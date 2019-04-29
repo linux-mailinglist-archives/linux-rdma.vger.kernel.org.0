@@ -2,81 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7AFDFF9
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2019 12:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9875AE0F9
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2019 13:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727470AbfD2KAd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Apr 2019 06:00:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727217AbfD2KAd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Apr 2019 06:00:33 -0400
-Received: from localhost (unknown [77.138.135.184])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727857AbfD2LAN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Apr 2019 07:00:13 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:50376 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727710AbfD2LAN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Apr 2019 07:00:13 -0400
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from webmail.solarflare.com (webmail.solarflare.com [12.187.104.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5337220449;
-        Mon, 29 Apr 2019 10:00:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1556532033;
-        bh=8+KrS3MN83LrdK/gcPTXlmQoU7AtaGEuBQj0pJa47Og=;
-        h=From:To:Cc:Subject:Date:From;
-        b=X2B+iNL9WYce0XZEHnruNMdxpXFiIkTAgYSsjEYnCLht4mjPrYwZEuBz6dzrNemby
-         EHDo7HUFC/5btVec1nfoFI1zVFmEtUO48UddjRJ8tOb9U1niDm0zqehFQUe/V4T6ph
-         Y/g/d0C515pk3jB9d9Nc8ELE/Bj7JyYrAqUWLG54=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] RDMA/uverbs: Fix compilation error on s390 and mips platforms
-Date:   Mon, 29 Apr 2019 13:00:14 +0300
-Message-Id: <20190429100014.5820-1-leon@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        by mx1-us4.ppe-hosted.com (Proofpoint Essentials ESMTP Server) with ESMTPS id E14D728008D;
+        Mon, 29 Apr 2019 11:00:11 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ocex03.SolarFlarecom.com
+ (10.20.40.36) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Mon, 29 Apr
+ 2019 04:00:07 -0700
+Subject: Re: [PATCH] rds: ib: force endiannes annotation
+To:     Nicholas Mc Guire <hofrat@osadl.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>
+CC:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
+        <linux-kernel@vger.kernel.org>
+References: <1556518178-13786-1-git-send-email-hofrat@osadl.org>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <20443fd3-bd1e-9472-8ca3-e3014e59f249@solarflare.com>
+Date:   Mon, 29 Apr 2019 12:00:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
+In-Reply-To: <1556518178-13786-1-git-send-email-hofrat@osadl.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Originating-IP: [10.17.20.203]
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-24580.005
+X-TM-AS-Result: No-4.279000-4.000000-10
+X-TMASE-MatchedRID: cgbqQT5W8hcOwH4pD14DsPHkpkyUphL9LC92/N1OWlkCJwlu5sh0qPlY
+        oV6p/cSxnvxAs02MrVHZj9bX58WOAtrx1weWCpUF9Ib/6w+1lWRzd7C7BtJobplWFHP5R0I96F2
+        xWH9ZAxvo0cmq7QOKCJE7C19CEuIWhlahuHmDw1YwmhCbeOj6aY/8SyGg0rIRY0DjZWmXtn6jxY
+        yRBa/qJUl4W8WVUOR/9xS3mVzWUuAojN1lLei7Rd/CUQwie/Fo7Mq1xmO35qw8xi0U5YNGcJ4n9
+        vxgOV3iHkqjqrZMW0AEbTwwTTJVcrjaVpzLE/5p34yXMiKxtsZMv+p+q89pYtQ17CngTb9OBKmZ
+        VgZCVnezGTWRXUlrx+EijnvekEIH
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--4.279000-4.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-24580.005
+X-MDID: 1556535612-qOvS5RxvVGZd
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On 29/04/2019 07:09, Nicholas Mc Guire wrote:
+> diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
+> index 7055985..a070a2d 100644
+> --- a/net/rds/ib_recv.c
+> +++ b/net/rds/ib_recv.c
+> @@ -824,7 +824,7 @@ static void rds_ib_cong_recv(struct rds_connection *conn,
+>  	}
+>  
+>  	/* the congestion map is in little endian order */
+> -	uncongested = le64_to_cpu(uncongested);
+> +	uncongested = le64_to_cpu((__force __le64)uncongested);
+>  
+>  	rds_cong_map_updated(map, uncongested);
+>  }
+Again, a __force cast doesn't seem necessary here.  It looks like the
+ code is just using the wrong types; if all of src, dst and uncongested
+ were __le64 instead of uint64_t, and the last two lines replaced with
+ rds_cong_map_updated(map, le64_to_cpu(uncongested)); then the semantics
+ would be kept with neither sparse errors nor __force.
 
-Most platforms ignore parameter provided to ZERO_PAGE macro,
-hence wrong parameter was used and missed. This caused to compilation
-error like presented below.
+__force is almost never necessary and mostly just masks other bugs or
+ endianness confusion in the surrounding code.  Instead of adding a
+ __force, either fix the code to be sparse-clean or leave the sparse
+ warning in place so that future developers know there's something not
+ right.
 
-drivers/infiniband/core/uverbs_main.c: In function 'rdma_umap_fault':
-drivers/infiniband/core/uverbs_main.c:898:28: error: 'struct vm_fault' has no member named 'vm_start'
-   vmf->page = ZERO_PAGE(vmf->vm_start);
-                            ^~
-Cc: stable@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@mellanox.com>
-Fixes: 67f269b37f9b ("RDMA/ucontext: Fix regression with disassociate")
-Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/uverbs_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index 7843e89235c3..65fe89b3fa2d 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -895,7 +895,7 @@ static vm_fault_t rdma_umap_fault(struct vm_fault *vmf)
-
- 	/* Read only pages can just use the system zero page. */
- 	if (!(vmf->vma->vm_flags & (VM_WRITE | VM_MAYWRITE))) {
--		vmf->page = ZERO_PAGE(vmf->vm_start);
-+		vmf->page = ZERO_PAGE(vmf->vma->vm_start);
- 		get_page(vmf->page);
- 		return 0;
- 	}
---
-2.20.1
-
+-Ed
