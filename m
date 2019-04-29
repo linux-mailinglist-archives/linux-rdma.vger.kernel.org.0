@@ -2,60 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 503C4E22B
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2019 14:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5412E2D7
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2019 14:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbfD2MWP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Apr 2019 08:22:15 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:51250 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727710AbfD2MWP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Apr 2019 08:22:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
-        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=xl4MrYPDmF4P7eoHhj1V5OKIKtqTlTb2zUS6E3j/D/k=; b=urzXn1TjNfhZgYIXvoNGdwcEL4
-        t32R7kXmkyDSDQ8U38vmgrR+PE3OEpsGs2J1p8qyU84uSDRMwJp4FZOCpIdDSVXWvMsDoT0+2JP2z
-        XNYcto0rN83HQx8dovrIibRYuZiernalkybiVBLziDtJ4OVr90Gvho1ip9OXiRTryUyGidMlj7Kbv
-        BkEwJrkIRessWqBBV40J+H7O5zd8oGPLTfKDWUwzoDo8wjTuHo4Sd8Q12kPlasjjsUM1hELMZ8n0/
-        U7mTMPPQKj2Pu/Bopf53s0bWYZQJQKNBMgwLYhVlOLWfwrfJsQzL5lx0ACoA2NoJTUE78c4EzZlle
-        bpg2Kz8Q==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1hL5IQ-0001hq-Mt; Mon, 29 Apr 2019 12:22:10 +0000
-Date:   Mon, 29 Apr 2019 05:22:10 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Edward Cree <ecree@solarflare.com>
-Cc:     Nicholas Mc Guire <der.herr@hofr.at>,
+        id S1728121AbfD2MiQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Apr 2019 08:38:16 -0400
+Received: from 178.115.242.59.static.drei.at ([178.115.242.59]:60492 "EHLO
+        mail.osadl.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728044AbfD2MiQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Apr 2019 08:38:16 -0400
+Received: by mail.osadl.at (Postfix, from userid 1001)
+        id 861765C0C43; Mon, 29 Apr 2019 14:37:23 +0200 (CEST)
+Date:   Mon, 29 Apr 2019 14:37:23 +0200
+From:   Nicholas Mc Guire <der.herr@hofr.at>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Edward Cree <ecree@solarflare.com>,
         Nicholas Mc Guire <hofrat@osadl.org>,
         Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] rds: ib: force endiannes annotation
-Message-ID: <20190429122210.GB32474@infradead.org>
+Message-ID: <20190429123723.GA18362@osadl.at>
 References: <1556518178-13786-1-git-send-email-hofrat@osadl.org>
  <20443fd3-bd1e-9472-8ca3-e3014e59f249@solarflare.com>
  <20190429111836.GA17830@osadl.at>
- <2ffed5fc-a372-3f90-e655-bcbc740eed33@solarflare.com>
+ <20190429122132.GA32474@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2ffed5fc-a372-3f90-e655-bcbc740eed33@solarflare.com>
-User-Agent: Mutt/1.9.2 (2017-12-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20190429122132.GA32474@infradead.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 29, 2019 at 01:02:31PM +0100, Edward Cree wrote:
-> ... are some bitwise ops on the values (bitwise ops are legal in any
->  endianness) and incrementation of the pointers (which cares only about
->  the pointee size, not type).
+On Mon, Apr 29, 2019 at 05:21:32AM -0700, Christoph Hellwig wrote:
+> On Mon, Apr 29, 2019 at 01:18:36PM +0200, Nicholas Mc Guire wrote:
+> > changing uncongested to __le64 is not an option here - it would only move
+> > the sparse warnings to those other locatoins where the ports that 
+> > became uncongested are being or'ed into uncongested.
+> 
+> Than fix that a well.  Either by throwing in a conversion, or
+> add {be,le}XX_{and,or} helpers.
 
-Oh, true.  That is why the underlying annotation is called __bitwise :)
-I'll take my previous comment back.
+ok - that is an option in that case - will try that route
+
+thx!
+hofrat
