@@ -2,84 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AAF1E811
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2019 18:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204CAE886
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2019 19:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728629AbfD2Qsj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Apr 2019 12:48:39 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:35766 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728520AbfD2Qsj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Apr 2019 12:48:39 -0400
-Received: by mail-lj1-f195.google.com with SMTP id z26so10041415ljj.2
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Apr 2019 09:48:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tYehPJ6wJvH/t0sND63lM9JFmbpN65exB3Q2CmnY7pQ=;
-        b=boxZnEB7KXPFCHisvjFAhGhtDzlLRSPvSiTJOtc3E2UiH96le78g5Eu6tEp8R4Osak
-         n/blcnqZgtrT+GiEjey4L/qDFcJ8IB9NiYzOJeU9JfWishn6yS+CkMjZ5pQsM1el58FG
-         FVj/h+G4gJ2fDEqwqpUf1xoYFHH0+VbQCiodA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tYehPJ6wJvH/t0sND63lM9JFmbpN65exB3Q2CmnY7pQ=;
-        b=r7KxQtZj4CVfm2CEKVyr2hjABBLdOOoybTqj6jaP/8CM5zsJotedB6YaYhPEpkKxHF
-         z70M5c23B8rFDS49ZIa6fY5iNWgvXMyYTT1Eisbl7HMP8N3HpeOtmj1adkRtBq9Y4Dr4
-         UKnFcRODmxLxerDRbGNH+YEnLKP18idSO4YMOkEx4FaOtV7G7LYB8yXY/SPm8H/XnDx+
-         DKWM3yhQ8/6W3N3o/AajWVze39SR3RgnqY+Eh1p+5tV9IZ2KjedEGr3MidMNQavjDUMf
-         7SWFS4vpbkSkJXmGN6iSP8RNuDQih9rgxhyQdwGgLDpQRs8y137qyFAjywz2w4RnMQZg
-         w2IQ==
-X-Gm-Message-State: APjAAAXnjgmajDlYkw+qsoaz3a1B/xYwLO44GFnK62yxq1e6IIoPVkp9
-        lehfzjreY09l4fyalh94EjVWHTKT/4g=
-X-Google-Smtp-Source: APXvYqwmx0ocBsWVmL1owkKUFLZh9TA5pHfU5XbmHuRE466Owtz2gIybeMapT0w4AOgR8oOxgYvBMw==
-X-Received: by 2002:a2e:8884:: with SMTP id k4mr9711625lji.138.1556556516993;
-        Mon, 29 Apr 2019 09:48:36 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id 77sm6950252ljs.58.2019.04.29.09.48.35
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Apr 2019 09:48:36 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id f23so10058272ljc.0
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Apr 2019 09:48:35 -0700 (PDT)
-X-Received: by 2002:a2e:5dd2:: with SMTP id v79mr34012924lje.22.1556556515412;
- Mon, 29 Apr 2019 09:48:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <48cbd548d153d1d2a1cf6c4f2127a6cef5d55deb.camel@redhat.com>
-In-Reply-To: <48cbd548d153d1d2a1cf6c4f2127a6cef5d55deb.camel@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 29 Apr 2019 09:48:18 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiYHXxkHrbDACc1-5bqJPuiMnmwbStSYBYo82zsO=gstQ@mail.gmail.com>
-Message-ID: <CAHk-=wiYHXxkHrbDACc1-5bqJPuiMnmwbStSYBYo82zsO=gstQ@mail.gmail.com>
+        id S1728895AbfD2RNG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Apr 2019 13:13:06 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:39662 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728520AbfD2RNF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Apr 2019 13:13:05 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 09E2D30B8FAC;
+        Mon, 29 Apr 2019 17:13:05 +0000 (UTC)
+Received: from haswell-e.nc.xsintricity.com (ovpn-112-9.rdu2.redhat.com [10.10.112.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 32A265D737;
+        Mon, 29 Apr 2019 17:13:04 +0000 (UTC)
+Message-ID: <a532d88432b2fd581d39faf12ce3c3c31015b45a.camel@redhat.com>
 Subject: Re: [GIT PULL] Please pull rdma.git
-To:     Doug Ledford <dledford@redhat.com>
+From:   Doug Ledford <dledford@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         "Gunthorpe, Jason" <jgg@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Mon, 29 Apr 2019 13:13:01 -0400
+In-Reply-To: <CAHk-=wiYHXxkHrbDACc1-5bqJPuiMnmwbStSYBYo82zsO=gstQ@mail.gmail.com>
+References: <48cbd548d153d1d2a1cf6c4f2127a6cef5d55deb.camel@redhat.com>
+         <CAHk-=wiYHXxkHrbDACc1-5bqJPuiMnmwbStSYBYo82zsO=gstQ@mail.gmail.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-gJ2yDr01R/2oc8/+BEOH"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Mon, 29 Apr 2019 17:13:05 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 29, 2019 at 9:29 AM Doug Ledford <dledford@redhat.com> wrote:
->
->
->  drivers/infiniband/core/uverbs_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-This trivial one-liner is actually incorrect.
+--=-gJ2yDr01R/2oc8/+BEOH
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-It should use 'vmf->address', because the point of the ZERO_PAGE
-argument is to pick the page with the right virtual address alias for
-broken architectures that need those kinds.
+On Mon, 2019-04-29 at 09:48 -0700, Linus Torvalds wrote:
+> On Mon, Apr 29, 2019 at 9:29 AM Doug Ledford <dledford@redhat.com> wrote:
+> >=20
+> >  drivers/infiniband/core/uverbs_main.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> This trivial one-liner is actually incorrect.
+>=20
+> It should use 'vmf->address', because the point of the ZERO_PAGE
+> argument is to pick the page with the right virtual address alias for
+> broken architectures that need those kinds.
+>=20
+> I'm actually surprised s390 wants it, usually it's just MIPS that has
+> the horribly broken virtual address translation stuff. But it looks
+> like for s390 it's at least only a performance issue (ie it causes
+> some aliases in L1 that cause cacheline ping-pong rather than anything
+> else).
 
-I'm actually surprised s390 wants it, usually it's just MIPS that has
-the horribly broken virtual address translation stuff. But it looks
-like for s390 it's at least only a performance issue (ie it causes
-some aliases in L1 that cause cacheline ping-pong rather than anything
-else).
+That's what I get for listening to Jason ;-)
 
-                 Linus
+Well, since you have just essentially re-written the patch to be
+correct, you are now the developer of origin.  Do you want to commit the
+fix directly or shall I respin it for you to pull?
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-gJ2yDr01R/2oc8/+BEOH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAlzHMJ0ACgkQuCajMw5X
+L90H7hAAiqMvkiQirtFRy+LzigQmVVSRSaCsHB2aWnhDLuSSC4be+nysMtDjDU1u
+0eMPSlMowbKK9ANeGZtsQCiJ9O+VpxItXGtivN1Zmk14HXMGqYByiYB82o1OOp6x
+Wpvm5U1X/DXJVhrH3L8k9E8bIATetiKh+kFPFg4wBDGoDdkzMlYWCYcANha+q78r
+Jo+PJ9vXzs6Pci6sKbxPuttn0GC9X3jEyo1mTSB/n5ydlbnG0oLtWZN32WqIGcbn
+RQ+fkVNgEuI1/fzXZlvBZvYgIJ7RJZ1nR71GbHYTvmnMzpF56HkzdJXq878PMQGq
+zGdHig+kjKN/yWniY9WrW32GcH6w+29Bni2eyPqzN+WeZhEThbuPDLlwWJyUNbEt
+hrrDqtEiXrmUgJbKqcHYbg+MIdTMEHMWvO/6QvapJFB+1Ky7wldgPOv8mk35tEDF
+4D10/OQSWDtCRdPit2/DP1WWEozycg7Kfqr2SLoqD5kW3sAM9dv4FZBeyvWMbySD
+y8srkgjxh3Ups3eEY37AdAZyqi+wp1ft+/Qs05kSy72zHEfFZ/dPubITAedzdn/J
+lDUqFCk+rOLd1fENS0Ie2F3jvvryeCsSzPqIV4v0CIOZnT+quJwYSKWH7wARZuIr
+XZB259dmMQ5qbfQreXoDJHjdjtsHWt7YFhunSB9xcDJ7OB1tUz4=
+=YO1c
+-----END PGP SIGNATURE-----
+
+--=-gJ2yDr01R/2oc8/+BEOH--
+
