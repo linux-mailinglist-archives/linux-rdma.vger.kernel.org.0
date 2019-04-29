@@ -2,102 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A82DBC8
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2019 08:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE1ADDC6
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2019 10:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbfD2GJ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Apr 2019 02:09:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54122 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726566AbfD2GJz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Apr 2019 02:09:55 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x3T64KB2107007
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Apr 2019 02:09:54 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2s5tjwjah9-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Apr 2019 02:09:54 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-rdma@vger.kernel.org> from <heiko.carstens@de.ibm.com>;
-        Mon, 29 Apr 2019 07:09:52 +0100
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 29 Apr 2019 07:09:49 +0100
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x3T69mUg32309268
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Apr 2019 06:09:48 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B65F852052;
-        Mon, 29 Apr 2019 06:09:48 +0000 (GMT)
-Received: from osiris (unknown [9.152.212.21])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 75C1D52057;
-        Mon, 29 Apr 2019 06:09:48 +0000 (GMT)
-Date:   Mon, 29 Apr 2019 08:09:47 +0200
-From:   Heiko Carstens <heiko.carstens@de.ibm.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-References: <20190428115207.GA11924@ziepe.ca>
+        id S1727576AbfD2IaU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Apr 2019 04:30:20 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:35134 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727547AbfD2IaU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Apr 2019 04:30:20 -0400
+Received: by mail-vs1-f67.google.com with SMTP id d8so5435396vsp.2;
+        Mon, 29 Apr 2019 01:30:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9ejeAg30FO+SrDtF8jst8HDS2kpQ8atdoBfotSwpxGw=;
+        b=svqzG533x54Ap5WJ3C0W7KXAnx99/4WT14tCfvNeaikhLHw8zeAeYBgvRx6Snn40HC
+         t4wE0fIbhVwalokrsTmrUJoIDOkeqxd44zwZd7SP8HTvApphhTCiVWGctt1pzAguxMIe
+         BU6u4UqZT3tFRG8XzvdocJK/xjWRw4uG3Jv9MzsJofhJYQ1hFu5d9Y4JQq+XTWAq/78h
+         W0DOZ4bH1ScRYpYKS0kUVUUhG+bMa/Kqtxcf/10QyFpSsea1bmfvx/kYxwQEl2zyrs0P
+         grDmOaGmqVrARm9TEUyr4awn06VgCg3Dc2vGtcQgcxF0dNy7jxEszZOVpvSv8jkwKTe4
+         IUVQ==
+X-Gm-Message-State: APjAAAVbV/f6/naSuKl9utyMM02FwA5dc8MgA9B0LDBbo/kPsEUDwXbw
+        yPTQHvxwRL2JW81TvbpajRvjasuuHcCYVChviXk7aAG+
+X-Google-Smtp-Source: APXvYqzpqRt7EbZh16JJWNf37hn4Co28yEj8C8YShxPm09scenh8EIcQQAtmmHqFtn2V4S8z4NnkGRneooKSVufHnhI=
+X-Received: by 2002:a67:ba07:: with SMTP id l7mr4160689vsn.11.1556526618217;
+ Mon, 29 Apr 2019 01:30:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190428115207.GA11924@ziepe.ca>
-X-TM-AS-GCONF: 00
-x-cbid: 19042906-4275-0000-0000-0000032F6605
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19042906-4276-0000-0000-0000383EB9F7
-Message-Id: <20190429060947.GB3665@osiris>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-29_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=932 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1904290047
+References: <20190429082645.9394-1-geert@linux-m68k.org>
+In-Reply-To: <20190429082645.9394-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 29 Apr 2019 10:30:06 +0200
+Message-ID: <CAMuHMdUuPPf8T2_WK2V_zW8kxb1ZfzvyKJck9D3MEHMRvYrmdA@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.1-rc7
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 28, 2019 at 11:52:12AM +0000, Jason Gunthorpe wrote:
-> Hi Linus,
-> 
-> Third rc pull request
-> 
-> Nothing particularly special here. There is a small merge conflict
-> with Adrea's mm_still_valid patches which is resolved as below:
-...
-> Jason Gunthorpe (3):
->       RDMA/mlx5: Do not allow the user to write to the clock page
->       RDMA/mlx5: Use rdma_user_map_io for mapping BAR pages
->       RDMA/ucontext: Fix regression with disassociate
+On Mon, Apr 29, 2019 at 10:28 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.1-rc7[1] to v5.1-rc6[3], the summaries are:
+>   - build errors: +1/-0
 
-This doesn't compile. The patch below would fix it, but not sure if
-this is what is intended:
+  + /kisskb/src/drivers/infiniband/core/uverbs_main.c: error: 'struct
+vm_fault' has no member named 'vm_start':  => 898:15, 898:28
 
-drivers/infiniband/core/uverbs_main.c: In function 'rdma_umap_fault':
-drivers/infiniband/core/uverbs_main.c:898:28: error: 'struct vm_fault' has no member named 'vm_start'
-   vmf->page = ZERO_PAGE(vmf->vm_start);
-                            ^~
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index 7843e89235c3..65fe89b3fa2d 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -895,7 +895,7 @@ static vm_fault_t rdma_umap_fault(struct vm_fault *vmf)
- 
- 	/* Read only pages can just use the system zero page. */
- 	if (!(vmf->vma->vm_flags & (VM_WRITE | VM_MAYWRITE))) {
--		vmf->page = ZERO_PAGE(vmf->vm_start);
-+		vmf->page = ZERO_PAGE(vmf->vma->vm_start);
- 		get_page(vmf->page);
- 		return 0;
- 	}
+mips-allmodconfig
+mips-allmodconfig
+s390-allmodconfig
+s390-allyesconfig
 
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/37624b58542fb9f2d9a70e6ea006ef8a5f66c30b/ (all 236 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/085b7755808aa11f78ab9377257e1dad2e6fa4bb/ (all 236 configs)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
