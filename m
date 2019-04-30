@@ -2,94 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 415A1FAED
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 16:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728CAFB5B
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 16:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbfD3OBg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Apr 2019 10:01:36 -0400
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:40128 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbfD3OBg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 10:01:36 -0400
-Received: by mail-pf1-f169.google.com with SMTP id u17so3139238pfn.7;
-        Tue, 30 Apr 2019 07:01:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0AILrt3kKWWbkhF709FLv0WUXE4if3LBxPh+WN7C8vc=;
-        b=GZH4JB3ZiiBwlmyGahUXFi8CEiz62Mzol3uZPLQ6J2AJ5Oe0ePwPcnhvBFb0Azby4N
-         jEqnDbcODK7l2gI4t2YGfmh0zu1Ml/oVwa0jd42XO7R843PNkphUM2VVPMTqmzwfOGm4
-         31CeZHXhtsz8CtSnj0P/DOt/NxkrblwWzTNjgGWUglTTyd/LnQEBSnoT5PzqS9GsSSJf
-         L9IdLbdcxlUHUqwWedAVECYpfRap0GdnUZGvnVXsQy+M6WbyQqxt775CbA2GwYhbnQ+M
-         Mpn38iuNmhpWCSKj2zJ+rI9prPPRgx8/VlgDx2IAzLvGGBv2b/nv6bLPF73nNZQ5Zgj3
-         m9Ww==
-X-Gm-Message-State: APjAAAV/7ldEl7coSsfwl6U1pmDZ4+8xp7xX72xMJg7sflwZ6niFTUHb
-        mvxXK1Vogt2oYENn3LCyrYPZoaEhXAM=
-X-Google-Smtp-Source: APXvYqyT+6TVkiY/N6jD1OysD3aQ7iGlOEtsLJwAACZ4nU9LgHBi96qtDXXdGOp4QN8SrAsY0DPDew==
-X-Received: by 2002:a63:3dca:: with SMTP id k193mr66883987pga.146.1556632894048;
-        Tue, 30 Apr 2019 07:01:34 -0700 (PDT)
-Received: from asus.site ([2601:647:4000:5dd1:a41e:80b4:deb3:fb66])
-        by smtp.gmail.com with ESMTPSA id t5sm47010653pfh.141.2019.04.30.07.01.31
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Tue, 30 Apr 2019 07:01:31 -0700 (PDT)
-Subject: Re: [PATCH] RDMA/srp: Accept again source addresses that do not have
- a port number
-To:     Laurence Oberman <loberman@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20190321203428.128471-1-bvanassche@acm.org>
- <bae975c8d5a4e256ba2987e5429b15333c1da0af.camel@redhat.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Openpgp: preference=signencrypt
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <ff66957f-d288-8d7d-edcb-fab04cf11265@acm.org>
-Date:   Tue, 30 Apr 2019 07:01:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726164AbfD3OY4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Apr 2019 10:24:56 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55966 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbfD3OY4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 10:24:56 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x3UEOeOX075205;
+        Tue, 30 Apr 2019 14:24:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2018-07-02; bh=u02ebgOH+Pi973tpKwUoPZrjknDPYJ7A7Hi/qIz9PJc=;
+ b=NgpOaUXAcxQCXHw40LLVfCAZlIxFvNaGyeytTKVKlAWLhSOLU3sPf6RMUmQ3ToE+1pB+
+ 964gHBhausvTade2Xy5fKfw/R5EFPzWwxvMyKiS/FxzvOyTyQvCBXkiBjHHhmITnu6jG
+ MlEyzFjQV4us2wywJv8/v7ni1HmQayJrJRQAWWzumo/JE/VfS8JVCly5X5YwOR/X1e9p
+ 2TxAmfuImcmhn3ymFzWlxMI6GctlxVI4YScWZrU+q8vvJs2XPiYhZ/UJF2UJOdS3hrF9
+ cRI4G3xOliCIcbE4g+O2jyV3VzI/AXfZ2cY77CXORL471P/lbYuOculiU/kpYdtXLvOs TA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2s4fqq4spv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Apr 2019 14:24:40 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x3UEN0KS058521;
+        Tue, 30 Apr 2019 14:24:40 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2s5u510vgw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Apr 2019 14:24:39 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x3UEOcK2002195;
+        Tue, 30 Apr 2019 14:24:38 GMT
+Received: from srabinov-laptop.nl.oracle.com (/10.175.1.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 30 Apr 2019 07:24:35 -0700
+From:   Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Subject: [PATCH for-next v1 0/4] ib_pd should not have ib_uobject
+Date:   Tue, 30 Apr 2019 17:23:20 +0300
+Message-Id: <20190430142333.31063-1-shamir.rabinovitch@oracle.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <bae975c8d5a4e256ba2987e5429b15333c1da0af.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9242 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=922
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1904300090
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9242 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=947 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1904300091
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/26/19 8:37 AM, Laurence Oberman wrote:
-> This looks orrect to me, will test and report back.
+This patch set complete the cleanup done in the driver/verbs/uverbs
+where the dependency of the code in the ib_x uobject pointer was
+removed. 
 
-Hi Laurence,
+This series include fix requested by Jason to initialize the
+driver_udata ucontext in ib_uverbs_get_context that was not
+initialized in this flow.
 
-As you probably know the merge window will open soon. Do you still plan
-to share test results?
+Last, the uobject pointer is removed from the ib_pd as last step 
+before I can start adding the pd sharing code. 
 
-Thanks,
+PLEASE NOTE! 
 
-Bart.
+The last patch that removed the uobject pointer from the ib_pd
+also affected the netlink interface. With this patch the netlink
+interface cannot figure the context id from ib_pd. 
+
+Please review this change carefully...
+
+Shamir Rabinovitch (4):
+  RDMA/uverbs: initialize uverbs_attr_bundle ucontext in
+    ib_uverbs_get_context
+  RDMA/uverbs: uobj_get_obj_read should return the ib_uobject
+  RDMA/uverbs: uobj_put_obj_read macro should be removed
+  IB/{core,hw}: ib_pd should not have ib_uobject pointer
+
+ drivers/infiniband/core/nldev.c            |   5 -
+ drivers/infiniband/core/uverbs_cmd.c       | 272 ++++++++++++++-------
+ drivers/infiniband/core/verbs.c            |   1 -
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c |   1 -
+ drivers/infiniband/hw/mlx5/main.c          |   1 -
+ drivers/infiniband/hw/mthca/mthca_qp.c     |   3 +-
+ include/rdma/ib_verbs.h                    |   1 -
+ include/rdma/uverbs_std_types.h            |  11 +-
+ 8 files changed, 192 insertions(+), 103 deletions(-)
+
+-- 
+2.20.1
+
