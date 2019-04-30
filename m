@@ -2,91 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBC1F5D6
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 13:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DE5F7D6
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 14:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726914AbfD3Li6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Apr 2019 07:38:58 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:16265 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726294AbfD3Li6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 07:38:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1556624337; x=1588160337;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=WTj2K2Lf8HXesK2UL/c1IwQw+mXAEYW4/eKoTUbulag=;
-  b=C/VEd9431AVhdnr4EVkzeUqf+em9Kl9M3Fdmswb19GDKZrLsNQkXPst3
-   q1NIvsdLO3oirpfudIex8/J6ZVZEGX0IUgR5PNGn6Exqrk6HjPfxkkk3o
-   DArXRoWhonpZv6RqIxViNX9D5WPU/OqMsz59Wqydv1/rhylVcM5E0kpjk
-   4=;
-X-IronPort-AV: E=Sophos;i="5.60,413,1549929600"; 
-   d="scan'208";a="400247935"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 30 Apr 2019 11:38:44 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (8.14.7/8.14.7) with ESMTP id x3UBcdJH052108
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
-        Tue, 30 Apr 2019 11:38:43 GMT
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 30 Apr 2019 11:38:43 +0000
-Received: from [10.95.87.116] (10.43.162.83) by EX13D19EUB003.ant.amazon.com
- (10.43.166.69) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 30 Apr
- 2019 11:38:36 +0000
-Subject: Re: [PATCH for-next] RDMA/uverbs: Initialize udata struct on destroy
- flows
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>,
-        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <1556613999-14823-1-git-send-email-galpress@amazon.com>
- <20190430111814.GE6705@mtr-leonro.mtl.com>
- <45a1912f-b811-ad4b-cf66-ac02edb4b811@amazon.com>
- <5dbebe7f-a55e-043f-ccc1-30f12096a36b@intel.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <dc45f88e-16fe-bd9d-f45a-584fd83ab773@amazon.com>
-Date:   Tue, 30 Apr 2019 14:38:30 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1729912AbfD3Ln1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Apr 2019 07:43:27 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:44976 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729902AbfD3Ln0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 07:43:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=c4e/nTvtQGyaW5Djk9MygY1aHxVTJJByJwYRDeIZNMg=; b=aUTZ9ARHMuIHgk7JMGKcAsU8V
+        dOhiiyl3m5nLsfJJwXXDr1mi6pPqBRqNnH0WCj2SzVwxWsTCmEl7J449q2rQSSTNiCqPjt/J30rU5
+        jyi7W54hKpBz5yMhHPgv1s4WoEEw8Pw8Wb/jhyh/Xh+lqvz96ioZ9prEv0a6PDzfyqiO7mjcob0gx
+        XZcZaYfejPRMk5JsjjPVK16nH4FgN5Y0umtIFzozFQH1ouPr5rnz2gjxqGoU1glX+vSZUHQAuWoGT
+        zrh9geTYeQtTJiK5wisUNzaqGODb0W0SpnOe4Uv8mXo3JId5lnPsO5cxhXJ6HhpXo6YxOkNWREQ2W
+        lttonOT5w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hLRAP-0002g8-VK; Tue, 30 Apr 2019 11:43:21 +0000
+Date:   Tue, 30 Apr 2019 04:43:21 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Nicholas Mc Guire <hofrat@osadl.org>
+Cc:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] rds: ib: force endiannes annotation
+Message-ID: <20190430114321.GA9813@infradead.org>
+References: <1556593977-15828-1-git-send-email-hofrat@osadl.org>
 MIME-Version: 1.0
-In-Reply-To: <5dbebe7f-a55e-043f-ccc1-30f12096a36b@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.83]
-X-ClientProxiedBy: EX13D17UWC003.ant.amazon.com (10.43.162.206) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1556593977-15828-1-git-send-email-hofrat@osadl.org>
+User-Agent: Mutt/1.9.2 (2017-12-15)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 30-Apr-19 14:35, Dennis Dalessandro wrote:
-> On 4/30/2019 7:27 AM, Gal Pressman wrote:
->> On 30-Apr-19 14:18, Leon Romanovsky wrote:
->>> On Tue, Apr 30, 2019 at 11:46:39AM +0300, Gal Pressman wrote:
->>>> Cited commit introduced the udata parameter to different destroy flows
->>>> but the uapi method definition does not have udata (i.e has_udata flag
->>>> is not set). As a result, an uninitialized udata struct is being passed
->>>> down to the driver callbacks.
->>>>
->>>> Fix that by clearing the driver udata even in cases where has_udata flag
->>>> is not set.
->>>>
->>>> Fixes: c4367a26357b ("IB: Pass uverbs_attr_bundle down ib_x destroy path")
->>>> Cc: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
->>>> Co-developed-by: Jason Gunthorpe <jgg@ziepe.ca>
->>>
->>> What is wrong with Signed-off-by that caused you to add new tag?
->>
->> Jason is the one that originally wrote and sent the code, this tag seems
->> appropriate.
->> Obviously I don't mind removing it, it's there to give him credit..
-> 
-> Did you find documentation for using that tag or did you just make it up? I
-> think Signed-off-by is what you want here.
-
-https://www.kernel.org/doc/html/v5.0/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
+The patch looks good, but the force in the subject sounds weird now.
