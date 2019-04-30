@@ -2,182 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3604FA0B
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 15:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415A1FAED
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 16:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbfD3N0N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Apr 2019 09:26:13 -0400
-Received: from mail-qk1-f201.google.com ([209.85.222.201]:36929 "EHLO
-        mail-qk1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728769AbfD3N0M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 09:26:12 -0400
-Received: by mail-qk1-f201.google.com with SMTP id c2so11811521qkm.4
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Apr 2019 06:26:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=CUfyrLNe/T3EcKv5qduPdE7e3xDRgpU9AlrvCv3qwqI=;
-        b=ACzTueebTGZuzKKoCgKBIgO56T+v/kmKwHjurWtS7UbHoL/8XDJlDb5ck/BSEBSEkL
-         L/cpQLHEpHyLmFxTqXzMv0MYxpPJ/tdSuF6iSO5LSNmbylvOUvYffcEQgPGf+AHIVemF
-         X7c/hUL69n/uOjY+uNJSNPAVfbcNbVaSMzD0uei9BaIXpxtVKCRwsIlHAcYOHL9EFavB
-         iCJAtq03WGCgnaX+tP7fN2qD5Hnfneud42YH1gQK4xFPHVYPeqPOAqGnfhU4Bvx5JZ4h
-         WVQJpJkjflxIoXEbOmqcqlW6kZy64vV5a1g9LW1u4aQq8hQq2UTluPLfVENOwe2MSfHQ
-         GaaA==
+        id S1726832AbfD3OBg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Apr 2019 10:01:36 -0400
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:40128 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbfD3OBg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 10:01:36 -0400
+Received: by mail-pf1-f169.google.com with SMTP id u17so3139238pfn.7;
+        Tue, 30 Apr 2019 07:01:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=CUfyrLNe/T3EcKv5qduPdE7e3xDRgpU9AlrvCv3qwqI=;
-        b=DmoYkF6k9KQUfm/lIixmMsMn9FUXtXFHtqNHbm7xhDC7tHfuuBioec57/3MQZwZ1/f
-         HyCzsOjbYjxD5IppZK9v8uC7fkkWpIhWAzt+qzJjXaEobkD5Ap0e61RFq3VvtnbIfe28
-         ketLdz5/sMuIc0yGf41ZgARPRrJd37VfF+1rMxX6REt75LxMWCoUD3HFzugAKq/3S3co
-         drVabSbpLJISsgLNFRYjO5ec+4akr3c8jHXc/X4TJKt/KiGpkxT5+nK+5ayfoqK7UdH6
-         AErkHeuzQWhdsIkaWWLTab5p8W7JJg3NDpwPmc4Pw1Iu1WsSkauea58Swv/i9GmsWTAg
-         tbVA==
-X-Gm-Message-State: APjAAAUy65Sj1paUGKqXrxh1wt2dLcSVkOcU9Y+W4T5jHZOzq/7N+kcu
-        BEHEzWM46WnfdUazVekX6DXM9YnSYf7hKtO5
-X-Google-Smtp-Source: APXvYqysB3GTYMj0WGj5xIZkllIRnPABiLNbQUXAXOCL1Y4t6SI5ksxcGzuX1TZYAhDJVUrbxfYKc2E7kTYKjt+4
-X-Received: by 2002:a05:620a:482:: with SMTP id 2mr43219855qkr.323.1556630770597;
- Tue, 30 Apr 2019 06:26:10 -0700 (PDT)
-Date:   Tue, 30 Apr 2019 15:25:13 +0200
-In-Reply-To: <cover.1556630205.git.andreyknvl@google.com>
-Message-Id: <d8f017e7ab36f698d05e6cc775115730c917ca77.1556630205.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <cover.1556630205.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.21.0.593.g511ec345e18-goog
-Subject: [PATCH v14 17/17] selftests, arm64: add a selftest for passing tagged
- pointers to kernel
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>, Kuehling@google.com,
-        Felix <Felix.Kuehling@amd.com>, Deucher@google.com,
-        Alexander <Alexander.Deucher@amd.com>, Koenig@google.com,
-        Christian <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Chintan Pandya <cpandya@codeaurora.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=0AILrt3kKWWbkhF709FLv0WUXE4if3LBxPh+WN7C8vc=;
+        b=GZH4JB3ZiiBwlmyGahUXFi8CEiz62Mzol3uZPLQ6J2AJ5Oe0ePwPcnhvBFb0Azby4N
+         jEqnDbcODK7l2gI4t2YGfmh0zu1Ml/oVwa0jd42XO7R843PNkphUM2VVPMTqmzwfOGm4
+         31CeZHXhtsz8CtSnj0P/DOt/NxkrblwWzTNjgGWUglTTyd/LnQEBSnoT5PzqS9GsSSJf
+         L9IdLbdcxlUHUqwWedAVECYpfRap0GdnUZGvnVXsQy+M6WbyQqxt775CbA2GwYhbnQ+M
+         Mpn38iuNmhpWCSKj2zJ+rI9prPPRgx8/VlgDx2IAzLvGGBv2b/nv6bLPF73nNZQ5Zgj3
+         m9Ww==
+X-Gm-Message-State: APjAAAV/7ldEl7coSsfwl6U1pmDZ4+8xp7xX72xMJg7sflwZ6niFTUHb
+        mvxXK1Vogt2oYENn3LCyrYPZoaEhXAM=
+X-Google-Smtp-Source: APXvYqyT+6TVkiY/N6jD1OysD3aQ7iGlOEtsLJwAACZ4nU9LgHBi96qtDXXdGOp4QN8SrAsY0DPDew==
+X-Received: by 2002:a63:3dca:: with SMTP id k193mr66883987pga.146.1556632894048;
+        Tue, 30 Apr 2019 07:01:34 -0700 (PDT)
+Received: from asus.site ([2601:647:4000:5dd1:a41e:80b4:deb3:fb66])
+        by smtp.gmail.com with ESMTPSA id t5sm47010653pfh.141.2019.04.30.07.01.31
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Tue, 30 Apr 2019 07:01:31 -0700 (PDT)
+Subject: Re: [PATCH] RDMA/srp: Accept again source addresses that do not have
+ a port number
+To:     Laurence Oberman <loberman@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20190321203428.128471-1-bvanassche@acm.org>
+ <bae975c8d5a4e256ba2987e5429b15333c1da0af.camel@redhat.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <ff66957f-d288-8d7d-edcb-fab04cf11265@acm.org>
+Date:   Tue, 30 Apr 2019 07:01:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <bae975c8d5a4e256ba2987e5429b15333c1da0af.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch is a part of a series that extends arm64 kernel ABI to allow to
-pass tagged user pointers (with the top byte set to something else other
-than 0x00) as syscall arguments.
+On 3/26/19 8:37 AM, Laurence Oberman wrote:
+> This looks orrect to me, will test and report back.
 
-This patch adds a simple test, that calls the uname syscall with a
-tagged user pointer as an argument. Without the kernel accepting tagged
-user pointers the test fails with EFAULT.
+Hi Laurence,
 
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- tools/testing/selftests/arm64/.gitignore      |  1 +
- tools/testing/selftests/arm64/Makefile        | 11 ++++++++++
- .../testing/selftests/arm64/run_tags_test.sh  | 12 +++++++++++
- tools/testing/selftests/arm64/tags_test.c     | 21 +++++++++++++++++++
- 4 files changed, 45 insertions(+)
- create mode 100644 tools/testing/selftests/arm64/.gitignore
- create mode 100644 tools/testing/selftests/arm64/Makefile
- create mode 100755 tools/testing/selftests/arm64/run_tags_test.sh
- create mode 100644 tools/testing/selftests/arm64/tags_test.c
+As you probably know the merge window will open soon. Do you still plan
+to share test results?
 
-diff --git a/tools/testing/selftests/arm64/.gitignore b/tools/testing/selftests/arm64/.gitignore
-new file mode 100644
-index 000000000000..e8fae8d61ed6
---- /dev/null
-+++ b/tools/testing/selftests/arm64/.gitignore
-@@ -0,0 +1 @@
-+tags_test
-diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/selftests/arm64/Makefile
-new file mode 100644
-index 000000000000..a61b2e743e99
---- /dev/null
-+++ b/tools/testing/selftests/arm64/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# ARCH can be overridden by the user for cross compiling
-+ARCH ?= $(shell uname -m 2>/dev/null || echo not)
-+
-+ifneq (,$(filter $(ARCH),aarch64 arm64))
-+TEST_GEN_PROGS := tags_test
-+TEST_PROGS := run_tags_test.sh
-+endif
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/arm64/run_tags_test.sh b/tools/testing/selftests/arm64/run_tags_test.sh
-new file mode 100755
-index 000000000000..745f11379930
---- /dev/null
-+++ b/tools/testing/selftests/arm64/run_tags_test.sh
-@@ -0,0 +1,12 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+echo "--------------------"
-+echo "running tags test"
-+echo "--------------------"
-+./tags_test
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+else
-+	echo "[PASS]"
-+fi
-diff --git a/tools/testing/selftests/arm64/tags_test.c b/tools/testing/selftests/arm64/tags_test.c
-new file mode 100644
-index 000000000000..2bd1830a7ebe
---- /dev/null
-+++ b/tools/testing/selftests/arm64/tags_test.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <stdint.h>
-+#include <sys/utsname.h>
-+
-+#define SHIFT_TAG(tag)		((uint64_t)(tag) << 56)
-+#define SET_TAG(ptr, tag)	(((uint64_t)(ptr) & ~SHIFT_TAG(0xff)) | \
-+					SHIFT_TAG(tag))
-+
-+int main(void)
-+{
-+	struct utsname *ptr = (struct utsname *)malloc(sizeof(*ptr));
-+	void *tagged_ptr = (void *)SET_TAG(ptr, 0x42);
-+	int err = uname(tagged_ptr);
-+
-+	free(ptr);
-+	return err;
-+}
--- 
-2.21.0.593.g511ec345e18-goog
+Thanks,
 
+Bart.
