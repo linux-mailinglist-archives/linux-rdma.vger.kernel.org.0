@@ -2,180 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3297CFF40
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 20:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAC6FF47
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 20:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbfD3SDW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Apr 2019 14:03:22 -0400
-Received: from mail-eopbgr820089.outbound.protection.outlook.com ([40.107.82.89]:32704
-        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725950AbfD3SDW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Apr 2019 14:03:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector1-amd-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zcTyGKK7XhXuFlLZ+UH/eXQ5TFTAt7g8+oy6gIRtKFQ=;
- b=oNtSCIixWsWFKmT4my1wLctp2ecLcn+Xi1t5G2bZopIM9pLUH4DwEIicx1StftMWWmJ16CTIM3zOEbleFTQ9CBcLKTgq8WLkbDV/HSm5Fs5pVPghjgml4haiKdm3igSrC9k0QtXGI8lYDlYiTp9vgA5PWVIJ+vzzbQXQ0yp0QVc=
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (20.179.92.82) by
- BYAPR12MB3494.namprd12.prod.outlook.com (20.178.196.220) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1835.15; Tue, 30 Apr 2019 18:03:12 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::9118:73f2:809c:22c7]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::9118:73f2:809c:22c7%4]) with mapi id 15.20.1835.010; Tue, 30 Apr 2019
- 18:03:12 +0000
-From:   "Kuehling, Felix" <Felix.Kuehling@amd.com>
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
+        id S1726731AbfD3SFL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Apr 2019 14:05:11 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:56776 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbfD3SFK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 14:05:10 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x3UI4Ovt053896;
+        Tue, 30 Apr 2019 18:04:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=TxQklnkm9kRNAQfwmkU+bMxLgo6wSlClB1L737Y7nlY=;
+ b=t821lhD82Ys2bDdel7+xAY8i6/MgRtnHtUzFFXIbuhugrquoianVVCAZhkxj5FYhN5Nz
+ J+AsJN1GTGWGGDkETLpRXaiG9U4tu9iNyV+Tnzm3pdBBufWULsooFDro42e7c8kvuPyg
+ SFmiAGn+hSxX0yxvc0CxG/W2VHI0CxB4MGDYv0TD7MqCy/RX06QjeLk9b0M9ltoIA2zJ
+ rnVJtD8fGCJd0hKG6n2ukiX20Jn+7K9ZFxHWWqIouBIMyDyWJCE5R7gnzpIDf8h3UPoa
+ i6YwQjtaspn39gjqXBKiND/TXwf6hIpqlSpRbTua01XHBwprExcvpuesLhq3oaaInvhE kg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2s5j5u2vef-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Apr 2019 18:04:24 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x3UI3bMC107273;
+        Tue, 30 Apr 2019 18:04:23 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2s4yy9pn7a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Apr 2019 18:04:23 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x3UI4K5g000592;
+        Tue, 30 Apr 2019 18:04:20 GMT
+Received: from srabinov-laptop (/10.175.1.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 30 Apr 2019 11:04:20 -0700
+Date:   Tue, 30 Apr 2019 21:04:11 +0300
+From:   Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     jgg@ziepe.ca, dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Lijun Ou <oulijun@huawei.com>,
+        "Wei Hu(Xavier)" <xavier.huwei@huawei.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Steve Wise <swise@opengridcomputing.com>,
         Yishai Hadas <yishaih@mellanox.com>,
-        "Kuehling@google.com" <Kuehling@google.com>,
-        "Deucher@google.com" <Deucher@google.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig@google.com" <Koenig@google.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Chintan Pandya <cpandya@codeaurora.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v14 11/17] drm/amdgpu, arm64: untag user pointers
-Thread-Topic: [PATCH v14 11/17] drm/amdgpu, arm64: untag user pointers
-Thread-Index: AQHU/1g9Os+vw7iTBUyHAg3XuguIT6ZU/zsA
-Date:   Tue, 30 Apr 2019 18:03:12 +0000
-Message-ID: <3108d33e-8e18-a73e-5e1a-f0db64f02ab3@amd.com>
-References: <cover.1556630205.git.andreyknvl@google.com>
- <2e827b5c484be14044933049fec180cd6acb054b.1556630205.git.andreyknvl@google.com>
-In-Reply-To: <2e827b5c484be14044933049fec180cd6acb054b.1556630205.git.andreyknvl@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [165.204.55.251]
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-x-clientproxiedby: YQXPR0101CA0047.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:14::24) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:133::18)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Felix.Kuehling@amd.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4c0999f5-fea3-44c9-0853-08d6cd961c3f
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:BYAPR12MB3494;
-x-ms-traffictypediagnostic: BYAPR12MB3494:
-x-microsoft-antispam-prvs: <BYAPR12MB34944A9CF5D1F8C6996BDC3E923A0@BYAPR12MB3494.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 00235A1EEF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(136003)(396003)(366004)(376002)(39860400002)(189003)(199004)(6486002)(99286004)(31686004)(25786009)(52116002)(66066001)(11346002)(65956001)(65806001)(446003)(68736007)(316002)(476003)(2616005)(3846002)(110136005)(486006)(186003)(6116002)(305945005)(58126008)(7736002)(72206003)(14454004)(54906003)(478600001)(4326008)(97736004)(6246003)(7416002)(7406005)(6506007)(36756003)(386003)(53546011)(8676002)(102836004)(2501003)(26005)(5660300002)(53936002)(6436002)(6512007)(8936002)(65826007)(81166006)(81156014)(64126003)(229853002)(66946007)(2201001)(73956011)(71200400001)(71190400001)(66476007)(66446008)(64756008)(66556008)(86362001)(76176011)(256004)(31696002)(2906002)(921003)(1121003);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR12MB3494;H:BYAPR12MB3176.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: nO9DaGDv6+2lX6EAW/xC3yZdEwR1SwyhpeYY2JKG8pN4EFtG0GW/j6cJ/QaUHEiswwrMSPxcJEO63sn7llbzLacEK8Vy44iqfEae7En0ty2SKV0vxUvuUnDs5qJ+2X5q2XmhjycRmXknWwSxV/y6PVYAO+c8lanTWxlluHWFDePvqBrfB7u2EpAawDQYbKsS8q/7sHqUolAn/F5oyCXH/XlTa3vppoAb+w+sgCaGxC/Gw2CppEFaGT14LNJGXSDrmaE+Usqh8RWTSfk6/zkAfCIt5QOD4cX5JF93WPUJf1+9sH+pFC+Fnc2DBNH75lW/5BtAmfwfOX1vmscn2aMtreJqaPk7SVO9mzCmPK3tNiWaTTFrbGGemYuncAx88RIY1e8Aog2mKb3jOyvDhbCPHII4FkaR2q6WDizpkz+ZcoY=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C547763D046D774F9BA7C517CFFB0B87@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Kamal Heib <kamalheib1@gmail.com>,
+        Denis Drozdov <denisd@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Erez Alfasi <ereza@mellanox.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH for-next v1 4/4] IB/{core,hw}: ib_pd should not have
+ ib_uobject pointer
+Message-ID: <20190430180410.GA30695@srabinov-laptop>
+References: <20190430142333.31063-1-shamir.rabinovitch@oracle.com>
+ <20190430142333.31063-5-shamir.rabinovitch@oracle.com>
+ <20190430171302.GK6705@mtr-leonro.mtl.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c0999f5-fea3-44c9-0853-08d6cd961c3f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2019 18:03:12.6688
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3494
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190430171302.GK6705@mtr-leonro.mtl.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9243 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1904300109
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9243 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1904300109
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMjAxOS0wNC0zMCA5OjI1IGEubS4sIEFuZHJleSBLb25vdmFsb3Ygd3JvdGU6DQo+IFtDQVVU
-SU9OOiBFeHRlcm5hbCBFbWFpbF0NCj4NCj4gVGhpcyBwYXRjaCBpcyBhIHBhcnQgb2YgYSBzZXJp
-ZXMgdGhhdCBleHRlbmRzIGFybTY0IGtlcm5lbCBBQkkgdG8gYWxsb3cgdG8NCj4gcGFzcyB0YWdn
-ZWQgdXNlciBwb2ludGVycyAod2l0aCB0aGUgdG9wIGJ5dGUgc2V0IHRvIHNvbWV0aGluZyBlbHNl
-IG90aGVyDQo+IHRoYW4gMHgwMCkgYXMgc3lzY2FsbCBhcmd1bWVudHMuDQo+DQo+IGFtZGdwdV90
-dG1fdHRfZ2V0X3VzZXJfcGFnZXMoKSB1c2VzIHByb3ZpZGVkIHVzZXIgcG9pbnRlcnMgZm9yIHZt
-YQ0KPiBsb29rdXBzLCB3aGljaCBjYW4gb25seSBieSBkb25lIHdpdGggdW50YWdnZWQgcG9pbnRl
-cnMuIFRoaXMgcGF0Y2gNCj4gdW50YWcgdXNlciBwb2ludGVycyB3aGVuIHRoZXkgYXJlIGJlaW5n
-IHNldCBpbg0KPiBhbWRncHVfdHRtX3R0X3NldF91c2VycHRyKCkuDQo+DQo+IEluIGFtZGdwdV9n
-ZW1fdXNlcnB0cl9pb2N0bCgpIGFuZCBhbWRncHVfYW1ka2ZkX2dwdXZtLmMvaW5pdF91c2VyX3Bh
-Z2VzKCkNCj4gYW4gTU1VIG5vdGlmaWVyIGlzIHNldCB1cCB3aXRoIGEgKHRhZ2dlZCkgdXNlcnNw
-YWNlIHBvaW50ZXIuIFRoZSB1bnRhZ2dlZA0KPiBhZGRyZXNzIHNob3VsZCBiZSB1c2VkIHNvIHRo
-YXQgTU1VIG5vdGlmaWVycyBmb3IgdGhlIHVudGFnZ2VkIGFkZHJlc3MgZ2V0DQo+IGNvcnJlY3Rs
-eSBtYXRjaGVkIHVwIHdpdGggdGhlIHJpZ2h0IEJPLiBUaGlzIHBhdGNoIHVudGFnIHVzZXIgcG9p
-bnRlcnMgaW4NCj4gYW1kZ3B1X2dlbV91c2VycHRyX2lvY3RsKCkgZm9yIHRoZSBHRU0gY2FzZSBh
-bmQgaW4NCj4gYW1kZ3B1X2FtZGtmZF9ncHV2bV9hbGxvY19tZW1vcnlfb2ZfZ3B1KCkgZm9yIHRo
-ZSBLRkQgY2FzZS4NCj4NCj4gU3VnZ2VzdGVkLWJ5OiBLdWVobGluZywgRmVsaXggPEZlbGl4Lkt1
-ZWhsaW5nQGFtZC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IEFuZHJleSBLb25vdmFsb3YgPGFuZHJl
-eWtudmxAZ29vZ2xlLmNvbT4NCj4gLS0tDQo+ICAgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUv
-YW1kZ3B1X2FtZGtmZF9ncHV2bS5jIHwgMiArLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1k
-Z3B1L2FtZGdwdV9nZW0uYyAgICAgICAgICB8IDIgKysNCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1k
-L2FtZGdwdS9hbWRncHVfdHRtLmMgICAgICAgICAgfCAyICstDQo+ICAgMyBmaWxlcyBjaGFuZ2Vk
-LCA0IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYW1ka2ZkX2dwdXZtLmMgYi9kcml2ZXJzL2dw
-dS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYW1ka2ZkX2dwdXZtLmMNCj4gaW5kZXggMTkyMWRlYzNk
-ZjdhLi4yMGNhYzQ0ZWQ0NDkgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1k
-Z3B1L2FtZGdwdV9hbWRrZmRfZ3B1dm0uYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2Ft
-ZGdwdS9hbWRncHVfYW1ka2ZkX2dwdXZtLmMNCj4gQEAgLTExMjEsNyArMTEyMSw3IEBAIGludCBh
-bWRncHVfYW1ka2ZkX2dwdXZtX2FsbG9jX21lbW9yeV9vZl9ncHUoDQo+ICAgICAgICAgICAgICAg
-ICAgYWxsb2NfZmxhZ3MgPSAwOw0KPiAgICAgICAgICAgICAgICAgIGlmICghb2Zmc2V0IHx8ICEq
-b2Zmc2V0KQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+IC0g
-ICAgICAgICAgICAgICB1c2VyX2FkZHIgPSAqb2Zmc2V0Ow0KPiArICAgICAgICAgICAgICAgdXNl
-cl9hZGRyID0gdW50YWdnZWRfYWRkcigqb2Zmc2V0KTsNCj4gICAgICAgICAgfSBlbHNlIGlmIChm
-bGFncyAmIEFMTE9DX01FTV9GTEFHU19ET09SQkVMTCkgew0KPiAgICAgICAgICAgICAgICAgIGRv
-bWFpbiA9IEFNREdQVV9HRU1fRE9NQUlOX0dUVDsNCj4gICAgICAgICAgICAgICAgICBhbGxvY19k
-b21haW4gPSBBTURHUFVfR0VNX0RPTUFJTl9DUFU7DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dw
-dS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfZ2VtLmMgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdw
-dS9hbWRncHVfZ2VtLmMNCj4gaW5kZXggZDIxZGQyZjM2OWRhLi45ODVjYjgyYjJhYTYgMTAwNjQ0
-DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9nZW0uYw0KPiArKysg
-Yi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfZ2VtLmMNCj4gQEAgLTI4Niw2ICsy
-ODYsOCBAQCBpbnQgYW1kZ3B1X2dlbV91c2VycHRyX2lvY3RsKHN0cnVjdCBkcm1fZGV2aWNlICpk
-ZXYsIHZvaWQgKmRhdGEsDQo+ICAgICAgICAgIHVpbnQzMl90IGhhbmRsZTsNCj4gICAgICAgICAg
-aW50IHI7DQo+DQo+ICsgICAgICAgYXJncy0+YWRkciA9IHVudGFnZ2VkX2FkZHIoYXJncy0+YWRk
-cik7DQo+ICsNCj4gICAgICAgICAgaWYgKG9mZnNldF9pbl9wYWdlKGFyZ3MtPmFkZHIgfCBhcmdz
-LT5zaXplKSkNCj4gICAgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4NCj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV90dG0uYyBiL2RyaXZlcnMv
-Z3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV90dG0uYw0KPiBpbmRleCA3M2U3MWU2MWRjOTkuLjFk
-MzBlOTdhYzJjNCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1k
-Z3B1X3R0bS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV90dG0u
-Yw0KPiBAQCAtMTI0OCw3ICsxMjQ4LDcgQEAgaW50IGFtZGdwdV90dG1fdHRfc2V0X3VzZXJwdHIo
-c3RydWN0IHR0bV90dCAqdHRtLCB1aW50NjRfdCBhZGRyLA0KPiAgICAgICAgICBpZiAoZ3R0ID09
-IE5VTEwpDQo+ICAgICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+DQo+IC0gICAgICAg
-Z3R0LT51c2VycHRyID0gYWRkcjsNCj4gKyAgICAgICBndHQtPnVzZXJwdHIgPSB1bnRhZ2dlZF9h
-ZGRyKGFkZHIpOw0KDQpEb2luZyB0aGlzIGhlcmUgc2VlbXMgdW5uZWNlc3NhcnkuIFlvdSBhbHJl
-YWR5IHVudGFnZ2VkIHRoZSBhZGRyZXNzIGluIA0KYm90aCBjYWxsZXJzIG9mIHRoaXMgZnVuY3Rp
-b24uIFVudGFnZ2luZyBpbiB0aGUgdHdvIGNhbGxlcnMgZW5zdXJlcyB0aGF0IA0KdGhlIHVzZXJw
-dHIgYW5kIE1NVSBub3RpZmllciBhcmUgaW4gc3luYywgdXNpbmcgdGhlIHNhbWUgdW50YWdnZWQg
-DQphZGRyZXNzLiBEb2luZyBpdCBhZ2FpbiBoZXJlIGlzIHJlZHVuZGFudC4NCg0KUmVnYXJkcywN
-CiDCoCBGZWxpeA0KDQoNCj4gICAgICAgICAgZ3R0LT51c2VyZmxhZ3MgPSBmbGFnczsNCj4NCj4g
-ICAgICAgICAgaWYgKGd0dC0+dXNlcnRhc2spDQo+IC0tDQo+IDIuMjEuMC41OTMuZzUxMWVjMzQ1
-ZTE4LWdvb2cNCj4NCg==
+On Tue, Apr 30, 2019 at 08:13:02PM +0300, Leon Romanovsky wrote:
+> On Tue, Apr 30, 2019 at 05:23:24PM +0300, Shamir Rabinovitch wrote:
+> > future patches will add the ability to share ib_pd across multiple
+> > ib_ucontext. given that, ib_pd will be pointed by 1 or more ib_uobject.
+> > thus, having ib_uobject pointer in ib_pd is incorrect.
+> >
+> > Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+> > ---
+> >  drivers/infiniband/core/nldev.c            | 5 -----
+> >  drivers/infiniband/core/uverbs_cmd.c       | 1 -
+> >  drivers/infiniband/core/verbs.c            | 1 -
+> >  drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 1 -
+> >  drivers/infiniband/hw/mlx5/main.c          | 1 -
+> >  drivers/infiniband/hw/mthca/mthca_qp.c     | 3 ++-
+> >  include/rdma/ib_verbs.h                    | 1 -
+> >  7 files changed, 2 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+> > index bced945a456d..f8a325d8082c 100644
+> > --- a/drivers/infiniband/core/nldev.c
+> > +++ b/drivers/infiniband/core/nldev.c
+> > @@ -606,11 +606,6 @@ static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
+> >  	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, res->id))
+> >  		goto err;
+> >
+> > -	if (!rdma_is_kernel_res(res) &&
+> > -	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
+> > -			pd->uobject->context->res.id))
+> > -		goto err;
+> > -
+> 
+> Definitely not, in current code, PD is not shared and connected to ucontext,
+> users need to continue to see it. There are multiple ways to return
+> multiple contextes for shared PD:
+> 1. Return multiple fill_res_pd_entry() for every shared PD, but with
+> different context ID.
+> 2. Create nested context ID and return list here.
+> 
+> Thanks
+
+Hi Leon,
+
+Why we drag the context into objects that do not need it? We already have
+issue with objects that do need the context but at least we can drop this 
+dependency from objects that do not need the context. 
+
+What is the impact of removing this piece of the code and avoiding
+such assumptions in the netlink for other ib_x objects?
+
+Thanks
