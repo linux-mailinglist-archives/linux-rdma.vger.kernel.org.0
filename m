@@ -2,197 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7DBF89C
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 14:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F15F8B5
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 14:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727432AbfD3MQ7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Apr 2019 08:16:59 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:49510 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbfD3MQ7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 08:16:59 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x3UC4PZN126081;
-        Tue, 30 Apr 2019 12:16:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2018-07-02;
- bh=stcZtfGfCo/IzUJLtd3HedLv0tCRRKGPYBwhTGzBWVY=;
- b=v9STOoOUwU++Z0fTdUDYGjcBy8B/HAOLzwTvQOdfHnyObjFF9dEg9dAPmT8oGzWEElr6
- kjG7WjFYmO0vGRYeH+zK/fDp1OYva1rJf+HR/tzB4KenlknrQRXHIbnwdcf27NYDGGkY
- 4vZeVW7ZHCpNcmJumqd/KP+l8IJGyzQR3YwPj8q+jGmPonWubGVxC8RzrU+JMWJjwmY8
- WCMXpc1T4pYLXyYCO69PqMWZ2KaFgI4/GhAI706fRQxF4MsOvQVW6tdoQcrfQ7RdTuC4
- MH2l7qUSygkbZhoCYvuEUc/kw82lL/lBu2o61/7xN+bKoCVwHnRGitrD1ZUsXikIIScV cA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2s5j5u0t3v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Apr 2019 12:16:34 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x3UCFbj3126300;
-        Tue, 30 Apr 2019 12:16:34 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2s4yy9gjc9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Apr 2019 12:16:34 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x3UCGWTM017802;
-        Tue, 30 Apr 2019 12:16:33 GMT
-Received: from lap1 (/77.138.183.59)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 30 Apr 2019 05:16:32 -0700
-Date:   Tue, 30 Apr 2019 15:16:25 +0300
-From:   Yuval Shaia <yuval.shaia@oracle.com>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Cornelia Huck <cohuck@redhat.com>, mst@redhat.com,
-        linux-rdma@vger.kernel.org, qemu-devel@nongnu.org,
-        virtualization@lists.linux-foundation.org, jgg@mellanox.com
-Subject: Re: [Qemu-devel] [RFC 0/3] VirtIO RDMA
-Message-ID: <20190430121624.GA8708@lap1>
-References: <20190411110157.14252-1-yuval.shaia@oracle.com>
- <20190411190215.2163572e.cohuck@redhat.com>
- <20190415103546.GA6854@lap1>
- <e73e03c2-ea2b-6ffc-cd23-e8e44d42ce80@suse.de>
+        id S1726053AbfD3MWN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Apr 2019 08:22:13 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:56579 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbfD3MWN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 08:22:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1556626932; x=1588162932;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=tiPS0oj/MVP0+pKD0C6cuBqpWvaLtizT8ludLikx/aE=;
+  b=qKtdtAvgk5D+0it5GR4lze/S2fl688xIpcDd7IXuwJ8J78Qa/rQT8Nwf
+   YinMsbGLrTjxZ8/WwiusG4kp5tqJa6NFyFf1AfDJEXlGbvgWc18SecQqo
+   GL29GXgKc4zZ1u4wAxagF6Ep7aoTEqclCCLJd2ct22S7+u82CO0qFH+MR
+   M=;
+X-IronPort-AV: E=Sophos;i="5.60,413,1549929600"; 
+   d="scan'208";a="797087899"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 30 Apr 2019 12:22:08 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (8.14.7/8.14.7) with ESMTP id x3UCM2tu062775
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
+        Tue, 30 Apr 2019 12:22:08 GMT
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 30 Apr 2019 12:22:07 +0000
+Received: from [10.95.87.116] (10.43.162.83) by EX13D19EUB003.ant.amazon.com
+ (10.43.166.69) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 30 Apr
+ 2019 12:22:03 +0000
+Subject: Re: [PATCH for-next] RDMA/uverbs: Initialize udata struct on destroy
+ flows
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        <linux-rdma@vger.kernel.org>,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <1556613999-14823-1-git-send-email-galpress@amazon.com>
+ <20190430111814.GE6705@mtr-leonro.mtl.com>
+ <45a1912f-b811-ad4b-cf66-ac02edb4b811@amazon.com>
+ <5dbebe7f-a55e-043f-ccc1-30f12096a36b@intel.com>
+ <dc45f88e-16fe-bd9d-f45a-584fd83ab773@amazon.com>
+ <20190430120732.GG6705@mtr-leonro.mtl.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <d91f85f2-ee3e-d0a6-7e10-4689ce87f938@amazon.com>
+Date:   Tue, 30 Apr 2019 15:21:58 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e73e03c2-ea2b-6ffc-cd23-e8e44d42ce80@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9242 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1904300080
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9242 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1904300080
+In-Reply-To: <20190430120732.GG6705@mtr-leonro.mtl.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.83]
+X-ClientProxiedBy: EX13D19UWA001.ant.amazon.com (10.43.160.169) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 19, 2019 at 01:16:06PM +0200, Hannes Reinecke wrote:
-> On 4/15/19 12:35 PM, Yuval Shaia wrote:
-> > On Thu, Apr 11, 2019 at 07:02:15PM +0200, Cornelia Huck wrote:
-> > > On Thu, 11 Apr 2019 14:01:54 +0300
-> > > Yuval Shaia <yuval.shaia@oracle.com> wrote:
-> > > 
-> > > > Data center backends use more and more RDMA or RoCE devices and more and
-> > > > more software runs in virtualized environment.
-> > > > There is a need for a standard to enable RDMA/RoCE on Virtual Machines.
-> > > > 
-> > > > Virtio is the optimal solution since is the de-facto para-virtualizaton
-> > > > technology and also because the Virtio specification
-> > > > allows Hardware Vendors to support Virtio protocol natively in order to
-> > > > achieve bare metal performance.
-> > > > 
-> > > > This RFC is an effort to addresses challenges in defining the RDMA/RoCE
-> > > > Virtio Specification and a look forward on possible implementation
-> > > > techniques.
-> > > > 
-> > > > Open issues/Todo list:
-> > > > List is huge, this is only start point of the project.
-> > > > Anyway, here is one example of item in the list:
-> > > > - Multi VirtQ: Every QP has two rings and every CQ has one. This means that
-> > > >    in order to support for example 32K QPs we will need 64K VirtQ. Not sure
-> > > >    that this is reasonable so one option is to have one for all and
-> > > >    multiplex the traffic on it. This is not good approach as by design it
-> > > >    introducing an optional starvation. Another approach would be multi
-> > > >    queues and round-robin (for example) between them.
-> > > > 
-> Typically there will be a one-to-one mapping between QPs and CPUs (on the
-> guest). So while one would need to be prepared to support quite some QPs,
-> the expectation is that the actual number of QPs used will be rather low.
-> In a similar vein, multiplexing QPs would be defeating the purpose, as the
-> overall idea was to have _independent_ QPs to enhance parallelism.
-
-Since Jason already addresses the issue then i'll skip it.
-
+On 30-Apr-19 15:07, Leon Romanovsky wrote:
+> On Tue, Apr 30, 2019 at 02:38:30PM +0300, Gal Pressman wrote:
+>> On 30-Apr-19 14:35, Dennis Dalessandro wrote:
+>>> On 4/30/2019 7:27 AM, Gal Pressman wrote:
+>>>> On 30-Apr-19 14:18, Leon Romanovsky wrote:
+>>>>> On Tue, Apr 30, 2019 at 11:46:39AM +0300, Gal Pressman wrote:
+>>>>>> Cited commit introduced the udata parameter to different destroy flows
+>>>>>> but the uapi method definition does not have udata (i.e has_udata flag
+>>>>>> is not set). As a result, an uninitialized udata struct is being passed
+>>>>>> down to the driver callbacks.
+>>>>>>
+>>>>>> Fix that by clearing the driver udata even in cases where has_udata flag
+>>>>>> is not set.
+>>>>>>
+>>>>>> Fixes: c4367a26357b ("IB: Pass uverbs_attr_bundle down ib_x destroy path")
+>>>>>> Cc: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+>>>>>> Co-developed-by: Jason Gunthorpe <jgg@ziepe.ca>
+>>>>>
+>>>>> What is wrong with Signed-off-by that caused you to add new tag?
+>>>>
+>>>> Jason is the one that originally wrote and sent the code, this tag seems
+>>>> appropriate.
+>>>> Obviously I don't mind removing it, it's there to give him credit..
+>>>
+>>> Did you find documentation for using that tag or did you just make it up? I
+>>> think Signed-off-by is what you want here.
+>>
+>> https://www.kernel.org/doc/html/v5.0/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
 > 
-> > > > Expectations from this posting:
-> > > > In general, any comment is welcome, starting from hey, drop this as it is a
-> > > > very bad idea, to yeah, go ahead, we really want it.
-> > > > Idea here is that since it is not a minor effort i first want to know if
-> > > > there is some sort interest in the community for such device.
-> > > 
-> > > My first reaction is: Sounds sensible, but it would be good to have a
-> > > spec for this :)
-> > > 
-> > > You'll need a spec if you want this to go forward anyway, so at least a
-> > > sketch would be good to answer questions such as how many virtqueues
-> > > you use for which purpose, what is actually put on the virtqueues,
-> > > whether there are negotiable features, and what the expectations for
-> > > the device and the driver are. It also makes it easier to understand
-> > > how this is supposed to work in practice.
-> > > 
-> > > If folks agree that this sounds useful, the next step would be to
-> > > reserve an id for the device type.
-> > 
-> > Thanks for the tips, will sure do that, it is that first i wanted to make
-> > sure there is a use case here.
-> > 
-> > Waiting for any feedback from the community.
-> > 
-> I really do like the ides; in fact, it saved me from coding a similar thing
-> myself :-)
+> I see no benefit of this new tag over SOB, especially for the patch which
+> has 100% code of that Co-* author.
 
-Isn't it the great thing with open source :-)
+I disagree, and probably more people as well as the tag was introduced to the
+kernel in addition to the SOB.
+Either way, I have no dog in this fight, the tag can be removed.
 
-> 
-> However, I'm still curious about the overall intent of this driver. Where
-> would the I/O be routed _to_ ?
-> It's nice that we have a virtualized driver, but this driver is
-> intended to do I/O (even if it doesn't _do_ any I/O ATM :-)
-> And this I/O needs to be send to (and possibly received from)
-> something.
-
-Idea is to have a virtio-rdma device emulation (patch #2) on host that will
-relay the traffic to the real HW on host.
-
-It will be good to have design that will allow Virtio-HW to be plugged to
-the host and use the same driver. In this case the emulated device would
-not be needed - the driver will "attach" to the Virtqueue exposed by the
-virtio-HW instead of the emulated RDMA device.
-
-I don't know of any public virtio-rdma HW.
-
-> 
-> So what exactly is this something?
-> An existing piece of HW on the host?
-> If so, wouldn't it be more efficient to use vfio, either by using SR-IOV or
-> by using virtio-mdev?
-
-vfio needs to be implemented by every HW vendor where this approach is a
-generic one that is not depended on the HW.
-
-SV-IOV has it's limitations.
-
-And with virtio-mdev, sorry but do not know, can you elaborate more?
-
-> 
-> Another guest?
-
-No
-
-> If so, how would we route the I/O from one guest to the other?
-> Shared memory? Implementing a full-blown RDMA switch in qemu?
-> 
-> Oh, and I would _love_ to have a discussion about this at KVM Forum.
-> Maybe I'll manage to whip up guest-to-guest RDMA connection using ivshmem
-> ... let's see.
-
-Well, I've posted a proposal for a talk, lets see if it'll be accepted.
-
-> 
-> Cheers,
-> 
-> Hannes
-> -- 
-> Dr. Hannes Reinecke            Teamlead Storage & Networking
-> hare@suse.de                              +49 911 74053 688
-> SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
-> GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
-> HRB 21284 (AG Nürnberg)
+Jason, let me know if I should resubmit without it.
