@@ -2,106 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CA8EF92
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 06:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B400F1A7
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 09:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725268AbfD3EZn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Apr 2019 00:25:43 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50528 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbfD3EZn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 00:25:43 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x3U4NsFP157497;
-        Tue, 30 Apr 2019 04:25:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=Mb9RbwxX8QI4dGkhYSLrdKoKKBHjSFyPMeVIBLchQcY=;
- b=jFYY8Y/8e9/wt4ZH85LtuN0GVHQHb79s6zGFGMlBeOBnLeZozmQQZyjONSiD1F5An4Uh
- BnnfoIc7w/mIBo2FurAdWEgOS8PIFA3Tu6aAesoedqpZYx983w8/i91q75DDYmrzv57w
- wbYiBfPGzjIaaoxwWCPG5Gd5BTJpYxhMKm7MaOza5zZT4iJVaYNy8BdEzUKNimQtfB8o
- txC2BuIyxdw3TOmcCwPv3zAfPQFedBMLc3VU3hgNaT+XIc56MdAuEpv/j7oxL7jEp+LL
- SRbjbq4dekGRZdARhBfEqPqPgqTWTmBWNpMIXLu3f2mrgCRzWLKL5xJ2E3YvSS9k/Ykd fA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2s5j5txr0g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Apr 2019 04:25:26 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x3U4NZeP092158;
-        Tue, 30 Apr 2019 04:25:25 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 2s4yy9aqxr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 30 Apr 2019 04:25:25 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x3U4PPnM095590;
-        Tue, 30 Apr 2019 04:25:25 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2s4yy9aqxn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Apr 2019 04:25:25 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x3U4PNL8006894;
-        Tue, 30 Apr 2019 04:25:24 GMT
-Received: from santoshs-mbp.lan (/69.181.241.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 29 Apr 2019 21:25:23 -0700
-Subject: Re: [PATCH V2] rds: ib: force endiannes annotation
-To:     Nicholas Mc Guire <hofrat@osadl.org>
-Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org
-References: <1556593977-15828-1-git-send-email-hofrat@osadl.org>
-From:   "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <5ba055e9-5221-bff2-fdd2-d4b837c95ce1@oracle.com>
-Date:   Mon, 29 Apr 2019 21:25:15 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <1556593977-15828-1-git-send-email-hofrat@osadl.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1725938AbfD3HvT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Apr 2019 03:51:19 -0400
+Received: from mail-eopbgr30082.outbound.protection.outlook.com ([40.107.3.82]:27108
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725554AbfD3HvT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Apr 2019 03:51:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bI0J3zYsltL8yl7zcLVUxuXUOiUH2dFcmqJK+wYaoWo=;
+ b=fto22zzKv08oH0brxls96w/iMP8K6D3a61oWQDzYXUD4kRC5KAzB3QcDnKaQM9/gKygCILA2hmhoEuhRiB5g1UtorfPd1cdelICrrEOmKawhyBRkNTECKvPWOokFRxpa2uXYpP8GbOVGfFlHutnttuyQViD/f4W7NdCxuqBYHaU=
+Received: from AM6PR05MB4968.eurprd05.prod.outlook.com (20.177.36.17) by
+ AM6PR05MB6165.eurprd05.prod.outlook.com (20.178.94.206) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1835.13; Tue, 30 Apr 2019 07:51:16 +0000
+Received: from AM6PR05MB4968.eurprd05.prod.outlook.com
+ ([fe80::acbd:8441:a63a:8463]) by AM6PR05MB4968.eurprd05.prod.outlook.com
+ ([fe80::acbd:8441:a63a:8463%3]) with mapi id 15.20.1835.018; Tue, 30 Apr 2019
+ 07:51:16 +0000
+From:   Noa Osherovich <noaos@mellanox.com>
+To:     Leon Romanovsky <leonro@mellanox.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-core 0/4] pyverbs: General improvements
+Thread-Topic: [PATCH rdma-core 0/4] pyverbs: General improvements
+Thread-Index: AQHU/qP1/4fbrnC0l0KMDXDmUXVoD6ZTbhoAgADnlIA=
+Date:   Tue, 30 Apr 2019 07:51:16 +0000
+Message-ID: <788ae890-7e1b-25da-6ea1-60eabb12eadf@mellanox.com>
+References: <20190429155513.30543-1-noaos@mellanox.com>
+ <20190429180219.GY6705@mtr-leonro.mtl.com>
+In-Reply-To: <20190429180219.GY6705@mtr-leonro.mtl.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9242 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=984 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1904300028
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM0PR06CA0108.eurprd06.prod.outlook.com
+ (2603:10a6:208:fa::49) To AM6PR05MB4968.eurprd05.prod.outlook.com
+ (2603:10a6:20b:10::17)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=noaos@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [5.29.201.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dd1d32a7-3a5d-478b-6035-08d6cd409fd7
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:AM6PR05MB6165;
+x-ms-traffictypediagnostic: AM6PR05MB6165:
+x-microsoft-antispam-prvs: <AM6PR05MB61654BD5E4DAA766CFE8CE30D93A0@AM6PR05MB6165.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:39;
+x-forefront-prvs: 00235A1EEF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(39860400002)(376002)(136003)(346002)(396003)(189003)(199004)(71190400001)(71200400001)(73956011)(4326008)(66946007)(64756008)(66556008)(26005)(11346002)(66446008)(54906003)(66476007)(86362001)(25786009)(186003)(5660300002)(37006003)(256004)(6486002)(97736004)(53936002)(6506007)(305945005)(102836004)(76176011)(558084003)(316002)(7736002)(6246003)(68736007)(53546011)(2906002)(31696002)(386003)(52116002)(81166006)(6862004)(229853002)(81156014)(6436002)(8676002)(99286004)(8936002)(6512007)(478600001)(6636002)(3846002)(6116002)(36756003)(71446004)(446003)(476003)(2616005)(486006)(31686004)(66066001)(14454004);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB6165;H:AM6PR05MB4968.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: xNDz7RiMmMi2yxMD8D8zZWIj3grBEOh0u7+P4yjYClrWl3rnriauw+fxcokDbKY1nU8FfI4j4s/Geg4bfXcF6pLnXScivKq55L29RdRG6UdYiIZZDrq/yUt53kpp5BqXo3wzCiVt4q8DXcrGg3KvEtmRAQua7gX3lXdjyUO9OnpOVBotLSIiSg/EQex6IewPjrUPYvuXncurLUWd9Yr32RgWbh6H2SEY3LczIr1yFsZpjwQ6AMmRg8V1nd2oBw7coVS86mCzyHhup2hX3T/8LmATSwJ6HkIuW8HmOm6TEThdYYZcG7tYwaHQSNtGYp1HTzlj6OaafUEa0ykGbSHDv5PhE8OCXFF3AFjXlmOEEMRbTY1x0eF4IY7pQNKjyckJnE7bwEVc9E4HRs6YaUg2mThlWF+eiK+mzgikvleLiQk=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1B8025E930E60844B740B9E83B975666@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd1d32a7-3a5d-478b-6035-08d6cd409fd7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2019 07:51:16.5989
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6165
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 4/29/19 8:12 PM, Nicholas Mc Guire wrote:
-> While the endiannes is being handled correctly as indicated by the comment
-> above the offending line - sparse was unhappy with the missing annotation
-> as be64_to_cpu() expects a __be64 argument. To mitigate this annotation
-> all involved variables are changed to a consistent __le64 and the
->   conversion to uint64_t delayed to the call to rds_cong_map_updated().
-> 
-> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> ---
-> 
-> Problem located by an experimental coccinelle script to locate
-> patters that make sparse unhappy (false positives):
-> net/rds/ib_recv.c:827:23: warning: cast to restricted __le64
-> 
-> V2: Edward Cree <ecree@solarflare.com> rejected the need for using __force
->      here - instead solve the sparse issue by updating all of the involved
->      variables - which results in an identical binary as well without using
->      the __force "solution" to the sparse warning. Thanks !
-> 
-> Patch was compile-tested with: x86_64_defconfig + INFINIBAND=m, RDS_RDMA=m
-> 
-> Patch was verified not to change the binary by diffing the
-> generated object code before and after applying the patch.
-> 
-Thanks. I was worried about this macro magic o.w
-
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-
+T24gNC8yOS8yMDE5IDk6MDIgUE0sIExlb24gUm9tYW5vdnNreSB3cm90ZToNCg0KPiBOb2EsDQo+
+DQo+IFBsZWFzZSByZW1vdmUgQ2hhbmdlLUlEIHRyYXNoIGZyb20geW91ciBjb21taXQgbWVzc2Fn
+ZXMgYW5kIHJlZnJhaW4gZnJvbQ0KPiB1c2luZyBwb3dlciBwb2ludCBzdHlsZSBpbiBjb21taXQg
+bWVzc2FnZXMuDQo+DQo+IFRoYW5rcw0KDQpQUiB3YXMgdXBkYXRlZCwgdGhhbmtzLg0KDQo=
