@@ -2,141 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB2BFFD6
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 20:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CB010076
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 21:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbfD3SnR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Apr 2019 14:43:17 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:51380 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbfD3SnR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 14:43:17 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x3UIdbE8092711;
-        Tue, 30 Apr 2019 18:42:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=YyBSpvZVGUoae149gAMXoC8czWhOgz53XILRtlHeb5U=;
- b=ZeB2/pfF1rl27+iyaGLxGD/9nwLUwpHVvHFkt4/7ZCj3oy7dC+Ud87SG1y0a44BRXpFH
- zJBaotqNaDK8vtvV9uWdqS3x+J6JqyOIWnztXnFo+h7aWhNvJGN/lhQXKyIuDDLvDESe
- buzpydnkeJ/T/e+lkoFDsbdUF0EFmPERB+n1YT648A0npON7EtmWpx/ZfVm09H3IXPUm
- usg87WJefq6DanrgkgygVkacBguvDCpSJIrRfO4Oef8heacsyh41Nx9cDcF7JtG1SkhF
- 8O/zjWToagjXXII8280bhgQqDwi6FJYTinuI2aOPpqnXKK8Ny4aQHW+alY4YH4z5ucZw Jg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 2s4ckdekk4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Apr 2019 18:42:57 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x3UIfaxg001200;
-        Tue, 30 Apr 2019 18:42:56 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2s4yy9q78e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Apr 2019 18:42:56 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x3UIgsAt003825;
-        Tue, 30 Apr 2019 18:42:54 GMT
-Received: from srabinov-laptop (/10.175.1.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 30 Apr 2019 11:42:54 -0700
-Date:   Tue, 30 Apr 2019 21:42:49 +0300
-From:   Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+        id S1726015AbfD3TyZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 30 Apr 2019 15:54:25 -0400
+Received: from mga12.intel.com ([192.55.52.136]:36588 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726006AbfD3TyY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Apr 2019 15:54:24 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 30 Apr 2019 12:54:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.60,414,1549958400"; 
+   d="scan'208";a="147186868"
+Received: from fmsmsx108.amr.corp.intel.com ([10.18.124.206])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Apr 2019 12:54:24 -0700
+Received: from fmsmsx126.amr.corp.intel.com (10.18.125.43) by
+ FMSMSX108.amr.corp.intel.com (10.18.124.206) with Microsoft SMTP Server (TLS)
+ id 14.3.408.0; Tue, 30 Apr 2019 12:54:24 -0700
+Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.175]) by
+ FMSMSX126.amr.corp.intel.com ([169.254.1.19]) with mapi id 14.03.0415.000;
+ Tue, 30 Apr 2019 12:54:24 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        Leon Romanovsky <leon@kernel.org>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH for-next v1 2/4] RDMA/uverbs: uobj_get_obj_read should
- return the ib_uobject
-Message-ID: <20190430184249.GB30695@srabinov-laptop>
-References: <20190430142333.31063-1-shamir.rabinovitch@oracle.com>
- <20190430142333.31063-3-shamir.rabinovitch@oracle.com>
- <20190430175408.GA8101@ziepe.ca>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Gal Pressman <galpress@amazon.com>
+Subject: RE: [PATCH v2 rdma-next 1/5] RDMA/umem: Add API to find best driver
+ supported page size in an MR
+Thread-Topic: [PATCH v2 rdma-next 1/5] RDMA/umem: Add API to find best
+ driver supported page size in an MR
+Thread-Index: AQHU9rYQO5bZsKMgfk2PmawyTIYosKZNbYeAgAaoBrCAAXDXgP//m1jg
+Date:   Tue, 30 Apr 2019 19:54:24 +0000
+Message-ID: <9DD61F30A802C4429A01CA4200E302A7A5ACCB03@fmsmsx124.amr.corp.intel.com>
+References: <20190419134353.12684-1-shiraz.saleem@intel.com>
+ <20190419134353.12684-2-shiraz.saleem@intel.com>
+ <20190425142559.GA5388@ziepe.ca>
+ <9DD61F30A802C4429A01CA4200E302A7A5AC3A8C@fmsmsx124.amr.corp.intel.com>
+ <20190430180503.GB8101@ziepe.ca>
+In-Reply-To: <20190430180503.GB8101@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.0.600.7
+dlp-reaction: no-action
+x-originating-ip: [10.1.200.106]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190430175408.GA8101@ziepe.ca>
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9243 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1904300111
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9243 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1904300111
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 30, 2019 at 02:54:08PM -0300, Jason Gunthorpe wrote:
-> On Tue, Apr 30, 2019 at 05:23:22PM +0300, Shamir Rabinovitch wrote:
-> > future patch will remove the ib_uobject pointer from the ib_x
-> > objects. the uobj_get_obj_read and uobj_put_obj_read macros
-> > were constructed with the ability to reach the ib_uobject from
-> > ib_x in mind. this need to change now.
-> > 
-> > Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-> >  drivers/infiniband/core/uverbs_cmd.c | 165 +++++++++++++++++++++------
-> >  include/rdma/uverbs_std_types.h      |   8 +-
-> >  2 files changed, 137 insertions(+), 36 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-> > index 76ac113d1da5..93363c41e77e 100644
-> > +++ b/drivers/infiniband/core/uverbs_cmd.c
-> > @@ -37,6 +37,7 @@
-> >  #include <linux/fs.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/sched.h>
-> > +#include <linux/list.h>
-> >  
-> >  #include <linux/uaccess.h>
-> >  
-> > @@ -700,6 +701,7 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
-> >  	struct ib_uverbs_reg_mr      cmd;
-> >  	struct ib_uverbs_reg_mr_resp resp;
-> >  	struct ib_uobject           *uobj;
-> > +	struct ib_uobject           *pduobj;
-> >  	struct ib_pd                *pd;
-> >  	struct ib_mr                *mr;
-> >  	int                          ret;
-> > @@ -720,7 +722,8 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
-> >  	if (IS_ERR(uobj))
-> >  		return PTR_ERR(uobj);
-> >  
-> > -	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle, attrs);
-> > +	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle, attrs,
-> > +			       pduobj);
-> 
-> This should be &pduobj in all places so it reads sensibly..
+>Subject: Re: [PATCH v2 rdma-next 1/5] RDMA/umem: Add API to find best driver
+>supported page size in an MR
+>
+>On Tue, Apr 30, 2019 at 01:36:14PM +0000, Saleem, Shiraz wrote:
+>
+>> >If we make a MR with VA 0x6400FFF and length 2M-4095 I expect the 2M
+>> >page size with the NIC.
+>> >
+>> >We will have dma_addr_start = 0x2600000 and sg_dma_len = 0x200000 as
+>> >the SGL is always rounded to pages
+>>
+>> why isn't it the sg_dma_len 2M-4095? Is it because we compute npages
+>> in ib_umem_get() to build the SGL? Could using (addr & PAGE_MASK) and
+>> then adding dma_len help take care of this?
+>
+>We always round to page sizes when building the SGL, so the start is rounded
+>down and the end remains the same.
+>
+>> >I have a feeling the uvirt_addr should be computed more like
+>> >
+>> >  if (flags & IB_UMEM_VA_BASED_OFFSET)
+>> >        mask |= uvirt_addr ^ umem->addr;
+>>
+>> I am not following.
+>>
+>> For a case like below where uvirt_addr = umem_addr, mask = 0 and we
+>> run rdma_find_pgbit on it we ll pick 4K instead of 2M which is wrong.
+>
+>> uvirt_addr [0x7f2b98200000]
+>> best_pgsz [0x201000]
+>> umem->address [0x7f2b98200000]
+>> dma_addr_start [0x130e200000]
+>> dma_addr_end [0x130e400000]
+>> sg_dma_len [2097152]
+>
+>??
+>
+>0x7f2b98200000 ^ 0x7f2b98200000 = 0
+>
+>So mask isn't altered by the requested VA and you get 2M pages.
+I am still missing the point. mask was initialized to 0 and if we just do
+"mask |= uvirt_addr ^ umem->addr" for the first SGE, then you ll
+always get 0 for mask (and one page size) when uvirt_addr = umem->addr
+irrespective of their values.
 
-OK. Will change the macro.
+Maybe 'mask' is a wrong variable name to use but the intention of the algo is to
+OR together the dma_addr_start for every sg but the first, and the dma_addr_end
+of every sg but the last. mask is initialized to 0 and tracks the computed value after
+running through all SG's. Basically mask will track the lowest set bit from the entire set
+and running rdma_find_pg_bit gets the best page size to use.
 
-> 
-> > @@ -2009,6 +2034,12 @@ static int ib_uverbs_post_send(struct uverbs_attr_bundle *attrs)
-> >  	const struct ib_sge __user *sgls;
-> >  	const void __user *wqes;
-> >  	struct uverbs_req_iter iter;
-> > +	struct uobj_list_item {
-> > +		struct list_head list;
-> > +		struct ib_uobject *uobj;
-> > +	};
-> > +	struct uobj_list_item *item, *tmp;
-> > +	LIST_HEAD(ud_uobj_list);
-> 
-> I'd rather not add this for AH's if we don't plan to drop the uobject
-> pointer right away.. Same for the other place making a big logic
-> change
 
-What's the concern? We drop the uobject in (almost) same line of code
-where the current code do that. The uobjects are not held beyond the
-function. Can you elaborate? 
-
-Thanks
-
-> 
-> Jason
