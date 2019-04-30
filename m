@@ -2,90 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37929F1FF
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 10:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE17EF200
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2019 10:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbfD3I1w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Apr 2019 04:27:52 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7712 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725769AbfD3I1w (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Apr 2019 04:27:52 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 3FEBC7A62C3429FE3CBA;
-        Tue, 30 Apr 2019 16:27:50 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.439.0; Tue, 30 Apr 2019
- 16:27:42 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Add support function clear when
- removing module
-To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     oulijun <oulijun@huawei.com>, <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1555154941-55510-1-git-send-email-oulijun@huawei.com>
- <20190416121634.GA12981@mtr-leonro.mtl.com>
- <4d3613c7-1c68-9f9b-d185-ab015049e6cf@huawei.com>
- <20190422122209.GD27901@mtr-leonro.mtl.com>
- <add43d02-b3d5-35d9-a74d-8254c1fb472c@huawei.com>
- <20190423152339.GE27901@mtr-leonro.mtl.com>
- <90a91e1f-91fc-bc4e-067c-7bc788c62ab6@huawei.com>
- <20190426143656.GA2278@ziepe.ca> <20190426210520.GA6705@mtr-leonro.mtl.com>
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-Message-ID: <99195660-be8d-555f-01fc-efd9e680fdf3@huawei.com>
-Date:   Tue, 30 Apr 2019 16:27:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
+        id S1726564AbfD3I2S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Apr 2019 04:28:18 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:59914 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725769AbfD3I2S (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Apr 2019 04:28:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ztnwMSHtedoT9Gv7PEZNypm2kmS00QDMZIphrledsXY=; b=sVSA9x2lnTx39ltHEPZtds4dz
+        YiEJNhm1B4JWAiJA5kIIQke8QAp+P/wvO+MpBgMwf/WxjFPOs6jG2rak9aVm/M3/ZdBxZWQ8Eq0M/
+        ppL6ZO2RZepBB8jhJQrqnBf+2+TlFCa5wiCDSdV9mUx2Bqi4zaHrvr8IGK76jyx6gZ3OCEqffBoNx
+        +2UCQ8lh0ZVLit+1SZaRrM7rwNKZRcSpx7EHI2aacowq6goEHq2RGVSazG9OVR/uInVVLQoIZsrI7
+        +vDBej0JLuz1/PGPwdXuziIx5UaGdIyy/HNLAzXTGbvd3z56RtJFYqjc7l5pAqPfKlQvpwWrcgQwL
+        RuMaM33Dw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hLO7b-00018M-Rz; Tue, 30 Apr 2019 08:28:16 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 60AFC29D2D6D8; Tue, 30 Apr 2019 10:28:14 +0200 (CEST)
+Date:   Tue, 30 Apr 2019 10:28:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrea Parri <andrea.parri@amarulasolutions.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 5/5] IB/hfi1: Fix improper uses of smp_mb__before_atomic()
+Message-ID: <20190430082814.GC2677@hirez.programming.kicks-ass.net>
+References: <1556568902-12464-1-git-send-email-andrea.parri@amarulasolutions.com>
+ <1556568902-12464-6-git-send-email-andrea.parri@amarulasolutions.com>
 MIME-Version: 1.0
-In-Reply-To: <20190426210520.GA6705@mtr-leonro.mtl.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1556568902-12464-6-git-send-email-andrea.parri@amarulasolutions.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2019/4/27 5:05, Leon Romanovsky wrote:
-> On Fri, Apr 26, 2019 at 11:36:56AM -0300, Jason Gunthorpe wrote:
->> On Fri, Apr 26, 2019 at 06:12:11PM +0800, Liuyixian (Eason) wrote:
->>
->>>     However, I have talked with our chip team about function clear
->>>     functionality. We think it is necessary to inform the chip to
->>>     perform the outstanding task and some cleanup work and restore
->>>     hardware resources in time when rmmod ko. Otherwise, it is
->>>     dangerous to reuse the hardware as it can not guarantee those
->>>     work can be done well without the notification from our driver.
->>
->> If it is dangerous to reuse the hardware then you have to do this
->> cleanup on device startup, not on device removal.
+On Mon, Apr 29, 2019 at 10:15:01PM +0200, Andrea Parri wrote:
+> This barrier only applies to the read-modify-write operations; in
+> particular, it does not apply to the atomic_read() primitive.
 > 
-> Right, I can think about gazillion ways to brick such HW.
-> The simplest way will be to call SysRq during RDMA traffic
-> and no cleanup function will be called in such case.
+> Replace the barrier with an smp_mb().
 > 
-> Thanks
+> Fixes: 856cc4c237add ("IB/hfi1: Add the capability for reserved operations")
+> Cc: stable@vger.kernel.org
+> Reported-by: "Paul E. McKenney" <paulmck@linux.ibm.com>
+> Reported-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Andrea Parri <andrea.parri@amarulasolutions.com>
+> Cc: Dennis Dalessandro <dennis.dalessandro@intel.com>
+> Cc: Mike Marciniszyn <mike.marciniszyn@intel.com>
+> Cc: Doug Ledford <dledford@redhat.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: linux-rdma@vger.kernel.org
+> ---
+>  drivers/infiniband/sw/rdmavt/qp.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+> index a34b9a2a32b60..b64fd151d31fb 100644
+> --- a/drivers/infiniband/sw/rdmavt/qp.c
+> +++ b/drivers/infiniband/sw/rdmavt/qp.c
+> @@ -1863,11 +1863,11 @@ static inline int rvt_qp_is_avail(
+>  	u32 reserved_used;
+>  
+>  	/* see rvt_qp_wqe_unreserve() */
 
-Hi Jason and Leon,
+I see a completely bogus comment in rvf_op_wqe_unreserve(), referring to
+bogus comments makes this barrier bogus too.
 
-	As hip08 is a fake pcie device, we could not disassociate and stop the hardware access
-	through the chain break mechanism as a real pcie device. Alternatively, function clear
-	is used as a notification to the hardware to stop accessing and ensure to not read or
-	write DDR later. That is, the role of function clear to hip08 is similar as the chain
-	break to pcie device.
+> -	smp_mb__before_atomic();
+> +	smp_mb();
+>  	reserved_used = atomic_read(&qp->s_reserved_used);
+>  	if (unlikely(reserved_op)) {
+>  		/* see rvt_qp_wqe_unreserve() */
+> -		smp_mb__before_atomic();
 
-	Without function clear, following problems would be happened:
-	1) With current hardware design, the hardware request to the bus may not be able to wait
-	   for respone, as the rquest (read or write) may arrive to processor after the hardware
-	   has already returned to the destroy verbs from application, in this case, the access
-	   error may happen.
-	2) The traffic buffer applied from schedule module could not return back, it will affect
-	   the traffic of other functions.
+This was before, but there is nothing _after_ this. Which means this
+barrier was complete garbage anyway.
 
-	Thus, we think it is more reasonable to do function clear on device removal.
+> +		smp_mb();
+>  		if (reserved_used >= rdi->dparms.reserved_operations)
+>  			return -ENOMEM;
+>  		return 0;
+> @@ -1882,7 +1882,7 @@ static inline int rvt_qp_is_avail(
+>  		avail = slast - qp->s_head;
+>  
+>  	/* see rvt_qp_wqe_unreserve() */
+> -	smp_mb__before_atomic();
+> +	smp_mb();
 
-Thanks.
+Same as the first.
 
+>  	reserved_used = atomic_read(&qp->s_reserved_used);
+>  	avail =  avail - 1 -
+>  		(rdi->dparms.reserved_operations - reserved_used);
