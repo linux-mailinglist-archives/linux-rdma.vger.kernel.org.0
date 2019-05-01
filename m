@@ -2,41 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B21810722
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 12:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D536D10724
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 12:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbfEAKsm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 May 2019 06:48:42 -0400
+        id S1726295AbfEAKsp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 May 2019 06:48:45 -0400
 Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:22195 "EHLO
         smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbfEAKsl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 May 2019 06:48:41 -0400
+        with ESMTP id S1725788AbfEAKsp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 May 2019 06:48:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1556707719; x=1588243719;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=FasxCJCDKuCfdiFKeKFXy8TccNaDtnglBKy3PLIS7Wc=;
-  b=pW09tiITbpb2+8da1QkuMl6jxM2KlWvAwve1/useqIhkYvrj6/mgmF10
-   KNWZ1rA/y7BEZ5tMzK0c2Mp0bRlJk+U933Tgs1AtttX9xjKYEJbH0Cemj
-   XvBK3pNKMnPLe2SgHpiVHdSqA9FVxAA2uQPqPBTlpAYVuj2hoOyx26LHd
-   w=;
+  t=1556707722; x=1588243722;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=Myyf23kIMaBCHWJcQr/GbvWgV9giIenQuT4sERS/MEg=;
+  b=Pi9F7KeGPjslRpqH3K0SITiB0nz3W4yNojzjWLufvOOVPzGXC0uRTyaT
+   enqSHRnCdTprqh4YoCMgO47SdXrHadQwPq/xgRXdf/JmLV9UVRI/xZiEC
+   gXSJjhRvlWsvhtqNRmxz50hA00BvWtkQ+1ZI5tbG2cLy0BzauK4JMDHNE
+   c=;
 X-IronPort-AV: E=Sophos;i="5.60,417,1549929600"; 
-   d="scan'208";a="797274109"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1d-9ec21598.us-east-1.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 01 May 2019 10:48:36 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-9ec21598.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x41AmQK6103146
+   d="scan'208";a="797274117"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 01 May 2019 10:48:41 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x41AmYse036772
         (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
-        Wed, 1 May 2019 10:48:32 GMT
-Received: from EX13D04UWA004.ant.amazon.com (10.43.160.234) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 1 May 2019 10:48:32 +0000
+        Wed, 1 May 2019 10:48:37 GMT
+Received: from EX13D02EUB004.ant.amazon.com (10.43.166.221) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 1 May 2019 10:48:36 +0000
 Received: from EX13MTAUEE001.ant.amazon.com (10.43.62.200) by
- EX13D04UWA004.ant.amazon.com (10.43.160.234) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 1 May 2019 10:48:31 +0000
+ EX13D02EUB004.ant.amazon.com (10.43.166.221) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 1 May 2019 10:48:35 +0000
 Received: from galpress-VirtualBox.hfa16.amazon.com (10.218.62.21) by
  mail-relay.amazon.com (10.43.62.226) with Microsoft SMTP Server id
- 15.0.1367.3 via Frontend Transport; Wed, 1 May 2019 10:48:27 +0000
+ 15.0.1367.3 via Frontend Transport; Wed, 1 May 2019 10:48:31 +0000
 From:   Gal Pressman <galpress@amazon.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
 CC:     Yossi Leybovich <sleybo@amazon.com>,
@@ -52,11 +53,14 @@ CC:     Yossi Leybovich <sleybo@amazon.com>,
         Sagi Grimberg <sagi@grimberg.me>,
         Steve Wise <larrystevenwise@gmail.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
-        "Gal Pressman" <galpress@amazon.com>
-Subject: [PATCH for-next v6 00/12] RDMA/efa: Elastic Fabric Adapter (EFA) driver
-Date:   Wed, 1 May 2019 13:48:12 +0300
-Message-ID: <1556707704-11192-1-git-send-email-galpress@amazon.com>
+        "Gal Pressman" <galpress@amazon.com>,
+        Jason Baron <jbaron@akamai.com>
+Subject: [PATCH for-next v6 01/12] RDMA/core: Introduce RDMA subsystem ibdev_* print functions
+Date:   Wed, 1 May 2019 13:48:13 +0300
+Message-ID: <1556707704-11192-2-git-send-email-galpress@amazon.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1556707704-11192-1-git-send-email-galpress@amazon.com>
+References: <1556707704-11192-1-git-send-email-galpress@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
@@ -64,193 +68,224 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello all,
-The following v6 patchset introduces the Amazon Elastic Fabric Adapter (EFA)
-driver.
+Similarly to dev/netdev/etc printk helpers, add standard printk helpers
+for the RDMA subsystem.
 
-EFA is a networking adapter designed to support user space network
-communication, initially offered in the Amazon EC2 environment. First release
-of EFA supports datagram send/receive operations and does not support
-connection-oriented or read/write operations.
+Example output:
+efa 0000:00:06.0 efa_0: Hello World!
+efa_0: Hello World! (no parent device set)
+(NULL ib_device): Hello World! (ibdev is NULL)
 
-EFA supports Unreliable Datagrams (UD) as well as a new unordered, Scalable
-Reliable Datagram protocol (SRD). SRD provides support for reliable datagrams
-and more complete error handling than typical RD, but, unlike RD, it does not
-support ordering nor segmentation.
+Cc: Jason Baron <jbaron@akamai.com>
+Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+Suggested-by: Leon Romanovsky <leon@kernel.org>
+Signed-off-by: Gal Pressman <galpress@amazon.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+---
+ drivers/infiniband/core/device.c | 60 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/dynamic_debug.h    | 11 ++++++++
+ include/rdma/ib_verbs.h          | 30 ++++++++++++++++++++
+ lib/dynamic_debug.c              | 37 +++++++++++++++++++++++++
+ 4 files changed, 138 insertions(+)
 
-EFA reliable datagram transport provides reliable out-of-order delivery,
-transparently utilizing multiple network paths to reduce network tail
-latency. Its interface is similar to UD, in particular it supports
-message size up to MTU, with error handling extended to support reliable
-communication. More information regarding SRD can be found at [1].
-
-Kernel verbs and in-kernel services are initially not supported but are planned
-for future releases.
-
-EFA enabled EC2 instances have two different devices allocated, one for ENA
-(netdev) and one for EFA, the two are separate pci devices with no in-kernel
-communication between them.
-
-This patchset also introduces RDMA subsystem ibdev_* print helpers which should
-be used by the other new drivers that are currently under review (irdma, siw)
-and over time by all drivers in the subsystem.
-The print format is similar to the netdev_* helpers.
-
-PR for rdma-core provider was sent:
-https://github.com/linux-rdma/rdma-core/pull/475
-
-Thanks to everyone who took the time to review our last submissions (Jason, Doug,
-Sean, Dennis, Leon, Christoph, Parav, Sagi, Steve, Shiraz), it is very
-appreciated.
-
-Issues addressed in v6:
-* Remove BUG_ONs from __dynamic_ibdev_dbg
-* Remove redundant udata checks (Leon)
-* Remove rdma_user_mmap_page usage
-* Remove umem->page_shift usage
-* Make efa_destroy_qp_handle function static
-* Misc prints cleanups
-
-Issues addressed in v5:
-* Adapt to subsystem verbs API changes
-* Remove unnecessary 'do ... while' in ibdev_dbg (Jason)
-* Use a non-macro implementation for ibdev_dbg (Jason)
-* Use for_each_sg_dma_page() in umem iterations (Jason)
-* Remove unused enum value EFA_ADMIN_START_CMD_RANGE (Leon)
-* Don't assume the sg element offset is zero (Jason)
-* Cherry-picked Shiraz's new ib_umem_find_single_pg_size() work, encountered
-  some issues, debugging with Shiraz off-list. Will convert to use his work once
-  solved.
-
-Issues addressed in v4:
-* Add RDMA subsystem ibdev_* printk helpers (Leon, Jason)
-* Use xarray for mmap keys (Jason)
-* Use module_pci_driver macro (Jason)
-* Remove redundant cast in efa_remove (Jason)
-* Avoid unnecessary use of pci_get_drvdata (Jason)
-* Remove unnecessary admin queue sizes macros (Leon)
-* Remove EFA_DEVICE_RUNNING bit (Leon, Jason)
-* Remove incorrect comment in efa_com_validate_version (Leon)
-* Keep lists sorted (Jason)
-* Keep efa_com_dev as part of efa_dev instead of allocating it (Jason)
-
-Issues addressed in v3:
-* Use new rdma_udata_to_drv_context API
-* Adapt to new core ucontext allocations
-* Remove EFA transport/protocol/node type and use unspecified instead (Leon, Jason)
-* Replace stats lock with atomic variables (Leon, Jason, Steve)
-* Remove vertical alignment from structs (Steve)
-* Remove license text from ABI file (Leon)
-* Undefine macro when it's no longer used (Steve)
-* Fix kdoc formatting (Steve)
-* Remove unneeded lock from reg read destroy flow (Steve)
-* Prefer {} initializations over memset (Leon)
-* Remove highmem WARN_ON_ONCE (Steve)
-* ib_alloc_device returns NULL in case of error (Leon)
-* Remove redundant check from remove remove device flow (Leon)
-* Remove redundant zero assignments after memsets
-* Remove unnecessary WARN_ON_ONCEs from create QP verbs (Steve)
-* Remove redundant memsets (Steve, Shiraz)
-* Change all non-privileged flows error prints to debug level (Steve, Leon, Jason, Shiraz)
-* Remove likely/unlikelys from control path (Leon, Jason)
-* Fixes to reg MR indirect flow wrong PAGE_SIZE usage (Jason)
-* Use decimal array size in ABI file (Steve)
-* Remove redundant comments (Steve, Shiraz)
-* Change efa_verbs.c to GPL-2.0 OR Linux-OpenIB license (Leon, Jason)
-* Replace WARN in admin completion processing with WARN_ONCE (Steve)
-
-Major issues addressed in this v2:
-* Userspace libibverbs provider is implemented and attached for review.
-* Respect the atomic requirement of create/destroy AH flows using the new
-  sleepable flag [2].
-* Change link layer from Ethernet to Unspecified (Proprietary EC2 link layer).
-* Use RDMA mmap API.
-* Coherent DMA memory is no longer mapped to the userspace, streaming DMA
-  mappings are used instead.
-* Introduce alloc/dealloc PD admin commands, PDs are now backed by an object on
-  the device. This removes the bitmap used for PD number allocations.
-* Addressed the mmap lifetime issues:
-  Each ucontext now uses a new User Access Region (UAR) abstraction.
-  Objects which are tied to a specific UAR will not be allocated to a different
-  user until the UAR is deallocated (on application exit).
-  DMA memory will be unmapped when the QP/CQ is destroyed, but the buffers will
-  remain allocated until application exit.
-  The mmap entries now remain valid until application exit and allow for reuse
-  of the same mmap key more than once.
-* SRD QP type is now a driver QP type (previously was IB_QPT_SRD).
-* Match UD QP Infiniband semantics, including 40 bytes offset, state transitions,
-  QKey validation, etc.
-* Move AH reference counts to the device (previously was in the driver).
-  When creating more than one AH with the same GID, the same device resource is
-  used internally. Instead of keeping the reference count in the driver (and issue
-  one create AH command only), each AH creation is now passed on to the device
-  (accompanied with the PD number).
-  This allows for future optimizations for AHs that are no longer used by a
-  specific PD.
-* Removed all stub functions, which will mark EFA driver as a non-kverbs provider [3].
-* Replace all pr_* prints with dev_* prints
-
-[1] https://github.com/amzn/rdma-core/wiki/SRD
-[2] https://patchwork.kernel.org/cover/10725727/
-[3] https://patchwork.kernel.org/cover/10775039/
-
-Thanks,
-Gal
-
-Gal Pressman (12):
-  RDMA/core: Introduce RDMA subsystem ibdev_* print functions
-  RDMA: Add EFA related definitions
-  RDMA/efa: Add EFA device definitions
-  RDMA/efa: Add the efa.h header file
-  RDMA/efa: Add the efa_com.h file
-  RDMA/efa: Add the com service API definitions
-  RDMA/efa: Add the ABI definitions
-  RDMA/efa: Implement functions that submit and complete admin commands
-  RDMA/efa: Add common command handlers
-  RDMA/efa: Add EFA verbs implementation
-  RDMA/efa: Add the efa module
-  RDMA/efa: Add driver to Kconfig/Makefile
-
- MAINTAINERS                                     |    9 +
- drivers/infiniband/Kconfig                      |    1 +
- drivers/infiniband/core/device.c                |   60 +
- drivers/infiniband/core/sysfs.c                 |    1 +
- drivers/infiniband/core/verbs.c                 |    2 +
- drivers/infiniband/hw/Makefile                  |    1 +
- drivers/infiniband/hw/efa/Kconfig               |   15 +
- drivers/infiniband/hw/efa/Makefile              |    9 +
- drivers/infiniband/hw/efa/efa.h                 |  162 ++
- drivers/infiniband/hw/efa/efa_admin_cmds_defs.h |  794 ++++++++++
- drivers/infiniband/hw/efa/efa_admin_defs.h      |  136 ++
- drivers/infiniband/hw/efa/efa_com.c             | 1161 ++++++++++++++
- drivers/infiniband/hw/efa/efa_com.h             |  144 ++
- drivers/infiniband/hw/efa/efa_com_cmd.c         |  692 +++++++++
- drivers/infiniband/hw/efa/efa_com_cmd.h         |  270 ++++
- drivers/infiniband/hw/efa/efa_common_defs.h     |   18 +
- drivers/infiniband/hw/efa/efa_main.c            |  533 +++++++
- drivers/infiniband/hw/efa/efa_regs_defs.h       |  113 ++
- drivers/infiniband/hw/efa/efa_verbs.c           | 1873 +++++++++++++++++++++++
- include/linux/dynamic_debug.h                   |   11 +
- include/rdma/ib_verbs.h                         |   34 +-
- include/uapi/rdma/efa-abi.h                     |  101 ++
- include/uapi/rdma/rdma_user_ioctl_cmds.h        |    1 +
- lib/dynamic_debug.c                             |   37 +
- 24 files changed, 6177 insertions(+), 1 deletion(-)
- create mode 100644 drivers/infiniband/hw/efa/Kconfig
- create mode 100644 drivers/infiniband/hw/efa/Makefile
- create mode 100644 drivers/infiniband/hw/efa/efa.h
- create mode 100644 drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
- create mode 100644 drivers/infiniband/hw/efa/efa_admin_defs.h
- create mode 100644 drivers/infiniband/hw/efa/efa_com.c
- create mode 100644 drivers/infiniband/hw/efa/efa_com.h
- create mode 100644 drivers/infiniband/hw/efa/efa_com_cmd.c
- create mode 100644 drivers/infiniband/hw/efa/efa_com_cmd.h
- create mode 100644 drivers/infiniband/hw/efa/efa_common_defs.h
- create mode 100644 drivers/infiniband/hw/efa/efa_main.c
- create mode 100644 drivers/infiniband/hw/efa/efa_regs_defs.h
- create mode 100644 drivers/infiniband/hw/efa/efa_verbs.c
- create mode 100644 include/uapi/rdma/efa-abi.h
-
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index fcbf2d4c865d..76088655f06e 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -197,6 +197,66 @@ static int ib_security_change(struct notifier_block *nb, unsigned long event,
+ static void ib_policy_change_task(struct work_struct *work);
+ static DECLARE_WORK(ib_policy_change_work, ib_policy_change_task);
+ 
++static void __ibdev_printk(const char *level, const struct ib_device *ibdev,
++			   struct va_format *vaf)
++{
++	if (ibdev && ibdev->dev.parent)
++		dev_printk_emit(level[1] - '0',
++				ibdev->dev.parent,
++				"%s %s %s: %pV",
++				dev_driver_string(ibdev->dev.parent),
++				dev_name(ibdev->dev.parent),
++				dev_name(&ibdev->dev),
++				vaf);
++	else if (ibdev)
++		printk("%s%s: %pV",
++		       level, dev_name(&ibdev->dev), vaf);
++	else
++		printk("%s(NULL ib_device): %pV", level, vaf);
++}
++
++void ibdev_printk(const char *level, const struct ib_device *ibdev,
++		  const char *format, ...)
++{
++	struct va_format vaf;
++	va_list args;
++
++	va_start(args, format);
++
++	vaf.fmt = format;
++	vaf.va = &args;
++
++	__ibdev_printk(level, ibdev, &vaf);
++
++	va_end(args);
++}
++EXPORT_SYMBOL(ibdev_printk);
++
++#define define_ibdev_printk_level(func, level)                  \
++void func(const struct ib_device *ibdev, const char *fmt, ...)  \
++{                                                               \
++	struct va_format vaf;                                   \
++	va_list args;                                           \
++								\
++	va_start(args, fmt);                                    \
++								\
++	vaf.fmt = fmt;                                          \
++	vaf.va = &args;                                         \
++								\
++	__ibdev_printk(level, ibdev, &vaf);                     \
++								\
++	va_end(args);                                           \
++}                                                               \
++EXPORT_SYMBOL(func);
++
++define_ibdev_printk_level(ibdev_emerg, KERN_EMERG);
++define_ibdev_printk_level(ibdev_alert, KERN_ALERT);
++define_ibdev_printk_level(ibdev_crit, KERN_CRIT);
++define_ibdev_printk_level(ibdev_err, KERN_ERR);
++define_ibdev_printk_level(ibdev_warn, KERN_WARNING);
++define_ibdev_printk_level(ibdev_notice, KERN_NOTICE);
++define_ibdev_printk_level(ibdev_info, KERN_INFO);
++
+ static struct notifier_block ibdev_lsm_nb = {
+ 	.notifier_call = ib_security_change,
+ };
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index c2be029b9b53..6c809440f319 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -71,6 +71,13 @@ void __dynamic_netdev_dbg(struct _ddebug *descriptor,
+ 			  const struct net_device *dev,
+ 			  const char *fmt, ...);
+ 
++struct ib_device;
++
++extern __printf(3, 4)
++void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
++			 const struct ib_device *ibdev,
++			 const char *fmt, ...);
++
+ #define DEFINE_DYNAMIC_DEBUG_METADATA(name, fmt)		\
+ 	static struct _ddebug  __aligned(8)			\
+ 	__attribute__((section("__verbose"))) name = {		\
+@@ -154,6 +161,10 @@ void __dynamic_netdev_dbg(struct _ddebug *descriptor,
+ 	_dynamic_func_call(fmt, __dynamic_netdev_dbg,		\
+ 			   dev, fmt, ##__VA_ARGS__)
+ 
++#define dynamic_ibdev_dbg(dev, fmt, ...)			\
++	_dynamic_func_call(fmt, __dynamic_ibdev_dbg,		\
++			   dev, fmt, ##__VA_ARGS__)
++
+ #define dynamic_hex_dump(prefix_str, prefix_type, rowsize,		\
+ 			 groupsize, buf, len, ascii)			\
+ 	_dynamic_func_call_no_desc(__builtin_constant_p(prefix_str) ? prefix_str : "hexdump", \
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 737ef5ed3930..de8724e5a727 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -74,6 +74,36 @@ extern struct workqueue_struct *ib_wq;
+ extern struct workqueue_struct *ib_comp_wq;
+ extern struct workqueue_struct *ib_comp_unbound_wq;
+ 
++__printf(3, 4) __cold
++void ibdev_printk(const char *level, const struct ib_device *ibdev,
++		  const char *format, ...);
++__printf(2, 3) __cold
++void ibdev_emerg(const struct ib_device *ibdev, const char *format, ...);
++__printf(2, 3) __cold
++void ibdev_alert(const struct ib_device *ibdev, const char *format, ...);
++__printf(2, 3) __cold
++void ibdev_crit(const struct ib_device *ibdev, const char *format, ...);
++__printf(2, 3) __cold
++void ibdev_err(const struct ib_device *ibdev, const char *format, ...);
++__printf(2, 3) __cold
++void ibdev_warn(const struct ib_device *ibdev, const char *format, ...);
++__printf(2, 3) __cold
++void ibdev_notice(const struct ib_device *ibdev, const char *format, ...);
++__printf(2, 3) __cold
++void ibdev_info(const struct ib_device *ibdev, const char *format, ...);
++
++#if defined(CONFIG_DYNAMIC_DEBUG)
++#define ibdev_dbg(__dev, format, args...)                       \
++	dynamic_ibdev_dbg(__dev, format, ##args)
++#elif defined(DEBUG)
++#define ibdev_dbg(__dev, format, args...)                       \
++	ibdev_printk(KERN_DEBUG, __dev, format, ##args)
++#else
++__printf(2, 3) __cold
++static inline
++void ibdev_dbg(const struct ib_device *ibdev, const char *format, ...) {}
++#endif
++
+ union ib_gid {
+ 	u8	raw[16];
+ 	struct {
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index 7bdf98c37e91..8a16c2d498e9 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -37,6 +37,8 @@
+ #include <linux/device.h>
+ #include <linux/netdevice.h>
+ 
++#include <rdma/ib_verbs.h>
++
+ extern struct _ddebug __start___verbose[];
+ extern struct _ddebug __stop___verbose[];
+ 
+@@ -636,6 +638,41 @@ EXPORT_SYMBOL(__dynamic_netdev_dbg);
+ 
+ #endif
+ 
++#if IS_ENABLED(CONFIG_INFINIBAND)
++
++void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
++			 const struct ib_device *ibdev, const char *fmt, ...)
++{
++	struct va_format vaf;
++	va_list args;
++
++	va_start(args, fmt);
++
++	vaf.fmt = fmt;
++	vaf.va = &args;
++
++	if (ibdev && ibdev->dev.parent) {
++		char buf[PREFIX_SIZE];
++
++		dev_printk_emit(LOGLEVEL_DEBUG, ibdev->dev.parent,
++				"%s%s %s %s: %pV",
++				dynamic_emit_prefix(descriptor, buf),
++				dev_driver_string(ibdev->dev.parent),
++				dev_name(ibdev->dev.parent),
++				dev_name(&ibdev->dev),
++				&vaf);
++	} else if (ibdev) {
++		printk(KERN_DEBUG "%s: %pV", dev_name(&ibdev->dev), &vaf);
++	} else {
++		printk(KERN_DEBUG "(NULL ib_device): %pV", &vaf);
++	}
++
++	va_end(args);
++}
++EXPORT_SYMBOL(__dynamic_ibdev_dbg);
++
++#endif
++
+ #define DDEBUG_STRING_SIZE 1024
+ static __initdata char ddebug_setup_string[DDEBUG_STRING_SIZE];
+ 
 -- 
 2.7.4
 
