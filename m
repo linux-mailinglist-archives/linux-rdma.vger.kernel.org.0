@@ -2,439 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC64D1096C
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 16:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45E110956
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 16:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbfEAOo7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 May 2019 10:44:59 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:40075 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727053AbfEAOo4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 May 2019 10:44:56 -0400
-Received: from Internal Mail-Server by MTLPINE2 (envelope-from talgi@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 1 May 2019 17:44:50 +0300
-Received: from gen-l-vrt-692.mtl.labs.mlnx (gen-l-vrt-692.mtl.labs.mlnx [10.141.69.20])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x41Eiogd019831;
-        Wed, 1 May 2019 17:44:50 +0300
-Received: from gen-l-vrt-692.mtl.labs.mlnx (localhost [127.0.0.1])
-        by gen-l-vrt-692.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id x41Eiong036038;
-        Wed, 1 May 2019 17:44:50 +0300
-Received: (from talgi@localhost)
-        by gen-l-vrt-692.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id x41EioKV036037;
-        Wed, 1 May 2019 17:44:50 +0300
-From:   Tal Gilboa <talgi@mellanox.com>
-To:     linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org
-Cc:     Yishai Hadas <yishaih@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Tal Gilboa <talgi@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Idan Burstein <idanb@mellanox.com>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>
-Subject: [PATCH rdma-for-next 1/9] linux/dim: Move logic to dim.h
-Date:   Wed,  1 May 2019 17:44:31 +0300
-Message-Id: <1556721879-35987-2-git-send-email-talgi@mellanox.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1556721879-35987-1-git-send-email-talgi@mellanox.com>
-References: <1556721879-35987-1-git-send-email-talgi@mellanox.com>
+        id S1726947AbfEAOof (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 May 2019 10:44:35 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:42524 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726890AbfEAOoe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 1 May 2019 10:44:34 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 9AB04C05001C;
+        Wed,  1 May 2019 14:44:34 +0000 (UTC)
+Received: from haswell-e.nc.xsintricity.com (ovpn-112-9.rdu2.redhat.com [10.10.112.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 634B1795BA;
+        Wed,  1 May 2019 14:44:33 +0000 (UTC)
+Message-ID: <053009d7de76f8800304f354e3cbde068453257f.camel@redhat.com>
+Subject: Re: [PATCH for-rc 1/5] IB/hfi1: Fix WQ_MEM_RECLAIM warning
+From:   Doug Ledford <dledford@redhat.com>
+To:     "Tejun Heo (tj@kernel.org)" <tj@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
+Date:   Wed, 01 May 2019 10:44:31 -0400
+In-Reply-To: <20190327212502.GF69236@devbig004.ftw2.facebook.com>
+References: <20190318165205.23550.97894.stgit@scvm10.sc.intel.com>
+         <20190318165501.23550.24989.stgit@scvm10.sc.intel.com>
+         <20190319192737.GB3773@ziepe.ca>
+         <32E1700B9017364D9B60AED9960492BC70CD9227@fmsmsx120.amr.corp.intel.com>
+         <20190327152517.GD69236@devbig004.ftw2.facebook.com>
+         <20190327171611.GF21008@ziepe.ca>
+         <20190327190720.GE69236@devbig004.ftw2.facebook.com>
+         <20190327194347.GH21008@ziepe.ca>
+         <20190327212502.GF69236@devbig004.ftw2.facebook.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-W3B0OcwnC1UvGodrBicI"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Wed, 01 May 2019 14:44:34 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In preparation for supporting more implementations of the DIM
-algorithm, I'm moving what would become common logic to a common
-library. Downstream DIM implementations will use the common lib
-for their implementation.
 
-Signed-off-by: Tal Gilboa <talgi@mellanox.com>
----
- include/linux/dim.h     | 182 ++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/net_dim.h | 148 +--------------------------------------
- 2 files changed, 184 insertions(+), 146 deletions(-)
- create mode 100644 include/linux/dim.h
+--=-W3B0OcwnC1UvGodrBicI
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/linux/dim.h b/include/linux/dim.h
-new file mode 100644
-index 0000000..d06f6e4
---- /dev/null
-+++ b/include/linux/dim.h
-@@ -0,0 +1,182 @@
-+/*
-+ * Copyright (c) 2016, Mellanox Technologies. All rights reserved.
-+ * Copyright (c) 2017-2018, Broadcom Limited. All rights reserved.
-+ *
-+ * This software is available to you under a choice of one of two
-+ * licenses.  You may choose to be licensed under the terms of the GNU
-+ * General Public License (GPL) Version 2, available from the file
-+ * COPYING in the main directory of this source tree, or the
-+ * OpenIB.org BSD license below:
-+ *
-+ *     Redistribution and use in source and binary forms, with or
-+ *     without modification, are permitted provided that the following
-+ *     conditions are met:
-+ *
-+ *      - Redistributions of source code must retain the above
-+ *        copyright notice, this list of conditions and the following
-+ *        disclaimer.
-+ *
-+ *      - Redistributions in binary form must reproduce the above
-+ *        copyright notice, this list of conditions and the following
-+ *        disclaimer in the documentation and/or other materials
-+ *        provided with the distribution.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-+ * SOFTWARE.
-+ */
-+
-+#ifndef DIM_H
-+#define DIM_H
-+
-+#include <linux/module.h>
-+
-+#define NET_DIM_NEVENTS 64
-+#define IS_SIGNIFICANT_DIFF(val, ref) \
-+	(((100UL * abs((val) - (ref))) / (ref)) > 10) /* more than 10% difference */
-+#define BIT_GAP(bits, end, start) ((((end) - (start)) + BIT_ULL(bits)) & (BIT_ULL(bits) - 1))
-+
-+struct net_dim_cq_moder {
-+	u16 usec;
-+	u16 pkts;
-+	u8 cq_period_mode;
-+};
-+
-+struct net_dim_sample {
-+	ktime_t time;
-+	u32     pkt_ctr;
-+	u32     byte_ctr;
-+	u16     event_ctr;
-+};
-+
-+struct net_dim_stats {
-+	int ppms; /* packets per msec */
-+	int bpms; /* bytes per msec */
-+	int epms; /* events per msec */
-+};
-+
-+struct net_dim { /* Dynamic Interrupt Moderation */
-+	u8                                      state;
-+	struct net_dim_stats                    prev_stats;
-+	struct net_dim_sample                   start_sample;
-+	struct work_struct                      work;
-+	u8                                      profile_ix;
-+	u8                                      mode;
-+	u8                                      tune_state;
-+	u8                                      steps_right;
-+	u8                                      steps_left;
-+	u8                                      tired;
-+};
-+
-+enum {
-+	NET_DIM_CQ_PERIOD_MODE_START_FROM_EQE = 0x0,
-+	NET_DIM_CQ_PERIOD_MODE_START_FROM_CQE = 0x1,
-+	NET_DIM_CQ_PERIOD_NUM_MODES
-+};
-+
-+enum {
-+	NET_DIM_START_MEASURE,
-+	NET_DIM_MEASURE_IN_PROGRESS,
-+	NET_DIM_APPLY_NEW_PROFILE,
-+};
-+
-+enum {
-+	NET_DIM_PARKING_ON_TOP,
-+	NET_DIM_PARKING_TIRED,
-+	NET_DIM_GOING_RIGHT,
-+	NET_DIM_GOING_LEFT,
-+};
-+
-+enum {
-+	NET_DIM_STATS_WORSE,
-+	NET_DIM_STATS_SAME,
-+	NET_DIM_STATS_BETTER,
-+};
-+
-+enum {
-+	NET_DIM_STEPPED,
-+	NET_DIM_TOO_TIRED,
-+	NET_DIM_ON_EDGE,
-+};
-+
-+static inline bool net_dim_on_top(struct net_dim *net_dim)
-+{
-+	switch (net_dim->tune_state) {
-+	case NET_DIM_PARKING_ON_TOP:
-+	case NET_DIM_PARKING_TIRED:
-+		return true;
-+	case NET_DIM_GOING_RIGHT:
-+		return (net_dim->steps_left > 1) && (net_dim->steps_right == 1);
-+	default: /* NET_DIM_GOING_LEFT */
-+		return (net_dim->steps_right > 1) && (net_dim->steps_left == 1);
-+	}
-+}
-+
-+static inline void net_dim_turn(struct net_dim *net_dim)
-+{
-+	switch (net_dim->tune_state) {
-+	case NET_DIM_PARKING_ON_TOP:
-+	case NET_DIM_PARKING_TIRED:
-+		break;
-+	case NET_DIM_GOING_RIGHT:
-+		net_dim->tune_state = NET_DIM_GOING_LEFT;
-+		net_dim->steps_left = 0;
-+		break;
-+	case NET_DIM_GOING_LEFT:
-+		net_dim->tune_state = NET_DIM_GOING_RIGHT;
-+		net_dim->steps_right = 0;
-+		break;
-+	}
-+}
-+
-+static inline void net_dim_park_on_top(struct net_dim *net_dim)
-+{
-+	net_dim->steps_right  = 0;
-+	net_dim->steps_left   = 0;
-+	net_dim->tired        = 0;
-+	net_dim->tune_state   = NET_DIM_PARKING_ON_TOP;
-+}
-+
-+static inline void net_dim_park_tired(struct net_dim *net_dim)
-+{
-+	net_dim->steps_right  = 0;
-+	net_dim->steps_left   = 0;
-+	net_dim->tune_state   = NET_DIM_PARKING_TIRED;
-+}
-+
-+static inline void net_dim_sample(u16 event_ctr,
-+				  u64 packets,
-+				  u64 bytes,
-+				  struct net_dim_sample *s)
-+{
-+	s->time	     = ktime_get();
-+	s->pkt_ctr   = packets;
-+	s->byte_ctr  = bytes;
-+	s->event_ctr = event_ctr;
-+}
-+
-+static inline void net_dim_calc_stats(struct net_dim_sample *start,
-+				      struct net_dim_sample *end,
-+				      struct net_dim_stats *curr_stats)
-+{
-+	/* u32 holds up to 71 minutes, should be enough */
-+	u32 delta_us = ktime_us_delta(end->time, start->time);
-+	u32 npkts = BIT_GAP(BITS_PER_TYPE(u32), end->pkt_ctr, start->pkt_ctr);
-+	u32 nbytes = BIT_GAP(BITS_PER_TYPE(u32), end->byte_ctr,
-+			     start->byte_ctr);
-+
-+	if (!delta_us)
-+		return;
-+
-+	curr_stats->ppms = DIV_ROUND_UP(npkts * USEC_PER_MSEC, delta_us);
-+	curr_stats->bpms = DIV_ROUND_UP(nbytes * USEC_PER_MSEC, delta_us);
-+	curr_stats->epms = DIV_ROUND_UP(NET_DIM_NEVENTS * USEC_PER_MSEC,
-+					delta_us);
-+}
-+
-+#endif /* DIM_H */
-diff --git a/include/linux/net_dim.h b/include/linux/net_dim.h
-index fd45838..373cda7 100644
---- a/include/linux/net_dim.h
-+++ b/include/linux/net_dim.h
-@@ -35,73 +35,10 @@
- #define NET_DIM_H
- 
- #include <linux/module.h>
--
--struct net_dim_cq_moder {
--	u16 usec;
--	u16 pkts;
--	u8 cq_period_mode;
--};
--
--struct net_dim_sample {
--	ktime_t time;
--	u32     pkt_ctr;
--	u32     byte_ctr;
--	u16     event_ctr;
--};
--
--struct net_dim_stats {
--	int ppms; /* packets per msec */
--	int bpms; /* bytes per msec */
--	int epms; /* events per msec */
--};
--
--struct net_dim { /* Adaptive Moderation */
--	u8                                      state;
--	struct net_dim_stats                    prev_stats;
--	struct net_dim_sample                   start_sample;
--	struct work_struct                      work;
--	u8                                      profile_ix;
--	u8                                      mode;
--	u8                                      tune_state;
--	u8                                      steps_right;
--	u8                                      steps_left;
--	u8                                      tired;
--};
--
--enum {
--	NET_DIM_CQ_PERIOD_MODE_START_FROM_EQE = 0x0,
--	NET_DIM_CQ_PERIOD_MODE_START_FROM_CQE = 0x1,
--	NET_DIM_CQ_PERIOD_NUM_MODES
--};
--
--/* Adaptive moderation logic */
--enum {
--	NET_DIM_START_MEASURE,
--	NET_DIM_MEASURE_IN_PROGRESS,
--	NET_DIM_APPLY_NEW_PROFILE,
--};
--
--enum {
--	NET_DIM_PARKING_ON_TOP,
--	NET_DIM_PARKING_TIRED,
--	NET_DIM_GOING_RIGHT,
--	NET_DIM_GOING_LEFT,
--};
--
--enum {
--	NET_DIM_STATS_WORSE,
--	NET_DIM_STATS_SAME,
--	NET_DIM_STATS_BETTER,
--};
--
--enum {
--	NET_DIM_STEPPED,
--	NET_DIM_TOO_TIRED,
--	NET_DIM_ON_EDGE,
--};
-+#include <linux/dim.h>
- 
- #define NET_DIM_PARAMS_NUM_PROFILES 5
--/* Adaptive moderation profiles */
-+/* Netdev dynamic interrupt moderation profiles */
- #define NET_DIM_DEFAULT_RX_CQ_MODERATION_PKTS_FROM_EQE 256
- #define NET_DIM_DEFAULT_TX_CQ_MODERATION_PKTS_FROM_EQE 128
- #define NET_DIM_DEF_PROFILE_CQE 1
-@@ -188,36 +125,6 @@ enum {
- 	return net_dim_get_tx_moderation(cq_period_mode, profile_ix);
- }
- 
--static inline bool net_dim_on_top(struct net_dim *dim)
--{
--	switch (dim->tune_state) {
--	case NET_DIM_PARKING_ON_TOP:
--	case NET_DIM_PARKING_TIRED:
--		return true;
--	case NET_DIM_GOING_RIGHT:
--		return (dim->steps_left > 1) && (dim->steps_right == 1);
--	default: /* NET_DIM_GOING_LEFT */
--		return (dim->steps_right > 1) && (dim->steps_left == 1);
--	}
--}
--
--static inline void net_dim_turn(struct net_dim *dim)
--{
--	switch (dim->tune_state) {
--	case NET_DIM_PARKING_ON_TOP:
--	case NET_DIM_PARKING_TIRED:
--		break;
--	case NET_DIM_GOING_RIGHT:
--		dim->tune_state = NET_DIM_GOING_LEFT;
--		dim->steps_left = 0;
--		break;
--	case NET_DIM_GOING_LEFT:
--		dim->tune_state = NET_DIM_GOING_RIGHT;
--		dim->steps_right = 0;
--		break;
--	}
--}
--
- static inline int net_dim_step(struct net_dim *dim)
- {
- 	if (dim->tired == (NET_DIM_PARAMS_NUM_PROFILES * 2))
-@@ -245,21 +152,6 @@ static inline int net_dim_step(struct net_dim *dim)
- 	return NET_DIM_STEPPED;
- }
- 
--static inline void net_dim_park_on_top(struct net_dim *dim)
--{
--	dim->steps_right  = 0;
--	dim->steps_left   = 0;
--	dim->tired        = 0;
--	dim->tune_state   = NET_DIM_PARKING_ON_TOP;
--}
--
--static inline void net_dim_park_tired(struct net_dim *dim)
--{
--	dim->steps_right  = 0;
--	dim->steps_left   = 0;
--	dim->tune_state   = NET_DIM_PARKING_TIRED;
--}
--
- static inline void net_dim_exit_parking(struct net_dim *dim)
- {
- 	dim->tune_state = dim->profile_ix ? NET_DIM_GOING_LEFT :
-@@ -267,9 +159,6 @@ static inline void net_dim_exit_parking(struct net_dim *dim)
- 	net_dim_step(dim);
- }
- 
--#define IS_SIGNIFICANT_DIFF(val, ref) \
--	(((100UL * abs((val) - (ref))) / (ref)) > 10) /* more than 10% difference */
--
- static inline int net_dim_stats_compare(struct net_dim_stats *curr,
- 					struct net_dim_stats *prev)
- {
-@@ -351,39 +240,6 @@ static inline bool net_dim_decision(struct net_dim_stats *curr_stats,
- 	return dim->profile_ix != prev_ix;
- }
- 
--static inline void net_dim_sample(u16 event_ctr,
--				  u64 packets,
--				  u64 bytes,
--				  struct net_dim_sample *s)
--{
--	s->time	     = ktime_get();
--	s->pkt_ctr   = packets;
--	s->byte_ctr  = bytes;
--	s->event_ctr = event_ctr;
--}
--
--#define NET_DIM_NEVENTS 64
--#define BIT_GAP(bits, end, start) ((((end) - (start)) + BIT_ULL(bits)) & (BIT_ULL(bits) - 1))
--
--static inline void net_dim_calc_stats(struct net_dim_sample *start,
--				      struct net_dim_sample *end,
--				      struct net_dim_stats *curr_stats)
--{
--	/* u32 holds up to 71 minutes, should be enough */
--	u32 delta_us = ktime_us_delta(end->time, start->time);
--	u32 npkts = BIT_GAP(BITS_PER_TYPE(u32), end->pkt_ctr, start->pkt_ctr);
--	u32 nbytes = BIT_GAP(BITS_PER_TYPE(u32), end->byte_ctr,
--			     start->byte_ctr);
--
--	if (!delta_us)
--		return;
--
--	curr_stats->ppms = DIV_ROUND_UP(npkts * USEC_PER_MSEC, delta_us);
--	curr_stats->bpms = DIV_ROUND_UP(nbytes * USEC_PER_MSEC, delta_us);
--	curr_stats->epms = DIV_ROUND_UP(NET_DIM_NEVENTS * USEC_PER_MSEC,
--					delta_us);
--}
--
- static inline void net_dim(struct net_dim *dim,
- 			   struct net_dim_sample end_sample)
- {
--- 
-1.8.3.1
+On Wed, 2019-03-27 at 14:25 -0700, Tejun Heo (tj@kernel.org) wrote:
+> Hello,
+>=20
+> On Wed, Mar 27, 2019 at 04:43:47PM -0300, Jason Gunthorpe wrote:
+> > Well, at least I'm not super familiar with the block layer and
+> > wouldn't know about this..=20
+>=20
+> Yeah, conceptually it's not complex.  Filesytem and IOs are needed to
+> reclaim memory because we need to write back dirty pagecache and swap
+> pages before reuse them for other purposes.  Recursing on oneself
+> obviously won't be great, so filesystems need to use GFP_NOFS and
+> block layer below that needs to use GFP_NOIO.
+>=20
+> It's kinda unfortunate that network devices end up being pushed into
+> this dependency chain but we do put them in memory reclaim path w/ nfs
+> and block-over-network things, so it is what it is, I suppose.
+
+The discussion is helpful, but we still need to decide on the patch:
+
+Correct me if I'm wrong Tejun, but the key issues are:
+
+All WQ_MEM_RECLAIM work queues are eligible to be run when the machine
+is under extreme memory pressure and attempting to reclaim memory.  That
+means that the workqueue:
+
+1) MUST not perform any GFP_ATOMIC allocations as this could deadlock
+2) SHOULD not rely on any GFP_KERNEL allocations as these may fail
+3) MUST complete without blocking
+4) SHOULD ideally always make some sort of forward progress if at all
+possible without needing memory allocations to do so
+
+Mike, does hfi1_do_send() meet these requirements?  If not, we should
+not be putting WQ_MEM_RECLAIM on it, and instead should find another
+solution to the current trace issue.
+
+> > But your explanation is helpful. I will be watching for WQ_MEM_RECLAIM
+> > users that are allocating memory in their work functions.
+> >=20
+> > Would it be possible to have a lockdep-like debugging under kmalloc
+> > similar to check_flush_dependency() that complains if a WQ_MEM_RECLAIM
+> > work is doing inappropriate allocations?
+> >=20
+> > That would help discourage using it in WQ's it shouldn't be used on.
+>=20
+> Yeah, I was wondering whether that'd trigger warning.  I don't think
+> it does now.  I fully agree it'd be great to have.
+>=20
+> Thanks.
+>=20
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-W3B0OcwnC1UvGodrBicI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAlzJsM8ACgkQuCajMw5X
+L91m0A//Z50j2AFTmJd54kjHGrDj42aLi/YJqJ6neeOuu/2EGLJmMckSGFPGEraA
++ST1ccRZfb1s3nwvxPvkEWEtT7ZjvgKPPkN3tIr96bbPv2Jix/Q04tN84wRneo3X
+KaalU/3khapzycs4wfarJ4xXlaXsbuRmSwFUWuv8yhDlyIFuIZfwoaErKLu05pDX
+x5syrWLBzKkTEbtSNXqmpnCfIBCsx/iRMWgqfka+ZdGvh5MHp8Fzj6HsNCMRJkhF
+7r/PDq80i81W7OjZK3i2NuQ4Hmrd799w6PoDVfDyRYMeCtZqmVFWY69NxVkwrENV
+l+WCLSOyAt3s6aqtLJiEqbc6gdq5KZ5AFdZrEhgj4CpD1zRuL0Z5eJr8Munw1SsD
+4HI38Pto4urCRv1q5AcftCvMgJO6NZTlMXqwmfH9LnfgSrYQOoVWaZSqzi2dLEaA
+Klw/RU4QbiK3K9lNz/K8PXtlqhVu3EtXULscQDwDskMzyD27gFnJbfP4GIUm4Nw3
+Byfv9Jk2a6t55Fkm3Yu1O5VOi4VojnAbqIgog0zznC1RFSSGFlL7qJv+Cu9rhwn1
+nmdFz1zJ2uTO8XQ+3kMendtVUKMbUAT8Ch5inFwb3w0XSlqqUDpCPCGarGCBR/Jy
+NsZiFslb4Ka0bn1YRJAtfbCJdNYI/9owEJqG1159lorMZQ5MyQw=
+=zNbg
+-----END PGP SIGNATURE-----
+
+--=-W3B0OcwnC1UvGodrBicI--
 
