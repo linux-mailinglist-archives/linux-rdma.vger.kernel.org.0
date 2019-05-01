@@ -2,186 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA2B10A8C
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 18:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BA310B4E
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 18:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbfEAQEP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 May 2019 12:04:15 -0400
-Received: from mail-yw1-f67.google.com ([209.85.161.67]:46467 "EHLO
-        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbfEAQEP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 May 2019 12:04:15 -0400
-Received: by mail-yw1-f67.google.com with SMTP id v15so8607982ywe.13
-        for <linux-rdma@vger.kernel.org>; Wed, 01 May 2019 09:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1Oj/WUcyRxxUcW0wQUN0R2C4uN0F34nk4YQGosewwOg=;
-        b=BdkEZs7R9mCWaAV5rBhA8u99jrS9gEQiKTjz0Zj1In6Cju0zLJgRM3vQhw3x9nmrDp
-         OPF7T4OHLWDfgJGtlRWWb+9yvuq+eIGRxSiWL2farEW77wj6nbqT4vyndP+TWOpgpDAM
-         6uG2fyjSqWnORy589WJ0vIIwiuUPY2ZmDbl2rhPT/Fp77Uck2rZMi9NxpiV+nXeTw+IY
-         ON2PnuV3TtnYpHh/ZE4kRWcEHf3Jhb9PuyVpF/j0bP59SEFEiOYfR7jXx6D/JAYiNKZm
-         ZEz8jJ4WFH57UusBfmsWoPjN6WrKtmghfCj+0NL/BLnjS4Ug0Bi57Zsnu0bw75iYUUdn
-         84wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1Oj/WUcyRxxUcW0wQUN0R2C4uN0F34nk4YQGosewwOg=;
-        b=MeFY1duBUj9FpsZ7Rz9zT1Pg2Dc6LUmoIfpb80+d/MYOqGj15N+1W6vH0pab7c2I+e
-         8ZcWDV/HD8FsZ7veK2ImwHFyQ7FXe304as40oegNGBGBgEv2KvjaPgnslV2mQhkvVmYd
-         rp2AqjMQT7AirDpOrBanQpr904XpeNyOdsLYFMCmm+5skmIyMb+go+yVOArlCnydjS6H
-         E00AgMTnSjOGeigFVBhSSUo/Ksg16nG6uNzYVr5BOjvWunwd4XrV9YOOS9t+zT8FIuj7
-         kVGkkxruK0OzaHntp0UG1HASvUzd5cnLrrn8UT4kwWzLXT3d69cd3PKpyeD4dTlEmUze
-         oPHQ==
-X-Gm-Message-State: APjAAAX60Hg5xYTOCcDKq0y2vSrMBATOzfriygP9PnHyPgHYg6Lu1P10
-        yxOWDJHs7mZ3kw45cYsgzRg+lQ==
-X-Google-Smtp-Source: APXvYqzLJcvVHjGO71OtCFkCMb5emrvUXe19bjprN9+oSr4lBh10lOeD81kNGXnPy4yXO3Ux10gsOw==
-X-Received: by 2002:a5b:80f:: with SMTP id x15mr8202602ybp.140.1556726654484;
-        Wed, 01 May 2019 09:04:14 -0700 (PDT)
-Received: from ziepe.ca (adsl-173-228-226-134.prtc.net. [173.228.226.134])
-        by smtp.gmail.com with ESMTPSA id 78sm12489565ywr.65.2019.05.01.09.04.11
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 01 May 2019 09:04:12 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hLriM-00045B-0C; Wed, 01 May 2019 13:04:10 -0300
-Date:   Wed, 1 May 2019 13:04:09 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Tal Gilboa <talgi@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, Yishai Hadas <yishaih@mellanox.com>,
+        id S1726481AbfEAQ2z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 May 2019 12:28:55 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:53268 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726473AbfEAQ2z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 1 May 2019 12:28:55 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id B6C9B2D7E6;
+        Wed,  1 May 2019 16:28:54 +0000 (UTC)
+Received: from haswell-e.nc.xsintricity.com (ovpn-112-9.rdu2.redhat.com [10.10.112.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2B53F4B6;
+        Wed,  1 May 2019 16:28:52 +0000 (UTC)
+Message-ID: <cc59704be472e2576510ca3dcaeafdd6c547eacb.camel@redhat.com>
+Subject: Re: [PATCH for-next v6 00/12] RDMA/efa: Elastic Fabric Adapter
+ (EFA) driver
+From:   Doug Ledford <dledford@redhat.com>
+To:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leah Shalev <shalevl@amazon.com>,
+        Dave Goodell <goodell@amazon.com>,
+        Brian Barrett <bbarrett@amazon.com>,
+        linux-rdma@vger.kernel.org, Sean Hefty <sean.hefty@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Idan Burstein <idanb@mellanox.com>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Subject: Re: [PATCH rdma-for-next 0/9] drivers/infiniband: Introduce rdma_dim
-Message-ID: <20190501160409.GA15547@ziepe.ca>
-References: <1556721879-35987-1-git-send-email-talgi@mellanox.com>
+        Christoph Hellwig <hch@infradead.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Date:   Wed, 01 May 2019 12:28:45 -0400
+In-Reply-To: <1556707704-11192-1-git-send-email-galpress@amazon.com>
+References: <1556707704-11192-1-git-send-email-galpress@amazon.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-i3k1uQ9ZwbLNV35aW7y1"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1556721879-35987-1-git-send-email-talgi@mellanox.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.30]); Wed, 01 May 2019 16:28:55 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 01, 2019 at 05:44:30PM +0300, Tal Gilboa wrote:
-> net_dim.h lib exposes an implementation of the DIM algorithm for dynamically-tuned interrupt
-> moderation for networking interfaces.
-> 
-> We want a similar functionality for RDMA. The main motivation is to benefit from maximized
-> completion rate and reduced interrupt overhead that DIM may provide.
-> 
-> Current DIM implementation prioritizes reducing interrupt overhead over latency. Also, in
-> order to reduce DIM's own overhead, the algorithm might take take some time to identify it
-> needs to change profiles. For these reasons we got to the understanding that a slightly
-> modified algorithm is needed. Early tests with current implementation show it doesn't react
-> fast and sharply enough in order to satisfy the RDMA CQ needs.
-> 
-> I would like to suggest an implementation for RDMA DIM. The idea is to expose the new
-> functionality without the risk of breaking Net DIM behavior for netdev. Below are main
-> similarities and differences between the two implementations and general guidelines for the
-> suggested solution.
-> 
-> Performance improvement (ConnectX-5 100GbE, x86) running FIO benchmark over
-> NVMf between two equal end-hosts with 56 cores across a Mellanox switch
-> using null_blk device:
-> 
-> READS without DIM:
-> blk size | BW       | IOPS | 99th percentile latency  | 99.99th latency
-> 512B     | 3.8GiB/s | 7.7M | 1401  usec               | 2442  usec
-> 4k       | 7.0GiB/s | 1.8M | 4817  usec               | 6587  usec
-> 64k      | 10.7GiB/s| 175k | 9896  usec               | 10028 usec
-> 
-> IO WRITES without DIM:
-> blk size | BW       | IOPS | 99th percentile latency  | 99.99th latency
-> 512B     | 3.6GiB/s | 7.5M | 1434  usec               | 2474  usec
-> 4k       | 6.3GiB/s | 1.6M | 938   usec               | 1221  usec
-> 64k      | 10.7GiB/s| 175k | 8979  usec               | 12780 usec
-> 
-> IO READS with DIM:
-> blk size | BW       | IOPS | 99th percentile latency  | 99.99th latency
-> 512B     | 4GiB/s   | 8.2M | 816    usec              | 889   usec
-> 4k       | 10.1GiB/s| 2.65M| 3359   usec              | 5080  usec
-> 64k      | 10.7GiB/s| 175k | 9896   usec              | 10028 usec
-> 
-> IO WRITES with DIM:
-> blk size | BW       | IOPS  | 99th percentile latency | 99.99th latency
-> 512B     | 3.9GiB/s | 8.1M  | 799   usec              | 922   usec
-> 4k       | 9.6GiB/s | 2.5M  | 717   usec              | 1004  usec
-> 64k      | 10.7GiB/s| 176k  | 8586  usec              | 12256 usec
-> 
-> Common logic, main DIM procedure:
-> - Calculate current stats from a given sample
-> - Compare current stats vs. previous iteration stats
-> - Make a decision -> choose a new profile
-> 
-> Differences:
-> - Different parameters for moving between profiles
-> - Different moderation values and number of profiles
-> - Different sampled data
-> 
-> Suggested solution:
-> - Common logic will be declared in include/linux/dim.h and implemented in lib/dim/dim.c
-> - Net DIM (existing) logic will be declared in include/linux/net_dim.h and implemented in
->   lib/dim/net_dim.c, which will use the common logic from dim.h
-> - RDMA DIM logic will be declared in /include/linux/rdma_dim.h and implemented in
->   lib/dim/rdma_dim.c.
->   This new implementation will expose modified versions of profiles, dim_step() and dim_decision()
-> 
-> Pros for this solution are:
-> - Zero impact on existing net_dim implementation and usage
-> - Relatively more code reuse (compared to two separate solutions)
-> - Readiness for future implementations
->  
-> Tal Gilboa (6):
->   linux/dim: Move logic to dim.h
->   linux/dim: Remove "net" prefix from internal DIM members
->   linux/dim: Rename externally exposed macros
->   linux/dim: Rename net_dim_sample() to net_dim_create_sample()
->   linux/dim: Rename externally used net_dim members
->   linux/dim: Move implementation to .c files
-> 
-> Yamin Friedman (3):
->   linux/dim: Add completions count to dim_sample
->   linux/dim: Implement rdma_dim
->   drivers/infiniband: Use rdma_dim in infiniband driver
-> 
->  MAINTAINERS                                        |   3 +
->  drivers/infiniband/core/cq.c                       |  79 ++++-
->  drivers/infiniband/hw/mlx4/qp.c                    |   2 +-
->  drivers/infiniband/hw/mlx5/qp.c                    |   2 +-
->  drivers/net/ethernet/broadcom/bcmsysport.c         |  20 +-
->  drivers/net/ethernet/broadcom/bcmsysport.h         |   2 +-
->  drivers/net/ethernet/broadcom/bnxt/bnxt.c          |  13 +-
->  drivers/net/ethernet/broadcom/bnxt/bnxt.h          |   2 +-
->  drivers/net/ethernet/broadcom/bnxt/bnxt_debugfs.c  |   4 +-
->  drivers/net/ethernet/broadcom/bnxt/bnxt_dim.c      |   7 +-
->  drivers/net/ethernet/broadcom/genet/bcmgenet.c     |  18 +-
->  drivers/net/ethernet/broadcom/genet/bcmgenet.h     |   2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en.h       |   8 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_dim.c   |  12 +-
->  .../net/ethernet/mellanox/mlx5/core/en_ethtool.c   |   4 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  22 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c  |  12 +-
 
-A lot of this is touching netdev, why wasn't netdev cc'd?
+--=-i3k1uQ9ZwbLNV35aW7y1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Who is supposed to merge this? 
+On Wed, 2019-05-01 at 13:48 +0300, Gal Pressman wrote:
+> Hello all,
+> The following v6 patchset introduces the Amazon Elastic Fabric Adapter (E=
+FA)
+> driver.
+>=20
+> EFA is a networking adapter designed to support user space network
+> communication, initially offered in the Amazon EC2 environment. First rel=
+ease
+> of EFA supports datagram send/receive operations and does not support
+> connection-oriented or read/write operations.
+>=20
+> EFA supports Unreliable Datagrams (UD) as well as a new unordered, Scalab=
+le
+> Reliable Datagram protocol (SRD). SRD provides support for reliable datag=
+rams
+> and more complete error handling than typical RD, but, unlike RD, it does=
+ not
+> support ordering nor segmentation.
+>=20
+> EFA reliable datagram transport provides reliable out-of-order delivery,
+> transparently utilizing multiple network paths to reduce network tail
+> latency. Its interface is similar to UD, in particular it supports
+> message size up to MTU, with error handling extended to support reliable
+> communication. More information regarding SRD can be found at [1].
+>=20
+> Kernel verbs and in-kernel services are initially not supported but are p=
+lanned
+> for future releases.
+>=20
+> EFA enabled EC2 instances have two different devices allocated, one for E=
+NA
+> (netdev) and one for EFA, the two are separate pci devices with no in-ker=
+nel
+> communication between them.
+>=20
+> This patchset also introduces RDMA subsystem ibdev_* print helpers which =
+should
+> be used by the other new drivers that are currently under review (irdma, =
+siw)
+> and over time by all drivers in the subsystem.
+> The print format is similar to the netdev_* helpers.
+>=20
+> PR for rdma-core provider was sent:
+> https://github.com/linux-rdma/rdma-core/pull/475
+>=20
+> Thanks to everyone who took the time to review our last submissions (Jaso=
+n, Doug,
+> Sean, Dennis, Leon, Christoph, Parav, Sagi, Steve, Shiraz), it is very
+> appreciated.
 
-I think you need to take two steps and have netdev merge the above
-part and then send the single patch to RDMA for the last part, I don't
-really want to take so much netdev code here.
+This looks to me like all of the requirements we discussed at the OFA
+workshop for inclusion (must have UD in addition to SRD, must have a
+pull request for the user space portion, must have processed prior
+review comments) have been met.  I did a cursory review of this patchset
+and have no specific objections that I'm willing to hold things up for.=20
+I'll give this a few days for other people to comment, but I'm basically
+ready to take it.
 
-The maintainers file should also have some indication which tree
-patches for lib/dim/* this should go through..
+I will, however, take patch 1/12 sooner and feed it to for-next so other
+drivers can start modifying their prints to use the new helper.
 
-Jason
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-i3k1uQ9ZwbLNV35aW7y1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAlzJyT0ACgkQuCajMw5X
+L92RGQ/8DeVao7onS1oSuP6eJpM5zGXnvLTexJeKc5T8glENQYoidcqydaK1es8a
+E2yZqNW5FCHvHPOsUMnz57YrBn4mLydkEGQO+9VM4/d/cPYAmfDDb03w2Fud+qDu
+N58u4OLrwYkAWWjqg/vgT8TcqmouuMmhBnQHLRnmvHLJj1EVOQVsO8/BsjH7lHms
+6vKbsJfvifAFeLkANXsrKZrJB6eQEe0k7PhjKccURYM1pBj2Lh/YVpPmRO5z1Kj+
+xKJEFDewwH3CFX8lpzfUcdVPH1CbTdK6GZBdIQ8j5rVKbJvrYKbqZNqMrvtJ3H33
+Wh9rNvvX84RRE7hDOpdKZaPyzgGAj+K5Dx/8PwoOv2cTlqNgANPBou+ewZyr1t+E
+ETV0EbLgfZbl7f7xEzZI90+y6m8zq7TxG56qwgYOpVwWXaU/wjq6U/OCZ4dmTjri
+xB14aVIoflDZ9jfzguqcSu24zpTgdODbheHF7cmvZUMbC+YCZoVlcihHvQaHRn0i
+hMsU8DQbgq6fO+PR8M8jh4jjN5JiuCT9z4ieLrJZp2P1+9tqiCvVl9EJ9n8wZ90j
+7dKC+9UcfAyHHqoPX9cP1eWRCJ6PzvQVH/kz1s149j/hsP9pVjITcBnjkB76D6lB
+IRyYTm0Dtf4FvUatQrl/hOY45+zEt4ll5EJ9h41LrzJkLGpThR8=
+=eHsK
+-----END PGP SIGNATURE-----
+
+--=-i3k1uQ9ZwbLNV35aW7y1--
+
