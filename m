@@ -2,135 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3AC109EA
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 17:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA2B10A8C
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 18:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbfEAPVR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 May 2019 11:21:17 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:42406 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726473AbfEAPVR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 1 May 2019 11:21:17 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id F0EC08666E;
-        Wed,  1 May 2019 15:21:16 +0000 (UTC)
-Received: from [172.31.1.7] (ovpn-112-9.rdu2.redhat.com [10.10.112.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 843EF62AF8;
-        Wed,  1 May 2019 15:21:15 +0000 (UTC)
-From:   Doug Ledford <dledford@redhat.com>
-Message-Id: <4A4820DA-474E-437F-B3D3-56EAA31ED58D@redhat.com>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_0D3CF026-EA97-4DBE-AA86-5A5A44F91A99";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 12.2 \(3445.102.3\))
-Subject: Re: [PATCH for-rc 1/5] IB/hfi1: Fix WQ_MEM_RECLAIM warning
-Date:   Wed, 1 May 2019 11:21:08 -0400
-In-Reply-To: <20190327170213.GD22899@mtr-leonro.mtl.com>
-Cc:     Tejun Heo <tj@kernel.org>,
-        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-References: <20190318165205.23550.97894.stgit@scvm10.sc.intel.com>
- <20190318165501.23550.24989.stgit@scvm10.sc.intel.com>
- <20190319192737.GB3773@ziepe.ca>
- <32E1700B9017364D9B60AED9960492BC70CD9227@fmsmsx120.amr.corp.intel.com>
- <20190327152517.GD69236@devbig004.ftw2.facebook.com>
- <20190327170213.GD22899@mtr-leonro.mtl.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.26]); Wed, 01 May 2019 15:21:17 +0000 (UTC)
+        id S1726574AbfEAQEP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 May 2019 12:04:15 -0400
+Received: from mail-yw1-f67.google.com ([209.85.161.67]:46467 "EHLO
+        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726415AbfEAQEP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 May 2019 12:04:15 -0400
+Received: by mail-yw1-f67.google.com with SMTP id v15so8607982ywe.13
+        for <linux-rdma@vger.kernel.org>; Wed, 01 May 2019 09:04:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1Oj/WUcyRxxUcW0wQUN0R2C4uN0F34nk4YQGosewwOg=;
+        b=BdkEZs7R9mCWaAV5rBhA8u99jrS9gEQiKTjz0Zj1In6Cju0zLJgRM3vQhw3x9nmrDp
+         OPF7T4OHLWDfgJGtlRWWb+9yvuq+eIGRxSiWL2farEW77wj6nbqT4vyndP+TWOpgpDAM
+         6uG2fyjSqWnORy589WJ0vIIwiuUPY2ZmDbl2rhPT/Fp77Uck2rZMi9NxpiV+nXeTw+IY
+         ON2PnuV3TtnYpHh/ZE4kRWcEHf3Jhb9PuyVpF/j0bP59SEFEiOYfR7jXx6D/JAYiNKZm
+         ZEz8jJ4WFH57UusBfmsWoPjN6WrKtmghfCj+0NL/BLnjS4Ug0Bi57Zsnu0bw75iYUUdn
+         84wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1Oj/WUcyRxxUcW0wQUN0R2C4uN0F34nk4YQGosewwOg=;
+        b=MeFY1duBUj9FpsZ7Rz9zT1Pg2Dc6LUmoIfpb80+d/MYOqGj15N+1W6vH0pab7c2I+e
+         8ZcWDV/HD8FsZ7veK2ImwHFyQ7FXe304as40oegNGBGBgEv2KvjaPgnslV2mQhkvVmYd
+         rp2AqjMQT7AirDpOrBanQpr904XpeNyOdsLYFMCmm+5skmIyMb+go+yVOArlCnydjS6H
+         E00AgMTnSjOGeigFVBhSSUo/Ksg16nG6uNzYVr5BOjvWunwd4XrV9YOOS9t+zT8FIuj7
+         kVGkkxruK0OzaHntp0UG1HASvUzd5cnLrrn8UT4kwWzLXT3d69cd3PKpyeD4dTlEmUze
+         oPHQ==
+X-Gm-Message-State: APjAAAX60Hg5xYTOCcDKq0y2vSrMBATOzfriygP9PnHyPgHYg6Lu1P10
+        yxOWDJHs7mZ3kw45cYsgzRg+lQ==
+X-Google-Smtp-Source: APXvYqzLJcvVHjGO71OtCFkCMb5emrvUXe19bjprN9+oSr4lBh10lOeD81kNGXnPy4yXO3Ux10gsOw==
+X-Received: by 2002:a5b:80f:: with SMTP id x15mr8202602ybp.140.1556726654484;
+        Wed, 01 May 2019 09:04:14 -0700 (PDT)
+Received: from ziepe.ca (adsl-173-228-226-134.prtc.net. [173.228.226.134])
+        by smtp.gmail.com with ESMTPSA id 78sm12489565ywr.65.2019.05.01.09.04.11
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 01 May 2019 09:04:12 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hLriM-00045B-0C; Wed, 01 May 2019 13:04:10 -0300
+Date:   Wed, 1 May 2019 13:04:09 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tal Gilboa <talgi@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Idan Burstein <idanb@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Subject: Re: [PATCH rdma-for-next 0/9] drivers/infiniband: Introduce rdma_dim
+Message-ID: <20190501160409.GA15547@ziepe.ca>
+References: <1556721879-35987-1-git-send-email-talgi@mellanox.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1556721879-35987-1-git-send-email-talgi@mellanox.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, May 01, 2019 at 05:44:30PM +0300, Tal Gilboa wrote:
+> net_dim.h lib exposes an implementation of the DIM algorithm for dynamically-tuned interrupt
+> moderation for networking interfaces.
+> 
+> We want a similar functionality for RDMA. The main motivation is to benefit from maximized
+> completion rate and reduced interrupt overhead that DIM may provide.
+> 
+> Current DIM implementation prioritizes reducing interrupt overhead over latency. Also, in
+> order to reduce DIM's own overhead, the algorithm might take take some time to identify it
+> needs to change profiles. For these reasons we got to the understanding that a slightly
+> modified algorithm is needed. Early tests with current implementation show it doesn't react
+> fast and sharply enough in order to satisfy the RDMA CQ needs.
+> 
+> I would like to suggest an implementation for RDMA DIM. The idea is to expose the new
+> functionality without the risk of breaking Net DIM behavior for netdev. Below are main
+> similarities and differences between the two implementations and general guidelines for the
+> suggested solution.
+> 
+> Performance improvement (ConnectX-5 100GbE, x86) running FIO benchmark over
+> NVMf between two equal end-hosts with 56 cores across a Mellanox switch
+> using null_blk device:
+> 
+> READS without DIM:
+> blk size | BW       | IOPS | 99th percentile latency  | 99.99th latency
+> 512B     | 3.8GiB/s | 7.7M | 1401  usec               | 2442  usec
+> 4k       | 7.0GiB/s | 1.8M | 4817  usec               | 6587  usec
+> 64k      | 10.7GiB/s| 175k | 9896  usec               | 10028 usec
+> 
+> IO WRITES without DIM:
+> blk size | BW       | IOPS | 99th percentile latency  | 99.99th latency
+> 512B     | 3.6GiB/s | 7.5M | 1434  usec               | 2474  usec
+> 4k       | 6.3GiB/s | 1.6M | 938   usec               | 1221  usec
+> 64k      | 10.7GiB/s| 175k | 8979  usec               | 12780 usec
+> 
+> IO READS with DIM:
+> blk size | BW       | IOPS | 99th percentile latency  | 99.99th latency
+> 512B     | 4GiB/s   | 8.2M | 816    usec              | 889   usec
+> 4k       | 10.1GiB/s| 2.65M| 3359   usec              | 5080  usec
+> 64k      | 10.7GiB/s| 175k | 9896   usec              | 10028 usec
+> 
+> IO WRITES with DIM:
+> blk size | BW       | IOPS  | 99th percentile latency | 99.99th latency
+> 512B     | 3.9GiB/s | 8.1M  | 799   usec              | 922   usec
+> 4k       | 9.6GiB/s | 2.5M  | 717   usec              | 1004  usec
+> 64k      | 10.7GiB/s| 176k  | 8586  usec              | 12256 usec
+> 
+> Common logic, main DIM procedure:
+> - Calculate current stats from a given sample
+> - Compare current stats vs. previous iteration stats
+> - Make a decision -> choose a new profile
+> 
+> Differences:
+> - Different parameters for moving between profiles
+> - Different moderation values and number of profiles
+> - Different sampled data
+> 
+> Suggested solution:
+> - Common logic will be declared in include/linux/dim.h and implemented in lib/dim/dim.c
+> - Net DIM (existing) logic will be declared in include/linux/net_dim.h and implemented in
+>   lib/dim/net_dim.c, which will use the common logic from dim.h
+> - RDMA DIM logic will be declared in /include/linux/rdma_dim.h and implemented in
+>   lib/dim/rdma_dim.c.
+>   This new implementation will expose modified versions of profiles, dim_step() and dim_decision()
+> 
+> Pros for this solution are:
+> - Zero impact on existing net_dim implementation and usage
+> - Relatively more code reuse (compared to two separate solutions)
+> - Readiness for future implementations
+>  
+> Tal Gilboa (6):
+>   linux/dim: Move logic to dim.h
+>   linux/dim: Remove "net" prefix from internal DIM members
+>   linux/dim: Rename externally exposed macros
+>   linux/dim: Rename net_dim_sample() to net_dim_create_sample()
+>   linux/dim: Rename externally used net_dim members
+>   linux/dim: Move implementation to .c files
+> 
+> Yamin Friedman (3):
+>   linux/dim: Add completions count to dim_sample
+>   linux/dim: Implement rdma_dim
+>   drivers/infiniband: Use rdma_dim in infiniband driver
+> 
+>  MAINTAINERS                                        |   3 +
+>  drivers/infiniband/core/cq.c                       |  79 ++++-
+>  drivers/infiniband/hw/mlx4/qp.c                    |   2 +-
+>  drivers/infiniband/hw/mlx5/qp.c                    |   2 +-
+>  drivers/net/ethernet/broadcom/bcmsysport.c         |  20 +-
+>  drivers/net/ethernet/broadcom/bcmsysport.h         |   2 +-
+>  drivers/net/ethernet/broadcom/bnxt/bnxt.c          |  13 +-
+>  drivers/net/ethernet/broadcom/bnxt/bnxt.h          |   2 +-
+>  drivers/net/ethernet/broadcom/bnxt/bnxt_debugfs.c  |   4 +-
+>  drivers/net/ethernet/broadcom/bnxt/bnxt_dim.c      |   7 +-
+>  drivers/net/ethernet/broadcom/genet/bcmgenet.c     |  18 +-
+>  drivers/net/ethernet/broadcom/genet/bcmgenet.h     |   2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/en.h       |   8 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/en_dim.c   |  12 +-
+>  .../net/ethernet/mellanox/mlx5/core/en_ethtool.c   |   4 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  22 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c  |  12 +-
 
---Apple-Mail=_0D3CF026-EA97-4DBE-AA86-5A5A44F91A99
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+A lot of this is touching netdev, why wasn't netdev cc'd?
 
-On Mar 27, 2019, at 1:02 PM, Leon Romanovsky <leon@kernel.org> wrote:
->=20
-> On Wed, Mar 27, 2019 at 08:25:17AM -0700, Tejun Heo (tj@kernel.org) =
-wrote:
->> Hello,
->>=20
->> On Tue, Mar 26, 2019 at 08:55:09PM +0000, Marciniszyn, Mike wrote:
->>> The latter is the ipoib wq that conflicts with our =
-non-WQ_MEM_RECLAIM.  This seems excessive and pretty gratuitous.
->>>=20
->>> Tejun, what does "mem reclaim" really mean and when should it be =
-used?
->>=20
->> That it may be depended during memory reclaim.
->>=20
->>> I was assuming that since we are freeing QP kernel memory held by =
-user mode programs that could be oom killed, we need the flag.
->>=20
->> If it can't block memory reclaim, it doesn't need the flag.  Just in
->> case, if a workqueue is used to issue block IOs, it is depended upon
->> for memory reclaim as writeback and swap-outs are critical parts of
->> memory reclaim.
->=20
-> It looks like WQ_MEM_RECLAIM is needed for IPoIB, because if NFS runs
-> over IPoIB, it will do those types of IOs.
+Who is supposed to merge this? 
 
-Because of what IPoIB does, you=E2=80=99re right that it=E2=80=99s =
-needed.  However, it might be necessary to audit the wq usage in IPoIB =
-to make sure it=E2=80=99s actually eligible for the flag and that it =
-hasn=E2=80=99t been set when the code doesn=E2=80=99t meet the =
-requirements of the flag.
+I think you need to take two steps and have netdev merge the above
+part and then send the single patch to RDMA for the last part, I don't
+really want to take so much netdev code here.
 
-> Thanks
->=20
->>=20
->> Thanks.
->>=20
->> --
->> tejun
+The maintainers file should also have some indication which tree
+patches for lib/dim/* this should go through..
 
---
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 =
-2FDD
-
-
-
-
-
-
-
-
---Apple-Mail=_0D3CF026-EA97-4DBE-AA86-5A5A44F91A99
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAlzJuWQACgkQuCajMw5X
-L92rVxAAh+axOou9YbGIU/aLBFHJq2VvlH3689GLxVrCz3aFgelywPJA1G+LJ2f/
-yy+f2EXAdAuB650ruGfIjM+grffNi6UkZOhZuC/QVK6np+5udvzcr4QxOSeYAmg4
-j7n0m2XTbQ0eHpAF2zDyfEQGLUibOEpt7Kp4Dvoeth4umh4yqKedZD8T7lnfF3Er
-eG9ji6PMm4huq+h+4AhCV1SdgndbEOYe2x6TLI0TYo7mAAc7rXNFD/LJgHPe+Tau
-xGry60NLIqg6CUhRUtv2ZWDpCcqo16VYyPAXTbbhDGD/nXKYBY9vnOE6FnqibLMC
-aJ9aYJKX/UDuvN1yUJKCyduHAES0i5NTOPzL4PzRvfH6xBBIK/jc1PPQNVRVxhqS
-UzWbtS+mRTud5ICd+f3R5L3rxU4aqt89aK8gQc3XJkfCLZn5w/AxfkvESThlP1HT
-7FTh54RHGvXRYVNJ40n0DTPWtLkBr2X6GXxC2xlfLRUU6LvLcG/S4h+043YFD/pn
-QfgX3YCuLvP+7RQN7reapG9ChQf0s52NcNm+Bt1kkieTZhwJinfmWKK3ktvrG1fv
-DqjKOaJ06iJrz8oO8pw70wa0kugVP9CjPF0/0QTFAZGlQ5q+pb8Bf+iJWSh25uZc
-37ySdmJiM+bBUmV/ONfTUY38GRoWSB/qRBSVXHGzUpl2tYLa1IA=
-=LH4U
------END PGP SIGNATURE-----
-
---Apple-Mail=_0D3CF026-EA97-4DBE-AA86-5A5A44F91A99--
+Jason
