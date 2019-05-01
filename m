@@ -2,439 +2,244 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE09810976
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 16:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC7C1099C
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 16:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbfEAOpF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 May 2019 10:45:05 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:40165 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727084AbfEAOpD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 May 2019 10:45:03 -0400
-Received: from Internal Mail-Server by MTLPINE2 (envelope-from talgi@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 1 May 2019 17:44:54 +0300
-Received: from gen-l-vrt-692.mtl.labs.mlnx (gen-l-vrt-692.mtl.labs.mlnx [10.141.69.20])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x41EisrF019859;
-        Wed, 1 May 2019 17:44:54 +0300
-Received: from gen-l-vrt-692.mtl.labs.mlnx (localhost [127.0.0.1])
-        by gen-l-vrt-692.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id x41Eis9u036056;
-        Wed, 1 May 2019 17:44:54 +0300
-Received: (from talgi@localhost)
-        by gen-l-vrt-692.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id x41EirwW036055;
-        Wed, 1 May 2019 17:44:53 +0300
-From:   Tal Gilboa <talgi@mellanox.com>
-To:     linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org
-Cc:     Yishai Hadas <yishaih@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Tal Gilboa <talgi@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Idan Burstein <idanb@mellanox.com>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>
-Subject: [PATCH rdma-for-next 9/9] drivers/infiniband: Use rdma_dim in infiniband driver
-Date:   Wed,  1 May 2019 17:44:39 +0300
-Message-Id: <1556721879-35987-10-git-send-email-talgi@mellanox.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1556721879-35987-1-git-send-email-talgi@mellanox.com>
-References: <1556721879-35987-1-git-send-email-talgi@mellanox.com>
+        id S1726730AbfEAOuU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 May 2019 10:50:20 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:41834 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726673AbfEAOuT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 1 May 2019 10:50:19 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id E6CCC59451;
+        Wed,  1 May 2019 14:50:18 +0000 (UTC)
+Received: from haswell-e.nc.xsintricity.com (ovpn-112-9.rdu2.redhat.com [10.10.112.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0182F53;
+        Wed,  1 May 2019 14:50:17 +0000 (UTC)
+Message-ID: <7be4c649c4d826168891b07d52119f64e424379b.camel@redhat.com>
+Subject: Re: [PATCH] rdma/i40iw: Add a reference when accepting a connection
+ to avoid panic
+From:   Doug Ledford <dledford@redhat.com>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        Andrew Boyer <aboyer@tobark.org>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Parvathi Rajagopal <parvathi.rajagopal@emc.com>
+Date:   Wed, 01 May 2019 10:50:15 -0400
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7A5AA0344@fmsmsx124.amr.corp.intel.com>
+References: <20190327134254.1740-1-andrew.boyer@dell.com>
+         <9DD61F30A802C4429A01CA4200E302A7A5A88287@fmsmsx124.amr.corp.intel.com>
+         <BA22062A-AE8D-43C9-9F54-54214D8BF283@tobark.org>
+         <9DD61F30A802C4429A01CA4200E302A7A5AA0344@fmsmsx124.amr.corp.intel.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-6tpnLUOFoKrByxpPwXos"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Wed, 01 May 2019 14:50:19 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yamin Friedman <yaminf@mellanox.com>
 
-Added the interface in the infiniband driver that applies the rdma_dim
-adaptive moderation. There is now a special function for allocating an
-ib_cq that uses rdma_dim.
+--=-6tpnLUOFoKrByxpPwXos
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Performance improvement (ConnectX-5 100GbE, x86) running FIO benchmark over
-NVMf between two equal end-hosts with 56 cores across a Mellanox switch
-using null_blk device:
+On Mon, 2019-04-08 at 16:16 +0000, Saleem, Shiraz wrote:
+> > Subject: Re: [PATCH] rdma/i40iw: Add a reference when accepting a conne=
+ction to
+> > avoid panic
+> >=20
+> >=20
+> > > On Mar 29, 2019, at 7:29 PM, Saleem, Shiraz <shiraz.saleem@intel.com>=
+ wrote:
+> > >=20
+> > > > Subject: [PATCH] rdma/i40iw: Add a reference when accepting a
+> > > > connection to avoid panic
+> > > >=20
+> > > > When a CONNECT_REQUEST is received on the listening side, a new
+> > > > cm_node is created. A pointer to the cm_node is put into an iw_cm
+> > > > event message, which is put on a workqueue and then sent to i40iw_a=
+ccept().
+> > > >=20
+> > > > The driver needs to add a reference to go with the iw_cm event so
+> > > > that the cm_node cannot be destroyed before the workqueue item is p=
+rocessed.
+> > > >=20
+> > > > Note that i40iw_accept() already releases a reference in two error
+> > > > paths; these appear to be incorrect since there was no associated r=
+eference
+> > taken.
+> > > > Backtrace:
+> > > > [436732.936866] general protection fault: 0000 [#1] SMP NOPTI
+> > > > [436732.937891] Modules linked in: ...
+> > > > [436732.966395] CPU: 0 PID: 14062 Comm: CMIB Tainted: P           O=
+E   4.14.19-
+> > > > coreos-r9999.1533000047-442 #1
+> > > > [436732.970042] task: ffff8bd589113c80 task.stack: ffff99c047710000
+> > > > [436732.971123] RIP: 0010:i40iw_accept+0x2d0/0x4c0 [i40iw] [436732.=
+972065]
+> > RSP:
+> > > > 0018:ffff99c047713b28 EFLAGS: 00010046 [436732.973022] RAX:
+> > > > 0000000000000296 RBX: ffff8bcf356a1800 RCX: ffff8bcf356a34c0
+> > > > [436732.974314]
+> > > > RDX: dead000000000200 RSI: ffff8bd53818b1c0 RDI: dead000000000100
+> > > > [436732.975607] RBP: ffff99c047713c68 R08: 0000000000000000 R09:
+> > > > ffff8bd53818dc40 [436732.976902] R10: ffff99c047713a08 R11:
+> > > > 0000000000000004
+> > > > R12: ffff8bd538188018 [436732.978192] R13: ffff8bd53818b220 R14:
+> > > > ffff8bd648826800 R15: ffff8bcf356a3400 [436732.979480] FS:
+> > > > 00007fc6ceba2700(0000) GS:ffff8bd674400000(0000)
+> > > > knlGS:0000000000000000 [436732.980937] CS:  0010 DS: 0000 ES: 0000
+> > > > CR0: 0000000080050033 [436732.981983] CR2: 00007faa0ea26270 CR3:
+> > 00000016fa6ce003 CR4:
+> > > > 00000000003606f0 [436732.983312] DR0: 0000000000000000 DR1:
+> > > > 0000000000000000 DR2: 0000000000000000 [436732.984602] DR3:
+> > > > 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > [436732.985893] Call Trace:
+> > > > [436732.986368]  iw_cm_accept+0x8d/0x550 [iw_cm] [436732.987159]
+> > > > rdma_accept+0x1e8/0x260 [rdma_cm] [436732.987982]  0xffffffffc0ad11=
+41
+> > > > [436732.988574]  0xffffffffc0ad14cd [436732.989168]
+> > > > __vfs_write+0x33/0x150 [436732.989824]  ?
+> > > > __inode_security_revalidate+0x4a/0x70
+> > > > [436732.990734]  ? selinux_file_permission+0xdd/0x130
+> > > > [436732.991600]  ? security_file_permission+0x36/0xb0
+> > > > [436732.992466]  vfs_write+0xb3/0x1a0 [436732.993088]
+> > > > SyS_write+0x52/0xc0 [436732.993698]  do_syscall_64+0x66/0x1d0
+> > > > [436732.994384]
+> > > > entry_SYSCALL_64_after_hwframe+0x21/0x86
+> > > > [436732.995311] RIP: 0033:0x7fc79f7676ad [436732.995981] RSP:
+> > > > 002b:00007fc76d371040 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+> > > > [436732.997355] RAX: ffffffffffffffda RBX: 0000000028c80950 RCX:
+> > > > 00007fc79f7676ad [436732.998646] RDX: 0000000000000128 RSI:
+> > > > 00007fc76d371050 RDI: 000000000000005c [436732.999934] RBP:
+> > > > 00007fc76d371050 R08: 0000000000000000 R09: 0000000028cc2400
+> > > > [436733.001221] R10: 0000000000000009 R11: 0000000000000293 R12:
+> > > > 00007fc76d3711d0 [436733.002508] R13: 0000000028c80950 R14:
+> > > > 0000000028cc0950 R15: 000000002796b010 [436733.003798] Code: ...
+> > > > [436733.007166] RIP: i40iw_accept+0x2d0/0x4c0 [i40iw] RSP:
+> > > > ffff99c047713b28
+> > > >=20
+> > > > Fixes: f27b4746f378e ("i40iw: add connection management code"
+> > > > Signed-off-by: Andrew Boyer <andrew.boyer@dell.com>
+> > > > ---
+> > > > drivers/infiniband/hw/i40iw/i40iw_cm.c | 19 +++++++++++++++----
+> > > > 1 file changed, 15 insertions(+), 4 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c
+> > > > b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+> > > > index 206cfb0016f8..28e92a68c178 100644
+> > > > --- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
+> > > > +++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+> > > > @@ -272,6 +272,9 @@ static int i40iw_send_cm_event(struct
+> > > > i40iw_cm_node *cm_node,
+> > > > 		event.private_data =3D (void *)cm_node->pdata_buf;
+> > > > 		event.private_data_len =3D (u8)cm_node->pdata.size;
+> > > > 		event.ird =3D cm_node->ird_size;
+> > > > +
+> > > > +		/* Take a reference to go with the iw_cm event */
+> > > > +		atomic_inc(&cm_node->ref_count);
+> > > > 		break;
+> > >=20
+> > > Maybe I am missing something here, but i40iw_cm_post_event() should
+> > > have bumped the cm_node ref count so it is not deleted till event
+> > > worker completes. So, I am not entirely convinced this is the right r=
+oot cause and
+> > fix.
+> > > It would be useful if we could get the call trace on
+> > > i40iw_rem_ref_cm_node() when cm_node goes away. I can assist providin=
+g a
+> > debug patch.
+> > > Shiraz
+> >=20
+> > There are two distinct events put onto two different workqueues. Event =
+A is of type
+> > struct i40iw_cm_event. Event B is of type struct iw_cm_event.
+> >=20
+> > i40iw_cm_post_event() bumps the refcount and then posts event A.
+> > Event A gets sent to i40iw_cm_event_handler().
+> > i40iw_cm_event_handler() calls i40iw_send_cm_event().
+> > i40iw_send_cm_event() posts event B.
+> > Then i40iw_cm_event_handler() drops the refcount associated with event =
+A.
+> >=20
+> > Event B gets sent to cm_id->event_handler() which I believe is cm_event=
+_handler()
+> > in iwcm.c.
+> >=20
+> > There is nothing to prevent the refcount associated with event A from g=
+etting
+> > dropped before cm_event_handler() is able to process event B.
+> >=20
+> Sure. But, there is a refcnt for the cm_node when its created that I woul=
+d have expected to exist in i40iw_accept().
+> Where did that get dropped? Something like this that shows the sequence o=
+f callers dropping the refcnt on the cm_node
+> leading up to the problem would be good.
+>=20
+> diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/=
+hw/i40iw/i40iw_cm.c
+> index 8233f5a..9d01d9d 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+> @@ -2288,6 +2288,7 @@ static void i40iw_rem_ref_cm_node(struct i40iw_cm_n=
+ode *cm_node)
+>         struct i40iw_cm_info nfo;
+>         unsigned long flags;
+> =20
+> +       pr_info("%s: cm_node %px ref_cnt %d caller: %pS \n", __func__, cm=
+_node, atomic_read(&cm_node->ref_count),__builtin_return_address(0));
+>         spin_lock_irqsave(&cm_node->cm_core->ht_lock, flags);
+>         if (atomic_dec_return(&cm_node->ref_count)) {
+>                 spin_unlock_irqrestore(&cm_node->cm_core->ht_lock, flags)=
+;
+> @@ -3664,6 +3665,7 @@ int i40iw_accept(struct iw_cm_id *cm_id, struct iw_=
+cm_conn_param *conn_param)
+>         dev =3D &iwdev->sc_dev;
+>         cm_core =3D &iwdev->cm_core;
+>         cm_node =3D (struct i40iw_cm_node *)cm_id->provider_data;
+> +       pr_info("%s: cm_node %px\n", __func__, cm_node);
+> =20
+>         if (((struct sockaddr_in *)&cm_id->local_addr)->sin_family =3D=3D=
+ AF_INET) {
+>                 cm_node->ipv4 =3D true;
+>=20
 
-READS without DIM:
-blk size | BW       | IOPS | 99th percentile latency  | 99.99th latency
-512B     | 3.8GiB/s | 7.7M | 1401  usec               | 2442  usec
-4k       | 7.0GiB/s | 1.8M | 4817  usec               | 6587  usec
-64k      | 10.7GiB/s| 175k | 9896  usec               | 10028 usec
+This patch is now over a month old with no resolution.  Can we get a
+final answer on this please?
 
-IO WRITES without DIM:
-blk size | BW       | IOPS | 99th percentile latency  | 99.99th latency
-512B     | 3.6GiB/s | 7.5M | 1434  usec               | 2474  usec
-4k       | 6.3GiB/s | 1.6M | 938   usec               | 1221  usec
-64k      | 10.7GiB/s| 175k | 8979  usec               | 12780 usec
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-IO READS with DIM:
-blk size | BW       | IOPS | 99th percentile latency  | 99.99th latency
-512B     | 4GiB/s   | 8.2M | 816    usec              | 889   usec
-4k       | 10.1GiB/s| 2.65M| 3359   usec              | 5080  usec
-64k      | 10.7GiB/s| 175k | 9896   usec              | 10028 usec
+--=-6tpnLUOFoKrByxpPwXos
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-IO WRITES with DIM:
-blk size | BW       | IOPS  | 99th percentile latency | 99.99th latency
-512B     | 3.9GiB/s | 8.1M  | 799   usec              | 922   usec
-4k       | 9.6GiB/s | 2.5M  | 717   usec              | 1004  usec
-64k      | 10.7GiB/s| 176k  | 8586  usec              | 12256 usec
+-----BEGIN PGP SIGNATURE-----
 
-The rdma_dim algorithm was designed to measure the effectiveness of
-moderation on the flow in a general way and thus should be appropriate
-for all RDMA storage protocols.
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAlzJsicACgkQuCajMw5X
+L90y7Q//dcSdb3A2qZ3X9h9IKTK8V0hSO0PGojTRE6WcLqVwyHR4w5EfV4n1timK
+EXvGjwg49+3K3qP4zyx/s2HC/JWywzN9fW9lKwe4iTtRAWruZ82TXLzWVqo0TFhZ
+OhLZtRsbITXZrKWvVhBW6t70ZSnPUm0rElAKiaG2LXsWY1HN3BcqeSVce6Y4M0LP
+Xj5q8EGtTeSaCUcBcvsKEWZlz6p0cd3RCwE+tvdxyNRbVqRPvT9G6cZv+frdk74R
+uoqVp8Q60847ttpytf6OWmq50TRN3KM7tsKrUjV9Q+2y1LnZa963mAJSQhxk5cMW
+fPDaqFMbjEqltqNw3tHxxye7UX6qy2KA/mwZ4Mh9IIC06DHDA8jzJsGUirHPeVts
+gF6ndgJncXguG+yoFJkMr8PWv93lzW7ltGRWbqbRqry1IwlJyVFYIH5Dy1Nb2Bf1
+ht7cRBcvdNUlTrR6OP6zyYcjb3u7SwfaDDd5SJg2U7XwvCVDkhtZ0U0LE7Vv9G5h
+5uMDhRwBpKa/+AM2QHT/6nQYVTZX5e+W2fBboC8YF7mmMuTC1XJLgTLzj3BlAHzd
+YNq3/Pm9GD81711DYIDjbg9PCYS7fyQKU0YkuBdKdUtzsGf0qnDpbaROw22NS2fD
+3NbiyXKxab3M71mkUKqu4oBfNWAGvpvpFItbWsHNBi/2UEw1qJc=
+=upFh
+-----END PGP SIGNATURE-----
 
-Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-Signed-off-by: Tal Gilboa <talgi@mellanox.com>
----
- drivers/infiniband/core/cq.c    | 79 +++++++++++++++++++++++++++++++++++++----
- drivers/infiniband/hw/mlx4/qp.c |  2 +-
- drivers/infiniband/hw/mlx5/qp.c |  2 +-
- include/linux/irq_poll.h        |  5 +++
- include/rdma/ib_verbs.h         | 54 +++++++++++++++++++++++++---
- lib/irq_poll.c                  | 15 +++++++-
- 6 files changed, 144 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-index a4c8199..6fb3270 100644
---- a/drivers/infiniband/core/cq.c
-+++ b/drivers/infiniband/core/cq.c
-@@ -14,6 +14,7 @@
- #include <linux/err.h>
- #include <linux/slab.h>
- #include <rdma/ib_verbs.h>
-+#include <linux/rdma_dim.h>
- 
- /* # of WCs to poll for with a single call to ib_poll_cq */
- #define IB_POLL_BATCH			16
-@@ -26,6 +27,47 @@
- #define IB_POLL_FLAGS \
- 	(IB_CQ_NEXT_COMP | IB_CQ_REPORT_MISSED_EVENTS)
- 
-+static int ib_cq_dim_modify_cq(struct ib_cq *cq, unsigned short level)
-+{
-+	u16 usec = rdma_dim_prof[level].usec;
-+	u16 comps = rdma_dim_prof[level].comps;
-+
-+	return cq->device->ops.modify_cq(cq, comps, usec);
-+}
-+
-+static void update_cq_moderation(struct dim *dim, struct ib_cq *cq)
-+{
-+	dim->state = DIM_START_MEASURE;
-+
-+	ib_cq_dim_modify_cq(cq, dim->profile_ix);
-+}
-+
-+static void ib_cq_rdma_dim_workqueue_work(struct work_struct *w)
-+{
-+	struct dim *dim = container_of(w, struct dim, work);
-+	struct ib_cq *cq = container_of(dim, struct ib_cq, workqueue_poll.dim);
-+
-+	update_cq_moderation(dim, cq);
-+}
-+
-+static void ib_cq_rdma_dim_irqpoll_work(struct work_struct *w)
-+{
-+	struct dim *dim = container_of(w, struct dim, work);
-+	struct irq_poll *iop = container_of(dim, struct irq_poll, dim);
-+	struct ib_cq *cq = container_of(iop, struct ib_cq, iop);
-+
-+	update_cq_moderation(dim, cq);
-+}
-+
-+void rdma_dim_init(struct dim *dim, work_func_t func)
-+{
-+	memset(dim, 0, sizeof(*dim));
-+	dim->state = DIM_START_MEASURE;
-+	dim->tune_state = DIM_GOING_RIGHT;
-+	dim->profile_ix = RDMA_DIM_START_PROFILE;
-+	INIT_WORK(&dim->work, func);
-+}
-+
- static int __ib_process_cq(struct ib_cq *cq, int budget, struct ib_wc *wcs,
- 			   int batch)
- {
-@@ -105,19 +147,30 @@ static void ib_cq_completion_softirq(struct ib_cq *cq, void *private)
- 
- static void ib_cq_poll_work(struct work_struct *work)
- {
--	struct ib_cq *cq = container_of(work, struct ib_cq, work);
-+	struct ib_cq *cq = container_of(work, struct ib_cq,
-+					workqueue_poll.work);
- 	int completed;
-+	struct dim_sample e_sample;
-+	struct dim_sample *m_sample = &cq->workqueue_poll.dim.measuring_sample;
- 
- 	completed = __ib_process_cq(cq, IB_POLL_BUDGET_WORKQUEUE, cq->wc,
- 				    IB_POLL_BATCH);
-+
-+	if (cq->workqueue_poll.dim_used)
-+		dim_create_sample(m_sample->event_ctr + 1, m_sample->pkt_ctr,
-+				  m_sample->byte_ctr,
-+				  m_sample->comp_ctr + completed, &e_sample);
-+
- 	if (completed >= IB_POLL_BUDGET_WORKQUEUE ||
- 	    ib_req_notify_cq(cq, IB_POLL_FLAGS) > 0)
--		queue_work(cq->comp_wq, &cq->work);
-+		queue_work(cq->comp_wq, &cq->workqueue_poll.work);
-+	else if (cq->workqueue_poll.dim_used)
-+		rdma_dim(&cq->workqueue_poll.dim, &e_sample);
- }
- 
- static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
- {
--	queue_work(cq->comp_wq, &cq->work);
-+	queue_work(cq->comp_wq, &cq->workqueue_poll.work);
- }
- 
- /**
-@@ -129,6 +182,7 @@ static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
-  * @poll_ctx:		context to poll the CQ from.
-  * @caller:		module owner name.
-  * @udata:		Valid user data or NULL for kernel object
-+ * @use_dim:		use dynamic interrupt moderation
-  *
-  * This is the proper interface to allocate a CQ for in-kernel users. A
-  * CQ allocated with this interface will automatically be polled from the
-@@ -138,7 +192,8 @@ static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
- struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
- 				 int nr_cqe, int comp_vector,
- 				 enum ib_poll_context poll_ctx,
--				 const char *caller, struct ib_udata *udata)
-+				 const char *caller, struct ib_udata *udata,
-+				 bool use_dim)
- {
- 	struct ib_cq_init_attr cq_attr = {
- 		.cqe		= nr_cqe,
-@@ -174,12 +229,22 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
- 		cq->comp_handler = ib_cq_completion_softirq;
- 
- 		irq_poll_init(&cq->iop, IB_POLL_BUDGET_IRQ, ib_poll_handler);
-+		if (cq->device->ops.modify_cq && use_dim) {
-+			rdma_dim_init(&cq->iop.dim,
-+				      ib_cq_rdma_dim_irqpoll_work);
-+			cq->iop.dim_used = true;
-+		}
- 		ib_req_notify_cq(cq, IB_CQ_NEXT_COMP);
- 		break;
- 	case IB_POLL_WORKQUEUE:
- 	case IB_POLL_UNBOUND_WORKQUEUE:
- 		cq->comp_handler = ib_cq_completion_workqueue;
--		INIT_WORK(&cq->work, ib_cq_poll_work);
-+		INIT_WORK(&cq->workqueue_poll.work, ib_cq_poll_work);
-+		if (cq->device->ops.modify_cq && use_dim) {
-+			rdma_dim_init(&cq->workqueue_poll.dim,
-+				      ib_cq_rdma_dim_workqueue_work);
-+			cq->workqueue_poll.dim_used = true;
-+		}
- 		ib_req_notify_cq(cq, IB_CQ_NEXT_COMP);
- 		cq->comp_wq = (cq->poll_ctx == IB_POLL_WORKQUEUE) ?
- 				ib_comp_wq : ib_comp_unbound_wq;
-@@ -220,7 +285,9 @@ void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
- 		break;
- 	case IB_POLL_WORKQUEUE:
- 	case IB_POLL_UNBOUND_WORKQUEUE:
--		cancel_work_sync(&cq->work);
-+		cancel_work_sync(&cq->workqueue_poll.work);
-+		if (cq->workqueue_poll.dim_used)
-+			flush_work(&cq->iop.dim.work);
- 		break;
- 	default:
- 		WARN_ON_ONCE(1);
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 364e16b..b9b550b 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -4385,7 +4385,7 @@ static void handle_drain_completion(struct ib_cq *cq,
- 				irq_poll_enable(&cq->iop);
- 				break;
- 			case IB_POLL_WORKQUEUE:
--				cancel_work_sync(&cq->work);
-+				cancel_work_sync(&cq->workqueue_poll.work);
- 				break;
- 			default:
- 				WARN_ON_ONCE(1);
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index efe1f6f..ccee41a 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -6267,7 +6267,7 @@ static void handle_drain_completion(struct ib_cq *cq,
- 				irq_poll_enable(&cq->iop);
- 				break;
- 			case IB_POLL_WORKQUEUE:
--				cancel_work_sync(&cq->work);
-+				cancel_work_sync(&cq->workqueue_poll.work);
- 				break;
- 			default:
- 				WARN_ON_ONCE(1);
-diff --git a/include/linux/irq_poll.h b/include/linux/irq_poll.h
-index 16aaecc..3601e75 100644
---- a/include/linux/irq_poll.h
-+++ b/include/linux/irq_poll.h
-@@ -2,6 +2,8 @@
- #ifndef IRQ_POLL_H
- #define IRQ_POLL_H
- 
-+#include <linux/rdma_dim.h>
-+
- struct irq_poll;
- typedef int (irq_poll_fn)(struct irq_poll *, int);
- 
-@@ -10,6 +12,9 @@ struct irq_poll {
- 	unsigned long state;
- 	int weight;
- 	irq_poll_fn *poll;
-+
-+	bool dim_used;
-+	struct dim dim;
- };
- 
- enum {
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 737ef5e..0a92549 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1587,6 +1587,12 @@ enum ib_poll_context {
- 	IB_POLL_UNBOUND_WORKQUEUE, /* poll from unbound workqueue */
- };
- 
-+struct ib_cq_workqueue_poll {
-+	struct dim              dim;
-+	struct work_struct      work;
-+	bool                    dim_used;
-+};
-+
- struct ib_cq {
- 	struct ib_device       *device;
- 	struct ib_uobject      *uobject;
-@@ -1598,8 +1604,8 @@ struct ib_cq {
- 	enum ib_poll_context	poll_ctx;
- 	struct ib_wc		*wc;
- 	union {
--		struct irq_poll		iop;
--		struct work_struct	work;
-+		struct irq_poll			iop;
-+		struct ib_cq_workqueue_poll	workqueue_poll;
- 	};
- 	struct workqueue_struct *comp_wq;
- 	/*
-@@ -3628,7 +3634,8 @@ static inline int ib_post_recv(struct ib_qp *qp,
- struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
- 				 int nr_cqe, int comp_vector,
- 				 enum ib_poll_context poll_ctx,
--				 const char *caller, struct ib_udata *udata);
-+				 const char *caller, struct ib_udata *udata,
-+				 bool use_dim);
- 
- /**
-  * ib_alloc_cq_user: Allocate kernel/user CQ
-@@ -3646,7 +3653,27 @@ static inline struct ib_cq *ib_alloc_cq_user(struct ib_device *dev,
- 					     struct ib_udata *udata)
- {
- 	return __ib_alloc_cq_user(dev, private, nr_cqe, comp_vector, poll_ctx,
--				  KBUILD_MODNAME, udata);
-+				  KBUILD_MODNAME, udata, false);
-+}
-+
-+/**
-+ * ib_alloc_cq_user_dim: Allocate kernel/user CQ with dynamic interrupt
-+ * moderation
-+ * @dev: The IB device
-+ * @private: Private data attached to the CQE
-+ * @nr_cqe: Number of CQEs in the CQ
-+ * @comp_vector: Completion vector used for the IRQs
-+ * @poll_ctx: Context used for polling the CQ
-+ * @udata: Valid user data or NULL for kernel objects
-+ */
-+static inline struct ib_cq *ib_alloc_cq_user_dim(struct ib_device *dev,
-+						 void *private, int nr_cqe,
-+						 int comp_vector,
-+						 enum ib_poll_context poll_ctx,
-+						 struct ib_udata *udata)
-+{
-+	return __ib_alloc_cq_user(dev, private, nr_cqe, comp_vector, poll_ctx,
-+				  KBUILD_MODNAME, udata, true);
- }
- 
- /**
-@@ -3668,6 +3695,25 @@ static inline struct ib_cq *ib_alloc_cq(struct ib_device *dev, void *private,
- }
- 
- /**
-+ * ib_alloc_cq_dim: Allocate kernel CQ with dynamic interrupt moderation
-+ * @dev: The IB device
-+ * @private: Private data attached to the CQE
-+ * @nr_cqe: Number of CQEs in the CQ
-+ * @comp_vector: Completion vector used for the IRQs
-+ * @poll_ctx: Context used for polling the CQ
-+ *
-+ * NOTE: for user cq use ib_alloc_cq_user with valid udata!
-+ */
-+static inline struct ib_cq *ib_alloc_cq_dim(struct ib_device *dev,
-+					    void *private, int nr_cqe,
-+					    int comp_vector,
-+					    enum ib_poll_context poll_ctx)
-+{
-+	return ib_alloc_cq_user_dim(dev, private, nr_cqe, comp_vector,
-+				    poll_ctx, NULL);
-+}
-+
-+/**
-  * ib_free_cq_user - Free kernel/user CQ
-  * @cq: The CQ to free
-  * @udata: Valid user data or NULL for kernel objects
-diff --git a/lib/irq_poll.c b/lib/irq_poll.c
-index 2f17b48..c63bc9b 100644
---- a/lib/irq_poll.c
-+++ b/lib/irq_poll.c
-@@ -50,6 +50,8 @@ void irq_poll_sched(struct irq_poll *iop)
-  **/
- static void __irq_poll_complete(struct irq_poll *iop)
- {
-+	if (iop->dim_used)
-+		rdma_dim(&iop->dim, &iop->dim.measuring_sample);
- 	list_del(&iop->list);
- 	smp_mb__before_atomic();
- 	clear_bit_unlock(IRQ_POLL_F_SCHED, &iop->state);
-@@ -86,6 +88,7 @@ static void __latent_entropy irq_poll_softirq(struct softirq_action *h)
- 	while (!list_empty(list)) {
- 		struct irq_poll *iop;
- 		int work, weight;
-+		struct dim_sample *m_sample;
- 
- 		/*
- 		 * If softirq window is exhausted then punt.
-@@ -104,10 +107,18 @@ static void __latent_entropy irq_poll_softirq(struct softirq_action *h)
- 		 */
- 		iop = list_entry(list->next, struct irq_poll, list);
- 
-+		m_sample = &iop->dim.measuring_sample;
- 		weight = iop->weight;
- 		work = 0;
--		if (test_bit(IRQ_POLL_F_SCHED, &iop->state))
-+		if (test_bit(IRQ_POLL_F_SCHED, &iop->state)) {
- 			work = iop->poll(iop, weight);
-+			if (iop->dim_used)
-+				dim_create_sample(m_sample->event_ctr + 1,
-+						  m_sample->pkt_ctr,
-+						  m_sample->byte_ctr,
-+						  m_sample->comp_ctr + work,
-+						  &iop->dim.measuring_sample);
-+		}
- 
- 		budget -= work;
- 
-@@ -144,6 +155,8 @@ static void __latent_entropy irq_poll_softirq(struct softirq_action *h)
-  **/
- void irq_poll_disable(struct irq_poll *iop)
- {
-+	if (iop->dim_used)
-+		flush_work(&iop->dim.work);
- 	set_bit(IRQ_POLL_F_DISABLE, &iop->state);
- 	while (test_and_set_bit(IRQ_POLL_F_SCHED, &iop->state))
- 		msleep(1);
--- 
-1.8.3.1
+--=-6tpnLUOFoKrByxpPwXos--
 
