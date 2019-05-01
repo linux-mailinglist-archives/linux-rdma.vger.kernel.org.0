@@ -2,149 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BA310B4E
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 18:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D5B10B4F
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2019 18:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbfEAQ2z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 May 2019 12:28:55 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:53268 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726473AbfEAQ2z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 1 May 2019 12:28:55 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id B6C9B2D7E6;
-        Wed,  1 May 2019 16:28:54 +0000 (UTC)
-Received: from haswell-e.nc.xsintricity.com (ovpn-112-9.rdu2.redhat.com [10.10.112.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2B53F4B6;
-        Wed,  1 May 2019 16:28:52 +0000 (UTC)
-Message-ID: <cc59704be472e2576510ca3dcaeafdd6c547eacb.camel@redhat.com>
-Subject: Re: [PATCH for-next v6 00/12] RDMA/efa: Elastic Fabric Adapter
- (EFA) driver
-From:   Doug Ledford <dledford@redhat.com>
-To:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leah Shalev <shalevl@amazon.com>,
-        Dave Goodell <goodell@amazon.com>,
-        Brian Barrett <bbarrett@amazon.com>,
-        linux-rdma@vger.kernel.org, Sean Hefty <sean.hefty@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Steve Wise <larrystevenwise@gmail.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Date:   Wed, 01 May 2019 12:28:45 -0400
-In-Reply-To: <1556707704-11192-1-git-send-email-galpress@amazon.com>
-References: <1556707704-11192-1-git-send-email-galpress@amazon.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-i3k1uQ9ZwbLNV35aW7y1"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+        id S1726473AbfEAQ3d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 May 2019 12:29:33 -0400
+Received: from mail-yw1-f67.google.com ([209.85.161.67]:45910 "EHLO
+        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726434AbfEAQ3d (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 May 2019 12:29:33 -0400
+Received: by mail-yw1-f67.google.com with SMTP id r139so8674372ywe.12
+        for <linux-rdma@vger.kernel.org>; Wed, 01 May 2019 09:29:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=T9Z8RFGs2a/irq3SWQJ1wI98nx1GrUfatzyTxU7r1+8=;
+        b=C3FvmrMBuzUACJYrxuTGUgqxZv3mpshAQtO9/Kj6zJtcYTcoVc1kM/BtOy8gaymebt
+         CAZeDIBHC4QB1JwS5bWAUtWfgl9CscRrnjq1YkzOB6FGnQkIjRzSwkeU7bLNDDJUlLdn
+         0e5Q5prLVlMCAz/RsuK1WdWhqqG7PfyZBbc/doGbmodfFYtdcG6p32b9pHZmX5vm3LpQ
+         /whicNf0skZBrXIfPEng3sUdnMoNJtuz/sbWTecMK6Hj3MRyxRGIFbc4LSN1AGQP0AaN
+         CyGW+9y8xgCoJtjR9ADc51eS9WD5AxbSiZKwUlaLtp53RsdrVNeKwVyh5YTWzLv2MOFP
+         opmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=T9Z8RFGs2a/irq3SWQJ1wI98nx1GrUfatzyTxU7r1+8=;
+        b=XEOfI9U1VW9ynsPBOD/dFUXPJnocCwCRFA/4XtNfUSvMCcwoST0SM5PsCM7aqq5DEY
+         EHLhVAp3XrJEUX/ZzulBYdRTUsKoHBaYmQgiFcV1cStQSiBOmRaeTWoftTKRLN4aEWE1
+         2ahRnh/LQHLs5kxbJvirA2jbDRYwWqzrqLWC8mlAGsYLUeGi+rhYUA5XLhsbS4fvZ8F5
+         /YGYkViqsIMR/5KbpBAVXOfGAUCT9X8+hYbrNjOggzf0zzn+uQQ9RQgb1KYis1qn8LZR
+         xLzQr5XRhPxy0Y5+NEjB4B/FOh0Oq7q3FRIuu3HcNSSjNN94pQilWPVoMdp7FOsLKq1z
+         6nqQ==
+X-Gm-Message-State: APjAAAWBdHwaVwpCSCcXPeRss+4MX+h/98413/YcW/fSk4ApLblOUae6
+        TQJeE0pY6Bz1GTDDK89/a0Kbme8Qscc=
+X-Google-Smtp-Source: APXvYqyJwtgQkXG9nv4QTFCW6rQIG1Lt3Wv0uvj00d+ieQYsSb5AP3hfMJiBJt/QxVQHZsOt3fqByw==
+X-Received: by 2002:a0d:dd45:: with SMTP id g66mr54585019ywe.177.1556728172454;
+        Wed, 01 May 2019 09:29:32 -0700 (PDT)
+Received: from ziepe.ca (adsl-173-228-226-134.prtc.net. [173.228.226.134])
+        by smtp.gmail.com with ESMTPSA id v191sm1985636ywv.55.2019.05.01.09.29.31
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 01 May 2019 09:29:31 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hLs6t-0004II-33; Wed, 01 May 2019 13:29:31 -0300
+Date:   Wed, 1 May 2019 13:29:31 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Doug Ledford <dledford@redhat.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, Tejun Heo <tj@kernel.org>,
+        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
+Subject: Re: [PATCH for-rc 1/5] IB/hfi1: Fix WQ_MEM_RECLAIM warning
+Message-ID: <20190501162931.GA15621@ziepe.ca>
+References: <20190318165205.23550.97894.stgit@scvm10.sc.intel.com>
+ <20190318165501.23550.24989.stgit@scvm10.sc.intel.com>
+ <20190319192737.GB3773@ziepe.ca>
+ <32E1700B9017364D9B60AED9960492BC70CD9227@fmsmsx120.amr.corp.intel.com>
+ <20190327152517.GD69236@devbig004.ftw2.facebook.com>
+ <20190327170213.GD22899@mtr-leonro.mtl.com>
+ <4A4820DA-474E-437F-B3D3-56EAA31ED58D@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.30]); Wed, 01 May 2019 16:28:55 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4A4820DA-474E-437F-B3D3-56EAA31ED58D@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, May 01, 2019 at 11:21:08AM -0400, Doug Ledford wrote:
+> On Mar 27, 2019, at 1:02 PM, Leon Romanovsky <leon@kernel.org> wrote:
+> > 
+> > On Wed, Mar 27, 2019 at 08:25:17AM -0700, Tejun Heo (tj@kernel.org) wrote:
+> >> Hello,
+> >> 
+> >> On Tue, Mar 26, 2019 at 08:55:09PM +0000, Marciniszyn, Mike wrote:
+> >>> The latter is the ipoib wq that conflicts with our non-WQ_MEM_RECLAIM.  This seems excessive and pretty gratuitous.
+> >>> 
+> >>> Tejun, what does "mem reclaim" really mean and when should it be used?
+> >> 
+> >> That it may be depended during memory reclaim.
+> >> 
+> >>> I was assuming that since we are freeing QP kernel memory held by user mode programs that could be oom killed, we need the flag.
+> >> 
+> >> If it can't block memory reclaim, it doesn't need the flag.  Just in
+> >> case, if a workqueue is used to issue block IOs, it is depended upon
+> >> for memory reclaim as writeback and swap-outs are critical parts of
+> >> memory reclaim.
+> > 
+> > It looks like WQ_MEM_RECLAIM is needed for IPoIB, because if NFS runs
+> > over IPoIB, it will do those types of IOs.
+> 
+> Because of what IPoIB does, you’re right that it’s needed.  However,
+> it might be necessary to audit the wq usage in IPoIB to make sure
+> it’s actually eligible for the flag and that it hasn’t been set when
+> the code doesn’t meet the requirements of the flag.
 
---=-i3k1uQ9ZwbLNV35aW7y1
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+It isn't right - it is doing memory allocations from the work queue
+without the GFP_NOIO (or memalloc_noio_save)
 
-On Wed, 2019-05-01 at 13:48 +0300, Gal Pressman wrote:
-> Hello all,
-> The following v6 patchset introduces the Amazon Elastic Fabric Adapter (E=
-FA)
-> driver.
->=20
-> EFA is a networking adapter designed to support user space network
-> communication, initially offered in the Amazon EC2 environment. First rel=
-ease
-> of EFA supports datagram send/receive operations and does not support
-> connection-oriented or read/write operations.
->=20
-> EFA supports Unreliable Datagrams (UD) as well as a new unordered, Scalab=
-le
-> Reliable Datagram protocol (SRD). SRD provides support for reliable datag=
-rams
-> and more complete error handling than typical RD, but, unlike RD, it does=
- not
-> support ordering nor segmentation.
->=20
-> EFA reliable datagram transport provides reliable out-of-order delivery,
-> transparently utilizing multiple network paths to reduce network tail
-> latency. Its interface is similar to UD, in particular it supports
-> message size up to MTU, with error handling extended to support reliable
-> communication. More information regarding SRD can be found at [1].
->=20
-> Kernel verbs and in-kernel services are initially not supported but are p=
-lanned
-> for future releases.
->=20
-> EFA enabled EC2 instances have two different devices allocated, one for E=
-NA
-> (netdev) and one for EFA, the two are separate pci devices with no in-ker=
-nel
-> communication between them.
->=20
-> This patchset also introduces RDMA subsystem ibdev_* print helpers which =
-should
-> be used by the other new drivers that are currently under review (irdma, =
-siw)
-> and over time by all drivers in the subsystem.
-> The print format is similar to the netdev_* helpers.
->=20
-> PR for rdma-core provider was sent:
-> https://github.com/linux-rdma/rdma-core/pull/475
->=20
-> Thanks to everyone who took the time to review our last submissions (Jaso=
-n, Doug,
-> Sean, Dennis, Leon, Christoph, Parav, Sagi, Steve, Shiraz), it is very
-> appreciated.
+And I'm not sure it can actually tolerate failure of a memory
+allocation anyhow without blocking the dataplane.
 
-This looks to me like all of the requirements we discussed at the OFA
-workshop for inclusion (must have UD in addition to SRD, must have a
-pull request for the user space portion, must have processed prior
-review comments) have been met.  I did a cursory review of this patchset
-and have no specific objections that I'm willing to hold things up for.=20
-I'll give this a few days for other people to comment, but I'm basically
-ready to take it.
+In other words, the entire thing hasn't been designed with the idea
+that it could be on the IO path..
 
-I will, however, take patch 1/12 sooner and feed it to for-next so other
-drivers can start modifying their prints to use the new helper.
+I'm not sure how things work if NFS is on the critical reclaim path in
+general - does it even work with a normal netdev? How does netdev
+allocate a neighbor for instance if it becomes required?
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-i3k1uQ9ZwbLNV35aW7y1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAlzJyT0ACgkQuCajMw5X
-L92RGQ/8DeVao7onS1oSuP6eJpM5zGXnvLTexJeKc5T8glENQYoidcqydaK1es8a
-E2yZqNW5FCHvHPOsUMnz57YrBn4mLydkEGQO+9VM4/d/cPYAmfDDb03w2Fud+qDu
-N58u4OLrwYkAWWjqg/vgT8TcqmouuMmhBnQHLRnmvHLJj1EVOQVsO8/BsjH7lHms
-6vKbsJfvifAFeLkANXsrKZrJB6eQEe0k7PhjKccURYM1pBj2Lh/YVpPmRO5z1Kj+
-xKJEFDewwH3CFX8lpzfUcdVPH1CbTdK6GZBdIQ8j5rVKbJvrYKbqZNqMrvtJ3H33
-Wh9rNvvX84RRE7hDOpdKZaPyzgGAj+K5Dx/8PwoOv2cTlqNgANPBou+ewZyr1t+E
-ETV0EbLgfZbl7f7xEzZI90+y6m8zq7TxG56qwgYOpVwWXaU/wjq6U/OCZ4dmTjri
-xB14aVIoflDZ9jfzguqcSu24zpTgdODbheHF7cmvZUMbC+YCZoVlcihHvQaHRn0i
-hMsU8DQbgq6fO+PR8M8jh4jjN5JiuCT9z4ieLrJZp2P1+9tqiCvVl9EJ9n8wZ90j
-7dKC+9UcfAyHHqoPX9cP1eWRCJ6PzvQVH/kz1s149j/hsP9pVjITcBnjkB76D6lB
-IRyYTm0Dtf4FvUatQrl/hOY45+zEt4ll5EJ9h41LrzJkLGpThR8=
-=eHsK
------END PGP SIGNATURE-----
-
---=-i3k1uQ9ZwbLNV35aW7y1--
-
+Jason
