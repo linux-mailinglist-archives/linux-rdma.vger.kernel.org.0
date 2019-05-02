@@ -2,137 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D142D11580
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 10:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9AC115AD
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 10:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbfEBIei (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 04:34:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725905AbfEBIei (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 May 2019 04:34:38 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2857820873;
-        Thu,  2 May 2019 08:34:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1556786076;
-        bh=MQjRhogQLnzUq3Lldq3yF0nYV1BdOcxeJjuqAcrDwDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SbgCz/Ciyhy9PYlonWt+ep9RVgw8J2IFnpExiZTS5DqSsrl7BV3EvScRoeQcunY8K
-         gkHyue9SwLa/sINCO1qPNZEAsamW8wbTXuAttdzB52fzyO/zsBr82g7MzLfowj53gJ
-         4JRjWY9yKbREVMzC396iMWRTv9obSvTVIbdZHr+E=
-Date:   Thu, 2 May 2019 11:34:33 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Brian Welty <brian.welty@intel.com>
-Cc:     cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        ChunMing Zhou <David1.Zhou@amd.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>
-Subject: Re: [RFC PATCH 0/5] cgroup support for GPU devices
-Message-ID: <20190502083433.GP7676@mtr-leonro.mtl.com>
-References: <20190501140438.9506-1-brian.welty@intel.com>
+        id S1726202AbfEBIpG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 04:45:06 -0400
+Received: from mail-eopbgr20068.outbound.protection.outlook.com ([40.107.2.68]:26597
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725951AbfEBIpF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 May 2019 04:45:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=REQElg20qAbYRs2veFouFWQo4EJT+BLD7/xhiQYvHHA=;
+ b=XMBZLtjW7aylmMrCHkUtQGyzoDYiFdgPIsKFpN51tteiSx3E8iJCSD0qeWUV5eK0C8l6yy5FW/tnu5VY+dTnKS948esVUBGMbBcYkAk0EOKcY0cfsbPXhUsyHjeTPj3pzGnG4RsLW7B/OKfP/ytqjg16vTEE6openhbrgHF9kVA=
+Received: from AM6PR05MB5288.eurprd05.prod.outlook.com (20.177.196.225) by
+ AM6PR05MB5505.eurprd05.prod.outlook.com (20.177.188.205) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1835.15; Thu, 2 May 2019 08:45:02 +0000
+Received: from AM6PR05MB5288.eurprd05.prod.outlook.com
+ ([fe80::ac0c:21b7:bdfa:c4e]) by AM6PR05MB5288.eurprd05.prod.outlook.com
+ ([fe80::ac0c:21b7:bdfa:c4e%6]) with mapi id 15.20.1856.008; Thu, 2 May 2019
+ 08:45:02 +0000
+From:   Tal Gilboa <talgi@mellanox.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Idan Burstein <idanb@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-for-next 0/9] drivers/infiniband: Introduce rdma_dim
+Thread-Topic: [PATCH rdma-for-next 0/9] drivers/infiniband: Introduce rdma_dim
+Thread-Index: AQHVACyKoTvknlLO7kOSxA4Fp6QZcKZWbquAgAEXiQA=
+Date:   Thu, 2 May 2019 08:45:02 +0000
+Message-ID: <a6ca622e-9203-e69c-8d34-22e151529f0a@mellanox.com>
+References: <1556721879-35987-1-git-send-email-talgi@mellanox.com>
+ <20190501160409.GA15547@ziepe.ca>
+In-Reply-To: <20190501160409.GA15547@ziepe.ca>
+Accept-Language: he-IL, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [193.47.165.251]
+x-clientproxiedby: AM0PR01CA0031.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:69::44) To AM6PR05MB5288.eurprd05.prod.outlook.com
+ (2603:10a6:20b:64::33)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=talgi@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 12a16f7d-6b8a-4ea9-5ca7-08d6ceda7758
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:AM6PR05MB5505;
+x-ms-traffictypediagnostic: AM6PR05MB5505:
+x-microsoft-antispam-prvs: <AM6PR05MB5505287124D7629262B039FDD2340@AM6PR05MB5505.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 0025434D2D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(136003)(376002)(366004)(39860400002)(396003)(189003)(199004)(3846002)(86362001)(36756003)(476003)(4744005)(186003)(6116002)(31686004)(31696002)(229853002)(53936002)(8936002)(8676002)(14454004)(81166006)(6512007)(81156014)(6486002)(26005)(6436002)(256004)(66066001)(102836004)(66446008)(54906003)(478600001)(6246003)(5660300002)(25786009)(7736002)(305945005)(53546011)(6506007)(68736007)(486006)(6916009)(71200400001)(71190400001)(99286004)(4326008)(11346002)(64756008)(2616005)(66946007)(76176011)(446003)(66476007)(386003)(52116002)(2906002)(73956011)(316002)(66556008);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB5505;H:AM6PR05MB5288.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 89pzj+9oh17BGfaN2OUsHWlnzZ8zT5REdbslC2vSIrK3TXE1Bx7TPTibFpxFsDRgLMgsMCrpN3St/U4Lrdr1+7avgHxNdf7mdQFXGceTqWHKnnPlKnd/7oBKy2jKZDD+QQ2DNZi92/sAjBcO/DyDwjSuSiYD+jQpiHLFg8gfbu3g4JCkUnHXz3FhG2cuHTFW76XvzNrsasr4z2ZPajfxT3VS5nD6+wbUkGEimCZ+52kfSARgGD96kZty0/OoFsT5Vchmw9vM7v3qlzXDU+NrhqMLmkbPw0ZWuSlGk/R+qDG8efY7aDfhH5H9GS/5GinpwNqmi5R7m9lm0qzFKesePnRNrQt8EPy4P0ohF3AwYa0E2AdURfVUsXVD43A039o13BDYSFhK2LP54Ljjuxhop+aGnbeLROoR33IiTETUzcM=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <22854B5815F29D45B77BE94ABAD1FC31@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190501140438.9506-1-brian.welty@intel.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12a16f7d-6b8a-4ea9-5ca7-08d6ceda7758
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 May 2019 08:45:02.3348
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB5505
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 01, 2019 at 10:04:33AM -0400, Brian Welty wrote:
-> In containerized or virtualized environments, there is desire to have
-> controls in place for resources that can be consumed by users of a GPU
-> device.  This RFC patch series proposes a framework for integrating
-> use of existing cgroup controllers into device drivers.
-> The i915 driver is updated in this series as our primary use case to
-> leverage this framework and to serve as an example for discussion.
->
-> The patch series enables device drivers to use cgroups to control the
-> following resources within a GPU (or other accelerator device):
-> *  control allocation of device memory (reuse of memcg)
-
-Count us (Mellanox) too, our RDMA devices are exposing special and
-limited in size device memory to the users and we would like to provide
-an option to use cgroup to control its exposure.
-
-> and with future work, we could extend to:
-> *  track and control share of GPU time (reuse of cpu/cpuacct)
-> *  apply mask of allowed execution engines (reuse of cpusets)
->
-> Instead of introducing a new cgroup subsystem for GPU devices, a new
-> framework is proposed to allow devices to register with existing cgroup
-> controllers, which creates per-device cgroup_subsys_state within the
-> cgroup.  This gives device drivers their own private cgroup controls
-> (such as memory limits or other parameters) to be applied to device
-> resources instead of host system resources.
-> Device drivers (GPU or other) are then able to reuse the existing cgroup
-> controls, instead of inventing similar ones.
->
-> Per-device controls would be exposed in cgroup filesystem as:
->     mount/<cgroup_name>/<subsys_name>.devices/<dev_name>/<subsys_files>
-> such as (for example):
->     mount/<cgroup_name>/memory.devices/<dev_name>/memory.max
->     mount/<cgroup_name>/memory.devices/<dev_name>/memory.current
->     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.stat
->     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.weight
->
-> The drm/i915 patch in this series is based on top of other RFC work [1]
-> for i915 device memory support.
->
-> AMD [2] and Intel [3] have proposed related work in this area within the
-> last few years, listed below as reference.  This new RFC reuses existing
-> cgroup controllers and takes a different approach than prior work.
->
-> Finally, some potential discussion points for this series:
-> * merge proposed <subsys_name>.devices into a single devices directory?
-> * allow devices to have multiple registrations for subsets of resources?
-> * document a 'common charging policy' for device drivers to follow?
->
-> [1] https://patchwork.freedesktop.org/series/56683/
-> [2] https://lists.freedesktop.org/archives/dri-devel/2018-November/197106.html
-> [3] https://lists.freedesktop.org/archives/intel-gfx/2018-January/153156.html
->
->
-> Brian Welty (5):
->   cgroup: Add cgroup_subsys per-device registration framework
->   cgroup: Change kernfs_node for directories to store
->     cgroup_subsys_state
->   memcg: Add per-device support to memory cgroup subsystem
->   drm: Add memory cgroup registration and DRIVER_CGROUPS feature bit
->   drm/i915: Use memory cgroup for enforcing device memory limit
->
->  drivers/gpu/drm/drm_drv.c                  |  12 +
->  drivers/gpu/drm/drm_gem.c                  |   7 +
->  drivers/gpu/drm/i915/i915_drv.c            |   2 +-
->  drivers/gpu/drm/i915/intel_memory_region.c |  24 +-
->  include/drm/drm_device.h                   |   3 +
->  include/drm/drm_drv.h                      |   8 +
->  include/drm/drm_gem.h                      |  11 +
->  include/linux/cgroup-defs.h                |  28 ++
->  include/linux/cgroup.h                     |   3 +
->  include/linux/memcontrol.h                 |  10 +
->  kernel/cgroup/cgroup-v1.c                  |  10 +-
->  kernel/cgroup/cgroup.c                     | 310 ++++++++++++++++++---
->  mm/memcontrol.c                            | 183 +++++++++++-
->  13 files changed, 552 insertions(+), 59 deletions(-)
->
-> --
-> 2.21.0
->
+T24gNS8xLzIwMTkgNzowNCBQTSwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPiANCj4gQSBsb3Qg
+b2YgdGhpcyBpcyB0b3VjaGluZyBuZXRkZXYsIHdoeSB3YXNuJ3QgbmV0ZGV2IGNjJ2Q/DQo+IA0K
+PiBXaG8gaXMgc3VwcG9zZWQgdG8gbWVyZ2UgdGhpcz8NCj4gDQo+IEkgdGhpbmsgeW91IG5lZWQg
+dG8gdGFrZSB0d28gc3RlcHMgYW5kIGhhdmUgbmV0ZGV2IG1lcmdlIHRoZSBhYm92ZQ0KPiBwYXJ0
+IGFuZCB0aGVuIHNlbmQgdGhlIHNpbmdsZSBwYXRjaCB0byBSRE1BIGZvciB0aGUgbGFzdCBwYXJ0
+LCBJIGRvbid0DQo+IHJlYWxseSB3YW50IHRvIHRha2Ugc28gbXVjaCBuZXRkZXYgY29kZSBoZXJl
+Lg0KDQpPaywgSSdsbCBzdWJtaXQgdGhlIGZpcnN0IDcgcGF0Y2hlcyB0byBuZXRkZXYgYW5kIHRo
+ZSAyIFJETUEgc3BlY2lmaWMgDQpwYXRjaGVzIHdpbGwgYmUgc3VibWl0dGVkIG9uIHRvcCBvZiB0
+aGVtLg0KDQo+IA0KPiBUaGUgbWFpbnRhaW5lcnMgZmlsZSBzaG91bGQgYWxzbyBoYXZlIHNvbWUg
+aW5kaWNhdGlvbiB3aGljaCB0cmVlDQo+IHBhdGNoZXMgZm9yIGxpYi9kaW0vKiB0aGlzIHNob3Vs
+ZCBnbyB0aHJvdWdoLi4NCj4gDQo+IEphc29uDQo+IA0K
