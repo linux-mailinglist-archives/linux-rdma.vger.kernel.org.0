@@ -2,112 +2,199 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1783A119A6
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 15:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7488411A29
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 15:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbfEBNDH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 09:03:07 -0400
-Received: from mail-yw1-f65.google.com ([209.85.161.65]:46862 "EHLO
-        mail-yw1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726283AbfEBNDH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 09:03:07 -0400
-Received: by mail-yw1-f65.google.com with SMTP id v15so1445521ywe.13
-        for <linux-rdma@vger.kernel.org>; Thu, 02 May 2019 06:03:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hI4WW6CI9V9ZOJkFi1WbTAkXzplbag8K/GeOrZJaEB4=;
-        b=i/DytB2TDY7JRpkMm6eNFbZWgh4u9AHkYc83pe28M6IUwICSPCq6FRSv+9oXcOtLSX
-         U0oi3uvVCF9vM4p5S1steJNWPd8to1C5THYYh3ia1FmS/G1PC85i0sjCJSbEXAkExu0g
-         ZiiH5EEgAcu6y8iNhCfZaBDN3TOERlpEmGAsV5GTLmfmPWx0fItGZ9i3TKP4z1JZs1dD
-         4Hz/gfHbKEPvOUXKOPm11JET80fX+DBn0QB5uYuo8hhXsOZ/pgXSacz5aoMeP4m5xvFF
-         FTinUnwN0I8hAmfReaYdBtIBq4E2Yl5Mr3qAlPIkwbZe4lq8Xd7w3KDwPSn98TZEdEqW
-         TFug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hI4WW6CI9V9ZOJkFi1WbTAkXzplbag8K/GeOrZJaEB4=;
-        b=hzJqZw98/cK/6GPTH4P2D/xFZMCUxADD0F3mrlBQtX9nBlWWsPyywggTeQ+Exhncgl
-         QFMFEdD5748PkJ+4PrjjGTcyMpnZEp3WRIXvNK6rKBELGfVB2j8gE8t7nNddz0C5FNXx
-         az16v0PTHYJNTgmmTRtP/kIP4vlLuQlytJZyIlPfo+YcMofuJAk6xtWCUMdjB9nOrakw
-         C9H9yVTBPayZcYr/XNvB15/g0UnNPEdyjbaRcB4L+4xoj+C4yB6HDsHlliXBrBs5XL/d
-         8y6038SSoHPvUwIZwtcp6FERr32q2pXIk4gXBfjhGLH9vBv9uhycxEWlTfaJMs2HpREv
-         bzPQ==
-X-Gm-Message-State: APjAAAU6LE4VzLRWelRhpt+/I0cQyrbG5qvTGxFXtTxj7W7yb170u99S
-        gpQQFS+5tsOW0N9wTiHnoGbiiCKTJmQ=
-X-Google-Smtp-Source: APXvYqzFLghJWeB+ktgA4jqUBHrJW6rUMjpc7MAC1LzZ7g0fDocCTyylqQbLiiHYQY92jdf3p0xI6g==
-X-Received: by 2002:a25:7c3:: with SMTP id 186mr2761298ybh.97.1556802186870;
-        Thu, 02 May 2019 06:03:06 -0700 (PDT)
-Received: from ziepe.ca (adsl-173-228-226-134.prtc.net. [173.228.226.134])
-        by smtp.gmail.com with ESMTPSA id m62sm3264211ywm.105.2019.05.02.06.03.05
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 02 May 2019 06:03:05 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hMBMe-0004yo-Jz; Thu, 02 May 2019 10:03:04 -0300
-Date:   Thu, 2 May 2019 10:03:04 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Liuyixian (Eason)" <liuyixian@huawei.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, oulijun <oulijun@huawei.com>,
-        dledford@redhat.com, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next] RDMA/hns: Add support function clear when
- removing module
-Message-ID: <20190502130304.GB18518@ziepe.ca>
-References: <1555154941-55510-1-git-send-email-oulijun@huawei.com>
- <20190416121634.GA12981@mtr-leonro.mtl.com>
- <4d3613c7-1c68-9f9b-d185-ab015049e6cf@huawei.com>
- <20190422122209.GD27901@mtr-leonro.mtl.com>
- <add43d02-b3d5-35d9-a74d-8254c1fb472c@huawei.com>
- <20190423152339.GE27901@mtr-leonro.mtl.com>
- <90a91e1f-91fc-bc4e-067c-7bc788c62ab6@huawei.com>
- <20190426143656.GA2278@ziepe.ca>
- <20190426210520.GA6705@mtr-leonro.mtl.com>
- <99195660-be8d-555f-01fc-efd9e680fdf3@huawei.com>
+        id S1726268AbfEBN3A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 09:29:00 -0400
+Received: from mga01.intel.com ([192.55.52.88]:62471 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726267AbfEBN3A (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 May 2019 09:29:00 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 May 2019 06:28:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.60,421,1549958400"; 
+   d="scan'208";a="296377753"
+Received: from fmsmsx104.amr.corp.intel.com ([10.18.124.202])
+  by orsmga004.jf.intel.com with ESMTP; 02 May 2019 06:28:57 -0700
+Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.175]) by
+ fmsmsx104.amr.corp.intel.com ([169.254.3.3]) with mapi id 14.03.0415.000;
+ Thu, 2 May 2019 06:28:57 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Andrew Boyer <aboyer@tobark.org>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Parvathi Rajagopal" <parvathi.rajagopal@emc.com>
+Subject: RE: [PATCH] rdma/i40iw: Add a reference when accepting a connection
+ to avoid panic
+Thread-Topic: [PATCH] rdma/i40iw: Add a reference when accepting a
+ connection to avoid panic
+Thread-Index: AQHU5KMkaO2/Kpqr3kW2jKonZdTIsqYjEsOwgAsXCoCABEjh4IAkk8OA//+Q7zA=
+Date:   Thu, 2 May 2019 13:28:57 +0000
+Message-ID: <9DD61F30A802C4429A01CA4200E302A7A5ACF63E@fmsmsx124.amr.corp.intel.com>
+References: <20190327134254.1740-1-andrew.boyer@dell.com>
+         <9DD61F30A802C4429A01CA4200E302A7A5A88287@fmsmsx124.amr.corp.intel.com>
+         <BA22062A-AE8D-43C9-9F54-54214D8BF283@tobark.org>
+         <9DD61F30A802C4429A01CA4200E302A7A5AA0344@fmsmsx124.amr.corp.intel.com>
+ <7be4c649c4d826168891b07d52119f64e424379b.camel@redhat.com>
+In-Reply-To: <7be4c649c4d826168891b07d52119f64e424379b.camel@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.0.600.7
+dlp-reaction: no-action
+x-originating-ip: [10.1.200.107]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <99195660-be8d-555f-01fc-efd9e680fdf3@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 30, 2019 at 04:27:41PM +0800, Liuyixian (Eason) wrote:
-> 
-> 
-> On 2019/4/27 5:05, Leon Romanovsky wrote:
-> > On Fri, Apr 26, 2019 at 11:36:56AM -0300, Jason Gunthorpe wrote:
-> >> On Fri, Apr 26, 2019 at 06:12:11PM +0800, Liuyixian (Eason) wrote:
-> >>
-> >>>     However, I have talked with our chip team about function clear
-> >>>     functionality. We think it is necessary to inform the chip to
-> >>>     perform the outstanding task and some cleanup work and restore
-> >>>     hardware resources in time when rmmod ko. Otherwise, it is
-> >>>     dangerous to reuse the hardware as it can not guarantee those
-> >>>     work can be done well without the notification from our driver.
-> >>
-> >> If it is dangerous to reuse the hardware then you have to do this
-> >> cleanup on device startup, not on device removal.
-> > 
-> > Right, I can think about gazillion ways to brick such HW.
-> > The simplest way will be to call SysRq during RDMA traffic
-> > and no cleanup function will be called in such case.
-> > 
-> > Thanks
-> 
-> Hi Jason and Leon,
-> 
-> 	As hip08 is a fake pcie device, we could not disassociate and stop the hardware access
-> 	through the chain break mechanism as a real pcie device. Alternatively, function clear
-> 	is used as a notification to the hardware to stop accessing and ensure to not read or
-> 	write DDR later. That is, the role of function clear to hip08 is similar as the chain
-> 	break to pcie device.
-
-What? This hardware is broken and doesn't respond to the bus master
-enable bit in the PCI config space??
-
-Jason
+PlN1YmplY3Q6IFJlOiBbUEFUQ0hdIHJkbWEvaTQwaXc6IEFkZCBhIHJlZmVyZW5jZSB3aGVuIGFj
+Y2VwdGluZyBhIGNvbm5lY3Rpb24NCj50byBhdm9pZCBwYW5pYw0KPg0KPk9uIE1vbiwgMjAxOS0w
+NC0wOCBhdCAxNjoxNiArMDAwMCwgU2FsZWVtLCBTaGlyYXogd3JvdGU6DQo+PiA+IFN1YmplY3Q6
+IFJlOiBbUEFUQ0hdIHJkbWEvaTQwaXc6IEFkZCBhIHJlZmVyZW5jZSB3aGVuIGFjY2VwdGluZyBh
+DQo+PiA+IGNvbm5lY3Rpb24gdG8gYXZvaWQgcGFuaWMNCj4+ID4NCj4+ID4NCj4+ID4gPiBPbiBN
+YXIgMjksIDIwMTksIGF0IDc6MjkgUE0sIFNhbGVlbSwgU2hpcmF6IDxzaGlyYXouc2FsZWVtQGlu
+dGVsLmNvbT4NCj53cm90ZToNCj4+ID4gPg0KPj4gPiA+ID4gU3ViamVjdDogW1BBVENIXSByZG1h
+L2k0MGl3OiBBZGQgYSByZWZlcmVuY2Ugd2hlbiBhY2NlcHRpbmcgYQ0KPj4gPiA+ID4gY29ubmVj
+dGlvbiB0byBhdm9pZCBwYW5pYw0KPj4gPiA+ID4NCj4+ID4gPiA+IFdoZW4gYSBDT05ORUNUX1JF
+UVVFU1QgaXMgcmVjZWl2ZWQgb24gdGhlIGxpc3RlbmluZyBzaWRlLCBhIG5ldw0KPj4gPiA+ID4g
+Y21fbm9kZSBpcyBjcmVhdGVkLiBBIHBvaW50ZXIgdG8gdGhlIGNtX25vZGUgaXMgcHV0IGludG8g
+YW4NCj4+ID4gPiA+IGl3X2NtIGV2ZW50IG1lc3NhZ2UsIHdoaWNoIGlzIHB1dCBvbiBhIHdvcmtx
+dWV1ZSBhbmQgdGhlbiBzZW50IHRvDQo+aTQwaXdfYWNjZXB0KCkuDQo+PiA+ID4gPg0KPj4gPiA+
+ID4gVGhlIGRyaXZlciBuZWVkcyB0byBhZGQgYSByZWZlcmVuY2UgdG8gZ28gd2l0aCB0aGUgaXdf
+Y20gZXZlbnQNCj4+ID4gPiA+IHNvIHRoYXQgdGhlIGNtX25vZGUgY2Fubm90IGJlIGRlc3Ryb3ll
+ZCBiZWZvcmUgdGhlIHdvcmtxdWV1ZSBpdGVtIGlzDQo+cHJvY2Vzc2VkLg0KPj4gPiA+ID4NCj4+
+ID4gPiA+IE5vdGUgdGhhdCBpNDBpd19hY2NlcHQoKSBhbHJlYWR5IHJlbGVhc2VzIGEgcmVmZXJl
+bmNlIGluIHR3bw0KPj4gPiA+ID4gZXJyb3IgcGF0aHM7IHRoZXNlIGFwcGVhciB0byBiZSBpbmNv
+cnJlY3Qgc2luY2UgdGhlcmUgd2FzIG5vDQo+PiA+ID4gPiBhc3NvY2lhdGVkIHJlZmVyZW5jZQ0K
+Pj4gPiB0YWtlbi4NCj4+ID4gPiA+IEJhY2t0cmFjZToNCj4+ID4gPiA+IFs0MzY3MzIuOTM2ODY2
+XSBnZW5lcmFsIHByb3RlY3Rpb24gZmF1bHQ6IDAwMDAgWyMxXSBTTVAgTk9QVEkNCj4+ID4gPiA+
+IFs0MzY3MzIuOTM3ODkxXSBNb2R1bGVzIGxpbmtlZCBpbjogLi4uDQo+PiA+ID4gPiBbNDM2NzMy
+Ljk2NjM5NV0gQ1BVOiAwIFBJRDogMTQwNjIgQ29tbTogQ01JQiBUYWludGVkOiBQICAgICAgICAg
+ICBPRQ0KPjQuMTQuMTktDQo+PiA+ID4gPiBjb3Jlb3Mtcjk5OTkuMTUzMzAwMDA0Ny00NDIgIzEN
+Cj4+ID4gPiA+IFs0MzY3MzIuOTcwMDQyXSB0YXNrOiBmZmZmOGJkNTg5MTEzYzgwIHRhc2suc3Rh
+Y2s6DQo+PiA+ID4gPiBmZmZmOTljMDQ3NzEwMDAwIFs0MzY3MzIuOTcxMTIzXSBSSVA6DQo+PiA+
+ID4gPiAwMDEwOmk0MGl3X2FjY2VwdCsweDJkMC8weDRjMCBbaTQwaXddIFs0MzY3MzIuOTcyMDY1
+XQ0KPj4gPiBSU1A6DQo+PiA+ID4gPiAwMDE4OmZmZmY5OWMwNDc3MTNiMjggRUZMQUdTOiAwMDAx
+MDA0NiBbNDM2NzMyLjk3MzAyMl0gUkFYOg0KPj4gPiA+ID4gMDAwMDAwMDAwMDAwMDI5NiBSQlg6
+IGZmZmY4YmNmMzU2YTE4MDAgUkNYOiBmZmZmOGJjZjM1NmEzNGMwDQo+PiA+ID4gPiBbNDM2NzMy
+Ljk3NDMxNF0NCj4+ID4gPiA+IFJEWDogZGVhZDAwMDAwMDAwMDIwMCBSU0k6IGZmZmY4YmQ1Mzgx
+OGIxYzAgUkRJOg0KPj4gPiA+ID4gZGVhZDAwMDAwMDAwMDEwMCBbNDM2NzMyLjk3NTYwN10gUkJQ
+OiBmZmZmOTljMDQ3NzEzYzY4IFIwODoNCj4wMDAwMDAwMDAwMDAwMDAwIFIwOToNCj4+ID4gPiA+
+IGZmZmY4YmQ1MzgxOGRjNDAgWzQzNjczMi45NzY5MDJdIFIxMDogZmZmZjk5YzA0NzcxM2EwOCBS
+MTE6DQo+PiA+ID4gPiAwMDAwMDAwMDAwMDAwMDA0DQo+PiA+ID4gPiBSMTI6IGZmZmY4YmQ1Mzgx
+ODgwMTggWzQzNjczMi45NzgxOTJdIFIxMzogZmZmZjhiZDUzODE4YjIyMCBSMTQ6DQo+PiA+ID4g
+PiBmZmZmOGJkNjQ4ODI2ODAwIFIxNTogZmZmZjhiY2YzNTZhMzQwMCBbNDM2NzMyLjk3OTQ4MF0g
+RlM6DQo+PiA+ID4gPiAwMDAwN2ZjNmNlYmEyNzAwKDAwMDApIEdTOmZmZmY4YmQ2NzQ0MDAwMDAo
+MDAwMCkNCj4+ID4gPiA+IGtubEdTOjAwMDAwMDAwMDAwMDAwMDAgWzQzNjczMi45ODA5MzddIENT
+OiAgMDAxMCBEUzogMDAwMCBFUzoNCj4+ID4gPiA+IDAwMDANCj4+ID4gPiA+IENSMDogMDAwMDAw
+MDA4MDA1MDAzMyBbNDM2NzMyLjk4MTk4M10gQ1IyOiAwMDAwN2ZhYTBlYTI2MjcwDQo+Q1IzOg0K
+Pj4gPiAwMDAwMDAxNmZhNmNlMDAzIENSNDoNCj4+ID4gPiA+IDAwMDAwMDAwMDAzNjA2ZjAgWzQz
+NjczMi45ODMzMTJdIERSMDogMDAwMDAwMDAwMDAwMDAwMCBEUjE6DQo+PiA+ID4gPiAwMDAwMDAw
+MDAwMDAwMDAwIERSMjogMDAwMDAwMDAwMDAwMDAwMCBbNDM2NzMyLjk4NDYwMl0gRFIzOg0KPj4g
+PiA+ID4gMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBmZjAgRFI3OiAwMDAwMDAw
+MDAwMDAwNDAwDQo+PiA+ID4gPiBbNDM2NzMyLjk4NTg5M10gQ2FsbCBUcmFjZToNCj4+ID4gPiA+
+IFs0MzY3MzIuOTg2MzY4XSAgaXdfY21fYWNjZXB0KzB4OGQvMHg1NTAgW2l3X2NtXSBbNDM2NzMy
+Ljk4NzE1OV0NCj4+ID4gPiA+IHJkbWFfYWNjZXB0KzB4MWU4LzB4MjYwIFtyZG1hX2NtXSBbNDM2
+NzMyLjk4Nzk4Ml0NCj4+ID4gPiA+IDB4ZmZmZmZmZmZjMGFkMTE0MSBbNDM2NzMyLjk4ODU3NF0g
+IDB4ZmZmZmZmZmZjMGFkMTRjZA0KPj4gPiA+ID4gWzQzNjczMi45ODkxNjhdDQo+PiA+ID4gPiBf
+X3Zmc193cml0ZSsweDMzLzB4MTUwIFs0MzY3MzIuOTg5ODI0XSAgPw0KPj4gPiA+ID4gX19pbm9k
+ZV9zZWN1cml0eV9yZXZhbGlkYXRlKzB4NGEvMHg3MA0KPj4gPiA+ID4gWzQzNjczMi45OTA3MzRd
+ICA/IHNlbGludXhfZmlsZV9wZXJtaXNzaW9uKzB4ZGQvMHgxMzANCj4+ID4gPiA+IFs0MzY3MzIu
+OTkxNjAwXSAgPyBzZWN1cml0eV9maWxlX3Blcm1pc3Npb24rMHgzNi8weGIwDQo+PiA+ID4gPiBb
+NDM2NzMyLjk5MjQ2Nl0gIHZmc193cml0ZSsweGIzLzB4MWEwIFs0MzY3MzIuOTkzMDg4XQ0KPj4g
+PiA+ID4gU3lTX3dyaXRlKzB4NTIvMHhjMCBbNDM2NzMyLjk5MzY5OF0gIGRvX3N5c2NhbGxfNjQr
+MHg2Ni8weDFkMA0KPj4gPiA+ID4gWzQzNjczMi45OTQzODRdDQo+PiA+ID4gPiBlbnRyeV9TWVND
+QUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHgyMS8weDg2DQo+PiA+ID4gPiBbNDM2NzMyLjk5NTMxMV0g
+UklQOiAwMDMzOjB4N2ZjNzlmNzY3NmFkIFs0MzY3MzIuOTk1OTgxXSBSU1A6DQo+PiA+ID4gPiAw
+MDJiOjAwMDA3ZmM3NmQzNzEwNDAgRUZMQUdTOiAwMDAwMDI5MyBPUklHX1JBWDoNCj4+ID4gPiA+
+IDAwMDAwMDAwMDAwMDAwMDEgWzQzNjczMi45OTczNTVdIFJBWDogZmZmZmZmZmZmZmZmZmZkYSBS
+Qlg6DQo+MDAwMDAwMDAyOGM4MDk1MCBSQ1g6DQo+PiA+ID4gPiAwMDAwN2ZjNzlmNzY3NmFkIFs0
+MzY3MzIuOTk4NjQ2XSBSRFg6IDAwMDAwMDAwMDAwMDAxMjggUlNJOg0KPj4gPiA+ID4gMDAwMDdm
+Yzc2ZDM3MTA1MCBSREk6IDAwMDAwMDAwMDAwMDAwNWMgWzQzNjczMi45OTk5MzRdIFJCUDoNCj4+
+ID4gPiA+IDAwMDA3ZmM3NmQzNzEwNTAgUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogMDAwMDAw
+MDAyOGNjMjQwMA0KPj4gPiA+ID4gWzQzNjczMy4wMDEyMjFdIFIxMDogMDAwMDAwMDAwMDAwMDAw
+OSBSMTE6IDAwMDAwMDAwMDAwMDAyOTMNCj5SMTI6DQo+PiA+ID4gPiAwMDAwN2ZjNzZkMzcxMWQw
+IFs0MzY3MzMuMDAyNTA4XSBSMTM6IDAwMDAwMDAwMjhjODA5NTAgUjE0Og0KPj4gPiA+ID4gMDAw
+MDAwMDAyOGNjMDk1MCBSMTU6IDAwMDAwMDAwMjc5NmIwMTAgWzQzNjczMy4wMDM3OThdIENvZGU6
+IC4uLg0KPj4gPiA+ID4gWzQzNjczMy4wMDcxNjZdIFJJUDogaTQwaXdfYWNjZXB0KzB4MmQwLzB4
+NGMwIFtpNDBpd10gUlNQOg0KPj4gPiA+ID4gZmZmZjk5YzA0NzcxM2IyOA0KPj4gPiA+ID4NCj4+
+ID4gPiA+IEZpeGVzOiBmMjdiNDc0NmYzNzhlICgiaTQwaXc6IGFkZCBjb25uZWN0aW9uIG1hbmFn
+ZW1lbnQgY29kZSINCj4+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEFuZHJldyBCb3llciA8YW5kcmV3
+LmJveWVyQGRlbGwuY29tPg0KPj4gPiA+ID4gLS0tDQo+PiA+ID4gPiBkcml2ZXJzL2luZmluaWJh
+bmQvaHcvaTQwaXcvaTQwaXdfY20uYyB8IDE5ICsrKysrKysrKysrKysrKy0tLS0NCj4+ID4gPiA+
+IDEgZmlsZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPj4gPiA+
+ID4NCj4+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvaTQwaXcvaTQw
+aXdfY20uYw0KPj4gPiA+ID4gYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvaTQwaXcvaTQwaXdfY20u
+Yw0KPj4gPiA+ID4gaW5kZXggMjA2Y2ZiMDAxNmY4Li4yOGU5MmE2OGMxNzggMTAwNjQ0DQo+PiA+
+ID4gPiAtLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvaTQwaXcvaTQwaXdfY20uYw0KPj4gPiA+
+ID4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L2k0MGl3L2k0MGl3X2NtLmMNCj4+ID4gPiA+
+IEBAIC0yNzIsNiArMjcyLDkgQEAgc3RhdGljIGludCBpNDBpd19zZW5kX2NtX2V2ZW50KHN0cnVj
+dA0KPj4gPiA+ID4gaTQwaXdfY21fbm9kZSAqY21fbm9kZSwNCj4+ID4gPiA+IAkJZXZlbnQucHJp
+dmF0ZV9kYXRhID0gKHZvaWQgKiljbV9ub2RlLT5wZGF0YV9idWY7DQo+PiA+ID4gPiAJCWV2ZW50
+LnByaXZhdGVfZGF0YV9sZW4gPSAodTgpY21fbm9kZS0+cGRhdGEuc2l6ZTsNCj4+ID4gPiA+IAkJ
+ZXZlbnQuaXJkID0gY21fbm9kZS0+aXJkX3NpemU7DQo+PiA+ID4gPiArDQo+PiA+ID4gPiArCQkv
+KiBUYWtlIGEgcmVmZXJlbmNlIHRvIGdvIHdpdGggdGhlIGl3X2NtIGV2ZW50ICovDQo+PiA+ID4g
+PiArCQlhdG9taWNfaW5jKCZjbV9ub2RlLT5yZWZfY291bnQpOw0KPj4gPiA+ID4gCQlicmVhazsN
+Cj4+ID4gPg0KPj4gPiA+IE1heWJlIEkgYW0gbWlzc2luZyBzb21ldGhpbmcgaGVyZSwgYnV0IGk0
+MGl3X2NtX3Bvc3RfZXZlbnQoKQ0KPj4gPiA+IHNob3VsZCBoYXZlIGJ1bXBlZCB0aGUgY21fbm9k
+ZSByZWYgY291bnQgc28gaXQgaXMgbm90IGRlbGV0ZWQgdGlsbA0KPj4gPiA+IGV2ZW50IHdvcmtl
+ciBjb21wbGV0ZXMuIFNvLCBJIGFtIG5vdCBlbnRpcmVseSBjb252aW5jZWQgdGhpcyBpcw0KPj4g
+PiA+IHRoZSByaWdodCByb290IGNhdXNlIGFuZA0KPj4gPiBmaXguDQo+PiA+ID4gSXQgd291bGQg
+YmUgdXNlZnVsIGlmIHdlIGNvdWxkIGdldCB0aGUgY2FsbCB0cmFjZSBvbg0KPj4gPiA+IGk0MGl3
+X3JlbV9yZWZfY21fbm9kZSgpIHdoZW4gY21fbm9kZSBnb2VzIGF3YXkuIEkgY2FuIGFzc2lzdA0K
+Pj4gPiA+IHByb3ZpZGluZyBhDQo+PiA+IGRlYnVnIHBhdGNoLg0KPj4gPiA+IFNoaXJheg0KPj4g
+Pg0KPj4gPiBUaGVyZSBhcmUgdHdvIGRpc3RpbmN0IGV2ZW50cyBwdXQgb250byB0d28gZGlmZmVy
+ZW50IHdvcmtxdWV1ZXMuDQo+PiA+IEV2ZW50IEEgaXMgb2YgdHlwZSBzdHJ1Y3QgaTQwaXdfY21f
+ZXZlbnQuIEV2ZW50IEIgaXMgb2YgdHlwZSBzdHJ1Y3QNCj5pd19jbV9ldmVudC4NCj4+ID4NCj4+
+ID4gaTQwaXdfY21fcG9zdF9ldmVudCgpIGJ1bXBzIHRoZSByZWZjb3VudCBhbmQgdGhlbiBwb3N0
+cyBldmVudCBBLg0KPj4gPiBFdmVudCBBIGdldHMgc2VudCB0byBpNDBpd19jbV9ldmVudF9oYW5k
+bGVyKCkuDQo+PiA+IGk0MGl3X2NtX2V2ZW50X2hhbmRsZXIoKSBjYWxscyBpNDBpd19zZW5kX2Nt
+X2V2ZW50KCkuDQo+PiA+IGk0MGl3X3NlbmRfY21fZXZlbnQoKSBwb3N0cyBldmVudCBCLg0KPj4g
+PiBUaGVuIGk0MGl3X2NtX2V2ZW50X2hhbmRsZXIoKSBkcm9wcyB0aGUgcmVmY291bnQgYXNzb2Np
+YXRlZCB3aXRoIGV2ZW50IEEuDQo+PiA+DQo+PiA+IEV2ZW50IEIgZ2V0cyBzZW50IHRvIGNtX2lk
+LT5ldmVudF9oYW5kbGVyKCkgd2hpY2ggSSBiZWxpZXZlIGlzDQo+PiA+IGNtX2V2ZW50X2hhbmRs
+ZXIoKSBpbiBpd2NtLmMuDQo+PiA+DQo+PiA+IFRoZXJlIGlzIG5vdGhpbmcgdG8gcHJldmVudCB0
+aGUgcmVmY291bnQgYXNzb2NpYXRlZCB3aXRoIGV2ZW50IEENCj4+ID4gZnJvbSBnZXR0aW5nIGRy
+b3BwZWQgYmVmb3JlIGNtX2V2ZW50X2hhbmRsZXIoKSBpcyBhYmxlIHRvIHByb2Nlc3MgZXZlbnQg
+Qi4NCj4+ID4NCj4+IFN1cmUuIEJ1dCwgdGhlcmUgaXMgYSByZWZjbnQgZm9yIHRoZSBjbV9ub2Rl
+IHdoZW4gaXRzIGNyZWF0ZWQgdGhhdCBJIHdvdWxkIGhhdmUNCj5leHBlY3RlZCB0byBleGlzdCBp
+biBpNDBpd19hY2NlcHQoKS4NCj4+IFdoZXJlIGRpZCB0aGF0IGdldCBkcm9wcGVkPyBTb21ldGhp
+bmcgbGlrZSB0aGlzIHRoYXQgc2hvd3MgdGhlDQo+PiBzZXF1ZW5jZSBvZiBjYWxsZXJzIGRyb3Bw
+aW5nIHRoZSByZWZjbnQgb24gdGhlIGNtX25vZGUgbGVhZGluZyB1cCB0byB0aGUNCj5wcm9ibGVt
+IHdvdWxkIGJlIGdvb2QuDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9o
+dy9pNDBpdy9pNDBpd19jbS5jDQo+PiBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9pNDBpdy9pNDBp
+d19jbS5jDQo+PiBpbmRleCA4MjMzZjVhLi45ZDAxZDlkIDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVy
+cy9pbmZpbmliYW5kL2h3L2k0MGl3L2k0MGl3X2NtLmMNCj4+ICsrKyBiL2RyaXZlcnMvaW5maW5p
+YmFuZC9ody9pNDBpdy9pNDBpd19jbS5jDQo+PiBAQCAtMjI4OCw2ICsyMjg4LDcgQEAgc3RhdGlj
+IHZvaWQgaTQwaXdfcmVtX3JlZl9jbV9ub2RlKHN0cnVjdA0KPmk0MGl3X2NtX25vZGUgKmNtX25v
+ZGUpDQo+PiAgICAgICAgIHN0cnVjdCBpNDBpd19jbV9pbmZvIG5mbzsNCj4+ICAgICAgICAgdW5z
+aWduZWQgbG9uZyBmbGFnczsNCj4+DQo+PiArICAgICAgIHByX2luZm8oIiVzOiBjbV9ub2RlICVw
+eCByZWZfY250ICVkIGNhbGxlcjogJXBTIFxuIiwgX19mdW5jX18sDQo+PiArIGNtX25vZGUsDQo+
+PiArIGF0b21pY19yZWFkKCZjbV9ub2RlLT5yZWZfY291bnQpLF9fYnVpbHRpbl9yZXR1cm5fYWRk
+cmVzcygwKSk7DQo+PiAgICAgICAgIHNwaW5fbG9ja19pcnFzYXZlKCZjbV9ub2RlLT5jbV9jb3Jl
+LT5odF9sb2NrLCBmbGFncyk7DQo+PiAgICAgICAgIGlmIChhdG9taWNfZGVjX3JldHVybigmY21f
+bm9kZS0+cmVmX2NvdW50KSkgew0KPj4gICAgICAgICAgICAgICAgIHNwaW5fdW5sb2NrX2lycXJl
+c3RvcmUoJmNtX25vZGUtPmNtX2NvcmUtPmh0X2xvY2ssDQo+PiBmbGFncyk7IEBAIC0zNjY0LDYg
+KzM2NjUsNyBAQCBpbnQgaTQwaXdfYWNjZXB0KHN0cnVjdCBpd19jbV9pZCAqY21faWQsDQo+c3Ry
+dWN0IGl3X2NtX2Nvbm5fcGFyYW0gKmNvbm5fcGFyYW0pDQo+PiAgICAgICAgIGRldiA9ICZpd2Rl
+di0+c2NfZGV2Ow0KPj4gICAgICAgICBjbV9jb3JlID0gJml3ZGV2LT5jbV9jb3JlOw0KPj4gICAg
+ICAgICBjbV9ub2RlID0gKHN0cnVjdCBpNDBpd19jbV9ub2RlICopY21faWQtPnByb3ZpZGVyX2Rh
+dGE7DQo+PiArICAgICAgIHByX2luZm8oIiVzOiBjbV9ub2RlICVweFxuIiwgX19mdW5jX18sIGNt
+X25vZGUpOw0KPj4NCj4+ICAgICAgICAgaWYgKCgoc3RydWN0IHNvY2thZGRyX2luICopJmNtX2lk
+LT5sb2NhbF9hZGRyKS0+c2luX2ZhbWlseSA9PSBBRl9JTkVUKSB7DQo+PiAgICAgICAgICAgICAg
+ICAgY21fbm9kZS0+aXB2NCA9IHRydWU7DQo+Pg0KPg0KPlRoaXMgcGF0Y2ggaXMgbm93IG92ZXIg
+YSBtb250aCBvbGQgd2l0aCBubyByZXNvbHV0aW9uLiAgQ2FuIHdlIGdldCBhIGZpbmFsIGFuc3dl
+cg0KPm9uIHRoaXMgcGxlYXNlPw0KPg0KDQpOZWVkIHNvbWUgZnVydGhlciBkZWJ1ZyBkYXRhIG9u
+IHRoZSBwcm9ibGVtIGJlZm9yZSBhIGZpeCBjYW4gYmUgcHJvcG9zZWQuDQpQYXJ2YXRoaSAtIElz
+IHRoaXMgc29tZXRoaW5nIHlvdSBjYW4gaGVscCB3aXRoIG9yIGF0IGxlYXN0IHByb3ZpZGUgaW5z
+dHJ1Y3Rpb25zIHRvIHJlcHJvPw0KDQpTaGlyYXoNCg==
