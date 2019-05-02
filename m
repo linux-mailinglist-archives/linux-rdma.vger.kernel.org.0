@@ -2,188 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F297111BC2
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 16:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03BE11C1D
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 17:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbfEBOtv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 2 May 2019 10:49:51 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49022 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726278AbfEBOtv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 10:49:51 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x42EnmRw047147
-        for <linux-rdma@vger.kernel.org>; Thu, 2 May 2019 10:49:50 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2s81df40er-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 02 May 2019 10:49:49 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Thu, 2 May 2019 14:48:40 -0000
-Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
-        by smtp.notes.na.collabserv.com (10.106.227.158) with smtp.notes.na.collabserv.com ESMTP;
-        Thu, 2 May 2019 14:48:31 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp05.a3.dal06.isc4sb.com
-          with ESMTP id 2019050214482889-601129 ;
-          Thu, 2 May 2019 14:48:28 +0000 
-In-Reply-To: <20190426210718.GB6705@mtr-leonro.mtl.com>
-Subject: Re: [PATCH v8 00/12] SIW: Request for Comments
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Leon Romanovsky" <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org
-Date:   Thu, 2 May 2019 14:48:27 +0000
+        id S1726383AbfEBPDj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 11:03:39 -0400
+Received: from mail-eopbgr150073.outbound.protection.outlook.com ([40.107.15.73]:43047
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726197AbfEBPDj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 May 2019 11:03:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p1oTpMXlIEe5fQamtQxuHtaqDrU37fnmaZ2nYWfBuUg=;
+ b=ZXHkPi31AKcOVELK8huiSZr6BYN2i5ZOeefkId78XbC6yMT6YkeEWhVEamn2PhVhpVAnhkwZje8fX9KFpz3t9YcqMBx684RD76+6JJWtZ08sdJjpIIE8rpo8jY8TSh8qJpGgZECBf/QsUEb8LLkoXxtJtnQ2JbVhXZbZpCypiIs=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB6429.eurprd05.prod.outlook.com (20.179.27.208) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1835.14; Thu, 2 May 2019 15:03:35 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.008; Thu, 2 May 2019
+ 15:03:35 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: Re: [PATCH rdma-next v1] RDMA/umem: Move page_shift from ib_umem to
+ ib_odp_umem
+Thread-Topic: [PATCH rdma-next v1] RDMA/umem: Move page_shift from ib_umem to
+ ib_odp_umem
+Thread-Index: AQHU/93m7HEf6m4izEmJQhOevP6dcaZX8KwA
+Date:   Thu, 2 May 2019 15:03:35 +0000
+Message-ID: <20190502150330.GA21696@mellanox.com>
+References: <20190501052227.23246-1-leon@kernel.org>
+In-Reply-To: <20190501052227.23246-1-leon@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BN6PR1701CA0020.namprd17.prod.outlook.com
+ (2603:10b6:405:15::30) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [173.228.226.134]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4589d3fe-9ef7-45e9-7240-08d6cf0f59a6
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6429;
+x-ms-traffictypediagnostic: VI1PR05MB6429:
+x-microsoft-antispam-prvs: <VI1PR05MB64297D497013B526E0F879BACF340@VI1PR05MB6429.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2803;
+x-forefront-prvs: 0025434D2D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(366004)(376002)(39860400002)(136003)(346002)(199004)(189003)(14454004)(68736007)(4744005)(8936002)(71200400001)(8676002)(81166006)(6916009)(54906003)(71190400001)(6486002)(81156014)(316002)(6116002)(1076003)(3846002)(99286004)(52116002)(229853002)(2906002)(6436002)(305945005)(5660300002)(76176011)(86362001)(6512007)(478600001)(36756003)(476003)(446003)(256004)(486006)(7736002)(33656002)(102836004)(66476007)(6246003)(66556008)(64756008)(66446008)(107886003)(11346002)(4326008)(53936002)(2616005)(66946007)(73956011)(186003)(66066001)(25786009)(386003)(6506007)(26005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6429;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: EwbYERkqBTM0GpZR0eLa2f6QB8lnlznBiteV8c7LpuKN/h9np8tRlTqU/lnIIb+s7ztfoWwRtiFEqa0spJZsRq9LHUYC6JVOLqOB/SWTnNLqwIRZMCiL9Nbxc23B1N4xSkrLNAUaNbyZz9Ncnd8WZZU2LN8VEYVsaGP39vSROK/aMNznJscyXxteLv0iFXP7+pqj0YNtAAm1jB0waXIMgCzIFhJvgwX2N0TIs0nJPTbcMES/2T73fHN/SEfqN7c7HoAE9Fd3j8ajUQg/UqqZv8Hkzt/YcIDpeE3teHRFZWhP6FDIYQe8Xx2RBVdcJX06MsoEdZOlAiQDFGmYhfRkMVFUDuNTCSPtdg6G/hBzKZohJbf4loE6suw/mguXy68UWkajjXYA3lFh/Wgnid7bmIKmQPxsAqcWbo15XAKjx7Y=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B6D4A57D490AB648A6BF2FACEF4FFFD1@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190426210718.GB6705@mtr-leonro.mtl.com>,<20190426131852.30142-1-bmt@zurich.ibm.com>
-X-Mailer: IBM iNotes ($HaikuForm 1048) | IBM Domino Build
- SCN1812108_20180501T0841_FP38 April 10, 2019 at 11:56
-X-LLNOutbound: False
-X-Disclaimed: 37743
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19050214-6059-0000-0000-00000E71E86F
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.388783; ST=0; TS=0; UL=0; ISC=; MB=0.001729
-X-IBM-SpamModules-Versions: BY=3.00011035; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000285; SDB=6.01197540; UDB=6.00628112; IPR=6.00978396;
- BA=6.00006295; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
- ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00026696; XFM=3.00000015;
- UTC=2019-05-02 14:48:39
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-05-02 08:27:48 - 6.00009875
-x-cbparentid: 19050214-6060-0000-0000-00007A52FFD3
-Message-Id: <OF26004ADE.E173C131-ON002583EE.00515728-002583EE.0051572F@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-02_08:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4589d3fe-9ef7-45e9-7240-08d6cf0f59a6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 May 2019 15:03:35.8285
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6429
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Leon Romanovsky" <leon@kernel.org> wrote: -----
+On Wed, May 01, 2019 at 08:22:27AM +0300, Leon Romanovsky wrote:
 
->To: "Bernard Metzler" <bmt@zurich.ibm.com>
->From: "Leon Romanovsky" <leon@kernel.org>
->Date: 04/26/2019 11:07PM
->Cc: linux-rdma@vger.kernel.org
->Subject: Re: [PATCH v8 00/12] SIW: Request for Comments
->
->On Fri, Apr 26, 2019 at 03:18:40PM +0200, Bernard Metzler wrote:
->> This patch set contributes version 8 of the SoftiWarp
->> driver, as originally introduced to the list Oct 6th, 2017.
->> SoftiWarp (siw) implements the iWarp RDMA protocol over
->> kernel TCP sockets. The driver integrates with the
->> linux-rdma framework.
->>
->> The only purpose of this patch set is to rebase the driver
->> to the current code base of the 'rdma/for-next' branch of
->> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
->>
->> There are no functional changes wrt. version 7, except one
->> bug fix in the fast MR registration path, where an application
->> provided, changed IO address was not taken into account.
->>
->> As said, the current patch set is based on rdma/for-next.
->> For convenience, it is also maintained at
->>
->https://urldefense.proofpoint.com/v2/url?u=https-3A__github.com_zrlio
->_softiwarp-2Dfor-2Dlinux-2Drdma.git&d=DwIBAg&c=jf_iaSHvJObTbx-siA1ZOg
->&r=2TaYXQ0T-r8ZO1PP1alNwU_QJcRRLfmYTAgd3QCvqSc&m=s8kBzxPaiWgkYRMQ4GYI
->r7PWqYcD_iXi93ILDWO7c7E&s=XVI0RTnHzvzg_hoLQv66acO8xfIn3HchSRrxZ0Z4ySE
->&e=
->> within branch 'siw-for-rdma-next-v8'.
->>
->> Thanks very much for your time and help!
->>
->> Bernard.
->>
->> Bernard Metzler (12):
->>   iWarp wire packet format
->>   SIW main include file
->>   SIW network and RDMA core interface
->>   SIW connection management
->>   SIW application interface
->>   SIW application buffer management
->>   SIW queue pair methods
->>   SIW transmit path
->>   SIW receive path
->>   SIW completion queue methods
->>   SIW debugging
->>   SIW addition to kernel build environment
->>
->>  MAINTAINERS                              |    7 +
->>  drivers/infiniband/Kconfig               |    1 +
->>  drivers/infiniband/sw/Makefile           |    1 +
->>  drivers/infiniband/sw/siw/Kconfig        |   17 +
->>  drivers/infiniband/sw/siw/Makefile       |   12 +
->>  drivers/infiniband/sw/siw/iwarp.h        |  379 ++++
->>  drivers/infiniband/sw/siw/siw.h          |  733 ++++++++
->>  drivers/infiniband/sw/siw/siw_cm.c       | 2107
->++++++++++++++++++++++
->>  drivers/infiniband/sw/siw/siw_cm.h       |  121 ++
->>  drivers/infiniband/sw/siw/siw_cq.c       |  109 ++
->>  drivers/infiniband/sw/siw/siw_debug.c    |   91 +
->>  drivers/infiniband/sw/siw/siw_debug.h    |   40 +
->>  drivers/infiniband/sw/siw/siw_main.c     |  712 ++++++++
->>  drivers/infiniband/sw/siw/siw_mem.c      |  464 +++++
->>  drivers/infiniband/sw/siw/siw_mem.h      |   53 +
->>  drivers/infiniband/sw/siw/siw_qp.c       | 1354 ++++++++++++++
->>  drivers/infiniband/sw/siw/siw_qp_rx.c    | 1520 ++++++++++++++++
->>  drivers/infiniband/sw/siw/siw_qp_tx.c    | 1291 +++++++++++++
->>  drivers/infiniband/sw/siw/siw_verbs.c    | 1826
->+++++++++++++++++++
->>  drivers/infiniband/sw/siw/siw_verbs.h    |   83 +
->>  include/uapi/rdma/rdma_user_ioctl_cmds.h |    1 +
->>  include/uapi/rdma/siw_user.h             |  186 ++
->
->To make our life easier, that file should be named like all
->other files: siw-abi.h.
->
->Thanks
+> @@ -84,6 +85,24 @@ static inline struct ib_umem_odp *to_ib_umem_odp(struc=
+t ib_umem *umem)
+>  	return container_of(umem, struct ib_umem_odp, umem);
+>  }
+>=20
+> +/* Returns the first page of an ODP umem. */
+> +static inline unsigned long ib_umem_start(struct ib_umem_odp *umem_odp)
+> +{
+> +	return ALIGN_DOWN(umem_odp->umem.address, 1UL << umem_odp->page_shift);
+> +}
+> +
+> +/* Returns the address of the page after the last one of an ODP umem. */
+> +static inline unsigned long ib_umem_end(struct ib_umem_odp *umem_odp)
+> +{
+> +	return ALIGN(umem_odp->umem.address + umem_odp->umem.length,
+> +		     1UL << umem_odp->page_shift);
+> +}
+> +
+> +static inline size_t ib_umem_odp_num_pages(struct ib_umem_odp *umem_odp)
+> +{
+> +	return (ib_umem_end(umem_odp) - ib_umem_start(umem_odp)) >> PAGE_SHIFT;
 
-Hi Leon,
+It seems there are some testing failures with this patch, I think the
+above PAGE_SHIFT may need to be umem_odp->page_shift
 
-I just saw your several responses to my last RFC for
-siw (version 8). Thank you very much for your help.
-Sorry for not acting on it earlier. Since Friday
-night last week I am on a vacation trip with very
-limited time to work on it. I will be back next week
-and reply asap.
+But I need to check it
 
-Again, many thanks!
-
-Bernard.
->
->>  22 files changed, 11108 insertions(+)
->>  create mode 100644 drivers/infiniband/sw/siw/Kconfig
->>  create mode 100644 drivers/infiniband/sw/siw/Makefile
->>  create mode 100644 drivers/infiniband/sw/siw/iwarp.h
->>  create mode 100644 drivers/infiniband/sw/siw/siw.h
->>  create mode 100644 drivers/infiniband/sw/siw/siw_cm.c
->>  create mode 100644 drivers/infiniband/sw/siw/siw_cm.h
->>  create mode 100644 drivers/infiniband/sw/siw/siw_cq.c
->>  create mode 100644 drivers/infiniband/sw/siw/siw_debug.c
->>  create mode 100644 drivers/infiniband/sw/siw/siw_debug.h
->>  create mode 100644 drivers/infiniband/sw/siw/siw_main.c
->>  create mode 100644 drivers/infiniband/sw/siw/siw_mem.c
->>  create mode 100644 drivers/infiniband/sw/siw/siw_mem.h
->>  create mode 100644 drivers/infiniband/sw/siw/siw_qp.c
->>  create mode 100644 drivers/infiniband/sw/siw/siw_qp_rx.c
->>  create mode 100644 drivers/infiniband/sw/siw/siw_qp_tx.c
->>  create mode 100644 drivers/infiniband/sw/siw/siw_verbs.c
->>  create mode 100644 drivers/infiniband/sw/siw/siw_verbs.h
->>  create mode 100644 include/uapi/rdma/siw_user.h
->>
->> --
->> 2.17.2
->>
->
->
-
+Jason
