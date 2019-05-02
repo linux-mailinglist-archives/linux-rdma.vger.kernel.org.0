@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 969B81156B
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 10:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3732D1156C
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 10:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbfEBI27 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 04:28:59 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:54069 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbfEBI27 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 04:28:59 -0400
+        id S1726326AbfEBI3B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 04:29:01 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:17665 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725951AbfEBI3B (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 04:29:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1556785738; x=1588321738;
+  t=1556785740; x=1588321740;
   h=subject:to:cc:references:from:message-id:date:
    mime-version:in-reply-to:content-transfer-encoding;
-  bh=WskScnG6p0JMbDYZjT6mMyqLHhIcPKB6e5GUbcml11I=;
-  b=vfc8DD2UFgVx8XBBfcLHLZnZXsMCC6TgzE0StrvyUi6ICnXsO1jrZFz8
-   EI8CdoqoR342JukrSCzIV//yqlfJB17FENPacr+ZRQpFuWBiSks34Ikt+
-   25s3tXcDa3AzREp3FhYGD9yEtDXJ5K/ZSSz58dLYKTcwVicb/4AvRwR19
-   E=;
+  bh=5PwnBg3HmEgeKaaKyqDfbdoFGryAt534P0EMWl9w9B0=;
+  b=ZP2nA7VNr8zJcrrUIdKxzLoF3Vm0Iqk1QyFwEE8OLEvUXRTZRa4vvwfa
+   xqTc2TAwlVAsZaXzlcDXMX52oeKqIBxIEsAAH1f4sjzbM+c1mJpjsMf72
+   poJ5t0jEJesWJrs+0xPLgkBWYcLGtcXARnGSlew2n/HNaPa1s4wA8QB4Q
+   I=;
 X-IronPort-AV: E=Sophos;i="5.60,421,1549929600"; 
-   d="scan'208";a="797431587"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 02 May 2019 08:28:55 +0000
+   d="scan'208";a="802436712"
+Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.47.22.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 02 May 2019 08:28:57 +0000
 Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x428SpOm120210
+        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x428SrXS019448
         (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
-        Thu, 2 May 2019 08:28:52 GMT
+        Thu, 2 May 2019 08:28:54 GMT
 Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
  EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 2 May 2019 08:28:51 +0000
+ id 15.0.1367.3; Thu, 2 May 2019 08:28:53 +0000
 Received: from [10.218.62.21] (10.43.160.48) by EX13D19EUB003.ant.amazon.com
  (10.43.166.69) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 2 May
- 2019 08:28:43 +0000
+ 2019 08:28:45 +0000
 Subject: Re: [PATCH for-next v6 10/12] RDMA/efa: Add EFA verbs implementation
 To:     Jason Gunthorpe <jgg@mellanox.com>,
         Gal Pressman <galpress@amazon.com>
@@ -55,68 +55,56 @@ CC:     Doug Ledford <dledford@redhat.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>
 References: <1556707704-11192-1-git-send-email-galpress@amazon.com>
  <1556707704-11192-11-git-send-email-galpress@amazon.com>
- <20190501163852.GA18049@mellanox.com>
+ <20190501164020.GA18128@mellanox.com>
 From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <a5428152-3dab-cbf9-cf5f-0df9b8322bd7@amazon.com>
-Date:   Thu, 2 May 2019 11:28:38 +0300
+Message-ID: <75f5ded6-ba85-bd67-1a2f-92525f7a6e28@amazon.com>
+Date:   Thu, 2 May 2019 11:28:40 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190501163852.GA18049@mellanox.com>
+In-Reply-To: <20190501164020.GA18128@mellanox.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.43.160.48]
-X-ClientProxiedBy: EX13D04UWA004.ant.amazon.com (10.43.160.234) To
+X-ClientProxiedBy: EX13D01UWA002.ant.amazon.com (10.43.160.74) To
  EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 01-May-19 19:38, Jason Gunthorpe wrote:
->> +static int __efa_mmap(struct efa_dev *dev,
->> +		      struct efa_ucontext *ucontext,
->> +		      struct vm_area_struct *vma,
->> +		      struct efa_mmap_entry *entry)
+On 01-May-19 19:40, Jason Gunthorpe wrote:
+> On Wed, May 01, 2019 at 01:48:22PM +0300, Gal Pressman wrote:
+> 
+>> +int efa_mmap(struct ib_ucontext *ibucontext,
+>> +	     struct vm_area_struct *vma)
 >> +{
->> +	u8 mmap_flag = get_mmap_flag(entry->key);
->> +	u64 pfn = entry->address >> PAGE_SHIFT;
->> +	u64 address = entry->address;
->> +	u64 length = entry->length;
->> +	unsigned long va;
->> +	int err;
+>> +	struct efa_ucontext *ucontext = to_eucontext(ibucontext);
+>> +	struct efa_dev *dev = to_edev(ibucontext->device);
+>> +	u64 length = vma->vm_end - vma->vm_start;
+>> +	u64 key = vma->vm_pgoff << PAGE_SHIFT;
+>> +	struct efa_mmap_entry *entry;
 >> +
 >> +	ibdev_dbg(&dev->ibdev,
->> +		  "Mapping address[%#llx], length[%#llx], mmap_flag[%d]\n",
->> +		  address, length, mmap_flag);
+>> +		  "start %#lx, end %#lx, length = %#llx, key = %#llx\n",
+>> +		  vma->vm_start, vma->vm_end, length, key);
 >> +
->> +	switch (mmap_flag) {
->> +	case EFA_MMAP_IO_NC:
->> +		err = rdma_user_mmap_io(&ucontext->ibucontext, vma, pfn, length,
->> +					pgprot_noncached(vma->vm_page_prot));
->> +		break;
->> +	case EFA_MMAP_IO_WC:
->> +		err = rdma_user_mmap_io(&ucontext->ibucontext, vma, pfn, length,
->> +					pgprot_writecombine(vma->vm_page_prot));
->> +		break;
->> +	case EFA_MMAP_DMA_PAGE:
->> +		for (va = vma->vm_start; va < vma->vm_end;
->> +		     va += PAGE_SIZE, pfn++) {
->> +			err = vm_insert_page(vma, va, pfn_to_page(pfn));
->> +			if (err)
->> +				break
+>> +	if (length % PAGE_SIZE != 0 || !(vma->vm_flags & VM_SHARED)) {
+>> +		ibdev_dbg(&dev->ibdev,
+>> +			  "length[%#llx] is not page size aligned[%#lx] or VM_SHARED is not set [%#lx]\n",
+>> +			  length, PAGE_SIZE, vma->vm_flags);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	if (vma->vm_flags & VM_EXEC) {
+>> +		ibdev_dbg(&dev->ibdev, "Mapping executable pages is not permitted\n");
+>> +		return -EPERM;
+>> +	}
+>> +	vma->vm_flags &= ~VM_MAYEXEC;
 > 
-> This loop doesn't bound the number of pfns it accesses, so it is a
-> security problem.
-> 
-> The core code was checking this before
+> Also we dropped the MAYEXEC stuff
 
-Thanks Jason,
-Core code was checking for
-if (vma->vm_end - vma->vm_start != size)
-	return ERR_PTR(-EINVAL);
-
-Our code explicitly sets size as 'vma->vm_end - vma->vm_start'.
-In addition, we validate that the mapping size matches the size of the allocated
-buffers which are being mapped (and bounded).
+Latest commit that had any MAYEXEC changes is 4eb6ab13b991 ("RDMA: Remove
+rdma_user_mmap_page"), where MAYEXEC is added not removed.
+Am I missing a followup patch?
