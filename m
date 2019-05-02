@@ -2,772 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F28F911993
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 14:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1783A119A6
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 15:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbfEBM5X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 08:57:23 -0400
-Received: from mail-it1-f193.google.com ([209.85.166.193]:50815 "EHLO
-        mail-it1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbfEBM5W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 08:57:22 -0400
-Received: by mail-it1-f193.google.com with SMTP id q14so3102837itk.0
-        for <linux-rdma@vger.kernel.org>; Thu, 02 May 2019 05:57:22 -0700 (PDT)
+        id S1726310AbfEBNDH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 09:03:07 -0400
+Received: from mail-yw1-f65.google.com ([209.85.161.65]:46862 "EHLO
+        mail-yw1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726283AbfEBNDH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 09:03:07 -0400
+Received: by mail-yw1-f65.google.com with SMTP id v15so1445521ywe.13
+        for <linux-rdma@vger.kernel.org>; Thu, 02 May 2019 06:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Al79eLC426/gRWA+WtONeZawqYTW06JVaOtHl1KAxmA=;
-        b=M6qhn+Ib2wTpQ97U6h4rsl8QPEVM5rKpGx40VlU8OIlqeD74mtD2wionnSPO6x5hd2
-         2EGZXIweTeTgu7W8Q8CMBtpefXqQ/VyAozL6z9Am0puMRlkoJiWUEEAOQdacdpzPkQ+z
-         urFR3AU7Y/VkrH+vzzBY3mpAsSdEtwbQMuxMpIzyk89zJkXOHJLQc3D+0omXzmnByc0R
-         cia8nL/9BDZoSGqV90non5om73u9PaVo3LEMbvR1WZ5nJAgwd4IgYpK7PCxrmbcSyA2O
-         kxLWK7niVp3xAntsUlDvnAQ6fLULhi9U1+a40kVhA09h4QOLSdNpZrzKQZcrDp+ybMrM
-         iYZQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hI4WW6CI9V9ZOJkFi1WbTAkXzplbag8K/GeOrZJaEB4=;
+        b=i/DytB2TDY7JRpkMm6eNFbZWgh4u9AHkYc83pe28M6IUwICSPCq6FRSv+9oXcOtLSX
+         U0oi3uvVCF9vM4p5S1steJNWPd8to1C5THYYh3ia1FmS/G1PC85i0sjCJSbEXAkExu0g
+         ZiiH5EEgAcu6y8iNhCfZaBDN3TOERlpEmGAsV5GTLmfmPWx0fItGZ9i3TKP4z1JZs1dD
+         4Hz/gfHbKEPvOUXKOPm11JET80fX+DBn0QB5uYuo8hhXsOZ/pgXSacz5aoMeP4m5xvFF
+         FTinUnwN0I8hAmfReaYdBtIBq4E2Yl5Mr3qAlPIkwbZe4lq8Xd7w3KDwPSn98TZEdEqW
+         TFug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Al79eLC426/gRWA+WtONeZawqYTW06JVaOtHl1KAxmA=;
-        b=LtURsLqFvqVPFuRDwSI7W0BIcWAWqKtUP3kc7pbwj9qrc6Y7syMiA1BFzpk8JUGfMK
-         AtcW59SAuSe8yU5bocA+lb6zhZZjz7XcVQyokZUG5W7pd/QJIpEhF9aOe0ufpuVOSqL2
-         lkTrN0U1rh/ty3uz7eRR3X5htruGnrtEkbKE/YT47Cfzo3PW4GMGjOg8mnZ+2Z6f0ftK
-         HIvnVt+FQjL/9nmlIzHQDM7LOM4GJK/lkQ52PjOJDzhdhtQoeC4eapU3k2OCXRy2umOI
-         UWiseaiHNVuLpjmg2BIXVd96BQHInjaEzenM7+FWipjWhKNM1nHeKijYKPrQxyO0DKeV
-         KI1Q==
-X-Gm-Message-State: APjAAAX6v2U9WA438nJjqKTQtrbfBi5aR6WfX8QpvASPxOqJaig494FW
-        tqk1h1BGsBKMbPJQN+2T9IZDHY0pphlLI1bDQuw=
-X-Google-Smtp-Source: APXvYqx2XX5aGY+XOsVPWakFVLozrC5cYSki6IMXA+li3lv/UvdKBh+tQArnrLJDKiNurUBbPXSes3di7Gxj2w9lMi0=
-X-Received: by 2002:a02:ca4a:: with SMTP id i10mr2381171jal.70.1556801841601;
- Thu, 02 May 2019 05:57:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hI4WW6CI9V9ZOJkFi1WbTAkXzplbag8K/GeOrZJaEB4=;
+        b=hzJqZw98/cK/6GPTH4P2D/xFZMCUxADD0F3mrlBQtX9nBlWWsPyywggTeQ+Exhncgl
+         QFMFEdD5748PkJ+4PrjjGTcyMpnZEp3WRIXvNK6rKBELGfVB2j8gE8t7nNddz0C5FNXx
+         az16v0PTHYJNTgmmTRtP/kIP4vlLuQlytJZyIlPfo+YcMofuJAk6xtWCUMdjB9nOrakw
+         C9H9yVTBPayZcYr/XNvB15/g0UnNPEdyjbaRcB4L+4xoj+C4yB6HDsHlliXBrBs5XL/d
+         8y6038SSoHPvUwIZwtcp6FERr32q2pXIk4gXBfjhGLH9vBv9uhycxEWlTfaJMs2HpREv
+         bzPQ==
+X-Gm-Message-State: APjAAAU6LE4VzLRWelRhpt+/I0cQyrbG5qvTGxFXtTxj7W7yb170u99S
+        gpQQFS+5tsOW0N9wTiHnoGbiiCKTJmQ=
+X-Google-Smtp-Source: APXvYqzFLghJWeB+ktgA4jqUBHrJW6rUMjpc7MAC1LzZ7g0fDocCTyylqQbLiiHYQY92jdf3p0xI6g==
+X-Received: by 2002:a25:7c3:: with SMTP id 186mr2761298ybh.97.1556802186870;
+        Thu, 02 May 2019 06:03:06 -0700 (PDT)
+Received: from ziepe.ca (adsl-173-228-226-134.prtc.net. [173.228.226.134])
+        by smtp.gmail.com with ESMTPSA id m62sm3264211ywm.105.2019.05.02.06.03.05
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 02 May 2019 06:03:05 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hMBMe-0004yo-Jz; Thu, 02 May 2019 10:03:04 -0300
+Date:   Thu, 2 May 2019 10:03:04 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Liuyixian (Eason)" <liuyixian@huawei.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, oulijun <oulijun@huawei.com>,
+        dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Add support function clear when
+ removing module
+Message-ID: <20190502130304.GB18518@ziepe.ca>
+References: <1555154941-55510-1-git-send-email-oulijun@huawei.com>
+ <20190416121634.GA12981@mtr-leonro.mtl.com>
+ <4d3613c7-1c68-9f9b-d185-ab015049e6cf@huawei.com>
+ <20190422122209.GD27901@mtr-leonro.mtl.com>
+ <add43d02-b3d5-35d9-a74d-8254c1fb472c@huawei.com>
+ <20190423152339.GE27901@mtr-leonro.mtl.com>
+ <90a91e1f-91fc-bc4e-067c-7bc788c62ab6@huawei.com>
+ <20190426143656.GA2278@ziepe.ca>
+ <20190426210520.GA6705@mtr-leonro.mtl.com>
+ <99195660-be8d-555f-01fc-efd9e680fdf3@huawei.com>
 MIME-Version: 1.0
-References: <20190429115906.13509-1-kamalheib1@gmail.com> <20190429120654.GW6705@mtr-leonro.mtl.com>
- <6025c10a-3bb8-b152-ed89-cbaedd2214b1@gmail.com> <7e3b33760fb67074682a98d98a16339bc04978be.camel@gmail.com>
-In-Reply-To: <7e3b33760fb67074682a98d98a16339bc04978be.camel@gmail.com>
-From:   Steve Wise <larrystevenwise@gmail.com>
-Date:   Thu, 2 May 2019 07:57:10 -0500
-Message-ID: <CADmRdJfPoOYrfSm6UMR4WHKtzuCbWpH0hD_vGd8XbOfrAKNFMA@mail.gmail.com>
-Subject: Re: [PATCH V2 for-next] RDMA: Get rid of iw_cm_verbs
-To:     Kamal Heib <kamalheib1@gmail.com>
-Cc:     Steve Wise <swise@opengridcomputing.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <99195660-be8d-555f-01fc-efd9e680fdf3@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-IW_F_NO_PORT_MAP was recently added for SIW.  I recommend we do not
-remove it now...
+On Tue, Apr 30, 2019 at 04:27:41PM +0800, Liuyixian (Eason) wrote:
+> 
+> 
+> On 2019/4/27 5:05, Leon Romanovsky wrote:
+> > On Fri, Apr 26, 2019 at 11:36:56AM -0300, Jason Gunthorpe wrote:
+> >> On Fri, Apr 26, 2019 at 06:12:11PM +0800, Liuyixian (Eason) wrote:
+> >>
+> >>>     However, I have talked with our chip team about function clear
+> >>>     functionality. We think it is necessary to inform the chip to
+> >>>     perform the outstanding task and some cleanup work and restore
+> >>>     hardware resources in time when rmmod ko. Otherwise, it is
+> >>>     dangerous to reuse the hardware as it can not guarantee those
+> >>>     work can be done well without the notification from our driver.
+> >>
+> >> If it is dangerous to reuse the hardware then you have to do this
+> >> cleanup on device startup, not on device removal.
+> > 
+> > Right, I can think about gazillion ways to brick such HW.
+> > The simplest way will be to call SysRq during RDMA traffic
+> > and no cleanup function will be called in such case.
+> > 
+> > Thanks
+> 
+> Hi Jason and Leon,
+> 
+> 	As hip08 is a fake pcie device, we could not disassociate and stop the hardware access
+> 	through the chain break mechanism as a real pcie device. Alternatively, function clear
+> 	is used as a notification to the hardware to stop accessing and ensure to not read or
+> 	write DDR later. That is, the role of function clear to hip08 is similar as the chain
+> 	break to pcie device.
 
-On Thu, May 2, 2019 at 2:13 AM Kamal Heib <kamalheib1@gmail.com> wrote:
->
-> On Mon, 2019-04-29 at 23:13 +0300, Kamal Heib wrote:
-> >
-> > On 4/29/19 3:06 PM, Leon Romanovsky wrote:
-> > > On Mon, Apr 29, 2019 at 02:59:06PM +0300, Kamal Heib wrote:
-> > > > Integrate iw_cm_verbs data members into ib_device_ops and
-> > > > ib_device
-> > > > structs, this is done to achieve the following:
-> > > >
-> > > > 1- Avoid memory related bugs.
-> > > > 2- Make the code more cleaner.
-> > > > 3- Reduce code duplication.
-> > > >
-> > > > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> > > > ---
-> > > >  drivers/infiniband/core/device.c            |  8 +++++
-> > > >  drivers/infiniband/core/iwcm.c              | 35 +++++++++++--
-> > > > --------
-> > > >  drivers/infiniband/hw/cxgb3/iwch_provider.c | 32 +++++++------
-> > > > ------
-> > > >  drivers/infiniband/hw/cxgb4/provider.c      | 33 +++++++------
-> > > > ------
-> > > >  drivers/infiniband/hw/i40iw/i40iw_verbs.c   | 30 ++++++---------
-> > > > ---
-> > > >  drivers/infiniband/hw/nes/nes_verbs.c       | 27 ++++++---------
-> > > > -
-> > > >  drivers/infiniband/hw/qedr/main.c           | 25 ++++++---------
-> > > >  include/rdma/ib_verbs.h                     | 23 +++++++++++---
-> > > >  include/rdma/iw_cm.h                        | 25 ---------------
-> > > >  9 files changed, 98 insertions(+), 140 deletions(-)
-> > > >
-> > > > diff --git a/drivers/infiniband/core/device.c
-> > > > b/drivers/infiniband/core/device.c
-> > > > index fcbf2d4c865d..b1dc0454151c 100644
-> > > > --- a/drivers/infiniband/core/device.c
-> > > > +++ b/drivers/infiniband/core/device.c
-> > > > @@ -2310,6 +2310,14 @@ void ib_set_device_ops(struct ib_device
-> > > > *dev, const struct ib_device_ops *ops)
-> > > >   SET_DEVICE_OP(dev_ops, get_vf_config);
-> > > >   SET_DEVICE_OP(dev_ops, get_vf_stats);
-> > > >   SET_DEVICE_OP(dev_ops, init_port);
-> > > > + SET_DEVICE_OP(dev_ops, iw_accept);
-> > > > + SET_DEVICE_OP(dev_ops, iw_add_ref);
-> > > > + SET_DEVICE_OP(dev_ops, iw_connect);
-> > > > + SET_DEVICE_OP(dev_ops, iw_create_listen);
-> > > > + SET_DEVICE_OP(dev_ops, iw_destroy_listen);
-> > > > + SET_DEVICE_OP(dev_ops, iw_get_qp);
-> > > > + SET_DEVICE_OP(dev_ops, iw_reject);
-> > > > + SET_DEVICE_OP(dev_ops, iw_rem_ref);
-> > > >   SET_DEVICE_OP(dev_ops, map_mr_sg);
-> > > >   SET_DEVICE_OP(dev_ops, map_phys_fmr);
-> > > >   SET_DEVICE_OP(dev_ops, mmap);
-> > > > diff --git a/drivers/infiniband/core/iwcm.c
-> > > > b/drivers/infiniband/core/iwcm.c
-> > > > index 732637c913d9..ac56762e7e93 100644
-> > > > --- a/drivers/infiniband/core/iwcm.c
-> > > > +++ b/drivers/infiniband/core/iwcm.c
-> > > > @@ -394,7 +394,7 @@ static void destroy_cm_id(struct iw_cm_id
-> > > > *cm_id)
-> > > >           cm_id_priv->state = IW_CM_STATE_DESTROYING;
-> > > >           spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-> > > >           /* destroy the listening endpoint */
-> > > > -         cm_id->device->iwcm->destroy_listen(cm_id);
-> > > > +         cm_id->device->ops.iw_destroy_listen(cm_id);
-> > > >           spin_lock_irqsave(&cm_id_priv->lock, flags);
-> > > >           break;
-> > > >   case IW_CM_STATE_ESTABLISHED:
-> > > > @@ -417,7 +417,7 @@ static void destroy_cm_id(struct iw_cm_id
-> > > > *cm_id)
-> > > >            */
-> > > >           cm_id_priv->state = IW_CM_STATE_DESTROYING;
-> > > >           spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-> > > > -         cm_id->device->iwcm->reject(cm_id, NULL, 0);
-> > > > +         cm_id->device->ops.iw_reject(cm_id, NULL, 0);
-> > > >           spin_lock_irqsave(&cm_id_priv->lock, flags);
-> > > >           break;
-> > > >   case IW_CM_STATE_CONN_SENT:
-> > > > @@ -427,7 +427,7 @@ static void destroy_cm_id(struct iw_cm_id
-> > > > *cm_id)
-> > > >           break;
-> > > >   }
-> > > >   if (cm_id_priv->qp) {
-> > > > -         cm_id_priv->id.device->iwcm->rem_ref(cm_id_priv->qp);
-> > > > +         cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
-> > > >           cm_id_priv->qp = NULL;
-> > > >   }
-> > > >   spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-> > > > @@ -504,7 +504,7 @@ static void iw_cm_check_wildcard(struct
-> > > > sockaddr_storage *pm_addr,
-> > > >  static int iw_cm_map(struct iw_cm_id *cm_id, bool active)
-> > > >  {
-> > > >   const char *devname = dev_name(&cm_id->device->dev);
-> > > > - const char *ifname = cm_id->device->iwcm->ifname;
-> > > > + const char *ifname = cm_id->device->iw_ifname;
-> > > >   struct iwpm_dev_data pm_reg_msg = {};
-> > > >   struct iwpm_sa_data pm_msg;
-> > > >   int status;
-> > > > @@ -526,7 +526,7 @@ static int iw_cm_map(struct iw_cm_id *cm_id,
-> > > > bool active)
-> > > >   cm_id->mapped = true;
-> > > >   pm_msg.loc_addr = cm_id->local_addr;
-> > > >   pm_msg.rem_addr = cm_id->remote_addr;
-> > > > - pm_msg.flags = (cm_id->device->iwcm->driver_flags &
-> > > > IW_F_NO_PORT_MAP) ?
-> > > > + pm_msg.flags = (cm_id->device->iw_driver_flags &
-> > > > IW_F_NO_PORT_MAP) ?
-> > > >                  IWPM_FLAGS_NO_PORT_MAP : 0;
-> > >
-> > > There are no drivers that set driver_flags and IW_F_NO_PORT_MAP.
-> > > I think that you can safely remove it.
-> > >
-> >
-> > Hi Steve,
-> >
-> > Could you please add more info about the use of the driver_flags? It
-> > was
-> > introduced for the first time as part of the following commit and I
-> > don't see
-> > any use for it or for the IW_F_NO_PORT_MAP & IWPM_FLAGS_NO_PORT_MAP
-> > enums.
-> >
-> > commit b0bad9ad514fc1dd8890f1749f5d2425a73270e3
-> > Author: Steve Wise <swise@opengridcomputing.com>
-> > Date:   Tue Jan 29 13:33:16 2019 -0800
-> >
-> >     RDMA/IWPM: Support no port mapping requirements
-> >
-> >     A soft iwarp driver that uses the host TCP stack via a kernel
-> > mode socket
-> >     does not need port mapping.  In fact, if the port map daemon,
-> > iwpmd, is
-> >     running, then iwpmd must not try and create/bind a socket to the
-> > actual
-> >     port for a soft iwarp connection, since the driver already has
-> > that socket
-> >     bound.
-> >
-> >     Yet if the soft iwarp driver wants to interoperate with hard
-> > iwarp devices
-> >     that -are- using port mapping, then the soft iwarp driver's
-> > mappings still
-> >     need to be maintained and advertised by the iwpm protocol.
-> >
-> >     This patch enhances the rdma driver<->iwcm interface to allow an
-> > iwarp
-> >     driver to specify that it does not want port mapping.  The iwpm
-> >     kernel<->iwpmd interface is also enhanced to pass up this
-> > information on
-> >     map requests.
-> >
-> >     Care is taken to interoperate with the current iwpmd version (ABI
-> > version
-> >     3) and only use the new NL attributes if iwpmd supports ABI
-> > version 4.
-> >
-> >     The ABI version define has also been created in rdma_netlink.h so
-> > both
-> >     kernel and user code can share it.  The iwcm and iwpmd negotiate
-> > the ABI
-> >     version to use with a new HELLO netlink message.
-> >
-> >     Signed-off-by: Steve Wise <swise@opengridcomputing.com>
-> >     Reviewed-by: Tatyana Nikolova <Tatyana.E.Nikolova@intel.com>
-> >     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> >
-> >
->
-> Can someone from the iwarp folks comment on the above question?
->
-> > > >   if (active)
-> > > >           status = iwpm_add_and_query_mapping(&pm_msg,
-> > > > @@ -577,7 +577,8 @@ int iw_cm_listen(struct iw_cm_id *cm_id, int
-> > > > backlog)
-> > > >           spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-> > > >           ret = iw_cm_map(cm_id, false);
-> > > >           if (!ret)
-> > > > -                 ret = cm_id->device->iwcm->create_listen(cm_id,
-> > > > backlog);
-> > > > +                 ret = cm_id->device-
-> > > > >ops.iw_create_listen(cm_id,
-> > > > +                                                              ba
-> > > > cklog);
-> > > >           if (ret)
-> > > >                   cm_id_priv->state = IW_CM_STATE_IDLE;
-> > > >           spin_lock_irqsave(&cm_id_priv->lock, flags);
-> > > > @@ -617,7 +618,7 @@ int iw_cm_reject(struct iw_cm_id *cm_id,
-> > > >   cm_id_priv->state = IW_CM_STATE_IDLE;
-> > > >   spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-> > > >
-> > > > - ret = cm_id->device->iwcm->reject(cm_id, private_data,
-> > > > + ret = cm_id->device->ops.iw_reject(cm_id, private_data,
-> > > >                                     private_data_len);
-> > > >
-> > > >   clear_bit(IWCM_F_CONNECT_WAIT, &cm_id_priv->flags);
-> > > > @@ -653,25 +654,25 @@ int iw_cm_accept(struct iw_cm_id *cm_id,
-> > > >           return -EINVAL;
-> > > >   }
-> > > >   /* Get the ib_qp given the QPN */
-> > > > - qp = cm_id->device->iwcm->get_qp(cm_id->device, iw_param->qpn);
-> > > > + qp = cm_id->device->ops.iw_get_qp(cm_id->device, iw_param-
-> > > > >qpn);
-> > > >   if (!qp) {
-> > > >           spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-> > > >           clear_bit(IWCM_F_CONNECT_WAIT, &cm_id_priv->flags);
-> > > >           wake_up_all(&cm_id_priv->connect_wait);
-> > > >           return -EINVAL;
-> > > >   }
-> > > > - cm_id->device->iwcm->add_ref(qp);
-> > > > + cm_id->device->ops.iw_add_ref(qp);
-> > > >   cm_id_priv->qp = qp;
-> > > >   spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-> > > >
-> > > > - ret = cm_id->device->iwcm->accept(cm_id, iw_param);
-> > > > + ret = cm_id->device->ops.iw_accept(cm_id, iw_param);
-> > > >   if (ret) {
-> > > >           /* An error on accept precludes provider events */
-> > > >           BUG_ON(cm_id_priv->state != IW_CM_STATE_CONN_RECV);
-> > > >           cm_id_priv->state = IW_CM_STATE_IDLE;
-> > > >           spin_lock_irqsave(&cm_id_priv->lock, flags);
-> > > >           if (cm_id_priv->qp) {
-> > > > -                 cm_id->device->iwcm->rem_ref(qp);
-> > > > +                 cm_id->device->ops.iw_rem_ref(qp);
-> > > >                   cm_id_priv->qp = NULL;
-> > > >           }
-> > > >           spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-> > > > @@ -712,25 +713,25 @@ int iw_cm_connect(struct iw_cm_id *cm_id,
-> > > > struct iw_cm_conn_param *iw_param)
-> > > >   }
-> > > >
-> > > >   /* Get the ib_qp given the QPN */
-> > > > - qp = cm_id->device->iwcm->get_qp(cm_id->device, iw_param->qpn);
-> > > > + qp = cm_id->device->ops.iw_get_qp(cm_id->device, iw_param-
-> > > > >qpn);
-> > > >   if (!qp) {
-> > > >           ret = -EINVAL;
-> > > >           goto err;
-> > > >   }
-> > > > - cm_id->device->iwcm->add_ref(qp);
-> > > > + cm_id->device->ops.iw_add_ref(qp);
-> > > >   cm_id_priv->qp = qp;
-> > > >   cm_id_priv->state = IW_CM_STATE_CONN_SENT;
-> > > >   spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-> > > >
-> > > >   ret = iw_cm_map(cm_id, true);
-> > > >   if (!ret)
-> > > > -         ret = cm_id->device->iwcm->connect(cm_id, iw_param);
-> > > > +         ret = cm_id->device->ops.iw_connect(cm_id, iw_param);
-> > > >   if (!ret)
-> > > >           return 0;       /* success */
-> > > >
-> > > >   spin_lock_irqsave(&cm_id_priv->lock, flags);
-> > > >   if (cm_id_priv->qp) {
-> > > > -         cm_id->device->iwcm->rem_ref(qp);
-> > > > +         cm_id->device->ops.iw_rem_ref(qp);
-> > > >           cm_id_priv->qp = NULL;
-> > > >   }
-> > > >   cm_id_priv->state = IW_CM_STATE_IDLE;
-> > > > @@ -895,7 +896,7 @@ static int cm_conn_rep_handler(struct
-> > > > iwcm_id_private *cm_id_priv,
-> > > >           cm_id_priv->state = IW_CM_STATE_ESTABLISHED;
-> > > >   } else {
-> > > >           /* REJECTED or RESET */
-> > > > -         cm_id_priv->id.device->iwcm->rem_ref(cm_id_priv->qp);
-> > > > +         cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
-> > > >           cm_id_priv->qp = NULL;
-> > > >           cm_id_priv->state = IW_CM_STATE_IDLE;
-> > > >   }
-> > > > @@ -946,7 +947,7 @@ static int cm_close_handler(struct
-> > > > iwcm_id_private *cm_id_priv,
-> > > >   spin_lock_irqsave(&cm_id_priv->lock, flags);
-> > > >
-> > > >   if (cm_id_priv->qp) {
-> > > > -         cm_id_priv->id.device->iwcm->rem_ref(cm_id_priv->qp);
-> > > > +         cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
-> > > >           cm_id_priv->qp = NULL;
-> > > >   }
-> > > >   switch (cm_id_priv->state) {
-> > > > diff --git a/drivers/infiniband/hw/cxgb3/iwch_provider.c
-> > > > b/drivers/infiniband/hw/cxgb3/iwch_provider.c
-> > > > index 62b99d26f0d3..3a481dfb1607 100644
-> > > > --- a/drivers/infiniband/hw/cxgb3/iwch_provider.c
-> > > > +++ b/drivers/infiniband/hw/cxgb3/iwch_provider.c
-> > > > @@ -1321,6 +1321,14 @@ static const struct ib_device_ops
-> > > > iwch_dev_ops = {
-> > > >   .get_dma_mr = iwch_get_dma_mr,
-> > > >   .get_hw_stats = iwch_get_mib,
-> > > >   .get_port_immutable = iwch_port_immutable,
-> > > > + .iw_accept = iwch_accept_cr,
-> > > > + .iw_add_ref = iwch_qp_add_ref,
-> > > > + .iw_connect = iwch_connect,
-> > > > + .iw_create_listen = iwch_create_listen,
-> > > > + .iw_destroy_listen = iwch_destroy_listen,
-> > > > + .iw_get_qp = iwch_get_qp,
-> > > > + .iw_reject = iwch_reject_cr,
-> > > > + .iw_rem_ref = iwch_qp_rem_ref,
-> > > >   .map_mr_sg = iwch_map_mr_sg,
-> > > >   .mmap = iwch_mmap,
-> > > >   .modify_qp = iwch_ib_modify_qp,
-> > > > @@ -1340,8 +1348,6 @@ static const struct ib_device_ops
-> > > > iwch_dev_ops = {
-> > > >
-> > > >  int iwch_register_device(struct iwch_dev *dev)
-> > > >  {
-> > > > - int ret;
-> > > > -
-> > > >   pr_debug("%s iwch_dev %p\n", __func__, dev);
-> > > >   memset(&dev->ibdev.node_guid, 0, sizeof(dev->ibdev.node_guid));
-> > > >   memcpy(&dev->ibdev.node_guid, dev->rdev.t3cdev_p->lldev-
-> > > > >dev_addr, 6);
-> > > > @@ -1379,34 +1385,18 @@ int iwch_register_device(struct iwch_dev
-> > > > *dev)
-> > > >   dev->ibdev.dev.parent = &dev->rdev.rnic_info.pdev->dev;
-> > > >   dev->ibdev.uverbs_abi_ver = IWCH_UVERBS_ABI_VERSION;
-> > > >
-> > > > - dev->ibdev.iwcm = kzalloc(sizeof(struct iw_cm_verbs),
-> > > > GFP_KERNEL);
-> > > > - if (!dev->ibdev.iwcm)
-> > > > -         return -ENOMEM;
-> > > > -
-> > > > - dev->ibdev.iwcm->connect = iwch_connect;
-> > > > - dev->ibdev.iwcm->accept = iwch_accept_cr;
-> > > > - dev->ibdev.iwcm->reject = iwch_reject_cr;
-> > > > - dev->ibdev.iwcm->create_listen = iwch_create_listen;
-> > > > - dev->ibdev.iwcm->destroy_listen = iwch_destroy_listen;
-> > > > - dev->ibdev.iwcm->add_ref = iwch_qp_add_ref;
-> > > > - dev->ibdev.iwcm->rem_ref = iwch_qp_rem_ref;
-> > > > - dev->ibdev.iwcm->get_qp = iwch_get_qp;
-> > > > - memcpy(dev->ibdev.iwcm->ifname, dev->rdev.t3cdev_p->lldev-
-> > > > >name,
-> > > > -        sizeof(dev->ibdev.iwcm->ifname));
-> > > > + memcpy(dev->ibdev.iw_ifname, dev->rdev.t3cdev_p->lldev->name,
-> > > > +        sizeof(dev->ibdev.iw_ifname));
-> > > >
-> > > >   dev->ibdev.driver_id = RDMA_DRIVER_CXGB3;
-> > > >   rdma_set_device_sysfs_group(&dev->ibdev, &iwch_attr_group);
-> > > >   ib_set_device_ops(&dev->ibdev, &iwch_dev_ops);
-> > > > - ret = ib_register_device(&dev->ibdev, "cxgb3_%d");
-> > > > - if (ret)
-> > > > -         kfree(dev->ibdev.iwcm);
-> > > > - return ret;
-> > > > + return ib_register_device(&dev->ibdev, "cxgb3_%d");
-> > > >  }
-> > > >
-> > > >  void iwch_unregister_device(struct iwch_dev *dev)
-> > > >  {
-> > > >   pr_debug("%s iwch_dev %p\n", __func__, dev);
-> > > >   ib_unregister_device(&dev->ibdev);
-> > > > - kfree(dev->ibdev.iwcm);
-> > > >   return;
-> > > >  }
-> > > > diff --git a/drivers/infiniband/hw/cxgb4/provider.c
-> > > > b/drivers/infiniband/hw/cxgb4/provider.c
-> > > > index 3c5197ee77f5..74b795642fca 100644
-> > > > --- a/drivers/infiniband/hw/cxgb4/provider.c
-> > > > +++ b/drivers/infiniband/hw/cxgb4/provider.c
-> > > > @@ -510,6 +510,14 @@ static const struct ib_device_ops
-> > > > c4iw_dev_ops = {
-> > > >   .get_dma_mr = c4iw_get_dma_mr,
-> > > >   .get_hw_stats = c4iw_get_mib,
-> > > >   .get_port_immutable = c4iw_port_immutable,
-> > > > + .iw_accept = c4iw_accept_cr,
-> > > > + .iw_add_ref = c4iw_qp_add_ref,
-> > > > + .iw_connect = c4iw_connect,
-> > > > + .iw_create_listen = c4iw_create_listen,
-> > > > + .iw_destroy_listen = c4iw_destroy_listen,
-> > > > + .iw_get_qp = c4iw_get_qp,
-> > > > + .iw_reject = c4iw_reject_cr,
-> > > > + .iw_rem_ref = c4iw_qp_rem_ref,
-> > > >   .map_mr_sg = c4iw_map_mr_sg,
-> > > >   .mmap = c4iw_mmap,
-> > > >   .modify_qp = c4iw_ib_modify_qp,
-> > > > @@ -588,36 +596,20 @@ void c4iw_register_device(struct
-> > > > work_struct *work)
-> > > >   dev->ibdev.dev.parent = &dev->rdev.lldi.pdev->dev;
-> > > >   dev->ibdev.uverbs_abi_ver = C4IW_UVERBS_ABI_VERSION;
-> > > >
-> > > > - dev->ibdev.iwcm = kzalloc(sizeof(struct iw_cm_verbs),
-> > > > GFP_KERNEL);
-> > > > - if (!dev->ibdev.iwcm) {
-> > > > -         ret = -ENOMEM;
-> > > > -         goto err_dealloc_ctx;
-> > > > - }
-> > > > -
-> > > > - dev->ibdev.iwcm->connect = c4iw_connect;
-> > > > - dev->ibdev.iwcm->accept = c4iw_accept_cr;
-> > > > - dev->ibdev.iwcm->reject = c4iw_reject_cr;
-> > > > - dev->ibdev.iwcm->create_listen = c4iw_create_listen;
-> > > > - dev->ibdev.iwcm->destroy_listen = c4iw_destroy_listen;
-> > > > - dev->ibdev.iwcm->add_ref = c4iw_qp_add_ref;
-> > > > - dev->ibdev.iwcm->rem_ref = c4iw_qp_rem_ref;
-> > > > - dev->ibdev.iwcm->get_qp = c4iw_get_qp;
-> > > > - memcpy(dev->ibdev.iwcm->ifname, dev->rdev.lldi.ports[0]->name,
-> > > > -        sizeof(dev->ibdev.iwcm->ifname));
-> > > > + memcpy(dev->ibdev.iw_ifname, dev->rdev.lldi.ports[0]->name,
-> > > > +        sizeof(dev->ibdev.iw_ifname));
-> > > >
-> > > >   rdma_set_device_sysfs_group(&dev->ibdev, &c4iw_attr_group);
-> > > >   dev->ibdev.driver_id = RDMA_DRIVER_CXGB4;
-> > > >   ib_set_device_ops(&dev->ibdev, &c4iw_dev_ops);
-> > > >   ret = set_netdevs(&dev->ibdev, &dev->rdev);
-> > > >   if (ret)
-> > > > -         goto err_kfree_iwcm;
-> > > > +         goto err_dealloc_ctx;
-> > > >   ret = ib_register_device(&dev->ibdev, "cxgb4_%d");
-> > > >   if (ret)
-> > > > -         goto err_kfree_iwcm;
-> > > > +         goto err_dealloc_ctx;
-> > > >   return;
-> > > >
-> > > > -err_kfree_iwcm:
-> > > > - kfree(dev->ibdev.iwcm);
-> > > >  err_dealloc_ctx:
-> > > >   pr_err("%s - Failed registering iwarp device: %d\n",
-> > > >          pci_name(ctx->lldi.pdev), ret);
-> > > > @@ -629,6 +621,5 @@ void c4iw_unregister_device(struct c4iw_dev
-> > > > *dev)
-> > > >  {
-> > > >   pr_debug("c4iw_dev %p\n", dev);
-> > > >   ib_unregister_device(&dev->ibdev);
-> > > > - kfree(dev->ibdev.iwcm);
-> > > >   return;
-> > > >  }
-> > > > diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-> > > > b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-> > > > index 7bf7fe854464..b8a1412253ae 100644
-> > > > --- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-> > > > +++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-> > > > @@ -2704,6 +2704,14 @@ static const struct ib_device_ops
-> > > > i40iw_dev_ops = {
-> > > >   .get_dma_mr = i40iw_get_dma_mr,
-> > > >   .get_hw_stats = i40iw_get_hw_stats,
-> > > >   .get_port_immutable = i40iw_port_immutable,
-> > > > + .iw_accept = i40iw_accept,
-> > > > + .iw_add_ref = i40iw_add_ref,
-> > > > + .iw_connect = i40iw_connect,
-> > > > + .iw_create_listen = i40iw_create_listen,
-> > > > + .iw_destroy_listen = i40iw_destroy_listen,
-> > > > + .iw_get_qp = i40iw_get_qp,
-> > > > + .iw_reject = i40iw_reject,
-> > > > + .iw_rem_ref = i40iw_rem_ref,
-> > > >   .map_mr_sg = i40iw_map_mr_sg,
-> > > >   .mmap = i40iw_mmap,
-> > > >   .modify_qp = i40iw_modify_qp,
-> > > > @@ -2767,22 +2775,8 @@ static struct i40iw_ib_device
-> > > > *i40iw_init_rdma_device(struct i40iw_device *iwdev
-> > > >   iwibdev->ibdev.phys_port_cnt = 1;
-> > > >   iwibdev->ibdev.num_comp_vectors = iwdev->ceqs_count;
-> > > >   iwibdev->ibdev.dev.parent = &pcidev->dev;
-> > > > - iwibdev->ibdev.iwcm = kzalloc(sizeof(*iwibdev->ibdev.iwcm),
-> > > > GFP_KERNEL);
-> > > > - if (!iwibdev->ibdev.iwcm) {
-> > > > -         ib_dealloc_device(&iwibdev->ibdev);
-> > > > -         return NULL;
-> > > > - }
-> > > > -
-> > > > - iwibdev->ibdev.iwcm->add_ref = i40iw_add_ref;
-> > > > - iwibdev->ibdev.iwcm->rem_ref = i40iw_rem_ref;
-> > > > - iwibdev->ibdev.iwcm->get_qp = i40iw_get_qp;
-> > > > - iwibdev->ibdev.iwcm->connect = i40iw_connect;
-> > > > - iwibdev->ibdev.iwcm->accept = i40iw_accept;
-> > > > - iwibdev->ibdev.iwcm->reject = i40iw_reject;
-> > > > - iwibdev->ibdev.iwcm->create_listen = i40iw_create_listen;
-> > > > - iwibdev->ibdev.iwcm->destroy_listen = i40iw_destroy_listen;
-> > > > - memcpy(iwibdev->ibdev.iwcm->ifname, netdev->name,
-> > > > -        sizeof(iwibdev->ibdev.iwcm->ifname));
-> > > > + memcpy(iwibdev->ibdev.iw_ifname, netdev->name,
-> > > > +        sizeof(iwibdev->ibdev.iw_ifname));
-> > > >   ib_set_device_ops(&iwibdev->ibdev, &i40iw_dev_ops);
-> > > >
-> > > >   return iwibdev;
-> > > > @@ -2813,8 +2807,6 @@ void i40iw_destroy_rdma_device(struct
-> > > > i40iw_ib_device *iwibdev)
-> > > >           return;
-> > > >
-> > > >   ib_unregister_device(&iwibdev->ibdev);
-> > > > - kfree(iwibdev->ibdev.iwcm);
-> > > > - iwibdev->ibdev.iwcm = NULL;
-> > > >   wait_event_timeout(iwibdev->iwdev->close_wq,
-> > > >                      !atomic64_read(&iwibdev->iwdev->use_count),
-> > > >                      I40IW_EVENT_TIMEOUT);
-> > > > @@ -2842,8 +2834,6 @@ int i40iw_register_rdma_device(struct
-> > > > i40iw_device *iwdev)
-> > > >
-> > > >   return 0;
-> > > >  error:
-> > > > - kfree(iwdev->iwibdev->ibdev.iwcm);
-> > > > - iwdev->iwibdev->ibdev.iwcm = NULL;
-> > > >   ib_dealloc_device(&iwdev->iwibdev->ibdev);
-> > > >   return ret;
-> > > >  }
-> > > > diff --git a/drivers/infiniband/hw/nes/nes_verbs.c
-> > > > b/drivers/infiniband/hw/nes/nes_verbs.c
-> > > > index a3b5e8eecb98..49024326a518 100644
-> > > > --- a/drivers/infiniband/hw/nes/nes_verbs.c
-> > > > +++ b/drivers/infiniband/hw/nes/nes_verbs.c
-> > > > @@ -3577,6 +3577,14 @@ static const struct ib_device_ops
-> > > > nes_dev_ops = {
-> > > >   .get_dev_fw_str = get_dev_fw_str,
-> > > >   .get_dma_mr = nes_get_dma_mr,
-> > > >   .get_port_immutable = nes_port_immutable,
-> > > > + .iw_accept = nes_accept,
-> > > > + .iw_add_ref = nes_add_ref,
-> > > > + .iw_connect = nes_connect,
-> > > > + .iw_create_listen = nes_create_listen,
-> > > > + .iw_destroy_listen = nes_destroy_listen,
-> > > > + .iw_get_qp = nes_get_qp,
-> > > > + .iw_reject = nes_reject,
-> > > > + .iw_rem_ref = nes_rem_ref,
-> > > >   .map_mr_sg = nes_map_mr_sg,
-> > > >   .mmap = nes_mmap,
-> > > >   .modify_qp = nes_modify_qp,
-> > > > @@ -3641,23 +3649,9 @@ struct nes_ib_device
-> > > > *nes_init_ofa_device(struct net_device *netdev)
-> > > >   nesibdev->ibdev.num_comp_vectors = 1;
-> > > >   nesibdev->ibdev.dev.parent = &nesdev->pcidev->dev;
-> > > >
-> > > > - nesibdev->ibdev.iwcm = kzalloc(sizeof(*nesibdev->ibdev.iwcm),
-> > > > GFP_KERNEL);
-> > > > - if (nesibdev->ibdev.iwcm == NULL) {
-> > > > -         ib_dealloc_device(&nesibdev->ibdev);
-> > > > -         return NULL;
-> > > > - }
-> > > > - nesibdev->ibdev.iwcm->add_ref = nes_add_ref;
-> > > > - nesibdev->ibdev.iwcm->rem_ref = nes_rem_ref;
-> > > > - nesibdev->ibdev.iwcm->get_qp = nes_get_qp;
-> > > > - nesibdev->ibdev.iwcm->connect = nes_connect;
-> > > > - nesibdev->ibdev.iwcm->accept = nes_accept;
-> > > > - nesibdev->ibdev.iwcm->reject = nes_reject;
-> > > > - nesibdev->ibdev.iwcm->create_listen = nes_create_listen;
-> > > > - nesibdev->ibdev.iwcm->destroy_listen = nes_destroy_listen;
-> > > > -
-> > > >   ib_set_device_ops(&nesibdev->ibdev, &nes_dev_ops);
-> > > > - memcpy(nesibdev->ibdev.iwcm->ifname, netdev->name,
-> > > > -        sizeof(nesibdev->ibdev.iwcm->ifname));
-> > > > + memcpy(nesibdev->ibdev.iw_ifname, netdev->name,
-> > > > +        sizeof(nesibdev->ibdev.iw_ifname));
-> > > >
-> > > >   return nesibdev;
-> > > >  }
-> > > > @@ -3718,7 +3712,6 @@ void nes_destroy_ofa_device(struct
-> > > > nes_ib_device *nesibdev)
-> > > >
-> > > >   nes_unregister_ofa_device(nesibdev);
-> > > >
-> > > > - kfree(nesibdev->ibdev.iwcm);
-> > > >   ib_dealloc_device(&nesibdev->ibdev);
-> > > >  }
-> > > >
-> > > > diff --git a/drivers/infiniband/hw/qedr/main.c
-> > > > b/drivers/infiniband/hw/qedr/main.c
-> > > > index a0a49ed26860..083c2c00a8e9 100644
-> > > > --- a/drivers/infiniband/hw/qedr/main.c
-> > > > +++ b/drivers/infiniband/hw/qedr/main.c
-> > > > @@ -148,6 +148,14 @@ static const struct attribute_group
-> > > > qedr_attr_group = {
-> > > >
-> > > >  static const struct ib_device_ops qedr_iw_dev_ops = {
-> > > >   .get_port_immutable = qedr_iw_port_immutable,
-> > > > + .iw_accept = qedr_iw_accept,
-> > > > + .iw_add_ref = qedr_iw_qp_add_ref,
-> > > > + .iw_connect = qedr_iw_connect,
-> > > > + .iw_create_listen = qedr_iw_create_listen,
-> > > > + .iw_destroy_listen = qedr_iw_destroy_listen,
-> > > > + .iw_get_qp = qedr_iw_get_qp,
-> > > > + .iw_reject = qedr_iw_reject,
-> > > > + .iw_rem_ref = qedr_iw_qp_rem_ref,
-> > > >   .query_gid = qedr_iw_query_gid,
-> > > >  };
-> > > >
-> > > > @@ -157,21 +165,8 @@ static int qedr_iw_register_device(struct
-> > > > qedr_dev *dev)
-> > > >
-> > > >   ib_set_device_ops(&dev->ibdev, &qedr_iw_dev_ops);
-> > > >
-> > > > - dev->ibdev.iwcm = kzalloc(sizeof(*dev->ibdev.iwcm),
-> > > > GFP_KERNEL);
-> > > > - if (!dev->ibdev.iwcm)
-> > > > -         return -ENOMEM;
-> > > > -
-> > > > - dev->ibdev.iwcm->connect = qedr_iw_connect;
-> > > > - dev->ibdev.iwcm->accept = qedr_iw_accept;
-> > > > - dev->ibdev.iwcm->reject = qedr_iw_reject;
-> > > > - dev->ibdev.iwcm->create_listen = qedr_iw_create_listen;
-> > > > - dev->ibdev.iwcm->destroy_listen = qedr_iw_destroy_listen;
-> > > > - dev->ibdev.iwcm->add_ref = qedr_iw_qp_add_ref;
-> > > > - dev->ibdev.iwcm->rem_ref = qedr_iw_qp_rem_ref;
-> > > > - dev->ibdev.iwcm->get_qp = qedr_iw_get_qp;
-> > > > -
-> > > > - memcpy(dev->ibdev.iwcm->ifname,
-> > > > -        dev->ndev->name, sizeof(dev->ibdev.iwcm->ifname));
-> > > > + memcpy(dev->ibdev.iw_ifname,
-> > > > +        dev->ndev->name, sizeof(dev->ibdev.iw_ifname));
-> > > >
-> > > >   return 0;
-> > > >  }
-> > > > diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> > > > index 43a75ab8ea8a..efaae57edccd 100644
-> > > > --- a/include/rdma/ib_verbs.h
-> > > > +++ b/include/rdma/ib_verbs.h
-> > > > @@ -2191,8 +2191,6 @@ struct ib_cache {
-> > > >   struct ib_event_handler event_handler;
-> > > >  };
-> > > >
-> > > > -struct iw_cm_verbs;
-> > > > -
-> > > >  struct ib_port_immutable {
-> > > >   int                           pkey_tbl_len;
-> > > >   int                           gid_tbl_len;
-> > > > @@ -2274,6 +2272,8 @@ struct ib_counters_read_attr {
-> > > >  };
-> > > >
-> > > >  struct uverbs_attr_bundle;
-> > > > +struct iw_cm_id;
-> > > > +struct iw_cm_conn_param;
-> > > >
-> > > >  #define INIT_RDMA_OBJ_SIZE(ib_struct, drv_struct,
-> > > > member)                      \
-> > > >   .size_##ib_struct
-> > > > =                                                    \
-> > > > @@ -2551,6 +2551,19 @@ struct ib_device_ops {
-> > > >    */
-> > > >   void (*dealloc_driver)(struct ib_device *dev);
-> > > >
-> > > > + /* iWarp CM callbacks */
-> > > > + void (*iw_add_ref)(struct ib_qp *qp);
-> > > > + void (*iw_rem_ref)(struct ib_qp *qp);
-> > > > + struct ib_qp *(*iw_get_qp)(struct ib_device *device, int qpn);
-> > > > + int (*iw_connect)(struct iw_cm_id *cm_id,
-> > > > +                   struct iw_cm_conn_param *conn_param);
-> > > > + int (*iw_accept)(struct iw_cm_id *cm_id,
-> > > > +                  struct iw_cm_conn_param *conn_param);
-> > > > + int (*iw_reject)(struct iw_cm_id *cm_id, const void *pdata,
-> > > > +                  u8 pdata_len);
-> > > > + int (*iw_create_listen)(struct iw_cm_id *cm_id, int backlog);
-> > > > + int (*iw_destroy_listen)(struct iw_cm_id *cm_id);
-> > > > +
-> > > >   DECLARE_RDMA_OBJ_SIZE(ib_ah);
-> > > >   DECLARE_RDMA_OBJ_SIZE(ib_pd);
-> > > >   DECLARE_RDMA_OBJ_SIZE(ib_srq);
-> > > > @@ -2591,8 +2604,6 @@ struct ib_device {
-> > > >
-> > > >   int                           num_comp_vectors;
-> > > >
-> > > > - struct iw_cm_verbs           *iwcm;
-> > > > -
-> > > >   struct module               *owner;
-> > > >   union {
-> > > >           struct device           dev;
-> > > > @@ -2645,6 +2656,10 @@ struct ib_device {
-> > > >   struct mutex compat_devs_mutex;
-> > > >   /* Maintains compat devices for each net namespace */
-> > > >   struct xarray compat_devs;
-> > > > +
-> > > > + /* Used by iWarp CM */
-> > > > + char iw_ifname[IFNAMSIZ];
-> > > > + u32 iw_driver_flags;
-> > >
-> > > No one sets this field.
-> > >
-> > > >  };
-> > > >
-> > > >  struct ib_client {
-> > > > diff --git a/include/rdma/iw_cm.h b/include/rdma/iw_cm.h
-> > > > index 0e1f02815643..5aa8a9c76aa0 100644
-> > > > --- a/include/rdma/iw_cm.h
-> > > > +++ b/include/rdma/iw_cm.h
-> > > > @@ -118,31 +118,6 @@ enum iw_flags {
-> > > >   IW_F_NO_PORT_MAP = (1 << 0),
-> > > >  };
-> > > >
-> > > > -struct iw_cm_verbs {
-> > > > - void            (*add_ref)(struct ib_qp *qp);
-> > > > -
-> > > > - void            (*rem_ref)(struct ib_qp *qp);
-> > > > -
-> > > > - struct ib_qp *  (*get_qp)(struct ib_device *device,
-> > > > -                           int qpn);
-> > > > -
-> > > > - int             (*connect)(struct iw_cm_id *cm_id,
-> > > > -                            struct iw_cm_conn_param
-> > > > *conn_param);
-> > > > -
-> > > > - int             (*accept)(struct iw_cm_id *cm_id,
-> > > > -                           struct iw_cm_conn_param *conn_param);
-> > > > -
-> > > > - int             (*reject)(struct iw_cm_id *cm_id,
-> > > > -                           const void *pdata, u8 pdata_len);
-> > > > -
-> > > > - int             (*create_listen)(struct iw_cm_id *cm_id,
-> > > > -                                  int backlog);
-> > > > -
-> > > > - int             (*destroy_listen)(struct iw_cm_id *cm_id);
-> > > > - char            ifname[IFNAMSIZ];
-> > > > - enum iw_flags   driver_flags;
-> > > > -};
-> > > > -
-> > > >  /**
-> > > >   * iw_create_cm_id - Create an IW CM identifier.
-> > > >   *
-> > > > --
-> > > > 2.20.1
-> > > >
->
+What? This hardware is broken and doesn't respond to the bus master
+enable bit in the PCI config space??
+
+Jason
