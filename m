@@ -2,71 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7644D1127F
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 07:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D650711294
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 07:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725764AbfEBFN1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 01:13:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55542 "EHLO mail.kernel.org"
+        id S1726111AbfEBF0j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 01:26:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725681AbfEBFN1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 May 2019 01:13:27 -0400
+        id S1725681AbfEBF0j (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 May 2019 01:26:39 -0400
 Received: from localhost (unknown [37.142.3.125])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1AD6B2081C;
-        Thu,  2 May 2019 05:13:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16B442085A;
+        Thu,  2 May 2019 05:26:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1556774006;
-        bh=CrH2zf+C2T7OR/wQ8PNnjw3DEiFgZssh6zb6un90Zps=;
+        s=default; t=1556774798;
+        bh=WwXxMD/Z8IZGVNSYbPauYW3sigFOUV3wwZt343vv3Xk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LWEwJ23DjdMowrXBg/ptNJY41dX3+6r/soZmIhRqjhArv/nEMECbV0p6BWdu5SCvd
-         I1Re0hhrd7ewlsJVYEe40l2fgrUFv4LFxbUJ7E9Rs8ivC99nE/4OsZvU8t+dEFK7lQ
-         jth9gdv6zlczoDm2VKJjyb0Vx0Dufh59VlSWVZF8=
-Date:   Thu, 2 May 2019 08:13:20 +0300
+        b=NZAjWYH5vUtLpnQ7wJNs+/1YY0w7CrWDB2X5UYx+sti5x9aiOR4kp+A6q+uQBZtck
+         6kWQVTkuiN3SIt39iMZRB/lpyGYEp5SObxnPfuRh/X7sz5KmwtimXFXsF+w8bwX7Zk
+         qZw4Upzigh3HRGQvmG7zmE+mDQtqLKPyBFxnRJx0=
+Date:   Thu, 2 May 2019 08:26:32 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     michal.kalderon@marvell.com, David Miller <davem@davemloft.net>
-Cc:     ariel.elior@marvell.com, jgg@ziepe.ca, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH net-next 07/10] qed*: Add iWARP 100g support
-Message-ID: <20190502051320.GF7676@mtr-leonro.mtl.com>
-References: <20190501095722.6902-1-michal.kalderon@marvell.com>
- <20190501095722.6902-8-michal.kalderon@marvell.com>
- <20190501.203522.1577716429222042609.davem@davemloft.net>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/device: Don't fire uevent before device
+ is fully initialized
+Message-ID: <20190502052632.GG7676@mtr-leonro.mtl.com>
+References: <20190501054619.14838-1-leon@kernel.org>
+ <20190501115049.GA10407@mellanox.com>
+ <20190501173126.GD7676@mtr-leonro.mtl.com>
+ <VI1PR0501MB227160596CFF8DF1C72AAAF3D1340@VI1PR0501MB2271.eurprd05.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190501.203522.1577716429222042609.davem@davemloft.net>
+In-Reply-To: <VI1PR0501MB227160596CFF8DF1C72AAAF3D1340@VI1PR0501MB2271.eurprd05.prod.outlook.com>
 User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 01, 2019 at 08:35:22PM -0400, David Miller wrote:
-> From: Michal Kalderon <michal.kalderon@marvell.com>
-> Date: Wed, 1 May 2019 12:57:19 +0300
+On Thu, May 02, 2019 at 01:50:22AM +0000, Parav Pandit wrote:
+> Hi Leon,
 >
-> > diff --git a/drivers/infiniband/hw/qedr/main.c b/drivers/infiniband/hw/qedr/main.c
-> > index d93c8a893a89..8bc6775abb79 100644
-> > --- a/drivers/infiniband/hw/qedr/main.c
-> > +++ b/drivers/infiniband/hw/qedr/main.c
-> > @@ -52,6 +52,10 @@ MODULE_DESCRIPTION("QLogic 40G/100G ROCE Driver");
-> >  MODULE_AUTHOR("QLogic Corporation");
-> >  MODULE_LICENSE("Dual BSD/GPL");
+> > -----Original Message-----
+> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > owner@vger.kernel.org> On Behalf Of Leon Romanovsky
+> > Sent: Wednesday, May 1, 2019 12:31 PM
+> > To: Jason Gunthorpe <jgg@mellanox.com>
+> > Cc: Doug Ledford <dledford@redhat.com>; RDMA mailing list <linux-
+> > rdma@vger.kernel.org>
+> > Subject: Re: [PATCH rdma-next] RDMA/device: Don't fire uevent before
+> > device is fully initialized
 > >
-> > +static uint iwarp_cmt;
-> > +module_param(iwarp_cmt, uint, 0444);
-> > +MODULE_PARM_DESC(iwarp_cmt, " iWARP: Support CMT mode. 0 - Disabled, 1 - Enabled. Default: Disabled");
-> > +
->
-> Sorry no, this is totally beneath us.
+> > On Wed, May 01, 2019 at 01:28:55PM +0000, Jason Gunthorpe wrote:
+> > > On Wed, May 01, 2019 at 08:46:19AM +0300, Leon Romanovsky wrote:
+> > > > From: Leon Romanovsky <leonro@mellanox.com>
+> > > >
+> > > > When the refcount is 0 the device is invisible to netlink. However
+> > > > in the patch below the refcount = 1 was moved to after the device_add().
+> > > > This creates a race where userspace can issue a netlink query after
+> > > > the
+> > > > device_add() event and not see the device as visible.
+> > > >
+> > > > Ensure that no uevent is fired before device is fully registered.
+> > > >
+> > > > Fixes: d79af7242bb2 ("RDMA/device: Expose ib_device_try_get(()")
+> > > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > > > drivers/infiniband/core/device.c | 12 ++++++++++++
+> > > >  1 file changed, 12 insertions(+)
+> > > >
+> > > > diff --git a/drivers/infiniband/core/device.c
+> > > > b/drivers/infiniband/core/device.c
+> > > > index 8ae4906a60e7..4cdc8588df7f 100644
+> > > > +++ b/drivers/infiniband/core/device.c
+> > > > @@ -808,6 +808,7 @@ static int add_one_compat_dev(struct ib_device
+> > *device,
+> > > >  	cdev->dev.release = compatdev_release;
+> > > >  	dev_set_name(&cdev->dev, "%s", dev_name(&device->dev));
+> > > >
+> > > > +	dev_set_uevent_suppress(&device->dev, true);
+> > > >  	ret = device_add(&cdev->dev);
+> > > >  	if (ret)
+> > > >  		goto add_err;
+> > >
+> > > compat devices definitely should not be doing this..
+> >
+> > Why? They have the same problematic pattern:
+> >  device_add -> ..... -> enable_device.
+> >
+> compat devices are added in enable_device_and_get() after refcount is set.
+> ib_register_device()
+>    enable_device_and_get()
+>        refcount=2
+>        [...]
+>        add_compat_devs()
 
-It is not acceptable for RDMA too.
 
-Also please don't use comments inside function calls, it complicates
-various checkers without real need.
-dev->ops->iwarp_set_engine_affin(dev->cdev, true /* reset */);
-                                                ^^^^^^^^^^^^^^
+
+ok, I will return to my original patch before I changed its as a
+response for review comments.
+
 Thanks
