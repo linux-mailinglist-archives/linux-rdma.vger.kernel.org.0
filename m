@@ -2,111 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDBD12216
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 20:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF021228A
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 21:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbfEBSoo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 14:44:44 -0400
-Received: from mail-yw1-f66.google.com ([209.85.161.66]:43218 "EHLO
-        mail-yw1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbfEBSoo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 14:44:44 -0400
-Received: by mail-yw1-f66.google.com with SMTP id w196so2338065ywd.10
-        for <linux-rdma@vger.kernel.org>; Thu, 02 May 2019 11:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0H6/1V6/5CIKh3CDtEYPw4qJMt0j8mXo9dQuEOmaJ2c=;
-        b=TAjDKfRewk/UKamdlBYp4Z/f6fr9mzmhTBqPKn6Tso2lr/AkBQ1LMwAK9XIDmPfqWH
-         1X2g+ZiCkYEJEIfn+6n2PJc1Ev9G5K81J+GgEo5MfNluS5utNruV2aiJWOsWhO1L39V3
-         Z6C+J9uqiqXPYgQ6dcQSGANxw+xbHRVZAHWyN5hgFksgs/XhUgIKGl/0h+zrDIy2eofo
-         aoMe+6WRmr7JILlqWxy3H4DaUeYvmUJdygIwom0nYWR8nN82LMnNt4srD1UZaJjPLcot
-         OJpUgaV5+1lK6hPsIBFneSFAOj6A3kBGy7IE9y3T5wB9bI5Hesqt1uBVI3nJujocribj
-         yDpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0H6/1V6/5CIKh3CDtEYPw4qJMt0j8mXo9dQuEOmaJ2c=;
-        b=glRoAJF/Z0ZSkRUd30iRaOyKADleGoDA0uW20CxdRtcxpw3PRMg3AP/eTOx23p+aFu
-         EVK8E9Oo5uxVH7/mtcavO4pG+XSHgqyZfmOlItJ8qp3iBqfpZraMCvDHYq6bOaCbf4dJ
-         pcP9idmyjHHhGbbcROzV26ejBhcvosuwNs7MoqXzmwYrUV8X4Lh3mmDuDOIUxVaXEXu6
-         WgsF/ppogDrZCvQw9TkUB4wvgGe/ppRoPcyM4P7x/YjWeN23eiclhmasJg7qh1ehsdby
-         kUepCEB35NW+xiuIYgURhbXB0LTewSEvBIGGX+Vi8ViUk/37fiW1+R8vpFtwqRTfguYS
-         VVXg==
-X-Gm-Message-State: APjAAAVAgFfOYSwSX/wWLDtW+nFWN8Nxn6r4eyT/yZFu3UciCDZmgLxx
-        VnGynqGLRSFEmTAuzMalToHtBw==
-X-Google-Smtp-Source: APXvYqym/T/mBRrGXQQDSpwxLouliK+q+GpIj38u16aTEyLNBYQwSdaMmlgY9yKwhmdV2+JjJHDJNw==
-X-Received: by 2002:a25:5d0f:: with SMTP id r15mr4433647ybb.373.1556822683578;
-        Thu, 02 May 2019 11:44:43 -0700 (PDT)
-Received: from ziepe.ca (adsl-173-228-226-134.prtc.net. [173.228.226.134])
-        by smtp.gmail.com with ESMTPSA id q204sm16965820ywq.44.2019.05.02.11.44.42
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 02 May 2019 11:44:42 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hMGhG-00026A-3l; Thu, 02 May 2019 15:44:42 -0300
-Date:   Thu, 2 May 2019 15:44:42 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v13 16/20] IB/mlx4, arm64: untag user pointers in
- mlx4_get_umem_mr
-Message-ID: <20190502184442.GA31165@ziepe.ca>
-References: <cover.1553093420.git.andreyknvl@google.com>
- <1e2824fd77e8eeb351c6c6246f384d0d89fd2d58.1553093421.git.andreyknvl@google.com>
- <20190429180915.GZ6705@mtr-leonro.mtl.com>
- <20190430111625.GD29799@arrakis.emea.arm.com>
+        id S1726193AbfEBTTY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 15:19:24 -0400
+Received: from mail-eopbgr60071.outbound.protection.outlook.com ([40.107.6.71]:19431
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726126AbfEBTTY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 May 2019 15:19:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1r98+vowCgLknCN7vpr4bUaTL3CLzQ8LbyqE8misz4M=;
+ b=F5VlSZmaPQaOsu2OgILGaK7KK+yqOAZ7F+fRHunSsq3U0vbCZk1a69ayL93FELnB2c8xKsD+sy0dc+5XkkFdbslqSIS7Jcp89nunLsaiacDREBDcp8lqPO5rZhHYNl3vFmTLWaucB+dHv/kivPgTJXxdoYV85hy6+9Cl+nSBs20=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB5725.eurprd05.prod.outlook.com (20.178.121.151) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1856.11; Thu, 2 May 2019 19:19:19 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.008; Thu, 2 May 2019
+ 19:19:19 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Lijun Ou <oulijun@huawei.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>
+Subject: Re: [PATCH for-rc 1/2] RDMA/hns: Bugfix for releasing reserved qp
+Thread-Topic: [PATCH for-rc 1/2] RDMA/hns: Bugfix for releasing reserved qp
+Thread-Index: AQHVARvxOilSspY7Ik6qAlXwuvJAhg==
+Date:   Thu, 2 May 2019 19:19:19 +0000
+Message-ID: <20190502191913.GA29169@mellanox.com>
+References: <1556204854-90092-1-git-send-email-oulijun@huawei.com>
+ <1556204854-90092-2-git-send-email-oulijun@huawei.com>
+In-Reply-To: <1556204854-90092-2-git-send-email-oulijun@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BL0PR1501CA0030.namprd15.prod.outlook.com
+ (2603:10b6:207:17::43) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [173.228.226.134]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9fb3c726-d8ab-4280-53ee-08d6cf331359
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5725;
+x-ms-traffictypediagnostic: VI1PR05MB5725:
+x-microsoft-antispam-prvs: <VI1PR05MB5725A102A235411E298EB3C8CF340@VI1PR05MB5725.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 0025434D2D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(396003)(136003)(376002)(346002)(39860400002)(199004)(189003)(71190400001)(71200400001)(4744005)(7736002)(8936002)(66066001)(486006)(6916009)(6486002)(53936002)(99286004)(2616005)(11346002)(6246003)(476003)(6436002)(1076003)(229853002)(64756008)(66556008)(66446008)(66476007)(2906002)(14454004)(186003)(66946007)(73956011)(86362001)(68736007)(26005)(33656002)(76176011)(386003)(52116002)(316002)(446003)(4326008)(81156014)(478600001)(25786009)(36756003)(3846002)(6506007)(6116002)(102836004)(5660300002)(6512007)(256004)(14444005)(8676002)(81166006)(305945005)(54906003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5725;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: CCvK1itleujahozaUyXFQAzdqx6auZfYAfGNpRT0XSZUt51Qy0Wz8B9PA2HlA8Hg8r1LEzrqQB9kApfH2BmUDqlVEcVrva30wUk+eNbSwr8Tv8pa/mY2uogd+fWq1ZSjPeZHSTMklCv2NNyexc4Adjo5d4/6nQPHYwJxI8nXT4RU1xx99/da/Nz1uThrPaUGH0/I+bkNM1Up9Ruf0kku4hMD2aNdqx6OoQyfCKdObr3HXMT5K+jqIjNotqyuF94OkKEQu7BddxxIZcoSuLmp2ZzrNsmeWbPqeaqNe1tX8qlq/ozXz7jxzvw9Z2PYT2fRWpOH7S4pg7KIeYCZLiLxntM0GxT0X90PCalxkZz4+lc3PI8av56uXpPhJmNMTpLij9z56nsBeRG01vlvE9wZUz4L8xtnjl1wJnfIG/tgvXs=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <43A4F1BE8CA1014BAEE4564C41A6C87B@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190430111625.GD29799@arrakis.emea.arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fb3c726-d8ab-4280-53ee-08d6cf331359
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 May 2019 19:19:19.7689
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5725
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 30, 2019 at 12:16:25PM +0100, Catalin Marinas wrote:
-> > Interesting, the followup question is why mlx4 is only one driver in IB which
-> > needs such code in umem_mr. I'll take a look on it.
-> 
-> I don't know. Just using the light heuristics of find_vma() shows some
-> other places. For example, ib_umem_odp_get() gets the umem->address via
-> ib_umem_start(). This was previously set in ib_umem_get() as called from
-> mlx4_get_umem_mr(). Should the above patch have just untagged "start" on
-> entry?
+On Thu, Apr 25, 2019 at 11:07:33PM +0800, Lijun Ou wrote:
+> Hip06 reserves 12 qps, Hip08 reserves 8 qps. When the QP is released
+> based on hip08, the 8 to 11 reserved qp cannot released.
+>=20
+> Fixes: 926a01dc000d ("RDMA/hns: Add QP operations support for hip08 SoC")
+> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+> Signed-off-by: Lijun Ou <oulijun@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 1 +
+>  drivers/infiniband/hw/hns/hns_roce_hw_v1.h | 1 +
+>  drivers/infiniband/hw/hns/hns_roce_qp.c    | 2 +-
+>  3 files changed, 3 insertions(+), 1 deletion(-)
 
-I have a feeling that there needs to be something for this in the odp
-code..
+Applied to for-next
 
-Presumably mmu notifiers and what not also use untagged pointers? Most
-likely then the umem should also be storing untagged pointers.
-
-This probably becomes problematic because we do want the tag in cases
-talking about the base VA of the MR..
-
+Thanks,
 Jason
