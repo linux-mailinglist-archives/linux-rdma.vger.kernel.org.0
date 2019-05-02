@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EAF11483
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 09:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1580C11485
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 09:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbfEBHsS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 03:48:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51500 "EHLO mail.kernel.org"
+        id S1726202AbfEBHsV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 03:48:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725795AbfEBHsR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 May 2019 03:48:17 -0400
+        id S1725795AbfEBHsV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 May 2019 03:48:21 -0400
 Received: from localhost (unknown [37.142.3.125])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0CD42133F;
-        Thu,  2 May 2019 07:48:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C5AB20873;
+        Thu,  2 May 2019 07:48:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1556783297;
-        bh=a+wj9xLzpgrdoYwEbsKi7nP+GrbcTSL4XG+AJdJ5q3U=;
+        s=default; t=1556783300;
+        bh=DklgHYR0bzhEVAF818HTFe7v4KvqFBXhVOfUKWFGXgg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y03cHMfVYFpZSH1e1iGzyiGlYcrrYx0mN8X0ehT6xjNTF5+liSFNNUmHJQvJMF6Fy
-         jEcIEVzmhRa1ua2RDo7JNx39N8OgFgV/CysKv789DLWYuQTV351XypN8a/gnzuzbr7
-         T/YHJ5LjcA0V0MoYrMj/1gcqhQ2qhEo9DHVZVv0Y=
+        b=U3Tpgz8Op56xFUySIptgvoxnvQHqBeBP/1cxZYCgLvJvh8grWrdld9Eca7ki6+Zhr
+         KE9bLPzO/FpPTHNMI0vaAdKkgy4RBe4aUZ94oSlkGIRHVdgV5rWnGKk7MHbwDWimiX
+         zpW6AobT8o69BWGHxG1GlCVcoD+3FUQBajCoJTEw=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -30,9 +30,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Huy Nguyen <huyn@mellanox.com>, Martin Wilck <mwilck@suse.com>,
         Parav Pandit <parav@mellanox.com>
-Subject: [PATCH rdma-next v2 1/7] RDMA/rxe: Consider skb reserve space based on netdev of GID
-Date:   Thu,  2 May 2019 10:48:01 +0300
-Message-Id: <20190502074807.26566-2-leon@kernel.org>
+Subject: [PATCH rdma-next v2 2/7] IB/cm: Reduce dependency on gid attribute ndev check
+Date:   Thu,  2 May 2019 10:48:02 +0300
+Message-Id: <20190502074807.26566-3-leon@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190502074807.26566-1-leon@kernel.org>
 References: <20190502074807.26566-1-leon@kernel.org>
@@ -45,31 +45,36 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Parav Pandit <parav@mellanox.com>
 
-Always consider the skb reserve space based on netdevice of the GID
-attribute, regardless of vlan or non vlan netdevice.
+GID type to path record type conversion can be done directly
+based on port type and gid attribute type.
+There is no need to find out using indirect way by its GID attribute's
+ndev field.
 
-Fixes: 43c9fc509fa5 ("rdma_rxe: make rxe work over 802.1q VLAN devices")
 Signed-off-by: Parav Pandit <parav@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/sw/rxe/rxe_net.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/cm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index f186b92ba45b..c44139788afc 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -481,8 +481,9 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
- 	if (unlikely(!skb))
- 		goto out;
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 4df59f2b0f04..da10e6ccb43c 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -1985,11 +1985,12 @@ static int cm_req_handler(struct cm_work *work)
+ 	grh = rdma_ah_read_grh(&cm_id_priv->av.ah_attr);
+ 	gid_attr = grh->sgid_attr;
  
--	skb_reserve(skb, hdr_len + LL_RESERVED_SPACE(rxe->ndev));
-+	skb_reserve(skb, hdr_len + LL_RESERVED_SPACE(ndev));
- 
-+	/* FIXME: hold reference to this netdev until life of this skb. */
- 	skb->dev	= ndev;
- 	if (av->network_type == RDMA_NETWORK_IPV4)
- 		skb->protocol = htons(ETH_P_IP);
+-	if (gid_attr && gid_attr->ndev) {
++	if (gid_attr &&
++	    rdma_protocol_roce(work->port->cm_dev->ib_device,
++			       work->port->port_num)) {
+ 		work->path[0].rec_type =
+ 			sa_conv_gid_to_pathrec_type(gid_attr->gid_type);
+ 	} else {
+-		/* If no GID attribute or ndev is null, it is not RoCE. */
+ 		cm_path_set_rec_type(work->port->cm_dev->ib_device,
+ 				     work->port->port_num,
+ 				     &work->path[0],
 -- 
 2.20.1
 
