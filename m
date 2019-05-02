@@ -2,112 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D03BE11C1D
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 17:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDECA11C24
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 17:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbfEBPDj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 11:03:39 -0400
-Received: from mail-eopbgr150073.outbound.protection.outlook.com ([40.107.15.73]:43047
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726197AbfEBPDj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 May 2019 11:03:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p1oTpMXlIEe5fQamtQxuHtaqDrU37fnmaZ2nYWfBuUg=;
- b=ZXHkPi31AKcOVELK8huiSZr6BYN2i5ZOeefkId78XbC6yMT6YkeEWhVEamn2PhVhpVAnhkwZje8fX9KFpz3t9YcqMBx684RD76+6JJWtZ08sdJjpIIE8rpo8jY8TSh8qJpGgZECBf/QsUEb8LLkoXxtJtnQ2JbVhXZbZpCypiIs=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB6429.eurprd05.prod.outlook.com (20.179.27.208) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1835.14; Thu, 2 May 2019 15:03:35 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.008; Thu, 2 May 2019
- 15:03:35 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [PATCH rdma-next v1] RDMA/umem: Move page_shift from ib_umem to
- ib_odp_umem
-Thread-Topic: [PATCH rdma-next v1] RDMA/umem: Move page_shift from ib_umem to
- ib_odp_umem
-Thread-Index: AQHU/93m7HEf6m4izEmJQhOevP6dcaZX8KwA
-Date:   Thu, 2 May 2019 15:03:35 +0000
-Message-ID: <20190502150330.GA21696@mellanox.com>
-References: <20190501052227.23246-1-leon@kernel.org>
-In-Reply-To: <20190501052227.23246-1-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BN6PR1701CA0020.namprd17.prod.outlook.com
- (2603:10b6:405:15::30) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [173.228.226.134]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4589d3fe-9ef7-45e9-7240-08d6cf0f59a6
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6429;
-x-ms-traffictypediagnostic: VI1PR05MB6429:
-x-microsoft-antispam-prvs: <VI1PR05MB64297D497013B526E0F879BACF340@VI1PR05MB6429.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2803;
-x-forefront-prvs: 0025434D2D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(366004)(376002)(39860400002)(136003)(346002)(199004)(189003)(14454004)(68736007)(4744005)(8936002)(71200400001)(8676002)(81166006)(6916009)(54906003)(71190400001)(6486002)(81156014)(316002)(6116002)(1076003)(3846002)(99286004)(52116002)(229853002)(2906002)(6436002)(305945005)(5660300002)(76176011)(86362001)(6512007)(478600001)(36756003)(476003)(446003)(256004)(486006)(7736002)(33656002)(102836004)(66476007)(6246003)(66556008)(64756008)(66446008)(107886003)(11346002)(4326008)(53936002)(2616005)(66946007)(73956011)(186003)(66066001)(25786009)(386003)(6506007)(26005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6429;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: EwbYERkqBTM0GpZR0eLa2f6QB8lnlznBiteV8c7LpuKN/h9np8tRlTqU/lnIIb+s7ztfoWwRtiFEqa0spJZsRq9LHUYC6JVOLqOB/SWTnNLqwIRZMCiL9Nbxc23B1N4xSkrLNAUaNbyZz9Ncnd8WZZU2LN8VEYVsaGP39vSROK/aMNznJscyXxteLv0iFXP7+pqj0YNtAAm1jB0waXIMgCzIFhJvgwX2N0TIs0nJPTbcMES/2T73fHN/SEfqN7c7HoAE9Fd3j8ajUQg/UqqZv8Hkzt/YcIDpeE3teHRFZWhP6FDIYQe8Xx2RBVdcJX06MsoEdZOlAiQDFGmYhfRkMVFUDuNTCSPtdg6G/hBzKZohJbf4loE6suw/mguXy68UWkajjXYA3lFh/Wgnid7bmIKmQPxsAqcWbo15XAKjx7Y=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B6D4A57D490AB648A6BF2FACEF4FFFD1@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726268AbfEBPFy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 11:05:54 -0400
+Received: from mail-yw1-f67.google.com ([209.85.161.67]:41854 "EHLO
+        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbfEBPFy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 11:05:54 -0400
+Received: by mail-yw1-f67.google.com with SMTP id o65so28877ywd.8
+        for <linux-rdma@vger.kernel.org>; Thu, 02 May 2019 08:05:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tK7VWO/8zHsLCTty7EjdeKzrTs/ds+R4tFdQiPhlxog=;
+        b=kVYrWOu1lIDap8r1SI/7HenVKYmULQK1q5x98uzb1qpscpy8L27I9ONv5vy41js5uE
+         SWL1lN6s5S1cK2VphCACboFNylVoaitRnyIHbt8lbcqa15X9wutQM5CvBhSUriPvF54/
+         eMRRN9hPrqRuvpFmCFase7iIVGwkUY0lFnpMIstYbA506cxONfKz5t4FUsT7MtQ2L4IO
+         TkGHfLw/7tr5bT99fwB7iWS+OPO9Hlpn/iUg2QWwYpV7LSLBwnXVEFFzWqCwONzau2Dh
+         WzvOfu5wf0lluLdHhS+WPpda3pKm04gGDfgpgIAMcotttIj2zSd7zmmxInAridutmkqB
+         J1Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tK7VWO/8zHsLCTty7EjdeKzrTs/ds+R4tFdQiPhlxog=;
+        b=NtmdV5+48YgZYfPJCGYDm9C39d9xoztqTK6Ggsa0lbHXNMLRFIIwuQebnIipQfpGnF
+         IyD9AxjulaoV5VZ07tpFy5QC0X/MXvs7c8KpzOEFVJFxw36eO/icH7taxRWcZcVoZKvt
+         tQqc8VkM5Pnn6vWQ57a0hEvDz8czRopzQguAON4tJGoa6pjVS9MhrYfFKQFM7+aZ6bpU
+         mCyWnaZ42wHywxdh22p5nTiRImbM6aOa7PVRB+i00DI1GNtshI1ufw/R1Jt1y87h6CHY
+         A8+r9xlb+lsreOd8zP7j+XY4mZsWWIXyhscxBEQ1PZ9szkudgpypaftQy6/HbwfvRKm6
+         VjuQ==
+X-Gm-Message-State: APjAAAUqRnUcQlo5s05QzRMJ9QMO65kKM4GiDD0YY8m0D6Iol+rKUMqN
+        vnj0fjgnuT/YQ5zxG1Vt1HTuPFTXVlE=
+X-Google-Smtp-Source: APXvYqzyM96G/Fche8XpNpVH5+WveDg+JX9M9MrWDJIgn7X6F9OyScLynXOAgiRKgOYwei0k2CRmNg==
+X-Received: by 2002:a25:ba4d:: with SMTP id z13mr3508226ybj.355.1556809553762;
+        Thu, 02 May 2019 08:05:53 -0700 (PDT)
+Received: from ziepe.ca (adsl-173-228-226-134.prtc.net. [173.228.226.134])
+        by smtp.gmail.com with ESMTPSA id v144sm2242574ywv.15.2019.05.02.08.05.52
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 02 May 2019 08:05:52 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hMDHT-0005fV-9J; Thu, 02 May 2019 12:05:51 -0300
+Date:   Thu, 2 May 2019 12:05:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Yossi Leybovich <sleybo@amazon.com>
+Subject: Re: [PATCH for-next] RDMA/core: Introduce ratelimited ibdev printk
+ functions
+Message-ID: <20190502150551.GD18518@ziepe.ca>
+References: <1556807923-20403-1-git-send-email-galpress@amazon.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4589d3fe-9ef7-45e9-7240-08d6cf0f59a6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 May 2019 15:03:35.8285
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6429
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1556807923-20403-1-git-send-email-galpress@amazon.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 01, 2019 at 08:22:27AM +0300, Leon Romanovsky wrote:
+On Thu, May 02, 2019 at 05:38:43PM +0300, Gal Pressman wrote:
+> Add ratelimited helpers to the ibdev_* printk functions.
+> Implementation inspired by counterpart dev_*_ratelimited functions.
+> 
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
+> ---
+> This is a followup patch to the addition of ibdev printk helpers to the
+> subsystem.
+> 
+> From quick grep of infiniband drivers, some of the drivers will need this
+> variation when starting to use ibdev printk functions. In addition, I plan to
+> use them in EFA as well.
+> ---
+>  include/rdma/ib_verbs.h | 51 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 51 insertions(+)
 
-> @@ -84,6 +85,24 @@ static inline struct ib_umem_odp *to_ib_umem_odp(struc=
-t ib_umem *umem)
->  	return container_of(umem, struct ib_umem_odp, umem);
->  }
->=20
-> +/* Returns the first page of an ODP umem. */
-> +static inline unsigned long ib_umem_start(struct ib_umem_odp *umem_odp)
-> +{
-> +	return ALIGN_DOWN(umem_odp->umem.address, 1UL << umem_odp->page_shift);
-> +}
-> +
-> +/* Returns the address of the page after the last one of an ODP umem. */
-> +static inline unsigned long ib_umem_end(struct ib_umem_odp *umem_odp)
-> +{
-> +	return ALIGN(umem_odp->umem.address + umem_odp->umem.length,
-> +		     1UL << umem_odp->page_shift);
-> +}
-> +
-> +static inline size_t ib_umem_odp_num_pages(struct ib_umem_odp *umem_odp)
-> +{
-> +	return (ib_umem_end(umem_odp) - ib_umem_start(umem_odp)) >> PAGE_SHIFT;
-
-It seems there are some testing failures with this patch, I think the
-above PAGE_SHIFT may need to be umem_odp->page_shift
-
-But I need to check it
+I think we should wait till we get conversions patches that need
+this..
 
 Jason
