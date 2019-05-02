@@ -2,87 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDECA11C24
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 17:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AC61213F
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 19:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbfEBPFy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 11:05:54 -0400
-Received: from mail-yw1-f67.google.com ([209.85.161.67]:41854 "EHLO
-        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbfEBPFy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 11:05:54 -0400
-Received: by mail-yw1-f67.google.com with SMTP id o65so28877ywd.8
-        for <linux-rdma@vger.kernel.org>; Thu, 02 May 2019 08:05:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tK7VWO/8zHsLCTty7EjdeKzrTs/ds+R4tFdQiPhlxog=;
-        b=kVYrWOu1lIDap8r1SI/7HenVKYmULQK1q5x98uzb1qpscpy8L27I9ONv5vy41js5uE
-         SWL1lN6s5S1cK2VphCACboFNylVoaitRnyIHbt8lbcqa15X9wutQM5CvBhSUriPvF54/
-         eMRRN9hPrqRuvpFmCFase7iIVGwkUY0lFnpMIstYbA506cxONfKz5t4FUsT7MtQ2L4IO
-         TkGHfLw/7tr5bT99fwB7iWS+OPO9Hlpn/iUg2QWwYpV7LSLBwnXVEFFzWqCwONzau2Dh
-         WzvOfu5wf0lluLdHhS+WPpda3pKm04gGDfgpgIAMcotttIj2zSd7zmmxInAridutmkqB
-         J1Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tK7VWO/8zHsLCTty7EjdeKzrTs/ds+R4tFdQiPhlxog=;
-        b=NtmdV5+48YgZYfPJCGYDm9C39d9xoztqTK6Ggsa0lbHXNMLRFIIwuQebnIipQfpGnF
-         IyD9AxjulaoV5VZ07tpFy5QC0X/MXvs7c8KpzOEFVJFxw36eO/icH7taxRWcZcVoZKvt
-         tQqc8VkM5Pnn6vWQ57a0hEvDz8czRopzQguAON4tJGoa6pjVS9MhrYfFKQFM7+aZ6bpU
-         mCyWnaZ42wHywxdh22p5nTiRImbM6aOa7PVRB+i00DI1GNtshI1ufw/R1Jt1y87h6CHY
-         A8+r9xlb+lsreOd8zP7j+XY4mZsWWIXyhscxBEQ1PZ9szkudgpypaftQy6/HbwfvRKm6
-         VjuQ==
-X-Gm-Message-State: APjAAAUqRnUcQlo5s05QzRMJ9QMO65kKM4GiDD0YY8m0D6Iol+rKUMqN
-        vnj0fjgnuT/YQ5zxG1Vt1HTuPFTXVlE=
-X-Google-Smtp-Source: APXvYqzyM96G/Fche8XpNpVH5+WveDg+JX9M9MrWDJIgn7X6F9OyScLynXOAgiRKgOYwei0k2CRmNg==
-X-Received: by 2002:a25:ba4d:: with SMTP id z13mr3508226ybj.355.1556809553762;
-        Thu, 02 May 2019 08:05:53 -0700 (PDT)
-Received: from ziepe.ca (adsl-173-228-226-134.prtc.net. [173.228.226.134])
-        by smtp.gmail.com with ESMTPSA id v144sm2242574ywv.15.2019.05.02.08.05.52
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 02 May 2019 08:05:52 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hMDHT-0005fV-9J; Thu, 02 May 2019 12:05:51 -0300
-Date:   Thu, 2 May 2019 12:05:51 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: Re: [PATCH for-next] RDMA/core: Introduce ratelimited ibdev printk
- functions
-Message-ID: <20190502150551.GD18518@ziepe.ca>
-References: <1556807923-20403-1-git-send-email-galpress@amazon.com>
+        id S1726193AbfEBRrd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 13:47:33 -0400
+Received: from mail-eopbgr00041.outbound.protection.outlook.com ([40.107.0.41]:6469
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726145AbfEBRrd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 May 2019 13:47:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=be0YYBmFZMG0JqmJ/JIeXvJtxcJ6TTBtJoG0nkbaBOA=;
+ b=QHJR9L4/kpM9l1B+kXMa9C7IUY2mbUDoKlxli+pxWQWoAkhC8VPpoBIRiof9UqHvRgSCC5dHtKe86P66O2X9U50CmjNSjnzdBhWRbfiG7wfp0rTGJBltfgMzO9iGCjITCi72bIBD7E3M3Q1ZxqEsJo8Cjs6eIaBNBbjjbhYKGNI=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB4270.eurprd05.prod.outlook.com (52.133.12.23) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1835.16; Thu, 2 May 2019 17:47:26 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.008; Thu, 2 May 2019
+ 17:47:26 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Gal Pressman <galpress@amazon.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leah Shalev <shalevl@amazon.com>,
+        Dave Goodell <goodell@amazon.com>,
+        Brian Barrett <bbarrett@amazon.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: Re: [PATCH for-next v6 10/12] RDMA/efa: Add EFA verbs implementation
+Thread-Topic: [PATCH for-next v6 10/12] RDMA/efa: Add EFA verbs implementation
+Thread-Index: AQHVADyQt6YhcNgq2U2bxKGl+U/wYaZXgZ4AgAAE1wCAAJdCAA==
+Date:   Thu, 2 May 2019 17:47:26 +0000
+Message-ID: <20190502174722.GD27871@mellanox.com>
+References: <1556707704-11192-1-git-send-email-galpress@amazon.com>
+ <1556707704-11192-11-git-send-email-galpress@amazon.com>
+ <20190501164020.GA18128@mellanox.com>
+ <75f5ded6-ba85-bd67-1a2f-92525f7a6e28@amazon.com>
+ <20190502084600.GQ7676@mtr-leonro.mtl.com>
+In-Reply-To: <20190502084600.GQ7676@mtr-leonro.mtl.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR16CA0030.namprd16.prod.outlook.com
+ (2603:10b6:208:134::43) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [173.228.226.134]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a08e811e-082f-4203-6e75-08d6cf263d3b
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4270;
+x-ms-traffictypediagnostic: VI1PR05MB4270:
+x-microsoft-antispam-prvs: <VI1PR05MB427091002D969833F0032CDFCF340@VI1PR05MB4270.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:556;
+x-forefront-prvs: 0025434D2D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(396003)(136003)(39860400002)(366004)(199004)(189003)(2616005)(476003)(478600001)(446003)(7736002)(52116002)(2906002)(81166006)(54906003)(6436002)(102836004)(14454004)(53936002)(6916009)(6246003)(305945005)(486006)(6486002)(66946007)(6512007)(316002)(66556008)(4326008)(25786009)(68736007)(3846002)(186003)(73956011)(66476007)(229853002)(256004)(11346002)(66446008)(6116002)(64756008)(7416002)(76176011)(71200400001)(1076003)(81156014)(386003)(6506007)(66066001)(8676002)(5660300002)(53546011)(26005)(71190400001)(36756003)(8936002)(86362001)(99286004)(33656002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4270;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: H0pxPe6hj00v+iGp6VyIBGj8NSd1z4sjuNa733LWhZhHaIfZOhrDDnn38WC2ogzOWmdSgHg5GBclRddWbXmt6yyfEY5Q3QyrfIbGVJrpSSqj5C1+rjeAVCo3V4xU5QU7rmhN26zD3RqSK54H9p+RBs+RAUFfIKgal//3K5WQKQKs4bwwK1n2RPcSTIizEHYEL7W1Xy8jB528dp3chEnv/4rBw/6UF5ZRMfuTCo8bP4+cgq5JbfrEObrSUITv0HQuMnbjELUFXaIokMf+14VFv11A1gUJUNdIZK233MhbA22GP+9gTD4/tqrK3xhhJ/yA0Jva3gTkYxbJBNPRcbjf2sHoJ75DoWGJUYLuQpqgzUePQFIl8ERUnShwhTc9D+FwACeK41Z+47m8NPxqZSzI/TEkI4gISceQ0KSp8LtCu6g=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <91FE14B0144E784597087373C06BD951@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1556807923-20403-1-git-send-email-galpress@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a08e811e-082f-4203-6e75-08d6cf263d3b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 May 2019 17:47:26.5528
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4270
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 02, 2019 at 05:38:43PM +0300, Gal Pressman wrote:
-> Add ratelimited helpers to the ibdev_* printk functions.
-> Implementation inspired by counterpart dev_*_ratelimited functions.
-> 
-> Signed-off-by: Gal Pressman <galpress@amazon.com>
-> ---
-> This is a followup patch to the addition of ibdev printk helpers to the
-> subsystem.
-> 
-> From quick grep of infiniband drivers, some of the drivers will need this
-> variation when starting to use ibdev printk functions. In addition, I plan to
-> use them in EFA as well.
-> ---
->  include/rdma/ib_verbs.h | 51 +++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 51 insertions(+)
+On Thu, May 02, 2019 at 11:46:00AM +0300, Leon Romanovsky wrote:
+> On Thu, May 02, 2019 at 11:28:40AM +0300, Gal Pressman wrote:
+> > On 01-May-19 19:40, Jason Gunthorpe wrote:
+> > > On Wed, May 01, 2019 at 01:48:22PM +0300, Gal Pressman wrote:
+> > >
+> > >> +int efa_mmap(struct ib_ucontext *ibucontext,
+> > >> +	     struct vm_area_struct *vma)
+> > >> +{
+> > >> +	struct efa_ucontext *ucontext =3D to_eucontext(ibucontext);
+> > >> +	struct efa_dev *dev =3D to_edev(ibucontext->device);
+> > >> +	u64 length =3D vma->vm_end - vma->vm_start;
+> > >> +	u64 key =3D vma->vm_pgoff << PAGE_SHIFT;
+> > >> +	struct efa_mmap_entry *entry;
+> > >> +
+> > >> +	ibdev_dbg(&dev->ibdev,
+> > >> +		  "start %#lx, end %#lx, length =3D %#llx, key =3D %#llx\n",
+> > >> +		  vma->vm_start, vma->vm_end, length, key);
+> > >> +
+> > >> +	if (length % PAGE_SIZE !=3D 0 || !(vma->vm_flags & VM_SHARED)) {
+> > >> +		ibdev_dbg(&dev->ibdev,
+> > >> +			  "length[%#llx] is not page size aligned[%#lx] or VM_SHARED is =
+not set [%#lx]\n",
+> > >> +			  length, PAGE_SIZE, vma->vm_flags);
+> > >> +		return -EINVAL;
+> > >> +	}
+> > >> +
+> > >> +	if (vma->vm_flags & VM_EXEC) {
+> > >> +		ibdev_dbg(&dev->ibdev, "Mapping executable pages is not permitted=
+\n");
+> > >> +		return -EPERM;
+> > >> +	}
+> > >> +	vma->vm_flags &=3D ~VM_MAYEXEC;
+> > >
+> > > Also we dropped the MAYEXEC stuff
+> >
+> > Latest commit that had any MAYEXEC changes is 4eb6ab13b991 ("RDMA: Remo=
+ve
+> > rdma_user_mmap_page"), where MAYEXEC is added not removed.
+> > Am I missing a followup patch?
+>=20
+> I'm not aware of any.
 
-I think we should wait till we get conversions patches that need
-this..
+It was a mistake it wasn't removed from that commit too.
 
 Jason
