@@ -2,91 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 434D1123A7
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 22:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B941A124BB
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2019 00:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726030AbfEBUwd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 16:52:33 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:42198 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725962AbfEBUwd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 May 2019 16:52:33 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id B467E81DFE;
-        Thu,  2 May 2019 20:52:32 +0000 (UTC)
-Received: from haswell-e.nc.xsintricity.com (ovpn-112-9.rdu2.redhat.com [10.10.112.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 996F55D9C4;
-        Thu,  2 May 2019 20:52:31 +0000 (UTC)
-Message-ID: <532524968a01efe5ff9151a97b05ca0d03ddeab7.camel@redhat.com>
-Subject: Re: Is this a known build issue on s390x for v5.1-rc7?
-From:   Doug Ledford <dledford@redhat.com>
-To:     jtoppins@redhat.com, Jason Gunthorpe <jgg@mellanox.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>
-Date:   Thu, 02 May 2019 16:52:29 -0400
-In-Reply-To: <6ff4c15a28b585f41125fc264086c0d1aedefe4d.camel@redhat.com>
-References: <9dd7f774-2b14-d4a7-3a85-edff758e36d0@redhat.com>
-         <6ff4c15a28b585f41125fc264086c0d1aedefe4d.camel@redhat.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-HOPGPxTTV4fuK0SmibTu"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+        id S1726128AbfEBWsN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 18:48:13 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:33547 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726022AbfEBWsN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 18:48:13 -0400
+Received: by mail-oi1-f195.google.com with SMTP id l1so3085746oib.0;
+        Thu, 02 May 2019 15:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/WKHdnz38BeGL2pjuVKVInpoD4DDdnvc5veO1RpWfD0=;
+        b=lKkyAyPK+yQFL7c/rX2h7OTRgVgCfGIA3jxuxf0M3WS5KnZpTp8Mykm0JON9M6qmOF
+         30RUqUAUZnZXXZ56qm2hLdvg6D1Psc4W/Y3OoXcZI7QxDQ0zn9C+HqN544+NErubH6Rw
+         XJm9/tXR6XQawJT3hvz8sYAAZfKW8NOb+Z1DGTxnr8snyHMop8e80SKJpOuMMnzGi215
+         nkeBQ0z5As131KYmogi2xGm1lFCfd+O7ajJgqaIybuACpod0//VhJ13cWDX1xSHC2ZnA
+         Rh+r2wlqbLEKsWw9wSjkO4K4Ch3fAorDgZGsOwHCpg084Xzfptn6ptbHxrxct0Pvphjq
+         9DRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/WKHdnz38BeGL2pjuVKVInpoD4DDdnvc5veO1RpWfD0=;
+        b=mgTKYqiKIU2uGZ6UmULnuaWrdzv21xpTqVSzFJuqZP1pVU/AOlT7LgcvN/CaCSj5bE
+         OgWW9jt1ykFXNMasuDS4EdvhfQwxi+NwBgnIT8yn37edmZ6VY8m6WM96EqsrvhL89kik
+         IzePCoy6BO7Shp48GTObYyQLeCS66pBOsV86DG4TLLLGW7xPx98MAnT6O/KFcysuNcQc
+         cc+uvg5I3F+3m05W6rko6q6+3jwsj71cuA2UT5Hhmgw4wX1iBs4O0zpYCci4VdhgRh1v
+         KPbJcB+yJT0OZdkbzWg66bOVStByLtvv1cNiZhXqlkVPHt7IqkfqbflFkcO0PL2PHwic
+         651Q==
+X-Gm-Message-State: APjAAAUlO+2GTuKcoTVj0sbZy6d9iDzNtNxEyj6iPT9E+zW1Nk+DFSz3
+        1ZEoyr6I5EbVWPo9kaZu5tQp3GCQZZ8NiqDsiA8=
+X-Google-Smtp-Source: APXvYqx956/X+reg4oVrDOUcjV7/RLFZT10w3z+8wYApEAreW5PVj2U3DhgtoypbznWBNzSrhUtmkdshwuUO1i5ipOo=
+X-Received: by 2002:aca:d90a:: with SMTP id q10mr4133282oig.65.1556837292174;
+ Thu, 02 May 2019 15:48:12 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Thu, 02 May 2019 20:52:32 +0000 (UTC)
+References: <20190501140438.9506-1-brian.welty@intel.com> <20190502083433.GP7676@mtr-leonro.mtl.com>
+In-Reply-To: <20190502083433.GP7676@mtr-leonro.mtl.com>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Thu, 2 May 2019 18:48:00 -0400
+Message-ID: <CAOWid-cYknxeTQvP9vQf3-i3Cpux+bs7uBs7_o-YMFjVCo19bg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/5] cgroup support for GPU devices
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Brian Welty <brian.welty@intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Parav Pandit <parav@mellanox.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx@lists.freedesktop.org,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Li Zefan <lizefan@huawei.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+> Count us (Mellanox) too, our RDMA devices are exposing special and
+> limited in size device memory to the users and we would like to provide
+> an option to use cgroup to control its exposure.
+Doesn't RDMA already has a separate cgroup?  Why not implement it there?
 
---=-HOPGPxTTV4fuK0SmibTu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2019-05-02 at 16:50 -0400, Doug Ledford wrote:
-> > make[4]: *** [drivers/infiniband/core/uverbs_main.o] Error 1
-> > make[3]: *** [drivers/infiniband/core] Error 2
-> > make[2]: *** [drivers/infiniband] Error 2
-> > make[1]: *** [drivers] Error 2
-> > make: *** [sub-make] Error 2
->=20
-> Yes, there's a fix in Linus' tree for it.
->=20
-
-commit 6a5c5d26c4c6c3cc486fef0bf04ff9551132611b
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon Apr 29 09:48:53 2019 -0700
-
-    rdma: fix build errors on s390 and MIPS due to bad ZERO_PAGE use
-   =20
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-HOPGPxTTV4fuK0SmibTu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAlzLWI0ACgkQuCajMw5X
-L92MBw//eBTSRg3t0N2Ac4YOzaiXMMSt5yf+QQBvpPE4K3zteX8ofTVJech5woZ1
-UHvTx/ZKj5diPTbcGLgUYI0MLZv2elW/RyFETFNJ9heBUyGf1zf8lUhgqMxNX4Ni
-fRvKF80U6Od4NopBE62Ksx3ySph7Ud+aEYy3yQ8EgwvY/el9M8+10WYTPqHSwoh6
-rkAADwIl7cluqghLK4PHtyzZG62DyPrOe+DpZjELrfPX+TWQ9RPd/AtY0AKcTqKI
-o0SRPNPcwC2C5fw0BxQvHUeBDGQHxJdZrzdDwkMxg6wllFntX0hotfS21JQ1FmUz
-XcPxiBBtrWvWh6ISYPQ137rzmJ/zuzGupTDIyDon81Vr3gbE2caRDy8iTYl5Yrld
-tSyTLL2yVO8oAWJqDxW0AJi6IDvF4Tk/86ip20P2z0mqK//ejH2o2HIvYKwjJgMp
-ay6asMevqOGwFe6HDmUDJUuN8MhkbU7XPhNqxGsi1d5/lpxKguoVQ+wYz/65mRcS
-6Tvw+WgzqON1eWhvKvv9RCDDQFF3GDUMhnDoGnKs9dK0NxEyuJcoMCJwjiFK7lnn
-ng9Q+LiD+lJEeAXueS600bJaB7DQghX/Rj/lbQxLVscxmvQELIkjvOcT9xyhXUbL
-OaZVK8K4D9gP9YEPXEGQoTD5lgmEJVwmPQ6shgPnY9fi5zC9Mp0=
-=OA/m
------END PGP SIGNATURE-----
-
---=-HOPGPxTTV4fuK0SmibTu--
-
+> > and with future work, we could extend to:
+> > *  track and control share of GPU time (reuse of cpu/cpuacct)
+> > *  apply mask of allowed execution engines (reuse of cpusets)
+> >
+> > Instead of introducing a new cgroup subsystem for GPU devices, a new
+> > framework is proposed to allow devices to register with existing cgroup
+> > controllers, which creates per-device cgroup_subsys_state within the
+> > cgroup.  This gives device drivers their own private cgroup controls
+> > (such as memory limits or other parameters) to be applied to device
+> > resources instead of host system resources.
+> > Device drivers (GPU or other) are then able to reuse the existing cgroup
+> > controls, instead of inventing similar ones.
+> >
+> > Per-device controls would be exposed in cgroup filesystem as:
+> >     mount/<cgroup_name>/<subsys_name>.devices/<dev_name>/<subsys_files>
+> > such as (for example):
+> >     mount/<cgroup_name>/memory.devices/<dev_name>/memory.max
+> >     mount/<cgroup_name>/memory.devices/<dev_name>/memory.current
+> >     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.stat
+> >     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.weight
+> >
+> > The drm/i915 patch in this series is based on top of other RFC work [1]
+> > for i915 device memory support.
+> >
+> > AMD [2] and Intel [3] have proposed related work in this area within the
+> > last few years, listed below as reference.  This new RFC reuses existing
+> > cgroup controllers and takes a different approach than prior work.
+> >
+> > Finally, some potential discussion points for this series:
+> > * merge proposed <subsys_name>.devices into a single devices directory?
+> > * allow devices to have multiple registrations for subsets of resources?
+> > * document a 'common charging policy' for device drivers to follow?
+> >
+> > [1] https://patchwork.freedesktop.org/series/56683/
+> > [2] https://lists.freedesktop.org/archives/dri-devel/2018-November/197106.html
+> > [3] https://lists.freedesktop.org/archives/intel-gfx/2018-January/153156.html
+> >
+> >
+> > Brian Welty (5):
+> >   cgroup: Add cgroup_subsys per-device registration framework
+> >   cgroup: Change kernfs_node for directories to store
+> >     cgroup_subsys_state
+> >   memcg: Add per-device support to memory cgroup subsystem
+> >   drm: Add memory cgroup registration and DRIVER_CGROUPS feature bit
+> >   drm/i915: Use memory cgroup for enforcing device memory limit
+> >
+> >  drivers/gpu/drm/drm_drv.c                  |  12 +
+> >  drivers/gpu/drm/drm_gem.c                  |   7 +
+> >  drivers/gpu/drm/i915/i915_drv.c            |   2 +-
+> >  drivers/gpu/drm/i915/intel_memory_region.c |  24 +-
+> >  include/drm/drm_device.h                   |   3 +
+> >  include/drm/drm_drv.h                      |   8 +
+> >  include/drm/drm_gem.h                      |  11 +
+> >  include/linux/cgroup-defs.h                |  28 ++
+> >  include/linux/cgroup.h                     |   3 +
+> >  include/linux/memcontrol.h                 |  10 +
+> >  kernel/cgroup/cgroup-v1.c                  |  10 +-
+> >  kernel/cgroup/cgroup.c                     | 310 ++++++++++++++++++---
+> >  mm/memcontrol.c                            | 183 +++++++++++-
+> >  13 files changed, 552 insertions(+), 59 deletions(-)
+> >
+> > --
+> > 2.21.0
+> >
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
