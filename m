@@ -2,127 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A0C121E1
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 20:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDBD12216
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2019 20:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726114AbfEBSa6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 May 2019 14:30:58 -0400
-Received: from mail-eopbgr80077.outbound.protection.outlook.com ([40.107.8.77]:42499
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725962AbfEBSa6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 May 2019 14:30:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sA8xitavzV/lHmpyahknobVohb4b+Nemc5nQZMhDvT4=;
- b=hHh5hXHU8WiEMGOsJO9KK7Qh/0cymDaW2bEO5EidJzFNcVynkW/5QACVYCut0jBf3B1QDykJDfw4uy8LMjPxQ1M3/5Lm3eIE4in9Aws+9PCVYZqXWcuC+ZKFeVKF47sh6AESHJ6BsNIfuM4OghpXasQTPkILGeNAVT36uQKNgb8=
-Received: from VI1PR0501MB2271.eurprd05.prod.outlook.com (10.169.134.149) by
- VI1PR0501MB2733.eurprd05.prod.outlook.com (10.172.15.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1856.10; Thu, 2 May 2019 18:30:54 +0000
-Received: from VI1PR0501MB2271.eurprd05.prod.outlook.com
- ([fe80::8810:9799:ab77:9494]) by VI1PR0501MB2271.eurprd05.prod.outlook.com
- ([fe80::8810:9799:ab77:9494%2]) with mapi id 15.20.1856.008; Thu, 2 May 2019
- 18:30:54 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-CC:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: RE: [PATCH rdma-next v1] RDMA/device: Don't fire uevent before device
- is fully initialized
-Thread-Topic: [PATCH rdma-next v1] RDMA/device: Don't fire uevent before
- device is fully initialized
-Thread-Index: AQHVAL7PhQAMxrKzgkymANG7P633+6ZYKEfA
-Date:   Thu, 2 May 2019 18:30:54 +0000
-Message-ID: <VI1PR0501MB22716ADE6FE7EDBC0000F1D7D1340@VI1PR0501MB2271.eurprd05.prod.outlook.com>
-References: <20190502081229.18372-1-leon@kernel.org>
-In-Reply-To: <20190502081229.18372-1-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [208.176.44.194]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fb30d554-e9a9-4629-b77d-08d6cf2c5019
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR0501MB2733;
-x-ms-traffictypediagnostic: VI1PR0501MB2733:
-x-microsoft-antispam-prvs: <VI1PR0501MB2733EC239DB9BF83BF43EA0FD1340@VI1PR0501MB2733.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1201;
-x-forefront-prvs: 0025434D2D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(366004)(376002)(39860400002)(346002)(396003)(199004)(189003)(54534003)(13464003)(5660300002)(99286004)(6116002)(52536014)(66556008)(66476007)(8936002)(8676002)(478600001)(229853002)(73956011)(64756008)(66446008)(81156014)(81166006)(9686003)(6436002)(55016002)(76176011)(86362001)(66946007)(7696005)(316002)(6636002)(76116006)(3846002)(54906003)(7736002)(110136005)(6506007)(53546011)(102836004)(33656002)(53936002)(4326008)(68736007)(74316002)(25786009)(305945005)(6246003)(476003)(26005)(71190400001)(71200400001)(14454004)(66066001)(256004)(11346002)(2906002)(486006)(446003)(186003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0501MB2733;H:VI1PR0501MB2271.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: kwFTndg3lhZGJ3cjUlCcaQaNLpaSwHaG56RwxI6UI47eaTvV34DCuhqQcZx3jwtksLkosdPxVS+cWe3WytqRxYvAYy6ZpjLXv1U8KAP+p5XQI5s2D9pb7jTr47UE5dJ5AGV/cxqbb+AQgyZvnXJlozoHI79YzOnEA4d6ls5ggvAmWZDu6WFBYdBSslCcFsKjvJ1srlx8EjV0cZ983Hn0Z16fr7i9LlueJNyAzPRYYZyfe2/lBSr24+qWDjdN8F6LCZvoiw/f9lDDHmtBPXsetU5h1/SO2VxOBgnePiqNxrHT9NceCo4WWGoHY9WL1N4Cm0kPtY1WO+CNuZH+56iyPqP2F7BzL1WkoSLCn+pBz7WLznbqvVI8FWKW5QVPzhx5AUzlxqBsoAVmEem9eRB9OuCP9nKTW4x/+Iikzx0vRMQ=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726352AbfEBSoo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 May 2019 14:44:44 -0400
+Received: from mail-yw1-f66.google.com ([209.85.161.66]:43218 "EHLO
+        mail-yw1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbfEBSoo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 May 2019 14:44:44 -0400
+Received: by mail-yw1-f66.google.com with SMTP id w196so2338065ywd.10
+        for <linux-rdma@vger.kernel.org>; Thu, 02 May 2019 11:44:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0H6/1V6/5CIKh3CDtEYPw4qJMt0j8mXo9dQuEOmaJ2c=;
+        b=TAjDKfRewk/UKamdlBYp4Z/f6fr9mzmhTBqPKn6Tso2lr/AkBQ1LMwAK9XIDmPfqWH
+         1X2g+ZiCkYEJEIfn+6n2PJc1Ev9G5K81J+GgEo5MfNluS5utNruV2aiJWOsWhO1L39V3
+         Z6C+J9uqiqXPYgQ6dcQSGANxw+xbHRVZAHWyN5hgFksgs/XhUgIKGl/0h+zrDIy2eofo
+         aoMe+6WRmr7JILlqWxy3H4DaUeYvmUJdygIwom0nYWR8nN82LMnNt4srD1UZaJjPLcot
+         OJpUgaV5+1lK6hPsIBFneSFAOj6A3kBGy7IE9y3T5wB9bI5Hesqt1uBVI3nJujocribj
+         yDpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0H6/1V6/5CIKh3CDtEYPw4qJMt0j8mXo9dQuEOmaJ2c=;
+        b=glRoAJF/Z0ZSkRUd30iRaOyKADleGoDA0uW20CxdRtcxpw3PRMg3AP/eTOx23p+aFu
+         EVK8E9Oo5uxVH7/mtcavO4pG+XSHgqyZfmOlItJ8qp3iBqfpZraMCvDHYq6bOaCbf4dJ
+         pcP9idmyjHHhGbbcROzV26ejBhcvosuwNs7MoqXzmwYrUV8X4Lh3mmDuDOIUxVaXEXu6
+         WgsF/ppogDrZCvQw9TkUB4wvgGe/ppRoPcyM4P7x/YjWeN23eiclhmasJg7qh1ehsdby
+         kUepCEB35NW+xiuIYgURhbXB0LTewSEvBIGGX+Vi8ViUk/37fiW1+R8vpFtwqRTfguYS
+         VVXg==
+X-Gm-Message-State: APjAAAVAgFfOYSwSX/wWLDtW+nFWN8Nxn6r4eyT/yZFu3UciCDZmgLxx
+        VnGynqGLRSFEmTAuzMalToHtBw==
+X-Google-Smtp-Source: APXvYqym/T/mBRrGXQQDSpwxLouliK+q+GpIj38u16aTEyLNBYQwSdaMmlgY9yKwhmdV2+JjJHDJNw==
+X-Received: by 2002:a25:5d0f:: with SMTP id r15mr4433647ybb.373.1556822683578;
+        Thu, 02 May 2019 11:44:43 -0700 (PDT)
+Received: from ziepe.ca (adsl-173-228-226-134.prtc.net. [173.228.226.134])
+        by smtp.gmail.com with ESMTPSA id q204sm16965820ywq.44.2019.05.02.11.44.42
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 02 May 2019 11:44:42 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hMGhG-00026A-3l; Thu, 02 May 2019 15:44:42 -0300
+Date:   Thu, 2 May 2019 15:44:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v13 16/20] IB/mlx4, arm64: untag user pointers in
+ mlx4_get_umem_mr
+Message-ID: <20190502184442.GA31165@ziepe.ca>
+References: <cover.1553093420.git.andreyknvl@google.com>
+ <1e2824fd77e8eeb351c6c6246f384d0d89fd2d58.1553093421.git.andreyknvl@google.com>
+ <20190429180915.GZ6705@mtr-leonro.mtl.com>
+ <20190430111625.GD29799@arrakis.emea.arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb30d554-e9a9-4629-b77d-08d6cf2c5019
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 May 2019 18:30:54.7516
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2733
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190430111625.GD29799@arrakis.emea.arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Apr 30, 2019 at 12:16:25PM +0100, Catalin Marinas wrote:
+> > Interesting, the followup question is why mlx4 is only one driver in IB which
+> > needs such code in umem_mr. I'll take a look on it.
+> 
+> I don't know. Just using the light heuristics of find_vma() shows some
+> other places. For example, ib_umem_odp_get() gets the umem->address via
+> ib_umem_start(). This was previously set in ib_umem_get() as called from
+> mlx4_get_umem_mr(). Should the above patch have just untagged "start" on
+> entry?
 
+I have a feeling that there needs to be something for this in the odp
+code..
 
-> -----Original Message-----
-> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> owner@vger.kernel.org> On Behalf Of Leon Romanovsky
-> Sent: Thursday, May 2, 2019 3:12 AM
-> To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe
-> <jgg@mellanox.com>
-> Cc: Leon Romanovsky <leonro@mellanox.com>; RDMA mailing list <linux-
-> rdma@vger.kernel.org>; Jason Gunthorpe <jgg@ziepe.ca>
-> Subject: [PATCH rdma-next v1] RDMA/device: Don't fire uevent before devic=
-e
-> is fully initialized
->=20
-> From: Leon Romanovsky <leonro@mellanox.com>
->=20
-> When the refcount is 0 the device is invisible to netlink. However in the
-> patch below the refcount =3D 1 was moved to after the device_add().
-> This creates a race where userspace can issue a netlink query after the
-> device_add() event and not see the device as visible.
->=20
-> Ensure that no uevent is fired before device is fully registered.
->=20
-> Fixes: d79af7242bb2 ("RDMA/device: Expose ib_device_try_get(()")
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  Changelog v0->v1:
->  * Dropped uevent suppress in compat devices.
-> ---
->  drivers/infiniband/core/device.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->=20
-> diff --git a/drivers/infiniband/core/device.c
-> b/drivers/infiniband/core/device.c
-> index 8ae4906a60e7..7c51406e34e2 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -1244,6 +1244,11 @@ int ib_register_device(struct ib_device *device,
-> const char *name)
->=20
->  	ib_device_register_rdmacg(device);
->=20
-> +	/*
-> +	 * Ensure that ADD uevent is not fired because it
-> +	 * too early amd device is not initialized yet.
-> +	 */
-You probably sent older version?
-Minor nit comment correction.
-s/it too early amd/it is too early and
+Presumably mmu notifiers and what not also use untagged pointers? Most
+likely then the umem should also be storing untagged pointers.
+
+This probably becomes problematic because we do want the tag in cases
+talking about the base VA of the MR..
+
+Jason
