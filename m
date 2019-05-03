@@ -2,156 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCCC134AD
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2019 23:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA02E135D9
+	for <lists+linux-rdma@lfdr.de>; Sat,  4 May 2019 00:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbfECVOh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 May 2019 17:14:37 -0400
-Received: from mga01.intel.com ([192.55.52.88]:50429 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbfECVOh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 3 May 2019 17:14:37 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 May 2019 14:14:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.60,427,1549958400"; 
-   d="scan'208";a="296812649"
-Received: from brianwel-mobl1.amr.corp.intel.com (HELO [10.254.61.9]) ([10.254.61.9])
-  by orsmga004.jf.intel.com with ESMTP; 03 May 2019 14:14:33 -0700
-Subject: Re: [RFC PATCH 0/5] cgroup support for GPU devices
-To:     Kenny Ho <y2kenny@gmail.com>, Leon Romanovsky <leon@kernel.org>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Parav Pandit <parav@mellanox.com>,
-        David Airlie <airlied@linux.ie>,
-        intel-gfx@lists.freedesktop.org,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Li Zefan <lizefan@huawei.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        kenny.ho@amd.com, Harish.Kasiviswanathan@amd.com, daniel@ffwll.ch
-References: <20190501140438.9506-1-brian.welty@intel.com>
- <20190502083433.GP7676@mtr-leonro.mtl.com>
- <CAOWid-cYknxeTQvP9vQf3-i3Cpux+bs7uBs7_o-YMFjVCo19bg@mail.gmail.com>
-From:   "Welty, Brian" <brian.welty@intel.com>
-Message-ID: <bb001de0-e4e5-6b3f-7ced-9d0fb329635b@intel.com>
-Date:   Fri, 3 May 2019 14:14:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
-MIME-Version: 1.0
-In-Reply-To: <CAOWid-cYknxeTQvP9vQf3-i3Cpux+bs7uBs7_o-YMFjVCo19bg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S1726451AbfECWt3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 May 2019 18:49:29 -0400
+Received: from mail-eopbgr130077.outbound.protection.outlook.com ([40.107.13.77]:48709
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726041AbfECWt2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 3 May 2019 18:49:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dzegUUx8b8qnqLOYgAQqEbkA4A3LYVl88NTlv2hbywM=;
+ b=fJdriu6gHsBycCgs1EqF+1jRmo8VJscEXLsr4335YFSpPs7QMcX90pTm8puWZ6Hff3QWJVvtFZvzpMkALlos9eDcsHfpEjrhbZN8s058t7rKf0M032T568e5d5k7Iidt03xFP0g2uB83h6+35JJCwe4HLBK+2eGFCxXmOGXIGKw=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB5213.eurprd05.prod.outlook.com (20.178.12.86) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1835.15; Fri, 3 May 2019 22:49:24 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.008; Fri, 3 May 2019
+ 22:49:24 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Kamal Heib <kamalheib1@gmail.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>
+Subject: Re: [PATCH V2 for-next] RDMA: Get rid of iw_cm_verbs
+Thread-Topic: [PATCH V2 for-next] RDMA: Get rid of iw_cm_verbs
+Thread-Index: AQHVAgJ0HRjL/V+yeES1Uf2icTICoQ==
+Date:   Fri, 3 May 2019 22:49:24 +0000
+Message-ID: <20190503135620.GA12262@mellanox.com>
+References: <20190429115906.13509-1-kamalheib1@gmail.com>
+In-Reply-To: <20190429115906.13509-1-kamalheib1@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BL0PR01CA0001.prod.exchangelabs.com (2603:10b6:208:71::14)
+ To VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [65.119.211.164]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1047da72-d59c-41c6-f102-08d6d019964a
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5213;
+x-ms-traffictypediagnostic: VI1PR05MB5213:
+x-microsoft-antispam-prvs: <VI1PR05MB521323B91371C3BBA0E7411CCF350@VI1PR05MB5213.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0026334A56
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(39860400002)(366004)(396003)(136003)(376002)(199004)(189003)(256004)(6116002)(3846002)(99286004)(33656002)(66066001)(68736007)(305945005)(6916009)(53936002)(6512007)(66446008)(64756008)(66556008)(66476007)(73956011)(1076003)(4326008)(6246003)(14454004)(25786009)(66946007)(26005)(7736002)(81156014)(8676002)(71200400001)(81166006)(71190400001)(86362001)(6436002)(76176011)(186003)(2906002)(476003)(102836004)(486006)(2616005)(11346002)(52116002)(446003)(8936002)(54906003)(316002)(4744005)(229853002)(1411001)(6506007)(386003)(478600001)(6486002)(5660300002)(36756003)(26583001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5213;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: HaE+/62LRxfMcXd0rmm0E5pJF7gcguniP/CPewkDyLN8eb/W8qoDu7vCtYwSlv1p0j/kgMSVoF+C63emg5CoJ+ChLLm0WpaVadbXEPlZuvmagFHJB/s9opKzE4TKsRi26e0/RtuBioxasFaqDoCWRD/WnaRLTkE0VOibC8cB+38Tjr114Fdex8rzvboVxsPkrHKRoZA6pEivmDsj+d2k2IwtU2EOFep+AE0z/gLU1CUt4D6zgoTdXWK+epPSoiZVZdihJvbCS8l5rWBvMsKGGmDAml7mVECUD2J2c448j/zvVLPK8RMP5Iv5IA+3EIeuR5818lnJGdMTS7LeCdBsK84NmcgAoICQp1zofS5o26Y/DkYo+RIqLjAjaBe+sXsH/gDp48BqT7r/Lm+V5UB18JDsoZWuKtS/zSdWTZeqv40=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B7E073B9798697428ABF5F1F364FB89E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1047da72-d59c-41c6-f102-08d6d019964a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2019 22:49:24.4815
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5213
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Apr 29, 2019 at 02:59:06PM +0300, Kamal Heib wrote:
+> Integrate iw_cm_verbs data members into ib_device_ops and ib_device
+> structs, this is done to achieve the following:
+>=20
+> 1- Avoid memory related bugs.
+> 2- Make the code more cleaner.
+> 3- Reduce code duplication.
+>=20
+> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> ---
+>  drivers/infiniband/core/device.c            |  8 +++++
+>  drivers/infiniband/core/iwcm.c              | 35 +++++++++++----------
+>  drivers/infiniband/hw/cxgb3/iwch_provider.c | 32 +++++++------------
+>  drivers/infiniband/hw/cxgb4/provider.c      | 33 +++++++------------
+>  drivers/infiniband/hw/i40iw/i40iw_verbs.c   | 30 ++++++------------
+>  drivers/infiniband/hw/nes/nes_verbs.c       | 27 ++++++----------
+>  drivers/infiniband/hw/qedr/main.c           | 25 ++++++---------
+>  include/rdma/ib_verbs.h                     | 23 +++++++++++---
+>  include/rdma/iw_cm.h                        | 25 ---------------
+>  9 files changed, 98 insertions(+), 140 deletions(-)
 
-On 5/2/2019 3:48 PM, Kenny Ho wrote:
-> On 5/2/2019 1:34 AM, Leon Romanovsky wrote:
->> Count us (Mellanox) too, our RDMA devices are exposing special and
->> limited in size device memory to the users and we would like to provide
->> an option to use cgroup to control its exposure.
+Applied to for-next, thanks
 
-Hi Leon, great to hear and happy to work with you and RDMA community
-to shape this framework for use by RDMA devices as well.  The intent
-was to support more than GPU devices.
-
-Incidentally, I also wanted to ask about the rdma cgroup controller
-and if there is interest in updating the device registration implemented
-in that controller.  It could use the cgroup_device_register() that is
-proposed here.   But this is perhaps future work, so can discuss separately.
-
-
-> Doesn't RDMA already has a separate cgroup?  Why not implement it there?
-> 
-
-Hi Kenny, I can't answer for Leon, but I'm hopeful he agrees with rationale
-I gave in the cover letter.  Namely, to implement in rdma controller, would
-mean duplicating existing memcg controls there.
-
-Is AMD interested in collaborating to help shape this framework?
-It is intended to be device-neutral, so could be leveraged by various
-types of devices.
-If you have an alternative solution well underway, then maybe
-we can work together to merge our efforts into one.
-In the end, the DRM community is best served with common solution.
-
-
-> 
->>> and with future work, we could extend to:
->>> *  track and control share of GPU time (reuse of cpu/cpuacct)
->>> *  apply mask of allowed execution engines (reuse of cpusets)
->>>
->>> Instead of introducing a new cgroup subsystem for GPU devices, a new
->>> framework is proposed to allow devices to register with existing cgroup
->>> controllers, which creates per-device cgroup_subsys_state within the
->>> cgroup.  This gives device drivers their own private cgroup controls
->>> (such as memory limits or other parameters) to be applied to device
->>> resources instead of host system resources.
->>> Device drivers (GPU or other) are then able to reuse the existing cgroup
->>> controls, instead of inventing similar ones.
->>>
->>> Per-device controls would be exposed in cgroup filesystem as:
->>>     mount/<cgroup_name>/<subsys_name>.devices/<dev_name>/<subsys_files>
->>> such as (for example):
->>>     mount/<cgroup_name>/memory.devices/<dev_name>/memory.max
->>>     mount/<cgroup_name>/memory.devices/<dev_name>/memory.current
->>>     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.stat
->>>     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.weight
->>>
->>> The drm/i915 patch in this series is based on top of other RFC work [1]
->>> for i915 device memory support.
->>>
->>> AMD [2] and Intel [3] have proposed related work in this area within the
->>> last few years, listed below as reference.  This new RFC reuses existing
->>> cgroup controllers and takes a different approach than prior work.
->>>
->>> Finally, some potential discussion points for this series:
->>> * merge proposed <subsys_name>.devices into a single devices directory?
->>> * allow devices to have multiple registrations for subsets of resources?
->>> * document a 'common charging policy' for device drivers to follow?
->>>
->>> [1] https://patchwork.freedesktop.org/series/56683/
->>> [2] https://lists.freedesktop.org/archives/dri-devel/2018-November/197106.html
->>> [3] https://lists.freedesktop.org/archives/intel-gfx/2018-January/153156.html
->>>
->>>
->>> Brian Welty (5):
->>>   cgroup: Add cgroup_subsys per-device registration framework
->>>   cgroup: Change kernfs_node for directories to store
->>>     cgroup_subsys_state
->>>   memcg: Add per-device support to memory cgroup subsystem
->>>   drm: Add memory cgroup registration and DRIVER_CGROUPS feature bit
->>>   drm/i915: Use memory cgroup for enforcing device memory limit
->>>
->>>  drivers/gpu/drm/drm_drv.c                  |  12 +
->>>  drivers/gpu/drm/drm_gem.c                  |   7 +
->>>  drivers/gpu/drm/i915/i915_drv.c            |   2 +-
->>>  drivers/gpu/drm/i915/intel_memory_region.c |  24 +-
->>>  include/drm/drm_device.h                   |   3 +
->>>  include/drm/drm_drv.h                      |   8 +
->>>  include/drm/drm_gem.h                      |  11 +
->>>  include/linux/cgroup-defs.h                |  28 ++
->>>  include/linux/cgroup.h                     |   3 +
->>>  include/linux/memcontrol.h                 |  10 +
->>>  kernel/cgroup/cgroup-v1.c                  |  10 +-
->>>  kernel/cgroup/cgroup.c                     | 310 ++++++++++++++++++---
->>>  mm/memcontrol.c                            | 183 +++++++++++-
->>>  13 files changed, 552 insertions(+), 59 deletions(-)
->>>
->>> --
->>> 2.21.0
->>>
->> _______________________________________________
->> dri-devel mailing list
->> dri-devel@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Jason
