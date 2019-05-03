@@ -2,116 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 686EA132C9
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2019 19:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A58132BC
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2019 19:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728340AbfECRDU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 May 2019 13:03:20 -0400
-Received: from foss.arm.com ([217.140.101.70]:37368 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726720AbfECRDU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 3 May 2019 13:03:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B389915A2;
-        Fri,  3 May 2019 10:03:19 -0700 (PDT)
-Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A5D43F557;
-        Fri,  3 May 2019 10:03:13 -0700 (PDT)
-Date:   Fri, 3 May 2019 18:03:10 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>, Kuehling@google.com,
-        Felix <Felix.Kuehling@amd.com>, Deucher@google.com,
-        Alexander <Alexander.Deucher@amd.com>, Koenig@google.com,
-        Christian <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Chintan Pandya <cpandya@codeaurora.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [PATCH v14 13/17] IB/mlx4, arm64: untag user pointers in
- mlx4_get_umem_mr
-Message-ID: <20190503170310.GL55449@arrakis.emea.arm.com>
-References: <cover.1556630205.git.andreyknvl@google.com>
- <05c0c078b8b5984af4cc3b105a58c711dcd83342.1556630205.git.andreyknvl@google.com>
+        id S1727601AbfECRCi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 May 2019 13:02:38 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:56318 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726724AbfECRCh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 May 2019 13:02:37 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x43GxPbM141123;
+        Fri, 3 May 2019 17:02:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=BncSkmKFfSjgngfBN0eKIEFvp3WAo4qj1izyOTi5oSU=;
+ b=Laftfx5AdthWx83pArbwSNaQCp2334pSq8Nd3V+Lf4APplC9cbaTIUg0gREZxZKNfIzt
+ xbHhLDOisBrHOFg+HrjZG1jjrScs+5RF2go67GY1u2odxUp4LF83/0LcyAFD62qDvVDn
+ SJx57SB5qA0vXf3la01p3Hqx/xygF05KacrwvMo4qqLsr0qkd2Xd7htbwst8ER4NzOn4
+ 4zkbYsAa0wja5JzjTMTIv3cx/dv8AWQFQxYIGfKNwqI6JTF58bBfHg+61e+jnYcWcQIn
+ fqS1V5AnE0lz6R5t2nE39ct+/5UR4Hshk6mh8khKM/UmG+f6g/M5sa2kLAManHrq3pEL RA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2s6xhyr3ts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 May 2019 17:02:26 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x43H18eQ143976;
+        Fri, 3 May 2019 17:02:25 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2s6xhhqx69-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 03 May 2019 17:02:25 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x43H2PZq147775;
+        Fri, 3 May 2019 17:02:25 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 2s6xhhqx61-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 May 2019 17:02:25 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x43H2OEZ010679;
+        Fri, 3 May 2019 17:02:24 GMT
+Received: from [10.209.243.127] (/10.209.243.127)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 03 May 2019 10:02:24 -0700
+Subject: Re: [PATCH] net: rds: fix spelling mistake "syctl" -> "sysctl"
+To:     Colin King <colin.king@canonical.com>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20190503121017.5227-1-colin.king@canonical.com>
+From:   Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <0fc4a8a5-d275-ef2c-3cbc-5cfa97fe6881@oracle.com>
+Date:   Fri, 3 May 2019 10:05:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <05c0c078b8b5984af4cc3b105a58c711dcd83342.1556630205.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190503121017.5227-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9245 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=802 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905030109
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 30, 2019 at 03:25:09PM +0200, Andrey Konovalov wrote:
-> This patch is a part of a series that extends arm64 kernel ABI to allow to
-> pass tagged user pointers (with the top byte set to something else other
-> than 0x00) as syscall arguments.
+On 5/3/2019 5:10 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> mlx4_get_umem_mr() uses provided user pointers for vma lookups, which can
-> only by done with untagged pointers.
+> There is a spelling mistake in a pr_warn warning. Fix it.
 > 
-> Untag user pointers in this function.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  drivers/infiniband/hw/mlx4/mr.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
-> index 395379a480cb..9a35ed2c6a6f 100644
-> --- a/drivers/infiniband/hw/mlx4/mr.c
-> +++ b/drivers/infiniband/hw/mlx4/mr.c
-> @@ -378,6 +378,7 @@ static struct ib_umem *mlx4_get_umem_mr(struct ib_udata *udata, u64 start,
->  	 * again
->  	 */
->  	if (!ib_access_writable(access_flags)) {
-> +		unsigned long untagged_start = untagged_addr(start);
->  		struct vm_area_struct *vma;
->  
->  		down_read(&current->mm->mmap_sem);
-> @@ -386,9 +387,9 @@ static struct ib_umem *mlx4_get_umem_mr(struct ib_udata *udata, u64 start,
->  		 * cover the memory, but for now it requires a single vma to
->  		 * entirely cover the MR to support RO mappings.
->  		 */
-> -		vma = find_vma(current->mm, start);
-> -		if (vma && vma->vm_end >= start + length &&
-> -		    vma->vm_start <= start) {
-> +		vma = find_vma(current->mm, untagged_start);
-> +		if (vma && vma->vm_end >= untagged_start + length &&
-> +		    vma->vm_start <= untagged_start) {
->  			if (vma->vm_flags & VM_WRITE)
->  				access_flags |= IB_ACCESS_LOCAL_WRITE;
->  		} else {
-
-Discussion ongoing on the previous version of the patch but I'm more
-inclined to do this in ib_uverbs_(re)reg_mr() on cmd.start.
-
--- 
-Catalin
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
