@@ -2,102 +2,161 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2D5135DC
-	for <lists+linux-rdma@lfdr.de>; Sat,  4 May 2019 00:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9EC13658
+	for <lists+linux-rdma@lfdr.de>; Sat,  4 May 2019 01:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726041AbfECWtu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 May 2019 18:49:50 -0400
-Received: from mail-eopbgr130078.outbound.protection.outlook.com ([40.107.13.78]:54334
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726509AbfECWtu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 3 May 2019 18:49:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fehmT1d3+g4vjFSYiRvjOvbmjLeLYbJvvNN8zh4mxek=;
- b=UpM8s97zICM/rhrlTMQWtPHWtWyKdJCJE7h6FqTLCGxYIxAHeLCnQkVaBz4X4+EZ8XXQPYF/N8Qeux6l2bUGrdxh+6zswwv1fVaoxfahUsU9ZYwTtA5TNM8jG12WYkqKOXoXb3vTFwIhZ8b9rjWtzpz/PtmK1ZeHO61FmF9IzSU=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB5213.eurprd05.prod.outlook.com (20.178.12.86) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1835.15; Fri, 3 May 2019 22:49:46 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.008; Fri, 3 May 2019
- 22:49:46 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        id S1726604AbfECXu0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 May 2019 19:50:26 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:41635 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726444AbfECXu0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 May 2019 19:50:26 -0400
+Received: by mail-qt1-f193.google.com with SMTP id c13so8696521qtn.8
+        for <linux-rdma@vger.kernel.org>; Fri, 03 May 2019 16:50:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=myEmDM1tl8JbR6YMpSXJcrDkeSv8GCoixvaAoXhr78I=;
+        b=dpzp0Ir0qlWbRF7Yq/HHM0joK+p7hkUNm9sadj2y+lK/wbCY7lJ9yiiGozPIGOqNfB
+         SJkybzPS+g+f21FO/x9mz/cQyUJGg79S7os9kiqIUEUa/rbL3IzH4mpa1obS5anyBqyr
+         SHKoU/2GSDZgNgB57EnjRJ8h0zuz1dfLq/JEdVSE5RIskNjFswD9e5infY+XnCKjUZU+
+         FsovaoVmpAFAB7g9oxBs7FFh1fWInTtKBgTRyyDBpoX65pVxNgVZja+ilGTyE5WCt7R/
+         Xck975+x6Kxw85Vw2htWTplG0RYTJO83DsXfsDmWYX1JnjGfIk26MLTQ6vjrgSK8b6cJ
+         roHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=myEmDM1tl8JbR6YMpSXJcrDkeSv8GCoixvaAoXhr78I=;
+        b=B8Tb1xuRt/+9d4IxF2fHCJH4o2m/F+/BLtWjvyxUbOUFy3KZgnq9TunArHfQRxYl6Z
+         bSE3lPsMyUcCUwdEho1mhTb20T2ZO643Jz4hHXw0MJ9YRbld09uAPWwXq+Iz3mlGmGQS
+         TZSKo7++ra6bJZnuqzB0Lhkuy3nZpR77kZWimFrkzd/uj38qyUJwFu/ogVYxRX8vFiSA
+         K309YSGvvmkoHv5Hu/0pdng+eJi0wM79G5ni3AkI3Z1vKIYq5lE2SiuQIYXYfiYkoxmX
+         UcFf7eOiYIHztHXxYM9sTwop7UY7Jwt6+wBvZca7FRksGEBXc6I2nGfRmycOmiutvTP/
+         TiCA==
+X-Gm-Message-State: APjAAAWQ4zo+OmgDyKbIA+4Hs9QxdJwrsm+Hf2D8k++Li6393qMaYMu3
+        lBOmdB1Nt3c4uaInuBMKQ2srKACG3mj69Q==
+X-Google-Smtp-Source: APXvYqx6FTN5Ns8Os3k5JZyjYh4ogaIluYRodOB3Dwf/Mnpyu2Rse2uQUyHYdEubw82blvhvZVJO8Q==
+X-Received: by 2002:aed:24a3:: with SMTP id t32mr10993590qtc.206.1556927425112;
+        Fri, 03 May 2019 16:50:25 -0700 (PDT)
+Received: from ziepe.ca ([65.119.211.164])
+        by smtp.gmail.com with ESMTPSA id j129sm2001197qkd.51.2019.05.03.16.50.23
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 03 May 2019 16:50:24 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hMhwd-0001ku-43; Fri, 03 May 2019 20:50:23 -0300
+Date:   Fri, 3 May 2019 20:50:23 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     "dledford@redhat.com" <dledford@redhat.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH for-next v1 1/4] RDMA/uverbs: initialize
- uverbs_attr_bundle ucontext in ib_uverbs_get_context
-Thread-Topic: [PATCH for-next v1 1/4] RDMA/uverbs: initialize
- uverbs_attr_bundle ucontext in ib_uverbs_get_context
-Thread-Index: AQHVAgKBCE7HtjCa8UCiWemCif6ekw==
-Date:   Fri, 3 May 2019 22:49:46 +0000
-Message-ID: <20190503131329.GA18325@mellanox.com>
-References: <20190430142333.31063-1-shamir.rabinovitch@oracle.com>
- <20190430142333.31063-2-shamir.rabinovitch@oracle.com>
-In-Reply-To: <20190430142333.31063-2-shamir.rabinovitch@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BL0PR03CA0027.namprd03.prod.outlook.com
- (2603:10b6:208:2d::40) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [65.119.211.164]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2ca280cf-00aa-4804-4242-08d6d019a3bc
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5213;
-x-ms-traffictypediagnostic: VI1PR05MB5213:
-x-microsoft-antispam-prvs: <VI1PR05MB5213D621092C7C0C0964754ECF350@VI1PR05MB5213.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 0026334A56
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(39860400002)(366004)(396003)(136003)(376002)(199004)(189003)(256004)(6116002)(3846002)(99286004)(33656002)(66066001)(68736007)(305945005)(6916009)(53936002)(6512007)(66446008)(64756008)(66556008)(66476007)(73956011)(1076003)(4326008)(6246003)(107886003)(14454004)(25786009)(66946007)(26005)(7736002)(81156014)(8676002)(71200400001)(81166006)(71190400001)(86362001)(6436002)(76176011)(186003)(2906002)(476003)(102836004)(486006)(2616005)(11346002)(52116002)(446003)(8936002)(54906003)(316002)(4744005)(229853002)(6506007)(386003)(478600001)(6486002)(5660300002)(36756003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5213;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: p3JAZMs+Z8CpYNjlAj+XDC8xn38E0YHS30W0Ftm50Yz9lKIb0cjzZ1589LmPqm1hHfZNyXrNbge0319DzoC3NJ7qSVOWfIpBlnRxxq7vR7GiZFEkc2dwuRxM3d0xQJterVLC4yslhNyVOlT8wxcA8a55U9x+hs+OoWMOODGNpAg208wO/6fxuzAzrC0q93KkORFvKIlDZQMJtbQBo4tXvqdZ1i9p1k6L8VB4X4PeK5Ux5fa/QN6K16MCezjJ8g6a2bECsdMC4XQfD8yjQaBhMuWFdNr0vNQJ8WlVWcfHvAxtbFJZNmHiPcMx/6OWJttYuZFGHJvvWu/RLYiHyt6U9lhnFHM2i7gfok5vZuEk4LqwxnlccXPfBkgBzMJRKxUB04BvtFQWMnkQVapuzy+RU1y9ymXuv8ko47mK6gfL6Bs=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1D9F0F7091CF254198EAC9C2696215CC@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Gal Pressman <galpress@amazon.com>
+Subject: Re: [PATCH v2 rdma-next 1/5] RDMA/umem: Add API to find best driver
+ supported page size in an MR
+Message-ID: <20190503235023.GA6660@ziepe.ca>
+References: <20190419134353.12684-1-shiraz.saleem@intel.com>
+ <20190419134353.12684-2-shiraz.saleem@intel.com>
+ <20190425142559.GA5388@ziepe.ca>
+ <9DD61F30A802C4429A01CA4200E302A7A5AC3A8C@fmsmsx124.amr.corp.intel.com>
+ <20190430180503.GB8101@ziepe.ca>
+ <9DD61F30A802C4429A01CA4200E302A7A5ACCB03@fmsmsx124.amr.corp.intel.com>
+ <20190430210011.GA9059@ziepe.ca>
+ <9DD61F30A802C4429A01CA4200E302A7A5AD1514@fmsmsx124.amr.corp.intel.com>
+ <20190503152835.GB31165@ziepe.ca>
+ <9DD61F30A802C4429A01CA4200E302A7A5AD161A@fmsmsx124.amr.corp.intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ca280cf-00aa-4804-4242-08d6d019a3bc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2019 22:49:46.8944
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5213
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7A5AD161A@fmsmsx124.amr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 30, 2019 at 05:23:21PM +0300, Shamir Rabinovitch wrote:
-> ib_uverbs_get_context does not have uobject so it does not call the
-> rdma_lookup_get_uobject which is used to set up the uverbs_attr_bundle
-> ucontext. for ib_uverbs_get_context we need to set up this manually
-> before we send the uverbs_attr_bundle down to the driver layer.
->=20
-> this complete the change that was done in
-> ("70f06b26f07e IB: ucontext should be set properly for all cmd & ioctl pa=
-ths")
->=20
-> Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-> ---
->  drivers/infiniband/core/uverbs_cmd.c | 2 ++
->  1 file changed, 2 insertions(+)
+On Fri, May 03, 2019 at 04:01:27PM +0000, Saleem, Shiraz wrote:
+> >Subject: Re: [PATCH v2 rdma-next 1/5] RDMA/umem: Add API to find best driver
+> >supported page size in an MR
+> >
+> >On Fri, May 03, 2019 at 03:22:59PM +0000, Saleem, Shiraz wrote:
+> >> >This is because mask shouldn't start as zero - the highest possible
+> >> >mask is something like log2_ru(umem length)
+> >> >
+> >> >ie absent other considerations the page size at the NIC should be the
+> >> >size of the umem.
+> >> >
+> >> >Then we scan the sgl and reduce that value based on the physical
+> >> >address layout
+> >> >
+> >> >Then we reduce it again based on the uvirt vs address difference
+> >> >
+> >> >Oring a '0' into the mask means that step contributes no restriction.
+> >> >
+> >> >..
+> >> >
+> >> >So I think the algorithm is just off as is, it should be more like
+> >> >
+> >> > // Page size can't be larger than the length of the MR mask =
+> >> >log2_ru(umem length);
+> >> >
+> >> > // offset into the first SGL for umem->addr pgoff = umem->address &
+> >> >PAGE_MASK;  va = uvirt_addr;
+> >> >
+> >>
+> >> Did you mean pgoff = umem->address & ~PAGE_MASK?
+> >
+> >Yes...
+> 
+> OK. Don't we need something like this for zero based VA?
+> va = uvirt_addr ?  uvirt_addr :  umem->addr;
 
-Applied to for-next
+Every MR is created with an IOVA (here called VA). Before we get here
+the caller should figure out the IOVA and it should either be 0 or
+umem->address in the cases we implement today *however* it can really
+be anything and this code shouldn't care..
 
-Thanks,
-Jason
+> Also can we do this for all HW?
+
+All hardware has to support an arbitary IOVA.
+
+> Or do we keep the IB_UMEM_VA_BASED_OFFSET flag and OR
+> in the dma_addr_end (for first SGL) and dma_addr_start (for last SGL)
+> to the mask when the flag is not set?
+
+I wasn't totally sure what that flag did..
+
+If we don't have any drivers that need something different today then
+I would focus entirely on the:
+
+ PA = MR_PAGE_TABLE[IOVA/PAGE_SIZE] | (IOVA & PAGE_MASK)
+
+Case, which is what I outlined.
+
+The ^ is checking that the (IOVA & PAGE_MASK) scheme will work.
+
+> > for_each_sgl()
+> >   mask |= (sgl->dma_addr + pgoff) ^ va
+> >   if (not first or last)
+> >       // Interior SGLs limit by the length as well
+> >       mask |= sgl->length;
+> >   va += sgl->length - pgoff;
+> >   pgoff = 0;
+> >
+> 
+> >
+> >But really even that is not what it should be, the 'pgoff' should simply be the
+> >'offset' member of the first sgl and we should set it correctly based on the umem-
+> >>address when building the sgl in the core code.
+> >
+> 
+> I can look to update it post this series.
+> And the core code changes to not over allocate scatter table.
+
+Sure
+
+Lets try and get this sorted out right away so it can go in this merge
+window, which might start on Monday.
+
+Jason  
