@@ -2,177 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9783E13709
-	for <lists+linux-rdma@lfdr.de>; Sat,  4 May 2019 04:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB77D13E1A
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2019 09:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726726AbfEDCd6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 May 2019 22:33:58 -0400
-Received: from mail-eopbgr60044.outbound.protection.outlook.com ([40.107.6.44]:27201
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726558AbfEDCd6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 3 May 2019 22:33:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tvvvxguXFS/tCPT8wNJzJ7Ok4iAfTLhai36oe2TR2FY=;
- b=hNYoiAEUkMbnxwJA3/Gjc6FrDm4zGKO7Cyvb62waEqFEJXQIePa5lxSq/hB0JAQQUwSanyM86eR6BBWbCODoEfK6WvTSaoYMvo0zNd9FM6xcutbLchcoETlKbznJ38Jyg1Q3PPW6/mAy8Ag12TezmJvqxpIhF7VT08vzVdJkLMc=
-Received: from VI1PR0501MB2271.eurprd05.prod.outlook.com (10.169.134.149) by
- VI1PR0501MB2366.eurprd05.prod.outlook.com (10.169.136.15) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1856.10; Sat, 4 May 2019 02:33:40 +0000
-Received: from VI1PR0501MB2271.eurprd05.prod.outlook.com
- ([fe80::8810:9799:ab77:9494]) by VI1PR0501MB2271.eurprd05.prod.outlook.com
- ([fe80::8810:9799:ab77:9494%2]) with mapi id 15.20.1856.008; Sat, 4 May 2019
- 02:33:40 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
+        id S1727174AbfEEHOm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 5 May 2019 03:14:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725792AbfEEHOm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 5 May 2019 03:14:42 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35A502087F;
+        Sun,  5 May 2019 07:14:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557040481;
+        bh=wfOufAim4Z05zwv37oknpoe8Q7ERn1v/x1yShXBuzwo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kEPSKJZFVOtrHxerAwWDvAcODpxmsrEiPojp4/7M+6j0blyCN6MVehJ4myZtrIC5X
+         34/Zr3ouf0/msOtEJgUzm/YP2V9vUOt0UB2m+ZIjJ46Mn0DhmkOHtLOugSTpCQdchY
+         m6ed6oVQKxlrUjcHhFrZAOOMC8hJMNSequou6LUI=
+Date:   Sun, 5 May 2019 10:14:36 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Welty, Brian" <brian.welty@intel.com>
+Cc:     Kenny Ho <y2kenny@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Parav Pandit <parav@mellanox.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx@lists.freedesktop.org,
+        J??r??me Glisse <jglisse@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Li Zefan <lizefan@huawei.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        Christian K??nig <christian.koenig@amd.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Huy Nguyen <huyn@mellanox.com>, Martin Wilck <mwilck@suse.com>
-Subject: RE: [PATCH rdma-next v2 0/7] Allow RoCE GID attribute netdev
- detachment
-Thread-Topic: [PATCH rdma-next v2 0/7] Allow RoCE GID attribute netdev
- detachment
-Thread-Index: AQHVALtq7ORyUtyy6kmeVRpPOML/c6ZaI60AgAATn0A=
-Date:   Sat, 4 May 2019 02:33:40 +0000
-Message-ID: <VI1PR0501MB2271CB912D76520BB835D694D1360@VI1PR0501MB2271.eurprd05.prod.outlook.com>
-References: <20190502074807.26566-1-leon@kernel.org>
- <20190504004441.GA8449@mellanox.com>
-In-Reply-To: <20190504004441.GA8449@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [68.203.16.89]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 347a561e-5462-4c9e-0456-08d6d038eb7a
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR0501MB2366;
-x-ms-traffictypediagnostic: VI1PR0501MB2366:
-x-microsoft-antispam-prvs: <VI1PR0501MB2366479A9ADF24F531C499F4D1360@VI1PR0501MB2366.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-forefront-prvs: 0027ED21E7
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(366004)(39860400002)(376002)(136003)(396003)(189003)(199004)(54534003)(13464003)(6116002)(14454004)(3846002)(25786009)(33656002)(11346002)(478600001)(71200400001)(71190400001)(52536014)(53546011)(6246003)(54906003)(66476007)(229853002)(76176011)(7696005)(64756008)(66066001)(66446008)(73956011)(66946007)(476003)(76116006)(66556008)(5660300002)(8676002)(7736002)(99286004)(4326008)(6436002)(8936002)(110136005)(305945005)(446003)(55016002)(81156014)(486006)(186003)(81166006)(316002)(6506007)(74316002)(5024004)(2906002)(256004)(14444005)(102836004)(86362001)(53936002)(68736007)(9686003)(26005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0501MB2366;H:VI1PR0501MB2271.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: iUDjZ+jsrGK8PcBBkywjz09+J0yKas4is60WMf/UuTzYqqSmoIQ+hEuzJMc7LQbXJ1xUc4b23N9/8k0dnKQ6YTP6KDWGC24x6HhxOCVSUWbyyfcXhk1FVXonErWN0E3ypc1A/SCpkDPPxAuPawtGFOt2yCY6x7a7eiMjo52AMC16dcO7pSlF8UbcJtNQg6ljB/Z11766RPYBff1G0pnUmGpzjoSXa6VBnKWjs8kawqUExw63WMLsWaLDD3CCZfthgScCb09t7kqCgdjaQuhnyR47DBW9B5nbbslg+mJG37VROEX3n/6e0SGoP5XxwWbpuRgnec941sa4SX7dvuZoLTD3O3HuLU31o7IzkGgcIEFepY6B+iF+qTJLts+AtD6uHvuIcz0T+ryVy5zPVi2QzhFeXCL0jqxwM3B96a1S1LE=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        kenny.ho@amd.com, Harish.Kasiviswanathan@amd.com, daniel@ffwll.ch
+Subject: Re: [RFC PATCH 0/5] cgroup support for GPU devices
+Message-ID: <20190505071436.GD6938@mtr-leonro.mtl.com>
+References: <20190501140438.9506-1-brian.welty@intel.com>
+ <20190502083433.GP7676@mtr-leonro.mtl.com>
+ <CAOWid-cYknxeTQvP9vQf3-i3Cpux+bs7uBs7_o-YMFjVCo19bg@mail.gmail.com>
+ <bb001de0-e4e5-6b3f-7ced-9d0fb329635b@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 347a561e-5462-4c9e-0456-08d6d038eb7a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 May 2019 02:33:40.5661
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2366
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bb001de0-e4e5-6b3f-7ced-9d0fb329635b@intel.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Jason Gunthorpe
-> Sent: Friday, May 3, 2019 7:45 PM
-> To: Leon Romanovsky <leon@kernel.org>
-> Cc: Doug Ledford <dledford@redhat.com>; Leon Romanovsky
-> <leonro@mellanox.com>; RDMA mailing list <linux-rdma@vger.kernel.org>;
-> Huy Nguyen <huyn@mellanox.com>; Martin Wilck <mwilck@suse.com>;
-> Parav Pandit <parav@mellanox.com>
-> Subject: Re: [PATCH rdma-next v2 0/7] Allow RoCE GID attribute netdev
-> detachment
->=20
-> On Thu, May 02, 2019 at 10:48:00AM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > Changelog:
-> >  v1 -> v2:
-> >  * Resent
-> >  v0 -> v1:
-> >  * Fixed wrong RCU pointer access in patch "RDMA/core: Allow detaching
-> >    gid attribute netdevice for RoCE"
-> >
-> > ----------------------------------------------------------------------
-> > -
-> >
-> > >From Parav,
-> >
-> > This series covers following changes.
-> >
-> > 1. A fix in RXE to consider right reserved space of the netdev.
-> > 2. ib_cm to avoid accessing netdev of GID attribute.
-> > 3. Several RoCE drivers and net/smc needs to know the mac and vlan of
-> > the GID entry.
-> >
-> > Instead of open coded accessing netdev fields, we introduce an API to
-> > get such fields filled up using new API rdma_read_gid_l2_fields().
-> >
-> > 4. When there is active traffic through a GID, a QP/AH holds reference
-> > to this GID entry. GID entry holds reference to its attached netdevice.
-> > Due to this when netdevice (such as vlan netdev) is deleted by admin
-> > user, its refcount is not dropped.
-> >
-> > Therefore, use netdev under rcu lock so that netdev reference can be
-> > dropped when netdev and associated RoCE GID entry is deleted. This is
-> > facilitated by existing API rdma_read_gid_attr_ndev_rcu.
-> >
-> > Thanks
-> >
-> >
-> > Parav Pandit (7):
-> >   RDMA/rxe: Consider skb reserve space based on netdev of GID
-> >   IB/cm: Reduce dependency on gid attribute ndev check
-> >   RDMA: Introduce and use GID attr helper to read RoCE L2 fields
-> >   RDMA/cma: Use rdma_read_gid_attr_ndev_rcu to access netdev
-> >   RDMA/rxe: Use rdma_read_gid_attr_ndev_rcu to access netdev
-> >   net/smc: Use rdma_read_gid_l2_fields to L2 fields
-> >   RDMA/core: Allow detaching gid attribute netdevice for RoCE
-> >
-> >  drivers/infiniband/core/addr.c             |   1 +
-> >  drivers/infiniband/core/cache.c            | 117 +++++++++++++++++++--
-> >  drivers/infiniband/core/cm.c               |   5 +-
-> >  drivers/infiniband/core/cma.c              |  12 ++-
-> >  drivers/infiniband/core/sysfs.c            |  13 ++-
-> >  drivers/infiniband/hw/bnxt_re/ib_verbs.c   |  18 ++--
-> >  drivers/infiniband/hw/hns/hns_roce_ah.c    |  14 +--
-> >  drivers/infiniband/hw/hns/hns_roce_hw_v2.c |   7 +-
-> >  drivers/infiniband/hw/mlx4/ah.c            |   8 +-
-> >  drivers/infiniband/hw/mlx4/qp.c            |   6 +-
-> >  drivers/infiniband/hw/mlx5/main.c          |  42 ++------
-> >  drivers/infiniband/hw/ocrdma/ocrdma_ah.c   |   9 +-
-> >  drivers/infiniband/hw/ocrdma/ocrdma_hw.c   |   7 +-
-> >  drivers/infiniband/hw/qedr/qedr_roce_cm.c  |  11 +-
-> >  drivers/infiniband/hw/qedr/verbs.c         |   5 +-
-> >  drivers/infiniband/sw/rxe/rxe_net.c        |  18 +++-
-> >  include/rdma/ib_cache.h                    |   4 +
-> >  include/rdma/ib_verbs.h                    |   2 +-
-> >  net/smc/smc_ib.c                           |  16 +--
-> >  19 files changed, 221 insertions(+), 94 deletions(-)
->=20
-> Now that we have the RCU pointer in the gid_attr it is really ugly that t=
-he
-> onstack version and the pointer version are the same type, this needs a
-> cleanup to add some kind of gid_attr_init structure instead
+On Fri, May 03, 2019 at 02:14:33PM -0700, Welty, Brian wrote:
 >
-Hmm ok.=20
-Other option I was considering is to pass ndev pointer as additional argume=
-nt in add_gid code flow.
-But it was too much changes in roce_gid_mgmt.c.
-We can possibly keep the scope limited of gid_init_attr within cache.c and =
-git_mgmt.c.
+> On 5/2/2019 3:48 PM, Kenny Ho wrote:
+> > On 5/2/2019 1:34 AM, Leon Romanovsky wrote:
+> >> Count us (Mellanox) too, our RDMA devices are exposing special and
+> >> limited in size device memory to the users and we would like to provide
+> >> an option to use cgroup to control its exposure.
+>
+> Hi Leon, great to hear and happy to work with you and RDMA community
+> to shape this framework for use by RDMA devices as well.  The intent
+> was to support more than GPU devices.
+>
+> Incidentally, I also wanted to ask about the rdma cgroup controller
+> and if there is interest in updating the device registration implemented
+> in that controller.  It could use the cgroup_device_register() that is
+> proposed here.   But this is perhaps future work, so can discuss separately.
 
-> But otherwise applied to for-next
->=20
-Thanks
+I'll try to take a look later this week.
 
-> Thanks,
-> Jason
+>
+>
+> > Doesn't RDMA already has a separate cgroup?  Why not implement it there?
+> >
+>
+> Hi Kenny, I can't answer for Leon, but I'm hopeful he agrees with rationale
+> I gave in the cover letter.  Namely, to implement in rdma controller, would
+> mean duplicating existing memcg controls there.
+
+Exactly, I didn't feel comfortable to add notion of "device memory"
+to RDMA cgroup and postponed that decision to later point of time.
+RDMA operates with verbs objects and all our user space API is based around
+that concept. At the end, system administrator will have hard time to
+understand the differences between memcg and RDMA memory.
+
+>
+> Is AMD interested in collaborating to help shape this framework?
+> It is intended to be device-neutral, so could be leveraged by various
+> types of devices.
+> If you have an alternative solution well underway, then maybe
+> we can work together to merge our efforts into one.
+> In the end, the DRM community is best served with common solution.
+>
+>
+> >
+> >>> and with future work, we could extend to:
+> >>> *  track and control share of GPU time (reuse of cpu/cpuacct)
+> >>> *  apply mask of allowed execution engines (reuse of cpusets)
+> >>>
+> >>> Instead of introducing a new cgroup subsystem for GPU devices, a new
+> >>> framework is proposed to allow devices to register with existing cgroup
+> >>> controllers, which creates per-device cgroup_subsys_state within the
+> >>> cgroup.  This gives device drivers their own private cgroup controls
+> >>> (such as memory limits or other parameters) to be applied to device
+> >>> resources instead of host system resources.
+> >>> Device drivers (GPU or other) are then able to reuse the existing cgroup
+> >>> controls, instead of inventing similar ones.
+> >>>
+> >>> Per-device controls would be exposed in cgroup filesystem as:
+> >>>     mount/<cgroup_name>/<subsys_name>.devices/<dev_name>/<subsys_files>
+> >>> such as (for example):
+> >>>     mount/<cgroup_name>/memory.devices/<dev_name>/memory.max
+> >>>     mount/<cgroup_name>/memory.devices/<dev_name>/memory.current
+> >>>     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.stat
+> >>>     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.weight
+> >>>
+> >>> The drm/i915 patch in this series is based on top of other RFC work [1]
+> >>> for i915 device memory support.
+> >>>
+> >>> AMD [2] and Intel [3] have proposed related work in this area within the
+> >>> last few years, listed below as reference.  This new RFC reuses existing
+> >>> cgroup controllers and takes a different approach than prior work.
+> >>>
+> >>> Finally, some potential discussion points for this series:
+> >>> * merge proposed <subsys_name>.devices into a single devices directory?
+> >>> * allow devices to have multiple registrations for subsets of resources?
+> >>> * document a 'common charging policy' for device drivers to follow?
+> >>>
+> >>> [1] https://patchwork.freedesktop.org/series/56683/
+> >>> [2] https://lists.freedesktop.org/archives/dri-devel/2018-November/197106.html
+> >>> [3] https://lists.freedesktop.org/archives/intel-gfx/2018-January/153156.html
+> >>>
+> >>>
+> >>> Brian Welty (5):
+> >>>   cgroup: Add cgroup_subsys per-device registration framework
+> >>>   cgroup: Change kernfs_node for directories to store
+> >>>     cgroup_subsys_state
+> >>>   memcg: Add per-device support to memory cgroup subsystem
+> >>>   drm: Add memory cgroup registration and DRIVER_CGROUPS feature bit
+> >>>   drm/i915: Use memory cgroup for enforcing device memory limit
+> >>>
+> >>>  drivers/gpu/drm/drm_drv.c                  |  12 +
+> >>>  drivers/gpu/drm/drm_gem.c                  |   7 +
+> >>>  drivers/gpu/drm/i915/i915_drv.c            |   2 +-
+> >>>  drivers/gpu/drm/i915/intel_memory_region.c |  24 +-
+> >>>  include/drm/drm_device.h                   |   3 +
+> >>>  include/drm/drm_drv.h                      |   8 +
+> >>>  include/drm/drm_gem.h                      |  11 +
+> >>>  include/linux/cgroup-defs.h                |  28 ++
+> >>>  include/linux/cgroup.h                     |   3 +
+> >>>  include/linux/memcontrol.h                 |  10 +
+> >>>  kernel/cgroup/cgroup-v1.c                  |  10 +-
+> >>>  kernel/cgroup/cgroup.c                     | 310 ++++++++++++++++++---
+> >>>  mm/memcontrol.c                            | 183 +++++++++++-
+> >>>  13 files changed, 552 insertions(+), 59 deletions(-)
+> >>>
+> >>> --
+> >>> 2.21.0
+> >>>
+> >> _______________________________________________
+> >> dri-devel mailing list
+> >> dri-devel@lists.freedesktop.org
+> >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
