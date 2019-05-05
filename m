@@ -2,42 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F06A6141E2
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2019 20:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D6B141E6
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2019 20:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbfEESkm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 5 May 2019 14:40:42 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:56422 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbfEESkm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 May 2019 14:40:42 -0400
+        id S1727472AbfEESk4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 5 May 2019 14:40:56 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:13802 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727539AbfEESk4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 May 2019 14:40:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1557081635; x=1588617635;
+  t=1557081655; x=1588617655;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=DJnSukhrR1EsN756YFENmdYN4WleQJN1xiK9DBsh6ik=;
-  b=lBkDq/v1tSNN3Hn5Be3SQEndYcBCnwHxJxy2odsZgHb1CVMy+S1VB9Kr
-   jXeVU2U3xLrXw7fkIAVhS9Lxg+wmnX28VFMyn8jaLZbnn8UTwCescqG8Z
-   Lvqh2HqWnRD94pS9CAN3P5mVuP7KGmIWm9noJS5YjuVTIITiwl9bYg/3n
-   4=;
+  bh=W42wm8mM/6EQWajWFOBvwPJT9+uYgpcKqWXZp3GneH0=;
+  b=HFh04vjF1y1Fx3jCk/DDuynYCqMgfz5Uvvjdr8p8pPMMHPZaa+skpZU1
+   GkxUIojLZsllBpZealg0jB3d8ACdSsOWEDMwoz0nrtCb06BQhWqDXPPPk
+   ROew8slTmfuvURq1lnN9J5ixct7ihsXkfkKMp7gM1iXsuTyY7WTxKSy7A
+   A=;
 X-IronPort-AV: E=Sophos;i="5.60,434,1549929600"; 
-   d="scan'208";a="731832796"
-Received: from iad6-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.124.125.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 05 May 2019 18:40:33 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (8.14.7/8.14.7) with ESMTP id x45IeSxS005452
+   d="scan'208";a="802950111"
+Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.47.22.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 05 May 2019 18:40:52 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x45Ielam023773
         (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
-        Sun, 5 May 2019 18:40:32 GMT
-Received: from EX13D03EUC001.ant.amazon.com (10.43.164.245) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 5 May 2019 18:40:31 +0000
+        Sun, 5 May 2019 18:40:48 GMT
+Received: from EX13D19UWA002.ant.amazon.com (10.43.160.204) by
+ EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Sun, 5 May 2019 18:40:35 +0000
 Received: from EX13MTAUEB001.ant.amazon.com (10.43.60.96) by
- EX13D03EUC001.ant.amazon.com (10.43.164.245) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 5 May 2019 11:40:29 -0700
+ EX13D19UWA002.ant.amazon.com (10.43.160.204) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Sun, 5 May 2019 18:40:34 +0000
 Received: from galpress-VirtualBox.hfa16.amazon.com (10.85.90.212) by
  mail-relay.amazon.com (10.43.60.129) with Microsoft SMTP Server id
- 15.0.1367.3 via Frontend Transport; Sun, 5 May 2019 18:40:26 +0000
+ 15.0.1367.3 via Frontend Transport; Sun, 5 May 2019 18:40:30 +0000
 From:   Gal Pressman <galpress@amazon.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
 CC:     Yossi Leybovich <sleybo@amazon.com>,
@@ -54,9 +54,9 @@ CC:     Yossi Leybovich <sleybo@amazon.com>,
         Steve Wise <larrystevenwise@gmail.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         "Gal Pressman" <galpress@amazon.com>
-Subject: [PATCH for-next v7 02/11] RDMA/efa: Add EFA device definitions
-Date:   Sun, 5 May 2019 20:59:22 +0300
-Message-ID: <1557079171-19329-3-git-send-email-galpress@amazon.com>
+Subject: [PATCH for-next v7 03/11] RDMA/efa: Add the efa.h header file
+Date:   Sun, 5 May 2019 20:59:23 +0300
+Message-ID: <1557079171-19329-4-git-send-email-galpress@amazon.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1557079171-19329-1-git-send-email-galpress@amazon.com>
 References: <1557079171-19329-1-git-send-email-galpress@amazon.com>
@@ -67,1114 +67,184 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-EFA PCIe device implements a single Admin Queue (AQ) and Admin Completion Queue
-(ACQ) pair to initialize and communicate configuration with the device.
-Through this pair, we run set/get commands for querying and configuring the
-device, create/modify/destroy queues, and IB specific commands like Address
-Handler (AH), Memory Registration (MR) and Protection Domains (PD).
-
-In addition to admin (AQ/ACQ), we have data path queues that get classified as
-Queue Pairs (QP) and Completion Queues (CQ).
+Add EFA driver generic header file defining driver's device independent
+internal data structures and definitions.
 
 Signed-off-by: Gal Pressman <galpress@amazon.com>
-Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
 Reviewed-by: Steve Wise <swise@opengridcomputing.com>
 ---
- drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 794 ++++++++++++++++++++++++
- drivers/infiniband/hw/efa/efa_admin_defs.h      | 136 ++++
- drivers/infiniband/hw/efa/efa_common_defs.h     |  18 +
- drivers/infiniband/hw/efa/efa_regs_defs.h       | 113 ++++
- 4 files changed, 1061 insertions(+)
- create mode 100644 drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
- create mode 100644 drivers/infiniband/hw/efa/efa_admin_defs.h
- create mode 100644 drivers/infiniband/hw/efa/efa_common_defs.h
- create mode 100644 drivers/infiniband/hw/efa/efa_regs_defs.h
+ drivers/infiniband/hw/efa/efa.h | 162 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 162 insertions(+)
+ create mode 100644 drivers/infiniband/hw/efa/efa.h
 
-diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
 new file mode 100644
-index 000000000000..2be0469d545f
+index 000000000000..0061e6257d1c
 --- /dev/null
-+++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-@@ -0,0 +1,794 @@
++++ b/drivers/infiniband/hw/efa/efa.h
+@@ -0,0 +1,162 @@
 +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
 +/*
 + * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
 + */
 +
-+#ifndef _EFA_ADMIN_CMDS_H_
-+#define _EFA_ADMIN_CMDS_H_
++#ifndef _EFA_H_
++#define _EFA_H_
 +
-+#define EFA_ADMIN_API_VERSION_MAJOR          0
-+#define EFA_ADMIN_API_VERSION_MINOR          1
++#include <linux/bitops.h>
++#include <linux/idr.h>
++#include <linux/interrupt.h>
++#include <linux/pci.h>
++#include <linux/sched.h>
 +
-+/* EFA admin queue opcodes */
-+enum efa_admin_aq_opcode {
-+	EFA_ADMIN_CREATE_QP                         = 1,
-+	EFA_ADMIN_MODIFY_QP                         = 2,
-+	EFA_ADMIN_QUERY_QP                          = 3,
-+	EFA_ADMIN_DESTROY_QP                        = 4,
-+	EFA_ADMIN_CREATE_AH                         = 5,
-+	EFA_ADMIN_DESTROY_AH                        = 6,
-+	EFA_ADMIN_REG_MR                            = 7,
-+	EFA_ADMIN_DEREG_MR                          = 8,
-+	EFA_ADMIN_CREATE_CQ                         = 9,
-+	EFA_ADMIN_DESTROY_CQ                        = 10,
-+	EFA_ADMIN_GET_FEATURE                       = 11,
-+	EFA_ADMIN_SET_FEATURE                       = 12,
-+	EFA_ADMIN_GET_STATS                         = 13,
-+	EFA_ADMIN_ALLOC_PD                          = 14,
-+	EFA_ADMIN_DEALLOC_PD                        = 15,
-+	EFA_ADMIN_ALLOC_UAR                         = 16,
-+	EFA_ADMIN_DEALLOC_UAR                       = 17,
-+	EFA_ADMIN_MAX_OPCODE                        = 17,
++#include <rdma/efa-abi.h>
++#include <rdma/ib_verbs.h>
++
++#include "efa_com_cmd.h"
++
++#define DRV_MODULE_NAME         "efa"
++#define DEVICE_NAME             "Elastic Fabric Adapter (EFA)"
++
++#define EFA_IRQNAME_SIZE        40
++
++/* 1 for AENQ + ADMIN */
++#define EFA_NUM_MSIX_VEC                  1
++#define EFA_MGMNT_MSIX_VEC_IDX            0
++
++struct efa_irq {
++	irq_handler_t handler;
++	void *data;
++	int cpu;
++	u32 vector;
++	cpumask_t affinity_hint_mask;
++	char name[EFA_IRQNAME_SIZE];
 +};
 +
-+enum efa_admin_aq_feature_id {
-+	EFA_ADMIN_DEVICE_ATTR                       = 1,
-+	EFA_ADMIN_AENQ_CONFIG                       = 2,
-+	EFA_ADMIN_NETWORK_ATTR                      = 3,
-+	EFA_ADMIN_QUEUE_ATTR                        = 4,
-+	EFA_ADMIN_HW_HINTS                          = 5,
-+	EFA_ADMIN_FEATURES_OPCODE_NUM               = 8,
++struct efa_sw_stats {
++	atomic64_t alloc_pd_err;
++	atomic64_t create_qp_err;
++	atomic64_t create_cq_err;
++	atomic64_t reg_mr_err;
++	atomic64_t alloc_ucontext_err;
++	atomic64_t create_ah_err;
 +};
 +
-+/* QP transport type */
-+enum efa_admin_qp_type {
-+	/* Unreliable Datagram */
-+	EFA_ADMIN_QP_TYPE_UD                        = 1,
-+	/* Scalable Reliable Datagram */
-+	EFA_ADMIN_QP_TYPE_SRD                       = 2,
++/* Don't use anything other than atomic64 */
++struct efa_stats {
++	struct efa_sw_stats sw_stats;
++	atomic64_t keep_alive_rcvd;
 +};
 +
-+/* QP state */
-+enum efa_admin_qp_state {
-+	EFA_ADMIN_QP_STATE_RESET                    = 0,
-+	EFA_ADMIN_QP_STATE_INIT                     = 1,
-+	EFA_ADMIN_QP_STATE_RTR                      = 2,
-+	EFA_ADMIN_QP_STATE_RTS                      = 3,
-+	EFA_ADMIN_QP_STATE_SQD                      = 4,
-+	EFA_ADMIN_QP_STATE_SQE                      = 5,
-+	EFA_ADMIN_QP_STATE_ERR                      = 6,
-+};
-+
-+enum efa_admin_get_stats_type {
-+	EFA_ADMIN_GET_STATS_TYPE_BASIC              = 0,
-+};
-+
-+enum efa_admin_get_stats_scope {
-+	EFA_ADMIN_GET_STATS_SCOPE_ALL               = 0,
-+	EFA_ADMIN_GET_STATS_SCOPE_QUEUE             = 1,
-+};
-+
-+enum efa_admin_modify_qp_mask_bits {
-+	EFA_ADMIN_QP_STATE_BIT                      = 0,
-+	EFA_ADMIN_CUR_QP_STATE_BIT                  = 1,
-+	EFA_ADMIN_QKEY_BIT                          = 2,
-+	EFA_ADMIN_SQ_PSN_BIT                        = 3,
-+	EFA_ADMIN_SQ_DRAINED_ASYNC_NOTIFY_BIT       = 4,
-+};
-+
-+/*
-+ * QP allocation sizes, converted by fabric QueuePair (QP) create command
-+ * from QP capabilities.
-+ */
-+struct efa_admin_qp_alloc_size {
-+	/* Send descriptor ring size in bytes */
-+	u32 send_queue_ring_size;
-+
-+	/* Max number of WQEs that can be outstanding on send queue. */
-+	u32 send_queue_depth;
-+
-+	/*
-+	 * Recv descriptor ring size in bytes, sufficient for user-provided
-+	 * number of WQEs
-+	 */
-+	u32 recv_queue_ring_size;
-+
-+	/* Max number of WQEs that can be outstanding on recv queue */
-+	u32 recv_queue_depth;
-+};
-+
-+struct efa_admin_create_qp_cmd {
-+	/* Common Admin Queue descriptor */
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	/* Protection Domain associated with this QP */
-+	u16 pd;
-+
-+	/* QP type */
-+	u8 qp_type;
-+
-+	/*
-+	 * 0 : sq_virt - If set, SQ ring base address is
-+	 *    virtual (IOVA returned by MR registration)
-+	 * 1 : rq_virt - If set, RQ ring base address is
-+	 *    virtual (IOVA returned by MR registration)
-+	 * 7:2 : reserved - MBZ
-+	 */
-+	u8 flags;
-+
-+	/*
-+	 * Send queue (SQ) ring base physical address. This field is not
-+	 * used if this is a Low Latency Queue(LLQ).
-+	 */
-+	u64 sq_base_addr;
-+
-+	/* Receive queue (RQ) ring base address. */
-+	u64 rq_base_addr;
-+
-+	/* Index of CQ to be associated with Send Queue completions */
-+	u32 send_cq_idx;
-+
-+	/* Index of CQ to be associated with Recv Queue completions */
-+	u32 recv_cq_idx;
-+
-+	/*
-+	 * Memory registration key for the SQ ring, used only when not in
-+	 * LLQ mode and base address is virtual
-+	 */
-+	u32 sq_l_key;
-+
-+	/*
-+	 * Memory registration key for the RQ ring, used only when base
-+	 * address is virtual
-+	 */
-+	u32 rq_l_key;
-+
-+	/* Requested QP allocation sizes */
-+	struct efa_admin_qp_alloc_size qp_alloc_size;
-+
-+	/* UAR number */
-+	u16 uar;
-+
-+	/* MBZ */
-+	u16 reserved;
-+
-+	/* MBZ */
-+	u32 reserved2;
-+};
-+
-+struct efa_admin_create_qp_resp {
-+	/* Common Admin Queue completion descriptor */
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	/* Opaque handle to be used for consequent operations on the QP */
-+	u32 qp_handle;
-+
-+	/* QP number in the given EFA virtual device */
-+	u16 qp_num;
-+
-+	/* MBZ */
-+	u16 reserved;
-+
-+	/* Index of sub-CQ for Send Queue completions */
-+	u16 send_sub_cq_idx;
-+
-+	/* Index of sub-CQ for Receive Queue completions */
-+	u16 recv_sub_cq_idx;
-+
-+	/* SQ doorbell address, as offset to PCIe DB BAR */
-+	u32 sq_db_offset;
-+
-+	/* RQ doorbell address, as offset to PCIe DB BAR */
-+	u32 rq_db_offset;
-+
-+	/*
-+	 * low latency send queue ring base address as an offset to PCIe
-+	 * MMIO LLQ_MEM BAR
-+	 */
-+	u32 llq_descriptors_offset;
-+};
-+
-+struct efa_admin_modify_qp_cmd {
-+	/* Common Admin Queue descriptor */
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	/*
-+	 * Mask indicating which fields should be updated see enum
-+	 * efa_admin_modify_qp_mask_bits
-+	 */
-+	u32 modify_mask;
-+
-+	/* QP handle returned by create_qp command */
-+	u32 qp_handle;
-+
-+	/* QP state */
-+	u32 qp_state;
-+
-+	/* Override current QP state (before applying the transition) */
-+	u32 cur_qp_state;
-+
-+	/* QKey */
-+	u32 qkey;
-+
-+	/* SQ PSN */
-+	u32 sq_psn;
-+
-+	/* Enable async notification when SQ is drained */
-+	u8 sq_drained_async_notify;
-+
-+	/* MBZ */
-+	u8 reserved1;
-+
-+	/* MBZ */
-+	u16 reserved2;
-+};
-+
-+struct efa_admin_modify_qp_resp {
-+	/* Common Admin Queue completion descriptor */
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+};
-+
-+struct efa_admin_query_qp_cmd {
-+	/* Common Admin Queue descriptor */
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	/* QP handle returned by create_qp command */
-+	u32 qp_handle;
-+};
-+
-+struct efa_admin_query_qp_resp {
-+	/* Common Admin Queue completion descriptor */
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	/* QP state */
-+	u32 qp_state;
-+
-+	/* QKey */
-+	u32 qkey;
-+
-+	/* SQ PSN */
-+	u32 sq_psn;
-+
-+	/* Indicates that draining is in progress */
-+	u8 sq_draining;
-+
-+	/* MBZ */
-+	u8 reserved1;
-+
-+	/* MBZ */
-+	u16 reserved2;
-+};
-+
-+struct efa_admin_destroy_qp_cmd {
-+	/* Common Admin Queue descriptor */
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	/* QP handle returned by create_qp command */
-+	u32 qp_handle;
-+};
-+
-+struct efa_admin_destroy_qp_resp {
-+	/* Common Admin Queue completion descriptor */
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+};
-+
-+/*
-+ * Create Address Handle command parameters. Must not be called more than
-+ * once for the same destination
-+ */
-+struct efa_admin_create_ah_cmd {
-+	/* Common Admin Queue descriptor */
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	/* Destination address in network byte order */
-+	u8 dest_addr[16];
-+
-+	/* PD number */
-+	u16 pd;
-+
-+	u16 reserved;
-+};
-+
-+struct efa_admin_create_ah_resp {
-+	/* Common Admin Queue completion descriptor */
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	/* Target interface address handle (opaque) */
-+	u16 ah;
-+
-+	u16 reserved;
-+};
-+
-+struct efa_admin_destroy_ah_cmd {
-+	/* Common Admin Queue descriptor */
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	/* Target interface address handle (opaque) */
-+	u16 ah;
-+
-+	/* PD number */
-+	u16 pd;
-+};
-+
-+struct efa_admin_destroy_ah_resp {
-+	/* Common Admin Queue completion descriptor */
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+};
-+
-+/*
-+ * Registration of MemoryRegion, required for QP working with Virtual
-+ * Addresses. In standard verbs semantics, region length is limited to 2GB
-+ * space, but EFA offers larger MR support for large memory space, to ease
-+ * on users working with very large datasets (i.e. full GPU memory mapping).
-+ */
-+struct efa_admin_reg_mr_cmd {
-+	/* Common Admin Queue descriptor */
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	/* Protection Domain */
-+	u16 pd;
-+
-+	/* MBZ */
-+	u16 reserved16_w1;
-+
-+	/* Physical Buffer List, each element is page-aligned. */
-+	union {
-+		/*
-+		 * Inline array of guest-physical page addresses of user
-+		 * memory pages (optimization for short region
-+		 * registrations)
-+		 */
-+		u64 inline_pbl_array[4];
-+
-+		/* points to PBL (direct or indirect, chained if needed) */
-+		struct efa_admin_ctrl_buff_info pbl;
-+	} pbl;
-+
-+	/* Memory region length, in bytes. */
-+	u64 mr_length;
-+
-+	/*
-+	 * flags and page size
-+	 * 4:0 : phys_page_size_shift - page size is (1 <<
-+	 *    phys_page_size_shift). Page size is used for
-+	 *    building the Virtual to Physical address mapping
-+	 * 6:5 : reserved - MBZ
-+	 * 7 : mem_addr_phy_mode_en - Enable bit for physical
-+	 *    memory registration (no translation), can be used
-+	 *    only by privileged clients. If set, PBL must
-+	 *    contain a single entry.
-+	 */
-+	u8 flags;
-+
-+	/*
-+	 * permissions
-+	 * 0 : local_write_enable - Write permissions: value
-+	 *    of 1 needed for RQ buffers and for RDMA write
-+	 * 7:1 : reserved1 - remote access flags, etc
-+	 */
-+	u8 permissions;
-+
-+	u16 reserved16_w5;
-+
-+	/* number of pages in PBL (redundant, could be calculated) */
-+	u32 page_num;
-+
-+	/*
-+	 * IO Virtual Address associated with this MR. If
-+	 * mem_addr_phy_mode_en is set, contains the physical address of
-+	 * the region.
-+	 */
-+	u64 iova;
-+};
-+
-+struct efa_admin_reg_mr_resp {
-+	/* Common Admin Queue completion descriptor */
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	/*
-+	 * L_Key, to be used in conjunction with local buffer references in
-+	 * SQ and RQ WQE, or with virtual RQ/CQ rings
-+	 */
-+	u32 l_key;
-+
-+	/*
-+	 * R_Key, to be used in RDMA messages to refer to remotely accessed
-+	 * memory region
-+	 */
-+	u32 r_key;
-+};
-+
-+struct efa_admin_dereg_mr_cmd {
-+	/* Common Admin Queue descriptor */
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	/* L_Key, memory region's l_key */
-+	u32 l_key;
-+};
-+
-+struct efa_admin_dereg_mr_resp {
-+	/* Common Admin Queue completion descriptor */
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+};
-+
-+struct efa_admin_create_cq_cmd {
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	/*
-+	 * 4:0 : reserved5
-+	 * 5 : interrupt_mode_enabled - if set, cq operates
-+	 *    in interrupt mode (i.e. CQ events and MSI-X are
-+	 *    generated), otherwise - polling
-+	 * 6 : virt - If set, ring base address is virtual
-+	 *    (IOVA returned by MR registration)
-+	 * 7 : reserved6
-+	 */
-+	u8 cq_caps_1;
-+
-+	/*
-+	 * 4:0 : cq_entry_size_words - size of CQ entry in
-+	 *    32-bit words, valid values: 4, 8.
-+	 * 7:5 : reserved7
-+	 */
-+	u8 cq_caps_2;
-+
-+	/* completion queue depth in # of entries. must be power of 2 */
-+	u16 cq_depth;
-+
-+	/* msix vector assigned to this cq */
-+	u32 msix_vector_idx;
-+
-+	/*
-+	 * CQ ring base address, virtual or physical depending on 'virt'
-+	 * flag
-+	 */
-+	struct efa_common_mem_addr cq_ba;
-+
-+	/*
-+	 * Memory registration key for the ring, used only when base
-+	 * address is virtual
-+	 */
-+	u32 l_key;
-+
-+	/*
-+	 * number of sub cqs - must be equal to sub_cqs_per_cq of queue
-+	 *    attributes.
-+	 */
-+	u16 num_sub_cqs;
-+
-+	/* UAR number */
-+	u16 uar;
-+};
-+
-+struct efa_admin_create_cq_resp {
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	u16 cq_idx;
-+
-+	/* actual cq depth in number of entries */
-+	u16 cq_actual_depth;
-+};
-+
-+struct efa_admin_destroy_cq_cmd {
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	u16 cq_idx;
-+
-+	u16 reserved1;
-+};
-+
-+struct efa_admin_destroy_cq_resp {
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+};
-+
-+/*
-+ * EFA AQ Get Statistics command. Extended statistics are placed in control
-+ * buffer pointed by AQ entry
-+ */
-+struct efa_admin_aq_get_stats_cmd {
-+	struct efa_admin_aq_common_desc aq_common_descriptor;
-+
-+	union {
-+		/* command specific inline data */
-+		u32 inline_data_w1[3];
-+
-+		struct efa_admin_ctrl_buff_info control_buffer;
-+	} u;
-+
-+	/* stats type as defined in enum efa_admin_get_stats_type */
-+	u8 type;
-+
-+	/* stats scope defined in enum efa_admin_get_stats_scope */
-+	u8 scope;
-+
-+	u16 scope_modifier;
-+};
-+
-+struct efa_admin_basic_stats {
-+	u64 tx_bytes;
-+
-+	u64 tx_pkts;
-+
-+	u64 rx_bytes;
-+
-+	u64 rx_pkts;
-+
-+	u64 rx_drops;
-+};
-+
-+struct efa_admin_acq_get_stats_resp {
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	struct efa_admin_basic_stats basic_stats;
-+};
-+
-+struct efa_admin_get_set_feature_common_desc {
-+	/*
-+	 * 1:0 : select - 0x1 - current value; 0x3 - default
-+	 *    value
-+	 * 7:3 : reserved3
-+	 */
-+	u8 flags;
-+
-+	/* as appears in efa_admin_aq_feature_id */
-+	u8 feature_id;
-+
-+	/* MBZ */
-+	u16 reserved16;
-+};
-+
-+struct efa_admin_feature_device_attr_desc {
-+	/* Bitmap of efa_admin_aq_feature_id */
-+	u64 supported_features;
-+
-+	/* Bitmap of supported page sizes in MR registrations */
-+	u64 page_size_cap;
-+
-+	u32 fw_version;
-+
-+	u32 admin_api_version;
-+
-+	u32 device_version;
-+
-+	/* Bar used for SQ and RQ doorbells */
-+	u16 db_bar;
-+
-+	/* Indicates how many bits are used physical address access */
-+	u8 phys_addr_width;
-+
-+	/* Indicates how many bits are used virtual address access */
-+	u8 virt_addr_width;
-+};
-+
-+struct efa_admin_feature_queue_attr_desc {
-+	/* The maximum number of queue pairs supported */
-+	u32 max_qp;
-+
-+	u32 max_sq_depth;
-+
-+	/* max send wr used in inline-buf */
-+	u32 inline_buf_size;
-+
-+	u32 max_rq_depth;
-+
-+	/* The maximum number of completion queues supported per VF */
-+	u32 max_cq;
-+
-+	u32 max_cq_depth;
-+
-+	/* Number of sub-CQs to be created for each CQ */
-+	u16 sub_cqs_per_cq;
-+
-+	u16 reserved;
-+
-+	/*
-+	 * Maximum number of SGEs (buffs) allowed for a single send work
-+	 *    queue element (WQE)
-+	 */
-+	u16 max_wr_send_sges;
-+
-+	/* Maximum number of SGEs allowed for a single recv WQE */
-+	u16 max_wr_recv_sges;
-+
-+	/* The maximum number of memory regions supported */
-+	u32 max_mr;
-+
-+	/* The maximum number of pages can be registered */
-+	u32 max_mr_pages;
-+
-+	/* The maximum number of protection domains supported */
-+	u32 max_pd;
-+
-+	/* The maximum number of address handles supported */
-+	u32 max_ah;
-+
-+	/* The maximum size of LLQ in bytes */
-+	u32 max_llq_size;
-+};
-+
-+struct efa_admin_feature_aenq_desc {
-+	/* bitmask for AENQ groups the device can report */
-+	u32 supported_groups;
-+
-+	/* bitmask for AENQ groups to report */
-+	u32 enabled_groups;
-+};
-+
-+struct efa_admin_feature_network_attr_desc {
-+	/* Raw address data in network byte order */
-+	u8 addr[16];
-+
++struct efa_dev {
++	struct ib_device ibdev;
++	struct efa_com_dev edev;
++	struct pci_dev *pdev;
++	struct efa_com_get_device_attr_result dev_attr;
++
++	u64 reg_bar_addr;
++	u64 reg_bar_len;
++	u64 mem_bar_addr;
++	u64 mem_bar_len;
++	u64 db_bar_addr;
++	u64 db_bar_len;
++	u8 addr[EFA_GID_SIZE];
 +	u32 mtu;
++
++	int admin_msix_vector_idx;
++	struct efa_irq admin_irq;
++
++	struct efa_stats stats;
 +};
 +
-+/*
-+ * When hint value is 0, hints capabilities are not supported or driver
-+ * should use its own predefined value
-+ */
-+struct efa_admin_hw_hints {
-+	/* value in ms */
-+	u16 mmio_read_timeout;
-+
-+	/* value in ms */
-+	u16 driver_watchdog_timeout;
-+
-+	/* value in ms */
-+	u16 admin_completion_timeout;
-+
-+	/* poll interval in ms */
-+	u16 poll_interval;
++struct efa_ucontext {
++	struct ib_ucontext ibucontext;
++	struct xarray mmap_xa;
++	u16 uarn;
 +};
 +
-+struct efa_admin_get_feature_cmd {
-+	struct efa_admin_aq_common_desc aq_common_descriptor;
-+
-+	struct efa_admin_ctrl_buff_info control_buffer;
-+
-+	struct efa_admin_get_set_feature_common_desc feature_common;
-+
-+	u32 raw[11];
++struct efa_pd {
++	struct ib_pd ibpd;
++	u16 pdn;
 +};
 +
-+struct efa_admin_get_feature_resp {
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	union {
-+		u32 raw[14];
-+
-+		struct efa_admin_feature_device_attr_desc device_attr;
-+
-+		struct efa_admin_feature_aenq_desc aenq;
-+
-+		struct efa_admin_feature_network_attr_desc network_attr;
-+
-+		struct efa_admin_feature_queue_attr_desc queue_attr;
-+
-+		struct efa_admin_hw_hints hw_hints;
-+	} u;
++struct efa_mr {
++	struct ib_mr ibmr;
++	struct ib_umem *umem;
 +};
 +
-+struct efa_admin_set_feature_cmd {
-+	struct efa_admin_aq_common_desc aq_common_descriptor;
-+
-+	struct efa_admin_ctrl_buff_info control_buffer;
-+
-+	struct efa_admin_get_set_feature_common_desc feature_common;
-+
-+	union {
-+		u32 raw[11];
-+
-+		/* AENQ configuration */
-+		struct efa_admin_feature_aenq_desc aenq;
-+	} u;
++struct efa_cq {
++	struct ib_cq ibcq;
++	struct efa_ucontext *ucontext;
++	dma_addr_t dma_addr;
++	void *cpu_addr;
++	size_t size;
++	u16 cq_idx;
 +};
 +
-+struct efa_admin_set_feature_resp {
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	union {
-+		u32 raw[14];
-+	} u;
++struct efa_qp {
++	struct ib_qp ibqp;
++	dma_addr_t rq_dma_addr;
++	void *rq_cpu_addr;
++	size_t rq_size;
++	enum ib_qp_state state;
++	u32 qp_handle;
++	u32 max_send_wr;
++	u32 max_recv_wr;
++	u32 max_send_sge;
++	u32 max_recv_sge;
++	u32 max_inline_data;
 +};
 +
-+struct efa_admin_alloc_pd_cmd {
-+	struct efa_admin_aq_common_desc aq_common_descriptor;
++struct efa_ah {
++	struct ib_ah ibah;
++	u16 ah;
++	/* dest_addr */
++	u8 id[EFA_GID_SIZE];
 +};
 +
-+struct efa_admin_alloc_pd_resp {
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	/* PD number */
-+	u16 pd;
-+
-+	/* MBZ */
-+	u16 reserved;
-+};
-+
-+struct efa_admin_dealloc_pd_cmd {
-+	struct efa_admin_aq_common_desc aq_common_descriptor;
-+
-+	/* PD number */
-+	u16 pd;
-+
-+	/* MBZ */
-+	u16 reserved;
-+};
-+
-+struct efa_admin_dealloc_pd_resp {
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+};
-+
-+struct efa_admin_alloc_uar_cmd {
-+	struct efa_admin_aq_common_desc aq_common_descriptor;
-+};
-+
-+struct efa_admin_alloc_uar_resp {
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	/* UAR number */
-+	u16 uar;
-+
-+	/* MBZ */
-+	u16 reserved;
-+};
-+
-+struct efa_admin_dealloc_uar_cmd {
-+	struct efa_admin_aq_common_desc aq_common_descriptor;
-+
-+	/* UAR number */
-+	u16 uar;
-+
-+	/* MBZ */
-+	u16 reserved;
-+};
-+
-+struct efa_admin_dealloc_uar_resp {
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+};
-+
-+/* asynchronous event notification groups */
-+enum efa_admin_aenq_group {
-+	EFA_ADMIN_FATAL_ERROR                       = 1,
-+	EFA_ADMIN_WARNING                           = 2,
-+	EFA_ADMIN_NOTIFICATION                      = 3,
-+	EFA_ADMIN_KEEP_ALIVE                        = 4,
-+	EFA_ADMIN_AENQ_GROUPS_NUM                   = 5,
-+};
-+
-+enum efa_admin_aenq_notification_syndrom {
-+	EFA_ADMIN_SUSPEND                           = 0,
-+	EFA_ADMIN_RESUME                            = 1,
-+	EFA_ADMIN_UPDATE_HINTS                      = 2,
-+};
-+
-+struct efa_admin_mmio_req_read_less_resp {
-+	u16 req_id;
-+
-+	u16 reg_off;
-+
-+	/* value is valid when poll is cleared */
-+	u32 reg_val;
-+};
-+
-+/* create_qp_cmd */
-+#define EFA_ADMIN_CREATE_QP_CMD_SQ_VIRT_MASK                BIT(0)
-+#define EFA_ADMIN_CREATE_QP_CMD_RQ_VIRT_SHIFT               1
-+#define EFA_ADMIN_CREATE_QP_CMD_RQ_VIRT_MASK                BIT(1)
-+
-+/* reg_mr_cmd */
-+#define EFA_ADMIN_REG_MR_CMD_PHYS_PAGE_SIZE_SHIFT_MASK      GENMASK(4, 0)
-+#define EFA_ADMIN_REG_MR_CMD_MEM_ADDR_PHY_MODE_EN_SHIFT     7
-+#define EFA_ADMIN_REG_MR_CMD_MEM_ADDR_PHY_MODE_EN_MASK      BIT(7)
-+#define EFA_ADMIN_REG_MR_CMD_LOCAL_WRITE_ENABLE_MASK        BIT(0)
-+
-+/* create_cq_cmd */
-+#define EFA_ADMIN_CREATE_CQ_CMD_INTERRUPT_MODE_ENABLED_SHIFT 5
-+#define EFA_ADMIN_CREATE_CQ_CMD_INTERRUPT_MODE_ENABLED_MASK BIT(5)
-+#define EFA_ADMIN_CREATE_CQ_CMD_VIRT_SHIFT                  6
-+#define EFA_ADMIN_CREATE_CQ_CMD_VIRT_MASK                   BIT(6)
-+#define EFA_ADMIN_CREATE_CQ_CMD_CQ_ENTRY_SIZE_WORDS_MASK    GENMASK(4, 0)
-+
-+/* get_set_feature_common_desc */
-+#define EFA_ADMIN_GET_SET_FEATURE_COMMON_DESC_SELECT_MASK   GENMASK(1, 0)
-+
-+#endif /* _EFA_ADMIN_CMDS_H_ */
-diff --git a/drivers/infiniband/hw/efa/efa_admin_defs.h b/drivers/infiniband/hw/efa/efa_admin_defs.h
-new file mode 100644
-index 000000000000..c8e0c8b905be
---- /dev/null
-+++ b/drivers/infiniband/hw/efa/efa_admin_defs.h
-@@ -0,0 +1,136 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-+/*
-+ * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ */
-+
-+#ifndef _EFA_ADMIN_H_
-+#define _EFA_ADMIN_H_
-+
-+enum efa_admin_aq_completion_status {
-+	EFA_ADMIN_SUCCESS                           = 0,
-+	EFA_ADMIN_RESOURCE_ALLOCATION_FAILURE       = 1,
-+	EFA_ADMIN_BAD_OPCODE                        = 2,
-+	EFA_ADMIN_UNSUPPORTED_OPCODE                = 3,
-+	EFA_ADMIN_MALFORMED_REQUEST                 = 4,
-+	/* Additional status is provided in ACQ entry extended_status */
-+	EFA_ADMIN_ILLEGAL_PARAMETER                 = 5,
-+	EFA_ADMIN_UNKNOWN_ERROR                     = 6,
-+	EFA_ADMIN_RESOURCE_BUSY                     = 7,
-+};
-+
-+struct efa_admin_aq_common_desc {
-+	/*
-+	 * 11:0 : command_id
-+	 * 15:12 : reserved12
-+	 */
-+	u16 command_id;
-+
-+	/* as appears in efa_admin_aq_opcode */
-+	u8 opcode;
-+
-+	/*
-+	 * 0 : phase
-+	 * 1 : ctrl_data - control buffer address valid
-+	 * 2 : ctrl_data_indirect - control buffer address
-+	 *    points to list of pages with addresses of control
-+	 *    buffers
-+	 * 7:3 : reserved3
-+	 */
-+	u8 flags;
-+};
-+
-+/*
-+ * used in efa_admin_aq_entry. Can point directly to control data, or to a
-+ * page list chunk. Used also at the end of indirect mode page list chunks,
-+ * for chaining.
-+ */
-+struct efa_admin_ctrl_buff_info {
-+	u32 length;
-+
-+	struct efa_common_mem_addr address;
-+};
-+
-+struct efa_admin_aq_entry {
-+	struct efa_admin_aq_common_desc aq_common_descriptor;
-+
-+	union {
-+		u32 inline_data_w1[3];
-+
-+		struct efa_admin_ctrl_buff_info control_buffer;
-+	} u;
-+
-+	u32 inline_data_w4[12];
-+};
-+
-+struct efa_admin_acq_common_desc {
-+	/*
-+	 * command identifier to associate it with the aq descriptor
-+	 * 11:0 : command_id
-+	 * 15:12 : reserved12
-+	 */
-+	u16 command;
-+
-+	u8 status;
-+
-+	/*
-+	 * 0 : phase
-+	 * 7:1 : reserved1
-+	 */
-+	u8 flags;
-+
-+	u16 extended_status;
-+
-+	/*
-+	 * indicates to the driver which AQ entry has been consumed by the
-+	 *    device and could be reused
-+	 */
-+	u16 sq_head_indx;
-+};
-+
-+struct efa_admin_acq_entry {
-+	struct efa_admin_acq_common_desc acq_common_descriptor;
-+
-+	u32 response_specific_data[14];
-+};
-+
-+struct efa_admin_aenq_common_desc {
-+	u16 group;
-+
-+	u16 syndrom;
-+
-+	/*
-+	 * 0 : phase
-+	 * 7:1 : reserved - MBZ
-+	 */
-+	u8 flags;
-+
-+	u8 reserved1[3];
-+
-+	u32 timestamp_low;
-+
-+	u32 timestamp_high;
-+};
-+
-+struct efa_admin_aenq_entry {
-+	struct efa_admin_aenq_common_desc aenq_common_desc;
-+
-+	/* command specific inline data */
-+	u32 inline_data_w4[12];
-+};
-+
-+/* aq_common_desc */
-+#define EFA_ADMIN_AQ_COMMON_DESC_COMMAND_ID_MASK            GENMASK(11, 0)
-+#define EFA_ADMIN_AQ_COMMON_DESC_PHASE_MASK                 BIT(0)
-+#define EFA_ADMIN_AQ_COMMON_DESC_CTRL_DATA_SHIFT            1
-+#define EFA_ADMIN_AQ_COMMON_DESC_CTRL_DATA_MASK             BIT(1)
-+#define EFA_ADMIN_AQ_COMMON_DESC_CTRL_DATA_INDIRECT_SHIFT   2
-+#define EFA_ADMIN_AQ_COMMON_DESC_CTRL_DATA_INDIRECT_MASK    BIT(2)
-+
-+/* acq_common_desc */
-+#define EFA_ADMIN_ACQ_COMMON_DESC_COMMAND_ID_MASK           GENMASK(11, 0)
-+#define EFA_ADMIN_ACQ_COMMON_DESC_PHASE_MASK                BIT(0)
-+
-+/* aenq_common_desc */
-+#define EFA_ADMIN_AENQ_COMMON_DESC_PHASE_MASK               BIT(0)
-+
-+#endif /* _EFA_ADMIN_H_ */
-diff --git a/drivers/infiniband/hw/efa/efa_common_defs.h b/drivers/infiniband/hw/efa/efa_common_defs.h
-new file mode 100644
-index 000000000000..c559ec08898e
---- /dev/null
-+++ b/drivers/infiniband/hw/efa/efa_common_defs.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-+/*
-+ * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ */
-+
-+#ifndef _EFA_COMMON_H_
-+#define _EFA_COMMON_H_
-+
-+#define EFA_COMMON_SPEC_VERSION_MAJOR        2
-+#define EFA_COMMON_SPEC_VERSION_MINOR        0
-+
-+struct efa_common_mem_addr {
-+	u32 mem_addr_low;
-+
-+	u32 mem_addr_high;
-+};
-+
-+#endif /* _EFA_COMMON_H_ */
-diff --git a/drivers/infiniband/hw/efa/efa_regs_defs.h b/drivers/infiniband/hw/efa/efa_regs_defs.h
-new file mode 100644
-index 000000000000..bb9cad3d6a15
---- /dev/null
-+++ b/drivers/infiniband/hw/efa/efa_regs_defs.h
-@@ -0,0 +1,113 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-+/*
-+ * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ */
-+
-+#ifndef _EFA_REGS_H_
-+#define _EFA_REGS_H_
-+
-+enum efa_regs_reset_reason_types {
-+	EFA_REGS_RESET_NORMAL                       = 0,
-+	/* Keep alive timeout */
-+	EFA_REGS_RESET_KEEP_ALIVE_TO                = 1,
-+	EFA_REGS_RESET_ADMIN_TO                     = 2,
-+	EFA_REGS_RESET_INIT_ERR                     = 3,
-+	EFA_REGS_RESET_DRIVER_INVALID_STATE         = 4,
-+	EFA_REGS_RESET_OS_TRIGGER                   = 5,
-+	EFA_REGS_RESET_SHUTDOWN                     = 6,
-+	EFA_REGS_RESET_USER_TRIGGER                 = 7,
-+	EFA_REGS_RESET_GENERIC                      = 8,
-+};
-+
-+/* efa_registers offsets */
-+
-+/* 0 base */
-+#define EFA_REGS_VERSION_OFF                                0x0
-+#define EFA_REGS_CONTROLLER_VERSION_OFF                     0x4
-+#define EFA_REGS_CAPS_OFF                                   0x8
-+#define EFA_REGS_AQ_BASE_LO_OFF                             0x10
-+#define EFA_REGS_AQ_BASE_HI_OFF                             0x14
-+#define EFA_REGS_AQ_CAPS_OFF                                0x18
-+#define EFA_REGS_ACQ_BASE_LO_OFF                            0x20
-+#define EFA_REGS_ACQ_BASE_HI_OFF                            0x24
-+#define EFA_REGS_ACQ_CAPS_OFF                               0x28
-+#define EFA_REGS_AQ_PROD_DB_OFF                             0x2c
-+#define EFA_REGS_AENQ_CAPS_OFF                              0x34
-+#define EFA_REGS_AENQ_BASE_LO_OFF                           0x38
-+#define EFA_REGS_AENQ_BASE_HI_OFF                           0x3c
-+#define EFA_REGS_AENQ_CONS_DB_OFF                           0x40
-+#define EFA_REGS_INTR_MASK_OFF                              0x4c
-+#define EFA_REGS_DEV_CTL_OFF                                0x54
-+#define EFA_REGS_DEV_STS_OFF                                0x58
-+#define EFA_REGS_MMIO_REG_READ_OFF                          0x5c
-+#define EFA_REGS_MMIO_RESP_LO_OFF                           0x60
-+#define EFA_REGS_MMIO_RESP_HI_OFF                           0x64
-+
-+/* version register */
-+#define EFA_REGS_VERSION_MINOR_VERSION_MASK                 0xff
-+#define EFA_REGS_VERSION_MAJOR_VERSION_SHIFT                8
-+#define EFA_REGS_VERSION_MAJOR_VERSION_MASK                 0xff00
-+
-+/* controller_version register */
-+#define EFA_REGS_CONTROLLER_VERSION_SUBMINOR_VERSION_MASK   0xff
-+#define EFA_REGS_CONTROLLER_VERSION_MINOR_VERSION_SHIFT     8
-+#define EFA_REGS_CONTROLLER_VERSION_MINOR_VERSION_MASK      0xff00
-+#define EFA_REGS_CONTROLLER_VERSION_MAJOR_VERSION_SHIFT     16
-+#define EFA_REGS_CONTROLLER_VERSION_MAJOR_VERSION_MASK      0xff0000
-+#define EFA_REGS_CONTROLLER_VERSION_IMPL_ID_SHIFT           24
-+#define EFA_REGS_CONTROLLER_VERSION_IMPL_ID_MASK            0xff000000
-+
-+/* caps register */
-+#define EFA_REGS_CAPS_CONTIGUOUS_QUEUE_REQUIRED_MASK        0x1
-+#define EFA_REGS_CAPS_RESET_TIMEOUT_SHIFT                   1
-+#define EFA_REGS_CAPS_RESET_TIMEOUT_MASK                    0x3e
-+#define EFA_REGS_CAPS_DMA_ADDR_WIDTH_SHIFT                  8
-+#define EFA_REGS_CAPS_DMA_ADDR_WIDTH_MASK                   0xff00
-+#define EFA_REGS_CAPS_ADMIN_CMD_TO_SHIFT                    16
-+#define EFA_REGS_CAPS_ADMIN_CMD_TO_MASK                     0xf0000
-+
-+/* aq_caps register */
-+#define EFA_REGS_AQ_CAPS_AQ_DEPTH_MASK                      0xffff
-+#define EFA_REGS_AQ_CAPS_AQ_ENTRY_SIZE_SHIFT                16
-+#define EFA_REGS_AQ_CAPS_AQ_ENTRY_SIZE_MASK                 0xffff0000
-+
-+/* acq_caps register */
-+#define EFA_REGS_ACQ_CAPS_ACQ_DEPTH_MASK                    0xffff
-+#define EFA_REGS_ACQ_CAPS_ACQ_ENTRY_SIZE_SHIFT              16
-+#define EFA_REGS_ACQ_CAPS_ACQ_ENTRY_SIZE_MASK               0xff0000
-+#define EFA_REGS_ACQ_CAPS_ACQ_MSIX_VECTOR_SHIFT             24
-+#define EFA_REGS_ACQ_CAPS_ACQ_MSIX_VECTOR_MASK              0xff000000
-+
-+/* aenq_caps register */
-+#define EFA_REGS_AENQ_CAPS_AENQ_DEPTH_MASK                  0xffff
-+#define EFA_REGS_AENQ_CAPS_AENQ_ENTRY_SIZE_SHIFT            16
-+#define EFA_REGS_AENQ_CAPS_AENQ_ENTRY_SIZE_MASK             0xff0000
-+#define EFA_REGS_AENQ_CAPS_AENQ_MSIX_VECTOR_SHIFT           24
-+#define EFA_REGS_AENQ_CAPS_AENQ_MSIX_VECTOR_MASK            0xff000000
-+
-+/* dev_ctl register */
-+#define EFA_REGS_DEV_CTL_DEV_RESET_MASK                     0x1
-+#define EFA_REGS_DEV_CTL_AQ_RESTART_SHIFT                   1
-+#define EFA_REGS_DEV_CTL_AQ_RESTART_MASK                    0x2
-+#define EFA_REGS_DEV_CTL_RESET_REASON_SHIFT                 28
-+#define EFA_REGS_DEV_CTL_RESET_REASON_MASK                  0xf0000000
-+
-+/* dev_sts register */
-+#define EFA_REGS_DEV_STS_READY_MASK                         0x1
-+#define EFA_REGS_DEV_STS_AQ_RESTART_IN_PROGRESS_SHIFT       1
-+#define EFA_REGS_DEV_STS_AQ_RESTART_IN_PROGRESS_MASK        0x2
-+#define EFA_REGS_DEV_STS_AQ_RESTART_FINISHED_SHIFT          2
-+#define EFA_REGS_DEV_STS_AQ_RESTART_FINISHED_MASK           0x4
-+#define EFA_REGS_DEV_STS_RESET_IN_PROGRESS_SHIFT            3
-+#define EFA_REGS_DEV_STS_RESET_IN_PROGRESS_MASK             0x8
-+#define EFA_REGS_DEV_STS_RESET_FINISHED_SHIFT               4
-+#define EFA_REGS_DEV_STS_RESET_FINISHED_MASK                0x10
-+#define EFA_REGS_DEV_STS_FATAL_ERROR_SHIFT                  5
-+#define EFA_REGS_DEV_STS_FATAL_ERROR_MASK                   0x20
-+
-+/* mmio_reg_read register */
-+#define EFA_REGS_MMIO_REG_READ_REQ_ID_MASK                  0xffff
-+#define EFA_REGS_MMIO_REG_READ_REG_OFF_SHIFT                16
-+#define EFA_REGS_MMIO_REG_READ_REG_OFF_MASK                 0xffff0000
-+
-+#endif /* _EFA_REGS_H_ */
++int efa_query_device(struct ib_device *ibdev,
++		     struct ib_device_attr *props,
++		     struct ib_udata *udata);
++int efa_query_port(struct ib_device *ibdev, u8 port,
++		   struct ib_port_attr *props);
++int efa_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
++		 int qp_attr_mask,
++		 struct ib_qp_init_attr *qp_init_attr);
++int efa_query_gid(struct ib_device *ibdev, u8 port, int index,
++		  union ib_gid *gid);
++int efa_query_pkey(struct ib_device *ibdev, u8 port, u16 index,
++		   u16 *pkey);
++int efa_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
++void efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
++int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata);
++struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
++			    struct ib_qp_init_attr *init_attr,
++			    struct ib_udata *udata);
++int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
++struct ib_cq *efa_create_cq(struct ib_device *ibdev,
++			    const struct ib_cq_init_attr *attr,
++			    struct ib_udata *udata);
++struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
++			 u64 virt_addr, int access_flags,
++			 struct ib_udata *udata);
++int efa_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
++int efa_get_port_immutable(struct ib_device *ibdev, u8 port_num,
++			   struct ib_port_immutable *immutable);
++int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata);
++void efa_dealloc_ucontext(struct ib_ucontext *ibucontext);
++int efa_mmap(struct ib_ucontext *ibucontext,
++	     struct vm_area_struct *vma);
++int efa_create_ah(struct ib_ah *ibah,
++		  struct rdma_ah_attr *ah_attr,
++		  u32 flags,
++		  struct ib_udata *udata);
++void efa_destroy_ah(struct ib_ah *ibah, u32 flags);
++int efa_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
++		  int qp_attr_mask, struct ib_udata *udata);
++enum rdma_link_layer efa_port_link_layer(struct ib_device *ibdev,
++					 u8 port_num);
++
++#endif /* _EFA_H_ */
 -- 
 2.7.4
 
