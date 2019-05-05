@@ -2,42 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C0B141E7
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2019 20:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E56141E4
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2019 20:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbfEESlB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 5 May 2019 14:41:01 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:11354 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727539AbfEESlB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 May 2019 14:41:01 -0400
+        id S1727565AbfEESkz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 5 May 2019 14:40:55 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:6905 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbfEESkz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 May 2019 14:40:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1557081658; x=1588617658;
+  t=1557081654; x=1588617654;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=OynV9FLVmkrDVOWwJk0YkzHa/IPGo2lSYw0XY/7Ggk0=;
-  b=OyLiCRm3DXhkWYjR7m/yrQd35HafNzJ+/2QwbUHsC7K6rJrWoOaN9LCU
-   1WOVbNxwiL8R/yEdKMckJNUnwJ5jNXVSC1pgQt+KNLRu6mODXiMWKtPJ4
-   zDC1aT+lDqBTe/TUbUUJIDDYMqS4O0IE9moPBoQVFjaTCSm9tjx0Jfn70
-   s=;
+  bh=/Kte5c6hJCiY+tttlYg11Z8YOT4rlX0VvxCC1KoY/1o=;
+  b=GyrhfCF7fHcPCVwPP//I9HfP2B3c+4NmZHuSFn0/sZe4UkOIoXT0ZaDc
+   aZZdjMXutEaacRjzkgjDuJnz9ft6LsEZlM9E023YgLMYskeV3JSjdBLa0
+   Vi3aCi1h79SyGm0TCBa0tFBKXOtfd9BMplq/96plRcufhEaEF3FijLGoR
+   I=;
 X-IronPort-AV: E=Sophos;i="5.60,434,1549929600"; 
-   d="scan'208";a="400876775"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 05 May 2019 18:40:56 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (8.14.7/8.14.7) with ESMTP id x45Ieq2i129645
+   d="scan'208";a="395235667"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-97fdccfd.us-east-1.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 05 May 2019 18:40:52 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-97fdccfd.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x45IeiT0040123
         (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
-        Sun, 5 May 2019 18:40:54 GMT
-Received: from EX13D03EUA003.ant.amazon.com (10.43.165.89) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 5 May 2019 18:40:44 +0000
+        Sun, 5 May 2019 18:40:48 GMT
+Received: from EX13D19UWC003.ant.amazon.com (10.43.162.184) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Sun, 5 May 2019 18:40:48 +0000
 Received: from EX13MTAUEB001.ant.amazon.com (10.43.60.96) by
- EX13D03EUA003.ant.amazon.com (10.43.165.89) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 5 May 2019 18:40:43 +0000
+ EX13D19UWC003.ant.amazon.com (10.43.162.184) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Sun, 5 May 2019 18:40:47 +0000
 Received: from galpress-VirtualBox.hfa16.amazon.com (10.85.90.212) by
  mail-relay.amazon.com (10.43.60.129) with Microsoft SMTP Server id
- 15.0.1367.3 via Frontend Transport; Sun, 5 May 2019 18:40:39 +0000
+ 15.0.1367.3 via Frontend Transport; Sun, 5 May 2019 18:40:43 +0000
 From:   Gal Pressman <galpress@amazon.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
 CC:     Yossi Leybovich <sleybo@amazon.com>,
@@ -54,9 +54,9 @@ CC:     Yossi Leybovich <sleybo@amazon.com>,
         Steve Wise <larrystevenwise@gmail.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         "Gal Pressman" <galpress@amazon.com>
-Subject: [PATCH for-next v7 05/11] RDMA/efa: Add the com service API definitions
-Date:   Sun, 5 May 2019 20:59:25 +0300
-Message-ID: <1557079171-19329-6-git-send-email-galpress@amazon.com>
+Subject: [PATCH for-next v7 06/11] RDMA/efa: Add the ABI definitions
+Date:   Sun, 5 May 2019 20:59:26 +0300
+Message-ID: <1557079171-19329-7-git-send-email-galpress@amazon.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1557079171-19329-1-git-send-email-galpress@amazon.com>
 References: <1557079171-19329-1-git-send-email-galpress@amazon.com>
@@ -67,293 +67,122 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Header file for the various commands that can be sent through admin queue.
-This includes queue create/modify/destroy, setting up and remove protection
-domains, address handlers, and memory registration, etc.
+Add the EFA ABI file exposed to userspace.
 
 Signed-off-by: Gal Pressman <galpress@amazon.com>
 Reviewed-by: Steve Wise <swise@opengridcomputing.com>
 ---
- drivers/infiniband/hw/efa/efa_com_cmd.h | 270 ++++++++++++++++++++++++++++++++
- 1 file changed, 270 insertions(+)
- create mode 100644 drivers/infiniband/hw/efa/efa_com_cmd.h
+ include/uapi/rdma/efa-abi.h | 101 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 101 insertions(+)
+ create mode 100644 include/uapi/rdma/efa-abi.h
 
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
+diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
 new file mode 100644
-index 000000000000..a1174380462c
+index 000000000000..9599a2a62be8
 --- /dev/null
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-@@ -0,0 +1,270 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
++++ b/include/uapi/rdma/efa-abi.h
+@@ -0,0 +1,101 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
 +/*
 + * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
 + */
 +
-+#ifndef _EFA_COM_CMD_H_
-+#define _EFA_COM_CMD_H_
++#ifndef EFA_ABI_USER_H
++#define EFA_ABI_USER_H
 +
-+#include "efa_com.h"
++#include <linux/types.h>
 +
-+#define EFA_GID_SIZE 16
++/*
++ * Increment this value if any changes that break userspace ABI
++ * compatibility are made.
++ */
++#define EFA_UVERBS_ABI_VERSION 1
 +
-+struct efa_com_create_qp_params {
-+	u64 rq_base_addr;
-+	u32 send_cq_idx;
-+	u32 recv_cq_idx;
-+	/*
-+	 * Send descriptor ring size in bytes,
-+	 * sufficient for user-provided number of WQEs and SGL size
-+	 */
-+	u32 sq_ring_size_in_bytes;
-+	/* Max number of WQEs that will be posted on send queue */
-+	u32 sq_depth;
-+	/* Recv descriptor ring size in bytes */
-+	u32 rq_ring_size_in_bytes;
-+	u32 rq_depth;
-+	u16 pd;
-+	u16 uarn;
-+	u8 qp_type;
++/*
++ * Keep structs aligned to 8 bytes.
++ * Keep reserved fields as arrays of __u8 named reserved_XXX where XXX is the
++ * hex bit offset of the field.
++ */
++
++enum efa_ibv_user_cmds_supp_udata {
++	EFA_USER_CMDS_SUPP_UDATA_QUERY_DEVICE = 1 << 0,
++	EFA_USER_CMDS_SUPP_UDATA_CREATE_AH    = 1 << 1,
 +};
 +
-+struct efa_com_create_qp_result {
-+	u32 qp_handle;
-+	u32 qp_num;
-+	u32 sq_db_offset;
-+	u32 rq_db_offset;
-+	u32 llq_descriptors_offset;
-+	u16 send_sub_cq_idx;
-+	u16 recv_sub_cq_idx;
++struct efa_ibv_alloc_ucontext_resp {
++	__u32 comp_mask;
++	__u32 cmds_supp_udata_mask;
++	__u16 sub_cqs_per_cq;
++	__u16 inline_buf_size;
++	__u32 max_llq_size; /* bytes */
 +};
 +
-+struct efa_com_modify_qp_params {
-+	u32 modify_mask;
-+	u32 qp_handle;
-+	u32 qp_state;
-+	u32 cur_qp_state;
-+	u32 qkey;
-+	u32 sq_psn;
-+	u8 sq_drained_async_notify;
++struct efa_ibv_alloc_pd_resp {
++	__u32 comp_mask;
++	__u16 pdn;
++	__u8 reserved_30[2];
 +};
 +
-+struct efa_com_query_qp_params {
-+	u32 qp_handle;
++struct efa_ibv_create_cq {
++	__u32 comp_mask;
++	__u32 cq_entry_size;
++	__u16 num_sub_cqs;
++	__u8 reserved_50[6];
 +};
 +
-+struct efa_com_query_qp_result {
-+	u32 qp_state;
-+	u32 qkey;
-+	u32 sq_draining;
-+	u32 sq_psn;
++struct efa_ibv_create_cq_resp {
++	__u32 comp_mask;
++	__u8 reserved_20[4];
++	__aligned_u64 q_mmap_key;
++	__aligned_u64 q_mmap_size;
++	__u16 cq_idx;
++	__u8 reserved_d0[6];
 +};
 +
-+struct efa_com_destroy_qp_params {
-+	u32 qp_handle;
++enum {
++	EFA_QP_DRIVER_TYPE_SRD = 0,
 +};
 +
-+struct efa_com_create_cq_params {
-+	/* cq physical base address in OS memory */
-+	dma_addr_t dma_addr;
-+	/* completion queue depth in # of entries */
-+	u16 cq_depth;
-+	u16 num_sub_cqs;
-+	u16 uarn;
-+	u8 entry_size_in_bytes;
++struct efa_ibv_create_qp {
++	__u32 comp_mask;
++	__u32 rq_ring_size; /* bytes */
++	__u32 sq_ring_size; /* bytes */
++	__u32 driver_qp_type;
 +};
 +
-+struct efa_com_create_cq_result {
-+	/* cq identifier */
-+	u16 cq_idx;
-+	/* actual cq depth in # of entries */
-+	u16 actual_depth;
++struct efa_ibv_create_qp_resp {
++	__u32 comp_mask;
++	/* the offset inside the page of the rq db */
++	__u32 rq_db_offset;
++	/* the offset inside the page of the sq db */
++	__u32 sq_db_offset;
++	/* the offset inside the page of descriptors buffer */
++	__u32 llq_desc_offset;
++	__aligned_u64 rq_mmap_key;
++	__aligned_u64 rq_mmap_size;
++	__aligned_u64 rq_db_mmap_key;
++	__aligned_u64 sq_db_mmap_key;
++	__aligned_u64 llq_desc_mmap_key;
++	__u16 send_sub_cq_idx;
++	__u16 recv_sub_cq_idx;
++	__u8 reserved_1e0[4];
 +};
 +
-+struct efa_com_destroy_cq_params {
-+	u16 cq_idx;
++struct efa_ibv_create_ah_resp {
++	__u32 comp_mask;
++	__u16 efa_address_handle;
++	__u8 reserved_30[2];
 +};
 +
-+struct efa_com_create_ah_params {
-+	u16 pdn;
-+	/* Destination address in network byte order */
-+	u8 dest_addr[EFA_GID_SIZE];
++struct efa_ibv_ex_query_device_resp {
++	__u32 comp_mask;
++	__u32 max_sq_wr;
++	__u32 max_rq_wr;
++	__u16 max_sq_sge;
++	__u16 max_rq_sge;
 +};
 +
-+struct efa_com_create_ah_result {
-+	u16 ah;
-+};
-+
-+struct efa_com_destroy_ah_params {
-+	u16 ah;
-+	u16 pdn;
-+};
-+
-+struct efa_com_get_network_attr_result {
-+	u8 addr[EFA_GID_SIZE];
-+	u32 mtu;
-+};
-+
-+struct efa_com_get_device_attr_result {
-+	u64 page_size_cap;
-+	u64 max_mr_pages;
-+	u32 fw_version;
-+	u32 admin_api_version;
-+	u32 device_version;
-+	u32 supported_features;
-+	u32 phys_addr_width;
-+	u32 virt_addr_width;
-+	u32 max_qp;
-+	u32 max_sq_depth; /* wqes */
-+	u32 max_rq_depth; /* wqes */
-+	u32 max_cq;
-+	u32 max_cq_depth; /* cqes */
-+	u32 inline_buf_size;
-+	u32 max_mr;
-+	u32 max_pd;
-+	u32 max_ah;
-+	u32 max_llq_size;
-+	u16 sub_cqs_per_cq;
-+	u16 max_sq_sge;
-+	u16 max_rq_sge;
-+	u8 db_bar;
-+};
-+
-+struct efa_com_get_hw_hints_result {
-+	u16 mmio_read_timeout;
-+	u16 driver_watchdog_timeout;
-+	u16 admin_completion_timeout;
-+	u16 poll_interval;
-+	u32 reserved[4];
-+};
-+
-+struct efa_com_mem_addr {
-+	u32 mem_addr_low;
-+	u32 mem_addr_high;
-+};
-+
-+/* Used at indirect mode page list chunks for chaining */
-+struct efa_com_ctrl_buff_info {
-+	/* indicates length of the buffer pointed by control_buffer_address. */
-+	u32 length;
-+	/* points to control buffer (direct or indirect) */
-+	struct efa_com_mem_addr address;
-+};
-+
-+struct efa_com_reg_mr_params {
-+	/* Memory region length, in bytes. */
-+	u64 mr_length_in_bytes;
-+	/* IO Virtual Address associated with this MR. */
-+	u64 iova;
-+	/* words 8:15: Physical Buffer List, each element is page-aligned. */
-+	union {
-+		/*
-+		 * Inline array of physical addresses of app pages
-+		 * (optimization for short region reservations)
-+		 */
-+		u64 inline_pbl_array[4];
-+		/*
-+		 * Describes the next physically contiguous chunk of indirect
-+		 * page list. A page list contains physical addresses of command
-+		 * data pages. Data pages are 4KB; page list chunks are
-+		 * variable-sized.
-+		 */
-+		struct efa_com_ctrl_buff_info pbl;
-+	} pbl;
-+	/* number of pages in PBL (redundant, could be calculated) */
-+	u32 page_num;
-+	/* Protection Domain */
-+	u16 pd;
-+	/*
-+	 * phys_page_size_shift - page size is (1 << phys_page_size_shift)
-+	 * Page size is used for building the Virtual to Physical
-+	 * address mapping
-+	 */
-+	u8 page_shift;
-+	/*
-+	 * permissions
-+	 * 0: local_write_enable - Write permissions: value of 1 needed
-+	 * for RQ buffers and for RDMA write:1: reserved1 - remote
-+	 * access flags, etc
-+	 */
-+	u8 permissions;
-+	u8 inline_pbl;
-+	u8 indirect;
-+};
-+
-+struct efa_com_reg_mr_result {
-+	/*
-+	 * To be used in conjunction with local buffers references in SQ and
-+	 * RQ WQE
-+	 */
-+	u32 l_key;
-+	/*
-+	 * To be used in incoming RDMA semantics messages to refer to remotely
-+	 * accessed memory region
-+	 */
-+	u32 r_key;
-+};
-+
-+struct efa_com_dereg_mr_params {
-+	u32 l_key;
-+};
-+
-+struct efa_com_alloc_pd_result {
-+	u16 pdn;
-+};
-+
-+struct efa_com_dealloc_pd_params {
-+	u16 pdn;
-+};
-+
-+struct efa_com_alloc_uar_result {
-+	u16 uarn;
-+};
-+
-+struct efa_com_dealloc_uar_params {
-+	u16 uarn;
-+};
-+
-+void efa_com_set_dma_addr(dma_addr_t addr, u32 *addr_high, u32 *addr_low);
-+int efa_com_create_qp(struct efa_com_dev *edev,
-+		      struct efa_com_create_qp_params *params,
-+		      struct efa_com_create_qp_result *res);
-+int efa_com_modify_qp(struct efa_com_dev *edev,
-+		      struct efa_com_modify_qp_params *params);
-+int efa_com_query_qp(struct efa_com_dev *edev,
-+		     struct efa_com_query_qp_params *params,
-+		     struct efa_com_query_qp_result *result);
-+int efa_com_destroy_qp(struct efa_com_dev *edev,
-+		       struct efa_com_destroy_qp_params *params);
-+int efa_com_create_cq(struct efa_com_dev *edev,
-+		      struct efa_com_create_cq_params *params,
-+		      struct efa_com_create_cq_result *result);
-+int efa_com_destroy_cq(struct efa_com_dev *edev,
-+		       struct efa_com_destroy_cq_params *params);
-+int efa_com_register_mr(struct efa_com_dev *edev,
-+			struct efa_com_reg_mr_params *params,
-+			struct efa_com_reg_mr_result *result);
-+int efa_com_dereg_mr(struct efa_com_dev *edev,
-+		     struct efa_com_dereg_mr_params *params);
-+int efa_com_create_ah(struct efa_com_dev *edev,
-+		      struct efa_com_create_ah_params *params,
-+		      struct efa_com_create_ah_result *result);
-+int efa_com_destroy_ah(struct efa_com_dev *edev,
-+		       struct efa_com_destroy_ah_params *params);
-+int efa_com_get_network_attr(struct efa_com_dev *edev,
-+			     struct efa_com_get_network_attr_result *result);
-+int efa_com_get_device_attr(struct efa_com_dev *edev,
-+			    struct efa_com_get_device_attr_result *result);
-+int efa_com_get_hw_hints(struct efa_com_dev *edev,
-+			 struct efa_com_get_hw_hints_result *result);
-+int efa_com_set_aenq_config(struct efa_com_dev *edev, u32 groups);
-+int efa_com_alloc_pd(struct efa_com_dev *edev,
-+		     struct efa_com_alloc_pd_result *result);
-+int efa_com_dealloc_pd(struct efa_com_dev *edev,
-+		       struct efa_com_dealloc_pd_params *params);
-+int efa_com_alloc_uar(struct efa_com_dev *edev,
-+		      struct efa_com_alloc_uar_result *result);
-+int efa_com_dealloc_uar(struct efa_com_dev *edev,
-+			struct efa_com_dealloc_uar_params *params);
-+
-+#endif /* _EFA_COM_CMD_H_ */
++#endif /* EFA_ABI_USER_H */
 -- 
 2.7.4
 
