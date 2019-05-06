@@ -2,90 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF5F14995
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 14:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8620A14B1C
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 15:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725886AbfEFMbJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 May 2019 08:31:09 -0400
-Received: from mga07.intel.com ([134.134.136.100]:13652 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725856AbfEFMbI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 6 May 2019 08:31:08 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 May 2019 05:31:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.60,438,1549958400"; 
-   d="scan'208";a="141772418"
-Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
-  by orsmga006.jf.intel.com with ESMTP; 06 May 2019 05:31:07 -0700
-Received: from fmsmsx114.amr.corp.intel.com (10.18.116.8) by
- FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
- id 14.3.408.0; Mon, 6 May 2019 05:31:07 -0700
-Received: from fmsmsx120.amr.corp.intel.com ([169.254.15.34]) by
- FMSMSX114.amr.corp.intel.com ([169.254.6.228]) with mapi id 14.03.0415.000;
- Mon, 6 May 2019 05:31:07 -0700
-From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        "Tejun Heo (tj@kernel.org)" <tj@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
-Subject: RE: [PATCH for-rc 1/5] IB/hfi1: Fix WQ_MEM_RECLAIM warning
-Thread-Topic: [PATCH for-rc 1/5] IB/hfi1: Fix WQ_MEM_RECLAIM warning
-Thread-Index: AQHU3atkXxJ320IBn0GjhIL6jh/a0qYTzaCAgAqgl2CAAa5bgIAAHvyAgAAfDgCAAAovgIAAHEoAgDaRsoCABz8ggA==
-Date:   Mon, 6 May 2019 12:31:06 +0000
-Message-ID: <32E1700B9017364D9B60AED9960492BC70D3737D@fmsmsx120.amr.corp.intel.com>
-References: <20190318165205.23550.97894.stgit@scvm10.sc.intel.com>
-         <20190318165501.23550.24989.stgit@scvm10.sc.intel.com>
-         <20190319192737.GB3773@ziepe.ca>
-         <32E1700B9017364D9B60AED9960492BC70CD9227@fmsmsx120.amr.corp.intel.com>
-         <20190327152517.GD69236@devbig004.ftw2.facebook.com>
-         <20190327171611.GF21008@ziepe.ca>
-         <20190327190720.GE69236@devbig004.ftw2.facebook.com>
-         <20190327194347.GH21008@ziepe.ca>
-         <20190327212502.GF69236@devbig004.ftw2.facebook.com>
- <053009d7de76f8800304f354e3cbde068453257f.camel@redhat.com>
-In-Reply-To: <053009d7de76f8800304f354e3cbde068453257f.camel@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMGViN2NhYzgtMmMxYi00MTA0LWJmN2MtZWU0OGJjNDU4ODNjIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiN0VKYW9wQ1VzQUk4b0xtSmgwaHB4NXVxOTlBQktxU1wvQlwvQVwvRU9DRUVweUhSZEptemVXejd5K2pIdUQzOHFmdyJ9
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.0.600.7
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.108]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1725994AbfEFNps (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 May 2019 09:45:48 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:33343 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbfEFNps (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 09:45:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1557150346; x=1588686346;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=ZdDbaK5bgpulStjhGh/WcyjdeOPB6ca2t/UBRDr1KpE=;
+  b=SR1jImrKM/t0HoI53rtrxzkVn1a4jrcLJbu+CVCG//Lt1sHaV2glRFWw
+   WZECrbqW54OXOJ85cSE10jXVr5XK+BdjQTwVMhQW1OIonD47uOLB3x8da
+   UULTNlaD9VXJR3Ii2Jupuv6pgifT7r1BtqO7aNBlPJ/H51pNR4gkS60lp
+   o=;
+X-IronPort-AV: E=Sophos;i="5.60,438,1549929600"; 
+   d="scan'208";a="731947636"
+Received: from iad6-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com) ([10.124.125.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 06 May 2019 13:45:44 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com (8.14.7/8.14.7) with ESMTP id x46DjfhQ015020
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
+        Mon, 6 May 2019 13:45:43 GMT
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Mon, 6 May 2019 13:45:42 +0000
+Received: from [10.218.62.23] (10.43.161.10) by EX13D19EUB003.ant.amazon.com
+ (10.43.166.69) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 6 May
+ 2019 13:45:39 +0000
+Subject: Re: [PATCH rdma-next] RDMA/ipoib: Allow user space differentiate
+ between valid dev_port
+To:     Leon Romanovsky <leon@kernel.org>,
+        Gal Pressman <galpress@amazon.com>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Arseny Maslennikov <ar@cs.msu.ru>
+References: <20190506102107.14817-1-leon@kernel.org>
+ <4c4c560a-d3ec-4b32-203f-178bddde478d@amazon.com>
+ <20190506104952.GL6938@mtr-leonro.mtl.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <3410a5ca-ab69-8c35-9754-356500d1b9c9@amazon.com>
+Date:   Mon, 6 May 2019 16:45:34 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
+In-Reply-To: <20190506104952.GL6938@mtr-leonro.mtl.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.10]
+X-ClientProxiedBy: EX13D17UWB001.ant.amazon.com (10.43.161.252) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiBDb3JyZWN0IG1lIGlmIEknbSB3cm9uZyBUZWp1biwgYnV0IHRoZSBrZXkgaXNzdWVzIGFyZToN
-Cj4gDQo+IEFsbCBXUV9NRU1fUkVDTEFJTSB3b3JrIHF1ZXVlcyBhcmUgZWxpZ2libGUgdG8gYmUg
-cnVuIHdoZW4gdGhlDQo+IG1hY2hpbmUNCj4gaXMgdW5kZXIgZXh0cmVtZSBtZW1vcnkgcHJlc3N1
-cmUgYW5kIGF0dGVtcHRpbmcgdG8gcmVjbGFpbSBtZW1vcnkuICBUaGF0DQo+IG1lYW5zIHRoYXQg
-dGhlIHdvcmtxdWV1ZToNCj4gDQo+IDEpIE1VU1Qgbm90IHBlcmZvcm0gYW55IEdGUF9BVE9NSUMg
-YWxsb2NhdGlvbnMgYXMgdGhpcyBjb3VsZCBkZWFkbG9jaw0KDQpUaGUgc2VuZCBlbmdpbmUgY29k
-ZSBXSUxMIGRvIGEgR0ZQX0FUT01JQyBhbGxvY2F0aW9uIGJ1dCB0aGUgY29kZSBoYW5kbGVzIGZh
-aWx1cmUgYXMNCndpbGwgYW55IG90aGVyIHJlc291cmNlIHNob3J0YWdlLg0KDQo+IDIpIFNIT1VM
-RCBub3QgcmVseSBvbiBhbnkgR0ZQX0tFUk5FTCBhbGxvY2F0aW9ucyBhcyB0aGVzZSBtYXkgZmFp
-bA0KDQpUaGVyZSBhcmUgbm8gR0ZQX0tFUk5FTCBhbGxvY2F0aW9ucyBpbiB0aGUgc2VuZCBlbmdp
-bmUgY29kZS4NCg0KPiAzKSBNVVNUIGNvbXBsZXRlIHdpdGhvdXQgYmxvY2tpbmcNCg0KQWxsIHJl
-c291cmNlIGJsb2NrYWdlcyBhcmUgaGFuZGxlZCBieSBxdWV1aW5nIHRoZSBjdXJyZW50IFFQIGJl
-aW5nIHNlcnZpY2VkIGJ5DQp0aGUgc2VuZCBlbmdpbmUgZm9yIGFuZCBpbnRlcnJ1cHQgdG8gd2Fr
-ZSB0aGF0IFFQIHVwIHZpYSB0aGUgc2VuZCBlbmdpbmUuDQoNCj4gNCkgU0hPVUxEIGlkZWFsbHkg
-YWx3YXlzIG1ha2Ugc29tZSBzb3J0IG9mIGZvcndhcmQgcHJvZ3Jlc3MgaWYgYXQgYWxsDQo+IHBv
-c3NpYmxlIHdpdGhvdXQgbmVlZGluZyBtZW1vcnkgYWxsb2NhdGlvbnMgdG8gZG8gc28NCj4gDQoN
-CkFzIG5vdGVkIGFib3ZlLg0KDQo+IE1pa2UsIGRvZXMgaGZpMV9kb19zZW5kKCkgbWVldCB0aGVz
-ZSByZXF1aXJlbWVudHM/ICBJZiBub3QsIHdlIHNob3VsZA0KPiBub3QgYmUgcHV0dGluZyBXUV9N
-RU1fUkVDTEFJTSBvbiBpdCwgYW5kIGluc3RlYWQgc2hvdWxkIGZpbmQgYW5vdGhlcg0KPiBzb2x1
-dGlvbiB0byB0aGUgY3VycmVudCB0cmFjZSBpc3N1ZS4NCj4gDQoNCkknbSBub3Qgc3VyZSBJIHVu
-ZGVyc3RhbmQgdGhlIDEpIGFib3ZlLg0KDQpUZWp1biwgY2FuIHlvdSBlbGFib3JhdGU/DQoNCk1p
-a2UNCg==
+On 06-May-19 13:49, Leon Romanovsky wrote:
+> On Mon, May 06, 2019 at 01:35:07PM +0300, Gal Pressman wrote:
+>> On 06-May-19 13:21, Leon Romanovsky wrote:
+>>> From: Leon Romanovsky <leonro@mellanox.com>
+>>>
+>>> Systemd triggers the following warning during IPoIB device load:
+>>>
+>>>  mlx5_core 0000:00:0c.0 ib0: "systemd-udevd" wants to know my dev_id.
+>>>         Should it look at dev_port instead?
+>>>         See Documentation/ABI/testing/sysfs-class-net for more info.
+>>>
+>>> This is caused due to user space attempt to differentiate old systems
+>>> without dev_port and new systems with dev_port. In case dev_port will
+>>> be zero, the systemd will try to read dev_id instead.
+>>>
+>>> There is no need to print a warning in such case, because it is valid
+>>> situation and it is needed to ensure systemd compatibility with old
+>>> kernels.
+>>>
+>>> Link: https://github.com/systemd/systemd/blob/master/src/udev/udev-builtin-net_id.c#L358
+>>> Cc: <stable@vger.kernel.org> # 4.19
+>>> Fixes: f6350da41dc7 ("IB/ipoib: Log sysfs 'dev_id' accesses from userspace")
+>>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>>> ---
+>>>  drivers/infiniband/ulp/ipoib/ipoib_main.c | 12 +++++++++++-
+>>>  1 file changed, 11 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+>>> index 48eda16db1a7..34e6495aa8c5 100644
+>>> --- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
+>>> +++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+>>> @@ -2402,7 +2402,17 @@ static ssize_t dev_id_show(struct device *dev,
+>>>  {
+>>>  	struct net_device *ndev = to_net_dev(dev);
+>>>
+>>> -	if (ndev->dev_id == ndev->dev_port)
+>>> +	/*
+>>> +	 * ndev->dev_port will be equal to 0 in old kernel prior to commit
+>>> +	 * 9b8b2a323008 ("IB/ipoib: Use dev_port to expose network interface port numbers")
+>>> +	 * Zero was chosen as special case for user space applications to fallback
+>>> +	 * and query dev_id to check if it has different value or not.
+>>> +	 *
+>>> +	 * Don't pring warning in such scenario.
+>>
+>> "pring" -> "print".
+> 
+> Are you ok with other changes and I can add your ROB tag?
+
+To my understanding, the test should be for just:
+if (ndev->dev_port)
+
+As if dev_port is set then there's no reason to use dev_id, regardless of its value.
+But I'm not really familiar with this flow..
+
+>>
+>>> +	 *
+>>> +	 * https://github.com/systemd/systemd/blob/master/src/udev/udev-builtin-net_id.c#L358
+>>> +	 */
+>>> +	if (ndev->dev_port && ndev->dev_id == ndev->dev_port)
+>>>  		netdev_info_once(ndev,
+>>>  			"\"%s\" wants to know my dev_id. Should it look at dev_port instead? See Documentation/ABI/testing/sysfs-class-net for more info.\n",
+>>>  			current->comm);
+>>>
+>>
+
