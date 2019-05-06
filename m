@@ -2,96 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B25A150B2
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 17:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF4E150C2
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 17:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbfEFPvM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 May 2019 11:51:12 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:38689 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbfEFPvM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 11:51:12 -0400
-Received: by mail-qt1-f193.google.com with SMTP id d13so15265669qth.5
-        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2019 08:51:11 -0700 (PDT)
+        id S1726439AbfEFP42 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 May 2019 11:56:28 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:33570 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726423AbfEFP41 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 11:56:27 -0400
+Received: by mail-qk1-f193.google.com with SMTP id k189so936829qkc.0
+        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2019 08:56:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=14UOh5ci04U2f3OG4dQ+gZ9/xGd8b43Dg40qh5QIM88=;
-        b=gHhbsxxHaCNAF+hNCc7vxQhY8CZcfvbQcVUP1HQ7LaOqyY+8aId5V0XTNCJBIrTVUL
-         er7/H1KW1WQZUBmTiwvj4j6QKnE/gBRqu4H5qn1irDd9+va6fGFwTJIqLP8hqHhUm0Xf
-         l0/olEEVWijOHvANXQFE9K66sAsSPk4McCQmbkdOwnlHu//6esfhGRI8es2PhZOyfUN7
-         vQ2dWYbTdvOv6PjpEq9Ge+gPRHFRh015XtKubIA3Gm6nDZwoSRvRVG+1vLGSgczWb651
-         Y1csslEpBPMDV/pBO61abOZq8yETx3X6r+qRX5jJ2kkXejmFAeLf/PWUU+1AIqWkTfX9
-         0jYQ==
+        bh=udngeiJLZAnnTFOxfZeh06xOt8qYZ7pnr2re5dxZ7YU=;
+        b=WYM6eFeWV/BkmWY7HaWem4YU/WHYkjj3/FzNVuHO6IgllN5S5DImFvD7CktCjs9vFR
+         7btgEbXikZdJMGM4dUwUXq7CmKLtM7jt5wyyT9bdXEFTXx0Paw4ah/DrkxwTmVH7s85J
+         JmI8lrc4XtrNh5yVVR5UXH+Odj7Adop430FD+9l3BjgMK6UPwZw3osIumuHc8ldrH3xq
+         KjLSwCVOj4L9w1cNrKdDjIUCQzPq4PjTW+stDNUoDjfQwG/wypiQcWBu9YaiVAsX+dTj
+         w0+KdtiW0fip4o/6+lN+hNGZ0zpgLeWO9TK89yDOMXov//MVjUADCuhHO4VA8vR3+MhJ
+         hhXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=14UOh5ci04U2f3OG4dQ+gZ9/xGd8b43Dg40qh5QIM88=;
-        b=GS1J/Ighrl/HqjtmO/DNluQRt1dDXfT3krD03cOYe+/soTOXATWztn4O4GQuRnvs+p
-         sollZzmKsbiJ4OSf+tHxFfCiP+GZYOxRg909+OtFuIkVsg368JCb2Y/Tb4JrvGtJCWY/
-         +CPW1CRg/xIFyNnp5ggb7fs8YVvW3HghBXP81uq4n6j51kMRffDr4qsCcRCcDlI/bqnA
-         LsCMHxTKHp6XAhpWcdNe0F+uMtm0TzIv2H0+Gf/Gf9U+4/+91jT1aOi5kbve4mkNi639
-         iDhhNPmj5kBaLPWOrdJxParcBT2Qw5jUo6Ec/pXuDTZ3STyMX2Kd7qI9BizVsc/acTgE
-         MR1g==
-X-Gm-Message-State: APjAAAVwOgnQOABMnBpkDcPIvOCnMSMn5PucTYX+q96ApOV22wqJ+srI
-        f24TUGuA30ZvyE/wTTqBqbCRmw==
-X-Google-Smtp-Source: APXvYqyxycpiFPv74G1jRxhF3rvXOpZNgaY7l05e1Shbk9/sZrBHV0UND16ReCRK4f5UzohXMvK91A==
-X-Received: by 2002:ac8:65ce:: with SMTP id t14mr12890441qto.22.1557157871401;
-        Mon, 06 May 2019 08:51:11 -0700 (PDT)
+        bh=udngeiJLZAnnTFOxfZeh06xOt8qYZ7pnr2re5dxZ7YU=;
+        b=VNMdCYHt2MjFHY2QegPmhLO8tUquaXJ/SRBU0q0AljD9bYzvinOtC1WeA5LusApJPQ
+         JZ0GXRXgJOAC9VtB68ckMZP959+nrMfNmdKJPYPc1MYpWlWwkXoDCCBiJ7bQRm9TA0QD
+         PBvpZLM4Wixuks7v8IZ7D9Tf/elotXbqq0/ROrL5CAM7qMWKLqsSdJ5nkjv+4M+OV3Qd
+         fmkf2e9kRXdPEjYk3/vtDe6NvDvE+Cx8gdMSv29iy1ax3CafYFT6f8n5hOHCbdX5y3q1
+         lsPpiP1NEtMFbLzjVBfK2CFTPJevPPpet1sA3PqH1j6WrVcvdBB+c6CjTGODlJfvOApW
+         X4iQ==
+X-Gm-Message-State: APjAAAX768eFyg9wp41o9OX2WHVym31jKlQn5T3PYvPAJ6UPR+dytxPb
+        yH2ZpFXe75OIm7juuyyZ1CyVlw==
+X-Google-Smtp-Source: APXvYqxBIPIX1zO3OEwvaEm8Q+HCOaQrrcHMxyoywg8F3WLzE4is82VHfc6nS2DFtvJbCDtk9AGhTQ==
+X-Received: by 2002:ae9:f503:: with SMTP id o3mr2533780qkg.345.1557158186875;
+        Mon, 06 May 2019 08:56:26 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id t124sm5893760qkh.29.2019.05.06.08.51.09
+        by smtp.gmail.com with ESMTPSA id g15sm7133144qta.31.2019.05.06.08.56.25
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 06 May 2019 08:51:09 -0700 (PDT)
+        Mon, 06 May 2019 08:56:25 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hNftU-0007d6-Ss; Mon, 06 May 2019 12:51:08 -0300
-Date:   Mon, 6 May 2019 12:51:08 -0300
+        id 1hNfyb-0000Qn-1P; Mon, 06 May 2019 12:56:25 -0300
+Date:   Mon, 6 May 2019 12:56:25 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
         Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
-        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
-Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Catch use-after-free access of AH
- structures
-Message-ID: <20190506155108.GA29293@ziepe.ca>
-References: <20190416121310.20783-1-leon@kernel.org>
+        Ariel Levkovich <lariel@mellanox.com>,
+        Eli Cohen <eli@mellanox.com>, Mark Bloch <markb@mellanox.com>
+Subject: Re: [PATCH rdma-next 0/4] User space steering
+Message-ID: <20190506155625.GA1573@ziepe.ca>
+References: <20190505140714.8741-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190416121310.20783-1-leon@kernel.org>
+In-Reply-To: <20190505140714.8741-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 16, 2019 at 03:13:10PM +0300, Leon Romanovsky wrote:
+On Sun, May 05, 2019 at 05:07:10PM +0300, Leon Romanovsky wrote:
 > From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> Prior to commit d345691471b4 ("RDMA: Handle AH allocations by IB/core"),
-> AH destroy path is rdmavt returned -EBUSY warning to application and
-> caused to potential leakage of kernel memory of AH structure.
+> Changelog v0 -> v1:
+>  * Removed phys_addr dependency from kconfig
 > 
-> After that commit, the AH structure is always freed but such early
-> return in driver code can potentially cause to use-after-free error.
+> -------------------------------------------------------------------------
+> >From Ariel,
 > 
-> Add warning to catch such situation to help driver developers to fix
-> AH release path.
+> This series of patches adds user space managed steering infrastructure
+> to the mlx5_ib driver.
 > 
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/sw/rdmavt/ah.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> User space managed steering requires the means to access a dedicated
+> memory space that is used by the device to store the packet steering
+> and header modification tables and rules in order to manage them
+> directly without the device's firmware involvement. This dedicated memory
+> is part of the ICM memory space.
+> 
+> The changes are introducing the mlx5_ib API to allocate, deallocate and
+> register this dedicated SW ICM memory via the existing device memory API
+> using a private attribute which specifies the memory type.
+> 
+> The allocated memory itself is not IO mapped and user can only access it
+> using remote RDMA operations.
+> 
+> In addition, the series exposed the ICM address of the receive transport
+> interface (TIR) of Raw Packet and RSS QPs to user since they are
+> required to properly create and insert steering rules that direct flows
+> to these QPs.
+> 
+> Thanks
+> 
+> Ariel Levkovich (4):
+>   IB/mlx5: Support device memory type attribute
+>   IB/mlx5: Warn on allocated MEMIC buffers during cleanup
+>   IB/mlx5: Add steering SW ICM device memory type
+>   IB/mlx5: Device resource control for privileged DEVX user
 
-Applied to for-next
-
-Denny, since you missed the merge window with the fix, please send a
-fixup next cycle. The WARN_ON will scare people who might be able to
-hit this buggy case.
+Applied to for-next, thanks
 
 Jason
