@@ -2,161 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 888E414BB8
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 16:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7535D153D2
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 20:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbfEFOXW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 May 2019 10:23:22 -0400
-Received: from mail-eopbgr150080.outbound.protection.outlook.com ([40.107.15.80]:31566
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726037AbfEFOXW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 6 May 2019 10:23:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YJVk0kEM0fkEvqrxhINTSdDUoQTva3YLt1VhzkrSsNE=;
- b=kovJva3Pnkcvxu6KkwlIjKj8RsZc35l1N09S0QD1TLXOeZcsWBo7cpuZ0oXQeLwY4VMNZu1r0iknUvbrjkzLGZUxrjIl/l0vHEo4Ar/lcu/kLHK8ElgRhHTfxMEsd5ulK7aA5lDBs6qJfYryG/sn7xb0plOy0GQiQGywBJfh+00=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB4222.eurprd05.prod.outlook.com (52.133.12.11) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1856.11; Mon, 6 May 2019 14:23:17 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.012; Mon, 6 May 2019
- 14:23:17 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Gal Pressman <galpress@amazon.com>,
-        Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Arseny Maslennikov <ar@cs.msu.ru>
-Subject: Re: [PATCH rdma-next] RDMA/ipoib: Allow user space differentiate
- between valid dev_port
-Thread-Topic: [PATCH rdma-next] RDMA/ipoib: Allow user space differentiate
- between valid dev_port
-Thread-Index: AQHVA/Vxm8gbxhcUoUWVmDoqNjBGEKZd5tOAgAAEHwCAADEYAIAABbwAgAAEwAA=
-Date:   Mon, 6 May 2019 14:23:17 +0000
-Message-ID: <20190506142306.GE6186@mellanox.com>
-References: <20190506102107.14817-1-leon@kernel.org>
- <4c4c560a-d3ec-4b32-203f-178bddde478d@amazon.com>
- <20190506104952.GL6938@mtr-leonro.mtl.com>
- <3410a5ca-ab69-8c35-9754-356500d1b9c9@amazon.com>
- <20190506140606.GM6938@mtr-leonro.mtl.com>
-In-Reply-To: <20190506140606.GM6938@mtr-leonro.mtl.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: YTXPR0101CA0054.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:1::31) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.49.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 88209a10-f7c0-4c40-3e8f-08d6d22e6212
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4222;
-x-ms-traffictypediagnostic: VI1PR05MB4222:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <VI1PR05MB42221EC5BDF98D50E67937B7CF300@VI1PR05MB4222.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 0029F17A3F
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(136003)(396003)(39860400002)(376002)(346002)(199004)(189003)(71200400001)(6306002)(305945005)(66476007)(6486002)(73956011)(66946007)(33656002)(66556008)(229853002)(316002)(64756008)(7736002)(66446008)(6436002)(99286004)(2906002)(186003)(6246003)(26005)(1076003)(66066001)(102836004)(4326008)(52116002)(54906003)(386003)(6506007)(53546011)(76176011)(8936002)(36756003)(71190400001)(68736007)(81166006)(81156014)(8676002)(6512007)(86362001)(53936002)(5660300002)(3846002)(486006)(14444005)(446003)(6116002)(256004)(11346002)(966005)(2616005)(478600001)(476003)(25786009)(14454004)(6916009);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4222;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: BQM8peI7HTsxrql4qlj4NGXhTdd4AWPBcorwnOZ+kvnGqSooBLprppN64aQz5kM5MwvzDCbtDZ3iuu/NalNE/mTW0uUiwJz4a/y6v0YIQb3igLFtDd3tg/il3o1uA/z/+V3Wdi+S/SjFfzCpC2iW83xXfzhBJKFd0m9d4M0Qak/Q9oz8NW68NC0VdpX+Z0QWOoUQW4It5LYOIsRcnV/S0Oxq3xn3Q1jSzaTkPj/lbBgU7S6yOW5zTxP/lXApqiXG3r4GtqeXp8YT6d+K2BTHK5DzkgmP7FUTnMGicfgykrHjbrp1PBOjY6gh48kW7UUS3R/auDee08YNDTQ23z/sktoFHbob4gRl50WH9M+pYnKPwyrb2XV+Q8Slx6C8dkLaFMA1F93CgTmMECu7A1RPlBYLVavQxaJc/QfaBf3hEYQ=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9915C20095CFC441BDBC1E47C017B642@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726337AbfEFSqk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 May 2019 14:46:40 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:24075 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbfEFSqj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 14:46:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1557168399; x=1588704399;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=xsGBPZlIne63Ytr231ws6wJgXFwY/WEd6QZ4UcBmXeU=;
+  b=RUnQ0bhvH5aN40boUAzqEfovO5mxKeDTm9bAs1CN7XlUZrF8wdhvnyfa
+   ZTGiitoN38D1qFbkb82FsurvrXeoA1n9ET9QksLiyGgdDrFiPEgVM9QdA
+   VUPLyWQd42frUKLFrA4oKWsZCkMTbJ+uwzvWKh9v5J7wrT1yb4fl+QOrg
+   4=;
+X-IronPort-AV: E=Sophos;i="5.60,439,1549929600"; 
+   d="scan'208";a="798158296"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 06 May 2019 18:46:37 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (8.14.7/8.14.7) with ESMTP id x46IkZXv031692
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
+        Mon, 6 May 2019 18:46:37 GMT
+Received: from EX13D19EUA003.ant.amazon.com (10.43.165.175) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Mon, 6 May 2019 18:46:36 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13D19EUA003.ant.amazon.com (10.43.165.175) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Mon, 6 May 2019 18:46:35 +0000
+Received: from galpress-VirtualBox.hfa16.amazon.com (10.85.92.236) by
+ mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server id
+ 15.0.1367.3 via Frontend Transport; Mon, 6 May 2019 18:46:29 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>,
+        "Jason Gunthorpe" <jgg@mellanox.com>
+Subject: [RESEND PATCH v2] lib/scatterlist: Remove leftover from sg_page_iter comment
+Date:   Mon, 6 May 2019 18:02:56 +0300
+Message-ID: <1557154976-8070-1-git-send-email-galpress@amazon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88209a10-f7c0-4c40-3e8f-08d6d22e6212
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 May 2019 14:23:17.7526
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4222
+Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 06, 2019 at 05:06:06PM +0300, Leon Romanovsky wrote:
-> On Mon, May 06, 2019 at 04:45:34PM +0300, Gal Pressman wrote:
-> > On 06-May-19 13:49, Leon Romanovsky wrote:
-> > > On Mon, May 06, 2019 at 01:35:07PM +0300, Gal Pressman wrote:
-> > >> On 06-May-19 13:21, Leon Romanovsky wrote:
-> > >>> From: Leon Romanovsky <leonro@mellanox.com>
-> > >>>
-> > >>> Systemd triggers the following warning during IPoIB device load:
-> > >>>
-> > >>>  mlx5_core 0000:00:0c.0 ib0: "systemd-udevd" wants to know my dev_i=
-d.
-> > >>>         Should it look at dev_port instead?
-> > >>>         See Documentation/ABI/testing/sysfs-class-net for more info=
-.
-> > >>>
-> > >>> This is caused due to user space attempt to differentiate old syste=
-ms
-> > >>> without dev_port and new systems with dev_port. In case dev_port wi=
-ll
-> > >>> be zero, the systemd will try to read dev_id instead.
-> > >>>
-> > >>> There is no need to print a warning in such case, because it is val=
-id
-> > >>> situation and it is needed to ensure systemd compatibility with old
-> > >>> kernels.
-> > >>>
-> > >>> Link: https://github.com/systemd/systemd/blob/master/src/udev/udev-=
-builtin-net_id.c#L358
-> > >>> Cc: <stable@vger.kernel.org> # 4.19
-> > >>> Fixes: f6350da41dc7 ("IB/ipoib: Log sysfs 'dev_id' accesses from us=
-erspace")
-> > >>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > >>>  drivers/infiniband/ulp/ipoib/ipoib_main.c | 12 +++++++++++-
-> > >>>  1 file changed, 11 insertions(+), 1 deletion(-)
-> > >>>
-> > >>> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/in=
-finiband/ulp/ipoib/ipoib_main.c
-> > >>> index 48eda16db1a7..34e6495aa8c5 100644
-> > >>> +++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-> > >>> @@ -2402,7 +2402,17 @@ static ssize_t dev_id_show(struct device *de=
-v,
-> > >>>  {
-> > >>>  	struct net_device *ndev =3D to_net_dev(dev);
-> > >>>
-> > >>> -	if (ndev->dev_id =3D=3D ndev->dev_port)
-> > >>> +	/*
-> > >>> +	 * ndev->dev_port will be equal to 0 in old kernel prior to commi=
-t
-> > >>> +	 * 9b8b2a323008 ("IB/ipoib: Use dev_port to expose network interf=
-ace port numbers")
-> > >>> +	 * Zero was chosen as special case for user space applications to=
- fallback
-> > >>> +	 * and query dev_id to check if it has different value or not.
-> > >>> +	 *
-> > >>> +	 * Don't pring warning in such scenario.
-> > >>
-> > >> "pring" -> "print".
-> > >
-> > > Are you ok with other changes and I can add your ROB tag?
-> >
-> > To my understanding, the test should be for just:
-> > if (ndev->dev_port)
-> >
-> > As if dev_port is set then there's no reason to use dev_id, regardless =
-of its value.
-> > But I'm not really familiar with this flow..
->=20
-> It makes sense, but I'm not certain either.
+Commit d901b2760dc6 ("lib/scatterlist: Provide a DMA page iterator")
+added the sg DMA iterator but a leftover remained in the sg_page_iter
+documentation as you cannot get the page dma address (only the page
+itself), fix it.
 
-The dev_id =3D=3D dev_port thing makes no sense to me since the driver
-always sets them equal on startup - is there some way for these values
-to change outside the driver's control?
+Cc: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Gal Pressman <galpress@amazon.com>
+Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
+---
+This patch was sent twice to linux-kernel list with no response, I'm sending it
+to the rdma list as that's where the cited patch was sent to.
 
-Jason
+Changelog:
+v1->v2:
+* Reword commit message
+---
+ include/linux/scatterlist.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
+index b4be960c7e5d..30a9a55c28ba 100644
+--- a/include/linux/scatterlist.h
++++ b/include/linux/scatterlist.h
+@@ -340,11 +340,11 @@ int sg_alloc_table_chained(struct sg_table *table, int nents,
+  * sg page iterator
+  *
+  * Iterates over sg entries page-by-page.  On each successful iteration, you
+- * can call sg_page_iter_page(@piter) to get the current page and its dma
+- * address. @piter->sg will point to the sg holding this page and
+- * @piter->sg_pgoffset to the page's page offset within the sg. The iteration
+- * will stop either when a maximum number of sg entries was reached or a
+- * terminating sg (sg_last(sg) == true) was reached.
++ * can call sg_page_iter_page(@piter) to get the current page.
++ * @piter->sg will point to the sg holding this page and @piter->sg_pgoffset to
++ * the page's page offset within the sg. The iteration will stop either when a
++ * maximum number of sg entries was reached or a terminating sg
++ * (sg_last(sg) == true) was reached.
+  */
+ struct sg_page_iter {
+ 	struct scatterlist	*sg;		/* sg holding the page */
+-- 
+2.7.4
+
