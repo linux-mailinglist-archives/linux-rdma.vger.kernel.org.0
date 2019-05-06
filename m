@@ -2,132 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC4D14B3F
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 15:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F3714B46
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 15:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbfEFNxO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 May 2019 09:53:14 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:33954 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbfEFNxN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 09:53:13 -0400
-Received: by mail-pf1-f195.google.com with SMTP id b3so6825920pfd.1
-        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2019 06:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DfsikH3ADmgNVGOW8dVHffAJXBPBy/1Drd0IdtpjjJ8=;
-        b=kv7aGbZwowOP86IiNXKGTzv02HGdI2dS555U/AmH12LgQOZnKLK39c4sVdRuufn96A
-         qthFKSfdn7G60uj86be1sn6Yz08bEym7ZdQPS1mHAwXca2PX4G4xwzBsumjfQSNalrzf
-         yL5bwTZ9P03pKULjLPyCJCemso/1RN2dFNxsJkh8Db8dDQ4uyTu4XB2OtIwgRdUtOIbE
-         AyYkrbplUjKWiH4tJjgIH/K5mFuPdBD8NVSdZa64NURA8ieEyhpOBhaJlBUr1GIoMIGp
-         v2ptbSyS2qLsf62uamUc0COAt9buSU1YrXxFbkm18U+53rgjezb09axtZoHwZgv8hVgU
-         L1Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DfsikH3ADmgNVGOW8dVHffAJXBPBy/1Drd0IdtpjjJ8=;
-        b=SCGkEBbvSOpO6G+mLbquygLNGtXBHrKutyGPXJKMzibl2iuQKvLyzeuJbNHweBUTXo
-         c04SPgRxLkPSAzrvg1VwKcKEhtEmK7f6+rG+1MuSfIuvJAeAvrdM/y4CHVkXTx4/rAFX
-         5r+bkMqSK1W2a2w9yDjmXaG1ygGKCFw/OrSpgo8P6opI9o/PT4+2K2gKv8TadRLKix6n
-         R3BiYNF4TXQq8NZCm1nAOuO9yA9gwDDAyGfez+rTkvgL38aXetyEWvIHPWLmZxAHgT7i
-         VUIRBMql/xAPMZzbmLbW9+yhga1GTLDvlYRByDbBOvW3vOxnWmwRqIoqplm/jXTjvqg6
-         8E/w==
-X-Gm-Message-State: APjAAAXofvYaZbpGXQ+e1arx2wT29ntN+FGhNcRxO8CPRFztla42Zl6N
-        gNJ/62ukqQEpFS4LVj2ey57ZIdxbZMkrwS8D/MFH2A==
-X-Google-Smtp-Source: APXvYqz1fgwxD3Q1L0PJp0GBoiDCnAmVuD+UduBO6dKustad4HqnmYC98uMKFLNp2x7D5yl19BVMVIT9EGy2Pg34Ktk=
-X-Received: by 2002:aa7:9116:: with SMTP id 22mr33262822pfh.165.1557150792655;
- Mon, 06 May 2019 06:53:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1556630205.git.andreyknvl@google.com> <8e20df035de677029b3f970744ba2d35e2df1db3.1556630205.git.andreyknvl@google.com>
- <20190503165113.GJ55449@arrakis.emea.arm.com>
-In-Reply-To: <20190503165113.GJ55449@arrakis.emea.arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 6 May 2019 15:53:01 +0200
-Message-ID: <CAAeHK+wCyCa-5=bPNwfivP6sEODOXKE1bPjcjc2y_T4rN+-6gA@mail.gmail.com>
-Subject: Re: [PATCH v14 08/17] mm, arm64: untag user pointers in get_vaddr_frames
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>, Kuehling@google.com,
-        Felix <Felix.Kuehling@amd.com>, Deucher@google.com,
-        Alexander <Alexander.Deucher@amd.com>, Koenig@google.com,
-        Christian <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Chintan Pandya <cpandya@codeaurora.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726145AbfEFNyC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 May 2019 09:54:02 -0400
+Received: from mga12.intel.com ([192.55.52.136]:48135 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726095AbfEFNyB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 6 May 2019 09:54:01 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 May 2019 06:54:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.60,438,1549958400"; 
+   d="scan'208";a="344291802"
+Received: from ssaleem-mobl4.amr.corp.intel.com ([10.255.35.243])
+  by fmsmga006.fm.intel.com with ESMTP; 06 May 2019 06:54:00 -0700
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Subject: [PATCH v3 rdma-next 0/6] Introduce a DMA block iterator
+Date:   Mon,  6 May 2019 08:53:31 -0500
+Message-Id: <20190506135337.11324-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.8.3
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 3, 2019 at 6:51 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Tue, Apr 30, 2019 at 03:25:04PM +0200, Andrey Konovalov wrote:
-> > This patch is a part of a series that extends arm64 kernel ABI to allow to
-> > pass tagged user pointers (with the top byte set to something else other
-> > than 0x00) as syscall arguments.
-> >
-> > get_vaddr_frames uses provided user pointers for vma lookups, which can
-> > only by done with untagged pointers. Instead of locating and changing
-> > all callers of this function, perform untagging in it.
-> >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > ---
-> >  mm/frame_vector.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/mm/frame_vector.c b/mm/frame_vector.c
-> > index c64dca6e27c2..c431ca81dad5 100644
-> > --- a/mm/frame_vector.c
-> > +++ b/mm/frame_vector.c
-> > @@ -46,6 +46,8 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
-> >       if (WARN_ON_ONCE(nr_frames > vec->nr_allocated))
-> >               nr_frames = vec->nr_allocated;
-> >
-> > +     start = untagged_addr(start);
-> > +
-> >       down_read(&mm->mmap_sem);
-> >       locked = 1;
-> >       vma = find_vma_intersection(mm, start, start + 1);
->
-> Is this some buffer that the user may have malloc'ed? I got lost when
-> trying to track down the provenience of this buffer.
+From: "Saleem, Shiraz" <shiraz.saleem@intel.com>
 
-The caller that I found when I was looking at this:
+This patch set is aiming to allow drivers to leverage a new DMA
+block iterator to get contiguous aligned memory blocks within
+their HW supported page sizes. The motivation for this work comes
+from the discussion in [1].
 
-drivers/gpu/drm/exynos/exynos_drm_g2d.c:482
-exynos_g2d_set_cmdlist_ioctl()->g2d_map_cmdlist_gem()->g2d_userptr_get_dma_addr()->get_vaddr_frames()
+The first patch introduces a new umem API that allows drivers to find a
+best supported page size to use for the MR, from a bitmap of HW supported
+page sizes.
 
->
-> --
-> Catalin
+The second patch introduces a new DMA block iterator that returns allows
+drivers to get aligned DMA addresses within a supplied best page size.
+
+The third patch and fouth patch removes the dependency of i40iw and bnxt_re
+drivers on the hugetlb flag. The new core APIs are called in these drivers to
+get huge page size aligned addresses if the MR is backed by huge pages.
+
+The fifth patch removes the hugetlb flag from IB core.
+
+The sixth patch extends the DMA block itertaor for HW that can support mixed
+block sizes. This patch is untested.
+
+[1] https://patchwork.kernel.org/patch/10499753/
+
+RFC-->v0:
+---------
+* Add to scatter table by iterating a limited sized page list.
+* Updated driver call sites to use the for_each_sg_page iterator
+  variant where applicable.
+* Tweaked algorithm in ib_umem_find_single_pg_size and ib_umem_next_phys_iter
+  to ignore alignment of the start of first SGE and end of the last SGE.
+* Simplified ib_umem_find_single_pg_size on offset alignments checks for
+  user-space virtual and physical buffer.
+* Updated ib_umem_start_phys_iter to do some pre-computation
+  for the non-mixed page support case.
+* Updated bnxt_re driver to use the new core APIs and remove its
+  dependency on the huge tlb flag.
+* Fixed a bug in computation of sg_phys_iter->phyaddr in ib_umem_next_phys_iter.
+* Drop hugetlb flag usage from RDMA subsystem.
+* Rebased on top of for-next.
+
+v0-->v1:
+--------
+* Remove the patches that update driver to use for_each_sg_page variant
+  to iterate in the SGE. This is sent as a seperate series using
+  the for_each_sg_dma_page variant.
+* Tweak ib_umem_add_sg_table API defintion based on maintainer feedback.
+* Cache number of scatterlist entries in umem.
+* Update function headers for ib_umem_find_single_pg_size and ib_umem_next_phys_iter.
+* Add sanity check on supported_pgsz in ib_umem_find_single_pg_size.
+
+v1-->v2:
+--------
+*Removed page combining patch as it was sent stand alone.
+*__fls on pgsz_bitmap as opposed to fls64 since it's an unsigned long.
+*rename ib_umem_find_pg_bit() --> rdma_find_pg_bit() and moved to ib_verbs.h
+*rename ib_umem_find_single_pg_size() --> ib_umem_find_best_pgsz()
+*New flag IB_UMEM_VA_BASED_OFFSET for ib_umem_find_best_pgsz API for HW that uses least significant bits
+  of VA to indicate start offset into DMA list.
+*rdma_find_pg_bit() logic is re-written and simplified. It can support input of 0 or 1 dma addr cases.
+*ib_umem_find_best_pgsz() optimized to be less computationally expensive running rdma_find_pg_bit() only once.
+*rdma_for_each_block() is the new re-designed DMA block iterator which is more in line with for_each_sg_dma_page()iterator.
+*rdma_find_mixed_pg_bit() logic for interior SGE's accounting for start and end dma address. 
+*remove i40iw specific enums for supported page size
+*remove vma_list form ib_umem_get()
+
+v2-->v3:
+---------
+*Check VA/PA bits misalignment to restrict max page size for all SGL address in ib_umem_find_best_pgsz()
+*ib_umem_find_best_pgsz() extended to work with any IOVA
+*IB_UMEM_VA_BASED_OFFSET flag removed.
+*DMA block iterator API split into 2 patches. One for HW that supports single blocks and
+second which extends the API to support HW that can do mixed block sizes.
+
+Shiraz Saleem (6):
+  RDMA/umem: Add API to find best driver supported page size in an MR
+  RDMA/verbs: Add a DMA iterator to return aligned contiguous memory
+    blocks
+  RDMA/i40iw: Use core helpers to get aligned DMA address within a
+    supported page size
+  RDMA/bnxt_re: Use core helpers to get aligned DMA address
+  RDMA/umem: Remove hugetlb flag
+  RDMA/verbs: Extend DMA block iterator support for mixed block sizes
+
+ drivers/infiniband/core/umem.c            | 77 +++++++++++++++++++----------
+ drivers/infiniband/core/umem_odp.c        |  3 --
+ drivers/infiniband/core/verbs.c           | 68 ++++++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 27 ++++-------
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c | 46 +++---------------
+ drivers/infiniband/hw/i40iw/i40iw_verbs.h |  3 +-
+ include/rdma/ib_umem.h                    | 10 +++-
+ include/rdma/ib_verbs.h                   | 81 +++++++++++++++++++++++++++++++
+ 8 files changed, 228 insertions(+), 87 deletions(-)
+
+-- 
+1.8.3.1
+
