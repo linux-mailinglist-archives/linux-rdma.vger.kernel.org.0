@@ -2,130 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CABED14B3D
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 15:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC4D14B3F
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 15:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726313AbfEFNwr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 6 May 2019 09:52:47 -0400
-Received: from mga07.intel.com ([134.134.136.100]:17892 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726312AbfEFNwr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 6 May 2019 09:52:47 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 May 2019 06:52:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.60,438,1549958400"; 
-   d="scan'208";a="146843481"
-Received: from fmsmsx108.amr.corp.intel.com ([10.18.124.206])
-  by fmsmga008.fm.intel.com with ESMTP; 06 May 2019 06:52:46 -0700
-Received: from fmsmsx121.amr.corp.intel.com (10.18.125.36) by
- FMSMSX108.amr.corp.intel.com (10.18.124.206) with Microsoft SMTP Server (TLS)
- id 14.3.408.0; Mon, 6 May 2019 06:52:45 -0700
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.175]) by
- fmsmsx121.amr.corp.intel.com ([169.254.6.250]) with mapi id 14.03.0415.000;
- Mon, 6 May 2019 06:52:45 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Gal Pressman <galpress@amazon.com>
-Subject: RE: [PATCH v2 rdma-next 1/5] RDMA/umem: Add API to find best driver
- supported page size in an MR
-Thread-Topic: [PATCH v2 rdma-next 1/5] RDMA/umem: Add API to find best
- driver supported page size in an MR
-Thread-Index: AQHU9rYQO5bZsKMgfk2PmawyTIYosKZNbYeAgAaoBrCAAXDXgP//m1jggACVloCAAslQsIABkQmA//+LWjCAAQDZgIADmmWw
-Date:   Mon, 6 May 2019 13:52:45 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7A5AD45F7@fmsmsx124.amr.corp.intel.com>
-References: <20190419134353.12684-1-shiraz.saleem@intel.com>
- <20190419134353.12684-2-shiraz.saleem@intel.com>
- <20190425142559.GA5388@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7A5AC3A8C@fmsmsx124.amr.corp.intel.com>
- <20190430180503.GB8101@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7A5ACCB03@fmsmsx124.amr.corp.intel.com>
- <20190430210011.GA9059@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7A5AD1514@fmsmsx124.amr.corp.intel.com>
- <20190503152835.GB31165@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7A5AD161A@fmsmsx124.amr.corp.intel.com>
- <20190503235023.GA6660@ziepe.ca>
-In-Reply-To: <20190503235023.GA6660@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.0.600.7
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.108]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726321AbfEFNxO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 May 2019 09:53:14 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:33954 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726312AbfEFNxN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 09:53:13 -0400
+Received: by mail-pf1-f195.google.com with SMTP id b3so6825920pfd.1
+        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2019 06:53:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DfsikH3ADmgNVGOW8dVHffAJXBPBy/1Drd0IdtpjjJ8=;
+        b=kv7aGbZwowOP86IiNXKGTzv02HGdI2dS555U/AmH12LgQOZnKLK39c4sVdRuufn96A
+         qthFKSfdn7G60uj86be1sn6Yz08bEym7ZdQPS1mHAwXca2PX4G4xwzBsumjfQSNalrzf
+         yL5bwTZ9P03pKULjLPyCJCemso/1RN2dFNxsJkh8Db8dDQ4uyTu4XB2OtIwgRdUtOIbE
+         AyYkrbplUjKWiH4tJjgIH/K5mFuPdBD8NVSdZa64NURA8ieEyhpOBhaJlBUr1GIoMIGp
+         v2ptbSyS2qLsf62uamUc0COAt9buSU1YrXxFbkm18U+53rgjezb09axtZoHwZgv8hVgU
+         L1Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DfsikH3ADmgNVGOW8dVHffAJXBPBy/1Drd0IdtpjjJ8=;
+        b=SCGkEBbvSOpO6G+mLbquygLNGtXBHrKutyGPXJKMzibl2iuQKvLyzeuJbNHweBUTXo
+         c04SPgRxLkPSAzrvg1VwKcKEhtEmK7f6+rG+1MuSfIuvJAeAvrdM/y4CHVkXTx4/rAFX
+         5r+bkMqSK1W2a2w9yDjmXaG1ygGKCFw/OrSpgo8P6opI9o/PT4+2K2gKv8TadRLKix6n
+         R3BiYNF4TXQq8NZCm1nAOuO9yA9gwDDAyGfez+rTkvgL38aXetyEWvIHPWLmZxAHgT7i
+         VUIRBMql/xAPMZzbmLbW9+yhga1GTLDvlYRByDbBOvW3vOxnWmwRqIoqplm/jXTjvqg6
+         8E/w==
+X-Gm-Message-State: APjAAAXofvYaZbpGXQ+e1arx2wT29ntN+FGhNcRxO8CPRFztla42Zl6N
+        gNJ/62ukqQEpFS4LVj2ey57ZIdxbZMkrwS8D/MFH2A==
+X-Google-Smtp-Source: APXvYqz1fgwxD3Q1L0PJp0GBoiDCnAmVuD+UduBO6dKustad4HqnmYC98uMKFLNp2x7D5yl19BVMVIT9EGy2Pg34Ktk=
+X-Received: by 2002:aa7:9116:: with SMTP id 22mr33262822pfh.165.1557150792655;
+ Mon, 06 May 2019 06:53:12 -0700 (PDT)
 MIME-Version: 1.0
+References: <cover.1556630205.git.andreyknvl@google.com> <8e20df035de677029b3f970744ba2d35e2df1db3.1556630205.git.andreyknvl@google.com>
+ <20190503165113.GJ55449@arrakis.emea.arm.com>
+In-Reply-To: <20190503165113.GJ55449@arrakis.emea.arm.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 6 May 2019 15:53:01 +0200
+Message-ID: <CAAeHK+wCyCa-5=bPNwfivP6sEODOXKE1bPjcjc2y_T4rN+-6gA@mail.gmail.com>
+Subject: Re: [PATCH v14 08/17] mm, arm64: untag user pointers in get_vaddr_frames
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>, Kuehling@google.com,
+        Felix <Felix.Kuehling@amd.com>, Deucher@google.com,
+        Alexander <Alexander.Deucher@amd.com>, Koenig@google.com,
+        Christian <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Chintan Pandya <cpandya@codeaurora.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
->Subject: Re: [PATCH v2 rdma-next 1/5] RDMA/umem: Add API to find best driver
->supported page size in an MR
+On Fri, May 3, 2019 at 6:51 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
 >
->On Fri, May 03, 2019 at 04:01:27PM +0000, Saleem, Shiraz wrote:
->> >Subject: Re: [PATCH v2 rdma-next 1/5] RDMA/umem: Add API to find best
->> >driver supported page size in an MR
->> >
->> >On Fri, May 03, 2019 at 03:22:59PM +0000, Saleem, Shiraz wrote:
->> >> >This is because mask shouldn't start as zero - the highest
->> >> >possible mask is something like log2_ru(umem length)
->> >> >
->> >> >ie absent other considerations the page size at the NIC should be
->> >> >the size of the umem.
->> >> >
->> >> >Then we scan the sgl and reduce that value based on the physical
->> >> >address layout
->> >> >
->> >> >Then we reduce it again based on the uvirt vs address difference
->> >> >
->> >> >Oring a '0' into the mask means that step contributes no restriction.
->> >> >
->> >> >..
->> >> >
->> >> >So I think the algorithm is just off as is, it should be more like
->> >> >
->> >> > // Page size can't be larger than the length of the MR mask =
->> >> >log2_ru(umem length);
->> >> >
->> >> > // offset into the first SGL for umem->addr pgoff = umem->address
->> >> >& PAGE_MASK;  va = uvirt_addr;
->> >> >
->> >>
->> >> Did you mean pgoff = umem->address & ~PAGE_MASK?
->> >
->> >Yes...
->>
->> OK. Don't we need something like this for zero based VA?
->> va = uvirt_addr ?  uvirt_addr :  umem->addr;
+> On Tue, Apr 30, 2019 at 03:25:04PM +0200, Andrey Konovalov wrote:
+> > This patch is a part of a series that extends arm64 kernel ABI to allow to
+> > pass tagged user pointers (with the top byte set to something else other
+> > than 0x00) as syscall arguments.
+> >
+> > get_vaddr_frames uses provided user pointers for vma lookups, which can
+> > only by done with untagged pointers. Instead of locating and changing
+> > all callers of this function, perform untagging in it.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > ---
+> >  mm/frame_vector.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/mm/frame_vector.c b/mm/frame_vector.c
+> > index c64dca6e27c2..c431ca81dad5 100644
+> > --- a/mm/frame_vector.c
+> > +++ b/mm/frame_vector.c
+> > @@ -46,6 +46,8 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+> >       if (WARN_ON_ONCE(nr_frames > vec->nr_allocated))
+> >               nr_frames = vec->nr_allocated;
+> >
+> > +     start = untagged_addr(start);
+> > +
+> >       down_read(&mm->mmap_sem);
+> >       locked = 1;
+> >       vma = find_vma_intersection(mm, start, start + 1);
 >
->Every MR is created with an IOVA (here called VA). Before we get here the caller
->should figure out the IOVA and it should either be 0 or
->umem->address in the cases we implement today *however* it can really
->be anything and this code shouldn't care..
->
->> Also can we do this for all HW?
->
->All hardware has to support an arbitary IOVA.
->
->> Or do we keep the IB_UMEM_VA_BASED_OFFSET flag and OR in the
->> dma_addr_end (for first SGL) and dma_addr_start (for last SGL) to the
->> mask when the flag is not set?
->
->I wasn't totally sure what that flag did..
->
->If we don't have any drivers that need something different today then I would
->focus entirely on the:
->
-> PA = MR_PAGE_TABLE[IOVA/PAGE_SIZE] | (IOVA & PAGE_MASK)
->
+> Is this some buffer that the user may have malloc'ed? I got lost when
+> trying to track down the provenience of this buffer.
 
-OK. Agreed.
+The caller that I found when I was looking at this:
 
-Shiraz
+drivers/gpu/drm/exynos/exynos_drm_g2d.c:482
+exynos_g2d_set_cmdlist_ioctl()->g2d_map_cmdlist_gem()->g2d_userptr_get_dma_addr()->get_vaddr_frames()
+
+>
+> --
+> Catalin
