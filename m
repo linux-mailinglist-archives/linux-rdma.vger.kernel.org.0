@@ -2,116 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A4A1549B
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 21:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57109154AF
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 21:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbfEFTuX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 May 2019 15:50:23 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:36010 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbfEFTuX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 15:50:23 -0400
-Received: by mail-qk1-f196.google.com with SMTP id c14so315696qke.3
-        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2019 12:50:23 -0700 (PDT)
+        id S1726371AbfEFTyQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 May 2019 15:54:16 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:44967 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbfEFTyQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 15:54:16 -0400
+Received: by mail-qk1-f194.google.com with SMTP id w25so2600549qkj.11
+        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2019 12:54:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=ESsJ96JGC0CvnjgihpL/0kogE+VQksbbiyHqcPsgGyM=;
-        b=mAg8m7rSPAxM5D+1qNjO71dhsXUrQSGF8zaXxmrvN1W1e7B7fEhL/nFNC4QmlTH5S/
-         9FjLthJrMSnJTSlBNmAzOuj+WEEEHBw1j3jchmVO404WkT8GTT4n4WekZCWvQcvu4KOF
-         mx0V5cfxdymPVb2Ruxoza7w5KItB51NAJ5xivBL7H4fj5rRig8CXPXI75f55CKvkZyYC
-         Gs093sJb6bHKcKo1jSkGyp2Pk8c68+e+QijlfKiUVNZuBsCjguF+Uc/8jtTaC+sffP6g
-         22gO2vicgInFZL3gRZwFvB6M65AQIPZr/G+9s6iQjRuVRTS6fQK5LrCRIMT4SjvjNieX
-         MViA==
+        bh=ljHBBW/XLuR+HHp3i4N3Peaf7M/pmI+lk0SG9U10V+w=;
+        b=J90xAl4tLXBzZYqD7mQeE/QHNLjyCPkdrkUjp4VDfAdB0xpJsEDhocY+tuvQsc7maI
+         NnNpJNSw567XT2TvTmchROeP8G7yWIllXPHzFe7oAcNSSpFS+2H/SDscL9ePhhx4JweS
+         qaIAq9IXAPJvY6HlCFYVfIMPS7L1q4OvwRN+5ZDBvP+d4ct/TP1mXFXZHmN7ehEcctKk
+         6Viukv2IuyNQCe9vkRmInzmoRG5baTvYfxqczwVWbX4RkfylYgNVjBUi58UUd4Qa+1lE
+         6IyuZqNCOWgIxtjLvji0wNcnWZfEsZKsFsWtTdiS5n+t3rSE/BkAtNBFRyIbaaA0A2mY
+         qShw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ESsJ96JGC0CvnjgihpL/0kogE+VQksbbiyHqcPsgGyM=;
-        b=gZM5oRVaAjWgck0PDDEkKp8vVv5CTxlxm4p5gkRr0ZkYd8MRmAREW6zRzN27kOhCJv
-         HyZgpG8Tu4Ok3DVjt7mepcDo5FKBuEECgL3y7vajeGluhLsOHw7E/qt4APVM0KHpxI+1
-         0N83g/o9njcDPflPXVHZoaxCEf5/h91v8htGBRfJ/4vVhrbi3lbz8q+mvuTIBI7SPKss
-         yABcsYT5v3L1I4wV7rZe1s2T+ltttm3BQyrnEl31fHVWve4KcQQs+NQ1YR4A1wxCgk2q
-         Lpnz5RC+D9lxtcZ36asgjAHXBQawqyUS7/7tRmnAqVpPYVlThmYMnMTLAMwLnBCJY4wq
-         KTVg==
-X-Gm-Message-State: APjAAAWALeHfp8K/OENWjJStbtuxL9v332TE96bDnWlL6FPyqHwhIe0B
-        toTWEhQX9C7Xq0Jhuk0BwSEwRQ==
-X-Google-Smtp-Source: APXvYqweK3T+QR6CpnWc0KpWvE878/YztoCohPUsZDawCWkz4P9i6ckWrJvxSZLqhWTPckszjgD1bg==
-X-Received: by 2002:a05:620a:16b4:: with SMTP id s20mr10803976qkj.34.1557172222493;
-        Mon, 06 May 2019 12:50:22 -0700 (PDT)
+        bh=ljHBBW/XLuR+HHp3i4N3Peaf7M/pmI+lk0SG9U10V+w=;
+        b=pcMseg6QPyTvm0yFiE6woTydn12lzxY78GdbBsCEtr9CvO5UwEVKy7fYk7H0LnDCmG
+         YRFiyFeKtuJdtZRwCF5dtckJcTmaOi9Az0ruuai9W/8iR0GB98UbUTwNX7urxTDBiBHh
+         VIfHPOD0NVIZFldZwLoSUxxUn2L1H47s1zxQBtwwys3IV3FPp5OURGLpn4i5M9OQFkxo
+         nMC9Qwfs9OJfB2bAVBHWHOsKwcYR22/ApUzdi0wl27S96CjHmVjtfc3gmFkPfOzz/+1M
+         zaN5sdYAshf3ZJ0SaJxxwpegEvr1BW45TxjIlanz2F+ETdnWCBcr9zsZWGgjpCIEaacV
+         bUrg==
+X-Gm-Message-State: APjAAAVEsTtTG/WpdIp2dFa+q/yc0e98yXM6/BrQlUG0kXZkNy3ciDOy
+        pSNM9rxuOBrrJTUF62YUqwP5zA==
+X-Google-Smtp-Source: APXvYqzfxGrH5GE5PCzxYtDtiillrNNz90Tax8Fod0Lknrk403f91oKBcm+nYqZgV8dQAHbn4Ayv6A==
+X-Received: by 2002:a05:620a:1015:: with SMTP id z21mr11740725qkj.229.1557172455622;
+        Mon, 06 May 2019 12:54:15 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id o44sm9303175qto.36.2019.05.06.12.50.21
+        by smtp.gmail.com with ESMTPSA id g189sm6584497qkd.60.2019.05.06.12.54.14
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 06 May 2019 12:50:21 -0700 (PDT)
+        Mon, 06 May 2019 12:54:14 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hNjcy-0007kq-Cs; Mon, 06 May 2019 16:50:20 -0300
-Date:   Mon, 6 May 2019 16:50:20 -0300
+        id 1hNjgj-0007pg-Vj; Mon, 06 May 2019 16:54:13 -0300
+Date:   Mon, 6 May 2019 16:54:13 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v15 13/17] IB, arm64: untag user pointers in
- ib_uverbs_(re)reg_mr()
-Message-ID: <20190506195020.GD6201@ziepe.ca>
-References: <cover.1557160186.git.andreyknvl@google.com>
- <66d044ab9445dcf36a96205a109458ac23f38b73.1557160186.git.andreyknvl@google.com>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [RESEND PATCH v2] lib/scatterlist: Remove leftover from
+ sg_page_iter comment
+Message-ID: <20190506195413.GA30084@ziepe.ca>
+References: <1557154976-8070-1-git-send-email-galpress@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <66d044ab9445dcf36a96205a109458ac23f38b73.1557160186.git.andreyknvl@google.com>
+In-Reply-To: <1557154976-8070-1-git-send-email-galpress@amazon.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 06, 2019 at 06:30:59PM +0200, Andrey Konovalov wrote:
-> This patch is a part of a series that extends arm64 kernel ABI to allow to
-> pass tagged user pointers (with the top byte set to something else other
-> than 0x00) as syscall arguments.
+On Mon, May 06, 2019 at 06:02:56PM +0300, Gal Pressman wrote:
+> Commit d901b2760dc6 ("lib/scatterlist: Provide a DMA page iterator")
+> added the sg DMA iterator but a leftover remained in the sg_page_iter
+> documentation as you cannot get the page dma address (only the page
+> itself), fix it.
 > 
-> ib_uverbs_(re)reg_mr() use provided user pointers for vma lookups (through
-> e.g. mlx4_get_umem_mr()), which can only by done with untagged pointers.
-> 
-> Untag user pointers in these functions.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Cc: Jason Gunthorpe <jgg@mellanox.com>
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
+> Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
 > ---
->  drivers/infiniband/core/uverbs_cmd.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> This patch was sent twice to linux-kernel list with no response, I'm sending it
+> to the rdma list as that's where the cited patch was sent to.
 
-I think this is OK.. We should really get it tested though.. Leon?
+Okay, applied to for-next thanks
 
 Jason
