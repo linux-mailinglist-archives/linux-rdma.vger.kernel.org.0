@@ -2,146 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA1014F81
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 17:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B25A150B2
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 17:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726241AbfEFPMH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 May 2019 11:12:07 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:59320 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbfEFPMH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 6 May 2019 11:12:07 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id BA72588302;
-        Mon,  6 May 2019 15:12:06 +0000 (UTC)
-Received: from haswell-e.nc.xsintricity.com (ovpn-112-3.rdu2.redhat.com [10.10.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7EDD318945;
-        Mon,  6 May 2019 15:12:05 +0000 (UTC)
-Message-ID: <580150427022440ab0475cda91d666322ef7e055.camel@redhat.com>
-Subject: Re: [PATCH for-rc 1/5] IB/hfi1: Fix WQ_MEM_RECLAIM warning
-From:   Doug Ledford <dledford@redhat.com>
-To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
-        "Tejun Heo (tj@kernel.org)" <tj@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        id S1726460AbfEFPvM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 May 2019 11:51:12 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:38689 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726145AbfEFPvM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 11:51:12 -0400
+Received: by mail-qt1-f193.google.com with SMTP id d13so15265669qth.5
+        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2019 08:51:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=14UOh5ci04U2f3OG4dQ+gZ9/xGd8b43Dg40qh5QIM88=;
+        b=gHhbsxxHaCNAF+hNCc7vxQhY8CZcfvbQcVUP1HQ7LaOqyY+8aId5V0XTNCJBIrTVUL
+         er7/H1KW1WQZUBmTiwvj4j6QKnE/gBRqu4H5qn1irDd9+va6fGFwTJIqLP8hqHhUm0Xf
+         l0/olEEVWijOHvANXQFE9K66sAsSPk4McCQmbkdOwnlHu//6esfhGRI8es2PhZOyfUN7
+         vQ2dWYbTdvOv6PjpEq9Ge+gPRHFRh015XtKubIA3Gm6nDZwoSRvRVG+1vLGSgczWb651
+         Y1csslEpBPMDV/pBO61abOZq8yETx3X6r+qRX5jJ2kkXejmFAeLf/PWUU+1AIqWkTfX9
+         0jYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=14UOh5ci04U2f3OG4dQ+gZ9/xGd8b43Dg40qh5QIM88=;
+        b=GS1J/Ighrl/HqjtmO/DNluQRt1dDXfT3krD03cOYe+/soTOXATWztn4O4GQuRnvs+p
+         sollZzmKsbiJ4OSf+tHxFfCiP+GZYOxRg909+OtFuIkVsg368JCb2Y/Tb4JrvGtJCWY/
+         +CPW1CRg/xIFyNnp5ggb7fs8YVvW3HghBXP81uq4n6j51kMRffDr4qsCcRCcDlI/bqnA
+         LsCMHxTKHp6XAhpWcdNe0F+uMtm0TzIv2H0+Gf/Gf9U+4/+91jT1aOi5kbve4mkNi639
+         iDhhNPmj5kBaLPWOrdJxParcBT2Qw5jUo6Ec/pXuDTZ3STyMX2Kd7qI9BizVsc/acTgE
+         MR1g==
+X-Gm-Message-State: APjAAAVwOgnQOABMnBpkDcPIvOCnMSMn5PucTYX+q96ApOV22wqJ+srI
+        f24TUGuA30ZvyE/wTTqBqbCRmw==
+X-Google-Smtp-Source: APXvYqyxycpiFPv74G1jRxhF3rvXOpZNgaY7l05e1Shbk9/sZrBHV0UND16ReCRK4f5UzohXMvK91A==
+X-Received: by 2002:ac8:65ce:: with SMTP id t14mr12890441qto.22.1557157871401;
+        Mon, 06 May 2019 08:51:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id t124sm5893760qkh.29.2019.05.06.08.51.09
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 06 May 2019 08:51:09 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hNftU-0007d6-Ss; Mon, 06 May 2019 12:51:08 -0300
+Date:   Mon, 6 May 2019 12:51:08 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
         "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
+        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
         "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
-Date:   Mon, 06 May 2019 11:11:58 -0400
-In-Reply-To: <32E1700B9017364D9B60AED9960492BC70D3737D@fmsmsx120.amr.corp.intel.com>
-References: <20190318165205.23550.97894.stgit@scvm10.sc.intel.com>
-         <20190318165501.23550.24989.stgit@scvm10.sc.intel.com>
-         <20190319192737.GB3773@ziepe.ca>
-         <32E1700B9017364D9B60AED9960492BC70CD9227@fmsmsx120.amr.corp.intel.com>
-         <20190327152517.GD69236@devbig004.ftw2.facebook.com>
-         <20190327171611.GF21008@ziepe.ca>
-         <20190327190720.GE69236@devbig004.ftw2.facebook.com>
-         <20190327194347.GH21008@ziepe.ca>
-         <20190327212502.GF69236@devbig004.ftw2.facebook.com>
-         <053009d7de76f8800304f354e3cbde068453257f.camel@redhat.com>
-         <32E1700B9017364D9B60AED9960492BC70D3737D@fmsmsx120.amr.corp.intel.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-k2jOauPSrgo/nuoxu8SQ"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Catch use-after-free access of AH
+ structures
+Message-ID: <20190506155108.GA29293@ziepe.ca>
+References: <20190416121310.20783-1-leon@kernel.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.28]); Mon, 06 May 2019 15:12:06 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190416121310.20783-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Apr 16, 2019 at 03:13:10PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Prior to commit d345691471b4 ("RDMA: Handle AH allocations by IB/core"),
+> AH destroy path is rdmavt returned -EBUSY warning to application and
+> caused to potential leakage of kernel memory of AH structure.
+> 
+> After that commit, the AH structure is always freed but such early
+> return in driver code can potentially cause to use-after-free error.
+> 
+> Add warning to catch such situation to help driver developers to fix
+> AH release path.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/sw/rdmavt/ah.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
---=-k2jOauPSrgo/nuoxu8SQ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Applied to for-next
 
-On Mon, 2019-05-06 at 12:31 +0000, Marciniszyn, Mike wrote:
-> > Correct me if I'm wrong Tejun, but the key issues are:
-> >=20
-> > All WQ_MEM_RECLAIM work queues are eligible to be run when the
-> > machine
-> > is under extreme memory pressure and attempting to reclaim memory.  Tha=
-t
-> > means that the workqueue:
-> >=20
-> > 1) MUST not perform any GFP_ATOMIC allocations as this could deadlock
->=20
-> The send engine code WILL do a GFP_ATOMIC allocation but the code handles=
- failure as
-> will any other resource shortage.
+Denny, since you missed the merge window with the fix, please send a
+fixup next cycle. The WARN_ON will scare people who might be able to
+hit this buggy case.
 
-You're right.  I was misremembering the flag's full meaning (I double
-checked before writing this).  If you are holding a spinlock (or
-anything else that means you can't sleep), you must use GFP_ATOMIC and
-you must be prepared for failure.  So, before putting WQ_MEM_RECLAIM on
-your workqueue, it should use ATOMIC and be prepared for failure.
-
-> > 2) SHOULD not rely on any GFP_KERNEL allocations as these may fail
->=20
-> There are no GFP_KERNEL allocations in the send engine code.
-
-Right.
-
-> > 3) MUST complete without blocking
->=20
-> All resource blockages are handled by queuing the current QP being servic=
-ed by
-> the send engine for and interrupt to wake that QP up via the send engine.
-
-Ok.
-
-> > 4) SHOULD ideally always make some sort of forward progress if at all
-> > possible without needing memory allocations to do so
-> >=20
->=20
-> As noted above.
-
-Right.
-
-> > Mike, does hfi1_do_send() meet these requirements?  If not, we should
-> > not be putting WQ_MEM_RECLAIM on it, and instead should find another
-> > solution to the current trace issue.
-> >=20
->=20
-> I'm not sure I understand the 1) above.
->=20
-> Tejun, can you elaborate?
-
-My mistake.  It's been a long while since I coded the stuff I did for
-memory reclaim pressure and I had my flag usage wrong in my memory.=20
-=46rom the description you just gave, the original patch to add
-WQ_MEM_RECLAIM is ok.  I probably still need to audit the ipoib usage
-though.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-k2jOauPSrgo/nuoxu8SQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAlzQTr4ACgkQuCajMw5X
-L90Yfg/+JItvb6CiBqK0QJ3aaStsPgmPt6T6DXmQbdQO9VjTF/og66t3E3h69vn8
-9+XTLWVz4DFegqvUg8aUmymYkbwaZIPAMFGJdJF8NfAPunsN7zNPrU+HmlFRsFLw
-jdae45wCONZne1js/A8cv0/yKqNjlVrLH/PuMyw/sLRUjD8ucCwS63N5OCPk2Ftc
-GkMuJVUebs5u5bn4Q1g0NKu0tpS8xM/t9VNTgIgDT7qM10wNvFCYWANv+rdjxp42
-p7nocsvRl6IS4Ro63B2+r8yjtiWB962fbUbPkkeka0vJwsz8T7B3t8v2HyXqDY7S
-0cutoQisGOZ41aEdBwL5tpF7c+Dfi+v48exVjrD2Q/w11vdv5GuenIJryOPSdoix
-6CEkEkGcUl0t0uTkB3nN9laAJnPNnLWRAPklc43vDa9ymCy1y2R1RiTWqyt56UXu
-UGSGOVk8IgwENLTVOb2k9i2lJG1Sc12qdgEtlGnva8bYEfzS3J1eA1LKKCs6L/+P
-s8+UMqoUtr5z50kuuHr9y1oXc/o2sXyjtUYVfhXMbHeplBi2r5o+loxREaKjsJub
-RvBvlZY/4X76qSBwqaXZLvaCRwsF+qRmyqLZqM0NOo8aUnR18DNgOwaYviVAWGJk
-WPqQw1/6aRMPxzBWl0HDdnPr8k1087sxmcGgbjixChPNfXO7YFY=
-=6D4X
------END PGP SIGNATURE-----
-
---=-k2jOauPSrgo/nuoxu8SQ--
-
+Jason
