@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C07871514E
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 18:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6299415191
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 18:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbfEFQb2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 May 2019 12:31:28 -0400
-Received: from mail-vk1-f202.google.com ([209.85.221.202]:42896 "EHLO
-        mail-vk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726982AbfEFQb0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 12:31:26 -0400
-Received: by mail-vk1-f202.google.com with SMTP id n198so6145815vke.9
-        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2019 09:31:26 -0700 (PDT)
+        id S1727070AbfEFQba (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 May 2019 12:31:30 -0400
+Received: from mail-qt1-f202.google.com ([209.85.160.202]:53907 "EHLO
+        mail-qt1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727052AbfEFQb3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 12:31:29 -0400
+Received: by mail-qt1-f202.google.com with SMTP id 18so15844370qtw.20
+        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2019 09:31:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=ngD1QIqwofb3Y9K5MW1PYIryx3q7PiTEQfc6RhUnaA4=;
-        b=MxkQGAhZKcdMVO3IoBudATPab8TcsjZXX55HRiAN6IeYJiwC1j+iSqld+LLo8qyTyU
-         J83cHqvwCOHlnCBK8LZqFG9H1aqF9NgW/OCa1+Ffyx8ZPU7n9taYd+4siYtOtJGSGqfL
-         2bs1HGMZCs+84KfkjQ03uml4i8KyBdYF3wjbHGyt6HNd/mpMm+1Qp1No+KcUfeHVzCH2
-         4161opexQWrAtxUlTCrivmQSMNxZ99d5aHCBZ5OmsHW7nAo6evlOzv9F19PFlipvMxI4
-         C4R/T1FLs15dBoQSeJwhzGqmh+Swz0oYJVhSbKReuunpnwRMPL8ZC0ZS5QHAp3xWLkRd
-         Hr1w==
+        bh=TZHV8An4OEXfkqFgrZuDjdlNeU7w3PdkPz1ZU4+cbAs=;
+        b=lVlAxmmY4nFExOi7qcKMHLUyvk1dgMtcIDWsIxNnuOIKi7SENIWoorvqYx22FhFeiH
+         qNv3aCOvVP2Cd8JsXC4f5fwupU4T2PFYzqayLiNCFI9HFlqX4lWPhufSiUZxYZlKJbSP
+         xpayFPpaQpM+egkX1gh0HyRA3qPTTcL2EH50qtn8LLi1pPJilWqtH0/kYJiIyAq+8b8K
+         r7XbnjhrPxJ/+aU0+7xAQJYRuQVqDAYCQIetrAi8pdeAX3hMSEX83RJtSz7KeAzNa4AL
+         TEi4LWr1V919AH8PPG3nTQ8k7FsrBwYY7/UQoSLOaq/gIbNGSmHdWR4W58sdfzeJRSfR
+         CtWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ngD1QIqwofb3Y9K5MW1PYIryx3q7PiTEQfc6RhUnaA4=;
-        b=XUrWYy9oYwMz5qd56W1g1r8/tVd1W6fXqdGY5Dp3XNz4T4v9XMGs9o5KYtWFQUSS3/
-         kXmKVXyWCxsdF9/EyMQlUY5MZy9sNlUi7i7okVEtNW+Qp67tPK1YJF2/xkJKAVYmkHS9
-         jGkGdqwlg/gEcEsbTfxoajru3QxK73Ba38hz8zsr96q5ZbmHPM87Msd4MV2RCzWozMhy
-         +MbQ3tUz3tNvE/dCMzdw+B3QuipwtNfKjMa02x4IT7n4etyMM8JtRLMFf+uQkIzJVx5a
-         CiVJOoCtyWe1OmIn/hvy3/JrGvynjSc7WKN4IDp5QB7MjQfL0JKvUi1hpm8qMeL7Q1Wg
-         eFaA==
-X-Gm-Message-State: APjAAAWvziCvU+Wtro1te+k1t29tFWtsHqJxnLO+NBDlI2bLtK+qFy0b
-        DKIKLKZJPDi4CVR8OVXAxnRyv1Y+N82j74HM
-X-Google-Smtp-Source: APXvYqwpCSWnm5qxXyuaWGAqRu95+6gB9zDmbHbxq+0Vb45FEs/ziN6+T3PbyTnxcvdIphfk21MnSe6Qp4R1y+WG
-X-Received: by 2002:a1f:b45:: with SMTP id 66mr13881567vkl.38.1557160285529;
- Mon, 06 May 2019 09:31:25 -0700 (PDT)
-Date:   Mon,  6 May 2019 18:30:52 +0200
+        bh=TZHV8An4OEXfkqFgrZuDjdlNeU7w3PdkPz1ZU4+cbAs=;
+        b=SyOBClS92gAi7KCMRgF4RvPEhXMFVj8I0ssjXRs7EvzQoKOGdecR39A7TFJqJWuiiV
+         6e+1sKH+vFonkm8go9IPFVSG2VfVevo6LwRBDGwuQsO3SUvHqb20IOn/4fWreszEdaw3
+         FuaAadS71crdOw8VNe1Oj8LOiU7mWwJBvsl1waGDSmXQ4HDJdf+DPsKfhh1NoxFJoMOW
+         nKH9dy97SiFFaqL83fUGrwaIeVi99qjKZwOGSMjZOZpVQIc94F/YTmO2uF5zW4n0t+Mh
+         qImKAca83t9KVBEmya3sH7aMNU1pQtfJZMH97mj87I0H9uauThYfDdfZMcsRshvLDzeU
+         aaTg==
+X-Gm-Message-State: APjAAAUQMM8CLtRZdbCrfD8PPzQILeVQDl5PFKvmVlowWPjBxzNbFrpD
+        rPcfC+tql7/VkGqPi8WnteCDdI8lghH7jfrz
+X-Google-Smtp-Source: APXvYqzHIfoRqtGD9gbf6U+p/ZZcVtiOU3rLeCD3rrtZumSW95xfAvgD6n9pasKaBp9DQWdRwfRV+d2riHaf6boR
+X-Received: by 2002:a0c:d449:: with SMTP id r9mr16625749qvh.223.1557160288557;
+ Mon, 06 May 2019 09:31:28 -0700 (PDT)
+Date:   Mon,  6 May 2019 18:30:53 +0200
 In-Reply-To: <cover.1557160186.git.andreyknvl@google.com>
-Message-Id: <474b3c113edae1f2fa679dc7237ec070ff4efb70.1557160186.git.andreyknvl@google.com>
+Message-Id: <d234cd71774f35229bdfc0a793c34d6712b73093.1557160186.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1557160186.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
-Subject: [PATCH v15 06/17] mm: untag user pointers in do_pages_move
+Subject: [PATCH v15 07/17] mm, arm64: untag user pointers in mm/gup.c
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
@@ -91,27 +91,40 @@ This patch is a part of a series that extends arm64 kernel ABI to allow to
 pass tagged user pointers (with the top byte set to something else other
 than 0x00) as syscall arguments.
 
-do_pages_move() is used in the implementation of the move_pages syscall.
+mm/gup.c provides a kernel interface that accepts user addresses and
+manipulates user pages directly (for example get_user_pages, that is used
+by the futex syscall). Since a user can provided tagged addresses, we need
+to handle this case.
 
-Untag user pointers in this function.
+Add untagging to gup.c functions that use user addresses for vma lookups.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- mm/migrate.c | 1 +
- 1 file changed, 1 insertion(+)
+ mm/gup.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 663a5449367a..c014a07135f0 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1617,6 +1617,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
- 		if (get_user(node, nodes + i))
- 			goto out_flush;
- 		addr = (unsigned long)p;
-+		addr = untagged_addr(addr);
+diff --git a/mm/gup.c b/mm/gup.c
+index 91819b8ad9cc..2f477a0a7180 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -696,6 +696,8 @@ static long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
+ 	if (!nr_pages)
+ 		return 0;
  
- 		err = -ENODEV;
- 		if (node < 0 || node >= MAX_NUMNODES)
++	start = untagged_addr(start);
++
+ 	VM_BUG_ON(!!pages != !!(gup_flags & FOLL_GET));
+ 
+ 	/*
+@@ -858,6 +860,8 @@ int fixup_user_fault(struct task_struct *tsk, struct mm_struct *mm,
+ 	struct vm_area_struct *vma;
+ 	vm_fault_t ret, major = 0;
+ 
++	address = untagged_addr(address);
++
+ 	if (unlocked)
+ 		fault_flags |= FAULT_FLAG_ALLOW_RETRY;
+ 
 -- 
 2.21.0.1020.gf2820cf01a-goog
 
