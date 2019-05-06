@@ -2,167 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B167B14B4C
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 15:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BA214B5E
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 15:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbfEFNyF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 May 2019 09:54:05 -0400
-Received: from mga12.intel.com ([192.55.52.136]:48135 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726190AbfEFNyF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 6 May 2019 09:54:05 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 May 2019 06:54:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.60,438,1549958400"; 
-   d="scan'208";a="344291848"
-Received: from ssaleem-mobl4.amr.corp.intel.com ([10.255.35.243])
-  by fmsmga006.fm.intel.com with ESMTP; 06 May 2019 06:54:04 -0700
-From:   Shiraz Saleem <shiraz.saleem@intel.com>
-To:     dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH v3 rdma-next 6/6] RDMA/verbs: Extend DMA block iterator support for mixed block sizes
-Date:   Mon,  6 May 2019 08:53:37 -0500
-Message-Id: <20190506135337.11324-7-shiraz.saleem@intel.com>
-X-Mailer: git-send-email 2.8.3
-In-Reply-To: <20190506135337.11324-1-shiraz.saleem@intel.com>
-References: <20190506135337.11324-1-shiraz.saleem@intel.com>
+        id S1725883AbfEFN6O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 May 2019 09:58:14 -0400
+Received: from mail-eopbgr150089.outbound.protection.outlook.com ([40.107.15.89]:53236
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725853AbfEFN6O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 6 May 2019 09:58:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BUq6yj6flqvZKDL+sQkW7SAffNb7Co9ZgYk8cdQsvrk=;
+ b=WhfYXB5s4/vmjrB344sXcRcP0S22tm2n1CnvX4Q03ZR2Vud2KI/NyUiPl/2PqORsuWNmhb7pBNNecW2jtsMci8diNesqIrGt+fZSmY6sn15JOlU2oI18N41ExZ69sXf8BR9o9stmjsI5DDHPWHh9hxPyLeU4LpKEiXDWbcGdw2Q=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB6622.eurprd05.prod.outlook.com (20.178.126.203) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1856.10; Mon, 6 May 2019 13:58:08 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.012; Mon, 6 May 2019
+ 13:58:08 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Gal Pressman <galpress@amazon.com>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leah Shalev <shalevl@amazon.com>,
+        Dave Goodell <goodell@amazon.com>,
+        Brian Barrett <bbarrett@amazon.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: Re: [PATCH for-next v6 10/12] RDMA/efa: Add EFA verbs implementation
+Thread-Topic: [PATCH for-next v6 10/12] RDMA/efa: Add EFA verbs implementation
+Thread-Index: AQHVARLft6YhcNgq2U2bxKGl+U/wYaZZKheAgAAowYCAAt+4gIAASTIAgAEu2QCAAHqxgA==
+Date:   Mon, 6 May 2019 13:58:08 +0000
+Message-ID: <20190506135803.GD6186@mellanox.com>
+References: <1556707704-11192-1-git-send-email-galpress@amazon.com>
+ <1556707704-11192-11-git-send-email-galpress@amazon.com>
+ <20190502181425.GA28282@mellanox.com>
+ <7de52e1f-7d4a-354f-a0f6-b8f7eb13ce35@amazon.com>
+ <20190503121947.GB13315@mellanox.com>
+ <ed36cf91-7420-2533-9202-fa1126bd467b@amazon.com>
+ <20190505123500.GA30659@mellanox.com>
+ <b471d491-99bf-fbae-7859-05e7b652de2c@amazon.com>
+In-Reply-To: <b471d491-99bf-fbae-7859-05e7b652de2c@amazon.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YQBPR0101CA0072.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:1::49) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.49.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5fa89295-c0be-471e-39c7-08d6d22ade8e
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6622;
+x-ms-traffictypediagnostic: VI1PR05MB6622:
+x-microsoft-antispam-prvs: <VI1PR05MB66225E7DCCFC140E61AEA413CF300@VI1PR05MB6622.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-forefront-prvs: 0029F17A3F
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(39860400002)(346002)(376002)(366004)(136003)(199004)(189003)(6486002)(1076003)(6246003)(5660300002)(6436002)(66446008)(64756008)(66556008)(66476007)(73956011)(52116002)(8936002)(66946007)(229853002)(8676002)(81156014)(81166006)(14454004)(76176011)(25786009)(4326008)(86362001)(316002)(478600001)(6506007)(386003)(66066001)(53546011)(53936002)(2616005)(476003)(256004)(186003)(36756003)(486006)(33656002)(2906002)(305945005)(6916009)(99286004)(102836004)(3846002)(71190400001)(71200400001)(6116002)(26005)(54906003)(7416002)(68736007)(7736002)(446003)(6512007)(11346002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6622;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: XknR6wUY1/y2IkfB3vUHKrB+vfBo7g/tdwc93bcMIKaIcRPfkUMtlfVitx8bQUMWjVNwmrRAJHVY6ISSZZ0HDB2WwD5jNZB02kuURj9H9P2QvPbmJJ49sOiR+jqw7wud1gK7+ua7NDJOEkUwTMrLZozF7339nb6M5cORnO69M7vj57I8dXSZJTZhnZFw2bWOJmsv2tN13MsjTxECFSIKZjJcMqj2dY/wefqBxBMgmFUGQ6A0pZ/4G4BI3r43LVIWiSNUG0YG6faD+/R7PlCq3ShYkj/KTkbaETWaOrtvQOa1WrmhmG6y7khTCY/86Nw47ooVg+KbYlnqxv1cUfD2Y/Y2Q77DMk6+dyP6+MAtXqAAILcOkt3m8sNgRPLXQqIXk5VGdZN64e9V+8HJ3wFbBHaFMf5VU2E7H5s10+MOKr4=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B4F144E34DBAE046A1B9697781F06231@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fa89295-c0be-471e-39c7-08d6d22ade8e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 May 2019 13:58:08.7238
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6622
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Extend the DMA block iterator for HW that can support mixed
-block sizes. A bitmap of HW supported page sizes are provided
-to block iterator which returns contiguous aligned memory blocks
-within a HW supported page size.
+On Mon, May 06, 2019 at 09:38:56AM +0300, Gal Pressman wrote:
+> On 05-May-19 15:35, Jason Gunthorpe wrote:
+> > On Sun, May 05, 2019 at 11:13:01AM +0300, Gal Pressman wrote:
+> >> On 03-May-19 15:19, Jason Gunthorpe wrote:
+> >>> On Fri, May 03, 2019 at 12:53:55PM +0300, Gal Pressman wrote:
+> >>>> On 02-May-19 21:14, Jason Gunthorpe wrote:
+> >>>>> On Wed, May 01, 2019 at 01:48:22PM +0300, Gal Pressman wrote:
+> >>>>>
+> >>>>>> +/* create a page buffer list from a mapped user memory region */
+> >>>>>> +static int pbl_create(struct efa_dev *dev,
+> >>>>>> +		      struct pbl_context *pbl,
+> >>>>>> +		      struct ib_umem *umem,
+> >>>>>> +		      int hp_cnt,
+> >>>>>> +		      u8 hp_shift)
+> >>>>>> +{
+> >>>>>> +	int err;
+> >>>>>> +
+> >>>>>> +	pbl->pbl_buf_size_in_bytes =3D hp_cnt * EFA_CHUNK_PAYLOAD_PTR_SI=
+ZE;
+> >>>>>> +	pbl->pbl_buf =3D kzalloc(pbl->pbl_buf_size_in_bytes,
+> >>>>>> +			       GFP_KERNEL | __GFP_NOWARN);
+> >>>>>> +	if (pbl->pbl_buf) {
+> >>>>>> +		pbl->physically_continuous =3D 1;
+> >>>>>> +		err =3D umem_to_page_list(dev, umem, pbl->pbl_buf, hp_cnt,
+> >>>>>> +					hp_shift);
+> >>>>>> +		if (err)
+> >>>>>> +			goto err_continuous;
+> >>>>>> +		err =3D pbl_continuous_initialize(dev, pbl);
+> >>>>>> +		if (err)
+> >>>>>> +			goto err_continuous;
+> >>>>>> +	} else {
+> >>>>>> +		pbl->physically_continuous =3D 0;
+> >>>>>> +		pbl->pbl_buf =3D vzalloc(pbl->pbl_buf_size_in_bytes);
+> >>>>>> +		if (!pbl->pbl_buf)
+> >>>>>> +			return -ENOMEM;
+> >>>>>
+> >>>>> This way to fallback seems ugly, I think you should just call kvzal=
+loc
+> >>>>> and check for continuity during the umem_to_page_list
+> >>>>
+> >>>> I've considered using kvzalloc, but it doesn't really fit this use c=
+ase.
+> >>>
+> >>> It does, you just check for continuity when building the pbl instead
+> >>> of assuming it based on how it was created. It isn't hard, and driver=
+s
+> >>> shouldn't abuse APIs like this
+> >>
+> >> This is by no means abusing the API..
+> >=20
+> > It is, vzalloc isn't just kzalloc followed by vzalloc and you
+> > shouldn't expec the two to be the same. Most likely the above has bad
+> > behavior if it triggers reclaim.
+>=20
+> Is it OK to call kvzalloc and test for is_vmalloc_addr?
 
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- drivers/infiniband/core/verbs.c | 38 ++++++++++++++++++++++++++++++++++++--
- include/rdma/ib_verbs.h         | 18 ++++++++++++++----
- 2 files changed, 50 insertions(+), 6 deletions(-)
+Yes
 
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 3806038..fa9725d 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -2712,16 +2712,47 @@ int rdma_init_netdev(struct ib_device *device, u8 port_num,
- }
- EXPORT_SYMBOL(rdma_init_netdev);
- 
-+static unsigned int rdma_find_mixed_pg_bit(struct ib_block_iter *biter)
-+{
-+	if (biter->__sg == biter->__sgl_head) {
-+		return rdma_find_pg_bit(sg_dma_address(biter->__sg) +
-+					sg_dma_len(biter->__sg),
-+					biter->pgsz_bitmap);
-+	} else if (sg_is_last(biter->__sg)) {
-+		return rdma_find_pg_bit(sg_dma_address(biter->__sg),
-+					biter->pgsz_bitmap);
-+	} else {
-+		unsigned int remaining =
-+			sg_dma_address(biter->__sg) + sg_dma_len(biter->__sg) -
-+			biter->__dma_addr;
-+		unsigned int pg_bit = rdma_find_pg_bit(biter->__dma_addr,
-+						       biter->pgsz_bitmap);
-+		if (remaining < BIT_ULL(biter->__pg_bit))
-+			pg_bit = rdma_find_pg_bit(remaining,
-+						  biter->pgsz_bitmap);
-+
-+		return pg_bit;
-+	}
-+}
-+
- void __rdma_block_iter_start(struct ib_block_iter *biter,
- 			     struct scatterlist *sglist, unsigned int nents,
--			     unsigned long pgsz)
-+			     unsigned long pgsz_bitmap)
- {
- 	memset(biter, 0, sizeof(struct ib_block_iter));
- 	biter->__sg = sglist;
-+	biter->pgsz_bitmap = pgsz_bitmap;
- 	biter->__sg_nents = nents;
- 
- 	/* Driver provides best block size to use */
--	biter->__pg_bit = __fls(pgsz);
-+	if (hweight_long(pgsz_bitmap) == 1) {
-+		biter->__pg_bit = __fls(pgsz_bitmap);
-+	} else {
-+		/* mixed block size support. compute best block size to use */
-+		WARN_ON(!(pgsz_bitmap & GENMASK(PAGE_SHIFT, 0)));
-+		biter->__sgl_head = &sglist[0];
-+		biter->__mixed = true;
-+	}
- }
- EXPORT_SYMBOL(__rdma_block_iter_start);
- 
-@@ -2733,6 +2764,9 @@ bool __rdma_block_iter_next(struct ib_block_iter *biter)
- 		return false;
- 
- 	biter->__dma_addr = sg_dma_address(biter->__sg) + biter->__sg_advance;
-+	if (biter->__mixed)
-+		biter->__pg_bit = rdma_find_mixed_pg_bit(biter);
-+
- 	block_offset = biter->__dma_addr & (BIT_ULL(biter->__pg_bit) - 1);
- 	biter->__sg_advance += BIT_ULL(biter->__pg_bit) - block_offset;
- 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 8a5ed04..1d8725a 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2718,12 +2718,22 @@ struct ib_client {
-  * to a HW supported page size.
-  */
- struct ib_block_iter {
-+	unsigned long pgsz_bitmap;	/* bitmap of supported HW page sizes.
-+					 * HW that can handle only blocks of a
-+					 * single page size must just provide
-+					 * the best page size to use in pgsz_bitmap
-+					 */
-+
- 	/* internal states */
- 	struct scatterlist *__sg;	/* sg holding the current aligned block */
-+	struct scatterlist *__sgl_head;	/* scatterlist head */
- 	dma_addr_t __dma_addr;		/* unaligned DMA address of this block */
- 	unsigned int __sg_nents;	/* number of SG entries */
- 	unsigned int __sg_advance;	/* number of bytes to advance in sg in next step */
- 	unsigned int __pg_bit;		/* alignment of current block */
-+	u8 __mixed;			/* HW supports single block size or mixed
-+					 * block sizes
-+					 */
- };
- 
- struct ib_device *_ib_alloc_device(size_t size);
-@@ -2749,7 +2759,7 @@ struct ib_block_iter {
- void __rdma_block_iter_start(struct ib_block_iter *biter,
- 			     struct scatterlist *sglist,
- 			     unsigned int nents,
--			     unsigned long pgsz);
-+			     unsigned long pgsz_bitmap);
- bool __rdma_block_iter_next(struct ib_block_iter *biter);
- 
- /**
-@@ -2768,14 +2778,14 @@ void __rdma_block_iter_start(struct ib_block_iter *biter,
-  * @sglist: sglist to iterate over
-  * @biter: block iterator holding the memory block
-  * @nents: maximum number of sg entries to iterate over
-- * @pgsz: best HW supported page size to use
-+ * @pgsz_bitmap: bitmap of HW supported page sizes
-  *
-  * Callers may use rdma_block_iter_dma_address() to get each
-  * blocks aligned DMA address.
-  */
--#define rdma_for_each_block(sglist, biter, nents, pgsz)		\
-+#define rdma_for_each_block(sglist, biter, nents, pgsz_bitmap)	\
- 	for (__rdma_block_iter_start(biter, sglist, nents,	\
--				     pgsz);			\
-+				     pgsz_bitmap);		\
- 	     __rdma_block_iter_next(biter);)
- 
- /**
--- 
-1.8.3.1
-
+Jason
