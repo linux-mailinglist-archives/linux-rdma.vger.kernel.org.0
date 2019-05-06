@@ -2,84 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F16BB15422
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 21:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A4A1549B
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 21:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbfEFTED (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 May 2019 15:04:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57410 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726277AbfEFTEC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 6 May 2019 15:04:02 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA82E20830;
-        Mon,  6 May 2019 19:04:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557169441;
-        bh=BL63HtN7QhSeLqplJdjJ5e8V5JdhUinGYQPCnm2hFGE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EIQrJ/cWkm8jULrg9VGMqINApSOpGxBlxF5BIbUDhltE6V8YyJoohZZkLrgqs6Rar
-         nKN1CAqGbxJR2BDo91dCR+k1A4c62fJN3PsoM8upbz+y6aliikxW2QSCAPF5tbAPaz
-         dHyMwX580bktqaN78xxFAUVT6aXy0GwxguNCBlpA=
-Date:   Mon, 6 May 2019 22:03:56 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "Tejun Heo (tj@kernel.org)" <tj@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
-Subject: Re: [PATCH for-rc 1/5] IB/hfi1: Fix WQ_MEM_RECLAIM warning
-Message-ID: <20190506190356.GO6938@mtr-leonro.mtl.com>
-References: <20190327152517.GD69236@devbig004.ftw2.facebook.com>
- <20190327171611.GF21008@ziepe.ca>
- <20190327190720.GE69236@devbig004.ftw2.facebook.com>
- <20190327194347.GH21008@ziepe.ca>
- <20190327212502.GF69236@devbig004.ftw2.facebook.com>
- <053009d7de76f8800304f354e3cbde068453257f.camel@redhat.com>
- <32E1700B9017364D9B60AED9960492BC70D3737D@fmsmsx120.amr.corp.intel.com>
- <580150427022440ab0475cda91d666322ef7e055.camel@redhat.com>
- <32E1700B9017364D9B60AED9960492BC70D38297@fmsmsx120.amr.corp.intel.com>
- <20190506181610.GB6201@ziepe.ca>
+        id S1726442AbfEFTuX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 May 2019 15:50:23 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:36010 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbfEFTuX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 May 2019 15:50:23 -0400
+Received: by mail-qk1-f196.google.com with SMTP id c14so315696qke.3
+        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2019 12:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ESsJ96JGC0CvnjgihpL/0kogE+VQksbbiyHqcPsgGyM=;
+        b=mAg8m7rSPAxM5D+1qNjO71dhsXUrQSGF8zaXxmrvN1W1e7B7fEhL/nFNC4QmlTH5S/
+         9FjLthJrMSnJTSlBNmAzOuj+WEEEHBw1j3jchmVO404WkT8GTT4n4WekZCWvQcvu4KOF
+         mx0V5cfxdymPVb2Ruxoza7w5KItB51NAJ5xivBL7H4fj5rRig8CXPXI75f55CKvkZyYC
+         Gs093sJb6bHKcKo1jSkGyp2Pk8c68+e+QijlfKiUVNZuBsCjguF+Uc/8jtTaC+sffP6g
+         22gO2vicgInFZL3gRZwFvB6M65AQIPZr/G+9s6iQjRuVRTS6fQK5LrCRIMT4SjvjNieX
+         MViA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ESsJ96JGC0CvnjgihpL/0kogE+VQksbbiyHqcPsgGyM=;
+        b=gZM5oRVaAjWgck0PDDEkKp8vVv5CTxlxm4p5gkRr0ZkYd8MRmAREW6zRzN27kOhCJv
+         HyZgpG8Tu4Ok3DVjt7mepcDo5FKBuEECgL3y7vajeGluhLsOHw7E/qt4APVM0KHpxI+1
+         0N83g/o9njcDPflPXVHZoaxCEf5/h91v8htGBRfJ/4vVhrbi3lbz8q+mvuTIBI7SPKss
+         yABcsYT5v3L1I4wV7rZe1s2T+ltttm3BQyrnEl31fHVWve4KcQQs+NQ1YR4A1wxCgk2q
+         Lpnz5RC+D9lxtcZ36asgjAHXBQawqyUS7/7tRmnAqVpPYVlThmYMnMTLAMwLnBCJY4wq
+         KTVg==
+X-Gm-Message-State: APjAAAWALeHfp8K/OENWjJStbtuxL9v332TE96bDnWlL6FPyqHwhIe0B
+        toTWEhQX9C7Xq0Jhuk0BwSEwRQ==
+X-Google-Smtp-Source: APXvYqweK3T+QR6CpnWc0KpWvE878/YztoCohPUsZDawCWkz4P9i6ckWrJvxSZLqhWTPckszjgD1bg==
+X-Received: by 2002:a05:620a:16b4:: with SMTP id s20mr10803976qkj.34.1557172222493;
+        Mon, 06 May 2019 12:50:22 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id o44sm9303175qto.36.2019.05.06.12.50.21
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 06 May 2019 12:50:21 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hNjcy-0007kq-Cs; Mon, 06 May 2019 16:50:20 -0300
+Date:   Mon, 6 May 2019 16:50:20 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v15 13/17] IB, arm64: untag user pointers in
+ ib_uverbs_(re)reg_mr()
+Message-ID: <20190506195020.GD6201@ziepe.ca>
+References: <cover.1557160186.git.andreyknvl@google.com>
+ <66d044ab9445dcf36a96205a109458ac23f38b73.1557160186.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190506181610.GB6201@ziepe.ca>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <66d044ab9445dcf36a96205a109458ac23f38b73.1557160186.git.andreyknvl@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 06, 2019 at 03:16:10PM -0300, Jason Gunthorpe wrote:
-> On Mon, May 06, 2019 at 05:52:48PM +0000, Marciniszyn, Mike wrote:
-> > >
-> > > My mistake.  It's been a long while since I coded the stuff I did for
-> > > memory reclaim pressure and I had my flag usage wrong in my memory.
-> > > From the description you just gave, the original patch to add
-> > > WQ_MEM_RECLAIM is ok.  I probably still need to audit the ipoib usage
-> > > though.
-> > >
-> >
-> > Don't lose sight of the fact that the additional of the WQ_MEM_RECLAIM is to silence
-> > a warning BECAUSE ipoib's workqueue is WQ_MEM_RECLAIM.  This happens while
-> > rdmavt/hfi1 is doing a cancel_work_sync() for the work item used by the QP's send engine
-> >
-> > The ipoib wq needs to be audited to see if it is in the data path for VM I/O.
->
-> Well, it is doing unsafe memory allocations and other stuff, so it
-> can't be RECLAIM. We should just delete them from IPoIB like Doug says.
+On Mon, May 06, 2019 at 06:30:59PM +0200, Andrey Konovalov wrote:
+> This patch is a part of a series that extends arm64 kernel ABI to allow to
+> pass tagged user pointers (with the top byte set to something else other
+> than 0x00) as syscall arguments.
+> 
+> ib_uverbs_(re)reg_mr() use provided user pointers for vma lookups (through
+> e.g. mlx4_get_umem_mr()), which can only by done with untagged pointers.
+> 
+> Untag user pointers in these functions.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> ---
+>  drivers/infiniband/core/uverbs_cmd.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Please don't.
+I think this is OK.. We should really get it tested though.. Leon?
 
->
-> Before we get excited about IPoIB I'd love to hear how the netstack is
-> supposed to handle reclaim as well ie when using NFS/etc.
->
-> AFAIK the netstack code is not reclaim safe and can need to do things
-> like allocate neighbour structures/etc to progress the dataplane.
->
-> Jason
+Jason
