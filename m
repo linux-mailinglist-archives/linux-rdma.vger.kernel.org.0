@@ -2,10 +2,10 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36AA314B4B
+	by mail.lfdr.de (Postfix) with ESMTP id B167B14B4C
 	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 15:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726046AbfEFNyF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726283AbfEFNyF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Mon, 6 May 2019 09:54:05 -0400
 Received: from mga12.intel.com ([192.55.52.136]:48135 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
@@ -14,18 +14,18 @@ Received: from mga12.intel.com ([192.55.52.136]:48135 "EHLO mga12.intel.com"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 May 2019 06:54:04 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 May 2019 06:54:05 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.60,438,1549958400"; 
-   d="scan'208";a="344291844"
+   d="scan'208";a="344291848"
 Received: from ssaleem-mobl4.amr.corp.intel.com ([10.255.35.243])
-  by fmsmga006.fm.intel.com with ESMTP; 06 May 2019 06:54:03 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 06 May 2019 06:54:04 -0700
 From:   Shiraz Saleem <shiraz.saleem@intel.com>
 To:     dledford@redhat.com, jgg@ziepe.ca
 Cc:     linux-rdma@vger.kernel.org, Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH v3 rdma-next 5/6] RDMA/umem: Remove hugetlb flag
-Date:   Mon,  6 May 2019 08:53:36 -0500
-Message-Id: <20190506135337.11324-6-shiraz.saleem@intel.com>
+Subject: [PATCH v3 rdma-next 6/6] RDMA/verbs: Extend DMA block iterator support for mixed block sizes
+Date:   Mon,  6 May 2019 08:53:37 -0500
+Message-Id: <20190506135337.11324-7-shiraz.saleem@intel.com>
 X-Mailer: git-send-email 2.8.3
 In-Reply-To: <20190506135337.11324-1-shiraz.saleem@intel.com>
 References: <20190506135337.11324-1-shiraz.saleem@intel.com>
@@ -34,127 +34,135 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The drivers i40iw and bnxt_re no longer dependent on the
-hugetlb flag. So remove this flag from ib_umem structure.
+Extend the DMA block iterator for HW that can support mixed
+block sizes. A bitmap of HW supported page sizes are provided
+to block iterator which returns contiguous aligned memory blocks
+within a HW supported page size.
 
-Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
 Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
 ---
- drivers/infiniband/core/umem.c     | 26 +-------------------------
- drivers/infiniband/core/umem_odp.c |  3 ---
- include/rdma/ib_umem.h             |  1 -
- 3 files changed, 1 insertion(+), 29 deletions(-)
+ drivers/infiniband/core/verbs.c | 38 ++++++++++++++++++++++++++++++++++++--
+ include/rdma/ib_verbs.h         | 18 ++++++++++++++----
+ 2 files changed, 50 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 2534ddd..13441b2 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -37,7 +37,6 @@
- #include <linux/sched/signal.h>
- #include <linux/sched/mm.h>
- #include <linux/export.h>
--#include <linux/hugetlb.h>
- #include <linux/slab.h>
- #include <linux/pagemap.h>
- #include <rdma/ib_umem_odp.h>
-@@ -195,14 +194,12 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
- 	struct ib_ucontext *context;
- 	struct ib_umem *umem;
- 	struct page **page_list;
--	struct vm_area_struct **vma_list;
- 	unsigned long lock_limit;
- 	unsigned long new_pinned;
- 	unsigned long cur_base;
- 	struct mm_struct *mm;
- 	unsigned long npages;
- 	int ret;
--	int i;
- 	unsigned long dma_attrs = 0;
- 	struct scatterlist *sg;
- 	unsigned int gup_flags = FOLL_WRITE;
-@@ -260,23 +257,12 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
- 		return umem;
- 	}
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 3806038..fa9725d 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -2712,16 +2712,47 @@ int rdma_init_netdev(struct ib_device *device, u8 port_num,
+ }
+ EXPORT_SYMBOL(rdma_init_netdev);
  
--	/* We assume the memory is from hugetlb until proved otherwise */
--	umem->hugetlb   = 1;
--
- 	page_list = (struct page **) __get_free_page(GFP_KERNEL);
- 	if (!page_list) {
- 		ret = -ENOMEM;
- 		goto umem_kfree;
- 	}
++static unsigned int rdma_find_mixed_pg_bit(struct ib_block_iter *biter)
++{
++	if (biter->__sg == biter->__sgl_head) {
++		return rdma_find_pg_bit(sg_dma_address(biter->__sg) +
++					sg_dma_len(biter->__sg),
++					biter->pgsz_bitmap);
++	} else if (sg_is_last(biter->__sg)) {
++		return rdma_find_pg_bit(sg_dma_address(biter->__sg),
++					biter->pgsz_bitmap);
++	} else {
++		unsigned int remaining =
++			sg_dma_address(biter->__sg) + sg_dma_len(biter->__sg) -
++			biter->__dma_addr;
++		unsigned int pg_bit = rdma_find_pg_bit(biter->__dma_addr,
++						       biter->pgsz_bitmap);
++		if (remaining < BIT_ULL(biter->__pg_bit))
++			pg_bit = rdma_find_pg_bit(remaining,
++						  biter->pgsz_bitmap);
++
++		return pg_bit;
++	}
++}
++
+ void __rdma_block_iter_start(struct ib_block_iter *biter,
+ 			     struct scatterlist *sglist, unsigned int nents,
+-			     unsigned long pgsz)
++			     unsigned long pgsz_bitmap)
+ {
+ 	memset(biter, 0, sizeof(struct ib_block_iter));
+ 	biter->__sg = sglist;
++	biter->pgsz_bitmap = pgsz_bitmap;
+ 	biter->__sg_nents = nents;
  
--	/*
--	 * if we can't alloc the vma_list, it's not so bad;
--	 * just assume the memory is not hugetlb memory
--	 */
--	vma_list = (struct vm_area_struct **) __get_free_page(GFP_KERNEL);
--	if (!vma_list)
--		umem->hugetlb = 0;
--
- 	npages = ib_umem_num_pages(umem);
- 	if (npages == 0 || npages > UINT_MAX) {
- 		ret = -EINVAL;
-@@ -308,7 +294,7 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
- 		ret = get_user_pages_longterm(cur_base,
- 				     min_t(unsigned long, npages,
- 					   PAGE_SIZE / sizeof (struct page *)),
--				     gup_flags, page_list, vma_list);
-+				     gup_flags, page_list, NULL);
- 		if (ret < 0) {
- 			up_read(&mm->mmap_sem);
- 			goto umem_release;
-@@ -321,14 +307,6 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
- 			dma_get_max_seg_size(context->device->dma_device),
- 			&umem->sg_nents);
+ 	/* Driver provides best block size to use */
+-	biter->__pg_bit = __fls(pgsz);
++	if (hweight_long(pgsz_bitmap) == 1) {
++		biter->__pg_bit = __fls(pgsz_bitmap);
++	} else {
++		/* mixed block size support. compute best block size to use */
++		WARN_ON(!(pgsz_bitmap & GENMASK(PAGE_SHIFT, 0)));
++		biter->__sgl_head = &sglist[0];
++		biter->__mixed = true;
++	}
+ }
+ EXPORT_SYMBOL(__rdma_block_iter_start);
  
--		/* Continue to hold the mmap_sem as vma_list access
--		 * needs to be protected.
--		 */
--		for (i = 0; i < ret && umem->hugetlb; i++) {
--			if (vma_list && !is_vm_hugetlb_page(vma_list[i]))
--				umem->hugetlb = 0;
--		}
--
- 		up_read(&mm->mmap_sem);
- 	}
+@@ -2733,6 +2764,9 @@ bool __rdma_block_iter_next(struct ib_block_iter *biter)
+ 		return false;
  
-@@ -353,8 +331,6 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
- vma:
- 	atomic64_sub(ib_umem_num_pages(umem), &mm->pinned_vm);
- out:
--	if (vma_list)
--		free_page((unsigned long) vma_list);
- 	free_page((unsigned long) page_list);
- umem_kfree:
- 	if (ret) {
-diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-index 9721914..c7226cf 100644
---- a/drivers/infiniband/core/umem_odp.c
-+++ b/drivers/infiniband/core/umem_odp.c
-@@ -417,9 +417,6 @@ int ib_umem_odp_get(struct ib_umem_odp *umem_odp, int access)
- 		h = hstate_vma(vma);
- 		umem->page_shift = huge_page_shift(h);
- 		up_read(&mm->mmap_sem);
--		umem->hugetlb = 1;
--	} else {
--		umem->hugetlb = 0;
- 	}
+ 	biter->__dma_addr = sg_dma_address(biter->__sg) + biter->__sg_advance;
++	if (biter->__mixed)
++		biter->__pg_bit = rdma_find_mixed_pg_bit(biter);
++
+ 	block_offset = biter->__dma_addr & (BIT_ULL(biter->__pg_bit) - 1);
+ 	biter->__sg_advance += BIT_ULL(biter->__pg_bit) - block_offset;
  
- 	mutex_init(&umem_odp->umem_mutex);
-diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-index 917b687..040d853 100644
---- a/include/rdma/ib_umem.h
-+++ b/include/rdma/ib_umem.h
-@@ -48,7 +48,6 @@ struct ib_umem {
- 	unsigned long		address;
- 	int			page_shift;
- 	u32 writable : 1;
--	u32 hugetlb : 1;
- 	u32 is_odp : 1;
- 	struct work_struct	work;
- 	struct sg_table sg_head;
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 8a5ed04..1d8725a 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2718,12 +2718,22 @@ struct ib_client {
+  * to a HW supported page size.
+  */
+ struct ib_block_iter {
++	unsigned long pgsz_bitmap;	/* bitmap of supported HW page sizes.
++					 * HW that can handle only blocks of a
++					 * single page size must just provide
++					 * the best page size to use in pgsz_bitmap
++					 */
++
+ 	/* internal states */
+ 	struct scatterlist *__sg;	/* sg holding the current aligned block */
++	struct scatterlist *__sgl_head;	/* scatterlist head */
+ 	dma_addr_t __dma_addr;		/* unaligned DMA address of this block */
+ 	unsigned int __sg_nents;	/* number of SG entries */
+ 	unsigned int __sg_advance;	/* number of bytes to advance in sg in next step */
+ 	unsigned int __pg_bit;		/* alignment of current block */
++	u8 __mixed;			/* HW supports single block size or mixed
++					 * block sizes
++					 */
+ };
+ 
+ struct ib_device *_ib_alloc_device(size_t size);
+@@ -2749,7 +2759,7 @@ struct ib_block_iter {
+ void __rdma_block_iter_start(struct ib_block_iter *biter,
+ 			     struct scatterlist *sglist,
+ 			     unsigned int nents,
+-			     unsigned long pgsz);
++			     unsigned long pgsz_bitmap);
+ bool __rdma_block_iter_next(struct ib_block_iter *biter);
+ 
+ /**
+@@ -2768,14 +2778,14 @@ void __rdma_block_iter_start(struct ib_block_iter *biter,
+  * @sglist: sglist to iterate over
+  * @biter: block iterator holding the memory block
+  * @nents: maximum number of sg entries to iterate over
+- * @pgsz: best HW supported page size to use
++ * @pgsz_bitmap: bitmap of HW supported page sizes
+  *
+  * Callers may use rdma_block_iter_dma_address() to get each
+  * blocks aligned DMA address.
+  */
+-#define rdma_for_each_block(sglist, biter, nents, pgsz)		\
++#define rdma_for_each_block(sglist, biter, nents, pgsz_bitmap)	\
+ 	for (__rdma_block_iter_start(biter, sglist, nents,	\
+-				     pgsz);			\
++				     pgsz_bitmap);		\
+ 	     __rdma_block_iter_next(biter);)
+ 
+ /**
 -- 
 1.8.3.1
 
