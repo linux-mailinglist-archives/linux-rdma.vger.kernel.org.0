@@ -2,148 +2,215 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 591FC16935
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 19:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D5516939
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 19:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727139AbfEGR2x convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 7 May 2019 13:28:53 -0400
-Received: from mga09.intel.com ([134.134.136.24]:38672 "EHLO mga09.intel.com"
+        id S1726648AbfEGRaP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 13:30:15 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:55510 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726756AbfEGR2x (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 May 2019 13:28:53 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 May 2019 10:28:52 -0700
-X-ExtLoop1: 1
-Received: from fmsmsx108.amr.corp.intel.com ([10.18.124.206])
-  by orsmga004.jf.intel.com with ESMTP; 07 May 2019 10:28:50 -0700
-Received: from fmsmsx122.amr.corp.intel.com (10.18.125.37) by
- FMSMSX108.amr.corp.intel.com (10.18.124.206) with Microsoft SMTP Server (TLS)
- id 14.3.408.0; Tue, 7 May 2019 10:28:50 -0700
-Received: from fmsmsx121.amr.corp.intel.com ([169.254.6.250]) by
- fmsmsx122.amr.corp.intel.com ([169.254.5.42]) with mapi id 14.03.0415.000;
- Tue, 7 May 2019 10:28:50 -0700
-From:   "Williams, Gerald S" <gerald.s.williams@intel.com>
-To:     Chuck Lever <chuck.lever@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "Tejun Heo (tj@kernel.org)" <tj@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
-Subject: RE: [PATCH for-rc 1/5] IB/hfi1: Fix WQ_MEM_RECLAIM warning
-Thread-Topic: [PATCH for-rc 1/5] IB/hfi1: Fix WQ_MEM_RECLAIM warning
-Thread-Index: AQHVBEePRBhkoc1BHkSQ8BmFu9mSm6Ze/pcAgADgwvA=
-Date:   Tue, 7 May 2019 17:28:50 +0000
-Message-ID: <4212415DE1138C4D8CECD226937EE5C772F1BBF3@fmsmsx121.amr.corp.intel.com>
-References: <20190327171611.GF21008@ziepe.ca>
- <20190327190720.GE69236@devbig004.ftw2.facebook.com>
- <20190327194347.GH21008@ziepe.ca>
- <20190327212502.GF69236@devbig004.ftw2.facebook.com>
- <053009d7de76f8800304f354e3cbde068453257f.camel@redhat.com>
- <32E1700B9017364D9B60AED9960492BC70D3737D@fmsmsx120.amr.corp.intel.com>
- <580150427022440ab0475cda91d666322ef7e055.camel@redhat.com>
- <32E1700B9017364D9B60AED9960492BC70D38297@fmsmsx120.amr.corp.intel.com>
- <20190506181610.GB6201@ziepe.ca> <20190506190356.GO6938@mtr-leonro.mtl.com>
- <20190506200849.GF6201@ziepe.ca>
- <7C7AD392-B9EE-41D8-92C9-D09037E8B6E5@oracle.com>
-In-Reply-To: <7C7AD392-B9EE-41D8-92C9-D09037E8B6E5@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiYWMwYmFlMmItZTE2NS00ZmQ5LWIwYWMtNWQ2N2YyOTVmNWUxIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiK2JxaHBGdlY1UktpU3J6WGlsRnA1bFM5YlVcL0ZZYW8xNWZhSUN1MGlYbSt2cGxEaDVYS3N2RTF3Y3Y2NndhSWIifQ==
-dlp-product: dlpe-windows
-dlp-version: 11.0.600.7
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.108]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726256AbfEGRaP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 May 2019 13:30:15 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 6ED3B90916;
+        Tue,  7 May 2019 17:30:14 +0000 (UTC)
+Received: from haswell-e.nc.xsintricity.com (ovpn-112-3.rdu2.redhat.com [10.10.112.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 841851001E8D;
+        Tue,  7 May 2019 17:30:13 +0000 (UTC)
+Message-ID: <79daef2a1c32693a96b62b0d61277896f1a9d48a.camel@redhat.com>
+Subject: Re: iWARP and soft-iWARP interop testing
+From:   Doug Ledford <dledford@redhat.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        "Gunthorpe, Jason" <jgg@ziepe.ca>
+Date:   Tue, 07 May 2019 13:30:11 -0400
+In-Reply-To: <OFE1E7EE12.36A09436-ON002583F3.00346573-002583F3.004AD2B1@notes.na.collabserv.com>
+References: <49b807221e5af3fab8813a9ce769694cb536072a.camel@redhat.com>
+         <OFE1E7EE12.36A09436-ON002583F3.00346573-002583F3.004AD2B1@notes.na.collabserv.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-HGoB/ZzdighVW0YuU0RN"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
 MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.29]); Tue, 07 May 2019 17:30:14 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On May 06, 2019 at 4:19 PM, Chuck Lever <chuck.level@oracle> wrote:
-> On May 6, 2019, at 4:08 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
->> On Mon, May 06, 2019 at 10:03:56PM +0300, Leon Romanovsky wrote:
->>> On Mon, May 06, 2019 at 03:16:10PM -0300, Jason Gunthorpe wrote:
->>>> On Mon, May 06, 2019 at 05:52:48PM +0000, Marciniszyn, Mike wrote:
->>>>> Don't lose sight of the fact that the additional of the
->>>>> WQ_MEM_RECLAIM is to silence a warning BECAUSE ipoib's workqueue is
->>>>> WQ_MEM_RECLAIM.  This happens while
->>>>> rdmavt/hfi1 is doing a cancel_work_sync() for the work item used by
->>>>> the QP's send engine
->>>>
->>>> Well, it is doing unsafe memory allocations and other stuff, so it
->>>> can't be RECLAIM. We should just delete them from IPoIB like Doug says.
->>>
->>> Please don't.
->>
->> Well then fix the broken allocations it does, and I don't really see
->> how to do that. We can't have it both ways.
->>
->> I would rather have NFS be broken then normal systems with ipoib
->> hanging during reclaim.
->
-> TBH, NFS on IPoIB is a hack that I would be happy to see replaced with
-> NFS/RDMA. However, I don't think we can have it regressing at this point -
-> - and it sounds like there are other use cases that do depend on
-> WQ_MEM_RECLAIM remaining in the IPoIB path.
 
-I don't have an opinion on whether it is better to specify WQ_MEM_RECLAIM or not, although we are encountering a regression in the hfi1 driver when it is set. I have been debugging an issue that started happening during certain high-stress conditions after we added the WQ_MEM_RECLAIM attribute to our workqueue.
+--=-HGoB/ZzdighVW0YuU0RN
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We need to understand this issue, especially if it turns out to be a workqueue bug/restriction, if we're going to propagate WQ_MEM_RECLAIM.
+On Tue, 2019-05-07 at 13:37 +0000, Bernard Metzler wrote:
+> Hi Doug,
+>=20
+> many thanks for taking the time and effort...!=20
+> I'd love to have all that HW around here.
+>=20
+> Some comments inline
+>=20
+> Thanks very much!
+> Bernard.
+>=20
+> -----"Doug Ledford" <dledford@redhat.com> wrote: -----
+>=20
+> > To: "linux-rdma" <linux-rdma@vger.kernel.org>
+> > From: "Doug Ledford" <dledford@redhat.com>
+> > Date: 05/06/2019 10:38PM
+> > Cc: "Gunthorpe, Jason" <jgg@ziepe.ca>, "Bernard Metzler"
+> > <BMT@zurich.ibm.com>
+> > Subject: iWARP and soft-iWARP interop testing
+> >=20
+> > So, Jason and I were discussing the soft-iWARP driver submission, and
+> > he
+> > thought it would be good to know if it even works with the various
+> > iWARP
+> > hardware devices.  I happen to have most of them on hand in one form
+> > or
+> > another, so I set down to test it.  In the process, I ran across some
+> > issues just with the hardware versions themselves, let alone with
+> > soft-
+> > iWARP.  So, here's the results of my matrix of tests.  These aren't
+> > performance tests, just basic "does it work" smoke tests...
+> >=20
+> > Hardware:
+> > i40iw =3D Intel x722
+> > qed1 =3D QLogic FastLinQ QL45000
+> > qed2 =3D QLogic FastLinQ QL41000
+> > cxgb4 =3D Chelsio T520-CR
+> >=20
+> >=20
+> >=20
+> > Test 1:
+> > rping -s -S 40 -C 20 -a $local
+> > rping -c -S 40 -C 20 -I $local -a $remote
+> >=20
+> >                    Server Side
+> > 	i40iw		qed1		qed2		cxgb4		siw
+> > i40iw	FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]
+> > qed1	FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]
+> > qed2	FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]
+> > cxgb4	FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]
+> > siw	FAIL[2]		FAIL[1]		FAIL[1]		FAIL[1]		Untested
+> >=20
+> > Failure 1:
+> > Client side shows:
+> > client DISCONNECT EVENT...
+> > Server side shows:
+> > server DISCONNECT EVENT...
+> > wait for RDMA_READ_ADV state 10
+> >=20
+>=20
+> I see the same behavior between two siw instances. In my tests, these eve=
+nts
+> are created only towards the end of the rping test. Using the -v flag on
+> client and server, I see the right amount of data being exchanged before
+> ('-C 2' to save space here):
+>=20
+> Server:
+> [bmt@rims ~]$ rping -s -S 40 -C 2 -a 10.0.0.1 -v
+> server ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+> server ping data: rdma-ping-1: BCDEFGHIJKLMNOPQRSTUVWXYZ[
+> server DISCONNECT EVENT...
+> wait for RDMA_READ_ADV state 10
+> [bmt@rims ~]$=20
+>=20
+> Client:
+> [bmt@spoke ~]$ rping -c -S 40 -C 2 -I 10.0.0.2 -a 10.0.0.1 -v
+> ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+> ping data: rdma-ping-1: BCDEFGHIJKLMNOPQRSTUVWXYZ[
+> client DISCONNECT EVENT...
+> [bmt@spoke ~]$=20
+>=20
+> I am not sure if that DISCONNECT EVENT thing is a failure
+> though, or just the regular end of the test.
 
-Somewhat-gory WQ-specific details:
+You and Steve are right.  I somehow dropped the -v from my test runs and
+mistook this test ending for a failure.  It's probably worth fixing in
+rping as it really is confusing ;-)
 
-The error is detected by the "sanity checks" in destroy_workqueue(), which we call when unloading our driver. A stack dump is reported via WARN_ON and the function (which has no return code) exits without destroying the queue, creating additional errors later. The specific test that is failing is on the pwq reference count:
+>=20
+> > Failure 2:
+> > Client side shows:
+> > cma event RDMA_CM_EVENT_REJECTED, error -104
+> > wait for CONNECTED state 4
+> > connect error -1
+> > Server side show:
+> > Nothing, server didn't indicate anything had happened
+> >=20
+>=20
+> Looks like an MPA reject - maybe this is due to i40iw being
+> unwilling to switch of CRC, if it is not turned on at siw
+> side? Or any other MPA reject reason...for fixing, we could
+> take that issue into a private conversation thread. Turning
+> on siw debugging will likely show the reason.
 
-	WARN_ON((pwq != wq->dfl_pwq) && (pwq->refcnt > 1))
+I'm not too worried about it.  If it's just a mismatch of options, then
+it might be worth figuring out what options the i40iw doesn't like being
+on/off and documenting it though.
 
-That reference count is incremented by get_pwq(), which is called when adding work to the queue. It is also called by "mayday" handling in the send_mayday() function from the pool_mayday_timeout() timer handler and from within rescuer_thread() in some situations. rescuer_thread() also calls put_pwq() later to decrement the reference count.
+>=20
+> > Test 2:
+> > ib_read_bw -d $device -R
+> > ib_read_bw -d $device -R $remote
+> >=20
+> >                    Server Side
+> > 	i40iw		qed1		qed2		cxgb4		siw
+> > i40iw	PASS		PASS		PASS		PASS		PASS
+> > qed1	PASS		PASS		PASS		PASS		PASS[1]
+> > qed2	PASS		PASS		PASS		PASS		PASS[1]
+> > cxgb4	PASS		PASS		PASS		PASS		PASS
+> > siw	FAIL[1]		PASS		PASS		PASS		untested
+> >=20
+> > Pass 1:
+> > These tests passed, but show pretty much worst case performance
+> > behavior.  While I got 600MB/sec on one test, and 175MB/sec on
+> > another,
+> > the two that I marked were only at the 1 or 2MB/sec level.  I thought
+> > they has hung initially.
+>=20
+> Compared to plain TCP, performance suffers from not using
+> segmentation offloading.  Also, always good to set MTU size to max.=20
+> With all that, on a 40Gbs link, line speed should be possible.
+> But, yes, performance is not our main focus currently.
 
-By instrumenting workqueue.c, I determined that we are not adding any work to the queue at the time of the error (and that the queue is empty when the error occurs), although before that, send_mayday() is occasionally called on our workqueue, followed by the second get_pwq() from rescuer_thread().
+I wasn't really testing for performance here.  And I couldn't really
+anyway.  I had a mix of 10Gig, 40Gig, and 25Gig hardware in this matrix.
+It wouldn't be even close to an apples to apples comparison.  But, those
+two tests, which only effect the qed driver, showed a clearly
+pathological behavior.  It would be worth debugging in the future.
 
-This is happening during normal operation, although while the system is heavily loaded. Later, when we try to unload the driver, destroy_workqueue() fails due to the refcnt check, even though the queue is empty.
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-Here are the relevant checks around the rescuer_thread() call to get_pwq() that increments refcnt:
+--=-HGoB/ZzdighVW0YuU0RN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-		if (!list_empty(scheduled)) {
-			process_scheduled_works(rescuer);
+-----BEGIN PGP SIGNATURE-----
 
-			/*
-			 * The above execution of rescued work items could
-			 * have created more to rescue through
-			 * pwq_activate_first_delayed() or chained
-			 * queueing.  Let's put @pwq back on mayday list so
-			 * that such back-to-back work items, which may be
-			 * being used to relieve memory pressure, don't
-			 * incur MAYDAY_INTERVAL delay inbetween.
-			 */
-			if (need_to_create_worker(pool)) {
-				spin_lock(&wq_mayday_lock);
-				get_pwq(pwq);
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAlzRwKMACgkQuCajMw5X
+L92G1Q/9GnTjEtmjeQJBLYgPt7IeaFQB5Bnjeu2gviihApz1Z/eUcuprK3Sb0AFB
+UJz6D+Dbtf5+er/IlJQghvrGmpwDW+KRFSP2dtTV4LaPdTf3RGUprpqRJI6Fm1/O
+8r4Kg+u+BirLXHQevjm/GQY4pxiOk5RCJ0UTwimIisdNxANH1X3jm9HzZIjur9xj
+tDQhvHmhc3O9nSURCHxXOfoGAv5Na7XYNe1LoQlneEqYt2nl+e0jsY3peOfirvpJ
+FIu7QmmMm0YiScFtXwVzQS0uZL4RIus9jPAWZSSG4rzTtjQDQEuQMy4iZwSdSwGd
+filzRAdJMIUGCSObusWEebDm1gqAUCdvqQCaVsfwO+giIqH6zssKIxQliBmUCNu7
+d4rvctduDludT4Zb4dAIgu78PDGxM4N9GbRAO0XDJhbdRYVqJzd3pUXo14bPeoqj
+xsqCgnQt5F9W0Pk56kIRHHot3ke2C2j6FFF9dZRP6/q1Nl/+fYjN/XQ73rAo9g3i
+C8Mt99rjwxqY9qe+nbgUEgJvaV+7usMU51/cNWl43OirX2FwIycJdRL+wOapDUIb
+w9hQ3gIRGLFQwisW6Fh/jBR4Dj8zzOTWIk4yBWVs96erSY0AQFZpBycpLUDJbspb
+r3nVwVHiF+IcHgUc1nInV2tpV9ZQuCDXF1/QCryVQzM34B8Jqpk=
+=XAJu
+-----END PGP SIGNATURE-----
 
-And here is the relevant code from send_mayday():
-
-	/* mayday mayday mayday */
-	if (list_empty(&pwq->mayday_node)) {
-		/*
-		 * If @pwq is for an unbound wq, its base ref may be put at
-		 * any time due to an attribute change.  Pin @pwq until the
-		 * rescuer is done with it.
-		 */
-		get_pwq(pwq);
-
-To me, the comment in the latter seems to imply that the reference count is being incremented to keep the pwq alive. However, looking through the code, that does not appear to be how it works. destroy_workqueue() tries to flush it, but if the queue is empty yet refcnt is still greater than 1, it fails. Maybe there's something else going on behind the scenes that I don't understand here.
-
-I am trying to understand what is going wrong and whether there is something we can do about it. I'm hoping Tejun can provide some guidance into investigating this issue, otherwise we may need to move the discussion over to lkml or something.
-
---
-Gerald Williams
+--=-HGoB/ZzdighVW0YuU0RN--
 
