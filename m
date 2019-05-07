@@ -2,19 +2,19 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 074E3164CA
+	by mail.lfdr.de (Postfix) with ESMTP id A297A164CB
 	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 15:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbfEGNjG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 May 2019 09:39:06 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:40565 "EHLO
+        id S1726817AbfEGNjH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 09:39:07 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:40582 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726817AbfEGNjG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 09:39:06 -0400
+        with ESMTP id S1726825AbfEGNjH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 09:39:07 -0400
 Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 7 May 2019 16:38:42 +0300
 Received: from r-vnc08.mtr.labs.mlnx (r-vnc08.mtr.labs.mlnx [10.208.0.121])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x47DcdFM021865;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x47DcdFN021865;
         Tue, 7 May 2019 16:38:42 +0300
 From:   Max Gurtovoy <maxg@mellanox.com>
 To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
@@ -22,9 +22,9 @@ To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
         bvanassche@acm.org
 Cc:     israelr@mellanox.com, idanb@mellanox.com, oren@mellanox.com,
         vladimirk@mellanox.com, shlomin@mellanox.com, maxg@mellanox.com
-Subject: [PATCH 22/25] RDMA/core: Remove unused IB_WR_REG_SIG_MR code
-Date:   Tue,  7 May 2019 16:38:36 +0300
-Message-Id: <1557236319-9986-23-git-send-email-maxg@mellanox.com>
+Subject: [PATCH 23/25] RDMA/mlx5: Improve PI handover performance
+Date:   Tue,  7 May 2019 16:38:37 +0300
+Message-Id: <1557236319-9986-24-git-send-email-maxg@mellanox.com>
 X-Mailer: git-send-email 1.7.8.2
 In-Reply-To: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
 References: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
@@ -35,295 +35,327 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Israel Rukshin <israelr@mellanox.com>
 
-IB_WR_REG_SIG_MR is not needed after IB_WR_REG_MR_INTEGRITY
-was used.
+In some loads, there is performace degradation when using KLM mkey
+instead of MTT mkey. This is because KLM descriptor access is via
+indirection that might require more HW resources and cycles.
+Using KLM descriptor is not nessecery when there are no gaps at the
+data/metadata sg lists. As an optimization, use MTT mkey whenever it
+is possible. For that matter, allocate internal MTT mkey and choose the
+effective pi_mr for in transaction according to the required mapping
+scheme.
+
+The setup of the tested benchmark (using iSER ULP):
+ - 2 servers with 24 cores (1 initiator and 1 target)
+ - ConnectX-4/ConnectX-5 adapters
+ - 24 target sessions with 1 LUN each
+ - ramdisk backstore
+ - PI active
+
+Performance results running fio (24 jobs, 128 iodepth) using
+write_generate=1 and read_verify=1 (w/w.o patch):
+
+bs      IOPS(read)        IOPS(write)
+----    ----------        ----------
+512   1262.4K/1243.3K    1732.1K/1725.1K
+4k    570902/571233      773982/743293
+32k   72086/72388        96164/71789
+
+Using write_generate=0 and read_verify=0 (w/w.o patch):
+bs      IOPS(read)        IOPS(write)
+----    ----------        ----------
+512   1600.1K/1572.1K    1830.3K/1823.5K
+4k    937272/921992      815304/753772
+32k   77369/75052        97435/73180
 
 Signed-off-by: Israel Rukshin <israelr@mellanox.com>
 Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
+Suggested-by: Max Gurtovoy <maxg@mellanox.com>
+Suggested-by: Idan Burstein <idanb@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/mr.c           |  15 ++-
- drivers/infiniband/hw/mlx5/qp.c           | 154 ++----------------------------
- drivers/infiniband/hw/vmw_pvrdma/pvrdma.h |   2 +-
- include/rdma/ib_verbs.h                   |  19 ----
- 4 files changed, 17 insertions(+), 173 deletions(-)
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |   7 +-
+ drivers/infiniband/hw/mlx5/mr.c      | 176 ++++++++++++++++++++++++++++++-----
+ drivers/infiniband/hw/mlx5/qp.c      |   2 +-
+ 3 files changed, 162 insertions(+), 23 deletions(-)
 
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index c25a5c4bf9d6..5bc18256b71a 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -586,7 +586,12 @@ struct mlx5_ib_mr {
+ 	int			access_flags; /* Needed for rereg MR */
+ 
+ 	struct mlx5_ib_mr      *parent;
+-	struct mlx5_ib_mr      *pi_mr; /* Needed for IB_MR_TYPE_INTEGRITY */
++	/* Needed for IB_MR_TYPE_INTEGRITY */
++	struct mlx5_ib_mr      *pi_mr;
++	struct mlx5_ib_mr      *klm_mr;
++	struct mlx5_ib_mr      *mtt_mr;
++	u64			pi_iova;
++
+ 	atomic_t		num_leaf_free;
+ 	wait_queue_head_t       q_leaf_free;
+ 	struct mlx5_async_work  cb_work;
 diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 7dd5ad6d995e..c01097986e61 100644
+index c01097986e61..f94c47b87426 100644
 --- a/drivers/infiniband/hw/mlx5/mr.c
 +++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1746,8 +1746,7 @@ static struct ib_mr *__mlx5_ib_alloc_mr(struct ib_pd *pd,
- 			goto err_free_in;
- 		mr->desc_size = sizeof(struct mlx5_klm);
- 		mr->max_descs = ndescs;
--	} else if (mr_type == IB_MR_TYPE_SIGNATURE ||
--		   mr_type == IB_MR_TYPE_INTEGRITY) {
-+	} else if (mr_type == IB_MR_TYPE_INTEGRITY) {
- 		u32 psv_index[2];
+@@ -1627,8 +1627,10 @@ int mlx5_ib_dereg_mr(struct ib_mr *ibmr)
+ {
+ 	struct mlx5_ib_mr *mmr = to_mmr(ibmr);
  
- 		MLX5_SET(mkc, mkc, bsf_en, 1);
-@@ -1773,13 +1772,11 @@ static struct ib_mr *__mlx5_ib_alloc_mr(struct ib_pd *pd,
+-	if (ibmr->type == IB_MR_TYPE_INTEGRITY)
+-		dereg_mr(to_mdev(mmr->pi_mr->ibmr.device), mmr->pi_mr);
++	if (ibmr->type == IB_MR_TYPE_INTEGRITY) {
++		dereg_mr(to_mdev(mmr->mtt_mr->ibmr.device), mmr->mtt_mr);
++		dereg_mr(to_mdev(mmr->klm_mr->ibmr.device), mmr->klm_mr);
++	}
+ 
+ 	dereg_mr(to_mdev(ibmr->device), mmr);
+ 
+@@ -1636,7 +1638,8 @@ int mlx5_ib_dereg_mr(struct ib_mr *ibmr)
+ }
+ 
+ static struct mlx5_ib_mr *mlx5_ib_alloc_pi_mr(struct ib_pd *pd,
+-				u32 max_num_sg, u32 max_num_meta_sg)
++				u32 max_num_sg, u32 max_num_meta_sg,
++				int desc_size, int access_mode)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+ 	int inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
+@@ -1659,16 +1662,17 @@ static struct mlx5_ib_mr *mlx5_ib_alloc_pi_mr(struct ib_pd *pd,
+ 	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
+ 	MLX5_SET(mkc, mkc, free, 1);
+ 	MLX5_SET(mkc, mkc, translations_octword_size, ndescs);
++	if (access_mode == MLX5_MKC_ACCESS_MODE_MTT)
++		MLX5_SET(mkc, mkc, log_page_size, PAGE_SHIFT);
+ 	MLX5_SET(mkc, mkc, qpn, 0xffffff);
+ 	MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
+ 
+-	mr->access_mode = MLX5_MKC_ACCESS_MODE_KLMS;
++	mr->access_mode = access_mode;
+ 
+-	err = mlx5_alloc_priv_descs(pd->device, mr,
+-				    ndescs, sizeof(struct mlx5_klm));
++	err = mlx5_alloc_priv_descs(pd->device, mr, ndescs, desc_size);
+ 	if (err)
+ 		goto err_free_in;
+-	mr->desc_size = sizeof(struct mlx5_klm);
++	mr->desc_size = desc_size;
+ 	mr->max_descs = ndescs;
+ 
+ 	MLX5_SET(mkc, mkc, access_mode_1_0, mr->access_mode & 0x3);
+@@ -1772,12 +1776,22 @@ static struct ib_mr *__mlx5_ib_alloc_mr(struct ib_pd *pd,
  		mr->sig->sig_err_exists = false;
  		/* Next UMR, Arm SIGERR */
  		++mr->sig->sigerr_count;
--		if (mr_type == IB_MR_TYPE_INTEGRITY) {
--			mr->pi_mr = mlx5_ib_alloc_pi_mr(pd, max_num_sg,
--							max_num_meta_sg);
--			if (IS_ERR(mr->pi_mr)) {
--				err = PTR_ERR(mr->pi_mr);
--				goto err_destroy_psv;
--			}
-+		mr->pi_mr = mlx5_ib_alloc_pi_mr(pd, max_num_sg,
-+						max_num_meta_sg);
-+		if (IS_ERR(mr->pi_mr)) {
-+			err = PTR_ERR(mr->pi_mr);
-+			goto err_destroy_psv;
+-		mr->pi_mr = mlx5_ib_alloc_pi_mr(pd, max_num_sg,
+-						max_num_meta_sg);
+-		if (IS_ERR(mr->pi_mr)) {
+-			err = PTR_ERR(mr->pi_mr);
++		mr->klm_mr = mlx5_ib_alloc_pi_mr(pd, max_num_sg,
++						max_num_meta_sg,
++						sizeof(struct mlx5_klm),
++						MLX5_MKC_ACCESS_MODE_KLMS);
++		if (IS_ERR(mr->klm_mr)) {
++			err = PTR_ERR(mr->klm_mr);
+ 			goto err_destroy_psv;
  		}
++		mr->mtt_mr = mlx5_ib_alloc_pi_mr(pd, max_num_sg,
++						max_num_meta_sg,
++						sizeof(struct mlx5_mtt),
++						MLX5_MKC_ACCESS_MODE_MTT);
++		if (IS_ERR(mr->mtt_mr)) {
++			err = PTR_ERR(mr->mtt_mr);
++			goto err_free_klm_mr;
++		}
  	} else {
  		mlx5_ib_warn(dev, "Invalid mr type %d\n", mr_type);
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 105ee4477421..5bb9bc0975c0 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -4479,32 +4479,17 @@ static int set_sig_data_segment(const struct ib_send_wr *send_wr,
- 	bool prot = false;
- 	int ret;
- 	int wqe_size;
-+	struct mlx5_ib_mr *mr = to_mmr(sig_mr);
-+	struct mlx5_ib_mr *pi_mr = mr->pi_mr;
+ 		err = -EINVAL;
+@@ -1802,9 +1816,14 @@ static struct ib_mr *__mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 	return &mr->ibmr;
  
--	if (send_wr->opcode == IB_WR_REG_SIG_MR) {
--		const struct ib_sig_handover_wr *wr = sig_handover_wr(send_wr);
--
--		data_len = wr->wr.sg_list->length;
--		data_key = wr->wr.sg_list->lkey;
--		data_va = wr->wr.sg_list->addr;
--		if (wr->prot) {
--			prot_len = wr->prot->length;
--			prot_key = wr->prot->lkey;
--			prot_va = wr->prot->addr;
--			prot = true;
--		}
--	} else {
--		struct mlx5_ib_mr *mr = to_mmr(sig_mr);
--		struct mlx5_ib_mr *pi_mr = mr->pi_mr;
--
--		data_len = pi_mr->data_length;
--		data_key = pi_mr->ibmr.lkey;
--		data_va = pi_mr->ibmr.iova;
--		if (pi_mr->meta_ndescs) {
--			prot_len = pi_mr->meta_length;
--			prot_key = pi_mr->ibmr.lkey;
--			prot_va = pi_mr->ibmr.iova + data_len;
--			prot = true;
--		}
-+	data_len = pi_mr->data_length;
-+	data_key = pi_mr->ibmr.lkey;
-+	data_va = pi_mr->ibmr.iova;
-+	if (pi_mr->meta_ndescs) {
-+		prot_len = pi_mr->meta_length;
-+		prot_key = pi_mr->ibmr.lkey;
-+		prot_va = pi_mr->ibmr.iova + data_len;
-+		prot = true;
+ err_free_pi_mr:
+-	if (mr->pi_mr) {
+-		dereg_mr(to_mdev(mr->pi_mr->ibmr.device), mr->pi_mr);
+-		mr->pi_mr = NULL;
++	if (mr->mtt_mr) {
++		dereg_mr(to_mdev(mr->mtt_mr->ibmr.device), mr->mtt_mr);
++		mr->mtt_mr = NULL;
++	}
++err_free_klm_mr:
++	if (mr->klm_mr) {
++		dereg_mr(to_mdev(mr->klm_mr->ibmr.device), mr->klm_mr);
++		mr->klm_mr = NULL;
  	}
- 
- 	if (!prot || (data_key == prot_key && data_va == prot_va &&
-@@ -4670,57 +4655,6 @@ static int set_pi_umr_wr(const struct ib_send_wr *send_wr,
+ err_destroy_psv:
+ 	if (mr->sig) {
+@@ -2043,16 +2062,94 @@ static int mlx5_set_page(struct ib_mr *ibmr, u64 addr)
  	return 0;
  }
  
--static int set_sig_umr_wr(const struct ib_send_wr *send_wr,
--			  struct mlx5_ib_qp *qp, void **seg, int *size,
--			  void **cur_edge)
--{
--	const struct ib_sig_handover_wr *wr = sig_handover_wr(send_wr);
--	struct mlx5_ib_mr *sig_mr = to_mmr(wr->sig_mr);
--	u32 pdn = get_pd(qp)->pdn;
--	u32 xlt_size;
--	int region_len, ret;
--
--	if (unlikely(wr->wr.num_sge != 1) ||
--	    unlikely(wr->access_flags & IB_ACCESS_REMOTE_ATOMIC) ||
--	    unlikely(!sig_mr->sig) || unlikely(!qp->ibqp.signature_en) ||
--	    unlikely(!sig_mr->sig->sig_status_checked))
--		return -EINVAL;
--
--	/* length of the protected region, data + protection */
--	region_len = wr->wr.sg_list->length;
--	if (wr->prot &&
--	    (wr->prot->lkey != wr->wr.sg_list->lkey  ||
--	     wr->prot->addr != wr->wr.sg_list->addr  ||
--	     wr->prot->length != wr->wr.sg_list->length))
--		region_len += wr->prot->length;
--
--	/**
--	 * KLM octoword size - if protection was provided
--	 * then we use strided block format (3 octowords),
--	 * else we use single KLM (1 octoword)
--	 **/
--	xlt_size = wr->prot ? 0x30 : sizeof(struct mlx5_klm);
--
--	set_sig_umr_segment(*seg, xlt_size);
--	*seg += sizeof(struct mlx5_wqe_umr_ctrl_seg);
--	*size += sizeof(struct mlx5_wqe_umr_ctrl_seg) / 16;
--	handle_post_send_edge(&qp->sq, seg, *size, cur_edge);
--
--	set_sig_mkey_segment(*seg, wr->sig_mr, wr->access_flags, xlt_size,
--			     region_len, pdn);
--	*seg += sizeof(struct mlx5_mkey_seg);
--	*size += sizeof(struct mlx5_mkey_seg) / 16;
--	handle_post_send_edge(&qp->sq, seg, *size, cur_edge);
--
--	ret = set_sig_data_segment(send_wr, wr->sig_mr, wr->sig_attrs, qp, seg,
--				   size, cur_edge);
--	if (ret)
--		return ret;
--
--	sig_mr->sig->sig_status_checked = false;
--	return 0;
--}
--
- static int set_psv_wr(struct ib_sig_domain *domain,
- 		      u32 psv_idx, void **seg, int *size)
+-int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
++static int mlx5_set_page_pi(struct ib_mr *ibmr, u64 addr)
++{
++	struct mlx5_ib_mr *mr = to_mmr(ibmr);
++	__be64 *descs;
++
++	if (unlikely(mr->ndescs + mr->meta_ndescs == mr->max_descs))
++		return -ENOMEM;
++
++	descs = mr->descs;
++	descs[mr->ndescs + mr->meta_ndescs++] =
++		cpu_to_be64(addr | MLX5_EN_RD | MLX5_EN_WR);
++
++	return 0;
++}
++
++static int
++mlx5_ib_map_mtt_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
+ 			 int data_sg_nents, unsigned int *data_sg_offset,
+ 			 struct scatterlist *meta_sg, int meta_sg_nents,
+ 			 unsigned int *meta_sg_offset)
  {
-@@ -5110,74 +5044,6 @@ static int _mlx5_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 				num_sge = 0;
- 				goto skip_psv;
+ 	struct mlx5_ib_mr *mr = to_mmr(ibmr);
+-	struct mlx5_ib_mr *pi_mr = mr->pi_mr;
++	struct mlx5_ib_mr *pi_mr = mr->mtt_mr;
+ 	int n;
++	u64 iova;
  
--			case IB_WR_REG_SIG_MR:
--				qp->sq.wr_data[idx] = IB_WR_REG_SIG_MR;
--				mr = to_mmr(sig_handover_wr(wr)->sig_mr);
--
--				ctrl->imm = cpu_to_be32(mr->ibmr.rkey);
--				err = set_sig_umr_wr(wr, qp, &seg, &size,
--						     &cur_edge);
--				if (err) {
--					mlx5_ib_warn(dev, "\n");
--					*bad_wr = wr;
--					goto out;
--				}
--
--				finish_wqe(qp, ctrl, seg, size, cur_edge, idx,
--					   wr->wr_id, nreq, fence,
--					   MLX5_OPCODE_UMR);
--				/*
--				 * SET_PSV WQEs are not signaled and solicited
--				 * on error
--				 */
--				err = __begin_wqe(qp, &seg, &ctrl, wr, &idx,
--						  &size, &cur_edge, nreq, false,
--						  true);
--				if (err) {
--					mlx5_ib_warn(dev, "\n");
--					err = -ENOMEM;
--					*bad_wr = wr;
--					goto out;
--				}
--
--				err = set_psv_wr(&sig_handover_wr(wr)->sig_attrs->mem,
--						 mr->sig->psv_memory.psv_idx, &seg,
--						 &size);
--				if (err) {
--					mlx5_ib_warn(dev, "\n");
--					*bad_wr = wr;
--					goto out;
--				}
--
--				finish_wqe(qp, ctrl, seg, size, cur_edge, idx,
--					   wr->wr_id, nreq, fence,
--					   MLX5_OPCODE_SET_PSV);
--				err = __begin_wqe(qp, &seg, &ctrl, wr, &idx,
--						  &size, &cur_edge, nreq, false,
--						  true);
--				if (err) {
--					mlx5_ib_warn(dev, "\n");
--					err = -ENOMEM;
--					*bad_wr = wr;
--					goto out;
--				}
--
--				err = set_psv_wr(&sig_handover_wr(wr)->sig_attrs->wire,
--						 mr->sig->psv_wire.psv_idx, &seg,
--						 &size);
--				if (err) {
--					mlx5_ib_warn(dev, "\n");
--					*bad_wr = wr;
--					goto out;
--				}
--
--				finish_wqe(qp, ctrl, seg, size, cur_edge, idx,
--					   wr->wr_id, nreq, fence,
--					   MLX5_OPCODE_SET_PSV);
--				qp->next_fence = MLX5_FENCE_MODE_INITIATOR_SMALL;
--				num_sge = 0;
--				goto skip_psv;
--
- 			default:
- 				break;
- 			}
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
-index 3c633ab58052..c142f5e7f25f 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
-@@ -456,7 +456,7 @@ static inline enum pvrdma_wr_opcode ib_wr_opcode_to_pvrdma(enum ib_wr_opcode op)
- 		return PVRDMA_WR_MASKED_ATOMIC_CMP_AND_SWP;
- 	case IB_WR_MASKED_ATOMIC_FETCH_AND_ADD:
- 		return PVRDMA_WR_MASKED_ATOMIC_FETCH_AND_ADD;
--	case IB_WR_REG_SIG_MR:
-+	case IB_WR_REG_MR_INTEGRITY:
- 		return PVRDMA_WR_REG_SIG_MR;
- 	default:
- 		return PVRDMA_WR_ERROR;
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index e0de29206070..056ad2bdd20c 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -753,9 +753,6 @@ __attribute_const__ int ib_rate_to_mbps(enum ib_rate rate);
-  * enum ib_mr_type - memory region type
-  * @IB_MR_TYPE_MEM_REG:       memory region that is used for
-  *                            normal registration
-- * @IB_MR_TYPE_SIGNATURE:     memory region that is used for
-- *                            signature operations (data-integrity
-- *                            capable regions)
-  * @IB_MR_TYPE_SG_GAPS:       memory region that is capable to
-  *                            register any arbitrary sg lists (without
-  *                            the normal mr constraints - see
-@@ -771,7 +768,6 @@ __attribute_const__ int ib_rate_to_mbps(enum ib_rate rate);
-  */
- enum ib_mr_type {
- 	IB_MR_TYPE_MEM_REG,
--	IB_MR_TYPE_SIGNATURE,
- 	IB_MR_TYPE_SG_GAPS,
- 	IB_MR_TYPE_DM,
- 	IB_MR_TYPE_USER,
-@@ -1212,7 +1208,6 @@ enum ib_wr_opcode {
+-	WARN_ON(ibmr->type != IB_MR_TYPE_INTEGRITY);
++	pi_mr->ndescs = 0;
++	pi_mr->meta_ndescs = 0;
++
++	ib_dma_sync_single_for_cpu(ibmr->device, pi_mr->desc_map,
++				   pi_mr->desc_size * pi_mr->max_descs,
++				   DMA_TO_DEVICE);
++
++	pi_mr->ibmr.page_size = ibmr->page_size;
++	n = ib_sg_to_pages(&pi_mr->ibmr, data_sg, data_sg_nents, data_sg_offset,
++			   mlx5_set_page);
++	if (n != data_sg_nents)
++		return n;
++
++	iova = pi_mr->ibmr.iova;
++	pi_mr->data_length = pi_mr->ibmr.length;
++	pi_mr->ibmr.length = pi_mr->data_length;
++	ibmr->length = pi_mr->data_length;
++
++	if (meta_sg_nents) {
++		u64 page_mask = ~((u64)ibmr->page_size - 1);
++
++		n += ib_sg_to_pages(&pi_mr->ibmr, meta_sg, meta_sg_nents,
++				    meta_sg_offset, mlx5_set_page_pi);
++
++		pi_mr->meta_length = pi_mr->ibmr.length;
++		/*
++		 * PI address for the HW is the offset of the metadata address
++		 * relative to the first data page address.
++		 * It equals to first data page address + size of data pages +
++		 * metadata offset at the first metadata page
++		 */
++		pi_mr->pi_iova = (iova & page_mask) +
++				 pi_mr->ndescs * ibmr->page_size +
++				 (pi_mr->ibmr.iova & ~page_mask);
++		/*
++		 * In order to use one MTT MR for data and metadata, we register
++		 * also the gaps between the end of the data and the start of
++		 * the metadata (the sig MR will verify that the HW will access
++		 * to right addresses). This mapping is safe because we use
++		 * internal mkey for the registration.
++		 */
++		pi_mr->ibmr.length = pi_mr->pi_iova + pi_mr->meta_length - iova;
++		pi_mr->ibmr.iova = iova;
++		ibmr->length += pi_mr->meta_length;
++	}
++
++	ib_dma_sync_single_for_device(ibmr->device, pi_mr->desc_map,
++				      pi_mr->desc_size * pi_mr->max_descs,
++				      DMA_TO_DEVICE);
++
++	return n;
++}
++
++static int
++mlx5_ib_map_klm_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
++			 int data_sg_nents, unsigned int *data_sg_offset,
++			 struct scatterlist *meta_sg, int meta_sg_nents,
++			 unsigned int *meta_sg_offset)
++{
++	struct mlx5_ib_mr *mr = to_mmr(ibmr);
++	struct mlx5_ib_mr *pi_mr = mr->klm_mr;
++	int n;
  
- 	/* These are kernel only and can not be issued by userspace */
- 	IB_WR_REG_MR = 0x20,
--	IB_WR_REG_SIG_MR,
- 	IB_WR_REG_MR_INTEGRITY,
+ 	pi_mr->ndescs = 0;
+ 	pi_mr->meta_ndescs = 0;
+@@ -2064,14 +2161,51 @@ int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
+ 	n = mlx5_ib_sg_to_klms(pi_mr, data_sg, data_sg_nents, data_sg_offset,
+ 			       meta_sg, meta_sg_nents, meta_sg_offset);
  
- 	/* reserve values for low level drivers' internal use.
-@@ -1323,20 +1318,6 @@ static inline const struct ib_reg_wr *reg_wr(const struct ib_send_wr *wr)
- 	return container_of(wr, struct ib_reg_wr, wr);
++	ib_dma_sync_single_for_device(ibmr->device, pi_mr->desc_map,
++				      pi_mr->desc_size * pi_mr->max_descs,
++				      DMA_TO_DEVICE);
++
+ 	/* This is zero-based memory region */
+ 	pi_mr->ibmr.iova = 0;
++	pi_mr->pi_iova = pi_mr->data_length;
+ 	ibmr->length = pi_mr->ibmr.length;
+-	ibmr->iova = pi_mr->ibmr.iova;
+ 
+-	ib_dma_sync_single_for_device(ibmr->device, pi_mr->desc_map,
+-				      pi_mr->desc_size * pi_mr->max_descs,
+-				      DMA_TO_DEVICE);
++	return n;
++}
++
++int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
++			 int data_sg_nents, unsigned int *data_sg_offset,
++			 struct scatterlist *meta_sg, int meta_sg_nents,
++			 unsigned int *meta_sg_offset)
++{
++	struct mlx5_ib_mr *mr = to_mmr(ibmr);
++	struct mlx5_ib_mr *pi_mr = mr->mtt_mr;
++	int n;
++
++	WARN_ON(ibmr->type != IB_MR_TYPE_INTEGRITY);
++
++	/*
++	 * As a performance optimization, if possible, there is no need to map
++	 * the sg lists to KLM descriptors. First try to map the sg lists to MTT
++	 * descriptors and fallback to KLM only in case of a failure.
++	 * It's more efficient for the HW to work with MTT descriptors
++	 * (especially in high load).
++	 * Use KLM (indirect access) only if it's mandatory.
++	 */
++	n = mlx5_ib_map_mtt_mr_sg_pi(ibmr, data_sg, data_sg_nents,
++				     data_sg_offset, meta_sg, meta_sg_nents,
++				     meta_sg_offset);
++	if (n == data_sg_nents + meta_sg_nents)
++		goto out;
++
++	pi_mr = mr->klm_mr;
++	n = mlx5_ib_map_klm_mr_sg_pi(ibmr, data_sg, data_sg_nents,
++				     data_sg_offset, meta_sg, meta_sg_nents,
++				     meta_sg_offset);
++out:
++	/* This is zero-based memory region */
++	ibmr->iova = 0;
++	mr->pi_mr = pi_mr;
+ 
+ 	return n;
  }
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 5bb9bc0975c0..4fb816712c29 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -4488,7 +4488,7 @@ static int set_sig_data_segment(const struct ib_send_wr *send_wr,
+ 	if (pi_mr->meta_ndescs) {
+ 		prot_len = pi_mr->meta_length;
+ 		prot_key = pi_mr->ibmr.lkey;
+-		prot_va = pi_mr->ibmr.iova + data_len;
++		prot_va = pi_mr->pi_iova;
+ 		prot = true;
+ 	}
  
--struct ib_sig_handover_wr {
--	struct ib_send_wr	wr;
--	struct ib_sig_attrs    *sig_attrs;
--	struct ib_mr	       *sig_mr;
--	int			access_flags;
--	struct ib_sge	       *prot;
--};
--
--static inline const struct ib_sig_handover_wr *
--sig_handover_wr(const struct ib_send_wr *wr)
--{
--	return container_of(wr, struct ib_sig_handover_wr, wr);
--}
--
- struct ib_recv_wr {
- 	struct ib_recv_wr      *next;
- 	union {
 -- 
 2.16.3
 
