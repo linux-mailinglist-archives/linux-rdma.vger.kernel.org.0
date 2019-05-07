@@ -2,310 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1214E164BB
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 15:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1426164D5
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 15:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbfEGNjF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 May 2019 09:39:05 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:40551 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726808AbfEGNjE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 09:39:04 -0400
-Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 7 May 2019 16:38:42 +0300
-Received: from r-vnc08.mtr.labs.mlnx (r-vnc08.mtr.labs.mlnx [10.208.0.121])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x47DcdFP021865;
-        Tue, 7 May 2019 16:38:42 +0300
-From:   Max Gurtovoy <maxg@mellanox.com>
-To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
-        jgg@mellanox.com, dledford@redhat.com, hch@lst.de,
-        bvanassche@acm.org
-Cc:     israelr@mellanox.com, idanb@mellanox.com, oren@mellanox.com,
-        vladimirk@mellanox.com, shlomin@mellanox.com, maxg@mellanox.com
-Subject: [PATCH 25/25] RDMA/mlx5: Use PA mapping for PI handover
-Date:   Tue,  7 May 2019 16:38:39 +0300
-Message-Id: <1557236319-9986-26-git-send-email-maxg@mellanox.com>
-X-Mailer: git-send-email 1.7.8.2
-In-Reply-To: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
+        id S1726362AbfEGNm0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 09:42:26 -0400
+Received: from mail-eopbgr10081.outbound.protection.outlook.com ([40.107.1.81]:48526
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726304AbfEGNm0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 May 2019 09:42:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gyyz5BQNTyyXI7+stvzDR85t3HHvgd1esX5n3S26rlY=;
+ b=sJEp4zAEBIQdc2/xsQKZ+Xl7ITNnRwgIr+ubWCe88iwP2GTHtLkJXCNilqkFeItmRS0Yo5aHJ9IKy7zKYbW0DkpZBS/FCbeM/09Lenma3uSY/D7YYaqlD0mDLqnUIBjzLP9kkX3gU7+qYbuYeX3aWt3KgIaXYbaNYimerpdxZ7A=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB6256.eurprd05.prod.outlook.com (20.178.205.94) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1856.11; Tue, 7 May 2019 13:42:23 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.012; Tue, 7 May 2019
+ 13:42:23 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
+CC:     Leon Romanovsky <leonro@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Israel Rukshin <israelr@mellanox.com>,
+        Idan Burstein <idanb@mellanox.com>,
+        Oren Duer <oren@mellanox.com>,
+        Vladimir Koushnir <vladimirk@mellanox.com>,
+        Shlomi Nimrodi <shlomin@mellanox.com>
+Subject: Re: [PATCH 00/25 V4] Introduce new API for T10-PI offload
+Thread-Topic: [PATCH 00/25 V4] Introduce new API for T10-PI offload
+Thread-Index: AQHVBNo/qvTIRu6NOEydCCWllJ7Of6Zfq6qA
+Date:   Tue, 7 May 2019 13:42:23 +0000
+Message-ID: <20190507134217.GX6186@mellanox.com>
 References: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
+In-Reply-To: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YQBPR0101CA0067.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:1::44) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.49.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1adc4286-e028-408e-63b5-08d6d2f1d570
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6256;
+x-ms-traffictypediagnostic: VI1PR05MB6256:
+x-microsoft-antispam-prvs: <VI1PR05MB6256B95D305ABB02CC8AE655CF310@VI1PR05MB6256.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-forefront-prvs: 0030839EEE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(376002)(396003)(366004)(346002)(136003)(189003)(199004)(476003)(11346002)(14454004)(2616005)(486006)(316002)(256004)(14444005)(4326008)(478600001)(6246003)(71190400001)(8936002)(305945005)(107886003)(25786009)(6636002)(446003)(68736007)(2906002)(102836004)(66446008)(73956011)(66946007)(66476007)(66556008)(64756008)(6486002)(229853002)(71200400001)(36756003)(81156014)(81166006)(8676002)(66066001)(53936002)(6862004)(6506007)(386003)(54906003)(37006003)(3846002)(99286004)(5660300002)(76176011)(52116002)(6116002)(86362001)(33656002)(6436002)(7736002)(1076003)(186003)(26005)(6512007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6256;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: GELeweQ/SIbGovqxJY+mKA+++/sFRqlCVNrMeUC6oSDMhZ3WjikRmX/2ecHTOZTczfxhuAARtioBSBEgv9YxkPpPTeyz3ioqV2BO71eqGGww7Kqq3zAOJ4E4I+mzS/yEmYxFjunXIQhVSphnZtSNp2AjznuVkAqjyyF26Gbf2BjnbKlw1V+em64X1+vMhAB+e59fEDxAeIOJgXMLuOTI0yGDnFt77/JPeOGenSd+4+eHEg/j2ckU8D8w+k40LM1WcWQYY6iIAQBuxknMLXiGvtTXUXt0avtpRtW0N2apkUV6Yd9i68mhVjiiNyeUoZmDTD0+FYQFdQjBwRJsKDgprCPfDGKmqhqS48DDUKc++pSnZmxeZ6v3X6sqDpQK/GUfFPd58Byrt7EEFLc7NHkBSFk6QX3/wAAbOwiot7zvxME=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <8CFDD12D9CCCF64FAB1839DAF82B4417@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1adc4286-e028-408e-63b5-08d6d2f1d570
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2019 13:42:23.1599
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6256
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-If possibe, avoid doing a UMR operation to register data and protection
-buffers (via MTT/KLM mkeys). Instead, use the local DMA key and map the
-SG lists using PA access. This is safe, since the internal key for data
-and protection never exposed to the remote server (only signature key
-might be exposed). If PA mappings are not possible, perform mapping
-using MTT/KLM descriptors.
+On Tue, May 07, 2019 at 04:38:14PM +0300, Max Gurtovoy wrote:
+> Israel Rukshin (12):
+>   RDMA/core: Introduce IB_MR_TYPE_INTEGRITY and ib_alloc_mr_integrity
+>     API
+>   IB/iser: Refactor iscsi_iser_check_protection function
+>   IB/iser: Use IB_WR_REG_MR_INTEGRITY for PI handover
+>   IB/iser: Unwind WR union at iser_tx_desc
+>   IB/iser: Remove unused sig_attrs argument
+>   IB/isert: Remove unused sig_attrs argument
+>   RDMA/core: Add an integrity MR pool support
+>   RDMA/rw: Fix doc typo
+>   RDMA/rw: Print the correct number of sig MRs
+>   RDMA/rw: Use IB_WR_REG_MR_INTEGRITY for PI handover
+>   RDMA/core: Remove unused IB_WR_REG_SIG_MR code
+>   RDMA/mlx5: Improve PI handover performance
+>=20
+> Max Gurtovoy (13):
+>   RDMA/core: Introduce new header file for signature operations
+>   RDMA/core: Save the MR type in the ib_mr structure
+>   RDMA/core: Introduce ib_map_mr_sg_pi to map data/protection sgl's
+>   RDMA/core: Add signature attrs element for ib_mr structure
+>   RDMA/mlx5: Implement mlx5_ib_map_mr_sg_pi and
+>     mlx5_ib_alloc_mr_integrity
+>   RDMA/mlx5: Add attr for max number page list length for PI operation
+>   RDMA/mlx5: Pass UMR segment flags instead of boolean
+>   RDMA/mlx5: Update set_sig_data_segment attribute for new signature API
+>   RDMA/mlx5: Introduce and implement new IB_WR_REG_MR_INTEGRITY work
+>     request
+>   RDMA/mlx5: Move signature_en attribute from mlx5_qp to ib_qp
+>   RDMA/core: Validate signature handover device cap
+>   RDMA/rw: Add info regarding SG count failure
+>   RDMA/mlx5: Use PA mapping for PI handover
 
-The setup of the tested benchmark (using iSER ULP):
- - 2 servers with 24 cores (1 initiator and 1 target)
- - ConnectX-4/ConnectX-5 adapters
- - 24 target sessions with 1 LUN each
- - ramdisk backstore
- - PI active
+Max this is really too many patches now, can you please split this
+up.=20
 
-Performance results running fio (24 jobs, 128 iodepth) using
-write_generate=1 and read_verify=1 (w/w.o patch):
+Can several patches be applied right now as bug fixes like:
 
-bs      IOPS(read)        IOPS(write)
-----    ----------        ----------
-512   1266.4K/1262.4K    1720.1K/1732.1K
-4k    793139/570902      1129.6K/773982
-32k   72660/72086        97229/96164
+   RDMA/rw: Fix doc typo
+   RDMA/rw: Print the correct number of sig MRs
+   RDMA/core: Remove unused IB_WR_REG_SIG_MR code
+   RDMA/rw: Add info regarding SG count failure
 
-Using write_generate=0 and read_verify=0 (w/w.o patch):
-bs      IOPS(read)        IOPS(write)
-----    ----------        ----------
-512   1590.2K/1600.1K    1828.2K/1830.3K
-4k    1078.1K/937272     1142.1K/815304
-32k   77012/77369        98125/97435
+??
 
-Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-Suggested-by: Sagi Grimberg <sagi@grimberg.me>
----
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  1 +
- drivers/infiniband/hw/mlx5/mr.c      | 58 ++++++++++++++++++++++++--
- drivers/infiniband/hw/mlx5/qp.c      | 80 ++++++++++++++++++++++++------------
- 3 files changed, 110 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 5bc18256b71a..220971fd17aa 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -590,6 +590,7 @@ struct mlx5_ib_mr {
- 	struct mlx5_ib_mr      *pi_mr;
- 	struct mlx5_ib_mr      *klm_mr;
- 	struct mlx5_ib_mr      *mtt_mr;
-+	u64			data_iova;
- 	u64			pi_iova;
- 
- 	atomic_t		num_leaf_free;
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index f94c47b87426..2cc9f64c9ec0 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1988,6 +1988,39 @@ int mlx5_ib_check_mr_status(struct ib_mr *ibmr, u32 check_mask,
- 	return ret;
- }
- 
-+static int
-+mlx5_ib_map_pa_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
-+			int data_sg_nents, unsigned int *data_sg_offset,
-+			struct scatterlist *meta_sg, int meta_sg_nents,
-+			unsigned int *meta_sg_offset)
-+{
-+	struct mlx5_ib_mr *mr = to_mmr(ibmr);
-+	unsigned int sg_offset = 0;
-+	int n = 0;
-+
-+	if (data_sg_nents == 1) {
-+		n++;
-+		mr->ndescs = 1;
-+		if (data_sg_offset)
-+			sg_offset = *data_sg_offset;
-+		mr->data_length = sg_dma_len(data_sg) - sg_offset;
-+		mr->data_iova = sg_dma_address(data_sg) + sg_offset;
-+		if (meta_sg_nents && meta_sg_nents == 1) {
-+			n++;
-+			mr->meta_ndescs = 1;
-+			if (meta_sg_offset)
-+				sg_offset = *meta_sg_offset;
-+			else
-+				sg_offset = 0;
-+			mr->meta_length = sg_dma_len(meta_sg) - sg_offset;
-+			mr->pi_iova = sg_dma_address(meta_sg) + sg_offset;
-+		}
-+		mr->ibmr.length = mr->data_length + mr->meta_length;
-+	}
-+
-+	return n;
-+}
-+
- static int
- mlx5_ib_sg_to_klms(struct mlx5_ib_mr *mr,
- 		   struct scatterlist *sgl,
-@@ -2086,7 +2119,6 @@ mlx5_ib_map_mtt_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
- 	struct mlx5_ib_mr *mr = to_mmr(ibmr);
- 	struct mlx5_ib_mr *pi_mr = mr->mtt_mr;
- 	int n;
--	u64 iova;
- 
- 	pi_mr->ndescs = 0;
- 	pi_mr->meta_ndescs = 0;
-@@ -2101,13 +2133,14 @@ mlx5_ib_map_mtt_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
- 	if (n != data_sg_nents)
- 		return n;
- 
--	iova = pi_mr->ibmr.iova;
-+	pi_mr->data_iova = pi_mr->ibmr.iova;
- 	pi_mr->data_length = pi_mr->ibmr.length;
- 	pi_mr->ibmr.length = pi_mr->data_length;
- 	ibmr->length = pi_mr->data_length;
- 
- 	if (meta_sg_nents) {
- 		u64 page_mask = ~((u64)ibmr->page_size - 1);
-+		u64 iova = pi_mr->data_iova;
- 
- 		n += ib_sg_to_pages(&pi_mr->ibmr, meta_sg, meta_sg_nents,
- 				    meta_sg_offset, mlx5_set_page_pi);
-@@ -2166,6 +2199,7 @@ mlx5_ib_map_klm_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
- 				      DMA_TO_DEVICE);
- 
- 	/* This is zero-based memory region */
-+	pi_mr->data_iova = 0;
- 	pi_mr->ibmr.iova = 0;
- 	pi_mr->pi_iova = pi_mr->data_length;
- 	ibmr->length = pi_mr->ibmr.length;
-@@ -2179,11 +2213,28 @@ int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
- 			 unsigned int *meta_sg_offset)
- {
- 	struct mlx5_ib_mr *mr = to_mmr(ibmr);
--	struct mlx5_ib_mr *pi_mr = mr->mtt_mr;
-+	struct mlx5_ib_mr *pi_mr = NULL;
- 	int n;
- 
- 	WARN_ON(ibmr->type != IB_MR_TYPE_INTEGRITY);
- 
-+	mr->ndescs = 0;
-+	mr->data_length = 0;
-+	mr->data_iova = 0;
-+	mr->meta_ndescs = 0;
-+	mr->meta_length = 0;
-+	mr->pi_iova = 0;
-+	/*
-+	 * As a performance optimization, if possible, there is no need to
-+	 * perform UMR operation to register the data/metadata buffers.
-+	 * First try to map the sg lists to PA descriptors with local_dma_lkey.
-+	 * Fallback to UMR only in case of a failure.
-+	 */
-+	n = mlx5_ib_map_pa_mr_sg_pi(ibmr, data_sg, data_sg_nents,
-+				    data_sg_offset, meta_sg, meta_sg_nents,
-+				    meta_sg_offset);
-+	if (n == data_sg_nents + meta_sg_nents)
-+		goto out;
- 	/*
- 	 * As a performance optimization, if possible, there is no need to map
- 	 * the sg lists to KLM descriptors. First try to map the sg lists to MTT
-@@ -2192,6 +2243,7 @@ int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
- 	 * (especially in high load).
- 	 * Use KLM (indirect access) only if it's mandatory.
- 	 */
-+	pi_mr = mr->mtt_mr;
- 	n = mlx5_ib_map_mtt_mr_sg_pi(ibmr, data_sg, data_sg_nents,
- 				     data_sg_offset, meta_sg, meta_sg_nents,
- 				     meta_sg_offset);
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 4fb816712c29..24c7dc43f39d 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -4484,7 +4484,7 @@ static int set_sig_data_segment(const struct ib_send_wr *send_wr,
- 
- 	data_len = pi_mr->data_length;
- 	data_key = pi_mr->ibmr.lkey;
--	data_va = pi_mr->ibmr.iova;
-+	data_va = pi_mr->data_iova;
- 	if (pi_mr->meta_ndescs) {
- 		prot_len = pi_mr->meta_length;
- 		prot_key = pi_mr->ibmr.lkey;
-@@ -4835,6 +4835,7 @@ static int _mlx5_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 	struct mlx5_ib_qp *qp;
- 	struct mlx5_ib_mr *mr;
- 	struct mlx5_ib_mr *pi_mr;
-+	struct mlx5_ib_mr pa_pi_mr;
- 	struct ib_sig_attrs *sig_attrs;
- 	struct mlx5_wqe_xrc_seg *xrc;
- 	struct mlx5_bf *bf;
-@@ -4949,35 +4950,62 @@ static int _mlx5_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 				break;
- 
- 			case IB_WR_REG_MR_INTEGRITY:
--				memset(&reg_pi_wr, 0, sizeof(struct ib_reg_wr));
-+				qp->sq.wr_data[idx] = IB_WR_REG_MR_INTEGRITY;
- 
- 				mr = to_mmr(reg_wr(wr)->mr);
- 				pi_mr = mr->pi_mr;
- 
--				reg_pi_wr.mr = &pi_mr->ibmr;
--				reg_pi_wr.access = reg_wr(wr)->access;
--				reg_pi_wr.key = pi_mr->ibmr.rkey;
--
--				qp->sq.wr_data[idx] = IB_WR_REG_MR_INTEGRITY;
--				ctrl->imm = cpu_to_be32(reg_pi_wr.key);
--				/* UMR for data + protection registration */
--				err = set_reg_wr(qp, &reg_pi_wr, &seg, &size,
--						 &cur_edge, false);
--				if (err) {
--					*bad_wr = wr;
--					goto out;
--				}
--				finish_wqe(qp, ctrl, seg, size, cur_edge, idx,
--					   wr->wr_id, nreq, fence,
--					   MLX5_OPCODE_UMR);
--
--				err = begin_wqe(qp, &seg, &ctrl, wr, &idx,
--						&size, &cur_edge, nreq);
--				if (err) {
--					mlx5_ib_warn(dev, "\n");
--					err = -ENOMEM;
--					*bad_wr = wr;
--					goto out;
-+				if (pi_mr) {
-+					memset(&reg_pi_wr, 0,
-+					       sizeof(struct ib_reg_wr));
-+
-+					reg_pi_wr.mr = &pi_mr->ibmr;
-+					reg_pi_wr.access = reg_wr(wr)->access;
-+					reg_pi_wr.key = pi_mr->ibmr.rkey;
-+
-+					ctrl->imm = cpu_to_be32(reg_pi_wr.key);
-+					/* UMR for data + prot registration */
-+					err = set_reg_wr(qp, &reg_pi_wr, &seg,
-+							 &size, &cur_edge,
-+							 false);
-+					if (err) {
-+						*bad_wr = wr;
-+						goto out;
-+					}
-+					finish_wqe(qp, ctrl, seg, size,
-+						   cur_edge, idx, wr->wr_id,
-+						   nreq, fence,
-+						   MLX5_OPCODE_UMR);
-+
-+					err = begin_wqe(qp, &seg, &ctrl, wr,
-+							&idx, &size, &cur_edge,
-+							nreq);
-+					if (err) {
-+						mlx5_ib_warn(dev, "\n");
-+						err = -ENOMEM;
-+						*bad_wr = wr;
-+						goto out;
-+					}
-+				} else {
-+					memset(&pa_pi_mr, 0,
-+					       sizeof(struct mlx5_ib_mr));
-+					/* No UMR, use local_dma_lkey */
-+					pa_pi_mr.ibmr.lkey =
-+						mr->ibmr.pd->local_dma_lkey;
-+
-+					pa_pi_mr.ndescs = mr->ndescs;
-+					pa_pi_mr.data_length = mr->data_length;
-+					pa_pi_mr.data_iova = mr->data_iova;
-+					if (mr->meta_ndescs) {
-+						pa_pi_mr.meta_ndescs =
-+							mr->meta_ndescs;
-+						pa_pi_mr.meta_length =
-+							mr->meta_length;
-+						pa_pi_mr.pi_iova = mr->pi_iova;
-+					}
-+
-+					pa_pi_mr.ibmr.length = mr->ibmr.length;
-+					mr->pi_mr = &pa_pi_mr;
- 				}
- 				ctrl->imm = cpu_to_be32(mr->ibmr.rkey);
- 				/* UMR for sig MR */
--- 
-2.16.3
-
+Thanks,
+Jason
