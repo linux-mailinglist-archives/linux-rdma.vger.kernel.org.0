@@ -2,168 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D8616ADF
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 21:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6DE16AE9
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 21:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbfEGTG0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 May 2019 15:06:26 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:40015 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbfEGTGZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 15:06:25 -0400
-Received: by mail-qt1-f196.google.com with SMTP id k24so3177874qtq.7
-        for <linux-rdma@vger.kernel.org>; Tue, 07 May 2019 12:06:25 -0700 (PDT)
+        id S1726224AbfEGTM2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 15:12:28 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:37131 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726091AbfEGTM2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 15:12:28 -0400
+Received: by mail-qt1-f195.google.com with SMTP id o7so8425250qtp.4
+        for <linux-rdma@vger.kernel.org>; Tue, 07 May 2019 12:12:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=7jgRsI2s3ajSEK/gDpKUSjf1j97EOmpcHMelfW9vqsk=;
-        b=A237T3zkGaYeQkvkfW2Va4v2CqKNAjZPs5ijRQOHOhR3UXROInhxJSODZbmf6WiwsH
-         hIGTxRkV6An82xWH533ngBxAhfQzGdMxwJEOenYJXUeAxqSRgmGn6VtJ90O1LKQpXivp
-         Utuenwkv5tkdOx2K6L5eDrAYTMwvTvS31ln5HVmLvGjGCLHm6XRRbUJQzJf9m8eedumP
-         bnFONY775KgEgVAjZyHBf+22FdSjuSm1Ve06TWQ5CHaChEH6UskBHBvCSxMJi1oKe6+3
-         U3JyyhzIMXsNvzcX8PcN0qcgyeH6GohrAkdpF3hcDKV+CJIK88fmxAfy95nzkrrQnbPI
-         p0Fw==
+        bh=nolViST0cq/q5AqeoUtNiTYjlAXMgvBgMxj3rnqyVZ4=;
+        b=SN4XqDaDrgLA1AWtbYwNVuBaNp+qEuSUIpo7gBSNfE4ziaN2JLkqd0l4EuA+Y3aCnc
+         4oHDR2SfzO2erksSkya+WKP5gGfpxqcRImdhiEEqG0etKqISf4eYWRFmKLDgjv7Jslei
+         I5o7EglYI8G9Jb6v9H8S5TsYlvbW+8PeDXMz1tIQtW0kKAZznLkh5ZYhgx7LO6FnEV/0
+         s+KsybrTwbzeEpmlBBtH5pG1fnu5EigxiTx3AKp9hBY3n4SESn5okHwOzlodD+QKO5yd
+         uqP2E5rl/NNM6UQrry+VxI15BYddIasSbSeCYlrB8lpC+AGD53qbvXMwrjZ1UfNyIZ1x
+         uFsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7jgRsI2s3ajSEK/gDpKUSjf1j97EOmpcHMelfW9vqsk=;
-        b=bIQFWHyrt92VxAi6Enke6TIFBxaacihmYqVbTGJKJkD4bo0IomfdmpW7lc8yyYXh/H
-         NCZVE2Mu9b3o85cJ5/QRWcpcLoSUGthLvoMZrzNwY8wlobWIC/XMw2PYI36XyyxN9dnO
-         Q5E+rmehk01eRvTBklvmcAwUoAzJ0we0lHpWz8FwWnHqZXMkVTVGdfvSAyrysk9XpZjA
-         uvK8R94psp73ZzDfRSzjjTb5MAsNsHmvSAcFbv91moEn5vDAvNrE7o3eE6hEAhVW8Xiw
-         ZJChPbS4RavXQqo/XbMY5PhDJY8YCr45NYt3IR1h0O7PdXNvPYAolDn/UPTbVUmztq6k
-         Aqzg==
-X-Gm-Message-State: APjAAAX/Tk2WkYAVh0YyMOUVSbUiGOh0A7ydgNn3Yx/26HGCmLJx4XBy
-        TAMtcyD+xevC9u/FQSwa7O89Kg==
-X-Google-Smtp-Source: APXvYqx3r7zcPEIfxolMQ50JsYjSvdJvRJzMp27zxRUs3y3pHAS7l2Ctv5Joa59v+BL9/u96qAbPWw==
-X-Received: by 2002:aed:21c3:: with SMTP id m3mr28646974qtc.39.1557255984868;
-        Tue, 07 May 2019 12:06:24 -0700 (PDT)
+        bh=nolViST0cq/q5AqeoUtNiTYjlAXMgvBgMxj3rnqyVZ4=;
+        b=SgYvMLwlVsklJ1UlwhUGlALURKLljriej3coHeeRBqJuIOi1qw50YNs+skfLBK7KYm
+         A6+WSx7cs1UHfu7Pg+fo82/eiB6MMqmzthMyvnx1+IpcmlFsGl/axPNcOJnG4xExSx+D
+         cHCYXmIyy0z0V8opj2goZJJitYSTzRxz60j2K/g2wUDiHqoZ/MyAe1PlFbdieA/tUPhV
+         8w1cN3hIErOPd9EuWvNk8c4qNAc2LMjZfyC8LLqahjTQ/KDpvf2wbT8qM+i/iIPmuj5z
+         nZq4AGh/Fi9eRloWiPqPicl2etZkfYjtEn4kabPuEKjjnP47Go3wWdXKmI89ai+2tqTf
+         Jj8w==
+X-Gm-Message-State: APjAAAWplF7acYmaLrv0GGsx1I+JCO2GRyKrrCPZqfxZnb/YoeI0RiZp
+        2G7n25oDX1Cc09SWZ7yAv3AjMezPx5Q=
+X-Google-Smtp-Source: APXvYqwYCaeuqT8ZDKjiaUxPqLD4+8sqG8ohu32r5qVNsI+lxQ2stCJCHHk+qVEF8oQ385JL1QflvQ==
+X-Received: by 2002:aed:3fc1:: with SMTP id w1mr28754138qth.2.1557256347148;
+        Tue, 07 May 2019 12:12:27 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id f1sm7327010qkc.50.2019.05.07.12.06.23
+        by smtp.gmail.com with ESMTPSA id s55sm9145987qte.17.2019.05.07.12.12.26
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 07 May 2019 12:06:23 -0700 (PDT)
+        Tue, 07 May 2019 12:12:26 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hO5Pz-00084r-A4; Tue, 07 May 2019 16:06:23 -0300
-Date:   Tue, 7 May 2019 16:06:23 -0300
+        id 1hO5Vp-0000qT-LG; Tue, 07 May 2019 16:12:25 -0300
+Date:   Tue, 7 May 2019 16:12:25 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Michael Brooks <michael.brooks@intel.com>,
-        Todd Rimmer <todd.rimmer@intel.com>
-Subject: Re: [PATCH for-next] IB/core, ipoib: Do not overreact to SM LID
- change event
-Message-ID: <20190507190623.GA31027@ziepe.ca>
-References: <20190411142228.22587.63118.stgit@scvm10.sc.intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Arseny Maslennikov <ar@cs.msu.ru>
+Subject: Re: [PATCH rdma-next v1] RDMA/ipoib: Allow user space differentiate
+ between valid dev_port
+Message-ID: <20190507191225.GA3163@ziepe.ca>
+References: <20190506112304.10346-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190411142228.22587.63118.stgit@scvm10.sc.intel.com>
+In-Reply-To: <20190506112304.10346-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 11, 2019 at 07:22:35AM -0700, Dennis Dalessandro wrote:
-> When IPoIB receives an SM LID change event, it reacts by flushing its
-> path record cache and rejoining multicast groups. This is the same
-> behavior it performs when it receives a reregistration event. This
-> behavior is unnecessary as an SM may have database backup or
-> synchronization mechanisms which permit the SM location or LID to change
-> without loss of multicast membership and without impact to path records.
+On Mon, May 06, 2019 at 02:23:04PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> Both opensm and the OPA FM issue reregistration events if a new SM is
-> started (or restarted with a new config) or an SM event occurs which
-> results in loss of multicast membership records by the SM (such as
-> opensm failover) or the SM encounters new nodes with Active ports (such
-> as after joining 2 fabrics by connecting switches via ISLs). Hence this
-> event can be depended on as the trigger for IPoIB cache and multicast
-> flushing.
+> Systemd triggers the following warning during IPoIB device load:
 > 
-> It appears that some drivers, such as qib, and hfi1 issue the
-> IB_EVENT_SM_CHANGE but other drivers such as mlx4 and mlx5 do not.
-> Empirical testing on Mellanox EDR using ibv_asyncwatch has confirmed
-> that Mellanox EDR HCAs do not generate SM change events and that opensm
-> does generate reregistration.
+>  mlx5_core 0000:00:0c.0 ib0: "systemd-udevd" wants to know my dev_id.
+>         Should it look at dev_port instead?
+>         See Documentation/ABI/testing/sysfs-class-net for more info.
 > 
-> An SM LID change event is generated by the mentioned drivers to reflect
-> that sm_lid and/or sm_sl in the local port info has changed. The intent
-> of this event is to permit applications and ULPs which have a local copy
-> of this information (or an address handle using it) to update their
-> information.
+> This is caused due to user space attempt to differentiate old systems
+> without dev_port and new systems with dev_port. In case dev_port will
+> be zero, the systemd will try to read dev_id instead.
 > 
-> The intent is that the reregistration event (caused by the SM via a bit
-> in Set(PortInfo)) be used to inform nodes that they need to rejoin
-> multicast groups, resubscribe for notices and potentially update path
-> records.
+> There is no need to print a warning in such case, because it is valid
+> situation and it is needed to ensure systemd compatibility with old
+> kernels.
 > 
-> When an SM migrates or fails over, a SM LID change event can occur. In
-> response IPoIB discards path records and multicast membership and loses
-> connectivity until these records are restored via SA requests. In very
-> large fabrics, it may take minutes for the SM to be ready and for the SA
-> responses to be supplied.  This can result in undesirable and
-> unnecessary IPoIB connectivity impacts. It also can result in an
-> unnecessary storm of SA queries from all nodes in a cluster potentially
-> followed by yet another storm if the SM issues the reregistration
-> request.
-> 
-> The fact the Mellanox HCAs do not even generate this event, is further
-> evidence that on modern IB fabrics there will be no ill side effects
-> from the proposed changes below to reduce the reaction by 3 kernel
-> components to this event. So these changes should be benign for Mellanox
-> IB fabrics and will benefit OPA fabrics while also making ib_core and
-> ULP behavor "correct" as intended by the IBTA spec and kernel RDMA event
-> APIs.
-> 
-> Address these issues by removing IB_EVENT_SM_CHANGE handling from ipoib.
-> IPoIB does not locally store sm_lid nor sm_sl, so it does not need to do
-> anything on SM LID change. IPoIB makes use of other ib_core components
-> to issue SA requests for it and those components correctly track SM LID
-> and SM LID changes.
-> 
-> Also in ib_core multicast handling,  remove the test for
-> IB_EVENT_SM_CHANGE. This code is moving all multicast groups to the
-> error state, which will trigger rejoins. This code is used by IPoIB as
-> well as the connection manager and other clients of multicast groups.
-> This kernel module centralizes group membership status and joins since a
-> node can only join a given group once but multiple ULPs or applications
-> may want to join the same group. It makes use of the sa_query.c
-> component in ib_core, which correctly trackes SM LID and SL. This
-> component does not track SM LID nor SL itself and hence need not react
-> to their changes.
-> 
-> Similarly in the ib_core cache code remove the handling for the
-> IB_EVENT_SM_CHANGE.  In this function. The ib_cache_update function
-> which is ultimately called is updating local copies of the pkey table,
-> gid table and lmc. It does not update nor retain sm_lid nor sm_sl. As
-> such it does not need to be called on an SM LID change. It technically
-> also does not need to be called on a reregistration. The LID_CHANGE,
-> PKEY_CHANGE, GID_CHANGE and port state change events (PORT_ERR,
-> PORT_ACTICE) should be sufficient triggers.
-> 
-> It is worth noting that the alternative of simply having the hfi1 and
-> qib drivers not generate the SM LID change event was explored. While
-> this would duplicate what Mellanox drivers do now, it is not the correct
-> behavior and removes the ability for an SM to migrate without requiring
-> reregistration. Since both opensm and OPA SM have mechanisms to backup
-> or synchronize registration information, it is desirable to let them
-> perform SM migrations (with LID or SL changes) without requiring
-> reregistration when they deem it appropriate.
-> 
-> Suggested-by: Todd Rimmer <todd.rimmer@intel.com>
-> Tested-by: Michael Brooks <michael.brooks@intel.com>
-> Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-> Reviewed-by: Todd Rimmer <todd.rimmer@intel.com>
-> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+> Link: https://github.com/systemd/systemd/blob/master/src/udev/udev-builtin-net_id.c#L358
+> Cc: <stable@vger.kernel.org> # 4.19
+> Fixes: f6350da41dc7 ("IB/ipoib: Log sysfs 'dev_id' accesses from userspace")
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 > ---
->  drivers/infiniband/core/cache.c            |    1 -
->  drivers/infiniband/core/multicast.c        |    1 -
->  drivers/infiniband/ulp/ipoib/ipoib_verbs.c |    3 +--
->  3 files changed, 1 insertions(+), 4 deletions(-)
+>  Changelog v0->v1:
+>  * Fix typo as pointed by Gal P.
+> ---
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
 
 Applied to for-next, thanks
 
