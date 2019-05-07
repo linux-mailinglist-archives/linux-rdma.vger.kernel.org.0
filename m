@@ -2,174 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 037CC154F6
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2019 22:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77FC5158D8
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 07:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726304AbfEFUig (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 May 2019 16:38:36 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:61291 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725994AbfEFUif (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 6 May 2019 16:38:35 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E020930833BF;
-        Mon,  6 May 2019 20:38:34 +0000 (UTC)
-Received: from haswell-e.nc.xsintricity.com (ovpn-112-3.rdu2.redhat.com [10.10.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E9ACE3DA5;
-        Mon,  6 May 2019 20:38:33 +0000 (UTC)
-Message-ID: <49b807221e5af3fab8813a9ce769694cb536072a.camel@redhat.com>
-Subject: iWARP and soft-iWARP interop testing
-From:   Doug Ledford <dledford@redhat.com>
-To:     linux-rdma <linux-rdma@vger.kernel.org>
-Cc:     "Gunthorpe, Jason" <jgg@ziepe.ca>,
-        Bernard Metzler <BMT@zurich.ibm.com>
-Date:   Mon, 06 May 2019 16:38:27 -0400
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-ZuHpwLIaC4enCJbtXy27"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+        id S1726337AbfEGFRv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 01:17:51 -0400
+Received: from mail-eopbgr760049.outbound.protection.outlook.com ([40.107.76.49]:45488
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725843AbfEGFRv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 May 2019 01:17:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YuGJ8uavJ/PT9hHqbHv5rxWTGixXoa1FBnB/mFUUjX0=;
+ b=nTaEm1JGn+aYrvwyweXD2Kp+wX4PEweuFhSkJ4/6uKnOSFrk7fWRHfJO4PcHw1NUlK6xjbI6SOtYzqInLGtsF/MOfB5bj+xWvwkl7dBh1aP+DABS11H2qWtFodMIMcoqaBDfW+VqOrxtiiZIhXHGVRpY+mMu06wG5RRz0jwIZpQ=
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com (20.177.186.28) by
+ BYAPR05MB4182.namprd05.prod.outlook.com (52.135.200.141) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1878.19; Tue, 7 May 2019 05:17:46 +0000
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::f0e2:4d9d:b09b:def5]) by BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::f0e2:4d9d:b09b:def5%7]) with mapi id 15.20.1878.019; Tue, 7 May 2019
+ 05:17:46 +0000
+From:   Adit Ranadive <aditr@vmware.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jgg@mellanox.com" <jgg@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>
+CC:     Adit Ranadive <aditr@vmware.com>
+Subject: [PATCH] libibverbs: Expose the get neighbor timeout for dmac
+ resolution
+Thread-Topic: [PATCH] libibverbs: Expose the get neighbor timeout for dmac
+ resolution
+Thread-Index: AQHVBJQ03rON3H5UMUmK3O/KPKwCrg==
+Date:   Tue, 7 May 2019 05:17:45 +0000
+Message-ID: <20190507051537.2161-1-aditr@vmware.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BY5PR03CA0023.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::33) To BYAPR05MB5511.namprd05.prod.outlook.com
+ (2603:10b6:a03:1a::28)
+x-mailer: git-send-email 2.17.1
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=aditr@vmware.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [66.170.99.2]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 57a8de1f-958c-43ca-f216-08d6d2ab56c1
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR05MB4182;
+x-ms-traffictypediagnostic: BYAPR05MB4182:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <BYAPR05MB41824D2DBB40BA8E9A4F3F49C5310@BYAPR05MB4182.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 0030839EEE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(376002)(396003)(136003)(366004)(39860400002)(199004)(189003)(50226002)(14454004)(966005)(305945005)(8936002)(5660300002)(14444005)(25786009)(66066001)(71190400001)(256004)(8676002)(386003)(2501003)(6506007)(81166006)(7736002)(64756008)(66446008)(66556008)(66476007)(66946007)(478600001)(107886003)(4326008)(102836004)(73956011)(81156014)(53936002)(1076003)(316002)(6116002)(3846002)(99286004)(2906002)(26005)(52116002)(71200400001)(110136005)(68736007)(486006)(6486002)(86362001)(2616005)(36756003)(2201001)(6512007)(6436002)(476003)(186003)(6306002);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB4182;H:BYAPR05MB5511.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: ByJhciBxISAqRJCcAgIBHXK7JxO2Pue31b6K8X3NPm5yXpjSqVS+PYn6NBlIpKdVLN3pydluFXPwKnyz75ZJlIgAMnoJA6aZZB3sprQKIHqYPoYHiLM3qF3TcM1p6tZCwPLm5+xK07OfuFpuQgAdfInYZMvspDfruG/WwTzBkFMPvx0VxGpLd1EWhosYoWgIlHqeGrJmPH7RlHYhHyXKwb1jbUTJF8pfTLyO5afZ2j4EU7HjQX3fl0fq83kbjyh0BkZ/Vv1BrcTU5hOGg+AmV0qOhESLWh+ldESb+rt3JC8YK9gp/d60ODrC33uGMyS5UCTR+QUZ9BmRVP85UgBEBllQcOgmUSjdzwJQ4aMmKuSKf/REwgTF/BtxLd96h/wPk65xFCZehTM9DDtAiveEhQdSPQo7Qb0qM+WPfzJcznI=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Mon, 06 May 2019 20:38:35 +0000 (UTC)
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57a8de1f-958c-43ca-f216-08d6d2ab56c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2019 05:17:45.9053
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4182
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
---=-ZuHpwLIaC4enCJbtXy27
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-So, Jason and I were discussing the soft-iWARP driver submission, and he
-thought it would be good to know if it even works with the various iWARP
-hardware devices.  I happen to have most of them on hand in one form or
-another, so I set down to test it.  In the process, I ran across some
-issues just with the hardware versions themselves, let alone with soft-
-iWARP.  So, here's the results of my matrix of tests.  These aren't
-performance tests, just basic "does it work" smoke tests...
-
-Hardware:
-i40iw =3D Intel x722
-qed1 =3D QLogic FastLinQ QL45000
-qed2 =3D QLogic FastLinQ QL41000
-cxgb4 =3D Chelsio T520-CR
-
-
-
-Test 1:
-rping -s -S 40 -C 20 -a $local
-rping -c -S 40 -C 20 -I $local -a $remote
-
-                    Server Side
-	i40iw		qed1		qed2		cxgb4		siw
-i40iw	FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]
-qed1	FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]
-qed2	FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]
-cxgb4	FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]		FAIL[1]
-siw	FAIL[2]		FAIL[1]		FAIL[1]		FAIL[1]		Untested
-
-Failure 1:
-Client side shows:
-client DISCONNECT EVENT...
-Server side shows:
-server DISCONNECT EVENT...
-wait for RDMA_READ_ADV state 10
-
-Failure 2:
-Client side shows:
-cma event RDMA_CM_EVENT_REJECTED, error -104
-wait for CONNECTED state 4
-connect error -1
-Server side show:
-Nothing, server didn't indicate anything had happened
-
-Obviously, rping appears to be busted on iWARP (which surprises me to be
-honest...it's part of the rdmacm-utils and should be using the rdmacm
-connection manager, which is what's required to work on iWARP, but maybe
-it just has some simple bug that needs fixed).
-
-Test 2:
-ib_read_bw -d $device -R
-ib_read_bw -d $device -R $remote
-
-                    Server Side
-	i40iw		qed1		qed2		cxgb4		siw
-i40iw	PASS		PASS		PASS		PASS		PASS
-qed1	PASS		PASS		PASS		PASS		PASS[1]
-qed2	PASS		PASS		PASS		PASS		PASS[1]
-cxgb4	PASS		PASS		PASS		PASS		PASS
-siw	FAIL[1]		PASS		PASS		PASS		untested
-
-Pass 1:
-These tests passed, but show pretty much worst case performance
-behavior.  While I got 600MB/sec on one test, and 175MB/sec on another,
-the two that I marked were only at the 1 or 2MB/sec level.  I thought
-they has hung initially.
-
-Test 3:
-qperf
-qperf -cm1 -v $remote rc_bw
-
-                    Server Side
-	i40iw		qed1		qed2		cxgb4		siw
-i40iw	PASS[1]		PASS		PASS[1]		PASS[1]		PASS
-qed1	PASS[1]		PASS		PASS[1]		PASS[1]		PASS
-qed2	PASS[1]		PASS		PASS[1]		PASS		PASS
-cxgb4	FAIL[2]		FAIL[2]		FAIL[2]		FAIL[2]		FAIL[2]
-siw	FAIL[3]		PASS		PASS		PASS		untested
-
-Pass 1:
-These passed, but only with some help.  After each client ran, the qperf
-server had to be restarted or else the client would show this error:
-rc_bw:
-failed to receive RDMA CM TCP IPv4 server port: timed out
-
-Fail 2:
-Whenever cxgb4 was the client side, the test would appear to run
-(including there was a delay appropriate for the test to run), but when
-it should have printed out results, it printed this instead:
-rc_bw:
-rdma_disconnect failed: Invalid argument
-
-Fail 3:
-Server side showed no output
-Client side showed:
-rc_bw:
-rdma_connect failed
-
-So, there you go, it looks like siw actually does a reasonable job of
-working, at least at the functionality level, and in some cases even has
-modestly decent performance.  I'm impressed.  Well done Bernard.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-ZuHpwLIaC4enCJbtXy27
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAlzQm0MACgkQuCajMw5X
-L92k5w//QxNVMiccYHxqBrv9wEBHhDXqFNSWJMoxy1V4WDSb7/fB3kUGcEox6Tz0
-djYRWDqIucQqiJrJs7aT4H4+iOZh5X+9NUD42R06qlpNXK+al/cBA/se59hIhruC
-4YsmLBat5SGDPjaSOOaVaSEkZaoybWvZ0BbaD0cnuWSI7lWjdr+NefCtyatKONB4
-VPjLcAGgaN851bS87otTz6rOo+45Kk/CgJ11Fww+fderL11hLt5fBW+UI3ZMrhRf
-nIXf3QK18p3BNXBu6FzySVmLwVKeBL8YPZ90p8oXu+1eoY0QyTli+jMUs6zZPHTg
-4LkyPuv8EUIuV49qgSwPbAkVrhlGP3Rg7SSnvZ3uZAcR2aG539cSPBdMBkUVyYbB
-p+26rlIrtOxkWPjL7JLSDBtEwIjGUls0Bv/X0RgCDbkYUYvXrySRO3jgH1SqJWcs
-eAgFno4WbWbHFRi1+WMXW7Ro3yWR7KgiMQHwiOyP/fl/QmXOm5ylbEsdvRq9zmZD
-AnvKtYWXlew1I8oeSh/Ec3Oz5CcklBxxZM27FM625VBij0v5GZYUAHVzHhcJJAGI
-xfJsfKKDhmU1Qglws0o6yu4pScTD2IyxnFr0W2rZbzNA1Us8Yn/cMpbd2dKXViG4
-b0LP7TIma78hmDjO4JMWMp6+btj8yZ5CnVne+YAm5TApxExD67g=
-=Ikfb
------END PGP SIGNATURE-----
-
---=-ZuHpwLIaC4enCJbtXy27--
-
+VGhpcyBhbGxvd3MgdGhlIG5laWdoYm9yIHRpbWVvdXQgdG8gYmUgY29uZmlndXJlZCB3aGlsZSBi
+dWlsZGluZw0KcmRtYS1jb3JlIHVzaW5nIHRoZSBleHRyYSBjbWFrZSBmbGFncy4NCg0KUmV2aWV3
+ZWQtYnk6IEpvcmdlbiBIYW5zZW4gPGpoYW5zZW5Adm13YXJlLmNvbT4NClJldmlld2VkLWJ5OiBW
+aXNobnUgRGFzYSA8dmRhc2FAdm13YXJlLmNvbT4NClNpZ25lZC1vZmYtYnk6IEFkaXQgUmFuYWRp
+dmUgPGFkaXRyQHZtd2FyZS5jb20+DQotLS0NCiBDTWFrZUxpc3RzLnR4dCAgICAgICB8IDYgKysr
+KysrDQogYnVpbGRsaWIvY29uZmlnLmguaW4gfCAyICsrDQogbGliaWJ2ZXJicy92ZXJicy5jICAg
+fCAxIC0NCiAzIGZpbGVzIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0K
+LS0tDQoNCkhlcmUgaXMgdGhlIFBSOg0KaHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXJkbWEvcmRt
+YS1jb3JlL3B1bGwvNTI0DQoNCi0tLQ0KZGlmZiAtLWdpdCBhL0NNYWtlTGlzdHMudHh0IGIvQ01h
+a2VMaXN0cy50eHQNCmluZGV4IGJlYjhmNGVjMTIzOC4uOGRiZGQyYjgwN2Y0IDEwMDY0NA0KLS0t
+IGEvQ01ha2VMaXN0cy50eHQNCisrKyBiL0NNYWtlTGlzdHMudHh0DQpAQCAtNDUsNiArNDUsOCBA
+QA0KICMgICAtRE5PX1BZVkVSQlM9MSAoZGVmYXVsdCwgYnVpbGQgcHl2ZXJicykNCiAjICAgICAg
+SW52b2tlIGN5dGhvbiB0byBidWlsZCBweXZlcmJzLiBVc3VhbGx5IHlvdSB3aWxsIHJ1biB3aXRo
+IHRoaXMgb3B0aW9uDQogIyAgICAgIGlzIHNldCwgYnV0IGl0IHdpbGwgYmUgZGlzYWJsZWQgZm9y
+IHRyYXZpcyBydW5zLg0KKyMgICAtRE5FSUdIX0dFVF9ERUZBVUxUX1RJTUVPVVRfTVM9MzAwMCAo
+ZGVmYXVsdCkNCisjICAgICAgU2V0IHRoZSBkZWZhdWx0IHRpbWVvdXQgZm9yIGxvb2t1cCBvZiBu
+ZWlnaGJvciBmb3IgbWFjIGFkZHJlc3MuDQogDQogY21ha2VfbWluaW11bV9yZXF1aXJlZChWRVJT
+SU9OIDIuOC4xMSBGQVRBTF9FUlJPUikNCiBwcm9qZWN0KHJkbWEtY29yZSBDKQ0KQEAgLTg0LDYg
+Kzg2LDEwIEBAIGlmIChJTl9QTEFDRSkNCiAgIHNldChDTUFLRV9JTlNUQUxMX0lOQ0xVREVESVIg
+ImluY2x1ZGUiKQ0KIGVuZGlmKCkNCiANCitpZiAoIiR7TkVJR0hfR0VUX0RFRkFVTFRfVElNRU9V
+VF9NU30iIFNUUkVRVUFMICIiKQ0KKyAgc2V0KE5FSUdIX0dFVF9ERUZBVUxUX1RJTUVPVVRfTVMg
+MzAwMCkNCitlbmRpZigpDQorDQogaW5jbHVkZShHTlVJbnN0YWxsRGlycykNCiAjIEMgaW5jbHVk
+ZSByb290DQogc2V0KEJVSUxEX0lOQ0xVREUgJHtDTUFLRV9CSU5BUllfRElSfS9pbmNsdWRlKQ0K
+ZGlmZiAtLWdpdCBhL2J1aWxkbGliL2NvbmZpZy5oLmluIGIvYnVpbGRsaWIvY29uZmlnLmguaW4N
+CmluZGV4IDA3NTRkMjQ5NDIzNC4uNTkwZTcwMTYyZDFlIDEwMDY0NA0KLS0tIGEvYnVpbGRsaWIv
+Y29uZmlnLmguaW4NCisrKyBiL2J1aWxkbGliL2NvbmZpZy5oLmluDQpAQCAtNjEsNiArNjEsOCBA
+QA0KICMgZGVmaW5lIFZFUkJTX1dSSVRFX09OTFkgMA0KICNlbmRpZg0KIA0KKyMgZGVmaW5lIE5F
+SUdIX0dFVF9ERUZBVUxUX1RJTUVPVVRfTVMgQE5FSUdIX0dFVF9ERUZBVUxUX1RJTUVPVVRfTVNA
+DQorDQogLy8gQ29uZmlndXJhdGlvbiBkZWZhdWx0cw0KIA0KICNkZWZpbmUgSUJBQ01fU0VSVkVS
+X01PREVfVU5JWCAwDQpkaWZmIC0tZ2l0IGEvbGliaWJ2ZXJicy92ZXJicy5jIGIvbGliaWJ2ZXJi
+cy92ZXJicy5jDQppbmRleCAxNzY2YjlmNTJkMzEuLjJjYWI4NjE4NGUzMiAxMDA2NDQNCi0tLSBh
+L2xpYmlidmVyYnMvdmVyYnMuYw0KKysrIGIvbGliaWJ2ZXJicy92ZXJicy5jDQpAQCAtOTY3LDcg
+Kzk2Nyw2IEBAIHN0YXRpYyBpbmxpbmUgaW50IGNyZWF0ZV9wZWVyX2Zyb21fZ2lkKGludCBmYW1p
+bHksIHZvaWQgKnJhd19naWQsDQogCXJldHVybiAwOw0KIH0NCiANCi0jZGVmaW5lIE5FSUdIX0dF
+VF9ERUZBVUxUX1RJTUVPVVRfTVMgMzAwMA0KIGludCBpYnZfcmVzb2x2ZV9ldGhfbDJfZnJvbV9n
+aWQoc3RydWN0IGlidl9jb250ZXh0ICpjb250ZXh0LA0KIAkJCQlzdHJ1Y3QgaWJ2X2FoX2F0dHIg
+KmF0dHIsDQogCQkJCXVpbnQ4X3QgZXRoX21hY1tFVEhFUk5FVF9MTF9TSVpFXSwNCi0tIA0KMi4x
+Ny4xDQoNCg==
