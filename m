@@ -2,36 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E106615B13
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 07:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8192D15AD6
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 07:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbfEGFjw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 May 2019 01:39:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59342 "EHLO mail.kernel.org"
+        id S1728049AbfEGFtS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 01:49:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728940AbfEGFjv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 May 2019 01:39:51 -0400
+        id S1728812AbfEGFkc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 May 2019 01:40:32 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 874D8214AE;
-        Tue,  7 May 2019 05:39:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58BE920578;
+        Tue,  7 May 2019 05:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557207590;
-        bh=I7g2P9K7D4dU1UxT9helvGgvqlFPJNb06UB/OqUI2Fo=;
+        s=default; t=1557207631;
+        bh=t/Br6gIcSiZmlrPC7V3vb+4t9UEZaeU+lmbv8eZ3UJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b/W9O7Rt4ArS5XZQhIgTrZWaaZ8ezaybfLqm0jpQp6lBFa70RCkKptsv6UMSvCEmP
-         OMtReh/AemwnHC79bshbWmCBwBtsU3XG9tZ8uPPMmwfB6p57WRj/1B7R3H/gVTiTAc
-         NBj9S18PuvOotJNME8GNMPGqJV2nEQAjV7YQ5edQ=
+        b=eqMTMFfNiAdmOTFz6IRJSh1OzTHCw+F8+JdFUgr8JXsy6OYrMC/U3z/LM+lAJxd+2
+         xlyLSQA6woMkon6KhWrh2KOzoVyJsfwfOvcZiI7lNkosOttSUE0s3dpkucqR4Aim6x
+         CUVIVnkXsSzF47bGYqiAcpVshRB1jaHsmO3T3pWw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Seth Howell <seth.howell@intel.com>,
+Cc:     Adit Ranadive <aditr@vmware.com>,
+        Ruishuang Wang <ruishuangw@vmware.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Vishnu Dasa <vdasa@vmware.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <alexander.levin@microsoft.com>,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 40/95] IB/rxe: Revise the ib_wr_opcode enum
-Date:   Tue,  7 May 2019 01:37:29 -0400
-Message-Id: <20190507053826.31622-40-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 68/95] RDMA/vmw_pvrdma: Return the correct opcode when creating WR
+Date:   Tue,  7 May 2019 01:37:57 -0400
+Message-Id: <20190507053826.31622-68-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190507053826.31622-1-sashal@kernel.org>
 References: <20190507053826.31622-1-sashal@kernel.org>
@@ -44,127 +47,103 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Adit Ranadive <aditr@vmware.com>
 
-[ Upstream commit 9a59739bd01f77db6fbe2955a4fce165f0f43568 ]
+[ Upstream commit 6325e01b6cdf4636b721cf7259c1616e3cf28ce2 ]
 
-This enum has become part of the uABI, as both RXE and the
-ib_uverbs_post_send() command expect userspace to supply values from this
-enum. So it should be properly placed in include/uapi/rdma.
+Since the IB_WR_REG_MR opcode value changed, let's set the PVRDMA device
+opcodes explicitly.
 
-In userspace this enum is called 'enum ibv_wr_opcode' as part of
-libibverbs.h. That enum defines different values for IB_WR_LOCAL_INV,
-IB_WR_SEND_WITH_INV, and IB_WR_LSO. These were introduced (incorrectly, it
-turns out) into libiberbs in 2015.
-
-The kernel has changed its mind on the numbering for several of the IB_WC
-values over the years, but has remained stable on IB_WR_LOCAL_INV and
-below.
-
-Based on this we can conclude that there is no real user space user of the
-values beyond IB_WR_ATOMIC_FETCH_AND_ADD, as they have never worked via
-rdma-core. This is confirmed by inspection, only rxe uses the kernel enum
-and implements the latter operations. rxe has clearly never worked with
-these attributes from userspace. Other drivers that support these opcodes
-implement the functionality without calling out to the kernel.
-
-To make IB_WR_SEND_WITH_INV and related work for RXE in userspace we
-choose to renumber the IB_WR enum in the kernel to match the uABI that
-userspace has bee using since before Soft RoCE was merged. This is an
-overall simpler configuration for the whole software stack, and obviously
-can't break anything existing.
-
-Reported-by: Seth Howell <seth.howell@intel.com>
-Tested-by: Seth Howell <seth.howell@intel.com>
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Cc: <stable@vger.kernel.org>
+Reported-by: Ruishuang Wang <ruishuangw@vmware.com>
+Fixes: 9a59739bd01f ("IB/rxe: Revise the ib_wr_opcode enum")
+Cc: stable@vger.kernel.org
+Reviewed-by: Bryan Tan <bryantan@vmware.com>
+Reviewed-by: Ruishuang Wang <ruishuangw@vmware.com>
+Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
+Signed-off-by: Adit Ranadive <aditr@vmware.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
 ---
- include/rdma/ib_verbs.h           | 34 ++++++++++++++++++-------------
- include/uapi/rdma/ib_user_verbs.h | 20 +++++++++++++++++-
- 2 files changed, 39 insertions(+), 15 deletions(-)
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma.h    | 35 +++++++++++++++++++-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c |  6 ++++
+ include/uapi/rdma/vmw_pvrdma-abi.h           |  1 +
+ 3 files changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 5a24b4c700e5..9e76b2410d03 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1251,21 +1251,27 @@ struct ib_qp_attr {
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
+index 984aa3484928..4463e1c1a764 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
+@@ -407,7 +407,40 @@ static inline enum ib_qp_state pvrdma_qp_state_to_ib(enum pvrdma_qp_state state)
+ 
+ static inline enum pvrdma_wr_opcode ib_wr_opcode_to_pvrdma(enum ib_wr_opcode op)
+ {
+-	return (enum pvrdma_wr_opcode)op;
++	switch (op) {
++	case IB_WR_RDMA_WRITE:
++		return PVRDMA_WR_RDMA_WRITE;
++	case IB_WR_RDMA_WRITE_WITH_IMM:
++		return PVRDMA_WR_RDMA_WRITE_WITH_IMM;
++	case IB_WR_SEND:
++		return PVRDMA_WR_SEND;
++	case IB_WR_SEND_WITH_IMM:
++		return PVRDMA_WR_SEND_WITH_IMM;
++	case IB_WR_RDMA_READ:
++		return PVRDMA_WR_RDMA_READ;
++	case IB_WR_ATOMIC_CMP_AND_SWP:
++		return PVRDMA_WR_ATOMIC_CMP_AND_SWP;
++	case IB_WR_ATOMIC_FETCH_AND_ADD:
++		return PVRDMA_WR_ATOMIC_FETCH_AND_ADD;
++	case IB_WR_LSO:
++		return PVRDMA_WR_LSO;
++	case IB_WR_SEND_WITH_INV:
++		return PVRDMA_WR_SEND_WITH_INV;
++	case IB_WR_RDMA_READ_WITH_INV:
++		return PVRDMA_WR_RDMA_READ_WITH_INV;
++	case IB_WR_LOCAL_INV:
++		return PVRDMA_WR_LOCAL_INV;
++	case IB_WR_REG_MR:
++		return PVRDMA_WR_FAST_REG_MR;
++	case IB_WR_MASKED_ATOMIC_CMP_AND_SWP:
++		return PVRDMA_WR_MASKED_ATOMIC_CMP_AND_SWP;
++	case IB_WR_MASKED_ATOMIC_FETCH_AND_ADD:
++		return PVRDMA_WR_MASKED_ATOMIC_FETCH_AND_ADD;
++	case IB_WR_REG_SIG_MR:
++		return PVRDMA_WR_REG_SIG_MR;
++	default:
++		return PVRDMA_WR_ERROR;
++	}
+ }
+ 
+ static inline enum ib_wc_status pvrdma_wc_status_to_ib(
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
+index d7162f2b7979..4d9c99dd366b 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
+@@ -695,6 +695,12 @@ int pvrdma_post_send(struct ib_qp *ibqp, struct ib_send_wr *wr,
+ 		    wr->opcode == IB_WR_RDMA_WRITE_WITH_IMM)
+ 			wqe_hdr->ex.imm_data = wr->ex.imm_data;
+ 
++		if (unlikely(wqe_hdr->opcode == PVRDMA_WR_ERROR)) {
++			*bad_wr = wr;
++			ret = -EINVAL;
++			goto out;
++		}
++
+ 		switch (qp->ibqp.qp_type) {
+ 		case IB_QPT_GSI:
+ 		case IB_QPT_UD:
+diff --git a/include/uapi/rdma/vmw_pvrdma-abi.h b/include/uapi/rdma/vmw_pvrdma-abi.h
+index 912ea1556a0b..fd801c7be120 100644
+--- a/include/uapi/rdma/vmw_pvrdma-abi.h
++++ b/include/uapi/rdma/vmw_pvrdma-abi.h
+@@ -76,6 +76,7 @@ enum pvrdma_wr_opcode {
+ 	PVRDMA_WR_MASKED_ATOMIC_FETCH_AND_ADD,
+ 	PVRDMA_WR_BIND_MW,
+ 	PVRDMA_WR_REG_SIG_MR,
++	PVRDMA_WR_ERROR,
  };
  
- enum ib_wr_opcode {
--	IB_WR_RDMA_WRITE,
--	IB_WR_RDMA_WRITE_WITH_IMM,
--	IB_WR_SEND,
--	IB_WR_SEND_WITH_IMM,
--	IB_WR_RDMA_READ,
--	IB_WR_ATOMIC_CMP_AND_SWP,
--	IB_WR_ATOMIC_FETCH_AND_ADD,
--	IB_WR_LSO,
--	IB_WR_SEND_WITH_INV,
--	IB_WR_RDMA_READ_WITH_INV,
--	IB_WR_LOCAL_INV,
--	IB_WR_REG_MR,
--	IB_WR_MASKED_ATOMIC_CMP_AND_SWP,
--	IB_WR_MASKED_ATOMIC_FETCH_AND_ADD,
-+	/* These are shared with userspace */
-+	IB_WR_RDMA_WRITE = IB_UVERBS_WR_RDMA_WRITE,
-+	IB_WR_RDMA_WRITE_WITH_IMM = IB_UVERBS_WR_RDMA_WRITE_WITH_IMM,
-+	IB_WR_SEND = IB_UVERBS_WR_SEND,
-+	IB_WR_SEND_WITH_IMM = IB_UVERBS_WR_SEND_WITH_IMM,
-+	IB_WR_RDMA_READ = IB_UVERBS_WR_RDMA_READ,
-+	IB_WR_ATOMIC_CMP_AND_SWP = IB_UVERBS_WR_ATOMIC_CMP_AND_SWP,
-+	IB_WR_ATOMIC_FETCH_AND_ADD = IB_UVERBS_WR_ATOMIC_FETCH_AND_ADD,
-+	IB_WR_LSO = IB_UVERBS_WR_TSO,
-+	IB_WR_SEND_WITH_INV = IB_UVERBS_WR_SEND_WITH_INV,
-+	IB_WR_RDMA_READ_WITH_INV = IB_UVERBS_WR_RDMA_READ_WITH_INV,
-+	IB_WR_LOCAL_INV = IB_UVERBS_WR_LOCAL_INV,
-+	IB_WR_MASKED_ATOMIC_CMP_AND_SWP =
-+		IB_UVERBS_WR_MASKED_ATOMIC_CMP_AND_SWP,
-+	IB_WR_MASKED_ATOMIC_FETCH_AND_ADD =
-+		IB_UVERBS_WR_MASKED_ATOMIC_FETCH_AND_ADD,
-+
-+	/* These are kernel only and can not be issued by userspace */
-+	IB_WR_REG_MR = 0x20,
- 	IB_WR_REG_SIG_MR,
-+
- 	/* reserve values for low level drivers' internal use.
- 	 * These values will not be used at all in the ib core layer.
- 	 */
-diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
-index e0e83a105953..e11b4def8630 100644
---- a/include/uapi/rdma/ib_user_verbs.h
-+++ b/include/uapi/rdma/ib_user_verbs.h
-@@ -751,10 +751,28 @@ struct ib_uverbs_sge {
- 	__u32 lkey;
- };
- 
-+enum ib_uverbs_wr_opcode {
-+	IB_UVERBS_WR_RDMA_WRITE = 0,
-+	IB_UVERBS_WR_RDMA_WRITE_WITH_IMM = 1,
-+	IB_UVERBS_WR_SEND = 2,
-+	IB_UVERBS_WR_SEND_WITH_IMM = 3,
-+	IB_UVERBS_WR_RDMA_READ = 4,
-+	IB_UVERBS_WR_ATOMIC_CMP_AND_SWP = 5,
-+	IB_UVERBS_WR_ATOMIC_FETCH_AND_ADD = 6,
-+	IB_UVERBS_WR_LOCAL_INV = 7,
-+	IB_UVERBS_WR_BIND_MW = 8,
-+	IB_UVERBS_WR_SEND_WITH_INV = 9,
-+	IB_UVERBS_WR_TSO = 10,
-+	IB_UVERBS_WR_RDMA_READ_WITH_INV = 11,
-+	IB_UVERBS_WR_MASKED_ATOMIC_CMP_AND_SWP = 12,
-+	IB_UVERBS_WR_MASKED_ATOMIC_FETCH_AND_ADD = 13,
-+	/* Review enum ib_wr_opcode before modifying this */
-+};
-+
- struct ib_uverbs_send_wr {
- 	__u64 wr_id;
- 	__u32 num_sge;
--	__u32 opcode;
-+	__u32 opcode;		/* see enum ib_uverbs_wr_opcode */
- 	__u32 send_flags;
- 	union {
- 		__u32 imm_data;
+ enum pvrdma_wc_status {
 -- 
 2.20.1
 
