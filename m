@@ -2,19 +2,19 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07232164B4
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 15:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1943C164BC
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 15:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbfEGNis (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 May 2019 09:38:48 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:40337 "EHLO
+        id S1726753AbfEGNiu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 09:38:50 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:40333 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726591AbfEGNis (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 09:38:48 -0400
+        with ESMTP id S1726516AbfEGNit (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 09:38:49 -0400
 Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 7 May 2019 16:38:40 +0300
 Received: from r-vnc08.mtr.labs.mlnx (r-vnc08.mtr.labs.mlnx [10.208.0.121])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x47DcdF5021865;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x47DcdF6021865;
         Tue, 7 May 2019 16:38:40 +0300
 From:   Max Gurtovoy <maxg@mellanox.com>
 To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
@@ -22,9 +22,9 @@ To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
         bvanassche@acm.org
 Cc:     israelr@mellanox.com, idanb@mellanox.com, oren@mellanox.com,
         vladimirk@mellanox.com, shlomin@mellanox.com, maxg@mellanox.com
-Subject: [PATCH 05/25] RDMA/core: Add signature attrs element for ib_mr structure
-Date:   Tue,  7 May 2019 16:38:19 +0300
-Message-Id: <1557236319-9986-6-git-send-email-maxg@mellanox.com>
+Subject: [PATCH 06/25] RDMA/mlx5: Implement mlx5_ib_map_mr_sg_pi and mlx5_ib_alloc_mr_integrity
+Date:   Tue,  7 May 2019 16:38:20 +0300
+Message-Id: <1557236319-9986-7-git-send-email-maxg@mellanox.com>
 X-Mailer: git-send-email 1.7.8.2
 In-Reply-To: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
 References: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
@@ -33,105 +33,376 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This element will describe the needed characteristics for the signature
-operation per signature enabled memory region (type IB_MR_TYPE_INTEGRITY).
+mlx5_ib_map_mr_sg_pi() will map the PI and data dma mapped SG lists to the
+mlx5 memory region prior to the registration operation. In the new
+API, the mlx5 driver will allocate an internal memory region for the
+UMR operation to register both PI and data SG lists. The internal MR
+will use KLM mode in order to map 2 (possibly non-contiguous/non-align)
+SG lists using 1 memory key. In the new API, each ULP will use 1 memory
+region for the signature operation (instead of 3 in the old API). This
+memory region will have a key that will be exposed to remote server to
+perform RDMA operation. The internal memory key that will map the SG lists
+will stay private.
 
 Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
 Signed-off-by: Israel Rukshin <israelr@mellanox.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 ---
- drivers/infiniband/core/uverbs_cmd.c |  1 +
- drivers/infiniband/core/verbs.c      | 13 ++++++++++++-
- include/rdma/ib_verbs.h              |  2 +-
- 3 files changed, 14 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c    |   2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  11 +++
+ drivers/infiniband/hw/mlx5/mr.c      | 184 ++++++++++++++++++++++++++++++++---
+ 3 files changed, 185 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 095d714b9c1c..9643d19314cd 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -746,6 +746,7 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
- 	mr->pd      = pd;
- 	mr->type    = IB_MR_TYPE_USER;
- 	mr->dm	    = NULL;
-+	mr->sig_attrs = NULL;
- 	mr->uobject = uobj;
- 	atomic_inc(&pd->usecnt);
- 	mr->res.type = RDMA_RESTRACK_MR;
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 9044e5f84ae4..151fc2e52b63 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1957,6 +1957,7 @@ int ib_dereg_mr(struct ib_mr *mr)
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index d3dd290ae1b1..175f315fc43f 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -5933,6 +5933,7 @@ static void mlx5_ib_stage_flow_db_cleanup(struct mlx5_ib_dev *dev)
+ static const struct ib_device_ops mlx5_ib_dev_ops = {
+ 	.add_gid = mlx5_ib_add_gid,
+ 	.alloc_mr = mlx5_ib_alloc_mr,
++	.alloc_mr_integrity = mlx5_ib_alloc_mr_integrity,
+ 	.alloc_pd = mlx5_ib_alloc_pd,
+ 	.alloc_ucontext = mlx5_ib_alloc_ucontext,
+ 	.attach_mcast = mlx5_ib_mcg_attach,
+@@ -5962,6 +5963,7 @@ static const struct ib_device_ops mlx5_ib_dev_ops = {
+ 	.get_dma_mr = mlx5_ib_get_dma_mr,
+ 	.get_link_layer = mlx5_ib_port_link_layer,
+ 	.map_mr_sg = mlx5_ib_map_mr_sg,
++	.map_mr_sg_pi = mlx5_ib_map_mr_sg_pi,
+ 	.mmap = mlx5_ib_mmap,
+ 	.modify_cq = mlx5_ib_modify_cq,
+ 	.modify_device = mlx5_ib_modify_device,
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index 4a617d78eae1..2ad6e483ab9d 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -568,6 +568,9 @@ struct mlx5_ib_mr {
+ 	void			*descs;
+ 	dma_addr_t		desc_map;
+ 	int			ndescs;
++	int			data_length;
++	int			meta_ndescs;
++	int			meta_length;
+ 	int			max_descs;
+ 	int			desc_size;
+ 	int			access_mode;
+@@ -586,6 +589,7 @@ struct mlx5_ib_mr {
+ 	int			access_flags; /* Needed for rereg MR */
+ 
+ 	struct mlx5_ib_mr      *parent;
++	struct mlx5_ib_mr      *pi_mr; /* Needed for IB_MR_TYPE_INTEGRITY */
+ 	atomic_t		num_leaf_free;
+ 	wait_queue_head_t       q_leaf_free;
+ 	struct mlx5_async_work  cb_work;
+@@ -1116,8 +1120,15 @@ int mlx5_ib_dereg_mr(struct ib_mr *ibmr);
+ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 			       enum ib_mr_type mr_type,
+ 			       u32 max_num_sg);
++struct ib_mr *mlx5_ib_alloc_mr_integrity(struct ib_pd *pd,
++					 u32 max_num_sg,
++					 u32 max_num_meta_sg);
+ int mlx5_ib_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+ 		      unsigned int *sg_offset);
++int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
++			 int data_sg_nents, unsigned int *data_sg_offset,
++			 struct scatterlist *meta_sg, int meta_sg_nents,
++			 unsigned int *meta_sg_offset);
+ int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port_num,
+ 			const struct ib_wc *in_wc, const struct ib_grh *in_grh,
+ 			const struct ib_mad_hdr *in, size_t in_mad_size,
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index c85f00255884..7dd5ad6d995e 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1625,17 +1625,22 @@ static void dereg_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr)
+ 
+ int mlx5_ib_dereg_mr(struct ib_mr *ibmr)
  {
- 	struct ib_pd *pd = mr->pd;
- 	struct ib_dm *dm = mr->dm;
-+	struct ib_sig_attrs *sig_attrs = mr->sig_attrs;
- 	int ret;
+-	dereg_mr(to_mdev(ibmr->device), to_mmr(ibmr));
++	struct mlx5_ib_mr *mmr = to_mmr(ibmr);
++
++	if (ibmr->type == IB_MR_TYPE_INTEGRITY)
++		dereg_mr(to_mdev(mmr->pi_mr->ibmr.device), mmr->pi_mr);
++
++	dereg_mr(to_mdev(ibmr->device), mmr);
++
+ 	return 0;
+ }
  
- 	rdma_restrack_del(&mr->res);
-@@ -1965,6 +1966,7 @@ int ib_dereg_mr(struct ib_mr *mr)
- 		atomic_dec(&pd->usecnt);
- 		if (dm)
- 			atomic_dec(&dm->usecnt);
-+		kfree(sig_attrs);
- 	}
- 
- 	return ret;
-@@ -2006,6 +2008,7 @@ struct ib_mr *ib_alloc_mr(struct ib_pd *pd,
- 		mr->res.type = RDMA_RESTRACK_MR;
- 		rdma_restrack_kadd(&mr->res);
- 		mr->type = mr_type;
-+		mr->sig_attrs = NULL;
- 	}
- 
- 	return mr;
-@@ -2029,6 +2032,7 @@ struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
- 				    u32 max_num_meta_sg)
+-struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd,
+-			       enum ib_mr_type mr_type,
+-			       u32 max_num_sg)
++static struct mlx5_ib_mr *mlx5_ib_alloc_pi_mr(struct ib_pd *pd,
++				u32 max_num_sg, u32 max_num_meta_sg)
  {
- 	struct ib_mr *mr;
-+	struct ib_sig_attrs *sig_attrs;
+ 	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+ 	int inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
+-	int ndescs = ALIGN(max_num_sg, 4);
++	int ndescs = ALIGN(max_num_sg + max_num_meta_sg, 4);
+ 	struct mlx5_ib_mr *mr;
+ 	void *mkc;
+ 	u32 *in;
+@@ -1657,8 +1662,72 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 	MLX5_SET(mkc, mkc, qpn, 0xffffff);
+ 	MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
  
- 	if (!pd->device->ops.alloc_mr_integrity ||
- 	    !pd->device->ops.map_mr_sg_pi)
-@@ -2037,10 +2041,16 @@ struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
- 	if (!max_num_meta_sg)
- 		return ERR_PTR(-EINVAL);
- 
-+	sig_attrs = kzalloc(sizeof(struct ib_sig_attrs), GFP_KERNEL);
-+	if (!sig_attrs)
++	mr->access_mode = MLX5_MKC_ACCESS_MODE_KLMS;
++
++	err = mlx5_alloc_priv_descs(pd->device, mr,
++				    ndescs, sizeof(struct mlx5_klm));
++	if (err)
++		goto err_free_in;
++	mr->desc_size = sizeof(struct mlx5_klm);
++	mr->max_descs = ndescs;
++
++	MLX5_SET(mkc, mkc, access_mode_1_0, mr->access_mode & 0x3);
++	MLX5_SET(mkc, mkc, access_mode_4_2, (mr->access_mode >> 2) & 0x7);
++	MLX5_SET(mkc, mkc, umr_en, 1);
++
++	mr->ibmr.pd = pd;
++	mr->ibmr.device = pd->device;
++	err = mlx5_core_create_mkey(dev->mdev, &mr->mmkey, in, inlen);
++	if (err)
++		goto err_priv_descs;
++
++	mr->mmkey.type = MLX5_MKEY_MR;
++	mr->ibmr.lkey = mr->mmkey.key;
++	mr->ibmr.rkey = mr->mmkey.key;
++	mr->umem = NULL;
++	kfree(in);
++
++	return mr;
++
++err_priv_descs:
++	mlx5_free_priv_descs(mr);
++err_free_in:
++	kfree(in);
++err_free:
++	kfree(mr);
++	return ERR_PTR(err);
++}
++
++static struct ib_mr *__mlx5_ib_alloc_mr(struct ib_pd *pd,
++					enum ib_mr_type mr_type,
++					u32 max_num_sg, u32 max_num_meta_sg)
++{
++	struct mlx5_ib_dev *dev = to_mdev(pd->device);
++	int inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
++	int ndescs = ALIGN(max_num_sg, 4);
++	struct mlx5_ib_mr *mr;
++	void *mkc;
++	u32 *in;
++	int err;
++
++	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
++	if (!mr)
 +		return ERR_PTR(-ENOMEM);
 +
- 	mr = pd->device->ops.alloc_mr_integrity(pd, max_num_data_sg,
- 						max_num_meta_sg);
--	if (IS_ERR(mr))
-+	if (IS_ERR(mr)) {
-+		kfree(sig_attrs);
- 		return mr;
++	in = kzalloc(inlen, GFP_KERNEL);
++	if (!in) {
++		err = -ENOMEM;
++		goto err_free;
 +	}
++
++	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
++	MLX5_SET(mkc, mkc, free, 1);
++	MLX5_SET(mkc, mkc, qpn, 0xffffff);
++	MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
++
+ 	if (mr_type == IB_MR_TYPE_MEM_REG) {
+ 		mr->access_mode = MLX5_MKC_ACCESS_MODE_MTT;
++		MLX5_SET(mkc, mkc, translations_octword_size, ndescs);
+ 		MLX5_SET(mkc, mkc, log_page_size, PAGE_SHIFT);
+ 		err = mlx5_alloc_priv_descs(pd->device, mr,
+ 					    ndescs, sizeof(struct mlx5_mtt));
+@@ -1669,6 +1738,7 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 		mr->max_descs = ndescs;
+ 	} else if (mr_type == IB_MR_TYPE_SG_GAPS) {
+ 		mr->access_mode = MLX5_MKC_ACCESS_MODE_KLMS;
++		MLX5_SET(mkc, mkc, translations_octword_size, ndescs);
  
- 	mr->device = pd->device;
- 	mr->pd = pd;
-@@ -2051,6 +2061,7 @@ struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
- 	mr->res.type = RDMA_RESTRACK_MR;
- 	rdma_restrack_kadd(&mr->res);
- 	mr->type = IB_MR_TYPE_INTEGRITY;
-+	mr->sig_attrs = sig_attrs;
+ 		err = mlx5_alloc_priv_descs(pd->device, mr,
+ 					    ndescs, sizeof(struct mlx5_klm));
+@@ -1676,11 +1746,13 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 			goto err_free_in;
+ 		mr->desc_size = sizeof(struct mlx5_klm);
+ 		mr->max_descs = ndescs;
+-	} else if (mr_type == IB_MR_TYPE_SIGNATURE) {
++	} else if (mr_type == IB_MR_TYPE_SIGNATURE ||
++		   mr_type == IB_MR_TYPE_INTEGRITY) {
+ 		u32 psv_index[2];
  
- 	return mr;
+ 		MLX5_SET(mkc, mkc, bsf_en, 1);
+ 		MLX5_SET(mkc, mkc, bsf_octword_size, MLX5_MKEY_BSF_OCTO_SIZE);
++		MLX5_SET(mkc, mkc, translations_octword_size, 4);
+ 		mr->sig = kzalloc(sizeof(*mr->sig), GFP_KERNEL);
+ 		if (!mr->sig) {
+ 			err = -ENOMEM;
+@@ -1701,6 +1773,14 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 		mr->sig->sig_err_exists = false;
+ 		/* Next UMR, Arm SIGERR */
+ 		++mr->sig->sigerr_count;
++		if (mr_type == IB_MR_TYPE_INTEGRITY) {
++			mr->pi_mr = mlx5_ib_alloc_pi_mr(pd, max_num_sg,
++							max_num_meta_sg);
++			if (IS_ERR(mr->pi_mr)) {
++				err = PTR_ERR(mr->pi_mr);
++				goto err_destroy_psv;
++			}
++		}
+ 	} else {
+ 		mlx5_ib_warn(dev, "Invalid mr type %d\n", mr_type);
+ 		err = -EINVAL;
+@@ -1714,7 +1794,7 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 	mr->ibmr.device = pd->device;
+ 	err = mlx5_core_create_mkey(dev->mdev, &mr->mmkey, in, inlen);
+ 	if (err)
+-		goto err_destroy_psv;
++		goto err_free_pi_mr;
+ 
+ 	mr->mmkey.type = MLX5_MKEY_MR;
+ 	mr->ibmr.lkey = mr->mmkey.key;
+@@ -1724,6 +1804,11 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 
+ 	return &mr->ibmr;
+ 
++err_free_pi_mr:
++	if (mr->pi_mr) {
++		dereg_mr(to_mdev(mr->pi_mr->ibmr.device), mr->pi_mr);
++		mr->pi_mr = NULL;
++	}
+ err_destroy_psv:
+ 	if (mr->sig) {
+ 		if (mlx5_core_destroy_psv(dev->mdev,
+@@ -1745,6 +1830,20 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 	return ERR_PTR(err);
  }
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 0e288fb5cd40..05c9996915d5 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1716,7 +1716,7 @@ struct ib_mr {
- 	};
  
- 	struct ib_dm      *dm;
--
-+	struct ib_sig_attrs *sig_attrs; /* only for IB_MR_TYPE_INTEGRITY MRs */
- 	/*
- 	 * Implementation details of the RDMA core, don't use in drivers:
- 	 */
++struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd,
++			       enum ib_mr_type mr_type,
++			       u32 max_num_sg)
++{
++	return __mlx5_ib_alloc_mr(pd, mr_type, max_num_sg, 0);
++}
++
++struct ib_mr *mlx5_ib_alloc_mr_integrity(struct ib_pd *pd,
++					 u32 max_num_sg, u32 max_num_meta_sg)
++{
++	return __mlx5_ib_alloc_mr(pd, IB_MR_TYPE_INTEGRITY, max_num_sg,
++				  max_num_meta_sg);
++}
++
+ struct ib_mw *mlx5_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+ 			       struct ib_udata *udata)
+ {
+@@ -1877,13 +1976,16 @@ static int
+ mlx5_ib_sg_to_klms(struct mlx5_ib_mr *mr,
+ 		   struct scatterlist *sgl,
+ 		   unsigned short sg_nents,
+-		   unsigned int *sg_offset_p)
++		   unsigned int *sg_offset_p,
++		   struct scatterlist *meta_sgl,
++		   unsigned short meta_sg_nents,
++		   unsigned int *meta_sg_offset_p)
+ {
+ 	struct scatterlist *sg = sgl;
+ 	struct mlx5_klm *klms = mr->descs;
+ 	unsigned int sg_offset = sg_offset_p ? *sg_offset_p : 0;
+ 	u32 lkey = mr->ibmr.pd->local_dma_lkey;
+-	int i;
++	int i, j = 0;
+ 
+ 	mr->ibmr.iova = sg_dma_address(sg) + sg_offset;
+ 	mr->ibmr.length = 0;
+@@ -1898,12 +2000,36 @@ mlx5_ib_sg_to_klms(struct mlx5_ib_mr *mr,
+ 
+ 		sg_offset = 0;
+ 	}
+-	mr->ndescs = i;
+ 
+ 	if (sg_offset_p)
+ 		*sg_offset_p = sg_offset;
+ 
+-	return i;
++	mr->ndescs = i;
++	mr->data_length = mr->ibmr.length;
++
++	if (meta_sg_nents) {
++		sg = meta_sgl;
++		sg_offset = meta_sg_offset_p ? *meta_sg_offset_p : 0;
++		for_each_sg(meta_sgl, sg, meta_sg_nents, j) {
++			if (unlikely(i + j >= mr->max_descs))
++				break;
++			klms[i + j].va = cpu_to_be64(sg_dma_address(sg) +
++						     sg_offset);
++			klms[i + j].bcount = cpu_to_be32(sg_dma_len(sg) -
++							 sg_offset);
++			klms[i + j].key = cpu_to_be32(lkey);
++			mr->ibmr.length += sg_dma_len(sg) - sg_offset;
++
++			sg_offset = 0;
++		}
++		if (meta_sg_offset_p)
++			*meta_sg_offset_p = sg_offset;
++
++		mr->meta_ndescs = j;
++		mr->meta_length = mr->ibmr.length - mr->data_length;
++	}
++
++	return i + j;
+ }
+ 
+ static int mlx5_set_page(struct ib_mr *ibmr, u64 addr)
+@@ -1920,6 +2046,39 @@ static int mlx5_set_page(struct ib_mr *ibmr, u64 addr)
+ 	return 0;
+ }
+ 
++int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
++			 int data_sg_nents, unsigned int *data_sg_offset,
++			 struct scatterlist *meta_sg, int meta_sg_nents,
++			 unsigned int *meta_sg_offset)
++{
++	struct mlx5_ib_mr *mr = to_mmr(ibmr);
++	struct mlx5_ib_mr *pi_mr = mr->pi_mr;
++	int n;
++
++	WARN_ON(ibmr->type != IB_MR_TYPE_INTEGRITY);
++
++	pi_mr->ndescs = 0;
++	pi_mr->meta_ndescs = 0;
++
++	ib_dma_sync_single_for_cpu(ibmr->device, pi_mr->desc_map,
++				   pi_mr->desc_size * pi_mr->max_descs,
++				   DMA_TO_DEVICE);
++
++	n = mlx5_ib_sg_to_klms(pi_mr, data_sg, data_sg_nents, data_sg_offset,
++			       meta_sg, meta_sg_nents, meta_sg_offset);
++
++	/* This is zero-based memory region */
++	pi_mr->ibmr.iova = 0;
++	ibmr->length = pi_mr->ibmr.length;
++	ibmr->iova = pi_mr->ibmr.iova;
++
++	ib_dma_sync_single_for_device(ibmr->device, pi_mr->desc_map,
++				      pi_mr->desc_size * pi_mr->max_descs,
++				      DMA_TO_DEVICE);
++
++	return n;
++}
++
+ int mlx5_ib_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+ 		      unsigned int *sg_offset)
+ {
+@@ -1933,7 +2092,8 @@ int mlx5_ib_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+ 				   DMA_TO_DEVICE);
+ 
+ 	if (mr->access_mode == MLX5_MKC_ACCESS_MODE_KLMS)
+-		n = mlx5_ib_sg_to_klms(mr, sg, sg_nents, sg_offset);
++		n = mlx5_ib_sg_to_klms(mr, sg, sg_nents, sg_offset, NULL, 0,
++				       NULL);
+ 	else
+ 		n = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset,
+ 				mlx5_set_page);
 -- 
 2.16.3
 
