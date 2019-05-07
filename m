@@ -2,144 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C99316830
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 18:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE99E168D8
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 19:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbfEGQoH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 May 2019 12:44:07 -0400
-Received: from mail-eopbgr730065.outbound.protection.outlook.com ([40.107.73.65]:13792
-        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726476AbfEGQoH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 May 2019 12:44:07 -0400
+        id S1727241AbfEGRJr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 13:09:47 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:36562 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726225AbfEGRJr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 13:09:47 -0400
+Received: by mail-qk1-f195.google.com with SMTP id c14so2239735qke.3
+        for <linux-rdma@vger.kernel.org>; Tue, 07 May 2019 10:09:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector1-amd-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XDmUxc0I3Vs06iUOv0mgYhYfmxdHxaW2JnGAm6xmlv4=;
- b=Uo8Nv1i3+69R/LhIxA3soBtXJ2s46HvlJdQoCtBNkfjEGnuoOXrCeXEd+f+FmlnJA0QmasVRB7BYDnk2uCZy86IWpuo418YVAzko+51ZBkfaRJKMicVW0XR7xHG8dD8Ngc8gbJnMxuTKKQmrt3wxM4zHz376fEGgZ9IuvR64H8E=
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (20.179.92.82) by
- BYAPR12MB3544.namprd12.prod.outlook.com (20.179.94.154) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1856.11; Tue, 7 May 2019 16:44:02 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::9118:73f2:809c:22c7]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::9118:73f2:809c:22c7%4]) with mapi id 15.20.1856.012; Tue, 7 May 2019
- 16:44:02 +0000
-From:   "Kuehling, Felix" <Felix.Kuehling@amd.com>
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v15 12/17] drm/radeon, arm64: untag user pointers in
- radeon_gem_userptr_ioctl
-Thread-Topic: [PATCH v15 12/17] drm/radeon, arm64: untag user pointers in
- radeon_gem_userptr_ioctl
-Thread-Index: AQHVBCkzLfkJvfOc9kqyclyg05ajP6Zf386A
-Date:   Tue, 7 May 2019 16:44:02 +0000
-Message-ID: <7568118b-ad57-156c-464f-54fb3f90a783@amd.com>
-References: <cover.1557160186.git.andreyknvl@google.com>
- <03fe9d923db75cf72678f3ce103838e67390751a.1557160186.git.andreyknvl@google.com>
-In-Reply-To: <03fe9d923db75cf72678f3ce103838e67390751a.1557160186.git.andreyknvl@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [165.204.55.251]
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-x-clientproxiedby: YTXPR0101CA0058.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:1::35) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:133::18)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Felix.Kuehling@amd.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 93eca1e0-2a8f-45ef-5051-08d6d30b35d1
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:BYAPR12MB3544;
-x-ms-traffictypediagnostic: BYAPR12MB3544:
-x-microsoft-antispam-prvs: <BYAPR12MB35449D43230F5246FFBE6D1892310@BYAPR12MB3544.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 0030839EEE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(376002)(366004)(346002)(136003)(39860400002)(189003)(199004)(72206003)(71190400001)(2501003)(316002)(76176011)(386003)(36756003)(81166006)(53546011)(66066001)(476003)(81156014)(6506007)(14454004)(8936002)(478600001)(52116002)(102836004)(486006)(2906002)(8676002)(65956001)(31696002)(65806001)(68736007)(25786009)(5660300002)(186003)(2616005)(6116002)(6246003)(66446008)(73956011)(11346002)(86362001)(446003)(66476007)(64756008)(2201001)(66946007)(26005)(4326008)(31686004)(71200400001)(6512007)(66556008)(53936002)(229853002)(64126003)(58126008)(54906003)(305945005)(6486002)(7406005)(7416002)(256004)(99286004)(65826007)(7736002)(110136005)(6436002)(3846002)(921003)(1121003);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR12MB3544;H:BYAPR12MB3176.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Lq5pCPDcPNLU5X+6HbKKo8uqlLH+qh1zPjC6a8jGCekQNZW/q3Uz5M5mILQQpOHPKm6yY7nVRSZkwb1aqbixPMKXDgRTrUEtSJc3P0fPdeVOAWwqkgoD6CXrw1+YnroUVESXWCnoWejM1WWWmtHHXP/3jLhJBO+0owXMBvH5Zjj7+nHCSozrJ++KKAP4ZRiPdoDmJVdEjPv4cM/2d8TBRHXO/Qd6GZcvYkcHUd1Nd9wYO+vrqFTuHiSZXQIUA+091XhYfn/pTZ5FbYAGZQFJZGCdA4KlegQuZPs2ughkxoW92Z9qq4w/pVD1i2tJKBOKsXs+vssL9Jfc4LWT0XHg5u6nA1YN4UpzQZ4b7EHBx37e00LlGJc2ZkMXVBMWO3RFqCccp5ZFyrsn9YtusagfI81mN78mXr3VKrVHTnKLwGY=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AC55AB809D9E174784D2867A22094BC5@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VRY6mepAUzetYwvlQRliutkiA56prNy9/A7KoI2aT7w=;
+        b=CLkLlIPU/xEz1AFw3zgb5smF/7C+sy+tfwMomit+fzg9iMB9qDWAgnGTrx7WNBNUHa
+         8eKl5KS0UJuniJuUQPYHyFzVq1JlgwK6dSIdbtz9v4Q672CTafPqT+X7yaks36gD9sye
+         sORBSyqStEtBns1xX5IqQdAaqv28luTmudcJhzGhLfPbru6D1oZULl2ly38RE97RQt1V
+         ZI5kwFLH3rcuHtPL/3T1xj5NY8dWPYWcNu7UvIXfgxWdPt2U+WzF4MnssOmYBUpcLmcb
+         EtncOIjU7iUJ4PzQVdhnwRVDuJt09Hw+0GvIdyFC2RXZsJODnjiuNpvBmq2K/+E/3yXi
+         hvIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VRY6mepAUzetYwvlQRliutkiA56prNy9/A7KoI2aT7w=;
+        b=Ia3X1Djz2pvDI9JCty6p1NCUhhPG27fYYRPTmmGCURR/lQd7r/t5kwlfiuBpttko7s
+         QlfnoCOCG2HskuGekRqF6hqbWKIoOlVo3zlpiPEkJonXhP/wAqYuiO/ErMDOz4vj46zI
+         +QquQc1Luy8M78nQM9yV/JJG0oP5aptw4cpD9c/zAmfqvrYaZwPqNZg2pnvuukOz9nMu
+         a8S9SX0+R2pLPe9FZhk1xWr3YnAh//hhWK1UaiOo1V2OkL1EcERzZnpCYsnOskmsE3pM
+         IY/wyT9cCnVB8iptQX2B+3xE9jhG2JiY1eb72ry3LZrHc5JKZ1reyB/K9E0gDvHVULyc
+         1Hvg==
+X-Gm-Message-State: APjAAAWfrAbQwELCIJRdHu0/6NYdrojUAq2Rvb6D7fhyTWXb6oZUs+Gd
+        szvVpBoNPlkuRNZ+KdqKDUpJl9JF8hk=
+X-Google-Smtp-Source: APXvYqyBh6XksJw91yeQb6QYAPkhL8bbV/TjgQunJ7exDATKJHC8Z+xlCDJCP5N6pxfiKFdBdAckfg==
+X-Received: by 2002:ae9:f00d:: with SMTP id l13mr19257782qkg.110.1557248985900;
+        Tue, 07 May 2019 10:09:45 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id q5sm10020421qtj.3.2019.05.07.10.09.43
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 May 2019 10:09:44 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hO3b5-0007Mw-66; Tue, 07 May 2019 14:09:43 -0300
+Date:   Tue, 7 May 2019 14:09:43 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v8 02/12] SIW main include file
+Message-ID: <20190507170943.GI6201@ziepe.ca>
+References: <20190505170956.GH6938@mtr-leonro.mtl.com>
+ <20190428110721.GI6705@mtr-leonro.mtl.com>
+ <20190426131852.30142-1-bmt@zurich.ibm.com>
+ <20190426131852.30142-3-bmt@zurich.ibm.com>
+ <OF713CDB64.D1B09740-ON002583F1.0050F874-002583F1.005CE977@notes.na.collabserv.com>
+ <OF11D27C39.8647DC53-ON002583F3.005609DE-002583F3.0057694C@notes.na.collabserv.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 93eca1e0-2a8f-45ef-5051-08d6d30b35d1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2019 16:44:02.5248
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3544
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF11D27C39.8647DC53-ON002583F3.005609DE-002583F3.0057694C@notes.na.collabserv.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMjAxOS0wNS0wNiAxMjozMCBwLm0uLCBBbmRyZXkgS29ub3ZhbG92IHdyb3RlOg0KPiBbQ0FV
-VElPTjogRXh0ZXJuYWwgRW1haWxdDQo+DQo+IFRoaXMgcGF0Y2ggaXMgYSBwYXJ0IG9mIGEgc2Vy
-aWVzIHRoYXQgZXh0ZW5kcyBhcm02NCBrZXJuZWwgQUJJIHRvIGFsbG93IHRvDQo+IHBhc3MgdGFn
-Z2VkIHVzZXIgcG9pbnRlcnMgKHdpdGggdGhlIHRvcCBieXRlIHNldCB0byBzb21ldGhpbmcgZWxz
-ZSBvdGhlcg0KPiB0aGFuIDB4MDApIGFzIHN5c2NhbGwgYXJndW1lbnRzLg0KPg0KPiBJbiByYWRl
-b25fZ2VtX3VzZXJwdHJfaW9jdGwoKSBhbiBNTVUgbm90aWZpZXIgaXMgc2V0IHVwIHdpdGggYSAo
-dGFnZ2VkKQ0KPiB1c2Vyc3BhY2UgcG9pbnRlci4gVGhlIHVudGFnZ2VkIGFkZHJlc3Mgc2hvdWxk
-IGJlIHVzZWQgc28gdGhhdCBNTVUNCj4gbm90aWZpZXJzIGZvciB0aGUgdW50YWdnZWQgYWRkcmVz
-cyBnZXQgY29ycmVjdGx5IG1hdGNoZWQgdXAgd2l0aCB0aGUgcmlnaHQNCj4gQk8uIFRoaXMgZnVu
-Y2F0aW9uIGFsc28gY2FsbHMgcmFkZW9uX3R0bV90dF9waW5fdXNlcnB0cigpLCB3aGljaCB1c2Vz
-DQo+IHByb3ZpZGVkIHVzZXIgcG9pbnRlcnMgZm9yIHZtYSBsb29rdXBzLCB3aGljaCBjYW4gb25s
-eSBieSBkb25lIHdpdGgNCj4gdW50YWdnZWQgcG9pbnRlcnMuDQo+DQo+IFRoaXMgcGF0Y2ggdW50
-YWdzIHVzZXIgcG9pbnRlcnMgaW4gcmFkZW9uX2dlbV91c2VycHRyX2lvY3RsKCkuDQo+DQo+IFNp
-Z25lZC1vZmYtYnk6IEFuZHJleSBLb25vdmFsb3YgPGFuZHJleWtudmxAZ29vZ2xlLmNvbT4NCkFj
-a2VkLWJ5OiBGZWxpeCBLdWVobGluZyA8RmVsaXguS3VlaGxpbmdAYW1kLmNvbT4NCg0KDQo+IC0t
-LQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9yYWRlb24vcmFkZW9uX2dlbS5jIHwgMiArKw0KPiAgIDEg
-ZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-Z3B1L2RybS9yYWRlb24vcmFkZW9uX2dlbS5jIGIvZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9yYWRl
-b25fZ2VtLmMNCj4gaW5kZXggNDQ2MTdkZWM4MTgzLi45MGViNzhmYjVlYjIgMTAwNjQ0DQo+IC0t
-LSBhL2RyaXZlcnMvZ3B1L2RybS9yYWRlb24vcmFkZW9uX2dlbS5jDQo+ICsrKyBiL2RyaXZlcnMv
-Z3B1L2RybS9yYWRlb24vcmFkZW9uX2dlbS5jDQo+IEBAIC0yOTEsNiArMjkxLDggQEAgaW50IHJh
-ZGVvbl9nZW1fdXNlcnB0cl9pb2N0bChzdHJ1Y3QgZHJtX2RldmljZSAqZGV2LCB2b2lkICpkYXRh
-LA0KPiAgICAgICAgICB1aW50MzJfdCBoYW5kbGU7DQo+ICAgICAgICAgIGludCByOw0KPg0KPiAr
-ICAgICAgIGFyZ3MtPmFkZHIgPSB1bnRhZ2dlZF9hZGRyKGFyZ3MtPmFkZHIpOw0KPiArDQo+ICAg
-ICAgICAgIGlmIChvZmZzZXRfaW5fcGFnZShhcmdzLT5hZGRyIHwgYXJncy0+c2l6ZSkpDQo+ICAg
-ICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+DQo+IC0tDQo+IDIuMjEuMC4xMDIwLmdm
-MjgyMGNmMDFhLWdvb2cNCj4NCg==
+On Tue, May 07, 2019 at 03:54:45PM +0000, Bernard Metzler wrote:
+> 
+> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+> >From: "Leon Romanovsky" <leon@kernel.org>
+> >Date: 05/05/2019 07:10PM
+> >Cc: linux-rdma@vger.kernel.org, "Bernard Metzler"
+> ><bmt@rims.zurich.ibm.com>
+> >Subject: Re: [PATCH v8 02/12] SIW main include file
+> >
+> >On Sun, May 05, 2019 at 04:54:50PM +0000, Bernard Metzler wrote:
+> >>
+> >> >To: "Bernard Metzler" <bmt@zurich.ibm.com>
+> >> >From: "Leon Romanovsky" <leon@kernel.org>
+> >> >Date: 04/28/2019 01:07PM
+> >> >Cc: linux-rdma@vger.kernel.org, "Bernard Metzler"
+> >> ><bmt@rims.zurich.ibm.com>
+> >> >Subject: Re: [PATCH v8 02/12] SIW main include file
+> >> >
+> >> >On Fri, Apr 26, 2019 at 03:18:42PM +0200, Bernard Metzler wrote:
+> >> >> From: Bernard Metzler <bmt@rims.zurich.ibm.com>
+> >> >>
+> >> >> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+> >> >>  drivers/infiniband/sw/siw/siw.h | 733
+> >> >++++++++++++++++++++++++++++++++
+> >> >>  1 file changed, 733 insertions(+)
+> >> >>  create mode 100644 drivers/infiniband/sw/siw/siw.h
+> >> >>
+> >> >> diff --git a/drivers/infiniband/sw/siw/siw.h
+> >> >b/drivers/infiniband/sw/siw/siw.h
+> >> >> new file mode 100644
+> >> >> index 000000000000..9a3c2abbd858
+> >> >> +++ b/drivers/infiniband/sw/siw/siw.h
+> >> >> @@ -0,0 +1,733 @@
+> >> >> +/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
+> >> >> +
+> >> >> +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+> >> >> +/* Copyright (c) 2008-2019, IBM Corporation */
+> >> >> +
+> >> >> +#ifndef _SIW_H
+> >> >> +#define _SIW_H
+> >> >> +
+> >> >> +#include <linux/idr.h>
+> >> >> +#include <rdma/ib_verbs.h>
+> >> >> +#include <linux/socket.h>
+> >> >> +#include <linux/skbuff.h>
+> >> >> +#include <linux/in.h>
+> >> >> +#include <linux/fs.h>
+> >> >> +#include <linux/netdevice.h>
+> >> >> +#include <crypto/hash.h>
+> >> >> +#include <linux/resource.h> /* MLOCK_LIMIT */
+> >> >> +#include <linux/module.h>
+> >> >> +#include <linux/version.h>
+> >> >> +#include <linux/llist.h>
+> >> >> +#include <linux/mm.h>
+> >> >> +#include <linux/sched/signal.h>
+> >> >> +
+> >> >> +#include <rdma/siw_user.h>
+> >> >> +#include "iwarp.h"
+> >> >> +
+> >> >> +/* driver debugging enabled */
+> >> >> +#define DEBUG
+> >> >
+> >> >I clearly remember that we asked to remove this.
+> >>
+> >> Absolutely. Sorry, it sneaked in again since I did some
+> >> debugging. Will remove...
+> >> >
+> >> >> +	spinlock_t lock;
+> >> >> +
+> >> >> +	/* object management */
+> >> >> +	struct idr qp_idr;
+> >> >> +	struct idr mem_idr;
+> >> >
+> >> >Why IDR and not XArray?
+> >>
+> >> Memory access keys and QP IDs are generated as random
+> >> numbers, since both are exposed to the application.
+> >> Since XArray is not designed for sparsely distributed
+> >> id ranges, I am still in favor of IDR for these two
+> >> resources.
+
+IDR and xarray have identical underlying storage so this is nonsense
+
+No new idr's or radix tree users will be accepted into rdma.... Use
+xarray
+
+Jason
