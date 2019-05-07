@@ -2,172 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CF316585
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 16:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D96165C0
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 16:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbfEGOSk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 May 2019 10:18:40 -0400
-Received: from mail-eopbgr70052.outbound.protection.outlook.com ([40.107.7.52]:18112
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726265AbfEGOSk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 May 2019 10:18:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oAnfx2gMV9Znc2c6mniy5R0FhYqIcqvDVR6dbIf4/tQ=;
- b=a4eZpj56IA+uP68hsKcoJLPV299BvX22cq1seIki9y6nX1how+kYjtZ3EVHN82NNDOE4pp/ov5SY/1AhTLkJlcQHu1lV/iKEGialXZJcu6Xd/9/FDlIlcxa/d/wBhZg4BiFb5ipX1+rNGFmD7yfYg9apvr8EWoD1tu1RmLZC56M=
-Received: from HE1PR0502CA0003.eurprd05.prod.outlook.com (10.175.36.141) by
- AM6PR0502MB4054.eurprd05.prod.outlook.com (52.133.30.153) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1856.10; Tue, 7 May 2019 14:18:31 +0000
-Received: from VE1EUR03FT046.eop-EUR03.prod.protection.outlook.com
- (2a01:111:f400:7e09::206) by HE1PR0502CA0003.outlook.office365.com
- (2603:10a6:3:e3::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1856.10 via Frontend
- Transport; Tue, 7 May 2019 14:18:31 +0000
-Authentication-Results: spf=pass (sender IP is 193.47.165.134)
- smtp.mailfrom=mellanox.com; acm.org; dkim=none (message not signed)
- header.d=none;acm.org; dmarc=pass action=none header.from=mellanox.com;
-Received-SPF: Pass (protection.outlook.com: domain of mellanox.com designates
- 193.47.165.134 as permitted sender) receiver=protection.outlook.com;
- client-ip=193.47.165.134; helo=mtlcas13.mtl.com;
-Received: from mtlcas13.mtl.com (193.47.165.134) by
- VE1EUR03FT046.mail.protection.outlook.com (10.152.19.226) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.1856.11 via Frontend Transport; Tue, 7 May 2019 14:18:30 +0000
-Received: from MTLCAS13.mtl.com (10.0.8.78) by mtlcas13.mtl.com (10.0.8.78)
- with Microsoft SMTP Server (TLS) id 15.0.1178.4; Tue, 7 May 2019 17:18:30
- +0300
-Received: from MTLCAS01.mtl.com (10.0.8.71) by MTLCAS13.mtl.com (10.0.8.78)
- with Microsoft SMTP Server (TLS) id 15.0.1178.4 via Frontend Transport; Tue,
- 7 May 2019 17:18:30 +0300
-Received: from [10.223.3.162] (10.223.3.162) by MTLCAS01.mtl.com (10.0.8.71)
- with Microsoft SMTP Server (TLS) id 14.3.301.0; Tue, 7 May 2019 17:17:47
- +0300
-Subject: Re: [PATCH 00/25 V4] Introduce new API for T10-PI offload
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     Leon Romanovsky <leonro@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Israel Rukshin <israelr@mellanox.com>,
-        Idan Burstein <idanb@mellanox.com>,
-        Oren Duer <oren@mellanox.com>,
-        Vladimir Koushnir <vladimirk@mellanox.com>,
-        "Shlomi Nimrodi" <shlomin@mellanox.com>
-References: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
- <20190507134217.GX6186@mellanox.com>
- <2e3d9da7-d4fa-e2fa-5d3b-e60c54e7f7ba@mellanox.com>
- <20190507140818.GZ6186@mellanox.com>
-From:   Max Gurtovoy <maxg@mellanox.com>
-Message-ID: <1378a723-81c8-63f3-c863-2e7b130eccd0@mellanox.com>
-Date:   Tue, 7 May 2019 17:17:46 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726353AbfEGOea convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 7 May 2019 10:34:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39108 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726403AbfEGOea (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 10:34:30 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x47ETQlB022714
+        for <linux-rdma@vger.kernel.org>; Tue, 7 May 2019 10:34:29 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.66])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2sbbmmgu2w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 07 May 2019 10:34:28 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 7 May 2019 14:34:28 -0000
+Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
+        by smtp.notes.na.collabserv.com (10.106.227.127) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 7 May 2019 14:34:25 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp05.a3.dal06.isc4sb.com
+          with ESMTP id 2019050714342467-692554 ;
+          Tue, 7 May 2019 14:34:24 +0000 
+In-Reply-To: <20190426210718.GB6705@mtr-leonro.mtl.com>
+Subject: Re: [PATCH v8 00/12] SIW: Request for Comments
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Tue, 7 May 2019 14:34:24 +0000
 MIME-Version: 1.0
-In-Reply-To: <20190507140818.GZ6186@mellanox.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.223.3.162]
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:193.47.165.134;IPV:NLI;CTRY:IL;EFV:NLI;SFV:NSPM;SFS:(10009020)(376002)(346002)(396003)(136003)(39860400002)(2980300002)(199004)(189003)(478600001)(6116002)(77096007)(2906002)(230700001)(6636002)(31686004)(7736002)(70586007)(305945005)(36756003)(65826007)(50466002)(70206006)(31696002)(126002)(14444005)(81166006)(81156014)(8676002)(86362001)(64126003)(2616005)(476003)(3846002)(16526019)(186003)(76176011)(486006)(53546011)(6862004)(336012)(356004)(4326008)(446003)(6246003)(8936002)(67846002)(5660300002)(11346002)(107886003)(229853002)(54906003)(47776003)(65806001)(16576012)(65956001)(106002)(58126008)(316002)(26005)(23676004)(2486003)(37006003)(3940600001);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR0502MB4054;H:mtlcas13.mtl.com;FPR:;SPF:Pass;LANG:en;PTR:mail13.mellanox.com;A:1;MX:1;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 890a2750-7943-4038-0bc8-08d6d2f6e1ca
-X-Microsoft-Antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4709054)(2017052603328)(7193020);SRVR:AM6PR0502MB4054;
-X-MS-TrafficTypeDiagnostic: AM6PR0502MB4054:
-X-Microsoft-Antispam-PRVS: <AM6PR0502MB4054FACAC3DD3D0F723F9979B6310@AM6PR0502MB4054.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-Forefront-PRVS: 0030839EEE
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: PvFO/NpRabSQzWJIE6uI+qBESvK3tVfDMfxKDIq80BAbrw6iy3u02JUoGPpik6Ik9LvB+8p/eIRj7oIqdoCuNAF2xqcgr8vqttj4RiHPpViAGsFDC+7QZzGeECSaHco1EFTkk7EavNuU7hwVJVNBqFxkv+8dOuxUtMenOBne+brA9jWck6jBXj9LkvRH1jVsgZDKG0SivF4ZYuuDUo1kd9ZT+wdOzZBw+/epnKmhPFt8K55nYoeUMcfAzInNJ2QPFnXADLqBu9DrWEqX15C/PVWNhug9h/I7mtR5eUODMMp9cnnj8kKmLTBhse/mUWREqgpCIy2N+IwysWor8RDOzYyEpVYLe8MSQkNgqVtUbItkIs4omrm7aoVG/OOZSgFuChIAmjtIYhpbxXnigRYaqUqBHe7pmnH0J3z4MoEysgA=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2019 14:18:30.9244
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 890a2750-7943-4038-0bc8-08d6d2f6e1ca
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a652971c-7d2e-4d9b-a6a4-d149256f461b;Ip=[193.47.165.134];Helo=[mtlcas13.mtl.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0502MB4054
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190426210718.GB6705@mtr-leonro.mtl.com>,<20190426131852.30142-1-bmt@zurich.ibm.com>
+X-Mailer: IBM iNotes ($HaikuForm 1048) | IBM Domino Build
+ SCN1812108_20180501T0841_FP38 April 10, 2019 at 11:56
+X-LLNOutbound: False
+X-Disclaimed: 50507
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19050714-6357-0000-0000-00000ABD39D7
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.388783; ST=0; TS=0; UL=0; ISC=; MB=0.108145
+X-IBM-SpamModules-Versions: BY=3.00011065; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000285; SDB=6.01199908; UDB=6.00629545; IPR=6.00980791;
+ BA=6.00006300; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
+ ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00026768; XFM=3.00000015;
+ UTC=2019-05-07 14:34:27
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-05-07 06:36:08 - 6.00009895
+x-cbparentid: 19050714-6358-0000-0000-00006FF33E72
+Message-Id: <OF3F7D0677.E5CDD902-ON002583F3.00500E1E-002583F3.00500E22@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-07_08:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+-----"Leon Romanovsky" <leon@kernel.org> wrote: -----
 
-On 5/7/2019 5:08 PM, Jason Gunthorpe wrote:
-> On Tue, May 07, 2019 at 04:54:56PM +0300, Max Gurtovoy wrote:
->> On 5/7/2019 4:42 PM, Jason Gunthorpe wrote:
->>> On Tue, May 07, 2019 at 04:38:14PM +0300, Max Gurtovoy wrote:
->>>> Israel Rukshin (12):
->>>>     RDMA/core: Introduce IB_MR_TYPE_INTEGRITY and ib_alloc_mr_integrity
->>>>       API
->>>>     IB/iser: Refactor iscsi_iser_check_protection function
->>>>     IB/iser: Use IB_WR_REG_MR_INTEGRITY for PI handover
->>>>     IB/iser: Unwind WR union at iser_tx_desc
->>>>     IB/iser: Remove unused sig_attrs argument
->>>>     IB/isert: Remove unused sig_attrs argument
->>>>     RDMA/core: Add an integrity MR pool support
->>>>     RDMA/rw: Fix doc typo
->>>>     RDMA/rw: Print the correct number of sig MRs
->>>>     RDMA/rw: Use IB_WR_REG_MR_INTEGRITY for PI handover
->>>>     RDMA/core: Remove unused IB_WR_REG_SIG_MR code
->>>>     RDMA/mlx5: Improve PI handover performance
->>>>
->>>> Max Gurtovoy (13):
->>>>     RDMA/core: Introduce new header file for signature operations
->>>>     RDMA/core: Save the MR type in the ib_mr structure
->>>>     RDMA/core: Introduce ib_map_mr_sg_pi to map data/protection sgl's
->>>>     RDMA/core: Add signature attrs element for ib_mr structure
->>>>     RDMA/mlx5: Implement mlx5_ib_map_mr_sg_pi and
->>>>       mlx5_ib_alloc_mr_integrity
->>>>     RDMA/mlx5: Add attr for max number page list length for PI operation
->>>>     RDMA/mlx5: Pass UMR segment flags instead of boolean
->>>>     RDMA/mlx5: Update set_sig_data_segment attribute for new signature API
->>>>     RDMA/mlx5: Introduce and implement new IB_WR_REG_MR_INTEGRITY work
->>>>       request
->>>>     RDMA/mlx5: Move signature_en attribute from mlx5_qp to ib_qp
->>>>     RDMA/core: Validate signature handover device cap
->>>>     RDMA/rw: Add info regarding SG count failure
->>>>     RDMA/mlx5: Use PA mapping for PI handover
->>> Max this is really too many patches now, can you please split this
->>> up.
->>>
->>> Can several patches be applied right now as bug fixes like:
->>>
->>>      RDMA/rw: Fix doc typo
->>>      RDMA/rw: Print the correct number of sig MRs
->>>      RDMA/core: Remove unused IB_WR_REG_SIG_MR code
->>>      RDMA/rw: Add info regarding SG count failure
->>>
->>> ??
->> Yes we can. Except of "RDMA/core: Remove unused IB_WR_REG_SIG_MR code".
->>
->> Patches that also can be merged now are:
->>
->> "IB/iser: Remove unused sig_attrs argument"
->>
->> "IB/isert: Remove unused sig_attrs argument"
->>
->> what is the merge plan ?
->>
->> are we going to squeeze this to 5.2 or 5.3 ?
-> The 5.2 merge window is now open so it will not make 5.2
-
-Can we merge it to your for-5.3 branch after getting green light on this 
-series ?
-
-
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>
+>From: "Leon Romanovsky" <leon@kernel.org>
+>Date: 04/26/2019 11:07PM
+>Cc: linux-rdma@vger.kernel.org
+>Subject: Re: [PATCH v8 00/12] SIW: Request for Comments
 >
->> which branch should we sent the 5 patches from above ?
-> It is probably best to repost this thing split up against 5.2-rc1 in
-> two weeks, I'll drop it off patchworks until then.
+>On Fri, Apr 26, 2019 at 03:18:40PM +0200, Bernard Metzler wrote:
+>> This patch set contributes version 8 of the SoftiWarp
+>> driver, as originally introduced to the list Oct 6th, 2017.
+>> SoftiWarp (siw) implements the iWarp RDMA protocol over
+>> kernel TCP sockets. The driver integrates with the
+>> linux-rdma framework.
+>>
+>> The only purpose of this patch set is to rebase the driver
+>> to the current code base of the 'rdma/for-next' branch of
+>> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
+>>
+>> There are no functional changes wrt. version 7, except one
+>> bug fix in the fast MR registration path, where an application
+>> provided, changed IO address was not taken into account.
+>>
+>> As said, the current patch set is based on rdma/for-next.
+>> For convenience, it is also maintained at
+>>
+>https://urldefense.proofpoint.com/v2/url?u=https-3A__github.com_zrlio
+>_softiwarp-2Dfor-2Dlinux-2Drdma.git&d=DwIBAg&c=jf_iaSHvJObTbx-siA1ZOg
+>&r=2TaYXQ0T-r8ZO1PP1alNwU_QJcRRLfmYTAgd3QCvqSc&m=s8kBzxPaiWgkYRMQ4GYI
+>r7PWqYcD_iXi93ILDWO7c7E&s=XVI0RTnHzvzg_hoLQv66acO8xfIn3HchSRrxZ0Z4ySE
+>&e=
+>> within branch 'siw-for-rdma-next-v8'.
+>>
+>> Thanks very much for your time and help!
+>>
+>> Bernard.
+>>
+>> Bernard Metzler (12):
+>>   iWarp wire packet format
+>>   SIW main include file
+>>   SIW network and RDMA core interface
+>>   SIW connection management
+>>   SIW application interface
+>>   SIW application buffer management
+>>   SIW queue pair methods
+>>   SIW transmit path
+>>   SIW receive path
+>>   SIW completion queue methods
+>>   SIW debugging
+>>   SIW addition to kernel build environment
+>>
+>>  MAINTAINERS                              |    7 +
+>>  drivers/infiniband/Kconfig               |    1 +
+>>  drivers/infiniband/sw/Makefile           |    1 +
+>>  drivers/infiniband/sw/siw/Kconfig        |   17 +
+>>  drivers/infiniband/sw/siw/Makefile       |   12 +
+>>  drivers/infiniband/sw/siw/iwarp.h        |  379 ++++
+>>  drivers/infiniband/sw/siw/siw.h          |  733 ++++++++
+>>  drivers/infiniband/sw/siw/siw_cm.c       | 2107
+>++++++++++++++++++++++
+>>  drivers/infiniband/sw/siw/siw_cm.h       |  121 ++
+>>  drivers/infiniband/sw/siw/siw_cq.c       |  109 ++
+>>  drivers/infiniband/sw/siw/siw_debug.c    |   91 +
+>>  drivers/infiniband/sw/siw/siw_debug.h    |   40 +
+>>  drivers/infiniband/sw/siw/siw_main.c     |  712 ++++++++
+>>  drivers/infiniband/sw/siw/siw_mem.c      |  464 +++++
+>>  drivers/infiniband/sw/siw/siw_mem.h      |   53 +
+>>  drivers/infiniband/sw/siw/siw_qp.c       | 1354 ++++++++++++++
+>>  drivers/infiniband/sw/siw/siw_qp_rx.c    | 1520 ++++++++++++++++
+>>  drivers/infiniband/sw/siw/siw_qp_tx.c    | 1291 +++++++++++++
+>>  drivers/infiniband/sw/siw/siw_verbs.c    | 1826
+>+++++++++++++++++++
+>>  drivers/infiniband/sw/siw/siw_verbs.h    |   83 +
+>>  include/uapi/rdma/rdma_user_ioctl_cmds.h |    1 +
+>>  include/uapi/rdma/siw_user.h             |  186 ++
+>
+>To make our life easier, that file should be named like all
+>other files: siw-abi.h.
+>
+OK, will do.
 
-Sure, but please approve it to avoid another review cycle.
+>>  22 files changed, 11108 insertions(+)
+>>  create mode 100644 drivers/infiniband/sw/siw/Kconfig
+>>  create mode 100644 drivers/infiniband/sw/siw/Makefile
+>>  create mode 100644 drivers/infiniband/sw/siw/iwarp.h
+>>  create mode 100644 drivers/infiniband/sw/siw/siw.h
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_cm.c
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_cm.h
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_cq.c
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_debug.c
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_debug.h
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_main.c
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_mem.c
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_mem.h
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_qp.c
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_qp_rx.c
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_qp_tx.c
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_verbs.c
+>>  create mode 100644 drivers/infiniband/sw/siw/siw_verbs.h
+>>  create mode 100644 include/uapi/rdma/siw_user.h
+>>
+>> --
+>> 2.17.2
+>>
+>
+>
 
-
-> Jason
