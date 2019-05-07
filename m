@@ -2,113 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4251673C
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 17:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DE21677A
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 18:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbfEGP4L convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 7 May 2019 11:56:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38520 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726438AbfEGP4L (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 11:56:11 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x47FnnoY115895
-        for <linux-rdma@vger.kernel.org>; Tue, 7 May 2019 11:56:10 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.112])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2sbbw6ku1j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 07 May 2019 11:56:10 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Tue, 7 May 2019 15:56:09 -0000
-Received: from us1b3-smtp02.a3dr.sjc01.isc4sb.com (10.122.7.175)
-        by smtp.notes.na.collabserv.com (10.122.47.54) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 7 May 2019 15:56:06 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp02.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019050715560540-721950 ;
-          Tue, 7 May 2019 15:56:05 +0000 
-In-Reply-To: <20190507154401.GG6201@ziepe.ca>
-Subject: Re: [PATCH v8 04/12] SIW connection management
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Jason Gunthorpe" <jgg@ziepe.ca>
-Cc:     "Leon Romanovsky" <leon@kernel.org>, linux-rdma@vger.kernel.org
-Date:   Tue, 7 May 2019 15:56:06 +0000
+        id S1726295AbfEGQNH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 12:13:07 -0400
+Received: from mail-qt1-f170.google.com ([209.85.160.170]:34283 "EHLO
+        mail-qt1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbfEGQNH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 12:13:07 -0400
+Received: by mail-qt1-f170.google.com with SMTP id j6so19706913qtq.1
+        for <linux-rdma@vger.kernel.org>; Tue, 07 May 2019 09:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YM2w6AmpNvRPBJ2loenNlcbSW+vMuZLhd6i39B6cpW8=;
+        b=JVPPkUsYVY1FuoiueYHEBERczDM06RKxqcAdMG0Tj2B+F3AGIkv+wB53wKF45oWr+c
+         EHai6LdNNGkPpH6XwoAgrzNBmlYZ9Tr1p6QV3kitSb0UeUAoqWReQW+YX/FV620CEW65
+         YNXdp60xyVKqYZzjIdIgprt0PF6cx0C1wkp4IPBhHsRFhnZe1Nv6VJIZxqyBNVP7gw0j
+         p/RCG+tMAfu0wvIMjJxKdxht3G4prz/IGZXPbmGdTeSspgfAcnnTj8mOTGuGLWjsRdus
+         Xh7T2+O2LtO3wikcdurVHl1JPuueVALrkI1JEtFhsD4Nmhp9aAJmsNgE2zOw7UnVofpM
+         7/7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YM2w6AmpNvRPBJ2loenNlcbSW+vMuZLhd6i39B6cpW8=;
+        b=G8tt15WQlZh8WLAMZrVlNhLVC8EOM/XGnrSVOGxG9cmNV4fBFS0QlKmKpeuXyQMPzB
+         xhCu2eM8BFhy94vjR09mEkE7RJ8G5gideT5JameiwlUGwUym2+rPeeu6wR+gFIK7XE9H
+         7saOiMhStaqx1JcSumPkmDjK4IPFYI7cu7yY5+vWPBrqH4KWyAf1hB/tk1VTiMEcqqsf
+         NDUhNXVnG2ONBwOQm7gOm5zZI12fAKuAa0zA9jwBXCYGlMSgWY8EzsG8EIXgp46nuKmX
+         DXZPpC3lpnGTKZxu51BN4NR/1EkTjgPZi3Tq55WT/eEn7273XFVUnFQagrhNvrscGbNw
+         UN5Q==
+X-Gm-Message-State: APjAAAW8yzAcK3LrkMblCAQjtFcJXFE7jQfXPKKRmYXmXWxBHG8huEAn
+        oM005k3I6DwnLrIPXalkXNv4jw==
+X-Google-Smtp-Source: APXvYqxHTc2ukbN4U4rHlnJSfKBh0vt08RJvULnkhzWlKPPpvxyb9SScELml+yzaDNq7Pz1uw9VoQA==
+X-Received: by 2002:a0c:bf10:: with SMTP id m16mr27573444qvi.156.1557245586506;
+        Tue, 07 May 2019 09:13:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id s193sm8514962qke.4.2019.05.07.09.13.05
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 May 2019 09:13:05 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hO2iG-0006k8-T4; Tue, 07 May 2019 13:13:04 -0300
+Date:   Tue, 7 May 2019 13:13:04 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Doug Ledford <dledford@redhat.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Bernard Metzler <BMT@zurich.ibm.com>
+Subject: Re: iWARP and soft-iWARP interop testing
+Message-ID: <20190507161304.GH6201@ziepe.ca>
+References: <49b807221e5af3fab8813a9ce769694cb536072a.camel@redhat.com>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190507154401.GG6201@ziepe.ca>,<20190428164954.GP6705@mtr-leonro.mtl.com>
- <20190426131852.30142-1-bmt@zurich.ibm.com>
- <20190426131852.30142-5-bmt@zurich.ibm.com>
- <OF63ED2654.B14EF197-ON002583F3.00529A34-002583F3.00545CFD@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1048) | IBM Domino Build
- SCN1812108_20180501T0841_FP38 April 10, 2019 at 11:56
-X-KeepSent: EC75C556:23D7641D-002583F3:0057889C;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 58003
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19050715-0163-0000-0000-0000062E74B5
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.003726
-X-IBM-SpamModules-Versions: BY=3.00011066; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000285; SDB=6.01199936; UDB=6.00629561; IPR=6.00980818;
- BA=6.00006300; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
- ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00026771; XFM=3.00000015;
- UTC=2019-05-07 15:56:08
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-05-07 15:19:53 - 6.00009896
-x-cbparentid: 19050715-0164-0000-0000-00000F468DCD
-Message-Id: <OFEC75C556.23D7641D-ON002583F3.0057889C-002583F3.0057889F@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-07_09:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <49b807221e5af3fab8813a9ce769694cb536072a.camel@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
+On Mon, May 06, 2019 at 04:38:27PM -0400, Doug Ledford wrote:
+> So, Jason and I were discussing the soft-iWARP driver submission, and he
+> thought it would be good to know if it even works with the various iWARP
+> hardware devices.  I happen to have most of them on hand in one form or
+> another, so I set down to test it.  In the process, I ran across some
+> issues just with the hardware versions themselves, let alone with soft-
+> iWARP.  So, here's the results of my matrix of tests.  These aren't
+> performance tests, just basic "does it work" smoke tests...
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Jason Gunthorpe" <jgg@ziepe.ca>
->Date: 05/07/2019 05:44PM
->Cc: "Leon Romanovsky" <leon@kernel.org>, linux-rdma@vger.kernel.org
->Subject: Re: [PATCH v8 04/12] SIW connection management
->
->On Tue, May 07, 2019 at 03:21:28PM +0000, Bernard Metzler wrote:
->
->> >> +void siw_cep_put(struct siw_cep *cep)
->> >> +{
->> >> +	siw_dbg_cep(cep, "new refcount: %d\n", kref_read(&cep->ref) -
->1);
->> >> +
->> >> +	WARN_ON(kref_read(&cep->ref) < 1);
->> >> +	kref_put(&cep->ref, __siw_cep_dealloc);
->> >> +}
->> >> +
->> >> +void siw_cep_get(struct siw_cep *cep)
->> >> +{
->> >> +	kref_get(&cep->ref);
->> >> +	siw_dbg_cep(cep, "new refcount: %d\n", kref_read(&cep->ref));
->> >> +}
->> >
->> >Another kref_get/put wrappers, unlikely needed.
->> >
->> It just avoids writing down the free routine in each
->> put call, and I used it to add some debug info for
->> tracking status. So I would remove it if it you tell me it's
->> bad style...
->
->It is common to have a put wrapper and thus usually a symetrically
->named get wrapepr - this is so the free function is done consistently
->
->The debugging might be over doing it
->
+Well, lets imagine to merge this at 5.2-rc1? 
 
-Yes, agreed, I am going to drop that debugging stuff.
+Bernard you'll need to rebase and resend when it comes out in two weeks.
 
+Thanks,
+Jason
