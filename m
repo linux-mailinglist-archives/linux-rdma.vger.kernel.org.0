@@ -2,267 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1C816619
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 16:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0780516631
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 17:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbfEGO5g convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 7 May 2019 10:57:36 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47112 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726322AbfEGO5g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 10:57:36 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x47EvPIY067264
-        for <linux-rdma@vger.kernel.org>; Tue, 7 May 2019 10:57:34 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.91])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2sbbj5t61q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 07 May 2019 10:57:34 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Tue, 7 May 2019 14:57:33 -0000
-Received: from us1a3-smtp04.a3.dal06.isc4sb.com (10.106.154.237)
-        by smtp.notes.na.collabserv.com (10.106.227.143) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 7 May 2019 14:57:29 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp04.a3.dal06.isc4sb.com
-          with ESMTP id 2019050714572816-729856 ;
-          Tue, 7 May 2019 14:57:28 +0000 
-In-Reply-To: <20190427053931.GD6705@mtr-leonro.mtl.com>
-Subject: Re: [PATCH v8 11/12] SIW debugging
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Leon Romanovsky" <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org,
-        "Bernard Metzler" <bmt@rims.zurich.ibm.com>
-Date:   Tue, 7 May 2019 14:57:27 +0000
+        id S1726586AbfEGPEd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 11:04:33 -0400
+Received: from mail-eopbgr150081.outbound.protection.outlook.com ([40.107.15.81]:59360
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725843AbfEGPEc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 May 2019 11:04:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/NpLqPOiQRU6VN/31kkL4I7hCD0JwkjdFxzX9JmM9yM=;
+ b=eOCSljQgPoaQY+CNObAdoMn6dnCvWsb8cvt66bAdeMy6JBHw/jA630rzPdFbo1+hCKwqBkBt2lP0YP1e4hYOA4WJhVuWTb9XYx+2E7V0X8QJ/YofU+Wq/9ZaxDc5V9PRh7WUMxYKWV/aGee8amI4RZMoue1buCOBgfyhhxqsmos=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB5296.eurprd05.prod.outlook.com (20.178.12.83) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1856.12; Tue, 7 May 2019 15:04:28 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.012; Tue, 7 May 2019
+ 15:04:28 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
+CC:     Leon Romanovsky <leonro@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Israel Rukshin <israelr@mellanox.com>,
+        Idan Burstein <idanb@mellanox.com>,
+        Oren Duer <oren@mellanox.com>,
+        Vladimir Koushnir <vladimirk@mellanox.com>,
+        Shlomi Nimrodi <shlomin@mellanox.com>
+Subject: Re: [PATCH 00/25 V4] Introduce new API for T10-PI offload
+Thread-Topic: [PATCH 00/25 V4] Introduce new API for T10-PI offload
+Thread-Index: AQHVBNo/qvTIRu6NOEydCCWllJ7Of6Zfq6qAgAADiQCAAAO8AIAAAqUAgAANBQA=
+Date:   Tue, 7 May 2019 15:04:27 +0000
+Message-ID: <20190507150422.GD6186@mellanox.com>
+References: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
+ <20190507134217.GX6186@mellanox.com>
+ <2e3d9da7-d4fa-e2fa-5d3b-e60c54e7f7ba@mellanox.com>
+ <20190507140818.GZ6186@mellanox.com>
+ <1378a723-81c8-63f3-c863-2e7b130eccd0@mellanox.com>
+In-Reply-To: <1378a723-81c8-63f3-c863-2e7b130eccd0@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: QB1PR01CA0022.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:2d::35) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.49.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 34e8af55-cfd8-4903-03dd-08d6d2fd4ccb
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5296;
+x-ms-traffictypediagnostic: VI1PR05MB5296:
+x-microsoft-antispam-prvs: <VI1PR05MB5296463BEC662D9AE999747ACF310@VI1PR05MB5296.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0030839EEE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(396003)(366004)(376002)(346002)(136003)(189003)(199004)(66066001)(102836004)(11346002)(229853002)(2616005)(5660300002)(71200400001)(107886003)(71190400001)(186003)(52116002)(6246003)(99286004)(256004)(26005)(73956011)(6116002)(14444005)(3846002)(446003)(386003)(6506007)(6486002)(6862004)(6436002)(476003)(66476007)(6636002)(66556008)(64756008)(66446008)(53936002)(66946007)(53546011)(486006)(37006003)(7736002)(8676002)(25786009)(36756003)(305945005)(68736007)(6512007)(478600001)(4326008)(33656002)(81166006)(81156014)(2906002)(8936002)(86362001)(76176011)(316002)(14454004)(54906003)(1076003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5296;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: ML7u+lwhhnLP1479y+NZ7q4oNMBrzaLoVY5b+t8VYLUJCSENxS26vfLWAVwLzLN+A8zu5YhR8ptw4Ep4EYq11Pl2ycFZs8NYh4sn6aJKZrSUXElCNiY9ISks7wAhzjkhTA0FJVy22E10qoyfur1kPY9vPMVqHMJK0rwduoO04vHkOFeuFTyFMO0wLIJQIww2Uu9S5Yc4Yhg1+QYBTcqNCtTGdtsxba8ilZ/9CsyfhfFXZS1DU38+Ssn9DwrlKj3co/MD2kojTfPj1uzHVOkfd55pWD8pi/hni+/7bFEcyfy2DpdBh0575g3mvwMoXts4vBJgNIH0GoY3yay721IOrVteT0bmddiGX6tlTkHDmIXIGQuPQtzHWbtQE3+zODxGsu/ZiVOOUjFwViezK8IZpZl+2agFcSBDfpXLuhduHpY=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D4B00AAE85AE394182975F789877FE7E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190427053931.GD6705@mtr-leonro.mtl.com>,<20190426131852.30142-1-bmt@zurich.ibm.com>
- <20190426131852.30142-12-bmt@zurich.ibm.com>
-X-Mailer: IBM iNotes ($HaikuForm 1048) | IBM Domino Build
- SCN1812108_20180501T0841_FP38 April 10, 2019 at 11:56
-X-LLNOutbound: False
-X-Disclaimed: 44571
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19050714-9951-0000-0000-00000C5FB00C
-X-IBM-SpamModules-Scores: BY=0.020958; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.077016
-X-IBM-SpamModules-Versions: BY=3.00011066; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000285; SDB=6.01199916; UDB=6.00629549; IPR=6.00980799;
- BA=6.00006300; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
- ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00026770; XFM=3.00000015;
- UTC=2019-05-07 14:57:31
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-05-07 06:19:41 - 6.00009895
-x-cbparentid: 19050714-9952-0000-0000-00003C57C82C
-Message-Id: <OF7C942C02.82621E0C-ON002583F3.0051E3A9-002583F3.00522A5E@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-07_08:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34e8af55-cfd8-4903-03dd-08d6d2fd4ccb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2019 15:04:27.9317
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5296
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Leon Romanovsky" <leon@kernel.org> wrote: -----
+On Tue, May 07, 2019 at 05:17:46PM +0300, Max Gurtovoy wrote:
+>=20
+> On 5/7/2019 5:08 PM, Jason Gunthorpe wrote:
+> > On Tue, May 07, 2019 at 04:54:56PM +0300, Max Gurtovoy wrote:
+> > > On 5/7/2019 4:42 PM, Jason Gunthorpe wrote:
+> > > > On Tue, May 07, 2019 at 04:38:14PM +0300, Max Gurtovoy wrote:
+> > > > > Israel Rukshin (12):
+> > > > >     RDMA/core: Introduce IB_MR_TYPE_INTEGRITY and ib_alloc_mr_int=
+egrity
+> > > > >       API
+> > > > >     IB/iser: Refactor iscsi_iser_check_protection function
+> > > > >     IB/iser: Use IB_WR_REG_MR_INTEGRITY for PI handover
+> > > > >     IB/iser: Unwind WR union at iser_tx_desc
+> > > > >     IB/iser: Remove unused sig_attrs argument
+> > > > >     IB/isert: Remove unused sig_attrs argument
+> > > > >     RDMA/core: Add an integrity MR pool support
+> > > > >     RDMA/rw: Fix doc typo
+> > > > >     RDMA/rw: Print the correct number of sig MRs
+> > > > >     RDMA/rw: Use IB_WR_REG_MR_INTEGRITY for PI handover
+> > > > >     RDMA/core: Remove unused IB_WR_REG_SIG_MR code
+> > > > >     RDMA/mlx5: Improve PI handover performance
+> > > > >=20
+> > > > > Max Gurtovoy (13):
+> > > > >     RDMA/core: Introduce new header file for signature operations
+> > > > >     RDMA/core: Save the MR type in the ib_mr structure
+> > > > >     RDMA/core: Introduce ib_map_mr_sg_pi to map data/protection s=
+gl's
+> > > > >     RDMA/core: Add signature attrs element for ib_mr structure
+> > > > >     RDMA/mlx5: Implement mlx5_ib_map_mr_sg_pi and
+> > > > >       mlx5_ib_alloc_mr_integrity
+> > > > >     RDMA/mlx5: Add attr for max number page list length for PI op=
+eration
+> > > > >     RDMA/mlx5: Pass UMR segment flags instead of boolean
+> > > > >     RDMA/mlx5: Update set_sig_data_segment attribute for new sign=
+ature API
+> > > > >     RDMA/mlx5: Introduce and implement new IB_WR_REG_MR_INTEGRITY=
+ work
+> > > > >       request
+> > > > >     RDMA/mlx5: Move signature_en attribute from mlx5_qp to ib_qp
+> > > > >     RDMA/core: Validate signature handover device cap
+> > > > >     RDMA/rw: Add info regarding SG count failure
+> > > > >     RDMA/mlx5: Use PA mapping for PI handover
+> > > > Max this is really too many patches now, can you please split this
+> > > > up.
+> > > >=20
+> > > > Can several patches be applied right now as bug fixes like:
+> > > >=20
+> > > >      RDMA/rw: Fix doc typo
+> > > >      RDMA/rw: Print the correct number of sig MRs
+> > > >      RDMA/core: Remove unused IB_WR_REG_SIG_MR code
+> > > >      RDMA/rw: Add info regarding SG count failure
+> > > >=20
+> > > > ??
+> > > Yes we can. Except of "RDMA/core: Remove unused IB_WR_REG_SIG_MR code=
+".
+> > >=20
+> > > Patches that also can be merged now are:
+> > >=20
+> > > "IB/iser: Remove unused sig_attrs argument"
+> > >=20
+> > > "IB/isert: Remove unused sig_attrs argument"
+> > >=20
+> > > what is the merge plan ?
+> > >=20
+> > > are we going to squeeze this to 5.2 or 5.3 ?
+> > The 5.2 merge window is now open so it will not make 5.2
+>=20
+> Can we merge it to your for-5.3 branch after getting green light on this
+> series ?
 
->To: "Bernard Metzler" <bmt@zurich.ibm.com>
->From: "Leon Romanovsky" <leon@kernel.org>
->Date: 04/27/2019 07:39AM
->Cc: linux-rdma@vger.kernel.org, "Bernard Metzler"
-><bmt@rims.zurich.ibm.com>
->Subject: Re: [PATCH v8 11/12] SIW debugging
->
->On Fri, Apr 26, 2019 at 03:18:51PM +0200, Bernard Metzler wrote:
->> From: Bernard Metzler <bmt@rims.zurich.ibm.com>
->>
->> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
->> ---
->>  drivers/infiniband/sw/siw/siw_debug.c | 91
->+++++++++++++++++++++++++++
->>  drivers/infiniband/sw/siw/siw_debug.h | 40 ++++++++++++
->>  2 files changed, 131 insertions(+)
->>  create mode 100644 drivers/infiniband/sw/siw/siw_debug.c
->>  create mode 100644 drivers/infiniband/sw/siw/siw_debug.h
->>
->> diff --git a/drivers/infiniband/sw/siw/siw_debug.c
->b/drivers/infiniband/sw/siw/siw_debug.c
->> new file mode 100644
->> index 000000000000..86460d370333
->> --- /dev/null
->> +++ b/drivers/infiniband/sw/siw/siw_debug.c
->> @@ -0,0 +1,91 @@
->> +// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
->> +
->> +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
->> +/* Copyright (c) 2008-2019, IBM Corporation */
->> +
->> +#include <linux/types.h>
->> +#include <linux/printk.h>
->> +
->> +#include "siw.h"
->> +
->> +#define ddp_data_len(op, mpa_len)
->            \
->> +	(mpa_len - (iwarp_pktinfo[op].hdr_len - MPA_HDR_SIZE))
->> +
->> +void siw_print_hdr(union iwarp_hdr *hdr, int qp_id, char *string)
->> +{
->> +	enum rdma_opcode op = __rdmap_get_opcode(&hdr->ctrl);
->> +	u16 mpa_len = be16_to_cpu(hdr->ctrl.mpa_len);
->> +
->> +	switch (op) {
->> +	case RDMAP_RDMA_WRITE:
->> +		pr_info("siw: [QP %u]: %s(WRITE, DDP len %d): %08x %016llx\n",
->> +			qp_id, string, ddp_data_len(op, mpa_len),
->> +			hdr->rwrite.sink_stag, hdr->rwrite.sink_to);
->> +		break;
->> +
->> +	case RDMAP_RDMA_READ_REQ:
->> +		pr_info("siw: [QP %u]: %s(RREQ, DDP len %d): %08x %08x %08x %08x
->%016llx %08x %08x %016llx\n",
->> +			qp_id, string, ddp_data_len(op, mpa_len),
->> +			be32_to_cpu(hdr->rreq.ddp_qn),
->> +			be32_to_cpu(hdr->rreq.ddp_msn),
->> +			be32_to_cpu(hdr->rreq.ddp_mo),
->> +			be32_to_cpu(hdr->rreq.sink_stag),
->> +			be64_to_cpu(hdr->rreq.sink_to),
->> +			be32_to_cpu(hdr->rreq.read_size),
->> +			be32_to_cpu(hdr->rreq.source_stag),
->> +			be64_to_cpu(hdr->rreq.source_to));
->> +
->> +		break;
->> +
->> +	case RDMAP_RDMA_READ_RESP:
->> +		pr_info("siw: [QP %u]: %s(RRESP, DDP len %d): %08x %016llx\n",
->> +			qp_id, string, ddp_data_len(op, mpa_len),
->> +			be32_to_cpu(hdr->rresp.sink_stag),
->> +			be64_to_cpu(hdr->rresp.sink_to));
->> +		break;
->> +
->> +	case RDMAP_SEND:
->> +		pr_info("siw: [QP %u]: %s(SEND, DDP len %d): %08x %08x %08x\n",
->> +			qp_id, string, ddp_data_len(op, mpa_len),
->> +			be32_to_cpu(hdr->send.ddp_qn),
->> +			be32_to_cpu(hdr->send.ddp_msn),
->> +			be32_to_cpu(hdr->send.ddp_mo));
->> +		break;
->> +
->> +	case RDMAP_SEND_INVAL:
->> +		pr_info("siw: [QP %u]: %s(S_INV, DDP len %d): %08x %08x %08x
->%08x\n",
->> +			qp_id, string, ddp_data_len(op, mpa_len),
->> +			be32_to_cpu(hdr->send_inv.inval_stag),
->> +			be32_to_cpu(hdr->send_inv.ddp_qn),
->> +			be32_to_cpu(hdr->send_inv.ddp_msn),
->> +			be32_to_cpu(hdr->send_inv.ddp_mo));
->> +		break;
->> +
->> +	case RDMAP_SEND_SE:
->> +		pr_info("siw: [QP %u]: %s(S_SE, DDP len %d): %08x %08x %08x\n",
->> +			qp_id, string, ddp_data_len(op, mpa_len),
->> +			be32_to_cpu(hdr->send.ddp_qn),
->> +			be32_to_cpu(hdr->send.ddp_msn),
->> +			be32_to_cpu(hdr->send.ddp_mo));
->> +		break;
->> +
->> +	case RDMAP_SEND_SE_INVAL:
->> +		pr_info("siw: [QP %u]: %s(S_SE_INV, DDP len %d): %08x %08x %08x
->%08x\n",
->> +			qp_id, string, ddp_data_len(op, mpa_len),
->> +			be32_to_cpu(hdr->send_inv.inval_stag),
->> +			be32_to_cpu(hdr->send_inv.ddp_qn),
->> +			be32_to_cpu(hdr->send_inv.ddp_msn),
->> +			be32_to_cpu(hdr->send_inv.ddp_mo));
->> +		break;
->> +
->> +	case RDMAP_TERMINATE:
->> +		pr_info("siw: [QP %u]: %s(TERM, DDP len %d):\n", qp_id, string,
->> +			ddp_data_len(op, mpa_len));
->> +		break;
->> +
->> +	default:
->> +		pr_info("siw: [QP %u]: %s (undefined opcode %d)", qp_id, string,
->> +			op);
->> +		break;
->> +	}
->> +}
->> diff --git a/drivers/infiniband/sw/siw/siw_debug.h
->b/drivers/infiniband/sw/siw/siw_debug.h
->> new file mode 100644
->> index 000000000000..2cfe7ce68428
->> --- /dev/null
->> +++ b/drivers/infiniband/sw/siw/siw_debug.h
->> @@ -0,0 +1,40 @@
->> +/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
->> +
->> +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
->> +/* Copyright (c) 2008-2019, IBM Corporation */
->> +
->> +#ifndef _SIW_DEBUG_H
->> +#define _SIW_DEBUG_H
->> +
->> +#define siw_dbg(ddev, fmt, ...)
->            \
->> +	dev_dbg(&(ddev)->base_dev.dev, "cpu%2d %s: " fmt,
->smp_processor_id(),  \
->> +		__func__, ##__VA_ARGS__)
->> +
->> +#define siw_dbg_qp(qp, fmt, ...)
->            \
->> +	siw_dbg(qp->sdev, "[QP %u]: " fmt, qp->id, ##__VA_ARGS__)
->> +
->> +#define siw_dbg_cq(cq, fmt, ...)
->            \
->> +	siw_dbg(cq->sdev, "[CQ %u]: " fmt, cq->id, ##__VA_ARGS__)
->> +
->> +#define siw_dbg_pd(pd, fmt, ...)
->            \
->> +	siw_dbg(pd->sdev, "[PD %u]: " fmt, pd->base_pd.res.id,
->##__VA_ARGS__)
->> +
->> +#define siw_dbg_mem(mem, fmt, ...)
->            \
->> +	siw_dbg(mem->sdev, "[MEM 0x%08x]: " fmt, mem->stag,
->##__VA_ARGS__)
->> +
->> +#define siw_dbg_cep(cep, fmt, ...)
->            \
->> +	siw_dbg(cep->sdev, "[CEP 0x%p]: " fmt, cep, ##__VA_ARGS__)
->> +
->> +#ifdef DEBUG_HDR
->
->We already talked about it, this DEBUG_HDR is not set and
->siw_dprint_hdr() is unreachable.
+That branch will start only when rc1 comes out.
 
-I agree. That code gets only compiled in if DEBUG_HDR is #defined.
-Any better idea than this ugly thing for a compile time switch is
-highly appreciated...
+> > > which branch should we sent the 5 patches from above ?
+> > It is probably best to repost this thing split up against 5.2-rc1 in
+> > two weeks, I'll drop it off patchworks until then.
+>=20
+> Sure, but please approve it to avoid another review cycle.
 
+Well you almost certainly will need to repost it after rebasing
+it.. So I need new patches - both others can Ack your approach..
 
->
->> +
->> +#define siw_dprint_hdr(hdr, qpn, msg) siw_print_hdr(hdr, qpn, msg)
->> +
->> +#else
->> +
->> +#define siw_dprint_hdr(hdr, qpn, msg)
->            \
->> +	do {
->     \
->> +	} while (0)
->> +
->> +#endif
->> +
->> +#endif
->> --
->> 2.17.2
->>
->
->
-
+Jason
