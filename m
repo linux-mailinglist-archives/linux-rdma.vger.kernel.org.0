@@ -2,148 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8192D15AD6
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 07:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054A915D69
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 08:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728049AbfEGFtS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 May 2019 01:49:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60042 "EHLO mail.kernel.org"
+        id S1726510AbfEGGdn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 02:33:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728812AbfEGFkc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 May 2019 01:40:32 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726349AbfEGGdn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 May 2019 02:33:43 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58BE920578;
-        Tue,  7 May 2019 05:40:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6C092087F;
+        Tue,  7 May 2019 06:33:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557207631;
-        bh=t/Br6gIcSiZmlrPC7V3vb+4t9UEZaeU+lmbv8eZ3UJY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eqMTMFfNiAdmOTFz6IRJSh1OzTHCw+F8+JdFUgr8JXsy6OYrMC/U3z/LM+lAJxd+2
-         xlyLSQA6woMkon6KhWrh2KOzoVyJsfwfOvcZiI7lNkosOttSUE0s3dpkucqR4Aim6x
-         CUVIVnkXsSzF47bGYqiAcpVshRB1jaHsmO3T3pWw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Adit Ranadive <aditr@vmware.com>,
-        Ruishuang Wang <ruishuangw@vmware.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Vishnu Dasa <vdasa@vmware.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <alexander.levin@microsoft.com>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 68/95] RDMA/vmw_pvrdma: Return the correct opcode when creating WR
-Date:   Tue,  7 May 2019 01:37:57 -0400
-Message-Id: <20190507053826.31622-68-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190507053826.31622-1-sashal@kernel.org>
-References: <20190507053826.31622-1-sashal@kernel.org>
+        s=default; t=1557210822;
+        bh=oBFyk7fpihJdB0jCxegQVyX+6vGmLC1DK9IvU35itFk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RyPsl6lmqvcCnKl41VkY/GHW2+ETy7nDPo8Tpqc6bp7gDCBLdqWePFxG5B2Wa9vwT
+         R3/WlBSqCc8Bj3KtWz9uGTPPZS6ordaRPlQ/fveMibMSWfgfc4tq1AglaAlmwW4kMa
+         oMxOIvxG2cStHRR+RV/gLi/uVrPbQ27CrKcpR2aA=
+Date:   Tue, 7 May 2019 09:33:37 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v15 13/17] IB, arm64: untag user pointers in
+ ib_uverbs_(re)reg_mr()
+Message-ID: <20190507063337.GP6938@mtr-leonro.mtl.com>
+References: <cover.1557160186.git.andreyknvl@google.com>
+ <66d044ab9445dcf36a96205a109458ac23f38b73.1557160186.git.andreyknvl@google.com>
+ <20190506195020.GD6201@ziepe.ca>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190506195020.GD6201@ziepe.ca>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Adit Ranadive <aditr@vmware.com>
+On Mon, May 06, 2019 at 04:50:20PM -0300, Jason Gunthorpe wrote:
+> On Mon, May 06, 2019 at 06:30:59PM +0200, Andrey Konovalov wrote:
+> > This patch is a part of a series that extends arm64 kernel ABI to allow to
+> > pass tagged user pointers (with the top byte set to something else other
+> > than 0x00) as syscall arguments.
+> >
+> > ib_uverbs_(re)reg_mr() use provided user pointers for vma lookups (through
+> > e.g. mlx4_get_umem_mr()), which can only by done with untagged pointers.
+> >
+> > Untag user pointers in these functions.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > ---
+> >  drivers/infiniband/core/uverbs_cmd.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+>
+> I think this is OK.. We should really get it tested though.. Leon?
 
-[ Upstream commit 6325e01b6cdf4636b721cf7259c1616e3cf28ce2 ]
+It can be done after v5.2-rc1.
 
-Since the IB_WR_REG_MR opcode value changed, let's set the PVRDMA device
-opcodes explicitly.
+Thanks
 
-Reported-by: Ruishuang Wang <ruishuangw@vmware.com>
-Fixes: 9a59739bd01f ("IB/rxe: Revise the ib_wr_opcode enum")
-Cc: stable@vger.kernel.org
-Reviewed-by: Bryan Tan <bryantan@vmware.com>
-Reviewed-by: Ruishuang Wang <ruishuangw@vmware.com>
-Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
-Signed-off-by: Adit Ranadive <aditr@vmware.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
----
- drivers/infiniband/hw/vmw_pvrdma/pvrdma.h    | 35 +++++++++++++++++++-
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c |  6 ++++
- include/uapi/rdma/vmw_pvrdma-abi.h           |  1 +
- 3 files changed, 41 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
-index 984aa3484928..4463e1c1a764 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
-@@ -407,7 +407,40 @@ static inline enum ib_qp_state pvrdma_qp_state_to_ib(enum pvrdma_qp_state state)
- 
- static inline enum pvrdma_wr_opcode ib_wr_opcode_to_pvrdma(enum ib_wr_opcode op)
- {
--	return (enum pvrdma_wr_opcode)op;
-+	switch (op) {
-+	case IB_WR_RDMA_WRITE:
-+		return PVRDMA_WR_RDMA_WRITE;
-+	case IB_WR_RDMA_WRITE_WITH_IMM:
-+		return PVRDMA_WR_RDMA_WRITE_WITH_IMM;
-+	case IB_WR_SEND:
-+		return PVRDMA_WR_SEND;
-+	case IB_WR_SEND_WITH_IMM:
-+		return PVRDMA_WR_SEND_WITH_IMM;
-+	case IB_WR_RDMA_READ:
-+		return PVRDMA_WR_RDMA_READ;
-+	case IB_WR_ATOMIC_CMP_AND_SWP:
-+		return PVRDMA_WR_ATOMIC_CMP_AND_SWP;
-+	case IB_WR_ATOMIC_FETCH_AND_ADD:
-+		return PVRDMA_WR_ATOMIC_FETCH_AND_ADD;
-+	case IB_WR_LSO:
-+		return PVRDMA_WR_LSO;
-+	case IB_WR_SEND_WITH_INV:
-+		return PVRDMA_WR_SEND_WITH_INV;
-+	case IB_WR_RDMA_READ_WITH_INV:
-+		return PVRDMA_WR_RDMA_READ_WITH_INV;
-+	case IB_WR_LOCAL_INV:
-+		return PVRDMA_WR_LOCAL_INV;
-+	case IB_WR_REG_MR:
-+		return PVRDMA_WR_FAST_REG_MR;
-+	case IB_WR_MASKED_ATOMIC_CMP_AND_SWP:
-+		return PVRDMA_WR_MASKED_ATOMIC_CMP_AND_SWP;
-+	case IB_WR_MASKED_ATOMIC_FETCH_AND_ADD:
-+		return PVRDMA_WR_MASKED_ATOMIC_FETCH_AND_ADD;
-+	case IB_WR_REG_SIG_MR:
-+		return PVRDMA_WR_REG_SIG_MR;
-+	default:
-+		return PVRDMA_WR_ERROR;
-+	}
- }
- 
- static inline enum ib_wc_status pvrdma_wc_status_to_ib(
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
-index d7162f2b7979..4d9c99dd366b 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
-@@ -695,6 +695,12 @@ int pvrdma_post_send(struct ib_qp *ibqp, struct ib_send_wr *wr,
- 		    wr->opcode == IB_WR_RDMA_WRITE_WITH_IMM)
- 			wqe_hdr->ex.imm_data = wr->ex.imm_data;
- 
-+		if (unlikely(wqe_hdr->opcode == PVRDMA_WR_ERROR)) {
-+			*bad_wr = wr;
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
- 		switch (qp->ibqp.qp_type) {
- 		case IB_QPT_GSI:
- 		case IB_QPT_UD:
-diff --git a/include/uapi/rdma/vmw_pvrdma-abi.h b/include/uapi/rdma/vmw_pvrdma-abi.h
-index 912ea1556a0b..fd801c7be120 100644
---- a/include/uapi/rdma/vmw_pvrdma-abi.h
-+++ b/include/uapi/rdma/vmw_pvrdma-abi.h
-@@ -76,6 +76,7 @@ enum pvrdma_wr_opcode {
- 	PVRDMA_WR_MASKED_ATOMIC_FETCH_AND_ADD,
- 	PVRDMA_WR_BIND_MW,
- 	PVRDMA_WR_REG_SIG_MR,
-+	PVRDMA_WR_ERROR,
- };
- 
- enum pvrdma_wc_status {
--- 
-2.20.1
-
+>
+> Jason
