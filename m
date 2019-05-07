@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D56315C41
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 08:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5F915990
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 07:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727848AbfEGFfh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 May 2019 01:35:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
+        id S1728467AbfEGFhx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 May 2019 01:37:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727842AbfEGFff (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 May 2019 01:35:35 -0400
+        id S1727878AbfEGFhw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 May 2019 01:37:52 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72A0920C01;
-        Tue,  7 May 2019 05:35:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E03C21655;
+        Tue,  7 May 2019 05:37:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557207334;
-        bh=KDEGM0eq/AtErAd5TrU4EuKWWbDXNrqqmQ0Z8ErZ1W4=;
+        s=default; t=1557207471;
+        bh=IppytvYArZuXTW2szNeE2hJxNI5S5UlMeksAx99e3SI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a7TWnaFHp486uATonmXtH4ng/T5IPW4ZY/7FbonaScFT3Vw9PMb75KqOW7Qt2167J
-         gzd24fPe/1DXkcOIZrtaxathb1hbcyp3I8rn0TTEc7n/uoWsSR6z8+xSpAoHfl0+L4
-         7DtMQVkFb6ZeTEc2vhLsMtx0st88XCoqCSlIOXTk=
+        b=0MJDAe+Q8BtWOa7ZcE5Nhrwv8fVlVdUDKrBBA5uyN8ewee5qPYeFEICzUwTICkzc9
+         nmaKmRp5CU321IEBBuL08It6AEwLyC3Bv+GHNjQPCRvK1A4shsMxUHKsII6Je9iH/F
+         q749X/MzBagkRVB1LWR/excuDnMx+wSrEjwCmdYU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Lijun Ou <oulijun@huawei.com>, Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.0 93/99] RDMA/hns: Bugfix for mapping user db
-Date:   Tue,  7 May 2019 01:32:27 -0400
-Message-Id: <20190507053235.29900-93-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 62/81] RDMA/hns: Bugfix for mapping user db
+Date:   Tue,  7 May 2019 01:35:33 -0400
+Message-Id: <20190507053554.30848-62-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190507053235.29900-1-sashal@kernel.org>
-References: <20190507053235.29900-1-sashal@kernel.org>
+In-Reply-To: <20190507053554.30848-1-sashal@kernel.org>
+References: <20190507053554.30848-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -70,10 +70,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 54031c5b53fa..89dd2380fc81 100644
+index efb7e961ca65..2fa4fb17f6d3 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -517,7 +517,7 @@ static int hns_roce_set_kernel_sq_size(struct hns_roce_dev *hr_dev,
+@@ -494,7 +494,7 @@ static int hns_roce_set_kernel_sq_size(struct hns_roce_dev *hr_dev,
  
  static int hns_roce_qp_has_sq(struct ib_qp_init_attr *attr)
  {
