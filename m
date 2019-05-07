@@ -2,19 +2,19 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E8D164B1
+	by mail.lfdr.de (Postfix) with ESMTP id EE48E164B3
 	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 15:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbfEGNio (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726522AbfEGNio (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Tue, 7 May 2019 09:38:44 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:40247 "EHLO
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:40241 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726522AbfEGNio (ORCPT
+        with ESMTP id S1726516AbfEGNio (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 May 2019 09:38:44 -0400
 Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 7 May 2019 16:38:39 +0300
 Received: from r-vnc08.mtr.labs.mlnx (r-vnc08.mtr.labs.mlnx [10.208.0.121])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x47DcdF0021865;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x47DcdF1021865;
         Tue, 7 May 2019 16:38:39 +0300
 From:   Max Gurtovoy <maxg@mellanox.com>
 To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
@@ -22,142 +22,292 @@ To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
         bvanassche@acm.org
 Cc:     israelr@mellanox.com, idanb@mellanox.com, oren@mellanox.com,
         vladimirk@mellanox.com, shlomin@mellanox.com, maxg@mellanox.com
-Subject: [PATCH 00/25 V4] Introduce new API for T10-PI offload
-Date:   Tue,  7 May 2019 16:38:14 +0300
-Message-Id: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
+Subject: [PATCH 01/25] RDMA/core: Introduce new header file for signature operations
+Date:   Tue,  7 May 2019 16:38:15 +0300
+Message-Id: <1557236319-9986-2-git-send-email-maxg@mellanox.com>
 X-Mailer: git-send-email 1.7.8.2
+In-Reply-To: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
+References: <1557236319-9986-1-git-send-email-maxg@mellanox.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Sagi, Christoph, Jason, Doug, Leon and Co
+Ease the exhausted ib_verbs.h file and make the code more readable.
 
-This patchset adds a new verbs API for T10-PI offload and
-implementation for iSER initiator and iSER target (NVMe-oF/RDMA host side
-was completed and will be sent on a different patchset).
-This set starts with a few preparation commits to the RDMA/core layer.
-It continues with introducing a new MR type IB_MR_TYPE_INTEGRITY.
-Using this MR all the needed mappings will be done in the low level drivers
-and not be visible to the ULP. Later patches implement the needed functionality
-in the mlx5 layer. As suggested by Sagi, in the new API, the mlx5 driver
-will allocate a single internal memory region for the UMR operation to
-register both PI and data SG lists and it will look like:
-
-    data start  meta start
-    |           |
-    -------------------------
-    |d1|d2|d3|d4|m1|m2|m3|m4|
-    -------------------------
-
-The sig_mr stride block would be using the same lkey but different
-offsets in it (offset 0 and offset d1+d2+d3+d4). The verbs layer will
-use a special mr type that will describe everything and will replace
-the old API, that enforce using 3 different memory regions (data_mr,
-protection_mr, sig_mr) and their local invalidations. This will ease
-the code in the ULP and will improve the abstraction of the HW (see
-iSER code changes). 
-The patchset contains also iSER initator patches that using this new API.
-
-For iSER, the code was tested vs. LIO iSER target using Mellanox's
-ConnectX-4/ConnectX-5.
-
-This series applies cleanly on top of kernel 5.1.0 tag.
-We should aim to push this code during the next merge window.
-Linux fork with this series can be found at:
-https://github.com/Mellanox/NVMEoF-P2P (t10_new_api_iser-5_1 branch).
-
-Next steps are:
- - merge NVMe-oF/RDMA host side after merging this patchset
- - Implement metadata support for NVMe-oF/RDMA target side with new API
-
----------
-Changes since v3:
-
- - Add new mr types IB_MR_TYPE_USER and IB_MR_TYPE_DMA at patch 02/25
- - Fix kernel-doc syntax at include/rdma/signature.h
- - Remove struct ib_scaterlist
- - Rebase the code over kernel 5.1.0
- - Added Reviewed-by signatures
- - Use new API in iSER LIO target and remove the old API
- - If possibe, avoid doing a UMR operation to register data and
-   protection buffers at patch 25/25
----------
-Changes since v2:
-
- - Rename IB_MR_TYPE_PI to IB_MR_TYPE_INTEGRITY (Sagi)
- - Rename IB_WR_REG_PI_MR to IB_WR_REG_MR_INTEGRITY (Sagi)
- - Refactor iser_login_rsp (Christoph)
- - Unwind WR union at iser_tx_desc (patch 16/18 - Christoph)
- - Rebase the code over kernel 5.0 plus 2 iser fixes
- - Added Reviewed-by signatures
----------
-Changes since v1:
-
- - Add a missing comma at patch 01/17
- - Fix coding style at patches 03/17, 05/17 and 09/17
- - Fix srp_map_finish_fr function at patch 04/17
- - Rebase the code over 5.0-rc5
----------
-
-Israel Rukshin (12):
-  RDMA/core: Introduce IB_MR_TYPE_INTEGRITY and ib_alloc_mr_integrity
-    API
-  IB/iser: Refactor iscsi_iser_check_protection function
-  IB/iser: Use IB_WR_REG_MR_INTEGRITY for PI handover
-  IB/iser: Unwind WR union at iser_tx_desc
-  IB/iser: Remove unused sig_attrs argument
-  IB/isert: Remove unused sig_attrs argument
-  RDMA/core: Add an integrity MR pool support
-  RDMA/rw: Fix doc typo
-  RDMA/rw: Print the correct number of sig MRs
-  RDMA/rw: Use IB_WR_REG_MR_INTEGRITY for PI handover
-  RDMA/core: Remove unused IB_WR_REG_SIG_MR code
-  RDMA/mlx5: Improve PI handover performance
-
-Max Gurtovoy (13):
-  RDMA/core: Introduce new header file for signature operations
-  RDMA/core: Save the MR type in the ib_mr structure
-  RDMA/core: Introduce ib_map_mr_sg_pi to map data/protection sgl's
-  RDMA/core: Add signature attrs element for ib_mr structure
-  RDMA/mlx5: Implement mlx5_ib_map_mr_sg_pi and
-    mlx5_ib_alloc_mr_integrity
-  RDMA/mlx5: Add attr for max number page list length for PI operation
-  RDMA/mlx5: Pass UMR segment flags instead of boolean
-  RDMA/mlx5: Update set_sig_data_segment attribute for new signature API
-  RDMA/mlx5: Introduce and implement new IB_WR_REG_MR_INTEGRITY work
-    request
-  RDMA/mlx5: Move signature_en attribute from mlx5_qp to ib_qp
-  RDMA/core: Validate signature handover device cap
-  RDMA/rw: Add info regarding SG count failure
-  RDMA/mlx5: Use PA mapping for PI handover
-
- drivers/infiniband/core/device.c              |   2 +
- drivers/infiniband/core/mr_pool.c             |   8 +-
- drivers/infiniband/core/rw.c                  | 200 +++++++-------
- drivers/infiniband/core/uverbs_cmd.c          |   2 +
- drivers/infiniband/core/uverbs_std_types_mr.c |   1 +
- drivers/infiniband/core/verbs.c               | 105 +++++++-
- drivers/infiniband/hw/mlx5/main.c             |   4 +
- drivers/infiniband/hw/mlx5/mlx5_ib.h          |  20 +-
- drivers/infiniband/hw/mlx5/mr.c               | 367 +++++++++++++++++++++++++-
- drivers/infiniband/hw/mlx5/qp.c               | 217 ++++++++++-----
- drivers/infiniband/hw/vmw_pvrdma/pvrdma.h     |   2 +-
- drivers/infiniband/ulp/iser/iscsi_iser.c      |  12 +-
- drivers/infiniband/ulp/iser/iscsi_iser.h      |  64 +----
- drivers/infiniband/ulp/iser/iser_initiator.c  |  12 +-
- drivers/infiniband/ulp/iser/iser_memory.c     | 123 ++++-----
- drivers/infiniband/ulp/iser/iser_verbs.c      | 103 +++-----
- drivers/infiniband/ulp/isert/ib_isert.c       |  15 +-
- drivers/nvme/host/rdma.c                      |   2 +-
- include/linux/mlx5/qp.h                       |   3 +-
- include/rdma/ib_verbs.h                       | 165 +++---------
- include/rdma/mr_pool.h                        |   2 +-
- include/rdma/rw.h                             |   9 -
- include/rdma/signature.h                      | 120 +++++++++
- 23 files changed, 1001 insertions(+), 557 deletions(-)
+Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+Signed-off-by: Israel Rukshin <israelr@mellanox.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+---
+ include/rdma/ib_verbs.h  | 112 +------------------------------------------
+ include/rdma/signature.h | 120 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 121 insertions(+), 111 deletions(-)
  create mode 100644 include/rdma/signature.h
 
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 9b9e17bcc201..fb532c634e91 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -61,6 +61,7 @@
+ #include <linux/cgroup_rdma.h>
+ #include <uapi/rdma/ib_user_verbs.h>
+ #include <rdma/restrack.h>
++#include <rdma/signature.h>
+ #include <uapi/rdma/rdma_user_ioctl.h>
+ #include <uapi/rdma/ib_user_ioctl_verbs.h>
+ 
+@@ -241,17 +242,6 @@ enum ib_device_cap_flags {
+ 	IB_DEVICE_ALLOW_USER_UNREG		= (1ULL << 37),
+ };
+ 
+-enum ib_signature_prot_cap {
+-	IB_PROT_T10DIF_TYPE_1 = 1,
+-	IB_PROT_T10DIF_TYPE_2 = 1 << 1,
+-	IB_PROT_T10DIF_TYPE_3 = 1 << 2,
+-};
+-
+-enum ib_signature_guard_cap {
+-	IB_GUARD_T10DIF_CRC	= 1,
+-	IB_GUARD_T10DIF_CSUM	= 1 << 1,
+-};
+-
+ enum ib_atomic_cap {
+ 	IB_ATOMIC_NONE,
+ 	IB_ATOMIC_HCA,
+@@ -776,106 +766,6 @@ enum ib_mr_type {
+ 	IB_MR_TYPE_SG_GAPS,
+ };
+ 
+-/**
+- * Signature types
+- * IB_SIG_TYPE_NONE: Unprotected.
+- * IB_SIG_TYPE_T10_DIF: Type T10-DIF
+- */
+-enum ib_signature_type {
+-	IB_SIG_TYPE_NONE,
+-	IB_SIG_TYPE_T10_DIF,
+-};
+-
+-/**
+- * Signature T10-DIF block-guard types
+- * IB_T10DIF_CRC: Corresponds to T10-PI mandated CRC checksum rules.
+- * IB_T10DIF_CSUM: Corresponds to IP checksum rules.
+- */
+-enum ib_t10_dif_bg_type {
+-	IB_T10DIF_CRC,
+-	IB_T10DIF_CSUM
+-};
+-
+-/**
+- * struct ib_t10_dif_domain - Parameters specific for T10-DIF
+- *     domain.
+- * @bg_type: T10-DIF block guard type (CRC|CSUM)
+- * @pi_interval: protection information interval.
+- * @bg: seed of guard computation.
+- * @app_tag: application tag of guard block
+- * @ref_tag: initial guard block reference tag.
+- * @ref_remap: Indicate wethear the reftag increments each block
+- * @app_escape: Indicate to skip block check if apptag=0xffff
+- * @ref_escape: Indicate to skip block check if reftag=0xffffffff
+- * @apptag_check_mask: check bitmask of application tag.
+- */
+-struct ib_t10_dif_domain {
+-	enum ib_t10_dif_bg_type bg_type;
+-	u16			pi_interval;
+-	u16			bg;
+-	u16			app_tag;
+-	u32			ref_tag;
+-	bool			ref_remap;
+-	bool			app_escape;
+-	bool			ref_escape;
+-	u16			apptag_check_mask;
+-};
+-
+-/**
+- * struct ib_sig_domain - Parameters for signature domain
+- * @sig_type: specific signauture type
+- * @sig: union of all signature domain attributes that may
+- *     be used to set domain layout.
+- */
+-struct ib_sig_domain {
+-	enum ib_signature_type sig_type;
+-	union {
+-		struct ib_t10_dif_domain dif;
+-	} sig;
+-};
+-
+-/**
+- * struct ib_sig_attrs - Parameters for signature handover operation
+- * @check_mask: bitmask for signature byte check (8 bytes)
+- * @mem: memory domain layout desciptor.
+- * @wire: wire domain layout desciptor.
+- */
+-struct ib_sig_attrs {
+-	u8			check_mask;
+-	struct ib_sig_domain	mem;
+-	struct ib_sig_domain	wire;
+-};
+-
+-enum ib_sig_err_type {
+-	IB_SIG_BAD_GUARD,
+-	IB_SIG_BAD_REFTAG,
+-	IB_SIG_BAD_APPTAG,
+-};
+-
+-/**
+- * Signature check masks (8 bytes in total) according to the T10-PI standard:
+- *  -------- -------- ------------
+- * | GUARD  | APPTAG |   REFTAG   |
+- * |  2B    |  2B    |    4B      |
+- *  -------- -------- ------------
+- */
+-enum {
+-	IB_SIG_CHECK_GUARD	= 0xc0,
+-	IB_SIG_CHECK_APPTAG	= 0x30,
+-	IB_SIG_CHECK_REFTAG	= 0x0f,
+-};
+-
+-/**
+- * struct ib_sig_err - signature error descriptor
+- */
+-struct ib_sig_err {
+-	enum ib_sig_err_type	err_type;
+-	u32			expected;
+-	u32			actual;
+-	u64			sig_err_offset;
+-	u32			key;
+-};
+-
+ enum ib_mr_status_check {
+ 	IB_MR_CHECK_SIG_STATUS = 1,
+ };
+diff --git a/include/rdma/signature.h b/include/rdma/signature.h
+new file mode 100644
+index 000000000000..5998fe94dfd4
+--- /dev/null
++++ b/include/rdma/signature.h
+@@ -0,0 +1,120 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB) */
++/*
++ * Copyright (c) 2017-2018 Mellanox Technologies. All rights reserved.
++ */
++
++#ifndef _RDMA_SIGNATURE_H_
++#define _RDMA_SIGNATURE_H_
++
++enum ib_signature_prot_cap {
++	IB_PROT_T10DIF_TYPE_1 = 1,
++	IB_PROT_T10DIF_TYPE_2 = 1 << 1,
++	IB_PROT_T10DIF_TYPE_3 = 1 << 2,
++};
++
++enum ib_signature_guard_cap {
++	IB_GUARD_T10DIF_CRC	= 1,
++	IB_GUARD_T10DIF_CSUM	= 1 << 1,
++};
++
++/**
++ * enum ib_signature_type - Signature types
++ * @IB_SIG_TYPE_NONE: Unprotected.
++ * @IB_SIG_TYPE_T10_DIF: Type T10-DIF
++ */
++enum ib_signature_type {
++	IB_SIG_TYPE_NONE,
++	IB_SIG_TYPE_T10_DIF,
++};
++
++/**
++ * enum ib_t10_dif_bg_type - Signature T10-DIF block-guard types
++ * @IB_T10DIF_CRC: Corresponds to T10-PI mandated CRC checksum rules.
++ * @IB_T10DIF_CSUM: Corresponds to IP checksum rules.
++ */
++enum ib_t10_dif_bg_type {
++	IB_T10DIF_CRC,
++	IB_T10DIF_CSUM,
++};
++
++/**
++ * struct ib_t10_dif_domain - Parameters specific for T10-DIF
++ *     domain.
++ * @bg_type: T10-DIF block guard type (CRC|CSUM)
++ * @pi_interval: protection information interval.
++ * @bg: seed of guard computation.
++ * @app_tag: application tag of guard block
++ * @ref_tag: initial guard block reference tag.
++ * @ref_remap: Indicate wethear the reftag increments each block
++ * @app_escape: Indicate to skip block check if apptag=0xffff
++ * @ref_escape: Indicate to skip block check if reftag=0xffffffff
++ * @apptag_check_mask: check bitmask of application tag.
++ */
++struct ib_t10_dif_domain {
++	enum ib_t10_dif_bg_type bg_type;
++	u16			pi_interval;
++	u16			bg;
++	u16			app_tag;
++	u32			ref_tag;
++	bool			ref_remap;
++	bool			app_escape;
++	bool			ref_escape;
++	u16			apptag_check_mask;
++};
++
++/**
++ * struct ib_sig_domain - Parameters for signature domain
++ * @sig_type: specific signauture type
++ * @sig: union of all signature domain attributes that may
++ *     be used to set domain layout.
++ */
++struct ib_sig_domain {
++	enum ib_signature_type sig_type;
++	union {
++		struct ib_t10_dif_domain dif;
++	} sig;
++};
++
++/**
++ * struct ib_sig_attrs - Parameters for signature handover operation
++ * @check_mask: bitmask for signature byte check (8 bytes)
++ * @mem: memory domain layout descriptor.
++ * @wire: wire domain layout descriptor.
++ */
++struct ib_sig_attrs {
++	u8			check_mask;
++	struct ib_sig_domain	mem;
++	struct ib_sig_domain	wire;
++};
++
++enum ib_sig_err_type {
++	IB_SIG_BAD_GUARD,
++	IB_SIG_BAD_REFTAG,
++	IB_SIG_BAD_APPTAG,
++};
++
++/*
++ * Signature check masks (8 bytes in total) according to the T10-PI standard:
++ *  -------- -------- ------------
++ * | GUARD  | APPTAG |   REFTAG   |
++ * |  2B    |  2B    |    4B      |
++ *  -------- -------- ------------
++ */
++enum {
++	IB_SIG_CHECK_GUARD = 0xc0,
++	IB_SIG_CHECK_APPTAG = 0x30,
++	IB_SIG_CHECK_REFTAG = 0x0f,
++};
++
++/*
++ * struct ib_sig_err - signature error descriptor
++ */
++struct ib_sig_err {
++	enum ib_sig_err_type	err_type;
++	u32			expected;
++	u32			actual;
++	u64			sig_err_offset;
++	u32			key;
++};
++
++#endif /* _RDMA_SIGNATURE_H_ */
 -- 
 2.16.3
 
