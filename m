@@ -2,98 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3365416BB0
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2019 21:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A5016F68
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2019 05:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbfEGTuv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 May 2019 15:50:51 -0400
-Received: from mga18.intel.com ([134.134.136.126]:2626 "EHLO mga18.intel.com"
+        id S1726658AbfEHDJE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 7 May 2019 23:09:04 -0400
+Received: from mga17.intel.com ([192.55.52.151]:38432 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbfEGTuv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 May 2019 15:50:51 -0400
+        id S1726371AbfEHDJE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 May 2019 23:09:04 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 May 2019 12:50:51 -0700
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 May 2019 20:03:02 -0700
 X-ExtLoop1: 1
-Received: from brianwel-mobl1.amr.corp.intel.com (HELO [10.144.155.123]) ([10.144.155.123])
-  by orsmga004.jf.intel.com with ESMTP; 07 May 2019 12:50:50 -0700
-Subject: Re: [RFC PATCH 0/5] cgroup support for GPU devices
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>, kenny.ho@amd.com
-References: <20190501140438.9506-1-brian.welty@intel.com>
- <20190506152643.GL374014@devbig004.ftw2.facebook.com>
-From:   "Welty, Brian" <brian.welty@intel.com>
-Message-ID: <cf58b047-d678-ad89-c9b6-96fc6b01c1d7@intel.com>
-Date:   Tue, 7 May 2019 12:50:50 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
-MIME-Version: 1.0
-In-Reply-To: <20190506152643.GL374014@devbig004.ftw2.facebook.com>
-Content-Type: text/plain; charset=utf-8
+Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
+  by orsmga001.jf.intel.com with ESMTP; 07 May 2019 20:03:01 -0700
+Received: from fmsmsx152.amr.corp.intel.com (10.18.125.5) by
+ FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
+ id 14.3.408.0; Tue, 7 May 2019 20:03:01 -0700
+Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.175]) by
+ FMSMSX152.amr.corp.intel.com ([169.254.6.135]) with mapi id 14.03.0415.000;
+ Tue, 7 May 2019 20:03:00 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH v3 rdma-next 6/6] RDMA/verbs: Extend DMA block iterator
+ support for mixed block sizes
+Thread-Topic: [PATCH v3 rdma-next 6/6] RDMA/verbs: Extend DMA block iterator
+ support for mixed block sizes
+Thread-Index: AQHVBBM1V1fCbGIZhE6HVinKKyGD66Zeme6AgAHu26A=
+Date:   Wed, 8 May 2019 03:03:00 +0000
+Message-ID: <9DD61F30A802C4429A01CA4200E302A7A5AD7E78@fmsmsx124.amr.corp.intel.com>
+References: <20190506135337.11324-1-shiraz.saleem@intel.com>
+ <20190506135337.11324-7-shiraz.saleem@intel.com>
+ <20190506141659.GA6201@ziepe.ca>
+In-Reply-To: <20190506141659.GA6201@ziepe.ca>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.0.600.7
+dlp-reaction: no-action
+x-originating-ip: [10.1.200.107]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 5/6/2019 8:26 AM, Tejun Heo wrote:
-> Hello,
-> 
-> On Wed, May 01, 2019 at 10:04:33AM -0400, Brian Welty wrote:
->> The patch series enables device drivers to use cgroups to control the
->> following resources within a GPU (or other accelerator device):
->> *  control allocation of device memory (reuse of memcg)
->> and with future work, we could extend to:
->> *  track and control share of GPU time (reuse of cpu/cpuacct)
->> *  apply mask of allowed execution engines (reuse of cpusets)
->>
->> Instead of introducing a new cgroup subsystem for GPU devices, a new
->> framework is proposed to allow devices to register with existing cgroup
->> controllers, which creates per-device cgroup_subsys_state within the
->> cgroup.  This gives device drivers their own private cgroup controls
->> (such as memory limits or other parameters) to be applied to device
->> resources instead of host system resources.
->> Device drivers (GPU or other) are then able to reuse the existing cgroup
->> controls, instead of inventing similar ones.
-> 
-> I'm really skeptical about this approach.  When creating resource
-> controllers, I think what's the most important and challenging is
-> establishing resource model - what resources are and how they can be
-> distributed.  This patchset is going the other way around - building
-> out core infrastructure for bolierplates at a significant risk of
-> mixing up resource models across different types of resources.
-> 
-> IO controllers already implement per-device controls.  I'd suggest
-> following the same interface conventions and implementing a dedicated
-> controller for the subsystem.
+>Subject: Re: [PATCH v3 rdma-next 6/6] RDMA/verbs: Extend DMA block iterator
+>support for mixed block sizes
 >
-Okay, thanks for feedback.  Preference is clear to see this done as
-dedicated cgroup controller.
+>On Mon, May 06, 2019 at 08:53:37AM -0500, Shiraz Saleem wrote:
+>> Extend the DMA block iterator for HW that can support mixed block
+>> sizes. A bitmap of HW supported page sizes are provided to block
+>> iterator which returns contiguous aligned memory blocks within a HW
+>> supported page size.
+>>
+>> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+>> drivers/infiniband/core/verbs.c | 38
+>++++++++++++++++++++++++++++++++++++--
+>>  include/rdma/ib_verbs.h         | 18 ++++++++++++++----
+>>  2 files changed, 50 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/core/verbs.c
+>> b/drivers/infiniband/core/verbs.c index 3806038..fa9725d 100644
+>> +++ b/drivers/infiniband/core/verbs.c
+>> @@ -2712,16 +2712,47 @@ int rdma_init_netdev(struct ib_device *device,
+>> u8 port_num,  }  EXPORT_SYMBOL(rdma_init_netdev);
+>>
+>> +static unsigned int rdma_find_mixed_pg_bit(struct ib_block_iter
+>> +*biter) {
+>> +	if (biter->__sg == biter->__sgl_head) {
+>> +		return rdma_find_pg_bit(sg_dma_address(biter->__sg) +
+>> +					sg_dma_len(biter->__sg),
+>> +					biter->pgsz_bitmap);
+>> +	} else if (sg_is_last(biter->__sg)) {
+>> +		return rdma_find_pg_bit(sg_dma_address(biter->__sg),
+>> +					biter->pgsz_bitmap);
+>> +	} else {
+>> +		unsigned int remaining =
+>> +			sg_dma_address(biter->__sg) + sg_dma_len(biter->__sg)
+>-
+>> +			biter->__dma_addr;
+>> +		unsigned int pg_bit = rdma_find_pg_bit(biter->__dma_addr,
+>> +						       biter->pgsz_bitmap);
+>> +		if (remaining < BIT_ULL(biter->__pg_bit))
+>> +			pg_bit = rdma_find_pg_bit(remaining,
+>> +						  biter->pgsz_bitmap);
+>
+>I think this needs to follow the same basic algorithm as the single bit case,
+>considering the IOVA/etc.
+>
+>But there is no user, so let us just drop this patch until a user appears..
+>
+Sure. Let's wait for a user. Updating the algo to consider IOVA is do-able.
 
-Part of my proposal was an attempt for devices with "mem like" and "cpu 
-like" attributes to be managed by common controller.   We can ignore this
-idea for cpu attributes, as those can just go in a GPU controller.
-
-There might still be merit in having a 'device mem' cgroup controller.
-The resource model at least is then no longer mixed up with host memory.
-RDMA community seemed to have some interest in a common controller at
-least for device memory aspects.
-Thoughts on this?   I believe could still reuse the 'struct mem_cgroup' data
-structure.  There should be some opportunity to reuse charging APIs and
-have some nice integration with HMM for charging to device memory, depending
-on backing store.
-
--Brian
+Shiraz
