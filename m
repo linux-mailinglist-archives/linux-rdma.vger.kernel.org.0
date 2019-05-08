@@ -2,120 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A1517AA1
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2019 15:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F3E17B4E
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2019 16:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbfEHNab (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 May 2019 09:30:31 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:43931 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbfEHNab (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 May 2019 09:30:31 -0400
-Received: by mail-qk1-f195.google.com with SMTP id z6so2805199qkl.10
-        for <linux-rdma@vger.kernel.org>; Wed, 08 May 2019 06:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fIPxNemL26gncp0fugU1uXPUP3iDjf6rOsbqi1YD6k4=;
-        b=HoFUeYXnK/Fv5IoDWfK21IBIsH0dM8YwMYVZcyNE7rpsz52M05OKw8OhoBVdgq0zbs
-         T76DzjvVMo3BlPHt+HYj55XqRUCUoE953+gxPcZD7IR0/bcrCyr9X5h7KyYKlutOQ0N5
-         sA9cuslx3Q/nPbuCvLAoRm9Jv0o1NXCgJQyaRdPCPRIAsbQBeHJrvOhfu1to0ltD2/WK
-         xoSX7Bre7h45NhBrZ7S0ZqhC+JG3KYO7Zw7lPKdZqJLc7fT94i9liLZxa4/pNBz51C87
-         56vHIF29NBSkQaAtPGq2SHmVcODQKtfNHQcE4q6gMTxJLY9MYpcsZcFAFFFWvh8+NNq/
-         x2DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fIPxNemL26gncp0fugU1uXPUP3iDjf6rOsbqi1YD6k4=;
-        b=IJFk3l57nwX6x2TDc8t/Wbds9rJbVUjxRz4Yu6AMJ285VmKCtXpTDCFS79AsoNe1g7
-         F4VxBweOqe91c4IsLm+37z7I9HdGCg4J28BHNxfqVEUIVNsOQEQ3+zpPM33t5rUHltZL
-         aI3u1DIUWHjVT1XXHmmqf1dkijEm3W8w85ugC8ZTCUwlQJWtm3Zw7baTC6fi5Utp1cdb
-         fiOwnKBXXybCZx5SwITIC3nS/ouWY/U+aNTfKyqU5HtDR0O9uQ8eAnNxUlgTAIRMgVSc
-         48G+TiQ5A6LyGnxlv/LeuvC3/XanAAOGUoFPfLEeykg4vG+1IDq3/QKqRlzKdRISjmo0
-         Qe1Q==
-X-Gm-Message-State: APjAAAUuUQEZOCfgDuaCyxn57b65s6xNIsVTxsMm27gy+imbeKFT8vG3
-        jU/BVshJovLXR3zY/EYKoGNFnoIV33M=
-X-Google-Smtp-Source: APXvYqx0SLC5uwN2gq1QlvTC40+JBva8eowplf2a4o9YFX5asKsIMDiLVMdQb1MgGaoIYROcqU4D5g==
-X-Received: by 2002:a37:9f08:: with SMTP id i8mr18043564qke.242.1557322230555;
-        Wed, 08 May 2019 06:30:30 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id a5sm8319134qtj.58.2019.05.08.06.30.29
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 08 May 2019 06:30:29 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hOMeS-0001kI-I3; Wed, 08 May 2019 10:30:28 -0300
-Date:   Wed, 8 May 2019 10:30:28 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Bernard Metzler <BMT@zurich.ibm.com>
-Subject: Re: iWARP and soft-iWARP interop testing
-Message-ID: <20190508133028.GB32282@ziepe.ca>
-References: <49b807221e5af3fab8813a9ce769694cb536072a.camel@redhat.com>
- <20190507161304.GH6201@ziepe.ca>
- <20190508062600.GV6938@mtr-leonro.mtl.com>
+        id S1726543AbfEHOGN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 8 May 2019 10:06:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41136 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726767AbfEHOGN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 May 2019 10:06:13 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x48E4Cvd034017
+        for <linux-rdma@vger.kernel.org>; Wed, 8 May 2019 10:06:11 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.110])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2sbx73qqxt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Wed, 08 May 2019 10:06:11 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Wed, 8 May 2019 14:06:09 -0000
+Received: from us1b3-smtp08.a3dr.sjc01.isc4sb.com (10.122.203.190)
+        by smtp.notes.na.collabserv.com (10.122.47.50) with smtp.notes.na.collabserv.com ESMTP;
+        Wed, 8 May 2019 14:06:06 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp08.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019050814060594-488212 ;
+          Wed, 8 May 2019 14:06:05 +0000 
+In-Reply-To: <20190508130834.GA32282@ziepe.ca>
+Subject: Re: [PATCH v8 02/12] SIW main include file
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     "Leon Romanovsky" <leon@kernel.org>, linux-rdma@vger.kernel.org
+Date:   Wed, 8 May 2019 14:06:05 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190508062600.GV6938@mtr-leonro.mtl.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190508130834.GA32282@ziepe.ca>,<20190507170943.GI6201@ziepe.ca>
+ <20190505170956.GH6938@mtr-leonro.mtl.com>
+ <20190428110721.GI6705@mtr-leonro.mtl.com>
+ <20190426131852.30142-1-bmt@zurich.ibm.com>
+ <20190426131852.30142-3-bmt@zurich.ibm.com>
+ <OF713CDB64.D1B09740-ON002583F1.0050F874-002583F1.005CE977@notes.na.collabserv.com>
+ <OF11D27C39.8647DC53-ON002583F3.005609DE-002583F3.0057694C@notes.na.collabserv.com>
+ <OFE6341395.7491F9CF-ON002583F4.002BAA7E-002583F4.002CAD7E@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1048) | IBM Domino Build
+ SCN1812108_20180501T0841_FP38 April 10, 2019 at 11:56
+X-KeepSent: 21EE5DBF:E508AFF5-002583F4:004B49A6;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 51739
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19050814-7769-0000-0000-000006A9530B
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.415104; ST=0; TS=0; UL=0; ISC=; MB=0.206328
+X-IBM-SpamModules-Versions: BY=3.00011071; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000285; SDB=6.01200375; UDB=6.00629827; IPR=6.00981262;
+ BA=6.00006304; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
+ ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00026790; XFM=3.00000015;
+ UTC=2019-05-08 14:06:08
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-05-08 13:09:14 - 6.00009900
+x-cbparentid: 19050814-7770-0000-0000-000030C75DD4
+Message-Id: <OF21EE5DBF.E508AFF5-ON002583F4.004B49A6-002583F4.004D764A@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-08_08:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 08, 2019 at 09:26:00AM +0300, Leon Romanovsky wrote:
-> On Tue, May 07, 2019 at 01:13:04PM -0300, Jason Gunthorpe wrote:
-> > On Mon, May 06, 2019 at 04:38:27PM -0400, Doug Ledford wrote:
-> > > So, Jason and I were discussing the soft-iWARP driver submission, and he
-> > > thought it would be good to know if it even works with the various iWARP
-> > > hardware devices.  I happen to have most of them on hand in one form or
-> > > another, so I set down to test it.  In the process, I ran across some
-> > > issues just with the hardware versions themselves, let alone with soft-
-> > > iWARP.  So, here's the results of my matrix of tests.  These aren't
-> > > performance tests, just basic "does it work" smoke tests...
-> >
-> > Well, lets imagine to merge this at 5.2-rc1?
-> 
-> Can we do something with kref in QPs and MRs before merging it?
-> 
-> I'm super worried that memory model and locking used in this driver
-> won't allow me to continue with allocation patches?
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-Well, this use of idr doesn't look right to me:
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 05/08/2019 03:08PM
+>Cc: "Leon Romanovsky" <leon@kernel.org>, linux-rdma@vger.kernel.org
+>Subject: Re: [PATCH v8 02/12] SIW main include file
+>
+>On Wed, May 08, 2019 at 08:07:59AM +0000, Bernard Metzler wrote:
+>> >> >> Memory access keys and QP IDs are generated as random
+>> >> >> numbers, since both are exposed to the application.
+>> >> >> Since XArray is not designed for sparsely distributed
+>> >> >> id ranges, I am still in favor of IDR for these two
+>> >> >> resources.
+>> >
+>> >IDR and xarray have identical underlying storage so this is
+>nonsense
+>> >
+>> >No new idr's or radix tree users will be accepted into rdma....
+>Use
+>> >xarray
+>> >
+>> Sounds good to me! I just came across that introductory video from
+>Matthew,
+>> where he explicitly stated that xarray will be not very efficient
+>if the
+>> indices are not densely clustered. But maybe this is all far beyond
+>the
+>> 24bits of index space a memory key is in. So let me drop that IDR
+>thing
+>> completely, while handling randomized 24 bit memory keys.
+>
+>xarray/idr is a poor choice to store highly unclustered random data
+>
+>I'm not sure why this is a problem, shouldn't the driver be in
+>control
+>of mkey assignment? Just use xa_alloc_cyclic and it will be
+>sufficiently clustered to be efficient.
+>
 
-static inline struct siw_qp *siw_qp_id2obj(struct siw_device *sdev, int id)
-{
-	struct siw_qp *qp = idr_find(&sdev->qp_idr, id);
+It is a recommendation to choose a hard to predict memory
+key (to make it hard for an attacker to guess it). From 
+RFC 5040, sec 8.1.1:
 
-	if (likely(qp && kref_get_unless_zero(&qp->ref)))
-		return qp;
+  An RNIC MUST choose the value of STags in a way difficult to
+  predict.  It is RECOMMENDED to sparsely populate them over the
+  full available range.
 
-kref_get_unless_zero is nonsense unless used with someting like rcu,
-and there is no rcu read lock here.
+Since I did not want to roll my own bug-prone key based lookup,
+I chose idr. If you tell me xarray is just as inefficient as
+idr for sparse index distributions, I'll take xarray.
 
-Also, IDR's have to be locked..
+Thanks,
+Bernard.
 
-It probably wants to be written as
-
-xa_lock()
-qp = xa_load()
-if (qp)
-   kref_get(&qp->ref);
-xa_unlock()
-
-But I'm not completely sure what this is all about.. A QP cannot
-really exist past destroy - about the only thing that would make sense
-is to leave some memory around so other things can see it is failed -
-but generally it is better to wipe out the QP from those other things
-then attempt to do reference counting like this.
-
-The only thing that seems to need this is the siw_cep, and I'm not
-sure what this object is about or how it should function if the QP is
-destroyed.
-
-Jason
