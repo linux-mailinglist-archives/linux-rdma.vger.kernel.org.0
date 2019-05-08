@@ -2,114 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBA317B81
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2019 16:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9E717B8B
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2019 16:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbfEHOZq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 May 2019 10:25:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726700AbfEHOZq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 8 May 2019 10:25:46 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2ADA421530;
-        Wed,  8 May 2019 14:25:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557325544;
-        bh=MW+CK2D3jtd6pw0KyjaGVz+BDEKw3XVFPSiYAI2EPJE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GlK+q/6Bf+PKhNkMLC2Q0r26lB1d7uOSNiYCRm0vBIBf/NU7egEH80WJF79QGOuVL
-         LNvroDnJWeWwL4CHYjuQJMZTuy98zgm97uN8marQN3XCyDcrEMe1IGzraMTJaCknD9
-         vbo1axFjK5SZ8DRcNFe2e6P4npXG+xBTiYd+R9eQ=
-Date:   Wed, 8 May 2019 17:25:30 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Bernard Metzler <BMT@zurich.ibm.com>
-Subject: Re: iWARP and soft-iWARP interop testing
-Message-ID: <20190508142530.GE6938@mtr-leonro.mtl.com>
-References: <49b807221e5af3fab8813a9ce769694cb536072a.camel@redhat.com>
- <20190507161304.GH6201@ziepe.ca>
- <20190508062600.GV6938@mtr-leonro.mtl.com>
- <20190508133028.GB32282@ziepe.ca>
- <20190508140644.GB6938@mtr-leonro.mtl.com>
- <20190508141841.GD32282@ziepe.ca>
+        id S1727495AbfEHObu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 May 2019 10:31:50 -0400
+Received: from mail-eopbgr140084.outbound.protection.outlook.com ([40.107.14.84]:53487
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727081AbfEHObu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 8 May 2019 10:31:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bypMe+H7Hoqi6B5lRccPfqOwGEvfkFq8k6DvXn2tRNc=;
+ b=EHl4pOxjaYHDWpuTZ4M6jId0RAbLzxNDcAxAvT5vBVn6uv9GtXy93vnZAsj0P3Un2VvbqUySv04Vt1H14o+EH6TFlcDBlXM1B2nKuG5cmB3r0zgcTuoMcwP1rh8UkANKjGl3ZS7aBWTEK2boab0Ikw1Edj2Dlknp/5E7lN3wW1Y=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB6110.eurprd05.prod.outlook.com (20.178.204.212) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1878.20; Wed, 8 May 2019 14:31:44 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::711b:c0d6:eece:f044%5]) with mapi id 15.20.1856.012; Wed, 8 May 2019
+ 14:31:44 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Adit Ranadive <aditr@vmware.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>
+Subject: Re: [PATCH] libibverbs: Expose the get neighbor timeout for dmac
+ resolution
+Thread-Topic: [PATCH] libibverbs: Expose the get neighbor timeout for dmac
+ resolution
+Thread-Index: AQHVBJQ03rON3H5UMUmK3O/KPKwCrqZfnnCAgABUfYCAAVligA==
+Date:   Wed, 8 May 2019 14:31:44 +0000
+Message-ID: <20190508143133.GG32297@mellanox.com>
+References: <20190507051537.2161-1-aditr@vmware.com>
+ <20190507125259.GT6186@mellanox.com>
+ <266697af-bf5e-07a1-489e-fed7cf8c695a@vmware.com>
+In-Reply-To: <266697af-bf5e-07a1-489e-fed7cf8c695a@vmware.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YT1PR01CA0019.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::32)
+ To VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.49.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a548ddd6-a549-41bd-a090-08d6d3c1e4e7
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6110;
+x-ms-traffictypediagnostic: VI1PR05MB6110:
+x-microsoft-antispam-prvs: <VI1PR05MB611065122296D90C395E205CCF320@VI1PR05MB6110.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0031A0FFAF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(376002)(346002)(366004)(136003)(396003)(199004)(189003)(4326008)(53936002)(66066001)(102836004)(6436002)(2616005)(68736007)(54906003)(73956011)(316002)(6246003)(386003)(6506007)(6916009)(14454004)(478600001)(25786009)(8936002)(81166006)(8676002)(486006)(446003)(11346002)(33656002)(476003)(81156014)(186003)(6512007)(26005)(36756003)(3846002)(6116002)(71200400001)(71190400001)(66446008)(256004)(64756008)(66556008)(76176011)(66946007)(66476007)(229853002)(6486002)(86362001)(1076003)(99286004)(7736002)(305945005)(5660300002)(2906002)(52116002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6110;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: AqzXanHx8+4DHQDcuenDX9wQJdYIGXc1wwdRIrQ4WKv0wpigqkLlyUU83sxcvaIv3+tZ1nRYOIJsL3fqemBTsPIQaEDIguAxRqPW6xKubLnCO5hDzPfxUCGdwbVkcTTLlbo8qZpp24R1qAecgbhbVwZAttVe+jx6uNqYlrjKwBrCa1jr8aDUh41IpdqnLVzB7/cfCtN7PkZXpwcdkuD8WlIejsEhcM0RgoTP+6ALl/tarHqg3SoTxvpgtnXTm0l/rQiQJPVHlLxMCVDTSKt7Ffkzlpvs94z4KGCGnK8ZohqKfG7CwBeT2L/uJKE0Rx1VPH3/DJSVy19lEsWlLoLKiaXeIfuE19vddMKE+a1htfxucxt/2Z321AVZEdHfcTGjNdynWulB3iEkYO1Uf0TGDiIRCQwSA78+J11n2/y9R94=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <F7BA47DEEF940C429AD77CB4A7C31EDD@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190508141841.GD32282@ziepe.ca>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a548ddd6-a549-41bd-a090-08d6d3c1e4e7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2019 14:31:44.4849
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6110
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 08, 2019 at 11:18:41AM -0300, Jason Gunthorpe wrote:
-> On Wed, May 08, 2019 at 05:06:44PM +0300, Leon Romanovsky wrote:
-> > On Wed, May 08, 2019 at 10:30:28AM -0300, Jason Gunthorpe wrote:
-> > > On Wed, May 08, 2019 at 09:26:00AM +0300, Leon Romanovsky wrote:
-> > > > On Tue, May 07, 2019 at 01:13:04PM -0300, Jason Gunthorpe wrote:
-> > > > > On Mon, May 06, 2019 at 04:38:27PM -0400, Doug Ledford wrote:
-> > > > > > So, Jason and I were discussing the soft-iWARP driver submission, and he
-> > > > > > thought it would be good to know if it even works with the various iWARP
-> > > > > > hardware devices.  I happen to have most of them on hand in one form or
-> > > > > > another, so I set down to test it.  In the process, I ran across some
-> > > > > > issues just with the hardware versions themselves, let alone with soft-
-> > > > > > iWARP.  So, here's the results of my matrix of tests.  These aren't
-> > > > > > performance tests, just basic "does it work" smoke tests...
-> > > > >
-> > > > > Well, lets imagine to merge this at 5.2-rc1?
-> > > >
-> > > > Can we do something with kref in QPs and MRs before merging it?
-> > > >
-> > > > I'm super worried that memory model and locking used in this driver
-> > > > won't allow me to continue with allocation patches?
-> > >
-> > > Well, this use of idr doesn't look right to me:
-> > >
-> > > static inline struct siw_qp *siw_qp_id2obj(struct siw_device *sdev, int id)
-> > > {
-> > > 	struct siw_qp *qp = idr_find(&sdev->qp_idr, id);
-> > >
-> > > 	if (likely(qp && kref_get_unless_zero(&qp->ref)))
-> > > 		return qp;
-> > >
-> > > kref_get_unless_zero is nonsense unless used with someting like rcu,
-> > > and there is no rcu read lock here.
-> > >
-> > > Also, IDR's have to be locked..
-> > >
-> > > It probably wants to be written as
-> > >
-> > > xa_lock()
-> > > qp = xa_load()
-> > > if (qp)
-> > >    kref_get(&qp->ref);
-> > > xa_unlock()
-> > >
-> > > But I'm not completely sure what this is all about.. A QP cannot
-> > > really exist past destroy - about the only thing that would make sense
-> > > is to leave some memory around so other things can see it is failed -
-> > > but generally it is better to wipe out the QP from those other things
-> > > then attempt to do reference counting like this.
-> >
-> > No, no,, no, it is still not enough. I need to be sure that destroy path
-> > always successes and kref_get(&qp->ref) doesn't guarantee that.
-> >
-> > The good coding pattern can be seen in rdmavt
-> > https://elixir.bootlin.com/linux/latest/source/drivers/infiniband/sw/rdmavt/cq.c#L316
-> > They krefing and releasing extra structure outside of user visible object.
->
-> In some respects I would rather the core code put a proper memory kref
-> in every object. We wanted this anyhow for the netlink restrack
-> stuff, and used properly it is pretty useful.
+On Tue, May 07, 2019 at 05:55:25PM +0000, Adit Ranadive wrote:
+> >>  // Configuration defaults
+> >> =20
+> >>  #define IBACM_SERVER_MODE_UNIX 0
+> >> diff --git a/libibverbs/verbs.c b/libibverbs/verbs.c
+> >> index 1766b9f52d31..2cab86184e32 100644
+> >> +++ b/libibverbs/verbs.c
+> >> @@ -967,7 +967,6 @@ static inline int create_peer_from_gid(int family,=
+ void *raw_gid,
+> >>  	return 0;
+> >>  }
+> >> =20
+> >> -#define NEIGH_GET_DEFAULT_TIMEOUT_MS 3000
+> >>  int ibv_resolve_eth_l2_from_gid(struct ibv_context *context,
+> >>  				struct ibv_ah_attr *attr,
+> >>  				uint8_t eth_mac[ETHERNET_LL_SIZE],
+> >=20
+> > Really compile time configurations are not so useful, what is the use
+> > case here?=20
+> >=20
+>=20
+> In the general sense I agree with you. Pre-built RPMs may not have this
+> set to anything other than the default value.=20
+> However, in our internal testing we've seen timeouts when trying to
+> resolve the DMAC when creating an AH. Instead, of simply increasing
+> the #define value here I thought it would be mildly helpful to expose=20
+> this out.
+>=20
+> If this is not going to be useful I can drop it but I thought it would=20
+> atleast make rdma-core a bit more configurable..
 
-We can do it and for sure will do it, but in meanwhile I would prefer do not
-see additions of krefs in drivers.
+Stuff like this should not be configured.. if you are hitting timeout
+it sounds like a bug of some sort to me.
 
-Thanks
->
-> Jason
+Jason
