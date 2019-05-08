@@ -2,365 +2,194 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A6017094
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2019 07:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9865170A3
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2019 08:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbfEHFwU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 May 2019 01:52:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40636 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728109AbfEHFwU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 8 May 2019 01:52:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1E931AE27
-        for <linux-rdma@vger.kernel.org>; Wed,  8 May 2019 05:52:18 +0000 (UTC)
-From:   Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Subject: [ANNOUNCE] rdma-core: new stable releases
-To:     linux-rdma@vger.kernel.org
-Message-ID: <013fc422-ec3f-aaca-8bc4-cd3661fd6b7f@suse.com>
-Date:   Wed, 8 May 2019 07:52:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        id S1726980AbfEHGAf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 May 2019 02:00:35 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:7719 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726832AbfEHGAf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 May 2019 02:00:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1557295234; x=1588831234;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=5pvYqLb0Rb8MxGuLAtagbrchCWN1uzHNwg3FeTd9thY=;
+  b=MLIzzRofAKYKeqDgxrRar6VHIjPjDJB250dUj9aBRtBnjw1y+og3y2ZP
+   GXQOFOcGShLXSHzX2umjf2r80l/FgJVKHHxTmIpQUl1bUjmJlz2VFVY1J
+   SA/mw2xPfCW1HcA7Xm4cOSsptEIYqQ0opdgGepO3RZ9ZXTrBDWvWB5t66
+   o=;
+X-IronPort-AV: E=Sophos;i="5.60,444,1549929600"; 
+   d="scan'208";a="395630024"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-98acfc19.us-east-1.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 08 May 2019 06:00:33 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-98acfc19.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x4860TOK001176
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
+        Wed, 8 May 2019 06:00:29 GMT
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 8 May 2019 06:00:28 +0000
+Received: from [10.95.77.144] (10.43.162.38) by EX13D19EUB003.ant.amazon.com
+ (10.43.166.69) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Wed, 8 May
+ 2019 06:00:21 +0000
+Subject: Re: [PATCH for-next v6 08/12] RDMA/efa: Implement functions that
+ submit and complete admin commands
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leah Shalev <shalevl@amazon.com>,
+        Dave Goodell <goodell@amazon.com>,
+        Brian Barrett <bbarrett@amazon.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "Steve Wise" <larrystevenwise@gmail.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+References: <1556707704-11192-1-git-send-email-galpress@amazon.com>
+ <1556707704-11192-9-git-send-email-galpress@amazon.com>
+ <20190502135505.GA21208@mellanox.com>
+ <639fc272-e2bf-9fb3-2599-0e4884c7546c@amazon.com>
+ <20190503122042.GC13315@mellanox.com>
+ <bbc3ff2b-797e-1b63-0c4c-2f74d782e0fd@amazon.com>
+ <20190505123657.GB30659@mellanox.com>
+ <04fa3da6-4661-e319-61e3-a7083b81af62@amazon.com>
+ <20190506183112.GM6186@mellanox.com>
+ <68f9242d-f2c2-a92d-270e-ad1af8f02d9f@amazon.com>
+ <20190507125146.GS6186@mellanox.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <2d0cefd7-5cb9-1884-d7cd-ec42a3a43e11@amazon.com>
+Date:   Wed, 8 May 2019 09:00:17 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Language: fr
+In-Reply-To: <20190507125146.GS6186@mellanox.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.38]
+X-ClientProxiedBy: EX13D02UWB004.ant.amazon.com (10.43.161.11) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-These version were tagged/released:
- * v15.8
- * v16.8
- * v17.5
- * v18.4
- * v19.3
- * v20.3
- * v21.2
- * v22.2
- * v23.1
+On 07-May-19 15:51, Jason Gunthorpe wrote:
+> On Tue, May 07, 2019 at 03:38:21PM +0300, Gal Pressman wrote:
+>> On 06-May-19 21:31, Jason Gunthorpe wrote:
+>>> On Mon, May 06, 2019 at 04:51:00PM +0300, Gal Pressman wrote:
+>>>>>>>>>> +static void efa_com_admin_flush(struct efa_com_dev *edev)
+>>>>>>>>>> +{
+>>>>>>>>>> +	struct efa_com_admin_queue *aq = &edev->aq;
+>>>>>>>>>> +
+>>>>>>>>>> +	clear_bit(EFA_AQ_STATE_RUNNING_BIT, &aq->state);
+>>>>>>>>>
+>>>>>>>>> This scheme looks use after free racey to me..
+>>>>>>>>
+>>>>>>>> The running bit stops new admin commands from being submitted, clearly the exact
+>>>>>>>> moment in which the bit is cleared is "racy" to submission of admin commands but
+>>>>>>>> that is taken care of.
+>>>>>>>>
+>>>>>>>> The submission of an admin command is atomic as it is guarded by an admin queue
+>>>>>>>> lock.
+>>>>>>>> The same lock is acquired by this flow as well when flushing the admin queue.
+>>>>>>>> After all admin commands have been aborted and we know for sure that
+>>>>>>>> no new
+>>>>>>>
+>>>>>>> The problem is the 'abort' does nothing to ensure parallel threads are
+>>>>>>> no longer touching this memory, 
+>>>>>>
+>>>>>> Which memory? The user threads touch the user allocated buffers which are not
+>>>>>> being freed on admin queue destroy.
+>>>>>
+>>>>> The memory the other thread is touching is freed a few lines below in
+>>>>> a devm_kfree. The apparent purpose of this code is to make the other
+>>>>> thread stop but does it wrong.
+>>>>
+>>>> Are we talking about the completion context/completion context pool?
+>>>> The user thread does use this memory, but this is done while the avail_cmds
+>>>> semaphore is down which means the wait_for_abort_completion function is still
+>>>> waiting for this thread to finish.
+>>>
+>>> We are talking about
+>>>
+>>>      CPU 0                                          CPU 1
+>>> efa_com_submit_admin_cmd()
+>>>   	spin_lock(&aq->sq.lock);
+>>>
+>>>                                          efa_remove_device()
+>>>                                              efa_com_admin_destroy()
+>>>                                                efa_com_admin_flush()
+>>>                                                [..]
+>>>                                           kfree(aq)
+>>>
+>>>
+>>
+>> As long as efa_com_submit_admin_cmd() is running the semaphore is still "down"
+>> which means the wait function will be blocked.
+> 
+> It is a race, order it a little differently:
+> 
+>       CPU 0                                          CPU 1
+>  efa_com_submit_admin_cmd()
+>                                           efa_remove_device()
+>                                               efa_com_admin_destroy()
+>                                                 efa_com_admin_flush()
+>                                                 efa_com_wait_for_abort_completion()
+>                                                 [..]
+>    	spin_lock(&aq->sq.lock);
+>  
+>                                            kfree(aq)
+> 
+> Fundamentally you can't use locking *inside* the memory you are trying
+> to free to exclude other threads from using that memory. That is
+> always a user after free.
+> 
+> Which is why when I see someone write something like:
+> 
+> 	spin_lock(&aq->sq.lock);
+> 	if (!test_bit(EFA_AQ_STATE_RUNNING_BIT, &aq->state)) {
+> 		ibdev_err(aq->efa_dev, "Admin queue is closed\n");
+> 		spin_unlock(&aq->sq.lock);
+> 
+> it is almost always a bug
+> 
+> And when you see matching things like:
+> 
+> [..]
+> 	set_bit(EFA_AQ_STATE_POLLING_BIT, &edev->aq.state);
+>         kfree(edev)
+> 
+> You know it is screwed up in some way.
 
-It's available at the normal places:
+Thanks for the detailed explanation, makes sense.
 
-git://github.com/linux-rdma/rdma-core
-https://github.com/linux-rdma/rdma-core/releases
+> 
+>>> So, either there is no possible concurrency with the 'aq' users and
+>>> device removal, in which case all the convoluted locking in
+>>> efa_com_admin_flush() and related is unneeded
+>>>
+>>> Or there is concurrency and it isn't being torn down properly, so we
+>>> get the above race.
+>>>
+>>> My read is that all the 'admin commands' are done off of verbs
+>>> callbacks and ib_unregister_device is called before we get to
+>>> efa_remove_device (guaranteeing there are no running verbs callbacks),
+>>> so there is no possible concurrency and all this efa_com_admin_flush()
+>>> and related is pointless obfuscation. Delete it.
+>>
+>> You're right, the "abort" flow was overcautious as there shouldn't be any
+>> pending threads after ib_unregister_device.
+>> I will remove this flow.
+> 
+> Send a follow up patch
 
----
-
-Here's the information from the tags:
-tag v15.8
-Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Date:   Fri May 3 08:06:22 2019 +0200
-
-rdma-core-15.8:
-
-Updates from version 15.7
- * Backport fixes:
-   * mlx5: Fix masking service level in mlx5_create_ah
-   * cmake: Explicitly convert build type to be STRING
-   * buildlib: Ensure stanza is properly sorted
-   * mlx4: Allow loopback when using raw Ethernet QP
-   * travis: Change SuSE package target due to Travis CI failures
-   * cbuild: fix tumbleweed docker image
-   * libhns: Bugfix for using buffer length
-   * mlx5: Fix incorrect error handling when SQ wqe count is 0
------BEGIN PGP SIGNATURE-----
-
-iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAlzL2mIcHG5tb3JleWNo
-YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZCP6B/90JqJ4MRaTOtHMK9xE
-p6tSN8ww9viZDtTk1PHzAMMpeopVwjYVzq1UuJLdyPQI1Xcg4QTOEv4mJX0BnBmF
-9FG3cYCSmh7WKBUiNQPXHhpRGFWWzGagsHJ/6LzOK6ItDgI9u4/L13jn1yxWQ6IH
-ucQUCe4Yf9pLWG81llRKOpFNkn8z3Qxjm2tdDxJ3fDpjGb1UQi2VO3Bn77Hd0NQP
-OvdVDegzAP/aDS5bboVcfV32nz7sqORXjOf18QmYO8qoZ42usNh2TSXPKEzosTN9
-SKNSIq+DAPNxuUvoYnR4dV2SiLAOCx0CZ36cBqil5KA5oKF1tmBskqzmMdo0xrNb
-dHCn
-=XYEr
------END PGP SIGNATURE-----
-
-tag v16.8
-Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Date:   Fri May 3 08:06:36 2019 +0200
-
-rdma-core-16.8:
-
-Updates from version 16.7
- * Backport fixes:
-   * mlx5: Fix masking service level in mlx5_create_ah
-   * cmake: Explicitly convert build type to be STRING
-   * libhns: Bugfix for filtering zero length sge
-   * buildlib: Ensure stanza is properly sorted
-   * mlx4: Allow loopback when using raw Ethernet QP
-   * travis: Change SuSE package target due to Travis CI failures
-   * cbuild: fix tumbleweed docker image
-   * libhns: Bugfix for using buffer length
-   * mlx5: Fix incorrect error handling when SQ wqe count is 0
------BEGIN PGP SIGNATURE-----
-
-iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAlzL2m4cHG5tb3JleWNo
-YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZL1xB/9xEJtqXS6lbl+D8jkA
-9nJCrTNAZPy+4EZ7i/u9uHlRWTifsHNu0PT0b+8ED6b3bYjREk3660/Y3LVhhr49
-AY2ZEdqUvBb0SyLNwJKzjmV+gIepQ1QMz2ku+M2px82YhC/5vEpy1n2jFGU8uVi1
-oL2w1VisGsUorQuROlxph3/3FsCCEaxJqahpvfTCdq1RX7gR/co4u8vknNtD1mpo
-f+uXOImFViqMwmP/dRKqD6pmJmFBQc62lGpmLvqZB2UXpFf8i/iEpCkk1gcz7wR7
-M5hWPdx5+Gfwz8eiM0sKEGQhXDH/Yovw2glMRQz6SbVABhmBP//c1kCO27NwX28c
-3ciw
-=faJY
------END PGP SIGNATURE-----
-
-tag v17.5
-Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Date:   Fri May 3 08:06:46 2019 +0200
-
-rdma-core-17.5:
-
-Updates from version 17.4
- * Backport fixes:
-   * verbs: The ibv_xsrq_pingpong "-c" option is broken
-   * mlx5: Fix masking service level in mlx5_create_ah
-   * cmake: Explicitly convert build type to be STRING
-   * libhns: Bugfix for filtering zero length sge
-   * buildlib: Ensure stanza is properly sorted
-   * mlx4: Allow loopback when using raw Ethernet QP
-   * travis: Change SuSE package target due to Travis CI failures
-   * cbuild: fix tumbleweed docker image
-   * libhns: Bugfix for using buffer length
-   * mlx5: Fix incorrect error handling when SQ wqe count is 0
------BEGIN PGP SIGNATURE-----
-
-iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAlzL2ngcHG5tb3JleWNo
-YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZHtlB/9UPdrk2id5ni3YygTr
-N6A7oYES76GGE8WEB5x38b6JrqVAh4gkgb5GQUGtcB7ToA+RnVi62qaht6Fdq/d8
-DA7juig16xLJI77yMaUMTjN9GPdhY5fYcL800e/KaCXEdSQabZyJfDbdwOFfd20n
-8r0SWCPXO+9hgk9ytzrs1sG7NuJ5cJo1HADv51a2TeS8KiRAeJAsa78npSC/Uwms
-C0PblXBODOvLwW2kma727+I4oNm+uhWrtleVmc+swC7RUU8kC3i/o7IYXlqwr+L5
-lgMfcobMNoJrr7AzaehkWDJ5fqK+N4Wm4acVKr6o/32zwfegTYOAsYyMh88qs7o+
-Ea/L
-=P8g3
------END PGP SIGNATURE-----
-
-tag v18.4
-Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Date:   Fri May 3 08:06:52 2019 +0200
-
-rdma-core-18.4:
-
-Updates from version 18.3
- * Backport fixes:
-   * ibacm: fix double hint.ai_family assignment in ib_acm_connect_open()
-   * ibacm: acme does not work if server_mode != unix
-   * ibacm: ib_acm_connect() is doing too much
-   * verbs: The ibv_xsrq_pingpong "-c" option is broken
-   * mlx5: Fix masking service level in mlx5_create_ah
-   * cmake: Explicitly convert build type to be STRING
-   * libhns: Bugfix for filtering zero length sge
-   * buildlib: Ensure stanza is properly sorted
-   * mlx4: Allow loopback when using raw Ethernet QP
-   * travis: Change SuSE package target due to Travis CI failures
-   * cbuild: fix tumbleweed docker image
-   * verbs: Avoid inline send when using device memory in rc_pingpong
-   * mlx5: Use copy loop to read from device memory
-   * libhns: Bugfix for using buffer length
-   * mlx5: Fix incorrect error handling when SQ wqe count is 0
------BEGIN PGP SIGNATURE-----
-
-iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAlzL2n4cHG5tb3JleWNo
-YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZHwTB/9RO7VgcnTbbdMmYVWV
-UMAYK8Vlp9Lq2CvLaYIu/1m4yvg2i9OiFXlPut5hkL58ztefwAV0E+X6tN5fLEfX
-CSHaRfGd/OvgsOoK2PJTFFsBTGcZuPjfWuKO+XkbZf8kM7z0pLV2veI6DGMSKV+v
-vczJKXqA952I9r3M6EjXkUAU8kLqUZw86Je0J/Nh6JflvR55r9bWHCF3X3+5D1b/
-YqzoiaYm6qyVVWk/1f/FX0h2J8MeGt5we7GTlAU9087sC9TxxddYkWfsP6juJGrc
-yVP0H8fPzDBAJ7uFM9H8A6Su4ZLwnBmPbbigPv0D9I8pnL1FFP8vqnqV4urbdo4o
-L1lJ
-=o5I6
------END PGP SIGNATURE-----
-
-tag v19.3
-Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Date:   Fri May 3 08:06:57 2019 +0200
-
-rdma-core-19.3:
-
-Updates from version 19.2
- * Backport fixes:
-   * ibacm: fix double hint.ai_family assignment in ib_acm_connect_open()
-   * ibacm: acme does not work if server_mode != unix
-   * ibacm: ib_acm_connect() is doing too much
-   * verbs: The ibv_xsrq_pingpong "-c" option is broken
-   * mlx5: Fix masking service level in mlx5_create_ah
-   * cmake: Explicitly convert build type to be STRING
-   * libhns: Bugfix for filtering zero length sge
-   * buildlib: Ensure stanza is properly sorted
-   * mlx4: Allow loopback when using raw Ethernet QP
-   * travis: Change SuSE package target due to Travis CI failures
-   * cbuild: fix tumbleweed docker image
-   * verbs: Avoid inline send when using device memory in rc_pingpong
-   * mlx5: Use copy loop to read from device memory
-   * libhns: Bugfix for using buffer length
-   * mlx5: Fix incorrect error handling when SQ wqe count is 0
------BEGIN PGP SIGNATURE-----
-
-iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAlzL2oQcHG5tb3JleWNo
-YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZNnRB/0T4H+ZlarzMMq+S2BL
-SB9KqEeapL55fGFworU1olE0gkf/reyV+7NY0GAoJoUUQYbVoTcqMej+JvLhr0zq
-dNGpqBYUvXqiRbLFEpGJgyxixfkSmY8q4Pk0bQN1FQudrCEAXGobyztgwg+81EZp
-Q/4/n86WBBSLkBO0hHo74Uj5L14LPO85MKaGICVY6teUr1HlXBBRo3z/iIWaERiX
-aPtbSaUaeJ/EehAtXr5sdkyx+rTpe9S6AeAzW/AFtNdPa87dCUb634l3E66xiFjT
-6CdfLv/TFz+v3eu6ifEwCwi40m4HvIFuvZX93WL7yfKEiE+DUsobQZDszJ2ZoQcO
-Rk/O
-=SNtL
------END PGP SIGNATURE-----
-
-tag v20.3
-Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Date:   Fri May 3 08:07:03 2019 +0200
-
-rdma-core-20.3:
-
-Updates from version 20.2
- * Backport fixes:
-   * ibacm: fix double hint.ai_family assignment in ib_acm_connect_open()
-   * ibacm: acme does not work if server_mode != unix
-   * ibacm: ib_acm_connect() is doing too much
-   * verbs: The ibv_xsrq_pingpong "-c" option is broken
-   * mlx5: Fix masking service level in mlx5_create_ah
-   * cmake: Explicitly convert build type to be STRING
-   * libhns: Bugfix for filtering zero length sge
-   * buildlib: Ensure stanza is properly sorted
-   * mlx4: Allow loopback when using raw Ethernet QP
-   * travis: Change SuSE package target due to Travis CI failures
-   * cbuild: fix tumbleweed docker image
-   * verbs: Avoid inline send when using device memory in rc_pingpong
-   * mlx5: Use copy loop to read from device memory
-   * libhns: Bugfix for using buffer length
-   * mlx5: Fix incorrect error handling when SQ wqe count is 0
------BEGIN PGP SIGNATURE-----
-
-iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAlzL2okcHG5tb3JleWNo
-YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZNoiCACU0gDJ+kpNYdKdjXwk
-oolNGOygMtXV0K31SebB0d4lL7UN6DGA62Oi9k9w4iLYrI4eLqwPwqmhj/iJ/ouu
-CG/g5DFHGXaUEW22BesKY/jsBddJnqv7NTiC8/9BBeLErPzLe1BKHeEZGm+XZ6eV
-E2Lof3DV3M6kMslAeSZt8GcaYJ43C2eCf4NalrHUX5mWclJQqwS9SXzqBlqLxQSh
-+CZGRCQdlIe0ClYqpfuM3rt9uye+UpGtcA1Jzyq2d3yWGXWPjAjivB5zCwQAjcTb
-k1TAxS28NYChEN62yYOFVcgW0zL4PBKN8ak5TaqfhhTQaEXSpISGlRZcHkQer5CP
-aQCh
-=mhWp
------END PGP SIGNATURE-----
-
-tag v21.2
-Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Date:   Fri May 3 08:07:17 2019 +0200
-
-rdma-core-21.2:
-
-Updates from version 21.1
- * Backport fixes:
-   * ibacm: fix double hint.ai_family assignment in ib_acm_connect_open()
-   * ibacm: acme does not work if server_mode != unix
-   * ibacm: ib_acm_connect() is doing too much
-   * verbs: The ibv_xsrq_pingpong "-c" option is broken
-   * mlx5: Fix masking service level in mlx5_create_ah
-   * cmake: Explicitly convert build type to be STRING
-   * libhns: Bugfix for filtering zero length sge
-   * buildlib: Ensure stanza is properly sorted
-   * mlx4: Allow loopback when using raw Ethernet QP
-   * cbuild: Fix packaging of SuSE leap
-   * cbuild: fix python path for leap
-   * travis: Change SuSE package target due to Travis CI failures
-   * verbs: Avoid inline send when using device memory in rc_pingpong
-   * mlx5: Use copy loop to read from device memory
-   * libhns: Bugfix for using buffer length
-   * mlx5: Fix incorrect error handling when SQ wqe count is 0
------BEGIN PGP SIGNATURE-----
-
-iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAlzL2pccHG5tb3JleWNo
-YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZEayCACTIn1Qf6zML6RczWYJ
-gc43nqanLiOIar0wxgp9kTI11DOUSWzW3Qi8VQ/lUfZvBLByfobChH2PDhnd5p4+
-UDjhttTFc6VgCCzNsAcDDFl4a1aq9w7gAzBZolKyKIN2u0GdSfPPgVt1Lrqa8EGq
-whoQc3+q+vyqGCkpthu+aS7iC7aeGlMzYbV4P3/00L8UsyoGCGXDW8g8hbnFEyU6
-JbwBmWVQRXvaGXJ2NS8O3TQ4zsuNuURfVJK1+9YQ+ZtZCwV9RmS1FTLxYys5edk+
-CRtWmjz2dgCcBXSkaf2mUD+uf4LPHV2W6b7qW4djvDq5r8hP/qnDpt7A5DUbhvEA
-QrIC
-=ZVFd
------END PGP SIGNATURE-----
-
-tag v22.2
-Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Date:   Fri May 3 08:07:23 2019 +0200
-
-rdma-core-22.2:
-
-Updates from version 22.1
- * Backport fixes:
-   * ibacm: fix double hint.ai_family assignment in ib_acm_connect_open()
-   * ibacm: acme does not work if server_mode != unix
-   * ibacm: ib_acm_connect() is doing too much
-   * verbs: The ibv_xsrq_pingpong "-c" option is broken
-   * mlx5: Fix masking service level in mlx5_create_ah
-   * cmake: Explicitly convert build type to be STRING
-   * libhns: Bugfix for filtering zero length sge
-   * buildlib: Ensure stanza is properly sorted
-   * debian: Create empty pyverbs package for builds without pyverbs
-   * verbs: Fix attribute returning
-   * build: Fix pyverbs build issues on Debian
-   * travis: Change SuSE package target due to Travis CI failures
-   * verbs: Avoid inline send when using device memory in rc_pingpong
-   * mlx5: Use copy loop to read from device memory
-   * verbs: clear cmd buffer when creating indirection table
-   * libhns: Bugfix for using buffer length
-   * mlx5: Fix incorrect error handling when SQ wqe count is 0
------BEGIN PGP SIGNATURE-----
-
-iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAlzL2p0cHG5tb3JleWNo
-YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZDiJCACGc67QPNt7e1X9MkXH
-1H/jZq6jRKLOyDoezHD21FpPX/bQzWaMBwOMx31LolERL9Sql+bc4T7F6JCyKEiy
-1BkvMD7lnEvJx2E4B3aRGZnyEt6RPsfptszp+5skrv6a0u5/KY47o++qa5XUXu0p
-Cb6N+kp1TG180Tr2IFXQ1f7oB5MqASq/uAV+L8zzQzdgpvcgQpVWO8oewvC2js4n
-m7pw2WNtn4W3XMpZHePWqCJqI1joAcTxYTlutjJObSo6ap9ip1IJQcloXqPYOx1P
-JW1z8iEeyhPOT95oSwp/r+8llQmAxKBgN8JUObTqh/jMhais9lRAxWPEAMIV9mra
-Anxd
-=9enQ
------END PGP SIGNATURE-----
-
-tag v23.1
-Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Date:   Fri May 3 08:07:39 2019 +0200
-
-rdma-core-23.1:
-
-Updates from version 23.0
- * Backport fixes:
-   * ibacm: fix double hint.ai_family assignment in ib_acm_connect_open()
-   * ibacm: acme does not work if server_mode != unix
-   * ibacm: ib_acm_connect() is doing too much
-   * verbs: The ibv_xsrq_pingpong "-c" option is broken
-   * suse: Update rdma-core.spec with the latest OBS parser
-   * mlx5: Fix masking service level in mlx5_create_ah
-   * suse: remove %if..%endif guards that do not affect the build result
-   * suse: make sure LTO is disabled
-   * suse: mode udev.md into the right package
-   * suse: use _udevrulesdir macro
-   * cmake: Explicitly convert build type to be STRING
-   * verbs: Don't check IBV_ODP_SUPPORT_RECV in ibv_{xsrq,srq}_pingpong
-   * mlx5: Fix a compiler warning when -Wcast-qual is used
-   * libhns: Bugfix for filtering zero length sge
-   * buildlib: Ensure stanza is properly sorted
-   * ABI Files
------BEGIN PGP SIGNATURE-----
-
-iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAlzL2q0cHG5tb3JleWNo
-YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZL1ZB/wMeuxEKt8JDuxPrpDh
-linWJiiKdq8pqiX1otDTasIgEHhTtNhEwM3vYsH2urHoY6QkC+jxtAgsiaT2Y0eY
-D2GKb19vkVd8sPOXMueX26OZjcyYi3xkJUS0ds56+vymugi9dAWddECsY8cOzRSy
-oLnT26gUClgB7S5tP1h1gnMjICPz5ciy9ngcSM1pwZyxoTXR9c7Nltgkk0OMd0lI
-31npbazuTnACYpFAxHIVhEEsObh/8TpzYRp3TYFF+Tt7/UIFFGYyYLp1lOUGKNc8
-wQfcKK4cuXhu8OloCnxgrVNOJRc9EECszd5X2nN/OaPqr4LABENnVCwqZuk9Z2L3
-KbKU
-=ymt4
------END PGP SIGNATURE-----
-
-It's available at the normal places:
-
-git://github.com/linux-rdma/rdma-core
-https://github.com/linux-rdma/rdma-core/releases
+Will do.
