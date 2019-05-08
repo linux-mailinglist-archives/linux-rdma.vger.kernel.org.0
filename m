@@ -2,106 +2,193 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 326E217CC1
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2019 17:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9FF17CEE
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2019 17:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbfEHPCe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 May 2019 11:02:34 -0400
-Received: from mail-eopbgr130053.outbound.protection.outlook.com ([40.107.13.53]:65210
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726649AbfEHPCd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 8 May 2019 11:02:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=32pbzUUrFMaUtff+CTZcMi3HKbsNoU73kyKTLzbCt1w=;
- b=U0BGZsrRTIPi1eN7ezPTcrMhTlSX2dXZZWY+/WT/9sO2pESLtY0apSzbHvEjnbGfiSTpWuSmejimrvysuu8qXevUbHPw1M5nk1A455XcYnSQpncXHmeHk9s+6AtjCP5T0VK+KLjRgHkdu2FlPc2/h43yepg1/klCgropL5zRbG0=
-Received: from VI1PR0501MB2701.eurprd05.prod.outlook.com (10.172.15.23) by
- VI1PR0501MB2607.eurprd05.prod.outlook.com (10.168.137.19) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1878.20; Wed, 8 May 2019 15:02:25 +0000
-Received: from VI1PR0501MB2701.eurprd05.prod.outlook.com
- ([fe80::21a9:b659:2332:4e9a]) by VI1PR0501MB2701.eurprd05.prod.outlook.com
- ([fe80::21a9:b659:2332:4e9a%6]) with mapi id 15.20.1878.019; Wed, 8 May 2019
- 15:02:25 +0000
-From:   Majd Dibbiny <majd@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Adit Ranadive <aditr@vmware.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Subject: Re: [PATCH] libibverbs: Expose the get neighbor timeout for dmac
- resolution
-Thread-Topic: [PATCH] libibverbs: Expose the get neighbor timeout for dmac
- resolution
-Thread-Index: AQHVBJQ03rON3H5UMUmK3O/KPKwCrqZfnnCAgABUfYCAAVligIAACKCq
-Date:   Wed, 8 May 2019 15:02:25 +0000
-Message-ID: <ED61DBC4-5762-47C8-89D5-89FAE763F915@mellanox.com>
-References: <20190507051537.2161-1-aditr@vmware.com>
- <20190507125259.GT6186@mellanox.com>
- <266697af-bf5e-07a1-489e-fed7cf8c695a@vmware.com>,<20190508143133.GG32297@mellanox.com>
-In-Reply-To: <20190508143133.GG32297@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=majd@mellanox.com; 
-x-originating-ip: [2.53.63.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4a632c3c-2b39-4c7c-a1e1-08d6d3c62e96
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR0501MB2607;
-x-ms-traffictypediagnostic: VI1PR0501MB2607:
-x-microsoft-antispam-prvs: <VI1PR0501MB2607F0853DFEE056CF3C73C6A7320@VI1PR0501MB2607.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 0031A0FFAF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(346002)(396003)(39860400002)(376002)(366004)(189003)(199004)(86362001)(33656002)(68736007)(71190400001)(316002)(99286004)(3846002)(229853002)(5660300002)(54906003)(110136005)(102836004)(66476007)(66556008)(76116006)(64756008)(53546011)(186003)(91956017)(2616005)(73956011)(66446008)(486006)(476003)(66946007)(11346002)(6436002)(6116002)(6486002)(2906002)(26005)(66066001)(36756003)(446003)(6506007)(256004)(14454004)(478600001)(76176011)(71200400001)(82746002)(83716004)(25786009)(8936002)(81166006)(81156014)(8676002)(7736002)(305945005)(53936002)(4326008)(6246003)(6512007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0501MB2607;H:VI1PR0501MB2701.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 0WDId7b1rRQ36JJBctjNEdMD/Mf+Wl38xIg/VcBg2rK0gEUXG1qZRQ2RGxv7PLNLBsR5txlZ02OzXT3lBUGp9XWseS9n3eHNEdsSUTYqHKSA4jDNi+Plj0ET3YfugI7yZBK7wHoe3+C8CST/OduTNudF4ubiSvIhNJu6R44vy4klFMsYJWnQd7IIpQlOZrcRzHdYUlZiXjb0Dg1BLL6zIe16yyXQdeMtdLK+soxzFShpifVCdsl+I2gpaMMZ4RiU/umgOWwPuAsvwc0BC6YJpBjIPnbd5mnAC/5TCVTwEdSwaVXTcMcg/MMnDmrxSvMZ9Ag0e3LG5K5Z15kKr3Y2JzeMcyaT4blHUBuJ3hqh/yA95zm3lYeAQS4qMThvvY2YJD8OIGVNGx3GsFMdnYYw+L5K8aLxgywSSM3SYA0z/YQ=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726545AbfEHPQK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 8 May 2019 11:16:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54226 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726163AbfEHPQJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 May 2019 11:16:09 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x48F7VnN070823
+        for <linux-rdma@vger.kernel.org>; Wed, 8 May 2019 11:16:07 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.114])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2sc0tsjwtk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Wed, 08 May 2019 11:16:07 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Wed, 8 May 2019 15:16:06 -0000
+Received: from us1b3-smtp02.a3dr.sjc01.isc4sb.com (10.122.7.175)
+        by smtp.notes.na.collabserv.com (10.122.47.58) with smtp.notes.na.collabserv.com ESMTP;
+        Wed, 8 May 2019 15:16:00 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp02.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019050815155995-615187 ;
+          Wed, 8 May 2019 15:15:59 +0000 
+In-Reply-To: <20190508142530.GE6938@mtr-leonro.mtl.com>
+Subject: Re: iWARP and soft-iWARP interop testing
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Doug Ledford" <dledford@redhat.com>,
+        "linux-rdma" <linux-rdma@vger.kernel.org>
+Date:   Wed, 8 May 2019 15:15:59 +0000
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a632c3c-2b39-4c7c-a1e1-08d6d3c62e96
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2019 15:02:25.7542
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2607
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190508142530.GE6938@mtr-leonro.mtl.com>,<49b807221e5af3fab8813a9ce769694cb536072a.camel@redhat.com>
+ <20190507161304.GH6201@ziepe.ca> <20190508062600.GV6938@mtr-leonro.mtl.com>
+ <20190508133028.GB32282@ziepe.ca> <20190508140644.GB6938@mtr-leonro.mtl.com>
+ <20190508141841.GD32282@ziepe.ca>
+X-Mailer: IBM iNotes ($HaikuForm 1048) | IBM Domino Build
+ SCN1812108_20180501T0841_FP38 April 10, 2019 at 11:56
+X-KeepSent: 5AD65D44:561F332B-002583F4:0050EC64;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 41043
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19050815-9695-0000-0000-0000063479CC
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.394266; ST=0; TS=0; UL=0; ISC=; MB=0.163511
+X-IBM-SpamModules-Versions: BY=3.00011071; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000285; SDB=6.01200398; UDB=6.00629841; IPR=6.00981285;
+ BA=6.00006304; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
+ ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00026792; XFM=3.00000015;
+ UTC=2019-05-08 15:16:04
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-05-08 12:40:21 - 6.00009900
+x-cbparentid: 19050815-9696-0000-0000-000067568E86
+Message-Id: <OF5AD65D44.561F332B-ON002583F4.0050EC64-002583F4.0053DCBB@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-08_08:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQo+IE9uIE1heSA4LCAyMDE5LCBhdCA1OjMxIFBNLCBKYXNvbiBHdW50aG9ycGUgPGpnZ0BtZWxs
-YW5veC5jb20+IHdyb3RlOg0KPiANCj4gT24gVHVlLCBNYXkgMDcsIDIwMTkgYXQgMDU6NTU6MjVQ
-TSArMDAwMCwgQWRpdCBSYW5hZGl2ZSB3cm90ZToNCj4+Pj4gLy8gQ29uZmlndXJhdGlvbiBkZWZh
-dWx0cw0KPj4+PiANCj4+Pj4gI2RlZmluZSBJQkFDTV9TRVJWRVJfTU9ERV9VTklYIDANCj4+Pj4g
-ZGlmZiAtLWdpdCBhL2xpYmlidmVyYnMvdmVyYnMuYyBiL2xpYmlidmVyYnMvdmVyYnMuYw0KPj4+
-PiBpbmRleCAxNzY2YjlmNTJkMzEuLjJjYWI4NjE4NGUzMiAxMDA2NDQNCj4+Pj4gKysrIGIvbGli
-aWJ2ZXJicy92ZXJicy5jDQo+Pj4+IEBAIC05NjcsNyArOTY3LDYgQEAgc3RhdGljIGlubGluZSBp
-bnQgY3JlYXRlX3BlZXJfZnJvbV9naWQoaW50IGZhbWlseSwgdm9pZCAqcmF3X2dpZCwNCj4+Pj4g
-ICAgcmV0dXJuIDA7DQo+Pj4+IH0NCj4+Pj4gDQo+Pj4+IC0jZGVmaW5lIE5FSUdIX0dFVF9ERUZB
-VUxUX1RJTUVPVVRfTVMgMzAwMA0KPj4+PiBpbnQgaWJ2X3Jlc29sdmVfZXRoX2wyX2Zyb21fZ2lk
-KHN0cnVjdCBpYnZfY29udGV4dCAqY29udGV4dCwNCj4+Pj4gICAgICAgICAgICAgICAgc3RydWN0
-IGlidl9haF9hdHRyICphdHRyLA0KPj4+PiAgICAgICAgICAgICAgICB1aW50OF90IGV0aF9tYWNb
-RVRIRVJORVRfTExfU0laRV0sDQo+Pj4gDQo+Pj4gUmVhbGx5IGNvbXBpbGUgdGltZSBjb25maWd1
-cmF0aW9ucyBhcmUgbm90IHNvIHVzZWZ1bCwgd2hhdCBpcyB0aGUgdXNlDQo+Pj4gY2FzZSBoZXJl
-PyANCj4+PiANCj4+IA0KPj4gSW4gdGhlIGdlbmVyYWwgc2Vuc2UgSSBhZ3JlZSB3aXRoIHlvdS4g
-UHJlLWJ1aWx0IFJQTXMgbWF5IG5vdCBoYXZlIHRoaXMNCj4+IHNldCB0byBhbnl0aGluZyBvdGhl
-ciB0aGFuIHRoZSBkZWZhdWx0IHZhbHVlLiANCj4+IEhvd2V2ZXIsIGluIG91ciBpbnRlcm5hbCB0
-ZXN0aW5nIHdlJ3ZlIHNlZW4gdGltZW91dHMgd2hlbiB0cnlpbmcgdG8NCj4+IHJlc29sdmUgdGhl
-IERNQUMgd2hlbiBjcmVhdGluZyBhbiBBSC4NCllvdSBjYW4gZG8gdGhpcyB1c2luZyB1dmVyYnMg
-aW5zdGVhZCBvZiBuZXRsaW5rIGJ5IGNoYW5naW5nIHRoZSBjcmVhdGVfYWggcHJvdmlkZXLigJlz
-IGltcGxlbWVudGF0aW9uLi4gYW5kIEFGQUlSIGl04oCZcyBtb3JlIHNjYWxhYmxlIHRoYW4gbmV0
-bGluay4uDQo+PiBJbnN0ZWFkLCBvZiBzaW1wbHkgaW5jcmVhc2luZw0KPj4gdGhlICNkZWZpbmUg
-dmFsdWUgaGVyZSBJIHRob3VnaHQgaXQgd291bGQgYmUgbWlsZGx5IGhlbHBmdWwgdG8gZXhwb3Nl
-IA0KPj4gdGhpcyBvdXQuDQo+PiANCj4+IElmIHRoaXMgaXMgbm90IGdvaW5nIHRvIGJlIHVzZWZ1
-bCBJIGNhbiBkcm9wIGl0IGJ1dCBJIHRob3VnaHQgaXQgd291bGQgDQo+PiBhdGxlYXN0IG1ha2Ug
-cmRtYS1jb3JlIGEgYml0IG1vcmUgY29uZmlndXJhYmxlLi4NCj4gDQo+IFN0dWZmIGxpa2UgdGhp
-cyBzaG91bGQgbm90IGJlIGNvbmZpZ3VyZWQuLiBpZiB5b3UgYXJlIGhpdHRpbmcgdGltZW91dA0K
-PiBpdCBzb3VuZHMgbGlrZSBhIGJ1ZyBvZiBzb21lIHNvcnQgdG8gbWUuDQo+IA0KPiBKYXNvbg0K
+-----"Leon Romanovsky" <leon@kernel.org> wrote: -----
+
+>To: "Jason Gunthorpe" <jgg@ziepe.ca>
+>From: "Leon Romanovsky" <leon@kernel.org>
+>Date: 05/08/2019 04:25PM
+>Cc: "Doug Ledford" <dledford@redhat.com>, "linux-rdma"
+><linux-rdma@vger.kernel.org>, "Bernard Metzler" <BMT@zurich.ibm.com>
+>Subject: Re: iWARP and soft-iWARP interop testing
+>
+>On Wed, May 08, 2019 at 11:18:41AM -0300, Jason Gunthorpe wrote:
+>> On Wed, May 08, 2019 at 05:06:44PM +0300, Leon Romanovsky wrote:
+>> > On Wed, May 08, 2019 at 10:30:28AM -0300, Jason Gunthorpe wrote:
+>> > > On Wed, May 08, 2019 at 09:26:00AM +0300, Leon Romanovsky
+>wrote:
+>> > > > On Tue, May 07, 2019 at 01:13:04PM -0300, Jason Gunthorpe
+>wrote:
+>> > > > > On Mon, May 06, 2019 at 04:38:27PM -0400, Doug Ledford
+>wrote:
+>> > > > > > So, Jason and I were discussing the soft-iWARP driver
+>submission, and he
+>> > > > > > thought it would be good to know if it even works with
+>the various iWARP
+>> > > > > > hardware devices.  I happen to have most of them on hand
+>in one form or
+>> > > > > > another, so I set down to test it.  In the process, I ran
+>across some
+>> > > > > > issues just with the hardware versions themselves, let
+>alone with soft-
+>> > > > > > iWARP.  So, here's the results of my matrix of tests.
+>These aren't
+>> > > > > > performance tests, just basic "does it work" smoke
+>tests...
+>> > > > >
+>> > > > > Well, lets imagine to merge this at 5.2-rc1?
+>> > > >
+>> > > > Can we do something with kref in QPs and MRs before merging
+>it?
+>> > > >
+>> > > > I'm super worried that memory model and locking used in this
+>driver
+>> > > > won't allow me to continue with allocation patches?
+>> > >
+>> > > Well, this use of idr doesn't look right to me:
+>> > >
+>> > > static inline struct siw_qp *siw_qp_id2obj(struct siw_device
+>*sdev, int id)
+>> > > {
+>> > > 	struct siw_qp *qp = idr_find(&sdev->qp_idr, id);
+>> > >
+>> > > 	if (likely(qp && kref_get_unless_zero(&qp->ref)))
+>> > > 		return qp;
+>> > >
+>> > > kref_get_unless_zero is nonsense unless used with someting like
+>rcu,
+>> > > and there is no rcu read lock here.
+>> > >
+>> > > Also, IDR's have to be locked..
+>> > >
+>> > > It probably wants to be written as
+>> > >
+>> > > xa_lock()
+>> > > qp = xa_load()
+>> > > if (qp)
+>> > >    kref_get(&qp->ref);
+>> > > xa_unlock()
+>> > >
+>> > > But I'm not completely sure what this is all about.. A QP
+>cannot
+>> > > really exist past destroy - about the only thing that would
+>make sense
+>> > > is to leave some memory around so other things can see it is
+>failed -
+>> > > but generally it is better to wipe out the QP from those other
+>things
+>> > > then attempt to do reference counting like this.
+>> >
+>> > No, no,, no, it is still not enough. I need to be sure that
+>destroy path
+>> > always successes and kref_get(&qp->ref) doesn't guarantee that.
+>> >
+>> > The good coding pattern can be seen in rdmavt
+>> >
+>https://urldefense.proofpoint.com/v2/url?u=https-3A__elixir.bootlin.c
+>om_linux_latest_source_drivers_infiniband_sw_rdmavt_cq.c-23L316&d=DwI
+>BAg&c=jf_iaSHvJObTbx-siA1ZOg&r=2TaYXQ0T-r8ZO1PP1alNwU_QJcRRLfmYTAgd3Q
+>CvqSc&m=W8K4_QR3oPmfyY52_46Q1ICeIMJr5MSNJIsPe9AgVBM&s=sWDpPSRP82Q7pD_
+>Q0fUJl44yuL42iMKHv0AKta4KGUo&e=
+>> > They krefing and releasing extra structure outside of user
+>visible object.
+>>
+>> In some respects I would rather the core code put a proper memory
+>kref
+>> in every object. We wanted this anyhow for the netlink restrack
+>> stuff, and used properly it is pretty useful.
+>
+>We can do it and for sure will do it, but in meanwhile I would prefer
+>do not
+>see additions of krefs in drivers.
+>
+
+Without questioning the concept here, moving allocation and freeing
+of core resources to the mid layer may induce complex changes at
+driver level. Especially for a SW driver, which references those
+objects on the fast path. Following the approach rdmavt takes,
+that results in a split of objects between driver and mid layer.
+So we abandon the idea of folding driver state and mid layer
+state into one object.
+I can think of such a thing for memory objects. What is the time
+line for those changes to the mid layer? Will it be part of 5.2?
+
+I guarantee I'll do those changes when really needed, but I'd
+leave a rather stable current state. I am not saying I am reluctant
+to do so.
+
+
+Thanks,
+Bernard.
+
