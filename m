@@ -2,54 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C2418DF4
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2019 18:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1512A18E7F
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2019 18:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbfEIQZR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 May 2019 12:25:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726913AbfEIQZQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 9 May 2019 12:25:16 -0400
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557419116;
-        bh=9l24qoZpm/lMj/JHy0wFhM4SVl/U6n5X5kDMMREc2oc=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=JnBU9+g8BOMgXWtNf/a/0Qf058g2uCoVRfMsBF+Rv7xv4gE30bzIcgtfFRU5+9MvD
-         y+WFMa6PC531DB4PK2vwCFPYCX4ZessmhsCmsKwZWhPd5XZiHY9Nw5Rjzdc9wu/y8h
-         wDB68CXqM8vzYJ/wDlhsii59GwJjA0Y3sWstxK6w=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20190509133711.GA16703@ziepe.ca>
-References: <20190509133711.GA16703@ziepe.ca>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20190509133711.GA16703@ziepe.ca>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: b79656ed44c6865e17bcd93472ec39488bcc4984
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: dce45af5c2e9e85f22578f2f8065f225f5d11764
-Message-Id: <155741911625.30533.6017431247232404075.pr-tracker-bot@kernel.org>
-Date:   Thu, 09 May 2019 16:25:16 +0000
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        id S1726657AbfEIQwg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 May 2019 12:52:36 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45967 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbfEIQwg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 May 2019 12:52:36 -0400
+Received: by mail-qt1-f196.google.com with SMTP id t1so3248481qtc.12;
+        Thu, 09 May 2019 09:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jUsBtZeNw5FNZWL8p+EHmLQcD3RYdpay6K7eQaM/McY=;
+        b=lZ76QuoWP/RlQ75YXkOJcraYtkNTORpFzzVYzxh33URZ1VMjG3Xx5DjtZ3CHin9xa5
+         fS/xGH7+lJxkoHr7QwVmyDAjbeF7nvOmxv9beDILF+sB+8CiqCfnpouLazaG1HGm4wWr
+         sSEbhOG5/jozTrc/fsmtxtN959XvvWOXy5liSIq+k6J+n2dlsbSH6ap+adywXTDR7kLx
+         KiqF0AAJVljqXt6esw6EBUoQy090O3TR79BAiDBzt0e3J3KThFw2L3AVAsylb2+p2P5b
+         a2N9dHCQk3vpX1jSLasmI3wCY61bPxdTWmHGDEdgCCrPI+I3gdezXTWfZ9jvSdaQw7fz
+         mByg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jUsBtZeNw5FNZWL8p+EHmLQcD3RYdpay6K7eQaM/McY=;
+        b=X+qgnQND/SkWk3uehmAV8cvcDM4jrbVJoc0JzvMMKQHC/g4xRFQnDKGNsVrtMAjvuv
+         2dGhA1FzWeOuOokfzCW7ElZWpk21B1QuRSjQBJSUpUS79AtDWf/8sKb7kOMbG3QKnIFV
+         BdsSDfWXgjPQn7WuDGvl9nmeg6PG6v70SfKmcz8okamN4QtaTBd4dSvVkAyKjv77/UvF
+         uHvIYOf5Vod8wrE/HZ3yjFmQvL1cr0DjSxt0bKBkc1fSJU3artQ7ch0b14N+BEcVxqKT
+         3Mny6agn4cy7hFCljYubkmBZnIu4TiXOX3ZLVKyzWboOuMueALeY5wRMeXMW1OiheA2R
+         XqCQ==
+X-Gm-Message-State: APjAAAW4aogQpAiE6j+DyXsMAwDAkdLUxCCdHxkSZgvTrZmmQi8mUcA0
+        4N6rMIS5jJlV/WwDdA2wf3I=
+X-Google-Smtp-Source: APXvYqx1t5kT+XXZFiBv+VqPqn8kVEYcdTa7Y4TE5pWMD/WmWnopKPh7/3rEKvsPEmRwg0IA9htZcQ==
+X-Received: by 2002:ac8:19f5:: with SMTP id s50mr4695898qtk.281.1557420754955;
+        Thu, 09 May 2019 09:52:34 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::1:c346])
+        by smtp.gmail.com with ESMTPSA id x47sm1527214qth.68.2019.05.09.09.52.33
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 May 2019 09:52:34 -0700 (PDT)
+Date:   Thu, 9 May 2019 09:52:32 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     "Welty, Brian" <brian.welty@intel.com>
+Cc:     cgroups@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, kenny.ho@amd.com
+Subject: Re: [RFC PATCH 0/5] cgroup support for GPU devices
+Message-ID: <20190509165232.GW374014@devbig004.ftw2.facebook.com>
+References: <20190501140438.9506-1-brian.welty@intel.com>
+ <20190506152643.GL374014@devbig004.ftw2.facebook.com>
+ <cf58b047-d678-ad89-c9b6-96fc6b01c1d7@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf58b047-d678-ad89-c9b6-96fc6b01c1d7@intel.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Thu, 9 May 2019 13:37:23 +0000:
+Hello,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+On Tue, May 07, 2019 at 12:50:50PM -0700, Welty, Brian wrote:
+> There might still be merit in having a 'device mem' cgroup controller.
+> The resource model at least is then no longer mixed up with host memory.
+> RDMA community seemed to have some interest in a common controller at
+> least for device memory aspects.
+> Thoughts on this?   I believe could still reuse the 'struct mem_cgroup' data
+> structure.  There should be some opportunity to reuse charging APIs and
+> have some nice integration with HMM for charging to device memory, depending
+> on backing store.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/dce45af5c2e9e85f22578f2f8065f225f5d11764
+Library-ish sharing is fine but in terms of interface, I think it'd be
+better to keep them separate at least for now.  Down the line maybe
+these resources will interact with each other in a more integrated way
+but I don't think it's a good idea to try to design and implement
+resource models for something like that preemptively.
 
-Thank you!
+Thanks.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+tejun
