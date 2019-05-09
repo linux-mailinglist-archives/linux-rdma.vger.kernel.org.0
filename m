@@ -2,53 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA7E18820
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2019 12:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AC218885
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2019 12:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725892AbfEIKEG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 May 2019 06:04:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43382 "EHLO mx1.suse.de"
+        id S1725943AbfEIKu7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 May 2019 06:50:59 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:33890 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725826AbfEIKEG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 9 May 2019 06:04:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 031C9AB87;
-        Thu,  9 May 2019 10:04:05 +0000 (UTC)
-From:   Hannes Reinecke <hare@suse.de>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Hannes Reinecke <hare@suse.de>, Hannes Reinecke <hare@suse.com>
-Subject: [PATCH] infiniband/core: zero out bind_list pointer in cma_release_port()
-Date:   Thu,  9 May 2019 12:03:58 +0200
-Message-Id: <20190509100358.114974-1-hare@suse.de>
-X-Mailer: git-send-email 2.16.4
+        id S1725872AbfEIKu7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 9 May 2019 06:50:59 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D7A82D8320139C80FC53;
+        Thu,  9 May 2019 18:50:57 +0800 (CST)
+Received: from [127.0.0.1] (10.74.223.196) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Thu, 9 May 2019
+ 18:50:48 +0800
+Subject: Re: [PATCH for-next] RDMA/hns: Add support function clear when
+ removing module
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Leon Romanovsky <leon@kernel.org>, oulijun <oulijun@huawei.com>,
+        <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1555154941-55510-1-git-send-email-oulijun@huawei.com>
+ <20190416121634.GA12981@mtr-leonro.mtl.com>
+ <4d3613c7-1c68-9f9b-d185-ab015049e6cf@huawei.com>
+ <20190422122209.GD27901@mtr-leonro.mtl.com>
+ <add43d02-b3d5-35d9-a74d-8254c1fb472c@huawei.com>
+ <20190423152339.GE27901@mtr-leonro.mtl.com>
+ <90a91e1f-91fc-bc4e-067c-7bc788c62ab6@huawei.com>
+ <20190426143656.GA2278@ziepe.ca> <20190426210520.GA6705@mtr-leonro.mtl.com>
+ <99195660-be8d-555f-01fc-efd9e680fdf3@huawei.com>
+ <20190502130304.GB18518@ziepe.ca>
+From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
+Message-ID: <a23d02b4-5a1f-8b25-2b5c-f14e16acdcc2@huawei.com>
+Date:   Thu, 9 May 2019 18:50:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.1
+MIME-Version: 1.0
+In-Reply-To: <20190502130304.GB18518@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.223.196]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-After calling kfree() on the bind_list we should be zeroing out
-the pointer, otherwise a second call to cma_release_port() will
-crash.
 
-Signed-off-by: Hannes Reinecke <hare@suse.com>
----
- drivers/infiniband/core/cma.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 68c997be2429..2a0010eddb33 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -1770,6 +1770,7 @@ static void cma_release_port(struct rdma_id_private *id_priv)
- 	if (hlist_empty(&bind_list->owners)) {
- 		cma_ps_remove(net, bind_list->ps, bind_list->port);
- 		kfree(bind_list);
-+		id_priv->bind_list = NULL;
- 	}
- 	mutex_unlock(&lock);
- }
--- 
-2.16.4
+On 2019/5/2 21:03, Jason Gunthorpe wrote:
+> On Tue, Apr 30, 2019 at 04:27:41PM +0800, Liuyixian (Eason) wrote:
+>>
+>>
+>> On 2019/4/27 5:05, Leon Romanovsky wrote:
+>>> On Fri, Apr 26, 2019 at 11:36:56AM -0300, Jason Gunthorpe wrote:
+>>>> On Fri, Apr 26, 2019 at 06:12:11PM +0800, Liuyixian (Eason) wrote:
+>>>>
+>>>>>     However, I have talked with our chip team about function clear
+>>>>>     functionality. We think it is necessary to inform the chip to
+>>>>>     perform the outstanding task and some cleanup work and restore
+>>>>>     hardware resources in time when rmmod ko. Otherwise, it is
+>>>>>     dangerous to reuse the hardware as it can not guarantee those
+>>>>>     work can be done well without the notification from our driver.
+>>>>
+>>>> If it is dangerous to reuse the hardware then you have to do this
+>>>> cleanup on device startup, not on device removal.
+>>>
+>>> Right, I can think about gazillion ways to brick such HW.
+>>> The simplest way will be to call SysRq during RDMA traffic
+>>> and no cleanup function will be called in such case.
+>>>
+>>> Thanks
+>>
+>> Hi Jason and Leon,
+>>
+>> 	As hip08 is a fake pcie device, we could not disassociate and stop the hardware access
+>> 	through the chain break mechanism as a real pcie device. Alternatively, function clear
+>> 	is used as a notification to the hardware to stop accessing and ensure to not read or
+>> 	write DDR later. That is, the role of function clear to hip08 is similar as the chain
+>> 	break to pcie device.
+> 
+> What? This hardware is broken and doesn't respond to the bus master
+> enable bit in the PCI config space??
+> 
+Hi Jason,
+
+Sorry to reply to you late.
+
+Yes, the bus master enable bit should be set by a pcie device when startup and removal.
+The hns (nic) module use it as well. However, we couldn't use/operate this bit in hip08
+as it shares the PF(physical function) with nic. Therefore, we need function clear to
+notify the hardware to do the cleanup thing and cache write back.
+
+Thanks.
+
 
