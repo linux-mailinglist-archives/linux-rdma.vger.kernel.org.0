@@ -2,75 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B8119DDE
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2019 15:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4546319E3D
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2019 15:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727510AbfEJNKw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 May 2019 09:10:52 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:39706 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727465AbfEJNKw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 May 2019 09:10:52 -0400
-Received: by mail-qt1-f194.google.com with SMTP id y42so6466204qtk.6
-        for <linux-rdma@vger.kernel.org>; Fri, 10 May 2019 06:10:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UOKF47HJu2JuX7gI/SipAYpNlu6con13Zk+N5cJusI0=;
-        b=gn1IRzHqA23diQxfaISVbAnDyLB7V8DcGySfoOSEm7FEtxrlpoBHVfOoalkbc6Yk3y
-         4pfe0WFafaMy+OJcFQ+Id10S6MzWB6UKc42PSNyRY/Os/K5BjnzSAPWmJSCG7uWZwCeU
-         BEippNV3bvC4ef22K0fJwNuuMtWr6f08Rk9iSCM0da3gyyTesNpqFkliY+5SShsYCrl6
-         E6iOu6f+U5oESq3W2xZ2loYFCLgqRmOdZPzQlB03jrgkMCQxPACMzOt8sEHlm8c8WeLK
-         QVEnntkYh3F3uyShB+lScKZmqKn8QcJokFizanyeqeyrRcBzZIiG3wjtJXPmnFEfJPYr
-         s7MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UOKF47HJu2JuX7gI/SipAYpNlu6con13Zk+N5cJusI0=;
-        b=D4J093nsWdAg2srSRg3fm8tqKFD3p1fyox0FA7hm1oHPEYcwQvN0p+dOXS7byJgXp3
-         F6ZhiM99SciL9IungmRIQ15Q97ynG7EeSlK8mP25VxeTP4d/Z9v2dwVza69mExuiGhC/
-         jIUbmpTBVkbBDFJeRXh5kKRHHdpNb7ZGP8RkM1bQSCYPlEHd5jB380pD8zKRalboLUAW
-         6PuvY/1XGXfD1a4NEaltC/zAXfxqNwvM2flknlyPkEPJWOY/Pwu44DUXxAWkpmmzKCNX
-         sL0f+Vnf/B4F3aqlCRMfuJioeW46n9g2XwSndJ2h+ZHXRAy4YBdFH5dnvVAJNB7eIF4R
-         j5Tg==
-X-Gm-Message-State: APjAAAWQVcT/Jrs0xWigGwXtzJ7avlz5oQNa+YGkKQFbLlEexEWfEZh5
-        RVy8vUgRfCBZy6C7euwhb/OF1w==
-X-Google-Smtp-Source: APXvYqxO/8Uxr8djCfIhbSIBDEMkKdAf6d/r6crFMV4Kv7pPnwqVdyFx/0Yps51UuUgkOrA3FP5S/w==
-X-Received: by 2002:aed:3501:: with SMTP id a1mr9441038qte.265.1557493851327;
-        Fri, 10 May 2019 06:10:51 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id j123sm2784494qkf.23.2019.05.10.06.10.49
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 10 May 2019 06:10:49 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hP5IX-0004Y5-9B; Fri, 10 May 2019 10:10:49 -0300
-Date:   Fri, 10 May 2019 10:10:49 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Hannes Reinecke <hare@suse.com>
-Subject: Re: [PATCH] infiniband/core: zero out bind_list pointer in
- cma_release_port()
-Message-ID: <20190510131049.GA13038@ziepe.ca>
-References: <20190509100358.114974-1-hare@suse.de>
+        id S1727566AbfEJNbH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 May 2019 09:31:07 -0400
+Received: from mga05.intel.com ([192.55.52.43]:43905 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727535AbfEJNbG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 10 May 2019 09:31:06 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 May 2019 06:31:06 -0700
+X-ExtLoop1: 1
+Received: from ssaleem-mobl4.amr.corp.intel.com (HELO ssaleem-mobl1) ([10.122.129.109])
+  by orsmga002.jf.intel.com with SMTP; 10 May 2019 06:31:04 -0700
+Received: by ssaleem-mobl1 (sSMTP sendmail emulation); Fri, 10 May 2019 08:31:03 -0500
+Date:   Fri, 10 May 2019 08:31:02 -0500
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>
+Subject: Re: [RFC v1 01/19] net/i40e: Add peer register/unregister to struct
+ i40e_netdev_priv
+Message-ID: <20190510133102.GA13780@ssaleem-MOBL4.amr.corp.intel.com>
+References: <20190215171107.6464-1-shiraz.saleem@intel.com>
+ <20190215171107.6464-2-shiraz.saleem@intel.com>
+ <20190215172233.GC30706@ziepe.ca>
+ <9DD61F30A802C4429A01CA4200E302A7A5A471B8@fmsmsx124.amr.corp.intel.com>
+ <20190221193523.GO17500@ziepe.ca>
+ <2B0E3F215D1AB84DA946C8BEE234CCC97B11DF23@ORSMSX101.amr.corp.intel.com>
+ <20190222202340.GY17500@ziepe.ca>
+ <c53c117d58b8bbe325b3b32d6681b84cf422b773.camel@intel.com>
+ <20190313132841.GI20037@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190509100358.114974-1-hare@suse.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190313132841.GI20037@ziepe.ca>
+User-Agent: Mutt/1.7.2 (2016-11-26)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 09, 2019 at 12:03:58PM +0200, Hannes Reinecke wrote:
-> After calling kfree() on the bind_list we should be zeroing out
-> the pointer, otherwise a second call to cma_release_port() will
-> crash.
+On Wed, Mar 13, 2019 at 07:28:41AM -0600, Jason Gunthorpe wrote:
+> 
+> > > Register a device driver to the driver core and wait for the driver
+> > > core to call that driver's probe method.
+> > 
+> > Yes, the LAN PF driver is the software component exposing and managing the
+> > bus, so it is the one who will call probe/remove of the peer driver (RDMA
+> > driver).  Although netdev notifiers based approach is needed if the RDMA
+> > driver was loaded first before the LAN PF driver (i40e or ice) is loaded.
+> 
+> Why would notifiers be needed? Driver core handles all these ordering
+> things. If you have a device_driver with no device it waits until a
+> device gets plugged in to call probe.
+> 
 
-Why would there be two calls to cma_release_port? That is a bug.
+Hi Jason - Your feedback here is much appreciated and we have revisited our design based on it.
+The platform driver/device model is a good fit for us with the addition of RDMA capable devices
+to the virtual platform bus. Here are the highlights of design and how they address your concerns.
 
-Jason
+(1) irdma driver registers itself as a platform driver with its own probe()/remove() routines.
+    It will support RDMA capable platform devices from different Intel HW generations. 
+(2) The intel net driver will register RDMA capable devices on the platform bus.
+(3) Exposing a virtual bus type in the netdev driver is redundant and thus removed.
+    Additionally, it would require the bus object to be exported in order for irdma to register,
+    which doesnt allow irdma to be unified. 
+(4) In irdma bus probe(), we are able to reach each platform dev's associated net-specific
+    data including the netdev. 
+(5) There are no ordering dependencies between net-driver and irdma since it's managed by driver
+    core as you stated. Listening to netdev notifiers for attachment is no longer required and
+    thus removed.
+
+We did a proof-of-concept of this revised design with 'irdma' and 'ice'.
+
+The last 2 commits on github contain the specific changes to the 2 drivers to migrate to the new model.
+
+https://github.com/shirazsaleem/linux-rdma/commits/poc-irdma-platform-driver
+eba0979 ("RDMA/irdma: Register irdma as a platform driver")
+32a7dea ("ice: Register RDMA peer devices to the virtual platform bus")
+
+Thoughts?
+
+Shiraz
