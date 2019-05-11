@@ -2,119 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC581A2E2
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2019 20:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E8C1A882
+	for <lists+linux-rdma@lfdr.de>; Sat, 11 May 2019 18:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbfEJSRU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 May 2019 14:17:20 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:38040 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727535AbfEJSRT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 May 2019 14:17:19 -0400
-Received: by mail-qk1-f196.google.com with SMTP id a64so4250308qkg.5
-        for <linux-rdma@vger.kernel.org>; Fri, 10 May 2019 11:17:19 -0700 (PDT)
+        id S1726900AbfEKQw1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 11 May 2019 12:52:27 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:38538 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbfEKQw0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 11 May 2019 12:52:26 -0400
+Received: by mail-lf1-f66.google.com with SMTP id y19so6228323lfy.5
+        for <linux-rdma@vger.kernel.org>; Sat, 11 May 2019 09:52:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=l+dTlD8EzUiEZ36qCTDTFyiWR4lfkfM2VCg1MNYurkY=;
-        b=Zgib1X4YQpQ2wp128y5tUYsG2Hjp4NFwNmZl/CXkRDeIIAehtHLLb7f2CPpXOI4+X5
-         zyLagT0bavmw9FVZfJG2MXZtFx3ghMZ7Q8uURoGkgGdvb58PtAA9ET3jJHHZmKguSrN1
-         soJeFbh7jT0q6Ji7CwW8ezK2pYaRw15jIOG/lOz7EOdehY7IM9KmfewSe4HMFYu282Sh
-         9Q4AQR/v6p4X/CFJpyWfp7prfUkg1bq5dyRubms3f7PRFX94RlWZb1L8qQVcL2DYuVwj
-         fgBeoy1rE+HIyzWjxwtx8GekACJ/XpXMVEcoP4DYlBcevbxbapazhHYH7oGpNzr0zKyO
-         Bixw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=8wz43C7jxGCUsHy9MfWjXgalwSWO3z1P/EsbM3jZ0KM=;
+        b=GDi3fsBTBmf9X/8Hz0x1TQFBY0bhDBOVG947LRV8qCxSuuclixM+RZ23aQRJsD+7QL
+         FFoQee+EIXhKJpQVIge77dug+vh6aZEAXj7EobIugSWNrnrQ+lfqlnR8Q37ZkFcIA5GB
+         v7yQJ7MNZn/9ofUQykM+64Arse7i9M0xZTWTQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l+dTlD8EzUiEZ36qCTDTFyiWR4lfkfM2VCg1MNYurkY=;
-        b=bmJbQU1b3C2YUvH/cvY8IRztFpRdzUQ29bzlu3Llafr6lUmzdv8avrGbhvCddZRD1I
-         LjqGgUcOTqDXpxJsqAb3H/DMB9vQUT6KhQbEbnQ2+roHvwPTxb2m0LUKAWliLDeOSX0f
-         /mgc6EHfthNQcuUb2IwI1Eqm57jOqM60oXmc48lMrUJMvfUafS8pUdQOJELlxTPVV45N
-         trDzbOuBbj/pmUt6KJ0KlAux7Eig8pb5wYdPd5li+CWyKZBDZ3Dte8KJ5AOrGsfablNb
-         tAxNN8vYlGbLmEp150UcBoB2hD7cO0IvhErtt5mQ9SSJsEgV+T85YT8SLY6KE8ykbvq0
-         Bhaw==
-X-Gm-Message-State: APjAAAXIEoUiHlgrMrwp7ZW3fiGMeGqPfLUu64o4min0B913McUrFfMz
-        KreWlfxEG90v1lmbx5sk7p4l1A==
-X-Google-Smtp-Source: APXvYqw95u1KxHc5IxcBPSE1I7gQ9e3pljAG3yIWIYntu9vpvwCQvLIaGtrdNrdCYFrBsIIb5YPzmQ==
-X-Received: by 2002:a37:aa55:: with SMTP id t82mr4344515qke.136.1557512238725;
-        Fri, 10 May 2019 11:17:18 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id u21sm3946092qtk.61.2019.05.10.11.17.18
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 10 May 2019 11:17:18 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hPA57-0006oe-Mh; Fri, 10 May 2019 15:17:17 -0300
-Date:   Fri, 10 May 2019 15:17:17 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Shiraz Saleem <shiraz.saleem@intel.com>
-Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-Subject: Re: [RFC v1 01/19] net/i40e: Add peer register/unregister to struct
- i40e_netdev_priv
-Message-ID: <20190510181717.GG13038@ziepe.ca>
-References: <20190215171107.6464-1-shiraz.saleem@intel.com>
- <20190215171107.6464-2-shiraz.saleem@intel.com>
- <20190215172233.GC30706@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7A5A471B8@fmsmsx124.amr.corp.intel.com>
- <20190221193523.GO17500@ziepe.ca>
- <2B0E3F215D1AB84DA946C8BEE234CCC97B11DF23@ORSMSX101.amr.corp.intel.com>
- <20190222202340.GY17500@ziepe.ca>
- <c53c117d58b8bbe325b3b32d6681b84cf422b773.camel@intel.com>
- <20190313132841.GI20037@ziepe.ca>
- <20190510133102.GA13780@ssaleem-MOBL4.amr.corp.intel.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=8wz43C7jxGCUsHy9MfWjXgalwSWO3z1P/EsbM3jZ0KM=;
+        b=n8lSQy538TPwsE219y8Nv2Ustxx6FxZ9V4ZYeLEbAzlSJCC6tOlK232vq2m4u4EXoi
+         W7FCtYU58mP+UM8XPDjAPPnGneMwLULxK/jihAcBwFeK7mr214LSsYJMFzA9KIwc6HB9
+         eKYy7faH86EYGelpThieg+Mkwa/Ivw6fTlTMwddRurk9HPYHlL29WnBj9/59vHPsPjBZ
+         aC5aFkyCEggfbvqnmPRR2F+iGuftJd0lD9noFn50jrfqhaJmdmZ1MEL8MA9vX6XCPGgI
+         CHHRW0nVtlEIVxo0X+zfgD19MWUw3g8wxvrGvoXX2+oB/iWUhKkw7EJk5dLrFJi2YMPC
+         VmEA==
+X-Gm-Message-State: APjAAAXp9pjM8cm0bNrJefAY2peJsvtvdFIXBcIbxCXw1KAWYKXON7M8
+        qbrX/qa1DDeqbzZOSuqOSPDha7VEFno=
+X-Google-Smtp-Source: APXvYqxh5PIM5zuvgwWRfC8P0JZcutftU/3UE3jPD6i2+37T6bW4TCC3mBGXYPqZDo7x5aQUWkjtRw==
+X-Received: by 2002:ac2:54b7:: with SMTP id w23mr9377342lfk.139.1557593544444;
+        Sat, 11 May 2019 09:52:24 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id o21sm2157132ljj.19.2019.05.11.09.52.23
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 11 May 2019 09:52:23 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id f1so6232434lfl.6
+        for <linux-rdma@vger.kernel.org>; Sat, 11 May 2019 09:52:23 -0700 (PDT)
+X-Received: by 2002:a19:5015:: with SMTP id e21mr9229137lfb.62.1557593542751;
+ Sat, 11 May 2019 09:52:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190510133102.GA13780@ssaleem-MOBL4.amr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 11 May 2019 12:52:06 -0400
+X-Gmail-Original-Message-ID: <CAHk-=whbuwm5FbkPSfftZ3oHMWw43ZNFXqvW1b6KFMEj5wBipA@mail.gmail.com>
+Message-ID: <CAHk-=whbuwm5FbkPSfftZ3oHMWw43ZNFXqvW1b6KFMEj5wBipA@mail.gmail.com>
+Subject: Annoying gcc / rdma / networking warnings
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        David Miller <davem@davemloft.net>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 10, 2019 at 08:31:02AM -0500, Shiraz Saleem wrote:
-> On Wed, Mar 13, 2019 at 07:28:41AM -0600, Jason Gunthorpe wrote:
-> > 
-> > > > Register a device driver to the driver core and wait for the driver
-> > > > core to call that driver's probe method.
-> > > 
-> > > Yes, the LAN PF driver is the software component exposing and managing the
-> > > bus, so it is the one who will call probe/remove of the peer driver (RDMA
-> > > driver).  Although netdev notifiers based approach is needed if the RDMA
-> > > driver was loaded first before the LAN PF driver (i40e or ice) is loaded.
-> > 
-> > Why would notifiers be needed? Driver core handles all these ordering
-> > things. If you have a device_driver with no device it waits until a
-> > device gets plugged in to call probe.
-> > 
-> 
-> Hi Jason - Your feedback here is much appreciated and we have revisited our design based on it.
-> The platform driver/device model is a good fit for us with the addition of RDMA capable devices
-> to the virtual platform bus. Here are the highlights of design and how they address your concerns.
-> 
-> (1) irdma driver registers itself as a platform driver with its own probe()/remove() routines.
->     It will support RDMA capable platform devices from different Intel HW generations. 
-> (2) The intel net driver will register RDMA capable devices on the platform bus.
-> (3) Exposing a virtual bus type in the netdev driver is redundant and thus removed.
->     Additionally, it would require the bus object to be exported in order for irdma to register,
->     which doesnt allow irdma to be unified. 
-> (4) In irdma bus probe(), we are able to reach each platform dev's associated net-specific
->     data including the netdev. 
-> (5) There are no ordering dependencies between net-driver and irdma since it's managed by driver
->     core as you stated. Listening to netdev notifiers for attachment is no longer required and
->     thus removed.
+Jason and Davem,
+ with gcc-9, I'm now seeing a number of annoying warnings from the
+rdma layer. I think it depends on the exact gcc version, because I'm
+seeing them on my laptop but didn't see them on my desktop, probably
+due to updating at different times.
 
-This sounds a bount right, but you will want to run these details by
-Greg KH. I think he will tell you to use the multi-function device
-stuff, not a platform device.
+The warning is because gcc now looks at pointer types for some
+allocation sizes, and will do things like this:
 
-Jason
+In function =E2=80=98memset=E2=80=99,
+    inlined from =E2=80=98rdma_gid2ip=E2=80=99 at ./include/rdma/ib_addr.h:=
+168:3,
+    inlined from =E2=80=98roce_resolve_route_from_path=E2=80=99 at
+drivers/infiniband/core/addr.c:735:2:
+./include/linux/string.h:344:9: warning: =E2=80=98__builtin_memset=E2=80=99=
+ offset
+[17, 28] from the object at =E2=80=98dgid=E2=80=99 is out of the bounds of =
+referenced
+subobject =E2=80=98_sockaddr=E2=80=99 with type =E2=80=98struct sockaddr=E2=
+=80=99 at offset 0
+[-Warray-bounds]
+  344 |  return __builtin_memset(p, c, size);
+
+because the "memset()" is done onto a "sockaddr_in6" (where it's not
+out of bounds), but the rdma_gid2ip() function was passed a "sockaddr"
+type (where it *is* out of bounds.
+
+All the cases I found actually have good *allocations* for the
+underlying storage, using a union of the different sockaddr types, and
+includes a "sockaddr_in6". So the warning actually looks bogus from an
+actual allocation standpoint, but at the same time, I think the
+warning does show a real issue in the networking code.
+
+In particular, a "struct sockaddr" is supposed to be a valid superset
+of the different sockaddr types, and the rdma use is in that sense the
+rdma use of "struct sockaddr *" is entirely sane.
+
+BUT.
+
+The Linux kernel sockaddr is actually just 16 bytes. While a
+sockaddr_int is about twice that.
+
+So if you look at the types like gcc does, then the rdma layer really
+is passing a pointer to a 16-byte sockaddr, and then filling it with
+(much bigger) sockaddr_ip6 data.
+
+Arguably gcc is being stupid, and it should look at the actual
+allocation, but that's not what it does. And I do think what gcc does
+is at least understandable.
+
+So David, arguably the kernel "struct sockaddr" is simply wrong, if it
+can't contain a "struct sockaddr_in6". No? Is extending it a huge
+problem for other users that don't need it (mainly stack, I assume..)?
+
+Also equally arguably, the rdma code could just use a "struct
+sockaddr_in6 for this use and avoid the gcc issue, couldn't it? It has
+the type right there, and rdma_gid2ip() could just take that type
+instead, since that's what it actually then uses anyway.
+
+Comments?
+
+               Linus
