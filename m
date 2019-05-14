@@ -2,194 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5ECD1C039
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 May 2019 02:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53041C7EC
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 May 2019 13:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726833AbfENAzY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 May 2019 20:55:24 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:46542 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726233AbfENAzY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 May 2019 20:55:24 -0400
-Received: by mail-qt1-f195.google.com with SMTP id z19so8141117qtz.13
-        for <linux-rdma@vger.kernel.org>; Mon, 13 May 2019 17:55:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=pUBFTG3mMVYxmSF25knkwovcz+vklh44Q18Z6S9OSMc=;
-        b=MEimntidxOkQd50CgVh8V2VxRsFvKBoAstt85gad8xJKVyOeEoV11zNRiqblSvAjiq
-         1QMi0NcKTVMLI1kA/Ti0gtw7ZFby3wLfPdAYxMEersXhqvV0bIM4WNTeqPD3JVn0eq3L
-         fXCzgi2TPzX1K+d0wwQ8aa0i+RPNEWdCQhRT0tVOFlu9oLDteHUUwFB6fGSD9P5kO5Fy
-         QMPfyLpS3waf7LwPmFKhZOL+oGi8jEkKE5cOJIomUMyRcDSV7JsDlyP/y0jWzDqj9i00
-         VlzwONALu4JbkW8pjGfZbB2qrLpPHFJKoEUZRXHhDVxONQG1nfBbKJzOdnph7/mfKImg
-         wP8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=pUBFTG3mMVYxmSF25knkwovcz+vklh44Q18Z6S9OSMc=;
-        b=RqOhWA8H/tWecjnAHp313VSzH+Rqx1PmjgIJ7FVCnvNlKl7oDH83sAZPNkDk84Roy8
-         uJ0WYk1BhDqz7ROyRY2RhZJcGNVQx4TjxOwNemsMGbWxKhVDVuqq5JHSW/RszE0Mc583
-         r8TIXeOVD7xarntjWSloaRvuBqFv1cCBqpMyRR2qqgiPySv7kI2ae14yIaJYbWc+OfwK
-         A49X3CwEcyg1R8Me0pK/+5qnR6nbOc6Ksu5iBQ0/zEfKeCbKOsxhMq2St3/pfsXiP6sH
-         bQWU8PQPM8nRbrzRxKL90qgz/LvmTDSMcnDbrxAtwlIBzvIUAENAMp5TjTySHSuGkC+y
-         +m8w==
-X-Gm-Message-State: APjAAAWcPVjUbHMNpN9Z5i7RS8aLTWeFKxh0Lii6Ih8Z7LFP8oK5f+SS
-        LME7c101Ndz7uyUjHZw9sCHDVQ==
-X-Google-Smtp-Source: APXvYqyBUTx5Iw2WP9ZH7PL2DyEW9PA/PLDHy2q3fM6GCCJLcIjrlSwisidKRxN8NrlAM44YqdEpjA==
-X-Received: by 2002:ac8:4304:: with SMTP id z4mr18655245qtm.275.1557795322864;
-        Mon, 13 May 2019 17:55:22 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id r47sm11534911qtc.14.2019.05.13.17.55.22
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 13 May 2019 17:55:22 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hQLiz-0008Kd-Jd; Mon, 13 May 2019 21:55:21 -0300
-Date:   Mon, 13 May 2019 21:55:21 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>
-Subject: [PATCH v2] RDMA: Directly cast the sockaddr union to sockaddr
-Message-ID: <20190514005521.GA18085@ziepe.ca>
+        id S1726324AbfENLoU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 May 2019 07:44:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725893AbfENLoU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 May 2019 07:44:20 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C09620818;
+        Tue, 14 May 2019 11:44:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557834259;
+        bh=75oaqgPFRpMBkkXlg3jRciCVdOZTavNN6rpWHtYHW6c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lW4m7w6eBDc4bmTnQ7swBVA3FSmuynKfRlk4MwTlhT+wxvtxhFZW/Gnh44vLt6TCm
+         Yt3HYtslt7tKb1pdqIP+EmvP/ZNDVYCRJQnJcOYN8TV2RO/8a+I6dumbLyjNiEngoI
+         GSAKzXYaWmLOB2h/w0CO+dTjRMvn5YG+mJ8Wuupo=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: [PATCH rdma-next 0/2] DevX fixes
+Date:   Tue, 14 May 2019 14:44:10 +0300
+Message-Id: <20190514114412.30604-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-gcc 9 now does allocation size tracking and thinks that passing the member
-of a union and then accessing beyond that member's bounds is an overflow.
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Instead of using the union member, use the entire union with a cast to
-get to the sockaddr. gcc will now know that the memory extends the full
-size of the union.
+Hi,
 
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
----
- drivers/infiniband/core/addr.c           | 16 ++++++++--------
- drivers/infiniband/hw/ocrdma/ocrdma_ah.c |  5 ++---
- drivers/infiniband/hw/ocrdma/ocrdma_hw.c |  5 ++---
- 3 files changed, 12 insertions(+), 14 deletions(-)
+There are two very short but important fixes to DevX flows.
 
-I missed the ocrdma files in the v1
+Thanks
 
-We can revisit what to do with that repetitive union after the merge
-window, but this simple patch will eliminate the warnings for now.
+Yishai Hadas (2):
+  IB/mlx5: Verify DEVX general object type correctly
+  net/mlx5: Set completion EQs as shared resources
 
-Linus, I'll send this as a PR tomorrow - there is also a bug fix for
-the rdma-netlink changes posted that should go too.
+ drivers/infiniband/hw/mlx5/devx.c            | 13 ++++++++++---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c |  3 +++
+ include/linux/mlx5/mlx5_ifc.h                |  2 +-
+ 3 files changed, 14 insertions(+), 4 deletions(-)
 
-Thanks,
-Jason
-
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index ba01b90c04e775..2f7d14159841f8 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -731,8 +731,8 @@ int roce_resolve_route_from_path(struct sa_path_rec *rec,
- 	if (rec->roce.route_resolved)
- 		return 0;
- 
--	rdma_gid2ip(&sgid._sockaddr, &rec->sgid);
--	rdma_gid2ip(&dgid._sockaddr, &rec->dgid);
-+	rdma_gid2ip((struct sockaddr *)&sgid, &rec->sgid);
-+	rdma_gid2ip((struct sockaddr *)&dgid, &rec->dgid);
- 
- 	if (sgid._sockaddr.sa_family != dgid._sockaddr.sa_family)
- 		return -EINVAL;
-@@ -743,7 +743,7 @@ int roce_resolve_route_from_path(struct sa_path_rec *rec,
- 	dev_addr.net = &init_net;
- 	dev_addr.sgid_attr = attr;
- 
--	ret = addr_resolve(&sgid._sockaddr, &dgid._sockaddr,
-+	ret = addr_resolve((struct sockaddr *)&sgid, (struct sockaddr *)&dgid,
- 			   &dev_addr, false, true, 0);
- 	if (ret)
- 		return ret;
-@@ -815,22 +815,22 @@ int rdma_addr_find_l2_eth_by_grh(const union ib_gid *sgid,
- 	struct rdma_dev_addr dev_addr;
- 	struct resolve_cb_context ctx;
- 	union {
--		struct sockaddr     _sockaddr;
- 		struct sockaddr_in  _sockaddr_in;
- 		struct sockaddr_in6 _sockaddr_in6;
- 	} sgid_addr, dgid_addr;
- 	int ret;
- 
--	rdma_gid2ip(&sgid_addr._sockaddr, sgid);
--	rdma_gid2ip(&dgid_addr._sockaddr, dgid);
-+	rdma_gid2ip((struct sockaddr *)&sgid_addr, sgid);
-+	rdma_gid2ip((struct sockaddr *)&dgid_addr, dgid);
- 
- 	memset(&dev_addr, 0, sizeof(dev_addr));
- 	dev_addr.net = &init_net;
- 	dev_addr.sgid_attr = sgid_attr;
- 
- 	init_completion(&ctx.comp);
--	ret = rdma_resolve_ip(&sgid_addr._sockaddr, &dgid_addr._sockaddr,
--			      &dev_addr, 1000, resolve_cb, true, &ctx);
-+	ret = rdma_resolve_ip((struct sockaddr *)&sgid_addr,
-+			      (struct sockaddr *)&dgid_addr, &dev_addr, 1000,
-+			      resolve_cb, true, &ctx);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_ah.c b/drivers/infiniband/hw/ocrdma/ocrdma_ah.c
-index 1d4ea135c28f2a..8d3e36d548aae9 100644
---- a/drivers/infiniband/hw/ocrdma/ocrdma_ah.c
-+++ b/drivers/infiniband/hw/ocrdma/ocrdma_ah.c
-@@ -83,7 +83,6 @@ static inline int set_av_attr(struct ocrdma_dev *dev, struct ocrdma_ah *ah,
- 	struct iphdr ipv4;
- 	const struct ib_global_route *ib_grh;
- 	union {
--		struct sockaddr     _sockaddr;
- 		struct sockaddr_in  _sockaddr_in;
- 		struct sockaddr_in6 _sockaddr_in6;
- 	} sgid_addr, dgid_addr;
-@@ -133,9 +132,9 @@ static inline int set_av_attr(struct ocrdma_dev *dev, struct ocrdma_ah *ah,
- 		ipv4.tot_len = htons(0);
- 		ipv4.ttl = ib_grh->hop_limit;
- 		ipv4.protocol = nxthdr;
--		rdma_gid2ip(&sgid_addr._sockaddr, sgid);
-+		rdma_gid2ip((struct sockaddr *)&sgid_addr, sgid);
- 		ipv4.saddr = sgid_addr._sockaddr_in.sin_addr.s_addr;
--		rdma_gid2ip(&dgid_addr._sockaddr, &ib_grh->dgid);
-+		rdma_gid2ip((struct sockaddr*)&dgid_addr, &ib_grh->dgid);
- 		ipv4.daddr = dgid_addr._sockaddr_in.sin_addr.s_addr;
- 		memcpy((u8 *)ah->av + eth_sz, &ipv4, sizeof(struct iphdr));
- 	} else {
-diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_hw.c b/drivers/infiniband/hw/ocrdma/ocrdma_hw.c
-index 32674b291f60da..5127e2ea4bdd2d 100644
---- a/drivers/infiniband/hw/ocrdma/ocrdma_hw.c
-+++ b/drivers/infiniband/hw/ocrdma/ocrdma_hw.c
-@@ -2499,7 +2499,6 @@ static int ocrdma_set_av_params(struct ocrdma_qp *qp,
- 	u16 vlan_id = 0xFFFF;
- 	u8 mac_addr[6], hdr_type;
- 	union {
--		struct sockaddr     _sockaddr;
- 		struct sockaddr_in  _sockaddr_in;
- 		struct sockaddr_in6 _sockaddr_in6;
- 	} sgid_addr, dgid_addr;
-@@ -2542,8 +2541,8 @@ static int ocrdma_set_av_params(struct ocrdma_qp *qp,
- 
- 	hdr_type = rdma_gid_attr_network_type(sgid_attr);
- 	if (hdr_type == RDMA_NETWORK_IPV4) {
--		rdma_gid2ip(&sgid_addr._sockaddr, &sgid_attr->gid);
--		rdma_gid2ip(&dgid_addr._sockaddr, &grh->dgid);
-+		rdma_gid2ip((struct sockaddr *)&sgid_addr, &sgid_attr->gid);
-+		rdma_gid2ip((struct sockaddr *)&dgid_addr, &grh->dgid);
- 		memcpy(&cmd->params.dgid[0],
- 		       &dgid_addr._sockaddr_in.sin_addr.s_addr, 4);
- 		memcpy(&cmd->params.sgid[0],
--- 
-2.21.0
+--
+2.20.1
 
