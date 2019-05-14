@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 848F01E5C5
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 01:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376FF1E5EC
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 02:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbfENXto (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 May 2019 19:49:44 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:33725 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbfENXtn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 May 2019 19:49:43 -0400
-Received: by mail-qt1-f195.google.com with SMTP id m32so1264873qtf.0
-        for <linux-rdma@vger.kernel.org>; Tue, 14 May 2019 16:49:42 -0700 (PDT)
+        id S1726621AbfEOALM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 May 2019 20:11:12 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35364 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726790AbfEOALM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 May 2019 20:11:12 -0400
+Received: by mail-qk1-f194.google.com with SMTP id c15so442776qkl.2
+        for <linux-rdma@vger.kernel.org>; Tue, 14 May 2019 17:11:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lzSIqDVC7ycp73isxoAWHpxWlD5Mj5pY3gG903i5ZCI=;
-        b=Q8l/4PPKGXWhFgNYvrbbqplFRUwaHlgCng4NZnjaYYLAmozW506pYNws4nGB+S4WDK
-         onDMqcZQ+W+EI1GXT4BnPt2BUj240btfELnaLcJbz6iSD7JHLWVOKG9Tbsa+UW8mkfxa
-         z2/Jc43kkAHqhJ9F39cDCd3T5gdEokUk8Jb8j7mRwRZYY3jFZ/nabi114+04i1HUz+vo
-         aULUAX9S63Mtc5/hJLk9LXxZYG483My/WE0RzKJwL0v0OhVXPnCO4r+df4f5sBM/7u3N
-         x6nOrxHrVcNeUGMoASg6TqmmzkjmMPcZpln9VQfxzJ8OE+ti2L1nSPmE6nQsqpNahlnh
-         NEYA==
+        bh=Mpw6hVHHI13fPbqmbD4sv5vRdfLgyvm4tO2Bz6bVSkY=;
+        b=am6ckc3JPbNQS4AAG2WBu3FTsWj6WbKB9nrASFymxfYjuOCxFqc1JcKTnQqOk7ewey
+         0rADydJCf8OQLewhO5CrK3z/jl1Vo8bHeteyzMWw3ddmcmV/kLWpxfLf5KA0MEA2+4xp
+         KUl2XoGNaLGOu2kMoDWBDG2PKfSvsvvIiKlio7e+fMG2NbP0V5ZXB0pAqCoI3CyhzA6v
+         O226TGSjbGtITcG9P/rYG0qrj9H1Yq+6/c1zewWSkcMdbUb/kKUEChsGoMHdWfIgHSUi
+         qrqsGYGa4n7+emxPUSJn1cTHeKnp13Et0B1TgDQ6Fv5Qcjg7o0OsuLtjQbGGjQg8LDtY
+         Fw+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lzSIqDVC7ycp73isxoAWHpxWlD5Mj5pY3gG903i5ZCI=;
-        b=CR9Fu4o56tP6CQRtI8ytd/kvvXXok8tgnPA+J3M3ykpgJzjO5tuVFicO+/gejsGaJZ
-         RxcJ7wS4uW2dsOJExL/UElBsbzkwsEnvFT4q+zCetdXyjPVR2OvErBbnp7gUDQlqWRya
-         IHdPLnKNkgWY+IZntmXH7jx7PmX2XvLPQdV9PMiVFGJi/+Y5w2hQm+Ayj+kxjdeKErYK
-         v0RfotgmRdxf3LP5+4wk46H5uZRQi8QMKx7QmLAQKsbpBy0v+qcnlGKfnOOO5UDgvQqr
-         O8oB2rQ9LMHVb5Bip98J6A6oqTkqep8zJNp/r8IkqhWLOhsCamM8Af7Bb12Z7d2C87WS
-         5Euw==
-X-Gm-Message-State: APjAAAVkyLDAGvJuKi9SzCz2p8aHrbMrjWfDCpIODwPQkGGiH9ZNqqMg
-        fwqQCJFltZLOeb1UlAbsCFVfmhF2mh8=
-X-Google-Smtp-Source: APXvYqw/ZSDn+HrKp0z78eaIcpwlnMzeQSkMtq5PE6fOUONesdQU8qsa0QVWBDw4u9mBsF/HJvnWfg==
-X-Received: by 2002:a0c:d4c9:: with SMTP id y9mr15576084qvh.80.1557877781900;
-        Tue, 14 May 2019 16:49:41 -0700 (PDT)
+        bh=Mpw6hVHHI13fPbqmbD4sv5vRdfLgyvm4tO2Bz6bVSkY=;
+        b=quygbUGiTuP8yiQKPi509d7c9Q/XDFr8LuRbMMpGSzCEeXDD1M0HlNukMJK2rtkTWo
+         0nkjsUyO71sZuuhVwSguMol1PNKqH1IZICKrmshbGT7VxH/6wpgQcOwIWEaM9tGJzbMe
+         bGD1GltgAETedtBN5s/LgI5b4ESdoT5UYfavqukquKNGBKxhu3uagnhRQkhPy7vDBhSa
+         TfSHwSbqz3nPb4IsEhKRnMrbk2bA/jFwRFMYxTzRkY3fYesO6BxrswBhe8D40Mvd+98z
+         VkFOSvby+Jt9tnCpxI8pqHLxPRs4KY3fCsmaDy0mnEup5WG5fkJQ6UzMBwj+mdRJ0U+h
+         BH4w==
+X-Gm-Message-State: APjAAAX8AGYwhu00E0Y1uUE0Eej1/R3ktcuE9PvUOkpPCgQ96qQRP5/w
+        1+4qwKYYiZEPODj4IWRfdV/oLJWYw+A=
+X-Google-Smtp-Source: APXvYqyRoPUkijhPYGRmBbRqp4qyoaL7XWjj8X8Ibn42YIvaZdj3J44V+bMsL0kI3ptbv+GqoB4ong==
+X-Received: by 2002:a37:609:: with SMTP id 9mr30338041qkg.217.1557879070788;
+        Tue, 14 May 2019 17:11:10 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id d85sm87045qkc.64.2019.05.14.16.49.39
+        by smtp.gmail.com with ESMTPSA id n66sm177065qke.6.2019.05.14.17.11.10
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 May 2019 16:49:40 -0700 (PDT)
+        Tue, 14 May 2019 17:11:10 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hQhAx-0001O6-Af; Tue, 14 May 2019 20:49:39 -0300
+        id 1hQhAx-0001OC-Ce; Tue, 14 May 2019 20:49:39 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 15/20] libibmad: Flatten libibmad into one directory
-Date:   Tue, 14 May 2019 20:49:31 -0300
-Message-Id: <20190514234936.5175-16-jgg@ziepe.ca>
+Subject: [PATCH rdma-core 16/20] libibnetdiscover: Flatten libibnetdiscover into one directory
+Date:   Tue, 14 May 2019 20:49:32 -0300
+Message-Id: <20190514234936.5175-17-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190514234936.5175-1-jgg@ziepe.ca>
 References: <20190514234936.5175-1-jgg@ziepe.ca>
@@ -69,154 +69,135 @@ As is the standard for rdma-core
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- CMakeLists.txt                                              | 2 +-
- {ibdiags/libibmad/src => libibmad}/CMakeLists.txt           | 4 ++--
- {ibdiags/libibmad/src => libibmad}/bm.c                     | 0
- {ibdiags/libibmad/src => libibmad}/cc.c                     | 0
- {ibdiags/libibmad/src => libibmad}/dump.c                   | 0
- {ibdiags/libibmad/src => libibmad}/fields.c                 | 0
- {ibdiags/libibmad/src => libibmad}/gs.c                     | 0
- {ibdiags/libibmad/src => libibmad}/iba_types.h              | 0
- {ibdiags/libibmad/src => libibmad}/libibmad.map             | 0
- {ibdiags/libibmad/src => libibmad}/mad.c                    | 0
- {ibdiags/libibmad/include/infiniband => libibmad}/mad.h     | 0
- {ibdiags/libibmad/src => libibmad}/mad_internal.h           | 0
- {ibdiags/libibmad/include/infiniband => libibmad}/mad_osd.h | 0
- {ibdiags/libibmad/src => libibmad}/portid.c                 | 0
- {ibdiags/libibmad/src => libibmad}/register.c               | 0
- {ibdiags/libibmad/src => libibmad}/resolve.c                | 0
- {ibdiags/libibmad/src => libibmad}/rpc.c                    | 0
- {ibdiags/libibmad/src => libibmad}/sa.c                     | 0
- {ibdiags/libibmad/src => libibmad}/serv.c                   | 0
- {ibdiags/libibmad/src => libibmad}/smp.c                    | 0
- {ibdiags/libibmad/src => libibmad}/vendor.c                 | 0
- 21 files changed, 3 insertions(+), 3 deletions(-)
- rename {ibdiags/libibmad/src => libibmad}/CMakeLists.txt (86%)
- rename {ibdiags/libibmad/src => libibmad}/bm.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/cc.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/dump.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/fields.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/gs.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/iba_types.h (100%)
- rename {ibdiags/libibmad/src => libibmad}/libibmad.map (100%)
- rename {ibdiags/libibmad/src => libibmad}/mad.c (100%)
- rename {ibdiags/libibmad/include/infiniband => libibmad}/mad.h (100%)
- rename {ibdiags/libibmad/src => libibmad}/mad_internal.h (100%)
- rename {ibdiags/libibmad/include/infiniband => libibmad}/mad_osd.h (100%)
- rename {ibdiags/libibmad/src => libibmad}/portid.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/register.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/resolve.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/rpc.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/sa.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/serv.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/smp.c (100%)
- rename {ibdiags/libibmad/src => libibmad}/vendor.c (100%)
+ CMakeLists.txt                                              | 4 ++--
+ {ibdiags/libibnetdisc/src => libibnetdisc}/CMakeLists.txt   | 6 +++---
+ {ibdiags/libibnetdisc/src => libibnetdisc}/chassis.c        | 0
+ {ibdiags/libibnetdisc/src => libibnetdisc}/chassis.h        | 0
+ {ibdiags/libibnetdisc/src => libibnetdisc}/ibnetdisc.c      | 0
+ .../include/infiniband => libibnetdisc}/ibnetdisc.h         | 0
+ .../libibnetdisc/src => libibnetdisc}/ibnetdisc_cache.c     | 0
+ .../include/infiniband => libibnetdisc}/ibnetdisc_osd.h     | 0
+ {ibdiags/libibnetdisc/src => libibnetdisc}/internal.h       | 0
+ {ibdiags/libibnetdisc/src => libibnetdisc}/libibnetdisc.map | 0
+ {ibdiags/libibnetdisc => libibnetdisc}/man/CMakeLists.txt   | 0
+ .../man/ibnd_discover_fabric.3                              | 0
+ .../libibnetdisc => libibnetdisc}/man/ibnd_find_node_guid.3 | 0
+ .../libibnetdisc => libibnetdisc}/man/ibnd_iter_nodes.3     | 0
+ {ibdiags/libibnetdisc/src => libibnetdisc}/query_smp.c      | 0
+ .../libibnetdisc/test => libibnetdisc/tests}/testleaks.c    | 0
+ 16 files changed, 5 insertions(+), 5 deletions(-)
+ rename {ibdiags/libibnetdisc/src => libibnetdisc}/CMakeLists.txt (75%)
+ rename {ibdiags/libibnetdisc/src => libibnetdisc}/chassis.c (100%)
+ rename {ibdiags/libibnetdisc/src => libibnetdisc}/chassis.h (100%)
+ rename {ibdiags/libibnetdisc/src => libibnetdisc}/ibnetdisc.c (100%)
+ rename {ibdiags/libibnetdisc/include/infiniband => libibnetdisc}/ibnetdisc.h (100%)
+ rename {ibdiags/libibnetdisc/src => libibnetdisc}/ibnetdisc_cache.c (100%)
+ rename {ibdiags/libibnetdisc/include/infiniband => libibnetdisc}/ibnetdisc_osd.h (100%)
+ rename {ibdiags/libibnetdisc/src => libibnetdisc}/internal.h (100%)
+ rename {ibdiags/libibnetdisc/src => libibnetdisc}/libibnetdisc.map (100%)
+ rename {ibdiags/libibnetdisc => libibnetdisc}/man/CMakeLists.txt (100%)
+ rename {ibdiags/libibnetdisc => libibnetdisc}/man/ibnd_discover_fabric.3 (100%)
+ rename {ibdiags/libibnetdisc => libibnetdisc}/man/ibnd_find_node_guid.3 (100%)
+ rename {ibdiags/libibnetdisc => libibnetdisc}/man/ibnd_iter_nodes.3 (100%)
+ rename {ibdiags/libibnetdisc/src => libibnetdisc}/query_smp.c (100%)
+ rename {ibdiags/libibnetdisc/test => libibnetdisc/tests}/testleaks.c (100%)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index fd9355787291c0..a5c1dc7f1e2421 100644
+index a5c1dc7f1e2421..7b048a0fa164c1 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -617,7 +617,7 @@ add_subdirectory(providers/ipathverbs)
- add_subdirectory(providers/rxe)
+@@ -618,8 +618,8 @@ add_subdirectory(providers/rxe)
  add_subdirectory(providers/rxe/man)
  
--add_subdirectory(ibdiags/libibmad/src)
-+add_subdirectory(libibmad)
- add_subdirectory(ibdiags/libibnetdisc/src)
- add_subdirectory(ibdiags/libibnetdisc/man)
+ add_subdirectory(libibmad)
+-add_subdirectory(ibdiags/libibnetdisc/src)
+-add_subdirectory(ibdiags/libibnetdisc/man)
++add_subdirectory(libibnetdisc)
++add_subdirectory(libibnetdisc/man)
  add_subdirectory(ibdiags/src)
-diff --git a/ibdiags/libibmad/src/CMakeLists.txt b/libibmad/CMakeLists.txt
-similarity index 86%
-rename from ibdiags/libibmad/src/CMakeLists.txt
-rename to libibmad/CMakeLists.txt
-index 81fa4a366fc3c7..43d560a43d0a2e 100644
---- a/ibdiags/libibmad/src/CMakeLists.txt
-+++ b/libibmad/CMakeLists.txt
+ add_subdirectory(ibdiags/scripts)
+ add_subdirectory(ibdiags/man)
+diff --git a/ibdiags/libibnetdisc/src/CMakeLists.txt b/libibnetdisc/CMakeLists.txt
+similarity index 75%
+rename from ibdiags/libibnetdisc/src/CMakeLists.txt
+rename to libibnetdisc/CMakeLists.txt
+index ad8c09dc9722f6..e908bc2d6a29f9 100644
+--- a/ibdiags/libibnetdisc/src/CMakeLists.txt
++++ b/libibnetdisc/CMakeLists.txt
 @@ -1,6 +1,6 @@
  publish_headers(infiniband
--  ../include/infiniband/mad.h
--  ../include/infiniband/mad_osd.h
-+  mad.h
-+  mad_osd.h
+-  ../include/infiniband/ibnetdisc.h
+-  ../include/infiniband/ibnetdisc_osd.h
++  ibnetdisc.h
++  ibnetdisc_osd.h
    )
  
- publish_internal_headers(util
-diff --git a/ibdiags/libibmad/src/bm.c b/libibmad/bm.c
+ rdma_library(ibnetdisc libibnetdisc.map
+@@ -17,7 +17,7 @@ target_link_libraries(ibnetdisc LINK_PRIVATE
+   )
+ rdma_pkg_config("ibnetdisc" "libibumad libibmad" "")
+ 
+-rdma_test_executable(testleaks ../test/testleaks.c)
++rdma_test_executable(testleaks tests/testleaks.c)
+ target_link_libraries(testleaks LINK_PRIVATE
+   ibmad
+   ibnetdisc
+diff --git a/ibdiags/libibnetdisc/src/chassis.c b/libibnetdisc/chassis.c
 similarity index 100%
-rename from ibdiags/libibmad/src/bm.c
-rename to libibmad/bm.c
-diff --git a/ibdiags/libibmad/src/cc.c b/libibmad/cc.c
+rename from ibdiags/libibnetdisc/src/chassis.c
+rename to libibnetdisc/chassis.c
+diff --git a/ibdiags/libibnetdisc/src/chassis.h b/libibnetdisc/chassis.h
 similarity index 100%
-rename from ibdiags/libibmad/src/cc.c
-rename to libibmad/cc.c
-diff --git a/ibdiags/libibmad/src/dump.c b/libibmad/dump.c
+rename from ibdiags/libibnetdisc/src/chassis.h
+rename to libibnetdisc/chassis.h
+diff --git a/ibdiags/libibnetdisc/src/ibnetdisc.c b/libibnetdisc/ibnetdisc.c
 similarity index 100%
-rename from ibdiags/libibmad/src/dump.c
-rename to libibmad/dump.c
-diff --git a/ibdiags/libibmad/src/fields.c b/libibmad/fields.c
+rename from ibdiags/libibnetdisc/src/ibnetdisc.c
+rename to libibnetdisc/ibnetdisc.c
+diff --git a/ibdiags/libibnetdisc/include/infiniband/ibnetdisc.h b/libibnetdisc/ibnetdisc.h
 similarity index 100%
-rename from ibdiags/libibmad/src/fields.c
-rename to libibmad/fields.c
-diff --git a/ibdiags/libibmad/src/gs.c b/libibmad/gs.c
+rename from ibdiags/libibnetdisc/include/infiniband/ibnetdisc.h
+rename to libibnetdisc/ibnetdisc.h
+diff --git a/ibdiags/libibnetdisc/src/ibnetdisc_cache.c b/libibnetdisc/ibnetdisc_cache.c
 similarity index 100%
-rename from ibdiags/libibmad/src/gs.c
-rename to libibmad/gs.c
-diff --git a/ibdiags/libibmad/src/iba_types.h b/libibmad/iba_types.h
+rename from ibdiags/libibnetdisc/src/ibnetdisc_cache.c
+rename to libibnetdisc/ibnetdisc_cache.c
+diff --git a/ibdiags/libibnetdisc/include/infiniband/ibnetdisc_osd.h b/libibnetdisc/ibnetdisc_osd.h
 similarity index 100%
-rename from ibdiags/libibmad/src/iba_types.h
-rename to libibmad/iba_types.h
-diff --git a/ibdiags/libibmad/src/libibmad.map b/libibmad/libibmad.map
+rename from ibdiags/libibnetdisc/include/infiniband/ibnetdisc_osd.h
+rename to libibnetdisc/ibnetdisc_osd.h
+diff --git a/ibdiags/libibnetdisc/src/internal.h b/libibnetdisc/internal.h
 similarity index 100%
-rename from ibdiags/libibmad/src/libibmad.map
-rename to libibmad/libibmad.map
-diff --git a/ibdiags/libibmad/src/mad.c b/libibmad/mad.c
+rename from ibdiags/libibnetdisc/src/internal.h
+rename to libibnetdisc/internal.h
+diff --git a/ibdiags/libibnetdisc/src/libibnetdisc.map b/libibnetdisc/libibnetdisc.map
 similarity index 100%
-rename from ibdiags/libibmad/src/mad.c
-rename to libibmad/mad.c
-diff --git a/ibdiags/libibmad/include/infiniband/mad.h b/libibmad/mad.h
+rename from ibdiags/libibnetdisc/src/libibnetdisc.map
+rename to libibnetdisc/libibnetdisc.map
+diff --git a/ibdiags/libibnetdisc/man/CMakeLists.txt b/libibnetdisc/man/CMakeLists.txt
 similarity index 100%
-rename from ibdiags/libibmad/include/infiniband/mad.h
-rename to libibmad/mad.h
-diff --git a/ibdiags/libibmad/src/mad_internal.h b/libibmad/mad_internal.h
+rename from ibdiags/libibnetdisc/man/CMakeLists.txt
+rename to libibnetdisc/man/CMakeLists.txt
+diff --git a/ibdiags/libibnetdisc/man/ibnd_discover_fabric.3 b/libibnetdisc/man/ibnd_discover_fabric.3
 similarity index 100%
-rename from ibdiags/libibmad/src/mad_internal.h
-rename to libibmad/mad_internal.h
-diff --git a/ibdiags/libibmad/include/infiniband/mad_osd.h b/libibmad/mad_osd.h
+rename from ibdiags/libibnetdisc/man/ibnd_discover_fabric.3
+rename to libibnetdisc/man/ibnd_discover_fabric.3
+diff --git a/ibdiags/libibnetdisc/man/ibnd_find_node_guid.3 b/libibnetdisc/man/ibnd_find_node_guid.3
 similarity index 100%
-rename from ibdiags/libibmad/include/infiniband/mad_osd.h
-rename to libibmad/mad_osd.h
-diff --git a/ibdiags/libibmad/src/portid.c b/libibmad/portid.c
+rename from ibdiags/libibnetdisc/man/ibnd_find_node_guid.3
+rename to libibnetdisc/man/ibnd_find_node_guid.3
+diff --git a/ibdiags/libibnetdisc/man/ibnd_iter_nodes.3 b/libibnetdisc/man/ibnd_iter_nodes.3
 similarity index 100%
-rename from ibdiags/libibmad/src/portid.c
-rename to libibmad/portid.c
-diff --git a/ibdiags/libibmad/src/register.c b/libibmad/register.c
+rename from ibdiags/libibnetdisc/man/ibnd_iter_nodes.3
+rename to libibnetdisc/man/ibnd_iter_nodes.3
+diff --git a/ibdiags/libibnetdisc/src/query_smp.c b/libibnetdisc/query_smp.c
 similarity index 100%
-rename from ibdiags/libibmad/src/register.c
-rename to libibmad/register.c
-diff --git a/ibdiags/libibmad/src/resolve.c b/libibmad/resolve.c
+rename from ibdiags/libibnetdisc/src/query_smp.c
+rename to libibnetdisc/query_smp.c
+diff --git a/ibdiags/libibnetdisc/test/testleaks.c b/libibnetdisc/tests/testleaks.c
 similarity index 100%
-rename from ibdiags/libibmad/src/resolve.c
-rename to libibmad/resolve.c
-diff --git a/ibdiags/libibmad/src/rpc.c b/libibmad/rpc.c
-similarity index 100%
-rename from ibdiags/libibmad/src/rpc.c
-rename to libibmad/rpc.c
-diff --git a/ibdiags/libibmad/src/sa.c b/libibmad/sa.c
-similarity index 100%
-rename from ibdiags/libibmad/src/sa.c
-rename to libibmad/sa.c
-diff --git a/ibdiags/libibmad/src/serv.c b/libibmad/serv.c
-similarity index 100%
-rename from ibdiags/libibmad/src/serv.c
-rename to libibmad/serv.c
-diff --git a/ibdiags/libibmad/src/smp.c b/libibmad/smp.c
-similarity index 100%
-rename from ibdiags/libibmad/src/smp.c
-rename to libibmad/smp.c
-diff --git a/ibdiags/libibmad/src/vendor.c b/libibmad/vendor.c
-similarity index 100%
-rename from ibdiags/libibmad/src/vendor.c
-rename to libibmad/vendor.c
+rename from ibdiags/libibnetdisc/test/testleaks.c
+rename to libibnetdisc/tests/testleaks.c
 -- 
 2.21.0
 
