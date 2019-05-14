@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E591E5C2
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 01:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22A01E5C1
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 01:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbfENXtn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 May 2019 19:49:43 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:43436 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726416AbfENXtl (ORCPT
+        id S1726491AbfENXtl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 May 2019 19:49:41 -0400
+Received: from mail-qt1-f175.google.com ([209.85.160.175]:43315 "EHLO
+        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbfENXtl (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 May 2019 19:49:41 -0400
-Received: by mail-qt1-f194.google.com with SMTP id i26so1186854qtr.10
-        for <linux-rdma@vger.kernel.org>; Tue, 14 May 2019 16:49:41 -0700 (PDT)
+Received: by mail-qt1-f175.google.com with SMTP id i26so1186840qtr.10
+        for <linux-rdma@vger.kernel.org>; Tue, 14 May 2019 16:49:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UL2wNBlXg9debLwIHryy/HadoDYIIpSBighsnapG9WM=;
-        b=ONInj+Ce8zHbbWztyCvxbZTeN+En48v/EGz2jvTEnrv6htbnlFcJygx9iLRkjsQbZe
-         TzvrIZb+JwFZoQpaBLZLYOU4wwzKrrgz6d54KIt5kHIwhBQCPQ0ixbWtqwsmsoUqw4pj
-         9meJfF5X2iF6TKb68qwP/VvsXhrElKieE+Y3tWggYn1a0/jmYFG8cy+RfZcnkepmIP3J
-         y0D9v/AW6NKyjAJJBUnb8c3G8wo/pSEzo9xvI3yjCPIQxyERA2x7+ziL6fe/5X/4rMpl
-         XSwsKD6qpnhbjHP/unyNeXEtf5MQpOYYfwM20gVd3lKgag+wLdSoKLvvT4R5RdSmh4Uz
-         w+Lw==
+        bh=+KpfNuvqNu3/sVb2aStopFsd7NJVmrQALKhZUo1BvIg=;
+        b=EMpSBCqmCZGjNsei+tEHj9FU9QK3JixAFJmMlBiFIs0/Z7B67CSmc6vDgzKrhPWEop
+         pPQXHzs0oTVmABLb7bJfmu35EtnGTFSZ0gFOpX+DR/c7JjdtSALnckD2kdczvkU3+eQh
+         87W5EHquNjBZKYMDGkTGGnqXDPBMBQCJsMfhpFqV9zq55vptdVIsvy+lZlQbenwVQC60
+         UzPRRmAW+omMRtF4kIHmNbatG9gv2KDno6J52s1ccv0YF81jaWa0LXIw/5DsKHyN6Xnm
+         LiSfo0mJlRSJJw7IgsTE5xnU9CwEioo/EJzYOHX1KMhlAed152dBdOymQpm1QFdJpW2H
+         zMlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UL2wNBlXg9debLwIHryy/HadoDYIIpSBighsnapG9WM=;
-        b=OLEtFwGsGLJ1So+caFDZ9KS+bBtHxbGwus9I8QwxY8FlJDuCVYK+ll3qANM3eTv2PJ
-         eFvmJA7jwi6ChY8UYC7Q5Rj0HhzGTObKL8j7KeIYDsAa72kN/EH83pCl8m5fw8XWWlSL
-         SidCUbc7/omGhX/WQwjJ+E6HkXs770tpPFJ+YIJfE/Q03m4XVm5bJmi+ggXZx8kWI5v8
-         ZInh/bGjLvzlhN6AXbH6OkEusPKl46FnBdiXqDyOh8sfSwo/d+33AHoFNPpYu+J3LIdb
-         8MkgQGTwHu1BtE2HiXmPeu44siiOv7YEf09XOYT3vxPKfr8VXdCwyicx+zJvslOmpWaj
-         dRXw==
-X-Gm-Message-State: APjAAAXkI3mCnUUpLkrof2jWdQzqC+FKJvGakLfzTzrcwq57koZULdIc
-        ykhNV6Ik9OjtWz2gDlADBDf36HRxrwc=
-X-Google-Smtp-Source: APXvYqyCEC9PbFL8Aal8t+KKp5ZUpy9ElB6w7Nx90gLh4S0Y8PKHs0ge5Tm7eS7EGcRUXuM2JXSZoQ==
-X-Received: by 2002:aed:2a25:: with SMTP id c34mr33303643qtd.62.1557877780508;
+        bh=+KpfNuvqNu3/sVb2aStopFsd7NJVmrQALKhZUo1BvIg=;
+        b=YL+AELjzUmtZW3KJxJOMI9ismvoPHu+s/CInOxvU2I33AFVFMy+Bpoal2qpKtgD4Fu
+         +G1pNoP+4joQuBpJp6kFIejiTuQtC1VvXTs4s7oMm2YN+pEPEzqz2Bip9enNU7oXOj+G
+         4IyWTQEunyZhVJnAL19sIvL6Jz6w0owoH8HAy1dTVd67R69O/drHQ5hImg68dg2esR9x
+         RM11Hdn0lG1xjOc7AO2y+vJH6K6HxwOfQaIvti4oDQe1GE3Qm9utyVu508Idt0adOIlg
+         fN0BZgn+hJwOYaC4OaoawHzt9n5QSdpsUYEmABuus+BpzEKQ6WLJnfILWbM5SyyPfU9o
+         +UKg==
+X-Gm-Message-State: APjAAAWcr8X4XYm8DF+Ce2BfJjLQhqWw+bkJ6u6FbrRSUXn5eTONFdpd
+        tgjCC2ZWLoA8P1jOnaRxusWrLBDDiq8=
+X-Google-Smtp-Source: APXvYqyWKAwHmP4ZnDJQsSqFCekIt1B1x2u9t/2CNZhWECCpLl0s5S6QRcvW6o8boQS6PA0TOwaYtA==
+X-Received: by 2002:a0c:d1d0:: with SMTP id k16mr31039264qvh.59.1557877780025;
         Tue, 14 May 2019 16:49:40 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id u5sm128664qkk.85.2019.05.14.16.49.39
+        by smtp.gmail.com with ESMTPSA id 91sm224673qte.38.2019.05.14.16.49.39
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Tue, 14 May 2019 16:49:39 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hQhAw-0001ND-TN; Tue, 14 May 2019 20:49:38 -0300
+        id 1hQhAw-0001NJ-V5; Tue, 14 May 2019 20:49:38 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 06/20] build: Support rst as a man page option
-Date:   Tue, 14 May 2019 20:49:22 -0300
-Message-Id: <20190514234936.5175-7-jgg@ziepe.ca>
+Subject: [PATCH rdma-core 07/20] ibdiags: Add cmake files for ibdiags components
+Date:   Tue, 14 May 2019 20:49:23 -0300
+Message-Id: <20190514234936.5175-8-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190514234936.5175-1-jgg@ziepe.ca>
 References: <20190514234936.5175-1-jgg@ziepe.ca>
@@ -65,324 +65,501 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-infiniband-diags uses rst as a man page preprocessor, so add it along side
-pandoc in the build system.
+These are simple cmakefiles that emulate what the autotools stuff did.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- .travis.yml                 |  1 +
- CMakeLists.txt              | 10 ++++++-
- buildlib/Findrst2man.cmake  | 21 +++++++++++++
- buildlib/cbuild             | 12 +++++++-
- buildlib/pandoc-prebuilt.py | 33 +++++++++++++++++---
- buildlib/rdma_man.cmake     | 60 ++++++++++++++++++++++++++++++-------
- debian/control              |  1 +
- redhat/rdma-core.spec       |  1 +
- suse/rdma-core.spec         |  1 +
- 9 files changed, 123 insertions(+), 17 deletions(-)
- create mode 100644 buildlib/Findrst2man.cmake
+ CMakeLists.txt                          |  28 +++++-
+ buildlib/check-build                    |   6 +-
+ debian/rules                            |   1 +
+ ibdiags/doc/rst/CMakeLists.txt          |  41 ++++++++
+ ibdiags/libibmad/src/CMakeLists.txt     |  27 ++++++
+ ibdiags/libibnetdisc/man/CMakeLists.txt |  14 +++
+ ibdiags/libibnetdisc/src/CMakeLists.txt |  28 ++++++
+ ibdiags/man/CMakeLists.txt              |  22 +++++
+ ibdiags/scripts/CMakeLists.txt          | 119 ++++++++++++++++++++++++
+ ibdiags/src/CMakeLists.txt              |  48 ++++++++++
+ redhat/rdma-core.spec                   |   1 +
+ suse/rdma-core.spec                     |   1 +
+ 12 files changed, 334 insertions(+), 2 deletions(-)
+ create mode 100644 ibdiags/doc/rst/CMakeLists.txt
+ create mode 100644 ibdiags/libibmad/src/CMakeLists.txt
+ create mode 100644 ibdiags/libibnetdisc/man/CMakeLists.txt
+ create mode 100644 ibdiags/libibnetdisc/src/CMakeLists.txt
+ create mode 100644 ibdiags/man/CMakeLists.txt
+ create mode 100644 ibdiags/scripts/CMakeLists.txt
+ create mode 100644 ibdiags/src/CMakeLists.txt
 
-diff --git a/.travis.yml b/.travis.yml
-index 660b306797bf6b..1cc2c69ca8671d 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -19,6 +19,7 @@ addons:
-       - make
-       - ninja-build
-       - pandoc
-+      - python-docutils
-       - pkg-config
-       - python
-       - valgrind
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 5cb3c32c318821..9428ce02191bc4 100644
+index 9428ce02191bc4..c54cf6606e3c0d 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -406,8 +406,9 @@ if (CYTHON_EXECUTABLE)
-   string(STRIP ${py_path} CMAKE_PYTHON_SO_SUFFIX)
+@@ -45,6 +45,11 @@
+ #   -DNO_PYVERBS=1 (default, build pyverbs)
+ #      Invoke cython to build pyverbs. Usually you will run with this option
+ #      is set, but it will be disabled for travis runs.
++#   -DWITH_IBDIAGS=False (default True)
++#      Do not build infiniband-diags components
++#   -DWITH_IBDIAGS_COMPAT=True (default False)
++#      Include obsolete scripts. These scripts are replaced by C programs with
++#      a different interface now.
+ 
+ cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
+ project(rdma-core C)
+@@ -79,6 +84,7 @@ set(IBVERBS_PROVIDER_SUFFIX "-rdmav${IBVERBS_PABI_VERSION}.so")
+ if (IN_PLACE)
+   set(CMAKE_INSTALL_SYSCONFDIR "${CMAKE_BINARY_DIR}/etc")
+   set(CMAKE_INSTALL_BINDIR "${CMAKE_BINARY_DIR}/bin")
++  set(CMAKE_INSTALL_SBINDIR "${CMAKE_BINARY_DIR}/bin")
+   set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}")
+   set(CMAKE_INSTALL_LIBDIR "lib")
+   set(CMAKE_INSTALL_INCLUDEDIR "include")
+@@ -108,7 +114,6 @@ set(CMAKE_INSTALL_SYSTEMD_BINDIR "/lib/systemd"
+ 
+ set(ACM_PROVIDER_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/ibacm"
+   CACHE PATH "Location for ibacm provider plugin shared library files.")
+-
+ # Location to find the provider plugin shared library files
+ set(VERBS_PROVIDER_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/libibverbs"
+   CACHE PATH "Location for provider plugin shared library files. If set to empty the system search path is used.")
+@@ -133,6 +138,15 @@ else()
+   set(CMAKE_INSTALL_FULL_UDEV_RULESDIR "${CMAKE_INSTALL_UDEV_RULESDIR}")
  endif()
  
--# Look for pandoc
-+# Look for pandoc and rst2man for making manual pages
- FIND_PACKAGE(pandoc)
-+FIND_PACKAGE(rst2man)
++# Allow the perl library dir to be configurable
++set(CMAKE_INSTALL_PERLDIR "share/perl5"
++  CACHE PATH "Location for system perl library, typically /usr/share/perl5")
++if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_PERLDIR})
++  set(CMAKE_INSTALL_FULL_PERLDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_PERLDIR}")
++else()
++  set(CMAKE_INSTALL_FULL_PERLDIR "${CMAKE_INSTALL_PERLDIR}")
++endif()
++
+ # Location to place provider .driver files
+ if (IN_PLACE)
+   set(CONFIG_DIR "${BUILD_ETC}/libibverbs.d")
+@@ -145,6 +159,8 @@ endif()
+ set(DISTRO_FLAVOUR "None" CACHE
+   STRING "Flavour of distribution to install for. This primarily impacts the init.d scripts installed.")
  
++set(WITH_IBDIAGS "True" CACHE BOOL "Build infiniband-diags stuff too")
++
  #-------------------------
- # Find libraries
-@@ -668,6 +669,13 @@ if (NOT PANDOC_FOUND)
-     message(STATUS " pandoc NOT found (using prebuilt man pages)")
-   endif()
- endif()
-+if (NOT RST2MAN_FOUND)
-+  if (NOT EXISTS "${CMAKE_SOURCE_DIR}/buildlib/pandoc-prebuilt")
-+    message(STATUS " rst2man NOT found and NO prebuilt man pages. 'install' disabled")
-+  else()
-+    message(STATUS " rst2man NOT found (using prebuilt man pages)")
-+  endif()
+ # Load CMake components
+ set(BUILDLIB "${CMAKE_SOURCE_DIR}/buildlib")
+@@ -604,6 +620,16 @@ add_subdirectory(providers/ipathverbs)
+ add_subdirectory(providers/rxe)
+ add_subdirectory(providers/rxe/man)
+ 
++if (WITH_IBDIAGS)
++add_subdirectory(ibdiags/libibmad/src)
++add_subdirectory(ibdiags/libibnetdisc/src)
++add_subdirectory(ibdiags/libibnetdisc/man)
++add_subdirectory(ibdiags/src)
++add_subdirectory(ibdiags/scripts)
++add_subdirectory(ibdiags/man)
++add_subdirectory(ibdiags/doc/rst)
 +endif()
- if (NOT CYTHON_EXECUTABLE)
-   message(STATUS " cython NOT found (disabling pyverbs)")
++
+ if (CYTHON_EXECUTABLE)
+   add_subdirectory(pyverbs)
  endif()
-diff --git a/buildlib/Findrst2man.cmake b/buildlib/Findrst2man.cmake
+diff --git a/buildlib/check-build b/buildlib/check-build
+index 348b0590f296ee..83358572b0b906 100755
+--- a/buildlib/check-build
++++ b/buildlib/check-build
+@@ -85,9 +85,13 @@ def check_lib_symver(args,fn):
+         raise ValueError("Shared Library filename %r does not have the package version %r (%r)%"(
+             fn,args.PACKAGE_VERSION,g.groups()));
+ 
+-    # umad used the wrong symbol version name when they moved to soname 3.0
++    # umad/etc used the wrong symbol version name when they moved to soname 3.0
+     if g.group(1) == "ibumad":
+         newest_symver = "%s_%s.%s"%(g.group(1).upper(),'1',g.group(3));
++    elif g.group(1) == "ibmad":
++        newest_symver = "%s_%s.%s"%(g.group(1).upper(),'1',g.group(3));
++    elif g.group(1) == "ibnetdisc":
++        newest_symver = "%s_%s.%s"%(g.group(1).upper(),'1',g.group(3));
+     else:
+         newest_symver = "%s_%s.%s"%(g.group(1).upper(),g.group(2),g.group(3));
+ 
+diff --git a/debian/rules b/debian/rules
+index c84d9ef8f5ed54..744bf28c52f070 100755
+--- a/debian/rules
++++ b/debian/rules
+@@ -36,6 +36,7 @@ DH_AUTO_CONFIGURE := "--" \
+ 		     "-DCMAKE_INSTALL_RUNDIR:PATH=/run" \
+ 		     "-DCMAKE_INSTALL_UDEV_RULESDIR:PATH=/lib/udev/rules.d" \
+ 		     "-DENABLE_STATIC=1" \
++		     "-DWITH_IBDIAGS:BOOL=False" \
+ 		     $(EXTRA_CMAKE_FLAGS)
+ 
+ override_dh_auto_configure:
+diff --git a/ibdiags/doc/rst/CMakeLists.txt b/ibdiags/doc/rst/CMakeLists.txt
 new file mode 100644
-index 00000000000000..a7236604dfcc28
+index 00000000000000..f0e4072306a57c
 --- /dev/null
-+++ b/buildlib/Findrst2man.cmake
-@@ -0,0 +1,21 @@
-+# COPYRIGHT (c) 2019 Mellanox Technologies Ltd
-+# Licensed under BSD (MIT variant) or GPLv2. See COPYING.
-+find_program(RST2MAN_EXECUTABLE NAMES rst2man)
++++ b/ibdiags/doc/rst/CMakeLists.txt
+@@ -0,0 +1,41 @@
++set(BUILD_DATE "2019")
 +
-+if(RST2MAN_EXECUTABLE)
-+  execute_process(COMMAND "${RST2MAN_EXECUTABLE}" --version
-+    OUTPUT_VARIABLE _VERSION
-+    RESULT_VARIABLE _VERSION_RESULT
-+    ERROR_QUIET)
++# rst2man has no way to set the include search path
++rdma_create_symlink("${CMAKE_CURRENT_SOURCE_DIR}/common" "${CMAKE_CURRENT_BINARY_DIR}/common")
 +
-+  if(NOT _VERSION_RESULT)
-+    string(REGEX REPLACE "^rst2man \\(Docutils ([^,]+), .*" "\\1" RST2MAN_VERSION_STRING "${_VERSION}")
-+  endif()
-+  unset(_VERSION_RESULT)
-+  unset(_VERSION)
++rdma_man_pages(
++  check_lft_balance.8.in.rst
++  dump_fts.8.in.rst
++  ibaddr.8.in.rst
++  ibcacheedit.8.in.rst
++  ibccconfig.8.in.rst
++  ibccquery.8.in.rst
++  ibfindnodesusing.8.in.rst
++  ibhosts.8.in.rst
++  ibidsverify.8.in.rst
++  iblinkinfo.8.in.rst
++  ibnetdiscover.8.in.rst
++  ibnodes.8.in.rst
++  ibping.8.in.rst
++  ibportstate.8.in.rst
++  ibqueryerrors.8.in.rst
++  ibroute.8.in.rst
++  ibrouters.8.in.rst
++  ibstat.8.in.rst
++  ibstatus.8.in.rst
++  ibswitches.8.in.rst
++  ibsysstat.8.in.rst
++  ibtracert.8.in.rst
++  infiniband-diags.8.in.rst
++  perfquery.8.in.rst
++  saquery.8.in.rst
++  sminfo.8.in.rst
++  smpdump.8.in.rst
++  smpquery.8.in.rst
++  vendstat.8.in.rst
++  )
++
++rdma_alias_man_pages(
++  dump_fts.8 dump_lfts.8
++  dump_fts.8 dump_mfts.8
++  )
+diff --git a/ibdiags/libibmad/src/CMakeLists.txt b/ibdiags/libibmad/src/CMakeLists.txt
+new file mode 100644
+index 00000000000000..37da71a336324a
+--- /dev/null
++++ b/ibdiags/libibmad/src/CMakeLists.txt
+@@ -0,0 +1,27 @@
++publish_headers(infiniband
++  ../include/infiniband/mad.h
++  ../include/infiniband/mad_osd.h
++  )
++
++rdma_library(ibmad libibmad.map
++  # See Documentation/versioning.md
++  5 5.3.${PACKAGE_VERSION}
++  bm.c
++  cc.c
++  dump.c
++  fields.c
++  gs.c
++  mad.c
++  portid.c
++  register.c
++  resolve.c
++  rpc.c
++  sa.c
++  serv.c
++  smp.c
++  vendor.c
++  )
++target_link_libraries(ibmad LINK_PRIVATE
++  ibumad
++  )
++rdma_pkg_config("ibmad" "libibumad" "")
+diff --git a/ibdiags/libibnetdisc/man/CMakeLists.txt b/ibdiags/libibnetdisc/man/CMakeLists.txt
+new file mode 100644
+index 00000000000000..01457ddbc86c72
+--- /dev/null
++++ b/ibdiags/libibnetdisc/man/CMakeLists.txt
+@@ -0,0 +1,14 @@
++rdma_man_pages(
++  ibnd_discover_fabric.3
++  ibnd_find_node_guid.3
++  ibnd_iter_nodes.3
++  )
++
++rdma_alias_man_pages(
++  ibnd_discover_fabric.3 ibnd_debug.3
++  ibnd_discover_fabric.3 ibnd_destroy_fabric.3
++  ibnd_discover_fabric.3 ibnd_set_max_smps_on_wire.3
++  ibnd_discover_fabric.3 ibnd_show_progress.3
++  ibnd_find_node_guid.3 ibnd_find_node_dr.3
++  ibnd_iter_nodes.3 ibnd_iter_nodes_type.3
++  )
+diff --git a/ibdiags/libibnetdisc/src/CMakeLists.txt b/ibdiags/libibnetdisc/src/CMakeLists.txt
+new file mode 100644
+index 00000000000000..a71516ecc1eb60
+--- /dev/null
++++ b/ibdiags/libibnetdisc/src/CMakeLists.txt
+@@ -0,0 +1,28 @@
++publish_headers(infiniband
++  ../include/infiniband/ibnetdisc.h
++  ../include/infiniband/ibnetdisc_osd.h
++  )
++
++rdma_library(ibnetdisc libibnetdisc.map
++  # See Documentation/versioning.md
++  5 5.0.${PACKAGE_VERSION}
++  chassis.c
++  ibnetdisc.c
++  ibnetdisc_cache.c
++  query_smp.c
++  )
++target_link_libraries(ibnetdisc LINK_PRIVATE
++  ibmad
++  ibumad
++  osmcomp
++  )
++# FIXME for osmcomp
++target_include_directories(ibnetdisc PRIVATE "/usr/include/infiniband")
++rdma_pkg_config("ibnetdisc" "libibumad libibmad" "")
++
++rdma_test_executable(testleaks ../test/testleaks.c)
++target_link_libraries(testleaks LINK_PRIVATE
++  ibmad
++  ibnetdisc
++)
++target_include_directories(testleaks PRIVATE "/usr/include/infiniband")
+diff --git a/ibdiags/man/CMakeLists.txt b/ibdiags/man/CMakeLists.txt
+new file mode 100644
+index 00000000000000..2446acbb522c86
+--- /dev/null
++++ b/ibdiags/man/CMakeLists.txt
+@@ -0,0 +1,22 @@
++if (WITH_IBDIAGS_COMPAT)
++  rdma_man_pages(
++    ibcheckerrors.8
++    ibcheckerrs.8
++    ibchecknet.8
++    ibchecknode.8
++    ibcheckport.8
++    ibcheckportstate.8
++    ibcheckportwidth.8
++    ibcheckstate.8
++    ibcheckwidth.8
++    ibclearcounters.8
++    ibclearerrors.8
++    ibdatacounters.8
++    ibdatacounts.8
++    ibdiscover.8
++    ibprintca.8
++    ibprintrt.8
++    ibprintswitch.8
++    ibswportwatch.8
++    )
 +endif()
+diff --git a/ibdiags/scripts/CMakeLists.txt b/ibdiags/scripts/CMakeLists.txt
+new file mode 100644
+index 00000000000000..3d65ed837a2d83
+--- /dev/null
++++ b/ibdiags/scripts/CMakeLists.txt
+@@ -0,0 +1,119 @@
++function(_rdma_sbin_interp INTERP IFN OFN)
++  configure_file("${IFN}" "${CMAKE_CURRENT_BINARY_DIR}/${OFN}" @ONLY)
++  file(WRITE "${BUILD_BIN}/${OFN}" "#!${INTERP} ${CMAKE_CURRENT_BINARY_DIR}/${OFN}")
++  execute_process(COMMAND "chmod" "a+x" "${BUILD_BIN}/${OFN}")
 +
-+include(FindPackageHandleStandardArgs)
-+find_package_handle_standard_args(rst2man REQUIRED_VARS RST2MAN_EXECUTABLE RST2MAN_VERSION_STRING VERSION_VAR RST2MAN_VERSION_STRING)
-+
-+mark_as_advanced(RST2MAN_EXECUTABLE)
-diff --git a/buildlib/cbuild b/buildlib/cbuild
-index e012b08b5fbb76..2d0fc46a1ee913 100755
---- a/buildlib/cbuild
-+++ b/buildlib/cbuild
-@@ -104,6 +104,7 @@ class centos6(YumEnvironment):
-         'pkgconfig',
-         'python',
-         'python-argparse',
-+        'python-docutils',
-         'rpm-build',
-         'valgrind-devel',
-     };
-@@ -149,7 +150,14 @@ class centos7_epel(centos7):
- 
- class fc30(Environment):
-     docker_parent = "fedora:30";
--    pkgs = (centos7.pkgs - {"make", "python-argparse" }) | {"ninja-build","pandoc","perl-generators","python3-Cython","python3-devel"};
-+    pkgs = (centos7.pkgs - {"make", "python-argparse" }) | {
-+        "ninja-build",
-+        "pandoc",
-+        "perl-generators",
-+        "python3-docutils",
-+        "python3-Cython",
-+        "python3-devel",
-+    };
-     name = "fc30";
-     specfile = "redhat/rdma-core.spec";
-     ninja_cmd = "ninja-build";
-@@ -190,6 +198,7 @@ class xenial(APTEnvironment):
-         'pandoc',
-         'pkg-config',
-         'python3',
-+        "python3-docutils",
-         'valgrind',
-     };
-     name = "ubuntu-16.04";
-@@ -354,6 +363,7 @@ class leap(ZypperEnvironment):
-         'valgrind-devel',
-         'python3-Cython',
-         'python3-devel',
-+        'python3-docutils',
-     };
-     rpmbuild_options = [ "--without=curlmini" ];
-     name = "opensuse-15.0";
-diff --git a/buildlib/pandoc-prebuilt.py b/buildlib/pandoc-prebuilt.py
-index c1db6a25a23bad..afba326324345b 100644
---- a/buildlib/pandoc-prebuilt.py
-+++ b/buildlib/pandoc-prebuilt.py
-@@ -4,19 +4,31 @@ import shutil
- import subprocess
- import sys
- import hashlib
-+import re
-+
-+def hash_rst_includes(incdir,txt):
-+    h = ""
-+    for fn in re.findall(br"^..\s+include::\s+(.*)$", txt, flags=re.MULTILINE):
-+        with open(os.path.join(incdir,fn.decode()),"rb") as F:
-+            h = h +  hashlib.sha1(F.read()).hexdigest();
-+    return h.encode();
- 
- def get_id(SRC):
-     """Return a unique ID for the SRC file. For simplicity and robustness we just
-     content hash it"""
-+    incdir = os.path.dirname(SRC)
-     with open(SRC,"rb") as F:
--        return hashlib.sha1(F.read()).hexdigest();
-+        txt = F.read();
-+        if SRC.endswith(".rst"):
-+            txt = txt + hash_rst_includes(incdir,txt);
-+        return hashlib.sha1(txt).hexdigest();
- 
- def do_retrieve(src_root,SRC):
-     """Retrieve the file from the prebuild cache and write it to DEST"""
-     prebuilt = os.path.join(src_root,"buildlib","pandoc-prebuilt",get_id(SRC))
-     sys.stdout.write(prebuilt);
- 
--def do_build(build_root,pandoc,SRC,DEST):
-+def do_build_pandoc(build_root,pandoc,SRC,DEST):
-     """Build the markdown into a man page with pandoc and then keep a copy of the
-     output under build/pandoc-prebuilt"""
-     try:
-@@ -25,13 +37,26 @@ def do_build(build_root,pandoc,SRC,DEST):
-         sys.exit(100);
-     shutil.copy(DEST,os.path.join(build_root,"pandoc-prebuilt",get_id(SRC)));
- 
-+def do_build_rst2man(build_root,rst2man,SRC,DEST):
-+    """Build the markdown into a man page with pandoc and then keep a copy of the
-+    output under build/pandoc-prebuilt"""
-+    try:
-+        subprocess.check_call([rst2man,SRC,DEST]);
-+    except subprocess.CalledProcessError:
-+        sys.exit(100);
-+    shutil.copy(DEST,os.path.join(build_root,"pandoc-prebuilt",get_id(SRC)));
-+
- # We support python 2.6 so argparse is not available.
- if len(sys.argv) == 4:
-     assert(sys.argv[1] == "--retrieve");
-     do_retrieve(sys.argv[2],sys.argv[3]);
- elif len(sys.argv) == 7:
-     assert(sys.argv[1] == "--build");
--    assert(sys.argv[3] == "--pandoc");
--    do_build(sys.argv[2],sys.argv[4],sys.argv[5],sys.argv[6]);
-+    if sys.argv[3] == "--pandoc":
-+        do_build_pandoc(sys.argv[2],sys.argv[4],sys.argv[5],sys.argv[6]);
-+    elif sys.argv[3] == "--rst":
-+        do_build_rst2man(sys.argv[2],sys.argv[4],sys.argv[5],sys.argv[6]);
-+    else:
-+        raise ValueError("Bad sys.argv[3]");
- else:
-     raise ValueError("Must provide --build or --retrieve");
-diff --git a/buildlib/rdma_man.cmake b/buildlib/rdma_man.cmake
-index 0db455f0cc6029..f8f43c9fe55a6e 100644
---- a/buildlib/rdma_man.cmake
-+++ b/buildlib/rdma_man.cmake
-@@ -4,6 +4,22 @@
- rdma_make_dir("${CMAKE_BINARY_DIR}/pandoc-prebuilt")
- add_custom_target("docs" ALL DEPENDS "${OBJ}")
- 
-+function(rdma_man_get_prebuilt SRC OUT)
-+  # If rst2man is not installed then we install the man page from the
-+  # pre-built cache directory under buildlib. When the release tar file is
-+  # made the man pages are pre-built and included. This is done via install
-+  # so that ./build.sh never depends on pandoc, only 'ninja install'.
-+  execute_process(
-+    COMMAND "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/buildlib/pandoc-prebuilt.py" --retrieve "${CMAKE_SOURCE_DIR}" "${SRC}"
-+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-+    OUTPUT_VARIABLE OBJ
-+    RESULT_VARIABLE retcode)
-+  if(NOT "${retcode}" STREQUAL "0")
-+    message(FATAL_ERROR "Failed to load prebuilt pandoc output")
-+  endif()
-+  set(${OUT} "${OBJ}" PARENT_SCOPE)
++  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${OFN}"
++    DESTINATION "${CMAKE_INSTALL_SBINDIR}"
++    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
 +endfunction()
 +
- function(rdma_md_man_page SRC MAN_SECT MANFN)
-   set(OBJ "${CMAKE_CURRENT_BINARY_DIR}/${MANFN}")
- 
-@@ -18,18 +34,29 @@ function(rdma_md_man_page SRC MAN_SECT MANFN)
-     add_custom_target("man-${MANFN}" ALL DEPENDS "${OBJ}")
-     add_dependencies("docs" "man-${MANFN}")
-   else()
--    # If pandoc is not installed then we install the man page from the
--    # pre-built cache directory under buildlib. When the release tar file is
--    # made the man pages are pre-built and included. This is done via install
--    # so that ./build.sh never depends on pandoc, only 'ninja install'.
--    execute_process(
--      COMMAND "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/buildlib/pandoc-prebuilt.py" --retrieve "${CMAKE_SOURCE_DIR}" "${SRC}"
-+    rdma_man_get_prebuilt(${SRC} OBJ)
-+  endif()
++function(_rdma_sbin_interp_link INTERP IFN OFN)
++  file(WRITE "${BUILD_BIN}/${OFN}" "#!${INTERP} ${CMAKE_CURRENT_SOURCE_DIR}/${IFN}")
++  execute_process(COMMAND "chmod" "a+x" "${BUILD_BIN}/${OFN}")
 +
-+  install(FILES "${OBJ}"
-+    RENAME "${MANFN}"
-+    DESTINATION "${CMAKE_INSTALL_MANDIR}/man${MAN_SECT}/")
++  install(FILES "${IFN}"
++    DESTINATION "${CMAKE_INSTALL_SBINDIR}"
++    RENAME "${OFN}"
++    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
 +endfunction()
 +
-+function(rdma_rst_man_page SRC MAN_SECT MANFN)
-+  set(OBJ "${CMAKE_CURRENT_BINARY_DIR}/${MANFN}")
++function(rdma_sbin_shell_program)
++  foreach(IFN ${ARGN})
++    if (IFN MATCHES "\\.sh\\.in")
++      if (DISTRO_FLAVOUR STREQUAL Debian)
++	string(REGEX REPLACE "^(.+)\\.sh\\.in$" "\\1" OFN "${IFN}")
++      else()
++	string(REGEX REPLACE "^(.+)\\.in$" "\\1" OFN "${IFN}")
++      endif()
++      _rdma_sbin_interp("/bin/bash" "${IFN}" "${OFN}")
++    elseif (IFN MATCHES "\\.in")
++      string(REGEX REPLACE "^(.+)\\.in$" "\\1" OFN "${IFN}")
++      _rdma_sbin_interp("/bin/bash" "${IFN}" "${OFN}")
++    elseif (IFN MATCHES "\\.sh")
++      if (DISTRO_FLAVOUR STREQUAL Debian)
++	string(REGEX REPLACE "^(.+)\\.sh$" "\\1" OFN "${IFN}")
++      else()
++	set(OFN "${IFN}")
++      endif()
++      _rdma_sbin_interp_link("/bin/bash" "${IFN}" "${OFN}")
++    else()
++      _rdma_sbin_interp_link("/bin/bash" "${IFN}" "${IFN}")
++    endif()
++  endforeach()
++endfunction()
 +
-+  if (RST2MAN_EXECUTABLE)
-+    add_custom_command(
-+      OUTPUT "${OBJ}"
-+      COMMAND "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/buildlib/pandoc-prebuilt.py" --build "${CMAKE_BINARY_DIR}" --rst "${RST2MAN_EXECUTABLE}" "${SRC}" "${OBJ}"
-+      MAIN_DEPENDENCY "${SRC}"
-       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
--      OUTPUT_VARIABLE OBJ
--      RESULT_VARIABLE retcode)
--    if(NOT "${retcode}" STREQUAL "0")
--      message(FATAL_ERROR "Failed to load prebuilt pandoc output")
--    endif()
-+      COMMENT "Creating man page ${MANFN}"
-+      VERBATIM)
-+    add_custom_target("man-${MANFN}" ALL DEPENDS "${OBJ}")
-+    add_dependencies("docs" "man-${MANFN}")
-+  else()
-+    rdma_man_get_prebuilt(${SRC} OBJ)
-   endif()
- 
-   install(FILES "${OBJ}"
-@@ -50,6 +77,17 @@ function(rdma_man_pages)
- 	"${I}"
- 	"${MAN_SECT}"
- 	"${BASE_NAME}")
-+    elseif ("${I}" MATCHES "\\.in\\.rst$")
-+      string(REGEX REPLACE "^.+[.](.+)\\.in\\.rst$" "\\1" MAN_SECT "${I}")
-+      string(REGEX REPLACE "^(.+)\\.in\\.rst$" "\\1" BASE_NAME "${I}")
-+      get_filename_component(BASE_NAME "${BASE_NAME}" NAME)
++function(rdma_sbin_perl_program)
++  foreach(IFN ${ARGN})
++    if (IFN MATCHES "\\.pl\\.in")
++      if (DISTRO_FLAVOUR STREQUAL Debian)
++	string(REGEX REPLACE "^(.+)\\.pl\\.in$" "\\1" OFN "${IFN}")
++      else()
++	string(REGEX REPLACE "^(.+)\\.in$" "\\1" OFN "${IFN}")
++      endif()
++      _rdma_sbin_interp("/usr/bin/perl" "${IFN}" "${OFN}")
++    elseif (IFN MATCHES "\\.pl")
++      if (DISTRO_FLAVOUR STREQUAL Debian)
++	string(REGEX REPLACE "^(.+)\\.pl$" "\\1" OFN "${IFN}")
++      else()
++	set(OFN "${IFN}")
++      endif()
++      _rdma_sbin_interp_link("/usr/bin/perl" "${IFN}" "${OFN}")
++    endif()
++  endforeach()
++endfunction()
 +
-+      configure_file("${I}" "${CMAKE_CURRENT_BINARY_DIR}/${BASE_NAME}.rst" @ONLY)
++set(IBSCRIPTPATH "${CMAKE_INSTALL_FULL_SBINDIR}")
 +
-+      rdma_rst_man_page(
-+	"${CMAKE_CURRENT_BINARY_DIR}/${BASE_NAME}.rst"
-+	"${MAN_SECT}"
-+	"${BASE_NAME}")
-     elseif ("${I}" MATCHES "\\.in$")
-       string(REGEX REPLACE "^.+[.](.+)\\.in$" "\\1" MAN_SECT "${I}")
-       string(REGEX REPLACE "^(.+)\\.in$" "\\1" BASE_NAME "${I}")
-diff --git a/debian/control b/debian/control
-index 9fb546ac8999cd..f4480827bf86af 100644
---- a/debian/control
-+++ b/debian/control
-@@ -16,6 +16,7 @@ Build-Depends: cmake (>= 2.8.11),
-                ninja-build,
-                pandoc,
-                pkg-config,
-+               python-docutils,
-                python3-dev,
-                valgrind [amd64 arm64 armhf i386 mips mips64el mipsel powerpc ppc64 ppc64el s390x]
- Standards-Version: 4.3.0
++rdma_sbin_shell_program(
++  dump_lfts.sh.in
++  dump_mfts.sh.in
++  ibhosts.in
++  ibnodes.in
++  ibrouters.in
++  ibstatus
++  ibswitches.in
++  )
++
++rdma_sbin_perl_program(
++  check_lft_balance.pl
++  ibfindnodesusing.pl
++  ibidsverify.pl
++  )
++
++install(FILES "IBswcountlimits.pm"
++  DESTINATION "${CMAKE_INSTALL_PERLDIR}")
++
++install(FILES
++  "../etc/error_thresholds"
++  "../etc/ibdiag.conf"
++  DESTINATION "${IBDIAG_CONFIG_PATH}")
++
++if (WITH_IBDIAGS_COMPAT)
++  rdma_sbin_shell_program(
++    ibcheckerrors.in
++    ibcheckerrs.in
++    ibchecknet.in
++    ibchecknode.in
++    ibcheckport.in
++    ibcheckportstate.in
++    ibcheckportwidth.in
++    ibcheckstate.in
++    ibcheckwidth.in
++    ibclearcounters.in
++    ibclearerrors.in
++    ibdatacounters.in
++    ibdatacounts.in
++    set_nodedesc.sh
++    )
++
++  rdma_sbin_perl_program(
++    ibdiscover.pl
++    iblinkinfo.pl.in
++    ibprintca.pl
++    ibprintrt.pl
++    ibprintswitch.pl
++    ibqueryerrors.pl.in
++    ibswportwatch.pl
++    )
++endif()
+diff --git a/ibdiags/src/CMakeLists.txt b/ibdiags/src/CMakeLists.txt
+new file mode 100644
+index 00000000000000..edce64f2106a3d
+--- /dev/null
++++ b/ibdiags/src/CMakeLists.txt
+@@ -0,0 +1,48 @@
++publish_internal_headers(""
++  ../include/ibdiag_common.h
++  ../include/ibdiag_sa.h
++  )
++
++add_library(ibdiags_tools STATIC
++  ibdiag_common.c
++  ibdiag_sa.c
++  )
++target_include_directories(ibdiags_tools PRIVATE "/usr/include/infiniband")
++
++function(ibdiag_programs)
++  foreach(I ${ARGN})
++    rdma_sbin_executable(${I} "${I}.c")
++    target_link_libraries(${I} PRIVATE ${RT_LIBRARIES} ibumad ibmad ibdiags_tools ibnetdisc osmcomp)
++    target_include_directories(${I} PRIVATE "/usr/include/infiniband")
++  endforeach()
++endfunction()
++
++ibdiag_programs(
++  dump_fts
++  ibaddr
++  ibcacheedit
++  ibccconfig
++  ibccquery
++  iblinkinfo
++  ibnetdiscover
++  ibping
++  ibportstate
++  ibqueryerrors
++  ibroute
++  ibstat
++  ibsysstat
++  ibtracert
++  perfquery
++  saquery
++  sminfo
++  smpdump
++  smpquery
++  vendstat
++  )
++
++rdma_test_executable(ibsendtrap "ibsendtrap.c")
++target_link_libraries(ibsendtrap PRIVATE ibumad ibmad ibdiags_tools)
++target_include_directories(ibsendtrap PRIVATE "/usr/include/infiniband")
++rdma_test_executable(mcm_rereg_test "mcm_rereg_test.c")
++target_link_libraries(mcm_rereg_test PRIVATE ibumad ibmad ibdiags_tools)
++target_include_directories(mcm_rereg_test PRIVATE "/usr/include/infiniband")
 diff --git a/redhat/rdma-core.spec b/redhat/rdma-core.spec
-index ba563a7b87fa4e..ea48fc4e29a36f 100644
+index ea48fc4e29a36f..29bf26531c97ab 100644
 --- a/redhat/rdma-core.spec
 +++ b/redhat/rdma-core.spec
-@@ -20,6 +20,7 @@ BuildRequires: libudev-devel
- BuildRequires: pkgconfig
- BuildRequires: pkgconfig(libnl-3.0)
- BuildRequires: pkgconfig(libnl-route-3.0)
-+BuildRequires: python-docutils
- BuildRequires: valgrind-devel
- BuildRequires: systemd
- BuildRequires: systemd-devel
+@@ -259,6 +259,7 @@ easy, object-oriented access to IB verbs.
+          -DCMAKE_INSTALL_RUNDIR:PATH=%{_rundir} \
+          -DCMAKE_INSTALL_DOCDIR:PATH=%{_docdir}/%{name}-%{version} \
+          -DCMAKE_INSTALL_UDEV_RULESDIR:PATH=%{_udevrulesdir} \
++         -DWITH_IBDIAGS:BOOL=False \
+ %if %{with_static}
+          -DENABLE_STATIC=1 \
+ %endif
 diff --git a/suse/rdma-core.spec b/suse/rdma-core.spec
-index d533059603b918..5ddb46aaf8f9cc 100644
+index 5ddb46aaf8f9cc..c0d4922658cb6a 100644
 --- a/suse/rdma-core.spec
 +++ b/suse/rdma-core.spec
-@@ -62,6 +62,7 @@ BuildRequires:  pkgconfig(libsystemd)
- BuildRequires:  pkgconfig(libudev)
- BuildRequires:  pkgconfig(systemd)
- BuildRequires:  pkgconfig(udev)
-+BuildRequires:  python-docutils
- %if %{with_pyverbs}
- BuildRequires:  python3-Cython
- BuildRequires:  python3-devel
+@@ -372,6 +372,7 @@ easy, object-oriented access to IB verbs.
+          -DCMAKE_INSTALL_RUNDIR:PATH=%{_rundir} \
+          -DCMAKE_INSTALL_DOCDIR:PATH=%{_docdir}/%{name}-%{version} \
+          -DCMAKE_INSTALL_UDEV_RULESDIR:PATH=%{_udevrulesdir} \
++         -DWITH_IBDIAGS:BOOL=False \
+ %if %{with_static}
+          -DENABLE_STATIC=1 \
+ %endif
 -- 
 2.21.0
 
