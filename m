@@ -2,89 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 344891C7EE
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 May 2019 13:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28831C871
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 May 2019 14:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbfENLoZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 May 2019 07:44:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41038 "EHLO mail.kernel.org"
+        id S1726254AbfENMXZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 May 2019 08:23:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725893AbfENLoY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 May 2019 07:44:24 -0400
+        id S1725893AbfENMXZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 May 2019 08:23:25 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7501F20818;
-        Tue, 14 May 2019 11:44:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0699720850;
+        Tue, 14 May 2019 12:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557834264;
-        bh=35oBFZSldviLua8EdqgxA23baQw8l7OwiHxmZXoknIw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cdW0+AAl59KPNml4mJugdCsh/DMmAmol8rVEnnOEuXc3mAU3cdeYfUY5dUCoJm43G
-         Pd5iK2quoWRlHaFV6MATJZWRJLs25Bu/Ox7sVEvN3g1Fn3+VoM2zLalUlL8DRiV+kR
-         tNjxYv4iolvxaQan8X2uJ3BSBk87KmcBjgWP++KA=
+        s=default; t=1557836604;
+        bh=ovaUcWCRrSIqpnGvgTJrI7a7teTV+2l9ZYOtBT+OmF4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ebg+AHk11N2DV0tHSlNQqwSdCHRCKZ5TEkK09AKWwyElKUZNDZMVyGyyuOA2SIVLB
+         TGhdMkHrxAXYP+0BgVJFy/foHuBo1XUQzLkqt4uN09VwqbgWPVq6T3X4/0XTAAzBjy
+         2E3fppiJ0/ohbf/TTINeM6rBiCDvZYqCaLz5fHks=
+Date:   Tue, 14 May 2019 15:23:21 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: [PATCH mlx5-next 2/2] net/mlx5: Set completion EQs as shared resources
-Date:   Tue, 14 May 2019 14:44:12 +0300
-Message-Id: <20190514114412.30604-3-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190514114412.30604-1-leon@kernel.org>
-References: <20190514114412.30604-1-leon@kernel.org>
+To:     RDMA mailing list <linux-rdma@vger.kernel.org>
+Cc:     linux-netdev <netdev@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: CFP: 4th RDMA Mini-Summit at LPC 2019
+Message-ID: <20190514122321.GH6425@mtr-leonro.mtl.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yishai Hadas <yishaih@mellanox.com>
+This is a call for proposals for the 4th RDMA mini-summit at the Linux
+Plumbers Conference in Lisbon, Portugal, which will be happening on
+September 9-11h, 2019.
 
-Mark completion EQs as shared resources so that they can be used by CQs
-with uid != 0.
+We are looking for topics with focus on active audience discussions
+and problem solving. The preferable topic is up to 30 minutes with
+3-5 slides maximum.
 
-Fixes: 7efce3691d33 ("IB/mlx5: Add obj create and destroy functionality")
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/eq.c | 3 +++
- include/linux/mlx5/mlx5_ifc.h                | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+This year, the LPC will include netdev track too and it is
+collocated with Kernel Summit, such timing makes an excellent
+opportunity to drive cross-tree solutions.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index 5aac97847721..23883d1fa22f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -291,6 +291,9 @@ create_map_eq(struct mlx5_core_dev *dev, struct mlx5_eq *eq, const char *name,
- 	mlx5_fill_page_array(&eq->buf, pas);
- 
- 	MLX5_SET(create_eq_in, in, opcode, MLX5_CMD_OP_CREATE_EQ);
-+	if (!param->mask && MLX5_CAP_GEN(dev, log_max_uctx))
-+		MLX5_SET(create_eq_in, in, uid, MLX5_SHARED_RESOURCE_UID);
-+
- 	MLX5_SET64(create_eq_in, in, event_bitmask, param->mask);
- 
- 	eqc = MLX5_ADDR_OF(create_eq_in, in, eq_context_entry);
-diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index 9be13e2c5a20..9c9979cf0fd5 100644
---- a/include/linux/mlx5/mlx5_ifc.h
-+++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -7346,7 +7346,7 @@ struct mlx5_ifc_create_eq_out_bits {
- 
- struct mlx5_ifc_create_eq_in_bits {
- 	u8         opcode[0x10];
--	u8         reserved_at_10[0x10];
-+	u8         uid[0x10];
- 
- 	u8         reserved_at_20[0x10];
- 	u8         op_mod[0x10];
--- 
-2.20.1
+BTW, RDMA is not accepted yet as a track in LPC, but let's think
+positive and start collect topics.
 
+Thanks
