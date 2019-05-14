@@ -2,103 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8501CACC
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 May 2019 16:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707DC1D023
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 May 2019 21:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbfENOsU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 May 2019 10:48:20 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:52450 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbfENOsT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 May 2019 10:48:19 -0400
-Received: by mail-wm1-f65.google.com with SMTP id y3so3206464wmm.2
-        for <linux-rdma@vger.kernel.org>; Tue, 14 May 2019 07:48:18 -0700 (PDT)
+        id S1726332AbfENTpP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 May 2019 15:45:15 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:42578 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbfENTpP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 May 2019 15:45:15 -0400
+Received: by mail-ed1-f68.google.com with SMTP id l25so536031eda.9;
+        Tue, 14 May 2019 12:45:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oVzNv9Cda4AG48ayrkoKl5rIu1/NIqCv8NqNC2WTHNk=;
-        b=PWGMigxrpID6s8IULkbH99Y1lhvCduvvj46ce+Jn7M72fT9TeIXEZYECmVOQCUQNHr
-         FApeJ4e7A9fYy9hxGe5qnCUNcXvgdNuVkhfOD5K1xtfRWbarEA7+dfHVLkK7x7+g3xiK
-         Re4w+Z+2GFCXOd0H6gAQJMx6YjB9hvvcVK8f8=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=Fu9WOeDbdlL/ua5Ah2bZTlJie+g3UL98LUXK/FhpkXQ=;
+        b=LPIXovgGUA7+D6oKZfVjcYMnrbagOKIgBIOb5NewyNJ34GdkG0K735sD0dyGuRsOrc
+         Ma1fbjdFgcd8fxKKGhQfHYGgTriKPgHFRQTP8GGOt8MgOq+gw9VxEHyz0y9DLBXwScwh
+         gIrdADKXUNCqCUrOEMDmv8WhBbLeKQQCZ8IkSWrAmftE4jF3rzwthp9WABk3qJSs7w1y
+         P9rwf4TwckKSorNd+oRWiDsqUlL5+iFIlB+d9T7GuAwJGYfgt5bcGRUBb0oNYFONZzjq
+         UKywE9BnSA/NU8wMalz+VX/rwAPYMDZQyc0NhRw4bpWMeRvnZL68JMR9kfwpvKkiAGai
+         29vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oVzNv9Cda4AG48ayrkoKl5rIu1/NIqCv8NqNC2WTHNk=;
-        b=JXLW/sBGN89jdT0B0VNqsSyf7xrNHPxxb2j9HBNjV+AK7NrY9l8fFRJ5rUo8kb93UH
-         F2Txvlmz/towjvDkrEKA6t4Ln+1Y1CUuqblswhbJe6OaMLXzsxhBFju0AXbHTWyueJT8
-         A9t59WHu0ihkCB6us3Q7Qbf1dc5ftZvTpQgv6n9Dd9enMc/bkdHn2ddMDsIaBAqgOvLC
-         CmQ2lhlYrtGep6ogNiwvygwVRRUMQKH2OX5Ma9qdR4SKVN0QMxqr2YTdRRSoqlaghnfo
-         /orkz1xoulG6XxdfWQg2OkLrn9wpGgCcE+jJW0Ovfrhv+i/FlO4nmYHZels4/mXYQfSf
-         58Tg==
-X-Gm-Message-State: APjAAAXE8BrQzvt3EMl7v00cjelBF/tjYctYeA2ih6pQJ2YdxYJD+cu4
-        9WYIH+AhgX3JNa8dpa4gTSdk1g==
-X-Google-Smtp-Source: APXvYqxYk6Oc5UfGGWqyARsIZbZicHGDxdaBpkaV0YzlrdD1K6Gucx02gXt4F3GaCGNm3U6vsVvpfQ==
-X-Received: by 2002:a1c:3c2:: with SMTP id 185mr2275481wmd.91.1557845297691;
-        Tue, 14 May 2019 07:48:17 -0700 (PDT)
-Received: from andrea (86.100.broadband17.iol.cz. [109.80.100.86])
-        by smtp.gmail.com with ESMTPSA id p6sm12048114wrs.6.2019.05.14.07.48.16
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 May 2019 07:48:17 -0700 (PDT)
-Date:   Tue, 14 May 2019 16:48:06 +0200
-From:   Andrea Parri <andrea.parri@amarulasolutions.com>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=Fu9WOeDbdlL/ua5Ah2bZTlJie+g3UL98LUXK/FhpkXQ=;
+        b=LKR5bnviCqr9plzF4P14MYNn6yVRGcJqLqTG5qmlqiqTqo8llCewqCYrWaKhKxg1b3
+         3imXJA/F5rJQDz0qWjXbTxGWdjr5pm6Jyw6Uoo63kTdOPkvXFGyFxIijIpkgyyb0lDcV
+         vejwKkj6sbRWWZM+mHg9KD3W696pfmCDUujhN184WNI0JCsAAO/EBAQWlamTCykVs0Wm
+         ZMbm4oA1wAu6ofUJ202RsPrmOfsXzxkLVrkLWUGAYYy6hlyKY86H0h9yClGON57zXmg8
+         YGg4XqXL7LLJQnRaelxtMqKlmK9OxPrWxLKUWIEumvyPZlm7n1d9hcppeEcLki9qGe+w
+         Bt7Q==
+X-Gm-Message-State: APjAAAVgu8MF+3OqW5hJXsXpFyQrccuvWsDuUhDTVfcAUiEiTat4YJJp
+        KR40gibGfULMTvRzeQhIXYw=
+X-Google-Smtp-Source: APXvYqy29p1AGL/lhkLzcm9t9htDL/6Rgp/8i5IyzXb3FiDwnKLmonFhwH6a3wXa6z6BF4OHcI0LvA==
+X-Received: by 2002:a50:a51c:: with SMTP id y28mr32223328edb.280.1557863113126;
+        Tue, 14 May 2019 12:45:13 -0700 (PDT)
+Received: from archlinux-i9 ([2a01:4f9:2b:2b84::2])
+        by smtp.gmail.com with ESMTPSA id e33sm4855172edd.53.2019.05.14.12.45.11
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 14 May 2019 12:45:12 -0700 (PDT)
+Date:   Tue, 14 May 2019 12:45:10 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Ariel Levkovich <lariel@mellanox.com>,
+        Eli Cohen <eli@mellanox.com>, Mark Bloch <markb@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 5/5] IB/hfi1: Fix improper uses of smp_mb__before_atomic()
-Message-ID: <20190514144806.GA14962@andrea>
-References: <1556568902-12464-1-git-send-email-andrea.parri@amarulasolutions.com>
- <1556568902-12464-6-git-send-email-andrea.parri@amarulasolutions.com>
- <14063C7AD467DE4B82DEDB5C278E8663BE6AADCE@FMSMSX108.amr.corp.intel.com>
- <20190429231657.GA2733@andrea>
- <20190509211221.GA4966@andrea>
- <0a78eded-6c08-8d32-ec31-d62d6feb2118@intel.com>
+        Doug Ledford <dledford@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: undefined reference to `__aeabi_uldivmod' after 25c13324d03d
+ ("IB/mlx5: Add steering SW ICM device memory type")
+Message-ID: <20190514194510.GA15465@archlinux-i9>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0a78eded-6c08-8d32-ec31-d62d6feb2118@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 14, 2019 at 08:32:52AM -0400, Dennis Dalessandro wrote:
-> On 5/9/2019 5:12 PM, Andrea Parri wrote:
-> >On Tue, Apr 30, 2019 at 01:16:57AM +0200, Andrea Parri wrote:
-> >>Hi Mike,
-> >>
-> >>>>This barrier only applies to the read-modify-write operations; in
-> >>>>particular, it does not apply to the atomic_read() primitive.
-> >>>>
-> >>>>Replace the barrier with an smp_mb().
-> >>>
-> >>>This is one of a couple of barrier issues that we are currently looking into.
-> >>>
-> >>>See:
-> >>>
-> >>>[PATCH for-next 6/9] IB/rdmavt: Add new completion inline
-> >>>
-> >>>We will take a look at this one as well.
-> >>
-> >>Thank you for the reference and for looking into this,
-> >
-> >So, I'm planning to just drop this patch; or can I do something to help?
-> >
-> >Please let me know.
-> 
-> Mike was looking into this, and I've got a handful of patches from him to
-> review. He's unavailable for a while but if it's not included in the patches
-> I've got we'll get something out shortly. So yes I think we can hold off on
-> this patch for now. Thanks.
+Hi all,
 
-Thank you for the confirmation, Dennis.  I'll hold off on this one.
+I checked the RDMA mailing list and trees and I haven't seen this
+reported/fixed yet (forgive me if it has) but when building for arm32
+with multi_v7_defconfig and the following configs (distilled from
+allyesconfig):
 
-  Andrea
+CONFIG_INFINIBAND=y
+CONFIG_INFINIBAND_ON_DEMAND_PAGING=y
+CONFIG_INFINIBAND_USER_ACCESS=y
+CONFIG_MLX5_CORE=y
+CONFIG_MLX5_INFINIBAND=y
+
+The following link time errors occur:
+
+arm-linux-gnueabi-ld: drivers/infiniband/hw/mlx5/main.o: in function `mlx5_ib_alloc_dm':
+main.c:(.text+0x60c): undefined reference to `__aeabi_uldivmod'
+arm-linux-gnueabi-ld: drivers/infiniband/hw/mlx5/cmd.o: in function `mlx5_cmd_alloc_sw_icm':
+cmd.c:(.text+0x6d4): undefined reference to `__aeabi_uldivmod'
+arm-linux-gnueabi-ld: drivers/infiniband/hw/mlx5/cmd.o: in function `mlx5_cmd_dealloc_sw_icm':
+cmd.c:(.text+0x9ec): undefined reference to `__aeabi_uldivmod'
+
+Bisect log:
+
+git bisect start
+# good: [e93c9c99a629c61837d5a7fc2120cd2b6c70dbdd] Linux 5.1
+git bisect good e93c9c99a629c61837d5a7fc2120cd2b6c70dbdd
+# bad: [63863ee8e2f6f6ae47be3dff4af2f2806f5ca2dd] Merge tag 'gcc-plugins-v5.2-rc1' of ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/kees/linux
+git bisect bad 63863ee8e2f6f6ae47be3dff4af2f2806f5ca2dd
+# good: [80f232121b69cc69a31ccb2b38c1665d770b0710] Merge git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next
+git bisect good 80f232121b69cc69a31ccb2b38c1665d770b0710
+# good: [a2d635decbfa9c1e4ae15cb05b68b2559f7f827c] Merge tag 'drm-next-2019-05-09' of git://anongit.freedesktop.org/drm/drm
+git bisect good a2d635decbfa9c1e4ae15cb05b68b2559f7f827c
+# bad: [8e4ff713ce313dcabbb60e6ede1ffc193e67631f] Merge tag 'rtc-5.2' of git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux
+git bisect bad 8e4ff713ce313dcabbb60e6ede1ffc193e67631f
+# good: [055128ee008b00fba14e3638e7e84fc2cff8d77d] Merge tag 'dmaengine-5.2-rc1' of git://git.infradead.org/users/vkoul/slave-dma
+git bisect good 055128ee008b00fba14e3638e7e84fc2cff8d77d
+# bad: [abde77eb5c66b2f98539c4644b54f34b7e179e6b] Merge branch 'for-5.2' of git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup
+git bisect bad abde77eb5c66b2f98539c4644b54f34b7e179e6b
+# good: [3b70508a6bfbdc78b565e9da22fd98483263494e] RDMA/mlx5: Create flow table with max size supported
+git bisect good 3b70508a6bfbdc78b565e9da22fd98483263494e
+# bad: [e7a5b4aafd82771f8924905c208d5d236ddcb671] RDMA/device: Don't fire uevent before device is fully initialized
+git bisect bad e7a5b4aafd82771f8924905c208d5d236ddcb671
+# good: [dd05cb828d0ebecd3d772075fccb85ec3618bedf] RDMA: Get rid of iw_cm_verbs
+git bisect good dd05cb828d0ebecd3d772075fccb85ec3618bedf
+# bad: [a808273a495c657e33281b181fd7fcc2bb28f662] RDMA/verbs: Add a DMA iterator to return aligned contiguous memory blocks
+git bisect bad a808273a495c657e33281b181fd7fcc2bb28f662
+# good: [3a4ef2e2b5cf9a34bcc66c0d33f7eba180a14535] RDMA/rdmavt: Catch use-after-free access of AH structures
+git bisect good 3a4ef2e2b5cf9a34bcc66c0d33f7eba180a14535
+# bad: [33cde96fb5d7ae36207541c8a832d7fae3cadbde] IB/mlx5: Device resource control for privileged DEVX user
+git bisect bad 33cde96fb5d7ae36207541c8a832d7fae3cadbde
+# good: [4056b12efd43248d8331b6ed93df5ea5250106a9] IB/mlx5: Warn on allocated MEMIC buffers during cleanup
+git bisect good 4056b12efd43248d8331b6ed93df5ea5250106a9
+# bad: [25c13324d03d004f9e8071bf5bf5d5c6fdace71e] IB/mlx5: Add steering SW ICM device memory type
+git bisect bad 25c13324d03d004f9e8071bf5bf5d5c6fdace71e
+# first bad commit: [25c13324d03d004f9e8071bf5bf5d5c6fdace71e] IB/mlx5: Add steering SW ICM device memory type
+
+DIV_ROUND_UP is u64 / u32 in this case. I think DIV_ROUND_UP_ULL is
+needed but I am not sure if that has any unintended side effects so I
+didn't want to send a patch.
+
+I would appreciate if you guys could look into this.
+
+Cheers,
+Nathan
