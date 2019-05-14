@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E724A1E5C4
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 01:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2983D1E5C6
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 01:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbfENXtn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 May 2019 19:49:43 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:42918 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbfENXtn (ORCPT
+        id S1726369AbfENXto (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 May 2019 19:49:44 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]:39130 "EHLO
+        mail-qk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726461AbfENXtn (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 May 2019 19:49:43 -0400
-Received: by mail-qk1-f195.google.com with SMTP id d4so387249qkc.9
-        for <linux-rdma@vger.kernel.org>; Tue, 14 May 2019 16:49:42 -0700 (PDT)
+Received: by mail-qk1-f174.google.com with SMTP id z128so398227qkb.6
+        for <linux-rdma@vger.kernel.org>; Tue, 14 May 2019 16:49:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4st1/ft9+Etz/+zCC0IqUInccA6rB4kgtjxpZOOg6w4=;
-        b=SQQkpjqc5sT22460lsHOUwmM3qXsc9tybmClro0CR1JuxcbeMhron4RZIut2xg0Ocx
-         v8OliJbfo8AMHGrmI2hSMFkMEge+sufnDP14H0IVAjT1vkTwkG5sO1To5IVYAVp9s2Cz
-         w1YlKTagL8INRGGVKrahRq4lrGY/nRPsXRc2BUX9K0mRHXBlIiq8yu4YkyQmDpJuGX+u
-         lkUWgNtV0kjMXSg1UM4leBOz6QoOsOk/GBaQ9fN9wE1yxBu6Syeu9lXbQ1hX67rG6Cyu
-         +KHnhlsSUN1ZXZ7lhLKKSFI8j3sssAgzJCmPaQYzFwIgQAqdng/AM6aFehjDREHO7JVa
-         9jmw==
+        bh=/EbjoA80E7TwbBGI5fHJ/wmV814+rYmSj5+48yVgSYA=;
+        b=Vxmql7AqsYfTJcpfG3Kl1JbqWXd1a3ZD24Z+Vb6HP48oHCKHUdPGKd7ZS37/NN79AT
+         Y1HpzBm8wIN0QZCqQfMjrKUds6ftjtNx2GQXZEvRI74UvugDniwZBBsOeLk593BrS6vN
+         5dzk3r0ByMTN203UAwwgm6syGpCiSpLiq1GHbcLrsvZXTEzMZRYV4O2bb69GUO5bWasR
+         n5gezFyGABXNKo/6LSxJttenCEzn0qFGED6Hi2MBY5etOOYoIqf6VENXPD4YTGoOprAq
+         ioknDuOq80H469ibUsZn4K2W/cnd+oV0wUo3YTS0kyJ6mY6frs6NJndXGsPHK8lINq6c
+         FKIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4st1/ft9+Etz/+zCC0IqUInccA6rB4kgtjxpZOOg6w4=;
-        b=SlbrLbd7K1qjyfZWw5Jq6FnEjEa9m5n/psqlrYlYV8aMrosbFSQ62yI2IwOWKgxt9+
-         Ptb/bhVR/6ysGNvCAyr4kMt49d1Vb6zLkDz5NXeCEGWTth7JtZ3E9hH0G0zzJcgoS5L3
-         OQDIkBLhEHmtJwQrdqh1EsrOOlhhWxRAx+u53vO1IWko+sD6OHJNEAk2JjmsPGtAs8hz
-         uoqRqf5zPema1ymNngaO3fN3CeLH7w+7YUYjSf/24ouoLKFAY345/NqqxBVclrDmOyeR
-         WN//7dbcVkOPPqllyTR1busN5eCj3Wgj8XbHn2CpgSzRYIUAGQa59Js3kh9afEiYpg4l
-         SwRA==
-X-Gm-Message-State: APjAAAWLKDQBzhkh3ALYfayxJdpq1RbMCB0YBrZoBixj4TKDC/AgnMqb
-        l2et5sCRTNlmKnrYlXGkehkJNi6WMBs=
-X-Google-Smtp-Source: APXvYqzM3HplL45GhqX+FNxEzMBo1zup1vvF8QTon9r2HGATw4tBodnoxAGnz+RQoQ0x2iE3QsMMfA==
-X-Received: by 2002:ae9:f70d:: with SMTP id s13mr30891683qkg.213.1557877781632;
-        Tue, 14 May 2019 16:49:41 -0700 (PDT)
+        bh=/EbjoA80E7TwbBGI5fHJ/wmV814+rYmSj5+48yVgSYA=;
+        b=i+66GXwBTNnA6dp0esodG47OkrLqv1NMsW/TQxkrJK16P4MGlGbwqcK7c3oQwkt/KD
+         bxgaDzXoKGMAybPPv1Y0+UiDrkfOJQKf2lsro0MR04hVpoHMGsBFyxwChn1Yn9ZV3gPB
+         5wJhWgyXlfdesTYq2f0Ts40728YQYGKcLB+NUK6VLqXf0bJRkt7RwZMqoJE0/ay1dx1A
+         cNCJmjC58AZ4vALHlnvwAdzjOL8ZiMu9R3xicn855yjKBpuUxDdEJHTVntpHH8RmKWib
+         e29x1FzBkH6NymNTREkmCp2+30+80zblUIV8AQWmUSoOJrJLpFVe1qSbURS9fo3vrij0
+         uUWQ==
+X-Gm-Message-State: APjAAAXkKUWp3eQAsP287lLyCs/aVbqtL9S7XTL8rEScTcDUgCzJN8Pn
+        4FR4SrYvqNWtvxfcUM3+xelBAoaqANE=
+X-Google-Smtp-Source: APXvYqz4qXmgIcqiKOsFQXqPeR4DEZLYKU+G8u0Qda103RHbvPXExmL2q5cF/UDVvYqKlc8vIqajjg==
+X-Received: by 2002:a37:9e44:: with SMTP id h65mr17476032qke.196.1557877782430;
+        Tue, 14 May 2019 16:49:42 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id n190sm118622qkb.83.2019.05.14.16.49.39
+        by smtp.gmail.com with ESMTPSA id s7sm142916qkg.70.2019.05.14.16.49.39
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Tue, 14 May 2019 16:49:40 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hQhAx-0001Nn-6F; Tue, 14 May 2019 20:49:39 -0300
+        id 1hQhAx-0001Nu-8Q; Tue, 14 May 2019 20:49:39 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 12/20] ibdiags: Add Fedora packaging
-Date:   Tue, 14 May 2019 20:49:28 -0300
-Message-Id: <20190514234936.5175-13-jgg@ziepe.ca>
+Subject: [PATCH rdma-core 13/20] ibdiags: Add suse packaging
+Date:   Tue, 14 May 2019 20:49:29 -0300
+Message-Id: <20190514234936.5175-14-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190514234936.5175-1-jgg@ziepe.ca>
 References: <20190514234936.5175-1-jgg@ziepe.ca>
@@ -65,123 +65,170 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-This is copied from the FC30 spec file with infiniband-diags-devel rolled
-into rdma-core-devel.
+This is copied from the Factor spec file (rev 10) with
+infiniband-diags-devel rolled into rdma-core-devel.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- redhat/rdma-core.spec | 143 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 142 insertions(+), 1 deletion(-)
+ CMakeLists.txt      |   6 ---
+ suse/rdma-core.spec | 116 +++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 115 insertions(+), 7 deletions(-)
 
-diff --git a/redhat/rdma-core.spec b/redhat/rdma-core.spec
-index 29bf26531c97ab..72a05e58eda279 100644
---- a/redhat/rdma-core.spec
-+++ b/redhat/rdma-core.spec
-@@ -82,6 +82,11 @@ Obsoletes: librdmacm-devel < %{version}-%{release}
- Requires: ibacm = %{version}-%{release}
- Provides: ibacm-devel = %{version}-%{release}
- Obsoletes: ibacm-devel < %{version}-%{release}
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e16b955991558a..fd9355787291c0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -45,8 +45,6 @@
+ #   -DNO_PYVERBS=1 (default, build pyverbs)
+ #      Invoke cython to build pyverbs. Usually you will run with this option
+ #      is set, but it will be disabled for travis runs.
+-#   -DWITH_IBDIAGS=False (default True)
+-#      Do not build infiniband-diags components
+ #   -DWITH_IBDIAGS_COMPAT=True (default False)
+ #      Include obsolete scripts. These scripts are replaced by C programs with
+ #      a different interface now.
+@@ -160,8 +158,6 @@ endif()
+ set(DISTRO_FLAVOUR "None" CACHE
+   STRING "Flavour of distribution to install for. This primarily impacts the init.d scripts installed.")
+ 
+-set(WITH_IBDIAGS "True" CACHE BOOL "Build infiniband-diags stuff too")
+-
+ #-------------------------
+ # Load CMake components
+ set(BUILDLIB "${CMAKE_SOURCE_DIR}/buildlib")
+@@ -621,7 +617,6 @@ add_subdirectory(providers/ipathverbs)
+ add_subdirectory(providers/rxe)
+ add_subdirectory(providers/rxe/man)
+ 
+-if (WITH_IBDIAGS)
+ add_subdirectory(ibdiags/libibmad/src)
+ add_subdirectory(ibdiags/libibnetdisc/src)
+ add_subdirectory(ibdiags/libibnetdisc/man)
+@@ -629,7 +624,6 @@ add_subdirectory(ibdiags/src)
+ add_subdirectory(ibdiags/scripts)
+ add_subdirectory(ibdiags/man)
+ add_subdirectory(ibdiags/doc/rst)
+-endif()
+ 
+ if (CYTHON_EXECUTABLE)
+   add_subdirectory(pyverbs)
+diff --git a/suse/rdma-core.spec b/suse/rdma-core.spec
+index c0d4922658cb6a..a4614646fb2de9 100644
+--- a/suse/rdma-core.spec
++++ b/suse/rdma-core.spec
+@@ -34,6 +34,8 @@ Group:          Productivity/Networking/Other
+ %define umad_so_major   3
+ %define mlx4_so_major   1
+ %define mlx5_so_major   1
++%define ibnetdisc_major 5
++%define mad_major       5
+ 
+ %define  verbs_lname  libibverbs%{verbs_so_major}
+ %define  rdmacm_lname librdmacm%{rdmacm_so_major}
+@@ -160,6 +162,10 @@ BuildRequires:  pkgconfig(libnl-3.0)
+ BuildRequires:  pkgconfig(libnl-route-3.0)
+ %endif
+ 
 +Requires: infiniband-diags = %{version}-%{release}
 +Provides: infiniband-diags-devel = %{version}-%{release}
 +Obsoletes: infiniband-diags-devel < %{version}-%{release}
-+Provides: libibmad-devel = %{version}-%{release}
-+Obsoletes: libibmad-devel < %{version}-%{release}
- %if %{with_static}
- # Since our pkg-config files include private references to these packages they
- # need to have their .pc files installed too, even for dynamic linking, or
-@@ -93,6 +98,27 @@ BuildRequires: pkgconfig(libnl-route-3.0)
++
  %description devel
  RDMA core development libraries and headers.
  
+@@ -232,6 +238,14 @@ Group:          System/Libraries
+ %description -n %mlx5_lname
+ This package contains the mlx5 runtime library.
+ 
++%package    -n libibnetdisc%{ibnetdisc_major}
++Summary:        Infiniband Net Discovery runtime library
++Group:          System/Libraries
++
++%description -n libibnetdisc%{ibnetdisc_major}
++This package contains the Infiniband Net Discovery runtime library needed
++mainly by infiniband-diags.
++
+ %package -n     libibverbs-utils
+ Summary:        Examples for the libibverbs library
+ Group:          Productivity/Networking/Other
+@@ -259,6 +273,23 @@ user applications need not know about this daemon as long as their app
+ uses librdmacm to handle connection bring up/tear down.  The librdmacm
+ library knows how to talk directly to the ibacm daemon to retrieve data.
+ 
 +%package -n infiniband-diags
-+Summary: InfiniBand Diagnostic Tools
-+Provides: perl(IBswcountlimits)
-+Provides: libibmad = %{version}-%{release}
-+Obsoletes: libibmad < %{version}-%{release}
-+Obsoletes: openib-diags < 1.3
++Summary:        InfiniBand Diagnostic Tools
++Group:          Productivity/Networking/Diagnostic
 +
 +%description -n infiniband-diags
-+This package provides IB diagnostic programs and scripts needed to diagnose an
-+IB subnet.  infiniband-diags now also provides libibmad.  libibmad provides
-+low layer IB functions for use by the IB diagnostic and management
-+programs. These include MAD, SA, SMP, and other basic IB functions.
++diags provides IB diagnostic programs and scripts needed to diagnose an
++IB subnet.
 +
-+%package -n infiniband-diags-compat
-+Summary: OpenFabrics Alliance InfiniBand Diagnostic Tools
++%package -n     libibmad%{mad_major}
++Summary:        Libibmad runtime library
++Group:          System/Libraries
 +
-+%description -n infiniband-diags-compat
-+Deprecated scripts and utilities which provide duplicated functionality, most
-+often at a reduced performance. These are maintained for the time being for
-+compatibility reasons.
++%description -n libibmad%{mad_major}
++Libibmad provides low layer IB functions for use by the IB diagnostic
++and management programs. These include MAD, SA, SMP, and other basic IB
++functions. This package contains the runtime library.
 +
- %package -n libibverbs
- Summary: A library and drivers for direct userspace use of RDMA (InfiniBand/iWARP/RoCE) hardware
- Requires(post): /sbin/ldconfig
-@@ -259,7 +285,8 @@ easy, object-oriented access to IB verbs.
+ %package -n iwpmd
+ Summary:        Userspace iWarp Port Mapper daemon
+ Group:          Development/Libraries/C and C++
+@@ -372,7 +403,7 @@ easy, object-oriented access to IB verbs.
           -DCMAKE_INSTALL_RUNDIR:PATH=%{_rundir} \
           -DCMAKE_INSTALL_DOCDIR:PATH=%{_docdir}/%{name}-%{version} \
           -DCMAKE_INSTALL_UDEV_RULESDIR:PATH=%{_udevrulesdir} \
 -         -DWITH_IBDIAGS:BOOL=False \
 +         -DCMAKE_INSTALL_PERLDIR:PATH=%{perl_vendorlib} \
-+         -DWITH_IBDIAGS_COMPAT:BOOL=True \
  %if %{with_static}
           -DENABLE_STATIC=1 \
  %endif
-@@ -307,6 +334,10 @@ install -D -m0644 ibacm_opts.cfg %{buildroot}%{_sysconfdir}/rdma/
- rm -rf %{buildroot}/%{_initrddir}/
- rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
+@@ -444,6 +475,12 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
+ %post -n %rdmacm_lname -p /sbin/ldconfig
+ %postun -n %rdmacm_lname -p /sbin/ldconfig
  
-+# infiniband-diags
-+%post -n infiniband-diags -p /sbin/ldconfig
-+%postun -n infiniband-diags -p /sbin/ldconfig
++%post -n libibnetdisc%{ibnetdisc_major} -p /sbin/ldconfig
++%postun -n libibnetdisc%{ibnetdisc_major} -p /sbin/ldconfig
 +
- # libibverbs
- %post -n libibverbs -p /sbin/ldconfig
- %postun -n libibverbs -p /sbin/ldconfig
-@@ -407,6 +438,116 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
- %{_mandir}/man3/mlx4dv*
- %{_mandir}/man7/mlx5dv*
- %{_mandir}/man7/mlx4dv*
++%post -n libibmad%{mad_major} -p /sbin/ldconfig
++%postun -n libibmad%{mad_major} -p /sbin/ldconfig
++
+ %post
+ # we ship udev rules, so trigger an update.
+ /sbin/udevadm trigger --subsystem-match=infiniband --action=change || true
+@@ -567,6 +604,7 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
+ %endif
+ %{_libdir}/lib*.so
+ %{_libdir}/pkgconfig/*.pc
 +%{_mandir}/man3/ibnd_*
+ %{_mandir}/man3/ibv_*
+ %{_mandir}/man3/rdma*
+ %{_mandir}/man3/umad*
+@@ -592,6 +630,14 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
+ %{_mandir}/man7/rxe*
+ %{_mandir}/man8/rxe*
+ 
++%files -n libibnetdisc%{ibnetdisc_major}
++%defattr(-, root, root)
++%{_libdir}/libibnetdisc.so.*
 +
-+%files -n infiniband-diags-compat
-+%{_sbindir}/ibcheckerrs
-+%{_mandir}/man8/ibcheckerrs*
-+%{_sbindir}/ibchecknet
-+%{_mandir}/man8/ibchecknet*
-+%{_sbindir}/ibchecknode
-+%{_mandir}/man8/ibchecknode*
-+%{_sbindir}/ibcheckport
-+%{_mandir}/man8/ibcheckport.*
-+%{_sbindir}/ibcheckportwidth
-+%{_mandir}/man8/ibcheckportwidth*
-+%{_sbindir}/ibcheckportstate
-+%{_mandir}/man8/ibcheckportstate*
-+%{_sbindir}/ibcheckwidth
-+%{_mandir}/man8/ibcheckwidth*
-+%{_sbindir}/ibcheckstate
-+%{_mandir}/man8/ibcheckstate*
-+%{_sbindir}/ibcheckerrors
-+%{_mandir}/man8/ibcheckerrors*
-+%{_sbindir}/ibdatacounts
-+%{_mandir}/man8/ibdatacounts*
-+%{_sbindir}/ibdatacounters
-+%{_mandir}/man8/ibdatacounters*
-+%{_sbindir}/ibdiscover.pl
-+%{_mandir}/man8/ibdiscover*
-+%{_sbindir}/ibswportwatch.pl
-+%{_mandir}/man8/ibswportwatch*
-+%{_sbindir}/ibqueryerrors.pl
-+%{_sbindir}/iblinkinfo.pl
-+%{_sbindir}/ibprintca.pl
-+%{_mandir}/man8/ibprintca*
-+%{_sbindir}/ibprintswitch.pl
-+%{_mandir}/man8/ibprintswitch*
-+%{_sbindir}/ibprintrt.pl
-+%{_mandir}/man8/ibprintrt*
-+%{_sbindir}/set_nodedesc.sh
++%files -n libibmad%{mad_major}
++%defattr(-, root, root)
++%{_libdir}/libibmad.so.*
 +
+ %files -n %verbs_lname
+ %defattr(-,root,root)
+ %{_libdir}/libibverbs*.so.*
+@@ -627,6 +673,74 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
+ %{_sbindir}/rcibacm
+ %doc %{_docdir}/%{name}-%{version}/ibacm.md
+ 
 +%files -n infiniband-diags
++%defattr(-, root, root)
++%config %{_sysconfdir}/infiniband-diags/error_thresholds
++%dir %{_sysconfdir}/infiniband-diags
++%config(noreplace) %{_sysconfdir}/infiniband-diags/*
 +%{_sbindir}/ibaddr
 +%{_mandir}/man8/ibaddr*
 +%{_sbindir}/ibnetdiscover
@@ -240,21 +287,14 @@ index 29bf26531c97ab..72a05e58eda279 100644
 +%{_mandir}/man8/dump_lfts*
 +%{_sbindir}/dump_mfts.sh
 +%{_mandir}/man8/dump_mfts*
-+%{_sbindir}/ibclearerrors
-+%{_mandir}/man8/ibclearerrors*
-+%{_sbindir}/ibclearcounters
-+%{_mandir}/man8/ibclearcounters*
 +%{_sbindir}/ibstatus
 +%{_mandir}/man8/ibstatus*
 +%{_mandir}/man8/infiniband-diags*
-+%{_libdir}/libibmad*.so.*
-+%{_libdir}/libibnetdisc*.so.*
 +%{perl_vendorlib}/IBswcountlimits.pm
-+%config(noreplace) %{_sysconfdir}/infiniband-diags/error_thresholds
-+%config(noreplace) %{_sysconfdir}/infiniband-diags/ibdiag.conf
- 
- %files -n libibverbs
- %dir %{_sysconfdir}/libibverbs.d
++
+ %files -n iwpmd
+ %defattr(-,root,root)
+ %dir %{_sysconfdir}/rdma
 -- 
 2.21.0
 
