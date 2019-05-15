@@ -2,160 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 647651F028
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 13:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A8D1F0F9
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 13:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728286AbfEOLlY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 May 2019 07:41:24 -0400
-Received: from mail-eopbgr140050.outbound.protection.outlook.com ([40.107.14.50]:17382
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726553AbfEOLlY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 May 2019 07:41:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oGL/zesZeF4gWt/DGUEKggTHIWiEDye2L2h2aPS1/mo=;
- b=W6lBG2yy8+ISFkde04tuz2aoNmol1TqGd4FdEeDqG27iDg42PbHUrek05Jj96d4RhiroPrwPV7UFb1Q7RlGMPkvbxE5sdQkEugJa6A7h/OaclyfGaNkWt/kfAOaSZUrhZNpidTWpWAODVgm17rZUU0wzRzGp0Azb2s0aeyRNcvk=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB5550.eurprd05.prod.outlook.com (20.177.201.210) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1878.22; Wed, 15 May 2019 11:41:21 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1900.010; Wed, 15 May 2019
- 11:41:21 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Nirranjan Kirubaharan <nirranjan@chelsio.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "bharat@chelsio.com" <bharat@chelsio.com>
-Subject: Re: [PATCH for-next] iw_cxgb4: Fix qpid leak
-Thread-Topic: [PATCH for-next] iw_cxgb4: Fix qpid leak
-Thread-Index: AQHVCw2NFmxUD1pu6kCWNpUYO1/sFKZsB9MA
-Date:   Wed, 15 May 2019 11:41:21 +0000
-Message-ID: <20190515111138.GB30771@mellanox.com>
-References: <ea84bb959151af439b4a40a029ccf0d7c2323b0f.1557917496.git.nirranjan@chelsio.com>
-In-Reply-To: <ea84bb959151af439b4a40a029ccf0d7c2323b0f.1557917496.git.nirranjan@chelsio.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: YQXPR0101CA0068.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:14::45) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.49.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 02e11bb5-c7ff-48c0-2354-08d6d92a4027
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5550;
-x-ms-traffictypediagnostic: VI1PR05MB5550:
-x-microsoft-antispam-prvs: <VI1PR05MB55507CF10ADCBFC5970787A8CF090@VI1PR05MB5550.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:901;
-x-forefront-prvs: 0038DE95A2
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(366004)(136003)(346002)(376002)(396003)(189003)(199004)(53936002)(6486002)(7736002)(33656002)(14454004)(66446008)(66556008)(446003)(66066001)(2616005)(508600001)(2906002)(486006)(476003)(6512007)(11346002)(66946007)(64756008)(73956011)(66476007)(25786009)(4326008)(305945005)(81156014)(81166006)(6246003)(8936002)(26005)(6116002)(5660300002)(316002)(102836004)(99286004)(386003)(76176011)(6916009)(52116002)(54906003)(36756003)(68736007)(1076003)(8676002)(186003)(229853002)(6436002)(71190400001)(71200400001)(86362001)(3846002)(256004)(14444005)(6506007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5550;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: buggyhefkCEo6ZpeRgJUyO/KGWLCAQ2x+7bKZnWGSCbLtyuUpvvznCnpriI4k4vsb6jz3R04/w9LsDBjJUHT1nNfxqeMr/Na2Mns3xxDNoAl8MmMrBi4elnP0kX+8CFbE6Y6S/YVg5MqanjDEaN+8lkIDEy3ByEjKO1k0oeWnQltlOVqfw64307lnfjZxqRaYURz3oQEqTsZnzOT29RibIx45nSMWIzipSlXLvxD1qUgrm2GPRi4S8os+PxW7EfEDrzBfyBgVSWNk15DO895+GSq4awDmPbHUsWYgKHqxSMXpswE9MuOQLnq2X4GLmhLSWY0KPKzuxgouu2Bb7IQu3a5qi4BmstmwWtg1KS/zGKWPxHWmjBETxdUQAD8fy8/CZNIvs6j6YawQW8AIII5n5njxHpPTlYPcDyu5jW68nY=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <298289C3F2AF1B40BC88A7B4C5B035D3@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1731448AbfEOLtc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 May 2019 07:49:32 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:34515 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730068AbfEOLt3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 May 2019 07:49:29 -0400
+Received: by mail-qt1-f194.google.com with SMTP id h1so2879045qtp.1
+        for <linux-rdma@vger.kernel.org>; Wed, 15 May 2019 04:49:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IBVsz3o+2n0t1L/2nETYgDIAX1JE+bW+wb3PVLyZLoQ=;
+        b=jrcTPpbHlf0E4shErVqIxRmEpaxgSakoF1BSLXvCeogXuWGWquGF9cADlyP62kewDA
+         Z37ueTThjgcT9HL6fRlGntUi1wAvaoe2kmC4VE1eF4eQCFsLErsLw1CsGf0zrz79OTSz
+         G3gAHTl5YXFpSwOqLEkEyab/e1NuUgHsoRm2urtCw/BFqD9iFL2JDv949m2RaButudlb
+         MQ1IWz4mal9mIEHgxj6QRjYJ9ws0ycgu1hdVVuRPPbvBp802NsvMvm8mu9A8Q7rHPrZD
+         jnl+byi9m60ajmwx3qeyl87eNb+4PsMZslCe+EOAvl/TvxbRODo13ybu0ZDVrNlAVLv7
+         py9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IBVsz3o+2n0t1L/2nETYgDIAX1JE+bW+wb3PVLyZLoQ=;
+        b=ueJ4eNLV2Bywwn8jKNXJCTAu5JMFtltKcIhPTFpvRERp0b5kKd0xaVoAhywUZhFq3M
+         S1fqAoNFfGH+VMr9OW0COwQnOSW2E4GUex8TQW6C4OHFeVJEjzWJs3ek28Z9Ivpqnnzq
+         3AVW9G4wwHGtUYKemiMKMxdHa0KDZzGQH5Bg3sBMwsvRQSucZpqHwFS8lX2xCRVDRe8o
+         KAOEs2dE1R/WT2vL+GfWr93EkeYoIAXHxoFDpxzc/zIuc3/V6Ur0gNYQyjxotLfeerr0
+         rRzAIlHEAfvZaz+FXbbrixxa40pH+CEkziNEIM1AdVFZnLnfVv2FqIzjJ7Jx/YMHl9JH
+         mf0A==
+X-Gm-Message-State: APjAAAXymocL2H0DcubfDkbMzQbBKkbjrnkimRMU3R/iDYAAguFN8jUQ
+        pNsyOdrlva8oKu7Nt0IiRFB19Q==
+X-Google-Smtp-Source: APXvYqwqsRAdisj/324Xnhw7EqX0qHQgn4W6fr2YsK3IF0ZtJWXCTFEq4NmuRFyGy7zeXmoG901n1w==
+X-Received: by 2002:a0c:9542:: with SMTP id m2mr17301558qvm.108.1557920968746;
+        Wed, 15 May 2019 04:49:28 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id e131sm783104qkb.80.2019.05.15.04.49.28
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 15 May 2019 04:49:28 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hQsPX-0008Sm-SI; Wed, 15 May 2019 08:49:27 -0300
+Date:   Wed, 15 May 2019 08:49:27 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Liuyixian (Eason)" <liuyixian@huawei.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, oulijun <oulijun@huawei.com>,
+        dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Add support function clear when
+ removing module
+Message-ID: <20190515114927.GB30791@ziepe.ca>
+References: <20190422122209.GD27901@mtr-leonro.mtl.com>
+ <add43d02-b3d5-35d9-a74d-8254c1fb472c@huawei.com>
+ <20190423152339.GE27901@mtr-leonro.mtl.com>
+ <90a91e1f-91fc-bc4e-067c-7bc788c62ab6@huawei.com>
+ <20190426143656.GA2278@ziepe.ca>
+ <20190426210520.GA6705@mtr-leonro.mtl.com>
+ <99195660-be8d-555f-01fc-efd9e680fdf3@huawei.com>
+ <20190502130304.GB18518@ziepe.ca>
+ <a23d02b4-5a1f-8b25-2b5c-f14e16acdcc2@huawei.com>
+ <bd517597-4feb-c748-b43b-e0f45ced959d@huawei.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02e11bb5-c7ff-48c0-2354-08d6d92a4027
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2019 11:41:21.0113
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5550
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd517597-4feb-c748-b43b-e0f45ced959d@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 15, 2019 at 04:01:13AM -0700, Nirranjan Kirubaharan wrote:
-> In iw_cxgb4, sometimes scheduled freeing of QPs complete after
-> completion of dealloc_ucontext(). So in use qpids stored in ucontext
-> gets lost, causing qpid leak. Added changes in dealloc_ucontext(),
-> to wait until completion of freeing of all QPs.
->=20
-> Signed-off-by: Nirranjan Kirubaharan <nirranjan@chelsio.com>
-> Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
->  drivers/infiniband/hw/cxgb4/device.c   | 3 +++
->  drivers/infiniband/hw/cxgb4/iw_cxgb4.h | 2 ++
->  drivers/infiniband/hw/cxgb4/provider.c | 6 +++++-
->  drivers/infiniband/hw/cxgb4/resource.c | 9 +++++++++
->  4 files changed, 19 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/infiniband/hw/cxgb4/device.c b/drivers/infiniband/hw=
-/cxgb4/device.c
-> index 4c0d925c5ff5..fad4ca247bc7 100644
-> +++ b/drivers/infiniband/hw/cxgb4/device.c
-> @@ -775,6 +775,9 @@ void c4iw_init_dev_ucontext(struct c4iw_rdev *rdev,
->  	INIT_LIST_HEAD(&uctx->qpids);
->  	INIT_LIST_HEAD(&uctx->cqids);
->  	mutex_init(&uctx->lock);
-> +	uctx->qid_count =3D 0;
-> +	init_completion(&uctx->qid_rel_comp);
-> +	complete(&uctx->qid_rel_comp);
->  }
-> =20
->  /* Caller takes care of locking if needed */
-> diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/=
-hw/cxgb4/iw_cxgb4.h
-> index 916ef982172e..768532e29538 100644
-> +++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-> @@ -110,6 +110,8 @@ struct c4iw_dev_ucontext {
->  	struct list_head cqids;
->  	struct mutex lock;
->  	struct kref kref;
-> +	struct completion qid_rel_comp;
-> +	u32 qid_count;
->  };
-> =20
->  enum c4iw_rdev_flags {
-> diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/=
-hw/cxgb4/provider.c
-> index 74b795642fca..bfd541c55c31 100644
-> +++ b/drivers/infiniband/hw/cxgb4/provider.c
-> @@ -64,12 +64,16 @@ static void c4iw_dealloc_ucontext(struct ib_ucontext =
-*context)
->  	struct c4iw_dev *rhp;
->  	struct c4iw_mm_entry *mm, *tmp;
-> =20
-> -	pr_debug("context %p\n", context);
-> +	pr_debug("context %p\n", &ucontext->uctx);
->  	rhp =3D to_c4iw_dev(ucontext->ibucontext.device);
-> =20
->  	list_for_each_entry_safe(mm, tmp, &ucontext->mmaps, entry)
->  		kfree(mm);
-> +
-> +	wait_for_completion(&ucontext->uctx.qid_rel_comp);
-> +
->  	c4iw_release_dev_ucontext(&rhp->rdev, &ucontext->uctx);
-> +	pr_debug("context %p done\n", &ucontext->uctx);
->  }
-> =20
->  static int c4iw_alloc_ucontext(struct ib_ucontext *ucontext,
-> diff --git a/drivers/infiniband/hw/cxgb4/resource.c b/drivers/infiniband/=
-hw/cxgb4/resource.c
-> index 57ed26b3cc21..e9cc06f8a9ad 100644
-> +++ b/drivers/infiniband/hw/cxgb4/resource.c
-> @@ -224,6 +224,10 @@ u32 c4iw_get_qpid(struct c4iw_rdev *rdev, struct c4i=
-w_dev_ucontext *uctx)
->  			list_add_tail(&entry->entry, &uctx->cqids);
->  		}
->  	}
-> +	if (uctx->qid_count =3D=3D 0)
-> +		reinit_completion(&uctx->qid_rel_comp);
-> +	uctx->qid_count++;
+On Wed, May 15, 2019 at 05:38:02PM +0800, Liuyixian (Eason) wrote:
+> 
+> 
+> On 2019/5/9 18:50, Liuyixian (Eason) wrote:
+> > 
+> > 
+> > On 2019/5/2 21:03, Jason Gunthorpe wrote:
+> >> On Tue, Apr 30, 2019 at 04:27:41PM +0800, Liuyixian (Eason) wrote:
+> >>>
+> >>>
+> >>> On 2019/4/27 5:05, Leon Romanovsky wrote:
+> >>>> On Fri, Apr 26, 2019 at 11:36:56AM -0300, Jason Gunthorpe wrote:
+> >>>>> On Fri, Apr 26, 2019 at 06:12:11PM +0800, Liuyixian (Eason) wrote:
+> >>>>>
+> >>>>>>     However, I have talked with our chip team about function clear
+> >>>>>>     functionality. We think it is necessary to inform the chip to
+> >>>>>>     perform the outstanding task and some cleanup work and restore
+> >>>>>>     hardware resources in time when rmmod ko. Otherwise, it is
+> >>>>>>     dangerous to reuse the hardware as it can not guarantee those
+> >>>>>>     work can be done well without the notification from our driver.
+> >>>>>
+> >>>>> If it is dangerous to reuse the hardware then you have to do this
+> >>>>> cleanup on device startup, not on device removal.
+> >>>>
+> >>>> Right, I can think about gazillion ways to brick such HW.
+> >>>> The simplest way will be to call SysRq during RDMA traffic
+> >>>> and no cleanup function will be called in such case.
+> >>>>
+> >>>> Thanks
+> >>>
+> >>> Hi Jason and Leon,
+> >>>
+> >>> 	As hip08 is a fake pcie device, we could not disassociate and stop the hardware access
+> >>> 	through the chain break mechanism as a real pcie device. Alternatively, function clear
+> >>> 	is used as a notification to the hardware to stop accessing and ensure to not read or
+> >>> 	write DDR later. That is, the role of function clear to hip08 is similar as the chain
+> >>> 	break to pcie device.
+> >>
+> >> What? This hardware is broken and doesn't respond to the bus master
+> >> enable bit in the PCI config space??
+> >>
+> > Hi Jason,
+> > 
+> > Sorry to reply to you late.
+> > 
+> > Yes, the bus master enable bit should be set by a pcie device when startup and removal.
+> > The hns (nic) module use it as well. However, we couldn't use/operate this bit in hip08
+> > as it shares the PF(physical function) with nic. Therefore, we need function clear to
+> > notify the hardware to do the cleanup thing and cache write back.
+> > 
+> > Thanks.
+> > 
+> 
+> Hi Jason and Leon,
+> 
+> Do you have further more suggestions?
 
-This looks racy/sketchy. You should use the normal pattern and set
-qid_count to 1 then -- & complete it before wait_for_completion
+The approach seems completely wrong to me - no other driver is doing
+something so sketchy. 
+
+You need to explain why hns is so special
 
 Jason
