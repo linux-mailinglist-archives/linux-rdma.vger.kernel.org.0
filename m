@@ -2,75 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 886A91F95F
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 19:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC22D1F9C4
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 20:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbfEORck convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 15 May 2019 13:32:40 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:36181 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbfEORck (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 May 2019 13:32:40 -0400
-Received: by mail-ed1-f67.google.com with SMTP id a8so971050edx.3
-        for <linux-rdma@vger.kernel.org>; Wed, 15 May 2019 10:32:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GT8wmmQdIHTnGUAcmNvTL9fntJCMAgk1z0hY2szmhm0=;
-        b=gOBg1UoPCxjEJOE6PCzHxQR3QjNxFBHK93/Pg+ZYfqZeDSNlcRmQ5ZLFFEXrfyIffl
-         ppX3wgpDcn9kEU/jRWWLcgu3TnK5vlA0FD17J+MUvCYEqxTgraZWwRN8C3BdL9RuEiUc
-         35U1Zg5ZOVJKIpPOUNd4BaI8LRsAl5K40+OcPXFptbDQQjEo26gzRDTMaUp77SjnE1+y
-         oDbletS6uop8zLWqthblmOtag+d+zwiyBRLbvvB9acxTig5Js1miamj+qgfsB7hTIkPt
-         BePUiTINPJrpLxpebm7/pZA+901LdjdJBH6Km+Sh+Qw7i9uAVKBm8tidI75A5MCkobtC
-         y1Mg==
-X-Gm-Message-State: APjAAAVbktROCK+hjHLNUpK0Li2pHlg21wnHyIvWA+74WyB7Ub7jOCxT
-        U/wsfpkyOJjkT2b8lcFdUjX3MXsc
-X-Google-Smtp-Source: APXvYqy/FNFAoiU+rH9zrl59QXGLeibCxy1u0kxLDLMqqQjtBAGRKxbIJpMQvRns5XV3K+xsknefTQ==
-X-Received: by 2002:a50:ee01:: with SMTP id g1mr44516047eds.263.1557941558145;
-        Wed, 15 May 2019 10:32:38 -0700 (PDT)
-Received: from [192.168.1.6] (178-117-55-239.access.telenet.be. [178.117.55.239])
-        by smtp.gmail.com with ESMTPSA id j55sm1057595ede.27.2019.05.15.10.32.36
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 May 2019 10:32:36 -0700 (PDT)
-Subject: Re: [RFC PATCH rdma-next v2] RDMA/srp: Rename SRP sysfs name after IB
- device rename trigger
-To:     Leon Romanovsky <leon@kernel.org>,
+        id S1727146AbfEOSQF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 May 2019 14:16:05 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:52548 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727068AbfEOSQF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 May 2019 14:16:05 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4FI47PS172168;
+        Wed, 15 May 2019 18:15:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=v50nlXpVfnXeYNEuOAWmVcGj2GBr2Lsy6iwXW/Ee2xk=;
+ b=aW6+HG7ztSpn1tkLHF4Zv+JTF+cUwq2MXiwj33eLClqkEE9YtFUsjeBj6xhoA8D1zt0i
+ Gaq/dYQKWwXGRbFHpV+QgPSuugL+KKI+ICnInOu2w94vcKVzycro04GwJxbQTpvIh61U
+ BFgzeo0q+6nUqKu49hYnaJeFnImeoJiG1jNb6yaVWe0bgye9hkeyP5msjJTMOAKsKQAB
+ XhGS/bXIkWhLZW8fvBwzOxvE2BvEqNmTb27ULEyWr9WfPu9PA+yhnbkfs7k707p1/vVH
+ +l02xG0uHOrURHoX+ktYqnrRR84iEU8+KZKoHvwErYdxyQRC9Saj6gPtqnFcXUMilYRJ Lw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 2sdkwdxvcf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 May 2019 18:15:46 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4FIED17038245;
+        Wed, 15 May 2019 18:15:45 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2sgkx3mnn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 May 2019 18:15:45 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4FIFhL8024505;
+        Wed, 15 May 2019 18:15:44 GMT
+Received: from lap1 (/77.138.183.59)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 May 2019 11:15:43 -0700
+Date:   Wed, 15 May 2019 21:15:38 +0300
+From:   Yuval Shaia <yuval.shaia@oracle.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        linux-netdev <netdev@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20190515170638.11913-1-leon@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <97b980a9-6a2a-234e-c12c-b7ee5fd4262e@acm.org>
-Date:   Wed, 15 May 2019 19:32:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Marcel Apfelbaum <marcel.apfelbaum@gmail.com>
+Subject: Re: CFP: 4th RDMA Mini-Summit at LPC 2019
+Message-ID: <20190515181537.GA5720@lap1>
+References: <20190514122321.GH6425@mtr-leonro.mtl.com>
+ <20190515153050.GB2356@lap1>
+ <20190515163626.GO5225@mtr-leonro.mtl.com>
 MIME-Version: 1.0
-In-Reply-To: <20190515170638.11913-1-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190515163626.GO5225@mtr-leonro.mtl.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9257 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905150110
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9257 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905150110
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/15/19 7:06 PM, Leon Romanovsky wrote:
-> +	list_for_each_entry_safe(host, tmp_host, &srp_dev->dev_list, list) {
-> +		char name[IB_DEVICE_NAME_MAX * 2] = {};
-                          ^^^^^^^^^^^^^^^^^^^^^^
-I think this should be IB_DEVICE_NAME_MAX + 8 instead of ... * 2. Please
-also consider to leave out the initialization of the char array since
-snprintf() overwrites the array whether or not it has been initialized.
+On Wed, May 15, 2019 at 07:36:26PM +0300, Leon Romanovsky wrote:
+> On Wed, May 15, 2019 at 06:30:51PM +0300, Yuval Shaia wrote:
+> > On Tue, May 14, 2019 at 03:23:21PM +0300, Leon Romanovsky wrote:
+> > > This is a call for proposals for the 4th RDMA mini-summit at the Linux
+> > > Plumbers Conference in Lisbon, Portugal, which will be happening on
+> > > September 9-11h, 2019.
+> > >
+> > > We are looking for topics with focus on active audience discussions
+> > > and problem solving. The preferable topic is up to 30 minutes with
+> > > 3-5 slides maximum.
+> >
+> > Abstract: Expand the virtio portfolio with RDMA
+> >
+> > Description:
+> > Data center backends use more and more RDMA or RoCE devices and more and
+> > more software runs in virtualized environment.
+> > There is a need for a standard to enable RDMA/RoCE on Virtual Machines.
+> > Virtio is the optimal solution since is the de-facto para-virtualizaton
+> > technology and also because the Virtio specification allows Hardware
+> > Vendors to support Virtio protocol natively in order to achieve bare metal
+> > performance.
+> > This talk addresses challenges in defining the RDMA/RoCE Virtio
+> > Specification and a look forward on possible implementation techniques.
+> 
+> Yuval,
+> 
+> Who is going to implement it?
+> 
+> Thanks
 
-> +		snprintf(name, IB_DEVICE_NAME_MAX * 2, "srp-%s-%d",
-                               ^^^^^^^^^^^^^^^^^^^^^^
-Please change this into sizeof(name) such that the size expression only
-occurs once.
+It is going to be an open source effort by an open source contributors.
+Probably as with qemu-pvrdma it would be me and Marcel and i have an
+unofficial approval from extra person that gave promise to join (can't say
+his name but since he is also on this list then he welcome to raise a
+hand).
+I also recall once someone from Mellanox wanted to join but not sure about
+his availability now.
 
-Thanks,
-
-Bart.
-
+> 
+> >
+> > >
+> > > This year, the LPC will include netdev track too and it is
+> > > collocated with Kernel Summit, such timing makes an excellent
+> > > opportunity to drive cross-tree solutions.
+> > >
+> > > BTW, RDMA is not accepted yet as a track in LPC, but let's think
+> > > positive and start collect topics.
+> > >
+> > > Thanks
