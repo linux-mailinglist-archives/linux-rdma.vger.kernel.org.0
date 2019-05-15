@@ -2,173 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8B61F67C
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 16:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2CC1F712
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 17:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbfEOOY4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 15 May 2019 10:24:56 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:39929 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbfEOOY4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 May 2019 10:24:56 -0400
-Received: by mail-ed1-f68.google.com with SMTP id e24so86622edq.6
-        for <linux-rdma@vger.kernel.org>; Wed, 15 May 2019 07:24:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Z4KkXzMGMdsXHUxREK7EgxFfhaFvOJAo05HeWUfBBrA=;
-        b=pgQ3YyKC6gTOviJyNuVazSgBJLBXbuVKBJhDdTZ/saiYEYLmd/MzzrjhnzFnxFiWlo
-         lir1PHCgvG5U6LtFenv8ABKyO8CtAoG3GkP97pv6Ou019K0mSAwnBuBRpXVrQ3mpJZ9e
-         W22h5CVnR47bNmP/CT4zaRXRGa6gbA5vn8ke2gJO5wyy/jDBP361ci00cSCrAN39G4EX
-         OGI4EqaQiDT2+WKuHaiQZIquNM/Ru96lArM86vTmXjcUteFFrQLWy8KFnnnxhtJcJxGx
-         SpElQ/fUrQYk3lPjS+eeDpU2dAAuXeZg8EnBV0Y8YToJZ59lARmT1R4RyQr0bDsdk35n
-         Mnvw==
-X-Gm-Message-State: APjAAAW7Gqym2GUnbGvuO5LIEYskZPYW2TilhVMPVbzbdhBdyKQiwoiQ
-        eh7qJXoo8U738jGrxxrj98u0/xuz
-X-Google-Smtp-Source: APXvYqzM7iKRRsJ6UU6oSv1UDJ8YcDo3CaMKG4mOevGq5Ah5Eqt71h0lcuX+gWVEm2r4s5zE93yMdA==
-X-Received: by 2002:a17:906:27c5:: with SMTP id k5mr33876499ejc.141.1557930293940;
-        Wed, 15 May 2019 07:24:53 -0700 (PDT)
-Received: from [192.168.1.6] (178-117-55-239.access.telenet.be. [178.117.55.239])
-        by smtp.gmail.com with ESMTPSA id c8sm493622ejs.87.2019.05.15.07.24.51
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 May 2019 07:24:52 -0700 (PDT)
+        id S1726407AbfEOPDM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 May 2019 11:03:12 -0400
+Received: from mail-eopbgr60053.outbound.protection.outlook.com ([40.107.6.53]:48947
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725939AbfEOPDL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 15 May 2019 11:03:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X+dfteZQe88DSkwHwMNs09j40yG+kVY9Zd2GmIJGiuA=;
+ b=XR98DmQkZuLG0+VSe2yCMZ/rp1vTXG4pW9z/T4CVBDEV/YhRORGb6kuQB+ZMUVrXjs5c54M911Mw/xgiknMyGKGmqNBMk/H6YoKOX0dopAob+XGJWMBC9T3F7zklG3Xh/E352EJAqH+q+tsuO26dizXvsRmqjffYU++HcrO/YQc=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB5261.eurprd05.prod.outlook.com (20.178.8.151) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1900.16; Wed, 15 May 2019 15:03:07 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1900.010; Wed, 15 May 2019
+ 15:03:07 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
 Subject: Re: [RFC PATCH rdma-next v1] RDMA/srp: Rename SRP sysfs name after IB
  device rename trigger
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
+Thread-Topic: [RFC PATCH rdma-next v1] RDMA/srp: Rename SRP sysfs name after
+ IB device rename trigger
+Thread-Index: AQHVCyD7tJKWIpzEbUWUvMvlthApuqZsSFKA
+Date:   Wed, 15 May 2019 15:03:07 +0000
+Message-ID: <20190515150301.GG30771@mellanox.com>
 References: <20190515132026.18768-1-leon@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <446a5af5-953a-0892-0456-d5ac74225086@acm.org>
-Date:   Wed, 15 May 2019 16:24:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
 In-Reply-To: <20190515132026.18768-1-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YTOPR0101CA0001.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:15::14) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.49.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 788493a5-bdc7-4710-3f2d-08d6d9467045
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5261;
+x-ms-traffictypediagnostic: VI1PR05MB5261:
+x-microsoft-antispam-prvs: <VI1PR05MB52610C5E52D9F71BBFBAF84BCF090@VI1PR05MB5261.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 0038DE95A2
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(396003)(39860400002)(136003)(366004)(346002)(199004)(189003)(76176011)(446003)(3846002)(6116002)(6512007)(8676002)(5660300002)(2906002)(486006)(25786009)(8936002)(71190400001)(6506007)(386003)(1076003)(71200400001)(36756003)(99286004)(256004)(86362001)(476003)(52116002)(6916009)(2616005)(54906003)(11346002)(66066001)(4326008)(186003)(508600001)(6246003)(68736007)(102836004)(73956011)(26005)(64756008)(66556008)(66476007)(33656002)(66946007)(305945005)(66446008)(7736002)(53936002)(14454004)(81166006)(81156014)(316002)(6436002)(6486002)(229853002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5261;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: TlzJQkzuvy/f2RWKu/Ak1YDseLZuHDDHcijyTcvkysxDi9FrejXWT7I58bnMeoSlrnAxHHBLQq3LA/jkvwOVYJAlUo9NFSnDTWWS05cNUQEdiNRaqyQ2gi5fb5zOVJ1Gd9YrAGUW3FGdu40PRxR3SPln8FFbK16T/ED0t99kGe1ffaRLkWtjm2iQXYCLIgspnpFLrfwZDof0WivTyN5vMfcoAIs8UtTyiF5am6iajQE6ZZ/RX5jKJJ8Lg9Kiz5P0SMUrVc6joaQx1Noz9ttmNJVPZnk951OcJq8oM6bNXPKLOIVcxWVCoGmBgq8QjpAb04pWFYTJuI6BkhKPztUV3zD0Ec1EdTZyA6Mu99ZBanyyx+U/dNnWxuuF2uN0X5tJo6iN9n9UFbDm9A/ckMX1OnldUL8c5zGfF+f1T7OlidQ=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B265702CE3ED1D4DB999F19E615243AB@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 788493a5-bdc7-4710-3f2d-08d6d9467045
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2019 15:03:07.6996
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5261
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/15/19 3:20 PM, Leon Romanovsky wrote:
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+On Wed, May 15, 2019 at 04:20:26PM +0300, Leon Romanovsky wrote:
+>=20
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/d=
+evice.c
 > index a67aaf0e1f76..64f777e757f6 100644
-> --- a/drivers/infiniband/core/device.c
 > +++ b/drivers/infiniband/core/device.c
-> @@ -410,6 +410,9 @@ static int rename_compat_devs(struct ib_device *device)
-> 
+> @@ -410,6 +410,9 @@ static int rename_compat_devs(struct ib_device *devic=
+e)
+>=20
 >  int ib_device_rename(struct ib_device *ibdev, const char *name)
 >  {
 > +	struct ib_client *client;
 > +	unsigned long index;
 > +	void *client_data;
 >  	int ret;
-> 
+>=20
 >  	down_write(&devices_rwsem);
-> @@ -428,6 +431,19 @@ int ib_device_rename(struct ib_device *ibdev, const char *name)
+> @@ -428,6 +431,19 @@ int ib_device_rename(struct ib_device *ibdev, const =
+char *name)
 >  		goto out;
 >  	strlcpy(ibdev->name, name, IB_DEVICE_NAME_MAX);
->  	ret = rename_compat_devs(ibdev);
+>  	ret =3D rename_compat_devs(ibdev);
 > +
 > +	downgrade_write(&devices_rwsem);
 > +	down_read(&clients_rwsem);
 > +	xa_for_each_marked (&clients, index, client, CLIENT_REGISTERED) {
 > +		if (client->rename) {
-> +			client_data =
-> +				xa_load(&ibdev->client_data, client->client_id);
-> +			client->rename(ibdev, client_data);
-> +		}
-> +	}
-> +	up_read(&clients_rwsem);
-> +	up_read(&devices_rwsem);
-> +	return 0;
->  out:
->  	up_write(&devices_rwsem);
->  	return ret;
-> diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-> index be9ddcad8f28..2edd014e62db 100644
-> --- a/drivers/infiniband/ulp/srp/ib_srp.c
-> +++ b/drivers/infiniband/ulp/srp/ib_srp.c
-> @@ -148,6 +148,7 @@ MODULE_PARM_DESC(ch_count,
-> 
->  static void srp_add_one(struct ib_device *device);
->  static void srp_remove_one(struct ib_device *device, void *client_data);
-> +static void srp_rename_dev(struct ib_device *device, void *client_data);
->  static void srp_recv_done(struct ib_cq *cq, struct ib_wc *wc);
->  static void srp_handle_qp_err(struct ib_cq *cq, struct ib_wc *wc,
->  		const char *opname);
-> @@ -162,7 +163,8 @@ static struct workqueue_struct *srp_remove_wq;
->  static struct ib_client srp_client = {
->  	.name   = "srp",
->  	.add    = srp_add_one,
-> -	.remove = srp_remove_one
-> +	.remove = srp_remove_one,
-> +	.rename = srp_rename_dev
->  };
-> 
->  static struct ib_sa_client srp_sa_client;
-> @@ -4112,6 +4114,20 @@ static struct srp_host *srp_add_port(struct srp_device *device, u8 port)
->  	return NULL;
->  }
-> 
-> +static void srp_rename_dev(struct ib_device *device, void *client_data)
-> +{
-> +	struct srp_device *srp_dev = client_data;
-> +	struct srp_host *host, *tmp_host;
-> +
-> +	list_for_each_entry_safe (host, tmp_host, &srp_dev->dev_list, list) {
-> +		char name[IB_DEVICE_NAME_MAX * 2] = {};
-> +
-> +		snprintf(name, IB_DEVICE_NAME_MAX * 2, "srp-%s-%d",
-> +			 dev_name(&device->dev), host->port);
-> +		device_rename(&host->dev, name);
-> +	}
-> +}
-> +
->  static void srp_add_one(struct ib_device *device)
->  {
->  	struct srp_device *srp_dev;
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index e9fffa55426b..59d0fffbf192 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -2727,6 +2727,7 @@ struct ib_client {
->  	const char *name;
->  	void (*add)   (struct ib_device *);
->  	void (*remove)(struct ib_device *, void *client_data);
-> +	void (*rename)(struct ib_device *, void *client_data);
-> 
->  	/* Returns the net_dev belonging to this ib_client and matching the
->  	 * given parameters.
 
-Hi Leon,
+This isn't the right iteration for clients.. It has to iterate the
+same way ib_get_net_dev_by_params() does it, otherwise there are races
+if the client is concurrently unregistering.
 
-Thanks for having shared this patch early. The approach of this patch
-looks good to me but please fix the checkpatch warnings triggered by
-this patch:
-
-WARNING: space prohibited between function name and open parenthesis '('
-#203: FILE: drivers/infiniband/core/device.c:437:
-+       xa_for_each_marked (&clients, index, client, CLIENT_REGISTERED) {
-
-WARNING: space prohibited between function name and open parenthesis '('
-#247: FILE: drivers/infiniband/ulp/srp/ib_srp.c:4122:
-+       list_for_each_entry_safe (host, tmp_host, &srp_dev->dev_list,
-list) {
-
-WARNING: function definition argument 'struct ib_device *' should also
-have an identifier name
-#267: FILE: include/rdma/ib_verbs.h:2730:
-+       void (*rename)(struct ib_device *, void *client_data);
-
-Thanks,
-
-Bart.
-
+Jason
