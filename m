@@ -2,107 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEB91F759
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 17:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE211F793
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 May 2019 17:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbfEOPTy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 May 2019 11:19:54 -0400
-Received: from mail-eopbgr40063.outbound.protection.outlook.com ([40.107.4.63]:29308
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726553AbfEOPTy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 May 2019 11:19:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VEx+i4eFGcb428hpHreLaBXdoe61rk+Q/PGJLzyoMdU=;
- b=St2eeQI8sWKpxBeCHy6B7biNkp8ZNi9MjxJvugXIEPhrqhpTv0UF79XRjFyEoTRaCPKcc8uG11SZZqvbZ6qqOYIwo58xyPkxs64A5Csy1bspa2NVC7iIE0j6jYBoAoG+Kro3sHPUil96slvRHmqocTJ+hdrKlFQP6JFYf71KLlI=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB3151.eurprd05.prod.outlook.com (10.170.237.144) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1900.16; Wed, 15 May 2019 15:19:50 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1900.010; Wed, 15 May 2019
- 15:19:50 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
+        id S1728453AbfEOPbN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 May 2019 11:31:13 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:33668 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727528AbfEOPbM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 May 2019 11:31:12 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4FFNsAX013479;
+        Wed, 15 May 2019 15:31:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=BdPtnDR11Vdn7XWeNGSG6wyyu26x7E5yMudl0+Igi6Y=;
+ b=uWWnZxvML88GDB2B0uUzOE8auo8d+Kcumm+yrje6UE4Io8lI4TzL64qQi9UaCu7LKHh9
+ mmdesnwP0yVIdC38FHD1l3lgcXIxoxpkD3TlNEAgG5wY9zjeRkdva9ipeNaEmZR3ns5k
+ hSQNSiNi9KNrPBUcHjXxcQEZzCHsLxVdhTA7PQHAnKbfxAy9a2nyuu+T28HTLfqBBHdd
+ xZnwUVFMakHOPllfGxS4wkzapMc51X8c/nZVIqsYtie+2ksPEaTsFeWTszM4VqGs+AiD
+ j+QKUOAfaCM9kSGPmxHAlKRdmEmRsXbwysXN/Sl/RWEDtN8h28+Rzt3wkYwjQLs3FZbb 8g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2sdnttwnuf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 May 2019 15:31:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4FFTMHe069829;
+        Wed, 15 May 2019 15:31:03 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 2sgk76jtdw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 May 2019 15:31:03 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4FFV1mJ022122;
+        Wed, 15 May 2019 15:31:02 GMT
+Received: from lap1 (/77.138.183.59)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 May 2019 08:31:01 -0700
+Date:   Wed, 15 May 2019 18:30:51 +0300
+From:   Yuval Shaia <yuval.shaia@oracle.com>
 To:     Leon Romanovsky <leon@kernel.org>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-core 4/5] cbuild: Do not use the http proxy for
- tumbleweed
-Thread-Topic: [PATCH rdma-core 4/5] cbuild: Do not use the http proxy for
- tumbleweed
-Thread-Index: AQHVCq0HUGM85A2DmUOSy8uLcNKHCaZrqh8AgACjx4A=
-Date:   Wed, 15 May 2019 15:19:50 +0000
-Message-ID: <20190515151945.GK30771@mellanox.com>
-References: <20190514233028.3905-1-jgg@ziepe.ca>
- <20190514233028.3905-5-jgg@ziepe.ca>
- <20190515053334.GH5225@mtr-leonro.mtl.com>
-In-Reply-To: <20190515053334.GH5225@mtr-leonro.mtl.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: YTXPR0101CA0051.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:1::28) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.49.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bced8ede-db68-49e3-42ca-08d6d948c5f5
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB3151;
-x-ms-traffictypediagnostic: VI1PR05MB3151:
-x-microsoft-antispam-prvs: <VI1PR05MB315183FB738532C6C41B1EC5CF090@VI1PR05MB3151.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2331;
-x-forefront-prvs: 0038DE95A2
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(136003)(376002)(396003)(366004)(39860400002)(199004)(189003)(76176011)(2906002)(66066001)(476003)(7736002)(26005)(256004)(33656002)(73956011)(52116002)(305945005)(66946007)(64756008)(66446008)(66556008)(186003)(6506007)(386003)(25786009)(36756003)(4326008)(14454004)(102836004)(66476007)(4744005)(486006)(508600001)(53936002)(11346002)(446003)(316002)(8676002)(6246003)(99286004)(81166006)(3846002)(71200400001)(71190400001)(81156014)(8936002)(2616005)(6116002)(6512007)(229853002)(68736007)(5660300002)(6486002)(6436002)(6916009)(86362001)(1076003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3151;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: OZnSpuA0iEWWkB8pOSUHaQPtx24vS474pnpd+Ws8z4ifE85wg89rRMvl5LqfjCYtfbZ/OHer4qOghLZJPhyblPOK40R4iiB0OtSWrc6yh9fA7hqNn18umFzvug2VsW8cAUbdVzC/1ZcJw1ptX1lkzYWVii67vmnM8gAZ+FWWZZ3L40zbOtEx2LUS6m9VU0ECP2Iug2qv7j0E3wzrRUrbK1RKIk/kdKgzSlBnJhvT7awtWuqhBVzLnbDaQHwtojarQNMuAUiX7l32OKqYHA4TdMPF/EUxxso3EMz7c9wdt2+YbqEV9F0eDjudSWci/uxFpZILFnSSyToRjm+qcIPRTSWqlKuJHroHcX6jEkK/lxXzTFaW4lHY6RIsUjIvBnONC9ss2Dt+cojv0QUZIH7diebYzcWbaDfdk4lCmaKmCvA=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <58350A806B68474F8531704E73BD4532@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        linux-netdev <netdev@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: Re: CFP: 4th RDMA Mini-Summit at LPC 2019
+Message-ID: <20190515153050.GB2356@lap1>
+References: <20190514122321.GH6425@mtr-leonro.mtl.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bced8ede-db68-49e3-42ca-08d6d948c5f5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2019 15:19:50.5809
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3151
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190514122321.GH6425@mtr-leonro.mtl.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9257 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905150095
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9257 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905150095
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 15, 2019 at 08:33:34AM +0300, Leon Romanovsky wrote:
-> On Tue, May 14, 2019 at 08:30:27PM -0300, Jason Gunthorpe wrote:
-> > From: Jason Gunthorpe <jgg@mellanox.com>
-> >
-> > It also does not work with apt-cacher-ng because the server generates
-> > redirects for some reason.
-> >
-> > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> >  buildlib/cbuild | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/buildlib/cbuild b/buildlib/cbuild
-> > index a659a77fc5bb74..e012b08b5fbb76 100755
-> > +++ b/buildlib/cbuild
-> > @@ -360,6 +360,7 @@ class leap(ZypperEnvironment):
-> >      aliases =3D {"leap"};
-> >
-> >  class tumbleweed(ZypperEnvironment):
-> > +    proxy =3D False;
->=20
-> It should be set in ZypperEnvironment, because both leap and tumbleweed
-> have this line now.
+On Tue, May 14, 2019 at 03:23:21PM +0300, Leon Romanovsky wrote:
+> This is a call for proposals for the 4th RDMA mini-summit at the Linux
+> Plumbers Conference in Lisbon, Portugal, which will be happening on
+> September 9-11h, 2019.
+> 
+> We are looking for topics with focus on active audience discussions
+> and problem solving. The preferable topic is up to 30 minutes with
+> 3-5 slides maximum.
 
-done
+Abstract: Expand the virtio portfolio with RDMA 
 
-Jason
+Description:
+Data center backends use more and more RDMA or RoCE devices and more and
+more software runs in virtualized environment.
+There is a need for a standard to enable RDMA/RoCE on Virtual Machines.
+Virtio is the optimal solution since is the de-facto para-virtualizaton
+technology and also because the Virtio specification allows Hardware
+Vendors to support Virtio protocol natively in order to achieve bare metal
+performance.
+This talk addresses challenges in defining the RDMA/RoCE Virtio
+Specification and a look forward on possible implementation techniques.
+
+> 
+> This year, the LPC will include netdev track too and it is
+> collocated with Kernel Summit, such timing makes an excellent
+> opportunity to drive cross-tree solutions.
+> 
+> BTW, RDMA is not accepted yet as a track in LPC, but let's think
+> positive and start collect topics.
+> 
+> Thanks
