@@ -2,117 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5C81FFF6
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 09:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D10F20071
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 09:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbfEPHIg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 May 2019 03:08:36 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:37492 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726363AbfEPHIg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 May 2019 03:08:36 -0400
-Received: by mail-wr1-f68.google.com with SMTP id e15so2053817wrs.4
-        for <linux-rdma@vger.kernel.org>; Thu, 16 May 2019 00:08:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2QFBfiR8VI/6EkQt+vuqBNOU1C/FdNF/sGlGiprXM9A=;
-        b=j/Lhf749/cQfgW8YcjleDNT0U38LPB/ofu+oLwGA2Nvj+VnkPSTwzc32OJ987Ay/C4
-         PZ6qxlAnyQGDYc5t0xxJpEyQUxb2WTnrID7fU9a0roW2pDALBvilHuKyR08k5SP+PGad
-         tW0gM0YMN6CpVf5fSLj+phdFmCaXnuJNKVIH249/aRRxTRYw/NtC+uqWWYyvopCs/Z5i
-         slkErOKV54yNWjs1YJJby6MAnLs7NPJOeVVxF8oOvvuZoJEWnrl+yos0ocsAv0Mwd3xB
-         DRmorxQzUxKMX5Lm3+TpfTQ6jhBbhuBek29VIILx+Y0nRtVNN8oUBpDXnHPMMaR2+qvn
-         vRxw==
-X-Gm-Message-State: APjAAAWIv3xx3J6i5Zoeb8anv2KMeL8tt1EwzJVZUF4qCW3WcP/D/bnK
-        gw/7ISjmoWwePRMPoU0HDVJxKQ==
-X-Google-Smtp-Source: APXvYqw/XTuFioPhzaxrGOO8i0SgiDZ+sf087TBN/7+xA54JWipsUns+nX80rrXU1SpsZxTYHNrcCg==
-X-Received: by 2002:adf:8184:: with SMTP id 4mr30276940wra.27.1557990514979;
-        Thu, 16 May 2019 00:08:34 -0700 (PDT)
-Received: from [192.168.1.105] (bzq-79-181-17-143.red.bezeqint.net. [79.181.17.143])
-        by smtp.gmail.com with ESMTPSA id s10sm3062588wrt.66.2019.05.16.00.08.33
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 May 2019 00:08:34 -0700 (PDT)
-Subject: Re: CFP: 4th RDMA Mini-Summit at LPC 2019
-To:     Leon Romanovsky <leon@kernel.org>
+        id S1726374AbfEPHlw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 May 2019 03:41:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57808 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726363AbfEPHlw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 May 2019 03:41:52 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2852220862;
+        Thu, 16 May 2019 07:41:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557992511;
+        bh=YxyX6cGFHGzUuS+MPekODxndLWwuptJrstJIadn93Cw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ajxoLS7uh1rWobeFTo2ZiS03AbFavD9ncUtOH+zdyqFe5p7LaaNfV/Ks6syk/dl7d
+         wtaWmqleS0+KHqYQUCGsL/w+EZx3zgGGyVCQQrIQ5QIJs6lLuHEea8pw/Ta+RJdNmu
+         h1ovR2ukDmDKhxuid31DamzwvAa+Ec7+WWYwFMnc=
+Date:   Thu, 16 May 2019 10:41:48 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Kamal Heib <kheib@redhat.com>
 Cc:     Yuval Shaia <yuval.shaia@oracle.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         linux-netdev <netdev@vger.kernel.org>,
         linux-mm <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
         Doug Ledford <dledford@redhat.com>,
         Marcel Apfelbaum <marcel.apfelbaum@gmail.com>
+Subject: Re: CFP: 4th RDMA Mini-Summit at LPC 2019
+Message-ID: <20190516074148.GV5225@mtr-leonro.mtl.com>
 References: <20190514122321.GH6425@mtr-leonro.mtl.com>
- <20190515153050.GB2356@lap1> <20190515163626.GO5225@mtr-leonro.mtl.com>
+ <20190515153050.GB2356@lap1>
+ <20190515163626.GO5225@mtr-leonro.mtl.com>
  <20190515181537.GA5720@lap1>
-From:   Kamal Heib <kheib@redhat.com>
-Message-ID: <df639315-e13c-9a20-caf5-a66b009a8aa1@redhat.com>
-Date:   Thu, 16 May 2019 10:08:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ <df639315-e13c-9a20-caf5-a66b009a8aa1@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20190515181537.GA5720@lap1>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df639315-e13c-9a20-caf5-a66b009a8aa1@redhat.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, May 16, 2019 at 10:08:32AM +0300, Kamal Heib wrote:
+>
+>
+> On 5/15/19 9:15 PM, Yuval Shaia wrote:
+> > On Wed, May 15, 2019 at 07:36:26PM +0300, Leon Romanovsky wrote:
+> >> On Wed, May 15, 2019 at 06:30:51PM +0300, Yuval Shaia wrote:
+> >>> On Tue, May 14, 2019 at 03:23:21PM +0300, Leon Romanovsky wrote:
+> >>>> This is a call for proposals for the 4th RDMA mini-summit at the Linux
+> >>>> Plumbers Conference in Lisbon, Portugal, which will be happening on
+> >>>> September 9-11h, 2019.
+> >>>>
+> >>>> We are looking for topics with focus on active audience discussions
+> >>>> and problem solving. The preferable topic is up to 30 minutes with
+> >>>> 3-5 slides maximum.
+> >>>
+> >>> Abstract: Expand the virtio portfolio with RDMA
+> >>>
+> >>> Description:
+> >>> Data center backends use more and more RDMA or RoCE devices and more and
+> >>> more software runs in virtualized environment.
+> >>> There is a need for a standard to enable RDMA/RoCE on Virtual Machines.
+> >>> Virtio is the optimal solution since is the de-facto para-virtualizaton
+> >>> technology and also because the Virtio specification allows Hardware
+> >>> Vendors to support Virtio protocol natively in order to achieve bare metal
+> >>> performance.
+> >>> This talk addresses challenges in defining the RDMA/RoCE Virtio
+> >>> Specification and a look forward on possible implementation techniques.
+> >>
+> >> Yuval,
+> >>
+> >> Who is going to implement it?
+> >>
+> >> Thanks
+> >
+> > It is going to be an open source effort by an open source contributors.
+> > Probably as with qemu-pvrdma it would be me and Marcel and i have an
+> > unofficial approval from extra person that gave promise to join (can't say
+> > his name but since he is also on this list then he welcome to raise a
+> > hand).
+>
+> That person is me.
+> Leon: Is Mellanox willing to join too?
 
+I have no mandate to publicly commit to any future plans
+on behalf of my employer.
 
-On 5/15/19 9:15 PM, Yuval Shaia wrote:
-> On Wed, May 15, 2019 at 07:36:26PM +0300, Leon Romanovsky wrote:
->> On Wed, May 15, 2019 at 06:30:51PM +0300, Yuval Shaia wrote:
->>> On Tue, May 14, 2019 at 03:23:21PM +0300, Leon Romanovsky wrote:
->>>> This is a call for proposals for the 4th RDMA mini-summit at the Linux
->>>> Plumbers Conference in Lisbon, Portugal, which will be happening on
->>>> September 9-11h, 2019.
->>>>
->>>> We are looking for topics with focus on active audience discussions
->>>> and problem solving. The preferable topic is up to 30 minutes with
->>>> 3-5 slides maximum.
->>>
->>> Abstract: Expand the virtio portfolio with RDMA
->>>
->>> Description:
->>> Data center backends use more and more RDMA or RoCE devices and more and
->>> more software runs in virtualized environment.
->>> There is a need for a standard to enable RDMA/RoCE on Virtual Machines.
->>> Virtio is the optimal solution since is the de-facto para-virtualizaton
->>> technology and also because the Virtio specification allows Hardware
->>> Vendors to support Virtio protocol natively in order to achieve bare metal
->>> performance.
->>> This talk addresses challenges in defining the RDMA/RoCE Virtio
->>> Specification and a look forward on possible implementation techniques.
->>
->> Yuval,
->>
->> Who is going to implement it?
->>
->> Thanks
-> 
-> It is going to be an open source effort by an open source contributors.
-> Probably as with qemu-pvrdma it would be me and Marcel and i have an
-> unofficial approval from extra person that gave promise to join (can't say
-> his name but since he is also on this list then he welcome to raise a
-> hand).
-
-That person is me.
-Leon: Is Mellanox willing to join too?
-
-> I also recall once someone from Mellanox wanted to join but not sure about
-> his availability now.
-> 
->>
->>>
->>>>
->>>> This year, the LPC will include netdev track too and it is
->>>> collocated with Kernel Summit, such timing makes an excellent
->>>> opportunity to drive cross-tree solutions.
->>>>
->>>> BTW, RDMA is not accepted yet as a track in LPC, but let's think
->>>> positive and start collect topics.
->>>>
->>>> Thanks
+Thanks
