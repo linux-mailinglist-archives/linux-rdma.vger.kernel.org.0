@@ -2,120 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF0520886
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 15:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4A520899
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 15:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbfEPNpF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 May 2019 09:45:05 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:49546 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726692AbfEPNpF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 May 2019 09:45:05 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6C05FF5289AA3F1FAAB3;
-        Thu, 16 May 2019 21:45:03 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Thu, 16 May 2019
- 21:44:56 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Add support function clear when
- removing module
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Leon Romanovsky <leon@kernel.org>, oulijun <oulijun@huawei.com>,
-        <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <20190422122209.GD27901@mtr-leonro.mtl.com>
- <add43d02-b3d5-35d9-a74d-8254c1fb472c@huawei.com>
- <20190423152339.GE27901@mtr-leonro.mtl.com>
- <90a91e1f-91fc-bc4e-067c-7bc788c62ab6@huawei.com>
- <20190426143656.GA2278@ziepe.ca> <20190426210520.GA6705@mtr-leonro.mtl.com>
- <99195660-be8d-555f-01fc-efd9e680fdf3@huawei.com>
- <20190502130304.GB18518@ziepe.ca>
- <a23d02b4-5a1f-8b25-2b5c-f14e16acdcc2@huawei.com>
- <bd517597-4feb-c748-b43b-e0f45ced959d@huawei.com>
- <20190515114927.GB30791@ziepe.ca>
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-Message-ID: <874cdd5d-93df-f323-1615-db24011e74ad@huawei.com>
-Date:   Thu, 16 May 2019 21:44:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
+        id S1726717AbfEPNwy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 May 2019 09:52:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726692AbfEPNwy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 May 2019 09:52:54 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64D9820657;
+        Thu, 16 May 2019 13:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1558014774;
+        bh=qeX4i0JrTN9jqDaBVzn1t/lmiSevEpaIjo9eG2rgKUI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=saDAd4SDQL+BFwDxZ6DosPXunOKY9mTfM0Snwh8+VN0HmVQ0/V87j8U6Bf1WPAxKx
+         stpvxMvSH1AqY0W46s/L0vjBPGiwMPIyNyCJUlEIqXO71QkekZ6NE4lQ4LMSbwjXkB
+         InH1VpP4piiEdbvJP7Yr9oBzM5Rg3q/4MejNPPb0=
+Date:   Thu, 16 May 2019 16:52:50 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v3] RDMA/srp: Rename SRP sysfs name after IB
+ device rename trigger
+Message-ID: <20190516135250.GA6026@mtr-leonro.mtl.com>
+References: <20190516065738.1423-1-leon@kernel.org>
+ <b765380c-6477-6574-6863-74eb4f1e6b1c@acm.org>
 MIME-Version: 1.0
-In-Reply-To: <20190515114927.GB30791@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b765380c-6477-6574-6863-74eb4f1e6b1c@acm.org>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, May 16, 2019 at 01:33:55PM +0200, Bart Van Assche wrote:
+> On 5/16/19 8:57 AM, Leon Romanovsky wrote:
+> > +static void srp_rename_dev(struct ib_device *device, void *client_data)
+> > +{
+> > +	struct srp_device *srp_dev = client_data;
+> > +	struct srp_host *host, *tmp_host;
+> > +> +	list_for_each_entry_safe(host, tmp_host, &srp_dev->dev_list, list) {
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+> Would list_for_each_entry() have been sufficient?
 
+I assumed that if it is enough for srp_remove_one, it will be enough for
+rename too.
 
-On 2019/5/15 19:49, Jason Gunthorpe wrote:
-> On Wed, May 15, 2019 at 05:38:02PM +0800, Liuyixian (Eason) wrote:
->>
->>
->> On 2019/5/9 18:50, Liuyixian (Eason) wrote:
->>>
->>>
->>> On 2019/5/2 21:03, Jason Gunthorpe wrote:
->>>> On Tue, Apr 30, 2019 at 04:27:41PM +0800, Liuyixian (Eason) wrote:
->>>>>
->>>>>
->>>>> On 2019/4/27 5:05, Leon Romanovsky wrote:
->>>>>> On Fri, Apr 26, 2019 at 11:36:56AM -0300, Jason Gunthorpe wrote:
->>>>>>> On Fri, Apr 26, 2019 at 06:12:11PM +0800, Liuyixian (Eason) wrote:
->>>>>>>
->>>>>>>>     However, I have talked with our chip team about function clear
->>>>>>>>     functionality. We think it is necessary to inform the chip to
->>>>>>>>     perform the outstanding task and some cleanup work and restore
->>>>>>>>     hardware resources in time when rmmod ko. Otherwise, it is
->>>>>>>>     dangerous to reuse the hardware as it can not guarantee those
->>>>>>>>     work can be done well without the notification from our driver.
->>>>>>>
->>>>>>> If it is dangerous to reuse the hardware then you have to do this
->>>>>>> cleanup on device startup, not on device removal.
->>>>>>
->>>>>> Right, I can think about gazillion ways to brick such HW.
->>>>>> The simplest way will be to call SysRq during RDMA traffic
->>>>>> and no cleanup function will be called in such case.
->>>>>>
->>>>>> Thanks
->>>>>
->>>>> Hi Jason and Leon,
->>>>>
->>>>> 	As hip08 is a fake pcie device, we could not disassociate and stop the hardware access
->>>>> 	through the chain break mechanism as a real pcie device. Alternatively, function clear
->>>>> 	is used as a notification to the hardware to stop accessing and ensure to not read or
->>>>> 	write DDR later. That is, the role of function clear to hip08 is similar as the chain
->>>>> 	break to pcie device.
->>>>
->>>> What? This hardware is broken and doesn't respond to the bus master
->>>> enable bit in the PCI config space??
->>>>
->>> Hi Jason,
->>>
->>> Sorry to reply to you late.
->>>
->>> Yes, the bus master enable bit should be set by a pcie device when startup and removal.
->>> The hns (nic) module use it as well. However, we couldn't use/operate this bit in hip08
->>> as it shares the PF(physical function) with nic. Therefore, we need function clear to
->>> notify the hardware to do the cleanup thing and cache write back.
->>>
->>> Thanks.
->>>
->>
->> Hi Jason and Leon,
->>
->> Do you have further more suggestions?
-> 
-> The approach seems completely wrong to me - no other driver is doing
-> something so sketchy. 
-> 
-> You need to explain why hns is so special
-> 
-> Jason
+>
+> > +		char name[IB_DEVICE_NAME_MAX * 8];
+>
+> Why "* 8"? Would "+ 8" have been sufficient?
 
-Thanks, Jason. I will revisit the solution and feedback soon.
+Typo
 
+>
+> Otherwise this patch looks good to me. This patch also passes the tests
+> I ran.
+>
+> Thanks,
+>
+> Bart.
+>
