@@ -2,206 +2,254 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A9B20EA1
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 20:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE7820EA6
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 20:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbfEPS1S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 May 2019 14:27:18 -0400
-Received: from mail-eopbgr680047.outbound.protection.outlook.com ([40.107.68.47]:59781
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        id S1726452AbfEPS3K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 May 2019 14:29:10 -0400
+Received: from mail-eopbgr140071.outbound.protection.outlook.com ([40.107.14.71]:19231
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726357AbfEPS1S (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 May 2019 14:27:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+        id S1726357AbfEPS3K (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 May 2019 14:29:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KY367ckya/3sejYZEOCfB8Ym7afEwn8ShFuoocACl1o=;
- b=vKIG8boRH0Wl8bch7VqiYy5bOKdU++JN9S7I+CqHFB7kGhOuDvLLbeDJv2GNlLO8MHlM1NIhjSICM5vSQnSAkoOqmeA5NCxid75Po4MRyOBeJKIBeVHjAvBGlK9wv2WnLMu1maiS2M5BR/B0mlH0l6n3AFym2ACoOtX7J5fgUQ4=
-Received: from BYAPR05MB5511.namprd05.prod.outlook.com (20.177.186.28) by
- BYAPR05MB6245.namprd05.prod.outlook.com (20.178.196.14) with Microsoft SMTP
+ bh=Axw3mLAiHvt7qXVX8LWAQsp0v1FVxKftR0cpIiN7rac=;
+ b=UeedgriDbRf6jTI3pTl5x4bSKrv0uddcETfHt4A3KrOd/WIao+FeSSmoRGsMVLG7GO8leoRczLbQzUWYYp/J8kNURkkbam4H3fM+G1veA/HJViRq6qjEQyJA+9GaQVq+E8TwaGd/bX8uqxqHwEGm0okY6KJo6NiYQmom9miIcVI=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB4160.eurprd05.prod.outlook.com (10.171.183.10) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1900.13; Thu, 16 May 2019 18:27:06 +0000
-Received: from BYAPR05MB5511.namprd05.prod.outlook.com
- ([fe80::d99b:a85f:758a:f04b]) by BYAPR05MB5511.namprd05.prod.outlook.com
- ([fe80::d99b:a85f:758a:f04b%7]) with mapi id 15.20.1922.002; Thu, 16 May 2019
- 18:27:06 +0000
-From:   Adit Ranadive <aditr@vmware.com>
-To:     "jgg@mellanox.com" <jgg@mellanox.com>,
-        "dledford@redhat.com" <dledford@redhat.com>
-CC:     Bryan Tan <bryantan@vmware.com>,
+ 15.20.1900.16; Thu, 16 May 2019 18:29:06 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1900.010; Thu, 16 May 2019
+ 18:29:06 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Adit Ranadive <aditr@vmware.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        Bryan Tan <bryantan@vmware.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Pv-drivers <Pv-drivers@vmware.com>,
-        Adit Ranadive <aditr@vmware.com>
-Subject: [PATCH rdma-core] vmw_pvrdma: Use resource ids from physical device
- if available
-Thread-Topic: [PATCH rdma-core] vmw_pvrdma: Use resource ids from physical
+        Pv-drivers <Pv-drivers@vmware.com>
+Subject: Re: [PATCH for-next] RDMA/vmw_pvrdma: Use resource ids from physical
  device if available
-Thread-Index: AQHVDBT3BQBSIqM9/0CtsQbRxE3AJQ==
-Date:   Thu, 16 May 2019 18:27:06 +0000
-Message-ID: <1558031213-14219-1-git-send-email-aditr@vmware.com>
+Thread-Topic: [PATCH for-next] RDMA/vmw_pvrdma: Use resource ids from physical
+ device if available
+Thread-Index: AQHVDBSlkap1QWBkwEm57ccCex0bMqZuEk2A
+Date:   Thu, 16 May 2019 18:29:06 +0000
+Message-ID: <20190516182901.GH22573@mellanox.com>
+References: <1558031071-14110-1-git-send-email-aditr@vmware.com>
+In-Reply-To: <1558031071-14110-1-git-send-email-aditr@vmware.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: BYAPR01CA0012.prod.exchangelabs.com (2603:10b6:a02:80::25)
- To BYAPR05MB5511.namprd05.prod.outlook.com (2603:10b6:a03:1a::28)
-x-mailer: git-send-email 1.8.3.1
+x-clientproxiedby: YTOPR0101CA0025.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:15::38) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
 authentication-results: spf=none (sender IP is )
- smtp.mailfrom=aditr@vmware.com; 
+ smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [66.170.99.2]
+x-originating-ip: [156.34.49.251]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7b15c807-9c27-4daa-7a6b-08d6da2c1986
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR05MB6245;
-x-ms-traffictypediagnostic: BYAPR05MB6245:
+x-ms-office365-filtering-correlation-id: d8c06842-3dfa-4113-c636-08d6da2c60f4
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4160;
+x-ms-traffictypediagnostic: VI1PR05MB4160:
 x-ms-exchange-purlcount: 1
-x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-x-microsoft-antispam-prvs: <BYAPR05MB624530974F742C7D01209F32C50A0@BYAPR05MB6245.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:826;
+x-microsoft-antispam-prvs: <VI1PR05MB4160B7D81A2397BEE923FF71CF0A0@VI1PR05MB4160.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:288;
 x-forefront-prvs: 0039C6E5C5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(366004)(396003)(39860400002)(346002)(136003)(189003)(199004)(81166006)(81156014)(5660300002)(50226002)(8936002)(66446008)(8676002)(25786009)(66946007)(73956011)(86362001)(64756008)(14444005)(66476007)(66556008)(107886003)(256004)(4326008)(486006)(476003)(3846002)(6116002)(2616005)(305945005)(7736002)(36756003)(478600001)(386003)(102836004)(2501003)(110136005)(4720700003)(26005)(186003)(52116002)(14454004)(66066001)(6512007)(6306002)(6506007)(966005)(68736007)(99286004)(53936002)(71190400001)(71200400001)(2906002)(6486002)(54906003)(316002)(6436002);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB6245;H:BYAPR05MB5511.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: vmware.com does not designate
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(136003)(346002)(396003)(366004)(39860400002)(189003)(199004)(68736007)(14444005)(6246003)(256004)(229853002)(66066001)(6506007)(26005)(11346002)(66476007)(64756008)(54906003)(386003)(14454004)(66556008)(66446008)(2616005)(66946007)(476003)(102836004)(81166006)(36756003)(73956011)(81156014)(6436002)(53936002)(966005)(8936002)(7736002)(305945005)(71200400001)(76176011)(8676002)(6916009)(86362001)(186003)(3846002)(6116002)(25786009)(5660300002)(6512007)(99286004)(316002)(1076003)(486006)(6486002)(33656002)(2906002)(478600001)(4326008)(446003)(52116002)(6306002)(71190400001)(309714004);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4160;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: DQ1A9ZLmppKtI+vzr8cTCdMYT2oc4hPMB8gTBARO2AGYf0bBqIFE4BlEXFnfSPVvv7mshuXODvHmnGaki8J/vF9ORgt0lRRzyei0ZoAuulvYtqTl3ga+M6DpKBo5/AU2OmyMxOkiczqm+Vmjnd8evmTr3r+2cx42azJz2quRMozHkqbeeNTN/iUL4d9DkdG4kaQVOfpQXSxbd7fjMbederjURgCRxGOMn0nkPiv9CfT3UITrfOnrMGXpa+UGsX/Gf9T8BccOQ0jLl/q+HXNEwkGIG2XfJsjf/+injenTIgAiXBv3YxX0yw/roI0FziO1WOfg8Psq28x6dXZZhtalgB2EfI1h6iedG/MkgstZOMSMdWy9BFg47kxfzu3j6wxDUetGChT/GkU7FSBT6/Q6xjvc4ARB0dLYxjeNjykn0Hw=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+x-microsoft-antispam-message-info: zFBA26Ug3vk4XzOet9unEUtD4H7tM3XeBIxeXgdVqs/tE7oXQLXiRhVw29BzbYJkGzQtH4FnSrSZI/6ryePwZUc2e6CONvW0/Q2h4nVIbJgRglHOyJJWO1GNBeYtgG9uxHJQUgh5kM6w3xDy/jZPfKpO5llmTIwcEgIMx1ZjLq6V6XNnD5cgqPmFc4GvILKMjsGMqpUY+6X0ava8V+m4TR+GHxy2gM1b1E0Zd0eVEb6j1mIAjtc/dKbSH7uVVT5DcRQm+QNYJMqi/NPLfEBWLnAf0wzu95ZlMOSMtLElDDGVlyxAU3bxs7sH62VgbvTmye4B9AlRD3wYwhYcXZDa9WS4YbHJng+pTO03nhN1nttWdQV1q3VkllU/3Y/tDtzrfTCkYone7ubr+1zuoloQe3WhtkporiIKqU1plZWf+0g=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E0AC85C1AF22A84E959CD0AFFC7243AC@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b15c807-9c27-4daa-7a6b-08d6da2c1986
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 May 2019 18:27:06.4441
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8c06842-3dfa-4113-c636-08d6da2c60f4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 May 2019 18:29:06.2892
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB6245
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4160
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-RnJvbTogQnJ5YW4gVGFuIDxicnlhbnRhbkB2bXdhcmUuY29tPg0KDQpUaGlzIGNoYW5nZSBhbGxv
-d3MgdXNlci1zcGFjZSB0byB1c2UgcGh5c2ljYWwgcmVzb3VyY2UgbnVtYmVycyBpZg0KdGhleSBh
-cmUgcGFzc2VkIHVwIGZyb20gdGhlIGRyaXZlci4gRG9pbmcgc28gYWxsb3dzIGNvbW11bmljYXRp
-b24gd2l0aA0KcGh5c2ljYWwgbm9uLUVTWCBlbmRwb2ludHMgKHN1Y2ggYXMgYSBiYXJlLW1ldGFs
-IExpbnV4IG1hY2hpbmUgb3IgYQ0KU1ItSU9WLWVuYWJsZWQgVk0pLg0KDQpUaGlzIGlzIGFjY29t
-cGxpc2hlZCBieSBzZXBhcmF0aW5nIHRoZSBjb25jZXB0IG9mIHRoZSBRUCBudW1iZXIgZnJvbQ0K
-dGhlIFFQIGhhbmRsZS4gUHJldmlvdXNseSwgdGhlIHR3byB3ZXJlIHRoZSBzYW1lLCBhcyB0aGUg
-UVAgbnVtYmVyDQp3YXMgZXhwb3NlZCB0byB0aGUgZ3Vlc3QgYW5kIGFsc28gdXNlZCB0byByZWZl
-cmVuY2UgIGEgdmlydHVhbCBRUCBpbg0KdGhlIGRldmljZSBiYWNrZW5kLiBXaXRoIHBoeXNpY2Fs
-IHJlc291cmNlIG51bWJlcnMgZXhwb3NlZCwgdGhlIFFQDQpudW1iZXIgZ2l2ZW4gdG8gdGhlIGd1
-ZXN0IGlzIHRoZSBRUCBudW1iZXIgYXNzaWduZWQgdG8gdGhlIHBoeXNpY2FsDQpIQ0EncyBRUCwg
-d2hpbGUgdGhlIFFQIGhhbmRsZSBpcyBzdGlsbCB0aGUgaW50ZXJuYWwgaGFuZGxlIHVzZWQgdG8N
-CnJlZmVyZW5jZSBhIHZpcnR1YWwgUVAuIFJlZ2FyZGxlc3Mgb2Ygd2hldGhlciB0aGUgZGV2aWNl
-IGlzIGV4cG9zaW5nDQpwaHlzaWNhbCBpZHMsIHRoZSBkcml2ZXIgd2lsbCBzdGlsbCB0cnkgdG8g
-cGljayB1cCB0aGUgUVAgaGFuZGxlIGZyb20NCnRoZSBiYWNrZW5kIGlmIHBvc3NpYmxlLg0KDQpU
-aGUgTVIga2V5cyBleHBvc2VkIHRvIHRoZSBndWVzdCB3aGVuIHRoZSBwaHlzaWNhbCByZXNvdXJj
-ZSBpZHMgZmVhdHVyZQ0KaXMgdHVybmVkIG9uIGFyZSBsaWtld2lzZSBub3cgdGhlIE1SIGtleXMg
-Y3JlYXRlZCBieSB0aGUgcGh5c2ljYWwgSENBLA0KaW5zdGVhZCBvZiB2aXJ0dWFsIE1SIGtleXMu
-DQoNClRoZSBBQkkgaGFzIGJlZW4gdXBkYXRlZCB0byBhbGxvdyB0aGUgcmV0dXJuIG9mIHRoZSBR
-UCBoYW5kbGUgdG8gdGhlDQpndWVzdCBsaWJyYXJ5LiBUaGUgQUJJIHZlcnNpb24gaGFzIGJlZW4g
-YnVtcGVkIHVwIGJlY2F1c2Ugb2YgdGhpcw0Kbm9uLWNvbXBhdGlibGUgY2hhbmdlLg0KDQpSZXZp
-ZXdlZC1ieTogSm9yZ2VuIEhhbnNlbiA8amhhbnNlbkB2bXdhcmUuY29tPg0KU2lnbmVkLW9mZi1i
-eTogQWRpdCBSYW5hZGl2ZSA8YWRpdHJAdm13YXJlLmNvbT4NClNpZ25lZC1vZmYtYnk6IEJyeWFu
-IFRhbiA8YnJ5YW50YW5Adm13YXJlLmNvbT4NCi0tLQ0KIGtlcm5lbC1oZWFkZXJzL3JkbWEvdm13
-X3B2cmRtYS1hYmkuaCB8IDExICsrKysrKysrKystDQogcHJvdmlkZXJzL3Ztd19wdnJkbWEvcHZy
-ZG1hLWFiaS5oICAgIHwgIDQgKysrLQ0KIHByb3ZpZGVycy92bXdfcHZyZG1hL3B2cmRtYS5oICAg
-ICAgICB8ICAxICsNCiBwcm92aWRlcnMvdm13X3B2cmRtYS9wdnJkbWFfbWFpbi5jICAgfCAgNCAr
-Ky0tDQogcHJvdmlkZXJzL3Ztd19wdnJkbWEvcXAuYyAgICAgICAgICAgIHwgMzEgKysrKysrKysr
-KysrKysrKysrKystLS0tLS0tLS0tLQ0KIDUgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygr
-KSwgMTUgZGVsZXRpb25zKC0pDQotLS0NCg0KR2l0aHViIFBSOg0KaHR0cHM6Ly9naXRodWIuY29t
-L2xpbnV4LXJkbWEvcmRtYS1jb3JlL3B1bGwvNTMxDQoNCi0tLQ0KZGlmZiAtLWdpdCBhL2tlcm5l
-bC1oZWFkZXJzL3JkbWEvdm13X3B2cmRtYS1hYmkuaCBiL2tlcm5lbC1oZWFkZXJzL3JkbWEvdm13
-X3B2cmRtYS1hYmkuaA0KaW5kZXggNmU3M2YwMjc0ZTQxLi44YzM4OGQ2MjNlNWMgMTAwNjQ0DQot
-LS0gYS9rZXJuZWwtaGVhZGVycy9yZG1hL3Ztd19wdnJkbWEtYWJpLmgNCisrKyBiL2tlcm5lbC1o
-ZWFkZXJzL3JkbWEvdm13X3B2cmRtYS1hYmkuaA0KQEAgLTQ5LDcgKzQ5LDExIEBADQogDQogI2lu
-Y2x1ZGUgPGxpbnV4L3R5cGVzLmg+DQogDQotI2RlZmluZSBQVlJETUFfVVZFUkJTX0FCSV9WRVJT
-SU9OCTMJCS8qIEFCSSBWZXJzaW9uLiAqLw0KKyNkZWZpbmUgUFZSRE1BX1VWRVJCU19NSU5fQUJJ
-X1ZFUlNJT04JCTMNCisjZGVmaW5lIFBWUkRNQV9VVkVSQlNfTUFYX0FCSV9WRVJTSU9OCQk0DQor
-DQorI2RlZmluZSBQVlJETUFfVVZFUkJTX05PX1FQX0hBTkRMRV9BQklfVkVSU0lPTgkzDQorDQog
-I2RlZmluZSBQVlJETUFfVUFSX0hBTkRMRV9NQVNLCQkweDAwRkZGRkZGCS8qIEJvdHRvbSAyNCBi
-aXRzLiAqLw0KICNkZWZpbmUgUFZSRE1BX1VBUl9RUF9PRkZTRVQJCTAJCS8qIFFQIGRvb3JiZWxs
-LiAqLw0KICNkZWZpbmUgUFZSRE1BX1VBUl9RUF9TRU5ECQkoMSA8PCAzMCkJLyogU2VuZCBiaXQu
-ICovDQpAQCAtMTc5LDYgKzE4MywxMSBAQCBzdHJ1Y3QgcHZyZG1hX2NyZWF0ZV9xcCB7DQogCV9f
-YWxpZ25lZF91NjQgcXBfYWRkcjsNCiB9Ow0KIA0KK3N0cnVjdCBwdnJkbWFfY3JlYXRlX3FwX3Jl
-c3Agew0KKwlfX3UzMiBxcG47DQorCV9fdTMyIHFwX2hhbmRsZTsNCit9Ow0KKw0KIC8qIFBWUkRN
-QSBtYXNrZWQgYXRvbWljIGNvbXBhcmUgYW5kIHN3YXAgKi8NCiBzdHJ1Y3QgcHZyZG1hX2V4X2Nt
-cF9zd2FwIHsNCiAJX19hbGlnbmVkX3U2NCBzd2FwX3ZhbDsNCmRpZmYgLS1naXQgYS9wcm92aWRl
-cnMvdm13X3B2cmRtYS9wdnJkbWEtYWJpLmggYi9wcm92aWRlcnMvdm13X3B2cmRtYS9wdnJkbWEt
-YWJpLmgNCmluZGV4IDc3ZGI5ZGRkMWJiNy4uOTc3NTkyNWY4NTU1IDEwMDY0NA0KLS0tIGEvcHJv
-dmlkZXJzL3Ztd19wdnJkbWEvcHZyZG1hLWFiaS5oDQorKysgYi9wcm92aWRlcnMvdm13X3B2cmRt
-YS9wdnJkbWEtYWJpLmgNCkBAIC01NCw4ICs1NCwxMCBAQCBERUNMQVJFX0RSVl9DTUQodXNlcl9w
-dnJkbWFfYWxsb2NfcGQsIElCX1VTRVJfVkVSQlNfQ01EX0FMTE9DX1BELA0KIAkJZW1wdHksIHB2
-cmRtYV9hbGxvY19wZF9yZXNwKTsNCiBERUNMQVJFX0RSVl9DTUQodXNlcl9wdnJkbWFfY3JlYXRl
-X2NxLCBJQl9VU0VSX1ZFUkJTX0NNRF9DUkVBVEVfQ1EsDQogCQlwdnJkbWFfY3JlYXRlX2NxLCBw
-dnJkbWFfY3JlYXRlX2NxX3Jlc3ApOw0KLURFQ0xBUkVfRFJWX0NNRCh1c2VyX3B2cmRtYV9jcmVh
-dGVfcXAsIElCX1VTRVJfVkVSQlNfQ01EX0NSRUFURV9RUCwNCitERUNMQVJFX0RSVl9DTUQodXNl
-cl9wdnJkbWFfY3JlYXRlX3FwX3YzLCBJQl9VU0VSX1ZFUkJTX0NNRF9DUkVBVEVfUVAsDQogCQlw
-dnJkbWFfY3JlYXRlX3FwLCBlbXB0eSk7DQorREVDTEFSRV9EUlZfQ01EKHVzZXJfcHZyZG1hX2Ny
-ZWF0ZV9xcCwgSUJfVVNFUl9WRVJCU19DTURfQ1JFQVRFX1FQLA0KKwkJcHZyZG1hX2NyZWF0ZV9x
-cCwgcHZyZG1hX2NyZWF0ZV9xcF9yZXNwKTsNCiBERUNMQVJFX0RSVl9DTUQodXNlcl9wdnJkbWFf
-Y3JlYXRlX3NycSwgSUJfVVNFUl9WRVJCU19DTURfQ1JFQVRFX1NSUSwNCiAJCXB2cmRtYV9jcmVh
-dGVfc3JxLCBwdnJkbWFfY3JlYXRlX3NycV9yZXNwKTsNCiBERUNMQVJFX0RSVl9DTUQodXNlcl9w
-dnJkbWFfYWxsb2NfdWNvbnRleHQsIElCX1VTRVJfVkVSQlNfQ01EX0dFVF9DT05URVhULA0KZGlm
-ZiAtLWdpdCBhL3Byb3ZpZGVycy92bXdfcHZyZG1hL3B2cmRtYS5oIGIvcHJvdmlkZXJzL3Ztd19w
-dnJkbWEvcHZyZG1hLmgNCmluZGV4IGViZDUwY2UxYzNjZC4uYjY3YzA3ZTk0ZjkwIDEwMDY0NA0K
-LS0tIGEvcHJvdmlkZXJzL3Ztd19wdnJkbWEvcHZyZG1hLmgNCisrKyBiL3Byb3ZpZGVycy92bXdf
-cHZyZG1hL3B2cmRtYS5oDQpAQCAtMTcwLDYgKzE3MCw3IEBAIHN0cnVjdCBwdnJkbWFfcXAgew0K
-IAlzdHJ1Y3QgcHZyZG1hX3dxCQlzcTsNCiAJc3RydWN0IHB2cmRtYV93cQkJcnE7DQogCWludAkJ
-CQlpc19zcnE7DQorCXVpbnQzMl90CQkJcXBfaGFuZGxlOw0KIH07DQogDQogc3RydWN0IHB2cmRt
-YV9haCB7DQpkaWZmIC0tZ2l0IGEvcHJvdmlkZXJzL3Ztd19wdnJkbWEvcHZyZG1hX21haW4uYyBi
-L3Byb3ZpZGVycy92bXdfcHZyZG1hL3B2cmRtYV9tYWluLmMNCmluZGV4IDUyYTJkZTIyZDQ0Yy4u
-NjE2MzEwYWU0NWM1IDEwMDY0NA0KLS0tIGEvcHJvdmlkZXJzL3Ztd19wdnJkbWEvcHZyZG1hX21h
-aW4uYw0KKysrIGIvcHJvdmlkZXJzL3Ztd19wdnJkbWEvcHZyZG1hX21haW4uYw0KQEAgLTIwMSw4
-ICsyMDEsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHZlcmJzX21hdGNoX2VudCBoY2FfdGFibGVb
-XSA9IHsNCiANCiBzdGF0aWMgY29uc3Qgc3RydWN0IHZlcmJzX2RldmljZV9vcHMgcHZyZG1hX2Rl
-dl9vcHMgPSB7DQogCS5uYW1lID0gInB2cmRtYSIsDQotCS5tYXRjaF9taW5fYWJpX3ZlcnNpb24g
-PSBQVlJETUFfVVZFUkJTX0FCSV9WRVJTSU9OLA0KLQkubWF0Y2hfbWF4X2FiaV92ZXJzaW9uID0g
-UFZSRE1BX1VWRVJCU19BQklfVkVSU0lPTiwNCisJLm1hdGNoX21pbl9hYmlfdmVyc2lvbiA9IFBW
-UkRNQV9VVkVSQlNfTUlOX0FCSV9WRVJTSU9OLA0KKwkubWF0Y2hfbWF4X2FiaV92ZXJzaW9uID0g
-UFZSRE1BX1VWRVJCU19NQVhfQUJJX1ZFUlNJT04sDQogCS5tYXRjaF90YWJsZSA9IGhjYV90YWJs
-ZSwNCiAJLmFsbG9jX2RldmljZSA9IHB2cmRtYV9kZXZpY2VfYWxsb2MsDQogCS51bmluaXRfZGV2
-aWNlID0gcHZyZG1hX3VuaW5pdF9kZXZpY2UsDQpkaWZmIC0tZ2l0IGEvcHJvdmlkZXJzL3Ztd19w
-dnJkbWEvcXAuYyBiL3Byb3ZpZGVycy92bXdfcHZyZG1hL3FwLmMNCmluZGV4IGVmNDI5ZGI5M2E0
-My4uYTE3M2Q0NDFkZjBkIDEwMDY0NA0KLS0tIGEvcHJvdmlkZXJzL3Ztd19wdnJkbWEvcXAuYw0K
-KysrIGIvcHJvdmlkZXJzL3Ztd19wdnJkbWEvcXAuYw0KQEAgLTIxMSw5ICsyMTEsOSBAQCBzdHJ1
-Y3QgaWJ2X3FwICpwdnJkbWFfY3JlYXRlX3FwKHN0cnVjdCBpYnZfcGQgKnBkLA0KIHsNCiAJc3Ry
-dWN0IHB2cmRtYV9kZXZpY2UgKmRldiA9IHRvX3ZkZXYocGQtPmNvbnRleHQtPmRldmljZSk7DQog
-CXN0cnVjdCB1c2VyX3B2cmRtYV9jcmVhdGVfcXAgY21kOw0KLQlzdHJ1Y3QgaWJfdXZlcmJzX2Ny
-ZWF0ZV9xcF9yZXNwIHJlc3A7DQorCXN0cnVjdCB1c2VyX3B2cmRtYV9jcmVhdGVfcXBfcmVzcCBy
-ZXNwOw0KKwlzdHJ1Y3QgdXNlcl9wdnJkbWFfY3JlYXRlX3FwX3YzX3Jlc3AgcmVzcF92MzsNCiAJ
-c3RydWN0IHB2cmRtYV9xcCAqcXA7DQotCWludCByZXQ7DQogCWludCBpc19zcnEgPSAhIShhdHRy
-LT5zcnEpOw0KIA0KIAlhdHRyLT5jYXAubWF4X3NlbmRfc2dlID0gbWF4X3QodWludDMyX3QsIDFV
-LCBhdHRyLT5jYXAubWF4X3NlbmRfc2dlKTsNCkBAIC0yODIsMTQgKzI4MiwyMyBAQCBzdHJ1Y3Qg
-aWJ2X3FwICpwdnJkbWFfY3JlYXRlX3FwKHN0cnVjdCBpYnZfcGQgKnBkLA0KIAljbWQucmJ1Zl9z
-aXplID0gcXAtPnJidWYubGVuZ3RoOw0KIAljbWQucXBfYWRkciA9ICh1aW50cHRyX3QpIHFwOw0K
-IA0KLQlyZXQgPSBpYnZfY21kX2NyZWF0ZV9xcChwZCwgJnFwLT5pYnZfcXAsIGF0dHIsDQotCQkJ
-CSZjbWQuaWJ2X2NtZCwgc2l6ZW9mKGNtZCksDQotCQkJCSZyZXNwLCBzaXplb2YocmVzcCkpOw0K
-KwlpZiAoZGV2LT5hYmlfdmVyc2lvbiA8PSBQVlJETUFfVVZFUkJTX05PX1FQX0hBTkRMRV9BQklf
-VkVSU0lPTikgew0KKwkJaWYgKGlidl9jbWRfY3JlYXRlX3FwKHBkLCAmcXAtPmlidl9xcCwgYXR0
-ciwgJmNtZC5pYnZfY21kLA0KKwkJCQkgICAgICBzaXplb2YoY21kKSwgJnJlc3BfdjMuaWJ2X3Jl
-c3AsDQorCQkJCSAgICAgIHNpemVvZihyZXNwX3YzLmlidl9yZXNwKSkpDQorCQkJZ290byBlcnJf
-ZnJlZTsNCiANCi0JaWYgKHJldCkNCi0JCWdvdG8gZXJyX2ZyZWU7DQorCQlxcC0+cXBfaGFuZGxl
-ID0gcXAtPmlidl9xcC5xcF9udW07DQorCX0gZWxzZSB7DQorCQlpZiAoaWJ2X2NtZF9jcmVhdGVf
-cXAocGQsICZxcC0+aWJ2X3FwLCBhdHRyLCAmY21kLmlidl9jbWQsDQorCQkJCSAgICAgIHNpemVv
-ZihjbWQpLCAmcmVzcC5pYnZfcmVzcCwNCisJCQkJICAgICAgc2l6ZW9mKHJlc3ApKSkNCisJCQln
-b3RvIGVycl9mcmVlOw0KKw0KKwkJcXAtPnFwX2hhbmRsZSA9IHJlc3AuZHJ2X3BheWxvYWQucXBf
-aGFuZGxlOw0KKwl9DQogDQotCXRvX3ZjdHgocGQtPmNvbnRleHQpLT5xcF90YmxbcXAtPmlidl9x
-cC5xcF9udW0gJiAweEZGRkZdID0gcXA7DQorCXRvX3ZjdHgocGQtPmNvbnRleHQpLT5xcF90Ymxb
-cXAtPnFwX2hhbmRsZSAmIDB4RkZGRl0gPSBxcDsNCiANCiAJLyogSWYgc2V0LCBlYWNoIFdSIHN1
-Ym1pdHRlZCB0byB0aGUgU1EgZ2VuZXJhdGUgYSBjb21wbGV0aW9uIGVudHJ5ICovDQogCWlmIChh
-dHRyLT5zcV9zaWdfYWxsKQ0KQEAgLTQxNCw3ICs0MjMsNyBAQCBpbnQgcHZyZG1hX2Rlc3Ryb3lf
-cXAoc3RydWN0IGlidl9xcCAqaWJxcCkNCiAJZnJlZShxcC0+cnEud3JpZCk7DQogCXB2cmRtYV9m
-cmVlX2J1ZigmcXAtPnJidWYpOw0KIAlwdnJkbWFfZnJlZV9idWYoJnFwLT5zYnVmKTsNCi0JY3R4
-LT5xcF90YmxbaWJxcC0+cXBfbnVtICYgMHhGRkZGXSA9IE5VTEw7DQorCWN0eC0+cXBfdGJsW3Fw
-LT5xcF9oYW5kbGUgJiAweEZGRkZdID0gTlVMTDsNCiAJZnJlZShxcCk7DQogDQogCXJldHVybiAw
-Ow0KQEAgLTU0Nyw3ICs1NTYsNyBAQCBvdXQ6DQogCWlmIChucmVxKSB7DQogCQl1ZG1hX3RvX2Rl
-dmljZV9iYXJyaWVyKCk7DQogCQlwdnJkbWFfd3JpdGVfdWFyX3FwKGN0eC0+dWFyLA0KLQkJCQkg
-ICAgUFZSRE1BX1VBUl9RUF9TRU5EIHwgaWJxcC0+cXBfbnVtKTsNCisJCQkJICAgIFBWUkRNQV9V
-QVJfUVBfU0VORCB8IHFwLT5xcF9oYW5kbGUpOw0KIAl9DQogDQogCXB0aHJlYWRfc3Bpbl91bmxv
-Y2soJnFwLT5zcS5sb2NrKTsNCkBAIC02MzAsNyArNjM5LDcgQEAgaW50IHB2cmRtYV9wb3N0X3Jl
-Y3Yoc3RydWN0IGlidl9xcCAqaWJxcCwgc3RydWN0IGlidl9yZWN2X3dyICp3ciwNCiBvdXQ6DQog
-CWlmIChucmVxKQ0KIAkJcHZyZG1hX3dyaXRlX3Vhcl9xcChjdHgtPnVhciwNCi0JCQkJICAgIFBW
-UkRNQV9VQVJfUVBfUkVDViB8IGlicXAtPnFwX251bSk7DQorCQkJCSAgICBQVlJETUFfVUFSX1FQ
-X1JFQ1YgfCBxcC0+cXBfaGFuZGxlKTsNCiANCiAJcHRocmVhZF9zcGluX3VubG9jaygmcXAtPnJx
-LmxvY2spOw0KIAlyZXR1cm4gcmV0Ow0KLS0gDQoxLjguMy4xDQoNCg==
+On Thu, May 16, 2019 at 06:24:48PM +0000, Adit Ranadive wrote:
+> From: Bryan Tan <bryantan@vmware.com>
+>=20
+> This change allows the RDMA stack to use physical resource numbers if
+> they are passed up from the device. Doing so allows communication with
+> physical non-ESX endpoints (such as a bare-metal Linux machine or a
+> SR-IOV-enabled VM).
+>=20
+> This is accomplished by separating the concept of the QP number from
+> the QP handle. Previously, the two were the same, as the QP number was
+> exposed to the guest and also used to reference a virtual QP in the
+> device backend. With physical resource numbers exposed, the QP number
+> given to the guest is the QP number assigned to the physical HCA's QP,
+> while the QP handle is still the internal handle used to reference a
+> virtual QP. Regardless of whether the device is exposing physical ids,
+> the driver will still try to pick up the QP handle from the backend if
+> possible. The MR keys exposed to the guest will also be the MR keys
+> created by the physical HCA, instead of virtual MR keys.
+>=20
+> A new version of the create QP response has been added to the device
+> API. The device backend will pass the QP handle up to the driver, if
+> both the device and driver are at the appriopriate version, and the ABI
+> has also been updated to allow the return of the QP handle to the guest
+> library. The PVRDMA version and ABI version have been bumped up because
+> of these non-compatible changes.
+>=20
+> Reviewed-by: Jorgen Hansen <jhansen@vmware.com>
+> Signed-off-by: Adit Ranadive <aditr@vmware.com>
+> Signed-off-by: Bryan Tan <bryantan@vmware.com>
+> ---
+>  drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h | 15 +++++++++++++-
+>  drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  8 +++++++-
+>  drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c      | 24 +++++++++++++++++=
+++++--
+>  include/uapi/rdma/vmw_pvrdma-abi.h                |  9 ++++++++-
+>  4 files changed, 51 insertions(+), 5 deletions(-)
+> ---
+>=20
+> The PR for userspace was sent:
+> https://github.com/linux-rdma/rdma-core/pull/531
+>=20
+> ---
+> diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h b/drivers/=
+infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
+> index 8f9749d54688..86a6c054ea26 100644
+> --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
+> +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
+> @@ -58,7 +58,8 @@
+>  #define PVRDMA_ROCEV1_VERSION		17
+>  #define PVRDMA_ROCEV2_VERSION		18
+>  #define PVRDMA_PPN64_VERSION		19
+> -#define PVRDMA_VERSION			PVRDMA_PPN64_VERSION
+> +#define PVRDMA_QPHANDLE_VERSION		20
+> +#define PVRDMA_VERSION			PVRDMA_QPHANDLE_VERSION
+> =20
+>  #define PVRDMA_BOARD_ID			1
+>  #define PVRDMA_REV_ID			1
+> @@ -581,6 +582,17 @@ struct pvrdma_cmd_create_qp_resp {
+>  	u32 max_inline_data;
+>  };
+> =20
+> +struct pvrdma_cmd_create_qp_resp_v2 {
+> +	struct pvrdma_cmd_resp_hdr hdr;
+> +	u32 qpn;
+> +	u32 qp_handle;
+> +	u32 max_send_wr;
+> +	u32 max_recv_wr;
+> +	u32 max_send_sge;
+> +	u32 max_recv_sge;
+> +	u32 max_inline_data;
+> +};
+> +
+>  struct pvrdma_cmd_modify_qp {
+>  	struct pvrdma_cmd_hdr hdr;
+>  	u32 qp_handle;
+> @@ -663,6 +675,7 @@ struct pvrdma_cmd_destroy_bind {
+>  	struct pvrdma_cmd_create_cq_resp create_cq_resp;
+>  	struct pvrdma_cmd_resize_cq_resp resize_cq_resp;
+>  	struct pvrdma_cmd_create_qp_resp create_qp_resp;
+> +	struct pvrdma_cmd_create_qp_resp_v2 create_qp_resp_v2;
+>  	struct pvrdma_cmd_query_qp_resp query_qp_resp;
+>  	struct pvrdma_cmd_destroy_qp_resp destroy_qp_resp;
+>  	struct pvrdma_cmd_create_srq_resp create_srq_resp;
+> diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/inf=
+iniband/hw/vmw_pvrdma/pvrdma_main.c
+> index 40182297f87f..02e337837a2e 100644
+> --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+> +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+> @@ -201,7 +201,13 @@ static int pvrdma_register_device(struct pvrdma_dev =
+*dev)
+>  	dev->ib_dev.owner =3D THIS_MODULE;
+>  	dev->ib_dev.num_comp_vectors =3D 1;
+>  	dev->ib_dev.dev.parent =3D &dev->pdev->dev;
+> -	dev->ib_dev.uverbs_abi_ver =3D PVRDMA_UVERBS_ABI_VERSION;
+> +
+> +	if (dev->dsr_version >=3D PVRDMA_QPHANDLE_VERSION)
+> +		dev->ib_dev.uverbs_abi_ver =3D PVRDMA_UVERBS_ABI_VERSION;
+> +	else
+> +		dev->ib_dev.uverbs_abi_ver =3D
+> +				PVRDMA_UVERBS_NO_QP_HANDLE_ABI_VERSION;
+> +
+>  	dev->ib_dev.uverbs_cmd_mask =3D
+>  		(1ull << IB_USER_VERBS_CMD_GET_CONTEXT)		|
+>  		(1ull << IB_USER_VERBS_CMD_QUERY_DEVICE)	|
+> diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c b/drivers/infin=
+iband/hw/vmw_pvrdma/pvrdma_qp.c
+> index 0eaaead5baec..8cba7623f379 100644
+> --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
+> +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
+> @@ -195,7 +195,9 @@ struct ib_qp *pvrdma_create_qp(struct ib_pd *pd,
+>  	union pvrdma_cmd_resp rsp;
+>  	struct pvrdma_cmd_create_qp *cmd =3D &req.create_qp;
+>  	struct pvrdma_cmd_create_qp_resp *resp =3D &rsp.create_qp_resp;
+> +	struct pvrdma_cmd_create_qp_resp_v2 *resp_v2 =3D &rsp.create_qp_resp_v2=
+;
+>  	struct pvrdma_create_qp ucmd;
+> +	struct pvrdma_create_qp_resp qp_resp =3D {};
+>  	unsigned long flags;
+>  	int ret;
+>  	bool is_srq =3D !!init_attr->srq;
+> @@ -379,13 +381,31 @@ struct ib_qp *pvrdma_create_qp(struct ib_pd *pd,
+>  	}
+> =20
+>  	/* max_send_wr/_recv_wr/_send_sge/_recv_sge/_inline_data */
+> -	qp->qp_handle =3D resp->qpn;
+>  	qp->port =3D init_attr->port_num;
+> -	qp->ibqp.qp_num =3D resp->qpn;
+> +	if (dev->dsr_version >=3D PVRDMA_QPHANDLE_VERSION) {
+> +		qp->ibqp.qp_num =3D resp_v2->qpn;
+> +		qp->qp_handle =3D resp_v2->qp_handle;
+> +	} else {
+> +		qp->ibqp.qp_num =3D resp->qpn;
+> +		qp->qp_handle =3D resp->qpn;
+> +	}
+> +
+>  	spin_lock_irqsave(&dev->qp_tbl_lock, flags);
+>  	dev->qp_tbl[qp->qp_handle % dev->dsr->caps.max_qp] =3D qp;
+>  	spin_unlock_irqrestore(&dev->qp_tbl_lock, flags);
+> =20
+> +	if (!qp->is_kernel) {
+> +		/* Copy udata back. */
+> +		qp_resp.qpn =3D qp->ibqp.qp_num;
+> +		qp_resp.qp_handle =3D qp->qp_handle;
+> +		if (ib_copy_to_udata(udata, &qp_resp, sizeof(qp_resp))) {
+> +			dev_warn(&dev->pdev->dev,
+> +				 "failed to copy back udata\n");
+> +			pvrdma_destroy_qp(&qp->ibqp, udata);
+> +			return ERR_PTR(-EINVAL);
+> +		}
+> +	}
+> +
+>  	return &qp->ibqp;
+> =20
+>  err_pdir:
+> diff --git a/include/uapi/rdma/vmw_pvrdma-abi.h b/include/uapi/rdma/vmw_p=
+vrdma-abi.h
+> index 6e73f0274e41..8ebab11dadcb 100644
+> --- a/include/uapi/rdma/vmw_pvrdma-abi.h
+> +++ b/include/uapi/rdma/vmw_pvrdma-abi.h
+> @@ -49,7 +49,9 @@
+> =20
+>  #include <linux/types.h>
+> =20
+> -#define PVRDMA_UVERBS_ABI_VERSION	3		/* ABI Version. */
+> +#define PVRDMA_UVERBS_NO_QP_HANDLE_ABI_VERSION	3
+> +#define PVRDMA_UVERBS_ABI_VERSION		4	/* ABI Version. */
+
+Don't mess with ABI version when all you are doing is making the
+response or request struct longer.
+
+Jason
