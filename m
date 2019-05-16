@@ -2,92 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 308F42045A
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 13:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1972204B0
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 13:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726537AbfEPLQK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 May 2019 07:16:10 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:38134 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726955AbfEPLQK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 May 2019 07:16:10 -0400
-Received: by mail-qt1-f193.google.com with SMTP id d13so3356088qth.5
-        for <linux-rdma@vger.kernel.org>; Thu, 16 May 2019 04:16:09 -0700 (PDT)
+        id S1726569AbfEPL2o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 May 2019 07:28:44 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33611 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbfEPL2o (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 May 2019 07:28:44 -0400
+Received: by mail-wr1-f67.google.com with SMTP id d9so3024643wrx.0
+        for <linux-rdma@vger.kernel.org>; Thu, 16 May 2019 04:28:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dgG827h4xHr7z365VN3FGwrSU2zh6E/LrTDEofMaaKE=;
-        b=cVVwz2TyFNZS5i00t4HDbj5w16ojHP0lAlyDRvpAjTe4oLhrENzEAwpaaXAOa+arbY
-         myXKRLKzHTOzHugKGp5/UspYUrfk/r6ZENPnkJGFJoFH5YNp/88jwLUKGtupg/yg1yna
-         tVyVgdp5E9zLVPFJSC//Spg36lbNk6KDEtx8biJzpQQ6SqXDKf9JOh7wXcbXRIPzyFae
-         yJazleARAcE68C9k94rPII41rStsjepL4ynxKMQM6QucOkD/TD7Vej+V31MnQxzHNn0q
-         DJ9eFO9lGS9lGOc7SFAzQKWpVg8q3GYMujwVBzcx3xCN2iNOBVao0pWHA80dpnZ49D5O
-         0GPw==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=vXDRNLgoGMN6g5/iZYTdUiGMMZTk0J2NCfgCWTFIutA=;
+        b=TVmjG0TfVEMMNGe1AtUDLcVjQgtJ1wzQvJLsA4/x6fPx7ed3r5jbOKVdVcAt9Ux4OW
+         XHxhN+3CmxOo+MXxW/cWzBEF9/ZXS20kjmwPJWW+hoPeHv51j9eceAX81LMSQOyCGfzB
+         twKcXUB6ShNGWvYTcrsRlwWh0eM2prPh5IOV5QoqA+8pldsRiTmkxFx2O5lZGxckshVo
+         bLdFhravRTn5+rzns9XwRTiwrKA53/+uH9IFIBBRJayx9J1j+reYrYS2HiLQWlYWxpxF
+         4FgPEEyIYXp5jskXi3WXdGwIXEfCiC7eQcLXjrDPbHOfLb3y0q1eA+SrMYwr/d0oKoaB
+         t29g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dgG827h4xHr7z365VN3FGwrSU2zh6E/LrTDEofMaaKE=;
-        b=ECP5Vuqv5DUQD8vk+bPTNdPVcyPk7tiboAgZTvRZfVHE1qd/K9qZGnmWFj1rYLmufq
-         gihLQLICt4PWEydZYV5LDUeF9ZbDmpwyw6rxXDKsOHPXa6HRm/1v+iyAoYeTFf3xAQZn
-         I5jwaxqggF+Npzr+nHHZP89/FBa5+kIzqgBHJPila0H32+apfxIozawVPTPLKXFp+ULo
-         q7XTmnB4/1a1keVAc0qnQLckECUsbxYHC6Q1fKzm7ijoxJQRbRfTOPU9Nj/kwGo5Khu5
-         d6TlFUgOKkkk/onHDD6YdYluS97qKRtxxfq3w/QPa16g96DORdiZV/08Mxt489da4Hyd
-         GRaw==
-X-Gm-Message-State: APjAAAVITGF4CF8IutcCNfuROYJJutqbGhFuZeOqVoMUnLTKcVRUels7
-        SB9YjYRIcXWINyHmWjB8Hgt3+CLwwIA=
-X-Google-Smtp-Source: APXvYqzHQMn2SX3hWJbmmP3JAuIm5wmkj9J+uRVk4hHEzL4nCheBh1ZKTcl5KmbU5IR2f4TrjeOvPg==
-X-Received: by 2002:aed:224e:: with SMTP id o14mr41074733qtc.271.1558005369248;
-        Thu, 16 May 2019 04:16:09 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id a51sm3419908qta.85.2019.05.16.04.16.08
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 May 2019 04:16:08 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hREMp-0006B3-Vz; Thu, 16 May 2019 08:16:07 -0300
-Date:   Thu, 16 May 2019 08:16:07 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kamal Heib <kamalheib1@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=vXDRNLgoGMN6g5/iZYTdUiGMMZTk0J2NCfgCWTFIutA=;
+        b=YErJGr12aS2V9A5xgM/NgDCpH2jWdFyZ7OwMwmOMdybRxeYbW3yrC1YsNmY1l21geh
+         loQyaa2P8LAvUP6QpClLgPYA2JBhpGGrVjBkvjJTYBS3jojS8KRzaJIYy5MpV3Bg7dgk
+         9ZPcj01Lf2AYN6TL3mqyQSHC7UM0OAf+I/eCQtSTHXeeyvEfPxVfChbT5gmFWLE1ajuz
+         EEbNJtOxiS1EVVcEb4yovfl5o2p2NomzxgLGl6XJJ3ortT/rYfSd/Y9c7fqCIuEfTD/n
+         SJ/5JpeNWEtAlfpTLoou2yXUi/wAMFNMN1T/xePGqNyiyh8kurkaEBikDAUaGoF+aAJU
+         L1zA==
+X-Gm-Message-State: APjAAAWeK3U9FJ8we9jqOcYEKGDPbFQkNkb69S3WY/XaL+uCqYpN4XUR
+        g3B8Xn09yUluMUbS2mQSVSM=
+X-Google-Smtp-Source: APXvYqyopLYCbCObCsDFf1BfsMPIdmbj2QILez8vuEbIJODm//lC7xxy8sOr5KvA9xM2s82ADHRWkA==
+X-Received: by 2002:adf:dc8e:: with SMTP id r14mr12892749wrj.121.1558006122809;
+        Thu, 16 May 2019 04:28:42 -0700 (PDT)
+Received: from kheib-workstation (bzq-79-181-17-143.red.bezeqint.net. [79.181.17.143])
+        by smtp.gmail.com with ESMTPSA id x6sm6931250wru.36.2019.05.16.04.28.41
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 16 May 2019 04:28:42 -0700 (PDT)
+Message-ID: <3c53c827f287df7f46b58c7f5e2fd23207a83683.camel@gmail.com>
 Subject: Re: [PATCH for-next] RDMA/providers: Simplify ib_modify_port for
  RoCE providers
-Message-ID: <20190516111607.GA22587@ziepe.ca>
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Date:   Thu, 16 May 2019 14:28:40 +0300
+In-Reply-To: <20190516111607.GA22587@ziepe.ca>
 References: <20190516105308.29450-1-kamalheib1@gmail.com>
+         <20190516111607.GA22587@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190516105308.29450-1-kamalheib1@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 16, 2019 at 01:53:08PM +0300, Kamal Heib wrote:
-> For RoCE ports the call for ib_modify_port is not meaningful, so
-> simplify the providers of RoCE by return OK in ib_core.
+On Thu, 2019-05-16 at 08:16 -0300, Jason Gunthorpe wrote:
+> On Thu, May 16, 2019 at 01:53:08PM +0300, Kamal Heib wrote:
+> > For RoCE ports the call for ib_modify_port is not meaningful, so
+> > simplify the providers of RoCE by return OK in ib_core.
+> > 
+> > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> > ---
+> >  drivers/infiniband/core/device.c              | 23 ++++++-----
+> >  drivers/infiniband/hw/hns/hns_roce_main.c     |  7 ----
+> >  drivers/infiniband/hw/mlx4/main.c             |  8 ----
+> >  drivers/infiniband/hw/mlx5/main.c             |  6 ---
+> >  drivers/infiniband/hw/ocrdma/ocrdma_main.c    |  1 -
+> >  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |  6 ---
+> >  drivers/infiniband/hw/ocrdma/ocrdma_verbs.h   |  2 -
+> >  drivers/infiniband/hw/qedr/main.c             |  1 -
+> >  drivers/infiniband/hw/qedr/verbs.c            |  6 ---
+> >  drivers/infiniband/hw/qedr/verbs.h            |  2 -
+> >  .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  1 -
+> >  .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.c   | 38 -------------
+> > ------
+> >  .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |  2 -
+> >  drivers/infiniband/sw/rxe/rxe_verbs.c         | 18 ---------
+> >  14 files changed, 14 insertions(+), 107 deletions(-)
 > 
-> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> ---
->  drivers/infiniband/core/device.c              | 23 ++++++-----
->  drivers/infiniband/hw/hns/hns_roce_main.c     |  7 ----
->  drivers/infiniband/hw/mlx4/main.c             |  8 ----
->  drivers/infiniband/hw/mlx5/main.c             |  6 ---
->  drivers/infiniband/hw/ocrdma/ocrdma_main.c    |  1 -
->  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |  6 ---
->  drivers/infiniband/hw/ocrdma/ocrdma_verbs.h   |  2 -
->  drivers/infiniband/hw/qedr/main.c             |  1 -
->  drivers/infiniband/hw/qedr/verbs.c            |  6 ---
->  drivers/infiniband/hw/qedr/verbs.h            |  2 -
->  .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  1 -
->  .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.c   | 38 -------------------
->  .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |  2 -
->  drivers/infiniband/sw/rxe/rxe_verbs.c         | 18 ---------
->  14 files changed, 14 insertions(+), 107 deletions(-)
+> We have more roce only drivers than this, why isn't everything
+> changed?
+> 
+> Jason
 
-We have more roce only drivers than this, why isn't everything
-changed?
+Not all of them implements modify_port().
 
-Jason
+Thanks,
+Kamal
+
