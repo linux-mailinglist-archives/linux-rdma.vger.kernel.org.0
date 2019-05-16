@@ -2,228 +2,220 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0226320EAB
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 20:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96A420F04
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 20:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbfEPS3u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 May 2019 14:29:50 -0400
-Received: from mail-eopbgr140074.outbound.protection.outlook.com ([40.107.14.74]:47059
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        id S1726494AbfEPS7z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 May 2019 14:59:55 -0400
+Received: from mail-eopbgr740079.outbound.protection.outlook.com ([40.107.74.79]:25083
+        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726357AbfEPS3t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 May 2019 14:29:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+        id S1726491AbfEPS7z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 May 2019 14:59:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jHubt/S9JKEsQVNsPm3V79OlM2UzXv9v0I36mC0ebCE=;
- b=gAxk84oVIFjFyGjfC/Y+jRMahCi85VewnAXpCzQ7hQ83PeGcIx5PAXOZvFtqH2MgP4Ru5beiiuwFmNPecvJuFffCs3ZfNRNNszS/e18ONseNkxuYk54gXFu22ztdhfuKyv+sbsefLftQRs7iyw2lvOcV8GlkqI6tOQF5qcMO+8Q=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB4160.eurprd05.prod.outlook.com (10.171.183.10) with Microsoft SMTP
+ bh=EdNCgPc1bvzgiD8BkPess6mUndaow71h9jWEANHcivg=;
+ b=O74n3ALxDJFdNJ8HjK9t3XUixbqtA2Z/AySEEhGjQr7JOzUhycCIz80GuhS2xk+gVfsR6/Q1IpEA29mch9HF40J6bbUyUjNT6BBDF8RE3BZQrf+W/sIny2v9B2XcC7lYmcDDKsN2wnFRN1mD3ChCcs2kg22/6+oAFsSOPOTpJBQ=
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com (20.177.186.28) by
+ BYAPR05MB4981.namprd05.prod.outlook.com (20.177.230.159) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1900.16; Thu, 16 May 2019 18:29:45 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1900.010; Thu, 16 May 2019
- 18:29:45 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Adit Ranadive <aditr@vmware.com>
+ 15.20.1922.8; Thu, 16 May 2019 18:59:45 +0000
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::d99b:a85f:758a:f04b]) by BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::d99b:a85f:758a:f04b%7]) with mapi id 15.20.1922.002; Thu, 16 May 2019
+ 18:59:45 +0000
+From:   Adit Ranadive <aditr@vmware.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
 CC:     "dledford@redhat.com" <dledford@redhat.com>,
         Bryan Tan <bryantan@vmware.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Pv-drivers <Pv-drivers@vmware.com>
-Subject: Re: [PATCH rdma-core] vmw_pvrdma: Use resource ids from physical
+Subject: Re: [PATCH for-next] RDMA/vmw_pvrdma: Use resource ids from physical
  device if available
-Thread-Topic: [PATCH rdma-core] vmw_pvrdma: Use resource ids from physical
+Thread-Topic: [PATCH for-next] RDMA/vmw_pvrdma: Use resource ids from physical
  device if available
-Thread-Index: AQHVDBT3BQBSIqM9/0CtsQbRxE3AJaZuEnsA
-Date:   Thu, 16 May 2019 18:29:45 +0000
-Message-ID: <20190516182940.GI22573@mellanox.com>
-References: <1558031213-14219-1-git-send-email-aditr@vmware.com>
-In-Reply-To: <1558031213-14219-1-git-send-email-aditr@vmware.com>
+Thread-Index: AQHVDBSlkap1QWBkwEm57ccCex0bMqZuEk2AgAAIp4A=
+Date:   Thu, 16 May 2019 18:59:45 +0000
+Message-ID: <9b951e0f-e662-197a-8af2-a0fd57744aee@vmware.com>
+References: <1558031071-14110-1-git-send-email-aditr@vmware.com>
+ <20190516182901.GH22573@mellanox.com>
+In-Reply-To: <20190516182901.GH22573@mellanox.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: YTXPR0101CA0026.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00::39) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
+x-clientproxiedby: BY5PR13CA0032.namprd13.prod.outlook.com
+ (2603:10b6:a03:180::45) To BYAPR05MB5511.namprd05.prod.outlook.com
+ (2603:10b6:a03:1a::28)
 authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
+ smtp.mailfrom=aditr@vmware.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.49.251]
+x-originating-ip: [66.170.99.1]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: eec42925-1256-47f3-e703-08d6da2c7884
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4160;
-x-ms-traffictypediagnostic: VI1PR05MB4160:
+x-ms-office365-filtering-correlation-id: 8b778caa-61b4-47d8-50c2-08d6da30a912
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR05MB4981;
+x-ms-traffictypediagnostic: BYAPR05MB4981:
 x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <VI1PR05MB4160251B67946962F740E2BBCF0A0@VI1PR05MB4160.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+x-microsoft-antispam-prvs: <BYAPR05MB49816C1F74FA28E9E8A9C902C50A0@BYAPR05MB4981.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:293;
 x-forefront-prvs: 0039C6E5C5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(136003)(346002)(396003)(366004)(39860400002)(189003)(199004)(68736007)(6246003)(256004)(229853002)(66066001)(6506007)(26005)(11346002)(66476007)(64756008)(54906003)(386003)(14454004)(66556008)(66446008)(2616005)(66946007)(476003)(102836004)(81166006)(36756003)(73956011)(81156014)(6436002)(53936002)(966005)(8936002)(7736002)(305945005)(71200400001)(76176011)(8676002)(6916009)(86362001)(186003)(3846002)(6116002)(25786009)(5660300002)(6512007)(99286004)(316002)(1076003)(486006)(6486002)(33656002)(2906002)(478600001)(4326008)(446003)(52116002)(6306002)(71190400001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4160;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(39860400002)(376002)(346002)(366004)(396003)(199004)(189003)(446003)(66556008)(66446008)(81166006)(81156014)(2616005)(64756008)(8676002)(66476007)(107886003)(25786009)(6246003)(4326008)(316002)(486006)(71190400001)(8936002)(966005)(31686004)(73956011)(66946007)(11346002)(68736007)(66066001)(31696002)(14444005)(256004)(53936002)(229853002)(86362001)(53546011)(6306002)(76176011)(386003)(6916009)(6506007)(52116002)(6116002)(99286004)(3846002)(54906003)(2906002)(36756003)(6486002)(6512007)(5660300002)(186003)(45080400002)(478600001)(476003)(14454004)(71200400001)(26005)(305945005)(6436002)(7736002)(102836004)(309714004);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB4981;H:BYAPR05MB5511.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: uwtKN+U63yt5lurHY0g2ESc2hcyvXWsHaUtqFmg8NbG1Q8KDCL8Bv7MeBJoEgJ9XuR2kRA3ZdTMY0/ACFQNyhUmidQBz6iMM8E2CXwayn3b6Rxpj3b4qQjSlcZ6imv+IcxDN4YZBSAERjCAT1XFeZJjMScKffenzTJeIiXsPwlE5GWR6lVzBVZ2j4Rj8hAb9fEVy2eLIVqMPtReVh+n6CRqHJv1+ITG5QGL4ce2I2ACevzMLpe7tsAI0DWfLp5xyoh/FaJ2opb1xblYHw8I8/kouVtoIG6LRg5KUs3GZ63kQYNzRVqnDTydjTI/DA8bs4XZbbj7A/OO6xU40IdVQfTPAyGdlTgnZDEnbjHdFQeuj34RMm+qvtHsVLcacy+kjI9bsoqKXZ1LdusWNX3jL6hSLSzAenLVZ1BISrrnAosI=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2A3CEFC46046ED4A9EB1A18FA087D17D@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+x-microsoft-antispam-message-info: KHAumdw6b+hAhorVbOlYD3a84y4q6Gpi1A5wlrBs/gUUyUoqeVdJWuCnofOeKNZJB+XdI6tcEofcjSQp+wc1s+riNIDrO+ukj9iKGPPBYKbaZ42CiP5LwEJJugq8lDtbbHezl+thagLxfQKBZwy7ez8TFE4tr/2n29+NU6AlHAUspm/Eaoe1qk+1Pj4Q3t2/hh+dWkoVXMUAACVhN2PswlWNaGqXv70YhRQy8Jtmztz3Ri97eOO8kuiYDBHiEoWXPOKJcnmkr5UfYZj6dCRu/IuPVNojxu3vwy0aQ5TzPUWE/fPXfa1zvQtpkj1EYbH3qNfMRoVhq9yS89+FLIW6xOMpiTt2x/f7tBm5SHMxujVyuSznCoTFHx6iIDbvnyeO6T+lFpjutHuSlFhBdZfXI1TuO7vz195W2WU/wXtuaaI=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0C502C5BDC655644A5A1D469DE5FAA16@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eec42925-1256-47f3-e703-08d6da2c7884
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 May 2019 18:29:45.7184
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b778caa-61b4-47d8-50c2-08d6da30a912
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 May 2019 18:59:45.3036
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4160
+X-MS-Exchange-CrossTenant-userprincipalname: aditr@vmware.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4981
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 16, 2019 at 06:27:06PM +0000, Adit Ranadive wrote:
-> From: Bryan Tan <bryantan@vmware.com>
->=20
-> This change allows user-space to use physical resource numbers if
-> they are passed up from the driver. Doing so allows communication with
-> physical non-ESX endpoints (such as a bare-metal Linux machine or a
-> SR-IOV-enabled VM).
->=20
-> This is accomplished by separating the concept of the QP number from
-> the QP handle. Previously, the two were the same, as the QP number
-> was exposed to the guest and also used to reference  a virtual QP in
-> the device backend. With physical resource numbers exposed, the QP
-> number given to the guest is the QP number assigned to the physical
-> HCA's QP, while the QP handle is still the internal handle used to
-> reference a virtual QP. Regardless of whether the device is exposing
-> physical ids, the driver will still try to pick up the QP handle from
-> the backend if possible.
->=20
-> The MR keys exposed to the guest when the physical resource ids feature
-> is turned on are likewise now the MR keys created by the physical HCA,
-> instead of virtual MR keys.
->=20
-> The ABI has been updated to allow the return of the QP handle to the
-> guest library. The ABI version has been bumped up because of this
-> non-compatible change.
->=20
-> Reviewed-by: Jorgen Hansen <jhansen@vmware.com>
-> Signed-off-by: Adit Ranadive <aditr@vmware.com>
-> Signed-off-by: Bryan Tan <bryantan@vmware.com>
->  kernel-headers/rdma/vmw_pvrdma-abi.h | 11 ++++++++++-
->  providers/vmw_pvrdma/pvrdma-abi.h    |  4 +++-
->  providers/vmw_pvrdma/pvrdma.h        |  1 +
->  providers/vmw_pvrdma/pvrdma_main.c   |  4 ++--
->  providers/vmw_pvrdma/qp.c            | 31 ++++++++++++++++++++----------=
--
->  5 files changed, 36 insertions(+), 15 deletions(-)
->=20
-> Github PR:
-> https://github.com/linux-rdma/rdma-core/pull/531
->=20
-> diff --git a/kernel-headers/rdma/vmw_pvrdma-abi.h b/kernel-headers/rdma/v=
-mw_pvrdma-abi.h
-> index 6e73f0274e41..8c388d623e5c 100644
-> +++ b/kernel-headers/rdma/vmw_pvrdma-abi.h
-> @@ -49,7 +49,11 @@
-> =20
->  #include <linux/types.h>
-> =20
-> -#define PVRDMA_UVERBS_ABI_VERSION	3		/* ABI Version. */
-> +#define PVRDMA_UVERBS_MIN_ABI_VERSION		3
-> +#define PVRDMA_UVERBS_MAX_ABI_VERSION		4
-> +
-> +#define PVRDMA_UVERBS_NO_QP_HANDLE_ABI_VERSION	3
-> +
->  #define PVRDMA_UAR_HANDLE_MASK		0x00FFFFFF	/* Bottom 24 bits. */
->  #define PVRDMA_UAR_QP_OFFSET		0		/* QP doorbell. */
->  #define PVRDMA_UAR_QP_SEND		(1 << 30)	/* Send bit. */
-> @@ -179,6 +183,11 @@ struct pvrdma_create_qp {
->  	__aligned_u64 qp_addr;
->  };
-> =20
-> +struct pvrdma_create_qp_resp {
-> +	__u32 qpn;
-> +	__u32 qp_handle;
-> +};
-> +
->  /* PVRDMA masked atomic compare and swap */
->  struct pvrdma_ex_cmp_swap {
->  	__aligned_u64 swap_val;
-> diff --git a/providers/vmw_pvrdma/pvrdma-abi.h b/providers/vmw_pvrdma/pvr=
-dma-abi.h
-> index 77db9ddd1bb7..9775925f8555 100644
-> +++ b/providers/vmw_pvrdma/pvrdma-abi.h
-> @@ -54,8 +54,10 @@ DECLARE_DRV_CMD(user_pvrdma_alloc_pd, IB_USER_VERBS_CM=
-D_ALLOC_PD,
->  		empty, pvrdma_alloc_pd_resp);
->  DECLARE_DRV_CMD(user_pvrdma_create_cq, IB_USER_VERBS_CMD_CREATE_CQ,
->  		pvrdma_create_cq, pvrdma_create_cq_resp);
-> -DECLARE_DRV_CMD(user_pvrdma_create_qp, IB_USER_VERBS_CMD_CREATE_QP,
-> +DECLARE_DRV_CMD(user_pvrdma_create_qp_v3, IB_USER_VERBS_CMD_CREATE_QP,
->  		pvrdma_create_qp, empty);
-> +DECLARE_DRV_CMD(user_pvrdma_create_qp, IB_USER_VERBS_CMD_CREATE_QP,
-> +		pvrdma_create_qp, pvrdma_create_qp_resp);
->  DECLARE_DRV_CMD(user_pvrdma_create_srq, IB_USER_VERBS_CMD_CREATE_SRQ,
->  		pvrdma_create_srq, pvrdma_create_srq_resp);
->  DECLARE_DRV_CMD(user_pvrdma_alloc_ucontext, IB_USER_VERBS_CMD_GET_CONTEX=
-T,
-> diff --git a/providers/vmw_pvrdma/pvrdma.h b/providers/vmw_pvrdma/pvrdma.=
-h
-> index ebd50ce1c3cd..b67c07e94f90 100644
-> +++ b/providers/vmw_pvrdma/pvrdma.h
-> @@ -170,6 +170,7 @@ struct pvrdma_qp {
->  	struct pvrdma_wq		sq;
->  	struct pvrdma_wq		rq;
->  	int				is_srq;
-> +	uint32_t			qp_handle;
->  };
-> =20
->  struct pvrdma_ah {
-> diff --git a/providers/vmw_pvrdma/pvrdma_main.c b/providers/vmw_pvrdma/pv=
-rdma_main.c
-> index 52a2de22d44c..616310ae45c5 100644
-> +++ b/providers/vmw_pvrdma/pvrdma_main.c
-> @@ -201,8 +201,8 @@ static const struct verbs_match_ent hca_table[] =3D {
-> =20
->  static const struct verbs_device_ops pvrdma_dev_ops =3D {
->  	.name =3D "pvrdma",
-> -	.match_min_abi_version =3D PVRDMA_UVERBS_ABI_VERSION,
-> -	.match_max_abi_version =3D PVRDMA_UVERBS_ABI_VERSION,
-> +	.match_min_abi_version =3D PVRDMA_UVERBS_MIN_ABI_VERSION,
-> +	.match_max_abi_version =3D PVRDMA_UVERBS_MAX_ABI_VERSION,
->  	.match_table =3D hca_table,
->  	.alloc_device =3D pvrdma_device_alloc,
->  	.uninit_device =3D pvrdma_uninit_device,
-> diff --git a/providers/vmw_pvrdma/qp.c b/providers/vmw_pvrdma/qp.c
-> index ef429db93a43..a173d441df0d 100644
-> +++ b/providers/vmw_pvrdma/qp.c
-> @@ -211,9 +211,9 @@ struct ibv_qp *pvrdma_create_qp(struct ibv_pd *pd,
->  {
->  	struct pvrdma_device *dev =3D to_vdev(pd->context->device);
->  	struct user_pvrdma_create_qp cmd;
-> -	struct ib_uverbs_create_qp_resp resp;
-> +	struct user_pvrdma_create_qp_resp resp;
-> +	struct user_pvrdma_create_qp_v3_resp resp_v3;
->  	struct pvrdma_qp *qp;
-> -	int ret;
->  	int is_srq =3D !!(attr->srq);
-> =20
->  	attr->cap.max_send_sge =3D max_t(uint32_t, 1U, attr->cap.max_send_sge);
-> @@ -282,14 +282,23 @@ struct ibv_qp *pvrdma_create_qp(struct ibv_pd *pd,
->  	cmd.rbuf_size =3D qp->rbuf.length;
->  	cmd.qp_addr =3D (uintptr_t) qp;
-> =20
-> -	ret =3D ibv_cmd_create_qp(pd, &qp->ibv_qp, attr,
-> -				&cmd.ibv_cmd, sizeof(cmd),
-> -				&resp, sizeof(resp));
-> +	if (dev->abi_version <=3D PVRDMA_UVERBS_NO_QP_HANDLE_ABI_VERSION) {
-> +		if (ibv_cmd_create_qp(pd, &qp->ibv_qp, attr, &cmd.ibv_cmd,
-> +				      sizeof(cmd), &resp_v3.ibv_resp,
-> +				      sizeof(resp_v3.ibv_resp)))
-
-And here just pass in the version with the longer size and provide
-some in-band way to tell if the kernel wrote to it.
-
-Jason
+T24gNS8xNi8xOSAxMToyOSBBTSwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPiBPbiBUaHUsIE1h
+eSAxNiwgMjAxOSBhdCAwNjoyNDo0OFBNICswMDAwLCBBZGl0IFJhbmFkaXZlIHdyb3RlOg0KPj4g
+RnJvbTogQnJ5YW4gVGFuIDxicnlhbnRhbkB2bXdhcmUuY29tPg0KPj4NCj4+IFRoaXMgY2hhbmdl
+IGFsbG93cyB0aGUgUkRNQSBzdGFjayB0byB1c2UgcGh5c2ljYWwgcmVzb3VyY2UgbnVtYmVycyBp
+Zg0KPj4gdGhleSBhcmUgcGFzc2VkIHVwIGZyb20gdGhlIGRldmljZS4gRG9pbmcgc28gYWxsb3dz
+IGNvbW11bmljYXRpb24gd2l0aA0KPj4gcGh5c2ljYWwgbm9uLUVTWCBlbmRwb2ludHMgKHN1Y2gg
+YXMgYSBiYXJlLW1ldGFsIExpbnV4IG1hY2hpbmUgb3IgYQ0KPj4gU1ItSU9WLWVuYWJsZWQgVk0p
+Lg0KPj4NCj4+IFRoaXMgaXMgYWNjb21wbGlzaGVkIGJ5IHNlcGFyYXRpbmcgdGhlIGNvbmNlcHQg
+b2YgdGhlIFFQIG51bWJlciBmcm9tDQo+PiB0aGUgUVAgaGFuZGxlLiBQcmV2aW91c2x5LCB0aGUg
+dHdvIHdlcmUgdGhlIHNhbWUsIGFzIHRoZSBRUCBudW1iZXIgd2FzDQo+PiBleHBvc2VkIHRvIHRo
+ZSBndWVzdCBhbmQgYWxzbyB1c2VkIHRvIHJlZmVyZW5jZSBhIHZpcnR1YWwgUVAgaW4gdGhlDQo+
+PiBkZXZpY2UgYmFja2VuZC4gV2l0aCBwaHlzaWNhbCByZXNvdXJjZSBudW1iZXJzIGV4cG9zZWQs
+IHRoZSBRUCBudW1iZXINCj4+IGdpdmVuIHRvIHRoZSBndWVzdCBpcyB0aGUgUVAgbnVtYmVyIGFz
+c2lnbmVkIHRvIHRoZSBwaHlzaWNhbCBIQ0EncyBRUCwNCj4+IHdoaWxlIHRoZSBRUCBoYW5kbGUg
+aXMgc3RpbGwgdGhlIGludGVybmFsIGhhbmRsZSB1c2VkIHRvIHJlZmVyZW5jZSBhDQo+PiB2aXJ0
+dWFsIFFQLiBSZWdhcmRsZXNzIG9mIHdoZXRoZXIgdGhlIGRldmljZSBpcyBleHBvc2luZyBwaHlz
+aWNhbCBpZHMsDQo+PiB0aGUgZHJpdmVyIHdpbGwgc3RpbGwgdHJ5IHRvIHBpY2sgdXAgdGhlIFFQ
+IGhhbmRsZSBmcm9tIHRoZSBiYWNrZW5kIGlmDQo+PiBwb3NzaWJsZS4gVGhlIE1SIGtleXMgZXhw
+b3NlZCB0byB0aGUgZ3Vlc3Qgd2lsbCBhbHNvIGJlIHRoZSBNUiBrZXlzDQo+PiBjcmVhdGVkIGJ5
+IHRoZSBwaHlzaWNhbCBIQ0EsIGluc3RlYWQgb2YgdmlydHVhbCBNUiBrZXlzLg0KPj4NCj4+IEEg
+bmV3IHZlcnNpb24gb2YgdGhlIGNyZWF0ZSBRUCByZXNwb25zZSBoYXMgYmVlbiBhZGRlZCB0byB0
+aGUgZGV2aWNlDQo+PiBBUEkuIFRoZSBkZXZpY2UgYmFja2VuZCB3aWxsIHBhc3MgdGhlIFFQIGhh
+bmRsZSB1cCB0byB0aGUgZHJpdmVyLCBpZg0KPj4gYm90aCB0aGUgZGV2aWNlIGFuZCBkcml2ZXIg
+YXJlIGF0IHRoZSBhcHByaW9wcmlhdGUgdmVyc2lvbiwgYW5kIHRoZSBBQkkNCj4+IGhhcyBhbHNv
+IGJlZW4gdXBkYXRlZCB0byBhbGxvdyB0aGUgcmV0dXJuIG9mIHRoZSBRUCBoYW5kbGUgdG8gdGhl
+IGd1ZXN0DQo+PiBsaWJyYXJ5LiBUaGUgUFZSRE1BIHZlcnNpb24gYW5kIEFCSSB2ZXJzaW9uIGhh
+dmUgYmVlbiBidW1wZWQgdXAgYmVjYXVzZQ0KPj4gb2YgdGhlc2Ugbm9uLWNvbXBhdGlibGUgY2hh
+bmdlcy4NCj4+DQo+PiBSZXZpZXdlZC1ieTogSm9yZ2VuIEhhbnNlbiA8amhhbnNlbkB2bXdhcmUu
+Y29tPg0KPj4gU2lnbmVkLW9mZi1ieTogQWRpdCBSYW5hZGl2ZSA8YWRpdHJAdm13YXJlLmNvbT4N
+Cj4+IFNpZ25lZC1vZmYtYnk6IEJyeWFuIFRhbiA8YnJ5YW50YW5Adm13YXJlLmNvbT4NCj4+IC0t
+LQ0KPj4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody92bXdfcHZyZG1hL3B2cmRtYV9kZXZfYXBpLmgg
+fCAxNSArKysrKysrKysrKysrLQ0KPj4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody92bXdfcHZyZG1h
+L3B2cmRtYV9tYWluLmMgICAgfCAgOCArKysrKysrLQ0KPj4gIGRyaXZlcnMvaW5maW5pYmFuZC9o
+dy92bXdfcHZyZG1hL3B2cmRtYV9xcC5jICAgICAgfCAyNCArKysrKysrKysrKysrKysrKysrKyst
+LQ0KPj4gIGluY2x1ZGUvdWFwaS9yZG1hL3Ztd19wdnJkbWEtYWJpLmggICAgICAgICAgICAgICAg
+fCAgOSArKysrKysrKy0NCj4+ICA0IGZpbGVzIGNoYW5nZWQsIDUxIGluc2VydGlvbnMoKyksIDUg
+ZGVsZXRpb25zKC0pDQo+PiAtLS0NCj4+DQo+PiBUaGUgUFIgZm9yIHVzZXJzcGFjZSB3YXMgc2Vu
+dDoNCj4+IGh0dHBzOi8vbmFtMDQuc2FmZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20vP3Vy
+bD1odHRwcyUzQSUyRiUyRmdpdGh1Yi5jb20lMkZsaW51eC1yZG1hJTJGcmRtYS1jb3JlJTJGcHVs
+bCUyRjUzMSZhbXA7ZGF0YT0wMiU3QzAxJTdDYWRpdHIlNDB2bXdhcmUuY29tJTdDZDRiMGUxZWRl
+Y2IwNGE2OGE0YjQwOGQ2ZGEyYzYyOTUlN0NiMzkxMzhjYTNjZWU0YjRhYTRkNmNkODNkOWRkNjJm
+MCU3QzAlN0MwJTdDNjM2OTM2MjgxNTE2MTQ2MDQ0JmFtcDtzZGF0YT03M3VsVWVCR1lyblpVS25G
+Ulh5T0FBUkJQc0F5ck9OWUFtTGVrc2FHekRJJTNEJmFtcDtyZXNlcnZlZD0wDQo+Pg0KPj4gLS0t
+DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L3Ztd19wdnJkbWEvcHZyZG1h
+X2Rldl9hcGkuaCBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody92bXdfcHZyZG1hL3B2cmRtYV9kZXZf
+YXBpLmgNCj4+IGluZGV4IDhmOTc0OWQ1NDY4OC4uODZhNmMwNTRlYTI2IDEwMDY0NA0KPj4gLS0t
+IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L3Ztd19wdnJkbWEvcHZyZG1hX2Rldl9hcGkuaA0KPj4g
+KysrIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L3Ztd19wdnJkbWEvcHZyZG1hX2Rldl9hcGkuaA0K
+Pj4gQEAgLTU4LDcgKzU4LDggQEANCj4+ICAjZGVmaW5lIFBWUkRNQV9ST0NFVjFfVkVSU0lPTgkJ
+MTcNCj4+ICAjZGVmaW5lIFBWUkRNQV9ST0NFVjJfVkVSU0lPTgkJMTgNCj4+ICAjZGVmaW5lIFBW
+UkRNQV9QUE42NF9WRVJTSU9OCQkxOQ0KPj4gLSNkZWZpbmUgUFZSRE1BX1ZFUlNJT04JCQlQVlJE
+TUFfUFBONjRfVkVSU0lPTg0KPj4gKyNkZWZpbmUgUFZSRE1BX1FQSEFORExFX1ZFUlNJT04JCTIw
+DQo+PiArI2RlZmluZSBQVlJETUFfVkVSU0lPTgkJCVBWUkRNQV9RUEhBTkRMRV9WRVJTSU9ODQo+
+PiAgDQo+PiAgI2RlZmluZSBQVlJETUFfQk9BUkRfSUQJCQkxDQo+PiAgI2RlZmluZSBQVlJETUFf
+UkVWX0lECQkJMQ0KPj4gQEAgLTU4MSw2ICs1ODIsMTcgQEAgc3RydWN0IHB2cmRtYV9jbWRfY3Jl
+YXRlX3FwX3Jlc3Agew0KPj4gIAl1MzIgbWF4X2lubGluZV9kYXRhOw0KPj4gIH07DQo+PiAgDQo+
+PiArc3RydWN0IHB2cmRtYV9jbWRfY3JlYXRlX3FwX3Jlc3BfdjIgew0KPj4gKwlzdHJ1Y3QgcHZy
+ZG1hX2NtZF9yZXNwX2hkciBoZHI7DQo+PiArCXUzMiBxcG47DQo+PiArCXUzMiBxcF9oYW5kbGU7
+DQo+PiArCXUzMiBtYXhfc2VuZF93cjsNCj4+ICsJdTMyIG1heF9yZWN2X3dyOw0KPj4gKwl1MzIg
+bWF4X3NlbmRfc2dlOw0KPj4gKwl1MzIgbWF4X3JlY3Zfc2dlOw0KPj4gKwl1MzIgbWF4X2lubGlu
+ZV9kYXRhOw0KPj4gK307DQo+PiArDQo+PiAgc3RydWN0IHB2cmRtYV9jbWRfbW9kaWZ5X3FwIHsN
+Cj4+ICAJc3RydWN0IHB2cmRtYV9jbWRfaGRyIGhkcjsNCj4+ICAJdTMyIHFwX2hhbmRsZTsNCj4+
+IEBAIC02NjMsNiArNjc1LDcgQEAgc3RydWN0IHB2cmRtYV9jbWRfZGVzdHJveV9iaW5kIHsNCj4+
+ICAJc3RydWN0IHB2cmRtYV9jbWRfY3JlYXRlX2NxX3Jlc3AgY3JlYXRlX2NxX3Jlc3A7DQo+PiAg
+CXN0cnVjdCBwdnJkbWFfY21kX3Jlc2l6ZV9jcV9yZXNwIHJlc2l6ZV9jcV9yZXNwOw0KPj4gIAlz
+dHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVfcXBfcmVzcCBjcmVhdGVfcXBfcmVzcDsNCj4+ICsJc3Ry
+dWN0IHB2cmRtYV9jbWRfY3JlYXRlX3FwX3Jlc3BfdjIgY3JlYXRlX3FwX3Jlc3BfdjI7DQo+PiAg
+CXN0cnVjdCBwdnJkbWFfY21kX3F1ZXJ5X3FwX3Jlc3AgcXVlcnlfcXBfcmVzcDsNCj4+ICAJc3Ry
+dWN0IHB2cmRtYV9jbWRfZGVzdHJveV9xcF9yZXNwIGRlc3Ryb3lfcXBfcmVzcDsNCj4+ICAJc3Ry
+dWN0IHB2cmRtYV9jbWRfY3JlYXRlX3NycV9yZXNwIGNyZWF0ZV9zcnFfcmVzcDsNCj4+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvdm13X3B2cmRtYS9wdnJkbWFfbWFpbi5jIGIv
+ZHJpdmVycy9pbmZpbmliYW5kL2h3L3Ztd19wdnJkbWEvcHZyZG1hX21haW4uYw0KPj4gaW5kZXgg
+NDAxODIyOTdmODdmLi4wMmUzMzc4MzdhMmUgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL2luZmlu
+aWJhbmQvaHcvdm13X3B2cmRtYS9wdnJkbWFfbWFpbi5jDQo+PiArKysgYi9kcml2ZXJzL2luZmlu
+aWJhbmQvaHcvdm13X3B2cmRtYS9wdnJkbWFfbWFpbi5jDQo+PiBAQCAtMjAxLDcgKzIwMSwxMyBA
+QCBzdGF0aWMgaW50IHB2cmRtYV9yZWdpc3Rlcl9kZXZpY2Uoc3RydWN0IHB2cmRtYV9kZXYgKmRl
+dikNCj4+ICAJZGV2LT5pYl9kZXYub3duZXIgPSBUSElTX01PRFVMRTsNCj4+ICAJZGV2LT5pYl9k
+ZXYubnVtX2NvbXBfdmVjdG9ycyA9IDE7DQo+PiAgCWRldi0+aWJfZGV2LmRldi5wYXJlbnQgPSAm
+ZGV2LT5wZGV2LT5kZXY7DQo+PiAtCWRldi0+aWJfZGV2LnV2ZXJic19hYmlfdmVyID0gUFZSRE1B
+X1VWRVJCU19BQklfVkVSU0lPTjsNCj4+ICsNCj4+ICsJaWYgKGRldi0+ZHNyX3ZlcnNpb24gPj0g
+UFZSRE1BX1FQSEFORExFX1ZFUlNJT04pDQo+PiArCQlkZXYtPmliX2Rldi51dmVyYnNfYWJpX3Zl
+ciA9IFBWUkRNQV9VVkVSQlNfQUJJX1ZFUlNJT047DQo+PiArCWVsc2UNCj4+ICsJCWRldi0+aWJf
+ZGV2LnV2ZXJic19hYmlfdmVyID0NCj4+ICsJCQkJUFZSRE1BX1VWRVJCU19OT19RUF9IQU5ETEVf
+QUJJX1ZFUlNJT047DQo+PiArDQo+PiAgCWRldi0+aWJfZGV2LnV2ZXJic19jbWRfbWFzayA9DQo+
+PiAgCQkoMXVsbCA8PCBJQl9VU0VSX1ZFUkJTX0NNRF9HRVRfQ09OVEVYVCkJCXwNCj4+ICAJCSgx
+dWxsIDw8IElCX1VTRVJfVkVSQlNfQ01EX1FVRVJZX0RFVklDRSkJfA0KPj4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvaW5maW5pYmFuZC9ody92bXdfcHZyZG1hL3B2cmRtYV9xcC5jIGIvZHJpdmVycy9p
+bmZpbmliYW5kL2h3L3Ztd19wdnJkbWEvcHZyZG1hX3FwLmMNCj4+IGluZGV4IDBlYWFlYWQ1YmFl
+Yy4uOGNiYTc2MjNmMzc5IDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L3Zt
+d19wdnJkbWEvcHZyZG1hX3FwLmMNCj4+ICsrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody92bXdf
+cHZyZG1hL3B2cmRtYV9xcC5jDQo+PiBAQCAtMTk1LDcgKzE5NSw5IEBAIHN0cnVjdCBpYl9xcCAq
+cHZyZG1hX2NyZWF0ZV9xcChzdHJ1Y3QgaWJfcGQgKnBkLA0KPj4gIAl1bmlvbiBwdnJkbWFfY21k
+X3Jlc3AgcnNwOw0KPj4gIAlzdHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVfcXAgKmNtZCA9ICZyZXEu
+Y3JlYXRlX3FwOw0KPj4gIAlzdHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVfcXBfcmVzcCAqcmVzcCA9
+ICZyc3AuY3JlYXRlX3FwX3Jlc3A7DQo+PiArCXN0cnVjdCBwdnJkbWFfY21kX2NyZWF0ZV9xcF9y
+ZXNwX3YyICpyZXNwX3YyID0gJnJzcC5jcmVhdGVfcXBfcmVzcF92MjsNCj4+ICAJc3RydWN0IHB2
+cmRtYV9jcmVhdGVfcXAgdWNtZDsNCj4+ICsJc3RydWN0IHB2cmRtYV9jcmVhdGVfcXBfcmVzcCBx
+cF9yZXNwID0ge307DQo+PiAgCXVuc2lnbmVkIGxvbmcgZmxhZ3M7DQo+PiAgCWludCByZXQ7DQo+
+PiAgCWJvb2wgaXNfc3JxID0gISFpbml0X2F0dHItPnNycTsNCj4+IEBAIC0zNzksMTMgKzM4MSwz
+MSBAQCBzdHJ1Y3QgaWJfcXAgKnB2cmRtYV9jcmVhdGVfcXAoc3RydWN0IGliX3BkICpwZCwNCj4+
+ICAJfQ0KPj4gIA0KPj4gIAkvKiBtYXhfc2VuZF93ci9fcmVjdl93ci9fc2VuZF9zZ2UvX3JlY3Zf
+c2dlL19pbmxpbmVfZGF0YSAqLw0KPj4gLQlxcC0+cXBfaGFuZGxlID0gcmVzcC0+cXBuOw0KPj4g
+IAlxcC0+cG9ydCA9IGluaXRfYXR0ci0+cG9ydF9udW07DQo+PiAtCXFwLT5pYnFwLnFwX251bSA9
+IHJlc3AtPnFwbjsNCj4+ICsJaWYgKGRldi0+ZHNyX3ZlcnNpb24gPj0gUFZSRE1BX1FQSEFORExF
+X1ZFUlNJT04pIHsNCj4+ICsJCXFwLT5pYnFwLnFwX251bSA9IHJlc3BfdjItPnFwbjsNCj4+ICsJ
+CXFwLT5xcF9oYW5kbGUgPSByZXNwX3YyLT5xcF9oYW5kbGU7DQo+PiArCX0gZWxzZSB7DQo+PiAr
+CQlxcC0+aWJxcC5xcF9udW0gPSByZXNwLT5xcG47DQo+PiArCQlxcC0+cXBfaGFuZGxlID0gcmVz
+cC0+cXBuOw0KPj4gKwl9DQo+PiArDQo+PiAgCXNwaW5fbG9ja19pcnFzYXZlKCZkZXYtPnFwX3Ri
+bF9sb2NrLCBmbGFncyk7DQo+PiAgCWRldi0+cXBfdGJsW3FwLT5xcF9oYW5kbGUgJSBkZXYtPmRz
+ci0+Y2Fwcy5tYXhfcXBdID0gcXA7DQo+PiAgCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRldi0+
+cXBfdGJsX2xvY2ssIGZsYWdzKTsNCj4+ICANCj4+ICsJaWYgKCFxcC0+aXNfa2VybmVsKSB7DQo+
+PiArCQkvKiBDb3B5IHVkYXRhIGJhY2suICovDQo+PiArCQlxcF9yZXNwLnFwbiA9IHFwLT5pYnFw
+LnFwX251bTsNCj4+ICsJCXFwX3Jlc3AucXBfaGFuZGxlID0gcXAtPnFwX2hhbmRsZTsNCj4+ICsJ
+CWlmIChpYl9jb3B5X3RvX3VkYXRhKHVkYXRhLCAmcXBfcmVzcCwgc2l6ZW9mKHFwX3Jlc3ApKSkg
+ew0KPj4gKwkJCWRldl93YXJuKCZkZXYtPnBkZXYtPmRldiwNCj4+ICsJCQkJICJmYWlsZWQgdG8g
+Y29weSBiYWNrIHVkYXRhXG4iKTsNCj4+ICsJCQlwdnJkbWFfZGVzdHJveV9xcCgmcXAtPmlicXAs
+IHVkYXRhKTsNCj4+ICsJCQlyZXR1cm4gRVJSX1BUUigtRUlOVkFMKTsNCj4+ICsJCX0NCj4+ICsJ
+fQ0KPj4gKw0KPj4gIAlyZXR1cm4gJnFwLT5pYnFwOw0KPj4gIA0KPj4gIGVycl9wZGlyOg0KPj4g
+ZGlmZiAtLWdpdCBhL2luY2x1ZGUvdWFwaS9yZG1hL3Ztd19wdnJkbWEtYWJpLmggYi9pbmNsdWRl
+L3VhcGkvcmRtYS92bXdfcHZyZG1hLWFiaS5oDQo+PiBpbmRleCA2ZTczZjAyNzRlNDEuLjhlYmFi
+MTFkYWRjYiAxMDA2NDQNCj4+IC0tLSBhL2luY2x1ZGUvdWFwaS9yZG1hL3Ztd19wdnJkbWEtYWJp
+LmgNCj4+ICsrKyBiL2luY2x1ZGUvdWFwaS9yZG1hL3Ztd19wdnJkbWEtYWJpLmgNCj4+IEBAIC00
+OSw3ICs0OSw5IEBADQo+PiAgDQo+PiAgI2luY2x1ZGUgPGxpbnV4L3R5cGVzLmg+DQo+PiAgDQo+
+PiAtI2RlZmluZSBQVlJETUFfVVZFUkJTX0FCSV9WRVJTSU9OCTMJCS8qIEFCSSBWZXJzaW9uLiAq
+Lw0KPj4gKyNkZWZpbmUgUFZSRE1BX1VWRVJCU19OT19RUF9IQU5ETEVfQUJJX1ZFUlNJT04JMw0K
+Pj4gKyNkZWZpbmUgUFZSRE1BX1VWRVJCU19BQklfVkVSU0lPTgkJNAkvKiBBQkkgVmVyc2lvbi4g
+Ki8NCj4gDQo+IERvbid0IG1lc3Mgd2l0aCBBQkkgdmVyc2lvbiB3aGVuIGFsbCB5b3UgYXJlIGRv
+aW5nIGlzIG1ha2luZyB0aGUNCj4gcmVzcG9uc2Ugb3IgcmVxdWVzdCBzdHJ1Y3QgbG9uZ2VyLg0K
+DQpIbW0sIEkgdGhvdWdodCB3ZSBhbHdheXMgaGFkIHRvIHVwZGF0ZSB0aGUgQUJJIGluIGNhc2Ug
+b2Ygc3VjaA0KY2hhbmdlcyBhcyB3ZWxsPyBQcmV2aW91c2x5LCB3ZSB3ZXJlbid0IGNvcHlpbmcg
+b3V0IHFwcmVzcCB0byB1ZGF0YSBhdCBhbGwNCmFuZCB0aGlzIGFkZHMgYSBuZXcgcmVzcG9uc2Ug
+dG8gdXNlci1zcGFjZS4NCkFsc28sIHdvdWxkbid0IG9sZGVyIHJkbWEtY29yZSBwcm9iYWJseSBi
+cmVhayBiZWNhdXNlIG9mIHRoaXMgc2luY2UgaXQgDQphc3N1bWVzIHRoZSBxcG4gcmVwb3J0ZWQg
+aXMgdGhlIHZpcnR1YWwgb25lPyBJIGd1ZXNzIHRoYXQncyBhIGJ1ZyBhbHJlYWR5DQpmcm9tIGEg
+YmFja3dhcmQgY29tcGF0IHBlcnNwZWN0aXZlLi4NCg0KPiBKYXNvbg0KPiANCg0K
