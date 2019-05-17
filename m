@@ -2,87 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0C321ADB
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 May 2019 17:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7AE21C37
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 May 2019 19:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbfEQPm4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 May 2019 11:42:56 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53980 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728982AbfEQPm4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 May 2019 11:42:56 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4HFcpSx144254;
-        Fri, 17 May 2019 15:42:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=3CM987q037k3bX5mzRYTr6wnvS5FFAhILuIVJie0AyA=;
- b=f/ae1aSGcf9WpwnG/tGRi9RsrCz9zA2Zc3Qxojdvl+4HbwIN0Cxl66E/eV4jLADx3IzJ
- KlB1Zgg0p0AIxlRzVEWK8Ek8p/002sV2z4WUh4dQqTDEZFil6BEn90I0VRhGtQIiyGTQ
- pHE9dXTdLdcVhKAiu1iLyu1wpgqAMW6W1xDdStOObjw2VvSkGp8+Vozv/4Ow9EZe8xMh
- 9G7UXiYmrfrnwdXmc0W8CWqKDmseXDw5YxSZ1OyX9ri7qQ6rNLtTttmiMhg5WHatBY5t
- LQIxdPtqx8Vx6m2Z1BXbVsF4kIB/fY3e4bqs98zvPuunNQST34saNQJ2jY3ynCCkiAto iQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2sdq1r2fqu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 May 2019 15:42:54 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4HFgI1n083341;
-        Fri, 17 May 2019 15:42:54 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2sgkx4rx6c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 May 2019 15:42:53 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4HFgqcH023522;
-        Fri, 17 May 2019 15:42:53 GMT
-Received: from [10.182.69.170] (/10.182.69.170)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 17 May 2019 08:42:52 -0700
-Subject: Re: rdma-core debian packages
-To:     Steve Wise <larrystevenwise@gmail.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-References: <CADmRdJdS8EF99MprTPBmcQwjwB0sV29iHTk4C+eCPDwifAyEBw@mail.gmail.com>
-From:   Yanjun Zhu <yanjun.zhu@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <1774023a-1767-9884-7322-281e6873e167@oracle.com>
-Date:   Fri, 17 May 2019 23:42:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726519AbfEQRIs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 May 2019 13:08:48 -0400
+Received: from mail-it1-f169.google.com ([209.85.166.169]:40028 "EHLO
+        mail-it1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbfEQRIs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 May 2019 13:08:48 -0400
+Received: by mail-it1-f169.google.com with SMTP id g71so13151997ita.5
+        for <linux-rdma@vger.kernel.org>; Fri, 17 May 2019 10:08:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sCKYMXGGf8N9kNYWuo8jQbiJbqwCXo92jqFrbt2jwZY=;
+        b=NZEyvPT3YXMsj5rWAmZ9kq4Hg6aDUcdKJMCo4VoufIEkBUvkWt82GxsPnjpXRw6j/b
+         Xy9v69IhIPXgUKBpdhJvt/DpX8hihQIqu7AjsxNnrpYA75uGtwji/V0WjQWdq+TaJwvb
+         5GJAzBC/igfhvQboYoP2uWfomqC+ChLELiznV04/vaVMcwSLg9NYDd7YJ/SV7rs1/vSl
+         TesjEvuneOQpyPv3TCmVa2uxX0BR4eLdCUyUQV9ra3xUvUsPi/l5IA+tPICIWgf7jKbS
+         Wj99CaBi9BrO4d4l2aVOoa4l2SoGZrNE7mumKFWULTokgRm5YTykPdHwwY76CysV5aQY
+         0jjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sCKYMXGGf8N9kNYWuo8jQbiJbqwCXo92jqFrbt2jwZY=;
+        b=picfclGLrLfQmum1tb0tt4O4Pt8jN6JaTWm+niTx1kREx23gyyH+An3ZgU3woj03cQ
+         kbSattocNwECu5EeYGRRGamioS+14uAk6P6uo9PBW8nWsuziM0ipbjam82IMwvXlIL3S
+         1lEsfytp+OY9Bb60mfj0MjZ99mytVkk5T4lUh2Jw0BBBNKP5cH808iIH02G3mpcMBtzM
+         taX84KlkJad6bMh+Fufm6/VwW+ztrXug257rI11+TM43QBZcCNHHNX492hXceZGtoan/
+         ODE3BG+QrdqmdLxiA3ubgMf9qqUz4acEG3tgBqNT56PDk4BL2hfQqpJvgzSqFB+pb9Ot
+         6vTw==
+X-Gm-Message-State: APjAAAXoUTQfGByZEap41pMJ0jeZgMv+dxq3/TpZY5tkxE5dmDQCyB7c
+        3BYWPyBpGAm4h8GvfgJwcXOqqvkqVjX2coI1Ef3baQ==
+X-Google-Smtp-Source: APXvYqw3e1HpFGGmykE15z4GgjHeSI6CM5pxpiiVIRQ3NgK+ZM4xSWZqIqSf+TA4B0F6KUEYNNIFxhRcCQo5h5i+hHg=
+X-Received: by 2002:a24:7345:: with SMTP id y66mr19060704itb.23.1558112927210;
+ Fri, 17 May 2019 10:08:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CADmRdJdS8EF99MprTPBmcQwjwB0sV29iHTk4C+eCPDwifAyEBw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9260 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905170095
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9260 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905170095
+References: <CADmRdJdS8EF99MprTPBmcQwjwB0sV29iHTk4C+eCPDwifAyEBw@mail.gmail.com>
+ <0100016ac67378f1-7e828df6-cebc-4c44-8e88-00503869d453-000000@email.amazonses.com>
+In-Reply-To: <0100016ac67378f1-7e828df6-cebc-4c44-8e88-00503869d453-000000@email.amazonses.com>
+From:   Steve Wise <larrystevenwise@gmail.com>
+Date:   Fri, 17 May 2019 12:08:36 -0500
+Message-ID: <CADmRdJe-mk0TQBno1yaAcRH4hrV=kHAyNtX7dmQ4vfucZtRNmQ@mail.gmail.com>
+Subject: Re: rdma-core debian packages
+To:     Christopher Lameter <cl@linux.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 2019/5/17 22:14, Steve Wise wrote:
-> Hey,
+On Fri, May 17, 2019 at 10:40 AM Christopher Lameter <cl@linux.com> wrote:
 >
-> Is there a how-to somewhere on building the Debian rdma-core packages?
-
-Which rdma-core version do you need?
-
-Zhu Yanjun
-
+> On Fri, 17 May 2019, Steve Wise wrote:
 >
-> Thanks,
+> > Is there a how-to somewhere on building the Debian rdma-core packages?
 >
-> Steve.
+> README.md?
 >
+
+The README.md file doesn't explain how to create packages to install
+with 'apt-get'.
