@@ -2,77 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0070217C4
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 May 2019 13:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C6D21884
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 May 2019 14:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbfEQLcg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 May 2019 07:32:36 -0400
-Received: from kirsty.vergenet.net ([202.4.237.240]:32864 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728336AbfEQLcf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 May 2019 07:32:35 -0400
-Received: from reginn.horms.nl (watermunt.horms.nl [80.127.179.77])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id 9A09925AD7D;
-        Fri, 17 May 2019 21:32:33 +1000 (AEST)
-Received: by reginn.horms.nl (Postfix, from userid 7100)
-        id 15FC994048B; Fri, 17 May 2019 13:32:30 +0200 (CEST)
-Date:   Fri, 17 May 2019 13:32:30 +0200
-From:   Simon Horman <horms@verge.net.au>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2] RDMA: Directly cast the sockaddr union to sockaddr
-Message-ID: <20190517113230.6sx5amsm3vsji2mz@verge.net.au>
-References: <20190514005521.GA18085@ziepe.ca>
- <20190516124428.hytvkwfltfi24lrv@verge.net.au>
- <20190516152148.GD22587@ziepe.ca>
+        id S1728268AbfEQMl3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 May 2019 08:41:29 -0400
+Received: from mail-it1-f195.google.com ([209.85.166.195]:39869 "EHLO
+        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728474AbfEQMl2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 May 2019 08:41:28 -0400
+Received: by mail-it1-f195.google.com with SMTP id 9so11699243itf.4
+        for <linux-rdma@vger.kernel.org>; Fri, 17 May 2019 05:41:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=SAoSdsefzzCmPOTzwU+Ovh/O9jS+esAN3o944dSuqEw=;
+        b=tnEVFJTZlSqOochUCn6IM3LKQk1SkodoA/ZMO7LuMlkRVCCDNYQPdfx2HRXkNHdjwb
+         BSEO6oHQNsrWZAb8kusWSDWEhVWNgF4z1yJ7m+OXQjR7rhcO+7+PGcwKl02nxWbejDYO
+         Y8RT18YTTTpVHewrhe6HfM8IWI7CuZUjSrgIWCvmCvcmrR8gYq0RbCEG6eyWwC5TVGqL
+         B9boqHvr/Go7SoJZCWqp4drWo0LxIKps87kTEkCMqHEYYjsUyBRB++AXvymIlV1T05g3
+         MLtMU3chAg/eESfrhre3T4+d2luyYNnigyGWNxDcJEceIRfn83SWEj4gMA3UbtkypNEK
+         M7bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=SAoSdsefzzCmPOTzwU+Ovh/O9jS+esAN3o944dSuqEw=;
+        b=MzbFGgKgW5dHfUBk9MP2PQT3a9ZAeQrJZZFNG6KeScNVjjlTu+FHQAQjUtZFETwDer
+         sDNZM08cZXVfQXZO3AkH2P43HUkhj1Od+o3EYG1RYEZNjP3LgOvy0sv2+lqt3gyem1S8
+         AHjtJcZinh2eFD4CDvdjQD4H4l7+anFIcnxDbn9swctuYxox9v6QeXl9GQrafb0xGn6w
+         cp68Kzc/JPtV/gXZ3xhHuIyWierRZC/yO2xuldR0GWX/tuD2vXJ8+HjhtY2BC+johrrf
+         UexKDd/onYKj+YxehvE8X2Ql2JgtBfDQxvzZXFuFGUM874v7hYodaT0UIQcl1WosRytt
+         jPcw==
+X-Gm-Message-State: APjAAAVVUVVFvHtXBqyz3NQ4nMbLwleZRiJQ6rjrAWPxfTC+KIZj8orH
+        yngasLVfkBpE+DjQAJ5ZfGFJHWyld2ijf+aIh+Q=
+X-Google-Smtp-Source: APXvYqwmGbgHlvNzMJiHLYGBO939GhhPEB/GWwkljVmMomHRXepdLqJ3fRtES6yYdBSpaGksbelKaxx0lGgEUArQEBI=
+X-Received: by 2002:a24:28c1:: with SMTP id h184mr16697690ith.105.1558096887968;
+ Fri, 17 May 2019 05:41:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190516152148.GD22587@ziepe.ca>
-Organisation: Horms Solutions BV
-User-Agent: NeoMutt/20170113 (1.7.2)
+Received: by 2002:a6b:4017:0:0:0:0:0 with HTTP; Fri, 17 May 2019 05:41:27
+ -0700 (PDT)
+Reply-To: eddywilliam0002@gmail.com
+From:   eddy william <davisemm6@gmail.com>
+Date:   Fri, 17 May 2019 14:41:27 +0200
+Message-ID: <CAKAY_3XX4m93XEzau3_RC6d1=svXAj5HPz29w_KLy8=Z3S7SpA@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 16, 2019 at 12:21:48PM -0300, Jason Gunthorpe wrote:
-> On Thu, May 16, 2019 at 02:44:28PM +0200, Simon Horman wrote:
-> > On Mon, May 13, 2019 at 09:55:21PM -0300, Jason Gunthorpe wrote:
-> > > gcc 9 now does allocation size tracking and thinks that passing the member
-> > > of a union and then accessing beyond that member's bounds is an overflow.
-> > > 
-> > > Instead of using the union member, use the entire union with a cast to
-> > > get to the sockaddr. gcc will now know that the memory extends the full
-> > > size of the union.
-> > > 
-> > > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> > >  drivers/infiniband/core/addr.c           | 16 ++++++++--------
-> > >  drivers/infiniband/hw/ocrdma/ocrdma_ah.c |  5 ++---
-> > >  drivers/infiniband/hw/ocrdma/ocrdma_hw.c |  5 ++---
-> > >  3 files changed, 12 insertions(+), 14 deletions(-)
-> > > 
-> > > I missed the ocrdma files in the v1
-> > > 
-> > > We can revisit what to do with that repetitive union after the merge
-> > > window, but this simple patch will eliminate the warnings for now.
-> > > 
-> > > Linus, I'll send this as a PR tomorrow - there is also a bug fix for
-> > > the rdma-netlink changes posted that should go too.
-> > 
-> > <2c>
-> > I would be very happy to see this revisited in such a way
-> > that some use is made of the C type system (instead of casts).
-> > </2c>
-> 
-> Well, I was thinking of swapping the union to sockaddr_storage ..
-> 
-> Do you propose to add a union to the kernel's sockaddr storage?
+Mijn naam is Eddy William. Ik ben van beroep advocaat. Ik wil je aanbieden
+nabestaanden van mijn cli=C3=ABnt. Je ervaart de som van ($ 14,2 miljoen)
+dollars die mijn cli=C3=ABnt voor zijn overlijden op de bank heeft achterge=
+laten.
 
-I understand you have been down that rabbit hole before but,
-yes, in an ideal world that would be my preference.
+Mijn klant is een burger van jouw land die stierf in auto-ongeluk met zijn =
+vrouw
+en alleen zoon. Ik krijg 50% van het totale fonds en 50% wel
+voor jou zijn.
+
+Neem hier voor meer informatie contact op met mijn priv=C3=A9mail:
+eddywilliam0002@gmail.com
+
+Bij voorbaat hartelijk dank,
+Eddy William,
+
+
+
+Hello
+
+My name is Eddy William I am a lawyer by profession. I wish to offer you
+the next of kin to my client. You will inherit the sum of ($14.2 Million)
+dollars my client left in the bank before his death.
+
+My client is a citizen of your country who died in auto crash with his wife
+and only son. I will be entitled with 50% of the total fund while 50% will
+be for you.
+
+Please contact my private email here for more details:eddywilliam0002@gmail=
+.com
+
+Many thanks in advance,
+Mr.Eddy William,
