@@ -2,92 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D09120F4A
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 May 2019 21:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52944215B9
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 May 2019 10:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727002AbfEPTlT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 May 2019 15:41:19 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:33004 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbfEPTlT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 May 2019 15:41:19 -0400
-Received: by mail-qk1-f194.google.com with SMTP id p18so2495506qkk.0
-        for <linux-rdma@vger.kernel.org>; Thu, 16 May 2019 12:41:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IPz3d6OagyC2dFi6j/aPMTF/+zzkP41+Id/EUpFQv0Q=;
-        b=akOCPxXU+ZJsJg5Yo9mbdSZMvaopqquxcG+MZT9Yr9bbHPeCDHrPSY1L0s3HBnkUkc
-         63THaDfJAbCHWM5bbvk2sguv4fivHXHIywuxxqq91yHrLKK+cBTrpKwNqhem3QXagbYn
-         UE2fiv/PJrhWP/Ol6oFsFyZ9IJ6sVZQs06h+VqXFCWiA1StS2j+K9h3BMil9JHT1Wk+W
-         vp+/csgyxEZQvOR26BQ401YYXz6MIYPffh4A3OwyqgqDZONvRgAzJL9pn06rWEiq1Clv
-         2JbsHb5LJ0i5DrUODrg5CF+48BJQX5Ybjc6ysSFRAnEpALOtBesaNhCyk90h2FBZFVK2
-         dkQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IPz3d6OagyC2dFi6j/aPMTF/+zzkP41+Id/EUpFQv0Q=;
-        b=OJMcapJxmxxa54BNsghMfD35GTaT1ABvOZlt8RrDG0ofgAIt9jZp/mP6nRrc4eIDfS
-         czgm0rGhsib+jwzhonyOF/tbhkz1tJDrIFgZTcEq+OuHMvhACFiVpBL2A6JmohYoZ89X
-         dk6PLqvZFs/Y0hMmKpsrrVXI7/splXCWatAUfgFXWj8q6sovn51lZufAROynS0ipiZp5
-         P8Od3dsD2R5hfz+hnQsvGtuXBKmqNn+1Ru0S1NBQzvbzakDWDEa47Bq6qKimtUvMBkBf
-         im1NzOzfVZn880U83rmOWKmCPabRDaj0reVRBzcvJYR48xu8Ei1gm0QBNzBGtdS/pR/3
-         A+aw==
-X-Gm-Message-State: APjAAAVRL8X/Mr2bhxK3CShNNUZ5VUtFict4ytaROquX4YHLZmQ2oYSq
-        F+G/P73S/C1WgQgHRkGsDt9nxyMwrpw=
-X-Google-Smtp-Source: APXvYqxggxm+cnuxhxz4QhhLbcQf79yrcSqsxl3H0mhirFzaJZldnUZ16ra9Wqmm2ZJmCjIKEwT32A==
-X-Received: by 2002:a37:4f10:: with SMTP id d16mr25458544qkb.71.1558035678093;
-        Thu, 16 May 2019 12:41:18 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id f33sm4589474qtf.64.2019.05.16.12.41.17
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 May 2019 12:41:17 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hRMFh-0007hj-7v; Thu, 16 May 2019 16:41:17 -0300
-Date:   Thu, 16 May 2019 16:41:17 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-core 06/20] build: Support rst as a man page option
-Message-ID: <20190516194117.GH22587@ziepe.ca>
-References: <20190514234936.5175-1-jgg@ziepe.ca>
- <20190514234936.5175-7-jgg@ziepe.ca>
- <20190516164734.GC6026@mtr-leonro.mtl.com>
- <20190516165149.GG22587@ziepe.ca>
- <20190516192529.GD6026@mtr-leonro.mtl.com>
+        id S1727405AbfEQIvv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 17 May 2019 04:51:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51198 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726685AbfEQIvv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 17 May 2019 04:51:51 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4H8kg0j034054
+        for <linux-rdma@vger.kernel.org>; Fri, 17 May 2019 04:51:49 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.109])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2shs7q1m6w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 17 May 2019 04:51:49 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 17 May 2019 08:51:48 -0000
+Received: from us1b3-smtp08.a3dr.sjc01.isc4sb.com (10.122.203.190)
+        by smtp.notes.na.collabserv.com (10.122.47.48) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 17 May 2019 08:51:42 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp08.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019051708514282-242637 ;
+          Fri, 17 May 2019 08:51:42 +0000 
+In-Reply-To: <20190516155425.GF22587@ziepe.ca>
+Subject: Re: iWARP and soft-iWARP interop testing
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     "Leon Romanovsky" <leon@kernel.org>,
+        "Doug Ledford" <dledford@redhat.com>,
+        "linux-rdma" <linux-rdma@vger.kernel.org>
+Date:   Fri, 17 May 2019 08:51:42 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190516192529.GD6026@mtr-leonro.mtl.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190516155425.GF22587@ziepe.ca>,<20190516154720.GE22587@ziepe.ca>
+ <20190507161304.GH6201@ziepe.ca>
+ <49b807221e5af3fab8813a9ce769694cb536072a.camel@redhat.com>
+ <OF39E350A0.36B83BDF-ON002583FC.0053C32C-002583FC.0055FBFD@notes.na.collabserv.com>
+ <OF8865413E.BEF32DF5-ON002583FC.0057236E-002583FC.00572374@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1048) | IBM Domino Build
+ SCN1812108_20180501T0841_FP38 April 10, 2019 at 11:56
+X-KeepSent: F3F05DC7:F57252F9-002583FD:0030ADC2;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 61843
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19051708-3721-0000-0000-000006867F14
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.133184
+X-IBM-SpamModules-Versions: BY=3.00011110; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000285; SDB=6.01204535; UDB=6.00632348; IPR=6.00985471;
+ BA=6.00006312; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
+ ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00026928; XFM=3.00000015;
+ UTC=2019-05-17 08:51:46
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-05-17 07:16:25 - 6.00009935
+x-cbparentid: 19051708-3722-0000-0000-0000FDF6BB0C
+Message-Id: <OFF3F05DC7.F57252F9-ON002583FD.0030ADC2-002583FD.0030ADC7@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-17_04:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 16, 2019 at 10:25:29PM +0300, Leon Romanovsky wrote:
-> On Thu, May 16, 2019 at 01:51:49PM -0300, Jason Gunthorpe wrote:
-> > On Thu, May 16, 2019 at 07:47:34PM +0300, Leon Romanovsky wrote:
-> > > On Tue, May 14, 2019 at 08:49:22PM -0300, Jason Gunthorpe wrote:
-> > > > From: Jason Gunthorpe <jgg@mellanox.com>
-> > > >
-> > > > infiniband-diags uses rst as a man page preprocessor, so add it along side
-> > > > pandoc in the build system.
-> > >
-> > > Why don't we convert RST to MD prior to integrating infiniband-diags
-> > > into rdma-core, instead of introducing extra dependency and complexity?
-> >
-> > The ibdiags stuff uses RST's #include feature extensively and
-> > unwinding all of that is simply too hard. Maybe someday we can do it.
-> 
-> Doesn't pandoc handle such conversion? Anyway you are introducing some
-> tooling to do some conversion on the flight.
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-I didn't try to make pandoc work, that might be a future effort.
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 05/16/2019 05:59PM
+>Cc: "Leon Romanovsky" <leon@kernel.org>, "Doug Ledford"
+><dledford@redhat.com>, "linux-rdma" <linux-rdma@vger.kernel.org>
+>Subject: Re: iWARP and soft-iWARP interop testing
+>
+>On Thu, May 16, 2019 at 03:51:47PM +0000, Bernard Metzler wrote:
+>> 
+>> 
+>> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >Date: 05/16/2019 05:47PM
+>> >Cc: "Leon Romanovsky" <leon@kernel.org>, "Doug Ledford"
+>> ><dledford@redhat.com>, "linux-rdma" <linux-rdma@vger.kernel.org>
+>> >Subject: Re: iWARP and soft-iWARP interop testing
+>> >
+>> >On Thu, May 16, 2019 at 03:39:10PM +0000, Bernard Metzler wrote:
+>> >> 
+>> >> >To: "Doug Ledford" <dledford@redhat.com>
+>> >> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >> >Date: 05/07/2019 06:13PM
+>> >> >Cc: "linux-rdma" <linux-rdma@vger.kernel.org>, "Bernard
+>Metzler"
+>> >> ><BMT@zurich.ibm.com>
+>> >> >Subject: Re: iWARP and soft-iWARP interop testing
+>> >> >
+>> >> >On Mon, May 06, 2019 at 04:38:27PM -0400, Doug Ledford wrote:
+>> >> >> So, Jason and I were discussing the soft-iWARP driver
+>> >submission,
+>> >> >and he
+>> >> >> thought it would be good to know if it even works with the
+>> >various
+>> >> >iWARP
+>> >> >> hardware devices.  I happen to have most of them on hand in
+>one
+>> >> >form or
+>> >> >> another, so I set down to test it.  In the process, I ran
+>across
+>> >> >some
+>> >> >> issues just with the hardware versions themselves, let alone
+>> >with
+>> >> >soft-
+>> >> >> iWARP.  So, here's the results of my matrix of tests.  These
+>> >aren't
+>> >> >> performance tests, just basic "does it work" smoke tests...
+>> >> >
+>> >> >Well, lets imagine to merge this at 5.2-rc1? 
+>> >> >
+>> >> >Bernard you'll need to rebase and resend when it comes out in
+>two
+>> >> >weeks.
+>> >> >
+>> >> >Thanks,
+>> >> >Jason
+>> >> >
+>> >> >
+>> >> I think I addressed all major issues of the current siw RFC.
+>> >> 
+>> >> Probably most important, it's now guaranteed that the remaining
+>> >> two objects (QP and MR) are kfree'd after return from the
+>> >> ib_devices free call. This makes it easier for future
+>development
+>> >> of mid layers resource management, as Leon was pointing out.
+>> >> 
+>> >> All IDR usage is gone as well.
+>> >> 
+>> >> I removed the siw protection domain, since there is nothing
+>> >> siw specific to be stored within. I just keep a structure
+>> >> definition of 'struct siw_pd {struct ib_pd *base_pd}' to
+>> >> keep INIT_RDMA_OBJ_SIZE() happy. 
+>> >
+>> >? Really? I iwarp doesn't use a protection domain?
+>> 
+>> Aehm no, siw does not need any siw specific additions to the ib_pd.
+>> So there is no need to define any extra siw_pd besides of ib_pd.
+>> Except for the INIT_RDMA_OBJ_SIZE thing.
+>> 
+>> siw can just use struct ib_pd. It has all it needs...
+>
+>So you are using the pointer value of the ib_pd to identify if a
+>MR/QP/etc are in the same PD?
+>
+Right....since that value should stay constant during a PD's life time ;)
+Bernard.
 
-pandoc and rst2man have various differences.
-
-Jason
