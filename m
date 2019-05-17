@@ -2,79 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B11D21DF8
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 May 2019 21:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D2421FFC
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 May 2019 00:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbfEQTD7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 May 2019 15:03:59 -0400
-Received: from mail-it1-f181.google.com ([209.85.166.181]:54386 "EHLO
-        mail-it1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbfEQTD7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 May 2019 15:03:59 -0400
-Received: by mail-it1-f181.google.com with SMTP id a190so13609904ite.4
-        for <linux-rdma@vger.kernel.org>; Fri, 17 May 2019 12:03:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Z2UMLOtpdiz9do+FLYX1QXd3L5MOiV5c/7qryhjyeM=;
-        b=Lx9ONK94YdrR4obSFs3oWkw9vnuv+HV73Hmit6uvtsVZhUix+0TcxvwcW4F/3YNH00
-         yVGbRkabQjJLbUK1SdFwCP+S/F8yj+0JS9kqDp5CRPShMUjjNACJsSgZJ8f42t3RhXNQ
-         gpMXiXm3lCI0KMxBfBGkWuXY//wgDSpUm2776Y9UTCd4WIgUseubUa0bGS4ROdGBsT8q
-         45gIvJI65gRDbBNsVZod6LgiLoIa4ya+/eRbunAlioCAXmKJ+cRKclMZwlUS7JXHJ4Ge
-         s25aZ6Tpamz1Gw/Oqxmfa6IHQtdCehEV0zr2GL0IKPdjOcLP2t14C3si3OHoiMbHco3e
-         0OPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Z2UMLOtpdiz9do+FLYX1QXd3L5MOiV5c/7qryhjyeM=;
-        b=cbJA+CR3VphpsvkJ1KiwS06QDJnNe/LZh+TBj2QwK7RiUxuV321iCOz22CkynfYFtZ
-         S8mJBIhWu1mpcw89pEGQ5BGNc7Rk55XYQNkK5IbrYHdAD7LYQ2O15UbRdyK66/HDubvA
-         DU73njVnkaMV/PDSF4T8yjrVCWN+OMjQ1bGtBdlOjHcOSCTBEftR8R5RWb+6l1fLEONZ
-         6quvSY1KL59oou1p/Kv3pyh78Iywi2c4ZI0Bms5OwgJ5iG/ivV7EuZJgmVlrfZb056gf
-         XYL3oA20fTKWvXXxPHOMETCC4KqBMwTaTzouRdFKRbWYIHtZgvSeeISvVubuRzCOB+YH
-         AE3A==
-X-Gm-Message-State: APjAAAXOvH+5jI2AC0fC/4xcCmS8zvsRtyKSdxz83J+G20WlVeFPLBbc
-        T4kIGCPkJ16Bj5f01qnoUCgzDIsoKz2gD/C5Fww=
-X-Google-Smtp-Source: APXvYqyQJCgYpgtKt87Y37U3fdzdmBfyBsVKaQFC0ZR6X3KJ6NSXsc+zfB4z+Cif8K2XLWRPTOIQNwLmyjngfPFfg3g=
-X-Received: by 2002:a02:3f0c:: with SMTP id d12mr38871838jaa.9.1558119837876;
- Fri, 17 May 2019 12:03:57 -0700 (PDT)
+        id S1727431AbfEQWAe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 May 2019 18:00:34 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46256 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726738AbfEQWAe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 17 May 2019 18:00:34 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 May 2019 15:00:33 -0700
+X-ExtLoop1: 1
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga007.jf.intel.com with ESMTP; 17 May 2019 15:00:33 -0700
+Date:   Fri, 17 May 2019 15:01:19 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Kamal Heib <kamalheib1@gmail.com>, linux-rdma@vger.kernel.org,
+        Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH for-next] RDMA/providers: Simplify ib_modify_port for
+ RoCE providers
+Message-ID: <20190517220118.GB14175@iweiny-DESK2.sc.intel.com>
+References: <20190516105308.29450-1-kamalheib1@gmail.com>
+ <20190516111607.GA22587@ziepe.ca>
+ <3c53c827f287df7f46b58c7f5e2fd23207a83683.camel@gmail.com>
+ <20190516113750.GB22587@ziepe.ca>
+ <8f4116c03236210e3481fae7e4ff51dfbad6c980.camel@gmail.com>
+ <20190516151944.GC22587@ziepe.ca>
 MIME-Version: 1.0
-References: <CADmRdJdS8EF99MprTPBmcQwjwB0sV29iHTk4C+eCPDwifAyEBw@mail.gmail.com>
- <20190517182129.GA5822@mtr-leonro.mtl.com>
-In-Reply-To: <20190517182129.GA5822@mtr-leonro.mtl.com>
-From:   Steve Wise <larrystevenwise@gmail.com>
-Date:   Fri, 17 May 2019 14:03:47 -0500
-Message-ID: <CADmRdJc+49GY8ACvPKJWHL2OR4q_+JP0qTdjrR-0JhaBHKew3A@mail.gmail.com>
-Subject: Re: rdma-core debian packages
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190516151944.GC22587@ziepe.ca>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 17, 2019 at 1:21 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Fri, May 17, 2019 at 09:14:13AM -0500, Steve Wise wrote:
-> > Hey,
-> >
-> > Is there a how-to somewhere on building the Debian rdma-core packages?
->
-> There buildlib/cbuild script exactly for that.
->
-> 0. Install docker.
-> 1. Commit your changes which you want to package.
-> 2. ./buildlib/cbuild build-images supported_os_from_the_list
-> 3. ./buildlib/cbuild make supported_os_from_the_list
-> 4. ./buildlib/cbuild pkg supported_os_from_the_list
-> 5. See RPMs or DEBs in ../
->
-> Repeat 3 and 4 till you will be satisfied with result.
->
-> Thanks
->
+On Thu, May 16, 2019 at 12:19:44PM -0300, Jason Gunthorpe wrote:
+> On Thu, May 16, 2019 at 02:52:48PM +0300, Kamal Heib wrote:
+> > On Thu, 2019-05-16 at 08:37 -0300, Jason Gunthorpe wrote:
+> > > On Thu, May 16, 2019 at 02:28:40PM +0300, Kamal Heib wrote:
+> > > > On Thu, 2019-05-16 at 08:16 -0300, Jason Gunthorpe wrote:
+> > > > > On Thu, May 16, 2019 at 01:53:08PM +0300, Kamal Heib wrote:
+> > > > > > For RoCE ports the call for ib_modify_port is not meaningful,
+> > > > > > so
+> > > > > > simplify the providers of RoCE by return OK in ib_core.
+> > > > > > 
+> > > > > > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> > > > > >  drivers/infiniband/core/device.c              | 23 ++++++-----
+> > > > > >  drivers/infiniband/hw/hns/hns_roce_main.c     |  7 ----
+> > > > > >  drivers/infiniband/hw/mlx4/main.c             |  8 ----
+> > > > > >  drivers/infiniband/hw/mlx5/main.c             |  6 ---
+> > > > > >  drivers/infiniband/hw/ocrdma/ocrdma_main.c    |  1 -
+> > > > > >  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |  6 ---
+> > > > > >  drivers/infiniband/hw/ocrdma/ocrdma_verbs.h   |  2 -
+> > > > > >  drivers/infiniband/hw/qedr/main.c             |  1 -
+> > > > > >  drivers/infiniband/hw/qedr/verbs.c            |  6 ---
+> > > > > >  drivers/infiniband/hw/qedr/verbs.h            |  2 -
+> > > > > >  .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  1 -
+> > > > > >  .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.c   | 38 ---------
+> > > > > >  .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |  2 -
+> > > > > >  drivers/infiniband/sw/rxe/rxe_verbs.c         | 18 ---------
+> > > > > >  14 files changed, 14 insertions(+), 107 deletions(-)
+> > > > > 
+> > > > > We have more roce only drivers than this, why isn't everything
+> > > > > changed?
+> > > > > 
+> > > > > Jason
+> > > > 
+> > > > Not all of them implements modify_port().
+> > > 
+> > > Then why didn't we just delete modify port from the other drivers?
+> > > 
+> > > Jason
+> > 
+> > This patch is doing that for all roce drivers that implement modify
+> > port, unless you mean none-roce drivers?
+> 
+> I mean just delete it without any change to the core code.. Here we
+> are now changing some roce drivers to have a working modify_port
+> 
+> It is confusing what the intention is
 
-Great, thanks Leon.
+I see what Jason is saying here.  If ib_modify_port() is meaningless then lets
+remove the call and let it return -EOPNOTSUPP.
+
+Returning "ok" implies that something worked.  I guess that is what happens
+now...
+
+Also FWIW you are changing the return from ENOSYS to EOPNOTSUPP.  Did you mean
+to do that?
+
+Ira
+
+> 
+> Jason
