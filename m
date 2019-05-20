@@ -2,142 +2,200 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF1223013
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2019 11:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337CA2300E
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2019 11:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731124AbfETJTf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 May 2019 05:19:35 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:60826 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729598AbfETJTf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 May 2019 05:19:35 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4K9BMsg012817;
-        Mon, 20 May 2019 02:19:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0818;
- bh=xr69cf0+E0HNIA1RwiqIpWXoNhuOKwiIdQ32tKxogrQ=;
- b=Tlteet5skv0GyRz3HdDQkF6wUtlhIQ+GdCYopSDA0QsqOewTx9UxhcOY6CB4i143beoN
- qOS4HKJxFkB1v8+T81SdIakz4OwQZvQ6EdXC9WpVGwgn1YB5O2ng3heaUAlFz4QIJ8l9
- +7bc6Y/qgywv3GRPwj6WYppvUKxWlJEHLgIY4grs9ah9Q2s7yfHfL5qr8fL/AtJ5iKvV
- q5o4na2DvEz2fUuCwb8DDDRhg+VEqVZYKVliE/iDaeOMFRxh6arXh3zhskRA485uZLig
- sjU1f+HYiAPI7QphGaASGwkNU4kRLObn6UdqlSYCi/nY8fm0FhnQocjIcK6Q20AYuhCP Iw== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2sjhjjqfj5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 20 May 2019 02:19:33 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 20 May
- 2019 02:19:31 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Mon, 20 May 2019 02:19:31 -0700
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 450563F703F;
-        Mon, 20 May 2019 02:19:30 -0700 (PDT)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
-        <sagiv.ozeri@marvell.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>
-Subject: [PATCH rdma] RDMA/qedr: Fix incorrect device rate.
-Date:   Mon, 20 May 2019 12:18:12 +0300
-Message-ID: <20190520091812.3311-1-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
+        id S1732007AbfETJSp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 May 2019 05:18:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729598AbfETJSp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 May 2019 05:18:45 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9798720675;
+        Mon, 20 May 2019 09:18:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1558343924;
+        bh=Ste7t+0PhNI3tpUcBHppHadW3P1aE0n0kTsym2j9uFg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X5o6hKUTBd8tlRtAiYy9pN3qzLS01lNNRxqs0mx3LoXW7e8vUX9nqwzqBJwm31A75
+         F5g/vtkm82w+cMwfKOsl3IMzePD7HEl0rme+tfeWnYCRUq9zW9xRIflDPGMO+jOrMz
+         uTGdvaOXUX/sEon8CeLEWY34fJfhpVCoJasVMnaY=
+Date:   Mon, 20 May 2019 12:18:40 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Cc:     dledford@redhat.com, jgg@mellanox.com, linux-rdma@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Parav Pandit <parav@mellanox.com>,
+        Steve Wise <swise@opengridcomputing.com>
+Subject: Re: [PATCH for-next v2 3/4] RDMA/nldev: ib_pd can be pointed by
+ multiple ib_ucontext
+Message-ID: <20190520091840.GB4573@mtr-leonro.mtl.com>
+References: <20190520075333.6002-1-shamir.rabinovitch@oracle.com>
+ <20190520075333.6002-4-shamir.rabinovitch@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-20_04:,,
- signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190520075333.6002-4-shamir.rabinovitch@oracle.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Sagiv Ozeri <sagiv.ozeri@marvell.com>
+On Mon, May 20, 2019 at 10:53:20AM +0300, Shamir Rabinovitch wrote:
+> In shared object model ib_pd can belong to 1 or more ib_ucontext.
+> Fix the nldev code so it could report multiple context ids.
+>
+> Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+> ---
+>  drivers/infiniband/core/nldev.c | 93 +++++++++++++++++++++++++++++++--
+>  1 file changed, 88 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+> index cbd712f5f8b2..f4cc92b897ff 100644
+> --- a/drivers/infiniband/core/nldev.c
+> +++ b/drivers/infiniband/core/nldev.c
+> @@ -41,6 +41,9 @@
+>  #include "core_priv.h"
+>  #include "cma_priv.h"
+>  #include "restrack.h"
+> +#include "uverbs.h"
+> +
+> +static bool is_visible_in_pid_ns(struct rdma_restrack_entry *res);
 
-Use the correct enum value introduced in
-commit 12113a35ada6 ("IB/core: Add HDR speed enum")
-Prior to this change a 50Gbps port would show 40Gbps.
+Mark needed it too.
+https://patchwork.kernel.org/patch/10921419/
 
-This patch also cleaned up the redundant redefiniton of ib speeds
-for qedr.
+>
+>  static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+>  	[RDMA_NLDEV_ATTR_DEV_INDEX]     = { .type = NLA_U32 },
+> @@ -584,11 +587,80 @@ static int fill_res_mr_entry(struct sk_buff *msg, bool has_cap_net_admin,
+>  err:	return -EMSGSIZE;
+>  }
+>
+> +struct context_id {
+> +	struct list_head list;
+> +	u32 id;
+> +};
+> +
+> +static void pd_context(struct ib_pd *pd, struct list_head *list)
+> +{
+> +	struct ib_device *device = pd->device;
+> +	struct rdma_restrack_entry *res;
+> +	struct rdma_restrack_root *rt;
+> +	struct ib_uverbs_file *ufile;
+> +	struct ib_ucontext *ucontext;
+> +	struct ib_uobject *uobj;
+> +	unsigned long flags;
+> +	unsigned long id;
+> +	bool found;
+> +
+> +	rt = &device->res[RDMA_RESTRACK_CTX];
+> +
+> +	xa_lock(&rt->xa);
+> +
+> +	xa_for_each(&rt->xa, id, res) {
+> +		if (!is_visible_in_pid_ns(res))
+> +			continue;
+> +
+> +		if (!rdma_restrack_get(res))
+> +			continue;
+> +
+> +		xa_unlock(&rt->xa);
+> +
+> +		ucontext = container_of(res, struct ib_ucontext, res);
+> +		ufile = ucontext->ufile;
+> +		found = false;
+> +
+> +		/* See locking requirements in struct ib_uverbs_file */
+> +		down_read(&ufile->hw_destroy_rwsem);
+> +		spin_lock_irqsave(&ufile->uobjects_lock, flags);
+> +
+> +		list_for_each_entry(uobj, &ufile->uobjects, list) {
+> +			if (uobj->object == pd) {
+> +				found = true;
+> +				goto found;
+> +			}
+> +		}
+> +
+> +found:		spin_unlock_irqrestore(&ufile->uobjects_lock, flags);
+> +		up_read(&ufile->hw_destroy_rwsem);
+> +
+> +		if (found) {
+> +			struct context_id *ctx_id =
+> +				kmalloc(sizeof(*ctx_id), GFP_KERNEL);
+> +
+> +			if (WARN_ON_ONCE(!ctx_id))
+> +				goto next;
+> +
+> +			ctx_id->id = ucontext->res.id;
+> +			list_add(&ctx_id->list, list);
+> +		}
+> +
+> +next:		rdma_restrack_put(res);
+> +		xa_lock(&rt->xa);
+> +	}
+> +
+> +	xa_unlock(&rt->xa);
+> +}
+> +
+>  static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
+>  			     struct rdma_restrack_entry *res, uint32_t port)
+>  {
+>  	struct ib_pd *pd = container_of(res, struct ib_pd, res);
+>  	struct ib_device *dev = pd->device;
+> +	struct context_id *ctx_id;
+> +	struct context_id *tmp;
+> +	LIST_HEAD(pd_context_ids);
+>
+>  	if (has_cap_net_admin) {
+>  		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_LOCAL_DMA_LKEY,
+> @@ -606,10 +678,14 @@ static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
+>  	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, res->id))
+>  		goto err;
+>
+> -	if (!rdma_is_kernel_res(res) &&
+> -	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
+> -			pd->uobject->context->res.id))
+> -		goto err;
+> +	if (!rdma_is_kernel_res(res)) {
+> +		pd_context(pd, &pd_context_ids);
+> +		list_for_each_entry(ctx_id, &pd_context_ids, list) {
+> +			if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
+> +				ctx_id->id))
 
-Fixes: 12113a35ada6 ("IB/core: Add HDR speed enum")
+Did it work? You are overwriting RDMA_NLDEV_ATTR_RES_CTXN entry in the
+loop. You need to add RDMA_NLDEV_ATTR_RES_CTX and
+RDMA_NLDEV_ATTR_RES_CTX_ENTRY to include/uapi/rdma_netlink.h and
+open nested table here (inside of PD) with list of contexts.
 
-Signed-off-by: Sagiv Ozeri <sagiv.ozeri@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/infiniband/hw/qedr/verbs.c | 25 +++++++++----------------
- 1 file changed, 9 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index e52d8761d681..f940da2eb61e 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -159,54 +159,47 @@ int qedr_query_device(struct ib_device *ibdev,
- 	return 0;
- }
- 
--#define QEDR_SPEED_SDR		(1)
--#define QEDR_SPEED_DDR		(2)
--#define QEDR_SPEED_QDR		(4)
--#define QEDR_SPEED_FDR10	(8)
--#define QEDR_SPEED_FDR		(16)
--#define QEDR_SPEED_EDR		(32)
--
- static inline void get_link_speed_and_width(int speed, u8 *ib_speed,
- 					    u8 *ib_width)
- {
- 	switch (speed) {
- 	case 1000:
--		*ib_speed = QEDR_SPEED_SDR;
-+		*ib_speed = IB_SPEED_SDR;
- 		*ib_width = IB_WIDTH_1X;
- 		break;
- 	case 10000:
--		*ib_speed = QEDR_SPEED_QDR;
-+		*ib_speed = IB_SPEED_QDR;
- 		*ib_width = IB_WIDTH_1X;
- 		break;
- 
- 	case 20000:
--		*ib_speed = QEDR_SPEED_DDR;
-+		*ib_speed = IB_SPEED_DDR;
- 		*ib_width = IB_WIDTH_4X;
- 		break;
- 
- 	case 25000:
--		*ib_speed = QEDR_SPEED_EDR;
-+		*ib_speed = IB_SPEED_EDR;
- 		*ib_width = IB_WIDTH_1X;
- 		break;
- 
- 	case 40000:
--		*ib_speed = QEDR_SPEED_QDR;
-+		*ib_speed = IB_SPEED_QDR;
- 		*ib_width = IB_WIDTH_4X;
- 		break;
- 
- 	case 50000:
--		*ib_speed = QEDR_SPEED_QDR;
--		*ib_width = IB_WIDTH_4X;
-+		*ib_speed = IB_SPEED_HDR;
-+		*ib_width = IB_WIDTH_1X;
- 		break;
- 
- 	case 100000:
--		*ib_speed = QEDR_SPEED_EDR;
-+		*ib_speed = IB_SPEED_EDR;
- 		*ib_width = IB_WIDTH_4X;
- 		break;
- 
- 	default:
- 		/* Unsupported */
--		*ib_speed = QEDR_SPEED_SDR;
-+		*ib_speed = IB_SPEED_SDR;
- 		*ib_width = IB_WIDTH_1X;
- 	}
- }
--- 
-2.14.5
-
+> +				goto err;
+> +		}
+> +	}
+>
+>  	if (fill_res_name_pid(msg, res))
+>  		goto err;
+> @@ -617,9 +693,16 @@ static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
+>  	if (fill_res_entry(dev, msg, res))
+>  		goto err;
+>
+> +	list_for_each_entry_safe(ctx_id, tmp, &pd_context_ids, list)
+> +		kfree(ctx_id);
+> +
+>  	return 0;
+>
+> -err:	return -EMSGSIZE;
+> +err:
+> +	list_for_each_entry_safe(ctx_id, tmp, &pd_context_ids, list)
+> +		kfree(ctx_id);
+> +
+> +	return -EMSGSIZE;
+>  }
+>
+>  static int nldev_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+> --
+> 2.20.1
+>
