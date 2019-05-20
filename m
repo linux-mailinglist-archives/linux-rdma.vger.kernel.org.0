@@ -2,151 +2,272 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46528237C4
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2019 15:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B2E23808
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2019 15:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730512AbfETNKG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 May 2019 09:10:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730513AbfETNKF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 May 2019 09:10:05 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A0E320815;
-        Mon, 20 May 2019 13:10:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558357804;
-        bh=k9eD2TZypAsxqDp8hA8ZH/WXIVSpfYoE/373ktyUG8U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nb3eIgecB1/2qZ9IXyCx/OdcYDJM6jfKFJI8Qk0c4h5doHtNwrapEzV4EzhEY4ksZ
-         5GYzeGsGG5ez2AcV1Jbsv6WippU09qhMnAQmZ/98jNQTfulIDfDa9MIhJUuJtcyP95
-         4095pEJM/ufibq/jX4+6MMn2+yG7gPG7Vos5DF3U=
-Date:   Mon, 20 May 2019 16:10:00 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+        id S1730606AbfETNbk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 May 2019 09:31:40 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:22322 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730481AbfETNbk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 May 2019 09:31:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1558359097; x=1589895097;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=AwQguLVXJdSHCOj35VzPKkb9TJRt4MB+fkxiin71iiE=;
+  b=mWdrgIgoe8jLPKu/gHrb6UXTSsMoLdxRjChax/tifAAcLbn4bXTdKEn2
+   1l+n3y5KpBPKoMhqwTJpkIp77MYO6qYWFAmoBsQiTigDnZawsXDikPYYN
+   L+0nVv7kVQx/rF7H4Er1xtJAwgskqv3XR+949/bSen9lYEQSG8fXQtk+M
+   g=;
+X-IronPort-AV: E=Sophos;i="5.60,491,1549929600"; 
+   d="scan'208";a="805561934"
+Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.47.22.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 20 May 2019 13:31:35 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x4KDVV4k006497
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
+        Mon, 20 May 2019 13:31:33 GMT
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Mon, 20 May 2019 13:31:32 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.4) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Mon, 20 May 2019 13:31:26 +0000
+Subject: Re: [PATCH rdma-next 15/15] RDMA: Convert CQ allocations to be under
+ core responsibility
+To:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Glenn Streiff <gstreiff@neteffect.com>,
-        Steve Wise <swise@opengridcomputing.com>
-Subject: Re: [PATCH rdma-next 04/15] RDMA/efa: Remove check that prevents
- destroy of resources in error flows
-Message-ID: <20190520131000.GJ4573@mtr-leonro.mtl.com>
+        "Steve Wise" <swise@opengridcomputing.com>
 References: <20190520065433.8734-1-leon@kernel.org>
- <20190520065433.8734-5-leon@kernel.org>
- <a3358e40-9be4-0a7c-dab5-96573b646ded@amazon.com>
+ <20190520065433.8734-16-leon@kernel.org>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <9eb4853d-71cd-0335-bfaf-ce808ba21047@amazon.com>
+Date:   Mon, 20 May 2019 16:31:22 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a3358e40-9be4-0a7c-dab5-96573b646ded@amazon.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <20190520065433.8734-16-leon@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.4]
+X-ClientProxiedBy: EX13D07UWB002.ant.amazon.com (10.43.161.131) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 20, 2019 at 03:39:26PM +0300, Gal Pressman wrote:
-> On 20/05/2019 9:54, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > There are two possible execution contexts of destroy flows in EFA.
-> > One is normal flow where user explicitly asked for object release
-> > and another error unwinding.
-> >
-> > In normal scenario, RDMA/core will ensure that udata is supplied
-> > according to KABI contract, for now it means no udata at all.
-> >
-> > In unwind flow, the EFA driver will receive uncleared udata from
-> > numerous *_create_*() calls, but won't release those resources
-> > due to extra checks.
->
-> Thanks for the fix Leon, a few questions:
->
-> Some of the unwind flows pass NULL udata and others an uncleared udata (is it
-> really uncleared or is it actually the create udata?), what are we considering
-> as the expected behavior? Isn't passing an uncleared udata the bug here?
+On 20/05/2019 9:54, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Ensure that CQ is allocated and freed by IB/core and not by drivers.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+> diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
+> index 8d8d3bd47c35..2ceb8067b99a 100644
+> --- a/drivers/infiniband/hw/efa/efa.h
+> +++ b/drivers/infiniband/hw/efa/efa.h
+> @@ -137,9 +137,8 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
+>  			    struct ib_qp_init_attr *init_attr,
+>  			    struct ib_udata *udata);
+>  void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
+> -struct ib_cq *efa_create_cq(struct ib_device *ibdev,
+> -			    const struct ib_cq_init_attr *attr,
+> -			    struct ib_udata *udata);
+> +int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> +		  struct ib_udata *udata);
+>  struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
+>  			 u64 virt_addr, int access_flags,
+>  			 struct ib_udata *udata);
+> diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+> index db974caf1eb1..27f8a473bde9 100644
+> --- a/drivers/infiniband/hw/efa/efa_main.c
+> +++ b/drivers/infiniband/hw/efa/efa_main.c
+> @@ -220,6 +220,7 @@ static const struct ib_device_ops efa_dev_ops = {
+>  	.reg_user_mr = efa_reg_mr,
+>  
+>  	INIT_RDMA_OBJ_SIZE(ib_ah, efa_ah, ibah),
+> +	INIT_RDMA_OBJ_SIZE(ib_cq, efa_cq, ibcq),
+>  	INIT_RDMA_OBJ_SIZE(ib_pd, efa_pd, ibpd),
+>  	INIT_RDMA_OBJ_SIZE(ib_ucontext, efa_ucontext, ibucontext),
+>  };
+> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+> index e57f8adde174..6ccb85950439 100644
+> --- a/drivers/infiniband/hw/efa/efa_verbs.c
+> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> @@ -859,8 +859,6 @@ void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+>  	efa_destroy_cq_idx(dev, cq->cq_idx);
+>  	dma_unmap_single(&dev->pdev->dev, cq->dma_addr, cq->size,
+>  			 DMA_FROM_DEVICE);
+> -
+> -	kfree(cq);
+>  }
+>  
+>  static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
+> @@ -876,20 +874,23 @@ static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
+>  	return 0;
+>  }
+>  
+> -static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+> -				  int vector, struct ib_ucontext *ibucontext,
+> -				  struct ib_udata *udata)
+> +int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> +		  struct ib_udata *udata)
+>  {
+> +	struct efa_ucontext *ucontext = rdma_udata_to_drv_context(
+> +		udata, struct efa_ucontext, ibucontext);
+> +	struct ib_device *ibdev = ibcq->device;
+> +	struct efa_dev *dev = to_edev(ibdev);
 
-It is a matter of unwind sequence, if IB/core did something after
-driver created some object, it will need to call to destroy of this
-object too. So I don't think that it is the bug.
+Nit, can we please keep the existing reverse xmas tree?
 
-And yes, it is not applicable for all flows, the one which caused me to
-write this patch is failure in ib_uverbs_reg_mr(), which will call to
-ib_dereg_mr_user(mr, &attrs->driver_udata);
+>  	struct efa_ibv_create_cq_resp resp = {};
+>  	struct efa_com_create_cq_params params;
+>  	struct efa_com_create_cq_result result;
+> -	struct efa_dev *dev = to_edev(ibdev);
+>  	struct efa_ibv_create_cq cmd = {};
+> +	struct efa_cq *cq = to_ecq(ibcq);
+>  	bool cq_entry_inserted = false;
+> -	struct efa_cq *cq;
+> +	int entries = attr->cqe;
+>  	int err;
+>  
+> -	ibdev_dbg(ibdev, "create_cq entries %d\n", entries);
+> +	ibdev_dbg(ibcq->device, "create_cq entries %d\n", entries);
 
-and attrs->driver_udata is valid there.
+No need to change, we can keep using 'ibdev'. Same applies for other prints.
 
->
-> Also, if passing NULL udata is expected (why?) we have a bigger problem here as
-> existing code will cause NULL dereference.
-
-Not anymore, the destroy paths are not relying on udata now.
-
->
-> >
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > ---
-> >  drivers/infiniband/hw/efa/efa_verbs.c | 24 ------------------------
-> >  1 file changed, 24 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-> > index 6d6886c9009f..4999a74cee24 100644
-> > --- a/drivers/infiniband/hw/efa/efa_verbs.c
-> > +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-> > @@ -436,12 +436,6 @@ void efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-> >  	struct efa_dev *dev = to_edev(ibpd->device);
-> >  	struct efa_pd *pd = to_epd(ibpd);
-> >
-> > -	if (udata->inlen &&
-> > -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
-> > -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
-> > -		return;
-> > -	}
-> > -
-> >  	ibdev_dbg(&dev->ibdev, "Dealloc pd[%d]\n", pd->pdn);
-> >  	efa_pd_dealloc(dev, pd->pdn);
-> >  }
-> > @@ -459,12 +453,6 @@ int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
-> >  	struct efa_qp *qp = to_eqp(ibqp);
-> >  	int err;
-> >
-> > -	if (udata->inlen &&
-> > -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
-> > -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
-> > -		return -EINVAL;
-> > -	}
-> > -
-> >  	ibdev_dbg(&dev->ibdev, "Destroy qp[%u]\n", ibqp->qp_num);
-> >  	err = efa_destroy_qp_handle(dev, qp->qp_handle);
-> >  	if (err)
-> > @@ -865,12 +853,6 @@ int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
-> >  	struct efa_cq *cq = to_ecq(ibcq);
-> >  	int err;
-> >
-> > -	if (udata->inlen &&
-> > -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
-> > -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
-> > -		return -EINVAL;
-> > -	}
-> > -
-> >  	ibdev_dbg(&dev->ibdev,
-> >  		  "Destroy cq[%d] virt[0x%p] freed: size[%lu], dma[%pad]\n",
-> >  		  cq->cq_idx, cq->cpu_addr, cq->size, &cq->dma_addr);
-> > @@ -1556,12 +1538,6 @@ int efa_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
-> >  	struct efa_mr *mr = to_emr(ibmr);
-> >  	int err;
-> >
-> > -	if (udata->inlen &&
-> > -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
-> > -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
-> > -		return -EINVAL;
-> > -	}
-> > -
-> >  	ibdev_dbg(&dev->ibdev, "Deregister mr[%d]\n", ibmr->lkey);
-> >
-> >  	if (mr->umem) {
-> > --
-> > 2.20.1
-> >
+>  
+>  	if (entries < 1 || entries > dev->dev_attr.max_cq_depth) {
+>  		ibdev_dbg(ibdev,
+> @@ -900,7 +901,7 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  	}
+>  
+>  	if (!field_avail(cmd, num_sub_cqs, udata->inlen)) {
+> -		ibdev_dbg(ibdev,
+> +		ibdev_dbg(ibcq->device,
+>  			  "Incompatible ABI params, no input udata\n");
+>  		err = -EINVAL;
+>  		goto err_out;
+> @@ -909,7 +910,7 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  	if (udata->inlen > sizeof(cmd) &&
+>  	    !ib_is_udata_cleared(udata, sizeof(cmd),
+>  				 udata->inlen - sizeof(cmd))) {
+> -		ibdev_dbg(ibdev,
+> +		ibdev_dbg(ibcq->device,
+>  			  "Incompatible ABI params, unknown fields in udata\n");
+>  		err = -EINVAL;
+>  		goto err_out;
+> @@ -918,45 +919,39 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  	err = ib_copy_from_udata(&cmd, udata,
+>  				 min(sizeof(cmd), udata->inlen));
+>  	if (err) {
+> -		ibdev_dbg(ibdev, "Cannot copy udata for create_cq\n");
+> +		ibdev_dbg(ibcq->device, "Cannot copy udata for create_cq\n");
+>  		goto err_out;
+>  	}
+>  
+>  	if (cmd.comp_mask || !is_reserved_cleared(cmd.reserved_50)) {
+> -		ibdev_dbg(ibdev,
+> +		ibdev_dbg(ibcq->device,
+>  			  "Incompatible ABI params, unknown fields in udata\n");
+>  		err = -EINVAL;
+>  		goto err_out;
+>  	}
+>  
+>  	if (!cmd.cq_entry_size) {
+> -		ibdev_dbg(ibdev,
+> +		ibdev_dbg(ibcq->device,
+>  			  "Invalid entry size [%u]\n", cmd.cq_entry_size);
+>  		err = -EINVAL;
+>  		goto err_out;
+>  	}
+>  
+>  	if (cmd.num_sub_cqs != dev->dev_attr.sub_cqs_per_cq) {
+> -		ibdev_dbg(ibdev,
+> +		ibdev_dbg(ibcq->device,
+>  			  "Invalid number of sub cqs[%u] expected[%u]\n",
+>  			  cmd.num_sub_cqs, dev->dev_attr.sub_cqs_per_cq);
+>  		err = -EINVAL;
+>  		goto err_out;
+>  	}
+>  
+> -	cq = kzalloc(sizeof(*cq), GFP_KERNEL);
+> -	if (!cq) {
+> -		err = -ENOMEM;
+> -		goto err_out;
+> -	}
+> -
+> -	cq->ucontext = to_eucontext(ibucontext);
+> +	cq->ucontext = ucontext;
+>  	cq->size = PAGE_ALIGN(cmd.cq_entry_size * entries * cmd.num_sub_cqs);
+>  	cq->cpu_addr = efa_zalloc_mapped(dev, &cq->dma_addr, cq->size,
+>  					 DMA_FROM_DEVICE);
+>  	if (!cq->cpu_addr) {
+>  		err = -ENOMEM;
+> -		goto err_free_cq;
+> +		goto err_out;
+>  	}
+>  
+>  	params.uarn = cq->ucontext->uarn;
+> @@ -975,7 +970,7 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  
+>  	err = cq_mmap_entries_setup(dev, cq, &resp);
+>  	if (err) {
+> -		ibdev_dbg(ibdev,
+> +		ibdev_dbg(ibcq->device,
+>  			  "Could not setup cq[%u] mmap entries\n", cq->cq_idx);
+>  		goto err_destroy_cq;
+>  	}
+> @@ -986,17 +981,17 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  		err = ib_copy_to_udata(udata, &resp,
+>  				       min(sizeof(resp), udata->outlen));
+>  		if (err) {
+> -			ibdev_dbg(ibdev,
+> +			ibdev_dbg(ibcq->device,
+>  				  "Failed to copy udata for create_cq\n");
+>  			goto err_destroy_cq;
+>  		}
+>  	}
+>  
+> -	ibdev_dbg(ibdev,
+> +	ibdev_dbg(ibcq->device,
+>  		  "Created cq[%d], cq depth[%u]. dma[%pad] virt[0x%p]\n",
+>  		  cq->cq_idx, result.actual_depth, &cq->dma_addr, cq->cpu_addr);
+>  
+> -	return &cq->ibcq;
+> +	return 0;
+>  
+>  err_destroy_cq:
+>  	efa_destroy_cq_idx(dev, cq->cq_idx);
+> @@ -1005,23 +1000,9 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  			 DMA_FROM_DEVICE);
+>  	if (!cq_entry_inserted)
+>  		free_pages_exact(cq->cpu_addr, cq->size);
+> -err_free_cq:
+> -	kfree(cq);
+>  err_out:
+>  	atomic64_inc(&dev->stats.sw_stats.create_cq_err);
+> -	return ERR_PTR(err);
+> -}
+> -
+> -struct ib_cq *efa_create_cq(struct ib_device *ibdev,
+> -			    const struct ib_cq_init_attr *attr,
+> -			    struct ib_udata *udata)
+> -{
+> -	struct efa_ucontext *ucontext = rdma_udata_to_drv_context(udata,
+> -								  struct efa_ucontext,
+> -								  ibucontext);
+> -
+> -	return do_create_cq(ibdev, attr->cqe, attr->comp_vector,
+> -			    &ucontext->ibucontext, udata);
+> +	return err;
+>  }
