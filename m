@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F2C22D6F
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2019 09:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D62922D71
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2019 09:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727539AbfETHyn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 May 2019 03:54:43 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54456 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727319AbfETHyn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 May 2019 03:54:43 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4K7nBgE147944;
-        Mon, 20 May 2019 07:54:31 GMT
+        id S1730393AbfETHzO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 May 2019 03:55:14 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:34762 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727319AbfETHzO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 May 2019 03:55:14 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4K7mkZg162096;
+        Mon, 20 May 2019 07:54:56 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2018-07-02;
- bh=YcGj2FSkIYR715FBkpPX/T4DVUavtCslUDAYxXz5G7U=;
- b=iyW8ZCDAiAXy+3CwI07kOTRmfKkx/qCtDcILAz0bMAw91HSom5NQCy3Nm5NpXwTgQGVu
- 0lUS1T85AsvMNXj8mgO9kTLFcWsxsWXOlDK6EfmA4zGhrZ2fTisIFJCa6S2c+3ZBVa/p
- pAuhhxDFZRZ35caIFfqyGTp7NldcXL9ezstyg2UZCEE8/3WN5fOvMv0lcSxTA3KLWdeK
- 9pyjMuHwp38sC52qgqFafF22hrznjZ4WBBwLi5x50iDYzM/hTU/u30xoAXop4OB1y+32
- u5VgoxxBnol+YbAyN6+UesZnjzvQQCISgUNWFn4FEyusre4wat+5SrAn0v+E1LK0B+5N 6Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2sj9ft5793-1
+ bh=noYL2MPKC0mn+hPiQaW/9kAkIdyqNMPT8IUAeNv5vfM=;
+ b=oKtjFsjd+6ffhfs6lgZrkW7CDprK73b9viGfPW52ljeMqi5/33uUHD3OP8CAdObWL1gh
+ mY1TzROBh6hZPakOF1m0JN6SxqGm2UVymMogxJOU7v6LECzqWHpdVELAzm9+NPFccAvE
+ YDWNWUoo3Xb2EJ7D5S7QjLe1pQ89HpMTGAXAS2gbN2M4ssfqm2LKO5TRf9U6EMoxbOy4
+ cqq4gHLwslQCwZ7MOmCvhxu3zzxe/tTj8DX0+6uelYANo61N2yv/LEJYF0W3WEGb6uuc
+ M5iAnffC2rXothsgXi3uKiH48h/BNe7b9wt9CDWtpRVPFgTDtWCQMo0nIz3fk5WjTZQu fQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 2sj7jdddpy-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 May 2019 07:54:31 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4K7rY72119305;
-        Mon, 20 May 2019 07:54:30 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2skbphnhbf-1
+        Mon, 20 May 2019 07:54:56 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4K7rWbB083679;
+        Mon, 20 May 2019 07:54:55 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 2sjwqr3t0g-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 May 2019 07:54:30 +0000
+        Mon, 20 May 2019 07:54:55 +0000
 Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4K7sTWC028221;
-        Mon, 20 May 2019 07:54:29 GMT
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4K7srbs016735;
+        Mon, 20 May 2019 07:54:54 GMT
 Received: from srabinov-laptop.nl.oracle.com (/10.175.35.172)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 20 May 2019 07:54:28 +0000
+        with ESMTP ; Mon, 20 May 2019 07:54:53 +0000
 From:   Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
 To:     dledford@redhat.com, jgg@mellanox.com, leon@kernel.org,
         linux-rdma@vger.kernel.org
 Cc:     shamir.rabinovitch@oracle.com, Jason Gunthorpe <jgg@ziepe.ca>,
         Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH for-next v2 1/4] RDMA/uverbs: uobj_get_obj_read should return the ib_uobject
-Date:   Mon, 20 May 2019 10:53:18 +0300
-Message-Id: <20190520075333.6002-2-shamir.rabinovitch@oracle.com>
+Subject: [PATCH for-next v2 2/4] RDMA/uverbs: uobj_put_obj_read macro should be removed
+Date:   Mon, 20 May 2019 10:53:19 +0300
+Message-Id: <20190520075333.6002-3-shamir.rabinovitch@oracle.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190520075333.6002-1-shamir.rabinovitch@oracle.com>
 References: <20190520075333.6002-1-shamir.rabinovitch@oracle.com>
@@ -69,575 +69,371 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-future patch will remove the ib_uobject pointer from the ib_x
-objects. the uobj_get_obj_read and uobj_put_obj_read macros
-were constructed with the ability to reach the ib_uobject from
-ib_x in mind. this need to change now.
+uobj_put_obj_read macro assume that ib_x has pointer to the
+ib_uobject. this is wrong assumption as future patches will
+remove the ib_uobject pointers from the ib_x objects. now
+that we fixed the uobj_get_obj_read macro and we have the
+ib_uobject we no longer need to use the ib_x to find the
+ib_uobject and we can remove the uobj_put_obj_read macro.
 
 Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
 ---
- drivers/infiniband/core/uverbs_cmd.c | 125 ++++++++++++++++++++-------
- include/rdma/uverbs_std_types.h      |   8 +-
- 2 files changed, 98 insertions(+), 35 deletions(-)
+ drivers/infiniband/core/uverbs_cmd.c | 92 ++++++++++++++--------------
+ include/rdma/uverbs_std_types.h      |  3 -
+ 2 files changed, 46 insertions(+), 49 deletions(-)
 
 diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 5a3a1780ceea..f1320de2b388 100644
+index f1320de2b388..a850424ae184 100644
 --- a/drivers/infiniband/core/uverbs_cmd.c
 +++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -37,6 +37,7 @@
- #include <linux/fs.h>
- #include <linux/slab.h>
- #include <linux/sched.h>
-+#include <linux/list.h>
- 
- #include <linux/uaccess.h>
- 
-@@ -700,6 +701,7 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
- 	struct ib_uverbs_reg_mr      cmd;
- 	struct ib_uverbs_reg_mr_resp resp;
- 	struct ib_uobject           *uobj;
-+	struct ib_uobject           *pduobj;
- 	struct ib_pd                *pd;
- 	struct ib_mr                *mr;
- 	int                          ret;
-@@ -720,7 +722,8 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
- 	if (IS_ERR(uobj))
- 		return PTR_ERR(uobj);
- 
--	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle, attrs);
-+	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle, attrs,
-+			       &pduobj);
- 	if (!pd) {
- 		ret = -EINVAL;
- 		goto err_free;
-@@ -786,6 +789,7 @@ static int ib_uverbs_rereg_mr(struct uverbs_attr_bundle *attrs)
- 	struct ib_pd		    *old_pd;
- 	int                          ret;
- 	struct ib_uobject	    *uobj;
-+	struct ib_uobject	    *pduobj = NULL;
- 
- 	ret = uverbs_request(attrs, &cmd, sizeof(cmd));
+@@ -765,7 +765,7 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
  	if (ret)
-@@ -818,7 +822,7 @@ static int ib_uverbs_rereg_mr(struct uverbs_attr_bundle *attrs)
+ 		goto err_copy;
  
- 	if (cmd.flags & IB_MR_REREG_PD) {
- 		pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle,
--				       attrs);
-+				       attrs, &pduobj);
- 		if (!pd) {
- 			ret = -EINVAL;
- 			goto put_uobjs;
-@@ -872,6 +876,7 @@ static int ib_uverbs_alloc_mw(struct uverbs_attr_bundle *attrs)
- 	struct ib_uverbs_alloc_mw      cmd;
- 	struct ib_uverbs_alloc_mw_resp resp;
- 	struct ib_uobject             *uobj;
-+	struct ib_uobject             *pduobj;
- 	struct ib_pd                  *pd;
- 	struct ib_mw                  *mw;
- 	int                            ret;
-@@ -885,7 +890,8 @@ static int ib_uverbs_alloc_mw(struct uverbs_attr_bundle *attrs)
- 	if (IS_ERR(uobj))
- 		return PTR_ERR(uobj);
+-	uobj_put_obj_read(pd);
++	uobj_put_read(pduobj);
  
--	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle, attrs);
-+	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle, attrs,
-+			       &pduobj);
- 	if (!pd) {
- 		ret = -EINVAL;
- 		goto err_free;
-@@ -1099,6 +1105,7 @@ static int ib_uverbs_resize_cq(struct uverbs_attr_bundle *attrs)
- {
- 	struct ib_uverbs_resize_cq	cmd;
- 	struct ib_uverbs_resize_cq_resp	resp = {};
-+	struct ib_uobject		*cquobj;
- 	struct ib_cq			*cq;
- 	int				ret = -EINVAL;
+ 	return uobj_alloc_commit(uobj, attrs);
  
-@@ -1106,7 +1113,8 @@ static int ib_uverbs_resize_cq(struct uverbs_attr_bundle *attrs)
+@@ -773,7 +773,7 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
+ 	ib_dereg_mr_user(mr, &attrs->driver_udata);
+ 
+ err_put:
+-	uobj_put_obj_read(pd);
++	uobj_put_read(pduobj);
+ 
+ err_free:
+ 	uobj_alloc_abort(uobj, attrs);
+@@ -851,7 +851,7 @@ static int ib_uverbs_rereg_mr(struct uverbs_attr_bundle *attrs)
+ 
+ put_uobj_pd:
+ 	if (cmd.flags & IB_MR_REREG_PD)
+-		uobj_put_obj_read(pd);
++		uobj_put_read(pduobj);
+ 
+ put_uobjs:
+ 	uobj_put_write(uobj);
+@@ -923,13 +923,13 @@ static int ib_uverbs_alloc_mw(struct uverbs_attr_bundle *attrs)
  	if (ret)
- 		return ret;
+ 		goto err_copy;
  
--	cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ, cmd.cq_handle, attrs);
-+	cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ, cmd.cq_handle, attrs,
-+			       &cquobj);
- 	if (!cq)
- 		return -EINVAL;
+-	uobj_put_obj_read(pd);
++	uobj_put_read(pduobj);
+ 	return uobj_alloc_commit(uobj, attrs);
  
-@@ -1159,6 +1167,7 @@ static int ib_uverbs_poll_cq(struct uverbs_attr_bundle *attrs)
- 	struct ib_uverbs_poll_cq_resp  resp;
- 	u8 __user                     *header_ptr;
- 	u8 __user                     *data_ptr;
-+	struct ib_uobject	      *cquobj;
- 	struct ib_cq                  *cq;
- 	struct ib_wc                   wc;
- 	int                            ret;
-@@ -1167,7 +1176,8 @@ static int ib_uverbs_poll_cq(struct uverbs_attr_bundle *attrs)
- 	if (ret)
- 		return ret;
+ err_copy:
+ 	uverbs_dealloc_mw(mw);
+ err_put:
+-	uobj_put_obj_read(pd);
++	uobj_put_read(pduobj);
+ err_free:
+ 	uobj_alloc_abort(uobj, attrs);
+ 	return ret;
+@@ -1126,7 +1126,7 @@ static int ib_uverbs_resize_cq(struct uverbs_attr_bundle *attrs)
  
--	cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ, cmd.cq_handle, attrs);
-+	cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ, cmd.cq_handle, attrs,
-+			       &cquobj);
- 	if (!cq)
- 		return -EINVAL;
+ 	ret = uverbs_response(attrs, &resp, sizeof(resp));
+ out:
+-	uobj_put_obj_read(cq);
++	uobj_put_read(cquobj);
  
-@@ -1208,6 +1218,7 @@ static int ib_uverbs_poll_cq(struct uverbs_attr_bundle *attrs)
- static int ib_uverbs_req_notify_cq(struct uverbs_attr_bundle *attrs)
- {
- 	struct ib_uverbs_req_notify_cq cmd;
-+	struct ib_uobject	      *cquobj;
- 	struct ib_cq                  *cq;
- 	int ret;
+ 	return ret;
+ }
+@@ -1211,7 +1211,7 @@ static int ib_uverbs_poll_cq(struct uverbs_attr_bundle *attrs)
+ 		ret = uverbs_output_written(attrs, UVERBS_ATTR_CORE_OUT);
  
-@@ -1215,7 +1226,8 @@ static int ib_uverbs_req_notify_cq(struct uverbs_attr_bundle *attrs)
- 	if (ret)
- 		return ret;
+ out_put:
+-	uobj_put_obj_read(cq);
++	uobj_put_read(cquobj);
+ 	return ret;
+ }
  
--	cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ, cmd.cq_handle, attrs);
-+	cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ, cmd.cq_handle, attrs,
-+			       &cquobj);
- 	if (!cq)
- 		return -EINVAL;
+@@ -1234,7 +1234,7 @@ static int ib_uverbs_req_notify_cq(struct uverbs_attr_bundle *attrs)
+ 	ib_req_notify_cq(cq, cmd.solicited_only ?
+ 			 IB_CQ_SOLICITED : IB_CQ_NEXT_COMP);
  
-@@ -1258,16 +1270,21 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
- {
- 	struct ib_uqp_object		*obj;
- 	struct ib_device		*device;
-+	struct ib_uobject		*pd_uobj = ERR_PTR(-ENOENT);
- 	struct ib_pd			*pd = NULL;
- 	struct ib_xrcd			*xrcd = NULL;
- 	struct ib_uobject		*xrcd_uobj = ERR_PTR(-ENOENT);
-+	struct ib_uobject		*scq_uobj = ERR_PTR(-ENOENT);
-+	struct ib_uobject		*rcq_uobj = ERR_PTR(-ENOENT);
- 	struct ib_cq			*scq = NULL, *rcq = NULL;
-+	struct ib_uobject		*srq_uobj = ERR_PTR(-ENOENT);
- 	struct ib_srq			*srq = NULL;
- 	struct ib_qp			*qp;
- 	struct ib_qp_init_attr		attr = {};
- 	struct ib_uverbs_ex_create_qp_resp resp;
- 	int				ret;
- 	struct ib_rwq_ind_table *ind_tbl = NULL;
-+	struct ib_uobject	*ind_tbl_uobj = ERR_PTR(-ENOENT);
- 	bool has_sq = true;
- 	struct ib_device *ib_dev;
+-	uobj_put_obj_read(cq);
++	uobj_put_read(cquobj);
  
-@@ -1285,7 +1302,8 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
- 	if (cmd->comp_mask & IB_UVERBS_CREATE_QP_MASK_IND_TABLE) {
- 		ind_tbl = uobj_get_obj_read(rwq_ind_table,
- 					    UVERBS_OBJECT_RWQ_IND_TBL,
--					    cmd->rwq_ind_tbl_handle, attrs);
-+					    cmd->rwq_ind_tbl_handle, attrs,
-+					    &ind_tbl_uobj);
- 		if (!ind_tbl) {
- 			ret = -EINVAL;
- 			goto err_put;
-@@ -1324,7 +1342,8 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
- 		} else {
- 			if (cmd->is_srq) {
- 				srq = uobj_get_obj_read(srq, UVERBS_OBJECT_SRQ,
--							cmd->srq_handle, attrs);
-+							cmd->srq_handle, attrs,
-+							&srq_uobj);
- 				if (!srq || srq->srq_type == IB_SRQT_XRC) {
- 					ret = -EINVAL;
- 					goto err_put;
-@@ -1335,7 +1354,8 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
- 				if (cmd->recv_cq_handle != cmd->send_cq_handle) {
- 					rcq = uobj_get_obj_read(
- 						cq, UVERBS_OBJECT_CQ,
--						cmd->recv_cq_handle, attrs);
-+						cmd->recv_cq_handle, attrs,
-+						&rcq_uobj);
- 					if (!rcq) {
- 						ret = -EINVAL;
- 						goto err_put;
-@@ -1346,11 +1366,12 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
- 
- 		if (has_sq)
- 			scq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ,
--						cmd->send_cq_handle, attrs);
-+						cmd->send_cq_handle, attrs,
-+						&scq_uobj);
- 		if (!ind_tbl)
- 			rcq = rcq ?: scq;
- 		pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd->pd_handle,
--				       attrs);
-+				       attrs, &pd_uobj);
- 		if (!pd || (!scq && has_sq)) {
- 			ret = -EINVAL;
- 			goto err_put;
-@@ -1645,6 +1666,7 @@ static int ib_uverbs_query_qp(struct uverbs_attr_bundle *attrs)
- {
- 	struct ib_uverbs_query_qp      cmd;
- 	struct ib_uverbs_query_qp_resp resp;
-+	struct ib_uobject	       *qpuobj;
- 	struct ib_qp                   *qp;
- 	struct ib_qp_attr              *attr;
- 	struct ib_qp_init_attr         *init_attr;
-@@ -1661,7 +1683,8 @@ static int ib_uverbs_query_qp(struct uverbs_attr_bundle *attrs)
- 		goto out;
+ 	return 0;
+ }
+@@ -1487,15 +1487,15 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
  	}
  
--	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs);
-+	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs,
-+			       &qpuobj);
- 	if (!qp) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -1758,6 +1781,7 @@ static int modify_qp(struct uverbs_attr_bundle *attrs,
- 		     struct ib_uverbs_ex_modify_qp *cmd)
- {
- 	struct ib_qp_attr *attr;
-+	struct ib_uobject *qpuobj;
- 	struct ib_qp *qp;
- 	int ret;
+ 	if (pd)
+-		uobj_put_obj_read(pd);
++		uobj_put_read(pd_uobj);
+ 	if (scq)
+-		uobj_put_obj_read(scq);
++		uobj_put_read(scq_uobj);
+ 	if (rcq && rcq != scq)
+-		uobj_put_obj_read(rcq);
++		uobj_put_read(rcq_uobj);
+ 	if (srq)
+-		uobj_put_obj_read(srq);
++		uobj_put_read(srq_uobj);
+ 	if (ind_tbl)
+-		uobj_put_obj_read(ind_tbl);
++		uobj_put_read(ind_tbl_uobj);
  
-@@ -1766,7 +1790,7 @@ static int modify_qp(struct uverbs_attr_bundle *attrs,
- 		return -ENOMEM;
+ 	return uobj_alloc_commit(&obj->uevent.uobject, attrs);
+ err_cb:
+@@ -1505,15 +1505,15 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+ 	if (!IS_ERR(xrcd_uobj))
+ 		uobj_put_read(xrcd_uobj);
+ 	if (pd)
+-		uobj_put_obj_read(pd);
++		uobj_put_read(pd_uobj);
+ 	if (scq)
+-		uobj_put_obj_read(scq);
++		uobj_put_read(scq_uobj);
+ 	if (rcq && rcq != scq)
+-		uobj_put_obj_read(rcq);
++		uobj_put_read(rcq_uobj);
+ 	if (srq)
+-		uobj_put_obj_read(srq);
++		uobj_put_read(srq_uobj);
+ 	if (ind_tbl)
+-		uobj_put_obj_read(ind_tbl);
++		uobj_put_read(ind_tbl_uobj);
  
- 	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd->base.qp_handle,
--			       attrs);
-+			       attrs, &qpuobj);
- 	if (!qp) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -2000,6 +2024,7 @@ static int ib_uverbs_post_send(struct uverbs_attr_bundle *attrs)
- 	struct ib_uverbs_send_wr       *user_wr;
- 	struct ib_send_wr              *wr = NULL, *last, *next;
- 	const struct ib_send_wr	       *bad_wr;
-+	struct ib_uobject	       *qpuobj;
- 	struct ib_qp                   *qp;
- 	int                             i, sg_ind;
- 	int				is_ud;
-@@ -2027,7 +2052,8 @@ static int ib_uverbs_post_send(struct uverbs_attr_bundle *attrs)
- 	if (!user_wr)
- 		return -ENOMEM;
+ 	uobj_alloc_abort(&obj->uevent.uobject, attrs);
+ 	return ret;
+@@ -1692,7 +1692,7 @@ static int ib_uverbs_query_qp(struct uverbs_attr_bundle *attrs)
  
--	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs);
-+	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs,
-+			       &qpuobj);
- 	if (!qp) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -2050,6 +2076,7 @@ static int ib_uverbs_post_send(struct uverbs_attr_bundle *attrs)
+ 	ret = ib_query_qp(qp, attr, cmd.attr_mask, init_attr);
  
- 		if (is_ud) {
- 			struct ib_ud_wr *ud;
-+			struct ib_uobject *uobj;
+-	uobj_put_obj_read(qp);
++	uobj_put_read(qpuobj);
  
- 			if (user_wr->opcode != IB_WR_SEND &&
- 			    user_wr->opcode != IB_WR_SEND_WITH_IMM) {
-@@ -2065,7 +2092,8 @@ static int ib_uverbs_post_send(struct uverbs_attr_bundle *attrs)
- 			}
- 
- 			ud->ah = uobj_get_obj_read(ah, UVERBS_OBJECT_AH,
--						   user_wr->wr.ud.ah, attrs);
-+						   user_wr->wr.ud.ah, attrs,
-+						   &uobj);
- 			if (!ud->ah) {
- 				kfree(ud);
- 				ret = -EINVAL;
-@@ -2290,6 +2318,7 @@ static int ib_uverbs_post_recv(struct uverbs_attr_bundle *attrs)
- 	struct ib_uverbs_post_recv_resp resp;
- 	struct ib_recv_wr              *wr, *next;
- 	const struct ib_recv_wr	       *bad_wr;
-+	struct ib_uobject	       *qpuobj;
- 	struct ib_qp                   *qp;
- 	int ret, ret2;
- 	struct uverbs_req_iter iter;
-@@ -2303,7 +2332,8 @@ static int ib_uverbs_post_recv(struct uverbs_attr_bundle *attrs)
- 	if (IS_ERR(wr))
- 		return PTR_ERR(wr);
- 
--	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs);
-+	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs,
-+			       &qpuobj);
- 	if (!qp) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -2340,6 +2370,7 @@ static int ib_uverbs_post_srq_recv(struct uverbs_attr_bundle *attrs)
- 	struct ib_uverbs_post_srq_recv_resp resp;
- 	struct ib_recv_wr                  *wr, *next;
- 	const struct ib_recv_wr		   *bad_wr;
-+	struct ib_uobject		   *srquobj;
- 	struct ib_srq                      *srq;
- 	int ret, ret2;
- 	struct uverbs_req_iter iter;
-@@ -2353,7 +2384,8 @@ static int ib_uverbs_post_srq_recv(struct uverbs_attr_bundle *attrs)
- 	if (IS_ERR(wr))
- 		return PTR_ERR(wr);
- 
--	srq = uobj_get_obj_read(srq, UVERBS_OBJECT_SRQ, cmd.srq_handle, attrs);
-+	srq = uobj_get_obj_read(srq, UVERBS_OBJECT_SRQ, cmd.srq_handle, attrs,
-+				&srquobj);
- 	if (!srq) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -2390,6 +2422,7 @@ static int ib_uverbs_create_ah(struct uverbs_attr_bundle *attrs)
- 	struct ib_uverbs_create_ah	 cmd;
- 	struct ib_uverbs_create_ah_resp	 resp;
- 	struct ib_uobject		*uobj;
-+	struct ib_uobject		*pduobj;
- 	struct ib_pd			*pd;
- 	struct ib_ah			*ah;
- 	struct rdma_ah_attr		attr = {};
-@@ -2409,7 +2442,8 @@ static int ib_uverbs_create_ah(struct uverbs_attr_bundle *attrs)
- 		goto err;
- 	}
- 
--	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle, attrs);
-+	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle, attrs,
-+			       &pduobj);
- 	if (!pd) {
- 		ret = -EINVAL;
- 		goto err;
-@@ -2478,6 +2512,7 @@ static int ib_uverbs_destroy_ah(struct uverbs_attr_bundle *attrs)
- static int ib_uverbs_attach_mcast(struct uverbs_attr_bundle *attrs)
- {
- 	struct ib_uverbs_attach_mcast cmd;
-+	struct ib_uobject	     *qpuobj;
- 	struct ib_qp                 *qp;
- 	struct ib_uqp_object         *obj;
- 	struct ib_uverbs_mcast_entry *mcast;
-@@ -2487,7 +2522,8 @@ static int ib_uverbs_attach_mcast(struct uverbs_attr_bundle *attrs)
  	if (ret)
- 		return ret;
+ 		goto out;
+@@ -1930,7 +1930,7 @@ static int modify_qp(struct uverbs_attr_bundle *attrs,
+ 				      &attrs->driver_udata);
  
--	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs);
-+	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs,
-+			       &qpuobj);
- 	if (!qp)
- 		return -EINVAL;
+ release_qp:
+-	uobj_put_obj_read(qp);
++	uobj_put_read(qpuobj);
+ out:
+ 	kfree(attr);
  
-@@ -2527,6 +2563,7 @@ static int ib_uverbs_detach_mcast(struct uverbs_attr_bundle *attrs)
- {
- 	struct ib_uverbs_detach_mcast cmd;
- 	struct ib_uqp_object         *obj;
-+	struct ib_uobject	     *qpuobj;
- 	struct ib_qp                 *qp;
- 	struct ib_uverbs_mcast_entry *mcast;
- 	int                           ret = -EINVAL;
-@@ -2536,7 +2573,8 @@ static int ib_uverbs_detach_mcast(struct uverbs_attr_bundle *attrs)
+@@ -2198,11 +2198,11 @@ static int ib_uverbs_post_send(struct uverbs_attr_bundle *attrs)
+ 		ret = ret2;
+ 
+ out_put:
+-	uobj_put_obj_read(qp);
++	uobj_put_read(qpuobj);
+ 
+ 	while (wr) {
+ 		if (is_ud && ud_wr(wr)->ah)
+-			uobj_put_obj_read(ud_wr(wr)->ah);
++			uobj_put_read(ud_wr(wr)->ah->uobject);
+ 		next = wr->next;
+ 		kfree(wr);
+ 		wr = next;
+@@ -2342,7 +2342,7 @@ static int ib_uverbs_post_recv(struct uverbs_attr_bundle *attrs)
+ 	resp.bad_wr = 0;
+ 	ret = qp->device->ops.post_recv(qp->real_qp, wr, &bad_wr);
+ 
+-	uobj_put_obj_read(qp);
++	uobj_put_read(qpuobj);
+ 	if (ret) {
+ 		for (next = wr; next; next = next->next) {
+ 			++resp.bad_wr;
+@@ -2394,7 +2394,7 @@ static int ib_uverbs_post_srq_recv(struct uverbs_attr_bundle *attrs)
+ 	resp.bad_wr = 0;
+ 	ret = srq->device->ops.post_srq_recv(srq, wr, &bad_wr);
+ 
+-	uobj_put_obj_read(srq);
++	uobj_put_read(srquobj);
+ 
  	if (ret)
- 		return ret;
+ 		for (next = wr; next; next = next->next) {
+@@ -2483,14 +2483,14 @@ static int ib_uverbs_create_ah(struct uverbs_attr_bundle *attrs)
+ 	if (ret)
+ 		goto err_copy;
  
--	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs);
-+	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs,
-+			       &qpuobj);
- 	if (!qp)
+-	uobj_put_obj_read(pd);
++	uobj_put_read(pduobj);
+ 	return uobj_alloc_commit(uobj, attrs);
+ 
+ err_copy:
+ 	rdma_destroy_ah(ah, RDMA_DESTROY_AH_SLEEPABLE);
+ 
+ err_put:
+-	uobj_put_obj_read(pd);
++	uobj_put_read(pduobj);
+ 
+ err:
+ 	uobj_alloc_abort(uobj, attrs);
+@@ -2554,7 +2554,7 @@ static int ib_uverbs_attach_mcast(struct uverbs_attr_bundle *attrs)
+ 
+ out_put:
+ 	mutex_unlock(&obj->mcast_lock);
+-	uobj_put_obj_read(qp);
++	uobj_put_read(qpuobj);
+ 
+ 	return ret;
+ }
+@@ -2599,7 +2599,7 @@ static int ib_uverbs_detach_mcast(struct uverbs_attr_bundle *attrs)
+ 
+ out_put:
+ 	mutex_unlock(&obj->mcast_lock);
+-	uobj_put_obj_read(qp);
++	uobj_put_read(qpuobj);
+ 	return ret;
+ }
+ 
+@@ -2718,7 +2718,7 @@ static int kern_spec_to_ib_spec_action(struct uverbs_attr_bundle *attrs,
+ 		flow_resources_add(uflow_res,
+ 				   IB_FLOW_SPEC_ACTION_HANDLE,
+ 				   ib_spec->action.act);
+-		uobj_put_obj_read(ib_spec->action.act);
++		uobj_put_read(uobj);
+ 		break;
+ 	case IB_FLOW_SPEC_ACTION_COUNT:
+ 		if (kern_spec->flow_count.size !=
+@@ -2736,7 +2736,7 @@ static int kern_spec_to_ib_spec_action(struct uverbs_attr_bundle *attrs,
+ 		flow_resources_add(uflow_res,
+ 				   IB_FLOW_SPEC_ACTION_COUNT,
+ 				   ib_spec->flow_count.counters);
+-		uobj_put_obj_read(ib_spec->flow_count.counters);
++		uobj_put_read(uobj);
+ 		break;
+ 	default:
  		return -EINVAL;
+@@ -3003,16 +3003,16 @@ static int ib_uverbs_ex_create_wq(struct uverbs_attr_bundle *attrs)
+ 	if (err)
+ 		goto err_copy;
  
-@@ -2646,6 +2684,8 @@ static int kern_spec_to_ib_spec_action(struct uverbs_attr_bundle *attrs,
- 				       union ib_flow_spec *ib_spec,
- 				       struct ib_uflow_resources *uflow_res)
- {
-+	struct ib_uobject *uobj;
-+
- 	ib_spec->type = kern_spec->type;
- 	switch (ib_spec->type) {
- 	case IB_FLOW_SPEC_ACTION_TAG:
-@@ -2670,7 +2710,7 @@ static int kern_spec_to_ib_spec_action(struct uverbs_attr_bundle *attrs,
- 		ib_spec->action.act = uobj_get_obj_read(flow_action,
- 							UVERBS_OBJECT_FLOW_ACTION,
- 							kern_spec->action.handle,
--							attrs);
-+							attrs, &uobj);
- 		if (!ib_spec->action.act)
- 			return -EINVAL;
- 		ib_spec->action.size =
-@@ -2688,7 +2728,7 @@ static int kern_spec_to_ib_spec_action(struct uverbs_attr_bundle *attrs,
- 			uobj_get_obj_read(counters,
- 					  UVERBS_OBJECT_COUNTERS,
- 					  kern_spec->flow_count.handle,
--					  attrs);
-+					  attrs, &uobj);
- 		if (!ib_spec->flow_count.counters)
- 			return -EINVAL;
- 		ib_spec->flow_count.size =
-@@ -2890,6 +2930,8 @@ static int ib_uverbs_ex_create_wq(struct uverbs_attr_bundle *attrs)
- 	struct ib_uverbs_ex_create_wq_resp resp = {};
- 	struct ib_uwq_object           *obj;
- 	int err = 0;
-+	struct ib_uobject *cquobj;
-+	struct ib_uobject *pduobj;
- 	struct ib_cq *cq;
- 	struct ib_pd *pd;
- 	struct ib_wq *wq;
-@@ -2908,13 +2950,15 @@ static int ib_uverbs_ex_create_wq(struct uverbs_attr_bundle *attrs)
- 	if (IS_ERR(obj))
- 		return PTR_ERR(obj);
+-	uobj_put_obj_read(pd);
+-	uobj_put_obj_read(cq);
++	uobj_put_read(pduobj);
++	uobj_put_read(cquobj);
+ 	return uobj_alloc_commit(&obj->uevent.uobject, attrs);
  
--	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle, attrs);
-+	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd.pd_handle, attrs,
-+			       &pduobj);
- 	if (!pd) {
- 		err = -EINVAL;
- 		goto err_uobj;
+ err_copy:
+ 	ib_destroy_wq(wq, &attrs->driver_udata);
+ err_put_cq:
+-	uobj_put_obj_read(cq);
++	uobj_put_read(cquobj);
+ err_put_pd:
+-	uobj_put_obj_read(pd);
++	uobj_put_read(pduobj);
+ err_uobj:
+ 	uobj_alloc_abort(&obj->uevent.uobject, attrs);
+ 
+@@ -3078,7 +3078,7 @@ static int ib_uverbs_ex_modify_wq(struct uverbs_attr_bundle *attrs)
  	}
+ 	ret = wq->device->ops.modify_wq(wq, &wq_attr, cmd.attr_mask,
+ 					&attrs->driver_udata);
+-	uobj_put_obj_read(wq);
++	uobj_put_read(wquobj);
+ 	return ret;
+ }
  
--	cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ, cmd.cq_handle, attrs);
-+	cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ, cmd.cq_handle, attrs,
-+			       &cquobj);
- 	if (!cq) {
- 		err = -EINVAL;
- 		goto err_put_pd;
-@@ -3006,6 +3050,7 @@ static int ib_uverbs_ex_destroy_wq(struct uverbs_attr_bundle *attrs)
- static int ib_uverbs_ex_modify_wq(struct uverbs_attr_bundle *attrs)
- {
- 	struct ib_uverbs_ex_modify_wq cmd;
-+	struct ib_uobject *wquobj;
- 	struct ib_wq *wq;
- 	struct ib_wq_attr wq_attr = {};
- 	int ret;
-@@ -3020,7 +3065,8 @@ static int ib_uverbs_ex_modify_wq(struct uverbs_attr_bundle *attrs)
- 	if (cmd.attr_mask > (IB_WQ_STATE | IB_WQ_CUR_STATE | IB_WQ_FLAGS))
- 		return -EINVAL;
+@@ -3182,7 +3182,7 @@ static int ib_uverbs_ex_create_rwq_ind_table(struct uverbs_attr_bundle *attrs)
+ 	kfree(wqs_handles);
  
--	wq = uobj_get_obj_read(wq, UVERBS_OBJECT_WQ, cmd.wq_handle, attrs);
-+	wq = uobj_get_obj_read(wq, UVERBS_OBJECT_WQ, cmd.wq_handle, attrs,
-+			       &wquobj);
- 	if (!wq)
- 		return -EINVAL;
+ 	for (j = 0; j < num_read_wqs; j++)
+-		uobj_put_obj_read(wqs[j]);
++		uobj_put_read(wqs[j]->uobject);
  
-@@ -3085,8 +3131,11 @@ static int ib_uverbs_ex_create_rwq_ind_table(struct uverbs_attr_bundle *attrs)
+ 	return uobj_alloc_commit(uobj, attrs);
  
- 	for (num_read_wqs = 0; num_read_wqs < num_wq_handles;
- 			num_read_wqs++) {
-+		struct ib_uobject *uobj;
-+
- 		wq = uobj_get_obj_read(wq, UVERBS_OBJECT_WQ,
--				       wqs_handles[num_read_wqs], attrs);
-+				       wqs_handles[num_read_wqs], attrs,
-+				       &uobj);
- 		if (!wq) {
- 			err = -EINVAL;
- 			goto put_wqs;
-@@ -3147,6 +3196,7 @@ static int ib_uverbs_ex_create_rwq_ind_table(struct uverbs_attr_bundle *attrs)
+@@ -3192,7 +3192,7 @@ static int ib_uverbs_ex_create_rwq_ind_table(struct uverbs_attr_bundle *attrs)
+ 	uobj_alloc_abort(uobj, attrs);
+ put_wqs:
+ 	for (j = 0; j < num_read_wqs; j++)
+-		uobj_put_obj_read(wqs[j]);
++		uobj_put_read(wqs[j]->uobject);
  err_free:
  	kfree(wqs_handles);
  	kfree(wqs);
-+
- 	return err;
+@@ -3361,7 +3361,7 @@ static int ib_uverbs_ex_create_flow(struct uverbs_attr_bundle *attrs)
+ 	if (err)
+ 		goto err_copy;
+ 
+-	uobj_put_obj_read(qp);
++	uobj_put_read(qpuobj);
+ 	kfree(flow_attr);
+ 	if (cmd.flow_attr.num_of_specs)
+ 		kfree(kern_flow_attr);
+@@ -3374,7 +3374,7 @@ static int ib_uverbs_ex_create_flow(struct uverbs_attr_bundle *attrs)
+ err_free_flow_attr:
+ 	kfree(flow_attr);
+ err_put:
+-	uobj_put_obj_read(qp);
++	uobj_put_read(qpuobj);
+ err_uobj:
+ 	uobj_alloc_abort(uobj, attrs);
+ err_free_attr:
+@@ -3513,9 +3513,9 @@ static int __uverbs_create_xsrq(struct uverbs_attr_bundle *attrs,
+ 		uobj_put_read(xrcd_uobj);
+ 
+ 	if (ib_srq_has_cq(cmd->srq_type))
+-		uobj_put_obj_read(attr.ext.cq);
++		uobj_put_read(cquobj);
+ 
+-	uobj_put_obj_read(pd);
++	uobj_put_read(pduobj);
+ 	return uobj_alloc_commit(&obj->uevent.uobject, attrs);
+ 
+ err_copy:
+@@ -3524,11 +3524,11 @@ static int __uverbs_create_xsrq(struct uverbs_attr_bundle *attrs,
+ err_free:
+ 	kfree(srq);
+ err_put:
+-	uobj_put_obj_read(pd);
++	uobj_put_read(pduobj);
+ 
+ err_put_cq:
+ 	if (ib_srq_has_cq(cmd->srq_type))
+-		uobj_put_obj_read(attr.ext.cq);
++		uobj_put_read(cquobj);
+ 
+ err_put_xrcd:
+ 	if (cmd->srq_type == IB_SRQT_XRC) {
+@@ -3598,7 +3598,7 @@ static int ib_uverbs_modify_srq(struct uverbs_attr_bundle *attrs)
+ 	ret = srq->device->ops.modify_srq(srq, &attr, cmd.attr_mask,
+ 					  &attrs->driver_udata);
+ 
+-	uobj_put_obj_read(srq);
++	uobj_put_read(srquobj);
+ 
+ 	return ret;
  }
+@@ -3623,7 +3623,7 @@ static int ib_uverbs_query_srq(struct uverbs_attr_bundle *attrs)
  
-@@ -3174,6 +3224,7 @@ static int ib_uverbs_ex_create_flow(struct uverbs_attr_bundle *attrs)
- 	struct ib_flow			  *flow_id;
- 	struct ib_uverbs_flow_attr	  *kern_flow_attr;
- 	struct ib_flow_attr		  *flow_attr;
-+	struct ib_uobject		  *qpuobj;
- 	struct ib_qp			  *qp;
- 	struct ib_uflow_resources	  *uflow_res;
- 	struct ib_uverbs_flow_spec_hdr	  *kern_spec;
-@@ -3237,7 +3288,8 @@ static int ib_uverbs_ex_create_flow(struct uverbs_attr_bundle *attrs)
- 		goto err_free_attr;
- 	}
+ 	ret = ib_query_srq(srq, &attr);
  
--	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs);
-+	qp = uobj_get_obj_read(qp, UVERBS_OBJECT_QP, cmd.qp_handle, attrs,
-+			       &qpuobj);
- 	if (!qp) {
- 		err = -EINVAL;
- 		goto err_uobj;
-@@ -3352,6 +3404,8 @@ static int __uverbs_create_xsrq(struct uverbs_attr_bundle *attrs,
- {
- 	struct ib_uverbs_create_srq_resp resp;
- 	struct ib_usrq_object           *obj;
-+	struct ib_uobject		*cquobj = ERR_PTR(-ENOENT);
-+	struct ib_uobject		*pduobj;
- 	struct ib_pd                    *pd;
- 	struct ib_srq                   *srq;
- 	struct ib_uobject               *uninitialized_var(xrcd_uobj);
-@@ -3387,14 +3441,15 @@ static int __uverbs_create_xsrq(struct uverbs_attr_bundle *attrs,
+-	uobj_put_obj_read(srq);
++	uobj_put_read(srquobj);
  
- 	if (ib_srq_has_cq(cmd->srq_type)) {
- 		attr.ext.cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ,
--						cmd->cq_handle, attrs);
-+						cmd->cq_handle, attrs, &cquobj);
- 		if (!attr.ext.cq) {
- 			ret = -EINVAL;
- 			goto err_put_xrcd;
- 		}
- 	}
- 
--	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd->pd_handle, attrs);
-+	pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd->pd_handle, attrs,
-+			       &pduobj);
- 	if (!pd) {
- 		ret = -EINVAL;
- 		goto err_put_cq;
-@@ -3523,6 +3578,7 @@ static int ib_uverbs_create_xsrq(struct uverbs_attr_bundle *attrs)
- static int ib_uverbs_modify_srq(struct uverbs_attr_bundle *attrs)
- {
- 	struct ib_uverbs_modify_srq cmd;
-+	struct ib_uobject	   *srquobj;
- 	struct ib_srq              *srq;
- 	struct ib_srq_attr          attr;
- 	int                         ret;
-@@ -3531,7 +3587,8 @@ static int ib_uverbs_modify_srq(struct uverbs_attr_bundle *attrs)
  	if (ret)
  		return ret;
+@@ -3750,7 +3750,7 @@ static int ib_uverbs_ex_modify_cq(struct uverbs_attr_bundle *attrs)
  
--	srq = uobj_get_obj_read(srq, UVERBS_OBJECT_SRQ, cmd.srq_handle, attrs);
-+	srq = uobj_get_obj_read(srq, UVERBS_OBJECT_SRQ, cmd.srq_handle, attrs,
-+				&srquobj);
- 	if (!srq)
- 		return -EINVAL;
+ 	ret = rdma_set_cq_moderation(cq, cmd.attr.cq_count, cmd.attr.cq_period);
  
-@@ -3551,6 +3608,7 @@ static int ib_uverbs_query_srq(struct uverbs_attr_bundle *attrs)
- 	struct ib_uverbs_query_srq      cmd;
- 	struct ib_uverbs_query_srq_resp resp;
- 	struct ib_srq_attr              attr;
-+	struct ib_uobject		*srquobj;
- 	struct ib_srq                   *srq;
- 	int                             ret;
+-	uobj_put_obj_read(cq);
++	uobj_put_read(cquobj);
  
-@@ -3558,7 +3616,8 @@ static int ib_uverbs_query_srq(struct uverbs_attr_bundle *attrs)
- 	if (ret)
- 		return ret;
- 
--	srq = uobj_get_obj_read(srq, UVERBS_OBJECT_SRQ, cmd.srq_handle, attrs);
-+	srq = uobj_get_obj_read(srq, UVERBS_OBJECT_SRQ, cmd.srq_handle, attrs,
-+				&srquobj);
- 	if (!srq)
- 		return -EINVAL;
- 
-@@ -3670,6 +3729,7 @@ static int ib_uverbs_ex_query_device(struct uverbs_attr_bundle *attrs)
- static int ib_uverbs_ex_modify_cq(struct uverbs_attr_bundle *attrs)
- {
- 	struct ib_uverbs_ex_modify_cq cmd;
-+	struct ib_uobject *cquobj;
- 	struct ib_cq *cq;
- 	int ret;
- 
-@@ -3683,7 +3743,8 @@ static int ib_uverbs_ex_modify_cq(struct uverbs_attr_bundle *attrs)
- 	if (cmd.attr_mask > IB_CQ_MODERATE)
- 		return -EOPNOTSUPP;
- 
--	cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ, cmd.cq_handle, attrs);
-+	cq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ, cmd.cq_handle, attrs,
-+			       &cquobj);
- 	if (!cq)
- 		return -EINVAL;
- 
+ 	return ret;
+ }
 diff --git a/include/rdma/uverbs_std_types.h b/include/rdma/uverbs_std_types.h
-index 05eabfd5d0d3..578e5c28bc1c 100644
+index 578e5c28bc1c..02641a3241e3 100644
 --- a/include/rdma/uverbs_std_types.h
 +++ b/include/rdma/uverbs_std_types.h
-@@ -64,9 +64,11 @@ static inline void *_uobj_get_obj_read(struct ib_uobject *uobj)
- 		return NULL;
- 	return uobj->object;
+@@ -98,9 +98,6 @@ static inline void uobj_put_read(struct ib_uobject *uobj)
+ 	rdma_lookup_put_uobject(uobj, UVERBS_LOOKUP_READ);
  }
--#define uobj_get_obj_read(_object, _type, _id, _attrs)                         \
--	((struct ib_##_object *)_uobj_get_obj_read(                            \
--		uobj_get_read(_type, _id, _attrs)))
-+#define uobj_get_obj_read(_object, _type, _id, _attrs, _uobj)                  \
-+({                                                                             \
-+	*_uobj = uobj_get_read(_type, _id, _attrs);                            \
-+	((struct ib_##_object *)_uobj_get_obj_read(*_uobj));                   \
-+})
  
- #define uobj_get_write(_type, _id, _attrs)                                     \
- 	rdma_lookup_get_uobject(uobj_get_type(_attrs, _type), (_attrs)->ufile, \
+-#define uobj_put_obj_read(_obj)					\
+-	uobj_put_read((_obj)->uobject)
+-
+ static inline void uobj_put_write(struct ib_uobject *uobj)
+ {
+ 	rdma_lookup_put_uobject(uobj, UVERBS_LOOKUP_WRITE);
 -- 
 2.20.1
 
