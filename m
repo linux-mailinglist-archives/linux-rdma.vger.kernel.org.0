@@ -2,249 +2,258 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFE2240FD
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2019 21:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59BC24112
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2019 21:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725905AbfETTPB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 May 2019 15:15:01 -0400
-Received: from mail-eopbgr690088.outbound.protection.outlook.com ([40.107.69.88]:38724
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725372AbfETTPA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 May 2019 15:15:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s12i2TCFEc2ZtpMAsyo58zcm7tzBQArH9C5XBWnaaQo=;
- b=paKMTr+BjwiGkBOn26EY+uyIL0rkqZjCIhyoK0/PDJQpCSEOn6ej2+BD6IXTm3ZguX6PF3QH8CIzfSZrb2z136RS6EQbU+UtQQse5MkebrAZ9exUASy6C9sluJ6qNQ2RJPL22rJgUy3m90xkSpLbDM//iIkS1nJK/EIg+2dU7rk=
-Received: from BYAPR05MB5511.namprd05.prod.outlook.com (20.177.186.28) by
- BYAPR05MB4821.namprd05.prod.outlook.com (52.135.235.95) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1922.9; Mon, 20 May 2019 19:14:47 +0000
-Received: from BYAPR05MB5511.namprd05.prod.outlook.com
- ([fe80::d99b:a85f:758a:f04b]) by BYAPR05MB5511.namprd05.prod.outlook.com
- ([fe80::d99b:a85f:758a:f04b%7]) with mapi id 15.20.1922.013; Mon, 20 May 2019
- 19:14:47 +0000
-From:   Adit Ranadive <aditr@vmware.com>
-To:     Yuval Shaia <yuval.shaia@oracle.com>
-CC:     "jgg@mellanox.com" <jgg@mellanox.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Pv-drivers <Pv-drivers@vmware.com>
-Subject: Re: [PATCH for-next] RDMA/vmw_pvrdma: Use resource ids from physical
- device if available
-Thread-Topic: [PATCH for-next] RDMA/vmw_pvrdma: Use resource ids from physical
- device if available
-Thread-Index: AQHVDBSlkap1QWBkwEm57ccCex0bMqZz9iuAgAByVgA=
-Date:   Mon, 20 May 2019 19:14:46 +0000
-Message-ID: <6184c75d-4726-8910-8209-b1caafa97bba@vmware.com>
-References: <1558031071-14110-1-git-send-email-aditr@vmware.com>
- <20190520122553.GA13761@lap1>
-In-Reply-To: <20190520122553.GA13761@lap1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BYAPR21CA0009.namprd21.prod.outlook.com
- (2603:10b6:a03:114::19) To BYAPR05MB5511.namprd05.prod.outlook.com
- (2603:10b6:a03:1a::28)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=aditr@vmware.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [66.170.99.1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4eeb77fd-6e6a-4bcc-294b-08d6dd576c36
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR05MB4821;
-x-ms-traffictypediagnostic: BYAPR05MB4821:
-x-ms-exchange-purlcount: 1
-x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-x-microsoft-antispam-prvs: <BYAPR05MB482116CFC9C7129C247FFBCEC5060@BYAPR05MB4821.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:411;
-x-forefront-prvs: 004395A01C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(376002)(366004)(39860400002)(346002)(136003)(189003)(199004)(53936002)(3846002)(66556008)(36756003)(6116002)(6246003)(5660300002)(64756008)(14454004)(8676002)(81156014)(66476007)(11346002)(2616005)(2906002)(6512007)(66946007)(73956011)(26005)(45080400002)(478600001)(486006)(186003)(6436002)(476003)(52116002)(386003)(6506007)(102836004)(53546011)(256004)(6306002)(316002)(14444005)(6916009)(31696002)(966005)(66066001)(76176011)(86362001)(66446008)(71190400001)(54906003)(99286004)(71200400001)(6486002)(305945005)(446003)(25786009)(68736007)(107886003)(81166006)(4326008)(31686004)(8936002)(229853002)(7736002)(309714004);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB4821;H:BYAPR05MB5511.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: vmware.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: jonQpbCNw4DHnDv/nN7fngTUKS0uSXRwOUu2hgSgqjvOfx4uHspY6rffNcYvbvkOJU4ZN+LuhuWHn3tQGC2v6c+Gc+KS+QDkOr6pLyiWHbUSt2gFNGuQkfEc3MfqO21kkMcAPxfhXnH7v/x+u/hgJyzhyQ7cMJsTQObYlPa2EKwPhTgFcfKu7ShJVBP6BtUSmTf3Eyy7y2gPm/ToRP9zbQknN82eu+O1mwLOuSAYimrIxxDuSyX95NfV5z6n8LS6HhtRjGVG/jW27i53HNTp7JesfuEDT1o0xn2X21OlUXxrR6yAcv4LtESkxRw1MdGLsKGRnmbcCY7KwUPfhPkSROlbrhYYpktEzkvfgK7kWGdNGL3ZYpAKPnIGB0O4KSWUBPPs9h1Vv3HFYMtAGP4/+mvPqJ15tkIX+ufZNI4IPJU=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <21097FD46A7A5E4CB00C71A81B9F99CE@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726076AbfETTWL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 May 2019 15:22:11 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:20087 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725971AbfETTWL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 May 2019 15:22:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1558380128; x=1589916128;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=fk4FOWnXH6m3S2a914xhgJurYfPfoBqeVQsxNwODOK0=;
+  b=t3kCk+v1Rc7Bh5gIdLu350vVkI4a+lr/UcwH0E27c4dS6H3F/srFMJ4J
+   +r2P7u85XlO2x7Yi6ugHnOzfaaAR/PoflOCEKtv3UZZRLWVWUt4l27lRY
+   Kf5LRFoPdogwOanqPJzWWeQofgKJMU+QJcx6P0y54iAlcTlMeZ7tE5p21
+   E=;
+X-IronPort-AV: E=Sophos;i="5.60,492,1549929600"; 
+   d="scan'208";a="733839260"
+Received: from iad6-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com) ([10.124.125.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 20 May 2019 19:22:06 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com (8.14.7/8.14.7) with ESMTP id x4KJM2sK072807
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
+        Mon, 20 May 2019 19:22:05 GMT
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Mon, 20 May 2019 19:22:05 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.34) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Mon, 20 May 2019 19:22:00 +0000
+Subject: Re: [PATCH rdma-next 04/15] RDMA/efa: Remove check that prevents
+ destroy of resources in error flows
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Glenn Streiff <gstreiff@neteffect.com>,
+        Steve Wise <swise@opengridcomputing.com>
+References: <20190520065433.8734-1-leon@kernel.org>
+ <20190520065433.8734-5-leon@kernel.org>
+ <a3358e40-9be4-0a7c-dab5-96573b646ded@amazon.com>
+ <20190520131000.GJ4573@mtr-leonro.mtl.com>
+ <161ad83d-cb50-d02a-8511-938b2b3b7156@amazon.com>
+ <20190520145105.GQ4573@mtr-leonro.mtl.com>
+ <807ef5dc-d4c7-9c4c-bad4-a437f3104237@amazon.com>
+ <20190520183028.GS4573@mtr-leonro.mtl.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <d6355ff2-f9e2-8297-3869-386d54c5cbb3@amazon.com>
+Date:   Mon, 20 May 2019 22:21:55 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.6.1
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4eeb77fd-6e6a-4bcc-294b-08d6dd576c36
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2019 19:14:47.0274
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aditr@vmware.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4821
+In-Reply-To: <20190520183028.GS4573@mtr-leonro.mtl.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.34]
+X-ClientProxiedBy: EX13D18UWA001.ant.amazon.com (10.43.160.11) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gNS8yMC8xOSA1OjI1IEFNLCBZdXZhbCBTaGFpYSB3cm90ZToNCj4gT24gVGh1LCBNYXkgMTYs
-IDIwMTkgYXQgMDY6MjQ6NDhQTSArMDAwMCwgQWRpdCBSYW5hZGl2ZSB3cm90ZToNCj4+IEZyb206
-IEJyeWFuIFRhbiA8YnJ5YW50YW5Adm13YXJlLmNvbT4NCj4+DQo+PiBUaGlzIGNoYW5nZSBhbGxv
-d3MgdGhlIFJETUEgc3RhY2sgdG8gdXNlIHBoeXNpY2FsIHJlc291cmNlIG51bWJlcnMgaWYNCj4+
-IHRoZXkgYXJlIHBhc3NlZCB1cCBmcm9tIHRoZSBkZXZpY2UuIERvaW5nIHNvIGFsbG93cyBjb21t
-dW5pY2F0aW9uIHdpdGgNCj4+IHBoeXNpY2FsIG5vbi1FU1ggZW5kcG9pbnRzIChzdWNoIGFzIGEg
-YmFyZS1tZXRhbCBMaW51eCBtYWNoaW5lIG9yIGENCj4+IFNSLUlPVi1lbmFibGVkIFZNKS4NCj4g
-DQo+IFdpdGggdGhlIHByaWNlIG9mIG5vdCBzdXBwb3J0aW5nIG1pZ3JhdGlvbiwgcmlnaHQgOikN
-Cg0KSSdtIGFjdHVhbGx5IGdvaW5nIHRvIHJlbW92ZSB0aGF0IGluIHYxIHNpbmNlIGl0J3MgYSBi
-aXQgbWlzbGVhZGluZyA6KS4NCg0KPiANCj4+DQo+PiBUaGlzIGlzIGFjY29tcGxpc2hlZCBieSBz
-ZXBhcmF0aW5nIHRoZSBjb25jZXB0IG9mIHRoZSBRUCBudW1iZXIgZnJvbQ0KPj4gdGhlIFFQIGhh
-bmRsZS4gUHJldmlvdXNseSwgdGhlIHR3byB3ZXJlIHRoZSBzYW1lLCBhcyB0aGUgUVAgbnVtYmVy
-IHdhcw0KPj4gZXhwb3NlZCB0byB0aGUgZ3Vlc3QgYW5kIGFsc28gdXNlZCB0byByZWZlcmVuY2Ug
-YSB2aXJ0dWFsIFFQIGluIHRoZQ0KPj4gZGV2aWNlIGJhY2tlbmQuIFdpdGggcGh5c2ljYWwgcmVz
-b3VyY2UgbnVtYmVycyBleHBvc2VkLCB0aGUgUVAgbnVtYmVyDQo+PiBnaXZlbiB0byB0aGUgZ3Vl
-c3QgaXMgdGhlIFFQIG51bWJlciBhc3NpZ25lZCB0byB0aGUgcGh5c2ljYWwgSENBJ3MgUVAsDQo+
-IA0KPiBzL2Fzc2lnbmVkIHRvIHRoZS9hc3NpZ25lZCBieSB0aGUNCj4gDQo+PiB3aGlsZSB0aGUg
-UVAgaGFuZGxlIGlzIHN0aWxsIHRoZSBpbnRlcm5hbCBoYW5kbGUgdXNlZCB0byByZWZlcmVuY2Ug
-YQ0KPj4gdmlydHVhbCBRUC4gUmVnYXJkbGVzcyBvZiB3aGV0aGVyIHRoZSBkZXZpY2UgaXMgZXhw
-b3NpbmcgcGh5c2ljYWwgaWRzLA0KPj4gdGhlIGRyaXZlciB3aWxsIHN0aWxsIHRyeSB0byBwaWNr
-IHVwIHRoZSBRUCBoYW5kbGUgZnJvbSB0aGUgYmFja2VuZCBpZg0KPj4gcG9zc2libGUuIFRoZSBN
-UiBrZXlzIGV4cG9zZWQgdG8gdGhlIGd1ZXN0IHdpbGwgYWxzbyBiZSB0aGUgTVIga2V5cw0KPj4g
-Y3JlYXRlZCBieSB0aGUgcGh5c2ljYWwgSENBLCBpbnN0ZWFkIG9mIHZpcnR1YWwgTVIga2V5cy4N
-Cj4gDQo+IEkgZG9uJ3Qgc2VlIGFueSB0aGluZyByZWxhdGVkIHRvIE1SIGluIHRoZSBwYXRjaCBz
-byB3b25kZXJpbmcgaWYgeW91IGFyZQ0KPiB0YWxraW5nIGFib3V0IHNvbWUgZnV0dXJlIHBhdGNo
-IGluIHlvdXIgcGlwZS4NCj4gSW4gYW55IGNhc2UgLSBzdWdnZXN0aW5nIHRvIHJlbW92ZSB0aGlz
-IGNvbW1lbnQuDQoNCldlIGFscmVhZHkgbWFrZSB0aGUgZGlzdGluY3Rpb24gZm9yIE1SIGluIHRl
-cm1zIG9mIHRoZSBoYW5kbGUgYW5kIHRoZSBrZXlzDQpzbyB3ZSBkb24ndCBuZWVkIHRvIGRvIGFu
-eXRoaW5nIHNwZWNpYWwgZm9yIHRoZW0uDQoNCj4gDQo+Pg0KPj4gQSBuZXcgdmVyc2lvbiBvZiB0
-aGUgY3JlYXRlIFFQIHJlc3BvbnNlIGhhcyBiZWVuIGFkZGVkIHRvIHRoZSBkZXZpY2UNCj4+IEFQ
-SS4gVGhlIGRldmljZSBiYWNrZW5kIHdpbGwgcGFzcyB0aGUgUVAgaGFuZGxlIHVwIHRvIHRoZSBk
-cml2ZXIsIGlmDQo+PiBib3RoIHRoZSBkZXZpY2UgYW5kIGRyaXZlciBhcmUgYXQgdGhlIGFwcHJp
-b3ByaWF0ZSB2ZXJzaW9uLCBhbmQgdGhlIEFCSQ0KPj4gaGFzIGFsc28gYmVlbiB1cGRhdGVkIHRv
-IGFsbG93IHRoZSByZXR1cm4gb2YgdGhlIFFQIGhhbmRsZSB0byB0aGUgZ3Vlc3QNCj4+IGxpYnJh
-cnkuIFRoZSBQVlJETUEgdmVyc2lvbiBhbmQgQUJJIHZlcnNpb24gaGF2ZSBiZWVuIGJ1bXBlZCB1
-cCBiZWNhdXNlDQo+PiBvZiB0aGVzZSBub24tY29tcGF0aWJsZSBjaGFuZ2VzLg0KPiANCj4gSSBo
-YXZlIHRvIGFkbWl0IGknbSBub3QgZnVsbHkgdW5kZXJzdGFuZCB3aHkgdGhpcyBwYXRjaCBpcyBu
-ZWVkZWQsIG1heWJlIGkNCj4gaGF2ZSB0byByZWFkIHRoZSByZWxldmFudCBsaWJyYXJ5IHBhdGNo
-IHRvIGhhdmUgYSBjb21wbGV0ZSBwaWN0dXJlIGJ1dCB3aGF0DQo+IGknbSBtaXNzaW5nIGhlcmUg
-aXMgd2h5IGl0IGlzIG5lZWRlZCwgYWZ0ZXIgYWxsIHRoZSBRRU1VIGRldmljZSAod2hpY2ggaXMN
-Cj4gYWxzbyBkZXJpdmVkIGJ5IHRoaXMgZHJpdmVyKSBwYXNzIHRoZSBwaHlzaWNhbCBRUE4gdG8g
-Z3Vlc3QgZnJvbSBkYXkgb25lDQo+IGFuZCBoYXMgbm8gaXNzdWVzIGNvbW11bmljYXRpbmcgd2l0
-aCBhbnkgcGVlciwgdmlydHVhbCBvciBiYXJlLW1ldGFsLg0KPiANCj4gQXMgaSBzZWUgaXQsIGZy
-b20gYSBkZXNpZ24gcGVyc3BlY3RpdmVzLCB0aGUgZHJpdmVyLCBhcyB3ZWxsIGFzIHRoZQ0KPiBs
-aWJyYXJ5LCBzaG91bGQgYmUgYWdub3N0aWMgdG8gaG93IHRoZSBkZXZpY2UgYWxsb2NhdGVzIGl0
-cyBRUE4uDQo+IA0KPiBJIG1pZ2h0IGJlIG1pc3Npbmcgc29tZXRoaW5nIGhlcmUgc28gd2lsbCBi
-ZSBoYXBweSBpZiB5b3UgY2FuIGVsYWJvcmF0ZSBhDQo+IGJpdCBtb3JlIG9uIHRoYXQuDQo+IA0K
-DQpXZWxsIHdlJ3JlIG1vdmluZyBmcm9tIHVzaW5nIGh5cGVydmlzb3ItZ2VuZXJhdGVkIHJlc291
-cmNlcyBpZHMgdG8gaGFyZHdhcmUtDQpnZW5lcmF0ZWQgb25lcyBzbyB3ZSBuZWVkIHRvIG1ha2Ug
-dGhlIGRpc3RpbmN0aW9uIGJldHdlZW4gdGhlIGhhbmRsZQ0KKGh5cGVydmlzb3ItZ2VuZXJhdGVk
-KSBhbmQgdGhlIFFQTiAoaGFyZHdhcmUtZ2VuZXJhdGVkKSB3aGljaCBpcyBjdXJyZW50bHkgDQpt
-aXNzaW5nIGZyb20gb3VyIGRyaXZlci9saWJyYXJ5LiBXZSBwcm9iYWJseSBkb24ndCBuZWVkIHRo
-ZSBBQkkgYnVtcCBsaWtlIEphc29uDQptZW50aW9uZWQgYnV0IHdlIGRvIG5lZWQgdG8gbWFrZSB0
-aGUgZGlzdGluY3Rpb24gdG8gYWxsb3cgYXBwbGljYXRpb25zIHRvIA0KbW9kaWZ5IFFQL3Bvc3Qg
-V1FFcyBjb3JyZWN0bHkuDQoNCj4gWXV2YWwNCj4gDQo+Pg0KPj4gUmV2aWV3ZWQtYnk6IEpvcmdl
-biBIYW5zZW4gPGpoYW5zZW5Adm13YXJlLmNvbT4NCj4+IFNpZ25lZC1vZmYtYnk6IEFkaXQgUmFu
-YWRpdmUgPGFkaXRyQHZtd2FyZS5jb20+DQo+PiBTaWduZWQtb2ZmLWJ5OiBCcnlhbiBUYW4gPGJy
-eWFudGFuQHZtd2FyZS5jb20+DQo+PiAtLS0NCj4+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvdm13
-X3B2cmRtYS9wdnJkbWFfZGV2X2FwaS5oIHwgMTUgKysrKysrKysrKysrKy0NCj4+ICBkcml2ZXJz
-L2luZmluaWJhbmQvaHcvdm13X3B2cmRtYS9wdnJkbWFfbWFpbi5jICAgIHwgIDggKysrKysrKy0N
-Cj4+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvdm13X3B2cmRtYS9wdnJkbWFfcXAuYyAgICAgIHwg
-MjQgKysrKysrKysrKysrKysrKysrKysrLS0NCj4+ICBpbmNsdWRlL3VhcGkvcmRtYS92bXdfcHZy
-ZG1hLWFiaS5oICAgICAgICAgICAgICAgIHwgIDkgKysrKysrKystDQo+PiAgNCBmaWxlcyBjaGFu
-Z2VkLCA1MSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KPj4gLS0tDQo+Pg0KPj4gVGhl
-IFBSIGZvciB1c2Vyc3BhY2Ugd2FzIHNlbnQ6DQo+PiBodHRwczovL25hbTA0LnNhZmVsaW5rcy5w
-cm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkZnaXRodWIuY29tJTJGbGlu
-dXgtcmRtYSUyRnJkbWEtY29yZSUyRnB1bGwlMkY1MzEmYW1wO2RhdGE9MDIlN0MwMSU3Q2FkaXRy
-JTQwdm13YXJlLmNvbSU3QzRiOTU2NTE4OTQ3NzQ2ZWU1YTExMDhkNmRkMWU2NTc5JTdDYjM5MTM4
-Y2EzY2VlNGI0YWE0ZDZjZDgzZDlkZDYyZjAlN0MwJTdDMCU3QzYzNjkzOTUyMDA4MzE5NTY3NyZh
-bXA7c2RhdGE9SjI4aTY5SnVuR29jSkd1R2VmcUJsQ0hDMXU3aGIlMkZxanE5JTJGWENQUHZOUk0l
-M0QmYW1wO3Jlc2VydmVkPTANCj4+DQo+PiAtLS0NCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lu
-ZmluaWJhbmQvaHcvdm13X3B2cmRtYS9wdnJkbWFfZGV2X2FwaS5oIGIvZHJpdmVycy9pbmZpbmli
-YW5kL2h3L3Ztd19wdnJkbWEvcHZyZG1hX2Rldl9hcGkuaA0KPj4gaW5kZXggOGY5NzQ5ZDU0Njg4
-Li44NmE2YzA1NGVhMjYgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvdm13
-X3B2cmRtYS9wdnJkbWFfZGV2X2FwaS5oDQo+PiArKysgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcv
-dm13X3B2cmRtYS9wdnJkbWFfZGV2X2FwaS5oDQo+PiBAQCAtNTgsNyArNTgsOCBAQA0KPj4gICNk
-ZWZpbmUgUFZSRE1BX1JPQ0VWMV9WRVJTSU9OCQkxNw0KPj4gICNkZWZpbmUgUFZSRE1BX1JPQ0VW
-Ml9WRVJTSU9OCQkxOA0KPj4gICNkZWZpbmUgUFZSRE1BX1BQTjY0X1ZFUlNJT04JCTE5DQo+PiAt
-I2RlZmluZSBQVlJETUFfVkVSU0lPTgkJCVBWUkRNQV9QUE42NF9WRVJTSU9ODQo+PiArI2RlZmlu
-ZSBQVlJETUFfUVBIQU5ETEVfVkVSU0lPTgkJMjANCj4+ICsjZGVmaW5lIFBWUkRNQV9WRVJTSU9O
-CQkJUFZSRE1BX1FQSEFORExFX1ZFUlNJT04NCj4+ICANCj4+ICAjZGVmaW5lIFBWUkRNQV9CT0FS
-RF9JRAkJCTENCj4+ICAjZGVmaW5lIFBWUkRNQV9SRVZfSUQJCQkxDQo+PiBAQCAtNTgxLDYgKzU4
-MiwxNyBAQCBzdHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVfcXBfcmVzcCB7DQo+PiAgCXUzMiBtYXhf
-aW5saW5lX2RhdGE7DQo+PiAgfTsNCj4+ICANCj4+ICtzdHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVf
-cXBfcmVzcF92MiB7DQo+PiArCXN0cnVjdCBwdnJkbWFfY21kX3Jlc3BfaGRyIGhkcjsNCj4+ICsJ
-dTMyIHFwbjsNCj4+ICsJdTMyIHFwX2hhbmRsZTsNCj4+ICsJdTMyIG1heF9zZW5kX3dyOw0KPj4g
-Kwl1MzIgbWF4X3JlY3Zfd3I7DQo+PiArCXUzMiBtYXhfc2VuZF9zZ2U7DQo+PiArCXUzMiBtYXhf
-cmVjdl9zZ2U7DQo+PiArCXUzMiBtYXhfaW5saW5lX2RhdGE7DQo+PiArfTsNCj4+ICsNCj4+ICBz
-dHJ1Y3QgcHZyZG1hX2NtZF9tb2RpZnlfcXAgew0KPj4gIAlzdHJ1Y3QgcHZyZG1hX2NtZF9oZHIg
-aGRyOw0KPj4gIAl1MzIgcXBfaGFuZGxlOw0KPj4gQEAgLTY2Myw2ICs2NzUsNyBAQCBzdHJ1Y3Qg
-cHZyZG1hX2NtZF9kZXN0cm95X2JpbmQgew0KPj4gIAlzdHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVf
-Y3FfcmVzcCBjcmVhdGVfY3FfcmVzcDsNCj4+ICAJc3RydWN0IHB2cmRtYV9jbWRfcmVzaXplX2Nx
-X3Jlc3AgcmVzaXplX2NxX3Jlc3A7DQo+PiAgCXN0cnVjdCBwdnJkbWFfY21kX2NyZWF0ZV9xcF9y
-ZXNwIGNyZWF0ZV9xcF9yZXNwOw0KPj4gKwlzdHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVfcXBfcmVz
-cF92MiBjcmVhdGVfcXBfcmVzcF92MjsNCj4+ICAJc3RydWN0IHB2cmRtYV9jbWRfcXVlcnlfcXBf
-cmVzcCBxdWVyeV9xcF9yZXNwOw0KPj4gIAlzdHJ1Y3QgcHZyZG1hX2NtZF9kZXN0cm95X3FwX3Jl
-c3AgZGVzdHJveV9xcF9yZXNwOw0KPj4gIAlzdHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVfc3JxX3Jl
-c3AgY3JlYXRlX3NycV9yZXNwOw0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9o
-dy92bXdfcHZyZG1hL3B2cmRtYV9tYWluLmMgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvdm13X3B2
-cmRtYS9wdnJkbWFfbWFpbi5jDQo+PiBpbmRleCA0MDE4MjI5N2Y4N2YuLjAyZTMzNzgzN2EyZSAx
-MDA2NDQNCj4+IC0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody92bXdfcHZyZG1hL3B2cmRtYV9t
-YWluLmMNCj4+ICsrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody92bXdfcHZyZG1hL3B2cmRtYV9t
-YWluLmMNCj4+IEBAIC0yMDEsNyArMjAxLDEzIEBAIHN0YXRpYyBpbnQgcHZyZG1hX3JlZ2lzdGVy
-X2RldmljZShzdHJ1Y3QgcHZyZG1hX2RldiAqZGV2KQ0KPj4gIAlkZXYtPmliX2Rldi5vd25lciA9
-IFRISVNfTU9EVUxFOw0KPj4gIAlkZXYtPmliX2Rldi5udW1fY29tcF92ZWN0b3JzID0gMTsNCj4+
-ICAJZGV2LT5pYl9kZXYuZGV2LnBhcmVudCA9ICZkZXYtPnBkZXYtPmRldjsNCj4+IC0JZGV2LT5p
-Yl9kZXYudXZlcmJzX2FiaV92ZXIgPSBQVlJETUFfVVZFUkJTX0FCSV9WRVJTSU9OOw0KPj4gKw0K
-Pj4gKwlpZiAoZGV2LT5kc3JfdmVyc2lvbiA+PSBQVlJETUFfUVBIQU5ETEVfVkVSU0lPTikNCj4+
-ICsJCWRldi0+aWJfZGV2LnV2ZXJic19hYmlfdmVyID0gUFZSRE1BX1VWRVJCU19BQklfVkVSU0lP
-TjsNCj4+ICsJZWxzZQ0KPj4gKwkJZGV2LT5pYl9kZXYudXZlcmJzX2FiaV92ZXIgPQ0KPj4gKwkJ
-CQlQVlJETUFfVVZFUkJTX05PX1FQX0hBTkRMRV9BQklfVkVSU0lPTjsNCj4+ICsNCj4+ICAJZGV2
-LT5pYl9kZXYudXZlcmJzX2NtZF9tYXNrID0NCj4+ICAJCSgxdWxsIDw8IElCX1VTRVJfVkVSQlNf
-Q01EX0dFVF9DT05URVhUKQkJfA0KPj4gIAkJKDF1bGwgPDwgSUJfVVNFUl9WRVJCU19DTURfUVVF
-UllfREVWSUNFKQl8DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L3Ztd19w
-dnJkbWEvcHZyZG1hX3FwLmMgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvdm13X3B2cmRtYS9wdnJk
-bWFfcXAuYw0KPj4gaW5kZXggMGVhYWVhZDViYWVjLi44Y2JhNzYyM2YzNzkgMTAwNjQ0DQo+PiAt
-LS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvdm13X3B2cmRtYS9wdnJkbWFfcXAuYw0KPj4gKysr
-IGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L3Ztd19wdnJkbWEvcHZyZG1hX3FwLmMNCj4+IEBAIC0x
-OTUsNyArMTk1LDkgQEAgc3RydWN0IGliX3FwICpwdnJkbWFfY3JlYXRlX3FwKHN0cnVjdCBpYl9w
-ZCAqcGQsDQo+PiAgCXVuaW9uIHB2cmRtYV9jbWRfcmVzcCByc3A7DQo+PiAgCXN0cnVjdCBwdnJk
-bWFfY21kX2NyZWF0ZV9xcCAqY21kID0gJnJlcS5jcmVhdGVfcXA7DQo+PiAgCXN0cnVjdCBwdnJk
-bWFfY21kX2NyZWF0ZV9xcF9yZXNwICpyZXNwID0gJnJzcC5jcmVhdGVfcXBfcmVzcDsNCj4+ICsJ
-c3RydWN0IHB2cmRtYV9jbWRfY3JlYXRlX3FwX3Jlc3BfdjIgKnJlc3BfdjIgPSAmcnNwLmNyZWF0
-ZV9xcF9yZXNwX3YyOw0KPj4gIAlzdHJ1Y3QgcHZyZG1hX2NyZWF0ZV9xcCB1Y21kOw0KPj4gKwlz
-dHJ1Y3QgcHZyZG1hX2NyZWF0ZV9xcF9yZXNwIHFwX3Jlc3AgPSB7fTsNCj4+ICAJdW5zaWduZWQg
-bG9uZyBmbGFnczsNCj4+ICAJaW50IHJldDsNCj4+ICAJYm9vbCBpc19zcnEgPSAhIWluaXRfYXR0
-ci0+c3JxOw0KPj4gQEAgLTM3OSwxMyArMzgxLDMxIEBAIHN0cnVjdCBpYl9xcCAqcHZyZG1hX2Ny
-ZWF0ZV9xcChzdHJ1Y3QgaWJfcGQgKnBkLA0KPj4gIAl9DQo+PiAgDQo+PiAgCS8qIG1heF9zZW5k
-X3dyL19yZWN2X3dyL19zZW5kX3NnZS9fcmVjdl9zZ2UvX2lubGluZV9kYXRhICovDQo+PiAtCXFw
-LT5xcF9oYW5kbGUgPSByZXNwLT5xcG47DQo+PiAgCXFwLT5wb3J0ID0gaW5pdF9hdHRyLT5wb3J0
-X251bTsNCj4+IC0JcXAtPmlicXAucXBfbnVtID0gcmVzcC0+cXBuOw0KPj4gKwlpZiAoZGV2LT5k
-c3JfdmVyc2lvbiA+PSBQVlJETUFfUVBIQU5ETEVfVkVSU0lPTikgew0KPj4gKwkJcXAtPmlicXAu
-cXBfbnVtID0gcmVzcF92Mi0+cXBuOw0KPj4gKwkJcXAtPnFwX2hhbmRsZSA9IHJlc3BfdjItPnFw
-X2hhbmRsZTsNCj4+ICsJfSBlbHNlIHsNCj4+ICsJCXFwLT5pYnFwLnFwX251bSA9IHJlc3AtPnFw
-bjsNCj4+ICsJCXFwLT5xcF9oYW5kbGUgPSByZXNwLT5xcG47DQo+PiArCX0NCj4+ICsNCj4+ICAJ
-c3Bpbl9sb2NrX2lycXNhdmUoJmRldi0+cXBfdGJsX2xvY2ssIGZsYWdzKTsNCj4+ICAJZGV2LT5x
-cF90YmxbcXAtPnFwX2hhbmRsZSAlIGRldi0+ZHNyLT5jYXBzLm1heF9xcF0gPSBxcDsNCj4+ICAJ
-c3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmZGV2LT5xcF90YmxfbG9jaywgZmxhZ3MpOw0KPj4gIA0K
-Pj4gKwlpZiAoIXFwLT5pc19rZXJuZWwpIHsNCj4+ICsJCS8qIENvcHkgdWRhdGEgYmFjay4gKi8N
-Cj4+ICsJCXFwX3Jlc3AucXBuID0gcXAtPmlicXAucXBfbnVtOw0KPj4gKwkJcXBfcmVzcC5xcF9o
-YW5kbGUgPSBxcC0+cXBfaGFuZGxlOw0KPj4gKwkJaWYgKGliX2NvcHlfdG9fdWRhdGEodWRhdGEs
-ICZxcF9yZXNwLCBzaXplb2YocXBfcmVzcCkpKSB7DQo+PiArCQkJZGV2X3dhcm4oJmRldi0+cGRl
-di0+ZGV2LA0KPj4gKwkJCQkgImZhaWxlZCB0byBjb3B5IGJhY2sgdWRhdGFcbiIpOw0KPj4gKwkJ
-CXB2cmRtYV9kZXN0cm95X3FwKCZxcC0+aWJxcCwgdWRhdGEpOw0KPj4gKwkJCXJldHVybiBFUlJf
-UFRSKC1FSU5WQUwpOw0KPj4gKwkJfQ0KPj4gKwl9DQo+PiArDQo+PiAgCXJldHVybiAmcXAtPmli
-cXA7DQo+PiAgDQo+PiAgZXJyX3BkaXI6DQo+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS91YXBpL3Jk
-bWEvdm13X3B2cmRtYS1hYmkuaCBiL2luY2x1ZGUvdWFwaS9yZG1hL3Ztd19wdnJkbWEtYWJpLmgN
-Cj4+IGluZGV4IDZlNzNmMDI3NGU0MS4uOGViYWIxMWRhZGNiIDEwMDY0NA0KPj4gLS0tIGEvaW5j
-bHVkZS91YXBpL3JkbWEvdm13X3B2cmRtYS1hYmkuaA0KPj4gKysrIGIvaW5jbHVkZS91YXBpL3Jk
-bWEvdm13X3B2cmRtYS1hYmkuaA0KPj4gQEAgLTQ5LDcgKzQ5LDkgQEANCj4+ICANCj4+ICAjaW5j
-bHVkZSA8bGludXgvdHlwZXMuaD4NCj4+ICANCj4+IC0jZGVmaW5lIFBWUkRNQV9VVkVSQlNfQUJJ
-X1ZFUlNJT04JMwkJLyogQUJJIFZlcnNpb24uICovDQo+PiArI2RlZmluZSBQVlJETUFfVVZFUkJT
-X05PX1FQX0hBTkRMRV9BQklfVkVSU0lPTgkzDQo+PiArI2RlZmluZSBQVlJETUFfVVZFUkJTX0FC
-SV9WRVJTSU9OCQk0CS8qIEFCSSBWZXJzaW9uLiAqLw0KPj4gKw0KPj4gICNkZWZpbmUgUFZSRE1B
-X1VBUl9IQU5ETEVfTUFTSwkJMHgwMEZGRkZGRgkvKiBCb3R0b20gMjQgYml0cy4gKi8NCj4+ICAj
-ZGVmaW5lIFBWUkRNQV9VQVJfUVBfT0ZGU0VUCQkwCQkvKiBRUCBkb29yYmVsbC4gKi8NCj4+ICAj
-ZGVmaW5lIFBWUkRNQV9VQVJfUVBfU0VORAkJKDEgPDwgMzApCS8qIFNlbmQgYml0LiAqLw0KPj4g
-QEAgLTE3OSw2ICsxODEsMTEgQEAgc3RydWN0IHB2cmRtYV9jcmVhdGVfcXAgew0KPj4gIAlfX2Fs
-aWduZWRfdTY0IHFwX2FkZHI7DQo+PiAgfTsNCj4+ICANCj4+ICtzdHJ1Y3QgcHZyZG1hX2NyZWF0
-ZV9xcF9yZXNwIHsNCj4+ICsJX191MzIgcXBuOw0KPj4gKwlfX3UzMiBxcF9oYW5kbGU7DQo+PiAr
-fTsNCj4+ICsNCj4+ICAvKiBQVlJETUEgbWFza2VkIGF0b21pYyBjb21wYXJlIGFuZCBzd2FwICov
-DQo+PiAgc3RydWN0IHB2cmRtYV9leF9jbXBfc3dhcCB7DQo+PiAgCV9fYWxpZ25lZF91NjQgc3dh
-cF92YWw7DQo+PiAtLSANCj4+IDEuOC4zLjENCj4+DQoNCg==
+On 20/05/2019 21:30, Leon Romanovsky wrote:
+> On Mon, May 20, 2019 at 07:54:57PM +0300, Gal Pressman wrote:
+>> On 20/05/2019 17:51, Leon Romanovsky wrote:
+>>> On Mon, May 20, 2019 at 05:24:43PM +0300, Gal Pressman wrote:
+>>>> On 20/05/2019 16:10, Leon Romanovsky wrote:
+>>>>> On Mon, May 20, 2019 at 03:39:26PM +0300, Gal Pressman wrote:
+>>>>>> On 20/05/2019 9:54, Leon Romanovsky wrote:
+>>>>>>> From: Leon Romanovsky <leonro@mellanox.com>
+>>>>>>>
+>>>>>>> There are two possible execution contexts of destroy flows in EFA.
+>>>>>>> One is normal flow where user explicitly asked for object release
+>>>>>>> and another error unwinding.
+>>>>>>>
+>>>>>>> In normal scenario, RDMA/core will ensure that udata is supplied
+>>>>>>> according to KABI contract, for now it means no udata at all.
+>>>>>>>
+>>>>>>> In unwind flow, the EFA driver will receive uncleared udata from
+>>>>>>> numerous *_create_*() calls, but won't release those resources
+>>>>>>> due to extra checks.
+>>>>>>
+>>>>>> Thanks for the fix Leon, a few questions:
+>>>>>>
+>>>>>> Some of the unwind flows pass NULL udata and others an uncleared udata (is it
+>>>>>> really uncleared or is it actually the create udata?), what are we considering
+>>>>>> as the expected behavior? Isn't passing an uncleared udata the bug here?
+>>>>>
+>>>>> It is a matter of unwind sequence, if IB/core did something after
+>>>>> driver created some object, it will need to call to destroy of this
+>>>>> object too. So I don't think that it is the bug.
+>>>>>
+>>>>> And yes, it is not applicable for all flows, the one which caused me to
+>>>>> write this patch is failure in ib_uverbs_reg_mr(), which will call to
+>>>>> ib_dereg_mr_user(mr, &attrs->driver_udata);
+>>>>>
+>>>>> and attrs->driver_udata is valid there.
+>>>>
+>>>> Right, but is it really valid? The udata in/out buffers in that case are
+>>>> actually the create buffers and the driver has no way of telling. I think a
+>>>> better approach is to clear the udata before calling the driver as done in
+>>>> normal destroy flow.
+>>>>
+>>>> Also, create_qp flow for example calls ib_destroy_qp on failure which passes
+>>>> NULL udata, the different flows are not consistent and I don't see a reason why
+>>>> they shouldn't be?
+>>>
+>>> Sorry, but I didn't look deeply enough on QPs and MRs yet to make clear
+>>> cut, but from what I have seen till now, the implementation looks like
+>>> a disaster.
+>>
+>> Is it possible that in the future the destroy flows will pass a valid kabi udata
+>> from rdma-core? If so, these removed checks are needed.
+> 
+> In such case, kernel modules will be updated. We are not supporting out-of-tree modules.
+> 
+>> Why not clear the udata struct before calling the driver?
+> 
+> What exactly are you trying to solve?
+
+IMHO, This patch just hides the real issue - the udata passed to the destroy
+flows is meaningless. Similarly for the reason we fixed the standard
+(non-unwind) destroy flows instead of removing these checks that discovered the
+bug [1].
+It points to buffers which are not relevant to the actual destroy flow, same
+goes for the in/out lengths.
+
+In standard destroy flow the udata is cleared before calling the driver. This
+way the driver knows it is called in user flow and the udata doesn't contain
+garbage.
+
+The checks you removed are not the problem here, but the content of the udata
+struct.
+
+[1] f89adedaf3fe ("RDMA/uverbs: Initialize udata struct on destroy flows")
+
+> 
+>>
+>>>
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Also, if passing NULL udata is expected (why?) we have a bigger problem here as
+>>>>>> existing code will cause NULL dereference.
+>>>>>
+>>>>> Not anymore, the destroy paths are not relying on udata now.
+>>>>
+>>>> This patch solves it, I'm thinking we need another patch for for-rc to prevent
+>>>> panic.
+>>>
+>>> I don't think that it is worth of hassle. EFA just entered kernel,
+>>
+>> That doesn't mean bugs shouldn't be fixed.
+> 
+> Go for it.
+> 
+>>
+>>> rdma-core is not merged yet
+>>
+>> Userspace library is independent of the kernel, once the provider is merged it
+>> can be used with any kernel with EFA.
+> 
+> I was under impression that Amazon controls OS stack, so unclear to me
+> how I can install bad kernel version on AWS hypervisor.
+
+Not at all, you can do whatever you want on your own instance, including
+building and running your own kernel.
+
+> 
+>>
+>>> and anyway no one can use EFA adapter in his home.
+>>
+>> That's not true, open up an AWS account and spin up an EFA enabled instance, all
+>> from your laptop at home. It's that simple :).
+> 
+> Can I get two adapters to install in my server not in AWS?
+
+EFA is initially offered in the Amazon EC2 environment only.
+
+> 
+>>
+>>>
+>>>>
+>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>>>>>>> ---
+>>>>>>>  drivers/infiniband/hw/efa/efa_verbs.c | 24 ------------------------
+>>>>>>>  1 file changed, 24 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+>>>>>>> index 6d6886c9009f..4999a74cee24 100644
+>>>>>>> --- a/drivers/infiniband/hw/efa/efa_verbs.c
+>>>>>>> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+>>>>>>> @@ -436,12 +436,6 @@ void efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+>>>>>>>  	struct efa_dev *dev = to_edev(ibpd->device);
+>>>>>>>  	struct efa_pd *pd = to_epd(ibpd);
+>>>>>>>
+>>>>>>> -	if (udata->inlen &&
+>>>>>>> -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
+>>>>>>> -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
+>>>>>>> -		return;
+>>>>>>> -	}
+>>>>>>> -
+>>>>>>>  	ibdev_dbg(&dev->ibdev, "Dealloc pd[%d]\n", pd->pdn);
+>>>>>>>  	efa_pd_dealloc(dev, pd->pdn);
+>>>>>>>  }
+>>>>>>> @@ -459,12 +453,6 @@ int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+>>>>>>>  	struct efa_qp *qp = to_eqp(ibqp);
+>>>>>>>  	int err;
+>>>>>>>
+>>>>>>> -	if (udata->inlen &&
+>>>>>>> -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
+>>>>>>> -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
+>>>>>>> -		return -EINVAL;
+>>>>>>> -	}
+>>>>>>> -
+>>>>>>>  	ibdev_dbg(&dev->ibdev, "Destroy qp[%u]\n", ibqp->qp_num);
+>>>>>>>  	err = efa_destroy_qp_handle(dev, qp->qp_handle);
+>>>>>>>  	if (err)
+>>>>>>> @@ -865,12 +853,6 @@ int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+>>>>>>>  	struct efa_cq *cq = to_ecq(ibcq);
+>>>>>>>  	int err;
+>>>>>>>
+>>>>>>> -	if (udata->inlen &&
+>>>>>>> -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
+>>>>>>> -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
+>>>>>>> -		return -EINVAL;
+>>>>>>> -	}
+>>>>>>> -
+>>>>>>>  	ibdev_dbg(&dev->ibdev,
+>>>>>>>  		  "Destroy cq[%d] virt[0x%p] freed: size[%lu], dma[%pad]\n",
+>>>>>>>  		  cq->cq_idx, cq->cpu_addr, cq->size, &cq->dma_addr);
+>>>>>>> @@ -1556,12 +1538,6 @@ int efa_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>>>>>>>  	struct efa_mr *mr = to_emr(ibmr);
+>>>>>>>  	int err;
+>>>>>>>
+>>>>>>> -	if (udata->inlen &&
+>>>>>>> -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
+>>>>>>> -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
+>>>>>>> -		return -EINVAL;
+>>>>>>> -	}
+>>>>>>> -
+>>>>>>>  	ibdev_dbg(&dev->ibdev, "Deregister mr[%d]\n", ibmr->lkey);
+>>>>>>>
+>>>>>>>  	if (mr->umem) {
+>>>>>>> --
+>>>>>>> 2.20.1
+>>>>>>>
