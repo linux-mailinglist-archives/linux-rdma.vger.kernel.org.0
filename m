@@ -2,214 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4575123DE5
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2019 18:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC5323E20
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2019 19:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392510AbfETQzM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 May 2019 12:55:12 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:35683 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388746AbfETQzM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 May 2019 12:55:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1558371311; x=1589907311;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=BO/EUovINuUBYqNvo4X9SL7fUOiYojBGHA4I4o0ciXM=;
-  b=lha8Hs3x8noEuP49x79m5XV69UMrb7nd6/0sI28TlxptXoEcbGTDRl51
-   kTcfA45NuGPWf7M8QW2c+ImaGNwRPvccCDaoMZKryCXJlWSBYAHtEsn8l
-   xCtJnGWE/2CJtfAvYfynA0PvlMgCkeUXbqkuac0kiVzDL7R/zgFd+Nrej
-   s=;
-X-IronPort-AV: E=Sophos;i="5.60,492,1549929600"; 
-   d="scan'208";a="402852144"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 20 May 2019 16:55:10 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x4KGt6xT063134
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
-        Mon, 20 May 2019 16:55:08 GMT
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Mon, 20 May 2019 16:55:08 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.34) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Mon, 20 May 2019 16:55:03 +0000
-Subject: Re: [PATCH rdma-next 04/15] RDMA/efa: Remove check that prevents
- destroy of resources in error flows
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+        id S2390836AbfETRPT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 May 2019 13:15:19 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41510 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388626AbfETRPS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 May 2019 13:15:18 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4KH9cXP062262;
+        Mon, 20 May 2019 17:14:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=kGU75vAibIXS1zkcp74MuQ55umzfkXnaT6ysiYcIWMk=;
+ b=I0RRRHd+1g8GL4KPfCdRrDxz59tfbuH/oDLkWIgQr0NZ1F00YR/77yMcN/12j9banMW4
+ v+LMfShYn2BCVr1sQZDrNudC54I0HQvCiw/5+R+CVUbZoz/Su1zhvATLOFRUsO5dmGBt
+ nlS7XiOYfr8C77y7Hls6Y+oZB1cvDOeWDohAKDnBZ0bHQK9jMhOM12YL0GrGMcukK7wv
+ gW8hK/ulhrn1VPAe0R1QvXcrn8sz+abGD/09rJLcqEFxLdE03Elav2u2Is5Si6TAQxqP
+ 0lBbyK24+nCZIgMuU0ZHBgwMEkVkVEesFSpxGzfRvLToIQW5I2rLB9cDIX+9GI+0bEBG wg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2sjapq898x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 May 2019 17:14:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4KHDco8035252;
+        Mon, 20 May 2019 17:14:46 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2sks1hygaq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 May 2019 17:14:46 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4KHEiUA005356;
+        Mon, 20 May 2019 17:14:45 GMT
+Received: from [10.209.243.127] (/10.209.243.127)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 20 May 2019 17:14:44 +0000
+Subject: Re: [PATCH rdma-next 01/15] rds: Don't check return value from
+ destroy CQ
+To:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Glenn Streiff <gstreiff@neteffect.com>,
-        Steve Wise <swise@opengridcomputing.com>
+        Steve Wise <swise@opengridcomputing.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
 References: <20190520065433.8734-1-leon@kernel.org>
- <20190520065433.8734-5-leon@kernel.org>
- <a3358e40-9be4-0a7c-dab5-96573b646ded@amazon.com>
- <20190520131000.GJ4573@mtr-leonro.mtl.com>
- <161ad83d-cb50-d02a-8511-938b2b3b7156@amazon.com>
- <20190520145105.GQ4573@mtr-leonro.mtl.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <807ef5dc-d4c7-9c4c-bad4-a437f3104237@amazon.com>
-Date:   Mon, 20 May 2019 19:54:57 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.6.1
+ <20190520065433.8734-2-leon@kernel.org>
+From:   Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <9db089b4-d088-9b2a-c6ce-350e11fb5460@oracle.com>
+Date:   Mon, 20 May 2019 10:17:43 -0700
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190520145105.GQ4573@mtr-leonro.mtl.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20190520065433.8734-2-leon@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.34]
-X-ClientProxiedBy: EX13D04UWB001.ant.amazon.com (10.43.161.46) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9262 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905200109
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9262 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905200109
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 20/05/2019 17:51, Leon Romanovsky wrote:
-> On Mon, May 20, 2019 at 05:24:43PM +0300, Gal Pressman wrote:
->> On 20/05/2019 16:10, Leon Romanovsky wrote:
->>> On Mon, May 20, 2019 at 03:39:26PM +0300, Gal Pressman wrote:
->>>> On 20/05/2019 9:54, Leon Romanovsky wrote:
->>>>> From: Leon Romanovsky <leonro@mellanox.com>
->>>>>
->>>>> There are two possible execution contexts of destroy flows in EFA.
->>>>> One is normal flow where user explicitly asked for object release
->>>>> and another error unwinding.
->>>>>
->>>>> In normal scenario, RDMA/core will ensure that udata is supplied
->>>>> according to KABI contract, for now it means no udata at all.
->>>>>
->>>>> In unwind flow, the EFA driver will receive uncleared udata from
->>>>> numerous *_create_*() calls, but won't release those resources
->>>>> due to extra checks.
->>>>
->>>> Thanks for the fix Leon, a few questions:
->>>>
->>>> Some of the unwind flows pass NULL udata and others an uncleared udata (is it
->>>> really uncleared or is it actually the create udata?), what are we considering
->>>> as the expected behavior? Isn't passing an uncleared udata the bug here?
->>>
->>> It is a matter of unwind sequence, if IB/core did something after
->>> driver created some object, it will need to call to destroy of this
->>> object too. So I don't think that it is the bug.
->>>
->>> And yes, it is not applicable for all flows, the one which caused me to
->>> write this patch is failure in ib_uverbs_reg_mr(), which will call to
->>> ib_dereg_mr_user(mr, &attrs->driver_udata);
->>>
->>> and attrs->driver_udata is valid there.
->>
->> Right, but is it really valid? The udata in/out buffers in that case are
->> actually the create buffers and the driver has no way of telling. I think a
->> better approach is to clear the udata before calling the driver as done in
->> normal destroy flow.
->>
->> Also, create_qp flow for example calls ib_destroy_qp on failure which passes
->> NULL udata, the different flows are not consistent and I don't see a reason why
->> they shouldn't be?
+On 5/19/2019 11:54 PM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> Sorry, but I didn't look deeply enough on QPs and MRs yet to make clear
-> cut, but from what I have seen till now, the implementation looks like
-> a disaster.
-
-Is it possible that in the future the destroy flows will pass a valid kabi udata
-from rdma-core? If so, these removed checks are needed.
-Why not clear the udata struct before calling the driver?
-
+> There is no value in checking ib_destroy_cq() result and skipping
+> to clear struct ic fields. This connection needs to be reinitialized
+> anyway.
 > 
->>
->>>
->>>>
->>>> Also, if passing NULL udata is expected (why?) we have a bigger problem here as
->>>> existing code will cause NULL dereference.
->>>
->>> Not anymore, the destroy paths are not relying on udata now.
->>
->> This patch solves it, I'm thinking we need another patch for for-rc to prevent
->> panic.
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>   net/rds/ib_cm.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> I don't think that it is worth of hassle. EFA just entered kernel,
+> diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
+> index 66c6eb56072b..5a42ebb892cd 100644
+> --- a/net/rds/ib_cm.c
+> +++ b/net/rds/ib_cm.c
+> @@ -611,11 +611,11 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
+>   qp_out:
+>   	rdma_destroy_qp(ic->i_cm_id);
+>   recv_cq_out:
+> -	if (!ib_destroy_cq(ic->i_recv_cq))
+> -		ic->i_recv_cq = NULL;
+> +	ib_destroy_cq(ic->i_recv_cq);
+> +	ic->i_recv_cq = NULL;
+>   send_cq_out:
+> -	if (!ib_destroy_cq(ic->i_send_cq))
+> -		ic->i_send_cq = NULL;
+> +	ib_destroy_cq(ic->i_send_cq);
+> +	ic->i_send_cq = NULL;
+This was done to ensure, you still don't get ISR delivering
+the CQEs while we are in shutdown path. Your patch
+is fine though since you don't change that behavior.
 
-That doesn't mean bugs shouldn't be fixed.
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
 
-> rdma-core is not merged yet
 
-Userspace library is independent of the kernel, once the provider is merged it
-can be used with any kernel with EFA.
-
-> and anyway no one can use EFA adapter in his home.
-
-That's not true, open up an AWS account and spin up an EFA enabled instance, all
-from your laptop at home. It's that simple :).
-
-> 
->>
->>>
->>>>
->>>>>
->>>>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->>>>> ---
->>>>>  drivers/infiniband/hw/efa/efa_verbs.c | 24 ------------------------
->>>>>  1 file changed, 24 deletions(-)
->>>>>
->>>>> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
->>>>> index 6d6886c9009f..4999a74cee24 100644
->>>>> --- a/drivers/infiniband/hw/efa/efa_verbs.c
->>>>> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
->>>>> @@ -436,12 +436,6 @@ void efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
->>>>>  	struct efa_dev *dev = to_edev(ibpd->device);
->>>>>  	struct efa_pd *pd = to_epd(ibpd);
->>>>>
->>>>> -	if (udata->inlen &&
->>>>> -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
->>>>> -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
->>>>> -		return;
->>>>> -	}
->>>>> -
->>>>>  	ibdev_dbg(&dev->ibdev, "Dealloc pd[%d]\n", pd->pdn);
->>>>>  	efa_pd_dealloc(dev, pd->pdn);
->>>>>  }
->>>>> @@ -459,12 +453,6 @@ int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
->>>>>  	struct efa_qp *qp = to_eqp(ibqp);
->>>>>  	int err;
->>>>>
->>>>> -	if (udata->inlen &&
->>>>> -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
->>>>> -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
->>>>> -		return -EINVAL;
->>>>> -	}
->>>>> -
->>>>>  	ibdev_dbg(&dev->ibdev, "Destroy qp[%u]\n", ibqp->qp_num);
->>>>>  	err = efa_destroy_qp_handle(dev, qp->qp_handle);
->>>>>  	if (err)
->>>>> @@ -865,12 +853,6 @@ int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
->>>>>  	struct efa_cq *cq = to_ecq(ibcq);
->>>>>  	int err;
->>>>>
->>>>> -	if (udata->inlen &&
->>>>> -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
->>>>> -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
->>>>> -		return -EINVAL;
->>>>> -	}
->>>>> -
->>>>>  	ibdev_dbg(&dev->ibdev,
->>>>>  		  "Destroy cq[%d] virt[0x%p] freed: size[%lu], dma[%pad]\n",
->>>>>  		  cq->cq_idx, cq->cpu_addr, cq->size, &cq->dma_addr);
->>>>> @@ -1556,12 +1538,6 @@ int efa_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->>>>>  	struct efa_mr *mr = to_emr(ibmr);
->>>>>  	int err;
->>>>>
->>>>> -	if (udata->inlen &&
->>>>> -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
->>>>> -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
->>>>> -		return -EINVAL;
->>>>> -	}
->>>>> -
->>>>>  	ibdev_dbg(&dev->ibdev, "Deregister mr[%d]\n", ibmr->lkey);
->>>>>
->>>>>  	if (mr->umem) {
->>>>> --
->>>>> 2.20.1
->>>>>
