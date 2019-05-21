@@ -2,174 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E115244D0
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 01:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10FA248A9
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 09:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727450AbfETXxf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 May 2019 19:53:35 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:40155 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727442AbfETXxU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 May 2019 19:53:20 -0400
-Received: by mail-vs1-f66.google.com with SMTP id c24so10046257vsp.7
-        for <linux-rdma@vger.kernel.org>; Mon, 20 May 2019 16:53:19 -0700 (PDT)
+        id S1725809AbfEUHFm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 May 2019 03:05:42 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:35591 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbfEUHFm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 03:05:42 -0400
+Received: by mail-wr1-f68.google.com with SMTP id m3so4239644wrv.2
+        for <linux-rdma@vger.kernel.org>; Tue, 21 May 2019 00:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DOow0La3W2Essx5H031uTOWFbAnDcBGJlXVfamcoL3w=;
-        b=Dx4+lU9jqXDtln/17Mrd8EV4Dxp/5zASL+1Y8Niio9Pqb06rC0aI8wedP3ohgziyEW
-         jppEZzDyXiAo/njLuzUnS0cZqB4tlCDf5SInO7A6W3spDccr9FtwpNa39rs9vTjn9Pol
-         gFjx66w14oqATAsCg/4xevDnAIAQo2Q0YzZMa3Njt5yFKOelm+SuxVUsWhk4woonxC/+
-         9D5FC/UAWBXCau72ARfrLZBFx2zGvzGs/3QYXrUb8NFYR9FnDOYRxbwkdocqirkPGsSw
-         AxoIYh3MeUP070fRiIy388VcetefsVsnX0FjFahzGTgGe2zBg5LkCE8dqpCaiB/D65kK
-         79Pw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2kYbZD/pU6FiuG4Hgvt8IzH8N+h/UystKlzRYYOBxz8=;
+        b=tpqbtIqeYOPCLg8eyxfYuyxVTJzJuJNwlqE1PZE+99e8yALnf8ENVfstjCtMwSBjle
+         6SjlA6SsU27SJbiyp4pehqbKluUMIt58HF8KTUUPC33wvGCUnms9Milnm8wcjYJL3aeX
+         tzujE9iVF2TVhkuBQdgsIjhajRX5pIXwL7VOzKeXuBT1TW4ytxKsD7PkrUwUiTU8eEju
+         ygj7ReSuGfEz3qa1RqqGpgNEZPHg9xUlU9qLQFkhCIe5OC5e+mGhRzCTRjjBrPxHBp6a
+         4/yOcuc/BuzEqNrk/aB3DKRC1Bp6LxRmJcA+46RSDit1YpwYazovqWQlSrqkSArD4R9D
+         wzPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DOow0La3W2Essx5H031uTOWFbAnDcBGJlXVfamcoL3w=;
-        b=odgn7p+ndJSHYOfJP1IgQ7Rkd6/NFlIlANcLHnNTtJed6Bde4zzSuuKktq0P5+bavT
-         5KsgaS5/M8XLiQIyBT5vp5pB/BWj116laxALMoo2FFI5R3XvdbVbYkY17vI33VkZIx2/
-         7d2tpt26GMNlTYpFhilnr6M4/rlrsuLOBLbUJjj62llJ78XBUGdwyPeF9UQEQm0W6Qvc
-         oho2rBirbv542wKpkeauFUuU3teQj1HQsQN4qzHgM0H9LwauolCgRE603ujScbq3Ecev
-         aeZt+sruroEfs+4XRCIsu0xSvOeNMEwjcTOxrrxbshux3Zpbawa20xJetFjf414itNnt
-         lMag==
-X-Gm-Message-State: APjAAAUdfzHuHaesPfV351gYoEpS7sa05HJ47F/sMEl7NAXZ60DhRzqa
-        6m8iYM8DstV6vwFjuGnBdYnCkhJIG82KchNsCGVjvA==
-X-Google-Smtp-Source: APXvYqyR0JsazypV3hCmWgdEzYpNKlJ3PjKF8ENA0Fjbz+eEGES/3XAyQs/kAm4YlbOIpNAtAAzvW9GW3+g1GtceCfY=
-X-Received: by 2002:a67:be17:: with SMTP id x23mr26047761vsq.173.1558396399029;
- Mon, 20 May 2019 16:53:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1557160186.git.andreyknvl@google.com> <20190517144931.GA56186@arrakis.emea.arm.com>
-In-Reply-To: <20190517144931.GA56186@arrakis.emea.arm.com>
-From:   Evgenii Stepanov <eugenis@google.com>
-Date:   Mon, 20 May 2019 16:53:07 -0700
-Message-ID: <CAFKCwrj6JEtp4BzhqO178LFJepmepoMx=G+YdC8sqZ3bcBp3EQ@mail.gmail.com>
-Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2kYbZD/pU6FiuG4Hgvt8IzH8N+h/UystKlzRYYOBxz8=;
+        b=Oa4tK6Yjnxv1oV3rGvXd38PIdt2OatfxxjMlalVRbqbeJJXsSJvQ2pDHiiO5zbP+yr
+         lk2pdzSKy0g9ehy3/weEA8AnOOydctsv9L3VFfAgePpqGg+JMd4Im8LLbh1EB7SQngMv
+         YoZ0mFyjHH5E+mU1L2FZs2JRbOsNOY4OUHqIw7pauC0/4CtnFYc14sceQRltDu3LXe1h
+         IJ/RdHABRS8EPJvbkFV5iCLrkcjjEHYL218mqtYub9j4XyFVnwfXLkfMZGoErWs/8bDv
+         bDBTQhR4zhzTwXWRPrcoQNzaDa7rT7Iuc9rRFNsYIU6J7CABHtYKKLHjFwSxB5Fa+pRU
+         mfMQ==
+X-Gm-Message-State: APjAAAX9tfAjUw7OduC2HacjQq20wYIR0o49sMx5y0h/dSc6J0dKMEmQ
+        HMcM1ggNWyP5vkT0+nn7COpSLDVG
+X-Google-Smtp-Source: APXvYqylRM6EnmvZtAcA3cWkVH4/xlFvsOBMc/JzQxC5L5VDQC7NPIro/ULYDnCKR0zXceAClkPL1Q==
+X-Received: by 2002:adf:8b83:: with SMTP id o3mr41309692wra.278.1558422340997;
+        Tue, 21 May 2019 00:05:40 -0700 (PDT)
+Received: from kheib-workstation.redhat.com (bzq-79-181-8-139.red.bezeqint.net. [79.181.8.139])
+        by smtp.gmail.com with ESMTPSA id u129sm2216311wmb.22.2019.05.21.00.05.39
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 21 May 2019 00:05:40 -0700 (PDT)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Elliott Hughes <enh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-next] RDMA/core: Return void from ib_device_check_mandatory()
+Date:   Tue, 21 May 2019 10:05:07 +0300
+Message-Id: <20190521070507.16686-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 17, 2019 at 7:49 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> Hi Andrey,
->
-> On Mon, May 06, 2019 at 06:30:46PM +0200, Andrey Konovalov wrote:
-> > One of the alternative approaches to untagging that was considered is to
-> > completely strip the pointer tag as the pointer enters the kernel with
-> > some kind of a syscall wrapper, but that won't work with the countless
-> > number of different ioctl calls. With this approach we would need a custom
-> > wrapper for each ioctl variation, which doesn't seem practical.
->
-> The more I look at this problem, the less convinced I am that we can
-> solve it in a way that results in a stable ABI covering ioctls(). While
-> for the Android kernel codebase it could be simpler as you don't upgrade
-> the kernel version every 2.5 months, for the mainline kernel this
-> doesn't scale. Any run-time checks are relatively limited in terms of
-> drivers covered. Better static checking would be nice as a long term
-> solution but we didn't get anywhere with the discussion last year.
->
-> IMO (RFC for now), I see two ways forward:
->
-> 1. Make this a user space problem and do not allow tagged pointers into
->    the syscall ABI. A libc wrapper would have to convert structures,
->    parameters before passing them into the kernel. Note that we can
->    still support the hardware MTE in the kernel by enabling tagged
->    memory ranges, saving/restoring tags etc. but not allowing tagged
->    addresses at the syscall boundary.
->
-> 2. Similar shim to the above libc wrapper but inside the kernel
->    (arch/arm64 only; most pointer arguments could be covered with an
->    __SC_CAST similar to the s390 one). There are two differences from
->    what we've discussed in the past:
->
->    a) this is an opt-in by the user which would have to explicitly call
->       prctl(). If it returns -ENOTSUPP etc., the user won't be allowed
->       to pass tagged pointers to the kernel. This would probably be the
->       responsibility of the C lib to make sure it doesn't tag heap
->       allocations. If the user did not opt-in, the syscalls are routed
->       through the normal path (no untagging address shim).
->
->    b) ioctl() and other blacklisted syscalls (prctl) will not accept
->       tagged pointers (to be documented in Vicenzo's ABI patches).
->
-> It doesn't solve the problems we are trying to address but 2.a saves us
-> from blindly relaxing the ABI without knowing how to easily assess new
-> code being merged (over 500K lines between kernel versions). Existing
-> applications (who don't opt-in) won't inadvertently start using the new
-> ABI which could risk becoming de-facto ABI that we need to support on
-> the long run.
->
-> Option 1 wouldn't solve the ioctl() problem either and while it makes
-> things simpler for the kernel, I am aware that it's slightly more
-> complicated in user space (but I really don't mind if you prefer option
-> 1 ;)).
->
-> The tagged pointers (whether hwasan or MTE) should ideally be a
-> transparent feature for the application writer but I don't think we can
-> solve it entirely and make it seamless for the multitude of ioctls().
-> I'd say you only opt in to such feature if you know what you are doing
-> and the user code takes care of specific cases like ioctl(), hence the
-> prctl() proposal even for the hwasan.
->
-> Comments welcomed.
+The return value from ib_device_check_mandatory() is always 0 - change
+it to be void.
 
-Any userspace shim approach is problematic for Android because of the
-apps that use raw system calls. AFAIK, all apps written in Go are in
-that camp - I'm not sure how common they are, but getting them all
-recompiled is probably not realistic.
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+---
+ drivers/infiniband/core/device.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-The way I see it, a patch that breaks handling of tagged pointers is
-not that different from, say, a patch that adds a wild pointer
-dereference. Both are bugs; the difference is that (a) the former
-breaks a relatively uncommon target and (b) it's arguably an easier
-mistake to make. If MTE adoption goes well, (a) will not be the case
-for long.
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 78dc07c6ac4b..afb3f5946796 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -270,7 +270,7 @@ struct ib_port_data_rcu {
+ 	struct ib_port_data pdata[];
+ };
+ 
+-static int ib_device_check_mandatory(struct ib_device *device)
++static void ib_device_check_mandatory(struct ib_device *device)
+ {
+ #define IB_MANDATORY_FUNC(x) { offsetof(struct ib_device_ops, x), #x }
+ 	static const struct {
+@@ -305,8 +305,6 @@ static int ib_device_check_mandatory(struct ib_device *device)
+ 			break;
+ 		}
+ 	}
+-
+-	return 0;
+ }
+ 
+ /*
+@@ -1175,10 +1173,7 @@ static int setup_device(struct ib_device *device)
+ 	int ret;
+ 
+ 	setup_dma_device(device);
+-
+-	ret = ib_device_check_mandatory(device);
+-	if (ret)
+-		return ret;
++	ib_device_check_mandatory(device);
+ 
+ 	ret = setup_port_data(device);
+ 	if (ret) {
+-- 
+2.20.1
 
-This is a bit of a chicken-and-egg problem. In a world where memory
-allocators on one or several popular platforms generate pointers with
-non-zero tags, any such breakage will be caught in testing.
-Unfortunately to reach that state we need the kernel to start
-accepting tagged pointers first, and then hold on for a couple of
-years until userspace catches up.
-
-Perhaps we can start by whitelisting ioctls by driver?
