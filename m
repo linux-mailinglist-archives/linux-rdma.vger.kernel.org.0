@@ -2,58 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C361257ED
+	by mail.lfdr.de (Postfix) with ESMTP id D062B257EE
 	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 21:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729295AbfEUTBa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1728318AbfEUTBa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Tue, 21 May 2019 15:01:30 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:36489 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728318AbfEUTBa (ORCPT
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:43890 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728283AbfEUTBa (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 15:01:30 -0400
-Received: by mail-qk1-f195.google.com with SMTP id c14so11775037qke.3
-        for <linux-rdma@vger.kernel.org>; Tue, 21 May 2019 12:01:29 -0700 (PDT)
+Received: by mail-qt1-f196.google.com with SMTP id i26so21758168qtr.10
+        for <linux-rdma@vger.kernel.org>; Tue, 21 May 2019 12:01:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8TG0vukPzfqbBb9w/D0tpRsAOxrMfEJlD8AP5D5Ww8s=;
-        b=I0IXhEPRJGOQhRpunZa4ATmrb5McO04u9dImUm4dX3pubuve6ULz2N9QNeND1XGjKH
-         AvEOAgUjWRZBS3IPoZpoD7H/Gu/vpVl+yivrsH/Shnj0NFsHnlqBKkBqHHFDFhyNZNwo
-         8YnUMep8bxF/b13TeHTELCKAbd7gS+pjVvX0ZQxslqflp0IJbwRtc32AfxKbs6Uw+Poo
-         qhAF3zbl55U8GtfRxUenoUa/niJbFrGxVWdFFTiQYG+YmhKeiBzgZdb1uWAzwkQiv2jb
-         HAea1XLo5TfZKmefOZ0XjQvuChlecjD7M7C5EscfShNaviCe5JJCaf/yEfuUH2a3oomv
-         mlqg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LnEXBJn2HA2hl5jOoOjqQBgyQQh0DgVZU+/vhW2PzgE=;
+        b=U3kCT/tWrgou2AeJHSb5e/mRMCzZve/y+O2TPSkou3PgN4WMX/lkxYgbh6NO4JukQY
+         wJv8aWZo1g0fgp1XtNyWqpHFYEez28G+/+C22F6QL+P+PQIv5IxYJmBsUHbHvMB0bEcQ
+         rVn0u4FiT+6Qr9l+yVDMuIs/fb9yLuG1KB9KL1xYXu2fQuPekPjpFKjB1qeZj6OerZwt
+         yUl8Mzhecd6jm0YPI/xlaBZygV6aItXI+hNpHcSREvJ1XRwvf+UxGxPVDEVbYy/jFwfP
+         MPUwE6NgjU1+tx/Pn5KKjRHcOrqrGXstsVdhCgDK5OlMEteEkON4azXzUzJgHuXowtty
+         N5Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8TG0vukPzfqbBb9w/D0tpRsAOxrMfEJlD8AP5D5Ww8s=;
-        b=Scbk5qf8Vrqxy0AH92c6rt4euW5ZE4UC4c7xTI6G2LRqs8t0UBlwPU5MSW16FYeSke
-         kkRgpLiZgBN3Bvsma9Mz4fzHFfq5wgfgIyXZM1yTPgBAqMj4h6grR6Qp4y4BS6ZDLn7d
-         mDwn6lg+K31stk2qGcZN4THIyiNBi2RTF/vkWqVupiZb158B5r5RLkVY7BCHDRyQ881Q
-         NiuZUnZwWsBcFD5AcGTydYiWNHw5QTwdHe1b7oYzRYx1IdCI+iPsyLccBHhT6k1wAYrU
-         eVARmWsBSxKuP4TNhaVSKfdePVezy5gi+QeAw6f3G+E0JLr1JmTTx4yHu19SHfeZGjzc
-         AegQ==
-X-Gm-Message-State: APjAAAXj8bCOgPWCtnEOlXJgYITppndJbqfGPlgxECgWI5G54irJuiBT
-        JyQmwD2GAVIivdIN0cxV782Khs6dObI=
-X-Google-Smtp-Source: APXvYqyQGLiJ9yFWvqijAx0nCY2w0vIeQq8A9HbM6+Y3OhMRSng7RxkPAELWod2WHKAJVh/L+Mqmbw==
-X-Received: by 2002:a37:480e:: with SMTP id v14mr45074560qka.344.1558465289168;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LnEXBJn2HA2hl5jOoOjqQBgyQQh0DgVZU+/vhW2PzgE=;
+        b=f7W6yOmyJVsJiJmFPXnsCL7XF5hU48Rb9wlm7PSd8o9fp6/HtXJRPsOWVi9pmRKYsP
+         FjqBxhJN0VefkFeLBXcZYxs8H36cnCLpy2G+78CPluhCrRCXyULQna9CnlwfyR3lGPWo
+         YZfdOiSrR8hz2vSErxBUV9Bje0VB03FNBHwylX2QHDEM+o55pSsdg6RQ6RhS7/fCSLLK
+         YdXLfYbOQUGp0xZwk0KjFN7j+gcZK2xXvQKu4Wav2qDE7bgtRP0F9P8lZ0Rd7mg3aA9X
+         ycb0ejEIP1OBWv20Wt+/W86udxK3ZteLvNr3ndqxTYnNJwNRope/Ho+z9mdPey+FeMuT
+         CgJg==
+X-Gm-Message-State: APjAAAVpekI7TSz58jWwaRAe3Qb3nxqtHQKzlVlqjatub1f63UsGucY4
+        w6moLHrYuj9K6EtR2GzAe/InaD1dmfA=
+X-Google-Smtp-Source: APXvYqyWs0kLIb0B4sVMmAHoDClg6Ag6Iq5a8uI7dYKGFBlDrA4uIzwONE+9PQJE9+oFSGOwIw5CgA==
+X-Received: by 2002:a0c:9b94:: with SMTP id o20mr22488023qve.56.1558465289472;
         Tue, 21 May 2019 12:01:29 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id v48sm5713278qth.46.2019.05.21.12.01.28
+        by smtp.gmail.com with ESMTPSA id x206sm10175047qkb.71.2019.05.21.12.01.28
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Tue, 21 May 2019 12:01:28 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hTA0t-0007Ce-U9; Tue, 21 May 2019 16:01:27 -0300
+        id 1hTA0t-0007Cj-Ve; Tue, 21 May 2019 16:01:27 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 0/7] More fixes for building
-Date:   Tue, 21 May 2019 16:01:17 -0300
-Message-Id: <20190521190124.27486-1-jgg@ziepe.ca>
+Subject: [PATCH rdma-core 1/7] ibacm: Fix format string warning on 32 bit compile
+Date:   Tue, 21 May 2019 16:01:18 -0300
+Message-Id: <20190521190124.27486-2-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190521190124.27486-1-jgg@ziepe.ca>
+References: <20190521190124.27486-1-jgg@ziepe.ca>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -63,40 +65,34 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-Various small mistakes I noticed while updating the CI build to run on a
-bionic based container.
+Need to use PRIx64 to print uint64_t's
 
-This is a github PR:
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ ibacm/src/acm_util.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-https://github.com/linux-rdma/rdma-core/pull/532
-
-Jason Gunthorpe (7):
-  ibacm: Fix format string warning on 32 bit compile
-  hns: Remove unneeded malloc.h
-  build: Use the system PYTHON_EXECUTABLE for gen-sparse
-  build: Support glibc 2.27 with sparse
-  build: Revise how gen-sparse finds the system headers
-  cbuild: Do not require yaml to always be installed
-  build: Expose the cbuild machinery to build the release .tar.gz
-
- CMakeLists.txt                                |  30 ++---
- buildlib/RDMA_Sparse.cmake                    |   3 +-
- buildlib/cbuild                               |  58 +++++++--
- buildlib/gen-sparse.py                        |  45 +++++--
- buildlib/github-release                       |   7 +-
- .../sparse-include/27/bits-sysmacros.h.diff   |  24 ++++
- buildlib/sparse-include/27/netinet-in.h.diff  | 121 ++++++++++++++++++
- buildlib/sparse-include/27/stdlib.h.diff      |  23 ++++
- buildlib/sparse-include/27/sys-socket.h.diff  |  11 ++
- ibacm/src/acm_util.c                          |   3 +-
- providers/hns/hns_roce_u_hw_v1.c              |   1 -
- providers/hns/hns_roce_u_hw_v2.c              |   1 -
- 12 files changed, 279 insertions(+), 48 deletions(-)
- create mode 100644 buildlib/sparse-include/27/bits-sysmacros.h.diff
- create mode 100644 buildlib/sparse-include/27/netinet-in.h.diff
- create mode 100644 buildlib/sparse-include/27/stdlib.h.diff
- create mode 100644 buildlib/sparse-include/27/sys-socket.h.diff
-
+diff --git a/ibacm/src/acm_util.c b/ibacm/src/acm_util.c
+index a1fe922b2fb7fd..1c6b9690430ce6 100644
+--- a/ibacm/src/acm_util.c
++++ b/ibacm/src/acm_util.c
+@@ -29,6 +29,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <inttypes.h>
+ #include <net/if_arp.h>
+ #include <string.h>
+ #include <unistd.h>
+@@ -207,7 +208,7 @@ static void acm_if_iter(struct nl_object *obj, void *_ctx_and_cb)
+ 	if (acm_if_get_pkey(rtnl_link_get_name(link), &pkey))
+ 		return;
+ 
+-	acm_log(2, "name: %5s label: %9s index: %2d flags: %s addr: %s pkey: 0x%04x guid: 0x%lx\n",
++	acm_log(2, "name: %5s label: %9s index: %2d flags: %s addr: %s pkey: 0x%04x guid: 0x%" PRIx64 "\n",
+ 		rtnl_link_get_name(link), label,
+ 		rtnl_addr_get_ifindex(addr),
+ 		rtnl_link_flags2str(rtnl_link_get_flags(link), flags_str, sizeof(flags_str)),
 -- 
 2.21.0
 
