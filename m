@@ -2,102 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EF7257D3
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 20:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C361257ED
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 21:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbfEUSyp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 May 2019 14:54:45 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:39684 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbfEUSyp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 14:54:45 -0400
-Received: by mail-qt1-f195.google.com with SMTP id y42so21798439qtk.6
-        for <linux-rdma@vger.kernel.org>; Tue, 21 May 2019 11:54:44 -0700 (PDT)
+        id S1729295AbfEUTBa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 May 2019 15:01:30 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:36489 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728318AbfEUTBa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 15:01:30 -0400
+Received: by mail-qk1-f195.google.com with SMTP id c14so11775037qke.3
+        for <linux-rdma@vger.kernel.org>; Tue, 21 May 2019 12:01:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EY8XZr1fkZO07wgxJyVHnnlupUOqrKOPtZdwHP1/sUo=;
-        b=PFU3pkv3NKB1ZIVwIKV5YVGysPEaz2O59DyuSAHnnjhN6ClZeLv/+ZFCda1PVfaDCF
-         1OI0ZLcGjIVx9eSBOKrq+MX5jGtt/9naWLtXy98yhdR+3+Yc4KJ9I/v0azlzWD43psdX
-         MEJn7U3QJPUn9yg/RTMcNZN2RsICWRrekN8boSlYL1/bTL3eQ2sUDfIAMrO/dbzdCbgQ
-         mMyJw73riZwhvsp3Tok5xnRcdK+OtMcPHMWKHAJ5yCR7fmGvKwyaAaVZeGkGYcZxx0qy
-         kDKpka7z07Th587y5sxUr9e4yv8Mge6sRMshqfJdbIMN6H6HB1xqBjttj6x5KmCW+cZq
-         xy0g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8TG0vukPzfqbBb9w/D0tpRsAOxrMfEJlD8AP5D5Ww8s=;
+        b=I0IXhEPRJGOQhRpunZa4ATmrb5McO04u9dImUm4dX3pubuve6ULz2N9QNeND1XGjKH
+         AvEOAgUjWRZBS3IPoZpoD7H/Gu/vpVl+yivrsH/Shnj0NFsHnlqBKkBqHHFDFhyNZNwo
+         8YnUMep8bxF/b13TeHTELCKAbd7gS+pjVvX0ZQxslqflp0IJbwRtc32AfxKbs6Uw+Poo
+         qhAF3zbl55U8GtfRxUenoUa/niJbFrGxVWdFFTiQYG+YmhKeiBzgZdb1uWAzwkQiv2jb
+         HAea1XLo5TfZKmefOZ0XjQvuChlecjD7M7C5EscfShNaviCe5JJCaf/yEfuUH2a3oomv
+         mlqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EY8XZr1fkZO07wgxJyVHnnlupUOqrKOPtZdwHP1/sUo=;
-        b=KJoKXrG7qLXG7I0wMtyupo0jhPaz6pfu2czl+pIqRvk+wmRUqQg/5BWIoKjbIAkUTV
-         KyxqKfaJiaH1FvEmMv2Q/hHTKoqjqYLSRixSZxr6yaK9ygQXny0osw6aRDkJDWl9U1Dp
-         l8Da3P7pi+QTgaiRznNk3XudDvGPAH3grYlGLyqPreA2Cg93nG1GGtliKIzcM3EGSmb9
-         qbAPeAXgpBsfGaAUIb4dpzCFQNGtG6vXiQofTy2dBFQQKqIhe8vLl9EnYjxpCEKS01TY
-         IbQZf/91yy6aXgwudLm+skcRTACjJK67+C2lmJrQ2N+Fko+KpohDJwNtWoz2C7KTRe54
-         IuSA==
-X-Gm-Message-State: APjAAAWKWFpUBmyC+S7LiaB3y2HJ1HPw7jdajgQ4LLDZwYG0qQCSQRgZ
-        82cRKXb84u97BGSHsjNsklT9Lg==
-X-Google-Smtp-Source: APXvYqwYSH3Cx4HD1Aa8yE0XQyXkf3xZWBcJLdh/nElVyy0Wg2kkcTlC8s7clt6dS2HGHzz2TBYQFg==
-X-Received: by 2002:a0c:b155:: with SMTP id r21mr50252694qvc.73.1558464884234;
-        Tue, 21 May 2019 11:54:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8TG0vukPzfqbBb9w/D0tpRsAOxrMfEJlD8AP5D5Ww8s=;
+        b=Scbk5qf8Vrqxy0AH92c6rt4euW5ZE4UC4c7xTI6G2LRqs8t0UBlwPU5MSW16FYeSke
+         kkRgpLiZgBN3Bvsma9Mz4fzHFfq5wgfgIyXZM1yTPgBAqMj4h6grR6Qp4y4BS6ZDLn7d
+         mDwn6lg+K31stk2qGcZN4THIyiNBi2RTF/vkWqVupiZb158B5r5RLkVY7BCHDRyQ881Q
+         NiuZUnZwWsBcFD5AcGTydYiWNHw5QTwdHe1b7oYzRYx1IdCI+iPsyLccBHhT6k1wAYrU
+         eVARmWsBSxKuP4TNhaVSKfdePVezy5gi+QeAw6f3G+E0JLr1JmTTx4yHu19SHfeZGjzc
+         AegQ==
+X-Gm-Message-State: APjAAAXj8bCOgPWCtnEOlXJgYITppndJbqfGPlgxECgWI5G54irJuiBT
+        JyQmwD2GAVIivdIN0cxV782Khs6dObI=
+X-Google-Smtp-Source: APXvYqyQGLiJ9yFWvqijAx0nCY2w0vIeQq8A9HbM6+Y3OhMRSng7RxkPAELWod2WHKAJVh/L+Mqmbw==
+X-Received: by 2002:a37:480e:: with SMTP id v14mr45074560qka.344.1558465289168;
+        Tue, 21 May 2019 12:01:29 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id a11sm9537113qtp.44.2019.05.21.11.54.43
+        by smtp.gmail.com with ESMTPSA id v48sm5713278qth.46.2019.05.21.12.01.28
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 21 May 2019 11:54:43 -0700 (PDT)
+        Tue, 21 May 2019 12:01:28 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hT9uN-000757-Bh; Tue, 21 May 2019 15:54:43 -0300
-Date:   Tue, 21 May 2019 15:54:43 -0300
+        id 1hTA0t-0007Ce-U9; Tue, 21 May 2019 16:01:27 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Glenn Streiff <gstreiff@neteffect.com>,
-        Steve Wise <swise@opengridcomputing.com>
-Subject: Re: [PATCH rdma-next 00/15] Convert CQ allocations
-Message-ID: <20190521185443.GA23445@ziepe.ca>
-References: <20190520065433.8734-1-leon@kernel.org>
+To:     linux-rdma@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH rdma-core 0/7] More fixes for building
+Date:   Tue, 21 May 2019 16:01:17 -0300
+Message-Id: <20190521190124.27486-1-jgg@ziepe.ca>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190520065433.8734-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 20, 2019 at 09:54:18AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Hi,
-> 
-> This is my next series of allocation conversion patches.
-> 
-> Thanks
-> 
-> Leon Romanovsky (15):
->   rds: Don't check return value from destroy CQ
->   RDMA/ipoib: Remove check of destroy CQ
->   RDMA/core: Make ib_destroy_cq() void
->   RDMA/nes: Remove useless NULL checks
->   RDMA/i40iw: Remove useless NULL checks
->   RDMA/nes: Remove second wait queue initialization call
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-These trivial ones all applied to for-rc, thanks
+Various small mistakes I noticed while updating the CI build to run on a
+bionic based container.
 
->   RDMA/efa: Remove check that prevents destroy of resources in error
->     flows
->   RDMA/nes: Avoid memory allocation during CQ destroy
->   RDMA: Clean destroy CQ in drivers do not return errors
->   RDMA/cxgb3: Use sizeof() notation instead of plain sizeof
->   RDMA/cxgb3: Don't expose DMA addresses
->   RDMA/cxgb3: Delete and properly mark unimplemented resize CQ function
->   RDMA/cxgb4: Use sizeof() notation
->   RDMA/cxgb4: Don't expose DMA addresses
->   RDMA: Convert CQ allocations to be under core responsibility
+This is a github PR:
 
-People should Review these ones please
+https://github.com/linux-rdma/rdma-core/pull/532
 
-Jason
+Jason Gunthorpe (7):
+  ibacm: Fix format string warning on 32 bit compile
+  hns: Remove unneeded malloc.h
+  build: Use the system PYTHON_EXECUTABLE for gen-sparse
+  build: Support glibc 2.27 with sparse
+  build: Revise how gen-sparse finds the system headers
+  cbuild: Do not require yaml to always be installed
+  build: Expose the cbuild machinery to build the release .tar.gz
+
+ CMakeLists.txt                                |  30 ++---
+ buildlib/RDMA_Sparse.cmake                    |   3 +-
+ buildlib/cbuild                               |  58 +++++++--
+ buildlib/gen-sparse.py                        |  45 +++++--
+ buildlib/github-release                       |   7 +-
+ .../sparse-include/27/bits-sysmacros.h.diff   |  24 ++++
+ buildlib/sparse-include/27/netinet-in.h.diff  | 121 ++++++++++++++++++
+ buildlib/sparse-include/27/stdlib.h.diff      |  23 ++++
+ buildlib/sparse-include/27/sys-socket.h.diff  |  11 ++
+ ibacm/src/acm_util.c                          |   3 +-
+ providers/hns/hns_roce_u_hw_v1.c              |   1 -
+ providers/hns/hns_roce_u_hw_v2.c              |   1 -
+ 12 files changed, 279 insertions(+), 48 deletions(-)
+ create mode 100644 buildlib/sparse-include/27/bits-sysmacros.h.diff
+ create mode 100644 buildlib/sparse-include/27/netinet-in.h.diff
+ create mode 100644 buildlib/sparse-include/27/stdlib.h.diff
+ create mode 100644 buildlib/sparse-include/27/sys-socket.h.diff
+
+-- 
+2.21.0
+
