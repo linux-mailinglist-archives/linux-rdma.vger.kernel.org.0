@@ -2,95 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE99424EF7
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 14:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827B9251CE
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 16:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726953AbfEUMdP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 May 2019 08:33:15 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:13343 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726705AbfEUMdP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 08:33:15 -0400
-Received: from localhost (r10.asicdesigners.com [10.192.194.10])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x4LCWdvS023094;
-        Tue, 21 May 2019 05:32:39 -0700
-From:   Nirranjan Kirubaharan <nirranjan@chelsio.com>
-To:     nirranjan@chelsio.com, bharat@chelsio.com, dledford@redhat.com,
-        jgg@mellanox.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH for-next v3] iw_cxgb4: Fix qpid leak
-Date:   Tue, 21 May 2019 05:32:30 -0700
-Message-Id: <d60f04ae2f0f5ba6f925d7f56a31e09f33f3fde7.1558438183.git.nirranjan@chelsio.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728137AbfEUOWx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 May 2019 10:22:53 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:57746 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727534AbfEUOWx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 10:22:53 -0400
+Received: from Internal Mail-Server by MTLPINE2 (envelope-from parav@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 21 May 2019 17:22:49 +0300
+Received: from sw-mtx-036.mtx.labs.mlnx (sw-mtx-036.mtx.labs.mlnx [10.12.150.149])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x4LEMlHr023035;
+        Tue, 21 May 2019 17:22:48 +0300
+From:   Parav Pandit <parav@mellanox.com>
+To:     dsahern@gmail.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        stephen@networkplumber.org, leonro@mellanox.com, parav@mellanox.com
+Subject: [PATCH iproute2-next 0/4] Enrich rdma tool for net namespace commands
+Date:   Tue, 21 May 2019 09:22:40 -0500
+Message-Id: <20190521142244.8452-1-parav@mellanox.com>
+X-Mailer: git-send-email 2.19.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In iw_cxgb4, Added wait in destroy_qp() so that all references to
-qp are dereferenced and qp is freed in destroy_qp() itself.
-This ensures freeing of all QPs before invocation of
-dealloc_ucontext(), which prevents loss of in use qpids stored
-in ucontext.
+RDMA subsystem can be running in either of the modes.
+(a) Sharing RDMA devices among multiple net namespaces or
+(b) Exclusive mode where RDMA device is bound to single net namespace 
 
-Signed-off-by: Nirranjan Kirubaharan <nirranjan@chelsio.com>
-Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
----
-v2:
-- Used kref instead of qid count.
----
-v3:
-- Ensured freeing of qp in destroy_qp() itself.
----
- drivers/infiniband/hw/cxgb4/iw_cxgb4.h | 1 +
- drivers/infiniband/hw/cxgb4/qp.c       | 7 ++++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+This patch series adds
+(1) query command to query rdma subsystem sharing mode
+(2) set command to change rdma subsystem sharing mode
+(3) assign rdma device to a net namespace
 
-diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-index 916ef982172e..10c3e5e9d3de 100644
---- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-+++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-@@ -497,6 +497,7 @@ struct c4iw_qp {
- 	struct work_struct free_work;
- 	struct c4iw_ucontext *ucontext;
- 	struct c4iw_wr_wait *wr_waitp;
-+	struct completion qp_rel_comp;
- };
- 
- static inline struct c4iw_qp *to_c4iw_qp(struct ib_qp *ibqp)
-diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-index e92b9544357a..ea0b7014fb03 100644
---- a/drivers/infiniband/hw/cxgb4/qp.c
-+++ b/drivers/infiniband/hw/cxgb4/qp.c
-@@ -905,7 +905,7 @@ static void free_qp_work(struct work_struct *work)
- 		   ucontext ? &ucontext->uctx : &rhp->rdev.uctx, !qhp->srq);
- 
- 	c4iw_put_wr_wait(qhp->wr_waitp);
--	kfree(qhp);
-+	complete(&qhp->qp_rel_comp);
- }
- 
- static void queue_qp_free(struct kref *kref)
-@@ -2120,7 +2120,11 @@ int c4iw_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
- 
- 	c4iw_qp_rem_ref(ib_qp);
- 
-+	wait_for_completion(&qhp->qp_rel_comp);
-+
- 	pr_debug("ib_qp %p qpid 0x%0x\n", ib_qp, qhp->wq.sq.qid);
-+
-+	kfree(qhp);
- 	return 0;
- }
- 
-@@ -2184,6 +2188,7 @@ struct ib_qp *c4iw_create_qp(struct ib_pd *pd, struct ib_qp_init_attr *attrs,
- 		(sqsize + rhp->rdev.hw_queue.t4_eq_status_entries) *
- 		sizeof(*qhp->wq.sq.queue) + 16 * sizeof(__be64);
- 	qhp->wq.sq.flush_cidx = -1;
-+	init_completion(&qhp->qp_rel_comp);
- 	if (!attrs->srq) {
- 		qhp->wq.rq.size = rqsize;
- 		qhp->wq.rq.memsize =
+rdma tool examples:
+(a) Query current rdma subsys net namespace sharing mode 
+$ rdma sys show
+netns shared
+
+(b) Change rdma subsys mode to exclusive mode
+$ rdma sys set netns exclusive
+
+$ rdma sys show
+netns exclusive
+
+(c) Assign rdma device to a specific newly created net namespace
+$ ip netns add foo
+$ rdma dev set mlx5_1 netns foo 
+
+
+Parav Pandit (4):
+  rdma: Add an option to query,set net namespace sharing sys parameter
+  rdma: Add man pages for rdma system commands
+  rdma: Add an option to set net namespace of rdma device
+  rdma: Add man page for rdma dev set netns command
+
+ man/man8/rdma-dev.8    |  18 +++++-
+ man/man8/rdma-system.8 |  82 +++++++++++++++++++++++
+ man/man8/rdma.8        |   7 +-
+ rdma/Makefile          |   2 +-
+ rdma/dev.c             |  37 +++++++++++
+ rdma/rdma.c            |   3 +-
+ rdma/rdma.h            |   1 +
+ rdma/sys.c             | 143 +++++++++++++++++++++++++++++++++++++++++
+ rdma/utils.c           |   1 +
+ 9 files changed, 289 insertions(+), 5 deletions(-)
+ create mode 100644 man/man8/rdma-system.8
+ create mode 100644 rdma/sys.c
+
 -- 
-1.8.3.1
+2.19.2
 
