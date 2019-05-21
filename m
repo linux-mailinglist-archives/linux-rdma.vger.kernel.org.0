@@ -2,70 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0531424DB0
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 13:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE99424EF7
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 14:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbfEULMv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 21 May 2019 07:12:51 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:36559 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726042AbfEULMv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 07:12:51 -0400
-Received: by mail-ed1-f66.google.com with SMTP id a8so28828366edx.3
-        for <linux-rdma@vger.kernel.org>; Tue, 21 May 2019 04:12:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zbfbsZ00BzTGr9D7X5h8lh8xvNwkVCme4sOpVqk+cTo=;
-        b=E7HJF0/nNYHegffqcGknfw5gcHKm6Mwc0Z0fe/bUnrnyRRIK1Sx3l+CV/0rzod0cad
-         kBps0Irgv7lKkVTTXbs6//Id23XYh82QfzIHijX8jEMXTrUluwro7igO2K08GXCeyFJN
-         /eNl/6YfDhwYfrsolagxGSw6MDFiD4lzDv8wDdvr3ow1tCezv7RQfWaNccWXI+696Is+
-         I5zHq2uajoCecVsEVrXzcE7w4DFjuyFhqqf5LxIDlkQ3QEygVvuMBUBkJDsEyU2UmrEY
-         PHOE5SyJWH0ZgFLFG87AZX+GrTFz1O1HCWGeDNPoEfVT40Jm3lfT8N448x67QJtAsBNJ
-         4aLg==
-X-Gm-Message-State: APjAAAVR8lRbQMLzXOdVETFLkmeOiBMO+GTl24CBEleUcYNvJ+x5Yd7F
-        HMdZvoVbjkxSQz0m2ef1QnQjVut8
-X-Google-Smtp-Source: APXvYqyeFCNGpIaIbs9sTSxCrnBwxPi9x7oMPV+5Nb7R6RsFX5tchkYSLf3zfE/YsUh4rPMvK8BwZg==
-X-Received: by 2002:a17:906:68c8:: with SMTP id y8mr47078976ejr.104.1558437169218;
-        Tue, 21 May 2019 04:12:49 -0700 (PDT)
-Received: from [192.168.1.6] (178-117-55-239.access.telenet.be. [178.117.55.239])
-        by smtp.gmail.com with ESMTPSA id v2sm6155290eds.69.2019.05.21.04.12.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 May 2019 04:12:45 -0700 (PDT)
-Subject: Re: [PATCH rdma-next v4] RDMA/srp: Rename SRP sysfs name after IB
- device rename trigger
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20190517124310.14815-1-leon@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <72eb677a-5c76-cdce-eff8-02b8d263f47e@acm.org>
-Date:   Tue, 21 May 2019 13:12:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <20190517124310.14815-1-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
+        id S1726953AbfEUMdP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 May 2019 08:33:15 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:13343 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726705AbfEUMdP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 08:33:15 -0400
+Received: from localhost (r10.asicdesigners.com [10.192.194.10])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x4LCWdvS023094;
+        Tue, 21 May 2019 05:32:39 -0700
+From:   Nirranjan Kirubaharan <nirranjan@chelsio.com>
+To:     nirranjan@chelsio.com, bharat@chelsio.com, dledford@redhat.com,
+        jgg@mellanox.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH for-next v3] iw_cxgb4: Fix qpid leak
+Date:   Tue, 21 May 2019 05:32:30 -0700
+Message-Id: <d60f04ae2f0f5ba6f925d7f56a31e09f33f3fde7.1558438183.git.nirranjan@chelsio.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/17/19 2:43 PM, Leon Romanovsky wrote:
-> This panic is caused due to races between device rename during boot and
-> initialization of new devices for multi-adapter system.
-> 
-> The module load/unload sequence was used to trigger such kernel panic:
->  sudo modprobe ib_srp
->  sudo modprobe -r mlx5_ib
->  sudo modprobe -r mlx5_core
->  sudo modprobe mlx5_core
+In iw_cxgb4, Added wait in destroy_qp() so that all references to
+qp are dereferenced and qp is freed in destroy_qp() itself.
+This ensures freeing of all QPs before invocation of
+dealloc_ucontext(), which prevents loss of in use qpids stored
+in ucontext.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Nirranjan Kirubaharan <nirranjan@chelsio.com>
+Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
+---
+v2:
+- Used kref instead of qid count.
+---
+v3:
+- Ensured freeing of qp in destroy_qp() itself.
+---
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h | 1 +
+ drivers/infiniband/hw/cxgb4/qp.c       | 7 ++++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+index 916ef982172e..10c3e5e9d3de 100644
+--- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
++++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+@@ -497,6 +497,7 @@ struct c4iw_qp {
+ 	struct work_struct free_work;
+ 	struct c4iw_ucontext *ucontext;
+ 	struct c4iw_wr_wait *wr_waitp;
++	struct completion qp_rel_comp;
+ };
+ 
+ static inline struct c4iw_qp *to_c4iw_qp(struct ib_qp *ibqp)
+diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
+index e92b9544357a..ea0b7014fb03 100644
+--- a/drivers/infiniband/hw/cxgb4/qp.c
++++ b/drivers/infiniband/hw/cxgb4/qp.c
+@@ -905,7 +905,7 @@ static void free_qp_work(struct work_struct *work)
+ 		   ucontext ? &ucontext->uctx : &rhp->rdev.uctx, !qhp->srq);
+ 
+ 	c4iw_put_wr_wait(qhp->wr_waitp);
+-	kfree(qhp);
++	complete(&qhp->qp_rel_comp);
+ }
+ 
+ static void queue_qp_free(struct kref *kref)
+@@ -2120,7 +2120,11 @@ int c4iw_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
+ 
+ 	c4iw_qp_rem_ref(ib_qp);
+ 
++	wait_for_completion(&qhp->qp_rel_comp);
++
+ 	pr_debug("ib_qp %p qpid 0x%0x\n", ib_qp, qhp->wq.sq.qid);
++
++	kfree(qhp);
+ 	return 0;
+ }
+ 
+@@ -2184,6 +2188,7 @@ struct ib_qp *c4iw_create_qp(struct ib_pd *pd, struct ib_qp_init_attr *attrs,
+ 		(sqsize + rhp->rdev.hw_queue.t4_eq_status_entries) *
+ 		sizeof(*qhp->wq.sq.queue) + 16 * sizeof(__be64);
+ 	qhp->wq.sq.flush_cidx = -1;
++	init_completion(&qhp->qp_rel_comp);
+ 	if (!attrs->srq) {
+ 		qhp->wq.rq.size = rqsize;
+ 		qhp->wq.rq.memsize =
+-- 
+1.8.3.1
 
