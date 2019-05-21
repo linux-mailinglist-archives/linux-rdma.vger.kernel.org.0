@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0DC257F4
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 21:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15F5257F0
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2019 21:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729293AbfEUTBe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 May 2019 15:01:34 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:43894 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729300AbfEUTBd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 15:01:33 -0400
-Received: by mail-qt1-f194.google.com with SMTP id i26so21758349qtr.10
-        for <linux-rdma@vger.kernel.org>; Tue, 21 May 2019 12:01:32 -0700 (PDT)
+        id S1729302AbfEUTBc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 May 2019 15:01:32 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:46167 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729293AbfEUTBc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 15:01:32 -0400
+Received: by mail-qk1-f195.google.com with SMTP id a132so11696711qkb.13
+        for <linux-rdma@vger.kernel.org>; Tue, 21 May 2019 12:01:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yRrcFGEbyx+hPo0HsL1IPBzWkHMm2ChjPx2mXLFfbus=;
-        b=Hq1qiXoyKJ+PSsiivsR41/h3O64FbvRv2aON2cvgSwvi5MZxtVGs5FtzZqRzaHJrhh
-         KfIQUpBbBZgE5t9m1/kayAne6Nh8PQ36h4rsyDGy2LEGq9YsQ+P/h71FNq54P6k0UT/D
-         DzVN+NQYXdT9ZpDPyefEnoTPAuDyIy8GJ39whPztPmNasi3/fxVCZqeN4jzv5zKuxOe5
-         sbPzHX3Kl2E0kfxuh0nkWhl3qDEMievBgrgR3b7rHFqFkS5NR5K3TKEdkEYyHe7ewOvx
-         BRv/9OzKMRVbrE0Ds1GeKVVwi/ayhrFD18+/V6u1sc7yXCqQKgQq933F1F8Bpb49iXbT
-         xXfA==
+        bh=P2t3+c9ysN1rC5QhyAqJD0PA6V0JpRZ6T2st9xocQGk=;
+        b=Te0MvSKYtVEhDN30fuRbCMzMeTnPtWXuO+EAQX5to0cf9Ewpn4i7xADYPUknqLBchv
+         YO8owuWWK1P+UP/EfraODOwSuoLNBajLpzD76uGpG1G82q/4m9nOmQR/dYTZYImV0ML7
+         Pue7SDUOHASqh7NzRNhHGex0kTCs32/C6iyd6ZO3QIc8OyQEOeWQspOJjBOYRLyvnXLq
+         N83x1fXCqOxKEkyhyyn83b7P69c/bohCj7pRfpJCSMvS3pRr5vDnFzo7vmWjgHxbHlDJ
+         5ETeINp68vx4JccPrLFMu+0FefJeeEVP32LIG35mvZ1refepflqHmTwZD9e5rZdgaEMp
+         onJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yRrcFGEbyx+hPo0HsL1IPBzWkHMm2ChjPx2mXLFfbus=;
-        b=RMkot6a9qBBA7kOQ1f6zRhlgrviDREK1nQGOVXLFLxgNOnVkTaDOAqxgS65zrNtb+4
-         m24sBh28cQvFCxfS0HXzPgIV6s2P0VzV88ia9WcAVAfBSof4HBX5XGfcB4fi/V6Av6D/
-         8gExgr5Yo7NV8n/mmv8s+WqiOSulekASYfILQQXbMaU01kIR2nmTkI/E7WxFxfZwy+Lw
-         +6h89boJwrYJzViogKXGJrkbICeSP2is+yW88yNJLLi1siR6WmfQl81H4sbdigIVS0ib
-         kfqCCM/aPdV5xQUBL1/nshS71xCzATkYjP9TVO3WJNqDros/9FAAPlkdLMKmuR3Kxwxh
-         tYIg==
-X-Gm-Message-State: APjAAAX3LfipEgNv885G4vZHMNgHPryvTBp6GfmZF9uV56ajoigdiTNZ
-        I8B0w/P6gNsl/Ey4I2d7z+0A3bfv200=
-X-Google-Smtp-Source: APXvYqyXNhi+cr/HacNOhdstAsKIOXLYWa4eRaT0/RrJT44QF3r7Earq7K9LIt0hbO+iHnsf4ImKQA==
-X-Received: by 2002:a0c:fccc:: with SMTP id i12mr65183454qvq.12.1558465292251;
-        Tue, 21 May 2019 12:01:32 -0700 (PDT)
+        bh=P2t3+c9ysN1rC5QhyAqJD0PA6V0JpRZ6T2st9xocQGk=;
+        b=QXxrEfb1UjiKEiHxiinbF53RFNXMYeKiYITQcUWQs4IEG0SZMkn7vI4unj2yg7tem0
+         GnEt5pRxL2aeye4JQHHQwNqlVvQLSHYQ08kSXrWnMmO9PjTCfXeKkwv8kvSI2VGoOZg9
+         ZEKvOL4e5HALEnJCZKPo04cZJO8LQ9Fazu2Fe+/Rat+5jYpzYfM+q1KFhaQMSvwuxvXd
+         oUHmeDTtUPWE6jl/M+lKyOnVEGae7YgHSBoijnZlQ36mZa47KO4b0c9rDarkl2hZrZ+m
+         SjBRZa7yA4D/Ov6N/ub0MJTLpwODLAkUDt6znjWOZY1zaijP42DJK1xsZA1igIYMB4QT
+         hjbg==
+X-Gm-Message-State: APjAAAVahe0HT/EGx3JV8Z6C++kVELi+ISkYqZgqlnI+rKZUiNEl8STd
+        eWwDz8p2F/00eV3tQsSmHW8pjrbxUe4=
+X-Google-Smtp-Source: APXvYqz2pPBnUqPI6+tkYzqzOYJad9TD9FJ5zd+7MeERtM1hzqUSM6xkM1WWt36fcEC2d0n7umbvcA==
+X-Received: by 2002:a05:620a:1278:: with SMTP id b24mr63929018qkl.265.1558465291080;
+        Tue, 21 May 2019 12:01:31 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id t2sm10524417qkd.57.2019.05.21.12.01.28
+        by smtp.gmail.com with ESMTPSA id o37sm13734319qta.86.2019.05.21.12.01.28
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Tue, 21 May 2019 12:01:29 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hTA0u-0007D2-4o; Tue, 21 May 2019 16:01:28 -0300
+        id 1hTA0u-0007D8-70; Tue, 21 May 2019 16:01:28 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 4/7] build: Support glibc 2.27 with sparse
-Date:   Tue, 21 May 2019 16:01:21 -0300
-Message-Id: <20190521190124.27486-5-jgg@ziepe.ca>
+Subject: [PATCH rdma-core 5/7] build: Revise how gen-sparse finds the system headers
+Date:   Tue, 21 May 2019 16:01:22 -0300
+Message-Id: <20190521190124.27486-6-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190521190124.27486-1-jgg@ziepe.ca>
 References: <20190521190124.27486-1-jgg@ziepe.ca>
@@ -65,244 +65,99 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-A few more things need patching to make sparse be warning free in glibc
-headers.
+When the compiler is configured for true multi-arch the system headers are
+not in /usr/include anymore, but in one of the arch specific directories.
+
+Get gcc to give the include search path and look along that path for the
+system header location for patching.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- buildlib/gen-sparse.py                        |   4 +-
- .../sparse-include/27/bits-sysmacros.h.diff   |  24 ++++
- buildlib/sparse-include/27/netinet-in.h.diff  | 121 ++++++++++++++++++
- buildlib/sparse-include/27/stdlib.h.diff      |  23 ++++
- buildlib/sparse-include/27/sys-socket.h.diff  |  11 ++
- 5 files changed, 182 insertions(+), 1 deletion(-)
- create mode 100644 buildlib/sparse-include/27/bits-sysmacros.h.diff
- create mode 100644 buildlib/sparse-include/27/netinet-in.h.diff
- create mode 100644 buildlib/sparse-include/27/stdlib.h.diff
- create mode 100644 buildlib/sparse-include/27/sys-socket.h.diff
+ buildlib/RDMA_Sparse.cmake |  1 +
+ buildlib/gen-sparse.py     | 30 ++++++++++++++++++++++++++----
+ 2 files changed, 27 insertions(+), 4 deletions(-)
 
+diff --git a/buildlib/RDMA_Sparse.cmake b/buildlib/RDMA_Sparse.cmake
+index 3d03ce6283eec4..72581fe5ceb9cf 100644
+--- a/buildlib/RDMA_Sparse.cmake
++++ b/buildlib/RDMA_Sparse.cmake
+@@ -22,6 +22,7 @@ int main(int argc,const char *argv[]) {return 0;}
+     execute_process(COMMAND "${PYTHON_EXECUTABLE}" "${BUILDLIB}/gen-sparse.py"
+       "--out" "${BUILD_INCLUDE}/"
+       "--src" "${CMAKE_SOURCE_DIR}/"
++      "--cc" "${CMAKE_C_COMPILER}"
+       RESULT_VARIABLE retcode)
+     if(NOT "${retcode}" STREQUAL "0")
+       message(FATAL_ERROR "glibc header file patching for sparse failed. Review include/*.rej and fix the rejects, then do "
 diff --git a/buildlib/gen-sparse.py b/buildlib/gen-sparse.py
-index 84781f4528feef..67e64de3202331 100755
+index 67e64de3202331..fe428b42a97462 100755
 --- a/buildlib/gen-sparse.py
 +++ b/buildlib/gen-sparse.py
-@@ -7,11 +7,13 @@ import os
+@@ -5,6 +5,7 @@ import argparse
+ import subprocess
+ import os
  import collections
++import re
  
  headers = {
-+    "bits/sysmacros.h",
-     "endian.h",
-     "netinet/in.h",
-     "pthread.h",
--    "sys/socket.h",
-     "stdatomic.h",
-+    "stdlib.h",
-+    "sys/socket.h",
-     };
+     "bits/sysmacros.h",
+@@ -25,6 +26,27 @@ def norm_header(fn):
+             return I;
+     return None;
  
- def norm_header(fn):
-diff --git a/buildlib/sparse-include/27/bits-sysmacros.h.diff b/buildlib/sparse-include/27/bits-sysmacros.h.diff
-new file mode 100644
-index 00000000000000..4ec58646f621af
---- /dev/null
-+++ b/buildlib/sparse-include/27/bits-sysmacros.h.diff
-@@ -0,0 +1,24 @@
-+--- /usr/include/bits/sysmacros.h	2018-04-16 20:14:20.000000000 +0000
-++++ include/bits/sysmacros.h	2019-05-16 19:30:02.096174695 +0000
-+@@ -40,8 +40,8 @@
-+   __SYSMACROS_DECLARE_MAJOR (DECL_TEMPL)			\
-+   {								\
-+     unsigned int __major;					\
-+-    __major  = ((__dev & (__dev_t) 0x00000000000fff00u) >>  8); \
-+-    __major |= ((__dev & (__dev_t) 0xfffff00000000000u) >> 32); \
-++    __major  = ((__dev & (__dev_t) 0x00000000000fff00ul) >>  8); \
-++    __major |= ((__dev & (__dev_t) 0xfffff00000000000ul) >> 32); \
-+     return __major;						\
-+   }
-+ 
-+@@ -52,8 +52,8 @@
-+   __SYSMACROS_DECLARE_MINOR (DECL_TEMPL)			\
-+   {								\
-+     unsigned int __minor;					\
-+-    __minor  = ((__dev & (__dev_t) 0x00000000000000ffu) >>  0); \
-+-    __minor |= ((__dev & (__dev_t) 0x00000ffffff00000u) >> 12); \
-++    __minor  = ((__dev & (__dev_t) 0x00000000000000fful) >>  0); \
-++    __minor |= ((__dev & (__dev_t) 0x00000ffffff00000ul) >> 12); \
-+     return __minor;						\
-+   }
-+ 
-diff --git a/buildlib/sparse-include/27/netinet-in.h.diff b/buildlib/sparse-include/27/netinet-in.h.diff
-new file mode 100644
-index 00000000000000..685f23fea71aef
---- /dev/null
-+++ b/buildlib/sparse-include/27/netinet-in.h.diff
-@@ -0,0 +1,121 @@
-+--- /usr/include/netinet/in.h	2018-04-16 20:14:20.000000000 +0000
-++++ include/netinet/in.h	2019-05-16 19:22:42.725853784 +0000
-+@@ -22,12 +22,12 @@
-+ #include <bits/stdint-uintn.h>
-+ #include <sys/socket.h>
-+ #include <bits/types.h>
-+-
-++#include <linux/types.h>
-+ 
-+ __BEGIN_DECLS
-+ 
-+ /* Internet address.  */
-+-typedef uint32_t in_addr_t;
-++typedef __be32 in_addr_t;
-+ struct in_addr
-+   {
-+     in_addr_t s_addr;
-+@@ -116,7 +116,7 @@
-+ #endif /* !__USE_KERNEL_IPV6_DEFS */
-+ 
-+ /* Type to represent a port.  */
-+-typedef uint16_t in_port_t;
-++typedef __be16 in_port_t;
-+ 
-+ /* Standard well-known ports.  */
-+ enum
-+@@ -175,36 +175,36 @@
-+ #define	IN_CLASSB_HOST		(0xffffffff & ~IN_CLASSB_NET)
-+ #define	IN_CLASSB_MAX		65536
-+ 
-+-#define	IN_CLASSC(a)		((((in_addr_t)(a)) & 0xe0000000) == 0xc0000000)
-++#define	IN_CLASSC(a)		((((uint32_t)(a)) & 0xe0000000) == 0xc0000000)
-+ #define	IN_CLASSC_NET		0xffffff00
-+ #define	IN_CLASSC_NSHIFT	8
-+ #define	IN_CLASSC_HOST		(0xffffffff & ~IN_CLASSC_NET)
-+ 
-+-#define	IN_CLASSD(a)		((((in_addr_t)(a)) & 0xf0000000) == 0xe0000000)
-++#define	IN_CLASSD(a)		((((uint32_t)(a)) & 0xf0000000) == 0xe0000000)
-+ #define	IN_MULTICAST(a)		IN_CLASSD(a)
-+ 
-+-#define	IN_EXPERIMENTAL(a)	((((in_addr_t)(a)) & 0xe0000000) == 0xe0000000)
-+-#define	IN_BADCLASS(a)		((((in_addr_t)(a)) & 0xf0000000) == 0xf0000000)
-++#define	IN_EXPERIMENTAL(a)	((((uint32_t)(a)) & 0xe0000000) == 0xe0000000)
-++#define	IN_BADCLASS(a)		((((uint32_t)(a)) & 0xf0000000) == 0xf0000000)
-+ 
-+ /* Address to accept any incoming messages.  */
-+-#define	INADDR_ANY		((in_addr_t) 0x00000000)
-++#define	INADDR_ANY		((uint32_t) 0x00000000)
-+ /* Address to send to all hosts.  */
-+-#define	INADDR_BROADCAST	((in_addr_t) 0xffffffff)
-++#define	INADDR_BROADCAST	((uint32_t) 0xffffffff)
-+ /* Address indicating an error return.  */
-+-#define	INADDR_NONE		((in_addr_t) 0xffffffff)
-++#define	INADDR_NONE		((uint32_t) 0xffffffff)
-+ 
-+ /* Network number for local host loopback.  */
-+ #define	IN_LOOPBACKNET		127
-+ /* Address to loopback in software to local host.  */
-+ #ifndef INADDR_LOOPBACK
-+-# define INADDR_LOOPBACK	((in_addr_t) 0x7f000001) /* Inet 127.0.0.1.  */
-++# define INADDR_LOOPBACK	((uint32_t) 0x7f000001) /* Inet 127.0.0.1.  */
-+ #endif
-+ 
-+ /* Defines for Multicast INADDR.  */
-+-#define INADDR_UNSPEC_GROUP	((in_addr_t) 0xe0000000) /* 224.0.0.0 */
-+-#define INADDR_ALLHOSTS_GROUP	((in_addr_t) 0xe0000001) /* 224.0.0.1 */
-+-#define INADDR_ALLRTRS_GROUP    ((in_addr_t) 0xe0000002) /* 224.0.0.2 */
-+-#define INADDR_MAX_LOCAL_GROUP  ((in_addr_t) 0xe00000ff) /* 224.0.0.255 */
-++#define INADDR_UNSPEC_GROUP	((uint32_t) 0xe0000000) /* 224.0.0.0 */
-++#define INADDR_ALLHOSTS_GROUP	((uint32_t) 0xe0000001) /* 224.0.0.1 */
-++#define INADDR_ALLRTRS_GROUP    ((uint32_t) 0xe0000002) /* 224.0.0.2 */
-++#define INADDR_MAX_LOCAL_GROUP  ((uint32_t) 0xe00000ff) /* 224.0.0.255 */
-+ 
-+ #if !__USE_KERNEL_IPV6_DEFS
-+ /* IPv6 address */
-+@@ -213,8 +213,8 @@
-+     union
-+       {
-+ 	uint8_t	__u6_addr8[16];
-+-	uint16_t __u6_addr16[8];
-+-	uint32_t __u6_addr32[4];
-++	__be16 __u6_addr16[8];
-++	__be32 __u6_addr32[4];
-+       } __in6_u;
-+ #define s6_addr			__in6_u.__u6_addr8
-+ #ifdef __USE_MISC
-+@@ -253,7 +253,7 @@
-+   {
-+     __SOCKADDR_COMMON (sin6_);
-+     in_port_t sin6_port;	/* Transport layer port # */
-+-    uint32_t sin6_flowinfo;	/* IPv6 flow information */
-++    __be32 sin6_flowinfo;	/* IPv6 flow information */
-+     struct in6_addr sin6_addr;	/* IPv6 address */
-+     uint32_t sin6_scope_id;	/* IPv6 scope-id */
-+   };
-+@@ -371,12 +371,12 @@
-+    this was a short-sighted decision since on different systems the types
-+    may have different representations but the values are always the same.  */
-+ 
-+-extern uint32_t ntohl (uint32_t __netlong) __THROW __attribute__ ((__const__));
-+-extern uint16_t ntohs (uint16_t __netshort)
-++extern uint32_t ntohl (__be32 __netlong) __THROW __attribute__ ((__const__));
-++extern uint16_t ntohs (__be16 __netshort)
-+      __THROW __attribute__ ((__const__));
-+-extern uint32_t htonl (uint32_t __hostlong)
-++extern __be32 htonl (uint32_t __hostlong)
-+      __THROW __attribute__ ((__const__));
-+-extern uint16_t htons (uint16_t __hostshort)
-++extern __be16 htons (uint16_t __hostshort)
-+      __THROW __attribute__ ((__const__));
-+ 
-+ #include <endian.h>
-+@@ -385,7 +385,7 @@
-+ #include <bits/byteswap.h>
-+ #include <bits/uintn-identity.h>
-+ 
-+-#ifdef __OPTIMIZE__
-++#ifdef __disabled_OPTIMIZE__
-+ /* We can optimize calls to the conversion functions.  Either nothing has
-+    to be done or we are using directly the byte-swapping functions which
-+    often can be inlined.  */
-diff --git a/buildlib/sparse-include/27/stdlib.h.diff b/buildlib/sparse-include/27/stdlib.h.diff
-new file mode 100644
-index 00000000000000..5ddced15cf71db
---- /dev/null
-+++ b/buildlib/sparse-include/27/stdlib.h.diff
-@@ -0,0 +1,23 @@
-+--- /usr/include/stdlib.h	2018-04-16 20:14:20.000000000 +0000
-++++ include/stdlib.h	2019-05-16 19:38:38.071615242 +0000
-+@@ -130,6 +130,20 @@
-+ 
-+ /* Likewise for '_FloatN' and '_FloatNx'.  */
-+ 
-++/* For whatever reason our sparse does not understand these new compiler types */
-++#undef __GLIBC_USE_IEC_60559_TYPES_EXT
-++#define __GLIBC_USE_IEC_60559_TYPES_EXT 0
-++#undef __HAVE_FLOAT32
-++#define __HAVE_FLOAT32 0
-++#undef __HAVE_FLOAT32X
-++#define __HAVE_FLOAT32X 0
-++#undef __HAVE_FLOAT64
-++#define __HAVE_FLOAT64 0
-++#undef __HAVE_FLOAT64X
-++#define __HAVE_FLOAT64X 0
-++#undef __HAVE_FLOAT128
-++#define __HAVE_FLOAT128 0
-++
-+ #if __HAVE_FLOAT16 && __GLIBC_USE (IEC_60559_TYPES_EXT)
-+ extern _Float16 strtof16 (const char *__restrict __nptr,
-+ 			  char **__restrict __endptr)
-diff --git a/buildlib/sparse-include/27/sys-socket.h.diff b/buildlib/sparse-include/27/sys-socket.h.diff
-new file mode 100644
-index 00000000000000..92ee3bfa1e1b64
---- /dev/null
-+++ b/buildlib/sparse-include/27/sys-socket.h.diff
-@@ -0,0 +1,11 @@
-+--- /usr/include/sys/socket.h	2018-04-16 20:14:20.000000000 +0000
-++++ include/sys/socket.h	2019-05-16 19:22:42.721853727 +0000
-+@@ -54,7 +54,7 @@
-+    uses with any of the listed types to be allowed without complaint.
-+    G++ 2.7 does not support transparent unions so there we want the
-+    old-style declaration, too.  */
-+-#if defined __cplusplus || !__GNUC_PREREQ (2, 7) || !defined __USE_GNU
-++#if 1
-+ # define __SOCKADDR_ARG		struct sockaddr *__restrict
-+ # define __CONST_SOCKADDR_ARG	const struct sockaddr *
-+ #else
++def find_system_header(args,hdr):
++    """/usr/include is not always where the include files are, particularly if we
++    are running full multi-arch as the azure_pipeline container does. Get gcc
++    to tell us where /usr/include is"""
++    if "incpath" not in args:
++        cpp = subprocess.check_output([args.cc, "-print-prog-name=cpp"],universal_newlines=True).strip()
++        data = subprocess.check_output([cpp, "-v"],universal_newlines=True,stdin=subprocess.DEVNULL,
++                                       stderr=subprocess.STDOUT)
++        args.incpath = [];
++        for incdir in re.finditer(r"^ (/\S+)$", data, re.MULTILINE):
++            incdir = incdir.group(1)
++            if "fixed" in incdir:
++                continue;
++            args.incpath.append(incdir)
++
++    for incdir in args.incpath:
++        fn = os.path.join(incdir,hdr)
++        if os.path.exists(fn):
++            return fn
++    raise ValueError("Could not find system include directory.");
++
+ def get_buildlib_patches(dfn):
+     """Within the buildlib directory we store patches for the glibc headers. Each
+     patch is in a numbered sub directory that indicates the order to try, the
+@@ -78,7 +100,7 @@ def apply_patch(src,patch,dest):
+ def replace_header(fn):
+     tries = 0;
+     for pfn in patches[fn]:
+-        if apply_patch(os.path.join(args.REF,fn),
++        if apply_patch(find_system_header(args,fn),
+                        pfn,os.path.join(args.INCLUDE,fn)):
+             return;
+         tries = tries + 1;
+@@ -100,7 +122,7 @@ def save(fn,outdir):
+     with open(flatfn,"wt") as F:
+         try:
+             subprocess.check_call(["diff","-u",
+-                                   os.path.join(args.REF,fn),
++                                   find_system_header(args,fn),
+                                    os.path.join(args.INCLUDE,fn)],
+                                   stdout=F);
+         except subprocess.CalledProcessError as ex:
+@@ -113,8 +135,8 @@ parser.add_argument("--out",dest="INCLUDE",required=True,
+                     help="Directory to write header files to");
+ parser.add_argument("--src",dest="SRC",required=True,
+                     help="Top of the source tree");
+-parser.add_argument("--ref",dest="REF",default="/usr/include/",
+-                    help="System headers to manipulate");
++parser.add_argument("--cc",default="gcc",
++                    help="System compiler to use to locate the default system headers");
+ parser.add_argument("--save",action="store_true",default=False,
+                     help="Save mode will write the current content of the headers to buildlib as a diff.");
+ args = parser.parse_args();
 -- 
 2.21.0
 
