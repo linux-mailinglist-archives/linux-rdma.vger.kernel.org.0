@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4447C268DC
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 19:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A586268E6
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 19:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729730AbfEVRKp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 13:10:45 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:36988 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729430AbfEVRKo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 13:10:44 -0400
-Received: by mail-qk1-f196.google.com with SMTP id d10so1970167qko.4
-        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 10:10:44 -0700 (PDT)
+        id S1730327AbfEVRLu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 13:11:50 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:34022 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729899AbfEVRLu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 13:11:50 -0400
+Received: by mail-qt1-f196.google.com with SMTP id h1so3300440qtp.1
+        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 10:11:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=g4EyfT6p5FwfZYyG+l5P03rDlwoWAmrsZLFPciaeXRM=;
-        b=W/KLuJZP0NRPc5fGkoEtpXBXGKQxRin1N6vGt/I4Uo0L9X3MosUo9RSM+/nPQdr0XP
-         a+2sYthD8ZhxU3FL/Dh0itkBt5CigdV+H+f1SRUyfeH9p8GgEySLFkVOgM5D1NRuvtAZ
-         n5HuznPgT8FYifzlt5LDriom1pQeeqNztiSO5s57CSMxYJAWeclSYfw1VvzNicaYGTVr
-         gwRD3AWbB1zCEABTw2xnjNReabz7RO4KOXkGHOZFhGfRGjUIG31hKuuglUQ3z9kpthS5
-         /h45xdg6DwBipg+9C+43WoCdQt9//cwyMEfBlUC3/C9QrfIckSkcqhUwLKqDAfOQ7qfe
-         jEVQ==
+        bh=7HjILda8I7Tovib4RdZQOyzSOVM+T0fg4HHgog52QHo=;
+        b=F/jTx+lta/x0dovZSyIDy65o7wqqbwFIwP8IoypA/1nyAjzedYlgz5v4HJjRMeqTAB
+         nF5xQmi1x3IF1KudHElBcK1AyfYW+9Ds3DnPIkFt6zJC9D1HOdRSTUxl4fuRTgs312Pt
+         bsA1rfJLMkcJUJ8Ah+oizHHWiyKXMlAMA8ApoMNQ3NvVQPK7777DRezKCT/YrSk9ntMA
+         Kt8sk5wxAX5ZPued4cXPhuyNVh6nxu7218H6T1ojnqs1sS1OpDe1p/dCCnZiUHYh5naf
+         j6ExPiIK8hfhdBRRSTZKmSS1upJ18VfYo1lySfXyCi6OOMKIzK04dnk9xafsIHJ4/M0v
+         jE7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=g4EyfT6p5FwfZYyG+l5P03rDlwoWAmrsZLFPciaeXRM=;
-        b=ExZ9Z/lzHGrrYuTfJE2hankPh1du/4nvHgnQ7Rht+v3qN5yAXxPhghit3iCosvAHTQ
-         dNpFGlBf0D2+24uD+Cx9dXumoTVjcGwN5LZg5mxRgeB93dsPfeXSUSjR/4lC3S26jafe
-         7MywG/EKTqATYBQ3tSyjluJ9yLmhnJ68VtUNX2EMrFY5HuQ2t1buOsna0hO0HidTlqqA
-         CSwEfIa6C6i05OlVSy43fR/HvlAzG14ltFTYw++7ZBpDcoSE7zF6YgtiYjifg3Ao1zGs
-         ycv74ZQWNdkV9l5LZ0G52FSVJWmNw8PtobF9d2iT3Bp61lPuPhE3OTkm/1GKneCHqcN6
-         NUmQ==
-X-Gm-Message-State: APjAAAVbVyBSQQeEDWar9/R8PXHu+fJ48LOR5ks/xIy61ZPQ7Ea9FwFs
-        qo7pQ2+znYOlBn2+BYgngb1FJw==
-X-Google-Smtp-Source: APXvYqytVKZZ4ui0xZ1VusHhA/020Xjj6SKTQ3TKIyS2BAkiv/Y4ZZgqGSp/TfCmOmdL5og0Sykvag==
-X-Received: by 2002:a05:620a:146d:: with SMTP id j13mr3848060qkl.222.1558545043992;
-        Wed, 22 May 2019 10:10:43 -0700 (PDT)
+        bh=7HjILda8I7Tovib4RdZQOyzSOVM+T0fg4HHgog52QHo=;
+        b=O7Z61AChF3B8ppDHnI5V0UxU/ZVTY8H3G6+d4Otm4y+FKuKuJSvM+sNjEgpmPBop+4
+         2a3ZiFoHYEQ0AUjQJ29RWtywwgvSBNcKYVRmr5vAZNRInKUJAj8IoD/G2GCvEJznarBm
+         F5nyiYnovSoPilxXpx/LbjrvIxkUykdmyeI8xG3jY73eMM4hXxQKjnbMIvCaxzg3hI5B
+         kcf2cD0uiJAlHJAKkqizqGVGwnk4qDgsj7sJ8wPlZuGBh6vKa8Pff4w5aphNaItY3ukN
+         EiwU/xIJ7QNx9OYqXOVY+1Z2i+dUtHh+Yq+lf8FL6fXCRbHqP5n8lFgjHu+CSJhpURaP
+         hOWQ==
+X-Gm-Message-State: APjAAAVYwGr1jPnBwUHM4OT4YomsgSyYC7o+ZzOw4m5+oIn69I+HQuVD
+        69EY1NqJ90LnVpQ+WmXOnG11Tg==
+X-Google-Smtp-Source: APXvYqy9sxRYtMr+VlR5FYrcN/0TISPnf5XZjUfHGlF8p2rWbFz6zusV1Ig5v4sVW/69GkJ+5ZRecw==
+X-Received: by 2002:a0c:9649:: with SMTP id 9mr61546648qvy.43.1558545109797;
+        Wed, 22 May 2019 10:11:49 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id l40sm15886693qtc.32.2019.05.22.10.10.43
+        by smtp.gmail.com with ESMTPSA id c32sm17034755qte.2.2019.05.22.10.11.49
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 May 2019 10:10:43 -0700 (PDT)
+        Wed, 22 May 2019 10:11:49 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hTUlH-0003wv-0E; Wed, 22 May 2019 14:10:43 -0300
-Date:   Wed, 22 May 2019 14:10:42 -0300
+        id 1hTUmK-0003xR-Su; Wed, 22 May 2019 14:11:48 -0300
+Date:   Wed, 22 May 2019 14:11:48 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
@@ -57,118 +57,36 @@ Cc:     Doug Ledford <dledford@redhat.com>,
         Mark Zhang <markz@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>,
         linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v2 13/17] RDMA/core: Get sum value of all
- counters when perform a sysfs stat read
-Message-ID: <20190522171042.GA15023@ziepe.ca>
+Subject: Re: [PATCH rdma-next v2 06/17] RDMA/counter: Add "auto"
+ configuration mode support
+Message-ID: <20190522171148.GB15023@ziepe.ca>
 References: <20190429083453.16654-1-leon@kernel.org>
- <20190429083453.16654-14-leon@kernel.org>
+ <20190429083453.16654-7-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190429083453.16654-14-leon@kernel.org>
+In-Reply-To: <20190429083453.16654-7-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 29, 2019 at 11:34:49AM +0300, Leon Romanovsky wrote:
-> From: Mark Zhang <markz@mellanox.com>
-> 
-> Since a QP can only be bound to one counter, then if it is bound to a
-> separate counter, for backward compatibility purpose, the statistic
-> value must be:
-> * stat of default counter
-> + stat of all running allocated counters
-> + stat of all deallocated counters (history stats)
-> 
-> Signed-off-by: Mark Zhang <markz@mellanox.com>
-> Reviewed-by: Majd Dibbiny <majd@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->  drivers/infiniband/core/counters.c | 99 +++++++++++++++++++++++++++++-
->  drivers/infiniband/core/device.c   |  8 ++-
->  drivers/infiniband/core/sysfs.c    | 10 ++-
->  include/rdma/rdma_counter.h        |  5 +-
->  4 files changed, 113 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-> index 36cd9eca1e46..f598b1cdb241 100644
-> +++ b/drivers/infiniband/core/counters.c
-> @@ -146,6 +146,20 @@ static int __rdma_counter_bind_qp(struct rdma_counter *counter,
->  	return ret;
->  }
->  
-> +static void counter_history_stat_update(const struct rdma_counter *counter)
-> +{
-> +	struct ib_device *dev = counter->device;
-> +	struct rdma_port_counter *port_counter;
-> +	int i;
-> +
-> +	port_counter = &dev->port_data[counter->port].port_counter;
-> +	if (!port_counter->hstats)
-> +		return;
-> +
-> +	for (i = 0; i < counter->stats->num_counters; i++)
-> +		port_counter->hstats->value[i] += counter->stats->value[i];
-> +}
-> +
->  static int __rdma_counter_unbind_qp(struct ib_qp *qp, bool force)
+On Mon, Apr 29, 2019 at 11:34:42AM +0300, Leon Romanovsky wrote:
+
+>  void rdma_counter_init(struct ib_device *dev)
 >  {
->  	struct rdma_counter *counter = qp->counter;
-> @@ -285,8 +299,10 @@ int rdma_counter_unbind_qp(struct ib_qp *qp, bool force)
->  		return ret;
->  
->  	rdma_restrack_put(&counter->res);
-> -	if (atomic_dec_and_test(&counter->usecnt))
-> +	if (atomic_dec_and_test(&counter->usecnt)) {
-> +		counter_history_stat_update(counter);
->  		rdma_counter_dealloc(counter);
-> +	}
->  
->  	return 0;
->  }
-> @@ -307,21 +323,98 @@ int rdma_counter_query_stats(struct rdma_counter *counter)
->  	return ret;
->  }
->  
-> -void rdma_counter_init(struct ib_device *dev)
-> +static u64 get_running_counters_hwstat_sum(struct ib_device *dev,
-> +					   u8 port, u32 index)
-> +{
-> +	struct rdma_restrack_entry *res;
-> +	struct rdma_restrack_root *rt;
-> +	struct rdma_counter *counter;
-> +	unsigned long id = 0;
-> +	u64 sum = 0;
-> +
-> +	rt = &dev->res[RDMA_RESTRACK_COUNTER];
-> +	xa_lock(&rt->xa);
-> +	xa_for_each(&rt->xa, id, res) {
-> +		if (!rdma_restrack_get(res))
-> +			continue;
+>  	struct rdma_port_counter *port_counter;
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> index 9204b4251fc8..dfaa57de871f 100644
+> +++ b/drivers/infiniband/core/device.c
+> @@ -2349,6 +2349,8 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+>  	SET_DEVICE_OP(dev_ops, set_vf_guid);
+>  	SET_DEVICE_OP(dev_ops, set_vf_link_state);
+>  	SET_DEVICE_OP(dev_ops, unmap_fmr);
+> +	SET_DEVICE_OP(dev_ops, counter_bind_qp);
+> +	SET_DEVICE_OP(dev_ops, counter_unbind_qp);
 
-Why do we need to get refcounts if we are holding the xa_lock?
-
-> +
-> +		counter = container_of(res, struct rdma_counter, res);
-> +		if ((counter->device != dev) || (counter->port != port))
-> +			goto next;
-> +
-> +		if (rdma_counter_query_stats(counter))
-> +			goto next;
-
-And rdma_counter_query_stats does
-
-+	mutex_lock(&counter->lock);
-
-So this was never tested as it will insta-crash with lockdep.
-
-Presumably this is why it is using xa_for_each and restrack_get - but
-it needs to drop the lock after successful get.
-
-This sort of comment applies to nearly evey place in this series that
-uses xa_for_each. 
-
-This needs to be tested with lockdep.
+Keep sorted
 
 Jason
