@@ -2,83 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6591026A00
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 20:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AC726A5C
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 21:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbfEVSoW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 14:44:22 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:36124 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729003AbfEVSoW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 14:44:22 -0400
-Received: by mail-qt1-f196.google.com with SMTP id a17so3669284qth.3
-        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 11:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xpMrAoFaNcl2llUfBdykf40aZwpmDfAE45nrVfwItA8=;
-        b=C2ydTS3pc6J8DY1wzN0YmmO0wmZv/2uZz6mj9rqIPyxszoaQ1acSbstf38Xr200782
-         J6sZjQoJ+fWBTL0CSw3WafX8y7Obd9mnC+gGcZqCJdB12Vykd1BEUQduBXjiUumKI99l
-         hrIcqumQ22zghAXNCb2s9DIRl+GA2JdmxAFL0CGDcc3OVtxGodDTNLV+f5kqQuD+nzOm
-         xGKfKg1JLwLVWq7J9wCsDCS6vf8qpCdGUpKPFVDoYOUH4zeEh9wDTk2+WZpHiKSzm+F1
-         ccdWOtvWuwKOLY8JviLKyslGZYUTBvXhwONiKtRp5BOj291SVYgahxce3b1DAI8L2MW2
-         4jGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xpMrAoFaNcl2llUfBdykf40aZwpmDfAE45nrVfwItA8=;
-        b=YlG1I84/EoC+zl8/sN6u/fjxhN32lPcMbjCxGtZIzZHR7bu4tPXl9LkErHDlagF772
-         s7X3mACera0Zc+EjO65ylCyR615+j9hVgZ5BCc6n/TRPYilBFeZ36XI8MiKOzVsGUsrV
-         ImXZUFbPDHxWvdiIRa2M5JIdT08sPoc8abRXAq2uQd3yX0IhF3GkNwCZN03GlQ8gdNiv
-         YsQWrelPmJFiT0sqFrgg7IXn/zjGHzN6gcaQloUm1ngxW448ZWMjRGpMfs0jXd+zRduP
-         xZpQseW19vcjI3XkO1urnD/94FP65d2se0BKSpEje+T/zyjQ5brENAOnAlGUY88QL1Mz
-         qj/w==
-X-Gm-Message-State: APjAAAW6LHiZzAiREP9cZJaGMZTE2zVwwQ1/nD1TY5R2jHZQMsSbWfKw
-        8BmcFbiKRyr1dkrO4ejt+1IM8g==
-X-Google-Smtp-Source: APXvYqy/8ZWQYwMqmbmDk70PTvBvoyAq+LUDr6HT41BG7RpIHN4GIJGQ0k6ZXLIDwsdf0oDk5Olidw==
-X-Received: by 2002:aed:258a:: with SMTP id x10mr76020537qtc.380.1558550661218;
-        Wed, 22 May 2019 11:44:21 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id 76sm11215421qkf.20.2019.05.22.11.44.20
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 May 2019 11:44:20 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hTWDs-0005Ox-7l; Wed, 22 May 2019 15:44:20 -0300
-Date:   Wed, 22 May 2019 15:44:20 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>, Moni Shoua <monis@mellanox.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Huy Nguyen <huyn@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Ilya Lesokhin <ilyal@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [PATCH rdma-next] IB/mlx5: Avoid second synchronize_srcu in
- dereg_mr
-Message-ID: <20190522184420.GA17682@ziepe.ca>
-References: <20190520060923.7987-1-leon@kernel.org>
+        id S1729654AbfEVTAn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 15:00:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728533AbfEVTAn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 May 2019 15:00:43 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C222520868;
+        Wed, 22 May 2019 18:54:52 +0000 (UTC)
+Date:   Wed, 22 May 2019 14:54:50 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] RDMA/mlx5: Use DIV_ROUND_UP_ULL macro to allow 32 bit to
+ build
+Message-ID: <20190522145450.25ff483d@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190520060923.7987-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 20, 2019 at 09:09:23AM +0300, Leon Romanovsky wrote:
-> From: Huy Nguyen <huyn@mellanox.com>
-> 
-> In dereg_mr, ODP mkey is synced for page fault handler completion.
-> Therefore, there is no need for another synchronize_srcu in
-> destroy_mkey (called by dereg_mr->clean_mr).
 
-Nope. Now that we have advise_mr userspace can trigger any mkey at all
-to hit the prefetch handler and we must still use proper RCU
-protection on the write side of the radix tree, otherwise userspace
-can trigger an access after destroy situation.
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Jason
+When testing 32 bit x86, my build failed with:
+
+  ERROR: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+
+It appears that a few non-ULL roundup() calls were made, which uses a
+normal division against a 64 bit number. This is fine for x86_64, but
+on 32 bit x86, it causes the compiler to look for a helper function
+__udivdi3, which we do not have in the kernel, and thus fails to build.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+diff --git a/drivers/infiniband/hw/mlx5/cmd.c b/drivers/infiniband/hw/mlx5/cmd.c
+index e3ec79b8f7f5..f080df9934e8 100644
+--- a/drivers/infiniband/hw/mlx5/cmd.c
++++ b/drivers/infiniband/hw/mlx5/cmd.c
+@@ -190,7 +190,7 @@ int mlx5_cmd_alloc_sw_icm(struct mlx5_dm *dm, int type, u64 length,
+ 			  u16 uid, phys_addr_t *addr, u32 *obj_id)
+ {
+ 	struct mlx5_core_dev *dev = dm->dev;
+-	u32 num_blocks = DIV_ROUND_UP(length, MLX5_SW_ICM_BLOCK_SIZE(dev));
++	u32 num_blocks = DIV_ROUND_UP_ULL(length, MLX5_SW_ICM_BLOCK_SIZE(dev));
+ 	u32 out[MLX5_ST_SZ_DW(general_obj_out_cmd_hdr)] = {};
+ 	u32 in[MLX5_ST_SZ_DW(create_sw_icm_in)] = {};
+ 	unsigned long *block_map;
+@@ -266,7 +266,7 @@ int mlx5_cmd_dealloc_sw_icm(struct mlx5_dm *dm, int type, u64 length,
+ 			    u16 uid, phys_addr_t addr, u32 obj_id)
+ {
+ 	struct mlx5_core_dev *dev = dm->dev;
+-	u32 num_blocks = DIV_ROUND_UP(length, MLX5_SW_ICM_BLOCK_SIZE(dev));
++	u32 num_blocks = DIV_ROUND_UP_ULL(length, MLX5_SW_ICM_BLOCK_SIZE(dev));
+ 	u32 out[MLX5_ST_SZ_DW(general_obj_out_cmd_hdr)] = {};
+ 	u32 in[MLX5_ST_SZ_DW(general_obj_in_cmd_hdr)] = {};
+ 	unsigned long *block_map;
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index abac70ad5c7c..40d4c5f7ea43 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -2344,7 +2344,7 @@ static int handle_alloc_dm_sw_icm(struct ib_ucontext *ctx,
+ 	/* Allocation size must a multiple of the basic block size
+ 	 * and a power of 2.
+ 	 */
+-	act_size = roundup(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
++	act_size = DIV_ROUND_UP_ULL(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
+ 	act_size = roundup_pow_of_two(act_size);
+ 
+ 	dm->size = act_size;
