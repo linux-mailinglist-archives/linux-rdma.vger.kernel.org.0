@@ -2,92 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB68263FB
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 14:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D9C264B5
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 15:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728761AbfEVMpm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 08:45:42 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:51552 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728468AbfEVMpm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 May 2019 08:45:42 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id C6A246439B;
-        Wed, 22 May 2019 12:45:41 +0000 (UTC)
-Received: from localhost (ovpn-12-21.pek2.redhat.com [10.72.12.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F31286198C;
-        Wed, 22 May 2019 12:45:40 +0000 (UTC)
-From:   Honggang Li <honli@redhat.com>
-To:     haakon.bugge@oracle.com
-Cc:     linux-rdma@vger.kernel.org, Honggang Li <honli@redhat.com>
-Subject: [rdma-core patch] ibacm: only open InfiniBand port
-Date:   Wed, 22 May 2019 08:45:28 -0400
-Message-Id: <20190522124528.5688-1-honli@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Wed, 22 May 2019 12:45:41 +0000 (UTC)
+        id S1728912AbfEVN2W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 09:28:22 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:14520 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728827AbfEVN2V (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 09:28:21 -0400
+Received: from localhost (r10.asicdesigners.com [10.192.194.10])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x4MDRpfZ031000;
+        Wed, 22 May 2019 06:27:51 -0700
+From:   Nirranjan Kirubaharan <nirranjan@chelsio.com>
+To:     nirranjan@chelsio.com, bharat@chelsio.com, dledford@redhat.com,
+        jgg@mellanox.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH for-next v4] iw_cxgb4: Fix qpid leak
+Date:   Wed, 22 May 2019 06:27:45 -0700
+Message-Id: <ecd8e5de39986704861913f2bfb70acbccf6b616.1558530087.git.nirranjan@chelsio.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The low 64 bits of cxgb3 and cxgb4 devices' GID are zeros. If the
-"provider" was set in the option file, ibacm will failed with
-segment fault.
+In iw_cxgb4, Added wait in destroy_qp() so that all references to
+qp are dereferenced and qp is freed in destroy_qp() itself.
+This ensures freeing of all QPs before invocation of
+dealloc_ucontext(), which prevents loss of in use qpids stored
+in ucontext.
 
-$ sed -i -e 's/# provider ibacmp 0xFE80000000000000/provider ibacmp 0xFE80000000000000/g' /etc/rdma/ibacm_opts.cfg
-$ /usr/sbin/ibacm --systemd
-Segmentation fault (core dumped)
-
-acm_open_dev function should not open port for IWARP or ROCE devices.
-
-Signed-off-by: Honggang Li <honli@redhat.com>
+Signed-off-by: Nirranjan Kirubaharan <nirranjan@chelsio.com>
+Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
 ---
- ibacm/src/acm.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+v2:
+- Used kref instead of qid count.
+---
+v3:
+- Ensured freeing of qp in destroy_qp() itself.
+---
+v4:
+- Change c4iw_qp_rem_ref() to use a refcount not kref and trigger
+complete() when the refcount goes to 0.
+- Move all of queue_qp_free into c4iw_destroy_qp()
+---
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h |  4 +--
+ drivers/infiniband/hw/cxgb4/qp.c       | 48 ++++++++++++----------------------
+ 2 files changed, 19 insertions(+), 33 deletions(-)
 
-diff --git a/ibacm/src/acm.c b/ibacm/src/acm.c
-index a21069d4..944cb820 100644
---- a/ibacm/src/acm.c
-+++ b/ibacm/src/acm.c
-@@ -2587,7 +2587,7 @@ acm_open_port(struct acmc_port *port, struct acmc_device *dev, uint8_t port_num)
+diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+index 916ef982172e..b8e90eaf4a03 100644
+--- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
++++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+@@ -490,13 +490,13 @@ struct c4iw_qp {
+ 	struct t4_wq wq;
+ 	spinlock_t lock;
+ 	struct mutex mutex;
+-	struct kref kref;
+ 	wait_queue_head_t wait;
+ 	int sq_sig_all;
+ 	struct c4iw_srq *srq;
+-	struct work_struct free_work;
+ 	struct c4iw_ucontext *ucontext;
+ 	struct c4iw_wr_wait *wr_waitp;
++	struct completion qp_rel_comp;
++	atomic_t qp_refcnt;
+ };
  
- 	port->mad_agentid = umad_register(port->mad_portid,
- 					  IB_MGMT_CLASS_SA, 1, 1, NULL);
--	if (port->mad_agentid < 0) {
-+	if (port->mad_agentid < 0 && port->mad_portid > 0) {
- 		umad_close_port(port->mad_portid);
- 		acm_log(0, "ERROR - unable to register MAD client\n");
- 	}
-@@ -2600,6 +2600,7 @@ static void acm_open_dev(struct ibv_device *ibdev)
+ static inline struct c4iw_qp *to_c4iw_qp(struct ib_qp *ibqp)
+diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
+index e92b9544357a..27db51d051ef 100644
+--- a/drivers/infiniband/hw/cxgb4/qp.c
++++ b/drivers/infiniband/hw/cxgb4/qp.c
+@@ -890,43 +890,17 @@ static int build_inv_stag(union t4_wr *wqe, const struct ib_send_wr *wr,
+ 	return 0;
+ }
+ 
+-static void free_qp_work(struct work_struct *work)
+-{
+-	struct c4iw_ucontext *ucontext;
+-	struct c4iw_qp *qhp;
+-	struct c4iw_dev *rhp;
+-
+-	qhp = container_of(work, struct c4iw_qp, free_work);
+-	ucontext = qhp->ucontext;
+-	rhp = qhp->rhp;
+-
+-	pr_debug("qhp %p ucontext %p\n", qhp, ucontext);
+-	destroy_qp(&rhp->rdev, &qhp->wq,
+-		   ucontext ? &ucontext->uctx : &rhp->rdev.uctx, !qhp->srq);
+-
+-	c4iw_put_wr_wait(qhp->wr_waitp);
+-	kfree(qhp);
+-}
+-
+-static void queue_qp_free(struct kref *kref)
+-{
+-	struct c4iw_qp *qhp;
+-
+-	qhp = container_of(kref, struct c4iw_qp, kref);
+-	pr_debug("qhp %p\n", qhp);
+-	queue_work(qhp->rhp->rdev.free_workq, &qhp->free_work);
+-}
+-
+ void c4iw_qp_add_ref(struct ib_qp *qp)
  {
- 	struct acmc_device *dev;
- 	struct ibv_device_attr attr;
-+	struct ibv_port_attr port_attr;
- 	struct ibv_context *verbs;
- 	size_t size;
- 	int i, ret;
-@@ -2628,6 +2629,17 @@ static void acm_open_dev(struct ibv_device *ibdev)
- 	list_head_init(&dev->prov_dev_context_list);
+ 	pr_debug("ib_qp %p\n", qp);
+-	kref_get(&to_c4iw_qp(qp)->kref);
++	atomic_inc(&to_c4iw_qp(qp)->qp_refcnt);
+ }
  
- 	for (i = 0; i < dev->port_cnt; i++) {
-+		acm_log(1, "%s %d\n", dev->device.verbs->device->name, i);
-+		ret = ibv_query_port(dev->device.verbs, i+1, &port_attr);
-+		if (ret) {
-+			acm_log(0, "ERROR - unable to query an RDMA port's attributes\n");
-+			return;
-+		}
-+		if (port_attr.link_layer != IBV_LINK_LAYER_INFINIBAND) {
-+			acm_log(1, "not an InfiniBand port\n");
-+			return;
-+		}
+ void c4iw_qp_rem_ref(struct ib_qp *qp)
+ {
+ 	pr_debug("ib_qp %p\n", qp);
+-	kref_put(&to_c4iw_qp(qp)->kref, queue_qp_free);
++	if (atomic_dec_and_test(&to_c4iw_qp(qp)->qp_refcnt))
++		complete(&to_c4iw_qp(qp)->qp_rel_comp);
+ }
+ 
+ static void add_to_fc_list(struct list_head *head, struct list_head *entry)
+@@ -2099,10 +2073,12 @@ int c4iw_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
+ {
+ 	struct c4iw_dev *rhp;
+ 	struct c4iw_qp *qhp;
++	struct c4iw_ucontext *ucontext;
+ 	struct c4iw_qp_attributes attrs;
+ 
+ 	qhp = to_c4iw_qp(ib_qp);
+ 	rhp = qhp->rhp;
++	ucontext = qhp->ucontext;
+ 
+ 	attrs.next_state = C4IW_QP_STATE_ERROR;
+ 	if (qhp->attr.state == C4IW_QP_STATE_TERMINATE)
+@@ -2120,7 +2096,17 @@ int c4iw_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
+ 
+ 	c4iw_qp_rem_ref(ib_qp);
+ 
++	wait_for_completion(&qhp->qp_rel_comp);
 +
- 		acm_open_port(&dev->port[i], dev, i + 1);
- 	}
+ 	pr_debug("ib_qp %p qpid 0x%0x\n", ib_qp, qhp->wq.sq.qid);
++	pr_debug("qhp %p ucontext %p\n", qhp, ucontext);
++
++	destroy_qp(&rhp->rdev, &qhp->wq,
++		   ucontext ? &ucontext->uctx : &rhp->rdev.uctx, !qhp->srq);
++
++	c4iw_put_wr_wait(qhp->wr_waitp);
++
++	kfree(qhp);
+ 	return 0;
+ }
  
+@@ -2230,8 +2216,8 @@ struct ib_qp *c4iw_create_qp(struct ib_pd *pd, struct ib_qp_init_attr *attrs,
+ 	spin_lock_init(&qhp->lock);
+ 	mutex_init(&qhp->mutex);
+ 	init_waitqueue_head(&qhp->wait);
+-	kref_init(&qhp->kref);
+-	INIT_WORK(&qhp->free_work, free_qp_work);
++	init_completion(&qhp->qp_rel_comp);
++	atomic_set(&qhp->qp_refcnt, 1);
+ 
+ 	ret = xa_insert_irq(&rhp->qps, qhp->wq.sq.qid, qhp, GFP_KERNEL);
+ 	if (ret)
 -- 
-2.20.1
+1.8.3.1
 
