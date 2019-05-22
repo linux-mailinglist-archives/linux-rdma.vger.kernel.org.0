@@ -2,220 +2,269 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B202716D
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 23:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F572717B
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 23:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730049AbfEVVMi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 17:12:38 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:9517 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729720AbfEVVMi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 17:12:38 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ce5bb430000>; Wed, 22 May 2019 14:12:35 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 22 May 2019 14:12:35 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 22 May 2019 14:12:35 -0700
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 22 May
- 2019 21:12:31 +0000
-Subject: Re: [PATCH v4 0/1] Use HMM for ODP v4
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
-        <linux-mm@kvack.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        "Leon Romanovsky" <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "Artemy Kovalyov" <artemyko@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        "Mike Marciniszyn" <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>
-References: <20190411181314.19465-1-jglisse@redhat.com>
- <20190506195657.GA30261@ziepe.ca> <20190521205321.GC3331@redhat.com>
- <20190522005225.GA30819@ziepe.ca> <20190522174852.GA23038@redhat.com>
- <20190522201247.GH6054@ziepe.ca>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <05e7f491-b8a4-4214-ab75-9ecf1128aaa6@nvidia.com>
-Date:   Wed, 22 May 2019 14:12:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.0
+        id S1729922AbfEVVRM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 17:17:12 -0400
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:33553 "EHLO
+        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729837AbfEVVRM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 17:17:12 -0400
+Received: by mail-ua1-f65.google.com with SMTP id 49so1428351uas.0
+        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 14:17:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4dHniiz5Iec+zX/39XStbUXbmPxCKmuaK7gygHepfyc=;
+        b=BozsRedf7hxOrPEwc14/5gYKjPtcuYPfCzdL5Qh8eptxMopndG6sl6KK8l1wx0gHcO
+         fX9KUGo72jJQy2d1m1wZ3No1Qi2uQpl1cB2uKNXeTTE0y7bVHQRp3jZ8gNy6f12oUbuZ
+         9pqndA18D5HuCzEP7FakfNMcFjkFYSW5Qf6tTdWeb6YU5HYx7NFV4gOPaqZKnmwkQ5VN
+         K2fCVmPCADr0j8VP+wLoOUFpEpW6WISMm8/ajD25DfdGIBy1SiKGnwF+/Lt+nHE51rtB
+         vS7fbs1gYfPlwpTBaswd0RKzwzIK+7d4NhNx6dxPb1W6jd5YUGLoFQyi73p/mW3CKcJq
+         v2ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4dHniiz5Iec+zX/39XStbUXbmPxCKmuaK7gygHepfyc=;
+        b=NXkuSt/Bo/buwZ2odAlh/zjD8jjgRqIUzMql+dYHuooG1+AtLEq5TN0REcZclJ858D
+         q1Lxg0WxBDupScMDtrHP/El+syCSkKMI39Zsnbs7UdRfINQTHzGyYje1GkIdEwI0HUHW
+         8sPPnW+V2Gvbneydm3V20nzbYgRx/41PMSCDt+yKotLl/6SXE3cQCJZQ7/WIfMItv/1h
+         TpO4CJ7thr0X97JJBSr7XiLwGlIIKUAnS6AD4DMfIr9rjwMvI8PUfkaAtHjEDGZl3v+y
+         KpTFFR+VhmgQuKDGsEjEX6Go3vT7sKBoVBnTnCUGaJS0rZMIstET+6S5dek1/zAyaLLF
+         WQBg==
+X-Gm-Message-State: APjAAAX8cbcwCZA4c/MInlwSeNFh5/uvAw8pvcPLmxJ1KdBPi9Ze3RFm
+        Lw5W8Dl9bDR5GBXRgTzchxB2AnGnZg0YQc6UaRZUZw==
+X-Google-Smtp-Source: APXvYqxH4+lXdvKeAKR6IcV6qRcWyD41x0RLMgowdC0uvePb1uyY7QqZdIceH4zhHD2Gn25pj1INm9uTZm6L2qnPIh8=
+X-Received: by 2002:ab0:115a:: with SMTP id g26mr16507991uac.84.1558559829704;
+ Wed, 22 May 2019 14:17:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190522201247.GH6054@ziepe.ca>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1558559555; bh=mX/CdrHkooQO7jjbW8rAIvvhdT+nRmphKetM9at3fl4=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=KQ4MO4k8l+72nJLn6i84C3CQ35IQKGD8fCmAUJnqiaH43emJ+Tq4QMnDM3at0c3oG
-         fKaiKcy3laigtGeONQU/lsCHwd+hKJwBy8kBAPM9CvkmalcPYHm8/SINlAY7n5SLLk
-         zw5vUeGhoN9s80rB8pwmqrzjT7VEK8mPmWOGD4k0CcAfOFOMxLZksmbNYWxU7hku78
-         VgBIGRWR7WGIPQ33NlYQNDB/zOJ9Phe2rNUIw723n+00aZn5TK99hVsVyz8gV9/ajv
-         Bw7OrdqLmaHMwWhtpVOsMF+1IQutmqv5wLHPEhWmgmdTUwyA542iZcapvY4q7VI2aD
-         ehyNrkOI11anw==
+References: <cover.1557160186.git.andreyknvl@google.com> <00eb4c63fefc054e2c8d626e8fedfca11d7c2600.1557160186.git.andreyknvl@google.com>
+ <20190522114910.emlckebwzv2qz42i@mbp>
+In-Reply-To: <20190522114910.emlckebwzv2qz42i@mbp>
+From:   Evgenii Stepanov <eugenis@google.com>
+Date:   Wed, 22 May 2019 14:16:57 -0700
+Message-ID: <CAFKCwrjyP+x0JJy=qpBFsp4pub3He6UkvU0qnf1UOKt6W1LPRQ@mail.gmail.com>
+Subject: Re: [PATCH v15 05/17] arms64: untag user pointers passed to memory syscalls
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, May 22, 2019 at 4:49 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> On Mon, May 06, 2019 at 06:30:51PM +0200, Andrey Konovalov wrote:
+> > This patch is a part of a series that extends arm64 kernel ABI to allow to
+> > pass tagged user pointers (with the top byte set to something else other
+> > than 0x00) as syscall arguments.
+> >
+> > This patch allows tagged pointers to be passed to the following memory
+> > syscalls: brk, get_mempolicy, madvise, mbind, mincore, mlock, mlock2,
+> > mmap, mmap_pgoff, mprotect, mremap, msync, munlock, munmap,
+> > remap_file_pages, shmat and shmdt.
+> >
+> > This is done by untagging pointers passed to these syscalls in the
+> > prologues of their handlers.
+>
+> I'll go through them one by one to see if we can tighten the expected
+> ABI while having the MTE in mind.
+>
+> > diff --git a/arch/arm64/kernel/sys.c b/arch/arm64/kernel/sys.c
+> > index b44065fb1616..933bb9f3d6ec 100644
+> > --- a/arch/arm64/kernel/sys.c
+> > +++ b/arch/arm64/kernel/sys.c
+> > @@ -35,10 +35,33 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
+> >  {
+> >       if (offset_in_page(off) != 0)
+> >               return -EINVAL;
+> > -
+> > +     addr = untagged_addr(addr);
+> >       return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
+> >  }
+>
+> If user passes a tagged pointer to mmap() and the address is honoured
+> (or MAP_FIXED is given), what is the expected return pointer? Does it
+> need to be tagged with the value from the hint?
 
-On 5/22/19 1:12 PM, Jason Gunthorpe wrote:
-> On Wed, May 22, 2019 at 01:48:52PM -0400, Jerome Glisse wrote:
-> 
->>   static void put_per_mm(struct ib_umem_odp *umem_odp)
->>   {
->>   	struct ib_ucontext_per_mm *per_mm = umem_odp->per_mm;
->> @@ -325,9 +283,10 @@ static void put_per_mm(struct ib_umem_odp *umem_odp)
->>   	up_write(&per_mm->umem_rwsem);
->>   
->>   	WARN_ON(!RB_EMPTY_ROOT(&per_mm->umem_tree.rb_root));
->> -	mmu_notifier_unregister_no_release(&per_mm->mn, per_mm->mm);
->> +	hmm_mirror_unregister(&per_mm->mirror);
->>   	put_pid(per_mm->tgid);
->> -	mmu_notifier_call_srcu(&per_mm->rcu, free_per_mm);
->> +
->> +	kfree(per_mm);
-> 
-> Notice that mmu_notifier only uses SRCU to fence in-progress ops
-> callbacks, so I think hmm internally has the bug that this ODP
-> approach prevents.
-> 
-> hmm should follow the same pattern ODP has and 'kfree_srcu' the hmm
-> struct, use container_of in the mmu_notifier callbacks, and use the
-> otherwise vestigal kref_get_unless_zero() to bail:
+For HWASan the most convenient would be to use the tag from the hint.
+But since in the TBI (not MTE) mode the kernel has no idea what
+meaning userspace assigns to pointer tags, perhaps it should not try
+to guess, and should return raw (zero-tagged) address instead.
 
-You might also want to look at my patch where
-I try to fix some of these same issues (5/5).
+> With MTE, we may want to use this as a request for the default colour of
+> the mapped pages (still under discussion).
 
-https://marc.info/?l=linux-mm&m=155718572908765&w=2
+I like this - and in that case it would make sense to return the
+pointer that can be immediately dereferenced without crashing the
+process, i.e. with the matching tag.
 
-
->  From 0cb536dc0150ba964a1d655151d7b7a84d0f915a Mon Sep 17 00:00:00 2001
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> Date: Wed, 22 May 2019 16:52:52 -0300
-> Subject: [PATCH] hmm: Fix use after free with struct hmm in the mmu notifiers
-> 
-> mmu_notifier_unregister_no_release() is not a fence and the mmu_notifier
-> system will continue to reference hmm->mn until the srcu grace period
-> expires.
-> 
->           CPU0                                     CPU1
->                                                 __mmu_notifier_invalidate_range_start()
->                                                   srcu_read_lock
->                                                   hlist_for_each ()
->                                                     // mn == hmm->mn
-> hmm_mirror_unregister()
->    hmm_put()
->      hmm_free()
->        mmu_notifier_unregister_no_release()
->           hlist_del_init_rcu(hmm-mn->list)
-> 			                           mn->ops->invalidate_range_start(mn, range);
-> 					             mm_get_hmm()
->        mm->hmm = NULL;
->        kfree(hmm)
->                                                       mutex_lock(&hmm->lock);
-> 
-> Use SRCU to kfree the hmm memory so that the notifiers can rely on hmm
-> existing. Get the now-safe hmm struct through container_of and directly
-> check kref_get_unless_zero to lock it against free.
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> ---
->   include/linux/hmm.h |  1 +
->   mm/hmm.c            | 25 +++++++++++++++++++------
->   2 files changed, 20 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-> index 51ec27a8466816..8b91c90d3b88cb 100644
-> --- a/include/linux/hmm.h
-> +++ b/include/linux/hmm.h
-> @@ -102,6 +102,7 @@ struct hmm {
->   	struct mmu_notifier	mmu_notifier;
->   	struct rw_semaphore	mirrors_sem;
->   	wait_queue_head_t	wq;
-> +	struct rcu_head		rcu;
->   	long			notifiers;
->   	bool			dead;
->   };
-> diff --git a/mm/hmm.c b/mm/hmm.c
-> index 816c2356f2449f..824e7e160d8167 100644
-> --- a/mm/hmm.c
-> +++ b/mm/hmm.c
-> @@ -113,6 +113,11 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
->   	return NULL;
->   }
->   
-> +static void hmm_fee_rcu(struct rcu_head *rcu)
-> +{
-> +	kfree(container_of(rcu, struct hmm, rcu));
-> +}
-> +
->   static void hmm_free(struct kref *kref)
->   {
->   	struct hmm *hmm = container_of(kref, struct hmm, kref);
-> @@ -125,7 +130,7 @@ static void hmm_free(struct kref *kref)
->   		mm->hmm = NULL;
->   	spin_unlock(&mm->page_table_lock);
->   
-> -	kfree(hmm);
-> +	mmu_notifier_call_srcu(&hmm->rcu, hmm_fee_rcu);
->   }
->   
->   static inline void hmm_put(struct hmm *hmm)
-> @@ -153,10 +158,14 @@ void hmm_mm_destroy(struct mm_struct *mm)
->   
->   static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->   {
-> -	struct hmm *hmm = mm_get_hmm(mm);
-> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
->   	struct hmm_mirror *mirror;
->   	struct hmm_range *range;
->   
-> +	/* hmm is in progress to free */
-> +	if (!kref_get_unless_zero(&hmm->kref))
-> +		return;
-> +
->   	/* Report this HMM as dying. */
->   	hmm->dead = true;
->   
-> @@ -194,13 +203,15 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->   static int hmm_invalidate_range_start(struct mmu_notifier *mn,
->   			const struct mmu_notifier_range *nrange)
->   {
-> -	struct hmm *hmm = mm_get_hmm(nrange->mm);
-> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
->   	struct hmm_mirror *mirror;
->   	struct hmm_update update;
->   	struct hmm_range *range;
->   	int ret = 0;
->   
-> -	VM_BUG_ON(!hmm);
-> +	/* hmm is in progress to free */
-> +	if (!kref_get_unless_zero(&hmm->kref))
-> +		return 0;
->   
->   	update.start = nrange->start;
->   	update.end = nrange->end;
-> @@ -248,9 +259,11 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
->   static void hmm_invalidate_range_end(struct mmu_notifier *mn,
->   			const struct mmu_notifier_range *nrange)
->   {
-> -	struct hmm *hmm = mm_get_hmm(nrange->mm);
-> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
->   
-> -	VM_BUG_ON(!hmm);
-> +	/* hmm is in progress to free */
-> +	if (!kref_get_unless_zero(&hmm->kref))
-> +		return;
->   
->   	mutex_lock(&hmm->lock);
->   	hmm->notifiers--;
-> 
+> > +SYSCALL_DEFINE6(arm64_mmap_pgoff, unsigned long, addr, unsigned long, len,
+> > +             unsigned long, prot, unsigned long, flags,
+> > +             unsigned long, fd, unsigned long, pgoff)
+> > +{
+> > +     addr = untagged_addr(addr);
+> > +     return ksys_mmap_pgoff(addr, len, prot, flags, fd, pgoff);
+> > +}
+>
+> We don't have __NR_mmap_pgoff on arm64.
+>
+> > +SYSCALL_DEFINE5(arm64_mremap, unsigned long, addr, unsigned long, old_len,
+> > +             unsigned long, new_len, unsigned long, flags,
+> > +             unsigned long, new_addr)
+> > +{
+> > +     addr = untagged_addr(addr);
+> > +     new_addr = untagged_addr(new_addr);
+> > +     return ksys_mremap(addr, old_len, new_len, flags, new_addr);
+> > +}
+>
+> Similar comment as for mmap(), do we want the tag from new_addr to be
+> preserved? In addition, should we check that the two tags are identical
+> or mremap() should become a way to repaint a memory region?
+>
+> > +SYSCALL_DEFINE2(arm64_munmap, unsigned long, addr, size_t, len)
+> > +{
+> > +     addr = untagged_addr(addr);
+> > +     return ksys_munmap(addr, len);
+> > +}
+>
+> This looks fine.
+>
+> > +SYSCALL_DEFINE1(arm64_brk, unsigned long, brk)
+> > +{
+> > +     brk = untagged_addr(brk);
+> > +     return ksys_brk(brk);
+> > +}
+>
+> I wonder whether brk() should simply not accept tags, and should not
+> return them (similar to the prctl(PR_SET_MM) discussion). We could
+> document this in the ABI requirements.
+>
+> > +SYSCALL_DEFINE5(arm64_get_mempolicy, int __user *, policy,
+> > +             unsigned long __user *, nmask, unsigned long, maxnode,
+> > +             unsigned long, addr, unsigned long, flags)
+> > +{
+> > +     addr = untagged_addr(addr);
+> > +     return ksys_get_mempolicy(policy, nmask, maxnode, addr, flags);
+> > +}
+> > +
+> > +SYSCALL_DEFINE3(arm64_madvise, unsigned long, start,
+> > +             size_t, len_in, int, behavior)
+> > +{
+> > +     start = untagged_addr(start);
+> > +     return ksys_madvise(start, len_in, behavior);
+> > +}
+> > +
+> > +SYSCALL_DEFINE6(arm64_mbind, unsigned long, start, unsigned long, len,
+> > +             unsigned long, mode, const unsigned long __user *, nmask,
+> > +             unsigned long, maxnode, unsigned int, flags)
+> > +{
+> > +     start = untagged_addr(start);
+> > +     return ksys_mbind(start, len, mode, nmask, maxnode, flags);
+> > +}
+> > +
+> > +SYSCALL_DEFINE2(arm64_mlock, unsigned long, start, size_t, len)
+> > +{
+> > +     start = untagged_addr(start);
+> > +     return ksys_mlock(start, len, VM_LOCKED);
+> > +}
+> > +
+> > +SYSCALL_DEFINE2(arm64_mlock2, unsigned long, start, size_t, len)
+> > +{
+> > +     start = untagged_addr(start);
+> > +     return ksys_mlock(start, len, VM_LOCKED);
+> > +}
+> > +
+> > +SYSCALL_DEFINE2(arm64_munlock, unsigned long, start, size_t, len)
+> > +{
+> > +     start = untagged_addr(start);
+> > +     return ksys_munlock(start, len);
+> > +}
+> > +
+> > +SYSCALL_DEFINE3(arm64_mprotect, unsigned long, start, size_t, len,
+> > +             unsigned long, prot)
+> > +{
+> > +     start = untagged_addr(start);
+> > +     return ksys_mprotect_pkey(start, len, prot, -1);
+> > +}
+> > +
+> > +SYSCALL_DEFINE3(arm64_msync, unsigned long, start, size_t, len, int, flags)
+> > +{
+> > +     start = untagged_addr(start);
+> > +     return ksys_msync(start, len, flags);
+> > +}
+> > +
+> > +SYSCALL_DEFINE3(arm64_mincore, unsigned long, start, size_t, len,
+> > +             unsigned char __user *, vec)
+> > +{
+> > +     start = untagged_addr(start);
+> > +     return ksys_mincore(start, len, vec);
+> > +}
+>
+> These look fine.
+>
+> > +SYSCALL_DEFINE5(arm64_remap_file_pages, unsigned long, start,
+> > +             unsigned long, size, unsigned long, prot,
+> > +             unsigned long, pgoff, unsigned long, flags)
+> > +{
+> > +     start = untagged_addr(start);
+> > +     return ksys_remap_file_pages(start, size, prot, pgoff, flags);
+> > +}
+>
+> While this has been deprecated for some time, I presume user space still
+> invokes it?
+>
+> > +SYSCALL_DEFINE3(arm64_shmat, int, shmid, char __user *, shmaddr, int, shmflg)
+> > +{
+> > +     shmaddr = untagged_addr(shmaddr);
+> > +     return ksys_shmat(shmid, shmaddr, shmflg);
+> > +}
+> > +
+> > +SYSCALL_DEFINE1(arm64_shmdt, char __user *, shmaddr)
+> > +{
+> > +     shmaddr = untagged_addr(shmaddr);
+> > +     return ksys_shmdt(shmaddr);
+> > +}
+>
+> Do we actually want to allow shared tagged memory? Who's going to tag
+> it? If not, we can document it as not supported.
+>
+> --
+> Catalin
