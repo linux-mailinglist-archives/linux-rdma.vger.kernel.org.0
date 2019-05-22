@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0EE26E87
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 21:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D6E26DA5
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 21:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732043AbfEVT0g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 15:26:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48154 "EHLO mail.kernel.org"
+        id S1732439AbfEVTnc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 15:43:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731376AbfEVT0g (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 May 2019 15:26:36 -0400
+        id S1731592AbfEVT2W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 May 2019 15:28:22 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5603521841;
-        Wed, 22 May 2019 19:26:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD18120675;
+        Wed, 22 May 2019 19:28:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558553195;
-        bh=pwoPlvmj+9knVBUrhv7le2wTL0tCghyhDMO6XBljEBI=;
+        s=default; t=1558553301;
+        bh=DHyAsJ+haRqHnwS0ceeZpC3DrKTcWJEl59EiFs2lpcU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UWbEbxcpooQ1tLKSuEH2Lz0Glke0zeGSSp5X5fdkazxybqjQ+RRE6BCvYdBdaSdKH
-         Q4ioelTNL8Bf5ZYIEbcCqjfGdnWiiSt41utrGfRjWT8B14QocgZ9rERV1BZNCBfnHW
-         Nt7p6nnTA09KgJQY1cwUTqHzEIxuIacFfckoBYng=
+        b=nG5IABCvfDXqEBKwFZMaZn1L3IMyW2mbdrzA/pld/f/7yShK0M4gUPbB3NNWr3W5U
+         AqHk7bp4aohHK3HvyFM8e9I0UALS6imDxWFLFFX4uE1RyO80/YYoYyEPvKElsEtnOP
+         xmHAKLb9/LNW6UaZLovWMYS9JeFv913sKeR0C/0E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        "Michael J . Ruhl" <michael.j.ruhl@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+Cc:     Parav Pandit <parav@mellanox.com>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 004/244] IB/hfi1: Fix WQ_MEM_RECLAIM warning
-Date:   Wed, 22 May 2019 15:22:30 -0400
-Message-Id: <20190522192630.24917-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 071/244] RDMA/cma: Consider scope_id while binding to ipv6 ll address
+Date:   Wed, 22 May 2019 15:23:37 -0400
+Message-Id: <20190522192630.24917-71-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190522192630.24917-1-sashal@kernel.org>
 References: <20190522192630.24917-1-sashal@kernel.org>
@@ -45,62 +45,82 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@intel.com>
+From: Parav Pandit <parav@mellanox.com>
 
-[ Upstream commit 4c4b1996b5db688e2dcb8242b0a3bf7b1e845e42 ]
+[ Upstream commit 5d7ed2f27bbd482fd29e6b2e204b1a1ee8a0b268 ]
 
-The work_item cancels that occur when a QP is destroyed can elicit the
-following trace:
+When two netdev have same link local addresses (such as vlan and non
+vlan), two rdma cm listen id should be able to bind to following different
+addresses.
 
- workqueue: WQ_MEM_RECLAIM ipoib_wq:ipoib_cm_tx_reap [ib_ipoib] is flushing !WQ_MEM_RECLAIM hfi0_0:_hfi1_do_send [hfi1]
- WARNING: CPU: 7 PID: 1403 at kernel/workqueue.c:2486 check_flush_dependency+0xb1/0x100
- Call Trace:
-  __flush_work.isra.29+0x8c/0x1a0
-  ? __switch_to_asm+0x40/0x70
-  __cancel_work_timer+0x103/0x190
-  ? schedule+0x32/0x80
-  iowait_cancel_work+0x15/0x30 [hfi1]
-  rvt_reset_qp+0x1f8/0x3e0 [rdmavt]
-  rvt_destroy_qp+0x65/0x1f0 [rdmavt]
-  ? _cond_resched+0x15/0x30
-  ib_destroy_qp+0xe9/0x230 [ib_core]
-  ipoib_cm_tx_reap+0x21c/0x560 [ib_ipoib]
-  process_one_work+0x171/0x370
-  worker_thread+0x49/0x3f0
-  kthread+0xf8/0x130
-  ? max_active_store+0x80/0x80
-  ? kthread_bind+0x10/0x10
-  ret_from_fork+0x35/0x40
+listener-1: addr=lla, scope_id=A, port=X
+listener-2: addr=lla, scope_id=B, port=X
 
-Since QP destruction frees memory, hfi1_wq should have the WQ_MEM_RECLAIM.
+However while comparing the addresses only addr and port are considered,
+due to which 2nd listener fails to listen.
 
-The hfi1_wq does not allocate memory with GFP_KERNEL or otherwise become
-entangled with memory reclaim, so this flag is appropriate.
+In below example of two listeners, 2nd listener is failing with address in
+use error.
 
-Fixes: 0a226edd203f ("staging/rdma/hfi1: Use parallel workqueue for SDMA engines")
-Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+$ rping -sv -a fe80::268a:7ff:feb3:d113%ens2f1 -p 4545&
+
+$ rping -sv -a fe80::268a:7ff:feb3:d113%ens2f1.200 -p 4545
+rdma_bind_addr: Address already in use
+
+To overcome this, consider the scope_ids as well which forms the accurate
+IPv6 link local address.
+
+Signed-off-by: Parav Pandit <parav@mellanox.com>
+Reviewed-by: Daniel Jurgens <danielj@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hfi1/init.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/cma.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
-index da786eb18558d..368f4f08b6866 100644
---- a/drivers/infiniband/hw/hfi1/init.c
-+++ b/drivers/infiniband/hw/hfi1/init.c
-@@ -798,7 +798,8 @@ static int create_workqueues(struct hfi1_devdata *dd)
- 			ppd->hfi1_wq =
- 				alloc_workqueue(
- 				    "hfi%d_%d",
--				    WQ_SYSFS | WQ_HIGHPRI | WQ_CPU_INTENSIVE,
-+				    WQ_SYSFS | WQ_HIGHPRI | WQ_CPU_INTENSIVE |
-+				    WQ_MEM_RECLAIM,
- 				    HFI1_MAX_ACTIVE_WORKQUEUE_ENTRIES,
- 				    dd->unit, pidx);
- 			if (!ppd->hfi1_wq)
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 6f5be78024762..39dc7be56884a 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -1078,18 +1078,31 @@ static inline bool cma_any_addr(const struct sockaddr *addr)
+ 	return cma_zero_addr(addr) || cma_loopback_addr(addr);
+ }
+ 
+-static int cma_addr_cmp(struct sockaddr *src, struct sockaddr *dst)
++static int cma_addr_cmp(const struct sockaddr *src, const struct sockaddr *dst)
+ {
+ 	if (src->sa_family != dst->sa_family)
+ 		return -1;
+ 
+ 	switch (src->sa_family) {
+ 	case AF_INET:
+-		return ((struct sockaddr_in *) src)->sin_addr.s_addr !=
+-		       ((struct sockaddr_in *) dst)->sin_addr.s_addr;
+-	case AF_INET6:
+-		return ipv6_addr_cmp(&((struct sockaddr_in6 *) src)->sin6_addr,
+-				     &((struct sockaddr_in6 *) dst)->sin6_addr);
++		return ((struct sockaddr_in *)src)->sin_addr.s_addr !=
++		       ((struct sockaddr_in *)dst)->sin_addr.s_addr;
++	case AF_INET6: {
++		struct sockaddr_in6 *src_addr6 = (struct sockaddr_in6 *)src;
++		struct sockaddr_in6 *dst_addr6 = (struct sockaddr_in6 *)dst;
++		bool link_local;
++
++		if (ipv6_addr_cmp(&src_addr6->sin6_addr,
++					  &dst_addr6->sin6_addr))
++			return 1;
++		link_local = ipv6_addr_type(&dst_addr6->sin6_addr) &
++			     IPV6_ADDR_LINKLOCAL;
++		/* Link local must match their scope_ids */
++		return link_local ? (src_addr6->sin6_scope_id !=
++				     dst_addr6->sin6_scope_id) :
++				    0;
++	}
++
+ 	default:
+ 		return ib_addr_cmp(&((struct sockaddr_ib *) src)->sib_addr,
+ 				   &((struct sockaddr_ib *) dst)->sib_addr);
 -- 
 2.20.1
 
