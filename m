@@ -2,76 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0898B26398
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 14:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC3D263C1
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 14:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbfEVMPQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 08:15:16 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:33045 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727975AbfEVMPQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 08:15:16 -0400
-Received: by mail-qt1-f195.google.com with SMTP id m32so2009789qtf.0
-        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 05:15:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9a+tzyr4S1aJenlOnUpsJAbd1rTle8vX8PhNM/blL7E=;
-        b=Ejh/4aCIBqTf5uTvGb9dGrRzBXFZb/vn39w81HbBS7k4QqiMFEO/3dtbcsdMVrO1Wq
-         HqgmWCa9M6SrzPzo6t8qSIEp9CZ3YP6hryuff5NLBWFrDnQWADu6tk76jAr2OUr2lQhZ
-         W2gxMG0EIJwsAz+yMhEHwu6fUvRB253KgfRGLvUsZxN3KXHvnbtrN9YIA6ATIkWgqTc2
-         qhyVlkUrqNjbdwJcEwjZeZnNbkgkIyAuq3kEFC3yia6Qrz6IhA6TWupDoWAbsZ2ZRckd
-         6H/1EJbIlz2HXSKZmm1tPWFxAr6rz536qTWUzImnrFwTeLs7GddGD4yPBo5sYGSfbVry
-         5OkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9a+tzyr4S1aJenlOnUpsJAbd1rTle8vX8PhNM/blL7E=;
-        b=ac1hdX5CmP7axYjGvo4tmR+S5qQBHZeTctdvjlTqYXtQJ0nXTn1h0HIGsnBKkTUzyR
-         4oJKy2anltTPs3loAbb352QnA9bFfu+MycHmKR4yypvD5z63TeqtYQBtYPNMUi4Nk0mo
-         JH8pdK4YnhRqnyZeFnkmZfCsHVlZeLeY+O67TZcW8MJ85D44N+KArRGEyoJHE6tHJfv4
-         tsc4FEexSkZzBylZStP7Sw4U1jp6FCrxaJQEzb/DJZuzfDBjJaayP84mpuBIKfpOsFTz
-         9/J5EF72nPD6Nq9wNUyXKktY6LD72XlXuZSDLnoQCiHzbZYo7E5iopFF1iWhamog8CSf
-         BMVQ==
-X-Gm-Message-State: APjAAAUFuHS3GLhP3s3cOYRmFITG8X6z9uxtVReOHJB/t8tmrqrhpmRW
-        8QMbV/5F2nFnPOG3eGACbXW12A==
-X-Google-Smtp-Source: APXvYqw3WomO6ITcyer6CPVBrQOOsY0Cg2Qgn6CsKn9Y9UICWMLSuX+MNtWFyKg83O+U0l1X7rMqug==
-X-Received: by 2002:a0c:d215:: with SMTP id m21mr71181172qvh.202.1558527315440;
-        Wed, 22 May 2019 05:15:15 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id u26sm12960356qtc.84.2019.05.22.05.15.14
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 May 2019 05:15:14 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hTQ9J-0001lW-Lz; Wed, 22 May 2019 09:15:13 -0300
-Date:   Wed, 22 May 2019 09:15:13 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kamal Heib <kamalheib1@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH for-next] RDMA/core: Avoid panic when port_data isn't
- initialized
-Message-ID: <20190522121513.GA6054@ziepe.ca>
-References: <20190522072340.9042-1-kamalheib1@gmail.com>
+        id S1728438AbfEVM01 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 08:26:27 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38880 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727975AbfEVM00 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 08:26:26 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4MCOHZv123090;
+        Wed, 22 May 2019 12:25:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=GvghwfEY5poykxErLpBcT/nLLpWoTXLSTARTFZ5A8BA=;
+ b=LyxxTKggrXYRVBMljI/jGqArtpoXJ6TFHX+A6M1OANjyfLw2YsOLTuEeKlsnfM+3flY/
+ VhweDevqGga4j5XG1stl/qa1GQn0gsloqeCotzvndv4h9rZpLp6xgTtC0WR74eWBH6Z7
+ UT6/CFcoL978+h+eaX+hrVTqAjtorstH09EL+UXgms4A1toZnzD7hzr4aWm1Dq/aIfzp
+ YK2/Olm40WU87xg7dlFFtd46vXf0zXOTfS9OwT1NKThSG2G8VgS2qAyb+omflFbRVLPx
+ DQoU8q84Gk8R8ZOeUo06fLY4iPNgl7/Km3Ew5amaK1XaQplHqeGyGKK9LS7negj8jBHA tg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2smsk53ahr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 May 2019 12:25:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4MCPg7b025628;
+        Wed, 22 May 2019 12:25:42 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2smsgutmm4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 May 2019 12:25:42 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4MCPbSD021739;
+        Wed, 22 May 2019 12:25:37 GMT
+Received: from srabinov-laptop (/10.175.62.21)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 22 May 2019 12:25:37 +0000
+Date:   Wed, 22 May 2019 15:25:32 +0300
+From:   Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     dledford@redhat.com, jgg@mellanox.com, linux-rdma@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Parav Pandit <parav@mellanox.com>,
+        Steve Wise <swise@opengridcomputing.com>
+Subject: Re: [PATCH for-next v2 3/4] RDMA/nldev: ib_pd can be pointed by
+ multiple ib_ucontext
+Message-ID: <20190522122531.GA6173@srabinov-laptop>
+References: <20190520075333.6002-1-shamir.rabinovitch@oracle.com>
+ <20190520075333.6002-4-shamir.rabinovitch@oracle.com>
+ <20190520091840.GB4573@mtr-leonro.mtl.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190522072340.9042-1-kamalheib1@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190520091840.GB4573@mtr-leonro.mtl.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9264 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905220091
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9264 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905220091
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 10:23:40AM +0300, Kamal Heib wrote:
-> A panic could occur when calling ib_device_release() and port_data
-> isn't initialized, To avoid that a check was added to verify that
-> port_data isn't NULL.
+On Mon, May 20, 2019 at 12:18:40PM +0300, Leon Romanovsky wrote:
+> On Mon, May 20, 2019 at 10:53:20AM +0300, Shamir Rabinovitch wrote:
+> > In shared object model ib_pd can belong to 1 or more ib_ucontext.
+> > Fix the nldev code so it could report multiple context ids.
+> >
+> > Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+> > ---
 
-This is a terrible commit message, describe the case that causes this.
+[...]
 
-The check should be in ib_device_release(), not in the functions.
+> > +	if (!rdma_is_kernel_res(res)) {
+> > +		pd_context(pd, &pd_context_ids);
+> > +		list_for_each_entry(ctx_id, &pd_context_ids, list) {
+> > +			if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
+> > +				ctx_id->id))
+> 
+> Did it work? You are overwriting RDMA_NLDEV_ATTR_RES_CTXN entry in the
+> loop. You need to add RDMA_NLDEV_ATTR_RES_CTX and
+> RDMA_NLDEV_ATTR_RES_CTX_ENTRY to include/uapi/rdma_netlink.h and
+> open nested table here (inside of PD) with list of contexts.
+> 
+> > +				goto err;
+> > +		}
 
-Jason
+Hi Leon,
+
+Just to clarify the above nesting...
+
+Do you expect the below NL attribute nesting in case of shared pd dump?
+
+RDMA_NLDEV_ATTR_RES_CTX
+	RDMA_NLDEV_ATTR_RES_CTX_ENTRY
+		RDMA_NLDEV_ATTR_RES_CTXN #1
+		RDMA_NLDEV_ATTR_RES_CTXN #2
+		...
+		RDMA_NLDEV_ATTR_RES_CTXN #N
+
+
+I tried this and rdmatool reported:
+
+[root@qemu-fc29 iproute2]# rdma/rdma res show pd dev mlx4_0
+dev mlx4_0 pdn 0 local_dma_lkey 0x8000 users 4 comm [ib_core]
+dev mlx4_0 pdn 1 local_dma_lkey 0x8000 users 4 comm [ib_core]
+error: Operation not supported
+
+Is this the expected behaviour from unmodified latest rdmatool?
+
+Thanks
