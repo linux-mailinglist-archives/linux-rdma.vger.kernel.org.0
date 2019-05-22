@@ -2,168 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B8B27272
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 00:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D503F27278
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 00:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728109AbfEVWmO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 18:42:14 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:59502 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726218AbfEVWmO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 May 2019 18:42:14 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E075A30001EB;
-        Wed, 22 May 2019 22:42:13 +0000 (UTC)
-Received: from redhat.com (unknown [10.20.6.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D720C62660;
-        Wed, 22 May 2019 22:42:12 +0000 (UTC)
-Date:   Wed, 22 May 2019 18:42:11 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        id S1728378AbfEVWnW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 18:43:22 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:35719 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727121AbfEVWnW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 18:43:22 -0400
+Received: by mail-qt1-f193.google.com with SMTP id a39so4515951qtk.2
+        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 15:43:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4SWkilyQvTQHlEqzOBLa67WncawDCy2JA2Vk1zS3JpI=;
+        b=hIme93JQDlrchgrVGm3YMRf+iBRfIGlzkQn6Uz6i+PXXztdN0kFEw0CTW4SlI60+jj
+         ppUnQ3Zyy9L2XHkfbEmVOs++b4xQFMnKClFJvOfjytQ2Tmrst7Vcze+IThXgGvYEVHLQ
+         p7/BJQtzoS23AfCRaA5SwW8tE2k3tLe9Jv5cIEBl4Jow34rnNtII64T3NBbkli1fmY00
+         H5XiZydx6mkiPb6b3AI1UC49umnq4I9YA/8pEZ511MOXZxW/ku9GbaaZFHM5+BAdUq8y
+         kUueaZxLGgRXhDs5OeLjbmajBA+PwT0E4sRopqUMWt4+Fv8PLF37kOUwg1PJfaPhzPET
+         GT+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4SWkilyQvTQHlEqzOBLa67WncawDCy2JA2Vk1zS3JpI=;
+        b=cFSaxOqSMmYOPnX3cd/59aSs4WAiRv52vH2Zri0a5uIoUFBCRv7FA0ptZmgIgAZ+W8
+         ExomKkmiQBEUGEefo68nO8yNCrv3m9keJRlctp81woABQMo6njKzeH0LXtBbRk1w8Gtr
+         Zi7iZ0C4ymKqCjG9yW0hJh8HYVRxQlrI5bKSgimxRK5dH8wDXxwDiQ0RaGmS2rPuA8ur
+         3qFcqpSWO9sWcpD/Orn8PnuOL9zmNhyvGM8iddAegs1/ijbxr85vw0jXVut4gGn7GieF
+         Jykf8btSTCjcx/NVKpabPp9/C01M5g4Ia6K4fjxD/YpIaGlin8KzBFImsy/JGowTxCAA
+         53qw==
+X-Gm-Message-State: APjAAAUl+vuCB9IRqYU6s9UInXjRKzmMXKDV6HyB7NPIFZViY588ndoD
+        lDIhAQywxvdsMXQo+vFMyVgskw==
+X-Google-Smtp-Source: APXvYqw+NrK7xEC+5vJ7oOJ7bIjaRY9OboLQe6hOcOWtImCItkydeaRTkFyLlt9dHWnw536nOmZe5w==
+X-Received: by 2002:a0c:f40c:: with SMTP id h12mr30465959qvl.95.1558565001202;
+        Wed, 22 May 2019 15:43:21 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id t2sm11883034qkm.11.2019.05.22.15.43.20
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 May 2019 15:43:20 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hTZxA-00047q-4Q; Wed, 22 May 2019 19:43:20 -0300
+Date:   Wed, 22 May 2019 19:43:20 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jerome Glisse <jglisse@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Leon Romanovsky <leonro@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
         Artemy Kovalyov <artemyko@mellanox.com>,
         Moni Shoua <monis@mellanox.com>,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        linux-mm@kvack.org
 Subject: Re: [PATCH v4 0/1] Use HMM for ODP v4
-Message-ID: <20190522224211.GF20179@redhat.com>
+Message-ID: <20190522224320.GB15389@ziepe.ca>
 References: <20190411181314.19465-1-jglisse@redhat.com>
  <20190506195657.GA30261@ziepe.ca>
  <20190521205321.GC3331@redhat.com>
  <20190522005225.GA30819@ziepe.ca>
  <20190522174852.GA23038@redhat.com>
- <20190522201247.GH6054@ziepe.ca>
- <20190522220419.GB20179@redhat.com>
- <20190522223906.GA15389@ziepe.ca>
+ <20190522192219.GF6054@ziepe.ca>
+ <20190522214917.GA20179@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190522223906.GA15389@ziepe.ca>
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Wed, 22 May 2019 22:42:14 +0000 (UTC)
+In-Reply-To: <20190522214917.GA20179@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 07:39:06PM -0300, Jason Gunthorpe wrote:
-> On Wed, May 22, 2019 at 06:04:20PM -0400, Jerome Glisse wrote:
-> > On Wed, May 22, 2019 at 05:12:47PM -0300, Jason Gunthorpe wrote:
-> > > On Wed, May 22, 2019 at 01:48:52PM -0400, Jerome Glisse wrote:
+On Wed, May 22, 2019 at 05:49:18PM -0400, Jerome Glisse wrote:
+> > > > So why is mm suddenly guarenteed valid? It was a bug report that
+> > > > triggered the race the mmget_not_zero is fixing, so I need a better
+> > > > explanation why it is now safe. From what I see the hmm_range_fault
+> > > > is doing stuff like find_vma without an active mmget??
 > > > 
-> > > >  static void put_per_mm(struct ib_umem_odp *umem_odp)
-> > > >  {
-> > > >  	struct ib_ucontext_per_mm *per_mm = umem_odp->per_mm;
-> > > > @@ -325,9 +283,10 @@ static void put_per_mm(struct ib_umem_odp *umem_odp)
-> > > >  	up_write(&per_mm->umem_rwsem);
-> > > >  
-> > > >  	WARN_ON(!RB_EMPTY_ROOT(&per_mm->umem_tree.rb_root));
-> > > > -	mmu_notifier_unregister_no_release(&per_mm->mn, per_mm->mm);
-> > > > +	hmm_mirror_unregister(&per_mm->mirror);
-> > > >  	put_pid(per_mm->tgid);
-> > > > -	mmu_notifier_call_srcu(&per_mm->rcu, free_per_mm);
-> > > > +
-> > > > +	kfree(per_mm);
-> > > 
-> > > Notice that mmu_notifier only uses SRCU to fence in-progress ops
-> > > callbacks, so I think hmm internally has the bug that this ODP
-> > > approach prevents.
-> > > 
-> > > hmm should follow the same pattern ODP has and 'kfree_srcu' the hmm
-> > > struct, use container_of in the mmu_notifier callbacks, and use the
-> > > otherwise vestigal kref_get_unless_zero() to bail:
-> > > 
-> > > From 0cb536dc0150ba964a1d655151d7b7a84d0f915a Mon Sep 17 00:00:00 2001
-> > > From: Jason Gunthorpe <jgg@mellanox.com>
-> > > Date: Wed, 22 May 2019 16:52:52 -0300
-> > > Subject: [PATCH] hmm: Fix use after free with struct hmm in the mmu notifiers
-> > > 
-> > > mmu_notifier_unregister_no_release() is not a fence and the mmu_notifier
-> > > system will continue to reference hmm->mn until the srcu grace period
-> > > expires.
-> > > 
-> > >          CPU0                                     CPU1
-> > >                                                __mmu_notifier_invalidate_range_start()
-> > >                                                  srcu_read_lock
-> > >                                                  hlist_for_each ()
-> > >                                                    // mn == hmm->mn
-> > > hmm_mirror_unregister()
-> > >   hmm_put()
-> > >     hmm_free()
-> > >       mmu_notifier_unregister_no_release()
-> > >          hlist_del_init_rcu(hmm-mn->list)
-> > > 			                           mn->ops->invalidate_range_start(mn, range);
-> > > 					             mm_get_hmm()
-> > >       mm->hmm = NULL;
-> > >       kfree(hmm)
-> > >                                                      mutex_lock(&hmm->lock);
-> > > 
-> > > Use SRCU to kfree the hmm memory so that the notifiers can rely on hmm
-> > > existing. Get the now-safe hmm struct through container_of and directly
-> > > check kref_get_unless_zero to lock it against free.
+> > > So the mm struct can not go away as long as we hold a reference on
+> > > the hmm struct and we hold a reference on it through both hmm_mirror
+> > > and hmm_range struct. So struct mm can not go away and thus it is
+> > > safe to try to take its mmap_sem.
 > > 
-> > It is already badly handled with BUG_ON()
+> > This was always true here, though, so long as the umem_odp exists the
+> > the mm has a grab on it. But a grab is not a get..
+> > 
+> > The point here was the old code needed an mmget() in order to do
+> > get_user_pages_remote()
+> > 
+> > If hmm does not need an external mmget() then fine, we delete this
+> > stuff and rely on hmm.
+> > 
+> > But I don't think that is true as we have:
+> > 
+> >           CPU 0                                           CPU1
+> >                                                        mmput()
+> >                        				        __mmput()
+> > 							 exit_mmap()
+> > down_read(&mm->mmap_sem);
+> > hmm_range_dma_map(range, device,..
+> >   ret = hmm_range_fault(range, block);
+> >      if (hmm->mm == NULL || hmm->dead)
+> > 							   mmu_notifier_release()
+> > 							     hmm->dead = true
+> >      vma = find_vma(hmm->mm, start);
+> >         .. rb traversal ..                                 while (vma) remove_vma()
+> > 
+> > *goes boom*
+> > 
+> > I think this is violating the basic constraint of the mm by acting on
+> > a mm's VMA's without holding a mmget() to prevent concurrent
+> > destruction.
+> > 
+> > In other words, mmput() destruction does not respect the mmap_sem - so
+> > holding the mmap sem alone is not enough locking.
+> > 
+> > The unlucked hmm->dead simply can't save this. Frankly every time I
+> > look a struct with 'dead' in it, I find races like this.
+> > 
+> > Thus we should put the mmget_notzero back in.
 > 
-> You can't crash the kernel because userspace forced a race, and no it
-> isn't handled today because there is no RCU locking in mm_get_hmm nor
-> is there a kfree_rcu for the struct hmm to make the
-> kref_get_unless_zero work without use-after-free.
-> 
-> > i just need to convert those to return and to use
-> > mmu_notifier_call_srcu() to free hmm struct.
-> 
-> Isn't that what this patch does?
+> So for some reason i thought exit_mmap() was setting the mm_rb
+> to empty node and flushing vmacache so that find_vma() would
+> fail.
 
-Yes but other chunk just need to replace BUG_ON with return
+It would still be racy without locks.
 
-> 
-> > The way race is avoided is because mm->hmm will either be NULL or
-> > point to another hmm struct before an existing hmm is free. 
-> 
-> There is no locking on mm->hmm so it is useless to prevent races.
+> Note that right before find_vma() there is also range->valid
+> check which will also intercept mm release.
 
-There is locking on mm->hmm
+There is no locking on range->valid so it is just moves the race
+around. You can't solve races with unlocked/non-atomic variables.
 
-> 
-> > Also if range_start/range_end use kref_get_unless_zero() but right
-> > now this is BUG_ON if it turn out to be NULL, it should just return
-> > on NULL.
-> 
-> Still needs rcu.
-> 
-> Also the container_of is necessary to avoid some race where you could
-> be doing:
-> 
->                   CPU0                                     CPU1                         CPU2
->                                                        hlist_for_each ()
->        mmu_notifier_unregister_no_release(hmm1)             
->        spin_lock(&mm->page_table_lock);                                
->        mm->hmm = NULL
->        spin_unlock(&mm->page_table_lock);                                                                                      
->                                                       				 hmm2 = hmm_get_or_create()
->                                                         mn == hmm1->mn
->                                                         mn->ops->invalidate_range_start(mn, range)
-> 							  mm_get_mm() == hmm2
->                                                       hist_for_each con't
->                                                         mn == hmm2->mn
->                                                         mn->ops->invalidate_range_start(mn, range)
-> 							  mm_get_mm() == hmm2
-> 
-> Now we called the same notifier twice on hmm2. Ooops.
-> 
-> There is no reason to risk this confusion just to avoid container_of.
-> 
-> So we agree this patch is necessary? Can you test it an ack it please?
+> Anyway the easy fix is to get ref on mm user in range_register.
 
-A slightly different patch than this one is necessary i will work on
-it tomorrow.
+Yes a mmget_not_zero inside range_register would be fine.
 
-Cheers,
-Jérôme
+How do you want to handle that patch?
+
+> > I saw some other funky looking stuff in hmm as well..
+> > 
+> > > Hence it is safe to take mmap_sem and it is safe to call in hmm, if
+> > > mm have been kill it will return EFAULT and this will propagate to
+> > > RDMA.
+> >  
+> > > As per_mm i removed the per_mm->mm = NULL from release so that it is
+> > > always safe to use that field even in face of racing mm "killing".
+> > 
+> > Yes, that certainly wasn't good.
+> > 
+> > > > > -	 * An array of the pages included in the on-demand paging umem.
+> > > > > -	 * Indices of pages that are currently not mapped into the device will
+> > > > > -	 * contain NULL.
+> > > > > +	 * An array of the pages included in the on-demand paging umem. Indices
+> > > > > +	 * of pages that are currently not mapped into the device will contain
+> > > > > +	 * 0.
+> > > > >  	 */
+> > > > > -	struct page		**page_list;
+> > > > > +	uint64_t *pfns;
+> > > > 
+> > > > Are these actually pfns, or are they mangled with some shift? (what is range->pfn_shift?)
+> > > 
+> > > They are not pfns they have flags (hence range->pfn_shift) at the
+> > > bottoms i just do not have a better name for this.
+> > 
+> > I think you need to have a better name then
+> 
+> Suggestion ? i have no idea for a better name, it has pfn value
+> in it.
+
+pfn_flags?
+
+Jason
