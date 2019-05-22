@@ -2,222 +2,210 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2CC271E8
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 23:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5684D27205
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 00:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729752AbfEVVth (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 17:49:37 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:42330 "EHLO mx1.redhat.com"
+        id S1726326AbfEVWEY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 18:04:24 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:55158 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728615AbfEVVth (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 May 2019 17:49:37 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        id S1726070AbfEVWEY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 May 2019 18:04:24 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E276837EEB;
-        Wed, 22 May 2019 21:49:22 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id EA61059463;
+        Wed, 22 May 2019 22:04:22 +0000 (UTC)
 Received: from redhat.com (unknown [10.20.6.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CADDF52E7;
-        Wed, 22 May 2019 21:49:19 +0000 (UTC)
-Date:   Wed, 22 May 2019 17:49:18 -0400
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D79D917AC6;
+        Wed, 22 May 2019 22:04:21 +0000 (UTC)
+Date:   Wed, 22 May 2019 18:04:20 -0400
 From:   Jerome Glisse <jglisse@redhat.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Leon Romanovsky <leonro@mellanox.com>,
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
         Artemy Kovalyov <artemyko@mellanox.com>,
         Moni Shoua <monis@mellanox.com>,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        linux-mm@kvack.org
+        Dennis Dalessandro <dennis.dalessandro@intel.com>
 Subject: Re: [PATCH v4 0/1] Use HMM for ODP v4
-Message-ID: <20190522214917.GA20179@redhat.com>
+Message-ID: <20190522220419.GB20179@redhat.com>
 References: <20190411181314.19465-1-jglisse@redhat.com>
  <20190506195657.GA30261@ziepe.ca>
  <20190521205321.GC3331@redhat.com>
  <20190522005225.GA30819@ziepe.ca>
  <20190522174852.GA23038@redhat.com>
- <20190522192219.GF6054@ziepe.ca>
+ <20190522201247.GH6054@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190522192219.GF6054@ziepe.ca>
+In-Reply-To: <20190522201247.GH6054@ziepe.ca>
 User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.29]); Wed, 22 May 2019 21:49:36 +0000 (UTC)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Wed, 22 May 2019 22:04:23 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 04:22:19PM -0300, Jason Gunthorpe wrote:
+On Wed, May 22, 2019 at 05:12:47PM -0300, Jason Gunthorpe wrote:
 > On Wed, May 22, 2019 at 01:48:52PM -0400, Jerome Glisse wrote:
 > 
-> > > > +long ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp,
-> > > > +			       struct hmm_range *range)
-> > > >  {
-> > > > +	struct device *device = umem_odp->umem.context->device->dma_device;
-> > > > +	struct ib_ucontext_per_mm *per_mm = umem_odp->per_mm;
-> > > >  	struct ib_umem *umem = &umem_odp->umem;
-> > > > -	struct task_struct *owning_process  = NULL;
-> > > > -	struct mm_struct *owning_mm = umem_odp->umem.owning_mm;
-> > > > -	struct page       **local_page_list = NULL;
-> > > > -	u64 page_mask, off;
-> > > > -	int j, k, ret = 0, start_idx, npages = 0, page_shift;
-> > > > -	unsigned int flags = 0;
-> > > > -	phys_addr_t p = 0;
-> > > > -
-> > > > -	if (access_mask == 0)
-> > > > +	struct mm_struct *mm = per_mm->mm;
-> > > > +	unsigned long idx, npages;
-> > > > +	long ret;
-> > > > +
-> > > > +	if (mm == NULL)
-> > > > +		return -ENOENT;
-> > > > +
-> > > > +	/* Only drivers with invalidate support can use this function. */
-> > > > +	if (!umem->context->invalidate_range)
-> > > >  		return -EINVAL;
-> > > >  
-> > > > -	if (user_virt < ib_umem_start(umem) ||
-> > > > -	    user_virt + bcnt > ib_umem_end(umem))
-> > > > -		return -EFAULT;
-> > > > +	/* Sanity checks. */
-> > > > +	if (range->default_flags == 0)
-> > > > +		return -EINVAL;
-> > > >  
-> > > > -	local_page_list = (struct page **)__get_free_page(GFP_KERNEL);
-> > > > -	if (!local_page_list)
-> > > > -		return -ENOMEM;
-> > > > +	if (range->start < ib_umem_start(umem) ||
-> > > > +	    range->end > ib_umem_end(umem))
-> > > > +		return -EINVAL;
-> > > >  
-> > > > -	page_shift = umem->page_shift;
-> > > > -	page_mask = ~(BIT(page_shift) - 1);
-> > > > -	off = user_virt & (~page_mask);
-> > > > -	user_virt = user_virt & page_mask;
-> > > > -	bcnt += off; /* Charge for the first page offset as well. */
-> > > > +	idx = (range->start - ib_umem_start(umem)) >> umem->page_shift;
-> > > 
-> > > Is this math OK? What is supposed to happen if the range->start is not
-> > > page aligned to the internal page size?
-> > 
-> > range->start is align on 1 << page_shift boundary within pagefault_mr
-> > thus the above math is ok. We can add a BUG_ON() and comments if you
-> > want.
+> >  static void put_per_mm(struct ib_umem_odp *umem_odp)
+> >  {
+> >  	struct ib_ucontext_per_mm *per_mm = umem_odp->per_mm;
+> > @@ -325,9 +283,10 @@ static void put_per_mm(struct ib_umem_odp *umem_odp)
+> >  	up_write(&per_mm->umem_rwsem);
+> >  
+> >  	WARN_ON(!RB_EMPTY_ROOT(&per_mm->umem_tree.rb_root));
+> > -	mmu_notifier_unregister_no_release(&per_mm->mn, per_mm->mm);
+> > +	hmm_mirror_unregister(&per_mm->mirror);
+> >  	put_pid(per_mm->tgid);
+> > -	mmu_notifier_call_srcu(&per_mm->rcu, free_per_mm);
+> > +
+> > +	kfree(per_mm);
 > 
-> OK
+> Notice that mmu_notifier only uses SRCU to fence in-progress ops
+> callbacks, so I think hmm internally has the bug that this ODP
+> approach prevents.
 > 
-> > > > +	range->pfns = &umem_odp->pfns[idx];
-> > > > +	range->pfn_shift = ODP_FLAGS_BITS;
-> > > > +	range->values = odp_hmm_values;
-> > > > +	range->flags = odp_hmm_flags;
-> > > >  
-> > > >  	/*
-> > > > -	 * owning_process is allowed to be NULL, this means somehow the mm is
-> > > > -	 * existing beyond the lifetime of the originating process.. Presumably
-> > > > -	 * mmget_not_zero will fail in this case.
-> > > > +	 * If mm is dying just bail out early without trying to take mmap_sem.
-> > > > +	 * Note that this might race with mm destruction but that is fine the
-> > > > +	 * is properly refcounted so are all HMM structure.
-> > > >  	 */
-> > > > -	owning_process = get_pid_task(umem_odp->per_mm->tgid, PIDTYPE_PID);
-> > > > -	if (!owning_process || !mmget_not_zero(owning_mm)) {
-> > > 
-> > > But we are not in a HMM context here, and per_mm is not a HMM
-> > > structure. 
-> > > 
-> > > So why is mm suddenly guarenteed valid? It was a bug report that
-> > > triggered the race the mmget_not_zero is fixing, so I need a better
-> > > explanation why it is now safe. From what I see the hmm_range_fault
-> > > is doing stuff like find_vma without an active mmget??
-> > 
-> > So the mm struct can not go away as long as we hold a reference on
-> > the hmm struct and we hold a reference on it through both hmm_mirror
-> > and hmm_range struct. So struct mm can not go away and thus it is
-> > safe to try to take its mmap_sem.
+> hmm should follow the same pattern ODP has and 'kfree_srcu' the hmm
+> struct, use container_of in the mmu_notifier callbacks, and use the
+> otherwise vestigal kref_get_unless_zero() to bail:
 > 
-> This was always true here, though, so long as the umem_odp exists the
-> the mm has a grab on it. But a grab is not a get..
+> From 0cb536dc0150ba964a1d655151d7b7a84d0f915a Mon Sep 17 00:00:00 2001
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> Date: Wed, 22 May 2019 16:52:52 -0300
+> Subject: [PATCH] hmm: Fix use after free with struct hmm in the mmu notifiers
 > 
-> The point here was the old code needed an mmget() in order to do
-> get_user_pages_remote()
+> mmu_notifier_unregister_no_release() is not a fence and the mmu_notifier
+> system will continue to reference hmm->mn until the srcu grace period
+> expires.
 > 
-> If hmm does not need an external mmget() then fine, we delete this
-> stuff and rely on hmm.
+>          CPU0                                     CPU1
+>                                                __mmu_notifier_invalidate_range_start()
+>                                                  srcu_read_lock
+>                                                  hlist_for_each ()
+>                                                    // mn == hmm->mn
+> hmm_mirror_unregister()
+>   hmm_put()
+>     hmm_free()
+>       mmu_notifier_unregister_no_release()
+>          hlist_del_init_rcu(hmm-mn->list)
+> 			                           mn->ops->invalidate_range_start(mn, range);
+> 					             mm_get_hmm()
+>       mm->hmm = NULL;
+>       kfree(hmm)
+>                                                      mutex_lock(&hmm->lock);
 > 
-> But I don't think that is true as we have:
-> 
->           CPU 0                                           CPU1
->                                                        mmput()
->                        				        __mmput()
-> 							 exit_mmap()
-> down_read(&mm->mmap_sem);
-> hmm_range_dma_map(range, device,..
->   ret = hmm_range_fault(range, block);
->      if (hmm->mm == NULL || hmm->dead)
-> 							   mmu_notifier_release()
-> 							     hmm->dead = true
->      vma = find_vma(hmm->mm, start);
->         .. rb traversal ..                                 while (vma) remove_vma()
-> 
-> *goes boom*
-> 
-> I think this is violating the basic constraint of the mm by acting on
-> a mm's VMA's without holding a mmget() to prevent concurrent
-> destruction.
-> 
-> In other words, mmput() destruction does not respect the mmap_sem - so
-> holding the mmap sem alone is not enough locking.
-> 
-> The unlucked hmm->dead simply can't save this. Frankly every time I
-> look a struct with 'dead' in it, I find races like this.
-> 
-> Thus we should put the mmget_notzero back in.
+> Use SRCU to kfree the hmm memory so that the notifiers can rely on hmm
+> existing. Get the now-safe hmm struct through container_of and directly
+> check kref_get_unless_zero to lock it against free.
 
-So for some reason i thought exit_mmap() was setting the mm_rb
-to empty node and flushing vmacache so that find_vma() would
-fail. Might have been in some patch that never went upstream.
+It is already badly handled with BUG_ON(), i just need to convert
+those to return and to use mmu_notifier_call_srcu() to free hmm
+struct.
 
-Note that right before find_vma() there is also range->valid
-check which will also intercept mm release.
-
-Anyway the easy fix is to get ref on mm user in range_register.
+The way race is avoided is because mm->hmm will either be NULL or
+point to another hmm struct before an existing hmm is free. Also
+if range_start/range_end use kref_get_unless_zero() but right now
+this is BUG_ON if it turn out to be NULL, it should just return
+on NULL.
 
 > 
-> I saw some other funky looking stuff in hmm as well..
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> ---
+>  include/linux/hmm.h |  1 +
+>  mm/hmm.c            | 25 +++++++++++++++++++------
+>  2 files changed, 20 insertions(+), 6 deletions(-)
 > 
-> > Hence it is safe to take mmap_sem and it is safe to call in hmm, if
-> > mm have been kill it will return EFAULT and this will propagate to
-> > RDMA.
+> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
+> index 51ec27a8466816..8b91c90d3b88cb 100644
+> --- a/include/linux/hmm.h
+> +++ b/include/linux/hmm.h
+> @@ -102,6 +102,7 @@ struct hmm {
+>  	struct mmu_notifier	mmu_notifier;
+>  	struct rw_semaphore	mirrors_sem;
+>  	wait_queue_head_t	wq;
+> +	struct rcu_head		rcu;
+>  	long			notifiers;
+>  	bool			dead;
+>  };
+> diff --git a/mm/hmm.c b/mm/hmm.c
+> index 816c2356f2449f..824e7e160d8167 100644
+> --- a/mm/hmm.c
+> +++ b/mm/hmm.c
+> @@ -113,6 +113,11 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+>  	return NULL;
+>  }
 >  
-> > As per_mm i removed the per_mm->mm = NULL from release so that it is
-> > always safe to use that field even in face of racing mm "killing".
+> +static void hmm_fee_rcu(struct rcu_head *rcu)
+> +{
+> +	kfree(container_of(rcu, struct hmm, rcu));
+> +}
+> +
+>  static void hmm_free(struct kref *kref)
+>  {
+>  	struct hmm *hmm = container_of(kref, struct hmm, kref);
+> @@ -125,7 +130,7 @@ static void hmm_free(struct kref *kref)
+>  		mm->hmm = NULL;
+>  	spin_unlock(&mm->page_table_lock);
+>  
+> -	kfree(hmm);
+> +	mmu_notifier_call_srcu(&hmm->rcu, hmm_fee_rcu);
+>  }
+>  
+>  static inline void hmm_put(struct hmm *hmm)
+> @@ -153,10 +158,14 @@ void hmm_mm_destroy(struct mm_struct *mm)
+>  
+>  static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+>  {
+> -	struct hmm *hmm = mm_get_hmm(mm);
+> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+>  	struct hmm_mirror *mirror;
+>  	struct hmm_range *range;
+>  
+> +	/* hmm is in progress to free */
+> +	if (!kref_get_unless_zero(&hmm->kref))
+> +		return;
+> +
+>  	/* Report this HMM as dying. */
+>  	hmm->dead = true;
+>  
+> @@ -194,13 +203,15 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+>  static int hmm_invalidate_range_start(struct mmu_notifier *mn,
+>  			const struct mmu_notifier_range *nrange)
+>  {
+> -	struct hmm *hmm = mm_get_hmm(nrange->mm);
+> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+>  	struct hmm_mirror *mirror;
+>  	struct hmm_update update;
+>  	struct hmm_range *range;
+>  	int ret = 0;
+>  
+> -	VM_BUG_ON(!hmm);
+> +	/* hmm is in progress to free */
+> +	if (!kref_get_unless_zero(&hmm->kref))
+> +		return 0;
+>  
+>  	update.start = nrange->start;
+>  	update.end = nrange->end;
+> @@ -248,9 +259,11 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
+>  static void hmm_invalidate_range_end(struct mmu_notifier *mn,
+>  			const struct mmu_notifier_range *nrange)
+>  {
+> -	struct hmm *hmm = mm_get_hmm(nrange->mm);
+> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+>  
+> -	VM_BUG_ON(!hmm);
+> +	/* hmm is in progress to free */
+> +	if (!kref_get_unless_zero(&hmm->kref))
+> +		return;
+>  
+>  	mutex_lock(&hmm->lock);
+>  	hmm->notifiers--;
+> -- 
+> 2.21.0
 > 
-> Yes, that certainly wasn't good.
-> 
-> > > > -	 * An array of the pages included in the on-demand paging umem.
-> > > > -	 * Indices of pages that are currently not mapped into the device will
-> > > > -	 * contain NULL.
-> > > > +	 * An array of the pages included in the on-demand paging umem. Indices
-> > > > +	 * of pages that are currently not mapped into the device will contain
-> > > > +	 * 0.
-> > > >  	 */
-> > > > -	struct page		**page_list;
-> > > > +	uint64_t *pfns;
-> > > 
-> > > Are these actually pfns, or are they mangled with some shift? (what is range->pfn_shift?)
-> > 
-> > They are not pfns they have flags (hence range->pfn_shift) at the
-> > bottoms i just do not have a better name for this.
-> 
-> I think you need to have a better name then
-
-Suggestion ? i have no idea for a better name, it has pfn value
-in it.
-
-Cheers,
-Jérôme
