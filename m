@@ -2,295 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8895266F2
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 17:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCCD26824
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 18:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729907AbfEVPag (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 11:30:36 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:40860 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729534AbfEVPag (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 11:30:36 -0400
-Received: by mail-lj1-f195.google.com with SMTP id q62so2510824ljq.7
-        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 08:30:34 -0700 (PDT)
+        id S1729576AbfEVQYp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 12:24:45 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:38136 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729475AbfEVQYo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 12:24:44 -0400
+Received: by mail-qt1-f194.google.com with SMTP id l3so3093868qtj.5
+        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 09:24:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RM2Vs3BpRvxchuOeBY/wop/PzNSZzl64F2EeK+wEZZM=;
-        b=YY6JA+LoUtjEOO757K58wra7rdXirZ4AlTHpmSQ+decwKFXSNcixrW+Od3xAIfHhzc
-         E31pVzZHa1k0N1eBsu/pwx/4gJOY/Z23T1KlGxD+A3kg2G2nUjg2KBJXZgrs4NREuNVs
-         TYlUYYtdAekOg5uSt0naDgODEcL0YeodFYzgZ2kMgQbeYv13wJLMpmBWE0SyYa3YKKBJ
-         Ky8EOr/z31g0owz/7VlcdxKTQPp3/9K5jFnQ5GWfggZi2OZBL5soMXgy15fr5y5CKPxC
-         m0te1S3imaMe8QwTNQlrTPoiVAA5L9886WXf4f0IGaQNg3NN+dFLYS9ofr5e9wU3GA29
-         mQlA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Wd5zSoCQkWyUnpnrNZptFGE9sLAarxmANwGIIWsgsPs=;
+        b=ILzPUBWLwnq9jdNSf7NqomaUyt+M0wFZVLCo7ggo5IcyEqs9oB59Cv2ewVcpzwGUfF
+         R9FpC2zCwOP1VZqSJEiNDODMMYp5Py7LPpPav6X9vf2U63d0klvtTxbaWjEl0Mr15evP
+         wvL6kWrhaWqDwL0N/cOXgLhGCBDHWo4pYOPuYf+IVn+gGP3lp1xgWZEdvCxmr7RBXpZ/
+         aknzb5GUvGFPFu7+TwJUXXX85i/kTJolVp7ml7Z7sE8D2FcJWXzbz7CMfri0iBegfwfT
+         +PLqPsWvqGobwx7WCMI++mLguPY+JdMBL2tRaB329ve5I8UYdUBsgxhU8qfTI1OPgThZ
+         S/Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RM2Vs3BpRvxchuOeBY/wop/PzNSZzl64F2EeK+wEZZM=;
-        b=hHghS7Uomy9+FF1otPOXe2ukiSsZnlmsQELh4Tj+SDGMkMe27X2436z/1Y89MK99ak
-         dt4a4ljad7ZvcKq4RUlU2YKaMJpxcRq6rR6VktUjfPE+8BxpsSGQOidbOOuS8NWFjn4U
-         FHE8mAl10/DbUMV0Wa+4y2frgyJVA/BZgk8r4hB6L1s6LdyhS0ZyAWaiOOv3yw6Se/Aw
-         HzCHwMzyNkHDq2hGB4SsO0SODhmV4/3111nEeAc2lgLLcXWPffTIL0ajKadG1RDVEjyr
-         tzMjqwqelZ4lfpc8At38exzt+q4k0gwGfSQdR+s5bbn/UW+FqCrIneGhponGV43BiGcI
-         pJaA==
-X-Gm-Message-State: APjAAAVH80FfehUbTWtOP2c1e3lCU7yYzXQz5O96jBKnpzL6QPs1B1U+
-        INb01/ejhJBcTJquP9u4ktMObwpe51lOTh31663M0A==
-X-Google-Smtp-Source: APXvYqyXSCxhB+3RVGWUi2lXqAnCXVjRJMmGDtSQwaSdaunD3RrP1dCFavWCgkEVu7tMxmxxgJ5X4QeZFUMwuOfrpVg=
-X-Received: by 2002:a2e:9601:: with SMTP id v1mr22163816ljh.60.1558539033496;
- Wed, 22 May 2019 08:30:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Wd5zSoCQkWyUnpnrNZptFGE9sLAarxmANwGIIWsgsPs=;
+        b=KiZUXCPMC/oMX63s5HgCeqqfPxrUTdXclT+mlBJNjIraAVp0OSlL7DnFW5gffqD73x
+         gE4dck6zU/2e28+O5b68SozVwzJR8zd92JGCXPIw0kGFcGSLQBt4JBjFkhKbB6irk4MH
+         oMS11lD4MYJCzicKaKll2Iw14lTtnefJQ1a1XuhSP7+6yJKmcZZr0OBYjmvNlkPRrC51
+         /Tq4OUU9uNbdr7JmOO9H9/xAgpO27P+hL0BjMkFL9aNbgNYSRxq7fFR7OU6xi22uycpg
+         8MDKhCjG45PoCYHJf6FWeR/PhfcId4qaiTBKJ58FecZP8C4+xkPNiMAk++zlwLjqsU/0
+         TlkQ==
+X-Gm-Message-State: APjAAAXBW/JhzTnNOHcohtGZHHudmxl2ud+BZH1dD0RJLyzJ8BGzYuZs
+        768XI/Y5CY597wPyKJPVc0Ke1gLLcAs=
+X-Google-Smtp-Source: APXvYqyjsENsgABDT5ADQgsqgVcqHjSoLqz9fu4JLrkx53A53XGGthwygvg0zQ1KmeA/63RXN2ildA==
+X-Received: by 2002:ac8:7a72:: with SMTP id w18mr73173280qtt.318.1558542283671;
+        Wed, 22 May 2019 09:24:43 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id s17sm14309396qke.60.2019.05.22.09.24.42
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 May 2019 09:24:43 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hTU2k-0000Bk-FR; Wed, 22 May 2019 13:24:42 -0300
+Date:   Wed, 22 May 2019 13:24:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Nirranjan Kirubaharan <nirranjan@chelsio.com>
+Cc:     bharat@chelsio.com, dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next v4] iw_cxgb4: Fix qpid leak
+Message-ID: <20190522162442.GD6054@ziepe.ca>
+References: <ecd8e5de39986704861913f2bfb70acbccf6b616.1558530087.git.nirranjan@chelsio.com>
 MIME-Version: 1.0
-References: <cover.1557160186.git.andreyknvl@google.com> <20190517144931.GA56186@arrakis.emea.arm.com>
- <CAFKCwrj6JEtp4BzhqO178LFJepmepoMx=G+YdC8sqZ3bcBp3EQ@mail.gmail.com>
- <20190521182932.sm4vxweuwo5ermyd@mbp> <201905211633.6C0BF0C2@keescook> <20190522101110.m2stmpaj7seezveq@mbp>
-In-Reply-To: <20190522101110.m2stmpaj7seezveq@mbp>
-From:   enh <enh@google.com>
-Date:   Wed, 22 May 2019 08:30:21 -0700
-Message-ID: <CAJgzZoosKBwqXRyA6fb8QQSZXFqfHqe9qO9je5TogHhzuoGXJQ@mail.gmail.com>
-Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecd8e5de39986704861913f2bfb70acbccf6b616.1558530087.git.nirranjan@chelsio.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 3:11 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> Hi Kees,
->
-> Thanks for joining the thread ;).
->
-> On Tue, May 21, 2019 at 05:04:39PM -0700, Kees Cook wrote:
-> > On Tue, May 21, 2019 at 07:29:33PM +0100, Catalin Marinas wrote:
-> > > On Mon, May 20, 2019 at 04:53:07PM -0700, Evgenii Stepanov wrote:
-> > > > On Fri, May 17, 2019 at 7:49 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > > > IMO (RFC for now), I see two ways forward:
-> > > > > [...]
-> > > > > 2. Similar shim to the above libc wrapper but inside the kernel
-> > > > >    (arch/arm64 only; most pointer arguments could be covered with an
-> > > > >    __SC_CAST similar to the s390 one). There are two differences from
-> > > > >    what we've discussed in the past:
-> > > > >
-> > > > >    a) this is an opt-in by the user which would have to explicitly call
-> > > > >       prctl(). If it returns -ENOTSUPP etc., the user won't be allowed
-> > > > >       to pass tagged pointers to the kernel. This would probably be the
-> > > > >       responsibility of the C lib to make sure it doesn't tag heap
-> > > > >       allocations. If the user did not opt-in, the syscalls are routed
-> > > > >       through the normal path (no untagging address shim).
-> > > > >
-> > > > >    b) ioctl() and other blacklisted syscalls (prctl) will not accept
-> > > > >       tagged pointers (to be documented in Vicenzo's ABI patches).
-> > > >
-> > > > The way I see it, a patch that breaks handling of tagged pointers is
-> > > > not that different from, say, a patch that adds a wild pointer
-> > > > dereference. Both are bugs; the difference is that (a) the former
-> > > > breaks a relatively uncommon target and (b) it's arguably an easier
-> > > > mistake to make. If MTE adoption goes well, (a) will not be the case
-> > > > for long.
-> > >
-> > > It's also the fact such patch would go unnoticed for a long time until
-> > > someone exercises that code path. And when they do, the user would be
-> > > pretty much in the dark trying to figure what what went wrong, why a
-> > > SIGSEGV or -EFAULT happened. What's worse, we can't even say we fixed
-> > > all the places where it matters in the current kernel codebase (ignoring
-> > > future patches).
-> >
-> > So, looking forward a bit, this isn't going to be an ARM-specific issue
-> > for long.
->
-> I do hope so.
->
-> > In fact, I think we shouldn't have arm-specific syscall wrappers
-> > in this series: I think untagged_addr() should likely be added at the
-> > top-level and have it be a no-op for other architectures.
->
-> That's what the current patchset does, so we have this as a starting
-> point. Kostya raised another potential issue with the syscall wrappers:
-> with MTE the kernel will be forced to enable the match-all (wildcard)
-> pointers for user space accesses since copy_from_user() would only get a
-> 0 tag. So it has wider implications than just uaccess routines not
-> checking the colour.
->
-> > So given this becoming a kernel-wide multi-architecture issue (under
-> > the assumption that x86, RISC-V, and others will gain similar TBI or
-> > MTE things), we should solve it in a way that we can re-use.
->
-> Can we do any better to aid the untagged_addr() placement (e.g. better
-> type annotations, better static analysis)? We have to distinguish
-> between user pointers that may be dereferenced by the kernel (I think
-> almost fully covered with this patchset) and user addresses represented
-> as ulong that may:
->
-> a) be converted to a user pointer and dereferenced; I think that's the
->    case for many overloaded ulong/u64 arguments
->
-> b) used for address space management, rbtree look-ups etc. where the tag
->    is no longer relevant and it even gets in the way
->
-> We tried last year to identify void __user * casts to unsigned long
-> using sparse on the assumption that pointers can be tagged while ulong
-> is about address space management and needs to lose such tag. I think we
-> could have pushed this further. For example, get_user_pages() takes an
-> unsigned long but it is perfectly capable of untagging the address
-> itself. Shall we change its first argument to void __user * (together
-> with all its callers)?
->
-> find_vma(), OTOH, could untag the address but it doesn't help since
-> vm_start/end don't have such information (that's more about the content
-> or type that the user decided) and the callers check against it.
->
-> Are there any other places where this matters? These patches tracked
-> down find_vma() as some heuristics but we may need better static
-> analysis to identify other cases.
->
-> > We need something that is going to work everywhere. And it needs to be
-> > supported by the kernel for the simple reason that the kernel needs to
-> > do MTE checks during copy_from_user(): having that information stripped
-> > means we lose any userspace-assigned MTE protections if they get handled
-> > by the kernel, which is a total non-starter, IMO.
->
-> Such feedback is welcomed ;).
->
-> > As an aside: I think Sparc ADI support in Linux actually side-stepped
-> > this[1] (i.e. chose "solution 1"): "All addresses passed to kernel must
-> > be non-ADI tagged addresses." (And sadly, "Kernel does not enable ADI
-> > for kernel code.") I think this was a mistake we should not repeat for
-> > arm64 (we do seem to be at least in agreement about this, I think).
-> >
-> > [1] https://lore.kernel.org/patchwork/patch/654481/
->
-> I tried to drag the SPARC guys into this discussion but without much
-> success.
->
-> > > > This is a bit of a chicken-and-egg problem. In a world where memory
-> > > > allocators on one or several popular platforms generate pointers with
-> > > > non-zero tags, any such breakage will be caught in testing.
-> > > > Unfortunately to reach that state we need the kernel to start
-> > > > accepting tagged pointers first, and then hold on for a couple of
-> > > > years until userspace catches up.
-> > >
-> > > Would the kernel also catch up with providing a stable ABI? Because we
-> > > have two moving targets.
-> > >
-> > > On one hand, you have Android or some Linux distro that stick to a
-> > > stable kernel version for some time, so they have better chance of
-> > > clearing most of the problems. On the other hand, we have mainline
-> > > kernel that gets over 500K lines every release. As maintainer, I can't
-> > > rely on my testing alone as this is on a limited number of platforms. So
-> > > my concern is that every kernel release has a significant chance of
-> > > breaking the ABI, unless we have a better way of identifying potential
-> > > issues.
-> >
-> > I just want to make sure I fully understand your concern about this
-> > being an ABI break, and I work best with examples. The closest situation
-> > I can see would be:
-> >
-> > - some program has no idea about MTE
->
-> Apart from some libraries like libc (and maybe those that handle
-> specific device ioctls), I think most programs should have no idea about
-> MTE. I wouldn't expect programmers to have to change their app just
-> because we have a new feature that colours heap allocations.
+On Wed, May 22, 2019 at 06:27:45AM -0700, Nirranjan Kirubaharan wrote:
+> In iw_cxgb4, Added wait in destroy_qp() so that all references to
+> qp are dereferenced and qp is freed in destroy_qp() itself.
+> This ensures freeing of all QPs before invocation of
+> dealloc_ucontext(), which prevents loss of in use qpids stored
+> in ucontext.
+> 
+> Signed-off-by: Nirranjan Kirubaharan <nirranjan@chelsio.com>
+> Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
+> v2:
+> - Used kref instead of qid count.
+> v3:
+> - Ensured freeing of qp in destroy_qp() itself.
+> v4:
+> - Change c4iw_qp_rem_ref() to use a refcount not kref and trigger
+> complete() when the refcount goes to 0.
+> - Move all of queue_qp_free into c4iw_destroy_qp()
+>  drivers/infiniband/hw/cxgb4/iw_cxgb4.h |  4 +--
+>  drivers/infiniband/hw/cxgb4/qp.c       | 48 ++++++++++++----------------------
+>  2 files changed, 19 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+> index 916ef982172e..b8e90eaf4a03 100644
+> +++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+> @@ -490,13 +490,13 @@ struct c4iw_qp {
+>  	struct t4_wq wq;
+>  	spinlock_t lock;
+>  	struct mutex mutex;
+> -	struct kref kref;
+>  	wait_queue_head_t wait;
+>  	int sq_sig_all;
+>  	struct c4iw_srq *srq;
+> -	struct work_struct free_work;
+>  	struct c4iw_ucontext *ucontext;
+>  	struct c4iw_wr_wait *wr_waitp;
+> +	struct completion qp_rel_comp;
+> +	atomic_t qp_refcnt;
 
-obviously i'm biased as a libc maintainer, but...
+no, refcount_t
 
-i don't think it helps to move this to libc --- now you just have an
-extra dependency where to have a guaranteed working system you need to
-update your kernel and libc together. (or at least update your libc to
-understand new ioctls etc _before_ you can update your kernel.)
+But oterhwise OK
 
-> > - malloc() starts returning MTE-tagged addresses
-> > - program doesn't break from that change
-> > - program uses some syscall that is missing untagged_addr() and fails
-> > - kernel has now broken userspace that used to work
->
-> That's one aspect though probably more of a case of plugging in a new
-> device (graphics card, network etc.) and the ioctl to the new device
-> doesn't work.
->
-> The other is that, assuming we reach a point where the kernel entirely
-> supports this relaxed ABI, can we guarantee that it won't break in the
-> future. Let's say some subsequent kernel change (some refactoring)
-> misses out an untagged_addr(). This renders a previously TBI/MTE-capable
-> syscall unusable. Can we rely only on testing?
->
-> > The trouble I see with this is that it is largely theoretical and
-> > requires part of userspace to collude to start using a new CPU feature
-> > that tickles a bug in the kernel. As I understand the golden rule,
-> > this is a bug in the kernel (a missed ioctl() or such) to be fixed,
-> > not a global breaking of some userspace behavior.
->
-> Yes, we should follow the rule that it's a kernel bug but it doesn't
-> help the user that a newly installed kernel causes user space to no
-> longer reach a prompt. Hence the proposal of an opt-in via personality
-> (for MTE we would need an explicit opt-in by the user anyway since the
-> top byte is no longer ignored but checked against the allocation tag).
-
-but realistically would this actually get used in this way? or would
-any given system either be MTE or non-MTE. in which case a kernel
-configuration option would seem to make more sense. (because either
-way, the hypothetical user basically needs to recompile the kernel to
-get back on their feet. or all of userspace.)
-
-i'm not sure i see this new way for a kernel update to break my system
-and need to be fixed forward/rolled back as any different from any of
-the existing ways in which this can happen :-) as an end-user i have
-to rely on whoever's sending me software updates to test adequately
-enough that they find the problems. as an end user, there isn't any
-difference between "my phone rebooted when i tried to take a photo
-because of a kernel/driver leak", say, and "my phone rebooted when i
-tried to take a photo because of missing untagging of a pointer passed
-via ioctl".
-
-i suspect you and i have very different people in mind when we say "user" :-)
-
-> > I feel like I'm missing something about this being seen as an ABI
-> > break. The kernel already fails on userspace addresses that have high
-> > bits set -- are there things that _depend_ on this failure to operate?
->
-> It's about providing a relaxed ABI which allows non-zero top byte and
-> breaking it later inadvertently without having something better in place
-> to analyse the kernel changes.
->
-> Thanks.
->
-> --
-> Catalin
+Jason
