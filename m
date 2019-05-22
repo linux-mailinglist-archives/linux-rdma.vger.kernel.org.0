@@ -2,108 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCCD26824
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 18:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4219F26866
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 18:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729576AbfEVQYp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 12:24:45 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:38136 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729475AbfEVQYo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 12:24:44 -0400
-Received: by mail-qt1-f194.google.com with SMTP id l3so3093868qtj.5
-        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 09:24:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Wd5zSoCQkWyUnpnrNZptFGE9sLAarxmANwGIIWsgsPs=;
-        b=ILzPUBWLwnq9jdNSf7NqomaUyt+M0wFZVLCo7ggo5IcyEqs9oB59Cv2ewVcpzwGUfF
-         R9FpC2zCwOP1VZqSJEiNDODMMYp5Py7LPpPav6X9vf2U63d0klvtTxbaWjEl0Mr15evP
-         wvL6kWrhaWqDwL0N/cOXgLhGCBDHWo4pYOPuYf+IVn+gGP3lp1xgWZEdvCxmr7RBXpZ/
-         aknzb5GUvGFPFu7+TwJUXXX85i/kTJolVp7ml7Z7sE8D2FcJWXzbz7CMfri0iBegfwfT
-         +PLqPsWvqGobwx7WCMI++mLguPY+JdMBL2tRaB329ve5I8UYdUBsgxhU8qfTI1OPgThZ
-         S/Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Wd5zSoCQkWyUnpnrNZptFGE9sLAarxmANwGIIWsgsPs=;
-        b=KiZUXCPMC/oMX63s5HgCeqqfPxrUTdXclT+mlBJNjIraAVp0OSlL7DnFW5gffqD73x
-         gE4dck6zU/2e28+O5b68SozVwzJR8zd92JGCXPIw0kGFcGSLQBt4JBjFkhKbB6irk4MH
-         oMS11lD4MYJCzicKaKll2Iw14lTtnefJQ1a1XuhSP7+6yJKmcZZr0OBYjmvNlkPRrC51
-         /Tq4OUU9uNbdr7JmOO9H9/xAgpO27P+hL0BjMkFL9aNbgNYSRxq7fFR7OU6xi22uycpg
-         8MDKhCjG45PoCYHJf6FWeR/PhfcId4qaiTBKJ58FecZP8C4+xkPNiMAk++zlwLjqsU/0
-         TlkQ==
-X-Gm-Message-State: APjAAAXBW/JhzTnNOHcohtGZHHudmxl2ud+BZH1dD0RJLyzJ8BGzYuZs
-        768XI/Y5CY597wPyKJPVc0Ke1gLLcAs=
-X-Google-Smtp-Source: APXvYqyjsENsgABDT5ADQgsqgVcqHjSoLqz9fu4JLrkx53A53XGGthwygvg0zQ1KmeA/63RXN2ildA==
-X-Received: by 2002:ac8:7a72:: with SMTP id w18mr73173280qtt.318.1558542283671;
-        Wed, 22 May 2019 09:24:43 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id s17sm14309396qke.60.2019.05.22.09.24.42
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 May 2019 09:24:43 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hTU2k-0000Bk-FR; Wed, 22 May 2019 13:24:42 -0300
-Date:   Wed, 22 May 2019 13:24:42 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Nirranjan Kirubaharan <nirranjan@chelsio.com>
-Cc:     bharat@chelsio.com, dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next v4] iw_cxgb4: Fix qpid leak
-Message-ID: <20190522162442.GD6054@ziepe.ca>
-References: <ecd8e5de39986704861913f2bfb70acbccf6b616.1558530087.git.nirranjan@chelsio.com>
+        id S1730137AbfEVQfh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 12:35:37 -0400
+Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:55078 "EHLO
+        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729950AbfEVQfg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 May 2019 12:35:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39D60341;
+        Wed, 22 May 2019 09:35:36 -0700 (PDT)
+Received: from mbp (usa-sjc-mx-foss1.foss.arm.com [217.140.101.70])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CE693F5AF;
+        Wed, 22 May 2019 09:35:29 -0700 (PDT)
+Date:   Wed, 22 May 2019 17:35:27 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     enh <enh@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <20190522163527.rnnc6t4tll7tk5zw@mbp>
+References: <cover.1557160186.git.andreyknvl@google.com>
+ <20190517144931.GA56186@arrakis.emea.arm.com>
+ <CAFKCwrj6JEtp4BzhqO178LFJepmepoMx=G+YdC8sqZ3bcBp3EQ@mail.gmail.com>
+ <20190521182932.sm4vxweuwo5ermyd@mbp>
+ <201905211633.6C0BF0C2@keescook>
+ <20190522101110.m2stmpaj7seezveq@mbp>
+ <CAJgzZoosKBwqXRyA6fb8QQSZXFqfHqe9qO9je5TogHhzuoGXJQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ecd8e5de39986704861913f2bfb70acbccf6b616.1558530087.git.nirranjan@chelsio.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAJgzZoosKBwqXRyA6fb8QQSZXFqfHqe9qO9je5TogHhzuoGXJQ@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 06:27:45AM -0700, Nirranjan Kirubaharan wrote:
-> In iw_cxgb4, Added wait in destroy_qp() so that all references to
-> qp are dereferenced and qp is freed in destroy_qp() itself.
-> This ensures freeing of all QPs before invocation of
-> dealloc_ucontext(), which prevents loss of in use qpids stored
-> in ucontext.
+On Wed, May 22, 2019 at 08:30:21AM -0700, enh wrote:
+> On Wed, May 22, 2019 at 3:11 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > On Tue, May 21, 2019 at 05:04:39PM -0700, Kees Cook wrote:
+> > > I just want to make sure I fully understand your concern about this
+> > > being an ABI break, and I work best with examples. The closest situation
+> > > I can see would be:
+> > >
+> > > - some program has no idea about MTE
+> >
+> > Apart from some libraries like libc (and maybe those that handle
+> > specific device ioctls), I think most programs should have no idea about
+> > MTE. I wouldn't expect programmers to have to change their app just
+> > because we have a new feature that colours heap allocations.
 > 
-> Signed-off-by: Nirranjan Kirubaharan <nirranjan@chelsio.com>
-> Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
-> v2:
-> - Used kref instead of qid count.
-> v3:
-> - Ensured freeing of qp in destroy_qp() itself.
-> v4:
-> - Change c4iw_qp_rem_ref() to use a refcount not kref and trigger
-> complete() when the refcount goes to 0.
-> - Move all of queue_qp_free into c4iw_destroy_qp()
->  drivers/infiniband/hw/cxgb4/iw_cxgb4.h |  4 +--
->  drivers/infiniband/hw/cxgb4/qp.c       | 48 ++++++++++++----------------------
->  2 files changed, 19 insertions(+), 33 deletions(-)
+> obviously i'm biased as a libc maintainer, but...
 > 
-> diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-> index 916ef982172e..b8e90eaf4a03 100644
-> +++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-> @@ -490,13 +490,13 @@ struct c4iw_qp {
->  	struct t4_wq wq;
->  	spinlock_t lock;
->  	struct mutex mutex;
-> -	struct kref kref;
->  	wait_queue_head_t wait;
->  	int sq_sig_all;
->  	struct c4iw_srq *srq;
-> -	struct work_struct free_work;
->  	struct c4iw_ucontext *ucontext;
->  	struct c4iw_wr_wait *wr_waitp;
-> +	struct completion qp_rel_comp;
-> +	atomic_t qp_refcnt;
+> i don't think it helps to move this to libc --- now you just have an
+> extra dependency where to have a guaranteed working system you need to
+> update your kernel and libc together. (or at least update your libc to
+> understand new ioctls etc _before_ you can update your kernel.)
 
-no, refcount_t
+That's not what I meant (or I misunderstood you). If we have a relaxed
+ABI in the kernel and a libc that returns tagged pointers on malloc() I
+wouldn't expect the programmer to do anything different in the
+application code like explicit untagging. Basically the program would
+continue to run unmodified irrespective of whether you use an old libc
+without tagged pointers or a new one which tags heap allocations.
 
-But oterhwise OK
+What I do expect is that the libc checks for the presence of the relaxed
+ABI, currently proposed as an AT_FLAGS bit (for MTE we'd have a
+HWCAP_MTE), and only tag the malloc() pointers if the kernel supports
+the relaxed ABI. As you said, you shouldn't expect that the C library
+and kernel are upgraded together, so they should be able to work in any
+new/old version combination.
 
-Jason
+> > > The trouble I see with this is that it is largely theoretical and
+> > > requires part of userspace to collude to start using a new CPU feature
+> > > that tickles a bug in the kernel. As I understand the golden rule,
+> > > this is a bug in the kernel (a missed ioctl() or such) to be fixed,
+> > > not a global breaking of some userspace behavior.
+> >
+> > Yes, we should follow the rule that it's a kernel bug but it doesn't
+> > help the user that a newly installed kernel causes user space to no
+> > longer reach a prompt. Hence the proposal of an opt-in via personality
+> > (for MTE we would need an explicit opt-in by the user anyway since the
+> > top byte is no longer ignored but checked against the allocation tag).
+> 
+> but realistically would this actually get used in this way? or would
+> any given system either be MTE or non-MTE. in which case a kernel
+> configuration option would seem to make more sense. (because either
+> way, the hypothetical user basically needs to recompile the kernel to
+> get back on their feet. or all of userspace.)
+
+The two hard requirements I have for supporting any new hardware feature
+in Linux are (1) a single kernel image binary continues to run on old
+hardware while making use of the new feature if available and (2) old
+user space continues to run on new hardware while new user space can
+take advantage of the new feature.
+
+The distro user space usually has a hard requirement that it continues
+to run on (certain) old hardware. We can't enforce this in the kernel
+but we offer the option to user space developers of checking feature
+availability through HWCAP bits.
+
+The Android story may be different as you have more control about which
+kernel configurations are deployed on specific SoCs. I'm looking more
+from a Linux distro angle where you just get an off-the-shelf OS image
+and install it on your hardware, either taking advantage of new features
+or just not using them if the software was not updated. Or, if updated
+software is installed on old hardware, it would just run.
+
+For MTE, we just can't enable it by default since there are applications
+who use the top byte of a pointer and expect it to be ignored rather
+than failing with a mismatched tag. Just think of a hwasan compiled
+binary where TBI is expected to work and you try to run it with MTE
+turned on.
+
+I would also expect the C library or dynamic loader to check for the
+presence of a HWCAP_MTE bit before starting to tag memory allocations,
+otherwise it would get SIGILL on the first MTE instruction it tries to
+execute.
+
+> i'm not sure i see this new way for a kernel update to break my system
+> and need to be fixed forward/rolled back as any different from any of
+> the existing ways in which this can happen :-) as an end-user i have
+> to rely on whoever's sending me software updates to test adequately
+> enough that they find the problems. as an end user, there isn't any
+> difference between "my phone rebooted when i tried to take a photo
+> because of a kernel/driver leak", say, and "my phone rebooted when i
+> tried to take a photo because of missing untagging of a pointer passed
+> via ioctl".
+> 
+> i suspect you and i have very different people in mind when we say "user" :-)
+
+Indeed, I think we have different users in mind. I didn't mean the end
+user who doesn't really care which C library version it's running on
+their phone but rather advanced users (not necessarily kernel
+developers) that prefer to build their own kernels with every release.
+We could extend this to kernel developers who don't have time to track
+down why a new kernel triggers lots of SIGSEGVs during boot.
+
+-- 
+Catalin
