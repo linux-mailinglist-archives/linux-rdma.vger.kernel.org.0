@@ -2,214 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE7D268BA
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 18:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4447C268DC
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 19:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730247AbfEVQ6h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 12:58:37 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:41622 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730242AbfEVQ6h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 12:58:37 -0400
-Received: by mail-lj1-f196.google.com with SMTP id q16so2768415ljj.8
-        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 09:58:34 -0700 (PDT)
+        id S1729730AbfEVRKp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 13:10:45 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:36988 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729430AbfEVRKo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 13:10:44 -0400
+Received: by mail-qk1-f196.google.com with SMTP id d10so1970167qko.4
+        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 10:10:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iEj6Ff/H6E4VLiXQm6DO5BqKseElb7ler1ySMSlsz4I=;
-        b=wK+Ags5fi2Zh9VWkgyeKWGUKDczOLAxo6NEBDIkT47LLbY+0uPXQ20Ef3md4Je4YM7
-         yTt+Dnj+qvCgrr4bQbXebiU250PfvvmpvwxcaxOqBf5zn5CMszutRFHD1jRI8Y5V/CPs
-         jt+pv/yu85FknwLJ8Zo9R8XECA2KhoyXo2Diq4THdh7+NYacc5mTvAPuk8TOUmLqFwYn
-         AgFwdp2R8ztxIowcvgrh5IyXMpDzu2HT0gF+HDg31nzr0Ecz3Q04rvVhTpk7W+XmTJ5D
-         H6CtsOUOTi8rz1vPfB8hysSXAunrOlBx79JX28IwO3FUWoOi2wwQCUxMiiDLS3NePwQF
-         DnQw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=g4EyfT6p5FwfZYyG+l5P03rDlwoWAmrsZLFPciaeXRM=;
+        b=W/KLuJZP0NRPc5fGkoEtpXBXGKQxRin1N6vGt/I4Uo0L9X3MosUo9RSM+/nPQdr0XP
+         a+2sYthD8ZhxU3FL/Dh0itkBt5CigdV+H+f1SRUyfeH9p8GgEySLFkVOgM5D1NRuvtAZ
+         n5HuznPgT8FYifzlt5LDriom1pQeeqNztiSO5s57CSMxYJAWeclSYfw1VvzNicaYGTVr
+         gwRD3AWbB1zCEABTw2xnjNReabz7RO4KOXkGHOZFhGfRGjUIG31hKuuglUQ3z9kpthS5
+         /h45xdg6DwBipg+9C+43WoCdQt9//cwyMEfBlUC3/C9QrfIckSkcqhUwLKqDAfOQ7qfe
+         jEVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iEj6Ff/H6E4VLiXQm6DO5BqKseElb7ler1ySMSlsz4I=;
-        b=Qovm37M3wu01vNdHEA6P+OCanjy2bFdvBPKamJztNGIpKtPdwXWzw7fAvejdf5n2J4
-         Zt4uStJPicM8/OG7I79iT3a9B4didYF+CKBz2xh9UPgZWnBBzE4IKYlq+2OgSys4k/2G
-         zxTjmPxcwsDOGDDGpHg8jZ9tSXkhGh9S5sZM3am6nizIUGjH7K/PI9VboIhYwEn69pGe
-         r1J97Sumwgt0I6aKducO/71GwdqCR4l1Tv7+rmd3gIA61YwD8cnnrwgbAUMgNb2o0fLE
-         l6yDhed6xuTYDX4Y4SxzkpUKIfrmXllQ1lY+0odY1XasFtRvqioOpCeyIhl6wYh/zmIY
-         oBjw==
-X-Gm-Message-State: APjAAAUkQSWSPMO6DfI2UcwrDmwP2G2Xyt4NKeAFjWO6wgH8B3C5w1Sf
-        3j41niuNBmhO/yMiTL9wTz8M00mYMAYuK/ZxGRX9og==
-X-Google-Smtp-Source: APXvYqy5hQuwmu5sUHU1LdrMDZRl8vRMt+7oXELCei2Hw7KHmtQdp6HFikhxSbWr2LIYnAvYIHTeEegng6kT70Dc8d0=
-X-Received: by 2002:a2e:8614:: with SMTP id a20mr7690480lji.20.1558544313559;
- Wed, 22 May 2019 09:58:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=g4EyfT6p5FwfZYyG+l5P03rDlwoWAmrsZLFPciaeXRM=;
+        b=ExZ9Z/lzHGrrYuTfJE2hankPh1du/4nvHgnQ7Rht+v3qN5yAXxPhghit3iCosvAHTQ
+         dNpFGlBf0D2+24uD+Cx9dXumoTVjcGwN5LZg5mxRgeB93dsPfeXSUSjR/4lC3S26jafe
+         7MywG/EKTqATYBQ3tSyjluJ9yLmhnJ68VtUNX2EMrFY5HuQ2t1buOsna0hO0HidTlqqA
+         CSwEfIa6C6i05OlVSy43fR/HvlAzG14ltFTYw++7ZBpDcoSE7zF6YgtiYjifg3Ao1zGs
+         ycv74ZQWNdkV9l5LZ0G52FSVJWmNw8PtobF9d2iT3Bp61lPuPhE3OTkm/1GKneCHqcN6
+         NUmQ==
+X-Gm-Message-State: APjAAAVbVyBSQQeEDWar9/R8PXHu+fJ48LOR5ks/xIy61ZPQ7Ea9FwFs
+        qo7pQ2+znYOlBn2+BYgngb1FJw==
+X-Google-Smtp-Source: APXvYqytVKZZ4ui0xZ1VusHhA/020Xjj6SKTQ3TKIyS2BAkiv/Y4ZZgqGSp/TfCmOmdL5og0Sykvag==
+X-Received: by 2002:a05:620a:146d:: with SMTP id j13mr3848060qkl.222.1558545043992;
+        Wed, 22 May 2019 10:10:43 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id l40sm15886693qtc.32.2019.05.22.10.10.43
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 May 2019 10:10:43 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hTUlH-0003wv-0E; Wed, 22 May 2019 14:10:43 -0300
+Date:   Wed, 22 May 2019 14:10:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Majd Dibbiny <majd@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2 13/17] RDMA/core: Get sum value of all
+ counters when perform a sysfs stat read
+Message-ID: <20190522171042.GA15023@ziepe.ca>
+References: <20190429083453.16654-1-leon@kernel.org>
+ <20190429083453.16654-14-leon@kernel.org>
 MIME-Version: 1.0
-References: <cover.1557160186.git.andreyknvl@google.com> <20190517144931.GA56186@arrakis.emea.arm.com>
- <CAFKCwrj6JEtp4BzhqO178LFJepmepoMx=G+YdC8sqZ3bcBp3EQ@mail.gmail.com>
- <20190521182932.sm4vxweuwo5ermyd@mbp> <201905211633.6C0BF0C2@keescook>
- <20190522101110.m2stmpaj7seezveq@mbp> <CAJgzZoosKBwqXRyA6fb8QQSZXFqfHqe9qO9je5TogHhzuoGXJQ@mail.gmail.com>
- <20190522163527.rnnc6t4tll7tk5zw@mbp>
-In-Reply-To: <20190522163527.rnnc6t4tll7tk5zw@mbp>
-From:   enh <enh@google.com>
-Date:   Wed, 22 May 2019 09:58:22 -0700
-Message-ID: <CAJgzZooc+wXBBXenm62n2zR8TVrv-y1pXMmHSdxeaNYhFLSzBA@mail.gmail.com>
-Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190429083453.16654-14-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 9:35 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Wed, May 22, 2019 at 08:30:21AM -0700, enh wrote:
-> > On Wed, May 22, 2019 at 3:11 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > On Tue, May 21, 2019 at 05:04:39PM -0700, Kees Cook wrote:
-> > > > I just want to make sure I fully understand your concern about this
-> > > > being an ABI break, and I work best with examples. The closest situation
-> > > > I can see would be:
-> > > >
-> > > > - some program has no idea about MTE
-> > >
-> > > Apart from some libraries like libc (and maybe those that handle
-> > > specific device ioctls), I think most programs should have no idea about
-> > > MTE. I wouldn't expect programmers to have to change their app just
-> > > because we have a new feature that colours heap allocations.
-> >
-> > obviously i'm biased as a libc maintainer, but...
-> >
-> > i don't think it helps to move this to libc --- now you just have an
-> > extra dependency where to have a guaranteed working system you need to
-> > update your kernel and libc together. (or at least update your libc to
-> > understand new ioctls etc _before_ you can update your kernel.)
->
-> That's not what I meant (or I misunderstood you). If we have a relaxed
-> ABI in the kernel and a libc that returns tagged pointers on malloc() I
-> wouldn't expect the programmer to do anything different in the
-> application code like explicit untagging. Basically the program would
-> continue to run unmodified irrespective of whether you use an old libc
-> without tagged pointers or a new one which tags heap allocations.
->
-> What I do expect is that the libc checks for the presence of the relaxed
-> ABI, currently proposed as an AT_FLAGS bit (for MTE we'd have a
-> HWCAP_MTE), and only tag the malloc() pointers if the kernel supports
-> the relaxed ABI. As you said, you shouldn't expect that the C library
-> and kernel are upgraded together, so they should be able to work in any
-> new/old version combination.
+On Mon, Apr 29, 2019 at 11:34:49AM +0300, Leon Romanovsky wrote:
+> From: Mark Zhang <markz@mellanox.com>
+> 
+> Since a QP can only be bound to one counter, then if it is bound to a
+> separate counter, for backward compatibility purpose, the statistic
+> value must be:
+> * stat of default counter
+> + stat of all running allocated counters
+> + stat of all deallocated counters (history stats)
+> 
+> Signed-off-by: Mark Zhang <markz@mellanox.com>
+> Reviewed-by: Majd Dibbiny <majd@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>  drivers/infiniband/core/counters.c | 99 +++++++++++++++++++++++++++++-
+>  drivers/infiniband/core/device.c   |  8 ++-
+>  drivers/infiniband/core/sysfs.c    | 10 ++-
+>  include/rdma/rdma_counter.h        |  5 +-
+>  4 files changed, 113 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
+> index 36cd9eca1e46..f598b1cdb241 100644
+> +++ b/drivers/infiniband/core/counters.c
+> @@ -146,6 +146,20 @@ static int __rdma_counter_bind_qp(struct rdma_counter *counter,
+>  	return ret;
+>  }
+>  
+> +static void counter_history_stat_update(const struct rdma_counter *counter)
+> +{
+> +	struct ib_device *dev = counter->device;
+> +	struct rdma_port_counter *port_counter;
+> +	int i;
+> +
+> +	port_counter = &dev->port_data[counter->port].port_counter;
+> +	if (!port_counter->hstats)
+> +		return;
+> +
+> +	for (i = 0; i < counter->stats->num_counters; i++)
+> +		port_counter->hstats->value[i] += counter->stats->value[i];
+> +}
+> +
+>  static int __rdma_counter_unbind_qp(struct ib_qp *qp, bool force)
+>  {
+>  	struct rdma_counter *counter = qp->counter;
+> @@ -285,8 +299,10 @@ int rdma_counter_unbind_qp(struct ib_qp *qp, bool force)
+>  		return ret;
+>  
+>  	rdma_restrack_put(&counter->res);
+> -	if (atomic_dec_and_test(&counter->usecnt))
+> +	if (atomic_dec_and_test(&counter->usecnt)) {
+> +		counter_history_stat_update(counter);
+>  		rdma_counter_dealloc(counter);
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -307,21 +323,98 @@ int rdma_counter_query_stats(struct rdma_counter *counter)
+>  	return ret;
+>  }
+>  
+> -void rdma_counter_init(struct ib_device *dev)
+> +static u64 get_running_counters_hwstat_sum(struct ib_device *dev,
+> +					   u8 port, u32 index)
+> +{
+> +	struct rdma_restrack_entry *res;
+> +	struct rdma_restrack_root *rt;
+> +	struct rdma_counter *counter;
+> +	unsigned long id = 0;
+> +	u64 sum = 0;
+> +
+> +	rt = &dev->res[RDMA_RESTRACK_COUNTER];
+> +	xa_lock(&rt->xa);
+> +	xa_for_each(&rt->xa, id, res) {
+> +		if (!rdma_restrack_get(res))
+> +			continue;
 
-yes, that part makes sense. i do think we'd use the AT_FLAGS bit, for
-exactly this.
+Why do we need to get refcounts if we are holding the xa_lock?
 
-i was questioning the argument about the ioctl issues, and saying that
-from my perspective, untagging bugs are not really any different than
-any other kind of kernel bug.
+> +
+> +		counter = container_of(res, struct rdma_counter, res);
+> +		if ((counter->device != dev) || (counter->port != port))
+> +			goto next;
+> +
+> +		if (rdma_counter_query_stats(counter))
+> +			goto next;
 
-> > > > The trouble I see with this is that it is largely theoretical and
-> > > > requires part of userspace to collude to start using a new CPU feature
-> > > > that tickles a bug in the kernel. As I understand the golden rule,
-> > > > this is a bug in the kernel (a missed ioctl() or such) to be fixed,
-> > > > not a global breaking of some userspace behavior.
-> > >
-> > > Yes, we should follow the rule that it's a kernel bug but it doesn't
-> > > help the user that a newly installed kernel causes user space to no
-> > > longer reach a prompt. Hence the proposal of an opt-in via personality
-> > > (for MTE we would need an explicit opt-in by the user anyway since the
-> > > top byte is no longer ignored but checked against the allocation tag).
-> >
-> > but realistically would this actually get used in this way? or would
-> > any given system either be MTE or non-MTE. in which case a kernel
-> > configuration option would seem to make more sense. (because either
-> > way, the hypothetical user basically needs to recompile the kernel to
-> > get back on their feet. or all of userspace.)
->
-> The two hard requirements I have for supporting any new hardware feature
-> in Linux are (1) a single kernel image binary continues to run on old
-> hardware while making use of the new feature if available and (2) old
-> user space continues to run on new hardware while new user space can
-> take advantage of the new feature.
->
-> The distro user space usually has a hard requirement that it continues
-> to run on (certain) old hardware. We can't enforce this in the kernel
-> but we offer the option to user space developers of checking feature
-> availability through HWCAP bits.
->
-> The Android story may be different as you have more control about which
-> kernel configurations are deployed on specific SoCs. I'm looking more
-> from a Linux distro angle where you just get an off-the-shelf OS image
-> and install it on your hardware, either taking advantage of new features
-> or just not using them if the software was not updated. Or, if updated
-> software is installed on old hardware, it would just run.
->
-> For MTE, we just can't enable it by default since there are applications
-> who use the top byte of a pointer and expect it to be ignored rather
-> than failing with a mismatched tag. Just think of a hwasan compiled
-> binary where TBI is expected to work and you try to run it with MTE
-> turned on.
->
-> I would also expect the C library or dynamic loader to check for the
-> presence of a HWCAP_MTE bit before starting to tag memory allocations,
-> otherwise it would get SIGILL on the first MTE instruction it tries to
-> execute.
+And rdma_counter_query_stats does
 
-(a bit off-topic, but i thought the MTE instructions were encoded in
-the no-op space, to avoid this?)
++	mutex_lock(&counter->lock);
 
-> > i'm not sure i see this new way for a kernel update to break my system
-> > and need to be fixed forward/rolled back as any different from any of
-> > the existing ways in which this can happen :-) as an end-user i have
-> > to rely on whoever's sending me software updates to test adequately
-> > enough that they find the problems. as an end user, there isn't any
-> > difference between "my phone rebooted when i tried to take a photo
-> > because of a kernel/driver leak", say, and "my phone rebooted when i
-> > tried to take a photo because of missing untagging of a pointer passed
-> > via ioctl".
-> >
-> > i suspect you and i have very different people in mind when we say "user" :-)
->
-> Indeed, I think we have different users in mind. I didn't mean the end
-> user who doesn't really care which C library version it's running on
-> their phone but rather advanced users (not necessarily kernel
-> developers) that prefer to build their own kernels with every release.
-> We could extend this to kernel developers who don't have time to track
-> down why a new kernel triggers lots of SIGSEGVs during boot.
+So this was never tested as it will insta-crash with lockdep.
 
-i still don't see how this isn't just a regular testing/CI issue, the
-same as any other kind of kernel bug. it's already the case that i can
-get a bad kernel...
+Presumably this is why it is using xa_for_each and restrack_get - but
+it needs to drop the lock after successful get.
 
-> --
-> Catalin
+This sort of comment applies to nearly evey place in this series that
+uses xa_for_each. 
+
+This needs to be tested with lockdep.
+
+Jason
