@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C79526C80
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 21:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A8E26C38
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 21:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730874AbfEVTfN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 15:35:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54614 "EHLO mail.kernel.org"
+        id S2387722AbfEVTcB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 15:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732971AbfEVTbH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 May 2019 15:31:07 -0400
+        id S2387714AbfEVTcA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 May 2019 15:32:00 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF9B720675;
-        Wed, 22 May 2019 19:31:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86E0D204FD;
+        Wed, 22 May 2019 19:31:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558553466;
-        bh=7UQ8nCbr7CLhfG35J4sz4PaYKZN7msH+PRGQty9D3s0=;
+        s=default; t=1558553520;
+        bh=Bq7qDtaF9Lj/Cks7dcpU/ltTMsWxr0eFIOFaPjG6ZoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MMTsFclcONxOrbEFWIesuLoeCC5pX6IOC6vRMOrySd+T3CC2z4bvjRsr7JBNhfkdc
-         NbZb4l9JP2z27cMo0u1wQNsvt30bs0mRlIXvH8/HyB09Lb8ulhSi6ncBhE+snTwYUU
-         MQFNsT+1Ae7hdXQMfSc+VaLLCtKSs1XX+b/DpMqY=
+        b=LltO4yVS62eq4Mr/PZx2ghEWb51IwrZ3kDLbWUsEhETZzYd+MfmD4X6uUfsItqVi8
+         dtUrQqyDZ56q3LbsNu6Q93JBjEl5JMrBIiERsmLI9DTInde0w2HgRYPIGH6zBrC4ks
+         5ZHHpOlmEewOPFGmPIKZRzXZC5ErUT/Lhal/x/j8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Parav Pandit <parav@mellanox.com>,
@@ -30,12 +30,12 @@ Cc:     Parav Pandit <parav@mellanox.com>,
         Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 032/114] RDMA/cma: Consider scope_id while binding to ipv6 ll address
-Date:   Wed, 22 May 2019 15:28:55 -0400
-Message-Id: <20190522193017.26567-32-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 22/92] RDMA/cma: Consider scope_id while binding to ipv6 ll address
+Date:   Wed, 22 May 2019 15:30:17 -0400
+Message-Id: <20190522193127.27079-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190522193017.26567-1-sashal@kernel.org>
-References: <20190522193017.26567-1-sashal@kernel.org>
+In-Reply-To: <20190522193127.27079-1-sashal@kernel.org>
+References: <20190522193127.27079-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -80,10 +80,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 19 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 85d4ef319c905..0c7d63e0f0fde 100644
+index 1454290078def..76e7eca35a110 100644
 --- a/drivers/infiniband/core/cma.c
 +++ b/drivers/infiniband/core/cma.c
-@@ -1021,18 +1021,31 @@ static inline int cma_any_addr(struct sockaddr *addr)
+@@ -902,18 +902,31 @@ static inline int cma_any_addr(struct sockaddr *addr)
  	return cma_zero_addr(addr) || cma_loopback_addr(addr);
  }
  
