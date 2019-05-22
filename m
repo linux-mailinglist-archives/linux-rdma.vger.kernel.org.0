@@ -2,588 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A7B25B12
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 02:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE88025B15
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 02:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726083AbfEVAKU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 May 2019 20:10:20 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:35102 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbfEVAKU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 May 2019 20:10:20 -0400
-Received: by mail-qt1-f195.google.com with SMTP id a39so323211qtk.2
-        for <linux-rdma@vger.kernel.org>; Tue, 21 May 2019 17:10:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=DgDSFdp/Y5/h7tcMJQKlW4O+syemYMzy8aJNypTjznU=;
-        b=hgfzYIq7ONCUlK0+xZP1XPcWHPiaWtEq4MushRyWaU6DtYV1mLW46Phcg/HOZeWjBM
-         jQwWXm0BLyxrx9aNNzsoFrHGTX9qgRMkJwl/ts5kiLQx5iHzCttLmy5PRVY0aGUGmNF/
-         tkSNXpg9fPkmtbYbB9HrHrt/3K47I30b7P079/0qfaaMJI94qBOXAKbKWkHAjiDpayrU
-         wVHG3bN9N8hkCMrFP1z0GjU1znXlomUnzxvuFvhExcB+78IbR846SuTplgXzMCQ4cC2V
-         QyXFPzhAdzn6T9sro7iuwLgWoZAm3hdCGwnWJxbKqmHwX9BcYxVne06zDUK/ZyW++/+p
-         bvkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=DgDSFdp/Y5/h7tcMJQKlW4O+syemYMzy8aJNypTjznU=;
-        b=U9NZZORkkg+sI8nWavByQWYcDbUL58TmMOBJH6hWiV2E9lQtYcmUAm14yQqk/NeLhh
-         nhFWK2ZrHo4AlXbDYADsRC0J3xfTki6iesCdifbiT5BIsoRDlRNqRFVnZCmMjdq53L6f
-         VLVNaRjMogM/bnFQDmjeHfwYhp104cqbRB2iU2YFmE0TUt+hJ1Z3G2U322wsiOKaEJRv
-         FtRnA9C4N6QIjSc1DqhE+oYHrrQ+QusiBRVZP81ECBCpp12dx6mz1fL8HLB1PCuLkhA0
-         F/5EnzNVQJFRIu5hnSpL6zmJCZNRbzSXxWh43zYfaVmeKHFtmb7x2sZxblj/vMl1tWNy
-         FYGA==
-X-Gm-Message-State: APjAAAWIwi5W7YCpEItqYaXAfJeu9wydBOVp8S7VtsGYstIHSwdl2ru7
-        /5B59mN26kZELxY8MLfQ7kB+76SwWwI=
-X-Google-Smtp-Source: APXvYqyj2d7xFtoue0pOXjUxzRPu0o36Xl52J5r0T37eQ+LsmF96u8mZDJTQzhaGrjtY9HBn/ceu5A==
-X-Received: by 2002:ac8:2f98:: with SMTP id l24mr37323674qta.78.1558483818273;
-        Tue, 21 May 2019 17:10:18 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id r54sm10207399qtr.41.2019.05.21.17.10.17
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 21 May 2019 17:10:17 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hTEpl-0008Au-4f
-        for linux-rdma@vger.kernel.org; Tue, 21 May 2019 21:10:17 -0300
-Date:   Tue, 21 May 2019 21:10:17 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-core] build: Set up CI with Azure Pipelines
-Message-ID: <20190522001017.GA27759@ziepe.ca>
+        id S1726083AbfEVAOW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 May 2019 20:14:22 -0400
+Received: from mail-eopbgr70040.outbound.protection.outlook.com ([40.107.7.40]:8198
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725797AbfEVAOW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 May 2019 20:14:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iBTxmRQbOrRmRWdaHgzYgHZcbpi6PX5sLV52ad7WI6E=;
+ b=hHHQ4UW2Qc6WNlLhQoRipIXRbOJOIpuy6KmX59FPzUzk06vhWEZwAOuE1Bu2bI7D1elXdaZa7kgY+VxGJfbZezZ26GB8h4ykju8mI/ZjZjgGs6fluqOoisOShJrAmMqsjmLHtCwLv6lyg9jA79O0ehNGcz6J/DQTzcfFy2dQMzU=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB4365.eurprd05.prod.outlook.com (52.133.12.157) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1900.17; Wed, 22 May 2019 00:14:17 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1922.013; Wed, 22 May 2019
+ 00:14:17 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Gal Pressman <galpress@amazon.com>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Glenn Streiff <gstreiff@neteffect.com>,
+        Steve Wise <swise@opengridcomputing.com>
+Subject: Re: [PATCH rdma-next 04/15] RDMA/efa: Remove check that prevents
+ destroy of resources in error flows
+Thread-Topic: [PATCH rdma-next 04/15] RDMA/efa: Remove check that prevents
+ destroy of resources in error flows
+Thread-Index: AQHVDtjuQBBHO2HSKkGy9VmU4u8onqZz9GwAgAAIigCAABTggIABx5AAgAAZSQCAAFYvAA==
+Date:   Wed, 22 May 2019 00:14:17 +0000
+Message-ID: <20190522001412.GA30833@mellanox.com>
+References: <20190520065433.8734-1-leon@kernel.org>
+ <20190520065433.8734-5-leon@kernel.org>
+ <a3358e40-9be4-0a7c-dab5-96573b646ded@amazon.com>
+ <20190520131000.GJ4573@mtr-leonro.mtl.com>
+ <161ad83d-cb50-d02a-8511-938b2b3b7156@amazon.com>
+ <20190521173514.GH2907@mellanox.com>
+ <3e957c76-5959-2b6a-f29e-09a4e2436258@amazon.com>
+In-Reply-To: <3e957c76-5959-2b6a-f29e-09a4e2436258@amazon.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR12CA0007.namprd12.prod.outlook.com
+ (2603:10b6:208:a8::20) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.49.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 627a3503-a724-4f88-9ccb-08d6de4a6d96
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4365;
+x-ms-traffictypediagnostic: VI1PR05MB4365:
+x-microsoft-antispam-prvs: <VI1PR05MB43654D1E1C79B05FA0FA9A0FCF000@VI1PR05MB4365.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0045236D47
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(346002)(376002)(366004)(39860400002)(136003)(189003)(199004)(6486002)(102836004)(229853002)(4326008)(11346002)(1076003)(186003)(446003)(66556008)(64756008)(66446008)(66476007)(66946007)(73956011)(25786009)(14454004)(71200400001)(476003)(6246003)(36756003)(478600001)(6436002)(2616005)(6512007)(71190400001)(68736007)(6916009)(33656002)(6116002)(486006)(53936002)(2906002)(5660300002)(316002)(3846002)(53546011)(256004)(54906003)(14444005)(305945005)(7736002)(52116002)(76176011)(86362001)(99286004)(8936002)(66066001)(8676002)(26005)(6506007)(386003)(81156014)(81166006);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4365;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: HSK1Bnd48zu1BZ9NK2WoeATGgdycG+uTbf7Q/gtRZB5WA8fV7BaQfqWGY1X1ACHZbeFYAJyX+4rc5Y4n7GUwkbVUIgQl7ntoUNi29+9zgud6/02jf9EMm7WbgmDkgYIlReVN/DtI4bK0u2qDMS4YrxQfmCkKW1khr6WqnzzWZGaDbzQyDYhYthwrJkfK9H+4ZKz7GogA9G0wgdd9zQiPXkf2Udmt6UWuI4mCB9cJ0hwK6DfJccOpMmNhyziR0GOf/uQYmWEBu8ZlzPRREK6l02HXsQuuYS4j/mnqJ6zG79KsH6cLJxyKpH6JbPHdFudmNoLF+6FmoNvFFvZG6AwPE6x2TH9ul87BsuRNz6OZzsvk6Nge/pJ0HH+JQUQNby+pwkFI9fZoCHnoZxl6OjlENMlLEgJ1HENgVCMEnPFEacA=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <7BF5B287CC4F6247B8D10B846083931E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 627a3503-a724-4f88-9ccb-08d6de4a6d96
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 May 2019 00:14:17.0605
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4365
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Azure Pipelines is intended to replace travis as the CI for rdma-core.
+On Tue, May 21, 2019 at 10:05:44PM +0300, Gal Pressman wrote:
+> On 21/05/2019 20:35, Jason Gunthorpe wrote:
+> > On Mon, May 20, 2019 at 05:24:43PM +0300, Gal Pressman wrote:
+> >=20
+> >>>>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> >>>>>  drivers/infiniband/hw/efa/efa_verbs.c | 24 -----------------------=
+-
+> >>>>>  1 file changed, 24 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infini=
+band/hw/efa/efa_verbs.c
+> >>>>> index 6d6886c9009f..4999a74cee24 100644
+> >>>>> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> >>>>> @@ -436,12 +436,6 @@ void efa_dealloc_pd(struct ib_pd *ibpd, struct=
+ ib_udata *udata)
+> >>>>>  	struct efa_dev *dev =3D to_edev(ibpd->device);
+> >>>>>  	struct efa_pd *pd =3D to_epd(ibpd);
+> >>>>>
+> >>>>> -	if (udata->inlen &&
+> >>>>> -	    !ib_is_udata_cleared(udata, 0, udata->inlen)) {
+> >>>>> -		ibdev_dbg(&dev->ibdev, "Incompatible ABI params\n");
+> >>>>> -		return;
+> >>>>> -	}
+> >=20
+> > Regardless of the issue of udata validity, these checks still cannot
+> > be here.
+> >=20
+> > We are moving the whole core to not return error codes from driver
+> > object destroy - because destroy is not allowed to fail in many flows.
+>=20
+> What is the reason for that?
 
-Build times are much faster at around 5 mins (vs 23 mins for travis) and
-because it is built on pre-built containers it should not suffer from the
-same flakiness that travis historically has. We can now also scale up the
-number of distros we are testing.
+Because very little was ever doing anything with the return codes. In
+nearly all cases it just caused a memory leak.
 
-This commit replicates all the functionality of travis, except for the
-automatic .tar.gz upload on release. That requires a more careful
-security analysis first.
+So I want to say not being able to destroy is a catastrophic error
+and the driver must cope with it, however it deems fit. WARN_ON & leak
+or fatal error the device, or whatever it wants.
 
-However AZP is setup to use a bionic based container, not the ancient
-xenial stuff. This container uses the built in bionic arm64 and 32 bit
-x86 cross compiler, including all the support libraries. This means it
-can now cross build everything except for pyverbs.
+But the ULPs will not be exposed to this, and don't contain any code
+to handle it.
 
-The GitHub experience is similar with two notable differences:
+> > So, drivers do not have the option to validate the udata and fail
+> > destroy at this point. If it ever comes up, then we will need to split
+> > validation into another step on the uapi path that is done before
+> > invoking the actual destroy function.
+>=20
+> Is it really necessary? The udata in these flows is new, so there's no re=
+ason
+> any driver won't be able to work with a cleared udata and fail the valida=
+tions,
+> even if it expands it in the future.
 
-1) PRs from non-team outside contributors will not run automatically.
-   Someone on the github team has to trigger them with a '/azp run'
-   comment. See azure-pipelines.md for why
-
-2) Checkpatch warnings/errors now result in a green checkmark. Clicking
-   through the check will show a count of errors/warnings and Azure's GUI
-   will show an orange checkmark.
-
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
----
- buildlib/azp-checkpatch      |  72 +++++++++++++++
- buildlib/azure-pipelines.yml | 167 +++++++++++++++++++++++++++++++++++
- buildlib/cbuild              | 141 ++++++++++++++++++++++++++++-
- 3 files changed, 379 insertions(+), 1 deletion(-)
- create mode 100755 buildlib/azp-checkpatch
- create mode 100644 buildlib/azure-pipelines.yml
-
-I've been threatening to do this for some time, as travis's
-limitations are finally too much to cope with
-
-The UCF Consortium has donated their Azure Tenant and is funding the
-Azure Container Registry instance to make this work. Like travis,
-Azure Pipelines provides free build time to open source, but Azure has
-more parallel VMs and I think the VMs are faster too.
-
-I've set it up to run faster, so it is not quite 100% the same as
-travis, but I feel the result is overall an improvement. I
-particularly like the GUI log viewer and how it breaks things down and
-actually points out where errors are.
-
-I have this linked to my testing repo, if there are no objections I'll
-set it up up on the main linux-rdma github sometime after the next
-release comes out and we can start to try it out. It would run in
-parallel with travis until we decide to turn off travis.
-
-To see the experience here, is a sample PR:
-
-https://github.com/jgunthorpe/rdma-plumbing/pull/2
-
-And the resulting build log/report (click checks then 'View more
-details on Azure Pipelines' to get here):
-
-https://dev.azure.com/ucfconsort/rdma-core%20test/_build/results?buildId=48
-
-After this is going I will revise the containers to again use latest
-compilers, with gcc 9 and clang 8, and probably add FC30 and Centos6
-to the matrix since that won't actually increase build time now..
+It isn't necessary now, and probably never will be as everyone should
+use the ioctl flow which already has this split validation approach.
 
 Jason
-
-diff --git a/buildlib/azp-checkpatch b/buildlib/azp-checkpatch
-new file mode 100755
-index 00000000000000..d7149a59af02e7
---- /dev/null
-+++ b/buildlib/azp-checkpatch
-@@ -0,0 +1,72 @@
-+#!/usr/bin/env python3
-+import subprocess
-+import urllib.request
-+import os
-+import re
-+import tempfile
-+import collections
-+import sys
-+
-+base = os.environ["SYSTEM_PULLREQUEST_TARGETBRANCH"]
-+if not re.match("^[0-9a-fA-F]{40}$", base):
-+    base = "refs/remotes/origin/" + base
-+
-+with tempfile.TemporaryDirectory() as dfn:
-+    patches = subprocess.check_output(
-+        [
-+            "git", "format-patch",
-+            "--output-directory", dfn,
-+            os.environ["SYSTEM_PULLREQUEST_SOURCECOMMITID"], "^" + base
-+        ],
-+        universal_newlines=True).splitlines()
-+    if len(patches) == 0:
-+        sys.exit(0)
-+
-+    ckp = os.path.join(dfn, "checkpatch.pl")
-+    urllib.request.urlretrieve(
-+        "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl",
-+        ckp)
-+    urllib.request.urlretrieve(
-+        "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/spelling.txt",
-+        os.path.join(dfn, "spelling.txt"))
-+    os.symlink(
-+        os.path.join(os.getcwd(), "buildlib/const_structs.checkpatch"),
-+        os.path.join(dfn, "const_structs.checkpatch"))
-+    checkpatch = [
-+        "perl", ckp, "--no-tree", "--ignore",
-+        "PREFER_KERNEL_TYPES,FILE_PATH_CHANGES,EXECUTE_PERMISSIONS,USE_NEGATIVE_ERRNO,CONST_STRUCT",
-+        "--emacs", "--mailback", "--quiet", "--no-summary"
-+    ]
-+
-+    failed = False
-+    for fn in patches:
-+        proc = subprocess.run(
-+            checkpatch + [os.path.basename(fn)],
-+            cwd=dfn,
-+            stdout=subprocess.PIPE,
-+            universal_newlines=True,
-+            stderr=subprocess.STDOUT)
-+        if proc.returncode == 0:
-+            assert (not proc.stdout)
-+            continue
-+        sys.stdout.write(proc.stdout)
-+
-+        failed = True
-+        for g in re.finditer(
-+                r"^\d+-.*:\d+: (\S+): (.*)(?:\n#(\d+): (?:FILE: (.*):(\d+):)?)?$",
-+                proc.stdout,
-+                flags=re.MULTILINE):
-+            itms = {}
-+            if g.group(1) == "WARNING":
-+                itms["type"] = "warning"
-+            else:
-+                itms["type"] = "error"
-+            if g.group(4):
-+                itms["sourcepath"] = g.group(4)
-+                itms["linenumber"] = g.group(5)
-+            print("##vso[task.logissue %s]%s" % (";".join(
-+                "%s=%s" % (k, v)
-+                for k, v in sorted(itms.items())), g.group(2)))
-+
-+if failed:
-+    print("##vso[task.complete result=SucceededWithIssues]]azp-checkpatch")
-diff --git a/buildlib/azure-pipelines.yml b/buildlib/azure-pipelines.yml
-new file mode 100644
-index 00000000000000..eb371b76c80129
---- /dev/null
-+++ b/buildlib/azure-pipelines.yml
-@@ -0,0 +1,167 @@
-+# See https://aka.ms/yaml
-+
-+trigger:
-+  - master
-+pr:
-+  - master
-+
-+resources:
-+  # Using ucfconsort_registry2 until this is activated in the agent:
-+  #   https://github.com/microsoft/azure-pipelines-agent/commit/70b69d6303e18f07e28ead393faa5f1be7655e6f#diff-2615f6b0f8a85aa4eeca0740b5bac69f
-+  #   https://developercommunity.visualstudio.com/content/problem/543727/using-containerized-services-in-build-pipeline-wit.html
-+  containers:
-+    - container: azp
-+      image: ucfconsort.azurecr.io/rdma-core/azure_pipelines:latest
-+      endpoint: ucfconsort_registry2
-+    - container: centos7
-+      image: ucfconsort.azurecr.io/rdma-core/centos7:latest
-+      endpoint: ucfconsort_registry2
-+    - container: leap
-+      image: ucfconsort.azurecr.io/rdma-core/opensuse-15.0:latest
-+      endpoint: ucfconsort_registry2
-+
-+stages:
-+  - stage: Build
-+    jobs:
-+      - job: Compile
-+        displayName: Compile Tests
-+        pool:
-+          vmImage: 'Ubuntu-16.04'
-+        container: azp
-+        steps:
-+          - task: PythonScript@0
-+            displayName: checkpatch
-+            condition: eq(variables['Build.Reason'], 'PullRequest')
-+            inputs:
-+              scriptPath: buildlib/azp-checkpatch
-+              pythonInterpreter: /usr/bin/python3
-+
-+          - bash: |
-+              set -e
-+              mkdir build-gcc8
-+              cd build-gcc8
-+              CC=gcc-8 CFLAGS="-Werror" cmake -GNinja .. -DIOCTL_MODE=both -DENABLE_STATIC=1
-+              ninja
-+            displayName: gcc 8.3 Compile
-+
-+          - bash: |
-+              set -e
-+              cd build-gcc8
-+              python2.7 ../buildlib/check-build --src .. --cc gcc-8
-+            displayName: Check Build Script
-+
-+          # Run sparse on the subdirectories which are sparse clean
-+          - bash: |
-+              set -e
-+              mkdir build-sparse
-+              mv CMakeLists.txt CMakeLists-orig.txt
-+              grep -v "# NO SPARSE" CMakeLists-orig.txt > CMakeLists.txt
-+              cd build-sparse
-+              CC=cgcc CFLAGS="-Werror" cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1
-+              ninja | grep -v '^\[' | tee out
-+              # sparse does not fail gcc on messages
-+              if [ -s out ]; then
-+                 false
-+              fi
-+              mv ../CMakeLists-orig.txt ../CMakeLists.txt
-+            displayName: sparse Analysis
-+
-+          - bash: |
-+              set -e
-+              mkdir build-clang
-+              cd build-clang
-+              CC=clang-7 CFLAGS="-Werror -m32 -msse3" cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1
-+              ninja
-+            displayName: clang 7.0 32-bit Compile
-+
-+          - bash: |
-+              set -e
-+              mv util/udma_barrier.h util/udma_barrier.h.old
-+              echo "#error Fail" >> util/udma_barrier.h
-+              cd build-gcc8
-+              rm CMakeCache.txt
-+              CC=gcc-8 CFLAGS="-Werror" cmake -GNinja .. -DIOCTL_MODE=both
-+              ninja
-+              mv ../util/udma_barrier.h.old ../util/udma_barrier.h
-+            displayName: Simulate non-coherent DMA Platform Compile
-+
-+          - bash: |
-+              set -e
-+              mkdir build-arm64
-+              cd build-arm64
-+              CC=aarch64-linux-gnu-gcc-8 CFLAGS="-Werror" cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1
-+              ninja
-+            displayName: gcc 8.3 ARM64 Compile
-+
-+          # When running cmake through debian/rules it is hard to set -Werror,
-+          # instead force it on by changing the CMakeLists.txt
-+          - bash: |
-+              set -e
-+              echo 'set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")' >> buildlib/RDMA_EnableCStd.cmake
-+              sed -i -e 's/-DCMAKE_BUILD_TYPE=Release/-DCMAKE_BUILD_TYPE=Debug/g' debian/rules
-+              sed -i -e 's/ninja \(.*\)-v/ninja \1/g' debian/rules
-+              debian/rules CC=clang-7 build
-+            displayName: clang 7.0 Bionic Build
-+          - bash: |
-+              set -e
-+              fakeroot debian/rules binary
-+            displayName: clang 7.0 Bionic .deb Build
-+
-+      - job: SrcPrep
-+        displayName: Build Source Tar
-+        pool:
-+          vmImage: 'Ubuntu-16.04'
-+        container: azp
-+        steps:
-+          - checkout: self
-+            fetchDepth: 1
-+
-+          - bash: |
-+              set -e
-+              mkdir build-pandoc artifacts
-+              cd build-pandoc
-+              CC=gcc-8 cmake -GNinja ..
-+              ninja docs
-+              cd ../artifacts
-+              # FIXME: Check Build.SourceBranch for tag consistency
-+              python2.7 ../buildlib/cbuild make-dist-tar ../build-pandoc
-+            displayName: Prebuild Documentation
-+
-+          - task: PublishPipelineArtifact@0
-+            inputs:
-+              # Contains a rdma-core-XX.tar.gz file
-+              artifactName: source_tar
-+              targetPath: artifacts
-+
-+      - job: Distros
-+        displayName: Test Build RPMs for
-+        dependsOn: SrcPrep
-+        pool:
-+          vmImage: 'Ubuntu-16.04'
-+        strategy:
-+          matrix:
-+            centos7:
-+              CONTAINER: centos7
-+              SPEC: redhat/rdma-core.spec
-+              RPMBUILD_OPTS:
-+            leap:
-+              CONTAINER: leap
-+              SPEC: suse/rdma-core.spec
-+              RPMBUILD_OPTS: --without=curlmini
-+        container: $[ variables['CONTAINER'] ]
-+        steps:
-+          - checkout: none
-+
-+          - task: DownloadPipelineArtifact@0
-+            inputs:
-+              artifactName: source_tar
-+              targetPath: .
-+
-+          - bash: |
-+              set -e
-+              mkdir SOURCES tmp
-+              tar --wildcards -xzf rdma-core*.tar.gz  */$(SPEC) --strip-components=2
-+              RPM_SRC=$(rpmspec -P rdma-core.spec | awk '/^Source:/{split($0,a,"[ \t]+");print(a[2])}')
-+              (cd SOURCES && ln -sf ../rdma-core*.tar.gz "$RPM_SRC")
-+              rpmbuild --define '_tmppath '$(pwd)'/tmp' --define '_topdir '$(pwd) -bb rdma-core.spec $(RPMBUILD_OPTS)
-+            displayName: Perform Package Build
-diff --git a/buildlib/cbuild b/buildlib/cbuild
-index 7b0b9a9de0ed44..ccf45e68962de9 100755
---- a/buildlib/cbuild
-+++ b/buildlib/cbuild
-@@ -79,7 +79,11 @@ class Environment(object):
-     proxy = True;
-     build_pyverbs = True;
- 
-+    to_azp = False;
-+
-     def image_name(self):
-+        if self.to_azp:
-+            return "ucfconsort.azurecr.io/%s/%s"%(project, self.name);
-         return "build-%s/%s"%(project,self.name);
- 
- # -------------------------------------------------------------------------
-@@ -122,6 +126,7 @@ class centos7(YumEnvironment):
-     build_pyverbs = False;
-     specfile = "redhat/rdma-core.spec";
-     python_cmd = "python";
-+    to_azp = True;
- 
- class centos7_epel(centos7):
-     pkgs = (centos7.pkgs - {"cmake","make"}) | {
-@@ -168,7 +173,7 @@ class APTEnvironment(Environment):
-     build_python = True;
-     def get_docker_file(self):
-         res = DockerFile(self.docker_parent);
--        res.lines.append("RUN apt-get update && apt-get install -y --no-install-recommends %s && apt-get clean"%(
-+        res.lines.append("RUN apt-get update && apt-get install -y --no-install-recommends %s && apt-get clean && rm -rf /usr/share/doc/ /usr/lib/debug"%(
-             " ".join(sorted(self.pkgs))));
-         return res;
- 
-@@ -356,6 +361,7 @@ class leap(ZypperEnvironment):
-         'python3-devel',
-     };
-     rpmbuild_options = [ "--without=curlmini" ];
-+    to_azp = True;
-     name = "opensuse-15.0";
-     aliases = {"leap"};
- 
-@@ -368,6 +374,51 @@ class tumbleweed(ZypperEnvironment):
- 
- # -------------------------------------------------------------------------
- 
-+class azure_pipelines(bionic):
-+    pkgs = bionic.pkgs | {
-+        "abi-compliance-checker",
-+        "abi-dumper",
-+        "ca-certificates",
-+        "clang-7",
-+        "fakeroot",
-+        "gcc-8",
-+        "git",
-+        "python2.7",
-+        "sparse",
-+    } | {
-+        # 32 bit build support
-+        "libgcc-8-dev:i386",
-+        "libc6-dev:i386",
-+        "libnl-3-dev:i386",
-+        "libnl-route-3-dev:i386",
-+        "libsystemd-dev:i386",
-+        "libudev-dev:i386",
-+    } | {
-+        # ARM 64 cross compiler
-+        "gcc-8-aarch64-linux-gnu",
-+        "libgcc-8-dev:arm64",
-+        "libc6-dev:arm64",
-+        "libnl-3-dev:arm64",
-+        "libnl-route-3-dev:arm64",
-+        "libsystemd-dev:arm64",
-+        "libudev-dev:arm64",
-+    }
-+    to_azp = True;
-+    name = "azure_pipelines";
-+    aliases = {"azp"}
-+
-+    def get_docker_file(self):
-+        res = bionic.get_docker_file(self);
-+        res.lines.insert(1,"RUN dpkg --add-architecture i386 &&"
-+                         "dpkg --add-architecture arm64 &&"
-+                         "sed -i -e 's/^deb /deb [arch=amd64,i386] /g' /etc/apt/sources.list &&"
-+                         "echo 'deb [arch=arm64] http://ports.ubuntu.com/ bionic main universe\\n"
-+                               "deb [arch=arm64] http://ports.ubuntu.com/ bionic-security main universe\\n"
-+                               "deb [arch=arm64] http://ports.ubuntu.com/ bionic-updates main universe' > /etc/apt/sources.list.d/arm64.list");
-+        return res;
-+
-+# -------------------------------------------------------------------------
-+
- environments = [centos6(),
-                 centos7(),
-                 centos7_epel(),
-@@ -380,6 +431,7 @@ environments = [centos6(),
-                 leap(),
-                 tumbleweed(),
-                 debian_experimental(),
-+                azure_pipelines(),
- ];
- 
- class ToEnvActionPkg(argparse.Action):
-@@ -751,6 +803,91 @@ def run_travis_build(args,env):
-             raise;
-         copy_abi_files(os.path.join(tmpdir, "src/ABI"));
- 
-+def run_azp_build(args,env):
-+    import yaml
-+    # Load the commands from the pipelines file
-+    with open("buildlib/azure-pipelines.yml") as F:
-+        azp = yaml.load(F);
-+    for bst in azp["stages"]:
-+        if bst["stage"] == "Build":
-+            break;
-+    else:
-+        raise ValueError("No Build stage found");
-+    for job in bst["jobs"]:
-+        if job["job"] == "Compile":
-+            break;
-+    else:
-+        raise ValueError("No Compile job found");
-+
-+    script = ["#!/bin/bash"]
-+    workdir = "/__w/1"
-+    srcdir = os.path.join(workdir,"s");
-+    for I in job["steps"]:
-+        script.append("echo ===================================");
-+        script.append("echo %s"%(I["displayName"]));
-+        script.append("cd %s"%(srcdir));
-+        if "bash" in I:
-+            script.append(I["bash"]);
-+        elif I.get("task") == "PythonScript@0":
-+            script.append("set -e");
-+            script.append("%s %s"%(I["inputs"]["pythonInterpreter"],
-+                                   I["inputs"]["scriptPath"]));
-+        else:
-+            raise ValueError("Unknown stanza %r"%(I));
-+
-+    with private_tmp(args) as tmpdir:
-+        os.mkdir(os.path.join(tmpdir,"s"));
-+        os.mkdir(os.path.join(tmpdir,"tmp"));
-+
-+        opwd = os.getcwd();
-+        with inDirectory(os.path.join(tmpdir,"s")):
-+            subprocess.check_call(["git",
-+                                   "--git-dir",os.path.join(opwd,".git"),
-+                                   "reset","--hard","HEAD"]);
-+            subprocess.check_call(["git",
-+                                   "--git-dir",os.path.join(opwd,".git"),
-+                                   "fetch",
-+                                   "--no-tags",
-+                                   "https://github.com/linux-rdma/rdma-core.git","HEAD",
-+                                   "master"]);
-+            base = subprocess.check_output(["git",
-+                                            "--git-dir",os.path.join(opwd,".git"),
-+                                            "merge-base",
-+                                            "HEAD","FETCH_HEAD"]).strip();
-+
-+        opts = [
-+            "run",
-+            "--read-only",
-+            "--rm=true",
-+            "-v","%s:%s"%(tmpdir, workdir),
-+            "-w",srcdir,
-+            "-u",str(os.getuid()),
-+            "-e","SYSTEM_PULLREQUEST_SOURCECOMMITID=HEAD",
-+            # azp puts the branch name 'master' here, we need to put a commit ID..
-+            "-e","SYSTEM_PULLREQUEST_TARGETBRANCH=%s"%(base),
-+            "-e","HOME=%s"%(workdir),
-+            "-e","TMPDIR=%s"%(os.path.join(workdir,"tmp")),
-+        ] + map_git_args(opwd,srcdir);
-+
-+        if args.run_shell:
-+            opts.append("-ti");
-+        opts.append(env.image_name());
-+
-+        with open(os.path.join(tmpdir,"go.sh"),"w") as F:
-+            F.write("\n".join(script))
-+
-+        if args.run_shell:
-+            opts.append("/bin/bash");
-+        else:
-+            opts.extend(["/bin/bash",os.path.join(workdir,"go.sh")]);
-+
-+        try:
-+            docker_cmd(args,*opts);
-+        except subprocess.CalledProcessError, e:
-+            copy_abi_files(os.path.join(tmpdir, "s/ABI"));
-+            raise;
-+        copy_abi_files(os.path.join(tmpdir, "s/ABI"));
-+
- def args_pkg(parser):
-     parser.add_argument("ENV",action=ToEnvActionPkg,choices=env_choices_pkg());
-     parser.add_argument("--run-shell",default=False,action="store_true",
-@@ -766,6 +903,8 @@ def cmd_pkg(args):
-     for env in args.ENV:
-         if env.name == "travis":
-             run_travis_build(args,env);
-+        elif env.name == "azure_pipelines":
-+            run_azp_build(args,env);
-         elif getattr(env,"is_deb",False):
-             run_deb_build(args,env);
-         elif getattr(env,"is_rpm",False):
--- 
-2.21.0
-
