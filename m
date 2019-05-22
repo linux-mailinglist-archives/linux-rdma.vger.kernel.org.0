@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0082268F9
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 19:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E096268FB
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 19:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729572AbfEVRVj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 13:21:39 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:46243 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729475AbfEVRVj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 13:21:39 -0400
-Received: by mail-qk1-f194.google.com with SMTP id a132so1955396qkb.13
-        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 10:21:38 -0700 (PDT)
+        id S1729523AbfEVRWS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 13:22:18 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:43488 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729511AbfEVRWR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 13:22:17 -0400
+Received: by mail-qk1-f196.google.com with SMTP id z6so1963224qkl.10
+        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 10:22:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=5QZytqMZiYOF2wTS5jUhUQ+GQL4+6ObxqUvVrYeJeHk=;
-        b=VtVWSjKkMs0dDBl+SEXlsg3zJ9jhjj05lFs1YFad3bzm27lQRKzgyXLqNcYynEdnt6
-         t3aJZTEUdP/sjkxxFgWHMgYIn8A5lq9vB5O5bRBWOoqM2JEBbXf9z4m8rjb7gaY2UGFp
-         33NhAzzEl8/LhuFHbuwYTlH3WoAH2J+xygA/E+7c6pbLLzCar8pdGD8SKPEfgSD1UQyA
-         iMQfI45NjOh+OcLLDcU1rfOXcGIkx9XP1aoOiFYiQUenDeDF9w19847zOfd6PfWQdN2T
-         r0OfD8Yx5BUCxzZEKvxla2o54LOyxgUF4nQUMGwE7OlYucXazT1tqRf/vcmnbpzcEJn/
-         NNWQ==
+        bh=/9cmKSxWeIgR5fJLUWZ+U+J12wM/zBl4mLbAQy2Q+0U=;
+        b=OXc4Qq6XsKuEn+iypCDBVs75WVhDLp6T5X+qzYhP/MVwQeup8ggDsNQARGaBqT3LBe
+         0doHu3ggDRqEiFkFt6ri6sAgdGDS9WpZPg9b2x/uk1fqrJx4nNW3NZ0Yxd/dms+/SXGf
+         YZwnFYcc2vPNt8uRrdfbEEdmd9Y8nmK2hypd8Zl8OFW7BpukxHGjkqHdlekzp7XaBQCl
+         tSRJoiPW635VtdrmayEBUAx7ctpNuD8KIEaVeDvYTpjchlv/i4voZIvnG7c8i/6vg1hk
+         cPAyVcZCW6QfZEDy0+BWIE1Rux7/UIL0h/Vqfytsp+oNcLNMQEygx5kx3cEgzXKxmE4S
+         nZ8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5QZytqMZiYOF2wTS5jUhUQ+GQL4+6ObxqUvVrYeJeHk=;
-        b=KASbC5RbSdalthghljbFOq7pqACXuUrW+TpWfS+q4ejpFCBEk2EmLYm3gg4PEvnkHL
-         YLoFT/0tzgjsLSqMIly7kb/s287KSeIcmksQCgAQ/xivdKYRjEVUhSRV4I45tbJw9VAD
-         aoTlMX3ZgrzNfnBgzYGshUnZLlCRJzsPwN+za3m82gM7H5vtVpCDTLOdlzkKzkTx9dVz
-         YOIcvWHOLA7iS0RBLPKioSLW/9wYWAdQY/361fXXyHchgR50U8PvDkhDZE7mg2ZU+DM4
-         CrSvDD2xUCYQgFjIup5+JN0tOx/DLkB7FT/Vk553EdteENepbf9ppRBVUJ/5V/94f7ND
-         Bojw==
-X-Gm-Message-State: APjAAAWKcArNR9m5TuxwVaaWLaRC0vYu3l5YeZ+liZZ7aZwzDBsTzhV/
-        PBhHn09KDAVNYSuV2PSsoSzAj11f1uk=
-X-Google-Smtp-Source: APXvYqypy3Kq4QQ2X0j/W5fNZo8gvyxSTpyOWA/z6R5djSaK8p7YAAEtG1Lmt9ruDgycBRyaC2w1nw==
-X-Received: by 2002:a37:4781:: with SMTP id u123mr70425969qka.284.1558545698541;
-        Wed, 22 May 2019 10:21:38 -0700 (PDT)
+        bh=/9cmKSxWeIgR5fJLUWZ+U+J12wM/zBl4mLbAQy2Q+0U=;
+        b=l9+rTwcCmomPi/3lnh4dFk7WmbNeKeNdG1lXqiScQbD81YYBCC7DEwhTsre1a4FCYu
+         hj2KHDo9b1xz6MtBH37pK5Q9NYJN/k4Qij/oWtXblFvApZtJ5IH6s7qUyXlrE3I8Pxty
+         yytmS+pyEVQ3/PpzHEt9R1dWdUrEuVlO61XL6BCI4MBO0exbl6lWXbIQzXWh/ok/x5cR
+         I45RevcChGLsZT6iDarruZvGX9RKLojNuWJMKJZusjPoz/1ADR9gYK131Nd+ukG+NLDB
+         2Cxc8YCihToPkHKzflK/C0upxf3ueJyKDcPMCfzfGHfU1J4iz0amFv2k3jeB58szpyqR
+         pDqw==
+X-Gm-Message-State: APjAAAVEb2tcRKDfAnwrb9WotXv4zuyuPW8tGazpIFtOSx77rmsUoaW6
+        8LoT5GOmHt/qbAeb0g4i8NBK+A==
+X-Google-Smtp-Source: APXvYqxdJtsK/VJCVK99qUdU9F8acU67rhJdbOlv09gZQumQ7TxyoXG4Qz9OnqhrVV2mgy/PI02aUg==
+X-Received: by 2002:a05:620a:158d:: with SMTP id d13mr12030473qkk.271.1558545736847;
+        Wed, 22 May 2019 10:22:16 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id s28sm15816210qtc.81.2019.05.22.10.21.37
+        by smtp.gmail.com with ESMTPSA id j9sm1340700qkg.30.2019.05.22.10.22.16
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 May 2019 10:21:38 -0700 (PDT)
+        Wed, 22 May 2019 10:22:16 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hTUvp-000429-KE; Wed, 22 May 2019 14:21:37 -0300
-Date:   Wed, 22 May 2019 14:21:37 -0300
+        id 1hTUwS-00042U-37; Wed, 22 May 2019 14:22:16 -0300
+Date:   Wed, 22 May 2019 14:22:16 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
@@ -59,7 +59,7 @@ Cc:     Doug Ledford <dledford@redhat.com>,
         linux-netdev <netdev@vger.kernel.org>
 Subject: Re: [PATCH rdma-next v2 11/17] RDMA/netlink: Implement counter
  dumpit calback
-Message-ID: <20190522172137.GD15023@ziepe.ca>
+Message-ID: <20190522172216.GE15023@ziepe.ca>
 References: <20190429083453.16654-1-leon@kernel.org>
  <20190429083453.16654-12-leon@kernel.org>
 MIME-Version: 1.0
@@ -99,8 +99,47 @@ On Mon, Apr 29, 2019 at 11:34:47AM +0300, Leon Romanovsky wrote:
 > +	if (!dev->ops.counter_alloc_stats)
 > +		return NULL;
 > +
+>  	counter = kzalloc(sizeof(*counter), GFP_KERNEL);
+>  	if (!counter)
+>  		return NULL;
+> @@ -69,16 +72,25 @@ static struct rdma_counter *rdma_counter_alloc(struct ib_device *dev, u8 port,
+>  	counter->device    = dev;
+>  	counter->port      = port;
+>  	counter->res.type  = RDMA_RESTRACK_COUNTER;
+> +	counter->stats     = dev->ops.counter_alloc_stats(counter);
+> +	if (!counter->stats)
+> +		goto err_stats;
+> +
+>  	counter->mode.mode = mode;
+>  	atomic_set(&counter->usecnt, 0);
+>  	mutex_init(&counter->lock);
+>  
+>  	return counter;
+> +
+> +err_stats:
+> +	kfree(counter);
+> +	return NULL;
+>  }
+>  
+>  static void rdma_counter_dealloc(struct rdma_counter *counter)
+>  {
+>  	rdma_restrack_del(&counter->res);
+> +	kfree(counter->stats);
+>  	kfree(counter);
+>  }
+>  
+> @@ -279,6 +291,22 @@ int rdma_counter_unbind_qp(struct ib_qp *qp, bool force)
+>  	return 0;
+>  }
+>  
+> +int rdma_counter_query_stats(struct rdma_counter *counter)
+> +{
+> +	int ret;
+> +
+> +	struct ib_device *dev = counter->device;
+> +
 
-Seems weird to add this now, why was it Ok to have counters prior to
-this patch?
+Extra blank line
+Something about festive trees
 
 Jason
