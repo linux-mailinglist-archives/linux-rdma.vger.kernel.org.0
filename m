@@ -2,168 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D9C264B5
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 15:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74888264BE
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 15:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbfEVN2W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 09:28:22 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:14520 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728827AbfEVN2V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 09:28:21 -0400
-Received: from localhost (r10.asicdesigners.com [10.192.194.10])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x4MDRpfZ031000;
-        Wed, 22 May 2019 06:27:51 -0700
-From:   Nirranjan Kirubaharan <nirranjan@chelsio.com>
-To:     nirranjan@chelsio.com, bharat@chelsio.com, dledford@redhat.com,
-        jgg@mellanox.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH for-next v4] iw_cxgb4: Fix qpid leak
-Date:   Wed, 22 May 2019 06:27:45 -0700
-Message-Id: <ecd8e5de39986704861913f2bfb70acbccf6b616.1558530087.git.nirranjan@chelsio.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1729127AbfEVNbV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 09:31:21 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:33994 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727975AbfEVNbV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 09:31:21 -0400
+Received: by mail-qt1-f193.google.com with SMTP id h1so2326248qtp.1
+        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 06:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ubdejyfFBgV0NIxa0IaMgmmvtyVegJ/ZkuYOW157514=;
+        b=NnLmXtPSYzEceOMQoRuWP641qVudVzMW/19gOubjZtrfqkVgACXGNZGkAHUrdNft+I
+         ksdn37dKuYdktj9doBrCiEPsz0V8bp+UVQHTUw8K5Iqh/X3/Hgw0JD+wZWg9E95TVlM8
+         xVGtdPjZqu3HBDl7nJksSB4AR5wSejgoKnBsjtWswL+O/IoQ+FEwEHk2fsjzCcreHHpQ
+         J1TkC17gnQ9Ds/mQ99v9yvh9GNNI4DPboDc0RtFmOoCqw0FSNn63iTXmhaT5kOYEk4c2
+         TZxIT0ojvgvQVxkrDoSRaAlOjnmBWmabYzF0FKZHm4nwuM3zdglaVBX9Uv/wqZfTcAyM
+         38FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ubdejyfFBgV0NIxa0IaMgmmvtyVegJ/ZkuYOW157514=;
+        b=Iazo2UHvnNi+ZCUUa6TFAazNazPla+Uqlvp7yT+IBqZYd6hlZNY4C2PejgKEVZTCGi
+         o1ibFJ+mlGb7VmpuI3QwGKznbtSXO5/7JUvPHeguf4YQeKNMAyXz9+Qs7WMETJtMS85/
+         YhenL2DnEkU54yrnLJu2s4ORA5tkndZ1mNFSggI/g2kawGPH/6KCatucFdHK1hNfbgTG
+         C4h/aP/CtohY/e0cryeI/rPyryh/1sAh93GzCDIVLYjwLqfOMf7zEw7/N0OwWeoUfUny
+         +iUZyqTB2dnJEPjizOxr9fWa2SFBN/ytJbXSFw0L8BBnmhYhWCAnCaQrw6SOnBe1qW6q
+         rpBw==
+X-Gm-Message-State: APjAAAW5KwmGTQnFlkmCkRCx+SV3xjxzFEvUuTwXKh2brBkZv3MZDI14
+        ygUq36oluRrNBk9LF+hLFNtc4Q==
+X-Google-Smtp-Source: APXvYqwJBzVXElj5c4CEyiXemjFUDGrp0sPhHNjY1cro2RgiSRoG/pIZ08A4USaFwYxK9AjHZvFDyg==
+X-Received: by 2002:a0c:d642:: with SMTP id e2mr70526469qvj.5.1558531880156;
+        Wed, 22 May 2019 06:31:20 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id l16sm10242130qtj.60.2019.05.22.06.31.19
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 May 2019 06:31:19 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hTRKx-0002aV-9y; Wed, 22 May 2019 10:31:19 -0300
+Date:   Wed, 22 May 2019 10:31:19 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH for-next] RDMA/core: Avoid panic when port_data isn't
+ initialized
+Message-ID: <20190522133119.GB6054@ziepe.ca>
+References: <20190522072340.9042-1-kamalheib1@gmail.com>
+ <20190522121513.GA6054@ziepe.ca>
+ <970f7a5caea09680b8bd7861ce43782fc34c127d.camel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <970f7a5caea09680b8bd7861ce43782fc34c127d.camel@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In iw_cxgb4, Added wait in destroy_qp() so that all references to
-qp are dereferenced and qp is freed in destroy_qp() itself.
-This ensures freeing of all QPs before invocation of
-dealloc_ucontext(), which prevents loss of in use qpids stored
-in ucontext.
+On Wed, May 22, 2019 at 03:42:47PM +0300, Kamal Heib wrote:
+> On Wed, 2019-05-22 at 09:15 -0300, Jason Gunthorpe wrote:
+> > On Wed, May 22, 2019 at 10:23:40AM +0300, Kamal Heib wrote:
+> > > A panic could occur when calling ib_device_release() and port_data
+> > > isn't initialized, To avoid that a check was added to verify that
+> > > port_data isn't NULL.
+> > 
+> > This is a terrible commit message, describe the case that causes
+> > this.
+> > 
+> 
+> This happen if assign_name() return failure when called from
+> ib_register_device() - The following panic will happen and in every
+> function that touches the port_data's data members.
 
-Signed-off-by: Nirranjan Kirubaharan <nirranjan@chelsio.com>
-Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
----
-v2:
-- Used kref instead of qid count.
----
-v3:
-- Ensured freeing of qp in destroy_qp() itself.
----
-v4:
-- Change c4iw_qp_rem_ref() to use a refcount not kref and trigger
-complete() when the refcount goes to 0.
-- Move all of queue_qp_free into c4iw_destroy_qp()
----
- drivers/infiniband/hw/cxgb4/iw_cxgb4.h |  4 +--
- drivers/infiniband/hw/cxgb4/qp.c       | 48 ++++++++++++----------------------
- 2 files changed, 19 insertions(+), 33 deletions(-)
+Then this should be the commit message, with the oops.
 
-diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-index 916ef982172e..b8e90eaf4a03 100644
---- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-+++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-@@ -490,13 +490,13 @@ struct c4iw_qp {
- 	struct t4_wq wq;
- 	spinlock_t lock;
- 	struct mutex mutex;
--	struct kref kref;
- 	wait_queue_head_t wait;
- 	int sq_sig_all;
- 	struct c4iw_srq *srq;
--	struct work_struct free_work;
- 	struct c4iw_ucontext *ucontext;
- 	struct c4iw_wr_wait *wr_waitp;
-+	struct completion qp_rel_comp;
-+	atomic_t qp_refcnt;
- };
- 
- static inline struct c4iw_qp *to_c4iw_qp(struct ib_qp *ibqp)
-diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-index e92b9544357a..27db51d051ef 100644
---- a/drivers/infiniband/hw/cxgb4/qp.c
-+++ b/drivers/infiniband/hw/cxgb4/qp.c
-@@ -890,43 +890,17 @@ static int build_inv_stag(union t4_wr *wqe, const struct ib_send_wr *wr,
- 	return 0;
- }
- 
--static void free_qp_work(struct work_struct *work)
--{
--	struct c4iw_ucontext *ucontext;
--	struct c4iw_qp *qhp;
--	struct c4iw_dev *rhp;
--
--	qhp = container_of(work, struct c4iw_qp, free_work);
--	ucontext = qhp->ucontext;
--	rhp = qhp->rhp;
--
--	pr_debug("qhp %p ucontext %p\n", qhp, ucontext);
--	destroy_qp(&rhp->rdev, &qhp->wq,
--		   ucontext ? &ucontext->uctx : &rhp->rdev.uctx, !qhp->srq);
--
--	c4iw_put_wr_wait(qhp->wr_waitp);
--	kfree(qhp);
--}
--
--static void queue_qp_free(struct kref *kref)
--{
--	struct c4iw_qp *qhp;
--
--	qhp = container_of(kref, struct c4iw_qp, kref);
--	pr_debug("qhp %p\n", qhp);
--	queue_work(qhp->rhp->rdev.free_workq, &qhp->free_work);
--}
--
- void c4iw_qp_add_ref(struct ib_qp *qp)
- {
- 	pr_debug("ib_qp %p\n", qp);
--	kref_get(&to_c4iw_qp(qp)->kref);
-+	atomic_inc(&to_c4iw_qp(qp)->qp_refcnt);
- }
- 
- void c4iw_qp_rem_ref(struct ib_qp *qp)
- {
- 	pr_debug("ib_qp %p\n", qp);
--	kref_put(&to_c4iw_qp(qp)->kref, queue_qp_free);
-+	if (atomic_dec_and_test(&to_c4iw_qp(qp)->qp_refcnt))
-+		complete(&to_c4iw_qp(qp)->qp_rel_comp);
- }
- 
- static void add_to_fc_list(struct list_head *head, struct list_head *entry)
-@@ -2099,10 +2073,12 @@ int c4iw_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
- {
- 	struct c4iw_dev *rhp;
- 	struct c4iw_qp *qhp;
-+	struct c4iw_ucontext *ucontext;
- 	struct c4iw_qp_attributes attrs;
- 
- 	qhp = to_c4iw_qp(ib_qp);
- 	rhp = qhp->rhp;
-+	ucontext = qhp->ucontext;
- 
- 	attrs.next_state = C4IW_QP_STATE_ERROR;
- 	if (qhp->attr.state == C4IW_QP_STATE_TERMINATE)
-@@ -2120,7 +2096,17 @@ int c4iw_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
- 
- 	c4iw_qp_rem_ref(ib_qp);
- 
-+	wait_for_completion(&qhp->qp_rel_comp);
-+
- 	pr_debug("ib_qp %p qpid 0x%0x\n", ib_qp, qhp->wq.sq.qid);
-+	pr_debug("qhp %p ucontext %p\n", qhp, ucontext);
-+
-+	destroy_qp(&rhp->rdev, &qhp->wq,
-+		   ucontext ? &ucontext->uctx : &rhp->rdev.uctx, !qhp->srq);
-+
-+	c4iw_put_wr_wait(qhp->wr_waitp);
-+
-+	kfree(qhp);
- 	return 0;
- }
- 
-@@ -2230,8 +2216,8 @@ struct ib_qp *c4iw_create_qp(struct ib_pd *pd, struct ib_qp_init_attr *attrs,
- 	spin_lock_init(&qhp->lock);
- 	mutex_init(&qhp->mutex);
- 	init_waitqueue_head(&qhp->wait);
--	kref_init(&qhp->kref);
--	INIT_WORK(&qhp->free_work, free_qp_work);
-+	init_completion(&qhp->qp_rel_comp);
-+	atomic_set(&qhp->qp_refcnt, 1);
- 
- 	ret = xa_insert_irq(&rhp->qps, qhp->wq.sq.qid, qhp, GFP_KERNEL);
- 	if (ret)
--- 
-1.8.3.1
+> > The check should be in ib_device_release(), not in the functions.
+> > 
+> > Jason
+>
+> Why?
 
+Because if the device has not progressed to be setup enough we
+shouldn't be freeing things that aren't started yet.
+
+However, it is a bit weird because the cache_release was intended to
+not have dependencies - but the cache also can't be started until the
+port_data is setup
+
+The real problem is that we can't allocate the port data during
+ib_alloc_device..
+
+Jason
