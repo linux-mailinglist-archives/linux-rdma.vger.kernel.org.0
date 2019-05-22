@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A586268E6
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 19:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6900E268F1
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 19:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730327AbfEVRLu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 13:11:50 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:34022 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729899AbfEVRLu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 13:11:50 -0400
-Received: by mail-qt1-f196.google.com with SMTP id h1so3300440qtp.1
-        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 10:11:50 -0700 (PDT)
+        id S1729877AbfEVRPb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 13:15:31 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:41487 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727499AbfEVRPb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 13:15:31 -0400
+Received: by mail-qt1-f195.google.com with SMTP id y22so3276318qtn.8
+        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 10:15:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=7HjILda8I7Tovib4RdZQOyzSOVM+T0fg4HHgog52QHo=;
-        b=F/jTx+lta/x0dovZSyIDy65o7wqqbwFIwP8IoypA/1nyAjzedYlgz5v4HJjRMeqTAB
-         nF5xQmi1x3IF1KudHElBcK1AyfYW+9Ds3DnPIkFt6zJC9D1HOdRSTUxl4fuRTgs312Pt
-         bsA1rfJLMkcJUJ8Ah+oizHHWiyKXMlAMA8ApoMNQ3NvVQPK7777DRezKCT/YrSk9ntMA
-         Kt8sk5wxAX5ZPued4cXPhuyNVh6nxu7218H6T1ojnqs1sS1OpDe1p/dCCnZiUHYh5naf
-         j6ExPiIK8hfhdBRRSTZKmSS1upJ18VfYo1lySfXyCi6OOMKIzK04dnk9xafsIHJ4/M0v
-         jE7Q==
+        bh=mtLrTvKLtyIH87Z35BeVR4rLask8PhbsT3FWaUVImUQ=;
+        b=foOaqQ6GQ4lBWEKS2XjlpG/wYhyYtRFA9FoqjTcdUCkKfCNNDYZUJZ2iYPELerllTO
+         prdWodJnC9VJkHrkVORBffZodRwUknY38YXMyucfrUd+2cHk9b5WPqDTQhkHNGpYPrOu
+         W2i+D8+Y8iLEtn9YNczEoxs8IYjdRTYKcQIlbqQKBodxQPQOg35a9Vl0WGprr8MlaWSj
+         9tgk+JTIEFmiI68LOnm/JJqHC3yxx0njQwvXgmpJXnc49geOSn6mC7DxN/TTrldN6zA8
+         ikVuoTdiwa//gpKviWG4n0yXYrbDUsmzaX1URcWsPVofI2evTXOAxF7mUdDpPsIWd7kG
+         I4iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7HjILda8I7Tovib4RdZQOyzSOVM+T0fg4HHgog52QHo=;
-        b=O7Z61AChF3B8ppDHnI5V0UxU/ZVTY8H3G6+d4Otm4y+FKuKuJSvM+sNjEgpmPBop+4
-         2a3ZiFoHYEQ0AUjQJ29RWtywwgvSBNcKYVRmr5vAZNRInKUJAj8IoD/G2GCvEJznarBm
-         F5nyiYnovSoPilxXpx/LbjrvIxkUykdmyeI8xG3jY73eMM4hXxQKjnbMIvCaxzg3hI5B
-         kcf2cD0uiJAlHJAKkqizqGVGwnk4qDgsj7sJ8wPlZuGBh6vKa8Pff4w5aphNaItY3ukN
-         EiwU/xIJ7QNx9OYqXOVY+1Z2i+dUtHh+Yq+lf8FL6fXCRbHqP5n8lFgjHu+CSJhpURaP
-         hOWQ==
-X-Gm-Message-State: APjAAAVYwGr1jPnBwUHM4OT4YomsgSyYC7o+ZzOw4m5+oIn69I+HQuVD
-        69EY1NqJ90LnVpQ+WmXOnG11Tg==
-X-Google-Smtp-Source: APXvYqy9sxRYtMr+VlR5FYrcN/0TISPnf5XZjUfHGlF8p2rWbFz6zusV1Ig5v4sVW/69GkJ+5ZRecw==
-X-Received: by 2002:a0c:9649:: with SMTP id 9mr61546648qvy.43.1558545109797;
-        Wed, 22 May 2019 10:11:49 -0700 (PDT)
+        bh=mtLrTvKLtyIH87Z35BeVR4rLask8PhbsT3FWaUVImUQ=;
+        b=rd5/uUlgx9gIxEcihsK/9Hnwo5DXjNl0QA48U7j4OShAU7zpzV8iTIXsOZBOuXMJx/
+         a9g7u3wK2VT73ZUF1T16wS31mR9d1dmLAa9EyACQgDZyqUuJISdIUggy3degQe7Qk7cM
+         ALNJ5fnnQw3YzZA8/NKHZQHeNvMvnp6H83I/kKd6lqhVGm7TkU5/tNNrgA/8lLVU3PsK
+         GF4W/wznVoP6qG8tLIboC5CHmH8MRgga+2erekHcFKZCU/qsvHoOZGmHOsxptZJvCkNx
+         gRm1e0XLOhayZAgeohIqqU0SUBrugUKUeKUoW/zhgrHScSK0fhpm4CBaHsyY88IcGCxk
+         nNww==
+X-Gm-Message-State: APjAAAWBpQi/Llb07wfjLhdmqhOGiYslTK415ko1svZgysPegc11Ilpo
+        2SJjao42DNKwmctYng7o19pnFw==
+X-Google-Smtp-Source: APXvYqws7CXOqSdeK+lbybAIxEJLSWubLP1GR3bdf+NFTe+BFHBAwnhIP+Qlaass2qKpfOsGf2JbBA==
+X-Received: by 2002:a0c:96b9:: with SMTP id a54mr27957008qvd.135.1558545330387;
+        Wed, 22 May 2019 10:15:30 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id c32sm17034755qte.2.2019.05.22.10.11.49
+        by smtp.gmail.com with ESMTPSA id h16sm13602017qtk.1.2019.05.22.10.15.29
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 May 2019 10:11:49 -0700 (PDT)
+        Wed, 22 May 2019 10:15:29 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hTUmK-0003xR-Su; Wed, 22 May 2019 14:11:48 -0300
-Date:   Wed, 22 May 2019 14:11:48 -0300
+        id 1hTUpt-0003zl-IP; Wed, 22 May 2019 14:15:29 -0300
+Date:   Wed, 22 May 2019 14:15:29 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
@@ -59,7 +59,7 @@ Cc:     Doug Ledford <dledford@redhat.com>,
         linux-netdev <netdev@vger.kernel.org>
 Subject: Re: [PATCH rdma-next v2 06/17] RDMA/counter: Add "auto"
  configuration mode support
-Message-ID: <20190522171148.GB15023@ziepe.ca>
+Message-ID: <20190522171529.GC15023@ziepe.ca>
 References: <20190429083453.16654-1-leon@kernel.org>
  <20190429083453.16654-7-leon@kernel.org>
 MIME-Version: 1.0
@@ -74,19 +74,28 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 On Mon, Apr 29, 2019 at 11:34:42AM +0300, Leon Romanovsky wrote:
 
->  void rdma_counter_init(struct ib_device *dev)
->  {
->  	struct rdma_port_counter *port_counter;
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index 9204b4251fc8..dfaa57de871f 100644
-> +++ b/drivers/infiniband/core/device.c
-> @@ -2349,6 +2349,8 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
->  	SET_DEVICE_OP(dev_ops, set_vf_guid);
->  	SET_DEVICE_OP(dev_ops, set_vf_link_state);
->  	SET_DEVICE_OP(dev_ops, unmap_fmr);
-> +	SET_DEVICE_OP(dev_ops, counter_bind_qp);
-> +	SET_DEVICE_OP(dev_ops, counter_unbind_qp);
+> +/**
+> + * rdma_counter_unbind_qp - Unbind a qp from a counter
+> + * @force:
+> + *   true - Decrease the counter ref-count anyway (e.g., qp destroy)
+> + */
+> +int rdma_counter_unbind_qp(struct ib_qp *qp, bool force)
+> +{
+> +	struct rdma_counter *counter = qp->counter;
+> +	int ret;
+> +
+> +	if (!counter)
+> +		return -EINVAL;
+> +
+> +	ret = __rdma_counter_unbind_qp(qp, force);
+> +	if (ret && !force)
+> +		return ret;
+> +
+> +	rdma_restrack_put(&counter->res);
+> +	if (atomic_dec_and_test(&counter->usecnt))
+> +		rdma_counter_dealloc(counter);
 
-Keep sorted
+An atomic that does kfree when it reaches zero should be implemented
+with a kref.
 
 Jason
