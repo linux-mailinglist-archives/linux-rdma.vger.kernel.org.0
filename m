@@ -2,125 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A8E26C38
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 21:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14FB26D96
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 21:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387722AbfEVTcB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 15:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55726 "EHLO mail.kernel.org"
+        id S1732464AbfEVTnI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 15:43:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387714AbfEVTcA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 May 2019 15:32:00 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1732148AbfEVTnI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 May 2019 15:43:08 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86E0D204FD;
-        Wed, 22 May 2019 19:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558553520;
-        bh=Bq7qDtaF9Lj/Cks7dcpU/ltTMsWxr0eFIOFaPjG6ZoI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LltO4yVS62eq4Mr/PZx2ghEWb51IwrZ3kDLbWUsEhETZzYd+MfmD4X6uUfsItqVi8
-         dtUrQqyDZ56q3LbsNu6Q93JBjEl5JMrBIiERsmLI9DTInde0w2HgRYPIGH6zBrC4ks
-         5ZHHpOlmEewOPFGmPIKZRzXZC5ErUT/Lhal/x/j8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Parav Pandit <parav@mellanox.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 22/92] RDMA/cma: Consider scope_id while binding to ipv6 ll address
-Date:   Wed, 22 May 2019 15:30:17 -0400
-Message-Id: <20190522193127.27079-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190522193127.27079-1-sashal@kernel.org>
-References: <20190522193127.27079-1-sashal@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 096B720856;
+        Wed, 22 May 2019 19:43:06 +0000 (UTC)
+Date:   Wed, 22 May 2019 15:43:05 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] RDMA/mlx5: Use DIV_ROUND_UP_ULL macro to allow 32 bit
+ to build
+Message-ID: <20190522154305.615d1d76@gandalf.local.home>
+In-Reply-To: <20190522192821.GG6054@ziepe.ca>
+References: <20190522145450.25ff483d@gandalf.local.home>
+        <20190522192821.GG6054@ziepe.ca>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@mellanox.com>
+On Wed, 22 May 2019 16:28:21 -0300
+Jason Gunthorpe <jgg@ziepe.ca> wrote:
 
-[ Upstream commit 5d7ed2f27bbd482fd29e6b2e204b1a1ee8a0b268 ]
+> On Wed, May 22, 2019 at 02:54:50PM -0400, Steven Rostedt wrote:
+> > 
+> > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > 
+> > When testing 32 bit x86, my build failed with:
+> > 
+> >   ERROR: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> > 
+> > It appears that a few non-ULL roundup() calls were made, which uses a
+> > normal division against a 64 bit number. This is fine for x86_64, but
+> > on 32 bit x86, it causes the compiler to look for a helper function
+> > __udivdi3, which we do not have in the kernel, and thus fails to build.
+> > 
+> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > ---  
+> 
+> Do you like this version better?
+> 
+> https://patchwork.kernel.org/patch/10950913/
+> 
 
-When two netdev have same link local addresses (such as vlan and non
-vlan), two rdma cm listen id should be able to bind to following different
-addresses.
+Honestly, I don't care ;-)
 
-listener-1: addr=lla, scope_id=A, port=X
-listener-2: addr=lla, scope_id=B, port=X
+As long as it is correct and doesn't break my builds. I really prefer
+if these kinds of things don't make it into Linus's tree to begin with.
+I'm surprised the zero-day bot didn't catch this. Because this is
+something that it normally does.
 
-However while comparing the addresses only addr and port are considered,
-due to which 2nd listener fails to listen.
-
-In below example of two listeners, 2nd listener is failing with address in
-use error.
-
-$ rping -sv -a fe80::268a:7ff:feb3:d113%ens2f1 -p 4545&
-
-$ rping -sv -a fe80::268a:7ff:feb3:d113%ens2f1.200 -p 4545
-rdma_bind_addr: Address already in use
-
-To overcome this, consider the scope_ids as well which forms the accurate
-IPv6 link local address.
-
-Signed-off-by: Parav Pandit <parav@mellanox.com>
-Reviewed-by: Daniel Jurgens <danielj@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/core/cma.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 1454290078def..76e7eca35a110 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -902,18 +902,31 @@ static inline int cma_any_addr(struct sockaddr *addr)
- 	return cma_zero_addr(addr) || cma_loopback_addr(addr);
- }
- 
--static int cma_addr_cmp(struct sockaddr *src, struct sockaddr *dst)
-+static int cma_addr_cmp(const struct sockaddr *src, const struct sockaddr *dst)
- {
- 	if (src->sa_family != dst->sa_family)
- 		return -1;
- 
- 	switch (src->sa_family) {
- 	case AF_INET:
--		return ((struct sockaddr_in *) src)->sin_addr.s_addr !=
--		       ((struct sockaddr_in *) dst)->sin_addr.s_addr;
--	case AF_INET6:
--		return ipv6_addr_cmp(&((struct sockaddr_in6 *) src)->sin6_addr,
--				     &((struct sockaddr_in6 *) dst)->sin6_addr);
-+		return ((struct sockaddr_in *)src)->sin_addr.s_addr !=
-+		       ((struct sockaddr_in *)dst)->sin_addr.s_addr;
-+	case AF_INET6: {
-+		struct sockaddr_in6 *src_addr6 = (struct sockaddr_in6 *)src;
-+		struct sockaddr_in6 *dst_addr6 = (struct sockaddr_in6 *)dst;
-+		bool link_local;
-+
-+		if (ipv6_addr_cmp(&src_addr6->sin6_addr,
-+					  &dst_addr6->sin6_addr))
-+			return 1;
-+		link_local = ipv6_addr_type(&dst_addr6->sin6_addr) &
-+			     IPV6_ADDR_LINKLOCAL;
-+		/* Link local must match their scope_ids */
-+		return link_local ? (src_addr6->sin6_scope_id !=
-+				     dst_addr6->sin6_scope_id) :
-+				    0;
-+	}
-+
- 	default:
- 		return ib_addr_cmp(&((struct sockaddr_ib *) src)->sib_addr,
- 				   &((struct sockaddr_ib *) dst)->sib_addr);
--- 
-2.20.1
-
+-- Steve
