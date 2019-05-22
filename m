@@ -2,55 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAC7270B6
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 22:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81922270FE
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2019 22:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbfEVUTV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 16:19:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729003AbfEVUTV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 May 2019 16:19:21 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE29521019;
-        Wed, 22 May 2019 20:19:19 +0000 (UTC)
-Date:   Wed, 22 May 2019 16:19:18 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        id S1730225AbfEVUrj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 16:47:39 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:33120 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730005AbfEVUrj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 16:47:39 -0400
+Received: by mail-pl1-f193.google.com with SMTP id g21so1645286plq.0
+        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 13:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zy3PazUIRm9Jc9PdJuB2u+ElFTk96lbYpo+oNBJZGCM=;
+        b=Y8j7WD6zpcc/2sEpj8EY6NRT1Dc510C1spsir21/hkUeu4mUUaoDDgjLww0pivEwF/
+         z6iJ0+f+gBw8re6q5xM6Dar0lLD7YYS2gJO3KPMVbNBtZ3Id3RkPfmb6s3Yr3rdRIcuf
+         rTPZw7otg9Z5O5b4Ojw+hEe7n4misMdps/iC8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zy3PazUIRm9Jc9PdJuB2u+ElFTk96lbYpo+oNBJZGCM=;
+        b=kpJwTwQH+9Q3KYy6w1OFCi/1VpDvb9ycbQw3zhzzA6IQOU4N15mSh7eufaQLoCfsQ9
+         ZPOIUzO99r+SmNcTri/mwZpRSHY91p2QRp4CmE4mdm4O3XOfhJ109KZZyHmCRuSYQ5iW
+         pfNyNCU5OZ81CvurOktPkuytMPfqJNo1iVUgTNDd2BkEkDoVLmyDv7bl0wXUkObpIRj9
+         HdxlIUgPQd8XB4bLuibpiVlqZFJ2hDOt+5YPjfYaAp6Rznsgi170XBfzO/uUHtsk0opQ
+         7HEI2oV2Xm5X1ZSPX/+mBtljDGZpKb9mQCtKbE/JuPJ1acgDNVhJT8cDux8cJANeVf0T
+         HYtA==
+X-Gm-Message-State: APjAAAXOeJWj0Se3k6kl9gSUn/I7TiBVeW0GRwgdS75lUfmRu1K4a2Jn
+        7yz+tFdK+0uicMvXn2JOQywtCg==
+X-Google-Smtp-Source: APXvYqxzAX+RobICkloaWYce4rx4oMkBv2QD394+NKxfoEao6LHAAvOlkD0rcjglQVK68ClP6ctquQ==
+X-Received: by 2002:a17:902:15c5:: with SMTP id a5mr93624265plh.39.1558558058259;
+        Wed, 22 May 2019 13:47:38 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d13sm23312074pfh.113.2019.05.22.13.47.36
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 May 2019 13:47:37 -0700 (PDT)
+Date:   Wed, 22 May 2019 13:47:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     enh <enh@google.com>, Evgenii Stepanov <eugenis@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] RDMA/mlx5: Use DIV_ROUND_UP_ULL macro to allow 32 bit
- to build
-Message-ID: <20190522161918.38c91478@gandalf.local.home>
-In-Reply-To: <20190522201412.GI6054@ziepe.ca>
-References: <20190522145450.25ff483d@gandalf.local.home>
-        <20190522192821.GG6054@ziepe.ca>
-        <20190522154305.615d1d76@gandalf.local.home>
-        <20190522201412.GI6054@ziepe.ca>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <201905221316.865581CF@keescook>
+References: <cover.1557160186.git.andreyknvl@google.com>
+ <20190517144931.GA56186@arrakis.emea.arm.com>
+ <CAFKCwrj6JEtp4BzhqO178LFJepmepoMx=G+YdC8sqZ3bcBp3EQ@mail.gmail.com>
+ <20190521182932.sm4vxweuwo5ermyd@mbp>
+ <201905211633.6C0BF0C2@keescook>
+ <20190522101110.m2stmpaj7seezveq@mbp>
+ <CAJgzZoosKBwqXRyA6fb8QQSZXFqfHqe9qO9je5TogHhzuoGXJQ@mail.gmail.com>
+ <20190522163527.rnnc6t4tll7tk5zw@mbp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190522163527.rnnc6t4tll7tk5zw@mbp>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 22 May 2019 17:14:12 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Wed, May 22, 2019 at 05:35:27PM +0100, Catalin Marinas wrote:
+> The two hard requirements I have for supporting any new hardware feature
+> in Linux are (1) a single kernel image binary continues to run on old
+> hardware while making use of the new feature if available and (2) old
+> user space continues to run on new hardware while new user space can
+> take advantage of the new feature.
 
-> > As long as it is correct and doesn't break my builds. I really prefer
-> > if these kinds of things don't make it into Linus's tree to begin with.
-> > I'm surprised the zero-day bot didn't catch this. Because this is
-> > something that it normally does.  
-> 
-> Yes, I was also surprised and I asked them.. They said they needed to
-> update ARM compilers to see this..
+Agreed! And I think the series meets these requirements, yes?
 
-Really? This triggered on x86 not ARM for me.
+> For MTE, we just can't enable it by default since there are applications
+> who use the top byte of a pointer and expect it to be ignored rather
+> than failing with a mismatched tag. Just think of a hwasan compiled
+> binary where TBI is expected to work and you try to run it with MTE
+> turned on.
 
--- Steve
+Ah! Okay, here's the use-case I wasn't thinking of: the concern is TBI
+conflicting with MTE. And anything that starts using TBI suddenly can't
+run in the future because it's being interpreted as MTE bits? (Is that
+the ABI concern? I feel like we got into the weeds about ioctl()s and
+one-off bugs...)
+
+So there needs to be some way to let the kernel know which of three
+things it should be doing:
+1- leaving userspace addresses as-is (present)
+2- wiping the top bits before using (this series)
+3- wiping the top bits for most things, but retaining them for MTE as
+   needed (the future)
+
+I expect MTE to be the "default" in the future. Once a system's libc has
+grown support for it, everything will be trying to use MTE. TBI will be
+the special case (but TBI is effectively a prerequisite).
+
+AFAICT, the only difference I see between 2 and 3 will be the tag handling
+in usercopy (all other places will continue to ignore the top bits). Is
+that accurate?
+
+Is "1" a per-process state we want to keep? (I assume not, but rather it
+is available via no TBI/MTE CONFIG or a boot-time option, if at all?)
+
+To choose between "2" and "3", it seems we need a per-process flag to
+opt into TBI (and out of MTE). For userspace, how would a future binary
+choose TBI over MTE? If it's a library issue, we can't use an ELF bit,
+since the choice may be "late" after ELF load (this implies the need
+for a prctl().) If it's binary-only ("built with HWKASan") then an ELF
+bit seems sufficient. And without the marking, I'd expect the kernel to
+enforce MTE when there are high bits.
+
+> I would also expect the C library or dynamic loader to check for the
+> presence of a HWCAP_MTE bit before starting to tag memory allocations,
+> otherwise it would get SIGILL on the first MTE instruction it tries to
+> execute.
+
+I've got the same question as Elliot: aren't MTE instructions just NOP
+to older CPUs? I.e. if the CPU (or kernel) don't support it, it just
+gets entirely ignored: checking is only needed to satisfy curiosity
+or behavioral expectations.
+
+To me, the conflict seems to be using TBI in the face of expecting MTE to
+be the default state of the future. (But the internal changes needed
+for TBI -- this series -- is a prereq for MTE.)
+
+-- 
+Kees Cook
