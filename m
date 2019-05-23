@@ -2,115 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC42A2896C
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 21:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8512898E
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 21:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389695AbfEWThH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 15:37:07 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:44399 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390202AbfEWThG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 15:37:06 -0400
-Received: by mail-qt1-f194.google.com with SMTP id f24so8148720qtk.11
-        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 12:37:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EvB2oEdix8izGKCkl98CmLnxVEgkJ+2l0HrrW4Cnk4Y=;
-        b=UfpXqxnkWDaeaaMCa66rkawZsy7d3VU8+Y4fiL6RCiHgxXiOAlS3lxadX42iz4hl+M
-         BIkIHbLj+ye2OmlcBBji/RjpTpPAk1hYv6g6D1K/w1oZN0xrtKLWtx95M6bwxcHoudgZ
-         LTE3fOtWAmcT5VE45VMIhIvFoG+07u1HBIcDuZZQNpfYs/WJC8yMoLOU/o6yns6gbHyh
-         da23t12u1Zi2CytLjFaaqChQILykLUvixJtBowukob56QB9gAZRPMHkq3K4suDSvzCK3
-         zp2oNMk2ARP7Ha6oXysTJv/ctxhnMVCiaedJEQ9BWmPCe4RT0uqCdknX2mfBR3uygiYX
-         Di9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EvB2oEdix8izGKCkl98CmLnxVEgkJ+2l0HrrW4Cnk4Y=;
-        b=gqcM8FsGX6aS/VB+PaJkgdYvbFbDKP3yZDWLsi/phu9GWIR1kgiooGMGk2Vsqh9hMJ
-         2uy/Tr3jFnMO5yY7xm2EbqwWnYd2jSZo4yxAUmyOEjvCs4GR2m6ghwBADYc3KeZyQve3
-         cnJRE/2t1iqLKQRNhtJqfq2m6f+GJcZZ5FRZsAd4lMBkd4D6Hhdhod3ECU4V8a7J/ipl
-         DiR6/Zd2rz67Xbz0nXEqP6gQEPL7Ey07coeVqAH/4b2ZHAPfHj/9DoJ8BBwJFUc/oJ8s
-         EdCwNIFNQ2y8LuXos5rWbhsxHbOiAQv05lk9QKnF9vkKvvastx/ELMINHWO1PoMsiJ+A
-         qukQ==
-X-Gm-Message-State: APjAAAUvh4lI6f6PuoO35t0tmhC9vw5QuRrDjR1N7m70jCrMPF0siiZg
-        u40ARcAEQagXDYAKkv2gA4kzdw==
-X-Google-Smtp-Source: APXvYqxJkBFJ4HgvZM38oeTFaXtBNor24nYI7KEJ+EprkXwXo4IbuqdcjGctpDTQXlmC7qxbJGyYAg==
-X-Received: by 2002:ac8:6750:: with SMTP id n16mr58786519qtp.142.1558640225374;
-        Thu, 23 May 2019 12:37:05 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id d58sm194218qtb.11.2019.05.23.12.37.04
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 May 2019 12:37:04 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hTtWR-0000xZ-Fj; Thu, 23 May 2019 16:37:03 -0300
-Date:   Thu, 23 May 2019 16:37:03 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>
-Subject: Re: [RFC PATCH 00/11] mm/hmm: Various revisions from a locking/code
- review
-Message-ID: <20190523193703.GI12159@ziepe.ca>
-References: <20190523153436.19102-1-jgg@ziepe.ca>
- <6ee88cde-5365-9bbc-6c4d-7459d5c3ebe2@nvidia.com>
+        id S2390306AbfEWTkE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 15:40:04 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:53712 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390281AbfEWTkD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 May 2019 15:40:03 -0400
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 356F988E63;
+        Thu, 23 May 2019 19:40:02 +0000 (UTC)
+Received: from redhat.com (unknown [10.20.6.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4820A60BF3;
+        Thu, 23 May 2019 19:40:01 +0000 (UTC)
+Date:   Thu, 23 May 2019 15:39:59 -0400
+From:   Jerome Glisse <jglisse@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>
+Subject: Re: [PATCH v4 0/1] Use HMM for ODP v4
+Message-ID: <20190523193959.GA5658@redhat.com>
+References: <20190522174852.GA23038@redhat.com>
+ <20190522235737.GD15389@ziepe.ca>
+ <20190523150432.GA5104@redhat.com>
+ <20190523154149.GB12159@ziepe.ca>
+ <20190523155207.GC5104@redhat.com>
+ <20190523163429.GC12159@ziepe.ca>
+ <20190523173302.GD5104@redhat.com>
+ <20190523175546.GE12159@ziepe.ca>
+ <20190523182458.GA3571@redhat.com>
+ <20190523191038.GG12159@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <6ee88cde-5365-9bbc-6c4d-7459d5c3ebe2@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190523191038.GG12159@ziepe.ca>
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Thu, 23 May 2019 19:40:02 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 12:04:16PM -0700, John Hubbard wrote:
-> On 5/23/19 8:34 AM, Jason Gunthorpe wrote:
-> > From: Jason Gunthorpe <jgg@mellanox.com>
-> > 
-> > This patch series arised out of discussions with Jerome when looking at the
-> > ODP changes, particularly informed by use after free races we have already
-> > found and fixed in the ODP code (thanks to syzkaller) working with mmu
-> > notifiers, and the discussion with Ralph on how to resolve the lifetime model.
-> > 
-> > Overall this brings in a simplified locking scheme and easy to explain
-> > lifetime model:
-> > 
-> >   If a hmm_range is valid, then the hmm is valid, if a hmm is valid then the mm
-> >   is allocated memory.
-> > 
-> >   If the mm needs to still be alive (ie to lock the mmap_sem, find a vma, etc)
-> >   then the mmget must be obtained via mmget_not_zero().
-> > 
-> > Locking of mm->hmm is shifted to use the mmap_sem consistently for all
-> > read/write and unlocked accesses are removed.
-> > 
-> > The use unlocked reads on 'hmm->dead' are also eliminated in favour of using
-> > standard mmget() locking to prevent the mm from being released. Many of the
-> > debugging checks of !range->hmm and !hmm->mm are dropped in favour of poison -
-> > which is much clearer as to the lifetime intent.
-> > 
-> > The trailing patches are just some random cleanups I noticed when reviewing
-> > this code.
-> > 
-> > I expect Jerome & Ralph will have some design notes so this is just RFC, and
-> > it still needs a matching edit to nouveau. It is only compile tested.
-> > 
+On Thu, May 23, 2019 at 04:10:38PM -0300, Jason Gunthorpe wrote:
 > 
-> Thanks so much for doing this. Jerome has already absorbed these into his
-> hmm-5.3 branch, along with Ralph's other fixes, so we can start testing,
-> as well as reviewing, the whole set. We'll have feedback soon.
+> On Thu, May 23, 2019 at 02:24:58PM -0400, Jerome Glisse wrote:
+> > I can not take mmap_sem in range_register, the READ_ONCE is fine and
+> > they are no race as we do take a reference on the hmm struct thus
+> 
+> Of course there are use after free races with a READ_ONCE scheme, I
+> shouldn't have to explain this.
 
-Yes, I looked at Jerome's v2's and he found a few great fixups.
+Well i can not think of anything again here the mm->hmm can not
+change while driver is calling hmm_range_register() so if you
+want i can remove the READ_ONCE() this does not change anything.
 
-My only dislike is re-introducing a READ_ONCE(mm->hmm) when a major
-point of this seris was to remove that use-after-free stuff. 
 
-But Jerome says it is a temporary defect while he works out some cross
-tree API stuff.
+> If you cannot take the read mmap sem (why not?), then please use my
+> version and push the update to the driver through -mm..
 
-Jason
+Please see previous threads on why it was a failure.
+
+Cheers,
+Jérôme
