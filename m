@@ -2,133 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A0128460
+	by mail.lfdr.de (Postfix) with ESMTP id 0969B2845E
 	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 18:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731107AbfEWQ5f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 12:57:35 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:34630 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730899AbfEWQ5f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 12:57:35 -0400
-Received: by mail-lj1-f196.google.com with SMTP id j24so6167375ljg.1
-        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 09:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ks/LH2oyTEaijoOzEMOK4qT05od1mgbLgD6IvZvC3ac=;
-        b=UrcFcbzEFPGggz1NPXakVDUiIg5mDqTO4045eBb7udfHenM+Veb+rBZ0tlbryVNdJc
-         qa5A4P3tgF5XCLb7D69n65wDt2yEO3fr0UKE7SehnvIvMriAPEG9xpGYM5u8gpQLeOdX
-         1vpQBx74HKkfDoRasFV6IFoGOt3sYNk7jzZac=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ks/LH2oyTEaijoOzEMOK4qT05od1mgbLgD6IvZvC3ac=;
-        b=XfiiNj3jQxxYOq7jxMlBLvUgqlJ0frOU6nH6Qhmkuypc8Xj0jLBKRFvCUPk1gXnfdy
-         pD34O5lO9QOjOyJX8fSLmvfp3wqiXpXYtS3jZ05LbFZ1JPsqNGKmWlsEsEW//UezxWF9
-         sOdAiyznMSm+a+ss7Cez5CbGCgISZYMwr3ca+oN0pkDy9HuRE/r6/+WHxGFHblClXg23
-         +zVoJFUBKkhgqQVhC7BeAB85MqYBb7VvdT0bh0h4OTV+octhydd1ojl7rnupAlO6GvX1
-         oGrtpCkENjjSpyWbjDoinKKPo1GU26RO6OBGge0Bt3OKj91GurnCYi2b1FDL/dFKbduS
-         5xWg==
-X-Gm-Message-State: APjAAAXL46Qazpj2i+k4Xa3rUNGneixnfpx9bueiwtv1QASRFyFgBI3r
-        kvCz7Fd2jqpmZNJ2p0YIEg1ySCcxCM0=
-X-Google-Smtp-Source: APXvYqzHDtSwbdTPuDhLnkymWOZO/IxWLebUT+lBlbRsIdvzmdxWRadBfj+qqhL+qtmxbk1GXVXdAg==
-X-Received: by 2002:a2e:824d:: with SMTP id j13mr4889172ljh.137.1558630307669;
-        Thu, 23 May 2019 09:51:47 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id y4sm2528lje.24.2019.05.23.09.51.46
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 May 2019 09:51:46 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id h13so4915228lfc.7
-        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 09:51:46 -0700 (PDT)
-X-Received: by 2002:a19:7d42:: with SMTP id y63mr41221787lfc.54.1558630305849;
- Thu, 23 May 2019 09:51:45 -0700 (PDT)
+        id S1731320AbfEWQ5X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 12:57:23 -0400
+Received: from foss.arm.com ([217.140.101.70]:50904 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730899AbfEWQ5W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 May 2019 12:57:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0774C374;
+        Thu, 23 May 2019 09:57:22 -0700 (PDT)
+Received: from mbp (usa-sjc-mx-foss1.foss.arm.com [217.140.101.70])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B06C3F5AF;
+        Thu, 23 May 2019 09:57:15 -0700 (PDT)
+Date:   Thu, 23 May 2019 17:57:09 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        Lee Smith <Lee.Smith@arm.com>, linux-kselftest@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        Evgeniy Stepanov <eugenis@google.com>,
+        linux-media@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        linux-kernel@vger.kernel.org,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <20190523165708.q6ru7xg45aqfjzpr@mbp>
+References: <cover.1557160186.git.andreyknvl@google.com>
+ <20190517144931.GA56186@arrakis.emea.arm.com>
+ <20190521184856.GC2922@ziepe.ca>
+ <20190522134925.GV28398@e103592.cambridge.arm.com>
+ <20190523002052.GF15389@ziepe.ca>
+ <20190523104256.GX28398@e103592.cambridge.arm.com>
 MIME-Version: 1.0
-References: <20190523100013.52a8d2a6@gandalf.local.home> <CAHk-=wg5HqJ2Kfgpub+tCWQ2_FiFwEW9H1Rm+an-BLGaGvDDXw@mail.gmail.com>
- <20190523112740.7167aba4@gandalf.local.home>
-In-Reply-To: <20190523112740.7167aba4@gandalf.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 23 May 2019 09:51:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whFJqTOk0mSxJGeh38ZxDksgRaMrNV8hqTngiuokyJzew@mail.gmail.com>
-Message-ID: <CAHk-=whFJqTOk0mSxJGeh38ZxDksgRaMrNV8hqTngiuokyJzew@mail.gmail.com>
-Subject: Re: [RFC][PATCH] kernel.h: Add generic roundup_64() macro
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        nouveau@lists.freedesktop.org,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190523104256.GX28398@e103592.cambridge.arm.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 8:27 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> I haven't yet tested this, but what about something like the following:
+On Thu, May 23, 2019 at 11:42:57AM +0100, Dave P Martin wrote:
+> On Wed, May 22, 2019 at 09:20:52PM -0300, Jason Gunthorpe wrote:
+> > On Wed, May 22, 2019 at 02:49:28PM +0100, Dave Martin wrote:
+> > > If multiple people will care about this, perhaps we should try to
+> > > annotate types more explicitly in SYSCALL_DEFINEx() and ABI data
+> > > structures.
+> > > 
+> > > For example, we could have a couple of mutually exclusive modifiers
+> > > 
+> > > T __object *
+> > > T __vaddr * (or U __vaddr)
+> > > 
+> > > In the first case the pointer points to an object (in the C sense)
+> > > that the call may dereference but not use for any other purpose.
+> > 
+> > How would you use these two differently?
+> > 
+> > So far the kernel has worked that __user should tag any pointer that
+> > is from userspace and then you can't do anything with it until you
+> > transform it into a kernel something
+> 
+> Ultimately it would be good to disallow casting __object pointers execpt
+> to compatible __object pointer types, and to make get_user etc. demand
+> __object.
+> 
+> __vaddr pointers / addresses would be freely castable, but not to
+> __object and so would not be dereferenceable even indirectly.
 
-So that at least handles the constant case that the normal "roundup()"
-case also handles.
+I think it gets too complicated and there are ambiguous cases that we
+may not be able to distinguish. For example copy_from_user() may be used
+to copy a user data structure into the kernel, hence __object would
+work, while the same function may be used to copy opaque data to a file,
+so __vaddr may be a better option (unless I misunderstood your
+proposal).
 
-At the same time, in the case you are talking about, I really do
-suspect that we have a (non-constant) power of two, and that you
-should have just used "round_up()" which works fine regardless of
-size, and is always efficient.
+We currently have T __user * and I think it's a good starting point. The
+prior attempt [1] was shut down because it was just hiding the cast
+using __force. We'd need to work through those cases again and rather
+start changing the function prototypes to avoid unnecessary casting in
+the callers (e.g. get_user_pages(void __user *) or come up with a new
+type) while changing the explicit casting to a macro where it needs to
+be obvious that we are converting a user pointer, potentially typed
+(tagged), to an untyped address range. We may need a user_ptr_to_ulong()
+macro or similar (it seems that we have a u64_to_user_ptr, wasn't aware
+of it).
 
-On a slight tangent.. Maybe we should have something like this:
+It may actually not be far from what you suggested but I'd keep the
+current T __user * to denote possible dereference.
 
-#define size_fn(x, prefix, ...) ({                      \
-        typeof(x) __ret;                                \
-        switch (sizeof(x)) {                            \
-        case 1: __ret = prefix##8(__VA_ARGS__); break;  \
-        case 2: __ret = prefix##16(__VA_ARGS__); break; \
-        case 4: __ret = prefix##32(__VA_ARGS__); break; \
-        case 8: __ret = prefix##64(__VA_ARGS__); break; \
-        default: __ret = prefix##bad(__VA_ARGS__);      \
-        } __ret; })
+[1] https://lore.kernel.org/lkml/5d54526e5ff2e5ad63d0dfdd9ab17cf359afa4f2.1535629099.git.andreyknvl@google.com/
 
-#define type_fn(x, prefix, ...) ({                              \
-        typeof(x) __ret;                                        \
-        if ((typeof(x))-1 > 1)                                  \
-                __ret = size_fn(x, prefix##_u, __VA_ARGS__);    \
-        else                                                    \
-                __ret = size_fn(x, prefix##_s, __VA_ARGS__);    \
-        __ret; })
-
-which would allow typed integer functions like this. So you could do
-something like
-
-     #define round_up(x, y) size_fn(x, round_up_size, x, y)
-
-and then you define functions for round_up_size8/16/32/64 (and you
-have toi declare - but not define - round_up_sizebad()).
-
-Of course, you probably want the usual "at least use 'int'" semantics,
-in which case the "type" should be "(x)+0":
-
-     #define round_up(x, y) size_fn((x)+0, round_up_size, x, y)
-
- and the 8-bit and 16-bit cases will never be used.
-
-We have a lot of cases where we end up using "type overloading" by
-size. The most explicit case is perhaps "get_user()" and "put_user()",
-but this whole round_up thing is another example.
-
-Maybe we never really care about "char" and "short", and always want
-just the "int-vs-long-vs-longlong"? That would make the cases simpler
-(32 and 64). And maybe we never care about sign. But we could try to
-have some unified helper model like the above..
-
-                  Linus
+-- 
+Catalin
