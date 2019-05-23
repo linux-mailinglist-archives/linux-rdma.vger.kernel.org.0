@@ -2,129 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0422813B
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 17:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2E42814B
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 17:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731076AbfEWPb7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 11:31:59 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:46924 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730859AbfEWPb6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 May 2019 11:31:58 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id A6B89C05B038;
-        Thu, 23 May 2019 15:31:39 +0000 (UTC)
-Received: from redhat.com (unknown [10.20.6.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 461DB79599;
-        Thu, 23 May 2019 15:31:35 +0000 (UTC)
-Date:   Thu, 23 May 2019 11:31:33 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     john.hubbard@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Christian Benvenuti <benve@cisco.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH 1/1] infiniband/mm: convert put_page() to put_user_page*()
-Message-ID: <20190523153133.GB5104@redhat.com>
-References: <20190523072537.31940-1-jhubbard@nvidia.com>
- <20190523072537.31940-2-jhubbard@nvidia.com>
+        id S1730867AbfEWPek (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 11:34:40 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:39121 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730752AbfEWPej (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 11:34:39 -0400
+Received: by mail-qt1-f196.google.com with SMTP id y42so7230018qtk.6
+        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 08:34:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LEV5tWURKgLpgo5q6BTc4NlcwzQLAQ+EC5rW0mqA8Xo=;
+        b=I9LiNRnSFZ2kQk44SojHBUW2L/OelCgKL7qFGsT/eFBZ2o/2dPwYCQGKf+9I82gF9J
+         YmMPy0Vt8yxMxwVrRjPf1tzl99wZpY7NcFdn6A/F9DXWGGsgYFAf9hzxBTZhnRj7FpkX
+         KCfPvI3xXOWOfHmUYKlJnS7RLRigNiJ4KB6Y4eR6rbyCee8r5pMw+2ivxFrA4Ayu8Gss
+         PQfscnAUj4S9o3GZGzlKdoR9TJ5mZQ9/q38CVQfZDT6a0bWJ/CMpI9Ri3YdsezPFWpTT
+         TGOExwxE+rRG5Ddo9+islZJbknQywxmTIzteFK17fpDdnRWg0EIaptARbwqBp/Gn1e0a
+         KLeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LEV5tWURKgLpgo5q6BTc4NlcwzQLAQ+EC5rW0mqA8Xo=;
+        b=gQqo8AoFPCiR5FtkLHB1kP3s7Qc77tqXNipxe1oiYgJckrm5+1wSz9vCsMIUF+i06v
+         U9cl0wW1mmGwN2F9WvFiQv5MjtdvZjwqOgQ+F1608rg+iGFkMKQ4s8wpUGQerR9p5ZuX
+         U0jWBDaeHEeQ3q4RXfSmwMypHxUX0ql7xyGoWdivt+mbb1ozsRLi9FePVDkr7tqttIto
+         YWPVBPPjIb9UB1VLUut//tjyWdx7yIcMuuf5yEBBCF0D+NNXtXT5xtJw/ebQ4VmvZPaa
+         ZZxOAv90aQCWnCtisqxX65jGbkFOOq4ZEAoUrEeXwjtqqJXN6tdF8tZJkkjbbVvVUcXg
+         miRw==
+X-Gm-Message-State: APjAAAVqV0kE/ZSgxs+w3bH3Xj9AdwPQvTYgX7jSfIvShwBgfv/Ovs2c
+        qc99ms4mH4UxPfVxU7OshX3XID/YvsI=
+X-Google-Smtp-Source: APXvYqyiewADpQP8cIsdPqhAjkY2KNXOElH4d5PbPs8KXkM0UEqnBsU2GR+WRo/ynGz4+mLf+I4aIA==
+X-Received: by 2002:a0c:961a:: with SMTP id 26mr61952699qvx.131.1558625678799;
+        Thu, 23 May 2019 08:34:38 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id o6sm14126879qtc.47.2019.05.23.08.34.38
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 23 May 2019 08:34:38 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hTpjp-0004z4-RS; Thu, 23 May 2019 12:34:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>
+Subject: [RFC PATCH 00/11] mm/hmm: Various revisions from a locking/code review
+Date:   Thu, 23 May 2019 12:34:25 -0300
+Message-Id: <20190523153436.19102-1-jgg@ziepe.ca>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190523072537.31940-2-jhubbard@nvidia.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Thu, 23 May 2019 15:31:58 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 12:25:37AM -0700, john.hubbard@gmail.com wrote:
-> From: John Hubbard <jhubbard@nvidia.com>
-> 
-> For infiniband code that retains pages via get_user_pages*(),
-> release those pages via the new put_user_page(), or
-> put_user_pages*(), instead of put_page()
-> 
-> This is a tiny part of the second step of fixing the problem described
-> in [1]. The steps are:
-> 
-> 1) Provide put_user_page*() routines, intended to be used
->    for releasing pages that were pinned via get_user_pages*().
-> 
-> 2) Convert all of the call sites for get_user_pages*(), to
->    invoke put_user_page*(), instead of put_page(). This involves dozens of
->    call sites, and will take some time.
-> 
-> 3) After (2) is complete, use get_user_pages*() and put_user_page*() to
->    implement tracking of these pages. This tracking will be separate from
->    the existing struct page refcounting.
-> 
-> 4) Use the tracking and identification of these pages, to implement
->    special handling (especially in writeback paths) when the pages are
->    backed by a filesystem. Again, [1] provides details as to why that is
->    desirable.
-> 
-> [1] https://lwn.net/Articles/753027/ : "The Trouble with get_user_pages()"
-> 
-> Cc: Doug Ledford <dledford@redhat.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Mike Marciniszyn <mike.marciniszyn@intel.com>
-> Cc: Dennis Dalessandro <dennis.dalessandro@intel.com>
-> Cc: Christian Benvenuti <benve@cisco.com>
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-> Acked-by: Jason Gunthorpe <jgg@mellanox.com>
-> Tested-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
+This patch series arised out of discussions with Jerome when looking at the
+ODP changes, particularly informed by use after free races we have already
+found and fixed in the ODP code (thanks to syzkaller) working with mmu
+notifiers, and the discussion with Ralph on how to resolve the lifetime model.
 
-Between i have a wishlist see below
+Overall this brings in a simplified locking scheme and easy to explain
+lifetime model:
 
+ If a hmm_range is valid, then the hmm is valid, if a hmm is valid then the mm
+ is allocated memory.
 
-> ---
->  drivers/infiniband/core/umem.c              |  7 ++++---
->  drivers/infiniband/core/umem_odp.c          | 10 +++++-----
->  drivers/infiniband/hw/hfi1/user_pages.c     | 11 ++++-------
->  drivers/infiniband/hw/mthca/mthca_memfree.c |  6 +++---
->  drivers/infiniband/hw/qib/qib_user_pages.c  | 11 ++++-------
->  drivers/infiniband/hw/qib/qib_user_sdma.c   |  6 +++---
->  drivers/infiniband/hw/usnic/usnic_uiom.c    |  7 ++++---
->  7 files changed, 27 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-> index e7ea819fcb11..673f0d240b3e 100644
-> --- a/drivers/infiniband/core/umem.c
-> +++ b/drivers/infiniband/core/umem.c
-> @@ -54,9 +54,10 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
->  
->  	for_each_sg_page(umem->sg_head.sgl, &sg_iter, umem->sg_nents, 0) {
->  		page = sg_page_iter_page(&sg_iter);
-> -		if (!PageDirty(page) && umem->writable && dirty)
-> -			set_page_dirty_lock(page);
-> -		put_page(page);
-> +		if (umem->writable && dirty)
-> +			put_user_pages_dirty_lock(&page, 1);
-> +		else
-> +			put_user_page(page);
+ If the mm needs to still be alive (ie to lock the mmap_sem, find a vma, etc)
+ then the mmget must be obtained via mmget_not_zero().
 
-Can we get a put_user_page_dirty(struct page 8*pages, bool dirty, npages) ?
+Locking of mm->hmm is shifted to use the mmap_sem consistently for all
+read/write and unlocked accesses are removed.
 
-It is a common pattern that we might have to conditionaly dirty the pages
-and i feel it would look cleaner if we could move the branch within the
-put_user_page*() function.
+The use unlocked reads on 'hmm->dead' are also eliminated in favour of using
+standard mmget() locking to prevent the mm from being released. Many of the
+debugging checks of !range->hmm and !hmm->mm are dropped in favour of poison -
+which is much clearer as to the lifetime intent.
 
-Cheers,
-Jérôme
+The trailing patches are just some random cleanups I noticed when reviewing
+this code.
+
+I expect Jerome & Ralph will have some design notes so this is just RFC, and
+it still needs a matching edit to nouveau. It is only compile tested.
+
+Regards,
+Jason
+
+Jason Gunthorpe (11):
+  mm/hmm: Fix use after free with struct hmm in the mmu notifiers
+  mm/hmm: Use hmm_mirror not mm as an argument for hmm_register_range
+  mm/hmm: Hold a mmgrab from hmm to mm
+  mm/hmm: Simplify hmm_get_or_create and make it reliable
+  mm/hmm: Improve locking around hmm->dead
+  mm/hmm: Remove duplicate condition test before wait_event_timeout
+  mm/hmm: Delete hmm_mirror_mm_is_alive()
+  mm/hmm: Use lockdep instead of comments
+  mm/hmm: Remove racy protection against double-unregistration
+  mm/hmm: Poison hmm_range during unregister
+  mm/hmm: Do not use list*_rcu() for hmm->ranges
+
+ include/linux/hmm.h |  50 ++----------
+ kernel/fork.c       |   1 -
+ mm/hmm.c            | 184 +++++++++++++++++++-------------------------
+ 3 files changed, 88 insertions(+), 147 deletions(-)
+
+-- 
+2.21.0
+
