@@ -2,233 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B64283F0
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 18:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A0128460
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 18:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731243AbfEWQiZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 12:38:25 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:39101 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730924AbfEWQiW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 12:38:22 -0400
-Received: by mail-pl1-f196.google.com with SMTP id g9so2972260plm.6
-        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 09:38:22 -0700 (PDT)
+        id S1731107AbfEWQ5f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 12:57:35 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:34630 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730899AbfEWQ5f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 12:57:35 -0400
+Received: by mail-lj1-f196.google.com with SMTP id j24so6167375ljg.1
+        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 09:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lscewINPN3hq/l0Swcavzj6U0JCykRwN+VKQYmeGavk=;
-        b=MzIBf/cg8HqX7LDHDmH3NduBH/GNHyk36BoEHjmaEfwdA0mOkdLBAg0EUXF7biIGPX
-         1D7AzOrIM750xRnkubOq1jGRkMcjIZjIYf+kPatHpylhUSqCQfdwGLTrWn4J8esTRBLk
-         Xcvmw1TY3lT5og+Fj9TWzv82uZX9wel5U8qi8=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ks/LH2oyTEaijoOzEMOK4qT05od1mgbLgD6IvZvC3ac=;
+        b=UrcFcbzEFPGggz1NPXakVDUiIg5mDqTO4045eBb7udfHenM+Veb+rBZ0tlbryVNdJc
+         qa5A4P3tgF5XCLb7D69n65wDt2yEO3fr0UKE7SehnvIvMriAPEG9xpGYM5u8gpQLeOdX
+         1vpQBx74HKkfDoRasFV6IFoGOt3sYNk7jzZac=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lscewINPN3hq/l0Swcavzj6U0JCykRwN+VKQYmeGavk=;
-        b=l1oDZIgJysX2k528oRu1yfBQaCVhKIgsjpI6w41IH72Qerv2G2C3+OUTc/wng/aTdK
-         CT4OaBbL48XOIXGn8AY6tLGkY/58Br2zbeYVjTlZMG3vLsIb7vEJ2z0qNvgRJgLvQJi4
-         iLF58ORV7iebXFTwnC9sMoN5P78IB6GIPnc0gzK7ZlIYdh0gjgO2ZK/vusCqylTOxtDi
-         Y+1FjAndkHspdG+7SFNM+wRyrqsSQsQKv1LW54NnN74s6O3++ot+w1mq7dvfggAflGmE
-         tH2qx+1u+xjCYNzYzn9K/RpfS7uPkJ1X/jx0SMeL5+R36MVjWixZ8+s6yqebpX2rlH33
-         9lDg==
-X-Gm-Message-State: APjAAAW4/mb/nhw6yN7APBCZYSy10mqSg5pi31ezC34/72bzm4XMR1cD
-        otKxZyZD5Fymdfsu34HLPWugLQ==
-X-Google-Smtp-Source: APXvYqzxDNUT+zQ+3IUTM4Pfo29z2ussIuDSTH+Mz2tPZncaJ19KDxQ7w12Ra519k713lyeCzNKlsQ==
-X-Received: by 2002:a17:902:2aa6:: with SMTP id j35mr17743251plb.189.1558629502290;
-        Thu, 23 May 2019 09:38:22 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g19sm56536684pgj.75.2019.05.23.09.38.20
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 May 2019 09:38:21 -0700 (PDT)
-Date:   Thu, 23 May 2019 09:38:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     enh <enh@google.com>, Evgenii Stepanov <eugenis@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
-Message-ID: <201905230917.DEE7A75EF0@keescook>
-References: <cover.1557160186.git.andreyknvl@google.com>
- <20190517144931.GA56186@arrakis.emea.arm.com>
- <CAFKCwrj6JEtp4BzhqO178LFJepmepoMx=G+YdC8sqZ3bcBp3EQ@mail.gmail.com>
- <20190521182932.sm4vxweuwo5ermyd@mbp>
- <201905211633.6C0BF0C2@keescook>
- <20190522101110.m2stmpaj7seezveq@mbp>
- <CAJgzZoosKBwqXRyA6fb8QQSZXFqfHqe9qO9je5TogHhzuoGXJQ@mail.gmail.com>
- <20190522163527.rnnc6t4tll7tk5zw@mbp>
- <201905221316.865581CF@keescook>
- <20190523144449.waam2mkyzhjpqpur@mbp>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ks/LH2oyTEaijoOzEMOK4qT05od1mgbLgD6IvZvC3ac=;
+        b=XfiiNj3jQxxYOq7jxMlBLvUgqlJ0frOU6nH6Qhmkuypc8Xj0jLBKRFvCUPk1gXnfdy
+         pD34O5lO9QOjOyJX8fSLmvfp3wqiXpXYtS3jZ05LbFZ1JPsqNGKmWlsEsEW//UezxWF9
+         sOdAiyznMSm+a+ss7Cez5CbGCgISZYMwr3ca+oN0pkDy9HuRE/r6/+WHxGFHblClXg23
+         +zVoJFUBKkhgqQVhC7BeAB85MqYBb7VvdT0bh0h4OTV+octhydd1ojl7rnupAlO6GvX1
+         oGrtpCkENjjSpyWbjDoinKKPo1GU26RO6OBGge0Bt3OKj91GurnCYi2b1FDL/dFKbduS
+         5xWg==
+X-Gm-Message-State: APjAAAXL46Qazpj2i+k4Xa3rUNGneixnfpx9bueiwtv1QASRFyFgBI3r
+        kvCz7Fd2jqpmZNJ2p0YIEg1ySCcxCM0=
+X-Google-Smtp-Source: APXvYqzHDtSwbdTPuDhLnkymWOZO/IxWLebUT+lBlbRsIdvzmdxWRadBfj+qqhL+qtmxbk1GXVXdAg==
+X-Received: by 2002:a2e:824d:: with SMTP id j13mr4889172ljh.137.1558630307669;
+        Thu, 23 May 2019 09:51:47 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id y4sm2528lje.24.2019.05.23.09.51.46
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 May 2019 09:51:46 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id h13so4915228lfc.7
+        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 09:51:46 -0700 (PDT)
+X-Received: by 2002:a19:7d42:: with SMTP id y63mr41221787lfc.54.1558630305849;
+ Thu, 23 May 2019 09:51:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190523144449.waam2mkyzhjpqpur@mbp>
+References: <20190523100013.52a8d2a6@gandalf.local.home> <CAHk-=wg5HqJ2Kfgpub+tCWQ2_FiFwEW9H1Rm+an-BLGaGvDDXw@mail.gmail.com>
+ <20190523112740.7167aba4@gandalf.local.home>
+In-Reply-To: <20190523112740.7167aba4@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 23 May 2019 09:51:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whFJqTOk0mSxJGeh38ZxDksgRaMrNV8hqTngiuokyJzew@mail.gmail.com>
+Message-ID: <CAHk-=whFJqTOk0mSxJGeh38ZxDksgRaMrNV8hqTngiuokyJzew@mail.gmail.com>
+Subject: Re: [RFC][PATCH] kernel.h: Add generic roundup_64() macro
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        nouveau@lists.freedesktop.org,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 03:44:49PM +0100, Catalin Marinas wrote:
-> There is also the obvious requirement which I didn't mention: new user
-> space continues to run on new/subsequent kernel versions. That's one of
-> the points of contention for this series (ignoring MTE) with the
-> maintainers having to guarantee this without much effort. IOW, do the
-> 500K+ new lines in a subsequent kernel version break any user space out
-> there? I'm only talking about the relaxed TBI ABI. Are the usual LTP,
-> syskaller sufficient? Better static analysis would definitely help.
+On Thu, May 23, 2019 at 8:27 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> I haven't yet tested this, but what about something like the following:
 
-We can't have perfect coverage of people actively (or accidentally)
-working to trick static analyzers (and the compiler) into "forgetting"
-about a __user annotation. We can certainly improve analysis (I see
-the other sub-thread on that), but I'd like that work not to block
-this series.
+So that at least handles the constant case that the normal "roundup()"
+case also handles.
 
-What on this front would you be comfortable with? Given it's a new
-feature isn't it sufficient to have a CONFIG (and/or boot option)?
+At the same time, in the case you are talking about, I really do
+suspect that we have a (non-constant) power of two, and that you
+should have just used "round_up()" which works fine regardless of
+size, and is always efficient.
 
-> Or, if we ever want MTE to be turned on by default (i.e. tag checking),
-> even if everything is tagged with 0, we have to disallow TBI for user
-> and this includes hwasan. There were a small number of programs using
-> the TBI (I think some JavaScript compilers tried this). But now we are
-> bringing in the hwasan support and this can be a large user base. Shall
-> we add an ELF note for such binaries that use TBI/hwasan?
+On a slight tangent.. Maybe we should have something like this:
 
-Just to be clear, you say "disallow TBI for user" -- you mean a
-particular process, yes? i.e. there is no architectural limitation that
-says once we're using MTE nothing can switch to TBI. i.e. a process is
-either doing MTE or TBI (or nothing, but that's the same as TBI).
+#define size_fn(x, prefix, ...) ({                      \
+        typeof(x) __ret;                                \
+        switch (sizeof(x)) {                            \
+        case 1: __ret = prefix##8(__VA_ARGS__); break;  \
+        case 2: __ret = prefix##16(__VA_ARGS__); break; \
+        case 4: __ret = prefix##32(__VA_ARGS__); break; \
+        case 8: __ret = prefix##64(__VA_ARGS__); break; \
+        default: __ret = prefix##bad(__VA_ARGS__);      \
+        } __ret; })
 
-> This needs solving as well. Most driver developers won't know why
-> untagged_addr() is needed unless we have more rigorous types or type
-> annotations and a tool to check them (we should probably revive the old
-> sparse thread).
+#define type_fn(x, prefix, ...) ({                              \
+        typeof(x) __ret;                                        \
+        if ((typeof(x))-1 > 1)                                  \
+                __ret = size_fn(x, prefix##_u, __VA_ARGS__);    \
+        else                                                    \
+                __ret = size_fn(x, prefix##_s, __VA_ARGS__);    \
+        __ret; })
 
-This seems like a parallel concern: we can do that separately from this
-series. Without landing it, is it much harder for people to test it,
-look for bugs, help with types/annotations, etc.
+which would allow typed integer functions like this. So you could do
+something like
 
-> > So there needs to be some way to let the kernel know which of three
-> > things it should be doing:
-> > 1- leaving userspace addresses as-is (present)
-> > 2- wiping the top bits before using (this series)
-> 
-> (I'd say tolerating rather than wiping since get_user still uses the tag
-> in the current series)
-> 
-> The current series does not allow any choice between 1 and 2, the
-> default ABI basically becomes option 2.
+     #define round_up(x, y) size_fn(x, round_up_size, x, y)
 
-What about testing tools that intentionally insert high bits for syscalls
-and are _expecting_ them to fail? It seems the TBI series will break them?
-In that case, do we need to opt into TBI as well?
+and then you define functions for round_up_size8/16/32/64 (and you
+have toi declare - but not define - round_up_sizebad()).
 
-> > 3- wiping the top bits for most things, but retaining them for MTE as
-> >    needed (the future)
-> 
-> 2 and 3 are not entirely compatible as a tagged pointer may be checked
-> against the memory colour by the hardware. So you can't have hwasan
-> binary with MTE enabled.
+Of course, you probably want the usual "at least use 'int'" semantics,
+in which case the "type" should be "(x)+0":
 
-Right: a process must be either MTE or TBI, not both.
+     #define round_up(x, y) size_fn((x)+0, round_up_size, x, y)
 
-> > I expect MTE to be the "default" in the future. Once a system's libc has
-> > grown support for it, everything will be trying to use MTE. TBI will be
-> > the special case (but TBI is effectively a prerequisite).
-> 
-> The kernel handling of tagged pointers is indeed a prerequisite. The ABI
-> distinction between the above 2 and 3 needs to be solved.
+ and the 8-bit and 16-bit cases will never be used.
 
-Does that need solving now or when the MTE series appears? As there is
-no reason to distinguish between "normal" and "TBI", that doesn't seem
-to need solving at this point?
+We have a lot of cases where we end up using "type overloading" by
+size. The most explicit case is perhaps "get_user()" and "put_user()",
+but this whole round_up thing is another example.
 
-> > AFAICT, the only difference I see between 2 and 3 will be the tag handling
-> > in usercopy (all other places will continue to ignore the top bits). Is
-> > that accurate?
-> 
-> Yes, mostly (for the kernel). If MTE is enabled by default for a hwasan
-> binary, it will SEGFAULT (either in user space or in kernel uaccess).
-> How does the kernel choose between 2 and 3?
+Maybe we never really care about "char" and "short", and always want
+just the "int-vs-long-vs-longlong"? That would make the cases simpler
+(32 and 64). And maybe we never care about sign. But we could try to
+have some unified helper model like the above..
 
-Right -- that was my question as well.
-
-> > Is "1" a per-process state we want to keep? (I assume not, but rather it
-> > is available via no TBI/MTE CONFIG or a boot-time option, if at all?)
-> 
-> Possibly, though not necessarily per process. For testing or if
-> something goes wrong during boot, a command line option with a static
-> label would do. The AT_FLAGS bit needs to be checked by user space. My
-> preference would be per-process.
-
-I would agree.
-
-> > To choose between "2" and "3", it seems we need a per-process flag to
-> > opt into TBI (and out of MTE).
-> 
-> Or leave option 2 the default and get it to opt in to MTE.
-
-Given that MTE has to "start" at some point in the binary lifetime, I'm
-fine with opting into MTE. I do expect, though, this will feel redundant
-in a couple years as everything will immediately opt-in. But, okay, this
-is therefore an issue for the MTE series.
-
-> The current plan is that a future binary issues a prctl(), after
-> checking the HWCAP_MTE bit (as I replied to Elliot, the MTE instructions
-> are not in the current NOP space). I'd expect this to be done by the
-> libc or dynamic loader under the assumption that the binaries it loads
-> do _not_ use the top pointer byte for anything else. With hwasan
-> compiled objects this gets more confusing (any ELF note to identify
-> them?).
-
-Okay, sounds fine.
-
-> (there is also the risk of existing applications using TBI already but
-> I'm not aware of any still using this feature other than hwasan)
-
-Correct.
-
-
-Alright, the tl;dr appears to be:
-- you want more assurances that we can find __user stripping in the
-  kernel more easily. (But this seems like a parallel problem.)
-- we might need to opt in to TBI with a prctl()
-- all other concerns are for the future MTE series (though it sounds
-  like HWCAP_MTE and a prctl() solve those issues too).
-
-Is this accurate? What do you see as the blockers for this series at
-this point?
-
--- 
-Kees Cook
+                  Linus
