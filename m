@@ -2,107 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 222932730D
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 01:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A93527334
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 02:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727434AbfEVX5k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 19:57:40 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:39023 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726218AbfEVX5k (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 19:57:40 -0400
-Received: by mail-qt1-f193.google.com with SMTP id y42so4662022qtk.6
-        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 16:57:39 -0700 (PDT)
+        id S1727936AbfEWAU4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 May 2019 20:20:56 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:38528 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727305AbfEWAUz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 20:20:55 -0400
+Received: by mail-qt1-f194.google.com with SMTP id l3so4719297qtj.5
+        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 17:20:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Ep9uVHpBGZswzwZ+H/eF/1/q1Yi9oKaegrCzMMn+v2w=;
-        b=Q1hKWyHArMJk0cuB6S0l9Ps4LFjPimg+ITsAv/pNx1HPV30Y0Dw5vtjo5ZJdvu6uDU
-         uPLkBnGxRltUikh5/RqnfW79NkePV+iLYOoOU2MZW0dGzUcIeDu2UjkmOW+72KOG+Z95
-         Os8nZL84gacPJsIDatNU8+oDl61IP9Wf+bHI48QXLL3m+HTuFfmqe0aTGUECJYAeXj1U
-         C6AYMQYiU26cdRliq/8oE9WKABTISlXuBsRwuKf6ehITMVfulLupiuy5N/Ac+bHWvVWh
-         9ESy3JVc3OeFWxRykU8wGeRnSFhJHV66xh0QhkSgpXG/QexM/GevHVjean7GbYVYi+8w
-         4y4w==
+        bh=kja4wR6FLtasYFQS1xUbhik8iG88bHuMFvf2ArrK0nw=;
+        b=b1PxbkXji6rxJkxXzX+E8hmtsDc4EAG6spndGBpqTY6Mtd1Z82qmKG7IFdzEDWmzKK
+         cpfPgmFkndIKUtDn3lZmf4ZAYcKRjit4YkqMU72A44nfyHayfu0+OGxh9SgysS/YRAv2
+         RDEnuh2qly9nvvswbClZIbFXuZCzwJj2KYSwWCU/YgJUugR9fRVuJUTKIe2+8zLwiPOj
+         anBDeIuRaK3lpaZn56KojfHXM/H6EWmNRZuecl/6erGrJ5dc4+VdWT4yxUQf8Rpv9nUY
+         hRDkUmUo3tTzvQuC1Vf8iYC9BBrTle8EWAWahcABrO+2gaF43DLowx5aiqsiUBpSVZlJ
+         7EAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ep9uVHpBGZswzwZ+H/eF/1/q1Yi9oKaegrCzMMn+v2w=;
-        b=f7qjsGQUKuwN1dfiKyGc0iVkhw5K+58tUJpSbny6p/zFgFgJ6n5w7HSefY4MKkvw7k
-         1LII15iH/obmmR1jmNcunHvfW2/9I/ResLqhWmX13nlvO9irbS37vESNSoLoyY0R2UYz
-         sbeZO9uVzUwDlmUxder5oXzOX4jkJihQPAIgnH9ioK1V4UNDN8zzWJGZ1B2OCjF/6PoE
-         VPBABUgnNCLdE1M6p5NPQzdyqOE9LBWG0PZWOVTQ6ysf0pLnam68RxJ2E3CtWXIwtxF5
-         BYNCFvr+1gaJmnFGgmbB05Xvesu6+yXsrZNAGL5kxPFPFEv1B3a4rxRrjdDDK+2IU3Us
-         Xlgg==
-X-Gm-Message-State: APjAAAUc2X7M05/FWdh+floIkoUYDo8wnGjJjlvm8MbjjickQOPF5H6h
-        514Ttmko2ZphNjpUjfWV5jRkLw==
-X-Google-Smtp-Source: APXvYqzaonhnkp/bUloxWlJ3maBzgQam/abanIz+C6FRxel/0h/X8xe2Qu7CLsQrUUqePsk4cAL/DQ==
-X-Received: by 2002:aed:2494:: with SMTP id t20mr75861244qtc.135.1558569459047;
-        Wed, 22 May 2019 16:57:39 -0700 (PDT)
+        bh=kja4wR6FLtasYFQS1xUbhik8iG88bHuMFvf2ArrK0nw=;
+        b=uSjoEWQNBRZij+XjD8JxqMW+1d1NqjDKHgY8vmd1ecQgYWV5SiKC6Ij7ESwO4UmUK+
+         mHvDVke0E2kbE0aRmFXg4Mk9EDprzPqqoHi9ICyBdCalFHXb/04xYZ87xUZNSmvQALdc
+         l6puk89AC78tii6g9vXJgkYzp9uFVOwVWYlGlNAyqQXehdUwArVX7ElOAEZtDLq7UuZg
+         kHec5FPh133NvAbc+We3PHA9mRINDTvZAQmnjjUlE9/Bu5jV90MRSrNpi07oXEdlhl8B
+         Fh3XiKm9GDwpjrTX/DKZ5UMa8zJeD6nJW3jC7X+T+3CVkoCzP7HMIbjKC6OBDpoOWCqZ
+         5mUA==
+X-Gm-Message-State: APjAAAWxBoU5pzdXW7Awen1gTutannnM6cCjPsIRR9jSMrK/7Fyaephv
+        nMPR4GgNfonOLK7GALxgT1n2Qw==
+X-Google-Smtp-Source: APXvYqwzvo9H/aW7qSfx2OQVIHnUtdd1Cyzpi6J44RNo2JLbDhDXh7kfDH2OJy33sD2sQGXynL6VQQ==
+X-Received: by 2002:ac8:f71:: with SMTP id l46mr70609860qtk.321.1558570854263;
+        Wed, 22 May 2019 17:20:54 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id q66sm12719518qke.66.2019.05.22.16.57.38
+        by smtp.gmail.com with ESMTPSA id t30sm15637238qtc.80.2019.05.22.17.20.53
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 May 2019 16:57:38 -0700 (PDT)
+        Wed, 22 May 2019 17:20:53 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hTb73-0001PC-MU; Wed, 22 May 2019 20:57:37 -0300
-Date:   Wed, 22 May 2019 20:57:37 -0300
+        id 1hTbTZ-0001Zh-03; Wed, 22 May 2019 21:20:53 -0300
+Date:   Wed, 22 May 2019 21:20:52 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jerome Glisse <jglisse@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>
-Subject: Re: [PATCH v4 0/1] Use HMM for ODP v4
-Message-ID: <20190522235737.GD15389@ziepe.ca>
-References: <20190411181314.19465-1-jglisse@redhat.com>
- <20190506195657.GA30261@ziepe.ca>
- <20190521205321.GC3331@redhat.com>
- <20190522005225.GA30819@ziepe.ca>
- <20190522174852.GA23038@redhat.com>
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, Dmitry Vyukov <dvyukov@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        linux-media@vger.kernel.org, Kevin Brodsky <kevin.brodsky@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Kostya Serebryany <kcc@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        linux-kernel@vger.kernel.org,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <20190523002052.GF15389@ziepe.ca>
+References: <cover.1557160186.git.andreyknvl@google.com>
+ <20190517144931.GA56186@arrakis.emea.arm.com>
+ <20190521184856.GC2922@ziepe.ca>
+ <20190522134925.GV28398@e103592.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190522174852.GA23038@redhat.com>
+In-Reply-To: <20190522134925.GV28398@e103592.cambridge.arm.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 01:48:52PM -0400, Jerome Glisse wrote:
-
-> > > So attached is a rebase on top of 5.2-rc1, i have tested with pingpong
-> > > (prefetch and not and different sizes). Seems to work ok.
+On Wed, May 22, 2019 at 02:49:28PM +0100, Dave Martin wrote:
+> On Tue, May 21, 2019 at 03:48:56PM -0300, Jason Gunthorpe wrote:
+> > On Fri, May 17, 2019 at 03:49:31PM +0100, Catalin Marinas wrote:
 > > 
-> > Urk, it already doesn't apply to the rdma tree :(
+> > > The tagged pointers (whether hwasan or MTE) should ideally be a
+> > > transparent feature for the application writer but I don't think we can
+> > > solve it entirely and make it seamless for the multitude of ioctls().
+> > > I'd say you only opt in to such feature if you know what you are doing
+> > > and the user code takes care of specific cases like ioctl(), hence the
+> > > prctl() proposal even for the hwasan.
 > > 
-> > The conflicts are a little more extensive than I'd prefer to handle..
-> > Can I ask you to rebase it on top of this branch please:
+> > I'm not sure such a dire view is warrented.. 
 > > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=wip/jgg-for-next
+> > The ioctl situation is not so bad, other than a few special cases,
+> > most drivers just take a 'void __user *' and pass it as an argument to
+> > some function that accepts a 'void __user *'. sparse et al verify
+> > this. 
 > > 
-> > Specifically it conflicts with this patch:
+> > As long as the core functions do the right thing the drivers will be
+> > OK.
 > > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?h=wip/jgg-for-next&id=d2183c6f1958e6b6dfdde279f4cee04280710e34
+> > The only place things get dicy is if someone casts to unsigned long
+> > (ie for vma work) but I think that reflects that our driver facing
+> > APIs for VMAs are compatible with static analysis (ie I have no
+> > earthly idea why get_user_pages() accepts an unsigned long), not that
+> > this is too hard.
+> 
+> If multiple people will care about this, perhaps we should try to
+> annotate types more explicitly in SYSCALL_DEFINEx() and ABI data
+> structures.
+> 
+> For example, we could have a couple of mutually exclusive modifiers
+> 
+> T __object *
+> T __vaddr * (or U __vaddr)
+> 
+> In the first case the pointer points to an object (in the C sense)
+> that the call may dereference but not use for any other purpose.
 
-There is at least one more serious blocker here:
+How would you use these two differently?
 
-config ARCH_HAS_HMM_MIRROR
-        bool
-        default y
-        depends on (X86_64 || PPC64)
-        depends on MMU && 64BIT
+So far the kernel has worked that __user should tag any pointer that
+is from userspace and then you can't do anything with it until you
+transform it into a kernel something
 
-I can't loose ARM64 support for ODP by merging this, that is too
-serious of a regression.
+> to tell static analysers the real type of pointers smuggled through
+> UAPI disguised as other types (*cough* KVM, etc.)
 
-Can you fix it?
+Yes, that would help alot, we often have to pass pointers through a
+u64 in the uAPI, and there is no static checker support to make sure
+they are run through the u64_to_user_ptr() helper.
 
-Thanks,
 Jason
