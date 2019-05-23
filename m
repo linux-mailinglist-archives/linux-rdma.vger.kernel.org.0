@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 267B928151
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 17:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CE728156
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 17:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731070AbfEWPen (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 11:34:43 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:43822 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731048AbfEWPen (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 11:34:43 -0400
-Received: by mail-qt1-f195.google.com with SMTP id g17so1163400qtq.10
-        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 08:34:42 -0700 (PDT)
+        id S1731075AbfEWPeq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 11:34:46 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:36789 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731104AbfEWPep (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 11:34:45 -0400
+Received: by mail-qt1-f193.google.com with SMTP id a17so7250663qth.3
+        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 08:34:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DCPTNx8CjmJ5EZR4Q7fEVnlEGDk6XaLfhfnTJM/xZQM=;
-        b=UscylUyC/LbE+hmwHcoTPty0rCYV8C9l6BH2lAPjaiQ8KCpQHYGVFqbwt9qHDAXr8/
-         0k3qTMBhSJf3S42PRZfbrX9UEI/6LGFwoDjvFpmqQlcDDdNyD6dTDJrchuLLNc489jB7
-         Y/rZmj+WB81MnhoL6YnHiAQeUu1bwtK84oY4YfOfklhLOiyLAZUJPzOkPy0cRE3mZC87
-         G/yVQEsPneUO8B683OG8mQMLHQ79F1URNwp0dMjSHeuCd7ZWZGchFIcBB3L628nY5y71
-         wweFi2dQmZAt9lY8+eQpEay8IdpvBecKhqsuVKkK81+YslCO9og21vt7HuyZ/YQvqfFx
-         2JDg==
+        bh=ncjASLGlHsj22sNocZs8CG3omWgokVRQnVtcSgoF4Do=;
+        b=afbPPYk9gBj4SFUfupZZE4bCnA6gDZMhgy4+OgszgUI8N1f+l4L4QbGabEscrkzZio
+         04dKwEZTY1ZZpMvvyuXHs/Zur4eepQiD1W+lZazrUaj4nn7/t4j1M+InHHRzuagZXcr8
+         KKv520d1DP6I7X4/cfCmplGSWFB7qHZa/I9bvrzKq1ogoyjdw+q2JJfFWS8aPCq+8IpA
+         qzget2M+jxJ0rPEHJZXgXf8cijcYlCmoGK6a41MkyHSp5f24D9rssOEcYPsQesCbV+n0
+         ERLiPP7EiRneYQ5/ivup+VNYTXqW/BHKDFa3+vKYdV9zuvfZzb8dXYO7o2N+FXeqLQBm
+         RkYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DCPTNx8CjmJ5EZR4Q7fEVnlEGDk6XaLfhfnTJM/xZQM=;
-        b=Mbd6sv1/2gi3YKYf+SBuLw6zvpvlezVVfnnHHhFh27ffumfGFHJMeubOQAMOaci63/
-         bwCD1LCnkn032U10jeTKfamgoInjguKurGjOFHAJ6N3AP3XMbU5Oqh+xxwXGKMkq8YQF
-         zQOskxUyMiQz+NEbG9eY/E379KmazZAEYp0KCvAbDNhr0uHQuI9LBkymM5VsMSzNidKx
-         ukt3wiiUEjbDW3IOJQCh6Bs31OJ/7wj4KyvPest03qwtz5TUgoUE/+d5tYdGT3HwTl1m
-         Ngn1dr4quNQe9FP8C4Ogx1+36wYrTor6ArR9qRQMJoFoWjDctdwNSxMgeodTtFA5j+VU
-         sbUg==
-X-Gm-Message-State: APjAAAUvNMEMrzT/0as3v5Uv23EMQJ2qAa5Cm0lTdrlxKkyc76feCV5b
-        aMuOkKoDh7NP5J3d03KdKlZg6b10LPg=
-X-Google-Smtp-Source: APXvYqxlKr/De7Ph6kX9Z/iOmfGCPd6u0UkBZ6roajbjLbPCO1l9qWnchzPbSB+6YXzx7C5cfiG9rg==
-X-Received: by 2002:ac8:28ac:: with SMTP id i41mr57963862qti.388.1558625682235;
-        Thu, 23 May 2019 08:34:42 -0700 (PDT)
+        bh=ncjASLGlHsj22sNocZs8CG3omWgokVRQnVtcSgoF4Do=;
+        b=Zy5luT8jvUUPBbYIlwoqKoECCIyQFmeD+C9BqdMF5B8gjdiZsKiYA9Zcvd969PiBfF
+         drMHk/phPeMWsjpqPma/3aLi/KCx3X6kFZg9kNM6PXBgTE5jgz0WPK9EUrZXea15msC6
+         jFk/yZW9W0fQdiRCYZui5AGe1iWPZVyZtlnXMWi0G64Q4cptBa7z/82ujIsP3PQTS6C+
+         C2Z6d1kv+qyPtYgc7LzRixrJd9GNIOnW0yBNyGNJqUcPKUq3Jtr8WDTvC6TLUXKs6yi9
+         FpjmpEV8WTCuoAcZm11NFdl/AhUsxVZVn/x6+962H+R1lGzyW2IEnWTNcfnF8GqZjqFJ
+         xxhg==
+X-Gm-Message-State: APjAAAVHhrsX8izTPd1vJiMfTimO557UXpSZfKQ/hJx+O07HvA6l1EhS
+        EGbXLrSyRix6/P/88/E9bKTv7uibFn0=
+X-Google-Smtp-Source: APXvYqxAz8IO0yDJzMp5j01V0l+mHdFZgyUtfceu0FECv0lekCVZ9tSBPQKcxg2vezV1TSB8NGjW9g==
+X-Received: by 2002:ac8:18b8:: with SMTP id s53mr76217225qtj.232.1558625684721;
+        Thu, 23 May 2019 08:34:44 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id a51sm17403701qta.85.2019.05.23.08.34.38
+        by smtp.gmail.com with ESMTPSA id g65sm2686228qkb.1.2019.05.23.08.34.38
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Thu, 23 May 2019 08:34:39 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hTpjq-0004zf-3t; Thu, 23 May 2019 12:34:38 -0300
+        id 1hTpjq-0004zl-5F; Thu, 23 May 2019 12:34:38 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
         John Hubbard <jhubbard@nvidia.com>
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [RFC PATCH 06/11] mm/hmm: Remove duplicate condition test before wait_event_timeout
-Date:   Thu, 23 May 2019 12:34:31 -0300
-Message-Id: <20190523153436.19102-7-jgg@ziepe.ca>
+Subject: [RFC PATCH 07/11] mm/hmm: Delete hmm_mirror_mm_is_alive()
+Date:   Thu, 23 May 2019 12:34:32 -0300
+Message-Id: <20190523153436.19102-8-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190523153436.19102-1-jgg@ziepe.ca>
 References: <20190523153436.19102-1-jgg@ziepe.ca>
@@ -68,49 +68,91 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-The wait_event_timeout macro already tests the condition as its first
-action, so there is no reason to open code another version of this, all
-that does is skip the might_sleep() debugging in common cases, which is
-not helpful.
+Now that it is clarified that callers to hmm_range_dma_map() must hold
+the mmap_sem and thus the mmget, there is no purpose for this function.
 
-Further, based on prior patches, we can no simplify the required condition
-test:
- - If range is valid memory then so is range->hmm
- - If hmm_release() has run then range->valid is set to false
-   at the same time as dead, so no reason to check both.
- - A valid hmm has a valid hmm->mm.
-
-Also, add the READ_ONCE for range->valid as there is no lock held here.
+It was the last user of dead, so delete it as well.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- include/linux/hmm.h | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ include/linux/hmm.h | 27 ---------------------------
+ mm/hmm.c            |  4 ----
+ 2 files changed, 31 deletions(-)
 
 diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-index 2a7346384ead13..7f3b751fcab1ce 100644
+index 7f3b751fcab1ce..6671643703a7ab 100644
 --- a/include/linux/hmm.h
 +++ b/include/linux/hmm.h
-@@ -216,17 +216,9 @@ static inline unsigned long hmm_range_page_size(const struct hmm_range *range)
- static inline bool hmm_range_wait_until_valid(struct hmm_range *range,
- 					      unsigned long timeout)
- {
--	/* Check if mm is dead ? */
--	if (range->hmm == NULL || range->hmm->dead || range->hmm->mm == NULL) {
--		range->valid = false;
--		return false;
--	}
--	if (range->valid)
--		return true;
--	wait_event_timeout(range->hmm->wq, range->valid || range->hmm->dead,
-+	wait_event_timeout(range->hmm->wq, range->valid,
- 			   msecs_to_jiffies(timeout));
--	/* Return current valid status just in case we get lucky */
--	return range->valid;
-+	return READ_ONCE(range->valid);
- }
+@@ -91,7 +91,6 @@
+  * @mirrors_sem: read/write semaphore protecting the mirrors list
+  * @wq: wait queue for user waiting on a range invalidation
+  * @notifiers: count of active mmu notifiers
+- * @dead: is the mm dead ?
+  */
+ struct hmm {
+ 	struct mm_struct	*mm;
+@@ -104,7 +103,6 @@ struct hmm {
+ 	wait_queue_head_t	wq;
+ 	struct rcu_head		rcu;
+ 	long			notifiers;
+-	bool			dead;
+ };
  
  /*
+@@ -466,31 +464,6 @@ struct hmm_mirror {
+ int hmm_mirror_register(struct hmm_mirror *mirror, struct mm_struct *mm);
+ void hmm_mirror_unregister(struct hmm_mirror *mirror);
+ 
+-/*
+- * hmm_mirror_mm_is_alive() - test if mm is still alive
+- * @mirror: the HMM mm mirror for which we want to lock the mmap_sem
+- * Returns: false if the mm is dead, true otherwise
+- *
+- * This is an optimization it will not accurately always return -EINVAL if the
+- * mm is dead ie there can be false negative (process is being kill but HMM is
+- * not yet inform of that). It is only intented to be use to optimize out case
+- * where driver is about to do something time consuming and it would be better
+- * to skip it if the mm is dead.
+- */
+-static inline bool hmm_mirror_mm_is_alive(struct hmm_mirror *mirror)
+-{
+-	struct mm_struct *mm;
+-
+-	if (!mirror || !mirror->hmm)
+-		return false;
+-	mm = READ_ONCE(mirror->hmm->mm);
+-	if (mirror->hmm->dead || !mm)
+-		return false;
+-
+-	return true;
+-}
+-
+-
+ /*
+  * Please see Documentation/vm/hmm.rst for how to use the range API.
+  */
+diff --git a/mm/hmm.c b/mm/hmm.c
+index d97ec293336ea5..2695925c0c5927 100644
+--- a/mm/hmm.c
++++ b/mm/hmm.c
+@@ -80,7 +80,6 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+ 	mutex_init(&hmm->lock);
+ 	kref_init(&hmm->kref);
+ 	hmm->notifiers = 0;
+-	hmm->dead = false;
+ 	hmm->mm = mm;
+ 	mmgrab(hmm->mm);
+ 
+@@ -130,9 +129,6 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+ 	if (!kref_get_unless_zero(&hmm->kref))
+ 		return;
+ 
+-	/* Report this HMM as dying. */
+-	hmm->dead = true;
+-
+ 	/* Wake-up everyone waiting on any range. */
+ 	mutex_lock(&hmm->lock);
+ 	list_for_each_entry(range, &hmm->ranges, list) {
 -- 
 2.21.0
 
