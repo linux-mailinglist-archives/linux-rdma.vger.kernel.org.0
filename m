@@ -2,129 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9C6278BD
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 11:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9ED27AF6
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 12:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728277AbfEWJEh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 05:04:37 -0400
-Received: from foss.arm.com ([217.140.101.70]:40630 "EHLO foss.arm.com"
+        id S1729962AbfEWKnG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 06:43:06 -0400
+Received: from foss.arm.com ([217.140.101.70]:43642 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726230AbfEWJEh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 May 2019 05:04:37 -0400
+        id S1727434AbfEWKnG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 May 2019 06:43:06 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 409B2341;
-        Thu, 23 May 2019 02:04:36 -0700 (PDT)
-Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A78AC3F575;
-        Thu, 23 May 2019 02:04:30 -0700 (PDT)
-Date:   Thu, 23 May 2019 10:04:28 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Evgenii Stepanov <eugenis@google.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84A77341;
+        Thu, 23 May 2019 03:43:05 -0700 (PDT)
+Received: from e103592.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.72.51.249])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C9A023F718;
+        Thu, 23 May 2019 03:42:59 -0700 (PDT)
+Date:   Thu, 23 May 2019 11:42:57 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
         Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        Lee Smith <Lee.Smith@arm.com>, linux-kselftest@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        Evgeniy Stepanov <eugenis@google.com>,
+        linux-media@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
         Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Dmitry Vyukov <dvyukov@google.com>,
         Kostya Serebryany <kcc@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        linux-kernel@vger.kernel.org,
+        Jens Wiklander <jens.wiklander@linaro.org>,
         Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v15 05/17] arms64: untag user pointers passed to memory
- syscalls
-Message-ID: <20190523090427.GA44383@arrakis.emea.arm.com>
+        Yishai Hadas <yishaih@mellanox.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <20190523104256.GX28398@e103592.cambridge.arm.com>
 References: <cover.1557160186.git.andreyknvl@google.com>
- <00eb4c63fefc054e2c8d626e8fedfca11d7c2600.1557160186.git.andreyknvl@google.com>
- <20190522114910.emlckebwzv2qz42i@mbp>
- <CAFKCwrjyP+x0JJy=qpBFsp4pub3He6UkvU0qnf1UOKt6W1LPRQ@mail.gmail.com>
+ <20190517144931.GA56186@arrakis.emea.arm.com>
+ <20190521184856.GC2922@ziepe.ca>
+ <20190522134925.GV28398@e103592.cambridge.arm.com>
+ <20190523002052.GF15389@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFKCwrjyP+x0JJy=qpBFsp4pub3He6UkvU0qnf1UOKt6W1LPRQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190523002052.GF15389@ziepe.ca>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 02:16:57PM -0700, Evgenii Stepanov wrote:
-> On Wed, May 22, 2019 at 4:49 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > On Mon, May 06, 2019 at 06:30:51PM +0200, Andrey Konovalov wrote:
-> > > This patch is a part of a series that extends arm64 kernel ABI to allow to
-> > > pass tagged user pointers (with the top byte set to something else other
-> > > than 0x00) as syscall arguments.
-> > >
-> > > This patch allows tagged pointers to be passed to the following memory
-> > > syscalls: brk, get_mempolicy, madvise, mbind, mincore, mlock, mlock2,
-> > > mmap, mmap_pgoff, mprotect, mremap, msync, munlock, munmap,
-> > > remap_file_pages, shmat and shmdt.
-> > >
-> > > This is done by untagging pointers passed to these syscalls in the
-> > > prologues of their handlers.
-> >
-> > I'll go through them one by one to see if we can tighten the expected
-> > ABI while having the MTE in mind.
-> >
-> > > diff --git a/arch/arm64/kernel/sys.c b/arch/arm64/kernel/sys.c
-> > > index b44065fb1616..933bb9f3d6ec 100644
-> > > --- a/arch/arm64/kernel/sys.c
-> > > +++ b/arch/arm64/kernel/sys.c
-> > > @@ -35,10 +35,33 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
-> > >  {
-> > >       if (offset_in_page(off) != 0)
-> > >               return -EINVAL;
-> > > -
-> > > +     addr = untagged_addr(addr);
-> > >       return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
-> > >  }
-> >
-> > If user passes a tagged pointer to mmap() and the address is honoured
-> > (or MAP_FIXED is given), what is the expected return pointer? Does it
-> > need to be tagged with the value from the hint?
+On Wed, May 22, 2019 at 09:20:52PM -0300, Jason Gunthorpe wrote:
+> On Wed, May 22, 2019 at 02:49:28PM +0100, Dave Martin wrote:
+> > On Tue, May 21, 2019 at 03:48:56PM -0300, Jason Gunthorpe wrote:
+> > > On Fri, May 17, 2019 at 03:49:31PM +0100, Catalin Marinas wrote:
+> > > 
+> > > > The tagged pointers (whether hwasan or MTE) should ideally be a
+> > > > transparent feature for the application writer but I don't think we can
+> > > > solve it entirely and make it seamless for the multitude of ioctls().
+> > > > I'd say you only opt in to such feature if you know what you are doing
+> > > > and the user code takes care of specific cases like ioctl(), hence the
+> > > > prctl() proposal even for the hwasan.
+> > > 
+> > > I'm not sure such a dire view is warrented.. 
+> > > 
+> > > The ioctl situation is not so bad, other than a few special cases,
+> > > most drivers just take a 'void __user *' and pass it as an argument to
+> > > some function that accepts a 'void __user *'. sparse et al verify
+> > > this. 
+> > > 
+> > > As long as the core functions do the right thing the drivers will be
+> > > OK.
+> > > 
+> > > The only place things get dicy is if someone casts to unsigned long
+> > > (ie for vma work) but I think that reflects that our driver facing
+> > > APIs for VMAs are compatible with static analysis (ie I have no
+> > > earthly idea why get_user_pages() accepts an unsigned long), not that
+> > > this is too hard.
+> > 
+> > If multiple people will care about this, perhaps we should try to
+> > annotate types more explicitly in SYSCALL_DEFINEx() and ABI data
+> > structures.
+> > 
+> > For example, we could have a couple of mutually exclusive modifiers
+> > 
+> > T __object *
+> > T __vaddr * (or U __vaddr)
+> > 
+> > In the first case the pointer points to an object (in the C sense)
+> > that the call may dereference but not use for any other purpose.
 > 
-> For HWASan the most convenient would be to use the tag from the hint.
-> But since in the TBI (not MTE) mode the kernel has no idea what
-> meaning userspace assigns to pointer tags, perhaps it should not try
-> to guess, and should return raw (zero-tagged) address instead.
-
-Then, just to relax the ABI for hwasan, shall we simply disallow tagged
-pointers on mmap() arguments? We can leave them in for
-mremap(old_address), madvise().
-
-> > With MTE, we may want to use this as a request for the default colour of
-> > the mapped pages (still under discussion).
+> How would you use these two differently?
 > 
-> I like this - and in that case it would make sense to return the
-> pointer that can be immediately dereferenced without crashing the
-> process, i.e. with the matching tag.
+> So far the kernel has worked that __user should tag any pointer that
+> is from userspace and then you can't do anything with it until you
+> transform it into a kernel something
 
-This came up from the Android investigation work where large memory
-allocations (using mmap) could be more efficiently pre-tagged by the
-kernel on page fault. Not sure about the implementation details yet.
+Ultimately it would be good to disallow casting __object pointers execpt
+to compatible __object pointer types, and to make get_user etc. demand
+__object.
 
--- 
-Catalin
+__vaddr pointers / addresses would be freely castable, but not to
+__object and so would not be dereferenceable even indirectly.
+
+Or that's the general idea.  Figuring out a sane set of rules that we
+could actually check / enforce would require a bit of work.
+
+(Whether the __vaddr base type is a pointer or an integer type is
+probably moot, due to the restrictions we would place on the use of
+these anyway.)
+
+> > to tell static analysers the real type of pointers smuggled through
+> > UAPI disguised as other types (*cough* KVM, etc.)
+> 
+> Yes, that would help alot, we often have to pass pointers through a
+> u64 in the uAPI, and there is no static checker support to make sure
+> they are run through the u64_to_user_ptr() helper.
+
+Agreed.
+
+Cheers
+---Dave
