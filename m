@@ -2,155 +2,233 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0899B283C1
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 18:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B64283F0
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 18:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730987AbfEWQec (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 12:34:32 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:38340 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730867AbfEWQeb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 12:34:31 -0400
-Received: by mail-qt1-f196.google.com with SMTP id l3so7486049qtj.5
-        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 09:34:31 -0700 (PDT)
+        id S1731243AbfEWQiZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 12:38:25 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:39101 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730924AbfEWQiW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 12:38:22 -0400
+Received: by mail-pl1-f196.google.com with SMTP id g9so2972260plm.6
+        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 09:38:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=F1YBHT3496svrxz+EkatQOzrROHl8f06iX70UV39xd8=;
-        b=HldtNd9DThCXABUokXssytt+812XdJeJivvnSsHqGM+j4bUvIvlV09bjjFwKa16++I
-         On9uV6QYyvZunXFC03CsY+SLzNeYgTgrJOctFXSGTHgDaLoQ9V1R4xLeEw/QiYp/KWFb
-         PDa07LQSEJaPSSa6yVorRs4qfI8XtuVZxkb2pamApt6eKUdFfW3zF5p7W0S3n4g8TN+q
-         fHSkGsmd4Fe8LrJrOrUN7ArzG9BBD2yuq0r4NtuOfGd7Kq5PapeuB2wkGRs1K9PiVwk4
-         dPIxd1t1ZdynIrcnf/aDpZ9rDSYvCwiEUki3zmA+hVr8mi2p2Fdto2QvQ9h8jD0X6PBD
-         dfAw==
+         :content-disposition:in-reply-to;
+        bh=lscewINPN3hq/l0Swcavzj6U0JCykRwN+VKQYmeGavk=;
+        b=MzIBf/cg8HqX7LDHDmH3NduBH/GNHyk36BoEHjmaEfwdA0mOkdLBAg0EUXF7biIGPX
+         1D7AzOrIM750xRnkubOq1jGRkMcjIZjIYf+kPatHpylhUSqCQfdwGLTrWn4J8esTRBLk
+         Xcvmw1TY3lT5og+Fj9TWzv82uZX9wel5U8qi8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=F1YBHT3496svrxz+EkatQOzrROHl8f06iX70UV39xd8=;
-        b=JnQuQHJVyof22AbS6pZNcsoSjJWxW2T6L7CKa8PwF70mLlPcqC1GNiLKlhx/Z2kMPz
-         YRlpJ8eB5aDmgcCXvzkY6OsFZmyquYq8ioNcLMvf0osoR86Ij9gk7ZL8ps2GOHx1BNOY
-         5ShZDhxSaVDiPABb1Q2FvEe0DTSC+b9yw8W3LCi9rNjrp11SZMOgnGTNLNBHb1nmJwxd
-         w5Aal0rWlu1gD+lG6lEEXJP3M8qRkoIAxTFtcR3ZXNQ6hIIAURO/gzH7j0WGPaj1l+wF
-         xMK3Mb0ocoRj0a/c5KWe2ZJ6OaXP7jIZOxLcy4LNklZbKksHS2DenDPM32HoGqgiAmH8
-         Xsug==
-X-Gm-Message-State: APjAAAXwBkt4sIkSXeC+Fsc83n7iZLYqBiW1YN0MbLiIjfux+7hS69oO
-        dSNaPMoUqT0YVROWgCEtjarcEg==
-X-Google-Smtp-Source: APXvYqwwASbT06slnQZ2dSsUZFCR8e09enADDDiYvAH6zm8DNI7x0isJ5vaxAb7mVHA/78N1kIP3zQ==
-X-Received: by 2002:a0c:e64f:: with SMTP id c15mr72350005qvn.239.1558629270823;
-        Thu, 23 May 2019 09:34:30 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id f10sm7973934qkh.23.2019.05.23.09.34.30
+         :mime-version:content-disposition:in-reply-to;
+        bh=lscewINPN3hq/l0Swcavzj6U0JCykRwN+VKQYmeGavk=;
+        b=l1oDZIgJysX2k528oRu1yfBQaCVhKIgsjpI6w41IH72Qerv2G2C3+OUTc/wng/aTdK
+         CT4OaBbL48XOIXGn8AY6tLGkY/58Br2zbeYVjTlZMG3vLsIb7vEJ2z0qNvgRJgLvQJi4
+         iLF58ORV7iebXFTwnC9sMoN5P78IB6GIPnc0gzK7ZlIYdh0gjgO2ZK/vusCqylTOxtDi
+         Y+1FjAndkHspdG+7SFNM+wRyrqsSQsQKv1LW54NnN74s6O3++ot+w1mq7dvfggAflGmE
+         tH2qx+1u+xjCYNzYzn9K/RpfS7uPkJ1X/jx0SMeL5+R36MVjWixZ8+s6yqebpX2rlH33
+         9lDg==
+X-Gm-Message-State: APjAAAW4/mb/nhw6yN7APBCZYSy10mqSg5pi31ezC34/72bzm4XMR1cD
+        otKxZyZD5Fymdfsu34HLPWugLQ==
+X-Google-Smtp-Source: APXvYqzxDNUT+zQ+3IUTM4Pfo29z2ussIuDSTH+Mz2tPZncaJ19KDxQ7w12Ra519k713lyeCzNKlsQ==
+X-Received: by 2002:a17:902:2aa6:: with SMTP id j35mr17743251plb.189.1558629502290;
+        Thu, 23 May 2019 09:38:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g19sm56536684pgj.75.2019.05.23.09.38.20
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 May 2019 09:34:30 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hTqfl-0005Lw-OR; Thu, 23 May 2019 13:34:29 -0300
-Date:   Thu, 23 May 2019 13:34:29 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jerome Glisse <jglisse@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>
-Subject: Re: [PATCH v4 0/1] Use HMM for ODP v4
-Message-ID: <20190523163429.GC12159@ziepe.ca>
-References: <20190411181314.19465-1-jglisse@redhat.com>
- <20190506195657.GA30261@ziepe.ca>
- <20190521205321.GC3331@redhat.com>
- <20190522005225.GA30819@ziepe.ca>
- <20190522174852.GA23038@redhat.com>
- <20190522235737.GD15389@ziepe.ca>
- <20190523150432.GA5104@redhat.com>
- <20190523154149.GB12159@ziepe.ca>
- <20190523155207.GC5104@redhat.com>
+        Thu, 23 May 2019 09:38:21 -0700 (PDT)
+Date:   Thu, 23 May 2019 09:38:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     enh <enh@google.com>, Evgenii Stepanov <eugenis@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <201905230917.DEE7A75EF0@keescook>
+References: <cover.1557160186.git.andreyknvl@google.com>
+ <20190517144931.GA56186@arrakis.emea.arm.com>
+ <CAFKCwrj6JEtp4BzhqO178LFJepmepoMx=G+YdC8sqZ3bcBp3EQ@mail.gmail.com>
+ <20190521182932.sm4vxweuwo5ermyd@mbp>
+ <201905211633.6C0BF0C2@keescook>
+ <20190522101110.m2stmpaj7seezveq@mbp>
+ <CAJgzZoosKBwqXRyA6fb8QQSZXFqfHqe9qO9je5TogHhzuoGXJQ@mail.gmail.com>
+ <20190522163527.rnnc6t4tll7tk5zw@mbp>
+ <201905221316.865581CF@keescook>
+ <20190523144449.waam2mkyzhjpqpur@mbp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190523155207.GC5104@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190523144449.waam2mkyzhjpqpur@mbp>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 11:52:08AM -0400, Jerome Glisse wrote:
-> On Thu, May 23, 2019 at 12:41:49PM -0300, Jason Gunthorpe wrote:
-> > On Thu, May 23, 2019 at 11:04:32AM -0400, Jerome Glisse wrote:
-> > > On Wed, May 22, 2019 at 08:57:37PM -0300, Jason Gunthorpe wrote:
-> > > > On Wed, May 22, 2019 at 01:48:52PM -0400, Jerome Glisse wrote:
-> > > > 
-> > > > > > > So attached is a rebase on top of 5.2-rc1, i have tested with pingpong
-> > > > > > > (prefetch and not and different sizes). Seems to work ok.
-> > > > > > 
-> > > > > > Urk, it already doesn't apply to the rdma tree :(
-> > > > > > 
-> > > > > > The conflicts are a little more extensive than I'd prefer to handle..
-> > > > > > Can I ask you to rebase it on top of this branch please:
-> > > > > > 
-> > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=wip/jgg-for-next
-> > > > > > 
-> > > > > > Specifically it conflicts with this patch:
-> > > > > > 
-> > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?h=wip/jgg-for-next&id=d2183c6f1958e6b6dfdde279f4cee04280710e34
-> > > > 
-> > > > There is at least one more serious blocker here:
-> > > > 
-> > > > config ARCH_HAS_HMM_MIRROR
-> > > >         bool
-> > > >         default y
-> > > >         depends on (X86_64 || PPC64)
-> > > >         depends on MMU && 64BIT
-> > > > 
-> > > > I can't loose ARM64 support for ODP by merging this, that is too
-> > > > serious of a regression.
-> > > > 
-> > > > Can you fix it?
-> > > 
-> > > 5.2 already has patch to fix the Kconfig (ARCH_HAS_HMM_MIRROR and
-> > > ARCH_HAS_HMM_DEVICE replacing ARCH_HAS_HMM) I need to update nouveau
-> > 
-> > Newer than 5.2-rc1? Is this why ARCH_HAS_HMM_MIRROR is not used anywhere?
+On Thu, May 23, 2019 at 03:44:49PM +0100, Catalin Marinas wrote:
+> There is also the obvious requirement which I didn't mention: new user
+> space continues to run on new/subsequent kernel versions. That's one of
+> the points of contention for this series (ignoring MTE) with the
+> maintainers having to guarantee this without much effort. IOW, do the
+> 500K+ new lines in a subsequent kernel version break any user space out
+> there? I'm only talking about the relaxed TBI ABI. Are the usual LTP,
+> syskaller sufficient? Better static analysis would definitely help.
+
+We can't have perfect coverage of people actively (or accidentally)
+working to trick static analyzers (and the compiler) into "forgetting"
+about a __user annotation. We can certainly improve analysis (I see
+the other sub-thread on that), but I'd like that work not to block
+this series.
+
+What on this front would you be comfortable with? Given it's a new
+feature isn't it sufficient to have a CONFIG (and/or boot option)?
+
+> Or, if we ever want MTE to be turned on by default (i.e. tag checking),
+> even if everything is tagged with 0, we have to disallow TBI for user
+> and this includes hwasan. There were a small number of programs using
+> the TBI (I think some JavaScript compilers tried this). But now we are
+> bringing in the hwasan support and this can be a large user base. Shall
+> we add an ELF note for such binaries that use TBI/hwasan?
+
+Just to be clear, you say "disallow TBI for user" -- you mean a
+particular process, yes? i.e. there is no architectural limitation that
+says once we're using MTE nothing can switch to TBI. i.e. a process is
+either doing MTE or TBI (or nothing, but that's the same as TBI).
+
+> This needs solving as well. Most driver developers won't know why
+> untagged_addr() is needed unless we have more rigorous types or type
+> annotations and a tool to check them (we should probably revive the old
+> sparse thread).
+
+This seems like a parallel concern: we can do that separately from this
+series. Without landing it, is it much harder for people to test it,
+look for bugs, help with types/annotations, etc.
+
+> > So there needs to be some way to let the kernel know which of three
+> > things it should be doing:
+> > 1- leaving userspace addresses as-is (present)
+> > 2- wiping the top bits before using (this series)
 > 
-> Yes this is multi-step update, first add the new Kconfig release n,
-> update driver in release n+1, update core Kconfig in release n+2
+> (I'd say tolerating rather than wiping since get_user still uses the tag
+> in the current series)
 > 
-> So we are in release n (5.2), in 5.3 i will update nouveau and amdgpu
-> so that in 5.4 in ca remove the old ARCH_HAS_HMM
+> The current series does not allow any choice between 1 and 2, the
+> default ABI basically becomes option 2.
 
-Why don't you just send the patch for both parts to mm or to DRM?
+What about testing tools that intentionally insert high bits for syscalls
+and are _expecting_ them to fail? It seems the TBI series will break them?
+In that case, do we need to opt into TBI as well?
 
-This is very normal - as long as the resulting conflicts would be
-small during there is no reason not to do this. Can you share the
-combined patch?
-
-> > If mm takes the fixup patches so hmm mirror is as reliable as ODP's
-> > existing stuff, and patch from you to enable ARM64, then we can
-> > continue to merge into 5.3
-> > 
-> > So, let us try to get acks on those other threads..
+> > 3- wiping the top bits for most things, but retaining them for MTE as
+> >    needed (the future)
 > 
-> I will be merging your patchset and Ralph and repost, they are only
-> minor change mostly that you can not update the driver API in just
-> one release.
+> 2 and 3 are not entirely compatible as a tagged pointer may be checked
+> against the memory colour by the hardware. So you can't have hwasan
+> binary with MTE enabled.
 
-Of course you can, we do it all the time. It requires some
-co-ordination, but as long as the merge conflicts are not big it is
-fine.
+Right: a process must be either MTE or TBI, not both.
 
-Merge the driver API change and the call site updates to -mm and
-refain from merging horrendously conflicting patches through DRM.
+> > I expect MTE to be the "default" in the future. Once a system's libc has
+> > grown support for it, everything will be trying to use MTE. TBI will be
+> > the special case (but TBI is effectively a prerequisite).
+> 
+> The kernel handling of tagged pointers is indeed a prerequisite. The ABI
+> distinction between the above 2 and 3 needs to be solved.
 
-In the case of the changes in my HMM RFC it is something like 2
-lines in DRM that need touching, no problem at all.
+Does that need solving now or when the MTE series appears? As there is
+no reason to distinguish between "normal" and "TBI", that doesn't seem
+to need solving at this point?
 
-If you want help I can volunteer make a hmm PR for Linus just for this
-during the merge window - but Andrew would need to agree and ack the
-patches.
+> > AFAICT, the only difference I see between 2 and 3 will be the tag handling
+> > in usercopy (all other places will continue to ignore the top bits). Is
+> > that accurate?
+> 
+> Yes, mostly (for the kernel). If MTE is enabled by default for a hwasan
+> binary, it will SEGFAULT (either in user space or in kernel uaccess).
+> How does the kernel choose between 2 and 3?
 
-Jason
+Right -- that was my question as well.
+
+> > Is "1" a per-process state we want to keep? (I assume not, but rather it
+> > is available via no TBI/MTE CONFIG or a boot-time option, if at all?)
+> 
+> Possibly, though not necessarily per process. For testing or if
+> something goes wrong during boot, a command line option with a static
+> label would do. The AT_FLAGS bit needs to be checked by user space. My
+> preference would be per-process.
+
+I would agree.
+
+> > To choose between "2" and "3", it seems we need a per-process flag to
+> > opt into TBI (and out of MTE).
+> 
+> Or leave option 2 the default and get it to opt in to MTE.
+
+Given that MTE has to "start" at some point in the binary lifetime, I'm
+fine with opting into MTE. I do expect, though, this will feel redundant
+in a couple years as everything will immediately opt-in. But, okay, this
+is therefore an issue for the MTE series.
+
+> The current plan is that a future binary issues a prctl(), after
+> checking the HWCAP_MTE bit (as I replied to Elliot, the MTE instructions
+> are not in the current NOP space). I'd expect this to be done by the
+> libc or dynamic loader under the assumption that the binaries it loads
+> do _not_ use the top pointer byte for anything else. With hwasan
+> compiled objects this gets more confusing (any ELF note to identify
+> them?).
+
+Okay, sounds fine.
+
+> (there is also the risk of existing applications using TBI already but
+> I'm not aware of any still using this feature other than hwasan)
+
+Correct.
+
+
+Alright, the tl;dr appears to be:
+- you want more assurances that we can find __user stripping in the
+  kernel more easily. (But this seems like a parallel problem.)
+- we might need to opt in to TBI with a prctl()
+- all other concerns are for the future MTE series (though it sounds
+  like HWCAP_MTE and a prctl() solve those issues too).
+
+Is this accurate? What do you see as the blockers for this series at
+this point?
+
+-- 
+Kees Cook
