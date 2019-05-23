@@ -2,19 +2,19 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F7A28BF2
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 22:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715F428BF4
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 22:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387885AbfEWUyA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 16:54:00 -0400
-Received: from toryburch.com ([198.23.132.45]:40931 "EHLO timesharemyths.com"
+        id S2387703AbfEWUyD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 16:54:03 -0400
+Received: from toryburch.com ([198.23.132.45]:33666 "EHLO timesharemyths.com"
         rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387647AbfEWUyA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 May 2019 16:54:00 -0400
+        id S2387647AbfEWUyD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 May 2019 16:54:03 -0400
 To:     linux-rdma@vger.kernel.org
 Subject: Custom made logo products
-Message-ID: <782326b5fa625c53af5e916e83c46acf@lucastirepros.com>
-Date:   Thu, 23 May 2019 14:58:08 +0200
+Message-ID: <99a6962bae9bbc02b99f56c20030dd93@lucastirepros.com>
+Date:   Thu, 23 May 2019 14:58:12 +0200
 From:   "Stacy" <ryan@tanschmidit.tech>
 Reply-To: lucas@tanschmidit.tech
 MIME-Version: 1.0
