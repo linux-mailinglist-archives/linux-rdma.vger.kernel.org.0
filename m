@@ -2,140 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9ED27AF6
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 12:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5AE27D1B
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 14:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729962AbfEWKnG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 06:43:06 -0400
-Received: from foss.arm.com ([217.140.101.70]:43642 "EHLO foss.arm.com"
+        id S1729430AbfEWMsP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 08:48:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727434AbfEWKnG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 May 2019 06:43:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84A77341;
-        Thu, 23 May 2019 03:43:05 -0700 (PDT)
-Received: from e103592.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.72.51.249])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C9A023F718;
-        Thu, 23 May 2019 03:42:59 -0700 (PDT)
-Date:   Thu, 23 May 2019 11:42:57 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        Lee Smith <Lee.Smith@arm.com>, linux-kselftest@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        Evgeniy Stepanov <eugenis@google.com>,
-        linux-media@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
-Message-ID: <20190523104256.GX28398@e103592.cambridge.arm.com>
-References: <cover.1557160186.git.andreyknvl@google.com>
- <20190517144931.GA56186@arrakis.emea.arm.com>
- <20190521184856.GC2922@ziepe.ca>
- <20190522134925.GV28398@e103592.cambridge.arm.com>
- <20190523002052.GF15389@ziepe.ca>
+        id S1728309AbfEWMsO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 May 2019 08:48:14 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB16721019;
+        Thu, 23 May 2019 12:48:13 +0000 (UTC)
+Date:   Thu, 23 May 2019 08:48:12 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] RDMA/mlx5: Use DIV_ROUND_UP_ULL macro to allow 32 bit
+ to build
+Message-ID: <20190523084812.325454f6@gandalf.local.home>
+In-Reply-To: <20190523065803.GB30439@unicorn.suse.cz>
+References: <20190522145450.25ff483d@gandalf.local.home>
+        <20190523065803.GB30439@unicorn.suse.cz>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190523002052.GF15389@ziepe.ca>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 09:20:52PM -0300, Jason Gunthorpe wrote:
-> On Wed, May 22, 2019 at 02:49:28PM +0100, Dave Martin wrote:
-> > On Tue, May 21, 2019 at 03:48:56PM -0300, Jason Gunthorpe wrote:
-> > > On Fri, May 17, 2019 at 03:49:31PM +0100, Catalin Marinas wrote:
-> > > 
-> > > > The tagged pointers (whether hwasan or MTE) should ideally be a
-> > > > transparent feature for the application writer but I don't think we can
-> > > > solve it entirely and make it seamless for the multitude of ioctls().
-> > > > I'd say you only opt in to such feature if you know what you are doing
-> > > > and the user code takes care of specific cases like ioctl(), hence the
-> > > > prctl() proposal even for the hwasan.
-> > > 
-> > > I'm not sure such a dire view is warrented.. 
-> > > 
-> > > The ioctl situation is not so bad, other than a few special cases,
-> > > most drivers just take a 'void __user *' and pass it as an argument to
-> > > some function that accepts a 'void __user *'. sparse et al verify
-> > > this. 
-> > > 
-> > > As long as the core functions do the right thing the drivers will be
-> > > OK.
-> > > 
-> > > The only place things get dicy is if someone casts to unsigned long
-> > > (ie for vma work) but I think that reflects that our driver facing
-> > > APIs for VMAs are compatible with static analysis (ie I have no
-> > > earthly idea why get_user_pages() accepts an unsigned long), not that
-> > > this is too hard.
-> > 
-> > If multiple people will care about this, perhaps we should try to
-> > annotate types more explicitly in SYSCALL_DEFINEx() and ABI data
-> > structures.
-> > 
-> > For example, we could have a couple of mutually exclusive modifiers
-> > 
-> > T __object *
-> > T __vaddr * (or U __vaddr)
-> > 
-> > In the first case the pointer points to an object (in the C sense)
-> > that the call may dereference but not use for any other purpose.
+On Thu, 23 May 2019 08:58:03 +0200
+Michal Kubecek <mkubecek@suse.cz> wrote:
+
+> > diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+> > index abac70ad5c7c..40d4c5f7ea43 100644
+> > --- a/drivers/infiniband/hw/mlx5/main.c
+> > +++ b/drivers/infiniband/hw/mlx5/main.c
+> > @@ -2344,7 +2344,7 @@ static int handle_alloc_dm_sw_icm(struct ib_ucontext *ctx,
+> >  	/* Allocation size must a multiple of the basic block size
+> >  	 * and a power of 2.
+> >  	 */
+> > -	act_size = roundup(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
+> > +	act_size = DIV_ROUND_UP_ULL(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
+> >  	act_size = roundup_pow_of_two(act_size);
+> >  
+> >  	dm->size = act_size;  
 > 
-> How would you use these two differently?
-> 
-> So far the kernel has worked that __user should tag any pointer that
-> is from userspace and then you can't do anything with it until you
-> transform it into a kernel something
+> This seems wrong: roundup() rounds up to a multiple of second argument
+> but DIV_ROUND_UP_ULL() would divide with rounding up.
 
-Ultimately it would be good to disallow casting __object pointers execpt
-to compatible __object pointer types, and to make get_user etc. demand
-__object.
+Yeah, the macros are a bit confusing. There's unfortunately no
+roundup_64() (perhaps we should make one?)
 
-__vaddr pointers / addresses would be freely castable, but not to
-__object and so would not be dereferenceable even indirectly.
+#define roundup(x, y) (					\
+{							\
+	typeof(y) __y = y;				\
+	(((x) + (__y - 1)) / __y) * __y;		\
+}							\
+)
 
-Or that's the general idea.  Figuring out a sane set of rules that we
-could actually check / enforce would require a bit of work.
 
-(Whether the __vaddr base type is a pointer or an integer type is
-probably moot, due to the restrictions we would place on the use of
-these anyway.)
+#define DIV_ROUND_DOWN_ULL(ll, d) \
+	({ unsigned long long _tmp = (ll); do_div(_tmp, d); _tmp; })
 
-> > to tell static analysers the real type of pointers smuggled through
-> > UAPI disguised as other types (*cough* KVM, etc.)
-> 
-> Yes, that would help alot, we often have to pass pointers through a
-> u64 in the uAPI, and there is no static checker support to make sure
-> they are run through the u64_to_user_ptr() helper.
+#define DIV_ROUND_UP_ULL(ll, d)		DIV_ROUND_DOWN_ULL((ll) + (d) - 1, (d))
 
-Agreed.
 
-Cheers
----Dave
+roundup(a, b) == ((a + b - 1) / b) * b
+
+DIV_ROUND_UP_ULL(a, b) DIV_ROUND_DOWN_ULL(a + b - 1, b)
+ = (a + b - 1) / b
+
+Hmm, looks like you are right (damn, I thought I did this before
+posting the patch, but I must have miscalculated something). It does
+look like we are missing a "* b" in there.
+
+I think I'll go and just add a roundup_64()!
+
+Thanks for pointing this out.
+
+-- Steve
