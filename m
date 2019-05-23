@@ -2,91 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5AE27D1B
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 14:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F7A28BF2
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 22:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729430AbfEWMsP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 08:48:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728309AbfEWMsO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 May 2019 08:48:14 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB16721019;
-        Thu, 23 May 2019 12:48:13 +0000 (UTC)
-Date:   Thu, 23 May 2019 08:48:12 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] RDMA/mlx5: Use DIV_ROUND_UP_ULL macro to allow 32 bit
- to build
-Message-ID: <20190523084812.325454f6@gandalf.local.home>
-In-Reply-To: <20190523065803.GB30439@unicorn.suse.cz>
-References: <20190522145450.25ff483d@gandalf.local.home>
-        <20190523065803.GB30439@unicorn.suse.cz>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2387885AbfEWUyA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 16:54:00 -0400
+Received: from toryburch.com ([198.23.132.45]:40931 "EHLO timesharemyths.com"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387647AbfEWUyA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 May 2019 16:54:00 -0400
+To:     linux-rdma@vger.kernel.org
+Subject: Custom made logo products
+Message-ID: <782326b5fa625c53af5e916e83c46acf@lucastirepros.com>
+Date:   Thu, 23 May 2019 14:58:08 +0200
+From:   "Stacy" <ryan@tanschmidit.tech>
+Reply-To: lucas@tanschmidit.tech
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 23 May 2019 08:58:03 +0200
-Michal Kubecek <mkubecek@suse.cz> wrote:
+Hi,
 
-> > diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-> > index abac70ad5c7c..40d4c5f7ea43 100644
-> > --- a/drivers/infiniband/hw/mlx5/main.c
-> > +++ b/drivers/infiniband/hw/mlx5/main.c
-> > @@ -2344,7 +2344,7 @@ static int handle_alloc_dm_sw_icm(struct ib_ucontext *ctx,
-> >  	/* Allocation size must a multiple of the basic block size
-> >  	 * and a power of 2.
-> >  	 */
-> > -	act_size = roundup(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
-> > +	act_size = DIV_ROUND_UP_ULL(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
-> >  	act_size = roundup_pow_of_two(act_size);
-> >  
-> >  	dm->size = act_size;  
-> 
-> This seems wrong: roundup() rounds up to a multiple of second argument
-> but DIV_ROUND_UP_ULL() would divide with rounding up.
+I am following up on my previous attempt to contact you.
+We wanted to check to see if you need any LOGO promotional products for
+your business?
 
-Yeah, the macros are a bit confusing. There's unfortunately no
-roundup_64() (perhaps we should make one?)
+Our company manufactures USB Flash Drives that are custom printed with your
+logo.
+They make the perfect marketing tool for your business or organization.
 
-#define roundup(x, y) (					\
-{							\
-	typeof(y) __y = y;				\
-	(((x) + (__y - 1)) / __y) * __y;		\
-}							\
-)
+Looking for other items with your logo?   We can supply anything with your
+logo…
 
+Most Popular Items right now:
+- T-shirts, Hoodies
+- Table Covers printed with your brand
+- Pens
+- Water Bottles
+- Banners…
+- You name it we can make it and print on it for you!
 
-#define DIV_ROUND_DOWN_ULL(ll, d) \
-	({ unsigned long long _tmp = (ll); do_div(_tmp, d); _tmp; })
+Our USB Pricing is at an ALL TIME LOW.
+We offer low minimum quantities and all memory sizes.
 
-#define DIV_ROUND_UP_ULL(ll, d)		DIV_ROUND_DOWN_ULL((ll) + (d) - 1, (d))
+Over 150 Stock Models as well as 100 % custom shaped USB drives in the
+shape of your Logo or
+product or just about anything else you can imagine!
+Ask about our End of the Year Promotions!
 
+We can pre-load your media files, images, presentations and files onto the
+drives for you.
+These are ideal handouts for trade shows, branding, corporate gifts and
+employees.
 
-roundup(a, b) == ((a + b - 1) / b) * b
+* Please reply back and let me know what quantity and memory size you need
+for a Fast Quote!
 
-DIV_ROUND_UP_ULL(a, b) DIV_ROUND_DOWN_ULL(a + b - 1, b)
- = (a + b - 1) / b
+Are you a school or nonprofit?  Please let us know for even further
+discounts.
 
-Hmm, looks like you are right (damn, I thought I did this before
-posting the patch, but I must have miscalculated something). It does
-look like we are missing a "* b" in there.
+Let us send you a quote!   We will EARN your business!
 
-I think I'll go and just add a roundup_64()!
+Regards,
 
-Thanks for pointing this out.
+Stacy Williams
+Custom Logo Products
+Whatsapp: +8617199402387
 
--- Steve
