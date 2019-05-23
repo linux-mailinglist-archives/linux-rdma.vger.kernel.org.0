@@ -2,129 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 389F428748
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 21:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC42A2896C
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 21:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388762AbfEWTRj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 15:17:39 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:40090 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389453AbfEWTRg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 15:17:36 -0400
-Received: by mail-qt1-f195.google.com with SMTP id k24so8088789qtq.7
-        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 12:17:36 -0700 (PDT)
+        id S2389695AbfEWThH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 15:37:07 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44399 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390202AbfEWThG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 15:37:06 -0400
+Received: by mail-qt1-f194.google.com with SMTP id f24so8148720qtk.11
+        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 12:37:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Pm+Vx0dhObnzybiaJozRDpH0LoNYUiVOhc6EGMjBZwU=;
-        b=O0RCPEGvWXVRXRZ7y88skUaFHv3isN4h6Tr6VLsss0em/c8A1IncniPr014w2Ci4io
-         9rBOKNHmm68kYI6ygpwlm+QtR16oXFPy2bhxS9CwKHFqrIfMtEWctvqEZ4eVLH4Cn7TJ
-         HOeZtmCGjBcvBSU18syidFL3Um1gGyCpWXeJsZC2Nvpz7PwdjRmaH9U2HY3sw2gtM83U
-         WGdsqtqNuVbxSdeTfdP4MztNl8z1hsbkujcQdJiIBLEMbySogRMR8przLBmtfBbirVh8
-         fc9baIPJgppq8UkcxW/nJPwGb+5dwFFa4fUBYQGfezP1UVVzSkaq/4vRP8kXOph9tKhv
-         tF2w==
+        bh=EvB2oEdix8izGKCkl98CmLnxVEgkJ+2l0HrrW4Cnk4Y=;
+        b=UfpXqxnkWDaeaaMCa66rkawZsy7d3VU8+Y4fiL6RCiHgxXiOAlS3lxadX42iz4hl+M
+         BIkIHbLj+ye2OmlcBBji/RjpTpPAk1hYv6g6D1K/w1oZN0xrtKLWtx95M6bwxcHoudgZ
+         LTE3fOtWAmcT5VE45VMIhIvFoG+07u1HBIcDuZZQNpfYs/WJC8yMoLOU/o6yns6gbHyh
+         da23t12u1Zi2CytLjFaaqChQILykLUvixJtBowukob56QB9gAZRPMHkq3K4suDSvzCK3
+         zp2oNMk2ARP7Ha6oXysTJv/ctxhnMVCiaedJEQ9BWmPCe4RT0uqCdknX2mfBR3uygiYX
+         Di9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Pm+Vx0dhObnzybiaJozRDpH0LoNYUiVOhc6EGMjBZwU=;
-        b=eh959hsa4ePpaVHUm2dCmqA7h0pXSlg/vPqXhMkJbrpWf5fpobfKUBvPr8fJ4gRWgA
-         pUQqz9y0AwFMenU31wddmhDkfTv813Zkw+vUPQkIwYncwPtSqz0C98WHjz86C9uJjkQ+
-         sqwMeaYf8Tus8kfVUYZWxtNepXOIfvXfkhbtnbZbQu3ZYKGy+YXjp23XEsXz1h8Ca6Wj
-         qlwT57VB37kkOoty/4wqJ0emsb+4fyl69S6r5IdmubHINyB60a6SuKDTJ23BiAPuUzxB
-         sRaeogXPlxw8sMFCN8grbkZemHC17sibEC9DXB3qo616/peBQQj8d+OJ7WfpAqR8KcGu
-         sCkA==
-X-Gm-Message-State: APjAAAXx31XbPTyCG4xncRe/d2p22CtxhyK1MxWzrPeFz3HIao7nCK3J
-        WPq1ckvbJvQ+aVo0GpQ0ONcm9A==
-X-Google-Smtp-Source: APXvYqyby6SPIf9lPMNL5yZPBW7JhGUYjZjNDXWEHEzHk702uXmsFYcPFIXfDXhIH78qusR4hcmSJg==
-X-Received: by 2002:a0c:9acb:: with SMTP id k11mr59015856qvf.85.1558639055850;
-        Thu, 23 May 2019 12:17:35 -0700 (PDT)
+        bh=EvB2oEdix8izGKCkl98CmLnxVEgkJ+2l0HrrW4Cnk4Y=;
+        b=gqcM8FsGX6aS/VB+PaJkgdYvbFbDKP3yZDWLsi/phu9GWIR1kgiooGMGk2Vsqh9hMJ
+         2uy/Tr3jFnMO5yY7xm2EbqwWnYd2jSZo4yxAUmyOEjvCs4GR2m6ghwBADYc3KeZyQve3
+         cnJRE/2t1iqLKQRNhtJqfq2m6f+GJcZZ5FRZsAd4lMBkd4D6Hhdhod3ECU4V8a7J/ipl
+         DiR6/Zd2rz67Xbz0nXEqP6gQEPL7Ey07coeVqAH/4b2ZHAPfHj/9DoJ8BBwJFUc/oJ8s
+         EdCwNIFNQ2y8LuXos5rWbhsxHbOiAQv05lk9QKnF9vkKvvastx/ELMINHWO1PoMsiJ+A
+         qukQ==
+X-Gm-Message-State: APjAAAUvh4lI6f6PuoO35t0tmhC9vw5QuRrDjR1N7m70jCrMPF0siiZg
+        u40ARcAEQagXDYAKkv2gA4kzdw==
+X-Google-Smtp-Source: APXvYqxJkBFJ4HgvZM38oeTFaXtBNor24nYI7KEJ+EprkXwXo4IbuqdcjGctpDTQXlmC7qxbJGyYAg==
+X-Received: by 2002:ac8:6750:: with SMTP id n16mr58786519qtp.142.1558640225374;
+        Thu, 23 May 2019 12:37:05 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id q24sm139016qtq.58.2019.05.23.12.17.35
+        by smtp.gmail.com with ESMTPSA id d58sm194218qtb.11.2019.05.23.12.37.04
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 May 2019 12:17:35 -0700 (PDT)
+        Thu, 23 May 2019 12:37:04 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hTtDa-0000kS-RM; Thu, 23 May 2019 16:17:34 -0300
-Date:   Thu, 23 May 2019 16:17:34 -0300
+        id 1hTtWR-0000xZ-Fj; Thu, 23 May 2019 16:37:03 -0300
+Date:   Thu, 23 May 2019 16:37:03 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        "john.hubbard@gmail.com" <john.hubbard@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Christian Benvenuti <benve@cisco.com>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 1/1] infiniband/mm: convert put_page() to put_user_page*()
-Message-ID: <20190523191734.GH12159@ziepe.ca>
-References: <20190523072537.31940-1-jhubbard@nvidia.com>
- <20190523072537.31940-2-jhubbard@nvidia.com>
- <20190523172852.GA27175@iweiny-DESK2.sc.intel.com>
- <20190523173222.GH12145@mellanox.com>
- <fa6d7d7c-13a3-0586-6384-768ebb7f0561@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Subject: Re: [RFC PATCH 00/11] mm/hmm: Various revisions from a locking/code
+ review
+Message-ID: <20190523193703.GI12159@ziepe.ca>
+References: <20190523153436.19102-1-jgg@ziepe.ca>
+ <6ee88cde-5365-9bbc-6c4d-7459d5c3ebe2@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fa6d7d7c-13a3-0586-6384-768ebb7f0561@nvidia.com>
+In-Reply-To: <6ee88cde-5365-9bbc-6c4d-7459d5c3ebe2@nvidia.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 10:46:38AM -0700, John Hubbard wrote:
-> On 5/23/19 10:32 AM, Jason Gunthorpe wrote:
-> > On Thu, May 23, 2019 at 10:28:52AM -0700, Ira Weiny wrote:
-> > > > @@ -686,8 +686,8 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
-> > > >   			 * ib_umem_odp_map_dma_single_page().
-> > > >   			 */
-> > > >   			if (npages - (j + 1) > 0)
-> > > > -				release_pages(&local_page_list[j+1],
-> > > > -					      npages - (j + 1));
-> > > > +				put_user_pages(&local_page_list[j+1],
-> > > > +					       npages - (j + 1));
-> > > 
-> > > I don't know if we discussed this before but it looks like the use of
-> > > release_pages() was not entirely correct (or at least not necessary) here.  So
-> > > I think this is ok.
+On Thu, May 23, 2019 at 12:04:16PM -0700, John Hubbard wrote:
+> On 5/23/19 8:34 AM, Jason Gunthorpe wrote:
+> > From: Jason Gunthorpe <jgg@mellanox.com>
 > > 
-> > Oh? John switched it from a put_pages loop to release_pages() here:
+> > This patch series arised out of discussions with Jerome when looking at the
+> > ODP changes, particularly informed by use after free races we have already
+> > found and fixed in the ODP code (thanks to syzkaller) working with mmu
+> > notifiers, and the discussion with Ralph on how to resolve the lifetime model.
 > > 
-> > commit 75a3e6a3c129cddcc683538d8702c6ef998ec589
-> > Author: John Hubbard <jhubbard@nvidia.com>
-> > Date:   Mon Mar 4 11:46:45 2019 -0800
+> > Overall this brings in a simplified locking scheme and easy to explain
+> > lifetime model:
 > > 
-> >      RDMA/umem: minor bug fix in error handling path
-> >      1. Bug fix: fix an off by one error in the code that cleans up if it fails
-> >         to dma-map a page, after having done a get_user_pages_remote() on a
-> >         range of pages.
-> >      2. Refinement: for that same cleanup code, release_pages() is better than
-> >         put_page() in a loop.
+> >   If a hmm_range is valid, then the hmm is valid, if a hmm is valid then the mm
+> >   is allocated memory.
 > > 
-> > And now we are going to back something called put_pages() that
-> > implements the same for loop the above removed?
+> >   If the mm needs to still be alive (ie to lock the mmap_sem, find a vma, etc)
+> >   then the mmget must be obtained via mmget_not_zero().
 > > 
-> > Seems like we are going in circles?? John?
+> > Locking of mm->hmm is shifted to use the mmap_sem consistently for all
+> > read/write and unlocked accesses are removed.
+> > 
+> > The use unlocked reads on 'hmm->dead' are also eliminated in favour of using
+> > standard mmget() locking to prevent the mm from being released. Many of the
+> > debugging checks of !range->hmm and !hmm->mm are dropped in favour of poison -
+> > which is much clearer as to the lifetime intent.
+> > 
+> > The trailing patches are just some random cleanups I noticed when reviewing
+> > this code.
+> > 
+> > I expect Jerome & Ralph will have some design notes so this is just RFC, and
+> > it still needs a matching edit to nouveau. It is only compile tested.
 > > 
 > 
-> put_user_pages() is meant to be a drop-in replacement for release_pages(),
-> so I made the above change as an interim step in moving the callsite from
-> a loop, to a single call.
-> 
-> And at some point, it may be possible to find a way to optimize put_user_pages()
-> in a similar way to the batching that release_pages() does, that was part
-> of the plan for this.
-> 
-> But I do see what you mean: in the interim, maybe put_user_pages() should
-> just be calling release_pages(), how does that change sound?
+> Thanks so much for doing this. Jerome has already absorbed these into his
+> hmm-5.3 branch, along with Ralph's other fixes, so we can start testing,
+> as well as reviewing, the whole set. We'll have feedback soon.
 
-It would have made it more consistent.. But it seems this isn't a
-functional problem in this patch
+Yes, I looked at Jerome's v2's and he found a few great fixups.
+
+My only dislike is re-introducing a READ_ONCE(mm->hmm) when a major
+point of this seris was to remove that use-after-free stuff. 
+
+But Jerome says it is a temporary defect while he works out some cross
+tree API stuff.
 
 Jason
