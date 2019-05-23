@@ -2,151 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A93527334
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 02:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3E52765D
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 08:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbfEWAU4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 May 2019 20:20:56 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:38528 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727305AbfEWAUz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 May 2019 20:20:55 -0400
-Received: by mail-qt1-f194.google.com with SMTP id l3so4719297qtj.5
-        for <linux-rdma@vger.kernel.org>; Wed, 22 May 2019 17:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kja4wR6FLtasYFQS1xUbhik8iG88bHuMFvf2ArrK0nw=;
-        b=b1PxbkXji6rxJkxXzX+E8hmtsDc4EAG6spndGBpqTY6Mtd1Z82qmKG7IFdzEDWmzKK
-         cpfPgmFkndIKUtDn3lZmf4ZAYcKRjit4YkqMU72A44nfyHayfu0+OGxh9SgysS/YRAv2
-         RDEnuh2qly9nvvswbClZIbFXuZCzwJj2KYSwWCU/YgJUugR9fRVuJUTKIe2+8zLwiPOj
-         anBDeIuRaK3lpaZn56KojfHXM/H6EWmNRZuecl/6erGrJ5dc4+VdWT4yxUQf8Rpv9nUY
-         hRDkUmUo3tTzvQuC1Vf8iYC9BBrTle8EWAWahcABrO+2gaF43DLowx5aiqsiUBpSVZlJ
-         7EAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kja4wR6FLtasYFQS1xUbhik8iG88bHuMFvf2ArrK0nw=;
-        b=uSjoEWQNBRZij+XjD8JxqMW+1d1NqjDKHgY8vmd1ecQgYWV5SiKC6Ij7ESwO4UmUK+
-         mHvDVke0E2kbE0aRmFXg4Mk9EDprzPqqoHi9ICyBdCalFHXb/04xYZ87xUZNSmvQALdc
-         l6puk89AC78tii6g9vXJgkYzp9uFVOwVWYlGlNAyqQXehdUwArVX7ElOAEZtDLq7UuZg
-         kHec5FPh133NvAbc+We3PHA9mRINDTvZAQmnjjUlE9/Bu5jV90MRSrNpi07oXEdlhl8B
-         Fh3XiKm9GDwpjrTX/DKZ5UMa8zJeD6nJW3jC7X+T+3CVkoCzP7HMIbjKC6OBDpoOWCqZ
-         5mUA==
-X-Gm-Message-State: APjAAAWxBoU5pzdXW7Awen1gTutannnM6cCjPsIRR9jSMrK/7Fyaephv
-        nMPR4GgNfonOLK7GALxgT1n2Qw==
-X-Google-Smtp-Source: APXvYqwzvo9H/aW7qSfx2OQVIHnUtdd1Cyzpi6J44RNo2JLbDhDXh7kfDH2OJy33sD2sQGXynL6VQQ==
-X-Received: by 2002:ac8:f71:: with SMTP id l46mr70609860qtk.321.1558570854263;
-        Wed, 22 May 2019 17:20:54 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id t30sm15637238qtc.80.2019.05.22.17.20.53
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 May 2019 17:20:53 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hTbTZ-0001Zh-03; Wed, 22 May 2019 21:20:53 -0300
-Date:   Wed, 22 May 2019 21:20:52 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dave Martin <Dave.Martin@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, Dmitry Vyukov <dvyukov@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        linux-media@vger.kernel.org, Kevin Brodsky <kevin.brodsky@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Kostya Serebryany <kcc@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-kernel@vger.kernel.org,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
-Message-ID: <20190523002052.GF15389@ziepe.ca>
-References: <cover.1557160186.git.andreyknvl@google.com>
- <20190517144931.GA56186@arrakis.emea.arm.com>
- <20190521184856.GC2922@ziepe.ca>
- <20190522134925.GV28398@e103592.cambridge.arm.com>
+        id S1725814AbfEWG6F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 02:58:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35928 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725806AbfEWG6F (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 May 2019 02:58:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id E1920B12B;
+        Thu, 23 May 2019 06:58:03 +0000 (UTC)
+Received: by unicorn.suse.cz (Postfix, from userid 1000)
+        id 5CD76E00A9; Thu, 23 May 2019 08:58:03 +0200 (CEST)
+Date:   Thu, 23 May 2019 08:58:03 +0200
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] RDMA/mlx5: Use DIV_ROUND_UP_ULL macro to allow 32 bit to
+ build
+Message-ID: <20190523065803.GB30439@unicorn.suse.cz>
+References: <20190522145450.25ff483d@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190522134925.GV28398@e103592.cambridge.arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190522145450.25ff483d@gandalf.local.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 02:49:28PM +0100, Dave Martin wrote:
-> On Tue, May 21, 2019 at 03:48:56PM -0300, Jason Gunthorpe wrote:
-> > On Fri, May 17, 2019 at 03:49:31PM +0100, Catalin Marinas wrote:
-> > 
-> > > The tagged pointers (whether hwasan or MTE) should ideally be a
-> > > transparent feature for the application writer but I don't think we can
-> > > solve it entirely and make it seamless for the multitude of ioctls().
-> > > I'd say you only opt in to such feature if you know what you are doing
-> > > and the user code takes care of specific cases like ioctl(), hence the
-> > > prctl() proposal even for the hwasan.
-> > 
-> > I'm not sure such a dire view is warrented.. 
-> > 
-> > The ioctl situation is not so bad, other than a few special cases,
-> > most drivers just take a 'void __user *' and pass it as an argument to
-> > some function that accepts a 'void __user *'. sparse et al verify
-> > this. 
-> > 
-> > As long as the core functions do the right thing the drivers will be
-> > OK.
-> > 
-> > The only place things get dicy is if someone casts to unsigned long
-> > (ie for vma work) but I think that reflects that our driver facing
-> > APIs for VMAs are compatible with static analysis (ie I have no
-> > earthly idea why get_user_pages() accepts an unsigned long), not that
-> > this is too hard.
+On Wed, May 22, 2019 at 02:54:50PM -0400, Steven Rostedt wrote:
 > 
-> If multiple people will care about this, perhaps we should try to
-> annotate types more explicitly in SYSCALL_DEFINEx() and ABI data
-> structures.
+> From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > 
-> For example, we could have a couple of mutually exclusive modifiers
+> When testing 32 bit x86, my build failed with:
 > 
-> T __object *
-> T __vaddr * (or U __vaddr)
+>   ERROR: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
 > 
-> In the first case the pointer points to an object (in the C sense)
-> that the call may dereference but not use for any other purpose.
+> It appears that a few non-ULL roundup() calls were made, which uses a
+> normal division against a 64 bit number. This is fine for x86_64, but
+> on 32 bit x86, it causes the compiler to look for a helper function
+> __udivdi3, which we do not have in the kernel, and thus fails to build.
+> 
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+...
+> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+> index abac70ad5c7c..40d4c5f7ea43 100644
+> --- a/drivers/infiniband/hw/mlx5/main.c
+> +++ b/drivers/infiniband/hw/mlx5/main.c
+> @@ -2344,7 +2344,7 @@ static int handle_alloc_dm_sw_icm(struct ib_ucontext *ctx,
+>  	/* Allocation size must a multiple of the basic block size
+>  	 * and a power of 2.
+>  	 */
+> -	act_size = roundup(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
+> +	act_size = DIV_ROUND_UP_ULL(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
+>  	act_size = roundup_pow_of_two(act_size);
+>  
+>  	dm->size = act_size;
 
-How would you use these two differently?
+This seems wrong: roundup() rounds up to a multiple of second argument
+but DIV_ROUND_UP_ULL() would divide with rounding up.
 
-So far the kernel has worked that __user should tag any pointer that
-is from userspace and then you can't do anything with it until you
-transform it into a kernel something
-
-> to tell static analysers the real type of pointers smuggled through
-> UAPI disguised as other types (*cough* KVM, etc.)
-
-Yes, that would help alot, we often have to pass pointers through a
-u64 in the uAPI, and there is no static checker support to make sure
-they are run through the u64_to_user_ptr() helper.
-
-Jason
+Michal Kubecek
