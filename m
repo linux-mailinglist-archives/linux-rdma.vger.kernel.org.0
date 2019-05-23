@@ -2,187 +2,203 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 450FC28CAD
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 May 2019 23:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBDA28D42
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 00:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388244AbfEWVtw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 17:49:52 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:58870 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388134AbfEWVtw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 17:49:52 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4NLhifU004317;
-        Thu, 23 May 2019 21:49:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=CA4BRvH7LpSOvdwGQ1RgbPK5R7ura7qGqy4SrVn6TGs=;
- b=X//cpGAKkvYu1m1BjaIbh5y4EYuwM+8rZjWW5aAmW0vi1toc+ON7ojqHQsbcK6pAW1oD
- bdaUeEmghYKNyuWdojEirpuCtcEnGnpjzGNjA/TAPNGPvcylGBa+20OGWCMnCwLHj8Tf
- YRS6xbAb5NCY6/3hnPEk+xsQaxia6MP4a6XjVZSvoh9chZIbCYwa7XRJ+TOdhejZB+v7
- XSe3hifUXqlRGwDwQJJUjbd8e+die4vTzQ+aF3wEY1CdthC5hOmZQere78SM0w/UZFJa
- y1F1RpJmvyYHjzu9jq9fzTHoce2ebfeYA5vSKPJb2pXe3nPIQrp8MMBgMFftquXsLaI1 XQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 2smsk5n948-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 May 2019 21:49:13 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4NLmFZJ185512;
-        Thu, 23 May 2019 21:49:12 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 2smsgvrm93-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 May 2019 21:49:12 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4NLn8SI003595;
-        Thu, 23 May 2019 21:49:09 GMT
-Received: from [192.168.1.16] (/24.9.64.241)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 23 May 2019 21:49:08 +0000
-Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
+        id S2388600AbfEWWgJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 18:36:09 -0400
+Received: from mga04.intel.com ([192.55.52.120]:10352 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387735AbfEWWgI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 May 2019 18:36:08 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 May 2019 15:36:07 -0700
+X-ExtLoop1: 1
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga008.fm.intel.com with ESMTP; 23 May 2019 15:36:07 -0700
+Date:   Thu, 23 May 2019 15:37:01 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Elliott Hughes <enh@google.com>
-References: <cover.1557160186.git.andreyknvl@google.com>
- <20190517144931.GA56186@arrakis.emea.arm.com>
- <CAFKCwrj6JEtp4BzhqO178LFJepmepoMx=G+YdC8sqZ3bcBp3EQ@mail.gmail.com>
- <20190521182932.sm4vxweuwo5ermyd@mbp> <201905211633.6C0BF0C2@keescook>
- <6049844a-65f5-f513-5b58-7141588fef2b@oracle.com>
- <20190523201105.oifkksus4rzcwqt4@mbp>
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-Organization: Oracle Corp
-Message-ID: <ffe58af3-7c70-d559-69f6-1f6ebcb0fec6@oracle.com>
-Date:   Thu, 23 May 2019 15:49:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Christian Benvenuti <benve@cisco.com>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 1/1] infiniband/mm: convert put_page() to put_user_page*()
+Message-ID: <20190523223701.GA15048@iweiny-DESK2.sc.intel.com>
+References: <20190523072537.31940-1-jhubbard@nvidia.com>
+ <20190523072537.31940-2-jhubbard@nvidia.com>
+ <20190523172852.GA27175@iweiny-DESK2.sc.intel.com>
+ <20190523173222.GH12145@mellanox.com>
+ <fa6d7d7c-13a3-0586-6384-768ebb7f0561@nvidia.com>
+ <20190523190423.GA19578@iweiny-DESK2.sc.intel.com>
+ <0bd9859f-8eb0-9148-6209-08ae42665626@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20190523201105.oifkksus4rzcwqt4@mbp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9266 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905230139
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9266 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905230139
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0bd9859f-8eb0-9148-6209-08ae42665626@nvidia.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/23/19 2:11 PM, Catalin Marinas wrote:
-> Hi Khalid,
->=20
-> On Thu, May 23, 2019 at 11:51:40AM -0600, Khalid Aziz wrote:
->> On 5/21/19 6:04 PM, Kees Cook wrote:
->>> As an aside: I think Sparc ADI support in Linux actually side-stepped=
+On Thu, May 23, 2019 at 12:13:59PM -0700, John Hubbard wrote:
+> On 5/23/19 12:04 PM, Ira Weiny wrote:
+> > On Thu, May 23, 2019 at 10:46:38AM -0700, John Hubbard wrote:
+> > > On 5/23/19 10:32 AM, Jason Gunthorpe wrote:
+> > > > On Thu, May 23, 2019 at 10:28:52AM -0700, Ira Weiny wrote:
+> > > > > > @@ -686,8 +686,8 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
+> > > > > >    			 * ib_umem_odp_map_dma_single_page().
+> > > > > >    			 */
+> > > > > >    			if (npages - (j + 1) > 0)
+> > > > > > -				release_pages(&local_page_list[j+1],
+> > > > > > -					      npages - (j + 1));
+> > > > > > +				put_user_pages(&local_page_list[j+1],
+> > > > > > +					       npages - (j + 1));
+> > > > > 
+> > > > > I don't know if we discussed this before but it looks like the use of
+> > > > > release_pages() was not entirely correct (or at least not necessary) here.  So
+> > > > > I think this is ok.
+> > > > 
+> > > > Oh? John switched it from a put_pages loop to release_pages() here:
+> > > > 
+> > > > commit 75a3e6a3c129cddcc683538d8702c6ef998ec589
+> > > > Author: John Hubbard <jhubbard@nvidia.com>
+> > > > Date:   Mon Mar 4 11:46:45 2019 -0800
+> > > > 
+> > > >       RDMA/umem: minor bug fix in error handling path
+> > > >       1. Bug fix: fix an off by one error in the code that cleans up if it fails
+> > > >          to dma-map a page, after having done a get_user_pages_remote() on a
+> > > >          range of pages.
+> > > >       2. Refinement: for that same cleanup code, release_pages() is better than
+> > > >          put_page() in a loop.
+> > > > 
+> > > > And now we are going to back something called put_pages() that
+> > > > implements the same for loop the above removed?
+> > > > 
+> > > > Seems like we are going in circles?? John?
+> > > > 
+> > > 
+> > > put_user_pages() is meant to be a drop-in replacement for release_pages(),
+> > > so I made the above change as an interim step in moving the callsite from
+> > > a loop, to a single call.
+> > > 
+> > > And at some point, it may be possible to find a way to optimize put_user_pages()
+> > > in a similar way to the batching that release_pages() does, that was part
+> > > of the plan for this.
+> > > 
+> > > But I do see what you mean: in the interim, maybe put_user_pages() should
+> > > just be calling release_pages(), how does that change sound?
+> > 
+> > I'm certainly not the expert here but FWICT release_pages() was originally
+> > designed to work with the page cache.
+> > 
+> > aabfb57296e3  mm: memcontrol: do not kill uncharge batching in free_pages_and_swap_cache
+> > 
+> > But at some point it was changed to be more general?
+> > 
+> > ea1754a08476 mm, fs: remove remaining PAGE_CACHE_* and page_cache_{get,release} usage
+> > 
+> > ... and it is exported and used outside of the swapping code... and used at
+> > lease 1 place to directly "put" pages gotten from get_user_pages_fast()
+> > [arch/x86/kvm/svm.c]
+> > 
+> >  From that it seems like it is safe.
+> > 
+> > But I don't see where release_page() actually calls put_page() anywhere?  What
+> > am I missing?
+> > 
+> 
+> For that question, I recall having to look closely at this function, as well:
+> 
+> void release_pages(struct page **pages, int nr)
+> {
+> 	int i;
+> 	LIST_HEAD(pages_to_free);
+> 	struct pglist_data *locked_pgdat = NULL;
+> 	struct lruvec *lruvec;
+> 	unsigned long uninitialized_var(flags);
+> 	unsigned int uninitialized_var(lock_batch);
+> 
+> 	for (i = 0; i < nr; i++) {
+> 		struct page *page = pages[i];
+> 
+> 		/*
+> 		 * Make sure the IRQ-safe lock-holding time does not get
+> 		 * excessive with a continuous string of pages from the
+> 		 * same pgdat. The lock is held only if pgdat != NULL.
+> 		 */
+> 		if (locked_pgdat && ++lock_batch == SWAP_CLUSTER_MAX) {
+> 			spin_unlock_irqrestore(&locked_pgdat->lru_lock, flags);
+> 			locked_pgdat = NULL;
+> 		}
+> 
+> 		if (is_huge_zero_page(page))
+> 			continue;
+> 
+> 		/* Device public page can not be huge page */
+> 		if (is_device_public_page(page)) {
+> 			if (locked_pgdat) {
+> 				spin_unlock_irqrestore(&locked_pgdat->lru_lock,
+> 						       flags);
+> 				locked_pgdat = NULL;
+> 			}
+> 			put_devmap_managed_page(page);
+> 			continue;
+> 		}
+> 
+> 		page = compound_head(page);
+> 		if (!put_page_testzero(page))
+> 
+> 		     ^here is where it does the put_page() call, is that what
+> 			you were looking for?
 
->>> this[1] (i.e. chose "solution 1"): "All addresses passed to kernel mu=
-st
->>> be non-ADI tagged addresses." (And sadly, "Kernel does not enable ADI=
+Yes I saw that...
 
->>> for kernel code.") I think this was a mistake we should not repeat fo=
-r
->>> arm64 (we do seem to be at least in agreement about this, I think).
->>>
->>> [1] https://lore.kernel.org/patchwork/patch/654481/
->>
->> That is a very early version of the sparc ADI patch. Support for tagge=
-d
->> addresses in syscalls was added in later versions and is in the patch
->> that is in the kernel.
->=20
-> I tried to figure out but I'm not familiar with the sparc port. How did=
+I've dug in further and I see now that release_pages() implements (almost the
+same thing, see below) as put_page().
 
-> you solve the tagged address going into various syscall implementations=
+However, I think we need to be careful here because put_page_testzero() calls
 
-> in the kernel (e.g. sys_write)? Is the tag removed on kernel entry or i=
-t
-> ends up deeper in the core code?
->=20
+	page_ref_dec_and_test(page);
 
-Another spot I should point out in ADI patch - Tags are not stored in
-VMAs and IOMMU does not support ADI tags on M7. ADI tags are stripped
-before userspace addresses are passed to IOMMU in the following snippet
-from the patch:
+... and after your changes it will need to call ...
 
-diff --git a/arch/sparc/mm/gup.c b/arch/sparc/mm/gup.c
-index 5335ba3c850e..357b6047653a 100644
---- a/arch/sparc/mm/gup.c
-+++ b/arch/sparc/mm/gup.c
-@@ -201,6 +202,24 @@ int __get_user_pages_fast(unsigned long start, int
-nr_pages
-, int write,
-        pgd_t *pgdp;
-        int nr =3D 0;
+	page_ref_sub_return(page, GUP_PIN_COUNTING_BIAS);
 
-+#ifdef CONFIG_SPARC64
-+       if (adi_capable()) {
-+               long addr =3D start;
-+
-+               /* If userspace has passed a versioned address, kernel
-+                * will not find it in the VMAs since it does not store
-+                * the version tags in the list of VMAs. Storing version
-+                * tags in list of VMAs is impractical since they can be
-+                * changed any time from userspace without dropping into
-+                * kernel. Any address search in VMAs will be done with
-+                * non-versioned addresses. Ensure the ADI version bits
-+                * are dropped here by sign extending the last bit before=
+... on a GUP page:
 
-+                * ADI bits. IOMMU does not implement version tags.
-+                */
-+               addr =3D (addr << (long)adi_nbits()) >> (long)adi_nbits()=
-;
-+               start =3D addr;
-+       }
-+#endif
-        start &=3D PAGE_MASK;
-        addr =3D start;
-        len =3D (unsigned long) nr_pages << PAGE_SHIFT;
+So how do you propose calling release_pages() from within put_user_pages()?  Or
+were you thinking this would be temporary?
 
+That said, there are 2 differences I see between release_pages() and put_page()
 
---
-Khalid
+1) release_pages() will only work for a MEMORY_DEVICE_PUBLIC page and not all
+   devmem pages...
+   I think this is a bug, patch to follow shortly.
 
+2) release_pages() calls __ClearPageActive() while put_page() does not
+
+I have no idea if the second difference is a bug or not.  But it smells of
+one...
+
+It would be nice to know if the open coding of put_page is really a performance
+benefit or not.  It seems like an attempt to optimize the taking of the page
+data lock.
+
+Does anyone have any information about the performance advantage here?
+
+Given the changes above it seems like it would be a benefit to merge the 2 call
+paths more closely to make sure we do the right thing.
+
+Ira
 
