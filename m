@@ -2,140 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB1129C7E
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 18:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D57629C8B
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 18:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390483AbfEXQtL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 12:49:11 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:50570 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390346AbfEXQtL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 May 2019 12:49:11 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 400CF300413F;
-        Fri, 24 May 2019 16:49:06 +0000 (UTC)
-Received: from redhat.com (ovpn-120-223.rdu2.redhat.com [10.10.120.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1D4F310027B6;
-        Fri, 24 May 2019 16:49:04 +0000 (UTC)
-Date:   Fri, 24 May 2019 12:49:02 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 00/11] mm/hmm: Various revisions from a locking/code
- review
-Message-ID: <20190524164902.GA3346@redhat.com>
-References: <20190523153436.19102-1-jgg@ziepe.ca>
- <20190524143649.GA14258@ziepe.ca>
+        id S2390210AbfEXQxE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 12:53:04 -0400
+Received: from mail-vk1-f193.google.com ([209.85.221.193]:41233 "EHLO
+        mail-vk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390448AbfEXQxD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 12:53:03 -0400
+Received: by mail-vk1-f193.google.com with SMTP id l73so2324674vkl.8
+        for <linux-rdma@vger.kernel.org>; Fri, 24 May 2019 09:53:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BWxqjKZCed63tdrqv52w7wsfWcnck29Bguoecq4JyuE=;
+        b=V2c3cbyoJqcZX30pcTkJEv7QnnWfFOVUG/SZKLtnQEgMJVwm89vkCiLejgP7M+iRpN
+         q/gLFJwalceC5ic9vkHhbkH+U/d7dt/5gsWtZqSmPEamXKr1uoECt4WeGoJqd2HwGhbx
+         9Occ1equYYbcXlCB88viJlGsBFmUVprPlSaUrUnpgJaFB5VgTgvCVd56gO+SEN+aAAgm
+         xm1VbLsF+wb2n+Ta5LcBu1FilJNm/nl1Mj5onw2ziQywv/g3tjrYI+IB0DZ9YrwYdgB0
+         VEIEcUTbHmI4X7mxwSOIeASg6iishBSuXQpcZN/RP20qWAgLsgkprlD05w//8ySkAW73
+         D/4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BWxqjKZCed63tdrqv52w7wsfWcnck29Bguoecq4JyuE=;
+        b=G8Y65v+NgyiJ7ctEhq/fro5f0jom7Si3pEy8UrophhO/gxHFZro0wGg3RPmNzGJgo9
+         pB4340jeiOYEyzbAlYD0D5AqgKoqP5KkGo8ljrzzEfdx6PfBqER9RwxqJ25LuTBl+H+X
+         pWLDEn5mUVtGTbL1SIuR9vdtt+7tf2TmBXWEQmL7g+1vWx7hDmVlCw2Sm1Ioq3FjBWtA
+         EoZAKLMbtGBG/+2RCuIj0EaIrq7TfIrYzOZS9olFSi6fkp4OO+MbJZCuoT/JanmKoaWn
+         diq700XqykxKukXhjFThZg0ega+Vdo7U9OtBWB5HuVMkkU8rS1NiKwrIYflFPjCFbJVu
+         1aMQ==
+X-Gm-Message-State: APjAAAXh2eEeob7mOZpkatzN8fT0w0208UuR91jHXJzBTAS9+KXV2ZSG
+        AOyTyWfVc1xBnHWe49KgtpT7Kw==
+X-Google-Smtp-Source: APXvYqxGf4YX6m1bc63rX3ITovS0x9J+uBVKSme0zDKMj1gtik5rsITucqSrT8VXY0G62c80cqSI9A==
+X-Received: by 2002:a1f:fe81:: with SMTP id l123mr6286152vki.51.1558716782783;
+        Fri, 24 May 2019 09:53:02 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id b2sm1470363vkf.16.2019.05.24.09.53.01
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 May 2019 09:53:01 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hUDRF-0008FA-F4; Fri, 24 May 2019 13:53:01 -0300
+Date:   Fri, 24 May 2019 13:53:01 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
+        Dave Airlie <airlied@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        linux-mm@kvack.org, dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: RFC: Run a dedicated hmm.git for 5.3
+Message-ID: <20190524165301.GD16845@ziepe.ca>
+References: <20190523154149.GB12159@ziepe.ca>
+ <20190523155207.GC5104@redhat.com>
+ <20190523163429.GC12159@ziepe.ca>
+ <20190523173302.GD5104@redhat.com>
+ <20190523175546.GE12159@ziepe.ca>
+ <20190523182458.GA3571@redhat.com>
+ <20190523191038.GG12159@ziepe.ca>
+ <20190524064051.GA28855@infradead.org>
+ <20190524124455.GB16845@ziepe.ca>
+ <20190524162709.GD21222@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190524143649.GA14258@ziepe.ca>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Fri, 24 May 2019 16:49:11 +0000 (UTC)
+In-Reply-To: <20190524162709.GD21222@phenom.ffwll.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 24, 2019 at 11:36:49AM -0300, Jason Gunthorpe wrote:
-> On Thu, May 23, 2019 at 12:34:25PM -0300, Jason Gunthorpe wrote:
-> > From: Jason Gunthorpe <jgg@mellanox.com>
-> > 
-> > This patch series arised out of discussions with Jerome when looking at the
-> > ODP changes, particularly informed by use after free races we have already
-> > found and fixed in the ODP code (thanks to syzkaller) working with mmu
-> > notifiers, and the discussion with Ralph on how to resolve the lifetime model.
-> 
-> So the last big difference with ODP's flow is how 'range->valid'
-> works.
-> 
-> In ODP this was done using the rwsem umem->umem_rwsem which is
-> obtained for read in invalidate_start and released in invalidate_end.
-> 
-> Then any other threads that wish to only work on a umem which is not
-> undergoing invalidation will obtain the write side of the lock, and
-> within that lock's critical section the virtual address range is known
-> to not be invalidating.
-> 
-> I cannot understand how hmm gets to the same approach. It has
-> range->valid, but it is not locked by anything that I can see, so when
-> we test it in places like hmm_range_fault it seems useless..
-> 
-> Jerome, how does this work?
-> 
-> I have a feeling we should copy the approach from ODP and use an
-> actual lock here.
+On Fri, May 24, 2019 at 06:27:09PM +0200, Daniel Vetter wrote:
+> Sure topic branch sounds fine, we do that all the time with various
+> subsystems all over. We have ready made scripts for topic branches and
+> applying pulls from all over, so we can even soak test everything in our
+> integration tree. In case there's conflicts or just to make sure
+> everything works, before we bake the topic branch into permanent history
+> (the main drm.git repo just can't be rebased, too much going on and too
+> many people involvd).
 
-range->valid is use as bail early if invalidation is happening in
-hmm_range_fault() to avoid doing useless work. The synchronization
-is explained in the documentation:
+We don't rebase rdma.git either for the same reasons and nor does
+netdev
 
-
-Locking within the sync_cpu_device_pagetables() callback is the most important
-aspect the driver must respect in order to keep things properly synchronized.
-The usage pattern is::
-
- int driver_populate_range(...)
- {
-      struct hmm_range range;
-      ...
-
-      range.start = ...;
-      range.end = ...;
-      range.pfns = ...;
-      range.flags = ...;
-      range.values = ...;
-      range.pfn_shift = ...;
-      hmm_range_register(&range);
-
-      /*
-       * Just wait for range to be valid, safe to ignore return value as we
-       * will use the return value of hmm_range_snapshot() below under the
-       * mmap_sem to ascertain the validity of the range.
-       */
-      hmm_range_wait_until_valid(&range, TIMEOUT_IN_MSEC);
-
- again:
-      down_read(&mm->mmap_sem);
-      ret = hmm_range_snapshot(&range);
-      if (ret) {
-          up_read(&mm->mmap_sem);
-          if (ret == -EAGAIN) {
-            /*
-             * No need to check hmm_range_wait_until_valid() return value
-             * on retry we will get proper error with hmm_range_snapshot()
-             */
-            hmm_range_wait_until_valid(&range, TIMEOUT_IN_MSEC);
-            goto again;
-          }
-          hmm_range_unregister(&range);
-          return ret;
-      }
-      take_lock(driver->update);
-      if (!hmm_range_valid(&range)) {
-          release_lock(driver->update);
-          up_read(&mm->mmap_sem);
-          goto again;
-      }
-
-      // Use pfns array content to update device page table
-
-      hmm_range_unregister(&range);
-      release_lock(driver->update);
-      up_read(&mm->mmap_sem);
-      return 0;
- }
-
-The driver->update lock is the same lock that the driver takes inside its
-sync_cpu_device_pagetables() callback. That lock must be held before calling
-hmm_range_valid() to avoid any race with a concurrent CPU page table update.
-
+So the usual flow for a shared topic branch is also no-rebase -
+testing/etc needs to be done before things get applied to it.
 
 Cheers,
-Jérôme
+Jason
