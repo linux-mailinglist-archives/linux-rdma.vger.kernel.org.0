@@ -2,140 +2,167 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F055B298A1
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 15:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323622990C
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 15:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391565AbfEXNOF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 09:14:05 -0400
-Received: from casper.infradead.org ([85.118.1.10]:53982 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391560AbfEXNOF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 09:14:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/n51XGtaWTFL2kzn79WHLkkiSbCnRxm63xReP9D+Qhg=; b=bUkJxWW27UUn0amoOcX30OMJrj
-        ZKVRSd1fLa7wKAL02nzw4IuOiQA4rzgr054ftsu9MviuEbu9mlGcvkuzEzVnirDZFWPfHjMMLLRk3
-        ZsW9iClnPD6BeArzI/irNnfgAKRVNaTgvodZ4TtoBZwoHm+HpL855LvNq4JvaGdw7aEGxArIj4/ar
-        bjQ2iBjNGlyPTpQSCWDE80zIQI9EXYMUp8RizSkmI+AmxIKaaD96lVlDCETopHnXFcxZVFNsAuFYn
-        eLi0l7CIdF+p1i1kh/+U5yW0qGVeRM/1NgoUENimwmZJ/qxCwebQt5wRW4slq4faCCWf2/ok2eNHJ
-        OcM7Zp+w==;
-Received: from 177.97.63.247.dynamic.adsl.gvt.net.br ([177.97.63.247] helo=coco.lan)
-        by casper.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1hUA1G-0007UW-C4; Fri, 24 May 2019 13:13:58 +0000
-Date:   Fri, 24 May 2019 10:13:45 -0300
-From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v15 14/17] media/v4l2-core, arm64: untag user pointers
- in videobuf_dma_contig_user_get
-Message-ID: <20190524101345.67c425fa@coco.lan>
-In-Reply-To: <b7999d13af54eb3ed8d7b0192397c7cde3df0b28.1557160186.git.andreyknvl@google.com>
-References: <cover.1557160186.git.andreyknvl@google.com>
-        <b7999d13af54eb3ed8d7b0192397c7cde3df0b28.1557160186.git.andreyknvl@google.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2403809AbfEXNfj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 09:35:39 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:44208 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403788AbfEXNfj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 09:35:39 -0400
+Received: by mail-ua1-f66.google.com with SMTP id i48so2842511uae.11
+        for <linux-rdma@vger.kernel.org>; Fri, 24 May 2019 06:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IcqaDeuGJCGa5ZggdGNAYSqFQEnHs8MfUQiHhXABBMk=;
+        b=kT6wAqKtAnkGgx9v0S5iMBX5PaiLPotndmiXT1nSNY9JkqPTYWp7A/iyFvybPJh8lp
+         6fvGORU6bU9+iKBWjnR/LQcEwu5lBvNu68V94RAb+y6RZW0AwsiOBgIQheR6rtQ4Zd2g
+         gR7y0LwWGp1cKWn2n1rsa1Na1N0NqaV89eAZsDyNbrQZb0CxTA4vDx/LWbDVG+DIgvbk
+         8E8kuzBfWLz9C7iv2GILGg8qdGMBNgctKYWpscbJ2irgE9XMPm0RJmzA/3hJZ2JRF3vs
+         D5OWvsg6hDAq43E7IKvTVtxBBLIx5E4CyvDBEHD4hHqJooOC7TmKHVlHhgNUsGi+XxMP
+         3Pkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IcqaDeuGJCGa5ZggdGNAYSqFQEnHs8MfUQiHhXABBMk=;
+        b=O8p/yq2ZTRB7hU89YVN6HCvO2Zgxe/8oe6YkcNv5Wu2beOYxYG+kf8tk9ZJd7zocRK
+         e82tfGidjCVk2gJkM85XvI6PoJ2mynOBgvJr/PpU8cOuakcMSNhN0tsUi07NxOWpruHy
+         Bwyt6MZUFtmBay3JX0NUcvx88HtuK4FJ+McEX3C/x1qwgY6wX7X18YHHPWloncV/SIc7
+         9iBIdF4G/J36XTkIwtuCOTqU2aeGmwoaqoE+o5wZGjT6XvDObCq/7Oo02n5h6BkCJOil
+         M3nt3U4/jFErvOTxjRKEvhVgRVRou2p4xm9f1XMzxcx84Loki6gpoNyMk65LAcOe9XkQ
+         daDg==
+X-Gm-Message-State: APjAAAUhXUI2LA62/oqZmYPFsJTWTTdG1qum9mYYMN2UK3Ogn1EoILqz
+        0bZB0Fz9klfOnot+7jw/DdtIqIw0WJo=
+X-Google-Smtp-Source: APXvYqwS/i6+HbsdCX5+s2T6q31qtlvAXYqPjnfVPNdoqlWYS5H7qKCjFxh3N6+BqekbFs052a88ew==
+X-Received: by 2002:ab0:688b:: with SMTP id t11mr15080209uar.70.1558704937753;
+        Fri, 24 May 2019 06:35:37 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id a123sm1060434vka.22.2019.05.24.06.35.37
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 May 2019 06:35:37 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hUAMC-0003DA-Dx; Fri, 24 May 2019 10:35:36 -0300
+Date:   Fri, 24 May 2019 10:35:36 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [RFC PATCH 00/11] mm/hmm: Various revisions from a locking/code
+ review
+Message-ID: <20190524133536.GA12259@ziepe.ca>
+References: <20190523153436.19102-1-jgg@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190523153436.19102-1-jgg@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Em Mon,  6 May 2019 18:31:00 +0200
-Andrey Konovalov <andreyknvl@google.com> escreveu:
-
-> This patch is a part of a series that extends arm64 kernel ABI to allow to
-> pass tagged user pointers (with the top byte set to something else other
-> than 0x00) as syscall arguments.
+On Thu, May 23, 2019 at 12:34:25PM -0300, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
 > 
-> videobuf_dma_contig_user_get() uses provided user pointers for vma
-> lookups, which can only by done with untagged pointers.
+> This patch series arised out of discussions with Jerome when looking at the
+> ODP changes, particularly informed by use after free races we have already
+> found and fixed in the ODP code (thanks to syzkaller) working with mmu
+> notifiers, and the discussion with Ralph on how to resolve the lifetime model.
 > 
-> Untag the pointers in this function.
+> Overall this brings in a simplified locking scheme and easy to explain
+> lifetime model:
 > 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-
-Acked-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-
-> ---
->  drivers/media/v4l2-core/videobuf-dma-contig.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+>  If a hmm_range is valid, then the hmm is valid, if a hmm is valid then the mm
+>  is allocated memory.
 > 
-> diff --git a/drivers/media/v4l2-core/videobuf-dma-contig.c b/drivers/media/v4l2-core/videobuf-dma-contig.c
-> index e1bf50df4c70..8a1ddd146b17 100644
-> --- a/drivers/media/v4l2-core/videobuf-dma-contig.c
-> +++ b/drivers/media/v4l2-core/videobuf-dma-contig.c
-> @@ -160,6 +160,7 @@ static void videobuf_dma_contig_user_put(struct videobuf_dma_contig_memory *mem)
->  static int videobuf_dma_contig_user_get(struct videobuf_dma_contig_memory *mem,
->  					struct videobuf_buffer *vb)
->  {
-> +	unsigned long untagged_baddr = untagged_addr(vb->baddr);
->  	struct mm_struct *mm = current->mm;
->  	struct vm_area_struct *vma;
->  	unsigned long prev_pfn, this_pfn;
-> @@ -167,22 +168,22 @@ static int videobuf_dma_contig_user_get(struct videobuf_dma_contig_memory *mem,
->  	unsigned int offset;
->  	int ret;
->  
-> -	offset = vb->baddr & ~PAGE_MASK;
-> +	offset = untagged_baddr & ~PAGE_MASK;
->  	mem->size = PAGE_ALIGN(vb->size + offset);
->  	ret = -EINVAL;
->  
->  	down_read(&mm->mmap_sem);
->  
-> -	vma = find_vma(mm, vb->baddr);
-> +	vma = find_vma(mm, untagged_baddr);
->  	if (!vma)
->  		goto out_up;
->  
-> -	if ((vb->baddr + mem->size) > vma->vm_end)
-> +	if ((untagged_baddr + mem->size) > vma->vm_end)
->  		goto out_up;
->  
->  	pages_done = 0;
->  	prev_pfn = 0; /* kill warning */
-> -	user_address = vb->baddr;
-> +	user_address = untagged_baddr;
->  
->  	while (pages_done < (mem->size >> PAGE_SHIFT)) {
->  		ret = follow_pfn(vma, user_address, &this_pfn);
+>  If the mm needs to still be alive (ie to lock the mmap_sem, find a vma, etc)
+>  then the mmget must be obtained via mmget_not_zero().
+> 
+> Locking of mm->hmm is shifted to use the mmap_sem consistently for all
+> read/write and unlocked accesses are removed.
+> 
+> The use unlocked reads on 'hmm->dead' are also eliminated in favour of using
+> standard mmget() locking to prevent the mm from being released. Many of the
+> debugging checks of !range->hmm and !hmm->mm are dropped in favour of poison -
+> which is much clearer as to the lifetime intent.
+> 
+> The trailing patches are just some random cleanups I noticed when reviewing
+> this code.
+> 
+> I expect Jerome & Ralph will have some design notes so this is just RFC, and
+> it still needs a matching edit to nouveau. It is only compile tested.
+> 
+> Regards,
+> Jason
+> 
+> Jason Gunthorpe (11):
+>   mm/hmm: Fix use after free with struct hmm in the mmu notifiers
+>   mm/hmm: Use hmm_mirror not mm as an argument for hmm_register_range
+>   mm/hmm: Hold a mmgrab from hmm to mm
+>   mm/hmm: Simplify hmm_get_or_create and make it reliable
+>   mm/hmm: Improve locking around hmm->dead
+>   mm/hmm: Remove duplicate condition test before wait_event_timeout
+>   mm/hmm: Delete hmm_mirror_mm_is_alive()
+>   mm/hmm: Use lockdep instead of comments
+>   mm/hmm: Remove racy protection against double-unregistration
+>   mm/hmm: Poison hmm_range during unregister
+>   mm/hmm: Do not use list*_rcu() for hmm->ranges
+> 
+>  include/linux/hmm.h |  50 ++----------
+>  kernel/fork.c       |   1 -
+>  mm/hmm.c            | 184 +++++++++++++++++++-------------------------
+>  3 files changed, 88 insertions(+), 147 deletions(-)
 
+Jerome, I was doing some more checking of this and noticed lockdep
+doesn't compile test if it is turned off, since you took and revised
+the series can you please fold in these hunks to fix compile failures
+with lockdep on. Thanks
 
+commit f0653c4d4c1dadeaf58d49f1c949ab1d2fda05d3
+diff --git a/mm/hmm.c b/mm/hmm.c
+index 836adf613f81c8..2a08b78550b90d 100644
+--- a/mm/hmm.c
++++ b/mm/hmm.c
+@@ -56,7 +56,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+ {
+ 	struct hmm *hmm;
+ 
+-	lockdep_assert_held_exclusive(mm->mmap_sem);
++	lockdep_assert_held_exclusive(&mm->mmap_sem);
+ 
+ 	if (mm->hmm) {
+ 		if (kref_get_unless_zero(&mm->hmm->kref))
+@@ -262,7 +262,7 @@ static const struct mmu_notifier_ops hmm_mmu_notifier_ops = {
+  */
+ int hmm_mirror_register(struct hmm_mirror *mirror, struct mm_struct *mm)
+ {
+-	lockdep_assert_held_exclusive(mm->mmap_sem);
++	lockdep_assert_held_exclusive(&mm->mmap_sem);
+ 
+ 	/* Sanity check */
+ 	if (!mm || !mirror || !mirror->ops)
+@@ -987,7 +987,7 @@ long hmm_range_snapshot(struct hmm_range *range)
+ 	struct mm_walk mm_walk;
+ 
+ 	/* Caller must hold the mmap_sem, and range hold a reference on mm. */
+-	lockdep_assert_held(hmm->mm->mmap_sem);
++	lockdep_assert_held(&hmm->mm->mmap_sem);
+ 	if (WARN_ON(!atomic_read(&hmm->mm->mm_users)))
+ 		return -EINVAL;
+ 
+@@ -1086,7 +1086,7 @@ long hmm_range_fault(struct hmm_range *range, bool block)
+ 	int ret;
+ 
+ 	/* Caller must hold the mmap_sem, and range hold a reference on mm. */
+-	lockdep_assert_held(hmm->mm->mmap_sem);
++	lockdep_assert_held(&hmm->mm->mmap_sem);
+ 	if (WARN_ON(!atomic_read(&hmm->mm->mm_users)))
+ 		return -EINVAL;
+ 
 
-Thanks,
-Mauro
