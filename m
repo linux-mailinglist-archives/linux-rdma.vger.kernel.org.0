@@ -2,213 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE50929E4D
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 20:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C270329EB4
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 20:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391455AbfEXSqT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 14:46:19 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:50570 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391184AbfEXSqS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 May 2019 14:46:18 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 1D28230821B3;
-        Fri, 24 May 2019 18:46:13 +0000 (UTC)
-Received: from redhat.com (ovpn-120-223.rdu2.redhat.com [10.10.120.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 049F11001E6F;
-        Fri, 24 May 2019 18:46:10 +0000 (UTC)
-Date:   Fri, 24 May 2019 14:46:08 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 00/11] mm/hmm: Various revisions from a locking/code
- review
-Message-ID: <20190524184608.GE3346@redhat.com>
-References: <20190523153436.19102-1-jgg@ziepe.ca>
- <20190524143649.GA14258@ziepe.ca>
- <20190524164902.GA3346@redhat.com>
- <20190524165931.GF16845@ziepe.ca>
- <20190524170148.GB3346@redhat.com>
- <20190524175203.GG16845@ziepe.ca>
- <20190524180321.GD3346@redhat.com>
- <20190524183225.GI16845@ziepe.ca>
+        id S2403967AbfEXS7p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 14:59:45 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:47716 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404122AbfEXS7o (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 14:59:44 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4OIwqEf025915;
+        Fri, 24 May 2019 18:59:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : sender : to : cc : subject : references :
+ in-reply-to : content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=bLhJULZuzMwxvwKVbALrmEFjxnPgEAH1OTEouZtc8ZI=;
+ b=V+yUWxf5L0o3jeQ8VEoIMEUuXrFNb1ZBWGH+w9M2+cN/TbwmLwFSUQcxJXdDh8b/p28w
+ KFb6Yz6c0qMNUFvWVT0XXkyiZcKxpCSfr1/SrT1dFh0aA71mJV+Ooccfj2Xl7TIDO0Pp
+ H9aF0xYtF33dyhpqlm8/v+l+YeKn6T9ySrYcegx42Oo0+DVYMO+vOu63Q2hK1+VouTwq
+ cJ7AEdZsaH8F4W25nzpx55hmJInHhZ8PxmxPs2wZNLbYDwA7nYTVN+x2XvSvRlIWvmm0
+ eikzWIC+5IwVzU4swBjpIeotPfmM51bunYEiDKIcyHcp44wEaRwIav2JK6PXxcJwtagv tg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2smsk5jxkk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 May 2019 18:59:39 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4OIwFZT118626;
+        Fri, 24 May 2019 18:59:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2smsh326n0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 May 2019 18:59:38 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4OIxcA5016318;
+        Fri, 24 May 2019 18:59:38 GMT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190524183225.GI16845@ziepe.ca>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Fri, 24 May 2019 18:46:18 +0000 (UTC)
+Message-ID: <309e44c2-f520-4e35-9f50-5e6932d7b40f@default>
+Date:   Fri, 24 May 2019 18:59:36 +0000 (UTC)
+From:   Zuoyu Tao <zuoyu.tao@oracle.com>
+To:     Gerd Rausch <gerd.rausch@oracle.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org,
+        Aron Silverton <aron.silverton@oracle.com>,
+        Sharon Liu <sharon.s.liu@oracle.com>
+Subject: RE: <infiniband/verbs.h> & ICC
+References: <54a40ca4-707b-d7a8-16b0-7d475e64f957@oracle.com>
+ <20190524013033.GA13582@mellanox.com>
+ <e9d86a45-a3b0-e303-027b-02474ed3a2ac@oracle.com>
+In-Reply-To: <e9d86a45-a3b0-e303-027b-02474ed3a2ac@oracle.com>
+X-Priority: 3
+X-Mailer: Oracle Beehive Extensions for Outlook 2.0.1.9.1  (1003210) [OL
+ 16.0.4849.0 (x86)]
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9267 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905240123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9267 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905240123
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 24, 2019 at 03:32:25PM -0300, Jason Gunthorpe wrote:
-> On Fri, May 24, 2019 at 02:03:22PM -0400, Jerome Glisse wrote:
-> > On Fri, May 24, 2019 at 02:52:03PM -0300, Jason Gunthorpe wrote:
-> > > On Fri, May 24, 2019 at 01:01:49PM -0400, Jerome Glisse wrote:
-> > > > On Fri, May 24, 2019 at 01:59:31PM -0300, Jason Gunthorpe wrote:
-> > > > > On Fri, May 24, 2019 at 12:49:02PM -0400, Jerome Glisse wrote:
-> > > > > > On Fri, May 24, 2019 at 11:36:49AM -0300, Jason Gunthorpe wrote:
-> > > > > > > On Thu, May 23, 2019 at 12:34:25PM -0300, Jason Gunthorpe wrote:
-> > > > > > > > From: Jason Gunthorpe <jgg@mellanox.com>
-> > > > > > > > 
-> > > > > > > > This patch series arised out of discussions with Jerome when looking at the
-> > > > > > > > ODP changes, particularly informed by use after free races we have already
-> > > > > > > > found and fixed in the ODP code (thanks to syzkaller) working with mmu
-> > > > > > > > notifiers, and the discussion with Ralph on how to resolve the lifetime model.
-> > > > > > > 
-> > > > > > > So the last big difference with ODP's flow is how 'range->valid'
-> > > > > > > works.
-> > > > > > > 
-> > > > > > > In ODP this was done using the rwsem umem->umem_rwsem which is
-> > > > > > > obtained for read in invalidate_start and released in invalidate_end.
-> > > > > > > 
-> > > > > > > Then any other threads that wish to only work on a umem which is not
-> > > > > > > undergoing invalidation will obtain the write side of the lock, and
-> > > > > > > within that lock's critical section the virtual address range is known
-> > > > > > > to not be invalidating.
-> > > > > > > 
-> > > > > > > I cannot understand how hmm gets to the same approach. It has
-> > > > > > > range->valid, but it is not locked by anything that I can see, so when
-> > > > > > > we test it in places like hmm_range_fault it seems useless..
-> > > > > > > 
-> > > > > > > Jerome, how does this work?
-> > > > > > > 
-> > > > > > > I have a feeling we should copy the approach from ODP and use an
-> > > > > > > actual lock here.
-> > > > > > 
-> > > > > > range->valid is use as bail early if invalidation is happening in
-> > > > > > hmm_range_fault() to avoid doing useless work. The synchronization
-> > > > > > is explained in the documentation:
-> > > > > 
-> > > > > That just says the hmm APIs handle locking. I asked how the apis
-> > > > > implement that locking internally.
-> > > > > 
-> > > > > Are you trying to say that if I do this, hmm will still work completely
-> > > > > correctly?
-> > > > 
-> > > > Yes it will keep working correctly. You would just be doing potentialy
-> > > > useless work.
-> > > 
-> > > I don't see how it works correctly.
-> > > 
-> > > Apply the comment out patch I showed and this trivially happens:
-> > > 
-> > >       CPU0                                               CPU1
-> > >   hmm_invalidate_start()
-> > >     ops->sync_cpu_device_pagetables()
-> > >       device_lock()
-> > >        // Wipe out page tables in device, enable faulting
-> > >       device_unlock()
-> > > 
-> > >                                                        DEVICE PAGE FAULT
-> > >                                                        device_lock()
-> > >                                                        hmm_range_register()
-> > >                                                        hmm_range_dma_map()
-> > >                                                        device_unlock()
-> > >   hmm_invalidate_end()
-> > 
-> > No in the above scenario hmm_range_register() will not mark the range
-> > as valid thus the driver will bailout after taking its lock and checking
-> > the range->valid value.
-> 
-> I see your confusion, I only asked about removing valid from hmm.c,
-> not the unlocked use of valid in your hmm.rst example. My mistake,
-> sorry for being unclear.
+Here were the compiler flags used with ICC:
 
-No i did understand properly and it is fine to remove all the valid
-check within hmm_range_fault() or hmm_range_snapshot() nothing bad
-will come out of that.
+-trigraphs -fno-omit-frame-pointer -fp-model source  -fno-strict-aliasing  =
+-mIPOPT_clone_max_total_clones=3D0 -mP2OPT_hpo_enable_short_trip_vec=3DF -s=
+ox=3Dprofile -sox=3Dinline   -no-global-hoist -mP2OPT_tls_control=3D0  -wd1=
+91 -wd175 -wd188 -wd810 -we127 -we1345 -we1338 -wd279 -wd186 -wd1572 -wd589=
+ -wd11505 -we592 -wd69 -we172 -Qoption,cpp,--treat_func_as_string_literal -=
+mP2OPT_spill_parms=3DT -wd11505 -wd411 -wd273 -ww174    -we266    -ww279   =
+ -we589    -we810    -we1011   -ww1418   -strict-ansi -wd66     -wd76     -=
+wd82     -wd94     -we102    -wd271    -wd424    -wd561    -wd662    -wd151=
+1    -std=3Dc99 -ww344 -we137   -fPIC -mP2OPT_tls_control=3D2
 
-> 
-> Here is the big 3 CPU ladder diagram that shows how 'valid' does not
-> work:
-> 
->        CPU0                                               CPU1                                          CPU2
->                                                         DEVICE PAGE FAULT
->                                                         range = hmm_range_register()
->
->   // Overlaps with range
->   hmm_invalidate_start()
->     range->valid = false
->     ops->sync_cpu_device_pagetables()
->       take_lock(driver->update);
->        // Wipe out page tables in device, enable faulting
->       release_lock(driver->update);
->                                                                                                    // Does not overlap with range
->                                                                                                    hmm_invalidate_start()
->                                                                                                    hmm_invalidate_end()
->                                                                                                        list_for_each
->                                                                                                            range->valid =  true
+-----Original Message-----
+From: Gerd Rausch=20
+Sent: Thursday, May 23, 2019 11:15 PM
+To: Jason Gunthorpe <jgg@mellanox.com>
+Cc: linux-rdma@vger.kernel.org; Aron Silverton <aron.silverton@oracle.com>;=
+ Sharon Liu <sharon.s.liu@oracle.com>; ZUOYU.TAO <zuoyu.tao@oracle.com>
+Subject: Re: <infiniband/verbs.h> & ICC
 
-                                                                                                             ^
-No this can not happen because CPU0 still has invalidate_range in progress and
-thus hmm->notifiers > 0 so the hmm_invalidate_range_end() will not set the
-range->valid as true.
++Zuoyu,
 
->
->
->                                                        device_lock()
->                                                        // Note range->valid = true now
->                                                        hmm_range_snapshot(&range);
->                                                        take_lock(driver->update);
->                                                        if (!hmm_range_valid(&range))
->                                                            goto again
->                                                        ESTABLISHE SPTES
->                                                        device_unlock()
->   hmm_invalidate_end()
-> 
-> 
-> And I can make this more complicated (ie overlapping parallel
-> invalidates, etc) and show any 'bool' valid cannot work.
+Hi Zuoyo,
 
-It does work. If you want i can remove the range->valid = true from the
-hmm_invalidate_range_end() and move it within hmm_range_wait_until_valid()
-ie modifying the hmm_range_wait_until_valid() logic, this might look
-cleaner.
+What compiler flags were you using while compiling the <verbs.h> file throw=
+ing the error about 'enumeration value is out of "int" range'?
 
-> > > The mmu notifier spec says:
-> > > 
-> > >  	 * Invalidation of multiple concurrent ranges may be
-> > > 	 * optionally permitted by the driver. Either way the
-> > > 	 * establishment of sptes is forbidden in the range passed to
-> > > 	 * invalidate_range_begin/end for the whole duration of the
-> > > 	 * invalidate_range_begin/end critical section.
-> > > 
-> > > And I understand "establishment of sptes is forbidden" means
-> > > "hmm_range_dmap_map() must fail with EAGAIN". 
-> > 
-> > No it means that secondary page table entry (SPTE) must not
-> > materialize thus what hmm_range_dmap_map() is doing if fine and safe
-> > as long as the driver do not use the result to populate the device
-> > page table if there was an invalidation for the range.
-> 
-> Okay, so we agree, if there is an invalidate_start/end critical region
-> then it is OK to *call* hmm_range_dmap_map(), however the driver must
-> not *use* the result, and you are expecting this bit:
-> 
->       take_lock(driver->update);
->       if (!hmm_range_valid(&range)) {
->          goto again
-> 
-> In your hmm.rst to prevent the pfns from being used by the driver?
-> 
-> I think the above ladder shows that hmm_range_valid can return true
-> during a invalidate_start/end critical region, so this is a problem.
->
-> I still think the best solution is to move device_lock() into mirror
-> and have hmm manage it for the driver as ODP does. It is certainly the
-> simplest solution to understand.
 
-It is un-efficient and would block further than needed forward progress
-by mm code.
+On 23/05/2019 18.30, Jason Gunthorpe wrote:
+> On Thu, May 23, 2019 at 03:57:29PM -0700, Gerd Rausch wrote:
+>>
+>> error: enumeration value is out of "int" range
+>>          IBV_RX_HASH_INNER =3D (1UL << 31),
+>=20
+> I assume you are running with some higher warning flags and -Werror?
+> gcc will not emit this warning without -Wpedantic
+>=20
 
-Cheers,
-Jérôme
+Perhaps. I've added Zuoyu, who reported this issue to this e-mail thread.
+
+>=20
+>> Since "int" is signed, it can't hold the unsigned value of 1UL<<31 on=20
+>> target platforms with sizeof(int) <=3D 4.
+>=20
+> Pedentically yes, but gcc and any compiler that can compile on linux=20
+> supports an extension where the underlying type of an enum constant is=20
+> automatically increased until it can hold the value of the constant.=20
+> In this case the constant is type promoted to long, IIRC.
+>=20
+
+Evidently ICC supports that as well:
+% icc --version
+icc (ICC) 17.0.5 20170817
+Copyright (C) 1985-2017 Intel Corporation.  All rights reserved.
+
+% cat foo.c
+enum { FOO =3D 1UL << 31 } foo =3D FOO;
+
+% icc -c -g foo.c && gdb -ex 'ptype foo' -ex 'print sizeof foo' foo.o type =
+=3D enum {FOO =3D -2147483648}
+$1 =3D 4
+
+% cat bar.c
+enum { FOO =3D 1UL << 31, BAR =3D -1 } bar =3D BAR; % icc -c -g bar.c && gd=
+b -ex 'ptype bar' -ex 'print sizeof bar' bar.o type =3D enum {FOO =3D -2147=
+483648, BAR =3D -1}
+$1 =3D 8
+
+I can't say that I'm thrilled with this behavior though, as it appears erro=
+r-prone:
+As soon as an enum value goes out of range for an "int", the type silently =
+changes, potentially rendering structures and functions silently incompatib=
+le.
+It's quite the pitfall (e.g. the foo.c vs bar.c case above).
+
+>=20
+> Can you clarify if icc is being run in some wonky mode that is causing=20
+> this warning? AFAIK icc will compile the linux kernel, and the kernel=20
+> makes extensive use of this extension. So I think the compiler is not=20
+> configured properly.
+>=20
+
+I've added Zuoyu to the distribution to shed some light on that.
+
+> IIRC I looked at this once for -Wpedantic support and decided it was a=20
+> lot of work as there are more cases than just this.
+>=20
+
+Not exactly shocking news ;-)
+
+Thanks for providing the information,
+
+  Gerd
