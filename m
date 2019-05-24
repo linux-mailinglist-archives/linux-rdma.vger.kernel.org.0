@@ -2,150 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBD229925
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 15:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86054299FF
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 16:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391550AbfEXNki (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 09:40:38 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:37493 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391361AbfEXNki (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 09:40:38 -0400
-Received: by mail-vs1-f66.google.com with SMTP id o5so2281252vsq.4
-        for <linux-rdma@vger.kernel.org>; Fri, 24 May 2019 06:40:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jk1Lvx1FvIw772wUrAuBFbuzjdT4riWG2uGTCncDffw=;
-        b=TJ1v3fknWXI7eBDTfpR4QuLVeyX1otnSWo1H+q2e4OMUI4FDYhMl+gkN9H1i+7mOhO
-         7/aDgJCW3ND4tnYxrEw1oB8b8v0vhLGSWJwGFDhhFwdjtmXO1CjA9vX5aIeYCApUY6Oz
-         oNA0Bacu6lV9kocnIprEn4BtBq9N0vh25RDNUa7RUM7LzAI70qLEi+L74kbDWi/ebHHq
-         EZOI/Y/fhswKPJt/JjMudE0M0zKse16oB9WUlDb4A6Dy36PRO74rbqLaTf0yGGxwJlz6
-         DBqTn1hSDKCT3Hdy3NmSOlACj5Q4uQPtcDwQrpx9MluvudT6JLzTdpifJWxlcS0JwkCT
-         ZkOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jk1Lvx1FvIw772wUrAuBFbuzjdT4riWG2uGTCncDffw=;
-        b=Z0qJQfMt10zu+UyJ2BAKz5GvFsOAh3aWclCPeyf8798baGQRlRbNwCua/sXJRIpYp6
-         6Of2tH10WkDwM1MGZF+UeI5RRMINezMzXBv6V/4bBVar58l9GMdHQS/CLihBjh6THXL4
-         zjQpRY2QbBiIbObTvJYfXtY4i71+HbVumrf/nJeE7KccJ4AQTZDov9ALj680I7un5V6k
-         P9HmYmaykMUjH9eU3EUivLAHRwBIMhm33oZJwQl7iBPHpVyeeNCgMMas9Ks89FX0fPUh
-         IAAQD+tjw3xQr1zdCwTujL3p3Sz/djmE0PFsyCW1ZccrVDMNCcNWfwMC14jlogOLdsJ+
-         y9Gw==
-X-Gm-Message-State: APjAAAV2wuAGvd6KSHU66fBKR+n/iESTaKRHRBHp49VTdJRq+kerRzzy
-        HHxDBRZVC6NF4Px9hVA1nFOsjsNQtVc=
-X-Google-Smtp-Source: APXvYqw8mwBk3DO7N2wH6PK1f+AD1sgPGSjHEWIChiWeOIKAMl3omYHQb8VqEw5144BspC8y2H55mg==
-X-Received: by 2002:a67:e9cf:: with SMTP id q15mr19361500vso.194.1558705236966;
-        Fri, 24 May 2019 06:40:36 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id 102sm864606uar.11.2019.05.24.06.40.36
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 May 2019 06:40:36 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hUAR1-0003QD-Jx; Fri, 24 May 2019 10:40:35 -0300
-Date:   Fri, 24 May 2019 10:40:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 05/11] mm/hmm: Improve locking around hmm->dead
-Message-ID: <20190524134035.GA12653@ziepe.ca>
-References: <20190523153436.19102-1-jgg@ziepe.ca>
- <20190523153436.19102-6-jgg@ziepe.ca>
+        id S2403921AbfEXOYE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 10:24:04 -0400
+Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:44072 "EHLO
+        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404039AbfEXOYD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 24 May 2019 10:24:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 268E8A78;
+        Fri, 24 May 2019 07:24:03 -0700 (PDT)
+Received: from e103592.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.72.51.249])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65CAA3F575;
+        Fri, 24 May 2019 07:23:57 -0700 (PDT)
+Date:   Fri, 24 May 2019 15:23:54 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        linux-media@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Kostya Serebryany <kcc@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        linux-kernel@vger.kernel.org,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <20190524142352.GY28398@e103592.cambridge.arm.com>
+References: <cover.1557160186.git.andreyknvl@google.com>
+ <20190517144931.GA56186@arrakis.emea.arm.com>
+ <20190521184856.GC2922@ziepe.ca>
+ <20190522134925.GV28398@e103592.cambridge.arm.com>
+ <20190523002052.GF15389@ziepe.ca>
+ <20190523104256.GX28398@e103592.cambridge.arm.com>
+ <20190523165708.q6ru7xg45aqfjzpr@mbp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190523153436.19102-6-jgg@ziepe.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190523165708.q6ru7xg45aqfjzpr@mbp>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 12:34:30PM -0300, Jason Gunthorpe wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
+On Thu, May 23, 2019 at 05:57:09PM +0100, Catalin Marinas wrote:
+> On Thu, May 23, 2019 at 11:42:57AM +0100, Dave P Martin wrote:
+> > On Wed, May 22, 2019 at 09:20:52PM -0300, Jason Gunthorpe wrote:
+> > > On Wed, May 22, 2019 at 02:49:28PM +0100, Dave Martin wrote:
+> > > > If multiple people will care about this, perhaps we should try to
+> > > > annotate types more explicitly in SYSCALL_DEFINEx() and ABI data
+> > > > structures.
+> > > > 
+> > > > For example, we could have a couple of mutually exclusive modifiers
+> > > > 
+> > > > T __object *
+> > > > T __vaddr * (or U __vaddr)
+> > > > 
+> > > > In the first case the pointer points to an object (in the C sense)
+> > > > that the call may dereference but not use for any other purpose.
+> > > 
+> > > How would you use these two differently?
+> > > 
+> > > So far the kernel has worked that __user should tag any pointer that
+> > > is from userspace and then you can't do anything with it until you
+> > > transform it into a kernel something
+> > 
+> > Ultimately it would be good to disallow casting __object pointers execpt
+> > to compatible __object pointer types, and to make get_user etc. demand
+> > __object.
+> > 
+> > __vaddr pointers / addresses would be freely castable, but not to
+> > __object and so would not be dereferenceable even indirectly.
 > 
-> This value is being read without any locking, so it is just an unreliable
-> hint, however in many cases we need to have certainty that code is not
-> racing with mmput()/hmm_release().
-> 
-> For the two functions doing find_vma(), document that the caller is
-> expected to hold mmap_sem and thus also have a mmget().
-> 
-> For hmm_range_register acquire a mmget internally as it must not race with
-> hmm_release() when it sets valid.
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
->  mm/hmm.c | 27 +++++++++++++++++++--------
->  1 file changed, 19 insertions(+), 8 deletions(-)
-> 
-> diff --git a/mm/hmm.c b/mm/hmm.c
-> index ec54be54d81135..d97ec293336ea5 100644
-> +++ b/mm/hmm.c
-> @@ -909,8 +909,10 @@ int hmm_range_register(struct hmm_range *range,
->  	range->start = start;
->  	range->end = end;
->  
-> -	/* Check if hmm_mm_destroy() was call. */
-> -	if (mirror->hmm->mm == NULL || mirror->hmm->dead)
-> +	/*
-> +	 * We cannot set range->value to true if hmm_release has already run.
-> +	 */
-> +	if (!mmget_not_zero(mirror->hmm->mm))
->  		return -EFAULT;
->  
->  	range->hmm = mirror->hmm;
-> @@ -928,6 +930,7 @@ int hmm_range_register(struct hmm_range *range,
->  	if (!range->hmm->notifiers)
->  		range->valid = true;
->  	mutex_unlock(&range->hmm->lock);
-> +	mmput(mirror->hmm->mm);
+> I think it gets too complicated and there are ambiguous cases that we
+> may not be able to distinguish. For example copy_from_user() may be used
+> to copy a user data structure into the kernel, hence __object would
+> work, while the same function may be used to copy opaque data to a file,
+> so __vaddr may be a better option (unless I misunderstood your
+> proposal).
 
-Hi Jerome, when you revised this patch to move the mmput to
-hmm_range_unregister() it means hmm_release() cannot run while a range
-exists, and thus we can have this futher simplification rolled into
-this patch. Can you update your git? Thanks:
+Can you illustrate?  I'm not sure of your point here.
 
-diff --git a/mm/hmm.c b/mm/hmm.c
-index 2a08b78550b90d..ddd05f2ebe739a 100644
---- a/mm/hmm.c
-+++ b/mm/hmm.c
-@@ -128,17 +128,17 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
- {
- 	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
- 	struct hmm_mirror *mirror;
--	struct hmm_range *range;
- 
- 	/* hmm is in progress to free */
- 	if (!kref_get_unless_zero(&hmm->kref))
- 		return;
- 
--	/* Wake-up everyone waiting on any range. */
- 	mutex_lock(&hmm->lock);
--	list_for_each_entry(range, &hmm->ranges, list)
--		range->valid = false;
--	wake_up_all(&hmm->wq);
-+	/*
-+	 * Since hmm_range_register() holds the mmget() lock hmm_release() is
-+	 * prevented as long as a range exists.
-+	 */
-+	WARN_ON(!list_empty(&hmm->ranges));
- 	mutex_unlock(&hmm->lock);
- 
- 	down_write(&hmm->mirrors_sem);
-@@ -908,9 +908,7 @@ int hmm_range_register(struct hmm_range *range,
- 	range->hmm = mm->hmm;
- 	kref_get(&range->hmm->kref);
- 
--	/*
--	 * We cannot set range->value to true if hmm_release has already run.
--	 */
-+	/* Prevent hmm_release() from running while the range is valid */
- 	if (!mmget_not_zero(mm))
- 		return -EFAULT;
- 
+> We currently have T __user * and I think it's a good starting point. The
+> prior attempt [1] was shut down because it was just hiding the cast
+> using __force. We'd need to work through those cases again and rather
+> start changing the function prototypes to avoid unnecessary casting in
+> the callers (e.g. get_user_pages(void __user *) or come up with a new
+> type) while changing the explicit casting to a macro where it needs to
+> be obvious that we are converting a user pointer, potentially typed
+> (tagged), to an untyped address range. We may need a user_ptr_to_ulong()
+> macro or similar (it seems that we have a u64_to_user_ptr, wasn't aware
+> of it).
+> 
+> It may actually not be far from what you suggested but I'd keep the
+> current T __user * to denote possible dereference.
+
+This may not have been clear, but __object and __vaddr would be
+orthogonal to __user.  Since __object and __vaddr strictly constrain
+what can be done with an lvalue, they could be cast on, but not be
+cast off without __force.
+
+Syscall arguments and pointer in ioctl structs etc. would typically
+be annotated as __object __user * or __vaddr __user *.  Plain old
+__user * would work as before, but would be more permissive and give
+static analysers less information to go on.
+
+Conversion or use or __object or __vaddr pointers would require specific
+APIs in the kernel, so that we can be clear about the semantics.
+
+Doing things this way would allow migration to annotation of most or all
+ABI pointers with __object or __vaddr over time, but we wouldn't have to
+do it all in one go.  Problem cases (which won't be the majority) could
+continue to be plain __user.
+
+
+This does not magically solve the challenges of MTE, but might provide
+tools that are useful to help avoid bitrot and regressions over time.
+
+I agree though that there might be a fair number of of cases that don't
+conveniently fall under __object or __vaddr semantics.  It's hard to
+know without trying it.
+
+_Most_ syscall arguments seem to be fairly obviously one or another
+though, and this approach has some possibility of scaling to ioctls
+and other odd interfaces.
+
+Cheers
+---Dave
