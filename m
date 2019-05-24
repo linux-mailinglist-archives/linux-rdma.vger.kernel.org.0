@@ -2,142 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC072983E
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 14:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F055B298A1
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 15:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391342AbfEXMo6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 08:44:58 -0400
-Received: from mail-ua1-f65.google.com ([209.85.222.65]:36757 "EHLO
-        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389057AbfEXMo6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 08:44:58 -0400
-Received: by mail-ua1-f65.google.com with SMTP id 94so3459676uam.3
-        for <linux-rdma@vger.kernel.org>; Fri, 24 May 2019 05:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=86zgAQfw8EJJS+UNpjxjOFPf8eRhOu/zVe65BnxqX6k=;
-        b=OwAdPYWwIIhzKIrP9zacmHWALt7WHScrXTSOiHZlMka+qhZn/6McmfKFyb+5mt72A8
-         4yZy3bxx8SNsfV/ezDuz1DHppIcgD8780P3ujAMHW+4K+f5RPN2e/31pnlevfPC9Lp+c
-         IN1fRiPPUJUb5X4snek7Tvn/JK+pQvE5V97Id1Jk2wzSHpDtKmilz9caWuJ8z3mWEy9q
-         AOt6arDl+8e3Fikr/N4U9ap3kxtcaR49d3FGq/xJ5hMQ0ZX/MhCAK0F6obNBUpuZOBis
-         qEUp9M8syRwmD9qj3C+L+koiFfG+W4r4XUmdJ49PyV4KvxBT7r7Hdnt9AYt3p/P2fLLt
-         SrEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=86zgAQfw8EJJS+UNpjxjOFPf8eRhOu/zVe65BnxqX6k=;
-        b=DxLFXQDFEyyGJsFgfLOUMsWEK6jZpUaXLwmQ9JMubHTkygVO7WcXvmciz49gRyBbta
-         ehkm94cgkdC9fR/xcPwHymSnxKz3fb8rvyQJGQ1G1diCows2xScby06SSFVuDvIpphGC
-         nUfL1nXy7GEvZAFKexFrFgwJreN0LHlEkrPYvP8frHhGc1godKgWY6EjTmLzgS8dO5gI
-         y1icJR8mmLoXZ3zhdVJdD8OZJIoaFpcQNls+xellzDLji+OQ74nQnDMxOI3m1To9CEhi
-         qFMauGvuZPualiLWSjtZJevLa+oucxiH58sUUVHplz26P/pTuxQXgblXBs8EPFA/PdtX
-         qjYg==
-X-Gm-Message-State: APjAAAXmgGIKaSwpDgaeoLkrIYlShGyc+tcqlgSz4fQaRSGyGBIBXBbK
-        3VAXpXCgOI8NDSHKvn2hH6x2D7zY0OI=
-X-Google-Smtp-Source: APXvYqyEylmmdkAB6AaIhsy3vhee0zusZnFo+WYBZWM/18FEIODicL7EA9MIafCvZ0ZYEzrSfr1ouA==
-X-Received: by 2002:ab0:23cd:: with SMTP id c13mr14715196uan.77.1558701896809;
-        Fri, 24 May 2019 05:44:56 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id x19sm453316vsq.9.2019.05.24.05.44.56
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 May 2019 05:44:56 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hU9Z9-0004qz-Fc; Fri, 24 May 2019 09:44:55 -0300
-Date:   Fri, 24 May 2019 09:44:55 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
-        Dave Airlie <airlied@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Jerome Glisse <jglisse@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        linux-mm@kvack.org, dri-devel <dri-devel@lists.freedesktop.org>
-Subject: RFC: Run a dedicated hmm.git for 5.3
-Message-ID: <20190524124455.GB16845@ziepe.ca>
-References: <20190522235737.GD15389@ziepe.ca>
- <20190523150432.GA5104@redhat.com>
- <20190523154149.GB12159@ziepe.ca>
- <20190523155207.GC5104@redhat.com>
- <20190523163429.GC12159@ziepe.ca>
- <20190523173302.GD5104@redhat.com>
- <20190523175546.GE12159@ziepe.ca>
- <20190523182458.GA3571@redhat.com>
- <20190523191038.GG12159@ziepe.ca>
- <20190524064051.GA28855@infradead.org>
+        id S2391565AbfEXNOF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 09:14:05 -0400
+Received: from casper.infradead.org ([85.118.1.10]:53982 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391560AbfEXNOF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 09:14:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=/n51XGtaWTFL2kzn79WHLkkiSbCnRxm63xReP9D+Qhg=; b=bUkJxWW27UUn0amoOcX30OMJrj
+        ZKVRSd1fLa7wKAL02nzw4IuOiQA4rzgr054ftsu9MviuEbu9mlGcvkuzEzVnirDZFWPfHjMMLLRk3
+        ZsW9iClnPD6BeArzI/irNnfgAKRVNaTgvodZ4TtoBZwoHm+HpL855LvNq4JvaGdw7aEGxArIj4/ar
+        bjQ2iBjNGlyPTpQSCWDE80zIQI9EXYMUp8RizSkmI+AmxIKaaD96lVlDCETopHnXFcxZVFNsAuFYn
+        eLi0l7CIdF+p1i1kh/+U5yW0qGVeRM/1NgoUENimwmZJ/qxCwebQt5wRW4slq4faCCWf2/ok2eNHJ
+        OcM7Zp+w==;
+Received: from 177.97.63.247.dynamic.adsl.gvt.net.br ([177.97.63.247] helo=coco.lan)
+        by casper.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hUA1G-0007UW-C4; Fri, 24 May 2019 13:13:58 +0000
+Date:   Fri, 24 May 2019 10:13:45 -0300
+From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v15 14/17] media/v4l2-core, arm64: untag user pointers
+ in videobuf_dma_contig_user_get
+Message-ID: <20190524101345.67c425fa@coco.lan>
+In-Reply-To: <b7999d13af54eb3ed8d7b0192397c7cde3df0b28.1557160186.git.andreyknvl@google.com>
+References: <cover.1557160186.git.andreyknvl@google.com>
+        <b7999d13af54eb3ed8d7b0192397c7cde3df0b28.1557160186.git.andreyknvl@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190524064051.GA28855@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 11:40:51PM -0700, Christoph Hellwig wrote:
-> On Thu, May 23, 2019 at 04:10:38PM -0300, Jason Gunthorpe wrote:
-> > 
-> > On Thu, May 23, 2019 at 02:24:58PM -0400, Jerome Glisse wrote:
-> > > I can not take mmap_sem in range_register, the READ_ONCE is fine and
-> > > they are no race as we do take a reference on the hmm struct thus
-> > 
-> > Of course there are use after free races with a READ_ONCE scheme, I
-> > shouldn't have to explain this.
-> > 
-> > If you cannot take the read mmap sem (why not?), then please use my
-> > version and push the update to the driver through -mm..
+Em Mon,  6 May 2019 18:31:00 +0200
+Andrey Konovalov <andreyknvl@google.com> escreveu:
+
+> This patch is a part of a series that extends arm64 kernel ABI to allow to
+> pass tagged user pointers (with the top byte set to something else other
+> than 0x00) as syscall arguments.
 > 
-> I think it would really help if we queue up these changes in a git tree
-> that can be pulled into the driver trees.  Given that you've been
-> doing so much work to actually make it usable I'd nominate rdma for the
-> "lead" tree.
+> videobuf_dma_contig_user_get() uses provided user pointers for vma
+> lookups, which can only by done with untagged pointers.
+> 
+> Untag the pointers in this function.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Sure, I'm willing to do that. RDMA has experience successfully running
-shared git trees with netdev. It can work very well, but requires
-discipline and understanding of the limitations.
+Acked-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 
-I really want to see the complete HMM solution from Jerome (ie the
-kconfig fixes, arm64, api fixes, etc) in one cohesive view, not
-forced to be sprinkled across multiple kernel releases to work around
-a submission process/coordination problem.
+> ---
+>  drivers/media/v4l2-core/videobuf-dma-contig.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/videobuf-dma-contig.c b/drivers/media/v4l2-core/videobuf-dma-contig.c
+> index e1bf50df4c70..8a1ddd146b17 100644
+> --- a/drivers/media/v4l2-core/videobuf-dma-contig.c
+> +++ b/drivers/media/v4l2-core/videobuf-dma-contig.c
+> @@ -160,6 +160,7 @@ static void videobuf_dma_contig_user_put(struct videobuf_dma_contig_memory *mem)
+>  static int videobuf_dma_contig_user_get(struct videobuf_dma_contig_memory *mem,
+>  					struct videobuf_buffer *vb)
+>  {
+> +	unsigned long untagged_baddr = untagged_addr(vb->baddr);
+>  	struct mm_struct *mm = current->mm;
+>  	struct vm_area_struct *vma;
+>  	unsigned long prev_pfn, this_pfn;
+> @@ -167,22 +168,22 @@ static int videobuf_dma_contig_user_get(struct videobuf_dma_contig_memory *mem,
+>  	unsigned int offset;
+>  	int ret;
+>  
+> -	offset = vb->baddr & ~PAGE_MASK;
+> +	offset = untagged_baddr & ~PAGE_MASK;
+>  	mem->size = PAGE_ALIGN(vb->size + offset);
+>  	ret = -EINVAL;
+>  
+>  	down_read(&mm->mmap_sem);
+>  
+> -	vma = find_vma(mm, vb->baddr);
+> +	vma = find_vma(mm, untagged_baddr);
+>  	if (!vma)
+>  		goto out_up;
+>  
+> -	if ((vb->baddr + mem->size) > vma->vm_end)
+> +	if ((untagged_baddr + mem->size) > vma->vm_end)
+>  		goto out_up;
+>  
+>  	pages_done = 0;
+>  	prev_pfn = 0; /* kill warning */
+> -	user_address = vb->baddr;
+> +	user_address = untagged_baddr;
+>  
+>  	while (pages_done < (mem->size >> PAGE_SHIFT)) {
+>  		ret = follow_pfn(vma, user_address, &this_pfn);
 
-Now that -mm merged the basic hmm API skeleton I think running like
-this would get us quickly to the place we all want: comprehensive in tree
-users of hmm.
 
-Andrew, would this be acceptable to you?
 
-Dave, would you be willing to merge a clean HMM tree into DRM if it is
-required for DRM driver work in 5.3?
-
-I'm fine to merge a tree like this for RDMA, we already do this
-pattern with netdev.
-
-Background: The issue that is motivating this is we want to make
-changes to some of the API's for hmm, which mean changes in existing
-DRM, changes in to-be-accepted RDMA code, and to-be-accepted DRM
-driver code. Coordintating the mm/hmm.c, RDMA and DRM changes is best
-done with the proven shared git tree pattern. As CH explains I would
-run a clean/minimal hmm tree that can be merged into driver trees as
-required, and I will commit to sending a PR to Linus for this tree
-very early in the merge window so that driver PR's are 'clean'.
-
-The tree will only contain uncontroversial hmm related commits, bug
-fixes, etc.
-
-Obviouisly I will also commit to providing review for patches flowing
-through this tree.
-
-Regards,
-Jason
-(rdma subsystem co-maintainer, FWIW)
+Thanks,
+Mauro
