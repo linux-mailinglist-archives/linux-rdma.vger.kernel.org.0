@@ -2,97 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52DD029A26
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 16:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B07229A96
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 17:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403917AbfEXOgw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 10:36:52 -0400
-Received: from mail-ua1-f68.google.com ([209.85.222.68]:40018 "EHLO
-        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403860AbfEXOgw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 10:36:52 -0400
-Received: by mail-ua1-f68.google.com with SMTP id d4so3613037uaj.7
-        for <linux-rdma@vger.kernel.org>; Fri, 24 May 2019 07:36:51 -0700 (PDT)
+        id S2389352AbfEXPHJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 11:07:09 -0400
+Received: from mail-vs1-f66.google.com ([209.85.217.66]:40131 "EHLO
+        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389350AbfEXPHJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 11:07:09 -0400
+Received: by mail-vs1-f66.google.com with SMTP id c24so5991810vsp.7
+        for <linux-rdma@vger.kernel.org>; Fri, 24 May 2019 08:07:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=GHLEPoYZVhV31cok7KrMb+3z0XgL2p9iJ8cXKGhCP18=;
-        b=E/xAAe6YXU9QOMecdpW0NLj4tYVOmUE5cXCSK2GCu8YQ2DQJxh9KpUb9RSJk2uSgHh
-         /KL9+bm9kuEEpQLzTzDb86QjLORjOFUCIDZQkZhDO53Sr/pPe2iOWjT/UriVqMv6J0X+
-         xoxyXbE4laWCEbFThtbH3bgr435xvqqZCnWJsn9P9lZ9EIypiSnhTOOhQPwM3nZdZOLF
-         gV0RUbSemnSX+NLHXTU8193PXMmOWpwPxFI69ut38XuoTTdACIeMyE8MGfs/n0B6jTDp
-         Q6hECGn4f1yu/hdO/Mnzz6lLcbF6uBsNCA2/GGUmYwrcdNyWCqeRKOfOoNupCjorJEwA
-         KJwg==
+        bh=mKemcv8by79IPZnaniy6Y+zcMWw4kiAbtu3LKiVJ/+o=;
+        b=KciMXCAO16tqC+NBh95gtSiSpbmeeRjyjZD0SItB4WkkMi124VSjx2BKbayivCheoy
+         hk/r9yRa6fOcs9NCAvaxYLQw63qvK/hAAQYALUr8Wih5GG3QTV4OwmsGnP+1MptVSv6Y
+         2JCeLahcRGnm6zT7wXV0me5pa0nYX0rZl/bLXwK3CVPL3NTWNuluO1Z8R4JdJRNvONF/
+         mZS7o4WK+WFDuMPT9/qKH0DlpNTT9h/OKeEcqS53UPlZWYwSKyUfA0F87ky4hmDskHjS
+         zR+DozS9X9OtldRd9JvGpoYhtJOEMuhEAoIAd9k4OiBEYGHPHswO0wYxxCB8kbuxebFy
+         3keQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GHLEPoYZVhV31cok7KrMb+3z0XgL2p9iJ8cXKGhCP18=;
-        b=bkUJXy5d0+kJT/lvUsoeEAJb2MX/0sNUyJgEwypytPrzjtO2YnKfj0NAfehP0quUcl
-         ITRkfamFfhUuyiQiMExoFAboAuDMsW7WmfwoC4nr92kC7Bp1z9tdEVpLypGutqZh1MdQ
-         w+72j8Njh8f8wyOnR71lQ9JozYYfLkYOqkvf7qbYqiyK62PrAankrXbgXb1Udu3J8JYy
-         qJuC0VebXzOk9YL9DvO5l+vXFziqTETIvY5t+3RSgW5ayrITSuXKLapSdUpVrBm/8ils
-         +6nRBYmPy6l8O2a9Ag0krlALGLO4PHBVhNgRZnZ/aY22XGVzZ973Y/skD1D9qYDSWhQW
-         ZnRw==
-X-Gm-Message-State: APjAAAXuha34w1pFHVm3FFves+O+L76hoF5B4AMreoCPGEGw3m/sDULh
-        s3xxE/Y6rteL6i6LHZIFjdaAz+SwiUA=
-X-Google-Smtp-Source: APXvYqwALepCgA/Gj9CzqFz7y5GIFjL1yFDhI7VMA1q74UV17dLK6TZiq5cYc+zFoe9mNLWCiM208Q==
-X-Received: by 2002:a9f:3083:: with SMTP id j3mr8771789uab.110.1558708610924;
-        Fri, 24 May 2019 07:36:50 -0700 (PDT)
+        bh=mKemcv8by79IPZnaniy6Y+zcMWw4kiAbtu3LKiVJ/+o=;
+        b=SUhs0WgWzofIGBB+PonQwF3Ir/RfN780b0H5MHrGioa/ZhnH4gQWroxfAIiR0lqTOi
+         Yc6jHnQzlvc0JyQU2UrC6TcgXGBWTRFXqLHa9UVF2iSnxpkqVzATtqhyn5OelvTziTA0
+         +YvVGbSoIRrxXvZsk5VG8BvNGcPn/DMB9ZJq08jOI5sZSFYr4tRd/h/6eJ1ahu3qQM2l
+         GwfqkrYwUM8GpFkSih3/XWJ7EKP2NljbdnyCsTNfEost7loRTKJe9fJKzRZTc/E1C423
+         MOJJHh9X1o3Uzxn+v8auyudqBuVCzNo1IhCcazK4v4Kuz0xARdm8C8CiysoItJuh/nFV
+         a75w==
+X-Gm-Message-State: APjAAAUhmxG1z7/iN3W1WNuzvKT2Mpda+dJM9M9JgfhMoSbK1dJ1CNbN
+        dXLP3cTse5bb2TzDpucecrmSdA==
+X-Google-Smtp-Source: APXvYqwgzHNB6IV3Gc4fyOZV2slSuBkfyyiI7ztAx7xjl0xE4VxNiU6v22F5G9xPq/CiLjBvrNhRgA==
+X-Received: by 2002:a67:fa51:: with SMTP id j17mr12405910vsq.89.1558710428227;
+        Fri, 24 May 2019 08:07:08 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id e19sm1569046vsc.24.2019.05.24.07.36.50
+        by smtp.gmail.com with ESMTPSA id x14sm862986uae.16.2019.05.24.08.07.07
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 May 2019 07:36:50 -0700 (PDT)
+        Fri, 24 May 2019 08:07:07 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hUBJR-0003nG-Pq; Fri, 24 May 2019 11:36:49 -0300
-Date:   Fri, 24 May 2019 11:36:49 -0300
+        id 1hUBml-0007d6-2d; Fri, 24 May 2019 12:07:07 -0300
+Date:   Fri, 24 May 2019 12:07:07 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 00/11] mm/hmm: Various revisions from a locking/code
- review
-Message-ID: <20190524143649.GA14258@ziepe.ca>
-References: <20190523153436.19102-1-jgg@ziepe.ca>
+To:     Gerd Rausch <gerd.rausch@oracle.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Aron Silverton <aron.silverton@oracle.com>,
+        Sharon Liu <sharon.s.liu@oracle.com>,
+        "ZUOYU.TAO" <zuoyu.tao@oracle.com>
+Subject: Re: <infiniband/verbs.h> & ICC
+Message-ID: <20190524150707.GC16845@ziepe.ca>
+References: <54a40ca4-707b-d7a8-16b0-7d475e64f957@oracle.com>
+ <20190524013033.GA13582@mellanox.com>
+ <e9d86a45-a3b0-e303-027b-02474ed3a2ac@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190523153436.19102-1-jgg@ziepe.ca>
+In-Reply-To: <e9d86a45-a3b0-e303-027b-02474ed3a2ac@oracle.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 12:34:25PM -0300, Jason Gunthorpe wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> This patch series arised out of discussions with Jerome when looking at the
-> ODP changes, particularly informed by use after free races we have already
-> found and fixed in the ODP code (thanks to syzkaller) working with mmu
-> notifiers, and the discussion with Ralph on how to resolve the lifetime model.
+On Thu, May 23, 2019 at 11:14:42PM -0700, Gerd Rausch wrote:
 
-So the last big difference with ODP's flow is how 'range->valid'
-works.
+> I can't say that I'm thrilled with this behavior though,
+> as it appears error-prone:
+> As soon as an enum value goes out of range for an "int", the
+> type silently changes, potentially rendering structures and functions silently incompatible.
+> It's quite the pitfall (e.g. the foo.c vs bar.c case above).
 
-In ODP this was done using the rwsem umem->umem_rwsem which is
-obtained for read in invalidate_start and released in invalidate_end.
+Indeed, I would be very careful using this extension with
+non-anonymous enums :)
 
-Then any other threads that wish to only work on a umem which is not
-undergoing invalidation will obtain the write side of the lock, and
-within that lock's critical section the virtual address range is known
-to not be invalidating.
+However, an anonymous enum can never have storage allocated, so it
+doesn't experience any ABI concern.
 
-I cannot understand how hmm gets to the same approach. It has
-range->valid, but it is not locked by anything that I can see, so when
-we test it in places like hmm_range_fault it seems useless..
-
-Jerome, how does this work?
-
-I have a feeling we should copy the approach from ODP and use an
-actual lock here.
+It is a good and very useful extension, it is unfortuntate that C11
+did not standardize it. (C++11 did though)
 
 Jason
