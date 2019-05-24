@@ -2,182 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A9428EC6
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 03:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCBD28ED1
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 03:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731632AbfEXBXY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 May 2019 21:23:24 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:46579 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726769AbfEXBXY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 May 2019 21:23:24 -0400
-Received: by mail-qt1-f193.google.com with SMTP id z19so6251812qtz.13
-        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 18:23:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ob1haUFm9FIqRuYLZIZ42lM0yuIKUzBg3HV4kFfNrOY=;
-        b=KLYYYyhfR7qLmYFT7PD/6mbnTSqoa5EKCxrWbEJljTnUQGQzjmXq0/IE4iv/pV5tD+
-         kV90GBjIM2Ex+gNXJsl8+DLghIGsZp0eyO36a7M9uJCwTwz1EDXCTwLzXHv2jqHbWs3b
-         mxaFuu0KU/naSa1V4DBVXwbnqPaUZQ9eZb9qTQ9SUqxg1Pd1X6YWj4JNmyLmctFvLjcB
-         jOt27076LQFHlY//bHsfmB5Qj7Z20kguVEUwen4NQ6Uxxq10xnVB7JoVwramPLyEO6IZ
-         Nu7979o6iWuxKxSllKta16tysjzPYGoaCQsSw0iPpivVUHu3cOXoo2x3QIlb+DkG4KwQ
-         Uy+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ob1haUFm9FIqRuYLZIZ42lM0yuIKUzBg3HV4kFfNrOY=;
-        b=r31IiE8w42tUZmy0UGgBFeGhGXPf9qn4Y+za/XNaJkF8sPLU8xuZCcxvyizkh8V4pw
-         3HG4hBXZZ7Rai76Lhkj2LdTh5Nk9gIQ5xllR4qiYgITxdqWLD78alU+hzKZ+Z9doTyVE
-         aW/JMRtngRpAHwHuLH6YvSWPHQm+ORRluSXk/gmEzU2ET+/gTqGOK0oSEn8MVh8b1RzQ
-         H9+VqEaDKsNrMWezQulO0z8v797Rm4D3wsU1e7Ig+WfVaoLaiK8eX4P8D8Z5PaTvJ3V3
-         FGE8DDR7H5pii9M2VIpDIwzzMlTY7V2ysUr/bwSp1YDDSNNZcb2twTaG7TvcOABWHRLe
-         xbfw==
-X-Gm-Message-State: APjAAAUOXLTkHzDO6lDx5sdpajGuc3qylzyFs+IRQ/PjjvEPM6U2bR3a
-        VZoULs1QQO6d0o5Sn81RVZbkkg==
-X-Google-Smtp-Source: APXvYqwsxMpcSzONxYLiLCOcNY8OkbIwVOP7XkNW4vjUWReqycLJjAvzE6AKOyHvlwsEdD3dsyM4VA==
-X-Received: by 2002:ac8:2bb3:: with SMTP id m48mr30921288qtm.218.1558661002696;
-        Thu, 23 May 2019 18:23:22 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id d23sm821597qta.26.2019.05.23.18.23.21
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 May 2019 18:23:21 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hTyvY-0003c5-PL; Thu, 23 May 2019 22:23:20 -0300
-Date:   Thu, 23 May 2019 22:23:20 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 04/11] mm/hmm: Simplify hmm_get_or_create and make it
- reliable
-Message-ID: <20190524012320.GA13614@ziepe.ca>
-References: <20190523153436.19102-1-jgg@ziepe.ca>
- <20190523153436.19102-5-jgg@ziepe.ca>
- <6945b6c9-338a-54e6-64df-2590d536910a@nvidia.com>
+        id S2388141AbfEXBao (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 May 2019 21:30:44 -0400
+Received: from mail-eopbgr140081.outbound.protection.outlook.com ([40.107.14.81]:56128
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387626AbfEXBan (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 May 2019 21:30:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VzdJV1RMXq4MW/uvxB9vlO3piV3Xs8vmDbD0B/J6Kzc=;
+ b=EjrhpzPd9yMG8/M6fCfaFuYDi+VCbb+v3XrbBEiD/C5OboJYyeUBjLAH93ukUVFvDKo2Llu9re06Ky7dljZPXlQPKlwedS3KrfaPv2PrfJch+dBmDwjvGs/k20FWkuZFMaHUgSvLA6nMkTQA6mFjL4TiqAUOc9eYEWxyx/sHCUI=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB4671.eurprd05.prod.outlook.com (20.176.3.156) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.15; Fri, 24 May 2019 01:30:39 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1922.018; Fri, 24 May 2019
+ 01:30:39 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Gerd Rausch <gerd.rausch@oracle.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Aron Silverton <aron.silverton@oracle.com>,
+        Sharon Liu <sharon.s.liu@oracle.com>
+Subject: Re: <infiniband/verbs.h> & ICC
+Thread-Topic: <infiniband/verbs.h> & ICC
+Thread-Index: AQHVEbrqTWFNmJy0s0Wb8HoOeUZS36Z5fRmA
+Date:   Fri, 24 May 2019 01:30:39 +0000
+Message-ID: <20190524013033.GA13582@mellanox.com>
+References: <54a40ca4-707b-d7a8-16b0-7d475e64f957@oracle.com>
+In-Reply-To: <54a40ca4-707b-d7a8-16b0-7d475e64f957@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR16CA0007.namprd16.prod.outlook.com
+ (2603:10b6:208:134::20) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.49.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8a248778-6fe1-4bbd-1b56-08d6dfe76d6b
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4671;
+x-ms-traffictypediagnostic: VI1PR05MB4671:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <VI1PR05MB46712DCF45CE4093088ABDEBCF020@VI1PR05MB4671.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0047BC5ADE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(376002)(39860400002)(136003)(366004)(396003)(199004)(189003)(76176011)(52116002)(7736002)(36756003)(316002)(53936002)(305945005)(6486002)(71200400001)(68736007)(71190400001)(73956011)(6916009)(6506007)(3846002)(6116002)(8676002)(6246003)(26005)(54906003)(186003)(386003)(4326008)(8936002)(99286004)(5660300002)(102836004)(2906002)(1076003)(81166006)(81156014)(486006)(446003)(25786009)(11346002)(2616005)(478600001)(476003)(14454004)(86362001)(966005)(33656002)(6512007)(6306002)(6436002)(66946007)(66476007)(66446008)(64756008)(66556008)(14444005)(256004)(66066001)(229853002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4671;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: vXlNSnntuWx7MUXlFCJz2r6IdSVxf3qGLmzGquTwwW3LrTBElNZbhojgP+DsOxEXtRxKGvy1Q7qrDwDRZN/0RWs5pdh2J+fGupXY2W4Zg/pqOvQg7IwR+WNp6Hp0rnxhnndJWEw2lC5V78TJSwWtZfYyGfIo3YiUYL5eepRaAxvmAybSRbwEeG7s3ThsvZ4/mIujsU1XbjVb6Cj6scJ3DcP6F9ZNzGFEpDlLdTDQ4xS7u+Wpl/PNdryhXSNoCri7BiErdE5zEEIflAkH88Xdfq8kT2ehnS28cA9YJJBA3ZvcBxE1jK05ZVkTtngafDM5NjXOaz+0Gv1iLl9v+efKLfdZM9kuq6GkQya4eeUwDGTQGWJohusvQdCMSNQ4hBA59kMlouqY6xa8xriU/KNMX995qfCZOzo1aGl0Vm219kc=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <8224327EF2CCD142900DFC95E53D612D@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6945b6c9-338a-54e6-64df-2590d536910a@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a248778-6fe1-4bbd-1b56-08d6dfe76d6b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 May 2019 01:30:39.6103
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4671
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 04:38:28PM -0700, Ralph Campbell wrote:
-> 
-> On 5/23/19 8:34 AM, Jason Gunthorpe wrote:
-> > From: Jason Gunthorpe <jgg@mellanox.com>
-> > 
-> > As coded this function can false-fail in various racy situations. Make it
-> > reliable by running only under the write side of the mmap_sem and avoiding
-> > the false-failing compare/exchange pattern.
-> > 
-> > Also make the locking very easy to understand by only ever reading or
-> > writing mm->hmm while holding the write side of the mmap_sem.
-> > 
-> > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> >   mm/hmm.c | 75 ++++++++++++++++++++------------------------------------
-> >   1 file changed, 27 insertions(+), 48 deletions(-)
-> > 
-> > diff --git a/mm/hmm.c b/mm/hmm.c
-> > index e27058e92508b9..ec54be54d81135 100644
-> > +++ b/mm/hmm.c
-> > @@ -40,16 +40,6 @@
-> >   #if IS_ENABLED(CONFIG_HMM_MIRROR)
-> >   static const struct mmu_notifier_ops hmm_mmu_notifier_ops;
-> > -static inline struct hmm *mm_get_hmm(struct mm_struct *mm)
-> > -{
-> > -	struct hmm *hmm = READ_ONCE(mm->hmm);
-> > -
-> > -	if (hmm && kref_get_unless_zero(&hmm->kref))
-> > -		return hmm;
-> > -
-> > -	return NULL;
-> > -}
-> > -
-> >   /**
-> >    * hmm_get_or_create - register HMM against an mm (HMM internal)
-> >    *
-> > @@ -64,11 +54,20 @@ static inline struct hmm *mm_get_hmm(struct mm_struct *mm)
-> >    */
-> >   static struct hmm *hmm_get_or_create(struct mm_struct *mm)
-> >   {
-> > -	struct hmm *hmm = mm_get_hmm(mm);
-> > -	bool cleanup = false;
-> > +	struct hmm *hmm;
-> > -	if (hmm)
-> > -		return hmm;
-> > +	lockdep_assert_held_exclusive(mm->mmap_sem);
-> > +
-> > +	if (mm->hmm) {
-> > +		if (kref_get_unless_zero(&mm->hmm->kref))
-> > +			return mm->hmm;
-> > +		/*
-> > +		 * The hmm is being freed by some other CPU and is pending a
-> > +		 * RCU grace period, but this CPU can NULL now it since we
-> > +		 * have the mmap_sem.
-> > +		 */
-> > +		mm->hmm = NULL;
-> 
-> Shouldn't there be a "return NULL;" here so it doesn't fall through and
-> allocate a struct hmm below?
+On Thu, May 23, 2019 at 03:57:29PM -0700, Gerd Rausch wrote:
+> Hi Jason,
+>=20
+> Trying to compile <infiniband/verbs.h> with ICC (Intel's C/C++ Compiler)
+> leads to the following error:
+>=20
+> error: enumeration value is out of "int" range
+>          IBV_RX_HASH_INNER =3D (1UL << 31),
 
-No, this function should only return NULL on memory allocation
-failure.
+I assume you are running with some higher warning flags and -Werror?
+gcc will not emit this warning without -Wpedantic
 
-In this case another thread is busy freeing the hmm but wasn't able to
-update mm->hmm to null due to a locking constraint. So we make it null
-on behalf of the other thread and allocate a fresh new hmm that is
-valid. The freeing thread will complete the free and do nothing with
-mm->hmm.
+Also, I think icc is broken to emit these kinds of pedantic warnings
+on a system header, gcc does not do that.
 
-> >   static void hmm_fee_rcu(struct rcu_head *rcu)
-> 
-> I see Jerome already saw and named this hmm_free_rcu()
-> which I agree with.
+> IMO, ICC is correct here, because according to ISO-C99:
+> 6.4.4.3  Enumeration constants
+>  Semantics
+>   identifier declared as an enumeration constant has type int
 
-I do love my typos :)
+Sure
 
-> >   {
-> > +	struct hmm *hmm = container_of(rcu, struct hmm, rcu);
-> > +
-> > +	down_write(&hmm->mm->mmap_sem);
-> > +	if (hmm->mm->hmm == hmm)
-> > +		hmm->mm->hmm = NULL;
-> > +	up_write(&hmm->mm->mmap_sem);
-> > +	mmdrop(hmm->mm);
-> > +
-> >   	kfree(container_of(rcu, struct hmm, rcu));
-> >   }
-> >   static void hmm_free(struct kref *kref)
-> >   {
-> >   	struct hmm *hmm = container_of(kref, struct hmm, kref);
-> > -	struct mm_struct *mm = hmm->mm;
-> > -
-> > -	mmu_notifier_unregister_no_release(&hmm->mmu_notifier, mm);
-> > -	spin_lock(&mm->page_table_lock);
-> > -	if (mm->hmm == hmm)
-> > -		mm->hmm = NULL;
-> > -	spin_unlock(&mm->page_table_lock);
-> > -
-> > -	mmdrop(hmm->mm);
-> > +	mmu_notifier_unregister_no_release(&hmm->mmu_notifier, hmm->mm);
-> >   	mmu_notifier_call_srcu(&hmm->rcu, hmm_fee_rcu);
-> >   }
-> > 
-> 
-> This email message is for the sole use of the intended recipient(s) and may contain
-> confidential information.  Any unauthorized review, use, disclosure or distribution
-> is prohibited.  If you are not the intended recipient, please contact the sender by
-> reply email and destroy all copies of the original message.
+> Since "int" is signed, it can't hold the unsigned value of 1UL<<31
+> on target platforms with sizeof(int) <=3D 4.
 
-Ah, you should not send this trailer to the public mailing lists.
+Pedentically yes, but gcc and any compiler that can compile on linux
+supports an extension where the underlying type of an enum constant is
+automatically increased until it can hold the value of the
+constant. In this case the constant is type promoted to long,
+IIRC.
 
-Thanks,
+See my past writing on this topic:
+
+https://www.spinics.net/lists/linux-rdma/msg36828.html
+
+FOO_VALUE2 automatically has the type of long because it cannot be
+represented by an int.
+
+> (In other words: that would be the sign-bit on two's complement machines)=
+.
+
+No, either the compiler supports the extension or it should refuse to
+compile the code.
+
+> Can you shed some light on whether or not verbs.h is supposed
+> to compile with ICC (i.e. if it's supported), and what the level
+> of appetite is to make this work?
+
+Generally we use many gcc extensions in verbs headers and expect the
+compiler to support them, this is just one of many. So I'm not
+particularly thrilled to have to support weird compilers. Particularly
+if the compilers just need to use the right option flags.
+=20
+> It's trivial to fix this, but there's benefit in making this part
+> of a regression test suite (e.g. Travis).
+
+Can you clarify if icc is being run in some wonky mode that is causing
+this warning? AFAIK icc will compile the linux kernel, and the kernel
+makes extensive use of this extension. So I think the compiler is not
+configured properly.
+
+IIRC I looked at this once for -Wpedantic support and decided it was a
+lot of work as there are more cases than just this.
+
 Jason
