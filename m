@@ -2,101 +2,213 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C81E729E19
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 20:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE50929E4D
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 20:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732161AbfEXSdZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 14:33:25 -0400
-Received: from mail-vs1-f68.google.com ([209.85.217.68]:35185 "EHLO
-        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732166AbfEXSdZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 14:33:25 -0400
-Received: by mail-vs1-f68.google.com with SMTP id q13so6495359vso.2
-        for <linux-rdma@vger.kernel.org>; Fri, 24 May 2019 11:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=T7oP6aiiwGSSJ1sv66niJcd7PA24SVMZ9uM8zYabpcw=;
-        b=F/Jsq9Mp7qkohtxwkf8Tki9kIIGVnAegq0OjfsmHhwueqIcU/eC1NBMQPv44mPL/0j
-         17P8RLkEoDYpV4bEwr2IgB1dLBWGfg7w4PMLwDGXpJCaFU2B6zsAtNCQ1Kce983b2cif
-         tYFq7rxCyhW5bZgQcXkfieBP2Peh17cu3Ka9QtNysPEFUrCVkDpMOcTzbMqug61FfhcS
-         mdvCTNL3tqexEq5cUPhKVEeW229/Kn5aF09HIpV2L04jPhbV8lAe2c7Z/eTaIql1LqBa
-         tJGXAPj1PewiVVIx8UZETeK2FI7LYS2Hg0jqxHDCKjIDrR73REs9xrCaUnKQSd6mlsee
-         fnHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=T7oP6aiiwGSSJ1sv66niJcd7PA24SVMZ9uM8zYabpcw=;
-        b=awkRXibw7A/DFHk1GoQro2nLHIPoe009LqYYc01G2yMDp5E7Dhl+okC/s/d/n0r342
-         0GrBv3Gcz+YD5n8C7BUY+AhbVuBqnROiWSCWxO4Db8dVqryyDNZ0u2QL1I457ELt6ISG
-         hEr3UH0Cd3RChyd7ZAF9LrftaYhm0Od2uKmrVWWK3CGjxd0pGQREE9LJau+D9NFvco8P
-         iejVthj9N4FK9yN7kTDQh9g86fjNOJm66cyUt1uBUYmDDab/dekXePn5ScvGxpoKh/Ul
-         r8LOYUqPtuhyKqWk28afAhO7oHxlXAUflXWEkYvOpuT6zPExws+W+GWA0+tQoOQvYJdk
-         m7EQ==
-X-Gm-Message-State: APjAAAU3g8OacK9s+TDEHjAYhMXwBnqrKTVNd8L7aSTSnPUWWPHh+eH3
-        C5h3AGIzQUwiMwG5Ggjc0kA7ww==
-X-Google-Smtp-Source: APXvYqwc1q/Jw79h+DIQO8cCg97QMBpdu6Oi012i5nG+CMXC+bDLOoKiCbl3UWSrVv25fkPdR4t3Uw==
-X-Received: by 2002:a67:fd93:: with SMTP id k19mr40032114vsq.45.1558722804212;
-        Fri, 24 May 2019 11:33:24 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id c71sm1424296vke.19.2019.05.24.11.33.23
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 May 2019 11:33:23 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hUF0N-0001KF-C8; Fri, 24 May 2019 15:33:23 -0300
-Date:   Fri, 24 May 2019 15:33:23 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gerd Rausch <gerd.rausch@oracle.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Aron Silverton <aron.silverton@oracle.com>,
-        Sharon Liu <sharon.s.liu@oracle.com>,
-        "ZUOYU.TAO" <zuoyu.tao@oracle.com>
-Subject: Re: <infiniband/verbs.h> & ICC
-Message-ID: <20190524183323.GJ16845@ziepe.ca>
-References: <54a40ca4-707b-d7a8-16b0-7d475e64f957@oracle.com>
- <20190524013033.GA13582@mellanox.com>
- <e9d86a45-a3b0-e303-027b-02474ed3a2ac@oracle.com>
- <20190524150707.GC16845@ziepe.ca>
- <2b1565e9-b262-e31d-cfec-6ca1da189090@oracle.com>
+        id S2391455AbfEXSqT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 14:46:19 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:50570 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391184AbfEXSqS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 24 May 2019 14:46:18 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 1D28230821B3;
+        Fri, 24 May 2019 18:46:13 +0000 (UTC)
+Received: from redhat.com (ovpn-120-223.rdu2.redhat.com [10.10.120.223])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 049F11001E6F;
+        Fri, 24 May 2019 18:46:10 +0000 (UTC)
+Date:   Fri, 24 May 2019 14:46:08 -0400
+From:   Jerome Glisse <jglisse@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [RFC PATCH 00/11] mm/hmm: Various revisions from a locking/code
+ review
+Message-ID: <20190524184608.GE3346@redhat.com>
+References: <20190523153436.19102-1-jgg@ziepe.ca>
+ <20190524143649.GA14258@ziepe.ca>
+ <20190524164902.GA3346@redhat.com>
+ <20190524165931.GF16845@ziepe.ca>
+ <20190524170148.GB3346@redhat.com>
+ <20190524175203.GG16845@ziepe.ca>
+ <20190524180321.GD3346@redhat.com>
+ <20190524183225.GI16845@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <2b1565e9-b262-e31d-cfec-6ca1da189090@oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190524183225.GI16845@ziepe.ca>
+User-Agent: Mutt/1.11.4 (2019-03-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Fri, 24 May 2019 18:46:18 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 24, 2019 at 11:20:48AM -0700, Gerd Rausch wrote:
-> Hi Jason,
+On Fri, May 24, 2019 at 03:32:25PM -0300, Jason Gunthorpe wrote:
+> On Fri, May 24, 2019 at 02:03:22PM -0400, Jerome Glisse wrote:
+> > On Fri, May 24, 2019 at 02:52:03PM -0300, Jason Gunthorpe wrote:
+> > > On Fri, May 24, 2019 at 01:01:49PM -0400, Jerome Glisse wrote:
+> > > > On Fri, May 24, 2019 at 01:59:31PM -0300, Jason Gunthorpe wrote:
+> > > > > On Fri, May 24, 2019 at 12:49:02PM -0400, Jerome Glisse wrote:
+> > > > > > On Fri, May 24, 2019 at 11:36:49AM -0300, Jason Gunthorpe wrote:
+> > > > > > > On Thu, May 23, 2019 at 12:34:25PM -0300, Jason Gunthorpe wrote:
+> > > > > > > > From: Jason Gunthorpe <jgg@mellanox.com>
+> > > > > > > > 
+> > > > > > > > This patch series arised out of discussions with Jerome when looking at the
+> > > > > > > > ODP changes, particularly informed by use after free races we have already
+> > > > > > > > found and fixed in the ODP code (thanks to syzkaller) working with mmu
+> > > > > > > > notifiers, and the discussion with Ralph on how to resolve the lifetime model.
+> > > > > > > 
+> > > > > > > So the last big difference with ODP's flow is how 'range->valid'
+> > > > > > > works.
+> > > > > > > 
+> > > > > > > In ODP this was done using the rwsem umem->umem_rwsem which is
+> > > > > > > obtained for read in invalidate_start and released in invalidate_end.
+> > > > > > > 
+> > > > > > > Then any other threads that wish to only work on a umem which is not
+> > > > > > > undergoing invalidation will obtain the write side of the lock, and
+> > > > > > > within that lock's critical section the virtual address range is known
+> > > > > > > to not be invalidating.
+> > > > > > > 
+> > > > > > > I cannot understand how hmm gets to the same approach. It has
+> > > > > > > range->valid, but it is not locked by anything that I can see, so when
+> > > > > > > we test it in places like hmm_range_fault it seems useless..
+> > > > > > > 
+> > > > > > > Jerome, how does this work?
+> > > > > > > 
+> > > > > > > I have a feeling we should copy the approach from ODP and use an
+> > > > > > > actual lock here.
+> > > > > > 
+> > > > > > range->valid is use as bail early if invalidation is happening in
+> > > > > > hmm_range_fault() to avoid doing useless work. The synchronization
+> > > > > > is explained in the documentation:
+> > > > > 
+> > > > > That just says the hmm APIs handle locking. I asked how the apis
+> > > > > implement that locking internally.
+> > > > > 
+> > > > > Are you trying to say that if I do this, hmm will still work completely
+> > > > > correctly?
+> > > > 
+> > > > Yes it will keep working correctly. You would just be doing potentialy
+> > > > useless work.
+> > > 
+> > > I don't see how it works correctly.
+> > > 
+> > > Apply the comment out patch I showed and this trivially happens:
+> > > 
+> > >       CPU0                                               CPU1
+> > >   hmm_invalidate_start()
+> > >     ops->sync_cpu_device_pagetables()
+> > >       device_lock()
+> > >        // Wipe out page tables in device, enable faulting
+> > >       device_unlock()
+> > > 
+> > >                                                        DEVICE PAGE FAULT
+> > >                                                        device_lock()
+> > >                                                        hmm_range_register()
+> > >                                                        hmm_range_dma_map()
+> > >                                                        device_unlock()
+> > >   hmm_invalidate_end()
+> > 
+> > No in the above scenario hmm_range_register() will not mark the range
+> > as valid thus the driver will bailout after taking its lock and checking
+> > the range->valid value.
 > 
-> On 24/05/2019 08.07, Jason Gunthorpe wrote:
-> > On Thu, May 23, 2019 at 11:14:42PM -0700, Gerd Rausch wrote:
-> > 
-> >> I can't say that I'm thrilled with this behavior though,
-> >> as it appears error-prone:
-> >> As soon as an enum value goes out of range for an "int", the
-> >> type silently changes, potentially rendering structures and functions silently incompatible.
-> >> It's quite the pitfall (e.g. the foo.c vs bar.c case above).
-> > 
-> > Indeed, I would be very careful using this extension with
-> > non-anonymous enums :)
-> > 
-> > However, an anonymous enum can never have storage allocated, so it
-> > doesn't experience any ABI concern.
-> > 
-> 
-> Sure it can:
-> 
-> % cat foo.c
-> struct foo {
-> 	enum { FOO = 1UL << 31 } foo;
-> } foo = { FOO };
+> I see your confusion, I only asked about removing valid from hmm.c,
+> not the unlocked use of valid in your hmm.rst example. My mistake,
+> sorry for being unclear.
 
-I meant top level anonymous enums :)
+No i did understand properly and it is fine to remove all the valid
+check within hmm_range_fault() or hmm_range_snapshot() nothing bad
+will come out of that.
 
-Jason
+> 
+> Here is the big 3 CPU ladder diagram that shows how 'valid' does not
+> work:
+> 
+>        CPU0                                               CPU1                                          CPU2
+>                                                         DEVICE PAGE FAULT
+>                                                         range = hmm_range_register()
+>
+>   // Overlaps with range
+>   hmm_invalidate_start()
+>     range->valid = false
+>     ops->sync_cpu_device_pagetables()
+>       take_lock(driver->update);
+>        // Wipe out page tables in device, enable faulting
+>       release_lock(driver->update);
+>                                                                                                    // Does not overlap with range
+>                                                                                                    hmm_invalidate_start()
+>                                                                                                    hmm_invalidate_end()
+>                                                                                                        list_for_each
+>                                                                                                            range->valid =  true
+
+                                                                                                             ^
+No this can not happen because CPU0 still has invalidate_range in progress and
+thus hmm->notifiers > 0 so the hmm_invalidate_range_end() will not set the
+range->valid as true.
+
+>
+>
+>                                                        device_lock()
+>                                                        // Note range->valid = true now
+>                                                        hmm_range_snapshot(&range);
+>                                                        take_lock(driver->update);
+>                                                        if (!hmm_range_valid(&range))
+>                                                            goto again
+>                                                        ESTABLISHE SPTES
+>                                                        device_unlock()
+>   hmm_invalidate_end()
+> 
+> 
+> And I can make this more complicated (ie overlapping parallel
+> invalidates, etc) and show any 'bool' valid cannot work.
+
+It does work. If you want i can remove the range->valid = true from the
+hmm_invalidate_range_end() and move it within hmm_range_wait_until_valid()
+ie modifying the hmm_range_wait_until_valid() logic, this might look
+cleaner.
+
+> > > The mmu notifier spec says:
+> > > 
+> > >  	 * Invalidation of multiple concurrent ranges may be
+> > > 	 * optionally permitted by the driver. Either way the
+> > > 	 * establishment of sptes is forbidden in the range passed to
+> > > 	 * invalidate_range_begin/end for the whole duration of the
+> > > 	 * invalidate_range_begin/end critical section.
+> > > 
+> > > And I understand "establishment of sptes is forbidden" means
+> > > "hmm_range_dmap_map() must fail with EAGAIN". 
+> > 
+> > No it means that secondary page table entry (SPTE) must not
+> > materialize thus what hmm_range_dmap_map() is doing if fine and safe
+> > as long as the driver do not use the result to populate the device
+> > page table if there was an invalidation for the range.
+> 
+> Okay, so we agree, if there is an invalidate_start/end critical region
+> then it is OK to *call* hmm_range_dmap_map(), however the driver must
+> not *use* the result, and you are expecting this bit:
+> 
+>       take_lock(driver->update);
+>       if (!hmm_range_valid(&range)) {
+>          goto again
+> 
+> In your hmm.rst to prevent the pfns from being used by the driver?
+> 
+> I think the above ladder shows that hmm_range_valid can return true
+> during a invalidate_start/end critical region, so this is a problem.
+>
+> I still think the best solution is to move device_lock() into mirror
+> and have hmm manage it for the driver as ODP does. It is certainly the
+> simplest solution to understand.
+
+It is un-efficient and would block further than needed forward progress
+by mm code.
+
+Cheers,
+Jérôme
