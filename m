@@ -2,168 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5973B29C24
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 18:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E5429C52
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 18:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390346AbfEXQ1P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 12:27:15 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:33694 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389588AbfEXQ1P (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 12:27:15 -0400
-Received: by mail-ed1-f67.google.com with SMTP id n17so15201187edb.0
-        for <linux-rdma@vger.kernel.org>; Fri, 24 May 2019 09:27:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=sender:date:from:to:cc:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5uGnJY6+WIJldncn5/DuJlJfSiMsN3sDHc0cFO6evKw=;
-        b=eGczKoO2oK1LxqRDUeq+D7nDJHBIb4XMUraNpLr4yOcOAsFgoTd33a5I2wq/sPLj5m
-         cv4CL9Pysa7bfIL+Jn+vSSY2Z0bldZYmz/9YA39+pTt/iA6nk2Z39gXEHUQfsENbPGDq
-         9COrk8k8zvaBOZH4FfeULv1UGUcPpYkvd+miQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=5uGnJY6+WIJldncn5/DuJlJfSiMsN3sDHc0cFO6evKw=;
-        b=sLb/Hej9c5ljXiZzmlrPfXmMjVSXqfUZWdOyB3A60BPpBnMOxRhJe6oJAxj5Lhb/9q
-         Q2MDK1m+QfaugbL1+Pwuzr5bvSegZpMsHRyFVHZvrG51FZTOXGUh6/KznUZe0j/YFVEZ
-         cTAoMlPlQxWEyM2EhA55pphp0hHRbgQYeu48lJCfWbOMxqnJfIgo+/A1X4t2acrcNXVu
-         bd6jDH7Tl+tOadjaQbYgMpviMYDF51NSniIWoK4s7X3U7QbHl2zqDAixYk7BlBdQXcA3
-         csJYa9jXQws6K88zuEaaYrM8cmrwNua7u2c4hgR37PnycFgsvgMosYn2CcTcOu/p7Iup
-         QfIQ==
-X-Gm-Message-State: APjAAAVm5kyP/KevBAFsHxDjAxVV7rNIewGJh7m69SFZ7tyofTlAQTLe
-        NO3kJrJf7LzhfU35/23OtnRTqw==
-X-Google-Smtp-Source: APXvYqz+Z4CiuIPAkdi1mB6lLRW1WTeonKTLCscAeQw4ulK7kt9ebJAos6eSJA0Dpqv9o1VxaTHnkw==
-X-Received: by 2002:a17:906:6a02:: with SMTP id o2mr57101777ejr.164.1558715233065;
-        Fri, 24 May 2019 09:27:13 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
-        by smtp.gmail.com with ESMTPSA id m16sm418816ejj.57.2019.05.24.09.27.11
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 May 2019 09:27:12 -0700 (PDT)
-Date:   Fri, 24 May 2019 18:27:09 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
-        Dave Airlie <airlied@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jerome Glisse <jglisse@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Leon Romanovsky <leonro@mellanox.com>,
+        id S2390314AbfEXQax (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 12:30:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42190 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390021AbfEXQax (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 24 May 2019 12:30:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 93715AF68;
+        Fri, 24 May 2019 16:30:50 +0000 (UTC)
+Subject: Re: [RFC][PATCH] kernel.h: Add generic roundup_64() macro
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Roger Willcocks <roger@filmlight.ltd.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        linux-mm@kvack.org, dri-devel <dri-devel@lists.freedesktop.org>
-Subject: Re: RFC: Run a dedicated hmm.git for 5.3
-Message-ID: <20190524162709.GD21222@phenom.ffwll.local>
-Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
-        Dave Airlie <airlied@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jerome Glisse <jglisse@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        linux-mm@kvack.org, dri-devel <dri-devel@lists.freedesktop.org>
-References: <20190523150432.GA5104@redhat.com>
- <20190523154149.GB12159@ziepe.ca>
- <20190523155207.GC5104@redhat.com>
- <20190523163429.GC12159@ziepe.ca>
- <20190523173302.GD5104@redhat.com>
- <20190523175546.GE12159@ziepe.ca>
- <20190523182458.GA3571@redhat.com>
- <20190523191038.GG12159@ziepe.ca>
- <20190524064051.GA28855@infradead.org>
- <20190524124455.GB16845@ziepe.ca>
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        nouveau@lists.freedesktop.org,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20190523100013.52a8d2a6@gandalf.local.home>
+ <CAHk-=wg5HqJ2Kfgpub+tCWQ2_FiFwEW9H1Rm+an-BLGaGvDDXw@mail.gmail.com>
+ <20190523112740.7167aba4@gandalf.local.home>
+ <e4e875f0-2aa5-89f4-f462-78bedb9c5cde@filmlight.ltd.uk>
+ <20190524112656.5ef67c6c@gandalf.local.home>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <bd4a85fc-dc56-aae0-4986-003ad4a11ef4@suse.com>
+Date:   Fri, 24 May 2019 19:30:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190524124455.GB16845@ziepe.ca>
-X-Operating-System: Linux phenom 4.14.0-3-amd64 
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190524112656.5ef67c6c@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 24, 2019 at 09:44:55AM -0300, Jason Gunthorpe wrote:
-> On Thu, May 23, 2019 at 11:40:51PM -0700, Christoph Hellwig wrote:
-> > On Thu, May 23, 2019 at 04:10:38PM -0300, Jason Gunthorpe wrote:
-> > > 
-> > > On Thu, May 23, 2019 at 02:24:58PM -0400, Jerome Glisse wrote:
-> > > > I can not take mmap_sem in range_register, the READ_ONCE is fine and
-> > > > they are no race as we do take a reference on the hmm struct thus
-> > > 
-> > > Of course there are use after free races with a READ_ONCE scheme, I
-> > > shouldn't have to explain this.
-> > > 
-> > > If you cannot take the read mmap sem (why not?), then please use my
-> > > version and push the update to the driver through -mm..
-> > 
-> > I think it would really help if we queue up these changes in a git tree
-> > that can be pulled into the driver trees.  Given that you've been
-> > doing so much work to actually make it usable I'd nominate rdma for the
-> > "lead" tree.
-> 
-> Sure, I'm willing to do that. RDMA has experience successfully running
-> shared git trees with netdev. It can work very well, but requires
-> discipline and understanding of the limitations.
-> 
-> I really want to see the complete HMM solution from Jerome (ie the
-> kconfig fixes, arm64, api fixes, etc) in one cohesive view, not
-> forced to be sprinkled across multiple kernel releases to work around
-> a submission process/coordination problem.
-> 
-> Now that -mm merged the basic hmm API skeleton I think running like
-> this would get us quickly to the place we all want: comprehensive in tree
-> users of hmm.
-> 
-> Andrew, would this be acceptable to you?
-> 
-> Dave, would you be willing to merge a clean HMM tree into DRM if it is
-> required for DRM driver work in 5.3?
-> 
-> I'm fine to merge a tree like this for RDMA, we already do this
-> pattern with netdev.
-> 
-> Background: The issue that is motivating this is we want to make
-> changes to some of the API's for hmm, which mean changes in existing
-> DRM, changes in to-be-accepted RDMA code, and to-be-accepted DRM
-> driver code. Coordintating the mm/hmm.c, RDMA and DRM changes is best
-> done with the proven shared git tree pattern. As CH explains I would
-> run a clean/minimal hmm tree that can be merged into driver trees as
-> required, and I will commit to sending a PR to Linus for this tree
-> very early in the merge window so that driver PR's are 'clean'.
-> 
-> The tree will only contain uncontroversial hmm related commits, bug
-> fixes, etc.
-> 
-> Obviouisly I will also commit to providing review for patches flowing
-> through this tree.
 
-Sure topic branch sounds fine, we do that all the time with various
-subsystems all over. We have ready made scripts for topic branches and
-applying pulls from all over, so we can even soak test everything in our
-integration tree. In case there's conflicts or just to make sure
-everything works, before we bake the topic branch into permanent history
-(the main drm.git repo just can't be rebased, too much going on and too
-many people involvd).
 
-If Jerome is ok with wrestling with our scripting we could even pull these
-updates in while the hmm.git tree is evolving.
+On 24.05.19 г. 18:26 ч., Steven Rostedt wrote:
+> On Fri, 24 May 2019 16:11:14 +0100
+> Roger Willcocks <roger@filmlight.ltd.uk> wrote:
+> 
+>> On 23/05/2019 16:27, Steven Rostedt wrote:
+>>>
+>>> I haven't yet tested this, but what about something like the following:
+>>>
+>>> ...perhaps forget about the constant check, and just force
+>>> the power of two check:
+>>>
+>>> 							\
+>>> 	if (!(__y & (__y >> 1))) {			\
+>>> 		__x = round_up(x, y);			\
+>>> 	} else {					\  
+>>
+>> You probably want
+>>
+>>             if (!(__y & (__y - 1))
+>>
+>> --
+> 
+> Yes I do. I corrected it in my next email.
+> 
+>  http://lkml.kernel.org/r/20190523133648.591f9e78@gandalf.local.home
 
-Cheers, Daniel
-(drm co-maintainer fwiw)
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Or perhaps just using is_power_of_2 from include/linux/log2.h ?
+> 
+>> #define roundup(x, y) (					\
+>> {							\
+>> 	typeof(y) __y = y;				\
+>> 	typeof(x) __x;					\
+>> 							\
+>> 	if (__y & (__y - 1))				\
+>> 		__x = round_up(x, __y);			\
+>> 	else						\
+>> 		__x = (((x) + (__y - 1)) / __y) * __y;	\
+>> 	__x;						\
+>> })
+> 
+> 
+> -- Steve
+> 
