@@ -2,165 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE7D291CC
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 09:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CC729584
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 12:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389029AbfEXHcp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 03:32:45 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17557 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389021AbfEXHco (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 May 2019 03:32:44 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 79AA5113F505E2CE7530;
-        Fri, 24 May 2019 15:32:41 +0800 (CST)
-Received: from linux-ioko.site (10.71.200.31) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.439.0; Fri, 24 May 2019 15:32:33 +0800
-From:   Lijun Ou <oulijun@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH V2 for-next 4/4] RDMA/hns: Remove jiffies operation in disable interrupt context
-Date:   Fri, 24 May 2019 15:31:23 +0800
-Message-ID: <1558683083-79692-5-git-send-email-oulijun@huawei.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1558683083-79692-1-git-send-email-oulijun@huawei.com>
-References: <1558683083-79692-1-git-send-email-oulijun@huawei.com>
+        id S2390391AbfEXKLy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 06:11:54 -0400
+Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:38896 "EHLO
+        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390156AbfEXKLy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 24 May 2019 06:11:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9EB11A78;
+        Fri, 24 May 2019 03:11:53 -0700 (PDT)
+Received: from mbp (usa-sjc-mx-foss1.foss.arm.com [217.140.101.70])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85B933F703;
+        Fri, 24 May 2019 03:11:47 -0700 (PDT)
+Date:   Fri, 24 May 2019 11:11:40 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Khalid Aziz <khalid.aziz@oracle.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Elliott Hughes <enh@google.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <20190524101139.36yre4af22bkvatx@mbp>
+References: <cover.1557160186.git.andreyknvl@google.com>
+ <20190517144931.GA56186@arrakis.emea.arm.com>
+ <CAFKCwrj6JEtp4BzhqO178LFJepmepoMx=G+YdC8sqZ3bcBp3EQ@mail.gmail.com>
+ <20190521182932.sm4vxweuwo5ermyd@mbp>
+ <201905211633.6C0BF0C2@keescook>
+ <6049844a-65f5-f513-5b58-7141588fef2b@oracle.com>
+ <20190523201105.oifkksus4rzcwqt4@mbp>
+ <ffe58af3-7c70-d559-69f6-1f6ebcb0fec6@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.71.200.31]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ffe58af3-7c70-d559-69f6-1f6ebcb0fec6@oracle.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+On Thu, May 23, 2019 at 03:49:05PM -0600, Khalid Aziz wrote:
+> On 5/23/19 2:11 PM, Catalin Marinas wrote:
+> > On Thu, May 23, 2019 at 11:51:40AM -0600, Khalid Aziz wrote:
+> >> On 5/21/19 6:04 PM, Kees Cook wrote:
+> >>> As an aside: I think Sparc ADI support in Linux actually side-stepped
+> >>> this[1] (i.e. chose "solution 1"): "All addresses passed to kernel must
+> >>> be non-ADI tagged addresses." (And sadly, "Kernel does not enable ADI
+> >>> for kernel code.") I think this was a mistake we should not repeat for
+> >>> arm64 (we do seem to be at least in agreement about this, I think).
+> >>>
+> >>> [1] https://lore.kernel.org/patchwork/patch/654481/
+> >>
+> >> That is a very early version of the sparc ADI patch. Support for tagged
+> >> addresses in syscalls was added in later versions and is in the patch
+> >> that is in the kernel.
+> > 
+> > I tried to figure out but I'm not familiar with the sparc port. How did
+> > you solve the tagged address going into various syscall implementations
+> > in the kernel (e.g. sys_write)? Is the tag removed on kernel entry or it
+> > ends up deeper in the core code?
+> 
+> Another spot I should point out in ADI patch - Tags are not stored in
+> VMAs and IOMMU does not support ADI tags on M7. ADI tags are stripped
+> before userspace addresses are passed to IOMMU in the following snippet
+> from the patch:
+> 
+> diff --git a/arch/sparc/mm/gup.c b/arch/sparc/mm/gup.c
+> index 5335ba3c850e..357b6047653a 100644
+> --- a/arch/sparc/mm/gup.c
+> +++ b/arch/sparc/mm/gup.c
+> @@ -201,6 +202,24 @@ int __get_user_pages_fast(unsigned long start, int
+> nr_pages
+> , int write,
+>         pgd_t *pgdp;
+>         int nr = 0;
+> 
+> +#ifdef CONFIG_SPARC64
+> +       if (adi_capable()) {
+> +               long addr = start;
+> +
+> +               /* If userspace has passed a versioned address, kernel
+> +                * will not find it in the VMAs since it does not store
+> +                * the version tags in the list of VMAs. Storing version
+> +                * tags in list of VMAs is impractical since they can be
+> +                * changed any time from userspace without dropping into
+> +                * kernel. Any address search in VMAs will be done with
+> +                * non-versioned addresses. Ensure the ADI version bits
+> +                * are dropped here by sign extending the last bit before
+> +                * ADI bits. IOMMU does not implement version tags.
+> +                */
+> +               addr = (addr << (long)adi_nbits()) >> (long)adi_nbits();
+> +               start = addr;
+> +       }
+> +#endif
+>         start &= PAGE_MASK;
+>         addr = start;
+>         len = (unsigned long) nr_pages << PAGE_SHIFT;
 
-In some functions, the jiffies operation is unnecessary, and we
-can control delay using mdelay and udelay functions only.
-Especially, in hns_roce_v1_clear_hem, the function calls
-spin_lock_irqsave, the context disables interrupt, so we
-can not use jiffies and msleep functions.
+Thanks Khalid. I missed that sparc does not enable HAVE_GENERIC_GUP, so
+you fix this case here. If we add the generic untagged_addr() macro in
+the generic code, I think sparc can start making use of it rather than
+open-coding the shifts.
 
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
----
-V1->V2:
-1. Rewrite the commit information according to Leon Romanovsky's
-reviews
----
- drivers/infiniband/hw/hns/hns_roce_hem.c   | 21 +++++++++++----------
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 19 ++++++++++---------
- 2 files changed, 21 insertions(+), 19 deletions(-)
+There are a few other other places where tags can leak and the core code
+would get confused (for example, madvise()). I presume your user space
+doesn't exercise them. On arm64 we plan to just allow the C library to
+tag any new memory allocation, so those core code paths would need to be
+covered.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index 8e29dbb..d0eacd8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -376,18 +376,19 @@ static int hns_roce_set_hem(struct hns_roce_dev *hr_dev,
- 
- 		bt_cmd = hr_dev->reg_base + ROCEE_BT_CMD_H_REG;
- 
--		end = msecs_to_jiffies(HW_SYNC_TIMEOUT_MSECS) + jiffies;
--		while (1) {
--			if (readl(bt_cmd) >> BT_CMD_SYNC_SHIFT) {
--				if (!(time_before(jiffies, end))) {
--					dev_err(dev, "Write bt_cmd err,hw_sync is not zero.\n");
--					spin_unlock_irqrestore(lock, flags);
--					return -EBUSY;
--				}
--			} else {
-+		end = HW_SYNC_TIMEOUT_MSECS;
-+		while (end) {
-+			if (!readl(bt_cmd) >> BT_CMD_SYNC_SHIFT)
- 				break;
--			}
-+
- 			mdelay(HW_SYNC_SLEEP_TIME_INTERVAL);
-+			end -= HW_SYNC_SLEEP_TIME_INTERVAL;
-+		}
-+
-+		if (end <= 0) {
-+			dev_err(dev, "Write bt_cmd err,hw_sync is not zero.\n");
-+			spin_unlock_irqrestore(lock, flags);
-+			return -EBUSY;
- 		}
- 
- 		bt_cmd_l = (u32)bt_ba;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index c35a4de..8b3169a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -965,8 +965,7 @@ static int hns_roce_v1_recreate_lp_qp(struct hns_roce_dev *hr_dev)
- 	struct hns_roce_free_mr *free_mr;
- 	struct hns_roce_v1_priv *priv;
- 	struct completion comp;
--	unsigned long end =
--	  msecs_to_jiffies(HNS_ROCE_V1_RECREATE_LP_QP_TIMEOUT_MSECS) + jiffies;
-+	unsigned long end = HNS_ROCE_V1_RECREATE_LP_QP_TIMEOUT_MSECS;
- 
- 	priv = (struct hns_roce_v1_priv *)hr_dev->priv;
- 	free_mr = &priv->free_mr;
-@@ -986,10 +985,11 @@ static int hns_roce_v1_recreate_lp_qp(struct hns_roce_dev *hr_dev)
- 
- 	queue_work(free_mr->free_mr_wq, &(lp_qp_work->work));
- 
--	while (time_before_eq(jiffies, end)) {
-+	while (end) {
- 		if (try_wait_for_completion(&comp))
- 			return 0;
- 		msleep(HNS_ROCE_V1_RECREATE_LP_QP_WAIT_VALUE);
-+		end -= HNS_ROCE_V1_RECREATE_LP_QP_WAIT_VALUE;
- 	}
- 
- 	lp_qp_work->comp_flag = 0;
-@@ -1103,8 +1103,7 @@ static int hns_roce_v1_dereg_mr(struct hns_roce_dev *hr_dev,
- 	struct hns_roce_free_mr *free_mr;
- 	struct hns_roce_v1_priv *priv;
- 	struct completion comp;
--	unsigned long end =
--		msecs_to_jiffies(HNS_ROCE_V1_FREE_MR_TIMEOUT_MSECS) + jiffies;
-+	unsigned long end = HNS_ROCE_V1_FREE_MR_TIMEOUT_MSECS ;
- 	unsigned long start = jiffies;
- 	int npages;
- 	int ret = 0;
-@@ -1134,10 +1133,11 @@ static int hns_roce_v1_dereg_mr(struct hns_roce_dev *hr_dev,
- 
- 	queue_work(free_mr->free_mr_wq, &(mr_work->work));
- 
--	while (time_before_eq(jiffies, end)) {
-+	while (end) {
- 		if (try_wait_for_completion(&comp))
- 			goto free_mr;
- 		msleep(HNS_ROCE_V1_FREE_MR_WAIT_VALUE);
-+		end -= HNS_ROCE_V1_FREE_MR_WAIT_VALUE;
- 	}
- 
- 	mr_work->comp_flag = 0;
-@@ -2462,10 +2462,10 @@ static int hns_roce_v1_clear_hem(struct hns_roce_dev *hr_dev,
- 
- 	bt_cmd = hr_dev->reg_base + ROCEE_BT_CMD_H_REG;
- 
--	end = msecs_to_jiffies(HW_SYNC_TIMEOUT_MSECS) + jiffies;
-+	end = HW_SYNC_TIMEOUT_MSECS;
- 	while (1) {
- 		if (readl(bt_cmd) >> BT_CMD_SYNC_SHIFT) {
--			if (!(time_before(jiffies, end))) {
-+			if (end < 0) {
- 				dev_err(dev, "Write bt_cmd err,hw_sync is not zero.\n");
- 				spin_unlock_irqrestore(&hr_dev->bt_cmd_lock,
- 					flags);
-@@ -2474,7 +2474,8 @@ static int hns_roce_v1_clear_hem(struct hns_roce_dev *hr_dev,
- 		} else {
- 			break;
- 		}
--		msleep(HW_SYNC_SLEEP_TIME_INTERVAL);
-+		mdelay(HW_SYNC_SLEEP_TIME_INTERVAL);
-+		end -= HW_SYNC_SLEEP_TIME_INTERVAL;
- 	}
- 
- 	bt_cmd_val[0] = (__le32)bt_ba;
+And similarly, devices, IOMMU, any DMA would ignore tags.
+
 -- 
-1.9.1
-
+Catalin
