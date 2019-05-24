@@ -2,171 +2,161 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BE429F0E
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 21:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D562A0FD
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 May 2019 00:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727344AbfEXTZm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 15:25:42 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:44918 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729918AbfEXTZm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 15:25:42 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4OJOQVN046246;
-        Fri, 24 May 2019 19:25:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=xxtgJNihH7K87lWD29Xt8z4zdYud+1WoD/6ePIKZLL4=;
- b=vs0GY8n4QPPR+rj9KbX2zCDYQXGiGJGA8fn4w3pI6XhyQ6GuyZG9zT4hS4t2WyRJHAnR
- WpYlLUrhICTpDUwxl8iOJGgnpK1iggEmjZWJyb3wuUo2/OXadHSPZxieGNORL6UAA6jd
- XnNLlsTWPRoGbDOqqkjY968D77yI0Xxz1Td0YwMsHK4BtMMlDLz7gCdGm+/mOHDICkcz
- q4GGfcQKkJqQdqVGtzABTBJLnOAuFLYtg06PzfePqWxMJJxh4G6c5pTubWkhU+sJ+tIz
- pOh/qywIJNNBSOvcTsV8QhUeNr+gsydn6wqSqbaX5KIS5x/6FARlzd8nJoo2RSynxsub Cw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2smsk5k1xy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 May 2019 19:25:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4OJOIwi180549;
-        Fri, 24 May 2019 19:25:36 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2smsh32jug-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 May 2019 19:25:36 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4OJPZtr031823;
-        Fri, 24 May 2019 19:25:35 GMT
-Received: from [10.211.55.11] (/10.211.55.11)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 24 May 2019 19:25:35 +0000
-Subject: Re: <infiniband/verbs.h> & ICC
-To:     Zuoyu Tao <zuoyu.tao@oracle.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org,
-        Aron Silverton <aron.silverton@oracle.com>,
-        Sharon Liu <sharon.s.liu@oracle.com>
-References: <54a40ca4-707b-d7a8-16b0-7d475e64f957@oracle.com>
- <20190524013033.GA13582@mellanox.com>
- <e9d86a45-a3b0-e303-027b-02474ed3a2ac@oracle.com>
- <309e44c2-f520-4e35-9f50-5e6932d7b40f@default>
-From:   Gerd Rausch <gerd.rausch@oracle.com>
-Message-ID: <d2f25bde-488f-dc37-b751-53ec602d66be@oracle.com>
-Date:   Fri, 24 May 2019 12:25:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1729974AbfEXWJ1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 18:09:27 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:35919 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729348AbfEXWJ0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 18:09:26 -0400
+Received: by mail-vs1-f65.google.com with SMTP id l20so6898296vsp.3
+        for <linux-rdma@vger.kernel.org>; Fri, 24 May 2019 15:09:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=N9WMPAq1SBJByj8qM7LaEK8FLATRoK2GkIV6yeIQrTg=;
+        b=bKmgytC7SrgoXWBeLhiR5hCTMa6fcLiMm5rC93YfDESWnXQkf9DWnWbpwOA2qai62r
+         UQQrf8KjLit1Nysl+fEDFWUYjRQ1BCAU5L2WBIVkSkvA3HxAdgjSCgRcrkwYzG0lVhKA
+         rkkm+QbUJn+xpBU32Ur7JFZ7RZnEvVuQ0Oh66ODXmdl++FyoKYM0Ut04eJ2K3+2AemGg
+         DWabdEAuNWRwAaZALYzLij44xk2C0zYcEH2yx16sPHNGrOzr4f9fAGoOIdFEHsBFqwCQ
+         KYvwVWtFbbfLv/HLr+MXFFfA2r3iSqVRvy/XUT9TF/l6/+fUUsNCW96LKaMe1KS1GPH8
+         qURw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=N9WMPAq1SBJByj8qM7LaEK8FLATRoK2GkIV6yeIQrTg=;
+        b=VLmtVfZQTss7lJqyghu9DmKfAMoWl/qipJcBJywdKnDMzo9K+H0rz01CendTTxnERn
+         x9b+dh5MMCQvcP5axSmDd8dpAI4Jbz9Qfur8mvRLcads6CDK9owQEIZnMFZRNs872SAu
+         fXmbJHqXVosOWzDxGPqo33erlMiesZBYGuGhbNFibcK/+8QWUa0c9mg9TfGB0y3aLYb4
+         RLAmnKY5m5C2Ktxz0OfGjo8qHc/OFlR6lv7aZVYSKGnen94y2fc9vVn8lgD6cvVCXffQ
+         BMpezIkGHp4w3E7/+aLseQm8hYujVKNtCBU3AaOcCOHqYV402c61J6UjKYwQRNxhFQLh
+         i7oQ==
+X-Gm-Message-State: APjAAAW3Et8DwK01Hm5huGuI+1z+IdpYUtfPsEg8kliU4u5TMThy2IBb
+        rurr30VdA0Pp7plihC9FQNvk7A==
+X-Google-Smtp-Source: APXvYqwgrX8m55ZYTOzrECuhHF6YZsdnmGWgqzcToJx9OiFpqNA9rfK65uaAw5d6QYwQwUEAquscGg==
+X-Received: by 2002:a67:2e15:: with SMTP id u21mr30135920vsu.50.1558735765273;
+        Fri, 24 May 2019 15:09:25 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
+        by smtp.gmail.com with ESMTPSA id v14sm2014695vkd.4.2019.05.24.15.09.23
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 May 2019 15:09:24 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hUINP-0002IN-DS; Fri, 24 May 2019 19:09:23 -0300
+Date:   Fri, 24 May 2019 19:09:23 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jerome Glisse <jglisse@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [RFC PATCH 00/11] mm/hmm: Various revisions from a locking/code
+ review
+Message-ID: <20190524220923.GA8519@ziepe.ca>
+References: <20190523153436.19102-1-jgg@ziepe.ca>
+ <20190524143649.GA14258@ziepe.ca>
+ <20190524164902.GA3346@redhat.com>
+ <20190524165931.GF16845@ziepe.ca>
+ <20190524170148.GB3346@redhat.com>
+ <20190524175203.GG16845@ziepe.ca>
+ <20190524180321.GD3346@redhat.com>
+ <20190524183225.GI16845@ziepe.ca>
+ <20190524184608.GE3346@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <309e44c2-f520-4e35-9f50-5e6932d7b40f@default>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9267 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905240126
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9267 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905240126
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190524184608.GE3346@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
+On Fri, May 24, 2019 at 02:46:08PM -0400, Jerome Glisse wrote:
+> > Here is the big 3 CPU ladder diagram that shows how 'valid' does not
+> > work:
+> > 
+> >        CPU0                                               CPU1                                          CPU2
+> >                                                         DEVICE PAGE FAULT
+> >                                                         range = hmm_range_register()
+> >
+> >   // Overlaps with range
+> >   hmm_invalidate_start()
+> >     range->valid = false
+> >     ops->sync_cpu_device_pagetables()
+> >       take_lock(driver->update);
+> >        // Wipe out page tables in device, enable faulting
+> >       release_lock(driver->update);
+> >                                                                                                    // Does not overlap with range
+> >                                                                                                    hmm_invalidate_start()
+> >                                                                                                    hmm_invalidate_end()
+> >                                                                                                        list_for_each
+> >                                                                                                            range->valid =  true
+> 
+>                                                                                                              ^
+> No this can not happen because CPU0 still has invalidate_range in progress and
+> thus hmm->notifiers > 0 so the hmm_invalidate_range_end() will not set the
+> range->valid as true.
 
-It's the "-strict-ansi" that makes it fail:
+Oh, Okay, I now see how this all works, thank you
 
-% icc -c -strict-ansi foo.c
-foo.c(2): error: enumeration value is out of "int" range
-  	enum { FOO = 1UL << 31 } foo;
+> > And I can make this more complicated (ie overlapping parallel
+> > invalidates, etc) and show any 'bool' valid cannot work.
+> 
+> It does work. 
 
+Well, I ment the bool alone cannot work, but this is really bool + a
+counter.
 
-Zuoyu, is it possible to _not_ use "-strict-ansi"?
+> If you want i can remove the range->valid = true from the
+> hmm_invalidate_range_end() and move it within hmm_range_wait_until_valid()
+> ie modifying the hmm_range_wait_until_valid() logic, this might look
+> cleaner.
 
-Thanks,
+Let me reflect on it for a bit. I have to say I don't like the clarity
+here, and I don't like the valid=true loop in the invalidate_end, it
+is pretty clunky.
 
-  Gerd
+I'm thinking a more obvious API for drivers, as something like:
 
-On 24/05/2019 11.59, Zuoyu Tao wrote:
-> Here were the compiler flags used with ICC:
+again:
+    hmm_range_start();
+     [..]
+    if (hmm_range_test_retry())
+          goto again
+
+    driver_lock()
+      if (hmm_range_end())
+           goto again
+    driver_unlock();
+
+Just because it makes it very clear to the driver author what to do
+and how this is working, and makes it clear that there is no such
+thing as 'valid' - what we *really* have is a locking collision
+forcing retry. ie this is really closer to a seq-lock scheme, not a
+valid/invalid scheme. Being able to explain the concept does matter
+for maintainability...
+
+And I'm thinking the above API design would comfortably support a more
+efficient seq-lock like approach without the loop in invalidate_end..
+
+But I haven't quite thought it all through yet. Next week!
+
+> > I still think the best solution is to move device_lock() into mirror
+> > and have hmm manage it for the driver as ODP does. It is certainly the
+> > simplest solution to understand.
 > 
-> -trigraphs -fno-omit-frame-pointer -fp-model source  -fno-strict-aliasing  -mIPOPT_clone_max_total_clones=0 -mP2OPT_hpo_enable_short_trip_vec=F -sox=profile -sox=inline   -no-global-hoist -mP2OPT_tls_control=0  -wd191 -wd175 -wd188 -wd810 -we127 -we1345 -we1338 -wd279 -wd186 -wd1572 -wd589 -wd11505 -we592 -wd69 -we172 -Qoption,cpp,--treat_func_as_string_literal -mP2OPT_spill_parms=T -wd11505 -wd411 -wd273 -ww174    -we266    -ww279    -we589    -we810    -we1011   -ww1418   -strict-ansi -wd66     -wd76     -wd82     -wd94     -we102    -wd271    -wd424    -wd561    -wd662    -wd1511    -std=c99 -ww344 -we137   -fPIC -mP2OPT_tls_control=2
-> 
-> -----Original Message-----
-> From: Gerd Rausch 
-> Sent: Thursday, May 23, 2019 11:15 PM
-> To: Jason Gunthorpe <jgg@mellanox.com>
-> Cc: linux-rdma@vger.kernel.org; Aron Silverton <aron.silverton@oracle.com>; Sharon Liu <sharon.s.liu@oracle.com>; ZUOYU.TAO <zuoyu.tao@oracle.com>
-> Subject: Re: <infiniband/verbs.h> & ICC
-> 
-> +Zuoyu,
-> 
-> Hi Zuoyo,
-> 
-> What compiler flags were you using while compiling the <verbs.h> file throwing the error about 'enumeration value is out of "int" range'?
-> 
-> 
-> On 23/05/2019 18.30, Jason Gunthorpe wrote:
->> On Thu, May 23, 2019 at 03:57:29PM -0700, Gerd Rausch wrote:
->>>
->>> error: enumeration value is out of "int" range
->>>          IBV_RX_HASH_INNER = (1UL << 31),
->>
->> I assume you are running with some higher warning flags and -Werror?
->> gcc will not emit this warning without -Wpedantic
->>
-> 
-> Perhaps. I've added Zuoyu, who reported this issue to this e-mail thread.
-> 
->>
->>> Since "int" is signed, it can't hold the unsigned value of 1UL<<31 on 
->>> target platforms with sizeof(int) <= 4.
->>
->> Pedentically yes, but gcc and any compiler that can compile on linux 
->> supports an extension where the underlying type of an enum constant is 
->> automatically increased until it can hold the value of the constant. 
->> In this case the constant is type promoted to long, IIRC.
->>
-> 
-> Evidently ICC supports that as well:
-> % icc --version
-> icc (ICC) 17.0.5 20170817
-> Copyright (C) 1985-2017 Intel Corporation.  All rights reserved.
-> 
-> % cat foo.c
-> enum { FOO = 1UL << 31 } foo = FOO;
-> 
-> % icc -c -g foo.c && gdb -ex 'ptype foo' -ex 'print sizeof foo' foo.o type = enum {FOO = -2147483648}
-> $1 = 4
-> 
-> % cat bar.c
-> enum { FOO = 1UL << 31, BAR = -1 } bar = BAR; % icc -c -g bar.c && gdb -ex 'ptype bar' -ex 'print sizeof bar' bar.o type = enum {FOO = -2147483648, BAR = -1}
-> $1 = 8
-> 
-> I can't say that I'm thrilled with this behavior though, as it appears error-prone:
-> As soon as an enum value goes out of range for an "int", the type silently changes, potentially rendering structures and functions silently incompatible.
-> It's quite the pitfall (e.g. the foo.c vs bar.c case above).
-> 
->>
->> Can you clarify if icc is being run in some wonky mode that is causing 
->> this warning? AFAIK icc will compile the linux kernel, and the kernel 
->> makes extensive use of this extension. So I think the compiler is not 
->> configured properly.
->>
-> 
-> I've added Zuoyu to the distribution to shed some light on that.
-> 
->> IIRC I looked at this once for -Wpedantic support and decided it was a 
->> lot of work as there are more cases than just this.
->>
-> 
-> Not exactly shocking news ;-)
-> 
-> Thanks for providing the information,
-> 
->   Gerd
-> 
+> It is un-efficient and would block further than needed forward progress
+> by mm code.
+
+I'm not sure how you get to that, we already have the device_lock()
+and it already blocks forward progress by mm code.
+
+Really the big unfortunate thing here is that valid is manipulated
+outside the device_lock, but really, logically, it is covered under
+the device_lock
+
+Jason
