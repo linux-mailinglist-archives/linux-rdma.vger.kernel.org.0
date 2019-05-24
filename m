@@ -2,153 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D1028FE7
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 06:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F380290D1
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 May 2019 08:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731784AbfEXEXY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 00:23:24 -0400
-Received: from mail-ua1-f68.google.com ([209.85.222.68]:37211 "EHLO
-        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726346AbfEXEXY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 00:23:24 -0400
-Received: by mail-ua1-f68.google.com with SMTP id t18so3041633uar.4
-        for <linux-rdma@vger.kernel.org>; Thu, 23 May 2019 21:23:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xAYnRWw3Tu8/93j9I1Decyj4SiwalEXjnp8HjDGWVMk=;
-        b=WnRK49CElZNooeneU/rmiXD4MNL+NGJ+1q+LoLrd8r1BWPG0vFLLn5srrzAwJdtZCr
-         YNvRiKrpydE8yY/WwhILnly3Zvune3jCfbXw7GsuMvu4P+dyMtapEbIZ2jkKw+bAAaZT
-         /NstjIQP+l4nVYqupG3KK3t/H/Zt2rSh8UshTl0ZeyMDpnbmZlbVjVV+q+S0iwZ4uNET
-         wEULW4QLu8xXLGSpfqZElCLKOXZT2Zp/eFOfWYxNKR73Qs1kFKXoJK7Lexkh9qJC8nqp
-         yZ2rrh8i3toWpfjsayQpALHrdDwRoiqV6AXbdW6lkKZym6fAr2YHiokI7QWgzJYQeySd
-         EWQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xAYnRWw3Tu8/93j9I1Decyj4SiwalEXjnp8HjDGWVMk=;
-        b=dxitNWCethMmqgbcO2mUq02ihVrGZ5btK5vk1WOakwLEOfx1iuDWteOPS/94TTA5fo
-         Kq93kpgkMeWW/gJ6NJ9XNYfoSL30hV9LXm0OrGsmYjS7W/gd7pBCpbc1SBv2gbiOXWKP
-         Y2QJQpCxPXEcAmwocF4ChfQMP5WLH0cEFFH9qWnA6n/3b/SHFLVbLSvLNesHwZ3QmbTh
-         iEr8zEmsvW0QlTkAqm4mmLe/bX+hmYWjDttBpWZqPXkAjYkVHpdNlkQelUGd61ee35I5
-         5TcWj2V+ay5l2igk4ckZ14XE2sfDtO9drqQJ42RAX8aCwETaPzw6ELwWdsQCfkmGfnuk
-         4DuQ==
-X-Gm-Message-State: APjAAAWwRuyNCaUYL+pnwj2EvLoDuHYMECuBhxIgUG9MBjrT22wGUrWi
-        yzL12KtOImsqAELJWmIznBe1tDpuKoCH2MRIKVoemA==
-X-Google-Smtp-Source: APXvYqx5Zm1ZYEN7Vn9AdcFTjSw8M3oFO3UV+ZriQQ1V2wP6o6e1yzY7Ig//CYIK3KGeMPCh4oSMGn+kEBJ+ngdeAaM=
-X-Received: by 2002:ab0:3109:: with SMTP id e9mr449008ual.66.1558671802883;
- Thu, 23 May 2019 21:23:22 -0700 (PDT)
+        id S2388350AbfEXGOu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 02:14:50 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:46244 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387936AbfEXGOu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 02:14:50 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4O69Clk157553;
+        Fri, 24 May 2019 06:14:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=Rhw2c7xgpuVuRq2dji++5N/o0ohzXJQLXmUSZWfoC2s=;
+ b=eWQkjP5G4FqLT+Nh26EFNnoYJxs2uvgCMWajuYf/OWoDeI3OZGD/+yojA3yaPyjPB/81
+ 1EVYpe/pZmbJvEB5BqOYKscmLHMDtDI4g6fm+YKnoCy1MYS43AQRH7NOt8/cZ+CgAxs3
+ jB7V/2oe2pURfpHk+rdtRby1l703FjAvbo9sfsLSNFQkf3Qk4y08tZB+H+Kkd4Ejdwc8
+ Z5GlZ1LXxhOiN96DF/XRSLhs3xqYuXzL6om6vdwL+ax7teIVnsPAjjQiNOKgvZgQogPT
+ iLrdDpbD5n3mfQ+6ul+f80xmGXiPZUA5SxaFVT1oAZwYOE9ENgHfOEWysqthG/Nc6kVr kw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 2smsk5pt7g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 May 2019 06:14:45 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4O6DlFX176619;
+        Fri, 24 May 2019 06:14:44 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2smsgvx0q3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 May 2019 06:14:44 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4O6Eiqi026817;
+        Fri, 24 May 2019 06:14:44 GMT
+Received: from [10.159.146.109] (/10.159.146.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 24 May 2019 06:14:43 +0000
+Subject: Re: <infiniband/verbs.h> & ICC
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Aron Silverton <aron.silverton@oracle.com>,
+        Sharon Liu <sharon.s.liu@oracle.com>,
+        "ZUOYU.TAO" <zuoyu.tao@oracle.com>
+References: <54a40ca4-707b-d7a8-16b0-7d475e64f957@oracle.com>
+ <20190524013033.GA13582@mellanox.com>
+From:   Gerd Rausch <gerd.rausch@oracle.com>
+Message-ID: <e9d86a45-a3b0-e303-027b-02474ed3a2ac@oracle.com>
+Date:   Thu, 23 May 2019 23:14:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <cover.1557160186.git.andreyknvl@google.com> <00eb4c63fefc054e2c8d626e8fedfca11d7c2600.1557160186.git.andreyknvl@google.com>
- <20190522114910.emlckebwzv2qz42i@mbp> <CAFKCwrjyP+x0JJy=qpBFsp4pub3He6UkvU0qnf1UOKt6W1LPRQ@mail.gmail.com>
- <20190523090427.GA44383@arrakis.emea.arm.com>
-In-Reply-To: <20190523090427.GA44383@arrakis.emea.arm.com>
-From:   Evgenii Stepanov <eugenis@google.com>
-Date:   Thu, 23 May 2019 21:23:13 -0700
-Message-ID: <CAFKCwrgk0+yR48Z5nhuZG5f7g==vRb4u+CS-4FS0mM7Eriavgw@mail.gmail.com>
-Subject: Re: [PATCH v15 05/17] arms64: untag user pointers passed to memory syscalls
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190524013033.GA13582@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9266 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905240042
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9266 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905240042
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 2:04 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Wed, May 22, 2019 at 02:16:57PM -0700, Evgenii Stepanov wrote:
-> > On Wed, May 22, 2019 at 4:49 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > On Mon, May 06, 2019 at 06:30:51PM +0200, Andrey Konovalov wrote:
-> > > > This patch is a part of a series that extends arm64 kernel ABI to allow to
-> > > > pass tagged user pointers (with the top byte set to something else other
-> > > > than 0x00) as syscall arguments.
-> > > >
-> > > > This patch allows tagged pointers to be passed to the following memory
-> > > > syscalls: brk, get_mempolicy, madvise, mbind, mincore, mlock, mlock2,
-> > > > mmap, mmap_pgoff, mprotect, mremap, msync, munlock, munmap,
-> > > > remap_file_pages, shmat and shmdt.
-> > > >
-> > > > This is done by untagging pointers passed to these syscalls in the
-> > > > prologues of their handlers.
-> > >
-> > > I'll go through them one by one to see if we can tighten the expected
-> > > ABI while having the MTE in mind.
-> > >
-> > > > diff --git a/arch/arm64/kernel/sys.c b/arch/arm64/kernel/sys.c
-> > > > index b44065fb1616..933bb9f3d6ec 100644
-> > > > --- a/arch/arm64/kernel/sys.c
-> > > > +++ b/arch/arm64/kernel/sys.c
-> > > > @@ -35,10 +35,33 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
-> > > >  {
-> > > >       if (offset_in_page(off) != 0)
-> > > >               return -EINVAL;
-> > > > -
-> > > > +     addr = untagged_addr(addr);
-> > > >       return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
-> > > >  }
-> > >
-> > > If user passes a tagged pointer to mmap() and the address is honoured
-> > > (or MAP_FIXED is given), what is the expected return pointer? Does it
-> > > need to be tagged with the value from the hint?
-> >
-> > For HWASan the most convenient would be to use the tag from the hint.
-> > But since in the TBI (not MTE) mode the kernel has no idea what
-> > meaning userspace assigns to pointer tags, perhaps it should not try
-> > to guess, and should return raw (zero-tagged) address instead.
->
-> Then, just to relax the ABI for hwasan, shall we simply disallow tagged
-> pointers on mmap() arguments? We can leave them in for
-> mremap(old_address), madvise().
++Zuoyu,
 
-I think this would be fine. We should allow tagged in pointers in
-mprotect though.
+Hi Zuoyo,
 
-> > > With MTE, we may want to use this as a request for the default colour of
-> > > the mapped pages (still under discussion).
-> >
-> > I like this - and in that case it would make sense to return the
-> > pointer that can be immediately dereferenced without crashing the
-> > process, i.e. with the matching tag.
->
-> This came up from the Android investigation work where large memory
-> allocations (using mmap) could be more efficiently pre-tagged by the
-> kernel on page fault. Not sure about the implementation details yet.
->
-> --
-> Catalin
+What compiler flags were you using while compiling the <verbs.h>
+file throwing the error about 'enumeration value is out of "int" range'?
+
+
+On 23/05/2019 18.30, Jason Gunthorpe wrote:
+> On Thu, May 23, 2019 at 03:57:29PM -0700, Gerd Rausch wrote:
+>>
+>> error: enumeration value is out of "int" range
+>>          IBV_RX_HASH_INNER = (1UL << 31),
+> 
+> I assume you are running with some higher warning flags and -Werror?
+> gcc will not emit this warning without -Wpedantic
+> 
+
+Perhaps. I've added Zuoyu, who reported this issue
+to this e-mail thread.
+
+> 
+>> Since "int" is signed, it can't hold the unsigned value of 1UL<<31
+>> on target platforms with sizeof(int) <= 4.
+> 
+> Pedentically yes, but gcc and any compiler that can compile on linux
+> supports an extension where the underlying type of an enum constant is
+> automatically increased until it can hold the value of the
+> constant. In this case the constant is type promoted to long,
+> IIRC.
+> 
+
+Evidently ICC supports that as well:
+% icc --version
+icc (ICC) 17.0.5 20170817
+Copyright (C) 1985-2017 Intel Corporation.  All rights reserved.
+
+% cat foo.c
+enum { FOO = 1UL << 31 } foo = FOO;
+
+% icc -c -g foo.c && gdb -ex 'ptype foo' -ex 'print sizeof foo' foo.o
+type = enum {FOO = -2147483648}
+$1 = 4
+
+% cat bar.c
+enum { FOO = 1UL << 31, BAR = -1 } bar = BAR;
+% icc -c -g bar.c && gdb -ex 'ptype bar' -ex 'print sizeof bar' bar.o
+type = enum {FOO = -2147483648, BAR = -1}
+$1 = 8
+
+I can't say that I'm thrilled with this behavior though,
+as it appears error-prone:
+As soon as an enum value goes out of range for an "int", the
+type silently changes, potentially rendering structures and functions silently incompatible.
+It's quite the pitfall (e.g. the foo.c vs bar.c case above).
+
+> 
+> Can you clarify if icc is being run in some wonky mode that is causing
+> this warning? AFAIK icc will compile the linux kernel, and the kernel
+> makes extensive use of this extension. So I think the compiler is not
+> configured properly.
+> 
+
+I've added Zuoyu to the distribution to shed some light on that.
+
+> IIRC I looked at this once for -Wpedantic support and decided it was a
+> lot of work as there are more cases than just this.
+> 
+
+Not exactly shocking news ;-)
+
+Thanks for providing the information,
+
+  Gerd
