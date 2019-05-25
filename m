@@ -2,95 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C65B92A47D
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 May 2019 14:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E97B2A748
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 May 2019 00:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbfEYM6I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 May 2019 08:58:08 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:34020 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726585AbfEYM6I (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 25 May 2019 08:58:08 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 529723CA67E16F11BCB1;
-        Sat, 25 May 2019 20:58:01 +0800 (CST)
-Received: from localhost (10.177.31.96) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.439.0; Sat, 25 May 2019
- 20:57:52 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <mike.marciniszyn@intel.com>, <dennis.dalessandro@intel.com>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] IB/hfi1: remove set but not used variables 'offset' and 'fspsn'
-Date:   Sat, 25 May 2019 20:57:37 +0800
-Message-ID: <20190525125737.15648-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.177.31.96]
-X-CFilter-Loop: Reflected
+        id S1726877AbfEYWwM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 May 2019 18:52:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725989AbfEYWwM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 25 May 2019 18:52:12 -0400
+Received: from localhost.localdomain (c-73-223-200-170.hsd1.ca.comcast.net [73.223.200.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8FC42081C;
+        Sat, 25 May 2019 22:52:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1558824731;
+        bh=MJPUSD67w1vDzE1s8ukB7WvKrTYgamW84goFYYVDSPI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uYhUPzjxc/GeB+FzHFhyxZ7vo3ablcJVW7xTFZBQ663X5B5pDMj9l2/WBJbSP5sIr
+         PmGFV5rSX7sooE3xDLZ0ZP95v/yHZ+2wABSbIW1lqY2R4xZBk6KSwpM+VoS3oiefLg
+         XSQ9v+swjbOvZCStCoNjXDVcLBs5kNEKQR+06saQ=
+Date:   Sat, 25 May 2019 15:52:10 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jerome Glisse <jglisse@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        linux-mm@kvack.org, dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: RFC: Run a dedicated hmm.git for 5.3
+Message-Id: <20190525155210.8a9a66385ac8169d0e144225@linux-foundation.org>
+In-Reply-To: <20190524124455.GB16845@ziepe.ca>
+References: <20190522235737.GD15389@ziepe.ca>
+        <20190523150432.GA5104@redhat.com>
+        <20190523154149.GB12159@ziepe.ca>
+        <20190523155207.GC5104@redhat.com>
+        <20190523163429.GC12159@ziepe.ca>
+        <20190523173302.GD5104@redhat.com>
+        <20190523175546.GE12159@ziepe.ca>
+        <20190523182458.GA3571@redhat.com>
+        <20190523191038.GG12159@ziepe.ca>
+        <20190524064051.GA28855@infradead.org>
+        <20190524124455.GB16845@ziepe.ca>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+On Fri, 24 May 2019 09:44:55 -0300 Jason Gunthorpe <jgg@ziepe.ca> wrote:
 
-drivers/infiniband/hw/hfi1/tid_rdma.c: In function tid_rdma_rcv_error:
-drivers/infiniband/hw/hfi1/tid_rdma.c:2029:7: warning: variable offset set but not used [-Wunused-but-set-variable]
-drivers/infiniband/hw/hfi1/tid_rdma.c: In function hfi1_rc_rcv_tid_rdma_ack:
-drivers/infiniband/hw/hfi1/tid_rdma.c:4555:35: warning: variable fspsn set but not used [-Wunused-but-set-variable]
+> Now that -mm merged the basic hmm API skeleton I think running like
+> this would get us quickly to the place we all want: comprehensive in tree
+> users of hmm.
+> 
+> Andrew, would this be acceptable to you?
 
-'offset' is never used since introduction in
-commit d0d564a1caac ("IB/hfi1: Add functions to receive TID RDMA READ request")
-
-'fspsn' is never used since introduciotn in
-commit 9e93e967f7b4 ("IB/hfi1: Add a function to receive TID RDMA ACK packet")
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/infiniband/hw/hfi1/tid_rdma.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
-index 6fb93032fbef..bdf1c313e13f 100644
---- a/drivers/infiniband/hw/hfi1/tid_rdma.c
-+++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
-@@ -2026,7 +2026,6 @@ static int tid_rdma_rcv_error(struct hfi1_packet *packet,
- 	trace_hfi1_tid_req_rcv_err(qp, 0, e->opcode, e->psn, e->lpsn, req);
- 	if (e->opcode == TID_OP(READ_REQ)) {
- 		struct ib_reth *reth;
--		u32 offset;
- 		u32 len;
- 		u32 rkey;
- 		u64 vaddr;
-@@ -2038,7 +2037,6 @@ static int tid_rdma_rcv_error(struct hfi1_packet *packet,
- 		 * The requester always restarts from the start of the original
- 		 * request.
- 		 */
--		offset = delta_psn(psn, e->psn) * qp->pmtu;
- 		len = be32_to_cpu(reth->length);
- 		if (psn != e->psn || len != req->total_len)
- 			goto unlock;
-@@ -4552,7 +4550,7 @@ void hfi1_rc_rcv_tid_rdma_ack(struct hfi1_packet *packet)
- 	struct rvt_swqe *wqe;
- 	struct tid_rdma_request *req;
- 	struct tid_rdma_flow *flow;
--	u32 aeth, psn, req_psn, ack_psn, fspsn, resync_psn, ack_kpsn;
-+	u32 aeth, psn, req_psn, ack_psn, resync_psn, ack_kpsn;
- 	unsigned long flags;
- 	u16 fidx;
- 
-@@ -4756,7 +4754,6 @@ void hfi1_rc_rcv_tid_rdma_ack(struct hfi1_packet *packet)
- 			IB_AETH_CREDIT_MASK) {
- 		case 0: /* PSN sequence error */
- 			flow = &req->flows[req->acked_tail];
--			fspsn = full_flow_psn(flow, flow->flow_state.spsn);
- 			trace_hfi1_tid_flow_rcv_tid_ack(qp, req->acked_tail,
- 							flow);
- 			req->r_ack_psn = mask_psn(be32_to_cpu(ohdr->bth[2]));
--- 
-2.17.1
-
+Sure.  Please take care not to permit this to reduce the amount of
+exposure and review which the core HMM pieces get.
 
