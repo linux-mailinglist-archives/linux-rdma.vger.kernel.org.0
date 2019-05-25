@@ -2,161 +2,214 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D562A0FD
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 May 2019 00:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED682A216
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 May 2019 02:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729974AbfEXWJ1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 May 2019 18:09:27 -0400
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:35919 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729348AbfEXWJ0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 18:09:26 -0400
-Received: by mail-vs1-f65.google.com with SMTP id l20so6898296vsp.3
-        for <linux-rdma@vger.kernel.org>; Fri, 24 May 2019 15:09:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=N9WMPAq1SBJByj8qM7LaEK8FLATRoK2GkIV6yeIQrTg=;
-        b=bKmgytC7SrgoXWBeLhiR5hCTMa6fcLiMm5rC93YfDESWnXQkf9DWnWbpwOA2qai62r
-         UQQrf8KjLit1Nysl+fEDFWUYjRQ1BCAU5L2WBIVkSkvA3HxAdgjSCgRcrkwYzG0lVhKA
-         rkkm+QbUJn+xpBU32Ur7JFZ7RZnEvVuQ0Oh66ODXmdl++FyoKYM0Ut04eJ2K3+2AemGg
-         DWabdEAuNWRwAaZALYzLij44xk2C0zYcEH2yx16sPHNGrOzr4f9fAGoOIdFEHsBFqwCQ
-         KYvwVWtFbbfLv/HLr+MXFFfA2r3iSqVRvy/XUT9TF/l6/+fUUsNCW96LKaMe1KS1GPH8
-         qURw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=N9WMPAq1SBJByj8qM7LaEK8FLATRoK2GkIV6yeIQrTg=;
-        b=VLmtVfZQTss7lJqyghu9DmKfAMoWl/qipJcBJywdKnDMzo9K+H0rz01CendTTxnERn
-         x9b+dh5MMCQvcP5axSmDd8dpAI4Jbz9Qfur8mvRLcads6CDK9owQEIZnMFZRNs872SAu
-         fXmbJHqXVosOWzDxGPqo33erlMiesZBYGuGhbNFibcK/+8QWUa0c9mg9TfGB0y3aLYb4
-         RLAmnKY5m5C2Ktxz0OfGjo8qHc/OFlR6lv7aZVYSKGnen94y2fc9vVn8lgD6cvVCXffQ
-         BMpezIkGHp4w3E7/+aLseQm8hYujVKNtCBU3AaOcCOHqYV402c61J6UjKYwQRNxhFQLh
-         i7oQ==
-X-Gm-Message-State: APjAAAW3Et8DwK01Hm5huGuI+1z+IdpYUtfPsEg8kliU4u5TMThy2IBb
-        rurr30VdA0Pp7plihC9FQNvk7A==
-X-Google-Smtp-Source: APXvYqwgrX8m55ZYTOzrECuhHF6YZsdnmGWgqzcToJx9OiFpqNA9rfK65uaAw5d6QYwQwUEAquscGg==
-X-Received: by 2002:a67:2e15:: with SMTP id u21mr30135920vsu.50.1558735765273;
-        Fri, 24 May 2019 15:09:25 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id v14sm2014695vkd.4.2019.05.24.15.09.23
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 May 2019 15:09:24 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hUINP-0002IN-DS; Fri, 24 May 2019 19:09:23 -0300
-Date:   Fri, 24 May 2019 19:09:23 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jerome Glisse <jglisse@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 00/11] mm/hmm: Various revisions from a locking/code
- review
-Message-ID: <20190524220923.GA8519@ziepe.ca>
-References: <20190523153436.19102-1-jgg@ziepe.ca>
- <20190524143649.GA14258@ziepe.ca>
- <20190524164902.GA3346@redhat.com>
- <20190524165931.GF16845@ziepe.ca>
- <20190524170148.GB3346@redhat.com>
- <20190524175203.GG16845@ziepe.ca>
- <20190524180321.GD3346@redhat.com>
- <20190524183225.GI16845@ziepe.ca>
- <20190524184608.GE3346@redhat.com>
+        id S1726129AbfEYAWS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 May 2019 20:22:18 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:51490 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbfEYAWS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 May 2019 20:22:18 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4P0Ihx9043620;
+        Sat, 25 May 2019 00:22:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : sender : to : cc : subject : references :
+ in-reply-to : content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=BZLkG88/rpbKWV3c9e0DsG1TPHe+UfFr9uJsJcunxds=;
+ b=PO+QyZCVRu1PIkGmw4mmEpOsk743Z4Tc/mQj5IWtoEV8fgGWauc8G1EqT64Z+MP9D/+U
+ Gu57Dnk8fzYI1JwENvE4NwD4Gn/3oTN1ARWPieLF3rAiUc3AAp4BFITFRheH1DZogFRB
+ KUG//n+3MS3lMFvAsllvgRDbG65qZpBGUwBlayqsOQrd8b2cZ10wGbGlt97Gr2fHFNHW
+ 84KieRy7CimyO6rgf05yREpAnM6D3pNBoSR9rkgNSV4LEGiD3jU/de1aT1PJCn5iJV8X
+ NcYvnRDv/eBi5MQBwnOZwmnIQ101mJADX9mE+fWwd+8SYy5mwT7e3Fztd9mkkHWREW3o lw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2smsk5kthy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 25 May 2019 00:22:14 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4P0Leax069274;
+        Sat, 25 May 2019 00:22:13 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2smsgu4uk6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 25 May 2019 00:22:13 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4P0MCsV004622;
+        Sat, 25 May 2019 00:22:13 GMT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190524184608.GE3346@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-ID: <249b6ede-bf1e-4d33-aeee-2f177d244495@default>
+Date:   Sat, 25 May 2019 00:22:10 +0000 (UTC)
+From:   Zuoyu Tao <zuoyu.tao@oracle.com>
+To:     Gerd Rausch <gerd.rausch@oracle.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org,
+        Aron Silverton <aron.silverton@oracle.com>,
+        Sharon Liu <sharon.s.liu@oracle.com>
+Subject: RE: <infiniband/verbs.h> & ICC
+References: <54a40ca4-707b-d7a8-16b0-7d475e64f957@oracle.com>
+ <20190524013033.GA13582@mellanox.com>
+ <e9d86a45-a3b0-e303-027b-02474ed3a2ac@oracle.com>
+ <309e44c2-f520-4e35-9f50-5e6932d7b40f@default>
+ <d2f25bde-488f-dc37-b751-53ec602d66be@oracle.com>
+In-Reply-To: <d2f25bde-488f-dc37-b751-53ec602d66be@oracle.com>
+X-Priority: 3
+X-Mailer: Oracle Beehive Extensions for Outlook 2.0.1.9.1  (1003210) [OL
+ 16.0.4849.0 (x86)]
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9267 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905250000
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9267 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905250000
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 24, 2019 at 02:46:08PM -0400, Jerome Glisse wrote:
-> > Here is the big 3 CPU ladder diagram that shows how 'valid' does not
-> > work:
-> > 
-> >        CPU0                                               CPU1                                          CPU2
-> >                                                         DEVICE PAGE FAULT
-> >                                                         range = hmm_range_register()
-> >
-> >   // Overlaps with range
-> >   hmm_invalidate_start()
-> >     range->valid = false
-> >     ops->sync_cpu_device_pagetables()
-> >       take_lock(driver->update);
-> >        // Wipe out page tables in device, enable faulting
-> >       release_lock(driver->update);
-> >                                                                                                    // Does not overlap with range
-> >                                                                                                    hmm_invalidate_start()
-> >                                                                                                    hmm_invalidate_end()
-> >                                                                                                        list_for_each
-> >                                                                                                            range->valid =  true
-> 
->                                                                                                              ^
-> No this can not happen because CPU0 still has invalidate_range in progress and
-> thus hmm->notifiers > 0 so the hmm_invalidate_range_end() will not set the
-> range->valid as true.
+Hi Gerd,=20
 
-Oh, Okay, I now see how this all works, thank you
+Here's the response I got back from Simon:=20
 
-> > And I can make this more complicated (ie overlapping parallel
-> > invalidates, etc) and show any 'bool' valid cannot work.
-> 
-> It does work. 
+=09there is an outstanding request with Intel, which would allow us to get =
+rid of -strict-ansi. But until then, it seems to be a choice between (A) on=
+e line change =09every time we update verbs.h and (B) let in the code chang=
+es that break GCC build.
 
-Well, I ment the bool alone cannot work, but this is really bool + a
-counter.
+=09I'd vote for (A), since it isn't really that often that we pick new verb=
+s.h.
 
-> If you want i can remove the range->valid = true from the
-> hmm_invalidate_range_end() and move it within hmm_range_wait_until_valid()
-> ie modifying the hmm_range_wait_until_valid() logic, this might look
-> cleaner.
+So I suppose for now if the upstream doesn't pick up the enum change, we ca=
+n make the change in our private verbs.h copy.=20
 
-Let me reflect on it for a bit. I have to say I don't like the clarity
-here, and I don't like the valid=true loop in the invalidate_end, it
-is pretty clunky.
+Thanks,
 
-I'm thinking a more obvious API for drivers, as something like:
+Zuoyu=20
 
-again:
-    hmm_range_start();
-     [..]
-    if (hmm_range_test_retry())
-          goto again
+-----Original Message-----
+From: Gerd Rausch=20
+Sent: Friday, May 24, 2019 12:26 PM
+To: Zuoyu Tao <zuoyu.tao@oracle.com>; Jason Gunthorpe <jgg@mellanox.com>
+Cc: linux-rdma@vger.kernel.org; Aron Silverton <aron.silverton@oracle.com>;=
+ Sharon Liu <sharon.s.liu@oracle.com>
+Subject: Re: <infiniband/verbs.h> & ICC
 
-    driver_lock()
-      if (hmm_range_end())
-           goto again
-    driver_unlock();
+Hi,
 
-Just because it makes it very clear to the driver author what to do
-and how this is working, and makes it clear that there is no such
-thing as 'valid' - what we *really* have is a locking collision
-forcing retry. ie this is really closer to a seq-lock scheme, not a
-valid/invalid scheme. Being able to explain the concept does matter
-for maintainability...
+It's the "-strict-ansi" that makes it fail:
 
-And I'm thinking the above API design would comfortably support a more
-efficient seq-lock like approach without the loop in invalidate_end..
+% icc -c -strict-ansi foo.c
+foo.c(2): error: enumeration value is out of "int" range
+  =09enum { FOO =3D 1UL << 31 } foo;
 
-But I haven't quite thought it all through yet. Next week!
 
-> > I still think the best solution is to move device_lock() into mirror
-> > and have hmm manage it for the driver as ODP does. It is certainly the
-> > simplest solution to understand.
-> 
-> It is un-efficient and would block further than needed forward progress
-> by mm code.
+Zuoyu, is it possible to _not_ use "-strict-ansi"?
 
-I'm not sure how you get to that, we already have the device_lock()
-and it already blocks forward progress by mm code.
+Thanks,
 
-Really the big unfortunate thing here is that valid is manipulated
-outside the device_lock, but really, logically, it is covered under
-the device_lock
+  Gerd
 
-Jason
+On 24/05/2019 11.59, Zuoyu Tao wrote:
+> Here were the compiler flags used with ICC:
+>=20
+> -trigraphs -fno-omit-frame-pointer -fp-model source  -fno-strict-aliasing=
+  -mIPOPT_clone_max_total_clones=3D0 -mP2OPT_hpo_enable_short_trip_vec=3DF =
+-sox=3Dprofile -sox=3Dinline   -no-global-hoist -mP2OPT_tls_control=3D0  -w=
+d191 -wd175 -wd188 -wd810 -we127 -we1345 -we1338 -wd279 -wd186 -wd1572 -wd5=
+89 -wd11505 -we592 -wd69 -we172 -Qoption,cpp,--treat_func_as_string_literal=
+ -mP2OPT_spill_parms=3DT -wd11505 -wd411 -wd273 -ww174    -we266    -ww279 =
+   -we589    -we810    -we1011   -ww1418   -strict-ansi -wd66     -wd76    =
+ -wd82     -wd94     -we102    -wd271    -wd424    -wd561    -wd662    -wd1=
+511    -std=3Dc99 -ww344 -we137   -fPIC -mP2OPT_tls_control=3D2
+>=20
+> -----Original Message-----
+> From: Gerd Rausch
+> Sent: Thursday, May 23, 2019 11:15 PM
+> To: Jason Gunthorpe <jgg@mellanox.com>
+> Cc: linux-rdma@vger.kernel.org; Aron Silverton=20
+> <aron.silverton@oracle.com>; Sharon Liu <sharon.s.liu@oracle.com>;=20
+> ZUOYU.TAO <zuoyu.tao@oracle.com>
+> Subject: Re: <infiniband/verbs.h> & ICC
+>=20
+> +Zuoyu,
+>=20
+> Hi Zuoyo,
+>=20
+> What compiler flags were you using while compiling the <verbs.h> file thr=
+owing the error about 'enumeration value is out of "int" range'?
+>=20
+>=20
+> On 23/05/2019 18.30, Jason Gunthorpe wrote:
+>> On Thu, May 23, 2019 at 03:57:29PM -0700, Gerd Rausch wrote:
+>>>
+>>> error: enumeration value is out of "int" range
+>>>          IBV_RX_HASH_INNER =3D (1UL << 31),
+>>
+>> I assume you are running with some higher warning flags and -Werror?
+>> gcc will not emit this warning without -Wpedantic
+>>
+>=20
+> Perhaps. I've added Zuoyu, who reported this issue to this e-mail thread.
+>=20
+>>
+>>> Since "int" is signed, it can't hold the unsigned value of 1UL<<31=20
+>>> on target platforms with sizeof(int) <=3D 4.
+>>
+>> Pedentically yes, but gcc and any compiler that can compile on linux=20
+>> supports an extension where the underlying type of an enum constant=20
+>> is automatically increased until it can hold the value of the constant.
+>> In this case the constant is type promoted to long, IIRC.
+>>
+>=20
+> Evidently ICC supports that as well:
+> % icc --version
+> icc (ICC) 17.0.5 20170817
+> Copyright (C) 1985-2017 Intel Corporation.  All rights reserved.
+>=20
+> % cat foo.c
+> enum { FOO =3D 1UL << 31 } foo =3D FOO;
+>=20
+> % icc -c -g foo.c && gdb -ex 'ptype foo' -ex 'print sizeof foo' foo.o=20
+> type =3D enum {FOO =3D -2147483648}
+> $1 =3D 4
+>=20
+> % cat bar.c
+> enum { FOO =3D 1UL << 31, BAR =3D -1 } bar =3D BAR; % icc -c -g bar.c && =
+gdb=20
+> -ex 'ptype bar' -ex 'print sizeof bar' bar.o type =3D enum {FOO =3D=20
+> -2147483648, BAR =3D -1}
+> $1 =3D 8
+>=20
+> I can't say that I'm thrilled with this behavior though, as it appears er=
+ror-prone:
+> As soon as an enum value goes out of range for an "int", the type silentl=
+y changes, potentially rendering structures and functions silently incompat=
+ible.
+> It's quite the pitfall (e.g. the foo.c vs bar.c case above).
+>=20
+>>
+>> Can you clarify if icc is being run in some wonky mode that is=20
+>> causing this warning? AFAIK icc will compile the linux kernel, and=20
+>> the kernel makes extensive use of this extension. So I think the=20
+>> compiler is not configured properly.
+>>
+>=20
+> I've added Zuoyu to the distribution to shed some light on that.
+>=20
+>> IIRC I looked at this once for -Wpedantic support and decided it was=20
+>> a lot of work as there are more cases than just this.
+>>
+>=20
+> Not exactly shocking news ;-)
+>=20
+> Thanks for providing the information,
+>=20
+>   Gerd
+>=20
