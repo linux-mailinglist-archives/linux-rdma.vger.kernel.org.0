@@ -2,157 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6C92A991
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 May 2019 14:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311452A99B
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 May 2019 14:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727658AbfEZMNi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 May 2019 08:13:38 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:6641 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726296AbfEZMNi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 May 2019 08:13:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1558872816; x=1590408816;
-  h=subject:to:references:from:message-id:date:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=F3/UOtZnUpISQ5KbL7g+fO4/mNnlzApmf07O7DIhCkE=;
-  b=MLoCe2BL0UVrr/AtxPpm+oBrzuFTrjXSgT56V0BySPnecc4L3xBgFO92
-   tkPnofqKqH4SdlqDNCm85Ow0q5oJXopLFRhB2s1LA43NHYmkVRyZMQnIQ
-   0AVUqv6MJlebA+1u3LBVUEpoF/lahGuCvwYZzCzCaCZOs1zP/lIQwltHv
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.60,514,1549929600"; 
-   d="scan'208";a="734804937"
-Received: from iad6-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-f273de60.us-east-1.amazon.com) ([10.124.125.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 26 May 2019 12:13:35 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-f273de60.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x4QCDYZS106068
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
-        Sun, 26 May 2019 12:13:35 GMT
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 26 May 2019 12:13:34 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.140) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 26 May 2019 12:13:31 +0000
-Subject: Re: [PATCH for-next v1 12/12] SIW addition to kernel build
- environment
-To:     Bernard Metzler <bmt@zurich.ibm.com>, <linux-rdma@vger.kernel.org>
-References: <20190526114156.6827-1-bmt@zurich.ibm.com>
- <20190526114156.6827-13-bmt@zurich.ibm.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <a6373742-6d27-ad4b-ff6d-61f00db663d4@amazon.com>
-Date:   Sun, 26 May 2019 15:13:26 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.6.1
+        id S1727741AbfEZMXy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 May 2019 08:23:54 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:40518 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727577AbfEZMXy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 26 May 2019 08:23:54 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4QCLchB001282;
+        Sun, 26 May 2019 05:23:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=HIPHPhbwdNJDlQ0Y1LqTXu0wTZnLIEcsKOh08Mk5LUU=;
+ b=g4myCAvQ1gYUcMjhPBqxjGDYP0s2Tiuct8s/HXOpty5WX3nVtb7hJRifmJFHCKzh4xhE
+ v+EsgKXTqN5/OjBKahURv1dRII5iTEWj8MC7eqnxGQmQwZiDXPueN/pPZ28zjyoaHAZY
+ EgK5QYZwUMaN5gFbOUqPrPudqgXUmK5B+47v4MlR5Bcp0WpfxMD5sNEdKMeC8C5OUfQx
+ VTScLOiSzcdlnfpWfTMYfhZ5teVh9piOCHlfHb4jszDnkBhMSVwIaNQaLW5A+4x5ohHx
+ UvPzlT7agdZ796ACTD1fxuv5OZ7u7zgyp0+Fiy+BUEIz4DHT2QhxZ71qCmtSqfhrackf yw== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2sq57fubsh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 26 May 2019 05:23:48 -0700
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Sun, 26 May
+ 2019 05:23:47 -0700
+Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
+ Transport; Sun, 26 May 2019 05:23:47 -0700
+Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
+        by maili.marvell.com (Postfix) with ESMTP id 2410B3F703F;
+        Sun, 26 May 2019 05:23:44 -0700 (PDT)
+From:   Michal Kalderon <michal.kalderon@marvell.com>
+To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
+        <davem@davemloft.net>
+CC:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>
+Subject: [PATCH v2 net-next 00/11] qed*: Improve performance on 100G link for offload protocols
+Date:   Sun, 26 May 2019 15:22:19 +0300
+Message-ID: <20190526122230.30039-1-michal.kalderon@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
-In-Reply-To: <20190526114156.6827-13-bmt@zurich.ibm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.140]
-X-ClientProxiedBy: EX13D12UWA002.ant.amazon.com (10.43.160.88) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-26_08:,,
+ signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 26/05/2019 14:41, Bernard Metzler wrote:
-> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
-> ---
->  MAINTAINERS                        |  7 +++++++
->  drivers/infiniband/Kconfig         |  1 +
->  drivers/infiniband/sw/Makefile     |  1 +
->  drivers/infiniband/sw/siw/Kconfig  | 17 +++++++++++++++++
->  drivers/infiniband/sw/siw/Makefile | 12 ++++++++++++
->  5 files changed, 38 insertions(+)
->  create mode 100644 drivers/infiniband/sw/siw/Kconfig
->  create mode 100644 drivers/infiniband/sw/siw/Makefile
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 5cfbea4ce575..3b437abffc39 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14545,6 +14545,13 @@ M:	Chris Boot <bootc@bootc.net>
->  S:	Maintained
->  F:	drivers/leds/leds-net48xx.c
->  
-> +SOFT-RDMA DRIVER (siw)
+This patch series modifies the current implementation of PF selection.
+The refactoring of the llh code enables setting additional filters
+(mac / protocol) per PF, and improves performance for offload protocols
+(RoCE, iWARP, iSCSI, fcoe) on 100G link (was capped at 90G per single
+PF).
 
-SOFT-RDMA or SOFT-IWARP RDMA?
+Improved performance on 100G link is achieved by configuring engine
+affinty to each PF.
+The engine affinity is read from the Management FW and hw is configured accordingly.
+A new hw resource called PPFID is exposed and an API is introduced to utilize
+it. This additional resource enables setting the affinity of a PF and providing
+more classification rules per PF.
+qedr,qedi,qedf are also modified as part of the series. Without the
+changes functionality is broken.
 
-> +M:	Bernard Metzler (bmt@zurich,ibm.com)
+v1 --> v2
+---------
+- Remove iWARP module parameter. Instead use devlink param infrastructure
+  for setting the iwarp_cmt mode. Additional patch added to the series for
+  adding the devlink support.
 
-Should be a dot between zurich and ibm?
+- Fix kbuild test robot warning on qed_llh_filter initialization.
 
-> +L:	linux-rdma@vger.kernel.org
-> +S:	Supported
-> +F:	drivers/infiniband/sw/rxe/
-> +F:	include/uapi/rdma/siw-abi.h
-> +
->  SOFT-ROCE DRIVER (rxe)
->  M:	Moni Shoua <monis@mellanox.com>
->  L:	linux-rdma@vger.kernel.org
-> diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-> index cbfbea49f126..2013ef848fd1 100644
-> --- a/drivers/infiniband/Kconfig
-> +++ b/drivers/infiniband/Kconfig
-> @@ -107,6 +107,7 @@ source "drivers/infiniband/hw/hfi1/Kconfig"
->  source "drivers/infiniband/hw/qedr/Kconfig"
->  source "drivers/infiniband/sw/rdmavt/Kconfig"
->  source "drivers/infiniband/sw/rxe/Kconfig"
-> +source "drivers/infiniband/sw/siw/Kconfig"
->  endif
->  
->  source "drivers/infiniband/ulp/ipoib/Kconfig"
-> diff --git a/drivers/infiniband/sw/Makefile b/drivers/infiniband/sw/Makefile
-> index 8b095b27db87..d37610fcbbc7 100644
-> --- a/drivers/infiniband/sw/Makefile
-> +++ b/drivers/infiniband/sw/Makefile
-> @@ -1,2 +1,3 @@
->  obj-$(CONFIG_INFINIBAND_RDMAVT)		+= rdmavt/
->  obj-$(CONFIG_RDMA_RXE)			+= rxe/
-> +obj-$(CONFIG_RDMA_SIW)			+= siw/
-> diff --git a/drivers/infiniband/sw/siw/Kconfig b/drivers/infiniband/sw/siw/Kconfig
-> new file mode 100644
-> index 000000000000..94f684174ce3
-> --- /dev/null
-> +++ b/drivers/infiniband/sw/siw/Kconfig
-> @@ -0,0 +1,17 @@
-> +config RDMA_SIW
-> +	tristate "Software RDMA over TCP/IP (iWARP) driver"
-> +	depends on INET && INFINIBAND && CRYPTO_CRC32
-> +	help
-> +	This driver implements the iWARP RDMA transport over
-> +	the Linux TCP/IP network stack. It enables a system with a
-> +	standard Ethernet adapter to interoperate with a iWARP
-> +	adapter or with another system running the SIW driver.
-> +	(See also RXE which is a similar software driver for RoCE.)
-> +
-> +	The driver interfaces with the Linux RDMA stack and
-> +	implements both a kernel and user space RDMA verbs API.
-> +	The user space verbs API requires a support
-> +	library named libsiw which is loaded by the generic user
-> +	space verbs API, libibverbs. To implement RDMA over
-> +	TCP/IP, the driver further interfaces with the Linux
-> +	in-kernel TCP socket layer.
-> diff --git a/drivers/infiniband/sw/siw/Makefile b/drivers/infiniband/sw/siw/Makefile
-> new file mode 100644
-> index 000000000000..ff190cb0d254
-> --- /dev/null
-> +++ b/drivers/infiniband/sw/siw/Makefile
-> @@ -0,0 +1,12 @@
-> +obj-$(CONFIG_RDMA_SIW) += siw.o
-> +
-> +siw-y := \
-> +	siw_cm.o \
-> +	siw_cq.o \
-> +	siw_debug.o \
-> +	siw_main.o \
-> +	siw_mem.o \
-> +	siw_qp.o \
-> +	siw_qp_tx.o \
-> +	siw_qp_rx.o \
-> +	siw_verbs.o
-> 
+- Remove comments inside function calls
+
+Chad Dupuis (1):
+  qedf: Use hwfns and affin_hwfn_idx to get MSI-X vector index to use
+
+Manish Rangankar (2):
+  Revert "scsi: qedi: Allocate IRQs based on msix_cnt"
+  qedi: Use hwfns and affin_hwfn_idx to get MSI-X vector index
+
+Michal Kalderon (8):
+  qed: Modify api for performing a dmae to another PF
+  qed: Add llh ppfid interface and 100g support for offload protocols
+  qed*: Change hwfn used for sb initialization
+  qed: Modify offload protocols to use the affined engine
+  qedr: Change the MSI-X vectors selection to be based on affined engine
+  qed: Set the doorbell address correctly
+  qed: Add qed devlink parameters table
+  qed*: Add iWARP 100g support
+
+ drivers/infiniband/hw/qedr/main.c              |   25 +-
+ drivers/infiniband/hw/qedr/qedr.h              |    2 +
+ drivers/net/ethernet/qlogic/qed/qed.h          |   24 +-
+ drivers/net/ethernet/qlogic/qed/qed_cxt.c      |    5 +-
+ drivers/net/ethernet/qlogic/qed/qed_debug.c    |    2 +-
+ drivers/net/ethernet/qlogic/qed/qed_dev.c      | 1275 +++++++++++++++++++-----
+ drivers/net/ethernet/qlogic/qed/qed_dev_api.h  |  113 ++-
+ drivers/net/ethernet/qlogic/qed/qed_fcoe.c     |   26 +-
+ drivers/net/ethernet/qlogic/qed/qed_hsi.h      |   16 +-
+ drivers/net/ethernet/qlogic/qed/qed_hw.c       |   44 +-
+ drivers/net/ethernet/qlogic/qed/qed_init_ops.c |    9 +-
+ drivers/net/ethernet/qlogic/qed/qed_int.c      |    8 +-
+ drivers/net/ethernet/qlogic/qed/qed_iscsi.c    |   35 +-
+ drivers/net/ethernet/qlogic/qed/qed_iwarp.c    |   24 +-
+ drivers/net/ethernet/qlogic/qed/qed_iwarp.h    |    4 +-
+ drivers/net/ethernet/qlogic/qed/qed_l2.c       |    4 +-
+ drivers/net/ethernet/qlogic/qed/qed_ll2.c      |  406 +++++---
+ drivers/net/ethernet/qlogic/qed/qed_main.c     |  157 ++-
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c      |   65 ++
+ drivers/net/ethernet/qlogic/qed/qed_mcp.h      |   16 +
+ drivers/net/ethernet/qlogic/qed/qed_rdma.c     |   75 +-
+ drivers/net/ethernet/qlogic/qed/qed_reg_addr.h |    6 +
+ drivers/net/ethernet/qlogic/qed/qed_sriov.c    |    3 +-
+ drivers/net/ethernet/qlogic/qede/qede_main.c   |    3 +-
+ drivers/scsi/qedf/qedf_main.c                  |   39 +-
+ drivers/scsi/qedi/qedi_main.c                  |   34 +-
+ include/linux/qed/qed_if.h                     |   10 +-
+ include/linux/qed/qed_rdma_if.h                |    2 +
+ 28 files changed, 1810 insertions(+), 622 deletions(-)
+
+-- 
+2.14.5
+
