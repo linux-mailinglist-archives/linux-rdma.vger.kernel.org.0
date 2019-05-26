@@ -2,151 +2,192 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BEE2A9B4
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 May 2019 14:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8BD2AA8F
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 May 2019 17:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbfEZMYW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 May 2019 08:24:22 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:40678 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727883AbfEZMYW (ORCPT
+        id S1727767AbfEZP5d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Sun, 26 May 2019 11:57:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36614 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726744AbfEZP5d (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 26 May 2019 08:24:22 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4QCL9dD001198;
-        Sun, 26 May 2019 05:24:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=LyPqu8EHKJ51sX8YQ1q+jd1z8LLEAjPdntn9bqYx9hI=;
- b=H4HNCSydALyFJRIJh1beekbz5TS2ClWNF36c1KHuWft8TJjrTPFY9Ozm4UEKq9Lg0INw
- nq7Vv4V5KhEBnwElT25nEJRszYLd0O8lVsMh5U3EVy2grch17KfRy/3HjN9mCbIW4pxO
- vWt+w/hA4C7pPqp1uXtO0GwT7oZ5RV372CBJ3dHDCy7mT32lDnMLT3b7n7pXvFgDcPuM
- 2Vh/OIEUaiYO8g2ko9yCcGEhH/U6S5E2Z3I8f93jAX4EaozjWe26nzVwYVbsC+vCRp/l
- rwQUKXX8imw6ZEhecePtz1oaXw1LFM7+41UPUb4kXYKpPTWl7FBLnyAMuNHRCN8v+s+1 Hw== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2sq57fubu4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 26 May 2019 05:24:17 -0700
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Sun, 26 May
- 2019 05:24:16 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Sun, 26 May 2019 05:24:16 -0700
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id AFF893F7040;
-        Sun, 26 May 2019 05:24:13 -0700 (PDT)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
-        <davem@davemloft.net>
-CC:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>, Chad Dupuis <cdupuis@marvell.com>,
-        "Saurav Kashyap" <skashyap@marvell.com>
-Subject: [PATCH v2 net-next 11/11] qedf: Use hwfns and affin_hwfn_idx to get MSI-X vector index to use
-Date:   Sun, 26 May 2019 15:22:30 +0300
-Message-ID: <20190526122230.30039-12-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20190526122230.30039-1-michal.kalderon@marvell.com>
-References: <20190526122230.30039-1-michal.kalderon@marvell.com>
+        Sun, 26 May 2019 11:57:33 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4QFuZCL038609
+        for <linux-rdma@vger.kernel.org>; Sun, 26 May 2019 11:57:32 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.91])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2sqk4y74tr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Sun, 26 May 2019 11:57:31 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Sun, 26 May 2019 15:57:31 -0000
+Received: from us1a3-smtp07.a3.dal06.isc4sb.com (10.146.103.14)
+        by smtp.notes.na.collabserv.com (10.106.227.143) with smtp.notes.na.collabserv.com ESMTP;
+        Sun, 26 May 2019 15:57:27 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp07.a3.dal06.isc4sb.com
+          with ESMTP id 2019052615572757-327308 ;
+          Sun, 26 May 2019 15:57:27 +0000 
+In-Reply-To: <a6373742-6d27-ad4b-ff6d-61f00db663d4@amazon.com>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Gal Pressman" <galpress@amazon.com>
+Cc:     <linux-rdma@vger.kernel.org>
+Date:   Sun, 26 May 2019 15:57:27 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-26_08:,,
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <a6373742-6d27-ad4b-ff6d-61f00db663d4@amazon.com>,<20190526114156.6827-1-bmt@zurich.ibm.com>
+ <20190526114156.6827-13-bmt@zurich.ibm.com>
+X-Mailer: IBM iNotes ($HaikuForm 1048) | IBM Domino Build
+ SCN1812108_20180501T0841_FP38 April 10, 2019 at 11:56
+X-LLNOutbound: False
+X-Disclaimed: 303
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19052615-9951-0000-0000-00000CA6361A
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.032659
+X-IBM-SpamModules-Versions: BY=3.00011167; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01208918; UDB=6.00635017; IPR=6.00989921;
+ BA=6.00006318; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
+ ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00027059; XFM=3.00000015;
+ UTC=2019-05-26 15:57:29
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-05-26 12:56:54 - 6.00009971
+x-cbparentid: 19052615-9952-0000-0000-00003CB23854
+Message-Id: <OF76C58353.DE6402CC-ON00258406.0057A85B-00258406.0057A861@notes.na.collabserv.com>
+Subject: Re:  Re: [PATCH for-next v1 12/12] SIW addition to kernel build environment
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-26_12:,,
  signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chad Dupuis <cdupuis@marvell.com>
+-----"Gal Pressman" <galpress@amazon.com> wrote: -----
 
-MSI-X vector index is determined using qed device information and
-affinity to use.
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>,
+><linux-rdma@vger.kernel.org>
+>From: "Gal Pressman" <galpress@amazon.com>
+>Date: 05/26/2019 02:13PM
+>Subject: [EXTERNAL] Re: [PATCH for-next v1 12/12] SIW addition to
+>kernel build environment
+>
+>On 26/05/2019 14:41, Bernard Metzler wrote:
+>> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+>> ---
+>>  MAINTAINERS                        |  7 +++++++
+>>  drivers/infiniband/Kconfig         |  1 +
+>>  drivers/infiniband/sw/Makefile     |  1 +
+>>  drivers/infiniband/sw/siw/Kconfig  | 17 +++++++++++++++++
+>>  drivers/infiniband/sw/siw/Makefile | 12 ++++++++++++
+>>  5 files changed, 38 insertions(+)
+>>  create mode 100644 drivers/infiniband/sw/siw/Kconfig
+>>  create mode 100644 drivers/infiniband/sw/siw/Makefile
+>> 
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 5cfbea4ce575..3b437abffc39 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -14545,6 +14545,13 @@ M:	Chris Boot <bootc@bootc.net>
+>>  S:	Maintained
+>>  F:	drivers/leds/leds-net48xx.c
+>>  
+>> +SOFT-RDMA DRIVER (siw)
+>
+>SOFT-RDMA or SOFT-IWARP RDMA?
 
-Signed-off-by: Chad Dupuis <cdupuis@marvell.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/scsi/qedf/qedf_main.c | 39 ++++++++++++++++++++++++++++-----------
- 1 file changed, 28 insertions(+), 11 deletions(-)
+Yes, thanks, sure, it is SOFT-IWARP. 
+>
+>> +M:	Bernard Metzler (bmt@zurich,ibm.com)
+>
+>Should be a dot between zurich and ibm?
+>
+Of course....
 
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index 9f9431a4cc0e..dc4cad1d5dcc 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -2086,16 +2086,21 @@ static void qedf_simd_int_handler(void *cookie)
- static void qedf_sync_free_irqs(struct qedf_ctx *qedf)
- {
- 	int i;
-+	u16 vector_idx = 0;
-+	u32 vector;
- 
- 	if (qedf->int_info.msix_cnt) {
- 		for (i = 0; i < qedf->int_info.used_cnt; i++) {
--			synchronize_irq(qedf->int_info.msix[i].vector);
--			irq_set_affinity_hint(qedf->int_info.msix[i].vector,
--			    NULL);
--			irq_set_affinity_notifier(qedf->int_info.msix[i].vector,
--			    NULL);
--			free_irq(qedf->int_info.msix[i].vector,
--			    &qedf->fp_array[i]);
-+			vector_idx = i * qedf->dev_info.common.num_hwfns +
-+				qed_ops->common->get_affin_hwfn_idx(qedf->cdev);
-+			QEDF_INFO(&qedf->dbg_ctx, QEDF_LOG_DISC,
-+				  "Freeing IRQ #%d vector_idx=%d.\n",
-+				  i, vector_idx);
-+			vector = qedf->int_info.msix[vector_idx].vector;
-+			synchronize_irq(vector);
-+			irq_set_affinity_hint(vector, NULL);
-+			irq_set_affinity_notifier(vector, NULL);
-+			free_irq(vector, &qedf->fp_array[i]);
- 		}
- 	} else
- 		qed_ops->common->simd_handler_clean(qedf->cdev,
-@@ -2108,11 +2113,19 @@ static void qedf_sync_free_irqs(struct qedf_ctx *qedf)
- static int qedf_request_msix_irq(struct qedf_ctx *qedf)
- {
- 	int i, rc, cpu;
-+	u16 vector_idx = 0;
-+	u32 vector;
- 
- 	cpu = cpumask_first(cpu_online_mask);
- 	for (i = 0; i < qedf->num_queues; i++) {
--		rc = request_irq(qedf->int_info.msix[i].vector,
--		    qedf_msix_handler, 0, "qedf", &qedf->fp_array[i]);
-+		vector_idx = i * qedf->dev_info.common.num_hwfns +
-+			qed_ops->common->get_affin_hwfn_idx(qedf->cdev);
-+		QEDF_INFO(&qedf->dbg_ctx, QEDF_LOG_DISC,
-+			  "Requesting IRQ #%d vector_idx=%d.\n",
-+			  i, vector_idx);
-+		vector = qedf->int_info.msix[vector_idx].vector;
-+		rc = request_irq(vector, qedf_msix_handler, 0, "qedf",
-+				 &qedf->fp_array[i]);
- 
- 		if (rc) {
- 			QEDF_WARN(&(qedf->dbg_ctx), "request_irq failed.\n");
-@@ -2121,8 +2134,7 @@ static int qedf_request_msix_irq(struct qedf_ctx *qedf)
- 		}
- 
- 		qedf->int_info.used_cnt++;
--		rc = irq_set_affinity_hint(qedf->int_info.msix[i].vector,
--		    get_cpu_mask(cpu));
-+		rc = irq_set_affinity_hint(vector, get_cpu_mask(cpu));
- 		cpu = cpumask_next(cpu, cpu_online_mask);
- 	}
- 
-@@ -3068,6 +3080,11 @@ static int __qedf_probe(struct pci_dev *pdev, int mode)
- 		goto err1;
- 	}
- 
-+	QEDF_INFO(&qedf->dbg_ctx, QEDF_LOG_DISC,
-+		  "dev_info: num_hwfns=%d affin_hwfn_idx=%d.\n",
-+		  qedf->dev_info.common.num_hwfns,
-+		  qed_ops->common->get_affin_hwfn_idx(qedf->cdev));
-+
- 	/* queue allocation code should come here
- 	 * order should be
- 	 * 	slowpath_start
--- 
-2.14.5
+Thanks a lot!
+Bernard
+
+
+>> +L:	linux-rdma@vger.kernel.org
+>> +S:	Supported
+>> +F:	drivers/infiniband/sw/rxe/
+>> +F:	include/uapi/rdma/siw-abi.h
+>> +
+>>  SOFT-ROCE DRIVER (rxe)
+>>  M:	Moni Shoua <monis@mellanox.com>
+>>  L:	linux-rdma@vger.kernel.org
+>> diff --git a/drivers/infiniband/Kconfig
+>b/drivers/infiniband/Kconfig
+>> index cbfbea49f126..2013ef848fd1 100644
+>> --- a/drivers/infiniband/Kconfig
+>> +++ b/drivers/infiniband/Kconfig
+>> @@ -107,6 +107,7 @@ source "drivers/infiniband/hw/hfi1/Kconfig"
+>>  source "drivers/infiniband/hw/qedr/Kconfig"
+>>  source "drivers/infiniband/sw/rdmavt/Kconfig"
+>>  source "drivers/infiniband/sw/rxe/Kconfig"
+>> +source "drivers/infiniband/sw/siw/Kconfig"
+>>  endif
+>>  
+>>  source "drivers/infiniband/ulp/ipoib/Kconfig"
+>> diff --git a/drivers/infiniband/sw/Makefile
+>b/drivers/infiniband/sw/Makefile
+>> index 8b095b27db87..d37610fcbbc7 100644
+>> --- a/drivers/infiniband/sw/Makefile
+>> +++ b/drivers/infiniband/sw/Makefile
+>> @@ -1,2 +1,3 @@
+>>  obj-$(CONFIG_INFINIBAND_RDMAVT)		+= rdmavt/
+>>  obj-$(CONFIG_RDMA_RXE)			+= rxe/
+>> +obj-$(CONFIG_RDMA_SIW)			+= siw/
+>> diff --git a/drivers/infiniband/sw/siw/Kconfig
+>b/drivers/infiniband/sw/siw/Kconfig
+>> new file mode 100644
+>> index 000000000000..94f684174ce3
+>> --- /dev/null
+>> +++ b/drivers/infiniband/sw/siw/Kconfig
+>> @@ -0,0 +1,17 @@
+>> +config RDMA_SIW
+>> +	tristate "Software RDMA over TCP/IP (iWARP) driver"
+>> +	depends on INET && INFINIBAND && CRYPTO_CRC32
+>> +	help
+>> +	This driver implements the iWARP RDMA transport over
+>> +	the Linux TCP/IP network stack. It enables a system with a
+>> +	standard Ethernet adapter to interoperate with a iWARP
+>> +	adapter or with another system running the SIW driver.
+>> +	(See also RXE which is a similar software driver for RoCE.)
+>> +
+>> +	The driver interfaces with the Linux RDMA stack and
+>> +	implements both a kernel and user space RDMA verbs API.
+>> +	The user space verbs API requires a support
+>> +	library named libsiw which is loaded by the generic user
+>> +	space verbs API, libibverbs. To implement RDMA over
+>> +	TCP/IP, the driver further interfaces with the Linux
+>> +	in-kernel TCP socket layer.
+>> diff --git a/drivers/infiniband/sw/siw/Makefile
+>b/drivers/infiniband/sw/siw/Makefile
+>> new file mode 100644
+>> index 000000000000..ff190cb0d254
+>> --- /dev/null
+>> +++ b/drivers/infiniband/sw/siw/Makefile
+>> @@ -0,0 +1,12 @@
+>> +obj-$(CONFIG_RDMA_SIW) += siw.o
+>> +
+>> +siw-y := \
+>> +	siw_cm.o \
+>> +	siw_cq.o \
+>> +	siw_debug.o \
+>> +	siw_main.o \
+>> +	siw_mem.o \
+>> +	siw_qp.o \
+>> +	siw_qp_tx.o \
+>> +	siw_qp_rx.o \
+>> +	siw_verbs.o
+>> 
+>
+>
 
