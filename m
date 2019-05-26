@@ -2,68 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 591622A965
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 May 2019 13:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F6F2A96F
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 May 2019 13:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727638AbfEZLaq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 May 2019 07:30:46 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:49650 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727621AbfEZLaq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 May 2019 07:30:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Jw4RVjb44Rl/ijGMDvXlIocM4n+wpJ+gzkrVGf7lYHI=; b=B9RbYvX+BRYnxapubpxxADejO
-        x66DQneKUCIAI1k9L+lDLC9ViSYCqJ/BatwnGD7a0pu9TzLVeiEfNw3idbXlvzBswV7SqthuEEAIx
-        Gug0nME/T60pDeZvnIb91NaU4p+NdlQz/hKNrAbTYbomQJcntR3p8L4MN4ayKwjOUxNQaxF7BFlQ9
-        3yFDRJB6uQ3Ezu7wghWk0H5Wy2JN8Bzl5/fQ0ht//A36yqfOwh+QxVBk3RI4xvRrwI1GRFmHg6Wb+
-        Fpau3zojmKqj2m8LJPCcW77VqLs0A6eS3vSfp/oSN0Zs/asSp3mvW7Su4ojTsUCIYBh10TTMv8Ych
-        fp2CzUbbw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1hUrMR-0002Dx-L2; Sun, 26 May 2019 11:30:43 +0000
-Date:   Sun, 26 May 2019 04:30:43 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     john.hubbard@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Christian Benvenuti <benve@cisco.com>, Jan Kara <jack@suse.cz>,
-        Ira Weiny <ira.weiny@intel.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2] infiniband/mm: convert put_page() to put_user_page*()
-Message-ID: <20190526113043.GA3518@infradead.org>
-References: <20190525014522.8042-1-jhubbard@nvidia.com>
- <20190525014522.8042-2-jhubbard@nvidia.com>
- <20190526110631.GD1075@bombadil.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190526110631.GD1075@bombadil.infradead.org>
-User-Agent: Mutt/1.9.2 (2017-12-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        id S1727658AbfEZLmd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 May 2019 07:42:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37926 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727621AbfEZLmc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 26 May 2019 07:42:32 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4QBb9an041102
+        for <linux-rdma@vger.kernel.org>; Sun, 26 May 2019 07:42:31 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2sqk4y24t5-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Sun, 26 May 2019 07:42:30 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
+        Sun, 26 May 2019 12:42:29 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Sun, 26 May 2019 12:42:26 +0100
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4QBgPag59965538
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 26 May 2019 11:42:25 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9EF4AA405F;
+        Sun, 26 May 2019 11:42:25 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BD7DA4054;
+        Sun, 26 May 2019 11:42:25 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 26 May 2019 11:42:25 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [PATCH for-next v1 00/12] SIW: Software iWarp RDMA (siw) driver
+Date:   Sun, 26 May 2019 13:41:44 +0200
+X-Mailer: git-send-email 2.17.2
+X-TM-AS-GCONF: 00
+x-cbid: 19052611-0012-0000-0000-0000031F8BFF
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19052611-0013-0000-0000-000021584C95
+Message-Id: <20190526114156.6827-1-bmt@zurich.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-26_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=643 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905260083
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, May 26, 2019 at 04:06:31AM -0700, Matthew Wilcox wrote:
-> I thought we agreed at LSFMM that the future is a new get_user_bvec()
-> / put_user_bvec().  This is largely going to touch the same places as
-> step 2 in your list above.  Is it worth doing step 2?
-> 
-> One of the advantages of put_user_bvec() is that it would be quite easy
-> to miss a conversion from put_page() to put_user_page(), but it'll be
-> a type error to miss a conversion from put_page() to put_user_bvec().
+This patch set contributes the SoftiWarp driver rebased for
+Kernel 5.2-rc1. SoftiWarp (siw) implements the iWarp RDMA
+protocol over kernel TCP sockets. The driver integrates with
+the linux-rdma framework.
 
-FYI, I've got a prototype for get_user_pages_bvec.  I'll post a RFC
-series in a few days.
+With this new driver version, the following things where
+changed, compared to the v8 RFC of siw:
+
+o Rebased to 5.2-rc1
+
+o All IDR code got removed.
+
+o Both MR and QP deallocation verbs now synchronously
+  free the resources referenced by the RDMA mid-layer.
+
+o IPv6 support was added.
+
+o For compatibility with Chelsio iWarp hardware, the RX
+  path was slightly reworked. It now allows packet intersection
+  between tagged and untagged RDMAP operations. While not
+  a defined behavior as of IETF RFC 5040/5041, some RDMA hardware
+  may intersect an ongoing outbound (large) tagged message, such
+  as an multisegment RDMA Read Response with sending an untagged
+  message, such as an RDMA Send frame. This behavior was only
+  detected in an NVMeF setup, where siw was used at target side,
+  and RDMA hardware at client side (during file write). siw now
+  implements two input paths for tagged and untagged messages each,
+  and allows the intersected placement of both messages.
+
+o The siw kernel abi file got renamed from siw_user.h to siw-abi.h.
+
+Many thanks for reviewing and testing the driver, especially to
+Steve, Leon, Jason, Doug, Olga, Dennis, Gal. You all helped to
+significantly improve the siw driver over the last year. It is
+very much appreciated.
+
+Many thanks!
+Bernard.
+
+Bernard Metzler (12):
+  iWarp wire packet format
+  SIW main include file
+  SIW network and RDMA core interface
+  SIW connection management
+  SIW application interface
+  SIW application buffer management
+  SIW queue pair methods
+  SIW transmit path
+  SIW receive path
+  SIW completion queue methods
+  SIW debugging
+  SIW addition to kernel build environment
+
+ MAINTAINERS                              |    7 +
+ drivers/infiniband/Kconfig               |    1 +
+ drivers/infiniband/sw/Makefile           |    1 +
+ drivers/infiniband/sw/siw/Kconfig        |   17 +
+ drivers/infiniband/sw/siw/Makefile       |   12 +
+ drivers/infiniband/sw/siw/iwarp.h        |  380 ++++
+ drivers/infiniband/sw/siw/siw.h          |  720 ++++++++
+ drivers/infiniband/sw/siw/siw_cm.c       | 2109 ++++++++++++++++++++++
+ drivers/infiniband/sw/siw/siw_cm.h       |  133 ++
+ drivers/infiniband/sw/siw/siw_cq.c       |  109 ++
+ drivers/infiniband/sw/siw/siw_debug.c    |  102 ++
+ drivers/infiniband/sw/siw/siw_debug.h    |   35 +
+ drivers/infiniband/sw/siw/siw_main.c     |  701 +++++++
+ drivers/infiniband/sw/siw/siw_mem.c      |  462 +++++
+ drivers/infiniband/sw/siw/siw_mem.h      |   74 +
+ drivers/infiniband/sw/siw/siw_qp.c       | 1345 ++++++++++++++
+ drivers/infiniband/sw/siw/siw_qp_rx.c    | 1537 ++++++++++++++++
+ drivers/infiniband/sw/siw/siw_qp_tx.c    | 1276 +++++++++++++
+ drivers/infiniband/sw/siw/siw_verbs.c    | 1778 ++++++++++++++++++
+ drivers/infiniband/sw/siw/siw_verbs.h    |  102 ++
+ include/uapi/rdma/rdma_user_ioctl_cmds.h |    1 +
+ include/uapi/rdma/siw-abi.h              |  186 ++
+ 22 files changed, 11088 insertions(+)
+ create mode 100644 drivers/infiniband/sw/siw/Kconfig
+ create mode 100644 drivers/infiniband/sw/siw/Makefile
+ create mode 100644 drivers/infiniband/sw/siw/iwarp.h
+ create mode 100644 drivers/infiniband/sw/siw/siw.h
+ create mode 100644 drivers/infiniband/sw/siw/siw_cm.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_cm.h
+ create mode 100644 drivers/infiniband/sw/siw/siw_cq.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_debug.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_debug.h
+ create mode 100644 drivers/infiniband/sw/siw/siw_main.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_mem.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_mem.h
+ create mode 100644 drivers/infiniband/sw/siw/siw_qp.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_qp_rx.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_qp_tx.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_verbs.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_verbs.h
+ create mode 100644 include/uapi/rdma/siw-abi.h
+
+-- 
+2.17.2
+
