@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7D82A974
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 May 2019 13:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEE52A97B
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 May 2019 13:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727727AbfEZLmg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 May 2019 07:42:36 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36836 "EHLO
+        id S1727611AbfEZLm4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 May 2019 07:42:56 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50496 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727621AbfEZLmg (ORCPT
+        by vger.kernel.org with ESMTP id S1727702AbfEZLm4 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 26 May 2019 07:42:36 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4QBgX1I111313
-        for <linux-rdma@vger.kernel.org>; Sun, 26 May 2019 07:42:33 -0400
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2sqk34te1t-1
+        Sun, 26 May 2019 07:42:56 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4QBgqgp114440
+        for <linux-rdma@vger.kernel.org>; Sun, 26 May 2019 07:42:53 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2sqk0gapt8-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Sun, 26 May 2019 07:42:32 -0400
+        for <linux-rdma@vger.kernel.org>; Sun, 26 May 2019 07:42:52 -0400
 Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
-        Sun, 26 May 2019 12:42:29 +0100
+        Sun, 26 May 2019 12:42:30 +0100
 Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
         Sun, 26 May 2019 12:42:28 +0100
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4QBgRrQ61604038
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4QBgRjt61604042
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Sun, 26 May 2019 11:42:27 GMT
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5ED41A4054;
+        by IMSVA (Postfix) with ESMTP id 9E4F9A4054;
         Sun, 26 May 2019 11:42:27 +0000 (GMT)
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B9B0A405C;
+        by IMSVA (Postfix) with ESMTP id 6B44CA405B;
         Sun, 26 May 2019 11:42:27 +0000 (GMT)
 Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
         by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
@@ -43,20 +43,20 @@ Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
 From:   Bernard Metzler <bmt@zurich.ibm.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [PATCH for-next v1 07/12] SIW queue pair methods
-Date:   Sun, 26 May 2019 13:41:51 +0200
+Subject: [PATCH for-next v1 08/12] SIW transmit path
+Date:   Sun, 26 May 2019 13:41:52 +0200
 X-Mailer: git-send-email 2.17.2
 In-Reply-To: <20190526114156.6827-1-bmt@zurich.ibm.com>
 References: <20190526114156.6827-1-bmt@zurich.ibm.com>
 X-TM-AS-GCONF: 00
-x-cbid: 19052611-0012-0000-0000-0000031F8C00
+x-cbid: 19052611-0016-0000-0000-0000027F9506
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19052611-0013-0000-0000-000021584C97
-Message-Id: <20190526114156.6827-8-bmt@zurich.ibm.com>
+x-cbparentid: 19052611-0017-0000-0000-000032DC9623
+Message-Id: <20190526114156.6827-9-bmt@zurich.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-26_08:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=4 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-1810050000 definitions=main-1905260084
@@ -67,16 +67,16 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
 ---
- drivers/infiniband/sw/siw/siw_qp.c | 1345 ++++++++++++++++++++++++++++
- 1 file changed, 1345 insertions(+)
- create mode 100644 drivers/infiniband/sw/siw/siw_qp.c
+ drivers/infiniband/sw/siw/siw_qp_tx.c | 1276 +++++++++++++++++++++++++
+ 1 file changed, 1276 insertions(+)
+ create mode 100644 drivers/infiniband/sw/siw/siw_qp_tx.c
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
 new file mode 100644
-index 000000000000..1ff04d1bb40a
+index 000000000000..4a22c94e55c4
 --- /dev/null
-+++ b/drivers/infiniband/sw/siw/siw_qp.c
-@@ -0,0 +1,1345 @@
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -0,0 +1,1276 @@
 +// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
 +
 +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
@@ -85,14 +85,13 @@ index 000000000000..1ff04d1bb40a
 +#include <linux/errno.h>
 +#include <linux/types.h>
 +#include <linux/net.h>
-+#include <linux/file.h>
 +#include <linux/scatterlist.h>
 +#include <linux/highmem.h>
-+#include <linux/vmalloc.h>
-+#include <asm/barrier.h>
++#include <linux/llist.h>
 +#include <net/sock.h>
 +#include <net/tcp_states.h>
 +#include <net/tcp.h>
++#include <linux/cpu.h>
 +
 +#include <rdma/iw_cm.h>
 +#include <rdma/ib_verbs.h>
@@ -105,1322 +104,1254 @@ index 000000000000..1ff04d1bb40a
 +#include "siw_mem.h"
 +#include "siw_debug.h"
 +
-+static char siw_qp_state_to_string[SIW_QP_STATE_COUNT][sizeof "TERMINATE"] = {
-+	[SIW_QP_STATE_IDLE] = "IDLE",
-+	[SIW_QP_STATE_RTR] = "RTR",
-+	[SIW_QP_STATE_RTS] = "RTS",
-+	[SIW_QP_STATE_CLOSING] = "CLOSING",
-+	[SIW_QP_STATE_TERMINATE] = "TERMINATE",
-+	[SIW_QP_STATE_ERROR] = "ERROR"
-+};
++#include <linux/kthread.h>
++
++static int siw_crc_txhdr(struct siw_iwarp_tx *ctx)
++{
++	crypto_shash_init(ctx->mpa_crc_hd);
++	return siw_crc_array(ctx->mpa_crc_hd, (u8 *)&ctx->pkt, ctx->ctrl_len);
++}
++
++#define MAX_HDR_INLINE					\
++	(((uint32_t)(sizeof(struct siw_rreq_pkt) -	\
++		     sizeof(struct iwarp_send))) & 0xF8)
++
++static struct page *siw_get_pblpage(struct siw_mem *mem, u64 addr, int *idx)
++{
++	struct siw_pbl *pbl = mem->pbl;
++	u64 offset = addr - mem->va;
++	u64 paddr = siw_pbl_get_buffer(pbl, offset, NULL, idx);
++
++	if (paddr)
++		return virt_to_page(paddr);
++
++	return NULL;
++}
 +
 +/*
-+ * iWARP (RDMAP, DDP and MPA) parameters as well as Softiwarp settings on a
-+ * per-RDMAP message basis. Please keep order of initializer. All MPA len
-+ * is initialized to minimum packet size.
++ * Copy short payload at provided destination payload address
 + */
-+struct iwarp_msg_info iwarp_pktinfo[RDMAP_TERMINATE + 1] = {
-+	{ /* RDMAP_RDMA_WRITE */
-+	  .hdr_len = sizeof(struct iwarp_rdma_write),
-+	  .ctrl.mpa_len = htons(sizeof(struct iwarp_rdma_write) - 2),
-+	  .ctrl.ddp_rdmap_ctrl = DDP_FLAG_TAGGED | DDP_FLAG_LAST |
-+				 cpu_to_be16(DDP_VERSION << 8) |
-+				 cpu_to_be16(RDMAP_VERSION << 6) |
-+				 cpu_to_be16(RDMAP_RDMA_WRITE),
-+	  .proc_data = siw_proc_write },
-+	{ /* RDMAP_RDMA_READ_REQ */
-+	  .hdr_len = sizeof(struct iwarp_rdma_rreq),
-+	  .ctrl.mpa_len = htons(sizeof(struct iwarp_rdma_rreq) - 2),
-+	  .ctrl.ddp_rdmap_ctrl = DDP_FLAG_LAST | cpu_to_be16(DDP_VERSION << 8) |
-+				 cpu_to_be16(RDMAP_VERSION << 6) |
-+				 cpu_to_be16(RDMAP_RDMA_READ_REQ),
-+	  .proc_data = siw_proc_rreq },
-+	{ /* RDMAP_RDMA_READ_RESP */
-+	  .hdr_len = sizeof(struct iwarp_rdma_rresp),
-+	  .ctrl.mpa_len = htons(sizeof(struct iwarp_rdma_rresp) - 2),
-+	  .ctrl.ddp_rdmap_ctrl = DDP_FLAG_TAGGED | DDP_FLAG_LAST |
-+				 cpu_to_be16(DDP_VERSION << 8) |
-+				 cpu_to_be16(RDMAP_VERSION << 6) |
-+				 cpu_to_be16(RDMAP_RDMA_READ_RESP),
-+	  .proc_data = siw_proc_rresp },
-+	{ /* RDMAP_SEND */
-+	  .hdr_len = sizeof(struct iwarp_send),
-+	  .ctrl.mpa_len = htons(sizeof(struct iwarp_send) - 2),
-+	  .ctrl.ddp_rdmap_ctrl = DDP_FLAG_LAST | cpu_to_be16(DDP_VERSION << 8) |
-+				 cpu_to_be16(RDMAP_VERSION << 6) |
-+				 cpu_to_be16(RDMAP_SEND),
-+	  .proc_data = siw_proc_send },
-+	{ /* RDMAP_SEND_INVAL */
-+	  .hdr_len = sizeof(struct iwarp_send_inv),
-+	  .ctrl.mpa_len = htons(sizeof(struct iwarp_send_inv) - 2),
-+	  .ctrl.ddp_rdmap_ctrl = DDP_FLAG_LAST | cpu_to_be16(DDP_VERSION << 8) |
-+				 cpu_to_be16(RDMAP_VERSION << 6) |
-+				 cpu_to_be16(RDMAP_SEND_INVAL),
-+	  .proc_data = siw_proc_send },
-+	{ /* RDMAP_SEND_SE */
-+	  .hdr_len = sizeof(struct iwarp_send),
-+	  .ctrl.mpa_len = htons(sizeof(struct iwarp_send) - 2),
-+	  .ctrl.ddp_rdmap_ctrl = DDP_FLAG_LAST | cpu_to_be16(DDP_VERSION << 8) |
-+				 cpu_to_be16(RDMAP_VERSION << 6) |
-+				 cpu_to_be16(RDMAP_SEND_SE),
-+	  .proc_data = siw_proc_send },
-+	{ /* RDMAP_SEND_SE_INVAL */
-+	  .hdr_len = sizeof(struct iwarp_send_inv),
-+	  .ctrl.mpa_len = htons(sizeof(struct iwarp_send_inv) - 2),
-+	  .ctrl.ddp_rdmap_ctrl = DDP_FLAG_LAST | cpu_to_be16(DDP_VERSION << 8) |
-+				 cpu_to_be16(RDMAP_VERSION << 6) |
-+				 cpu_to_be16(RDMAP_SEND_SE_INVAL),
-+	  .proc_data = siw_proc_send },
-+	{ /* RDMAP_TERMINATE */
-+	  .hdr_len = sizeof(struct iwarp_terminate),
-+	  .ctrl.mpa_len = htons(sizeof(struct iwarp_terminate) - 2),
-+	  .ctrl.ddp_rdmap_ctrl = DDP_FLAG_LAST | cpu_to_be16(DDP_VERSION << 8) |
-+				 cpu_to_be16(RDMAP_VERSION << 6) |
-+				 cpu_to_be16(RDMAP_TERMINATE),
-+	  .proc_data = siw_proc_terminate }
-+};
-+
-+void siw_qp_llp_data_ready(struct sock *sk)
++static int siw_try_1seg(struct siw_iwarp_tx *c_tx, u64 paddr)
 +{
-+	struct siw_qp *qp;
++	struct siw_wqe *wqe = &c_tx->wqe_active;
++	struct siw_sge *sge = &wqe->sqe.sge[0];
++	u32 bytes = sge->length;
 +
-+	read_lock(&sk->sk_callback_lock);
++	if (bytes > MAX_HDR_INLINE || wqe->sqe.num_sge != 1)
++		return MAX_HDR_INLINE + 1;
 +
-+	if (unlikely(!sk->sk_user_data || !sk_to_qp(sk)))
-+		goto done;
++	if (!bytes)
++		return 0;
 +
-+	qp = sk_to_qp(sk);
-+
-+	if (likely(!qp->rx_stream.rx_suspend &&
-+		   down_read_trylock(&qp->state_lock))) {
-+		read_descriptor_t rd_desc = { .arg.data = qp, .count = 1 };
-+
-+		if (likely(qp->attrs.state == SIW_QP_STATE_RTS))
-+			/*
-+			 * Implements data receive operation during
-+			 * socket callback. TCP gracefully catches
-+			 * the case where there is nothing to receive
-+			 * (not calling siw_tcp_rx_data() then).
-+			 */
-+			tcp_read_sock(sk, &rd_desc, siw_tcp_rx_data);
-+
-+		up_read(&qp->state_lock);
++	if (tx_flags(wqe) & SIW_WQE_INLINE) {
++		memcpy((void *)paddr, &wqe->sqe.sge[1], bytes);
 +	} else {
-+		siw_dbg_qp(qp, "unable to process RX, suspend: %d\n",
-+			   qp->rx_stream.rx_suspend);
-+	}
-+done:
-+	read_unlock(&sk->sk_callback_lock);
-+}
++		struct siw_mem *mem = wqe->mem[0];
 +
-+void siw_qp_llp_close(struct siw_qp *qp)
-+{
-+	siw_dbg_qp(qp, "enter llp close, state = %s\n",
-+		   siw_qp_state_to_string[qp->attrs.state]);
-+
-+	down_write(&qp->state_lock);
-+
-+	qp->rx_stream.rx_suspend = 1;
-+	qp->tx_ctx.tx_suspend = 1;
-+	qp->attrs.sk = NULL;
-+
-+	switch (qp->attrs.state) {
-+	case SIW_QP_STATE_RTS:
-+	case SIW_QP_STATE_RTR:
-+	case SIW_QP_STATE_IDLE:
-+	case SIW_QP_STATE_TERMINATE:
-+		qp->attrs.state = SIW_QP_STATE_ERROR;
-+		break;
-+	/*
-+	 * SIW_QP_STATE_CLOSING:
-+	 *
-+	 * This is a forced close. shall the QP be moved to
-+	 * ERROR or IDLE ?
-+	 */
-+	case SIW_QP_STATE_CLOSING:
-+		if (tx_wqe(qp)->wr_status == SIW_WR_IDLE)
-+			qp->attrs.state = SIW_QP_STATE_ERROR;
-+		else
-+			qp->attrs.state = SIW_QP_STATE_IDLE;
-+		break;
-+
-+	default:
-+		siw_dbg_qp(qp, "llp close: no state transition needed: %s\n",
-+			   siw_qp_state_to_string[qp->attrs.state]);
-+		break;
-+	}
-+	siw_sq_flush(qp);
-+	siw_rq_flush(qp);
-+
-+	/*
-+	 * Dereference closing CEP
-+	 */
-+	if (qp->cep) {
-+		siw_cep_put(qp->cep);
-+		qp->cep = NULL;
-+	}
-+
-+	up_write(&qp->state_lock);
-+
-+	siw_dbg_qp(qp, "llp close exit: state %s\n",
-+		   siw_qp_state_to_string[qp->attrs.state]);
-+}
-+
-+/*
-+ * socket callback routine informing about newly available send space.
-+ * Function schedules SQ work for processing SQ items.
-+ */
-+void siw_qp_llp_write_space(struct sock *sk)
-+{
-+	struct siw_cep *cep = sk_to_cep(sk);
-+
-+	cep->sk_write_space(sk);
-+
-+	if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
-+		(void)siw_sq_start(cep->qp);
-+}
-+
-+static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int orq_size)
-+{
-+	if (!irq_size)
-+		irq_size = 1;
-+	if (!orq_size)
-+		orq_size = 1;
-+
-+	qp->attrs.irq_size = irq_size;
-+	qp->attrs.orq_size = orq_size;
-+
-+	qp->irq = vzalloc(irq_size * sizeof(struct siw_sqe));
-+	if (!qp->irq) {
-+		siw_dbg_qp(qp, "irq malloc for %d failed\n", irq_size);
-+		qp->attrs.irq_size = 0;
-+		return -ENOMEM;
-+	}
-+	qp->orq = vzalloc(orq_size * sizeof(struct siw_sqe));
-+	if (!qp->orq) {
-+		siw_dbg_qp(qp, "orq malloc for %d failed\n", orq_size);
-+		qp->attrs.orq_size = 0;
-+		qp->attrs.irq_size = 0;
-+		vfree(qp->irq);
-+		return -ENOMEM;
-+	}
-+	siw_dbg_qp(qp, "ORD %d, IRD %d\n", orq_size, irq_size);
-+	return 0;
-+}
-+
-+static int siw_qp_enable_crc(struct siw_qp *qp)
-+{
-+	struct siw_rx_stream *c_rx = &qp->rx_stream;
-+	struct siw_iwarp_tx *c_tx = &qp->tx_ctx;
-+	int rv = 0;
-+
-+	if (siw_crypto_shash == NULL) {
-+		rv = -ENOENT;
-+		goto error;
-+	}
-+	c_tx->mpa_crc_hd =
-+		kzalloc(sizeof(struct shash_desc) +
-+				crypto_shash_descsize(siw_crypto_shash),
-+			GFP_KERNEL);
-+	c_rx->mpa_crc_hd =
-+		kzalloc(sizeof(struct shash_desc) +
-+				crypto_shash_descsize(siw_crypto_shash),
-+			GFP_KERNEL);
-+	if (!c_tx->mpa_crc_hd || !c_rx->mpa_crc_hd) {
-+		rv = -ENOMEM;
-+		goto error;
-+	}
-+	c_tx->mpa_crc_hd->tfm = siw_crypto_shash;
-+	c_rx->mpa_crc_hd->tfm = siw_crypto_shash;
-+
-+	return 0;
-+error:
-+	siw_dbg_qp(qp, "falied loading crc32c. error %d\n", rv);
-+
-+	kfree(c_tx->mpa_crc_hd);
-+	kfree(c_rx->mpa_crc_hd);
-+
-+	c_tx->mpa_crc_hd = c_rx->mpa_crc_hd = NULL;
-+
-+	return rv;
-+}
-+
-+/*
-+ * Send a non signalled READ or WRITE to peer side as negotiated
-+ * with MPAv2 P2P setup protocol. The work request is only created
-+ * as a current active WR and does not consume Send Queue space.
-+ *
-+ * Caller must hold QP state lock.
-+ */
-+int siw_qp_mpa_rts(struct siw_qp *qp, enum mpa_v2_ctrl ctrl)
-+{
-+	struct siw_wqe *wqe = tx_wqe(qp);
-+	unsigned long flags;
-+	int rv = 0;
-+
-+	spin_lock_irqsave(&qp->sq_lock, flags);
-+
-+	if (unlikely(wqe->wr_status != SIW_WR_IDLE)) {
-+		spin_unlock_irqrestore(&qp->sq_lock, flags);
-+		return -EIO;
-+	}
-+	memset(wqe->mem, 0, sizeof(*wqe->mem) * SIW_MAX_SGE);
-+
-+	wqe->wr_status = SIW_WR_QUEUED;
-+	wqe->sqe.flags = 0;
-+	wqe->sqe.num_sge = 1;
-+	wqe->sqe.sge[0].length = 0;
-+	wqe->sqe.sge[0].laddr = 0;
-+	wqe->sqe.sge[0].lkey = 0;
-+	/*
-+	 * While it must not be checked for inbound zero length
-+	 * READ/WRITE, some HW may treat STag 0 special.
-+	 */
-+	wqe->sqe.rkey = 1;
-+	wqe->sqe.raddr = 0;
-+	wqe->processed = 0;
-+
-+	if (ctrl & MPA_V2_RDMA_WRITE_RTR)
-+		wqe->sqe.opcode = SIW_OP_WRITE;
-+	else if (ctrl & MPA_V2_RDMA_READ_RTR) {
-+		struct siw_sqe *rreq;
-+
-+		wqe->sqe.opcode = SIW_OP_READ;
-+
-+		spin_lock(&qp->orq_lock);
-+
-+		rreq = orq_get_free(qp);
-+		if (rreq) {
-+			siw_read_to_orq(rreq, &wqe->sqe);
-+			qp->orq_put++;
-+		} else
-+			rv = -EIO;
-+
-+		spin_unlock(&qp->orq_lock);
-+	} else
-+		rv = -EINVAL;
-+
-+	if (rv)
-+		wqe->wr_status = SIW_WR_IDLE;
-+
-+	spin_unlock_irqrestore(&qp->sq_lock, flags);
-+
-+	if (!rv)
-+		rv = siw_sq_start(qp);
-+
-+	return rv;
-+}
-+
-+/*
-+ * Map memory access error to DDP tagged error
-+ */
-+enum ddp_ecode siw_tagged_error(enum siw_access_state state)
-+{
-+	if (state == E_STAG_INVALID)
-+		return DDP_ECODE_T_INVALID_STAG;
-+	if (state == E_BASE_BOUNDS)
-+		return DDP_ECODE_T_BASE_BOUNDS;
-+	if (state == E_PD_MISMATCH)
-+		return DDP_ECODE_T_STAG_NOT_ASSOC;
-+	if (state == E_ACCESS_PERM)
-+		/*
-+		 * RFC 5041 (DDP) lacks an ecode for insufficient access
-+		 * permissions. 'Invalid STag' seem to be the closest
-+		 * match though.
-+		 */
-+		return DDP_ECODE_T_INVALID_STAG;
-+
-+	WARN_ON(1);
-+
-+	return DDP_ECODE_T_INVALID_STAG;
-+}
-+
-+/*
-+ * Map memory access error to RDMAP protection error
-+ */
-+enum rdmap_ecode siw_rdmap_error(enum siw_access_state state)
-+{
-+	if (state == E_STAG_INVALID)
-+		return RDMAP_ECODE_INVALID_STAG;
-+	if (state == E_BASE_BOUNDS)
-+		return RDMAP_ECODE_BASE_BOUNDS;
-+	if (state == E_PD_MISMATCH)
-+		return RDMAP_ECODE_STAG_NOT_ASSOC;
-+	if (state == E_ACCESS_PERM)
-+		return RDMAP_ECODE_ACCESS_RIGHTS;
-+
-+	return RDMAP_ECODE_UNSPECIFIED;
-+}
-+
-+void siw_init_terminate(struct siw_qp *qp, enum term_elayer layer, u8 etype,
-+			u8 ecode, int in_tx)
-+{
-+	if (!qp->term_info.valid) {
-+		memset(&qp->term_info, 0, sizeof(qp->term_info));
-+		qp->term_info.layer = layer;
-+		qp->term_info.etype = etype;
-+		qp->term_info.ecode = ecode;
-+		qp->term_info.in_tx = in_tx;
-+		qp->term_info.valid = 1;
-+	}
-+	siw_dbg_qp(qp, "init TERM: layer %d, type %d, code %d, in tx %s\n",
-+		   layer, etype, ecode, in_tx ? "yes" : "no");
-+}
-+
-+/*
-+ * Send a TERMINATE message, as defined in RFC's 5040/5041/5044/6581.
-+ * Sending TERMINATE messages is best effort - such messages
-+ * can only be send if the QP is still connected and it does
-+ * not have another outbound message in-progress, i.e. the
-+ * TERMINATE message must not interfer with an incomplete current
-+ * transmit operation.
-+ */
-+void siw_send_terminate(struct siw_qp *qp)
-+{
-+	struct kvec iov[3];
-+	struct msghdr msg = { .msg_flags = MSG_DONTWAIT | MSG_EOR };
-+	struct iwarp_terminate *term = NULL;
-+	union iwarp_hdr *err_hdr = NULL;
-+	struct socket *s = qp->attrs.sk;
-+	struct siw_rx_stream *srx = &qp->rx_stream;
-+	union iwarp_hdr *rx_hdr = &srx->hdr;
-+	u32 crc = 0;
-+	int num_frags, len_terminate, rv;
-+
-+	if (!qp->term_info.valid)
-+		return;
-+
-+	qp->term_info.valid = 0;
-+
-+	if (tx_wqe(qp)->wr_status == SIW_WR_INPROGRESS) {
-+		siw_dbg_qp(qp, "cannot send TERMINATE: op %d in progress\n",
-+			   tx_type(tx_wqe(qp)));
-+		return;
-+	}
-+	if (!s && qp->cep)
-+		/* QP not yet in RTS. Take socket from connection end point */
-+		s = qp->cep->sock;
-+
-+	if (!s) {
-+		siw_dbg_qp(qp, "cannot send TERMINATE: not connected\n");
-+		return;
-+	}
-+
-+	term = kzalloc(sizeof(*term), GFP_KERNEL);
-+	if (!term)
-+		return;
-+
-+	term->ddp_qn = cpu_to_be32(RDMAP_UNTAGGED_QN_TERMINATE);
-+	term->ddp_mo = 0;
-+	term->ddp_msn = cpu_to_be32(1);
-+
-+	iov[0].iov_base = term;
-+	iov[0].iov_len = sizeof(*term);
-+
-+	if ((qp->term_info.layer == TERM_ERROR_LAYER_DDP) ||
-+	    ((qp->term_info.layer == TERM_ERROR_LAYER_RDMAP) &&
-+	     (qp->term_info.etype != RDMAP_ETYPE_CATASTROPHIC))) {
-+		err_hdr = kzalloc(sizeof(*err_hdr), GFP_KERNEL);
-+		if (!err_hdr) {
-+			kfree(term);
-+			return;
-+		}
-+	}
-+	memcpy(&term->ctrl, &iwarp_pktinfo[RDMAP_TERMINATE].ctrl,
-+	       sizeof(struct iwarp_ctrl));
-+
-+	__rdmap_term_set_layer(term, qp->term_info.layer);
-+	__rdmap_term_set_etype(term, qp->term_info.etype);
-+	__rdmap_term_set_ecode(term, qp->term_info.ecode);
-+
-+	switch (qp->term_info.layer) {
-+	case TERM_ERROR_LAYER_RDMAP:
-+		if (qp->term_info.etype == RDMAP_ETYPE_CATASTROPHIC)
-+			/* No additional DDP/RDMAP header to be included */
-+			break;
-+
-+		if (qp->term_info.etype == RDMAP_ETYPE_REMOTE_PROTECTION) {
-+			/*
-+			 * Complete RDMAP frame will get attached, and
-+			 * DDP segment length is valid
-+			 */
-+			term->flag_m = 1;
-+			term->flag_d = 1;
-+			term->flag_r = 1;
-+
-+			if (qp->term_info.in_tx) {
-+				struct iwarp_rdma_rreq *rreq;
-+				struct siw_wqe *wqe = tx_wqe(qp);
-+
-+				/* Inbound RREQ error, detected during
-+				 * RRESP creation. Take state from
-+				 * current TX work queue element to
-+				 * reconstruct peers RREQ.
-+				 */
-+				rreq = (struct iwarp_rdma_rreq *)err_hdr;
-+
-+				memcpy(&rreq->ctrl,
-+				       &iwarp_pktinfo[RDMAP_RDMA_READ_REQ].ctrl,
-+				       sizeof(struct iwarp_ctrl));
-+
-+				rreq->rsvd = 0;
-+				rreq->ddp_qn =
-+					htonl(RDMAP_UNTAGGED_QN_RDMA_READ);
-+
-+				/* Provide RREQ's MSN as kept aside */
-+				rreq->ddp_msn = htonl(wqe->sqe.sge[0].length);
-+
-+				rreq->ddp_mo = htonl(wqe->processed);
-+				rreq->sink_stag = htonl(wqe->sqe.rkey);
-+				rreq->sink_to = cpu_to_be64(wqe->sqe.raddr);
-+				rreq->read_size = htonl(wqe->sqe.sge[0].length);
-+				rreq->source_stag = htonl(wqe->sqe.sge[0].lkey);
-+				rreq->source_to =
-+					cpu_to_be64(wqe->sqe.sge[0].laddr);
-+
-+				iov[1].iov_base = rreq;
-+				iov[1].iov_len = sizeof(*rreq);
-+
-+				rx_hdr = (union iwarp_hdr *)rreq;
-+			} else {
-+				/* Take RDMAP/DDP information from
-+				 * current (failed) inbound frame.
-+				 */
-+				iov[1].iov_base = rx_hdr;
-+
-+				if (__rdmap_get_opcode(&rx_hdr->ctrl) ==
-+				    RDMAP_RDMA_READ_REQ)
-+					iov[1].iov_len =
-+						sizeof(struct iwarp_rdma_rreq);
-+				else /* SEND type */
-+					iov[1].iov_len =
-+						sizeof(struct iwarp_send);
-+			}
++		if (!mem->mem_obj) {
++			/* Kernel client using kva */
++			memcpy((void *)paddr, (void *)sge->laddr, bytes);
++		} else if (c_tx->in_syscall) {
++			if (copy_from_user((void *)paddr,
++					   (const void __user *)sge->laddr,
++					   bytes))
++				return -EFAULT;
 +		} else {
-+			/* Do not report DDP hdr information if packet
-+			 * layout is unknown
-+			 */
-+			if ((qp->term_info.ecode == RDMAP_ECODE_VERSION) ||
-+			    (qp->term_info.ecode == RDMAP_ECODE_OPCODE))
-+				break;
++			unsigned int off = sge->laddr & ~PAGE_MASK;
++			struct page *p;
++			char *buffer;
++			int pbl_idx = 0;
 +
-+			iov[1].iov_base = rx_hdr;
-+
-+			/* Only DDP frame will get attached */
-+			if (rx_hdr->ctrl.ddp_rdmap_ctrl & DDP_FLAG_TAGGED)
-+				iov[1].iov_len =
-+					sizeof(struct iwarp_rdma_write);
++			if (!mem->is_pbl)
++				p = siw_get_upage(mem->umem, sge->laddr);
 +			else
-+				iov[1].iov_len = sizeof(struct iwarp_send);
++				p = siw_get_pblpage(mem, sge->laddr, &pbl_idx);
 +
-+			term->flag_m = 1;
-+			term->flag_d = 1;
-+		}
-+		term->ctrl.mpa_len = cpu_to_be16(iov[1].iov_len);
-+		break;
++			if (unlikely(!p))
++				return -EFAULT;
 +
-+	case TERM_ERROR_LAYER_DDP:
-+		/* Report error encountered while DDP processing.
-+		 * This can only happen as a result of inbound
-+		 * DDP processing
-+		 */
++			buffer = kmap_atomic(p);
 +
-+		/* Do not report DDP hdr information if packet
-+		 * layout is unknown
-+		 */
-+		if (((qp->term_info.etype == DDP_ETYPE_TAGGED_BUF) &&
-+		     (qp->term_info.ecode == DDP_ECODE_T_VERSION)) ||
-+		    ((qp->term_info.etype == DDP_ETYPE_UNTAGGED_BUF) &&
-+		     (qp->term_info.ecode == DDP_ECODE_UT_VERSION)))
-+			break;
-+
-+		iov[1].iov_base = rx_hdr;
-+
-+		if (rx_hdr->ctrl.ddp_rdmap_ctrl & DDP_FLAG_TAGGED)
-+			iov[1].iov_len = sizeof(struct iwarp_ctrl_tagged);
-+		else
-+			iov[1].iov_len = sizeof(struct iwarp_ctrl_untagged);
-+
-+		term->flag_m = 1;
-+		term->flag_d = 1;
-+		break;
-+
-+	default:
-+		break;
-+	}
-+	if (term->flag_m || term->flag_d || term->flag_r) {
-+		iov[2].iov_base = &crc;
-+		iov[2].iov_len = sizeof(crc);
-+		len_terminate = sizeof(*term) + iov[1].iov_len + MPA_CRC_SIZE;
-+		num_frags = 3;
-+	} else {
-+		iov[1].iov_base = &crc;
-+		iov[1].iov_len = sizeof(crc);
-+		len_terminate = sizeof(*term) + MPA_CRC_SIZE;
-+		num_frags = 2;
-+	}
-+
-+	/* Adjust DDP Segment Length parameter, if valid */
-+	if (term->flag_m) {
-+		u32 real_ddp_len = be16_to_cpu(rx_hdr->ctrl.mpa_len);
-+		enum rdma_opcode op = __rdmap_get_opcode(&rx_hdr->ctrl);
-+
-+		real_ddp_len -= iwarp_pktinfo[op].hdr_len - MPA_HDR_SIZE;
-+		rx_hdr->ctrl.mpa_len = cpu_to_be16(real_ddp_len);
-+	}
-+
-+	term->ctrl.mpa_len =
-+		cpu_to_be16(len_terminate - (MPA_HDR_SIZE + MPA_CRC_SIZE));
-+	if (qp->tx_ctx.mpa_crc_hd) {
-+		crypto_shash_init(srx->mpa_crc_hd);
-+		if (siw_crc_array(srx->mpa_crc_hd, (u8 *)iov[0].iov_base,
-+				  iov[0].iov_len))
-+			goto out;
-+
-+		if (num_frags == 3) {
-+			if (siw_crc_array(srx->mpa_crc_hd,
-+					  (u8 *)iov[1].iov_base,
-+					  iov[1].iov_len))
-+				goto out;
-+		}
-+		crypto_shash_final(srx->mpa_crc_hd, (u8 *)&crc);
-+	}
-+
-+	rv = kernel_sendmsg(s, &msg, iov, num_frags, len_terminate);
-+	siw_dbg_qp(qp, "sent TERM: %s, layer %d, type %d, code %d (%d bytes)\n",
-+		   rv == len_terminate ? "success" : "failure",
-+		   __rdmap_term_layer(term), __rdmap_term_etype(term),
-+		   __rdmap_term_ecode(term), rv);
-+out:
-+	kfree(term);
-+	kfree(err_hdr);
-+}
-+
-+/*
-+ * Handle all attrs other than state
-+ */
-+static void siw_qp_modify_nonstate(struct siw_qp *qp,
-+				   struct siw_qp_attrs *attrs,
-+				   enum siw_qp_attr_mask mask)
-+{
-+	if (mask & SIW_QP_ATTR_ACCESS_FLAGS) {
-+		if (attrs->flags & SIW_RDMA_BIND_ENABLED)
-+			qp->attrs.flags |= SIW_RDMA_BIND_ENABLED;
-+		else
-+			qp->attrs.flags &= ~SIW_RDMA_BIND_ENABLED;
-+
-+		if (attrs->flags & SIW_RDMA_WRITE_ENABLED)
-+			qp->attrs.flags |= SIW_RDMA_WRITE_ENABLED;
-+		else
-+			qp->attrs.flags &= ~SIW_RDMA_WRITE_ENABLED;
-+
-+		if (attrs->flags & SIW_RDMA_READ_ENABLED)
-+			qp->attrs.flags |= SIW_RDMA_READ_ENABLED;
-+		else
-+			qp->attrs.flags &= ~SIW_RDMA_READ_ENABLED;
-+	}
-+}
-+
-+/*
-+ * Caller must hold qp->state_lock
-+ */
-+int siw_qp_modify(struct siw_qp *qp, struct siw_qp_attrs *attrs,
-+		  enum siw_qp_attr_mask mask)
-+{
-+	int drop_conn = 0, rv = 0;
-+
-+	if (!mask)
-+		return 0;
-+
-+	siw_dbg_qp(qp, "state: %s => %s\n",
-+		   siw_qp_state_to_string[qp->attrs.state],
-+		   siw_qp_state_to_string[attrs->state]);
-+
-+	if (mask != SIW_QP_ATTR_STATE)
-+		siw_qp_modify_nonstate(qp, attrs, mask);
-+
-+	if (!(mask & SIW_QP_ATTR_STATE))
-+		return 0;
-+
-+	switch (qp->attrs.state) {
-+	case SIW_QP_STATE_IDLE:
-+	case SIW_QP_STATE_RTR:
-+		switch (attrs->state) {
-+		case SIW_QP_STATE_RTS:
-+
-+			if (attrs->flags & SIW_MPA_CRC) {
-+				rv = siw_qp_enable_crc(qp);
-+				if (rv)
-+					break;
-+			}
-+			if (!(mask & SIW_QP_ATTR_LLP_HANDLE)) {
-+				siw_dbg_qp(qp, "no socket\n");
-+				rv = -EINVAL;
-+				break;
-+			}
-+			if (!(mask & SIW_QP_ATTR_MPA)) {
-+				siw_dbg_qp(qp, "no MPA\n");
-+				rv = -EINVAL;
-+				break;
-+			}
-+			siw_dbg_qp(qp, "enter RTS\n");
-+			/*
-+			 * Initialize iWARP TX state
-+			 */
-+			qp->tx_ctx.ddp_msn[RDMAP_UNTAGGED_QN_SEND] = 0;
-+			qp->tx_ctx.ddp_msn[RDMAP_UNTAGGED_QN_RDMA_READ] = 0;
-+			qp->tx_ctx.ddp_msn[RDMAP_UNTAGGED_QN_TERMINATE] = 0;
-+
-+			/*
-+			 * Initialize iWARP RX state
-+			 */
-+			qp->rx_stream.ddp_msn[RDMAP_UNTAGGED_QN_SEND] = 1;
-+			qp->rx_stream.ddp_msn[RDMAP_UNTAGGED_QN_RDMA_READ] = 1;
-+			qp->rx_stream.ddp_msn[RDMAP_UNTAGGED_QN_TERMINATE] = 1;
-+
-+			/*
-+			 * init IRD free queue, caller has already checked
-+			 * limits.
-+			 */
-+			rv = siw_qp_readq_init(qp, attrs->irq_size,
-+					       attrs->orq_size);
-+			if (rv)
-+				break;
-+
-+			qp->attrs.sk = attrs->sk;
-+			qp->attrs.state = SIW_QP_STATE_RTS;
-+			break;
-+
-+		case SIW_QP_STATE_ERROR:
-+			siw_rq_flush(qp);
-+			qp->attrs.state = SIW_QP_STATE_ERROR;
-+			if (qp->cep) {
-+				siw_cep_put(qp->cep);
-+				qp->cep = NULL;
-+			}
-+			break;
-+
-+		case SIW_QP_STATE_RTR:
-+			/* ignore */
-+			break;
-+
-+		default:
-+			siw_dbg_qp(qp, "state transition undefined: %s => %s\n",
-+				   siw_qp_state_to_string[qp->attrs.state],
-+				   siw_qp_state_to_string[attrs->state]);
-+			break;
-+		}
-+		break;
-+
-+	case SIW_QP_STATE_RTS:
-+		switch (attrs->state) {
-+		case SIW_QP_STATE_CLOSING:
-+			/*
-+			 * Verbs: move to IDLE if SQ and ORQ are empty.
-+			 * Move to ERROR otherwise. But first of all we must
-+			 * close the connection. So we keep CLOSING or ERROR
-+			 * as a transient state, schedule connection drop work
-+			 * and wait for the socket state change upcall to
-+			 * come back closed.
-+			 */
-+			if (tx_wqe(qp)->wr_status == SIW_WR_IDLE) {
-+				qp->attrs.state = SIW_QP_STATE_CLOSING;
++			if (likely(PAGE_SIZE - off >= bytes)) {
++				memcpy((void *)paddr, buffer + off, bytes);
++				kunmap_atomic(buffer);
 +			} else {
-+				qp->attrs.state = SIW_QP_STATE_ERROR;
-+				siw_sq_flush(qp);
++				unsigned long part = bytes - (PAGE_SIZE - off);
++
++				memcpy((void *)paddr, buffer + off, part);
++				kunmap_atomic(buffer);
++
++				if (!mem->is_pbl)
++					p = siw_get_upage(mem->umem,
++							  sge->laddr + part);
++				else
++					p = siw_get_pblpage(mem,
++							    sge->laddr + part,
++							    &pbl_idx);
++				if (unlikely(!p))
++					return -EFAULT;
++
++				buffer = kmap_atomic(p);
++				memcpy((void *)(paddr + part), buffer,
++				       bytes - part);
++				kunmap_atomic(buffer);
 +			}
-+			siw_rq_flush(qp);
-+
-+			drop_conn = 1;
-+			break;
-+
-+		case SIW_QP_STATE_TERMINATE:
-+			qp->attrs.state = SIW_QP_STATE_TERMINATE;
-+
-+			siw_init_terminate(qp, TERM_ERROR_LAYER_RDMAP,
-+					   RDMAP_ETYPE_CATASTROPHIC,
-+					   RDMAP_ECODE_UNSPECIFIED, 1);
-+			drop_conn = 1;
-+			break;
-+
-+		case SIW_QP_STATE_ERROR:
-+			/*
-+			 * This is an emergency close.
-+			 *
-+			 * Any in progress transmit operation will get
-+			 * cancelled.
-+			 * This will likely result in a protocol failure,
-+			 * if a TX operation is in transit. The caller
-+			 * could unconditional wait to give the current
-+			 * operation a chance to complete.
-+			 * Esp., how to handle the non-empty IRQ case?
-+			 * The peer was asking for data transfer at a valid
-+			 * point in time.
-+			 */
-+			siw_sq_flush(qp);
-+			siw_rq_flush(qp);
-+			qp->attrs.state = SIW_QP_STATE_ERROR;
-+			drop_conn = 1;
-+			break;
-+
-+		default:
-+			siw_dbg_qp(qp, "state transition undefined: %s => %s\n",
-+				   siw_qp_state_to_string[qp->attrs.state],
-+				   siw_qp_state_to_string[attrs->state]);
-+			break;
 +		}
++	}
++	return (int)bytes;
++}
++
++#define PKT_FRAGMENTED 1
++#define PKT_COMPLETE 0
++
++/*
++ * siw_qp_prepare_tx()
++ *
++ * Prepare tx state for sending out one fpdu. Builds complete pkt
++ * if no user data or only immediate data are present.
++ *
++ * returns PKT_COMPLETE if complete pkt built, PKT_FRAGMENTED otherwise.
++ */
++static int siw_qp_prepare_tx(struct siw_iwarp_tx *c_tx)
++{
++	struct siw_wqe *wqe = &c_tx->wqe_active;
++	char *crc = NULL;
++	int data = 0;
++
++	switch (tx_type(wqe)) {
++	case SIW_OP_READ:
++	case SIW_OP_READ_LOCAL_INV:
++		memcpy(&c_tx->pkt.ctrl,
++		       &iwarp_pktinfo[RDMAP_RDMA_READ_REQ].ctrl,
++		       sizeof(struct iwarp_ctrl));
++
++		c_tx->pkt.rreq.rsvd = 0;
++		c_tx->pkt.rreq.ddp_qn = htonl(RDMAP_UNTAGGED_QN_RDMA_READ);
++		c_tx->pkt.rreq.ddp_msn =
++			htonl(++c_tx->ddp_msn[RDMAP_UNTAGGED_QN_RDMA_READ]);
++		c_tx->pkt.rreq.ddp_mo = 0;
++		c_tx->pkt.rreq.sink_stag = htonl(wqe->sqe.sge[0].lkey);
++		c_tx->pkt.rreq.sink_to =
++			cpu_to_be64(wqe->sqe.sge[0].laddr);
++		c_tx->pkt.rreq.source_stag = htonl(wqe->sqe.rkey);
++		c_tx->pkt.rreq.source_to = cpu_to_be64(wqe->sqe.raddr);
++		c_tx->pkt.rreq.read_size = htonl(wqe->sqe.sge[0].length);
++
++		c_tx->ctrl_len = sizeof(struct iwarp_rdma_rreq);
++		crc = (char *)&c_tx->pkt.rreq_pkt.crc;
 +		break;
 +
-+	case SIW_QP_STATE_TERMINATE:
-+		switch (attrs->state) {
-+		case SIW_QP_STATE_ERROR:
-+			siw_rq_flush(qp);
-+			qp->attrs.state = SIW_QP_STATE_ERROR;
++	case SIW_OP_SEND:
++		if (tx_flags(wqe) & SIW_WQE_SOLICITED)
++			memcpy(&c_tx->pkt.ctrl,
++			       &iwarp_pktinfo[RDMAP_SEND_SE].ctrl,
++			       sizeof(struct iwarp_ctrl));
++		else
++			memcpy(&c_tx->pkt.ctrl, &iwarp_pktinfo[RDMAP_SEND].ctrl,
++			       sizeof(struct iwarp_ctrl));
 +
-+			if (tx_wqe(qp)->wr_status != SIW_WR_IDLE)
-+				siw_sq_flush(qp);
-+			break;
++		c_tx->pkt.send.ddp_qn = RDMAP_UNTAGGED_QN_SEND;
++		c_tx->pkt.send.ddp_msn =
++			htonl(++c_tx->ddp_msn[RDMAP_UNTAGGED_QN_SEND]);
++		c_tx->pkt.send.ddp_mo = 0;
 +
-+		default:
-+			siw_dbg_qp(qp, "state transition undefined: %s => %s\n",
-+				   siw_qp_state_to_string[qp->attrs.state],
-+				   siw_qp_state_to_string[attrs->state]);
-+		}
++		c_tx->pkt.send_inv.inval_stag = 0;
++
++		c_tx->ctrl_len = sizeof(struct iwarp_send);
++
++		crc = (char *)&c_tx->pkt.send_pkt.crc;
++		data = siw_try_1seg(c_tx, (u64)crc);
 +		break;
 +
-+	case SIW_QP_STATE_CLOSING:
-+		switch (attrs->state) {
-+		case SIW_QP_STATE_IDLE:
-+			WARN_ON(tx_wqe(qp)->wr_status != SIW_WR_IDLE);
-+			qp->attrs.state = SIW_QP_STATE_IDLE;
-+			break;
++	case SIW_OP_SEND_REMOTE_INV:
++		if (tx_flags(wqe) & SIW_WQE_SOLICITED)
++			memcpy(&c_tx->pkt.ctrl,
++			       &iwarp_pktinfo[RDMAP_SEND_SE_INVAL].ctrl,
++			       sizeof(struct iwarp_ctrl));
++		else
++			memcpy(&c_tx->pkt.ctrl,
++			       &iwarp_pktinfo[RDMAP_SEND_INVAL].ctrl,
++			       sizeof(struct iwarp_ctrl));
 +
-+		case SIW_QP_STATE_CLOSING:
-+			/*
-+			 * The LLP may already moved the QP to closing
-+			 * due to graceful peer close init
-+			 */
-+			break;
++		c_tx->pkt.send.ddp_qn = RDMAP_UNTAGGED_QN_SEND;
++		c_tx->pkt.send.ddp_msn =
++			htonl(++c_tx->ddp_msn[RDMAP_UNTAGGED_QN_SEND]);
++		c_tx->pkt.send.ddp_mo = 0;
 +
-+		case SIW_QP_STATE_ERROR:
-+			/*
-+			 * QP was moved to CLOSING by LLP event
-+			 * not yet seen by user.
-+			 */
-+			qp->attrs.state = SIW_QP_STATE_ERROR;
++		c_tx->pkt.send_inv.inval_stag = cpu_to_be32(wqe->sqe.rkey);
 +
-+			if (tx_wqe(qp)->wr_status != SIW_WR_IDLE)
-+				siw_sq_flush(qp);
++		c_tx->ctrl_len = sizeof(struct iwarp_send_inv);
 +
-+			siw_rq_flush(qp);
-+			break;
++		crc = (char *)&c_tx->pkt.send_pkt.crc;
++		data = siw_try_1seg(c_tx, (u64)crc);
++		break;
 +
-+		default:
-+			siw_dbg_qp(qp, "state transition undefined: %s => %s\n",
-+				   siw_qp_state_to_string[qp->attrs.state],
-+				   siw_qp_state_to_string[attrs->state]);
++	case SIW_OP_WRITE:
++		memcpy(&c_tx->pkt.ctrl, &iwarp_pktinfo[RDMAP_RDMA_WRITE].ctrl,
++		       sizeof(struct iwarp_ctrl));
 +
-+			return -ECONNABORTED;
-+		}
++		c_tx->pkt.rwrite.sink_stag = htonl(wqe->sqe.rkey);
++		c_tx->pkt.rwrite.sink_to = cpu_to_be64(wqe->sqe.raddr);
++		c_tx->ctrl_len = sizeof(struct iwarp_rdma_write);
++
++		crc = (char *)&c_tx->pkt.write_pkt.crc;
++		data = siw_try_1seg(c_tx, (u64)crc);
++		break;
++
++	case SIW_OP_READ_RESPONSE:
++		memcpy(&c_tx->pkt.ctrl,
++		       &iwarp_pktinfo[RDMAP_RDMA_READ_RESP].ctrl,
++		       sizeof(struct iwarp_ctrl));
++
++		/* NBO */
++		c_tx->pkt.rresp.sink_stag = cpu_to_be32(wqe->sqe.rkey);
++		c_tx->pkt.rresp.sink_to = cpu_to_be64(wqe->sqe.raddr);
++
++		c_tx->ctrl_len = sizeof(struct iwarp_rdma_rresp);
++
++		crc = (char *)&c_tx->pkt.write_pkt.crc;
++		data = siw_try_1seg(c_tx, (u64)crc);
 +		break;
 +
 +	default:
-+		siw_dbg_qp(qp, " noop: state %s\n",
-+			   siw_qp_state_to_string[qp->attrs.state]);
-+		break;
++		siw_dbg_qp(tx_qp(c_tx), "stale wqe type %d\n", tx_type(wqe));
++		return -EOPNOTSUPP;
 +	}
-+	if (drop_conn)
-+		siw_qp_cm_drop(qp, 0);
++	if (unlikely(data < 0))
++		return data;
 +
++	c_tx->ctrl_sent = 0;
++
++	if (data <= MAX_HDR_INLINE) {
++		if (data) {
++			wqe->processed = data;
++
++			c_tx->pkt.ctrl.mpa_len =
++				htons(c_tx->ctrl_len + data - MPA_HDR_SIZE);
++
++			/* Add pad, if needed */
++			data += -(int)data & 0x3;
++			/* advance CRC location after payload */
++			crc += data;
++			c_tx->ctrl_len += data;
++
++			if (!(c_tx->pkt.ctrl.ddp_rdmap_ctrl & DDP_FLAG_TAGGED))
++				c_tx->pkt.c_untagged.ddp_mo = 0;
++			else
++				c_tx->pkt.c_tagged.ddp_to =
++					cpu_to_be64(wqe->sqe.raddr);
++		}
++
++		*(u32 *)crc = 0;
++		/*
++		 * Do complete CRC if enabled and short packet
++		 */
++		if (c_tx->mpa_crc_hd) {
++			if (siw_crc_txhdr(c_tx) != 0)
++				return -EINVAL;
++			crypto_shash_final(c_tx->mpa_crc_hd, (u8 *)crc);
++		}
++		c_tx->ctrl_len += MPA_CRC_SIZE;
++
++		return PKT_COMPLETE;
++	}
++	c_tx->ctrl_len += MPA_CRC_SIZE;
++	c_tx->sge_idx = 0;
++	c_tx->sge_off = 0;
++	c_tx->pbl_idx = 0;
++
++	/*
++	 * Allow direct sending out of user buffer if WR is non signalled
++	 * and payload is over threshold.
++	 * Per RDMA verbs, the application should not change the send buffer
++	 * until the work completed. In iWarp, work completion is only
++	 * local delivery to TCP. TCP may reuse the buffer for
++	 * retransmission. Changing unsent data also breaks the CRC,
++	 * if applied.
++	 */
++	if (c_tx->zcopy_tx && wqe->bytes >= SENDPAGE_THRESH &&
++	    !(tx_flags(wqe) & SIW_WQE_SIGNALLED))
++		c_tx->use_sendpage = 1;
++	else
++		c_tx->use_sendpage = 0;
++
++	return PKT_FRAGMENTED;
++}
++
++/*
++ * Send out one complete control type FPDU, or header of FPDU carrying
++ * data. Used for fixed sized packets like Read.Requests or zero length
++ * SENDs, WRITEs, READ.Responses, or header only.
++ */
++static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
++			      int flags)
++{
++	struct msghdr msg = { .msg_flags = flags };
++	struct kvec iov = { .iov_base =
++				    (char *)&c_tx->pkt.ctrl + c_tx->ctrl_sent,
++			    .iov_len = c_tx->ctrl_len - c_tx->ctrl_sent };
++
++	int rv = kernel_sendmsg(s, &msg, &iov, 1,
++				c_tx->ctrl_len - c_tx->ctrl_sent);
++
++	if (rv >= 0) {
++		c_tx->ctrl_sent += rv;
++
++		if (c_tx->ctrl_sent == c_tx->ctrl_len) {
++			siw_dbg_pkt(&c_tx->pkt.hdr, tx_qp(c_tx),
++				    "HDR/CTRL sent");
++			rv = 0;
++		} else
++			rv = -EAGAIN;
++	}
 +	return rv;
 +}
 +
-+struct ib_qp *siw_get_base_qp(struct ib_device *base_dev, int id)
++/*
++ * 0copy TCP transmit interface: Use do_tcp_sendpages.
++ *
++ * Using sendpage to push page by page appears to be less efficient
++ * than using sendmsg, even if data are copied.
++ *
++ * A general performance limitation might be the extra four bytes
++ * trailer checksum segment to be pushed after user data.
++ */
++static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
++			     size_t size)
 +{
-+	struct siw_qp *qp = siw_qp_id2obj(to_siw_dev(base_dev), id);
++	struct sock *sk = s->sk;
++	int i = 0, rv = 0, sent = 0,
++	    flags = MSG_MORE | MSG_DONTWAIT | MSG_SENDPAGE_NOTLAST;
 +
-+	if (qp) {
-+		/*
-+		 * siw_qp_id2obj() increments object reference count
-+		 */
-+		siw_qp_put(qp);
-+		return qp->ib_qp;
++	while (size) {
++		size_t bytes = min_t(size_t, PAGE_SIZE - offset, size);
++
++		if (size + offset <= PAGE_SIZE)
++			flags = MSG_MORE | MSG_DONTWAIT;
++
++		tcp_rate_check_app_limited(sk);
++try_page_again:
++		lock_sock(sk);
++		rv = do_tcp_sendpages(sk, page[i], offset, bytes, flags);
++		release_sock(sk);
++
++		if (rv > 0) {
++			size -= rv;
++			sent += rv;
++			if (rv != bytes) {
++				offset += rv;
++				bytes -= rv;
++				goto try_page_again;
++			}
++			offset = 0;
++		} else {
++			if (rv == -EAGAIN || rv == 0)
++				break;
++			return rv;
++		}
++		i++;
 +	}
-+	return (struct ib_qp *)NULL;
-+}
-+
-+void siw_read_to_orq(struct siw_sqe *rreq, struct siw_sqe *sqe)
-+{
-+	rreq->id = sqe->id;
-+	rreq->opcode = sqe->opcode;
-+	rreq->sge[0].laddr = sqe->sge[0].laddr;
-+	rreq->sge[0].length = sqe->sge[0].length;
-+	rreq->sge[0].lkey = sqe->sge[0].lkey;
-+	rreq->sge[1].lkey = sqe->sge[1].lkey;
-+	rreq->flags = sqe->flags | SIW_WQE_VALID;
-+	rreq->num_sge = 1;
++	return sent;
 +}
 +
 +/*
-+ * Must be called with SQ locked.
-+ * To avoid complete SQ starvation by constant inbound READ requests,
-+ * the active IRQ will not be served after qp->irq_burst, if the
-+ * SQ has pending work.
++ * siw_0copy_tx()
++ *
++ * Pushes list of pages to TCP socket. If pages from multiple
++ * SGE's, all referenced pages of each SGE are pushed in one
++ * shot.
 + */
-+int siw_activate_tx(struct siw_qp *qp)
++static int siw_0copy_tx(struct socket *s, struct page **page,
++			struct siw_sge *sge, unsigned int offset,
++			unsigned int size)
 +{
-+	struct siw_sqe *irqe, *sqe;
-+	struct siw_wqe *wqe = tx_wqe(qp);
-+	int rv = 1;
++	int i = 0, sent = 0, rv;
++	int sge_bytes = min(sge->length - offset, size);
 +
-+	irqe = &qp->irq[qp->irq_get % qp->attrs.irq_size];
++	offset = (sge->laddr + offset) & ~PAGE_MASK;
 +
-+	if (irqe->flags & SIW_WQE_VALID) {
-+		sqe = sq_get_next(qp);
++	while (sent != size) {
++		rv = siw_tcp_sendpages(s, &page[i], offset, sge_bytes);
++		if (rv >= 0) {
++			sent += rv;
++			if (size == sent || sge_bytes > rv)
++				break;
 +
-+		/*
-+		 * Avoid local WQE processing starvation in case
-+		 * of constant inbound READ request stream
-+		 */
-+		if (sqe && ++qp->irq_burst >= SIW_IRQ_MAXBURST_SQ_ACTIVE) {
-+			qp->irq_burst = 0;
-+			goto skip_irq;
-+		}
-+		memset(wqe->mem, 0, sizeof(*wqe->mem) * SIW_MAX_SGE);
-+		wqe->wr_status = SIW_WR_QUEUED;
-+
-+		/* start READ RESPONSE */
-+		wqe->sqe.opcode = SIW_OP_READ_RESPONSE;
-+		wqe->sqe.flags = 0;
-+		if (irqe->num_sge) {
-+			wqe->sqe.num_sge = 1;
-+			wqe->sqe.sge[0].length = irqe->sge[0].length;
-+			wqe->sqe.sge[0].laddr = irqe->sge[0].laddr;
-+			wqe->sqe.sge[0].lkey = irqe->sge[0].lkey;
++			i += PAGE_ALIGN(sge_bytes + offset) >> PAGE_SHIFT;
++			sge++;
++			sge_bytes = min(sge->length, size - sent);
++			offset = sge->laddr & ~PAGE_MASK;
 +		} else {
-+			wqe->sqe.num_sge = 0;
++			sent = rv;
++			break;
++		}
++	}
++	return sent;
++}
++
++#define MAX_TRAILER (MPA_CRC_SIZE + 4)
++
++static void siw_unmap_pages(struct page **pages, int hdr_len, int num_maps)
++{
++	if (hdr_len) {
++		++pages;
++		--num_maps;
++	}
++	while (num_maps-- > 0) {
++		kunmap(*pages);
++		pages++;
++	}
++}
++
++/*
++ * siw_tx_hdt() tries to push a complete packet to TCP where all
++ * packet fragments are referenced by the elements of one iovec.
++ * For the data portion, each involved page must be referenced by
++ * one extra element. All sge's data can be non-aligned to page
++ * boundaries. Two more elements are referencing iWARP header
++ * and trailer:
++ * MAX_ARRAY = 64KB/PAGE_SIZE + 1 + (2 * (SIW_MAX_SGE - 1) + HDR + TRL
++ */
++#define MAX_ARRAY ((0xffff / PAGE_SIZE) + 1 + (2 * (SIW_MAX_SGE - 1) + 2))
++
++/*
++ * Write out iov referencing hdr, data and trailer of current FPDU.
++ * Update transmit state dependent on write return status
++ */
++static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
++{
++	struct siw_wqe *wqe = &c_tx->wqe_active;
++	struct siw_sge *sge = &wqe->sqe.sge[c_tx->sge_idx];
++	struct kvec iov[MAX_ARRAY];
++	struct page *page_array[MAX_ARRAY];
++	struct msghdr msg = { .msg_flags = MSG_DONTWAIT | MSG_EOR };
++
++	int seg = 0, do_crc = c_tx->do_crc, is_kva = 0, rv;
++	unsigned int data_len = c_tx->bytes_unsent, hdr_len = 0, trl_len = 0,
++		     sge_off = c_tx->sge_off, sge_idx = c_tx->sge_idx,
++		     pbl_idx = c_tx->pbl_idx;
++
++	if (c_tx->state == SIW_SEND_HDR) {
++		if (c_tx->use_sendpage) {
++			rv = siw_tx_ctrl(c_tx, s, MSG_DONTWAIT | MSG_MORE);
++			if (rv)
++				goto done;
++
++			c_tx->state = SIW_SEND_DATA;
++		} else {
++			iov[0].iov_base =
++				(char *)&c_tx->pkt.ctrl + c_tx->ctrl_sent;
++			iov[0].iov_len = hdr_len =
++				c_tx->ctrl_len - c_tx->ctrl_sent;
++			seg = 1;
++			siw_dbg_pkt(&c_tx->pkt.hdr, tx_qp(c_tx),
++				    "HDR to send");
++		}
++	}
++
++	wqe->processed += data_len;
++
++	while (data_len) { /* walk the list of SGE's */
++		unsigned int sge_len = min(sge->length - sge_off, data_len);
++		unsigned int fp_off = (sge->laddr + sge_off) & ~PAGE_MASK;
++		struct siw_mem *mem;
++
++		if (!(tx_flags(wqe) & SIW_WQE_INLINE)) {
++			mem = wqe->mem[sge_idx];
++			if (!mem->mem_obj)
++				is_kva = 1;
++		} else {
++			is_kva = 1;
++		}
++		if (is_kva && !c_tx->use_sendpage) {
++			/*
++			 * tx from kernel virtual address: either inline data
++			 * or memory region with assigned kernel buffer
++			 */
++			iov[seg].iov_base = (void *)(sge->laddr + sge_off);
++			iov[seg].iov_len = sge_len;
++
++			if (do_crc)
++				siw_crc_array(c_tx->mpa_crc_hd,
++					      iov[seg].iov_base, sge_len);
++			sge_off += sge_len;
++			data_len -= sge_len;
++			seg++;
++			goto sge_done;
 +		}
 +
-+		/* Retain original RREQ's message sequence number for
-+		 * potential error reporting cases.
++		while (sge_len) {
++			size_t plen = min((int)PAGE_SIZE - fp_off, sge_len);
++
++			if (!is_kva) {
++				struct page *p;
++
++				if (mem->is_pbl)
++					p = siw_get_pblpage(
++						mem, sge->laddr + sge_off,
++						&pbl_idx);
++				else
++					p = siw_get_upage(mem->umem,
++							  sge->laddr + sge_off);
++				if (unlikely(!p)) {
++					if (hdr_len)
++						seg--;
++					if (!c_tx->use_sendpage && seg) {
++						siw_unmap_pages(page_array,
++								hdr_len, seg);
++					}
++					wqe->processed -= c_tx->bytes_unsent;
++					rv = -EFAULT;
++					goto done_crc;
++				}
++				page_array[seg] = p;
++
++				if (!c_tx->use_sendpage) {
++					iov[seg].iov_base = kmap(p) + fp_off;
++					iov[seg].iov_len = plen;
++				}
++				if (do_crc)
++					siw_crc_page(c_tx->mpa_crc_hd, p,
++						     fp_off, plen);
++			} else {
++				u64 pa = ((sge->laddr + sge_off) & PAGE_MASK);
++
++				page_array[seg] = virt_to_page(pa);
++				if (do_crc)
++					siw_crc_array(
++						c_tx->mpa_crc_hd,
++						(void *)(sge->laddr + sge_off),
++						plen);
++			}
++
++			sge_len -= plen;
++			sge_off += plen;
++			data_len -= plen;
++			fp_off = 0;
++
++			if (++seg > (int)MAX_ARRAY) {
++				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
++				if (!is_kva && !c_tx->use_sendpage) {
++					siw_unmap_pages(page_array, hdr_len,
++							seg - 1);
++				}
++				wqe->processed -= c_tx->bytes_unsent;
++				rv = -EMSGSIZE;
++				goto done_crc;
++			}
++		}
++sge_done:
++		/* Update SGE variables at end of SGE */
++		if (sge_off == sge->length &&
++		    (data_len != 0 || wqe->processed < wqe->bytes)) {
++			sge_idx++;
++			sge++;
++			sge_off = 0;
++		}
++	}
++	/* trailer */
++	if (likely(c_tx->state != SIW_SEND_TRAILER)) {
++		iov[seg].iov_base = &c_tx->trailer.pad[4 - c_tx->pad];
++		iov[seg].iov_len = trl_len = MAX_TRAILER - (4 - c_tx->pad);
++	} else {
++		iov[seg].iov_base = &c_tx->trailer.pad[c_tx->ctrl_sent];
++		iov[seg].iov_len = trl_len = MAX_TRAILER - c_tx->ctrl_sent;
++	}
++
++	if (c_tx->pad) {
++		*(u32 *)c_tx->trailer.pad = 0;
++		if (do_crc)
++			siw_crc_array(c_tx->mpa_crc_hd,
++				      (u8 *)&c_tx->trailer.crc - c_tx->pad,
++				      c_tx->pad);
++	}
++	if (!c_tx->mpa_crc_hd)
++		c_tx->trailer.crc = 0;
++	else if (do_crc)
++		crypto_shash_final(c_tx->mpa_crc_hd, (u8 *)&c_tx->trailer.crc);
++
++	data_len = c_tx->bytes_unsent;
++
++	if (c_tx->use_sendpage) {
++		rv = siw_0copy_tx(s, page_array, &wqe->sqe.sge[c_tx->sge_idx],
++				  c_tx->sge_off, data_len);
++		if (rv == data_len) {
++			rv = kernel_sendmsg(s, &msg, &iov[seg], 1, trl_len);
++			if (rv > 0)
++				rv += data_len;
++			else
++				rv = data_len;
++		}
++	} else {
++		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
++				    hdr_len + data_len + trl_len);
++		if (!is_kva)
++			siw_unmap_pages(page_array, hdr_len, seg);
++	}
++	if (rv < (int)hdr_len) {
++		/* Not even complete hdr pushed or negative rv */
++		wqe->processed -= data_len;
++		if (rv >= 0) {
++			c_tx->ctrl_sent += rv;
++			rv = -EAGAIN;
++		}
++		goto done_crc;
++	}
++	rv -= hdr_len;
++
++	if (rv >= (int)data_len) {
++		/* all user data pushed to TCP or no data to push */
++		if (data_len > 0 && wqe->processed < wqe->bytes) {
++			/* Save the current state for next tx */
++			c_tx->sge_idx = sge_idx;
++			c_tx->sge_off = sge_off;
++			c_tx->pbl_idx = pbl_idx;
++		}
++		rv -= data_len;
++
++		if (rv == trl_len) /* all pushed */
++			rv = 0;
++		else {
++			c_tx->state = SIW_SEND_TRAILER;
++			c_tx->ctrl_len = MAX_TRAILER;
++			c_tx->ctrl_sent = rv + 4 - c_tx->pad;
++			c_tx->bytes_unsent = 0;
++			rv = -EAGAIN;
++		}
++
++	} else if (data_len > 0) {
++		/* Maybe some user data pushed to TCP */
++		c_tx->state = SIW_SEND_DATA;
++		wqe->processed -= data_len - rv;
++
++		if (rv) {
++			/*
++			 * Some bytes out. Recompute tx state based
++			 * on old state and bytes pushed
++			 */
++			unsigned int sge_unsent;
++
++			c_tx->bytes_unsent -= rv;
++			sge = &wqe->sqe.sge[c_tx->sge_idx];
++			sge_unsent = sge->length - c_tx->sge_off;
++
++			while (sge_unsent <= rv) {
++				rv -= sge_unsent;
++				c_tx->sge_idx++;
++				c_tx->sge_off = 0;
++				sge++;
++				sge_unsent = sge->length;
++			}
++			c_tx->sge_off += rv;
++		}
++		rv = -EAGAIN;
++	}
++done_crc:
++	c_tx->do_crc = 0;
++done:
++	return rv;
++}
++
++static void siw_update_tcpseg(struct siw_iwarp_tx *c_tx,
++				     struct socket *s)
++{
++	struct tcp_sock *tp = tcp_sk(s->sk);
++
++	if (tp->gso_segs) {
++		if (c_tx->gso_seg_limit == 0)
++			c_tx->tcp_seglen = tp->mss_cache * tp->gso_segs;
++		else
++			c_tx->tcp_seglen =
++				tp->mss_cache *
++				min_t(u16, c_tx->gso_seg_limit, tp->gso_segs);
++	} else {
++		c_tx->tcp_seglen = tp->mss_cache;
++	}
++	/* Loopback may give odd numbers */
++	c_tx->tcp_seglen &= 0xfffffff8;
++}
++
++/*
++ * siw_prepare_fpdu()
++ *
++ * Prepares transmit context to send out one FPDU if FPDU will contain
++ * user data and user data are not immediate data.
++ * Computes maximum FPDU length to fill up TCP MSS if possible.
++ *
++ * @qp:		QP from which to transmit
++ * @wqe:	Current WQE causing transmission
++ *
++ * TODO: Take into account real available sendspace on socket
++ *       to avoid header misalignment due to send pausing within
++ *       fpdu transmission
++ */
++static void siw_prepare_fpdu(struct siw_qp *qp, struct siw_wqe *wqe)
++{
++	struct siw_iwarp_tx *c_tx = &qp->tx_ctx;
++	int data_len;
++
++	c_tx->ctrl_len =
++		iwarp_pktinfo[__rdmap_get_opcode(&c_tx->pkt.ctrl)].hdr_len;
++	c_tx->ctrl_sent = 0;
++
++	/*
++	 * Update target buffer offset if any
++	 */
++	if (!(c_tx->pkt.ctrl.ddp_rdmap_ctrl & DDP_FLAG_TAGGED))
++		/* Untagged message */
++		c_tx->pkt.c_untagged.ddp_mo = cpu_to_be32(wqe->processed);
++	else /* Tagged message */
++		c_tx->pkt.c_tagged.ddp_to =
++			cpu_to_be64(wqe->sqe.raddr + wqe->processed);
++
++	data_len = wqe->bytes - wqe->processed;
++	if (data_len + c_tx->ctrl_len + MPA_CRC_SIZE > c_tx->tcp_seglen) {
++		/* Trim DDP payload to fit into current TCP segment */
++		data_len = c_tx->tcp_seglen - (c_tx->ctrl_len + MPA_CRC_SIZE);
++		c_tx->pkt.ctrl.ddp_rdmap_ctrl &= ~DDP_FLAG_LAST;
++		c_tx->pad = 0;
++	} else {
++		c_tx->pkt.ctrl.ddp_rdmap_ctrl |= DDP_FLAG_LAST;
++		c_tx->pad = -data_len & 0x3;
++	}
++	c_tx->bytes_unsent = data_len;
++
++	c_tx->pkt.ctrl.mpa_len =
++		htons(c_tx->ctrl_len + data_len - MPA_HDR_SIZE);
++
++	/*
++	 * Init MPA CRC computation
++	 */
++	if (c_tx->mpa_crc_hd) {
++		siw_crc_txhdr(c_tx);
++		c_tx->do_crc = 1;
++	}
++}
++
++/*
++ * siw_check_sgl_tx()
++ *
++ * Check permissions for a list of SGE's (SGL).
++ * A successful check will have all memory referenced
++ * for transmission resolved and assigned to the WQE.
++ *
++ * @pd:		Protection Domain SGL should belong to
++ * @wqe:	WQE to be checked
++ * @perms:	requested access permissions
++ *
++ */
++
++static int siw_check_sgl_tx(struct ib_pd *pd, struct siw_wqe *wqe,
++			    enum ib_access_flags perms)
++{
++	struct siw_sge *sge = &wqe->sqe.sge[0];
++	int i, len, num_sge = wqe->sqe.num_sge;
++
++	if (unlikely(num_sge > SIW_MAX_SGE))
++		return -EINVAL;
++
++	for (i = 0, len = 0; num_sge; num_sge--, i++, sge++) {
++		/*
++		 * rdma verbs: do not check stag for a zero length sge
 +		 */
-+		wqe->sqe.sge[1].length = irqe->sge[1].length;
++		if (sge->length) {
++			int rv = siw_check_sge(pd, sge, &wqe->mem[i], perms, 0,
++					       sge->length);
 +
-+		wqe->sqe.rkey = irqe->rkey;
-+		wqe->sqe.raddr = irqe->raddr;
++			if (unlikely(rv != E_ACCESS_OK))
++				return rv;
++		}
++		len += sge->length;
++	}
++	return len;
++}
 +
++/*
++ * siw_qp_sq_proc_tx()
++ *
++ * Process one WQE which needs transmission on the wire.
++ */
++static int siw_qp_sq_proc_tx(struct siw_qp *qp, struct siw_wqe *wqe)
++{
++	struct siw_iwarp_tx *c_tx = &qp->tx_ctx;
++	struct socket *s = qp->attrs.sk;
++	int rv = 0, burst_len = qp->tx_ctx.burst;
++	enum rdmap_ecode ecode = RDMAP_ECODE_CATASTROPHIC_STREAM;
++
++	if (unlikely(wqe->wr_status == SIW_WR_IDLE))
++		return 0;
++
++	if (!burst_len)
++		burst_len = SQ_USER_MAXBURST;
++
++	if (wqe->wr_status == SIW_WR_QUEUED) {
++		if (!(wqe->sqe.flags & SIW_WQE_INLINE)) {
++			if (tx_type(wqe) == SIW_OP_READ_RESPONSE)
++				wqe->sqe.num_sge = 1;
++
++			if (tx_type(wqe) != SIW_OP_READ &&
++			    tx_type(wqe) != SIW_OP_READ_LOCAL_INV) {
++				/*
++				 * Reference memory to be tx'd w/o checking
++				 * access for LOCAL_READ permission, since
++				 * not defined in RDMA core.
++				 */
++				rv = siw_check_sgl_tx(qp->pd, wqe, 0);
++				if (rv < 0) {
++					if (tx_type(wqe) ==
++					    SIW_OP_READ_RESPONSE)
++						ecode = siw_rdmap_error(-rv);
++					rv = -EINVAL;
++					goto tx_error;
++				}
++				wqe->bytes = rv;
++			} else {
++				wqe->bytes = 0;
++			}
++		} else {
++			wqe->bytes = wqe->sqe.sge[0].length;
++			if (!qp->kernel_verbs) {
++				if (wqe->bytes > SIW_MAX_INLINE) {
++					rv = -EINVAL;
++					goto tx_error;
++				}
++				wqe->sqe.sge[0].laddr = (u64)&wqe->sqe.sge[1];
++			}
++		}
++		wqe->wr_status = SIW_WR_INPROGRESS;
 +		wqe->processed = 0;
-+		qp->irq_get++;
 +
-+		/* mark current IRQ entry free */
-+		smp_store_mb(irqe->flags, 0);
++		siw_update_tcpseg(c_tx, s);
 +
++		rv = siw_qp_prepare_tx(c_tx);
++		if (rv == PKT_FRAGMENTED) {
++			c_tx->state = SIW_SEND_HDR;
++			siw_prepare_fpdu(qp, wqe);
++		} else if (rv == PKT_COMPLETE) {
++			c_tx->state = SIW_SEND_SHORT_FPDU;
++		} else {
++			goto tx_error;
++		}
++	}
++
++next_segment:
++	siw_dbg_qp(qp, "wr type %d, state %d, data %u, sent %u, id %llx\n",
++		   tx_type(wqe), wqe->wr_status, wqe->bytes, wqe->processed,
++		   wqe->sqe.id);
++
++	if (--burst_len == 0) {
++		rv = -EINPROGRESS;
++		goto tx_done;
++	}
++	if (c_tx->state == SIW_SEND_SHORT_FPDU) {
++		enum siw_opcode tx_type = tx_type(wqe);
++		unsigned int msg_flags;
++
++		if (siw_sq_empty(qp) || !siw_tcp_nagle || burst_len == 1)
++			/*
++			 * End current TCP segment, if SQ runs empty,
++			 * or siw_tcp_nagle is not set, or we bail out
++			 * soon due to no burst credit left.
++			 */
++			msg_flags = MSG_DONTWAIT;
++		else
++			msg_flags = MSG_DONTWAIT | MSG_MORE;
++
++		rv = siw_tx_ctrl(c_tx, s, msg_flags);
++
++		if (!rv && tx_type != SIW_OP_READ &&
++		    tx_type != SIW_OP_READ_LOCAL_INV)
++			wqe->processed = wqe->bytes;
++
++		goto tx_done;
++
++	} else {
++		rv = siw_tx_hdt(c_tx, s);
++	}
++	if (!rv) {
++		/*
++		 * One segment sent. Processing completed if last
++		 * segment, Do next segment otherwise.
++		 */
++		if (unlikely(c_tx->tx_suspend)) {
++			/*
++			 * Verbs, 6.4.: Try stopping sending after a full
++			 * DDP segment if the connection goes down
++			 * (== peer halfclose)
++			 */
++			rv = -ECONNABORTED;
++			goto tx_done;
++		}
++		if (c_tx->pkt.ctrl.ddp_rdmap_ctrl & DDP_FLAG_LAST) {
++			siw_dbg_qp(qp, "WQE completed\n");
++			goto tx_done;
++		}
++		c_tx->state = SIW_SEND_HDR;
++
++		siw_update_tcpseg(c_tx, s);
++
++		siw_prepare_fpdu(qp, wqe);
++		goto next_segment;
++	}
++tx_done:
++	qp->tx_ctx.burst = burst_len;
++	return rv;
++
++tx_error:
++	if (ecode != RDMAP_ECODE_CATASTROPHIC_STREAM)
++		siw_init_terminate(qp, TERM_ERROR_LAYER_RDMAP,
++				   RDMAP_ETYPE_REMOTE_PROTECTION, ecode, 1);
++	else
++		siw_init_terminate(qp, TERM_ERROR_LAYER_RDMAP,
++				   RDMAP_ETYPE_CATASTROPHIC,
++				   RDMAP_ECODE_UNSPECIFIED, 1);
++	return rv;
++}
++
++static int siw_fastreg_mr(struct ib_pd *pd, struct siw_sqe *sqe)
++{
++	struct ib_mr *base_mr = (struct ib_mr *)sqe->base_mr;
++	struct siw_device *sdev = to_siw_dev(pd->device);
++	struct siw_mem *mem = siw_mem_id2obj(sdev, sqe->rkey  >> 8);
++	int rv = 0;
++
++	siw_dbg_pd(pd, "STag 0x%08x\n", sqe->rkey);
++
++	if (unlikely(!mem || !base_mr)) {
++		pr_warn("siw: fastreg: STag 0x%08x unknown\n", sqe->rkey);
++		return -EINVAL;
++	}
++	if (unlikely(base_mr->rkey >> 8 != sqe->rkey  >> 8)) {
++		pr_warn("siw: fastreg: STag 0x%08x: bad MR\n", sqe->rkey);
++		rv = -EINVAL;
 +		goto out;
 +	}
-+	sqe = sq_get_next(qp);
-+	if (sqe) {
-+skip_irq:
-+		memset(wqe->mem, 0, sizeof(*wqe->mem) * SIW_MAX_SGE);
-+		wqe->wr_status = SIW_WR_QUEUED;
-+
-+		/* First copy SQE to kernel private memory */
-+		memcpy(&wqe->sqe, sqe, sizeof(*sqe));
-+
-+		if (wqe->sqe.opcode >= SIW_NUM_OPCODES) {
-+			rv = -EINVAL;
-+			goto out;
-+		}
-+		if (wqe->sqe.flags & SIW_WQE_INLINE) {
-+			if (wqe->sqe.opcode != SIW_OP_SEND &&
-+			    wqe->sqe.opcode != SIW_OP_WRITE) {
-+				rv = -EINVAL;
-+				goto out;
-+			}
-+			if (wqe->sqe.sge[0].length > SIW_MAX_INLINE) {
-+				rv = -EINVAL;
-+				goto out;
-+			}
-+			wqe->sqe.sge[0].laddr = (u64)&wqe->sqe.sge[1];
-+			wqe->sqe.sge[0].lkey = 0;
-+			wqe->sqe.num_sge = 1;
-+		}
-+		if (wqe->sqe.flags & SIW_WQE_READ_FENCE) {
-+			/* A READ cannot be fenced */
-+			if (unlikely(wqe->sqe.opcode == SIW_OP_READ ||
-+				     wqe->sqe.opcode ==
-+					     SIW_OP_READ_LOCAL_INV)) {
-+				siw_dbg_qp(qp, "cannot fence read\n");
-+				rv = -EINVAL;
-+				goto out;
-+			}
-+			spin_lock(&qp->orq_lock);
-+
-+			if (!siw_orq_empty(qp)) {
-+				qp->tx_ctx.orq_fence = 1;
-+				rv = 0;
-+			}
-+			spin_unlock(&qp->orq_lock);
-+
-+		} else if (wqe->sqe.opcode == SIW_OP_READ ||
-+			   wqe->sqe.opcode == SIW_OP_READ_LOCAL_INV) {
-+			struct siw_sqe *rreq;
-+
-+			wqe->sqe.num_sge = 1;
-+
-+			spin_lock(&qp->orq_lock);
-+
-+			rreq = orq_get_free(qp);
-+			if (rreq) {
-+				/*
-+				 * Make an immediate copy in ORQ to be ready
-+				 * to process loopback READ reply
-+				 */
-+				siw_read_to_orq(rreq, &wqe->sqe);
-+				qp->orq_put++;
-+			} else {
-+				qp->tx_ctx.orq_fence = 1;
-+				rv = 0;
-+			}
-+			spin_unlock(&qp->orq_lock);
-+		}
-+
-+		/* Clear SQE, can be re-used by application */
-+		smp_store_mb(sqe->flags, 0);
-+		qp->sq_get++;
-+	} else {
-+		rv = 0;
++	if (unlikely(mem->pd != pd)) {
++		pr_warn("siw: fastreg: PD mismatch\n");
++		rv = -EINVAL;
++		goto out;
 +	}
++	if (unlikely(mem->stag_valid)) {
++		pr_warn("siw: fastreg: STag 0x%08x already valid\n", sqe->rkey);
++		rv = -EINVAL;
++		goto out;
++	}
++	/* Refresh STag since user may have changed key part */
++	mem->stag = sqe->rkey;
++	mem->perms = sqe->access;
++
++	siw_dbg_mem(mem, "STag now valid, MR va: 0x%016llx -> 0x%016llx\n",
++		    mem->va, base_mr->iova);
++	mem->va = base_mr->iova;
++	mem->stag_valid = 1;
 +out:
-+	if (unlikely(rv < 0)) {
-+		siw_dbg_qp(qp, "error %d\n", rv);
-+		wqe->wr_status = SIW_WR_IDLE;
++	siw_mem_put(mem);
++	return rv;
++}
++
++static int siw_qp_sq_proc_local(struct siw_qp *qp, struct siw_wqe *wqe)
++{
++	int rv;
++
++	switch (tx_type(wqe)) {
++	case SIW_OP_REG_MR:
++		rv = siw_fastreg_mr(qp->pd, &wqe->sqe);
++		break;
++
++	case SIW_OP_INVAL_STAG:
++		rv = siw_invalidate_stag(qp->pd, wqe->sqe.rkey);
++		break;
++
++	default:
++		rv = -EINVAL;
 +	}
 +	return rv;
 +}
 +
 +/*
-+ * Check if current CQ state qualifies for calling CQ completion
-+ * handler. Must be called with CQ lock held.
-+ */
-+static bool siw_cq_notify_now(struct siw_cq *cq, u32 flags)
-+{
-+	u64 cq_notify;
-+
-+	if (!cq->base_cq.comp_handler)
-+		return false;
-+
-+	cq_notify = READ_ONCE(*cq->notify);
-+
-+	if ((cq_notify & SIW_NOTIFY_NEXT_COMPLETION) ||
-+	    ((cq_notify & SIW_NOTIFY_SOLICITED) &&
-+	     (flags & SIW_WQE_SOLICITED))) {
-+		/* dis-arm CQ */
-+		smp_store_mb(*cq->notify, SIW_NOTIFY_NOT);
-+
-+		return true;
-+	}
-+	return false;
-+}
-+
-+int siw_sqe_complete(struct siw_qp *qp, struct siw_sqe *sqe, u32 bytes,
-+		     enum siw_wc_status status)
-+{
-+	struct siw_cq *cq = qp->scq;
-+	int rv = 0;
-+
-+	if (cq) {
-+		u32 sqe_flags = sqe->flags;
-+		struct siw_cqe *cqe;
-+		u32 idx;
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&cq->lock, flags);
-+
-+		idx = cq->cq_put % cq->num_cqe;
-+		cqe = &cq->queue[idx];
-+
-+		if (!READ_ONCE(cqe->flags)) {
-+			bool notify;
-+
-+			cqe->id = sqe->id;
-+			cqe->opcode = sqe->opcode;
-+			cqe->status = status;
-+			cqe->imm_data = 0;
-+			cqe->bytes = bytes;
-+
-+			if (cq->kernel_verbs)
-+				cqe->base_qp = qp->ib_qp;
-+			else
-+				cqe->qp_id = qp_id(qp);
-+
-+			/* mark CQE valid for application */
-+			WRITE_ONCE(cqe->flags, SIW_WQE_VALID);
-+			/* recycle SQE */
-+			smp_store_mb(sqe->flags, 0);
-+
-+			cq->cq_put++;
-+			notify = siw_cq_notify_now(cq, sqe_flags);
-+
-+			spin_unlock_irqrestore(&cq->lock, flags);
-+
-+			if (notify) {
-+				siw_dbg_cq(cq, "Call completion handler\n");
-+				cq->base_cq.comp_handler(&cq->base_cq,
-+						cq->base_cq.cq_context);
-+			}
-+		} else {
-+			spin_unlock_irqrestore(&cq->lock, flags);
-+			rv = -ENOMEM;
-+			siw_cq_event(cq, IB_EVENT_CQ_ERR);
-+		}
-+	} else {
-+		/* recycle SQE */
-+		smp_store_mb(sqe->flags, 0);
-+	}
-+	return rv;
-+}
-+
-+int siw_rqe_complete(struct siw_qp *qp, struct siw_rqe *rqe, u32 bytes,
-+		     u32 inval_stag, enum siw_wc_status status)
-+{
-+	struct siw_cq *cq = qp->rcq;
-+	int rv = 0;
-+
-+	if (cq) {
-+		struct siw_cqe *cqe;
-+		u32 idx;
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&cq->lock, flags);
-+
-+		idx = cq->cq_put % cq->num_cqe;
-+		cqe = &cq->queue[idx];
-+
-+		if (!READ_ONCE(cqe->flags)) {
-+			bool notify;
-+			u8 cqe_flags = SIW_WQE_VALID;
-+
-+			cqe->id = rqe->id;
-+			cqe->opcode = SIW_OP_RECEIVE;
-+			cqe->status = status;
-+			cqe->imm_data = 0;
-+			cqe->bytes = bytes;
-+
-+			if (cq->kernel_verbs) {
-+				cqe->base_qp = qp->ib_qp;
-+				if (inval_stag) {
-+					cqe_flags |= SIW_WQE_REM_INVAL;
-+					cqe->inval_stag = inval_stag;
-+				}
-+			} else {
-+				cqe->qp_id = qp_id(qp);
-+			}
-+			/* mark CQE valid for application */
-+			WRITE_ONCE(cqe->flags, cqe_flags);
-+			/* recycle RQE */
-+			smp_store_mb(rqe->flags, 0);
-+
-+			cq->cq_put++;
-+			notify = siw_cq_notify_now(cq, SIW_WQE_SIGNALLED);
-+
-+			spin_unlock_irqrestore(&cq->lock, flags);
-+
-+			if (notify) {
-+				siw_dbg_cq(cq, "Call completion handler\n");
-+				cq->base_cq.comp_handler(&cq->base_cq,
-+						cq->base_cq.cq_context);
-+			}
-+		} else {
-+			spin_unlock_irqrestore(&cq->lock, flags);
-+			rv = -ENOMEM;
-+			siw_cq_event(cq, IB_EVENT_CQ_ERR);
-+		}
-+	} else {
-+		/* recycle RQE */
-+		smp_store_mb(rqe->flags, 0);
-+	}
-+	return rv;
-+}
-+
-+/*
-+ * siw_sq_flush()
++ * siw_qp_sq_process()
 + *
-+ * Flush SQ and ORRQ entries to CQ.
++ * Core TX path routine for RDMAP/DDP/MPA using a TCP kernel socket.
++ * Sends RDMAP payload for the current SQ WR @wqe of @qp in one or more
++ * MPA FPDUs, each containing a DDP segment.
 + *
-+ * Must be called with QP state write lock held.
-+ * Therefore, SQ and ORQ lock must not be taken.
++ * SQ processing may occur in user context as a result of posting
++ * new WQE's or from siw_sq_work_handler() context. Processing in
++ * user context is limited to non-kernel verbs users.
++ *
++ * SQ processing may get paused anytime, possibly in the middle of a WR
++ * or FPDU, if insufficient send space is available. SQ processing
++ * gets resumed from siw_sq_work_handler(), if send space becomes
++ * available again.
++ *
++ * Must be called with the QP state read-locked.
++ *
++ * Note:
++ * An outbound RREQ can be satisfied by the corresponding RRESP
++ * _before_ it gets assigned to the ORQ. This happens regularly
++ * in RDMA READ via loopback case. Since both outbound RREQ and
++ * inbound RRESP can be handled by the same CPU, locking the ORQ
++ * is dead-lock prone and thus not an option. With that, the
++ * RREQ gets assigned to the ORQ _before_ being sent - see
++ * siw_activate_tx() - and pulled back in case of send failure.
 + */
-+void siw_sq_flush(struct siw_qp *qp)
++int siw_qp_sq_process(struct siw_qp *qp)
 +{
-+	struct siw_sqe *sqe;
 +	struct siw_wqe *wqe = tx_wqe(qp);
-+	int async_event = 0;
++	enum siw_opcode tx_type;
++	unsigned long flags;
++	int rv = 0;
 +
-+	siw_dbg_qp(qp, "enter\n");
++	siw_dbg_qp(qp, "enter for type %d\n", tx_type(wqe));
 +
++next_wqe:
 +	/*
-+	 * Start with completing any work currently on the ORQ
++	 * Stop QP processing if SQ state changed
 +	 */
-+	while (qp->attrs.orq_size) {
-+		sqe = &qp->orq[qp->orq_get % qp->attrs.orq_size];
-+		if (!READ_ONCE(sqe->flags))
-+			break;
-+
-+		if (siw_sqe_complete(qp, sqe, 0, SIW_WC_WR_FLUSH_ERR) != 0)
-+			break;
-+
-+		WRITE_ONCE(sqe->flags, 0);
-+		qp->orq_get++;
++	if (unlikely(qp->tx_ctx.tx_suspend)) {
++		siw_dbg_qp(qp, "tx suspended\n");
++		goto done;
 +	}
-+	/*
-+	 * Flush an in-progess WQE if present
-+	 */
-+	if (wqe->wr_status != SIW_WR_IDLE) {
-+		siw_dbg_qp(qp, "flush current SQE, type %d, status %d\n",
-+			   tx_type(wqe), wqe->wr_status);
++	tx_type = tx_type(wqe);
 +
-+		siw_wqe_put_mem(wqe, tx_type(wqe));
-+
-+		if (tx_type(wqe) != SIW_OP_READ_RESPONSE &&
-+		    ((tx_type(wqe) != SIW_OP_READ &&
-+		      tx_type(wqe) != SIW_OP_READ_LOCAL_INV) ||
-+		     wqe->wr_status == SIW_WR_QUEUED))
-+			/*
-+			 * An in-progress Read Request is already in
-+			 * the ORQ
-+			 */
-+			siw_sqe_complete(qp, &wqe->sqe, wqe->bytes,
-+					 SIW_WC_WR_FLUSH_ERR);
-+
-+		wqe->wr_status = SIW_WR_IDLE;
-+	}
-+	/*
-+	 * Flush the Send Queue
-+	 */
-+	while (qp->attrs.sq_size) {
-+		sqe = &qp->sendq[qp->sq_get % qp->attrs.sq_size];
-+		if (!READ_ONCE(sqe->flags))
-+			break;
-+
-+		async_event = 1;
-+		if (siw_sqe_complete(qp, sqe, 0, SIW_WC_WR_FLUSH_ERR) != 0)
-+			/*
-+			 * Shall IB_EVENT_SQ_DRAINED be supressed if work
-+			 * completion fails?
-+			 */
-+			break;
-+
-+		WRITE_ONCE(sqe->flags, 0);
-+		qp->sq_get++;
-+	}
-+	if (async_event)
-+		siw_qp_event(qp, IB_EVENT_SQ_DRAINED);
-+}
-+
-+/*
-+ * siw_rq_flush()
-+ *
-+ * Flush recv queue entries to CQ. Also
-+ * takes care of pending active tagged and untagged
-+ * inbound transfers, which have target memory
-+ * referenced.
-+ *
-+ * Must be called with QP state write lock held.
-+ * Therefore, RQ lock must not be taken.
-+ */
-+void siw_rq_flush(struct siw_qp *qp)
-+{
-+	struct siw_wqe *wqe = &qp->rx_untagged.wqe_active;
-+
-+	siw_dbg_qp(qp, "enter\n");
-+
-+	/*
-+	 * Flush an in-progess untagged operation if present
-+	 */
-+	if (wqe->wr_status != SIW_WR_IDLE) {
-+		siw_dbg_qp(qp, "flush current rqe, type %d, status %d\n",
-+			   rx_type(wqe), wqe->wr_status);
-+
-+		siw_wqe_put_mem(wqe, rx_type(wqe));
-+
-+		if (rx_type(wqe) == SIW_OP_RECEIVE) {
-+			siw_rqe_complete(qp, &wqe->rqe, wqe->bytes,
-+					 0, SIW_WC_WR_FLUSH_ERR);
-+		} else if (rx_type(wqe) != SIW_OP_READ &&
-+			   rx_type(wqe) != SIW_OP_READ_RESPONSE &&
-+			   rx_type(wqe) != SIW_OP_WRITE) {
-+			siw_sqe_complete(qp, &wqe->sqe, 0, SIW_WC_WR_FLUSH_ERR);
-+		}
-+		wqe->wr_status = SIW_WR_IDLE;
-+	}
-+	wqe = &qp->rx_tagged.wqe_active;
-+
-+	if (wqe->wr_status != SIW_WR_IDLE) {
-+		siw_wqe_put_mem(wqe, rx_type(wqe));
-+		wqe->wr_status = SIW_WR_IDLE;
-+	}
-+	/*
-+	 * Flush the Receive Queue
-+	 */
-+	while (qp->attrs.rq_size) {
-+		struct siw_rqe *rqe =
-+			&qp->recvq[qp->rq_get % qp->attrs.rq_size];
-+
-+		if (!READ_ONCE(rqe->flags))
-+			break;
-+
-+		if (siw_rqe_complete(qp, rqe, 0, 0, SIW_WC_WR_FLUSH_ERR) != 0)
-+			break;
-+
-+		WRITE_ONCE(rqe->flags, 0);
-+		qp->rq_get++;
-+	}
-+}
-+
-+int siw_qp_add(struct siw_device *sdev, struct siw_qp *qp)
-+{
-+	int rv = xa_alloc(&sdev->qp_xa, &qp->ib_qp->qp_num, qp, xa_limit_32b,
-+			  GFP_KERNEL);
++	if (tx_type <= SIW_OP_READ_RESPONSE)
++		rv = siw_qp_sq_proc_tx(qp, wqe);
++	else
++		rv = siw_qp_sq_proc_local(qp, wqe);
 +
 +	if (!rv) {
-+		kref_init(&qp->ref);
-+		qp->sdev = sdev;
-+		qp->qp_num = qp->ib_qp->qp_num;
-+		siw_dbg_qp(qp, "new QP\n");
++		/*
++		 * WQE processing done
++		 */
++		switch (tx_type) {
++		case SIW_OP_SEND:
++		case SIW_OP_SEND_REMOTE_INV:
++		case SIW_OP_WRITE:
++			siw_wqe_put_mem(wqe, tx_type);
++		case SIW_OP_INVAL_STAG:
++		case SIW_OP_REG_MR:
++			if (tx_flags(wqe) & SIW_WQE_SIGNALLED)
++				siw_sqe_complete(qp, &wqe->sqe, wqe->bytes,
++						 SIW_WC_SUCCESS);
++			break;
++
++		case SIW_OP_READ:
++		case SIW_OP_READ_LOCAL_INV:
++			/*
++			 * already enqueued to ORQ queue
++			 */
++			break;
++
++		case SIW_OP_READ_RESPONSE:
++			siw_wqe_put_mem(wqe, tx_type);
++			break;
++
++		default:
++			WARN(1, "undefined WQE type %d\n", tx_type);
++			rv = -EINVAL;
++			goto done;
++		}
++
++		spin_lock_irqsave(&qp->sq_lock, flags);
++		wqe->wr_status = SIW_WR_IDLE;
++		rv = siw_activate_tx(qp);
++		spin_unlock_irqrestore(&qp->sq_lock, flags);
++
++		if (rv <= 0)
++			goto done;
++
++		goto next_wqe;
++
++	} else if (rv == -EAGAIN) {
++		siw_dbg_qp(qp, "sq paused: hd/tr %d of %d, data %d\n",
++			   qp->tx_ctx.ctrl_sent, qp->tx_ctx.ctrl_len,
++			   qp->tx_ctx.bytes_unsent);
++		rv = 0;
++		goto done;
++	} else if (rv == -EINPROGRESS) {
++		rv = siw_sq_start(qp);
++		goto done;
++	} else {
++		/*
++		 * WQE processing failed.
++		 * Verbs 8.3.2:
++		 * o It turns any WQE into a signalled WQE.
++		 * o Local catastrophic error must be surfaced
++		 * o QP must be moved into Terminate state: done by code
++		 *   doing socket state change processing
++		 *
++		 * o TODO: Termination message must be sent.
++		 * o TODO: Implement more precise work completion errors,
++		 *         see enum ib_wc_status in ib_verbs.h
++		 */
++		siw_dbg_qp(qp, "wqe type %d processing failed: %d\n",
++			   tx_type(wqe), rv);
++
++		spin_lock_irqsave(&qp->sq_lock, flags);
++		/*
++		 * RREQ may have already been completed by inbound RRESP!
++		 */
++		if (tx_type == SIW_OP_READ ||
++		    tx_type == SIW_OP_READ_LOCAL_INV) {
++			/* Cleanup pending entry in ORQ */
++			qp->orq_put--;
++			qp->orq[qp->orq_put % qp->attrs.orq_size].flags = 0;
++		}
++		spin_unlock_irqrestore(&qp->sq_lock, flags);
++		/*
++		 * immediately suspends further TX processing
++		 */
++		if (!qp->tx_ctx.tx_suspend)
++			siw_qp_cm_drop(qp, 0);
++
++		switch (tx_type) {
++		case SIW_OP_SEND:
++		case SIW_OP_SEND_REMOTE_INV:
++		case SIW_OP_SEND_WITH_IMM:
++		case SIW_OP_WRITE:
++		case SIW_OP_READ:
++		case SIW_OP_READ_LOCAL_INV:
++			siw_wqe_put_mem(wqe, tx_type);
++		case SIW_OP_INVAL_STAG:
++		case SIW_OP_REG_MR:
++			siw_sqe_complete(qp, &wqe->sqe, wqe->bytes,
++					 SIW_WC_LOC_QP_OP_ERR);
++
++			siw_qp_event(qp, IB_EVENT_QP_FATAL);
++
++			break;
++
++		case SIW_OP_READ_RESPONSE:
++			siw_dbg_qp(qp, "proc. read.response failed: %d\n", rv);
++
++			siw_qp_event(qp, IB_EVENT_QP_REQ_ERR);
++
++			siw_wqe_put_mem(wqe, SIW_OP_READ_RESPONSE);
++
++			break;
++
++		default:
++			WARN(1, "undefined WQE type %d\n", tx_type);
++			rv = -EINVAL;
++		}
++		wqe->wr_status = SIW_WR_IDLE;
 +	}
++done:
 +	return rv;
 +}
 +
-+void siw_free_qp(struct kref *ref)
++static void siw_sq_resume(struct siw_qp *qp)
 +{
-+	struct siw_qp *found, *qp = container_of(ref, struct siw_qp, ref);
-+	struct siw_device *sdev = qp->sdev;
-+	unsigned long flags;
++	if (down_read_trylock(&qp->state_lock)) {
++		if (likely(qp->attrs.state == SIW_QP_STATE_RTS &&
++			   !qp->tx_ctx.tx_suspend)) {
++			int rv = siw_qp_sq_process(qp);
 +
-+	siw_dbg_qp(qp, "free QP\n");
++			up_read(&qp->state_lock);
 +
-+	if (qp->cep)
-+		siw_cep_put(qp->cep);
++			if (unlikely(rv < 0)) {
++				siw_dbg_qp(qp, "SQ task failed: err %d\n", rv);
 +
-+	found = xa_erase(&sdev->qp_xa, qp_id(qp));
-+	WARN_ON(found != qp);
-+	spin_lock_irqsave(&sdev->lock, flags);
-+	list_del(&qp->devq);
-+	spin_unlock_irqrestore(&sdev->lock, flags);
++				if (!qp->tx_ctx.tx_suspend)
++					siw_qp_cm_drop(qp, 0);
++			}
++		} else {
++			up_read(&qp->state_lock);
++		}
++	} else {
++		siw_dbg_qp(qp, "Resume SQ while QP locked\n");
++	}
++	siw_qp_put(qp);
++}
 +
-+	if (qp->sendq)
-+		vfree(qp->sendq);
-+	if (qp->recvq)
-+		vfree(qp->recvq);
-+	if (qp->irq)
-+		vfree(qp->irq);
-+	if (qp->orq)
-+		vfree(qp->orq);
++struct tx_task_t {
++	struct llist_head active;
++	wait_queue_head_t waiting;
++};
 +
-+	siw_put_tx_cpu(qp->tx_cpu);
++static DEFINE_PER_CPU(struct tx_task_t, tx_task_g);
 +
-+	atomic_dec(&sdev->num_qp);
-+	kfree(qp);
++void siw_stop_tx_thread(int nr_cpu)
++{
++	kthread_stop(siw_tx_thread[nr_cpu]);
++	wake_up(&per_cpu(tx_task_g, nr_cpu).waiting);
++}
++
++int siw_run_sq(void *data)
++{
++	const int nr_cpu = (unsigned int)(long)data;
++	struct llist_node *active;
++	struct siw_qp *qp;
++	struct tx_task_t *tx_task = &per_cpu(tx_task_g, nr_cpu);
++
++	init_llist_head(&tx_task->active);
++	init_waitqueue_head(&tx_task->waiting);
++
++	pr_info("Started siw TX thread on CPU %u\n", nr_cpu);
++
++	while (1) {
++		struct llist_node *fifo_list = NULL;
++
++		wait_event_interruptible(tx_task->waiting,
++					 !llist_empty(&tx_task->active) ||
++						 kthread_should_stop());
++
++		if (kthread_should_stop())
++			break;
++
++		active = llist_del_all(&tx_task->active);
++		/*
++		 * llist_del_all returns a list with newest entry first.
++		 * Re-order list for fairness among QP's.
++		 */
++		while (active) {
++			struct llist_node *tmp = active;
++
++			active = llist_next(active);
++			tmp->next = fifo_list;
++			fifo_list = tmp;
++		}
++		while (fifo_list) {
++			qp = container_of(fifo_list, struct siw_qp, tx_list);
++			fifo_list = llist_next(fifo_list);
++			qp->tx_list.next = NULL;
++
++			siw_sq_resume(qp);
++		}
++	}
++	active = llist_del_all(&tx_task->active);
++	if (active) {
++		llist_for_each_entry(qp, active, tx_list) {
++			qp->tx_list.next = NULL;
++			siw_sq_resume(qp);
++		}
++	}
++	pr_info("Stopped siw TX thread on CPU %u\n", nr_cpu);
++
++	return 0;
++}
++
++int siw_sq_start(struct siw_qp *qp)
++{
++	if (tx_wqe(qp)->wr_status == SIW_WR_IDLE)
++		return 0;
++
++	if (unlikely(!cpu_online(qp->tx_cpu))) {
++		siw_put_tx_cpu(qp->tx_cpu);
++		qp->tx_cpu = siw_get_tx_cpu(qp->sdev);
++		if (qp->tx_cpu < 0) {
++			pr_warn("siw: no tx cpu available\n");
++
++			return -EIO;
++		}
++	}
++	siw_qp_get(qp);
++
++	llist_add(&qp->tx_list, &per_cpu(tx_task_g, qp->tx_cpu).active);
++
++	wake_up(&per_cpu(tx_task_g, qp->tx_cpu).waiting);
++
++	return 0;
 +}
 -- 
 2.17.2
