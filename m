@@ -2,81 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BCD2B17B
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 May 2019 11:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5ECF2BAC4
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 May 2019 21:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbfE0JnG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 May 2019 05:43:06 -0400
-Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:59724 "EHLO
-        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725991AbfE0JnG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 May 2019 05:43:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E16CA78;
-        Mon, 27 May 2019 02:43:05 -0700 (PDT)
-Received: from MBP.local (usa-sjc-mx-foss1.foss.arm.com [217.140.101.70])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D0DA3F5AF;
-        Mon, 27 May 2019 02:42:59 -0700 (PDT)
-Date:   Mon, 27 May 2019 10:42:48 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v15 05/17] arms64: untag user pointers passed to memory
- syscalls
-Message-ID: <20190527094247.GA45660@MBP.local>
-References: <cover.1557160186.git.andreyknvl@google.com>
- <00eb4c63fefc054e2c8d626e8fedfca11d7c2600.1557160186.git.andreyknvl@google.com>
+        id S1727070AbfE0TfG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 May 2019 15:35:06 -0400
+Received: from dolcegabbana.com ([198.23.132.36]:34012 "EHLO petraband.com"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726772AbfE0TfF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 27 May 2019 15:35:05 -0400
+X-Greylist: delayed 14089 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 May 2019 15:35:04 EDT
+To:     linux-rdma@vger.kernel.org
+Subject: Need traffic for your website?
+Message-ID: <c4068416066e198ce843019c1b223545@walkeralextra.tech>
+Date:   Mon, 27 May 2019 13:59:57 +0200
+From:   "Alex Walker" <schutz@walkeralextra.tech>
+Reply-To: fanfenqi@sina.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00eb4c63fefc054e2c8d626e8fedfca11d7c2600.1557160186.git.andreyknvl@google.com>
-User-Agent: Mutt/1.11.2 (2019-01-07)
+Content-Type: text/plain; format=flowed; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 06, 2019 at 06:30:51PM +0200, Andrey Konovalov wrote:
-> +SYSCALL_DEFINE2(arm64_mlock2, unsigned long, start, size_t, len)
-> +{
-> +	start = untagged_addr(start);
-> +	return ksys_mlock(start, len, VM_LOCKED);
-> +}
+Hi
 
-Copy/paste error: sys_mlock2() has 3 arguments and should call
-ksys_mlock2().
+Do you need traffic for your website, or ecommerce store?
+We can bring 1-2 thousands of visitors to your website daily.
 
-Still tracking down an LTP failure on test mlock01.
+No matter what you are selling, products or service. Getting more traffic
+is the key to your business.
 
--- 
-Catalin
+Please reply if interested, we will go options for you.
+
+Thanks,
+Alex Walker
+Whatsapp: +8617199402387
+
