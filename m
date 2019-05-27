@@ -2,143 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D372B9F2
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 May 2019 20:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA772BA0B
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 May 2019 20:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbfE0SPg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 May 2019 14:15:36 -0400
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:41295 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726647AbfE0SPg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 May 2019 14:15:36 -0400
-Received: by mail-ua1-f67.google.com with SMTP id l14so6794053uah.8
-        for <linux-rdma@vger.kernel.org>; Mon, 27 May 2019 11:15:35 -0700 (PDT)
+        id S1726817AbfE0SWW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 May 2019 14:22:22 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:32914 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726931AbfE0SWW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 May 2019 14:22:22 -0400
+Received: by mail-vs1-f67.google.com with SMTP id y6so11135334vsb.0
+        for <linux-rdma@vger.kernel.org>; Mon, 27 May 2019 11:22:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=8hNxMGBAGDDkJj992yk9VOgjaUK9vfpRQoQGfXOovpE=;
-        b=R35p3owaTNtpz8MKhE3eb7p90Rmi3WA5z/IJLfYWxVZBpq3sSmZbyPaLZ+g95OFPLj
-         9nln1OdB5Rvf8gwb4rQbRYIsNLusvEJXx7zGVj5EYwA83fEJtc5HaF1UNeCxOy5omeDa
-         GAyE56QpwHgC0CT68m18jw6FEeT/1n2spYPfWdSBhQgdW6IKW3e90iju4iJHMzcjoEr8
-         zyTxg1uWCQHDh7WZaUCrOJIKk18+S8uCyT77OMo4QJ0+v9wCEPzhPZEmgYXkMXXMm8VG
-         MtX0tokKVf2ITpLZZPa0p/ErpJtrljHSYPhMSlFxTmruq7ArzrEqc5QUvzfeuyQkWFG2
-         epXA==
+        bh=/01cq/SlaYtbObkQmxmZjx+axtEBoN7csuX0fKHDcl8=;
+        b=lT/DaBwGHTHzn0cV3BLyQXSapO0RBgxGvERFvh56gsn4Zb4OBgEtFFEDEobyS481WN
+         AFdN7EddQdi4M+68E/2joCb/T2QF9wJvJvB623VEx779sgIpv/mX2KN19vizyKZa5Okj
+         2mc/uiEsLNdZ5Z6x0djfOGFVlPBfDCDFA5ex3HaL6HZM3YMg3oSISz1t6YKkvJAfSW0s
+         xDYXf8szb9JgcuraU0uWxvS5q4JD9d1DvEsgo2hoie9B++ufmLR0ukgmkTx/0klti21W
+         4lj012BopBMroWX2q+FalglYy1xiPz+HcJDK8ST4s9loWhd5Nh9X3RmPQPpMSXD77kvH
+         vvXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8hNxMGBAGDDkJj992yk9VOgjaUK9vfpRQoQGfXOovpE=;
-        b=qgd248xXt4coA30mApSsQ58J6nkstoUaKVt4FHC86wbmzueud/6qu6gK74ef8TRqSE
-         gZynSN0UIelLY4T87xbpxzv3xYDMyXnZ3nGHmHSkoM2pYlIUei98kQv46pgH921NyVQj
-         3dWPwNa0EbE/nGv+r7HLiPpH/gkVz/nmn/Ag8ytv9QCJjFTkHv1nk9qvgZqOgCqRqRkC
-         lP30IudWYvZe+iOR0KUozqDPBOI7IUkNVI904RXXtEdapwcMKjg21whqYqRiw2hZgL+P
-         cj9D9YLVa4iM0kifGihi6Syhpt4ibMukDuQWgYhtDe9U6Oj9oj6FjJIdcHO5eL23+nyf
-         nVBw==
-X-Gm-Message-State: APjAAAVzentBDCSDClcvQsMUE2MVfABjuIh439LoWIqqb4IfbeUn9zMC
-        mlZ2PjgJCbN50RXWA/wp2UOsEw==
-X-Google-Smtp-Source: APXvYqwv7ANsIWSla6GVRQobbng/bEadzUM3um96jeSPyG6hwcnv7WioNf8L1mG+BSjhPwpAO5GK0w==
-X-Received: by 2002:ab0:4a97:: with SMTP id s23mr22342607uae.19.1558980935337;
-        Mon, 27 May 2019 11:15:35 -0700 (PDT)
+        bh=/01cq/SlaYtbObkQmxmZjx+axtEBoN7csuX0fKHDcl8=;
+        b=IccFiuxol/44pt2wPiuU053/pBsg1HaDKWa6L0tnSetFs0QGWyr6o/I5u2QJiGacje
+         VCtIXSucwQR0/LayVxpbJRTk+WR4st30LrSX4KEir+Ekq8biwB71oE8/3JsimnTpo5mk
+         H9gl6f2vCSuhUeQWvK8ldmE+HhKDmd73FyNGHEtWPL4uCjPhxbO6B4GPsFO8+/FtxfZQ
+         nGpGOenB/orp6yBtiEz01JYkYQk6h75qByF6Mts/eIRusQoRd82nIHKdvOZm5sTyyWSN
+         /DrwOXgS6o0fWxx0Z5HJRv6I+EF64wuMg1Wi390AkyshArP6cJrFdWzJ1pkxr1oYEgY7
+         WBlg==
+X-Gm-Message-State: APjAAAUHPKIOSokRc5CmgfnOG5NyctwsbXSKnk3iPw6wKF8DtMp4BOmt
+        kA8X2kuN734cnSpR/gg0Xb2vmw==
+X-Google-Smtp-Source: APXvYqz0x7n/PurCMpAcrP2HcCDXsAu+c1D6AWgDLypzmGgf96DcDbTeuC9OxnZ9iBSI8yy47T7BqQ==
+X-Received: by 2002:a05:6102:2008:: with SMTP id p8mr30980558vsr.73.1558981341026;
+        Mon, 27 May 2019 11:22:21 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id b78sm4160999vkb.10.2019.05.27.11.15.34
+        by smtp.gmail.com with ESMTPSA id t193sm7610091vkc.48.2019.05.27.11.22.20
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 May 2019 11:15:34 -0700 (PDT)
+        Mon, 27 May 2019 11:22:20 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hVK9m-0002cU-92; Mon, 27 May 2019 15:15:34 -0300
-Date:   Mon, 27 May 2019 15:15:34 -0300
+        id 1hVKGK-0003Xm-0o; Mon, 27 May 2019 15:22:20 -0300
+Date:   Mon, 27 May 2019 15:22:20 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mlx5: avoid 64-bit division
-Message-ID: <20190527181534.GA10029@ziepe.ca>
-References: <20190520111902.7104DE0184@unicorn.suse.cz>
+To:     Yuval Shaia <yuval.shaia@oracle.com>
+Cc:     yishaih@mellanox.com, dledford@redhat.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-core] verbs: Introduce a new reg_mr API for virtual
+ address space
+Message-ID: <20190527182219.GF18100@ziepe.ca>
+References: <20190527150004.21191-1-yuval.shaia@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190520111902.7104DE0184@unicorn.suse.cz>
+In-Reply-To: <20190527150004.21191-1-yuval.shaia@oracle.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 20, 2019 at 01:19:02PM +0200, Michal Kubecek wrote:
-> Commit 25c13324d03d ("IB/mlx5: Add steering SW ICM device memory type")
-> breaks i386 build by introducing three 64-bit divisions. As the divisor
-> is MLX5_SW_ICM_BLOCK_SIZE() which is always a power of 2, we can replace
-> the division with bit operations.
+On Mon, May 27, 2019 at 06:00:04PM +0300, Yuval Shaia wrote:
+> The virtual address that is registered is used as a base for any address
+> used later in post_recv and post_send operations.
 > 
-> Fixes: 25c13324d03d ("IB/mlx5: Add steering SW ICM device memory type")
-> Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
->  drivers/infiniband/hw/mlx5/cmd.c  | 9 +++++++--
->  drivers/infiniband/hw/mlx5/main.c | 2 +-
->  2 files changed, 8 insertions(+), 3 deletions(-)
+> On a virtualised environment this is not correct.
 > 
-> diff --git a/drivers/infiniband/hw/mlx5/cmd.c b/drivers/infiniband/hw/mlx5/cmd.c
-> index e3ec79b8f7f5..6c8645033102 100644
-> +++ b/drivers/infiniband/hw/mlx5/cmd.c
-> @@ -190,12 +190,12 @@ int mlx5_cmd_alloc_sw_icm(struct mlx5_dm *dm, int type, u64 length,
->  			  u16 uid, phys_addr_t *addr, u32 *obj_id)
->  {
->  	struct mlx5_core_dev *dev = dm->dev;
-> -	u32 num_blocks = DIV_ROUND_UP(length, MLX5_SW_ICM_BLOCK_SIZE(dev));
->  	u32 out[MLX5_ST_SZ_DW(general_obj_out_cmd_hdr)] = {};
->  	u32 in[MLX5_ST_SZ_DW(create_sw_icm_in)] = {};
->  	unsigned long *block_map;
->  	u64 icm_start_addr;
->  	u32 log_icm_size;
-> +	u32 num_blocks;
->  	u32 max_blocks;
->  	u64 block_idx;
->  	void *sw_icm;
-> @@ -224,6 +224,8 @@ int mlx5_cmd_alloc_sw_icm(struct mlx5_dm *dm, int type, u64 length,
->  		return -EINVAL;
->  	}
+> A guest cannot register its memory so hypervisor maps the guest physical
+> address to a host virtual address and register it with the HW. Later on,
+> at datapath phase, the guest fills the SGEs with addresses from its
+> address space.
+> Since HW cannot access guest virtual address space an extra translation
+> is needed to map those addresses to be based on the host virtual address
+> that was registered with the HW.
+> 
+> To avoid this, a logical separation between the address that is
+> registered and the address that is used as a offset at datapath phase is
+> needed.
+> 
+> This separation is already implemented in the lower layer part
+> (ibv_cmd_reg_mr) but blocked at the API level.
+> 
+> Fix it by introducing a new API function that accepts a address from
+> guest virtual address space as well.
+> 
+> Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
+>  libibverbs/verbs.c | 24 ++++++++++++++++++++++++
+>  libibverbs/verbs.h |  6 ++++++
+>  2 files changed, 30 insertions(+)
+> 
+> diff --git a/libibverbs/verbs.c b/libibverbs/verbs.c
+> index 1766b9f5..9ad74ee0 100644
+> +++ b/libibverbs/verbs.c
+> @@ -324,6 +324,30 @@ LATEST_SYMVER_FUNC(ibv_reg_mr, 1_1, "IBVERBS_1.1",
+>  	return mr;
+>  }
 >  
-> +	num_blocks = (length + MLX5_SW_ICM_BLOCK_SIZE(dev) - 1) >>
-> +		     MLX5_LOG_SW_ICM_BLOCK_SIZE(dev);
->  	max_blocks = BIT(log_icm_size - MLX5_LOG_SW_ICM_BLOCK_SIZE(dev));
->  	spin_lock(&dm->lock);
->  	block_idx = bitmap_find_next_zero_area(block_map,
-> @@ -266,13 +268,16 @@ int mlx5_cmd_dealloc_sw_icm(struct mlx5_dm *dm, int type, u64 length,
->  			    u16 uid, phys_addr_t addr, u32 obj_id)
->  {
->  	struct mlx5_core_dev *dev = dm->dev;
-> -	u32 num_blocks = DIV_ROUND_UP(length, MLX5_SW_ICM_BLOCK_SIZE(dev));
->  	u32 out[MLX5_ST_SZ_DW(general_obj_out_cmd_hdr)] = {};
->  	u32 in[MLX5_ST_SZ_DW(general_obj_in_cmd_hdr)] = {};
->  	unsigned long *block_map;
-> +	u32 num_blocks;
->  	u64 start_idx;
->  	int err;
->  
-> +	num_blocks = (length + MLX5_SW_ICM_BLOCK_SIZE(dev) - 1) >>
-> +		     MLX5_LOG_SW_ICM_BLOCK_SIZE(dev);
+> +LATEST_SYMVER_FUNC(ibv_reg_mr_virt_as, 1_1, "IBVERBS_1.1",
+> +		   struct ibv_mr *,
+> +		   struct ibv_pd *pd, void *addr, size_t length,
+> +		   uint64_t hca_va, int access)
+> +{
+
+Doesn't need this macro since it doesn't have a compat version
+
+> +	struct verbs_mr *vmr;
+> +	struct ibv_reg_mr cmd;
+> +	struct ib_uverbs_reg_mr_resp resp;
+> +	int ret;
 > +
->  	switch (type) {
->  	case MLX5_IB_UAPI_DM_TYPE_STEERING_SW_ICM:
->  		start_idx =
-> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-> index abac70ad5c7c..340290b883fe 100644
-> +++ b/drivers/infiniband/hw/mlx5/main.c
-> @@ -2344,7 +2344,7 @@ static int handle_alloc_dm_sw_icm(struct ib_ucontext *ctx,
->  	/* Allocation size must a multiple of the basic block size
->  	 * and a power of 2.
->  	 */
-> -	act_size = roundup(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
-> +	act_size = round_up(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
->  	act_size = roundup_pow_of_two(act_size);
+> +	vmr = malloc(sizeof(*vmr));
+> +	if (!vmr)
+> +		return NULL;
+> +
+> +	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
+> +			     sizeof(cmd), &resp, sizeof(resp));
 
-It is kind of weird that we have round_up and the bitshift
-version.. None of this is performance critical so why not just use
-round_up everywhere?
+It seems problematic not to call the driver, several of the drivers
+are wrappering mr in their own type (ie bnxt_re_mr) and we can't just
+allocate the wrong size of memory here.
 
-Ariel, it is true MLX5_SW_ICM_BLOCK_SIZE will always be a power of
-two?
+What you should do is modify the existing driver callback to accept
+another argument and go and fix all the drivers to pass that argument
+into their ibv_cmd_reg_mr as the hca_va above. This looks pretty
+trivial.
 
 Jason
