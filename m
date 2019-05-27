@@ -2,85 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3032BC37
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 00:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8052BC46
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 00:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbfE0Wud (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 May 2019 18:50:33 -0400
-Received: from mail-ua1-f65.google.com ([209.85.222.65]:35273 "EHLO
-        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726931AbfE0Wuc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 May 2019 18:50:32 -0400
-Received: by mail-ua1-f65.google.com with SMTP id r7so4858502ual.2
-        for <linux-rdma@vger.kernel.org>; Mon, 27 May 2019 15:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Fxo8yTiGyxdN/vAempwBnvBkD311Zpt8/tNnnY00LBg=;
-        b=AXiUSPwCx89Nx6+cPS/tjmeyCJnPb3eSyLHtTtPhT0hqyPkVgBA2m1t8jB7M1qpvRk
-         El6EJATV/SLoJ059vTFeOndaKVzrrUsEfKOA+uECckphmKQfwplGWfV0UzzOn5z4opJx
-         mTcGijzmIqJ8JZenhnA/Lsj1F870v4Ry0+5a71aHIOfjhpyHYKO+sQjE2iNCfONAoFLN
-         YYRCA2PMpZlp6fNJ83nXvrwRiY9gOmY7i59HrBxIZ9zgkHzaAlU4pUREVRzWPADyvoU7
-         o+q53ELVbgqBX6uyORRyzX3i3q/iysiA8OAEKFtdWOXyKS2mWrfdb6u4DtFzQLJhA1Ju
-         FEeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Fxo8yTiGyxdN/vAempwBnvBkD311Zpt8/tNnnY00LBg=;
-        b=SURu8v76pkAKQ8tWKCDnU7zMrNfyEgJ6gCoa/I2c8tnY0J9I/0gkSOtr2E8oHe/CA/
-         /FdF2AHfA3Z4bwYMpjGZ1ACMzFcXy4doILeV3GkvWEnSacsNNt1YEdo5zfsL5UPSwkXQ
-         7rCxvLK/jOs5ncyZfl8g332h/JedpupoM3cX2cf1j/ukAP2bV96DqGAX4LEh1C6xdRfS
-         vDPe39WP4W3H2HioWUhRIhPSa0jywYG6TJ8rqCERT1HAlX9mjqpMoC6K+rORQeFk2Cxd
-         /AYmG78aBZ47sxKKP2Me79/X69UPtgz8eJeS817Wo+go/HjBR7Vk31AbwT3W7Gd7MCpu
-         3zTw==
-X-Gm-Message-State: APjAAAUSJBfZFFYnPnEN6rhT4q3/eDFFyFLMwmHre+cHE41zsDQNiHQs
-        57NRGTbKDq3CiuY3gVhZaWD8pA==
-X-Google-Smtp-Source: APXvYqzY/NH0JIAoWsEu4UJd7xmbHrQvkt37r+geRG8CPCL4rYyWazn8oiNDWLKFLQAfz6TUjKJOhw==
-X-Received: by 2002:ab0:806:: with SMTP id a6mr37879511uaf.10.1558997431699;
-        Mon, 27 May 2019 15:50:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id x71sm8314138vkd.24.2019.05.27.15.50.30
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 May 2019 15:50:30 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hVORq-0004r4-2T; Mon, 27 May 2019 19:50:30 -0300
-Date:   Mon, 27 May 2019 19:50:30 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lijun Ou <oulijun@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next] RDMA/hns: Clear magic number
-Message-ID: <20190527225030.GA18640@ziepe.ca>
-References: <1558711776-11053-1-git-send-email-oulijun@huawei.com>
+        id S1727486AbfE0W5C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 May 2019 18:57:02 -0400
+Received: from mail-eopbgr30045.outbound.protection.outlook.com ([40.107.3.45]:30182
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726905AbfE0W5C (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 27 May 2019 18:57:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BT+LPOjOIRF2MwRWJndkjgGRnHAYGV3viHIVEC775a8=;
+ b=iUX3JWptB2/XhBGh0dk8UoIm50sJUlXk6+NX5DQufBl05mHPK/+t7sT+hILe76TvC9z9ubg71jBGYkztPGXA3ou5WQy7qn1kV/t0ZJi5RKzJP8k9+HIy4FDCpaX5KyVBPkyFUOTTtX1l1CSpFBr/2fJBP1zhSaNRMyLBxpbIxFo=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB6509.eurprd05.prod.outlook.com (20.179.25.86) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.17; Mon, 27 May 2019 22:56:57 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1922.021; Mon, 27 May 2019
+ 22:56:57 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     "john.hubbard@gmail.com" <john.hubbard@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Christian Benvenuti <benve@cisco.com>, Jan Kara <jack@suse.cz>,
+        Ira Weiny <ira.weiny@intel.com>,
+        =?iso-8859-1?Q?J=E9r=F4me_Glisse?= <jglisse@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2] infiniband/mm: convert put_page() to put_user_page*()
+Thread-Topic: [PATCH v2] infiniband/mm: convert put_page() to put_user_page*()
+Thread-Index: AQHVEpuNgBqUKNuE/kmNGLYDDVPIqqZ9QO6AgAJYy4A=
+Date:   Mon, 27 May 2019 22:56:56 +0000
+Message-ID: <20190527225651.GA18539@mellanox.com>
+References: <20190525014522.8042-1-jhubbard@nvidia.com>
+ <20190525014522.8042-2-jhubbard@nvidia.com>
+ <20190526110631.GD1075@bombadil.infradead.org>
+In-Reply-To: <20190526110631.GD1075@bombadil.infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR07CA0008.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::18) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2ac44459-f21a-46ea-24b9-08d6e2f69e16
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR05MB6509;
+x-ms-traffictypediagnostic: VI1PR05MB6509:
+x-microsoft-antispam-prvs: <VI1PR05MB650973D76D85F77B18ED1691CF1D0@VI1PR05MB6509.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 0050CEFE70
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(376002)(39860400002)(136003)(346002)(366004)(189003)(199004)(66946007)(73956011)(66556008)(64756008)(102836004)(66446008)(66476007)(76176011)(53936002)(71200400001)(71190400001)(1076003)(52116002)(305945005)(6246003)(6506007)(7736002)(386003)(5660300002)(26005)(33656002)(256004)(36756003)(54906003)(25786009)(6916009)(2906002)(3846002)(6486002)(229853002)(2616005)(476003)(6512007)(81166006)(8676002)(81156014)(86362001)(68736007)(486006)(6436002)(7416002)(8936002)(99286004)(4326008)(186003)(316002)(14454004)(66066001)(478600001)(11346002)(446003)(6116002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6509;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: CHp7qe7UlSF0sDMVzi5V7/a878fMOpXRT3t8fd8HreZNVdNzRtytBd8D/zp/Ekk5Hf32Jqg9cAIt45u35Uap3iUWC9dKdlGp4qCXatwmomYHlNr7IP7Ixs9HgUgnmTsTyWHvK0G9WTInbA0yA5XYrfuo0oncU5AnS2jQv8btJtfDYvEpbdiXDDkhesxMZ1ZiUOx3C/FEElE0KTtgaZL2EhlNcbD/65Ef8XoPJ9uKSE9JjHwZWxSUM1mctD1sdImntvZsR8df85oTwLAI082Hl0rILkHZID4A0UWPs6CxdofF8JCuS7OduVPAHloEJp3O17ipCV+y/aLXdw2AnkoYzOJDQtnoppkWnjwtp+uW7lX35y/BBLSNGo3gJ9SdATd3Vz68e5OPT0SAwUPXM9pmoIvFmvQpPzQV42lhK3tOcms=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <5BC0AB5A2E48604C93A93DEB61B51614@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1558711776-11053-1-git-send-email-oulijun@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ac44459-f21a-46ea-24b9-08d6e2f69e16
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 May 2019 22:56:56.9183
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6509
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 24, 2019 at 11:29:36PM +0800, Lijun Ou wrote:
-> This patch makes the code more readable by clearing magic numbers.
-> 
-> Signed-off-by: Xi Wang <wangxi11@huawei.com>
-> Signed-off-by: Lijun Ou <oulijun@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_db.c     |  8 ++--
->  drivers/infiniband/hw/hns/hns_roce_device.h | 37 +++++++++++++---
->  drivers/infiniband/hw/hns/hns_roce_hem.c    | 18 ++++----
->  drivers/infiniband/hw/hns/hns_roce_hw_v1.c  |  4 +-
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 65 ++++++++++++++++-------------
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 ++
->  drivers/infiniband/hw/hns/hns_roce_main.c   |  7 ++--
->  drivers/infiniband/hw/hns/hns_roce_mr.c     | 43 ++++++++++---------
->  8 files changed, 116 insertions(+), 70 deletions(-)
+On Sun, May 26, 2019 at 04:06:31AM -0700, Matthew Wilcox wrote:
+> On Fri, May 24, 2019 at 06:45:22PM -0700, john.hubbard@gmail.com wrote:
+> > For infiniband code that retains pages via get_user_pages*(),
+> > release those pages via the new put_user_page(), or
+> > put_user_pages*(), instead of put_page()
+>=20
+> I have no objection to this particular patch, but ...
+>=20
+> > This is a tiny part of the second step of fixing the problem described
+> > in [1]. The steps are:
+> >=20
+> > 1) Provide put_user_page*() routines, intended to be used
+> >    for releasing pages that were pinned via get_user_pages*().
+> >=20
+> > 2) Convert all of the call sites for get_user_pages*(), to
+> >    invoke put_user_page*(), instead of put_page(). This involves dozens=
+ of
+> >    call sites, and will take some time.
+> >=20
+> > 3) After (2) is complete, use get_user_pages*() and put_user_page*() to
+> >    implement tracking of these pages. This tracking will be separate fr=
+om
+> >    the existing struct page refcounting.
+> >=20
+> > 4) Use the tracking and identification of these pages, to implement
+> >    special handling (especially in writeback paths) when the pages are
+> >    backed by a filesystem. Again, [1] provides details as to why that i=
+s
+> >    desirable.
+>=20
+> I thought we agreed at LSFMM that the future is a new get_user_bvec()
+> / put_user_bvec().  This is largely going to touch the same places as
+> step 2 in your list above.  Is it worth doing step 2?
 
-Applied to for-next thanks
+I think so, as these two conversions can run in parallel, whichever we
+finish first, biovec or put_user_pages lets John progress to step #3
 
 Jason
