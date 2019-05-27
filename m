@@ -2,73 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCB32BB84
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 May 2019 22:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3032BC37
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 00:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbfE0Ur3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 May 2019 16:47:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39354 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727132AbfE0Ur3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 May 2019 16:47:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F30BEAF49;
-        Mon, 27 May 2019 20:47:27 +0000 (UTC)
-Received: by unicorn.suse.cz (Postfix, from userid 1000)
-        id 7CC76E00A9; Mon, 27 May 2019 22:47:27 +0200 (CEST)
-Date:   Mon, 27 May 2019 22:47:27 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mlx5: avoid 64-bit division
-Message-ID: <20190527204727.GH30439@unicorn.suse.cz>
-References: <20190520111902.7104DE0184@unicorn.suse.cz>
- <20190527181534.GA10029@ziepe.ca>
+        id S1727018AbfE0Wud (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 May 2019 18:50:33 -0400
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:35273 "EHLO
+        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726931AbfE0Wuc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 May 2019 18:50:32 -0400
+Received: by mail-ua1-f65.google.com with SMTP id r7so4858502ual.2
+        for <linux-rdma@vger.kernel.org>; Mon, 27 May 2019 15:50:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Fxo8yTiGyxdN/vAempwBnvBkD311Zpt8/tNnnY00LBg=;
+        b=AXiUSPwCx89Nx6+cPS/tjmeyCJnPb3eSyLHtTtPhT0hqyPkVgBA2m1t8jB7M1qpvRk
+         El6EJATV/SLoJ059vTFeOndaKVzrrUsEfKOA+uECckphmKQfwplGWfV0UzzOn5z4opJx
+         mTcGijzmIqJ8JZenhnA/Lsj1F870v4Ry0+5a71aHIOfjhpyHYKO+sQjE2iNCfONAoFLN
+         YYRCA2PMpZlp6fNJ83nXvrwRiY9gOmY7i59HrBxIZ9zgkHzaAlU4pUREVRzWPADyvoU7
+         o+q53ELVbgqBX6uyORRyzX3i3q/iysiA8OAEKFtdWOXyKS2mWrfdb6u4DtFzQLJhA1Ju
+         FEeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Fxo8yTiGyxdN/vAempwBnvBkD311Zpt8/tNnnY00LBg=;
+        b=SURu8v76pkAKQ8tWKCDnU7zMrNfyEgJ6gCoa/I2c8tnY0J9I/0gkSOtr2E8oHe/CA/
+         /FdF2AHfA3Z4bwYMpjGZ1ACMzFcXy4doILeV3GkvWEnSacsNNt1YEdo5zfsL5UPSwkXQ
+         7rCxvLK/jOs5ncyZfl8g332h/JedpupoM3cX2cf1j/ukAP2bV96DqGAX4LEh1C6xdRfS
+         vDPe39WP4W3H2HioWUhRIhPSa0jywYG6TJ8rqCERT1HAlX9mjqpMoC6K+rORQeFk2Cxd
+         /AYmG78aBZ47sxKKP2Me79/X69UPtgz8eJeS817Wo+go/HjBR7Vk31AbwT3W7Gd7MCpu
+         3zTw==
+X-Gm-Message-State: APjAAAUSJBfZFFYnPnEN6rhT4q3/eDFFyFLMwmHre+cHE41zsDQNiHQs
+        57NRGTbKDq3CiuY3gVhZaWD8pA==
+X-Google-Smtp-Source: APXvYqzY/NH0JIAoWsEu4UJd7xmbHrQvkt37r+geRG8CPCL4rYyWazn8oiNDWLKFLQAfz6TUjKJOhw==
+X-Received: by 2002:ab0:806:: with SMTP id a6mr37879511uaf.10.1558997431699;
+        Mon, 27 May 2019 15:50:31 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id x71sm8314138vkd.24.2019.05.27.15.50.30
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 27 May 2019 15:50:30 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hVORq-0004r4-2T; Mon, 27 May 2019 19:50:30 -0300
+Date:   Mon, 27 May 2019 19:50:30 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lijun Ou <oulijun@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Clear magic number
+Message-ID: <20190527225030.GA18640@ziepe.ca>
+References: <1558711776-11053-1-git-send-email-oulijun@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190527181534.GA10029@ziepe.ca>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1558711776-11053-1-git-send-email-oulijun@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 27, 2019 at 03:15:34PM -0300, Jason Gunthorpe wrote:
-> On Mon, May 20, 2019 at 01:19:02PM +0200, Michal Kubecek wrote:
-> > diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-> > index abac70ad5c7c..340290b883fe 100644
-> > +++ b/drivers/infiniband/hw/mlx5/main.c
-> > @@ -2344,7 +2344,7 @@ static int handle_alloc_dm_sw_icm(struct ib_ucontext *ctx,
-> >  	/* Allocation size must a multiple of the basic block size
-> >  	 * and a power of 2.
-> >  	 */
-> > -	act_size = roundup(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
-> > +	act_size = round_up(attr->length, MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
-> >  	act_size = roundup_pow_of_two(act_size);
+On Fri, May 24, 2019 at 11:29:36PM +0800, Lijun Ou wrote:
+> This patch makes the code more readable by clearing magic numbers.
 > 
-> It is kind of weird that we have round_up and the bitshift
-> version.. None of this is performance critical so why not just use
-> round_up everywhere?
-> 
-> Ariel, it is true MLX5_SW_ICM_BLOCK_SIZE will always be a power of
-> two?
+> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+> Signed-off-by: Lijun Ou <oulijun@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_db.c     |  8 ++--
+>  drivers/infiniband/hw/hns/hns_roce_device.h | 37 +++++++++++++---
+>  drivers/infiniband/hw/hns/hns_roce_hem.c    | 18 ++++----
+>  drivers/infiniband/hw/hns/hns_roce_hw_v1.c  |  4 +-
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 65 ++++++++++++++++-------------
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 ++
+>  drivers/infiniband/hw/hns/hns_roce_main.c   |  7 ++--
+>  drivers/infiniband/hw/hns/hns_roce_mr.c     | 43 ++++++++++---------
+>  8 files changed, 116 insertions(+), 70 deletions(-)
 
-If it weren't, the requirements from the comment above could never be
-satisfied as a power of two can only be a multiple of another power of
-two. Which also means that what the code above does is in fact
-equivalent to
+Applied to for-next thanks
 
-	act_size = max_t(u64, roundup_pow_of_two(attr->length),
-			 MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
-
-or
-
-	act_size = roundup_pow_of_two(max_t(u64, attr->length,
-					    MLX5_SW_ICM_BLOCK_SIZE(dm_db->dev));
-
-Michal Kubecek
+Jason
