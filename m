@@ -2,146 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 050DE2B510
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 May 2019 14:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B522B68C
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 May 2019 15:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbfE0M0J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 May 2019 08:26:09 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:39106 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbfE0M0I (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 May 2019 08:26:08 -0400
-Received: by mail-qk1-f193.google.com with SMTP id i125so15439278qkd.6
-        for <linux-rdma@vger.kernel.org>; Mon, 27 May 2019 05:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=r+g52EaCMMLGA1oGswHNE4URzFyMIs2Igb1Mp4ikhvY=;
-        b=EBk5LUD9rlvzxEA4NE3MhDOz7lJNOcyIsCAhpcOgdzhrewpP1UsgyWYN7YkbsAkhbN
-         V1DFEF5H+NBascHCq4husro1VS5Qse7U04KDoba9NeAoygevwVhWwuK4GlHdwk9P6NrY
-         zfW0IH7VGjE7kGzW8G5kQt1xpC/faPZrePmaiB52ZyQP9xmVJz67Hx7IqTIp/u0hoQbQ
-         +GmTcHDfGr2pnS242dNVNMz1Byb6d/QMuE9ohad4o4FWSr4ERsCon/QUiOwynAGI1wX2
-         HuAF+OcKGxD1UqkG4PKC46U9mc2AKUy2eVhwhLWZNoEN4DQ4K1cg5lB8w6Ae6MihrnS1
-         qzPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=r+g52EaCMMLGA1oGswHNE4URzFyMIs2Igb1Mp4ikhvY=;
-        b=VfZCPM1UHbRNXbTJWaDc9bdOZmj/XhA6pHC5r3Qumt16cKnN3vEFUok5Ym1I0HTENA
-         vxIYbhY4t7M/1y4h+3d5dRowka+FNVtnaI8EWu/9HP5TYq0tHoUAgc/VHfoDbjvODYvJ
-         imEzphq89Mpd4FNxcEqTjD15fTqzipHZCQt3ikbjlL8mXznY8SZKuPxkEIO6/ciXQza8
-         syyAyx5knTzF/PWgkM19HMmGrqOSxL96OPnYcCIRw/5c26m6vDPabrCXVEFfvcpoq0lR
-         1HzCFrQgg3CeO8BXf8hKEq/socY72TC2F372JD5GK8d5XBrT65NMe9Sypxl/zS1/gLKo
-         8thw==
-X-Gm-Message-State: APjAAAWhGgL7zIetcoSciKVfrnDtHvGH7UVGZBTZAlVy7pmQ2q/rAWC5
-        uf3Oampe5NQ2W8qQisgmwACSTQ==
-X-Google-Smtp-Source: APXvYqzl1gF4A/BozgVnksQrGYgSKLgjeOAg+VrSEeoA5XQBi+Nrvrvf3uK6ARC8tV6sKYeTjjaEHQ==
-X-Received: by 2002:a37:ea16:: with SMTP id t22mr63959991qkj.337.1558959967831;
-        Mon, 27 May 2019 05:26:07 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-49-251.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.49.251])
-        by smtp.gmail.com with ESMTPSA id m5sm747298qke.25.2019.05.27.05.26.07
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 May 2019 05:26:07 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hVEhb-0003nH-1S; Mon, 27 May 2019 09:26:07 -0300
-Date:   Mon, 27 May 2019 09:26:07 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Yuval Shaia <yuval.shaia@oracle.com>
-Cc:     yishaih@mellanox.com, dledford@redhat.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [RFC] verbs: Introduce a new reg_mr API for virtual address space
-Message-ID: <20190527122607.GD8519@ziepe.ca>
-References: <20190526080224.2778-1-yuval.shaia@oracle.com>
- <20190527121134.GC8519@ziepe.ca>
- <20190527121838.GA13891@lap1>
+        id S1726725AbfE0NjA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 May 2019 09:39:00 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:46928 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726668AbfE0NjA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 27 May 2019 09:39:00 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 777592117F9CD32A84FA;
+        Mon, 27 May 2019 21:38:56 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.439.0; Mon, 27 May 2019
+ 21:38:45 +0800
+Subject: Re: [PATCH for-next 2/3] RDMA/hns: add a group interfaces for
+ optimizing buffers getting flow
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <dledford@redhat.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1558777808-93864-1-git-send-email-oulijun@huawei.com>
+ <1558777808-93864-3-git-send-email-oulijun@huawei.com>
+ <20190527120718.GB8519@ziepe.ca>
+From:   oulijun <oulijun@huawei.com>
+Message-ID: <2a44c00f-c74e-41e8-aca6-843fdf95a2bd@huawei.com>
+Date:   Mon, 27 May 2019 21:38:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190527121838.GA13891@lap1>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190527120718.GB8519@ziepe.ca>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 27, 2019 at 03:18:39PM +0300, Yuval Shaia wrote:
-> On Mon, May 27, 2019 at 09:11:34AM -0300, Jason Gunthorpe wrote:
-> > On Sun, May 26, 2019 at 11:02:24AM +0300, Yuval Shaia wrote:
-> > > The virtual address that is registered is used as a base for any address
-> > > used later in post_recv and post_send operations.
-> > > 
-> > > On a virtualised environment this is not correct.
-> > > 
-> > > A guest cannot register its memory so hypervisor maps the guest physical
-> > > address to a host virtual address and register it with the HW. Later on,
-> > > at datapath phase, the guest fills the SGEs with addresses from its
-> > > address space.
-> > > Since HW cannot access guest virtual address space an extra translation
-> > > is needed map those addresses to be based on the host virtual address
-> > > that was registered with the HW.
-> > > 
-> > > To avoid this, a logical separation between the address that is
-> > > registered and the address that is used as a offset at datapath phase is
-> > > needed.
-> > > This separation is already implemented in the lower layer part
-> > > (ibv_cmd_reg_mr) but blocked at the API level.
-> > > 
-> > > Fix it by introducing a new API function that accepts a address from
-> > > guest virtual address space as well.
-> > > 
-> > > Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
-> > >  libibverbs/driver.h    |  3 +++
-> > >  libibverbs/dummy_ops.c | 10 ++++++++++
-> > >  libibverbs/verbs.h     | 26 ++++++++++++++++++++++++++
-> > >  providers/rxe/rxe.c    | 16 ++++++++++++----
-> > >  4 files changed, 51 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/libibverbs/driver.h b/libibverbs/driver.h
-> > > index e4d624b2..73bc10e6 100644
-> > > +++ b/libibverbs/driver.h
-> > > @@ -339,6 +339,9 @@ struct verbs_context_ops {
-> > >  				    unsigned int access);
-> > >  	struct ibv_mr *(*reg_mr)(struct ibv_pd *pd, void *addr, size_t length,
-> > >  				 int access);
-> > > +	struct ibv_mr *(*reg_mr_virt_as)(struct ibv_pd *pd, void *addr,
-> > > +					 size_t length, uint64_t hca_va,
-> > > +					 int access);
-> > 
-> > I don't want to see a new entry point, all HW already supports it, so
-> > we should just add the hca_va to the main one and remove the
-> > assumption that the void *addr should be used as the hca_va from the
-> > drivers.
-> 
-> So it is better to change the reg_mr signature? That would break API, i.e.
-> all apps that are using reg_mr would have to be changed accordingly.
-> I'm a newbie here so i might be talking nonsense.
+ÔÚ 2019/5/27 20:07, Jason Gunthorpe Ð´µÀ:
+> On Sat, May 25, 2019 at 05:50:07PM +0800, Lijun Ou wrote:
+>> Currently, the code for getting umem and kmem buffers exist many files,
+>> this patch adds a group interfaces to simplify the buffers getting flow.
+>>
+>> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+>> Signed-off-by: Lijun Ou <oulijun@huawei.com>
+>>  drivers/infiniband/hw/hns/hns_roce_alloc.c  | 131 ++++++++++++++++++++++++++++
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  12 +++
+>>  2 files changed, 143 insertions(+)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_alloc.c b/drivers/infiniband/hw/hns/hns_roce_alloc.c
+>> index dac058d..7a08064 100644
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_alloc.c
+>> @@ -34,6 +34,7 @@
+>>  #include <linux/platform_device.h>
+>>  #include <linux/vmalloc.h>
+>>  #include "hns_roce_device.h"
+>> +#include <rdma/ib_umem.h>
+>>  
+>>  int hns_roce_bitmap_alloc(struct hns_roce_bitmap *bitmap, unsigned long *obj)
+>>  {
+>> @@ -238,6 +239,136 @@ int hns_roce_buf_alloc(struct hns_roce_dev *hr_dev, u32 size, u32 max_direct,
+>>  	return -ENOMEM;
+>>  }
+>>  
+>> +int hns_roce_get_kmem_bufs(struct hns_roce_dev *hr_dev, dma_addr_t *bufs,
+>> +			   int buf_cnt, int start, struct hns_roce_buf *buf)
+>> +{
+>> +	int i, end;
+>> +	int total;
+>> +
+>> +	end = start + buf_cnt;
+>> +	if (end > buf->npages) {
+>> +		dev_err(hr_dev->dev,
+>> +			"invalid kmem region,offset %d,buf_cnt %d,total %d!\n",
+>> +			start, buf_cnt, buf->npages);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	total = 0;
+>> +	for (i = start; i < end; i++)
+>> +		if (buf->nbufs == 1)
+>> +			bufs[total++] = buf->direct.map +
+>> +					(i << buf->page_shift);
+>> +		else
+>> +			bufs[total++] = buf->page_list[i].map;
+>> +
+>> +	return total;
+>> +}
+>> +
+>> +int hns_roce_get_umem_bufs(struct hns_roce_dev *hr_dev, dma_addr_t *bufs,
+>> +			   int buf_cnt, int start, struct ib_umem *umem,
+>> +			   int page_shift)
+>> +{
+>> +	struct scatterlist *sg;
+>> +	int npage_per_buf;
+>> +	int npage_per_sg;
+>> +	dma_addr_t addr;
+>> +	int n, entry;
+>> +	int idx, end;
+>> +	int npage;
+>> +	int total;
+>> +
+>> +	if (page_shift < PAGE_SHIFT || page_shift > umem->page_shift) {
+>> +		dev_err(hr_dev->dev, "invalid page shift %d, umem shift %d!\n",
+>> +			page_shift, umem->page_shift);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	/* convert system page cnt to hw page cnt */
+>> +	npage_per_buf = (1 << (page_shift - PAGE_SHIFT));
+>> +	total = DIV_ROUND_UP(ib_umem_page_count(umem), npage_per_buf);
+>> +	end = start + buf_cnt;
+>> +	if (end > total) {
+>> +		dev_err(hr_dev->dev,
+>> +			"invalid umem region,offset %d,buf_cnt %d,total %d!\n",
+>> +			start, buf_cnt, total);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	idx = 0;
+>> +	npage = 0;
+>> +	total = 0;
+>> +	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, entry) {
+> You should convert this driver to use the new APIs, see something like
+>
+> commit eb52c0333f06b88bca5bac0dc0aeca729de6eb11
+> Author: Shiraz Saleem <shiraz.saleem@intel.com>
+> Date:   Mon May 6 08:53:34 2019 -0500
+>
+>     RDMA/i40iw: Use core helpers to get aligned DMA address within a supported page size
+>     
+>     Call the core helpers to retrieve the HW aligned address to use for the
+>     MR, within a supported i40iw page size.
+>     
+>     Remove code in i40iw to determine when MR is backed by 2M huge pages which
+>     involves checking the umem->hugetlb flag and VMA inspection.  The new DMA
+>     iterator will return the 2M aligned address if the MR is backed by 2M
+>     pages.
+>     
+>     Fixes: f26c7c83395b ("i40iw: Add 2MB page support")
+>     Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+>     Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+>     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+>
+>
+Thanks. We will fix it and send the V2.
+>> +		npage_per_sg = sg_dma_len(sg) >> PAGE_SHIFT;
+>> +		for (n = 0; n < npage_per_sg; n++) {
+>> +			if (!(npage % npage_per_buf)) {
+>> +				addr = sg_dma_address(sg) +
+>> +					(n << umem->page_shift);
+> No new references to umem->page_shift, this won't apply.
+>
+> Jason
+>
+> .
+>
 
-driver.h is not ABI
 
-> > > diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
-> > > index cb2d8439..8bcc8388 100644
-> > > +++ b/libibverbs/verbs.h
-> > > @@ -2037,6 +2037,9 @@ struct verbs_context {
-> > >  	struct ibv_mr *(*reg_dm_mr)(struct ibv_pd *pd, struct ibv_dm *dm,
-> > >  				    uint64_t dm_offset, size_t length,
-> > >  				    unsigned int access);
-> > > +	struct ibv_mr *(*reg_mr_virt_as)(struct ibv_pd *pd, void *addr,
-> > > +					 size_t length, uint64_t hca_va,
-> > > +					 int access);
-> > 
-> > Can't add new functions here, breaks the ABI
-> 
-> My assumption was that it is better to add new function than to change an
-> existing function's signature.
-
-verbs.h is ABI, so you have to change it by growing the structs, not
-adding things in the middle.
-
-Probably the best thing for an API like this is to just add a new
-normally linked public function instead of using function pointers
-here.
-
-Jason
