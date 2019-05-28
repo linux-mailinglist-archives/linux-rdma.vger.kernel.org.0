@@ -2,100 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5752CE06
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 19:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C532CE6C
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 20:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbfE1Rwq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 May 2019 13:52:46 -0400
-Received: from mail-vs1-f68.google.com ([209.85.217.68]:39817 "EHLO
-        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726452AbfE1Rwp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 May 2019 13:52:45 -0400
-Received: by mail-vs1-f68.google.com with SMTP id m1so801421vsr.6
-        for <linux-rdma@vger.kernel.org>; Tue, 28 May 2019 10:52:45 -0700 (PDT)
+        id S1727884AbfE1SUw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 May 2019 14:20:52 -0400
+Received: from mail-it1-f175.google.com ([209.85.166.175]:33857 "EHLO
+        mail-it1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727752AbfE1SUw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 May 2019 14:20:52 -0400
+Received: by mail-it1-f175.google.com with SMTP id g23so3325329iti.1;
+        Tue, 28 May 2019 11:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xSo9d9sXIn0KnznBmtYlnJ/PCUFfv7Lb3+7hoBRawy4=;
-        b=bIWle7WiD2SqhCsU1xAZ+IhlVOw7qaEyZ60SBnbGs+pcvy3rUfhmJFFhDo+RLuGmf+
-         84RfQYqdOL2fZqq14eimXLwQCprg3W1YBhhXyodrNedMhQiEJTrVmYkeT59JYB8mzdS8
-         rvSFEQVRSYJO2zBe45N/YhFtUubuXun1HpmpUypq7VEqK/jToUiKJy4zTEBpmg7HCYmC
-         7RFhuPAZQvx/Sg9a/I0N2QjMuxqwfWf5Hc6RGDSsykyKK+K76DkJjEGccVHQPBDR3NVa
-         dpiZzNxQzInRkEG46+kY4FEexnMX+mfjopS/JGPalBwE0hErefur9+BLb9p8Xa3XS3No
-         hFSg==
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=N0c2rFnSmWzudniOXAgq6FAlJXTSYfwB+Tp97fGmO8Q=;
+        b=WwHlIWsf3S1iXVYmqEqvK+xcDQY/1xmbADXyb/DrYqUZcW3HXWQUGCGTtGWQ/jQn1T
+         4ctAMGO4KQ7C/Fp9tMGh1NdoUVE1KBoqrBEouuqm+TFWTJyM9A78EGhy/dzXH8XztLur
+         kXygXOA9kog+4lcfvtA3a0TQxAy9+ATL54fdcSlJsGFNPlDFoaxy7nW8I7KoMUdaW8R2
+         KuPSNMix/MbBfXgNpZ0wckNRkhMgJybjE2kFIkRQe2PCyWw7DbLRYuyS0tdIDZsBQtZR
+         /tFw02fm0DF7Fd2hUsK1Q/i3cHlfrwm2yAFLDhKw/OVqAy6wyq99Xf2QyDReo3HQo4nB
+         Gh4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xSo9d9sXIn0KnznBmtYlnJ/PCUFfv7Lb3+7hoBRawy4=;
-        b=rjmq4Cf0R/uWUEdXqCLaRoQizU7xU/nlPxd4PPGCdBprSynXg3ouQZafK1kF3CdzCt
-         8yiWuS/kQv2iuQoRfhlFf8cDo8eags3/GtPCFdzg8nnGuaC12NNjPlavQT7RiN4oVGQp
-         XhNeiiQAUGC5QSzNtucibY2H35q5OevlfSKeENqZb229by40NZDA8Syy2RC2RswbSZgP
-         ePHQc+rjjdfVveXKSGfG8meKFvGfVFzAmYD5jpYSEfaDkbKqz8kHueUsD3ULCXaLPqbh
-         BDGd1CSoMwhEQ2DwMc1hfStS7XcDw2bK1paIkiaKsvMSM67S8DY6L5jfsmq8q02wqfGy
-         VERA==
-X-Gm-Message-State: APjAAAVYxelIIgD7Opl5EE1tTabp8Z5I9pInfH1a9ekbW6XkMWB6uIWD
-        c9zS8JmLRX4dzuNqIzdb7KVYwQ==
-X-Google-Smtp-Source: APXvYqxMqHAUC6CsBh5CCCz8EGvPgqyLcS+1/GQNr9qrlhvBUj71I+zuFH3uEoj6yRxne37k21oIdA==
-X-Received: by 2002:a67:ca1c:: with SMTP id z28mr24882802vsk.6.1559065964691;
-        Tue, 28 May 2019 10:52:44 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id 126sm5839092vkt.14.2019.05.28.10.52.43
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 May 2019 10:52:44 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hVgHD-0001Kf-FR; Tue, 28 May 2019 14:52:43 -0300
-Date:   Tue, 28 May 2019 14:52:43 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michal Kalderon <mkalderon@marvell.com>
-Cc:     Ariel Elior <aelior@marvell.com>, Sagiv Ozeri <sozeri@marvell.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v2 rdma] RDMA/qedr: Fix incorrect device rate.
-Message-ID: <20190528175243.GC31301@ziepe.ca>
-References: <20190520093320.3831-1-michal.kalderon@marvell.com>
- <20190521180513.GA24517@ziepe.ca>
- <MN2PR18MB3182D17675466AF1B2B22353A11E0@MN2PR18MB3182.namprd18.prod.outlook.com>
+        h=x-gm-message-state:sender:subject:from:to:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=N0c2rFnSmWzudniOXAgq6FAlJXTSYfwB+Tp97fGmO8Q=;
+        b=o1C+7AG9Cm+Cq/5TWV5T88FxhBidyJk+bFPlCXbNo3cCiGiMLixErJBtr8GHyXt7rQ
+         VVvo4Tg7dpoj1xZwrRgC4Q9nsy9cnai9dXqXIIgKSd3w9DCM3E7kfMVHIS/H69rZOwh8
+         fqJIgmv3R3m57LJMZ4v0DfwTz73S8v1X0UvK/ZHQ3+Cqu5pwM35zZeS8BlnOgF8kFZhL
+         vzcBO3+Vw+Y57y6kGY76JfIwU/D42OkrBjT9dsQSZoSsEr5nhEh3V7OyXCN23TWLHdbV
+         r/ON5hPtor7toItpP/3CezAtIRg8OJO0QZkq4Qx0LtgzKtR/QdxY0xq1c3XMiq3XriFl
+         Vr2A==
+X-Gm-Message-State: APjAAAWxIJBTk67sRNu6UMt/BRnSN/2ka1i3GPJ86aTSTW6kQ8Z8rp7C
+        4O0khEWLJN3aSKfAAGe7NBa9xflx
+X-Google-Smtp-Source: APXvYqzYWPLUse5oluk/7h5DncU8sPSSuOVqaapmqqKGuK93Bux6QS78oWartr6a4lm35XB9ZPAzVw==
+X-Received: by 2002:a02:9986:: with SMTP id a6mr15351888jal.51.1559067651496;
+        Tue, 28 May 2019 11:20:51 -0700 (PDT)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id f1sm4727331iop.53.2019.05.28.11.20.50
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 May 2019 11:20:51 -0700 (PDT)
+Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id x4SIKoKd014513;
+        Tue, 28 May 2019 18:20:50 GMT
+Subject: [PATCH RFC 00/12] for-5.3 NFS/RDMA patches for review
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
+Date:   Tue, 28 May 2019 14:20:50 -0400
+Message-ID: <20190528181018.19012.61210.stgit@manet.1015granger.net>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MN2PR18MB3182D17675466AF1B2B22353A11E0@MN2PR18MB3182.namprd18.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 28, 2019 at 08:43:20AM +0000, Michal Kalderon wrote:
-> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > owner@vger.kernel.org> On Behalf Of Jason Gunthorpe
-> > 
-> > On Mon, May 20, 2019 at 12:33:20PM +0300, Michal Kalderon wrote:
-> > > From: Sagiv Ozeri <sagiv.ozeri@marvell.com>
-> > >
-> > > Use the correct enum value introduced in commit 12113a35ada6
-> > > ("IB/core: Add HDR speed enum") Prior to this change a 50Gbps port
-> > > would show 40Gbps.
-> > >
-> > > This patch also cleaned up the redundant redefiniton of ib speeds for
-> > > qedr.
-> > >
-> > > Fixes: 12113a35ada6 ("IB/core: Add HDR speed enum")
-> > > Signed-off-by: Sagiv Ozeri <sagiv.ozeri@marvell.com>
-> > > Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-> > > v1 --> v2
-> > > Removed empty line after "Fixes"
-> > >
-> > >  drivers/infiniband/hw/qedr/verbs.c | 25 +++++++++----------------
-> > >  1 file changed, 9 insertions(+), 16 deletions(-)
-> > 
-> > Applied to for-next, thanks
-> > 
-> > Jason
-> Thanks Jason, this patch was actually intended for rc as it is a bug fix. 
-> Could you please apply it to for-rc branch ? 
+This is a series of fixes and architectural changes that should
+improve robustness and result in better scalability of NFS/RDMA.
+I'm sure one or two of these could be broken down a little more,
+comments welcome.
 
-It is sort of too late now, and the commit message is no really -rc quality
+The fundamental observation is that the RPC work queues are BOUND,
+thus rescheduling work in the Receive completion handler to one of
+these work queues just forces it to run later on the same CPU. So
+try to do more work right in the Receive completion handler to
+reduce context switch overhead.
 
-Jason
+A secondary concern is that the average amount of wall-clock time
+it takes to handle a single Receive completion caps the IOPS rate
+(both per-xprt and per-NIC). In this patch series I've taken a few
+steps to reduce that latency, and I'm looking into a few others.
+
+This series can be fetched from:
+
+  git://git.linux-nfs.org/projects/cel/cel-2.6.git
+
+in topic branch "nfs-for-5.3".
+
+---
+
+Chuck Lever (12):
+      xprtrdma: Fix use-after-free in rpcrdma_post_recvs
+      xprtrdma: Replace use of xdr_stream_pos in rpcrdma_marshal_req
+      xprtrdma: Fix occasional transport deadlock
+      xprtrdma: Remove the RPCRDMA_REQ_F_PENDING flag
+      xprtrdma: Remove fr_state
+      xprtrdma: Add mechanism to place MRs back on the free list
+      xprtrdma: Reduce context switching due to Local Invalidation
+      xprtrdma: Wake RPCs directly in rpcrdma_wc_send path
+      xprtrdma: Simplify rpcrdma_rep_create
+      xprtrdma: Streamline rpcrdma_post_recvs
+      xprtrdma: Refactor chunk encoding
+      xprtrdma: Remove rpcrdma_req::rl_buffer
+
+
+ include/trace/events/rpcrdma.h  |   47 ++++--
+ net/sunrpc/xprtrdma/frwr_ops.c  |  330 ++++++++++++++++++++++++++-------------
+ net/sunrpc/xprtrdma/rpc_rdma.c  |  146 +++++++----------
+ net/sunrpc/xprtrdma/transport.c |   16 +-
+ net/sunrpc/xprtrdma/verbs.c     |  115 ++++++--------
+ net/sunrpc/xprtrdma/xprt_rdma.h |   43 +----
+ 6 files changed, 384 insertions(+), 313 deletions(-)
+
+--
+Chuck Lever
