@@ -2,139 +2,194 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A45F2CCE3
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 19:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734272CD35
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 19:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbfE1RCy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 May 2019 13:02:54 -0400
-Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:33122 "EHLO
-        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbfE1RCy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 May 2019 13:02:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5FEB341;
-        Tue, 28 May 2019 10:02:53 -0700 (PDT)
-Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C71E83F59C;
-        Tue, 28 May 2019 10:02:47 -0700 (PDT)
-Date:   Tue, 28 May 2019 18:02:45 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     enh <enh@google.com>, Evgenii Stepanov <eugenis@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
-Message-ID: <20190528170244.GF32006@arrakis.emea.arm.com>
-References: <20190521182932.sm4vxweuwo5ermyd@mbp>
- <201905211633.6C0BF0C2@keescook>
- <20190522101110.m2stmpaj7seezveq@mbp>
- <CAJgzZoosKBwqXRyA6fb8QQSZXFqfHqe9qO9je5TogHhzuoGXJQ@mail.gmail.com>
- <20190522163527.rnnc6t4tll7tk5zw@mbp>
- <201905221316.865581CF@keescook>
- <20190523144449.waam2mkyzhjpqpur@mbp>
- <201905230917.DEE7A75EF0@keescook>
- <20190523174345.6sv3kcipkvlwfmox@mbp>
- <201905231327.77CA8D0A36@keescook>
+        id S1726452AbfE1RKY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 May 2019 13:10:24 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:19029 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbfE1RKY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 May 2019 13:10:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1559063422; x=1590599422;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=ihIzcxzNdLnItF+7PibJc/bgCUutChdFNHMFSF6ePtw=;
+  b=pLwYjYkJfykHR5wLT2JnFv4JtktWhe7BqSQok62hldlFbAQ1RX+0jjXU
+   xoX/XxQF9Tt7L/m2sMFiRYzTkfp6GpI+nmymBjfJLvYgsM9p/CJYntGWP
+   7XN3x8rjLb0Rkr7+1rfrVg+xpHcBCQ79jbhnUDPalc8QP0eRCfcmWxym9
+   c=;
+X-IronPort-AV: E=Sophos;i="5.60,523,1549929600"; 
+   d="scan'208";a="767977060"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-9ec21598.us-east-1.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 28 May 2019 17:10:21 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-9ec21598.us-east-1.amazon.com (8.14.7/8.14.7) with ESMTP id x4SHAFo2107508
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
+        Tue, 28 May 2019 17:10:19 GMT
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 28 May 2019 17:10:19 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.237) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 28 May 2019 17:10:15 +0000
+Subject: Re: [PATCH rdma-next v1 3/3] RDMA: Convert CQ allocations to be under
+ core responsibility
+To:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20190528113729.13314-1-leon@kernel.org>
+ <20190528113729.13314-4-leon@kernel.org>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <ecc6e5a9-c747-63f6-55ba-48f9b06b2589@amazon.com>
+Date:   Tue, 28 May 2019 20:10:10 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201905231327.77CA8D0A36@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190528113729.13314-4-leon@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.237]
+X-ClientProxiedBy: EX13D20UWA002.ant.amazon.com (10.43.160.176) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 23, 2019 at 02:31:16PM -0700, Kees Cook wrote:
-> syzkaller already attempts to randomly inject non-canonical and
-> 0xFFFF....FFFF addresses for user pointers in syscalls in an effort to
-> find bugs like CVE-2017-5123 where waitid() via unchecked put_user() was
-> able to write directly to kernel memory[1].
+On 28/05/2019 14:37, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> It seems that using TBI by default and not allowing a switch back to
-> "normal" ABI without a reboot actually means that userspace cannot inject
-> kernel pointers into syscalls any more, since they'll get universally
-> stripped now. Is my understanding correct, here? i.e. exploiting
-> CVE-2017-5123 would be impossible under TBI?
+> Ensure that CQ is allocated and freed by IB/core and not by drivers.
 > 
-> If so, then I think we should commit to the TBI ABI and have a boot
-> flag to disable it, but NOT have a process flag, as that would allow
-> attackers to bypass the masking. The only flag should be "TBI or MTE".
-> 
-> If so, can I get top byte masking for other architectures too? Like,
-> just to strip high bits off userspace addresses? ;)
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+> index e57f8adde174..fef760de0d6d 100644
+> --- a/drivers/infiniband/hw/efa/efa_verbs.c
+> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> @@ -859,8 +859,6 @@ void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+>  	efa_destroy_cq_idx(dev, cq->cq_idx);
+>  	dma_unmap_single(&dev->pdev->dev, cq->dma_addr, cq->size,
+>  			 DMA_FROM_DEVICE);
+> -
+> -	kfree(cq);
+>  }
+>  
+>  static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
+> @@ -876,17 +874,20 @@ static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
+>  	return 0;
+>  }
+>  
+> -static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+> -				  int vector, struct ib_ucontext *ibucontext,
+> -				  struct ib_udata *udata)
+> +int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> +		  struct ib_udata *udata)
+>  {
+> +	struct efa_ucontext *ucontext = rdma_udata_to_drv_context(
+> +		udata, struct efa_ucontext, ibucontext);
+>  	struct efa_ibv_create_cq_resp resp = {};
+>  	struct efa_com_create_cq_params params;
+>  	struct efa_com_create_cq_result result;
+> +	struct ib_device *ibdev = ibcq->device;
+>  	struct efa_dev *dev = to_edev(ibdev);
+>  	struct efa_ibv_create_cq cmd = {};
+> +	struct efa_cq *cq = to_ecq(ibcq);
+>  	bool cq_entry_inserted = false;
+> -	struct efa_cq *cq;
+> +	int entries = attr->cqe;
+>  	int err;
+>  
+>  	ibdev_dbg(ibdev, "create_cq entries %d\n", entries);
+> @@ -900,7 +901,7 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  	}
+>  
+>  	if (!field_avail(cmd, num_sub_cqs, udata->inlen)) {
+> -		ibdev_dbg(ibdev,
+> +		ibdev_dbg(ibcq->device,
 
-Just for fun, hack/attempt at your idea which should not interfere with
-TBI. Only briefly tested on arm64 (and the s390 __TYPE_IS_PTR macro is
-pretty weird ;)):
+You kept this change :\
 
---------------------------8<---------------------------------
-diff --git a/arch/s390/include/asm/compat.h b/arch/s390/include/asm/compat.h
-index 63b46e30b2c3..338455a74eff 100644
---- a/arch/s390/include/asm/compat.h
-+++ b/arch/s390/include/asm/compat.h
-@@ -11,9 +11,6 @@
- 
- #include <asm-generic/compat.h>
- 
--#define __TYPE_IS_PTR(t) (!__builtin_types_compatible_p( \
--				typeof(0?(__force t)0:0ULL), u64))
--
- #define __SC_DELOUSE(t,v) ({ \
- 	BUILD_BUG_ON(sizeof(t) > 4 && !__TYPE_IS_PTR(t)); \
- 	(__force t)(__TYPE_IS_PTR(t) ? ((v) & 0x7fffffff) : (v)); \
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index e2870fe1be5b..b1b9fe8502da 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -119,8 +119,15 @@ struct io_uring_params;
- #define __TYPE_IS_L(t)	(__TYPE_AS(t, 0L))
- #define __TYPE_IS_UL(t)	(__TYPE_AS(t, 0UL))
- #define __TYPE_IS_LL(t) (__TYPE_AS(t, 0LL) || __TYPE_AS(t, 0ULL))
-+#define __TYPE_IS_PTR(t) (!__builtin_types_compatible_p(typeof(0 ? (__force t)0 : 0ULL), u64))
- #define __SC_LONG(t, a) __typeof(__builtin_choose_expr(__TYPE_IS_LL(t), 0LL, 0L)) a
-+#ifdef CONFIG_64BIT
-+#define __SC_CAST(t, a)	(__TYPE_IS_PTR(t) \
-+				? (__force t) ((__u64)a & ~(1UL << 55)) \
-+				: (__force t) a)
-+#else
- #define __SC_CAST(t, a)	(__force t) a
-+#endif
- #define __SC_ARGS(t, a)	a
- #define __SC_TEST(t, a) (void)BUILD_BUG_ON_ZERO(!__TYPE_IS_LL(t) && sizeof(t) > sizeof(long))
- 
+Aside from that the EFA part LGTM, thanks Leon.
+Acked-by: Gal Pressman <galpress@amazon.com>
 
--- 
-Catalin
+>  			  "Incompatible ABI params, no input udata\n");
+>  		err = -EINVAL;
+>  		goto err_out;
+> @@ -944,19 +945,13 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  		goto err_out;
+>  	}
+>  
+> -	cq = kzalloc(sizeof(*cq), GFP_KERNEL);
+> -	if (!cq) {
+> -		err = -ENOMEM;
+> -		goto err_out;
+> -	}
+> -
+> -	cq->ucontext = to_eucontext(ibucontext);
+> +	cq->ucontext = ucontext;
+>  	cq->size = PAGE_ALIGN(cmd.cq_entry_size * entries * cmd.num_sub_cqs);
+>  	cq->cpu_addr = efa_zalloc_mapped(dev, &cq->dma_addr, cq->size,
+>  					 DMA_FROM_DEVICE);
+>  	if (!cq->cpu_addr) {
+>  		err = -ENOMEM;
+> -		goto err_free_cq;
+> +		goto err_out;
+>  	}
+>  
+>  	params.uarn = cq->ucontext->uarn;
+> @@ -975,8 +970,8 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  
+>  	err = cq_mmap_entries_setup(dev, cq, &resp);
+>  	if (err) {
+> -		ibdev_dbg(ibdev,
+> -			  "Could not setup cq[%u] mmap entries\n", cq->cq_idx);
+> +		ibdev_dbg(ibdev, "Could not setup cq[%u] mmap entries\n",
+> +			  cq->cq_idx);
+>  		goto err_destroy_cq;
+>  	}
+>  
+> @@ -992,11 +987,10 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  		}
+>  	}
+>  
+> -	ibdev_dbg(ibdev,
+> -		  "Created cq[%d], cq depth[%u]. dma[%pad] virt[0x%p]\n",
+> +	ibdev_dbg(ibdev, "Created cq[%d], cq depth[%u]. dma[%pad] virt[0x%p]\n",
+>  		  cq->cq_idx, result.actual_depth, &cq->dma_addr, cq->cpu_addr);
+>  
+> -	return &cq->ibcq;
+> +	return 0;
+>  
+>  err_destroy_cq:
+>  	efa_destroy_cq_idx(dev, cq->cq_idx);
+> @@ -1005,23 +999,9 @@ static struct ib_cq *do_create_cq(struct ib_device *ibdev, int entries,
+>  			 DMA_FROM_DEVICE);
+>  	if (!cq_entry_inserted)
+>  		free_pages_exact(cq->cpu_addr, cq->size);
+> -err_free_cq:
+> -	kfree(cq);
+>  err_out:
+>  	atomic64_inc(&dev->stats.sw_stats.create_cq_err);
+> -	return ERR_PTR(err);
+> -}
+> -
+> -struct ib_cq *efa_create_cq(struct ib_device *ibdev,
+> -			    const struct ib_cq_init_attr *attr,
+> -			    struct ib_udata *udata)
+> -{
+> -	struct efa_ucontext *ucontext = rdma_udata_to_drv_context(udata,
+> -								  struct efa_ucontext,
+> -								  ibucontext);
+> -
+> -	return do_create_cq(ibdev, attr->cqe, attr->comp_vector,
+> -			    &ucontext->ibucontext, udata);
+> +	return err;
+>  }
+>  
+>  static int umem_to_page_list(struct efa_dev *dev,
