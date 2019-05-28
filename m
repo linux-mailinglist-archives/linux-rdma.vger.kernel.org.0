@@ -2,75 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7521F2C54B
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 13:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2DE2C559
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 13:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbfE1LUn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 May 2019 07:20:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726313AbfE1LUn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 May 2019 07:20:43 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BD5220883;
-        Tue, 28 May 2019 11:20:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559042443;
-        bh=vNMx68m8t+QUI9mFbgeykBo8Vua6AYbbB6Hz4+8Gcao=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=guAS7RWKsNeXf1zGVq4iRJcP8DxXrfQhXJWWUXHFX8n/066Md1enBA4u+tNcQ90Ez
-         xQFFXiYFn7YcjpSi/hM2CmndHEo5crqTwaYFe5kfPYyuVOWozlNITMxxBPY2gt6jHk
-         hyFJCfJlRGH+u3XMlSZQ+GUUF8VpsJM/OX0iHJc0=
-Date:   Tue, 28 May 2019 14:20:39 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Glenn Streiff <gstreiff@neteffect.com>,
-        Steve Wise <swise@opengridcomputing.com>
-Subject: Re: [PATCH rdma-next 00/15] Convert CQ allocations
-Message-ID: <20190528112039.GH4633@mtr-leonro.mtl.com>
-References: <20190520065433.8734-1-leon@kernel.org>
- <20190521185443.GA23445@ziepe.ca>
- <1dcd9e36-8eda-2a10-5b69-cc76677366ed@intel.com>
+        id S1726313AbfE1LZC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 May 2019 07:25:02 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:59054 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726476AbfE1LZB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 May 2019 07:25:01 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4SBOXVa027689;
+        Tue, 28 May 2019 04:24:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=XkSfluNpVg4Ew5JlfUIU8GOOl1EJosBCNGV3lU+VbZw=;
+ b=oKmE/MW1iAVZUh4cc/gFEs9B5YAC+f0lV9Cqka/XZfyfhNAKHZwL9UqhT9tZaUvfXbj3
+ k67ol6sXqnPl+tJZv0CZhSQOMeXsmEnb72Bb4ZZuEbivBI8zlIs/Zb+5Ly1QBfIpECme
+ FozHqBRn4lw3dU0P/k5cxRxQhf98QJ+uaTrhrKSwVGmvxceUjZ6M2U085eMRjwqIrgws
+ pHs6pP4KYeswG/l5tgsIrmppjlgfnSF+DZjkUormwX5vJex62KXjUB9Ce1LeaezmJxv+
+ uz1CyM3ASeAXIhQE4JVg6xOl08VUp1RNqzAufWmahFopPL5jCQl0FOSo6WGOHhnwCgQf +A== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2ss270ge5f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 28 May 2019 04:24:55 -0700
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 28 May
+ 2019 04:24:54 -0700
+Received: from maili.marvell.com (10.93.176.43) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
+ Transport; Tue, 28 May 2019 04:24:54 -0700
+Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
+        by maili.marvell.com (Postfix) with ESMTP id 297DE3F703F;
+        Tue, 28 May 2019 04:24:52 -0700 (PDT)
+From:   Michal Kalderon <michal.kalderon@marvell.com>
+To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
+        <jgg@zeipe.ca>, <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>
+Subject: [PATCH v2 rdma-next 0/2] RDMA/qedr: Use the doorbell overflow recovery mechanism for RDMA
+Date:   Tue, 28 May 2019 14:23:59 +0300
+Message-ID: <20190528112401.14958-1-michal.kalderon@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1dcd9e36-8eda-2a10-5b69-cc76677366ed@intel.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-28_04:,,
+ signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 28, 2019 at 07:20:33AM -0400, Dennis Dalessandro wrote:
-> On 5/21/2019 2:54 PM, Jason Gunthorpe wrote:
-> > On Mon, May 20, 2019 at 09:54:18AM +0300, Leon Romanovsky wrote:
-> > > From: Leon Romanovsky <leonro@mellanox.com>
-> > >
-> > > Hi,
-> > >
-> > > This is my next series of allocation conversion patches.
-> > >
-> > > Thanks
-> > >
-> > > Leon Romanovsky (15):
-> > >    rds: Don't check return value from destroy CQ
-> > >    RDMA/ipoib: Remove check of destroy CQ
-> > >    RDMA/core: Make ib_destroy_cq() void
-> > >    RDMA/nes: Remove useless NULL checks
-> > >    RDMA/i40iw: Remove useless NULL checks
-> > >    RDMA/nes: Remove second wait queue initialization call
-> >
-> > These trivial ones all applied to for-rc, thanks
->
-> rc or next?
+This patch series used the doorbell overflow recovery mechanism
+introduced in
+commit 36907cd5cd72 ("qed: Add doorbell overflow recovery mechanism")
+for rdma ( RoCE and iWARP )
 
--next
+rdma-core pull request #493
 
-Thanks
+Changes from V1:
+- call kmap to map virtual address into kernel space
+- modify db_rec_delete to be void
+- remove some cpu_to_le16 that were added to previous patch which are
+  correct but not related to the overflow recovery mechanism. Will be
+  submitted as part of a different patch
 
->
-> -Denny
+
+Michal Kalderon (2):
+  RDMA/qedr: Add doorbell overflow recovery support
+  RDMA/qedr: Add iWARP doorbell recovery support
+
+ drivers/infiniband/hw/qedr/qedr.h  |  19 ++-
+ drivers/infiniband/hw/qedr/verbs.c | 298 +++++++++++++++++++++++++++++++++----
+ include/uapi/rdma/qedr-abi.h       |  15 ++
+ 3 files changed, 294 insertions(+), 38 deletions(-)
+
+-- 
+2.14.5
+
