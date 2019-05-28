@@ -2,131 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4792BC52
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 01:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E3D2BF76
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 08:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727487AbfE0XMn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 May 2019 19:12:43 -0400
-Received: from mail-vs1-f68.google.com ([209.85.217.68]:35513 "EHLO
-        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727392AbfE0XMn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 May 2019 19:12:43 -0400
-Received: by mail-vs1-f68.google.com with SMTP id q13so11583346vso.2
-        for <linux-rdma@vger.kernel.org>; Mon, 27 May 2019 16:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=wX6N01CkJjaDlOJ1ros8bm2onANhDW8NXyCYvkrtemg=;
-        b=CZiPuQaEwv3lqb5SZe/gadbr2on0uyWsxhzjtp+toaxSYDJsJ0veJ+MsHzoIX193A5
-         tGyRL3+z39ibqHrkHL4ig8trKDTVq1uE+qiFVL+hYR3cMJo6o4Aspd5k9Fgs+fP8XTOZ
-         EBxJZ1nObd0eaWg5uaSRpy2MVza2dQ+cCF/Qs41qm/fon5bRysCHkLJfqF4gN+OpH5zZ
-         HsFELDr80DLkXDrbWdXyBCpSqjsGY+tiobrH4KQ86PlJi0KLZWAX8yW8dgduwngWgKtU
-         Mr0WcxTALRjcOItn9ozWYXvUi+Rq2hQhmvWnN4sexsY5xyXZZ4wuDkWK4Q22BTIVNblW
-         xkMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=wX6N01CkJjaDlOJ1ros8bm2onANhDW8NXyCYvkrtemg=;
-        b=cH3axGi6rPKdQ1nAMYvU3gZC6Z0Jpb5jbU7faHxBZM3zbrhEMxD4znG9jhsXTcnioJ
-         2i1x8fe7HzSXprLFkgUG4msj1AXM9BcC4c2vDJXnPBTnyrv3nM9NH0Djs1+Qn5QWMrD9
-         IVSnY+aLvd1inipH29mfz8kgP8FpqaMdf9Wqz2cZWpSqwNXkWxNukrIcRMsdld1PgjbB
-         xfbyJgWMA+PkHpuY1v4eiiNOnXFWsCHBxGN5XDqzDh8bn69/KuwVeyM7P1JYRgQo3etr
-         sPBIocRJwR/1zQF01mGS4FtAViTlMAROG9g3a0UW12yNVZWDKiR07MPUFzDSy6Jtn1y+
-         feEw==
-X-Gm-Message-State: APjAAAWJEO78IjHTiaKNLk7HkTfLDKTM24ZgIiMgGDO+tzNM2/lWUOBv
-        /6yWNR4M3YFerFmwFXJ8+ACgRQ==
-X-Google-Smtp-Source: APXvYqy4sB3fYsZi2sRGgGcMy7oWE4xaEc4c4gHWtniQFIlK09l6934M+QPzMYcjxy9CgA/oBmrq0Q==
-X-Received: by 2002:a67:fa48:: with SMTP id j8mr50026871vsq.143.1558998761897;
-        Mon, 27 May 2019 16:12:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id a95sm5421589uaa.13.2019.05.27.16.12.41
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 May 2019 16:12:41 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hVOnI-000638-S7; Mon, 27 May 2019 20:12:40 -0300
-Date:   Mon, 27 May 2019 20:12:40 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     john.hubbard@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Christian Benvenuti <benve@cisco.com>, Jan Kara <jack@suse.cz>,
-        Ira Weiny <ira.weiny@intel.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>
-Subject: Re: [PATCH v2] infiniband/mm: convert put_page() to put_user_page*()
-Message-ID: <20190527231240.GA23224@ziepe.ca>
-References: <20190525014522.8042-1-jhubbard@nvidia.com>
- <20190525014522.8042-2-jhubbard@nvidia.com>
+        id S1726305AbfE1Gbs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 May 2019 02:31:48 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50566 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbfE1Gbr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 May 2019 02:31:47 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4S6OE5A012325;
+        Tue, 28 May 2019 06:31:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=Q8UKmowVwXJBqB8tiS2WKx4+mhdIvZaSXeTQm2opsd4=;
+ b=NPmyojb7Rod5pwoS9Hx301aaamCXe3iKBAAk1hD7qmMUlHKP2+dn4IpML7hh7YDofBtg
+ 8TEOBZRMUts2Wfl9yvclTJ/rEeQECeIC5dTfcixPfduLQ/nxjP2qZXF83BM8tMwjE+S3
+ 903sfAQOrwOYYdaB0NYkhHXSIwDQCeRzjvCQ+Xe0XvekkL0fIiN2h/uXKXAmu0OPG3tq
+ SYmFo2U+hoWjfcz3pXVOeXU5RQtHAkNcyl6Ei5SIPKXQTbUnqvhPw9rjle96UI5f37fd
+ jixrGdCY5nt3ZyurmLNz75DIYuAyBBDgXt2O1T9fzmCKDBPLXglcQATWfZTjJfP/RuLs MA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2spxbq0p6d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 May 2019 06:31:03 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4S6TuaC056123;
+        Tue, 28 May 2019 06:31:03 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2sr31ug0cw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 May 2019 06:31:03 +0000
+Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4S6V1BV028394;
+        Tue, 28 May 2019 06:31:01 GMT
+Received: from lap1 (/77.138.183.59)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 27 May 2019 23:31:00 -0700
+Date:   Tue, 28 May 2019 09:30:56 +0300
+From:   Yuval Shaia <yuval.shaia@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     yishaih@mellanox.com, dledford@redhat.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-core] verbs: Introduce a new reg_mr API for virtual
+ address space
+Message-ID: <20190528063055.GA2558@lap1>
+References: <20190527150004.21191-1-yuval.shaia@oracle.com>
+ <20190527182219.GF18100@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190525014522.8042-2-jhubbard@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190527182219.GF18100@ziepe.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9270 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905280044
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9270 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905280044
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 24, 2019 at 06:45:22PM -0700, john.hubbard@gmail.com wrote:
-> From: John Hubbard <jhubbard@nvidia.com>
+On Mon, May 27, 2019 at 03:22:20PM -0300, Jason Gunthorpe wrote:
+> On Mon, May 27, 2019 at 06:00:04PM +0300, Yuval Shaia wrote:
+> > The virtual address that is registered is used as a base for any address
+> > used later in post_recv and post_send operations.
+> > 
+> > On a virtualised environment this is not correct.
+> > 
+> > A guest cannot register its memory so hypervisor maps the guest physical
+> > address to a host virtual address and register it with the HW. Later on,
+> > at datapath phase, the guest fills the SGEs with addresses from its
+> > address space.
+> > Since HW cannot access guest virtual address space an extra translation
+> > is needed to map those addresses to be based on the host virtual address
+> > that was registered with the HW.
+> > 
+> > To avoid this, a logical separation between the address that is
+> > registered and the address that is used as a offset at datapath phase is
+> > needed.
+> > 
+> > This separation is already implemented in the lower layer part
+> > (ibv_cmd_reg_mr) but blocked at the API level.
+> > 
+> > Fix it by introducing a new API function that accepts a address from
+> > guest virtual address space as well.
+> > 
+> > Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
+> >  libibverbs/verbs.c | 24 ++++++++++++++++++++++++
+> >  libibverbs/verbs.h |  6 ++++++
+> >  2 files changed, 30 insertions(+)
+> > 
+> > diff --git a/libibverbs/verbs.c b/libibverbs/verbs.c
+> > index 1766b9f5..9ad74ee0 100644
+> > +++ b/libibverbs/verbs.c
+> > @@ -324,6 +324,30 @@ LATEST_SYMVER_FUNC(ibv_reg_mr, 1_1, "IBVERBS_1.1",
+> >  	return mr;
+> >  }
+> >  
+> > +LATEST_SYMVER_FUNC(ibv_reg_mr_virt_as, 1_1, "IBVERBS_1.1",
+> > +		   struct ibv_mr *,
+> > +		   struct ibv_pd *pd, void *addr, size_t length,
+> > +		   uint64_t hca_va, int access)
+> > +{
 > 
-> For infiniband code that retains pages via get_user_pages*(),
-> release those pages via the new put_user_page(), or
-> put_user_pages*(), instead of put_page()
-> 
-> This is a tiny part of the second step of fixing the problem described
-> in [1]. The steps are:
-> 
-> 1) Provide put_user_page*() routines, intended to be used
->    for releasing pages that were pinned via get_user_pages*().
-> 
-> 2) Convert all of the call sites for get_user_pages*(), to
->    invoke put_user_page*(), instead of put_page(). This involves dozens of
->    call sites, and will take some time.
-> 
-> 3) After (2) is complete, use get_user_pages*() and put_user_page*() to
->    implement tracking of these pages. This tracking will be separate from
->    the existing struct page refcounting.
-> 
-> 4) Use the tracking and identification of these pages, to implement
->    special handling (especially in writeback paths) when the pages are
->    backed by a filesystem. Again, [1] provides details as to why that is
->    desirable.
-> 
-> [1] https://lwn.net/Articles/753027/ : "The Trouble with get_user_pages()"
-> 
-> Cc: Doug Ledford <dledford@redhat.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Mike Marciniszyn <mike.marciniszyn@intel.com>
-> Cc: Dennis Dalessandro <dennis.dalessandro@intel.com>
-> Cc: Christian Benvenuti <benve@cisco.com>
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-> Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
-> Acked-by: Jason Gunthorpe <jgg@mellanox.com>
-> Tested-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  drivers/infiniband/core/umem.c              |  7 ++++---
->  drivers/infiniband/core/umem_odp.c          | 10 +++++-----
->  drivers/infiniband/hw/hfi1/user_pages.c     | 11 ++++-------
->  drivers/infiniband/hw/mthca/mthca_memfree.c |  6 +++---
->  drivers/infiniband/hw/qib/qib_user_pages.c  | 11 ++++-------
->  drivers/infiniband/hw/qib/qib_user_sdma.c   |  6 +++---
->  drivers/infiniband/hw/usnic/usnic_uiom.c    |  7 ++++---
->  7 files changed, 27 insertions(+), 31 deletions(-)
+> Doesn't need this macro since it doesn't have a compat version
 
-Applied to for-next, thanks
+That is weird, without this it fails in link stage.
 
-Jason
+/usr/bin/ld: hw/rdma/rdma_backend.o: in function `rdma_backend_create_mr':
+rdma_backend.c:(.text+0x260a): undefined reference to `ibv_reg_mr_virt_as'
+collect2: error: ld returned 1 exit status
+
+> 
+> > +	struct verbs_mr *vmr;
+> > +	struct ibv_reg_mr cmd;
+> > +	struct ib_uverbs_reg_mr_resp resp;
+> > +	int ret;
+> > +
+> > +	vmr = malloc(sizeof(*vmr));
+> > +	if (!vmr)
+> > +		return NULL;
+> > +
+> > +	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
+> > +			     sizeof(cmd), &resp, sizeof(resp));
+> 
+> It seems problematic not to call the driver, several of the drivers
+> are wrappering mr in their own type (ie bnxt_re_mr) and we can't just
+> allocate the wrong size of memory here.
+> 
+> What you should do is modify the existing driver callback to accept
+> another argument and go and fix all the drivers to pass that argument
+> into their ibv_cmd_reg_mr as the hca_va above. This looks pretty
+> trivial.
+
+So back to what was proposed in the RFC besides the addition of new arg
+instead of new callback, right?
+
+> 
+> Jason
