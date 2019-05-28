@@ -2,143 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6012C698
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 14:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA762C6EB
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 14:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726990AbfE1MeH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 May 2019 08:34:07 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:37036 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726592AbfE1MeH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 May 2019 08:34:07 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4SCSmWt137405;
-        Tue, 28 May 2019 12:33:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=fD5AjPOxgyAztRBQTSWFQMWWFEoVgYQmbKm+TYWNDhE=;
- b=MWzWlP4cy/8JymW3aFkPldtAo+Htr3WIY6ZsioqjG3xYB6JgzK5BZJ4ihiTYse0HtmGU
- ivuBIz4gs/joAooA3558xev9vtPcH529pEot4FHwX6RQABDUQXNPyZNoEQLXN29j9Ugn
- 0+znjeHA5olopF8q6KAUMQjemXWPDQ3m41+kkMKSVNDK0dp+y7QHoyBWN4lhQcNTA1D3
- ZLJUNPQOc+kg07FrxKA+cPkWdE2ttDZsYolGUHgXzVN26v/YoXoElXL2ck+9Dnxm3ylE
- uWI/onrhn1k7qCbOsXAvDP8P/DQQH4EMxJTzusN9dR/1SAciADYESoX8cQzK/GWEkKDm Cw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 2spu7dawb9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 May 2019 12:33:42 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4SCWKOV085575;
-        Tue, 28 May 2019 12:33:42 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2sqh732xmr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 May 2019 12:33:41 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4SCXdo1006283;
-        Tue, 28 May 2019 12:33:39 GMT
-Received: from srabinov-laptop (/109.186.250.120)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 28 May 2019 05:33:39 -0700
-Date:   Tue, 28 May 2019 15:33:26 +0300
-From:   Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     dledford@redhat.com, jgg@mellanox.com, linux-rdma@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Parav Pandit <parav@mellanox.com>,
-        Steve Wise <swise@opengridcomputing.com>
-Subject: Re: [PATCH for-next v2 3/4] RDMA/nldev: ib_pd can be pointed by
- multiple ib_ucontext
-Message-ID: <20190528123322.GA11474@srabinov-laptop>
-References: <20190520075333.6002-1-shamir.rabinovitch@oracle.com>
- <20190520075333.6002-4-shamir.rabinovitch@oracle.com>
- <20190520091840.GB4573@mtr-leonro.mtl.com>
- <20190522122531.GA6173@srabinov-laptop>
+        id S1727237AbfE1Mqv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 May 2019 08:46:51 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:16891 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727195AbfE1Mqu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 May 2019 08:46:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1559047610; x=1590583610;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=z8P1x3T/i9VLkXUcjV66qqt5b5l7OgosbkTv+ci9cf0=;
+  b=MWWJP6oCirc6H5SSRJ7d99+XvAVhd1Qz1aUYPZVipRZvn1N98wxf7XIl
+   38hdnIgABtOA3wwWEkwEaArEiNCYYuTjb3cz3w/izozHV8CXA+xkaEU9X
+   DGcIaHbIQZ7O+EqETMCn/5/JIU3ZTgzs4z+LdjXwcK37jkusRPC3lB8QW
+   k=;
+X-IronPort-AV: E=Sophos;i="5.60,523,1549929600"; 
+   d="scan'208";a="676767341"
+Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com) ([10.47.22.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 28 May 2019 12:46:47 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com (8.14.7/8.14.7) with ESMTP id x4SCki48019409
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=FAIL);
+        Tue, 28 May 2019 12:46:46 GMT
+Received: from EX13D19EUB004.ant.amazon.com (10.43.166.61) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 28 May 2019 12:46:46 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (10.43.162.135) by
+ EX13D19EUB004.ant.amazon.com (10.43.166.61) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 28 May 2019 12:46:45 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.218.69.129) by
+ mail-relay.amazon.com (10.43.162.232) with Microsoft SMTP Server id
+ 15.0.1367.3 via Frontend Transport; Tue, 28 May 2019 12:46:42 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-rc 0/6] EFA updates 2019-05-28
+Date:   Tue, 28 May 2019 15:46:12 +0300
+Message-ID: <20190528124618.77918-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190522122531.GA6173@srabinov-laptop>
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9270 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905280082
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9270 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905280082
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 22, 2019 at 03:25:32PM +0300, Shamir Rabinovitch wrote:
-> On Mon, May 20, 2019 at 12:18:40PM +0300, Leon Romanovsky wrote:
-> > On Mon, May 20, 2019 at 10:53:20AM +0300, Shamir Rabinovitch wrote:
-> > > In shared object model ib_pd can belong to 1 or more ib_ucontext.
-> > > Fix the nldev code so it could report multiple context ids.
-> > >
-> > > Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-> > > ---
-> 
-> [...]
-> 
-> > > +	if (!rdma_is_kernel_res(res)) {
-> > > +		pd_context(pd, &pd_context_ids);
-> > > +		list_for_each_entry(ctx_id, &pd_context_ids, list) {
-> > > +			if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
-> > > +				ctx_id->id))
-> > 
-> > Did it work? You are overwriting RDMA_NLDEV_ATTR_RES_CTXN entry in the
-> > loop. You need to add RDMA_NLDEV_ATTR_RES_CTX and
-> > RDMA_NLDEV_ATTR_RES_CTX_ENTRY to include/uapi/rdma_netlink.h and
-> > open nested table here (inside of PD) with list of contexts.
-> > 
-> > > +				goto err;
-> > > +		}
-> 
-> Hi Leon,
-> 
-> Just to clarify the above nesting...
-> 
-> Do you expect the below NL attribute nesting in case of shared pd dump?
-> 
-> RDMA_NLDEV_ATTR_RES_CTX
-> 	RDMA_NLDEV_ATTR_RES_CTX_ENTRY
-> 		RDMA_NLDEV_ATTR_RES_CTXN #1
-> 		RDMA_NLDEV_ATTR_RES_CTXN #2
-> 		...
-> 		RDMA_NLDEV_ATTR_RES_CTXN #N
-> 
-> 
-> I tried this and rdmatool reported:
-> 
-> [root@qemu-fc29 iproute2]# rdma/rdma res show pd dev mlx4_0
-> dev mlx4_0 pdn 0 local_dma_lkey 0x8000 users 4 comm [ib_core]
-> dev mlx4_0 pdn 1 local_dma_lkey 0x8000 users 4 comm [ib_core]
-> error: Operation not supported
-> 
-> Is this the expected behaviour from unmodified latest rdmatool?
-> 
-> Thanks
+Hi,
 
-Leon, 
+This series introduces misc updates that were discussed on-list to the
+EFA driver.
 
-I tried this nesting (which make more sense to me) and results are the
-same as above.
+I've sent this series to for-rc as EFA is a new driver and there's no
+real regression danger here, but I'm fine with applying these changes to
+for-next instead.
 
-RDMA_NLDEV_ATTR_RES_CTX
-	RDMA_NLDEV_ATTR_RES_CTX_ENTRY
-		RDMA_NLDEV_ATTR_RES_CTXN
-	RDMA_NLDEV_ATTR_RES_CTX_ENTRY
-		RDMA_NLDEV_ATTR_RES_CTXN
-...
+Thanks,
+Gal
 
-Which is the nesting you expect ?
+Gal Pressman (6):
+  RDMA/efa: Remove MAYEXEC flag check from mmap flow
+  RDMA/efa: Use kvzalloc instead of kzalloc with fallback
+  RDMA/efa: Remove unneeded admin commands abort flow
+  RDMA/efa: Use API to get contiguous memory blocks aligned to device
+    supported page size
+  RDMA/efa: Use rdma block iterator in chunk list creation
+  RDMA/efa: Remove unused includes
 
-Is it OK that we get the rdma tool "error: Operation not supported" ?
+ drivers/infiniband/hw/efa/efa.h         |   2 -
+ drivers/infiniband/hw/efa/efa_com.c     |  74 +----------
+ drivers/infiniband/hw/efa/efa_com.h     |   1 -
+ drivers/infiniband/hw/efa/efa_com_cmd.c |   1 -
+ drivers/infiniband/hw/efa/efa_verbs.c   | 157 ++++++++----------------
+ 5 files changed, 49 insertions(+), 186 deletions(-)
 
-Thanks
+-- 
+2.21.0
+
