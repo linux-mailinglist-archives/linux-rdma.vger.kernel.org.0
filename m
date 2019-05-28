@@ -2,135 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D1C2C74A
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 15:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04FC2C75E
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2019 15:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbfE1NF1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 May 2019 09:05:27 -0400
-Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:57252 "EHLO
-        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726620AbfE1NF1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 May 2019 09:05:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D01EC80D;
-        Tue, 28 May 2019 06:05:26 -0700 (PDT)
-Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 479923F5AF;
-        Tue, 28 May 2019 06:05:21 -0700 (PDT)
-Date:   Tue, 28 May 2019 14:05:18 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v15 05/17] arms64: untag user pointers passed to memory
- syscalls
-Message-ID: <20190528130518.GB32006@arrakis.emea.arm.com>
-References: <cover.1557160186.git.andreyknvl@google.com>
- <00eb4c63fefc054e2c8d626e8fedfca11d7c2600.1557160186.git.andreyknvl@google.com>
+        id S1726887AbfE1NJE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 May 2019 09:09:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726620AbfE1NJE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 May 2019 09:09:04 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DCB9208C3;
+        Tue, 28 May 2019 13:09:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559048944;
+        bh=zetCP8eEiCw3OVgAi1O9s2Z/RNTQWxLHVfW955CY4/8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jImWfnVz28iTA/v7qT4gFiGCwclivSDRJDWavoM1bYTgUHVARCHAvIqlO0zHT55Mk
+         aQmgfm/0jPWw0w+ur8CcY0SfrtK2AS2aT+XftEsVFk4mgprPsOLY3dbEl88Ye9v7xR
+         33DtJpuC8YKVIQDSR3HLC9oVI4lvQ46c7e23E3e8=
+Date:   Tue, 28 May 2019 16:09:01 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v1 2/3] RDMA: Clean destroy CQ in drivers do
+ not return errors
+Message-ID: <20190528130901.GL4633@mtr-leonro.mtl.com>
+References: <20190528113729.13314-1-leon@kernel.org>
+ <20190528113729.13314-3-leon@kernel.org>
+ <1934b1ce-d700-2cd1-d4eb-a30d8d13770d@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00eb4c63fefc054e2c8d626e8fedfca11d7c2600.1557160186.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1934b1ce-d700-2cd1-d4eb-a30d8d13770d@amazon.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 06, 2019 at 06:30:51PM +0200, Andrey Konovalov wrote:
->  /*
->   * Wrappers to pass the pt_regs argument.
->   */
->  #define sys_personality		sys_arm64_personality
-> +#define sys_mmap_pgoff		sys_arm64_mmap_pgoff
-> +#define sys_mremap		sys_arm64_mremap
-> +#define sys_munmap		sys_arm64_munmap
-> +#define sys_brk			sys_arm64_brk
-> +#define sys_get_mempolicy	sys_arm64_get_mempolicy
-> +#define sys_madvise		sys_arm64_madvise
-> +#define sys_mbind		sys_arm64_mbind
-> +#define sys_mlock		sys_arm64_mlock
-> +#define sys_mlock2		sys_arm64_mlock2
-> +#define sys_munlock		sys_arm64_munlock
-> +#define sys_mprotect		sys_arm64_mprotect
-> +#define sys_msync		sys_arm64_msync
-> +#define sys_mincore		sys_arm64_mincore
-> +#define sys_remap_file_pages	sys_arm64_remap_file_pages
-> +#define sys_shmat		sys_arm64_shmat
-> +#define sys_shmdt		sys_arm64_shmdt
+On Tue, May 28, 2019 at 04:03:42PM +0300, Gal Pressman wrote:
+> On 28/05/2019 14:37, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@mellanox.com>
+> >
+> > Like all other destroy commands, .destroy_cq() call is not supposed
+> > to fail. In all flows, the attempt to return earlier caused to memory
+> > leaks.
+> >
+> > This patch converts .destroy_cq() to do not return any errors.
+> >
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>
+> This patch doesn't apply to my tree for some reason.
 
-This hunk should be (I sent a separate patch for sys_personality):
+I rebased it on top of rdma/wip/jgg-for-next branch.
 
-@@ -160,23 +163,23 @@ SYSCALL_DEFINE1(arm64_shmdt, char __user *, shmaddr)
- /*
-  * Wrappers to pass the pt_regs argument.
-  */
--#define sys_personality		sys_arm64_personality
--#define sys_mmap_pgoff		sys_arm64_mmap_pgoff
--#define sys_mremap		sys_arm64_mremap
--#define sys_munmap		sys_arm64_munmap
--#define sys_brk			sys_arm64_brk
--#define sys_get_mempolicy	sys_arm64_get_mempolicy
--#define sys_madvise		sys_arm64_madvise
--#define sys_mbind		sys_arm64_mbind
--#define sys_mlock		sys_arm64_mlock
--#define sys_mlock2		sys_arm64_mlock2
--#define sys_munlock		sys_arm64_munlock
--#define sys_mprotect		sys_arm64_mprotect
--#define sys_msync		sys_arm64_msync
--#define sys_mincore		sys_arm64_mincore
--#define sys_remap_file_pages	sys_arm64_remap_file_pages
--#define sys_shmat		sys_arm64_shmat
--#define sys_shmdt		sys_arm64_shmdt
-+#define __arm64_sys_personality		__arm64_sys_arm64_personality
-+#define __arm64_sys_mmap_pgoff		__arm64_sys_arm64_mmap_pgoff
-+#define __arm64_sys_mremap		__arm64_sys_arm64_mremap
-+#define __arm64_sys_munmap		__arm64_sys_arm64_munmap
-+#define __arm64_sys_brk			__arm64_sys_arm64_brk
-+#define __arm64_sys_get_mempolicy	__arm64_sys_arm64_get_mempolicy
-+#define __arm64_sys_madvise		__arm64_sys_arm64_madvise
-+#define __arm64_sys_mbind		__arm64_sys_arm64_mbind
-+#define __arm64_sys_mlock		__arm64_sys_arm64_mlock
-+#define __arm64_sys_mlock2		__arm64_sys_arm64_mlock2
-+#define __arm64_sys_munlock		__arm64_sys_arm64_munlock
-+#define __arm64_sys_mprotect		__arm64_sys_arm64_mprotect
-+#define __arm64_sys_msync		__arm64_sys_arm64_msync
-+#define __arm64_sys_mincore		__arm64_sys_arm64_mincore
-+#define __arm64_sys_remap_file_pages	__arm64_sys_arm64_remap_file_pages
-+#define __arm64_sys_shmat		__arm64_sys_arm64_shmat
-+#define __arm64_sys_shmdt		__arm64_sys_arm64_shmdt
- 
- asmlinkage long sys_ni_syscall(const struct pt_regs *);
- #define __arm64_sys_ni_syscall	sys_ni_syscall
+>
+> Other than that, for the EFA part:
+> Acked-by: Gal Pressman <galpress@amazon.com>
 
--- 
-Catalin
+Thanks
+
+>
+> Thanks Leon
