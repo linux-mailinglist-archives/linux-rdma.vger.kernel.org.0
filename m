@@ -2,145 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D402A2E0DF
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2019 17:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEEB2E15A
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2019 17:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbfE2PSt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 May 2019 11:18:49 -0400
-Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:48042 "EHLO
-        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725936AbfE2PSt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 May 2019 11:18:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95CC8341;
-        Wed, 29 May 2019 08:18:48 -0700 (PDT)
-Received: from e103592.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.72.51.249])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9C163F5AF;
-        Wed, 29 May 2019 08:18:42 -0700 (PDT)
-Date:   Wed, 29 May 2019 16:18:40 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        Lee Smith <Lee.Smith@arm.com>, linux-kselftest@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        Evgeniy Stepanov <eugenis@google.com>,
-        linux-media@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-kernel@vger.kernel.org,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Andrew Murray <andrew.murray@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: Re: [PATCH v15 05/17] arms64: untag user pointers passed to memory
- syscalls
-Message-ID: <20190529151839.GF28398@e103592.cambridge.arm.com>
-References: <cover.1557160186.git.andreyknvl@google.com>
- <00eb4c63fefc054e2c8d626e8fedfca11d7c2600.1557160186.git.andreyknvl@google.com>
- <20190527143719.GA59948@MBP.local>
- <20190528145411.GA709@e119886-lin.cambridge.arm.com>
- <20190528154057.GD32006@arrakis.emea.arm.com>
- <20190528155644.GD28398@e103592.cambridge.arm.com>
- <20190528163400.GE32006@arrakis.emea.arm.com>
- <20190529124224.GE28398@e103592.cambridge.arm.com>
- <20190529132341.27t3knoxpb7t7y3g@mbp>
+        id S1726885AbfE2PmB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 May 2019 11:42:01 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:43221 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726658AbfE2PmB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 May 2019 11:42:01 -0400
+Received: by mail-qt1-f196.google.com with SMTP id z24so3107768qtj.10
+        for <linux-rdma@vger.kernel.org>; Wed, 29 May 2019 08:42:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=U9+ZXoZmSq1N9Z9JFxGsh6NHJYNjjT0qSWD/xvSYMYM=;
+        b=MlbCEbrlgMsZji00+NHhpB0p05UhjOwVQqXaDjFsG+n5A5L/xc11CEmAvvAjxKmun8
+         ALKIlXWhqIa1HCCMoK9i9DXClAFmkJ0bKBGHKGg5MyWuotehEkijBFBtfiRurjHHCDXI
+         2RZ2Puxk2ReVKADm9GZdIRxWbZeVKgEE1VaaZFeRgdxEqKE/d1EF7edGOFn/fWJPOkoL
+         xYouJp5Ur4tuqD5K7gZKNIOWPF56DsWNxyU89v5jTq+sRUPYZSmyF3FaUZm8HxzO/w68
+         wTXY9yZyStfZYyr0tFKPwR45WaH3ujbBfDrUGcNol8I1IncnG9QiDGoYqJywrEVjtMkG
+         FT2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=U9+ZXoZmSq1N9Z9JFxGsh6NHJYNjjT0qSWD/xvSYMYM=;
+        b=RG/ZxQLHAtdA6OAoW3lOtUR6z1pmhui6LFA9aPQZtrlGignvUtdh2cOJNHMyIHLdZk
+         avJ4cWxbEY6IW8Ip6Qe1u+ZVcraNCjaubhR67LPTCuji5zv36OwkGhQFe84bXgRamYDb
+         YD/QNl4JEg7KeiWt6oGsEuwXi7zDdSM+w0E//vzCYAtk/gbnw72izHqmz0Opxk2MH0ZO
+         kx9lznwQt4nadfs6KcUowg9fkmf3sApt07Gh1L/+QcDvzhB1FbLaq2PbHh4JKXWS5YuT
+         wyeJzasfedVP0uNgnc4gTzDFc+43EpPEh1MVcnjnPiQ4YyFxbpxp5akSFqhvg1SfXsuP
+         zYdg==
+X-Gm-Message-State: APjAAAWwr/4CyaqMNvtG7r2zJjMd6sFho3FD62bZW6Od68lD8QJH8Liv
+        6FZcMIw9VmUo4fABfmAew3RnXQ==
+X-Google-Smtp-Source: APXvYqxDNBw67ZtKJwdmuuaw0gjBiHUiz2Io7tBmqZ4SC9WJQ2YL7y7+wZOYhUfC5ctc4gS4ZCGrbw==
+X-Received: by 2002:a0c:8d0d:: with SMTP id r13mr21831740qvb.203.1559144520165;
+        Wed, 29 May 2019 08:42:00 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id z12sm4990740qkl.66.2019.05.29.08.41.59
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 29 May 2019 08:41:59 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hW0iE-0004yU-SX; Wed, 29 May 2019 12:41:58 -0300
+Date:   Wed, 29 May 2019 12:41:58 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Majd Dibbiny <majd@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2 13/17] RDMA/core: Get sum value of all
+ counters when perform a sysfs stat read
+Message-ID: <20190529154158.GA8567@ziepe.ca>
+References: <20190429083453.16654-1-leon@kernel.org>
+ <20190429083453.16654-14-leon@kernel.org>
+ <20190522171042.GA15023@ziepe.ca>
+ <20190529111544.GV4633@mtr-leonro.mtl.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190529132341.27t3knoxpb7t7y3g@mbp>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20190529111544.GV4633@mtr-leonro.mtl.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 29, 2019 at 02:23:42PM +0100, Catalin Marinas wrote:
-> On Wed, May 29, 2019 at 01:42:25PM +0100, Dave P Martin wrote:
-> > On Tue, May 28, 2019 at 05:34:00PM +0100, Catalin Marinas wrote:
-> > > On Tue, May 28, 2019 at 04:56:45PM +0100, Dave P Martin wrote:
-> > > > On Tue, May 28, 2019 at 04:40:58PM +0100, Catalin Marinas wrote:
-> > > > 
-> > > > [...]
-> > > > 
-> > > > > My thoughts on allowing tags (quick look):
-> > > > >
-> > > > > brk - no
-> > > > 
-> > > > [...]
-> > > > 
-> > > > > mlock, mlock2, munlock - yes
-> > > > > mmap - no (we may change this with MTE but not for TBI)
-> > > > 
-> > > > [...]
-> > > > 
-> > > > > mprotect - yes
-> > > > 
-> > > > I haven't following this discussion closely... what's the rationale for
-> > > > the inconsistencies here (feel free to refer me back to the discussion
-> > > > if it's elsewhere).
-> > > 
-> > > _My_ rationale (feel free to disagree) is that mmap() by default would
-> > > not return a tagged address (ignoring MTE for now). If it gets passed a
-> > > tagged address or a "tagged NULL" (for lack of a better name) we don't
-> > > have clear semantics of whether the returned address should be tagged in
-> > > this ABI relaxation. I'd rather reserve this specific behaviour if we
-> > > overload the non-zero tag meaning of mmap() for MTE. Similar reasoning
-> > > for mremap(), at least on the new_address argument (not entirely sure
-> > > about old_address).
-> > > 
-> > > munmap() should probably follow the mmap() rules.
-> > > 
-> > > As for brk(), I don't see why the user would need to pass a tagged
-> > > address, we can't associate any meaning to this tag.
-> > > 
-> > > For the rest, since it's likely such addresses would have been tagged by
-> > > malloc() in user space, we should allow tagged pointers.
-> > 
-> > Those arguments seem reasonable.  We should try to capture this
-> > somewhere when documenting the ABI.
-> > 
-> > To be clear, I'm not sure that we should guarantee anywhere that a
-> > tagged pointer is rejected: rather the behaviour should probably be
-> > left unspecified.  Then we can tidy it up incrementally.
-> > 
-> > (The behaviour is unspecified today, in any case.)
+On Wed, May 29, 2019 at 02:15:44PM +0300, Leon Romanovsky wrote:
+> On Wed, May 22, 2019 at 02:10:42PM -0300, Jason Gunthorpe wrote:
+> > On Mon, Apr 29, 2019 at 11:34:49AM +0300, Leon Romanovsky wrote:
+> > > From: Mark Zhang <markz@mellanox.com>
+> > >
+> > > Since a QP can only be bound to one counter, then if it is bound to a
+> > > separate counter, for backward compatibility purpose, the statistic
+> > > value must be:
+> > > * stat of default counter
+> > > + stat of all running allocated counters
+> > > + stat of all deallocated counters (history stats)
+> > >
+> > > Signed-off-by: Mark Zhang <markz@mellanox.com>
+> > > Reviewed-by: Majd Dibbiny <majd@mellanox.com>
+> > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > >  drivers/infiniband/core/counters.c | 99 +++++++++++++++++++++++++++++-
+> > >  drivers/infiniband/core/device.c   |  8 ++-
+> > >  drivers/infiniband/core/sysfs.c    | 10 ++-
+> > >  include/rdma/rdma_counter.h        |  5 +-
+> > >  4 files changed, 113 insertions(+), 9 deletions(-)
+> > >
+> > > diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
+> > > index 36cd9eca1e46..f598b1cdb241 100644
+> > > +++ b/drivers/infiniband/core/counters.c
+> > > @@ -146,6 +146,20 @@ static int __rdma_counter_bind_qp(struct rdma_counter *counter,
+> > >  	return ret;
+> > >  }
+> > >
+> > > +static void counter_history_stat_update(const struct rdma_counter *counter)
+> > > +{
+> > > +	struct ib_device *dev = counter->device;
+> > > +	struct rdma_port_counter *port_counter;
+> > > +	int i;
+> > > +
+> > > +	port_counter = &dev->port_data[counter->port].port_counter;
+> > > +	if (!port_counter->hstats)
+> > > +		return;
+> > > +
+> > > +	for (i = 0; i < counter->stats->num_counters; i++)
+> > > +		port_counter->hstats->value[i] += counter->stats->value[i];
+> > > +}
+> > > +
+> > >  static int __rdma_counter_unbind_qp(struct ib_qp *qp, bool force)
+> > >  {
+> > >  	struct rdma_counter *counter = qp->counter;
+> > > @@ -285,8 +299,10 @@ int rdma_counter_unbind_qp(struct ib_qp *qp, bool force)
+> > >  		return ret;
+> > >
+> > >  	rdma_restrack_put(&counter->res);
+> > > -	if (atomic_dec_and_test(&counter->usecnt))
+> > > +	if (atomic_dec_and_test(&counter->usecnt)) {
+> > > +		counter_history_stat_update(counter);
+> > >  		rdma_counter_dealloc(counter);
+> > > +	}
+> > >
+> > >  	return 0;
+> > >  }
+> > > @@ -307,21 +323,98 @@ int rdma_counter_query_stats(struct rdma_counter *counter)
+> > >  	return ret;
+> > >  }
+> > >
+> > > -void rdma_counter_init(struct ib_device *dev)
+> > > +static u64 get_running_counters_hwstat_sum(struct ib_device *dev,
+> > > +					   u8 port, u32 index)
+> > > +{
+> > > +	struct rdma_restrack_entry *res;
+> > > +	struct rdma_restrack_root *rt;
+> > > +	struct rdma_counter *counter;
+> > > +	unsigned long id = 0;
+> > > +	u64 sum = 0;
+> > > +
+> > > +	rt = &dev->res[RDMA_RESTRACK_COUNTER];
+> > > +	xa_lock(&rt->xa);
+> > > +	xa_for_each(&rt->xa, id, res) {
+> > > +		if (!rdma_restrack_get(res))
+> > > +			continue;
+> >
+> > Why do we need to get refcounts if we are holding the xa_lock?
 > 
-> What is specified (or rather de-facto ABI) today is that passing a user
-> address above TASK_SIZE (e.g. non-zero top byte) would fail in most
-> cases. If we relax this with the TBI we may end up with some de-facto
+> Don't we need to protect an entry itself from disappearing?
 
-I may be being too picky, but "would fail in most cases" sounds like
-"unspecified" ?
+xa_lock prevents xa_erase and xa_erase should be done before any
+parallel kfree.
 
-> ABI before we actually get MTE hardware. Tightening it afterwards may be
-> slightly more problematic, although MTE needs to be an explicit opt-in.
-> 
-> IOW, I wouldn't want to unnecessarily relax the ABI if we don't need to.
-
-So long we don't block foreseeable future developments unnecessarily
-either -- I agree there's a balance to be struck.
-
-I guess this can be reviewed when we have nailed down the details a bit
-further.
-
-Cheers
----Dave
+Jason
