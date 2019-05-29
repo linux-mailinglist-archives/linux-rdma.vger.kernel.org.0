@@ -2,81 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD612E30C
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2019 19:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D0A2E51C
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2019 21:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726049AbfE2RUI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 29 May 2019 13:20:08 -0400
-Received: from mga02.intel.com ([134.134.136.20]:58052 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbfE2RUI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 May 2019 13:20:08 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 May 2019 10:20:07 -0700
-X-ExtLoop1: 1
-Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
-  by orsmga001.jf.intel.com with ESMTP; 29 May 2019 10:20:05 -0700
-Received: from fmsmsx123.amr.corp.intel.com (10.18.125.38) by
- FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
- id 14.3.408.0; Wed, 29 May 2019 10:20:04 -0700
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.29]) by
- fmsmsx123.amr.corp.intel.com ([169.254.7.159]) with mapi id 14.03.0415.000;
- Wed, 29 May 2019 10:20:04 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Gal Pressman <galpress@amazon.com>
-CC:     Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Firas JahJah <firasj@amazon.com>
-Subject: RE: [PATCH for-rc 4/6] RDMA/efa: Use API to get contiguous memory
- blocks aligned to device supported page size
-Thread-Topic: [PATCH for-rc 4/6] RDMA/efa: Use API to get contiguous memory
- blocks aligned to device supported page size
-Thread-Index: AQHVFVN3lHBhqcKgs0S/UVTrJ3hegqaCv1EA//+W7GA=
-Date:   Wed, 29 May 2019 17:20:03 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7A5B07AB2@fmsmsx124.amr.corp.intel.com>
+        id S1726015AbfE2TLt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 May 2019 15:11:49 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:6971 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725914AbfE2TLt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 May 2019 15:11:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1559157107; x=1590693107;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=H0/OjCU3aiAqasMSTvOJglxIq8Ajj4o3SAUt63ANPrg=;
+  b=i3LoaD2JRgeBn9aJ4TpTUMsNQ+34pv7SGEGVI7/rfLGpFJwK2LSDlNY3
+   EJuy33qJ9rmzPjFGY2bJWWJlA3ls8yZEfmE3YWheTVt3uoml/tT/LJkir
+   V9JrvhIphGTPwQT71L1jmnnXm7/lioLqpG3WOzHye82bWLaA5YojPa/B4
+   4=;
+X-IronPort-AV: E=Sophos;i="5.60,527,1549929600"; 
+   d="scan'208";a="398563969"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 29 May 2019 19:11:45 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com (Postfix) with ESMTPS id B93D8A2628;
+        Wed, 29 May 2019 19:11:44 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 29 May 2019 19:11:44 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.16) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 29 May 2019 19:11:39 +0000
+Subject: Re: [PATCH for-rc 5/6] RDMA/efa: Use rdma block iterator in chunk
+ list creation
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
 References: <20190528124618.77918-1-galpress@amazon.com>
- <20190528124618.77918-5-galpress@amazon.com>
- <20190529161938.GA14765@ziepe.ca>
-In-Reply-To: <20190529161938.GA14765@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiYzlmOTIyMWItYzY3MS00NzhkLThiZTEtNDM4YWE0ZDc5ZmZhIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiZU5aeEJaYlV6U0c1T2JZRDZGYTk3OHFKUzRZNjNya1wvNjVxdXRIWHMwc3BVNmF1YmVqNDZzVVhldWFWQWJ6MncifQ==
-dlp-product: dlpe-windows
-dlp-version: 11.0.600.7
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.108]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+ <20190528124618.77918-6-galpress@amazon.com>
+ <9DD61F30A802C4429A01CA4200E302A7A5B07A3B@fmsmsx124.amr.corp.intel.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <74218704-80f4-88da-ea09-8a5c7a8dcf66@amazon.com>
+Date:   Wed, 29 May 2019 22:11:34 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7A5B07A3B@fmsmsx124.amr.corp.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.16]
+X-ClientProxiedBy: EX13D12UWA004.ant.amazon.com (10.43.160.168) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH for-rc 4/6] RDMA/efa: Use API to get contiguous memory
-> blocks aligned to device supported page size
+On 29/05/2019 20:03, Saleem, Shiraz wrote:
+>> Subject: [PATCH for-rc 5/6] RDMA/efa: Use rdma block iterator in chunk list
+>> creation
+>>
+>> When creating the chunks list the rdma_for_each_block() iterator is used in order
+>> to iterate over the payload in EFA_CHUNK_PAYLOAD_SIZE (device
+>> defined) strides.
+>>
+>> Cc: Shiraz Saleem <shiraz.saleem@intel.com>
+>> Reviewed-by: Firas JahJah <firasj@amazon.com>
+>> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
+>> Signed-off-by: Gal Pressman <galpress@amazon.com>
+>> ---
 > 
-> On Tue, May 28, 2019 at 03:46:16PM +0300, Gal Pressman wrote:
-> > @@ -1500,13 +1443,17 @@ struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64
-> start, u64 length,
-> >  	params.iova = virt_addr;
-> >  	params.mr_length_in_bytes = length;
-> >  	params.permissions = access_flags & 0x1;
-> > -	max_page_shift = fls64(dev->dev_attr.page_size_cap);
-> >
-> > -	efa_cont_pages(mr->umem, start, max_page_shift, &npages,
-> > -		       &params.page_shift, &params.page_num);
-> > +	pg_sz = ib_umem_find_best_pgsz(mr->umem,
-> > +				       dev->dev_attr.page_size_cap,
-> > +				       virt_addr);
+> Looks ok.
 > 
-> I think this needs to check pg_sz is not zero..
-> 
+> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
 
-What is the smallest page size this driver supports?
+Thanks Shiraz
 
