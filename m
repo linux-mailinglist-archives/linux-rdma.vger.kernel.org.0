@@ -2,170 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B33A52D519
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2019 07:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C41562D561
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2019 08:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725945AbfE2FgW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 May 2019 01:36:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725936AbfE2FgV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 May 2019 01:36:21 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB5A1208CB;
-        Wed, 29 May 2019 05:36:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559108180;
-        bh=uD+YlVHRZtdqkc4erE9DG99MkP9wdiozGXg7DPFsIsU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PmPAtAR3hohLWCrvuTg8xS1SxK0SKBcxbVI3zRr3W8K25rpyv0L5CVK20DAHaY48Y
-         hUuemN9uOH+ZLPd8mmxYYJMQykPZjpha/n/yLg6XJ6nhdwBz5deMQxNGCYL0vHcuEM
-         RqcXxetyWQKKVSxj72YKOPuy2HWAmtYDeC1oou38=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     linux-rdma@vger.kernel.org
-Cc:     Leon Romanovsky <leonro@mellanox.com>
-Subject: [ANNOUNCE] rdma-core v24.0 has been tagged/released
-Date:   Wed, 29 May 2019 08:36:01 +0300
-Message-Id: <20190529053601.31571-1-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
+        id S1726055AbfE2GLd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 May 2019 02:11:33 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:57898 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbfE2GLc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 May 2019 02:11:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Ki8wlzJaAXUMUjbjK207hScTMszow2OB9kp3Ebyx2W4=; b=C63n5tH5sy21OVy69pE2Oeedi
+        R/8G/O4R+cqkOb+iay2A6/Ut98QvmOoVxDkFq9W2+7U/LqR+H8f2OYu4N8PPxCiXmTn6+ZCacke9R
+        NiVaBNHylJKbX5saC2PVaMZWgJI/vqUasbLHzdYAaf6JMJZnN5dnuUb+xuFqzNQ1JfxCcFuQJ4xK+
+        6qWDzjNi2j3o36d3TPB8w5XNqN0HcN+Qs09ffRNSsIKDnPfv3T/Ev6qXrq/Wr6gPHomkX4l/KvNpH
+        N2TnBmCl3vuVelWduaIB1cfkd9FE3VcX3LaRbJyskNDE+jHFkxAKB3R4p6SImibWTKLIlWDTUm7UG
+        kjPLjC7pg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hVro6-0006Yh-Is; Wed, 29 May 2019 06:11:26 +0000
+Date:   Tue, 28 May 2019 23:11:26 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Elliott Hughes <enh@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <20190529061126.GA18124@infradead.org>
+References: <20190517144931.GA56186@arrakis.emea.arm.com>
+ <CAFKCwrj6JEtp4BzhqO178LFJepmepoMx=G+YdC8sqZ3bcBp3EQ@mail.gmail.com>
+ <20190521182932.sm4vxweuwo5ermyd@mbp>
+ <201905211633.6C0BF0C2@keescook>
+ <6049844a-65f5-f513-5b58-7141588fef2b@oracle.com>
+ <20190523201105.oifkksus4rzcwqt4@mbp>
+ <ffe58af3-7c70-d559-69f6-1f6ebcb0fec6@oracle.com>
+ <20190524101139.36yre4af22bkvatx@mbp>
+ <c6dd53d8-142b-3d8d-6a40-d21c5ee9d272@oracle.com>
+ <CAAeHK+yAUsZWhp6xPAbWewX5Nbw+-G3svUyPmhXu5MVeEDKYvA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+yAUsZWhp6xPAbWewX5Nbw+-G3svUyPmhXu5MVeEDKYvA@mail.gmail.com>
+User-Agent: Mutt/1.9.2 (2017-12-15)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On Tue, May 28, 2019 at 04:14:45PM +0200, Andrey Konovalov wrote:
+> Thanks for a lot of valuable input! I've read through all the replies
+> and got somewhat lost. What are the changes I need to do to this
+> series?
+> 
+> 1. Should I move untagging for memory syscalls back to the generic
+> code so other arches would make use of it as well, or should I keep
+> the arm64 specific memory syscalls wrappers and address the comments
+> on that patch?
 
-It's available at the normal places:
+It absolutely needs to move to common code.  Having arch code leads
+to pointless (often unintentional) semantic difference between
+architectures, and lots of boilerplate code.
 
-git://github.com/linux-rdma/rdma-core
-https://github.com/linux-rdma/rdma-core/releases
-
----
-
-Here's the information from the tags:
-tag v24.0
-Tagger: Leon Romanovsky <leonro@mellanox.com>
-Date:   Wed May 29 08:31:25 2019 +0300
-
-rdma-core-24.0:
-
-Updates from version 23.0
-   * Remove unneeded malloc.h
-   * buildlib: Fix gen-sparse for xenial
-   * rdma-ndd: Don't emit warnings for missing device folder
-   * efa: Elastic Fabric Adapter (EFA) direct verbs man pages
-   * efa: Elastic Fabric Adapter (EFA) direct verbs
-   * efa: Elastic Fabric Adapter (EFA) userspace RDMA provider
-   * Update kernel headers
-   * Add align and roundup_pow_of_two helpers
-   * mlx5: Expose the direct rules functionality to applications
-   * mlx5: Expose steering rule functionality
-   * mlx5: Expose steering action functionality
-   * mlx5: Expose steering matcher functionality
-   * mlx5: Expose steering table functionality
-   * mlx5: Expose steering domain functionality
-   * mlx5: Add Steering entry (STE) utilities
-   * mlx5: Expose an internal API to issue RDMA operations for direct rules
-   * mlx5: ICM pool memory allocator
-   * mlx5: Add direct rule utilities over DEVX
-   * mlx5: Add the internal header file
-   * mlx5: Expose DV APIs for direct rule managing
-   * mlx5: Set devx object information
-   * mlx5: Save the original errno upon mlx5_dbg
-   * build: Expose the cbuild machinery to build the release .tar.gz
-   * cbuild: Do not require yaml to always be installed
-   * build: Revise how gen-sparse finds the system headers
-   * build: Support glibc 2.27 with sparse
-   * build: Use the system PYTHON_EXECUTABLE for gen-sparse
-   * hns: Remove unneeded malloc.h
-   * ibacm: Fix format string warning on 32 bit compile
-   * mlx5: Fix man page of mlx5dv_create_flow_action_modify_header()
-   * verbs: Extend async_event function in all providers to get ibv_context
-   * build: Enable more warnings
-   * cbuild: Do not use the http proxy for tumbleweed
-   * cbuild: Use gcc-9 for debian experimental
-   * cbuild: Remove ubuntu trusty
-   * cbuild: Make pyverbs build with epel
-   * kernel-boot: Fix build failure with ancient libnl3 versions
-   * cbuild: Update to Fedora Core 30
-   * srp_daemon: Print the correct device name for error
-   * docs: Document stable names
-   * suse: Package persistence name UDEV rule and utility
-   * redhat: Add persistent naming installation
-   * debian: Install UDEV persistence rule and utility
-   * kernel-boot: Perform device rename to make stable names
-   * mlx5: Allow creating a matcher for a FDB flow table
-   * mlx5: Add SW steering ICM DM type support
-   * mlx5: Add device memory type attribute support via DV api
-   * mlx5: Expose device TIR ICM address for RAW and RSS QPs
-   * Update kernel headers
-   * Documentation: Document QP creation and basic usage with pyverbs
-   * pyverbs/tests: Add control-path unittests for QP class
-   * pyverbs: Add missing device capabilities
-   * pyverbs: Introducing QP class
-   * pyverbs: Add QP related classes
-   * pyverbs: Add work requests related classes
-   * Documentation: Document Address Handle creation with pyverbs
-   * pyverbs: Add unittests for address handle creation
-   * pyverbs: Add support for address handle creation
-   * libhns: Optimize some codes for hns userspace
-   * libhns: Update prompt message for hip08
-   * libhns: Bugfix for flush cqe in case multi-process
-   * mlx5: Support scatter to CQE over DCT QP
-   * Update kernel headers
-   * pyverbs: Add events support
-   * pyverbs/tests: Improvements
-   * pyverbs: Changes to print-related functions
-   * pyverbs: Add missing enums
-   * MAINTAINERS: Update libibumad maintainer
-   * README.md: Fix incorrect package name in zypper install command
-   * ibacm: fix double hint.ai_family assignment in ib_acm_connect_open()
-   * ibacm: acme does not work if server_mode != unix
-   * ibacm: ib_acm_connect() is doing too much
-   * suse: remove %if..%endif guards that do not affect the build result
-   * suse: make sure LTO is disabled
-   * suse: move udev.md into the right package
-   * suse: use _udevrulesdir macro
-   * suse: Update rdma-core.spec with the latest OBS parser
-   * cmake: Explicitly convert build type to be STRING
-   * mlx5: Fix masking service level in mlx5_create_ah
-   * verbs: The ibv_xsrq_pingpong "-c" option is broken
-   * verbs: Don't check IBV_ODP_SUPPORT_RECV in ibv_{xsrq,srq}_pingpong
-   * mlx5: Fix a compiler warning when -Wcast-qual is used
-   * mlx5: Introduce mlx5dv_wr_mr_list post send builder
-   * mlx5: Introduce mlx5dv_wr_mr_interleaved post send builder
-   * verbs: Introduce IBV_WR/WC_DRIVER opcodes
-   * mlx5: Expose DV APIs to create and destroy indirect mkey
-   * .mailmap: add Steve Wise aliases
-   * mlx5: Introduce a new send API in direct verbs
-   * verbs: Demonstrate the usage of new post send API
-   * mlx5: Support raw packet QPT over new post send API
-   * mlx5: Support inline data WR over new post send API
-   * mlx5: Support new post send API
-   * verbs: Introduce a new post send API
-   * buildlib: Ensure stanza is properly sorted
-   * pyverbs/tests: Pylint fixes
-   * Documentation: Document creation of CQs using pyverbs
-   * pyverbs: Add unittests for extended completion-related classes
-   * pyverbs: Introducing extended completions related classes
-   * pyverbs: Add unittests for completion-related classes
-   * pyverbs: Introducing completions related classes
-   * libhns: Bugfix for filtering zero length sge
-   * libhns: Package for creating qp function
-   * Update library version to be 24.0
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQT1m3YD37UfMCUQBNwp8NhrnBAZsQUCXO4ZOQAKCRAp8NhrnBAZ
-sRzrAP0VV35UDVYlaGlPwArh2OiRvjREhc/jQalLDLsPkQpjxAEA3EJHxMIR8Jp9
-LypazQcIc3xPxUVg/PkGJQVp07BZTQQ=
-=oENt
------END PGP SIGNATURE-----
-
-It's available at the normal places:
-
-git://github.com/linux-rdma/rdma-core
-https://github.com/linux-rdma/rdma-core/releases
+Btw, can anyone of the arm crowd or Khalid comment on the linux-mm
+thread on generic gup where I'm dealing with the pre-existing ADI
+case of pointer untagging?
