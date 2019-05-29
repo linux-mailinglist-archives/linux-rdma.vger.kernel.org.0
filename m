@@ -2,223 +2,167 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1A42E26C
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2019 18:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B652E2B8
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2019 19:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbfE2Qmd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 May 2019 12:42:33 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36426 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbfE2Qmd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 May 2019 12:42:33 -0400
-Received: by mail-qt1-f193.google.com with SMTP id u12so3415781qth.3
-        for <linux-rdma@vger.kernel.org>; Wed, 29 May 2019 09:42:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KmaUB/aPhU+wQgyfmgQ5xH9ZFN5Jp1mw8HcvaL7NVhA=;
-        b=MEj7oAeYPvP5LRsBAOCm+pLnJrAE28jEBrTLmB0QMu60IJTTQhWv6HnL840rStQUGC
-         Z51Pqe0/JvPOb1TbJfBpABBxPczVzs+6fTs8IvqX5I5xAd/gNLqXyXvS+O04Bn31mCJH
-         9uSyIUfJP9cRAjWROynmIcRwuFhzihlbWrxNTqRqwpObp2GqiWDBtP7qrDG1La3kaxqV
-         YDKTKau+DHMN7829x1VEkzHeAtvXl3+cGTQS5SgqpVDiSTE0UOVI3fI8Zy5tn8ZBB7qn
-         +uFbH09w7P3gz6Bsee1VPujfB3TJxd3Z6lx3kvkEULBpKzJjOrxWlep4e48Z42QQryu2
-         298w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KmaUB/aPhU+wQgyfmgQ5xH9ZFN5Jp1mw8HcvaL7NVhA=;
-        b=pV6uPJMt05vZN5H9EYWyDliAfnV01UOvkefhgnoTa9DZqpY5oASywJQ1VWGZWVyGZx
-         YfLnu/KxN4efx0Ug23HEQfC1rt+hxxxZZpAShxhRxCvMQ6iRnAFRvbrh7SYXeHdQXBMZ
-         /N5vF2X5y/9/jWzZhEXc2zLPJQMBxh7udash3TYF0OvC/NQX6dQf02zk8fDPxPdxPNf2
-         Wm3Y3AlHaUYcWmf10Yn+kZONWdEFnwlGVcj7uP2GU9AufhnJIUcFfjo7GmsA7+KdP1K6
-         W5FggD2eGLXlnhVhfTiLBOvM0llzpguJUCSMCzxXfSdQ5sOE7w7ZgBs9akdvtIS2ZjS3
-         ykAA==
-X-Gm-Message-State: APjAAAV85hYp0PoyrcmcAV+k2RSXstcij7eBuMXXZasTMxdwS7ZZGDqE
-        oWOEUFGTmueaflvVRrmgon4EfQ==
-X-Google-Smtp-Source: APXvYqwB4atNCpn79hHl523UhgGpghfDOndnBTZG2JP7S+TYLSTXLKUbtRxOakeZoJuonzgmEIy2Dw==
-X-Received: by 2002:ac8:2cf4:: with SMTP id 49mr23135312qtx.66.1559148152017;
-        Wed, 29 May 2019 09:42:32 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id p37sm1003824qtc.35.2019.05.29.09.42.31
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 May 2019 09:42:31 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hW1ep-00058O-2M; Wed, 29 May 2019 13:42:31 -0300
-Date:   Wed, 29 May 2019 13:42:31 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Yuval Shaia <yuval.shaia@oracle.com>
-Cc:     yishaih@mellanox.com, dledford@redhat.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v2 rdma-core] verbs: Introduce a new reg_mr API for
- virtual address space
-Message-ID: <20190529164231.GA19540@ziepe.ca>
-References: <20190529125132.6471-1-yuval.shaia@oracle.com>
+        id S1726008AbfE2RBS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 29 May 2019 13:01:18 -0400
+Received: from mga03.intel.com ([134.134.136.65]:37439 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725948AbfE2RBS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 May 2019 13:01:18 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 May 2019 10:01:17 -0700
+X-ExtLoop1: 1
+Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
+  by orsmga005.jf.intel.com with ESMTP; 29 May 2019 10:01:17 -0700
+Received: from fmsmsx102.amr.corp.intel.com (10.18.124.200) by
+ FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
+ id 14.3.408.0; Wed, 29 May 2019 10:01:16 -0700
+Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.29]) by
+ FMSMSX102.amr.corp.intel.com ([169.254.10.170]) with mapi id 14.03.0415.000;
+ Wed, 29 May 2019 10:01:16 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Doug Ledford" <dledford@redhat.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Firas JahJah <firasj@amazon.com>,
+        Leon Romanovsky <leon@kernel.org>
+Subject: RE: [PATCH for-rc 4/6] RDMA/efa: Use API to get contiguous memory
+ blocks aligned to device supported page size
+Thread-Topic: [PATCH for-rc 4/6] RDMA/efa: Use API to get contiguous memory
+ blocks aligned to device supported page size
+Thread-Index: AQHVFVN3lHBhqcKgs0S/UVTrJ3hegqaCVIBA
+Date:   Wed, 29 May 2019 17:01:15 +0000
+Message-ID: <9DD61F30A802C4429A01CA4200E302A7A5B07A27@fmsmsx124.amr.corp.intel.com>
+References: <20190528124618.77918-1-galpress@amazon.com>
+ <20190528124618.77918-5-galpress@amazon.com>
+In-Reply-To: <20190528124618.77918-5-galpress@amazon.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ctpclassification: CTP_NT
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiNDUxOWViMmUtMDk5Ny00ZGJhLWFkMjQtMjIwYWQ5NzFmMGU0IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiMnhkVXVselBLN1A2OFpkWHNXMUJaUVhPMkZnUUNzam44TjJWRWRsc0U4eXJ2cEJHbFhET0RyaHpBTk1IMEhhUiJ9
+dlp-product: dlpe-windows
+dlp-version: 11.0.600.7
+dlp-reaction: no-action
+x-originating-ip: [10.1.200.108]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190529125132.6471-1-yuval.shaia@oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 29, 2019 at 03:51:32PM +0300, Yuval Shaia wrote:
-> The virtual address that is registered is used as a base for any address
-> passed later in post_recv and post_send operations.
+> Subject: [PATCH for-rc 4/6] RDMA/efa: Use API to get contiguous memory blocks
+> aligned to device supported page size
 > 
-> On a virtualized environment this is not correct.
+> Use the ib_umem_find_best_pgsz() and rdma_for_each_block() API when
+> registering an MR instead of coding it in the driver.
 > 
-> A guest cannot register its memory so hypervisor maps the guest physical
-> address to a host virtual address and register it with the HW. Later on,
-> at datapath phase, the guest fills the SGEs with addresses from its
-> address space.
+> ib_umem_find_best_pgsz() is used to find the best suitable page size which
+> replaces the existing efa_cont_pages() implementation.
+> rdma_for_each_block() is used to iterate the umem in aligned contiguous memory
+> blocks.
 > 
-> Since HW cannot access guest virtual address space an extra translation
-> is needed to map those addresses to be based on the host virtual address
-> that was registered with the HW.
-> This datapath interference affects performances.
+> Cc: Shiraz Saleem <shiraz.saleem@intel.com>
+> Reviewed-by: Firas JahJah <firasj@amazon.com>
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
+> ---
+>  drivers/infiniband/hw/efa/efa_verbs.c | 81 +++++----------------------
+>  1 file changed, 14 insertions(+), 67 deletions(-)
 > 
-> To avoid this, a logical separation between the address that is
-> registered and the address that is used as a offset at datapath phase is
-> needed.
-> This separation is already implemented in the lower layer part
-> (ibv_cmd_reg_mr) but blocked at the API level.
-> 
-> Fix it by introducing a new API function that accepts an address from
-> guest virtual address space as well to be used as offset for later
-> datapath operations.
-> 
-> Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
-> v0 -> v1: 
-> 	* Change reg_mr callback signature instead of adding new callback
-> 	* Add the new API to libibverbs/libibverbs.map.in
-> v1 -> v2: 
-> 	* Do not modify reg_mr signature for version 1.0 
-> 	* Add note to man page
->  libibverbs/driver.h               |  2 +-
->  libibverbs/dummy_ops.c            |  2 +-
->  libibverbs/libibverbs.map.in      |  1 +
->  libibverbs/man/ibv_reg_mr.3       | 15 +++++++++++++--
->  libibverbs/verbs.c                | 23 ++++++++++++++++++++++-
->  libibverbs/verbs.h                |  7 +++++++
->  providers/bnxt_re/verbs.c         |  6 +++---
->  providers/bnxt_re/verbs.h         |  2 +-
->  providers/cxgb3/iwch.h            |  4 ++--
->  providers/cxgb3/verbs.c           |  9 +++++----
->  providers/cxgb4/libcxgb4.h        |  4 ++--
->  providers/cxgb4/verbs.c           |  9 +++++----
->  providers/hfi1verbs/hfiverbs.h    |  4 ++--
->  providers/hfi1verbs/verbs.c       |  8 ++++----
->  providers/hns/hns_roce_u.h        |  2 +-
->  providers/hns/hns_roce_u_verbs.c  |  6 +++---
->  providers/i40iw/i40iw_umain.h     |  2 +-
->  providers/i40iw/i40iw_uverbs.c    |  8 ++++----
->  providers/ipathverbs/ipathverbs.h |  4 ++--
->  providers/ipathverbs/verbs.c      |  8 ++++----
->  providers/mlx4/mlx4.h             |  4 ++--
->  providers/mlx4/verbs.c            |  7 +++----
->  providers/mlx5/mlx5.h             |  4 ++--
->  providers/mlx5/verbs.c            |  7 +++----
->  providers/mthca/ah.c              |  3 ++-
->  providers/mthca/mthca.h           |  4 ++--
->  providers/mthca/verbs.c           |  6 +++---
->  providers/nes/nes_umain.h         |  2 +-
->  providers/nes/nes_uverbs.c        |  9 ++++-----
->  providers/ocrdma/ocrdma_main.h    |  2 +-
->  providers/ocrdma/ocrdma_verbs.c   | 10 ++++------
->  providers/qedr/qelr_main.h        |  2 +-
->  providers/qedr/qelr_verbs.c       | 11 ++++-------
->  providers/qedr/qelr_verbs.h       |  4 ++--
->  providers/rxe/rxe.c               |  6 +++---
->  providers/vmw_pvrdma/pvrdma.h     |  4 ++--
->  providers/vmw_pvrdma/verbs.c      |  7 +++----
->  37 files changed, 126 insertions(+), 92 deletions(-)
-> 
-> diff --git a/libibverbs/driver.h b/libibverbs/driver.h
-> index e4d624b2..ef27259a 100644
-> +++ b/libibverbs/driver.h
-> @@ -338,7 +338,7 @@ struct verbs_context_ops {
->  				    uint64_t dm_offset, size_t length,
->  				    unsigned int access);
->  	struct ibv_mr *(*reg_mr)(struct ibv_pd *pd, void *addr, size_t length,
-> -				 int access);
-> +				 uint64_t hca_va, int access);
->  	int (*req_notify_cq)(struct ibv_cq *cq, int solicited_only);
->  	int (*rereg_mr)(struct verbs_mr *vmr, int flags, struct ibv_pd *pd,
->  			void *addr, size_t length, int access);
-> diff --git a/libibverbs/dummy_ops.c b/libibverbs/dummy_ops.c
-> index c861c3a0..61a8fbdf 100644
-> +++ b/libibverbs/dummy_ops.c
-> @@ -410,7 +410,7 @@ static struct ibv_mr *reg_dm_mr(struct ibv_pd *pd, struct ibv_dm *dm,
->  }
->  
->  static struct ibv_mr *reg_mr(struct ibv_pd *pd, void *addr, size_t length,
-> -			     int access)
-> +			     uint64_t hca_va,  int access)
+> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c
+> b/drivers/infiniband/hw/efa/efa_verbs.c
+> index 0640c2435f67..c1246c39f234 100644
+> --- a/drivers/infiniband/hw/efa/efa_verbs.c
+> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> @@ -1054,21 +1054,15 @@ static int umem_to_page_list(struct efa_dev *dev,
+>  			     u8 hp_shift)
 >  {
->  	errno = ENOSYS;
->  	return NULL;
-> diff --git a/libibverbs/libibverbs.map.in b/libibverbs/libibverbs.map.in
-> index 87a1b9fc..523fd424 100644
-> +++ b/libibverbs/libibverbs.map.in
-> @@ -94,6 +94,7 @@ IBVERBS_1.1 {
->  		ibv_query_srq;
->  		ibv_rate_to_mbps;
->  		ibv_reg_mr;
-> +		ibv_reg_mr_virt_as;
->  		ibv_register_driver;
->  		ibv_rereg_mr;
->  		ibv_resize_cq;
-> diff --git a/libibverbs/man/ibv_reg_mr.3 b/libibverbs/man/ibv_reg_mr.3
-> index 631e5fe8..983b5761 100644
-> +++ b/libibverbs/man/ibv_reg_mr.3
-> @@ -3,7 +3,7 @@
->  .\"
->  .TH IBV_REG_MR 3 2006-10-31 libibverbs "Libibverbs Programmer's Manual"
->  .SH "NAME"
-> -ibv_reg_mr, ibv_dereg_mr \- register or deregister a memory region (MR)
-> +ibv_reg_mr, ibv_reg_mr_virt_as, ibv_dereg_mr \- register or deregister a memory region (MR)
->  .SH "SYNOPSIS"
->  .nf
->  .B #include <infiniband/verbs.h>
-> @@ -11,6 +11,10 @@ ibv_reg_mr, ibv_dereg_mr \- register or deregister a memory region (MR)
->  .BI "struct ibv_mr *ibv_reg_mr(struct ibv_pd " "*pd" ", void " "*addr" ,
->  .BI "                          size_t " "length" ", int " "access" );
->  .sp
-> +.BI "struct ibv_mr *ibv_reg_mr_virt_as(struct ibv_pd " "*pd" ", void " "*addr" ,
-> +.BI "                                  size_t " "length" ", uint64_t " "hca_va" ,
-> +.BI "                                  int " "access" );
-> +.sp
->  .BI "int ibv_dereg_mr(struct ibv_mr " "*mr" );
->  .fi
->  .SH "DESCRIPTION"
-> @@ -52,11 +56,18 @@ Local read access is always enabled for the MR.
->  .PP
->  To create an implicit ODP MR, IBV_ACCESS_ON_DEMAND should be set, addr should be 0 and length should be SIZE_MAX.
->  .PP
-> +.B ibv_reg_mr_virt_as()
-> +Special variant of memory registration used when addresses passed to
-> +ibv_post_send and ibv_post_recv are relative to base address from a
-> +different address space than
-> +.I addr\fR. The argument
-> +.I hca_va\fR is the new base address.
-> +.PP
+>  	u32 pages_in_hp = BIT(hp_shift - PAGE_SHIFT);
+> -	struct sg_dma_page_iter sg_iter;
+> -	unsigned int page_idx = 0;
+> +	struct ib_block_iter biter;
+>  	unsigned int hp_idx = 0;
+> 
+>  	ibdev_dbg(&dev->ibdev, "hp_cnt[%u], pages_in_hp[%u]\n",
+>  		  hp_cnt, pages_in_hp);
+> 
+> -	for_each_sg_dma_page(umem->sg_head.sgl, &sg_iter, umem->nmap, 0)
+> {
+> -		if (page_idx % pages_in_hp == 0) {
+> -			page_list[hp_idx] = sg_page_iter_dma_address(&sg_iter);
+> -			hp_idx++;
+> -		}
+> -
+> -		page_idx++;
+> -	}
+> +	rdma_for_each_block(umem->sg_head.sgl, &biter, umem->nmap,
+> +			    BIT(hp_shift))
+> +		page_list[hp_idx++] = rdma_block_iter_dma_address(&biter);
+> 
+>  	return 0;
+>  }
+> @@ -1402,56 +1396,6 @@ static int efa_create_pbl(struct efa_dev *dev,
+>  	return 0;
+>  }
+> 
+> -static void efa_cont_pages(struct ib_umem *umem, u64 addr,
+> -			   unsigned long max_page_shift,
+> -			   int *count, u8 *shift, u32 *ncont)
+> -{
+> -	struct scatterlist *sg;
+> -	u64 base = ~0, p = 0;
+> -	unsigned long tmp;
+> -	unsigned long m;
+> -	u64 len, pfn;
+> -	int i = 0;
+> -	int entry;
+> -
+> -	addr = addr >> PAGE_SHIFT;
+> -	tmp = (unsigned long)addr;
+> -	m = find_first_bit(&tmp, BITS_PER_LONG);
+> -	if (max_page_shift)
+> -		m = min_t(unsigned long, max_page_shift - PAGE_SHIFT, m);
+> -
+> -	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, entry) {
+> -		len = DIV_ROUND_UP(sg_dma_len(sg), PAGE_SIZE);
+> -		pfn = sg_dma_address(sg) >> PAGE_SHIFT;
+> -		if (base + p != pfn) {
+> -			/*
+> -			 * If either the offset or the new
+> -			 * base are unaligned update m
+> -			 */
+> -			tmp = (unsigned long)(pfn | p);
+> -			if (!IS_ALIGNED(tmp, 1 << m))
+> -				m = find_first_bit(&tmp, BITS_PER_LONG);
+> -
+> -			base = pfn;
+> -			p = 0;
+> -		}
+> -
+> -		p += len;
+> -		i += len;
+> -	}
+> -
+> -	if (i) {
+> -		m = min_t(unsigned long, ilog2(roundup_pow_of_two(i)), m);
+> -		*ncont = DIV_ROUND_UP(i, (1 << m));
+> -	} else {
+> -		m = 0;
+> -		*ncont = 0;
+> -	}
+> -
+> -	*shift = PAGE_SHIFT + m;
+> -	*count = i;
+> -}
+> -
 
-This should also block ACCESS_ZERO_BASED for mr_virt_as as ZERO_BASED
-is really just hca_va == 0
+Leon - perhaps mlx5_ib_cont_pages() can also be replaced with the new core helper?
 
-In fact, I might be inclined to re-implement ZERO_BASED in rdma-core
-as just passing hca_va == 0 which would make it work on all drivers
-instead of the stupid implementation we have today..
-
-Also, not totally sold on the 'ibv_reg_mr_virt_as' for the
-name.. 
-
-How about 'ibv_reg_mr_iova'? And let us call hca_va iova in the public
-interface. I think that is an existing convention.
-
-Jason
+Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
