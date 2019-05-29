@@ -2,141 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E98282E022
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2019 16:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B6A2E128
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2019 17:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbfE2OuV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 May 2019 10:50:21 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:37242 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbfE2OuV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 May 2019 10:50:21 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4TEmj59055774;
-        Wed, 29 May 2019 14:49:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : subject
- : from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=corp-2018-07-02;
- bh=bdiE7HWyHmzeDdhgcpTkxNwVwsKMW5J4u0bwenhkW2I=;
- b=vAYGK9KOQKh1ci+61dIXEhKr/6PuEl3w9nerHoG2o6KZcTmroHCycrPlXsSVYoCc1D9e
- u53Af15v96j6SPmPoJ+syGA6mCGI1yCiY2PcW+gMzZiVseWDKwRqdfQ/vA5LKK20Ou6S
- qqH1kgPXhEpgNiGNUtFLQ9cNrcGvNjpxe3Gfdd5qauvpSfl3hiaspyOm5mJhBkWRqvwm
- IYx2v4CAD32zNH3jZdsRIlmsjtuapA8CQI+GAGIf1qsl+aD1+DqMFhyfxIFAGNXJW+cz
- 9a5PK1sw72WXYdjOuDHWee7Q0Jai2TlWbMJfUWHm89DxiTdsjrZTZi400nmT0P2EZndw JQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 2spu7djgus-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 May 2019 14:49:23 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4TEnL0O140618;
-        Wed, 29 May 2019 14:49:22 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2ss1fngsh2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 May 2019 14:49:22 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4TEnF2L021623;
-        Wed, 29 May 2019 14:49:16 GMT
-Received: from concerto-wl.internal (/24.9.64.241)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 29 May 2019 07:49:15 -0700
-Message-ID: <3ade20696cc772772f5362fea02ede81c4a0fad3.camel@oracle.com>
-Subject: Re: [PATCH v15 01/17] uaccess: add untagged_addr definition for
- other arches
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Date:   Wed, 29 May 2019 08:49:09 -0600
-In-Reply-To: <67ae3bd92e590d42af22ef2de0ad37b730a13837.1557160186.git.andreyknvl@google.com>
-References: <cover.1557160186.git.andreyknvl@google.com>
-         <67ae3bd92e590d42af22ef2de0ad37b730a13837.1557160186.git.andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9272 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905290098
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9272 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905290098
+        id S1726069AbfE2PeQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 May 2019 11:34:16 -0400
+Received: from gateway21.websitewelcome.com ([192.185.46.109]:35558 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725914AbfE2PeQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 May 2019 11:34:16 -0400
+X-Greylist: delayed 1283 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 May 2019 11:34:15 EDT
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id 08BC8400F069E
+        for <linux-rdma@vger.kernel.org>; Wed, 29 May 2019 10:12:52 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id W0G4hcgi4iQerW0G4hD8jJ; Wed, 29 May 2019 10:12:52 -0500
+X-Authority-Reason: nr=8
+Received: from [189.250.47.159] (port=47380 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.91)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1hW0G2-001J3u-VH; Wed, 29 May 2019 10:12:51 -0500
+Date:   Wed, 29 May 2019 10:12:48 -0500
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] IB/rdmavt: Use struct_size() helper
+Message-ID: <20190529151248.GA24080@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 189.250.47.159
+X-Source-L: No
+X-Exim-ID: 1hW0G2-001J3u-VH
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [189.250.47.159]:47380
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2019-05-06 at 18:30 +0200, Andrey Konovalov wrote:
-> To allow arm64 syscalls to accept tagged pointers from userspace, we
-> must
-> untag them when they are passed to the kernel. Since untagging is
-> done in
-> generic parts of the kernel, the untagged_addr macro needs to be
-> defined
-> for all architectures.
-> 
-> Define it as a noop for architectures other than arm64.
-> 
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> ---
->  include/linux/mm.h | 4 ++++
->  1 file changed, 4 insertions(+)
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes, in particular in the
+context in which this code is being used.
 
-As discussed in the other thread Chris started, there is a generic need
-to untag addresses in kernel and this patch gets us ready for that.
+So, replace the following form:
 
-Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
+sizeof(struct rvt_sge) * init_attr->cap.max_send_sge + sizeof(struct rvt_swqe)
 
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 6b10c21630f5..44041df804a6 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -99,6 +99,10 @@ extern int mmap_rnd_compat_bits __read_mostly;
->  #include <asm/pgtable.h>
->  #include <asm/processor.h>
->  
-> +#ifndef untagged_addr
-> +#define untagged_addr(addr) (addr)
-> +#endif
-> +
->  #ifndef __pa_symbol
->  #define __pa_symbol(x)  __pa(RELOC_HIDE((unsigned long)(x), 0))
->  #endif
+with:
+
+struct_size(swq, sg_list, init_attr->cap.max_send_sge)
+
+and so on...
+
+Also, notice that variable size is unnecessary, hence it is removed.
+
+This code was detected with the help of Coccinelle.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/infiniband/sw/rdmavt/qp.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 31a2e65e4906..a60f5faea198 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -988,9 +988,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 	case IB_QPT_UC:
+ 	case IB_QPT_RC:
+ 	case IB_QPT_UD:
+-		sz = sizeof(struct rvt_sge) *
+-			init_attr->cap.max_send_sge +
+-			sizeof(struct rvt_swqe);
++		sz = struct_size(swq, sg_list, init_attr->cap.max_send_sge);
+ 		swq = vzalloc_node(array_size(sz, sqsize), rdi->dparms.node);
+ 		if (!swq)
+ 			return ERR_PTR(-ENOMEM);
+-- 
+2.21.0
 
