@@ -2,84 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F593022A
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2019 20:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E929130233
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2019 20:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbfE3SrL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 May 2019 14:47:11 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:46163 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726079AbfE3SrL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 May 2019 14:47:11 -0400
-Received: by mail-qt1-f194.google.com with SMTP id z19so8215910qtz.13
-        for <linux-rdma@vger.kernel.org>; Thu, 30 May 2019 11:47:11 -0700 (PDT)
+        id S1726328AbfE3StV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 May 2019 14:49:21 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:36743 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbfE3StV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 May 2019 14:49:21 -0400
+Received: by mail-qk1-f193.google.com with SMTP id g18so4614835qkl.3
+        for <linux-rdma@vger.kernel.org>; Thu, 30 May 2019 11:49:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=diBaFFpQOlJHpKJW383mUN2AuWiME+bQ0o/ZMr4CX7g=;
-        b=UFO9adfCo/18SlB8rmLEWfhdTO1VLvgTQXQr+f5VpR5Vn+60DZpIydGbIK9797GNFq
-         Xy3XecSK+3Fky6d/uUhIOfVwldEY9gVT5EHyOwpoqoQHpyOYbSKtoo44D3q14TNBPFFB
-         HLkXYxRF66RbP7Iw8709C5bOahsIRVvGRhKkVYwmwFBW10BpF6wfOXwSIr4s5EVbMEno
-         X3oe+DWVYOcR3duLcUBWTxcsHVu+Kd0Vr4/BwFmTxhlre4bXP1T3gGRc0betIe8ua/vg
-         GAh+WcYICUA8+boK+8aWE7aEsf8CePt5RcjY9ljTbCmx1xq0/17bFvBsTH6/JNLOaFpO
-         sLrw==
+        bh=w0i/t6u0ONkXEx6ZyiDM2z9pAVyu8vYIkdQiMSupFL4=;
+        b=ID3rou9z207Iu/vciPvrLKMbLIJIJL5p1QIBOqvE2r8BZs31VwNWVyp1+Db0VEVctV
+         b/pu4m4vLOawz2hFeTmk7YlHE3JaigOiAFWUI4pDK58czuxj0v4F3OJnvch4VMBzXl/7
+         hXXaNsWVjVPZZH7n9SJ0P+vJCzpjsdGi71JfvWas7C9kQ0tWcHKGFjkdGn0w337dhxKs
+         SJTgnsKsAnkhp4+4/caa+LOEhE6P6SLXW4cci9PJlmS6wulQb87M157OPDt4pFcz0Ka5
+         D2GhG7kE7cr+7v5yhMVfBllnF5vzdrg56LaDVmd/fr9+eryxoRCYomRBpASIsSNnyROn
+         p4FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=diBaFFpQOlJHpKJW383mUN2AuWiME+bQ0o/ZMr4CX7g=;
-        b=j7DpvsAirgS+lyCKb5TGfEwzvNci5FUgM5Df39GiExysGFKBb5NYYR2Gg2Uzzaf60f
-         WdOJL0pza7r1kRHHB8DskeAOvUZbO6OoNuaRLslI7d/5Lu7oE4OtlodKa9SX7BnxKspL
-         eWkPqMkl+tKzTPMu+7B96WCscI39tV31HI16tc4fnNoA3HNuAMFX8/IuG0dXvfdGh0/2
-         Ok4NM1AdSuDtCHHJd551XBbxfrlcbdkAwuPvoiH0UjOB+qMmIWkfjp3De3SPQ6iBsZ+s
-         3egVhYZgo2xOvCpR715uee9w98CJkSbxVTwnjLrqyeUDqkcDNR6rTOm0dVoYeyLCsXVN
-         uVJA==
-X-Gm-Message-State: APjAAAUSLM6JI3L0p5PwUHRR3Lrl/pe8Nf6dHH2qZPi2EQs6DprJkXtq
-        EgKRykUHFIDc8plF8debuGuTNQ==
-X-Google-Smtp-Source: APXvYqwDry+6XP937lrELkrm98AM/hLZ9gH2okpbVOKmcOx5qydqW0tC4kDYVRTSKn5XTtjb5r/lvQ==
-X-Received: by 2002:ac8:30a7:: with SMTP id v36mr4983567qta.119.1559242030613;
-        Thu, 30 May 2019 11:47:10 -0700 (PDT)
+        bh=w0i/t6u0ONkXEx6ZyiDM2z9pAVyu8vYIkdQiMSupFL4=;
+        b=deOBzJLbLlEJrEGh7nHUVPgsVKEIEOa8iUbzfxmonn7anmHgbT9TzDBV2cVuUH9TfT
+         q8lU2TkAskAy/AnHefBG+YVvr2SCRmSUpuOP0vSSH7GzQqEBmvY5Dg21nAz6CjRTXNnp
+         o1BZkayVdLQT/kGeF9JhKvGKRjFZQiEzHxhm1KgAGU6drUnJyP/d9Hq9CyhPHsOdV3sh
+         NIZ2tCudKu1jrCIiw6OCny/F5oxxXZSboT2Zf7Xt7Xzq/YVkXKFu0OH+dZFxTEt3G+5r
+         etMYxYz/SOxYvX/M1QnLPSEk2QUFlD9ZrEyGqcKaK3Tnfps3qZIfOODhslSiMHhBwMEI
+         kgkg==
+X-Gm-Message-State: APjAAAVA5sGX4qVPEMZ8Mnm1EwcQCsFCZMI7v1cwlfcJrTegMw3J1Wyj
+        WUDaxyG+hPouUTx44jSxRqNFpg==
+X-Google-Smtp-Source: APXvYqyBhd7a9f+Ei8nhwFPFs6CWx4CBREEbAdpXD4RqMybB60dLn+Epr3J2KKsVLoLDjgRVYAlnHw==
+X-Received: by 2002:a37:2f87:: with SMTP id v129mr4752741qkh.151.1559242160875;
+        Thu, 30 May 2019 11:49:20 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id j33sm2185547qtc.10.2019.05.30.11.47.10
+        by smtp.gmail.com with ESMTPSA id j37sm1970061qtb.76.2019.05.30.11.49.20
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 30 May 2019 11:47:10 -0700 (PDT)
+        Thu, 30 May 2019 11:49:20 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hWQ4z-0000Gn-OX; Thu, 30 May 2019 15:47:09 -0300
-Date:   Thu, 30 May 2019 15:47:09 -0300
+        id 1hWQ75-0001QX-PR; Thu, 30 May 2019 15:49:19 -0300
+Date:   Thu, 30 May 2019 15:49:19 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/uverbs: check for allocation failure in
- uapi_add_elm()
-Message-ID: <20190530184709.GA982@ziepe.ca>
-References: <20190530082024.GA11836@mwanda>
+To:     Lijun Ou <oulijun@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH V2 for-next] RDMA/hns: Bugfix for posting multiple srq
+ work request
+Message-ID: <20190530184919.GA5454@ziepe.ca>
+References: <1559231753-81837-1-git-send-email-oulijun@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190530082024.GA11836@mwanda>
+In-Reply-To: <1559231753-81837-1-git-send-email-oulijun@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 30, 2019 at 11:20:24AM +0300, Dan Carpenter wrote:
-> If the kzalloc() fails then we should return ERR_PTR(-ENOMEM).  In the
-> current code it's possible that the kzalloc() fails and the
-> radix_tree_insert() inserts the NULL pointer successfully and we return
-> the NULL "elm" pointer to the caller.  That results in a NULL pointer
-> dereference.
+On Thu, May 30, 2019 at 11:55:53PM +0800, Lijun Ou wrote:
+> When the user submits more than 32 work request to a srq queue
+> at a time, it needs to find the corresponding number of entries
+> in the bitmap in the idx queue. However, the original lookup
+> function named ffs only processes 32 bits of the array element,
+> When the number of srq wqe issued exceeds 32, the ffs will only
+> process the lower 32 bits of the elements, it will not be able
+> to get the correct wqe index for srq wqe.
 > 
-> Fixes: 9ed3e5f44772 ("IB/uverbs: Build the specs into a radix tree at runtime")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+> Signed-off-by: Lijun Ou <oulijun@huawei.com>
 > ---
->  drivers/infiniband/core/uverbs_uapi.c | 2 ++
->  1 file changed, 2 insertions(+)
+> V1->V2:
+> 1. Use bitmap function instead of __ffs64()
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_device.h |  2 +-
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 29 +++++++++++++----------------
+>  drivers/infiniband/hw/hns/hns_roce_srq.c    | 15 +++------------
+>  3 files changed, 17 insertions(+), 29 deletions(-)
 
 Applied to for-next, thanks
 
