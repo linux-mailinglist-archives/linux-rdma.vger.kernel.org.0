@@ -2,19 +2,19 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCD12FC39
+	by mail.lfdr.de (Postfix) with ESMTP id 86CFE2FC3C
 	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2019 15:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbfE3NZk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726415AbfE3NZk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 30 May 2019 09:25:40 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:34901 "EHLO
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:34898 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726418AbfE3NZk (ORCPT
+        with ESMTP id S1726169AbfE3NZk (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 May 2019 09:25:40 -0400
 Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 30 May 2019 16:25:32 +0300
 Received: from r-vnc08.mtr.labs.mlnx (r-vnc08.mtr.labs.mlnx [10.208.0.121])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x4UDPVZV007883;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x4UDPVZW007883;
         Thu, 30 May 2019 16:25:31 +0300
 From:   Max Gurtovoy <maxg@mellanox.com>
 To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, jgg@mellanox.com,
@@ -22,9 +22,9 @@ To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, jgg@mellanox.com,
         bvanassche@acm.org
 Cc:     maxg@mellanox.com, israelr@mellanox.com, idanb@mellanox.com,
         oren@mellanox.com, vladimirk@mellanox.com, shlomin@mellanox.com
-Subject: [PATCH 03/20] RDMA/core: Introduce IB_MR_TYPE_INTEGRITY and ib_alloc_mr_integrity API
-Date:   Thu, 30 May 2019 16:25:14 +0300
-Message-Id: <1559222731-16715-4-git-send-email-maxg@mellanox.com>
+Subject: [PATCH 04/20] RDMA/core: Introduce ib_map_mr_sg_pi to map data/protection sgl's
+Date:   Thu, 30 May 2019 16:25:15 +0300
+Message-Id: <1559222731-16715-5-git-send-email-maxg@mellanox.com>
 X-Mailer: git-send-email 1.7.8.2
 In-Reply-To: <1559222731-16715-1-git-send-email-maxg@mellanox.com>
 References: <1559222731-16715-1-git-send-email-maxg@mellanox.com>
@@ -33,140 +33,117 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Israel Rukshin <israelr@mellanox.com>
+This function will map the previously dma mapped SG lists for PI
+(protection information) and data to an appropriate memory region for
+future registration.
+The given MR must be allocated as IB_MR_TYPE_INTEGRITY.
 
-This is a preparation for signature verbs API re-design. In the new
-design a single MR with IB_MR_TYPE_INTEGRITY type will be used to perform
-the needed mapping for data integrity operations.
-
-Signed-off-by: Israel Rukshin <israelr@mellanox.com>
 Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Israel Rukshin <israelr@mellanox.com>
 Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 ---
  drivers/infiniband/core/device.c |  1 +
- drivers/infiniband/core/verbs.c  | 46 ++++++++++++++++++++++++++++++++++++++++
- include/rdma/ib_verbs.h          | 10 +++++++++
- 3 files changed, 57 insertions(+)
+ drivers/infiniband/core/verbs.c  | 40 +++++++++++++++++++++++++++++++++++++++-
+ include/rdma/ib_verbs.h          |  9 +++++++++
+ 3 files changed, 49 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 78dc07c6ac4b..14a6d351ad1e 100644
+index 14a6d351ad1e..90c71542e76e 100644
 --- a/drivers/infiniband/core/device.c
 +++ b/drivers/infiniband/core/device.c
-@@ -2329,6 +2329,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, alloc_fmr);
- 	SET_DEVICE_OP(dev_ops, alloc_hw_stats);
- 	SET_DEVICE_OP(dev_ops, alloc_mr);
-+	SET_DEVICE_OP(dev_ops, alloc_mr_integrity);
- 	SET_DEVICE_OP(dev_ops, alloc_mw);
- 	SET_DEVICE_OP(dev_ops, alloc_pd);
- 	SET_DEVICE_OP(dev_ops, alloc_rdma_netdev);
+@@ -2389,6 +2389,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+ 	SET_DEVICE_OP(dev_ops, iw_reject);
+ 	SET_DEVICE_OP(dev_ops, iw_rem_ref);
+ 	SET_DEVICE_OP(dev_ops, map_mr_sg);
++	SET_DEVICE_OP(dev_ops, map_mr_sg_pi);
+ 	SET_DEVICE_OP(dev_ops, map_phys_fmr);
+ 	SET_DEVICE_OP(dev_ops, mmap);
+ 	SET_DEVICE_OP(dev_ops, modify_ah);
 diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index e080202ff673..80b9dc0dbd6a 100644
+index 80b9dc0dbd6a..96ddae029095 100644
 --- a/drivers/infiniband/core/verbs.c
 +++ b/drivers/infiniband/core/verbs.c
-@@ -2002,6 +2002,9 @@ struct ib_mr *ib_alloc_mr_user(struct ib_pd *pd, enum ib_mr_type mr_type,
- 	if (!pd->device->ops.alloc_mr)
+@@ -2040,7 +2040,8 @@ struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
+ {
+ 	struct ib_mr *mr;
+ 
+-	if (!pd->device->ops.alloc_mr_integrity)
++	if (!pd->device->ops.alloc_mr_integrity ||
++	    !pd->device->ops.map_mr_sg_pi)
  		return ERR_PTR(-EOPNOTSUPP);
  
-+	if (WARN_ON_ONCE(mr_type == IB_MR_TYPE_INTEGRITY))
-+		return ERR_PTR(-EINVAL);
-+
- 	mr = pd->device->ops.alloc_mr(pd, mr_type, max_num_sg, udata);
- 	if (!IS_ERR(mr)) {
- 		mr->device  = pd->device;
-@@ -2019,6 +2022,49 @@ struct ib_mr *ib_alloc_mr_user(struct ib_pd *pd, enum ib_mr_type mr_type,
+ 	if (!max_num_meta_sg)
+@@ -2423,6 +2424,43 @@ int ib_set_vf_guid(struct ib_device *device, int vf, u8 port, u64 guid,
  }
- EXPORT_SYMBOL(ib_alloc_mr_user);
+ EXPORT_SYMBOL(ib_set_vf_guid);
  
 +/**
-+ * ib_alloc_mr_integrity() - Allocates an integrity memory region
-+ * @pd:                      protection domain associated with the region
-+ * @max_num_data_sg:         maximum data sg entries available for registration
-+ * @max_num_meta_sg:         maximum metadata sg entries available for
-+ *                           registration
++ * ib_map_mr_sg_pi() - Map the dma mapped SG lists for PI (protection
++ *     information) and set an appropriate memory region for registration.
++ * @mr:             memory region
++ * @data_sg:        dma mapped scatterlist for data
++ * @data_sg_nents:  number of entries in data_sg
++ * @data_sg_offset: offset in bytes into data_sg
++ * @meta_sg:        dma mapped scatterlist for metadata
++ * @meta_sg_nents:  number of entries in meta_sg
++ * @meta_sg_offset: offset in bytes into meta_sg
++ * @page_size:      page vector desired page size
 + *
-+ * Notes:
-+ * Memory registration page/sg lists must not exceed max_num_sg,
-+ * also the integrity page/sg lists must not exceed max_num_meta_sg.
++ * Constraints:
++ * - The MR must be allocated with type IB_MR_TYPE_INTEGRITY.
 + *
++ * Returns the number of sg elements that were mapped to the memory region.
++ *
++ * After this completes successfully, the  memory region
++ * is ready for registration.
 + */
-+struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
-+				    u32 max_num_data_sg,
-+				    u32 max_num_meta_sg)
++int ib_map_mr_sg_pi(struct ib_mr *mr, struct scatterlist *data_sg,
++		    int data_sg_nents, unsigned int *data_sg_offset,
++		    struct scatterlist *meta_sg, int meta_sg_nents,
++		    unsigned int *meta_sg_offset, unsigned int page_size)
 +{
-+	struct ib_mr *mr;
++	if (unlikely(!mr->device->ops.map_mr_sg_pi ||
++		     WARN_ON_ONCE(mr->type != IB_MR_TYPE_INTEGRITY)))
++		return -EOPNOTSUPP;
 +
-+	if (!pd->device->ops.alloc_mr_integrity)
-+		return ERR_PTR(-EOPNOTSUPP);
++	mr->page_size = page_size;
 +
-+	if (!max_num_meta_sg)
-+		return ERR_PTR(-EINVAL);
-+
-+	mr = pd->device->ops.alloc_mr_integrity(pd, max_num_data_sg,
-+						max_num_meta_sg);
-+	if (IS_ERR(mr))
-+		return mr;
-+
-+	mr->device = pd->device;
-+	mr->pd = pd;
-+	mr->dm = NULL;
-+	mr->uobject = NULL;
-+	atomic_inc(&pd->usecnt);
-+	mr->need_inval = false;
-+	mr->res.type = RDMA_RESTRACK_MR;
-+	rdma_restrack_kadd(&mr->res);
-+	mr->type = IB_MR_TYPE_INTEGRITY;
-+
-+	return mr;
++	return mr->device->ops.map_mr_sg_pi(mr, data_sg, data_sg_nents,
++					    data_sg_offset, meta_sg,
++					    meta_sg_nents, meta_sg_offset);
 +}
-+EXPORT_SYMBOL(ib_alloc_mr_integrity);
-+
- /* "Fast" memory regions */
- 
- struct ib_fmr *ib_alloc_fmr(struct ib_pd *pd,
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 482237908fb9..1669a3886abf 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -799,6 +799,8 @@ __attribute_const__ int ib_rate_to_mbps(enum ib_rate rate);
-  *                            application
-  * @IB_MR_TYPE_DMA:           memory region that is used for DMA operations
-  *                            without address translations (VA=PA)
-+ * @IB_MR_TYPE_INTEGRITY:     memory region that is used for
-+ *                            data integrity operations
-  */
- enum ib_mr_type {
- 	IB_MR_TYPE_MEM_REG,
-@@ -807,6 +809,7 @@ enum ib_mr_type {
- 	IB_MR_TYPE_DM,
- 	IB_MR_TYPE_USER,
- 	IB_MR_TYPE_DMA,
-+	IB_MR_TYPE_INTEGRITY,
- };
- 
- enum ib_mr_status_check {
-@@ -2370,6 +2373,9 @@ struct ib_device_ops {
- 	int (*dereg_mr)(struct ib_mr *mr, struct ib_udata *udata);
- 	struct ib_mr *(*alloc_mr)(struct ib_pd *pd, enum ib_mr_type mr_type,
- 				  u32 max_num_sg, struct ib_udata *udata);
-+	struct ib_mr *(*alloc_mr_integrity)(struct ib_pd *pd,
-+					    u32 max_num_data_sg,
-+					    u32 max_num_meta_sg);
- 	int (*advise_mr)(struct ib_pd *pd,
- 			 enum ib_uverbs_advise_mr_advice advice, u32 flags,
- 			 struct ib_sge *sg_list, u32 num_sge,
-@@ -4047,6 +4053,10 @@ static inline struct ib_mr *ib_alloc_mr(struct ib_pd *pd,
- 	return ib_alloc_mr_user(pd, mr_type, max_num_sg, NULL);
- }
- 
-+struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
-+				    u32 max_num_data_sg,
-+				    u32 max_num_meta_sg);
++EXPORT_SYMBOL(ib_map_mr_sg_pi);
 +
  /**
-  * ib_update_fast_reg_key - updates the key portion of the fast_reg MR
-  *   R_Key and L_Key.
+  * ib_map_mr_sg() - Map the largest prefix of a dma mapped SG list
+  *     and set it the memory region.
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 1669a3886abf..96b868a223c5 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2444,6 +2444,11 @@ struct ib_device_ops {
+ 	int (*read_counters)(struct ib_counters *counters,
+ 			     struct ib_counters_read_attr *counters_read_attr,
+ 			     struct uverbs_attr_bundle *attrs);
++	int (*map_mr_sg_pi)(struct ib_mr *mr, struct scatterlist *data_sg,
++			    int data_sg_nents, unsigned int *data_sg_offset,
++			    struct scatterlist *meta_sg, int meta_sg_nents,
++			    unsigned int *meta_sg_offset);
++
+ 	/**
+ 	 * alloc_hw_stats - Allocate a struct rdma_hw_stats and fill in the
+ 	 *   driver initialized data.  The struct is kfree()'ed by the sysfs
+@@ -4241,6 +4246,10 @@ int ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *wq_ind_table);
+ 
+ int ib_map_mr_sg(struct ib_mr *mr, struct scatterlist *sg, int sg_nents,
+ 		 unsigned int *sg_offset, unsigned int page_size);
++int ib_map_mr_sg_pi(struct ib_mr *mr, struct scatterlist *data_sg,
++		    int data_sg_nents, unsigned int *data_sg_offset,
++		    struct scatterlist *meta_sg, int meta_sg_nents,
++		    unsigned int *meta_sg_offset, unsigned int page_size);
+ 
+ static inline int
+ ib_map_mr_sg_zbva(struct ib_mr *mr, struct scatterlist *sg, int sg_nents,
 -- 
 2.16.3
 
