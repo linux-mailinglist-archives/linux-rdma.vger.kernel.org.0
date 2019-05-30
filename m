@@ -2,510 +2,962 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 801922FCDE
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2019 16:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6FE2FDF7
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2019 16:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbfE3OGE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 May 2019 10:06:04 -0400
-Received: from mail-it1-f195.google.com ([209.85.166.195]:54577 "EHLO
-        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbfE3OGE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 May 2019 10:06:04 -0400
-Received: by mail-it1-f195.google.com with SMTP id h20so10044829itk.4;
-        Thu, 30 May 2019 07:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:message-id:subject:from:to:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=W0pykHyGOJTo04+5Bxg4ATyBoDRj9XuHd9pc3Vdw+Ww=;
-        b=tMjdzaR0OoN+BcgS/TiQZePjLjgHqota9aois5MNuHPW7lafGKpJbH+UwKhnijp1Zp
-         eKuMtBJJRDhbDNDyGRedLexa2eGEfFmvMfHlOmzaLIyQw5vztb1VjCFy1dYc5cEgeT+k
-         VrB3dVVtNsY9BraCxmcEbMAdnzq0G/WBcgz1TDT24WPr3OqAn+lKJluQmTyengBM9qBI
-         cPaqhewkLwkM/3CP/Pu+Y45oZYrikpZ5ozqtVOBpSJYoFOQZDU0qFrdJJRS9+gp8TIki
-         UecbQ+KqqlySI67SP59pGfIZMFOg3nW9+oV5w95suiTCSt8vhNqiyTBrlg2cG7/fntI8
-         KG/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:message-id:subject:from:to:date
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=W0pykHyGOJTo04+5Bxg4ATyBoDRj9XuHd9pc3Vdw+Ww=;
-        b=csDDEtRfdjzzPyAnyNG06pkUy2oeMfiYjto3mfKyeQgaKrZPXKwPtJstubVTtq2pVV
-         tCyc23VV0FoeGBOplOj9CPqjxklJAcUlVnwBXDTFjsJ9xHn2Sb+ypHGrpGdZrDDpwF0D
-         t4mg5HJ87ignKnVMjOYp42psFuNADBdfKymmT66aFBEqyVpnIAVWhMMGbdMHWuA/XPb+
-         PV3NtAvazs2l+EUJb/fJfvrzkLlp3VwYFAMLb5GyyJcBsTb+8nm1bAGVEmEUzDGV8RV7
-         W7jS/biuZGOhN7S13XjwH+FojixJxW1LpmXcAXds12Jpek8HNYJP5wvHRUj09y84Y9DC
-         gx0g==
-X-Gm-Message-State: APjAAAXmaZKkckr5skXe9kl4F7/IKKx2VdA0ku474nxj7GdeMT+MNEC7
-        IIFz4G3E5EDUaqryf5zCInqk2UcpmZo=
-X-Google-Smtp-Source: APXvYqzQO/Q3QKjNNm0AWX6NOIlONL5Bt6WXQdkh8lrdgsHnEWm6wSR4AoIhtU+H43LkNBk/PKZNVg==
-X-Received: by 2002:a02:b01c:: with SMTP id p28mr2575632jah.130.1559225162424;
-        Thu, 30 May 2019 07:06:02 -0700 (PDT)
-Received: from gouda.nowheycreamery.com (d28-23-121-75.dim.wideopenwest.com. [23.28.75.121])
-        by smtp.googlemail.com with ESMTPSA id 138sm1113966itu.26.2019.05.30.07.06.00
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 30 May 2019 07:06:01 -0700 (PDT)
-Message-ID: <9b9e663e68aa5d3aff8e621603186af286ce7f45.camel@gmail.com>
-Subject: Re: [PATCH RFC 05/12] xprtrdma: Remove fr_state
-From:   Anna Schumaker <schumaker.anna@gmail.com>
-To:     Chuck Lever <chuck.lever@oracle.com>, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Date:   Thu, 30 May 2019 10:05:59 -0400
-In-Reply-To: <20190528182116.19012.50268.stgit@manet.1015granger.net>
-References: <20190528181018.19012.61210.stgit@manet.1015granger.net>
-         <20190528182116.19012.50268.stgit@manet.1015granger.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.2 
+        id S1726359AbfE3Ofh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 May 2019 10:35:37 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:49014 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726430AbfE3Ofh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 May 2019 10:35:37 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4UEIvvm157735;
+        Thu, 30 May 2019 14:35:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=ALNexw7X5nEt2UPGGd1015Gan3Rw6ypzbuK1PpyGW0k=;
+ b=Tuf9WlSiR5rYC1YChJqgeMnMCK36Mypn6l2XNNKv2VjMzaigwiyqeEXEILY3h9+Nhu/7
+ VHm2yhKpL8EVpQotHAEmQ1gg3FHXt23IxpDEXOye5UOshgPpEB38C9TCQ/v/i8CeI1Yc
+ KXm5FenYp2xsgHl5ydIBbjrV5pSEaduPKCC4on24t12562qdVuheg0baVfMXiDLvMcg9
+ JPJTq5z+AABgbbGagaHyXR4xoH+KRD/steLSumvE0DQFmf4h3cs466y+DbWouGq4dbuA
+ MVIk1rwXFqgYfpyxofRHeVqI45xhE8afK0bb1o7+9X5GSfRicU9Z7KwMI0fV1lbuhFTo VA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2spw4trh0f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 May 2019 14:35:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4UEYREU105623;
+        Thu, 30 May 2019 14:35:03 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 2sqh74bjnt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 May 2019 14:35:03 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4UEZ2Un016254;
+        Thu, 30 May 2019 14:35:02 GMT
+Received: from lap1 (/77.138.183.59)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 30 May 2019 07:35:01 -0700
+Date:   Thu, 30 May 2019 17:34:53 +0300
+From:   Yuval Shaia <yuval.shaia@oracle.com>
+To:     Michal Kalderon <mkalderon@marvell.com>
+Cc:     "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jgg@mellanox.com" <jgg@mellanox.com>
+Subject: Re: [PATCH v3 rdma-core] verbs: Introduce a new reg_mr API for
+ virtual address space
+Message-ID: <20190530143452.GA19236@lap1>
+References: <20190530060539.7136-1-yuval.shaia@oracle.com>
+ <MN2PR18MB3182E08DB0E164C6BE6C409FA1180@MN2PR18MB3182.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR18MB3182E08DB0E164C6BE6C409FA1180@MN2PR18MB3182.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9272 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=29 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905300105
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9272 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=29 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905300105
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Chuck,
+On Thu, May 30, 2019 at 12:37:18PM +0000, Michal Kalderon wrote:
+> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > owner@vger.kernel.org> On Behalf Of Yuval Shaia
+> > 
+> > The virtual address that is registered is used as a base for any address passed
+> > later in post_recv and post_send operations.
+> > 
+> > On a virtualized environment this is not correct.
+> > 
+> > A guest cannot register its memory so hypervisor maps the guest physical
+> > address to a host virtual address and register it with the HW. Later on, at
+> > datapath phase, the guest fills the SGEs with addresses from its address
+> > space.
+> > Since HW cannot access guest virtual address space an extra translation is
+> > needed to map those addresses to be based on the host virtual address that
+> > was registered with the HW.
+> > This datapath interference affects performances.
+> > 
+> > To avoid this, a logical separation between the address that is registered and
+> > the address that is used as a offset at datapath phase is needed.
+> > This separation is already implemented in the lower layer part
+> > (ibv_cmd_reg_mr) but blocked at the API level.
+> > 
+> > Fix it by introducing a new API function which accepts an address from guest
+> > virtual address space as well, to be used as offset for later datapath
+> > operations.
+> > 
+> Could you give an example of how an app would use this new API? How will
+> It receive the new hca_va addresss ? 
 
-On Tue, 2019-05-28 at 14:21 -0400, Chuck Lever wrote:
-> Since both the Send and Receive completion queues are processed in
-> a workqueue context, it should be safe to DMA unmap and return MRs
-> to the free or recycle lists directly in the completion handlers.
+In my use case an application is device emulation that runs in the context
+of a userspace process in the host.
+This (virtual) device receives from guest driver a dma address (in form of
+scatter-gather list) along with guest user-space virtual address. This is
+done i guess by any device driver. The dma-list is mapped to host virtual
+address that is used as the addr argument and the guest-user-space virtual
+address is used as the iova argument.
+From this moment the guest userspace can continue using the virtual address
+as a base for any further post_send and post_recv operations, no extra
+translation is needed.
+
+Another use case is as Jason just mention - for the zero based MR.
+
+> And which virtualized environment are you referring to? Para-virtualized ? 
+> (since you don't have this problem with sriov - right ? ) 
+
+Yes, para-virt. sriov doesn't need it since it is driven by a vendor driver
+in guest that interact directly with the HW via iommu that translates the
+addresses, right?
+
+> Thanks,
+> Michal
+>  
+> > Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
+> > ---
+> > v0 -> v1:
+> > 	* Change reg_mr callback signature instead of adding new callback
+> > 	* Add the new API to libibverbs/libibverbs.map.in
+> > v1 -> v2:
+> > 	* Do not modify reg_mr signature for version 1.0
+> > 	* Add note to man page
+> > v2 -> v3:
+> > 	* Rename function to reg_mr_iova (and arg-name to iova)
+> > 	* Some checkpatch issues not related to this fix but detected now
+> > 		* s/__FUNCTION__/__func
+> > 		* WARNING: function definition argument 'void *' should
+> > 		  also have an identifier name
+> > ---
+> >  libibverbs/driver.h               |  2 +-
+> >  libibverbs/dummy_ops.c            |  2 +-
+> >  libibverbs/libibverbs.map.in      |  1 +
+> >  libibverbs/man/ibv_reg_mr.3       | 15 +++++++++++++--
+> >  libibverbs/verbs.c                | 23 ++++++++++++++++++++++-
+> >  libibverbs/verbs.h                |  7 +++++++
+> >  providers/bnxt_re/verbs.c         |  6 +++---
+> >  providers/bnxt_re/verbs.h         |  2 +-
+> >  providers/cxgb3/iwch.h            |  4 ++--
+> >  providers/cxgb3/verbs.c           |  9 +++++----
+> >  providers/cxgb4/libcxgb4.h        |  4 ++--
+> >  providers/cxgb4/verbs.c           |  9 +++++----
+> >  providers/hfi1verbs/hfiverbs.h    |  4 ++--
+> >  providers/hfi1verbs/verbs.c       |  8 ++++----
+> >  providers/hns/hns_roce_u.h        |  2 +-
+> >  providers/hns/hns_roce_u_verbs.c  |  6 +++---
+> >  providers/i40iw/i40iw_umain.h     |  3 ++-
+> >  providers/i40iw/i40iw_uverbs.c    |  8 ++++----
+> >  providers/ipathverbs/ipathverbs.h |  4 ++--
+> >  providers/ipathverbs/verbs.c      |  8 ++++----
+> >  providers/mlx4/mlx4.h             |  4 ++--
+> >  providers/mlx4/verbs.c            |  7 +++----
+> >  providers/mlx5/mlx5.h             |  4 ++--
+> >  providers/mlx5/verbs.c            |  7 +++----
+> >  providers/mthca/ah.c              |  3 ++-
+> >  providers/mthca/mthca.h           |  4 ++--
+> >  providers/mthca/verbs.c           |  6 +++---
+> >  providers/nes/nes_umain.h         |  3 ++-
+> >  providers/nes/nes_uverbs.c        |  9 ++++-----
+> >  providers/ocrdma/ocrdma_main.h    |  4 ++--
+> >  providers/ocrdma/ocrdma_verbs.c   | 10 ++++------
+> >  providers/qedr/qelr_main.h        |  4 ++--
+> >  providers/qedr/qelr_verbs.c       | 11 ++++-------
+> >  providers/qedr/qelr_verbs.h       |  4 ++--
+> >  providers/rxe/rxe.c               |  6 +++---
+> >  providers/vmw_pvrdma/pvrdma.h     |  4 ++--
+> >  providers/vmw_pvrdma/verbs.c      |  7 +++----
+> >  37 files changed, 130 insertions(+), 94 deletions(-)
+> > 
+> > diff --git a/libibverbs/driver.h b/libibverbs/driver.h index e4d624b2..ef27259a
+> > 100644
+> > --- a/libibverbs/driver.h
+> > +++ b/libibverbs/driver.h
+> > @@ -338,7 +338,7 @@ struct verbs_context_ops {
+> >  				    uint64_t dm_offset, size_t length,
+> >  				    unsigned int access);
+> >  	struct ibv_mr *(*reg_mr)(struct ibv_pd *pd, void *addr, size_t
+> > length,
+> > -				 int access);
+> > +				 uint64_t hca_va, int access);
+> >  	int (*req_notify_cq)(struct ibv_cq *cq, int solicited_only);
+> >  	int (*rereg_mr)(struct verbs_mr *vmr, int flags, struct ibv_pd *pd,
+> >  			void *addr, size_t length, int access); diff --git
+> > a/libibverbs/dummy_ops.c b/libibverbs/dummy_ops.c index
+> > c861c3a0..61a8fbdf 100644
+> > --- a/libibverbs/dummy_ops.c
+> > +++ b/libibverbs/dummy_ops.c
+> > @@ -410,7 +410,7 @@ static struct ibv_mr *reg_dm_mr(struct ibv_pd *pd,
+> > struct ibv_dm *dm,  }
+> > 
+> >  static struct ibv_mr *reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > -			     int access)
+> > +			     uint64_t hca_va,  int access)
+> >  {
+> >  	errno = ENOSYS;
+> >  	return NULL;
+> > diff --git a/libibverbs/libibverbs.map.in b/libibverbs/libibverbs.map.in index
+> > 87a1b9fc..aa0425ba 100644
+> > --- a/libibverbs/libibverbs.map.in
+> > +++ b/libibverbs/libibverbs.map.in
+> > @@ -94,6 +94,7 @@ IBVERBS_1.1 {
+> >  		ibv_query_srq;
+> >  		ibv_rate_to_mbps;
+> >  		ibv_reg_mr;
+> > +		ibv_reg_mr_iova;
+> >  		ibv_register_driver;
+> >  		ibv_rereg_mr;
+> >  		ibv_resize_cq;
+> > diff --git a/libibverbs/man/ibv_reg_mr.3 b/libibverbs/man/ibv_reg_mr.3
+> > index 631e5fe8..6c4c1434 100644
+> > --- a/libibverbs/man/ibv_reg_mr.3
+> > +++ b/libibverbs/man/ibv_reg_mr.3
+> > @@ -3,7 +3,7 @@
+> >  .\"
+> >  .TH IBV_REG_MR 3 2006-10-31 libibverbs "Libibverbs Programmer's Manual"
+> >  .SH "NAME"
+> > -ibv_reg_mr, ibv_dereg_mr \- register or deregister a memory region (MR)
+> > +ibv_reg_mr, ibv_reg_mr_iova, ibv_dereg_mr \- register or deregister a
+> > +memory region (MR)
+> >  .SH "SYNOPSIS"
+> >  .nf
+> >  .B #include <infiniband/verbs.h>
+> > @@ -11,6 +11,10 @@ ibv_reg_mr, ibv_dereg_mr \- register or deregister a
+> > memory region (MR)  .BI "struct ibv_mr *ibv_reg_mr(struct ibv_pd " "*pd" ",
+> > void " "*addr" ,
+> >  .BI "                          size_t " "length" ", int " "access" );
+> >  .sp
+> > +.BI "struct ibv_mr *ibv_reg_mr_iova(struct ibv_pd " "*pd" ", void " "*addr"
+> > ,
+> > +.BI "                               size_t " "length" ", uint64_t " "hca_va" ,
+> > +.BI "                               int " "access" );
+> > +.sp
+> >  .BI "int ibv_dereg_mr(struct ibv_mr " "*mr" );  .fi  .SH "DESCRIPTION"
+> > @@ -52,11 +56,18 @@ Local read access is always enabled for the MR.
+> >  .PP
+> >  To create an implicit ODP MR, IBV_ACCESS_ON_DEMAND should be set,
+> > addr should be 0 and length should be SIZE_MAX.
+> >  .PP
+> > +.B ibv_reg_mr_iova()
+> > +Special variant of memory registration used when addresses passed to
+> > +ibv_post_send and ibv_post_recv are relative to base address from a
+> > +different address space than .I addr\fR. The argument .I hca_va\fR is
+> > +the new base address.
+> > +.PP
+> >  .B ibv_dereg_mr()
+> >  deregisters the MR
+> >  .I mr\fR.
+> >  .SH "RETURN VALUE"
+> > -.B ibv_reg_mr()
+> > +.B ibv_reg_mr() / ibv_reg_mr_iova()
+> >  returns a pointer to the registered MR, or NULL if the request fails.
+> >  The local key (\fBL_Key\fR) field
+> >  .B lkey
+> > diff --git a/libibverbs/verbs.c b/libibverbs/verbs.c index 1766b9f5..56502ea5
+> > 100644
+> > --- a/libibverbs/verbs.c
+> > +++ b/libibverbs/verbs.c
+> > @@ -312,7 +312,28 @@ LATEST_SYMVER_FUNC(ibv_reg_mr, 1_1,
+> > "IBVERBS_1.1",
+> >  	if (ibv_dontfork_range(addr, length))
+> >  		return NULL;
+> > 
+> > -	mr = get_ops(pd->context)->reg_mr(pd, addr, length, access);
+> > +	mr = get_ops(pd->context)->reg_mr(pd, addr, length, (uint64_t)
+> > addr,
+> > +					  access);
+> > +	if (mr) {
+> > +		mr->context = pd->context;
+> > +		mr->pd      = pd;
+> > +		mr->addr    = addr;
+> > +		mr->length  = length;
+> > +	} else
+> > +		ibv_dofork_range(addr, length);
+> > +
+> > +	return mr;
+> > +}
+> > +
+> > +struct ibv_mr *ibv_reg_mr_iova(struct ibv_pd *pd, void *addr, size_t
+> > length,
+> > +			       uint64_t iova, int access)
+> > +{
+> > +	struct ibv_mr *mr;
+> > +
+> > +	if (ibv_dontfork_range(addr, length))
+> > +		return NULL;
+> > +
+> > +	mr = get_ops(pd->context)->reg_mr(pd, addr, length, iova, access);
+> >  	if (mr) {
+> >  		mr->context = pd->context;
+> >  		mr->pd      = pd;
+> > diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h index cb2d8439..c205a24c
+> > 100644
+> > --- a/libibverbs/verbs.h
+> > +++ b/libibverbs/verbs.h
+> > @@ -2372,6 +2372,13 @@ static inline int ibv_close_xrcd(struct ibv_xrcd
+> > *xrcd)  struct ibv_mr *ibv_reg_mr(struct ibv_pd *pd, void *addr,
+> >  			  size_t length, int access);
+> > 
+> > +/**
+> > + * ibv_reg_mr_iova - Register a memory region with a virtual offset
+> > + * address
+> > + */
+> > +struct ibv_mr *ibv_reg_mr_iova(struct ibv_pd *pd, void *addr, size_t
+> > length,
+> > +			       uint64_t iova, int access);
+> > +
+> > 
+> >  enum ibv_rereg_mr_err_code {
+> >  	/* Old MR is valid, invalid input */
+> > diff --git a/providers/bnxt_re/verbs.c b/providers/bnxt_re/verbs.c index
+> > bec382b3..f85c277b 100644
+> > --- a/providers/bnxt_re/verbs.c
+> > +++ b/providers/bnxt_re/verbs.c
+> > @@ -132,7 +132,7 @@ int bnxt_re_free_pd(struct ibv_pd *ibvpd)  }
+> > 
+> >  struct ibv_mr *bnxt_re_reg_mr(struct ibv_pd *ibvpd, void *sva, size_t len,
+> > -			      int access)
+> > +			      uint64_t hca_va, int access)
+> >  {
+> >  	struct bnxt_re_mr *mr;
+> >  	struct ibv_reg_mr cmd;
+> > @@ -142,8 +142,8 @@ struct ibv_mr *bnxt_re_reg_mr(struct ibv_pd *ibvpd,
+> > void *sva, size_t len,
+> >  	if (!mr)
+> >  		return NULL;
+> > 
+> > -	if (ibv_cmd_reg_mr(ibvpd, sva, len, (uintptr_t)sva, access, &mr-
+> > >vmr,
+> > -			   &cmd, sizeof(cmd), &resp.ibv_resp, sizeof(resp))) {
+> > +	if (ibv_cmd_reg_mr(ibvpd, sva, len, hca_va, access, &mr->vmr,
+> > &cmd,
+> > +			   sizeof(cmd), &resp.ibv_resp, sizeof(resp))) {
+> >  		free(mr);
+> >  		return NULL;
+> >  	}
+> > diff --git a/providers/bnxt_re/verbs.h b/providers/bnxt_re/verbs.h index
+> > 6e5f092b..af5f35f9 100644
+> > --- a/providers/bnxt_re/verbs.h
+> > +++ b/providers/bnxt_re/verbs.h
+> > @@ -62,7 +62,7 @@ int bnxt_re_query_port(struct ibv_context *uctx,
+> > uint8_t port,  struct ibv_pd *bnxt_re_alloc_pd(struct ibv_context *uctx);  int
+> > bnxt_re_free_pd(struct ibv_pd *ibvpd);  struct ibv_mr
+> > *bnxt_re_reg_mr(struct ibv_pd *ibvpd, void *buf, size_t len,
+> > -			      int ibv_access_flags);
+> > +			      uint64_t hca_va, int ibv_access_flags);
+> >  int bnxt_re_dereg_mr(struct verbs_mr *vmr);
+> > 
+> >  struct ibv_cq *bnxt_re_create_cq(struct ibv_context *uctx, int ncqe, diff --
+> > git a/providers/cxgb3/iwch.h b/providers/cxgb3/iwch.h index
+> > a6fea23d..ccb11729 100644
+> > --- a/providers/cxgb3/iwch.h
+> > +++ b/providers/cxgb3/iwch.h
+> > @@ -150,8 +150,8 @@ extern int iwch_query_port(struct ibv_context
+> > *context, uint8_t port,  extern struct ibv_pd *iwch_alloc_pd(struct
+> > ibv_context *context);  extern int iwch_free_pd(struct ibv_pd *pd);
+> > 
+> > -extern struct ibv_mr *iwch_reg_mr(struct ibv_pd *pd, void *addr,
+> > -				  size_t length, int access);
+> > +extern struct ibv_mr *iwch_reg_mr(struct ibv_pd *pd, void *addr, size_t
+> > length,
+> > +				  uint64_t hca_va, int access);
+> >  extern int iwch_dereg_mr(struct verbs_mr *mr);
+> > 
+> >  struct ibv_cq *iwch_create_cq(struct ibv_context *context, int cqe, diff --git
+> > a/providers/cxgb3/verbs.c b/providers/cxgb3/verbs.c index
+> > 67eb588b..091d7a67 100644
+> > --- a/providers/cxgb3/verbs.c
+> > +++ b/providers/cxgb3/verbs.c
+> > @@ -140,11 +140,12 @@ static struct ibv_mr *__iwch_reg_mr(struct ibv_pd
+> > *pd, void *addr,
+> >  	return &mhp->vmr.ibv_mr;
+> >  }
+> > 
+> > -struct ibv_mr *iwch_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			   size_t length, int access)
+> > +struct ibv_mr *iwch_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			   uint64_t hca_va, int access)
+> >  {
+> > -	PDBG("%s addr %p length %ld\n", __FUNCTION__, addr, length);
+> > -	return __iwch_reg_mr(pd, addr, length, (uintptr_t) addr, access);
+> > +	PDBG("%s addr %p length %ld hca_va %p\n", __func__, addr, length,
+> > +	     hca_va);
+> > +	return __iwch_reg_mr(pd, addr, length, hca_va, access);
+> >  }
+> > 
+> >  int iwch_dereg_mr(struct verbs_mr *vmr) diff --git
+> > a/providers/cxgb4/libcxgb4.h b/providers/cxgb4/libcxgb4.h index
+> > 7626a5f1..1ee94e4c 100644
+> > --- a/providers/cxgb4/libcxgb4.h
+> > +++ b/providers/cxgb4/libcxgb4.h
+> > @@ -198,8 +198,8 @@ int c4iw_query_port(struct ibv_context *context,
+> > uint8_t port,  struct ibv_pd *c4iw_alloc_pd(struct ibv_context *context);  int
+> > c4iw_free_pd(struct ibv_pd *pd);
+> > 
+> > -struct ibv_mr *c4iw_reg_mr(struct ibv_pd *pd, void *addr,
+> > -				  size_t length, int access);
+> > +struct ibv_mr *c4iw_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			   uint64_t hca_va, int access);
+> >  int c4iw_dereg_mr(struct verbs_mr *vmr);
+> > 
+> >  struct ibv_cq *c4iw_create_cq(struct ibv_context *context, int cqe, diff --git
+> > a/providers/cxgb4/verbs.c b/providers/cxgb4/verbs.c index
+> > f5c154e6..c8aeb8b4 100644
+> > --- a/providers/cxgb4/verbs.c
+> > +++ b/providers/cxgb4/verbs.c
+> > @@ -142,11 +142,12 @@ static struct ibv_mr *__c4iw_reg_mr(struct ibv_pd
+> > *pd, void *addr,
+> >  	return &mhp->vmr.ibv_mr;
+> >  }
+> > 
+> > -struct ibv_mr *c4iw_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			   size_t length, int access)
+> > +struct ibv_mr *c4iw_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			   uint64_t hca_va, int access)
+> >  {
+> > -	PDBG("%s addr %p length %ld\n", __func__, addr, length);
+> > -	return __c4iw_reg_mr(pd, addr, length, (uintptr_t) addr, access);
+> > +	PDBG("%s addr %p length %ld hca_va %p\n", __func__, addr, length,
+> > +	     hca_va);
+> > +	return __c4iw_reg_mr(pd, addr, length, hca_va, access);
+> >  }
+> > 
+> >  int c4iw_dereg_mr(struct verbs_mr *vmr) diff --git
+> > a/providers/hfi1verbs/hfiverbs.h b/providers/hfi1verbs/hfiverbs.h index
+> > 070a01c9..b9e91d80 100644
+> > --- a/providers/hfi1verbs/hfiverbs.h
+> > +++ b/providers/hfi1verbs/hfiverbs.h
+> > @@ -204,8 +204,8 @@ struct ibv_pd *hfi1_alloc_pd(struct ibv_context *pd);
+> > 
+> >  int hfi1_free_pd(struct ibv_pd *pd);
+> > 
+> > -struct ibv_mr *hfi1_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			    size_t length, int access);
+> > +struct ibv_mr *hfi1_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			   uint64_t hca_va, int access);
+> > 
+> >  int hfi1_dereg_mr(struct verbs_mr *vmr);
+> > 
+> > diff --git a/providers/hfi1verbs/verbs.c b/providers/hfi1verbs/verbs.c index
+> > ff001f6d..275f8d51 100644
+> > --- a/providers/hfi1verbs/verbs.c
+> > +++ b/providers/hfi1verbs/verbs.c
+> > @@ -129,8 +129,8 @@ int hfi1_free_pd(struct ibv_pd *pd)
+> >  	return 0;
+> >  }
+> > 
+> > -struct ibv_mr *hfi1_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			    size_t length, int access)
+> > +struct ibv_mr *hfi1_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			   uint64_t hca_va, int access)
+> >  {
+> >  	struct verbs_mr *vmr;
+> >  	struct ibv_reg_mr cmd;
+> > @@ -141,8 +141,8 @@ struct ibv_mr *hfi1_reg_mr(struct ibv_pd *pd, void
+> > *addr,
+> >  	if (!vmr)
+> >  		return NULL;
+> > 
+> > -	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr, access, vmr,
+> > -			     &cmd, sizeof cmd, &resp, sizeof resp);
+> > +	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
+> > +			     sizeof(cmd), &resp, sizeof(resp));
+> > 
+> >  	if (ret) {
+> >  		free(vmr);
+> > diff --git a/providers/hns/hns_roce_u.h b/providers/hns/hns_roce_u.h
+> > index 65125e5a..2d35e00f 100644
+> > --- a/providers/hns/hns_roce_u.h
+> > +++ b/providers/hns/hns_roce_u.h
+> > @@ -293,7 +293,7 @@ struct ibv_pd *hns_roce_u_alloc_pd(struct
+> > ibv_context *context);  int hns_roce_u_free_pd(struct ibv_pd *pd);
+> > 
+> >  struct ibv_mr *hns_roce_u_reg_mr(struct ibv_pd *pd, void *addr, size_t
+> > length,
+> > -				 int access);
+> > +				 uint64_t hca_va, int access);
+> >  int hns_roce_u_rereg_mr(struct verbs_mr *mr, int flags, struct ibv_pd *pd,
+> >  			void *addr, size_t length, int access);  int
+> > hns_roce_u_dereg_mr(struct verbs_mr *mr); diff --git
+> > a/providers/hns/hns_roce_u_verbs.c b/providers/hns/hns_roce_u_verbs.c
+> > index 9ca62c72..8cf21870 100644
+> > --- a/providers/hns/hns_roce_u_verbs.c
+> > +++ b/providers/hns/hns_roce_u_verbs.c
+> > @@ -120,7 +120,7 @@ int hns_roce_u_free_pd(struct ibv_pd *pd)  }
+> > 
+> >  struct ibv_mr *hns_roce_u_reg_mr(struct ibv_pd *pd, void *addr, size_t
+> > length,
+> > -				 int access)
+> > +				 uint64_t hca_va, int access)
+> >  {
+> >  	int ret;
+> >  	struct verbs_mr *vmr;
+> > @@ -141,8 +141,8 @@ struct ibv_mr *hns_roce_u_reg_mr(struct ibv_pd
+> > *pd, void *addr, size_t length,
+> >  	if (!vmr)
+> >  		return NULL;
+> > 
+> > -	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr, access, vmr,
+> > -			     &cmd, sizeof(cmd), &resp, sizeof(resp));
+> > +	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
+> > +			     sizeof(cmd), &resp, sizeof(resp));
+> >  	if (ret) {
+> >  		free(vmr);
+> >  		return NULL;
+> > diff --git a/providers/i40iw/i40iw_umain.h b/providers/i40iw/i40iw_umain.h
+> > index 80c1727c..2843c4bd 100644
+> > --- a/providers/i40iw/i40iw_umain.h
+> > +++ b/providers/i40iw/i40iw_umain.h
+> > @@ -160,7 +160,8 @@ int i40iw_uquery_device(struct ibv_context *, struct
+> > ibv_device_attr *);  int i40iw_uquery_port(struct ibv_context *, uint8_t,
+> > struct ibv_port_attr *);  struct ibv_pd *i40iw_ualloc_pd(struct ibv_context
+> > *);  int i40iw_ufree_pd(struct ibv_pd *); -struct ibv_mr
+> > *i40iw_ureg_mr(struct ibv_pd *, void *, size_t, int);
+> > +struct ibv_mr *i40iw_ureg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			     uint64_t hca_va, int access);
+> >  int i40iw_udereg_mr(struct verbs_mr *vmr);  struct ibv_cq
+> > *i40iw_ucreate_cq(struct ibv_context *, int, struct ibv_comp_channel *, int);
+> > int i40iw_uresize_cq(struct ibv_cq *, int); diff --git
+> > a/providers/i40iw/i40iw_uverbs.c b/providers/i40iw/i40iw_uverbs.c index
+> > 63b7206a..c054eb56 100644
+> > --- a/providers/i40iw/i40iw_uverbs.c
+> > +++ b/providers/i40iw/i40iw_uverbs.c
+> > @@ -149,7 +149,8 @@ int i40iw_ufree_pd(struct ibv_pd *pd)
+> >   * @length: length of the memory
+> >   * @access: access allowed on this mr
+> >   */
+> > -struct ibv_mr *i40iw_ureg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > int access)
+> > +struct ibv_mr *i40iw_ureg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			     uint64_t hca_va, int access)
+> >  {
+> >  	struct verbs_mr *vmr;
+> >  	struct i40iw_ureg_mr cmd;
+> > @@ -161,9 +162,8 @@ struct ibv_mr *i40iw_ureg_mr(struct ibv_pd *pd, void
+> > *addr, size_t length, int a
+> > 
+> >  	cmd.reg_type = IW_MEMREG_TYPE_MEM;
+> > 
+> > -	if (ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr,
+> > -			   access, vmr, &cmd.ibv_cmd, sizeof(cmd),
+> > -			   &resp, sizeof(resp))) {
+> > +	if (ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr,
+> > &cmd.ibv_cmd,
+> > +			   sizeof(cmd), &resp, sizeof(resp))) {
+> >  		fprintf(stderr, PFX "%s: Failed to register memory\n",
+> > __func__);
+> >  		free(vmr);
+> >  		return NULL;
+> > diff --git a/providers/ipathverbs/ipathverbs.h
+> > b/providers/ipathverbs/ipathverbs.h
+> > index cfb5cc38..694f1f44 100644
+> > --- a/providers/ipathverbs/ipathverbs.h
+> > +++ b/providers/ipathverbs/ipathverbs.h
+> > @@ -183,8 +183,8 @@ struct ibv_pd *ipath_alloc_pd(struct ibv_context
+> > *pd);
+> > 
+> >  int ipath_free_pd(struct ibv_pd *pd);
+> > 
+> > -struct ibv_mr *ipath_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			    size_t length, int access);
+> > +struct ibv_mr *ipath_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			    uint64_t hca_va, int access);
+> > 
+> >  int ipath_dereg_mr(struct verbs_mr *vmr);
+> > 
+> > diff --git a/providers/ipathverbs/verbs.c b/providers/ipathverbs/verbs.c
+> > index de4722b2..505ea584 100644
+> > --- a/providers/ipathverbs/verbs.c
+> > +++ b/providers/ipathverbs/verbs.c
+> > @@ -109,8 +109,8 @@ int ipath_free_pd(struct ibv_pd *pd)
+> >  	return 0;
+> >  }
+> > 
+> > -struct ibv_mr *ipath_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			    size_t length, int access)
+> > +struct ibv_mr *ipath_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			    uint64_t hca_va, int access)
+> >  {
+> >  	struct verbs_mr *vmr;
+> >  	struct ibv_reg_mr cmd;
+> > @@ -121,8 +121,8 @@ struct ibv_mr *ipath_reg_mr(struct ibv_pd *pd, void
+> > *addr,
+> >  	if (!vmr)
+> >  		return NULL;
+> > 
+> > -	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr, access, vmr,
+> > -			     &cmd, sizeof cmd, &resp, sizeof resp);
+> > +	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
+> > +			     sizeof(cmd), &resp, sizeof(resp));
+> >  	if (ret) {
+> >  		free(vmr);
+> >  		return NULL;
+> > diff --git a/providers/mlx4/mlx4.h b/providers/mlx4/mlx4.h index
+> > e9412c51..ae02221a 100644
+> > --- a/providers/mlx4/mlx4.h
+> > +++ b/providers/mlx4/mlx4.h
+> > @@ -325,8 +325,8 @@ struct ibv_xrcd *mlx4_open_xrcd(struct ibv_context
+> > *context,
+> >  				struct ibv_xrcd_init_attr *attr);
+> >  int mlx4_close_xrcd(struct ibv_xrcd *xrcd);
+> > 
+> > -struct ibv_mr *mlx4_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			    size_t length, int access);
+> > +struct ibv_mr *mlx4_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			   uint64_t hca_va, int access);
+> >  int mlx4_rereg_mr(struct verbs_mr *vmr, int flags, struct ibv_pd *pd,
+> >  		  void *addr, size_t length, int access);  int
+> > mlx4_dereg_mr(struct verbs_mr *vmr); diff --git a/providers/mlx4/verbs.c
+> > b/providers/mlx4/verbs.c index eae75f1d..697ef769 100644
+> > --- a/providers/mlx4/verbs.c
+> > +++ b/providers/mlx4/verbs.c
+> > @@ -275,7 +275,7 @@ int mlx4_close_xrcd(struct ibv_xrcd *ib_xrcd)  }
+> > 
+> >  struct ibv_mr *mlx4_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > -			   int access)
+> > +			   uint64_t hca_va, int access)
+> >  {
+> >  	struct verbs_mr *vmr;
+> >  	struct ibv_reg_mr cmd;
+> > @@ -286,9 +286,8 @@ struct ibv_mr *mlx4_reg_mr(struct ibv_pd *pd, void
+> > *addr, size_t length,
+> >  	if (!vmr)
+> >  		return NULL;
+> > 
+> > -	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t) addr,
+> > -			     access, vmr, &cmd, sizeof(cmd),
+> > -			     &resp, sizeof(resp));
+> > +	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
+> > +			     sizeof(cmd), &resp, sizeof(resp));
+> >  	if (ret) {
+> >  		free(vmr);
+> >  		return NULL;
+> > diff --git a/providers/mlx5/mlx5.h b/providers/mlx5/mlx5.h index
+> > 3838e901..77b0b151 100644
+> > --- a/providers/mlx5/mlx5.h
+> > +++ b/providers/mlx5/mlx5.h
+> > @@ -798,8 +798,8 @@ struct ibv_pd *mlx5_alloc_pd(struct ibv_context
+> > *context);  int mlx5_free_pd(struct ibv_pd *pd);
+> > 
+> >  struct ibv_mr *mlx5_alloc_null_mr(struct ibv_pd *pd); -struct ibv_mr
+> > *mlx5_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			   size_t length, int access);
+> > +struct ibv_mr *mlx5_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			   uint64_t hca_va, int access);
+> >  int mlx5_rereg_mr(struct verbs_mr *mr, int flags, struct ibv_pd *pd, void
+> > *addr,
+> >  		  size_t length, int access);
+> >  int mlx5_dereg_mr(struct verbs_mr *mr); diff --git a/providers/mlx5/verbs.c
+> > b/providers/mlx5/verbs.c index 44926610..129dc772 100644
+> > --- a/providers/mlx5/verbs.c
+> > +++ b/providers/mlx5/verbs.c
+> > @@ -373,7 +373,7 @@ int mlx5_free_pd(struct ibv_pd *pd)  }
+> > 
+> >  struct ibv_mr *mlx5_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > -			   int acc)
+> > +			   uint64_t hca_va, int acc)
+> >  {
+> >  	struct mlx5_mr *mr;
+> >  	struct ibv_reg_mr cmd;
+> > @@ -385,9 +385,8 @@ struct ibv_mr *mlx5_reg_mr(struct ibv_pd *pd, void
+> > *addr, size_t length,
+> >  	if (!mr)
+> >  		return NULL;
+> > 
+> > -	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr, access,
+> > -			     &mr->vmr, &cmd, sizeof(cmd), &resp,
+> > -			     sizeof resp);
+> > +	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, &mr->vmr,
+> > &cmd,
+> > +			     sizeof(cmd), &resp, sizeof(resp));
+> >  	if (ret) {
+> >  		mlx5_free_buf(&(mr->buf));
+> >  		free(mr);
+> > diff --git a/providers/mthca/ah.c b/providers/mthca/ah.c index
+> > df0cb281..70fee9a6 100644
+> > --- a/providers/mthca/ah.c
+> > +++ b/providers/mthca/ah.c
+> > @@ -61,7 +61,8 @@ static struct mthca_ah_page *__add_page(struct
+> > mthca_pd *pd, int page_size, int
+> >  		return NULL;
+> >  	}
+> > 
+> > -	page->mr = mthca_reg_mr(&pd->ibv_pd, page->buf.buf, page_size,
+> > 0);
+> > +	page->mr = mthca_reg_mr(&pd->ibv_pd, page->buf.buf, page_size,
+> > +				(uint64_t) page->buf.buf, 0);
+> >  	if (!page->mr) {
+> >  		mthca_free_buf(&page->buf);
+> >  		free(page);
+> > diff --git a/providers/mthca/mthca.h b/providers/mthca/mthca.h index
+> > 61042de3..b7df2f73 100644
+> > --- a/providers/mthca/mthca.h
+> > +++ b/providers/mthca/mthca.h
+> > @@ -280,8 +280,8 @@ int mthca_query_port(struct ibv_context *context,
+> > uint8_t port,  struct ibv_pd *mthca_alloc_pd(struct ibv_context *context);
+> > int mthca_free_pd(struct ibv_pd *pd);
+> > 
+> > -struct ibv_mr *mthca_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			    size_t length, int access);
+> > +struct ibv_mr *mthca_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			    uint64_t hca_va, int access);
+> >  int mthca_dereg_mr(struct verbs_mr *mr);
+> > 
+> >  struct ibv_cq *mthca_create_cq(struct ibv_context *context, int cqe, diff --
+> > git a/providers/mthca/verbs.c b/providers/mthca/verbs.c index
+> > e7a1c357..99e5ec66 100644
+> > --- a/providers/mthca/verbs.c
+> > +++ b/providers/mthca/verbs.c
+> > @@ -145,10 +145,10 @@ static struct ibv_mr *__mthca_reg_mr(struct
+> > ibv_pd *pd, void *addr,
+> >  	return &vmr->ibv_mr;
+> >  }
+> > 
+> > -struct ibv_mr *mthca_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			    size_t length, int access)
+> > +struct ibv_mr *mthca_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			    uint64_t hca_va, int access)
+> >  {
+> > -	return __mthca_reg_mr(pd, addr, length, (uintptr_t) addr, access,
+> > 0);
+> > +	return __mthca_reg_mr(pd, addr, length, hca_va, access, 0);
+> >  }
+> > 
+> >  int mthca_dereg_mr(struct verbs_mr *vmr) diff --git
+> > a/providers/nes/nes_umain.h b/providers/nes/nes_umain.h index
+> > b377508d..68ec807b 100644
+> > --- a/providers/nes/nes_umain.h
+> > +++ b/providers/nes/nes_umain.h
+> > @@ -355,7 +355,8 @@ int nes_uquery_device(struct ibv_context *, struct
+> > ibv_device_attr *);  int nes_uquery_port(struct ibv_context *, uint8_t, struct
+> > ibv_port_attr *);  struct ibv_pd *nes_ualloc_pd(struct ibv_context *);  int
+> > nes_ufree_pd(struct ibv_pd *); -struct ibv_mr *nes_ureg_mr(struct ibv_pd
+> > *, void *, size_t, int);
+> > +struct ibv_mr *nes_ureg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			   uint64_t hca_va, int access);
+> >  int nes_udereg_mr(struct verbs_mr *vmr);  struct ibv_cq
+> > *nes_ucreate_cq(struct ibv_context *, int, struct ibv_comp_channel *, int);
+> > int nes_uresize_cq(struct ibv_cq *, int); diff --git
+> > a/providers/nes/nes_uverbs.c b/providers/nes/nes_uverbs.c index
+> > fd14849e..e5442b78 100644
+> > --- a/providers/nes/nes_uverbs.c
+> > +++ b/providers/nes/nes_uverbs.c
+> > @@ -165,8 +165,8 @@ int nes_ufree_pd(struct ibv_pd *pd)
+> >  /**
+> >   * nes_ureg_mr
+> >   */
+> > -struct ibv_mr *nes_ureg_mr(struct ibv_pd *pd, void *addr,
+> > -		size_t length, int access)
+> > +struct ibv_mr *nes_ureg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > +			   uint64_t hca_va, int access)
+> >  {
+> >  	struct verbs_mr *vmr;
+> >  	struct nes_ureg_mr cmd;
+> > @@ -177,9 +177,8 @@ struct ibv_mr *nes_ureg_mr(struct ibv_pd *pd, void
+> > *addr,
+> >  		return NULL;
+> > 
+> >  	cmd.reg_type = IWNES_MEMREG_TYPE_MEM;
+> > -	if (ibv_cmd_reg_mr(pd, addr, length, (uintptr_t) addr,
+> > -			access, vmr, &cmd.ibv_cmd, sizeof(cmd),
+> > -			&resp, sizeof(resp))) {
+> > +	if (ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr,
+> > &cmd.ibv_cmd,
+> > +			   sizeof(cmd), &resp, sizeof(resp))) {
+> >  		free(vmr);
+> > 
+> >  		return NULL;
+> > diff --git a/providers/ocrdma/ocrdma_main.h
+> > b/providers/ocrdma/ocrdma_main.h index 33def78c..aadefd96 100644
+> > --- a/providers/ocrdma/ocrdma_main.h
+> > +++ b/providers/ocrdma/ocrdma_main.h
+> > @@ -269,8 +269,8 @@ int ocrdma_query_device(struct ibv_context *, struct
+> > ibv_device_attr *);  int ocrdma_query_port(struct ibv_context *, uint8_t,
+> > struct ibv_port_attr *);  struct ibv_pd *ocrdma_alloc_pd(struct ibv_context
+> > *);  int ocrdma_free_pd(struct ibv_pd *); -struct ibv_mr
+> > *ocrdma_reg_mr(struct ibv_pd *, void *, size_t,
+> > -			     int ibv_access_flags);
+> > +struct ibv_mr *ocrdma_reg_mr(struct ibv_pd *pd, void *addr, size_t len,
+> > +			     uint64_t hca_va, int access);
+> >  int ocrdma_dereg_mr(struct verbs_mr *vmr);
+> > 
+> >  struct ibv_cq *ocrdma_create_cq(struct ibv_context *, int, diff --git
+> > a/providers/ocrdma/ocrdma_verbs.c b/providers/ocrdma/ocrdma_verbs.c
+> > index 5bd9f5ae..2c608e26 100644
+> > --- a/providers/ocrdma/ocrdma_verbs.c
+> > +++ b/providers/ocrdma/ocrdma_verbs.c
+> > @@ -186,22 +186,20 @@ int ocrdma_free_pd(struct ibv_pd *ibpd)
+> >  /*
+> >   * ocrdma_reg_mr
+> >   */
+> > -struct ibv_mr *ocrdma_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			     size_t len, int access)
+> > +struct ibv_mr *ocrdma_reg_mr(struct ibv_pd *pd, void *addr, size_t len,
+> > +			     uint64_t hca_va, int access)
+> >  {
+> >  	struct ocrdma_mr *mr;
+> >  	struct ibv_reg_mr cmd;
+> >  	struct uocrdma_reg_mr_resp resp;
+> > -	uint64_t hca_va = (uintptr_t) addr;
+> > 
+> >  	mr = malloc(sizeof *mr);
+> >  	if (!mr)
+> >  		return NULL;
+> >  	bzero(mr, sizeof *mr);
+> > 
+> > -	if (ibv_cmd_reg_mr(pd, addr, len, hca_va,
+> > -			   access, &mr->vmr, &cmd, sizeof(cmd),
+> > -			   &resp.ibv_resp, sizeof(resp))) {
+> > +	if (ibv_cmd_reg_mr(pd, addr, len, hca_va, access, &mr->vmr, &cmd,
+> > +			   sizeof(cmd), &resp.ibv_resp, sizeof(resp))) {
+> >  		free(mr);
+> >  		return NULL;
+> >  	}
+> > diff --git a/providers/qedr/qelr_main.h b/providers/qedr/qelr_main.h index
+> > ef05acbc..40381e2a 100644
+> > --- a/providers/qedr/qelr_main.h
+> > +++ b/providers/qedr/qelr_main.h
+> > @@ -46,8 +46,8 @@ int qelr_query_port(struct ibv_context *, uint8_t, struct
+> > ibv_port_attr *);  struct ibv_pd *qelr_alloc_pd(struct ibv_context *);  int
+> > qelr_dealloc_pd(struct ibv_pd *);
+> > 
+> > -struct ibv_mr *qelr_reg_mr(struct ibv_pd *, void *, size_t,
+> > -			   int ibv_access_flags);
+> > +struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr, size_t len,
+> > +			   uint64_t hca_va, int access);
+> >  int qelr_dereg_mr(struct verbs_mr *vmr);
+> > 
+> >  struct ibv_cq *qelr_create_cq(struct ibv_context *, int, diff --git
+> > a/providers/qedr/qelr_verbs.c b/providers/qedr/qelr_verbs.c index
+> > c5edc097..8e406bc6 100644
+> > --- a/providers/qedr/qelr_verbs.c
+> > +++ b/providers/qedr/qelr_verbs.c
+> > @@ -157,8 +157,8 @@ int qelr_dealloc_pd(struct ibv_pd *ibpd)
+> >  	return rc;
+> >  }
+> > 
+> > -struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr,
+> > -			   size_t len, int access)
+> > +struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr, size_t len,
+> > +			   uint64_t hca_va, int access)
+> >  {
+> >  	struct qelr_mr *mr;
+> >  	struct ibv_reg_mr cmd;
+> > @@ -166,17 +166,14 @@ struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd,
+> > void *addr,
+> >  	struct qelr_pd *pd = get_qelr_pd(ibpd);
+> >  	struct qelr_devctx *cxt = get_qelr_ctx(ibpd->context);
+> > 
+> > -	uint64_t hca_va = (uintptr_t) addr;
+> > -
+> >  	mr = malloc(sizeof(*mr));
+> >  	if (!mr)
+> >  		return NULL;
+> > 
+> >  	bzero(mr, sizeof(*mr));
+> > 
+> > -	if (ibv_cmd_reg_mr(ibpd, addr, len, hca_va,
+> > -			   access, &mr->vmr, &cmd, sizeof(cmd),
+> > -			   &resp.ibv_resp, sizeof(resp))) {
+> > +	if (ibv_cmd_reg_mr(ibpd, addr, len, hca_va, access, &mr->vmr,
+> > &cmd,
+> > +			   sizeof(cmd), &resp.ibv_resp, sizeof(resp))) {
+> >  		free(mr);
+> >  		return NULL;
+> >  	}
+> > diff --git a/providers/qedr/qelr_verbs.h b/providers/qedr/qelr_verbs.h
+> > index 26802c3a..e8c9bcb5 100644
+> > --- a/providers/qedr/qelr_verbs.h
+> > +++ b/providers/qedr/qelr_verbs.h
+> > @@ -48,8 +48,8 @@ int qelr_query_port(struct ibv_context *context,
+> > uint8_t port,  struct ibv_pd *qelr_alloc_pd(struct ibv_context *context);  int
+> > qelr_dealloc_pd(struct ibv_pd *ibpd);
+> > 
+> > -struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr,
+> > -			   size_t len, int access);
+> > +struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr, size_t len,
+> > +			   uint64_t hca_va, int access);
+> >  int qelr_dereg_mr(struct verbs_mr *mr);
+> > 
+> >  struct ibv_cq *qelr_create_cq(struct ibv_context *context, int cqe, diff --git
+> > a/providers/rxe/rxe.c b/providers/rxe/rxe.c index 909c3f7b..c0fb32e3
+> > 100644
+> > --- a/providers/rxe/rxe.c
+> > +++ b/providers/rxe/rxe.c
+> > @@ -123,7 +123,7 @@ static int rxe_dealloc_pd(struct ibv_pd *pd)  }
+> > 
+> >  static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd, void *addr, size_t
+> > length,
+> > -				 int access)
+> > +				 uint64_t hca_va, int access)
+> >  {
+> >  	struct verbs_mr *vmr;
+> >  	struct ibv_reg_mr cmd;
+> > @@ -134,8 +134,8 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd,
+> > void *addr, size_t length,
+> >  	if (!vmr)
+> >  		return NULL;
+> > 
+> > -	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr, access, vmr,
+> > -			     &cmd, sizeof cmd, &resp, sizeof resp);
+> > +	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
+> > +			     sizeof(cmd), &resp, sizeof(resp));
+> >  	if (ret) {
+> >  		free(vmr);
+> >  		return NULL;
+> > diff --git a/providers/vmw_pvrdma/pvrdma.h
+> > b/providers/vmw_pvrdma/pvrdma.h index ebd50ce1..d90bd809 100644
+> > --- a/providers/vmw_pvrdma/pvrdma.h
+> > +++ b/providers/vmw_pvrdma/pvrdma.h
+> > @@ -281,8 +281,8 @@ int pvrdma_query_port(struct ibv_context *context,
+> > uint8_t port,  struct ibv_pd *pvrdma_alloc_pd(struct ibv_context *context);
+> > int pvrdma_free_pd(struct ibv_pd *pd);
+> > 
+> > -struct ibv_mr *pvrdma_reg_mr(struct ibv_pd *pd, void *addr,
+> > -			     size_t length, int access);
+> > +struct ibv_mr *pvrdma_reg_mr(struct ibv_pd *pd, void *addr, size_t
+> > length,
+> > +			     uint64_t hca_va, int access);
+> >  int pvrdma_dereg_mr(struct verbs_mr *mr);
+> > 
+> >  struct ibv_cq *pvrdma_create_cq(struct ibv_context *context, int cqe, diff -
+> > -git a/providers/vmw_pvrdma/verbs.c b/providers/vmw_pvrdma/verbs.c
+> > index e27952bf..e8423c01 100644
+> > --- a/providers/vmw_pvrdma/verbs.c
+> > +++ b/providers/vmw_pvrdma/verbs.c
+> > @@ -112,7 +112,7 @@ int pvrdma_free_pd(struct ibv_pd *pd)  }
+> > 
+> >  struct ibv_mr *pvrdma_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+> > -			     int access)
+> > +			     uint64_t hca_va, int access)
+> >  {
+> >  	struct verbs_mr *vmr;
+> >  	struct ibv_reg_mr cmd;
+> > @@ -123,9 +123,8 @@ struct ibv_mr *pvrdma_reg_mr(struct ibv_pd *pd,
+> > void *addr, size_t length,
+> >  	if (!vmr)
+> >  		return NULL;
+> > 
+> > -	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t) addr,
+> > -			     access, vmr, &cmd, sizeof(cmd),
+> > -			     &resp, sizeof(resp));
+> > +	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
+> > +			     sizeof(cmd), &resp, sizeof(resp));
+> >  	if (ret) {
+> >  		free(vmr);
+> >  		return NULL;
+> > --
+> > 2.20.1
 > 
-> Doing this means rpcrdma_frwr no longer needs to track the state
-> of each MR... a VALID or FLUSHED MR can no longer appear on an
-> xprt's MR free list.
-> 
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
->  include/trace/events/rpcrdma.h  |   19 ----
->  net/sunrpc/xprtrdma/frwr_ops.c  |  202 ++++++++++++++++++------------------
-> ---
->  net/sunrpc/xprtrdma/rpc_rdma.c  |    2 
->  net/sunrpc/xprtrdma/xprt_rdma.h |   11 --
->  4 files changed, 95 insertions(+), 139 deletions(-)
-> 
-> diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-> index a4ab3a2..7fe21ba 100644
-> --- a/include/trace/events/rpcrdma.h
-> +++ b/include/trace/events/rpcrdma.h
-> @@ -181,18 +181,6 @@
->  				),					\
->  				TP_ARGS(task, mr, nsegs))
->  
-> -TRACE_DEFINE_ENUM(FRWR_IS_INVALID);
-> -TRACE_DEFINE_ENUM(FRWR_IS_VALID);
-> -TRACE_DEFINE_ENUM(FRWR_FLUSHED_FR);
-> -TRACE_DEFINE_ENUM(FRWR_FLUSHED_LI);
-> -
-> -#define xprtrdma_show_frwr_state(x)					\
-> -		__print_symbolic(x,					\
-> -				{ FRWR_IS_INVALID, "INVALID" },		\
-> -				{ FRWR_IS_VALID, "VALID" },		\
-> -				{ FRWR_FLUSHED_FR, "FLUSHED_FR" },	\
-> -				{ FRWR_FLUSHED_LI, "FLUSHED_LI" })
-> -
->  DECLARE_EVENT_CLASS(xprtrdma_frwr_done,
->  	TP_PROTO(
->  		const struct ib_wc *wc,
-> @@ -203,22 +191,19 @@
->  
->  	TP_STRUCT__entry(
->  		__field(const void *, mr)
-> -		__field(unsigned int, state)
->  		__field(unsigned int, status)
->  		__field(unsigned int, vendor_err)
->  	),
->  
->  	TP_fast_assign(
->  		__entry->mr = container_of(frwr, struct rpcrdma_mr, frwr);
-> -		__entry->state = frwr->fr_state;
->  		__entry->status = wc->status;
->  		__entry->vendor_err = __entry->status ? wc->vendor_err : 0;
->  	),
->  
->  	TP_printk(
-> -		"mr=%p state=%s: %s (%u/0x%x)",
-> -		__entry->mr, xprtrdma_show_frwr_state(__entry->state),
-> -		rdma_show_wc_status(__entry->status),
-> +		"mr=%p: %s (%u/0x%x)",
-> +		__entry->mr, rdma_show_wc_status(__entry->status),
->  		__entry->status, __entry->vendor_err
->  	)
->  );
-> diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
-> index ac47314..99871fbf 100644
-> --- a/net/sunrpc/xprtrdma/frwr_ops.c
-> +++ b/net/sunrpc/xprtrdma/frwr_ops.c
-> @@ -168,7 +168,6 @@ int frwr_init_mr(struct rpcrdma_ia *ia, struct rpcrdma_mr
-> *mr)
->  		goto out_list_err;
->  
->  	mr->frwr.fr_mr = frmr;
-> -	mr->frwr.fr_state = FRWR_IS_INVALID;
->  	mr->mr_dir = DMA_NONE;
->  	INIT_LIST_HEAD(&mr->mr_list);
->  	INIT_WORK(&mr->mr_recycle, frwr_mr_recycle_worker);
-> @@ -298,65 +297,6 @@ size_t frwr_maxpages(struct rpcrdma_xprt *r_xprt)
->  }
->  
->  /**
-> - * frwr_wc_fastreg - Invoked by RDMA provider for a flushed FastReg WC
-> - * @cq:	completion queue (ignored)
-> - * @wc:	completed WR
-> - *
-> - */
-> -static void
-> -frwr_wc_fastreg(struct ib_cq *cq, struct ib_wc *wc)
-> -{
-> -	struct ib_cqe *cqe = wc->wr_cqe;
-> -	struct rpcrdma_frwr *frwr =
-> -			container_of(cqe, struct rpcrdma_frwr, fr_cqe);
-> -
-> -	/* WARNING: Only wr_cqe and status are reliable at this point */
-> -	if (wc->status != IB_WC_SUCCESS)
-> -		frwr->fr_state = FRWR_FLUSHED_FR;
-> -	trace_xprtrdma_wc_fastreg(wc, frwr);
-> -}
-> -
-> -/**
-> - * frwr_wc_localinv - Invoked by RDMA provider for a flushed LocalInv WC
-> - * @cq:	completion queue (ignored)
-> - * @wc:	completed WR
-> - *
-> - */
-> -static void
-> -frwr_wc_localinv(struct ib_cq *cq, struct ib_wc *wc)
-> -{
-> -	struct ib_cqe *cqe = wc->wr_cqe;
-> -	struct rpcrdma_frwr *frwr = container_of(cqe, struct rpcrdma_frwr,
-> -						 fr_cqe);
-> -
-> -	/* WARNING: Only wr_cqe and status are reliable at this point */
-> -	if (wc->status != IB_WC_SUCCESS)
-> -		frwr->fr_state = FRWR_FLUSHED_LI;
-> -	trace_xprtrdma_wc_li(wc, frwr);
-> -}
-> -
-> -/**
-> - * frwr_wc_localinv_wake - Invoked by RDMA provider for a signaled LocalInv
-> WC
-> - * @cq:	completion queue (ignored)
-> - * @wc:	completed WR
-> - *
-> - * Awaken anyone waiting for an MR to finish being fenced.
-> - */
-> -static void
-> -frwr_wc_localinv_wake(struct ib_cq *cq, struct ib_wc *wc)
-> -{
-> -	struct ib_cqe *cqe = wc->wr_cqe;
-> -	struct rpcrdma_frwr *frwr = container_of(cqe, struct rpcrdma_frwr,
-> -						 fr_cqe);
-> -
-> -	/* WARNING: Only wr_cqe and status are reliable at this point */
-> -	if (wc->status != IB_WC_SUCCESS)
-> -		frwr->fr_state = FRWR_FLUSHED_LI;
-> -	trace_xprtrdma_wc_li_wake(wc, frwr);
-> -	complete(&frwr->fr_linv_done);
-> -}
-> -
-> -/**
->   * frwr_map - Register a memory region
->   * @r_xprt: controlling transport
->   * @seg: memory region co-ordinates
-> @@ -378,23 +318,15 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt
-> *r_xprt,
->  {
->  	struct rpcrdma_ia *ia = &r_xprt->rx_ia;
->  	bool holes_ok = ia->ri_mrtype == IB_MR_TYPE_SG_GAPS;
-> -	struct rpcrdma_frwr *frwr;
->  	struct rpcrdma_mr *mr;
->  	struct ib_mr *ibmr;
->  	struct ib_reg_wr *reg_wr;
->  	int i, n;
->  	u8 key;
->  
-> -	mr = NULL;
-> -	do {
-> -		if (mr)
-> -			rpcrdma_mr_recycle(mr);
-> -		mr = rpcrdma_mr_get(r_xprt);
-> -		if (!mr)
-> -			goto out_getmr_err;
-> -	} while (mr->frwr.fr_state != FRWR_IS_INVALID);
-> -	frwr = &mr->frwr;
-> -	frwr->fr_state = FRWR_IS_VALID;
-> +	mr = rpcrdma_mr_get(r_xprt);
-> +	if (!mr)
-> +		goto out_getmr_err;
->  
->  	if (nsegs > ia->ri_max_frwr_depth)
->  		nsegs = ia->ri_max_frwr_depth;
-> @@ -423,7 +355,7 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt
-> *r_xprt,
->  	if (!mr->mr_nents)
->  		goto out_dmamap_err;
->  
-> -	ibmr = frwr->fr_mr;
-> +	ibmr = mr->frwr.fr_mr;
->  	n = ib_map_mr_sg(ibmr, mr->mr_sg, mr->mr_nents, NULL, PAGE_SIZE);
->  	if (unlikely(n != mr->mr_nents))
->  		goto out_mapmr_err;
-> @@ -433,7 +365,7 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt
-> *r_xprt,
->  	key = (u8)(ibmr->rkey & 0x000000FF);
->  	ib_update_fast_reg_key(ibmr, ++key);
->  
-> -	reg_wr = &frwr->fr_regwr;
-> +	reg_wr = &mr->frwr.fr_regwr;
->  	reg_wr->mr = ibmr;
->  	reg_wr->key = ibmr->rkey;
->  	reg_wr->access = writing ?
-> @@ -465,6 +397,23 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt
-> *r_xprt,
->  }
->  
->  /**
-> + * frwr_wc_fastreg - Invoked by RDMA provider for a flushed FastReg WC
-> + * @cq:	completion queue (ignored)
-> + * @wc:	completed WR
-> + *
-> + */
-> +static void frwr_wc_fastreg(struct ib_cq *cq, struct ib_wc *wc)
-> +{
-> +	struct ib_cqe *cqe = wc->wr_cqe;
-> +	struct rpcrdma_frwr *frwr =
-> +		container_of(cqe, struct rpcrdma_frwr, fr_cqe);
-> +
-> +	/* WARNING: Only wr_cqe and status are reliable at this point */
-> +	trace_xprtrdma_wc_fastreg(wc, frwr);
-> +	/* The MR will get recycled when the associated req is retransmitted */
-> +}
-> +
-> +/**
->   * frwr_send - post Send WR containing the RPC Call message
->   * @ia: interface adapter
->   * @req: Prepared RPC Call
-> @@ -516,65 +465,104 @@ void frwr_reminv(struct rpcrdma_rep *rep, struct
-> list_head *mrs)
->  		if (mr->mr_handle == rep->rr_inv_rkey) {
->  			list_del_init(&mr->mr_list);
->  			trace_xprtrdma_mr_remoteinv(mr);
-> -			mr->frwr.fr_state = FRWR_IS_INVALID;
->  			rpcrdma_mr_unmap_and_put(mr);
->  			break;	/* only one invalidated MR per RPC */
->  		}
->  }
->  
-> +static void __frwr_release_mr(struct ib_wc *wc, struct rpcrdma_mr *mr)
-> +{
-> +	if (wc->status != IB_WC_SUCCESS)
-> +		rpcrdma_mr_recycle(mr);
-> +	else
-> +		rpcrdma_mr_unmap_and_put(mr);
-> +}
-> +
->  /**
-> - * frwr_unmap_sync - invalidate memory regions that were registered for @req
-> - * @r_xprt: controlling transport
-> - * @mrs: list of MRs to process
-> + * frwr_wc_localinv - Invoked by RDMA provider for a LOCAL_INV WC
-> + * @cq:	completion queue (ignored)
-> + * @wc:	completed WR
->   *
-> - * Sleeps until it is safe for the host CPU to access the
-> - * previously mapped memory regions.
-> + */
-> +static void frwr_wc_localinv(struct ib_cq *cq, struct ib_wc *wc)
-> +{
-> +	struct ib_cqe *cqe = wc->wr_cqe;
-> +	struct rpcrdma_frwr *frwr =
-> +		container_of(cqe, struct rpcrdma_frwr, fr_cqe);
-> +	struct rpcrdma_mr *mr = container_of(frwr, struct rpcrdma_mr, frwr);
-> +
-> +	/* WARNING: Only wr_cqe and status are reliable at this point */
-> +	__frwr_release_mr(wc, mr);
-> +	trace_xprtrdma_wc_li(wc, frwr);
-> +}
-> +
-> +/**
-> + * frwr_wc_localinv_wake - Invoked by RDMA provider for a LOCAL_INV WC
-> + * @cq:	completion queue (ignored)
-> + * @wc:	completed WR
->   *
-> - * Caller ensures that @mrs is not empty before the call. This
-> - * function empties the list.
-> + * Awaken anyone waiting for an MR to finish being fenced.
->   */
-> -void frwr_unmap_sync(struct rpcrdma_xprt *r_xprt, struct list_head *mrs)
-> +static void frwr_wc_localinv_wake(struct ib_cq *cq, struct ib_wc *wc)
-> +{
-> +	struct ib_cqe *cqe = wc->wr_cqe;
-> +	struct rpcrdma_frwr *frwr =
-> +		container_of(cqe, struct rpcrdma_frwr, fr_cqe);
-> +	struct rpcrdma_mr *mr = container_of(frwr, struct rpcrdma_mr, frwr);
-> +
-> +	/* WARNING: Only wr_cqe and status are reliable at this point */
-> +	__frwr_release_mr(wc, mr);
-> +	trace_xprtrdma_wc_li_wake(wc, frwr);
-> +	complete(&frwr->fr_linv_done);
-> +}
-> +
-> +/**
-> + * frwr_unmap_sync - invalidate memory regions that were registered for @req
-> + * @r_xprt: controlling transport instance
-> + * @req: rpcrdma_req with a non-empty list of MRs to process
-> + *
-> + * Sleeps until it is safe for the host CPU to access the previously mapped
-> + * memory regions.
-> + */
-> +void frwr_unmap_sync(struct rpcrdma_xprt *r_xprt, struct rpcrdma_req *req)
->  {
->  	struct ib_send_wr *first, **prev, *last;
->  	const struct ib_send_wr *bad_wr;
-> -	struct rpcrdma_ia *ia = &r_xprt->rx_ia;
->  	struct rpcrdma_frwr *frwr;
->  	struct rpcrdma_mr *mr;
-> -	int count, rc;
-> +	int rc;
->  
->  	/* ORDER: Invalidate all of the MRs first
->  	 *
->  	 * Chain the LOCAL_INV Work Requests and post them with
->  	 * a single ib_post_send() call.
->  	 */
-> -	frwr = NULL;
-> -	count = 0;
->  	prev = &first;
-> -	list_for_each_entry(mr, mrs, mr_list) {
-> -		mr->frwr.fr_state = FRWR_IS_INVALID;
-> +	while (!list_empty(&req->rl_registered)) {
-
-Is this list guaranteed to always start full? Because we could potentially use
-frwr uninitialized a few lines down if it's not.
-
-net/sunrpc/xprtrdma/frwr_ops.c: In function ‘frwr_unmap_sync’:
-net/sunrpc/xprtrdma/frwr_ops.c:582:3: error: ‘frwr’ may be used uninitialized in
-this function [-Werror=maybe-uninitialized]
-   wait_for_completion(&frwr->fr_linv_done);
-   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Thanks,
-Anna
-> +		mr = rpcrdma_mr_pop(&req->rl_registered);
->  
-> -		frwr = &mr->frwr;
->  		trace_xprtrdma_mr_localinv(mr);
-> +		r_xprt->rx_stats.local_inv_needed++;
->  
-> +		frwr = &mr->frwr;
->  		frwr->fr_cqe.done = frwr_wc_localinv;
->  		last = &frwr->fr_invwr;
-> -		memset(last, 0, sizeof(*last));
-> +		last->next = NULL;
->  		last->wr_cqe = &frwr->fr_cqe;
-> +		last->sg_list = NULL;
-> +		last->num_sge = 0;
->  		last->opcode = IB_WR_LOCAL_INV;
-> +		last->send_flags = IB_SEND_SIGNALED;
->  		last->ex.invalidate_rkey = mr->mr_handle;
-> -		count++;
->  
->  		*prev = last;
->  		prev = &last->next;
->  	}
-> -	if (!frwr)
-> -		goto unmap;
->  
->  	/* Strong send queue ordering guarantees that when the
->  	 * last WR in the chain completes, all WRs in the chain
->  	 * are complete.
->  	 */
-> -	last->send_flags = IB_SEND_SIGNALED;
->  	frwr->fr_cqe.done = frwr_wc_localinv_wake;
->  	reinit_completion(&frwr->fr_linv_done);
->  
-> @@ -582,26 +570,18 @@ void frwr_unmap_sync(struct rpcrdma_xprt *r_xprt, struct
-> list_head *mrs)
->  	 * replaces the QP. The RPC reply handler won't call us
->  	 * unless ri_id->qp is a valid pointer.
->  	 */
-> -	r_xprt->rx_stats.local_inv_needed++;
->  	bad_wr = NULL;
-> -	rc = ib_post_send(ia->ri_id->qp, first, &bad_wr);
-> -	if (bad_wr != first)
-> -		wait_for_completion(&frwr->fr_linv_done);
-> -	if (rc)
-> -		goto out_release;
-> +	rc = ib_post_send(r_xprt->rx_ia.ri_id->qp, first, &bad_wr);
-> +	trace_xprtrdma_post_send(req, rc);
->  
-> -	/* ORDER: Now DMA unmap all of the MRs, and return
-> -	 * them to the free MR list.
-> +	/* The final LOCAL_INV WR in the chain is supposed to
-> +	 * do the wake. If it never gets posted, the wake will
-> +	 * not happen, so don't wait in that case.
->  	 */
-> -unmap:
-> -	while (!list_empty(mrs)) {
-> -		mr = rpcrdma_mr_pop(mrs);
-> -		rpcrdma_mr_unmap_and_put(mr);
-> -	}
-> -	return;
-> -
-> -out_release:
-> -	pr_err("rpcrdma: FRWR invalidate ib_post_send returned %i\n", rc);
-> +	if (bad_wr != first)
-> +		wait_for_completion(&frwr->fr_linv_done);
-> +	if (!rc)
-> +		return;
->  
->  	/* Unmap and release the MRs in the LOCAL_INV WRs that did not
->  	 * get posted.
-> diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
-> index 77fc1e4..6c049fd 100644
-> --- a/net/sunrpc/xprtrdma/rpc_rdma.c
-> +++ b/net/sunrpc/xprtrdma/rpc_rdma.c
-> @@ -1277,7 +1277,7 @@ void rpcrdma_release_rqst(struct rpcrdma_xprt *r_xprt,
-> struct rpcrdma_req *req)
->  	 * RPC has relinquished all its Send Queue entries.
->  	 */
->  	if (!list_empty(&req->rl_registered))
-> -		frwr_unmap_sync(r_xprt, &req->rl_registered);
-> +		frwr_unmap_sync(r_xprt, req);
->  
->  	/* Ensure that any DMA mapped pages associated with
->  	 * the Send of the RPC Call have been unmapped before
-> diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
-> index 3c39aa3..a9de116 100644
-> --- a/net/sunrpc/xprtrdma/xprt_rdma.h
-> +++ b/net/sunrpc/xprtrdma/xprt_rdma.h
-> @@ -240,17 +240,9 @@ struct rpcrdma_sendctx {
->   * An external memory region is any buffer or page that is registered
->   * on the fly (ie, not pre-registered).
->   */
-> -enum rpcrdma_frwr_state {
-> -	FRWR_IS_INVALID,	/* ready to be used */
-> -	FRWR_IS_VALID,		/* in use */
-> -	FRWR_FLUSHED_FR,	/* flushed FASTREG WR */
-> -	FRWR_FLUSHED_LI,	/* flushed LOCALINV WR */
-> -};
-> -
->  struct rpcrdma_frwr {
->  	struct ib_mr			*fr_mr;
->  	struct ib_cqe			fr_cqe;
-> -	enum rpcrdma_frwr_state		fr_state;
->  	struct completion		fr_linv_done;
->  	union {
->  		struct ib_reg_wr	fr_regwr;
-> @@ -567,8 +559,7 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt
-> *r_xprt,
->  				struct rpcrdma_mr **mr);
->  int frwr_send(struct rpcrdma_ia *ia, struct rpcrdma_req *req);
->  void frwr_reminv(struct rpcrdma_rep *rep, struct list_head *mrs);
-> -void frwr_unmap_sync(struct rpcrdma_xprt *r_xprt,
-> -		     struct list_head *mrs);
-> +void frwr_unmap_sync(struct rpcrdma_xprt *r_xprt, struct rpcrdma_req *req);
->  
->  /*
->   * RPC/RDMA protocol calls - xprtrdma/rpc_rdma.c
-> 
-
