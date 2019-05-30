@@ -2,236 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAB32F71D
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2019 07:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649C22F75A
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2019 08:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbfE3Fgp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 May 2019 01:36:45 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:45166 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbfE3Fgp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 May 2019 01:36:45 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4U5XQIA129429;
-        Thu, 30 May 2019 05:36:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=6LcyLarL54USQpkmaihJ3/MC0JhALtKM641a7vuD2ZI=;
- b=PTB911N6bUGojKjdvaSornK6efCSeFyfgwvMCKVoEMGZ61azyq5xo8nTuMrjmQqD5gp6
- nVyr8dQNKzHn7q/kfhMKQDRMNSCWDJXl81jkM4t50LPkVNlsitsahLHq6SWC7iz93UEr
- s9q/ncTwswgEg+eTvkV9BCa8XC1zC/bxRjnGb4tttP8/z3XX1ibSg+3+ecSh0a9idZwq
- gLM07Mlotw6xPAyFr5FohFrzokjKLGbFpaXOFUQFoThnW7MtNFhXDzbZtyLxR3R8H0Eq
- rDeb7yBMDC7GB7FjGi7W0P36qSAass86MLKB73XsAGqRahaEjvEEXSSUq8h1OazPRRNs Dw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2spxbqdrnj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 May 2019 05:36:11 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4U5ZNL6144879;
-        Thu, 30 May 2019 05:36:11 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2ss1fnv7dj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 May 2019 05:36:10 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4U5a8M9007135;
-        Thu, 30 May 2019 05:36:08 GMT
-Received: from lap1 (/10.175.33.186)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 29 May 2019 22:36:07 -0700
-Date:   Thu, 30 May 2019 08:36:02 +0300
-From:   Yuval Shaia <yuval.shaia@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     yishaih@mellanox.com, dledford@redhat.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v2 rdma-core] verbs: Introduce a new reg_mr API for
- virtual address space
-Message-ID: <20190530053601.GA2635@lap1>
-References: <20190529125132.6471-1-yuval.shaia@oracle.com>
- <20190529164231.GA19540@ziepe.ca>
+        id S1727187AbfE3GBv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 May 2019 02:01:51 -0400
+Received: from mail-eopbgr50085.outbound.protection.outlook.com ([40.107.5.85]:37925
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726287AbfE3GBv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 May 2019 02:01:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pSPGBN0Yv6OkEVjb9D2kumR4wP3mV5UesWdMLw604V0=;
+ b=e1bjv39n7nJALrtRMMttwCkpBHcPvHCLPPsYjAhhWfY/B09MGCwVUIz1EyVjQ5raQMyqdrrQQcxwwDAqMpQ7MB3HGFVaSmCjfEKkuswPHin6/qUdIcIFCY00ZGjiupyBCgHrespDDlYIX9dMKcWfmPO8OrJALptNY/mWhMXYCGw=
+Received: from AM0PR05MB4147.eurprd05.prod.outlook.com (52.134.124.140) by
+ AM0PR05MB5170.eurprd05.prod.outlook.com (20.178.18.19) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.17; Thu, 30 May 2019 06:01:46 +0000
+Received: from AM0PR05MB4147.eurprd05.prod.outlook.com
+ ([fe80::f099:9287:8470:5b72]) by AM0PR05MB4147.eurprd05.prod.outlook.com
+ ([fe80::f099:9287:8470:5b72%7]) with mapi id 15.20.1922.021; Thu, 30 May 2019
+ 06:01:46 +0000
+From:   Mark Zhang <markz@mellanox.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Majd Dibbiny <majd@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2 13/17] RDMA/core: Get sum value of all
+ counters when perform a sysfs stat read
+Thread-Topic: [PATCH rdma-next v2 13/17] RDMA/core: Get sum value of all
+ counters when perform a sysfs stat read
+Thread-Index: AQHU/maJo6zXY95FBkWR7IjH/etEzqZ3ijYAgAqV0ACAAE4FAIAA722A
+Date:   Thu, 30 May 2019 06:01:46 +0000
+Message-ID: <6e0b034c-b647-749f-fba7-2ac51a12d327@mellanox.com>
+References: <20190429083453.16654-1-leon@kernel.org>
+ <20190429083453.16654-14-leon@kernel.org> <20190522172636.GF15023@ziepe.ca>
+ <20190529110524.GU4633@mtr-leonro.mtl.com> <20190529154438.GB8567@ziepe.ca>
+In-Reply-To: <20190529154438.GB8567@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM5PR0202CA0013.eurprd02.prod.outlook.com
+ (2603:10a6:203:69::23) To AM0PR05MB4147.eurprd05.prod.outlook.com
+ (2603:10a6:208:63::12)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=markz@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [115.195.218.239]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a86eed97-875c-4d13-b97c-08d6e4c44c26
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:AM0PR05MB5170;
+x-ms-traffictypediagnostic: AM0PR05MB5170:
+x-microsoft-antispam-prvs: <AM0PR05MB51705EE57D30329B0CAD85E3CA180@AM0PR05MB5170.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 00531FAC2C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(396003)(346002)(39860400002)(366004)(376002)(189003)(199004)(71190400001)(316002)(71200400001)(54906003)(110136005)(66946007)(3846002)(229853002)(81156014)(81166006)(6116002)(31686004)(8676002)(66066001)(73956011)(6486002)(68736007)(36756003)(6512007)(305945005)(8936002)(2906002)(6436002)(5660300002)(256004)(186003)(52116002)(6506007)(4326008)(25786009)(6246003)(7736002)(66556008)(66476007)(64756008)(66446008)(2616005)(14454004)(478600001)(486006)(386003)(446003)(102836004)(86362001)(99286004)(476003)(26005)(31696002)(11346002)(53936002)(76176011)(53546011);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB5170;H:AM0PR05MB4147.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: BbxheWyvE75CELJspvsf/ozKUEXiOqp9XBx3z2v7oa8hdoE5MptiodLchXhb1ZioIV5vurpza/CWPnlCPhB8KJS6zNHNQhk8nTlzCLevbzCjNqnaTLkSqA05Osj1mnOsWsMamzOJi7gJR23dEQYgCNDwLBG4dBi00C8Y/eTuvB/mpe8zKstGQgKpa4RlSXKYaclI1mLyVQ5HQQ3wLO+oA/bUYLJxWXgqknvnS4r9P2xZqPaZzP3KtJU9Shvw26eddL1qz55lTr9DuXnt21Y42IN7BMMwQG+Zle6vUCxgL49266AGUQcM5QS5BGfGYeOnC3rrVxu61bhNrdwFUi9ZhGFZVnYF3DP+L6RVs9GbYncZTOOvxRzhIzc3+0AxM2U+UynOkIxnpb9IUfNoR+r6qYuiFCagv+LX46JPakl3fz0=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <733024340E9E054FBFD09B1E79D98316@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190529164231.GA19540@ziepe.ca>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9272 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=9 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905300042
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9272 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=9 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905300042
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a86eed97-875c-4d13-b97c-08d6e4c44c26
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2019 06:01:46.6420
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: markz@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5170
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 29, 2019 at 01:42:31PM -0300, Jason Gunthorpe wrote:
-> On Wed, May 29, 2019 at 03:51:32PM +0300, Yuval Shaia wrote:
-> > The virtual address that is registered is used as a base for any address
-> > passed later in post_recv and post_send operations.
-> > 
-> > On a virtualized environment this is not correct.
-> > 
-> > A guest cannot register its memory so hypervisor maps the guest physical
-> > address to a host virtual address and register it with the HW. Later on,
-> > at datapath phase, the guest fills the SGEs with addresses from its
-> > address space.
-> > 
-> > Since HW cannot access guest virtual address space an extra translation
-> > is needed to map those addresses to be based on the host virtual address
-> > that was registered with the HW.
-> > This datapath interference affects performances.
-> > 
-> > To avoid this, a logical separation between the address that is
-> > registered and the address that is used as a offset at datapath phase is
-> > needed.
-> > This separation is already implemented in the lower layer part
-> > (ibv_cmd_reg_mr) but blocked at the API level.
-> > 
-> > Fix it by introducing a new API function that accepts an address from
-> > guest virtual address space as well to be used as offset for later
-> > datapath operations.
-> > 
-> > Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
-> > v0 -> v1: 
-> > 	* Change reg_mr callback signature instead of adding new callback
-> > 	* Add the new API to libibverbs/libibverbs.map.in
-> > v1 -> v2: 
-> > 	* Do not modify reg_mr signature for version 1.0 
-> > 	* Add note to man page
-> >  libibverbs/driver.h               |  2 +-
-> >  libibverbs/dummy_ops.c            |  2 +-
-> >  libibverbs/libibverbs.map.in      |  1 +
-> >  libibverbs/man/ibv_reg_mr.3       | 15 +++++++++++++--
-> >  libibverbs/verbs.c                | 23 ++++++++++++++++++++++-
-> >  libibverbs/verbs.h                |  7 +++++++
-> >  providers/bnxt_re/verbs.c         |  6 +++---
-> >  providers/bnxt_re/verbs.h         |  2 +-
-> >  providers/cxgb3/iwch.h            |  4 ++--
-> >  providers/cxgb3/verbs.c           |  9 +++++----
-> >  providers/cxgb4/libcxgb4.h        |  4 ++--
-> >  providers/cxgb4/verbs.c           |  9 +++++----
-> >  providers/hfi1verbs/hfiverbs.h    |  4 ++--
-> >  providers/hfi1verbs/verbs.c       |  8 ++++----
-> >  providers/hns/hns_roce_u.h        |  2 +-
-> >  providers/hns/hns_roce_u_verbs.c  |  6 +++---
-> >  providers/i40iw/i40iw_umain.h     |  2 +-
-> >  providers/i40iw/i40iw_uverbs.c    |  8 ++++----
-> >  providers/ipathverbs/ipathverbs.h |  4 ++--
-> >  providers/ipathverbs/verbs.c      |  8 ++++----
-> >  providers/mlx4/mlx4.h             |  4 ++--
-> >  providers/mlx4/verbs.c            |  7 +++----
-> >  providers/mlx5/mlx5.h             |  4 ++--
-> >  providers/mlx5/verbs.c            |  7 +++----
-> >  providers/mthca/ah.c              |  3 ++-
-> >  providers/mthca/mthca.h           |  4 ++--
-> >  providers/mthca/verbs.c           |  6 +++---
-> >  providers/nes/nes_umain.h         |  2 +-
-> >  providers/nes/nes_uverbs.c        |  9 ++++-----
-> >  providers/ocrdma/ocrdma_main.h    |  2 +-
-> >  providers/ocrdma/ocrdma_verbs.c   | 10 ++++------
-> >  providers/qedr/qelr_main.h        |  2 +-
-> >  providers/qedr/qelr_verbs.c       | 11 ++++-------
-> >  providers/qedr/qelr_verbs.h       |  4 ++--
-> >  providers/rxe/rxe.c               |  6 +++---
-> >  providers/vmw_pvrdma/pvrdma.h     |  4 ++--
-> >  providers/vmw_pvrdma/verbs.c      |  7 +++----
-> >  37 files changed, 126 insertions(+), 92 deletions(-)
-> > 
-> > diff --git a/libibverbs/driver.h b/libibverbs/driver.h
-> > index e4d624b2..ef27259a 100644
-> > +++ b/libibverbs/driver.h
-> > @@ -338,7 +338,7 @@ struct verbs_context_ops {
-> >  				    uint64_t dm_offset, size_t length,
-> >  				    unsigned int access);
-> >  	struct ibv_mr *(*reg_mr)(struct ibv_pd *pd, void *addr, size_t length,
-> > -				 int access);
-> > +				 uint64_t hca_va, int access);
-> >  	int (*req_notify_cq)(struct ibv_cq *cq, int solicited_only);
-> >  	int (*rereg_mr)(struct verbs_mr *vmr, int flags, struct ibv_pd *pd,
-> >  			void *addr, size_t length, int access);
-> > diff --git a/libibverbs/dummy_ops.c b/libibverbs/dummy_ops.c
-> > index c861c3a0..61a8fbdf 100644
-> > +++ b/libibverbs/dummy_ops.c
-> > @@ -410,7 +410,7 @@ static struct ibv_mr *reg_dm_mr(struct ibv_pd *pd, struct ibv_dm *dm,
-> >  }
-> >  
-> >  static struct ibv_mr *reg_mr(struct ibv_pd *pd, void *addr, size_t length,
-> > -			     int access)
-> > +			     uint64_t hca_va,  int access)
-> >  {
-> >  	errno = ENOSYS;
-> >  	return NULL;
-> > diff --git a/libibverbs/libibverbs.map.in b/libibverbs/libibverbs.map.in
-> > index 87a1b9fc..523fd424 100644
-> > +++ b/libibverbs/libibverbs.map.in
-> > @@ -94,6 +94,7 @@ IBVERBS_1.1 {
-> >  		ibv_query_srq;
-> >  		ibv_rate_to_mbps;
-> >  		ibv_reg_mr;
-> > +		ibv_reg_mr_virt_as;
-> >  		ibv_register_driver;
-> >  		ibv_rereg_mr;
-> >  		ibv_resize_cq;
-> > diff --git a/libibverbs/man/ibv_reg_mr.3 b/libibverbs/man/ibv_reg_mr.3
-> > index 631e5fe8..983b5761 100644
-> > +++ b/libibverbs/man/ibv_reg_mr.3
-> > @@ -3,7 +3,7 @@
-> >  .\"
-> >  .TH IBV_REG_MR 3 2006-10-31 libibverbs "Libibverbs Programmer's Manual"
-> >  .SH "NAME"
-> > -ibv_reg_mr, ibv_dereg_mr \- register or deregister a memory region (MR)
-> > +ibv_reg_mr, ibv_reg_mr_virt_as, ibv_dereg_mr \- register or deregister a memory region (MR)
-> >  .SH "SYNOPSIS"
-> >  .nf
-> >  .B #include <infiniband/verbs.h>
-> > @@ -11,6 +11,10 @@ ibv_reg_mr, ibv_dereg_mr \- register or deregister a memory region (MR)
-> >  .BI "struct ibv_mr *ibv_reg_mr(struct ibv_pd " "*pd" ", void " "*addr" ,
-> >  .BI "                          size_t " "length" ", int " "access" );
-> >  .sp
-> > +.BI "struct ibv_mr *ibv_reg_mr_virt_as(struct ibv_pd " "*pd" ", void " "*addr" ,
-> > +.BI "                                  size_t " "length" ", uint64_t " "hca_va" ,
-> > +.BI "                                  int " "access" );
-> > +.sp
-> >  .BI "int ibv_dereg_mr(struct ibv_mr " "*mr" );
-> >  .fi
-> >  .SH "DESCRIPTION"
-> > @@ -52,11 +56,18 @@ Local read access is always enabled for the MR.
-> >  .PP
-> >  To create an implicit ODP MR, IBV_ACCESS_ON_DEMAND should be set, addr should be 0 and length should be SIZE_MAX.
-> >  .PP
-> > +.B ibv_reg_mr_virt_as()
-> > +Special variant of memory registration used when addresses passed to
-> > +ibv_post_send and ibv_post_recv are relative to base address from a
-> > +different address space than
-> > +.I addr\fR. The argument
-> > +.I hca_va\fR is the new base address.
-> > +.PP
-> 
-> This should also block ACCESS_ZERO_BASED for mr_virt_as as ZERO_BASED
-> is really just hca_va == 0
-> 
-> In fact, I might be inclined to re-implement ZERO_BASED in rdma-core
-> as just passing hca_va == 0 which would make it work on all drivers
-> instead of the stupid implementation we have today..
-> 
-> Also, not totally sold on the 'ibv_reg_mr_virt_as' for the
-> name.. 
-
-I didn't liked it also, just because it came from virtualization
-perspective in mind i choose virt-address-space.
-
-> 
-> How about 'ibv_reg_mr_iova'? And let us call hca_va iova in the public
-> interface. I think that is an existing convention.
-
-Sending v3.
-
-> 
-> Jason
+T24gNS8yOS8yMDE5IDExOjQ0IFBNLCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+IE9uIFdlZCwg
+TWF5IDI5LCAyMDE5IGF0IDAyOjA1OjI0UE0gKzAzMDAsIExlb24gUm9tYW5vdnNreSB3cm90ZToN
+Cj4+IE9uIFdlZCwgTWF5IDIyLCAyMDE5IGF0IDAyOjI2OjM2UE0gLTAzMDAsIEphc29uIEd1bnRo
+b3JwZSB3cm90ZToNCj4+PiBPbiBNb24sIEFwciAyOSwgMjAxOSBhdCAxMTozNDo0OUFNICswMzAw
+LCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6DQo+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmlu
+aWJhbmQvY29yZS9kZXZpY2UuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL2RldmljZS5jDQo+
+Pj4+IGluZGV4IGM1NmZmYzYxYWIxZS4uOGFlNDkwNmE2MGU3IDEwMDY0NA0KPj4+PiArKysgYi9k
+cml2ZXJzL2luZmluaWJhbmQvY29yZS9kZXZpY2UuYw0KPj4+PiBAQCAtMTI1NSw3ICsxMjU1LDEx
+IEBAIGludCBpYl9yZWdpc3Rlcl9kZXZpY2Uoc3RydWN0IGliX2RldmljZSAqZGV2aWNlLCBjb25z
+dCBjaGFyICpuYW1lKQ0KPj4+PiAgIAkJZ290byBkZXZfY2xlYW51cDsNCj4+Pj4gICAJfQ0KPj4+
+Pg0KPj4+PiAtCXJkbWFfY291bnRlcl9pbml0KGRldmljZSk7DQo+Pj4+ICsJcmV0ID0gcmRtYV9j
+b3VudGVyX2luaXQoZGV2aWNlKTsNCj4+Pj4gKwlpZiAocmV0KSB7DQo+Pj4+ICsJCWRldl93YXJu
+KCZkZXZpY2UtPmRldiwgIkNvdWxkbid0IGluaXRpYWxpemUgY291bnRlclxuIik7DQo+Pj4+ICsJ
+CWdvdG8gc3lzZnNfY2xlYW51cDsNCj4+Pj4gKwl9DQo+Pj4NCj4+PiBEb24ndCBwdXQgdGhpcyB0
+aGluZ3MgcmFuZG9tbHksIGlmIHRoZXJlIGlzIHNvbWUgcmVhc29uIGl0IHNob3VsZCBiZQ0KPj4+
+IGFmdGVyIHN5c2ZzIGl0IG5lZWRzIGEgY29tbWVudCwgb3RoZXJ3aXNlIGlmIGl0IGlzIGp1c3Qg
+YWxsb2NhdGluZw0KPj4+IG1lbW9yeSBpdCBiZWxvbmdzIGVhcmxpZXIsIGFuZCB0aGUgdW53aW5k
+IHNob3VsZCBiZSBkb25lIGluIHJlbGVhc2UuDQo+Pj4NCj4+PiBJIGFsc28gdGhpbmsgaXQgaXMg
+dmVyeSBzdHJhbmdlL3dyb25nIHRoYXQgYm90aCBzeXNmcyBhbmQgY291bnRlcnMgYXJlDQo+Pj4g
+YWxsb2NhdGluZyB0aGUgc2FtZSBhbGxvY19od19zdGF0cyBvYmplY3QNCj4+Pg0KPj4+IFdoeSBj
+YW4ndCB0aGV5IHNoYXJlPw0KPj4NCj4+IFRoZXkgY2FuLCBidXQgd2Ugd2FudGVkIHRvIHNlcGFy
+YXRlICJsZWdhY3kiIGNvdW50ZXJzIHdoaWNoIHdlcmUgZXhwb3NlZA0KPj4gdGhyb3VnaCBzeXNm
+cyBhbmQgIm5ldyIgY291bnRlcnMgd2hpY2ggY2FuIGJlIGVuYWJsZWQvZGlzYWJsZSBhdXRvbWF0
+aWNhbGx5Lg0KPiANCj4gSXMgdGhlcmUgYW55IGNyb3NzIGNvbnRhbWluYXRpb24gdGhyb3VnaCB0
+aGUgaHdfc3RhdHM/IElmIG5vIHRoZXkNCj4gc2hvdWxkIGp1c3Qgc2hhcmUuID4NCg0Kc3lzZnMg
+aHdfc3RhdHMgaG9sZHMgdGhlIHBvcnQgY291bnRlciwgd2hpbGUgdGhpcyBvbmUgaG9sZHMgdGhl
+DQpoaXN0b3J5IHZhbHVlIG9mIGFsbCBkeW5hbWljYWxseSBhbGxvY2F0ZWQgY291bnRlcnMuIFRo
+ZXkgY2FuIG5vdCBzaGFyZS4NCnBvcnRfY291bnRlciA9DQogICBkZWZhdWx0X2NvdW50ZXIgKyBy
+dW5uaW5nX2R5bmFtaWNfY291bnRlciArIGhpc3RvcnlfZHluYW1pY19jb3VudGVyDQoNCj4gSmFz
+b24NCj4gDQoNCg==
