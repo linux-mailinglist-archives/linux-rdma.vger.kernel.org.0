@@ -2,137 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6553D301AA
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2019 20:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0C9301D9
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2019 20:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbfE3SR0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 May 2019 14:17:26 -0400
-Received: from mail-eopbgr10064.outbound.protection.outlook.com ([40.107.1.64]:13275
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725961AbfE3SR0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 May 2019 14:17:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sLbXKLY4Thbfw1+bnmqaJTdNTLw3WKuCULnYdRkjG2c=;
- b=JNzCEcnD4Toi5TATeuJptJekdbYLts7hvx5riJZOgNilyGxnCHFxRWV/US9ENxhlyOa3IUGdxvQFCbkEdq6bs5of+mPHMHCGPzc0VhbxFJ6OeM534sBhg2t7ndLkFHubpFJ5poN+OimI6wmQdeREpYpxhDpkAoVCv5c14GT0Dw4=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB5517.eurprd05.prod.outlook.com (20.177.200.222) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1922.18; Thu, 30 May 2019 18:17:22 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1943.016; Thu, 30 May 2019
- 18:17:22 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Yuval Shaia <yuval.shaia@oracle.com>
-CC:     Michal Kalderon <mkalderon@marvell.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v3 rdma-core] verbs: Introduce a new reg_mr API for
- virtual address space
-Thread-Topic: [PATCH v3 rdma-core] verbs: Introduce a new reg_mr API for
- virtual address space
-Thread-Index: AQHVFq3BD+IbLFlwDUGZa6Hf17rhnqaDm3oAgAAg2oCAAD4jgA==
-Date:   Thu, 30 May 2019 18:17:21 +0000
-Message-ID: <20190530181717.GP13461@mellanox.com>
-References: <20190530060539.7136-1-yuval.shaia@oracle.com>
- <MN2PR18MB3182E08DB0E164C6BE6C409FA1180@MN2PR18MB3182.namprd18.prod.outlook.com>
- <20190530143452.GA19236@lap1>
-In-Reply-To: <20190530143452.GA19236@lap1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR12CA0011.namprd12.prod.outlook.com
- (2603:10b6:208:a8::24) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bde6e28f-4739-4f6d-67ad-08d6e52b0ed4
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5517;
-x-ms-traffictypediagnostic: VI1PR05MB5517:
-x-microsoft-antispam-prvs: <VI1PR05MB5517FB12C90217A9BDF4AFA2CF180@VI1PR05MB5517.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 00531FAC2C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(39860400002)(376002)(346002)(136003)(396003)(199004)(189003)(478600001)(316002)(68736007)(5660300002)(1076003)(26005)(66556008)(73956011)(66946007)(66066001)(66446008)(64756008)(71190400001)(2616005)(11346002)(66476007)(446003)(186003)(486006)(14454004)(14444005)(256004)(6512007)(6486002)(6116002)(6436002)(476003)(99286004)(54906003)(6246003)(81166006)(36756003)(71200400001)(8676002)(305945005)(229853002)(7736002)(3846002)(33656002)(2906002)(81156014)(86362001)(6916009)(53936002)(52116002)(25786009)(386003)(76176011)(6506007)(4326008)(8936002)(102836004);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5517;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: HZU4Ekr3XoLz8eP4j+zsZp2+0eNRhhJ0O0HrzD/mgaSJsDOliyD6/F8pgAirBlyMlofKYl6ZoiZQpyb/WtlI27jTa/ydImkpu7OEkPCj09mZ6d7JiG5WwAGc+OQXYQiBjhjEa7KGUH5S+NpLes9LcXI9J0xg+xLkmvcLf0M+Sm4/mP1SrjfpdfVAFo/Bj2icEch4xEbKnMGyoqAH5Tp/1mVUc/pm57z56RcfzFW08eNQnuPtEIjl5i2rQyVngXHA4kMYQ+jx1MtkKSKPH00IXwpKy+hSgDEnS2ClcG8bmQhTSbBadw12srup6h1ixItbzYoJSKKjg5wjFnTbDTg+mOEAde0aZXNQanNxh4ZRaiItBNhhaIBVxT0pgVALg4uEWFDs5ot/z95ORgu+G+pEj/XZq9QaxNADX3xonAXNZBg=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9D7C76603AABF545BB6A9343DB1275AA@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726446AbfE3SZL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 May 2019 14:25:11 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:45112 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbfE3SZL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 May 2019 14:25:11 -0400
+Received: by mail-qt1-f195.google.com with SMTP id t1so8151104qtc.12
+        for <linux-rdma@vger.kernel.org>; Thu, 30 May 2019 11:25:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cSrqrIgrInAtLJo2kHqTtMUGh4CJxgy1fN3QR1jv1as=;
+        b=PSNhexlAm6eiP/1ALt5hMFol25rYfA4R/+e93oiOPOaoY/F8gI/mQpbQsHsx2Pl+Lt
+         aebs4GAvYHYe2sClBfzLLLzfnJK3NeQy8c8jakZJw0VJnMUxskWPDB3eD3dT5E+6nimR
+         jAOe9ki+X2MnTZzJxCBGXmc+fbuyP6480BGM6pyZ9cizHvuFV5ddfbCXHSav9panuWkB
+         00HvOZfHcaIk369Zj91vkEHDWF+Qwi4cWAixPcJvVXZGkLM+KZvEBG7JdXHnOGzMW1Yp
+         9FSbNVd15brUOaDSYKSyYZCltb+oyOafEzCFb8wCNEQlWzC2aK6uydB+6crvwXBSaJ6d
+         Fr/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cSrqrIgrInAtLJo2kHqTtMUGh4CJxgy1fN3QR1jv1as=;
+        b=hzsma0dQbKZM4M9jHdk65U8fAinjdwGNm5preZ4NEcaFweeRcIME3taqRgU0xHFB3d
+         tvnMOu6XuOWeyCLoKPNwYmgAHj3ItTHIUt2uahKFQEclIOSYHdJqlLtuoTHr8VkkuUyb
+         UC8+YDNrhpp7TrnY8Jpe3hmU/jjW+fSZhcJuGjHl9EtO5buYJFvd+63pmoGULDT5ouhD
+         Ob1pCTKSebelCyv93wlcy3Q/Nw1JdRI5Mn3Ttqons1t0sfYIwsPh0SA8mJ3PegEKTszQ
+         KJf1q4Z2zlKB93nT0cCQ4EiYXImY1Fj3P1zTWSOcmDC6TQeAeXj4+yv4+AGXMewhKtTl
+         I7CA==
+X-Gm-Message-State: APjAAAVjmGucJx3huMzl5+7lB8AhCGuO/4Rf4+P0MBUqGO7X+5pFurnc
+        9ZsxZiGBngIp6YrR85hFgIg9LECWXiE=
+X-Google-Smtp-Source: APXvYqxFvdV4MF4CV763d59CefX8RLv1BSJVJkc7V5EiOiPCFp4cZVnXPPEYyYl59Wen8XdmhbZNfw==
+X-Received: by 2002:a0c:c612:: with SMTP id v18mr3872191qvi.215.1559240710445;
+        Thu, 30 May 2019 11:25:10 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id g9sm1459540qtj.67.2019.05.30.11.25.09
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 30 May 2019 11:25:09 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hWPjh-0006Z7-Gd
+        for linux-rdma@vger.kernel.org; Thu, 30 May 2019 15:25:09 -0300
+Date:   Thu, 30 May 2019 15:25:09 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-core 00/20] Incorporate infiniband-diags into
+ rdma-core
+Message-ID: <20190530182509.GA25195@ziepe.ca>
+References: <20190514234936.5175-1-jgg@ziepe.ca>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bde6e28f-4739-4f6d-67ad-08d6e52b0ed4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2019 18:17:21.9326
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5517
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190514234936.5175-1-jgg@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 30, 2019 at 05:34:53PM +0300, Yuval Shaia wrote:
-> On Thu, May 30, 2019 at 12:37:18PM +0000, Michal Kalderon wrote:
-> > > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > > owner@vger.kernel.org> On Behalf Of Yuval Shaia
-> > >=20
-> > > The virtual address that is registered is used as a base for any addr=
-ess passed
-> > > later in post_recv and post_send operations.
-> > >=20
-> > > On a virtualized environment this is not correct.
-> > >=20
-> > > A guest cannot register its memory so hypervisor maps the guest physi=
-cal
-> > > address to a host virtual address and register it with the HW. Later =
-on, at
-> > > datapath phase, the guest fills the SGEs with addresses from its addr=
-ess
-> > > space.
-> > > Since HW cannot access guest virtual address space an extra translati=
-on is
-> > > needed to map those addresses to be based on the host virtual address=
- that
-> > > was registered with the HW.
-> > > This datapath interference affects performances.
-> > >=20
-> > > To avoid this, a logical separation between the address that is regis=
-tered and
-> > > the address that is used as a offset at datapath phase is needed.
-> > > This separation is already implemented in the lower layer part
-> > > (ibv_cmd_reg_mr) but blocked at the API level.
-> > >=20
-> > > Fix it by introducing a new API function which accepts an address fro=
-m guest
-> > > virtual address space as well, to be used as offset for later datapat=
-h
-> > > operations.
-> > >=20
-> > Could you give an example of how an app would use this new API? How wil=
-l
-> > It receive the new hca_va addresss ?=20
->=20
-> In my use case an application is device emulation that runs in the contex=
-t
-> of a userspace process in the host.
-> This (virtual) device receives from guest driver a dma address (in form o=
-f
-> scatter-gather list) along with guest user-space virtual address.=20
+On Tue, May 14, 2019 at 08:49:16PM -0300, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> 
+> Ira would like to stop maintaining infiniband-diags, and also bring it up to
+> the level of CI, packaging, static analysis, etc that rdma-core has. Since it
+> is a fairly small and complementary code base, just roll it into rdma-core.
+> 
+> The packaging is based on what Debian, Fedora and suse have already.
+> 
+> I've already sent many commits to infinbiand-diags that clean up warnings/etc
+> so this drops in and passes travis CI.
+> 
+> Like all the past aggregations this preserves the GIT commit history and
+> per-file history and blame works with --follow.
+> 
+> This should not be merged until after we make the next rdma-core release.
+> 
+> It is a github PR:
+> 
+> https://github.com/linux-rdma/rdma-core/pull/529
+> 
+> The diffs attached are based off the merge point that includes the entire
+> infiniband-diag's source as a subdirectory to rdma-core. They show the
+> transformation of infiniband-diags to fit into rdma-core.
+> 
+> Jason Gunthorpe (20):
+>   ibdiags: Add SWITCH_FALLTHROUGH
+>   ibdiags: Add required definitions to rdma-core config.h
+>   ibdiags: Remove unneeded HAVE_ checks
+>   ibdiags: Remove config.h and HAVE_CONFIG_H
+>   ibdiags: Don't use __DATE__ and __TIME__
+>   build: Support rst as a man page option
+>   ibdiags: Add cmake files for ibdiags components
+>   ibdiags: Copy the cl_qmap implementation from opensm
+>   ibdiags: Copy part of ib_types.h from opensm
+>   ibdiags: Provide the cl_nodenamemap interface
+>   ibdiags: Add Debian packaging
+>   ibdiags: Add Fedora packaging
+>   ibdiags: Add suse packaging
+>   ibdiags: Obsolete mad_osd.h
+>   libibmad: Flatten libibmad into one directory
+>   libibnetdiscover: Flatten libibnetdiscover into one directory
+>   ibdiags: Flatten the infiniband-diags tools into one directory
+>   ibdiags: Remove obsolete build system and related files
+>   ibdiags: Remove @BUILD_DATE@ from the man pages
+>   ibdiags: Perform substitution on the RST include files as well
 
-How do you handle the scatter-gather list?
+Merged on github
 
 Jason
