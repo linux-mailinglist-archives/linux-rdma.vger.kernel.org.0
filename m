@@ -2,85 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0BE31563
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2019 21:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDBC31594
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2019 21:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727248AbfEaTdU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 May 2019 15:33:20 -0400
-Received: from mail-pg1-f182.google.com ([209.85.215.182]:43942 "EHLO
-        mail-pg1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726808AbfEaTdT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 May 2019 15:33:19 -0400
-Received: by mail-pg1-f182.google.com with SMTP id f25so4565207pgv.10;
-        Fri, 31 May 2019 12:33:19 -0700 (PDT)
+        id S1727371AbfEaTqB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 May 2019 15:46:01 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40329 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727366AbfEaTqA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 May 2019 15:46:00 -0400
+Received: by mail-qk1-f194.google.com with SMTP id c70so7055213qkg.7
+        for <linux-rdma@vger.kernel.org>; Fri, 31 May 2019 12:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ujUTnfvw/4taFNKx8LK2xbZPcUdGF4SCwE9rhK7tsgs=;
+        b=I31i/cTT23QnmCdlrkJ1wNrv+LfG8Kt+dJbrTW34fAfGFaIrRdDF/JxNh04n1uDUpT
+         gxRzC8Jssgfq139SagqA+PnXwSe8qvJMbaQnyJOzE1FmtFb7hrbChRGSNXyXlZL8z/Wv
+         l8wc4G4s1jOT71I/+CFnmJIXyYbsylqEImVjbO1Cz4qKnB5aAQgVOxEEZM/9UsvGnWbp
+         97DtkDb8MzmWVWN+UjjUvTJ+rPVT446+R2Ksp5E2JYk8VHmQZSbKGgMN+PNJRpYRD2ge
+         0v4vLPqVV8Eb1Dj4k06Xb08Q/Prq+G3srqvHSoinE4mDpsmhe+SbsqavBesHBoZahweW
+         4fqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tF4itkqnXuiTyUoa0PM1pBKr3QyIJoJOIgWAaCan9v8=;
-        b=UdbkpMHZGzIhlylkhxIi5Co/v81bLstXixqKj7cgvtxn0edtXMQn/XJbieZ2fKRj+5
-         mB2voTkAo35pxV10bJcUE7LqNNP5/WoCRjiV2LlxURPj5CDKEKvQXFDotCIbvqffhdjL
-         btJY22XZs42LVy1LrHG/926D/UDE3jvh/S2W8qjPlXL2hMzBXTu1zP75W1M4Caf8NH+z
-         A61tO7UncvTNlAYOUBIrl02TYkDLSgtaMhb5B4k1QDVoXflCiQ8kOYTzLWqcAcobBCoQ
-         DvsRy1+tAbsh+zufIOVz+HWZieUZwDX7X7wr765fAeaUHjzqmnh6VNw/omF7KLkMn0I5
-         ygHQ==
-X-Gm-Message-State: APjAAAX5H1W3zbHZhEm898ka4cS5jCLTr2CgnT1rBw2ibhU328KYGCE2
-        VuACPJWHos1qKGVVEV3QahftO0Q6
-X-Google-Smtp-Source: APXvYqy5jhD6b7Wtpuh1kyQPz8jssbocCY50E7GCI4UbM1odJoBKqZ0xOKoo2iyNuep5VB1mGsAqrg==
-X-Received: by 2002:a17:90a:2a09:: with SMTP id i9mr11543070pjd.103.1559331198576;
-        Fri, 31 May 2019 12:33:18 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id x28sm7843526pfo.78.2019.05.31.12.33.12
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 31 May 2019 12:33:13 -0700 (PDT)
-Subject: Re: [PATCH, RESEND] RDMA/srp: Accept again source addresses that do
- not have a port number
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Laurence Oberman <loberman@redhat.com>, stable@vger.kernel.org
-References: <20190529163831.138926-1-bvanassche@acm.org>
- <20190530184437.GA29836@ziepe.ca>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <aa530e2d-a968-4532-cdaa-a6cbf722f19e@acm.org>
-Date:   Fri, 31 May 2019 12:33:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ujUTnfvw/4taFNKx8LK2xbZPcUdGF4SCwE9rhK7tsgs=;
+        b=ttjkNGsBL5hbcjSs/g/ruiJwbsObVCmkjjYE3Yr2Wrq4aEJ2wsRXjH+h74bH5haY6i
+         PSUZhA35Rt7zwCgzcBW27pBt27Bn1bT3M/2Crf50gdsXmi1TvaYD0ijqqf2Usd1oBaqr
+         1/LnKnNbu8MOA5dCAYiuxKzywjzdCSJb7RntzLkiQOaKPlsrIjtGKe8YSN3KzzyJvRzi
+         zWUz7kDQRieuHeALosDDaqBdEpRSDH3VBFtmyviJ1HHgVyogkt4t17aiE2rwyuiJHT6o
+         DQNBZJ3FBaoKtC+xWH9ECiE48vdw34J0zDgb+5OZc88AQMVOl9LueOjyQSrjLG2J14dq
+         iDug==
+X-Gm-Message-State: APjAAAXEy5GfbLi4AoSewf1wwGQBnxWZ3q/KSxOXh/Ux8XuqJrOFRtIX
+        mTKJL6aCRUfBtLMo47EZlU2n1g==
+X-Google-Smtp-Source: APXvYqwu+WbHe4ArUSZjgIPOs75vypfO9KGt+Od4vE6Ds7jCloqcBRlsutRZLFyncHQc0YtOUj1IXw==
+X-Received: by 2002:a37:4f8a:: with SMTP id d132mr10457024qkb.272.1559331959898;
+        Fri, 31 May 2019 12:45:59 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id m40sm6179807qtm.2.2019.05.31.12.45.59
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 31 May 2019 12:45:59 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hWnTS-0007QU-R5; Fri, 31 May 2019 16:45:58 -0300
+Date:   Fri, 31 May 2019 16:45:58 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Adit Ranadive <aditr@vmware.com>
+Cc:     Yuval Shaia <yuval.shaia@oracle.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v3 rdma-core] verbs: Introduce a new reg_mr API for
+ virtual address space
+Message-ID: <20190531194558.GF8258@ziepe.ca>
+References: <20190530060539.7136-1-yuval.shaia@oracle.com>
+ <MN2PR18MB3182E08DB0E164C6BE6C409FA1180@MN2PR18MB3182.namprd18.prod.outlook.com>
+ <20190530143452.GA19236@lap1>
+ <2e7184db-ac1c-73bd-7e2d-08cd9d578a7d@vmware.com>
 MIME-Version: 1.0
-In-Reply-To: <20190530184437.GA29836@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e7184db-ac1c-73bd-7e2d-08cd9d578a7d@vmware.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/30/19 11:44 AM, Jason Gunthorpe wrote:
-> On Wed, May 29, 2019 at 09:38:31AM -0700, Bart Van Assche wrote:
->> The function srp_parse_in() is used both for parsing source address
->> specifications and for target address specifications. Target addresses
->> must have a port number. Having to specify a port number for source
->> addresses is inconvenient. Make sure that srp_parse_in() supports again
->> parsing addresses with no port number.
->>
->> Cc: Laurence Oberman <loberman@redhat.com>
->> Cc: <stable@vger.kernel.org>
->> Fixes: c62adb7def71 ("IB/srp: Fix IPv6 address parsing") # v4.17.
->> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
->> ---
->>   drivers/infiniband/ulp/srp/ib_srp.c | 21 +++++++++++++++------
->>   1 file changed, 15 insertions(+), 6 deletions(-)
-> 
-> Bart, do you want this applied now, or are we still waiting for
-> Laurence?
+On Thu, May 30, 2019 at 09:58:53PM +0000, Adit Ranadive wrote:
 
-Hi Jason,
+> That's interesting. So the guest would still do a ibv_reg_mr and the device
+> would re-send the mappings using ibv_reg_mr_iova?
+> How would you prevent applications from using/misusing ibv_reg_mr_iova by
+> passing arbitrary values to hca_va or is that even a problem? 
 
-Since Laurence has not replied to your e-mail please go ahead and apply 
-this patch.
+It is not a problem, the iova & mkey is the unique identifier for the
+memory. There is nothing that says iova has to be anything special.
 
-Thanks,
+> What if the underlying device doesn't support zero-based MRs?
 
-Bart.
+All devices have to support iova to handle the existing user
+cases. Thus all devices also support a 0 iova. The foolishness was
+making zero-based into something special at the driver level. The core
+code should have handled it.
+
+Jason
