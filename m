@@ -2,127 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BEC31056
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2019 16:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C213C31228
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2019 18:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbfEaOew (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 May 2019 10:34:52 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54676 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbfEaOew (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 May 2019 10:34:52 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4VEXlM0105352;
-        Fri, 31 May 2019 14:34:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2018-07-02; bh=vzLZGemaFjvXHnQ/Zx0FcK23a4/e/5VYAFocn3ujbDE=;
- b=0ET2Xo8hMu2anmLQiEc+NiOU/73kfvgqBh5lg/enSAAkO9VfP0IUUK9iHlqLxnFfC1MR
- PRExcgrxTeONbXDdZZ0NXwfpbX/vNlFxgijZHjTVG9unO+GEtUFYzmwmaxk4h/XQilCT
- HGToF4bSOgQb6wJlgPkmg0k7xDiUnQiU7UWqU551H0Xc6l8ge8raJDKqOA/xeIxzes8v
- oCfIwGt30otvnKkRF8DEXupieJhnfvufupPmQy11oY/qPOTZom//X6rbzpjvQn+A2KSo
- LKaVReOGdYxmhC8VuLWpGzmdWeFqxKXCwu43YR+BQXe/ujhDH8r6/C9JbHIQdqpZrkwJ lw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2spw4txnx4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 31 May 2019 14:34:50 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4VEXSvb040256;
-        Fri, 31 May 2019 14:34:49 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2ss1fpnr09-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 31 May 2019 14:34:49 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4VEYmh2025039;
-        Fri, 31 May 2019 14:34:49 GMT
-Received: from anon-dhcp-171.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 31 May 2019 07:34:48 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH RFC 00/12] for-5.3 NFS/RDMA patches for review
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <ef371698-5b2f-40c2-8fcc-b3a3c57cd158@intel.com>
-Date:   Fri, 31 May 2019 10:34:47 -0400
-Cc:     linux-rdma@vger.kernel.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CE9BE961-6555-46FF-A9ED-601468D5DBD7@oracle.com>
-References: <20190528181018.19012.61210.stgit@manet.1015granger.net>
- <ef371698-5b2f-40c2-8fcc-b3a3c57cd158@intel.com>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9273 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=737
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905310092
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9273 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=768 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905310092
+        id S1726550AbfEaQUE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 May 2019 12:20:04 -0400
+Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:54014 "EHLO
+        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726531AbfEaQUE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 31 May 2019 12:20:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E486341;
+        Fri, 31 May 2019 09:20:03 -0700 (PDT)
+Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B67CE3F59C;
+        Fri, 31 May 2019 09:19:57 -0700 (PDT)
+Date:   Fri, 31 May 2019 17:19:55 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Elliott Hughes <enh@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <20190531161954.GA3568@arrakis.emea.arm.com>
+References: <20190521182932.sm4vxweuwo5ermyd@mbp>
+ <201905211633.6C0BF0C2@keescook>
+ <6049844a-65f5-f513-5b58-7141588fef2b@oracle.com>
+ <20190523201105.oifkksus4rzcwqt4@mbp>
+ <ffe58af3-7c70-d559-69f6-1f6ebcb0fec6@oracle.com>
+ <20190524101139.36yre4af22bkvatx@mbp>
+ <c6dd53d8-142b-3d8d-6a40-d21c5ee9d272@oracle.com>
+ <CAAeHK+yAUsZWhp6xPAbWewX5Nbw+-G3svUyPmhXu5MVeEDKYvA@mail.gmail.com>
+ <20190530171540.GD35418@arrakis.emea.arm.com>
+ <CAAeHK+y34+SNz3Vf+_378bOxrPaj_3GaLCeC2Y2rHAczuaSz1A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+y34+SNz3Vf+_378bOxrPaj_3GaLCeC2Y2rHAczuaSz1A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, May 31, 2019 at 04:29:10PM +0200, Andrey Konovalov wrote:
+> On Thu, May 30, 2019 at 7:15 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > On Tue, May 28, 2019 at 04:14:45PM +0200, Andrey Konovalov wrote:
+> > > Thanks for a lot of valuable input! I've read through all the replies
+> > > and got somewhat lost. What are the changes I need to do to this
+> > > series?
+> > >
+> > > 1. Should I move untagging for memory syscalls back to the generic
+> > > code so other arches would make use of it as well, or should I keep
+> > > the arm64 specific memory syscalls wrappers and address the comments
+> > > on that patch?
+> >
+> > Keep them generic again but make sure we get agreement with Khalid on
+> > the actual ABI implications for sparc.
+> 
+> OK, will do. I find it hard to understand what the ABI implications
+> are. I'll post the next version without untagging in brk, mmap,
+> munmap, mremap (for new_address), mmap_pgoff, remap_file_pages, shmat
+> and shmdt.
 
+It's more about not relaxing the ABI to accept non-zero top-byte unless
+we have a use-case for it. For mmap() etc., I don't think that's needed
+but if you think otherwise, please raise it.
 
-> On May 31, 2019, at 10:32 AM, Dennis Dalessandro =
-<dennis.dalessandro@intel.com> wrote:
->=20
-> On 5/28/2019 2:20 PM, Chuck Lever wrote:
->> This is a series of fixes and architectural changes that should
->> improve robustness and result in better scalability of NFS/RDMA.
->> I'm sure one or two of these could be broken down a little more,
->> comments welcome.
->> The fundamental observation is that the RPC work queues are BOUND,
->> thus rescheduling work in the Receive completion handler to one of
->> these work queues just forces it to run later on the same CPU. So
->> try to do more work right in the Receive completion handler to
->> reduce context switch overhead.
->> A secondary concern is that the average amount of wall-clock time
->> it takes to handle a single Receive completion caps the IOPS rate
->> (both per-xprt and per-NIC). In this patch series I've taken a few
->> steps to reduce that latency, and I'm looking into a few others.
->> This series can be fetched from:
->>   git://git.linux-nfs.org/projects/cel/cel-2.6.git
->> in topic branch "nfs-for-5.3".
->> ---
->> Chuck Lever (12):
->>       xprtrdma: Fix use-after-free in rpcrdma_post_recvs
->>       xprtrdma: Replace use of xdr_stream_pos in rpcrdma_marshal_req
->>       xprtrdma: Fix occasional transport deadlock
->>       xprtrdma: Remove the RPCRDMA_REQ_F_PENDING flag
->>       xprtrdma: Remove fr_state
->>       xprtrdma: Add mechanism to place MRs back on the free list
->>       xprtrdma: Reduce context switching due to Local Invalidation
->>       xprtrdma: Wake RPCs directly in rpcrdma_wc_send path
->>       xprtrdma: Simplify rpcrdma_rep_create
->>       xprtrdma: Streamline rpcrdma_post_recvs
->>       xprtrdma: Refactor chunk encoding
->>       xprtrdma: Remove rpcrdma_req::rl_buffer
->>  include/trace/events/rpcrdma.h  |   47 ++++--
->>  net/sunrpc/xprtrdma/frwr_ops.c  |  330 =
-++++++++++++++++++++++++++-------------
->>  net/sunrpc/xprtrdma/rpc_rdma.c  |  146 +++++++----------
->>  net/sunrpc/xprtrdma/transport.c |   16 +-
->>  net/sunrpc/xprtrdma/verbs.c     |  115 ++++++--------
->>  net/sunrpc/xprtrdma/xprt_rdma.h |   43 +----
->>  6 files changed, 384 insertions(+), 313 deletions(-)
->=20
-> For hfi1:
-> Tested-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+> > > 2. Should I make untagging opt-in and controlled by a command line argument?
+> >
+> > Opt-in, yes, but per task rather than kernel command line option.
+> > prctl() is a possibility of opting in.
+> 
+> OK. Should I store a flag somewhere in task_struct? Should it be
+> inheritable on clone?
 
-Thanks!
+A TIF flag would do but I'd say leave it out for now (default opted in)
+until we figure out the best way to do this (can be a patch on top of
+this series).
 
---
-Chuck Lever
+Thanks.
 
-
-
+-- 
+Catalin
