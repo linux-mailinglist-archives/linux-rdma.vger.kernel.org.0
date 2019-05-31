@@ -2,83 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C2531518
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2019 21:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9495E31559
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2019 21:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbfEaTLj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 May 2019 15:11:39 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:44283 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726807AbfEaTLj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 May 2019 15:11:39 -0400
-Received: by mail-qt1-f194.google.com with SMTP id x47so2177315qtk.11
-        for <linux-rdma@vger.kernel.org>; Fri, 31 May 2019 12:11:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cgYbKJApp0nEJKVXjdXddAaP74wwjBOcIbnpyinSdxA=;
-        b=bLmKCp65t4u088eHtkgsteMVLgqeGR6EcoQt3865M+lYaC0agiwzZL68cUsJfpaw6r
-         T3cIp1GjCYSaT9I+JAz1t/Dn3Vh+tt7RihqcP+pG5PO0ajs2+KOo4y1n9Lz+lkKk9+So
-         4F1NdUu5StDh0CrNoTWhZQ2rlOILhNB53rLxlT+yhoofAWfx7yXfPJ3mkhXfelmT+XrV
-         fyZoeMsvDQsz3P79YzGd0AYSm9N/b2yCgyRyRGBVQYlPTDJdPRt4fKp9AzfCbizoE9J/
-         mFDzVjmD9Kc/tWW38jC5InpW/9/FoW4yE3GstnfSxmmcgTBmKRakb54o+c4TPtT0a46p
-         XyDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cgYbKJApp0nEJKVXjdXddAaP74wwjBOcIbnpyinSdxA=;
-        b=GY++X78NLr/rcweTnr4fUfF/S2NwIJC0R7P8DjMnXDbMOqbp5QOraSz9O3Hydez4QU
-         GAHA+z9UrJGUU1fVRZcAlEj98xZOWXIRko5VtWVBadeiXtJsdwqr8Jcdedapqw8jI6JZ
-         rpYfos3K13OUWvVY9nmYvnNxnkzMSSC/5beXP79fKWweghvROfNkdO24yVYladiJHkhr
-         hPtjfEDy3AD8Lty1AhiCNmA+zQTT58oviANNmls8J2EGxfR2dxEi2XKQX8+1r/wpnuP5
-         iKJiNBqRdQWG+7AUWmdxLfv+Sl9HDeDWGKem+4Ml7wzGqwIcb7Svg3dmCsIIya4IoKkF
-         zZIw==
-X-Gm-Message-State: APjAAAXJ6TO5G85SlYZ1G0UZJe8LIMsgaVNs9RaMficUIngK4hwMczx5
-        JTm7ZkXTEExNt9eFCvGpDlMrYdO5pkE=
-X-Google-Smtp-Source: APXvYqym9+irSV5qAppbF8jlQtwxhN14yrUhQgtXoS25hR7CclJfmE2tYm90Y4N5rENHf871KU+H3Q==
-X-Received: by 2002:ac8:13c4:: with SMTP id i4mr10402980qtj.63.1559329898642;
-        Fri, 31 May 2019 12:11:38 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id s74sm1283463qka.91.2019.05.31.12.11.37
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 31 May 2019 12:11:38 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hWmwD-0006VM-B1; Fri, 31 May 2019 16:11:37 -0300
-Date:   Fri, 31 May 2019 16:11:37 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lijun Ou <oulijun@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next 2/2] RDMA/hns: Consider the bitmap full situation
-Message-ID: <20190531191137.GE8258@ziepe.ca>
-References: <1559298484-63548-1-git-send-email-oulijun@huawei.com>
- <1559298484-63548-3-git-send-email-oulijun@huawei.com>
+        id S1727194AbfEaT3Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 May 2019 15:29:24 -0400
+Received: from mail-eopbgr30049.outbound.protection.outlook.com ([40.107.3.49]:34272
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727085AbfEaT3Y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 31 May 2019 15:29:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yuVPeiCO6kp8UIv6B5LlYPXTR07UsMNKfHxHLFk3x00=;
+ b=RuMyvaL/JJqNY1aDVI93fdEOB6CRXvk7+g0rETxX7//Wivok1WOTE7BrtBo/wGjpCq3e4K8VVNPIdQZ6Gg72fwEWWcUCJ19sHIhI8LZc40VK33n/90HQV8HqJDcGnWFJWuf4GEAh7kw7G680tI6HmPbxyr3YInS8Qkiexpd3ToQ=
+Received: from VI1PR05MB5902.eurprd05.prod.outlook.com (20.178.125.223) by
+ VI1PR05MB5213.eurprd05.prod.outlook.com (20.178.12.86) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1878.25; Fri, 31 May 2019 19:29:20 +0000
+Received: from VI1PR05MB5902.eurprd05.prod.outlook.com
+ ([fe80::dd31:2532:9adf:9b38]) by VI1PR05MB5902.eurprd05.prod.outlook.com
+ ([fe80::dd31:2532:9adf:9b38%6]) with mapi id 15.20.1922.021; Fri, 31 May 2019
+ 19:29:20 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     Leon Romanovsky <leonro@mellanox.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH mlx5-next 0/6] Mellanox, mlx5-next minor updates
+ 2019-05-29
+Thread-Topic: [PATCH mlx5-next 0/6] Mellanox, mlx5-next minor updates
+ 2019-05-29
+Thread-Index: AQHVFnDkskX4c0eOQUCYixTy9S10v6aFoWSA
+Date:   Fri, 31 May 2019 19:29:20 +0000
+Message-ID: <5b63c973d9f1066fa7f68177d8ddb00f51ebe307.camel@mellanox.com>
+References: <20190529224949.18194-1-saeedm@mellanox.com>
+In-Reply-To: <20190529224949.18194-1-saeedm@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [209.116.155.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ba0d502f-a013-4a3a-1515-08d6e5fe479c
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR05MB5213;
+x-ms-traffictypediagnostic: VI1PR05MB5213:
+x-microsoft-antispam-prvs: <VI1PR05MB5213F26E8BA8D55F336E7A85BE190@VI1PR05MB5213.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 00540983E2
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(136003)(346002)(376002)(396003)(39860400002)(53754006)(189003)(199004)(81166006)(58126008)(36756003)(102836004)(76176011)(86362001)(2906002)(6116002)(37006003)(5660300002)(8676002)(4744005)(305945005)(486006)(64756008)(25786009)(316002)(15650500001)(6862004)(26005)(14454004)(54906003)(256004)(6506007)(81156014)(99286004)(4326008)(3846002)(508600001)(450100002)(2616005)(476003)(446003)(6436002)(66476007)(11346002)(91956017)(229853002)(66556008)(6512007)(7736002)(8936002)(73956011)(68736007)(71190400001)(186003)(71200400001)(53936002)(66066001)(6486002)(66446008)(118296001)(14444005)(6636002)(6246003)(76116006)(66946007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5213;H:VI1PR05MB5902.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: udEgwSX+WD90FvkCU6QcIfRNsnCg8DJiu4EebcaYiobZtqGJiiyYidgNDuoS2Z+KZi4g+RxDcL+6zRjDHJ01agq7wHQAmTMIaFkDW4qENM4pykS1fvFaI/nSA7lRIEqHFJmbueftwM90kGeEtqDyLc14oeqm/jHMKjqpL/6FHwzHSDKPmAVUIZUDtvlRIa18fAbWvWzDWHGxtp2lzPIRRvE1AEV+TpWr8uYMWO6E4us34qK+O04XpltgEyo93ygaCvMWG5EqvvfSuE2SXyRKnb6dgRu5WXV2/M3IrihxPDDepXJHsikNjdwjp3aQxYR/GB7aWFH/h51d5EN8lcwckUsxBd1qVdkCYSB7tEnDYeorOBWhZa4EM5v6KzAlGovl0pMAn89qMN/cr2X0+R2EbSWXhoqLaVILZy5Phu499so=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6AAB369BB02AFA46BD279A6ACD925FD2@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1559298484-63548-3-git-send-email-oulijun@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba0d502f-a013-4a3a-1515-08d6e5fe479c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 May 2019 19:29:20.4019
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5213
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 31, 2019 at 06:28:04PM +0800, Lijun Ou wrote:
-> We use a fifo queue to store srq wqe index and use bimap to just
-> use the corresponding srq index. When bitmap is full, the
-> srq wqe is more than the max number of srqwqe and it should
-> return error and notify the user.
-> 
-> It will fix the patch("RDMA/hns: Bugfix for posting multiple srq work request")
-> 
-> Signed-off-by: Lijun Ou <oulijun@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-
-I squashed this into the last patch, thanks
-
-Jason
+T24gV2VkLCAyMDE5LTA1LTI5IGF0IDIyOjUwICswMDAwLCBTYWVlZCBNYWhhbWVlZCB3cm90ZToN
+Cj4gSGkgQWxsLA0KPiANCj4gVGhpcyBzZXJpZXMgcHJvdmlkZXMgc29tZSBsb3cgbGV2ZWwgdXBk
+YXRlcyBmb3IgbWx4NSBkcml2ZXIgbmVlZGVkDQo+IGZvcg0KPiBib3RoIHJkbWEgYW5kIG5ldGRl
+diB0cmVlcy4NCj4gDQo+IEVsaSBhZGRzIHRlcm1pbmF0aW9uIGZsb3cgc3RlZXJpbmcgdGFibGUg
+Yml0cyBhbmQgaGFyZHdhcmUNCj4gZGVmaW5pdGlvbnMuDQo+IA0KPiBNb3NoZSBpbnRyb2R1Y2Vz
+IHRoZSBjb3JlIGR1bXAgSFcgYWNjZXNzIHJlZ2lzdGVycyBkZWZpbml0aW9ucy4NCj4gDQo+IFBh
+cmF2IHJlZmFjdG9ycyBhbmQgY2xlYW5zLXVwIFZGIHJlcHJlc2VudG9ycyBmdW5jdGlvbnMgaGFu
+ZGxlcnMuDQo+IA0KPiBWdSByZW5hbWVzIGhvc3RfcGFyYW1zIGJpdHMgdG8gZnVuY3Rpb25fY2hh
+bmdlZCBiaXRzIGFuZCBhZGQgdGhlDQo+IHN1cHBvcnQgZm9yIGVzd2l0Y2ggZnVuY3Rpb25zIGNo
+YW5nZSBldmVudCBpbiB0aGUgZXN3aXRjaCBnZW5lcmFsDQo+IGNhc2UuDQo+IChmb3IgYm90aCBs
+ZWdhY3kgYW5kIHN3aXRjaGRldiBtb2RlcykuDQo+IA0KPiBJbiBjYXNlIG9mIG5vIG9iamVjdGlv
+biB0aGlzIHNlcmllcyB3aWxsIGJlIGFwcGxpZWQgdG8gbWx4NS1uZXh0DQo+IGJyYW5jaC4NCj4g
+DQoNClNlcmllcyBhcHBsaWVkIHRvIG1seDUtbmV4dCBicmFuY2guDQo=
