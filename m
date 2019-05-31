@@ -2,66 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F69F30B4F
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2019 11:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFDB30C80
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2019 12:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbfEaJVK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 May 2019 05:21:10 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42123 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726240AbfEaJVK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 May 2019 05:21:10 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-        (Exim 4.76)
-        (envelope-from <colin.king@canonical.com>)
-        id 1hWdig-0004Hk-1h; Fri, 31 May 2019 09:21:02 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Lijun Ou <oulijun@huawei.com>, Wei Hu <xavier.huwei@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2][next] RDMA/hns: fix inverted logic of readl read and shift
-Date:   Fri, 31 May 2019 10:21:01 +0100
-Message-Id: <20190531092101.28772-2-colin.king@canonical.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190531092101.28772-1-colin.king@canonical.com>
-References: <20190531092101.28772-1-colin.king@canonical.com>
+        id S1726307AbfEaKZD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 May 2019 06:25:03 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51478 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726330AbfEaKZD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 31 May 2019 06:25:03 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B0D8BA8224E209A71AEB;
+        Fri, 31 May 2019 18:25:00 +0800 (CST)
+Received: from linux-ioko.site (10.71.200.31) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.439.0; Fri, 31 May 2019 18:24:50 +0800
+From:   Lijun Ou <oulijun@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH for-next 0/2] Two srq bugfixes
+Date:   Fri, 31 May 2019 18:28:02 +0800
+Message-ID: <1559298484-63548-1-git-send-email-oulijun@huawei.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.71.200.31]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Here are fix two bugs for srq.
 
-A previous change incorrectly changed the inverted logic and logically
-negated the readl rather than the shifted readl result. Fix this by
-adding in missing parentheses around the expression that needs to be
-logically negated.
+Lijun Ou (2):
+  RDMA/hns: Bugfix for filling the sge of srq
+  RDMA/hns: Consider the bitmap full situation
 
-Addresses-Coverity: ("Logically dead code")
-Fixes: 669cefb654cb ("RDMA/hns: Remove jiffies operation in disable interrupt context")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/infiniband/hw/hns/hns_roce_hem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index b3641aeff27a..a8e9329cbf4e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -378,7 +378,7 @@ static int hns_roce_set_hem(struct hns_roce_dev *hr_dev,
- 
- 		end = HW_SYNC_TIMEOUT_MSECS;
- 		while (end > 0) {
--			if (!readl(bt_cmd) >> BT_CMD_SYNC_SHIFT)
-+			if (!(readl(bt_cmd) >> BT_CMD_SYNC_SHIFT))
- 				break;
- 
- 			mdelay(HW_SYNC_SLEEP_TIME_INTERVAL);
 -- 
-2.20.1
+1.9.1
 
