@@ -2,78 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE4A31700
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Jun 2019 00:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAF231A1B
+	for <lists+linux-rdma@lfdr.de>; Sat,  1 Jun 2019 09:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbfEaWNt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 May 2019 18:13:49 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:32883 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbfEaWNt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 May 2019 18:13:49 -0400
-Received: by mail-pg1-f193.google.com with SMTP id h17so4787822pgv.0;
-        Fri, 31 May 2019 15:13:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Zs72w1X3Xt8CWkfb5pSFrh+oDH9C1ioWuSVWrC/3HwY=;
-        b=pL2HTowgWwenuuoPM1VuR6AAEucC/B+Dd++UCKlpjTsaSCEHFI2oBdXcWUYH7b5Efq
-         /93gAlGtzb7FIIVEN++BlyCEhqYyk1g42qdcDBXFmNwHibcvNCEB1E0mqDGHrYmB/YA0
-         9NNWfeaMIZFbml+qgG0xuuUKU+NrF6F0GRR82TUctgJedXhMXFgO3YRttTMjiY7cDTee
-         hcNnh4n2qOsprf0tBZQ3CmRU7PgDd3xtohy3xceIQqxKDTrEJCj+3+l7RSlZB5mBzyzr
-         aVXFHGqKM0IUPyd9J2dcU1orwveVbdZNdB1DeccPy1jTdGA4faWoaVHuA8QJwa7frvXm
-         +SeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Zs72w1X3Xt8CWkfb5pSFrh+oDH9C1ioWuSVWrC/3HwY=;
-        b=nJg2apFeAZqtPOYe3JNcvIguHnWTdPrVWYRZYWGDvOFUWaph7vDN1hnIpLN1pZ97QA
-         8olIjklrj0C3vW4p0lSy3QBkx4/m3hz7h7dtEI0v6R5/ISOUifn/U12b6tN5L8mBRu78
-         RGz37qBNdV3u8hdsQ7Aj/2FmaYwYYk/6c4TVA1+c/B47cX+G3iO6qbDFsMBnmREQU+n8
-         mEWOA4ibTZLFVEDFMtIa1BQxhXDC5xNfk55Ity1TkKrPGVK1OBmDZJ5t+f5ygx5ehK1p
-         p0w43YHdJ+ZODR81S9MoM5q4IUs4J+gmpC+vF1NJgNPQZuzQznOnQ4FG6pdGxx22sv4A
-         Vo+A==
-X-Gm-Message-State: APjAAAXV2xl4VT17gJnntWfDLtsG5cBbPOr05ZDdorjzeAlCFgLsgQ0k
-        2xDf6aVTPwV6+jHsccKl3I4=
-X-Google-Smtp-Source: APXvYqzrgsSFlmcLvTNwdXofTE85WQN0G4KKalwEsvscA6exxcwv+UfT+frQwOwpKNvQIcHyyi+kDw==
-X-Received: by 2002:a62:b50c:: with SMTP id y12mr7403890pfe.171.1559340828813;
-        Fri, 31 May 2019 15:13:48 -0700 (PDT)
-Received: from [172.27.227.252] ([216.129.126.118])
-        by smtp.googlemail.com with ESMTPSA id k3sm6050016pju.27.2019.05.31.15.13.47
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 31 May 2019 15:13:47 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next v1 2/4] rdma: Add man pages for rdma system
- commands
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        stephen@networkplumber.org, leonro@mellanox.com
-References: <20190531031117.60984-1-parav@mellanox.com>
- <20190531031117.60984-3-parav@mellanox.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <6f0ff987-62d8-a314-6d9e-636363729d6a@gmail.com>
-Date:   Fri, 31 May 2019 16:13:46 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <20190531031117.60984-3-parav@mellanox.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726089AbfFAHr1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 1 Jun 2019 03:47:27 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:42250 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbfFAHr1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Jun 2019 03:47:27 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x517d7Jh043662;
+        Sat, 1 Jun 2019 07:47:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id; s=corp-2018-07-02;
+ bh=L5JQ3QiVucshw5CHawZFk9WPh+P5NP4gH4149MLUDnc=;
+ b=qK4d/YQx31z6/oQhWl3VPuhSnTb5dGxyrvsiq4wlK3UYvo1Uf0kG5+g9E+5TFM6BlOlW
+ pCoPCGTIzsdsyKRUKnGTtIqxbhE/jV9w8drEzX1Silbq9aJl9gYuUfRjI8ra3pJ48H9X
+ djFFU/pwN8DiPKmrnZILbZMQHW70faGTJIIozYwnfkZ1jhl0LRrUJ/+ogwaFNvX3n800
+ x+dZeP7v+Kyd80vJOatDy+iHRv23Us53zR1jKoYw7B1ELKNaP6U6YZ5kE0HBu32ka+LQ
+ smTv0NuRVd0txz0odowPY4lyvAqKweB4tjLAjbYqco45SEPLlpE7hlQ32LajyOCO8/C3 Uw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2suj0q09w8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 01 Jun 2019 07:47:18 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x517kF3s033710;
+        Sat, 1 Jun 2019 07:47:17 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2sugpjtr8s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 01 Jun 2019 07:47:17 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x517lHpW034619;
+        Sat, 1 Jun 2019 07:47:17 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2sugpjtr8p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 01 Jun 2019 07:47:17 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x517lGaq009628;
+        Sat, 1 Jun 2019 07:47:16 GMT
+Received: from shipfan.cn.oracle.com (/10.113.210.105)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 01 Jun 2019 00:47:15 -0700
+From:   Zhu Yanjun <yanjun.zhu@oracle.com>
+To:     santosh.shilimkar@oracle.com, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Subject: [PATCH 1/1] net: rds: add per rds connection cache statistics
+Date:   Sat,  1 Jun 2019 03:54:34 -0400
+Message-Id: <1559375674-17913-1-git-send-email-yanjun.zhu@oracle.com>
+X-Mailer: git-send-email 2.7.4
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9274 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906010057
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/30/19 9:11 PM, Parav Pandit wrote:
-> +
-> +.SH SEE ALSO
-> +.BR rdma (8),
-> +.BR rdma-link (8),
-> +.BR rdma-resource (8),
-> +.BR network_namespaces(7),
-> +.BR namespaces(7),
+The variable cache_allocs is to indicate how many frags (KiB) are in one
+rds connection frag cache.
+The command "rds-info -Iv" will output the rds connection cache
+statistics as below:
+"
+RDS IB Connections:
+      LocalAddr RemoteAddr Tos SL  LocalDev            RemoteDev
+      1.1.1.14 1.1.1.14   58 255  fe80::2:c903:a:7a31 fe80::2:c903:a:7a31
+      send_wr=256, recv_wr=1024, send_sge=8, rdma_mr_max=4096,
+      rdma_mr_size=257, cache_allocs=12
+"
+This means that there are about 12KiB frag in this rds connection frag
+ cache.
 
-Added the missing space before (7) and applied all of them to iproute2-next.
+Tested-by: RDS CI <rdsci_oslo@no.oracle.com>
+Signed-off-by: Zhu Yanjun <yanjun.zhu@oracle.com>
+---
+ include/uapi/linux/rds.h | 2 ++
+ net/rds/ib.c             | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/include/uapi/linux/rds.h b/include/uapi/linux/rds.h
+index 5d0f76c..fd6b5f6 100644
+--- a/include/uapi/linux/rds.h
++++ b/include/uapi/linux/rds.h
+@@ -250,6 +250,7 @@ struct rds_info_rdma_connection {
+ 	__u32		rdma_mr_max;
+ 	__u32		rdma_mr_size;
+ 	__u8		tos;
++	__u32		cache_allocs;
+ };
+ 
+ struct rds6_info_rdma_connection {
+@@ -264,6 +265,7 @@ struct rds6_info_rdma_connection {
+ 	__u32		rdma_mr_max;
+ 	__u32		rdma_mr_size;
+ 	__u8		tos;
++	__u32		cache_allocs;
+ };
+ 
+ /* RDS message Receive Path Latency points */
+diff --git a/net/rds/ib.c b/net/rds/ib.c
+index 2da9b75..f9baf2d 100644
+--- a/net/rds/ib.c
++++ b/net/rds/ib.c
+@@ -318,6 +318,7 @@ static int rds_ib_conn_info_visitor(struct rds_connection *conn,
+ 		iinfo->max_recv_wr = ic->i_recv_ring.w_nr;
+ 		iinfo->max_send_sge = rds_ibdev->max_sge;
+ 		rds_ib_get_mr_info(rds_ibdev, iinfo);
++		iinfo->cache_allocs = atomic_read(&ic->i_cache_allocs);
+ 	}
+ 	return 1;
+ }
+@@ -351,6 +352,7 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
+ 		iinfo6->max_recv_wr = ic->i_recv_ring.w_nr;
+ 		iinfo6->max_send_sge = rds_ibdev->max_sge;
+ 		rds6_ib_get_mr_info(rds_ibdev, iinfo6);
++		iinfo6->cache_allocs = atomic_read(&ic->i_cache_allocs);
+ 	}
+ 	return 1;
+ }
+-- 
+2.7.4
+
