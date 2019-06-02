@@ -2,130 +2,177 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAF231A1B
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Jun 2019 09:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6EB3223A
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2019 07:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726089AbfFAHr1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 1 Jun 2019 03:47:27 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:42250 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbfFAHr1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Jun 2019 03:47:27 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x517d7Jh043662;
-        Sat, 1 Jun 2019 07:47:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id; s=corp-2018-07-02;
- bh=L5JQ3QiVucshw5CHawZFk9WPh+P5NP4gH4149MLUDnc=;
- b=qK4d/YQx31z6/oQhWl3VPuhSnTb5dGxyrvsiq4wlK3UYvo1Uf0kG5+g9E+5TFM6BlOlW
- pCoPCGTIzsdsyKRUKnGTtIqxbhE/jV9w8drEzX1Silbq9aJl9gYuUfRjI8ra3pJ48H9X
- djFFU/pwN8DiPKmrnZILbZMQHW70faGTJIIozYwnfkZ1jhl0LRrUJ/+ogwaFNvX3n800
- x+dZeP7v+Kyd80vJOatDy+iHRv23Us53zR1jKoYw7B1ELKNaP6U6YZ5kE0HBu32ka+LQ
- smTv0NuRVd0txz0odowPY4lyvAqKweB4tjLAjbYqco45SEPLlpE7hlQ32LajyOCO8/C3 Uw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2suj0q09w8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 01 Jun 2019 07:47:18 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x517kF3s033710;
-        Sat, 1 Jun 2019 07:47:17 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 2sugpjtr8s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 01 Jun 2019 07:47:17 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x517lHpW034619;
-        Sat, 1 Jun 2019 07:47:17 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2sugpjtr8p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 01 Jun 2019 07:47:17 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x517lGaq009628;
-        Sat, 1 Jun 2019 07:47:16 GMT
-Received: from shipfan.cn.oracle.com (/10.113.210.105)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 01 Jun 2019 00:47:15 -0700
-From:   Zhu Yanjun <yanjun.zhu@oracle.com>
-To:     santosh.shilimkar@oracle.com, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com
-Subject: [PATCH 1/1] net: rds: add per rds connection cache statistics
-Date:   Sat,  1 Jun 2019 03:54:34 -0400
-Message-Id: <1559375674-17913-1-git-send-email-yanjun.zhu@oracle.com>
-X-Mailer: git-send-email 2.7.4
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9274 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906010057
+        id S1725974AbfFBFGO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 2 Jun 2019 01:06:14 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:42267 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725871AbfFBFGO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Jun 2019 01:06:14 -0400
+Received: by mail-pg1-f193.google.com with SMTP id e6so5076444pgd.9
+        for <linux-rdma@vger.kernel.org>; Sat, 01 Jun 2019 22:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8FrEn8Oc47oyqvsIyUn+ei84DckXK5ddHX1nKUOQVF0=;
+        b=I+l433GU6rh5Vh+cXRg2sWftONjf5E0xtYRJR0maMC3On194A0XuFQ8es0fmdrLaO4
+         QMulbFvcAdi+pOn8HpskX0ufgW7qoStMxwwMGtpoIzBLU8ImYfubQhLJZlu5J4RYe6TO
+         Yim8ter4osHiihcYza518LDlKNV+048cHSWMc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8FrEn8Oc47oyqvsIyUn+ei84DckXK5ddHX1nKUOQVF0=;
+        b=QQjmbbx9HM+lMJOkcH1do/jrLO9t5npMFlTDnzzosoXC1f6cX0eWU/mpcGcO0Z2a7j
+         qN8Ka1rLwIB43eIG1GeuRlFP3nmtehzlXC0JnH3Q6DE4jwM2oZ9NTSOQnfQhKsdUHdJ+
+         VDFpX7H5cPp60wEr3zDYrC8Zigdr5FZNGEBQeJZ/wz3AQFdOKALWMWchC//dG+k6B2x4
+         +5WYqxsRPviBUNNmBn/6jghzz5s+o7Eau2sG8dIqFoQ2RtV3yQAlWObXi2Ogq7FytIVK
+         sWbwTA1YLhLnPnGY42jfcbeAT6zDIgOBso/QzUErAeRZR3amhqbgf8tG8B2xnb2NU9WV
+         l7QA==
+X-Gm-Message-State: APjAAAXqV/pa9la6jFxRtz4TZYV8iwzGt6ZuOFROl2LXHfSppYo5LR7I
+        pZNO9Oappn/4YtwFhgJtbvjm0Q==
+X-Google-Smtp-Source: APXvYqww51z53Fj+SFur89FkVZvsAjQrEhIV13t8870aGnrYJ2f32X4e6lxRmTKOa2Pc17jm0i7ppA==
+X-Received: by 2002:a65:520b:: with SMTP id o11mr20347226pgp.184.1559451973138;
+        Sat, 01 Jun 2019 22:06:13 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x28sm12472404pfo.78.2019.06.01.22.06.11
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 01 Jun 2019 22:06:12 -0700 (PDT)
+Date:   Sat, 1 Jun 2019 22:06:10 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     enh <enh@google.com>, Evgenii Stepanov <eugenis@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
+Message-ID: <201906012156.55E2C45@keescook>
+References: <201905211633.6C0BF0C2@keescook>
+ <20190522101110.m2stmpaj7seezveq@mbp>
+ <CAJgzZoosKBwqXRyA6fb8QQSZXFqfHqe9qO9je5TogHhzuoGXJQ@mail.gmail.com>
+ <20190522163527.rnnc6t4tll7tk5zw@mbp>
+ <201905221316.865581CF@keescook>
+ <20190523144449.waam2mkyzhjpqpur@mbp>
+ <201905230917.DEE7A75EF0@keescook>
+ <20190523174345.6sv3kcipkvlwfmox@mbp>
+ <201905231327.77CA8D0A36@keescook>
+ <20190528170244.GF32006@arrakis.emea.arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190528170244.GF32006@arrakis.emea.arm.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The variable cache_allocs is to indicate how many frags (KiB) are in one
-rds connection frag cache.
-The command "rds-info -Iv" will output the rds connection cache
-statistics as below:
-"
-RDS IB Connections:
-      LocalAddr RemoteAddr Tos SL  LocalDev            RemoteDev
-      1.1.1.14 1.1.1.14   58 255  fe80::2:c903:a:7a31 fe80::2:c903:a:7a31
-      send_wr=256, recv_wr=1024, send_sge=8, rdma_mr_max=4096,
-      rdma_mr_size=257, cache_allocs=12
-"
-This means that there are about 12KiB frag in this rds connection frag
- cache.
+On Tue, May 28, 2019 at 06:02:45PM +0100, Catalin Marinas wrote:
+> On Thu, May 23, 2019 at 02:31:16PM -0700, Kees Cook wrote:
+> > syzkaller already attempts to randomly inject non-canonical and
+> > 0xFFFF....FFFF addresses for user pointers in syscalls in an effort to
+> > find bugs like CVE-2017-5123 where waitid() via unchecked put_user() was
+> > able to write directly to kernel memory[1].
+> > 
+> > It seems that using TBI by default and not allowing a switch back to
+> > "normal" ABI without a reboot actually means that userspace cannot inject
+> > kernel pointers into syscalls any more, since they'll get universally
+> > stripped now. Is my understanding correct, here? i.e. exploiting
+> > CVE-2017-5123 would be impossible under TBI?
+> > 
+> > If so, then I think we should commit to the TBI ABI and have a boot
+> > flag to disable it, but NOT have a process flag, as that would allow
+> > attackers to bypass the masking. The only flag should be "TBI or MTE".
+> > 
+> > If so, can I get top byte masking for other architectures too? Like,
+> > just to strip high bits off userspace addresses? ;)
+> 
+> Just for fun, hack/attempt at your idea which should not interfere with
+> TBI. Only briefly tested on arm64 (and the s390 __TYPE_IS_PTR macro is
+> pretty weird ;)):
 
-Tested-by: RDS CI <rdsci_oslo@no.oracle.com>
-Signed-off-by: Zhu Yanjun <yanjun.zhu@oracle.com>
----
- include/uapi/linux/rds.h | 2 ++
- net/rds/ib.c             | 2 ++
- 2 files changed, 4 insertions(+)
+OMG, this is amazing and bonkers. I love it.
 
-diff --git a/include/uapi/linux/rds.h b/include/uapi/linux/rds.h
-index 5d0f76c..fd6b5f6 100644
---- a/include/uapi/linux/rds.h
-+++ b/include/uapi/linux/rds.h
-@@ -250,6 +250,7 @@ struct rds_info_rdma_connection {
- 	__u32		rdma_mr_max;
- 	__u32		rdma_mr_size;
- 	__u8		tos;
-+	__u32		cache_allocs;
- };
- 
- struct rds6_info_rdma_connection {
-@@ -264,6 +265,7 @@ struct rds6_info_rdma_connection {
- 	__u32		rdma_mr_max;
- 	__u32		rdma_mr_size;
- 	__u8		tos;
-+	__u32		cache_allocs;
- };
- 
- /* RDS message Receive Path Latency points */
-diff --git a/net/rds/ib.c b/net/rds/ib.c
-index 2da9b75..f9baf2d 100644
---- a/net/rds/ib.c
-+++ b/net/rds/ib.c
-@@ -318,6 +318,7 @@ static int rds_ib_conn_info_visitor(struct rds_connection *conn,
- 		iinfo->max_recv_wr = ic->i_recv_ring.w_nr;
- 		iinfo->max_send_sge = rds_ibdev->max_sge;
- 		rds_ib_get_mr_info(rds_ibdev, iinfo);
-+		iinfo->cache_allocs = atomic_read(&ic->i_cache_allocs);
- 	}
- 	return 1;
- }
-@@ -351,6 +352,7 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
- 		iinfo6->max_recv_wr = ic->i_recv_ring.w_nr;
- 		iinfo6->max_send_sge = rds_ibdev->max_sge;
- 		rds6_ib_get_mr_info(rds_ibdev, iinfo6);
-+		iinfo6->cache_allocs = atomic_read(&ic->i_cache_allocs);
- 	}
- 	return 1;
- }
+> --------------------------8<---------------------------------
+> diff --git a/arch/s390/include/asm/compat.h b/arch/s390/include/asm/compat.h
+> index 63b46e30b2c3..338455a74eff 100644
+> --- a/arch/s390/include/asm/compat.h
+> +++ b/arch/s390/include/asm/compat.h
+> @@ -11,9 +11,6 @@
+>  
+>  #include <asm-generic/compat.h>
+>  
+> -#define __TYPE_IS_PTR(t) (!__builtin_types_compatible_p( \
+> -				typeof(0?(__force t)0:0ULL), u64))
+> -
+>  #define __SC_DELOUSE(t,v) ({ \
+>  	BUILD_BUG_ON(sizeof(t) > 4 && !__TYPE_IS_PTR(t)); \
+>  	(__force t)(__TYPE_IS_PTR(t) ? ((v) & 0x7fffffff) : (v)); \
+> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+> index e2870fe1be5b..b1b9fe8502da 100644
+> --- a/include/linux/syscalls.h
+> +++ b/include/linux/syscalls.h
+> @@ -119,8 +119,15 @@ struct io_uring_params;
+>  #define __TYPE_IS_L(t)	(__TYPE_AS(t, 0L))
+>  #define __TYPE_IS_UL(t)	(__TYPE_AS(t, 0UL))
+>  #define __TYPE_IS_LL(t) (__TYPE_AS(t, 0LL) || __TYPE_AS(t, 0ULL))
+> +#define __TYPE_IS_PTR(t) (!__builtin_types_compatible_p(typeof(0 ? (__force t)0 : 0ULL), u64))
+>  #define __SC_LONG(t, a) __typeof(__builtin_choose_expr(__TYPE_IS_LL(t), 0LL, 0L)) a
+> +#ifdef CONFIG_64BIT
+> +#define __SC_CAST(t, a)	(__TYPE_IS_PTR(t) \
+> +				? (__force t) ((__u64)a & ~(1UL << 55)) \
+> +				: (__force t) a)
+> +#else
+>  #define __SC_CAST(t, a)	(__force t) a
+> +#endif
+>  #define __SC_ARGS(t, a)	a
+>  #define __SC_TEST(t, a) (void)BUILD_BUG_ON_ZERO(!__TYPE_IS_LL(t) && sizeof(t) > sizeof(long))
+
+I'm laughing, I'm crying. Now I have to go look at the disassembly to
+see how this actually looks. (I mean, it _does_ solve my specific case
+of the waitid() flaw, but wouldn't help with pointers deeper in structs,
+etc, though TBI does, I think still help with that. I have to catch back
+up on the thread...) Anyway, if it's not too expensive it'd block
+reachability for those kinds of flaws.
+
+I wonder what my chances are of actually getting this landed? :)
+(Though, I guess I need to find a "VA width" macro instead of a raw 55.)
+
+Thanks for thinking of __SC_CAST() and __TYPE_IS_PTR() together. Really
+made my day. :)
+
 -- 
-2.7.4
-
+Kees Cook
