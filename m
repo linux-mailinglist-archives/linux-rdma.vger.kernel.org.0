@@ -2,177 +2,454 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6EB3223A
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2019 07:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F24E1322CB
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2019 11:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbfFBFGO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 2 Jun 2019 01:06:14 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:42267 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725871AbfFBFGO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Jun 2019 01:06:14 -0400
-Received: by mail-pg1-f193.google.com with SMTP id e6so5076444pgd.9
-        for <linux-rdma@vger.kernel.org>; Sat, 01 Jun 2019 22:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8FrEn8Oc47oyqvsIyUn+ei84DckXK5ddHX1nKUOQVF0=;
-        b=I+l433GU6rh5Vh+cXRg2sWftONjf5E0xtYRJR0maMC3On194A0XuFQ8es0fmdrLaO4
-         QMulbFvcAdi+pOn8HpskX0ufgW7qoStMxwwMGtpoIzBLU8ImYfubQhLJZlu5J4RYe6TO
-         Yim8ter4osHiihcYza518LDlKNV+048cHSWMc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8FrEn8Oc47oyqvsIyUn+ei84DckXK5ddHX1nKUOQVF0=;
-        b=QQjmbbx9HM+lMJOkcH1do/jrLO9t5npMFlTDnzzosoXC1f6cX0eWU/mpcGcO0Z2a7j
-         qN8Ka1rLwIB43eIG1GeuRlFP3nmtehzlXC0JnH3Q6DE4jwM2oZ9NTSOQnfQhKsdUHdJ+
-         VDFpX7H5cPp60wEr3zDYrC8Zigdr5FZNGEBQeJZ/wz3AQFdOKALWMWchC//dG+k6B2x4
-         +5WYqxsRPviBUNNmBn/6jghzz5s+o7Eau2sG8dIqFoQ2RtV3yQAlWObXi2Ogq7FytIVK
-         sWbwTA1YLhLnPnGY42jfcbeAT6zDIgOBso/QzUErAeRZR3amhqbgf8tG8B2xnb2NU9WV
-         l7QA==
-X-Gm-Message-State: APjAAAXqV/pa9la6jFxRtz4TZYV8iwzGt6ZuOFROl2LXHfSppYo5LR7I
-        pZNO9Oappn/4YtwFhgJtbvjm0Q==
-X-Google-Smtp-Source: APXvYqww51z53Fj+SFur89FkVZvsAjQrEhIV13t8870aGnrYJ2f32X4e6lxRmTKOa2Pc17jm0i7ppA==
-X-Received: by 2002:a65:520b:: with SMTP id o11mr20347226pgp.184.1559451973138;
-        Sat, 01 Jun 2019 22:06:13 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x28sm12472404pfo.78.2019.06.01.22.06.11
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 01 Jun 2019 22:06:12 -0700 (PDT)
-Date:   Sat, 1 Jun 2019 22:06:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     enh <enh@google.com>, Evgenii Stepanov <eugenis@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v15 00/17] arm64: untag user pointers passed to the kernel
-Message-ID: <201906012156.55E2C45@keescook>
-References: <201905211633.6C0BF0C2@keescook>
- <20190522101110.m2stmpaj7seezveq@mbp>
- <CAJgzZoosKBwqXRyA6fb8QQSZXFqfHqe9qO9je5TogHhzuoGXJQ@mail.gmail.com>
- <20190522163527.rnnc6t4tll7tk5zw@mbp>
- <201905221316.865581CF@keescook>
- <20190523144449.waam2mkyzhjpqpur@mbp>
- <201905230917.DEE7A75EF0@keescook>
- <20190523174345.6sv3kcipkvlwfmox@mbp>
- <201905231327.77CA8D0A36@keescook>
- <20190528170244.GF32006@arrakis.emea.arm.com>
+        id S1726124AbfFBJO2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 2 Jun 2019 05:14:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:48720 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbfFBJO2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Jun 2019 05:14:28 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x529DoRr182780;
+        Sun, 2 Jun 2019 09:13:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=9t/fsK4CvyCF3OHhlEG18wYTSv+wubPNDBov+GtbG1g=;
+ b=L0aDr1f4b+X13FWjsUdyypsnQldo3iPfZdLj/C4OQbHBcsKThfjms20LJPuInsUGbtQz
+ vcHblQq/0wJnhYNxTH/NlzbgXcAmvtbH539zmRhfQzv3VUoQWzvXQDbBgXlv8GpDxAci
+ /Shpp9b1drMpJFjapHMbiY2P2DDtpxpB7g2BY8ujNofoGM21nJlZfQ2BLGas9k8rM2ks
+ CV57LC9V0HMRHyPnS4rVeV+gXxqDT2S12UjWkaYFw/T6sz5rEgweZ4B65oZlGCj4spOb
+ 0spM8vxppd+0TVc6QLEW76QX/NZtJv0NqDjlI953gJz6AifU7vo5T1MosP2WEb9efn+J PA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2suj0q2t8m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 02 Jun 2019 09:13:50 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x529DVNW088887;
+        Sun, 2 Jun 2019 09:13:50 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2svbbur3fu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 02 Jun 2019 09:13:49 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x529DhQ5013581;
+        Sun, 2 Jun 2019 09:13:44 GMT
+Received: from srabinov-laptop (/10.175.34.156)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 02 Jun 2019 02:13:43 -0700
+Date:   Sun, 2 Jun 2019 12:13:35 +0300
+From:   Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
+Cc:     leonro@mellanox.com, linux-rdma@vger.kernel.org, jgg@mellanox.com,
+        dledford@redhat.com, sagi@grimberg.me, hch@lst.de,
+        bvanassche@acm.org, israelr@mellanox.com, idanb@mellanox.com,
+        oren@mellanox.com, vladimirk@mellanox.com, shlomin@mellanox.com
+Subject: Re: [PATCH 06/20] RDMA/mlx5: Implement mlx5_ib_map_mr_sg_pi and
+ mlx5_ib_alloc_mr_integrity
+Message-ID: <20190602091335.GA18026@srabinov-laptop>
+References: <1559222731-16715-1-git-send-email-maxg@mellanox.com>
+ <1559222731-16715-7-git-send-email-maxg@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190528170244.GF32006@arrakis.emea.arm.com>
+In-Reply-To: <1559222731-16715-7-git-send-email-maxg@mellanox.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9275 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906020071
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9275 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906020071
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 28, 2019 at 06:02:45PM +0100, Catalin Marinas wrote:
-> On Thu, May 23, 2019 at 02:31:16PM -0700, Kees Cook wrote:
-> > syzkaller already attempts to randomly inject non-canonical and
-> > 0xFFFF....FFFF addresses for user pointers in syscalls in an effort to
-> > find bugs like CVE-2017-5123 where waitid() via unchecked put_user() was
-> > able to write directly to kernel memory[1].
-> > 
-> > It seems that using TBI by default and not allowing a switch back to
-> > "normal" ABI without a reboot actually means that userspace cannot inject
-> > kernel pointers into syscalls any more, since they'll get universally
-> > stripped now. Is my understanding correct, here? i.e. exploiting
-> > CVE-2017-5123 would be impossible under TBI?
-> > 
-> > If so, then I think we should commit to the TBI ABI and have a boot
-> > flag to disable it, but NOT have a process flag, as that would allow
-> > attackers to bypass the masking. The only flag should be "TBI or MTE".
-> > 
-> > If so, can I get top byte masking for other architectures too? Like,
-> > just to strip high bits off userspace addresses? ;)
+On Thu, May 30, 2019 at 04:25:17PM +0300, Max Gurtovoy wrote:
+> mlx5_ib_map_mr_sg_pi() will map the PI and data dma mapped SG lists to the
+> mlx5 memory region prior to the registration operation. In the new
+> API, the mlx5 driver will allocate an internal memory region for the
+> UMR operation to register both PI and data SG lists. The internal MR
+> will use KLM mode in order to map 2 (possibly non-contiguous/non-align)
+> SG lists using 1 memory key. In the new API, each ULP will use 1 memory
+> region for the signature operation (instead of 3 in the old API). This
+> memory region will have a key that will be exposed to remote server to
+> perform RDMA operation. The internal memory key that will map the SG lists
+> will stay private.
 > 
-> Just for fun, hack/attempt at your idea which should not interfere with
-> TBI. Only briefly tested on arm64 (and the s390 __TYPE_IS_PTR macro is
-> pretty weird ;)):
-
-OMG, this is amazing and bonkers. I love it.
-
-> --------------------------8<---------------------------------
-> diff --git a/arch/s390/include/asm/compat.h b/arch/s390/include/asm/compat.h
-> index 63b46e30b2c3..338455a74eff 100644
-> --- a/arch/s390/include/asm/compat.h
-> +++ b/arch/s390/include/asm/compat.h
-> @@ -11,9 +11,6 @@
+> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> Signed-off-by: Israel Rukshin <israelr@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/main.c    |   2 +
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h |  11 +++
+>  drivers/infiniband/hw/mlx5/mr.c      | 184 ++++++++++++++++++++++++++++++++---
+>  3 files changed, 186 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+> index abac70ad5c7c..b6588cdef1cf 100644
+> --- a/drivers/infiniband/hw/mlx5/main.c
+> +++ b/drivers/infiniband/hw/mlx5/main.c
+> @@ -6126,6 +6126,7 @@ static void mlx5_ib_stage_flow_db_cleanup(struct mlx5_ib_dev *dev)
+>  static const struct ib_device_ops mlx5_ib_dev_ops = {
+>  	.add_gid = mlx5_ib_add_gid,
+>  	.alloc_mr = mlx5_ib_alloc_mr,
+> +	.alloc_mr_integrity = mlx5_ib_alloc_mr_integrity,
+>  	.alloc_pd = mlx5_ib_alloc_pd,
+>  	.alloc_ucontext = mlx5_ib_alloc_ucontext,
+>  	.attach_mcast = mlx5_ib_mcg_attach,
+> @@ -6155,6 +6156,7 @@ static const struct ib_device_ops mlx5_ib_dev_ops = {
+>  	.get_dma_mr = mlx5_ib_get_dma_mr,
+>  	.get_link_layer = mlx5_ib_port_link_layer,
+>  	.map_mr_sg = mlx5_ib_map_mr_sg,
+> +	.map_mr_sg_pi = mlx5_ib_map_mr_sg_pi,
+>  	.mmap = mlx5_ib_mmap,
+>  	.modify_cq = mlx5_ib_modify_cq,
+>  	.modify_device = mlx5_ib_modify_device,
+> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> index 40eb8be482e4..07bac37c3450 100644
+> --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> @@ -587,6 +587,9 @@ struct mlx5_ib_mr {
+>  	void			*descs;
+>  	dma_addr_t		desc_map;
+>  	int			ndescs;
+> +	int			data_length;
+> +	int			meta_ndescs;
+> +	int			meta_length;
+>  	int			max_descs;
+>  	int			desc_size;
+>  	int			access_mode;
+> @@ -605,6 +608,7 @@ struct mlx5_ib_mr {
+>  	int			access_flags; /* Needed for rereg MR */
 >  
->  #include <asm-generic/compat.h>
+>  	struct mlx5_ib_mr      *parent;
+> +	struct mlx5_ib_mr      *pi_mr; /* Needed for IB_MR_TYPE_INTEGRITY */
+>  	atomic_t		num_leaf_free;
+>  	wait_queue_head_t       q_leaf_free;
+>  	struct mlx5_async_work  cb_work;
+> @@ -1148,8 +1152,15 @@ int mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
+>  int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
+>  struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+>  			       u32 max_num_sg, struct ib_udata *udata);
+> +struct ib_mr *mlx5_ib_alloc_mr_integrity(struct ib_pd *pd,
+> +					 u32 max_num_sg,
+> +					 u32 max_num_meta_sg);
+>  int mlx5_ib_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+>  		      unsigned int *sg_offset);
+> +int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
+> +			 int data_sg_nents, unsigned int *data_sg_offset,
+> +			 struct scatterlist *meta_sg, int meta_sg_nents,
+> +			 unsigned int *meta_sg_offset);
+>  int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port_num,
+>  			const struct ib_wc *in_wc, const struct ib_grh *in_grh,
+>  			const struct ib_mad_hdr *in, size_t in_mad_size,
+> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+> index 5f09699fab98..6820d80c6a7f 100644
+> --- a/drivers/infiniband/hw/mlx5/mr.c
+> +++ b/drivers/infiniband/hw/mlx5/mr.c
+> @@ -1639,16 +1639,22 @@ static void dereg_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr)
 >  
-> -#define __TYPE_IS_PTR(t) (!__builtin_types_compatible_p( \
-> -				typeof(0?(__force t)0:0ULL), u64))
-> -
->  #define __SC_DELOUSE(t,v) ({ \
->  	BUILD_BUG_ON(sizeof(t) > 4 && !__TYPE_IS_PTR(t)); \
->  	(__force t)(__TYPE_IS_PTR(t) ? ((v) & 0x7fffffff) : (v)); \
-> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-> index e2870fe1be5b..b1b9fe8502da 100644
-> --- a/include/linux/syscalls.h
-> +++ b/include/linux/syscalls.h
-> @@ -119,8 +119,15 @@ struct io_uring_params;
->  #define __TYPE_IS_L(t)	(__TYPE_AS(t, 0L))
->  #define __TYPE_IS_UL(t)	(__TYPE_AS(t, 0UL))
->  #define __TYPE_IS_LL(t) (__TYPE_AS(t, 0LL) || __TYPE_AS(t, 0ULL))
-> +#define __TYPE_IS_PTR(t) (!__builtin_types_compatible_p(typeof(0 ? (__force t)0 : 0ULL), u64))
->  #define __SC_LONG(t, a) __typeof(__builtin_choose_expr(__TYPE_IS_LL(t), 0LL, 0L)) a
-> +#ifdef CONFIG_64BIT
-> +#define __SC_CAST(t, a)	(__TYPE_IS_PTR(t) \
-> +				? (__force t) ((__u64)a & ~(1UL << 55)) \
-> +				: (__force t) a)
-> +#else
->  #define __SC_CAST(t, a)	(__force t) a
-> +#endif
->  #define __SC_ARGS(t, a)	a
->  #define __SC_TEST(t, a) (void)BUILD_BUG_ON_ZERO(!__TYPE_IS_LL(t) && sizeof(t) > sizeof(long))
+>  int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>  {
+> -	dereg_mr(to_mdev(ibmr->device), to_mmr(ibmr));
+> +	struct mlx5_ib_mr *mmr = to_mmr(ibmr);
+> +
+> +	if (ibmr->type == IB_MR_TYPE_INTEGRITY)
+> +		dereg_mr(to_mdev(mmr->pi_mr->ibmr.device), mmr->pi_mr);
+> +
+> +	dereg_mr(to_mdev(ibmr->device), mmr);
+> +
+>  	return 0;
+>  }
+>  
+> -struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+> -			       u32 max_num_sg, struct ib_udata *udata)
+> +static struct mlx5_ib_mr *mlx5_ib_alloc_pi_mr(struct ib_pd *pd,
+> +				u32 max_num_sg, u32 max_num_meta_sg)
+>  {
+>  	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+>  	int inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
+> -	int ndescs = ALIGN(max_num_sg, 4);
+> +	int ndescs = ALIGN(max_num_sg + max_num_meta_sg, 4);
+>  	struct mlx5_ib_mr *mr;
+>  	void *mkc;
+>  	u32 *in;
+> @@ -1670,8 +1676,72 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+>  	MLX5_SET(mkc, mkc, qpn, 0xffffff);
+>  	MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
+>  
+> +	mr->access_mode = MLX5_MKC_ACCESS_MODE_KLMS;
+> +
+> +	err = mlx5_alloc_priv_descs(pd->device, mr,
+> +				    ndescs, sizeof(struct mlx5_klm));
+> +	if (err)
+> +		goto err_free_in;
+> +	mr->desc_size = sizeof(struct mlx5_klm);
+> +	mr->max_descs = ndescs;
+> +
+> +	MLX5_SET(mkc, mkc, access_mode_1_0, mr->access_mode & 0x3);
+> +	MLX5_SET(mkc, mkc, access_mode_4_2, (mr->access_mode >> 2) & 0x7);
+> +	MLX5_SET(mkc, mkc, umr_en, 1);
+> +
+> +	mr->ibmr.pd = pd;
+> +	mr->ibmr.device = pd->device;
+> +	err = mlx5_core_create_mkey(dev->mdev, &mr->mmkey, in, inlen);
+> +	if (err)
+> +		goto err_priv_descs;
+> +
+> +	mr->mmkey.type = MLX5_MKEY_MR;
+> +	mr->ibmr.lkey = mr->mmkey.key;
+> +	mr->ibmr.rkey = mr->mmkey.key;
+> +	mr->umem = NULL;
+> +	kfree(in);
+> +
+> +	return mr;
+> +
+> +err_priv_descs:
+> +	mlx5_free_priv_descs(mr);
+> +err_free_in:
+> +	kfree(in);
+> +err_free:
+> +	kfree(mr);
+> +	return ERR_PTR(err);
+> +}
+> +
+> +static struct ib_mr *__mlx5_ib_alloc_mr(struct ib_pd *pd,
+> +					enum ib_mr_type mr_type, u32 max_num_sg,
+> +					u32 max_num_meta_sg)
+> +{
+> +	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+> +	int inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
+> +	int ndescs = ALIGN(max_num_sg, 4);
+> +	struct mlx5_ib_mr *mr;
+> +	void *mkc;
+> +	u32 *in;
+> +	int err;
+> +
+> +	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
+> +	if (!mr)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	in = kzalloc(inlen, GFP_KERNEL);
+> +	if (!in) {
+> +		err = -ENOMEM;
+> +		goto err_free;
+> +	}
+> +
+> +	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
+> +	MLX5_SET(mkc, mkc, free, 1);
+> +	MLX5_SET(mkc, mkc, qpn, 0xffffff);
+> +	MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
+> +
+>  	if (mr_type == IB_MR_TYPE_MEM_REG) {
+>  		mr->access_mode = MLX5_MKC_ACCESS_MODE_MTT;
+> +		MLX5_SET(mkc, mkc, translations_octword_size, ndescs);
+>  		MLX5_SET(mkc, mkc, log_page_size, PAGE_SHIFT);
+>  		err = mlx5_alloc_priv_descs(pd->device, mr,
+>  					    ndescs, sizeof(struct mlx5_mtt));
+> @@ -1682,6 +1752,7 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+>  		mr->max_descs = ndescs;
+>  	} else if (mr_type == IB_MR_TYPE_SG_GAPS) {
+>  		mr->access_mode = MLX5_MKC_ACCESS_MODE_KLMS;
+> +		MLX5_SET(mkc, mkc, translations_octword_size, ndescs);
+>  
+>  		err = mlx5_alloc_priv_descs(pd->device, mr,
+>  					    ndescs, sizeof(struct mlx5_klm));
+> @@ -1689,11 +1760,13 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+>  			goto err_free_in;
+>  		mr->desc_size = sizeof(struct mlx5_klm);
+>  		mr->max_descs = ndescs;
+> -	} else if (mr_type == IB_MR_TYPE_SIGNATURE) {
+> +	} else if (mr_type == IB_MR_TYPE_SIGNATURE ||
+> +		   mr_type == IB_MR_TYPE_INTEGRITY) {
+>  		u32 psv_index[2];
+>  
+>  		MLX5_SET(mkc, mkc, bsf_en, 1);
+>  		MLX5_SET(mkc, mkc, bsf_octword_size, MLX5_MKEY_BSF_OCTO_SIZE);
+> +		MLX5_SET(mkc, mkc, translations_octword_size, 4);
+>  		mr->sig = kzalloc(sizeof(*mr->sig), GFP_KERNEL);
+>  		if (!mr->sig) {
+>  			err = -ENOMEM;
+> @@ -1714,6 +1787,14 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+>  		mr->sig->sig_err_exists = false;
+>  		/* Next UMR, Arm SIGERR */
+>  		++mr->sig->sigerr_count;
+> +		if (mr_type == IB_MR_TYPE_INTEGRITY) {
+> +			mr->pi_mr = mlx5_ib_alloc_pi_mr(pd, max_num_sg,
+> +							max_num_meta_sg);
+> +			if (IS_ERR(mr->pi_mr)) {
+> +				err = PTR_ERR(mr->pi_mr);
+> +				goto err_destroy_psv;
+> +			}
+> +		}
+>  	} else {
+>  		mlx5_ib_warn(dev, "Invalid mr type %d\n", mr_type);
+>  		err = -EINVAL;
+> @@ -1727,7 +1808,7 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+>  	mr->ibmr.device = pd->device;
+>  	err = mlx5_core_create_mkey(dev->mdev, &mr->mmkey, in, inlen);
+>  	if (err)
+> -		goto err_destroy_psv;
+> +		goto err_free_pi_mr;
+>  
+>  	mr->mmkey.type = MLX5_MKEY_MR;
+>  	mr->ibmr.lkey = mr->mmkey.key;
+> @@ -1737,6 +1818,11 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+>  
+>  	return &mr->ibmr;
+>  
+> +err_free_pi_mr:
+> +	if (mr->pi_mr) {
+> +		dereg_mr(to_mdev(mr->pi_mr->ibmr.device), mr->pi_mr);
+> +		mr->pi_mr = NULL;
+> +	}
+>  err_destroy_psv:
+>  	if (mr->sig) {
+>  		if (mlx5_core_destroy_psv(dev->mdev,
+> @@ -1758,6 +1844,19 @@ struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+>  	return ERR_PTR(err);
+>  }
+>  
+> +struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+> +			       u32 max_num_sg, struct ib_udata *udata)
+> +{
+> +	return __mlx5_ib_alloc_mr(pd, mr_type, max_num_sg, 0);
+> +}
+> +
+> +struct ib_mr *mlx5_ib_alloc_mr_integrity(struct ib_pd *pd,
+> +					 u32 max_num_sg, u32 max_num_meta_sg)
+> +{
+> +	return __mlx5_ib_alloc_mr(pd, IB_MR_TYPE_INTEGRITY, max_num_sg,
+> +				  max_num_meta_sg);
+> +}
+> +
+>  struct ib_mw *mlx5_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+>  			       struct ib_udata *udata)
+>  {
+> @@ -1890,13 +1989,16 @@ static int
+>  mlx5_ib_sg_to_klms(struct mlx5_ib_mr *mr,
+>  		   struct scatterlist *sgl,
+>  		   unsigned short sg_nents,
+> -		   unsigned int *sg_offset_p)
+> +		   unsigned int *sg_offset_p,
+> +		   struct scatterlist *meta_sgl,
+> +		   unsigned short meta_sg_nents,
+> +		   unsigned int *meta_sg_offset_p)
+>  {
+>  	struct scatterlist *sg = sgl;
+>  	struct mlx5_klm *klms = mr->descs;
+>  	unsigned int sg_offset = sg_offset_p ? *sg_offset_p : 0;
+>  	u32 lkey = mr->ibmr.pd->local_dma_lkey;
+> -	int i;
+> +	int i, j = 0;
+>  
+>  	mr->ibmr.iova = sg_dma_address(sg) + sg_offset;
+>  	mr->ibmr.length = 0;
+> @@ -1911,12 +2013,36 @@ mlx5_ib_sg_to_klms(struct mlx5_ib_mr *mr,
+>  
+>  		sg_offset = 0;
+>  	}
+> -	mr->ndescs = i;
+>  
+>  	if (sg_offset_p)
+>  		*sg_offset_p = sg_offset;
+>  
+> -	return i;
+> +	mr->ndescs = i;
+> +	mr->data_length = mr->ibmr.length;
+> +
+> +	if (meta_sg_nents) {
+> +		sg = meta_sgl;
+> +		sg_offset = meta_sg_offset_p ? *meta_sg_offset_p : 0;
+> +		for_each_sg(meta_sgl, sg, meta_sg_nents, j) {
+> +			if (unlikely(i + j >= mr->max_descs))
+> +				break;
+> +			klms[i + j].va = cpu_to_be64(sg_dma_address(sg) +
+> +						     sg_offset);
+> +			klms[i + j].bcount = cpu_to_be32(sg_dma_len(sg) -
+> +							 sg_offset);
+> +			klms[i + j].key = cpu_to_be32(lkey);
+> +			mr->ibmr.length += sg_dma_len(sg) - sg_offset;
+> +
+> +			sg_offset = 0;
+> +		}
+> +		if (meta_sg_offset_p)
+> +			*meta_sg_offset_p = sg_offset;
+> +
+> +		mr->meta_ndescs = j;
+> +		mr->meta_length = mr->ibmr.length - mr->data_length;
+> +	}
+> +
+> +	return i + j;
+>  }
+>  
+>  static int mlx5_set_page(struct ib_mr *ibmr, u64 addr)
+> @@ -1933,6 +2059,41 @@ static int mlx5_set_page(struct ib_mr *ibmr, u64 addr)
+>  	return 0;
+>  }
+>  
+> +int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
+> +			 int data_sg_nents, unsigned int *data_sg_offset,
+> +			 struct scatterlist *meta_sg, int meta_sg_nents,
+> +			 unsigned int *meta_sg_offset)
+> +{
+> +	struct mlx5_ib_mr *mr = to_mmr(ibmr);
+> +	struct mlx5_ib_mr *pi_mr = mr->pi_mr;
+> +	int n;
+> +
+> +	WARN_ON(ibmr->type != IB_MR_TYPE_INTEGRITY);
+> +
+> +	pi_mr->ndescs = 0;
+> +	pi_mr->meta_ndescs = 0;
+> +	pi_mr->meta_length = 0;
+> +
+> +	ib_dma_sync_single_for_cpu(ibmr->device, pi_mr->desc_map,
+> +				   pi_mr->desc_size * pi_mr->max_descs,
+> +				   DMA_TO_DEVICE);
+> +
+> +	n = mlx5_ib_sg_to_klms(pi_mr, data_sg, data_sg_nents, data_sg_offset,
+> +			       meta_sg, meta_sg_nents, meta_sg_offset);
+> +
+> +	/* This is zero-based memory region */
+> +	pi_mr->ibmr.iova = 0;
 
-I'm laughing, I'm crying. Now I have to go look at the disassembly to
-see how this actually looks. (I mean, it _does_ solve my specific case
-of the waitid() flaw, but wouldn't help with pointers deeper in structs,
-etc, though TBI does, I think still help with that. I have to catch back
-up on the thread...) Anyway, if it's not too expensive it'd block
-reachability for those kinds of flaws.
+Are you aware that Yuval enabled zero based mr from rdma-core with the
+follow patch?
 
-I wonder what my chances are of actually getting this landed? :)
-(Though, I guess I need to find a "VA width" macro instead of a raw 55.)
+https://marc.info/?l=linux-rdma&m=155919637918880&w=2
 
-Thanks for thinking of __SC_CAST() and __TYPE_IS_PTR() together. Really
-made my day. :)
-
--- 
-Kees Cook
+> +	ibmr->length = pi_mr->ibmr.length;
+> +	ibmr->iova = pi_mr->ibmr.iova;
+> +	ibmr->sig_attrs->meta_length = pi_mr->meta_length;
+> +
+> +	ib_dma_sync_single_for_device(ibmr->device, pi_mr->desc_map,
+> +				      pi_mr->desc_size * pi_mr->max_descs,
+> +				      DMA_TO_DEVICE);
+> +
+> +	return n;
+> +}
+> +
+>  int mlx5_ib_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+>  		      unsigned int *sg_offset)
+>  {
+> @@ -1946,7 +2107,8 @@ int mlx5_ib_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+>  				   DMA_TO_DEVICE);
+>  
+>  	if (mr->access_mode == MLX5_MKC_ACCESS_MODE_KLMS)
+> -		n = mlx5_ib_sg_to_klms(mr, sg, sg_nents, sg_offset);
+> +		n = mlx5_ib_sg_to_klms(mr, sg, sg_nents, sg_offset, NULL, 0,
+> +				       NULL);
+>  	else
+>  		n = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset,
+>  				mlx5_set_page);
+> -- 
+> 2.16.3
+> 
