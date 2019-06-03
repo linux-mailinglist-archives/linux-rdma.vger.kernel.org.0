@@ -2,152 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5383D337B6
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jun 2019 20:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EE33388D
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jun 2019 20:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbfFCSTJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jun 2019 14:19:09 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:47388 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbfFCSTJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jun 2019 14:19:09 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x53I8gIs153035;
-        Mon, 3 Jun 2019 18:17:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=GlaYcvRbXVbYyKKXSyNwJ8tBGJAG2pfqt1R7amaBqEw=;
- b=05U6KHBi25HCGJeXlllc8lO/7iSw1O36+nkjRk4VyMlhqURaxhzyWEAG56qBArt4ZIXH
- Rs6H67bbFeXkJ8dNAj/863iIftETrMYapMu/08uwIeo59ZY37LjyfUDhTwYxIuq0apcm
- mxgbgRIkv1jIFr3D9wbmIYjjONDeqSnJ2Q6OpAFTFQJnXlxeGQP3CRq4pVItc3hsAHhY
- eyf+kruVixj7mGRtSpX0nUteC3Br6Cqgqf9GkrLjvi8wjVLQ+WKBafILZOHfOiiQNyNp
- J0U+PSjroYIWCro+VOsKn1DLmMtnqiEQYZkolve4C6NI/cUHUIedA0+lH2Bzv9u6n/N0 Yw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2suj0q8ka1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 Jun 2019 18:17:43 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x53IGZGQ023818;
-        Mon, 3 Jun 2019 18:17:42 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2sv36sc445-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 Jun 2019 18:17:42 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x53IHbbL010166;
-        Mon, 3 Jun 2019 18:17:37 GMT
-Received: from [192.168.1.16] (/24.9.64.241)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 Jun 2019 11:17:36 -0700
-Subject: Re: [PATCH v16 01/16] uaccess: add untagged_addr definition for other
- arches
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-References: <cover.1559580831.git.andreyknvl@google.com>
- <097bc300a5c6554ca6fd1886421bb2e0adb03420.1559580831.git.andreyknvl@google.com>
- <8ff5b0ff-849a-1e0b-18da-ccb5be85dd2b@oracle.com>
- <CAAeHK+xX2538e674Pz25unkdFPCO_SH0pFwFu=8+DS7RzfYnLQ@mail.gmail.com>
- <f6711d31-e52c-473a-d7ad-b2d63131d7a5@oracle.com>
- <20190603172916.GA5390@infradead.org>
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-Organization: Oracle Corp
-Message-ID: <7a687a26-fc3e-2caa-1d6a-464f1f7e684c@oracle.com>
-Date:   Mon, 3 Jun 2019 12:17:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726055AbfFCSvH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jun 2019 14:51:07 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:38332 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726190AbfFCSvH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jun 2019 14:51:07 -0400
+Received: by mail-io1-f71.google.com with SMTP id h4so5323934iol.5
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Jun 2019 11:51:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Hc/Ql5pBCcEqkkw7qSEADSbLYyZ9Yl7/t4LfmUF/Rso=;
+        b=DmgdHpjEbyKkUUYO0xohq5M0CEhdB6AR1JL+cQhH6fNMVobXRxP/nT5v2o7HeOVVWz
+         yyZAPUY9+aCaOtQTLABaq7NOQs+3uKVTBIp3Dbp7FUWbzNrg/kkmKTXnyRt5xZMCXFzi
+         K0ePc4svTU+P8X8jTes7LBjWO3wWDsSQ88cTE2LUhYOtYwU3lH1lzGmx0ca/Lum9flcW
+         JXY9CGxLnJ+4g2u/SOIXw0PfvW6wfpPXHrXsX3KoEhPUW2SfNKneFOvUDe9wS2//Jy5U
+         UAcydygvPdz2NF6rJhvga9uJWbcp9VClpG45L5O/R9aDWzMSbGu7gNekb+UTXRDg60P3
+         0Z2A==
+X-Gm-Message-State: APjAAAW0pOnIZoOvzHzfAsxVjvLuEN3kRIzNK9MTnQu865RypIUV74sx
+        69OheUh/4xXoJhaiUodr0o0CtbNdUf4CM1IB4T9EBOMOwQkr
+X-Google-Smtp-Source: APXvYqyv0SnXMwc5y1PdJYmwJwPRSYd45Ii8i3pUCXQWuobZWIPev3JRvnZPyZdLwYw0Im3FKuWPa925cFr0Gdovko4iIv/+z6ee
 MIME-Version: 1.0
-In-Reply-To: <20190603172916.GA5390@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9277 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=970
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906030124
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9277 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=988 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906030124
+X-Received: by 2002:a24:7585:: with SMTP id y127mr18509944itc.112.1559587865933;
+ Mon, 03 Jun 2019 11:51:05 -0700 (PDT)
+Date:   Mon, 03 Jun 2019 11:51:05 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bec591058a6fd889@google.com>
+Subject: WARNING: suspicious RCU usage in in_dev_dump_addr
+From:   syzbot <syzbot+bad6e32808a3a97b1515@syzkaller.appspotmail.com>
+To:     amitkarwar@gmail.com, anshuman.khandual@arm.com, axboe@kernel.dk,
+        benedictwong@google.com, benve@cisco.com, coreteam@netfilter.org,
+        davej@codemonkey.org.uk, davem@davemloft.net, dbanerje@akamai.com,
+        devel@driverdev.osuosl.org, dledford@redhat.com, doshir@vmware.com,
+        edumazet@google.com, faisal.latif@intel.com, fw@strlen.de,
+        gbhat@marvell.com, gregkh@linuxfoundation.org,
+        gustavo@embeddedor.com, huxinming820@gmail.com,
+        idosch@mellanox.com, jakub.kicinski@netronome.com, jgg@ziepe.ca,
+        johannes@sipsolutions.net, kadlec@blackhole.kfki.hu,
+        keescook@chromium.org, kuznet@ms2.inr.ac.ru, kvalo@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-wireless@vger.kernel.org, liuhangbin@gmail.com,
+        lucien.xin@gmail.com, matwey@sai.msu.ru, mpe@ellerman.id.au,
+        neescoba@cisco.com, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, nishants@marvell.com,
+        pablo@netfilter.org, paulmck@linux.ibm.com, petrm@mellanox.com,
+        pkaustub@cisco.com, pv-drivers@vmware.com, romieu@fr.zoreil.com,
+        shannon.nelson@oracle.com, shiraz.saleem@intel.com,
+        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/3/19 11:29 AM, Christoph Hellwig wrote:
-> On Mon, Jun 03, 2019 at 11:24:35AM -0600, Khalid Aziz wrote:
->> On 6/3/19 11:06 AM, Andrey Konovalov wrote:
->>> On Mon, Jun 3, 2019 at 7:04 PM Khalid Aziz <khalid.aziz@oracle.com> w=
-rote:
->>>> Andrey,
->>>>
->>>> This patch has now become part of the other patch series Chris Hellw=
-ig
->>>> has sent out -
->>>> <https://lore.kernel.org/lkml/20190601074959.14036-1-hch@lst.de/>. C=
-an
->>>> you coordinate with that patch series?
->>>
->>> Hi!
->>>
->>> Yes, I've seen it. How should I coordinate? Rebase this series on top=
+Hello,
 
->>> of that one?
->>
->> That would be one way to do it. Better yet, separate this patch from
->> both patch series, make it standalone and then rebase the two patch
->> series on top of it.
->=20
-> I think easiest would be to just ask Linus if he could make an exceptio=
-n
-> and include this trivial prep patch in 5.2-rc.
->=20
+syzbot found the following crash on:
 
-Andrey,
+HEAD commit:    b33bc2b8 nexthop: Add entry to MAINTAINERS
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f46f52a00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1004db091673bbaf
+dashboard link: https://syzkaller.appspot.com/bug?extid=bad6e32808a3a97b1515
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11dc685aa00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16229e36a00000
 
-Would you mind updating the commit log to make it not arm64 specific and
-sending this patch out by itself. We can then ask Linus if he can
-include just this patch in the next rc.
+The bug was bisected to:
 
-Thanks,
-Khalid
+commit 2638eb8b50cfc16240e0bb080b9afbf541a9b39d
+Author: Florian Westphal <fw@strlen.de>
+Date:   Fri May 31 16:27:09 2019 +0000
 
+     net: ipv4: provide __rcu annotation for ifa_list
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=170e1a0ea00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=148e1a0ea00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=108e1a0ea00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+bad6e32808a3a97b1515@syzkaller.appspotmail.com
+Fixes: 2638eb8b50cf ("net: ipv4: provide __rcu annotation for ifa_list")
+
+=============================
+WARNING: suspicious RCU usage
+5.2.0-rc2+ #13 Not tainted
+-----------------------------
+net/ipv4/devinet.c:1766 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by syz-executor924/9000:
+  #0: 0000000087fe3874 (rtnl_mutex){+.+.}, at: netlink_dump+0xe7/0xfb0  
+net/netlink/af_netlink.c:2208
+
+stack backtrace:
+CPU: 0 PID: 9000 Comm: syz-executor924 Not tainted 5.2.0-rc2+ #13
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  lockdep_rcu_suspicious+0x153/0x15d kernel/locking/lockdep.c:5250
+  in_dev_dump_addr+0x36f/0x3d0 net/ipv4/devinet.c:1766
+  inet_dump_ifaddr+0xa8f/0xca0 net/ipv4/devinet.c:1826
+  rtnl_dump_all+0x295/0x490 net/core/rtnetlink.c:3444
+  netlink_dump+0x558/0xfb0 net/netlink/af_netlink.c:2253
+  __netlink_dump_start+0x5b1/0x7d0 net/netlink/af_netlink.c:2361
+  netlink_dump_start include/linux/netlink.h:226 [inline]
+  rtnetlink_rcv_msg+0x73d/0xb00 net/core/rtnetlink.c:5181
+  netlink_rcv_skb+0x177/0x450 net/netlink/af_netlink.c:2486
+  rtnetlink_rcv+0x1d/0x30 net/core/rtnetlink.c:5236
+  netlink_unicast_kernel net/netlink/af_netlink.c:1311 [inline]
+  netlink_unicast+0x531/0x710 net/netlink/af_netlink.c:1337
+  netlink_sendmsg+0x8ae/0xd70 net/netlink/af_netlink.c:1926
+  sock_sendmsg_nosec net/socket.c:652 [inline]
+  sock_sendmsg+0xd7/0x130 net/socket.c:671
+  ___sys_sendmsg+0x803/0x920 net/socket.c:2292
+  __sys_sendmsg+0x105/0x1d0 net/socket.c:2330
+  __do_sys_sendmsg net/socket.c:2339 [inline]
+  __se_sys_sendmsg net/socket.c:2337 [inline]
+  __x64_sys_sendmsg+0x78/0xb0 net/socket.c:2337
+  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x4402a9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fffe5f26f18 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004402a9
+RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
+R10:
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
