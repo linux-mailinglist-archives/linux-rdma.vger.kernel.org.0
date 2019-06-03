@@ -2,203 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8EF32FDF
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jun 2019 14:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8BA33359
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jun 2019 17:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbfFCMlY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jun 2019 08:41:24 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:53422 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbfFCMlY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jun 2019 08:41:24 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x53CYU0D043745;
-        Mon, 3 Jun 2019 12:41:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2018-07-02;
- bh=cNEEqICyDMHCYPWsAb0dfIFFWQNep6mKPjn4EncGscY=;
- b=oQgzz2scw65R7Djf37AidxdEKRN+1uKF60wDu5afa9pnUoSyCt+AQoEBFlMar1vXq+1P
- xW9PfB7ZVgj7Aw5wbAT/DUItLMWnY5/e7Cs6uqiIm8RCCIwMR707XbjjtO7tJbhEQK9E
- 9gXeicji/kj3ljxs9AJK0mLQc7+FwuYrdFppnq91xXomVbCxVkBO5aFgwwOIMjk7e+Bs
- yeGY+Mb5qPGgtAcbJOS7Jt/Yanvepp9gKUyqA7wkQ7Lu3Etz7nuiNh900E2xfBQzUucE
- B/Zm2Ov6xRz7Y9gR0IPSEVVAucf90NXUOP0yDo3jGNTMM0e9MHHGHeWjtTxyb0M7he5t Aw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2sugst6nnq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 Jun 2019 12:41:15 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x53Ce5YX092896;
-        Mon, 3 Jun 2019 12:41:14 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 2supp73d5x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 03 Jun 2019 12:41:14 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x53CfE6C095786;
-        Mon, 3 Jun 2019 12:41:14 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 2supp73d5t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 Jun 2019 12:41:14 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x53CfCGt010255;
-        Mon, 3 Jun 2019 12:41:13 GMT
-Received: from shipfan.cn.oracle.com (/10.113.210.105)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 Jun 2019 05:41:12 -0700
-From:   Zhu Yanjun <yanjun.zhu@oracle.com>
-To:     santosh.shilimkar@oracle.com, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com
-Subject: [PATCH 1/1] net: rds: fix memory leak when unload rds_rdma
-Date:   Mon,  3 Jun 2019 08:48:19 -0400
-Message-Id: <1559566099-30289-1-git-send-email-yanjun.zhu@oracle.com>
-X-Mailer: git-send-email 2.7.4
+        id S1729081AbfFCPUN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jun 2019 11:20:13 -0400
+Received: from mail-eopbgr70040.outbound.protection.outlook.com ([40.107.7.40]:25649
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729004AbfFCPUN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 3 Jun 2019 11:20:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZRd7kqyNQJeS1m6XFe2CUArBzACs6FETH8uwaNLeODM=;
+ b=bMj9wBadHKM0o2d8oNFIr9IWDrsgKsJa/cPSfnFXC52WzCIGr6D8NuPAqRb1kfwnQS942sROkC+ED4m+7UNKz/3Ee78oA6Vy/u5pIAie16t0OzskRvjj8zCqrsmwEJaP3vBANTtqj6BbKFwqTT0hwVO/4XyYCpG6FMf141AWHrU=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB3246.eurprd05.prod.outlook.com (10.170.238.15) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1943.22; Mon, 3 Jun 2019 15:20:06 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1943.018; Mon, 3 Jun 2019
+ 15:20:06 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: try_module_get in hfi1
+Thread-Topic: try_module_get in hfi1
+Thread-Index: AQHVGh/SUm4t+70oBk2OjtaBN/WlUw==
+Date:   Mon, 3 Jun 2019 15:20:05 +0000
+Message-ID: <20190603152000.GG11488@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YTBPR01CA0014.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:14::27) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 377dcf91-13af-4302-c82b-08d6e836f509
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB3246;
+x-ms-traffictypediagnostic: VI1PR05MB3246:
+x-microsoft-antispam-prvs: <VI1PR05MB324614264ADAC5A0357AB48DCF140@VI1PR05MB3246.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-forefront-prvs: 0057EE387C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(136003)(366004)(39860400002)(376002)(396003)(199004)(189003)(73956011)(66946007)(256004)(6916009)(71200400001)(71190400001)(6512007)(6436002)(1076003)(4744005)(66446008)(64756008)(66556008)(66476007)(68736007)(486006)(6116002)(81166006)(81156014)(4326008)(8936002)(8676002)(3846002)(2906002)(476003)(36756003)(7116003)(26005)(186003)(25786009)(2616005)(305945005)(7736002)(66066001)(99286004)(86362001)(53936002)(386003)(6506007)(52116002)(33656002)(102836004)(5660300002)(6486002)(316002)(14454004)(478600001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3246;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: j9wmyAD4eZIB4deg7eBVbvt/KGfQ3NXmo/brr/PgIAVSQnWpt1y0fGUVlj2xGE50+ly/dWfD5mG7dk5/kSPmPMC8XJ3gjP1g5LLQ+UFpcEAoa3SWzK1XZ4XdErqYDOQI3xfvOd9/cj/7uerRDy3GyceaYa1GyRTJVrtxI4CexdHjljV9NLA3WOVGvh+z3HVHwNMBo9OkqUGUP3otjOGqNUVLmQmfMyMnBSIwxUYiCe1ERtD+vyAWnTCqj7LZGGDs5e8v9AmRgbfsTe/TOE1yhhySENRwWtZRnch/mUYooj19KD8CJa6jwzPKHw5IbMXmTXVV9WHfp5F6j7u+ZOTI59jTHIsYi7BonEm8uiyT2U1b0PYWlxx9dfuM+AthNGrx4OO8IKxbLMRL7NZL2vGe1FszStiN98jTzC0EdbmKnNI=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1EDAEDDDFD9E01489CDC9278376BF607@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9276 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906030091
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 377dcf91-13af-4302-c82b-08d6e836f509
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2019 15:20:05.9639
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3246
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When KASAN is enabled, after several rds connections are
-created, then "rmmod rds_rdma" is run. The following will
-appear.
+Intel Guys,
 
-"
-BUG rds_ib_incoming (Not tainted): Objects remaining
-in rds_ib_incoming on __kmem_cache_shutdown()
+I'm looking at code in hfi1:
 
-Call Trace:
- dump_stack+0x71/0xab
- slab_err+0xad/0xd0
- __kmem_cache_shutdown+0x17d/0x370
- shutdown_cache+0x17/0x130
- kmem_cache_destroy+0x1df/0x210
- rds_ib_recv_exit+0x11/0x20 [rds_rdma]
- rds_ib_exit+0x7a/0x90 [rds_rdma]
- __x64_sys_delete_module+0x224/0x2c0
- ? __ia32_sys_delete_module+0x2c0/0x2c0
- do_syscall_64+0x73/0x190
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-"
-This is rds connection memory leak. The root cause is:
-When "rmmod rds_rdma" is run, rds_ib_remove_one will call
-rds_ib_dev_shutdown to drop the rds connections.
-rds_ib_dev_shutdown will call rds_conn_drop to drop rds
-connections as below.
-"
-rds_conn_path_drop(&conn->c_path[0], false);
-"
-In the above, destroy is set to false.
-void rds_conn_path_drop(struct rds_conn_path *cp, bool destroy)
+static int __i2c_debugfs_open(struct inode *in, struct file *fp, u32 target=
+)
 {
-        atomic_set(&cp->cp_state, RDS_CONN_ERROR);
+	struct hfi1_pportdata *ppd;
+	int ret;
 
-        rcu_read_lock();
-        if (!destroy && rds_destroy_pending(cp->cp_conn)) {
-                rcu_read_unlock();
-                return;
-        }
-        queue_work(rds_wq, &cp->cp_down_w);
-        rcu_read_unlock();
-}
-In the above function, destroy is set to false. rds_destroy_pending
-is called. This does not move rds connections to ib_nodev_conns.
-So destroy is set to true to move rds connections to ib_nodev_conns.
-In rds_ib_unregister_client, flush_workqueue is called to make rds_wq
-finsh shutdown rds connections. The function rds_ib_destroy_nodev_conns
-is called to shutdown rds connections finally.
-Then rds_ib_recv_exit is called to destroy slab.
+	if (!try_module_get(THIS_MODULE))
+		return -ENODEV;
 
-void rds_ib_recv_exit(void)
-{
-        kmem_cache_destroy(rds_ib_incoming_slab);
-        kmem_cache_destroy(rds_ib_frag_slab);
-}
-The above slab memory leak will not occur again.
+Seems like nonsense to me.
 
-From tests,
-256 rds connections
-[root@ca-dev14 ~]# time rmmod rds_rdma
+I think it should be:
 
-real    0m16.522s
-user    0m0.000s
-sys     0m8.152s
-512 rds connections
-[root@ca-dev14 ~]# time rmmod rds_rdma
+--- a/drivers/infiniband/hw/hfi1/debugfs.c
++++ b/drivers/infiniband/hw/hfi1/debugfs.c
+@@ -1155,6 +1155,7 @@ static int exprom_wp_debugfs_release(struct inode *in=
+, struct file *fp)
+ { \
+        .name =3D nm, \
+        .ops =3D { \
++               .owner =3D THIS_MODULE, \
+                .read =3D readroutine, \
+                .write =3D writeroutine, \
+                .llseek =3D generic_file_llseek, \
+@@ -1165,6 +1166,7 @@ static int exprom_wp_debugfs_release(struct inode *in=
+, struct file *fp)
+ { \
+        .name =3D nm, \
+        .ops =3D { \
++               .owner =3D THIS_MODULE, \
+                .read =3D readf, \
+                .write =3D writef, \
+                .llseek =3D generic_file_llseek, \
 
-real    0m32.054s
-user    0m0.000s
-sys     0m15.568s
 
-To rmmod rds_rdma with 256 rds connections, about 16 seconds are needed.
-And with 512 rds connections, about 32 seconds are needed.
-From ftrace, when one rds connection is destroyed,
+Can you fix it??
 
-"
- 19)               |  rds_conn_destroy [rds]() {
- 19)   7.782 us    |    rds_conn_path_drop [rds]();
- 15)               |  rds_shutdown_worker [rds]() {
- 15)               |    rds_conn_shutdown [rds]() {
- 15)   1.651 us    |      rds_send_path_reset [rds]();
- 15)   7.195 us    |    }
- 15) + 11.434 us   |  }
- 19)   2.285 us    |    rds_cong_remove_conn [rds]();
- 19) * 24062.76 us |  }
-"
-So if many rds connections will be destroyed, this function
-rds_ib_destroy_nodev_conns uses most of time.
-
-Suggested-by: Håkon Bugge <haakon.bugge@oracle.com>
-Signed-off-by: Zhu Yanjun <yanjun.zhu@oracle.com>
----
- net/rds/ib.c      | 2 +-
- net/rds/ib_recv.c | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/net/rds/ib.c b/net/rds/ib.c
-index f9baf2d..ec05d91 100644
---- a/net/rds/ib.c
-+++ b/net/rds/ib.c
-@@ -87,7 +87,7 @@ static void rds_ib_dev_shutdown(struct rds_ib_device *rds_ibdev)
- 
- 	spin_lock_irqsave(&rds_ibdev->spinlock, flags);
- 	list_for_each_entry(ic, &rds_ibdev->conn_list, ib_node)
--		rds_conn_drop(ic->conn);
-+		rds_conn_path_drop(&ic->conn->c_path[0], true);
- 	spin_unlock_irqrestore(&rds_ibdev->spinlock, flags);
- }
- 
-diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
-index 8946c89..3cae88c 100644
---- a/net/rds/ib_recv.c
-+++ b/net/rds/ib_recv.c
-@@ -168,6 +168,7 @@ void rds_ib_recv_free_caches(struct rds_ib_connection *ic)
- 		list_del(&inc->ii_cache_entry);
- 		WARN_ON(!list_empty(&inc->ii_frags));
- 		kmem_cache_free(rds_ib_incoming_slab, inc);
-+		atomic_dec(&rds_ib_allocation);
- 	}
- 
- 	rds_ib_cache_xfer_to_ready(&ic->i_cache_frags);
-@@ -1057,6 +1058,8 @@ int rds_ib_recv_init(void)
- 
- void rds_ib_recv_exit(void)
- {
-+	WARN_ON(atomic_read(&rds_ib_allocation));
-+
- 	kmem_cache_destroy(rds_ib_incoming_slab);
- 	kmem_cache_destroy(rds_ib_frag_slab);
- }
--- 
-2.7.4
-
+Jason
