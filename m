@@ -2,208 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2084B3370E
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jun 2019 19:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C88693373C
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jun 2019 19:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbfFCRqW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jun 2019 13:46:22 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:33628 "EHLO
+        id S1727308AbfFCRtv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jun 2019 13:49:51 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44328 "EHLO
         mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726911AbfFCRqW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jun 2019 13:46:22 -0400
-Received: by mail-qt1-f194.google.com with SMTP id 14so10481884qtf.0
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Jun 2019 10:46:21 -0700 (PDT)
+        with ESMTP id S1727230AbfFCRtu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jun 2019 13:49:50 -0400
+Received: by mail-qt1-f194.google.com with SMTP id x47so10406888qtk.11
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Jun 2019 10:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=3YD9QwJxecxdMHZGSRuYOcVyiXHhODdQ+7hG9X3IFEc=;
-        b=Y8xQhEUl5VIp1CHI2GNhUWumFeridnSrDVLR4ophf+TEEqb9RYCBYUuzTaKnpS0N95
-         PodsZw5QrRzXwcVAdLU8QbPx8UtppQyKINjpafz63KgI0mbZL1RBR/HG+Aw16qS1mL8x
-         GbfoGarwImiN/E4mJOvSlkb1cLIeV/RY7kSfMlxm7UZhj+NafqRJ9xFMGOVfHXfBQNL8
-         3KhvQIu3nzrYZ9gVumHcKZbTTOBDGZbVoC0PmchuHZfBO5itRE+CWVGivs8JV9Bdb68S
-         oKMm5wdMIjQdNVuG5jJ5CkpKuMh+/TZa/xggfv/76T6HlvfgScQBIZzwwZTZ5LwtflBg
-         nfEg==
+        bh=qZx9JW6oeq0PhklcBLISNgQmWnPDVjEknVAZMSrcqTw=;
+        b=WRtGVjVOyD6HzGR2LOlVMBKveJNJxEXFSLjfj3CvGu2209K7JaN+hWoBJ+hjynQsuP
+         d65/WnOB/W9Zxdppu21Wq52a0oTLKMOBzfPLqfuJCUhPUs32TpEtEpEjPpKQJoXxWUhq
+         hqd563VCcaI30pJOvkOtOC2BRpYLFoBSXTuoLqlxukWP2B1oe8UFv4+77a2bnBaJiOFX
+         144CseZp7yFGN5BGrzLZSVPSoHv9sYn8g7osnCMZ+ZFpi5HrOI1FQM/J1BCDa5YTyVV9
+         LVM7IdizVXdqI+f0C/f10g/qXF3PeRBQ5v+5Tjyux7gu0k53q14nxltczGyfP1YXKEJC
+         ep5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3YD9QwJxecxdMHZGSRuYOcVyiXHhODdQ+7hG9X3IFEc=;
-        b=IHMtnqJJ8p0OHdFGBa2VN53vHZSfkvTAjpPmDVr5xgBUVEyrdg04G7b4UiYxhOeGDs
-         LIpuEUd/5ynp8uEA2xVPZP5OPKTVOhA4PIt7kHm2TFYRoJzPMhddUCou1l0RAYSZCJVv
-         2noiPk7Avx93ZGDA0bSmrdFa43IFKNGylu35WgrcTSNDcj7JC9btGlGeZjx0IXApUgGC
-         7c7yOP1KZBLh7MkI5Mwtjwt5rrJDglDfBPKuwC8imxt6q45+p73YjfAZ5pT+lAyxCplY
-         VIz2x8qZgnf+0vHUx31dKHYSxThiP/w275WM008PALes0Rt7HMmIrxof3OhuTzY7a+Nn
-         tFIA==
-X-Gm-Message-State: APjAAAU0SpKnI9vVy2Nukw3eQ8fUEywqEOU8a7Gq+0/dy8yWKaM45o6o
-        3xL1xoTnoByzxR+QGA8URkXVJA==
-X-Google-Smtp-Source: APXvYqx+ClbIfZmOUdY0b04TFbjW+3r9mnjIe7N0zaIfZmDOHWubw4QUOroagi67b9WugppzpkzydA==
-X-Received: by 2002:ac8:7381:: with SMTP id t1mr24802701qtp.387.1559583980558;
-        Mon, 03 Jun 2019 10:46:20 -0700 (PDT)
+        bh=qZx9JW6oeq0PhklcBLISNgQmWnPDVjEknVAZMSrcqTw=;
+        b=V+8I+l3ISzxzxDDxDBeJSy7e4jHH+j9nRSh5t3jntAUELU/VY8Fjgiv2e/IDdwyInX
+         tEHOrQdd1tqvYwOweDhoIDgtXNpN+KkMqzINlbNiuqA7hDgFYLlSd8PxuDuq1/v2N9sf
+         KHKiO4Ea+sWk7m5EvQ5P2ZTEAjwbAvjaKqOPq9+MCLI7nlPaJ+DcaDZCMQo1Cxb68g3R
+         2leZ11zXWBdnaZOXA7pT3sxrNWYHTIJ0Ij0MmlUr+cWmJHk5rf7n+5AuJ8wGJ4xmyFw4
+         zYHD6w1l9NB7f/GbIOuT3tgq5b2GIEiK+5ebXhM1Zg83vIBn2W5Ki9XubZY2nANYiDS9
+         90HQ==
+X-Gm-Message-State: APjAAAUCOuGIXhaXZAVbVeCMdzZsNcvKFlE0dr134P6cJ7eIZ0/oyhxZ
+        f+uKWRLS91BYxiGF8UGTynD5jA==
+X-Google-Smtp-Source: APXvYqx91Qn/+7YvFaBJ8q+19AyJZ82lWm0oeK/esWjaqcxpYv+LjbxmhMUbgb6lsmP3fOSNqTpbCA==
+X-Received: by 2002:ac8:2fb7:: with SMTP id l52mr3936004qta.93.1559584189909;
+        Mon, 03 Jun 2019 10:49:49 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id m40sm12874710qtm.2.2019.06.03.10.46.19
+        by smtp.gmail.com with ESMTPSA id s35sm379768qts.10.2019.06.03.10.49.49
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 03 Jun 2019 10:46:19 -0700 (PDT)
+        Mon, 03 Jun 2019 10:49:49 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hXr2J-00032t-AT; Mon, 03 Jun 2019 14:46:19 -0300
-Date:   Mon, 3 Jun 2019 14:46:19 -0300
+        id 1hXr5g-0003Rg-RB; Mon, 03 Jun 2019 14:49:48 -0300
+Date:   Mon, 3 Jun 2019 14:49:48 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v16 12/16] IB, arm64: untag user pointers in
- ib_uverbs_(re)reg_mr()
-Message-ID: <20190603174619.GC11474@ziepe.ca>
-References: <cover.1559580831.git.andreyknvl@google.com>
- <c829f93b19ad6af1b13be8935ce29baa8e58518f.1559580831.git.andreyknvl@google.com>
+To:     Bernard Metzler <bmt@zurich.ibm.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next v1 00/12] SIW: Software iWarp RDMA (siw) driver
+Message-ID: <20190603174948.GA13214@ziepe.ca>
+References: <20190526114156.6827-1-bmt@zurich.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c829f93b19ad6af1b13be8935ce29baa8e58518f.1559580831.git.andreyknvl@google.com>
+In-Reply-To: <20190526114156.6827-1-bmt@zurich.ibm.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 03, 2019 at 06:55:14PM +0200, Andrey Konovalov wrote:
-> This patch is a part of a series that extends arm64 kernel ABI to allow to
-> pass tagged user pointers (with the top byte set to something else other
-> than 0x00) as syscall arguments.
+On Sun, May 26, 2019 at 01:41:44PM +0200, Bernard Metzler wrote:
+> This patch set contributes the SoftiWarp driver rebased for
+> Kernel 5.2-rc1. SoftiWarp (siw) implements the iWarp RDMA
+> protocol over kernel TCP sockets. The driver integrates with
+> the linux-rdma framework.
 > 
-> ib_uverbs_(re)reg_mr() use provided user pointers for vma lookups (through
-> e.g. mlx4_get_umem_mr()), which can only by done with untagged pointers.
+> With this new driver version, the following things where
+> changed, compared to the v8 RFC of siw:
 > 
-> Untag user pointers in these functions.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->  drivers/infiniband/core/uverbs_cmd.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> o Rebased to 5.2-rc1
 > 
-> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-> index 5a3a1780ceea..f88ee733e617 100644
-> +++ b/drivers/infiniband/core/uverbs_cmd.c
-> @@ -709,6 +709,8 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
->  	if (ret)
->  		return ret;
->  
-> +	cmd.start = untagged_addr(cmd.start);
-> +
->  	if ((cmd.start & ~PAGE_MASK) != (cmd.hca_va & ~PAGE_MASK))
->  		return -EINVAL;
+> o All IDR code got removed.
+> 
+> o Both MR and QP deallocation verbs now synchronously
+>   free the resources referenced by the RDMA mid-layer.
+> 
+> o IPv6 support was added.
+> 
+> o For compatibility with Chelsio iWarp hardware, the RX
+>   path was slightly reworked. It now allows packet intersection
+>   between tagged and untagged RDMAP operations. While not
+>   a defined behavior as of IETF RFC 5040/5041, some RDMA hardware
+>   may intersect an ongoing outbound (large) tagged message, such
+>   as an multisegment RDMA Read Response with sending an untagged
+>   message, such as an RDMA Send frame. This behavior was only
+>   detected in an NVMeF setup, where siw was used at target side,
+>   and RDMA hardware at client side (during file write). siw now
+>   implements two input paths for tagged and untagged messages each,
+>   and allows the intersected placement of both messages.
+> 
+> o The siw kernel abi file got renamed from siw_user.h to siw-abi.h.
+> 
+> Many thanks for reviewing and testing the driver, especially to
+> Steve, Leon, Jason, Doug, Olga, Dennis, Gal. You all helped to
+> significantly improve the siw driver over the last year. It is
+> very much appreciated.
 
-I feel like we shouldn't thave to do this here, surely the cmd.start
-should flow unmodified to get_user_pages, and gup should untag it?
+You need to open a PR for rdma-core before this can be merged with the
+userspace part.
 
-ie, this sort of direction for the IB code (this would be a giant
-patch, so I didn't have time to write it all, but I think it is much
-saner):
-
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 54628ef879f0ce..7b3b736c87c253 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -193,7 +193,7 @@ EXPORT_SYMBOL(ib_umem_find_best_pgsz);
-  * @access: IB_ACCESS_xxx flags for memory being pinned
-  * @dmasync: flush in-flight DMA when the memory region is written
-  */
--struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
-+struct ib_umem *ib_umem_get(struct ib_udata *udata, void __user *addr,
- 			    size_t size, int access, int dmasync)
- {
- 	struct ib_ucontext *context;
-@@ -201,7 +201,7 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
- 	struct page **page_list;
- 	unsigned long lock_limit;
- 	unsigned long new_pinned;
--	unsigned long cur_base;
-+	void __user *cur_base;
- 	struct mm_struct *mm;
- 	unsigned long npages;
- 	int ret;
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 5a3a1780ceea4d..94389e7f12371f 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -735,7 +735,8 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
- 		}
- 	}
- 
--	mr = pd->device->ops.reg_user_mr(pd, cmd.start, cmd.length, cmd.hca_va,
-+	mr = pd->device->ops.reg_user_mr(pd, u64_to_user_ptr(cmd.start),
-+					 cmd.length, cmd.hca_va,
- 					 cmd.access_flags,
- 					 &attrs->driver_udata);
- 	if (IS_ERR(mr)) {
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 4d033796dcfcc2..bddbb952082fc5 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -786,7 +786,7 @@ static int mr_cache_max_order(struct mlx5_ib_dev *dev)
- }
- 
- static int mr_umem_get(struct mlx5_ib_dev *dev, struct ib_udata *udata,
--		       u64 start, u64 length, int access_flags,
-+		       void __user *start, u64 length, int access_flags,
- 		       struct ib_umem **umem, int *npages, int *page_shift,
- 		       int *ncont, int *order)
- {
-@@ -1262,8 +1262,8 @@ struct ib_mr *mlx5_ib_reg_dm_mr(struct ib_pd *pd, struct ib_dm *dm,
- 				 attr->access_flags, mode);
- }
- 
--struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
--				  u64 virt_addr, int access_flags,
-+struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, void __user *start,
-+				  u64 length, u64 virt_addr, int access_flags,
- 				  struct ib_udata *udata)
- {
- 	struct mlx5_ib_dev *dev = to_mdev(pd->device);
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index ec6446864b08e9..b3c8eaaa35c760 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2464,8 +2464,8 @@ struct ib_device_ops {
- 	struct ib_mr *(*reg_user_mr)(struct ib_pd *pd, u64 start, u64 length,
- 				     u64 virt_addr, int mr_access_flags,
- 				     struct ib_udata *udata);
--	int (*rereg_user_mr)(struct ib_mr *mr, int flags, u64 start, u64 length,
--			     u64 virt_addr, int mr_access_flags,
-+	int (*rereg_user_mr)(struct ib_mr *mr, int flags, void __user *start,
-+			     u64 length, u64 virt_addr, int mr_access_flags,
- 			     struct ib_pd *pd, struct ib_udata *udata);
- 	int (*dereg_mr)(struct ib_mr *mr, struct ib_udata *udata);
- 	struct ib_mr *(*alloc_mr)(struct ib_pd *pd, enum ib_mr_type mr_type,
+Jason
