@@ -2,126 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D19283479B
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2019 15:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E15347AD
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2019 15:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbfFDNGw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jun 2019 09:06:52 -0400
-Received: from mail-eopbgr60066.outbound.protection.outlook.com ([40.107.6.66]:51845
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727033AbfFDNGw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 4 Jun 2019 09:06:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/WanoFGC/h4LOh7h5rBr8BbyJ6EfIYawm3UhUB1H5QM=;
- b=qdOY+i/Ucav2g7TfMvlWJsT8WZCX+ycDnX93Kzph6QM4doFjgEc+FVu9qHqr2HHpHnbV/emW3fFiB0+0HuWq5jB0oDcBEyS63rTiOBupH0A0bO/48bByAG0b5bntvsIF6FqbZ5ZbzJDJWTTSR3aOUosePqZKfiovyZjOMP97zmk=
-Received: from DB7PR05MB4138.eurprd05.prod.outlook.com (52.134.107.143) by
- DB7PR05MB5324.eurprd05.prod.outlook.com (20.178.42.76) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1943.18; Tue, 4 Jun 2019 13:06:47 +0000
-Received: from DB7PR05MB4138.eurprd05.prod.outlook.com
- ([fe80::599c:3c72:e7d9:e688]) by DB7PR05MB4138.eurprd05.prod.outlook.com
- ([fe80::599c:3c72:e7d9:e688%7]) with mapi id 15.20.1943.018; Tue, 4 Jun 2019
- 13:06:47 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Lijun Ou <oulijun@huawei.com>,
-        "Wei Hu(Xavier)" <xavier.huwei@huawei.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Steve Wise <swise@opengridcomputing.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Kamal Heib <kamalheib1@gmail.com>,
-        Denis Drozdov <denisd@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Erez Alfasi <ereza@mellanox.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH for-next v2 4/4] IB/{core,hw}: ib_pd should not have
- ib_uobject pointer
-Thread-Topic: [PATCH for-next v2 4/4] IB/{core,hw}: ib_pd should not have
- ib_uobject pointer
-Thread-Index: AQHVDuF1DOqAXpFGBkqC6rsta48O16Z2SyeAgBOe1ICAAaT4gA==
-Date:   Tue, 4 Jun 2019 13:06:47 +0000
-Message-ID: <20190604130643.GD15534@mellanox.com>
-References: <20190520075333.6002-1-shamir.rabinovitch@oracle.com>
- <20190520075333.6002-5-shamir.rabinovitch@oracle.com>
- <20190522002237.GB30833@mellanox.com>
- <20190603120000.GA31289@srabinov-laptop>
-In-Reply-To: <20190603120000.GA31289@srabinov-laptop>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: YTOPR0101CA0053.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:14::30) To DB7PR05MB4138.eurprd05.prod.outlook.com
- (2603:10a6:5:18::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 15eab781-59b9-4183-14f0-08d6e8ed802f
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB7PR05MB5324;
-x-ms-traffictypediagnostic: DB7PR05MB5324:
-x-ld-processed: a652971c-7d2e-4d9b-a6a4-d149256f461b,ExtAddr
-x-microsoft-antispam-prvs: <DB7PR05MB5324A2A73DED7F621A676ABECF150@DB7PR05MB5324.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:923;
-x-forefront-prvs: 0058ABBBC7
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(366004)(136003)(396003)(39860400002)(376002)(189003)(199004)(305945005)(446003)(11346002)(386003)(6506007)(86362001)(102836004)(36756003)(99286004)(7736002)(6512007)(66066001)(486006)(2616005)(476003)(1076003)(508600001)(229853002)(54906003)(76176011)(5660300002)(316002)(3846002)(73956011)(81166006)(81156014)(66446008)(64756008)(66556008)(66476007)(52116002)(66946007)(6116002)(53936002)(8676002)(8936002)(7416002)(4326008)(2906002)(71190400001)(186003)(6436002)(26005)(14454004)(71200400001)(6486002)(256004)(33656002)(25786009)(6916009)(6246003)(68736007)(142933001);DIR:OUT;SFP:1101;SCL:1;SRVR:DB7PR05MB5324;H:DB7PR05MB4138.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: jFywdQ7STO0KRLUo0HyejRZNcjiIbNLQXF7pBw/b9MP4YRA+ri3sf24N/x4h819E1D8hWTQ1mXJf2MaAxl6cpc591pZV8Yms3N1hCYuwooqEGs3eFI1SJFU2XP6z0KToYnody8PCAI7q7loSiV3gh+4efZo8Y26ZSgBhiecIF9+JD17JRHtuOj00DDfnsSZZSHpVpJOwB8Fm703YexubAKU0FFyFpe4EADYCrJ1wyngcq6ZOrhGj2NfAlkD3/JGy3QEAKQkDjofoXWyouj3i0vZy2X0ataJemttaWqo4y/EuL7qoRCFJaQOeNIysEEfQsWCI3yTLirh64s3vWHr1jZla2jscwKOfZDc4zSFbBpxp+qtL+RTzqOXAUtwx8KmK850vdl5tkLwRf55d1SxAZErpDmOn5K8SDYfJE/72AVA=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <82990D7B5724544CA4ECC7FB623EF686@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727168AbfFDNJj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jun 2019 09:09:39 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:40526 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727153AbfFDNJi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jun 2019 09:09:38 -0400
+Received: by mail-pg1-f195.google.com with SMTP id d30so10334707pgm.7
+        for <linux-rdma@vger.kernel.org>; Tue, 04 Jun 2019 06:09:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zBLpk28DZpa5o94Q/0/LiLBGCkVoEs9cAD1KugSM2WY=;
+        b=Lkz8dpKPRyddE/5l1SxtFW2tJDVJSIsNFYCOD1eigwQMuFNNmYLAz8pfUb/eNChwZF
+         OH2h9RaIuTJvzD4zfwI4In+YKCusdO0C+/wNdpvUvPZXC2iOOrHIqrrS+koi+fxYqD+r
+         iK2Zgy43Tahmq3qaqGtP4n+xMyhj8Yk3JvazolAsNKLfjKj1GXO3dAAQy063Hi2tMAsN
+         GhJY2yKC3BApNCj1AkvEe/6mz6FyJyIhhdR95z/RQ7El5pARzqaaKppkgNvLbKRJzKwz
+         N+Va7sAICkGdL463idSaVxKwCH7V2NZvNaXeQHS+go3oLu7b/Bj32cawMXuwRC+DSWx3
+         9rBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zBLpk28DZpa5o94Q/0/LiLBGCkVoEs9cAD1KugSM2WY=;
+        b=gve/bjrvKG5f+SIPoRkZdw+h//q6TeHsSJxeXBNKHWpS8cz6qpntVHP1r0QUH9Swqv
+         fUV//ATXnWex9X0hUJpnfo5zkxGJeqZAvilmnptxHOkOiqbSkQSx301daHSU/NrwI9rT
+         rNuztvGRpc75vTV7dzhdNh7UQVOBFFijxdIOj9FeX6FPwtEOdywnIqN/3Bp93kq+mEPB
+         H0JcUe2MKf7NhgswVMOkqmdpVERz2bqTjSIq6F31ndiaqQD3mMfbSBoQh/oWzOeZc9JF
+         FBNr6HPpNCj7V2sjmVIm3GHoKUScXUdtZkOsbzRmxM0ArrPDIOC4K5PA+oPYsY60Ibqd
+         H4sw==
+X-Gm-Message-State: APjAAAWA7zPxFy5oc8dZyGVwgIhypuigWrNDuHP5awqcv0sW3n69tYpW
+        l1XAn5T/RPacZGDEPQd1SO1De0MPZ9yttRJBewsNaw==
+X-Google-Smtp-Source: APXvYqwE+yY3fi9MHe5pAmjH6ujV7dnKQuJJ2mvTpcdW82/qczftH0mUauffZu6ryTn350uiR7ngmmR4ga1rtqlB5p8=
+X-Received: by 2002:aa7:8491:: with SMTP id u17mr25575697pfn.93.1559653777333;
+ Tue, 04 Jun 2019 06:09:37 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15eab781-59b9-4183-14f0-08d6e8ed802f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2019 13:06:47.7934
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB5324
+References: <cover.1559580831.git.andreyknvl@google.com> <c829f93b19ad6af1b13be8935ce29baa8e58518f.1559580831.git.andreyknvl@google.com>
+ <20190603174619.GC11474@ziepe.ca> <CAAeHK+xy-dx4dLDLLj9dRzRNSVG9H5nDPPnjpYF38qKZNNCh_g@mail.gmail.com>
+ <20190604122714.GA15385@ziepe.ca> <CAAeHK+xyqwuJyviGhvU7L1wPZQF7Mf9g2vgKSsYmML3fV6NrXg@mail.gmail.com>
+ <20190604130207.GD15385@ziepe.ca>
+In-Reply-To: <20190604130207.GD15385@ziepe.ca>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 4 Jun 2019 15:09:26 +0200
+Message-ID: <CAAeHK+xBxDB-OBuzPDcNaTHCNJqu6djHwqoVGSYpxG33w-YR9g@mail.gmail.com>
+Subject: Re: [PATCH v16 12/16] IB, arm64: untag user pointers in ib_uverbs_(re)reg_mr()
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 03, 2019 at 03:00:01PM +0300, Shamir Rabinovitch wrote:
-> On Wed, May 22, 2019 at 12:22:42AM +0000, Jason Gunthorpe wrote:
-> > On Mon, May 20, 2019 at 10:53:21AM +0300, Shamir Rabinovitch wrote:
-> > > future patches will add the ability to share ib_pd across multiple
-> > > ib_ucontext. given that, ib_pd will be pointed by 1 or more ib_uobjec=
-t.
-> > > thus, having ib_uobject pointer in ib_pd is incorrect.
-> > >=20
-> > > Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-> > >  drivers/infiniband/core/uverbs_cmd.c       | 1 -
-> > >  drivers/infiniband/core/verbs.c            | 1 -
-> > >  drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 1 -
-> > >  drivers/infiniband/hw/mlx5/main.c          | 1 -
-> > >  drivers/infiniband/hw/mthca/mthca_qp.c     | 3 ++-
-> > >  include/rdma/ib_verbs.h                    | 1 -
-> > >  6 files changed, 2 insertions(+), 6 deletions(-)
-> >=20
-> > Please remove the uobject from the mr as well, those are the two
-> > objects I want to see be sharable to start.
-> >=20
-> > Jason
->=20
-> Jason would it be OK to progress with PD first and later come back to
-> MR?
+On Tue, Jun 4, 2019 at 3:02 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Jun 04, 2019 at 02:45:32PM +0200, Andrey Konovalov wrote:
+> > On Tue, Jun 4, 2019 at 2:27 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Tue, Jun 04, 2019 at 02:18:19PM +0200, Andrey Konovalov wrote:
+> > > > On Mon, Jun 3, 2019 at 7:46 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > > >
+> > > > > On Mon, Jun 03, 2019 at 06:55:14PM +0200, Andrey Konovalov wrote:
+> > > > > > This patch is a part of a series that extends arm64 kernel ABI to allow to
+> > > > > > pass tagged user pointers (with the top byte set to something else other
+> > > > > > than 0x00) as syscall arguments.
+> > > > > >
+> > > > > > ib_uverbs_(re)reg_mr() use provided user pointers for vma lookups (through
+> > > > > > e.g. mlx4_get_umem_mr()), which can only by done with untagged pointers.
+> > > > > >
+> > > > > > Untag user pointers in these functions.
+> > > > > >
+> > > > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > > > >  drivers/infiniband/core/uverbs_cmd.c | 4 ++++
+> > > > > >  1 file changed, 4 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+> > > > > > index 5a3a1780ceea..f88ee733e617 100644
+> > > > > > +++ b/drivers/infiniband/core/uverbs_cmd.c
+> > > > > > @@ -709,6 +709,8 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
+> > > > > >       if (ret)
+> > > > > >               return ret;
+> > > > > >
+> > > > > > +     cmd.start = untagged_addr(cmd.start);
+> > > > > > +
+> > > > > >       if ((cmd.start & ~PAGE_MASK) != (cmd.hca_va & ~PAGE_MASK))
+> > > > > >               return -EINVAL;
+> > > > >
+> > > > > I feel like we shouldn't thave to do this here, surely the cmd.start
+> > > > > should flow unmodified to get_user_pages, and gup should untag it?
+> > > > >
+> > > > > ie, this sort of direction for the IB code (this would be a giant
+> > > > > patch, so I didn't have time to write it all, but I think it is much
+> > > > > saner):
+> > > >
+> > > > Hi Jason,
+> > > >
+> > > > ib_uverbs_reg_mr() passes cmd.start to mlx4_get_umem_mr(), which calls
+> > > > find_vma(), which only accepts untagged addresses. Could you explain
+> > > > how your patch helps?
+> > >
+> > > That mlx4 is just a 'weird duck', it is not the normal flow, and I
+> > > don't think the core code should be making special consideration for
+> > > it.
+> >
+> > How do you think we should do untagging (or something else) to deal
+> > with this 'weird duck' case?
+>
+> mlx4 should handle it around the call to find_vma like other patches
+> do, ideally as part of the cast from a void __user * to the unsigned
+> long that find_vma needs
 
-Ok
+So essentially what we had a few versions ago
+(https://lkml.org/lkml/2019/4/30/785) plus changing unsigned longs to
+__user * across all IB code? I think the second part is something
+that's not related to this series and needs to be done separately. I
+can move untagging back to mlx4_get_umem_mr() though.
 
-Jason
+Catalin, you've initially asked to to move untagging out of
+mlx4_get_umem_mr(), do you have any comments on this?
+
+>
+> Jason
