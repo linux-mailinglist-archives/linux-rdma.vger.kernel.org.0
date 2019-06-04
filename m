@@ -2,152 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6CA346A7
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2019 14:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFB534720
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2019 14:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbfFDM1R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jun 2019 08:27:17 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:36667 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727805AbfFDM1R (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jun 2019 08:27:17 -0400
-Received: by mail-qt1-f196.google.com with SMTP id u12so13468724qth.3
-        for <linux-rdma@vger.kernel.org>; Tue, 04 Jun 2019 05:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wnsJg5IBUcpd0uvGih9L7zWjhXAHb1EJO0yOEExZSzo=;
-        b=dcNC7UmtypwgYv25SVviVAOUG7URTCQh95rjKD+gc1HkGG0jrMjWKvaHqgOqnkLXCe
-         CmoljchytuIVIDVbprMz3tL0S5wF3BfmVPwpXMEcKwEKuopvqQDwmPbpLySBrTe+5P0P
-         +zjXSkVABYGjw15OrEI3UNK6X3hEEYJ5lmU4VodgY1OGgetHeu4xf6gu/Drrr5PoUFZD
-         NGszqORq933qFqUy4wxVOf9PkDJzNBd6Vt6SxvMrx9KcQhBJruI+UAnsanyndNgyFsW8
-         SfJHC+U7tiqZ4PP8CoYnZCXFGYoMymsmvspjQbzELX76TfLMwbqeFyJLFyTuqJIB4Dhp
-         ZF+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wnsJg5IBUcpd0uvGih9L7zWjhXAHb1EJO0yOEExZSzo=;
-        b=FA2kSg5nBeLdxKisRawVpOWee02Y4o9tEqCulYMfh48H4ncuZtI5xfKX8IiHp5QAFN
-         /aNTVH864xr+tMnIh7fwsfxSQDyLrhfeHDIo6ILJLL/j8iGZG0xQU9TdItMPOqg4S1zQ
-         F+N+Xm36hkKRX7dqPOmDLov419t4Aj1806V/zOm+MqOBMUvVxUW7aciQx3/cSI5itO/g
-         BCyK7M+LLgDnuNB0XLiL2tvpC78UavA19Zs4+cOOpeGg0++YBBH/5NnA+WzSKaxQ7POc
-         ikrbWc1jd+lYtNAYxCG6jUxFWsvEqqdfnsYDL4ZaUQTKbVUVhGULJq/5gzgWDUEWUuuU
-         VteA==
-X-Gm-Message-State: APjAAAUQXrtnx1RcNSbYqTw4fqzO6WQMGtZvoZSR1QeQUZBbz1ph0N0k
-        ODOVfC7xobD98k9maSBElJyHKQ==
-X-Google-Smtp-Source: APXvYqyQKZsajkt/gWb5hfUpWdj5TzMt6KfoFh/bz/W6aTLwqi1dm4Rk21CH5MrcGrt3uoh1Lu64hg==
-X-Received: by 2002:aed:3a87:: with SMTP id o7mr27583430qte.310.1559651236150;
-        Tue, 04 Jun 2019 05:27:16 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id c18sm4454633qkm.78.2019.06.04.05.27.15
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 04 Jun 2019 05:27:15 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hY8X4-000416-LN; Tue, 04 Jun 2019 09:27:14 -0300
-Date:   Tue, 4 Jun 2019 09:27:14 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v16 12/16] IB, arm64: untag user pointers in
- ib_uverbs_(re)reg_mr()
-Message-ID: <20190604122714.GA15385@ziepe.ca>
-References: <cover.1559580831.git.andreyknvl@google.com>
- <c829f93b19ad6af1b13be8935ce29baa8e58518f.1559580831.git.andreyknvl@google.com>
- <20190603174619.GC11474@ziepe.ca>
- <CAAeHK+xy-dx4dLDLLj9dRzRNSVG9H5nDPPnjpYF38qKZNNCh_g@mail.gmail.com>
+        id S1727462AbfFDMnV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jun 2019 08:43:21 -0400
+Received: from mail-eopbgr40051.outbound.protection.outlook.com ([40.107.4.51]:58750
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726994AbfFDMnV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 4 Jun 2019 08:43:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EScuZxlsHL3nw6OjKmK7bUXBfGp5zezNs4uHVa40t7M=;
+ b=mE/8Jb91VMvcwmPMvojGF4NPqOvodIcCUVIYu25kdUQa2/lJzIeH2L9ai5vPJQ6S6rWLgPf+WVdTFHuSNQdYfT44E18EUNXsD/Z991atZgqwMl3LqnLGxIcy4CAXe+UKOvXcAvSbQQ2nZev2xQ30k5n6KGAc6jynL4G6Z2wUoZA=
+Received: from DB7PR05MB4138.eurprd05.prod.outlook.com (52.134.107.143) by
+ DB7PR05MB4476.eurprd05.prod.outlook.com (52.134.109.29) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1943.20; Tue, 4 Jun 2019 12:43:17 +0000
+Received: from DB7PR05MB4138.eurprd05.prod.outlook.com
+ ([fe80::599c:3c72:e7d9:e688]) by DB7PR05MB4138.eurprd05.prod.outlook.com
+ ([fe80::599c:3c72:e7d9:e688%7]) with mapi id 15.20.1943.018; Tue, 4 Jun 2019
+ 12:43:17 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
+CC:     Christoph Hellwig <hch@lst.de>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Israel Rukshin <israelr@mellanox.com>,
+        Idan Burstein <idanb@mellanox.com>,
+        Oren Duer <oren@mellanox.com>,
+        Vladimir Koushnir <vladimirk@mellanox.com>,
+        Shlomi Nimrodi <shlomin@mellanox.com>
+Subject: Re: [PATCH 03/20] RDMA/core: Introduce IB_MR_TYPE_INTEGRITY and
+ ib_alloc_mr_integrity API
+Thread-Topic: [PATCH 03/20] RDMA/core: Introduce IB_MR_TYPE_INTEGRITY and
+ ib_alloc_mr_integrity API
+Thread-Index: AQHVFus23gCZBj65wk2CVXT8nleHhKaLIkIAgAAYgwCAAD2JgA==
+Date:   Tue, 4 Jun 2019 12:43:17 +0000
+Message-ID: <20190604124313.GC15534@mellanox.com>
+References: <1559222731-16715-1-git-send-email-maxg@mellanox.com>
+ <1559222731-16715-4-git-send-email-maxg@mellanox.com>
+ <20190604073514.GL15680@lst.de>
+ <bcd4fe8a-38df-e302-b12f-4e7a99f9a77b@mellanox.com>
+In-Reply-To: <bcd4fe8a-38df-e302-b12f-4e7a99f9a77b@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR10CA0033.namprd10.prod.outlook.com
+ (2603:10b6:208:120::46) To DB7PR05MB4138.eurprd05.prod.outlook.com
+ (2603:10a6:5:18::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b05e8271-5ff2-468b-f728-08d6e8ea37ca
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB7PR05MB4476;
+x-ms-traffictypediagnostic: DB7PR05MB4476:
+x-microsoft-antispam-prvs: <DB7PR05MB4476E04F26DFC0C7B4AC7D84CF150@DB7PR05MB4476.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2000;
+x-forefront-prvs: 0058ABBBC7
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(366004)(346002)(136003)(396003)(39860400002)(189003)(199004)(66066001)(5660300002)(229853002)(26005)(6486002)(6436002)(486006)(36756003)(68736007)(446003)(11346002)(86362001)(71190400001)(2616005)(476003)(71200400001)(33656002)(53936002)(8936002)(99286004)(6506007)(81166006)(256004)(1076003)(52116002)(2906002)(81156014)(54906003)(186003)(107886003)(316002)(4326008)(305945005)(37006003)(6246003)(14454004)(6862004)(508600001)(64756008)(6636002)(7736002)(66476007)(66946007)(66446008)(66556008)(73956011)(386003)(6512007)(102836004)(6116002)(53546011)(25786009)(76176011)(3846002)(8676002);DIR:OUT;SFP:1101;SCL:1;SRVR:DB7PR05MB4476;H:DB7PR05MB4138.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: +Cum/ErTDdRavVzZ8L5AyNKNv9bqmj/oel6N1Aw9nmhDpitPVO3d2FyaAbHQ2Dx0+EUt0UGPv9xOyhNO8m3WWg0ZC9D2I8NiWHhjrlSXJvjaR0rY3ut1Dka0oyrGzi3TtNlncwhLo64DOXQT1UbymX2nSVt2pJPExTw5heHRaBerLBXMMKOZzlUkjV1VBekiQ5DYb3KK2Uttg9a5MGo2OZrbTaAFA5dw0tpCmAC+5PPKUcyUUvJNF2eVNj4GlT3oY04/H+WWWySLG+ugyTVGp8Ydy6flPMWGNTHlyd8PcxuH+1iHr2jsejw7nEVW1yJbueoR7Q83u/8RWPvFO4WGTvLLUt/lznKgvJ4nZ5L8P0bEMo3CLZeSnJM1OH4ygmje8sUF1Ypn/bb60EvFYir9SUHZSl6xUco/RUH0GGa4kbw=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1B238A75B110A4449B69FE5F6A79DB38@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAeHK+xy-dx4dLDLLj9dRzRNSVG9H5nDPPnjpYF38qKZNNCh_g@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b05e8271-5ff2-468b-f728-08d6e8ea37ca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2019 12:43:17.8471
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB4476
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 04, 2019 at 02:18:19PM +0200, Andrey Konovalov wrote:
-> On Mon, Jun 3, 2019 at 7:46 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Mon, Jun 03, 2019 at 06:55:14PM +0200, Andrey Konovalov wrote:
-> > > This patch is a part of a series that extends arm64 kernel ABI to allow to
-> > > pass tagged user pointers (with the top byte set to something else other
-> > > than 0x00) as syscall arguments.
-> > >
-> > > ib_uverbs_(re)reg_mr() use provided user pointers for vma lookups (through
-> > > e.g. mlx4_get_umem_mr()), which can only by done with untagged pointers.
-> > >
-> > > Untag user pointers in these functions.
-> > >
-> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > >  drivers/infiniband/core/uverbs_cmd.c | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-> > > index 5a3a1780ceea..f88ee733e617 100644
-> > > +++ b/drivers/infiniband/core/uverbs_cmd.c
-> > > @@ -709,6 +709,8 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
-> > >       if (ret)
-> > >               return ret;
-> > >
-> > > +     cmd.start = untagged_addr(cmd.start);
-> > > +
-> > >       if ((cmd.start & ~PAGE_MASK) != (cmd.hca_va & ~PAGE_MASK))
-> > >               return -EINVAL;
-> >
-> > I feel like we shouldn't thave to do this here, surely the cmd.start
-> > should flow unmodified to get_user_pages, and gup should untag it?
-> >
-> > ie, this sort of direction for the IB code (this would be a giant
-> > patch, so I didn't have time to write it all, but I think it is much
-> > saner):
-> 
-> Hi Jason,
-> 
-> ib_uverbs_reg_mr() passes cmd.start to mlx4_get_umem_mr(), which calls
-> find_vma(), which only accepts untagged addresses. Could you explain
-> how your patch helps?
+On Tue, Jun 04, 2019 at 12:02:58PM +0300, Max Gurtovoy wrote:
+>=20
+> On 6/4/2019 10:35 AM, Christoph Hellwig wrote:
+> > On Thu, May 30, 2019 at 04:25:14PM +0300, Max Gurtovoy wrote:
+> > > From: Israel Rukshin <israelr@mellanox.com>
+> > >=20
+> > > This is a preparation for signature verbs API re-design. In the new
+> > > design a single MR with IB_MR_TYPE_INTEGRITY type will be used to per=
+form
+> > > the needed mapping for data integrity operations.
+> > >=20
+> > > Signed-off-by: Israel Rukshin <israelr@mellanox.com>
+> > > Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> > > Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+> > > Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> > Looks good, but thinks like this that are very Linux specific really
+> > should be EXPORT_SYMBOL_GPL.
+>=20
+> Well we used the convention of other exported functions in this .h file.
+>=20
+> If the maintainers are not against that, we can fix it.
+>=20
+> Jason/Leon/Doug ?
 
-That mlx4 is just a 'weird duck', it is not the normal flow, and I
-don't think the core code should be making special consideration for
-it.
+Since it is in a .c file that is dual licensed I have a hard time
+justifying the _GPL prefix.
+
+Although I would agree with CH that it does seem to be very Linux
+specific.
+
+Honestly, I've never seen a clear description of when to use one or
+the other choice.
 
 Jason
