@@ -2,117 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19098342A7
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2019 11:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AD9345C3
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2019 13:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbfFDJHA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jun 2019 05:07:00 -0400
-Received: from mail-eopbgr50043.outbound.protection.outlook.com ([40.107.5.43]:47489
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726873AbfFDJG7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 4 Jun 2019 05:06:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JBSSBQyX8XoP0Gm1MQcmRpknXkhMQTPWf8XX5Bc8LNI=;
- b=ZzwMITm/9xXQ5HMW0zrfx7hW4Wo/qZ6OYDiy+T1dwGsIVYfuWIG/ini/1GsKTS2KBQCIzGDWqEX5FfxZ/zcAyLa0Om03lJYfINmkzra5Q0qcvtgV87RAfb+dZxkTiTuLPTJGj5YKCZn6FVlhVIsRA07/gRRWgDAms1ZABMuMO0k=
-Received: from HE1PR05CA0234.eurprd05.prod.outlook.com (2603:10a6:3:fa::34) by
- HE1PR0502MB3018.eurprd05.prod.outlook.com (2603:10a6:3:d8::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1943.22; Tue, 4 Jun 2019 09:06:55 +0000
-Received: from VE1EUR03FT055.eop-EUR03.prod.protection.outlook.com
- (2a01:111:f400:7e09::205) by HE1PR05CA0234.outlook.office365.com
- (2603:10a6:3:fa::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1943.17 via Frontend
- Transport; Tue, 4 Jun 2019 09:06:55 +0000
-Authentication-Results: spf=pass (sender IP is 193.47.165.134)
- smtp.mailfrom=mellanox.com; acm.org; dkim=none (message not signed)
- header.d=none;acm.org; dmarc=pass action=none header.from=mellanox.com;
-Received-SPF: Pass (protection.outlook.com: domain of mellanox.com designates
- 193.47.165.134 as permitted sender) receiver=protection.outlook.com;
- client-ip=193.47.165.134; helo=mtlcas13.mtl.com;
-Received: from mtlcas13.mtl.com (193.47.165.134) by
- VE1EUR03FT055.mail.protection.outlook.com (10.152.19.158) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.1943.19 via Frontend Transport; Tue, 4 Jun 2019 09:06:54 +0000
-Received: from MTLCAS13.mtl.com (10.0.8.78) by mtlcas13.mtl.com (10.0.8.78)
- with Microsoft SMTP Server (TLS) id 15.0.1178.4; Tue, 4 Jun 2019 12:06:54
- +0300
-Received: from MTLCAS01.mtl.com (10.0.8.71) by MTLCAS13.mtl.com (10.0.8.78)
- with Microsoft SMTP Server (TLS) id 15.0.1178.4 via Frontend Transport; Tue,
- 4 Jun 2019 12:06:54 +0300
-Received: from [172.16.0.17] (172.16.0.17) by MTLCAS01.mtl.com (10.0.8.71)
- with Microsoft SMTP Server (TLS) id 14.3.301.0; Tue, 4 Jun 2019 12:06:31
- +0300
-Subject: Re: [PATCH 15/20] RDMA/core: Validate signature handover device cap
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <leonro@mellanox.com>, <linux-rdma@vger.kernel.org>,
-        <jgg@mellanox.com>, <dledford@redhat.com>, <sagi@grimberg.me>,
-        <bvanassche@acm.org>, <israelr@mellanox.com>, <idanb@mellanox.com>,
-        <oren@mellanox.com>, <vladimirk@mellanox.com>,
-        <shlomin@mellanox.com>
-References: <1559222731-16715-1-git-send-email-maxg@mellanox.com>
- <1559222731-16715-16-git-send-email-maxg@mellanox.com>
- <20190604074858.GR15680@lst.de>
-From:   Max Gurtovoy <maxg@mellanox.com>
-Message-ID: <f271d27c-2f69-bfdb-9dee-eec32eedc463@mellanox.com>
-Date:   Tue, 4 Jun 2019 12:06:30 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1727444AbfFDLpg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jun 2019 07:45:36 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:45637 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727356AbfFDLpg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jun 2019 07:45:36 -0400
+Received: by mail-pl1-f194.google.com with SMTP id x7so7258470plr.12
+        for <linux-rdma@vger.kernel.org>; Tue, 04 Jun 2019 04:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ROpXrP+r2OC9uJKtrd7VeU5I2GEkuLFi73TKRyEYr3w=;
+        b=YbXtk1gZpPouwSYE2Vhs1oY1Y4f37CPgCl4rhCDKDXOACPNCfLr9np6wKfbnqxvNqK
+         net1HG8o5wBQb4vNApxrOerpg8MX7Frcm0nkoJCRedOp4gIlsU8B+szPQLnyAp7uDFz6
+         18a5z5D1t2cCXPLwVyjN57+1xoFuuaOeWrZS3QYEL6m6NSRbpHdyTtJVRsjz8hDvO7ay
+         x4MfN3T0GXyhVOPDl8Cb4swrSICIbrgdMT9k5w6B73MKVGcGVf0T8Ojj0gm6GQdck4bi
+         ehe9TCYVm49T6ewlmRPV9pTGt0imE7M4Hg2EyyudgsziWrwS3zmaj416nN50DFpNVxSV
+         8gRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ROpXrP+r2OC9uJKtrd7VeU5I2GEkuLFi73TKRyEYr3w=;
+        b=BdrqK8E1cxze9RVIgcGNXzCgKZBu4gyD6ilb+ElyWXNodIlK4uJi6nXOEoitQmf1LN
+         LXTZj9zYinOVDap6EHv+8UIDqdRO+shPwPV7ZqkYcEhJfdRAUZOfz3ohOLh6u48m2Fql
+         Czbx5c2hsiANT6LUzrhiQePbLAm1mbCWxhNiIU7UXhoB4xjvjNxA/85fIQa5LIGj2dge
+         oJdQqir/3kNc+uAp7kjb5rq8yFKUEG+frjONRhm4XoEbdkkEcfeTZQNiJhpAzqMYpAbE
+         alEz9MRx2mkTZx1sCro4lgt3pTKJxxYsTY/28Iqng748hLFh620BW/8VCG+FP6t0MoZZ
+         LXZg==
+X-Gm-Message-State: APjAAAWZslvd+8cxw0AwSl53vbPIMKh9T30mpxbCNdwwxyeL3u8jdVjO
+        HxbL166CQi0seXw0SYFVCcEOoMawSmBtPUK6FhTKTw==
+X-Google-Smtp-Source: APXvYqw/MEeiL2bhH+9bBygV1lo6Im71uAjcUSVWx84fFkrTwjlzF36BIb4PZCfj0/vMKrfmiVx/F/2QMSAp/3q5QEs=
+X-Received: by 2002:a17:902:8609:: with SMTP id f9mr33680584plo.252.1559648735444;
+ Tue, 04 Jun 2019 04:45:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190604074858.GR15680@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.16.0.17]
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:193.47.165.134;IPV:NLI;CTRY:IL;EFV:NLI;SFV:NSPM;SFS:(10009020)(376002)(39860400002)(346002)(136003)(396003)(2980300002)(199004)(189003)(70586007)(8676002)(476003)(486006)(186003)(50466002)(6246003)(47776003)(26005)(77096007)(2616005)(305945005)(106002)(126002)(7736002)(65826007)(2906002)(23676004)(64126003)(446003)(3846002)(6916009)(16526019)(54906003)(6116002)(58126008)(70206006)(4326008)(230700001)(65956001)(31696002)(11346002)(107886003)(508600001)(53546011)(8936002)(336012)(356004)(31686004)(5660300002)(2486003)(86362001)(16576012)(76176011)(229853002)(4744005)(67846002)(65806001)(81156014)(316002)(81166006)(36756003)(3940600001);DIR:OUT;SFP:1101;SCL:1;SRVR:HE1PR0502MB3018;H:mtlcas13.mtl.com;FPR:;SPF:Pass;LANG:en;PTR:mail13.mellanox.com;A:1;MX:1;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6e3b0672-57b6-4558-ccf8-08d6e8cbfdc1
-X-Microsoft-Antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(4709080)(1401327)(2017052603328)(7193020);SRVR:HE1PR0502MB3018;
-X-MS-TrafficTypeDiagnostic: HE1PR0502MB3018:
-X-Microsoft-Antispam-PRVS: <HE1PR0502MB3018873DDAF91625D151DB7CB6150@HE1PR0502MB3018.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-Forefront-PRVS: 0058ABBBC7
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: Fyh0iYY9rBszUJV+H4ZejvfiOlYgQv15voYO5iFO+yUPDAyJkqqYP9AF+kxM5C8fIgisxXNddr34wBNjS/A/Ye1gpDnoddKvgdkm42ptHFhYLnEzhKTKElbwER4aO5iv7xyZ+Y21s7CWfgOcZ6PaBUyCR0CCkYhx86SjJlE7c7QBvjy6Hy/aPfAYHb2nIex2JMfpsvZ3ytvfZCTVNjGf6h+K06b5k/eY3eN413S56T1fd5d4/FoaMr+7WLNBEKS7CNaT2CeRGbFfOWfTbHBXCqZMBMPSQNwo7ErxudYnY14N7mthDLW8KAPuTli/BrolUUCyO/aSWgbZ6aUQWwWXmvaJNvGQothAZdTv7QMXQpb/BJpkzvBWWTlSD9zf2YErXYV84peK2QxqJfva+afXAGym6LURF7+CCdJDNkcYKTE=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2019 09:06:54.9643
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e3b0672-57b6-4558-ccf8-08d6e8cbfdc1
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a652971c-7d2e-4d9b-a6a4-d149256f461b;Ip=[193.47.165.134];Helo=[mtlcas13.mtl.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0502MB3018
+References: <cover.1559580831.git.andreyknvl@google.com> <097bc300a5c6554ca6fd1886421bb2e0adb03420.1559580831.git.andreyknvl@google.com>
+ <8ff5b0ff-849a-1e0b-18da-ccb5be85dd2b@oracle.com> <CAAeHK+xX2538e674Pz25unkdFPCO_SH0pFwFu=8+DS7RzfYnLQ@mail.gmail.com>
+ <f6711d31-e52c-473a-d7ad-b2d63131d7a5@oracle.com> <20190603172916.GA5390@infradead.org>
+ <7a687a26-fc3e-2caa-1d6a-464f1f7e684c@oracle.com>
+In-Reply-To: <7a687a26-fc3e-2caa-1d6a-464f1f7e684c@oracle.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 4 Jun 2019 13:45:24 +0200
+Message-ID: <CAAeHK+wccK1upfOWxNbZBR0BUWT23VFUFEqRTEp3H+8hXN8yzw@mail.gmail.com>
+Subject: Re: [PATCH v16 01/16] uaccess: add untagged_addr definition for other arches
+To:     Khalid Aziz <khalid.aziz@oracle.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Jun 3, 2019 at 8:17 PM Khalid Aziz <khalid.aziz@oracle.com> wrote:
+>
+> On 6/3/19 11:29 AM, Christoph Hellwig wrote:
+> > On Mon, Jun 03, 2019 at 11:24:35AM -0600, Khalid Aziz wrote:
+> >> On 6/3/19 11:06 AM, Andrey Konovalov wrote:
+> >>> On Mon, Jun 3, 2019 at 7:04 PM Khalid Aziz <khalid.aziz@oracle.com> wrote:
+> >>>> Andrey,
+> >>>>
+> >>>> This patch has now become part of the other patch series Chris Hellwig
+> >>>> has sent out -
+> >>>> <https://lore.kernel.org/lkml/20190601074959.14036-1-hch@lst.de/>. Can
+> >>>> you coordinate with that patch series?
+> >>>
+> >>> Hi!
+> >>>
+> >>> Yes, I've seen it. How should I coordinate? Rebase this series on top
+> >>> of that one?
+> >>
+> >> That would be one way to do it. Better yet, separate this patch from
+> >> both patch series, make it standalone and then rebase the two patch
+> >> series on top of it.
+> >
+> > I think easiest would be to just ask Linus if he could make an exception
+> > and include this trivial prep patch in 5.2-rc.
+> >
+>
+> Andrey,
+>
+> Would you mind updating the commit log to make it not arm64 specific and
+> sending this patch out by itself. We can then ask Linus if he can
+> include just this patch in the next rc.
 
-On 6/4/2019 10:48 AM, Christoph Hellwig wrote:
-> On Thu, May 30, 2019 at 04:25:26PM +0300, Max Gurtovoy wrote:
->> Protect the case that a ULP tries to allocate a QP with signature
->> enabled flag while the LLD doesn't support this feature.
->>
->> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-> Oh, ok.  I think this should be folded into the previous patch.
-
-I'm fine with this squash.
+Sure! Just sent it out.
 
 >
->> +	if ((qp_init_attr->rwq_ind_tbl &&
->> +	     (qp_init_attr->recv_cq ||
->> +	      qp_init_attr->srq || qp_init_attr->cap.max_recv_wr ||
->> +	      qp_init_attr->cap.max_recv_sge)) ||
->> +	    ((qp_init_attr->create_flags & IB_QP_CREATE_SIGNATURE_EN) &&
->> +	     !(device->attrs.device_cap_flags & IB_DEVICE_SIGNATURE_HANDOVER)))
->>   		return ERR_PTR(-EINVAL);
-> This looks almost unreadable.   Just make the signature check a separate
-> conditional.
-
-Yup we'll fix that.
-
-
+> Thanks,
+> Khalid
+>
