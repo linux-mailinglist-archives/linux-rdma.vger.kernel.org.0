@@ -2,57 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AD9345C3
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2019 13:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4773734667
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2019 14:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727444AbfFDLpg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jun 2019 07:45:36 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:45637 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727356AbfFDLpg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jun 2019 07:45:36 -0400
-Received: by mail-pl1-f194.google.com with SMTP id x7so7258470plr.12
-        for <linux-rdma@vger.kernel.org>; Tue, 04 Jun 2019 04:45:36 -0700 (PDT)
+        id S1727642AbfFDMSc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jun 2019 08:18:32 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:38452 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727447AbfFDMSb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jun 2019 08:18:31 -0400
+Received: by mail-pf1-f193.google.com with SMTP id a186so11880841pfa.5
+        for <linux-rdma@vger.kernel.org>; Tue, 04 Jun 2019 05:18:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ROpXrP+r2OC9uJKtrd7VeU5I2GEkuLFi73TKRyEYr3w=;
-        b=YbXtk1gZpPouwSYE2Vhs1oY1Y4f37CPgCl4rhCDKDXOACPNCfLr9np6wKfbnqxvNqK
-         net1HG8o5wBQb4vNApxrOerpg8MX7Frcm0nkoJCRedOp4gIlsU8B+szPQLnyAp7uDFz6
-         18a5z5D1t2cCXPLwVyjN57+1xoFuuaOeWrZS3QYEL6m6NSRbpHdyTtJVRsjz8hDvO7ay
-         x4MfN3T0GXyhVOPDl8Cb4swrSICIbrgdMT9k5w6B73MKVGcGVf0T8Ojj0gm6GQdck4bi
-         ehe9TCYVm49T6ewlmRPV9pTGt0imE7M4Hg2EyyudgsziWrwS3zmaj416nN50DFpNVxSV
-         8gRg==
+        bh=izP2xVkH+lJ1XiJaz25EL/2sjI5XZqFKPi8rAth3/y8=;
+        b=anXrne3zDdmEVildSzDwGKYMdshtpWiEi/bSjfUgHwDoCg62X8GEgJ1oLKPrpJDBTp
+         sCO27Nd8vGOH1LG/aPfklMvFylAFcLd0duV9qTE0Uw2bgUkgehc21vjcK8KjtBKBSIeh
+         hbrrSVL1q8qPT28KLxALn+5w5v0FjrGnKuEQGLgwne0GhOjJGw91IA05Yw5AYbDH2v2V
+         eAfpEy7jnKgsdj8ID/iHcGjtOrlCN+u9PocCqqNSQrn/Xx8uaOQ0ef5ELA37nbSJameE
+         4YvdhcrfbGwQSFgLEIgyOhrMQbK4CtUaCUAqm4fpOOKP+JqNZLGloD+rwiN3Vuf1ojqO
+         poUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ROpXrP+r2OC9uJKtrd7VeU5I2GEkuLFi73TKRyEYr3w=;
-        b=BdrqK8E1cxze9RVIgcGNXzCgKZBu4gyD6ilb+ElyWXNodIlK4uJi6nXOEoitQmf1LN
-         LXTZj9zYinOVDap6EHv+8UIDqdRO+shPwPV7ZqkYcEhJfdRAUZOfz3ohOLh6u48m2Fql
-         Czbx5c2hsiANT6LUzrhiQePbLAm1mbCWxhNiIU7UXhoB4xjvjNxA/85fIQa5LIGj2dge
-         oJdQqir/3kNc+uAp7kjb5rq8yFKUEG+frjONRhm4XoEbdkkEcfeTZQNiJhpAzqMYpAbE
-         alEz9MRx2mkTZx1sCro4lgt3pTKJxxYsTY/28Iqng748hLFh620BW/8VCG+FP6t0MoZZ
-         LXZg==
-X-Gm-Message-State: APjAAAWZslvd+8cxw0AwSl53vbPIMKh9T30mpxbCNdwwxyeL3u8jdVjO
-        HxbL166CQi0seXw0SYFVCcEOoMawSmBtPUK6FhTKTw==
-X-Google-Smtp-Source: APXvYqw/MEeiL2bhH+9bBygV1lo6Im71uAjcUSVWx84fFkrTwjlzF36BIb4PZCfj0/vMKrfmiVx/F/2QMSAp/3q5QEs=
-X-Received: by 2002:a17:902:8609:: with SMTP id f9mr33680584plo.252.1559648735444;
- Tue, 04 Jun 2019 04:45:35 -0700 (PDT)
+        bh=izP2xVkH+lJ1XiJaz25EL/2sjI5XZqFKPi8rAth3/y8=;
+        b=U8nWOl4Y3THslSIkcY/IskzAA8YrkNXimmO/nXmD8C6mLS95T5pZTSbIEjANL8eM5H
+         QqdYl0mngiP7k5d/cHW7xKmtiUrcHC4fuou7EEvUEMDWg+5ao3RJJDWhmrWFfqCchBCF
+         jg7U7p8rwCydooZS4e/KyZszjIejLZ2VlSstVioHPl3JgPVsZxbAfLcdeytlOcCpaN55
+         9B9yERSRz6AY7Zp0FUcWy8MD/zXSFz7fjTJbDnMzt1qHNJjjA0KvPXI/LLS+uApWFn93
+         f5wkL4CLaFfiKLRgfSrwvFhArgaHsdPu/x5eS+6a7/iYraKExZ3xo5eXx7yfAE7KvhRI
+         m3nQ==
+X-Gm-Message-State: APjAAAV6Kfz1PZ1VarLDetsyLDzSka5ovWIzzdh4QiUefZwi6PPfYiKB
+        HxrU0rqTGmRxMOYjHEFQRLElUwHeuJovVV9dXrt0hw==
+X-Google-Smtp-Source: APXvYqz1BnXRogJ38HsJg+YXXm2v0kW8wf81Q7/M4AVfD5zoRhp7qhUtn8D86raEkRJz58lLKdDFOynhTkL7EDkBRUg=
+X-Received: by 2002:a63:1919:: with SMTP id z25mr35448936pgl.440.1559650710127;
+ Tue, 04 Jun 2019 05:18:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1559580831.git.andreyknvl@google.com> <097bc300a5c6554ca6fd1886421bb2e0adb03420.1559580831.git.andreyknvl@google.com>
- <8ff5b0ff-849a-1e0b-18da-ccb5be85dd2b@oracle.com> <CAAeHK+xX2538e674Pz25unkdFPCO_SH0pFwFu=8+DS7RzfYnLQ@mail.gmail.com>
- <f6711d31-e52c-473a-d7ad-b2d63131d7a5@oracle.com> <20190603172916.GA5390@infradead.org>
- <7a687a26-fc3e-2caa-1d6a-464f1f7e684c@oracle.com>
-In-Reply-To: <7a687a26-fc3e-2caa-1d6a-464f1f7e684c@oracle.com>
+References: <cover.1559580831.git.andreyknvl@google.com> <c829f93b19ad6af1b13be8935ce29baa8e58518f.1559580831.git.andreyknvl@google.com>
+ <20190603174619.GC11474@ziepe.ca>
+In-Reply-To: <20190603174619.GC11474@ziepe.ca>
 From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 4 Jun 2019 13:45:24 +0200
-Message-ID: <CAAeHK+wccK1upfOWxNbZBR0BUWT23VFUFEqRTEp3H+8hXN8yzw@mail.gmail.com>
-Subject: Re: [PATCH v16 01/16] uaccess: add untagged_addr definition for other arches
-To:     Khalid Aziz <khalid.aziz@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+Date:   Tue, 4 Jun 2019 14:18:19 +0200
+Message-ID: <CAAeHK+xy-dx4dLDLLj9dRzRNSVG9H5nDPPnjpYF38qKZNNCh_g@mail.gmail.com>
+Subject: Re: [PATCH v16 12/16] IB, arm64: untag user pointers in ib_uverbs_(re)reg_mr()
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Memory Management List <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
@@ -76,8 +73,9 @@ Cc:     Christoph Hellwig <hch@infradead.org>,
         Alex Williamson <alex.williamson@redhat.com>,
         Leon Romanovsky <leon@kernel.org>,
         Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Christoph Hellwig <hch@infradead.org>,
         Dmitry Vyukov <dvyukov@google.com>,
         Kostya Serebryany <kcc@google.com>,
         Evgeniy Stepanov <eugenis@google.com>,
@@ -94,41 +92,122 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 3, 2019 at 8:17 PM Khalid Aziz <khalid.aziz@oracle.com> wrote:
+On Mon, Jun 3, 2019 at 7:46 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> On 6/3/19 11:29 AM, Christoph Hellwig wrote:
-> > On Mon, Jun 03, 2019 at 11:24:35AM -0600, Khalid Aziz wrote:
-> >> On 6/3/19 11:06 AM, Andrey Konovalov wrote:
-> >>> On Mon, Jun 3, 2019 at 7:04 PM Khalid Aziz <khalid.aziz@oracle.com> wrote:
-> >>>> Andrey,
-> >>>>
-> >>>> This patch has now become part of the other patch series Chris Hellwig
-> >>>> has sent out -
-> >>>> <https://lore.kernel.org/lkml/20190601074959.14036-1-hch@lst.de/>. Can
-> >>>> you coordinate with that patch series?
-> >>>
-> >>> Hi!
-> >>>
-> >>> Yes, I've seen it. How should I coordinate? Rebase this series on top
-> >>> of that one?
-> >>
-> >> That would be one way to do it. Better yet, separate this patch from
-> >> both patch series, make it standalone and then rebase the two patch
-> >> series on top of it.
+> On Mon, Jun 03, 2019 at 06:55:14PM +0200, Andrey Konovalov wrote:
+> > This patch is a part of a series that extends arm64 kernel ABI to allow to
+> > pass tagged user pointers (with the top byte set to something else other
+> > than 0x00) as syscall arguments.
 > >
-> > I think easiest would be to just ask Linus if he could make an exception
-> > and include this trivial prep patch in 5.2-rc.
+> > ib_uverbs_(re)reg_mr() use provided user pointers for vma lookups (through
+> > e.g. mlx4_get_umem_mr()), which can only by done with untagged pointers.
 > >
+> > Untag user pointers in these functions.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> >  drivers/infiniband/core/uverbs_cmd.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+> > index 5a3a1780ceea..f88ee733e617 100644
+> > +++ b/drivers/infiniband/core/uverbs_cmd.c
+> > @@ -709,6 +709,8 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
+> >       if (ret)
+> >               return ret;
+> >
+> > +     cmd.start = untagged_addr(cmd.start);
+> > +
+> >       if ((cmd.start & ~PAGE_MASK) != (cmd.hca_va & ~PAGE_MASK))
+> >               return -EINVAL;
 >
-> Andrey,
+> I feel like we shouldn't thave to do this here, surely the cmd.start
+> should flow unmodified to get_user_pages, and gup should untag it?
 >
-> Would you mind updating the commit log to make it not arm64 specific and
-> sending this patch out by itself. We can then ask Linus if he can
-> include just this patch in the next rc.
+> ie, this sort of direction for the IB code (this would be a giant
+> patch, so I didn't have time to write it all, but I think it is much
+> saner):
 
-Sure! Just sent it out.
+Hi Jason,
+
+ib_uverbs_reg_mr() passes cmd.start to mlx4_get_umem_mr(), which calls
+find_vma(), which only accepts untagged addresses. Could you explain
+how your patch helps?
+
+Thanks!
 
 >
-> Thanks,
-> Khalid
+> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+> index 54628ef879f0ce..7b3b736c87c253 100644
+> --- a/drivers/infiniband/core/umem.c
+> +++ b/drivers/infiniband/core/umem.c
+> @@ -193,7 +193,7 @@ EXPORT_SYMBOL(ib_umem_find_best_pgsz);
+>   * @access: IB_ACCESS_xxx flags for memory being pinned
+>   * @dmasync: flush in-flight DMA when the memory region is written
+>   */
+> -struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
+> +struct ib_umem *ib_umem_get(struct ib_udata *udata, void __user *addr,
+>                             size_t size, int access, int dmasync)
+>  {
+>         struct ib_ucontext *context;
+> @@ -201,7 +201,7 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
+>         struct page **page_list;
+>         unsigned long lock_limit;
+>         unsigned long new_pinned;
+> -       unsigned long cur_base;
+> +       void __user *cur_base;
+>         struct mm_struct *mm;
+>         unsigned long npages;
+>         int ret;
+> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+> index 5a3a1780ceea4d..94389e7f12371f 100644
+> --- a/drivers/infiniband/core/uverbs_cmd.c
+> +++ b/drivers/infiniband/core/uverbs_cmd.c
+> @@ -735,7 +735,8 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
+>                 }
+>         }
 >
+> -       mr = pd->device->ops.reg_user_mr(pd, cmd.start, cmd.length, cmd.hca_va,
+> +       mr = pd->device->ops.reg_user_mr(pd, u64_to_user_ptr(cmd.start),
+> +                                        cmd.length, cmd.hca_va,
+>                                          cmd.access_flags,
+>                                          &attrs->driver_udata);
+>         if (IS_ERR(mr)) {
+> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+> index 4d033796dcfcc2..bddbb952082fc5 100644
+> --- a/drivers/infiniband/hw/mlx5/mr.c
+> +++ b/drivers/infiniband/hw/mlx5/mr.c
+> @@ -786,7 +786,7 @@ static int mr_cache_max_order(struct mlx5_ib_dev *dev)
+>  }
+>
+>  static int mr_umem_get(struct mlx5_ib_dev *dev, struct ib_udata *udata,
+> -                      u64 start, u64 length, int access_flags,
+> +                      void __user *start, u64 length, int access_flags,
+>                        struct ib_umem **umem, int *npages, int *page_shift,
+>                        int *ncont, int *order)
+>  {
+> @@ -1262,8 +1262,8 @@ struct ib_mr *mlx5_ib_reg_dm_mr(struct ib_pd *pd, struct ib_dm *dm,
+>                                  attr->access_flags, mode);
+>  }
+>
+> -struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+> -                                 u64 virt_addr, int access_flags,
+> +struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, void __user *start,
+> +                                 u64 length, u64 virt_addr, int access_flags,
+>                                   struct ib_udata *udata)
+>  {
+>         struct mlx5_ib_dev *dev = to_mdev(pd->device);
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index ec6446864b08e9..b3c8eaaa35c760 100644
+> --- a/include/rdma/ib_verbs.h
+> +++ b/include/rdma/ib_verbs.h
+> @@ -2464,8 +2464,8 @@ struct ib_device_ops {
+>         struct ib_mr *(*reg_user_mr)(struct ib_pd *pd, u64 start, u64 length,
+>                                      u64 virt_addr, int mr_access_flags,
+>                                      struct ib_udata *udata);
+> -       int (*rereg_user_mr)(struct ib_mr *mr, int flags, u64 start, u64 length,
+> -                            u64 virt_addr, int mr_access_flags,
+> +       int (*rereg_user_mr)(struct ib_mr *mr, int flags, void __user *start,
+> +                            u64 length, u64 virt_addr, int mr_access_flags,
+>                              struct ib_pd *pd, struct ib_udata *udata);
+>         int (*dereg_mr)(struct ib_mr *mr, struct ib_udata *udata);
+>         struct ib_mr *(*alloc_mr)(struct ib_pd *pd, enum ib_mr_type mr_type,
