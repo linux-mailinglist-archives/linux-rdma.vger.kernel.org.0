@@ -2,128 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 424F935F88
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2019 16:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF398360A0
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2019 17:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727960AbfFEOq4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jun 2019 10:46:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726442AbfFEOq4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 5 Jun 2019 10:46:56 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8185B20693;
-        Wed,  5 Jun 2019 14:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559746015;
-        bh=ErhGag2HU22LO2XlAHaaq7u7D1FlJhAcgpZyic36J6k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N2yYzWUNwSpGDoKn9/U4eUY9wzAwyp7GxVwoQ0iW/H05Vd5AASTc0HcwlnG/Yr6NZ
-         4SvgUqI/DfoQKuz1dA3/WHqfWiGM09/FgG5BtmB1Tk4W0jWh8Q50SV8P7mYTX4rd0E
-         bt0gClYrOfzfTw8JDAPtkJa/MYXBXJWqNBU3wpkc=
-Date:   Wed, 5 Jun 2019 17:46:51 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, dledford@redhat.com, jgg@mellanox.com
-Subject: Re: [PATCH for-next v3 0/4] ib_pd should not have ib_uobject
-Message-ID: <20190605144651.GO5261@mtr-leonro.mtl.com>
-References: <20190530122422.32283-1-shamir.rabinovitch@oracle.com>
- <20190605072125.GA18424@srabinov-laptop>
- <20190605082549.GM5261@mtr-leonro.mtl.com>
- <20190605130244.GA3433@srabinov-laptop>
+        id S1728390AbfFEP6I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jun 2019 11:58:08 -0400
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:40183 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728386AbfFEP6I (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jun 2019 11:58:08 -0400
+Received: by mail-vs1-f68.google.com with SMTP id c24so16012667vsp.7;
+        Wed, 05 Jun 2019 08:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wQ18CZZm3tJZUQ3j6dGO6lJbbSyHo2fJ3H0W6Gvd1XA=;
+        b=ibkHyhdxgjvgFY4Dmq8LBQSgoY/ugqCmejaCmE+1qeXoQHAqGku4AD6kbXS0CkX2H8
+         jyyAbPRcKuoODFVOiCG5mUiI8FREcn9OV6mghE5nez/DlI+YnaFFSeUZgg79of/HOdTG
+         utriVYqWDwWDL7Jx21lOuEjfrgENiqaJwnFf2HQiFyY81649BrbqgeBYNFTcwqiyTQoJ
+         BmdIjSYYnkHu4nlg2Am/g8Dka14lmNXolnUpeh6h8XbH4O4F5BBgwqmCx+7knkbcNApg
+         V3fW1TwBOKoErdU1j+TuOeueGgC+BwDBsC8C2c024vhoAA674q+32HQpsDTDFdagUPWb
+         tkaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wQ18CZZm3tJZUQ3j6dGO6lJbbSyHo2fJ3H0W6Gvd1XA=;
+        b=Lu3ubrY6xavzppnhRIylanTe8I76UaoRqCj04KH6spZMTVh0tRfL4bpAL7RmYoHtPa
+         Y/h7b+CKEJS+auF3Pg4rMXS444OyVavDQRVfOhcoMLYER8EFnWElLlKVNRvGriPI0eVy
+         xqT8fDSavhpkPVc0PqsoDaj3JjoK9DvkfX6d4l/q4Lhh+0+vweD11MfTdU+pp2AzLOra
+         q2JDhqTDeNf9cpjavn3R9yysqHDvb0xR0rHPboS8qvB2KasB0BhY9JtP1u631FfKpJyp
+         vk82VkVcx/EwU9QFWX7Wefyvwb6b/C5qqOjWmoj31//X0eQsZsU7nfTsWRyZMYOihBE1
+         S0sA==
+X-Gm-Message-State: APjAAAUlCY7OHLP+bD9pf5P82ByRstfnyMDpYvXWtU+RAzq2RDUnaCBx
+        Q09/JZs3nvaMvhU8VQy4wvRLafci+jepvSXLU870mA==
+X-Google-Smtp-Source: APXvYqzCYt+2hKfHvHJetPWxAZ32t9t2U8l8K9YfHPGMnLoVZg3TZpvCP3vmHtoWQMx18/bHyOuD70659edfCeyu7SE=
+X-Received: by 2002:a05:6102:382:: with SMTP id m2mr10152621vsq.134.1559750287084;
+ Wed, 05 Jun 2019 08:58:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190605130244.GA3433@srabinov-laptop>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+References: <20190605121518.2150.26479.stgit@klimt.1015granger.net>
+In-Reply-To: <20190605121518.2150.26479.stgit@klimt.1015granger.net>
+From:   Olga Kornievskaia <aglo@umich.edu>
+Date:   Wed, 5 Jun 2019 11:57:56 -0400
+Message-ID: <CAN-5tyH5r_cq9qYF3E2BaNK1Xr0RLsxQFCOGQqXhGb8Rk2xMXw@mail.gmail.com>
+Subject: Re: [PATCH RFC] svcrdma: Ignore source port when computing DRC hash
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 05, 2019 at 04:02:45PM +0300, Shamir Rabinovitch wrote:
-> On Wed, Jun 05, 2019 at 11:25:49AM +0300, Leon Romanovsky wrote:
-> > On Wed, Jun 05, 2019 at 10:21:26AM +0300, Shamir Rabinovitch wrote:
-> > > On Thu, May 30, 2019 at 03:24:05PM +0300, Shamir Rabinovitch wrote:
-> > > > This patch set complete the cleanup done in the driver/verbs/uverbs
-> > > > where the dependency of the code in the ib_x uobject pointer was
-> > > > removed.
-> > > >
-> > > > The uobject pointer is removed from the ib_pd as last step
-> > > > before I can start adding the pd sharing code.
-> > > >
-> > > > The rdma/netlink code now don't have dependency in the ib_pd
-> > > > uobject pointer and can report multiple context id that point
-> > > > to same ib_pd.
-> > > >
-> > > > Using iproute2 I can test the modified rdma/netlink:
-> > > > [root@qemu-fc29 iproute2]# rdma/rdma res show pd dev mlx4_0
-> > > > dev mlx4_0 pdn 0 local_dma_lkey 0x8000 users 4 comm [ib_core]
-> > > > dev mlx4_0 pdn 1 local_dma_lkey 0x8000 users 4 comm [ib_core]
-> > > > dev mlx4_0 pdn 2 local_dma_lkey 0x8000 users 5 comm [ib_ipoib]
-> > > > dev mlx4_0 pdn 3 local_dma_lkey 0x8000 users 5 comm [ib_ipoib]
-> > > > dev mlx4_0 pdn 4 local_dma_lkey 0x8000 users 0 comm [ib_srp]
-> > > > dev mlx4_0 pdn 5 local_dma_lkey 0x8000 users 0 comm [ib_srpt]
-> > > > dev mlx4_0 pdn 6 local_dma_lkey 0x0 users 2 ctxn 0 pid 7693 comm ib_send_bw
-> > > > dev mlx4_0 pdn 7 local_dma_lkey 0x0 users 2 ctxn 1 pid 7694 comm ib_send_bw
-> > > >
-> > > > Changelog:
-> > > >
-> > > > v1->v2
-> > > > * 1 patch from v1 applied (Jason)
-> > > > * Fix uobj_get_obj_read macro (Jason)
-> > > > * Do not allocate memory when fixing uobj_get_obj_read (Jason)
-> > > > * Fix uobj_get_obj_read macro (Jason)
-> > > > * rdma/netlink can now work as before (Leon)
-> > > >
-> > > > v2->v3:
-> > > > * rdma/netlink nest multiple context ids of same ib_pd (Leon)
-> > > >
-> > > > Shamir Rabinovitch (4):
-> > > >   RDMA/uverbs: uobj_get_obj_read should return the ib_uobject
-> > > >   RDMA/uverbs: uobj_put_obj_read macro should be removed
-> > > >   RDMA/nldev: ib_pd can be pointed by multiple ib_ucontext
-> > > >   IB/{core,hw}: ib_pd should not have ib_uobject pointer
-> > > >
-> > > >  drivers/infiniband/core/nldev.c            | 129 +++++++++++-
-> > > >  drivers/infiniband/core/uverbs_cmd.c       | 218 +++++++++++++--------
-> > > >  drivers/infiniband/core/verbs.c            |   1 -
-> > > >  drivers/infiniband/hw/hns/hns_roce_hw_v1.c |   1 -
-> > > >  drivers/infiniband/hw/mlx5/main.c          |   1 -
-> > > >  drivers/infiniband/hw/mthca/mthca_qp.c     |   3 +-
-> > > >  include/rdma/ib_verbs.h                    |   1 -
-> > > >  include/rdma/uverbs_std_types.h            |  11 +-
-> > > >  include/uapi/rdma/rdma_netlink.h           |   3 +
-> > > >  9 files changed, 273 insertions(+), 95 deletions(-)
-> > > >
-> > > > --
-> > > > 2.20.1
-> > > >
-> > >
-> > > Jason, Leon, can you please review this patch set ?
-> >
-> > I'm sorry for the delay.
-> >
-> > >
-> > > Anything missing from my side here?
-> >
-> > Can you please post rdmatool output for shared PD?
-> > In such case, all those shared PD need to have same PDN.
+On Wed, Jun 5, 2019 at 8:15 AM Chuck Lever <chuck.lever@oracle.com> wrote:
 >
-> Leon I do not have all the pieces in place for this yes.
+> The DRC is not working at all after an RPC/RDMA transport reconnect.
+> The problem is that the new connection uses a different source port,
+> which defeats DRC hash.
 >
-> I only tested that current rdmatool can cope with netlink message that
-> has nested context ids as it will happen in shared pd case.
+> An NFS/RDMA client's source port is meaningless for RDMA transports.
+> The transport layer typically sets the source port value on the
+> connection to a random ephemeral port. The server already ignores it
+> for the "secure port" check. See commit 16e4d93f6de7 ("NFSD: Ignore
+> client's source port on RDMA transports").
+>
+> I'm not sure why I never noticed this before.
 
-Thanks, multiple PDNs worried me and I was afraid that they come from
-shared PDs. You will still need to mock something to see that you
-print them correctly.
+Hi Chuck,
+
+I have a question: is the reason for choosing this fix as oppose to
+fixing the client because it's server's responsibility to design a DRC
+differently for the NFSoRDMA?
 
 >
-> I'll do that once we have the export_to_fd & import_pd & import_mr verbs
-> in place.
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  net/sunrpc/xprtrdma/svc_rdma_transport.c |    7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 >
-> >
-> > Thanks
+> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> index 027a3b0..1b3700b 100644
+> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> @@ -211,9 +211,14 @@ static void handle_connect_req(struct rdma_cm_id *new_cma_id,
+>         /* Save client advertised inbound read limit for use later in accept. */
+>         newxprt->sc_ord = param->initiator_depth;
+>
+> -       /* Set the local and remote addresses in the transport */
+>         sa = (struct sockaddr *)&newxprt->sc_cm_id->route.addr.dst_addr;
+>         svc_xprt_set_remote(&newxprt->sc_xprt, sa, svc_addr_len(sa));
+> +       /* The remote port is arbitrary and not under the control of the
+> +        * ULP. Set it to a fixed value so that the DRC continues to work
+> +        * after a reconnect.
+> +        */
+> +       rpc_set_port((struct sockaddr *)&newxprt->sc_xprt.xpt_remote, 0);
+> +
+>         sa = (struct sockaddr *)&newxprt->sc_cm_id->route.addr.src_addr;
+>         svc_xprt_set_local(&newxprt->sc_xprt, sa, svc_addr_len(sa));
+>
+>
