@@ -2,60 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5F5362D6
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2019 19:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC2F362D9
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2019 19:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbfFERiP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jun 2019 13:38:15 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:35736 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbfFERiP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jun 2019 13:38:15 -0400
-Received: by mail-ot1-f65.google.com with SMTP id j19so1519488otq.2
-        for <linux-rdma@vger.kernel.org>; Wed, 05 Jun 2019 10:38:14 -0700 (PDT)
+        id S1726527AbfFERja (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jun 2019 13:39:30 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:41067 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbfFERja (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jun 2019 13:39:30 -0400
+Received: by mail-qt1-f193.google.com with SMTP id s57so11834290qte.8
+        for <linux-rdma@vger.kernel.org>; Wed, 05 Jun 2019 10:39:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ybj1p+3wcYlhfA2C5XOSkI05LBbFJvNFfBuYFch0szI=;
+        b=lySfKiTSy3qIXNUvifPFoi9KWOo/3bZXpK6xqtrpITwWUXUsPv/xQQKnO04U8sbWrG
+         kKoGT49WQ5NbpqEJ+dF5C+aIPjwRTDFV9eGcyqidi/fRl7W9ivwp2sx7toQbeipsG6TS
+         Rox7hH0CATm/S40C9qD0T3U/ureGzaAQlqDV6qBZTBDFGen5bgvX/QhAqeqaq10Fjabd
+         XRnhCOCjMY/3qUnmB3EpM8d/J2/yYmbbsy7DSK6lGrqmFvrwo0XpCb43TvqU+K1+YzWL
+         IHB62XHaflF8slmNXZA0HDeL4JEdcn1H1x2fJ/HmsqFZZPtH2lJmZlTnEO/wL0k0g+0L
+         MHWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
-        b=iNecNP23pPU96aSX0EE9VxyG7zO565jXem/GRxwDic5l6Uej+WwipoGBEdOyyWNaz8
-         a9vzyX94O68eY8SFQGRSJ7knsZ30uVDNqDR9ov8FbeuXQSBE/dN44/X3OBTY/SGwQdE3
-         p3XUpGb7TCP70vfmp6Rv/P9x9Qj0QsosdvsMQOYVdrv8kvLTW0jZn/RWfN827QIafXIc
-         Pgk1I8GlICrZc+xR6fA3kRSPuYpA7SKALv0jVGxJYyRYg9Wd/QjZbzfkALVVKxpBAMTw
-         Jvyr9Z5bgSkYD0CibCV0S43jmKRGuHyrvXymd5qbVxAPbqoXoNf5SUiZdctYLhakfuZJ
-         Vg1A==
-X-Gm-Message-State: APjAAAUBicu6PUCuYlmzfmdXLY4BxidvwvBtjt0idO5yOqpnzYSGXSY1
-        7TbjT3fGfE+2bGpt5gd7Iag=
-X-Google-Smtp-Source: APXvYqyDhgcZ3AAOKsiDfhyLIgLOm19K53Xz5+hUWX4kQKNWo89ebLP6CbO2ftq2TXSb4AYZSkBSLw==
-X-Received: by 2002:a9d:ece:: with SMTP id 72mr9187205otj.163.1559756294446;
-        Wed, 05 Jun 2019 10:38:14 -0700 (PDT)
-Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
-        by smtp.gmail.com with ESMTPSA id j62sm7904415otc.31.2019.06.05.10.38.12
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 05 Jun 2019 10:38:13 -0700 (PDT)
-Subject: Re: [PATCH 05/20] RDMA/core: Add signature attrs element for ib_mr
- structure
-To:     Max Gurtovoy <maxg@mellanox.com>, leonro@mellanox.com,
-        linux-rdma@vger.kernel.org, jgg@mellanox.com, dledford@redhat.com,
-        hch@lst.de, bvanassche@acm.org
-Cc:     israelr@mellanox.com, idanb@mellanox.com, oren@mellanox.com,
-        vladimirk@mellanox.com, shlomin@mellanox.com
-References: <1559222731-16715-1-git-send-email-maxg@mellanox.com>
- <1559222731-16715-6-git-send-email-maxg@mellanox.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <2d77db57-1f93-d866-c49f-8ca6e671f6e4@grimberg.me>
-Date:   Wed, 5 Jun 2019 10:38:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        bh=Ybj1p+3wcYlhfA2C5XOSkI05LBbFJvNFfBuYFch0szI=;
+        b=go1/uNxERmBijVQ9Rsouir/c5iV5mWnB88pTVf4jc2Ir63kpmfy4tOYdTo15tj1/0z
+         aYRGCPhQmCKi9LIcNqccnwiOoFY/pNCw+cpiEMlZ5gC/Tbr0ixq6P3h3EcICyykoz+U7
+         IFDpMXEwDiyi17G31v+jOiP+WQ/6PGFb4rnAM6j3SBfYlq31xxx57OmFj2mhrxiy9oP2
+         14DHKk6BRtNT2ygnIIt7GqRHyMFujwJu+8sAm8RXnfMwB3S/newBUdMZo4tyNy53IjAc
+         1Fr4dFhdycf+78WL2rC4aIrJ80J/hRNe0sG8lpYI5fZ/FFoEMbRgRaAhMG2KToRQFp6M
+         DI/A==
+X-Gm-Message-State: APjAAAVV0MlZFMTh4P/r0veOMLI9j2tMgjcX2XpiQUXkK+EjP9DxDjn7
+        9W2khAzhS2JyHNTHXdp8ZTH5tPXH/7OKsg==
+X-Google-Smtp-Source: APXvYqz6garZoydsgtalcMFJA34iQEt8J8NMRZKkaBlFpxKfNoS2bJ67CG9AkehZPiSeCcLFMJDoYg==
+X-Received: by 2002:ac8:303a:: with SMTP id f55mr36409458qte.101.1559756368825;
+        Wed, 05 Jun 2019 10:39:28 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id c184sm2560479qkf.82.2019.06.05.10.39.28
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 05 Jun 2019 10:39:28 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hYZsl-0004gG-JA; Wed, 05 Jun 2019 14:39:27 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     linux-rdma@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH 0/3] Move more constant stuff into struct ib_device_ops
+Date:   Wed,  5 Jun 2019 14:39:23 -0300
+Message-Id: <20190605173926.16995-1-jgg@ziepe.ca>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <1559222731-16715-6-git-send-email-maxg@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+From: Jason Gunthorpe <jgg@mellanox.com>
+
+Each driver has a single constant value for
+ - driver_id
+ - uverbs_abi_ver
+ - module owner
+
+So set them in the ib_device_ops along with the other constant stuff.
+
+Jason Gunthorpe (3):
+  RDMA: Move driver_id into struct ib_device_ops
+  RDMA: Move uverbs_abi_ver into struct ib_device_ops
+  RDMA: Move owner into struct ib_device_ops
+
+ drivers/infiniband/core/device.c              | 18 ++++++++++++++---
+ drivers/infiniband/core/uverbs_main.c         |  8 ++++----
+ drivers/infiniband/core/uverbs_uapi.c         |  2 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  6 +++---
+ drivers/infiniband/hw/bnxt_re/main.c          |  7 ++++---
+ drivers/infiniband/hw/cxgb3/iwch_provider.c   |  7 ++++---
+ drivers/infiniband/hw/cxgb4/provider.c        |  7 ++++---
+ drivers/infiniband/hw/efa/efa_main.c          |  7 ++++---
+ drivers/infiniband/hw/hfi1/verbs.c            |  6 ++++--
+ drivers/infiniband/hw/hns/hns_roce_main.c     |  7 ++++---
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c     |  7 +++++--
+ drivers/infiniband/hw/mlx4/main.c             | 20 ++++++++++---------
+ drivers/infiniband/hw/mlx5/main.c             |  7 ++++---
+ drivers/infiniband/hw/mthca/mthca_provider.c  |  8 ++++----
+ drivers/infiniband/hw/nes/nes_verbs.c         |  7 +++++--
+ drivers/infiniband/hw/ocrdma/ocrdma_main.c    |  7 ++++---
+ drivers/infiniband/hw/qedr/main.c             |  7 ++++---
+ drivers/infiniband/hw/qib/qib_verbs.c         |  6 ++++--
+ drivers/infiniband/hw/usnic/usnic_ib_main.c   |  7 ++++---
+ .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  7 ++++---
+ drivers/infiniband/sw/rdmavt/vt.c             |  6 +++---
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |  7 ++++---
+ include/rdma/ib_verbs.h                       |  7 ++++---
+ include/rdma/rdma_vt.h                        |  2 +-
+ 24 files changed, 108 insertions(+), 72 deletions(-)
+
+-- 
+2.21.0
+
