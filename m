@@ -2,93 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A11836555
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2019 22:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A092E36602
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2019 22:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbfFEUWj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jun 2019 16:22:39 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:35453 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726551AbfFEUWi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jun 2019 16:22:38 -0400
-Received: by mail-qk1-f194.google.com with SMTP id l128so78602qke.2
-        for <linux-rdma@vger.kernel.org>; Wed, 05 Jun 2019 13:22:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hdVKMo8506TgrZK1PYQwv5IIzq/3ub7YoF/TJnHz4iQ=;
-        b=jn33M/OLPMrHDhWB/oB3uBW6KyUZwZ3dHbeuh1XlGJHpj6dwZhMsOO5OOrjM6STAk4
-         qROquiS6fMH0HrsaHJQe7IWfco1/3CwVA1Gz+FGmFpUONVqiEw31nfTAMmDzWlOeuUEZ
-         mk6d5RDBk04fmPauqpzDR3UBYRMhcvzlsYSc74mHKl9XePav6wRDF+ORoRV2fKHFG/sb
-         cUQUGUyyBaCwXiDs4NT1HvJhutfWYLBEeCwb+RHe4UP0YFMmyv3lmlZz7HJMeHb2peh0
-         c0KHydFemqtXhwO8HH1TOYZIPA8HQnsiNT2WYwoU7yhfgAcf8QGzWgN4SKzBFML0mJnJ
-         tpyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hdVKMo8506TgrZK1PYQwv5IIzq/3ub7YoF/TJnHz4iQ=;
-        b=qS2q8CLp39EcttEcau9PkCOMMV5ZJLNfI5avfLwRZHW7zGCFEkG07zMXbxBaHAkpE1
-         8h6dOoTYmVs0S/mE6WxYW0XrCcf2FJc1b8Pf7lu7lrTxtq5d57rsfZ/5CrID6ir4faTM
-         zuvv0EhJaN538Y3UpDiAQD/QWk1MNvXno/k/AFVEdPYZ35LlcSoARbX6HNwo0+EF/EqZ
-         GhbVlztc/cg1BPezYD7Hg+C2UBqwiIMt28v1re6GY563kVkYlkZN7wynXh5KOyRmKz7v
-         dG+MmQXkEyYDzGzQSXxrvD9T2/YEOGmKdoL0L0mCSgmvYadzLTq2HCBTxxkXRImuFyHP
-         JHig==
-X-Gm-Message-State: APjAAAUNr5I8eq4Wte+QNZ0xKnZhowZ2eM2GkStHMxh4h3FMpvRBGa7H
-        YUuuXf+GYJeulaC3JqCm9dWwsA==
-X-Google-Smtp-Source: APXvYqzsyiPSTmn82JkgPtH+Z1+lnK81jan/CvvnzRGGA4oYrI2ETBGBe6mNB1mjYk7SLXHnNDomow==
-X-Received: by 2002:a37:6312:: with SMTP id x18mr35736460qkb.300.1559766157655;
-        Wed, 05 Jun 2019 13:22:37 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id v9sm884883qti.60.2019.06.05.13.22.36
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 05 Jun 2019 13:22:36 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hYcQd-0002uk-Vd; Wed, 05 Jun 2019 17:22:35 -0300
-Date:   Wed, 5 Jun 2019 17:22:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Sebastian Ott <sebott@linux.ibm.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Oliver Neukum <oneukum@suse.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com,
-        linux-hyperv@vger.kernel.org, linux-usb@vger.kernel.org,
-        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/13] IB/iser: set virt_boundary_mask in the scsi host
-Message-ID: <20190605202235.GC3273@ziepe.ca>
-References: <20190605190836.32354-1-hch@lst.de>
- <20190605190836.32354-9-hch@lst.de>
+        id S1726510AbfFEUxV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jun 2019 16:53:21 -0400
+Received: from mail-eopbgr80047.outbound.protection.outlook.com ([40.107.8.47]:58039
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726305AbfFEUxV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 5 Jun 2019 16:53:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pVdCocYi0gLO387WdwpsPDVduIkw0BaQShReCgylpx4=;
+ b=ihEpDL4VzxSld2X2bid33ouKyZIlVpR3RwMZk8IJFjCKhIuqA+N0DEGYyr45RyAxhoIA7ikWhKQXzjR7kmfwU1zyY1QXXUFlj1Q3cprJ3ggn5XmpFtl++La9qQ6bXdTeeMJoSZMAcbDcZvYPITRiUq6m+gyoktCtSS/3VKD/Oag=
+Received: from VI1PR0501CA0025.eurprd05.prod.outlook.com
+ (2603:10a6:800:60::11) by DB3PR0502MB4058.eurprd05.prod.outlook.com
+ (2603:10a6:8:9::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1943.22; Wed, 5 Jun
+ 2019 20:53:15 +0000
+Received: from DB5EUR03FT033.eop-EUR03.prod.protection.outlook.com
+ (2a01:111:f400:7e0a::208) by VI1PR0501CA0025.outlook.office365.com
+ (2603:10a6:800:60::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1943.17 via Frontend
+ Transport; Wed, 5 Jun 2019 20:53:15 +0000
+Authentication-Results: spf=pass (sender IP is 193.47.165.134)
+ smtp.mailfrom=mellanox.com; acm.org; dkim=none (message not signed)
+ header.d=none;acm.org; dmarc=pass action=none header.from=mellanox.com;
+Received-SPF: Pass (protection.outlook.com: domain of mellanox.com designates
+ 193.47.165.134 as permitted sender) receiver=protection.outlook.com;
+ client-ip=193.47.165.134; helo=mtlcas13.mtl.com;
+Received: from mtlcas13.mtl.com (193.47.165.134) by
+ DB5EUR03FT033.mail.protection.outlook.com (10.152.20.76) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.1965.12 via Frontend Transport; Wed, 5 Jun 2019 20:53:15 +0000
+Received: from MTLCAS13.mtl.com (10.0.8.78) by mtlcas13.mtl.com (10.0.8.78)
+ with Microsoft SMTP Server (TLS) id 15.0.1178.4; Wed, 5 Jun 2019 23:53:14
+ +0300
+Received: from MTLCAS01.mtl.com (10.0.8.71) by MTLCAS13.mtl.com (10.0.8.78)
+ with Microsoft SMTP Server (TLS) id 15.0.1178.4 via Frontend Transport; Wed,
+ 5 Jun 2019 23:53:14 +0300
+Received: from [172.16.0.12] (172.16.0.12) by MTLCAS01.mtl.com (10.0.8.71)
+ with Microsoft SMTP Server (TLS) id 14.3.301.0; Wed, 5 Jun 2019 23:52:32
+ +0300
+Subject: Re: [PATCH 04/20] RDMA/core: Introduce ib_map_mr_sg_pi to map
+ data/protection sgl's
+To:     Sagi Grimberg <sagi@grimberg.me>, <leonro@mellanox.com>,
+        <linux-rdma@vger.kernel.org>, <jgg@mellanox.com>,
+        <dledford@redhat.com>, <hch@lst.de>, <bvanassche@acm.org>
+CC:     <israelr@mellanox.com>, <idanb@mellanox.com>, <oren@mellanox.com>,
+        <vladimirk@mellanox.com>, <shlomin@mellanox.com>
+References: <1559222731-16715-1-git-send-email-maxg@mellanox.com>
+ <1559222731-16715-5-git-send-email-maxg@mellanox.com>
+ <b9c0f67c-e690-b6db-b326-2c76cfcab7b9@grimberg.me>
+From:   Max Gurtovoy <maxg@mellanox.com>
+Message-ID: <0d18b282-3950-44f9-c0cd-50c0a87df301@mellanox.com>
+Date:   Wed, 5 Jun 2019 23:52:32 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190605190836.32354-9-hch@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b9c0f67c-e690-b6db-b326-2c76cfcab7b9@grimberg.me>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.16.0.12]
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:193.47.165.134;IPV:NLI;CTRY:IL;EFV:NLI;SFV:NSPM;SFS:(10009020)(346002)(136003)(376002)(39850400004)(396003)(2980300002)(199004)(189003)(64126003)(476003)(126002)(2616005)(31686004)(11346002)(486006)(5660300002)(6246003)(36756003)(65806001)(65956001)(2906002)(31696002)(2870700001)(50466002)(107886003)(356004)(6116002)(3846002)(316002)(47776003)(16576012)(229853002)(14444005)(446003)(110136005)(54906003)(58126008)(70586007)(305945005)(86362001)(26005)(77096007)(16526019)(186003)(8936002)(106002)(2201001)(81166006)(81156014)(8676002)(65826007)(336012)(4326008)(67846002)(2486003)(76176011)(478600001)(23676004)(53546011)(7736002)(70206006)(3940600001)(2101003);DIR:OUT;SFP:1101;SCL:1;SRVR:DB3PR0502MB4058;H:mtlcas13.mtl.com;FPR:;SPF:Pass;LANG:en;PTR:mail13.mellanox.com;A:1;MX:1;
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7d5b959d-f688-40be-3329-08d6e9f7d49d
+X-Microsoft-Antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(4709080)(1401327)(2017052603328)(7193020);SRVR:DB3PR0502MB4058;
+X-MS-TrafficTypeDiagnostic: DB3PR0502MB4058:
+X-Microsoft-Antispam-PRVS: <DB3PR0502MB405823EF4C385C49ABFB204FB6160@DB3PR0502MB4058.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 00594E8DBA
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Message-Info: aty6pf2TqyLW8pRaxL2VwoBSDPB4jp+R+vVCluu4bNexN2iFecEUXrdN+FibD8pDjPSYfQ2l8P49GRiD7mTBKvlzo4HrGGoUb1FQ3hFcaOmKydExZstCGdHgWUAPjNl1ndT4BLoXb9m8tm1BRjG1xk4xLkFs79y7I0o5zr12mUbRYd83lyypK6aCwRvL6sovoyIGKN6Kz6dzrkgfCuJoPtLeXS0rlp1Shc/U46GRyi0nEdyplCBwZo0l+m6J5CFd0+acao9xITt5NRAoi5+p6e8SR3sleOBR497qtGUkRr3XQPVzVb2s0XC0EimXWykQXqEeMLYHWB/fQ3xNOB6Mj0eIK7TbBk5/ukcTWS/rwhScJwF+5rrSHXkynopXrzlDQiBmsBdRSvO6jnvk8lEGhxdREd6dqDTZ1+KbEQuLlHU=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2019 20:53:15.0718
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d5b959d-f688-40be-3329-08d6e9f7d49d
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a652971c-7d2e-4d9b-a6a4-d149256f461b;Ip=[193.47.165.134];Helo=[mtlcas13.mtl.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0502MB4058
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 05, 2019 at 09:08:31PM +0200, Christoph Hellwig wrote:
-> This ensures all proper DMA layer handling is taken care of by the
-> SCSI midlayer.
 
-Maybe not entirely related to this series, but it looks like the SCSI
-layer is changing the device global dma_set_max_seg_size() - at least
-in RDMA the dma device is being shared between many users, so we
-really don't want SCSI to make this value smaller.
+On 6/5/2019 8:38 PM, Sagi Grimberg wrote:
+>
+>> +/**
+>> + * ib_map_mr_sg_pi() - Map the dma mapped SG lists for PI (protection
+>> + *     information) and set an appropriate memory region for 
+>> registration.
+>> + * @mr:             memory region
+>> + * @data_sg:        dma mapped scatterlist for data
+>> + * @data_sg_nents:  number of entries in data_sg
+>> + * @data_sg_offset: offset in bytes into data_sg
+>> + * @meta_sg:        dma mapped scatterlist for metadata
+>> + * @meta_sg_nents:  number of entries in meta_sg
+>> + * @meta_sg_offset: offset in bytes into meta_sg
+>> + * @page_size:      page vector desired page size
+>> + *
+>> + * Constraints:
+>> + * - The MR must be allocated with type IB_MR_TYPE_INTEGRITY.
+>> + *
+>> + * Returns the number of sg elements that were mapped to the memory 
+>> region.
+>
+> Question, is it possible that all data sges were mapped but not all
+> meta sges? Given that there is a non-trivial accounting on the relations
+> between data and meta sges maybe the return value should be
+> success/failure?
 
-Can we do something about this?
+if data_sges will be mapped but not all meta_sges then the check of 
+return value n == data_nents + meta_nents will fail.
 
-Wondering about other values too, and the interaction with the new
-combining stuff in umem.c
+I don't understand the concern here.
 
-Thanks,
-Jason
+Can you give an example ?
+
+>
+>
+> Or, if this cannot happen we need to describe why here.
+
+failures can always happen :)
+
