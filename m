@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07243362DC
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2019 19:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63275362DA
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2019 19:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbfFERjc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jun 2019 13:39:32 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:43030 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbfFERjb (ORCPT
+        id S1726280AbfFERjb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jun 2019 13:39:31 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:42559 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726512AbfFERjb (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jun 2019 13:39:31 -0400
-Received: by mail-qt1-f194.google.com with SMTP id z24so11810529qtj.10
+Received: by mail-qk1-f194.google.com with SMTP id b18so5673421qkc.9
         for <linux-rdma@vger.kernel.org>; Wed, 05 Jun 2019 10:39:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/rvf4gPfASuYg6P8OPT5Qh5P52eC6sVpg2O30l2RG3s=;
-        b=lM9pC/XcbwjHTkc5I9HE8t66i+vaEnRdFxmeYXKWxIEbiKuJaR79FmMbMemxn+CwEq
-         VzjxzQvCw6abAgNCN+ed+jtK6IE68wzdS7qSQaoYo+LsL5VBdxwtXHiwYBdobjxewoo/
-         vXCbpIgcVjZmp4hFG54rjLGKgNTpSK1HXrK0cv5D/X4/epz/7+ynmFHg3TIGY8Cp/1Nn
-         Agn8Rd6a0EIjvBuLN+ZwUmcxLoQJcvw8MbtAYZWjpjiAxrfOvTF5R6DgaZI6ZyXsJlQh
-         I/a2/M4e79mTAoLP9uzHsTh/oyZSvvwwec9wTZzEMX2f9BD3XmGRStPSMLfHQTqpzmUD
-         pnyQ==
+        bh=roOl2Usy0w6+997U+yRf4AcFZUd7SJKqSBksvliQMZs=;
+        b=lZkKE+pDR4cDFwOYlOiuId+Uw5QsOo4fhLOm2auUBYI7/uxBjkEZALTnbXPvnTBqaN
+         tvwwNh9PEm1DMTxUs8PuAfPqsdeBX0bYjxWPv38Pt00LPVHGNvb8GPRmJv9tbRTyWUXp
+         HtFY2C/KodK/Dv/TqQk8zNgZExdozIg/znN7nuqHawp0KTfVQSVffdOpXfB/sFaXaweC
+         fLS9y2sat1OkUaU3aT2XoDrSZ2QjjEAUWGrVWdXZfS9GRC/t+u9ejgN/Afsvw5J6/Y/z
+         FT6Tlm9k+0kmK/KvugN7wH+ndbMYSnhw+PMZIC1ZUINuvImAWWgQkYcMs6isZnhcSk+1
+         /ALg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/rvf4gPfASuYg6P8OPT5Qh5P52eC6sVpg2O30l2RG3s=;
-        b=rgQjX5j3COLVwb5iyHI1zECOgZ/Zwcj04GOAnrEjt8LMs9NtFLQhUckbMNociXh1YW
-         DQ2XMEu3qBM7xsx5rVam2aD4PCo8MwFtnWUtQEyWuTVZnJQTSt/gSJp8EVDGupH0OWN/
-         BZxb5u+lq2y7UmAAvyqp/ImI6QjZnDlrpgJxVQOcTw6hu7Ni5yhLofg50TZU2Uz9IZXU
-         VL9gxKVThNjLAVH94LkTyW33IdTwhfTsSBO65hIyvaY6z9o27NwNrAwoLf3VdI3dO+Rs
-         BPyuW/U5VGhEOHy+kiuvRfdKHw+WpAmz7pxazzSWn4G1/eHM6giLjLHtNaBuui7ZL2q1
-         6C5A==
-X-Gm-Message-State: APjAAAXIT3y/J71JYFXUlUCbJAUZzDQ+gOUBI7NZ3E3Wx3LDV19nSPh5
-        8HsjvDTTvE7Fo4jo8sT83fMT9FPTIP6DaA==
-X-Google-Smtp-Source: APXvYqzrzCsStpIkGG83YRLfi10PVzPO9nO8ptAvWhGfunCimUEFLZc+2EOAqA50rlfF1pRoGvz8Pw==
-X-Received: by 2002:a0c:ad85:: with SMTP id w5mr33768335qvc.242.1559756369720;
+        bh=roOl2Usy0w6+997U+yRf4AcFZUd7SJKqSBksvliQMZs=;
+        b=iQdvjbutF8y/5HEtuXJi1VtsnRVoxp/C7+xW8eHDYE9tvRDI3x/+6X7gM1yzAGi46x
+         D57lNSsnErhfVuLrUS6QnvxaYJ4f6kKOF+nQR3K3zxgJ9SUCMaz13wknOUJPRXEnqgQL
+         J8T3LAjzMfjSx1sI4hXCf6w0kQETF8I56Ruq559BM4DZ8uuy6SE3RfH2cbn2rg9oBnws
+         DiRsGK7FuRMKIYeGtzL33771ahmQtklwxIZAclYDENbrFCMzVc2XIjVHlnWa44vHbFRs
+         abKFdRKRpUlHJI9EJwuWuBfywAqbkIjxAYgfF2i8TxTMW+u7ppH6drRciFyN0SoDhm3S
+         /ARA==
+X-Gm-Message-State: APjAAAX5H+myiFIAmLsShUqrYQvbuJZFPJuq962qaRO9xeK50fu1fFNf
+        8GmelHWjeJ3ipB3Q3eZVOZHoQGLuqvQ0WA==
+X-Google-Smtp-Source: APXvYqyOJtUV3qh8DaVqJktLVRQve/VXnbBiSYiM00hd2Idt3kE3JAvo4ZyAHDNjjm5aau/CltIuaQ==
+X-Received: by 2002:a37:b7c6:: with SMTP id h189mr34192107qkf.347.1559756369431;
         Wed, 05 Jun 2019 10:39:29 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id a16sm7555249qtj.9.2019.06.05.10.39.28
+        by smtp.gmail.com with ESMTPSA id i37sm13006556qtb.31.2019.06.05.10.39.28
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Wed, 05 Jun 2019 10:39:28 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hYZsl-0004gS-O2; Wed, 05 Jun 2019 14:39:27 -0300
+        id 1hYZsl-0004gY-QI; Wed, 05 Jun 2019 14:39:27 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH 2/3] RDMA: Move uverbs_abi_ver into struct ib_device_ops
-Date:   Wed,  5 Jun 2019 14:39:25 -0300
-Message-Id: <20190605173926.16995-3-jgg@ziepe.ca>
+Subject: [PATCH 3/3] RDMA: Move owner into struct ib_device_ops
+Date:   Wed,  5 Jun 2019 14:39:26 -0300
+Message-Id: <20190605173926.16995-4-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190605173926.16995-1-jgg@ziepe.ca>
 References: <20190605173926.16995-1-jgg@ziepe.ca>
@@ -65,438 +65,440 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-No reason for every driver to emit code to set this, just make it part of
-the driver's existing static const ops structure.
+This more closely follows how other subsytems work, with owner being a
+member of the structure containing the function pointers.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- drivers/infiniband/core/device.c               |  2 ++
- drivers/infiniband/core/uverbs_main.c          |  2 +-
- drivers/infiniband/hw/bnxt_re/ib_verbs.c       |  6 +++---
- drivers/infiniband/hw/bnxt_re/main.c           |  2 +-
- drivers/infiniband/hw/cxgb3/iwch_provider.c    |  2 +-
- drivers/infiniband/hw/cxgb4/provider.c         |  2 +-
- drivers/infiniband/hw/efa/efa_main.c           |  2 +-
- drivers/infiniband/hw/hns/hns_roce_main.c      |  2 +-
- drivers/infiniband/hw/i40iw/i40iw_verbs.c      |  2 ++
- drivers/infiniband/hw/mlx4/main.c              | 15 ++++++++-------
- drivers/infiniband/hw/mlx5/main.c              |  2 +-
- drivers/infiniband/hw/mthca/mthca_provider.c   |  2 +-
- drivers/infiniband/hw/nes/nes_verbs.c          |  2 ++
- drivers/infiniband/hw/ocrdma/ocrdma_main.c     |  2 +-
- drivers/infiniband/hw/qedr/main.c              |  2 +-
- drivers/infiniband/hw/usnic/usnic_ib_main.c    |  2 +-
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c |  2 +-
- drivers/infiniband/sw/rdmavt/vt.c              |  3 ++-
- drivers/infiniband/sw/rxe/rxe_verbs.c          |  2 +-
- include/rdma/ib_verbs.h                        |  2 +-
- 20 files changed, 33 insertions(+), 25 deletions(-)
+ drivers/infiniband/core/device.c               | 4 ++++
+ drivers/infiniband/core/uverbs_main.c          | 6 +++---
+ drivers/infiniband/hw/bnxt_re/main.c           | 2 +-
+ drivers/infiniband/hw/cxgb3/iwch_provider.c    | 2 +-
+ drivers/infiniband/hw/cxgb4/provider.c         | 2 +-
+ drivers/infiniband/hw/efa/efa_main.c           | 2 +-
+ drivers/infiniband/hw/hfi1/verbs.c             | 2 +-
+ drivers/infiniband/hw/hns/hns_roce_main.c      | 2 +-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c      | 2 +-
+ drivers/infiniband/hw/mlx4/main.c              | 2 +-
+ drivers/infiniband/hw/mlx5/main.c              | 2 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c   | 3 +--
+ drivers/infiniband/hw/nes/nes_verbs.c          | 2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_main.c     | 2 +-
+ drivers/infiniband/hw/qedr/main.c              | 2 +-
+ drivers/infiniband/hw/qib/qib_verbs.c          | 2 +-
+ drivers/infiniband/hw/usnic/usnic_ib_main.c    | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c | 2 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c          | 2 +-
+ include/rdma/ib_verbs.h                        | 2 +-
+ 20 files changed, 25 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 021eb68230270e..fa5100dbb277e1 100644
+index fa5100dbb277e1..49e5ea3a530f53 100644
 --- a/drivers/infiniband/core/device.c
 +++ b/drivers/infiniband/core/device.c
-@@ -2349,6 +2349,8 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+@@ -2349,6 +2349,10 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
  			dev_ops->driver_id != ops->driver_id);
  		dev_ops->driver_id = ops->driver_id;
  	}
-+	if (ops->uverbs_abi_ver)
-+		dev_ops->uverbs_abi_ver = ops->uverbs_abi_ver;
++	if (ops->owner) {
++		WARN_ON(dev_ops->owner && dev_ops->owner != ops->owner);
++		dev_ops->owner = ops->owner;
++	}
+ 	if (ops->uverbs_abi_ver)
+ 		dev_ops->uverbs_abi_ver = ops->uverbs_abi_ver;
  
- 	SET_DEVICE_OP(dev_ops, add_gid);
- 	SET_DEVICE_OP(dev_ops, advise_mr);
 diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index 84a5e9a6d483e8..0f8a286a92d3de 100644
+index 0f8a286a92d3de..870b3dd35aac63 100644
 --- a/drivers/infiniband/core/uverbs_main.c
 +++ b/drivers/infiniband/core/uverbs_main.c
-@@ -1186,7 +1186,7 @@ static ssize_t abi_version_show(struct device *device,
- 	srcu_key = srcu_read_lock(&dev->disassociate_srcu);
- 	ib_dev = srcu_dereference(dev->ib_dev, &dev->disassociate_srcu);
- 	if (ib_dev)
--		ret = sprintf(buf, "%d\n", ib_dev->uverbs_abi_ver);
-+		ret = sprintf(buf, "%u\n", ib_dev->ops.uverbs_abi_ver);
- 	srcu_read_unlock(&dev->disassociate_srcu, srcu_key);
+@@ -198,7 +198,7 @@ void ib_uverbs_release_file(struct kref *ref)
+ 	ib_dev = srcu_dereference(file->device->ib_dev,
+ 				  &file->device->disassociate_srcu);
+ 	if (ib_dev && !ib_dev->ops.disassociate_ucontext)
+-		module_put(ib_dev->owner);
++		module_put(ib_dev->ops.owner);
+ 	srcu_read_unlock(&file->device->disassociate_srcu, srcu_key);
  
- 	return ret;
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 2c3685faa57a42..8af8e147210194 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3630,10 +3630,10 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
- 	u32 chip_met_rev_num = 0;
- 	int rc;
+ 	if (atomic_dec_and_test(&file->device->refcount))
+@@ -1065,7 +1065,7 @@ static int ib_uverbs_open(struct inode *inode, struct file *filp)
+ 	module_dependent = !(ib_dev->ops.disassociate_ucontext);
  
--	dev_dbg(rdev_to_dev(rdev), "ABI version requested %d",
--		ibdev->uverbs_abi_ver);
-+	dev_dbg(rdev_to_dev(rdev), "ABI version requested %u",
-+		ibdev->ops.uverbs_abi_ver);
+ 	if (module_dependent) {
+-		if (!try_module_get(ib_dev->owner)) {
++		if (!try_module_get(ib_dev->ops.owner)) {
+ 			ret = -ENODEV;
+ 			goto err;
+ 		}
+@@ -1100,7 +1100,7 @@ static int ib_uverbs_open(struct inode *inode, struct file *filp)
+ 	return stream_open(inode, filp);
  
--	if (ibdev->uverbs_abi_ver != BNXT_RE_ABI_VERSION) {
-+	if (ibdev->ops.uverbs_abi_ver != BNXT_RE_ABI_VERSION) {
- 		dev_dbg(rdev_to_dev(rdev), " is different from the device %d ",
- 			BNXT_RE_ABI_VERSION);
- 		return -EPERM;
+ err_module:
+-	module_put(ib_dev->owner);
++	module_put(ib_dev->ops.owner);
+ 
+ err:
+ 	mutex_unlock(&dev->lists_mutex);
 diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 1ef5f83ec914fe..a45cb9ee51abf9 100644
+index a45cb9ee51abf9..351c420248a0cc 100644
 --- a/drivers/infiniband/hw/bnxt_re/main.c
 +++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -597,6 +597,7 @@ static void bnxt_re_unregister_ib(struct bnxt_re_dev *rdev)
+@@ -596,6 +596,7 @@ static void bnxt_re_unregister_ib(struct bnxt_re_dev *rdev)
+ }
  
  static const struct ib_device_ops bnxt_re_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_BNXT_RE,
-+	.uverbs_abi_ver = BNXT_RE_ABI_VERSION,
+ 	.uverbs_abi_ver = BNXT_RE_ABI_VERSION,
  
- 	.add_gid = bnxt_re_add_gid,
- 	.alloc_hw_stats = bnxt_re_ib_alloc_hw_stats,
-@@ -663,7 +664,6 @@ static int bnxt_re_register_ib(struct bnxt_re_dev *rdev)
- 	ibdev->local_dma_lkey = BNXT_QPLIB_RSVD_LKEY;
+@@ -651,7 +652,6 @@ static int bnxt_re_register_ib(struct bnxt_re_dev *rdev)
+ 	int ret;
  
- 	/* User space */
--	ibdev->uverbs_abi_ver = BNXT_RE_ABI_VERSION;
- 	ibdev->uverbs_cmd_mask =
- 			(1ull << IB_USER_VERBS_CMD_GET_CONTEXT)		|
- 			(1ull << IB_USER_VERBS_CMD_QUERY_DEVICE)	|
+ 	/* ib device init */
+-	ibdev->owner = THIS_MODULE;
+ 	ibdev->node_type = RDMA_NODE_IB_CA;
+ 	strlcpy(ibdev->node_desc, BNXT_RE_DESC " HCA",
+ 		strlen(BNXT_RE_DESC) + 5);
 diff --git a/drivers/infiniband/hw/cxgb3/iwch_provider.c b/drivers/infiniband/hw/cxgb3/iwch_provider.c
-index 6cd103221c4a52..be3756c1f3f655 100644
+index be3756c1f3f655..6a3e2e5c3efcca 100644
 --- a/drivers/infiniband/hw/cxgb3/iwch_provider.c
 +++ b/drivers/infiniband/hw/cxgb3/iwch_provider.c
-@@ -1305,6 +1305,7 @@ static void get_dev_fw_ver_str(struct ib_device *ibdev, char *str)
+@@ -1304,6 +1304,7 @@ static void get_dev_fw_ver_str(struct ib_device *ibdev, char *str)
+ }
  
  static const struct ib_device_ops iwch_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_CXGB3,
-+	.uverbs_abi_ver = IWCH_UVERBS_ABI_VERSION,
+ 	.uverbs_abi_ver = IWCH_UVERBS_ABI_VERSION,
  
- 	.alloc_hw_stats	= iwch_alloc_stats,
- 	.alloc_mr = iwch_alloc_mr,
-@@ -1385,7 +1386,6 @@ int iwch_register_device(struct iwch_dev *dev)
- 	dev->ibdev.phys_port_cnt = dev->rdev.port_info.nports;
- 	dev->ibdev.num_comp_vectors = 1;
- 	dev->ibdev.dev.parent = &dev->rdev.rnic_info.pdev->dev;
--	dev->ibdev.uverbs_abi_ver = IWCH_UVERBS_ABI_VERSION;
- 
- 	memcpy(dev->ibdev.iw_ifname, dev->rdev.t3cdev_p->lldev->name,
- 	       sizeof(dev->ibdev.iw_ifname));
+@@ -1354,7 +1355,6 @@ int iwch_register_device(struct iwch_dev *dev)
+ 	pr_debug("%s iwch_dev %p\n", __func__, dev);
+ 	memset(&dev->ibdev.node_guid, 0, sizeof(dev->ibdev.node_guid));
+ 	memcpy(&dev->ibdev.node_guid, dev->rdev.t3cdev_p->lldev->dev_addr, 6);
+-	dev->ibdev.owner = THIS_MODULE;
+ 	dev->device_cap_flags = IB_DEVICE_LOCAL_DMA_LKEY |
+ 				IB_DEVICE_MEM_WINDOW |
+ 				IB_DEVICE_MEM_MGT_EXTENSIONS;
 diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/hw/cxgb4/provider.c
-index edd1115ee0f9ae..2968d5c58f8774 100644
+index 2968d5c58f8774..bcc3533a857fab 100644
 --- a/drivers/infiniband/hw/cxgb4/provider.c
 +++ b/drivers/infiniband/hw/cxgb4/provider.c
-@@ -491,6 +491,7 @@ static int fill_res_entry(struct sk_buff *msg, struct rdma_restrack_entry *res)
+@@ -490,6 +490,7 @@ static int fill_res_entry(struct sk_buff *msg, struct rdma_restrack_entry *res)
+ }
  
  static const struct ib_device_ops c4iw_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_CXGB4,
-+	.uverbs_abi_ver = C4IW_UVERBS_ABI_VERSION,
+ 	.uverbs_abi_ver = C4IW_UVERBS_ABI_VERSION,
  
- 	.alloc_hw_stats = c4iw_alloc_stats,
- 	.alloc_mr = c4iw_alloc_mr,
-@@ -596,7 +597,6 @@ void c4iw_register_device(struct work_struct *work)
- 	dev->ibdev.phys_port_cnt = dev->rdev.lldi.nports;
- 	dev->ibdev.num_comp_vectors =  dev->rdev.lldi.nciq;
- 	dev->ibdev.dev.parent = &dev->rdev.lldi.pdev->dev;
--	dev->ibdev.uverbs_abi_ver = C4IW_UVERBS_ABI_VERSION;
- 
- 	memcpy(dev->ibdev.iw_ifname, dev->rdev.lldi.ports[0]->name,
- 	       sizeof(dev->ibdev.iw_ifname));
+@@ -564,7 +565,6 @@ void c4iw_register_device(struct work_struct *work)
+ 	pr_debug("c4iw_dev %p\n", dev);
+ 	memset(&dev->ibdev.node_guid, 0, sizeof(dev->ibdev.node_guid));
+ 	memcpy(&dev->ibdev.node_guid, dev->rdev.lldi.ports[0]->dev_addr, 6);
+-	dev->ibdev.owner = THIS_MODULE;
+ 	dev->device_cap_flags = IB_DEVICE_LOCAL_DMA_LKEY | IB_DEVICE_MEM_WINDOW;
+ 	if (fastreg_support)
+ 		dev->device_cap_flags |= IB_DEVICE_MEM_MGT_EXTENSIONS;
 diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index 3803dd4526b508..b05c5a0b9bc0be 100644
+index b05c5a0b9bc0be..b891ee239a6755 100644
 --- a/drivers/infiniband/hw/efa/efa_main.c
 +++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -198,6 +198,7 @@ static void efa_stats_init(struct efa_dev *dev)
+@@ -197,6 +197,7 @@ static void efa_stats_init(struct efa_dev *dev)
+ }
  
  static const struct ib_device_ops efa_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_EFA,
-+	.uverbs_abi_ver = EFA_UVERBS_ABI_VERSION,
+ 	.uverbs_abi_ver = EFA_UVERBS_ABI_VERSION,
  
- 	.alloc_pd = efa_alloc_pd,
- 	.alloc_ucontext = efa_alloc_ucontext,
-@@ -266,7 +267,6 @@ static int efa_ib_device_add(struct efa_dev *dev)
+@@ -262,7 +263,6 @@ static int efa_ib_device_add(struct efa_dev *dev)
+ 	if (err)
+ 		goto err_release_doorbell_bar;
+ 
+-	dev->ibdev.owner = THIS_MODULE;
+ 	dev->ibdev.node_type = RDMA_NODE_UNSPECIFIED;
  	dev->ibdev.phys_port_cnt = 1;
  	dev->ibdev.num_comp_vectors = 1;
- 	dev->ibdev.dev.parent = &pdev->dev;
--	dev->ibdev.uverbs_abi_ver = EFA_UVERBS_ABI_VERSION;
+diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+index 563f0946516001..de6fdd6a2b7e10 100644
+--- a/drivers/infiniband/hw/hfi1/verbs.c
++++ b/drivers/infiniband/hw/hfi1/verbs.c
+@@ -1777,6 +1777,7 @@ static int get_hw_stats(struct ib_device *ibdev, struct rdma_hw_stats *stats,
+ }
  
- 	dev->ibdev.uverbs_cmd_mask =
- 		(1ull << IB_USER_VERBS_CMD_GET_CONTEXT) |
+ static const struct ib_device_ops hfi1_dev_ops = {
++	.owner = THIS_MODULE,
+ 	.driver_id = RDMA_DRIVER_HFI1,
+ 
+ 	.alloc_hw_stats = alloc_hw_stats,
+@@ -1829,7 +1830,6 @@ int hfi1_register_ib_device(struct hfi1_devdata *dd)
+ 	 */
+ 	if (!ib_hfi1_sys_image_guid)
+ 		ib_hfi1_sys_image_guid = ibdev->node_guid;
+-	ibdev->owner = THIS_MODULE;
+ 	ibdev->phys_port_cnt = dd->num_pports;
+ 	ibdev->dev.parent = &dd->pcidev->dev;
+ 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index bf7cdeb2de9788..70420193a53f93 100644
+index 70420193a53f93..58bb64560d4a88 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_main.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -424,6 +424,7 @@ static void hns_roce_unregister_device(struct hns_roce_dev *hr_dev)
+@@ -423,6 +423,7 @@ static void hns_roce_unregister_device(struct hns_roce_dev *hr_dev)
+ }
  
  static const struct ib_device_ops hns_roce_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_HNS,
-+	.uverbs_abi_ver = 1,
+ 	.uverbs_abi_ver = 1,
  
- 	.add_gid = hns_roce_add_gid,
- 	.alloc_pd = hns_roce_alloc_pd,
-@@ -498,7 +499,6 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
- 	ib_dev->phys_port_cnt		= hr_dev->caps.num_ports;
- 	ib_dev->local_dma_lkey		= hr_dev->caps.reserved_lkey;
- 	ib_dev->num_comp_vectors	= hr_dev->caps.num_comp_vectors;
--	ib_dev->uverbs_abi_ver		= 1;
- 	ib_dev->uverbs_cmd_mask		=
- 		(1ULL << IB_USER_VERBS_CMD_GET_CONTEXT) |
- 		(1ULL << IB_USER_VERBS_CMD_QUERY_DEVICE) |
+@@ -492,7 +493,6 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
+ 
+ 	ib_dev = &hr_dev->ib_dev;
+ 
+-	ib_dev->owner			= THIS_MODULE;
+ 	ib_dev->node_type		= RDMA_NODE_IB_CA;
+ 	ib_dev->dev.parent		= dev;
+ 
 diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-index 39610d91317b9e..bf1d232f94c83e 100644
+index bf1d232f94c83e..6463eec0c1a8bf 100644
 --- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
 +++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-@@ -2656,6 +2656,8 @@ static int i40iw_query_pkey(struct ib_device *ibdev,
+@@ -2655,6 +2655,7 @@ static int i40iw_query_pkey(struct ib_device *ibdev,
+ }
  
  static const struct ib_device_ops i40iw_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_I40IW,
-+	/* NOTE: Older kernels wrongly use 0 for the uverbs_abi_ver */
-+	.uverbs_abi_ver = I40IW_ABI_VER,
+ 	/* NOTE: Older kernels wrongly use 0 for the uverbs_abi_ver */
+ 	.uverbs_abi_ver = I40IW_ABI_VER,
+@@ -2716,7 +2717,6 @@ static struct i40iw_ib_device *i40iw_init_rdma_device(struct i40iw_device *iwdev
+ 		i40iw_pr_err("iwdev == NULL\n");
+ 		return NULL;
+ 	}
+-	iwibdev->ibdev.owner = THIS_MODULE;
+ 	iwdev->iwibdev = iwibdev;
+ 	iwibdev->iwdev = iwdev;
  
- 	.alloc_hw_stats = i40iw_alloc_hw_stats,
- 	.alloc_mr = i40iw_alloc_mr,
 diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index 03847e2f7835a3..1f87221acbb056 100644
+index 1f87221acbb056..5d7a87842291d5 100644
 --- a/drivers/infiniband/hw/mlx4/main.c
 +++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -1089,7 +1089,8 @@ static int mlx4_ib_alloc_ucontext(struct ib_ucontext *uctx,
- 	if (!dev->ib_active)
- 		return -EAGAIN;
- 
--	if (ibdev->uverbs_abi_ver == MLX4_IB_UVERBS_NO_DEV_CAPS_ABI_VERSION) {
-+	if (ibdev->ops.uverbs_abi_ver ==
-+	    MLX4_IB_UVERBS_NO_DEV_CAPS_ABI_VERSION) {
- 		resp_v3.qp_tab_size      = dev->dev->caps.num_qps;
- 		resp_v3.bf_reg_size      = dev->dev->caps.bf_reg_size;
- 		resp_v3.bf_regs_per_page = dev->dev->caps.bf_regs_per_page;
-@@ -1111,7 +1112,7 @@ static int mlx4_ib_alloc_ucontext(struct ib_ucontext *uctx,
- 	INIT_LIST_HEAD(&context->wqn_ranges_list);
- 	mutex_init(&context->wqn_ranges_mutex);
- 
--	if (ibdev->uverbs_abi_ver == MLX4_IB_UVERBS_NO_DEV_CAPS_ABI_VERSION)
-+	if (ibdev->ops.uverbs_abi_ver == MLX4_IB_UVERBS_NO_DEV_CAPS_ABI_VERSION)
- 		err = ib_copy_to_udata(udata, &resp_v3, sizeof(resp_v3));
- 	else
- 		err = ib_copy_to_udata(udata, &resp, sizeof(resp));
-@@ -2510,6 +2511,7 @@ static void get_fw_ver_str(struct ib_device *device, char *str)
+@@ -2510,6 +2510,7 @@ static void get_fw_ver_str(struct ib_device *device, char *str)
+ }
  
  static const struct ib_device_ops mlx4_ib_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_MLX4,
-+	.uverbs_abi_ver = MLX4_IB_UVERBS_ABI_VERSION,
+ 	.uverbs_abi_ver = MLX4_IB_UVERBS_ABI_VERSION,
  
- 	.add_gid = mlx4_ib_add_gid,
- 	.alloc_mr = mlx4_ib_alloc_mr,
-@@ -2653,11 +2655,6 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
- 	ibdev->ib_dev.num_comp_vectors	= dev->caps.num_comp_vectors;
- 	ibdev->ib_dev.dev.parent	= &dev->persist->pdev->dev;
+@@ -2646,7 +2647,6 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
+ 	ibdev->dev = dev;
+ 	ibdev->bond_next_port	= 0;
  
--	if (dev->caps.userspace_caps)
--		ibdev->ib_dev.uverbs_abi_ver = MLX4_IB_UVERBS_ABI_VERSION;
--	else
--		ibdev->ib_dev.uverbs_abi_ver = MLX4_IB_UVERBS_NO_DEV_CAPS_ABI_VERSION;
--
- 	ibdev->ib_dev.uverbs_cmd_mask	=
- 		(1ull << IB_USER_VERBS_CMD_GET_CONTEXT)		|
- 		(1ull << IB_USER_VERBS_CMD_QUERY_DEVICE)	|
-@@ -2731,6 +2728,10 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
- 		ib_set_device_ops(&ibdev->ib_dev, &mlx4_ib_dev_fs_ops);
- 	}
- 
-+	if (!dev->caps.userspace_caps)
-+		ibdev->ib_dev.ops.uverbs_abi_ver =
-+			MLX4_IB_UVERBS_NO_DEV_CAPS_ABI_VERSION;
-+
- 	mlx4_ib_alloc_eqs(dev, ibdev);
- 
- 	spin_lock_init(&iboe->lock);
+-	ibdev->ib_dev.owner		= THIS_MODULE;
+ 	ibdev->ib_dev.node_type		= RDMA_NODE_IB_CA;
+ 	ibdev->ib_dev.local_dma_lkey	= dev->caps.reserved_lkey;
+ 	ibdev->num_ports		= num_ports;
 diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index c6eecddb4285a3..8d12a55e95ec87 100644
+index 8d12a55e95ec87..e48a61d4f4466a 100644
 --- a/drivers/infiniband/hw/mlx5/main.c
 +++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -6125,6 +6125,7 @@ static void mlx5_ib_stage_flow_db_cleanup(struct mlx5_ib_dev *dev)
+@@ -6044,7 +6044,6 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
+ 	if (mlx5_use_mad_ifc(dev))
+ 		get_ext_port_caps(dev);
+ 
+-	dev->ib_dev.owner		= THIS_MODULE;
+ 	dev->ib_dev.node_type		= RDMA_NODE_IB_CA;
+ 	dev->ib_dev.local_dma_lkey	= 0 /* not supported for now */;
+ 	dev->ib_dev.phys_port_cnt	= dev->num_ports;
+@@ -6124,6 +6123,7 @@ static void mlx5_ib_stage_flow_db_cleanup(struct mlx5_ib_dev *dev)
+ }
  
  static const struct ib_device_ops mlx5_ib_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_MLX5,
-+	.uverbs_abi_ver	= MLX5_IB_UVERBS_ABI_VERSION,
+ 	.uverbs_abi_ver	= MLX5_IB_UVERBS_ABI_VERSION,
  
- 	.add_gid = mlx5_ib_add_gid,
- 	.alloc_mr = mlx5_ib_alloc_mr,
-@@ -6223,7 +6224,6 @@ static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
- 	struct mlx5_core_dev *mdev = dev->mdev;
- 	int err;
- 
--	dev->ib_dev.uverbs_abi_ver	= MLX5_IB_UVERBS_ABI_VERSION;
- 	dev->ib_dev.uverbs_cmd_mask	=
- 		(1ull << IB_USER_VERBS_CMD_GET_CONTEXT)		|
- 		(1ull << IB_USER_VERBS_CMD_QUERY_DEVICE)	|
 diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
-index d6467da39aab55..690c65accea4a9 100644
+index 690c65accea4a9..b128ff76f70966 100644
 --- a/drivers/infiniband/hw/mthca/mthca_provider.c
 +++ b/drivers/infiniband/hw/mthca/mthca_provider.c
-@@ -1154,6 +1154,7 @@ static void get_dev_fw_str(struct ib_device *device, char *str)
+@@ -1153,6 +1153,7 @@ static void get_dev_fw_str(struct ib_device *device, char *str)
+ }
  
  static const struct ib_device_ops mthca_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_MTHCA,
-+	.uverbs_abi_ver = MTHCA_UVERBS_ABI_VERSION,
+ 	.uverbs_abi_ver = MTHCA_UVERBS_ABI_VERSION,
  
- 	.alloc_pd = mthca_alloc_pd,
- 	.alloc_ucontext = mthca_alloc_ucontext,
-@@ -1247,7 +1248,6 @@ int mthca_register_device(struct mthca_dev *dev)
+@@ -1246,8 +1247,6 @@ int mthca_register_device(struct mthca_dev *dev)
+ 	if (ret)
+ 		return ret;
  
- 	dev->ib_dev.owner                = THIS_MODULE;
- 
--	dev->ib_dev.uverbs_abi_ver	 = MTHCA_UVERBS_ABI_VERSION;
+-	dev->ib_dev.owner                = THIS_MODULE;
+-
  	dev->ib_dev.uverbs_cmd_mask	 =
  		(1ull << IB_USER_VERBS_CMD_GET_CONTEXT)		|
  		(1ull << IB_USER_VERBS_CMD_QUERY_DEVICE)	|
 diff --git a/drivers/infiniband/hw/nes/nes_verbs.c b/drivers/infiniband/hw/nes/nes_verbs.c
-index fc28a0a24df075..1d9822695f8da6 100644
+index 1d9822695f8da6..f10686d320142a 100644
 --- a/drivers/infiniband/hw/nes/nes_verbs.c
 +++ b/drivers/infiniband/hw/nes/nes_verbs.c
-@@ -3561,6 +3561,8 @@ static void get_dev_fw_str(struct ib_device *dev, char *str)
+@@ -3560,6 +3560,7 @@ static void get_dev_fw_str(struct ib_device *dev, char *str)
+ }
  
  static const struct ib_device_ops nes_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_NES,
-+	/* NOTE: Older kernels wrongly use 0 for the uverbs_abi_ver */
-+	.uverbs_abi_ver = NES_ABI_USERSPACE_VER,
+ 	/* NOTE: Older kernels wrongly use 0 for the uverbs_abi_ver */
+ 	.uverbs_abi_ver = NES_ABI_USERSPACE_VER,
+@@ -3619,7 +3620,6 @@ struct nes_ib_device *nes_init_ofa_device(struct net_device *netdev)
+ 	if (nesibdev == NULL) {
+ 		return NULL;
+ 	}
+-	nesibdev->ibdev.owner = THIS_MODULE;
  
- 	.alloc_mr = nes_alloc_mr,
- 	.alloc_mw = nes_alloc_mw,
+ 	nesibdev->ibdev.node_type = RDMA_NODE_RNIC;
+ 	memset(&nesibdev->ibdev.node_guid, 0, sizeof(nesibdev->ibdev.node_guid));
 diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_main.c b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
-index a9da4b857566cc..ef823f1144b522 100644
+index ef823f1144b522..b326313d413f75 100644
 --- a/drivers/infiniband/hw/ocrdma/ocrdma_main.c
 +++ b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
-@@ -145,6 +145,7 @@ static const struct attribute_group ocrdma_attr_group = {
+@@ -144,6 +144,7 @@ static const struct attribute_group ocrdma_attr_group = {
+ };
  
  static const struct ib_device_ops ocrdma_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_OCRDMA,
-+	.uverbs_abi_ver = OCRDMA_ABI_VERSION,
+ 	.uverbs_abi_ver = OCRDMA_ABI_VERSION,
  
- 	.alloc_mr = ocrdma_alloc_mr,
- 	.alloc_pd = ocrdma_alloc_pd,
 @@ -203,7 +204,6 @@ static int ocrdma_register_device(struct ocrdma_dev *dev)
+ 	BUILD_BUG_ON(sizeof(OCRDMA_NODE_DESC) > IB_DEVICE_NODE_DESC_MAX);
  	memcpy(dev->ibdev.node_desc, OCRDMA_NODE_DESC,
  	       sizeof(OCRDMA_NODE_DESC));
- 	dev->ibdev.owner = THIS_MODULE;
--	dev->ibdev.uverbs_abi_ver = OCRDMA_ABI_VERSION;
+-	dev->ibdev.owner = THIS_MODULE;
  	dev->ibdev.uverbs_cmd_mask =
  	    OCRDMA_UVERBS(GET_CONTEXT) |
  	    OCRDMA_UVERBS(QUERY_DEVICE) |
 diff --git a/drivers/infiniband/hw/qedr/main.c b/drivers/infiniband/hw/qedr/main.c
-index 737745231f8ffe..793e25776a7e24 100644
+index 793e25776a7e24..a0bb07ba0f3c0a 100644
 --- a/drivers/infiniband/hw/qedr/main.c
 +++ b/drivers/infiniband/hw/qedr/main.c
-@@ -184,6 +184,7 @@ static void qedr_roce_register_device(struct qedr_dev *dev)
+@@ -183,6 +183,7 @@ static void qedr_roce_register_device(struct qedr_dev *dev)
+ }
  
  static const struct ib_device_ops qedr_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_QEDR,
-+	.uverbs_abi_ver = QEDR_ABI_VERSION,
+ 	.uverbs_abi_ver = QEDR_ABI_VERSION,
  
- 	.alloc_mr = qedr_alloc_mr,
- 	.alloc_pd = qedr_alloc_pd,
 @@ -234,7 +235,6 @@ static int qedr_register_device(struct qedr_dev *dev)
+ 
  	dev->ibdev.node_guid = dev->attr.node_guid;
  	memcpy(dev->ibdev.node_desc, QEDR_NODE_DESC, sizeof(QEDR_NODE_DESC));
- 	dev->ibdev.owner = THIS_MODULE;
--	dev->ibdev.uverbs_abi_ver = QEDR_ABI_VERSION;
+-	dev->ibdev.owner = THIS_MODULE;
  
  	dev->ibdev.uverbs_cmd_mask = QEDR_UVERBS(GET_CONTEXT) |
  				     QEDR_UVERBS(QUERY_DEVICE) |
+diff --git a/drivers/infiniband/hw/qib/qib_verbs.c b/drivers/infiniband/hw/qib/qib_verbs.c
+index 2e8e309f221805..33778d451b827f 100644
+--- a/drivers/infiniband/hw/qib/qib_verbs.c
++++ b/drivers/infiniband/hw/qib/qib_verbs.c
+@@ -1480,6 +1480,7 @@ static void qib_fill_device_attr(struct qib_devdata *dd)
+ }
+ 
+ static const struct ib_device_ops qib_dev_ops = {
++	.owner = THIS_MODULE,
+ 	.driver_id = RDMA_DRIVER_QIB,
+ 
+ 	.init_port = qib_create_port_files,
+@@ -1545,7 +1546,6 @@ int qib_register_ib_device(struct qib_devdata *dd)
+ 	if (!ib_qib_sys_image_guid)
+ 		ib_qib_sys_image_guid = ppd->guid;
+ 
+-	ibdev->owner = THIS_MODULE;
+ 	ibdev->node_guid = ppd->guid;
+ 	ibdev->phys_port_cnt = dd->num_pports;
+ 	ibdev->dev.parent = &dd->pcidev->dev;
 diff --git a/drivers/infiniband/hw/usnic/usnic_ib_main.c b/drivers/infiniband/hw/usnic/usnic_ib_main.c
-index 47830334cb555d..f6169081609580 100644
+index f6169081609580..e701322dc7401b 100644
 --- a/drivers/infiniband/hw/usnic/usnic_ib_main.c
 +++ b/drivers/infiniband/hw/usnic/usnic_ib_main.c
-@@ -330,6 +330,7 @@ static void usnic_get_dev_fw_str(struct ib_device *device, char *str)
+@@ -329,6 +329,7 @@ static void usnic_get_dev_fw_str(struct ib_device *device, char *str)
+ }
  
  static const struct ib_device_ops usnic_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_USNIC,
-+	.uverbs_abi_ver = USNIC_UVERBS_ABI_VERSION,
+ 	.uverbs_abi_ver = USNIC_UVERBS_ABI_VERSION,
  
- 	.alloc_pd = usnic_ib_alloc_pd,
- 	.alloc_ucontext = usnic_ib_alloc_ucontext,
-@@ -391,7 +392,6 @@ static void *usnic_ib_device_add(struct pci_dev *dev)
+@@ -387,7 +388,6 @@ static void *usnic_ib_device_add(struct pci_dev *dev)
+ 
+ 	us_ibdev->pdev = dev;
+ 	us_ibdev->netdev = pci_get_drvdata(dev);
+-	us_ibdev->ib_dev.owner = THIS_MODULE;
+ 	us_ibdev->ib_dev.node_type = RDMA_NODE_USNIC_UDP;
  	us_ibdev->ib_dev.phys_port_cnt = USNIC_IB_PORT_CNT;
  	us_ibdev->ib_dev.num_comp_vectors = USNIC_IB_NUM_COMP_VECTORS;
- 	us_ibdev->ib_dev.dev.parent = &dev->dev;
--	us_ibdev->ib_dev.uverbs_abi_ver = USNIC_UVERBS_ABI_VERSION;
- 
- 	us_ibdev->ib_dev.uverbs_cmd_mask =
- 		(1ull << IB_USER_VERBS_CMD_GET_CONTEXT) |
 diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-index 54a0b63726295f..2a7eb2838453d4 100644
+index 2a7eb2838453d4..0c48464ffff1b7 100644
 --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
 +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-@@ -145,6 +145,7 @@ static int pvrdma_port_immutable(struct ib_device *ibdev, u8 port_num,
+@@ -144,6 +144,7 @@ static int pvrdma_port_immutable(struct ib_device *ibdev, u8 port_num,
+ }
  
  static const struct ib_device_ops pvrdma_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_VMW_PVRDMA,
-+	.uverbs_abi_ver = PVRDMA_UVERBS_ABI_VERSION,
+ 	.uverbs_abi_ver = PVRDMA_UVERBS_ABI_VERSION,
  
- 	.add_gid = pvrdma_add_gid,
- 	.alloc_mr = pvrdma_alloc_mr,
-@@ -203,7 +204,6 @@ static int pvrdma_register_device(struct pvrdma_dev *dev)
- 	dev->ib_dev.owner = THIS_MODULE;
+@@ -201,7 +202,6 @@ static int pvrdma_register_device(struct pvrdma_dev *dev)
+ 	dev->ib_dev.node_guid = dev->dsr->caps.node_guid;
+ 	dev->sys_image_guid = dev->dsr->caps.sys_image_guid;
+ 	dev->flags = 0;
+-	dev->ib_dev.owner = THIS_MODULE;
  	dev->ib_dev.num_comp_vectors = 1;
  	dev->ib_dev.dev.parent = &dev->pdev->dev;
--	dev->ib_dev.uverbs_abi_ver = PVRDMA_UVERBS_ABI_VERSION;
  	dev->ib_dev.uverbs_cmd_mask =
- 		(1ull << IB_USER_VERBS_CMD_GET_CONTEXT)		|
- 		(1ull << IB_USER_VERBS_CMD_QUERY_DEVICE)	|
-diff --git a/drivers/infiniband/sw/rdmavt/vt.c b/drivers/infiniband/sw/rdmavt/vt.c
-index 60700e197e6c79..639ef8ac540070 100644
---- a/drivers/infiniband/sw/rdmavt/vt.c
-+++ b/drivers/infiniband/sw/rdmavt/vt.c
-@@ -382,6 +382,8 @@ enum {
- };
- 
- static const struct ib_device_ops rvt_dev_ops = {
-+	.uverbs_abi_ver = RVT_UVERBS_ABI_VERSION,
-+
- 	.alloc_fmr = rvt_alloc_fmr,
- 	.alloc_mr = rvt_alloc_mr,
- 	.alloc_pd = rvt_alloc_pd,
-@@ -600,7 +602,6 @@ int rvt_register_device(struct rvt_dev_info *rdi)
- 	 * exactly which functions rdmavt supports, nor do they know the ABI
- 	 * version, so we do all of this sort of stuff here.
- 	 */
--	rdi->ibdev.uverbs_abi_ver = RVT_UVERBS_ABI_VERSION;
- 	rdi->ibdev.uverbs_cmd_mask =
- 		(1ull << IB_USER_VERBS_CMD_GET_CONTEXT)         |
- 		(1ull << IB_USER_VERBS_CMD_QUERY_DEVICE)        |
 diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 3d3130dc6380bd..9e87cdb82becaa 100644
+index 9e87cdb82becaa..046129393215da 100644
 --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
 +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -1112,6 +1112,7 @@ static int rxe_enable_driver(struct ib_device *ib_dev)
+@@ -1111,6 +1111,7 @@ static int rxe_enable_driver(struct ib_device *ib_dev)
+ }
  
  static const struct ib_device_ops rxe_dev_ops = {
++	.owner = THIS_MODULE,
  	.driver_id = RDMA_DRIVER_RXE,
-+	.uverbs_abi_ver = RXE_UVERBS_ABI_VERSION,
+ 	.uverbs_abi_ver = RXE_UVERBS_ABI_VERSION,
  
- 	.alloc_hw_stats = rxe_ib_alloc_hw_stats,
- 	.alloc_mr = rxe_alloc_mr,
-@@ -1184,7 +1185,6 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
- 	dma_coerce_mask_and_coherent(&dev->dev,
- 				     dma_get_required_mask(&dev->dev));
+@@ -1173,7 +1174,6 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
  
--	dev->uverbs_abi_ver = RXE_UVERBS_ABI_VERSION;
- 	dev->uverbs_cmd_mask = BIT_ULL(IB_USER_VERBS_CMD_GET_CONTEXT)
- 	    | BIT_ULL(IB_USER_VERBS_CMD_CREATE_COMP_CHANNEL)
- 	    | BIT_ULL(IB_USER_VERBS_CMD_QUERY_DEVICE)
+ 	strlcpy(dev->node_desc, "rxe", sizeof(dev->node_desc));
+ 
+-	dev->owner = THIS_MODULE;
+ 	dev->node_type = RDMA_NODE_IB_CA;
+ 	dev->phys_port_cnt = 1;
+ 	dev->num_comp_vectors = num_possible_cpus();
 diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 49fcb42647e33d..9e0d5ec35f4192 100644
+index 9e0d5ec35f4192..cdfeeda1db7f31 100644
 --- a/include/rdma/ib_verbs.h
 +++ b/include/rdma/ib_verbs.h
-@@ -2330,6 +2330,7 @@ struct iw_cm_conn_param;
+@@ -2329,6 +2329,7 @@ struct iw_cm_conn_param;
+  * need to define the supported operations, otherwise they will be set to null.
   */
  struct ib_device_ops {
++	struct module *owner;
  	enum rdma_driver_id driver_id;
-+	u32 uverbs_abi_ver;
+ 	u32 uverbs_abi_ver;
  
- 	int (*post_send)(struct ib_qp *qp, const struct ib_send_wr *send_wr,
- 			 const struct ib_send_wr **bad_send_wr);
-@@ -2650,7 +2651,6 @@ struct ib_device {
- 	 */
- 	const struct attribute_group	*groups[3];
+@@ -2639,7 +2640,6 @@ struct ib_device {
  
--	int			     uverbs_abi_ver;
- 	u64			     uverbs_cmd_mask;
- 	u64			     uverbs_ex_cmd_mask;
+ 	int			      num_comp_vectors;
  
+-	struct module               *owner;
+ 	union {
+ 		struct device		dev;
+ 		struct ib_core_device	coredev;
 -- 
 2.21.0
 
