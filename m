@@ -2,115 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1AA374B0
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 14:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFBB374D0
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 15:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbfFFM7i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 08:59:38 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:38326 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728210AbfFFM7h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 08:59:37 -0400
-Received: by mail-qt1-f194.google.com with SMTP id l3so2471877qtj.5
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 05:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Pcms2hpiozX31D6cP+b+pcEmPCGLaGYLU1hDb/Ksv08=;
-        b=MkdX75Ny9LXeEDd7M2ULnDHXydpfH/hamtC61IJll/djUvPjzu3CL4xNMlr5cz6Q5w
-         guXxPdUF+9pLJqSbeFYaU0ImdK+8nAij30U0KPUu6/8BURnKFaQs0UmduUvDZSZvS3t9
-         KBmMub0KUG4Vu/RcFYW7BchKnUQlRyD5eB/hRcBQ502FwMXpWw81+Pu+hLi173/AjDI5
-         NP7He53xnoEtj8xoDotmmQb52tCLcvzr3zPzMDREz/bS8CoABsqvoL1RwTYigpnE7jWm
-         Us4tLj2+XhGrNSs+5OFv+xlEHIunotlG5e2WVBNFLJZ98kl/iklZykxEmFHo7iATuPWe
-         rK7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Pcms2hpiozX31D6cP+b+pcEmPCGLaGYLU1hDb/Ksv08=;
-        b=NQA4Be6Oq5fJ6iQ9Zcod4W+u1Xh/OuhCUgVgWh8TeonLb2iQN6DHC/TUGfMoZ9++u9
-         E7oppGd2A9B9d0w7YMalaqJGrDuFsNm+wPdGISu2z0XX7I7EqsYJswhvEDkLVJfM6sOm
-         +LUPKQ3MHl0prQESLZE9/+bAxwfg2+qOJhhCTreye13+N/NNzr/A1wzWshI97T6au/jS
-         Iz0Jns/NOD3zJq5h0F8VZ3sqNANMnvNzRJVyQOjunLGJZul5JnsaOUg1l8T0Wg6NIlbS
-         nOWUf+EwoFQgsHq315h3gmiHFJIpUR7UwQqZiYo2FYXlKjm7NfbS9pcO4fsjPe0VBZrh
-         UoEQ==
-X-Gm-Message-State: APjAAAVMM1cIwZm22DrHYpneh1vKUsymjnlVa01m4L/EgNpiYmI62teE
-        qX+b3/y8++Ckd0VM7/5xQJDhww==
-X-Google-Smtp-Source: APXvYqyDJboU1GnyolHbPy9u8JPHRKlv/ujxxO2lQHi1JZVZmAE4fxPsnUgZOrHcZM/zPgtxL88Vqg==
-X-Received: by 2002:ac8:7a87:: with SMTP id x7mr32060230qtr.215.1559825976661;
-        Thu, 06 Jun 2019 05:59:36 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id f67sm934787qtb.68.2019.06.06.05.59.35
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 06 Jun 2019 05:59:35 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hYrzT-00057B-B5; Thu, 06 Jun 2019 09:59:35 -0300
-Date:   Thu, 6 Jun 2019 09:59:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Sebastian Ott <sebott@linux.ibm.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Oliver Neukum <oneukum@suse.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com,
-        linux-hyperv@vger.kernel.org, linux-usb@vger.kernel.org,
-        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/13] IB/iser: set virt_boundary_mask in the scsi host
-Message-ID: <20190606125935.GA17373@ziepe.ca>
-References: <20190605190836.32354-1-hch@lst.de>
- <20190605190836.32354-9-hch@lst.de>
- <20190605202235.GC3273@ziepe.ca>
- <20190606062441.GB26745@lst.de>
+        id S1726798AbfFFNHX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 09:07:23 -0400
+Received: from mail-eopbgr60042.outbound.protection.outlook.com ([40.107.6.42]:44610
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726157AbfFFNHX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 6 Jun 2019 09:07:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IUOUOOVog7Ui4Oem5h4vQ6omdPiXnglg2OMNUs6TIjs=;
+ b=skBse3+AVFPy2lgy5EsxFR8Mz7TAbNbzaeJUpYWeot96vJj69IdjHm0Buh/HnXen3C5NduLlpmiPWa0bRZY6ZkiFD2AqwYwf4Olai/ghwVsipUQJ24P+7+PPW4C+J/DdhSmwnqxa9reYqhwtLRTj9zGgf+pAcqrYr+abf9T1DRE=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB5087.eurprd05.prod.outlook.com (20.177.52.88) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1965.12; Thu, 6 Jun 2019 13:07:18 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1965.011; Thu, 6 Jun 2019
+ 13:07:18 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Doug Ledford <dledford@redhat.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Tal Gilboa <talgi@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [pull request][for-next 0/9] Generic DIM lib for netdev and RDMA
+Thread-Topic: [pull request][for-next 0/9] Generic DIM lib for netdev and RDMA
+Thread-Index: AQHVG/XTn2LcR9xgMkG6p2oMks5Qt6aONwiAgAABdoCAAGEZgA==
+Date:   Thu, 6 Jun 2019 13:07:18 +0000
+Message-ID: <20190606130713.GC17392@mellanox.com>
+References: <20190605232348.6452-1-saeedm@mellanox.com>
+ <20190606071427.GU5261@mtr-leonro.mtl.com>
+ <898e0df0-b73c-c6d7-9cbe-084163643236@mellanox.com>
+In-Reply-To: <898e0df0-b73c-c6d7-9cbe-084163643236@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR05CA0004.namprd05.prod.outlook.com
+ (2603:10b6:208:c0::17) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0089310b-eff5-4572-e2ef-08d6ea7fe735
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR05MB5087;
+x-ms-traffictypediagnostic: VI1PR05MB5087:
+x-microsoft-antispam-prvs: <VI1PR05MB5087163F8363BB2B8FC5CC06CF170@VI1PR05MB5087.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 00603B7EEF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(376002)(396003)(366004)(39860400002)(136003)(199004)(189003)(2906002)(66066001)(6486002)(26005)(229853002)(25786009)(68736007)(6116002)(3846002)(6436002)(316002)(476003)(36756003)(102836004)(2616005)(186003)(86362001)(486006)(6512007)(6506007)(386003)(14444005)(256004)(11346002)(446003)(73956011)(99286004)(6636002)(71190400001)(66476007)(66446008)(64756008)(66556008)(14454004)(66946007)(4326008)(76176011)(478600001)(8936002)(52116002)(71200400001)(81156014)(8676002)(81166006)(7736002)(305945005)(54906003)(6246003)(37006003)(6862004)(5660300002)(1076003)(33656002)(53936002)(41533002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5087;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: KJ7QJMzgCIpyY/k+DaNDO+IOzxKEw4a9XsYja77GCaVOK0cB76AKJF+QBwSAKOOagoD+5oKdCtUUT7LqKHRCxo7aggal98ERGmsgi0xqfoxkDCDRCZoT4LAgeTCJvZh3qa7111NXHaN6K9zpcuFclDBpcG4qQOBbMdJeVkOoWwqLRhaq/U/0HMf2/V56clleEUCuybShr6Cm797dj8U5DZtzZLJ3cXf8TTUBNevLeMSt6mzFkjbSzwFXreyv1qAkiX9jzcm3CuhBZ5JOPhuCoX4uiNvTQ3kJalAMBgnoK2d4/9aQCBUa4l1x9gzaJIkW/A1T4fqYEpkmkyQEvv5tOxyMlPZeZfwi3qcOq/MmFlMsoKBoT2QZ6M2ADewWcF8pB8C5NdXXXMJybmeJ++dT0ceU1KXYS0VoEZ2DA5RI4cg=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3133F2B66F95664CBC0D308614FA41E0@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190606062441.GB26745@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0089310b-eff5-4572-e2ef-08d6ea7fe735
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2019 13:07:18.3966
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5087
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 06, 2019 at 08:24:41AM +0200, Christoph Hellwig wrote:
-> On Wed, Jun 05, 2019 at 05:22:35PM -0300, Jason Gunthorpe wrote:
-> > On Wed, Jun 05, 2019 at 09:08:31PM +0200, Christoph Hellwig wrote:
-> > > This ensures all proper DMA layer handling is taken care of by the
-> > > SCSI midlayer.
-> > 
-> > Maybe not entirely related to this series, but it looks like the SCSI
-> > layer is changing the device global dma_set_max_seg_size() - at least
-> > in RDMA the dma device is being shared between many users, so we
-> > really don't want SCSI to make this value smaller.
-> > 
-> > Can we do something about this?
-> 
-> We could do something about it as outlined in my mail - pass the
-> dma_params explicitly to the dma_map_sg call.  But that isn't really
-> suitable for a short term fix and will take a little more time.
+On Thu, Jun 06, 2019 at 10:19:41AM +0300, Max Gurtovoy wrote:
+> > > Solution:
+> > > - Common logic is declared in include/linux/dim.h and implemented in
+> > >    lib/dim/dim.c
+> > > - Net DIM (existing) logic is declared in include/linux/net_dim.h and
+> > >    implemented in lib/dim/net_dim.c, which uses the common logic from=
+ dim.h
+> > > - Any new DIM logic will be declared in "/include/linux/new_dim.h" an=
+d
+> > >     implemented in "lib/dim/new_dim.c".
+> > > - This new implementation will expose modified versions of profiles,
+> > >    dim_step() and dim_decision().
+> > >=20
+> > > Pros for this solution are:
+> > > - Zero impact on existing net_dim implementation and usage
+> > > - Relatively more code reuse (compared to two separate solutions)
+> > > - Increased extensibility
+> > >=20
+> > > Tal Gilboa (6):
+> > >        linux/dim: Move logic to dim.h
+> > >        linux/dim: Remove "net" prefix from internal DIM members
+> > >        linux/dim: Rename externally exposed macros
+> > >        linux/dim: Rename net_dim_sample() to net_dim_update_sample()
+> > >        linux/dim: Rename externally used net_dim members
+> > >        linux/dim: Move implementation to .c files
+> > >=20
+> > > Yamin Friedman (3):
+> > >        linux/dim: Add completions count to dim_sample
+> > >        linux/dim: Implement rdma_dim
+> > >        RDMA/core: Provide RDMA DIM support for ULPs
+> > Saeed,
+> >=20
+> > No, for the RDMA patches.
+> > We need to see usage of those APIs before merging.
+>=20
+> I've asked Yamin to prepare patches for NVMeoF initiator and target for
+> review, so I guess he has it on his plate (this is how he tested it..).
+>=20
+> It might cause conflict with NVMe/blk branch maintained by Sagi, Christop=
+h
+> and Jens.
 
-Sounds good to me, having every dma mapping specify its restrictions
-makes a lot more sense than a device global setting, IMHO.
+It looks like nvme could pull this series + the RDMA patches into the
+nvme tree via PR? I'm not familiar with how that tree works.
 
-In RDMA the restrictions to build a SGL, create a device queue or
-build a MR are all a little different.
-
-ie for MRs alignment of the post-IOMMU DMA address is very important
-for performance as the MR logic can only build device huge pages out
-of properly aligned DMA addresses. While for SGLs we don't care about
-this, instead SGLs usually have the 32 bit per-element length limit in
-the HW that MRs do not.
-
-> Until we've sorted that out the device paramter needs to be set to
-> the smallest value supported.
-
-smallest? largest? We've been setting it to the largest value the
-device can handle (ie 2G)
+But we need to get the patches posted right away..
 
 Jason
