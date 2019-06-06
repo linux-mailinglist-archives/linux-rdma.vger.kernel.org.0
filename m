@@ -2,234 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC72837C56
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 20:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AD537C6D
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 20:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729642AbfFFSdo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 14:33:44 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:35442 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726837AbfFFSdi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 14:33:38 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x56ISr1D110235;
-        Thu, 6 Jun 2019 18:33:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2018-07-02; bh=/4qI0pF6nyiwAnWSVs/s/VMqczMTvFbdOpCK9GVIR0A=;
- b=l2hA1WK1UjXycYzvFUbMXipUuZWuCnItvJhkHr1Tza7gFlZqhWTvfOYaf+HaD8s9eOo/
- T1QyulkZdUKF7dQysBJxc6LNasgtYyjK4e0XJUGkz9W8v8vCReULiHsi5ZCebZS6txxX
- cFyW5OU44Xz2LjiMDcDK7Fg+KCwoslb99eN9oUd7hOmHviAiWz+askiXeifxxUUU0p+U
- V6rpgGAGxS/i1LW+cZpbkyKrnpT1UxZ7u2dkpYtgO5WLK77ObEvz15xqocq6Jj1+Rmuu
- RwHOHlKBFxRMYa++GGh1NHILHhZxfC/2OMghINm+wRJBGXnjXnWXhVKay+XehoKfmrmd qA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2sugstt7yj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Jun 2019 18:33:32 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x56IX8tq070550;
-        Thu, 6 Jun 2019 18:33:32 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2swngmnv9s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Jun 2019 18:33:32 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x56IXVl3001830;
-        Thu, 6 Jun 2019 18:33:31 GMT
-Received: from anon-dhcp-171.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Jun 2019 11:33:31 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH RFC] svcrdma: Ignore source port when computing DRC hash
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <CAN-5tyEUHrDkj7MKfYeN5LsFwZEtaLsHYMX20UQMShHtQa-QsA@mail.gmail.com>
-Date:   Thu, 6 Jun 2019 14:33:30 -0400
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <52A2AF4C-1858-486E-8A9B-94392E7E18BD@oracle.com>
-References: <20190605121518.2150.26479.stgit@klimt.1015granger.net>
- <CAN-5tyH5r_cq9qYF3E2BaNK1Xr0RLsxQFCOGQqXhGb8Rk2xMXw@mail.gmail.com>
- <DD7B8184-4124-4307-BD7F-98F6231361DF@oracle.com>
- <CAN-5tyEUHrDkj7MKfYeN5LsFwZEtaLsHYMX20UQMShHtQa-QsA@mail.gmail.com>
-To:     Olga Kornievskaia <aglo@umich.edu>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9280 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906060125
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9280 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906060124
+        id S1726923AbfFFSor (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 14:44:47 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33089 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbfFFSor (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 14:44:47 -0400
+Received: by mail-qt1-f196.google.com with SMTP id 14so3944853qtf.0
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 11:44:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tcl38YCYPEHxtG59vS1/laf3LqY602AZ9Gwml32ANEI=;
+        b=hlrXri4CeEqiio7H/zfky6NMR7c65pBi/F8pbkmeJr2seEsfBd9qQbAyoCdHKPCuAC
+         qOjGVsCwywsrQAs8F8f7bXbvI4mxQXMaLzXfL+nD0jx3Re+FpvedlkosN9s82eEcILOF
+         jjkWSF5MrKwcYO1kxfxzkGpH5jfkehCo7dr1F9ZVwxWOtEG3YD724vwOMu83c6AsplFV
+         wapKpAfXNKW3ibR5Yp3tsVpjC565fxndhwuL+Aw71vwHim7yGiO0p7XecLABBh9kjhYa
+         RBziZbveeMFL4Dvyn731jLuoNH1SB7mJwtOsx5v/oKmqUFczBchHp49QeSTBXmd1v1Dv
+         415Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tcl38YCYPEHxtG59vS1/laf3LqY602AZ9Gwml32ANEI=;
+        b=s3SUhDt2xKOeAOqv2a4p33WHi6zjk2W3X4iXI1AYMlcgwk/UuETcaV+X0owAhXL9HV
+         6EsO1dIN6OaLzhmtUDM8LDZkYSNfOJs5hqzKKxgkfIOhCd7GJejxyAuMwY4iSEhLYQ7a
+         ZkY1EiVP3Fcii+RF7Ghh78u1HcY6oeBjPls1/KQdptZ5AuFUIci8M8YGw7+q4cEO5Wiu
+         HGe0XMl9Ztiz4sp4WXI0isnqnxnwHb0larJf+q4ipBd4iZbkZdAHo7bwoWAGxcgawRrd
+         1risIRRZrv5UkXZqBAZnasDHnCmtFBxgtn0THYaV8nOYgXvFlvvSSinB0+aZ6MGIAYXN
+         rsZQ==
+X-Gm-Message-State: APjAAAVT9PCbLgswA6Ay9LM/Dq6NrnA/yw4OMduk6ECK2PVobWMDhww3
+        BitS+adC4F1Jxk18pbtDOfWC7A==
+X-Google-Smtp-Source: APXvYqwHsJyTk4fQz5PZYwBgzdqZtwH6jrE0uJFj5aHZhZ7tQwHTh6bgGfHk1coLRSMVlHO0bDCdZQ==
+X-Received: by 2002:ac8:1a39:: with SMTP id v54mr42610485qtj.21.1559846686346;
+        Thu, 06 Jun 2019 11:44:46 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id c184sm1290839qkf.82.2019.06.06.11.44.45
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Jun 2019 11:44:45 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hYxNV-0008Hz-CZ; Thu, 06 Jun 2019 15:44:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com
+Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH v2 hmm 00/11] Various revisions from a locking/code review
+Date:   Thu,  6 Jun 2019 15:44:27 -0300
+Message-Id: <20190606184438.31646-1-jgg@ziepe.ca>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Jason Gunthorpe <jgg@mellanox.com>
 
+For hmm.git:
 
-> On Jun 6, 2019, at 2:13 PM, Olga Kornievskaia <aglo@umich.edu> wrote:
->=20
-> On Wed, Jun 5, 2019 at 1:28 PM Chuck Lever <chuck.lever@oracle.com> =
-wrote:
->>=20
->>=20
->>=20
->>> On Jun 5, 2019, at 11:57 AM, Olga Kornievskaia <aglo@umich.edu> =
-wrote:
->>>=20
->>> On Wed, Jun 5, 2019 at 8:15 AM Chuck Lever <chuck.lever@oracle.com> =
-wrote:
->>>>=20
->>>> The DRC is not working at all after an RPC/RDMA transport =
-reconnect.
->>>> The problem is that the new connection uses a different source =
-port,
->>>> which defeats DRC hash.
->>>>=20
->>>> An NFS/RDMA client's source port is meaningless for RDMA =
-transports.
->>>> The transport layer typically sets the source port value on the
->>>> connection to a random ephemeral port. The server already ignores =
-it
->>>> for the "secure port" check. See commit 16e4d93f6de7 ("NFSD: Ignore
->>>> client's source port on RDMA transports").
->>>>=20
->>>> I'm not sure why I never noticed this before.
->>>=20
->>> Hi Chuck,
->>>=20
->>> I have a question: is the reason for choosing this fix as oppose to
->>> fixing the client because it's server's responsibility to design a =
-DRC
->>> differently for the NFSoRDMA?
->>=20
->> The server DRC implementation is not specified in any standard.
->> The server implementation can use whatever works the best. The
->> current Linux DRC implementation is useless for NFS/RDMA, because
->> the clients have to disconnect before they send retransmissions.
->>=20
->> If someone knows a way that a client side RDMA consumer can specify
->> the source port that is presented to a server, then we can make
->> that change too.
->=20
-> Ok I see you point about this being difficult on the client. Various
-> implementations take different approaches even on RoCE itself:
-> 1. software RoCE does
->        /* pick a source UDP port number for this QP based on
->         * the source QPN. this spreads traffic for different QPs
->         * across different NIC RX queues (while using a single
->         * flow for a given QP to maintain packet order).
->         * the port number must be in the Dynamic Ports range
->         * (0xc000 - 0xffff).
->         */
->        qp->src_port =3D RXE_ROCE_V2_SPORT +
->                (hash_32_generic(qp_num(qp), 14) & 0x3fff);
->=20
-> When I allow the connection to be re-established I can confirm that a
-> new UDP source port is gotten).
->=20
-> 2. bnxt_re (broadband net extreme) seems to always use the same source =
-port:
-> qp->qp1_hdr.udp.sport =3D htons(0x8CD1);
->=20
-> 3. mlx4 seems to always use the same source port:
-> sqp->ud_header.udp.sport =3D htons(MLX4_ROCEV2_QP1_SPORT);
->=20
-> 4. mlx5 also seems to be pick the same port:
-> return cpu_to_be16(MLX5_CAP_ROCE(dev->mdev, r_roce_min_src_udp_port));
->=20
-> I have a CX5 card and I see that the source port is always 49513. So
-> if you use Mellanox cards or this other card, DNC implementations are
-> safe?
+This patch series arised out of discussions with Jerome when looking at the
+ODP changes, particularly informed by use after free races we have already
+found and fixed in the ODP code (thanks to syzkaller) working with mmu
+notifiers, and the discussion with Ralph on how to resolve the lifetime model.
 
-Thanks for looking into this.
+Overall this brings in a simplified locking scheme and easy to explain
+lifetime model:
 
-Not sure that's the same source port that is visible to the
-NFS server's transport accept logic. That's the one that
-matters to the DRC. Certainly IB fabrics wouldn't have an IP
-source port like this.
+ If a hmm_range is valid, then the hmm is valid, if a hmm is valid then the mm
+ is allocated memory.
 
-For RoCE (and perhaps iWARP) that port number would be the
-same for all transports from the client. Still not useful
-for adding entropy to a DRC entry hash.
+ If the mm needs to still be alive (ie to lock the mmap_sem, find a vma, etc)
+ then the mmget must be obtained via mmget_not_zero().
 
-@@ -211,9 +211,14 @@ static void handle_connect_req(struct rdma_cm_id =
-*new_cma_id,
-        /* Save client advertised inbound read limit for use later in =
-accept. */
-        newxprt->sc_ord =3D param->initiator_depth;
-=20
-        /* Set the local and remote addresses in the transport */
-        sa =3D (struct sockaddr =
-*)&newxprt->sc_cm_id->route.addr.dst_addr;
+Locking of mm->hmm is shifted to use the mmap_sem consistently for all
+read/write and unlocked accesses are removed.
 
-Can you add a printk to your server to show the port value
-in cm_id->route.addr.dst_addr?
+The use unlocked reads on 'hmm->dead' are also eliminated in favour of using
+standard mmget() locking to prevent the mm from being released. Many of the
+debugging checks of !range->hmm and !hmm->mm are dropped in favour of poison -
+which is much clearer as to the lifetime intent.
 
+The trailing patches are just some random cleanups I noticed when reviewing
+this code.
 
-> I also see that there is nothing in the verbs API thru which we
-> interact with the RDMA drivers will allow us to set the port.
+This v2 incorporates alot of the good off list changes & feedback Jerome had,
+and all the on-list comments too. However, now that we have the shared git I
+have kept the one line change to nouveau_svm.c rather than the compat
+funtions.
 
-I suspect this would be part of the RDMA Connection Manager
-interface, not part of the RDMA driver code.
+I believe we can resolve this merge in the DRM tree now and keep the core
+mm/hmm.c clean. DRM maintainers, please correct me if I'm wrong.
 
+It is on top of hmm.git, and I have a git tree of this series to ease testing
+here:
 
-> Unless
-> we can ask the linux implementation to augment some structures to
-> allow us to set and query that port or is that unreasonable because
-> it's not in the standard API.
->=20
->>=20
->>=20
->>>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
->>>> Cc: stable@vger.kernel.org
->>>> ---
->>>> net/sunrpc/xprtrdma/svc_rdma_transport.c |    7 ++++++-
->>>> 1 file changed, 6 insertions(+), 1 deletion(-)
->>>>=20
->>>> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c =
-b/net/sunrpc/xprtrdma/svc_rdma_transport.c
->>>> index 027a3b0..1b3700b 100644
->>>> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
->>>> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
->>>> @@ -211,9 +211,14 @@ static void handle_connect_req(struct =
-rdma_cm_id *new_cma_id,
->>>>       /* Save client advertised inbound read limit for use later in =
-accept. */
->>>>       newxprt->sc_ord =3D param->initiator_depth;
->>>>=20
->>>> -       /* Set the local and remote addresses in the transport */
->>>>       sa =3D (struct sockaddr =
-*)&newxprt->sc_cm_id->route.addr.dst_addr;
->>>>       svc_xprt_set_remote(&newxprt->sc_xprt, sa, svc_addr_len(sa));
->>>> +       /* The remote port is arbitrary and not under the control =
-of the
->>>> +        * ULP. Set it to a fixed value so that the DRC continues =
-to work
->>>> +        * after a reconnect.
->>>> +        */
->>>> +       rpc_set_port((struct sockaddr =
-*)&newxprt->sc_xprt.xpt_remote, 0);
->>>> +
->>>>       sa =3D (struct sockaddr =
-*)&newxprt->sc_cm_id->route.addr.src_addr;
->>>>       svc_xprt_set_local(&newxprt->sc_xprt, sa, svc_addr_len(sa));
->>>>=20
->>>>=20
->>=20
->> --
->> Chuck Lever
+https://github.com/jgunthorpe/linux/tree/hmm
 
---
-Chuck Lever
+There are still some open locking issues, as I think this remains unaddressed:
 
+https://lore.kernel.org/linux-mm/20190527195829.GB18019@mellanox.com/
 
+I'm looking for some more acks, reviews and tests so this can move ahead to
+hmm.git.
 
+Detailed notes on the v2 changes are in each patch. The big changes:
+ - mmget is held so long as the range is registered
+ - the last patch 'Remove confusing comment and logic from hmm_release' is new
+
+Thanks everyone,
+Jason
+
+Jason Gunthorpe (11):
+  mm/hmm: fix use after free with struct hmm in the mmu notifiers
+  mm/hmm: Use hmm_mirror not mm as an argument for hmm_range_register
+  mm/hmm: Hold a mmgrab from hmm to mm
+  mm/hmm: Simplify hmm_get_or_create and make it reliable
+  mm/hmm: Remove duplicate condition test before wait_event_timeout
+  mm/hmm: Hold on to the mmget for the lifetime of the range
+  mm/hmm: Use lockdep instead of comments
+  mm/hmm: Remove racy protection against double-unregistration
+  mm/hmm: Poison hmm_range during unregister
+  mm/hmm: Do not use list*_rcu() for hmm->ranges
+  mm/hmm: Remove confusing comment and logic from hmm_release
+
+ drivers/gpu/drm/nouveau/nouveau_svm.c |   2 +-
+ include/linux/hmm.h                   |  49 +------
+ kernel/fork.c                         |   1 -
+ mm/hmm.c                              | 204 ++++++++++----------------
+ 4 files changed, 87 insertions(+), 169 deletions(-)
+
+-- 
+2.21.0
