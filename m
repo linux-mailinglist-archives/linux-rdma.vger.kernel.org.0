@@ -2,138 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDBC36D8B
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 09:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDD836DD3
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 09:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbfFFHnh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 03:43:37 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:42848 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbfFFHng (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 03:43:36 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x567cR4L172223
-        for <linux-rdma@vger.kernel.org>; Thu, 6 Jun 2019 07:43:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=Ompnr7uDAyI7oD2G+wA5L5iWSPcHjYrrQHjiGbk2dwE=;
- b=SNQ6MwrwnGIqsXFd8XjDyan3BvoDYW3YAZ/IJ0i9iuWn3MPl7Joo+7IKXbfZL6fIyZmX
- sEXS80NC5lm8rT92xQNU32G8GmijUe6uTEeJ5AJvbXf3n+OmiM+MvTk/TkKACQuzshTa
- wkH7b1U1QTUBp+9rbrHSOvc/INAJI2Br9sZVO7FnOlIYCctp72l8UZUhDfzc8A2s1H/k
- fRrUzqr1e7uM0Ok441k6O3MMcYbCqfFBeFy3GvYopTaV+654zl/96h7PNbSBkPm9EoAl
- gchUOZV7dEzllByFTb7cke/xUtCZGdrIXCOMdm3GvW2PxprLJJco47SRa54TWqT12FLs 7g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 2suevdq1xb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 07:43:35 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x567gbnQ111575
-        for <linux-rdma@vger.kernel.org>; Thu, 6 Jun 2019 07:43:34 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2swnham801-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 07:43:34 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x567hXmG027889
-        for <linux-rdma@vger.kernel.org>; Thu, 6 Jun 2019 07:43:33 GMT
-Received: from [10.182.69.170] (/10.182.69.170)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Jun 2019 00:43:32 -0700
-Subject: Re: cma::addr_handler
-To:     =?UTF-8?Q?H=c3=a5kon_Bugge?= <haakon.bugge@oracle.com>
-Cc:     OFED mailing list <linux-rdma@vger.kernel.org>
-References: <3B7DEF8D-966E-4C75-9A6D-A55A7B323A4F@oracle.com>
- <200e4a4b-1151-bcb1-08a8-55e21a393e9c@oracle.com>
- <3D94AAFD-3023-4721-94F3-B2937F14A4E5@oracle.com>
-From:   Yanjun Zhu <yanjun.zhu@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <17744e0d-9a0a-e533-0d34-0347f91ce443@oracle.com>
-Date:   Thu, 6 Jun 2019 15:43:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726777AbfFFHxg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 03:53:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbfFFHxf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 6 Jun 2019 03:53:35 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB8B220866;
+        Thu,  6 Jun 2019 07:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559807614;
+        bh=2fvCUpnAwuedIO39GLzQOmNGpCsFXtR857PReVMe/OM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WZ5Q5xB0OkTIONuwVnkaxebnVOsvgH0CW0W36YfqhkWUVFS2cxTrZZeaIldbN4yGH
+         RW8hVWRYETYtNPfKH+Wlge3DqGdXZP8mMAVRhCRl3Re3naaAdV3eUgaCUqGVuNybp6
+         xAMr8c8y9W1oy3dwcSUI9bJvbtknCM7SPOFExgEQ=
+Date:   Thu, 6 Jun 2019 10:53:31 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Max Gurtovoy <maxg@mellanox.com>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Tal Gilboa <talgi@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [pull request][for-next 0/9] Generic DIM lib for netdev and RDMA
+Message-ID: <20190606075331.GW5261@mtr-leonro.mtl.com>
+References: <20190605232348.6452-1-saeedm@mellanox.com>
+ <20190606071427.GU5261@mtr-leonro.mtl.com>
+ <898e0df0-b73c-c6d7-9cbe-084163643236@mellanox.com>
 MIME-Version: 1.0
-In-Reply-To: <3D94AAFD-3023-4721-94F3-B2937F14A4E5@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9279 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=975
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906060056
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9279 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906060055
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <898e0df0-b73c-c6d7-9cbe-084163643236@mellanox.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 2019/6/6 15:14, Håkon Bugge wrote:
+On Thu, Jun 06, 2019 at 10:19:41AM +0300, Max Gurtovoy wrote:
 >
->> On 6 Jun 2019, at 08:24, Yanjun Zhu <yanjun.zhu@oracle.com> wrote:
->>
->> How to handle "status = 0 && id_priv->cma_dev !=NULL"?
->>
->> "if (!status && !id_priv->cma_dev)"  is false.
->>
->> "} else if (status) {" is also false.
-> Exactly, we do not want to print an error message (status != 0) when there is no error (status == 0).
+> On 6/6/2019 10:14 AM, Leon Romanovsky wrote:
+> > On Wed, Jun 05, 2019 at 11:24:31PM +0000, Saeed Mahameed wrote:
+> > > Hi Dave, Doug & Jason
+> > >
+> > > This series improves DIM - Dynamically-tuned Interrupt
+> > > Moderation- to be generic for netdev and RDMA use-cases.
+> > >
+> > >  From Tal and Yamin:
+> > > The first 7 patches provide the necessary refactoring to current net_dim
+> > > library which affect some net drivers who are using the API.
+> > >
+> > > The last 2 patches provide the RDMA implementation for DIM.
+> > >
+> > > For more information please see tag log below.
+> > >
+> > > Once we are all happy with the series, please pull to net-next and
+> > > rdma-next trees.
+> > >
+> > > Thanks,
+> > > Saeed.
+> > >
+> > > ---
+> > > The following changes since commit cd6c84d8f0cdc911df435bb075ba22ce3c605b07:
+> > >
+> > >    Linux 5.2-rc2 (2019-05-26 16:49:19 -0700)
+> > >
+> > > are available in the Git repository at:
+> > >
+> > >    git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux.git tags/dim-updates-2019-06-05
+> > >
+> > > for you to fetch changes up to 1ec9974e75e7a58bff1ab17c4fcda17b180ed3bb:
+> > >
+> > >    RDMA/core: Provide RDMA DIM support for ULPs (2019-06-05 16:09:02 -0700)
+> > >
+> > > ----------------------------------------------------------------
+> > > dim-updates-2019-06-05
+> > >
+> > > From: Tal Gilboa
+> > >
+> > > Implement net DIM over a generic DIM library
+> > >
+> > > net_dim.h lib exposes an implementation of the DIM algorithm for
+> > > dynamically-tuned interrupt moderation for networking interfaces.
+> > >
+> > > We want a similar functionality for other protocols, which might need to
+> > > optimize interrupts differently. Main motivation here is DIM for NVMf
+> > > storage protocol.
+> > >
+> > > Current DIM implementation prioritizes reducing interrupt overhead over
+> > > latency. Also, in order to reduce DIM's own overhead, the algorithm might
+> > > take some time to identify it needs to change profiles. While this is
+> > > acceptable for networking, it might not work well on other scenarios.
+> > >
+> > > Here I propose a new structure to DIM. The idea is to allow a slightly
+> > > modified functionality without the risk of breaking Net DIM behavior for
+> > > netdev. I verified there are no degradations in current DIM behavior with
+> > > the modified solution.
+> > >
+> > > Solution:
+> > > - Common logic is declared in include/linux/dim.h and implemented in
+> > >    lib/dim/dim.c
+> > > - Net DIM (existing) logic is declared in include/linux/net_dim.h and
+> > >    implemented in lib/dim/net_dim.c, which uses the common logic from dim.h
+> > > - Any new DIM logic will be declared in "/include/linux/new_dim.h" and
+> > >     implemented in "lib/dim/new_dim.c".
+> > > - This new implementation will expose modified versions of profiles,
+> > >    dim_step() and dim_decision().
+> > >
+> > > Pros for this solution are:
+> > > - Zero impact on existing net_dim implementation and usage
+> > > - Relatively more code reuse (compared to two separate solutions)
+> > > - Increased extensibility
+> > >
+> > > ----------------------------------------------------------------
+> > > Tal Gilboa (6):
+> > >        linux/dim: Move logic to dim.h
+> > >        linux/dim: Remove "net" prefix from internal DIM members
+> > >        linux/dim: Rename externally exposed macros
+> > >        linux/dim: Rename net_dim_sample() to net_dim_update_sample()
+> > >        linux/dim: Rename externally used net_dim members
+> > >        linux/dim: Move implementation to .c files
+> > >
+> > > Yamin Friedman (3):
+> > >        linux/dim: Add completions count to dim_sample
+> > >        linux/dim: Implement rdma_dim
+> > >        RDMA/core: Provide RDMA DIM support for ULPs
+> > Saeed,
+> >
+> > No, for the RDMA patches.
+> > We need to see usage of those APIs before merging.
+>
+> I've asked Yamin to prepare patches for NVMeoF initiator and target for
+> review, so I guess he has it on his plate (this is how he tested it..).
+>
+> It might cause conflict with NVMe/blk branch maintained by Sagi, Christoph
+> and Jens.
+>
+> So we need a plan here.
 
-status  cma_dev
+We are on top of it and will handle.
 
-0          NULL                           "if (!status && 
-!id_priv->cma_dev)" is true
-
-0          !NULL                          No print
-
-!0         NULL                           "} else if (status) {" is true
-
-!0         !NULL                          "} else if (status) {" is true
-
-I think your change is good.:-(
-
-Zhu Yanjun
+Thanks
 
 >
-> Thxs, Håkon
 >
->> Zhu Yanjun
->>
->> On 2019/6/5 21:40, Håkon Bugge wrote:
->>> Said function contains:
-
->>>
->>> 	if (!status && !id_priv->cma_dev) {
->>> 		status = cma_acquire_dev_by_src_ip(id_priv);
->>> 		if (status)
->>> 			pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to acquire device. status %d\n",
->>> 					     status);
->>> 	} else {
->>> 		pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to resolve IP. status %d\n", status);
->>> 	}
->>>
->>> Now, assuming status == 0 and the device already has been acquired (id_priv->cma_dev != NULL), we get the "error" message:
->>>
->>> RDMA CM: ADDR_ERROR: failed to resolve IP. status 0
->>>
->>> Probably not intentional.
->>>
->>> So, would we agree to have:
->>>
->>> 	} else if (status) {
->>> 		pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to resolve IP. status %d\n", status);
->>> 	}
->>>
->>>
->>> instead?
->>>
->>>
->>> Thxs, Håkon
->>>
->>>
+> >
+> > Thanks
