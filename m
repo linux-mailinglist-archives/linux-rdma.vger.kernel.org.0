@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 036D937223
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 12:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560B937220
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 12:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727198AbfFFKyE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 06:54:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54680 "EHLO mail.kernel.org"
+        id S1726757AbfFFKxy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 06:53:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726818AbfFFKyE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 6 Jun 2019 06:54:04 -0400
+        id S1726818AbfFFKxy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 6 Jun 2019 06:53:54 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1268E20868;
-        Thu,  6 Jun 2019 10:54:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E677020874;
+        Thu,  6 Jun 2019 10:53:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559818443;
-        bh=NN/5pnVJ+KuM9ruaU6IAJzN1bcF3ummm70hig0qptxM=;
+        s=default; t=1559818433;
+        bh=n9BMUBUX6Ju4MFJ2VNZ3BI2YDTkGbK8TqHr9KIbrpNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fJSAUlwYemQ+BSvfqdGQvucLSJy1jnN2+yXhnj2xXWWqOgvZJe+j+kyhTgtplRUeH
-         GsojCsN6/+DacGo4l0TQJa34ZrDJo53W16VD4hCcfhlH0+AX1E5fieSEtcX1CnJD6a
-         067Hw9eyAMJq4CpfeaX20NaSnqR8JVSRnnL02vDI=
+        b=yYUowJMjDkqAvOBumvmDlv7ZhdGOypUIvf/4QDi4zWmruyffASwTNhUANpxiYuaxV
+         y1go5apuHjwwJQ8QUxaf+tBMgvLqTdhvQ0DSBkwcnyswGTj4EqsU9WsBgF7m402aAA
+         o+ZavCx4NdQpNDqyyGEll7UqvGI3IxqKCQBupk4k=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -31,9 +31,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Majd Dibbiny <majd@mellanox.com>,
         Mark Zhang <markz@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH rdma-next v3 01/17] net/mlx5: Add rts2rts_qp_counters_set_id field in hca cap
-Date:   Thu,  6 Jun 2019 13:53:29 +0300
-Message-Id: <20190606105345.8546-2-leon@kernel.org>
+Subject: [PATCH rdma-next v3 02/17] RDMA/restrack: Introduce statistic counter
+Date:   Thu,  6 Jun 2019 13:53:30 +0300
+Message-Id: <20190606105345.8546-3-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190606105345.8546-1-leon@kernel.org>
 References: <20190606105345.8546-1-leon@kernel.org>
@@ -46,31 +46,127 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Mark Zhang <markz@mellanox.com>
 
-Add rts2rts_qp_counters_set_id field in hca cap so that RTS2RTS
-qp modification can be used to change the counter of a QP.
+Introduce statistic counter as a new resource. It allows a user
+to monitor specific objects (e.g., QPs) by binding to a counter.
+
+In some cases a user counter resource is created with task other then
+"current", because its creation is done as part of rdmatool call.
 
 Signed-off-by: Mark Zhang <markz@mellanox.com>
 Reviewed-by: Majd Dibbiny <majd@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- include/linux/mlx5/mlx5_ifc.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/restrack.c | 22 +++++++++++++++++-----
+ include/rdma/rdma_counter.h        | 18 ++++++++++++++++++
+ include/rdma/restrack.h            |  4 ++++
+ 3 files changed, 39 insertions(+), 5 deletions(-)
+ create mode 100644 include/rdma/rdma_counter.h
 
-diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index 5e74305e2e57..9c9979cf0fd5 100644
---- a/include/linux/mlx5/mlx5_ifc.h
-+++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -1023,7 +1023,9 @@ struct mlx5_ifc_cmd_hca_cap_bits {
- 	u8         cc_modify_allowed[0x1];
- 	u8         start_pad[0x1];
- 	u8         cache_line_128byte[0x1];
--	u8         reserved_at_165[0xa];
-+	u8         reserved_at_165[0x4];
-+	u8         rts2rts_qp_counters_set_id[0x1];
-+	u8         reserved_at_16a[0x5];
- 	u8         qcam_reg[0x1];
- 	u8         gid_table_size[0x10];
-
---
+diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
+index 3b5ff2f7b5f8..95573f292aae 100644
+--- a/drivers/infiniband/core/restrack.c
++++ b/drivers/infiniband/core/restrack.c
+@@ -6,6 +6,7 @@
+ #include <rdma/rdma_cm.h>
+ #include <rdma/ib_verbs.h>
+ #include <rdma/restrack.h>
++#include <rdma/rdma_counter.h>
+ #include <linux/mutex.h>
+ #include <linux/sched/task.h>
+ #include <linux/pid_namespace.h>
+@@ -45,6 +46,7 @@ static const char *type2str(enum rdma_restrack_type type)
+ 		[RDMA_RESTRACK_CM_ID] = "CM_ID",
+ 		[RDMA_RESTRACK_MR] = "MR",
+ 		[RDMA_RESTRACK_CTX] = "CTX",
++		[RDMA_RESTRACK_COUNTER] = "COUNTER",
+ 	};
+ 
+ 	return names[type];
+@@ -169,6 +171,8 @@ static struct ib_device *res_to_dev(struct rdma_restrack_entry *res)
+ 		return container_of(res, struct ib_mr, res)->device;
+ 	case RDMA_RESTRACK_CTX:
+ 		return container_of(res, struct ib_ucontext, res)->device;
++	case RDMA_RESTRACK_COUNTER:
++		return container_of(res, struct rdma_counter, res)->device;
+ 	default:
+ 		WARN_ONCE(true, "Wrong resource tracking type %u\n", res->type);
+ 		return NULL;
+@@ -203,15 +207,22 @@ static void rdma_restrack_add(struct rdma_restrack_entry *res)
+ 
+ 	kref_init(&res->kref);
+ 	init_completion(&res->comp);
+-	if (res->type != RDMA_RESTRACK_QP)
+-		ret = xa_alloc_cyclic(&rt->xa, &res->id, res, xa_limit_32b,
+-				&rt->next_id, GFP_KERNEL);
+-	else {
++	if (res->type == RDMA_RESTRACK_QP) {
+ 		/* Special case to ensure that LQPN points to right QP */
+ 		struct ib_qp *qp = container_of(res, struct ib_qp, res);
+ 
+ 		ret = xa_insert(&rt->xa, qp->qp_num, res, GFP_KERNEL);
+ 		res->id = ret ? 0 : qp->qp_num;
++	} else if (res->type == RDMA_RESTRACK_COUNTER) {
++		/* Special case to ensure that cntn points to right counter */
++		struct rdma_counter *counter;
++
++		counter = container_of(res, struct rdma_counter, res);
++		ret = xa_insert(&rt->xa, counter->id, res, GFP_KERNEL);
++		res->id = ret ? 0 : counter->id;
++	} else {
++		ret = xa_alloc_cyclic(&rt->xa, &res->id, res, xa_limit_32b,
++				      &rt->next_id, GFP_KERNEL);
+ 	}
+ 
+ 	if (!ret)
+@@ -237,7 +248,8 @@ EXPORT_SYMBOL(rdma_restrack_kadd);
+  */
+ void rdma_restrack_uadd(struct rdma_restrack_entry *res)
+ {
+-	if (res->type != RDMA_RESTRACK_CM_ID)
++	if ((res->type != RDMA_RESTRACK_CM_ID) &&
++	    (res->type != RDMA_RESTRACK_COUNTER))
+ 		res->task = NULL;
+ 
+ 	if (!res->task)
+diff --git a/include/rdma/rdma_counter.h b/include/rdma/rdma_counter.h
+new file mode 100644
+index 000000000000..283ac1a0cdb7
+--- /dev/null
++++ b/include/rdma/rdma_counter.h
+@@ -0,0 +1,18 @@
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
++/*
++ * Copyright (c) 2019 Mellanox Technologies. All rights reserved.
++ */
++
++#ifndef _RDMA_COUNTER_H_
++#define _RDMA_COUNTER_H_
++
++#include <rdma/ib_verbs.h>
++#include <rdma/restrack.h>
++
++struct rdma_counter {
++	struct rdma_restrack_entry	res;
++	struct ib_device		*device;
++	uint32_t			id;
++	u8				port;
++};
++#endif /* _RDMA_COUNTER_H_ */
+diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
+index ecf3c7702a4f..4041a4d96524 100644
+--- a/include/rdma/restrack.h
++++ b/include/rdma/restrack.h
+@@ -42,6 +42,10 @@ enum rdma_restrack_type {
+ 	 * @RDMA_RESTRACK_CTX: Verbs contexts (CTX)
+ 	 */
+ 	RDMA_RESTRACK_CTX,
++	/**
++	 * @RDMA_RESTRACK_COUNTER: Statistic Counter
++	 */
++	RDMA_RESTRACK_COUNTER,
+ 	/**
+ 	 * @RDMA_RESTRACK_MAX: Last entry, used for array dclarations
+ 	 */
+-- 
 2.20.1
 
