@@ -2,53 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 741A436C73
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 08:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C79736C81
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 08:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726103AbfFFGmV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 02:42:21 -0400
-Received: from verein.lst.de ([213.95.11.211]:47422 "EHLO newverein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725267AbfFFGmV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 6 Jun 2019 02:42:21 -0400
-Received: by newverein.lst.de (Postfix, from userid 2407)
-        id 9AB2968B05; Thu,  6 Jun 2019 08:41:53 +0200 (CEST)
-Date:   Thu, 6 Jun 2019 08:41:53 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Sebastian Ott <sebott@linux.ibm.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Oliver Neukum <oneukum@suse.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com,
-        linux-hyperv@vger.kernel.org, linux-usb@vger.kernel.org,
-        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/13] megaraid_sas: set virt_boundary_mask in the scsi
- host
-Message-ID: <20190606064153.GD27033@lst.de>
-References: <20190605190836.32354-1-hch@lst.de> <20190605190836.32354-11-hch@lst.de> <345c3931-0940-7d59-ebc6-fa1ea56c60ac@suse.de>
+        id S1725784AbfFFGr0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 02:47:26 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:33109 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbfFFGr0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 02:47:26 -0400
+Received: by mail-pl1-f194.google.com with SMTP id g21so535110plq.0;
+        Wed, 05 Jun 2019 23:47:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WPf/+Ec6XD2NJwS+WuJwGcBhY4O7tg8bwCx2+7XcVtY=;
+        b=ZEdSg4LKKDjq/btsZHPuKaeMc2wqnxhdUFVDtZxa+tdjajqlxv3x0JKqQvl3aZu1dq
+         uFWpR2+qS1epXMN0pXVfFCDMSv0icoNp321auCEsJWX7/uzbjEQXXmEaA3DxVqidtqtr
+         ufaZtw6ICchVS1BEmsdL/qroAfoXdbtu9j5U7yR5yb//0Uq+kxpQAo+XO8DvPlt7uBEU
+         fNOiKmvS3P4BHovUsX7r00kli0z0qVYrcyAnVDkm9dk8HhzyhaWQw3OGrTB3Lz5oJJzh
+         YmGguEp0kRfQAIAqFh1jxY+LQERfmadyaALx9RLRiISw5fdOnYyqinOxk9YNaca7ctlP
+         yhjw==
+X-Gm-Message-State: APjAAAWisPO7n2Jjt2QyLSzNVqSCX2Cs1QIk7pdLTVCEzsEIUumIAQpq
+        G8ifQ/J1H5KYqFtVNI4i7kqTaHhJdY4=
+X-Google-Smtp-Source: APXvYqwwzEgFacSOy5lBObqVx659/0dp2Vvew435YbpssOVPqAJ3BZRIQKOSQbhlCgfelEUdxbxi3w==
+X-Received: by 2002:a17:902:8648:: with SMTP id y8mr50224257plt.30.1559803645405;
+        Wed, 05 Jun 2019 23:47:25 -0700 (PDT)
+Received: from ?IPv6:2601:647:4800:973f:d85c:2df7:72d9:ea63? ([2601:647:4800:973f:d85c:2df7:72d9:ea63])
+        by smtp.gmail.com with ESMTPSA id o192sm1047967pgo.74.2019.06.05.23.47.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 05 Jun 2019 23:47:24 -0700 (PDT)
+Subject: Re: [PATCH] IB/iser: explicitly set shost max_segment_size
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-scsi@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+References: <20190606000209.26086-1-sagi@grimberg.me>
+ <20190606063600.GB27033@lst.de>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <ae65c220-193c-e526-57da-17b50820b015@grimberg.me>
+Date:   Wed, 5 Jun 2019 23:47:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <345c3931-0940-7d59-ebc6-fa1ea56c60ac@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20190606063600.GB27033@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 06, 2019 at 08:02:07AM +0200, Hannes Reinecke wrote:
-> >  	scsi_change_queue_depth(sdev, device_qd);
-> >  
-> What happened to the NOMERGES queue flag?
+>> diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.c b/drivers/infiniband/ulp/iser/iscsi_iser.c
+>> index 56848232eb81..2984a366dd7d 100644
+>> --- a/drivers/infiniband/ulp/iser/iscsi_iser.c
+>> +++ b/drivers/infiniband/ulp/iser/iscsi_iser.c
+>> @@ -653,6 +653,7 @@ iscsi_iser_session_create(struct iscsi_endpoint *ep,
+>>   						   SHOST_DIX_GUARD_CRC);
+>>   		}
+>>   
+>> +		shost->max_segment_size = ib_dma_max_seg_size(ib_dev);
+>>   		if (!(ib_dev->attrs.device_cap_flags & IB_DEVICE_SG_GAPS_REG))
+>>   			shost->virt_boundary_mask = ~MASK_4K;
+> 
+> We only really need this settings in the IB_DEVICE_SG_GAPS_REG case,
+> as the segement size is unlimited on the PRP-like scheme used by the
+> other MR types anyway, and set as such by the block layer.  I.e.g this
+> should become:
+> 
+>   		if (ib_dev->attrs.device_cap_flags & IB_DEVICE_SG_GAPS_REG)
+> 			shost->max_segment_size = ib_dma_max_seg_size(ib_dev);
+> 		else
+>    			shost->virt_boundary_mask = ~MASK_4K;
 
-Quote from the patch description:
+Not sure I understand.
 
-"Also remove the bogus nomerges flag, merges do take the virt_boundary
- into account."
+max_segment_size and virt_boundary_mask are related how?
