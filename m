@@ -2,183 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 094053772B
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 16:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA96F377CC
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 17:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728682AbfFFOwh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 10:52:37 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:59742 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727559AbfFFOwg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 10:52:36 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x56EYDkN110285;
-        Thu, 6 Jun 2019 14:52:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=rI+UUdUA03Q/nZ9d+CumA3Zpk3oRpZWMIXwg3x38YdU=;
- b=Wn0dU2jLCdcZr6VnzV7oPW5T76ISl5L5im99lv7CXNwVcaVz07/7JqEyU2Sp65vnMnaI
- uKc8CohqVZyK5HpEHAQ6kHwqWZoo0/y+aGBzzjIoZmu4f38qsl9PwGd3h/oAuKC3SkI7
- /cs31kGs21QwWvRbN1xTTj3Q3xl2nWjIfJmQllR6S1peVo7MlI/p7Y6zYYqZZPD5m3uk
- f1EKIkQHPT26/aMCp5igfTubC4sDKPX5I5q4eeIpnyeqwOSV9NHGPp4rNKsCojBUSLUR
- AUkCBcD9MHFJWXgbjRvIqm4nDHcA4/xVWhys6HasYddqFGvj/iVQVuU9eqIKCZapXAJk YQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2suj0qrvws-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Jun 2019 14:52:07 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x56Epuf2031725;
-        Thu, 6 Jun 2019 14:52:06 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2swngjg047-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Jun 2019 14:52:06 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x56Eq5hV018911;
-        Thu, 6 Jun 2019 14:52:05 GMT
-Received: from srabinov-laptop (/10.175.12.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Jun 2019 07:52:05 -0700
-Date:   Thu, 6 Jun 2019 17:51:51 +0300
-From:   Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, dledford@redhat.com, jgg@mellanox.com
-Subject: Re: [PATCH for-next v3 0/4] ib_pd should not have ib_uobject
-Message-ID: <20190606145147.GA5485@srabinov-laptop>
-References: <20190530122422.32283-1-shamir.rabinovitch@oracle.com>
- <20190605072125.GA18424@srabinov-laptop>
- <20190605082549.GM5261@mtr-leonro.mtl.com>
- <20190605130244.GA3433@srabinov-laptop>
- <20190605144651.GO5261@mtr-leonro.mtl.com>
+        id S1729181AbfFFPZy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 11:25:54 -0400
+Received: from mail-eopbgr140071.outbound.protection.outlook.com ([40.107.14.71]:29819
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729077AbfFFPZy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 6 Jun 2019 11:25:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XWcAHdRQnqzHGJAKFZ2q4k/hoMaigFKEFslTi5hvcF0=;
+ b=iKCdZuFeCZfsiVUojWwWi4mal8IjuxvXWQpE5dHU4Rmio4RRjWH/hAOHy/xB7P66oIaBEaAY+rfYQIBHwaq+CyJkyPxjGEQS50Kva4mCMadlJ550q3Au751OvJlyAlL4BbcmppOjnRGuN8051tv8c+GP+c5HlPds9xqx8wqOvJA=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB6333.eurprd05.prod.outlook.com (20.179.25.139) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1965.12; Thu, 6 Jun 2019 15:25:49 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1965.011; Thu, 6 Jun 2019
+ 15:25:49 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: RFC: Run a dedicated hmm.git for 5.3
+Thread-Topic: RFC: Run a dedicated hmm.git for 5.3
+Thread-Index: AQHVHHwepzoj9aeiT0uMK+ZOBPXi0w==
+Date:   Thu, 6 Jun 2019 15:25:49 +0000
+Message-ID: <20190606152543.GE17392@mellanox.com>
+References: <20190523155207.GC5104@redhat.com>
+ <20190523163429.GC12159@ziepe.ca> <20190523173302.GD5104@redhat.com>
+ <20190523175546.GE12159@ziepe.ca> <20190523182458.GA3571@redhat.com>
+ <20190523191038.GG12159@ziepe.ca> <20190524064051.GA28855@infradead.org>
+ <20190524124455.GB16845@ziepe.ca>
+ <20190525155210.8a9a66385ac8169d0e144225@linux-foundation.org>
+ <20190527191247.GA12540@ziepe.ca>
+In-Reply-To: <20190527191247.GA12540@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR01CA0022.prod.exchangelabs.com (2603:10b6:208:10c::35)
+ To VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5a638c50-562c-4409-f22b-08d6ea9340bd
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6333;
+x-ms-traffictypediagnostic: VI1PR05MB6333:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <VI1PR05MB6333E902FD50A38DF264B3ABCF170@VI1PR05MB6333.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 00603B7EEF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(396003)(136003)(376002)(39860400002)(366004)(199004)(189003)(43544003)(446003)(26005)(2616005)(476003)(11346002)(36756003)(186003)(486006)(6436002)(966005)(76176011)(14454004)(102836004)(6506007)(5660300002)(478600001)(1076003)(6306002)(386003)(52116002)(99286004)(54906003)(110136005)(86362001)(316002)(33656002)(8936002)(3846002)(6116002)(6246003)(66066001)(68736007)(305945005)(229853002)(6512007)(6486002)(66946007)(2906002)(53936002)(73956011)(66476007)(256004)(66556008)(71200400001)(71190400001)(7416002)(81156014)(8676002)(66446008)(4326008)(81166006)(64756008)(7736002)(25786009);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6333;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: AbJMCQcRGx9GTjWdfJZrJkodaWaHU/JEUcYmTQNuI1w1hmmo5HaPZy3bzn+RxLTsmKB0jVP1VQbc+d43iYsdABOBAIMEr+PtjtaBEvdAFdcPsDKQ+6DO9h2ebIQvO8hoR4BKKkEZkMXy0rXbyC8ttg3Btv1bAaeJRHu/eIqndvUulVfqWVvMIuAqQV325AsIPDHoQ1kOg7lazgufEpym7HhgzStKIDX4uVCOppK7EqQi8i03qsmqDwP/KNXZIj6r8Zh69frCkB4cLPnFQJpdxt4YjyUOe8bQTlatVlvhDKh9pjNZ7QrqohJdoXaTko913JGpSQSiX7hy+90BxykxTKbQX76IpD9XiKwGq1gnczsUXNsnegLddEcBdPVmZ+em85ZXCNwb/HKkYmU/3+qr78ma9nsCxBm9GB4q0qvHXeY=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <994523D7B122E1489B649951953089FD@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190605144651.GO5261@mtr-leonro.mtl.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9280 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906060102
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9280 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906060102
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a638c50-562c-4409-f22b-08d6ea9340bd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2019 15:25:49.2982
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6333
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 05, 2019 at 05:46:51PM +0300, Leon Romanovsky wrote:
-> On Wed, Jun 05, 2019 at 04:02:45PM +0300, Shamir Rabinovitch wrote:
-> > On Wed, Jun 05, 2019 at 11:25:49AM +0300, Leon Romanovsky wrote:
-> > > On Wed, Jun 05, 2019 at 10:21:26AM +0300, Shamir Rabinovitch wrote:
-> > > > On Thu, May 30, 2019 at 03:24:05PM +0300, Shamir Rabinovitch wrote:
-> > > > > This patch set complete the cleanup done in the driver/verbs/uverbs
-> > > > > where the dependency of the code in the ib_x uobject pointer was
-> > > > > removed.
-> > > > >
-> > > > > The uobject pointer is removed from the ib_pd as last step
-> > > > > before I can start adding the pd sharing code.
-> > > > >
-> > > > > The rdma/netlink code now don't have dependency in the ib_pd
-> > > > > uobject pointer and can report multiple context id that point
-> > > > > to same ib_pd.
-> > > > >
-> > > > > Using iproute2 I can test the modified rdma/netlink:
-> > > > > [root@qemu-fc29 iproute2]# rdma/rdma res show pd dev mlx4_0
-> > > > > dev mlx4_0 pdn 0 local_dma_lkey 0x8000 users 4 comm [ib_core]
-> > > > > dev mlx4_0 pdn 1 local_dma_lkey 0x8000 users 4 comm [ib_core]
-> > > > > dev mlx4_0 pdn 2 local_dma_lkey 0x8000 users 5 comm [ib_ipoib]
-> > > > > dev mlx4_0 pdn 3 local_dma_lkey 0x8000 users 5 comm [ib_ipoib]
-> > > > > dev mlx4_0 pdn 4 local_dma_lkey 0x8000 users 0 comm [ib_srp]
-> > > > > dev mlx4_0 pdn 5 local_dma_lkey 0x8000 users 0 comm [ib_srpt]
-> > > > > dev mlx4_0 pdn 6 local_dma_lkey 0x0 users 2 ctxn 0 pid 7693 comm ib_send_bw
-> > > > > dev mlx4_0 pdn 7 local_dma_lkey 0x0 users 2 ctxn 1 pid 7694 comm ib_send_bw
-> > > > >
-> > > > > Changelog:
-> > > > >
-> > > > > v1->v2
-> > > > > * 1 patch from v1 applied (Jason)
-> > > > > * Fix uobj_get_obj_read macro (Jason)
-> > > > > * Do not allocate memory when fixing uobj_get_obj_read (Jason)
-> > > > > * Fix uobj_get_obj_read macro (Jason)
-> > > > > * rdma/netlink can now work as before (Leon)
-> > > > >
-> > > > > v2->v3:
-> > > > > * rdma/netlink nest multiple context ids of same ib_pd (Leon)
-> > > > >
-> > > > > Shamir Rabinovitch (4):
-> > > > >   RDMA/uverbs: uobj_get_obj_read should return the ib_uobject
-> > > > >   RDMA/uverbs: uobj_put_obj_read macro should be removed
-> > > > >   RDMA/nldev: ib_pd can be pointed by multiple ib_ucontext
-> > > > >   IB/{core,hw}: ib_pd should not have ib_uobject pointer
-> > > > >
-> > > > >  drivers/infiniband/core/nldev.c            | 129 +++++++++++-
-> > > > >  drivers/infiniband/core/uverbs_cmd.c       | 218 +++++++++++++--------
-> > > > >  drivers/infiniband/core/verbs.c            |   1 -
-> > > > >  drivers/infiniband/hw/hns/hns_roce_hw_v1.c |   1 -
-> > > > >  drivers/infiniband/hw/mlx5/main.c          |   1 -
-> > > > >  drivers/infiniband/hw/mthca/mthca_qp.c     |   3 +-
-> > > > >  include/rdma/ib_verbs.h                    |   1 -
-> > > > >  include/rdma/uverbs_std_types.h            |  11 +-
-> > > > >  include/uapi/rdma/rdma_netlink.h           |   3 +
-> > > > >  9 files changed, 273 insertions(+), 95 deletions(-)
-> > > > >
-> > > > > --
-> > > > > 2.20.1
-> > > > >
-> > > >
-> > > > Jason, Leon, can you please review this patch set ?
-> > >
-> > > I'm sorry for the delay.
-> > >
-> > > >
-> > > > Anything missing from my side here?
-> > >
-> > > Can you please post rdmatool output for shared PD?
-> > > In such case, all those shared PD need to have same PDN.
-> >
-> > Leon I do not have all the pieces in place for this yes.
-> >
-> > I only tested that current rdmatool can cope with netlink message that
-> > has nested context ids as it will happen in shared pd case.
-> 
-> Thanks, multiple PDNs worried me and I was afraid that they come from
-> shared PDs. You will still need to mock something to see that you
-> print them correctly.
+On Mon, May 27, 2019 at 04:12:47PM -0300, Jason Gunthorpe wrote:
+> On Sat, May 25, 2019 at 03:52:10PM -0700, Andrew Morton wrote:
+> > On Fri, 24 May 2019 09:44:55 -0300 Jason Gunthorpe <jgg@ziepe.ca> wrote=
+:
+> >=20
+> > > Now that -mm merged the basic hmm API skeleton I think running like
+> > > this would get us quickly to the place we all want: comprehensive in =
+tree
+> > > users of hmm.
+> > >=20
+> > > Andrew, would this be acceptable to you?
+> >=20
+> > Sure.  Please take care not to permit this to reduce the amount of
+> > exposure and review which the core HMM pieces get.
+>=20
+> Certainly, thanks all
+>=20
+> Jerome: I started a HMM branch on v5.2-rc2 in the rdma.git here:
+>=20
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
+> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=3Dhm=
+m
 
-I tried to check this by iterating twice on the code in
-'fill_res_pd_entry' for user pd. 
+I did a first round of collecting patches for hmm.git
 
-kernel confirm that we have duplicate lines for each pd:
-[ 4707.051279] fill_res_pd_entry: iter 0
-[ 4707.052371] fill_res_pd_entry: iter 1
-[ 4707.053426] fill_res_pd_entry: iter 0
-[ 4707.054529] fill_res_pd_entry: iter 1
+Andrew, I'm checking linux-next and to stay co-ordinated, I see the
+patches below are in your tree and now also in hmm.git. Can you please
+drop them from your tree?=20
 
-But the rdmatool prints remain as-is:
-[root@qemu-fc29 iproute2]# rdma/rdma res show pd dev mlx4_0
-dev mlx4_0 pdn 0 local_dma_lkey 0x8000 users 4 comm [ib_core]
-dev mlx4_0 pdn 1 local_dma_lkey 0x8000 users 4 comm [ib_core]
-dev mlx4_0 pdn 2 local_dma_lkey 0x0 users 2 ctxn 0 pid 12918 comm ib_send_bw
-dev mlx4_0 pdn 3 local_dma_lkey 0x0 users 2 ctxn 1 pid 12919 comm ib_send_bw
+5b693741de2ace mm/hmm.c: suppress compilation warnings when CONFIG_HUGETLB_=
+PAGE is not set
+b2870fb882599a mm/hmm.c: only set FAULT_FLAG_ALLOW_RETRY for non-blocking
+dff7babf8ae9f1 mm/hmm.c: support automatic NUMA balancing
 
-Does this make sense to you ?
+I checked that the other two patches in -next also touching hmm.c are
+best suited to go through your tree:
 
-Since we do not have any crash in the rdmatool in this case, can we
-postpone this test till we have proper shared pd ?
+a76b9b318a7180 mm/devm_memremap_pages: fix final page put race
+fc64c058d01b98 mm/memremap: rename and consolidate SECTION_SIZE
 
-Can you please review the series ?
+StephenR: Can you pick up the hmm branch from rdma.git for linux-next for
+this cycle? As above we are moving the patches from -mm to hmm.git, so
+there will be a conflict in -next until Andrew adjusts his tree,
+thanks!
 
-Thanks
-> 
-> >
-> > I'll do that once we have the export_to_fd & import_pd & import_mr verbs
-> > in place.
-> >
-> > >
-> > > Thanks
+Regards,
+Jason
+(hashes are from today's linux-next)
