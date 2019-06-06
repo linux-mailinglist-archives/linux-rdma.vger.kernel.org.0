@@ -2,84 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B6937834
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 17:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CCC37901
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 17:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729486AbfFFPhb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 11:37:31 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:33977 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729145AbfFFPha (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 11:37:30 -0400
-Received: by mail-io1-f66.google.com with SMTP id k8so564384iot.1
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 08:37:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:references:in-reply-to:mime-version:thread-index:date
-         :message-id:subject:to:cc;
-        bh=7FsPigjoq8C26eFiFz4PbLbviE4sOu/NaNL8Wv/dWZY=;
-        b=AFDD/k2/le52Hdd/TKthmiFLkpxwsE8wgwm+ToBDcTp5nk5LpKOXg2c5jC8eyqSr8U
-         PbQa5dsh5SDeL6j0empaIJIbULAJcPWpVBbqfwPg+RIvS/9Z4t7qTgc+J2TnzpXamk2f
-         Jk2clgGQMDirG2oKq3gaszEI2ZXgq2nzh2D7A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:references:in-reply-to:mime-version
-         :thread-index:date:message-id:subject:to:cc;
-        bh=7FsPigjoq8C26eFiFz4PbLbviE4sOu/NaNL8Wv/dWZY=;
-        b=GZWq8h1ZqvtMGqwOQ+DiIioB15LomRGll17OWuuv5/2yTJXHEznQXgyNHIZYwqX4Qw
-         FuTg13yqoBb5N0he9p7tc3RwncIElst1UdKhMePvh4aygoczXvnuUv4cQ4bop5cG5eMc
-         rTh68ojViDfiBf9ZGNNAIpvp8LgDcBa0r8eKsjbHk0+2tqCDFfZzyzIEilGAA8o+QVJG
-         BayGue3a9JQ1I1u59OkqhWMDCyRszZH5ssvhuJ8W7NZd2+d7IDaYNRRvK1d3SeBpA0wE
-         amioC7jWMlXycU0MKYwq7Vecc6p+k3uuklYCnXh1ndw5AdhXbsszpO7nXvh/dz3e1lVi
-         tOLw==
-X-Gm-Message-State: APjAAAXzovPWsH1+bJB3i2LfmrWz6EbE3D5TYuHaHcs9zSYA2X+TYE9M
-        QdAzlYWgwwAZFD0KFD0njvrpaPV0Cl57nMX/JyDcUA==
-X-Google-Smtp-Source: APXvYqxuIiFVwwy3SZOPoMV5d6L9mjSBqLBwyeJYTl2PURpa5yAIPkIYD/4gZiMQyRghGYi7pdemfpa8qFQTyevPY6Q=
-X-Received: by 2002:a5d:9502:: with SMTP id d2mr14353761iom.2.1559835449946;
- Thu, 06 Jun 2019 08:37:29 -0700 (PDT)
-From:   Kashyap Desai <kashyap.desai@broadcom.com>
-References: <20190605190836.32354-1-hch@lst.de> <20190605190836.32354-11-hch@lst.de>
-In-Reply-To: <20190605190836.32354-11-hch@lst.de>
+        id S1729539AbfFFP5e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 11:57:34 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45524 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729165AbfFFP5e (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 11:57:34 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x56FsPE1183115;
+        Thu, 6 Jun 2019 15:57:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=e9tXhqutf+gIjtNsdxE4py+UbQk4Ifj4FQBivnfx9gE=;
+ b=5g6BZRVcdkbheb3LC5qCuHWNU8OGlLKxY1A5JmHiMFgm3DZ2Mc0xgZxUscJGuCk0f1K1
+ /uFjeNnTvFvsk+vAJA/PY7bFCnZthzyu74gC1ww948P3kQousQ4IFqjUFAtvB96fhDJI
+ PMKdf9G8XRzElDN2ybIwciN8GI/6Ti6cKBVwxH8VBn0HCDxgOrC9/cZtfyaUDj2kbqBv
+ XIXQAqdB5YzOlYTFHQiaB8V14/CVYfewaEU3Pg+0K56RcDPqKg87CZWpD1qJZC1s3/gk
+ 6d1UtXIq0tvUI3o4v6QK4fAakWC/iHCos6EIe1QkIqHV8mxzeaL/RqIxi1ZMQpWUoRRb +A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2suj0qsa7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Jun 2019 15:57:27 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x56Fv5hg016481;
+        Thu, 6 Jun 2019 15:57:27 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 2swngmk2f5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 06 Jun 2019 15:57:27 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x56FvRw7017402;
+        Thu, 6 Jun 2019 15:57:27 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2swngmk2f0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Jun 2019 15:57:27 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x56FvPUu024299;
+        Thu, 6 Jun 2019 15:57:25 GMT
+Received: from [10.11.0.40] (/10.11.0.40)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 Jun 2019 08:57:25 -0700
+Subject: Re: [PATCH 1/1] net: rds: fix memory leak in rds_ib_flush_mr_pool
+To:     Zhu Yanjun <yanjun.zhu@oracle.com>, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+References: <1559808003-1030-1-git-send-email-yanjun.zhu@oracle.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <7519cb35-07b3-e530-0402-67f76c16a6b4@oracle.com>
+Date:   Thu, 6 Jun 2019 08:57:24 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQNLjZIO2zMn7N+9xPobnDbFSu4o5gI2RJdJo5AtPRA=
-Date:   Thu, 6 Jun 2019 21:07:27 +0530
-Message-ID: <cd713506efb9579d1f69a719d831c28d@mail.gmail.com>
-Subject: RE: [PATCH 10/13] megaraid_sas: set virt_boundary_mask in the scsi host
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Sebastian Ott <sebott@linux.ibm.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Oliver Neukum <oneukum@suse.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        PDL-MPT-FUSIONLINUX <mpt-fusionlinux.pdl@broadcom.com>,
-        linux-hyperv@vger.kernel.org, linux-usb@vger.kernel.org,
-        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1559808003-1030-1-git-send-email-yanjun.zhu@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9280 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906060108
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
->
-> This ensures all proper DMA layer handling is taken care of by the SCSI
-> midlayer.  Note that the effect is global, as the IOMMU merging is based
-> off a
-> paramters in struct device.  We could still turn if off if no PCIe devices
-> are
-> present, but I don't know how to find that out.
->
-> Also remove the bogus nomerges flag, merges do take the virt_boundary into
-> account.
-
-Hi Christoph, Changes for <megaraid_sas> and <mpt3sas> looks good. We want
-to confirm few sanity before ACK. BTW, what benefit we will see moving
-virt_boundry setting to SCSI mid layer ? Is it just modular approach OR any
-functional fix ?
-
-Kashyap
+On 6/6/19 1:00 AM, Zhu Yanjun wrote:
+> When the following tests last for several hours, the problem will occur.
+> 
+> Server:
+>      rds-stress -r 1.1.1.16 -D 1M
+> Client:
+>      rds-stress -r 1.1.1.14 -s 1.1.1.16 -D 1M -T 30
+> 
+> The following will occur.
+> 
+> "
+> Starting up....
+> tsks   tx/s   rx/s  tx+rx K/s    mbi K/s    mbo K/s tx us/c   rtt us cpu
+> %
+>    1      0      0       0.00       0.00       0.00    0.00 0.00 -1.00
+>    1      0      0       0.00       0.00       0.00    0.00 0.00 -1.00
+>    1      0      0       0.00       0.00       0.00    0.00 0.00 -1.00
+>    1      0      0       0.00       0.00       0.00    0.00 0.00 -1.00
+> "
+>  From vmcore, we can find that clean_list is NULL.
+> 
+>  From the source code, rds_mr_flushd calls rds_ib_mr_pool_flush_worker.
+> Then rds_ib_mr_pool_flush_worker calls
+> "
+>   rds_ib_flush_mr_pool(pool, 0, NULL);
+> "
+> Then in function
+> "
+> int rds_ib_flush_mr_pool(struct rds_ib_mr_pool *pool,
+>                           int free_all, struct rds_ib_mr **ibmr_ret)
+> "
+> ibmr_ret is NULL.
+> 
+> In the source code,
+> "
+> ...
+> list_to_llist_nodes(pool, &unmap_list, &clean_nodes, &clean_tail);
+> if (ibmr_ret)
+>          *ibmr_ret = llist_entry(clean_nodes, struct rds_ib_mr, llnode);
+> 
+> /* more than one entry in llist nodes */
+> if (clean_nodes->next)
+>          llist_add_batch(clean_nodes->next, clean_tail, &pool->clean_list);
+> ...
+> "
+> When ibmr_ret is NULL, llist_entry is not executed. clean_nodes->next
+> instead of clean_nodes is added in clean_list.
+> So clean_nodes is discarded. It can not be used again.
+> The workqueue is executed periodically. So more and more clean_nodes are
+> discarded. Finally the clean_list is NULL.
+> Then this problem will occur.
+> 
+> Fixes: 1bc144b62524 ("net, rds, Replace xlist in net/rds/xlist.h with llist")
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@oracle.com>
+> ---
+Thanks.
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
