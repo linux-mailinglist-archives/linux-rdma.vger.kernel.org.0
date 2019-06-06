@@ -2,148 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F1837C87
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 20:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9432D37D8F
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 21:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbfFFSsD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 14:48:03 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:43617 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727341AbfFFSov (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 14:44:51 -0400
-Received: by mail-qk1-f193.google.com with SMTP id m14so2118959qka.10
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 11:44:51 -0700 (PDT)
+        id S1727423AbfFFTqy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 15:46:54 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:35225 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727408AbfFFTqy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 15:46:54 -0400
+Received: by mail-qt1-f196.google.com with SMTP id d23so4164867qto.2
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 12:46:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nVAUpO+Ga9NYec9bVUlta7oVxGoK2kbyT+1hUTcsX2M=;
-        b=WgY47IGZKwCscEhmp/e1SH9Qdm9WcIPMWuHYPXHgf1Mke+ckY9UbBST6Yg3085YiGZ
-         dcNR69Qrxwy8qK6hBe1Ue5L8mtizg8fgMYwpWlMDyzW4sJZM/YSdC7J0JCTA28fxl76n
-         +LUXoIcNaktF9sMJ+8Tn9DSETKfpEaKYxfe0XcgkeYX9s25CuXN7zKQgSo93XiKMF8Ia
-         uyDd1lBZZfguzvqyPsXI94pwdw1QaF2JfejyOIr3xXYPHSXV060VLQByKbXFlIqKGo61
-         qP5nXZ0Y1Bzv69Slh4GEkWmlgkAOHNc2qWHPy706QC/VjevthD4d+IaR7G2877aUIVh2
-         s12Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qajFXRwDSumJ1VBt1nbVb8YwByztvxS980sXRo7osmo=;
+        b=eoZ3O1RetGytNaHJt1/lQ055Dyp4yKlZbucZb+BvUi5davTaqNwzsojRJaEX3o7YBt
+         pW3kUz6Q6eZ28rLtA9Jjv3JM9Jbd8rpL+tsDn7iM2UqXOLGkn166O+4yvLdC3Kj1J1Kw
+         EN/awr72rkEt7yQR+AiRXrTbLCAXuw/PReh8Jee8gULLsUma+/gjV4ptkpnFqaWY9ScQ
+         pfzfEEURVPjfvQ17a2N2djx/e2F+JgvAKdq7T0ZC0+SYGMwKMi53TV6yqzPwuSf8v+9u
+         LYyAO6rl9kNxn5WFf8W3yFzNwERteSui2pJz14BOr2RQ5bfl/hj47SMCT66KbVbY4Rcp
+         hJzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nVAUpO+Ga9NYec9bVUlta7oVxGoK2kbyT+1hUTcsX2M=;
-        b=LAj7Z6GEC5hfeDhUCYKKfgjp1fw0GpT6h25/XPGan/lhcOk10WLYVO1wU3RRLlBed8
-         c0RyAxMAzYjCzTDFpQzuYtONWENLtuI2WUwvRUzrijL/9XQSPwPycYJrTc+j3uaZHYpE
-         vG31qXixy4dddA+eLEmz2BlLrGAqlv6MSVhVrGELP5qaL9WhkCQNzLhtcEvIO7xrFaYi
-         Dpgj4/lfEttCDeb2oWabi9CkPiyoAiLsMx0W8zGo62aTeRIqJAZbwo19LaZ3YqeU6vF/
-         uOzUDrObWJUi+DIyGIvaktbfX3O5LyGCOrDFTj8kEqI9aFqjAmUGzKFvt4ax6Vglz64U
-         nRcg==
-X-Gm-Message-State: APjAAAU6kO/wB3/qHjJLuqs1VRdVB62NmBv/otzxVBMuTHmhf9Nk5Dn7
-        6M4wKd34moSZpu+iXSlUOy0vUw==
-X-Google-Smtp-Source: APXvYqy0lCJbH1BvPYOo0rOmLYXG/g+I9HtsZNodsB/KhCTBbD6BMVIIs/zFfGrbgs1cd5AeX+0slQ==
-X-Received: by 2002:a05:620a:16cc:: with SMTP id a12mr32024122qkn.256.1559846690927;
-        Thu, 06 Jun 2019 11:44:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qajFXRwDSumJ1VBt1nbVb8YwByztvxS980sXRo7osmo=;
+        b=Mfy5YRrVKXLcBkd9oMDAlbrDuMTP1OxSKc6Tt+nqXre524kAT+3bEjYsg/XpL6063n
+         N1d4EDxZ+pwsVUcFEJOsa5PJulfOXrtfIkbSCC0ZwnEGzDvErEmHGQaVpaYnRaeJkQUp
+         SV5TVXbs+VF6unNTzSmVh8ME4pLLW3vwLIXpz5UVe3eEhmsGyp5FpFY9W7FIDl6bNH//
+         +1WZrlLBsbrrkN9Nz70meQle5ucRwbFOK6OmoqQCBiJEW8+qT7RGn5eJPPf2WfQEnN4O
+         5B+U8VZMp8il37NGdPv39SarOU5cPF9qgCG7Mnbq3SdJNzlnm1+/9ePXiZr0GmPGX9Y6
+         L6Ig==
+X-Gm-Message-State: APjAAAUnYEPitT5znxxD0MbqUnxYKXMtFsePPwLzvy/W0ayHNyXyUfAS
+        bYPzH2hPxZTARuBgS7vR3pE3Ag==
+X-Google-Smtp-Source: APXvYqzAxBsAbtmAf/N2gWiDpLiwySAazMdlavwrTbL7etxy94AKJa3CMpYnlx0qPyIVzWATublI1w==
+X-Received: by 2002:a0c:d0b6:: with SMTP id z51mr27514879qvg.3.1559850413173;
+        Thu, 06 Jun 2019 12:46:53 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id q36sm1951613qtc.12.2019.06.06.11.44.46
+        by smtp.gmail.com with ESMTPSA id t197sm1407918qke.2.2019.06.06.12.46.52
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 06 Jun 2019 11:44:46 -0700 (PDT)
+        Thu, 06 Jun 2019 12:46:52 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hYxNV-0008J3-Ud; Thu, 06 Jun 2019 15:44:45 -0300
+        id 1hYyLc-0007zs-5h; Thu, 06 Jun 2019 16:46:52 -0300
+Date:   Thu, 6 Jun 2019 16:46:52 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com
-Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v2 hmm 11/11] mm/hmm: Remove confusing comment and logic from hmm_release
-Date:   Thu,  6 Jun 2019 15:44:38 -0300
-Message-Id: <20190606184438.31646-12-jgg@ziepe.ca>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190606184438.31646-1-jgg@ziepe.ca>
-References: <20190606184438.31646-1-jgg@ziepe.ca>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190606194652.GI17373@ziepe.ca>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <c559c2ce-50dc-d143-5741-fe3d21d0305c@nvidia.com>
+ <20190606171158.GB11374@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190606171158.GB11374@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+On Thu, Jun 06, 2019 at 10:11:58AM -0700, Ira Weiny wrote:
 
-hmm_release() is called exactly once per hmm. ops->release() cannot
-accidentally trigger any action that would recurse back onto
-hmm->mirrors_sem.
+> 2) This is a bit more subtle and something I almost delayed sending these out
+>    for.  Currently the implementation of a lease break actually removes the
+>    lease from the file.  I did not want this to happen and I was thinking of
+>    delaying this patch set to implement something which keeps the lease around
+>    but I figured I should get something out for comments.  Jan has proposed
+>    something along these lines and I agree with him so I'm going to ask you to
+>    read my response to him about the details.
+>
+> 
+>    Anyway so the key here is that currently an app needs the SIGIO to retake
+>    the lease if they want to map the file again or in parts based on usage.
+>    For example, they may only want to map some of the file for when they are
+>    using it and then map another part later.  Without the SIGIO they would lose
+>    their lease or would have to just take the lease for each GUP pin (which
+>    adds overhead).  Like I said I did not like this but I left it to get
+>    something which works out.
 
-This fixes a use after-free race of the form:
+So to be clear.. 
 
-       CPU0                                   CPU1
-                                           hmm_release()
-                                             up_write(&hmm->mirrors_sem);
- hmm_mirror_unregister(mirror)
-  down_write(&hmm->mirrors_sem);
-  up_write(&hmm->mirrors_sem);
-  kfree(mirror)
-                                             mirror->ops->release(mirror)
+Even though the lease is broken the GUP remains, the pages remain
+pined, and truncate/etc continues to fail? 
 
-The only user we have today for ops->release is an empty function, so this
-is unambiguously safe.
+I like Jan's take on this actually.. see other email.
 
-As a consequence of plugging this race drivers are not allowed to
-register/unregister mirrors from within a release op.
-
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
----
- mm/hmm.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
-
-diff --git a/mm/hmm.c b/mm/hmm.c
-index 709d138dd49027..3a45dd3d778248 100644
---- a/mm/hmm.c
-+++ b/mm/hmm.c
-@@ -136,26 +136,16 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
- 	WARN_ON(!list_empty(&hmm->ranges));
- 	mutex_unlock(&hmm->lock);
- 
--	down_write(&hmm->mirrors_sem);
--	mirror = list_first_entry_or_null(&hmm->mirrors, struct hmm_mirror,
--					  list);
--	while (mirror) {
--		list_del_init(&mirror->list);
--		if (mirror->ops->release) {
--			/*
--			 * Drop mirrors_sem so the release callback can wait
--			 * on any pending work that might itself trigger a
--			 * mmu_notifier callback and thus would deadlock with
--			 * us.
--			 */
--			up_write(&hmm->mirrors_sem);
-+	down_read(&hmm->mirrors_sem);
-+	list_for_each_entry(mirror, &hmm->mirrors, list) {
-+		/*
-+		 * Note: The driver is not allowed to trigger
-+		 * hmm_mirror_unregister() from this thread.
-+		 */
-+		if (mirror->ops->release)
- 			mirror->ops->release(mirror);
--			down_write(&hmm->mirrors_sem);
--		}
--		mirror = list_first_entry_or_null(&hmm->mirrors,
--						  struct hmm_mirror, list);
- 	}
--	up_write(&hmm->mirrors_sem);
-+	up_read(&hmm->mirrors_sem);
- 
- 	hmm_put(hmm);
- }
-@@ -287,7 +277,7 @@ void hmm_mirror_unregister(struct hmm_mirror *mirror)
- 	struct hmm *hmm = mirror->hmm;
- 
- 	down_write(&hmm->mirrors_sem);
--	list_del_init(&mirror->list);
-+	list_del(&mirror->list);
- 	up_write(&hmm->mirrors_sem);
- 	hmm_put(hmm);
- 	memset(&mirror->hmm, POISON_INUSE, sizeof(mirror->hmm));
--- 
-2.21.0
-
+Jason
