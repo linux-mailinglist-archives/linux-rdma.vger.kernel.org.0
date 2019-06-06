@@ -2,106 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 355383817C
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 01:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7829B381F6
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 01:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727754AbfFFXBu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 19:01:50 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:53264 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726352AbfFFXBt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 19:01:49 -0400
-X-Greylist: delayed 1912 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Jun 2019 19:01:48 EDT
-Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 868484EA85D;
-        Fri,  7 Jun 2019 08:29:50 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hZ0sP-0000g2-35; Fri, 07 Jun 2019 08:28:53 +1000
-Date:   Fri, 7 Jun 2019 08:28:53 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1726943AbfFFXxb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 19:53:31 -0400
+Received: from mga09.intel.com ([134.134.136.24]:9181 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726609AbfFFXxb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 6 Jun 2019 19:53:31 -0400
+X-Amp-Result: UNSCANNABLE
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Jun 2019 16:53:29 -0700
+X-ExtLoop1: 1
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga001.fm.intel.com with ESMTP; 06 Jun 2019 16:53:29 -0700
+Date:   Thu, 6 Jun 2019 16:54:41 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
         John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190606222853.GD14308@dread.disaster.area>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: Re: [RFC PATCH 01/11] mm/hmm: Fix use after free with struct hmm in
+ the mmu notifiers
+Message-ID: <20190606235440.GA13674@iweiny-DESK2.sc.intel.com>
+References: <20190523153436.19102-1-jgg@ziepe.ca>
+ <20190523153436.19102-2-jgg@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0 cx=a_idp_d
-        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
-        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=-fIxr7oOWDDygYgkAT8A:9
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20190523153436.19102-2-jgg@ziepe.ca>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 06, 2019 at 03:03:30PM -0700, Ira Weiny wrote:
-> On Thu, Jun 06, 2019 at 12:42:03PM +0200, Jan Kara wrote:
-> > On Wed 05-06-19 18:45:33, ira.weiny@intel.com wrote:
-> > So I'd like to actually mandate that you *must* hold the file lease until
-> > you unpin all pages in the given range (not just that you have an option to
-> > hold a lease). And I believe the kernel should actually enforce this. That
-> > way we maintain a sane state that if someone uses a physical location of
-> > logical file offset on disk, he has a layout lease. Also once this is done,
-> > sysadmin has a reasonably easy way to discover run-away RDMA application
-> > and kill it if he wishes so.
+On Thu, May 23, 2019 at 12:34:26PM -0300, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
 > 
-> Fair enough.
+> mmu_notifier_unregister_no_release() is not a fence and the mmu_notifier
+> system will continue to reference hmm->mn until the srcu grace period
+> expires.
 > 
-> I was kind of heading that direction but had not thought this far forward.  I
-> was exploring how to have a lease remain on the file even after a "lease
-> break".  But that is incompatible with the current semantics of a "layout"
-> lease (as currently defined in the kernel).  [In the end I wanted to get an RFC
-> out to see what people think of this idea so I did not look at keeping the
-> lease.]
+> Resulting in use after free races like this:
 > 
-> Also hitch is that currently a lease is forcefully broken after
-> <sysfs>/lease-break-time.  To do what you suggest I think we would need a new
-> lease type with the semantics you describe.
+>          CPU0                                     CPU1
+>                                                __mmu_notifier_invalidate_range_start()
+>                                                  srcu_read_lock
+>                                                  hlist_for_each ()
+>                                                    // mn == hmm->mn
+> hmm_mirror_unregister()
+>   hmm_put()
+>     hmm_free()
+>       mmu_notifier_unregister_no_release()
+>          hlist_del_init_rcu(hmm-mn->list)
+> 			                           mn->ops->invalidate_range_start(mn, range);
+> 					             mm_get_hmm()
+>       mm->hmm = NULL;
+>       kfree(hmm)
+>                                                      mutex_lock(&hmm->lock);
+> 
+> Use SRCU to kfree the hmm memory so that the notifiers can rely on hmm
+> existing. Get the now-safe hmm struct through container_of and directly
+> check kref_get_unless_zero to lock it against free.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> ---
+>  include/linux/hmm.h |  1 +
+>  mm/hmm.c            | 25 +++++++++++++++++++------
+>  2 files changed, 20 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
+> index 51ec27a8466816..8b91c90d3b88cb 100644
+> --- a/include/linux/hmm.h
+> +++ b/include/linux/hmm.h
+> @@ -102,6 +102,7 @@ struct hmm {
+>  	struct mmu_notifier	mmu_notifier;
+>  	struct rw_semaphore	mirrors_sem;
+>  	wait_queue_head_t	wq;
+> +	struct rcu_head		rcu;
+>  	long			notifiers;
+>  	bool			dead;
+>  };
+> diff --git a/mm/hmm.c b/mm/hmm.c
+> index 816c2356f2449f..824e7e160d8167 100644
+> --- a/mm/hmm.c
+> +++ b/mm/hmm.c
+> @@ -113,6 +113,11 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+>  	return NULL;
+>  }
+>  
+> +static void hmm_fee_rcu(struct rcu_head *rcu)
 
-That just requires a flag when gaining the layout lease to say it is
-an "unbreakable layout lease". That gives the kernel the information
-needed to determine whether it should attempt to break the lease on
-truncate or just return ETXTBSY....
+NIT: "free"
 
-i.e. it allows gup-pinning applications that want to behave nicely
-with other users to drop their gup pins and release the lease when
-something else wants to truncate/hole punch the file rather than
-have truncate return an error. e.g. to allow apps to cleanly interop
-with other breakable layout leases (e.g. pNFS) on the same
-filesystem.
+Other than that looks good.
 
-FWIW, I'd also like to see the "truncate fails when unbreakable
-layout lease is held" behaviour to be common across all
-filesystem/storage types, not be confined to DAX only. i.e. truncate
-should return ETXTBSY when an unbreakable layout lease is held
-by an application, not just when "DAX+gup-pinned" is triggered....
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-Whatever we decide, the behaviour of truncate et al needs to be
-predictable, consistent and easily discoverable...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> +{
+> +	kfree(container_of(rcu, struct hmm, rcu));
+> +}
+> +
+>  static void hmm_free(struct kref *kref)
+>  {
+>  	struct hmm *hmm = container_of(kref, struct hmm, kref);
+> @@ -125,7 +130,7 @@ static void hmm_free(struct kref *kref)
+>  		mm->hmm = NULL;
+>  	spin_unlock(&mm->page_table_lock);
+>  
+> -	kfree(hmm);
+> +	mmu_notifier_call_srcu(&hmm->rcu, hmm_fee_rcu);
+>  }
+>  
+>  static inline void hmm_put(struct hmm *hmm)
+> @@ -153,10 +158,14 @@ void hmm_mm_destroy(struct mm_struct *mm)
+>  
+>  static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+>  {
+> -	struct hmm *hmm = mm_get_hmm(mm);
+> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+>  	struct hmm_mirror *mirror;
+>  	struct hmm_range *range;
+>  
+> +	/* hmm is in progress to free */
+> +	if (!kref_get_unless_zero(&hmm->kref))
+> +		return;
+> +
+>  	/* Report this HMM as dying. */
+>  	hmm->dead = true;
+>  
+> @@ -194,13 +203,15 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+>  static int hmm_invalidate_range_start(struct mmu_notifier *mn,
+>  			const struct mmu_notifier_range *nrange)
+>  {
+> -	struct hmm *hmm = mm_get_hmm(nrange->mm);
+> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+>  	struct hmm_mirror *mirror;
+>  	struct hmm_update update;
+>  	struct hmm_range *range;
+>  	int ret = 0;
+>  
+> -	VM_BUG_ON(!hmm);
+> +	/* hmm is in progress to free */
+> +	if (!kref_get_unless_zero(&hmm->kref))
+> +		return 0;
+>  
+>  	update.start = nrange->start;
+>  	update.end = nrange->end;
+> @@ -248,9 +259,11 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
+>  static void hmm_invalidate_range_end(struct mmu_notifier *mn,
+>  			const struct mmu_notifier_range *nrange)
+>  {
+> -	struct hmm *hmm = mm_get_hmm(nrange->mm);
+> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+>  
+> -	VM_BUG_ON(!hmm);
+> +	/* hmm is in progress to free */
+> +	if (!kref_get_unless_zero(&hmm->kref))
+> +		return;
+>  
+>  	mutex_lock(&hmm->lock);
+>  	hmm->notifiers--;
+> -- 
+> 2.21.0
+> 
