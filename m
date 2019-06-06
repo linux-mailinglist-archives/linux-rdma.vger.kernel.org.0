@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AD537C6D
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 20:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1704037C6E
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 20:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbfFFSor (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 14:44:47 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33089 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbfFFSor (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 14:44:47 -0400
-Received: by mail-qt1-f196.google.com with SMTP id 14so3944853qtf.0
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 11:44:46 -0700 (PDT)
+        id S1726964AbfFFSos (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 14:44:48 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:43614 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726906AbfFFSos (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 14:44:48 -0400
+Received: by mail-qk1-f196.google.com with SMTP id m14so2118823qka.10
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 11:44:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Tcl38YCYPEHxtG59vS1/laf3LqY602AZ9Gwml32ANEI=;
-        b=hlrXri4CeEqiio7H/zfky6NMR7c65pBi/F8pbkmeJr2seEsfBd9qQbAyoCdHKPCuAC
-         qOjGVsCwywsrQAs8F8f7bXbvI4mxQXMaLzXfL+nD0jx3Re+FpvedlkosN9s82eEcILOF
-         jjkWSF5MrKwcYO1kxfxzkGpH5jfkehCo7dr1F9ZVwxWOtEG3YD724vwOMu83c6AsplFV
-         wapKpAfXNKW3ibR5Yp3tsVpjC565fxndhwuL+Aw71vwHim7yGiO0p7XecLABBh9kjhYa
-         RBziZbveeMFL4Dvyn731jLuoNH1SB7mJwtOsx5v/oKmqUFczBchHp49QeSTBXmd1v1Dv
-         415Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lL1gh8nawE6RFwsPdkPriGSJ+VnlR7Td1463Tqz8utE=;
+        b=i1eoUPW+Np1ntz3bbKM3DpfMNN3rtSLjFDcmDB0vnq8UBH26kk63yNvtdKWmYVv2TV
+         Pi+BVA4ti/NZ/Kxq6fbwoxDlR7kj35FAE/DOaimNUrZ5r1sTA5O/bAcr13jRwmRbnpxo
+         TDFODNWEBAT/btsMWcqDTmLq2sZ6BFWqMBX8F+5SG9cP5jttZex0XY8bZAT3yEvhQllA
+         Ti/dQpvuTYxWENCc1huucv5i9yrAjKo9CBNJ/Lo8NX9PMfBSb4jhB683uChR8oVThjIV
+         ISzCmuSiYW97tizaIYodsqJaggibXGQKh2/eAvL6GclckuApULlhfSiRO/Br537Ceq9G
+         qQdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Tcl38YCYPEHxtG59vS1/laf3LqY602AZ9Gwml32ANEI=;
-        b=s3SUhDt2xKOeAOqv2a4p33WHi6zjk2W3X4iXI1AYMlcgwk/UuETcaV+X0owAhXL9HV
-         6EsO1dIN6OaLzhmtUDM8LDZkYSNfOJs5hqzKKxgkfIOhCd7GJejxyAuMwY4iSEhLYQ7a
-         ZkY1EiVP3Fcii+RF7Ghh78u1HcY6oeBjPls1/KQdptZ5AuFUIci8M8YGw7+q4cEO5Wiu
-         HGe0XMl9Ztiz4sp4WXI0isnqnxnwHb0larJf+q4ipBd4iZbkZdAHo7bwoWAGxcgawRrd
-         1risIRRZrv5UkXZqBAZnasDHnCmtFBxgtn0THYaV8nOYgXvFlvvSSinB0+aZ6MGIAYXN
-         rsZQ==
-X-Gm-Message-State: APjAAAVT9PCbLgswA6Ay9LM/Dq6NrnA/yw4OMduk6ECK2PVobWMDhww3
-        BitS+adC4F1Jxk18pbtDOfWC7A==
-X-Google-Smtp-Source: APXvYqwHsJyTk4fQz5PZYwBgzdqZtwH6jrE0uJFj5aHZhZ7tQwHTh6bgGfHk1coLRSMVlHO0bDCdZQ==
-X-Received: by 2002:ac8:1a39:: with SMTP id v54mr42610485qtj.21.1559846686346;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lL1gh8nawE6RFwsPdkPriGSJ+VnlR7Td1463Tqz8utE=;
+        b=MMWLItN3OWXJagg1VaCFj0HnvntedUfcsIHmA3k5eFqoeBfJTQUkixw2uGxfLNvPjy
+         0lwNKLvvrWKHMrgmf78kvIQF0tIRaO7c382pD91jUqG+WrC/vkmpG+nG0SUTQllfHhAE
+         eVN3qwU9WM0Iom5dgsfPmYqOEKiMe3yT230BqVJmN75SuH95GAD8MLfWaffEdwJuVuVi
+         s100SEPzZBbA78lRWVMoFBTEgsxqsL6ITHXwNuLYNWbG/f6SE8AvPt2Nxtiicq3ze0oH
+         oHL8FX8sTM+qThoDPq84EKDygFjuI2Ae8XpSKIlHufZh9okIqXPjYs71raq/RGfoV7U8
+         W1RQ==
+X-Gm-Message-State: APjAAAX6Fc9TFakbSgNWB9kfkCkbNUuF810UUt57IJ7LyCBbpTtPKV/v
+        Iec1RKU4+QQgirXsFOmtiJQRzw==
+X-Google-Smtp-Source: APXvYqysUYNwLpFGpXB7aK6DBYGI6cTSoPBzuRqVbpub4N7BK9TEIAgc5KayvZk47O3Fq3EpoC7BwA==
+X-Received: by 2002:a37:6f81:: with SMTP id k123mr4055833qkc.321.1559846686738;
         Thu, 06 Jun 2019 11:44:46 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id c184sm1290839qkf.82.2019.06.06.11.44.45
+        by smtp.gmail.com with ESMTPSA id e128sm1194796qkf.90.2019.06.06.11.44.45
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 06 Jun 2019 11:44:45 -0700 (PDT)
+        Thu, 06 Jun 2019 11:44:46 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hYxNV-0008Hz-CZ; Thu, 06 Jun 2019 15:44:45 -0300
+        id 1hYxNV-0008I5-Dx; Thu, 06 Jun 2019 15:44:45 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
@@ -55,12 +55,13 @@ Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Andrea Arcangeli <aarcange@redhat.com>,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v2 hmm 00/11] Various revisions from a locking/code review
-Date:   Thu,  6 Jun 2019 15:44:27 -0300
-Message-Id: <20190606184438.31646-1-jgg@ziepe.ca>
+Subject: [PATCH v2 hmm 01/11] mm/hmm: fix use after free with struct hmm in the mmu notifiers
+Date:   Thu,  6 Jun 2019 15:44:28 -0300
+Message-Id: <20190606184438.31646-2-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190606184438.31646-1-jgg@ziepe.ca>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
@@ -69,78 +70,126 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-For hmm.git:
+mmu_notifier_unregister_no_release() is not a fence and the mmu_notifier
+system will continue to reference hmm->mn until the srcu grace period
+expires.
 
-This patch series arised out of discussions with Jerome when looking at the
-ODP changes, particularly informed by use after free races we have already
-found and fixed in the ODP code (thanks to syzkaller) working with mmu
-notifiers, and the discussion with Ralph on how to resolve the lifetime model.
+Resulting in use after free races like this:
 
-Overall this brings in a simplified locking scheme and easy to explain
-lifetime model:
+         CPU0                                     CPU1
+                                               __mmu_notifier_invalidate_range_start()
+                                                 srcu_read_lock
+                                                 hlist_for_each ()
+                                                   // mn == hmm->mn
+hmm_mirror_unregister()
+  hmm_put()
+    hmm_free()
+      mmu_notifier_unregister_no_release()
+         hlist_del_init_rcu(hmm-mn->list)
+			                           mn->ops->invalidate_range_start(mn, range);
+					             mm_get_hmm()
+      mm->hmm = NULL;
+      kfree(hmm)
+                                                     mutex_lock(&hmm->lock);
 
- If a hmm_range is valid, then the hmm is valid, if a hmm is valid then the mm
- is allocated memory.
+Use SRCU to kfree the hmm memory so that the notifiers can rely on hmm
+existing. Get the now-safe hmm struct through container_of and directly
+check kref_get_unless_zero to lock it against free.
 
- If the mm needs to still be alive (ie to lock the mmap_sem, find a vma, etc)
- then the mmget must be obtained via mmget_not_zero().
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+v2:
+- Spell 'free' properly (Jerome/Ralph)
+---
+ include/linux/hmm.h |  1 +
+ mm/hmm.c            | 25 +++++++++++++++++++------
+ 2 files changed, 20 insertions(+), 6 deletions(-)
 
-Locking of mm->hmm is shifted to use the mmap_sem consistently for all
-read/write and unlocked accesses are removed.
-
-The use unlocked reads on 'hmm->dead' are also eliminated in favour of using
-standard mmget() locking to prevent the mm from being released. Many of the
-debugging checks of !range->hmm and !hmm->mm are dropped in favour of poison -
-which is much clearer as to the lifetime intent.
-
-The trailing patches are just some random cleanups I noticed when reviewing
-this code.
-
-This v2 incorporates alot of the good off list changes & feedback Jerome had,
-and all the on-list comments too. However, now that we have the shared git I
-have kept the one line change to nouveau_svm.c rather than the compat
-funtions.
-
-I believe we can resolve this merge in the DRM tree now and keep the core
-mm/hmm.c clean. DRM maintainers, please correct me if I'm wrong.
-
-It is on top of hmm.git, and I have a git tree of this series to ease testing
-here:
-
-https://github.com/jgunthorpe/linux/tree/hmm
-
-There are still some open locking issues, as I think this remains unaddressed:
-
-https://lore.kernel.org/linux-mm/20190527195829.GB18019@mellanox.com/
-
-I'm looking for some more acks, reviews and tests so this can move ahead to
-hmm.git.
-
-Detailed notes on the v2 changes are in each patch. The big changes:
- - mmget is held so long as the range is registered
- - the last patch 'Remove confusing comment and logic from hmm_release' is new
-
-Thanks everyone,
-Jason
-
-Jason Gunthorpe (11):
-  mm/hmm: fix use after free with struct hmm in the mmu notifiers
-  mm/hmm: Use hmm_mirror not mm as an argument for hmm_range_register
-  mm/hmm: Hold a mmgrab from hmm to mm
-  mm/hmm: Simplify hmm_get_or_create and make it reliable
-  mm/hmm: Remove duplicate condition test before wait_event_timeout
-  mm/hmm: Hold on to the mmget for the lifetime of the range
-  mm/hmm: Use lockdep instead of comments
-  mm/hmm: Remove racy protection against double-unregistration
-  mm/hmm: Poison hmm_range during unregister
-  mm/hmm: Do not use list*_rcu() for hmm->ranges
-  mm/hmm: Remove confusing comment and logic from hmm_release
-
- drivers/gpu/drm/nouveau/nouveau_svm.c |   2 +-
- include/linux/hmm.h                   |  49 +------
- kernel/fork.c                         |   1 -
- mm/hmm.c                              | 204 ++++++++++----------------
- 4 files changed, 87 insertions(+), 169 deletions(-)
-
+diff --git a/include/linux/hmm.h b/include/linux/hmm.h
+index 092f0234bfe917..688c5ca7068795 100644
+--- a/include/linux/hmm.h
++++ b/include/linux/hmm.h
+@@ -102,6 +102,7 @@ struct hmm {
+ 	struct mmu_notifier	mmu_notifier;
+ 	struct rw_semaphore	mirrors_sem;
+ 	wait_queue_head_t	wq;
++	struct rcu_head		rcu;
+ 	long			notifiers;
+ 	bool			dead;
+ };
+diff --git a/mm/hmm.c b/mm/hmm.c
+index 8e7403f081f44a..547002f56a163d 100644
+--- a/mm/hmm.c
++++ b/mm/hmm.c
+@@ -113,6 +113,11 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+ 	return NULL;
+ }
+ 
++static void hmm_free_rcu(struct rcu_head *rcu)
++{
++	kfree(container_of(rcu, struct hmm, rcu));
++}
++
+ static void hmm_free(struct kref *kref)
+ {
+ 	struct hmm *hmm = container_of(kref, struct hmm, kref);
+@@ -125,7 +130,7 @@ static void hmm_free(struct kref *kref)
+ 		mm->hmm = NULL;
+ 	spin_unlock(&mm->page_table_lock);
+ 
+-	kfree(hmm);
++	mmu_notifier_call_srcu(&hmm->rcu, hmm_free_rcu);
+ }
+ 
+ static inline void hmm_put(struct hmm *hmm)
+@@ -153,10 +158,14 @@ void hmm_mm_destroy(struct mm_struct *mm)
+ 
+ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+ {
+-	struct hmm *hmm = mm_get_hmm(mm);
++	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+ 	struct hmm_mirror *mirror;
+ 	struct hmm_range *range;
+ 
++	/* hmm is in progress to free */
++	if (!kref_get_unless_zero(&hmm->kref))
++		return;
++
+ 	/* Report this HMM as dying. */
+ 	hmm->dead = true;
+ 
+@@ -194,13 +203,15 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
+ 			const struct mmu_notifier_range *nrange)
+ {
+-	struct hmm *hmm = mm_get_hmm(nrange->mm);
++	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+ 	struct hmm_mirror *mirror;
+ 	struct hmm_update update;
+ 	struct hmm_range *range;
+ 	int ret = 0;
+ 
+-	VM_BUG_ON(!hmm);
++	/* hmm is in progress to free */
++	if (!kref_get_unless_zero(&hmm->kref))
++		return 0;
+ 
+ 	update.start = nrange->start;
+ 	update.end = nrange->end;
+@@ -245,9 +256,11 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
+ static void hmm_invalidate_range_end(struct mmu_notifier *mn,
+ 			const struct mmu_notifier_range *nrange)
+ {
+-	struct hmm *hmm = mm_get_hmm(nrange->mm);
++	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+ 
+-	VM_BUG_ON(!hmm);
++	/* hmm is in progress to free */
++	if (!kref_get_unless_zero(&hmm->kref))
++		return;
+ 
+ 	mutex_lock(&hmm->lock);
+ 	hmm->notifiers--;
 -- 
 2.21.0
+
