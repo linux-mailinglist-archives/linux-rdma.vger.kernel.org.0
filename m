@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3E737C75
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 20:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEBE37C77
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 20:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727415AbfFFSov (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 14:44:51 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:46069 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727279AbfFFSou (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 14:44:50 -0400
-Received: by mail-qk1-f195.google.com with SMTP id s22so2104246qkj.12
+        id S1727003AbfFFSow (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 14:44:52 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:34574 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726906AbfFFSov (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 14:44:51 -0400
+Received: by mail-qt1-f196.google.com with SMTP id m29so3945242qtu.1
         for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 11:44:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=m5r23PQEATRs0yuo7EiwMQdVkzY1U+YCz5n+ShEeoJ4=;
-        b=NWo/t5Eg8vkPop9rmLEJM24/TPCJSDGLkfJSg++y8tqe0YH7o0F0c+BLBxXYqlWbHn
-         TQBM+rvo5UiyMgZHvqK7Pvgn4ARc08XbQ20YAC3fqCirAP5zyCBTuaRKGYQxA5+ez9MY
-         5dtAcK3pg10dTEX2QJmbgVOe2q4izOeIa/IhaKfFTg1LtlOqd5CgPkliph8c0pVndS4n
-         r9g5yTZjE2Bz4PyNamQroNF8IT3K4ojSe1Y0KMRcIsSxPFsRL0WgkcnPYGMbxXNaACfs
-         /YPv4ioHw6zlpgsrcrlglyXYrBLyXki3e7XQt67BaOsoljLrmJ+pampgcg1bCjvTHEk3
-         u1yw==
+        bh=IcIuNwf0zSIjR7XDITYyS7Upr/ibuj30Et6ThDetGUk=;
+        b=Rvt6PYlHJVz8B4LawxVuziHGCwRJD2Qr2qMiY3NEDUJNQxIcviDgQFIUHpNOBK6bPf
+         MIIBJmiWVVkfUMbHMVhNgYzIahm6Aa7GUFAb3gMyDxztH5h7Eb+fHHV92q7izqEBwwUK
+         enoyn9lRGevzhavWgW36BHvjzT31gUq2EFNwzhKeKkZTpVNTzzVvik0L2TrM3EnBxw1d
+         HwLNV0REutZrfhliSSQTwWrC1elVFzjojR+FeHHh1CsZjd+KT2xql8gm7opCTrlBcvvX
+         NVsKXd0JcUf5SXTHZ3LhocSEFVCL79+sS0K2915hv11I6abm0hUCKJT6F6DnKNs8vXBi
+         N3Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=m5r23PQEATRs0yuo7EiwMQdVkzY1U+YCz5n+ShEeoJ4=;
-        b=RyFCIkzyp19GQAbs/kp/LMhWTN992tjosL8Dp+4kiQiUq7Grb+i5ZaREHtAZXWP9s/
-         q/ifSfQXjGEOp8+51cIcaDUnJwtLfcEww9fMzwxMqPUf1gZGp2rtwHlxbdRZhueslkFk
-         EQ0n4L/6yhrV3FnaLgNvUycXFslZClHrqwZCKisKmv1tKPYSXx8eT362z8xoWYDirb6Z
-         12Q7v1B0HzDcZVN01/3xRcLOoe9pmvGmoSJYLJNJ4R0DaS6xW3rwNjRobOeqOGOWsGLg
-         CSCTPXV2Nt85l+eQgoTorIT/KURcH3GNe3h2Xvi93hZurP9WvQy8L+t/1WufjyGArIoA
-         fCpw==
-X-Gm-Message-State: APjAAAWhybLDzq7YCW7O+e8u7A9rrpGEI2byIPV0YjcHFTWIZV4xJPsA
-        jDz1/1zdPi/ZE8Z62cC8pc5r51sfe5JNMQ==
-X-Google-Smtp-Source: APXvYqyDTfgtep66c/jLgBTZULmgoKmkAN7hyfuI/DrREbp9gQ0U06D4ocKYi5xCroJDWLKbh/kYjQ==
-X-Received: by 2002:ae9:c30e:: with SMTP id n14mr34724569qkg.220.1559846689590;
-        Thu, 06 Jun 2019 11:44:49 -0700 (PDT)
+        bh=IcIuNwf0zSIjR7XDITYyS7Upr/ibuj30Et6ThDetGUk=;
+        b=iMVsWffgrMx3uvW4TA4EbCFqM1+SyJc9IFkDuExCMvKcbeEBHVP/2Je0yZKLIGnSfs
+         9B8Z5GBUdudgYHsJLstUSdOs2/FNhhNo/B84fCID1elp1Kqh5R/woFgxPwqmXS7rhJ4i
+         wqCXN33LMTjXx1pZj+E4vuK/xTc4hYkmZ7QuHwLXeeSPnCAXfFlpQXz9sLaQIC/JEK5k
+         25aStAL67IK4BZ1B3hACrwHSoF57H9bO6tgZ4reZl8EKHrA5jY/14NMiuYCNGB24kv7O
+         06vDOTtVKL+6Gf4vIYUP9RZwI+s+qZQCilqTx+2cT/Bg33p7ApZSPx/inQ31eTsW9MPE
+         Q4Bw==
+X-Gm-Message-State: APjAAAWxPHbz0pEAtOuzPQo7zgasbh4PCogTYQTBQs2p7sitNgHI7ACg
+        J+CeFlpEz0Z9rGSedbFL8p21+RAo4A2k2Q==
+X-Google-Smtp-Source: APXvYqykn/mITkIwjkB65/z/6RCijqiu6Ix2iI3uboXOjS2+VibgJIHgW9EaDOqfs4y2pX6u4b1Wyw==
+X-Received: by 2002:aed:33e6:: with SMTP id v93mr42686308qtd.157.1559846690472;
+        Thu, 06 Jun 2019 11:44:50 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id s64sm1267327qkb.56.2019.06.06.11.44.46
+        by smtp.gmail.com with ESMTPSA id y8sm1656836qth.22.2019.06.06.11.44.46
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Thu, 06 Jun 2019 11:44:46 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hYxNV-0008Ir-QZ; Thu, 06 Jun 2019 15:44:45 -0300
+        id 1hYxNV-0008Ix-Sq; Thu, 06 Jun 2019 15:44:45 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
@@ -55,9 +55,9 @@ Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Andrea Arcangeli <aarcange@redhat.com>,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v2 hmm 09/11] mm/hmm: Poison hmm_range during unregister
-Date:   Thu,  6 Jun 2019 15:44:36 -0300
-Message-Id: <20190606184438.31646-10-jgg@ziepe.ca>
+Subject: [PATCH v2 hmm 10/11] mm/hmm: Do not use list*_rcu() for hmm->ranges
+Date:   Thu,  6 Jun 2019 15:44:37 -0300
+Message-Id: <20190606184438.31646-11-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190606184438.31646-1-jgg@ziepe.ca>
 References: <20190606184438.31646-1-jgg@ziepe.ca>
@@ -71,43 +71,37 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-Trying to misuse a range outside its lifetime is a kernel bug. Use WARN_ON
-and poison bytes to detect this condition.
+This list is always read and written while holding hmm->lock so there is
+no need for the confusing _rcu annotations.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
 ---
-v2
-- Keep range start/end valid after unregistration (Jerome)
----
- mm/hmm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ mm/hmm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mm/hmm.c b/mm/hmm.c
-index 6802de7080d172..c2fecb3ecb11e1 100644
+index c2fecb3ecb11e1..709d138dd49027 100644
 --- a/mm/hmm.c
 +++ b/mm/hmm.c
-@@ -937,7 +937,7 @@ void hmm_range_unregister(struct hmm_range *range)
- 	struct hmm *hmm = range->hmm;
+@@ -911,7 +911,7 @@ int hmm_range_register(struct hmm_range *range,
+ 	mutex_lock(&hmm->lock);
  
- 	/* Sanity check this really should not happen. */
--	if (hmm == NULL || range->end <= range->start)
-+	if (WARN_ON(range->end <= range->start))
+ 	range->hmm = hmm;
+-	list_add_rcu(&range->list, &hmm->ranges);
++	list_add(&range->list, &hmm->ranges);
+ 
+ 	/*
+ 	 * If there are any concurrent notifiers we have to wait for them for
+@@ -941,7 +941,7 @@ void hmm_range_unregister(struct hmm_range *range)
  		return;
  
  	mutex_lock(&hmm->lock);
-@@ -948,7 +948,10 @@ void hmm_range_unregister(struct hmm_range *range)
- 	range->valid = false;
- 	mmput(hmm->mm);
- 	hmm_put(hmm);
--	range->hmm = NULL;
-+
-+	/* The range is now invalid, leave it poisoned. */
-+	range->valid = false;
-+	memset(&range->hmm, POISON_INUSE, sizeof(range->hmm));
- }
- EXPORT_SYMBOL(hmm_range_unregister);
+-	list_del_rcu(&range->list);
++	list_del(&range->list);
+ 	mutex_unlock(&hmm->lock);
  
+ 	/* Drop reference taken by hmm_range_register() */
 -- 
 2.21.0
 
