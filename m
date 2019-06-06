@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1704037C6E
+	by mail.lfdr.de (Postfix) with ESMTP id EC9BB37C70
 	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 20:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbfFFSos (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726066AbfFFSos (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 6 Jun 2019 14:44:48 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:43614 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726906AbfFFSos (ORCPT
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:41978 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726922AbfFFSos (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 14:44:48 -0400
-Received: by mail-qk1-f196.google.com with SMTP id m14so2118823qka.10
+Received: by mail-qk1-f194.google.com with SMTP id c11so2117791qkk.8
         for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 11:44:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lL1gh8nawE6RFwsPdkPriGSJ+VnlR7Td1463Tqz8utE=;
-        b=i1eoUPW+Np1ntz3bbKM3DpfMNN3rtSLjFDcmDB0vnq8UBH26kk63yNvtdKWmYVv2TV
-         Pi+BVA4ti/NZ/Kxq6fbwoxDlR7kj35FAE/DOaimNUrZ5r1sTA5O/bAcr13jRwmRbnpxo
-         TDFODNWEBAT/btsMWcqDTmLq2sZ6BFWqMBX8F+5SG9cP5jttZex0XY8bZAT3yEvhQllA
-         Ti/dQpvuTYxWENCc1huucv5i9yrAjKo9CBNJ/Lo8NX9PMfBSb4jhB683uChR8oVThjIV
-         ISzCmuSiYW97tizaIYodsqJaggibXGQKh2/eAvL6GclckuApULlhfSiRO/Br537Ceq9G
-         qQdQ==
+        bh=cKkqHG6lA8ec9OmOBivsmV6gRcE/obxU2CCqIDGlTpM=;
+        b=jwj7m66yktUzAAVuBGGSCtyJS/egSnF1B/vxHFcHYcF2Uik/EqL4UNPU57byfvPnPV
+         EUOhSE6Yc2ULsjPzk2Q0cPgGDWJT6t2SoK+wEhbAq1wIixyAii3w6eS/3F4aOcLSPwis
+         wISfz8dx+YNMVHjshe7Qu1Sb1slKfIiBQMNHt3ytiNJzaiH2eoJOAMMz+9NSZ0N4cZIj
+         IOJsM/44sVtvL3oMoPVTtng3fKxXbLORwQK9ZTj6pDXhMqEyH4epdWP8UfEJY1SfdN0a
+         cUwOJj4KyRl8nUp5tdavSJ2m0nYwjfI9rz5uUmGGXTAadrKsObhys9ToUrWKVFbjE5E+
+         wb4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lL1gh8nawE6RFwsPdkPriGSJ+VnlR7Td1463Tqz8utE=;
-        b=MMWLItN3OWXJagg1VaCFj0HnvntedUfcsIHmA3k5eFqoeBfJTQUkixw2uGxfLNvPjy
-         0lwNKLvvrWKHMrgmf78kvIQF0tIRaO7c382pD91jUqG+WrC/vkmpG+nG0SUTQllfHhAE
-         eVN3qwU9WM0Iom5dgsfPmYqOEKiMe3yT230BqVJmN75SuH95GAD8MLfWaffEdwJuVuVi
-         s100SEPzZBbA78lRWVMoFBTEgsxqsL6ITHXwNuLYNWbG/f6SE8AvPt2Nxtiicq3ze0oH
-         oHL8FX8sTM+qThoDPq84EKDygFjuI2Ae8XpSKIlHufZh9okIqXPjYs71raq/RGfoV7U8
-         W1RQ==
-X-Gm-Message-State: APjAAAX6Fc9TFakbSgNWB9kfkCkbNUuF810UUt57IJ7LyCBbpTtPKV/v
-        Iec1RKU4+QQgirXsFOmtiJQRzw==
-X-Google-Smtp-Source: APXvYqysUYNwLpFGpXB7aK6DBYGI6cTSoPBzuRqVbpub4N7BK9TEIAgc5KayvZk47O3Fq3EpoC7BwA==
-X-Received: by 2002:a37:6f81:: with SMTP id k123mr4055833qkc.321.1559846686738;
-        Thu, 06 Jun 2019 11:44:46 -0700 (PDT)
+        bh=cKkqHG6lA8ec9OmOBivsmV6gRcE/obxU2CCqIDGlTpM=;
+        b=B3+6rKr+N7nkiyEZO1C0owHtX/f6L7EQXgjdEFV9Frc3EVmgqRoZjMVBoVqa6uIlmj
+         MHmmcYdgGskXzSNR+pZqRLBHBeFupo4hENKJ16arEZ+pBzrnjKfFxwv5D46TJDl8psM8
+         9NEGhPY/guw4V77yLq1xWzsSoR2ro+wQwuMLgw9RxTQbUa2GDdLk3xljaUQOSyREk7KW
+         +siN+/u4u7hzX9Z+F1UzOVf6aqYZjzgvswpcLdotClkm1YcBiHAcSysr+o6hshFEL8mP
+         vnMmsF+MuVDTniY06aSq7CbU4TYdMOdu/GtBl+PsenjrKzQbzBXX6bqEBs20EqKqW4I7
+         XdMg==
+X-Gm-Message-State: APjAAAUU4bPI24w1ROXeQxP74Lvl2RVyuP43WKD+cZ2Tyul/ENs0vjqK
+        SLeoBf6oceIDbR2MFfYDV7Iaiw==
+X-Google-Smtp-Source: APXvYqwVkPweqvQyzdMm8hrdxDc8fcdFbLwJPBzLxuUMc6ON/X0Bc6zX6ARY8mPOX6I9iWyD4gOp2g==
+X-Received: by 2002:a37:a0e:: with SMTP id 14mr21589009qkk.203.1559846687100;
+        Thu, 06 Jun 2019 11:44:47 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id e128sm1194796qkf.90.2019.06.06.11.44.45
+        by smtp.gmail.com with ESMTPSA id e66sm1557234qtb.55.2019.06.06.11.44.45
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Thu, 06 Jun 2019 11:44:46 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hYxNV-0008I5-Dx; Thu, 06 Jun 2019 15:44:45 -0300
+        id 1hYxNV-0008IB-G5; Thu, 06 Jun 2019 15:44:45 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
@@ -55,9 +55,9 @@ Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Andrea Arcangeli <aarcange@redhat.com>,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v2 hmm 01/11] mm/hmm: fix use after free with struct hmm in the mmu notifiers
-Date:   Thu,  6 Jun 2019 15:44:28 -0300
-Message-Id: <20190606184438.31646-2-jgg@ziepe.ca>
+Subject: [PATCH v2 hmm 02/11] mm/hmm: Use hmm_mirror not mm as an argument for hmm_range_register
+Date:   Thu,  6 Jun 2019 15:44:29 -0300
+Message-Id: <20190606184438.31646-3-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190606184438.31646-1-jgg@ziepe.ca>
 References: <20190606184438.31646-1-jgg@ziepe.ca>
@@ -70,126 +70,110 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-mmu_notifier_unregister_no_release() is not a fence and the mmu_notifier
-system will continue to reference hmm->mn until the srcu grace period
-expires.
+Ralph observes that hmm_range_register() can only be called by a driver
+while a mirror is registered. Make this clear in the API by passing in the
+mirror structure as a parameter.
 
-Resulting in use after free races like this:
+This also simplifies understanding the lifetime model for struct hmm, as
+the hmm pointer must be valid as part of a registered mirror so all we
+need in hmm_register_range() is a simple kref_get.
 
-         CPU0                                     CPU1
-                                               __mmu_notifier_invalidate_range_start()
-                                                 srcu_read_lock
-                                                 hlist_for_each ()
-                                                   // mn == hmm->mn
-hmm_mirror_unregister()
-  hmm_put()
-    hmm_free()
-      mmu_notifier_unregister_no_release()
-         hlist_del_init_rcu(hmm-mn->list)
-			                           mn->ops->invalidate_range_start(mn, range);
-					             mm_get_hmm()
-      mm->hmm = NULL;
-      kfree(hmm)
-                                                     mutex_lock(&hmm->lock);
-
-Use SRCU to kfree the hmm memory so that the notifiers can rely on hmm
-existing. Get the now-safe hmm struct through container_of and directly
-check kref_get_unless_zero to lock it against free.
-
+Suggested-by: Ralph Campbell <rcampbell@nvidia.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
-v2:
-- Spell 'free' properly (Jerome/Ralph)
+v2
+- Include the oneline patch to nouveau_svm.c
 ---
- include/linux/hmm.h |  1 +
- mm/hmm.c            | 25 +++++++++++++++++++------
- 2 files changed, 20 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_svm.c |  2 +-
+ include/linux/hmm.h                   |  7 ++++---
+ mm/hmm.c                              | 15 ++++++---------
+ 3 files changed, 11 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
+index 93ed43c413f0bb..8c92374afcf227 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_svm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
+@@ -649,7 +649,7 @@ nouveau_svm_fault(struct nvif_notify *notify)
+ 		range.values = nouveau_svm_pfn_values;
+ 		range.pfn_shift = NVIF_VMM_PFNMAP_V0_ADDR_SHIFT;
+ again:
+-		ret = hmm_vma_fault(&range, true);
++		ret = hmm_vma_fault(&svmm->mirror, &range, true);
+ 		if (ret == 0) {
+ 			mutex_lock(&svmm->mutex);
+ 			if (!hmm_vma_range_done(&range)) {
 diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-index 092f0234bfe917..688c5ca7068795 100644
+index 688c5ca7068795..2d519797cb134a 100644
 --- a/include/linux/hmm.h
 +++ b/include/linux/hmm.h
-@@ -102,6 +102,7 @@ struct hmm {
- 	struct mmu_notifier	mmu_notifier;
- 	struct rw_semaphore	mirrors_sem;
- 	wait_queue_head_t	wq;
-+	struct rcu_head		rcu;
- 	long			notifiers;
- 	bool			dead;
- };
+@@ -505,7 +505,7 @@ static inline bool hmm_mirror_mm_is_alive(struct hmm_mirror *mirror)
+  * Please see Documentation/vm/hmm.rst for how to use the range API.
+  */
+ int hmm_range_register(struct hmm_range *range,
+-		       struct mm_struct *mm,
++		       struct hmm_mirror *mirror,
+ 		       unsigned long start,
+ 		       unsigned long end,
+ 		       unsigned page_shift);
+@@ -541,7 +541,8 @@ static inline bool hmm_vma_range_done(struct hmm_range *range)
+ }
+ 
+ /* This is a temporary helper to avoid merge conflict between trees. */
+-static inline int hmm_vma_fault(struct hmm_range *range, bool block)
++static inline int hmm_vma_fault(struct hmm_mirror *mirror,
++				struct hmm_range *range, bool block)
+ {
+ 	long ret;
+ 
+@@ -554,7 +555,7 @@ static inline int hmm_vma_fault(struct hmm_range *range, bool block)
+ 	range->default_flags = 0;
+ 	range->pfn_flags_mask = -1UL;
+ 
+-	ret = hmm_range_register(range, range->vma->vm_mm,
++	ret = hmm_range_register(range, mirror,
+ 				 range->start, range->end,
+ 				 PAGE_SHIFT);
+ 	if (ret)
 diff --git a/mm/hmm.c b/mm/hmm.c
-index 8e7403f081f44a..547002f56a163d 100644
+index 547002f56a163d..8796447299023c 100644
 --- a/mm/hmm.c
 +++ b/mm/hmm.c
-@@ -113,6 +113,11 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
- 	return NULL;
- }
+@@ -925,13 +925,13 @@ static void hmm_pfns_clear(struct hmm_range *range,
+  * Track updates to the CPU page table see include/linux/hmm.h
+  */
+ int hmm_range_register(struct hmm_range *range,
+-		       struct mm_struct *mm,
++		       struct hmm_mirror *mirror,
+ 		       unsigned long start,
+ 		       unsigned long end,
+ 		       unsigned page_shift)
+ {
+ 	unsigned long mask = ((1UL << page_shift) - 1UL);
+-	struct hmm *hmm;
++	struct hmm *hmm = mirror->hmm;
  
-+static void hmm_free_rcu(struct rcu_head *rcu)
-+{
-+	kfree(container_of(rcu, struct hmm, rcu));
-+}
+ 	range->valid = false;
+ 	range->hmm = NULL;
+@@ -945,15 +945,12 @@ int hmm_range_register(struct hmm_range *range,
+ 	range->start = start;
+ 	range->end = end;
+ 
+-	hmm = hmm_get_or_create(mm);
+-	if (!hmm)
+-		return -EFAULT;
+-
+ 	/* Check if hmm_mm_destroy() was call. */
+-	if (hmm->mm == NULL || hmm->dead) {
+-		hmm_put(hmm);
++	if (hmm->mm == NULL || hmm->dead)
+ 		return -EFAULT;
+-	}
 +
- static void hmm_free(struct kref *kref)
- {
- 	struct hmm *hmm = container_of(kref, struct hmm, kref);
-@@ -125,7 +130,7 @@ static void hmm_free(struct kref *kref)
- 		mm->hmm = NULL;
- 	spin_unlock(&mm->page_table_lock);
++	range->hmm = hmm;
++	kref_get(&hmm->kref);
  
--	kfree(hmm);
-+	mmu_notifier_call_srcu(&hmm->rcu, hmm_free_rcu);
- }
- 
- static inline void hmm_put(struct hmm *hmm)
-@@ -153,10 +158,14 @@ void hmm_mm_destroy(struct mm_struct *mm)
- 
- static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
- {
--	struct hmm *hmm = mm_get_hmm(mm);
-+	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
- 	struct hmm_mirror *mirror;
- 	struct hmm_range *range;
- 
-+	/* hmm is in progress to free */
-+	if (!kref_get_unless_zero(&hmm->kref))
-+		return;
-+
- 	/* Report this HMM as dying. */
- 	hmm->dead = true;
- 
-@@ -194,13 +203,15 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
- static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 			const struct mmu_notifier_range *nrange)
- {
--	struct hmm *hmm = mm_get_hmm(nrange->mm);
-+	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
- 	struct hmm_mirror *mirror;
- 	struct hmm_update update;
- 	struct hmm_range *range;
- 	int ret = 0;
- 
--	VM_BUG_ON(!hmm);
-+	/* hmm is in progress to free */
-+	if (!kref_get_unless_zero(&hmm->kref))
-+		return 0;
- 
- 	update.start = nrange->start;
- 	update.end = nrange->end;
-@@ -245,9 +256,11 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- static void hmm_invalidate_range_end(struct mmu_notifier *mn,
- 			const struct mmu_notifier_range *nrange)
- {
--	struct hmm *hmm = mm_get_hmm(nrange->mm);
-+	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
- 
--	VM_BUG_ON(!hmm);
-+	/* hmm is in progress to free */
-+	if (!kref_get_unless_zero(&hmm->kref))
-+		return;
- 
+ 	/* Initialize range to track CPU page table updates. */
  	mutex_lock(&hmm->lock);
- 	hmm->notifiers--;
 -- 
 2.21.0
 
