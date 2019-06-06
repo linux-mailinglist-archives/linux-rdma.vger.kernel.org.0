@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB4F37225
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 12:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EF637226
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2019 12:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbfFFKyL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 06:54:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54738 "EHLO mail.kernel.org"
+        id S1727419AbfFFKyO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 06:54:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726818AbfFFKyL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 6 Jun 2019 06:54:11 -0400
+        id S1726818AbfFFKyO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 6 Jun 2019 06:54:14 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E324320874;
-        Thu,  6 Jun 2019 10:54:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 562F3206E0;
+        Thu,  6 Jun 2019 10:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559818450;
-        bh=1WxS+kb0IDltBy61ob9HBwPyLimsorBu1/6O5LIfy5Y=;
+        s=default; t=1559818454;
+        bh=PIU3NWwOlgIDF1ALlJMGH1PjMbhgVedvjKmYuD7i7e4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iqyUL8I5dJpPK1yTFZnP0FdLs0lviZ3unPveb+TlSb42HxeRKmRbKjBsgPzFckEkW
-         k5eoUTXyxzmtI69K2TVNKTzyLwHsI1jaFQIeKLLR4baR2f73ZCKD+hbVvAuIMq4vWq
-         1ESaCQjxXvmB2jq/Idwv0QqzmUT4JOTDqwoW4zpY=
+        b=N/wLz4IT/NdxeEwp1BHD4PGDYVmTWTyiOSdkLyDymFfpkoDF36DXstyBcxoF6EGlZ
+         bAT6x/N443kD5aIr3VO/Z87WCK1hX5XAeiFsVCQQxdtevQ56CqKkHsw79M60ltY+5x
+         L3u3GnhsfxzuCVlN8J+WfTOA6zyw60qdeD+7OOa8=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -31,9 +31,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Majd Dibbiny <majd@mellanox.com>,
         Mark Zhang <markz@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH rdma-next v3 07/17] IB/mlx5: Support set qp counter
-Date:   Thu,  6 Jun 2019 13:53:35 +0300
-Message-Id: <20190606105345.8546-8-leon@kernel.org>
+Subject: [PATCH rdma-next v3 08/17] IB/mlx5: Add counter set id as a parameter for mlx5_ib_query_q_counters()
+Date:   Thu,  6 Jun 2019 13:53:36 +0300
+Message-Id: <20190606105345.8546-9-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190606105345.8546-1-leon@kernel.org>
 References: <20190606105345.8546-1-leon@kernel.org>
@@ -46,185 +46,51 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Mark Zhang <markz@mellanox.com>
 
-Support bind a qp with counter. If counter is null then bind the qp to
-the default counter. Different QP state has different operation:
-- RESET: Set the counter field so that it will take effective
-  during RST2INIT change;
-- RTS: Issue an RTS2RTS change to update the QP counter;
-- Other: Set the counter field and mark the counter_pending flag,
-  when QP is moved to RTS state and this flag is set, then issue
-  an RTS2RTS modification to update the counter.
+Add counter set id as a parameter so that this API can be used for
+querying any q counter.
 
 Signed-off-by: Mark Zhang <markz@mellanox.com>
 Reviewed-by: Majd Dibbiny <majd@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  6 +++
- drivers/infiniband/hw/mlx5/qp.c      | 76 +++++++++++++++++++++++++++-
- include/linux/mlx5/qp.h              |  1 +
- 3 files changed, 81 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 40eb8be482e4..228ceac13d4d 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -442,6 +442,10 @@ struct mlx5_ib_qp {
- 	u32			flags_en;
- 	/* storage for qp sub type when core qp type is IB_QPT_DRIVER */
- 	enum ib_qp_type		qp_sub_type;
-+	/* A flag to indicate if there's a new counter is configured
-+	 * but not take effective
-+	 */
-+	u32                     counter_pending;
- };
-
- struct mlx5_ib_cq_buf {
-@@ -1442,4 +1446,6 @@ void mlx5_ib_put_xlt_emergency_page(void);
- int bfregn_to_uar_index(struct mlx5_ib_dev *dev,
- 			struct mlx5_bfreg_info *bfregi, u32 bfregn,
- 			bool dyn_bfreg);
-+
-+int mlx5_ib_qp_set_counter(struct ib_qp *qp, struct rdma_counter *counter);
- #endif /* MLX5_IB_H */
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index f6623c77443a..8dbbef843010 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -34,6 +34,7 @@
- #include <rdma/ib_umem.h>
- #include <rdma/ib_cache.h>
- #include <rdma/ib_user_verbs.h>
-+#include <rdma/rdma_counter.h>
- #include <linux/mlx5/fs.h>
- #include "mlx5_ib.h"
- #include "ib_rep.h"
-@@ -3386,6 +3387,35 @@ static unsigned int get_tx_affinity(struct mlx5_ib_dev *dev,
- 	return tx_port_affinity;
- }
-
-+static int __mlx5_ib_qp_set_counter(struct ib_qp *qp,
-+				    struct rdma_counter *counter)
-+{
-+	struct mlx5_ib_dev *dev = to_mdev(qp->device);
-+	struct mlx5_ib_qp *mqp = to_mqp(qp);
-+	struct mlx5_qp_context context = {};
-+	struct mlx5_ib_port *mibport = NULL;
-+	struct mlx5_ib_qp_base *base;
-+	u32 set_id;
-+
-+	if (!MLX5_CAP_GEN(dev->mdev, rts2rts_qp_counters_set_id))
-+		return 0;
-+
-+	if (counter) {
-+		set_id = counter->id;
-+	} else {
-+		mibport = &dev->port[mqp->port - 1];
-+		set_id = mibport->cnts.set_id;
-+	}
-+
-+	base = &mqp->trans_qp.base;
-+	context.qp_counter_set_usr_page &= cpu_to_be32(0xffffff);
-+	context.qp_counter_set_usr_page |= cpu_to_be32(set_id << 24);
-+	return mlx5_core_qp_modify(dev->mdev,
-+				   MLX5_CMD_OP_RTS2RTS_QP,
-+				   MLX5_QP_OPTPAR_COUNTER_SET_ID,
-+				   &context, &base->mqp);
-+}
-+
- static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 			       const struct ib_qp_attr *attr, int attr_mask,
- 			       enum ib_qp_state cur_state,
-@@ -3439,6 +3469,7 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 	struct mlx5_ib_port *mibport = NULL;
- 	enum mlx5_qp_state mlx5_cur, mlx5_new;
- 	enum mlx5_qp_optpar optpar;
-+	u32 set_id = 0;
- 	int mlx5_st;
- 	int err;
- 	u16 op;
-@@ -3601,8 +3632,12 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 			port_num = 0;
-
- 		mibport = &dev->port[port_num];
-+		if (ibqp->counter)
-+			set_id = ibqp->counter->id;
-+		else
-+			set_id = mibport->cnts.set_id;
- 		context->qp_counter_set_usr_page |=
--			cpu_to_be32((u32)(mibport->cnts.set_id) << 24);
-+			cpu_to_be32(set_id << 24);
- 	}
-
- 	if (!ibqp->uobject && cur_state == IB_QPS_RESET && new_state == IB_QPS_INIT)
-@@ -3630,7 +3665,7 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
-
- 		raw_qp_param.operation = op;
- 		if (cur_state == IB_QPS_RESET && new_state == IB_QPS_INIT) {
--			raw_qp_param.rq_q_ctr_id = mibport->cnts.set_id;
-+			raw_qp_param.rq_q_ctr_id = set_id;
- 			raw_qp_param.set_mask |= MLX5_RAW_QP_MOD_SET_RQ_Q_CTR_ID;
- 		}
-
-@@ -3707,6 +3742,12 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 		qp->db.db[MLX5_SND_DBR] = 0;
- 	}
-
-+	if ((new_state == IB_QPS_RTS) && qp->counter_pending) {
-+		err = __mlx5_ib_qp_set_counter(ibqp, ibqp->counter);
-+		if (!err)
-+			qp->counter_pending = 0;
-+	}
-+
- out:
- 	kfree(context);
- 	return err;
-@@ -6367,3 +6408,34 @@ void mlx5_ib_drain_rq(struct ib_qp *qp)
-
- 	handle_drain_completion(cq, &rdrain, dev);
- }
-+
-+/**
-+ * Bind a qp to a counter. If @counter is NULL then bind the qp to
-+ * the default counter
-+ */
-+int mlx5_ib_qp_set_counter(struct ib_qp *qp, struct rdma_counter *counter)
-+{
-+	struct mlx5_ib_qp *mqp = to_mqp(qp);
-+	int err = 0;
-+
-+	mutex_lock(&mqp->mutex);
-+	if (mqp->state == IB_QPS_RESET) {
-+		qp->counter = counter;
-+		goto out;
-+	}
-+
-+	if (mqp->state == IB_QPS_RTS) {
-+		err = __mlx5_ib_qp_set_counter(qp, counter);
-+		if (!err)
-+			qp->counter = counter;
-+
-+		goto out;
-+	}
-+
-+	mqp->counter_pending = 1;
-+	qp->counter = counter;
-+
-+out:
-+	mutex_unlock(&mqp->mutex);
-+	return err;
-+}
-diff --git a/include/linux/mlx5/qp.h b/include/linux/mlx5/qp.h
-index 3ba4edbd17a6..787c5fabdc07 100644
---- a/include/linux/mlx5/qp.h
-+++ b/include/linux/mlx5/qp.h
-@@ -70,6 +70,7 @@ enum mlx5_qp_optpar {
- 	MLX5_QP_OPTPAR_CQN_RCV			= 1 << 19,
- 	MLX5_QP_OPTPAR_DC_HS			= 1 << 20,
- 	MLX5_QP_OPTPAR_DC_KEY			= 1 << 21,
-+	MLX5_QP_OPTPAR_COUNTER_SET_ID		= 1 << 25,
- };
-
- enum mlx5_qp_state {
---
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index abac70ad5c7c..8b7bcf8f68fb 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -5424,7 +5424,8 @@ static struct rdma_hw_stats *mlx5_ib_alloc_hw_stats(struct ib_device *ibdev,
+ 
+ static int mlx5_ib_query_q_counters(struct mlx5_core_dev *mdev,
+ 				    struct mlx5_ib_port *port,
+-				    struct rdma_hw_stats *stats)
++				    struct rdma_hw_stats *stats,
++				    u16 set_id)
+ {
+ 	int outlen = MLX5_ST_SZ_BYTES(query_q_counter_out);
+ 	void *out;
+@@ -5435,9 +5436,7 @@ static int mlx5_ib_query_q_counters(struct mlx5_core_dev *mdev,
+ 	if (!out)
+ 		return -ENOMEM;
+ 
+-	ret = mlx5_core_query_q_counter(mdev,
+-					port->cnts.set_id, 0,
+-					out, outlen);
++	ret = mlx5_core_query_q_counter(mdev, set_id, 0, out, outlen);
+ 	if (ret)
+ 		goto free;
+ 
+@@ -5497,7 +5496,8 @@ static int mlx5_ib_get_hw_stats(struct ib_device *ibdev,
+ 		       port->cnts.num_ext_ppcnt_counters;
+ 
+ 	/* q_counters are per IB device, query the master mdev */
+-	ret = mlx5_ib_query_q_counters(dev->mdev, port, stats);
++	ret = mlx5_ib_query_q_counters(dev->mdev, port, stats,
++				       port->cnts.set_id);
+ 	if (ret)
+ 		return ret;
+ 
+-- 
 2.20.1
 
