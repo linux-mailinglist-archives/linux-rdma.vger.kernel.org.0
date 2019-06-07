@@ -2,160 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F4F38A2E
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 14:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A6238A42
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 14:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728906AbfFGMZq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 08:25:46 -0400
-Received: from mga07.intel.com ([134.134.136.100]:39619 "EHLO mga07.intel.com"
+        id S1728526AbfFGM2O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 08:28:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728597AbfFGMZp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 7 Jun 2019 08:25:45 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Jun 2019 05:25:44 -0700
-X-ExtLoop1: 1
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga004.jf.intel.com with ESMTP; 07 Jun 2019 05:25:42 -0700
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x57CPdoO062826;
-        Fri, 7 Jun 2019 05:25:40 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x57CPcUF158531;
-        Fri, 7 Jun 2019 08:25:38 -0400
-Subject: [PATCH for-rc 3/3] IB/hfi1: Correct tid qp rcd to match verbs
- context
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        stable@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>
-Date:   Fri, 07 Jun 2019 08:25:38 -0400
-Message-ID: <20190607122538.158478.62945.stgit@awfm-01.aw.intel.com>
-In-Reply-To: <20190607113807.157915.48581.stgit@awfm-01.aw.intel.com>
-References: <20190607113807.157915.48581.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.17.1-dirty
+        id S1728774AbfFGM2O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 7 Jun 2019 08:28:14 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E3312133D;
+        Fri,  7 Jun 2019 12:28:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559910493;
+        bh=oJ0oXLdoaOadHkZ7PwrbAaEJNIkbJRpvQpGAOxVoZF8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ywlyviadc6IcULePF/emG5wwW+7dK43SVqiXo5maCTd18VzaLbUgLpr6R4y1tuYlW
+         Bxv8YUZH/G090B0s3wL6yl1U1/mw4G+VILR5W6FN+XpYz7whNvytlkDVIEjYDMQXhO
+         XF4VscBjQiLRmIa62E+359cjFb3R1IvXFZFXQP4I=
+Date:   Fri, 7 Jun 2019 15:28:07 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>
+Subject: Re: [PATCH 1/3] RDMA: Move driver_id into struct ib_device_ops
+Message-ID: <20190607122807.GL5261@mtr-leonro.mtl.com>
+References: <20190605173926.16995-1-jgg@ziepe.ca>
+ <20190605173926.16995-2-jgg@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190605173926.16995-2-jgg@ziepe.ca>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@intel.com>
+On Wed, Jun 05, 2019 at 02:39:24PM -0300, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+>
+> No reason for every driver to emit code to set this, just make it part of
+> the driver's existing static const ops structure.
+>
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> ---
+>  drivers/infiniband/core/device.c               | 12 +++++++++---
+>  drivers/infiniband/core/uverbs_uapi.c          |  2 +-
+>  drivers/infiniband/hw/bnxt_re/main.c           |  3 ++-
+>  drivers/infiniband/hw/cxgb3/iwch_provider.c    |  3 ++-
+>  drivers/infiniband/hw/cxgb4/provider.c         |  3 ++-
+>  drivers/infiniband/hw/efa/efa_main.c           |  3 ++-
+>  drivers/infiniband/hw/hfi1/verbs.c             |  4 +++-
+>  drivers/infiniband/hw/hns/hns_roce_main.c      |  3 ++-
+>  drivers/infiniband/hw/i40iw/i40iw_verbs.c      |  3 ++-
+>  drivers/infiniband/hw/mlx4/main.c              |  3 ++-
+>  drivers/infiniband/hw/mlx5/main.c              |  3 ++-
+>  drivers/infiniband/hw/mthca/mthca_provider.c   |  3 ++-
+>  drivers/infiniband/hw/nes/nes_verbs.c          |  3 ++-
+>  drivers/infiniband/hw/ocrdma/ocrdma_main.c     |  3 ++-
+>  drivers/infiniband/hw/qedr/main.c              |  3 ++-
+>  drivers/infiniband/hw/qib/qib_verbs.c          |  4 +++-
+>  drivers/infiniband/hw/usnic/usnic_ib_main.c    |  3 ++-
+>  drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c |  3 ++-
+>  drivers/infiniband/sw/rdmavt/vt.c              |  3 +--
+>  drivers/infiniband/sw/rxe/rxe_verbs.c          |  3 ++-
+>  include/rdma/ib_verbs.h                        |  3 ++-
+>  include/rdma/rdma_vt.h                         |  2 +-
+>  22 files changed, 50 insertions(+), 25 deletions(-)
+>
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> index 29f7b15c81d946..021eb68230270e 100644
+> --- a/drivers/infiniband/core/device.c
+> +++ b/drivers/infiniband/core/device.c
+> @@ -375,7 +375,7 @@ struct ib_device *ib_device_get_by_name(const char *name,
+>  	down_read(&devices_rwsem);
+>  	device = __ib_device_get_by_name(name);
+>  	if (device && driver_id != RDMA_DRIVER_UNKNOWN &&
+> -	    device->driver_id != driver_id)
+> +	    device->ops.driver_id != driver_id)
+>  		device = NULL;
+>
+>  	if (device) {
+> @@ -1479,7 +1479,7 @@ void ib_unregister_driver(enum rdma_driver_id driver_id)
+>
+>  	down_read(&devices_rwsem);
+>  	xa_for_each (&devices, index, ib_dev) {
+> -		if (ib_dev->driver_id != driver_id)
+> +		if (ib_dev->ops.driver_id != driver_id)
+>  			continue;
+>
+>  		get_device(&ib_dev->dev);
+> @@ -2039,7 +2039,7 @@ struct ib_device *ib_device_get_by_netdev(struct net_device *ndev,
+>  				    (uintptr_t)ndev) {
+>  		if (rcu_access_pointer(cur->netdev) == ndev &&
+>  		    (driver_id == RDMA_DRIVER_UNKNOWN ||
+> -		     cur->ib_dev->driver_id == driver_id) &&
+> +		     cur->ib_dev->ops.driver_id == driver_id) &&
+>  		    ib_device_try_get(cur->ib_dev)) {
+>  			res = cur->ib_dev;
+>  			break;
+> @@ -2344,6 +2344,12 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+>
+>  #define SET_OBJ_SIZE(ptr, name) SET_DEVICE_OP(ptr, size_##name)
+>
+> +	if (ops->driver_id != RDMA_DRIVER_UNKNOWN) {
+> +		WARN_ON(dev_ops->driver_id != RDMA_DRIVER_UNKNOWN &&
+> +			dev_ops->driver_id != ops->driver_id);
+> +		dev_ops->driver_id = ops->driver_id;
+> +	}
 
-The qp priv rcd pointer doesn't match the context being
-used for verbs causing issues when 9B and kdeth packets
-are processed by different receive contexts and hence
-different CPUs.
+I prefer to see WARN() and now WARN_ON(), it allows more easily correlate
+some randomly compiled code with upstream version.
 
-When running on different CPUs the following panic can
-occur:
-[476262.398106] WARNING: CPU: 3 PID: 2584 at lib/list_debug.c:59 __list_del_entry+0xa1/0xd0
-[476262.398109] list_del corruption. prev->next should be ffff9a7ac31f7a30, but was ffff9a7c3bc89230
-[476262.398266] CPU: 3 PID: 2584 Comm: z_wr_iss Kdump: loaded Tainted: P           OE  ------------   3.10.0-862.2.3.el7_lustre.x86_64 #1
-[476262.398272] Call Trace:
-[476262.398277]  <IRQ>  [<ffffffffb7b0d78e>] dump_stack+0x19/0x1b
-[476262.398314]  [<ffffffffb74916d8>] __warn+0xd8/0x100
-[476262.398317]  [<ffffffffb749175f>] warn_slowpath_fmt+0x5f/0x80
-[476262.398320]  [<ffffffffb7768671>] __list_del_entry+0xa1/0xd0
-[476262.398402]  [<ffffffffc0c7a945>] process_rcv_qp_work+0xb5/0x160 [hfi1]
-[476262.398424]  [<ffffffffc0c7bc2b>] handle_receive_interrupt_nodma_rtail+0x20b/0x2b0 [hfi1]
-[476262.398438]  [<ffffffffc0c70683>] receive_context_interrupt+0x23/0x40 [hfi1]
-[476262.398447]  [<ffffffffb7540a94>] __handle_irq_event_percpu+0x44/0x1c0
-[476262.398450]  [<ffffffffb7540c42>] handle_irq_event_percpu+0x32/0x80
-[476262.398454]  [<ffffffffb7540ccc>] handle_irq_event+0x3c/0x60
-[476262.398460]  [<ffffffffb7543a1f>] handle_edge_irq+0x7f/0x150
-[476262.398469]  [<ffffffffb742d504>] handle_irq+0xe4/0x1a0
-[476262.398475]  [<ffffffffb7b23f7d>] do_IRQ+0x4d/0xf0
-[476262.398481]  [<ffffffffb7b16362>] common_interrupt+0x162/0x162
-[476262.398482]  <EOI>  [<ffffffffb775a326>] ? memcpy+0x6/0x110
-[476262.398645]  [<ffffffffc109210d>] ? abd_copy_from_buf_off_cb+0x1d/0x30 [zfs]
-[476262.398678]  [<ffffffffc10920f0>] ? abd_copy_to_buf_off_cb+0x30/0x30 [zfs]
-[476262.398696]  [<ffffffffc1093257>] abd_iterate_func+0x97/0x120 [zfs]
-[476262.398710]  [<ffffffffc10934d9>] abd_copy_from_buf_off+0x39/0x60 [zfs]
-[476262.398726]  [<ffffffffc109b828>] arc_write_ready+0x178/0x300 [zfs]
-[476262.398732]  [<ffffffffb7b11032>] ? mutex_lock+0x12/0x2f
-[476262.398734]  [<ffffffffb7b11032>] ? mutex_lock+0x12/0x2f
-[476262.398837]  [<ffffffffc1164d05>] zio_ready+0x65/0x3d0 [zfs]
-[476262.398884]  [<ffffffffc04d725e>] ? tsd_get_by_thread+0x2e/0x50 [spl]
-[476262.398893]  [<ffffffffc04d1318>] ? taskq_member+0x18/0x30 [spl]
-[476262.398968]  [<ffffffffc115ef22>] zio_execute+0xa2/0x100 [zfs]
-[476262.398982]  [<ffffffffc04d1d2c>] taskq_thread+0x2ac/0x4f0 [spl]
-[476262.399001]  [<ffffffffb74cee80>] ? wake_up_state+0x20/0x20
-[476262.399043]  [<ffffffffc115ee80>] ? zio_taskq_member.isra.7.constprop.10+0x80/0x80 [zfs]
-[476262.399055]  [<ffffffffc04d1a80>] ? taskq_thread_spawn+0x60/0x60 [spl]
-[476262.399067]  [<ffffffffb74bae31>] kthread+0xd1/0xe0
-[476262.399072]  [<ffffffffb74bad60>] ? insert_kthread_work+0x40/0x40
-[476262.399082]  [<ffffffffb7b1f5f7>] ret_from_fork_nospec_begin+0x21/0x21
-[476262.399087]  [<ffffffffb74bad60>] ? insert_kthread_work+0x40/0x40
-
-Fix by reading the map entry in the same manner as the
-hardware so that the kdeth and verbs contexts match.
-
-Fixes: 5190f052a365 ("IB/hfi1: Allow the driver to initialize QP priv struct")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
----
- drivers/infiniband/hw/hfi1/chip.c     |   13 +++++++++++++
- drivers/infiniband/hw/hfi1/chip.h     |    1 +
- drivers/infiniband/hw/hfi1/tid_rdma.c |    5 ++---
- 3 files changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index 4221a99e..674f62a 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -14032,6 +14032,19 @@ static void init_kdeth_qp(struct hfi1_devdata *dd)
- }
- 
- /**
-+ * hfi1_get_qp_map
-+ * @dd: device data
-+ * @idx: index to read
-+ */
-+u8 hfi1_get_qp_map(struct hfi1_devdata *dd, u8 idx)
-+{
-+	u64 reg = read_csr(dd, RCV_QP_MAP_TABLE + (idx / 8) * 8);
-+
-+	reg >>= (idx % 8) * 8;
-+	return (u8)reg;
-+}
-+
-+/**
-  * init_qpmap_table
-  * @dd - device data
-  * @first_ctxt - first context
-diff --git a/drivers/infiniband/hw/hfi1/chip.h b/drivers/infiniband/hw/hfi1/chip.h
-index 4e6c355..b76cf81 100644
---- a/drivers/infiniband/hw/hfi1/chip.h
-+++ b/drivers/infiniband/hw/hfi1/chip.h
-@@ -1445,6 +1445,7 @@ int hfi1_set_ctxt_pkey(struct hfi1_devdata *dd, struct hfi1_ctxtdata *ctxt,
- void remap_intr(struct hfi1_devdata *dd, int isrc, int msix_intr);
- void remap_sdma_interrupts(struct hfi1_devdata *dd, int engine, int msix_intr);
- void reset_interrupts(struct hfi1_devdata *dd);
-+u8 hfi1_get_qp_map(struct hfi1_devdata *dd, u8 idx);
- 
- /*
-  * Interrupt source table.
-diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
-index 6fb9303..d77276d 100644
---- a/drivers/infiniband/hw/hfi1/tid_rdma.c
-+++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
-@@ -312,9 +312,8 @@ static struct hfi1_ctxtdata *qp_to_rcd(struct rvt_dev_info *rdi,
- 	if (qp->ibqp.qp_num == 0)
- 		ctxt = 0;
- 	else
--		ctxt = ((qp->ibqp.qp_num >> dd->qos_shift) %
--			(dd->n_krcv_queues - 1)) + 1;
--
-+		ctxt = hfi1_get_qp_map(dd,
-+				       (u8)(qp->ibqp.qp_num >> dd->qos_shift));
- 	return dd->rcd[ctxt];
- }
- 
-
+Other than that,
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
