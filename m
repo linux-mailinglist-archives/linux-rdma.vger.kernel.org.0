@@ -2,159 +2,188 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 143893943C
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCEB39483
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731502AbfFGSYX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 14:24:23 -0400
-Received: from mga05.intel.com ([192.55.52.43]:54926 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729677AbfFGSYW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 7 Jun 2019 14:24:22 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Jun 2019 11:24:21 -0700
-X-ExtLoop1: 1
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Jun 2019 11:24:21 -0700
-Date:   Fri, 7 Jun 2019 11:25:35 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
+        id S1731979AbfFGSlZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 14:41:25 -0400
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:17828 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729449AbfFGSlY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 14:41:24 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5cfaafd20001>; Fri, 07 Jun 2019 11:41:22 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 07 Jun 2019 11:41:22 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 07 Jun 2019 11:41:22 -0700
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Jun
+ 2019 18:41:21 +0000
+Subject: Re: [PATCH v2 hmm 03/11] mm/hmm: Hold a mmgrab from hmm to mm
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>, <Felix.Kuehling@amd.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
+ <20190606184438.31646-4-jgg@ziepe.ca>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <605172dc-5c66-123f-61a3-8e6880678aef@nvidia.com>
+Date:   Fri, 7 Jun 2019 11:41:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190607110426.GB12765@quack2.suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20190606184438.31646-4-jgg@ziepe.ca>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1559932882; bh=BXL7/wF1685JXXTrRB3MzSSsbcW5afztk5Rzsz/BPwQ=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Wkrw1snfHAMLfoxwtDrAaK5NrPSHE8tbm/7LuFI2XQAtYTox/3q2xrehM2lJJL18q
+         P/lK/orwO3+mod6CKV0QZm78jJRxIKuvbNOsQZhdd+1yRIPKKDJpL5YWOhc9vnhKch
+         UWKavQ8B/OXpV8YxtD2Qxuz8CaPCy8NIu1DMnM0y/udqNHlRe/2PVTqjEHpPLOTT8Z
+         m2SvCKaGpDUPdJbPo5rTpLyBiA5MJ07nzuPSxth9C5xwlF0gz+O9RKbQZjerlG99CH
+         yhyMU5sdcUbqnd3nDCzFo4CZyHozRpUrUPNHp9dYtOryQgA8jcqcd5zND+0Xlcs0Xq
+         ulL1B4XzCIYwA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 07, 2019 at 01:04:26PM +0200, Jan Kara wrote:
-> On Thu 06-06-19 15:03:30, Ira Weiny wrote:
-> > On Thu, Jun 06, 2019 at 12:42:03PM +0200, Jan Kara wrote:
-> > > On Wed 05-06-19 18:45:33, ira.weiny@intel.com wrote:
-> > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > 
-> > > So I'd like to actually mandate that you *must* hold the file lease until
-> > > you unpin all pages in the given range (not just that you have an option to
-> > > hold a lease). And I believe the kernel should actually enforce this. That
-> > > way we maintain a sane state that if someone uses a physical location of
-> > > logical file offset on disk, he has a layout lease. Also once this is done,
-> > > sysadmin has a reasonably easy way to discover run-away RDMA application
-> > > and kill it if he wishes so.
-> > 
-> > Fair enough.
-> > 
-> > I was kind of heading that direction but had not thought this far forward.  I
-> > was exploring how to have a lease remain on the file even after a "lease
-> > break".  But that is incompatible with the current semantics of a "layout"
-> > lease (as currently defined in the kernel).  [In the end I wanted to get an RFC
-> > out to see what people think of this idea so I did not look at keeping the
-> > lease.]
-> > 
-> > Also hitch is that currently a lease is forcefully broken after
-> > <sysfs>/lease-break-time.  To do what you suggest I think we would need a new
-> > lease type with the semantics you describe.
-> 
-> I'd do what Dave suggested - add flag to mark lease as unbreakable by
-> truncate and teach file locking core to handle that. There actually is
-> support for locks that are not broken after given timeout so there
-> shouldn't be too many changes need.
->  
-> > Previously I had thought this would be a good idea (for other reasons).  But
-> > what does everyone think about using a "longterm lease" similar to [1] which
-> > has the semantics you proppose?  In [1] I was not sure "longterm" was a good
-> > name but with your proposal I think it makes more sense.
-> 
-> As I wrote elsewhere in this thread I think FL_LAYOUT name still makes
-> sense and I'd add there FL_UNBREAKABLE to mark unusal behavior with
-> truncate.
 
-Ok I want to make sure I understand what you and Dave are suggesting.
+On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+>=20
+> So long a a struct hmm pointer exists, so should the struct mm it is
 
-Are you suggesting that we have something like this from user space?
+s/a a/as a/
 
-	fcntl(fd, F_SETLEASE, F_LAYOUT | F_UNBREAKABLE);
+> linked too. Hold the mmgrab() as soon as a hmm is created, and mmdrop() i=
+t
+> once the hmm refcount goes to zero.
+>=20
+> Since mmdrop() (ie a 0 kref on struct mm) is now impossible with a !NULL
+> mm->hmm delete the hmm_hmm_destroy().
+>=20
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> Reviewed-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
 
-> 
-> > > - probably I'd just transition all gup_longterm()
-> > > users to a saner API similar to the one we have in mm/frame_vector.c where
-> > > we don't hand out page pointers but an encapsulating structure that does
-> > > all the necessary tracking.
-> > 
-> > I'll take a look at that code.  But that seems like a pretty big change.
-> 
-> I was looking into that yesterday before proposing this and there aren't
-> than many gup_longterm() users and most of them anyway just stick pages
-> array into their tracking structure and then release them once done. So it
-> shouldn't be that complex to convert to a new convention (and you have to
-> touch all gup_longterm() users anyway to teach them track leases etc.).
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
 
-I think in the direction we are heading this becomes more attractive for sure.
-For me though it will take some time.
-
-Should we convert the frame_vector over to this new mechanism?  (Or more
-accurately perhaps, add to frame_vector and use it?)  It seems bad to have "yet
-another object" returned from the pin pages interface...
-
-And I think this is related to what Christoph Hellwig is doing with bio_vec and
-dma.  Really we want drivers out of the page processing business.
-
-So for now I'm going to move forward with the idea of handing "some object" to
-the GUP callers and figure out the lsof stuff, and let bigger questions like
-this play out a bit more before I try and work with that code.  Fair?
-
-> 
-> > > Removing a lease would need to block until all
-> > > pins are released - this is probably the most hairy part since we need to
-> > > handle a case if application just closes the file descriptor which would
-> > > release the lease but OTOH we need to make sure task exit does not deadlock.
-> > > Maybe we could block only on explicit lease unlock and just drop the layout
-> > > lease on file close and if there are still pinned pages, send SIGKILL to an
-> > > application as a reminder it did something stupid...
-> > 
-> > As presented at LSFmm I'm not opposed to killing a process which does not
-> > "follow the rules".  But I'm concerned about how to handle this across a fork.
-> > 
-> > Limiting the open()/LEASE/GUP/close()/SIGKILL to a specific pid "leak"'s pins
-> > to a child through the RDMA context.  This was the major issue Jason had with
-> > the SIGBUS proposal.
-> > 
-> > Always sending a SIGKILL would prevent an RDMA process from doing something
-> > like system("ls") (would kill the child unnecessarily).  Are we ok with that?
-> 
-> I answered this in another email but system("ls") won't kill anybody.
-> fork(2) just creates new file descriptor for the same file and possibly
-> then closes it but since there is still another file descriptor for the
-> same struct file, the "close" code won't trigger.
-
-Agreed.  I was wrong.  Sorry.
-
-But if we can keep track of who has the pins in lsof can we agree no process
-needs to be SIGKILL'ed?  Admins can do this on their own "killing" if they
-really need to stop the use of these files, right?
-
-Ira
-
+> ---
+> v2:
+>   - Fix error unwind paths in hmm_get_or_create (Jerome/Jason)
+> ---
+>   include/linux/hmm.h |  3 ---
+>   kernel/fork.c       |  1 -
+>   mm/hmm.c            | 22 ++++------------------
+>   3 files changed, 4 insertions(+), 22 deletions(-)
+>=20
+> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
+> index 2d519797cb134a..4ee3acabe5ed22 100644
+> --- a/include/linux/hmm.h
+> +++ b/include/linux/hmm.h
+> @@ -586,14 +586,11 @@ static inline int hmm_vma_fault(struct hmm_mirror *=
+mirror,
+>   }
+>  =20
+>   /* Below are for HMM internal use only! Not to be used by device driver=
+! */
+> -void hmm_mm_destroy(struct mm_struct *mm);
+> -
+>   static inline void hmm_mm_init(struct mm_struct *mm)
+>   {
+>   	mm->hmm =3D NULL;
+>   }
+>   #else /* IS_ENABLED(CONFIG_HMM_MIRROR) */
+> -static inline void hmm_mm_destroy(struct mm_struct *mm) {}
+>   static inline void hmm_mm_init(struct mm_struct *mm) {}
+>   #endif /* IS_ENABLED(CONFIG_HMM_MIRROR) */
+>  =20
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index b2b87d450b80b5..588c768ae72451 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -673,7 +673,6 @@ void __mmdrop(struct mm_struct *mm)
+>   	WARN_ON_ONCE(mm =3D=3D current->active_mm);
+>   	mm_free_pgd(mm);
+>   	destroy_context(mm);
+> -	hmm_mm_destroy(mm);
+>   	mmu_notifier_mm_destroy(mm);
+>   	check_mm(mm);
+>   	put_user_ns(mm->user_ns);
+> diff --git a/mm/hmm.c b/mm/hmm.c
+> index 8796447299023c..cc7c26fda3300e 100644
+> --- a/mm/hmm.c
+> +++ b/mm/hmm.c
+> @@ -29,6 +29,7 @@
+>   #include <linux/swapops.h>
+>   #include <linux/hugetlb.h>
+>   #include <linux/memremap.h>
+> +#include <linux/sched/mm.h>
+>   #include <linux/jump_label.h>
+>   #include <linux/dma-mapping.h>
+>   #include <linux/mmu_notifier.h>
+> @@ -82,6 +83,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct *=
+mm)
+>   	hmm->notifiers =3D 0;
+>   	hmm->dead =3D false;
+>   	hmm->mm =3D mm;
+> +	mmgrab(hmm->mm);
+>  =20
+>   	spin_lock(&mm->page_table_lock);
+>   	if (!mm->hmm)
+> @@ -109,6 +111,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct=
+ *mm)
+>   		mm->hmm =3D NULL;
+>   	spin_unlock(&mm->page_table_lock);
+>   error:
+> +	mmdrop(hmm->mm);
+>   	kfree(hmm);
+>   	return NULL;
+>   }
+> @@ -130,6 +133,7 @@ static void hmm_free(struct kref *kref)
+>   		mm->hmm =3D NULL;
+>   	spin_unlock(&mm->page_table_lock);
+>  =20
+> +	mmdrop(hmm->mm);
+>   	mmu_notifier_call_srcu(&hmm->rcu, hmm_free_rcu);
+>   }
+>  =20
+> @@ -138,24 +142,6 @@ static inline void hmm_put(struct hmm *hmm)
+>   	kref_put(&hmm->kref, hmm_free);
+>   }
+>  =20
+> -void hmm_mm_destroy(struct mm_struct *mm)
+> -{
+> -	struct hmm *hmm;
+> -
+> -	spin_lock(&mm->page_table_lock);
+> -	hmm =3D mm_get_hmm(mm);
+> -	mm->hmm =3D NULL;
+> -	if (hmm) {
+> -		hmm->mm =3D NULL;
+> -		hmm->dead =3D true;
+> -		spin_unlock(&mm->page_table_lock);
+> -		hmm_put(hmm);
+> -		return;
+> -	}
+> -
+> -	spin_unlock(&mm->page_table_lock);
+> -}
+> -
+>   static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+>   {
+>   	struct hmm *hmm =3D container_of(mn, struct hmm, mmu_notifier);
+>=20
