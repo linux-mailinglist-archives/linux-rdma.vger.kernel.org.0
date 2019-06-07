@@ -2,77 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDEB39200
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 18:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8897D39270
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 18:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730281AbfFGQ3E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 12:29:04 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:34240 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730272AbfFGQ3E (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 12:29:04 -0400
-Received: by mail-qk1-f194.google.com with SMTP id t64so1628323qkh.1
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 09:29:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=RfRK+ekNywqACS8bXF5+1rPkcEcOxB5GMJwKX8UrKlE=;
-        b=Qk17rSusyBrcDvpHxC3qyo2jlv6AbqiU2n0MYgP5u7mqsYnnHuZ/Zzx68WM/TokP4m
-         4qBfwd4nyi98QK6j5Uh4dpI5S/eMbtjQSRAZUt+sj/0i4unMTKRIm4HOmbcBapG72klS
-         ss9BYxeHNY6lhap72cvxlfo4tVgnBOe+F7z0a3l/sP+E++7SCdGHfKeWjHs8O3yPQL8G
-         1/3zXASQNKCdOYN52dh3nd7vx7d4mRYVK82WmCmgAkvhyFB3+n2nFOcFkTTAzb1x8Wm/
-         SahZr9yosS5Pr09X2YxWoFIhvmSgf46KgV790PHapA0URMaB/Xgp5Dh22z+qTfu6dY8Q
-         0rDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=RfRK+ekNywqACS8bXF5+1rPkcEcOxB5GMJwKX8UrKlE=;
-        b=ZwAumFGe6HSsApiVbDqZqZf1kTKJMeqzOrdBP0IVCyZanymAY+FvqsENpdZBz4ZkHo
-         tHijS5JOBUP/byFTx/23byxWo6JAxHp5fOgfNiZN2LFZFKv4axQ6puX2LTcCXqrNbcMp
-         Yh3wlKNrp3MOkbJjPHKK3Yk1TkmVSXi+E9AVQABcF7FpPeWPdjvl+OnBqCm+xrEaoCei
-         NcjDCD71XNL/xyLVfCIFmJGueCnsDaCS+a9sor4UgERtZqJ+zOPISXyzZ4CmxhmfG1BR
-         s7iIpkC8CzD4no+hD+wopRgnGOktnjH0PQxefqhZvvEP85OwUUAdNbSbIM/4QEhAp2pX
-         SyNg==
-X-Gm-Message-State: APjAAAW7t4v63R5PTfRbz2g8BM5aNnT6ZapQdKmFaN0qfq+rvWzt2has
-        0Sg0KWyNJ53T0cJ2kI6KnfOiH2WutCHv9w==
-X-Google-Smtp-Source: APXvYqwz77/M68QndiXQE+7kmU9WM6bTqTZhzhfNgg9Vylli0pF+QPN/XXdeo9r84fuDFY37vZrDKg==
-X-Received: by 2002:a05:620a:35e:: with SMTP id t30mr44830939qkm.14.1559924943733;
-        Fri, 07 Jun 2019 09:29:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id d123sm1404216qkb.94.2019.06.07.09.29.03
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 09:29:03 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hZHji-0000tN-Si
-        for linux-rdma@vger.kernel.org; Fri, 07 Jun 2019 13:29:02 -0300
-Date:   Fri, 7 Jun 2019 13:29:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org
-Subject: linux-rdma on lore.kernel.org
-Message-ID: <20190607162902.GM14802@ziepe.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1730417AbfFGQpL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 12:45:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729788AbfFGQpL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 7 Jun 2019 12:45:11 -0400
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559925911;
+        bh=dewJd33oSw/c07BVLCwYhSX+/yORn3lSorUPNSTJH9A=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=J1IK6NjmHkIRiZVFXsF5oH1cJcIDc+ur5aq1yrzVpzSVhU6wHkVk5jvOanHRLxr8D
+         UL2R4nL3QfKa0gkZylqg4ZcrmPxtcoluIhy+RydsWXTCtTUR+KJDJ2dYtZ+DdD7puU
+         2MMnMAcPQD3rssqiQh4Jx+CrsqXEZfSU/KccueJI=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20190606201420.GA9763@ziepe.ca>
+References: <20190606201420.GA9763@ziepe.ca>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20190606201420.GA9763@ziepe.ca>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 4f240dfec6bcc852b124ea7c419fb590949fbd4c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6e38335dcc70f03faba26bf1260ee024d930afe1
+Message-Id: <155992591105.2725.17839182914999758884.pr-tracker-bot@kernel.org>
+Date:   Fri, 07 Jun 2019 16:45:11 +0000
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I would like to see linux-rdma archived on lore.kernel.org.
+The pull request you sent on Thu, 6 Jun 2019 20:14:24 +0000:
 
-To do this we need to provide the best historical archive we can.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-Those of you that have subscribed to this list for a long time may
-have this in a gmail account, perhaps.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6e38335dcc70f03faba26bf1260ee024d930afe1
 
-Konstantin has some directions here:
+Thank you!
 
-https://korg.wiki.kernel.org/userdoc/lore
-
-Thanks,
-Jason
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
