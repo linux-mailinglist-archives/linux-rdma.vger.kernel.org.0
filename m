@@ -2,86 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8C63928C
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 18:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F73F39308
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 19:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730128AbfFGQxj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 12:53:39 -0400
-Received: from mail-qt1-f176.google.com ([209.85.160.176]:41648 "EHLO
-        mail-qt1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729172AbfFGQxj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 12:53:39 -0400
-Received: by mail-qt1-f176.google.com with SMTP id s57so3036753qte.8
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 09:53:39 -0700 (PDT)
+        id S1731289AbfFGRX5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 13:23:57 -0400
+Received: from mail-it1-f172.google.com ([209.85.166.172]:39281 "EHLO
+        mail-it1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730717AbfFGRX5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 13:23:57 -0400
+Received: by mail-it1-f172.google.com with SMTP id j204so3915459ite.4
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 10:23:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hbP4NV39kfwqjrM2uVAjAMMSDLVSDPZSh63Bx7Di41A=;
-        b=SedHDblfYrrUma4FlQdqKB/gELJZG1KOj+Ttw2tWF6B/MVKt+8XBlPva9dl/QGS2sK
-         JBqBOSCTUC0rzvk8jQ9OKU0oVy8enAgclmWltEvUP8vXzAmM5uF+gDtAFCQesUfTbIu4
-         QCfPq92pa7wuFnRX9dax2gLTHAAGsCZQGjoW0TFT+xKUIkioPOOjqUvX+1SgxpReQ5BL
-         QbArLLMLp7L6Sv5Ru6TDbSHWkwpnY+SABDWSd4bl/1M/AwS07+ebfUB4/6hYVLDLfOfu
-         RCvZXawiBKVlvNBJ9+UwTGyX1+Lr7B60cyo5UUwDedalFdo5rncMXFSvRXzVcnoqbIyh
-         d2MA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xD2kr1NRPPCTgnHKdbbrWJtgF05Fn/3EG0cGVN1BQjw=;
+        b=ijuxxk9o2FVRb/ON9wwFcuY7VHEG0S22lLODa3cyDdcX01N3a9qWfNZC8MjPNfn0Br
+         wnt4EXGtVSM6TWHfvjdzDAAQfs4SaooMpDHyNHvgveS9S8pc11ZCRSRa2RYQFLNwdeT2
+         alD9yGfaBEnTxdLzgloVeaV6TfQMJVRJkXBmuNFX9rR3Uzs+MncSaU0nSSpzw4kuP0e/
+         7zzQJxaiDtpo+Lo+Qxd8rozlW92iGDuLKFogM28ZeWIGNlG2MyBIiDryxGOxSXDs9DKm
+         GkEu9jeebQszwO+LBCOWd0RTrtHOZWGM/X8NpUCr5I6TZXzxn+RCIYgorMEu0PuJ9dVI
+         uIIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hbP4NV39kfwqjrM2uVAjAMMSDLVSDPZSh63Bx7Di41A=;
-        b=Qj6Qxu8RouA+U+8qgfGMvQS33OHvzqSz1rp8Cvl7+yZbvrVQwUaJnOC/CjSzhfFbRH
-         sOs3bw55I51GYGSrOc9+/AEy1wzbshCzs3yF9JNyDuXQpI0vy76hyx8iR9LmRXsCHQYm
-         5+mLMXRirKrL8fqS7oy0MECv2dHJz1d9UbboKn85j5R2PLQCD+cbXU0g6EvGxFF5gLGX
-         O77Cw9HsTMEa1C2W1NlPOGYwwurMTe5sdibhd5TiEWpuVAo5jSUwD1jdhDLpdxf7S3wt
-         79HhOD2BesiHmdQstlOyRWuAVnUkoFjM/oFCYay/2XXKfrsNfe7Rn+/ng9ZrZc6xxbwc
-         KARg==
-X-Gm-Message-State: APjAAAW2tN9FeraExD6oWmigIlPwEr+MmR834r6c8FZgOhe4wOHQ7V/K
-        EfPux+KIqTVeU2ss8hKlkdCMmw==
-X-Google-Smtp-Source: APXvYqzhzJQ4ETZ7wJZxSTF/BgzunvU6O7pRFTiYvUpBHGu+wQzrfYbo2Ob9g2EpJmCwGTlM0k1nQg==
-X-Received: by 2002:aed:2fe7:: with SMTP id m94mr45205851qtd.191.1559926418598;
-        Fri, 07 Jun 2019 09:53:38 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id 39sm1490220qtx.71.2019.06.07.09.53.38
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 09:53:38 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hZI7V-0005qA-Qh; Fri, 07 Jun 2019 13:53:37 -0300
-Date:   Fri, 7 Jun 2019 13:53:37 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Laurence Oberman <loberman@redhat.com>, stable@vger.kernel.org
-Subject: Re: [PATCH, RESEND] RDMA/srp: Accept again source addresses that do
- not have a port number
-Message-ID: <20190607165337.GB22304@ziepe.ca>
-References: <20190529163831.138926-1-bvanassche@acm.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xD2kr1NRPPCTgnHKdbbrWJtgF05Fn/3EG0cGVN1BQjw=;
+        b=p8wbU6Mp40+6HcYo56reaDB0qCCyIyn98ZUnDfiM4YBz91mNGm+CAA0nHuZB4yIb8Y
+         ZqxGyplfohL6svT9DEWuwog5p6FgXN6LJM86+o3WT/Qdb6DzHLuaFHhntAVsmN7a1Dbm
+         aUVOL4j9K48+TkpaxsPMLzWVdxY/KUUXvQcamQdHaKWSX5Mp0+IXtSIVLyi9pCc7gpsv
+         jzXQnoHhGCOqdY928Qqn9i/Uezqyiu0W5+j1ggyWUU9lOlod0V1ybYrvCMq329+Wi1Sr
+         IeQ6WyYUX4yL78K95lFbm6MRuCfF0WM9P775HBz0r0cveNeypMavPDBmKPH5Jp7ivGZv
+         fydA==
+X-Gm-Message-State: APjAAAUeTBZb/BrzX9SpNuvYEtsBn82ljwHJUAovOym+3b/yNyBsEEIk
+        fD420RvA3NiEcfLDyTQCVpVhrbwVtGzJbZWlpcM=
+X-Google-Smtp-Source: APXvYqwIzKLs/HqkbBGZerPr+tDxPB0ZxwhtztucHfjocksYKMyZ4OplKfBgDgTpntfeOssgYmHD2kCKSdVvR1cWDdk=
+X-Received: by 2002:a24:f34a:: with SMTP id t10mr4718900iti.129.1559928236467;
+ Fri, 07 Jun 2019 10:23:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190529163831.138926-1-bvanassche@acm.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20190607162430.GL14802@ziepe.ca>
+In-Reply-To: <20190607162430.GL14802@ziepe.ca>
+From:   Steve Wise <larrystevenwise@gmail.com>
+Date:   Fri, 7 Jun 2019 12:23:45 -0500
+Message-ID: <CADmRdJfDLp_C+rVuRqDVfDahtcwSDb8HGgR2_SHmbxD3AUghfw@mail.gmail.com>
+Subject: Re: RFC: Remove nes
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 29, 2019 at 09:38:31AM -0700, Bart Van Assche wrote:
-> The function srp_parse_in() is used both for parsing source address
-> specifications and for target address specifications. Target addresses
-> must have a port number. Having to specify a port number for source
-> addresses is inconvenient. Make sure that srp_parse_in() supports again
-> parsing addresses with no port number.
-> 
-> Cc: Laurence Oberman <loberman@redhat.com>
-> Cc: <stable@vger.kernel.org>
-> Fixes: c62adb7def71 ("IB/srp: Fix IPv6 address parsing") # v4.17.
-> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-> ---
->  drivers/infiniband/ulp/srp/ib_srp.c | 21 +++++++++++++++------
->  1 file changed, 15 insertions(+), 6 deletions(-)
+On Fri, Jun 7, 2019 at 11:24 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> Since we have gained another two (EFA, SIW) drivers lately, I'd really
+> like to remove NES as we have in the past for other drivers.
+>
+> This hardware was proposed to be removed at the last purge, but I
+> think that Steve still wanted to keep it for some reason. I suppose
+> that has changed now.
+>
+> If I recall the reasons for removal were basically:
+>  - Does not support modern FRWR, which is now becoming mandatory for ULPs
+>  - Does not support 64 bit physical addresses, so is useless on modern
+>    servers
+>  - Possibly nobody has even loaded the module in years. Wouldn't be
+>    surprised to learn it is broken with all the recent churn.
+>
+> Remarkably there still seem to be cards in ebay though..
+>
+> Jason
 
-Applied to for-next, thanks
-
-Jason
+It wasn't me.  Perhaps we were discussing cxgb3 removal?  Anyway, are
+you certain it doesn't support REG_MR?    I see support for it in
+nes_post_send().
