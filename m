@@ -2,115 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B460391A3
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 18:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB661391DB
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 18:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729797AbfFGQJg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 12:09:36 -0400
-Received: from mail-eopbgr130052.outbound.protection.outlook.com ([40.107.13.52]:38624
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729325AbfFGQJg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 7 Jun 2019 12:09:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8Ibi9Yq7Jw3rXHNXkIHEh1C+CTujCzpRhxetU21Zq5E=;
- b=Du1ZX4ZdQH4c71fR9YjdUl0mHVdjp+KuhWO2t/mGyDzgGIMnnb72TxGw5Ya8xIT2381OtKbVTyFSz86cr+rsb4p1yP8cHA6V+eM7MuXpUTDfZD1iuDOB/T7ZOQX6Pg9IiHa3GTwIePGJOZd0l2S3iJLja5JVMl9vMX+xw6jkSLQ=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB3263.eurprd05.prod.outlook.com (10.170.238.20) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1965.15; Fri, 7 Jun 2019 16:09:31 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1965.011; Fri, 7 Jun 2019
- 16:09:31 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Max Gurtovoy <maxg@mellanox.com>
-CC:     Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Israel Rukshin <israelr@mellanox.com>,
-        Idan Burstein <idanb@mellanox.com>,
-        Oren Duer <oren@mellanox.com>,
-        Vladimir Koushnir <vladimirk@mellanox.com>,
-        Shlomi Nimrodi <shlomin@mellanox.com>
-Subject: Re: [PATCH 15/20] RDMA/core: Validate signature handover device cap
-Thread-Topic: [PATCH 15/20] RDMA/core: Validate signature handover device cap
-Thread-Index: AQHVFutI8IXfz1d/vEebKEIJceO0iKaNfvAAgAAALwCAACi6AIACwRCA
-Date:   Fri, 7 Jun 2019 16:09:30 +0000
-Message-ID: <20190607160925.GD14771@mellanox.com>
-References: <1559222731-16715-1-git-send-email-maxg@mellanox.com>
- <1559222731-16715-16-git-send-email-maxg@mellanox.com>
- <4780f87f-98ba-9432-2de9-352bdf8bf5a0@grimberg.me>
- <a69a134b-d0a5-3144-142e-2050ce935037@grimberg.me>
- <45f75d84-0616-8516-c482-65cbab7b8557@mellanox.com>
-In-Reply-To: <45f75d84-0616-8516-c482-65cbab7b8557@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: YQBPR0101CA0012.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00::25) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3efb4310-7e44-4a2c-9655-08d6eb6285dc
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB3263;
-x-ms-traffictypediagnostic: VI1PR05MB3263:
-x-microsoft-antispam-prvs: <VI1PR05MB3263829C0F96E5B2270B5F61CF100@VI1PR05MB3263.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2958;
-x-forefront-prvs: 0061C35778
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(39860400002)(366004)(136003)(346002)(396003)(189003)(199004)(5660300002)(71190400001)(52116002)(71200400001)(6486002)(229853002)(486006)(25786009)(446003)(7736002)(6246003)(11346002)(53936002)(8676002)(53546011)(6512007)(316002)(6436002)(14454004)(1076003)(81156014)(99286004)(256004)(386003)(6506007)(81166006)(66066001)(66446008)(6116002)(76176011)(186003)(86362001)(68736007)(3846002)(66476007)(107886003)(478600001)(66946007)(66556008)(64756008)(102836004)(73956011)(26005)(476003)(2616005)(6636002)(4326008)(37006003)(36756003)(2906002)(54906003)(33656002)(6862004)(305945005)(8936002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3263;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: MPVwDH6tth+I8jN3t3VjS1jkfGn+SIkPls3afpM4SnAAUmVLXx3/TmSseBKUBmY3OaGfZZsTIL0IYS5ZzP6DXQ9ZPpoY0ysIKCC+zXQabnAuZitI0VoJDLVgkFrcBvoxhgUzFejVlAI7TpcjPYmY2jdlWLYNKFV6laqrafb8Aca5PNjgO3l8Ke9L80TVXkZ824lbUTGHFiDaPYSvv7pPsgX7nOTrA83I2qVqEmDW68bGNKqvXiBQEgFrAp80333+js2TE274VNjiRiO9RhWvswIc2jeKEZBEf+yDT2MQJ8x4QQv+Hg8C1TZ/iL8ZYb33icw2IMDkumn40/EGeW3ukxo9EHm69URX3I56fabvVJqkeSSzGzeGZgwsHZEkbIfUYh/N8HGgH8Gi3wbql8gdrgtwZqOwKhWfiFK6VHOksPg=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C71EE9D99E223546B1B9BB78EFF39448@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1730591AbfFGQYd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 12:24:33 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:39588 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730446AbfFGQYc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 12:24:32 -0400
+Received: by mail-qk1-f196.google.com with SMTP id i125so1604662qkd.6
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 09:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=RF2U79PSY9O6J/T638DfornWeYDHnSZlzeDWWIyddfI=;
+        b=MX2uoLyCWJXBB8LOKU9I9FBJiL5GWg4AMSwZOaEFy5Z/GMVm3CPgsLyhTMGtoMZzAX
+         WvdrZRBHGtdOpzfav+/ma066dZ2a3f46xbyMjFlx9HtBsGuNEfijItePiyHWuFJUR3aV
+         pDSfPlu5tEuqIzOGzdbQp1Hm8B0R9sYhq0efj7kFabV3r9BlQJPaTq/06AUADNeHPX8B
+         vRKB6u8XYYY/N+EZeRf5YPq/1GHCJsQF4MxDtXmSC6v5EHHGbhWnpPrCCzdcY7OUu1yE
+         VZOo0tFIah6bL93+jrmO7EE8G2YxgfPfj+uE+KCgXsmGJsznA4zvBaCzr1Ozlvm0zMJK
+         wxZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=RF2U79PSY9O6J/T638DfornWeYDHnSZlzeDWWIyddfI=;
+        b=ZHDmkGfpQ+0cRjMMaJTr2SEdR0xmLpUdfNqK4onmAXs1GYDEUWIpQeyGElyJ7cwtne
+         141/BZXuNUt8i6ZonymHa+Fh+qls3n6YwdeB/TffLa3xxAluhZOS/+gYFhNX84P4PigI
+         McdZpIuFUn+GTU9aTRUN6Fk7kxZZDy3k9Zg1sraPO6wkuiCSGm5BnmVfMwZNI+XSNhvY
+         zt/T8rXB3cEs+F0rBrY42xdui8sInfSqc/88zyuxpGkjhXiiCiT/nMuOHNcFZkyXxa+s
+         Of7bhru3K0Gv66pUw1wii7ZU8/d+xzV8SJowilFA/kbOiAzsDMigvCKFZ/A0N1WoN+Nn
+         Bl+g==
+X-Gm-Message-State: APjAAAWj9Md5hcm1IDMNOHBn2+3T2iMQ2o5vYGQIle1dQtx2d8HWVDTd
+        NySauewP1AQPEU2TasKYLHFFebGvjIiNdA==
+X-Google-Smtp-Source: APXvYqwQPohyZZpu6DigWmr67r+FYzh6VARQvMJh2U/vPdG2uRiWTFK1ESJBn2wO8ZSQRKoKr+3LRA==
+X-Received: by 2002:a37:a0d:: with SMTP id 13mr45363881qkk.273.1559924671510;
+        Fri, 07 Jun 2019 09:24:31 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id f16sm1080225qth.46.2019.06.07.09.24.31
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 07 Jun 2019 09:24:31 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hZHfK-0000pD-Ie; Fri, 07 Jun 2019 13:24:30 -0300
+Date:   Fri, 7 Jun 2019 13:24:30 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Cc:     Faisal Latif <faisal.latif@intel.com>, larrystevenwise@gmail.com
+Subject: RFC: Remove nes
+Message-ID: <20190607162430.GL14802@ziepe.ca>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3efb4310-7e44-4a2c-9655-08d6eb6285dc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2019 16:09:31.0479
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3263
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gVGh1LCBKdW4gMDYsIDIwMTkgYXQgMDE6MDU6NTRBTSArMDMwMCwgTWF4IEd1cnRvdm95IHdy
-b3RlOg0KPiANCj4gT24gNi81LzIwMTkgMTA6NDAgUE0sIFNhZ2kgR3JpbWJlcmcgd3JvdGU6DQo+
-ID4gDQo+ID4gPiA+IC3CoMKgwqAgaWYgKHFwX2luaXRfYXR0ci0+cndxX2luZF90YmwgJiYNCj4g
-PiA+ID4gLcKgwqDCoMKgwqDCoMKgIChxcF9pbml0X2F0dHItPnJlY3ZfY3EgfHwNCj4gPiA+ID4g
-LcKgwqDCoMKgwqDCoMKgIHFwX2luaXRfYXR0ci0+c3JxIHx8IHFwX2luaXRfYXR0ci0+Y2FwLm1h
-eF9yZWN2X3dyIHx8DQo+ID4gPiA+IC3CoMKgwqDCoMKgwqDCoCBxcF9pbml0X2F0dHItPmNhcC5t
-YXhfcmVjdl9zZ2UpKQ0KPiA+ID4gPiArwqDCoMKgIGlmICgocXBfaW5pdF9hdHRyLT5yd3FfaW5k
-X3RibCAmJg0KPiA+ID4gPiArwqDCoMKgwqDCoMKgwqDCoCAocXBfaW5pdF9hdHRyLT5yZWN2X2Nx
-IHx8DQo+ID4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqAgcXBfaW5pdF9hdHRyLT5zcnEgfHwgcXBf
-aW5pdF9hdHRyLT5jYXAubWF4X3JlY3Zfd3IgfHwNCj4gPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
-oCBxcF9pbml0X2F0dHItPmNhcC5tYXhfcmVjdl9zZ2UpKSB8fA0KPiA+ID4gPiArwqDCoMKgwqDC
-oMKgwqAgKChxcF9pbml0X2F0dHItPmNyZWF0ZV9mbGFncyAmIElCX1FQX0NSRUFURV9TSUdOQVRV
-UkVfRU4pICYmDQo+ID4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgICEoZGV2aWNlLT5hdHRycy5kZXZp
-Y2VfY2FwX2ZsYWdzICYNCj4gPiA+ID4gSUJfREVWSUNFX1NJR05BVFVSRV9IQU5ET1ZFUikpKQ0K
-PiA+ID4gDQo+ID4gPiBXb3VsZG4ndCBpdCBtYWtlIHNlbnNlIHRvIGFsc28gY2hhbmdlIHRoZSBx
-cCBjcmVhdGUgZmxhZyBhbmQgdGhlIGRldmljZQ0KPiA+ID4gY2FwIHRvIGJlIFBJX0VOL1BJX0hB
-TkRPVkVSIHdoaWxlIHdlJ3JlIGF0IGl0Pw0KPiANCj4gV2UncmUgYWxyZWFkeSBzdGFuZGluZyBv
-biAyMCBwYXRjaGVzIGluIHRoaXMgc2VyaWVzLCBzbyBpZiBKYXNvbiB3aWxsIGFncmVlDQo+IEkn
-bGwgZG8gdGhpcyByZW5hbWluZyBpbiBhIHNlcGFyYXRlIGNvbW1pdCBvciB3ZSBjYW4gc3RheSB3
-aXRoIHRoZSBjdXJyZW50DQo+IG5hbWluZy4NCg0KR2l2ZW4gdGhlIENIIGFuZCBTYWdpIGhhdmUg
-ZG9uZSB0aGUgaGFyZCB3b3JrIHRvIHJldmlldyB0aGUgbGFyZ2UNCnNlcmllcywgSSBhbSBmaW5l
-IHRvIHRha2UgMnggcGF0Y2hlcyBpZiB0aGV5IGFyZSBmaW5lIHRvIHJldmlldyBpdA0KDQpKYXNv
-bg0K
+Since we have gained another two (EFA, SIW) drivers lately, I'd really
+like to remove NES as we have in the past for other drivers.
+
+This hardware was proposed to be removed at the last purge, but I
+think that Steve still wanted to keep it for some reason. I suppose
+that has changed now.
+
+If I recall the reasons for removal were basically:
+ - Does not support modern FRWR, which is now becoming mandatory for ULPs
+ - Does not support 64 bit physical addresses, so is useless on modern
+   servers
+ - Possibly nobody has even loaded the module in years. Wouldn't be
+   surprised to learn it is broken with all the recent churn.
+
+Remarkably there still seem to be cards in ebay though..
+
+Jason
