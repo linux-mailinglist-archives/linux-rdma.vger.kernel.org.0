@@ -2,26 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8D5382DB
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 04:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58F2382EF
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 04:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbfFGCpF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 22:45:05 -0400
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:19726 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726173AbfFGCpF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 22:45:05 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5cf9cfac0000>; Thu, 06 Jun 2019 19:45:00 -0700
+        id S1726724AbfFGCym (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 22:54:42 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:14173 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbfFGCym (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 22:54:42 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5cf9d1df0000>; Thu, 06 Jun 2019 19:54:25 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
   by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 06 Jun 2019 19:45:02 -0700
+  Thu, 06 Jun 2019 19:54:40 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 06 Jun 2019 19:45:02 -0700
+        by hqpgpgate102.nvidia.com on Thu, 06 Jun 2019 19:54:40 -0700
 Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Jun
- 2019 02:44:59 +0000
-Subject: Re: [PATCH v2 hmm 03/11] mm/hmm: Hold a mmgrab from hmm to mm
+ 2019 02:54:34 +0000
+Subject: Re: [PATCH v2 hmm 04/11] mm/hmm: Simplify hmm_get_or_create and make
+ it reliable
 To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
         "Ralph Campbell" <rcampbell@nvidia.com>, <Felix.Kuehling@amd.com>
 CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
@@ -29,33 +30,33 @@ CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
         <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
         Jason Gunthorpe <jgg@mellanox.com>
 References: <20190606184438.31646-1-jgg@ziepe.ca>
- <20190606184438.31646-4-jgg@ziepe.ca>
-From:   John Hubbard <jhubbard@nvidia.com>
+ <20190606184438.31646-5-jgg@ziepe.ca>
 X-Nvconfidentiality: public
-Message-ID: <48fcaa19-6ac3-59d0-cd51-455abeca7cdb@nvidia.com>
-Date:   Thu, 6 Jun 2019 19:44:58 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <f02db2c8-8639-2142-bb1d-df33240e376c@nvidia.com>
+Date:   Thu, 6 Jun 2019 19:54:33 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190606184438.31646-4-jgg@ziepe.ca>
+In-Reply-To: <20190606184438.31646-5-jgg@ziepe.ca>
 X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+X-ClientProxiedBy: HQMAIL108.nvidia.com (172.18.146.13) To
  HQMAIL107.nvidia.com (172.20.187.13)
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1559875501; bh=CTx0CZF1eqGSR9YUaBnLK21ryxBUxrtYilDSKRTBU9s=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+        t=1559876066; bh=3huOKZv8HXfSbCtVJDMPY1F6+DxRnSCZ3RkJ5zBunYk=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
          Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
          X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
          Content-Transfer-Encoding;
-        b=WbdgepJxjCHukIhBJ337H26udHrSAKLUnbPQYX01omNSCrQ4fChLraSIVS8BdQztY
-         y4HSS82fWGqhCo05fjhDYEDdSq1PaJ4ub4bBnNrfIjyV3AtMVD/rdGCLHbnXn7BVZr
-         3EFPvF0FE7KTfTwY0aOOZ6HXEp2eoCLm3QlHH3PYW0iEfIIYDBMotKjfdI9+2mrboJ
-         xcwswKfBDrDosV24wiz5GIj+6DDKbooE/KHh75+F17jnsGUKSVgHbYgV3D1Ho3yWOF
-         ftxVH4bh2uBdUMQ7pou1FfierCA1ZvJnx2039/gk7jyWsEixyV9Daz6598bhPfjFsU
-         yQqrp+fujdKEg==
+        b=VAlAdXP/WVpIOzRKqOZX3nzrP9LNlYjaF6jw7eNfW115o3TuUHozNL7b6/KHHaB8s
+         wcjJXlYEc82ETwQGSetT3w5PLrLzdGK5DH8/MtZeqVnz8NiLSQTH8cIigI2+ZFf7oC
+         zzbPSf+EnlWzzpjD8iw+IujfhuihOEgfmMQdY6nnIJoFMdysXo//Z0Z1DbyQazuu/A
+         LOcBgzViceNSzbV6lMQX4DtVeQumKafO1rxrdA8+57JmvZv1rfOC80ArBgyGKGUtHr
+         93DBAhjbe1QCT6BsjcSnkJy6C9QQqCcliCytXT7tlXmLx+gIDkr/IhwP2dv5/MkvsA
+         Cy7uig1VG9zeg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
@@ -63,135 +64,151 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
 > From: Jason Gunthorpe <jgg@mellanox.com>
->=20
-> So long a a struct hmm pointer exists, so should the struct mm it is
-> linked too. Hold the mmgrab() as soon as a hmm is created, and mmdrop() i=
-t
-> once the hmm refcount goes to zero.
->=20
-> Since mmdrop() (ie a 0 kref on struct mm) is now impossible with a !NULL
-> mm->hmm delete the hmm_hmm_destroy().
->=20
+> 
+> As coded this function can false-fail in various racy situations. Make it
+> reliable by running only under the write side of the mmap_sem and avoiding
+> the false-failing compare/exchange pattern.
+> 
+> Also make the locking very easy to understand by only ever reading or
+> writing mm->hmm while holding the write side of the mmap_sem.
+> 
 > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> Reviewed-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
 > ---
 > v2:
->  - Fix error unwind paths in hmm_get_or_create (Jerome/Jason)
+> - Fix error unwind of mmgrab (Jerome)
+> - Use hmm local instead of 2nd container_of (Jerome)
 > ---
->  include/linux/hmm.h |  3 ---
->  kernel/fork.c       |  1 -
->  mm/hmm.c            | 22 ++++------------------
->  3 files changed, 4 insertions(+), 22 deletions(-)
->=20
-> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-> index 2d519797cb134a..4ee3acabe5ed22 100644
-> --- a/include/linux/hmm.h
-> +++ b/include/linux/hmm.h
-> @@ -586,14 +586,11 @@ static inline int hmm_vma_fault(struct hmm_mirror *=
-mirror,
->  }
-> =20
->  /* Below are for HMM internal use only! Not to be used by device driver!=
- */
-> -void hmm_mm_destroy(struct mm_struct *mm);
-> -
->  static inline void hmm_mm_init(struct mm_struct *mm)
->  {
->  	mm->hmm =3D NULL;
->  }
->  #else /* IS_ENABLED(CONFIG_HMM_MIRROR) */
-> -static inline void hmm_mm_destroy(struct mm_struct *mm) {}
->  static inline void hmm_mm_init(struct mm_struct *mm) {}
->  #endif /* IS_ENABLED(CONFIG_HMM_MIRROR) */
-> =20
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index b2b87d450b80b5..588c768ae72451 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -673,7 +673,6 @@ void __mmdrop(struct mm_struct *mm)
->  	WARN_ON_ONCE(mm =3D=3D current->active_mm);
->  	mm_free_pgd(mm);
->  	destroy_context(mm);
-> -	hmm_mm_destroy(mm);
-
-
-This is particularly welcome, not to have an "HMM is special" case
-in such a core part of process/mm code.=20
-
-
->  	mmu_notifier_mm_destroy(mm);
->  	check_mm(mm);
->  	put_user_ns(mm->user_ns);
+>  mm/hmm.c | 80 ++++++++++++++++++++------------------------------------
+>  1 file changed, 29 insertions(+), 51 deletions(-)
+> 
 > diff --git a/mm/hmm.c b/mm/hmm.c
-> index 8796447299023c..cc7c26fda3300e 100644
+> index cc7c26fda3300e..dc30edad9a8a02 100644
 > --- a/mm/hmm.c
 > +++ b/mm/hmm.c
-> @@ -29,6 +29,7 @@
->  #include <linux/swapops.h>
->  #include <linux/hugetlb.h>
->  #include <linux/memremap.h>
-> +#include <linux/sched/mm.h>
->  #include <linux/jump_label.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/mmu_notifier.h>
-> @@ -82,6 +83,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct *=
-mm)
->  	hmm->notifiers =3D 0;
->  	hmm->dead =3D false;
->  	hmm->mm =3D mm;
-> +	mmgrab(hmm->mm);
-> =20
->  	spin_lock(&mm->page_table_lock);
->  	if (!mm->hmm)
-> @@ -109,6 +111,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct=
- *mm)
->  		mm->hmm =3D NULL;
->  	spin_unlock(&mm->page_table_lock);
->  error:
-> +	mmdrop(hmm->mm);
->  	kfree(hmm);
->  	return NULL;
->  }
-> @@ -130,6 +133,7 @@ static void hmm_free(struct kref *kref)
->  		mm->hmm =3D NULL;
->  	spin_unlock(&mm->page_table_lock);
-> =20
-> +	mmdrop(hmm->mm);
->  	mmu_notifier_call_srcu(&hmm->rcu, hmm_free_rcu);
->  }
-> =20
-> @@ -138,24 +142,6 @@ static inline void hmm_put(struct hmm *hmm)
->  	kref_put(&hmm->kref, hmm_free);
->  }
-> =20
-> -void hmm_mm_destroy(struct mm_struct *mm)
+> @@ -40,16 +40,6 @@
+>  #if IS_ENABLED(CONFIG_HMM_MIRROR)
+>  static const struct mmu_notifier_ops hmm_mmu_notifier_ops;
+>  
+> -static inline struct hmm *mm_get_hmm(struct mm_struct *mm)
 > -{
-> -	struct hmm *hmm;
+> -	struct hmm *hmm = READ_ONCE(mm->hmm);
 > -
-> -	spin_lock(&mm->page_table_lock);
-> -	hmm =3D mm_get_hmm(mm);
-> -	mm->hmm =3D NULL;
-> -	if (hmm) {
-> -		hmm->mm =3D NULL;
-> -		hmm->dead =3D true;
-> -		spin_unlock(&mm->page_table_lock);
-> -		hmm_put(hmm);
-> -		return;
-> -	}
+> -	if (hmm && kref_get_unless_zero(&hmm->kref))
+> -		return hmm;
 > -
-> -	spin_unlock(&mm->page_table_lock);
+> -	return NULL;
 > -}
 > -
->  static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+>  /**
+>   * hmm_get_or_create - register HMM against an mm (HMM internal)
+>   *
+> @@ -64,11 +54,20 @@ static inline struct hmm *mm_get_hmm(struct mm_struct *mm)
+>   */
+>  static struct hmm *hmm_get_or_create(struct mm_struct *mm)
 >  {
->  	struct hmm *hmm =3D container_of(mn, struct hmm, mmu_notifier);
->=20
+> -	struct hmm *hmm = mm_get_hmm(mm);
+> -	bool cleanup = false;
+> +	struct hmm *hmm;
+>  
+> -	if (hmm)
+> -		return hmm;
+> +	lockdep_assert_held_exclusive(&mm->mmap_sem);
+> +
+> +	if (mm->hmm) {
+> +		if (kref_get_unless_zero(&mm->hmm->kref))
+> +			return mm->hmm;
+> +		/*
+> +		 * The hmm is being freed by some other CPU and is pending a
+> +		 * RCU grace period, but this CPU can NULL now it since we
+> +		 * have the mmap_sem.
+> +		 */
+> +		mm->hmm = NULL;
+> +	}
+>  
+>  	hmm = kmalloc(sizeof(*hmm), GFP_KERNEL);
+>  	if (!hmm)
+> @@ -83,57 +82,36 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+>  	hmm->notifiers = 0;
+>  	hmm->dead = false;
+>  	hmm->mm = mm;
+> -	mmgrab(hmm->mm);
+> -
+> -	spin_lock(&mm->page_table_lock);
+> -	if (!mm->hmm)
+> -		mm->hmm = hmm;
+> -	else
+> -		cleanup = true;
+> -	spin_unlock(&mm->page_table_lock);
+>  
+> -	if (cleanup)
+> -		goto error;
+> -
+> -	/*
+> -	 * We should only get here if hold the mmap_sem in write mode ie on
+> -	 * registration of first mirror through hmm_mirror_register()
+> -	 */
+>  	hmm->mmu_notifier.ops = &hmm_mmu_notifier_ops;
+> -	if (__mmu_notifier_register(&hmm->mmu_notifier, mm))
+> -		goto error_mm;
+> +	if (__mmu_notifier_register(&hmm->mmu_notifier, mm)) {
+> +		kfree(hmm);
+> +		return NULL;
+> +	}
+>  
+> +	mmgrab(hmm->mm);
+> +	mm->hmm = hmm;
+>  	return hmm;
+> -
+> -error_mm:
+> -	spin_lock(&mm->page_table_lock);
+> -	if (mm->hmm == hmm)
+> -		mm->hmm = NULL;
+> -	spin_unlock(&mm->page_table_lock);
+> -error:
+> -	mmdrop(hmm->mm);
+> -	kfree(hmm);
+> -	return NULL;
+>  }
+>  
+>  static void hmm_free_rcu(struct rcu_head *rcu)
+>  {
+> -	kfree(container_of(rcu, struct hmm, rcu));
+> +	struct hmm *hmm = container_of(rcu, struct hmm, rcu);
+> +
+> +	down_write(&hmm->mm->mmap_sem);
+> +	if (hmm->mm->hmm == hmm)
+> +		hmm->mm->hmm = NULL;
+> +	up_write(&hmm->mm->mmap_sem);
+> +	mmdrop(hmm->mm);
+> +
+> +	kfree(hmm);
+>  }
+>  
+>  static void hmm_free(struct kref *kref)
+>  {
+>  	struct hmm *hmm = container_of(kref, struct hmm, kref);
+> -	struct mm_struct *mm = hmm->mm;
+> -
+> -	mmu_notifier_unregister_no_release(&hmm->mmu_notifier, mm);
+>  
+> -	spin_lock(&mm->page_table_lock);
+> -	if (mm->hmm == hmm)
+> -		mm->hmm = NULL;
+> -	spin_unlock(&mm->page_table_lock);
+> -
+> -	mmdrop(hmm->mm);
+> +	mmu_notifier_unregister_no_release(&hmm->mmu_notifier, hmm->mm);
+>  	mmu_notifier_call_srcu(&hmm->rcu, hmm_free_rcu);
+>  }
+>  
+> 
 
-Failed to find any problems with this. :)
+Yes.
 
     Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
+
 thanks,
---=20
+-- 
 John Hubbard
 NVIDIA
