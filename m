@@ -2,99 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF0139349
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 19:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC76039383
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 19:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731484AbfFGRbw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 13:31:52 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:50960 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729355AbfFGRbw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 13:31:52 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x57HIpx6178003;
-        Fri, 7 Jun 2019 17:30:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2018-07-02;
- bh=g9qgPYWy2UeZZX7Q5xvayFUZ5+Jlv5AgZT4Wz1d17eI=;
- b=GquEmfpf1HBT7vX2CzX+dMvzNB0wpOB4iQtcXeOAyF2DoiXBKIsxxFSTqxuQEeD3dFsE
- NW/2qE6nTYp8yIdaZlmQWE+LLZF9hQdENVg3wyoapAls1vxX2q+9hAztXIlTcBohI7iE
- puGOc+EVwd+Wj8du+nhWNsaHMeyQXzpQZb9TZBrehPH95mB9xQPTriWtztvyVvBfZJSY
- ZvDGQ2w0kte1RG2ckQVBBt6EnYhIHB7zOIRVQHpveA/dR7UH9rQ/u//0E/s5itVU17r+
- 9iPvrwQcznyJ2mXDhgxzinr5bV6Wic02t6r2sOO0mi4aLy1ulC69fy/YracyVTUd+Ixp yw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2suj0qyhpc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 07 Jun 2019 17:30:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x57HU97U102069;
-        Fri, 7 Jun 2019 17:30:36 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2swngk4vhc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 07 Jun 2019 17:30:36 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x57HUY6s025234;
-        Fri, 7 Jun 2019 17:30:34 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 07 Jun 2019 10:30:34 -0700
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Sebastian Ott <sebott@linux.ibm.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Oliver Neukum <oneukum@suse.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com,
-        linux-hyperv@vger.kernel.org, linux-usb@vger.kernel.org,
-        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
-Subject: Re: properly communicate queue limits to the DMA layer
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-References: <20190605190836.32354-1-hch@lst.de>
-        <591cfa1e-fecb-7d00-c855-3b9eb8eb8a2a@kernel.dk>
-        <20190605192405.GA18243@lst.de>
-        <f07d0abf-b3eb-f530-37b9-e66454740b3f@kernel.dk>
-Date:   Fri, 07 Jun 2019 13:30:30 -0400
-In-Reply-To: <f07d0abf-b3eb-f530-37b9-e66454740b3f@kernel.dk> (Jens Axboe's
-        message of "Thu, 6 Jun 2019 23:52:35 -0600")
-Message-ID: <yq1o939i9qh.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
+        id S1730385AbfFGRnB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 13:43:01 -0400
+Received: from mail-qt1-f174.google.com ([209.85.160.174]:40457 "EHLO
+        mail-qt1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728684AbfFGRnA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 13:43:00 -0400
+Received: by mail-qt1-f174.google.com with SMTP id a15so3223794qtn.7
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 10:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=oeg4EF5rujeMPp9Nb508v+kktFKAGSLZCcv908l1IKI=;
+        b=ASV7ALoDT2zd/fgs+zwpbGGUj0d/qCEx8lkGbpyMxX/W7LD3hK+5d/qGKsSk3EGIC5
+         yDv9mgPFQpk3rVuje624DMrgJLaT2fuMeYl0n3m+dftgWTG7oeR1uZG0dEeSIbjxYE1/
+         HQkgUODeG07bYrZrgmA2C1MBFRVpqljCDQze4qBlriSUbjaYMvxwp2ntxJzJz1TdtTfU
+         ZSIOr/qYX0o2WEL2cWWQ+IBhm/4KEg/bww7JMdEm3JvdEW1ZqoTMqDSvRp8XWiP2bAzZ
+         H4gN6kCxEV4uf6nG80fqFqXkJa6VSpzmk2bfOSQ8NSHuHbbDintF7SoFfxQD96Y/q6EQ
+         hbWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=oeg4EF5rujeMPp9Nb508v+kktFKAGSLZCcv908l1IKI=;
+        b=dVCmYwS/v8GPeeMkgd96ORf0LvgH8xLjwdd47EdcfPuzfI6x7fgR+ITJyIpcZnpqak
+         FE6XxfHdm7ffWC4W+jq8z3pOu3FN8QQgkNIgU4bX0vthu/PrkLMGDoesW4qmYVZGwIkE
+         KlXbzS1/1zrVljS3+QTWOO6qASOFOmTE4VFQlFK1B3eHmqxutbv392xZJlLolvaGGe2m
+         nJJXJTyDw7ioMDNQXHmhYMFwcmdea0bMrcbZycM10U0lOI5fJJd34NN2JYOyOl+eiqi+
+         vuI0TUj/E6QF8mEOoDa1ukVr1YqTssRcJtr0DFr3l947w/DKnbMRJ0/i2qonCG9JU0FZ
+         cmJg==
+X-Gm-Message-State: APjAAAVY0Zw8V6vEzUTzDvr6Zh2Oqk4MGXsjhpuRzBUR17KKuhsZWIJi
+        Mn6wZwDHCloadp16aEdgrQ9w2w==
+X-Google-Smtp-Source: APXvYqymWEMaLa+WKtddtzs6yJGAH+5gbYNxEwl4/peDnB4fesrHGK3NrZV0fixGWqPE635JbizZyg==
+X-Received: by 2002:ac8:2edc:: with SMTP id i28mr27410453qta.77.1559929379521;
+        Fri, 07 Jun 2019 10:42:59 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id w143sm1375909qka.22.2019.06.07.10.42.58
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 07 Jun 2019 10:42:58 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hZItG-0006H8-GC; Fri, 07 Jun 2019 14:42:58 -0300
+Date:   Fri, 7 Jun 2019 14:42:58 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Steve Wise <larrystevenwise@gmail.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>
+Subject: Re: RFC: Remove nes
+Message-ID: <20190607174258.GO14802@ziepe.ca>
+References: <20190607162430.GL14802@ziepe.ca>
+ <CADmRdJfDLp_C+rVuRqDVfDahtcwSDb8HGgR2_SHmbxD3AUghfw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9281 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=528
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906070116
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9281 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=574 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906070116
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADmRdJfDLp_C+rVuRqDVfDahtcwSDb8HGgR2_SHmbxD3AUghfw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Jun 07, 2019 at 12:23:45PM -0500, Steve Wise wrote:
+> On Fri, Jun 7, 2019 at 11:24 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > Since we have gained another two (EFA, SIW) drivers lately, I'd really
+> > like to remove NES as we have in the past for other drivers.
+> >
+> > This hardware was proposed to be removed at the last purge, but I
+> > think that Steve still wanted to keep it for some reason. I suppose
+> > that has changed now.
+> >
+> > If I recall the reasons for removal were basically:
+> >  - Does not support modern FRWR, which is now becoming mandatory for ULPs
+> >  - Does not support 64 bit physical addresses, so is useless on modern
+> >    servers
+> >  - Possibly nobody has even loaded the module in years. Wouldn't be
+> >    surprised to learn it is broken with all the recent churn.
+> >
+> > Remarkably there still seem to be cards in ebay though..
+> >
+> > Jason
+> 
+> It wasn't me.
 
-Jens,
+Oh? I wonder who..
 
->> The SCSI bits will need a bit more review, and possibly tweaking
->> fo megaraid and mpt3sas.  But they are really independent of the
->> other patches, so maybe skip them for now and leave them for Martin
->> to deal with.
->
-> I dropped the SCSI bits.
+> Perhaps we were discussing cxgb3 removal?
 
-I'll monitor and merge them.
+I know we discussed that :) can we remove cxgb3? :)
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> Anyway, are you certain it doesn't support REG_MR?  I see support
+> for it in nes_post_send().
+
+Hm, not really, but I thought it was one of the ones. It does set
+IB_DEVICE_MEM_MGT_EXTENSIONS so I guess it is OK.
+
+Jason
