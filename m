@@ -2,303 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBE339192
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 18:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B460391A3
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 18:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730045AbfFGQGA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 12:06:00 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:41543 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729133AbfFGQF7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 12:05:59 -0400
-Received: by mail-qt1-f196.google.com with SMTP id s57so2848349qte.8
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 09:05:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mDQI7vDRgVEqfEUUaCyaBBK+4bOYH5UfB7o3hA1mJXA=;
-        b=h6KpvG8kEPwZ4LEZggj55gXJyseLol+sT11VPWvdlbvHuRB/SDV9CdXfnBVmjGGNUR
-         rOaB3khRLP9k43hFFlM7JgJrB+xap09v5WEvcNpCcDm+R7q6tjjOEBwesAVq48cJ/83g
-         So0nJITGzjxRk4D0uPQp5n7PvmlL4uFKrl/48pOQIl6ZN2eKDvmwWgXQZlPWvyAnWlIw
-         yU5ZwpruBe/84KRjpLYqcD9PBjC1jDUG3G9Ohbk+ythU2LvunFU4UkOUnBzmx4hF6Ao0
-         Lnzva0XY+uFw0Y+ynwlkcWlHyp6MBQc24OEdhN/d2qSSoB3U9Jw6KgBVG8SRZERqZzkb
-         2hlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mDQI7vDRgVEqfEUUaCyaBBK+4bOYH5UfB7o3hA1mJXA=;
-        b=X/GL7PIz6eKagV3lW4idbTtIiblGJ7+EKxMMEHc0I3Qx1YjXumcYbIQGw0SCzeIYmV
-         rkBqBrJvaqDh5mkqqU7wKGJWpDzwvKtO3mnbIwYWnMwewUQi8R2rYoRbIi0RX/E/L1Dy
-         xCGuN8LF1zXjmGGIEev5Rp3NUTm+D7HzOEKKhOo9ARBU7pjRAYlTDbrLZjumph1PiBcL
-         S9DxYW4S5ZHF2y/xOS3CbhGlWB5/IsWXG1NC+IImSEdbq+vEt/W4TjL8OfM4SpbeaMm9
-         ucdPVskGhbSwrTj9haV6BMtMqYmr7686jML7h/33DpDXOf9rjlWDF2o5xErXzCrMC5wJ
-         Ulug==
-X-Gm-Message-State: APjAAAU7iJ4Nm91V2paKfVkm5BD7XfbWRUfMF4K7exhT0x8tllPzhmlz
-        RBBV+jz2QcLu2WBkWXpP2NGajg==
-X-Google-Smtp-Source: APXvYqwIT1CmduZzPGFrLNflexTC0zIShRnLBlA8OsJP0/v7GZFL6ZhIHAbjBC1Kw7kXZZYVQlIuiQ==
-X-Received: by 2002:ac8:1af4:: with SMTP id h49mr38593897qtk.183.1559923558110;
-        Fri, 07 Jun 2019 09:05:58 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id n124sm1260323qkf.31.2019.06.07.09.05.57
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 09:05:57 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hZHNN-00008j-5Z; Fri, 07 Jun 2019 13:05:57 -0300
-Date:   Fri, 7 Jun 2019 13:05:57 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com
-Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
-Subject: [PATCH v2 12/11] mm/hmm: Fix error flows in
- hmm_invalidate_range_start
-Message-ID: <20190607160557.GA335@ziepe.ca>
-References: <20190606184438.31646-1-jgg@ziepe.ca>
+        id S1729797AbfFGQJg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 12:09:36 -0400
+Received: from mail-eopbgr130052.outbound.protection.outlook.com ([40.107.13.52]:38624
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729325AbfFGQJg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 7 Jun 2019 12:09:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8Ibi9Yq7Jw3rXHNXkIHEh1C+CTujCzpRhxetU21Zq5E=;
+ b=Du1ZX4ZdQH4c71fR9YjdUl0mHVdjp+KuhWO2t/mGyDzgGIMnnb72TxGw5Ya8xIT2381OtKbVTyFSz86cr+rsb4p1yP8cHA6V+eM7MuXpUTDfZD1iuDOB/T7ZOQX6Pg9IiHa3GTwIePGJOZd0l2S3iJLja5JVMl9vMX+xw6jkSLQ=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB3263.eurprd05.prod.outlook.com (10.170.238.20) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1965.15; Fri, 7 Jun 2019 16:09:31 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1965.011; Fri, 7 Jun 2019
+ 16:09:31 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
+CC:     Sagi Grimberg <sagi@grimberg.me>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Israel Rukshin <israelr@mellanox.com>,
+        Idan Burstein <idanb@mellanox.com>,
+        Oren Duer <oren@mellanox.com>,
+        Vladimir Koushnir <vladimirk@mellanox.com>,
+        Shlomi Nimrodi <shlomin@mellanox.com>
+Subject: Re: [PATCH 15/20] RDMA/core: Validate signature handover device cap
+Thread-Topic: [PATCH 15/20] RDMA/core: Validate signature handover device cap
+Thread-Index: AQHVFutI8IXfz1d/vEebKEIJceO0iKaNfvAAgAAALwCAACi6AIACwRCA
+Date:   Fri, 7 Jun 2019 16:09:30 +0000
+Message-ID: <20190607160925.GD14771@mellanox.com>
+References: <1559222731-16715-1-git-send-email-maxg@mellanox.com>
+ <1559222731-16715-16-git-send-email-maxg@mellanox.com>
+ <4780f87f-98ba-9432-2de9-352bdf8bf5a0@grimberg.me>
+ <a69a134b-d0a5-3144-142e-2050ce935037@grimberg.me>
+ <45f75d84-0616-8516-c482-65cbab7b8557@mellanox.com>
+In-Reply-To: <45f75d84-0616-8516-c482-65cbab7b8557@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YQBPR0101CA0012.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00::25) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3efb4310-7e44-4a2c-9655-08d6eb6285dc
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB3263;
+x-ms-traffictypediagnostic: VI1PR05MB3263:
+x-microsoft-antispam-prvs: <VI1PR05MB3263829C0F96E5B2270B5F61CF100@VI1PR05MB3263.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2958;
+x-forefront-prvs: 0061C35778
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(39860400002)(366004)(136003)(346002)(396003)(189003)(199004)(5660300002)(71190400001)(52116002)(71200400001)(6486002)(229853002)(486006)(25786009)(446003)(7736002)(6246003)(11346002)(53936002)(8676002)(53546011)(6512007)(316002)(6436002)(14454004)(1076003)(81156014)(99286004)(256004)(386003)(6506007)(81166006)(66066001)(66446008)(6116002)(76176011)(186003)(86362001)(68736007)(3846002)(66476007)(107886003)(478600001)(66946007)(66556008)(64756008)(102836004)(73956011)(26005)(476003)(2616005)(6636002)(4326008)(37006003)(36756003)(2906002)(54906003)(33656002)(6862004)(305945005)(8936002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3263;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: MPVwDH6tth+I8jN3t3VjS1jkfGn+SIkPls3afpM4SnAAUmVLXx3/TmSseBKUBmY3OaGfZZsTIL0IYS5ZzP6DXQ9ZPpoY0ysIKCC+zXQabnAuZitI0VoJDLVgkFrcBvoxhgUzFejVlAI7TpcjPYmY2jdlWLYNKFV6laqrafb8Aca5PNjgO3l8Ke9L80TVXkZ824lbUTGHFiDaPYSvv7pPsgX7nOTrA83I2qVqEmDW68bGNKqvXiBQEgFrAp80333+js2TE274VNjiRiO9RhWvswIc2jeKEZBEf+yDT2MQJ8x4QQv+Hg8C1TZ/iL8ZYb33icw2IMDkumn40/EGeW3ukxo9EHm69URX3I56fabvVJqkeSSzGzeGZgwsHZEkbIfUYh/N8HGgH8Gi3wbql8gdrgtwZqOwKhWfiFK6VHOksPg=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C71EE9D99E223546B1B9BB78EFF39448@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190606184438.31646-1-jgg@ziepe.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3efb4310-7e44-4a2c-9655-08d6eb6285dc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2019 16:09:31.0479
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3263
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-If the trylock on the hmm->mirrors_sem fails the function will return
-without decrementing the notifiers that were previously incremented. Since
-the caller will not call invalidate_range_end() on EAGAIN this will result
-in notifiers becoming permanently incremented and deadlock.
-
-If the sync_cpu_device_pagetables() required blocking the function will
-not return EAGAIN even though the device continues to touch the
-pages. This is a violation of the mmu notifier contract.
-
-Switch, and rename, the ranges_lock to a spin lock so we can reliably
-obtain it without blocking during error unwind.
-
-The error unwind is necessary since the notifiers count must be held
-incremented across the call to sync_cpu_device_pagetables() as we cannot
-allow the range to become marked valid by a parallel
-invalidate_start/end() pair while doing sync_cpu_device_pagetables().
-
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
----
- include/linux/hmm.h |  2 +-
- mm/hmm.c            | 77 +++++++++++++++++++++++++++------------------
- 2 files changed, 48 insertions(+), 31 deletions(-)
-
-I almost lost this patch - it is part of the series, hasn't been
-posted before, and wasn't sent with the rest, sorry.
-
-diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-index bf013e96525771..0fa8ea34ccef6d 100644
---- a/include/linux/hmm.h
-+++ b/include/linux/hmm.h
-@@ -86,7 +86,7 @@
- struct hmm {
- 	struct mm_struct	*mm;
- 	struct kref		kref;
--	struct mutex		lock;
-+	spinlock_t		ranges_lock;
- 	struct list_head	ranges;
- 	struct list_head	mirrors;
- 	struct mmu_notifier	mmu_notifier;
-diff --git a/mm/hmm.c b/mm/hmm.c
-index 4215edf737ef5b..10103a24e9b7b3 100644
---- a/mm/hmm.c
-+++ b/mm/hmm.c
-@@ -68,7 +68,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
- 	init_rwsem(&hmm->mirrors_sem);
- 	hmm->mmu_notifier.ops = NULL;
- 	INIT_LIST_HEAD(&hmm->ranges);
--	mutex_init(&hmm->lock);
-+	spin_lock_init(&hmm->ranges_lock);
- 	kref_init(&hmm->kref);
- 	hmm->notifiers = 0;
- 	hmm->mm = mm;
-@@ -114,18 +114,19 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
- {
- 	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
- 	struct hmm_mirror *mirror;
-+	unsigned long flags;
- 
- 	/* Bail out if hmm is in the process of being freed */
- 	if (!kref_get_unless_zero(&hmm->kref))
- 		return;
- 
--	mutex_lock(&hmm->lock);
-+	spin_lock_irqsave(&hmm->ranges_lock, flags);
- 	/*
- 	 * Since hmm_range_register() holds the mmget() lock hmm_release() is
- 	 * prevented as long as a range exists.
- 	 */
- 	WARN_ON(!list_empty(&hmm->ranges));
--	mutex_unlock(&hmm->lock);
-+	spin_unlock_irqrestore(&hmm->ranges_lock, flags);
- 
- 	down_read(&hmm->mirrors_sem);
- 	list_for_each_entry(mirror, &hmm->mirrors, list) {
-@@ -141,6 +142,23 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
- 	hmm_put(hmm);
- }
- 
-+static void notifiers_decrement(struct hmm *hmm)
-+{
-+	lockdep_assert_held(&hmm->ranges_lock);
-+
-+	hmm->notifiers--;
-+	if (!hmm->notifiers) {
-+		struct hmm_range *range;
-+
-+		list_for_each_entry(range, &hmm->ranges, list) {
-+			if (range->valid)
-+				continue;
-+			range->valid = true;
-+		}
-+		wake_up_all(&hmm->wq);
-+	}
-+}
-+
- static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 			const struct mmu_notifier_range *nrange)
- {
-@@ -148,6 +166,7 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 	struct hmm_mirror *mirror;
- 	struct hmm_update update;
- 	struct hmm_range *range;
-+	unsigned long flags;
- 	int ret = 0;
- 
- 	if (!kref_get_unless_zero(&hmm->kref))
-@@ -158,12 +177,7 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 	update.event = HMM_UPDATE_INVALIDATE;
- 	update.blockable = mmu_notifier_range_blockable(nrange);
- 
--	if (mmu_notifier_range_blockable(nrange))
--		mutex_lock(&hmm->lock);
--	else if (!mutex_trylock(&hmm->lock)) {
--		ret = -EAGAIN;
--		goto out;
--	}
-+	spin_lock_irqsave(&hmm->ranges_lock, flags);
- 	hmm->notifiers++;
- 	list_for_each_entry(range, &hmm->ranges, list) {
- 		if (update.end < range->start || update.start >= range->end)
-@@ -171,7 +185,7 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 
- 		range->valid = false;
- 	}
--	mutex_unlock(&hmm->lock);
-+	spin_unlock_irqrestore(&hmm->ranges_lock, flags);
- 
- 	if (mmu_notifier_range_blockable(nrange))
- 		down_read(&hmm->mirrors_sem);
-@@ -179,16 +193,26 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 		ret = -EAGAIN;
- 		goto out;
- 	}
-+
- 	list_for_each_entry(mirror, &hmm->mirrors, list) {
--		int ret;
-+		int rc;
- 
--		ret = mirror->ops->sync_cpu_device_pagetables(mirror, &update);
--		if (!update.blockable && ret == -EAGAIN)
-+		rc = mirror->ops->sync_cpu_device_pagetables(mirror, &update);
-+		if (rc) {
-+			if (WARN_ON(update.blockable || rc != -EAGAIN))
-+				continue;
-+			ret = -EAGAIN;
- 			break;
-+		}
- 	}
- 	up_read(&hmm->mirrors_sem);
- 
- out:
-+	if (ret) {
-+		spin_lock_irqsave(&hmm->ranges_lock, flags);
-+		notifiers_decrement(hmm);
-+		spin_unlock_irqrestore(&hmm->ranges_lock, flags);
-+	}
- 	hmm_put(hmm);
- 	return ret;
- }
-@@ -197,23 +221,14 @@ static void hmm_invalidate_range_end(struct mmu_notifier *mn,
- 			const struct mmu_notifier_range *nrange)
- {
- 	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
-+	unsigned long flags;
- 
- 	if (!kref_get_unless_zero(&hmm->kref))
- 		return;
- 
--	mutex_lock(&hmm->lock);
--	hmm->notifiers--;
--	if (!hmm->notifiers) {
--		struct hmm_range *range;
--
--		list_for_each_entry(range, &hmm->ranges, list) {
--			if (range->valid)
--				continue;
--			range->valid = true;
--		}
--		wake_up_all(&hmm->wq);
--	}
--	mutex_unlock(&hmm->lock);
-+	spin_lock_irqsave(&hmm->ranges_lock, flags);
-+	notifiers_decrement(hmm);
-+	spin_unlock_irqrestore(&hmm->ranges_lock, flags);
- 
- 	hmm_put(hmm);
- }
-@@ -866,6 +881,7 @@ int hmm_range_register(struct hmm_range *range,
- {
- 	unsigned long mask = ((1UL << page_shift) - 1UL);
- 	struct hmm *hmm = mirror->hmm;
-+	unsigned long flags;
- 
- 	range->valid = false;
- 	range->hmm = NULL;
-@@ -887,7 +903,7 @@ int hmm_range_register(struct hmm_range *range,
- 	kref_get(&hmm->kref);
- 
- 	/* Initialize range to track CPU page table updates. */
--	mutex_lock(&hmm->lock);
-+	spin_lock_irqsave(&hmm->ranges_lock, flags);
- 
- 	range->hmm = hmm;
- 	list_add(&range->list, &hmm->ranges);
-@@ -898,7 +914,7 @@ int hmm_range_register(struct hmm_range *range,
- 	 */
- 	if (!hmm->notifiers)
- 		range->valid = true;
--	mutex_unlock(&hmm->lock);
-+	spin_unlock_irqrestore(&hmm->ranges_lock, flags);
- 
- 	return 0;
- }
-@@ -914,13 +930,14 @@ EXPORT_SYMBOL(hmm_range_register);
- void hmm_range_unregister(struct hmm_range *range)
- {
- 	struct hmm *hmm = range->hmm;
-+	unsigned long flags;
- 
- 	if (WARN_ON(range->end <= range->start))
- 		return;
- 
--	mutex_lock(&hmm->lock);
-+	spin_lock_irqsave(&hmm->ranges_lock, flags);
- 	list_del(&range->list);
--	mutex_unlock(&hmm->lock);
-+	spin_unlock_irqrestore(&hmm->ranges_lock, flags);
- 
- 	/* Drop reference taken by hmm_range_register() */
- 	range->valid = false;
--- 
-2.21.0
-
+T24gVGh1LCBKdW4gMDYsIDIwMTkgYXQgMDE6MDU6NTRBTSArMDMwMCwgTWF4IEd1cnRvdm95IHdy
+b3RlOg0KPiANCj4gT24gNi81LzIwMTkgMTA6NDAgUE0sIFNhZ2kgR3JpbWJlcmcgd3JvdGU6DQo+
+ID4gDQo+ID4gPiA+IC3CoMKgwqAgaWYgKHFwX2luaXRfYXR0ci0+cndxX2luZF90YmwgJiYNCj4g
+PiA+ID4gLcKgwqDCoMKgwqDCoMKgIChxcF9pbml0X2F0dHItPnJlY3ZfY3EgfHwNCj4gPiA+ID4g
+LcKgwqDCoMKgwqDCoMKgIHFwX2luaXRfYXR0ci0+c3JxIHx8IHFwX2luaXRfYXR0ci0+Y2FwLm1h
+eF9yZWN2X3dyIHx8DQo+ID4gPiA+IC3CoMKgwqDCoMKgwqDCoCBxcF9pbml0X2F0dHItPmNhcC5t
+YXhfcmVjdl9zZ2UpKQ0KPiA+ID4gPiArwqDCoMKgIGlmICgocXBfaW5pdF9hdHRyLT5yd3FfaW5k
+X3RibCAmJg0KPiA+ID4gPiArwqDCoMKgwqDCoMKgwqDCoCAocXBfaW5pdF9hdHRyLT5yZWN2X2Nx
+IHx8DQo+ID4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqAgcXBfaW5pdF9hdHRyLT5zcnEgfHwgcXBf
+aW5pdF9hdHRyLT5jYXAubWF4X3JlY3Zfd3IgfHwNCj4gPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
+oCBxcF9pbml0X2F0dHItPmNhcC5tYXhfcmVjdl9zZ2UpKSB8fA0KPiA+ID4gPiArwqDCoMKgwqDC
+oMKgwqAgKChxcF9pbml0X2F0dHItPmNyZWF0ZV9mbGFncyAmIElCX1FQX0NSRUFURV9TSUdOQVRV
+UkVfRU4pICYmDQo+ID4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgICEoZGV2aWNlLT5hdHRycy5kZXZp
+Y2VfY2FwX2ZsYWdzICYNCj4gPiA+ID4gSUJfREVWSUNFX1NJR05BVFVSRV9IQU5ET1ZFUikpKQ0K
+PiA+ID4gDQo+ID4gPiBXb3VsZG4ndCBpdCBtYWtlIHNlbnNlIHRvIGFsc28gY2hhbmdlIHRoZSBx
+cCBjcmVhdGUgZmxhZyBhbmQgdGhlIGRldmljZQ0KPiA+ID4gY2FwIHRvIGJlIFBJX0VOL1BJX0hB
+TkRPVkVSIHdoaWxlIHdlJ3JlIGF0IGl0Pw0KPiANCj4gV2UncmUgYWxyZWFkeSBzdGFuZGluZyBv
+biAyMCBwYXRjaGVzIGluIHRoaXMgc2VyaWVzLCBzbyBpZiBKYXNvbiB3aWxsIGFncmVlDQo+IEkn
+bGwgZG8gdGhpcyByZW5hbWluZyBpbiBhIHNlcGFyYXRlIGNvbW1pdCBvciB3ZSBjYW4gc3RheSB3
+aXRoIHRoZSBjdXJyZW50DQo+IG5hbWluZy4NCg0KR2l2ZW4gdGhlIENIIGFuZCBTYWdpIGhhdmUg
+ZG9uZSB0aGUgaGFyZCB3b3JrIHRvIHJldmlldyB0aGUgbGFyZ2UNCnNlcmllcywgSSBhbSBmaW5l
+IHRvIHRha2UgMnggcGF0Y2hlcyBpZiB0aGV5IGFyZSBmaW5lIHRvIHJldmlldyBpdA0KDQpKYXNv
+bg0K
