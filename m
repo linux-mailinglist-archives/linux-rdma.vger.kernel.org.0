@@ -2,128 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD00838331
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 05:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDE4383C1
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 07:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726331AbfFGDrf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 23:47:35 -0400
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:2406 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbfFGDrf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 23:47:35 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5cf9de530000>; Thu, 06 Jun 2019 20:47:32 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 06 Jun 2019 20:47:34 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 06 Jun 2019 20:47:34 -0700
-Received: from [10.110.48.28] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Jun
- 2019 03:47:28 +0000
-Subject: Re: [PATCH v2 hmm 11/11] mm/hmm: Remove confusing comment and logic
- from hmm_release
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
-        "Ralph Campbell" <rcampbell@nvidia.com>, <Felix.Kuehling@amd.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
-        Jason Gunthorpe <jgg@mellanox.com>
-References: <20190606184438.31646-1-jgg@ziepe.ca>
- <20190606184438.31646-12-jgg@ziepe.ca>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <3edc47bd-e8f6-0e65-5844-d16901890637@nvidia.com>
-Date:   Thu, 6 Jun 2019 20:47:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726607AbfFGFdu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 01:33:50 -0400
+Received: from mail-it1-f196.google.com ([209.85.166.196]:39468 "EHLO
+        mail-it1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbfFGFdu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 01:33:50 -0400
+Received: by mail-it1-f196.google.com with SMTP id j204so941180ite.4
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 22:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I1Ohgac363EioDxzXpyXf7UN1ZgVyShBjggu94kceQ8=;
+        b=k/GR7joJNJJ6Ve9R/aFsDJRsptZAid18wqkAKiXzRB6NlE5r0KsuMRDWBQiDjQE71p
+         daD8j4DSrVfI6HVAkD5vCpZj39PQaq9fApbZACjRC0RDDKZIBpn7/PLmAhGU1uSNjV36
+         ZPpnk1tioX9M+1EYWJoeTvWylBd+vbf5sKkC6jEafyQKFEFkOanMnEF7whEz4Nqwt4hG
+         bE4l9bBTG0ogocOQzuioUmmPSF5w+Ho92/o1cceuVe444tHP69yQxu8DSewMXHLCqg4l
+         Ja6TZAP9vQDDI+y+jUJx9i8y337VPVjbLYX5aoIkmB6O4W9ByhkvQ0wvmaFU4t1VIu/d
+         h8DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I1Ohgac363EioDxzXpyXf7UN1ZgVyShBjggu94kceQ8=;
+        b=EUKCr/MOVeQWTvksV6JmMa7wc2yx9Jrgxpchxvt7o+neV6t6n7LNDWnxmgwrXNG0wB
+         3pSPGFHfBQEMb7QtfWl7/m3LZM8+5KiQ1dEJemd2/whBiW/80V7kQc21X9IsS3XA8HgT
+         F6ZAqf8G1SEYkTTLPREbBkHgdQwhghynLXDxBnAhucQPUT/bFud9JqX375UScQQXMear
+         0yoKg0DEPNayAXpQaGcaE0P9h9fJ3vgZxzAYVHPqi8N6EA0EdjoreSsLHYKVqGu0a25A
+         8eagoy8616pa6wz+LhIloCCl7mh2lN/PoylbZz+Qs6q3AzwWdYqHgu3mjHAHxtOezv4T
+         rInw==
+X-Gm-Message-State: APjAAAWEi1cOen9jaaUSDCL0pjK8DTV31ejOUIkgMLZ1ui5Nqfq8CHuy
+        A7gxq164Oyib8ykoEgigOlGU5ps9YCO+4qR8fKCaUA==
+X-Google-Smtp-Source: APXvYqzO76FNbL4lc2mT5nAI8664+vPAEC2qxggUSScGxp/b2eT89TkEwyH+hzeEqr8qRCV6LZQ9VkHcX6jY2/9nElY=
+X-Received: by 2002:a05:660c:752:: with SMTP id a18mr2789419itl.63.1559885629583;
+ Thu, 06 Jun 2019 22:33:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190606184438.31646-12-jgg@ziepe.ca>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL103.nvidia.com (172.20.187.11) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1559879252; bh=bZvuY/i6GNCDoB9S/9ycfjQg/GlXUjYF/GtxOCf0uXU=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=A7b3B9MIZYE2j+v3mXjKis5leb/eVo7kaz4HeWlw96qB4oJdGtB86PLsdX70nI9ax
-         x3/wFcbHrGloJGNYAG+xmMO+ti4FMUCxIPFMH+21XCi150Jn6NaUYQx0kq04Bf6jKj
-         LkktxvYAUlD5Ove8fENnNtyaieAVfZiEKInsVhqpxtqRzXZAStQjBmX1EmXNW9wVD0
-         qRd9vtBuVuOZRuz1WMqrpCwQNfKp37kqYjYZ8hbRrh6CM+QdjaHZLXTSzrJBYQvPb/
-         tMZ+XTvLFuSez92di1HCFzs1bE/CVkNOISup9kLBndzsy8o/zyKWeRc6duPhudgnyM
-         tfNzpFVVgkGIg==
+References: <cover.1559580831.git.andreyknvl@google.com> <dc3f3092abbc0d48e51b2e2a2ca8f4c4f69fa0f4.1559580831.git.andreyknvl@google.com>
+In-Reply-To: <dc3f3092abbc0d48e51b2e2a2ca8f4c4f69fa0f4.1559580831.git.andreyknvl@google.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Fri, 7 Jun 2019 07:33:38 +0200
+Message-ID: <CAHUa44E+g3YTcja+7qgx+iABVd48DbrMMOm0sbyMwf0U6F5NPw@mail.gmail.com>
+Subject: Re: [PATCH v16 14/16] tee, arm64: untag user pointers in tee_shm_register
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> hmm_release() is called exactly once per hmm. ops->release() cannot
-> accidentally trigger any action that would recurse back onto
-> hmm->mirrors_sem.
-> 
-> This fixes a use after-free race of the form:
-> 
->        CPU0                                   CPU1
->                                            hmm_release()
->                                              up_write(&hmm->mirrors_sem);
->  hmm_mirror_unregister(mirror)
->   down_write(&hmm->mirrors_sem);
->   up_write(&hmm->mirrors_sem);
->   kfree(mirror)
->                                              mirror->ops->release(mirror)
-> 
-> The only user we have today for ops->release is an empty function, so this
-> is unambiguously safe.
-> 
-> As a consequence of plugging this race drivers are not allowed to
-> register/unregister mirrors from within a release op.
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+On Mon, Jun 3, 2019 at 6:56 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> This patch is a part of a series that extends arm64 kernel ABI to allow to
+> pass tagged user pointers (with the top byte set to something else other
+> than 0x00) as syscall arguments.
+>
+> tee_shm_register()->optee_shm_unregister()->check_mem_type() uses provided
+> user pointers for vma lookups (via __check_mem_type()), which can only by
+> done with untagged pointers.
+>
+> Untag user pointers in this function.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+
+Acked-by: Jens Wiklander <jens.wiklander@linaro.org>
+
 > ---
->  mm/hmm.c | 28 +++++++++-------------------
->  1 file changed, 9 insertions(+), 19 deletions(-)
-> 
-> diff --git a/mm/hmm.c b/mm/hmm.c
-> index 709d138dd49027..3a45dd3d778248 100644
-> --- a/mm/hmm.c
-> +++ b/mm/hmm.c
-> @@ -136,26 +136,16 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->  	WARN_ON(!list_empty(&hmm->ranges));
->  	mutex_unlock(&hmm->lock);
->  
-> -	down_write(&hmm->mirrors_sem);
-> -	mirror = list_first_entry_or_null(&hmm->mirrors, struct hmm_mirror,
-> -					  list);
-> -	while (mirror) {
-> -		list_del_init(&mirror->list);
-> -		if (mirror->ops->release) {
-> -			/*
-> -			 * Drop mirrors_sem so the release callback can wait
-> -			 * on any pending work that might itself trigger a
-> -			 * mmu_notifier callback and thus would deadlock with
-> -			 * us.
-> -			 */
-> -			up_write(&hmm->mirrors_sem);
-> +	down_read(&hmm->mirrors_sem);
-
-This is cleaner and simpler, but I suspect it is leading to the deadlock
-that Ralph Campbell is seeing in his driver testing. (And in general, holding
-a lock during a driver callback usually leads to deadlocks.)
-
-Ralph, is this the one? It's the only place in this patchset where I can
-see a lock around a callback to driver code, that wasn't there before. So
-I'm pretty sure it is the one...
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+>  drivers/tee/tee_shm.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+> index 49fd7312e2aa..96945f4cefb8 100644
+> --- a/drivers/tee/tee_shm.c
+> +++ b/drivers/tee/tee_shm.c
+> @@ -263,6 +263,7 @@ struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
+>         shm->teedev = teedev;
+>         shm->ctx = ctx;
+>         shm->id = -1;
+> +       addr = untagged_addr(addr);
+>         start = rounddown(addr, PAGE_SIZE);
+>         shm->offset = addr - start;
+>         shm->size = length;
+> --
+> 2.22.0.rc1.311.g5d7573a151-goog
+>
