@@ -2,122 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FABC394A2
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4917394A7
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731907AbfFGSuW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 14:50:22 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33364 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730934AbfFGSuV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 14:50:21 -0400
-Received: by mail-qt1-f196.google.com with SMTP id x2so2581527qtr.0
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 11:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=981lOBbF7NntqOPGnU+wDEqlWf7ONqp9B0Ou4FbjqoU=;
-        b=oZC9a6nvcosvTmp2Xz2vW0f9gvXIuh4kitLGI6CjsLXK1+Gnu0mccx6TNO5esZKRWN
-         jpusXhxZ6diyXP/2IvDfe4Sozh6aFMls99kKfV0Oh9uEVYvzKsy1COSoqZhzVVpYwP9K
-         DlLyyRWwMTfr89qP7WlB75o9IQD+x/cE6xx3qucV0uEUL41Hb7JpWs/wMh4hLxr3HoJx
-         fc49CEJVp4R714dI4okPWcziniOd2LBG5fbQY9h/Cjd9k+Pglq+pi5j+zKX1QlmTE64r
-         wbxNASKedhU1orq0qO6Me5wbL2KGqE9NauEFAABsOyUfWfONSs2MlnU6mWezKlVjNiry
-         8Hvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=981lOBbF7NntqOPGnU+wDEqlWf7ONqp9B0Ou4FbjqoU=;
-        b=qQo/cuwGwY+DI/qi9E5kTV9/rqGYV724WkuDgIAEuHBv3u8Al+vEoOBo4TTknytvLo
-         zgeATaduyGC/y8nknp/8EQvyR/v6Afcsmn4oYAAvkGxB4VJLBgZelfCtMrKWr5qPW8Ub
-         1yLDs1clEmB0AXodlgwhCj4f9VW9ZEeLCO+L6mrHE3Yrcew4wo4hyyuHm+zw6qYzDQD9
-         OTHSxSPj7ZLhzkeTHM8aDmC5IYznnUhMBeTQvbUWnCH4msyfAiL1hqeERkMxDuf5JTJF
-         L5RUgoi7KIt0h9mobwlPqsmtL4Fv+DiaKaZi9DMd0M0aAPgk84yxEfkeuO04v2ZNwTzK
-         54OA==
-X-Gm-Message-State: APjAAAU5jbR7Wre9ZkPC0TJTE6m3ti9r/0LC15wsKjAKQgCw0nih/D/Q
-        mijtU4HX/1QuBIyDAbFiuZctQQ==
-X-Google-Smtp-Source: APXvYqxHzZOVD73PAZq/gC6oUmCxE3JRfnnnGXli2ogTGkWJxAu+ueWdhS//gQBOh+cGCpWnmaBbVg==
-X-Received: by 2002:ac8:444c:: with SMTP id m12mr48345365qtn.306.1559933420780;
-        Fri, 07 Jun 2019 11:50:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id q2sm1527313qkf.44.2019.06.07.11.50.20
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 11:50:20 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hZJwR-0007vm-HB; Fri, 07 Jun 2019 15:50:19 -0300
-Date:   Fri, 7 Jun 2019 15:50:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1730157AbfFGSvX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 14:51:23 -0400
+Received: from mail-eopbgr00064.outbound.protection.outlook.com ([40.107.0.64]:5211
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729809AbfFGSvX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 7 Jun 2019 14:51:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MRw/IJJcG2eME8/d+ka6VpE5+lGTha4ZmhExxxxr+Oc=;
+ b=owwp0k7AsULPqOBGpTrCpr/hPuxURHvaHf8Yx9ICyohivwEOklO9ywX+Qh4bcUG08fJeqRxjh8L1tV0qIVdBQhjkvAl1ndf6DttEAkBjyj037lvf/+ycsIFIK2MESxOA/2lSz6ql5BZmSsdeq70zLUmjYULHN1gYwWthB91OQi8=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB5869.eurprd05.prod.outlook.com (20.178.125.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1965.14; Fri, 7 Jun 2019 18:51:18 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1965.011; Fri, 7 Jun 2019
+ 18:51:18 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+CC:     Jerome Glisse <jglisse@redhat.com>,
         John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190607185019.GP14802@ziepe.ca>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+Subject: Re: [PATCH v2 hmm 03/11] mm/hmm: Hold a mmgrab from hmm to mm
+Thread-Topic: [PATCH v2 hmm 03/11] mm/hmm: Hold a mmgrab from hmm to mm
+Thread-Index: AQHVHJfsjve3VpvfK0iKvy9k76PyJKaQiAIAgAACw4A=
+Date:   Fri, 7 Jun 2019 18:51:18 +0000
+Message-ID: <20190607185113.GF14771@mellanox.com>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
+ <20190606184438.31646-4-jgg@ziepe.ca>
+ <605172dc-5c66-123f-61a3-8e6880678aef@nvidia.com>
+In-Reply-To: <605172dc-5c66-123f-61a3-8e6880678aef@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR13CA0020.namprd13.prod.outlook.com
+ (2603:10b6:208:160::33) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c00a4373-03ca-4166-2866-08d6eb791ffd
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR05MB5869;
+x-ms-traffictypediagnostic: VI1PR05MB5869:
+x-microsoft-antispam-prvs: <VI1PR05MB58695D751D5C3702EDDA94DECF100@VI1PR05MB5869.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2089;
+x-forefront-prvs: 0061C35778
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(396003)(366004)(39860400002)(136003)(189003)(199004)(3846002)(558084003)(86362001)(316002)(52116002)(6246003)(11346002)(8676002)(8936002)(66556008)(71200400001)(81166006)(6506007)(305945005)(54906003)(6116002)(229853002)(71190400001)(6486002)(66066001)(64756008)(66446008)(7736002)(66946007)(102836004)(99286004)(6916009)(478600001)(73956011)(6512007)(1076003)(53936002)(14454004)(6436002)(66476007)(256004)(25786009)(76176011)(33656002)(81156014)(68736007)(5660300002)(446003)(486006)(2616005)(2906002)(53546011)(186003)(4326008)(36756003)(26005)(386003)(476003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5869;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: n+stqAix+Tn0aLVPjWDW2vTKorm3d9SSzs9OhKDw4dqDsSeXwX5pqh7XhCG+hEeu7uLmRAQQdgUkJx5jj6fJHFkqBhzOi7ruFWDWqVsdYduWB6PbvrD2HcrvA+iM+FRcffuJuScRsxqKBUtTNrpTzTVcxd7hWvi1f6xtWJ+HAur5Bv0lds+VdQ6ykex7wCpddULcIHAhNQJW9ToR9TH18kHVWRe8Xcz+BWN6B5zt3De66vZGAP8QOgu+R0QaoIiRDy5YvJIQRfnv5M/rILFVkMJWncMZauZIxEOoLwDoXEJnQ+4bwWvY69fOyC8DjOaZ/bLkN6zkhbbDgY253SI2RvlUJRTKGHRseCfmhJOpamCSZWCRxLf0ieqKU7KgzPOwoXUEGou7u8tJaJF6IEDkLOpTDIt9cuRrWqcfKrnX1Dg=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0ED1D20CB91BB94C8ED721D38322F396@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c00a4373-03ca-4166-2866-08d6eb791ffd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2019 18:51:18.4066
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5869
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
+On Fri, Jun 07, 2019 at 11:41:20AM -0700, Ralph Campbell wrote:
+>=20
+> On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
+> > From: Jason Gunthorpe <jgg@mellanox.com>
+> >=20
+> > So long a a struct hmm pointer exists, so should the struct mm it is
+>=20
+> s/a a/as a/
 
-> And I think this is related to what Christoph Hellwig is doing with bio_vec and
-> dma.  Really we want drivers out of the page processing business.
-
-At least for RDMA, and a few other places I've noticed, I'd really
-like to get totally out of the handling struct pages game.
-
-We are DMA based and really only want DMA addresses for the target
-device. I know other places need CPU pages or more complicated
-things.. But I also know there are other drivers like RDMA..
-
-So I think it would be very helpful to have a driver API something
-like:
-
-int get_user_mem_for_dma(struct device *dma_device,
-                void __user *mem, size_t length,
-                struct gup_handle *res,
-                struct 'bio dma list' *dma_list,
-                const struct dma_params *params);
-void put_user_mem_for_dma(struct gup_handle *res, 
-                 struct 'bio dma list' *dma_list);
-
-And we could hope to put in there all the specialty logic we want to
-have for this flow:
- - The weird HMM stuff in hmm_range_dma_map()
- - Interaction with DAX
- - Interaction with DMA BUF
- - Holding file leases
- - PCI peer 2 peer features
- - Optimizations for huge pages
- - Handling page dirtying from DMA
- - etc
-
-I think Matthew was suggesting something like this at LS/MM, so +1
-from here..
-
-When Christoph sends his BIO dma work I was thinking of investigating
-this avenue, as we already have something quite similiar in RDMA that
-could perhaps be hoisted out for re-use into mm/
+Got it, thanks
 
 Jason
