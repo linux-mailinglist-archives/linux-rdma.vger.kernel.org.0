@@ -2,188 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BCEB39483
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FABC394A2
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731979AbfFGSlZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 14:41:25 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:17828 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729449AbfFGSlY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 14:41:24 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5cfaafd20001>; Fri, 07 Jun 2019 11:41:22 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 07 Jun 2019 11:41:22 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 07 Jun 2019 11:41:22 -0700
-Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Jun
- 2019 18:41:21 +0000
-Subject: Re: [PATCH v2 hmm 03/11] mm/hmm: Hold a mmgrab from hmm to mm
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
-        "John Hubbard" <jhubbard@nvidia.com>, <Felix.Kuehling@amd.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
-        Jason Gunthorpe <jgg@mellanox.com>
-References: <20190606184438.31646-1-jgg@ziepe.ca>
- <20190606184438.31646-4-jgg@ziepe.ca>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <605172dc-5c66-123f-61a3-8e6880678aef@nvidia.com>
-Date:   Fri, 7 Jun 2019 11:41:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.0
+        id S1731907AbfFGSuW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 14:50:22 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33364 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730934AbfFGSuV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 14:50:21 -0400
+Received: by mail-qt1-f196.google.com with SMTP id x2so2581527qtr.0
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 11:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=981lOBbF7NntqOPGnU+wDEqlWf7ONqp9B0Ou4FbjqoU=;
+        b=oZC9a6nvcosvTmp2Xz2vW0f9gvXIuh4kitLGI6CjsLXK1+Gnu0mccx6TNO5esZKRWN
+         jpusXhxZ6diyXP/2IvDfe4Sozh6aFMls99kKfV0Oh9uEVYvzKsy1COSoqZhzVVpYwP9K
+         DlLyyRWwMTfr89qP7WlB75o9IQD+x/cE6xx3qucV0uEUL41Hb7JpWs/wMh4hLxr3HoJx
+         fc49CEJVp4R714dI4okPWcziniOd2LBG5fbQY9h/Cjd9k+Pglq+pi5j+zKX1QlmTE64r
+         wbxNASKedhU1orq0qO6Me5wbL2KGqE9NauEFAABsOyUfWfONSs2MlnU6mWezKlVjNiry
+         8Hvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=981lOBbF7NntqOPGnU+wDEqlWf7ONqp9B0Ou4FbjqoU=;
+        b=qQo/cuwGwY+DI/qi9E5kTV9/rqGYV724WkuDgIAEuHBv3u8Al+vEoOBo4TTknytvLo
+         zgeATaduyGC/y8nknp/8EQvyR/v6Afcsmn4oYAAvkGxB4VJLBgZelfCtMrKWr5qPW8Ub
+         1yLDs1clEmB0AXodlgwhCj4f9VW9ZEeLCO+L6mrHE3Yrcew4wo4hyyuHm+zw6qYzDQD9
+         OTHSxSPj7ZLhzkeTHM8aDmC5IYznnUhMBeTQvbUWnCH4msyfAiL1hqeERkMxDuf5JTJF
+         L5RUgoi7KIt0h9mobwlPqsmtL4Fv+DiaKaZi9DMd0M0aAPgk84yxEfkeuO04v2ZNwTzK
+         54OA==
+X-Gm-Message-State: APjAAAU5jbR7Wre9ZkPC0TJTE6m3ti9r/0LC15wsKjAKQgCw0nih/D/Q
+        mijtU4HX/1QuBIyDAbFiuZctQQ==
+X-Google-Smtp-Source: APXvYqxHzZOVD73PAZq/gC6oUmCxE3JRfnnnGXli2ogTGkWJxAu+ueWdhS//gQBOh+cGCpWnmaBbVg==
+X-Received: by 2002:ac8:444c:: with SMTP id m12mr48345365qtn.306.1559933420780;
+        Fri, 07 Jun 2019 11:50:20 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id q2sm1527313qkf.44.2019.06.07.11.50.20
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 07 Jun 2019 11:50:20 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hZJwR-0007vm-HB; Fri, 07 Jun 2019 15:50:19 -0300
+Date:   Fri, 7 Jun 2019 15:50:19 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Dan Williams <dan.j.williams@intel.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190607185019.GP14802@ziepe.ca>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+ <20190607110426.GB12765@quack2.suse.cz>
+ <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20190606184438.31646-4-jgg@ziepe.ca>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1559932882; bh=BXL7/wF1685JXXTrRB3MzSSsbcW5afztk5Rzsz/BPwQ=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=Wkrw1snfHAMLfoxwtDrAaK5NrPSHE8tbm/7LuFI2XQAtYTox/3q2xrehM2lJJL18q
-         P/lK/orwO3+mod6CKV0QZm78jJRxIKuvbNOsQZhdd+1yRIPKKDJpL5YWOhc9vnhKch
-         UWKavQ8B/OXpV8YxtD2Qxuz8CaPCy8NIu1DMnM0y/udqNHlRe/2PVTqjEHpPLOTT8Z
-         m2SvCKaGpDUPdJbPo5rTpLyBiA5MJ07nzuPSxth9C5xwlF0gz+O9RKbQZjerlG99CH
-         yhyMU5sdcUbqnd3nDCzFo4CZyHozRpUrUPNHp9dYtOryQgA8jcqcd5zND+0Xlcs0Xq
-         ulL1B4XzCIYwA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
 
-On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
->=20
-> So long a a struct hmm pointer exists, so should the struct mm it is
+> And I think this is related to what Christoph Hellwig is doing with bio_vec and
+> dma.  Really we want drivers out of the page processing business.
 
-s/a a/as a/
+At least for RDMA, and a few other places I've noticed, I'd really
+like to get totally out of the handling struct pages game.
 
-> linked too. Hold the mmgrab() as soon as a hmm is created, and mmdrop() i=
-t
-> once the hmm refcount goes to zero.
->=20
-> Since mmdrop() (ie a 0 kref on struct mm) is now impossible with a !NULL
-> mm->hmm delete the hmm_hmm_destroy().
->=20
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> Reviewed-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+We are DMA based and really only want DMA addresses for the target
+device. I know other places need CPU pages or more complicated
+things.. But I also know there are other drivers like RDMA..
 
-Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+So I think it would be very helpful to have a driver API something
+like:
 
-> ---
-> v2:
->   - Fix error unwind paths in hmm_get_or_create (Jerome/Jason)
-> ---
->   include/linux/hmm.h |  3 ---
->   kernel/fork.c       |  1 -
->   mm/hmm.c            | 22 ++++------------------
->   3 files changed, 4 insertions(+), 22 deletions(-)
->=20
-> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-> index 2d519797cb134a..4ee3acabe5ed22 100644
-> --- a/include/linux/hmm.h
-> +++ b/include/linux/hmm.h
-> @@ -586,14 +586,11 @@ static inline int hmm_vma_fault(struct hmm_mirror *=
-mirror,
->   }
->  =20
->   /* Below are for HMM internal use only! Not to be used by device driver=
-! */
-> -void hmm_mm_destroy(struct mm_struct *mm);
-> -
->   static inline void hmm_mm_init(struct mm_struct *mm)
->   {
->   	mm->hmm =3D NULL;
->   }
->   #else /* IS_ENABLED(CONFIG_HMM_MIRROR) */
-> -static inline void hmm_mm_destroy(struct mm_struct *mm) {}
->   static inline void hmm_mm_init(struct mm_struct *mm) {}
->   #endif /* IS_ENABLED(CONFIG_HMM_MIRROR) */
->  =20
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index b2b87d450b80b5..588c768ae72451 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -673,7 +673,6 @@ void __mmdrop(struct mm_struct *mm)
->   	WARN_ON_ONCE(mm =3D=3D current->active_mm);
->   	mm_free_pgd(mm);
->   	destroy_context(mm);
-> -	hmm_mm_destroy(mm);
->   	mmu_notifier_mm_destroy(mm);
->   	check_mm(mm);
->   	put_user_ns(mm->user_ns);
-> diff --git a/mm/hmm.c b/mm/hmm.c
-> index 8796447299023c..cc7c26fda3300e 100644
-> --- a/mm/hmm.c
-> +++ b/mm/hmm.c
-> @@ -29,6 +29,7 @@
->   #include <linux/swapops.h>
->   #include <linux/hugetlb.h>
->   #include <linux/memremap.h>
-> +#include <linux/sched/mm.h>
->   #include <linux/jump_label.h>
->   #include <linux/dma-mapping.h>
->   #include <linux/mmu_notifier.h>
-> @@ -82,6 +83,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct *=
-mm)
->   	hmm->notifiers =3D 0;
->   	hmm->dead =3D false;
->   	hmm->mm =3D mm;
-> +	mmgrab(hmm->mm);
->  =20
->   	spin_lock(&mm->page_table_lock);
->   	if (!mm->hmm)
-> @@ -109,6 +111,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct=
- *mm)
->   		mm->hmm =3D NULL;
->   	spin_unlock(&mm->page_table_lock);
->   error:
-> +	mmdrop(hmm->mm);
->   	kfree(hmm);
->   	return NULL;
->   }
-> @@ -130,6 +133,7 @@ static void hmm_free(struct kref *kref)
->   		mm->hmm =3D NULL;
->   	spin_unlock(&mm->page_table_lock);
->  =20
-> +	mmdrop(hmm->mm);
->   	mmu_notifier_call_srcu(&hmm->rcu, hmm_free_rcu);
->   }
->  =20
-> @@ -138,24 +142,6 @@ static inline void hmm_put(struct hmm *hmm)
->   	kref_put(&hmm->kref, hmm_free);
->   }
->  =20
-> -void hmm_mm_destroy(struct mm_struct *mm)
-> -{
-> -	struct hmm *hmm;
-> -
-> -	spin_lock(&mm->page_table_lock);
-> -	hmm =3D mm_get_hmm(mm);
-> -	mm->hmm =3D NULL;
-> -	if (hmm) {
-> -		hmm->mm =3D NULL;
-> -		hmm->dead =3D true;
-> -		spin_unlock(&mm->page_table_lock);
-> -		hmm_put(hmm);
-> -		return;
-> -	}
-> -
-> -	spin_unlock(&mm->page_table_lock);
-> -}
-> -
->   static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->   {
->   	struct hmm *hmm =3D container_of(mn, struct hmm, mmu_notifier);
->=20
+int get_user_mem_for_dma(struct device *dma_device,
+                void __user *mem, size_t length,
+                struct gup_handle *res,
+                struct 'bio dma list' *dma_list,
+                const struct dma_params *params);
+void put_user_mem_for_dma(struct gup_handle *res, 
+                 struct 'bio dma list' *dma_list);
+
+And we could hope to put in there all the specialty logic we want to
+have for this flow:
+ - The weird HMM stuff in hmm_range_dma_map()
+ - Interaction with DAX
+ - Interaction with DMA BUF
+ - Holding file leases
+ - PCI peer 2 peer features
+ - Optimizations for huge pages
+ - Handling page dirtying from DMA
+ - etc
+
+I think Matthew was suggesting something like this at LS/MM, so +1
+from here..
+
+When Christoph sends his BIO dma work I was thinking of investigating
+this avenue, as we already have something quite similiar in RDMA that
+could perhaps be hoisted out for re-use into mm/
+
+Jason
