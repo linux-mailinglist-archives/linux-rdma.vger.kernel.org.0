@@ -2,105 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A79B3984C
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 00:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 267A2398C4
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 00:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729685AbfFGWK6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 18:10:58 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:39133 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729345AbfFGWK6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 18:10:58 -0400
-Received: by mail-lj1-f194.google.com with SMTP id v18so3007465ljh.6
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 15:10:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KJ2BLcajVixF67CJRoLG0re1JrYiYqxErMSXYl0tsRw=;
-        b=XuBNVLdgbcY56Ud4pdH5EXvxmGUKkACohMhQU5klJr5o3160jnTXt0fFBjrUYI8cwP
-         qecWlqIvuoz0yWBNmcfBXRagMuyCN57WmUDAmyLBAoGU/vidUSxhCkBsLMXMAH3gz4EM
-         tWZ1AvPkv98MPJtshU6r4aCzmSJMbti0XAF/zuBjkobX6oY2h/G+vb0ik5Hw5N96rvpl
-         6I3l+tkrVJzURiq0H50JHF2DmIxfH/WItDgvQ/p6+kMn6jvKrdwRXX3GqUJ8EGr+IbP6
-         8uKRI0Z+Ms/ak/i4ugiXOgxFVoAHcF4ZSdzDMKgNGJtjX6zHgettmLUAxF9t1zYsva3u
-         aXCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KJ2BLcajVixF67CJRoLG0re1JrYiYqxErMSXYl0tsRw=;
-        b=ltUb4K0eDZdRNrlLpVfTQmGH3vj8IMIE07r3drXHDS9daMfAg9s1JtIJ+lMainRHZx
-         nykq8+F6ruZUgK27Nzn9/uN8LJ8B9khk7YbuiIfSzgEohggTFGHnR9Kr+rN2Szb6giU3
-         URkfM+3aNxz4gS74uirFbE9aNXPqv1lNTPEEdXJxzQSLDLBqTH9DPSDQAKE2ll4UGIxs
-         vx6yifHlhcNFi7hiwEYtcruNTBuJqExGjiUrJJKh82Cy3wLby7To9hAujE8d4T4f2RNm
-         m1hV1QsPfEPQH40g83dG1Lf1fC2+H/Pp+YOiCnp7bWsUqwfGR82oxkIhdVTM5/WC81lD
-         ZiQA==
-X-Gm-Message-State: APjAAAVjGjx/FD5aGFcjFVueKGnxXZK8Gn9LPdtVSstdelKrgfLkPlbb
-        RZvFuQNur05gAw9R+lEKRbzqZXaG8RTLp3Gdw4k=
-X-Google-Smtp-Source: APXvYqziLCb0F1leUAaa1UiZwsg3YnrP4quS0pn+HDEfTbgIMU+w+qLFrO34EBW5m2sppHV711BE8EPBCVYV8kHdz3g=
-X-Received: by 2002:a2e:3912:: with SMTP id g18mr20425063lja.38.1559945456292;
- Fri, 07 Jun 2019 15:10:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190606184438.31646-1-jgg@ziepe.ca> <20190606184438.31646-8-jgg@ziepe.ca>
-In-Reply-To: <20190606184438.31646-8-jgg@ziepe.ca>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat, 8 Jun 2019 03:46:00 +0530
-Message-ID: <CAFqt6zbPYWiV+2d7-o8EYACKKM2s_M7U=9j3pRux1OWsEqrQAQ@mail.gmail.com>
-Subject: Re: [PATCH v2 hmm 07/11] mm/hmm: Use lockdep instead of comments
+        id S1728756AbfFGWcM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 18:32:12 -0400
+Received: from mga01.intel.com ([192.55.52.88]:17597 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728749AbfFGWcM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 7 Jun 2019 18:32:12 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Jun 2019 15:32:11 -0700
+X-ExtLoop1: 1
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga008.jf.intel.com with ESMTP; 07 Jun 2019 15:32:10 -0700
+Date:   Fri, 7 Jun 2019 15:33:24 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
         John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
-        linux-rdma@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Andrea Arcangeli <aarcange@redhat.com>,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         Jason Gunthorpe <jgg@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 hmm 02/11] mm/hmm: Use hmm_mirror not mm as an
+ argument for hmm_range_register
+Message-ID: <20190607223324.GD14559@iweiny-DESK2.sc.intel.com>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
+ <20190606184438.31646-3-jgg@ziepe.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190606184438.31646-3-jgg@ziepe.ca>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 7, 2019 at 12:15 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
+On Thu, Jun 06, 2019 at 03:44:29PM -0300, Jason Gunthorpe wrote:
 > From: Jason Gunthorpe <jgg@mellanox.com>
->
-> So we can check locking at runtime.
-
-Little more descriptive change log would be helpful.
-Acked-by: Souptick Joarder <jrdr.linux@gmail.com>
-
->
+> 
+> Ralph observes that hmm_range_register() can only be called by a driver
+> while a mirror is registered. Make this clear in the API by passing in the
+> mirror structure as a parameter.
+> 
+> This also simplifies understanding the lifetime model for struct hmm, as
+> the hmm pointer must be valid as part of a registered mirror so all we
+> need in hmm_register_range() is a simple kref_get.
+> 
+> Suggested-by: Ralph Campbell <rcampbell@nvidia.com>
 > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> Reviewed-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
 > ---
 > v2
-> - Fix missing & in lockdeps (Jason)
+> - Include the oneline patch to nouveau_svm.c
 > ---
->  mm/hmm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
+>  drivers/gpu/drm/nouveau/nouveau_svm.c |  2 +-
+>  include/linux/hmm.h                   |  7 ++++---
+>  mm/hmm.c                              | 15 ++++++---------
+>  3 files changed, 11 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
+> index 93ed43c413f0bb..8c92374afcf227 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_svm.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
+> @@ -649,7 +649,7 @@ nouveau_svm_fault(struct nvif_notify *notify)
+>  		range.values = nouveau_svm_pfn_values;
+>  		range.pfn_shift = NVIF_VMM_PFNMAP_V0_ADDR_SHIFT;
+>  again:
+> -		ret = hmm_vma_fault(&range, true);
+> +		ret = hmm_vma_fault(&svmm->mirror, &range, true);
+>  		if (ret == 0) {
+>  			mutex_lock(&svmm->mutex);
+>  			if (!hmm_vma_range_done(&range)) {
+> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
+> index 688c5ca7068795..2d519797cb134a 100644
+> --- a/include/linux/hmm.h
+> +++ b/include/linux/hmm.h
+> @@ -505,7 +505,7 @@ static inline bool hmm_mirror_mm_is_alive(struct hmm_mirror *mirror)
+>   * Please see Documentation/vm/hmm.rst for how to use the range API.
+>   */
+>  int hmm_range_register(struct hmm_range *range,
+> -		       struct mm_struct *mm,
+> +		       struct hmm_mirror *mirror,
+>  		       unsigned long start,
+>  		       unsigned long end,
+>  		       unsigned page_shift);
+> @@ -541,7 +541,8 @@ static inline bool hmm_vma_range_done(struct hmm_range *range)
+>  }
+>  
+>  /* This is a temporary helper to avoid merge conflict between trees. */
+> -static inline int hmm_vma_fault(struct hmm_range *range, bool block)
+> +static inline int hmm_vma_fault(struct hmm_mirror *mirror,
+> +				struct hmm_range *range, bool block)
+>  {
+>  	long ret;
+>  
+> @@ -554,7 +555,7 @@ static inline int hmm_vma_fault(struct hmm_range *range, bool block)
+>  	range->default_flags = 0;
+>  	range->pfn_flags_mask = -1UL;
+>  
+> -	ret = hmm_range_register(range, range->vma->vm_mm,
+> +	ret = hmm_range_register(range, mirror,
+>  				 range->start, range->end,
+>  				 PAGE_SHIFT);
+>  	if (ret)
 > diff --git a/mm/hmm.c b/mm/hmm.c
-> index f67ba32983d9f1..c702cd72651b53 100644
+> index 547002f56a163d..8796447299023c 100644
 > --- a/mm/hmm.c
 > +++ b/mm/hmm.c
-> @@ -254,11 +254,11 @@ static const struct mmu_notifier_ops hmm_mmu_notifi=
-er_ops =3D {
->   *
->   * To start mirroring a process address space, the device driver must re=
-gister
->   * an HMM mirror struct.
-> - *
-> - * THE mm->mmap_sem MUST BE HELD IN WRITE MODE !
+> @@ -925,13 +925,13 @@ static void hmm_pfns_clear(struct hmm_range *range,
+>   * Track updates to the CPU page table see include/linux/hmm.h
 >   */
->  int hmm_mirror_register(struct hmm_mirror *mirror, struct mm_struct *mm)
+>  int hmm_range_register(struct hmm_range *range,
+> -		       struct mm_struct *mm,
+> +		       struct hmm_mirror *mirror,
+>  		       unsigned long start,
+>  		       unsigned long end,
+>  		       unsigned page_shift)
 >  {
-> +       lockdep_assert_held_exclusive(&mm->mmap_sem);
+>  	unsigned long mask = ((1UL << page_shift) - 1UL);
+> -	struct hmm *hmm;
+> +	struct hmm *hmm = mirror->hmm;
+>  
+>  	range->valid = false;
+>  	range->hmm = NULL;
+> @@ -945,15 +945,12 @@ int hmm_range_register(struct hmm_range *range,
+>  	range->start = start;
+>  	range->end = end;
+>  
+> -	hmm = hmm_get_or_create(mm);
+> -	if (!hmm)
+> -		return -EFAULT;
+> -
+>  	/* Check if hmm_mm_destroy() was call. */
+> -	if (hmm->mm == NULL || hmm->dead) {
+> -		hmm_put(hmm);
+> +	if (hmm->mm == NULL || hmm->dead)
+>  		return -EFAULT;
+> -	}
 > +
->         /* Sanity check */
->         if (!mm || !mirror || !mirror->ops)
->                 return -EINVAL;
-> --
+> +	range->hmm = hmm;
+
+I don't think you need this assignment here.  In the code below (right after
+the mutext_lock()) it is set already.  And looks like it remains that way after
+the end of the series.
+
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+
+> +	kref_get(&hmm->kref);
+>  
+>  	/* Initialize range to track CPU page table updates. */
+>  	mutex_lock(&hmm->lock);
+> -- 
 > 2.21.0
->
+> 
