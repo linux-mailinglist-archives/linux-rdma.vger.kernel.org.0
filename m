@@ -2,102 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B50023970A
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 22:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0873970C
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 22:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729915AbfFGUtJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 16:49:09 -0400
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:1432 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729640AbfFGUtJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 16:49:09 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5cfacdc20001>; Fri, 07 Jun 2019 13:49:06 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 07 Jun 2019 13:49:08 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 07 Jun 2019 13:49:08 -0700
-Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Jun
- 2019 20:49:06 +0000
-Subject: Re: [PATCH v2 hmm 10/11] mm/hmm: Do not use list*_rcu() for
- hmm->ranges
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
-        "John Hubbard" <jhubbard@nvidia.com>, <Felix.Kuehling@amd.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        id S1729950AbfFGUtc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 16:49:32 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:42338 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729640AbfFGUtb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 16:49:31 -0400
+Received: by mail-qt1-f195.google.com with SMTP id s15so3856532qtk.9
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 13:49:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=xpue/yTKTfw/egd/V5x6eR0dUTrWX63mNojFgXXVaNY=;
+        b=XXE969tPj//9W51VkE9buoc1JR7bmeVIhDAenkig2qDcQeGQ9MQNdB4210YOgBQ6Ee
+         urj3N09P7L5Mjvi4xbXHFj8HKfPprYKq7M7k/EcjofeMB2GoxEsuqBmDRxsipmPauBqe
+         JJ48ov9QD+JiHQdqD9ykoXBcB6idhYNIBBpzZJ3zljvLxzfdUEHW6WPXsiiOISOg1mj6
+         7DBax0TlpUXdzKzMpIHUKAbPg2PH7L5VNttRwq2gKh2xi8KiWg94GJWmCGzV9d7EA4dS
+         T2I4WYqCFPx5kBGsqWXqkhkJCYicSNB5CNfx8sekAbHUUM1GtLdieXZWKGLrM/mxrLUx
+         C/1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=xpue/yTKTfw/egd/V5x6eR0dUTrWX63mNojFgXXVaNY=;
+        b=SxyKpQLEnRN2wA80ouUM5XrVxIuaocMyWzgaSg0Ci95fA9kFDd6gvwkkj8bzg6zNDP
+         +tMghjpXf3XyudtbO7zdpizJywfqgUZglp4nV7bGKMqauK/jONOEFSTnqo6Jwb/CZvwT
+         kqOhjtJvHDsTGSpjGLySBsbFRMyvjDovXH/gln2/PQ4jUdGaM7J5GMMnrqXtgJsLyR5O
+         mOURYw1FSqgAaXtr9pJVZyfvUfN1f6nzcd2lrENper4X5DGn3xfqWyHNcRPTeg3F+Ycy
+         V/3+8LjFr8Ws2m7rhJDe4qmy6U6HPRIr2xADFd7uNB0/4PxP/KBwccRVXfaoIhUjOq2l
+         uWRg==
+X-Gm-Message-State: APjAAAV0VlfcHKG4S0R7D49A/BUUyJjrl/X6iO/hF4mFriKQ5niBbo+K
+        YWfUhrAQ6qFb9CDGfMXbGzH4lQ==
+X-Google-Smtp-Source: APXvYqzPKIbGhJdstJ73Gy3kLdTzS56fHmRoDPMXyiprmrDID4cHA2htBZhMjn4/4PIp+2lgQ2jdNg==
+X-Received: by 2002:ac8:3325:: with SMTP id t34mr44082999qta.172.1559940571006;
+        Fri, 07 Jun 2019 13:49:31 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id b66sm1666176qkd.37.2019.06.07.13.49.30
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 07 Jun 2019 13:49:30 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hZLnm-0001TA-75; Fri, 07 Jun 2019 17:49:30 -0300
+Date:   Fri, 7 Jun 2019 17:49:30 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Andrea Arcangeli <aarcange@redhat.com>,
-        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
-        Jason Gunthorpe <jgg@mellanox.com>
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v2 hmm 09/11] mm/hmm: Poison hmm_range during unregister
+Message-ID: <20190607204930.GV14802@ziepe.ca>
 References: <20190606184438.31646-1-jgg@ziepe.ca>
- <20190606184438.31646-11-jgg@ziepe.ca>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <57cf91db-bebe-24f0-29c3-64274f10d10b@nvidia.com>
-Date:   Fri, 7 Jun 2019 13:49:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.0
+ <20190606184438.31646-10-jgg@ziepe.ca>
+ <96a2739f-6902-05be-7143-289b41c4304d@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20190606184438.31646-11-jgg@ziepe.ca>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL108.nvidia.com (172.18.146.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1559940546; bh=oGeyU71GSCfi4k4k8mSueh4JEltagVCe/KlNbvsSutg=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=UJz2Qt1QfanMEhOyt/3R/g2DHXV8MDxZ8h5tNqHZXgifBkiWanoofMHj0WGWGojU3
-         r7hVfwPkjuzgQD7LU06bneMH68aqOd5ZgdE2TfB1EmRGNULUoGCRnsfVCsdcub+iS1
-         03SomttNcSlu+bgApB2KFIb/oMQ8U6aQKkg+bakwP+c+sQwjrKCDv8TUTDpkPUHIMr
-         sGnkKrGR06RJOx8WxR7boji2N9rK6vQxJGwimzGESBTMzTX7Rla6rzRRhoGVTpbSc+
-         pJlxWklk2KTdXTtn3LcrHxzebmMdPEOIuDL28O14ysFKMaSnkp4n1nQImnJoYkwMRl
-         ITLcdbPEakgYg==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <96a2739f-6902-05be-7143-289b41c4304d@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Jun 07, 2019 at 01:46:30PM -0700, Ralph Campbell wrote:
+> 
+> On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
+> > From: Jason Gunthorpe <jgg@mellanox.com>
+> > 
+> > Trying to misuse a range outside its lifetime is a kernel bug. Use WARN_ON
+> > and poison bytes to detect this condition.
+> > 
+> > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> > Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
+> 
+> Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+> 
+> > v2
+> > - Keep range start/end valid after unregistration (Jerome)
+> >   mm/hmm.c | 7 +++++--
+> >   1 file changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/mm/hmm.c b/mm/hmm.c
+> > index 6802de7080d172..c2fecb3ecb11e1 100644
+> > +++ b/mm/hmm.c
+> > @@ -937,7 +937,7 @@ void hmm_range_unregister(struct hmm_range *range)
+> >   	struct hmm *hmm = range->hmm;
+> >   	/* Sanity check this really should not happen. */
+> > -	if (hmm == NULL || range->end <= range->start)
+> > +	if (WARN_ON(range->end <= range->start))
+> >   		return;
+> 
+> WARN_ON() is definitely better than silent return but I wonder how
+> useful it is since the caller shouldn't be modifying the hmm_range
+> once it is registered. Other fields could be changed too...
 
-On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
->=20
-> This list is always read and written while holding hmm->lock so there is
-> no need for the confusing _rcu annotations.
->=20
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> Reviewed-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+I deleted the warn on (see the other thread), but I'm confused by your 
+"shouldn't be modified" statement.
 
-Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+The only thing that needs to be set and remain unchanged for register
+is the virtual start/end address. Everything else should be done once
+it is clear to proceed based on the collision-retry locking scheme
+this uses.
 
-> ---
->   mm/hmm.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/mm/hmm.c b/mm/hmm.c
-> index c2fecb3ecb11e1..709d138dd49027 100644
-> --- a/mm/hmm.c
-> +++ b/mm/hmm.c
-> @@ -911,7 +911,7 @@ int hmm_range_register(struct hmm_range *range,
->   	mutex_lock(&hmm->lock);
->  =20
->   	range->hmm =3D hmm;
-> -	list_add_rcu(&range->list, &hmm->ranges);
-> +	list_add(&range->list, &hmm->ranges);
->  =20
->   	/*
->   	 * If there are any concurrent notifiers we have to wait for them for
-> @@ -941,7 +941,7 @@ void hmm_range_unregister(struct hmm_range *range)
->   		return;
->  =20
->   	mutex_lock(&hmm->lock);
-> -	list_del_rcu(&range->list);
-> +	list_del(&range->list);
->   	mutex_unlock(&hmm->lock);
->  =20
->   	/* Drop reference taken by hmm_range_register() */
->=20
+Basically the range register only setups a 'detector' for colliding
+invalidations. The other stuff in the struct is just random temporary
+storage for the API.
+
+AFAICS at least..
+
+Jason
