@@ -2,130 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A91A38C11
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 15:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA38538C1B
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 16:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbfFGN5z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 09:57:55 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:33191 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729204AbfFGN5z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 09:57:55 -0400
-Received: by mail-qk1-f193.google.com with SMTP id r6so1302629qkc.0
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 06:57:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=17gadSvJGp+uvcoNC+FfcmshKqVGv1ZUwiPdnI82lOI=;
-        b=I+46Zffwelv3FY2kYKGzdobJ6uMmX8zCgsnvKiDTSkfI3HJBa+htk88VkGWM7NSZpi
-         /0JCHDpAA7Hsoa4omW1wx1J85SCrH7dgr6RV0StdZtsaWrex1ZOuSIm+Zka617XPTGpN
-         X1fcgiH+n0lyWRW1QagWvryyhg9XGrmKSd/F4IVorle0OcarTMiFrJd0Z3r6ZGdD+cmy
-         VAiy5ECKzDJ4NQLEc4bwJAM+qICcpqA6QdhJ28xs1+NDe0kplypSuDdQRy0yFtY9sLB3
-         MnA8Gv2LBIO0rwR5UIbYCFViG3FrLuek4drM6k3G4h9h5StmR/AX6O3RMQT8pEjmMpLr
-         Yz8Q==
+        id S1728669AbfFGOAs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 10:00:48 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:45794 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728123AbfFGOAs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 10:00:48 -0400
+Received: by mail-pf1-f193.google.com with SMTP id s11so1240309pfm.12;
+        Fri, 07 Jun 2019 07:00:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=17gadSvJGp+uvcoNC+FfcmshKqVGv1ZUwiPdnI82lOI=;
-        b=AJOr+isqrwfbUPgY1z0pVqTk+wxW9ndhuDo3Pq8pR6JNAloeGp4K3bXCgrV0kLyaLf
-         0EVZ7wWMDOIWodfCCbfpdX3pU2eFoaVYeuimJjLOynK9EWVzuxA4Mf2LgNnYS8vA6lnH
-         9QlSpTizNjImojw2lL5/qRt+Saaq979tMnFRzWDLYxKQdB1HQctnw3QYJc+FteievDlb
-         lS0IPytcIKxaA0iUEWB8v5A3eXqITM4fqoYQCszH6TvdwcpZUrmfyygiheGWYx/qPj7V
-         JIPWsLU4JIZpjLJFsDDbnDK/HO9DMSIObkXW+KlgUhdYx7vQUDNmB+KnKYA72MJ5VRau
-         WRKA==
-X-Gm-Message-State: APjAAAU/cqxI8D+cUH+pp2+WLPY8CAz1ekzfAR6TkyENoiQHScvYCg3i
-        hSwPA1hi4ZFD/TwLkFtzMCsouA==
-X-Google-Smtp-Source: APXvYqyXb3YGPBh3lIclsi3PYfUGbJ2uvWrtfDWhG41E8l5j7j4vV139lmCRlFT78OmA7F3xtrX4pg==
-X-Received: by 2002:a37:bc03:: with SMTP id m3mr24773704qkf.199.1559915874559;
-        Fri, 07 Jun 2019 06:57:54 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id w30sm1247493qtb.28.2019.06.07.06.57.53
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 06:57:54 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hZFNR-0001xU-JJ; Fri, 07 Jun 2019 10:57:53 -0300
-Date:   Fri, 7 Jun 2019 10:57:53 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Felix.Kuehling@amd.com,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v2 hmm 08/11] mm/hmm: Remove racy protection against
- double-unregistration
-Message-ID: <20190607135753.GH14802@ziepe.ca>
-References: <20190606184438.31646-1-jgg@ziepe.ca>
- <20190606184438.31646-9-jgg@ziepe.ca>
- <88400de9-e1ae-509b-718f-c6b0f726b14c@nvidia.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kPPgCpRmEJOLYe8kNS7nWVxDs4IWDbfZkl6QFdE16GI=;
+        b=KECS81+5IcowhqeEY1R5h/76agUNapD4hfkWzvY7jn4LNincdvEvnZdA7kuol+KdBC
+         vPFNLULE6T33MJ5krQXm0NhaORuKNIkV8lprA6cEC6ngbq42ct05PAhS9wQQp4s9BtrW
+         WUcrGPYLRa/DznCDer4I3xZZEzU4XzDWHNHm917tPXuSTYaeHENAErm3Qey2tPLJIvzM
+         s5pSHEtR78piIKRkKj7UscYuRGsV8vKR4M/0ISpcgSXcBiAmGcWPia78uR7j8G03fRBG
+         4jDy+lUNMSADH4afCRvThdMJWYxAs8bKkZMcsk0WabKsGeBmzjuHFKtAnpybec9APHKO
+         2+dA==
+X-Gm-Message-State: APjAAAW+OaMRBDSj/8T5CUcPDhmEj8OXkLwBpvOw9REBfgvY/1mrg/IN
+        77nLmYqqUZaRg05ur1zi8iCTKTsc
+X-Google-Smtp-Source: APXvYqyrNZHiuKHiLU9Qt6KuxpTVlAAlN334TtseYuuHmQNDqwVRCVe8PQ/rMRirhB94O0S/WQJjhg==
+X-Received: by 2002:aa7:8248:: with SMTP id e8mr19108120pfn.155.1559916048110;
+        Fri, 07 Jun 2019 07:00:48 -0700 (PDT)
+Received: from asus.site ([2601:647:4000:5dd1:a41e:80b4:deb3:fb66])
+        by smtp.gmail.com with ESMTPSA id y7sm2932798pge.89.2019.06.07.07.00.46
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Fri, 07 Jun 2019 07:00:47 -0700 (PDT)
+Subject: Re: [PATCH v2] iser: explicitly set shost max_segment_size if non
+ virtual boundary devices
+To:     Sagi Grimberg <sagi@grimberg.me>, linux-rdma@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-scsi@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>
+References: <20190607012914.2328-1-sagi@grimberg.me>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <a82f76b0-8474-9f11-832b-920c096faa83@acm.org>
+Date:   Fri, 7 Jun 2019 07:00:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <88400de9-e1ae-509b-718f-c6b0f726b14c@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190607012914.2328-1-sagi@grimberg.me>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 06, 2019 at 08:29:10PM -0700, John Hubbard wrote:
-> On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
-> > From: Jason Gunthorpe <jgg@mellanox.com>
-> > 
-> > No other register/unregister kernel API attempts to provide this kind of
-> > protection as it is inherently racy, so just drop it.
-> > 
-> > Callers should provide their own protection, it appears nouveau already
-> > does, but just in case drop a debugging POISON.
-> > 
-> > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> > Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
-> >  mm/hmm.c | 9 ++-------
-> >  1 file changed, 2 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/mm/hmm.c b/mm/hmm.c
-> > index c702cd72651b53..6802de7080d172 100644
-> > +++ b/mm/hmm.c
-> > @@ -284,18 +284,13 @@ EXPORT_SYMBOL(hmm_mirror_register);
-> >   */
-> >  void hmm_mirror_unregister(struct hmm_mirror *mirror)
-> >  {
-> > -	struct hmm *hmm = READ_ONCE(mirror->hmm);
-> > -
-> > -	if (hmm == NULL)
-> > -		return;
-> > +	struct hmm *hmm = mirror->hmm;
-> >  
-> >  	down_write(&hmm->mirrors_sem);
-> >  	list_del_init(&mirror->list);
-> > -	/* To protect us against double unregister ... */
-> > -	mirror->hmm = NULL;
-> >  	up_write(&hmm->mirrors_sem);
-> > -
-> >  	hmm_put(hmm);
-> > +	memset(&mirror->hmm, POISON_INUSE, sizeof(mirror->hmm));
+On 6/6/19 6:29 PM, Sagi Grimberg wrote:
+> if the rdma device supports sg gaps, we don't need to set a virtual
+> boundary but we then need to explicitly set the max_segment_size, otherwise
+> scsi takes BLK_MAX_SEGMENT_SIZE and sets it using dma_set_max_seg_size()
+> and this affects all the rdma device consumers.
 > 
-> I hadn't thought of POISON_* for these types of cases, it's a 
-> good technique to remember.
+> Fix it by setting shost max_segment_size according to the device
+> capability if SG_GAPS are not supported.
 > 
-> I noticed that this is now done outside of the lock, but that
-> follows directly from your commit description, so that all looks 
-> correct.
+> Reported-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Suggested-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+> ---
+> Changes from v1:
+> - set max_segment_size only for non virtual boundary devices
+> 
+>   drivers/infiniband/ulp/iser/iscsi_iser.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.c b/drivers/infiniband/ulp/iser/iscsi_iser.c
+> index 841b66397a57..a3a4b956bbb9 100644
+> --- a/drivers/infiniband/ulp/iser/iscsi_iser.c
+> +++ b/drivers/infiniband/ulp/iser/iscsi_iser.c
+> @@ -653,7 +653,9 @@ iscsi_iser_session_create(struct iscsi_endpoint *ep,
+>   						   SHOST_DIX_GUARD_CRC);
+>   		}
+>   
+> -		if (!(ib_dev->attrs.device_cap_flags & IB_DEVICE_SG_GAPS_REG))
+> +		if (ib_dev->attrs.device_cap_flags & IB_DEVICE_SG_GAPS_REG)
+> +			shost->max_segment_size = ib_dma_max_seg_size(ib_dev);
+> +		else
+>   			shost->virt_boundary_mask = ~MASK_4K;
+>   
+>   		if (iscsi_host_add(shost, ib_dev->dev.parent)) {
 
-Yes, the thing about POISON is that if you ever read it then you have
-found a use after free bug - thus we should never need to write it
-under a lock (just after a serializing lock)
+This is incomprehensible without a big comment that explains why 
+max_segment_size is only set if the IB_DEVICE_SG_GAPS_REG feature is 
+available.
 
-Normally I wouldn't bother as kfree does poison as well, but since we
-can't easily audit the patches yet to be submitted this seems safer
-and will reliably cause those patches to explode with an oops in
-testing.
+Bart.
 
-Thanks,
-Jason
+
