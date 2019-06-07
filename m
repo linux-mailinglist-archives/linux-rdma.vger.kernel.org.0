@@ -2,92 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA43384C5
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 09:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94BB38873
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 13:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbfFGHNl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 03:13:41 -0400
-Received: from smtp1.iitb.ac.in ([103.21.127.13]:45308 "EHLO smtp1.iitb.ac.in"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727027AbfFGHNj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 7 Jun 2019 03:13:39 -0400
-Received: from ldns1.iitb.ac.in (ldns1.iitb.ac.in [10.200.12.1])
-        by smtp1.iitb.ac.in (Postfix) with SMTP id 087A7105B779
-        for <linux-rdma@vger.kernel.org>; Fri,  7 Jun 2019 12:01:34 +0530 (IST)
-Received: (qmail 27999 invoked by uid 510); 7 Jun 2019 12:01:33 +0530
-X-Qmail-Scanner-Diagnostics: from 10.200.1.25 by ldns1 (envelope-from <rws@aero.iitb.ac.in>, uid 501) with qmail-scanner-2.11
- spamassassin: 3.4.1. mhr: 1.0. {clamdscan: 0.100.0/25472} 
- Clear:RC:1(10.200.1.25):SA:0(1.5/7.0):. Processed in 2.069313 secs; 07 Jun 2019 12:01:33 +0530
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on ldns1.iitb.ac.in
-X-Spam-Level: *
-X-Spam-Status: No, score=1.5 required=7.0 tests=BAYES_50,IITB_ORIG,
-        MISSING_HEADERS,PROPER_IITB_MSGID,T_RP_MATCHES_RCVD autolearn=disabled
-        version=3.4.1
-X-Spam-Pyzor: Reported 0 times.
-X-Envelope-From: rws@aero.iitb.ac.in
-X-Qmail-Scanner-Mime-Attachments: |
-X-Qmail-Scanner-Zip-Files: |
-Received: from unknown (HELO ldns1.iitb.ac.in) (10.200.1.25)
-  by ldns1.iitb.ac.in with SMTP; 7 Jun 2019 12:01:31 +0530
-Received: from vayu.aero.iitb.ac.in (vayu.aero.iitb.ac.in [10.101.1.1])
-        by ldns1.iitb.ac.in (Postfix) with ESMTP id 80518360036;
-        Fri,  7 Jun 2019 12:01:17 +0530 (IST)
-Received: from localhost (localhost [127.0.0.1])
-        by vayu.aero.iitb.ac.in (Postfix) with ESMTP id E4B948902E55E;
-        Fri,  7 Jun 2019 12:01:16 +0530 (IST)
-Received: from vayu.aero.iitb.ac.in ([127.0.0.1])
-        by localhost (vayu.aero.iitb.ac.in [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id uy24o_MU5OGU; Fri,  7 Jun 2019 12:01:16 +0530 (IST)
-Received: from localhost (localhost [127.0.0.1])
-        by vayu.aero.iitb.ac.in (Postfix) with ESMTP id 5C3AC8902E548;
-        Fri,  7 Jun 2019 12:01:14 +0530 (IST)
-X-Virus-Scanned: amavisd-new at aero.iitb.ac.in
-Received: from vayu.aero.iitb.ac.in ([127.0.0.1])
-        by localhost (vayu.aero.iitb.ac.in [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 2kbUWSjAc2AF; Fri,  7 Jun 2019 12:01:14 +0530 (IST)
-Received: from vayu.aero.iitb.ac.in (vayu.aero.iitb.ac.in [10.101.1.1])
-        by vayu.aero.iitb.ac.in (Postfix) with ESMTP id 0EEE684310111;
-        Fri,  7 Jun 2019 12:01:10 +0530 (IST)
-Date:   Fri, 7 Jun 2019 12:01:09 +0530 (IST)
-From:   Martins Henry <rws@aero.iitb.ac.in>
-Message-ID: <412557711.60336.1559889069980.JavaMail.zimbra@aero.iitb.ac.in>
-Subject: Thanks and I wait for your answer
+        id S1728305AbfFGLE3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 07:04:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57526 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728115AbfFGLE3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 7 Jun 2019 07:04:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 0B6BFAE91;
+        Fri,  7 Jun 2019 11:04:27 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 41D0F1E3FCA; Fri,  7 Jun 2019 13:04:26 +0200 (CEST)
+Date:   Fri, 7 Jun 2019 13:04:26 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Dan Williams <dan.j.williams@intel.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190607110426.GB12765@quack2.suse.cz>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.101.1.5]
-X-Mailer: Zimbra 8.8.12_GA_3803 (ZimbraWebClient - FF11 (Win)/8.8.12_GA_3794)
-Thread-Index: SsslhYkcLNFU69da/wYft5cO9/ZYnA==
-Thread-Topic: Thanks and I wait for your answer
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On Thu 06-06-19 15:03:30, Ira Weiny wrote:
+> On Thu, Jun 06, 2019 at 12:42:03PM +0200, Jan Kara wrote:
+> > On Wed 05-06-19 18:45:33, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > So I'd like to actually mandate that you *must* hold the file lease until
+> > you unpin all pages in the given range (not just that you have an option to
+> > hold a lease). And I believe the kernel should actually enforce this. That
+> > way we maintain a sane state that if someone uses a physical location of
+> > logical file offset on disk, he has a layout lease. Also once this is done,
+> > sysadmin has a reasonably easy way to discover run-away RDMA application
+> > and kill it if he wishes so.
+> 
+> Fair enough.
+> 
+> I was kind of heading that direction but had not thought this far forward.  I
+> was exploring how to have a lease remain on the file even after a "lease
+> break".  But that is incompatible with the current semantics of a "layout"
+> lease (as currently defined in the kernel).  [In the end I wanted to get an RFC
+> out to see what people think of this idea so I did not look at keeping the
+> lease.]
+> 
+> Also hitch is that currently a lease is forcefully broken after
+> <sysfs>/lease-break-time.  To do what you suggest I think we would need a new
+> lease type with the semantics you describe.
 
-I am Martin Henry, An American Citizen; I am the personal secretary to
-Mr. Donald Railton, the controller of a Lottery Company. Please I am
-having big problem now, I have a 6yrs old daughter who has leukemia, a
-disease of the blood, and she needs a bone marrow transplant or she
-will die.
+I'd do what Dave suggested - add flag to mark lease as unbreakable by
+truncate and teach file locking core to handle that. There actually is
+support for locks that are not broken after given timeout so there
+shouldn't be too many changes need.
+ 
+> Previously I had thought this would be a good idea (for other reasons).  But
+> what does everyone think about using a "longterm lease" similar to [1] which
+> has the semantics you proppose?  In [1] I was not sure "longterm" was a good
+> name but with your proposal I think it makes more sense.
 
-Please I am only asking for your help and you will benefit from it
-also. As an insider with Lottery Firm, working as the personal
-secretary to the controller, I want you to send me your name to play,
-I have some numbers that are going to win, stored in his secret data
-system in the office. The Lottery is an online entry with credit card
-anywhere with a name and address. All I want you to do is to send your
-name to play it and I will send confirmation to you.
+As I wrote elsewhere in this thread I think FL_LAYOUT name still makes
+sense and I'd add there FL_UNBREAKABLE to mark unusal behavior with
+truncate.
 
-I will play with my card on your name and the Prize will be shared
-equally between us. Immediately the results are released they will
-contact you for payment as the oversea winner. The lotto can be played
-with 9.00 dollars, or 50 dollars but the prize will be Millions.
-Remember that I am playing on your name with my card; I just want to
-front you for this, because I need this money to save the life of my
-little daughter.
+> > - probably I'd just transition all gup_longterm()
+> > users to a saner API similar to the one we have in mm/frame_vector.c where
+> > we don't hand out page pointers but an encapsulating structure that does
+> > all the necessary tracking.
+> 
+> I'll take a look at that code.  But that seems like a pretty big change.
 
-Thanks and I wait for your answer
-Martin Henry.
+I was looking into that yesterday before proposing this and there aren't
+than many gup_longterm() users and most of them anyway just stick pages
+array into their tracking structure and then release them once done. So it
+shouldn't be that complex to convert to a new convention (and you have to
+touch all gup_longterm() users anyway to teach them track leases etc.).
+
+> > Removing a lease would need to block until all
+> > pins are released - this is probably the most hairy part since we need to
+> > handle a case if application just closes the file descriptor which would
+> > release the lease but OTOH we need to make sure task exit does not deadlock.
+> > Maybe we could block only on explicit lease unlock and just drop the layout
+> > lease on file close and if there are still pinned pages, send SIGKILL to an
+> > application as a reminder it did something stupid...
+> 
+> As presented at LSFmm I'm not opposed to killing a process which does not
+> "follow the rules".  But I'm concerned about how to handle this across a fork.
+> 
+> Limiting the open()/LEASE/GUP/close()/SIGKILL to a specific pid "leak"'s pins
+> to a child through the RDMA context.  This was the major issue Jason had with
+> the SIGBUS proposal.
+> 
+> Always sending a SIGKILL would prevent an RDMA process from doing something
+> like system("ls") (would kill the child unnecessarily).  Are we ok with that?
+
+I answered this in another email but system("ls") won't kill anybody.
+fork(2) just creates new file descriptor for the same file and possibly
+then closes it but since there is still another file descriptor for the
+same struct file, the "close" code won't trigger.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
