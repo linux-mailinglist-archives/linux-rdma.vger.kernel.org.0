@@ -2,99 +2,207 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4917394A7
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED2C394B0
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730157AbfFGSvX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 14:51:23 -0400
-Received: from mail-eopbgr00064.outbound.protection.outlook.com ([40.107.0.64]:5211
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729809AbfFGSvX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 7 Jun 2019 14:51:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MRw/IJJcG2eME8/d+ka6VpE5+lGTha4ZmhExxxxr+Oc=;
- b=owwp0k7AsULPqOBGpTrCpr/hPuxURHvaHf8Yx9ICyohivwEOklO9ywX+Qh4bcUG08fJeqRxjh8L1tV0qIVdBQhjkvAl1ndf6DttEAkBjyj037lvf/+ycsIFIK2MESxOA/2lSz6ql5BZmSsdeq70zLUmjYULHN1gYwWthB91OQi8=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB5869.eurprd05.prod.outlook.com (20.178.125.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1965.14; Fri, 7 Jun 2019 18:51:18 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1965.011; Fri, 7 Jun 2019
- 18:51:18 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        id S1729764AbfFGSwk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 14:52:40 -0400
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:15559 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729673AbfFGSwk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 14:52:40 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5cfab2730000>; Fri, 07 Jun 2019 11:52:35 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 07 Jun 2019 11:52:37 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 07 Jun 2019 11:52:37 -0700
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Jun
+ 2019 18:52:33 +0000
+Subject: Re: [PATCH v2 hmm 04/11] mm/hmm: Simplify hmm_get_or_create and make
+ it reliable
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>, <Felix.Kuehling@amd.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
         Andrea Arcangeli <aarcange@redhat.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Subject: Re: [PATCH v2 hmm 03/11] mm/hmm: Hold a mmgrab from hmm to mm
-Thread-Topic: [PATCH v2 hmm 03/11] mm/hmm: Hold a mmgrab from hmm to mm
-Thread-Index: AQHVHJfsjve3VpvfK0iKvy9k76PyJKaQiAIAgAACw4A=
-Date:   Fri, 7 Jun 2019 18:51:18 +0000
-Message-ID: <20190607185113.GF14771@mellanox.com>
+        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
 References: <20190606184438.31646-1-jgg@ziepe.ca>
- <20190606184438.31646-4-jgg@ziepe.ca>
- <605172dc-5c66-123f-61a3-8e6880678aef@nvidia.com>
-In-Reply-To: <605172dc-5c66-123f-61a3-8e6880678aef@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR13CA0020.namprd13.prod.outlook.com
- (2603:10b6:208:160::33) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c00a4373-03ca-4166-2866-08d6eb791ffd
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR05MB5869;
-x-ms-traffictypediagnostic: VI1PR05MB5869:
-x-microsoft-antispam-prvs: <VI1PR05MB58695D751D5C3702EDDA94DECF100@VI1PR05MB5869.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2089;
-x-forefront-prvs: 0061C35778
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(396003)(366004)(39860400002)(136003)(189003)(199004)(3846002)(558084003)(86362001)(316002)(52116002)(6246003)(11346002)(8676002)(8936002)(66556008)(71200400001)(81166006)(6506007)(305945005)(54906003)(6116002)(229853002)(71190400001)(6486002)(66066001)(64756008)(66446008)(7736002)(66946007)(102836004)(99286004)(6916009)(478600001)(73956011)(6512007)(1076003)(53936002)(14454004)(6436002)(66476007)(256004)(25786009)(76176011)(33656002)(81156014)(68736007)(5660300002)(446003)(486006)(2616005)(2906002)(53546011)(186003)(4326008)(36756003)(26005)(386003)(476003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5869;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: n+stqAix+Tn0aLVPjWDW2vTKorm3d9SSzs9OhKDw4dqDsSeXwX5pqh7XhCG+hEeu7uLmRAQQdgUkJx5jj6fJHFkqBhzOi7ruFWDWqVsdYduWB6PbvrD2HcrvA+iM+FRcffuJuScRsxqKBUtTNrpTzTVcxd7hWvi1f6xtWJ+HAur5Bv0lds+VdQ6ykex7wCpddULcIHAhNQJW9ToR9TH18kHVWRe8Xcz+BWN6B5zt3De66vZGAP8QOgu+R0QaoIiRDy5YvJIQRfnv5M/rILFVkMJWncMZauZIxEOoLwDoXEJnQ+4bwWvY69fOyC8DjOaZ/bLkN6zkhbbDgY253SI2RvlUJRTKGHRseCfmhJOpamCSZWCRxLf0ieqKU7KgzPOwoXUEGou7u8tJaJF6IEDkLOpTDIt9cuRrWqcfKrnX1Dg=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <0ED1D20CB91BB94C8ED721D38322F396@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ <20190606184438.31646-5-jgg@ziepe.ca>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <b4a65f1c-3c77-4d87-ef73-105a228ef5c5@nvidia.com>
+Date:   Fri, 7 Jun 2019 11:52:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c00a4373-03ca-4166-2866-08d6eb791ffd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2019 18:51:18.4066
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5869
+In-Reply-To: <20190606184438.31646-5-jgg@ziepe.ca>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1559933555; bh=JqPVjfnMUsVeriG51gkWP6yZJVSw9KGyEZqOWsZkh5s=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=o3/Dw8k5XmUikUSMfkLR2Ul1W+S62I/WdXmLNUJUPldK6bbzIkRUXYmeVUKur2tk2
+         hRglFo1y61L9h+ML/qFrFBzlZlDUM6JlOgJpCsG3r6s9WEWXEfgT1glvkbOjZlKqjm
+         GE1lNjGpCideng6jNvECw+LuqNOBghJgxhxohC/SiemfE+Cd5+SeVW8/L90bgqv5/N
+         gdoay8YDSEOL7LQDzr4xYrLARW7Ve+n/eVSP9mk6HKh6mmn2JLgEggrUhXzxQ4P2uI
+         kYPKIYY6R/zyYKv/J0WRHRpC08/YADLNQQAEAjjEqo8sQf09L6FJF5RFB0CGoWQXMj
+         VAlrl2LTDd8qA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 07, 2019 at 11:41:20AM -0700, Ralph Campbell wrote:
->=20
-> On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
-> > From: Jason Gunthorpe <jgg@mellanox.com>
-> >=20
-> > So long a a struct hmm pointer exists, so should the struct mm it is
->=20
-> s/a a/as a/
 
-Got it, thanks
+On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> 
+> As coded this function can false-fail in various racy situations. Make it
+> reliable by running only under the write side of the mmap_sem and avoiding
+> the false-failing compare/exchange pattern.
+> 
+> Also make the locking very easy to understand by only ever reading or
+> writing mm->hmm while holding the write side of the mmap_sem.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 
-Jason
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+
+> ---
+> v2:
+> - Fix error unwind of mmgrab (Jerome)
+> - Use hmm local instead of 2nd container_of (Jerome)
+> ---
+>   mm/hmm.c | 80 ++++++++++++++++++++------------------------------------
+>   1 file changed, 29 insertions(+), 51 deletions(-)
+> 
+> diff --git a/mm/hmm.c b/mm/hmm.c
+> index cc7c26fda3300e..dc30edad9a8a02 100644
+> --- a/mm/hmm.c
+> +++ b/mm/hmm.c
+> @@ -40,16 +40,6 @@
+>   #if IS_ENABLED(CONFIG_HMM_MIRROR)
+>   static const struct mmu_notifier_ops hmm_mmu_notifier_ops;
+>   
+> -static inline struct hmm *mm_get_hmm(struct mm_struct *mm)
+> -{
+> -	struct hmm *hmm = READ_ONCE(mm->hmm);
+> -
+> -	if (hmm && kref_get_unless_zero(&hmm->kref))
+> -		return hmm;
+> -
+> -	return NULL;
+> -}
+> -
+>   /**
+>    * hmm_get_or_create - register HMM against an mm (HMM internal)
+>    *
+> @@ -64,11 +54,20 @@ static inline struct hmm *mm_get_hmm(struct mm_struct *mm)
+>    */
+>   static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+>   {
+> -	struct hmm *hmm = mm_get_hmm(mm);
+> -	bool cleanup = false;
+> +	struct hmm *hmm;
+>   
+> -	if (hmm)
+> -		return hmm;
+> +	lockdep_assert_held_exclusive(&mm->mmap_sem);
+> +
+> +	if (mm->hmm) {
+> +		if (kref_get_unless_zero(&mm->hmm->kref))
+> +			return mm->hmm;
+> +		/*
+> +		 * The hmm is being freed by some other CPU and is pending a
+> +		 * RCU grace period, but this CPU can NULL now it since we
+> +		 * have the mmap_sem.
+> +		 */
+> +		mm->hmm = NULL;
+> +	}
+>   
+>   	hmm = kmalloc(sizeof(*hmm), GFP_KERNEL);
+>   	if (!hmm)
+> @@ -83,57 +82,36 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+>   	hmm->notifiers = 0;
+>   	hmm->dead = false;
+>   	hmm->mm = mm;
+> -	mmgrab(hmm->mm);
+> -
+> -	spin_lock(&mm->page_table_lock);
+> -	if (!mm->hmm)
+> -		mm->hmm = hmm;
+> -	else
+> -		cleanup = true;
+> -	spin_unlock(&mm->page_table_lock);
+>   
+> -	if (cleanup)
+> -		goto error;
+> -
+> -	/*
+> -	 * We should only get here if hold the mmap_sem in write mode ie on
+> -	 * registration of first mirror through hmm_mirror_register()
+> -	 */
+>   	hmm->mmu_notifier.ops = &hmm_mmu_notifier_ops;
+> -	if (__mmu_notifier_register(&hmm->mmu_notifier, mm))
+> -		goto error_mm;
+> +	if (__mmu_notifier_register(&hmm->mmu_notifier, mm)) {
+> +		kfree(hmm);
+> +		return NULL;
+> +	}
+>   
+> +	mmgrab(hmm->mm);
+> +	mm->hmm = hmm;
+>   	return hmm;
+> -
+> -error_mm:
+> -	spin_lock(&mm->page_table_lock);
+> -	if (mm->hmm == hmm)
+> -		mm->hmm = NULL;
+> -	spin_unlock(&mm->page_table_lock);
+> -error:
+> -	mmdrop(hmm->mm);
+> -	kfree(hmm);
+> -	return NULL;
+>   }
+>   
+>   static void hmm_free_rcu(struct rcu_head *rcu)
+>   {
+> -	kfree(container_of(rcu, struct hmm, rcu));
+> +	struct hmm *hmm = container_of(rcu, struct hmm, rcu);
+> +
+> +	down_write(&hmm->mm->mmap_sem);
+> +	if (hmm->mm->hmm == hmm)
+> +		hmm->mm->hmm = NULL;
+> +	up_write(&hmm->mm->mmap_sem);
+> +	mmdrop(hmm->mm);
+> +
+> +	kfree(hmm);
+>   }
+>   
+>   static void hmm_free(struct kref *kref)
+>   {
+>   	struct hmm *hmm = container_of(kref, struct hmm, kref);
+> -	struct mm_struct *mm = hmm->mm;
+> -
+> -	mmu_notifier_unregister_no_release(&hmm->mmu_notifier, mm);
+>   
+> -	spin_lock(&mm->page_table_lock);
+> -	if (mm->hmm == hmm)
+> -		mm->hmm = NULL;
+> -	spin_unlock(&mm->page_table_lock);
+> -
+> -	mmdrop(hmm->mm);
+> +	mmu_notifier_unregister_no_release(&hmm->mmu_notifier, hmm->mm);
+>   	mmu_notifier_call_srcu(&hmm->rcu, hmm_free_rcu);
+>   }
+>   
+> 
