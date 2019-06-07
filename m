@@ -2,121 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DE039628
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 21:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D542139673
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 22:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730834AbfFGTud (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 15:50:33 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:44569 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729715AbfFGTuc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 15:50:32 -0400
-Received: by mail-lj1-f194.google.com with SMTP id k18so2735229ljc.11
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 12:50:31 -0700 (PDT)
+        id S1729977AbfFGUIK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 16:08:10 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:38219 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729342AbfFGUIK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 16:08:10 -0400
+Received: by mail-lf1-f68.google.com with SMTP id b11so2518242lfa.5
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 13:08:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=L4/BQvJwRH8pzYfkzs4GJ1WfF93VEGjPp4jeBLqlphY=;
-        b=YCUY4mO48TpdXn4RiwPHgCrMGugdvwDHB8vyFdr/XROShWBDsWdsngRPoLfJD9TPR6
-         IslwjkUAlLZPxElG6sFIGiVn1uv3FRFGVyRaFXPMK5vmCt1W40kS47ohKbJ/jiKGG2gD
-         8xIuMivNI+7pZ0OMS0ULxhKEDTfL4NJS7PagdqHIAfmkR8n1pXPYeMBFwpCpmIoVjfd8
-         Df2lK+rDqvVayMAoPzfdoqP8M4+AH53wN1R8WDXlrurqH/S8CqYCCePsYhJEnE5bNzH7
-         ztKCZIFRg4gjihqAxZ1NPDjn8QRL6/fHYc3lwedsD8Tc5vVDKVwvGnvWkc7kmFNHUG2y
-         cYlQ==
+        bh=QDK3Ccwx6XT9W6QHiKSRwInuQJSgvhMen0AzjEbYCA8=;
+        b=CI1ZG2byPK/1Kx8LZGxmpQVJbJPwAqQiJocZJTlvpGxmCbijp6s/MCkHKaIeulCqHm
+         jkzBrAdWPEJYL7EChVEhSiSL7fH/uls6StJKdkrQ5+Q01AJSmPLrW82w/L+Hn1S73z+Q
+         eyuKALMZREPHrLDajs0j38+UZFCBbs1bFRfrvM40LOT8ZeGSwORrXT3ZIw6l6e+DYtyO
+         WHj3L2BKr8MObeNnmJF4CZwwqvoF+GvIu23HNTC/PhyX1ZAprAr1cMW2llBY8qa9UfbT
+         n0rS9y7xpuoSaMNzM0KoPozltJ5AIo5wBfdosSEzNtv1l1F1knPWA4PyuP18dJYg4v87
+         a46w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=L4/BQvJwRH8pzYfkzs4GJ1WfF93VEGjPp4jeBLqlphY=;
-        b=JQ71AkeY/EWqNLAduXY+aqgk0sxRtQ+FYmEx2IfJnCqYXWgyW8BdLmOZXtRFf2WJrh
-         IHgKn81HIROGTK7o2SQOTs6qKjdQEj+432un01fjEPHlg7s4C9P7ulvtyjYZ+43mnU20
-         udg8j3rDMhjuQZTzjSvFnbi2oZS3B5qHaJYbs/yxfGUVSNDXUUiZicEsGm8bgLa7H9YJ
-         z6BfpYAbdhN460tFJTS/z9TT/jfXEFzpixPMknQwbGplgilzlqJ13JwO1y5N0uQgRpik
-         DHxBxhGLRXFvRm8C/4g4YQ2psLib8O/d7vk9WLwT4uktn7NBkpQ2/wqFC7q0WLo05x+d
-         +88Q==
-X-Gm-Message-State: APjAAAWiww5n5dmcYeZfh2MW6F/bNCK90ZQeofoOa2OLjR709TkU2S/L
-        VlkHqCUNY6wFZdOezT/jjgIl1UQSNpTlj5Cn2HU=
-X-Google-Smtp-Source: APXvYqz1LzcnbHycWMD3GBKCgKDEZGlCDEysdeWvZ+1mAaMPH6qe+E+wW/6XfWmxUHzeQMloiPf8k1Da89PWu7bXKPA=
-X-Received: by 2002:a2e:4a1a:: with SMTP id x26mr13678555lja.207.1559937031060;
- Fri, 07 Jun 2019 12:50:31 -0700 (PDT)
+        bh=QDK3Ccwx6XT9W6QHiKSRwInuQJSgvhMen0AzjEbYCA8=;
+        b=VNqbUyCNKSAexCCSLKL6Fe0iJmZrsh/CwSLt3rUqPum6MqjssVbayMuC1DWuotDZsy
+         uLnNCRTlQohpz0aRhjv5vd7fPGHR7uxx0gWZDgAhUJP+9IpLEHaV+TVJD9LY9Q2zpN40
+         DvkEGHvSGMIlE7CNeMtZGau1NfN662W7z7qp+5WgjS0fI2p4JRM++ZV8QSPKxSiDNEIL
+         WPs4czlTBA+K0f36vmlr/Id+N0/7fqUOZLlohmkXb2NNaI//tKw7L/Q+TzvT4z51IVfH
+         h1iC+Iqhz0Iu9JSR0i51L7Vkx84hgXKvu5aIv4PYMdV3Qgm68MiXPTbaGBmHxRLszCG3
+         t/Vw==
+X-Gm-Message-State: APjAAAX8ZMrnPWvWdsgXfoHnfJOC2Gp/Hn1Y+BuvHSIl0qgj/YpDLY1s
+        00TARbVrfggEoOWO/gXC7smxO3jtnPH+E9+wDVDYjA==
+X-Google-Smtp-Source: APXvYqwqkSPR8EIsmRv7XptKwGZtNlG6WGTa+Aw0Rgt8bmKe6Kk78did3YSh+DNFgKoB7girGDdcu1ECBFa9wEIQIxM=
+X-Received: by 2002:ac2:4ac5:: with SMTP id m5mr4305451lfp.95.1559938088611;
+ Fri, 07 Jun 2019 13:08:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190523153436.19102-1-jgg@ziepe.ca> <20190523153436.19102-10-jgg@ziepe.ca>
- <CAFqt6zarGTZeA+Dw_RT2WXwgoYhnKP28LGfc+CDZqNFRexEXoQ@mail.gmail.com> <20190607193722.GS14802@ziepe.ca>
-In-Reply-To: <20190607193722.GS14802@ziepe.ca>
+References: <20190523153436.19102-1-jgg@ziepe.ca> <20190523153436.19102-11-jgg@ziepe.ca>
+In-Reply-To: <20190523153436.19102-11-jgg@ziepe.ca>
 From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat, 8 Jun 2019 01:25:35 +0530
-Message-ID: <CAFqt6zbUjFLXWch5jEx5OaC8ag27nBoHKGF5VXtCbvGcPbJ=Aw@mail.gmail.com>
-Subject: Re: [RFC PATCH 09/11] mm/hmm: Remove racy protection against double-unregistration
+Date:   Sat, 8 Jun 2019 01:43:12 +0530
+Message-ID: <CAFqt6zatjZdCzd=cg-kZiajsSwF6Jr+d-rL_vQ9kMtHjcDx8uQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 10/11] mm/hmm: Poison hmm_range during unregister
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     linux-rdma@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
         Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
+        John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 8, 2019 at 1:07 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Thu, May 23, 2019 at 9:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> On Sat, Jun 08, 2019 at 01:08:37AM +0530, Souptick Joarder wrote:
-> > On Thu, May 23, 2019 at 9:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > From: Jason Gunthorpe <jgg@mellanox.com>
-> > >
-> > > No other register/unregister kernel API attempts to provide this kind of
-> > > protection as it is inherently racy, so just drop it.
-> > >
-> > > Callers should provide their own protection, it appears nouveau already
-> > > does, but just in case drop a debugging POISON.
-> > >
-> > > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> > >  mm/hmm.c | 9 ++-------
-> > >  1 file changed, 2 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/mm/hmm.c b/mm/hmm.c
-> > > index 46872306f922bb..6c3b7398672c29 100644
-> > > +++ b/mm/hmm.c
-> > > @@ -286,18 +286,13 @@ EXPORT_SYMBOL(hmm_mirror_register);
-> > >   */
-> > >  void hmm_mirror_unregister(struct hmm_mirror *mirror)
-> > >  {
-> > > -       struct hmm *hmm = READ_ONCE(mirror->hmm);
-> > > -
-> > > -       if (hmm == NULL)
-> > > -               return;
-> > > +       struct hmm *hmm = mirror->hmm;
-> >
-> > How about remove struct hmm *hmm and replace the code like below -
-> >
-> > down_write(&mirror->hmm->mirrors_sem);
-> > list_del_init(&mirror->list);
-> > up_write(&mirror->hmm->mirrors_sem);
-> > hmm_put(hmm);
-> > memset(&mirror->hmm, POISON_INUSE, sizeof(mirror->hmm));
-> >
-> > Similar to hmm_mirror_register().
+> From: Jason Gunthorpe <jgg@mellanox.com>
 >
-> I think we get there in patch 10, right?
+> Trying to misuse a range outside its lifetime is a kernel bug. Use WARN_ON
+> and poison bytes to detect this condition.
+>
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 
-No, Patch 10 of this series has modified hmm_range_unregister().
->
-> When the series is all done the function looks like this:
->
-> void hmm_mirror_unregister(struct hmm_mirror *mirror)
-> {
->         struct hmm *hmm = mirror->hmm;
->
->         down_write(&hmm->mirrors_sem);
->         list_del(&mirror->list);
->         up_write(&hmm->mirrors_sem);
->         hmm_put(hmm);
->         memset(&mirror->hmm, POISON_INUSE, sizeof(mirror->hmm));
-> }
->
-> I think this mostly matches what you wrote above, or do you think we
-> should s/hmm/mirror->hmm/ anyhow? I think Ralph just added that :)
+Acked-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-I prefer, s/hmm/mirror->hmm and remove struct hmm *hmm :)
+> ---
+>  mm/hmm.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/hmm.c b/mm/hmm.c
+> index 6c3b7398672c29..02752d3ef2ed92 100644
+> --- a/mm/hmm.c
+> +++ b/mm/hmm.c
+> @@ -936,8 +936,7 @@ EXPORT_SYMBOL(hmm_range_register);
+>   */
+>  void hmm_range_unregister(struct hmm_range *range)
+>  {
+> -       /* Sanity check this really should not happen. */
+> -       if (range->hmm == NULL || range->end <= range->start)
+> +       if (WARN_ON(range->end <= range->start))
+>                 return;
+
+Does it make any sense to sanity check for range == NULL as well ?
+>
+>         mutex_lock(&range->hmm->lock);
+> @@ -945,9 +944,13 @@ void hmm_range_unregister(struct hmm_range *range)
+>         mutex_unlock(&range->hmm->lock);
+>
+>         /* Drop reference taken by hmm_range_register() */
+> -       range->valid = false;
+>         hmm_put(range->hmm);
+> -       range->hmm = NULL;
+> +
+> +       /* The range is now invalid, leave it poisoned. */
+> +       range->valid = false;
+> +       range->start = ULONG_MAX;
+> +       range->end = 0;
+> +       memset(&range->hmm, POISON_INUSE, sizeof(range->hmm));
+>  }
+>  EXPORT_SYMBOL(hmm_range_unregister);
+>
+> --
+> 2.21.0
+>
