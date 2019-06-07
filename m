@@ -2,153 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B093950B
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EF639528
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 21:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729827AbfFGS5v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 14:57:51 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:37823 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729550AbfFGS5u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 14:57:50 -0400
-Received: by mail-qt1-f193.google.com with SMTP id y57so3513727qtk.4
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 11:57:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YUXV9PM1gUReE/Arf4xImR2GHtQznOUBOXbDNdzr10w=;
-        b=aKo5RpQPx8pcoIQAryKpp0vXCouQLfC4wRIivD6RgKoW79W1aecSlZIfANLyfCs7Ch
-         Mw/0tY6fXxQoOMdVAo5xWFKFam24LWsX8wFYfdvqpEmbpbn7TZMlhb/T7xZm1QLL9I/X
-         mjBA5NWaUzc32uvkkzyQq739YLtL7/839gCjbXWzWW5OgBo7qP8gnhh67dzcRgKUhqPD
-         ruCqgtDODk7zKm4Q1V2pCFpAEn7bw/QT1Lzzuud6tHRqyiJ0/vDINoVwgcUp8/UBAonr
-         UcTsNhimOqVVG2SHyWPQoaTnl6dHCKEgxRmyGiPvocN6x//MOsFQithnUXEffo/3ou6I
-         S7EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YUXV9PM1gUReE/Arf4xImR2GHtQznOUBOXbDNdzr10w=;
-        b=uTYH4oP2ZhlB64JtYiMPSIOcUKC07BQ28mz5q5Yg09T/rolvnm9xJlAZeP2HYn7ZdB
-         /4L0wBSpqYQNNkCXq5ZCBJEJTpMDGtxe/t07PNti3HWuMFxe/TVVJjda8mycmREO5DWY
-         RaWc2ljufYcXVATEtK/uTIHSr++NpLReNIrk+vFf79gGln/MfW8vs0Itnv1zZjS8V9Od
-         g8aNJY5FGkWloLHFTPD73WPa2ZD3Qj7rWJg57wZg+Ue7PGlrtlLQh3foN+A5BJpyUuWq
-         T+GX94YtRBQFDjFeLAvpg2g0Ws0gCrvpN0gtopkhqmbqYk4gHVSb9RG20yzA073w8V/8
-         ivkg==
-X-Gm-Message-State: APjAAAVsc/AOjxyUDj28eVXpGCZsJBkmgq4YD2V/F0AhgNr9IiUTwv8C
-        6ERwJkF100Dbwi5ARp+ZW7ABmw==
-X-Google-Smtp-Source: APXvYqx3TFzlyw4WzjMypOFIInBA68fRopnC9Mjfy4mwCrCnI6AM+xatVlTQmC3Ry788Y+OFyolYGw==
-X-Received: by 2002:a0c:ba20:: with SMTP id w32mr44748746qvf.152.1559933870086;
-        Fri, 07 Jun 2019 11:57:50 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id s23sm780234qtk.31.2019.06.07.11.57.49
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 11:57:49 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hZK3h-00081s-2M; Fri, 07 Jun 2019 15:57:49 -0300
-Date:   Fri, 7 Jun 2019 15:57:49 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     Max Gurtovoy <maxg@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "andy@greyhouse.net" <andy@greyhouse.net>,
-        Tal Gilboa <talgi@mellanox.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Subject: Re: [pull request][for-next 0/9] Generic DIM lib for netdev and RDMA
-Message-ID: <20190607185749.GQ14802@ziepe.ca>
-References: <20190605232348.6452-1-saeedm@mellanox.com>
- <20190606071427.GU5261@mtr-leonro.mtl.com>
- <898e0df0-b73c-c6d7-9cbe-084163643236@mellanox.com>
- <20190606130713.GC17392@mellanox.com>
- <9faeadac971aaf481b1066b1dde0fc9e77e893a5.camel@mellanox.com>
+        id S1729474AbfFGTBt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 15:01:49 -0400
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:16015 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728595AbfFGTBs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 15:01:48 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5cfab4990002>; Fri, 07 Jun 2019 12:01:45 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 07 Jun 2019 12:01:47 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 07 Jun 2019 12:01:47 -0700
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Jun
+ 2019 19:01:45 +0000
+Subject: Re: [PATCH v2 hmm 05/11] mm/hmm: Remove duplicate condition test
+ before wait_event_timeout
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>, <Felix.Kuehling@amd.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
+ <20190606184438.31646-6-jgg@ziepe.ca>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <6833be96-12a3-1a1c-1514-c148ba2dd87b@nvidia.com>
+Date:   Fri, 7 Jun 2019 12:01:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9faeadac971aaf481b1066b1dde0fc9e77e893a5.camel@mellanox.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190606184438.31646-6-jgg@ziepe.ca>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL106.nvidia.com (172.18.146.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1559934105; bh=Kx8oCHq1Rv6wVMPa9pb6SeAWwPMNVFkybn8lVkznCEc=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=lijWUGubJCR64HCSORX4QLqG3zil2s0//JM6B87DqP7lBJ5ltD/J/GDcaS3G2ZX2e
+         gWemy5KFFY6h0iVAOYTmbphNBWI/LDNjC6c0xgS+2/+yBQohtbcmyE4AlfFOXpHeLQ
+         4YgDqKoU4mYZGqM+umLyKSpCK/E7doCn27H3GCULDP4SwQcK4nXs8qHf75pHYEke5V
+         rctRDR3GL/NH60mIG08uN5KRkBfiy+JXJoWm1LmB7A9hM2vDBjKAbzjpZxeZ8ZiLKT
+         8GMvc9iw2Ylz1UmEP1JPMDGnTs0Sr5zjQDRTNK9WwdjtY1TvsxYmK0vrSaq1WqcRhY
+         Z6k1iCiG9xexw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 07, 2019 at 06:14:11PM +0000, Saeed Mahameed wrote:
-> On Thu, 2019-06-06 at 13:07 +0000, Jason Gunthorpe wrote:
-> > On Thu, Jun 06, 2019 at 10:19:41AM +0300, Max Gurtovoy wrote:
-> > > > > Solution:
-> > > > > - Common logic is declared in include/linux/dim.h and
-> > > > > implemented in
-> > > > >    lib/dim/dim.c
-> > > > > - Net DIM (existing) logic is declared in
-> > > > > include/linux/net_dim.h and
-> > > > >    implemented in lib/dim/net_dim.c, which uses the common
-> > > > > logic from dim.h
-> > > > > - Any new DIM logic will be declared in
-> > > > > "/include/linux/new_dim.h" and
-> > > > >     implemented in "lib/dim/new_dim.c".
-> > > > > - This new implementation will expose modified versions of
-> > > > > profiles,
-> > > > >    dim_step() and dim_decision().
-> > > > > 
-> > > > > Pros for this solution are:
-> > > > > - Zero impact on existing net_dim implementation and usage
-> > > > > - Relatively more code reuse (compared to two separate
-> > > > > solutions)
-> > > > > - Increased extensibility
-> > > > > 
-> > > > > Tal Gilboa (6):
-> > > > >        linux/dim: Move logic to dim.h
-> > > > >        linux/dim: Remove "net" prefix from internal DIM members
-> > > > >        linux/dim: Rename externally exposed macros
-> > > > >        linux/dim: Rename net_dim_sample() to
-> > > > > net_dim_update_sample()
-> > > > >        linux/dim: Rename externally used net_dim members
-> > > > >        linux/dim: Move implementation to .c files
-> > > > > 
-> > > > > Yamin Friedman (3):
-> > > > >        linux/dim: Add completions count to dim_sample
-> > > > >        linux/dim: Implement rdma_dim
-> > > > >        RDMA/core: Provide RDMA DIM support for ULPs
-> > > > Saeed,
-> > > > 
-> > > > No, for the RDMA patches.
-> > > > We need to see usage of those APIs before merging.
-> > > 
-> > > I've asked Yamin to prepare patches for NVMeoF initiator and target
-> > > for
-> > > review, so I guess he has it on his plate (this is how he tested
-> > > it..).
-> > > 
-> > > It might cause conflict with NVMe/blk branch maintained by Sagi,
-> > > Christoph
-> > > and Jens.
-> > 
-> > It looks like nvme could pull this series + the RDMA patches into the
-> > nvme tree via PR? I'm not familiar with how that tree works.
-> > 
-> > But we need to get the patches posted right away..
-> > 
-> 
-> What do you suggest here ?
-> I think the netdev community also deserve to see the rdma patches, at
-> least with an external link, I can drop the last patch (or two ) ? but
-> i need an external rdma link for people who are going to review this
-> series.
 
-Yes, all the patches need to be posted. We should have a 'double
-branch' where you send the linux/dim & net stuff to net and then we
-add the RDMA stuff on top and send to nvme & rdma with the ULP
-patches
+On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+>=20
+> The wait_event_timeout macro already tests the condition as its first
+> action, so there is no reason to open code another version of this, all
+> that does is skip the might_sleep() debugging in common cases, which is
+> not helpful.
+>=20
+> Further, based on prior patches, we can no simplify the required conditio=
+n
+> test:
+>   - If range is valid memory then so is range->hmm
+>   - If hmm_release() has run then range->valid is set to false
+>     at the same time as dead, so no reason to check both.
+>   - A valid hmm has a valid hmm->mm.
+>=20
+> Also, add the READ_ONCE for range->valid as there is no lock held here.
+>=20
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> Reviewed-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> ---
+>   include/linux/hmm.h | 12 ++----------
+>   1 file changed, 2 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
+> index 4ee3acabe5ed22..2ab35b40992b24 100644
+> --- a/include/linux/hmm.h
+> +++ b/include/linux/hmm.h
+> @@ -218,17 +218,9 @@ static inline unsigned long hmm_range_page_size(cons=
+t struct hmm_range *range)
+>   static inline bool hmm_range_wait_until_valid(struct hmm_range *range,
+>   					      unsigned long timeout)
+>   {
+> -	/* Check if mm is dead ? */
+> -	if (range->hmm =3D=3D NULL || range->hmm->dead || range->hmm->mm =3D=3D=
+ NULL) {
+> -		range->valid =3D false;
+> -		return false;
+> -	}
+> -	if (range->valid)
+> -		return true;
+> -	wait_event_timeout(range->hmm->wq, range->valid || range->hmm->dead,
+> +	wait_event_timeout(range->hmm->wq, range->valid,
+>   			   msecs_to_jiffies(timeout));
+> -	/* Return current valid status just in case we get lucky */
+> -	return range->valid;
+> +	return READ_ONCE(range->valid);
+>   }
+>  =20
+>   /*
+>=20
 
-Assuming nvme takes pull requests.
+Since we are simplifying things, perhaps we should consider merging
+hmm_range_wait_until_valid() info hmm_range_register() and
+removing hmm_range_wait_until_valid() since the pattern
+is to always call the two together.
 
-But the whole thing should be posted as a single series on the list to
-get acks before the PRs are generated.
-
-Similar to how we've run the mlx5 shared branch
-
-Jason
+In any case, this looks OK to me so you can add
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
