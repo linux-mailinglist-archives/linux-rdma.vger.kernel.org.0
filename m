@@ -2,88 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E71339611
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 21:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DE039628
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 21:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729153AbfFGTms (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 15:42:48 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:43987 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729482AbfFGTms (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 15:42:48 -0400
-Received: by mail-qt1-f194.google.com with SMTP id z24so3646538qtj.10
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 12:42:47 -0700 (PDT)
+        id S1730834AbfFGTud (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 15:50:33 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:44569 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729715AbfFGTuc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 15:50:32 -0400
+Received: by mail-lj1-f194.google.com with SMTP id k18so2735229ljc.11
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 12:50:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Zz59RPGX+iC5zxoolzCkkNfTjthC5JIy19KosFGWAYA=;
-        b=lHUzzHduCHUtHrRrYIqL9RioEFr1pMHnf0pQ8x5cigCWzQWGLU1yLqo81VDmmnxa7G
-         RD7mgbk+czQz3dPvCP7In7qav3HxzS4FtBn3BVJvTXV+RoJ3InGhlP9WV9iQk5n8PSdl
-         6x4hGbcoTYG8PCf6OgltCwXjLhWJT9z0+bj5Jb158YQmBGMHweCoBEjddckMdtVJvFng
-         xvb5lsrOUaERkcgMS2gJBmG2kz3aA8p4vheJssY8BsZTUagDAzhPksPCWGHGD38ax6EB
-         Ghw9H3kEwVmGD+h4OnbVgffTwFgHZyx4674Xg1w5V76WcgacojYUvSGgDE1yCsQq1X03
-         5Lcw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L4/BQvJwRH8pzYfkzs4GJ1WfF93VEGjPp4jeBLqlphY=;
+        b=YCUY4mO48TpdXn4RiwPHgCrMGugdvwDHB8vyFdr/XROShWBDsWdsngRPoLfJD9TPR6
+         IslwjkUAlLZPxElG6sFIGiVn1uv3FRFGVyRaFXPMK5vmCt1W40kS47ohKbJ/jiKGG2gD
+         8xIuMivNI+7pZ0OMS0ULxhKEDTfL4NJS7PagdqHIAfmkR8n1pXPYeMBFwpCpmIoVjfd8
+         Df2lK+rDqvVayMAoPzfdoqP8M4+AH53wN1R8WDXlrurqH/S8CqYCCePsYhJEnE5bNzH7
+         ztKCZIFRg4gjihqAxZ1NPDjn8QRL6/fHYc3lwedsD8Tc5vVDKVwvGnvWkc7kmFNHUG2y
+         cYlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Zz59RPGX+iC5zxoolzCkkNfTjthC5JIy19KosFGWAYA=;
-        b=oSPslGTwDiQeHoHiWoVVpLOlr2GWHs1Z4Xf/bl0JfHg+MCE9tHDi1AfTkkUFo7oALB
-         THZmK8Y7dwVjd7kHBmEpi0uN787NgyBoUU6JCbLhDTILgWHtWOw3nzROGxFByxphVLk0
-         4vcLEXIXQgBtb1c9wRzmIvZ2vRItk6D15ZXCXwb7iDdTgEGpVh5lwEpPYNUhLM8iTgd7
-         wai6e6FCn/Q5h9rl/tIScLPOJSvMxt8JZuRudX/Hwh5GDbAvYcnFF8XAO9AHxbnmIJ3u
-         w5Y1ZWfFxl27EdnQDfGCJ10fY6oZE0j7cNeAoN+vjm5JelAFRai6pi0YMp66Va0VrSa5
-         H+tQ==
-X-Gm-Message-State: APjAAAVKc6C0pUBxSDauUFsNgPT+c7V4vQ3OsCDxV/A5HZi+o1d7t1lW
-        qKLKBa6fy66R6RazxQA8puOo8pPoaxhVZg==
-X-Google-Smtp-Source: APXvYqyGFpV1dTHrmQ2Y7gjQknxrvpXYnT9DeR3klPYI6+o8RSnl/dW8xSfW9z0m1+2O3lKpE4k/OA==
-X-Received: by 2002:ac8:38cc:: with SMTP id g12mr47204847qtc.68.1559936567299;
-        Fri, 07 Jun 2019 12:42:47 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id f34sm1727201qta.19.2019.06.07.12.42.46
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 12:42:46 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hZKlC-0006LD-B0; Fri, 07 Jun 2019 16:42:46 -0300
-Date:   Fri, 7 Jun 2019 16:42:46 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 30/32] ucma: Convert ctx_idr to XArray
-Message-ID: <20190607194246.GB24288@ziepe.ca>
-References: <20190221002107.22625-1-willy@infradead.org>
- <20190221002107.22625-31-willy@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L4/BQvJwRH8pzYfkzs4GJ1WfF93VEGjPp4jeBLqlphY=;
+        b=JQ71AkeY/EWqNLAduXY+aqgk0sxRtQ+FYmEx2IfJnCqYXWgyW8BdLmOZXtRFf2WJrh
+         IHgKn81HIROGTK7o2SQOTs6qKjdQEj+432un01fjEPHlg7s4C9P7ulvtyjYZ+43mnU20
+         udg8j3rDMhjuQZTzjSvFnbi2oZS3B5qHaJYbs/yxfGUVSNDXUUiZicEsGm8bgLa7H9YJ
+         z6BfpYAbdhN460tFJTS/z9TT/jfXEFzpixPMknQwbGplgilzlqJ13JwO1y5N0uQgRpik
+         DHxBxhGLRXFvRm8C/4g4YQ2psLib8O/d7vk9WLwT4uktn7NBkpQ2/wqFC7q0WLo05x+d
+         +88Q==
+X-Gm-Message-State: APjAAAWiww5n5dmcYeZfh2MW6F/bNCK90ZQeofoOa2OLjR709TkU2S/L
+        VlkHqCUNY6wFZdOezT/jjgIl1UQSNpTlj5Cn2HU=
+X-Google-Smtp-Source: APXvYqz1LzcnbHycWMD3GBKCgKDEZGlCDEysdeWvZ+1mAaMPH6qe+E+wW/6XfWmxUHzeQMloiPf8k1Da89PWu7bXKPA=
+X-Received: by 2002:a2e:4a1a:: with SMTP id x26mr13678555lja.207.1559937031060;
+ Fri, 07 Jun 2019 12:50:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190221002107.22625-31-willy@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20190523153436.19102-1-jgg@ziepe.ca> <20190523153436.19102-10-jgg@ziepe.ca>
+ <CAFqt6zarGTZeA+Dw_RT2WXwgoYhnKP28LGfc+CDZqNFRexEXoQ@mail.gmail.com> <20190607193722.GS14802@ziepe.ca>
+In-Reply-To: <20190607193722.GS14802@ziepe.ca>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Sat, 8 Jun 2019 01:25:35 +0530
+Message-ID: <CAFqt6zbUjFLXWch5jEx5OaC8ag27nBoHKGF5VXtCbvGcPbJ=Aw@mail.gmail.com>
+Subject: Re: [RFC PATCH 09/11] mm/hmm: Remove racy protection against double-unregistration
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 20, 2019 at 04:21:05PM -0800, Matthew Wilcox wrote:
-> Signed-off-by: Matthew Wilcox <willy@infradead.org>
-> ---
->  drivers/infiniband/core/ucma.c | 56 ++++++++++++++--------------------
->  1 file changed, 23 insertions(+), 33 deletions(-)
+On Sat, Jun 8, 2019 at 1:07 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Sat, Jun 08, 2019 at 01:08:37AM +0530, Souptick Joarder wrote:
+> > On Thu, May 23, 2019 at 9:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > From: Jason Gunthorpe <jgg@mellanox.com>
+> > >
+> > > No other register/unregister kernel API attempts to provide this kind of
+> > > protection as it is inherently racy, so just drop it.
+> > >
+> > > Callers should provide their own protection, it appears nouveau already
+> > > does, but just in case drop a debugging POISON.
+> > >
+> > > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> > >  mm/hmm.c | 9 ++-------
+> > >  1 file changed, 2 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/mm/hmm.c b/mm/hmm.c
+> > > index 46872306f922bb..6c3b7398672c29 100644
+> > > +++ b/mm/hmm.c
+> > > @@ -286,18 +286,13 @@ EXPORT_SYMBOL(hmm_mirror_register);
+> > >   */
+> > >  void hmm_mirror_unregister(struct hmm_mirror *mirror)
+> > >  {
+> > > -       struct hmm *hmm = READ_ONCE(mirror->hmm);
+> > > -
+> > > -       if (hmm == NULL)
+> > > -               return;
+> > > +       struct hmm *hmm = mirror->hmm;
+> >
+> > How about remove struct hmm *hmm and replace the code like below -
+> >
+> > down_write(&mirror->hmm->mirrors_sem);
+> > list_del_init(&mirror->list);
+> > up_write(&mirror->hmm->mirrors_sem);
+> > hmm_put(hmm);
+> > memset(&mirror->hmm, POISON_INUSE, sizeof(mirror->hmm));
+> >
+> > Similar to hmm_mirror_register().
+>
+> I think we get there in patch 10, right?
 
-Applied to for-next, but I added this hunk:
+No, Patch 10 of this series has modified hmm_range_unregister().
+>
+> When the series is all done the function looks like this:
+>
+> void hmm_mirror_unregister(struct hmm_mirror *mirror)
+> {
+>         struct hmm *hmm = mirror->hmm;
+>
+>         down_write(&hmm->mirrors_sem);
+>         list_del(&mirror->list);
+>         up_write(&hmm->mirrors_sem);
+>         hmm_put(hmm);
+>         memset(&mirror->hmm, POISON_INUSE, sizeof(mirror->hmm));
+> }
+>
+> I think this mostly matches what you wrote above, or do you think we
+> should s/hmm/mirror->hmm/ anyhow? I think Ralph just added that :)
 
---- a/drivers/infiniband/core/ucma.c
-+++ b/drivers/infiniband/core/ucma.c
-@@ -81,7 +81,7 @@ struct ucma_file {
- };
- 
- struct ucma_context {
--       int                     id;
-+       u32                     id;
-        struct completion       comp;
-        atomic_t                ref;
-        int                     events_reported;
-
-Thanks,
-Jason
+I prefer, s/hmm/mirror->hmm and remove struct hmm *hmm :)
