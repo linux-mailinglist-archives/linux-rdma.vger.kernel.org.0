@@ -2,27 +2,26 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C23F38311
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 05:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFF138315
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 05:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbfFGDPF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jun 2019 23:15:05 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:8858 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbfFGDPF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 23:15:05 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5cf9d6b60000>; Thu, 06 Jun 2019 20:15:03 -0700
+        id S1726543AbfFGDTj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jun 2019 23:19:39 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:14807 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbfFGDTj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jun 2019 23:19:39 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5cf9d7bb0000>; Thu, 06 Jun 2019 20:19:23 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
   by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 06 Jun 2019 20:15:03 -0700
+  Thu, 06 Jun 2019 20:19:38 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 06 Jun 2019 20:15:03 -0700
+        by hqpgpgate102.nvidia.com on Thu, 06 Jun 2019 20:19:38 -0700
 Received: from [10.110.48.28] (172.20.13.39) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Jun
- 2019 03:15:00 +0000
-Subject: Re: [PATCH v2 hmm 06/11] mm/hmm: Hold on to the mmget for the
- lifetime of the range
+ 2019 03:19:34 +0000
+Subject: Re: [PATCH v2 hmm 07/11] mm/hmm: Use lockdep instead of comments
 To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
         "Ralph Campbell" <rcampbell@nvidia.com>, <Felix.Kuehling@amd.com>
 CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
@@ -30,33 +29,33 @@ CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
         <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
         Jason Gunthorpe <jgg@mellanox.com>
 References: <20190606184438.31646-1-jgg@ziepe.ca>
- <20190606184438.31646-7-jgg@ziepe.ca>
+ <20190606184438.31646-8-jgg@ziepe.ca>
 X-Nvconfidentiality: public
 From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <326c4ed3-5232-4a58-7501-d27f763a9b56@nvidia.com>
-Date:   Thu, 6 Jun 2019 20:15:00 -0700
+Message-ID: <c1916bf0-1cec-9742-da9a-cfb0620be1f6@nvidia.com>
+Date:   Thu, 6 Jun 2019 20:19:33 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190606184438.31646-7-jgg@ziepe.ca>
+In-Reply-To: <20190606184438.31646-8-jgg@ziepe.ca>
 X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+X-ClientProxiedBy: HQMAIL106.nvidia.com (172.18.146.12) To
  HQMAIL107.nvidia.com (172.20.187.13)
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1559877303; bh=mCcWZEzpCTsPipMN71Lz9uMR0MoE4eiC77/meSFaMEQ=;
+        t=1559877563; bh=9gF3uYn8obWB5VlUA+vgwaf2NDgSDG+GUN4zo8V/T7s=;
         h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
          Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
          X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
          Content-Transfer-Encoding;
-        b=X3TwxqkBds3ij5FnWrqRL99V47aBaPIKWcjKrhPbF0tav64A16LFWGRp/3prKJxOK
-         phms8zB0OSFinWSxdr/cB++D0LDlUH3N5UvWsrk1CCcJbTbBwhkrQ4E1+v90nzrj7k
-         YYvBlH+G1S8iFPxp5OH509NjsD+9sPDp3P/J31eCGssrLFN+u/4tOZn6dirtjhTmZ7
-         l/vJNbS+XdQqGpddyIoHpge99rIroRbjtwxxbZMprAAdPWtOPGQvo9E0KX7JEFJRwm
-         I1NnL/nWUEGanUITplh4wTCfa5OcGDDyeFK2b3bpd5NAAO0W3TRpsZf9yMeXyfnUSy
-         2ZyzoEM/ZeRCw==
+        b=Y2/wSIlTDTvSRdYSF0JE+b/OJ9Z37KAvZnjLdpqLblVoJpA9RpMEc1+t+7lodIvC+
+         K+XHIKj+M0kiuZZIjR4KCP8V9ptM6hqYnxC2cmwq9/5357Hxxim2CabkXCAfwxfrHp
+         9Wh+0tBCkMV3T7aTLJd2fnNgLpEF1E8MIZhoMqANxrZ1BOkL2sC/fAZ7g1TogRo44I
+         f3D/LwtPMs0lhTGycNl7sIhQr0vmnOvaXB9iQrOFpj6N03P5RGYLZluNdASeuRNZUt
+         CUq/h0Q3gYsBA60V6778+IW8VendGjD8aGz4nQuNAJjYGZUfIAaZiQeH5yD1+Xhn8R
+         gdpnlOI2/wIHg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
@@ -64,169 +63,44 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
 > From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> Range functions like hmm_range_snapshot() and hmm_range_fault() call
-> find_vma, which requires hodling the mmget() and the mmap_sem for the mm.
-> 
-> Make this simpler for the callers by holding the mmget() inside the range
-> for the lifetime of the range. Other functions that accept a range should
-> only be called if the range is registered.
-> 
-> This has the side effect of directly preventing hmm_release() from
-> happening while a range is registered. That means range->dead cannot be
-> false during the lifetime of the range, so remove dead and
-> hmm_mirror_mm_is_alive() entirely.
-> 
+>=20
+> So we can check locking at runtime.
+>=20
 > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> Reviewed-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
 > ---
-> v2:
->  - Use Jerome's idea of just holding the mmget() for the range lifetime,
->    rework the patch to use that as as simplification to remove dead in
->    one step
+> v2
+> - Fix missing & in lockdeps (Jason)
 > ---
->  include/linux/hmm.h | 26 --------------------------
->  mm/hmm.c            | 28 ++++++++++------------------
->  2 files changed, 10 insertions(+), 44 deletions(-)
-> 
-> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-> index 2ab35b40992b24..0e20566802967a 100644
-> --- a/include/linux/hmm.h
-> +++ b/include/linux/hmm.h
-> @@ -91,7 +91,6 @@
->   * @mirrors_sem: read/write semaphore protecting the mirrors list
->   * @wq: wait queue for user waiting on a range invalidation
->   * @notifiers: count of active mmu notifiers
-> - * @dead: is the mm dead ?
->   */
->  struct hmm {
->  	struct mm_struct	*mm;
-> @@ -104,7 +103,6 @@ struct hmm {
->  	wait_queue_head_t	wq;
->  	struct rcu_head		rcu;
->  	long			notifiers;
-> -	bool			dead;
->  };
->  
->  /*
-> @@ -469,30 +467,6 @@ struct hmm_mirror {
->  int hmm_mirror_register(struct hmm_mirror *mirror, struct mm_struct *mm);
->  void hmm_mirror_unregister(struct hmm_mirror *mirror);
->  
-> -/*
-> - * hmm_mirror_mm_is_alive() - test if mm is still alive
-> - * @mirror: the HMM mm mirror for which we want to lock the mmap_sem
-> - * Return: false if the mm is dead, true otherwise
-> - *
-> - * This is an optimization, it will not always accurately return false if the
-> - * mm is dead; i.e., there can be false negatives (process is being killed but
-> - * HMM is not yet informed of that). It is only intended to be used to optimize
-> - * out cases where the driver is about to do something time consuming and it
-> - * would be better to skip it if the mm is dead.
-> - */
-> -static inline bool hmm_mirror_mm_is_alive(struct hmm_mirror *mirror)
-> -{
-> -	struct mm_struct *mm;
-> -
-> -	if (!mirror || !mirror->hmm)
-> -		return false;
-> -	mm = READ_ONCE(mirror->hmm->mm);
-> -	if (mirror->hmm->dead || !mm)
-> -		return false;
-> -
-> -	return true;
-> -}
-> -
->  /*
->   * Please see Documentation/vm/hmm.rst for how to use the range API.
->   */
+>  mm/hmm.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
 > diff --git a/mm/hmm.c b/mm/hmm.c
-> index dc30edad9a8a02..f67ba32983d9f1 100644
+> index f67ba32983d9f1..c702cd72651b53 100644
 > --- a/mm/hmm.c
 > +++ b/mm/hmm.c
-> @@ -80,7 +80,6 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
->  	mutex_init(&hmm->lock);
->  	kref_init(&hmm->kref);
->  	hmm->notifiers = 0;
-> -	hmm->dead = false;
->  	hmm->mm = mm;
->  
->  	hmm->mmu_notifier.ops = &hmm_mmu_notifier_ops;
-> @@ -124,20 +123,17 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+> @@ -254,11 +254,11 @@ static const struct mmu_notifier_ops hmm_mmu_notifi=
+er_ops =3D {
+>   *
+>   * To start mirroring a process address space, the device driver must re=
+gister
+>   * an HMM mirror struct.
+> - *
+> - * THE mm->mmap_sem MUST BE HELD IN WRITE MODE !
+>   */
+>  int hmm_mirror_register(struct hmm_mirror *mirror, struct mm_struct *mm)
 >  {
->  	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
->  	struct hmm_mirror *mirror;
-> -	struct hmm_range *range;
->  
->  	/* hmm is in progress to free */
->  	if (!kref_get_unless_zero(&hmm->kref))
->  		return;
->  
-> -	/* Report this HMM as dying. */
-> -	hmm->dead = true;
-> -
-> -	/* Wake-up everyone waiting on any range. */
->  	mutex_lock(&hmm->lock);
-> -	list_for_each_entry(range, &hmm->ranges, list)
-> -		range->valid = false;
-> -	wake_up_all(&hmm->wq);
-> +	/*
-> +	 * Since hmm_range_register() holds the mmget() lock hmm_release() is
-> +	 * prevented as long as a range exists.
-> +	 */
-> +	WARN_ON(!list_empty(&hmm->ranges));
->  	mutex_unlock(&hmm->lock);
->  
->  	down_write(&hmm->mirrors_sem);
-> @@ -909,8 +905,8 @@ int hmm_range_register(struct hmm_range *range,
->  	range->start = start;
->  	range->end = end;
->  
-> -	/* Check if hmm_mm_destroy() was call. */
-> -	if (hmm->mm == NULL || hmm->dead)
-> +	/* Prevent hmm_release() from running while the range is valid */
-> +	if (!mmget_not_zero(hmm->mm))
->  		return -EFAULT;
->  
->  	range->hmm = hmm;
-> @@ -955,6 +951,7 @@ void hmm_range_unregister(struct hmm_range *range)
->  
->  	/* Drop reference taken by hmm_range_register() */
->  	range->valid = false;
-> +	mmput(hmm->mm);
->  	hmm_put(hmm);
->  	range->hmm = NULL;
->  }
-> @@ -982,10 +979,7 @@ long hmm_range_snapshot(struct hmm_range *range)
->  	struct vm_area_struct *vma;
->  	struct mm_walk mm_walk;
->  
-> -	/* Check if hmm_mm_destroy() was call. */
-> -	if (hmm->mm == NULL || hmm->dead)
-> -		return -EFAULT;
-> -
-> +	lockdep_assert_held(&hmm->mm->mmap_sem);
->  	do {
->  		/* If range is no longer valid force retry. */
->  		if (!range->valid)
-> @@ -1080,9 +1074,7 @@ long hmm_range_fault(struct hmm_range *range, bool block)
->  	struct mm_walk mm_walk;
->  	int ret;
->  
-> -	/* Check if hmm_mm_destroy() was call. */
-> -	if (hmm->mm == NULL || hmm->dead)
-> -		return -EFAULT;
-> +	lockdep_assert_held(&hmm->mm->mmap_sem);
->  
->  	do {
->  		/* If range is no longer valid force retry. */
-> 
-
-Nice cleanup.
+> +	lockdep_assert_held_exclusive(&mm->mmap_sem);
+> +
+>  	/* Sanity check */
+>  	if (!mm || !mirror || !mirror->ops)
+>  		return -EINVAL;
+>=20
 
     Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
 
 thanks,
--- 
+--=20
 John Hubbard
 NVIDIA
