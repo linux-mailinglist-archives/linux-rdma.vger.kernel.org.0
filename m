@@ -2,107 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C61D8395E5
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 21:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302D53960B
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 21:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729653AbfFGTj5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 15:39:57 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:37712 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729353AbfFGTj5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 15:39:57 -0400
-Received: by mail-qk1-f194.google.com with SMTP id d15so1997991qkl.4
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 12:39:57 -0700 (PDT)
+        id S1729729AbfFGTmR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 15:42:17 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:46714 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729482AbfFGTmR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 15:42:17 -0400
+Received: by mail-qt1-f193.google.com with SMTP id h21so3618218qtn.13
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 12:42:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=v5PuEzRCYukWCZO7VXmHdZiC17djxNHawIgWZJ3C3rI=;
-        b=SAtTDMFwUmHIu49ip5MvvV585/FJuArUH6e+7qtqGRge4Po4xGdF9mVWCB0X/LfcDZ
-         S8k2EUayAT/XyINgUH3TIe/wXyoHbb9DFckpgvIyY/0/q3Ii0Co5gDrul9aKC4OKk20W
-         aHokMp9l9jU2YuHq9oePc3nIazjf1Zzt/8VIYFXOd+z+D8CBo2rWiHRA+Z3w2pAHQgxi
-         coNiAQZJYT5BweEOPNk1ChYd4KC/kMJQSqMc53F6JyrSUVaBkqVmwfuh6vyWs++p37xR
-         IXPalW63NH2kpn4cw3UD+fCEyK3p1JBU8J3vmnxDsZ2ZdorBeINpEQ7o7qHIwYNDmk1h
-         AbrQ==
+        bh=9WlNvlIn4Yu4cKL76GlL2n3cIGFb3fLAppC++UjZiGo=;
+        b=OO6pQORKbrWxji9jhleGXtAZhUXSkehfdQlqM2JTYAPNxlK2E010g1wyHb49YIglcI
+         bvBad2Mxnyn6o1FHH6a43uSmy0Ha/ddhntVm/xA7TZZLdV5rwOcVQMjPrTZUe85feOZW
+         /gtWw1cbqGPkBzc2cbKzaji7P+k56UoIXlum2RoK8xcxZWC9jBAtiTkJqf1eW5chLDSe
+         tqSaEK9ZKOpd5lA92dL7V+PIim/4+lc7KxbHtAshnc4mrDZ1Owd1KGDzZ2CyqIX/+X5M
+         wKxuIGn+Nv1GVxGifDQxKeyPnZxfWiELvAzitkVTPhOqSMh2Rsw8bsPzvNoDzyaNMmh6
+         l8Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=v5PuEzRCYukWCZO7VXmHdZiC17djxNHawIgWZJ3C3rI=;
-        b=I8fE87PtPREaUquBoxpQVvRLiJ1PXMWuv42xlZ25u3fjc6Ru4l9lvhD5YEpvNY1NF5
-         dZdK3R5ZhcS4bXbyL5RfXsQihihnjg+K6bwiomfAKJiq4QyQZmC+2vUmzadXSc4+HHw6
-         nJLbu+IbKU1IY1i5W4VcZQH5TGZRs1iwCM/cnSMw1L0A/1CJa7j+dhCvdxGaXY6RKKXA
-         Mriv1uIHPZ4QHj5WLXnyRmlnWSmii79euaydNopFSWIteWbz9Es/IhMmW3h6sdA6/UTV
-         16oYou1oP0XwbNkuu5MeT2uZDcBiD3X7dld2T9jSAMuxIeTlb97d7oLn8M104t5+nczI
-         x9VQ==
-X-Gm-Message-State: APjAAAWlswD/CDqWo3HHWBDZNYVEWNO6pj5Q+MmTBuyb63Q/lPeBBSY0
-        Ym7TJ2oXCITXyo+KzI9z/hdLWg==
-X-Google-Smtp-Source: APXvYqxGWrYqN4UNN4o5aR4HOkmObWEddG1b3Np+uajVbZa2p3YdBOe1UPksd0tTWtPwZyGUbFZPeg==
-X-Received: by 2002:a37:a110:: with SMTP id k16mr25061800qke.97.1559936396611;
-        Fri, 07 Jun 2019 12:39:56 -0700 (PDT)
+        bh=9WlNvlIn4Yu4cKL76GlL2n3cIGFb3fLAppC++UjZiGo=;
+        b=pDxT6mzKCcMbH/V7yZKQg2ykkBeCOpBn/Xvi542mVP/cnfIvVa1vW0YmSls3n3VorN
+         aLmgnSouc5HC992eGtn8QlhqSJETli3V9LRoRIZGMH7XpwC6V9MTqIyL1baU497ng6uA
+         WHAShOFscOb37Jp7ck9gzZ1j63zi3gSELa8IkY5GVggnQ9wkQtdCYLDZ+koLDaPSuveO
+         1jPBOm6TZVDR9VQzIdhXO2U3+zQgTS5N2SeE1Rq7JxOVvG/0yeHywBOlz+4sVdpA95Rw
+         EKuFDsS937BMRif0u+epm7Jht1OpRnZIV8uYK2IBfdllyVxEb5pZaEXNRNs+kh5uQy90
+         sWZA==
+X-Gm-Message-State: APjAAAXM/R6aVIR4snabQ2/el35h4+i8dIUY6UBgRN9n+RoPt+nepNMJ
+        lgehUPfBPKuf+uY+g60+aBsARA==
+X-Google-Smtp-Source: APXvYqw6vrpwcsz8N88q53i2g8cjP5FctRWJKnNBUIR52owJAkY7FFvb/yQdMoczc1yc1VS+v+vxGQ==
+X-Received: by 2002:a0c:afa2:: with SMTP id s31mr45288457qvc.186.1559936536026;
+        Fri, 07 Jun 2019 12:42:16 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id g5sm1140002qta.77.2019.06.07.12.39.56
+        by smtp.gmail.com with ESMTPSA id g184sm1552273qkf.45.2019.06.07.12.42.15
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 12:39:56 -0700 (PDT)
+        Fri, 07 Jun 2019 12:42:15 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hZKiR-0005LL-KT; Fri, 07 Jun 2019 16:39:55 -0300
-Date:   Fri, 7 Jun 2019 16:39:55 -0300
+        id 1hZKkh-0006KN-4q; Fri, 07 Jun 2019 16:42:15 -0300
+Date:   Fri, 7 Jun 2019 16:42:15 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 08/11] mm/hmm: Use lockdep instead of comments
-Message-ID: <20190607193955.GT14802@ziepe.ca>
-References: <20190523153436.19102-1-jgg@ziepe.ca>
- <20190523153436.19102-9-jgg@ziepe.ca>
- <CAFqt6zakL282X2SMh7E9kHDLnT9nW5ifbN2p1OKTXY4gaU=qkA@mail.gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 29/32] ucma: Convert multicast_idr to XArray
+Message-ID: <20190607194215.GA24288@ziepe.ca>
+References: <20190221002107.22625-1-willy@infradead.org>
+ <20190221002107.22625-30-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFqt6zakL282X2SMh7E9kHDLnT9nW5ifbN2p1OKTXY4gaU=qkA@mail.gmail.com>
+In-Reply-To: <20190221002107.22625-30-willy@infradead.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 08, 2019 at 01:03:48AM +0530, Souptick Joarder wrote:
-> On Thu, May 23, 2019 at 9:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > From: Jason Gunthorpe <jgg@mellanox.com>
-> >
-> > So we can check locking at runtime.
-> >
-> > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> >  mm/hmm.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/hmm.c b/mm/hmm.c
-> > index 2695925c0c5927..46872306f922bb 100644
-> > +++ b/mm/hmm.c
-> > @@ -256,11 +256,11 @@ static const struct mmu_notifier_ops hmm_mmu_notifier_ops = {
-> >   *
-> >   * To start mirroring a process address space, the device driver must register
-> >   * an HMM mirror struct.
-> > - *
-> > - * THE mm->mmap_sem MUST BE HELD IN WRITE MODE !
-> >   */
-> >  int hmm_mirror_register(struct hmm_mirror *mirror, struct mm_struct *mm)
-> >  {
-> > +       lockdep_assert_held_exclusive(mm->mmap_sem);
-> > +
-> 
-> Gentle query, does the same required in hmm_mirror_unregister() ?
+On Wed, Feb 20, 2019 at 04:21:04PM -0800, Matthew Wilcox wrote:
+> Signed-off-by: Matthew Wilcox <willy@infradead.org>
+> ---
+>  drivers/infiniband/core/ucma.c | 26 +++++++++-----------------
+>  1 file changed, 9 insertions(+), 17 deletions(-)
 
-No.. The unregistration path does its actual work in the srcu
-callback, which is in a different context than this function. So any
-locking held by the caller of unregister will not apply.
+Applied to for-next, but I added these two hunks:
 
-The hmm_range_free SRCU callback obtains the write side of mmap_sem to
-protect the same data that the write side above in register is
-touching, mostly &mm->hmm.
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -104,7 +104,7 @@ struct ucma_context {
+ 
+ struct ucma_multicast {
+        struct ucma_context     *ctx;
+-       int                     id;
++       u32                     id;
+        int                     events_reported;
+ 
+        u64                     uid;
+@@ -234,10 +234,10 @@ static struct ucma_multicast* ucma_alloc_multicast(struct ucma_context *ctx)
+        if (!mc)
+                return NULL;
+ 
++       mc->ctx = ctx;
+        if (xa_alloc(&multicast_table, &mc->id, NULL, xa_limit_32b, GFP_KERNEL))
+                goto error;
+ 
+-       mc->ctx = ctx;
+        list_add_tail(&mc->list, &ctx->mc_list);
+        return mc;
 
+Thanks,
 Jason
