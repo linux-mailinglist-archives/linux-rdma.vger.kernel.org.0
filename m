@@ -2,125 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDE4383C1
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 07:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B3C383F0
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 07:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbfFGFdu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 01:33:50 -0400
-Received: from mail-it1-f196.google.com ([209.85.166.196]:39468 "EHLO
-        mail-it1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbfFGFdu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 01:33:50 -0400
-Received: by mail-it1-f196.google.com with SMTP id j204so941180ite.4
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 22:33:50 -0700 (PDT)
+        id S1726962AbfFGFwk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 01:52:40 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:40427 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726694AbfFGFwj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 01:52:39 -0400
+Received: by mail-wm1-f65.google.com with SMTP id v19so628864wmj.5
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Jun 2019 22:52:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I1Ohgac363EioDxzXpyXf7UN1ZgVyShBjggu94kceQ8=;
-        b=k/GR7joJNJJ6Ve9R/aFsDJRsptZAid18wqkAKiXzRB6NlE5r0KsuMRDWBQiDjQE71p
-         daD8j4DSrVfI6HVAkD5vCpZj39PQaq9fApbZACjRC0RDDKZIBpn7/PLmAhGU1uSNjV36
-         ZPpnk1tioX9M+1EYWJoeTvWylBd+vbf5sKkC6jEafyQKFEFkOanMnEF7whEz4Nqwt4hG
-         bE4l9bBTG0ogocOQzuioUmmPSF5w+Ho92/o1cceuVe444tHP69yQxu8DSewMXHLCqg4l
-         Ja6TZAP9vQDDI+y+jUJx9i8y337VPVjbLYX5aoIkmB6O4W9ByhkvQ0wvmaFU4t1VIu/d
-         h8DQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=36gEkNDx0uUeJoUQsXVk3mt2cfXOtD54F9aZsyl2w8M=;
+        b=pDdAAUOpVsFzxNwV4O/e7ssQLNLp50XAh3glMTxl5eSnaHqtKF1ESH20wwt4BLQ/kh
+         BH7Od/RfACcOXYVEIHend3957AwdYma2TIl9/LqXUz4RFZcrNMzz27LkuDXjVjWNKTih
+         ByCP8NoFt4Peya0Fp9Z21FaEJu/O+2bb8GCVNqttwksWr2+ZPc0cmapZ1Anup+ViBNTZ
+         vjBIujh54ocCaeRN2S4DXdXQ718laVtBtLQxjNMDeXv9pj9WBm/YV9GRPDwOtdsA5mWJ
+         krketIS//R+rWMkC2qjWZnfTvl0ZR5/Jjz7KOThnoVy/qaKx6I0jpjjmoalU/zkPP0pe
+         +kUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I1Ohgac363EioDxzXpyXf7UN1ZgVyShBjggu94kceQ8=;
-        b=EUKCr/MOVeQWTvksV6JmMa7wc2yx9Jrgxpchxvt7o+neV6t6n7LNDWnxmgwrXNG0wB
-         3pSPGFHfBQEMb7QtfWl7/m3LZM8+5KiQ1dEJemd2/whBiW/80V7kQc21X9IsS3XA8HgT
-         F6ZAqf8G1SEYkTTLPREbBkHgdQwhghynLXDxBnAhucQPUT/bFud9JqX375UScQQXMear
-         0yoKg0DEPNayAXpQaGcaE0P9h9fJ3vgZxzAYVHPqi8N6EA0EdjoreSsLHYKVqGu0a25A
-         8eagoy8616pa6wz+LhIloCCl7mh2lN/PoylbZz+Qs6q3AzwWdYqHgu3mjHAHxtOezv4T
-         rInw==
-X-Gm-Message-State: APjAAAWEi1cOen9jaaUSDCL0pjK8DTV31ejOUIkgMLZ1ui5Nqfq8CHuy
-        A7gxq164Oyib8ykoEgigOlGU5ps9YCO+4qR8fKCaUA==
-X-Google-Smtp-Source: APXvYqzO76FNbL4lc2mT5nAI8664+vPAEC2qxggUSScGxp/b2eT89TkEwyH+hzeEqr8qRCV6LZQ9VkHcX6jY2/9nElY=
-X-Received: by 2002:a05:660c:752:: with SMTP id a18mr2789419itl.63.1559885629583;
- Thu, 06 Jun 2019 22:33:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=36gEkNDx0uUeJoUQsXVk3mt2cfXOtD54F9aZsyl2w8M=;
+        b=GzZA6CHn2RLeRauX/O0P3zlLN1QhkADAa7NGNDewZmocie+A0leYauBvR+OSO48E1R
+         K+Ld5dF9Ci/XBg7vyFkNF15XxAG1ReohLCzN4s278v0aA6ynic7Ook73yH1hfPoKIbjW
+         pBWBTboWaomF4/ZQtG5q55hlyrI/wvQiKpKgFi8rUPm7670L7hLtyF8y7KRrBH760XEu
+         DCOhRinlkNfqmhxDQbjdStm7tyNTmNCTlHPZW79bSFXLUtanYhuoV4iwUSxbV2zLunf5
+         nlZD65k2aUcHRV0UYCYtP2i6hqR1KP67KDrBx6/YIOGOQb459FxtDnN8ct2hYeaXSg3t
+         h4PA==
+X-Gm-Message-State: APjAAAUvm9bcel9ITfFcpq8xJg+Iw4DtnEst8Jq5mx+hKPG63liMZlpJ
+        aepTRL9T0jkZFd6JwodzG08Nzw==
+X-Google-Smtp-Source: APXvYqxWfaiEDyUcmFI97Rqe1RFTEHA2+tg12ZBqTXrA/m0sqmbdeuwPeKLwpO4B0drdqMT3H41KnQ==
+X-Received: by 2002:a05:600c:204c:: with SMTP id p12mr2244021wmg.121.1559886757922;
+        Thu, 06 Jun 2019 22:52:37 -0700 (PDT)
+Received: from [10.97.4.179] (aputeaux-682-1-82-78.w90-86.abo.wanadoo.fr. [90.86.61.78])
+        by smtp.gmail.com with ESMTPSA id j15sm819336wrn.50.2019.06.06.22.52.36
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Jun 2019 22:52:37 -0700 (PDT)
+Subject: Re: properly communicate queue limits to the DMA layer
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Sebastian Ott <sebott@linux.ibm.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Oliver Neukum <oneukum@suse.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com,
+        linux-hyperv@vger.kernel.org, linux-usb@vger.kernel.org,
+        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
+References: <20190605190836.32354-1-hch@lst.de>
+ <591cfa1e-fecb-7d00-c855-3b9eb8eb8a2a@kernel.dk>
+ <20190605192405.GA18243@lst.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <f07d0abf-b3eb-f530-37b9-e66454740b3f@kernel.dk>
+Date:   Thu, 6 Jun 2019 23:52:35 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <cover.1559580831.git.andreyknvl@google.com> <dc3f3092abbc0d48e51b2e2a2ca8f4c4f69fa0f4.1559580831.git.andreyknvl@google.com>
-In-Reply-To: <dc3f3092abbc0d48e51b2e2a2ca8f4c4f69fa0f4.1559580831.git.andreyknvl@google.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Fri, 7 Jun 2019 07:33:38 +0200
-Message-ID: <CAHUa44E+g3YTcja+7qgx+iABVd48DbrMMOm0sbyMwf0U6F5NPw@mail.gmail.com>
-Subject: Re: [PATCH v16 14/16] tee, arm64: untag user pointers in tee_shm_register
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mm@kvack.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190605192405.GA18243@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 3, 2019 at 6:56 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> This patch is a part of a series that extends arm64 kernel ABI to allow to
-> pass tagged user pointers (with the top byte set to something else other
-> than 0x00) as syscall arguments.
->
-> tee_shm_register()->optee_shm_unregister()->check_mem_type() uses provided
-> user pointers for vma lookups (via __check_mem_type()), which can only by
-> done with untagged pointers.
->
-> Untag user pointers in this function.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+On 6/5/19 1:24 PM, Christoph Hellwig wrote:
+> On Wed, Jun 05, 2019 at 01:17:15PM -0600, Jens Axboe wrote:
+>> Since I'm heading out shortly and since I think this should make
+>> the next -rc, I'll tentatively queue this up.
+> 
+> The SCSI bits will need a bit more review, and possibly tweaking
+> fo megaraid and mpt3sas.  But they are really independent of the
+> other patches, so maybe skip them for now and leave them for Martin
+> to deal with.
 
-Acked-by: Jens Wiklander <jens.wiklander@linaro.org>
+I dropped the SCSI bits.
 
-> ---
->  drivers/tee/tee_shm.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-> index 49fd7312e2aa..96945f4cefb8 100644
-> --- a/drivers/tee/tee_shm.c
-> +++ b/drivers/tee/tee_shm.c
-> @@ -263,6 +263,7 @@ struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
->         shm->teedev = teedev;
->         shm->ctx = ctx;
->         shm->id = -1;
-> +       addr = untagged_addr(addr);
->         start = rounddown(addr, PAGE_SIZE);
->         shm->offset = addr - start;
->         shm->size = length;
-> --
-> 2.22.0.rc1.311.g5d7573a151-goog
->
+-- 
+Jens Axboe
+
