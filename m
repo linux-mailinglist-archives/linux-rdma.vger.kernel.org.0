@@ -2,89 +2,193 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DCB393E8
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D2F39407
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2019 20:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731783AbfFGSFK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 14:05:10 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:32779 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730336AbfFGSFK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 14:05:10 -0400
-Received: by mail-qt1-f196.google.com with SMTP id x2so2419556qtr.0
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 11:05:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1u8QA5gDOKeNLVCd2bIEH+QLN4jvjcMRS9RX5LydFVo=;
-        b=EZ20ECrHM9ckS09YSKff5zWQ4PQXOp2h3ff9oZ8Yz1H0GRPOYbX/p4Q/p6elbds5Ho
-         Dervbbi1ZXm+hC1mme6oG/EF2SslLChrdLL9aaOJTlo04u1OWPPiCRq2t96ZDZQb3dGQ
-         nrkDFXm5UKgGSbnkKT80uvxIl+g505IYmvsBgVR7C0R1ntFng+00hvy4Husorjg91trl
-         X7Kp3pvDUZNzzG4k3gGGDYPirrVpqz05FrFBoaAsDisDVZXnGMON86CRHcoK/pMy2BHe
-         i8paEjz3b+IwtyYXPrQ+g2usQYJgNu2cTPuDsaYgOlbvjU84YljcMISrvLTjp1BfSWeH
-         V/2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1u8QA5gDOKeNLVCd2bIEH+QLN4jvjcMRS9RX5LydFVo=;
-        b=JRTZcwJNSSjVsVflgf4PcSta/HUANpinlO1qLdAMRFzTVeCEz7B20FqNHo3h4cAH0W
-         dNN/kRq+zZchJIyA2sea9e0xIuNNNrRpaaBK80aBJ9K5GTH6aGNhO8SjchsKqvoo4L/7
-         cjEIqFk3A8kW2nnFNCRjR2JUY6fPTLtuPYC0tCskHQvqL1qS7dNierqcW4FuK2ehsBKM
-         c3PoyHq0pHPcBxZQuGuAIAYocJbgivbfj+oZeq+/UG+JKzrJfg51d5M4a0YuweIPuFRR
-         1usgLUule0Xv10rJ0GytA25MDlm02y2j+Zs/YdmzllVpMGib1Dj+CdmUog/UVsk0u2LI
-         ShAQ==
-X-Gm-Message-State: APjAAAWQnnfpgnIRmgI94qamzU/t0+Cck03zhOqG+P1UvFILVkLkiwDv
-        XzQ881NCo/0T9S86Hw4OHsWJJmNOrhzIQA==
-X-Google-Smtp-Source: APXvYqwY1xXf3g4oZc2oTXnuhHygmo24ORh16m5jKK1MJW0iJrr9WhUZgH8WbbTfQR24AG1VLpdySA==
-X-Received: by 2002:aed:2961:: with SMTP id s88mr46611186qtd.120.1559930709358;
-        Fri, 07 Jun 2019 11:05:09 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id k7sm1167641qth.88.2019.06.07.11.05.08
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 11:05:08 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hZJEi-0007ai-Gq; Fri, 07 Jun 2019 15:05:08 -0300
-Date:   Fri, 7 Jun 2019 15:05:08 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/ucma: Use struct_size() helper
-Message-ID: <20190607180508.GA29136@ziepe.ca>
-References: <20190604154222.GA8938@embeddedor>
+        id S1730437AbfFGSMT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 14:12:19 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:11634 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730336AbfFGSMT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 14:12:19 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5cfaa8f10000>; Fri, 07 Jun 2019 11:12:02 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 07 Jun 2019 11:12:17 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 07 Jun 2019 11:12:17 -0700
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Jun
+ 2019 18:12:14 +0000
+Subject: Re: [PATCH v2 hmm 01/11] mm/hmm: fix use after free with struct hmm
+ in the mmu notifiers
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>, <Felix.Kuehling@amd.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
+ <20190606184438.31646-2-jgg@ziepe.ca>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <377cadfa-180e-9a6a-49df-0c2c27ae6fb3@nvidia.com>
+Date:   Fri, 7 Jun 2019 11:12:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190604154222.GA8938@embeddedor>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190606184438.31646-2-jgg@ziepe.ca>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL104.nvidia.com (172.18.146.11) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1559931122; bh=yvViGcleFu6fAY5Z1ueRI2Sd+W1uzOgNJahahekeWt4=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=GwkD8xsCGHW0KQ7XDbv8wawHd+SJN+lRqrAQpT/q6IxU90uItm8+7KTvX+8unVVF7
+         Vz00qV1V8aOiQueD3BHPHHGFZQnANCqbwbnRRbBFwh3oJhF3aWr4/aVmfy0TkhKL+W
+         lmrPKNeaNFVPyriJVct/0VeUfyZ1MufFzoGvniQz+6lRXlnYRx5V3xeqPhkXlq2I54
+         ZO79+tNGlAT4Ihs91XWeiX8VLNCv226zJTLdk0nY1y9xEBj/6xZQqrOC13Y2hVUrI/
+         ZBcxJUBuG8iMwDX7QBnuTnYytNPULKEzM6tmkNK9OnPziujs0OLxsvUVUEuBUQVLdA
+         TOS8OF+mbpUPw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 04, 2019 at 10:42:22AM -0500, Gustavo A. R. Silva wrote:
-> Make use of the struct_size() helper instead of an open-coded version
-> in order to avoid any potential type mistakes, in particular in the
-> context in which this code is being used.
+
+
+On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
 > 
-> So, replace the following form:
+> mmu_notifier_unregister_no_release() is not a fence and the mmu_notifier
+> system will continue to reference hmm->mn until the srcu grace period
+> expires.
 > 
-> sizeof(*resp) + (i * sizeof(struct ib_path_rec_data))
+> Resulting in use after free races like this:
 > 
-> with:
+>           CPU0                                     CPU1
+>                                                 __mmu_notifier_invalidate_range_start()
+>                                                   srcu_read_lock
+>                                                   hlist_for_each ()
+>                                                     // mn == hmm->mn
+> hmm_mirror_unregister()
+>    hmm_put()
+>      hmm_free()
+>        mmu_notifier_unregister_no_release()
+>           hlist_del_init_rcu(hmm-mn->list)
+> 			                           mn->ops->invalidate_range_start(mn, range);
+> 					             mm_get_hmm()
+>        mm->hmm = NULL;
+>        kfree(hmm)
+>                                                       mutex_lock(&hmm->lock);
 > 
-> struct_size(resp, path_data, i)
+> Use SRCU to kfree the hmm memory so that the notifiers can rely on hmm
+> existing. Get the now-safe hmm struct through container_of and directly
+> check kref_get_unless_zero to lock it against free.
 > 
-> This code was detected with the help of Coccinelle.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+
+You can add
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+
 > ---
->  drivers/infiniband/core/ucma.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-
-Applied to for-next, thanks
-
-Jason
+> v2:
+> - Spell 'free' properly (Jerome/Ralph)
+> ---
+>   include/linux/hmm.h |  1 +
+>   mm/hmm.c            | 25 +++++++++++++++++++------
+>   2 files changed, 20 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
+> index 092f0234bfe917..688c5ca7068795 100644
+> --- a/include/linux/hmm.h
+> +++ b/include/linux/hmm.h
+> @@ -102,6 +102,7 @@ struct hmm {
+>   	struct mmu_notifier	mmu_notifier;
+>   	struct rw_semaphore	mirrors_sem;
+>   	wait_queue_head_t	wq;
+> +	struct rcu_head		rcu;
+>   	long			notifiers;
+>   	bool			dead;
+>   };
+> diff --git a/mm/hmm.c b/mm/hmm.c
+> index 8e7403f081f44a..547002f56a163d 100644
+> --- a/mm/hmm.c
+> +++ b/mm/hmm.c
+> @@ -113,6 +113,11 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+>   	return NULL;
+>   }
+>   
+> +static void hmm_free_rcu(struct rcu_head *rcu)
+> +{
+> +	kfree(container_of(rcu, struct hmm, rcu));
+> +}
+> +
+>   static void hmm_free(struct kref *kref)
+>   {
+>   	struct hmm *hmm = container_of(kref, struct hmm, kref);
+> @@ -125,7 +130,7 @@ static void hmm_free(struct kref *kref)
+>   		mm->hmm = NULL;
+>   	spin_unlock(&mm->page_table_lock);
+>   
+> -	kfree(hmm);
+> +	mmu_notifier_call_srcu(&hmm->rcu, hmm_free_rcu);
+>   }
+>   
+>   static inline void hmm_put(struct hmm *hmm)
+> @@ -153,10 +158,14 @@ void hmm_mm_destroy(struct mm_struct *mm)
+>   
+>   static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+>   {
+> -	struct hmm *hmm = mm_get_hmm(mm);
+> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+>   	struct hmm_mirror *mirror;
+>   	struct hmm_range *range;
+>   
+> +	/* hmm is in progress to free */
+> +	if (!kref_get_unless_zero(&hmm->kref))
+> +		return;
+> +
+>   	/* Report this HMM as dying. */
+>   	hmm->dead = true;
+>   
+> @@ -194,13 +203,15 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+>   static int hmm_invalidate_range_start(struct mmu_notifier *mn,
+>   			const struct mmu_notifier_range *nrange)
+>   {
+> -	struct hmm *hmm = mm_get_hmm(nrange->mm);
+> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+>   	struct hmm_mirror *mirror;
+>   	struct hmm_update update;
+>   	struct hmm_range *range;
+>   	int ret = 0;
+>   
+> -	VM_BUG_ON(!hmm);
+> +	/* hmm is in progress to free */
+> +	if (!kref_get_unless_zero(&hmm->kref))
+> +		return 0;
+>   
+>   	update.start = nrange->start;
+>   	update.end = nrange->end;
+> @@ -245,9 +256,11 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
+>   static void hmm_invalidate_range_end(struct mmu_notifier *mn,
+>   			const struct mmu_notifier_range *nrange)
+>   {
+> -	struct hmm *hmm = mm_get_hmm(nrange->mm);
+> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
+>   
+> -	VM_BUG_ON(!hmm);
+> +	/* hmm is in progress to free */
+> +	if (!kref_get_unless_zero(&hmm->kref))
+> +		return;
+>   
+>   	mutex_lock(&hmm->lock);
+>   	hmm->notifiers--;
+> 
