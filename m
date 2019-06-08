@@ -2,124 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A27239A01
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 03:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4878939A08
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 03:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729815AbfFHBP0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 21:15:26 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:42939 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729685AbfFHBP0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 21:15:26 -0400
-Received: by mail-qt1-f196.google.com with SMTP id s15so4417910qtk.9
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 18:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=h6Z9rr6zGxumR/45vmaME9IJ083vX8f0km+kn2uW+c8=;
-        b=bRrQYKB2zE6/wWU/OjS2kqvu2AoxAnZ/cCuCgPmbOeWj+HhbWbKLaCaogL0rqmZe0R
-         BtruNkxj/Zi/NgK7luDutuRW7H758gt9Eu6yTyut/4xnbnV7w3i473DBuvfoey1s+Ay5
-         XmK6BJ9hHcTUZl8lDhdBJ2IGvsrZUQbNiv03egVplE5XTDlTBUMw8lj/AuEbwkeC1oeK
-         YAnG/BpSduK8thlJPaUbYi8ZQC2H3u8Rg78tXDXasJ0Kh/NDiNEG3VMZKRfJqN2PpXZr
-         jtsX+FFxZSKZrB8lKqNa9CPoPomNmQIdreS92pKoIQ9qgTGc0r+xReuWGWSNMTsCofLP
-         CCQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=h6Z9rr6zGxumR/45vmaME9IJ083vX8f0km+kn2uW+c8=;
-        b=k3ifRB15UewghV5hnJZmTsQ5lAYb6vVb07v6XU606dPpGZ7mGcbSLaVPQcidmx15yz
-         huGV3fPH+B6JX8y9U0LCCyJX+bJS5Eg2megx4sxkcbJp1Q3yTu2YLUn2b4ZOlih/LDW2
-         U7JU6fLR/znmsO2bGdfbXaLKY4NPkNclU8WWIO3/HUSGYFxPUMBw4xfvvJnG8DM+7KXm
-         KWdkJ0d2uHuAEpbtOootazi7a4ll8Rmf/++XDRY/Ti+1Cd86Yy46WjOH3RYDL6ZNcXFz
-         Y0Qigxd1NvBFU2VfGVjV3ISt6QHAB1ksvAEytXKd28qJ7h3AltDKYJHmZKBCksh33N9J
-         H6+g==
-X-Gm-Message-State: APjAAAXqW6pIcslrIusWJLsrJu0rFCOZJg0EuGeL+O/JGvfNkLxp0CLF
-        EKZ1b/7/tnRqECWHKArQ9/Lv+g==
-X-Google-Smtp-Source: APXvYqxlijcObZVobH5DV858Z4pTZYEKltcFNld56zqPC5gVgwHJRZ7Ay2DmCcFxie8ytW1foI+w9w==
-X-Received: by 2002:ac8:2d69:: with SMTP id o38mr35025897qta.169.1559956525671;
-        Fri, 07 Jun 2019 18:15:25 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id f34sm2160045qta.19.2019.06.07.18.15.25
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 18:15:25 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hZPx6-00023t-KY; Fri, 07 Jun 2019 22:15:24 -0300
-Date:   Fri, 7 Jun 2019 22:15:24 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        Jerome Glisse <jglisse@redhat.com>,
+        id S1729862AbfFHBcn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 21:32:43 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:10333 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728456AbfFHBcn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 21:32:43 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5cfb102a0001>; Fri, 07 Jun 2019 18:32:27 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 07 Jun 2019 18:32:42 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 07 Jun 2019 18:32:42 -0700
+Received: from [10.110.48.28] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 8 Jun
+ 2019 01:32:39 +0000
+Subject: Re: [PATCH v3 hmm 05/11] mm/hmm: Remove duplicate condition test
+ before wait_event_timeout
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 08/11] mm/hmm: Use lockdep instead of comments
-Message-ID: <20190608011524.GA7844@ziepe.ca>
-References: <20190523153436.19102-1-jgg@ziepe.ca>
- <20190523153436.19102-9-jgg@ziepe.ca>
- <CAFqt6zakL282X2SMh7E9kHDLnT9nW5ifbN2p1OKTXY4gaU=qkA@mail.gmail.com>
- <20190607193955.GT14802@ziepe.ca>
- <CAFqt6zZbQmPq=v9xtgHfc5QCy4Vk8pjWgTOY0+TyFgHmEnWTsg@mail.gmail.com>
+        <Felix.Kuehling@amd.com>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, Andrea Arcangeli <aarcange@redhat.com>,
+        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
+ <20190606184438.31646-6-jgg@ziepe.ca>
+ <86962e22-88b1-c1bf-d704-d5a5053fa100@nvidia.com>
+ <20190607133107.GF14802@ziepe.ca>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <4c1a18b7-6dcb-7ce3-c178-9efd255e8056@nvidia.com>
+Date:   Fri, 7 Jun 2019 18:32:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFqt6zZbQmPq=v9xtgHfc5QCy4Vk8pjWgTOY0+TyFgHmEnWTsg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190607133107.GF14802@ziepe.ca>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL103.nvidia.com (172.20.187.11) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1559957547; bh=xVgyj/Sltl83MtwATtJ5A8fGsNYheaZeYpyqP7L5KAE=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=GYKNG1guS/PHUsAd0J2qN9HUV4d3WKr9M1/GPzqHHGQhrOJ6/d/qZI2z5UvXkDVSn
+         Ng/R0UmHQgBZALpk+QV7PGHkieBLm5sE+nOdT9PnB9vhI0YwIaj7FcafynhrREdkaC
+         LVWTBVe98W53OWJnxbiRTu68ZRBvOMlVxzr34UOPe4fHKZMZJBuyJLUupa6MjR5L+i
+         Vvc7YeCTnOwpFbhUOGQnW0FfnLcky93noaVhM7A3AWMPrAFOWIu7BhzYB1hrF1WCP3
+         WI5gua45CZvoJhs+zWsNFiKgRpZH45b1dnLmOB/r8OgGpM4n9GPBKWbsM20ZhqCDzl
+         tB81whaCw2vig==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 08, 2019 at 02:32:23AM +0530, Souptick Joarder wrote:
-> On Sat, Jun 8, 2019 at 1:09 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Sat, Jun 08, 2019 at 01:03:48AM +0530, Souptick Joarder wrote:
-> > > On Thu, May 23, 2019 at 9:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > >
-> > > > From: Jason Gunthorpe <jgg@mellanox.com>
-> > > >
-> > > > So we can check locking at runtime.
-> > > >
-> > > > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> > > >  mm/hmm.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/mm/hmm.c b/mm/hmm.c
-> > > > index 2695925c0c5927..46872306f922bb 100644
-> > > > +++ b/mm/hmm.c
-> > > > @@ -256,11 +256,11 @@ static const struct mmu_notifier_ops hmm_mmu_notifier_ops = {
-> > > >   *
-> > > >   * To start mirroring a process address space, the device driver must register
-> > > >   * an HMM mirror struct.
-> > > > - *
-> > > > - * THE mm->mmap_sem MUST BE HELD IN WRITE MODE !
-> > > >   */
-> > > >  int hmm_mirror_register(struct hmm_mirror *mirror, struct mm_struct *mm)
-> > > >  {
-> > > > +       lockdep_assert_held_exclusive(mm->mmap_sem);
-> > > > +
-> > >
-> > > Gentle query, does the same required in hmm_mirror_unregister() ?
-> >
-> > No.. The unregistration path does its actual work in the srcu
-> > callback, which is in a different context than this function. So any
-> > locking held by the caller of unregister will not apply.
-> >
-> > The hmm_range_free SRCU callback obtains the write side of mmap_sem to
-> > protect the same data that the write side above in register is
-> > touching, mostly &mm->hmm.
+On 6/7/19 6:31 AM, Jason Gunthorpe wrote:
+> The wait_event_timeout macro already tests the condition as its first
+> action, so there is no reason to open code another version of this, all
+> that does is skip the might_sleep() debugging in common cases, which is
+> not helpful.
 > 
-> Looking into https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/tree/?h=hmm,
-> unable trace hmm_range_free(). Am I looking into correct tree ?
+> Further, based on prior patches, we can now simplify the required condition
+> test:
+>  - If range is valid memory then so is range->hmm
+>  - If hmm_release() has run then range->valid is set to false
+>    at the same time as dead, so no reason to check both.
+>  - A valid hmm has a valid hmm->mm.
+> 
+> Allowing the return value of wait_event_timeout() (along with its internal
+> barriers) to compute the result of the function.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> ---
 
-The cover letter for the v2 posting has a note about the git tree for
-this series:
 
-https://github.com/jgunthorpe/linux/tree/hmm
+    Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-The above rdma.git is only for already applied patches on their way to
-Linus. This series is still in review.
 
-Thanks,
-Jason
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
+
+
+> v3
+> - Simplify the wait_event_timeout to not check valid
+> ---
+>  include/linux/hmm.h | 13 ++-----------
+>  1 file changed, 2 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
+> index 1d97b6d62c5bcf..26e7c477490c4e 100644
+> --- a/include/linux/hmm.h
+> +++ b/include/linux/hmm.h
+> @@ -209,17 +209,8 @@ static inline unsigned long hmm_range_page_size(const struct hmm_range *range)
+>  static inline bool hmm_range_wait_until_valid(struct hmm_range *range,
+>  					      unsigned long timeout)
+>  {
+> -	/* Check if mm is dead ? */
+> -	if (range->hmm == NULL || range->hmm->dead || range->hmm->mm == NULL) {
+> -		range->valid = false;
+> -		return false;
+> -	}
+> -	if (range->valid)
+> -		return true;
+> -	wait_event_timeout(range->hmm->wq, range->valid || range->hmm->dead,
+> -			   msecs_to_jiffies(timeout));
+> -	/* Return current valid status just in case we get lucky */
+> -	return range->valid;
+> +	return wait_event_timeout(range->hmm->wq, range->valid,
+> +				  msecs_to_jiffies(timeout)) != 0;
+>  }
+>  
+>  /*
+> 
+
