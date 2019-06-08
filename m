@@ -2,140 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2206039A21
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 04:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B9039A5A
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 05:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729573AbfFHCYd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 22:24:33 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:18112 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729864AbfFHCYc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 7 Jun 2019 22:24:32 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D95CCFD9997FB28713DD;
-        Sat,  8 Jun 2019 10:24:29 +0800 (CST)
-Received: from [127.0.0.1] (10.65.94.163) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.439.0; Sat, 8 Jun 2019
- 10:24:23 +0800
-Subject: Re: [PATCH V4 for-next 1/3] RDMA/hns: Add mtr support for mixed
- multihop addressing
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Lijun Ou <oulijun@huawei.com>
-CC:     <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
-        <linuxarm@huawei.com>, <leon@kernel.org>
-References: <1559285867-29529-1-git-send-email-oulijun@huawei.com>
- <1559285867-29529-2-git-send-email-oulijun@huawei.com>
- <20190607164818.GA22156@ziepe.ca>
-From:   wangxi <wangxi11@huawei.com>
-Message-ID: <26040386-e155-7223-b2b7-48e74e92b521@huawei.com>
-Date:   Sat, 8 Jun 2019 10:24:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.6.0
+        id S1730345AbfFHDsK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 23:48:10 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:42939 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729815AbfFHDsK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 23:48:10 -0400
+Received: by mail-pl1-f193.google.com with SMTP id go2so1522311plb.9
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 20:48:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RNlIE7RpVdU5f0iicQk2k5+1DUNsXJMHiELoWiOeeG4=;
+        b=D3MmOWnYob5UGtglFoMh75eVVkGVzLzcVT66trF4Vmsjdvy86taKH6QFas2mfzRzwj
+         M8+OanNKrPI4fOGoGPo9/Uo5q+LH1LQX0K1IVkP72ijXTjagsPaUUaKA337dIrVp0dDF
+         lHdVQs6LUPfUrx+oo7yXpxf993QJ3yfDpOh+8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RNlIE7RpVdU5f0iicQk2k5+1DUNsXJMHiELoWiOeeG4=;
+        b=F1VZ7bgxm5smAiHeUA/C08rOhUKpsGjSpVojhJdhIiVPAgOwIfp9cA73RWqp8/IswS
+         p1uCR3PXWdUlpQ1Cd5/HaqXJCk8XXUDVRdCLmQHVXm5aMvSWCsBs3NgFpZMycuILuOxb
+         evK1kM33IvXR20/XoilaigyZIEElqNpxUrWF8AB336gb18jY4pAMeYLO9kjkIYkVsB0V
+         yGXNmnmNDThHbrvcp85yxlmFYNQAYtra0BuMud7XPrhPoSd+/u59V4uCLK8gUc7GVFqG
+         fn8Xh+ZqhoVN5ojbSUFjCY/teKBSnZj+iolT4Yjooh4Tj8HBoGrovDWfV1RYXfcyZMVr
+         LNKg==
+X-Gm-Message-State: APjAAAV6rUfocpejrYgv2XqYD3G5AglvriH1viNq+gV9E+bDTy4oddwQ
+        Bn7jXQO1odhPihEU9RybTepOtQ==
+X-Google-Smtp-Source: APXvYqzUHOb4VtJencGcx41aqOHHoNwcDiffGcfqaDDdYTWrPV9XhElqMpS0fUjS81CjEO5luRHFeQ==
+X-Received: by 2002:a17:902:d916:: with SMTP id c22mr34327398plz.195.1559965689632;
+        Fri, 07 Jun 2019 20:48:09 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l13sm3156889pjq.20.2019.06.07.20.48.08
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 07 Jun 2019 20:48:08 -0700 (PDT)
+Date:   Fri, 7 Jun 2019 20:48:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v16 03/16] lib, arm64: untag user pointers in strn*_user
+Message-ID: <201906072047.50371DBE2@keescook>
+References: <cover.1559580831.git.andreyknvl@google.com>
+ <14f17ef1902aa4f07a39f96879394e718a1f5dc1.1559580831.git.andreyknvl@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20190607164818.GA22156@ziepe.ca>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.65.94.163]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <14f17ef1902aa4f07a39f96879394e718a1f5dc1.1559580831.git.andreyknvl@google.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Jun 03, 2019 at 06:55:05PM +0200, Andrey Konovalov wrote:
+> This patch is a part of a series that extends arm64 kernel ABI to allow to
+> pass tagged user pointers (with the top byte set to something else other
+> than 0x00) as syscall arguments.
+> 
+> strncpy_from_user and strnlen_user accept user addresses as arguments, and
+> do not go through the same path as copy_from_user and others, so here we
+> need to handle the case of tagged user addresses separately.
+> 
+> Untag user pointers passed to these functions.
+> 
+> Note, that this patch only temporarily untags the pointers to perform
+> validity checks, but then uses them as is to perform user memory accesses.
+> 
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
+Acked-by: Kees Cook <keescook@chromium.org>
 
-ÔÚ 2019/6/8 0:48, Jason Gunthorpe Ð´µÀ:
-> On Fri, May 31, 2019 at 02:57:45PM +0800, Lijun Ou wrote:
->> +
->> +static int hns_roce_write_mtr(struct hns_roce_dev *hr_dev,
->> +			      struct hns_roce_mtr *mtr, dma_addr_t *bufs,
->> +			      struct hns_roce_buf_region *r)
->> +{
->> +	int offset;
->> +	int count;
->> +	int npage;
->> +	u64 *mtts;
->> +	int end;
->> +	int i;
->> +
->> +	offset = r->offset;
->> +	end = offset + r->count;
->> +	npage = 0;
->> +	while (offset < end) {
->> +		mtts = hns_roce_hem_list_find_mtt(hr_dev, &mtr->hem_list,
->> +						  offset, &count, NULL);
->> +		if (!mtts)
->> +			return -ENOBUFS;
->> +
->> +		/* Save page addr, low 12 bits : 0 */
->> +		for (i = 0; i < count; i++) {
->> +			if (hr_dev->hw_rev == HNS_ROCE_HW_VER1)
->> +				mtts[i] = cpu_to_le64(bufs[npage] >>
->> +							PAGE_ADDR_SHIFT);
->> +			else
->> +				mtts[i] = cpu_to_le64(bufs[npage]);
->> +
->> +			npage++;
->> +		}
->> +		offset += count;
->> +	}
->> +
->> +	/* Memory barrier */
->> +	mb();
+-Kees
+
+> ---
+>  lib/strncpy_from_user.c | 3 ++-
+>  lib/strnlen_user.c      | 3 ++-
+>  2 files changed, 4 insertions(+), 2 deletions(-)
 > 
-> Didn't we talk about this already? Comments for all memory barriers
-> have to be very good.
-> 
-> Be really sure you are using the right barrier type for the right
-> thing, because I won't take patches that get this stuff wrong.
-> 
-ok,thanks, I will append more comments at here.
->> +int hns_roce_mtr_find(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
->> +		      int offset, u64 *mtt_buf, int mtt_max, u64 *base_addr)
->> +{
->> +	u64 *mtts = mtt_buf;
->> +	int mtt_count;
->> +	int total = 0;
->> +	u64 *addr;
->> +	int npage;
->> +	int left;
->> +
->> +	if (mtts == NULL || mtt_max < 1)
->> +		goto done;
->> +
->> +	left = mtt_max;
->> +	while (left > 0) {
->> +		mtt_count = 0;
->> +		addr = hns_roce_hem_list_find_mtt(hr_dev, &mtr->hem_list,
->> +						  offset + total,
->> +						  &mtt_count, NULL);
->> +		if (!addr || !mtt_count)
->> +			goto done;
->> +
->> +		npage = min(mtt_count, left);
->> +		memcpy(&mtts[total], addr, BA_BYTE_LEN * npage);
->> +		left -= npage;
->> +		total += npage;
->> +	}
->> +
->> +done:
->> +	if (base_addr)
->> +		*base_addr = mtr->hem_list.root_ba;
->> +
->> +	return total;
->> +}
->> +EXPORT_SYMBOL_GPL(hns_roce_mtr_find);
-> 
-> Why is there an EXPROT_SYMBOL in a IB driver? I see many in
-> hns. Please send a patch to remove all of them and respin this.
-> 
-There are 2 modules in our ib driver, one is hns_roce.ko, another
-is hns_roce_hw_v2.ko. all extern symbols are named like hns_roce_xxx,
-this function defined in hns_roce.ko, and invoked in hns_roce_hw_v2.ko.
-> Jason
-> _______________________________________________
-> Linuxarm mailing list
-> Linuxarm@huawei.com
-> http://hulk.huawei.com/mailman/listinfo/linuxarm
-> .
+> diff --git a/lib/strncpy_from_user.c b/lib/strncpy_from_user.c
+> index 023ba9f3b99f..dccb95af6003 100644
+> --- a/lib/strncpy_from_user.c
+> +++ b/lib/strncpy_from_user.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/uaccess.h>
+>  #include <linux/kernel.h>
+>  #include <linux/errno.h>
+> +#include <linux/mm.h>
+>  
+>  #include <asm/byteorder.h>
+>  #include <asm/word-at-a-time.h>
+> @@ -108,7 +109,7 @@ long strncpy_from_user(char *dst, const char __user *src, long count)
+>  		return 0;
+>  
+>  	max_addr = user_addr_max();
+> -	src_addr = (unsigned long)src;
+> +	src_addr = (unsigned long)untagged_addr(src);
+>  	if (likely(src_addr < max_addr)) {
+>  		unsigned long max = max_addr - src_addr;
+>  		long retval;
+> diff --git a/lib/strnlen_user.c b/lib/strnlen_user.c
+> index 7f2db3fe311f..28ff554a1be8 100644
+> --- a/lib/strnlen_user.c
+> +++ b/lib/strnlen_user.c
+> @@ -2,6 +2,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/export.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/mm.h>
+>  
+>  #include <asm/word-at-a-time.h>
+>  
+> @@ -109,7 +110,7 @@ long strnlen_user(const char __user *str, long count)
+>  		return 0;
+>  
+>  	max_addr = user_addr_max();
+> -	src_addr = (unsigned long)str;
+> +	src_addr = (unsigned long)untagged_addr(str);
+>  	if (likely(src_addr < max_addr)) {
+>  		unsigned long max = max_addr - src_addr;
+>  		long retval;
+> -- 
+> 2.22.0.rc1.311.g5d7573a151-goog
 > 
 
+-- 
+Kees Cook
