@@ -2,107 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DFD39C1C
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 11:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B7539D49
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 13:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbfFHJ2F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 8 Jun 2019 05:28:05 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:55822 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726478AbfFHJ2F (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 8 Jun 2019 05:28:05 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x589It1I042194;
-        Sat, 8 Jun 2019 09:27:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
- bh=n2Cp/zOnPUelZ6ZAzbyuETxr/exUIQ0SWwRmO0m758Y=;
- b=pntCmACThBpgO0mK6Xf6hVyUhX/0c3KOqyLxzQCgrEmHO4ZzGCJvYLEwsy0/f7hkltMa
- qaDVA6P0LPYiy5xDRIURKgTGx7V3YjyVQvHgq9R0scnpb42LADxjJp1HRPqQwfHVluvG
- y7b76lHOcTRE2G3F/Ff4ZmTaKnVLY3iLfIedRuavhyslCF5/waZ9jd9/ToaBEKEU+YJG
- M5pmIp08PZOskHFwZKRPanUbdGXoWxWscwfaL1k38Ima6p+a+5O4ilhsKxnTvxEPVfBp
- jAXMGwOSEe1RB/tmzmhkJXMtAzQrcQXGUJFCry+ywmyaVtH6wahwcGcuJFLfhvnlanqU Sw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 2t02he8vsa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 Jun 2019 09:27:31 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x589RIZV176582;
-        Sat, 8 Jun 2019 09:27:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 2t04hx3qut-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 Jun 2019 09:27:31 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x589RT86031442;
-        Sat, 8 Jun 2019 09:27:29 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 08 Jun 2019 02:27:29 -0700
-Date:   Sat, 8 Jun 2019 12:27:14 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Lijun Ou <oulijun@huawei.com>
-Cc:     "Wei Hu(Xavier)" <xavier.huwei@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] RDMA/hns: Fix an error code in hns_roce_set_user_sq_size()
-Message-ID: <20190608092714.GE28890@mwanda>
+        id S1726935AbfFHLdI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 8 Jun 2019 07:33:08 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:32893 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726918AbfFHLdI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 8 Jun 2019 07:33:08 -0400
+Received: by mail-qt1-f195.google.com with SMTP id x2so4501576qtr.0
+        for <linux-rdma@vger.kernel.org>; Sat, 08 Jun 2019 04:33:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2lXGspEHCJbsk8rcUX58kNgJSDj9yX2lNCrXRKPLPfY=;
+        b=cQto6lY11nB7CtyFVsb4EWl/wSLEbWjYy53473tDxhVa+M8kUBtzMhsyB4GzDkwDxV
+         q+kMV3+bqlucZoGG+l3NUydWUmA01Kdk2/AmaOWjogGX9cZ5VHeo4NXfNrqxa9973eio
+         jEWacea/Hw5cMfA8v2U6v7fZH/FxhaA8zRa/sqGqp9oG8OkETGNmhyB3dR63HPNpwJq3
+         bTef+d3XCAUCKnqZ2kfsu5R+6/Una6mdshi9VfoOWhgkoKLdvmGi1Faluq9FD8FSmrwe
+         Lml1z8nOCaJ2hrr3JC/PpvYRD94dpvVxrBx2HEhfbkPIJl6PJI/3BtMNPyc9TsLDPXIT
+         qE0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2lXGspEHCJbsk8rcUX58kNgJSDj9yX2lNCrXRKPLPfY=;
+        b=iXBt0ee9VybxBJ5Ku0yfYPdJtWGGFHnAhP6yysmlubLr3k7hLdbd1A1GfEex8cKP4k
+         OCkCh9LfTHiQmG5+Slg/o390g8nd3gK2iFYYk8CWRIWUmqeyFyt4wydIsc6WlzoKSHjr
+         fxg4ZuLPuTYF7uL1d3X6S0+/RPhmTQlqVGVqAxTid1Y28YoyjNiTruxUqqcZQhLUfokd
+         KwH7VLslYmra+fiGiAycLA3nmenMuR7Z0YrzMJhXE5vJ3ckOYNsqcQNqK5Asmal5XRQX
+         hguKH674QXlzQ+IH7eAHq8ijEAIAjD4vfdIOjy57L8gYAuvSz+tcVTGEuANmLINw7UlI
+         Qe3Q==
+X-Gm-Message-State: APjAAAX6vT2cBjkZ6kJGwxDggvdcrFnrufuIHd1xtUKVuxrPF2fWq5gC
+        tDXaf7gUScCOd1svRbKV0EpY+w==
+X-Google-Smtp-Source: APXvYqxyYPohAHdX/cPPDfW1JlnojtSPLPS5vSeQSfnXomKNh388kBmPHyLX8ufWHVYbMbkJEo8bCw==
+X-Received: by 2002:a0c:c164:: with SMTP id i33mr30155410qvh.37.1559993587190;
+        Sat, 08 Jun 2019 04:33:07 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id i55sm3386912qtc.21.2019.06.08.04.33.05
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 08 Jun 2019 04:33:06 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hZZar-0003rc-2C; Sat, 08 Jun 2019 08:33:05 -0300
+Date:   Sat, 8 Jun 2019 08:33:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v2 hmm 01/11] mm/hmm: fix use after free with struct hmm
+ in the mmu notifiers
+Message-ID: <20190608113305.GA12419@ziepe.ca>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
+ <20190606184438.31646-2-jgg@ziepe.ca>
+ <20190608084948.GA32185@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9281 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=755
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906080071
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9281 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=801 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906080071
+In-Reply-To: <20190608084948.GA32185@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This function is supposed to return negative kernel error codes but here
-it returns CMD_RST_PRC_EBUSY (2).  The error code eventually gets passed
-to IS_ERR() and since it's not an error pointer it leads to an Oops in
-hns_roce_v1_rsv_lp_qp()
+On Sat, Jun 08, 2019 at 01:49:48AM -0700, Christoph Hellwig wrote:
+> I still think sruct hmm should die.  We already have a structure used
+> for additional information for drivers having crazly tight integration
+> into the VM, and it is called struct mmu_notifier_mm.  We really need
+> to reuse that intead of duplicating it badly.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Static analysis.  Not tested.
+Probably. But at least in ODP we needed something very similar to
+'struct hmm' to make our mmu notifier implementation work.
 
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The mmu notifier api really lends itself to having a per-mm structure
+in the driver to hold the 'struct mmu_notifier'..
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index ac017c24b200..018ff302ab9e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1098,7 +1098,7 @@ static int hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
- 	if (ret == CMD_RST_PRC_SUCCESS)
- 		return 0;
- 	if (ret == CMD_RST_PRC_EBUSY)
--		return ret;
-+		return -EBUSY;
- 
- 	ret = __hns_roce_cmq_send(hr_dev, desc, num);
- 	if (ret) {
-@@ -1106,7 +1106,7 @@ static int hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
- 		if (retval == CMD_RST_PRC_SUCCESS)
- 			return 0;
- 		else if (retval == CMD_RST_PRC_EBUSY)
--			return retval;
-+			return -EBUSY;
- 	}
- 
- 	return ret;
--- 
-2.20.1
+I think I see other drivers are doing things like assuming that there
+is only one mm in their world (despite being FD based, so this is not
+really guarenteed)
 
+So, my first attempt would be an api something like:
+
+   priv = mmu_notififer_attach_mm(ops, current->mm, sizeof(my_priv))
+   mmu_notifier_detach_mm(priv);
+
+ ops->invalidate_start(struct mmu_notififer *mn):
+   struct p *priv = mmu_notifier_priv(mn);
+
+Such that
+ - There is only one priv per mm
+ - All the srcu stuff is handled inside mmu notifier
+ - It is reference counted, so ops can be attached multiple times to
+   the same mm
+
+Then odp's per_mm, and struct hmm (if we keep it at all) is simply a
+'priv' in the above.
+
+I was thinking of looking at this stuff next, once this series is
+done.
+
+Jason
