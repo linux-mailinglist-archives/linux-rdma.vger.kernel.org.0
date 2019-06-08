@@ -2,119 +2,206 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0A4399D4
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 02:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FADD399E0
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 02:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730703AbfFHALo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 20:11:44 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:38024 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729685AbfFHALo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 20:11:44 -0400
-Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 946BC43E794;
-        Sat,  8 Jun 2019 10:11:34 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hZOwO-0001iX-35; Sat, 08 Jun 2019 10:10:36 +1000
-Date:   Sat, 8 Jun 2019 10:10:36 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190608001036.GF14308@dread.disaster.area>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+        id S1730111AbfFHAPH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 20:15:07 -0400
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:9464 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729685AbfFHAPH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 20:15:07 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5cfafe070000>; Fri, 07 Jun 2019 17:15:03 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 07 Jun 2019 17:15:05 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 07 Jun 2019 17:15:05 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL108.nvidia.com
+ (172.18.146.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 8 Jun
+ 2019 00:14:59 +0000
+Received: from hqnvemgw01.nvidia.com (172.20.150.20) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Sat, 8 Jun 2019 00:14:59 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5cfafe030001>; Fri, 07 Jun 2019 17:14:59 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>, <Felix.Kuehling@amd.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Subject: [RFC] mm/hmm: pass mmu_notifier_range to sync_cpu_device_pagetables
+Date:   Fri, 7 Jun 2019 17:14:52 -0700
+Message-ID: <20190608001452.7922-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0 cx=a_idp_d
-        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
-        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=q-LccRbQMXva6PWEi7oA:9
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1559952903; bh=jjTMN2tDk2DnfrJ4AiOM/WxsV6jt0FXZOA5qIWGi5Vo=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=SQ11Ml7mtU/VVPx6gJwSisurSRky6JAGtlAhDA3ya7KnsP+2Me9XdeQy0dl1/UoMN
+         xv+0zFG5tik4y8rSVn5cofTeuqlqujlwsB//FH0By1uUSUvO7ycUIG0wW3FapovgKa
+         0fgRjWS1C3zMfwBfxYIDpEYpQ75A8cZp3tc7J8DR0BHNMLA2r6uHj4FFGAjh7AxA7v
+         IWvDBx+zGF8diRe5AyZGqdAEsVBWyz3rszufqbSV5jqPmoYCAOc/vHJCe10E6K4ZkJ
+         rsy8vxbGy5RxTm7tuWyiuduAXKyz+pNxC80+VL4H5GF4RhQPhyKDFw8nr1yhTTckBa
+         DnZ96Pvym7CFw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
-> On Fri, Jun 07, 2019 at 01:04:26PM +0200, Jan Kara wrote:
-> > On Thu 06-06-19 15:03:30, Ira Weiny wrote:
-> > > On Thu, Jun 06, 2019 at 12:42:03PM +0200, Jan Kara wrote:
-> > > > On Wed 05-06-19 18:45:33, ira.weiny@intel.com wrote:
-> > > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > > 
-> > > > So I'd like to actually mandate that you *must* hold the file lease until
-> > > > you unpin all pages in the given range (not just that you have an option to
-> > > > hold a lease). And I believe the kernel should actually enforce this. That
-> > > > way we maintain a sane state that if someone uses a physical location of
-> > > > logical file offset on disk, he has a layout lease. Also once this is done,
-> > > > sysadmin has a reasonably easy way to discover run-away RDMA application
-> > > > and kill it if he wishes so.
-> > > 
-> > > Fair enough.
-> > > 
-> > > I was kind of heading that direction but had not thought this far forward.  I
-> > > was exploring how to have a lease remain on the file even after a "lease
-> > > break".  But that is incompatible with the current semantics of a "layout"
-> > > lease (as currently defined in the kernel).  [In the end I wanted to get an RFC
-> > > out to see what people think of this idea so I did not look at keeping the
-> > > lease.]
-> > > 
-> > > Also hitch is that currently a lease is forcefully broken after
-> > > <sysfs>/lease-break-time.  To do what you suggest I think we would need a new
-> > > lease type with the semantics you describe.
-> > 
-> > I'd do what Dave suggested - add flag to mark lease as unbreakable by
-> > truncate and teach file locking core to handle that. There actually is
-> > support for locks that are not broken after given timeout so there
-> > shouldn't be too many changes need.
-> >  
-> > > Previously I had thought this would be a good idea (for other reasons).  But
-> > > what does everyone think about using a "longterm lease" similar to [1] which
-> > > has the semantics you proppose?  In [1] I was not sure "longterm" was a good
-> > > name but with your proposal I think it makes more sense.
-> > 
-> > As I wrote elsewhere in this thread I think FL_LAYOUT name still makes
-> > sense and I'd add there FL_UNBREAKABLE to mark unusal behavior with
-> > truncate.
-> 
-> Ok I want to make sure I understand what you and Dave are suggesting.
-> 
-> Are you suggesting that we have something like this from user space?
-> 
-> 	fcntl(fd, F_SETLEASE, F_LAYOUT | F_UNBREAKABLE);
+HMM defines its own struct hmm_update which is passed to the
+sync_cpu_device_pagetables() callback function. This is
+sufficient when the only action is to invalidate. However,
+a device may want to know the reason for the invalidation and
+be able to see the new permissions on a range, update device access
+rights or range statistics. Since sync_cpu_device_pagetables()
+can be called from try_to_unmap(), the mmap_sem may not be held
+and find_vma() is not safe to be called.
+Pass the struct mmu_notifier_range to sync_cpu_device_pagetables()
+to allow the full invalidation information to be used.
 
-Rather than "unbreakable", perhaps a clearer description of the
-policy it entails is "exclusive"?
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+---
 
-i.e. what we are talking about here is an exclusive lease that
-prevents other processes from changing the layout. i.e. the
-mechanism used to guarantee a lease is exclusive is that the layout
-becomes "unbreakable" at the filesystem level, but the policy we are
-actually presenting to uses is "exclusive access"...
+I'm sending this out now since we are updating many of the HMM APIs
+and I think it will be useful.
 
-Cheers,
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+ drivers/gpu/drm/nouveau/nouveau_svm.c |  4 ++--
+ include/linux/hmm.h                   | 27 ++-------------------------
+ mm/hmm.c                              | 13 ++++---------
+ 3 files changed, 8 insertions(+), 36 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouvea=
+u/nouveau_svm.c
+index 8c92374afcf2..c34b98fafe2f 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_svm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
+@@ -252,13 +252,13 @@ nouveau_svmm_invalidate(struct nouveau_svmm *svmm, u6=
+4 start, u64 limit)
+=20
+ static int
+ nouveau_svmm_sync_cpu_device_pagetables(struct hmm_mirror *mirror,
+-					const struct hmm_update *update)
++					const struct mmu_notifier_range *update)
+ {
+ 	struct nouveau_svmm *svmm =3D container_of(mirror, typeof(*svmm), mirror)=
+;
+ 	unsigned long start =3D update->start;
+ 	unsigned long limit =3D update->end;
+=20
+-	if (!update->blockable)
++	if (!mmu_notifier_range_blockable(update))
+ 		return -EAGAIN;
+=20
+ 	SVMM_DBG(svmm, "invalidate %016lx-%016lx", start, limit);
+diff --git a/include/linux/hmm.h b/include/linux/hmm.h
+index 0fa8ea34ccef..07a2d38fde34 100644
+--- a/include/linux/hmm.h
++++ b/include/linux/hmm.h
+@@ -377,29 +377,6 @@ static inline uint64_t hmm_pfn_from_pfn(const struct h=
+mm_range *range,
+=20
+ struct hmm_mirror;
+=20
+-/*
+- * enum hmm_update_event - type of update
+- * @HMM_UPDATE_INVALIDATE: invalidate range (no indication as to why)
+- */
+-enum hmm_update_event {
+-	HMM_UPDATE_INVALIDATE,
+-};
+-
+-/*
+- * struct hmm_update - HMM update information for callback
+- *
+- * @start: virtual start address of the range to update
+- * @end: virtual end address of the range to update
+- * @event: event triggering the update (what is happening)
+- * @blockable: can the callback block/sleep ?
+- */
+-struct hmm_update {
+-	unsigned long start;
+-	unsigned long end;
+-	enum hmm_update_event event;
+-	bool blockable;
+-};
+-
+ /*
+  * struct hmm_mirror_ops - HMM mirror device operations callback
+  *
+@@ -420,7 +397,7 @@ struct hmm_mirror_ops {
+ 	/* sync_cpu_device_pagetables() - synchronize page tables
+ 	 *
+ 	 * @mirror: pointer to struct hmm_mirror
+-	 * @update: update information (see struct hmm_update)
++	 * @update: update information (see struct mmu_notifier_range)
+ 	 * Return: -EAGAIN if update.blockable false and callback need to
+ 	 *          block, 0 otherwise.
+ 	 *
+@@ -434,7 +411,7 @@ struct hmm_mirror_ops {
+ 	 * synchronous call.
+ 	 */
+ 	int (*sync_cpu_device_pagetables)(struct hmm_mirror *mirror,
+-					  const struct hmm_update *update);
++				const struct mmu_notifier_range *update);
+ };
+=20
+ /*
+diff --git a/mm/hmm.c b/mm/hmm.c
+index 9aad3550f2bb..b49a43712554 100644
+--- a/mm/hmm.c
++++ b/mm/hmm.c
+@@ -164,7 +164,6 @@ static int hmm_invalidate_range_start(struct mmu_notifi=
+er *mn,
+ {
+ 	struct hmm *hmm =3D container_of(mn, struct hmm, mmu_notifier);
+ 	struct hmm_mirror *mirror;
+-	struct hmm_update update;
+ 	struct hmm_range *range;
+ 	unsigned long flags;
+ 	int ret =3D 0;
+@@ -173,15 +172,10 @@ static int hmm_invalidate_range_start(struct mmu_noti=
+fier *mn,
+ 	if (!kref_get_unless_zero(&hmm->kref))
+ 		return 0;
+=20
+-	update.start =3D nrange->start;
+-	update.end =3D nrange->end;
+-	update.event =3D HMM_UPDATE_INVALIDATE;
+-	update.blockable =3D mmu_notifier_range_blockable(nrange);
+-
+ 	spin_lock_irqsave(&hmm->ranges_lock, flags);
+ 	hmm->notifiers++;
+ 	list_for_each_entry(range, &hmm->ranges, list) {
+-		if (update.end < range->start || update.start >=3D range->end)
++		if (nrange->end < range->start || nrange->start >=3D range->end)
+ 			continue;
+=20
+ 		range->valid =3D false;
+@@ -198,9 +192,10 @@ static int hmm_invalidate_range_start(struct mmu_notif=
+ier *mn,
+ 	list_for_each_entry(mirror, &hmm->mirrors, list) {
+ 		int rc;
+=20
+-		rc =3D mirror->ops->sync_cpu_device_pagetables(mirror, &update);
++		rc =3D mirror->ops->sync_cpu_device_pagetables(mirror, nrange);
+ 		if (rc) {
+-			if (WARN_ON(update.blockable || rc !=3D -EAGAIN))
++			if (WARN_ON(mmu_notifier_range_blockable(nrange) ||
++				    rc !=3D -EAGAIN))
+ 				continue;
+ 			ret =3D -EAGAIN;
+ 			break;
+--=20
+2.20.1
+
