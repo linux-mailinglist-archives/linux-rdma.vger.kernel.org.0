@@ -2,134 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FFA39AC3
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 06:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD66D39B65
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 08:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726083AbfFHEFF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 8 Jun 2019 00:05:05 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:34468 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbfFHEFF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 8 Jun 2019 00:05:05 -0400
-Received: by mail-pg1-f193.google.com with SMTP id h2so2158836pgg.1
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 21:05:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7MRDr4KJ8a0CcLFRNA6a6rBwJKdO40+h9uyHwhos1XY=;
-        b=FihBxmn2dVJ6Rw2WItUxtjZpswcNWCrx4UusJNMmjDUeSXGlPeke41oTHXObrS9v9s
-         auz9bPPxx2drUDHwQFTWyjmSfE251zoGthyYFhJV5WSoJ0SYpqwBy7GNBhwklPOXO6Qg
-         gWZEmprLR6lDNUGcv9V07ySSkX/PEr3KR97+4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7MRDr4KJ8a0CcLFRNA6a6rBwJKdO40+h9uyHwhos1XY=;
-        b=ALIVy1ixruzntpw1zCwEIecZCCXqId9TOlcN2ni6ADyLaLzjnaRzf5LYXtmco/yEVE
-         Qy/7bMXOZYC4nVo/r4Nz5n2kdZ2hJPSDnBBB24mCrcnvdDJAPVkmPFrKbIycJ4i/OhXs
-         yyHYlB1/PTCTkTocvybiDImLVIjWBC4qE67wjIRexHLYIqgJfdVLyfARdzbDzhSG3Ydf
-         BD1EPrXU02hVIDLdthKdKX9c4A30lLEjilW68/fRdYmnYg3T12ViJtb+5Vj56UdTJ6LX
-         BtIEZsNAjPUJWFjZcqj7V+aQ+2vvvLzhF1xC8DV7EwEjeWvpFP+0TSWtGIC1NZ3fXWQj
-         Wk/Q==
-X-Gm-Message-State: APjAAAVGD/4OQrK2b4cImnkvYp62+5WD8TLFwTDIFn8ZORtkYNlOLvgz
-        RAzgk3bG7dxOOs1X/zdpZ0QjzQ==
-X-Google-Smtp-Source: APXvYqwInYsY/wUHZ9P1C1XrBfyqppKEaGOwIlzHhH7Qkl6+K82Iixjx8HiJ+/il/stbMYBMbkFxfA==
-X-Received: by 2002:a63:4045:: with SMTP id n66mr5882121pga.386.1559966704443;
-        Fri, 07 Jun 2019 21:05:04 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z14sm3301959pgs.79.2019.06.07.21.05.03
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 21:05:03 -0700 (PDT)
-Date:   Fri, 7 Jun 2019 21:05:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v16 14/16] tee, arm64: untag user pointers in
- tee_shm_register
-Message-ID: <201906072104.B6A89D8CB@keescook>
-References: <cover.1559580831.git.andreyknvl@google.com>
- <dc3f3092abbc0d48e51b2e2a2ca8f4c4f69fa0f4.1559580831.git.andreyknvl@google.com>
+        id S1726924AbfFHGnU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 8 Jun 2019 02:43:20 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:18100 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726876AbfFHGnU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 8 Jun 2019 02:43:20 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 125485E67E7D8C94D80D;
+        Sat,  8 Jun 2019 14:43:18 +0800 (CST)
+Received: from linux-ioko.site (10.71.200.31) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.439.0; Sat, 8 Jun 2019 14:43:11 +0800
+From:   Lijun Ou <oulijun@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH V5 for-next 0/3] Add mix multihop addressing for supporting 32K
+Date:   Sat, 8 Jun 2019 14:46:07 +0800
+Message-ID: <1559976370-46306-1-git-send-email-oulijun@huawei.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc3f3092abbc0d48e51b2e2a2ca8f4c4f69fa0f4.1559580831.git.andreyknvl@google.com>
+Content-Type: text/plain
+X-Originating-IP: [10.71.200.31]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 03, 2019 at 06:55:16PM +0200, Andrey Konovalov wrote:
-> This patch is a part of a series that extends arm64 kernel ABI to allow to
-> pass tagged user pointers (with the top byte set to something else other
-> than 0x00) as syscall arguments.
-> 
-> tee_shm_register()->optee_shm_unregister()->check_mem_type() uses provided
-> user pointers for vma lookups (via __check_mem_type()), which can only by
-> done with untagged pointers.
-> 
-> Untag user pointers in this function.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+This patch series mainly adds a mix multihop addressing for support the 32K
+specification of send wqe from UM.
 
-"tee: shm: untag user pointers in tee_shm_register"
+It adds the MTR (memory translate region) design for unified management of
+MTT (memory translate table). The MTT design requires that the hopnum of
+the address space must be the same and cannot meet the requirements of the
+current max hopnum of the hip08. The hopnum of sqwqe up to 3 level and
+the extend sge up to 1 level. As a result, we add an MTR based on mtt to
+solve this problem.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+The MTR allows a contiguous address space to use different hopnums, so that
+the driver supports the mixed hop feature in UM.
 
--Kees
+Change from V4:
+1. Remove the unnecessary mb().
 
-> ---
->  drivers/tee/tee_shm.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-> index 49fd7312e2aa..96945f4cefb8 100644
-> --- a/drivers/tee/tee_shm.c
-> +++ b/drivers/tee/tee_shm.c
-> @@ -263,6 +263,7 @@ struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
->  	shm->teedev = teedev;
->  	shm->ctx = ctx;
->  	shm->id = -1;
-> +	addr = untagged_addr(addr);
->  	start = rounddown(addr, PAGE_SIZE);
->  	shm->offset = addr - start;
->  	shm->size = length;
-> -- 
-> 2.22.0.rc1.311.g5d7573a151-goog
-> 
+Change from V3:
+1. Remove the simple wrapper around kernel functions from Leon Romanovsky's
+reviews.
+
+Change from V2:
+1. Remove building error.
+
+Change from V1:
+1. Use new API named rdma_for_each_block instead of for_each_sg from Jason
+Gunthorpe's reviews.
+
+Lijun Ou (3):
+  RDMA/hns: Add mtr support for mixed multihop addressing
+  RDMA/hns: Add a group interfaces for optimizing buffers getting flow
+  RDMA/hns: Fix bug when wqe num is larger than 16K
+
+ drivers/infiniband/hw/hns/hns_roce_alloc.c  |  99 ++++++
+ drivers/infiniband/hw/hns/hns_roce_device.h |  59 ++++
+ drivers/infiniband/hw/hns/hns_roce_hem.c    | 460 ++++++++++++++++++++++++++++
+ drivers/infiniband/hw/hns/hns_roce_hem.h    |  14 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 118 ++++---
+ drivers/infiniband/hw/hns/hns_roce_mr.c     | 118 +++++++
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 189 +++++++++---
+ 7 files changed, 974 insertions(+), 83 deletions(-)
 
 -- 
-Kees Cook
+1.9.1
+
