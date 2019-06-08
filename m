@@ -2,115 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FC739A0C
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 03:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDBA39A0F
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jun 2019 03:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729981AbfFHBhX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jun 2019 21:37:23 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:15354 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728456AbfFHBhX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 21:37:23 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5cfb11520000>; Fri, 07 Jun 2019 18:37:22 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 07 Jun 2019 18:37:22 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 07 Jun 2019 18:37:22 -0700
-Received: from [10.110.48.28] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 8 Jun
- 2019 01:37:22 +0000
-Subject: Re: [PATCH v2 hmm 01/11] mm/hmm: fix use after free with struct hmm
- in the mmu notifiers
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        <Felix.Kuehling@amd.com>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>, Andrea Arcangeli <aarcange@redhat.com>,
-        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>
+        id S1730086AbfFHBrW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jun 2019 21:47:22 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40592 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730083AbfFHBrW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jun 2019 21:47:22 -0400
+Received: by mail-qk1-f193.google.com with SMTP id c70so2440099qkg.7
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2019 18:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nc6xGH604Ibjz1J23Rb+p/HSbXggztW0x+56PG9xNfU=;
+        b=RzikS2kkWB0yrELIxgOKLXI7n4K6BJfDButHAVBC/ZMtnKj9yRR01Gnk1MX5Wvtry3
+         kC7LOlMabScS8+6SgA690KRqkMx4YF/wk5KRtrM8TUpQIPevIFuD9RLh756wG5jzrO0u
+         bszQkMJEE+oGUuSRlcoJcg81LGTFNkoJQzy6/hRMAA2ruxbSXL9D1pPwzRGFl89qiHD8
+         bFLVrpGj4wTlH/KA7c/LZKJAdoc5Ll+42EURexdS0k7qha7cppex+m6A9m9qANDBZwGK
+         ZC2QbDqv7tCrDTHZw0yqwsuUkrQHcVWL95VP2Zxvnz/oWzhVXifsSAXOWXXRMR0JbrBC
+         I82w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nc6xGH604Ibjz1J23Rb+p/HSbXggztW0x+56PG9xNfU=;
+        b=hPZZGnfV1SvgifgQKySbGoYnSEqHjFcEBssQ4yIlJWpL1+IbXaQbKrc0n12PkfT2qt
+         GwV7fV7Rh1y3iwR1lWq5D5Rc5EH3GNN26ueIeFdD/XzQ/OOwk5y5c52T252pJnzlFQUW
+         0xGgAbsUOi4goPjrbb38QWS51g4mgOhvXEAKNqN7IEifaHBpCiarUup/DpT17M4ZkXJ4
+         68Ub5ewvxp7QxmdJP3xX3S+zwyKjOqyAfZxtzIEhxjsCqj0R0HhlFBnVX7MJiaLZ3Kg3
+         cDDgbEY4GkWnrq5cu1v/RhjQCRiFjLc3OpFySiEUu6bb3pldACauWYlYuRuL5LayhmxG
+         1x3Q==
+X-Gm-Message-State: APjAAAWMWplvXgiM8cHHX3d4kLKzd/UexanlHANFzuMk8RidJ76NDgFG
+        1pE9xngXpIhXk79OpOixIy57lA==
+X-Google-Smtp-Source: APXvYqzJ0Y9PkmyZQUNKepOagJid3O/yJSUEccWesudwHooEMgZ4TRfl4qAnoz7gxWh5y3LkbErzsw==
+X-Received: by 2002:a05:620a:1285:: with SMTP id w5mr37337035qki.302.1559958441410;
+        Fri, 07 Jun 2019 18:47:21 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id m4sm1851701qka.70.2019.06.07.18.47.20
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 07 Jun 2019 18:47:20 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hZQS0-0002Fo-D2; Fri, 07 Jun 2019 22:47:20 -0300
+Date:   Fri, 7 Jun 2019 22:47:20 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v2 hmm 05/11] mm/hmm: Remove duplicate condition test
+ before wait_event_timeout
+Message-ID: <20190608014720.GC7844@ziepe.ca>
 References: <20190606184438.31646-1-jgg@ziepe.ca>
- <20190606184438.31646-2-jgg@ziepe.ca>
- <9c72d18d-2924-cb90-ea44-7cd4b10b5bc2@nvidia.com>
- <20190607123432.GB14802@ziepe.ca>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <771c9b7b-983a-934b-a507-76aa0e8aceaf@nvidia.com>
-Date:   Fri, 7 Jun 2019 18:37:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ <20190606184438.31646-6-jgg@ziepe.ca>
+ <6833be96-12a3-1a1c-1514-c148ba2dd87b@nvidia.com>
+ <20190607191302.GR14802@ziepe.ca>
+ <e17aa8c5-790c-d977-2eb8-c18cdaa4cbb3@nvidia.com>
+ <20190607204427.GU14802@ziepe.ca>
+ <ba55e382-c982-8e50-4ee7-7f05c9f7fafa@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20190607123432.GB14802@ziepe.ca>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL103.nvidia.com (172.20.187.11) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1559957842; bh=M2sIXUfHOY4caJ1/GSTT6zN+FY4XjAfM+4N4CfP5+0w=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=FjXO3DJQC3v99wu3gjrQndwbgGxJGQ3SEeqG6TFvKt1w8r53KkjAm5XGISySd7/Dm
-         KLix8M+qphUJiEIxz8Y3hQB0oYZaiIAeoBkX9pa0tzwdBg2beA71/hN66V58sKJ/Gl
-         GsBt0SeJWOAr27yT3YO0qWzVqE+qm57g4x2hJ0tPPIcDxmY0MVfpMNRJpBiNZRA5+O
-         Hlr8TVddXcJqFVeZwSJrflfkrUQ/oDXy6uzdvHLmWUjJrkAsi7dR/wNzUdJdnlq0ll
-         D7efeHpKaM+iJpMEls+jYjF7AMwgFUPpMleyuHXmzsG1896UdCqXNxclh3QfcubGCq
-         PE9i3yKPcaVHQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ba55e382-c982-8e50-4ee7-7f05c9f7fafa@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/7/19 5:34 AM, Jason Gunthorpe wrote:
-> On Thu, Jun 06, 2019 at 07:29:08PM -0700, John Hubbard wrote:
->> On 6/6/19 11:44 AM, Jason Gunthorpe wrote:
->>> From: Jason Gunthorpe <jgg@mellanox.com>
->> ...
->>> @@ -153,10 +158,14 @@ void hmm_mm_destroy(struct mm_struct *mm)
->>>  
->>>  static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->>>  {
->>> -	struct hmm *hmm = mm_get_hmm(mm);
->>> +	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
->>>  	struct hmm_mirror *mirror;
->>>  	struct hmm_range *range;
->>>  
->>> +	/* hmm is in progress to free */
->>
->> Well, sometimes, yes. :)
+On Fri, Jun 07, 2019 at 03:13:00PM -0700, Ralph Campbell wrote:
+> > Do you see a reason why the find_vma() ever needs to be before the
+> > 'again' in my above example? range.vma does not need to be set for
+> > range_register.
 > 
-> It think it is in all cases actually.. The only way we see a 0 kref
-> and still reach this code path is if another thread has alreay setup
-> the hmm_free in the call_srcu..
-> 
->> Maybe this wording is clearer (if we need any comment at all):
-> 
-> I always find this hard.. This is a very standard pattern when working
-> with RCU - however in my experience few people actually know the RCU
-> patterns, and missing the _unless_zero is a common bug I find when
-> looking at code.
-> 
-> This is mm/ so I can drop it, what do you think?
-> 
+> Yes, for the GPU case, there can be many faults in an event queue
+> and the goal is to try to handle more than one page at a time.
+> The vma is needed to limit the amount of coalescing and checking
+> for pages that could be speculatively migrated or mapped.
 
-I forgot to respond to this section, so catching up now:
+I'd need to see an algorithm sketch to see what you are thinking..
 
-I think we're talking about slightly different things. I was just
-noting that the comment above the "if" statement was only accurate
-if the branch is taken, which is why I recommended this combination
-of comment and code:
+But, I guess a driver would have figure out a list of what virtual
+pages it wants to fault under the mmap sem (maybe use find_vam, etc),
+then drop mmap_sem, and start processing those pages for mirroring
+under the hmm side.
 
-	/* Bail out if hmm is in the process of being freed */
-	if (!kref_get_unless_zero(&hmm->kref))
-		return;
+ie they are two seperate unrelated tasks.
 
-As for the actual _unless_zero part, I think that's good to have.
-And it's a good reminder if nothing else, even in mm/ code.
+I looked at the hmm.rst again, and that reference algorithm is already
+showing that that upon retry the mmap_sem is released:
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+      take_lock(driver->update);
+      if (!range.valid) {
+          release_lock(driver->update);
+          up_read(&mm->mmap_sem);
+          goto again;
+
+So a driver cannot assume that any VMA related work done under the
+mmap before the hmm 'critical section' can carry into the hmm critical
+section as the lock can be released upon retry and invalidate all that
+data..
+
+Forcing the hmm_range_start_and_lock() to acquire the mmap_sem is a
+rough way to force the driver author to realize there are two locking
+domains and lock protected information cannot cross between.
+
+> OK, I understand.
+> If you come up with a set of changes, I can try testing them.
+
+Thanks, I make a sketch of the patch, I have to get back to it after
+this series is done.
+
+Jason
