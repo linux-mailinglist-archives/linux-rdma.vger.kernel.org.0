@@ -2,141 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 215193AFC5
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 09:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E49A3B39D
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 13:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388034AbfFJHgw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jun 2019 03:36:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388000AbfFJHgw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Jun 2019 03:36:52 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1EC12082E;
-        Mon, 10 Jun 2019 07:36:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560152211;
-        bh=lg2e5oI4yLI3bsVP7NzvXeQvaJUE1rWwAH6Vzo8NH20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gyMZNHvzyUVTLX/hn8AsnFSPFj+O732ukkS4JQ1LCexFBC9WYT9jTF87t5RFgtgL1
-         fF2IUsAxcnnphXRq0ZLGbQCkfkYwsgqFmB00ZhmAVzpIHGmRtqQZM4zyDx6fR0FgtG
-         SS79yugNwPji0Yjq0w0l5vR8AWXNsNqCMdmawYPU=
-Date:   Mon, 10 Jun 2019 10:36:47 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bernard Metzler <bmt@zurich.ibm.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next v1 12/12] SIW addition to kernel build
- environment
-Message-ID: <20190610073647.GK6369@mtr-leonro.mtl.com>
-References: <20190526114156.6827-1-bmt@zurich.ibm.com>
- <20190526114156.6827-13-bmt@zurich.ibm.com>
+        id S2389094AbfFJK7g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 06:59:36 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:40381 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388912AbfFJK7f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jun 2019 06:59:35 -0400
+Received: by mail-wr1-f68.google.com with SMTP id p11so8692088wre.7
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Jun 2019 03:59:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Uer6lNTQogYDPtgQx7Xvg5YjsemAhR0TAzBGBismyGk=;
+        b=hTRdTbwrR3qx6GGWDnI/3SJ5QqEC8hxeOEiXYhG/c4RP9+WNDWK2QYR4EiVaeruoTY
+         VVBkuRiicUrStZDXrLblR/USs+FIujtIXZd8ydhM67IWMJ8ZY44y2Dcxf6EOl04OqrUA
+         rw1P43RcXCQtqlFafxNmX3f/jL7UDnl8c2MPQ+i47eXEv74c9+ADLraEQW0oU7CXHyjc
+         lsPMyDLECjQcC6R0BIggTemEOEDA54xHHAg9KCQHb6Eqf4DwjgfH5Hl+NW+1cY676Iyi
+         T/bUonNAv28/LgiNtFC1uLp57ozPJelHZkEIqCZJ26kRvQqeY3dA9XeB5wln5UnWS1Ak
+         /1zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Uer6lNTQogYDPtgQx7Xvg5YjsemAhR0TAzBGBismyGk=;
+        b=Zh1s2OKwjru9H9GfQd53yJaPyPlOBQuKj4MkQrG/y4Fu5hiHrKHc85Zzq57ifTHpjn
+         Q2GKAvsLoNac54yhUGZo/PbeBS4/SfsacTEuqvQxkqk57hzbvJ1Vw+eSvk+q0rAoFKN7
+         TmDaR2WY5vAk5kZA+9YeJYyynA48WEuP46CnwjGFcd69T8X7UkCT5q61czRL9ALx24L3
+         Dj5S8ZyGu8tHbxR09fUyT8DpAt/yjPywj1vpOzvUYaLvxDH8xZa002lKqi6u9R9S6Pgr
+         VoYszxw2ozQCpd/OEBvRuFtsrqzwVxFa/xomnBHZxHukDtfjwtH03CIKSvsjSfZW0odq
+         8LUA==
+X-Gm-Message-State: APjAAAV3BlzNVv8dIx+YUEyhVs5/aptQxbT3yZht6/TQBwDK24j3lQTN
+        RiSdVs14GI0tLsqD+P+m3iU=
+X-Google-Smtp-Source: APXvYqxlm73bw2BeY0EG3T38qM0+9PvQEn8IFZPJSLPWJCZWjf8t4VKwrVsa1ZiwmvooXxpYcunH3w==
+X-Received: by 2002:a05:6000:a:: with SMTP id h10mr25448831wrx.215.1560164373752;
+        Mon, 10 Jun 2019 03:59:33 -0700 (PDT)
+Received: from kheib-workstation (bzq-79-182-32-182.red.bezeqint.net. [79.182.32.182])
+        by smtp.gmail.com with ESMTPSA id q20sm29324942wra.36.2019.06.10.03.59.32
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 10 Jun 2019 03:59:32 -0700 (PDT)
+Message-ID: <338cf9cde79ee9d734d8d854a342731e0da7e962.camel@gmail.com>
+Subject: Re: [PATCH for-next] RDMA/ipoib: Remove check for ETH_SS_TEST
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Date:   Mon, 10 Jun 2019 13:59:31 +0300
+In-Reply-To: <20190607120952.GJ5261@mtr-leonro.mtl.com>
+References: <20190530131817.6147-1-kamalheib1@gmail.com>
+         <20190607120952.GJ5261@mtr-leonro.mtl.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190526114156.6827-13-bmt@zurich.ibm.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, May 26, 2019 at 01:41:56PM +0200, Bernard Metzler wrote:
-> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
-> ---
->  MAINTAINERS                        |  7 +++++++
->  drivers/infiniband/Kconfig         |  1 +
->  drivers/infiniband/sw/Makefile     |  1 +
->  drivers/infiniband/sw/siw/Kconfig  | 17 +++++++++++++++++
->  drivers/infiniband/sw/siw/Makefile | 12 ++++++++++++
->  5 files changed, 38 insertions(+)
->  create mode 100644 drivers/infiniband/sw/siw/Kconfig
->  create mode 100644 drivers/infiniband/sw/siw/Makefile
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 5cfbea4ce575..3b437abffc39 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14545,6 +14545,13 @@ M:	Chris Boot <bootc@bootc.net>
->  S:	Maintained
->  F:	drivers/leds/leds-net48xx.c
->
-> +SOFT-RDMA DRIVER (siw)
-> +M:	Bernard Metzler (bmt@zurich,ibm.com)
+On Fri, 2019-06-07 at 15:09 +0300, Leon Romanovsky wrote:
+> On Thu, May 30, 2019 at 04:18:17PM +0300, Kamal Heib wrote:
+> > Self-test isn't supported by the ipoib driver, so remove the check
+> > for
+> > ETH_SS_TEST.
+> > 
+> > Fixes: e3614bc9dc44 ("IB/ipoib: Add readout of statistics using
+> > ethtool")
+> > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> > ---
+> >  drivers/infiniband/ulp/ipoib/ipoib_ethtool.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
+> > b/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
+> > index 83429925dfc6..b0bd0ff0b45c 100644
+> > --- a/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
+> > +++ b/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
+> > @@ -138,7 +138,6 @@ static void ipoib_get_strings(struct net_device
+> > __always_unused *dev,
+> >  			p += ETH_GSTRING_LEN;
+> >  		}
+> >  		break;
+> > -	case ETH_SS_TEST:
+> 
+> The commit message and code doesn't match each other.
+> Removing this specific case will leave exactly the same behaviour as
+> before, so why should we change it?
+> 
 
-As Gal said "." in email and it should be <bmt@zurich.ibm.com>
-and not (bmt@zurich,ibm.com)
+The idea is very simple, no point of checking ETH_SS_TEST if the ipoib
+doesn't support it.
 
-> +L:	linux-rdma@vger.kernel.org
-> +S:	Supported
-> +F:	drivers/infiniband/sw/rxe/
-> +F:	include/uapi/rdma/siw-abi.h
-> +
->  SOFT-ROCE DRIVER (rxe)
->  M:	Moni Shoua <monis@mellanox.com>
->  L:	linux-rdma@vger.kernel.org
-> diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-> index cbfbea49f126..2013ef848fd1 100644
-> --- a/drivers/infiniband/Kconfig
-> +++ b/drivers/infiniband/Kconfig
-> @@ -107,6 +107,7 @@ source "drivers/infiniband/hw/hfi1/Kconfig"
->  source "drivers/infiniband/hw/qedr/Kconfig"
->  source "drivers/infiniband/sw/rdmavt/Kconfig"
->  source "drivers/infiniband/sw/rxe/Kconfig"
-> +source "drivers/infiniband/sw/siw/Kconfig"
->  endif
->
->  source "drivers/infiniband/ulp/ipoib/Kconfig"
-> diff --git a/drivers/infiniband/sw/Makefile b/drivers/infiniband/sw/Makefile
-> index 8b095b27db87..d37610fcbbc7 100644
-> --- a/drivers/infiniband/sw/Makefile
-> +++ b/drivers/infiniband/sw/Makefile
-> @@ -1,2 +1,3 @@
->  obj-$(CONFIG_INFINIBAND_RDMAVT)		+= rdmavt/
->  obj-$(CONFIG_RDMA_RXE)			+= rxe/
-> +obj-$(CONFIG_RDMA_SIW)			+= siw/
-> diff --git a/drivers/infiniband/sw/siw/Kconfig b/drivers/infiniband/sw/siw/Kconfig
-> new file mode 100644
-> index 000000000000..94f684174ce3
-> --- /dev/null
-> +++ b/drivers/infiniband/sw/siw/Kconfig
-> @@ -0,0 +1,17 @@
-> +config RDMA_SIW
-> +	tristate "Software RDMA over TCP/IP (iWARP) driver"
-> +	depends on INET && INFINIBAND && CRYPTO_CRC32
-> +	help
-> +	This driver implements the iWARP RDMA transport over
-> +	the Linux TCP/IP network stack. It enables a system with a
-> +	standard Ethernet adapter to interoperate with a iWARP
-> +	adapter or with another system running the SIW driver.
-> +	(See also RXE which is a similar software driver for RoCE.)
-> +
-> +	The driver interfaces with the Linux RDMA stack and
-> +	implements both a kernel and user space RDMA verbs API.
-> +	The user space verbs API requires a support
-> +	library named libsiw which is loaded by the generic user
-> +	space verbs API, libibverbs. To implement RDMA over
-> +	TCP/IP, the driver further interfaces with the Linux
-> +	in-kernel TCP socket layer.
-> diff --git a/drivers/infiniband/sw/siw/Makefile b/drivers/infiniband/sw/siw/Makefile
-> new file mode 100644
-> index 000000000000..ff190cb0d254
-> --- /dev/null
-> +++ b/drivers/infiniband/sw/siw/Makefile
-> @@ -0,0 +1,12 @@
-> +obj-$(CONFIG_RDMA_SIW) += siw.o
-> +
-> +siw-y := \
-> +	siw_cm.o \
-> +	siw_cq.o \
-> +	siw_debug.o \
-> +	siw_main.o \
-> +	siw_mem.o \
-> +	siw_qp.o \
-> +	siw_qp_tx.o \
-> +	siw_qp_rx.o \
-> +	siw_verbs.o
-> --
-> 2.17.2
->
+> >  	default:
+> >  		break;
+> >  	}
+> > @@ -149,7 +148,6 @@ static int ipoib_get_sset_count(struct
+> > net_device __always_unused *dev,
+> >  	switch (sset) {
+> >  	case ETH_SS_STATS:
+> >  		return IPOIB_GLOBAL_STATS_LEN;
+> > -	case ETH_SS_TEST:
+> >  	default:
+> >  		break;
+> >  	}
+> > --
+> > 2.20.1
+> > 
+
