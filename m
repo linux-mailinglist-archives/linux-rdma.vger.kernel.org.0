@@ -2,724 +2,522 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 688B23AEE1
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 08:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D6F3AF09
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 08:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387789AbfFJGE2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jun 2019 02:04:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44952 "EHLO mail.kernel.org"
+        id S2387774AbfFJGg4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 02:36:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387724AbfFJGE2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Jun 2019 02:04:28 -0400
+        id S2387464AbfFJGgz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Jun 2019 02:36:55 -0400
 Received: from localhost (unknown [37.142.3.125])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BA2120820;
-        Mon, 10 Jun 2019 06:04:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87B9C20833;
+        Mon, 10 Jun 2019 06:36:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560146666;
-        bh=jyufqPpCJOAKTfp9hh4c5gr6cmOWxu+OscsyHXLRxUo=;
+        s=default; t=1560148614;
+        bh=N8j9J6Qw3y/1cEvYSLKK0g6S6DSwg68101Hu5tLY1Kw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iqAWMuY8ddSM/IYBNzj3/Qkm4dW9oa79swNmYLF5LVE7KVb4aFkAjYK32lOeJXTYd
-         UdrFnt8/QmEVYYyaG1BLrkYeaJFDERn1BdOSeR9l1PIPhBC4hTylshS7jARf/+loRM
-         GsaMwpQ14qfdLOHQN2BKcPvK4hA3hnyk2Rj6T+nI=
-Date:   Mon, 10 Jun 2019 09:04:23 +0300
+        b=ZlvC8H+K6WUgiedCPBGl7ioOvL0hLfaYImeOZuu/5Y12dL6YyNOV6e06+vIvfaNke
+         2TzDdfAvF8yU7Gilccs4edjRHLMlNPfj/6rbLyhELVAO7m2JXEseiHsI3JVUZGdlNV
+         ZFj/zSzf5zith2swTEVvvJwbuTgruXvzauxKVPDo=
+Date:   Mon, 10 Jun 2019 09:36:50 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Bernard Metzler <bmt@zurich.ibm.com>
 Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next v1 05/12] SIW application interface
-Message-ID: <20190610060423.GD6369@mtr-leonro.mtl.com>
+Subject: Re: [PATCH for-next v1 06/12] SIW application buffer management
+Message-ID: <20190610063650.GE6369@mtr-leonro.mtl.com>
 References: <20190526114156.6827-1-bmt@zurich.ibm.com>
- <20190526114156.6827-6-bmt@zurich.ibm.com>
+ <20190526114156.6827-7-bmt@zurich.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190526114156.6827-6-bmt@zurich.ibm.com>
+In-Reply-To: <20190526114156.6827-7-bmt@zurich.ibm.com>
 User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, May 26, 2019 at 01:41:49PM +0200, Bernard Metzler wrote:
+On Sun, May 26, 2019 at 01:41:50PM +0200, Bernard Metzler wrote:
 > Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
 > ---
->  drivers/infiniband/sw/siw/siw_verbs.c    | 1778 ++++++++++++++++++++++
->  drivers/infiniband/sw/siw/siw_verbs.h    |  102 ++
->  include/uapi/rdma/rdma_user_ioctl_cmds.h |    1 +
->  include/uapi/rdma/siw-abi.h              |  186 +++
->  4 files changed, 2067 insertions(+)
->  create mode 100644 drivers/infiniband/sw/siw/siw_verbs.c
->  create mode 100644 drivers/infiniband/sw/siw/siw_verbs.h
->  create mode 100644 include/uapi/rdma/siw-abi.h
+>  drivers/infiniband/sw/siw/siw_mem.c | 462 ++++++++++++++++++++++++++++
+>  drivers/infiniband/sw/siw/siw_mem.h |  74 +++++
+>  2 files changed, 536 insertions(+)
+>  create mode 100644 drivers/infiniband/sw/siw/siw_mem.c
+>  create mode 100644 drivers/infiniband/sw/siw/siw_mem.h
 >
-> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+> diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
 > new file mode 100644
-> index 000000000000..e0e53d23d9de
+> index 000000000000..e2961e6be1d9
 > --- /dev/null
-> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
-> @@ -0,0 +1,1778 @@
+> +++ b/drivers/infiniband/sw/siw/siw_mem.c
+> @@ -0,0 +1,462 @@
 > +// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
 > +
 > +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
 > +/* Copyright (c) 2008-2019, IBM Corporation */
 > +
-> +#include <linux/errno.h>
-> +#include <linux/types.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/vmalloc.h>
-> +#include <linux/xarray.h>
-> +
-> +#include <rdma/iw_cm.h>
+> +#include <linux/version.h>
+> +#include <linux/scatterlist.h>
+> +#include <linux/gfp.h>
 > +#include <rdma/ib_verbs.h>
-> +#include <rdma/ib_smi.h>
-> +#include <rdma/ib_user_verbs.h>
-> +#include <rdma/uverbs_ioctl.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/slab.h>
+> +#include <linux/pid.h>
+> +#include <linux/sched/mm.h>
 > +
 > +#include "siw.h"
-> +#include "siw_verbs.h"
-> +#include "siw_mem.h"
-> +#include "siw_cm.h"
 > +#include "siw_debug.h"
+> +#include "siw_mem.h"
 > +
-> +static int ib_qp_state_to_siw_qp_state[IB_QPS_ERR + 1] = {
-> +	[IB_QPS_RESET] = SIW_QP_STATE_IDLE,
-> +	[IB_QPS_INIT] = SIW_QP_STATE_IDLE,
-> +	[IB_QPS_RTR] = SIW_QP_STATE_RTR,
-> +	[IB_QPS_RTS] = SIW_QP_STATE_RTS,
-> +	[IB_QPS_SQD] = SIW_QP_STATE_CLOSING,
-> +	[IB_QPS_SQE] = SIW_QP_STATE_TERMINATE,
-> +	[IB_QPS_ERR] = SIW_QP_STATE_ERROR
-> +};
-> +
-> +static char ib_qp_state_to_string[IB_QPS_ERR + 1][sizeof("RESET")] = {
-> +	[IB_QPS_RESET] = "RESET", [IB_QPS_INIT] = "INIT", [IB_QPS_RTR] = "RTR",
-> +	[IB_QPS_RTS] = "RTS",     [IB_QPS_SQD] = "SQD",   [IB_QPS_SQE] = "SQE",
-> +	[IB_QPS_ERR] = "ERR"
-> +};
-> +
-> +static u32 siw_create_uobj(struct siw_ucontext *uctx, void *vaddr, u32 size)
+> +/*
+> + * Stag lookup is based on its index part only (24 bits).
+> + * The code avoids special Stag of zero and tries to randomize
+> + * STag values between 1 and SIW_STAG_MAX_INDEX.
+> + */
+> +int siw_mem_add(struct siw_device *sdev, struct siw_mem *m)
 > +{
-> +	struct siw_uobj *uobj;
-> +	struct xa_limit limit = XA_LIMIT(0, SIW_UOBJ_MAX_KEY);
-> +	u32 key;
+> +	struct xa_limit limit = XA_LIMIT(1, 0x00ffffff);
+> +	u32 id, next;
 > +
-> +	uobj = kzalloc(sizeof(*uobj), GFP_KERNEL);
-> +	if (!uobj)
-> +		return SIW_INVAL_UOBJ_KEY;
+> +	get_random_bytes(&next, 4);
+> +	next &= 0x00ffffff;
 > +
-> +	if (xa_alloc_cyclic(&uctx->xa, &key, uobj, limit, &uctx->uobj_nextkey,
-> +			    GFP_KERNEL) < 0) {
-> +		kfree(uobj);
-> +		return SIW_INVAL_UOBJ_KEY;
-> +	}
-> +	uobj->size = PAGE_ALIGN(size);
-> +	uobj->addr = vaddr;
+> +	if (xa_alloc_cyclic(&sdev->mem_xa, &id, m, limit, &next,
+> +	    GFP_KERNEL) < 0)
+> +		return -ENOMEM;
 > +
-> +	return key;
+> +	/* Set the STag index part */
+> +	m->stag = id << 8;
+> +
+> +	siw_dbg_mem(m, "new MEM object\n");
+> +
+> +	return 0;
 > +}
 > +
-> +static struct siw_uobj *siw_get_uobj(struct siw_ucontext *uctx,
-> +				     unsigned long off, u32 size)
+> +/*
+> + * siw_mem_id2obj()
+> + *
+> + * resolves memory from stag given by id. might be called from:
+> + * o process context before sending out of sgl, or
+> + * o in softirq when resolving target memory
+> + */
+> +struct siw_mem *siw_mem_id2obj(struct siw_device *sdev, int stag_index)
 > +{
-> +	struct siw_uobj *uobj = xa_load(&uctx->xa, off);
+> +	struct siw_mem *mem;
 > +
-> +	if (uobj && uobj->size == size)
-> +		return uobj;
+> +	rcu_read_lock();
+> +	mem = xa_load(&sdev->mem_xa, stag_index);
+> +	if (likely(mem && kref_get_unless_zero(&mem->ref))) {
+> +		rcu_read_unlock();
+> +		return mem;
+> +	}
+> +	rcu_read_unlock();
 > +
 > +	return NULL;
 > +}
 > +
-> +static void siw_delete_uobj(struct siw_ucontext *uctx, unsigned long index)
+> +static void siw_free_plist(struct siw_page_chunk *chunk, int num_pages,
+> +			   bool dirty)
 > +{
-> +	struct siw_uobj *uobj = xa_erase(&uctx->xa, index);
+> +	struct page **p = chunk->p;
 > +
-> +	kfree(uobj);
-> +}
-> +
-> +int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma)
-> +{
-> +	struct siw_ucontext *uctx = to_siw_ctx(ctx);
-> +	struct siw_uobj *uobj;
-> +	unsigned long off = vma->vm_pgoff;
-> +	int size = vma->vm_end - vma->vm_start;
-> +	int rv = -EINVAL;
-> +
-> +	/*
-> +	 * Must be page aligned
-> +	 */
-> +	if (vma->vm_start & (PAGE_SIZE - 1)) {
-> +		pr_warn("siw: mmap not page aligned\n");
-> +		goto out;
+> +	while (num_pages--) {
+> +		if (!PageDirty(*p) && dirty)
+> +			set_page_dirty_lock(*p);
+> +		put_page(*p);
+> +		p++;
 > +	}
-> +	uobj = siw_get_uobj(uctx, off, size);
-> +	if (!uobj) {
-> +		siw_dbg(&uctx->sdev->base_dev, "mmap lookup failed: %lu, %u\n",
-> +			off, size);
-> +		goto out;
+> +}
+> +
+> +void siw_umem_release(struct siw_umem *umem, bool dirty)
+> +{
+> +	struct mm_struct *mm_s = umem->owning_mm;
+> +	int i, num_pages = umem->num_pages;
+> +
+> +	for (i = 0; num_pages; i++) {
+> +		int to_free = min_t(int, PAGES_PER_CHUNK, num_pages);
+> +
+> +		siw_free_plist(&umem->page_chunk[i], to_free,
+> +			       umem->writable && dirty);
+> +		kfree(umem->page_chunk[i].p);
+> +		num_pages -= to_free;
 > +	}
-> +	rv = remap_vmalloc_range(vma, uobj->addr, 0);
-> +	if (rv)
-> +		pr_warn("remap_vmalloc_range failed: %lu, %u\n", off, size);
-> +out:
-> +	return rv;
+> +	atomic64_sub(umem->num_pages, &mm_s->pinned_vm);
+> +
+> +	mmdrop(mm_s);
+> +	kfree(umem->page_chunk);
+> +	kfree(umem);
 > +}
 > +
-> +int siw_alloc_ucontext(struct ib_ucontext *base_ctx, struct ib_udata *udata)
-> +{
-> +	struct siw_device *sdev = to_siw_dev(base_ctx->device);
-> +	struct siw_ucontext *ctx = to_siw_ctx(base_ctx);
-> +	struct siw_uresp_alloc_ctx uresp = {};
-> +	int rv;
-> +
-> +	if (atomic_inc_return(&sdev->num_ctx) > SIW_MAX_CONTEXT) {
-> +		rv = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +	xa_init_flags(&ctx->xa, XA_FLAGS_ALLOC);
-> +	ctx->uobj_nextkey = 0;
-> +	ctx->sdev = sdev;
-> +
-> +	uresp.dev_id = sdev->vendor_part_id;
-> +
-> +	if (udata->outlen < sizeof(uresp)) {
-> +		rv = -EINVAL;
-> +		goto err_out;
-> +	}
-> +	rv = ib_copy_to_udata(udata, &uresp, sizeof(uresp));
-> +	if (rv)
-> +		goto err_out;
-> +
-> +	siw_dbg(base_ctx->device, "success. now %d context(s)\n",
-> +		atomic_read(&sdev->num_ctx));
-> +
-> +	return 0;
-> +
-> +err_out:
-> +	atomic_dec(&sdev->num_ctx);
-> +	siw_dbg(base_ctx->device, "failure %d. now %d context(s)\n", rv,
-> +		atomic_read(&sdev->num_ctx));
-> +
-> +	return rv;
-> +}
-> +
-> +void siw_dealloc_ucontext(struct ib_ucontext *base_ctx)
-> +{
-> +	struct siw_ucontext *uctx = to_siw_ctx(base_ctx);
-> +	void *entry;
-> +	unsigned long index;
-> +
-> +	/*
-> +	 * Make sure all user mmap objects are gone. Since QP, CQ
-> +	 * and SRQ destroy routines destroy related objects, nothing
-> +	 * should be found here.
-> +	 */
-> +	xa_for_each(&uctx->xa, index, entry) {
-> +		kfree(xa_erase(&uctx->xa, index));
-
-Thanks, it is good example why obfuscation is bad, a couple of lines
-above, you added siw_delete_uobj() which does exactly the same, but
-you already don't remember about that function.
-
-> +		pr_warn("siw: dropping orphaned uobj at %lu\n", index);
-> +	}
-> +	xa_destroy(&uctx->xa);
-> +	atomic_dec(&uctx->sdev->num_ctx);
-> +}
-> +
-> +int siw_query_device(struct ib_device *base_dev, struct ib_device_attr *attr,
-> +		     struct ib_udata *udata)
-> +{
-> +	struct siw_device *sdev = to_siw_dev(base_dev);
-> +
-> +	memset(attr, 0, sizeof(*attr));
-> +
-> +	/* Revisit atomic caps if RFC 7306 gets supported */
-> +	attr->atomic_cap = 0;
-> +	attr->device_cap_flags =
-> +		IB_DEVICE_MEM_MGT_EXTENSIONS | IB_DEVICE_ALLOW_USER_UNREG;
-> +	attr->max_cq = sdev->attrs.max_cq;
-> +	attr->max_cqe = sdev->attrs.max_cqe;
-> +	attr->max_fast_reg_page_list_len = SIW_MAX_SGE_PBL;
-> +	attr->max_fmr = sdev->attrs.max_fmr;
-> +	attr->max_mr = sdev->attrs.max_mr;
-> +	attr->max_mw = sdev->attrs.max_mw;
-> +	attr->max_mr_size = ~0ull;
-> +	attr->max_pd = sdev->attrs.max_pd;
-> +	attr->max_qp = sdev->attrs.max_qp;
-> +	attr->max_qp_init_rd_atom = sdev->attrs.max_ird;
-> +	attr->max_qp_rd_atom = sdev->attrs.max_ord;
-> +	attr->max_qp_wr = sdev->attrs.max_qp_wr;
-> +	attr->max_recv_sge = sdev->attrs.max_sge;
-> +	attr->max_res_rd_atom = sdev->attrs.max_qp * sdev->attrs.max_ird;
-> +	attr->max_send_sge = sdev->attrs.max_sge;
-> +	attr->max_sge_rd = sdev->attrs.max_sge_rd;
-> +	attr->max_srq = sdev->attrs.max_srq;
-> +	attr->max_srq_sge = sdev->attrs.max_srq_sge;
-> +	attr->max_srq_wr = sdev->attrs.max_srq_wr;
-> +	attr->page_size_cap = PAGE_SIZE;
-> +	attr->vendor_id = SIW_VENDOR_ID;
-> +	attr->vendor_part_id = sdev->vendor_part_id;
-> +
-> +	memcpy(&attr->sys_image_guid, sdev->netdev->dev_addr, 6);
-> +
-> +	return 0;
-> +}
-> +
-> +int siw_query_port(struct ib_device *base_dev, u8 port,
-> +		   struct ib_port_attr *attr)
-> +{
-> +	struct siw_device *sdev = to_siw_dev(base_dev);
-> +
-> +	memset(attr, 0, sizeof(*attr));
-> +
-> +	attr->active_mtu = attr->max_mtu;
-> +	attr->active_speed = 2;
-> +	attr->active_width = 2;
-> +	attr->gid_tbl_len = 1;
-> +	attr->max_msg_sz = -1;
-> +	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
-> +	attr->phys_state = sdev->state == IB_PORT_ACTIVE ? 5 : 3;
-> +	attr->pkey_tbl_len = 1;
-> +	attr->port_cap_flags = IB_PORT_CM_SUP | IB_PORT_DEVICE_MGMT_SUP;
-> +	attr->state = sdev->state;
-> +	/*
-> +	 * All zero
-> +	 *
-> +	 * attr->lid = 0;
-> +	 * attr->bad_pkey_cntr = 0;
-> +	 * attr->qkey_viol_cntr = 0;
-> +	 * attr->sm_lid = 0;
-> +	 * attr->lmc = 0;
-> +	 * attr->max_vl_num = 0;
-> +	 * attr->sm_sl = 0;
-> +	 * attr->subnet_timeout = 0;
-> +	 * attr->init_type_repy = 0;
-> +	 */
-> +	return 0;
-> +}
-> +
-> +int siw_get_port_immutable(struct ib_device *base_dev, u8 port,
-> +			   struct ib_port_immutable *port_immutable)
-> +{
-> +	struct ib_port_attr attr;
-> +	int rv = siw_query_port(base_dev, port, &attr);
-> +
-> +	if (rv)
-> +		return rv;
-> +
-> +	port_immutable->pkey_tbl_len = attr.pkey_tbl_len;
-> +	port_immutable->gid_tbl_len = attr.gid_tbl_len;
-> +	port_immutable->core_cap_flags = RDMA_CORE_PORT_IWARP;
-> +
-> +	return 0;
-> +}
-> +
-> +int siw_query_pkey(struct ib_device *base_dev, u8 port, u16 idx, u16 *pkey)
-> +{
-> +	/* Report the default pkey */
-> +	*pkey = 0xffff;
-> +	return 0;
-> +}
-> +
-> +int siw_query_gid(struct ib_device *base_dev, u8 port, int idx,
-> +		  union ib_gid *gid)
-> +{
-> +	struct siw_device *sdev = to_siw_dev(base_dev);
-> +
-> +	/* subnet_prefix == interface_id == 0; */
-> +	memset(gid, 0, sizeof(*gid));
-> +	memcpy(&gid->raw[0], sdev->netdev->dev_addr, 6);
-> +
-> +	return 0;
-> +}
-> +
-> +int siw_alloc_pd(struct ib_pd *pd, struct ib_udata *udata)
+> +int siw_mr_add_mem(struct siw_mr *mr, struct ib_pd *pd, void *mem_obj,
+> +		   u64 start, u64 len, int rights)
 > +{
 > +	struct siw_device *sdev = to_siw_dev(pd->device);
+> +	struct siw_mem *mem = kzalloc(sizeof(*mem), GFP_KERNEL);
+> +	struct xa_limit limit = XA_LIMIT(1, 0x00ffffff);
+> +	u32 id, next;
 > +
-> +	if (atomic_inc_return(&sdev->num_pd) > SIW_MAX_PD) {
-> +		atomic_dec(&sdev->num_pd);
+> +	if (!mem)
+> +		return -ENOMEM;
+> +
+> +	mem->mem_obj = mem_obj;
+> +	mem->stag_valid = 0;
+> +	mem->sdev = sdev;
+> +	mem->va = start;
+> +	mem->len = len;
+> +	mem->pd = pd;
+> +	mem->perms = rights & IWARP_ACCESS_MASK;
+> +	kref_init(&mem->ref);
+> +
+> +	mr->mem = mem;
+> +
+> +	get_random_bytes(&next, 4);
+> +	next &= 0x00ffffff;
+> +
+> +	if (xa_alloc_cyclic(&sdev->mem_xa, &id, mem, limit, &next,
+> +	    GFP_KERNEL) < 0) {
+> +		kfree(mem);
 > +		return -ENOMEM;
 > +	}
-> +	siw_dbg_pd(pd, "now %d PD's(s)\n", atomic_read(&sdev->num_pd));
+> +	/* Set the STag index part */
+> +	mem->stag = id << 8;
+> +	mr->base_mr.lkey = mr->base_mr.rkey = mem->stag;
 > +
 > +	return 0;
 > +}
 > +
-> +void siw_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
+> +void siw_mr_drop_mem(struct siw_mr *mr)
 > +{
-> +	struct siw_device *sdev = to_siw_dev(pd->device);
+> +	struct siw_mem *mem = mr->mem, *found;
 > +
-> +	siw_dbg_pd(pd, "free PD\n");
-> +	atomic_dec(&sdev->num_pd);
+> +	mem->stag_valid = 0;
+> +
+> +	/* make STag invalid visible asap */
+> +	smp_mb();
+> +
+> +	found = xa_erase(&mem->sdev->mem_xa, mem->stag >> 8);
+> +	WARN_ON(found != mem);
+> +	siw_mem_put(mem);
 > +}
 > +
-> +void siw_qp_get_ref(struct ib_qp *base_qp)
+> +void siw_free_mem(struct kref *ref)
 > +{
-> +	siw_qp_get(to_siw_qp(base_qp));
-> +}
+> +	struct siw_mem *mem = container_of(ref, struct siw_mem, ref);
 > +
-> +void siw_qp_put_ref(struct ib_qp *base_qp)
-> +{
-> +	siw_qp_put(to_siw_qp(base_qp));
+> +	siw_dbg_mem(mem, "free mem, pbl: %s\n", mem->is_pbl ? "y" : "n");
+> +
+> +	if (!mem->is_mw && mem->mem_obj) {
+> +		if (mem->is_pbl == 0)
+> +			siw_umem_release(mem->umem, true);
+> +		else
+> +			kfree(mem->pbl);
+> +	}
+> +	kfree(mem);
 > +}
 > +
 > +/*
-> + * siw_create_qp()
+> + * siw_check_mem()
 > + *
-> + * Create QP of requested size on given device.
+> + * Check protection domain, STAG state, access permissions and
+> + * address range for memory object.
 > + *
-> + * @pd:		Protection Domain
-> + * @attrs:	Initial QP attributes.
-> + * @udata:	used to provide QP ID, SQ and RQ size back to user.
+> + * @pd:		Protection Domain memory should belong to
+> + * @mem:	memory to be checked
+> + * @addr:	starting addr of mem
+> + * @perms:	requested access permissions
+> + * @len:	len of memory interval to be checked
+> + *
 > + */
-> +
-> +struct ib_qp *siw_create_qp(struct ib_pd *pd,
-> +			    struct ib_qp_init_attr *attrs,
-> +			    struct ib_udata *udata)
+> +int siw_check_mem(struct ib_pd *pd, struct siw_mem *mem, u64 addr,
+> +		  enum ib_access_flags perms, int len)
 > +{
-> +	struct siw_qp *qp = NULL;
-> +	struct siw_base_qp *siw_base_qp = NULL;
-> +	struct ib_device *base_dev = pd->device;
-> +	struct siw_device *sdev = to_siw_dev(base_dev);
-> +	struct siw_ucontext *uctx =
-> +		rdma_udata_to_drv_context(udata, struct siw_ucontext,
-> +					  base_ucontext);
-> +	struct siw_cq *scq = NULL, *rcq = NULL;
-> +	unsigned long flags;
-> +	int num_sqe, num_rqe, rv = 0;
-> +
-> +	siw_dbg(base_dev, "create new QP\n");
-> +
-> +	if (atomic_inc_return(&sdev->num_qp) > SIW_MAX_QP) {
-> +		siw_dbg(base_dev, "too many QP's\n");
-> +		rv = -ENOMEM;
-> +		goto err_out;
+> +	if (!mem->stag_valid) {
+> +		siw_dbg_pd(pd, "STag 0x%08x invalid\n", mem->stag);
+> +		return -E_STAG_INVALID;
 > +	}
-> +	if (attrs->qp_type != IB_QPT_RC) {
-> +		siw_dbg(base_dev, "only RC QP's supported\n");
-> +		rv = -EINVAL;
-> +		goto err_out;
-> +	}
-> +	if ((attrs->cap.max_send_wr > SIW_MAX_QP_WR) ||
-> +	    (attrs->cap.max_recv_wr > SIW_MAX_QP_WR) ||
-> +	    (attrs->cap.max_send_sge > SIW_MAX_SGE) ||
-> +	    (attrs->cap.max_recv_sge > SIW_MAX_SGE)) {
-> +		siw_dbg(base_dev, "QP size error\n");
-> +		rv = -EINVAL;
-> +		goto err_out;
-> +	}
-> +	if (attrs->cap.max_inline_data > SIW_MAX_INLINE) {
-> +		siw_dbg(base_dev, "max inline send: %d > %d\n",
-> +			attrs->cap.max_inline_data, (int)SIW_MAX_INLINE);
-> +		rv = -EINVAL;
-> +		goto err_out;
+> +	if (mem->pd != pd) {
+> +		siw_dbg_pd(pd, "STag 0x%08x: PD mismatch\n", mem->stag);
+> +		return -E_PD_MISMATCH;
 > +	}
 > +	/*
-> +	 * NOTE: we allow for zero element SQ and RQ WQE's SGL's
-> +	 * but not for a QP unable to hold any WQE (SQ + RQ)
+> +	 * check access permissions
 > +	 */
-> +	if (attrs->cap.max_send_wr + attrs->cap.max_recv_wr == 0) {
-> +		siw_dbg(base_dev, "QP must have send or receive queue\n");
-> +		rv = -EINVAL;
-> +		goto err_out;
+> +	if ((mem->perms & perms) < perms) {
+> +		siw_dbg_pd(pd, "permissions 0x%08x < 0x%08x\n",
+> +			   mem->perms, perms);
+> +		return -E_ACCESS_PERM;
 > +	}
-> +	scq = to_siw_cq(attrs->send_cq);
-> +	rcq = to_siw_cq(attrs->recv_cq);
+> +	/*
+> +	 * Check if access falls into valid memory interval.
+> +	 */
+> +	if (addr < mem->va || addr + len > mem->va + mem->len) {
+> +		siw_dbg_pd(pd, "MEM interval len %d\n", len);
+> +		siw_dbg_pd(pd, "[0x%016llx, 0x%016llx] out of bounds\n",
+> +			   (unsigned long long)addr,
+> +			   (unsigned long long)(addr + len));
+> +		siw_dbg_pd(pd, "[0x%016llx, 0x%016llx] STag=0x%08x\n",
+> +			   (unsigned long long)mem->va,
+> +			   (unsigned long long)(mem->va + mem->len),
+> +			   mem->stag);
 > +
-> +	if (!scq || (!rcq && !attrs->srq)) {
-> +		siw_dbg(base_dev, "send CQ or receive CQ invalid\n");
-> +		rv = -EINVAL;
-> +		goto err_out;
+> +		return -E_BASE_BOUNDS;
 > +	}
-> +	siw_base_qp = kzalloc(sizeof(*siw_base_qp), GFP_KERNEL);
-> +	if (!siw_base_qp) {
-> +		rv = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +	qp = kzalloc(sizeof(*qp), GFP_KERNEL);
-> +	if (!qp) {
-> +		rv = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +	siw_base_qp->qp = qp;
-> +	qp->ib_qp = &siw_base_qp->base_qp;
-> +
-> +	init_rwsem(&qp->state_lock);
-> +	spin_lock_init(&qp->sq_lock);
-> +	spin_lock_init(&qp->rq_lock);
-> +	spin_lock_init(&qp->orq_lock);
-> +
-> +	qp->kernel_verbs = !udata;
-
-Are you sure that you absolutely need kernel_verbs flag inside QP and
-can't do like all other drivers did to understand it dynamically?
-
-> +	qp->xa_sq_index = SIW_INVAL_UOBJ_KEY;
-> +	qp->xa_rq_index = SIW_INVAL_UOBJ_KEY;
-> +
-> +	rv = siw_qp_add(sdev, qp);
-> +	if (rv)
-> +		goto err_out;
-> +
-> +	num_sqe = roundup_pow_of_two(attrs->cap.max_send_wr);
-> +	num_rqe = roundup_pow_of_two(attrs->cap.max_recv_wr);
-> +
-> +	if (qp->kernel_verbs)
-> +		qp->sendq = vzalloc(num_sqe * sizeof(struct siw_sqe));
-> +	else
-> +		qp->sendq = vmalloc_user(num_sqe * sizeof(struct siw_sqe));
-> +
-> +	if (qp->sendq == NULL) {
-> +		siw_dbg(base_dev, "SQ size %d alloc failed\n", num_sqe);
-> +		rv = -ENOMEM;
-> +		goto err_out_xa;
-> +	}
-> +	if (attrs->sq_sig_type != IB_SIGNAL_REQ_WR) {
-> +		if (attrs->sq_sig_type == IB_SIGNAL_ALL_WR)
-> +			qp->attrs.flags |= SIW_SIGNAL_ALL_WR;
-> +		else {
-> +			rv = -EINVAL;
-> +			goto err_out_xa;
-> +		}
-> +	}
-> +	qp->pd = pd;
-> +	qp->scq = scq;
-> +	qp->rcq = rcq;
-> +
-> +	if (attrs->srq) {
-> +		/*
-> +		 * SRQ support.
-> +		 * Verbs 6.3.7: ignore RQ size, if SRQ present
-> +		 * Verbs 6.3.5: do not check PD of SRQ against PD of QP
-> +		 */
-> +		qp->srq = to_siw_srq(attrs->srq);
-> +		qp->attrs.rq_size = 0;
-> +		siw_dbg(base_dev, "QP [%u]: [SRQ 0x%p] attached\n",
-> +			qp->qp_num, qp->srq);
-> +	} else if (num_rqe) {
-> +		if (qp->kernel_verbs)
-> +			qp->recvq = vzalloc(num_rqe * sizeof(struct siw_rqe));
-> +		else
-> +			qp->recvq =
-> +				vmalloc_user(num_rqe * sizeof(struct siw_rqe));
-> +
-> +		if (qp->recvq == NULL) {
-> +			siw_dbg(base_dev, "RQ size %d alloc failed\n", num_rqe);
-> +			rv = -ENOMEM;
-> +			goto err_out_xa;
-> +		}
-> +		qp->attrs.rq_size = num_rqe;
-> +	}
-> +	qp->attrs.sq_size = num_sqe;
-> +	qp->attrs.sq_max_sges = attrs->cap.max_send_sge;
-> +	qp->attrs.rq_max_sges = attrs->cap.max_recv_sge;
-> +
-> +	/* Make those two tunables fixed for now. */
-> +	qp->tx_ctx.gso_seg_limit = 1;
-> +	qp->tx_ctx.zcopy_tx = zcopy_tx;
-> +
-> +	qp->attrs.state = SIW_QP_STATE_IDLE;
-> +
-> +	if (udata) {
-> +		struct siw_uresp_create_qp uresp = {};
-> +
-> +		uresp.num_sqe = num_sqe;
-> +		uresp.num_rqe = num_rqe;
-> +		uresp.qp_id = qp_id(qp);
-> +
-> +		if (qp->sendq) {
-> +			qp->xa_sq_index =
-> +				siw_create_uobj(uctx, qp->sendq,
-> +					num_sqe * sizeof(struct siw_sqe));
-> +		}
-> +		if (qp->recvq) {
-> +			qp->xa_rq_index =
-> +				 siw_create_uobj(uctx, qp->recvq,
-> +					num_rqe * sizeof(struct siw_rqe));
-> +		}
-> +		if (qp->xa_sq_index == SIW_INVAL_UOBJ_KEY ||
-> +		    qp->xa_rq_index == SIW_INVAL_UOBJ_KEY) {
-> +			rv = -ENOMEM;
-> +			goto err_out_xa;
-> +		}
-> +		uresp.sq_key = qp->xa_sq_index << PAGE_SHIFT;
-> +		uresp.rq_key = qp->xa_rq_index << PAGE_SHIFT;
-> +
-> +		if (udata->outlen < sizeof(uresp)) {
-> +			rv = -EINVAL;
-> +			goto err_out_xa;
-> +		}
-> +		rv = ib_copy_to_udata(udata, &uresp, sizeof(uresp));
-> +		if (rv)
-> +			goto err_out_xa;
-> +	}
-> +	qp->tx_cpu = siw_get_tx_cpu(sdev);
-> +	if (qp->tx_cpu < 0) {
-> +		rv = -EINVAL;
-> +		goto err_out_xa;
-> +	}
-> +	INIT_LIST_HEAD(&qp->devq);
-> +	spin_lock_irqsave(&sdev->lock, flags);
-> +	list_add_tail(&qp->devq, &sdev->qp_list);
-> +	spin_unlock_irqrestore(&sdev->lock, flags);
-> +
-> +	return qp->ib_qp;
-> +
-> +err_out_xa:
-> +	xa_erase(&sdev->qp_xa, qp_id(qp));
-> +err_out:
-> +	kfree(siw_base_qp);
-> +
-> +	if (qp) {
-> +		if (qp->xa_sq_index != SIW_INVAL_UOBJ_KEY)
-> +			siw_delete_uobj(uctx, qp->xa_sq_index);
-> +		if (qp->xa_rq_index != SIW_INVAL_UOBJ_KEY)
-> +			siw_delete_uobj(uctx, qp->xa_rq_index);
-> +		if (qp->sendq)
-> +			vfree(qp->sendq);
-> +		if (qp->recvq)
-> +			vfree(qp->recvq);
-> +		kfree(qp);
-> +	}
-> +	atomic_dec(&sdev->num_qp);
-> +
-> +	return ERR_PTR(rv);
+> +	return E_ACCESS_OK;
 > +}
 > +
 > +/*
-> + * Minimum siw_query_qp() verb interface.
+> + * siw_check_sge()
 > + *
-> + * @qp_attr_mask is not used but all available information is provided
+> + * Check SGE for access rights in given interval
+> + *
+> + * @pd:		Protection Domain memory should belong to
+> + * @sge:	SGE to be checked
+> + * @mem:	location of memory reference within array
+> + * @perms:	requested access permissions
+> + * @off:	starting offset in SGE
+> + * @len:	len of memory interval to be checked
+> + *
+> + * NOTE: Function references SGE's memory object (mem->obj)
+> + * if not yet done. New reference is kept if check went ok and
+> + * released if check failed. If mem->obj is already valid, no new
+> + * lookup is being done and mem is not released it check fails.
 > + */
-> +int siw_query_qp(struct ib_qp *base_qp, struct ib_qp_attr *qp_attr,
-> +		 int qp_attr_mask, struct ib_qp_init_attr *qp_init_attr)
+> +int siw_check_sge(struct ib_pd *pd, struct siw_sge *sge, struct siw_mem *mem[],
+> +		  enum ib_access_flags perms, u32 off, int len)
 > +{
-> +	struct siw_qp *qp;
-> +	struct siw_device *sdev;
+> +	struct siw_device *sdev = to_siw_dev(pd->device);
+> +	struct siw_mem *new = NULL;
+> +	int rv = E_ACCESS_OK;
 > +
-> +	if (base_qp && qp_attr && qp_init_attr) {
-> +		qp = to_siw_qp(base_qp);
-> +		sdev = to_siw_dev(base_qp->device);
-> +	} else {
-> +		return -EINVAL;
+> +	if (len + off > sge->length) {
+> +		rv = -E_BASE_BOUNDS;
+> +		goto fail;
 > +	}
-> +	qp_attr->cap.max_inline_data = SIW_MAX_INLINE;
-> +	qp_attr->cap.max_send_wr = qp->attrs.sq_size;
-> +	qp_attr->cap.max_send_sge = qp->attrs.sq_max_sges;
-> +	qp_attr->cap.max_recv_wr = qp->attrs.rq_size;
-> +	qp_attr->cap.max_recv_sge = qp->attrs.rq_max_sges;
-> +	qp_attr->path_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
-> +	qp_attr->max_rd_atomic = qp->attrs.irq_size;
-> +	qp_attr->max_dest_rd_atomic = qp->attrs.orq_size;
-> +
-> +	qp_attr->qp_access_flags = IB_ACCESS_LOCAL_WRITE |
-> +				   IB_ACCESS_REMOTE_WRITE |
-> +				   IB_ACCESS_REMOTE_READ;
-> +
-> +	qp_init_attr->qp_type = base_qp->qp_type;
-> +	qp_init_attr->send_cq = base_qp->send_cq;
-> +	qp_init_attr->recv_cq = base_qp->recv_cq;
-> +	qp_init_attr->srq = base_qp->srq;
-> +
-> +	qp_init_attr->cap = qp_attr->cap;
+> +	if (*mem == NULL) {
+> +		new = siw_mem_id2obj(sdev, sge->lkey >> 8);
+> +		if (unlikely(!new)) {
+> +			siw_dbg_pd(pd, "STag unknown: 0x%08x\n", sge->lkey);
+> +			rv = -E_STAG_INVALID;
+> +			goto fail;
+> +		}
+> +		*mem = new;
+> +	}
+> +	/* Check if user re-registered with different STag key */
+> +	if (unlikely((*mem)->stag != sge->lkey)) {
+> +		siw_dbg_mem((*mem), "STag mismatch: 0x%08x\n", sge->lkey);
+> +		rv = -E_STAG_INVALID;
+> +		goto fail;
+> +	}
+> +	rv = siw_check_mem(pd, *mem, sge->laddr + off, perms, len);
+> +	if (unlikely(rv))
+> +		goto fail;
 > +
 > +	return 0;
-> +}
 > +
-> +int siw_verbs_modify_qp(struct ib_qp *base_qp, struct ib_qp_attr *attr,
-> +			int attr_mask, struct ib_udata *udata)
-> +{
-> +	struct siw_qp_attrs new_attrs;
-> +	enum siw_qp_attr_mask siw_attr_mask = 0;
-> +	struct siw_qp *qp = to_siw_qp(base_qp);
-> +	int rv = 0;
-> +
-> +	if (!attr_mask)
-> +		return 0;
-> +
-> +	memset(&new_attrs, 0, sizeof(new_attrs));
-> +
-> +	if (attr_mask & IB_QP_ACCESS_FLAGS) {
-> +		siw_attr_mask = SIW_QP_ATTR_ACCESS_FLAGS;
-> +
-> +		if (attr->qp_access_flags & IB_ACCESS_REMOTE_READ)
-> +			new_attrs.flags |= SIW_RDMA_READ_ENABLED;
-> +		if (attr->qp_access_flags & IB_ACCESS_REMOTE_WRITE)
-> +			new_attrs.flags |= SIW_RDMA_WRITE_ENABLED;
-> +		if (attr->qp_access_flags & IB_ACCESS_MW_BIND)
-> +			new_attrs.flags |= SIW_RDMA_BIND_ENABLED;
+> +fail:
+> +	if (new) {
+> +		*mem = NULL;
+> +		siw_mem_put(new);
 > +	}
-> +	if (attr_mask & IB_QP_STATE) {
-> +		siw_dbg_qp(qp, "desired IB QP state: %s\n",
-> +			   ib_qp_state_to_string[attr->qp_state]);
-> +
-> +		new_attrs.state = ib_qp_state_to_siw_qp_state[attr->qp_state];
-> +
-> +		if (new_attrs.state > SIW_QP_STATE_RTS)
-> +			qp->tx_ctx.tx_suspend = 1;
-> +
-> +		siw_attr_mask |= SIW_QP_ATTR_STATE;
-> +	}
-> +	if (!siw_attr_mask)
-> +		goto out;
-> +
-> +	down_write(&qp->state_lock);
-> +
-> +	rv = siw_qp_modify(qp, &new_attrs, siw_attr_mask);
-> +
-> +	up_write(&qp->state_lock);
-> +out:
 > +	return rv;
 > +}
 > +
-> +int siw_destroy_qp(struct ib_qp *base_qp, struct ib_udata *udata)
+> +void siw_wqe_put_mem(struct siw_wqe *wqe, enum siw_opcode op)
 > +{
-> +	struct siw_qp *qp = to_siw_qp(base_qp);
-> +	struct siw_base_qp *siw_base_qp = to_siw_base_qp(base_qp);
-> +	struct siw_ucontext *uctx =
-> +		rdma_udata_to_drv_context(udata, struct siw_ucontext,
-> +					  base_ucontext);
-> +	struct siw_qp_attrs qp_attrs;
+> +	switch (op) {
+> +	case SIW_OP_SEND:
+> +	case SIW_OP_WRITE:
+> +	case SIW_OP_SEND_WITH_IMM:
+> +	case SIW_OP_SEND_REMOTE_INV:
+> +	case SIW_OP_READ:
+> +	case SIW_OP_READ_LOCAL_INV:
+> +		if (!(wqe->sqe.flags & SIW_WQE_INLINE))
+> +			siw_unref_mem_sgl(wqe->mem, wqe->sqe.num_sge);
+> +		break;
 > +
-> +	siw_dbg_qp(qp, "state %d, cep 0x%p\n", qp->attrs.state, qp->cep);
+> +	case SIW_OP_RECEIVE:
+> +		siw_unref_mem_sgl(wqe->mem, wqe->rqe.num_sge);
+> +		break;
 > +
-> +	/*
-> +	 * Mark QP as in process of destruction to prevent from
-> +	 * any async callbacks to RDMA core
-> +	 */
-> +	qp->attrs.flags |= SIW_QP_IN_DESTROY;
-> +	qp->rx_stream.rx_suspend = 1;
+> +	case SIW_OP_READ_RESPONSE:
+> +		siw_unref_mem_sgl(wqe->mem, 1);
+> +		break;
 > +
-> +	if (uctx && qp->xa_sq_index != SIW_INVAL_UOBJ_KEY)
-> +		siw_delete_uobj(uctx, qp->xa_sq_index);
-> +	if (uctx && qp->xa_rq_index != SIW_INVAL_UOBJ_KEY)
-> +		siw_delete_uobj(uctx, qp->xa_rq_index);
-> +
-> +	down_write(&qp->state_lock);
-> +
-> +	qp_attrs.state = SIW_QP_STATE_ERROR;
-> +	(void)siw_qp_modify(qp, &qp_attrs, SIW_QP_ATTR_STATE);
-
-Where is no need to do (void) casting.
-
-> +
-> +	if (qp->cep) {
-> +		siw_cep_put(qp->cep);
-> +		qp->cep = NULL;
+> +	default:
+> +		/*
+> +		 * SIW_OP_INVAL_STAG and SIW_OP_REG_MR
+> +		 * do not hold memory references
+> +		 */
+> +		break;
 > +	}
-> +	up_write(&qp->state_lock);
+> +}
 > +
-> +	kfree(qp->rx_stream.mpa_crc_hd);
-> +	kfree(qp->tx_ctx.mpa_crc_hd);
+> +int siw_invalidate_stag(struct ib_pd *pd, u32 stag)
+> +{
+> +	struct siw_device *sdev = to_siw_dev(pd->device);
+> +	struct siw_mem *mem = siw_mem_id2obj(sdev, stag >> 8);
+> +	int rv = 0;
 > +
-> +	/* Drop references */
-> +	qp->scq = qp->rcq = NULL;
+> +	if (unlikely(!mem)) {
+> +		siw_dbg_pd(pd, "STag 0x%08x unknown\n", stag);
+> +		return -EINVAL;
+> +	}
+> +	if (unlikely(mem->pd != pd)) {
+> +		siw_dbg_pd(pd, "PD mismatch for STag 0x%08x\n", stag);
+> +		rv = -EACCES;
+> +		goto out;
+> +	}
+> +	/*
+> +	 * Per RDMA verbs definition, an STag may already be in invalid
+> +	 * state if invalidation is requested. So no state check here.
+> +	 */
+> +	mem->stag_valid = 0;
 > +
-> +	siw_qp_put(qp);
-> +	kfree_rcu(siw_base_qp, rcu);
+> +	siw_dbg_pd(pd, "STag 0x%08x now invalid\n", stag);
+> +out:
+> +	siw_mem_put(mem);
+> +	return rv;
+> +}
+> +
+> +/*
+> + * Gets physical address backed by PBL element. Address is referenced
+> + * by linear byte offset into list of variably sized PB elements.
+> + * Optionally, provides remaining len within current element, and
+> + * current PBL index for later resume at same element.
+> + */
+> +u64 siw_pbl_get_buffer(struct siw_pbl *pbl, u64 off, int *len, int *idx)
+> +{
+> +	int i = idx ? *idx : 0;
+> +
+> +	while (i < pbl->num_buf) {
+> +		struct siw_pble *pble = &pbl->pbe[i];
+> +
+> +		if (pble->pbl_off + pble->size > off) {
+> +			u64 pble_off = off - pble->pbl_off;
+> +
+> +			if (len)
+> +				*len = pble->size - pble_off;
+> +			if (idx)
+> +				*idx = i;
+> +
+> +			return pble->addr + pble_off;
+> +		}
+> +		i++;
+> +	}
+> +	if (len)
+> +		*len = 0;
+> +	return 0;
+> +}
+> +
+> +struct siw_pbl *siw_pbl_alloc(u32 num_buf)
+> +{
+> +	struct siw_pbl *pbl;
+> +	int buf_size = sizeof(*pbl);
+> +
+> +	if (num_buf == 0)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	buf_size += ((num_buf - 1) * sizeof(struct siw_pble));
+> +
+> +	pbl = kzalloc(buf_size, GFP_KERNEL);
+> +	if (!pbl)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	pbl->max_buf = num_buf;
+> +
+> +	return pbl;
+> +}
+> +
+> +struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
+> +{
+> +	struct siw_umem *umem;
+> +	struct mm_struct *mm_s;
+> +	u64 first_page_va;
+> +	unsigned long mlock_limit;
+> +	unsigned int foll_flags = FOLL_WRITE;
+> +	int num_pages, num_chunks, i, rv = 0;
+> +
+> +	if (!can_do_mlock())
+> +		return ERR_PTR(-EPERM);
+> +
+> +	if (!len)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	first_page_va = start & PAGE_MASK;
+> +	num_pages = PAGE_ALIGN(start + len - first_page_va) >> PAGE_SHIFT;
+> +	num_chunks = (num_pages >> CHUNK_SHIFT) + 1;
+> +
+> +	umem = kzalloc(sizeof(*umem), GFP_KERNEL);
+> +	if (!umem)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	mm_s = current->mm;
+> +	umem->owning_mm = mm_s;
+> +	umem->writable = writable;
+> +
+> +	mmgrab(mm_s);
+> +
+> +	if (!writable)
+> +		foll_flags |= FOLL_FORCE;
+> +
+> +	down_read(&mm_s->mmap_sem);
+> +
+> +	mlock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+> +
+> +	if (num_pages + atomic64_read(&mm_s->pinned_vm) > mlock_limit) {
+> +		rv = -ENOMEM;
+> +		goto out_sem_up;
+> +	}
+> +	umem->fp_addr = first_page_va;
+> +
+> +	umem->page_chunk =
+> +		kcalloc(num_chunks, sizeof(struct siw_page_chunk), GFP_KERNEL);
+> +	if (!umem->page_chunk) {
+> +		rv = -ENOMEM;
+> +		goto out_sem_up;
+> +	}
+> +	for (i = 0; num_pages; i++) {
+> +		int got, nents = min_t(int, num_pages, PAGES_PER_CHUNK);
+> +
+> +		umem->page_chunk[i].p =
+> +			kcalloc(nents, sizeof(struct page *), GFP_KERNEL);
+> +		if (!umem->page_chunk[i].p) {
+> +			rv = -ENOMEM;
+> +			goto out_sem_up;
+> +		}
+> +		got = 0;
+> +		while (nents) {
+> +			struct page **plist = &umem->page_chunk[i].p[got];
+> +
+> +			rv = get_user_pages(first_page_va, nents,
+> +					    foll_flags | FOLL_LONGTERM,
+> +					    plist, NULL);
+> +			if (rv < 0)
+> +				goto out_sem_up;
+> +
+> +			umem->num_pages += rv;
+> +			atomic64_add(rv, &mm_s->pinned_vm);
+> +			first_page_va += rv * PAGE_SIZE;
+> +			nents -= rv;
+> +			got += rv;
+> +		}
+> +		num_pages -= got;
+> +	}
+> +out_sem_up:
+> +	up_read(&mm_s->mmap_sem);
+> +
+> +	if (rv > 0)
+> +		return umem;
+> +
+> +	siw_umem_release(umem, false);
+> +
+> +	return ERR_PTR(rv);
 
-I would say that RCU over base QP can't be right and proper locking is needed.
+No, please use ib_umem_get().
 
 Thanks
