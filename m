@@ -2,84 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E723BD3D
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 21:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85A13BD3E
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 21:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389314AbfFJT43 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jun 2019 15:56:29 -0400
-Received: from mail-ua1-f68.google.com ([209.85.222.68]:34480 "EHLO
-        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389170AbfFJT42 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jun 2019 15:56:28 -0400
-Received: by mail-ua1-f68.google.com with SMTP id 7so3598923uah.1
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Jun 2019 12:56:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OUvXRss51vuZbQiadfmhsCC0g5u+ZZ9EIKQF586Z7FM=;
-        b=INgxWvaUjGseW6JzGG0bZ8lcpE4o2afZp4lH6GyIyTYExm/cAhd2riTujXw55rry9C
-         7pSCltY+on5d6wF8NyFbGW1W3F6yfhF9f8bhHneJV5SqtegDttu58EEwIhayJBhrtChh
-         47nj6csTQH5KNixLtiC2cXwvVcWv5kiZBVVdXvFJlFwSbQgGM0hMv/GLA8/y/Z4vGLZU
-         v64GCfHh3ZcSfgarqIcD/YgRafMriaYxH1Wq5lOyuAK1Mu07FaEMr3hjWoXN7uAZDOqw
-         TQ10kfxWBz0NmCN2V8Pep4z0QgmAThLPRIg+mtCZnf5nDJiWBmIM/u20nkJY5HT86puB
-         OmTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OUvXRss51vuZbQiadfmhsCC0g5u+ZZ9EIKQF586Z7FM=;
-        b=duj/HVw7AryKmba5pd1t1kBl+c0/sevHdjNxpaxsR1PnSXHvzYNLYqKmtodAwSjoii
-         seYUulDUyAqnApNjRNaa1PK3gE4vbjGZoOgsVU+1bgscWq5TjPyx8bApQOpQOHLfci2+
-         1zoLISXM/vS70XTtYS148XZycgsNd2w/5NUAefts1HiDWdwP+JTt984UEDXfAyPdU0Os
-         1p16yUpjAKTEqBJQ92t7AW4DKBh0Dl2PBRhD3zb86Ne1Ecaj335QUsiYGiF0N0lNDiUV
-         EU6WEq9xf+9WuQVcm44dx8FL8GCXeOQb3J+q9K50PSWftKbpWLALuE0Wk9aKotM2hpUp
-         2qbA==
-X-Gm-Message-State: APjAAAV0omVhga0IvfwHrCPOjPbDaE31iRjje4brkMk4aaxSrL1JwXvO
-        Bv/e5OveM2IU2p9ioJxyiWj2PGWm7HIN7Q==
-X-Google-Smtp-Source: APXvYqzEasaCSTLjaNVllPlXSF4vHbLu6QWh4S4MdvxeT+rUbntLkA3o3p7TagFcuJjhWmXNLpsITw==
-X-Received: by 2002:ab0:5a64:: with SMTP id m33mr12392796uad.135.1560196587720;
-        Mon, 10 Jun 2019 12:56:27 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id h13sm3854244vke.50.2019.06.10.12.56.27
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 10 Jun 2019 12:56:27 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1haQP4-00055d-Ra
-        for linux-rdma@vger.kernel.org; Mon, 10 Jun 2019 16:56:26 -0300
-Date:   Mon, 10 Jun 2019 16:56:26 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 0/3] Move more constant stuff into struct ib_device_ops
-Message-ID: <20190610195626.GA19534@ziepe.ca>
-References: <20190605173926.16995-1-jgg@ziepe.ca>
+        id S2389201AbfFJT63 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 10 Jun 2019 15:58:29 -0400
+Received: from mga01.intel.com ([192.55.52.88]:56452 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389170AbfFJT63 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Jun 2019 15:58:29 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Jun 2019 12:58:28 -0700
+X-ExtLoop1: 1
+Received: from orsmsx108.amr.corp.intel.com ([10.22.240.6])
+  by orsmga005.jf.intel.com with ESMTP; 10 Jun 2019 12:58:28 -0700
+Received: from orsmsx112.amr.corp.intel.com (10.22.240.13) by
+ ORSMSX108.amr.corp.intel.com (10.22.240.6) with Microsoft SMTP Server (TLS)
+ id 14.3.408.0; Mon, 10 Jun 2019 12:58:28 -0700
+Received: from orsmsx109.amr.corp.intel.com ([169.254.11.79]) by
+ ORSMSX112.amr.corp.intel.com ([169.254.3.233]) with mapi id 14.03.0415.000;
+ Mon, 10 Jun 2019 12:58:28 -0700
+From:   "Hefty, Sean" <sean.hefty@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Eric Biggers <ebiggers@kernel.org>
+CC:     syzbot <syzbot+e5579222b6a3edd96522@syzkaller.appspotmail.com>,
+        "dasaratharaman.chandramouli@intel.com" 
+        <dasaratharaman.chandramouli@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "roland@purestorage.com" <roland@purestorage.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+Subject: RE: WARNING: bad unlock balance in ucma_event_handler
+Thread-Topic: WARNING: bad unlock balance in ucma_event_handler
+Thread-Index: AQHVH70r3ZnP/JtE/Uij3ZacQcoN06aVwI4A//+McGA=
+Date:   Mon, 10 Jun 2019 19:58:27 +0000
+Message-ID: <1828884A29C6694DAF28B7E6B8A82373B3E99E60@ORSMSX109.amr.corp.intel.com>
+References: <000000000000af6530056e863794@google.com>
+ <20180613170543.GB30019@ziepe.ca> <20190610184853.GG63833@gmail.com>
+ <20190610194732.GH18468@ziepe.ca>
+In-Reply-To: <20190610194732.GH18468@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMmFlNGYyMDgtNzFmOS00M2JhLWFjN2QtNjYzZjcwMjVjYmVhIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiTG1mRU5YQUcxYVwvSVRNTFJBRkY4ajRzZDM4TTg2bFRONmlTcUprQldvMVo3U0FOaUhOTDZ3XC81UmYzNUoxbWhuIn0=
+x-ctpclassification: CTP_NT
+dlp-product: dlpe-windows
+dlp-version: 11.0.600.7
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.140]
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190605173926.16995-1-jgg@ziepe.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 05, 2019 at 02:39:23PM -0300, Jason Gunthorpe wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> Each driver has a single constant value for
->  - driver_id
->  - uverbs_abi_ver
->  - module owner
-> 
-> So set them in the ib_device_ops along with the other constant stuff.
-> 
-> Jason Gunthorpe (3):
->   RDMA: Move driver_id into struct ib_device_ops
->   RDMA: Move uverbs_abi_ver into struct ib_device_ops
->   RDMA: Move owner into struct ib_device_ops
+> That is as far as I can get, trying to figure out how to rework
+> ctx->file to be properly ref counted, accessed and locked, is a major
+> task.. I don't even know right now what migrate_id is supposed to be
+> for :(
 
-Applied to for-next
+By default, events for a new connection (rdma_cm_id) go to the fd (rdma_cm_event_channel) associated with the listen.  This allows migrating those events to a different fd.
 
-Jason
+- Sean
