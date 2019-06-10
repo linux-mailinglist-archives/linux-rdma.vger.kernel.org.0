@@ -2,116 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7853B8EE
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 18:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9817A3B96D
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 18:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403957AbfFJQFc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jun 2019 12:05:32 -0400
-Received: from mail-eopbgr40040.outbound.protection.outlook.com ([40.107.4.40]:21553
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2403847AbfFJQFc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Jun 2019 12:05:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M+VzdtUPNs0Qsr8q4rBSwfK18f19SNMd3ZofZrRSFwU=;
- b=P6xSAZNkK3OGIMOvqppZt3JQ5OwYdewNtk0i/ZvKptQFrhz9ZYum1xZLodbwPHTcY21vIZ3RFnt6XtJnuLwv0Tw7fazpLUVn4gqUhU2TZWLgvwkPqGBSIU4jEOXD8zzq6YyH6dF65c2tWj7fXVFzHe24vOFWMHWx4a8FMWn0gjk=
-Received: from AM0PR05MB4130.eurprd05.prod.outlook.com (52.134.90.143) by
- AM0PR05MB4387.eurprd05.prod.outlook.com (52.134.93.146) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1965.13; Mon, 10 Jun 2019 16:05:27 +0000
-Received: from AM0PR05MB4130.eurprd05.prod.outlook.com
- ([fe80::4825:8958:8055:def7]) by AM0PR05MB4130.eurprd05.prod.outlook.com
- ([fe80::4825:8958:8055:def7%3]) with mapi id 15.20.1965.017; Mon, 10 Jun 2019
- 16:05:27 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Ajay Kaher <akaher@vmware.com>
-CC:     "aarcange@redhat.com" <aarcange@redhat.com>,
-        "jannh@google.com" <jannh@google.com>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "mhocko@suse.com" <mhocko@suse.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "sean.hefty@intel.com" <sean.hefty@intel.com>,
-        "hal.rosenstock@gmail.com" <hal.rosenstock@gmail.com>,
-        Matan Barak <matanb@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "srivatsab@vmware.com" <srivatsab@vmware.com>,
-        "amakhalov@vmware.com" <amakhalov@vmware.com>
-Subject: Re: [PATCH] [v4.14.y] infiniband: fix race condition between
- infiniband mlx4, mlx5  driver and core dumping
-Thread-Topic: [PATCH] [v4.14.y] infiniband: fix race condition between
- infiniband mlx4, mlx5  driver and core dumping
-Thread-Index: AQHVH4tSEyCAUrGWFkaDJIPiIklE3KaVDYWA
-Date:   Mon, 10 Jun 2019 16:05:27 +0000
-Message-ID: <20190610160521.GJ18446@mellanox.com>
-References: <1560199937-23476-1-git-send-email-akaher@vmware.com>
-In-Reply-To: <1560199937-23476-1-git-send-email-akaher@vmware.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: YQXPR0101CA0057.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:14::34) To AM0PR05MB4130.eurprd05.prod.outlook.com
- (2603:10a6:208:57::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 50b390ed-c575-46b9-9608-08d6edbd73f4
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM0PR05MB4387;
-x-ms-traffictypediagnostic: AM0PR05MB4387:
-x-ld-processed: a652971c-7d2e-4d9b-a6a4-d149256f461b,ExtAddr
-x-microsoft-antispam-prvs: <AM0PR05MB43878D40173CE641A9CBE923CF130@AM0PR05MB4387.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:407;
-x-forefront-prvs: 0064B3273C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(366004)(346002)(396003)(39860400002)(376002)(189003)(199004)(316002)(25786009)(2616005)(476003)(486006)(99286004)(76176011)(4326008)(66066001)(478600001)(52116002)(36756003)(11346002)(446003)(66946007)(186003)(6512007)(66476007)(26005)(6486002)(229853002)(66446008)(64756008)(386003)(6506007)(66556008)(53936002)(102836004)(73956011)(68736007)(54906003)(6916009)(6436002)(305945005)(256004)(81166006)(7736002)(8936002)(2906002)(7416002)(8676002)(81156014)(6246003)(71190400001)(71200400001)(14444005)(6116002)(3846002)(86362001)(33656002)(1076003)(4744005)(5660300002)(14454004);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB4387;H:AM0PR05MB4130.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: bp4pf/ZhjjpDCrnkLAHxQYc8bmcaqUIuLJmZgCW7sSfE04lwuE87VB1mBe+PB0Tp8EmTRGPcSDvzC/AJu6LXSC+Acn2axArpNOkw8ZsMBnteopEX1TaCl8ODKJFuRaQCescMNcQxBFgGExq0+X0BVjctxO2NNKSnO09/8S6Crc17Y8MlxcIVG8EZtPJ5DlcSiOh+zdls1RJY5vFLZ070loEyup1PKKgNRZswCNWhc0bW2BPQmMdbPcEYkIXIW6g1N7O+WtqIxaACXLZbI1HkBpvPV8kNK3TajxsrB9MqFAf5wzrEx1p/Ekw/d2EzhZ9Cvad1jBDH184KJV9mDBIjvRc5iBTEzaOV1fn8N598QuCnqj1lW1Fqtb9T52mIG6fDvWQUql3gDS1Py50taMeoTUBy5BMC19UqKu4Yh8UqrIw=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <ACA6821CDC8397409049C57892C1C405@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727709AbfFJQ2e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 12:28:34 -0400
+Received: from mga14.intel.com ([192.55.52.115]:38703 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726215AbfFJQ2e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Jun 2019 12:28:34 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Jun 2019 09:28:32 -0700
+X-ExtLoop1: 1
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by orsmga001.jf.intel.com with ESMTP; 10 Jun 2019 09:28:33 -0700
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x5AGSOOY023560;
+        Mon, 10 Jun 2019 09:28:26 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x5AGSIBS098955;
+        Mon, 10 Jun 2019 12:28:18 -0400
+Subject: [PATCH v2 for-rc 3/3] IB/hfi1: Correct tid qp rcd to match verbs
+ context
+To:     jgg@ziepe.ca, dledford@redhat.com
+From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Mon, 10 Jun 2019 12:28:18 -0400
+Message-ID: <20190610162818.98933.46638.stgit@awfm-01.aw.intel.com>
+In-Reply-To: <20190608081533.GO5261@mtr-leonro.mtl.com>
+References: <20190608081533.GO5261@mtr-leonro.mtl.com>
+User-Agent: StGit/0.16
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50b390ed-c575-46b9-9608-08d6edbd73f4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jun 2019 16:05:27.3182
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4387
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 11, 2019 at 02:22:17AM +0530, Ajay Kaher wrote:
-> This patch is the extension of following upstream commit to fix
-> the race condition between get_task_mm() and core dumping
-> for IB->mlx4 and IB->mlx5 drivers:
->=20
-> commit 04f5866e41fb ("coredump: fix race condition between
-> mmget_not_zero()/get_task_mm() and core dumping")'
->=20
-> Thanks to Jason for pointing this.
->=20
-> Signed-off-by: Ajay Kaher <akaher@vmware.com>
-> ---
->  drivers/infiniband/hw/mlx4/main.c | 4 +++-
->  drivers/infiniband/hw/mlx5/main.c | 3 +++
->  2 files changed, 6 insertions(+), 1 deletion(-)
+The qp priv rcd pointer doesn't match the context being
+used for verbs causing issues when 9B and kdeth packets
+are processed by different receive contexts and hence
+different CPUs.
 
-Acked-by: Jason Gunthorpe <jgg@mellanox.com>
+When running on different CPUs the following panic can
+occur:
+[476262.398106] WARNING: CPU: 3 PID: 2584 at lib/list_debug.c:59 __list_del_entry+0xa1/0xd0
+[476262.398109] list_del corruption. prev->next should be ffff9a7ac31f7a30, but was ffff9a7c3bc89230
+[476262.398266] CPU: 3 PID: 2584 Comm: z_wr_iss Kdump: loaded Tainted: P           OE  ------------   3.10.0-862.2.3.el7_lustre.x86_64 #1
+[476262.398272] Call Trace:
+[476262.398277]  <IRQ>  [<ffffffffb7b0d78e>] dump_stack+0x19/0x1b
+[476262.398314]  [<ffffffffb74916d8>] __warn+0xd8/0x100
+[476262.398317]  [<ffffffffb749175f>] warn_slowpath_fmt+0x5f/0x80
+[476262.398320]  [<ffffffffb7768671>] __list_del_entry+0xa1/0xd0
+[476262.398402]  [<ffffffffc0c7a945>] process_rcv_qp_work+0xb5/0x160 [hfi1]
+[476262.398424]  [<ffffffffc0c7bc2b>] handle_receive_interrupt_nodma_rtail+0x20b/0x2b0 [hfi1]
+[476262.398438]  [<ffffffffc0c70683>] receive_context_interrupt+0x23/0x40 [hfi1]
+[476262.398447]  [<ffffffffb7540a94>] __handle_irq_event_percpu+0x44/0x1c0
+[476262.398450]  [<ffffffffb7540c42>] handle_irq_event_percpu+0x32/0x80
+[476262.398454]  [<ffffffffb7540ccc>] handle_irq_event+0x3c/0x60
+[476262.398460]  [<ffffffffb7543a1f>] handle_edge_irq+0x7f/0x150
+[476262.398469]  [<ffffffffb742d504>] handle_irq+0xe4/0x1a0
+[476262.398475]  [<ffffffffb7b23f7d>] do_IRQ+0x4d/0xf0
+[476262.398481]  [<ffffffffb7b16362>] common_interrupt+0x162/0x162
+[476262.398482]  <EOI>  [<ffffffffb775a326>] ? memcpy+0x6/0x110
+[476262.398645]  [<ffffffffc109210d>] ? abd_copy_from_buf_off_cb+0x1d/0x30 [zfs]
+[476262.398678]  [<ffffffffc10920f0>] ? abd_copy_to_buf_off_cb+0x30/0x30 [zfs]
+[476262.398696]  [<ffffffffc1093257>] abd_iterate_func+0x97/0x120 [zfs]
+[476262.398710]  [<ffffffffc10934d9>] abd_copy_from_buf_off+0x39/0x60 [zfs]
+[476262.398726]  [<ffffffffc109b828>] arc_write_ready+0x178/0x300 [zfs]
+[476262.398732]  [<ffffffffb7b11032>] ? mutex_lock+0x12/0x2f
+[476262.398734]  [<ffffffffb7b11032>] ? mutex_lock+0x12/0x2f
+[476262.398837]  [<ffffffffc1164d05>] zio_ready+0x65/0x3d0 [zfs]
+[476262.398884]  [<ffffffffc04d725e>] ? tsd_get_by_thread+0x2e/0x50 [spl]
+[476262.398893]  [<ffffffffc04d1318>] ? taskq_member+0x18/0x30 [spl]
+[476262.398968]  [<ffffffffc115ef22>] zio_execute+0xa2/0x100 [zfs]
+[476262.398982]  [<ffffffffc04d1d2c>] taskq_thread+0x2ac/0x4f0 [spl]
+[476262.399001]  [<ffffffffb74cee80>] ? wake_up_state+0x20/0x20
+[476262.399043]  [<ffffffffc115ee80>] ? zio_taskq_member.isra.7.constprop.10+0x80/0x80 [zfs]
+[476262.399055]  [<ffffffffc04d1a80>] ? taskq_thread_spawn+0x60/0x60 [spl]
+[476262.399067]  [<ffffffffb74bae31>] kthread+0xd1/0xe0
+[476262.399072]  [<ffffffffb74bad60>] ? insert_kthread_work+0x40/0x40
+[476262.399082]  [<ffffffffb7b1f5f7>] ret_from_fork_nospec_begin+0x21/0x21
+[476262.399087]  [<ffffffffb74bad60>] ? insert_kthread_work+0x40/0x40
 
-Jason
+Fix by reading the map entry in the same manner as the
+hardware so that the kdeth and verbs contexts match.
+
+Fixes: 5190f052a365 ("IB/hfi1: Allow the driver to initialize QP priv struct")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+---
+v2: Remove superflous casts
+---
+ drivers/infiniband/hw/hfi1/chip.c     |   13 +++++++++++++
+ drivers/infiniband/hw/hfi1/chip.h     |    1 +
+ drivers/infiniband/hw/hfi1/tid_rdma.c |    4 +---
+ 3 files changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
+index 4221a99e..d5b643a 100644
+--- a/drivers/infiniband/hw/hfi1/chip.c
++++ b/drivers/infiniband/hw/hfi1/chip.c
+@@ -14032,6 +14032,19 @@ static void init_kdeth_qp(struct hfi1_devdata *dd)
+ }
+ 
+ /**
++ * hfi1_get_qp_map
++ * @dd: device data
++ * @idx: index to read
++ */
++u8 hfi1_get_qp_map(struct hfi1_devdata *dd, u8 idx)
++{
++	u64 reg = read_csr(dd, RCV_QP_MAP_TABLE + (idx / 8) * 8);
++
++	reg >>= (idx % 8) * 8;
++	return reg;
++}
++
++/**
+  * init_qpmap_table
+  * @dd - device data
+  * @first_ctxt - first context
+diff --git a/drivers/infiniband/hw/hfi1/chip.h b/drivers/infiniband/hw/hfi1/chip.h
+index 4e6c355..b76cf81 100644
+--- a/drivers/infiniband/hw/hfi1/chip.h
++++ b/drivers/infiniband/hw/hfi1/chip.h
+@@ -1445,6 +1445,7 @@ int hfi1_set_ctxt_pkey(struct hfi1_devdata *dd, struct hfi1_ctxtdata *ctxt,
+ void remap_intr(struct hfi1_devdata *dd, int isrc, int msix_intr);
+ void remap_sdma_interrupts(struct hfi1_devdata *dd, int engine, int msix_intr);
+ void reset_interrupts(struct hfi1_devdata *dd);
++u8 hfi1_get_qp_map(struct hfi1_devdata *dd, u8 idx);
+ 
+ /*
+  * Interrupt source table.
+diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
+index 6fb9303..aa9c8d3 100644
+--- a/drivers/infiniband/hw/hfi1/tid_rdma.c
++++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+@@ -312,9 +312,7 @@ static struct hfi1_ctxtdata *qp_to_rcd(struct rvt_dev_info *rdi,
+ 	if (qp->ibqp.qp_num == 0)
+ 		ctxt = 0;
+ 	else
+-		ctxt = ((qp->ibqp.qp_num >> dd->qos_shift) %
+-			(dd->n_krcv_queues - 1)) + 1;
+-
++		ctxt = hfi1_get_qp_map(dd, qp->ibqp.qp_num >> dd->qos_shift);
+ 	return dd->rcd[ctxt];
+ }
+ 
+
