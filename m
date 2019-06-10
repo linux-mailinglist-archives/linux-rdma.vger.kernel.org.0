@@ -2,73 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4FB3B7BE
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 16:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1583B7F7
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 17:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390122AbfFJOvG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 10 Jun 2019 10:51:06 -0400
-Received: from mga17.intel.com ([192.55.52.151]:19112 "EHLO mga17.intel.com"
+        id S2389830AbfFJPEJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 11:04:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389123AbfFJOvG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Jun 2019 10:51:06 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Jun 2019 07:51:05 -0700
-X-ExtLoop1: 1
-Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
-  by orsmga003.jf.intel.com with ESMTP; 10 Jun 2019 07:51:05 -0700
-Received: from fmsmsx117.amr.corp.intel.com (10.18.116.17) by
- FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
- id 14.3.408.0; Mon, 10 Jun 2019 07:51:05 -0700
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.88]) by
- fmsmsx117.amr.corp.intel.com ([169.254.3.141]) with mapi id 14.03.0415.000;
- Mon, 10 Jun 2019 07:51:04 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     'Jason Gunthorpe' <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>
-CC:     "Latif, Faisal" <faisal.latif@intel.com>,
-        "larrystevenwise@gmail.com" <larrystevenwise@gmail.com>
-Subject: RE: Remove nes
-Thread-Topic: Remove nes
-Thread-Index: AQHVHU2BsVG3v9Y7wk6K9Z3x3tF/aKaQZBcQ
-Date:   Mon, 10 Jun 2019 14:51:04 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7A5B25C03@fmsmsx124.amr.corp.intel.com>
-References: <20190607162430.GL14802@ziepe.ca>
-In-Reply-To: <20190607162430.GL14802@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiZWE5NWQzNDEtODQ3My00MjZjLTk3NWEtOGIxMjY3NGUxMGJlIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiQjdFelhoUHcxNEI1TUFZU1lVSEJDZkhTUlhMWG01b2dwY3lRSnBhdGowdVZCaTR5azRBZHpTQlRPdmRyVytyQiJ9
-dlp-product: dlpe-windows
-dlp-version: 11.0.600.7
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.108]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S2389345AbfFJPEJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Jun 2019 11:04:09 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FD0E20859;
+        Mon, 10 Jun 2019 15:04:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560179048;
+        bh=nxj7GZVJsiPI4fCQSjsYbK+kxomTJa3zmf/uaqaXnPI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FrSpwJjlNbSny5R38T5GR6ozCrcbzFzMe4iiFv7Gps0F/80VD1gUKlpnv0lCi+1BI
+         S3xrA185VDkAnZ4PpNn2ZExy0kCEZNcB/7wAVAS74irsm+EifmLQZEH2r2NR7TCsft
+         IqzHJcar5rhupoqiV4xUPwSylAZdWqgmOM+JvuM8=
+Date:   Mon, 10 Jun 2019 18:04:04 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH 2/3] RDMA: Add NLDEV_GET_CHARDEV to allow char dev
+ discovery and autoload
+Message-ID: <20190610150404.GF6369@mtr-leonro.mtl.com>
+References: <20190605183252.6687-1-jgg@ziepe.ca>
+ <20190605183252.6687-3-jgg@ziepe.ca>
+ <20190610142325.GC6369@mtr-leonro.mtl.com>
+ <20190610144737.GE18446@mellanox.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190610144737.GE18446@mellanox.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: RFC: Remove nes
-> 
-> Since we have gained another two (EFA, SIW) drivers lately, I'd really like to
-> remove NES as we have in the past for other drivers.
-> 
-> This hardware was proposed to be removed at the last purge, but I think that Steve
-> still wanted to keep it for some reason. I suppose that has changed now.
-> 
-> If I recall the reasons for removal were basically:
->  - Does not support modern FRWR, which is now becoming mandatory for ULPs
->  - Does not support 64 bit physical addresses, so is useless on modern
->    servers
->  - Possibly nobody has even loaded the module in years. Wouldn't be
->    surprised to learn it is broken with all the recent churn.
+On Mon, Jun 10, 2019 at 02:47:42PM +0000, Jason Gunthorpe wrote:
+> On Mon, Jun 10, 2019 at 05:23:25PM +0300, Leon Romanovsky wrote:
+> > On Wed, Jun 05, 2019 at 03:32:51PM -0300, Jason Gunthorpe wrote:
+> > > From: Jason Gunthorpe <jgg@mellanox.com>
+> > >
+> > > Allow userspace to issue a netlink query against the ib_device for
+> > > something like "uverbs" and get back the char dev name, inode major/minor,
+> > > and interface ABI information for "uverbs0".
+> > >
+> > > Since we are now in netlink this can also trigger a module autoload to
+> > > make the uverbs device come into existence.
+> > >
+> > > Largely this will let us replace searching and reading inside sysfs to
+> > > setup devices, and provides an alternative (using driver_id) to device
+> > > name based provider binding for things like rxe.
+> > >
+> > > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> > >  drivers/infiniband/core/core_priv.h |  9 +++
+> > >  drivers/infiniband/core/device.c    | 88 ++++++++++++++++++++++++++++
+> > >  drivers/infiniband/core/nldev.c     | 91 +++++++++++++++++++++++++++++
+> > >  include/rdma/ib_verbs.h             |  4 ++
+> > >  include/rdma/rdma_netlink.h         |  2 +
+> > >  include/uapi/rdma/rdma_netlink.h    | 10 ++++
+> > >  6 files changed, 204 insertions(+)
+> > >
+> > > diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+> > > index ff40a450b5d28e..a953c2fa2e7811 100644
+> > > +++ b/drivers/infiniband/core/core_priv.h
+> > > @@ -88,6 +88,15 @@ typedef int (*nldev_callback)(struct ib_device *device,
+> > >  int ib_enum_all_devs(nldev_callback nldev_cb, struct sk_buff *skb,
+> > >  		     struct netlink_callback *cb);
+> > >
+> > > +struct ib_client_nl_info {
+> > > +	struct sk_buff *nl_msg;
+> > > +	struct device *cdev;
+> > > +	unsigned int port;
+> > > +	u64 abi;
+> > > +};
+> > > +int ib_get_client_nl_info(struct ib_device *ibdev, const char *client_name,
+> > > +			  struct ib_client_nl_info *res);
+> > > +
+> > >  enum ib_cache_gid_default_mode {
+> > >  	IB_CACHE_GID_DEFAULT_MODE_SET,
+> > >  	IB_CACHE_GID_DEFAULT_MODE_DELETE
+> > > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> > > index 49e5ea3a530f53..80e7911951f6f6 100644
+> > > +++ b/drivers/infiniband/core/device.c
+> > > @@ -1749,6 +1749,94 @@ void ib_unregister_client(struct ib_client *client)
+> > >  }
+> > >  EXPORT_SYMBOL(ib_unregister_client);
+> > >
+> > > +static int __ib_get_client_nl_info(struct ib_device *ibdev,
+> > > +				   const char *client_name,
+> > > +				   struct ib_client_nl_info *res)
+> > > +{
+> > > +	unsigned long index;
+> > > +	void *client_data;
+> > > +	int ret = -ENOENT;
+> > > +
+> > > +	if (!ibdev) {
+> > > +		struct ib_client *client;
+> > > +
+> > > +		down_read(&clients_rwsem);
+> > > +		xa_for_each_marked (&clients, index, client, CLIENT_REGISTERED) {
+> > > +			if (strcmp(client->name, client_name) != 0)
+> > > +				continue;
+> > > +			if (!client->get_global_nl_info) {
+> > > +				ret = -EOPNOTSUPP;
+> > > +				break;
+> > > +			}
+> > > +			ret = client->get_global_nl_info(res);
+> > > +			if (WARN_ON(ret == -ENOENT))
+> >
+> > You are putting to much WARN_ON, sometimes printk can be enough.
+>
+> One should not use printk for a kernel bug. It just makes debugging
+> harder. This is the appropriate pattern for 'things that cannot happen'
+>
+>
+> > > +				ret = -EINVAL;
+> > > +			if (!ret && res->cdev)
+> > > +				get_device(res->cdev);
+> > > +			break;
+> > > +		}
+> > > +		up_read(&clients_rwsem);
+> > > +		return ret;
+> >
+> > This flow is better to have in separate function, one function for
+> > loaded client and another for no-loaded.
+>
+> Yah, maybe so
+>
+> > > diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
+> > > index f588e8551c6cea..15eb861d1324f4 100644
+> > > +++ b/include/uapi/rdma/rdma_netlink.h
+> > > @@ -279,6 +279,8 @@ enum rdma_nldev_command {
+> > >
+> > >  	RDMA_NLDEV_CMD_RES_PD_GET, /* can dump */
+> > >
+> > > +	RDMA_NLDEV_CMD_GET_CHARDEV,
+> > > +
+> > >  	RDMA_NLDEV_NUM_OPS
+> > >  };
+> > >
+> > > @@ -491,6 +493,14 @@ enum rdma_nldev_attr {
+> > >  	 */
+> > >  	RDMA_NLDEV_NET_NS_FD,			/* u32 */
+> > >
+> > > +	/*
+> > > +	 * Information about a chardev
+> > > +	 */
+> > > +	RDMA_NLDEV_ATTR_CHARDEV_TYPE,		/* string */
+> > > +	RDMA_NLDEV_ATTR_CHARDEV_NAME,		/* string */
+> > > +	RDMA_NLDEV_ATTR_CHARDEV_ABI,		/* u64 */
+> > > +	RDMA_NLDEV_ATTR_CHARDEV,		/* u64 */
+> >
+> > Please document them, especially RDMA_NLDEV_ATTR_CHARDEV and
+> > RDMA_NLDEV_ATTR_CHARDEV_TYPE.
+>
+> Where do you want to put them? There is a distinct lack of
+> documentation for the netlink attributes in this file. Every one I
+> wanted to use I had to look up the implementation.
 
-Intel agrees with removing nes support.
+I believe that short description near their declaration in
+rdna_netlink.h is fine enough.
 
+Thanks
+
+>
+> Jason
