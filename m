@@ -2,72 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D85A13BD3E
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 21:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AD33BD95
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 22:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389201AbfFJT63 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 10 Jun 2019 15:58:29 -0400
-Received: from mga01.intel.com ([192.55.52.88]:56452 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389170AbfFJT63 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Jun 2019 15:58:29 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Jun 2019 12:58:28 -0700
-X-ExtLoop1: 1
-Received: from orsmsx108.amr.corp.intel.com ([10.22.240.6])
-  by orsmga005.jf.intel.com with ESMTP; 10 Jun 2019 12:58:28 -0700
-Received: from orsmsx112.amr.corp.intel.com (10.22.240.13) by
- ORSMSX108.amr.corp.intel.com (10.22.240.6) with Microsoft SMTP Server (TLS)
- id 14.3.408.0; Mon, 10 Jun 2019 12:58:28 -0700
-Received: from orsmsx109.amr.corp.intel.com ([169.254.11.79]) by
- ORSMSX112.amr.corp.intel.com ([169.254.3.233]) with mapi id 14.03.0415.000;
- Mon, 10 Jun 2019 12:58:28 -0700
-From:   "Hefty, Sean" <sean.hefty@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Eric Biggers <ebiggers@kernel.org>
-CC:     syzbot <syzbot+e5579222b6a3edd96522@syzkaller.appspotmail.com>,
-        "dasaratharaman.chandramouli@intel.com" 
-        <dasaratharaman.chandramouli@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "roland@purestorage.com" <roland@purestorage.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
-Subject: RE: WARNING: bad unlock balance in ucma_event_handler
-Thread-Topic: WARNING: bad unlock balance in ucma_event_handler
-Thread-Index: AQHVH70r3ZnP/JtE/Uij3ZacQcoN06aVwI4A//+McGA=
-Date:   Mon, 10 Jun 2019 19:58:27 +0000
-Message-ID: <1828884A29C6694DAF28B7E6B8A82373B3E99E60@ORSMSX109.amr.corp.intel.com>
-References: <000000000000af6530056e863794@google.com>
- <20180613170543.GB30019@ziepe.ca> <20190610184853.GG63833@gmail.com>
- <20190610194732.GH18468@ziepe.ca>
-In-Reply-To: <20190610194732.GH18468@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMmFlNGYyMDgtNzFmOS00M2JhLWFjN2QtNjYzZjcwMjVjYmVhIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiTG1mRU5YQUcxYVwvSVRNTFJBRkY4ajRzZDM4TTg2bFRONmlTcUprQldvMVo3U0FOaUhOTDZ3XC81UmYzNUoxbWhuIn0=
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.0.600.7
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.140]
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: 8BIT
+        id S2389589AbfFJUgG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 16:36:06 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:42903 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389583AbfFJUgG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jun 2019 16:36:06 -0400
+Received: by mail-pg1-f195.google.com with SMTP id l19so3030150pgh.9
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Jun 2019 13:36:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QIiaElKbYG7X2iRY6VXsdeM4+31zgx4vPIFfu4hUJug=;
+        b=aypLgRrX0btLwkQ78UmSd30OW9UF0AUZJnAd3r2/5HqpTZB7t9pPjkr79taehwRSBe
+         Uf3LjKJsRGeyWW7niEs4BHLmd/27Tp++YcV8xUIXVrHXkWkhfr39ad2bGk73/2ccXpRd
+         Krrfs143htc/xGI+Ppm9VimNWGnjKhQyxh//k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QIiaElKbYG7X2iRY6VXsdeM4+31zgx4vPIFfu4hUJug=;
+        b=YTecIhtRwVH+OMYTv7BfgteUGqtEmqG1lyRYD4N1Bkua2hUeiNlfNHJVO4CMe/X1qc
+         A5f8DB03HdonsVFVCchy5RKg/87r27GHuK2TOpxXTyBDt1RqIX7IzcTNY7FduYt3aaAX
+         Pa6okFEsgwfQb54pcY1LBGBSQZym0X7kAqy9UHMzU6/cn8cPTkhjfgJLovsZfLeJWlG8
+         XkspBwiARfcvGnxzQLXg33bcvv31m+eQRtIk4ikib6PmgzdNSVvQJZRp/Jpwehh8rYCe
+         DeOJ1yDYczwIuLCQLKEX7A/p1goKHUwtNAXBZD7sorQm1Ym9DzxxZlzrf65/lCWG3sz2
+         KapQ==
+X-Gm-Message-State: APjAAAVxr+XGkVgav6q2/VYZ8AmTJdESwAunmWO7zqmlxqBJt85W1Poz
+        afpwLhsYPPh51ENLqLvzTdrxcw==
+X-Google-Smtp-Source: APXvYqz36v1zCKX0GRWb534Z9an9udGHI/NESxPlvuGqVOMCrwC97gsWY6mXQoFhLwcNndoWLde2ZA==
+X-Received: by 2002:a62:1b85:: with SMTP id b127mr76850297pfb.165.1560198965895;
+        Mon, 10 Jun 2019 13:36:05 -0700 (PDT)
+Received: from www.outflux.net (173-164-112-133-Oregon.hfc.comcastbusiness.net. [173.164.112.133])
+        by smtp.gmail.com with ESMTPSA id k22sm11148457pfk.178.2019.06.10.13.36.04
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 10 Jun 2019 13:36:04 -0700 (PDT)
+Date:   Mon, 10 Jun 2019 13:36:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v16 02/16] arm64: untag user pointers in access_ok and
+ __uaccess_mask_ptr
+Message-ID: <201906101335.DF80D631@keescook>
+References: <cover.1559580831.git.andreyknvl@google.com>
+ <4327b260fb17c4776a1e3c844f388e4948cfb747.1559580831.git.andreyknvl@google.com>
+ <20190610175326.GC25803@arrakis.emea.arm.com>
+ <201906101106.3CA50745E3@keescook>
+ <20190610185329.xhjawzfy4uddrkrj@mbp>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190610185329.xhjawzfy4uddrkrj@mbp>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> That is as far as I can get, trying to figure out how to rework
-> ctx->file to be properly ref counted, accessed and locked, is a major
-> task.. I don't even know right now what migrate_id is supposed to be
-> for :(
+On Mon, Jun 10, 2019 at 07:53:30PM +0100, Catalin Marinas wrote:
+> On Mon, Jun 10, 2019 at 11:07:03AM -0700, Kees Cook wrote:
+> > On Mon, Jun 10, 2019 at 06:53:27PM +0100, Catalin Marinas wrote:
+> > > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> > > index 3767fb21a5b8..fd191c5b92aa 100644
+> > > --- a/arch/arm64/kernel/process.c
+> > > +++ b/arch/arm64/kernel/process.c
+> > > @@ -552,3 +552,18 @@ void arch_setup_new_exec(void)
+> > >  
+> > >  	ptrauth_thread_init_user(current);
+> > >  }
+> > > +
+> > > +/*
+> > > + * Enable the relaxed ABI allowing tagged user addresses into the kernel.
+> > > + */
+> > > +int untagged_uaddr_set_mode(unsigned long arg)
+> > > +{
+> > > +	if (is_compat_task())
+> > > +		return -ENOTSUPP;
+> > > +	if (arg)
+> > > +		return -EINVAL;
+> > > +
+> > > +	set_thread_flag(TIF_UNTAGGED_UADDR);
+> > > +
+> > > +	return 0;
+> > > +}
+> > 
+> > I think this should be paired with a flag clearing in copy_thread(),
+> > yes? (i.e. each binary needs to opt in)
+> 
+> It indeed needs clearing though not in copy_thread() as that's used on
+> clone/fork but rather in flush_thread(), called on the execve() path.
 
-By default, events for a new connection (rdma_cm_id) go to the fd (rdma_cm_event_channel) associated with the listen.  This allows migrating those events to a different fd.
+Ah! Yes, thanks.
 
-- Sean
+> And a note to myself: I think PR_UNTAGGED_ADDR (not UADDR) looks better
+> in a uapi header, the user doesn't differentiate between uaddr and
+> kaddr.
+
+Good point. I would agree. :)
+
+-- 
+Kees Cook
