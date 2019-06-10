@@ -2,176 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 243063B7BD
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 16:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4FB3B7BE
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 16:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390257AbfFJOuk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jun 2019 10:50:40 -0400
-Received: from p3plsmtpa08-02.prod.phx3.secureserver.net ([173.201.193.103]:53217
-        "EHLO p3plsmtpa08-02.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389123AbfFJOuj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Jun 2019 10:50:39 -0400
-Received: from [192.168.0.67] ([24.218.182.144])
-        by :SMTPAUTH: with ESMTPSA
-        id aLd8hbTzLd9U0aLd8hA472; Mon, 10 Jun 2019 07:50:38 -0700
-Subject: Re: [PATCH RFC] svcrdma: Ignore source port when computing DRC hash
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-rdma@vger.kernel.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-References: <20190605121518.2150.26479.stgit@klimt.1015granger.net>
- <9E0019E1-1C1B-465C-B2BF-76372029ABD8@talpey.com>
- <955993A4-0626-4819-BC6F-306A50E2E048@oracle.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <4b05cdf7-2c2d-366f-3a29-1034bfec2941@talpey.com>
-Date:   Mon, 10 Jun 2019 10:50:36 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <955993A4-0626-4819-BC6F-306A50E2E048@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S2390122AbfFJOvG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 10 Jun 2019 10:51:06 -0400
+Received: from mga17.intel.com ([192.55.52.151]:19112 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389123AbfFJOvG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Jun 2019 10:51:06 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Jun 2019 07:51:05 -0700
+X-ExtLoop1: 1
+Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
+  by orsmga003.jf.intel.com with ESMTP; 10 Jun 2019 07:51:05 -0700
+Received: from fmsmsx117.amr.corp.intel.com (10.18.116.17) by
+ FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
+ id 14.3.408.0; Mon, 10 Jun 2019 07:51:05 -0700
+Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.88]) by
+ fmsmsx117.amr.corp.intel.com ([169.254.3.141]) with mapi id 14.03.0415.000;
+ Mon, 10 Jun 2019 07:51:04 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     'Jason Gunthorpe' <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>
+CC:     "Latif, Faisal" <faisal.latif@intel.com>,
+        "larrystevenwise@gmail.com" <larrystevenwise@gmail.com>
+Subject: RE: Remove nes
+Thread-Topic: Remove nes
+Thread-Index: AQHVHU2BsVG3v9Y7wk6K9Z3x3tF/aKaQZBcQ
+Date:   Mon, 10 Jun 2019 14:51:04 +0000
+Message-ID: <9DD61F30A802C4429A01CA4200E302A7A5B25C03@fmsmsx124.amr.corp.intel.com>
+References: <20190607162430.GL14802@ziepe.ca>
+In-Reply-To: <20190607162430.GL14802@ziepe.ca>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfIo8/2pz+e9fabIO+IuUP3I1YHCK/5+0EX6gw6vq52ousb+NvHacvP8GTldpDzdlWA0bl71jUts1IfC3x+EZsboddBCD0WbROwVEqbaJzPjs7y4OPyjX
- Vh94xpo2BFs0kcSvxdhcXCFvh8HHnz1fJgDtYajNis2l5wFYJ1CXLv+PSZOhA9zYB6TFHPgzepCetI3JhJglkqQT7pxpQNP4uicTQe1JHdJGnuWDXgBIvy/w
- q3ehekPTCjrL9zSiW6j/Fw==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ctpclassification: CTP_NT
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiZWE5NWQzNDEtODQ3My00MjZjLTk3NWEtOGIxMjY3NGUxMGJlIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiQjdFelhoUHcxNEI1TUFZU1lVSEJDZkhTUlhMWG01b2dwY3lRSnBhdGowdVZCaTR5azRBZHpTQlRPdmRyVytyQiJ9
+dlp-product: dlpe-windows
+dlp-version: 11.0.600.7
+dlp-reaction: no-action
+x-originating-ip: [10.1.200.108]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/5/2019 1:25 PM, Chuck Lever wrote:
-> Hi Tom-
+> Subject: RFC: Remove nes
 > 
->> On Jun 5, 2019, at 12:43 PM, Tom Talpey <tom@talpey.com> wrote:
->>
->> On 6/5/2019 8:15 AM, Chuck Lever wrote:
->>> The DRC is not working at all after an RPC/RDMA transport reconnect.
->>> The problem is that the new connection uses a different source port,
->>> which defeats DRC hash.
->>>
->>> An NFS/RDMA client's source port is meaningless for RDMA transports.
->>> The transport layer typically sets the source port value on the
->>> connection to a random ephemeral port. The server already ignores it
->>> for the "secure port" check. See commit 16e4d93f6de7 ("NFSD: Ignore
->>> client's source port on RDMA transports").
->>
->> Where does the entropy come from, then, for the server to not
->> match other requests from other mount points on this same client?
+> Since we have gained another two (EFA, SIW) drivers lately, I'd really like to
+> remove NES as we have in the past for other drivers.
 > 
-> The first ~200 bytes of each RPC Call message.
+> This hardware was proposed to be removed at the last purge, but I think that Steve
+> still wanted to keep it for some reason. I suppose that has changed now.
 > 
-> [ Note that this has some fun ramifications for calls with small
-> RPC headers that use Read chunks. ]
+> If I recall the reasons for removal were basically:
+>  - Does not support modern FRWR, which is now becoming mandatory for ULPs
+>  - Does not support 64 bit physical addresses, so is useless on modern
+>    servers
+>  - Possibly nobody has even loaded the module in years. Wouldn't be
+>    surprised to learn it is broken with all the recent churn.
 
-Ok, good to know. I forgot that the Linux server implemented this.
-I have some concerns abot it, honestly, and it's important to remember
-that it's not the same on all servers. But for the problem you're
-fixing, it's ok I guess and certainly better than today. Still, the
-errors are goingto be completely silent, and can lead to data being
-corrupted. Well, welcome to the world of NFSv3.
+Intel agrees with removing nes support.
 
->> Any time an XID happens to match on a second mount, it will trigger
->> incorrect server processing, won't it?
-> 
-> Not a risk for clients that use only a single transport per
-> client-server pair.
-
-I just want to interject here that this is completely irrelevant.
-The server can't know what these clients are doing, or expecting.
-One case that might work is not any kind of evidence, and is not
-a workaround.
-
->> And since RDMA is capable of
->> such high IOPS, the likelihood seems rather high.
-> 
-> Only when the server's durable storage is slow enough to cause
-> some RPC requests to have extremely high latency.
-> 
-> And, most clients use an atomic counter for their XIDs, so they
-> are also likely to wrap that counter over some long-pending RPC
-> request.
-> 
-> The only real answer here is NFSv4 sessions.
-> 
-> 
->> Missing the cache
->> might actually be safer than hitting, in this case.
-> 
-> Remember that _any_ retransmit on RPC/RDMA requires a fresh
-> connection, that includes NFSv3, to reset credit accounting
-> due to the lost half of the RPC Call/Reply pair.
-> 
-> I can very quickly reproduce bad (non-deterministic) behavior
-> by running a software build on an NFSv3 on RDMA mount point
-> with disconnect injection. If the DRC issue is addressed, the
-> software build runs to completion.
-
-Ok, good. But I have a better test.
-
-In the Connectathon suite, there's a "Special" test called "nfsidem".
-I wrote this test in, like, 1989 so I remember it :-)
-
-This test performs all the non-idempotent NFv3 operations in a loop,
-and each loop element depends on the previous one, so if there's
-any failure, the test imemdiately bombs.
-
-Nobody seems to understand it, usually when it gets run people will
-run it without injecting errors, and it "passes" so they decide
-everything is ok.
-
-So my suggestion is to run your flakeway packet-drop harness while
-running nfsidem in a huge loop (nfsidem 10000). The test is slow,
-owing to the expensive operations it performs, so you'll need to
-run it for a long time.
-
-You'll almost definitely get a failure or two, since the NFSv3
-protocol is flawed by design. But you can compare the behaviors,
-and even compute a likelihood. I'd love to see some actual numbers.
-
-> IMO we can't leave things the way they are.
-
-Agreed!
-
-Tom.
-
-
->>> I'm not sure why I never noticed this before.
->>>
->>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
->>> Cc: stable@vger.kernel.org
->>> ---
->>>   net/sunrpc/xprtrdma/svc_rdma_transport.c |    7 ++++++-
->>>   1 file changed, 6 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
->>> index 027a3b0..1b3700b 100644
->>> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
->>> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
->>> @@ -211,9 +211,14 @@ static void handle_connect_req(struct rdma_cm_id *new_cma_id,
->>>   	/* Save client advertised inbound read limit for use later in accept. */
->>>   	newxprt->sc_ord = param->initiator_depth;
->>>
->>> -	/* Set the local and remote addresses in the transport */
->>>   	sa = (struct sockaddr *)&newxprt->sc_cm_id->route.addr.dst_addr;
->>>   	svc_xprt_set_remote(&newxprt->sc_xprt, sa, svc_addr_len(sa));
->>> +	/* The remote port is arbitrary and not under the control of the
->>> +	 * ULP. Set it to a fixed value so that the DRC continues to work
->>> +	 * after a reconnect.
->>> +	 */
->>> +	rpc_set_port((struct sockaddr *)&newxprt->sc_xprt.xpt_remote, 0);
->>> +
->>>   	sa = (struct sockaddr *)&newxprt->sc_cm_id->route.addr.src_addr;
->>>   	svc_xprt_set_local(&newxprt->sc_xprt, sa, svc_addr_len(sa));
->>>
->>>
->>>
->>>
-> 
-> --
-> Chuck Lever
-> 
-> 
-> 
-> 
-> 
