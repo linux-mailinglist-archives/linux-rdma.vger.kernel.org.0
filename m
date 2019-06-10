@@ -2,245 +2,241 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB143BB5C
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 19:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46F63BB6B
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 19:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388174AbfFJRwd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jun 2019 13:52:33 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:60944 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388137AbfFJRwd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jun 2019 13:52:33 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5AHmsmQ096618;
-        Mon, 10 Jun 2019 17:52:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2018-07-02; bh=RNIQ+ccK7Elu3ntExmFbnbrG+KP9zDP4G5NpoV3eE6o=;
- b=i1s9ti2URnU1b2Duhu9FpnA+wfEtHJKi/c5Nh/bF3R9yEkL3mP9noE+nCK78QKz9f35V
- TmDfFZTvGAONiMzyycCJRwZ68DB+6bovkCGxdpFU6newoNjTEnmGBXgtQsTDR5zqnAkH
- 1ONURV7jqF8jXHxb9CJljv5sWJqHjd/ITSsRno4x1MPD3Z+mgvbMDCmLvEaHMjPfLHgI
- 6LMP2HdL7RHgfs8GaVciDVfrCrSemchycYj6oW3mY+n5mqTsM/28o+eX4ajm95bC9KO6
- B28oHSKsneY5EISHTUFAdh8bxCNxoB0yZ2oP8tx9CRQdeIOsSW2otSwVWZnFvMjm52DO kg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 2t02hegjg1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Jun 2019 17:52:30 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5AHmpXe152087;
-        Mon, 10 Jun 2019 17:50:30 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2t04hxwjhq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Jun 2019 17:50:29 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5AHoTFx030607;
-        Mon, 10 Jun 2019 17:50:29 GMT
-Received: from anon-dhcp-171.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 10 Jun 2019 10:50:29 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH RFC] svcrdma: Ignore source port when computing DRC hash
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <4b05cdf7-2c2d-366f-3a29-1034bfec2941@talpey.com>
-Date:   Mon, 10 Jun 2019 13:50:27 -0400
-Cc:     linux-rdma@vger.kernel.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <721DF459-ECAE-4FDD-A016-AFB193BA1C65@oracle.com>
-References: <20190605121518.2150.26479.stgit@klimt.1015granger.net>
- <9E0019E1-1C1B-465C-B2BF-76372029ABD8@talpey.com>
- <955993A4-0626-4819-BC6F-306A50E2E048@oracle.com>
- <4b05cdf7-2c2d-366f-3a29-1034bfec2941@talpey.com>
-To:     Tom Talpey <tom@talpey.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906100121
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906100121
+        id S2388642AbfFJRxf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 13:53:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:47008 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388174AbfFJRxf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Jun 2019 13:53:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED62C337;
+        Mon, 10 Jun 2019 10:53:33 -0700 (PDT)
+Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4ABC63F246;
+        Mon, 10 Jun 2019 10:53:29 -0700 (PDT)
+Date:   Mon, 10 Jun 2019 18:53:27 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v16 02/16] arm64: untag user pointers in access_ok and
+ __uaccess_mask_ptr
+Message-ID: <20190610175326.GC25803@arrakis.emea.arm.com>
+References: <cover.1559580831.git.andreyknvl@google.com>
+ <4327b260fb17c4776a1e3c844f388e4948cfb747.1559580831.git.andreyknvl@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4327b260fb17c4776a1e3c844f388e4948cfb747.1559580831.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Tom-
+On Mon, Jun 03, 2019 at 06:55:04PM +0200, Andrey Konovalov wrote:
+> diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+> index e5d5f31c6d36..9164ecb5feca 100644
+> --- a/arch/arm64/include/asm/uaccess.h
+> +++ b/arch/arm64/include/asm/uaccess.h
+> @@ -94,7 +94,7 @@ static inline unsigned long __range_ok(const void __user *addr, unsigned long si
+>  	return ret;
+>  }
+>  
+> -#define access_ok(addr, size)	__range_ok(addr, size)
+> +#define access_ok(addr, size)	__range_ok(untagged_addr(addr), size)
 
-> On Jun 10, 2019, at 10:50 AM, Tom Talpey <tom@talpey.com> wrote:
->=20
-> On 6/5/2019 1:25 PM, Chuck Lever wrote:
->> Hi Tom-
->>> On Jun 5, 2019, at 12:43 PM, Tom Talpey <tom@talpey.com> wrote:
->>>=20
->>> On 6/5/2019 8:15 AM, Chuck Lever wrote:
->>>> The DRC is not working at all after an RPC/RDMA transport =
-reconnect.
->>>> The problem is that the new connection uses a different source =
-port,
->>>> which defeats DRC hash.
->>>>=20
->>>> An NFS/RDMA client's source port is meaningless for RDMA =
-transports.
->>>> The transport layer typically sets the source port value on the
->>>> connection to a random ephemeral port. The server already ignores =
-it
->>>> for the "secure port" check. See commit 16e4d93f6de7 ("NFSD: Ignore
->>>> client's source port on RDMA transports").
->>>=20
->>> Where does the entropy come from, then, for the server to not
->>> match other requests from other mount points on this same client?
->> The first ~200 bytes of each RPC Call message.
->> [ Note that this has some fun ramifications for calls with small
->> RPC headers that use Read chunks. ]
->=20
-> Ok, good to know. I forgot that the Linux server implemented this.
-> I have some concerns abot it, honestly, and it's important to remember
-> that it's not the same on all servers. But for the problem you're
-> fixing, it's ok I guess and certainly better than today. Still, the
-> errors are goingto be completely silent, and can lead to data being
-> corrupted. Well, welcome to the world of NFSv3.
+I'm going to propose an opt-in method here (RFC for now). We can't have
+a check in untagged_addr() since this is already used throughout the
+kernel for both user and kernel addresses (khwasan) but we can add one
+in __range_ok(). The same prctl() option will be used for controlling
+the precise/imprecise mode of MTE later on. We can use a TIF_ flag here
+assuming that this will be called early on and any cloned thread will
+inherit this.
 
-I don't see another option.
+Anyway, it's easier to paste some diff than explain but Vincenzo can
+fold them into his ABI patches that should really go together with
+these. I added a couple of MTE definitions for prctl() as an example,
+not used currently:
 
-Some regard this checksum as more robust than using the client's
-IP source port. After all, the same argument can be made that
-the server cannot depend on clients to reuse their source port.
-That is simply a convention that many clients adopted before
-servers used a stronger DRC hash mechanism.
+------------------8<---------------------------------------------
+diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
+index fcd0e691b1ea..2d4cb7e4edab 100644
+--- a/arch/arm64/include/asm/processor.h
++++ b/arch/arm64/include/asm/processor.h
+@@ -307,6 +307,10 @@ extern void __init minsigstksz_setup(void);
+ /* PR_PAC_RESET_KEYS prctl */
+ #define PAC_RESET_KEYS(tsk, arg)	ptrauth_prctl_reset_keys(tsk, arg)
+ 
++/* PR_UNTAGGED_UADDR prctl */
++int untagged_uaddr_set_mode(unsigned long arg);
++#define SET_UNTAGGED_UADDR_MODE(arg)	untagged_uaddr_set_mode(arg)
++
+ /*
+  * For CONFIG_GCC_PLUGIN_STACKLEAK
+  *
+diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
+index c285d1ce7186..89ce77773c49 100644
+--- a/arch/arm64/include/asm/thread_info.h
++++ b/arch/arm64/include/asm/thread_info.h
+@@ -101,6 +101,7 @@ void arch_release_task_struct(struct task_struct *tsk);
+ #define TIF_SVE			23	/* Scalable Vector Extension in use */
+ #define TIF_SVE_VL_INHERIT	24	/* Inherit sve_vl_onexec across exec */
+ #define TIF_SSBD		25	/* Wants SSB mitigation */
++#define TIF_UNTAGGED_UADDR	26
+ 
+ #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+ #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+@@ -116,6 +117,7 @@ void arch_release_task_struct(struct task_struct *tsk);
+ #define _TIF_FSCHECK		(1 << TIF_FSCHECK)
+ #define _TIF_32BIT		(1 << TIF_32BIT)
+ #define _TIF_SVE		(1 << TIF_SVE)
++#define _TIF_UNTAGGED_UADDR	(1 << TIF_UNTAGGED_UADDR)
+ 
+ #define _TIF_WORK_MASK		(_TIF_NEED_RESCHED | _TIF_SIGPENDING | \
+ 				 _TIF_NOTIFY_RESUME | _TIF_FOREIGN_FPSTATE | \
+diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+index 9164ecb5feca..54f5bbaebbc4 100644
+--- a/arch/arm64/include/asm/uaccess.h
++++ b/arch/arm64/include/asm/uaccess.h
+@@ -73,6 +73,9 @@ static inline unsigned long __range_ok(const void __user *addr, unsigned long si
+ {
+ 	unsigned long ret, limit = current_thread_info()->addr_limit;
+ 
++	if (test_thread_flag(TIF_UNTAGGED_UADDR))
++		addr = untagged_addr(addr);
++
+ 	__chk_user_ptr(addr);
+ 	asm volatile(
+ 	// A + B <= C + 1 for all A,B,C, in four easy steps:
+@@ -94,7 +97,7 @@ static inline unsigned long __range_ok(const void __user *addr, unsigned long si
+ 	return ret;
+ }
+ 
+-#define access_ok(addr, size)	__range_ok(untagged_addr(addr), size)
++#define access_ok(addr, size)	__range_ok(addr, size)
+ #define user_addr_max			get_fs
+ 
+ #define _ASM_EXTABLE(from, to)						\
+diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+index 3767fb21a5b8..fd191c5b92aa 100644
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@ -552,3 +552,18 @@ void arch_setup_new_exec(void)
+ 
+ 	ptrauth_thread_init_user(current);
+ }
++
++/*
++ * Enable the relaxed ABI allowing tagged user addresses into the kernel.
++ */
++int untagged_uaddr_set_mode(unsigned long arg)
++{
++	if (is_compat_task())
++		return -ENOTSUPP;
++	if (arg)
++		return -EINVAL;
++
++	set_thread_flag(TIF_UNTAGGED_UADDR);
++
++	return 0;
++}
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index 094bb03b9cc2..4afd5e2980ee 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -229,4 +229,9 @@ struct prctl_mm_map {
+ # define PR_PAC_APDBKEY			(1UL << 3)
+ # define PR_PAC_APGAKEY			(1UL << 4)
+ 
++/* Untagged user addresses for arm64 */
++#define PR_UNTAGGED_UADDR		55
++# define PR_MTE_IMPRECISE_CHECK		0
++# define PR_MTE_PRECISE_CHECK		1
++
+ #endif /* _LINUX_PRCTL_H */
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 2969304c29fe..b1f67a8cffc4 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -124,6 +124,9 @@
+ #ifndef PAC_RESET_KEYS
+ # define PAC_RESET_KEYS(a, b)	(-EINVAL)
+ #endif
++#ifndef SET_UNTAGGED_UADDR_MODE
++# define SET_UNTAGGED_UADDR_MODE	(-EINVAL)
++#endif
+ 
+ /*
+  * this is where the system-wide overflow UID and GID are defined, for
+@@ -2492,6 +2495,11 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 			return -EINVAL;
+ 		error = PAC_RESET_KEYS(me, arg2);
+ 		break;
++	case PR_UNTAGGED_UADDR:
++		if (arg3 || arg4 || arg5)
++			return -EINVAL;
++		error = SET_UNTAGGED_UADDR_MODE(arg2);
++		break;
+ 	default:
+ 		error = -EINVAL;
+ 		break;
+------------------8<---------------------------------------------
 
+The tag_ptr() function in the test library would become:
 
->>> And since RDMA is capable of
->>> such high IOPS, the likelihood seems rather high.
->> Only when the server's durable storage is slow enough to cause
->> some RPC requests to have extremely high latency.
->> And, most clients use an atomic counter for their XIDs, so they
->> are also likely to wrap that counter over some long-pending RPC
->> request.
->> The only real answer here is NFSv4 sessions.
->>> Missing the cache
->>> might actually be safer than hitting, in this case.
->> Remember that _any_ retransmit on RPC/RDMA requires a fresh
->> connection, that includes NFSv3, to reset credit accounting
->> due to the lost half of the RPC Call/Reply pair.
->> I can very quickly reproduce bad (non-deterministic) behavior
->> by running a software build on an NFSv3 on RDMA mount point
->> with disconnect injection. If the DRC issue is addressed, the
->> software build runs to completion.
->=20
-> Ok, good. But I have a better test.
->=20
-> In the Connectathon suite, there's a "Special" test called "nfsidem".
-> I wrote this test in, like, 1989 so I remember it :-)
->=20
-> This test performs all the non-idempotent NFv3 operations in a loop,
-> and each loop element depends on the previous one, so if there's
-> any failure, the test imemdiately bombs.
->=20
-> Nobody seems to understand it, usually when it gets run people will
-> run it without injecting errors, and it "passes" so they decide
-> everything is ok.
->=20
-> So my suggestion is to run your flakeway packet-drop harness while
-> running nfsidem in a huge loop (nfsidem 10000). The test is slow,
-> owing to the expensive operations it performs, so you'll need to
-> run it for a long time.
->=20
-> You'll almost definitely get a failure or two, since the NFSv3
-> protocol is flawed by design. But you can compare the behaviors,
-> and even compute a likelihood. I'd love to see some actual numbers.
+static void *tag_ptr(void *ptr)
+{
+	static int tbi_enabled = 0;
+	unsigned long tag = 0;
 
-I configured the client to disconnect after 23711 RPCs have completed.
-(I can re-run these with more frequent disconnects if you think that
-would be useful).
+	if (!tbi_enabled) {
+		if (prctl(PR_UNTAGGED_UADDR, 0, 0, 0, 0) == 0)
+			tbi_enabled = 1;
+	}
 
-Here's a run with the DRC modification:
+	if (!ptr)
+		return ptr;
+	if (tbi_enabled)
+		tag = rand() & 0xff;
 
-[cel@manet ~]$ sudo mount -o vers=3D3,proto=3Drdma,sec=3Dsys =
-klimt.ib:/export/tmp /mnt
-[cel@manet ~]$ (cd /mnt; ~/src/cthon04/special/nfsidem 100000)
-testing 100000 idempotencies in directory "./TEST"
-[cel@manet ~]$ sudo umount /mnt
+	return (void *)((unsigned long)ptr | (tag << TAG_SHIFT));
+}
 
-
-Here's a run with the stock v5.1 Linux server:
-
-[cel@manet ~]$ sudo mount -o vers=3D3,proto=3Drdma,sec=3Dsys =
-klimt.ib:/export/tmp /mnt
-[cel@manet ~]$ (cd /mnt; ~/src/cthon04/special/nfsidem 100000)
-testing 100000 idempotencies in directory "./TEST"
-[cel@manet ~]$
-
-This test reported no errors in either case. We can see that the
-disconnects did trigger retransmits:
-
-RPC statistics:
-  1888819 RPC requests sent, 1888581 RPC replies received (0 XIDs not =
-found)
-  average backlog queue length: 119
-
-ACCESS:
-        300001 ops (15%)        44 retrans (0%)         0 major timeouts
-        avg bytes sent per op: 132	avg bytes received per op: 120
-        backlog wait: 0.591118  RTT: 0.017463   total execute time: =
-0.614795 (milliseconds)
-REMOVE:
-       	300000 ops (15%)        40 retrans (0%)         0 major timeouts
-        avg bytes sent per op: 136	avg bytes received per op: 144
-        backlog wait: 0.531667  RTT: 0.018973   total execute time: =
-0.556927 (milliseconds)
-MKDIR:
-     	200000 ops (10%)        26 retrans (0%)         0 major timeouts
-        avg bytes sent per op: 158      avg bytes received per op: 272
-        backlog wait: 0.518940  RTT: 0.019755   total execute time: =
-0.545230 (milliseconds)
-RMDIR:
-	200000 ops (10%)        24 retrans (0%)         0 major timeouts
-        avg bytes sent per op: 130	avg bytes received per op: 144
-        backlog wait: 0.512320  RTT: 0.018580   total execute time: =
-0.537095 (milliseconds)
-LOOKUP:
-       	188533 ops (9%)         21 retrans (0%)         0 major timeouts
-        avg bytes sent per op: 136	avg bytes received per op: 174
-        backlog wait: 0.455925  RTT: 0.017721   total execute time: =
-0.480011 (milliseconds)
-SETATTR:
-        100000 ops (5%)         11 retrans (0%)         0 major timeouts
-        avg bytes sent per op: 160	avg bytes received per op: 144
-        backlog wait: 0.371960  RTT: 0.019470   total execute time: =
-0.398330 (milliseconds)
-WRITE:
-      	100000 ops (5%)         9 retrans (0%)  0 major timeouts
-        avg bytes sent per op: 180	avg bytes received per op: 136
-        backlog wait: 0.399190  RTT: 0.022860   total execute time: =
-0.436610 (milliseconds)
-CREATE:
-       	100000 ops (5%)         9 retrans (0%)  0 major timeouts
-        avg bytes sent per op: 168	avg bytes received per op: 272
-        backlog wait: 0.365290  RTT: 0.019560   total execute time: =
-0.391140 (milliseconds)
-SYMLINK:
-     	100000 ops (5%)         18 retrans (0%)         0 major timeouts
-        avg bytes sent per op: 188	avg bytes received per op: 272
-        backlog wait: 0.750470  RTT: 0.020150   total execute time: =
-0.786410 (milliseconds)
-RENAME:
-     	100000 ops (5%)         14 retrans (0%)         0 major timeouts
-        avg bytes sent per op: 180	avg bytes received per op: 260
-        backlog wait: 0.461650  RTT: 0.020710   total execute time: =
-0.489670 (milliseconds)
-
-
---
-Chuck Lever
-
-
-
+-- 
+Catalin
