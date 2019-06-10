@@ -2,84 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF553B68B
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 15:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC383B6F2
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 16:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390462AbfFJNz4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jun 2019 09:55:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32920 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389373AbfFJNz4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Jun 2019 09:55:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BBE4BABD2;
-        Mon, 10 Jun 2019 13:55:53 +0000 (UTC)
-Date:   Mon, 10 Jun 2019 15:55:53 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Ajay Kaher <akaher@vmware.com>
-Cc:     aarcange@redhat.com, jannh@google.com, oleg@redhat.com,
-        peterx@redhat.com, rppt@linux.ibm.com, jgg@mellanox.com,
-        yishaih@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, matanb@mellanox.com, leonro@mellanox.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, srivatsab@vmware.com, amakhalov@vmware.com
-Subject: Re: [PATCH] [v4.14.y] infiniband: fix race condition between
- infiniband mlx4, mlx5  driver and core dumping
-Message-ID: <20190610135553.GH30967@dhcp22.suse.cz>
-References: <1560199937-23476-1-git-send-email-akaher@vmware.com>
+        id S2390712AbfFJOJD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 10:09:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390707AbfFJOJD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Jun 2019 10:09:03 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7D22207E0;
+        Mon, 10 Jun 2019 14:09:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560175742;
+        bh=Dmhjn6dmerxXt3ol9jRCHnE5w1zR4m9csfEWBzDuhn4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k3TGXv+nJgo3yOOp07fNs9ycIRFhMbZiT4PcS0cEAJ02ju98idOf2y9PHPKHXF6V+
+         w8ZxiPBtWL/+Zz6AQVV3DxIbWnfmd/6CJYLx8IuuIFRoVQGlu4QTyvf9sDzgPcVJou
+         XmQ2mMHsCGStAcmRMU6mZ8bQEfW17nWTl9HF3Txs=
+Date:   Mon, 10 Jun 2019 17:08:58 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] IB/mlx4: prevent undefined shift in set_user_sq_size()
+Message-ID: <20190610140858.GA6369@mtr-leonro.mtl.com>
+References: <20190608092231.GA28890@mwanda>
+ <20190610132849.GD18468@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1560199937-23476-1-git-send-email-akaher@vmware.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190610132849.GD18468@ziepe.ca>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue 11-06-19 02:22:17, Ajay Kaher wrote:
-> This patch is the extension of following upstream commit to fix
-> the race condition between get_task_mm() and core dumping
-> for IB->mlx4 and IB->mlx5 drivers:
-> 
-> commit 04f5866e41fb ("coredump: fix race condition between
-> mmget_not_zero()/get_task_mm() and core dumping")'
-> 
-> Thanks to Jason for pointing this.
-> 
-> Signed-off-by: Ajay Kaher <akaher@vmware.com>
-> ---
->  drivers/infiniband/hw/mlx4/main.c | 4 +++-
->  drivers/infiniband/hw/mlx5/main.c | 3 +++
->  2 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-> index e2beb18..0299c06 100644
-> --- a/drivers/infiniband/hw/mlx4/main.c
-> +++ b/drivers/infiniband/hw/mlx4/main.c
-> @@ -1197,6 +1197,8 @@ static void mlx4_ib_disassociate_ucontext(struct ib_ucontext *ibcontext)
->  	 * mlx4_ib_vma_close().
->  	 */
->  	down_write(&owning_mm->mmap_sem);
-> +	if (!mmget_still_valid(owning_mm))
-> +		goto skip_mm;
->  	for (i = 0; i < HW_BAR_COUNT; i++) {
->  		vma = context->hw_bar_info[i].vma;
->  		if (!vma)
+On Mon, Jun 10, 2019 at 10:28:49AM -0300, Jason Gunthorpe wrote:
+> On Sat, Jun 08, 2019 at 12:22:31PM +0300, Dan Carpenter wrote:
+> > The ucmd->log_sq_bb_count is a u8 that comes from the user.  If it's
+> > larger than the number of bits in an int then that's undefined behavior.
+> > It turns out this doesn't really cause an issue at runtime but it's
+> > still nice to clean it up.
+> >
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> >  drivers/infiniband/hw/mlx4/qp.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+> > index 5221c0794d1d..9f6eb23e8044 100644
+> > --- a/drivers/infiniband/hw/mlx4/qp.c
+> > +++ b/drivers/infiniband/hw/mlx4/qp.c
+> > @@ -439,7 +439,8 @@ static int set_user_sq_size(struct mlx4_ib_dev *dev,
+> >  			    struct mlx4_ib_create_qp *ucmd)
+> >  {
+> >  	/* Sanity check SQ size before proceeding */
+> > -	if ((1 << ucmd->log_sq_bb_count) > dev->dev->caps.max_wqes	 ||
+> > +	if (ucmd->log_sq_bb_count > 31					 ||
+> > +	    (1 << ucmd->log_sq_bb_count) > dev->dev->caps.max_wqes	 ||
+>
+> Surely this should use check_shl_overflow() ?
 
-I have missed this part in 4.4 stable backport. Thanks for catching it.
-I have updated my backport.
+Yes
 
-> @@ -1215,7 +1217,7 @@ static void mlx4_ib_disassociate_ucontext(struct ib_ucontext *ibcontext)
->  		/* context going to be destroyed, should not access ops any more */
->  		context->hw_bar_info[i].vma->vm_ops = NULL;
->  	}
-> -
-> +skip_mm:
->  	up_write(&owning_mm->mmap_sem);
->  	mmput(owning_mm);
->  	put_task_struct(owning_process);
--- 
-Michal Hocko
-SUSE Labs
+>
+> Jason
