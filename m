@@ -2,62 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D493BDB5
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 22:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2559D3B53F
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 14:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389573AbfFJUp0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jun 2019 16:45:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389331AbfFJUp0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Jun 2019 16:45:26 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEBBC206E0;
-        Mon, 10 Jun 2019 20:45:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560199526;
-        bh=Sl6eccgIpGpXLNppse+kSAkAyOn3m0wVLWUt3obSHyU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zTYSn31RcPA2WX6cjULsR/Ho2AraR/emd9uyH0WKJSCC3pPJPEjKnW/TePvawiJLE
-         bLkMs32JvmlgZiogJd0HU6hbOkJrDAoCR333d/pCsLMdzCiRSUQ1Q7KPNx5qdgTwUS
-         P/1zaXfSy7L902vw2AQhy2pSYKjiB+AEG/SmISFo=
-Date:   Mon, 10 Jun 2019 13:45:24 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     syzbot <syzbot+e5579222b6a3edd96522@syzkaller.appspotmail.com>,
-        dasaratharaman.chandramouli@intel.com, dledford@redhat.com,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, parav@mellanox.com,
-        roland@purestorage.com, sean.hefty@intel.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: WARNING: bad unlock balance in ucma_event_handler
-Message-ID: <20190610204523.GK63833@gmail.com>
-References: <000000000000af6530056e863794@google.com>
- <20180613170543.GB30019@ziepe.ca>
- <20190610184853.GG63833@gmail.com>
- <20190610194732.GH18468@ziepe.ca>
+        id S2389075AbfFJMwH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 08:52:07 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:26243 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388373AbfFJMwH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Jun 2019 08:52:07 -0400
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Mon, 10 Jun 2019 05:51:59 -0700
+Received: from akaher-lnx-dev.eng.vmware.com (unknown [10.110.19.203])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 6C6AE40E0B;
+        Mon, 10 Jun 2019 05:52:01 -0700 (PDT)
+From:   Ajay Kaher <akaher@vmware.com>
+To:     <aarcange@redhat.com>, <jannh@google.com>, <oleg@redhat.com>,
+        <peterx@redhat.com>, <rppt@linux.ibm.com>, <jgg@mellanox.com>,
+        <mhocko@suse.com>
+CC:     <yishaih@mellanox.com>, <dledford@redhat.com>,
+        <sean.hefty@intel.com>, <hal.rosenstock@gmail.com>,
+        <matanb@mellanox.com>, <leonro@mellanox.com>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>, <akaher@vmware.com>,
+        <srivatsab@vmware.com>, <amakhalov@vmware.com>
+Subject: [PATCH] [v4.14.y] infiniband: fix race condition between infiniband mlx4, mlx5  driver and core dumping
+Date:   Tue, 11 Jun 2019 02:22:17 +0530
+Message-ID: <1560199937-23476-1-git-send-email-akaher@vmware.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190610194732.GH18468@ziepe.ca>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: akaher@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 04:47:32PM -0300, Jason Gunthorpe wrote:
-> 
-> There are many unfixed syzkaller bugs in rdma_cm, so I'm not surprised
-> it is still happening..
-> 
-> Nobody has stepped forward to work on this code, and it is not a
-> simple mess to understand, let alone try to fix.
-> 
+This patch is the extension of following upstream commit to fix
+the race condition between get_task_mm() and core dumping
+for IB->mlx4 and IB->mlx5 drivers:
 
-But people still use it, right?  Do they not care that it's spewing syzbot
-reports?  Are they depending on the kernel to provide any security properties?
+commit 04f5866e41fb ("coredump: fix race condition between
+mmget_not_zero()/get_task_mm() and core dumping")'
 
-- Eric
+Thanks to Jason for pointing this.
+
+Signed-off-by: Ajay Kaher <akaher@vmware.com>
+---
+ drivers/infiniband/hw/mlx4/main.c | 4 +++-
+ drivers/infiniband/hw/mlx5/main.c | 3 +++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index e2beb18..0299c06 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -1197,6 +1197,8 @@ static void mlx4_ib_disassociate_ucontext(struct ib_ucontext *ibcontext)
+ 	 * mlx4_ib_vma_close().
+ 	 */
+ 	down_write(&owning_mm->mmap_sem);
++	if (!mmget_still_valid(owning_mm))
++		goto skip_mm;
+ 	for (i = 0; i < HW_BAR_COUNT; i++) {
+ 		vma = context->hw_bar_info[i].vma;
+ 		if (!vma)
+@@ -1215,7 +1217,7 @@ static void mlx4_ib_disassociate_ucontext(struct ib_ucontext *ibcontext)
+ 		/* context going to be destroyed, should not access ops any more */
+ 		context->hw_bar_info[i].vma->vm_ops = NULL;
+ 	}
+-
++skip_mm:
+ 	up_write(&owning_mm->mmap_sem);
+ 	mmput(owning_mm);
+ 	put_task_struct(owning_process);
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 13a9206..3fbe396 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -1646,6 +1646,8 @@ static void mlx5_ib_disassociate_ucontext(struct ib_ucontext *ibcontext)
+ 	 * mlx5_ib_vma_close.
+ 	 */
+ 	down_write(&owning_mm->mmap_sem);
++	if (!mmget_still_valid(owning_mm))
++		goto skip_mm;
+ 	mutex_lock(&context->vma_private_list_mutex);
+ 	list_for_each_entry_safe(vma_private, n, &context->vma_private_list,
+ 				 list) {
+@@ -1662,6 +1664,7 @@ static void mlx5_ib_disassociate_ucontext(struct ib_ucontext *ibcontext)
+ 		kfree(vma_private);
+ 	}
+ 	mutex_unlock(&context->vma_private_list_mutex);
++skip_mm:
+ 	up_write(&owning_mm->mmap_sem);
+ 	mmput(owning_mm);
+ 	put_task_struct(owning_process);
+-- 
+2.7.4
+
