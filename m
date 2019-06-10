@@ -2,82 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEF63B5D0
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 15:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC903B5EE
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 15:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390043AbfFJNMq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jun 2019 09:12:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389762AbfFJNMq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Jun 2019 09:12:46 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8EFE820679;
-        Mon, 10 Jun 2019 13:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560172365;
-        bh=NdwOInWatgcJZuyjHQlFg9AujwOVXsRbRzzzCFPErhs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R9LNgZZ36GrBbaet58folJRyVUsgNHCCxMrtpHa192t6ihYY+ccpMoSzRSAH8hVUC
-         GWs2fl9Hn8jqch/EAj0h0ZMSTgsfJkaGqgnThRVgBmPrN7l2nWs2S6BiOeQFnSK6zD
-         lYZU2NVlwtqMFPKFQU5/YcismtySHXIBFNXYV0kQ=
-Date:   Mon, 10 Jun 2019 16:12:42 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Kamal Heib <kamalheib1@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH for-next] RDMA/ipoib: Remove check for ETH_SS_TEST
-Message-ID: <20190610131242.GX6369@mtr-leonro.mtl.com>
-References: <20190530131817.6147-1-kamalheib1@gmail.com>
- <20190607120952.GJ5261@mtr-leonro.mtl.com>
- <338cf9cde79ee9d734d8d854a342731e0da7e962.camel@gmail.com>
+        id S2390158AbfFJNZN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 09:25:13 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44727 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390147AbfFJNZN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jun 2019 09:25:13 -0400
+Received: by mail-qk1-f193.google.com with SMTP id w187so5470135qkb.11
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Jun 2019 06:25:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EP2hZETBNFMkMXQxpC7bE32Nxy9YmYkXCgVJmKFvnLM=;
+        b=lwBm86jc/w+BsZQDmX0MTSUYY0dS1P3p1OP7wg9GUju0nDip/kI7LJoL7jWr4kfSHU
+         Phwm3GHY+tyW1P+TaAndQb5pOnMlwAxk5YgAIZbH7+3Iyup4eAzfsMQHAQNPOmGaCF5d
+         p51sZTVyHQOnR2iGER7aRFAcJyUog3xq9e/5G2MFGIfgXP+HfdC7mlA8x8W0iOH++2Ff
+         yll0XK3ITowTFtIcGs6zx9ogZj/wvKOOFse1hG0gUjJF1bEj+hvDEKOZTA+SALHRxAoE
+         /s465zAJVDND1Csh/VtU7YvC9dd3dNZ3MMU+OcfCmIT3GtO5eKZKXGPwFy3ljAL1cz1M
+         Oxuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EP2hZETBNFMkMXQxpC7bE32Nxy9YmYkXCgVJmKFvnLM=;
+        b=K9IBGMJbermBAaqZb/P4CiQARyIGrQCMp07X62NqBZACwcC3D7qH0dGusVpVxF65fz
+         XhyIre8VRHMbqMbzUHa6kWJX0NqCejylNJXkxY6nalFWZtGJOxseUEtZyFH8/1KximCf
+         KV+OGtRD3/5heWOhypm5iJvjYylIS9Ed1k1tV816TwRRUxtAbkpraG5cmUJsi/WP8eUo
+         k23Lu5XiqGGxped722aLP+9dY1yYgAwtgE/smNAU3qiH5QvfFNyWvCUY9ckTTVmkLPF5
+         enmPM/WUSkVwxhVsRPz+XRsUtkI/nDcoC5PefIXOMTIhvVcQFVVTrM2A/qhppWZ+Ye4D
+         Y8+Q==
+X-Gm-Message-State: APjAAAUDL9Lxj6suHRw6RfJaxW35oZ48fzCwoi+bMD8CeEkCq78d3O5m
+        5R6rOufNWMdqPBoNni6bqFFbBA==
+X-Google-Smtp-Source: APXvYqzk7RRXy42+5AHoey1bLlIiNbMbLEEHBhC8YtTEpNYdxOqj4tCw4fvjJUUqkhmvCT80B9kphw==
+X-Received: by 2002:a37:aa4d:: with SMTP id t74mr57138080qke.144.1560173112586;
+        Mon, 10 Jun 2019 06:25:12 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id l11sm5103526qkk.65.2019.06.10.06.25.12
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 10 Jun 2019 06:25:12 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1haKIR-0001os-NM; Mon, 10 Jun 2019 10:25:11 -0300
+Date:   Mon, 10 Jun 2019 10:25:11 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Wan, Kaike" <kaike.wan@intel.com>
+Subject: Re: [PATCH for-rc 3/3] IB/hfi1: Correct tid qp rcd to match verbs
+ context
+Message-ID: <20190610132511.GB18468@ziepe.ca>
+References: <20190607113807.157915.48581.stgit@awfm-01.aw.intel.com>
+ <20190607122538.158478.62945.stgit@awfm-01.aw.intel.com>
+ <20190608081533.GO5261@mtr-leonro.mtl.com>
+ <32E1700B9017364D9B60AED9960492BC70DA2848@fmsmsx120.amr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <338cf9cde79ee9d734d8d854a342731e0da7e962.camel@gmail.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <32E1700B9017364D9B60AED9960492BC70DA2848@fmsmsx120.amr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 01:59:31PM +0300, Kamal Heib wrote:
-> On Fri, 2019-06-07 at 15:09 +0300, Leon Romanovsky wrote:
-> > On Thu, May 30, 2019 at 04:18:17PM +0300, Kamal Heib wrote:
-> > > Self-test isn't supported by the ipoib driver, so remove the check
-> > > for
-> > > ETH_SS_TEST.
-> > >
-> > > Fixes: e3614bc9dc44 ("IB/ipoib: Add readout of statistics using
-> > > ethtool")
-> > > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> > > ---
-> > >  drivers/infiniband/ulp/ipoib/ipoib_ethtool.c | 2 --
-> > >  1 file changed, 2 deletions(-)
-> > >
-> > > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
-> > > b/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
-> > > index 83429925dfc6..b0bd0ff0b45c 100644
-> > > --- a/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
-> > > +++ b/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
-> > > @@ -138,7 +138,6 @@ static void ipoib_get_strings(struct net_device
-> > > __always_unused *dev,
-> > >  			p += ETH_GSTRING_LEN;
-> > >  		}
-> > >  		break;
-> > > -	case ETH_SS_TEST:
-> >
-> > The commit message and code doesn't match each other.
-> > Removing this specific case will leave exactly the same behaviour as
-> > before, so why should we change it?
-> >
->
-> The idea is very simple, no point of checking ETH_SS_TEST if the ipoib
-> doesn't support it.
+On Mon, Jun 10, 2019 at 01:03:54PM +0000, Marciniszyn, Mike wrote:
+> > > diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c
+> > b/drivers/infiniband/hw/hfi1/tid_rdma.c
+> > > index 6fb9303..d77276d 100644
+> > > +++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+> > > @@ -312,9 +312,8 @@ static struct hfi1_ctxtdata *qp_to_rcd(struct
+> > rvt_dev_info *rdi,
+> > >  	if (qp->ibqp.qp_num == 0)
+> > >  		ctxt = 0;
+> > >  	else
+> > > -		ctxt = ((qp->ibqp.qp_num >> dd->qos_shift) %
+> > > -			(dd->n_krcv_queues - 1)) + 1;
+> > > -
+> > > +		ctxt = hfi1_get_qp_map(dd,
+> > > +				       (u8)(qp->ibqp.qp_num >> dd-
+> > >qos_shift));
+> > 
+> > It is one time use functions, why don't you handle this (u8) casting
+> > inside of hfi1_get_qp_map()?
+> > 
+> 
+> I assume the suggestion is to remove the u8 cast at the call site?
+> 
+> The function return value already is a u8 and there is a cast of the 64 bit CSR read result.
 
-Please write in commit message, that "default" option means "unsupported" and
-there is no need in explicit declaration of unsupported ETH_SS_TEST.
+Why do you need an explicit cast at all?
 
-Thanks
+Jason
