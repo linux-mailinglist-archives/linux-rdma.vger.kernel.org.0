@@ -2,187 +2,237 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 949903BD13
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 21:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB3C3BD17
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 21:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389099AbfFJTrf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jun 2019 15:47:35 -0400
-Received: from mail-vk1-f196.google.com ([209.85.221.196]:45925 "EHLO
-        mail-vk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389093AbfFJTrf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jun 2019 15:47:35 -0400
-Received: by mail-vk1-f196.google.com with SMTP id r23so1975747vkd.12
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Jun 2019 12:47:34 -0700 (PDT)
+        id S2389099AbfFJTtP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 15:49:15 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:37210 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388901AbfFJTtP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jun 2019 15:49:15 -0400
+Received: by mail-ua1-f68.google.com with SMTP id z13so3326165uaa.4
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Jun 2019 12:49:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tJqkZkxvqyt0n9gXCfpqbeOFz1qw5IOHXOpz6/WZhNc=;
-        b=WkUG0DgqDvpwq5Ck702sSYctkVvRBLsLXKrdU9Bzq/ThgjnoERtwsm0XEtq5rMO1EB
-         tGyFG23ImgFkflLRvSlYUXBMirqPn3gdS2dGo0jssn48CfllSuxtbzmEM5mikB40Tk4h
-         VapbXtm/tt2rOYI3T/TYNqIZFBxkcqNtJCjLN+CsuZWqvUSw5tB3QIacT5gSlRXgis8K
-         rGD/0PCbHZEhvaMBvXoda0Lf4NQpR1Pz/z0nHKhrR1rW/kJfttMYtd+tjc3/0eG52Epn
-         wVv4cc9yi8+oRf29lOkpyD5LjS1iLBnZ3RMeWjeOscMdx2/PHu8BY591xYf92xNch16T
-         7wog==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=91oHmaoT7ycnY+1e5HwqBS5NaVQbeIQ8yMG8ce2KIKY=;
+        b=T2E+LtufWW2S6WO4yiYNKjmQMkWvl1VYKuzH5KyhjtVvVVqT8VvuzQQLfLLA9sKDZd
+         GfGWrAn1aCCNJELTg1kpBILflGFXIQ00lpCoPArY+L4GHDKZ5PL6Z5gjFQ9v32TaHpbE
+         tnHq8GEAkYjtV+yTxKg6Xqa7RTWQixc0bFxbOl1F+B5nCVWO/myluieIj3ykSLg5yd8O
+         aBPlqQgA0AvxdzKOzefsG21uVITMowYLTn8StfOT61+sjEjBL3Aov2/h5+4v5mCQvrka
+         NHku4jTq9uTlXPF0vfXLpkeSd+N7y0ZnSQujM9rMj949di6vfPirUKPPc+deBJyCIvoy
+         FKfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tJqkZkxvqyt0n9gXCfpqbeOFz1qw5IOHXOpz6/WZhNc=;
-        b=mV+DpNSBl5frP2L099NFEeto0cZ1oa+SyP5JUFvYZz8wGUpvJHAmIdA1/hdXCS0F0b
-         kfzsbT+cqIhgU9QfeP5kBFVAJe0+Fl+h6Ebr7aKL3zhDiUu70o5ppslQ7jdRQT+EZnjK
-         DNP559cpSnARi9tcJxq6QYT+O74YOoTEM8fdauwUE8MGTBIZk0Xv9w8t7R9yjgNxnqvU
-         CKnP/3bzgBNbmvacZEluGYh9AVQcJsbZ054/fmSwfCfRkFwNsrLT1zbQEUEOLq4UV5Oz
-         OCTxvBC0t713jhebqDXczHVLdllRg/ZGK7+J0CysfwoGwS4PisF9VZJZbiZoHajMsYBF
-         Mkug==
-X-Gm-Message-State: APjAAAXlTm4ZyhWcqGoqAC3A3BTiXk0UHTtuuoClMq0Csn17uXdQ0SgG
-        F28rFJV3CiHKjIxR6gb2/3kVKg==
-X-Google-Smtp-Source: APXvYqxHX0MXghDAcbC5HGfJIEWJMHBjWcxTXhlF+7xiDLgOB64uA0+4DO5KecRyO0VbYw28h/SUqA==
-X-Received: by 2002:a1f:2896:: with SMTP id o144mr15347442vko.73.1560196053934;
-        Mon, 10 Jun 2019 12:47:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=91oHmaoT7ycnY+1e5HwqBS5NaVQbeIQ8yMG8ce2KIKY=;
+        b=rBIyd03Kf7SuwmYmLeaa+4xC+gMWShWtFPjfF3qiwX7ZTwisQXlFguqjeO+0+GBv5W
+         hX8QMOajWI7McJTALMbtZscgksQILggoSV4e9CiQ3R1kvRqKTVGTXVLe1mpIJvG0l7pK
+         EyfnrRQXdJtmK8AYzzF+7tsKRHGgvbPJJmwtMkhM8O9ZZxf+iAQWYP+76YlGJ6d3udyH
+         kFNsZTrtDjFV3S3WclQPYyLXe5PRdvyqUn3gWL66qT3i9l8kyitMpgJu1TFSVBLUJm6v
+         u7+qxY1H6F+3+Xc/FzAL++V7cnvSPYuxmEVK1GIZ4O+JFWnkqCPrSA2BSJHbl1UWxP7U
+         IsgQ==
+X-Gm-Message-State: APjAAAWfR0WTpVYEcokY+rKT66e4Ub1l0BYqzmS63aE9EuqpFM+cqfDQ
+        UbnQAEczm36puXnefkqvBOJR4ytC0PQzZw==
+X-Google-Smtp-Source: APXvYqyOqCQ6IOwWKmk0Tv4kit/uPK2Pe/votbaF5hpinpZANi+kvjwkAgedKJ468IVWGJXkwFUdUw==
+X-Received: by 2002:ab0:234e:: with SMTP id h14mr11013167uao.25.1560196154024;
+        Mon, 10 Jun 2019 12:49:14 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id v133sm5191417vkv.5.2019.06.10.12.47.33
+        by smtp.gmail.com with ESMTPSA id x14sm3470597uae.16.2019.06.10.12.49.13
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 10 Jun 2019 12:47:33 -0700 (PDT)
+        Mon, 10 Jun 2019 12:49:13 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1haQGS-0003pA-Vq; Mon, 10 Jun 2019 16:47:32 -0300
-Date:   Mon, 10 Jun 2019 16:47:32 -0300
+        id 1haQI4-0004r8-UF; Mon, 10 Jun 2019 16:49:12 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     syzbot <syzbot+e5579222b6a3edd96522@syzkaller.appspotmail.com>,
-        dasaratharaman.chandramouli@intel.com, dledford@redhat.com,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, parav@mellanox.com,
-        roland@purestorage.com, sean.hefty@intel.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: WARNING: bad unlock balance in ucma_event_handler
-Message-ID: <20190610194732.GH18468@ziepe.ca>
-References: <000000000000af6530056e863794@google.com>
- <20180613170543.GB30019@ziepe.ca>
- <20190610184853.GG63833@gmail.com>
+To:     linux-rdma@vger.kernel.org,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Latif, Faisal" <faisal.latif@intel.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH] rdma: Remove nes
+Date:   Mon, 10 Jun 2019 16:49:11 -0300
+Message-Id: <20190610194911.12427-1-jgg@ziepe.ca>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190610184853.GG63833@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 11:48:54AM -0700, Eric Biggers wrote:
-> On Wed, Jun 13, 2018 at 11:05:43AM -0600, Jason Gunthorpe wrote:
-> > On Wed, Jun 13, 2018 at 06:47:02AM -0700, syzbot wrote:
-> > > Hello,
-> > > 
-> > > syzbot found the following crash on:
-> > > 
-> > > HEAD commit:    73fcb1a370c7 Merge branch 'akpm' (patches from Andrew)
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=16d70827800000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=f3b4e30da84ec1ed
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=e5579222b6a3edd96522
-> > > compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
-> > > syzkaller repro:https://syzkaller.appspot.com/x/repro.syz?x=176daf97800000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15e7bd57800000
-> > > 
-> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > Reported-by: syzbot+e5579222b6a3edd96522@syzkaller.appspotmail.com
-> > > 
-> > > 
-> > > =====================================
-> > > WARNING: bad unlock balance detected!
-> > > 4.17.0-rc5+ #58 Not tainted
-> > > kworker/u4:0/6 is trying to release lock (&file->mut) at:
-> > > [<ffffffff8593ecc0>] ucma_event_handler+0x780/0xff0
-> > > drivers/infiniband/core/ucma.c:390
-> > > but there are no more locks to release!
-> > > 
-> > > other info that might help us debug this:
-> > > 4 locks held by kworker/u4:0/6:
-> > >  #0:         (ptrval) ((wq_completion)"ib_addr"){+.+.}, at:
-> > > __write_once_size include/linux/compiler.h:215 [inline]
-> > >  #0:         (ptrval) ((wq_completion)"ib_addr"){+.+.}, at:
-> > > arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
-> > >  #0:         (ptrval) ((wq_completion)"ib_addr"){+.+.}, at: atomic64_set
-> > > include/asm-generic/atomic-instrumented.h:40 [inline]
-> > >  #0:         (ptrval) ((wq_completion)"ib_addr"){+.+.}, at: atomic_long_set
-> > > include/asm-generic/atomic-long.h:57 [inline]
-> > >  #0:         (ptrval) ((wq_completion)"ib_addr"){+.+.}, at: set_work_data
-> > > kernel/workqueue.c:617 [inline]
-> > >  #0:         (ptrval) ((wq_completion)"ib_addr"){+.+.}, at:
-> > > set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
-> > >  #0:         (ptrval) ((wq_completion)"ib_addr"){+.+.}, at:
-> > > process_one_work+0xaef/0x1b50 kernel/workqueue.c:2116
-> > >  #1:         (ptrval) ((work_completion)(&(&req->work)->work)){+.+.}, at:
-> > > process_one_work+0xb46/0x1b50 kernel/workqueue.c:2120
-> > >  #2:         (ptrval) (&id_priv->handler_mutex){+.+.}, at:
-> > > addr_handler+0xa6/0x3d0 drivers/infiniband/core/cma.c:2796
-> > >  #3:         (ptrval) (&file->mut){+.+.}, at: ucma_event_handler+0x10e/0xff0
-> > > drivers/infiniband/core/ucma.c:350
-> > 
-> > I think this is probably a use-after-free race, eg when we do
-> > ctx->file->mut we have raced with ucma_free_ctx() ..
-> > 
-> > Which probably means something along the way to free_ctx() did not
-> > call rdma_addr_cancel?
-> > 
-> > Jason
-> 
-> This is still happening.  Just FYI, ignoring these reports doesn't make the bugs
-> go away.  Here's a crash report from v5.2.0-rc4:
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-There are many unfixed syzkaller bugs in rdma_cm, so I'm not surprised
-it is still happening..
+This driver was first merged over 10 years ago and has not seen major
+activity by the authors in the last 7 years. However, in that time it has
+been patched 150 times to adapt it to changing kernel APIs.
 
-Nobody has stepped forward to work on this code, and it is not a
-simple mess to understand, let alone try to fix.
+Further, the hardware has several issues, like not supporting 64 bit DMA,
+that make it rather uninteresting for use with modern systems and RDMA.
 
-> =====================================
-> WARNING: bad unlock balance detected!
-> 5.2.0-rc4 #44 Not tainted
-> kworker/u4:2/61 is trying to release lock (&file->mut) at:
-> [<ffffffff851a3f81>] ucma_event_handler+0x711/0xef0 drivers/infiniband/core/ucma.c:394
-> but there are no more locks to release!
-> 
-> other info that might help us debug this:
-> 4 locks held by kworker/u4:2/61:
->  #0: 000000005ff5546b ((wq_completion)ib_addr){+.+.}, at: __write_once_size include/linux/compiler.h:221 [inline]
->  #0: 000000005ff5546b ((wq_completion)ib_addr){+.+.}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
->  #0: 000000005ff5546b ((wq_completion)ib_addr){+.+.}, at: atomic64_set include/asm-generic/atomic-instrumented.h:855 [inline]
->  #0: 000000005ff5546b ((wq_completion)ib_addr){+.+.}, at: atomic_long_set include/asm-generic/atomic-long.h:40 [inline]
->  #0: 000000005ff5546b ((wq_completion)ib_addr){+.+.}, at: set_work_data kernel/workqueue.c:620 [inline]
->  #0: 000000005ff5546b ((wq_completion)ib_addr){+.+.}, at: set_work_pool_and_clear_pending kernel/workqueue.c:647 [inline]
->  #0: 000000005ff5546b ((wq_completion)ib_addr){+.+.}, at: process_one_work+0x87e/0x1790 kernel/workqueue.c:2240
->  #1: 00000000d75dabcd ((work_completion)(&(&req->work)->work)){+.+.}, at: process_one_work+0x8b4/0x1790 kernel/workqueue.c:2244
->  #2: 0000000058b7aa49 (&id_priv->handler_mutex){+.+.}, at: addr_handler+0xaf/0x3d0 drivers/infiniband/core/cma.c:3031
->  #3: 00000000e5042b0a (&file->mut){+.+.}, at: ucma_event_handler+0xb3/0xef0 drivers/infiniband/core/ucma.c:354
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ .../ABI/stable/sysfs-class-infiniband         |   17 -
+ MAINTAINERS                                   |    8 -
+ drivers/infiniband/Kconfig                    |    1 -
+ drivers/infiniband/hw/Makefile                |    1 -
+ drivers/infiniband/hw/nes/Kconfig             |   15 -
+ drivers/infiniband/hw/nes/Makefile            |    3 -
+ drivers/infiniband/hw/nes/nes.c               | 1205 -----
+ drivers/infiniband/hw/nes/nes.h               |  574 ---
+ drivers/infiniband/hw/nes/nes_cm.c            | 3992 -----------------
+ drivers/infiniband/hw/nes/nes_cm.h            |  470 --
+ drivers/infiniband/hw/nes/nes_context.h       |  193 -
+ drivers/infiniband/hw/nes/nes_hw.c            | 3887 ----------------
+ drivers/infiniband/hw/nes/nes_hw.h            | 1380 ------
+ drivers/infiniband/hw/nes/nes_mgt.c           | 1155 -----
+ drivers/infiniband/hw/nes/nes_mgt.h           |   97 -
+ drivers/infiniband/hw/nes/nes_nic.c           | 1870 --------
+ drivers/infiniband/hw/nes/nes_utils.c         |  915 ----
+ drivers/infiniband/hw/nes/nes_verbs.c         | 3754 ----------------
+ drivers/infiniband/hw/nes/nes_verbs.h         |  198 -
+ include/uapi/rdma/nes-abi.h                   |  115 -
+ 20 files changed, 19850 deletions(-)
+ delete mode 100644 drivers/infiniband/hw/nes/Kconfig
+ delete mode 100644 drivers/infiniband/hw/nes/Makefile
+ delete mode 100644 drivers/infiniband/hw/nes/nes.c
+ delete mode 100644 drivers/infiniband/hw/nes/nes.h
+ delete mode 100644 drivers/infiniband/hw/nes/nes_cm.c
+ delete mode 100644 drivers/infiniband/hw/nes/nes_cm.h
+ delete mode 100644 drivers/infiniband/hw/nes/nes_context.h
+ delete mode 100644 drivers/infiniband/hw/nes/nes_hw.c
+ delete mode 100644 drivers/infiniband/hw/nes/nes_hw.h
+ delete mode 100644 drivers/infiniband/hw/nes/nes_mgt.c
+ delete mode 100644 drivers/infiniband/hw/nes/nes_mgt.h
+ delete mode 100644 drivers/infiniband/hw/nes/nes_nic.c
+ delete mode 100644 drivers/infiniband/hw/nes/nes_utils.c
+ delete mode 100644 drivers/infiniband/hw/nes/nes_verbs.c
+ delete mode 100644 drivers/infiniband/hw/nes/nes_verbs.h
+ delete mode 100644 include/uapi/rdma/nes-abi.h
 
-Well, it is holding the (logical) lock it is releasing, so this
-probably menas ctx->file changed value while this event handler is
-running. :\
+As discussed.
 
-A quick look suggests ucma_migrate_id does that..
+diff --git a/Documentation/ABI/stable/sysfs-class-infiniband b/Documentation/ABI/stable/sysfs-class-infiniband
+index 17211ceb9bf438..aed21b8916a25a 100644
+--- a/Documentation/ABI/stable/sysfs-class-infiniband
++++ b/Documentation/ABI/stable/sysfs-class-infiniband
+@@ -423,23 +423,6 @@ Description:
+ 		(e.g. driver restart on the VM which owns the VF).
+ 
+ 
+-sysfs interface for NetEffect RNIC Low-Level iWARP driver (nes)
+----------------------------------------------------------------
+-
+-What:		/sys/class/infiniband/nesX/hw_rev
+-What:		/sys/class/infiniband/nesX/hca_type
+-What:		/sys/class/infiniband/nesX/board_id
+-Date:		Feb, 2008
+-KernelVersion:	v2.6.25
+-Contact:	linux-rdma@vger.kernel.org
+-Description:
+-		hw_rev:		(RO) Hardware revision number
+-
+-		hca_type:	(RO) Host Channel Adapter type (NEX020)
+-
+-		board_id:	(RO) Manufacturing board id
+-
+-
+ sysfs interface for Chelsio T4/T5 RDMA driver (cxgb4)
+ -----------------------------------------------------
+ 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5cfbea4ce57503..9ac03f3e3bd562 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10830,14 +10830,6 @@ F:	driver/net/net_failover.c
+ F:	include/net/net_failover.h
+ F:	Documentation/networking/net_failover.rst
+ 
+-NETEFFECT IWARP RNIC DRIVER (IW_NES)
+-M:	Faisal Latif <faisal.latif@intel.com>
+-L:	linux-rdma@vger.kernel.org
+-W:	http://www.intel.com/Products/Server/Adapters/Server-Cluster/Server-Cluster-overview.htm
+-S:	Supported
+-F:	drivers/infiniband/hw/nes/
+-F:	include/uapi/rdma/nes-abi.h
+-
+ NETEM NETWORK EMULATOR
+ M:	Stephen Hemminger <stephen@networkplumber.org>
+ L:	netem@lists.linux-foundation.org (moderated for non-subscribers)
+diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
+index cbaafa4e030269..0fe6f76e8fdccf 100644
+--- a/drivers/infiniband/Kconfig
++++ b/drivers/infiniband/Kconfig
+@@ -86,7 +86,6 @@ source "drivers/infiniband/hw/efa/Kconfig"
+ source "drivers/infiniband/hw/i40iw/Kconfig"
+ source "drivers/infiniband/hw/mlx4/Kconfig"
+ source "drivers/infiniband/hw/mlx5/Kconfig"
+-source "drivers/infiniband/hw/nes/Kconfig"
+ source "drivers/infiniband/hw/ocrdma/Kconfig"
+ source "drivers/infiniband/hw/vmw_pvrdma/Kconfig"
+ source "drivers/infiniband/hw/usnic/Kconfig"
+diff --git a/drivers/infiniband/hw/Makefile b/drivers/infiniband/hw/Makefile
+index 77094be1b2627d..433fca59febdff 100644
+--- a/drivers/infiniband/hw/Makefile
++++ b/drivers/infiniband/hw/Makefile
+@@ -7,7 +7,6 @@ obj-$(CONFIG_INFINIBAND_EFA)		+= efa/
+ obj-$(CONFIG_INFINIBAND_I40IW)		+= i40iw/
+ obj-$(CONFIG_MLX4_INFINIBAND)		+= mlx4/
+ obj-$(CONFIG_MLX5_INFINIBAND)		+= mlx5/
+-obj-$(CONFIG_INFINIBAND_NES)		+= nes/
+ obj-$(CONFIG_INFINIBAND_OCRDMA)		+= ocrdma/
+ obj-$(CONFIG_INFINIBAND_VMWARE_PVRDMA)	+= vmw_pvrdma/
+ obj-$(CONFIG_INFINIBAND_USNIC)		+= usnic/
+diff --git a/drivers/infiniband/hw/nes/Kconfig b/drivers/infiniband/hw/nes/Kconfig
+deleted file mode 100644
+index 52caae954e4ae6..00000000000000
+diff --git a/drivers/infiniband/hw/nes/Makefile b/drivers/infiniband/hw/nes/Makefile
+deleted file mode 100644
+index 97820c23ecef7a..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes.c b/drivers/infiniband/hw/nes/nes.c
+deleted file mode 100644
+index e00add6d78ec77..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes.h b/drivers/infiniband/hw/nes/nes.h
+deleted file mode 100644
+index a895fe980d10ac..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_cm.c b/drivers/infiniband/hw/nes/nes_cm.c
+deleted file mode 100644
+index 62bf986eba67b1..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_cm.h b/drivers/infiniband/hw/nes/nes_cm.h
+deleted file mode 100644
+index b9cc02b4e8d59c..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_context.h b/drivers/infiniband/hw/nes/nes_context.h
+deleted file mode 100644
+index a69eef16d72d03..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_hw.c b/drivers/infiniband/hw/nes/nes_hw.c
+deleted file mode 100644
+index 5517e392bc018a..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_hw.h b/drivers/infiniband/hw/nes/nes_hw.h
+deleted file mode 100644
+index 3c56470816a87f..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_mgt.c b/drivers/infiniband/hw/nes/nes_mgt.c
+deleted file mode 100644
+index cc4dce5c3e5f6d..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_mgt.h b/drivers/infiniband/hw/nes/nes_mgt.h
+deleted file mode 100644
+index 4f7f701c4a817c..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_nic.c b/drivers/infiniband/hw/nes/nes_nic.c
+deleted file mode 100644
+index 16f33454c198d2..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_utils.c b/drivers/infiniband/hw/nes/nes_utils.c
+deleted file mode 100644
+index 90f28890246dd4..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_verbs.c b/drivers/infiniband/hw/nes/nes_verbs.c
+deleted file mode 100644
+index fb2d0762c7c820..00000000000000
+diff --git a/drivers/infiniband/hw/nes/nes_verbs.h b/drivers/infiniband/hw/nes/nes_verbs.h
+deleted file mode 100644
+index 114a9b59fefd58..00000000000000
+diff --git a/include/uapi/rdma/nes-abi.h b/include/uapi/rdma/nes-abi.h
+deleted file mode 100644
+index f80495baa9697e..00000000000000
+-- 
+2.21.0
 
-.. and we can quickly see the bug, we try to obtain a lock:
-
-        mutex_lock(&ctx->file->mut);
-
-while another thread is changing that pointer under the lock we are
-trying to get:
-
-        ctx->file = new_file;
-
-So probably mutex_lock went to sleep, holding &ctx->file->mut in a
-register, then the thing in the lock changed ctx->file, finally the
-unlock reloaded ctx->file and got the new unlocked value, and crash.
-
-Which just an insane design in the first place.
-
-That is as far as I can get, trying to figure out how to rework
-ctx->file to be properly ref counted, accessed and locked, is a major
-task.. I don't even know right now what migrate_id is supposed to be
-for :(
-
-Jason
