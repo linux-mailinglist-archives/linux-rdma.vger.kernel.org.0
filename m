@@ -2,120 +2,207 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1E23AC89
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 02:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9803AEA9
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jun 2019 07:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729684AbfFJAQJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 9 Jun 2019 20:16:09 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:5150 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbfFJAQJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Jun 2019 20:16:09 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5cfda1490000>; Sun, 09 Jun 2019 17:16:09 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Sun, 09 Jun 2019 17:16:08 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Sun, 09 Jun 2019 17:16:08 -0700
-Received: from [10.110.48.28] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 10 Jun
- 2019 00:16:07 +0000
-Subject: Re: [RFC] mm/hmm: pass mmu_notifier_range to
- sync_cpu_device_pagetables
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Christoph Hellwig <hch@infradead.org>
-CC:     Ralph Campbell <rcampbell@nvidia.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-References: <20190608001452.7922-1-rcampbell@nvidia.com>
- <20190608091008.GC32185@infradead.org> <20190608114133.GA14873@mellanox.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <2be4987a-eede-c864-c69c-382698641d25@nvidia.com>
-Date:   Sun, 9 Jun 2019 17:16:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S2387615AbfFJFkl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jun 2019 01:40:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387505AbfFJFkk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Jun 2019 01:40:40 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3838020820;
+        Mon, 10 Jun 2019 05:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560145239;
+        bh=uDmQJ2fdQe3pgp+2HPDsgrwEUsVDgDu2ffQ/i9CSCIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eStEphU+eZssUS9RDbJD0H4aiVyDN2HQaUAhddX42NYqLvOaMBI3kFXRiyaSTOjbK
+         noi6bTAacBjwSWi6nGRcwwihGaiUrJUUQ5bXJn9jvVSWCfGP9Xen3AOhf0Gdq+AZhb
+         9xXa0pIIwEYBCZUDLnIvgMmHaBixr8CEKlzj4HyY=
+Date:   Mon, 10 Jun 2019 08:40:35 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bernard Metzler <bmt@zurich.ibm.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next v1 03/12] SIW network and RDMA core interface
+Message-ID: <20190610054035.GB6369@mtr-leonro.mtl.com>
+References: <20190526114156.6827-1-bmt@zurich.ibm.com>
+ <20190526114156.6827-4-bmt@zurich.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20190608114133.GA14873@mellanox.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1560125769; bh=xcBhzlVW6R3gFNBTrQqz4x9pqkklyqjUIKM1o42kpyM=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=E6X87sdu/LBn60CmN02yYjx0e4LyL+XQ/EpyrSmFXI2fQ5Zb+Gh+JZPwwwFyhR9/T
-         DR8oJjqqMJ9r+VrKVwUG2o3JczcXZgsbMi07n3RJ7p29qYbn9AWfErKW4mHKk2FRpv
-         7+ufnoxySLzKTlkINeZdmFMs9VXRW0J/FG4cJKrSvuAOgP6EdI3FxQrq6Z4C9QnMCw
-         zKTDzopKQehlzGuMNc9bmY5FRAUDEloQCDHXi95cyZWmUE2V0UpuPOonrNC/A7AMs4
-         gdRNwHonTHKYQRUAtWc6IMPZ4/G46btrcTuhnh6Q5ec1u46swkktkF4Xs0TKPrStrX
-         C0pK3ycdPHRrA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190526114156.6827-4-bmt@zurich.ibm.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/8/19 4:41 AM, Jason Gunthorpe wrote:
-> On Sat, Jun 08, 2019 at 02:10:08AM -0700, Christoph Hellwig wrote:
->> On Fri, Jun 07, 2019 at 05:14:52PM -0700, Ralph Campbell wrote:
->>> HMM defines its own struct hmm_update which is passed to the
->>> sync_cpu_device_pagetables() callback function. This is
->>> sufficient when the only action is to invalidate. However,
->>> a device may want to know the reason for the invalidation and
->>> be able to see the new permissions on a range, update device access
->>> rights or range statistics. Since sync_cpu_device_pagetables()
->>> can be called from try_to_unmap(), the mmap_sem may not be held
->>> and find_vma() is not safe to be called.
->>> Pass the struct mmu_notifier_range to sync_cpu_device_pagetables()
->>> to allow the full invalidation information to be used.
->>>
->>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->>>
->>> I'm sending this out now since we are updating many of the HMM APIs
->>> and I think it will be useful.
->>
->> This is the right thing to do.  But the really right thing is to just
->> kill the hmm_mirror API entirely and move to mmu_notifiers.  At least
->> for noveau this already is way simpler, although right now it defeats
->> Jasons patch to avoid allocating the struct hmm in the fault path.
->> But as said before that can be avoided by just killing struct hmm,
->> which for many reasons is the right thing to do anyway.
->>
->> I've got a series here, which is a bit broken (epecially the last
->> patch can't work as-is), but should explain where I'm trying to head:
->>
->> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/hmm-mirror-simplification
-> 
-> At least the current hmm approach does rely on the collision retry
-> locking scheme in struct hmm/struct hmm_range for the pagefault side
-> to work right.
-> 
-> So, before we can apply patch one in this series we need to fix
-> hmm_vma_fault() and all its varients. Otherwise the driver will be
-> broken.
-> 
-> I'm hoping to first define what this locking should be (see other
-> emails to Ralph) then, ideally, see if we can extend mmu notifiers to
-> get it directly withouth hmm stuff.
-> 
-> Then we apply your patch one and the hmm ops wrapper dies.
-> 
+On Sun, May 26, 2019 at 01:41:47PM +0200, Bernard Metzler wrote:
+> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+> ---
+>  drivers/infiniband/sw/siw/siw_main.c | 701 +++++++++++++++++++++++++++
+>  1 file changed, 701 insertions(+)
+>  create mode 100644 drivers/infiniband/sw/siw/siw_main.c
+>
+> diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+> new file mode 100644
+> index 000000000000..a9b8a5d2aaa3
+> --- /dev/null
+> +++ b/drivers/infiniband/sw/siw/siw_main.c
+> @@ -0,0 +1,701 @@
+> +// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
+> +
+> +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+> +/* Copyright (c) 2008-2019, IBM Corporation */
+> +
+> +#include <linux/init.h>
+> +#include <linux/errno.h>
+> +#include <linux/netdevice.h>
+> +#include <linux/inetdevice.h>
+> +#include <net/net_namespace.h>
+> +#include <linux/rtnetlink.h>
+> +#include <linux/if_arp.h>
+> +#include <linux/list.h>
+> +#include <linux/kernel.h>
+> +#include <linux/dma-mapping.h>
+> +
+> +#include <rdma/ib_verbs.h>
+> +#include <rdma/ib_smi.h>
+> +#include <rdma/ib_user_verbs.h>
+> +#include <rdma/rdma_netlink.h>
+> +#include <linux/kthread.h>
+> +
+> +#include "siw.h"
+> +#include "siw_cm.h"
+> +#include "siw_verbs.h"
+> +#include "siw_debug.h"
+> +
+> +MODULE_AUTHOR("Bernard Metzler");
+> +MODULE_DESCRIPTION("Software iWARP Driver");
+> +MODULE_LICENSE("Dual BSD/GPL");
+> +
+> +/* transmit from user buffer, if possible */
+> +const bool zcopy_tx = true;
+> +
+> +/* Restrict usage of GSO, if hardware peer iwarp is unable to process
+> + * large packets. try_gso = true lets siw try to use local GSO,
+> + * if peer agrees.  Not using GSO severly limits siw maximum tx bandwidth.
+> + */
+> +const bool try_gso;
+> +
+> +/* Attach siw also with loopback devices */
+> +const bool loopback_enabled = true;
+> +
+> +/* We try to negotiate CRC on, if true */
+> +const bool mpa_crc_required;
+> +
+> +/* MPA CRC on/off enforced */
+> +const bool mpa_crc_strict;
+> +
+> +/* Control TCP_NODELAY socket option */
+> +const bool siw_tcp_nagle;
+> +
+> +/* Select MPA version to be used during connection setup */
+> +u_char mpa_version = MPA_REVISION_2;
+> +
+> +/* Selects MPA P2P mode (additional handshake during connection
+> + * setup, if true.
+> + */
+> +const bool peer_to_peer;
+> +
+> +struct task_struct *siw_tx_thread[NR_CPUS];
+> +struct crypto_shash *siw_crypto_shash;
+> +
+> +static int siw_device_register(struct siw_device *sdev, const char *name)
+> +{
+> +	struct ib_device *base_dev = &sdev->base_dev;
+> +	static int dev_id = 1;
+> +	int rv;
+> +
+> +	base_dev->driver_id = RDMA_DRIVER_SIW;
+> +
+> +	rv = ib_register_device(base_dev, name);
+> +	if (rv) {
+> +		pr_warn("siw: device registration error %d\n", rv);
+> +		return rv;
+> +	}
+> +	sdev->vendor_part_id = dev_id++;
+> +
+> +	siw_dbg(base_dev, "HWaddr=%pM\n", sdev->netdev->dev_addr);
+> +
+> +	return 0;
+> +}
+> +
+> +static void siw_device_cleanup(struct ib_device *base_dev)
+> +{
+> +	struct siw_device *sdev = to_siw_dev(base_dev);
+> +
+> +	siw_dbg(base_dev, "Cleanup device\n");
+> +
+> +	if (atomic_read(&sdev->num_ctx) || atomic_read(&sdev->num_srq) ||
+> +	    atomic_read(&sdev->num_mr) || atomic_read(&sdev->num_cep) ||
+> +	    atomic_read(&sdev->num_qp) || atomic_read(&sdev->num_cq) ||
+> +	    atomic_read(&sdev->num_pd)) {
+> +		pr_warn("siw at %s: orphaned resources!\n", sdev->netdev->name);
+> +		pr_warn("           CTX %d, SRQ %d, QP %d, CQ %d, MEM %d, CEP %d, PD %d\n",
+> +			atomic_read(&sdev->num_ctx),
+> +			atomic_read(&sdev->num_srq), atomic_read(&sdev->num_qp),
+> +			atomic_read(&sdev->num_cq), atomic_read(&sdev->num_mr),
+> +			atomic_read(&sdev->num_cep),
+> +			atomic_read(&sdev->num_pd));
+> +	}
 
-This all makes sense, and thanks for all this work to simplify and clarify
-HMM. It's going to make it a lot easier to work with, when the dust settles.
+We already talked about it, most of this code is redundant due to restrack and it should be removed.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+> +	while (!list_empty(&sdev->cep_list)) {
+> +		struct siw_cep *cep =
+> +			list_entry(sdev->cep_list.next, struct siw_cep, devq);
+> +		list_del(&cep->devq);
+> +		pr_warn("siw: at %s: free orphaned CEP 0x%p, state %d\n",
+> +			sdev->base_dev.name, cep, cep->state);
+
+Does it mean that SIW leak memory? If cep can be not-empty at this
+stage, what will be the purpose of pr_warn? If it can't, it is better
+to find memory leak.
+
+> +		kfree(cep);
+> +	}
+> +	xa_destroy(&sdev->qp_xa);
+> +	xa_destroy(&sdev->mem_xa);
+> +}
+> +
+> +static int siw_create_tx_threads(void)
+> +{
+> +	int cpu, rv, assigned = 0;
+> +
+> +	for_each_online_cpu(cpu) {
+> +		/* Skip HT cores */
+> +		if (cpu % cpumask_weight(topology_sibling_cpumask(cpu))) {
+> +			siw_tx_thread[cpu] = NULL;
+> +			continue;
+> +		}
+> +		siw_tx_thread[cpu] =
+> +			kthread_create(siw_run_sq, (unsigned long *)(long)cpu,
+> +				       "siw_tx/%d", cpu);
+
+I don't decide here, but just for the record, creating kernel threads
+for every CPU is wrong.
+
+> +		if (IS_ERR(siw_tx_thread[cpu])) {
+> +			rv = PTR_ERR(siw_tx_thread[cpu]);
+> +			siw_tx_thread[cpu] = NULL;
+> +			pr_info("Creating TX thread for CPU %d failed", cpu);
+> +			continue;
+> +		}
+> +		kthread_bind(siw_tx_thread[cpu], cpu);
+> +
+> +		wake_up_process(siw_tx_thread[cpu]);
+> +		assigned++;
+> +	}
+> +	return assigned;
+> +}
+> +
