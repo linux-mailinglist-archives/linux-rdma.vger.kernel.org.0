@@ -2,93 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E30533DB9F
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 22:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353463D77A
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 22:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405915AbfFKUHS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 16:07:18 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:52182 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405476AbfFKUHS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 16:07:18 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BK5X7D176393;
+        id S2406448AbfFKUG2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jun 2019 16:06:28 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:38320 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405706AbfFKUG2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 16:06:28 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BK5cbO196092;
         Tue, 11 Jun 2019 20:06:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=chD9BHu2Q8n/vFf6CCiBN6lp1HXxmyrKtdEjtx98SfY=;
- b=i+ihcJfD+r++tCN09DcxE+9SdhIRXslpbsen1Ly2b/r82XpfipS+cg5oxIFDHr5z/GAU
- VrRdu7NdT1KOdFyjMhexY6IfvMPY77FUH+FKxtIUXO8d1C0e0tDTPRmvp1FdzV8V7pYX
- U4IzADiDszYzTuo1y6F4qZFiT2b9u6Cz8QDPrN+6Sqlg39FglRjDj2+y+RKoGD/iKR6m
- uDqlrJDwwIbHmVtlRXKy/zbwpgKr8Ch3G7MbdDDHDEU1fdVCH38z0MVPNm3oNSiK0LeC
- adAcFZjzJlLyTbihfu+4rXpoW5PNw7BgFZdrw7mehFHTf2SW6/39ZzEaisuCtPm7xaov 9A== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2018-07-02; bh=fH6q0ADJX8IaE6W/edr/GAdNJAHMSgx6pXe9WqGKYk4=;
+ b=gDXzOoHg88+Huc10HhK6fBEK8sYk4iYl9Md3ay0FMC4q+UO67uvVy19TJBq2cGrD4sDv
+ 26LX/Rc4CFJQ71/m9tfXFuKyYMeD9ggRhG+4UP2iqEMc8OmwyQsbkLKpt6od/fJX/XzG
+ sXAHeAbJG8zHV9bONueGHPK2yqCigThPDIkzYfXcUF7vMhbcGLFOl4t6fgwEe3gD7uwM
+ W2yTVYtCtw2CkP1/GqWhylsoviSRaQLEpjkSuDPdHdmpg9oNVL8Gbc1q0HJzTfgtJXyz
+ LkSFYVgVYIY7JQ7viktjT85D2q/KXhpD9LFIoLQpjFlO4FIdePekulbV9ZU+GsmIknHi 6Q== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2t04etqfpk-1
+        by aserp2130.oracle.com with ESMTP id 2t02heqm1r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 11 Jun 2019 20:06:20 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BK52LA147470;
-        Tue, 11 Jun 2019 20:06:20 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 2t04hyj0wv-1
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BK4rDZ147066;
+        Tue, 11 Jun 2019 20:06:19 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2t04hyj0wy-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 11 Jun 2019 20:06:19 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5BK6Df4017807;
-        Tue, 11 Jun 2019 20:06:13 GMT
-Received: from [10.154.187.61] (/10.154.187.61)
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5BK6JIc023097;
+        Tue, 11 Jun 2019 20:06:19 GMT
+Received: from anon-dhcp-171.1015granger.net (/68.61.232.219)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 11 Jun 2019 13:06:13 -0700
-Subject: Re: [PATCH v16 03/16] lib, arm64: untag user pointers in strn*_user
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-References: <cover.1559580831.git.andreyknvl@google.com>
- <14f17ef1902aa4f07a39f96879394e718a1f5dc1.1559580831.git.andreyknvl@google.com>
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-Organization: Oracle Corp
-Message-ID: <dd2de772-bd55-86e3-0812-2e01ae97f8fa@oracle.com>
-Date:   Tue, 11 Jun 2019 14:06:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <14f17ef1902aa4f07a39f96879394e718a1f5dc1.1559580831.git.andreyknvl@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        with ESMTP ; Tue, 11 Jun 2019 13:06:18 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v2 16/19] NFS: Fix show_nfs_errors macros again
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <CAN-5tyHW4L8_djraOPfoLx=NorqgHOijjaApWNNESVRO2X9Upg@mail.gmail.com>
+Date:   Tue, 11 Jun 2019 16:06:17 -0400
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <C7B66AE1-1D14-4EC8-B0A7-F3916913A8AB@oracle.com>
+References: <20190611150445.2877.8656.stgit@manet.1015granger.net>
+ <20190611150923.2877.6862.stgit@manet.1015granger.net>
+ <CAN-5tyHx-r6c6RgHk2ocv2CxTgw_8Ebie_fUUSxzaVKotmX1zw@mail.gmail.com>
+ <C5542119-E526-4A69-9D15-B0EDEFF1E5A9@oracle.com>
+ <CAN-5tyHW4L8_djraOPfoLx=NorqgHOijjaApWNNESVRO2X9Upg@mail.gmail.com>
+To:     Olga Kornievskaia <aglo@umich.edu>
+X-Mailer: Apple Mail (2.3445.104.11)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
@@ -105,81 +74,643 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/3/19 10:55 AM, Andrey Konovalov wrote:
-> This patch is a part of a series that extends arm64 kernel ABI to allow=
- to
-> pass tagged user pointers (with the top byte set to something else othe=
-r
-> than 0x00) as syscall arguments.
->=20
-> strncpy_from_user and strnlen_user accept user addresses as arguments, =
-and
-> do not go through the same path as copy_from_user and others, so here w=
-e
-> need to handle the case of tagged user addresses separately.
->=20
-> Untag user pointers passed to these functions.
->=20
-> Note, that this patch only temporarily untags the pointers to perform
-> validity checks, but then uses them as is to perform user memory access=
-es.
->=20
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> ---
->  lib/strncpy_from_user.c | 3 ++-
->  lib/strnlen_user.c      | 3 ++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
 
-Looks good.
 
-Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
+> On Jun 11, 2019, at 4:00 PM, Olga Kornievskaia <aglo@umich.edu> wrote:
+>=20
+> On Tue, Jun 11, 2019 at 3:37 PM Chuck Lever <chuck.lever@oracle.com> =
+wrote:
+>>=20
+>>=20
+>>=20
+>>> On Jun 11, 2019, at 3:33 PM, Olga Kornievskaia <aglo@umich.edu> =
+wrote:
+>>>=20
+>>> On Tue, Jun 11, 2019 at 11:09 AM Chuck Lever =
+<chuck.lever@oracle.com> wrote:
+>>>>=20
+>>>> I noticed that NFS status values stopped working again.
+>>>>=20
+>>>> trace_print_symbols_seq() takes an unsigned long. Passing a =
+negative
+>>>> errno or negative NFSERR value just confuses it, and since we're
+>>>> using C macros here and not static inline functions, all bets are
+>>>> off due to implicit type casting.
+>>>>=20
+>>>> Straight-line the calling conventions so that error codes are =
+stored
+>>>> in the trace record as positive values in an unsigned long field.
+>>>>=20
+>>>> It's often the case that an error value that is positive is a byte
+>>>> count but when it's negative, it's an error (e.g. nfs4_write). Fix
+>>>> those cases so that the value that is eventually stored in the
+>>>> error field is a positive NFS status or errno, or zero.
+>>>>=20
+>>>=20
+>>> Hi Chuck,
+>>>=20
+>>> To clarify, so on error case, we no longer going be seeing a =
+negative
+>>> value so error=3D-5 (EIO) would be error=3D5 (EIO)? I have always =
+relied
+>>> on searching for "error=3D-" thru the trace_pipe log for errors. Do =
+we
+>>> really need to change that?
+>>=20
+>> error=3D will be zero or a positive errno/status code. If the trace =
+point
+>> has a count=3D or task->tk_status=3D you can see the byte count when
+>> error=3D0.
+>>=20
+>> So now the search will be for anything that has "error=3D" but is not
+>> "error=3D0".
+>=20
+> Unfortunately, "error=3D" but not "error=3D0" isn't easily translated =
+into
+> the vi search... ("error=3D-" was more convenient).
+>=20
+> Can we keep the value of the error=3D negative but change it to the
+> positive value for the show_nfsv4_errors()?
 
->=20
-> diff --git a/lib/strncpy_from_user.c b/lib/strncpy_from_user.c
-> index 023ba9f3b99f..dccb95af6003 100644
-> --- a/lib/strncpy_from_user.c
-> +++ b/lib/strncpy_from_user.c
-> @@ -6,6 +6,7 @@
->  #include <linux/uaccess.h>
->  #include <linux/kernel.h>
->  #include <linux/errno.h>
-> +#include <linux/mm.h>
-> =20
->  #include <asm/byteorder.h>
->  #include <asm/word-at-a-time.h>
-> @@ -108,7 +109,7 @@ long strncpy_from_user(char *dst, const char __user=
- *src, long count)
->  		return 0;
-> =20
->  	max_addr =3D user_addr_max();
-> -	src_addr =3D (unsigned long)src;
-> +	src_addr =3D (unsigned long)untagged_addr(src);
->  	if (likely(src_addr < max_addr)) {
->  		unsigned long max =3D max_addr - src_addr;
->  		long retval;
-> diff --git a/lib/strnlen_user.c b/lib/strnlen_user.c
-> index 7f2db3fe311f..28ff554a1be8 100644
-> --- a/lib/strnlen_user.c
-> +++ b/lib/strnlen_user.c
-> @@ -2,6 +2,7 @@
->  #include <linux/kernel.h>
->  #include <linux/export.h>
->  #include <linux/uaccess.h>
-> +#include <linux/mm.h>
-> =20
->  #include <asm/word-at-a-time.h>
-> =20
-> @@ -109,7 +110,7 @@ long strnlen_user(const char __user *str, long coun=
-t)
->  		return 0;
-> =20
->  	max_addr =3D user_addr_max();
-> -	src_addr =3D (unsigned long)str;
-> +	src_addr =3D (unsigned long)untagged_addr(str);
->  	if (likely(src_addr < max_addr)) {
->  		unsigned long max =3D max_addr - src_addr;
->  		long retval;
->=20
+The patch strips out implicit and explicit type casts which
+makes the trace points less brittle.
+
+You could just as easily use awk or grep instead, or switch
+to using trace-cmd, which has more efficient mechanisms for
+filtering by value.
+
+I can try storing the value as an unsigned long, and
+printing it as negative (signed) long, so that zero is
+still displayed as "error=3D0". But I think some people might
+find this confusing.
+
+
+>>>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+>>>> ---
+>>>> fs/nfs/nfs4trace.h |  120 =
+++++++++++++++++++++++++++--------------------------
+>>>> 1 file changed, 60 insertions(+), 60 deletions(-)
+>>>>=20
+>>>> diff --git a/fs/nfs/nfs4trace.h b/fs/nfs/nfs4trace.h
+>>>> index 6beb1f2..9a01731 100644
+>>>> --- a/fs/nfs/nfs4trace.h
+>>>> +++ b/fs/nfs/nfs4trace.h
+>>>> @@ -156,7 +156,7 @@
+>>>> TRACE_DEFINE_ENUM(NFS4ERR_XDEV);
+>>>>=20
+>>>> #define show_nfsv4_errors(error) \
+>>>> -       __print_symbolic(-(error), \
+>>>> +       __print_symbolic(error, \
+>>>>               { NFS4_OK, "OK" }, \
+>>>>               /* Mapped by nfs4_stat_to_errno() */ \
+>>>>               { EPERM, "EPERM" }, \
+>>>> @@ -348,7 +348,7 @@
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>>                       __string(dstaddr, clp->cl_hostname)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>               ),
+>>>>=20
+>>>>               TP_fast_assign(
+>>>> @@ -357,7 +357,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) dstaddr=3D%s",
+>>>> +                       "error=3D%lu (%s) dstaddr=3D%s",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>>                       __get_str(dstaddr)
+>>>> @@ -420,7 +420,7 @@
+>>>>                       __field(unsigned int, highest_slotid)
+>>>>                       __field(unsigned int, target_highest_slotid)
+>>>>                       __field(unsigned int, status_flags)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>               ),
+>>>>=20
+>>>>               TP_fast_assign(
+>>>> @@ -435,7 +435,7 @@
+>>>>                       __entry->error =3D res->sr_status;
+>>>>               ),
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) session=3D0x%08x =
+slot_nr=3D%u seq_nr=3D%u "
+>>>> +                       "error=3D%lu (%s) session=3D0x%08x =
+slot_nr=3D%u seq_nr=3D%u "
+>>>>                       "highest_slotid=3D%u target_highest_slotid=3D%u=
+ "
+>>>>                       "status_flags=3D%u (%s)",
+>>>>                       __entry->error,
+>>>> @@ -467,7 +467,7 @@
+>>>>                       __field(unsigned int, seq_nr)
+>>>>                       __field(unsigned int, highest_slotid)
+>>>>                       __field(unsigned int, cachethis)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>               ),
+>>>>=20
+>>>>               TP_fast_assign(
+>>>> @@ -476,11 +476,11 @@
+>>>>                       __entry->seq_nr =3D args->csa_sequenceid;
+>>>>                       __entry->highest_slotid =3D =
+args->csa_highestslotid;
+>>>>                       __entry->cachethis =3D args->csa_cachethis;
+>>>> -                       __entry->error =3D -be32_to_cpu(status);
+>>>> +                       __entry->error =3D be32_to_cpu(status);
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) session=3D0x%08x =
+slot_nr=3D%u seq_nr=3D%u "
+>>>> +                       "error=3D%lu (%s) session=3D0x%08x =
+slot_nr=3D%u seq_nr=3D%u "
+>>>>                       "highest_slotid=3D%u",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -504,7 +504,7 @@
+>>>>                       __field(unsigned int, seq_nr)
+>>>>                       __field(unsigned int, highest_slotid)
+>>>>                       __field(unsigned int, cachethis)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>               ),
+>>>>=20
+>>>>               TP_fast_assign(
+>>>> @@ -513,11 +513,11 @@
+>>>>                       __entry->seq_nr =3D args->csa_sequenceid;
+>>>>                       __entry->highest_slotid =3D =
+args->csa_highestslotid;
+>>>>                       __entry->cachethis =3D args->csa_cachethis;
+>>>> -                       __entry->error =3D -be32_to_cpu(status);
+>>>> +                       __entry->error =3D be32_to_cpu(status);
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) session=3D0x%08x =
+slot_nr=3D%u seq_nr=3D%u "
+>>>> +                       "error=3D%lu (%s) session=3D0x%08x =
+slot_nr=3D%u seq_nr=3D%u "
+>>>>                       "highest_slotid=3D%u",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -572,18 +572,18 @@
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>>                       __field(u32, op)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>               ),
+>>>>=20
+>>>>               TP_fast_assign(
+>>>>                       __entry->op =3D op;
+>>>> -                       __entry->error =3D -error;
+>>>> +                       __entry->error =3D error;
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "operation %d: nfs status %d (%s)",
+>>>> -                       __entry->op,
+>>>> -                       __entry->error, =
+show_nfsv4_errors(__entry->error)
+>>>> +                       "error=3D%lu (%s) operation %d:",
+>>>> +                       __entry->error, =
+show_nfsv4_errors(__entry->error),
+>>>> +                       __entry->op
+>>>>               )
+>>>> );
+>>>>=20
+>>>> @@ -597,7 +597,7 @@
+>>>>               TP_ARGS(ctx, flags, error),
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(unsigned int, flags)
+>>>>                       __field(unsigned int, fmode)
+>>>>                       __field(dev_t, dev)
+>>>> @@ -615,7 +615,7 @@
+>>>>                       const struct nfs4_state *state =3D =
+ctx->state;
+>>>>                       const struct inode *inode =3D NULL;
+>>>>=20
+>>>> -                       __entry->error =3D error;
+>>>> +                       __entry->error =3D -error;
+>>>>                       __entry->flags =3D flags;
+>>>>                       __entry->fmode =3D (__force unsigned =
+int)ctx->mode;
+>>>>                       __entry->dev =3D ctx->dentry->d_sb->s_dev;
+>>>> @@ -647,7 +647,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) flags=3D%d (%s) fmode=3D%s =
+"
+>>>> +                       "error=3D%lu (%s) flags=3D%d (%s) fmode=3D%s =
+"
+>>>>                       "fileid=3D%02x:%02x:%llu fhandle=3D0x%08x "
+>>>>                       "name=3D%02x:%02x:%llu/%s stateid=3D%d:0x%08x =
+"
+>>>>                       "openstateid=3D%d:0x%08x",
+>>>> @@ -733,7 +733,7 @@
+>>>>                       __field(u32, fhandle)
+>>>>                       __field(u64, fileid)
+>>>>                       __field(unsigned int, fmode)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(int, stateid_seq)
+>>>>                       __field(u32, stateid_hash)
+>>>>               ),
+>>>> @@ -753,7 +753,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fmode=3D%s =
+fileid=3D%02x:%02x:%llu "
+>>>> +                       "error=3D%lu (%s) fmode=3D%s =
+fileid=3D%02x:%02x:%llu "
+>>>>                       "fhandle=3D0x%08x openstateid=3D%d:0x%08x",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -795,7 +795,7 @@
+>>>>               TP_ARGS(request, state, cmd, error),
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(int, cmd)
+>>>>                       __field(char, type)
+>>>>                       __field(loff_t, start)
+>>>> @@ -825,7 +825,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) cmd=3D%s:%s =
+range=3D%lld:%lld "
+>>>> +                       "error=3D%lu (%s) cmd=3D%s:%s =
+range=3D%lld:%lld "
+>>>>                       "fileid=3D%02x:%02x:%llu fhandle=3D0x%08x "
+>>>>                       "stateid=3D%d:0x%08x",
+>>>>                       __entry->error,
+>>>> @@ -865,7 +865,7 @@
+>>>>               TP_ARGS(request, state, lockstateid, cmd, error),
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(int, cmd)
+>>>>                       __field(char, type)
+>>>>                       __field(loff_t, start)
+>>>> @@ -901,7 +901,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) cmd=3D%s:%s =
+range=3D%lld:%lld "
+>>>> +                       "error=3D%lu (%s) cmd=3D%s:%s =
+range=3D%lld:%lld "
+>>>>                       "fileid=3D%02x:%02x:%llu fhandle=3D0x%08x "
+>>>>                       "stateid=3D%d:0x%08x lockstateid=3D%d:0x%08x",
+>>>>                       __entry->error,
+>>>> @@ -970,7 +970,7 @@
+>>>>               TP_STRUCT__entry(
+>>>>                       __field(dev_t, dev)
+>>>>                       __field(u32, fhandle)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(int, stateid_seq)
+>>>>                       __field(u32, stateid_hash)
+>>>>               ),
+>>>> @@ -986,7 +986,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) dev=3D%02x:%02x =
+fhandle=3D0x%08x "
+>>>> +                       "error=3D%lu (%s) dev=3D%02x:%02x =
+fhandle=3D0x%08x "
+>>>>                       "stateid=3D%d:0x%08x",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -1007,7 +1007,7 @@
+>>>>               TP_ARGS(state, lsp, error),
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(dev_t, dev)
+>>>>                       __field(u32, fhandle)
+>>>>                       __field(u64, fileid)
+>>>> @@ -1029,7 +1029,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>>                       "stateid=3D%d:0x%08x",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -1064,7 +1064,7 @@
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>>                       __field(dev_t, dev)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(u64, dir)
+>>>>                       __string(name, name->name)
+>>>>               ),
+>>>> @@ -1072,12 +1072,12 @@
+>>>>               TP_fast_assign(
+>>>>                       __entry->dev =3D dir->i_sb->s_dev;
+>>>>                       __entry->dir =3D NFS_FILEID(dir);
+>>>> -                       __entry->error =3D error;
+>>>> +                       __entry->error =3D -error;
+>>>>                       __assign_str(name, name->name);
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) name=3D%02x:%02x:%llu/%s",
+>>>> +                       "error=3D%lu (%s) name=3D%02x:%02x:%llu/%s",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>>                       MAJOR(__entry->dev), MINOR(__entry->dev),
+>>>> @@ -1114,7 +1114,7 @@
+>>>>               TP_STRUCT__entry(
+>>>>                       __field(dev_t, dev)
+>>>>                       __field(u64, ino)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>               ),
+>>>>=20
+>>>>               TP_fast_assign(
+>>>> @@ -1124,7 +1124,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) inode=3D%02x:%02x:%llu",
+>>>> +                       "error=3D%lu (%s) inode=3D%02x:%02x:%llu",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>>                       MAJOR(__entry->dev), MINOR(__entry->dev),
+>>>> @@ -1145,7 +1145,7 @@
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>>                       __field(dev_t, dev)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(u64, olddir)
+>>>>                       __string(oldname, oldname->name)
+>>>>                       __field(u64, newdir)
+>>>> @@ -1162,7 +1162,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) oldname=3D%02x:%02x:%llu/%s =
+"
+>>>> +                       "error=3D%lu (%s) oldname=3D%02x:%02x:%llu/%s=
+ "
+>>>>                       "newname=3D%02x:%02x:%llu/%s",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -1187,18 +1187,18 @@
+>>>>                       __field(dev_t, dev)
+>>>>                       __field(u32, fhandle)
+>>>>                       __field(u64, fileid)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>               ),
+>>>>=20
+>>>>               TP_fast_assign(
+>>>>                       __entry->dev =3D inode->i_sb->s_dev;
+>>>>                       __entry->fileid =3D NFS_FILEID(inode);
+>>>>                       __entry->fhandle =3D =
+nfs_fhandle_hash(NFS_FH(inode));
+>>>> -                       __entry->error =3D error;
+>>>> +                       __entry->error =3D error < 0 ? -error : 0;
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x",
+>>>> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>>                       MAJOR(__entry->dev), MINOR(__entry->dev),
+>>>> @@ -1238,7 +1238,7 @@
+>>>>                       __field(dev_t, dev)
+>>>>                       __field(u32, fhandle)
+>>>>                       __field(u64, fileid)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(int, stateid_seq)
+>>>>                       __field(u32, stateid_hash)
+>>>>               ),
+>>>> @@ -1255,7 +1255,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>>                       "stateid=3D%d:0x%08x",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -1295,7 +1295,7 @@
+>>>>                       __field(u32, fhandle)
+>>>>                       __field(u64, fileid)
+>>>>                       __field(unsigned int, valid)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>               ),
+>>>>=20
+>>>>               TP_fast_assign(
+>>>> @@ -1307,7 +1307,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>>                       "valid=3D%s",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -1342,7 +1342,7 @@
+>>>>               TP_ARGS(clp, fhandle, inode, error),
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(dev_t, dev)
+>>>>                       __field(u32, fhandle)
+>>>>                       __field(u64, fileid)
+>>>> @@ -1363,7 +1363,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>>                       "dstaddr=3D%s",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -1397,7 +1397,7 @@
+>>>>               TP_ARGS(clp, fhandle, inode, stateid, error),
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(dev_t, dev)
+>>>>                       __field(u32, fhandle)
+>>>>                       __field(u64, fileid)
+>>>> @@ -1424,7 +1424,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>>                       "stateid=3D%d:0x%08x dstaddr=3D%s",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -1460,7 +1460,7 @@
+>>>>               TP_ARGS(name, len, id, error),
+>>>>=20
+>>>>               TP_STRUCT__entry(
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(u32, id)
+>>>>                       __dynamic_array(char, name, len > 0 ? len + 1 =
+: 1)
+>>>>               ),
+>>>> @@ -1475,8 +1475,8 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d id=3D%u name=3D%s",
+>>>> -                       __entry->error,
+>>>> +                       "error=3D%lu (%s) id=3D%u name=3D%s",
+>>>> +                       __entry->error, =
+show_nfsv4_errors(__entry->error),
+>>>>                       __entry->id,
+>>>>                       __get_str(name)
+>>>>               )
+>>>> @@ -1509,7 +1509,7 @@
+>>>>                       __field(u64, fileid)
+>>>>                       __field(loff_t, offset)
+>>>>                       __field(size_t, count)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(int, stateid_seq)
+>>>>                       __field(u32, stateid_hash)
+>>>>               ),
+>>>> @@ -1523,7 +1523,7 @@
+>>>>                       __entry->fhandle =3D =
+nfs_fhandle_hash(NFS_FH(inode));
+>>>>                       __entry->offset =3D hdr->args.offset;
+>>>>                       __entry->count =3D hdr->args.count;
+>>>> -                       __entry->error =3D error;
+>>>> +                       __entry->error =3D error < 0 ? -error : 0;
+>>>>                       __entry->stateid_seq =3D
+>>>>                               be32_to_cpu(state->stateid.seqid);
+>>>>                       __entry->stateid_hash =3D
+>>>> @@ -1531,7 +1531,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>>                       "offset=3D%lld count=3D%zu =
+stateid=3D%d:0x%08x",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -1569,7 +1569,7 @@
+>>>>                       __field(u64, fileid)
+>>>>                       __field(loff_t, offset)
+>>>>                       __field(size_t, count)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(int, stateid_seq)
+>>>>                       __field(u32, stateid_hash)
+>>>>               ),
+>>>> @@ -1583,7 +1583,7 @@
+>>>>                       __entry->fhandle =3D =
+nfs_fhandle_hash(NFS_FH(inode));
+>>>>                       __entry->offset =3D hdr->args.offset;
+>>>>                       __entry->count =3D hdr->args.count;
+>>>> -                       __entry->error =3D error;
+>>>> +                       __entry->error =3D error < 0 ? -error : 0;
+>>>>                       __entry->stateid_seq =3D
+>>>>                               be32_to_cpu(state->stateid.seqid);
+>>>>                       __entry->stateid_hash =3D
+>>>> @@ -1591,7 +1591,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>>                       "offset=3D%lld count=3D%zu =
+stateid=3D%d:0x%08x",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -1630,7 +1630,7 @@
+>>>>                       __field(u64, fileid)
+>>>>                       __field(loff_t, offset)
+>>>>                       __field(size_t, count)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>               ),
+>>>>=20
+>>>>               TP_fast_assign(
+>>>> @@ -1644,7 +1644,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>>                       "offset=3D%lld count=3D%zu",
+>>>>                       __entry->error,
+>>>>                       show_nfsv4_errors(__entry->error),
+>>>> @@ -1694,7 +1694,7 @@
+>>>>                       __field(u32, iomode)
+>>>>                       __field(u64, offset)
+>>>>                       __field(u64, count)
+>>>> -                       __field(int, error)
+>>>> +                       __field(unsigned long, error)
+>>>>                       __field(int, stateid_seq)
+>>>>                       __field(u32, stateid_hash)
+>>>>                       __field(int, layoutstateid_seq)
+>>>> @@ -1727,7 +1727,7 @@
+>>>>               ),
+>>>>=20
+>>>>               TP_printk(
+>>>> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
+fhandle=3D0x%08x "
+>>>>                       "iomode=3D%s offset=3D%llu count=3D%llu =
+stateid=3D%d:0x%08x "
+>>>>                       "layoutstateid=3D%d:0x%08x",
+>>>>                       __entry->error,
+>>=20
+>> --
+>> Chuck Lever
+
+--
+Chuck Lever
+
 
 
