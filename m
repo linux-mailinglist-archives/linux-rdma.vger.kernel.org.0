@@ -2,185 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E6D3CBAD
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 14:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8993CCCF
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 15:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387963AbfFKMcP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 08:32:15 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:52302 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388392AbfFKMcO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 08:32:14 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BCSMdo166304;
-        Tue, 11 Jun 2019 12:31:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2018-07-02; bh=s5XRtEENMjirHerqUbSyG93dHIq3JyxnoP+a4ubNUrM=;
- b=ijahAZNX5osXn3EXYBemuuhUZsc9CHeZf6tAw5C5xm7+2+TXLLTJYsZ2wO+jhIPpleX3
- OOmC15LD3oPbYL8/0VeWLGEl1pgbBiMzB0yjkYDEWFs2SaXJ2Hph4dMyHHjybBPctwz5
- sBgEIGASeIrdGhHTqMPhxCx2J4kExb38/96gjIkn3sEtt1pAsH43DUXIuapztaDyXSN7
- haBNf5QQ6075Z4etKPsVluQoVSQAC2hi62vwtgx3880JxlSxk36WOiL1uBeMnS2E2Tcw
- TcGHbXsfEvD6B2T4Ag+TiF4MTiW6Fmm1w4dP0NSCRFg/FBHLwLzhspqhiqzT8uhAR9BI pw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 2t02hemy4h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 12:31:35 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BCTG8I010777;
-        Tue, 11 Jun 2019 12:29:34 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2t024ucen9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 12:29:34 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5BCTX97031475;
-        Tue, 11 Jun 2019 12:29:33 GMT
-Received: from dhcp-10-172-157-227.no.oracle.com (/10.172.157.227)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 11 Jun 2019 05:29:33 -0700
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [rdma-core ibacm v2] ibacm: only open InfiniBand port
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <20190610135527.2638-1-honli@redhat.com>
-Date:   Tue, 11 Jun 2019 14:29:31 +0200
-Cc:     OFED mailing list <linux-rdma@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B507E339-82E7-4ADC-9EBD-3F9AE343E466@oracle.com>
-References: <20190610135527.2638-1-honli@redhat.com>
-To:     Honggang Li <honli@redhat.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906110085
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906110085
+        id S2390442AbfFKNVV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 11 Jun 2019 09:21:21 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59504 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387764AbfFKNVV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Jun 2019 09:21:21 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5BDIvMe107433
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jun 2019 09:21:19 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.114])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2t2ct418ba-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jun 2019 09:21:19 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 11 Jun 2019 13:21:18 -0000
+Received: from us1b3-smtp04.a3dr.sjc01.isc4sb.com (10.122.203.161)
+        by smtp.notes.na.collabserv.com (10.122.47.58) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 11 Jun 2019 13:21:16 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp04.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019061113211516-528977 ;
+          Tue, 11 Jun 2019 13:21:15 +0000 
+In-Reply-To: 
+Subject: receive side CRC computation in siw.
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Date:   Tue, 11 Jun 2019 13:21:15 +0000
+MIME-Version: 1.0
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: 
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-KeepSent: BD80408B:8C25683E-00258416:0047A63B;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 35715
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19061113-9695-0000-0000-0000067C3BFE
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.405233; ST=0; TS=0; UL=0; ISC=; MB=0.032118
+X-IBM-SpamModules-Versions: BY=3.00011246; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01216439; UDB=6.00639591; IPR=6.00997539;
+ BA=6.00006331; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
+ ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00027261; XFM=3.00000015;
+ UTC=2019-06-11 13:21:17
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-06-11 11:40:24 - 6.00010036
+x-cbparentid: 19061113-9696-0000-0000-000067C140EC
+Message-Id: <OFBD80408B.8C25683E-ON00258416.0047A63B-00258416.00495B83@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-11_06:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hi all,
+
+If enabled for siw, during receive operation, a crc32c over
+header and data is being generated and checked. So far, siw
+was generating that CRC from the content of the just written
+target buffer. What kept me busy last weekend were spurious
+CRC errors, if running qperf. I finally found the application
+is constantly writing the target buffer while data are placed
+concurrently, which sometimes races with the CRC computation
+for that buffer, and yields a broken CRC.
+
+siw uses skb_copy_bits() to move the data. I now added an
+extra round of skb walking via __skb_checksum() in front of
+it, which resolves the issue. Unfortunately, performance
+significantly drops with that (some 30% or worse compared
+to generating the CRC from a linear buffer).
+
+To preserve performance for kernel clients, I propose
+checksumming the data before the copy only for user
+land applications, and leave it as is for kernel clients.
+I am not aware of kernel clients which are constantly
+reading/writing a target buffer to detect it has been written. 
+I also checked other kernel code using skb_copy_bits(),
+which also needs to checksum the received data. Those code
+(such as nvme tcp) also does the CRC on the linear buffer
+after data receive.
+
+The best solution might be to fold the CRC into the
+skb_copy_bits() function itself. That being something we
+might propose later?
+
+Thoughts?
 
 
-> On 10 Jun 2019, at 15:55, Honggang Li <honli@redhat.com> wrote:
->=20
-> The low 64 bits of cxgb3 and cxgb4 devices' GID are zeros. If the
-> "provider" was set in the option file, ibacm will fail with
-> segment fault.
->=20
-> $ sed -i -e 's/# provider ibacmp 0xFE80000000000000/provider ibacmp =
-0xFE80000000000000/g' /etc/rdma/ibacm_opts.cfg
-> $ /usr/sbin/ibacm --systemd
-> Segmentation fault (core dumped)
-> $ gdb /usr/sbin/ibacm core.ibacm
-> (gdb) bt
-> 0  0x00005625a4809217 in acm_assign_provider (port=3D0x5625a4bc6f28) =
-at /usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2285
-> 1  acm_port_up (port=3D0x5625a4bc6f28) at =
-/usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2372
-> 2  0x00005625a48073d2 in acm_activate_devices () at =
-/usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2564
-> 3  main (argc=3D<optimized out>, argv=3D<optimized out>) at =
-/usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:3270
->=20
-> Note: The rpm was built with tarball generated from upstream repo. The =
-last
-> commit is aa41a65ec86bdb9c1c86e57885ee588b39558238.
->=20
-> acm_open_dev function should not open an umad port for iWARP or RoCE =
-devices.
-
-It is "a umad port" (as suggested), even though the "u" is a vowel, it =
-is pronounced as a consonant, hence "a umad port".
-
-> Signed-off-by: Honggang Li <honli@redhat.com>
-> ---
-> ibacm/src/acm.c | 26 ++++++++++++++++++++++----
-> 1 file changed, 22 insertions(+), 4 deletions(-)
->=20
-> diff --git a/ibacm/src/acm.c b/ibacm/src/acm.c
-> index a21069d4..5c8a5d3c 100644
-> --- a/ibacm/src/acm.c
-> +++ b/ibacm/src/acm.c
-> @@ -2600,9 +2600,11 @@ static void acm_open_dev(struct ibv_device =
-*ibdev)
-> {
-> 	struct acmc_device *dev;
-> 	struct ibv_device_attr attr;
-> +	struct ibv_port_attr port_attr;
-> 	struct ibv_context *verbs;
-> 	size_t size;
-> 	int i, ret;
-> +	unsigned int opened_ib_port_cnt =3D 0;
->=20
-> 	acm_log(1, "%s\n", ibdev->name);
-> 	verbs =3D ibv_open_device(ibdev);
-> @@ -2628,13 +2630,29 @@ static void acm_open_dev(struct ibv_device =
-*ibdev)
-> 	list_head_init(&dev->prov_dev_context_list);
->=20
-> 	for (i =3D 0; i < dev->port_cnt; i++) {
-> +		acm_log(1, "%s port %d\n", ibdev->name, i + 1);
-> +		ret =3D ibv_query_port(dev->device.verbs, i + 1, =
-&port_attr);
-> +		if (ret) {
-> +			acm_log(0, "ERROR - ibv_query_port failed\n");
-
-With the richness below when printing port or ports, may be add the =
-value of ret here as well?
-
-> +			continue;
-> +		}
-> +		if (port_attr.link_layer !=3D IBV_LINK_LAYER_INFINIBAND) =
-{
-> +			acm_log(1, "not an InfiniBand port\n");
-> +			continue;
-> +		}
-> +
-> 		acm_open_port(&dev->port[i], dev, i + 1);
-> +		opened_ib_port_cnt++;
-> 	}
->=20
-> -	list_add(&dev_list, &dev->entry);
-> -
-> -	acm_log(1, "%s opened\n", ibdev->name);
-> -	return;
-> +	if (opened_ib_port_cnt > 0) {
-
-or simpler, if (opened_ib_port_cnt) {
-
-> +		list_add(&dev_list, &dev->entry);
-> +		acm_log(1, "%d InfiniBand %s opened for %s\n",
-> +				opened_ib_port_cnt,
-> +				opened_ib_port_cnt =3D=3D 1 ? =
-"port":"ports",
-
-Spaces around ":". I am also OK with the literal "port(s)" as well.
-
-Otherwise, LGTM,
-
-Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
-
-
-Thxs, H=C3=A5kon
-
-
-> +				ibdev->name);
-> +		return;
-> +	}
->=20
-> err1:
-> 	ibv_close_device(verbs);
-> --=20
-> 2.20.1
->=20
+Many thanks,
+Bernard.
 
