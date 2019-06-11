@@ -2,19 +2,19 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 958843D173
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 17:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB9B3D175
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 17:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391836AbfFKPxQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 11:53:16 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:33201 "EHLO
+        id S2391835AbfFKPxS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jun 2019 11:53:18 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:33214 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388958AbfFKPxQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 11:53:16 -0400
+        with ESMTP id S2391827AbfFKPxS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 11:53:18 -0400
 Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 11 Jun 2019 18:53:01 +0300
 Received: from r-vnc12.mtr.labs.mlnx (r-vnc12.mtr.labs.mlnx [10.208.0.12])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x5BFqxLJ023036;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x5BFqxLK023036;
         Tue, 11 Jun 2019 18:53:01 +0300
 From:   Max Gurtovoy <maxg@mellanox.com>
 To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
@@ -22,9 +22,9 @@ To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
         bvanassche@acm.org
 Cc:     maxg@mellanox.com, israelr@mellanox.com, idanb@mellanox.com,
         oren@mellanox.com, vladimirk@mellanox.com, shlomin@mellanox.com
-Subject: [PATCH 17/21] RDMA/rw: Use IB_WR_REG_MR_INTEGRITY for PI handover
-Date:   Tue, 11 Jun 2019 18:52:53 +0300
-Message-Id: <1560268377-26560-18-git-send-email-maxg@mellanox.com>
+Subject: [PATCH 18/21] RDMA/mlx5: Remove unused IB_WR_REG_SIG_MR code
+Date:   Tue, 11 Jun 2019 18:52:54 +0300
+Message-Id: <1560268377-26560-19-git-send-email-maxg@mellanox.com>
 X-Mailer: git-send-email 1.7.1
 In-Reply-To: <1560268377-26560-1-git-send-email-maxg@mellanox.com>
 References: <1560268377-26560-1-git-send-email-maxg@mellanox.com>
@@ -35,390 +35,297 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Israel Rukshin <israelr@mellanox.com>
 
-Replace the old signature handover API with the new one. The new API
-simplifes PI handover code complexity for ULPs and improve performance.
-For RW API it will reduce the maximum number of work requests per task
-and the need of dealing with multiple MRs (and their registrations and
-invalidations) per task. All the mappings and registration of the data
-and the protection buffers is done by the LLD using a single WR and a
-special MR type (IB_MR_TYPE_INTEGRITY) for the PI handover operation.
-
-The setup of the tested benchmark (using iSER ULP):
- - 2 servers with 24 cores (1 initiator and 1 target)
- - ConnectX-4/ConnectX-5 adapters
- - 24 target sessions with 1 LUN each
- - ramdisk backstore
- - PI active
-
-Performance results running fio (24 jobs, 128 iodepth) using
-write_generate=1 and read_verify=1 (w/w.o patch):
-
-bs      IOPS(read)        IOPS(write)
-----    ----------        ----------
-512   1243.3K/1182.3K    1725.1K/1680.2K
-4k    571233/528835      743293/748259
-32k   72388/71086        71789/93573
-
-Using write_generate=0 and read_verify=0 (w/w.o patch):
-bs      IOPS(read)        IOPS(write)
-----    ----------        ----------
-512   1572.1K/1427.2K    1823.5K/1724.3K
-4k    921992/916194      753772/768267
-32k   75052/73960        73180/95484
-
-There is a performance degradation when writing big block sizes.
-Degradation is caused by the complexity of combining multiple
-indirections and perform RDMA READ operation from it. This will be
-fixed in the following patches by reducing the indirections if
-possible.
+IB_WR_REG_SIG_MR is not needed after IB_WR_REG_MR_INTEGRITY
+was used.
 
 Signed-off-by: Israel Rukshin <israelr@mellanox.com>
 Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 ---
- drivers/infiniband/core/rw.c            | 167 +++++++++++++-------------------
- drivers/infiniband/ulp/isert/ib_isert.c |   4 +-
- include/rdma/rw.h                       |   9 --
- 3 files changed, 72 insertions(+), 108 deletions(-)
+ drivers/infiniband/hw/mlx5/mr.c           |  15 ++-
+ drivers/infiniband/hw/mlx5/qp.c           | 154 ++----------------------------
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma.h |   2 +-
+ include/rdma/ib_verbs.h                   |  19 ----
+ 4 files changed, 17 insertions(+), 173 deletions(-)
 
-diff --git a/drivers/infiniband/core/rw.c b/drivers/infiniband/core/rw.c
-index 096fafec1047..dce06108c8c3 100644
---- a/drivers/infiniband/core/rw.c
-+++ b/drivers/infiniband/core/rw.c
-@@ -51,10 +51,18 @@ static inline bool rdma_rw_io_needs_mr(struct ib_device *dev, u8 port_num,
- 	return false;
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 1ae1846256b8..beed2d5530d3 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1760,8 +1760,7 @@ static struct ib_mr *__mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 			goto err_free_in;
+ 		mr->desc_size = sizeof(struct mlx5_klm);
+ 		mr->max_descs = ndescs;
+-	} else if (mr_type == IB_MR_TYPE_SIGNATURE ||
+-		   mr_type == IB_MR_TYPE_INTEGRITY) {
++	} else if (mr_type == IB_MR_TYPE_INTEGRITY) {
+ 		u32 psv_index[2];
+ 
+ 		MLX5_SET(mkc, mkc, bsf_en, 1);
+@@ -1787,13 +1786,11 @@ static struct ib_mr *__mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 		mr->sig->sig_err_exists = false;
+ 		/* Next UMR, Arm SIGERR */
+ 		++mr->sig->sigerr_count;
+-		if (mr_type == IB_MR_TYPE_INTEGRITY) {
+-			mr->pi_mr = mlx5_ib_alloc_pi_mr(pd, max_num_sg,
+-							max_num_meta_sg);
+-			if (IS_ERR(mr->pi_mr)) {
+-				err = PTR_ERR(mr->pi_mr);
+-				goto err_destroy_psv;
+-			}
++		mr->pi_mr = mlx5_ib_alloc_pi_mr(pd, max_num_sg,
++						max_num_meta_sg);
++		if (IS_ERR(mr->pi_mr)) {
++			err = PTR_ERR(mr->pi_mr);
++			goto err_destroy_psv;
+ 		}
+ 	} else {
+ 		mlx5_ib_warn(dev, "Invalid mr type %d\n", mr_type);
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 4cbafcb215e8..6626468ab628 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -4560,32 +4560,17 @@ static int set_sig_data_segment(const struct ib_send_wr *send_wr,
+ 	bool prot = false;
+ 	int ret;
+ 	int wqe_size;
++	struct mlx5_ib_mr *mr = to_mmr(sig_mr);
++	struct mlx5_ib_mr *pi_mr = mr->pi_mr;
+ 
+-	if (send_wr->opcode == IB_WR_REG_SIG_MR) {
+-		const struct ib_sig_handover_wr *wr = sig_handover_wr(send_wr);
+-
+-		data_len = wr->wr.sg_list->length;
+-		data_key = wr->wr.sg_list->lkey;
+-		data_va = wr->wr.sg_list->addr;
+-		if (wr->prot) {
+-			prot_len = wr->prot->length;
+-			prot_key = wr->prot->lkey;
+-			prot_va = wr->prot->addr;
+-			prot = true;
+-		}
+-	} else {
+-		struct mlx5_ib_mr *mr = to_mmr(sig_mr);
+-		struct mlx5_ib_mr *pi_mr = mr->pi_mr;
+-
+-		data_len = pi_mr->data_length;
+-		data_key = pi_mr->ibmr.lkey;
+-		data_va = pi_mr->ibmr.iova;
+-		if (pi_mr->meta_ndescs) {
+-			prot_len = pi_mr->meta_length;
+-			prot_key = pi_mr->ibmr.lkey;
+-			prot_va = pi_mr->ibmr.iova + data_len;
+-			prot = true;
+-		}
++	data_len = pi_mr->data_length;
++	data_key = pi_mr->ibmr.lkey;
++	data_va = pi_mr->ibmr.iova;
++	if (pi_mr->meta_ndescs) {
++		prot_len = pi_mr->meta_length;
++		prot_key = pi_mr->ibmr.lkey;
++		prot_va = pi_mr->ibmr.iova + data_len;
++		prot = true;
+ 	}
+ 
+ 	if (!prot || (data_key == prot_key && data_va == prot_va &&
+@@ -4751,57 +4736,6 @@ static int set_pi_umr_wr(const struct ib_send_wr *send_wr,
+ 	return 0;
  }
  
--static inline u32 rdma_rw_fr_page_list_len(struct ib_device *dev)
-+static inline u32 rdma_rw_fr_page_list_len(struct ib_device *dev,
-+					   bool pi_support)
+-static int set_sig_umr_wr(const struct ib_send_wr *send_wr,
+-			  struct mlx5_ib_qp *qp, void **seg, int *size,
+-			  void **cur_edge)
+-{
+-	const struct ib_sig_handover_wr *wr = sig_handover_wr(send_wr);
+-	struct mlx5_ib_mr *sig_mr = to_mmr(wr->sig_mr);
+-	u32 pdn = get_pd(qp)->pdn;
+-	u32 xlt_size;
+-	int region_len, ret;
+-
+-	if (unlikely(wr->wr.num_sge != 1) ||
+-	    unlikely(wr->access_flags & IB_ACCESS_REMOTE_ATOMIC) ||
+-	    unlikely(!sig_mr->sig) || unlikely(!qp->ibqp.integrity_en) ||
+-	    unlikely(!sig_mr->sig->sig_status_checked))
+-		return -EINVAL;
+-
+-	/* length of the protected region, data + protection */
+-	region_len = wr->wr.sg_list->length;
+-	if (wr->prot &&
+-	    (wr->prot->lkey != wr->wr.sg_list->lkey  ||
+-	     wr->prot->addr != wr->wr.sg_list->addr  ||
+-	     wr->prot->length != wr->wr.sg_list->length))
+-		region_len += wr->prot->length;
+-
+-	/**
+-	 * KLM octoword size - if protection was provided
+-	 * then we use strided block format (3 octowords),
+-	 * else we use single KLM (1 octoword)
+-	 **/
+-	xlt_size = wr->prot ? 0x30 : sizeof(struct mlx5_klm);
+-
+-	set_sig_umr_segment(*seg, xlt_size);
+-	*seg += sizeof(struct mlx5_wqe_umr_ctrl_seg);
+-	*size += sizeof(struct mlx5_wqe_umr_ctrl_seg) / 16;
+-	handle_post_send_edge(&qp->sq, seg, *size, cur_edge);
+-
+-	set_sig_mkey_segment(*seg, wr->sig_mr, wr->access_flags, xlt_size,
+-			     region_len, pdn);
+-	*seg += sizeof(struct mlx5_mkey_seg);
+-	*size += sizeof(struct mlx5_mkey_seg) / 16;
+-	handle_post_send_edge(&qp->sq, seg, *size, cur_edge);
+-
+-	ret = set_sig_data_segment(send_wr, wr->sig_mr, wr->sig_attrs, qp, seg,
+-				   size, cur_edge);
+-	if (ret)
+-		return ret;
+-
+-	sig_mr->sig->sig_status_checked = false;
+-	return 0;
+-}
+-
+ static int set_psv_wr(struct ib_sig_domain *domain,
+ 		      u32 psv_idx, void **seg, int *size)
  {
-+	u32 max_pages;
-+
-+	if (pi_support)
-+		max_pages = dev->attrs.max_pi_fast_reg_page_list_len;
-+	else
-+		max_pages = dev->attrs.max_fast_reg_page_list_len;
-+
- 	/* arbitrary limit to avoid allocating gigantic resources */
--	return min_t(u32, dev->attrs.max_fast_reg_page_list_len, 256);
-+	return min_t(u32, max_pages, 256);
+@@ -5190,74 +5124,6 @@ static int _mlx5_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
+ 				num_sge = 0;
+ 				goto skip_psv;
+ 
+-			case IB_WR_REG_SIG_MR:
+-				qp->sq.wr_data[idx] = IB_WR_REG_SIG_MR;
+-				mr = to_mmr(sig_handover_wr(wr)->sig_mr);
+-
+-				ctrl->imm = cpu_to_be32(mr->ibmr.rkey);
+-				err = set_sig_umr_wr(wr, qp, &seg, &size,
+-						     &cur_edge);
+-				if (err) {
+-					mlx5_ib_warn(dev, "\n");
+-					*bad_wr = wr;
+-					goto out;
+-				}
+-
+-				finish_wqe(qp, ctrl, seg, size, cur_edge, idx,
+-					   wr->wr_id, nreq, fence,
+-					   MLX5_OPCODE_UMR);
+-				/*
+-				 * SET_PSV WQEs are not signaled and solicited
+-				 * on error
+-				 */
+-				err = __begin_wqe(qp, &seg, &ctrl, wr, &idx,
+-						  &size, &cur_edge, nreq, false,
+-						  true);
+-				if (err) {
+-					mlx5_ib_warn(dev, "\n");
+-					err = -ENOMEM;
+-					*bad_wr = wr;
+-					goto out;
+-				}
+-
+-				err = set_psv_wr(&sig_handover_wr(wr)->sig_attrs->mem,
+-						 mr->sig->psv_memory.psv_idx, &seg,
+-						 &size);
+-				if (err) {
+-					mlx5_ib_warn(dev, "\n");
+-					*bad_wr = wr;
+-					goto out;
+-				}
+-
+-				finish_wqe(qp, ctrl, seg, size, cur_edge, idx,
+-					   wr->wr_id, nreq, fence,
+-					   MLX5_OPCODE_SET_PSV);
+-				err = __begin_wqe(qp, &seg, &ctrl, wr, &idx,
+-						  &size, &cur_edge, nreq, false,
+-						  true);
+-				if (err) {
+-					mlx5_ib_warn(dev, "\n");
+-					err = -ENOMEM;
+-					*bad_wr = wr;
+-					goto out;
+-				}
+-
+-				err = set_psv_wr(&sig_handover_wr(wr)->sig_attrs->wire,
+-						 mr->sig->psv_wire.psv_idx, &seg,
+-						 &size);
+-				if (err) {
+-					mlx5_ib_warn(dev, "\n");
+-					*bad_wr = wr;
+-					goto out;
+-				}
+-
+-				finish_wqe(qp, ctrl, seg, size, cur_edge, idx,
+-					   wr->wr_id, nreq, fence,
+-					   MLX5_OPCODE_SET_PSV);
+-				qp->next_fence = MLX5_FENCE_MODE_INITIATOR_SMALL;
+-				num_sge = 0;
+-				goto skip_psv;
+-
+ 			default:
+ 				break;
+ 			}
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
+index 3c633ab58052..c142f5e7f25f 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
+@@ -456,7 +456,7 @@ static inline enum pvrdma_wr_opcode ib_wr_opcode_to_pvrdma(enum ib_wr_opcode op)
+ 		return PVRDMA_WR_MASKED_ATOMIC_CMP_AND_SWP;
+ 	case IB_WR_MASKED_ATOMIC_FETCH_AND_ADD:
+ 		return PVRDMA_WR_MASKED_ATOMIC_FETCH_AND_ADD;
+-	case IB_WR_REG_SIG_MR:
++	case IB_WR_REG_MR_INTEGRITY:
+ 		return PVRDMA_WR_REG_SIG_MR;
+ 	default:
+ 		return PVRDMA_WR_ERROR;
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 0da1fa1d02ee..d425ef12517c 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -787,9 +787,6 @@ __attribute_const__ int ib_rate_to_mbps(enum ib_rate rate);
+  * enum ib_mr_type - memory region type
+  * @IB_MR_TYPE_MEM_REG:       memory region that is used for
+  *                            normal registration
+- * @IB_MR_TYPE_SIGNATURE:     memory region that is used for
+- *                            signature operations (data-integrity
+- *                            capable regions)
+  * @IB_MR_TYPE_SG_GAPS:       memory region that is capable to
+  *                            register any arbitrary sg lists (without
+  *                            the normal mr constraints - see
+@@ -805,7 +802,6 @@ __attribute_const__ int ib_rate_to_mbps(enum ib_rate rate);
+  */
+ enum ib_mr_type {
+ 	IB_MR_TYPE_MEM_REG,
+-	IB_MR_TYPE_SIGNATURE,
+ 	IB_MR_TYPE_SG_GAPS,
+ 	IB_MR_TYPE_DM,
+ 	IB_MR_TYPE_USER,
+@@ -1246,7 +1242,6 @@ enum ib_wr_opcode {
+ 
+ 	/* These are kernel only and can not be issued by userspace */
+ 	IB_WR_REG_MR = 0x20,
+-	IB_WR_REG_SIG_MR,
+ 	IB_WR_REG_MR_INTEGRITY,
+ 
+ 	/* reserve values for low level drivers' internal use.
+@@ -1357,20 +1352,6 @@ static inline const struct ib_reg_wr *reg_wr(const struct ib_send_wr *wr)
+ 	return container_of(wr, struct ib_reg_wr, wr);
  }
  
- static inline int rdma_rw_inv_key(struct rdma_rw_reg_ctx *reg)
-@@ -78,7 +86,8 @@ static int rdma_rw_init_one_mr(struct ib_qp *qp, u8 port_num,
- 		struct rdma_rw_reg_ctx *reg, struct scatterlist *sg,
- 		u32 sg_cnt, u32 offset)
- {
--	u32 pages_per_mr = rdma_rw_fr_page_list_len(qp->pd->device);
-+	u32 pages_per_mr = rdma_rw_fr_page_list_len(qp->pd->device,
-+						    qp->integrity_en);
- 	u32 nents = min(sg_cnt, pages_per_mr);
- 	int count = 0, ret;
- 
-@@ -111,7 +120,8 @@ static int rdma_rw_init_mr_wrs(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
- 		u64 remote_addr, u32 rkey, enum dma_data_direction dir)
- {
- 	struct rdma_rw_reg_ctx *prev = NULL;
--	u32 pages_per_mr = rdma_rw_fr_page_list_len(qp->pd->device);
-+	u32 pages_per_mr = rdma_rw_fr_page_list_len(qp->pd->device,
-+						    qp->integrity_en);
- 	int i, j, ret = 0, count = 0;
- 
- 	ctx->nr_ops = (sg_cnt + pages_per_mr - 1) / pages_per_mr;
-@@ -352,9 +362,9 @@ int rdma_rw_ctx_signature_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
- 		u64 remote_addr, u32 rkey, enum dma_data_direction dir)
- {
- 	struct ib_device *dev = qp->pd->device;
--	u32 pages_per_mr = rdma_rw_fr_page_list_len(qp->pd->device);
-+	u32 pages_per_mr = rdma_rw_fr_page_list_len(qp->pd->device,
-+						    qp->integrity_en);
- 	struct ib_rdma_wr *rdma_wr;
--	struct ib_send_wr *prev_wr = NULL;
- 	int count = 0, ret;
- 
- 	if (sg_cnt > pages_per_mr || prot_sg_cnt > pages_per_mr) {
-@@ -368,75 +378,58 @@ int rdma_rw_ctx_signature_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
- 		return -ENOMEM;
- 	sg_cnt = ret;
- 
--	ret = ib_dma_map_sg(dev, prot_sg, prot_sg_cnt, dir);
--	if (!ret) {
--		ret = -ENOMEM;
--		goto out_unmap_sg;
-+	if (prot_sg_cnt) {
-+		ret = ib_dma_map_sg(dev, prot_sg, prot_sg_cnt, dir);
-+		if (!ret) {
-+			ret = -ENOMEM;
-+			goto out_unmap_sg;
-+		}
-+		prot_sg_cnt = ret;
- 	}
--	prot_sg_cnt = ret;
- 
- 	ctx->type = RDMA_RW_SIG_MR;
- 	ctx->nr_ops = 1;
--	ctx->sig = kcalloc(1, sizeof(*ctx->sig), GFP_KERNEL);
--	if (!ctx->sig) {
-+	ctx->reg = kcalloc(1, sizeof(*ctx->reg), GFP_KERNEL);
-+	if (!ctx->reg) {
- 		ret = -ENOMEM;
- 		goto out_unmap_prot_sg;
- 	}
- 
--	ret = rdma_rw_init_one_mr(qp, port_num, &ctx->sig->data, sg, sg_cnt, 0);
--	if (ret < 0)
--		goto out_free_ctx;
--	count += ret;
--	prev_wr = &ctx->sig->data.reg_wr.wr;
+-struct ib_sig_handover_wr {
+-	struct ib_send_wr	wr;
+-	struct ib_sig_attrs    *sig_attrs;
+-	struct ib_mr	       *sig_mr;
+-	int			access_flags;
+-	struct ib_sge	       *prot;
+-};
 -
--	ret = rdma_rw_init_one_mr(qp, port_num, &ctx->sig->prot,
--				  prot_sg, prot_sg_cnt, 0);
--	if (ret < 0)
--		goto out_destroy_data_mr;
--	count += ret;
+-static inline const struct ib_sig_handover_wr *
+-sig_handover_wr(const struct ib_send_wr *wr)
+-{
+-	return container_of(wr, struct ib_sig_handover_wr, wr);
+-}
 -
--	if (ctx->sig->prot.inv_wr.next)
--		prev_wr->next = &ctx->sig->prot.inv_wr;
--	else
--		prev_wr->next = &ctx->sig->prot.reg_wr.wr;
--	prev_wr = &ctx->sig->prot.reg_wr.wr;
--
--	ctx->sig->sig_mr = ib_mr_pool_get(qp, &qp->sig_mrs);
--	if (!ctx->sig->sig_mr) {
-+	ctx->reg->mr = ib_mr_pool_get(qp, &qp->sig_mrs);
-+	if (!ctx->reg->mr) {
- 		ret = -EAGAIN;
--		goto out_destroy_prot_mr;
-+		goto out_free_ctx;
- 	}
- 
--	if (ctx->sig->sig_mr->need_inval) {
--		memset(&ctx->sig->sig_inv_wr, 0, sizeof(ctx->sig->sig_inv_wr));
-+	count += rdma_rw_inv_key(ctx->reg);
- 
--		ctx->sig->sig_inv_wr.opcode = IB_WR_LOCAL_INV;
--		ctx->sig->sig_inv_wr.ex.invalidate_rkey = ctx->sig->sig_mr->rkey;
-+	memcpy(ctx->reg->mr->sig_attrs, sig_attrs, sizeof(struct ib_sig_attrs));
- 
--		prev_wr->next = &ctx->sig->sig_inv_wr;
--		prev_wr = &ctx->sig->sig_inv_wr;
-+	ret = ib_map_mr_sg_pi(ctx->reg->mr, sg, sg_cnt, NULL, prot_sg,
-+			      prot_sg_cnt, NULL, SZ_4K);
-+	if (unlikely(ret)) {
-+		pr_err("failed to map PI sg (%d)\n", sg_cnt + prot_sg_cnt);
-+		goto out_destroy_sig_mr;
- 	}
- 
--	ctx->sig->sig_wr.wr.opcode = IB_WR_REG_SIG_MR;
--	ctx->sig->sig_wr.wr.wr_cqe = NULL;
--	ctx->sig->sig_wr.wr.sg_list = &ctx->sig->data.sge;
--	ctx->sig->sig_wr.wr.num_sge = 1;
--	ctx->sig->sig_wr.access_flags = IB_ACCESS_LOCAL_WRITE;
--	ctx->sig->sig_wr.sig_attrs = sig_attrs;
--	ctx->sig->sig_wr.sig_mr = ctx->sig->sig_mr;
--	if (prot_sg_cnt)
--		ctx->sig->sig_wr.prot = &ctx->sig->prot.sge;
--	prev_wr->next = &ctx->sig->sig_wr.wr;
--	prev_wr = &ctx->sig->sig_wr.wr;
-+	ctx->reg->reg_wr.wr.opcode = IB_WR_REG_MR_INTEGRITY;
-+	ctx->reg->reg_wr.wr.wr_cqe = NULL;
-+	ctx->reg->reg_wr.wr.num_sge = 0;
-+	ctx->reg->reg_wr.wr.send_flags = 0;
-+	ctx->reg->reg_wr.access = IB_ACCESS_LOCAL_WRITE;
-+	if (rdma_protocol_iwarp(qp->device, port_num))
-+		ctx->reg->reg_wr.access |= IB_ACCESS_REMOTE_WRITE;
-+	ctx->reg->reg_wr.mr = ctx->reg->mr;
-+	ctx->reg->reg_wr.key = ctx->reg->mr->lkey;
- 	count++;
- 
--	ctx->sig->sig_sge.addr = 0;
--	ctx->sig->sig_sge.length = ctx->sig->data.sge.length;
--	if (sig_attrs->wire.sig_type != IB_SIG_TYPE_NONE)
--		ctx->sig->sig_sge.length += ctx->sig->prot.sge.length;
-+	ctx->reg->sge.addr = ctx->reg->mr->iova;
-+	ctx->reg->sge.length = ctx->reg->mr->length;
-+	if (sig_attrs->wire.sig_type == IB_SIG_TYPE_NONE)
-+		ctx->reg->sge.length -= ctx->reg->mr->sig_attrs->meta_length;
- 
--	rdma_wr = &ctx->sig->data.wr;
--	rdma_wr->wr.sg_list = &ctx->sig->sig_sge;
-+	rdma_wr = &ctx->reg->wr;
-+	rdma_wr->wr.sg_list = &ctx->reg->sge;
- 	rdma_wr->wr.num_sge = 1;
- 	rdma_wr->remote_addr = remote_addr;
- 	rdma_wr->rkey = rkey;
-@@ -444,21 +437,18 @@ int rdma_rw_ctx_signature_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
- 		rdma_wr->wr.opcode = IB_WR_RDMA_WRITE;
- 	else
- 		rdma_wr->wr.opcode = IB_WR_RDMA_READ;
--	prev_wr->next = &rdma_wr->wr;
--	prev_wr = &rdma_wr->wr;
-+	ctx->reg->reg_wr.wr.next = &rdma_wr->wr;
- 	count++;
- 
- 	return count;
- 
--out_destroy_prot_mr:
--	if (prot_sg_cnt)
--		ib_mr_pool_put(qp, &qp->rdma_mrs, ctx->sig->prot.mr);
--out_destroy_data_mr:
--	ib_mr_pool_put(qp, &qp->rdma_mrs, ctx->sig->data.mr);
-+out_destroy_sig_mr:
-+	ib_mr_pool_put(qp, &qp->sig_mrs, ctx->reg->mr);
- out_free_ctx:
--	kfree(ctx->sig);
-+	kfree(ctx->reg);
- out_unmap_prot_sg:
--	ib_dma_unmap_sg(dev, prot_sg, prot_sg_cnt, dir);
-+	if (prot_sg_cnt)
-+		ib_dma_unmap_sg(dev, prot_sg, prot_sg_cnt, dir);
- out_unmap_sg:
- 	ib_dma_unmap_sg(dev, sg, sg_cnt, dir);
- 	return ret;
-@@ -501,22 +491,8 @@ struct ib_send_wr *rdma_rw_ctx_wrs(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
- 
- 	switch (ctx->type) {
- 	case RDMA_RW_SIG_MR:
--		rdma_rw_update_lkey(&ctx->sig->data, true);
--		if (ctx->sig->prot.mr)
--			rdma_rw_update_lkey(&ctx->sig->prot, true);
--	
--		ctx->sig->sig_mr->need_inval = true;
--		ib_update_fast_reg_key(ctx->sig->sig_mr,
--			ib_inc_rkey(ctx->sig->sig_mr->lkey));
--		ctx->sig->sig_sge.lkey = ctx->sig->sig_mr->lkey;
--
--		if (ctx->sig->data.inv_wr.next)
--			first_wr = &ctx->sig->data.inv_wr;
--		else
--			first_wr = &ctx->sig->data.reg_wr.wr;
--		last_wr = &ctx->sig->data.wr.wr;
--		break;
- 	case RDMA_RW_MR:
-+		/* fallthrough */
- 		for (i = 0; i < ctx->nr_ops; i++) {
- 			rdma_rw_update_lkey(&ctx->reg[i],
- 				ctx->reg[i].wr.wr.opcode !=
-@@ -633,16 +609,12 @@ void rdma_rw_ctx_destroy_signature(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
- 	if (WARN_ON_ONCE(ctx->type != RDMA_RW_SIG_MR))
- 		return;
- 
--	ib_mr_pool_put(qp, &qp->rdma_mrs, ctx->sig->data.mr);
--	ib_dma_unmap_sg(qp->pd->device, sg, sg_cnt, dir);
-+	ib_mr_pool_put(qp, &qp->sig_mrs, ctx->reg->mr);
-+	kfree(ctx->reg);
- 
--	if (ctx->sig->prot.mr) {
--		ib_mr_pool_put(qp, &qp->rdma_mrs, ctx->sig->prot.mr);
-+	ib_dma_unmap_sg(qp->pd->device, sg, sg_cnt, dir);
-+	if (prot_sg_cnt)
- 		ib_dma_unmap_sg(qp->pd->device, prot_sg, prot_sg_cnt, dir);
--	}
--
--	ib_mr_pool_put(qp, &qp->sig_mrs, ctx->sig->sig_mr);
--	kfree(ctx->sig);
- }
- EXPORT_SYMBOL(rdma_rw_ctx_destroy_signature);
- 
-@@ -663,7 +635,7 @@ unsigned int rdma_rw_mr_factor(struct ib_device *device, u8 port_num,
- 	unsigned int mr_pages;
- 
- 	if (rdma_rw_can_use_mr(device, port_num))
--		mr_pages = rdma_rw_fr_page_list_len(device);
-+		mr_pages = rdma_rw_fr_page_list_len(device, false);
- 	else
- 		mr_pages = device->attrs.max_sge_rd;
- 	return DIV_ROUND_UP(maxpages, mr_pages);
-@@ -689,9 +661,8 @@ void rdma_rw_init_qp(struct ib_device *dev, struct ib_qp_init_attr *attr)
- 	 * we'll need two additional MRs for the registrations and the
- 	 * invalidation.
- 	 */
--	if (attr->create_flags & IB_QP_CREATE_INTEGRITY_EN)
--		factor += 6;	/* (inv + reg) * (data + prot + sig) */
--	else if (rdma_rw_can_use_mr(dev, attr->port_num))
-+	if (attr->create_flags & IB_QP_CREATE_INTEGRITY_EN ||
-+	    rdma_rw_can_use_mr(dev, attr->port_num))
- 		factor += 2;	/* inv + reg */
- 
- 	attr->cap.max_send_wr += factor * attr->cap.max_rdma_ctxs;
-@@ -707,20 +678,22 @@ void rdma_rw_init_qp(struct ib_device *dev, struct ib_qp_init_attr *attr)
- int rdma_rw_init_mrs(struct ib_qp *qp, struct ib_qp_init_attr *attr)
- {
- 	struct ib_device *dev = qp->pd->device;
--	u32 nr_mrs = 0, nr_sig_mrs = 0;
-+	u32 nr_mrs = 0, nr_sig_mrs = 0, max_num_sg = 0;
- 	int ret = 0;
- 
- 	if (attr->create_flags & IB_QP_CREATE_INTEGRITY_EN) {
- 		nr_sig_mrs = attr->cap.max_rdma_ctxs;
--		nr_mrs = attr->cap.max_rdma_ctxs * 2;
-+		nr_mrs = attr->cap.max_rdma_ctxs;
-+		max_num_sg = rdma_rw_fr_page_list_len(dev, true);
- 	} else if (rdma_rw_can_use_mr(dev, attr->port_num)) {
- 		nr_mrs = attr->cap.max_rdma_ctxs;
-+		max_num_sg = rdma_rw_fr_page_list_len(dev, false);
- 	}
- 
- 	if (nr_mrs) {
- 		ret = ib_mr_pool_init(qp, &qp->rdma_mrs, nr_mrs,
- 				IB_MR_TYPE_MEM_REG,
--				rdma_rw_fr_page_list_len(dev), 0);
-+				max_num_sg, 0);
- 		if (ret) {
- 			pr_err("%s: failed to allocated %d MRs\n",
- 				__func__, nr_mrs);
-@@ -730,7 +703,7 @@ int rdma_rw_init_mrs(struct ib_qp *qp, struct ib_qp_init_attr *attr)
- 
- 	if (nr_sig_mrs) {
- 		ret = ib_mr_pool_init(qp, &qp->sig_mrs, nr_sig_mrs,
--				IB_MR_TYPE_SIGNATURE, 2, 0);
-+				IB_MR_TYPE_INTEGRITY, max_num_sg, max_num_sg);
- 		if (ret) {
- 			pr_err("%s: failed to allocated %d SIG MRs\n",
- 				__func__, nr_sig_mrs);
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-index df6c303103d5..a1a035270cab 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.c
-+++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -1669,7 +1669,7 @@ isert_rdma_write_done(struct ib_cq *cq, struct ib_wc *wc)
- 
- 	isert_dbg("Cmd %p\n", isert_cmd);
- 
--	ret = isert_check_pi_status(cmd, isert_cmd->rw.sig->sig_mr);
-+	ret = isert_check_pi_status(cmd, isert_cmd->rw.reg->mr);
- 	isert_rdma_rw_ctx_destroy(isert_cmd, isert_conn);
- 
- 	if (ret) {
-@@ -1715,7 +1715,7 @@ isert_rdma_read_done(struct ib_cq *cq, struct ib_wc *wc)
- 	iscsit_stop_dataout_timer(cmd);
- 
- 	if (isert_prot_cmd(isert_conn, se_cmd))
--		ret = isert_check_pi_status(se_cmd, isert_cmd->rw.sig->sig_mr);
-+		ret = isert_check_pi_status(se_cmd, isert_cmd->rw.reg->mr);
- 	isert_rdma_rw_ctx_destroy(isert_cmd, isert_conn);
- 	cmd->write_data_done = 0;
- 
-diff --git a/include/rdma/rw.h b/include/rdma/rw.h
-index 494f79ca3e62..6ad9dc836c10 100644
---- a/include/rdma/rw.h
-+++ b/include/rdma/rw.h
-@@ -39,15 +39,6 @@ struct rdma_rw_ctx {
- 			struct ib_send_wr	inv_wr;
- 			struct ib_mr		*mr;
- 		} *reg;
--
--		struct {
--			struct rdma_rw_reg_ctx	data;
--			struct rdma_rw_reg_ctx	prot;
--			struct ib_send_wr	sig_inv_wr;
--			struct ib_mr		*sig_mr;
--			struct ib_sge		sig_sge;
--			struct ib_sig_handover_wr sig_wr;
--		} *sig;
- 	};
- };
- 
+ struct ib_recv_wr {
+ 	struct ib_recv_wr      *next;
+ 	union {
 -- 
 2.16.3
 
