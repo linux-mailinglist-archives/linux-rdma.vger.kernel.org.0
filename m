@@ -2,677 +2,336 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 540E33D6EC
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 21:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D1B3D71F
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 21:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405271AbfFKThV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 15:37:21 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:56770 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404788AbfFKThV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 15:37:21 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BJZjlL155375;
-        Tue, 11 Jun 2019 19:37:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2018-07-02; bh=nP+Ibe78/ANBGjhT8Z0rzqkvIHocUUcMlZtROlI5xp8=;
- b=sAbzGo5PuLJJT0QNZ+5O/S5rSLTG2SRC1syq9YE8zFbHTJU7ugYYbgiqPAelrZBPGy7g
- XY9ChdQN1TL7yyKVugEnMAsSSIqkFlR65pnFpd+bUjQc3RzW9IOLuaxqxzPHZQyM6XbT
- f1YPJsOrFWnWYt/GGu4gy2rynJnaQ6S7fu9FVsPRsAbXZFwZV8QrRlRPKSEdtrCwuOoP
- 0cslkcbP3NPhvElvTPHAW2CJTtr2grTRB30zqQHoMOkuQjA0PqypLQD2WXCZ6RT4O/yB
- pN5VChAmxbE9V3vqsvptkBBZbFVhOk4niUAa/LV1AFOgFNJ5gtsAUGwLtNh28/pa0JEF fA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2t05nqq7xc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 19:37:13 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BJa9VC131190;
-        Tue, 11 Jun 2019 19:37:12 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 2t0p9rfrud-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 19:37:12 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5BJbBQJ022839;
-        Tue, 11 Jun 2019 19:37:11 GMT
-Received: from anon-dhcp-171.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 11 Jun 2019 12:37:10 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v2 16/19] NFS: Fix show_nfs_errors macros again
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <CAN-5tyHx-r6c6RgHk2ocv2CxTgw_8Ebie_fUUSxzaVKotmX1zw@mail.gmail.com>
-Date:   Tue, 11 Jun 2019 15:37:07 -0400
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C5542119-E526-4A69-9D15-B0EDEFF1E5A9@oracle.com>
-References: <20190611150445.2877.8656.stgit@manet.1015granger.net>
- <20190611150923.2877.6862.stgit@manet.1015granger.net>
- <CAN-5tyHx-r6c6RgHk2ocv2CxTgw_8Ebie_fUUSxzaVKotmX1zw@mail.gmail.com>
-To:     Olga Kornievskaia <aglo@umich.edu>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906110125
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906110125
+        id S2404917AbfFKToe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jun 2019 15:44:34 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:35075 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404890AbfFKToe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 15:44:34 -0400
+Received: by mail-qt1-f193.google.com with SMTP id d23so16051022qto.2
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jun 2019 12:44:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0wVahQWOtZqsHwcjYboXhZ8xmvq6TDZROratpn9jK+o=;
+        b=lg2OoIxPWMt+YSmGaILIbusgcWDifxTW7e65EX3sxhPnEuWqY6ckfwdIVK6bxYaj4D
+         /Se9H+/UoWB8E+yMPOmrgaYspQrEAAZyUYnQxUu+iqUlSZ1Me2XihuQrIKfgMT8rinY6
+         YIYI4Q3iwlrjTv+fj0zBV+Br3GlIUBY2JhCCOIewMutojUG5+eNPUgQQrVAs+ekBpROY
+         HQE4TKOpYj3dFgp7sSamfF8zqcH+Rfq/54vQXhisztrLw7tHaNKZCI7Nac/f1kKE67PU
+         BtZBqAhXEkoTT4hsun+6H9rzcpJKSh0DE3SM+Cfh1UZgPU0RBSVysGgTWs/dUH2Pz8yj
+         LNfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0wVahQWOtZqsHwcjYboXhZ8xmvq6TDZROratpn9jK+o=;
+        b=NjrxELeKc3Dc927ncv6ProztPSrd9o4fSR+4rLsId1AD3u6cfZz+Yi+20XWEpTcRAj
+         xBA8yaKfKByHCRrdP0a+grbAFq+aLtg7fmfepY0ghJfY9LncBaJwnGxRNWQxaVu4aqZ1
+         m+S7oTYKtRjrNhJMWE6ASq0aMG7ZcOxjDlfTqMORt4SpalDn8jy8wzdcbfh23hG2b6wK
+         7L2xqy+w3VguFlI97Jcc0d4wkU45x2u/bIpO4281n691eEhVi9XasDt0wNhtG4y3uDst
+         B8W7d8EO+Bv4WbJ5Es3MA1Bi+VMtla3Njr7YdhxYjUjCXMuTl+ymNAR4UoNfJpHXFIkp
+         J2WQ==
+X-Gm-Message-State: APjAAAV2PxZNJie2VM1xu9sD0bxHKtGUP63814cnMFEEZjdI00nLG7XF
+        tGnCVdNkDxEubLjY4k+PlzSDIQ==
+X-Google-Smtp-Source: APXvYqxN1rsrdbPLpnUSRUIFougVtrUocqVp5o5RzenZEH/EseHKCc1Fa1UBz9VWttmJTii4ojTTrg==
+X-Received: by 2002:ac8:4619:: with SMTP id p25mr33781429qtn.73.1560282272851;
+        Tue, 11 Jun 2019 12:44:32 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id z1sm8154500qth.7.2019.06.11.12.44.32
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 11 Jun 2019 12:44:32 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hamh5-0007DI-P7; Tue, 11 Jun 2019 16:44:31 -0300
+Date:   Tue, 11 Jun 2019 16:44:31 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v2 hmm 02/11] mm/hmm: Use hmm_mirror not mm as an
+ argument for hmm_range_register
+Message-ID: <20190611194431.GC29375@ziepe.ca>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
+ <20190606184438.31646-3-jgg@ziepe.ca>
+ <20190608085425.GB32185@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190608085425.GB32185@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Sat, Jun 08, 2019 at 01:54:25AM -0700, Christoph Hellwig wrote:
+> FYI, I very much disagree with the direction this is moving.
+> 
+> struct hmm_mirror literally is a trivial duplication of the
+> mmu_notifiers.  All these drivers should just use the mmu_notifiers
+> directly for the mirroring part instead of building a thing wrapper
+> that adds nothing but helping to manage the lifetime of struct hmm,
+> which shouldn't exist to start with.
 
+Christoph: What do you think about this sketch below?
 
-> On Jun 11, 2019, at 3:33 PM, Olga Kornievskaia <aglo@umich.edu> wrote:
->=20
-> On Tue, Jun 11, 2019 at 11:09 AM Chuck Lever <chuck.lever@oracle.com> =
-wrote:
->>=20
->> I noticed that NFS status values stopped working again.
->>=20
->> trace_print_symbols_seq() takes an unsigned long. Passing a negative
->> errno or negative NFSERR value just confuses it, and since we're
->> using C macros here and not static inline functions, all bets are
->> off due to implicit type casting.
->>=20
->> Straight-line the calling conventions so that error codes are stored
->> in the trace record as positive values in an unsigned long field.
->>=20
->> It's often the case that an error value that is positive is a byte
->> count but when it's negative, it's an error (e.g. nfs4_write). Fix
->> those cases so that the value that is eventually stored in the
->> error field is a positive NFS status or errno, or zero.
->>=20
->=20
-> Hi Chuck,
->=20
-> To clarify, so on error case, we no longer going be seeing a negative
-> value so error=3D-5 (EIO) would be error=3D5 (EIO)? I have always =
-relied
-> on searching for "error=3D-" thru the trace_pipe log for errors. Do we
-> really need to change that?
+It would replace the hmm_range/mirror/etc with a different way to
+build the same locking scheme using some optional helpers linked to
+the mmu notifier?
 
-error=3D will be zero or a positive errno/status code. If the trace =
-point
-has a count=3D or task->tk_status=3D you can see the byte count when
-error=3D0.
+(just a sketch, still needs a lot more thinking)
 
-So now the search will be for anything that has "error=3D" but is not
-"error=3D0".
+Jason
 
+From 5a91d17bc3b8fcaa685abddaaae5c5aea6f82dca Mon Sep 17 00:00:00 2001
+From: Jason Gunthorpe <jgg@mellanox.com>
+Date: Tue, 11 Jun 2019 16:33:33 -0300
+Subject: [PATCH] RFC mm: Provide helpers to implement the common mmu_notifier
+ locking
 
->> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
->> ---
->> fs/nfs/nfs4trace.h |  120 =
-++++++++++++++++++++++++++--------------------------
->> 1 file changed, 60 insertions(+), 60 deletions(-)
->>=20
->> diff --git a/fs/nfs/nfs4trace.h b/fs/nfs/nfs4trace.h
->> index 6beb1f2..9a01731 100644
->> --- a/fs/nfs/nfs4trace.h
->> +++ b/fs/nfs/nfs4trace.h
->> @@ -156,7 +156,7 @@
->> TRACE_DEFINE_ENUM(NFS4ERR_XDEV);
->>=20
->> #define show_nfsv4_errors(error) \
->> -       __print_symbolic(-(error), \
->> +       __print_symbolic(error, \
->>                { NFS4_OK, "OK" }, \
->>                /* Mapped by nfs4_stat_to_errno() */ \
->>                { EPERM, "EPERM" }, \
->> @@ -348,7 +348,7 @@
->>=20
->>                TP_STRUCT__entry(
->>                        __string(dstaddr, clp->cl_hostname)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                ),
->>=20
->>                TP_fast_assign(
->> @@ -357,7 +357,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) dstaddr=3D%s",
->> +                       "error=3D%lu (%s) dstaddr=3D%s",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->>                        __get_str(dstaddr)
->> @@ -420,7 +420,7 @@
->>                        __field(unsigned int, highest_slotid)
->>                        __field(unsigned int, target_highest_slotid)
->>                        __field(unsigned int, status_flags)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                ),
->>=20
->>                TP_fast_assign(
->> @@ -435,7 +435,7 @@
->>                        __entry->error =3D res->sr_status;
->>                ),
->>                TP_printk(
->> -                       "error=3D%d (%s) session=3D0x%08x slot_nr=3D%u =
-seq_nr=3D%u "
->> +                       "error=3D%lu (%s) session=3D0x%08x slot_nr=3D%u=
- seq_nr=3D%u "
->>                        "highest_slotid=3D%u target_highest_slotid=3D%u =
-"
->>                        "status_flags=3D%u (%s)",
->>                        __entry->error,
->> @@ -467,7 +467,7 @@
->>                        __field(unsigned int, seq_nr)
->>                        __field(unsigned int, highest_slotid)
->>                        __field(unsigned int, cachethis)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                ),
->>=20
->>                TP_fast_assign(
->> @@ -476,11 +476,11 @@
->>                        __entry->seq_nr =3D args->csa_sequenceid;
->>                        __entry->highest_slotid =3D =
-args->csa_highestslotid;
->>                        __entry->cachethis =3D args->csa_cachethis;
->> -                       __entry->error =3D -be32_to_cpu(status);
->> +                       __entry->error =3D be32_to_cpu(status);
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) session=3D0x%08x slot_nr=3D%u =
-seq_nr=3D%u "
->> +                       "error=3D%lu (%s) session=3D0x%08x slot_nr=3D%u=
- seq_nr=3D%u "
->>                        "highest_slotid=3D%u",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -504,7 +504,7 @@
->>                        __field(unsigned int, seq_nr)
->>                        __field(unsigned int, highest_slotid)
->>                        __field(unsigned int, cachethis)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                ),
->>=20
->>                TP_fast_assign(
->> @@ -513,11 +513,11 @@
->>                        __entry->seq_nr =3D args->csa_sequenceid;
->>                        __entry->highest_slotid =3D =
-args->csa_highestslotid;
->>                        __entry->cachethis =3D args->csa_cachethis;
->> -                       __entry->error =3D -be32_to_cpu(status);
->> +                       __entry->error =3D be32_to_cpu(status);
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) session=3D0x%08x slot_nr=3D%u =
-seq_nr=3D%u "
->> +                       "error=3D%lu (%s) session=3D0x%08x slot_nr=3D%u=
- seq_nr=3D%u "
->>                        "highest_slotid=3D%u",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -572,18 +572,18 @@
->>=20
->>                TP_STRUCT__entry(
->>                        __field(u32, op)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                ),
->>=20
->>                TP_fast_assign(
->>                        __entry->op =3D op;
->> -                       __entry->error =3D -error;
->> +                       __entry->error =3D error;
->>                ),
->>=20
->>                TP_printk(
->> -                       "operation %d: nfs status %d (%s)",
->> -                       __entry->op,
->> -                       __entry->error, =
-show_nfsv4_errors(__entry->error)
->> +                       "error=3D%lu (%s) operation %d:",
->> +                       __entry->error, =
-show_nfsv4_errors(__entry->error),
->> +                       __entry->op
->>                )
->> );
->>=20
->> @@ -597,7 +597,7 @@
->>                TP_ARGS(ctx, flags, error),
->>=20
->>                TP_STRUCT__entry(
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(unsigned int, flags)
->>                        __field(unsigned int, fmode)
->>                        __field(dev_t, dev)
->> @@ -615,7 +615,7 @@
->>                        const struct nfs4_state *state =3D ctx->state;
->>                        const struct inode *inode =3D NULL;
->>=20
->> -                       __entry->error =3D error;
->> +                       __entry->error =3D -error;
->>                        __entry->flags =3D flags;
->>                        __entry->fmode =3D (__force unsigned =
-int)ctx->mode;
->>                        __entry->dev =3D ctx->dentry->d_sb->s_dev;
->> @@ -647,7 +647,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) flags=3D%d (%s) fmode=3D%s "
->> +                       "error=3D%lu (%s) flags=3D%d (%s) fmode=3D%s =
-"
->>                        "fileid=3D%02x:%02x:%llu fhandle=3D0x%08x "
->>                        "name=3D%02x:%02x:%llu/%s stateid=3D%d:0x%08x =
-"
->>                        "openstateid=3D%d:0x%08x",
->> @@ -733,7 +733,7 @@
->>                        __field(u32, fhandle)
->>                        __field(u64, fileid)
->>                        __field(unsigned int, fmode)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(int, stateid_seq)
->>                        __field(u32, stateid_hash)
->>                ),
->> @@ -753,7 +753,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fmode=3D%s =
-fileid=3D%02x:%02x:%llu "
->> +                       "error=3D%lu (%s) fmode=3D%s =
-fileid=3D%02x:%02x:%llu "
->>                        "fhandle=3D0x%08x openstateid=3D%d:0x%08x",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -795,7 +795,7 @@
->>                TP_ARGS(request, state, cmd, error),
->>=20
->>                TP_STRUCT__entry(
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(int, cmd)
->>                        __field(char, type)
->>                        __field(loff_t, start)
->> @@ -825,7 +825,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) cmd=3D%s:%s range=3D%lld:%lld =
-"
->> +                       "error=3D%lu (%s) cmd=3D%s:%s range=3D%lld:%lld=
- "
->>                        "fileid=3D%02x:%02x:%llu fhandle=3D0x%08x "
->>                        "stateid=3D%d:0x%08x",
->>                        __entry->error,
->> @@ -865,7 +865,7 @@
->>                TP_ARGS(request, state, lockstateid, cmd, error),
->>=20
->>                TP_STRUCT__entry(
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(int, cmd)
->>                        __field(char, type)
->>                        __field(loff_t, start)
->> @@ -901,7 +901,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) cmd=3D%s:%s range=3D%lld:%lld =
-"
->> +                       "error=3D%lu (%s) cmd=3D%s:%s range=3D%lld:%lld=
- "
->>                        "fileid=3D%02x:%02x:%llu fhandle=3D0x%08x "
->>                        "stateid=3D%d:0x%08x lockstateid=3D%d:0x%08x",
->>                        __entry->error,
->> @@ -970,7 +970,7 @@
->>                TP_STRUCT__entry(
->>                        __field(dev_t, dev)
->>                        __field(u32, fhandle)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(int, stateid_seq)
->>                        __field(u32, stateid_hash)
->>                ),
->> @@ -986,7 +986,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) dev=3D%02x:%02x =
-fhandle=3D0x%08x "
->> +                       "error=3D%lu (%s) dev=3D%02x:%02x =
-fhandle=3D0x%08x "
->>                        "stateid=3D%d:0x%08x",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -1007,7 +1007,7 @@
->>                TP_ARGS(state, lsp, error),
->>=20
->>                TP_STRUCT__entry(
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(dev_t, dev)
->>                        __field(u32, fhandle)
->>                        __field(u64, fileid)
->> @@ -1029,7 +1029,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->>                        "stateid=3D%d:0x%08x",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -1064,7 +1064,7 @@
->>=20
->>                TP_STRUCT__entry(
->>                        __field(dev_t, dev)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(u64, dir)
->>                        __string(name, name->name)
->>                ),
->> @@ -1072,12 +1072,12 @@
->>                TP_fast_assign(
->>                        __entry->dev =3D dir->i_sb->s_dev;
->>                        __entry->dir =3D NFS_FILEID(dir);
->> -                       __entry->error =3D error;
->> +                       __entry->error =3D -error;
->>                        __assign_str(name, name->name);
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) name=3D%02x:%02x:%llu/%s",
->> +                       "error=3D%lu (%s) name=3D%02x:%02x:%llu/%s",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->>                        MAJOR(__entry->dev), MINOR(__entry->dev),
->> @@ -1114,7 +1114,7 @@
->>                TP_STRUCT__entry(
->>                        __field(dev_t, dev)
->>                        __field(u64, ino)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                ),
->>=20
->>                TP_fast_assign(
->> @@ -1124,7 +1124,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) inode=3D%02x:%02x:%llu",
->> +                       "error=3D%lu (%s) inode=3D%02x:%02x:%llu",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->>                        MAJOR(__entry->dev), MINOR(__entry->dev),
->> @@ -1145,7 +1145,7 @@
->>=20
->>                TP_STRUCT__entry(
->>                        __field(dev_t, dev)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(u64, olddir)
->>                        __string(oldname, oldname->name)
->>                        __field(u64, newdir)
->> @@ -1162,7 +1162,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) oldname=3D%02x:%02x:%llu/%s =
-"
->> +                       "error=3D%lu (%s) oldname=3D%02x:%02x:%llu/%s =
-"
->>                        "newname=3D%02x:%02x:%llu/%s",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -1187,18 +1187,18 @@
->>                        __field(dev_t, dev)
->>                        __field(u32, fhandle)
->>                        __field(u64, fileid)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                ),
->>=20
->>                TP_fast_assign(
->>                        __entry->dev =3D inode->i_sb->s_dev;
->>                        __entry->fileid =3D NFS_FILEID(inode);
->>                        __entry->fhandle =3D =
-nfs_fhandle_hash(NFS_FH(inode));
->> -                       __entry->error =3D error;
->> +                       __entry->error =3D error < 0 ? -error : 0;
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x",
->> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->>                        MAJOR(__entry->dev), MINOR(__entry->dev),
->> @@ -1238,7 +1238,7 @@
->>                        __field(dev_t, dev)
->>                        __field(u32, fhandle)
->>                        __field(u64, fileid)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(int, stateid_seq)
->>                        __field(u32, stateid_hash)
->>                ),
->> @@ -1255,7 +1255,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->>                        "stateid=3D%d:0x%08x",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -1295,7 +1295,7 @@
->>                        __field(u32, fhandle)
->>                        __field(u64, fileid)
->>                        __field(unsigned int, valid)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                ),
->>=20
->>                TP_fast_assign(
->> @@ -1307,7 +1307,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->>                        "valid=3D%s",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -1342,7 +1342,7 @@
->>                TP_ARGS(clp, fhandle, inode, error),
->>=20
->>                TP_STRUCT__entry(
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(dev_t, dev)
->>                        __field(u32, fhandle)
->>                        __field(u64, fileid)
->> @@ -1363,7 +1363,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->>                        "dstaddr=3D%s",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -1397,7 +1397,7 @@
->>                TP_ARGS(clp, fhandle, inode, stateid, error),
->>=20
->>                TP_STRUCT__entry(
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(dev_t, dev)
->>                        __field(u32, fhandle)
->>                        __field(u64, fileid)
->> @@ -1424,7 +1424,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->>                        "stateid=3D%d:0x%08x dstaddr=3D%s",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -1460,7 +1460,7 @@
->>                TP_ARGS(name, len, id, error),
->>=20
->>                TP_STRUCT__entry(
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(u32, id)
->>                        __dynamic_array(char, name, len > 0 ? len + 1 =
-: 1)
->>                ),
->> @@ -1475,8 +1475,8 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d id=3D%u name=3D%s",
->> -                       __entry->error,
->> +                       "error=3D%lu (%s) id=3D%u name=3D%s",
->> +                       __entry->error, =
-show_nfsv4_errors(__entry->error),
->>                        __entry->id,
->>                        __get_str(name)
->>                )
->> @@ -1509,7 +1509,7 @@
->>                        __field(u64, fileid)
->>                        __field(loff_t, offset)
->>                        __field(size_t, count)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(int, stateid_seq)
->>                        __field(u32, stateid_hash)
->>                ),
->> @@ -1523,7 +1523,7 @@
->>                        __entry->fhandle =3D =
-nfs_fhandle_hash(NFS_FH(inode));
->>                        __entry->offset =3D hdr->args.offset;
->>                        __entry->count =3D hdr->args.count;
->> -                       __entry->error =3D error;
->> +                       __entry->error =3D error < 0 ? -error : 0;
->>                        __entry->stateid_seq =3D
->>                                be32_to_cpu(state->stateid.seqid);
->>                        __entry->stateid_hash =3D
->> @@ -1531,7 +1531,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->>                        "offset=3D%lld count=3D%zu stateid=3D%d:0x%08x",=
+Many users of mmu_notifiers require a read/write lock that is write locked
+during the invalidate_range_start/end period to protect against a parallel
+thread reading the page tables while another thread is invalidating them.
 
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -1569,7 +1569,7 @@
->>                        __field(u64, fileid)
->>                        __field(loff_t, offset)
->>                        __field(size_t, count)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(int, stateid_seq)
->>                        __field(u32, stateid_hash)
->>                ),
->> @@ -1583,7 +1583,7 @@
->>                        __entry->fhandle =3D =
-nfs_fhandle_hash(NFS_FH(inode));
->>                        __entry->offset =3D hdr->args.offset;
->>                        __entry->count =3D hdr->args.count;
->> -                       __entry->error =3D error;
->> +                       __entry->error =3D error < 0 ? -error : 0;
->>                        __entry->stateid_seq =3D
->>                                be32_to_cpu(state->stateid.seqid);
->>                        __entry->stateid_hash =3D
->> @@ -1591,7 +1591,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->>                        "offset=3D%lld count=3D%zu stateid=3D%d:0x%08x",=
+kvm uses a collision-retry lock built with something like a sequence
+count, and many mmu_notifiers users have copied this approach with various
+levels of success.
 
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -1630,7 +1630,7 @@
->>                        __field(u64, fileid)
->>                        __field(loff_t, offset)
->>                        __field(size_t, count)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                ),
->>=20
->>                TP_fast_assign(
->> @@ -1644,7 +1644,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->>                        "offset=3D%lld count=3D%zu",
->>                        __entry->error,
->>                        show_nfsv4_errors(__entry->error),
->> @@ -1694,7 +1694,7 @@
->>                        __field(u32, iomode)
->>                        __field(u64, offset)
->>                        __field(u64, count)
->> -                       __field(int, error)
->> +                       __field(unsigned long, error)
->>                        __field(int, stateid_seq)
->>                        __field(u32, stateid_hash)
->>                        __field(int, layoutstateid_seq)
->> @@ -1727,7 +1727,7 @@
->>                ),
->>=20
->>                TP_printk(
->> -                       "error=3D%d (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->> +                       "error=3D%lu (%s) fileid=3D%02x:%02x:%llu =
-fhandle=3D0x%08x "
->>                        "iomode=3D%s offset=3D%llu count=3D%llu =
-stateid=3D%d:0x%08x "
->>                        "layoutstateid=3D%d:0x%08x",
->>                        __entry->error,
+Provide a common set of helpers that build a sleepable read side lock
+using a collision retry scheme. The general usage pattern is:
 
---
-Chuck Lever
+driver pagefault():
+  struct mmu_invlock_state st = MMU_INVLOCK_STATE_INIT;
 
+again:
+  mmu_invlock_write_start_and_lock(&driver->mn, &st)
 
+  /* read vmas and page data under mmap_sem */
+  /* maybe sleep */
+
+  take_lock(&driver->lock);
+  if (mn_invlock_end_write_and_unlock(&driver->mn, &st)) {
+      unlock(&driver->lock);
+      goto again;
+  }
+  /* make data visible to the device */
+  /* does not sleep */
+  unlock(&driver->lock);
+
+The driver is responsible to provide the 'driver->lock', which is the same
+lock it must hold during invalidate_range_start. By holding this lock the
+sequence count is fully locked, and invalidations are prevented, so it is
+safe to make the work visible to the device.
+
+Since it is possible for this to live lock it uses the write side of the
+mmap_sem to create a slow path if there are repeated collisions.
+
+This is based off the design of the hmm_range and the RDMA ODP locking
+scheme, with some additional refinements.
+
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ include/linux/mmu_notifier.h | 83 ++++++++++++++++++++++++++++++++++++
+ mm/mmu_notifier.c            | 71 ++++++++++++++++++++++++++++++
+ 2 files changed, 154 insertions(+)
+
+diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+index b6c004bd9f6ad9..0417f9452f2a09 100644
+--- a/include/linux/mmu_notifier.h
++++ b/include/linux/mmu_notifier.h
+@@ -6,6 +6,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/mm_types.h>
+ #include <linux/srcu.h>
++#include <linux/sched.h>
+ 
+ struct mmu_notifier;
+ struct mmu_notifier_ops;
+@@ -227,8 +228,90 @@ struct mmu_notifier_ops {
+ struct mmu_notifier {
+ 	struct hlist_node hlist;
+ 	const struct mmu_notifier_ops *ops;
++
++	/*
++	 * mmu_invlock is a set of helpers to allow the caller to provide a
++	 * read/write lock scheme where the write side of the lock is held
++	 * between invalidate_start -> end, and the read side can be obtained
++	 * on some other thread. This is a common usage pattern for mmu
++	 * notifier users that want to lock against changes to the mmu.
++	 */
++	struct mm_struct *mm;
++	unsigned int active_invalidates;
++	seqcount_t invalidate_seq;
++	wait_queue_head_t wq;
+ };
+ 
++struct mmu_invlock_state
++{
++	unsigned long timeout;
++	unsigned int update_seq;
++	bool write_locked;
++};
++
++#define MMU_INVLOCK_STATE_INIT {.timeout = msecs_to_jiffies(1000)}
++
++// FIXME: needs a seqcount helper
++static inline bool is_locked_seqcount(const seqcount_t *s)
++{
++	return s->sequence & 1;
++}
++
++void mmu_invlock_write_start_and_lock(struct mmu_notifier *mn,
++				      struct mmu_invlock_state *st);
++bool mmu_invlock_write_end(struct mmu_notifier *mn);
++
++/**
++ * mmu_invlock_inv_start - Call during invalidate_range_start
++ * @mn - mmu_notifier
++ * @lock - True if the supplied range is interesting and should cause the
++ *         write side of the lock lock to be held.
++ *
++ * Updates the locking state as part of the invalidate_range_start callback.
++ * This must be called under a user supplied lock, and it must be called for
++ * every invalidate_range_start.
++ */
++static inline void mmu_invlock_inv_start(struct mmu_notifier *mn, bool lock)
++{
++	if (lock && !mn->active_invalidates)
++		write_seqcount_begin(&mn->invalidate_seq);
++	mn->active_invalidates++;
++}
++
++/**
++ * mmu_invlock_inv_start - Call during invalidate_range_start
++ * @mn - mmu_notifier
++ *
++ * Updates the locking state as part of the invalidate_range_start callback.
++ * This must be called under a user supplied lock, and it must be called for
++ * every invalidate_range_end.
++ */
++static inline void mmu_invlock_inv_end(struct mmu_notifier *mn)
++{
++	mn->active_invalidates++;
++	if (!mn->active_invalidates &&
++	    is_locked_seqcount(&mn->invalidate_seq)) {
++		write_seqcount_end(&mn->invalidate_seq);
++		wake_up_all(&mn->wq);
++	}
++}
++
++/**
++ * mmu_invlock_write_needs_retry - Check if the write lock has collided
++ * @mn - mmu_notifier
++ * @st - lock state set by mmu_invlock_write_start_and_lock()
++ *
++ * The nlock uses a collision retry scheme for the fast path. If a parallel
++ * invalidate has collided with the lock then it should be restarted again
++ * from mmu_invlock_write_start_and_lock()
++ */
++static inline bool mmu_invlock_write_needs_retry(struct mmu_notifier *mn,
++						 struct mmu_invlock_state *st)
++{
++	return !st->write_locked &&
++	       read_seqcount_retry(&mn->invalidate_seq, st->update_seq);
++}
++
+ static inline int mm_has_notifiers(struct mm_struct *mm)
+ {
+ 	return unlikely(mm->mmu_notifier_mm);
+diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
+index ee36068077b6e5..3db8cdd7211285 100644
+--- a/mm/mmu_notifier.c
++++ b/mm/mmu_notifier.c
+@@ -247,6 +247,11 @@ static int do_mmu_notifier_register(struct mmu_notifier *mn,
+ 
+ 	BUG_ON(atomic_read(&mm->mm_users) <= 0);
+ 
++	mn->mm = mm;
++	mn->active_invalidates = 0;
++	seqcount_init(&mn->invalidate_seq);
++	init_waitqueue_head(&mn->wq);
++
+ 	ret = -ENOMEM;
+ 	mmu_notifier_mm = kmalloc(sizeof(struct mmu_notifier_mm), GFP_KERNEL);
+ 	if (unlikely(!mmu_notifier_mm))
+@@ -405,3 +410,69 @@ mmu_notifier_range_update_to_read_only(const struct mmu_notifier_range *range)
+ 	return range->vma->vm_flags & VM_READ;
+ }
+ EXPORT_SYMBOL_GPL(mmu_notifier_range_update_to_read_only);
++
++/**
++ * mm_invlock_start_write_and_lock - Start a read critical section
++ * @mn - mmu_notifier
++ * @st - lock state set initialized by MMU_INVLOCK_STATE_INIT
++ *
++ * This should be called with the mmap sem unlocked. It will wait for any
++ * parallel invalidations to complete and return with the mmap_sem locked. The
++ * mmap_sem may be locked for read or write.
++ *
++ * The critical section must always be ended by
++ * mn_invlock_end_write_and_unlock().
++ */
++void mm_invlock_start_write_and_lock(struct mmu_notifier *mn, struct mmu_invlock_state *st)
++{
++	long ret;
++
++	if (st->timeout == 0)
++		goto write_out;
++
++	ret = wait_event_timeout(
++		mn->wq, !is_locked_seqcount(&mn->invalidate_seq), st->timeout);
++	if (ret == 0)
++		goto write_out;
++
++	if (ret == 1)
++		st->timeout = 0;
++	else
++		st->timeout = ret;
++	down_read(&mn->mm->mmap_sem);
++	return;
++
++write_out:
++	/*
++	 * If we ran out of time then fall back to using the mmap_sem write
++	 * side to block concurrent invalidations. The seqcount is an
++	 * optimization to try and avoid this expensive lock.
++	 */
++	down_write(&mn->mm->mmap_sem);
++	st->write_locked = true;
++}
++EXPORT_SYMBOL_GPL(mm_invlock_start_write_and_lock);
++
++/**
++ * mn_invlock_end_write_and_unlock - End a read critical section
++ * @mn - mmu_notifier
++ * @st - lock state set by mmu_invlock_write_start_and_lock()
++ *
++ * This completes the read side critical section. If it returns false the
++ * caller must call mm_invlock_start_write_and_lock again.  Upon success the
++ * mmap_sem is unlocked.
++ *
++ * The caller must hold the same lock that is held while calling
++ * mmu_invlock_inv_start()
++ */
++bool mn_invlock_end_write_and_unlock(struct mmu_notifier *mn,
++				     struct mmu_invlock_state *st)
++{
++	if (st->write_locked) {
++		up_write(&mn->mm->mmap_sem);
++		return true;
++	}
++	up_read(&mn->mm->mmap_sem);
++	return mmu_invlock_write_needs_retry(mn, st);
++}
++EXPORT_SYMBOL_GPL(mn_invlock_end_write_and_unlock);
+-- 
+2.21.0
 
