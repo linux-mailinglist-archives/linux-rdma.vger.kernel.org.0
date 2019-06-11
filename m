@@ -2,140 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A25F63DBB0
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 22:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE023DBB1
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 22:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406450AbfFKULl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 16:11:41 -0400
-Received: from mail-ua1-f65.google.com ([209.85.222.65]:40540 "EHLO
+        id S2405799AbfFKUL7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jun 2019 16:11:59 -0400
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:36498 "EHLO
         mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405799AbfFKULl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 16:11:41 -0400
-Received: by mail-ua1-f65.google.com with SMTP id s4so5030671uad.7
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Jun 2019 13:11:40 -0700 (PDT)
+        with ESMTP id S2405476AbfFKUL7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 16:11:59 -0400
+Received: by mail-ua1-f65.google.com with SMTP id 94so5037870uam.3
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jun 2019 13:11:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=nbyO3nRw9JFOPLH91kkBtvdh7nt7OAaaubUh8z2eVDA=;
-        b=os8qo+mXUXC9iruJi3EsqRmT4LMaZqC61kNo3rnkLtBl3e8udzOSoHS1wwciuhglLL
-         BJlPeWbrSgBKm2qxMW855Pjo6Yni9P17WKi9H5YecNTx41odf7WUOaBvjNS9GD3LeYUF
-         nPSjDiWf5kSdgsgcMtzBXFowhU43YoKZV43bhr1w3W3by3saOaCrrpGGu6Yfl7HhkuNT
-         MQOCimeYqW6OsFxuole99zgS97HM483VckssODZkaMr/MhWptEEbcWO58l7mr+peEQnK
-         fMw8mGdFhMrHHKzT3s/PuVNNOKSYEDldpNLH4x+pcyx2pajGY4r7btO1QhEho/DiF/B0
-         CDGA==
+        bh=3bPeK+CLQa8N7YbQMrJKIkMaWwhASd3cxSvc0yjCu6s=;
+        b=UVRZSI74ejRvkf1aZO/n1V2sCKsv8eBZiw1oTfe7B3hZBKFSyvvChE+CbHieT3wA7a
+         WirZ21xAaFM4gFPd26o12mliIjtO5hjPWRl13ziq0OaMUpzcQ8xEuTDUXHUsXPncPSVL
+         LX5nWYTM1MozGSl7PhjYOqfNcTHGbY3T5VWubpSi5iIKulW6YX+xUGbR9Ne4LpyZiEhO
+         Fs9/0hylwVnZwFQZVvC9TCOvEqGbhQKnLEy51Qd1nrMUhMA1eQeXLrJifKyvhd74sLff
+         Ml6t7KxNMRJmIYgdqLUw8NJq8n7gaPAtP2e3RF0FTTw9gQ4aFdO8EPfA/ICK28kdr9WR
+         3p/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nbyO3nRw9JFOPLH91kkBtvdh7nt7OAaaubUh8z2eVDA=;
-        b=JiXiwSKUVJjgEFb0QTIXgzy/U7sV7FHQuVWRjrIarAq4O65nKUbQnMVyTKCxKY9143
-         t4M+/32n8lSGDANSk9OJWue8Z8e0F07nyOIBJkrdO4wkiUwg91B8iPwtAoAQ39I+pIHR
-         W3ixvzPRJ/9lrBYghqGHg1u3uBP4Hi2Sr8PJ+GtFii2K4VScHuWi/e3cYfYMeD+Qzdx3
-         k1YttO2avmfHe3RDKkH3dQyLGJUjddbZhLP6hCGWvZ3PMfs/rnY0f4zgHSxuY3mfFT6t
-         ZZ/Znftn80dWopUbmuUzazbSZ9WuV9bczXJa+PNXkQ7FiBrRZRjnrxJLiLNDfApFmnZL
-         uM0g==
-X-Gm-Message-State: APjAAAX7abJqlT9M7zxyWuNHdpf3DIJCh4qYCxlFAlD1lJ46VivNlcxW
-        WrpDRbW1RDb27kxA0DNUtN/2nQ==
-X-Google-Smtp-Source: APXvYqw5PczCpGIqXZv2/tM4aAFgZa9GFOdQnPYRDQgj4LRChbtO+33tz5X6VB2DWqDio7LWoejnvg==
-X-Received: by 2002:ab0:6881:: with SMTP id t1mr25517766uar.65.1560283900032;
-        Tue, 11 Jun 2019 13:11:40 -0700 (PDT)
+        bh=3bPeK+CLQa8N7YbQMrJKIkMaWwhASd3cxSvc0yjCu6s=;
+        b=Um9iCi1wu57akeRI1lf7ZPQfahOQbBm7IFvtbcBjf4L6Vgo81VHZZ1y8RXseNnmSMT
+         phEA912km4ucrp2CoZ8jpOfqPWwkOKU+aX7QIe9nDc6sY3OTE0r3qZ6gmD3cS+ITThS+
+         z5XcfmbBuCG5virEJuCJQfvLyODP+P+XZX2AtvwRKhU7jJXJOFmekB/giRIzFDOzQuxR
+         bvx2IIWWA/qlN+Y2xlcI1QF+0fEEmnru4xHT0x9bdeacyaLIabWtt5P1VaOVWBfDEABj
+         Zc+9saerCb81dIVB5Omuabtgvj4buHK9BEO+KClxW55SN1zkjwkMw9O8ExAHQonkKXu1
+         beYg==
+X-Gm-Message-State: APjAAAWX0L1pALG82dzPfabS3XRSYlUlouu1oALPgVaE04H+GFEO7Imz
+        0uOn+cPpaOBcZ5qT1ETj79GQLw==
+X-Google-Smtp-Source: APXvYqzR7pCuJzmMYzbO629Y6vy6d3ESbvCwTN8N7tu6JsNPd/gSZutBm+L3CBRBx39IF/fKHh4pDw==
+X-Received: by 2002:ab0:138e:: with SMTP id m14mr3062252uae.71.1560283916898;
+        Tue, 11 Jun 2019 13:11:56 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id n6sm44093vkk.20.2019.06.11.13.11.39
+        by smtp.gmail.com with ESMTPSA id 126sm4925038vkt.14.2019.06.11.13.11.56
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 11 Jun 2019 13:11:39 -0700 (PDT)
+        Tue, 11 Jun 2019 13:11:56 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1han7L-0006uA-2c; Tue, 11 Jun 2019 17:11:39 -0300
-Date:   Tue, 11 Jun 2019 17:11:39 -0300
+        id 1han7c-0006ud-0q; Tue, 11 Jun 2019 17:11:56 -0300
+Date:   Tue, 11 Jun 2019 17:11:56 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Kaike Wan <kaike.wan@intel.com>
-Subject: Re: [PATCH for-rc 1/3] IB/hfi1: Validate fault injection opcode user
- input
-Message-ID: <20190611201139.GA26457@ziepe.ca>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-rc 0/3] IB/hfi1: Fixes for 5.2 RC cycle
+Message-ID: <20190611201155.GB26457@ziepe.ca>
 References: <20190607113807.157915.48581.stgit@awfm-01.aw.intel.com>
- <20190607122525.158478.61319.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190607122525.158478.61319.stgit@awfm-01.aw.intel.com>
+In-Reply-To: <20190607113807.157915.48581.stgit@awfm-01.aw.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 07, 2019 at 08:25:25AM -0400, Dennis Dalessandro wrote:
-> From: Kaike Wan <kaike.wan@intel.com>
+On Fri, Jun 07, 2019 at 07:39:05AM -0400, Dennis Dalessandro wrote:
+> We have a couple of fixes we'd like to try and get into the rc cycle. These 3
+> are all targeted to stable as well. One fixes an issue of not validating user
+> input that was reported by Dan C. We have a race condition that leads to a
+> hung SDMA engine as well as a fix for a problem when verbs and kdeth packets
+> get processed on different cpus for the same qp.
 > 
-> The opcode range for fault injection from user should be validated
-> before it is applied to the fault->opcodes[] bitmap to avoid
-> out-of-bound error. In addition, this patch also simplifies the code
-> by using the BIT macro.
 > 
-> Fixes: a74d5307caba ("IB/hfi1: Rework fault injection machinery")
-> Cc: <stable@vger.kernel.org>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-> Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
->  drivers/infiniband/hw/hfi1/fault.c |    5 +++++
->  drivers/infiniband/hw/hfi1/fault.h |    6 +++---
->  2 files changed, 8 insertions(+), 3 deletions(-)
+> Kaike Wan (1):
+>       IB/hfi1: Validate fault injection opcode user input
 > 
-> diff --git a/drivers/infiniband/hw/hfi1/fault.c b/drivers/infiniband/hw/hfi1/fault.c
-> index 3fd3315..13ba291 100644
-> +++ b/drivers/infiniband/hw/hfi1/fault.c
-> @@ -153,6 +153,7 @@ static ssize_t fault_opcodes_write(struct file *file, const char __user *buf,
->  		char *dash;
->  		unsigned long range_start, range_end, i;
->  		bool remove = false;
-> +		unsigned long bound = BIT(BITS_PER_BYTE);
->  
->  		end = strchr(ptr, ',');
->  		if (end)
-> @@ -178,6 +179,10 @@ static ssize_t fault_opcodes_write(struct file *file, const char __user *buf,
->  				    BITS_PER_BYTE);
->  			break;
->  		}
-> +		/* Check the inputs */
-> +		if (range_start >= bound || range_end >= bound)
-> +			break;
-> +
->  		for (i = range_start; i <= range_end; i++) {
->  			if (remove)
->  				clear_bit(i, fault->opcodes);
-> diff --git a/drivers/infiniband/hw/hfi1/fault.h b/drivers/infiniband/hw/hfi1/fault.h
-> index a833827..c61035c 100644
-> +++ b/drivers/infiniband/hw/hfi1/fault.h
-> @@ -60,13 +60,13 @@
->  struct fault {
->  	struct fault_attr attr;
->  	struct dentry *dir;
-> -	u64 n_rxfaults[(1U << BITS_PER_BYTE)];
-> -	u64 n_txfaults[(1U << BITS_PER_BYTE)];
-> +	u64 n_rxfaults[BIT(BITS_PER_BYTE)];
-> +	u64 n_txfaults[BIT(BITS_PER_BYTE)];
->  	u64 fault_skip;
->  	u64 skip;
->  	u64 fault_skip_usec;
->  	unsigned long skip_usec;
-> -	unsigned long opcodes[(1U << BITS_PER_BYTE) / BITS_PER_LONG];
-> +	unsigned long opcodes[BIT(BITS_PER_BYTE) / BITS_PER_LONG];
->  	bool enable;
->  	bool suppress_err;
->  	bool opcode;
+> Mike Marciniszyn (2):
+>       IB/hfi1: Close PSM sdma_progress sleep window
+>       IB/hfi1: Correct tid qp rcd to match verbs context
 
-I don't think this is a simplification, BIT() is intended to create
-flag values, and this is an array length. I also wonder if
-1<<BITS_PER_BYTE is really a sane constant to be using for something
-that looks HW specific, and if opcodes is really wanting to be a
-bitmap type..
-
-So, I dropped this hunk.
+Applied to for-rc, thanks
 
 Jason
