@@ -2,104 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE763C81C
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 12:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A033CA5C
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 13:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405153AbfFKKIJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 06:08:09 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:34262 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405169AbfFKKIJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 06:08:09 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BA4BEX051438;
-        Tue, 11 Jun 2019 10:07:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=LjjDKR+0h5jy8XWEJc5KDfAlumpMbZO6+MQdfmzWlVc=;
- b=Z4UJWCmSC5Fx0veR+504Jx5Wf5hA4lgVp8zYHsu4stBJBEd0Fvr6ewO7UVjpqh2pOMP3
- IdQ1V63N0qaOhh17Sby4XazWeuQhE6SsGH/FfpUd9qFN+aeylQYXzCBwJCeRYmfNxFt4
- pf8i9mQhmqqPK7HbMgP7uiblqZLJbqyQaPS7eCbDJElTx8/CMwDMMhihxvkl/P1Jz1Q0
- KTGqepsHNsdkWSAK49hxWZb3bCVItdBBgVF4wlXrgL79URvo0+QXx7MmVoftgmESXN5P
- NQ+v8RMsLynTBNxftHT0TjDjqTIAWPOz2pp3GGZPq8bhiPUMqHh2OjHYGMU4zqxdm4vA 9Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 2t02hemabq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 10:07:36 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BA7GG8103976;
-        Tue, 11 Jun 2019 10:07:35 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2t024uars6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 10:07:35 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5BA7XDJ020039;
-        Tue, 11 Jun 2019 10:07:33 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 11 Jun 2019 03:07:33 -0700
-Date:   Tue, 11 Jun 2019 13:07:24 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Yishai Hadas <yishaih@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] IB/mlx4: prevent undefined shift in set_user_sq_size()
-Message-ID: <20190611100724.GB1915@kadam>
-References: <20190608092231.GA28890@mwanda>
- <20190610132849.GD18468@ziepe.ca>
+        id S2390026AbfFKLtb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jun 2019 07:49:31 -0400
+Received: from mail-eopbgr80082.outbound.protection.outlook.com ([40.107.8.82]:57924
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389938AbfFKLtb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Jun 2019 07:49:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lewkSU9LFhZLxzOmKshS3k5ZJ0pLErJk/QoNhiisvJQ=;
+ b=OBeRFEDTNbeaXA+fc7oOV3PyczlFSewsDCl2lSL72t9jLLMdm7xHrm/08x0xysSHNGoxRG5toTD7IUw5lo5NFi6B0yYTWvgeap1cMOVTEknqbbNj7YakaalNF7cK2xNbhqe1lvQbMM1+WfBiyunFR+Pzbp9iMyFRxdPO5ry4Ozs=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB4431.eurprd05.prod.outlook.com (52.133.13.26) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1965.17; Tue, 11 Jun 2019 11:49:27 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::c16d:129:4a40:9ba1%6]) with mapi id 15.20.1965.017; Tue, 11 Jun 2019
+ 11:49:27 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Yuval Shaia <yuval.shaia@oracle.com>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v4 rdma-core] verbs: Introduce a new reg_mr API for
+ virtual address space
+Thread-Topic: [PATCH v4 rdma-core] verbs: Introduce a new reg_mr API for
+ virtual address space
+Thread-Index: AQHVHE9dGVBySl0utkK8dObZD1pJ+aaRcMUAgAS704CAADIsgA==
+Date:   Tue, 11 Jun 2019 11:49:27 +0000
+Message-ID: <20190611114915.GA25673@mellanox.com>
+References: <20190606100511.4489-1-yuval.shaia@oracle.com>
+ <20190608083224.GS5261@mtr-leonro.mtl.com> <20190611084941.GA3499@lap1>
+In-Reply-To: <20190611084941.GA3499@lap1>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YQXPR01CA0091.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:41::20) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9d91f4d3-4d63-442a-ba83-08d6ee62dae6
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4431;
+x-ms-traffictypediagnostic: VI1PR05MB4431:
+x-microsoft-antispam-prvs: <VI1PR05MB44316EEEFC4A82D4DE685E7BCFED0@VI1PR05MB4431.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:108;
+x-forefront-prvs: 006546F32A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(39860400002)(376002)(136003)(366004)(346002)(189003)(199004)(476003)(66446008)(11346002)(66556008)(99286004)(64756008)(6436002)(66946007)(446003)(86362001)(14454004)(54906003)(33656002)(66476007)(68736007)(486006)(73956011)(386003)(2906002)(76176011)(6506007)(7736002)(478600001)(3846002)(305945005)(52116002)(6116002)(2616005)(4326008)(6916009)(25786009)(36756003)(81166006)(102836004)(66066001)(8676002)(186003)(5660300002)(81156014)(4744005)(26005)(1076003)(6512007)(71200400001)(71190400001)(8936002)(256004)(53936002)(6486002)(316002)(229853002)(6246003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4431;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 9HFX7D5yfjHMPLyxhn1UsflDnfvMbQpNQH5jmZyUWJVUVPuY61hYnCS1/yz5S0+YXX3zlIimP5/0yieilMsw5tEolaeRuNBSQXUbF3XKI1fxAUa+BLmS3ZzLJXmjAodOFMz8HSSY5v1qTIMe6g2iGe61oATO9Z1vlIE9Wjh48WjPYzdTPSCuka0pgNNw182Ilpd9LqO2CAsZVTLqqcLfHDMg4gQSfIOeYDfSGxa4VlOQxC9TcrL6Pq2IBjT11Fv9/kgka/5/LNVYTNf8t6nTz75HhNbTvT2ZPQf6zzAJNNiZuQGaMRPYtGjAv9lbdeJNa5Iq05WMeXLoxg1Dcqdt//3h191ZYau96SFt2PxuTAj+jORkaB2tiwlO7r6ta+YX2EjKEwzcMd0E+d6T+HMmnQhlJ+lq3ihxQxFIlBIaRUc=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <FDD1DB3327867E49B08F57DE8313970E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190610132849.GD18468@ziepe.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906110070
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906110070
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d91f4d3-4d63-442a-ba83-08d6ee62dae6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2019 11:49:27.1520
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4431
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 10:28:49AM -0300, Jason Gunthorpe wrote:
-> On Sat, Jun 08, 2019 at 12:22:31PM +0300, Dan Carpenter wrote:
-> > The ucmd->log_sq_bb_count is a u8 that comes from the user.  If it's
-> > larger than the number of bits in an int then that's undefined behavior.
-> > It turns out this doesn't really cause an issue at runtime but it's
-> > still nice to clean it up.
-> > 
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > ---
-> >  drivers/infiniband/hw/mlx4/qp.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-> > index 5221c0794d1d..9f6eb23e8044 100644
-> > --- a/drivers/infiniband/hw/mlx4/qp.c
-> > +++ b/drivers/infiniband/hw/mlx4/qp.c
-> > @@ -439,7 +439,8 @@ static int set_user_sq_size(struct mlx4_ib_dev *dev,
-> >  			    struct mlx4_ib_create_qp *ucmd)
-> >  {
-> >  	/* Sanity check SQ size before proceeding */
-> > -	if ((1 << ucmd->log_sq_bb_count) > dev->dev->caps.max_wqes	 ||
-> > +	if (ucmd->log_sq_bb_count > 31					 ||
-> > +	    (1 << ucmd->log_sq_bb_count) > dev->dev->caps.max_wqes	 ||
-> 
-> Surely this should use check_shl_overflow() ?
-> 
+On Tue, Jun 11, 2019 at 11:49:41AM +0300, Yuval Shaia wrote:
 
-Same for the other one I sent.  I'll resend in a couple days.  No rush.
+> > You need to bump PABI in main CmakeList.txt file, otherwise "old
+> > providers" won't work with new libibverbs.
+>=20
+> The P stands for "Private" (asking so i'll know to look carefully at
+> section "Private symbols in libibverbs").
+>
+> Just bump 22 to 23?
+> How about PACKAGE_VERSION? nothing there?
 
-regards,
-dan carpenter
+Both should become set to 25
 
+> Shall i take commit 75c65bbca as an example?
+
+Seems OK
+
+Jason
