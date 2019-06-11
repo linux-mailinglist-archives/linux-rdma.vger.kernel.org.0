@@ -2,202 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DF63D068
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 17:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5064D3D07C
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 17:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404340AbfFKPJm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 11:09:42 -0400
-Received: from mail-it1-f173.google.com ([209.85.166.173]:51341 "EHLO
-        mail-it1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404326AbfFKPJm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 11:09:42 -0400
-Received: by mail-it1-f173.google.com with SMTP id m3so5518327itl.1;
-        Tue, 11 Jun 2019 08:09:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=x4ZI6AAcYxM1u4HoJDhmrMyYOkjjlo0+XHPXMAifCPU=;
-        b=SJQQ8XeS/7096YFNvxN5WCauud98Bsda4pJxq3dGW6HLhTYAFOqkCeTqZJeEKUO33j
-         K7MsK7zfY6InBikA/zcTLb0tktK6mB/FWfn2/xWN1Cr0NgLNHpjGWycp8n01b7UR3nyC
-         ig5mcExvh41Y6k8fZw6cHVI91hQmLE3lMNYefpI+OLjf1WPxrTLogy7gNuHrkirtFCKR
-         d7BNK1ZPLcTJu0wPA33YK2qIv8bYUIDzCUnePkyqDWUDNFzHU/msIftkUwng2rWnRwuu
-         ncLvC1+aUewsLCxHN45yl4XrtxtOPgDGViOoXZ2wJMVmJD9mOtPJ02YcPOgAYjMNAstR
-         fOFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:date:message-id
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=x4ZI6AAcYxM1u4HoJDhmrMyYOkjjlo0+XHPXMAifCPU=;
-        b=P6GwnbgwFLgsAxL7B+CoYiFCO6WcK7xC38b1Y9D9Mfug+WB4IhueCO00/3XgfNZ7se
-         oSBd60n37oqBjq+UR36dod4SSDa1qZVRHLutyHRZZZENkQYt06sp8LGAOJtGLMSd5sb+
-         LMDvJyu7D1PLxm5PHZQYxZ1DdDI4WQi6aaobGj5WNyqaiuGcSZhBgi+Vv9/lbDtG2Uc0
-         S7JSZAtXWDvC6BvY3zNIDALfS8qP1p7uXPQOLSkWi1PIUuGifnYwsCN3cq+4dfJ2iIC6
-         igEjpLA6N9DxbLUPRv7QMVaIyByl/bBJnjf/qwu5FINVNyweJufg0n49RxCd2lYwUOJw
-         UiRg==
-X-Gm-Message-State: APjAAAXD/5hY/nKmzvI8WXKb15XO/vyFHULYiyH9ouLNIJLzjm8+NrMy
-        VpWZN0WZVpIJYkTy8QV0rgjYfWWa
-X-Google-Smtp-Source: APXvYqzjyjxwrLS1XAlg8rqbke2WHS7wGE2WEwcRynT0UTCU4nou6F1cRwwuoxfne6blgau8iOtSWQ==
-X-Received: by 2002:a24:c803:: with SMTP id w3mr6621815itf.30.1560265781096;
-        Tue, 11 Jun 2019 08:09:41 -0700 (PDT)
-Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id y17sm3363803ioa.40.2019.06.11.08.09.40
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 11 Jun 2019 08:09:40 -0700 (PDT)
-Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id x5BF9eJ1021782;
-        Tue, 11 Jun 2019 15:09:40 GMT
-Subject: [PATCH v2 19/19] NFS: Record task, client ID,
- and XID in xdr_status trace points
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
-Date:   Tue, 11 Jun 2019 11:09:40 -0400
-Message-ID: <20190611150939.2877.26452.stgit@manet.1015granger.net>
-In-Reply-To: <20190611150445.2877.8656.stgit@manet.1015granger.net>
-References: <20190611150445.2877.8656.stgit@manet.1015granger.net>
-User-Agent: StGit/0.17.1-dirty
+        id S2404494AbfFKPLK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jun 2019 11:11:10 -0400
+Received: from p3plsmtpa06-04.prod.phx3.secureserver.net ([173.201.192.105]:59404
+        "EHLO p3plsmtpa06-04.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404488AbfFKPLK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Jun 2019 11:11:10 -0400
+Received: from [192.168.0.67] ([24.218.182.144])
+        by :SMTPAUTH: with ESMTPSA
+        id aiQWh78jCZelWaiQXhc3yI; Tue, 11 Jun 2019 08:11:09 -0700
+Subject: Re: receive side CRC computation in siw.
+To:     Bernard Metzler <BMT@zurich.ibm.com>, linux-rdma@vger.kernel.org
+References: <OFBD80408B.8C25683E-ON00258416.0047A63B-00258416.00495B83@notes.na.collabserv.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <a84cd017-fe4c-fecf-6414-db6a3f98c09c@talpey.com>
+Date:   Tue, 11 Jun 2019 11:11:08 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <OFBD80408B.8C25683E-ON00258416.0047A63B-00258416.00495B83@notes.na.collabserv.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfF7NRUYvMJo5l6JatjC5JnfId2U1QrN4gvobiZ2ltIi/Oc68eu/B4ua6PZqjOWpGCNST04ZZDuPccihtphOiU/pb1+Nhf471vyrisQ2tTv1MKsx5YI/e
+ kqt8D3UGGsDYl1MFDXcW3wn2etWkLMCwBgL7i6bzAImIPkpYKuJu0xQtVRsVXFghxtUkviGPktEjW5sZ+t3uPMMyK7HtkrFLKPA=
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When triggering an nfs_xdr_status trace point, record the task ID
-and XID of the failing RPC to better pinpoint the problem.
+On 6/11/2019 9:21 AM, Bernard Metzler wrote:
+> Hi all,
+> 
+> If enabled for siw, during receive operation, a crc32c over
+> header and data is being generated and checked. So far, siw
+> was generating that CRC from the content of the just written
+> target buffer. What kept me busy last weekend were spurious
+> CRC errors, if running qperf. I finally found the application
+> is constantly writing the target buffer while data are placed
+> concurrently, which sometimes races with the CRC computation
+> for that buffer, and yields a broken CRC.
 
-This feels like a bit of a layering violation.
+Well, that's a clear bug in the application, assuming siw has
+not yet delivered a send completion for the operation using
+the buffer. This is a basic Verbs API contract.
 
-Suggested-by: Trond Myklebust <trondmy@hammerspace.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- fs/nfs/nfs2xdr.c   |    2 +-
- fs/nfs/nfs3xdr.c   |    2 +-
- fs/nfs/nfs4trace.h |   15 +++++++++++++--
- fs/nfs/nfs4xdr.c   |    2 +-
- fs/nfs/nfstrace.h  |   15 +++++++++++++--
- 5 files changed, 29 insertions(+), 7 deletions(-)
+> siw uses skb_copy_bits() to move the data. I now added an
+> extra round of skb walking via __skb_checksum() in front of
+> it, which resolves the issue. Unfortunately, performance
+> significantly drops with that (some 30% or worse compared
+> to generating the CRC from a linear buffer).
+> 
+> To preserve performance for kernel clients, I propose
+> checksumming the data before the copy only for user
+> land applications, and leave it as is for kernel clients.
+> I am not aware of kernel clients which are constantly
+> reading/writing a target buffer to detect it has been written.
 
-diff --git a/fs/nfs/nfs2xdr.c b/fs/nfs/nfs2xdr.c
-index 572794d..cbc17a2 100644
---- a/fs/nfs/nfs2xdr.c
-+++ b/fs/nfs/nfs2xdr.c
-@@ -151,7 +151,7 @@ static int decode_stat(struct xdr_stream *xdr, enum nfs_stat *status)
- 	return 0;
- out_status:
- 	*status = be32_to_cpup(p);
--	trace_nfs_xdr_status((int)*status);
-+	trace_nfs_xdr_status(xdr, (int)*status);
- 	return 0;
- }
- 
-diff --git a/fs/nfs/nfs3xdr.c b/fs/nfs/nfs3xdr.c
-index abbbdde..6027678 100644
---- a/fs/nfs/nfs3xdr.c
-+++ b/fs/nfs/nfs3xdr.c
-@@ -343,7 +343,7 @@ static int decode_nfsstat3(struct xdr_stream *xdr, enum nfs_stat *status)
- 	return 0;
- out_status:
- 	*status = be32_to_cpup(p);
--	trace_nfs_xdr_status((int)*status);
-+	trace_nfs_xdr_status(xdr, (int)*status);
- 	return 0;
- }
- 
-diff --git a/fs/nfs/nfs4trace.h b/fs/nfs/nfs4trace.h
-index 9a01731..6cba216 100644
---- a/fs/nfs/nfs4trace.h
-+++ b/fs/nfs/nfs4trace.h
-@@ -564,24 +564,35 @@
- 
- TRACE_EVENT(nfs4_xdr_status,
- 		TP_PROTO(
-+			const struct xdr_stream *xdr,
- 			u32 op,
- 			int error
- 		),
- 
--		TP_ARGS(op, error),
-+		TP_ARGS(xdr, op, error),
- 
- 		TP_STRUCT__entry(
-+			__field(unsigned int, task_id)
-+			__field(unsigned int, client_id)
-+			__field(u32, xid)
- 			__field(u32, op)
- 			__field(unsigned long, error)
- 		),
- 
- 		TP_fast_assign(
-+			const struct rpc_rqst *rqstp = xdr->rqst;
-+			const struct rpc_task *task = rqstp->rq_task;
-+
-+			__entry->task_id = task->tk_pid;
-+			__entry->client_id = task->tk_client->cl_clid;
-+			__entry->xid = be32_to_cpu(rqstp->rq_xid);
- 			__entry->op = op;
- 			__entry->error = error;
- 		),
- 
- 		TP_printk(
--			"error=%lu (%s) operation %d:",
-+			"task:%u@%d xid=0x%08x error=%lu (%s) operation=%d",
-+			__entry->task_id, __entry->client_id, __entry->xid,
- 			__entry->error, show_nfsv4_errors(__entry->error),
- 			__entry->op
- 		)
-diff --git a/fs/nfs/nfs4xdr.c b/fs/nfs/nfs4xdr.c
-index 6024461..d974ff3 100644
---- a/fs/nfs/nfs4xdr.c
-+++ b/fs/nfs/nfs4xdr.c
-@@ -3187,7 +3187,7 @@ static bool __decode_op_hdr(struct xdr_stream *xdr, enum nfs_opnum4 expected,
- 	return true;
- out_status:
- 	nfserr = be32_to_cpup(p);
--	trace_nfs4_xdr_status(opnum, nfserr);
-+	trace_nfs4_xdr_status(xdr, opnum, nfserr);
- 	*nfs_retval = nfs4_stat_to_errno(nfserr);
- 	return true;
- out_bad_operation:
-diff --git a/fs/nfs/nfstrace.h b/fs/nfs/nfstrace.h
-index 3a0ed3d..84a79ba 100644
---- a/fs/nfs/nfstrace.h
-+++ b/fs/nfs/nfstrace.h
-@@ -1111,21 +1111,32 @@
- 
- TRACE_EVENT(nfs_xdr_status,
- 		TP_PROTO(
-+			const struct xdr_stream *xdr,
- 			int error
- 		),
- 
--		TP_ARGS(error),
-+		TP_ARGS(xdr, error),
- 
- 		TP_STRUCT__entry(
-+			__field(unsigned int, task_id)
-+			__field(unsigned int, client_id)
-+			__field(u32, xid)
- 			__field(unsigned long, error)
- 		),
- 
- 		TP_fast_assign(
-+			const struct rpc_rqst *rqstp = xdr->rqst;
-+			const struct rpc_task *task = rqstp->rq_task;
-+
-+			__entry->task_id = task->tk_pid;
-+			__entry->client_id = task->tk_client->cl_clid;
-+			__entry->xid = be32_to_cpu(rqstp->rq_xid);
- 			__entry->error = error;
- 		),
- 
- 		TP_printk(
--			"error=%lu (%s)",
-+			"task:%u@%d xid=0x%08x error=%lu (%s)",
-+			__entry->task_id, __entry->client_id, __entry->xid,
- 			__entry->error, nfs_show_status(__entry->error)
- 		)
- );
+This, too, is an invalid application. The RDMA provider is free
+to write the target buffer at any time. Many implementations
+take full advantage of this by placing received RDMA Writes
+in memory prior to validating their packets' checksum(s). If
+there is a mismatch, retries are initiated. The realtime
+contents of the buffers, prior to a completion, are undefined.
 
+Tom.
+
+> I also checked other kernel code using skb_copy_bits(),
+> which also needs to checksum the received data. Those code
+> (such as nvme tcp) also does the CRC on the linear buffer
+> after data receive.
+> 
+> The best solution might be to fold the CRC into the
+> skb_copy_bits() function itself. That being something we
+> might propose later?
+> 
+> Thoughts?
+> 
+> 
+> Many thanks,
+> Bernard.
+> 
+> 
+> 
