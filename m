@@ -2,86 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 658F8417E6
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 00:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1787C4188E
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 01:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407860AbfFKWG6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 18:06:58 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:46957 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405700AbfFKWG6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 18:06:58 -0400
-Received: by mail-wr1-f42.google.com with SMTP id n4so14637872wrw.13
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Jun 2019 15:06:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=wzwMoSZCZ2rv98TS0vwYYbWzhGa5CgsUnl8GufbZ7oE=;
-        b=KZ0G7c5r59kqlJAPT4OxGfjJokkYM4CyBXIO3Q7dQsI3wZJZC5diIw1cfM9wmI7eE9
-         RdauGfie2Vxfah/YwHI24KfYAuK241QQ7d5MvM3fm4wajtMT9mlTfesSMIhDPb/Ecr5h
-         2ApKgXwtRoMnrp7SWR25hnLnqAmX/L1tM1WGl2qoZZobp0VLwbiZu3sVbT8XJYgnt/Pl
-         7MoYFHCPNiytX9zLVBc37Ez4vLed9fPAwP9JGbI1nC9LJ0Llhx3dKrdy4D0IITw0diXk
-         4R+n3GC5MnNXSo1/Qt5gsnVOmzimFuhQeb7LaDMW+3H87yK2ynKXqsNcWxzcwpGeliro
-         kzHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=wzwMoSZCZ2rv98TS0vwYYbWzhGa5CgsUnl8GufbZ7oE=;
-        b=lkFzjDIszpSjbSC/dli0u4hHRKqkpzkie4W1fklZRfvvawCK35IP8aaSclFYpycGkb
-         Al8P/LMBZv+icFMexSiCpQpgD534FteUZ47OzRgpHmueKGQW5ftY56Vg0M7Ef97Z7+Cn
-         fOwF0NOY1/1Mwqs+kRIFKCUDFTbN+ZJh9DUTgiJ+QoAHt3BXicH0yPGU8r75bPN0AU7q
-         Ztf61P8D5R2WeQonbEfJRpY6a9nOFfdBu5nxNacKkIBtPOq0d0MQ4LE4dLi5U6zmWfXg
-         83Hn+fE1IDifD1ua9gz//kbmt8vk5fhMEYJGoU/rxF1LhuRsKdNIcSW0h6MOUhQdVJ9H
-         yxMQ==
-X-Gm-Message-State: APjAAAX1TI7F7hsKqLJ6ZcPO2vzAuaDfmny8VtRr251T0H8a4iO+zEcI
-        asbL3jWLFbWEh6sIcRKnjccX3a+8pe8=
-X-Google-Smtp-Source: APXvYqw2sr8EF8/fHj2cVK6XbMYI5/b3qTSyJ06uu6uoAuxTTE2pRsy/P+d+vL0tNMErGEhLAE0fFg==
-X-Received: by 2002:a5d:4bce:: with SMTP id l14mr41174wrt.79.1560290816861;
-        Tue, 11 Jun 2019 15:06:56 -0700 (PDT)
-Received: from [10.128.129.210] ([141.226.120.58])
-        by smtp.gmail.com with ESMTPSA id q9sm5355902wmq.9.2019.06.11.15.06.55
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 11 Jun 2019 15:06:55 -0700 (PDT)
-From:   Vladimir Sokolovsky <vlad@dev.mellanox.co.il>
-Subject: [ANNOUNCE] OFED 4.17-1-rc2 release is available
-To:     "ewg@lists.openfabrics.org" <ewg@lists.openfabrics.org>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Message-ID: <ca5463ac-150d-6313-9df2-db2fd60e7d54@dev.mellanox.co.il>
-Date:   Wed, 12 Jun 2019 01:06:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.4.0
+        id S2437013AbfFKXFS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jun 2019 19:05:18 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:42920 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436837AbfFKXFR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Jun 2019 19:05:17 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 1BCC93084249;
+        Tue, 11 Jun 2019 23:05:17 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 340D51001B01;
+        Tue, 11 Jun 2019 23:05:15 +0000 (UTC)
+Message-ID: <0ca5427ff2654b274b64098c9fa4586895a2a84e.camel@redhat.com>
+Subject: Re: [PATCH for-next] RDMA/ipoib: Remove check for ETH_SS_TEST
+From:   Doug Ledford <dledford@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>
+Date:   Tue, 11 Jun 2019 19:05:12 -0400
+In-Reply-To: <20190610131242.GX6369@mtr-leonro.mtl.com>
+References: <20190530131817.6147-1-kamalheib1@gmail.com>
+         <20190607120952.GJ5261@mtr-leonro.mtl.com>
+         <338cf9cde79ee9d734d8d854a342731e0da7e962.camel@gmail.com>
+         <20190610131242.GX6369@mtr-leonro.mtl.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-k6CnsgNM4cPz8BcTwQNN"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Tue, 11 Jun 2019 23:05:17 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
-OFED-4.17-1-rc2 is available at:
-http://openfabrics.org/downloads/OFED/ofed-4.17-1/OFED-4.17-1-rc2.tgz
 
-Please report any issues in bugzilla
-https://bugs.openfabrics.org/ for OFED 4.17-1-rc2
+--=-k6CnsgNM4cPz8BcTwQNN
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Release notes:
-http://openfabrics.org/downloads/OFED/release_notes/OFED_4.17-1-rc2-release_notes
+On Mon, 2019-06-10 at 16:12 +0300, Leon Romanovsky wrote:
+> On Mon, Jun 10, 2019 at 01:59:31PM +0300, Kamal Heib wrote:
+> > On Fri, 2019-06-07 at 15:09 +0300, Leon Romanovsky wrote:
+> > > On Thu, May 30, 2019 at 04:18:17PM +0300, Kamal Heib wrote:
+> > > > Self-test isn't supported by the ipoib driver, so remove the
+> > > > check
+> > > > for
+> > > > ETH_SS_TEST.
+> > > >=20
+> > > > Fixes: e3614bc9dc44 ("IB/ipoib: Add readout of statistics using
+> > > > ethtool")
+> > > > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> > > > ---
+> > > >  drivers/infiniband/ulp/ipoib/ipoib_ethtool.c | 2 --
+> > > >  1 file changed, 2 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
+> > > > b/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
+> > > > index 83429925dfc6..b0bd0ff0b45c 100644
+> > > > --- a/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
+> > > > +++ b/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
+> > > > @@ -138,7 +138,6 @@ static void ipoib_get_strings(struct
+> > > > net_device
+> > > > __always_unused *dev,
+> > > >  			p +=3D ETH_GSTRING_LEN;
+> > > >  		}
+> > > >  		break;
+> > > > -	case ETH_SS_TEST:
+> > >=20
+> > > The commit message and code doesn't match each other.
+> > > Removing this specific case will leave exactly the same behaviour
+> > > as
+> > > before, so why should we change it?
+> > >=20
+> >=20
+> > The idea is very simple, no point of checking ETH_SS_TEST if the
+> > ipoib
+> > doesn't support it.
+>=20
+> Please write in commit message, that "default" option means
+> "unsupported" and
+> there is no need in explicit declaration of unsupported ETH_SS_TEST.
+>=20
+> Thanks
 
--------------------------------------------------------------------------------
-OFED-4.17-1-rc2 Main Changes from OFED-4.17-1-rc1
--------------------------------------------------------------------------------
-1. compat-rdma
-- Module.supported: Added new Mellanox kernel modules
+With an appropriate fix to the commit message, applied to for-next,
+thanks.
 
-2. Updated packages
-- rdma-core v17.5
-- perftest-4.4-0.6.gba4bf6d
-- opensm-3.3.22
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
+2FDD
 
+--=-k6CnsgNM4cPz8BcTwQNN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Regards,
-Vladimir
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0AM6gACgkQuCajMw5X
+L90NGg//boywrdbwne1RCnjKKeFWEK6mWBVboO8kx2SfNLuE46tcAQBXH/z+wL8l
+XUPLL5qwerHprEqMIfrB0vkCzmLuRVbzU+KJpggQ8s2wWkPx9s+jEHf+HSllHMt/
++XlR3kYp1e1rQS4ZpJjATirl/jMpGjn1F/R0n7MWs8X+WdgYhIVEwrx1MxNIvumD
+DrhCOWbaOjGt3/4vfqxFFlD5NNS6q8S+DiaoPqtusnkY4st+i0FDxY4/C6zYqmsi
+1ua68m+UGpBaOSvt9oPfqtcmDQ2meR1cLVFaWBSqEPoLvQHUNi/dtImGVV9Kf7Ee
+r+cDLdaH5HtoncQblVyaA2ejUKheGpwLLxQpP4VJATyhbWe7ucPmJulNw2ecv8nq
+zwGfVQ4HvbMAznukPsYRv3bLrs3eqJyoCLv6xuHClZm8MoOKOpcR/4E/02HOGshu
+5Ikw+QpE+L+Bi3Zmh5Upa0BcHxc0l9wmEiRGPqbtqlW9U3cIl9UGWPpzmRUdifh5
+dGFNRv4Lrjpd4qOQd7U2a4HstSNf9RAq4SY4zy0LuUDs5fwLOmAdoe9yHas9ZL+n
+9yUl6j74SPoR6YkF9bPVqfkrEEyKZpc3l7HrsEKo/UJACa8bWjyE9cUj3+fAk1la
+DlUmeOagpJrIsSNK3NNp9sqltVFbf1PDYi6SBpWz0RslVbiW0Xw=
+=VDXg
+-----END PGP SIGNATURE-----
+
+--=-k6CnsgNM4cPz8BcTwQNN--
+
