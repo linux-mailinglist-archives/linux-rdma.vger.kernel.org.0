@@ -2,121 +2,182 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5D93D0F2
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 17:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6F33D165
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 17:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405058AbfFKPfo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 11:35:44 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:43646 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405046AbfFKPfn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 11:35:43 -0400
-Received: by mail-pg1-f195.google.com with SMTP id f25so7165433pgv.10
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Jun 2019 08:35:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8h42m3mke7DA8ejB89qFnTkC5cX+aLshhHC5jTwYOa4=;
-        b=sLMq+bA6sOUYAuoQSdZze7aS/o01HRJh37fgBzOaTlULVRlgN1Pzky0WnEt9ggPhRi
-         JH1qa8PI3fUsxopnA8vxXjk80emL0gwgHoi/kN+wCfZhW7CtGG3mN+/yxVY59EUBa1rS
-         M4cxQ83xr93VSRZJzwzbUXprtAi+dT3meCk3L8KOZ/xZDFb/kZqFJzv63133Zz0lw9er
-         v1LYil8+krDw44YMHLuvpYAB34RsEpHwQbuoHBJWYMzgMu6DfV6usjm0aFv9/2YjnuNW
-         tz3JzLRCLMzdWSO9grr5tL4TPlHUr6KXqW3Th206n5IMIeoSFDjvZhgTeHCUKYHlgpUu
-         bTiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8h42m3mke7DA8ejB89qFnTkC5cX+aLshhHC5jTwYOa4=;
-        b=MIP9iYqO4MCx9nw2pfzdfaElNTcOPSj+LJo904kk6PRj3vbkq7rkDGMUThMAylK1/w
-         dvr6ZtgqcwNl7JDss5my3HAlZ93kLqNVZQWdxPmDFdd6V/T7FIdAyWP9f7a/w+LiVggy
-         YsTQnMl7U6ap3XJnvEAbBuO93aNOeETDv4QHwUPtwP1j7/IfVAp8f9BFqhgVbjzUpUEc
-         dL9ju261qLwKA4kaT5eGja06Rlm78OirnaR6TNppA52Psrdx4lyjO0EblHMpumbVO8Bs
-         R18Ff/vNzN6hDudcdm8ScRzBIqN5hQbaX8yjkXmshKvwINKHNEEOvZN4mjwAqpa8u4Xk
-         d06w==
-X-Gm-Message-State: APjAAAVjTV9G2k0BLnuJM8APUZ4ez+pIl4Yrvqep32sZkzGMLeUbXfCd
-        PX+NdJmnP5nrjFq1nElNq4cBQPwN7bP+DgsYfkbaVA==
-X-Google-Smtp-Source: APXvYqwVttVVtet3fqIi0VnES8Ilb/p6V60nSXc7x8WFpoZ7Ynv9ahn+wWxWGukqfJnR2JBKBovfx92r2kGjPnyP20Q=
-X-Received: by 2002:a63:1919:: with SMTP id z25mr21205093pgl.440.1560267342622;
- Tue, 11 Jun 2019 08:35:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1559580831.git.andreyknvl@google.com> <045a94326401693e015bf80c444a4d946a5c68ed.1559580831.git.andreyknvl@google.com>
- <20190610142824.GB10165@c02tf0j2hf1t.cambridge.arm.com>
-In-Reply-To: <20190610142824.GB10165@c02tf0j2hf1t.cambridge.arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 11 Jun 2019 17:35:31 +0200
-Message-ID: <CAAeHK+zBDB6i+iEw+TJY14gZeccvWeOBEaU+otn1F+jzDLaRpA@mail.gmail.com>
-Subject: Re: [PATCH v16 05/16] arm64: untag user pointers passed to memory syscalls
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2391829AbfFKPxG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jun 2019 11:53:06 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:33037 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2391012AbfFKPxG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 11:53:06 -0400
+Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 11 Jun 2019 18:52:59 +0300
+Received: from r-vnc12.mtr.labs.mlnx (r-vnc12.mtr.labs.mlnx [10.208.0.12])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x5BFqxL2023036;
+        Tue, 11 Jun 2019 18:52:59 +0300
+From:   Max Gurtovoy <maxg@mellanox.com>
+To:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
+        jgg@mellanox.com, dledford@redhat.com, hch@lst.de,
+        bvanassche@acm.org
+Cc:     maxg@mellanox.com, israelr@mellanox.com, idanb@mellanox.com,
+        oren@mellanox.com, vladimirk@mellanox.com, shlomin@mellanox.com
+Subject: [PATCH 00/21 V6] Introduce new API for T10-PI offload
+Date:   Tue, 11 Jun 2019 18:52:36 +0300
+Message-Id: <1560268377-26560-1-git-send-email-maxg@mellanox.com>
+X-Mailer: git-send-email 1.7.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 4:28 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Mon, Jun 03, 2019 at 06:55:07PM +0200, Andrey Konovalov wrote:
-> > This patch is a part of a series that extends arm64 kernel ABI to allow to
-> > pass tagged user pointers (with the top byte set to something else other
-> > than 0x00) as syscall arguments.
-> >
-> > This patch allows tagged pointers to be passed to the following memory
-> > syscalls: get_mempolicy, madvise, mbind, mincore, mlock, mlock2, mprotect,
-> > mremap, msync, munlock.
-> >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->
-> I would add in the commit log (and possibly in the code with a comment)
-> that mremap() and mmap() do not currently accept tagged hint addresses.
-> Architectures may interpret the hint tag as a background colour for the
-> corresponding vma. With this:
+Hello Sagi, Christoph, Keith, Jason, Doug, Leon and Co
 
-I'll change the commit log. Where do you you think I should put this
-comment? Before mmap and mremap definitions in mm/?
+This patchset adds a new verbs API for T10-PI offload and
+implementation for iSER initiator and iSER target (NVMe-oF/RDMA host side
+was completed and will be sent on a different patchset).
+This set starts with a few preparation commits to the RDMA/core layer.
+It continues with introducing a new MR type IB_MR_TYPE_INTEGRITY.
+Using this MR all the needed mappings will be done in the low level drivers
+and not be visible to the ULP. Later patches implement the needed functionality
+in the mlx5 layer. As suggested by Sagi, in the new API, the mlx5 driver
+will allocate a single internal memory region for the UMR operation to
+register both PI and data SG lists and it will look like:
 
-Thanks!
+    data start  meta start
+    |           |
+    -------------------------
+    |d1|d2|d3|d4|m1|m2|m3|m4|
+    -------------------------
 
->
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
->
-> --
-> Catalin
+The sig_mr stride block would be using the same lkey but different
+offsets in it (offset 0 and offset d1+d2+d3+d4). The verbs layer will
+use a special mr type that will describe everything and will replace
+the old API, that enforce using 3 different memory regions (data_mr,
+protection_mr, sig_mr) and their local invalidations. This will ease
+the code in the ULP and will improve the abstraction of the HW (see
+iSER code changes). 
+The patchset contains also iSER initator and target patches that using
+this new API.
+
+For iSER, the code was tested vs. LIO iSER target using Mellanox's
+ConnectX-4/ConnectX-5.
+
+This series applies cleanly on top of kernel 5.2.0-rc4 tag plus patchest
+"[PATCH 0/7] iser/isert/rw-api cleanups" that was applied to for-next (Jason).
+We should aim to push this code during 5.3 merge window.
+
+Next steps are:
+ - merge NVMe-oF/RDMA host side after merging this patchset
+ - Implement metadata support for NVMe-oF/RDMA target side with new API
+
+---------
+Changes since v5:
+
+ - Rebase the code over kernel 5.2.0-rc4
+ - Change return value of ib_map_mr_sg_pi() to success/fail
+   (patches 4, 6, 11 and 16 were changed - Sagi).
+ - Squash and refactor "Validate signature handover device cap" and
+   "Move signature_en attribute from mlx5_qp to ib_qp".
+   (patch 15/21 - Christoph)
+ - Split out helper function at RW (patches 16/21 and 17/21 - Christoph)
+ - Rename signature qp create flag and signature device capability
+   (patch 14/21 - Sagi)
+ - Added Reviewed-by signatures
+
+---------
+Changes since v4:
+
+ - Rebase the code over kernel 5.2.0-rc2
+ - Remove some cleanups patches (they were applied to Jason's for-next)
+ - Merge iser_create_fastreg_desc and iser_alloc_reg_res (patch 11/20)
+ - Add meta_length to ib_sig_attrs structure (patch 5/20)
+ - Fix RW API in case of sig_type IB_SIG_TYPE_NONE (patch 16/20)
+ - Refactor MR descriptors allocation (patch 20/20)
+---------
+Changes since v3:
+
+ - Add new mr types IB_MR_TYPE_USER and IB_MR_TYPE_DMA at patch 02/25
+ - Fix kernel-doc syntax at include/rdma/signature.h
+ - Remove struct ib_scaterlist
+ - Rebase the code over kernel 5.1.0
+ - Added Reviewed-by signatures
+ - Use new API in iSER LIO target and remove the old API
+ - If possibe, avoid doing a UMR operation to register data and
+   protection buffers at patch 25/25
+---------
+Changes since v2:
+
+ - Rename IB_MR_TYPE_PI to IB_MR_TYPE_INTEGRITY (Sagi)
+ - Rename IB_WR_REG_PI_MR to IB_WR_REG_MR_INTEGRITY (Sagi)
+ - Refactor iser_login_rsp (Christoph)
+ - Unwind WR union at iser_tx_desc (patch 16/18 - Christoph)
+ - Rebase the code over kernel 5.0 plus 2 iser fixes
+ - Added Reviewed-by signatures
+---------
+Changes since v1:
+
+ - Add a missing comma at patch 01/17
+ - Fix coding style at patches 03/17, 05/17 and 09/17
+ - Fix srp_map_finish_fr function at patch 04/17
+ - Rebase the code over 5.0-rc5
+---------
+
+Israel Rukshin (9):
+  RDMA/core: Introduce IB_MR_TYPE_INTEGRITY and ib_alloc_mr_integrity
+    API
+  IB/iser: Use IB_WR_REG_MR_INTEGRITY for PI handover
+  IB/iser: Unwind WR union at iser_tx_desc
+  RDMA/core: Add an integrity MR pool support
+  RDMA/core: Rename signature qp create flag and signature device
+    capability
+  RDMA/rw: Introduce rdma_rw_inv_key helper
+  RDMA/rw: Use IB_WR_REG_MR_INTEGRITY for PI handover
+  RDMA/mlx5: Remove unused IB_WR_REG_SIG_MR code
+  RDMA/mlx5: Improve PI handover performance
+
+Max Gurtovoy (12):
+  RDMA/core: Introduce new header file for signature operations
+  RDMA/core: Save the MR type in the ib_mr structure
+  RDMA/core: Introduce ib_map_mr_sg_pi to map data/protection sgl's
+  RDMA/core: Add signature attrs element for ib_mr structure
+  RDMA/mlx5: Implement mlx5_ib_map_mr_sg_pi and
+    mlx5_ib_alloc_mr_integrity
+  RDMA/mlx5: Add attr for max number page list length for PI operation
+  RDMA/mlx5: Pass UMR segment flags instead of boolean
+  RDMA/mlx5: Update set_sig_data_segment attribute for new signature API
+  RDMA/mlx5: Introduce and implement new IB_WR_REG_MR_INTEGRITY work
+    request
+  RDMA/core: Validate integrity handover device cap
+  RDMA/mlx5: Use PA mapping for PI handover
+  RDMA/mlx5: Refactor MR descriptors allocation
+
+ drivers/infiniband/core/device.c              |   2 +
+ drivers/infiniband/core/mr_pool.c             |   8 +-
+ drivers/infiniband/core/rw.c                  | 194 +++++-----
+ drivers/infiniband/core/uverbs_cmd.c          |   2 +
+ drivers/infiniband/core/uverbs_std_types_mr.c |   1 +
+ drivers/infiniband/core/verbs.c               | 103 +++++
+ drivers/infiniband/hw/mlx5/main.c             |   6 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  20 +-
+ drivers/infiniband/hw/mlx5/mr.c               | 536 ++++++++++++++++++++++----
+ drivers/infiniband/hw/mlx5/qp.c               | 223 +++++++----
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma.h     |   2 +-
+ drivers/infiniband/ulp/iser/iscsi_iser.c      |   3 +-
+ drivers/infiniband/ulp/iser/iscsi_iser.h      |  64 +--
+ drivers/infiniband/ulp/iser/iser_initiator.c  |  12 +-
+ drivers/infiniband/ulp/iser/iser_memory.c     | 110 ++----
+ drivers/infiniband/ulp/iser/iser_verbs.c      | 156 +++-----
+ drivers/infiniband/ulp/isert/ib_isert.c       |   8 +-
+ drivers/nvme/host/rdma.c                      |   2 +-
+ include/linux/mlx5/qp.h                       |   3 +-
+ include/rdma/ib_verbs.h                       | 169 ++------
+ include/rdma/mr_pool.h                        |   2 +-
+ include/rdma/rw.h                             |   9 -
+ include/rdma/signature.h                      | 122 ++++++
+ 23 files changed, 1113 insertions(+), 644 deletions(-)
+ create mode 100644 include/rdma/signature.h
+
+-- 
+2.16.3
+
