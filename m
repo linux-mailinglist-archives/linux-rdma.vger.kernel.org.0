@@ -2,140 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4EE3DBBD
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 22:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C6841677
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2019 22:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406475AbfFKUTI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 16:19:08 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:43658 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406133AbfFKUTI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jun 2019 16:19:08 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BKIG4j188569;
-        Tue, 11 Jun 2019 20:18:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=pbmzGiYbk5X7Ese6X3ZnPOdFp3xt858d68MV4hL41o8=;
- b=aNfZmQbNP69ST1fFgutdWgNsoHsdTrxkUj7frUiu18XSvo5ty/Pn14NuvBXeongSeXs5
- W+/X6Zg80mFm1wMWd+zVCPCrQRP9QFtEH+cG0F7+uHlQwGnz+OWpR52bZNKpwSlJXUqv
- nMKBQhJ5HrsIVS6xiQg2bgHXLgu1p42NoCzZ/6Z08/cyHiS+fbUmTJNnXs/64PEUCVDy
- LuWVBuquORM9Cl3ljZsvAUUgUitqLMYyHC0GQkhfk1XGzvDOaXFduSfm+GFL8dwtAmDt
- oSfpqPsaE2SKGUeznCaVKxrCypUl2tuyIAul53FQXJZOqETR2JQgxWtw699nf/W05RQb Uw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2t04etqhfn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 20:18:29 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5BKIAf4177892;
-        Tue, 11 Jun 2019 20:18:28 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 2t04hyj648-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 20:18:28 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5BKIMpX015673;
-        Tue, 11 Jun 2019 20:18:23 GMT
-Received: from [10.154.187.61] (/10.154.187.61)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 11 Jun 2019 13:18:22 -0700
-Subject: Re: [PATCH v16 04/16] mm: untag user pointers in do_pages_move
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-References: <cover.1559580831.git.andreyknvl@google.com>
- <e410843d00a4ecd7e525a7a949e605ffc6c394c4.1559580831.git.andreyknvl@google.com>
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-Organization: Oracle Corp
-Message-ID: <d0dffcf8-d7bf-a7b4-5766-3a6f87437851@oracle.com>
-Date:   Tue, 11 Jun 2019 14:18:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S2406629AbfFKUxf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jun 2019 16:53:35 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:38218 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406036AbfFKUxf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Jun 2019 16:53:35 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id AE4A33082231;
+        Tue, 11 Jun 2019 20:53:29 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CAFB11972B;
+        Tue, 11 Jun 2019 20:53:24 +0000 (UTC)
+Message-ID: <08ce5b4ed985b885e33054cae6426018b46f67ff.camel@redhat.com>
+Subject: Re: [PATCH rdma-next v1 0/3] Convert CQ allocations
+From:   Doug Ledford <dledford@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Date:   Tue, 11 Jun 2019 16:53:22 -0400
+In-Reply-To: <20190528113729.13314-1-leon@kernel.org>
+References: <20190528113729.13314-1-leon@kernel.org>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-KtbPWzUDY0JPEMZJmmN4"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <e410843d00a4ecd7e525a7a949e605ffc6c394c4.1559580831.git.andreyknvl@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906110131
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906110130
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Tue, 11 Jun 2019 20:53:35 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/3/19 10:55 AM, Andrey Konovalov wrote:
-> This patch is a part of a series that extends arm64 kernel ABI to allow=
- to
-> pass tagged user pointers (with the top byte set to something else othe=
-r
-> than 0x00) as syscall arguments.
->=20
-> do_pages_move() is used in the implementation of the move_pages syscall=
-=2E
->=20
-> Untag user pointers in this function.
->=20
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> ---
->  mm/migrate.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index f2ecc2855a12..3930bb6fa656 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1617,6 +1617,7 @@ static int do_pages_move(struct mm_struct *mm, no=
-demask_t task_nodes,
->  		if (get_user(node, nodes + i))
->  			goto out_flush;
->  		addr =3D (unsigned long)p;
-> +		addr =3D untagged_addr(addr);
 
-Why not just "addr =3D (unsigned long)untagged_addr(p);"
+--=-KtbPWzUDY0JPEMZJmmN4
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---
-Khalid
+On Tue, 2019-05-28 at 14:37 +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+>=20
+> Hi,
+>=20
+> This is second version of my CQ allocation patches, rebased to latest
+> rdma/wip/for-next branch with changes requested by Gal.
+>=20
+> Thanks
+>=20
+> Leon Romanovsky (3):
+>   RDMA/nes: Avoid memory allocation during CQ destroy
+>   RDMA: Clean destroy CQ in drivers do not return errors
+>   RDMA: Convert CQ allocations to be under core responsibility
+
+Series, minus the one hunk in 3/3 that Gal objected to, applied to for-
+next.  Thanks.
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
+2FDD
+
+--=-KtbPWzUDY0JPEMZJmmN4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0AFMIACgkQuCajMw5X
+L91dHQ//YLNii+TAJVe+V4o5MYj1HBoY/MG/oECztr/jSj1OhEcMpDnb1nN/G1IZ
+a4zHgJnWb3FrSfJyk9Tk5AtA7gA9ZuTBysBYYsWAKSKcqyXcE/fXcxI8TIyQyaBo
+y08UsED74gJPrWptfDimqJW/7MqZ/+3gKOpUcgBS8TxFSdnV+UU/DcBxYN5UyIiH
+pc/rCZNbpwcA5N/c/8+Us8bnWrsm16i/PrCK3L8m47SMF3H3bEcv0gtmkR7HQOfh
+DKrPCnmUwxLygGhnUYvEtXSQaWM2mosgaKPSiSq2WpoTnZ72Z4KwI/gFXCoVhUMv
+ztRY77CzUNHVgmfAlgVK1JNsAVjyzYoQesZ4loKjsHLh0zt3ICdUemn/hKPzCKzX
+3UBiEYhWkEWytXWJCcPDwIwkGmDb1N4+VFvKsqktG1XQal6w/vOmtchUI5uWzIS7
+wrdBe7K1tH3ZngC/3DH3jBQEvNIgLGvOz6m4GH5Q8YW7YcV8QaASKGxORJdsHrz8
+rzbZgcTthhBrxxt8UCidzOnwKQUumrsWWpiAGft/EXnFZYQFDLey7Zxnh0wu3ygV
+EQsyvUJ0iU8m8QbvhbMXng+o7b88fX+fDmkBFbgGs14VwGcHqw40zPcgOlZjz7Wl
+5WnsO0dNx4mhoCdvmPKWYSMPRpkA5oL5kXgCmnSrQbx2vqyH1R4=
+=CcgA
+-----END PGP SIGNATURE-----
+
+--=-KtbPWzUDY0JPEMZJmmN4--
 
