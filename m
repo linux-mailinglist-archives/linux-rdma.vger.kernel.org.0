@@ -2,127 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1787C4188E
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 01:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E46418EF
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 01:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437013AbfFKXFS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 19:05:18 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:42920 "EHLO mx1.redhat.com"
+        id S2405254AbfFKXcW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jun 2019 19:32:22 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:51086 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436837AbfFKXFR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 11 Jun 2019 19:05:17 -0400
+        id S2405243AbfFKXcW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Jun 2019 19:32:22 -0400
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 1BCC93084249;
-        Tue, 11 Jun 2019 23:05:17 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 340D51001B01;
-        Tue, 11 Jun 2019 23:05:15 +0000 (UTC)
-Message-ID: <0ca5427ff2654b274b64098c9fa4586895a2a84e.camel@redhat.com>
-Subject: Re: [PATCH for-next] RDMA/ipoib: Remove check for ETH_SS_TEST
-From:   Doug Ledford <dledford@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Kamal Heib <kamalheib1@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>
-Date:   Tue, 11 Jun 2019 19:05:12 -0400
-In-Reply-To: <20190610131242.GX6369@mtr-leonro.mtl.com>
-References: <20190530131817.6147-1-kamalheib1@gmail.com>
-         <20190607120952.GJ5261@mtr-leonro.mtl.com>
-         <338cf9cde79ee9d734d8d854a342731e0da7e962.camel@gmail.com>
-         <20190610131242.GX6369@mtr-leonro.mtl.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-k6CnsgNM4cPz8BcTwQNN"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        by mx1.redhat.com (Postfix) with ESMTPS id B8DDE3082B25;
+        Tue, 11 Jun 2019 23:32:21 +0000 (UTC)
+Received: from localhost (ovpn-12-20.pek2.redhat.com [10.72.12.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2130D1001B13;
+        Tue, 11 Jun 2019 23:32:20 +0000 (UTC)
+Date:   Tue, 11 Jun 2019 19:32:09 -0400
+From:   Honggang LI <honli@redhat.com>
+To:     =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
+Cc:     OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [rdma-core ibacm v2] ibacm: only open InfiniBand port
+Message-ID: <20190611233209.GB22002@localhost.localdomain>
+References: <20190610135527.2638-1-honli@redhat.com>
+ <B507E339-82E7-4ADC-9EBD-3F9AE343E466@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <B507E339-82E7-4ADC-9EBD-3F9AE343E466@oracle.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Tue, 11 Jun 2019 23:05:17 +0000 (UTC)
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Tue, 11 Jun 2019 23:32:21 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Jun 11, 2019 at 02:29:31PM +0200, Håkon Bugge wrote:
+> 
+> 
+> > On 10 Jun 2019, at 15:55, Honggang Li <honli@redhat.com> wrote:
+> > 
+> > The low 64 bits of cxgb3 and cxgb4 devices' GID are zeros. If the
+> > "provider" was set in the option file, ibacm will fail with
+> > segment fault.
+> > 
+> > $ sed -i -e 's/# provider ibacmp 0xFE80000000000000/provider ibacmp 0xFE80000000000000/g' /etc/rdma/ibacm_opts.cfg
+> > $ /usr/sbin/ibacm --systemd
+> > Segmentation fault (core dumped)
+> > $ gdb /usr/sbin/ibacm core.ibacm
+> > (gdb) bt
+> > 0  0x00005625a4809217 in acm_assign_provider (port=0x5625a4bc6f28) at /usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2285
+> > 1  acm_port_up (port=0x5625a4bc6f28) at /usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2372
+> > 2  0x00005625a48073d2 in acm_activate_devices () at /usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2564
+> > 3  main (argc=<optimized out>, argv=<optimized out>) at /usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:3270
+> > 
+> > Note: The rpm was built with tarball generated from upstream repo. The last
+> > commit is aa41a65ec86bdb9c1c86e57885ee588b39558238.
+> > 
+> > acm_open_dev function should not open an umad port for iWARP or RoCE devices.
+> 
+> It is "a umad port" (as suggested), even though the "u" is a vowel, it is pronounced as a consonant, hence "a umad port".
 
---=-k6CnsgNM4cPz8BcTwQNN
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ok, fixed.
 
-On Mon, 2019-06-10 at 16:12 +0300, Leon Romanovsky wrote:
-> On Mon, Jun 10, 2019 at 01:59:31PM +0300, Kamal Heib wrote:
-> > On Fri, 2019-06-07 at 15:09 +0300, Leon Romanovsky wrote:
-> > > On Thu, May 30, 2019 at 04:18:17PM +0300, Kamal Heib wrote:
-> > > > Self-test isn't supported by the ipoib driver, so remove the
-> > > > check
-> > > > for
-> > > > ETH_SS_TEST.
-> > > >=20
-> > > > Fixes: e3614bc9dc44 ("IB/ipoib: Add readout of statistics using
-> > > > ethtool")
-> > > > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> > > > ---
-> > > >  drivers/infiniband/ulp/ipoib/ipoib_ethtool.c | 2 --
-> > > >  1 file changed, 2 deletions(-)
-> > > >=20
-> > > > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
-> > > > b/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
-> > > > index 83429925dfc6..b0bd0ff0b45c 100644
-> > > > --- a/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
-> > > > +++ b/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
-> > > > @@ -138,7 +138,6 @@ static void ipoib_get_strings(struct
-> > > > net_device
-> > > > __always_unused *dev,
-> > > >  			p +=3D ETH_GSTRING_LEN;
-> > > >  		}
-> > > >  		break;
-> > > > -	case ETH_SS_TEST:
-> > >=20
-> > > The commit message and code doesn't match each other.
-> > > Removing this specific case will leave exactly the same behaviour
-> > > as
-> > > before, so why should we change it?
-> > >=20
-> >=20
-> > The idea is very simple, no point of checking ETH_SS_TEST if the
-> > ipoib
-> > doesn't support it.
->=20
-> Please write in commit message, that "default" option means
-> "unsupported" and
-> there is no need in explicit declaration of unsupported ETH_SS_TEST.
->=20
-> Thanks
+> 
+> > Signed-off-by: Honggang Li <honli@redhat.com>
+> > ---
+> > ibacm/src/acm.c | 26 ++++++++++++++++++++++----
+> > 1 file changed, 22 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/ibacm/src/acm.c b/ibacm/src/acm.c
+> > index a21069d4..5c8a5d3c 100644
+> > --- a/ibacm/src/acm.c
+> > +++ b/ibacm/src/acm.c
+> > @@ -2600,9 +2600,11 @@ static void acm_open_dev(struct ibv_device *ibdev)
+> > {
+> > 	struct acmc_device *dev;
+> > 	struct ibv_device_attr attr;
+> > +	struct ibv_port_attr port_attr;
+> > 	struct ibv_context *verbs;
+> > 	size_t size;
+> > 	int i, ret;
+> > +	unsigned int opened_ib_port_cnt = 0;
+> > 
+> > 	acm_log(1, "%s\n", ibdev->name);
+> > 	verbs = ibv_open_device(ibdev);
+> > @@ -2628,13 +2630,29 @@ static void acm_open_dev(struct ibv_device *ibdev)
+> > 	list_head_init(&dev->prov_dev_context_list);
+> > 
+> > 	for (i = 0; i < dev->port_cnt; i++) {
+> > +		acm_log(1, "%s port %d\n", ibdev->name, i + 1);
+> > +		ret = ibv_query_port(dev->device.verbs, i + 1, &port_attr);
+> > +		if (ret) {
+> > +			acm_log(0, "ERROR - ibv_query_port failed\n");
+> 
+> With the richness below when printing port or ports, may be add the value of ret here as well?
 
-With an appropriate fix to the commit message, applied to for-next,
-thanks.
+sure, fixed.
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
-2FDD
+> 
+> > +			continue;
+> > +		}
+> > +		if (port_attr.link_layer != IBV_LINK_LAYER_INFINIBAND) {
+> > +			acm_log(1, "not an InfiniBand port\n");
+> > +			continue;
+> > +		}
+> > +
+> > 		acm_open_port(&dev->port[i], dev, i + 1);
+> > +		opened_ib_port_cnt++;
+> > 	}
+> > 
+> > -	list_add(&dev_list, &dev->entry);
+> > -
+> > -	acm_log(1, "%s opened\n", ibdev->name);
+> > -	return;
+> > +	if (opened_ib_port_cnt > 0) {
+> 
+> or simpler, if (opened_ib_port_cnt) {
 
---=-k6CnsgNM4cPz8BcTwQNN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+ok, fixed.
 
------BEGIN PGP SIGNATURE-----
+> 
+> > +		list_add(&dev_list, &dev->entry);
+> > +		acm_log(1, "%d InfiniBand %s opened for %s\n",
+> > +				opened_ib_port_cnt,
+> > +				opened_ib_port_cnt == 1 ? "port":"ports",
+> 
+> Spaces around ":". I am also OK with the literal "port(s)" as well.
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0AM6gACgkQuCajMw5X
-L90NGg//boywrdbwne1RCnjKKeFWEK6mWBVboO8kx2SfNLuE46tcAQBXH/z+wL8l
-XUPLL5qwerHprEqMIfrB0vkCzmLuRVbzU+KJpggQ8s2wWkPx9s+jEHf+HSllHMt/
-+XlR3kYp1e1rQS4ZpJjATirl/jMpGjn1F/R0n7MWs8X+WdgYhIVEwrx1MxNIvumD
-DrhCOWbaOjGt3/4vfqxFFlD5NNS6q8S+DiaoPqtusnkY4st+i0FDxY4/C6zYqmsi
-1ua68m+UGpBaOSvt9oPfqtcmDQ2meR1cLVFaWBSqEPoLvQHUNi/dtImGVV9Kf7Ee
-r+cDLdaH5HtoncQblVyaA2ejUKheGpwLLxQpP4VJATyhbWe7ucPmJulNw2ecv8nq
-zwGfVQ4HvbMAznukPsYRv3bLrs3eqJyoCLv6xuHClZm8MoOKOpcR/4E/02HOGshu
-5Ikw+QpE+L+Bi3Zmh5Upa0BcHxc0l9wmEiRGPqbtqlW9U3cIl9UGWPpzmRUdifh5
-dGFNRv4Lrjpd4qOQd7U2a4HstSNf9RAq4SY4zy0LuUDs5fwLOmAdoe9yHas9ZL+n
-9yUl6j74SPoR6YkF9bPVqfkrEEyKZpc3l7HrsEKo/UJACa8bWjyE9cUj3+fAk1la
-DlUmeOagpJrIsSNK3NNp9sqltVFbf1PDYi6SBpWz0RslVbiW0Xw=
-=VDXg
------END PGP SIGNATURE-----
+fixed.
 
---=-k6CnsgNM4cPz8BcTwQNN--
+please see v3 for details.
 
+> 
+> Otherwise, LGTM,
+> 
+> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+> 
+> 
+> Thxs, Håkon
+> 
+> 
+> > +				ibdev->name);
+> > +		return;
+> > +	}
+> > 
+> > err1:
+> > 	ibv_close_device(verbs);
+> > -- 
+> > 2.20.1
+> > 
+> 
