@@ -2,104 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 128E342410
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 13:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3D442426
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 13:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408240AbfFLLeC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 07:34:02 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:45045 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408287AbfFLLd6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 07:33:58 -0400
-Received: by mail-ed1-f66.google.com with SMTP id k8so25183458edr.11
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 04:33:57 -0700 (PDT)
+        id S2409084AbfFLLgt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 07:36:49 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:43580 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409077AbfFLLgs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 07:36:48 -0400
+Received: by mail-pf1-f196.google.com with SMTP id i189so9496334pfg.10
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 04:36:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ZK1rfebeAZy2VZhbXgK9JVhhf/g7goNVoEB7hDLP6Mg=;
-        b=gjqGr1oUqHSoVIfYm5ktzYwqWbRdlBa4lSY87EGwZIf4P9E52Qss5XP8L3X8gTbnaJ
-         4YQa3APlW+YAtEmQHG566Oz4O2ZhnbKsMhVZc1EcV+es38lU70zgbFCNPfm4sBfpDAoQ
-         yFhtWkB3gtGkhk0S9+JHs9sHcA2Wwh0z90If1biT/tEltS4peaZY3fXtITnd8Y7/o8hN
-         6VcIE6enxNcteq6+ER+z5pqHqnil9uWCfqCD4RQhwWWoFSdPHEk3dGoYXwkJ7laSjGlN
-         tXSZhH42m+NqYRXmB+wTWPNE2o/4zgvJj10dNN7wvM2Oo5JKJO1f8xgVVqo6NmuzZ4q7
-         FSCw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MhkB743oojqt0jCijE6DsOt5IqaBpxqgWof9mFxCLr0=;
+        b=GDzbgDhOafy14R/X43UkUN/+wf8bZdqGlFyPynLyOoG20vlQgN7zE9jZaanLyn3zx5
+         qQhhso2gb34OxP/u3xHSg6zS8JjJRY1rM9k4rX+82IiHVqiDxz7X2a893Yf4graw7TMN
+         nSUF/2Gtu0ZiA9FjJgluVZwCMm/sY7nIvA/8cwZyNRO0pWttZ9rn4SJm4NDG5Og1LJ7q
+         69ebVQ9hxBQQPUib1nigJuccodsU3NmYrSrnehuErfe4YWQQvRoySvoE3IbFgIm+u5mm
+         oszynkP2bKoPt4/Zv/VgvQYlSIXKjNdvA3RFAgK5OHTEZyvWErx96s2gVUjdKfd7KRLc
+         uonQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ZK1rfebeAZy2VZhbXgK9JVhhf/g7goNVoEB7hDLP6Mg=;
-        b=rD8GISv0t7BGCTa2/vvgllcQ9XgRUKKGMrG5hXDuGrSS9uy3stxj95fJ/aU3Dd+K/j
-         ZjTuvqLUtShmu2obI8GR/Uq2GEIK/EZDvP6MfbCAfBaNBIKk8wHPyrec0CXebJ4i1Zos
-         pyk3+MI+NxG99yqGsoydSjgiz6I7RhU+ObyfO5CWmfV1LeLbLyVYZ7lC+TwYiTrdg1Yz
-         mWX+wak7Z4rdB7+mt3lAF1sB/ebFbiac0Vf/gswYsrmsjnVgc+Ha4HRQcm0p1rd0KtSy
-         GJO5MxORC8RRnje8JHbqOwsQFlrsQ4KHrCiO0IJxfx/1PXKouBDddN0advyyweH+Bnvr
-         it8g==
-X-Gm-Message-State: APjAAAU5A0W3MG6SyJBZG83CWnDegv4O+HqQWXDntTl4hY8+7fNMfT9F
-        bfN/bgGKswGrU8VAxvbADzaEpg==
-X-Google-Smtp-Source: APXvYqxxAXM2MiwL49vBBLeDWD8POyGb924iwQ9IdmSEKUkNva+/5X+GZyGqZY6BbiUzBYrgWvjA+A==
-X-Received: by 2002:a50:9282:: with SMTP id k2mr39869843eda.269.1560339236705;
-        Wed, 12 Jun 2019 04:33:56 -0700 (PDT)
-Received: from tegmen.arch.suse.de (charybdis-ext.suse.de. [195.135.221.2])
-        by smtp.gmail.com with ESMTPSA id i21sm2752934ejd.76.2019.06.12.04.33.55
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 12 Jun 2019 04:33:56 -0700 (PDT)
-From:   Denis Kirjanov <kda@linux-powerpc.org>
-X-Google-Original-From: Denis Kirjanov <dkirjanov@suse.com>
-To:     davem@davemloft.net, dledford@redhat.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH net-next 2/2] ipoib: show VF broadcast address
-Date:   Wed, 12 Jun 2019 13:33:48 +0200
-Message-Id: <20190612113348.59858-4-dkirjanov@suse.com>
-X-Mailer: git-send-email 2.12.3
-In-Reply-To: <20190612113348.59858-1-dkirjanov@suse.com>
-References: <20190612113348.59858-1-dkirjanov@suse.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MhkB743oojqt0jCijE6DsOt5IqaBpxqgWof9mFxCLr0=;
+        b=dKiGS+cfZ3xAieN+3XlBRHHH14u/E6UoETyzEkPiQqUvM+PVJhTj/cBnH4nSWQyxqh
+         8BpZML6hPZL8xRBk1hY9kVqsav+4dsn5ur5lv0x+bPg3HSUDGpyapeaaO284/aVuIqxP
+         gtWgVpWNRsQGYvEYuJIovQJD2ARRG/TirupJWj7wD4cZ/dLPNz+zw7ubb/DtrSIbTV3z
+         KBYm4lm8nk3KjwijGxMzEsEdGUbyKj5SbH1yUG37JmviBtT8bolq6cUsgSNdTuMSQIM7
+         EtUzz1qecwm0C4LuY/ko8vuVHUIcHMcUNwM7CVNikyDraTQ5zbUkgwtIw4vT6HTi6Yit
+         Yc4g==
+X-Gm-Message-State: APjAAAVGDhy4fw0+Dtl3gjCD7HrXnSQzWVfefgDGYo0HvUQWsTjvGNpM
+        dgHmCrfvNMD0YmdTlHPWpmw6eIYTXQuSR/hqFt8Kqg==
+X-Google-Smtp-Source: APXvYqzGzjPmF8qGtciCMiJ8cvvmFlnWp+2d9nBudQ86r37IgxuDA/rPCLSSJ3M+cA0egqf1SPnYkN9tXts/BubXkpo=
+X-Received: by 2002:aa7:97bb:: with SMTP id d27mr18575219pfq.93.1560339407628;
+ Wed, 12 Jun 2019 04:36:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1559580831.git.andreyknvl@google.com> <51f44a12c4e81c9edea8dcd268f820f5d1fad87c.1559580831.git.andreyknvl@google.com>
+ <201906072101.58C919E@keescook> <CAAeHK+y8CH4P3vheUDCEnPAuO-2L6mc-sz6wMA_hT=wC1Cy3KQ@mail.gmail.com>
+In-Reply-To: <CAAeHK+y8CH4P3vheUDCEnPAuO-2L6mc-sz6wMA_hT=wC1Cy3KQ@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 12 Jun 2019 13:36:36 +0200
+Message-ID: <CAAeHK+xCmc-x=Mvs8RC+xJOCw6AnEUgUzXXjjS3NJXeLwJkyqg@mail.gmail.com>
+Subject: Re: [PATCH v16 08/16] fs, arm64: untag user pointers in copy_mount_options
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-in IPoIB case we can't see a VF broadcast address for but
-can see for PF
+On Tue, Jun 11, 2019 at 4:38 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> On Sat, Jun 8, 2019 at 6:02 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Mon, Jun 03, 2019 at 06:55:10PM +0200, Andrey Konovalov wrote:
+> > > This patch is a part of a series that extends arm64 kernel ABI to allow to
+> > > pass tagged user pointers (with the top byte set to something else other
+> > > than 0x00) as syscall arguments.
+> > >
+> > > In copy_mount_options a user address is being subtracted from TASK_SIZE.
+> > > If the address is lower than TASK_SIZE, the size is calculated to not
+> > > allow the exact_copy_from_user() call to cross TASK_SIZE boundary.
+> > > However if the address is tagged, then the size will be calculated
+> > > incorrectly.
+> > >
+> > > Untag the address before subtracting.
+> > >
+> > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> >
+> > One thing I just noticed in the commit titles... "arm64" is in the
+> > prefix, but these are arch-indep areas. Should the ", arm64" be left
+> > out?
+> >
+> > I would expect, instead:
+> >
+> >         fs/namespace: untag user pointers in copy_mount_options
+>
+> Hm, I've added the arm64 tag in all of the patches because they are
+> related to changes in arm64 kernel ABI. I can remove it from all the
+> patches that only touch common code if you think that it makes sense.
 
-Before:
-11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
-state UP mode DEFAULT group default qlen 256
-    link/infiniband
-80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
-00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
-    vf 0 MAC 14:80:00:00:66:fe, spoof checking off, link-state disable,
-trust off, query_rss off
-...
+I'll keep the arm64 tags in commit titles for v17. Please reply
+explicitly if you think I should remove them. Thanks! :)
 
-After:
-11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
-state UP mode DEFAULT group default qlen 256
-    link/infiniband
-80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
-00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
-    vf 0     link/infiniband
-80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
-00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
-checking off, link-state disable, trust off, query_rss off
-...
-
-Signed-off-by: Denis Kirjanov <dkirjanov@suse.com>
----
- net/core/rtnetlink.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 2e1b9ffbe602..f70902b57a40 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -1248,6 +1248,7 @@ static noinline_for_stack int rtnl_fill_vfinfo(struct sk_buff *skb,
- 	if (!vf)
- 		goto nla_put_vfinfo_failure;
- 	if (nla_put(skb, IFLA_VF_MAC, sizeof(vf_mac), &vf_mac) ||
-+	    nla_put(skb, IFLA_BROADCAST, dev->addr_len, dev->broadcast) ||
- 	    nla_put(skb, IFLA_VF_VLAN, sizeof(vf_vlan), &vf_vlan) ||
- 	    nla_put(skb, IFLA_VF_RATE, sizeof(vf_rate),
- 		    &vf_rate) ||
--- 
-2.12.3
-
+>
+> Thanks!
+>
+> >
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> >
+> > -Kees
+> >
+> > > ---
+> > >  fs/namespace.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/fs/namespace.c b/fs/namespace.c
+> > > index b26778bdc236..2e85712a19ed 100644
+> > > --- a/fs/namespace.c
+> > > +++ b/fs/namespace.c
+> > > @@ -2993,7 +2993,7 @@ void *copy_mount_options(const void __user * data)
+> > >        * the remainder of the page.
+> > >        */
+> > >       /* copy_from_user cannot cross TASK_SIZE ! */
+> > > -     size = TASK_SIZE - (unsigned long)data;
+> > > +     size = TASK_SIZE - (unsigned long)untagged_addr(data);
+> > >       if (size > PAGE_SIZE)
+> > >               size = PAGE_SIZE;
+> > >
+> > > --
+> > > 2.22.0.rc1.311.g5d7573a151-goog
+> > >
+> >
+> > --
+> > Kees Cook
