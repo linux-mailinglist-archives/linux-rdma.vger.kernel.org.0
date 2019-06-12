@@ -2,159 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3D442426
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 13:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5D042436
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 13:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409084AbfFLLgt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 07:36:49 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:43580 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409077AbfFLLgs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 07:36:48 -0400
-Received: by mail-pf1-f196.google.com with SMTP id i189so9496334pfg.10
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 04:36:48 -0700 (PDT)
+        id S2406547AbfFLLl2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 07:41:28 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:46328 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405753AbfFLLl2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 07:41:28 -0400
+Received: by mail-qt1-f196.google.com with SMTP id h21so18096850qtn.13
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 04:41:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MhkB743oojqt0jCijE6DsOt5IqaBpxqgWof9mFxCLr0=;
-        b=GDzbgDhOafy14R/X43UkUN/+wf8bZdqGlFyPynLyOoG20vlQgN7zE9jZaanLyn3zx5
-         qQhhso2gb34OxP/u3xHSg6zS8JjJRY1rM9k4rX+82IiHVqiDxz7X2a893Yf4graw7TMN
-         nSUF/2Gtu0ZiA9FjJgluVZwCMm/sY7nIvA/8cwZyNRO0pWttZ9rn4SJm4NDG5Og1LJ7q
-         69ebVQ9hxBQQPUib1nigJuccodsU3NmYrSrnehuErfe4YWQQvRoySvoE3IbFgIm+u5mm
-         oszynkP2bKoPt4/Zv/VgvQYlSIXKjNdvA3RFAgK5OHTEZyvWErx96s2gVUjdKfd7KRLc
-         uonQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lSxjAlC+uZbBWLnsce9oyecap+o1G1ClcqcyZBLt6wI=;
+        b=c/H5ji3nSCh+gOvUZDZ+S49kTWjjHMkqM5K2HXt6kiI18mXJOv9nYMDgzX8sXa8uuc
+         IcCdYbXGtrpY3GhKtGwh+RIXGC+PFMakdA+wusR+N3jiLNgrx4wjM95NSf+r/FPBRTNN
+         yd4RlBPaK5CMMzhC7YE89oQF4gmN6FRcGMETb6SbdNYDGHpJjmCsIvQszvUQHLGeEEcf
+         QKiBZ/BRdaKFgmw9CAqhzwIQ6vijVznk6tB3bDaJa089FcAOedvmz990jdY7jBdkCUSa
+         1Pra7M2WAjRYPtoJQ+g7F+1qbiV5Kg4vguRuA6sY7Djm4wQOECC02VyEL2dpeO3v2WOZ
+         am+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MhkB743oojqt0jCijE6DsOt5IqaBpxqgWof9mFxCLr0=;
-        b=dKiGS+cfZ3xAieN+3XlBRHHH14u/E6UoETyzEkPiQqUvM+PVJhTj/cBnH4nSWQyxqh
-         8BpZML6hPZL8xRBk1hY9kVqsav+4dsn5ur5lv0x+bPg3HSUDGpyapeaaO284/aVuIqxP
-         gtWgVpWNRsQGYvEYuJIovQJD2ARRG/TirupJWj7wD4cZ/dLPNz+zw7ubb/DtrSIbTV3z
-         KBYm4lm8nk3KjwijGxMzEsEdGUbyKj5SbH1yUG37JmviBtT8bolq6cUsgSNdTuMSQIM7
-         EtUzz1qecwm0C4LuY/ko8vuVHUIcHMcUNwM7CVNikyDraTQ5zbUkgwtIw4vT6HTi6Yit
-         Yc4g==
-X-Gm-Message-State: APjAAAVGDhy4fw0+Dtl3gjCD7HrXnSQzWVfefgDGYo0HvUQWsTjvGNpM
-        dgHmCrfvNMD0YmdTlHPWpmw6eIYTXQuSR/hqFt8Kqg==
-X-Google-Smtp-Source: APXvYqzGzjPmF8qGtciCMiJ8cvvmFlnWp+2d9nBudQ86r37IgxuDA/rPCLSSJ3M+cA0egqf1SPnYkN9tXts/BubXkpo=
-X-Received: by 2002:aa7:97bb:: with SMTP id d27mr18575219pfq.93.1560339407628;
- Wed, 12 Jun 2019 04:36:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lSxjAlC+uZbBWLnsce9oyecap+o1G1ClcqcyZBLt6wI=;
+        b=cv5RH1o8fvMFXAffRgtaM1boETvmZwccMqyFfhx8buDWbkk378Dm/nMPs9OE5XJ+Dv
+         S6klRKBkcRTVzdacECnPDlcoluQyVDb2FQYBMjXaIH54VZSxu/t4ctJ5EJDZTtuyGjVc
+         hCZM+fvMtzYBug6mXQY28gIi84Mseyuv5Rf3lT6dQ1JiwGRXAdiwe2kIOT0zq/1Lmq9h
+         z2vEcc6cQVBzO7LzV8qHJNlAMUXlRd5Q84uoWV+b0PeaGWSu5lZtrnFEhsDCkd2HkrT3
+         WbCkVUmMACDqOAAbfHWz0ZCzPw1xRu7Mla3Tf3i+R/ufYUBaePQcBj3xTQvhL3VpUrrc
+         DiOA==
+X-Gm-Message-State: APjAAAUEZr2aH7eHQt221FZyq7A5+8TXZhZto3/mDMk2NHyGA77doadp
+        tk73VgMazdFXr7RiWAtN4/ZWPQ==
+X-Google-Smtp-Source: APXvYqyV/onR2nJG+SUqo2rImG4GNtftgkItRoz2K7ZKcS8ciTodUxxiDupnb/jFspB22/5anKiaMA==
+X-Received: by 2002:ac8:2b01:: with SMTP id 1mr63205463qtu.177.1560339686428;
+        Wed, 12 Jun 2019 04:41:26 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id s66sm7743817qkh.17.2019.06.12.04.41.25
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 12 Jun 2019 04:41:25 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hb1d7-0002GY-4q; Wed, 12 Jun 2019 08:41:25 -0300
+Date:   Wed, 12 Jun 2019 08:41:25 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v2 hmm 02/11] mm/hmm: Use hmm_mirror not mm as an
+ argument for hmm_range_register
+Message-ID: <20190612114125.GA3876@ziepe.ca>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
+ <20190606184438.31646-3-jgg@ziepe.ca>
+ <20190608085425.GB32185@infradead.org>
+ <20190611194431.GC29375@ziepe.ca>
+ <20190612071234.GA20306@infradead.org>
 MIME-Version: 1.0
-References: <cover.1559580831.git.andreyknvl@google.com> <51f44a12c4e81c9edea8dcd268f820f5d1fad87c.1559580831.git.andreyknvl@google.com>
- <201906072101.58C919E@keescook> <CAAeHK+y8CH4P3vheUDCEnPAuO-2L6mc-sz6wMA_hT=wC1Cy3KQ@mail.gmail.com>
-In-Reply-To: <CAAeHK+y8CH4P3vheUDCEnPAuO-2L6mc-sz6wMA_hT=wC1Cy3KQ@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 12 Jun 2019 13:36:36 +0200
-Message-ID: <CAAeHK+xCmc-x=Mvs8RC+xJOCw6AnEUgUzXXjjS3NJXeLwJkyqg@mail.gmail.com>
-Subject: Re: [PATCH v16 08/16] fs, arm64: untag user pointers in copy_mount_options
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190612071234.GA20306@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 11, 2019 at 4:38 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> On Sat, Jun 8, 2019 at 6:02 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Mon, Jun 03, 2019 at 06:55:10PM +0200, Andrey Konovalov wrote:
-> > > This patch is a part of a series that extends arm64 kernel ABI to allow to
-> > > pass tagged user pointers (with the top byte set to something else other
-> > > than 0x00) as syscall arguments.
-> > >
-> > > In copy_mount_options a user address is being subtracted from TASK_SIZE.
-> > > If the address is lower than TASK_SIZE, the size is calculated to not
-> > > allow the exact_copy_from_user() call to cross TASK_SIZE boundary.
-> > > However if the address is tagged, then the size will be calculated
-> > > incorrectly.
-> > >
-> > > Untag the address before subtracting.
-> > >
-> > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> >
-> > One thing I just noticed in the commit titles... "arm64" is in the
-> > prefix, but these are arch-indep areas. Should the ", arm64" be left
-> > out?
-> >
-> > I would expect, instead:
-> >
-> >         fs/namespace: untag user pointers in copy_mount_options
->
-> Hm, I've added the arm64 tag in all of the patches because they are
-> related to changes in arm64 kernel ABI. I can remove it from all the
-> patches that only touch common code if you think that it makes sense.
+On Wed, Jun 12, 2019 at 12:12:34AM -0700, Christoph Hellwig wrote:
+> On Tue, Jun 11, 2019 at 04:44:31PM -0300, Jason Gunthorpe wrote:
+> > On Sat, Jun 08, 2019 at 01:54:25AM -0700, Christoph Hellwig wrote:
+> > > FYI, I very much disagree with the direction this is moving.
+> > > 
+> > > struct hmm_mirror literally is a trivial duplication of the
+> > > mmu_notifiers.  All these drivers should just use the mmu_notifiers
+> > > directly for the mirroring part instead of building a thing wrapper
+> > > that adds nothing but helping to manage the lifetime of struct hmm,
+> > > which shouldn't exist to start with.
+> > 
+> > Christoph: What do you think about this sketch below?
+> > 
+> > It would replace the hmm_range/mirror/etc with a different way to
+> > build the same locking scheme using some optional helpers linked to
+> > the mmu notifier?
+> > 
+> > (just a sketch, still needs a lot more thinking)
+> 
+> I like the idea.  A few nitpicks: Can we avoid having to store the
+> mm in struct mmu_notifier? I think we could just easily pass it as a
+> parameter to the helpers.
 
-I'll keep the arm64 tags in commit titles for v17. Please reply
-explicitly if you think I should remove them. Thanks! :)
+Yes, but I think any driver that needs to use this API will have to
+hold the 'struct mm_struct' and the 'struct mmu_notifier' together (ie
+ODP does this in ib_ucontext_per_mm), so if we put it in the notifier
+then it is trivially available everwhere it is needed, and the
+mmu_notifier code takes care of the lifetime for the driver.
 
->
-> Thanks!
->
-> >
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> >
-> > -Kees
-> >
-> > > ---
-> > >  fs/namespace.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/fs/namespace.c b/fs/namespace.c
-> > > index b26778bdc236..2e85712a19ed 100644
-> > > --- a/fs/namespace.c
-> > > +++ b/fs/namespace.c
-> > > @@ -2993,7 +2993,7 @@ void *copy_mount_options(const void __user * data)
-> > >        * the remainder of the page.
-> > >        */
-> > >       /* copy_from_user cannot cross TASK_SIZE ! */
-> > > -     size = TASK_SIZE - (unsigned long)data;
-> > > +     size = TASK_SIZE - (unsigned long)untagged_addr(data);
-> > >       if (size > PAGE_SIZE)
-> > >               size = PAGE_SIZE;
-> > >
-> > > --
-> > > 2.22.0.rc1.311.g5d7573a151-goog
-> > >
-> >
-> > --
-> > Kees Cook
+> The write lock case of mm_invlock_start_write_and_lock is probably
+> worth factoring into separate helper? I can see cases where drivers
+> want to just use it directly if they need to force getting the lock
+> without the chance of a long wait.
+
+The entire purpose of the invlock is to avoid getting the write lock
+on mmap_sem as a fast path - if the driver wishes to use mmap_sem
+locking only then it should just do so directly and forget about the
+invlock.
+
+Note that this patch is just an API sketch, I haven't fully checked
+that the range_start/end are actually always called under mmap_sem,
+and I already found that release is not. So there will need to be some
+preperatory adjustments before we can use down_write(mmap_sem) as a
+locking strategy here.
+
+Thanks,
+Jason
