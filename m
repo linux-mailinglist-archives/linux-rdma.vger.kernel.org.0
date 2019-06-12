@@ -2,110 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AD142F4D
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 20:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BFA430CF
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 22:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbfFLSsz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 12 Jun 2019 14:48:55 -0400
-Received: from mga04.intel.com ([192.55.52.120]:62325 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725497AbfFLSsz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Jun 2019 14:48:55 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Jun 2019 11:48:54 -0700
-X-ExtLoop1: 1
-Received: from fmsmsx104.amr.corp.intel.com ([10.18.124.202])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Jun 2019 11:48:54 -0700
-Received: from fmsmsx161.amr.corp.intel.com (10.18.125.9) by
- fmsmsx104.amr.corp.intel.com (10.18.124.202) with Microsoft SMTP Server (TLS)
- id 14.3.408.0; Wed, 12 Jun 2019 11:48:54 -0700
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.88]) by
- FMSMSX161.amr.corp.intel.com ([169.254.12.26]) with mapi id 14.03.0415.000;
- Wed, 12 Jun 2019 11:48:54 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Latif, Faisal" <faisal.latif@intel.com>
-CC:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: RE: [PATCH] rdma: Remove nes
-Thread-Topic: [PATCH] rdma: Remove nes
-Thread-Index: AQHVH8WaElvEFprbXUuXyCrHBlhG5qaYXoJA
-Date:   Wed, 12 Jun 2019 18:48:53 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7A5B2A8BB@fmsmsx124.amr.corp.intel.com>
-References: <20190610194911.12427-1-jgg@ziepe.ca>
-In-Reply-To: <20190610194911.12427-1-jgg@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiYzhlMWU0NTItMjE5Mi00ZDEwLWJjYjItMTU1OTcxMDBhMmZkIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiWW9GM0I2RG1ZTlJxVWh3ZGdmRlJxMDU1SnRBVkJRVDZjVGpEenFrQWRcLzNsUWNnbGNcLzBUaVV0VjZNMEtvaGdzIn0=
-dlp-product: dlpe-windows
-dlp-version: 11.0.600.7
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.106]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726735AbfFLUHz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 16:07:55 -0400
+Received: from p3plsmtpa06-06.prod.phx3.secureserver.net ([173.201.192.107]:55826
+        "EHLO p3plsmtpa06-06.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728064AbfFLUHy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Jun 2019 16:07:54 -0400
+Received: from [192.168.0.56] ([24.218.182.144])
+        by :SMTPAUTH: with ESMTPSA
+        id b9XFhIaViwmHdb9XFhikVd; Wed, 12 Jun 2019 13:07:54 -0700
+Subject: Re: receive side CRC computation in siw.
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Bernard Metzler <BMT@zurich.ibm.com>, linux-rdma@vger.kernel.org
+References: <OFBD80408B.8C25683E-ON00258416.0047A63B-00258416.00495B83@notes.na.collabserv.com>
+ <a84cd017-fe4c-fecf-6414-db6a3f98c09c@talpey.com>
+ <20190612152116.GI3876@ziepe.ca>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <ea1e140d-f1a7-5d63-8b6e-e99d57264178@talpey.com>
+Date:   Wed, 12 Jun 2019 16:07:53 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <20190612152116.GI3876@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfPSYQWD+v72VBoUHG0W2PK0swAikXoALdjhm9pkcvDiSVFhNiiKwRMtMcDOZt1jMq5kFOSCiti4DiNDRqwWA7PTFPCPJgzMdlbmRrq8zfeBurO8xGGYe
+ joGAfX2HnYKIoL5yaeeB+SAdRm0xqKfPtMs1JK5udRSTm21jnbL89W1f+5AubFbg1aY7rsZqYs54N7AvZwtIa/Nng5SiG8Of3O/kFJMktqJCTSYjXknVZbZ5
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: [PATCH] rdma: Remove nes
+On 6/12/2019 11:21 AM, Jason Gunthorpe wrote:
+> On Tue, Jun 11, 2019 at 11:11:08AM -0400, Tom Talpey wrote:
+>> On 6/11/2019 9:21 AM, Bernard Metzler wrote:
+>>> Hi all,
+>>>
+>>> If enabled for siw, during receive operation, a crc32c over
+>>> header and data is being generated and checked. So far, siw
+>>> was generating that CRC from the content of the just written
+>>> target buffer. What kept me busy last weekend were spurious
+>>> CRC errors, if running qperf. I finally found the application
+>>> is constantly writing the target buffer while data are placed
+>>> concurrently, which sometimes races with the CRC computation
+>>> for that buffer, and yields a broken CRC.
+>>
+>> Well, that's a clear bug in the application, assuming siw has
+>> not yet delivered a send completion for the operation using
+>> the buffer. This is a basic Verbs API contract.
 > 
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> This driver was first merged over 10 years ago and has not seen major activity by
-> the authors in the last 7 years. However, in that time it has been patched 150 times
-> to adapt it to changing kernel APIs.
-> 
-> Further, the hardware has several issues, like not supporting 64 bit DMA, that make
-> it rather uninteresting for use with modern systems and RDMA.
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> ---
->  .../ABI/stable/sysfs-class-infiniband         |   17 -
->  MAINTAINERS                                   |    8 -
->  drivers/infiniband/Kconfig                    |    1 -
->  drivers/infiniband/hw/Makefile                |    1 -
->  drivers/infiniband/hw/nes/Kconfig             |   15 -
->  drivers/infiniband/hw/nes/Makefile            |    3 -
->  drivers/infiniband/hw/nes/nes.c               | 1205 -----
->  drivers/infiniband/hw/nes/nes.h               |  574 ---
->  drivers/infiniband/hw/nes/nes_cm.c            | 3992 -----------------
->  drivers/infiniband/hw/nes/nes_cm.h            |  470 --
->  drivers/infiniband/hw/nes/nes_context.h       |  193 -
->  drivers/infiniband/hw/nes/nes_hw.c            | 3887 ----------------
->  drivers/infiniband/hw/nes/nes_hw.h            | 1380 ------
->  drivers/infiniband/hw/nes/nes_mgt.c           | 1155 -----
->  drivers/infiniband/hw/nes/nes_mgt.h           |   97 -
->  drivers/infiniband/hw/nes/nes_nic.c           | 1870 --------
->  drivers/infiniband/hw/nes/nes_utils.c         |  915 ----
->  drivers/infiniband/hw/nes/nes_verbs.c         | 3754 ----------------
->  drivers/infiniband/hw/nes/nes_verbs.h         |  198 -
->  include/uapi/rdma/nes-abi.h                   |  115 -
->  20 files changed, 19850 deletions(-)
->  delete mode 100644 drivers/infiniband/hw/nes/Kconfig  delete mode 100644
-> drivers/infiniband/hw/nes/Makefile
->  delete mode 100644 drivers/infiniband/hw/nes/nes.c  delete mode 100644
-> drivers/infiniband/hw/nes/nes.h  delete mode 100644
-> drivers/infiniband/hw/nes/nes_cm.c
->  delete mode 100644 drivers/infiniband/hw/nes/nes_cm.h
->  delete mode 100644 drivers/infiniband/hw/nes/nes_context.h
->  delete mode 100644 drivers/infiniband/hw/nes/nes_hw.c
->  delete mode 100644 drivers/infiniband/hw/nes/nes_hw.h
->  delete mode 100644 drivers/infiniband/hw/nes/nes_mgt.c
->  delete mode 100644 drivers/infiniband/hw/nes/nes_mgt.h
->  delete mode 100644 drivers/infiniband/hw/nes/nes_nic.c
->  delete mode 100644 drivers/infiniband/hw/nes/nes_utils.c
->  delete mode 100644 drivers/infiniband/hw/nes/nes_verbs.c
->  delete mode 100644 drivers/infiniband/hw/nes/nes_verbs.h
->  delete mode 100644 include/uapi/rdma/nes-abi.h
-> 
+> May be so, but a kernel driver must not make any assumptions about the
+> content of memory controlled by user. So it is clearly wrong to write
+> data to a user buffer and then read it again to compute a CRC.
 
-Thank you!
+But it's not a user buffer. It's been mapped into the kernel for the
+purpose of registering and performing data transfer This is standard
+i/o processing. Both kernel and user have access.
 
-Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Furthermore, an RDMA hardware adapter has zero notion of user buffers.
+All it gets is a registration, with memory described by dma addresses.
+It can perform whatever memory operations are required on them, and the
+kernel isn't even in the loop.
+
+
+> All the applications touching buffers without waiting for a completion
+> are relying on some extended behavior outside the specification, but
+> they cannot cause the kernel to malfunction and report bogus data
+> integrity errors.
+
+Ok, this I agree with, but the RDMA specifications were quite careful
+about it. And we *definitely* don't want to require that the providers
+all start double-buffering incoming data, in order to shield an
+uncomplying application from itself. To double buffer RDMA Writes (and
+Sends) would undo the entire direct data placement design!
+
+Bernard, I'd still welcome your thoughts on whether you can compute
+the MPA CRC inline in SIW during the copy_to_user. Avoiding the overhead
+of reading back the data after copying could be a speedup for you?
+
+Tom.
