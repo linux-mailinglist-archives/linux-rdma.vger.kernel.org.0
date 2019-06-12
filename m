@@ -2,120 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D01C41DB9
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 09:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35DB41FB9
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 10:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389710AbfFLH3J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 03:29:09 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:1273 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404659AbfFLH3I (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 03:29:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1560324547; x=1591860547;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=F3HBzbqQpB53/PLprpo5NO+weJB6oHALm3yWVRLkmy0=;
-  b=KlHeNowyT5BLrntZuD15curr076eT5tT0NdOm+fiy2GZIUi3dIO0of13
-   ocxhfGv+16TQSC37E+86n2Zf7iH7jAaNEI7oe7kkFNqBoaLAQlzPxc1je
-   D1+1EZrxUIA5TOXYJOPB1lf1r9QiUjcxXU93VQi4MkvIJb6yRq3rh60Eq
-   U=;
-X-IronPort-AV: E=Sophos;i="5.62,363,1554768000"; 
-   d="scan'208";a="679454626"
-Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.47.22.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 12 Jun 2019 07:28:57 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id D3750A274A;
-        Wed, 12 Jun 2019 07:28:55 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 12 Jun 2019 07:28:55 +0000
-Received: from EX13MTAUEE001.ant.amazon.com (10.43.62.200) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 12 Jun 2019 07:28:54 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.218.69.132) by
- mail-relay.amazon.com (10.43.62.226) with Microsoft SMTP Server id
- 15.0.1367.3 via Frontend Transport; Wed, 12 Jun 2019 07:28:52 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>
-Subject: [PATCH for-rc 2/2] RDMA/efa: Handle mmap insertions overflow
-Date:   Wed, 12 Jun 2019 10:28:42 +0300
-Message-ID: <20190612072842.99285-3-galpress@amazon.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190612072842.99285-1-galpress@amazon.com>
-References: <20190612072842.99285-1-galpress@amazon.com>
+        id S1731500AbfFLIwR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 04:52:17 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:18139 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730954AbfFLIwQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Jun 2019 04:52:16 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 0DD35A4BFB29D6A26A55;
+        Wed, 12 Jun 2019 16:52:15 +0800 (CST)
+Received: from [127.0.0.1] (10.202.227.238) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.439.0; Wed, 12 Jun 2019
+ 16:52:04 +0800
+Subject: Re: [PATCH V4 for-next 1/3] RDMA/hns: Add mtr support for mixed
+ multihop addressing
+To:     Leon Romanovsky <leon@kernel.org>, wangxi <wangxi11@huawei.com>
+References: <1559285867-29529-1-git-send-email-oulijun@huawei.com>
+ <1559285867-29529-2-git-send-email-oulijun@huawei.com>
+ <20190607164818.GA22156@ziepe.ca>
+ <26040386-e155-7223-b2b7-48e74e92b521@huawei.com>
+ <20190610132716.GC18468@ziepe.ca>
+ <1e1f3980-6c31-c562-7f23-7734bf739ef4@huawei.com>
+ <20190611055604.GH6369@mtr-leonro.mtl.com>
+CC:     <linux-rdma@vger.kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        <dledford@redhat.com>, <linuxarm@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <3487721f-2f1b-c3e4-473b-5ed506c5682c@huawei.com>
+Date:   Wed, 12 Jun 2019 09:51:59 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.3.0
 MIME-Version: 1.0
+In-Reply-To: <20190611055604.GH6369@mtr-leonro.mtl.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+X-Originating-IP: [10.202.227.238]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When inserting a new mmap entry to the xarray we should check for
-'mmap_page' overflow as it is limited to 32 bits.
+On 11/06/2019 06:56, Leon Romanovsky wrote:
+> On Tue, Jun 11, 2019 at 10:37:48AM +0800, wangxi wrote:
+>>
+>>
+>> 在 2019/6/10 21:27, Jason Gunthorpe 写道:
+>>> On Sat, Jun 08, 2019 at 10:24:15AM +0800, wangxi wrote:
+>>>
+>>>>> Why is there an EXPROT_SYMBOL in a IB driver? I see many in
+>>>>> hns. Please send a patch to remove all of them and respin this.
+>>>>>
+>>>> There are 2 modules in our ib driver, one is hns_roce.ko, another
+>>>> is hns_roce_hw_v2.ko. all extern symbols are named like hns_roce_xxx,
+>>>> this function defined in hns_roce.ko, and invoked in
+>>>> hns_roce_hw_v2.ko.
+>>>
+>>> seems unnecessarily complicated
+>>>
+>>> Jason
+>>> .
+>>>
+>> Hi,Jason,
+>>
+>> The hns ib driver was originally designed for the hip06. When designing the
+>> driver for the new hardware hip08, in order to maximize the reuse of the
+>> existing hip06 code, the common part of the code is separated into the
+>> hns_roce.ko, and the hardware difference code is defined into hns_roce_hw_v1.ko
+>> for hip06 and hns_roce_hw_v2.ko for hip08.
+>>
+>> The mtr code is designed as a public part in this patchset, so it is defined
+>> in hns_roce.ko. It can be used for hi16xx series hardware with mixed mutihop
+>> addressing feature. Currently, hip08 supports this feature, so it is be called
+>> in hns_roce_hw_v2.ko.
+>
+> Combine v1 and v2 into one driver (.ko) and change initialization to
+> call v1 or v2 accordingly. The rest is handled by ib_device_ops
+> structure.
+>
 
-While at it, make sure to advance the mmap_page stored on the ucontext
-only after a successful insertion.
+Is there a rule which says that a driver cannot export symbols? Module 
+stacking is useful for more complex drivers, in that a hw-specific 
+implementation may plug into common driver. This helps code reuse.
 
-Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
-Signed-off-by: Gal Pressman <galpress@amazon.com>
----
- drivers/infiniband/hw/efa/efa_verbs.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+In addition to this, v1 hw is a platform device driver and depends on 
+HNS, while v2 hw is for a PCI device and depends on PCI && HNS3. 
+Attempts to combine into a single ko would introduce messy dependencies 
+and ifdefs.
 
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 0fea5d63fdbe..c463c683ae84 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -204,6 +204,7 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
- 			     void *obj, u64 address, u64 length, u8 mmap_flag)
- {
- 	struct efa_mmap_entry *entry;
-+	u32 next_mmap_page;
- 	int err;
- 
- 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-@@ -216,15 +217,19 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
- 	entry->mmap_flag = mmap_flag;
- 
- 	xa_lock(&ucontext->mmap_xa);
-+	if (check_add_overflow(ucontext->mmap_xa_page,
-+			       (u32)(length >> PAGE_SHIFT),
-+			       &next_mmap_page))
-+		goto err_unlock;
-+
- 	entry->mmap_page = ucontext->mmap_xa_page;
--	ucontext->mmap_xa_page += DIV_ROUND_UP(length, PAGE_SIZE);
- 	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
- 			  GFP_KERNEL);
-+	if (err)
-+		goto err_unlock;
-+
-+	ucontext->mmap_xa_page = next_mmap_page;
- 	xa_unlock(&ucontext->mmap_xa);
--	if (err){
--		kfree(entry);
--		return EFA_MMAP_INVALID;
--	}
- 
- 	ibdev_dbg(
- 		&dev->ibdev,
-@@ -232,6 +237,12 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
- 		entry->obj, entry->address, entry->length, get_mmap_key(entry));
- 
- 	return get_mmap_key(entry);
-+
-+err_unlock:
-+	xa_unlock(&ucontext->mmap_xa);
-+	kfree(entry);
-+	return EFA_MMAP_INVALID;
-+
- }
- 
- int efa_query_device(struct ib_device *ibdev,
--- 
-2.22.0
+Thanks,
+John
+
+
+> Thanks
+>
+>>
+>> Xi Wang
+>>
+> _______________________________________________
+> Linuxarm mailing list
+> Linuxarm@huawei.com
+> http://hulk.huawei.com/mailman/listinfo/linuxarm
+>
+
 
