@@ -2,120 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED35424F7
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 14:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13F442503
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 14:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437063AbfFLMEs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 08:04:48 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:43598 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406140AbfFLMEs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 08:04:48 -0400
-Received: by mail-vs1-f67.google.com with SMTP id d128so10060252vsc.10
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 05:04:47 -0700 (PDT)
+        id S2438466AbfFLMIE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 08:08:04 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:42596 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436551AbfFLMIE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 08:08:04 -0400
+Received: by mail-qk1-f195.google.com with SMTP id b18so9935815qkc.9
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 05:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=RyXefo1AKgFRL46CmUUBxzimpNeLSzhWVHAVIaZQWcQ=;
-        b=QKHZ0a0VFZIbQYkz80wtcUjlGiYzmkj/efESGdEsCgn8jGvJCS59LRLHDndYYUFTok
-         kexnFfUcAyz2qW/4exMGh4+3esU0f1tBnRsdYM3eAJfSOVXHR2pMnqoj0sQ0C+tPNUeR
-         qInSoTeVxyFuwqFstyf//Vuj0FZFmsU46h0HAkAUvUx0NttqYYIz1mW8tROitAAft3eK
-         eGrxbHXQ3QTn4ElEU23PcGgCAGRUlrYYD56T/UVutMVsvYkONv1XOebJStBRVv74hl45
-         REt20N5N31kEOP560G4d1VWRuCdfnVb2LqZRzFNglJTSh1VMwJZ158Dq7vDKoF0gFgYw
-         cO3Q==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6NOeCBOrnBN0RlmAADU+m3uzIx8oDA95tOg6QXSnSmk=;
+        b=FUsucM0vbLBFRiGfEx4qHdE+losYgcDKwv+ykgVpuzBzJFjlhTraEhG4VdaD1+OL0L
+         JID1uJR/dTgRfyTEVCBW77l/oNUNUz8TaLRErZD23mhMSGQU4j89xf29BTdtZA0l9IaL
+         NnkJbiybo05fQg1Kjs/XG3sAv7f3OkfttrWCXQNxpYO1S/G+YkAx25UsrbEv4rLscAEE
+         82jC1+ZcIW+fF7h9JpsLD7RILceSd+kH2aKYXzovdA2W+k0u+HvBHMcfegcV2Y3nNEVF
+         dh+8q+rhGJQeNIVLq8E9BD3p3vPB46KrT6m5qoFcBWajLKAZaCAivsdZVjS356iXBmY3
+         OBcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=RyXefo1AKgFRL46CmUUBxzimpNeLSzhWVHAVIaZQWcQ=;
-        b=MM1C+rcLh9UECU+lNNcpvjgTpeb163+FJ1hdBGqIpmS0EjvECFHjo8BAog0Pj2xymd
-         2rUfpHNz3RPPuD0oWcZZDaKCzZX5QIz/ovDMbTISOSBYAbNd5yMULVS+XeBH8y9vSy0k
-         SJTg9IlS5Jnjupt95Eu07IwnrggCVUgSIn46lIXe2hYnlHmRTqMrmBOrr0IzBZ/q+cDG
-         rVM1z2xgeWZQ/EJkI8tzYG7vHfAA6GZ5JAFSWqwhgEhApq6T8PFIc22aaT+Qs94MwOe9
-         AaFr+SlLBxHARogmep2BvItYToPfyZoe7ZsnXUyIYh/9MRXVPPlQVpTn/79PxuMh4JDi
-         HtiQ==
-X-Gm-Message-State: APjAAAU7F6FzbhniONPh35XF0zkacJNT/2YYzdfFmmVpdWcuvmTYbGro
-        Rjs/5/JYgPQugYhYKckHbLJNyqV5dKFwzm+76FmozQ==
-X-Google-Smtp-Source: APXvYqxUEUXmcG23tBr9TrEMfAwLafTiQeNT3e/jtvSSdK7jaW4xqh1IWvXwtFNw8Gh+lEOPlFbi0IitP6QYDdBtBhU=
-X-Received: by 2002:a67:e446:: with SMTP id n6mr3890090vsm.142.1560341087097;
- Wed, 12 Jun 2019 05:04:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6NOeCBOrnBN0RlmAADU+m3uzIx8oDA95tOg6QXSnSmk=;
+        b=aYQW7rbTQZ6Mgd5UxdkByvDiQXMdRFhzWUCyUDgA4kCQwit/R7QqnUs/6hnL4GLczu
+         QyMa+EMsm0yFrCGywXG42KZuZvXxyfQ9qfGgR+qP91KfL12YmvSddX5s5hN7O768uVQj
+         t2iwNab5RkJBTHuUWzjKiQ32NsGLPH9CEHkSertgWo5Fkh26WCeARF5pA0qL0/2obtaR
+         hbQjZz099a5HW+dOxLTRlbMjZxDigk1zFcU2qCFymKNl9gXJQFC6a/nay+cQd3VLGDc7
+         X+m6ydaftVvmfaoxAyl9zCklBxD+YW8KEq9J+Y3r42hbvMQMdh5S9rnsSRVPCRYGy9B9
+         mSfw==
+X-Gm-Message-State: APjAAAVkKqggOqAvQWwQDDWJxA7iwol3v7V1ufh6Ktp7f4DQNJbwjgkK
+        SAVigWVkvVNyuwi3XMJOp2/IKw==
+X-Google-Smtp-Source: APXvYqxzDKa1Pnbe4ZvLLSe5dWy27ZlSHxeqpR1fzEI1tSMBKWdjniZlLhyLICMD1Aae/SGwKrZbTw==
+X-Received: by 2002:a05:620a:15d3:: with SMTP id o19mr46494877qkm.213.1560341283009;
+        Wed, 12 Jun 2019 05:08:03 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id k6sm7887218qkd.21.2019.06.12.05.08.02
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 12 Jun 2019 05:08:02 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hb22s-0002VB-33; Wed, 12 Jun 2019 09:08:02 -0300
+Date:   Wed, 12 Jun 2019 09:08:02 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mark Zhang <markz@mellanox.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Majd Dibbiny <majd@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: Re: [PATCH rdma-next v3 09/17] IB/mlx5: Support statistic q counter
+ configuration
+Message-ID: <20190612120802.GE3876@ziepe.ca>
+References: <20190606105345.8546-1-leon@kernel.org>
+ <20190606105345.8546-10-leon@kernel.org>
+ <20190611175419.GA19838@ziepe.ca>
+ <285c454e-2a20-d9e0-56a4-7738dd375d17@mellanox.com>
 MIME-Version: 1.0
-Received: by 2002:ab0:108a:0:0:0:0:0 with HTTP; Wed, 12 Jun 2019 05:04:46
- -0700 (PDT)
-X-Originating-IP: [5.35.24.158]
-In-Reply-To: <20190612120216.GH31797@unicorn.suse.cz>
-References: <20190612113348.59858-1-dkirjanov@suse.com> <20190612113348.59858-4-dkirjanov@suse.com>
- <20190612120216.GH31797@unicorn.suse.cz>
-From:   Denis Kirjanov <kda@linux-powerpc.org>
-Date:   Wed, 12 Jun 2019 15:04:46 +0300
-Message-ID: <CAOJe8K1T-LXA-v+JBm7uc48=R8SZLEtoH9+bMbxmKVv9SsQaPA@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/2] ipoib: show VF broadcast address
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     davem@davemloft.net, dledford@redhat.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <285c454e-2a20-d9e0-56a4-7738dd375d17@mellanox.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/12/19, Michal Kubecek <mkubecek@suse.cz> wrote:
-> On Wed, Jun 12, 2019 at 01:33:48PM +0200, Denis Kirjanov wrote:
->> in IPoIB case we can't see a VF broadcast address for but
->> can see for PF
->>
->> Before:
->> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
->> state UP mode DEFAULT group default qlen 256
->>     link/infiniband
->> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
->> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
->>     vf 0 MAC 14:80:00:00:66:fe, spoof checking off, link-state disable,
->> trust off, query_rss off
->> ...
->>
->> After:
->> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
->> state UP mode DEFAULT group default qlen 256
->>     link/infiniband
->> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
->> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
->>     vf 0     link/infiniband
->> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
->> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
->> checking off, link-state disable, trust off, query_rss off
->> ...
->>
->> Signed-off-by: Denis Kirjanov <dkirjanov@suse.com>
->> ---
->>  net/core/rtnetlink.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
->> index 2e1b9ffbe602..f70902b57a40 100644
->> --- a/net/core/rtnetlink.c
->> +++ b/net/core/rtnetlink.c
->> @@ -1248,6 +1248,7 @@ static noinline_for_stack int
->> rtnl_fill_vfinfo(struct sk_buff *skb,
->>  	if (!vf)
->>  		goto nla_put_vfinfo_failure;
->>  	if (nla_put(skb, IFLA_VF_MAC, sizeof(vf_mac), &vf_mac) ||
->> +	    nla_put(skb, IFLA_BROADCAST, dev->addr_len, dev->broadcast) ||
->>  	    nla_put(skb, IFLA_VF_VLAN, sizeof(vf_vlan), &vf_vlan) ||
->>  	    nla_put(skb, IFLA_VF_RATE, sizeof(vf_rate),
->>  		    &vf_rate) ||
->
-> This doesn't seem right, IFLA_BROADCAST is 2 which is the same as
-> IFLA_VF_VLAN. You should add a new constant in the same enum as other
-> IFLA_VF_* attribute types expected in this context. You should then also
-> add an entry to ifla_vf_policy and account for the new attribute size in
-> rtnl_vfinfo_size().
+On Wed, Jun 12, 2019 at 12:01:23PM +0000, Mark Zhang wrote:
+> On 6/12/2019 1:54 AM, Jason Gunthorpe wrote:
+> > On Thu, Jun 06, 2019 at 01:53:37PM +0300, Leon Romanovsky wrote:
+> >> From: Mark Zhang <markz@mellanox.com>
+> >>
+> >> Add support for ib callbacks counter_bind_qp() and counter_unbind_qp().
+> >>
+> >> Signed-off-by: Mark Zhang <markz@mellanox.com>
+> >> Reviewed-by: Majd Dibbiny <majd@mellanox.com>
+> >> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> >>   drivers/infiniband/hw/mlx5/main.c | 53 +++++++++++++++++++++++++++++++
+> >>   1 file changed, 53 insertions(+)
+> >>
+> >> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+> >> index 8b7bcf8f68fb..66c94a060718 100644
+> >> +++ b/drivers/infiniband/hw/mlx5/main.c
+> >> @@ -5533,6 +5533,57 @@ static int mlx5_ib_get_hw_stats(struct ib_device *ibdev,
+> >>   	return num_counters;
+> >>   }
+> >>   
+> >> +static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
+> >> +				   struct ib_qp *qp)
+> >> +{
+> >> +	struct mlx5_ib_dev *dev = to_mdev(qp->device);
+> >> +	u16 cnt_set_id = 0;
+> >> +	int err;
+> >> +
+> >> +	if (!counter->id) {
+> >> +		err = mlx5_cmd_alloc_q_counter(dev->mdev,
+> >> +					       &cnt_set_id,
+> >> +					       MLX5_SHARED_RESOURCE_UID);
+> >> +		if (err)
+> >> +			return err;
+> >> +		counter->id = cnt_set_id;
+> >> +	}
+> >> +
+> >> +	err = mlx5_ib_qp_set_counter(qp, counter);
+> >> +	if (err)
+> >> +		goto fail_set_counter;
+> >> +
+> >> +	return 0;
+> >> +
+> >> +fail_set_counter:
+> >> +	mlx5_core_dealloc_q_counter(dev->mdev, cnt_set_id);
+> >> +	counter->id = 0;
+> >> +
+> >> +	return err;
+> >> +}
+> >> +
+> >> +static int mlx5_ib_counter_unbind_qp(struct ib_qp *qp, bool force)
+> >> +{
+> >> +	struct mlx5_ib_dev *dev = to_mdev(qp->device);
+> >> +	struct rdma_counter *counter = qp->counter;
+> >> +	int err;
+> >> +
+> >> +	err = mlx5_ib_qp_set_counter(qp, NULL);
+> >> +	if (err && !force)
+> >> +		return err;
+> >> +
+> >> +	/*
+> >> +	 * Deallocate the counter if this is the last QP bound on it;
+> >> +	 * If @force is set then we still deallocate the q counter
+> >> +	 * no matter if there's any error in previous. used for cases
+> >> +	 * like qp destroy.
+> >> +	 */
+> >> +	if (atomic_read(&counter->usecnt) == 1)
+> >> +		return mlx5_core_dealloc_q_counter(dev->mdev, counter->id);
+> > 
+> > This looks like a nonsense thing to write, what it is trying to do
+> > with that atomic?
+> > 
+> > I still can't see why this isn't a normal kref.
+> > 
+> 
+> Hi Jason,
+> 
+> Have discussed with Leon, unlike other resources, counter alloc/dealloc 
+> isn't called explicitly. So we need a refcount to record how many QPs 
+> are bound on this counter, when it comes to 0 then the counter can be 
+> deallocated. Whether to use atomic or kref the code is similar, it is 
+> not able to take advantage of kref/completion.
 
-Ah, ok,
+That doesn't explain the nonsense "atomic_read(&counter->usecnt) == 1"
+test
 
-Thanks
-
->
-> Michal
->
+Jason
