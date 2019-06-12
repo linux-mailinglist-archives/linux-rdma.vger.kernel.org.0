@@ -2,119 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 160B7426C1
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 14:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A304277C
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 15:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436623AbfFLMzq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 08:55:46 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:40490 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438421AbfFLMzp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 08:55:45 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5CCsKvY145703;
-        Wed, 12 Jun 2019 12:55:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=v79sqnZ4W7t95evEJOziS0PN1d4ZsR5ftu3hgA3hjiM=;
- b=eu6UL9KoR3mQbzYhVTie91UCPyOv/Jx66T0XWnBsrHomzQEEv/yc4Us8y3xBXSIxZ3Aa
- 6EjQInZD57rGO7obeIRTMQfSddx6fO1dXwRE9TYBQFLALONXMjz3ZsY5tE1uuPWvXQJ+
- 91Q1IwLVgn+VEE/x7b+b/0HOeNydiJGcjXEx1G56Q8WSbxxSfXzvRyYL681jExhbxdx3
- k71Rl9NcYgDceq3LwIbMHfGNp5V3Gs5QgS08c4S+03Co8sL1xt1kFlI2Dub/EH38M/nA
- o8rRTT62p6FsDrFLQ/9sF7Pvm+c+XQkJbtOL5L5cx7edDVJhiYi7lnBe9e+stmhWkI+y Fw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2t04etu6x5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 Jun 2019 12:55:24 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5CCsoeZ003150;
-        Wed, 12 Jun 2019 12:55:24 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 2t1jpj0hk0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 Jun 2019 12:55:24 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5CCtNDK023670;
-        Wed, 12 Jun 2019 12:55:23 GMT
-Received: from lap1 (/77.138.183.59)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 12 Jun 2019 05:55:23 -0700
-Date:   Wed, 12 Jun 2019 15:55:18 +0300
-From:   Yuval Shaia <yuval.shaia@oracle.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA: Convert destroy_wq to be void
-Message-ID: <20190612125518.GA3358@lap1>
-References: <20190612122741.22850-1-leon@kernel.org>
- <20190612124049.GA2448@lap1>
- <20190612125112.GR6369@mtr-leonro.mtl.com>
+        id S1732380AbfFLN2m (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 09:28:42 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:10212 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727416AbfFLN2l (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 09:28:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1560346121; x=1591882121;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Vb8f5ijLcWV1N5C8MvaLaQiKnyo7t4VZa9IbRm5YjAk=;
+  b=BVrLnT+iX4ehz5ax8F9tgAnqcHdIsdMsU5OLKcLp85XxfeK4IRYxscbC
+   xZPHC8IOqc0/uJ2rmtRP0f9fvE9dMBG15760lqNs2GoSIDMo+ImdMXcZq
+   CfNGxB/AJcj14WaUCMteEv9AJSQVSgDjwrg9Lppeu9JS0GKYeRjdOAWBf
+   4=;
+X-IronPort-AV: E=Sophos;i="5.62,366,1554768000"; 
+   d="scan'208";a="679507109"
+Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com) ([10.47.22.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 12 Jun 2019 13:28:37 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com (Postfix) with ESMTPS id 7C314C5E0F;
+        Wed, 12 Jun 2019 13:28:37 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 12 Jun 2019 13:28:37 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.57) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 12 Jun 2019 13:28:34 +0000
+Subject: Re: [PATCH for-rc 2/2] RDMA/efa: Handle mmap insertions overflow
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>
+References: <20190612072842.99285-1-galpress@amazon.com>
+ <20190612072842.99285-3-galpress@amazon.com> <20190612120114.GD3876@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <eb0bbd15-cf37-eacc-a4ce-62becf045c38@amazon.com>
+Date:   Wed, 12 Jun 2019 16:28:29 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190612125112.GR6369@mtr-leonro.mtl.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9285 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906120089
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9285 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906120089
+In-Reply-To: <20190612120114.GD3876@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.57]
+X-ClientProxiedBy: EX13D13UWB003.ant.amazon.com (10.43.161.233) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 03:51:12PM +0300, Leon Romanovsky wrote:
-> On Wed, Jun 12, 2019 at 03:40:50PM +0300, Yuval Shaia wrote:
-> > On Wed, Jun 12, 2019 at 03:27:41PM +0300, Leon Romanovsky wrote:
-> > > From: Leon Romanovsky <leonro@mellanox.com>
-> > >
-> > > All callers of destroy WQ are always success and there is no need
-> > > to check their return value, so convert destroy_wq to be void.
-> > >
-> > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > > ---
-> > >  drivers/infiniband/core/verbs.c      | 12 +++++-------
-> > >  drivers/infiniband/hw/mlx4/mlx4_ib.h |  2 +-
-> > >  drivers/infiniband/hw/mlx4/qp.c      |  4 +---
-> > >  drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 +-
-> > >  drivers/infiniband/hw/mlx5/qp.c      |  4 +---
-> > >  include/rdma/ib_verbs.h              |  2 +-
-> > >  6 files changed, 10 insertions(+), 16 deletions(-)
-> > >
-> > > diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> > > index 2fb834bb146c..d55f491be24f 100644
-> > > --- a/drivers/infiniband/core/verbs.c
-> > > +++ b/drivers/infiniband/core/verbs.c
-> > > @@ -2344,19 +2344,17 @@ EXPORT_SYMBOL(ib_create_wq);
-> > >   */
-> > >  int ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata)
-> >
-> > So why this one left out of this change?
+On 12/06/2019 15:01, Jason Gunthorpe wrote:
+> On Wed, Jun 12, 2019 at 10:28:42AM +0300, Gal Pressman wrote:
+>> When inserting a new mmap entry to the xarray we should check for
+>> 'mmap_page' overflow as it is limited to 32 bits.
+>>
+>> While at it, make sure to advance the mmap_page stored on the ucontext
+>> only after a successful insertion.
+>>
+>> Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
+>> Signed-off-by: Gal Pressman <galpress@amazon.com>
+>>  drivers/infiniband/hw/efa/efa_verbs.c | 21 ++++++++++++++++-----
+>>  1 file changed, 16 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+>> index 0fea5d63fdbe..c463c683ae84 100644
+>> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+>> @@ -204,6 +204,7 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+>>  			     void *obj, u64 address, u64 length, u8 mmap_flag)
+>>  {
+>>  	struct efa_mmap_entry *entry;
+>> +	u32 next_mmap_page;
+>>  	int err;
+>>  
+>>  	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+>> @@ -216,15 +217,19 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+>>  	entry->mmap_flag = mmap_flag;
+>>  
+>>  	xa_lock(&ucontext->mmap_xa);
+>> +	if (check_add_overflow(ucontext->mmap_xa_page,
+>> +			       (u32)(length >> PAGE_SHIFT),
+>> +			       &next_mmap_page))
+>> +		goto err_unlock;
+>> +
+>>  	entry->mmap_page = ucontext->mmap_xa_page;
+>> -	ucontext->mmap_xa_page += DIV_ROUND_UP(length, PAGE_SIZE);
+>>  	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
+>>  			  GFP_KERNEL);
+>> +	if (err)
+>> +		goto err_unlock;
+>> +
+>> +	ucontext->mmap_xa_page = next_mmap_page;
 > 
-> This function can return -EBUSY.
+> This is not ordered right anymore, the xa_lock can be released inside
+> __xa_insert, so to be atomic you must do everything before calling
+> __xa_insert.
 
-Missed that.
-
-> 
-> >
-> > >  {
-> > > -	int err;
-> > >  	struct ib_cq *cq = wq->cq;
-> > >  	struct ib_pd *pd = wq->pd;
-> > >
-> > >  	if (atomic_read(&wq->usecnt))
-> > >  		return -EBUSY;
-> 
-> Thanks
-
-Reviewed-by: Yuval Shaia <yuval.shaia@oracle.com>
-
+Ah, missed the fact that __xa_insert could release the lock :\..
+Thanks Jason, will bring back the mmap_xa_page assignment before the __xa_insert
+call and unwind it in case of __xa_insert failure.
