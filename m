@@ -2,94 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0967A4191A
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 01:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE06A41B42
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 06:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392038AbfFKXmj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jun 2019 19:42:39 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:24510 "EHLO mx1.redhat.com"
+        id S1729880AbfFLEim (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 00:38:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389600AbfFKXmj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 11 Jun 2019 19:42:39 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729868AbfFLEim (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Jun 2019 00:38:42 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E78D781DFB;
-        Tue, 11 Jun 2019 23:42:35 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3A8637A420;
-        Tue, 11 Jun 2019 23:42:34 +0000 (UTC)
-Message-ID: <cdd2493633c2b260fc3ded61af1909c41fde4da2.camel@redhat.com>
-Subject: Re: [PATCH 2/3] RDMA: Add NLDEV_GET_CHARDEV to allow char dev
- discovery and autoload
-From:   Doug Ledford <dledford@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Date:   Tue, 11 Jun 2019 19:42:31 -0400
-In-Reply-To: <20190605183252.6687-3-jgg@ziepe.ca>
-References: <20190605183252.6687-1-jgg@ziepe.ca>
-         <20190605183252.6687-3-jgg@ziepe.ca>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-RGgCe+MTpdcG5j4DaqqQ"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        by mail.kernel.org (Postfix) with ESMTPSA id F1D1D2086A;
+        Wed, 12 Jun 2019 04:38:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560314321;
+        bh=IgA33fK12x2ky4CgJPs2odqBSRrlD6GTXsEQbs85g9s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cjsiNamchirmc8+kfz+jhLzasVGmhSG7uNSRmC/N0b+E47hD3OdFx7PIofEVXvHn1
+         MSr97WzOvxh7Q2NOb7xKt7fQ6gGs4yp7/9HtfGLlPFHOZsD4SXgAVOauXQ6Z6xYBHb
+         npaQcuNQc3pISbb927I709fklwyO6K0ucjI9in3I=
+Date:   Wed, 12 Jun 2019 07:38:37 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Majd Dibbiny <majd@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: Re: [PATCH rdma-next v3 13/17] RDMA/core: Get sum value of all
+ counters when perform a sysfs stat read
+Message-ID: <20190612043837.GL6369@mtr-leonro.mtl.com>
+References: <20190606105345.8546-1-leon@kernel.org>
+ <20190606105345.8546-14-leon@kernel.org>
+ <20190611180446.GA20174@ziepe.ca>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Tue, 11 Jun 2019 23:42:39 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190611180446.GA20174@ziepe.ca>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
---=-RGgCe+MTpdcG5j4DaqqQ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2019-06-05 at 15:32 -0300, Jason Gunthorpe wrote:
-> +static int __ib_get_client_nl_info(struct ib_device *ibdev,
-> +                                  const char *client_name,
-> +                                  struct ib_client_nl_info *res)
+On Tue, Jun 11, 2019 at 03:04:46PM -0300, Jason Gunthorpe wrote:
+> On Thu, Jun 06, 2019 at 01:53:41PM +0300, Leon Romanovsky wrote:
+> > @@ -302,6 +318,46 @@ int rdma_counter_query_stats(struct rdma_counter *counter)
+> >  	return ret;
+> >  }
+> >
+> > +static u64 get_running_counters_hwstat_sum(struct ib_device *dev,
+> > +					   u8 port, u32 index)
+> > +{
+> > +	struct rdma_restrack_entry *res;
+> > +	struct rdma_restrack_root *rt;
+> > +	struct rdma_counter *counter;
+> > +	unsigned long id = 0;
+> > +	u64 sum = 0;
+> > +
+> > +	rt = &dev->res[RDMA_RESTRACK_COUNTER];
+> > +	xa_lock(&rt->xa);
+> > +	xa_for_each(&rt->xa, id, res) {
+> > +		counter = container_of(res, struct rdma_counter, res);
+> > +		if ((counter->device != dev) || (counter->port != port) ||
+> > +		    rdma_counter_query_stats(counter))
+> > +			continue;
+>
+> rdma_counter_query_stats has:
+>
+> int rdma_counter_query_stats(struct rdma_counter *counter)
 > +{
-> +       unsigned long index;
-> +       void *client_data;
-> +       int ret =3D -ENOENT;
+> +	struct ib_device *dev = counter->device;
+> +	int ret;
 > +
-> +       if (!ibdev) {
-> +               struct ib_client *client;
+> +	if (!dev->ops.counter_update_stats)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&counter->lock);
+> +	ret = dev->ops.counter_update_stats(counter);
+> +	mutex_unlock(&counter->lock);
+>
+> so again, this can't work and would blow up with lockdep if it was
+> ever tested. xa_lock is a spinlock, you can't nest mutex's inside
+> spinlocks.
+>
+> Check all the xa_lock for this. No idea why you are not catching this
+> during testing. Maybe some might_sleeps() are needed.
 
-I agree with Leon, this function would look better as two separate
-functions.  But that's more cosmetic than anything else.  It's
-unfortunate that the two loops are so close to identical, but vary in
-such subtle ways that it prevents a reasonable joining of the loops.
+I will check it, but on my system LOCKDEP is enabled, /proc/lockdep
+exists and full of information, so it is working.
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
-2FDD
+Thanks
 
---=-RGgCe+MTpdcG5j4DaqqQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0APGcACgkQuCajMw5X
-L914Xg/8DEX7eR3Rn8PARHhU1hfRSOmlxG0AP8sBc9jljjkRXr8OjI98sbTJ4+tK
-YYdqwkY5kt6Xp0tQmlM9jte+r58VA3wEnHFqOPEaz3068J9JeKkV2HD5ZmXHaHIY
-owKMcLBunZyNLiD0c6EYyYy5W3aEv676t3Mx3TcobOu+UrK4SA47w6j4c5XKn6ND
-adnCjqeauh7Fs+IuEHRDsxNUABL12f7KM1ptOhCw8MLdX1wkwT4YaK4IY/r7gANb
-SpWdDq7rGPL3RMTipHRtj+V+J0DXu3u9iK6jsH9p/hH+GCEbQTuU7sCut5f3V4nD
-X8DH7eIvXaBH8B2/Bi1rNa4iQQw4WrnCnOdUOmrV+5q70hUAn6Lpj/V91E15maJZ
-aI9PcJOzAFPFHuSs0bOUriFH6DVnRdf4ZjDpK4CaTHGTv9F+NNjyk59Naf5nHWAn
-CfXsgX+YZNiWwlF/oHNi2pPIUXjXzbcW7oH2f5wMK4g561t2dHJ/j0L3cxnvUIHA
-XtSNR5e8wuzsI7Ds7wrsKB7rKxCROw4qulVPCGfvqNGG2yWBgK9uWJUd6BcnBRe3
-AqiSWK01O4O1IA1Gi9nZTOVj9aIpwr65kZXUieu7yeHS9vFjFjMF0Tov3V9tMemp
-NCTKNC8M2Lpe+u5ygsOq9IQhBK05cdwby3N5TsPluKezJWG3rMY=
-=+glX
------END PGP SIGNATURE-----
-
---=-RGgCe+MTpdcG5j4DaqqQ--
-
+>
+> Jason
