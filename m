@@ -2,115 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A9042B91
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 17:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3350042BD7
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 18:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440372AbfFLP7i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 11:59:38 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:58036 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436987AbfFLP7g (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Jun 2019 11:59:36 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id B96E4223882;
-        Wed, 12 Jun 2019 15:59:17 +0000 (UTC)
-Received: from [10.36.116.67] (ovpn-116-67.ams2.redhat.com [10.36.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7B463183FD;
-        Wed, 12 Jun 2019 15:59:01 +0000 (UTC)
-Subject: Re: [PATCH v17 14/15] vfio/type1, arm64: untag user pointers in
- vaddr_get_pfn
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-References: <cover.1560339705.git.andreyknvl@google.com>
- <e86d8cd6bd0ade9cce6304594bcaf0c8e7f788b0.1560339705.git.andreyknvl@google.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <ac482b04-94b1-ab29-97cc-3232fc44b3d1@redhat.com>
-Date:   Wed, 12 Jun 2019 17:58:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
+        id S2409437AbfFLQNW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 12:13:22 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:43277 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409460AbfFLQNW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 12:13:22 -0400
+Received: by mail-qt1-f195.google.com with SMTP id z24so5884311qtj.10
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 09:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5CI5dAUbbtRsnO5uk6nUcTR7hYc6exJ1mZNpf9Jsw5E=;
+        b=cwV1KGtJTd5TlOhublIP1o1a4Xyb830RexAbXQFNJfrXGnVID/p1PibPHrJC+fua8U
+         8NBRD1DcuuOuKrRDyTKNLoNUWW93tmDGOUuEFS8xxNjDJiRQib86DC3wQMpvTirMve08
+         LkXZivIkwLdaY5Vj0rYPcum2YgW1CAHIQxy1bPbNW8QPgQiBxXdUnWbGotkgdXoJTxIH
+         sna9Zq1sg8lSYOy4sKQNiZU9SObRZPtbSvn8FbuRUdl7tlrSFSYMd0THuIj9CzL13D6b
+         5HVSXJ2togvZWJPFrf3VxkSNqGO7Hp/C/415o+LLl+ZS14jbBVX7KKtWLJLCmV69ZW/j
+         ZWVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5CI5dAUbbtRsnO5uk6nUcTR7hYc6exJ1mZNpf9Jsw5E=;
+        b=rOaUZ6/zkkWbQAvm8hT2WL3IWs8GLwKTimC5R+wZZ8nddgH2XPPwiWJLxwMP8V65z4
+         CFhy0QM+v30+c6X13I2wRzoIiJ83x2VJxsflCOXYh5n7X/7NeXzLRSHM4m10ik1BxVzc
+         7Fa8YWjF+KXv4ZMhjvuHCjP0g7TpmpjVFhHuEv/IHyW2lCTVhtRcX0s9rEemIPCHgk4K
+         cu04iM3eiGC4+doGdP49sj9OkiURXC1hy2R5T8lJnJSU9pAZiUU9OSqdVW4O0Udb6Y3Y
+         XuTbUvNXCh/zhmJldjGyTTFZKwaY9l+WRcuMHssQ+zlgiGg9/qDvNRuKiMWNOjRDVEuc
+         9mrA==
+X-Gm-Message-State: APjAAAWuwXpjDuzVrWYQG+CJ1Uz6K5EWHrw4zI+qW1/W8SOfr60R++Qj
+        ayLdJWenZy7H+jZGXwB/Oh7icw==
+X-Google-Smtp-Source: APXvYqxBrORsPn41v6aJ9MPgJt+zsniQyCqjJijIL08x/AL9Yz0EaqvvQYU3MOfA4pkQios/OHudwg==
+X-Received: by 2002:ac8:28bc:: with SMTP id i57mr39941671qti.288.1560356001022;
+        Wed, 12 Jun 2019 09:13:21 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id s44sm176275qtc.8.2019.06.12.09.13.20
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 12 Jun 2019 09:13:20 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hb5sF-0004Ih-Lt; Wed, 12 Jun 2019 13:13:19 -0300
+Date:   Wed, 12 Jun 2019 13:13:19 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Vladimir Sokolovsky <vlad@dev.mellanox.co.il>
+Cc:     "ewg@lists.openfabrics.org" <ewg@lists.openfabrics.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [ANNOUNCE] OFED 4.17-1-rc2 release is available
+Message-ID: <20190612161319.GJ3876@ziepe.ca>
+References: <ca5463ac-150d-6313-9df2-db2fd60e7d54@dev.mellanox.co.il>
 MIME-Version: 1.0
-In-Reply-To: <e86d8cd6bd0ade9cce6304594bcaf0c8e7f788b0.1560339705.git.andreyknvl@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Wed, 12 Jun 2019 15:59:28 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca5463ac-150d-6313-9df2-db2fd60e7d54@dev.mellanox.co.il>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Andrey,
+On Wed, Jun 12, 2019 at 01:06:26AM +0300, Vladimir Sokolovsky wrote:
+> Hi,
+> OFED-4.17-1-rc2 is available at:
+> http://openfabrics.org/downloads/OFED/ofed-4.17-1/OFED-4.17-1-rc2.tgz
+> 
+> Please report any issues in bugzilla
+> https://bugs.openfabrics.org/ for OFED 4.17-1-rc2
+> 
+> Release notes:
+> http://openfabrics.org/downloads/OFED/release_notes/OFED_4.17-1-rc2-release_notes
+> 
+> OFED-4.17-1-rc2 Main Changes from OFED-4.17-1-rc1
+> 1. compat-rdma
+> - Module.supported: Added new Mellanox kernel modules
+> 
+> 2. Updated packages
+> - rdma-core v17.5
+> - perftest-4.4-0.6.gba4bf6d
+> - opensm-3.3.22
 
-On 6/12/19 1:43 PM, Andrey Konovalov wrote:
-> This patch is a part of a series that extends arm64 kernel ABI to allow to
-> pass tagged user pointers (with the top byte set to something else other
-> than 0x00) as syscall arguments.
-> 
-> vaddr_get_pfn() uses provided user pointers for vma lookups, which can
-> only by done with untagged pointers.
-> 
-> Untag user pointers in this function.
-> 
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Uhm, this software is over a year old now.
 
-Thanks
+In fact, this release is older than the software shiped in RHEL 7.7 and
+maybe even RHEL 7.6...
 
-Eric
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 3ddc375e7063..528e39a1c2dd 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -384,6 +384,8 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
->  
->  	down_read(&mm->mmap_sem);
->  
-> +	vaddr = untagged_addr(vaddr);
-> +
->  	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
->  
->  	if (vma && vma->vm_flags & VM_PFNMAP) {
-> 
+It used to be that OFED contained new software, now it doesn't.
+
+I really think OFA should stop producing this package, truely it has
+lost its purpose.
+
+Jason
