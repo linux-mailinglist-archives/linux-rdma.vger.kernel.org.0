@@ -2,99 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0A74220F
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 12:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C9D422B0
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 12:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437977AbfFLKMm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 06:12:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60876 "EHLO mail.kernel.org"
+        id S2437058AbfFLKjU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 06:39:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:49826 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437611AbfFLKMm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Jun 2019 06:12:42 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E7CC2080A;
-        Wed, 12 Jun 2019 10:12:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560334361;
-        bh=irMS+lgDpJJNSDT1/6QON3/hnkbR69PoagsHSfhPN04=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KNorcfdyK10E7uVC/6SccYVzTbvVS4A9erB40sjs9XwwYGZ9IHuX9fEWu5pn6cusj
-         zRyv7vrAAqHtnK38DzehU3qrGbP9U0/4IEKLw2fJ/gGjNcypAIbebq9b3tF9GACXcZ
-         +EKEcwJWVHOpfZhkb2YNukTXQn9NJEjopMGxhnJw=
-Date:   Wed, 12 Jun 2019 13:12:38 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Chris Elrod <elrodc@gmail.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: Failed to enable unit: Unit file rdma.service does not exist
-Message-ID: <20190612101238.GN6369@mtr-leonro.mtl.com>
-References: <CA+pTmbCAd47NbJ0=QxwUHZRtyqdx61sFv6P8nyRPtxi-mk_A4Q@mail.gmail.com>
+        id S2437055AbfFLKjU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Jun 2019 06:39:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 29FDA28;
+        Wed, 12 Jun 2019 03:39:19 -0700 (PDT)
+Received: from C02TF0J2HF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0039F3F246;
+        Wed, 12 Jun 2019 03:40:38 -0700 (PDT)
+Date:   Wed, 12 Jun 2019 11:38:49 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v16 15/16] vfio/type1, arm64: untag user pointers in
+ vaddr_get_pfn
+Message-ID: <20190612103848.GA28951@C02TF0J2HF1T.local>
+References: <cover.1559580831.git.andreyknvl@google.com>
+ <c529e1eeea7700beff197c4456da6a882ce2efb7.1559580831.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+pTmbCAd47NbJ0=QxwUHZRtyqdx61sFv6P8nyRPtxi-mk_A4Q@mail.gmail.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <c529e1eeea7700beff197c4456da6a882ce2efb7.1559580831.git.andreyknvl@google.com>
+User-Agent: Mutt/1.11.2 (2019-01-07)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 01:23:12AM -0500, Chris Elrod wrote:
-> - Linux distribution and version
-> Clear Linux (29870)
->
-> - Linux Kernel and version
-> 5.1.8
->
-> - InfiniBand hardware and firmware version
-> Hardware version: MCX354A-FCBT (FDR)
-> Firmware version: 2.42.5000
->
-> Problem:
-> $ systemctl enable rdma
-> Failed to enable unit: Unit file rdma.service does not exist.
->
-> More background:
-> I have 3 computers and 3 cards. Each card has 2 ports, so I'd like to
-> directly link each computer and use infiniband with (Open)MPI.
->
-> Clear Linux's package manager provides rdma and rdma-core, but doesn't
-> provide rdma.service. I do not see a /usr/libexec/rdma-init-kernel,
-> either.
-> (Same story with other packages, like opensm).
-> I made a comment on the Clear Linux community forum, and was told:
->
-> """Upstream does not provide these files, and this is explained by the
-> age of the project and the amount of development activity.
->
-> This is one of those problems that should have been solved upstream.
-> If we add unit files, they’re most likely not going to be correct
-> since it’s unlikely that anyone on our team uses RDMA/opensm.
->
-> YTEH - You’re The Expert Here. It would really help if you could
-> investigate what the proper content of the unit files are, submit them
-> upstream and Cc the clearlinux github issue tracker. Then we can make
-> progress instead of blindly adding some untested and copied unit file
-> from another distro."""
->
-> https://community.clearlinux.org/t/unit-file-opensm-service-does-not-exist-provide-opensm-service-files/762/4
->
-> I see for example that you provide support for Debian, Red Hat, and Suse.
->
-> What is your policy towards other distributions (that aren't built on
-> top of those three) / what are your recommendations?
+On Mon, Jun 03, 2019 at 06:55:17PM +0200, Andrey Konovalov wrote:
+> This patch is a part of a series that extends arm64 kernel ABI to allow to
+> pass tagged user pointers (with the top byte set to something else other
+> than 0x00) as syscall arguments.
+> 
+> vaddr_get_pfn() uses provided user pointers for vma lookups, which can
+> only by done with untagged pointers.
+> 
+> Untag user pointers in this function.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Send patches and PR for rdma-core that adds your distribution and
-upstream rdma-core will support it as long as you will take care
-of ensuring that such new distribution picks this upstream variant.
-
->
-> I am far from an expert, but I'd be happy to help if there's something I can do.
-
-You will need to update our buildlib/cbuild too to support your distribution.
-It will ensure that any new changes to rdma-core are checked against
-this distro.
-
-Thanks
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
