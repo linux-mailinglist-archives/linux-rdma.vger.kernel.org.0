@@ -2,264 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3582542484
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 13:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD51424C7
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 13:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438578AbfFLLoa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 07:44:30 -0400
-Received: from mail-yw1-f73.google.com ([209.85.161.73]:35100 "EHLO
-        mail-yw1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438554AbfFLLoZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 07:44:25 -0400
-Received: by mail-yw1-f73.google.com with SMTP id p68so1346686ywp.2
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 04:44:24 -0700 (PDT)
+        id S1730172AbfFLLw2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 07:52:28 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35792 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728150AbfFLLw2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 07:52:28 -0400
+Received: by mail-qk1-f194.google.com with SMTP id l128so9918666qke.2
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 04:52:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=gGgZ3a6eTnEUj++uQZqNg8ohQ9SAhJYSqDRRhc7mNEI=;
-        b=IyYT4UbafS5twM0xOLKRaXywnDFDdbDqJgnUILJhttHP1uH2L+NNxbnxVgYAee8lTj
-         qqRpjg9Px1/VzqAAM6upfA449si21/4lJ1XkboyBr77Ub0YTrQLbJn5sOIwz1IVA69V5
-         Ap8ARpNEkRP6VF2Emm63QaD9Cx3fvDSKZaN/HHC/Xocn6hv1419HlST6JCQQ1Z5EHlL/
-         CiJ+tHOg0rDi38FsnXC87324szrGfxAi8RWcHgDsH+2gfi2ulhbLZaNJ0gAKDJ3X8Gkg
-         JxyfovuFPvVfND0iTfX5ByU+bmOloPTC5uiR6JL5swcvm2UzXNQY3tCHhrlAltKj98wk
-         GeRA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=rVxt7efS5AHvg2mhczjfYrOT90Z76QMKXU0uqSLTbMw=;
+        b=AHlb/p0SGFX0Ka4jmDBv675+ey5oFkC6ZL/1vJHoI8bFH9NcOgFxUXEXStscdOIb+M
+         SChyjmMunyOIPRnNQLtBcsbBqbu7hV7WmM/cLo12zyFH21C7BD6hmz1WaQaXTlWMY2i7
+         /47HSx2FzibYAAZCGwIFquxzwiGKHY6WnD5zHI6eYnq593futmWdi2qHBbXuj7XLwoIl
+         QsnAy2dASxwoWOVPqVCCgxLgRKLVpyoGQJ5AF5iKnIiE59i06huICzq+YyecWNZvBseC
+         7gnJnGjFS4x1v5ppecyDhYpRyn3WKuWDgPBb5IwKzlGQ0opYtyDuja75EfQVqHJrnISY
+         wTIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=gGgZ3a6eTnEUj++uQZqNg8ohQ9SAhJYSqDRRhc7mNEI=;
-        b=Lgg4hwlbvJRs9KzAUZAQTf3Ip+NI8V2omsPywmw0vUXCElIoyaYF2YIc+TcvljWi1f
-         yjo4Rc64hrujc+5CTl75sgjU8lu9w2mMqFnz6laZAlxtm11ZFpOisiSQ5VxNOnhw+/Qt
-         RB9uxV9UVRLDQa5OyXZcrp5yBmW89/JBeEFtMkYEEtbo6R9nOq9dACrLD8AyxvnkoIIA
-         D17iXBXgrrqiUx3iAhkgZNjPCxLZWwL+xjwD2PT6W6pzrZHXd90jfFMmQ/WDy5MudKbJ
-         fa9K2TdLbiehfIOZC2Tj5uPUqymgnmp3PmgcM2W9Lgv3uqEjKDkkocrMdCU+1NtrCvjx
-         SqkA==
-X-Gm-Message-State: APjAAAUq/11nzrE3H3gP03nqQcryWpOgibsp6gIIy13tYe/EDcxpdMNG
-        6HZioo4jmVIdZkty85YaF3umaLy0JhubbLb2
-X-Google-Smtp-Source: APXvYqw2mEWzgJjQoV5VS4+2oS4fV2R/NqpuRE12+fqx+o9WDuiIlBB+xhQmG1zgiCj0aRJhgLJNrenJlX6SsR3w
-X-Received: by 2002:a81:6d46:: with SMTP id i67mr906534ywc.103.1560339863971;
- Wed, 12 Jun 2019 04:44:23 -0700 (PDT)
-Date:   Wed, 12 Jun 2019 13:43:32 +0200
-In-Reply-To: <cover.1560339705.git.andreyknvl@google.com>
-Message-Id: <e024234e652f23be4d76d63227de114e7def5dff.1560339705.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <cover.1560339705.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.22.0.rc2.383.gf4fbbf30c2-goog
-Subject: [PATCH v17 15/15] selftests, arm64: add a selftest for passing tagged
- pointers to kernel
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=rVxt7efS5AHvg2mhczjfYrOT90Z76QMKXU0uqSLTbMw=;
+        b=Vb0z+ZiiXwhFzaudtfmQeidqtdOjqN0l+2ZrVEgvm5R7KTPbMkcmcvhKWLGJ63/kUX
+         gmbIQlyRBhldhSsQ9EM2h/46aHXpLRnv7deiDE4Enk3FImW3OZs8FB66QOW1uxrlseNm
+         eCD5pWmigMAAfbLyExyubjSgJZp12GRYkfX/XpWcmW5iZ9amJnOvfBZ87eBKOWMSre4G
+         XEjIA6IYy6v+tmMzVKimaiXtvC6o/5IaXORPmKa7JSqetMCqCUeCu3VclXCRFROUWdbk
+         ETpK+C1F2EvFCTr8T9oJq03rMqreMw3qCSIBSeJkZZN2jAlvXWCpqtkvJ/nFhXh2eALE
+         FnTA==
+X-Gm-Message-State: APjAAAXUVLEMRwv8pnYJqBQWTf+CzG0uLyPq8LY17Lg9CQ0O9f4r6yUX
+        wjtE3v+V6bE7mjKIxxgcmhptgw==
+X-Google-Smtp-Source: APXvYqy6QrnzD7t5MmpVCk2mjN3zevxiabcamvR4ddH534+vgkzyeRWYihmg21qVRrSOVdAVORD7tQ==
+X-Received: by 2002:a37:9c16:: with SMTP id f22mr65654797qke.261.1560340347444;
+        Wed, 12 Jun 2019 04:52:27 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id a139sm7932517qkb.48.2019.06.12.04.52.27
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 12 Jun 2019 04:52:27 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hb1nm-0002Lj-KI; Wed, 12 Jun 2019 08:52:26 -0300
+Date:   Wed, 12 Jun 2019 08:52:26 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, wangxi <wangxi11@huawei.com>,
+        linux-rdma@vger.kernel.org, dledford@redhat.com,
+        linuxarm@huawei.com
+Subject: Re: [PATCH V4 for-next 1/3] RDMA/hns: Add mtr support for mixed
+ multihop addressing
+Message-ID: <20190612115226.GC3876@ziepe.ca>
+References: <1559285867-29529-1-git-send-email-oulijun@huawei.com>
+ <1559285867-29529-2-git-send-email-oulijun@huawei.com>
+ <20190607164818.GA22156@ziepe.ca>
+ <26040386-e155-7223-b2b7-48e74e92b521@huawei.com>
+ <20190610132716.GC18468@ziepe.ca>
+ <1e1f3980-6c31-c562-7f23-7734bf739ef4@huawei.com>
+ <20190611055604.GH6369@mtr-leonro.mtl.com>
+ <3487721f-2f1b-c3e4-473b-5ed506c5682c@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3487721f-2f1b-c3e4-473b-5ed506c5682c@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch is a part of a series that extends arm64 kernel ABI to allow to
-pass tagged user pointers (with the top byte set to something else other
-than 0x00) as syscall arguments.
+On Wed, Jun 12, 2019 at 09:51:59AM +0100, John Garry wrote:
+> On 11/06/2019 06:56, Leon Romanovsky wrote:
+> > On Tue, Jun 11, 2019 at 10:37:48AM +0800, wangxi wrote:
+> > > 
+> > > 
+> > > 在 2019/6/10 21:27, Jason Gunthorpe 写道:
+> > > > On Sat, Jun 08, 2019 at 10:24:15AM +0800, wangxi wrote:
+> > > > 
+> > > > > > Why is there an EXPROT_SYMBOL in a IB driver? I see many in
+> > > > > > hns. Please send a patch to remove all of them and respin this.
+> > > > > > 
+> > > > > There are 2 modules in our ib driver, one is hns_roce.ko, another
+> > > > > is hns_roce_hw_v2.ko. all extern symbols are named like hns_roce_xxx,
+> > > > > this function defined in hns_roce.ko, and invoked in
+> > > > > hns_roce_hw_v2.ko.
+> > > > 
+> > > > seems unnecessarily complicated
+> > > > 
+> > > > Jason
+> > > > .
+> > > > 
+> > > Hi,Jason,
+> > > 
+> > > The hns ib driver was originally designed for the hip06. When designing the
+> > > driver for the new hardware hip08, in order to maximize the reuse of the
+> > > existing hip06 code, the common part of the code is separated into the
+> > > hns_roce.ko, and the hardware difference code is defined into hns_roce_hw_v1.ko
+> > > for hip06 and hns_roce_hw_v2.ko for hip08.
+> > > 
+> > > The mtr code is designed as a public part in this patchset, so it is defined
+> > > in hns_roce.ko. It can be used for hi16xx series hardware with mixed mutihop
+> > > addressing feature. Currently, hip08 supports this feature, so it is be called
+> > > in hns_roce_hw_v2.ko.
+> > 
+> > Combine v1 and v2 into one driver (.ko) and change initialization to
+> > call v1 or v2 accordingly. The rest is handled by ib_device_ops
+> > structure.
+> > 
+> 
+> Is there a rule which says that a driver cannot export symbols? Module
+> stacking is useful for more complex drivers, in that a hw-specific
+> implementation may plug into common driver. This helps code reuse.
 
-This patch adds a simple test, that calls the uname syscall with a
-tagged user pointer as an argument. Without the kernel accepting tagged
-user pointers the test fails with EFAULT.
+Generally we do not like to see leaf drivers be so complicated that
+they need to export symbols. A multi-module driver is generally an
+over engineered thing to do, few drivers would be so big for that to
+make any sense.
 
-Co-developed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- tools/testing/selftests/arm64/.gitignore      |  2 +
- tools/testing/selftests/arm64/Makefile        | 22 +++++++
- .../testing/selftests/arm64/run_tags_test.sh  | 12 ++++
- tools/testing/selftests/arm64/tags_lib.c      | 62 +++++++++++++++++++
- tools/testing/selftests/arm64/tags_test.c     | 18 ++++++
- 5 files changed, 116 insertions(+)
- create mode 100644 tools/testing/selftests/arm64/.gitignore
- create mode 100644 tools/testing/selftests/arm64/Makefile
- create mode 100755 tools/testing/selftests/arm64/run_tags_test.sh
- create mode 100644 tools/testing/selftests/arm64/tags_lib.c
- create mode 100644 tools/testing/selftests/arm64/tags_test.c
+> In addition to this, v1 hw is a platform device driver and depends on HNS,
+> while v2 hw is for a PCI device and depends on PCI && HNS3. Attempts to
+> combine into a single ko would introduce messy dependencies and ifdefs.
 
-diff --git a/tools/testing/selftests/arm64/.gitignore b/tools/testing/selftests/arm64/.gitignore
-new file mode 100644
-index 000000000000..9b6a568de17f
---- /dev/null
-+++ b/tools/testing/selftests/arm64/.gitignore
-@@ -0,0 +1,2 @@
-+tags_test
-+tags_lib.so
-diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/selftests/arm64/Makefile
-new file mode 100644
-index 000000000000..9dee18727923
---- /dev/null
-+++ b/tools/testing/selftests/arm64/Makefile
-@@ -0,0 +1,22 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+include ../lib.mk
-+
-+# ARCH can be overridden by the user for cross compiling
-+ARCH ?= $(shell uname -m 2>/dev/null || echo not)
-+
-+ifneq (,$(filter $(ARCH),aarch64 arm64))
-+
-+TEST_CUSTOM_PROGS := $(OUTPUT)/tags_test
-+
-+$(OUTPUT)/tags_test: tags_test.c $(OUTPUT)/tags_lib.so
-+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $<
-+
-+$(OUTPUT)/tags_lib.so: tags_lib.c
-+	$(CC) -o $@ -shared $(CFLAGS) $(LDFLAGS) $^
-+
-+TEST_PROGS := run_tags_test.sh
-+
-+all: $(TEST_CUSTOM_PROGS)
-+
-+endif
-diff --git a/tools/testing/selftests/arm64/run_tags_test.sh b/tools/testing/selftests/arm64/run_tags_test.sh
-new file mode 100755
-index 000000000000..2bbe0cd4220b
---- /dev/null
-+++ b/tools/testing/selftests/arm64/run_tags_test.sh
-@@ -0,0 +1,12 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+echo "--------------------"
-+echo "running tags test"
-+echo "--------------------"
-+LD_PRELOAD=./tags_lib.so ./tags_test
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+else
-+	echo "[PASS]"
-+fi
-diff --git a/tools/testing/selftests/arm64/tags_lib.c b/tools/testing/selftests/arm64/tags_lib.c
-new file mode 100644
-index 000000000000..55f64fc1aae6
---- /dev/null
-+++ b/tools/testing/selftests/arm64/tags_lib.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdlib.h>
-+#include <sys/prctl.h>
-+
-+#define TAG_SHIFT	(56)
-+#define TAG_MASK	(0xffUL << TAG_SHIFT)
-+
-+#define PR_SET_TAGGED_ADDR_CTRL	55
-+#define PR_GET_TAGGED_ADDR_CTRL	56
-+#define PR_TAGGED_ADDR_ENABLE	(1UL << 0)
-+
-+void *__libc_malloc(size_t size);
-+void __libc_free(void *ptr);
-+void *__libc_realloc(void *ptr, size_t size);
-+void *__libc_calloc(size_t nmemb, size_t size);
-+
-+static void *tag_ptr(void *ptr)
-+{
-+	static int tagged_addr_err = 1;
-+	unsigned long tag = 0;
-+
-+	/*
-+	 * Note that this code is racy. We only use it as a part of a single
-+	 * threaded test application. Beware of using in multithreaded ones.
-+	 */
-+	if (tagged_addr_err == 1)
-+		tagged_addr_err = prctl(PR_SET_TAGGED_ADDR_CTRL,
-+				PR_TAGGED_ADDR_ENABLE, 0, 0, 0);
-+
-+	if (!ptr)
-+		return ptr;
-+	if (!tagged_addr_err)
-+		tag = rand() & 0xff;
-+
-+	return (void *)((unsigned long)ptr | (tag << TAG_SHIFT));
-+}
-+
-+static void *untag_ptr(void *ptr)
-+{
-+	return (void *)((unsigned long)ptr & ~TAG_MASK);
-+}
-+
-+void *malloc(size_t size)
-+{
-+	return tag_ptr(__libc_malloc(size));
-+}
-+
-+void free(void *ptr)
-+{
-+	__libc_free(untag_ptr(ptr));
-+}
-+
-+void *realloc(void *ptr, size_t size)
-+{
-+	return tag_ptr(__libc_realloc(untag_ptr(ptr), size));
-+}
-+
-+void *calloc(size_t nmemb, size_t size)
-+{
-+	return tag_ptr(__libc_calloc(nmemb, size));
-+}
-diff --git a/tools/testing/selftests/arm64/tags_test.c b/tools/testing/selftests/arm64/tags_test.c
-new file mode 100644
-index 000000000000..263b302874ed
---- /dev/null
-+++ b/tools/testing/selftests/arm64/tags_test.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <stdint.h>
-+#include <sys/utsname.h>
-+
-+int main(void)
-+{
-+	struct utsname *ptr;
-+	int err;
-+
-+	ptr = (struct utsname *)malloc(sizeof(*ptr));
-+	err = uname(ptr);
-+	free(ptr);
-+	return err;
-+}
--- 
-2.22.0.rc2.383.gf4fbbf30c2-goog
+I suspect it would not be any different from how it is today. Do
+everything the same, just have one module not three. module_init/etc
+already take care of conditional compilation of the entire .c file via
+Makefile
 
+Jason
