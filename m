@@ -2,81 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB774256F
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 14:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8344259D
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 14:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438826AbfFLMUc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 08:20:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438820AbfFLMUb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Jun 2019 08:20:31 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E04A721721;
-        Wed, 12 Jun 2019 12:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560342030;
-        bh=zt65VgfxKQvQ+uAkmElwoWTzQZJV+r2K3y2D73RGgiY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VWl3Vwh0KgQ0tO2G2cOmSDt9zVlnntFrTrJSE6QzrbjR3mSepZG/jKrZOrSUXTwNM
-         IHS4ssnbCLM0DU2NAxO2fxyhsTBF3oH+3BxY33/fAfwy4yGHwUHcTwT3NyYRj7FOJV
-         9I0K1iRVOklHki2As0hOjL2pDvf1e7ce8yk3SKZc=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Mark Bloch <markb@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>, Petr Vorel <pvorel@suse.cz>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>
-Subject: [PATCH rdma-next v1 4/4] RDMA/mlx5: Enable decap and packet reformat on FDB
-Date:   Wed, 12 Jun 2019 15:20:14 +0300
-Message-Id: <20190612122014.22359-5-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190612122014.22359-1-leon@kernel.org>
-References: <20190612122014.22359-1-leon@kernel.org>
+        id S1731217AbfFLM0J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 08:26:09 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:42475 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731204AbfFLM0I (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 08:26:08 -0400
+Received: by mail-ua1-f66.google.com with SMTP id a97so4020673uaa.9
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 05:26:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=7goNvhglzUO2C7xjkqDQYZkLXNCnrE6QZxOYE9iirMg=;
+        b=PI8YDnw3uUtj+5PSxCJUN9Mt10dWUuswZQbQmfrjW1h2+ZuLxEORSTfDBNYbXFC/34
+         C6bPlD1pj5Z7LAEvrCGlS4tv32l01lFu+mFDE8mY17grUO0OxTmfTN3SUstIYGOTqepr
+         D5j/tWhCRh+zMgsuTQnY/YNTROZIdktGE+WRDfqcy8h+qnHQ2rXWVtu/Y6l7UK0IL4g8
+         BYWMLJdiVB0RjOoyD7cKvc9PX365ZnpfikcglTFATQSuNIIXjbNHcRtoIGLSObZ7mhs8
+         FnvlkEa4HhelMXacq3doefoTFwxVLh1C9j/rggHGZ7gI+Z0zJgxICfHXfqhUj2nGFc8R
+         evMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=7goNvhglzUO2C7xjkqDQYZkLXNCnrE6QZxOYE9iirMg=;
+        b=mh8hez5Z7KJeiTqXPdLRKPMjORY7tnU9OW2sg5yxl+DLLw6+p5B8pTjw8jmKkwDpSt
+         Ko0E0OaRPTB1CK9iFqgEJdXStj/SFbiYcbUTPtbTnWpj5gt43Rdo670kbZM6nLIjclXj
+         MiSjUBMOYio7fk/NxpkmnSvAY9epIZEWBuRDiiJUYHVD0pSZXeoGmBpmcl9fG626h7BI
+         QA2Ww3or7yxkYA/KRJ7Y83PDKXURTQQhlfnHyAImjrVy5UrsffIt5Isaj3GSJvWUg+Gk
+         7RB+AozpC4yEwRlUpbxOv7Fy2dyVPOZEi3JEhEQceFhM08Lj7T+IUPjMiLb2ieqO0EWg
+         /Mxw==
+X-Gm-Message-State: APjAAAWGbKbXHAfYtxHCZQCsRx4GEl+SI+nr9Qei55P5oZ1ZOp6p4FvP
+        CEhh13MSRaO2VtIYzj+zzTmd96mOx0x/+bTYTWYJDg==
+X-Google-Smtp-Source: APXvYqynk/i4mwDYyq1YwQCoVDH2UoekfgAzWEDjsTxXRLr9MT2bobgcnziipLn/hbKAG3Ebca2LtGryZgNmE6HOrUs=
+X-Received: by 2002:ab0:734f:: with SMTP id k15mr28416792uap.28.1560342367656;
+ Wed, 12 Jun 2019 05:26:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab0:108a:0:0:0:0:0 with HTTP; Wed, 12 Jun 2019 05:26:07
+ -0700 (PDT)
+X-Originating-IP: [5.35.24.158]
+In-Reply-To: <20190612120909.GI31797@unicorn.suse.cz>
+References: <20190612113348.59858-1-dkirjanov@suse.com> <20190612113348.59858-3-dkirjanov@suse.com>
+ <20190612120909.GI31797@unicorn.suse.cz>
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+Date:   Wed, 12 Jun 2019 15:26:07 +0300
+Message-ID: <CAOJe8K0x-OFg656266oc8ky6VtcX9tUOm03_gWtVBfiXgjJ73w@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] ipoib: correcly show a VF hardware address
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     davem@davemloft.net, dledford@redhat.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@mellanox.com>
+On 6/12/19, Michal Kubecek <mkubecek@suse.cz> wrote:
+> On Wed, Jun 12, 2019 at 01:33:47PM +0200, Denis Kirjanov wrote:
+>> in the case of IPoIB with SRIOV enabled hardware
+>> ip link show command incorrecly prints
+>> 0 instead of a VF hardware address. To correcly print the address
+>> add a new field to specify an address length.
+>>
+>> Before:
+>> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+>> state UP mode DEFAULT group default qlen 256
+>>     link/infiniband
+>> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+>> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+>>     vf 0 MAC 00:00:00:00:00:00, spoof checking off, link-state disable,
+>> trust off, query_rss off
+>> ...
+>> After:
+>> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+>> state UP mode DEFAULT group default qlen 256
+>>     link/infiniband
+>> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+>> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+>>     vf 0     link/infiniband
+>> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+>> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
+>> checking off, link-state disable, trust off, query_rss off
+>> ...
+>>
+>> Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
+>> ---
+> ...
+>> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+>> index 5b225ff63b48..904ee1a7330b 100644
+>> --- a/include/uapi/linux/if_link.h
+>> +++ b/include/uapi/linux/if_link.h
+>> @@ -702,6 +702,7 @@ enum {
+>>  struct ifla_vf_mac {
+>>  	__u32 vf;
+>>  	__u8 mac[32]; /* MAX_ADDR_LEN */
+>> +	__u8 addr_len;
+>>  };
+>
+> This structure is part of userspace API, adding a member would break
+> compatibility between new kernel and old iproute2 and vice versa. Do we
+> need to pass MAC address length for each VF if (AFAICS) it's always the
+> same as dev->addr_len?
 
-If FDB flow tables support decap operation, enable it on creation,
-This allows to perform decapsulation of tunnelled packets by steering
-rules. If FDB flow tables support reformat operation, enable it on
-creation as well.
+I believe so, initially I thought that it's required to pass a length
+but looks like I can use RTA_DATA/RTA_PAYLOAD() for that.
 
-Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/main.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index a6e2e0210ebb..33709fd93ab2 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3917,6 +3917,11 @@ _get_flow_table(struct mlx5_ib_dev *dev,
- 	} else if (fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_FDB) {
- 		max_table_size = BIT(
- 			MLX5_CAP_ESW_FLOWTABLE_FDB(dev->mdev, log_max_ft_size));
-+		if (MLX5_CAP_ESW_FLOWTABLE_FDB(dev->mdev, decap) && esw_encap)
-+			flags |= MLX5_FLOW_TABLE_TUNNEL_EN_DECAP;
-+		if (MLX5_CAP_ESW_FLOWTABLE_FDB(dev->mdev, reformat_l3_tunnel_to_l2) &&
-+		    esw_encap)
-+			flags |= MLX5_FLOW_TABLE_TUNNEL_EN_REFORMAT;
- 		priority = FDB_BYPASS_PATH;
- 	}
-
---
-2.20.1
-
+>
+> Michal
+>
+>
