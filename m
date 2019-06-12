@@ -2,49 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A7A41DB8
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 09:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D01C41DB9
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 09:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391217AbfFLH25 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 03:28:57 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:64018 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389710AbfFLH25 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 03:28:57 -0400
+        id S2389710AbfFLH3J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 03:29:09 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:1273 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404659AbfFLH3I (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 03:29:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1560324536; x=1591860536;
+  t=1560324547; x=1591860547;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=/CR0DqlhbCF/5aaAWCQyLhms86t7ulAXnhxRMMOrGVE=;
-  b=eV4+KJncKCMks74BIsD9azBfGBFPQziP1zDvWTkBmPIXOHfLn5WvYT8E
-   FhyN+hdi+hINmWHbVTd3kgyrZQMBV/JCmSw2Ayk1N9to3AuLLceEWl/Cl
-   6G6hxeeBtxHQN/KFGCMnXet5XPBPkAHmhRW0IhCZ40/Usel91T9WySruW
-   w=;
+  bh=F3HBzbqQpB53/PLprpo5NO+weJB6oHALm3yWVRLkmy0=;
+  b=KlHeNowyT5BLrntZuD15curr076eT5tT0NdOm+fiy2GZIUi3dIO0of13
+   ocxhfGv+16TQSC37E+86n2Zf7iH7jAaNEI7oe7kkFNqBoaLAQlzPxc1je
+   D1+1EZrxUIA5TOXYJOPB1lf1r9QiUjcxXU93VQi4MkvIJb6yRq3rh60Eq
+   U=;
 X-IronPort-AV: E=Sophos;i="5.62,363,1554768000"; 
-   d="scan'208";a="804941592"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 12 Jun 2019 07:28:54 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com (Postfix) with ESMTPS id EEB17A2413;
-        Wed, 12 Jun 2019 07:28:53 +0000 (UTC)
-Received: from EX13D19EUA004.ant.amazon.com (10.43.165.28) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 12 Jun 2019 07:28:53 +0000
+   d="scan'208";a="679454626"
+Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.47.22.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 12 Jun 2019 07:28:57 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id D3750A274A;
+        Wed, 12 Jun 2019 07:28:55 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 12 Jun 2019 07:28:55 +0000
 Received: from EX13MTAUEE001.ant.amazon.com (10.43.62.200) by
- EX13D19EUA004.ant.amazon.com (10.43.165.28) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 12 Jun 2019 07:28:52 +0000
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 12 Jun 2019 07:28:54 +0000
 Received: from 8c85908914bf.ant.amazon.com (10.218.69.132) by
  mail-relay.amazon.com (10.43.62.226) with Microsoft SMTP Server id
- 15.0.1367.3 via Frontend Transport; Wed, 12 Jun 2019 07:28:49 +0000
+ 15.0.1367.3 via Frontend Transport; Wed, 12 Jun 2019 07:28:52 +0000
 From:   Gal Pressman <galpress@amazon.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>,
-        "Firas JahJah" <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: [PATCH for-rc 1/2] RDMA/efa: Fix success return value in case of error
-Date:   Wed, 12 Jun 2019 10:28:41 +0300
-Message-ID: <20190612072842.99285-2-galpress@amazon.com>
+CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-rc 2/2] RDMA/efa: Handle mmap insertions overflow
+Date:   Wed, 12 Jun 2019 10:28:42 +0300
+Message-ID: <20190612072842.99285-3-galpress@amazon.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190612072842.99285-1-galpress@amazon.com>
 References: <20190612072842.99285-1-galpress@amazon.com>
@@ -56,102 +54,68 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Existing code would mistakenly return success in case of error instead
-of a proper return value.
+When inserting a new mmap entry to the xarray we should check for
+'mmap_page' overflow as it is limited to 32 bits.
 
-Fixes: e9c6c5373088 ("RDMA/efa: Add common command handlers")
-Reviewed-by: Firas JahJah <firasj@amazon.com>
-Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
+While at it, make sure to advance the mmap_page stored on the ucontext
+only after a successful insertion.
+
+Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
 Signed-off-by: Gal Pressman <galpress@amazon.com>
 ---
- drivers/infiniband/hw/efa/efa_com_cmd.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ drivers/infiniband/hw/efa/efa_verbs.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 14227725521c..c0016648804c 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -139,9 +139,11 @@ int efa_com_destroy_qp(struct efa_com_dev *edev,
- 			       sizeof(qp_cmd),
- 			       (struct efa_admin_acq_entry *)&cmd_completion,
- 			       sizeof(cmd_completion));
--	if (err)
-+	if (err) {
- 		ibdev_err(edev->efa_dev, "Failed to destroy qp-%u [%d]\n",
- 			  qp_cmd.qp_handle, err);
-+		return err;
-+	}
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 0fea5d63fdbe..c463c683ae84 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -204,6 +204,7 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+ 			     void *obj, u64 address, u64 length, u8 mmap_flag)
+ {
+ 	struct efa_mmap_entry *entry;
++	u32 next_mmap_page;
+ 	int err;
  
- 	return 0;
+ 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+@@ -216,15 +217,19 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+ 	entry->mmap_flag = mmap_flag;
+ 
+ 	xa_lock(&ucontext->mmap_xa);
++	if (check_add_overflow(ucontext->mmap_xa_page,
++			       (u32)(length >> PAGE_SHIFT),
++			       &next_mmap_page))
++		goto err_unlock;
++
+ 	entry->mmap_page = ucontext->mmap_xa_page;
+-	ucontext->mmap_xa_page += DIV_ROUND_UP(length, PAGE_SIZE);
+ 	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
+ 			  GFP_KERNEL);
++	if (err)
++		goto err_unlock;
++
++	ucontext->mmap_xa_page = next_mmap_page;
+ 	xa_unlock(&ucontext->mmap_xa);
+-	if (err){
+-		kfree(entry);
+-		return EFA_MMAP_INVALID;
+-	}
+ 
+ 	ibdev_dbg(
+ 		&dev->ibdev,
+@@ -232,6 +237,12 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+ 		entry->obj, entry->address, entry->length, get_mmap_key(entry));
+ 
+ 	return get_mmap_key(entry);
++
++err_unlock:
++	xa_unlock(&ucontext->mmap_xa);
++	kfree(entry);
++	return EFA_MMAP_INVALID;
++
  }
-@@ -199,9 +201,11 @@ int efa_com_destroy_cq(struct efa_com_dev *edev,
- 			       (struct efa_admin_acq_entry *)&destroy_resp,
- 			       sizeof(destroy_resp));
  
--	if (err)
-+	if (err) {
- 		ibdev_err(edev->efa_dev, "Failed to destroy CQ-%u [%d]\n",
- 			  params->cq_idx, err);
-+		return err;
-+	}
- 
- 	return 0;
- }
-@@ -273,10 +277,12 @@ int efa_com_dereg_mr(struct efa_com_dev *edev,
- 			       sizeof(mr_cmd),
- 			       (struct efa_admin_acq_entry *)&cmd_completion,
- 			       sizeof(cmd_completion));
--	if (err)
-+	if (err) {
- 		ibdev_err(edev->efa_dev,
- 			  "Failed to de-register mr(lkey-%u) [%d]\n",
- 			  mr_cmd.l_key, err);
-+		return err;
-+	}
- 
- 	return 0;
- }
-@@ -327,9 +333,11 @@ int efa_com_destroy_ah(struct efa_com_dev *edev,
- 			       sizeof(ah_cmd),
- 			       (struct efa_admin_acq_entry *)&cmd_completion,
- 			       sizeof(cmd_completion));
--	if (err)
-+	if (err) {
- 		ibdev_err(edev->efa_dev, "Failed to destroy ah-%d pd-%d [%d]\n",
- 			  ah_cmd.ah, ah_cmd.pd, err);
-+		return err;
-+	}
- 
- 	return 0;
- }
-@@ -387,10 +395,12 @@ static int efa_com_get_feature_ex(struct efa_com_dev *edev,
- 			       get_resp,
- 			       sizeof(*get_resp));
- 
--	if (err)
-+	if (err) {
- 		ibdev_err(edev->efa_dev,
- 			  "Failed to submit get_feature command %d [%d]\n",
- 			  feature_id, err);
-+		return err;
-+	}
- 
- 	return 0;
- }
-@@ -534,10 +544,12 @@ static int efa_com_set_feature_ex(struct efa_com_dev *edev,
- 			       (struct efa_admin_acq_entry *)set_resp,
- 			       sizeof(*set_resp));
- 
--	if (err)
-+	if (err) {
- 		ibdev_err(edev->efa_dev,
- 			  "Failed to submit set_feature command %d error: %d\n",
- 			  feature_id, err);
-+		return err;
-+	}
- 
- 	return 0;
- }
+ int efa_query_device(struct ib_device *ibdev,
 -- 
 2.22.0
 
