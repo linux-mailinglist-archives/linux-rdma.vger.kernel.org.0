@@ -2,55 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BB14240E
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 13:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128E342410
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 13:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406951AbfFLLd6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 07:33:58 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:45315 "EHLO
+        id S2408240AbfFLLeC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 07:34:02 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:45045 "EHLO
         mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407591AbfFLLd5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 07:33:57 -0400
-Received: by mail-ed1-f66.google.com with SMTP id a14so23332441edv.12
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 04:33:56 -0700 (PDT)
+        with ESMTP id S2408287AbfFLLd6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 07:33:58 -0400
+Received: by mail-ed1-f66.google.com with SMTP id k8so25183458edr.11
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 04:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=TsABUyr6czjxkgVPVlQz/+LV8vXRq4YLo2VkQCGdbrI=;
-        b=aRcMzt/DiOaPSx7zsRGguao3JcN6luewaLiYoXTY/Tid7U/gioJSfzG7aqvCIglu+S
-         MhSm1avGDRO0qVyfwdNXAzxJFbJuN44Ha/NDEnxe6Uqy/469wHTViOcMPGzSkwWDCZVH
-         M4gVn+PdROOGHU6/WhhN2UketiJkSwvApE2jAU8xvr0xtzr5Oa7KRmOACHyJVIHsvONA
-         FETc6mrPGQNW8bxaeGVU8WQdGX7ZSnZjhmGkKQSVK97FZDZxPrNu/mHh1yR4sDo6k7Zc
-         mW1R+ictO0vWOl5vyT9rTsG7g9ShYy8sBz9CoI7+vwCg3kc+CxsPq/jgdp/WjMResQee
-         omAQ==
+        bh=ZK1rfebeAZy2VZhbXgK9JVhhf/g7goNVoEB7hDLP6Mg=;
+        b=gjqGr1oUqHSoVIfYm5ktzYwqWbRdlBa4lSY87EGwZIf4P9E52Qss5XP8L3X8gTbnaJ
+         4YQa3APlW+YAtEmQHG566Oz4O2ZhnbKsMhVZc1EcV+es38lU70zgbFCNPfm4sBfpDAoQ
+         yFhtWkB3gtGkhk0S9+JHs9sHcA2Wwh0z90If1biT/tEltS4peaZY3fXtITnd8Y7/o8hN
+         6VcIE6enxNcteq6+ER+z5pqHqnil9uWCfqCD4RQhwWWoFSdPHEk3dGoYXwkJ7laSjGlN
+         tXSZhH42m+NqYRXmB+wTWPNE2o/4zgvJj10dNN7wvM2Oo5JKJO1f8xgVVqo6NmuzZ4q7
+         FSCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=TsABUyr6czjxkgVPVlQz/+LV8vXRq4YLo2VkQCGdbrI=;
-        b=pZgwrA4l55GGSfGInlJryiTVcYLpMzTKLrKbIsOT+Vgrp0ltwpjNjgd2TCdPDc5ro3
-         6XEkqKmdpmEjG0VLCF7FTl9KYCI6NXHB6CeJHDxGNWyWkMymxX36R6LCPa1x+2tm26AP
-         aJXZhEJCofcRHeKAIgOX5d5e/lbQQlWKGxak98h0zVufaYV7KXWWRsSxnMEqWmZDJ2zK
-         IZW62awdgAzxQn6fyz5YsOpLnd0SoLO51oKOmPyigYuri9saYaCqMZE/6ewpiiYWnoI8
-         qWtbqIXNfK8JSpULbuhrp/ZtmHaVg/NZ0DweH6aria4utZ4trZ0Go/SoaZZCcLT+9EGi
-         9+Hg==
-X-Gm-Message-State: APjAAAVeeQvhWP+JJ3uaXmScYm2A33eZIaZZrfbDsGGrHlbxUfFmXnt5
-        llcnJ8FBRw2E0h9C4MDGJ4qoxQ==
-X-Google-Smtp-Source: APXvYqyUXzAFkZpGpzj35SrPGn+8SbHQ03MMgRfmsKa25zTAeRMgrlFeacBw13d3yMBeAAVpr26CRQ==
-X-Received: by 2002:a17:906:4948:: with SMTP id f8mr22533651ejt.79.1560339235927;
-        Wed, 12 Jun 2019 04:33:55 -0700 (PDT)
+        bh=ZK1rfebeAZy2VZhbXgK9JVhhf/g7goNVoEB7hDLP6Mg=;
+        b=rD8GISv0t7BGCTa2/vvgllcQ9XgRUKKGMrG5hXDuGrSS9uy3stxj95fJ/aU3Dd+K/j
+         ZjTuvqLUtShmu2obI8GR/Uq2GEIK/EZDvP6MfbCAfBaNBIKk8wHPyrec0CXebJ4i1Zos
+         pyk3+MI+NxG99yqGsoydSjgiz6I7RhU+ObyfO5CWmfV1LeLbLyVYZ7lC+TwYiTrdg1Yz
+         mWX+wak7Z4rdB7+mt3lAF1sB/ebFbiac0Vf/gswYsrmsjnVgc+Ha4HRQcm0p1rd0KtSy
+         GJO5MxORC8RRnje8JHbqOwsQFlrsQ4KHrCiO0IJxfx/1PXKouBDddN0advyyweH+Bnvr
+         it8g==
+X-Gm-Message-State: APjAAAU5A0W3MG6SyJBZG83CWnDegv4O+HqQWXDntTl4hY8+7fNMfT9F
+        bfN/bgGKswGrU8VAxvbADzaEpg==
+X-Google-Smtp-Source: APXvYqxxAXM2MiwL49vBBLeDWD8POyGb924iwQ9IdmSEKUkNva+/5X+GZyGqZY6BbiUzBYrgWvjA+A==
+X-Received: by 2002:a50:9282:: with SMTP id k2mr39869843eda.269.1560339236705;
+        Wed, 12 Jun 2019 04:33:56 -0700 (PDT)
 Received: from tegmen.arch.suse.de (charybdis-ext.suse.de. [195.135.221.2])
         by smtp.gmail.com with ESMTPSA id i21sm2752934ejd.76.2019.06.12.04.33.55
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 12 Jun 2019 04:33:55 -0700 (PDT)
+        Wed, 12 Jun 2019 04:33:56 -0700 (PDT)
 From:   Denis Kirjanov <kda@linux-powerpc.org>
 X-Google-Original-From: Denis Kirjanov <dkirjanov@suse.com>
 To:     davem@davemloft.net, dledford@redhat.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Denis Kirjanov <kda@linux-powerpc.org>
-Subject: [PATCH net-next 1/2] ipoib: correcly show a VF hardware address
-Date:   Wed, 12 Jun 2019 13:33:47 +0200
-Message-Id: <20190612113348.59858-3-dkirjanov@suse.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH net-next 2/2] ipoib: show VF broadcast address
+Date:   Wed, 12 Jun 2019 13:33:48 +0200
+Message-Id: <20190612113348.59858-4-dkirjanov@suse.com>
 X-Mailer: git-send-email 2.12.3
 In-Reply-To: <20190612113348.59858-1-dkirjanov@suse.com>
 References: <20190612113348.59858-1-dkirjanov@suse.com>
@@ -59,10 +58,8 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-in the case of IPoIB with SRIOV enabled hardware
-ip link show command incorrecly prints
-0 instead of a VF hardware address. To correcly print the address
-add a new field to specify an address length.
+in IPoIB case we can't see a VF broadcast address for but
+can see for PF
 
 Before:
 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
@@ -70,9 +67,10 @@ state UP mode DEFAULT group default qlen 256
     link/infiniband
 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
-    vf 0 MAC 00:00:00:00:00:00, spoof checking off, link-state disable,
+    vf 0 MAC 14:80:00:00:66:fe, spoof checking off, link-state disable,
 trust off, query_rss off
 ...
+
 After:
 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
 state UP mode DEFAULT group default qlen 256
@@ -85,49 +83,23 @@ state UP mode DEFAULT group default qlen 256
 checking off, link-state disable, trust off, query_rss off
 ...
 
-Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
+Signed-off-by: Denis Kirjanov <dkirjanov@suse.com>
 ---
- drivers/infiniband/ulp/ipoib/ipoib_main.c | 1 +
- include/uapi/linux/if_link.h              | 1 +
- net/core/rtnetlink.c                      | 1 +
- 3 files changed, 3 insertions(+)
+ net/core/rtnetlink.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-index 9b5e11d3fb85..04ea7db08e87 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-@@ -1998,6 +1998,7 @@ static int ipoib_get_vf_config(struct net_device *dev, int vf,
- 		return err;
- 
- 	ivf->vf = vf;
-+	memcpy(ivf->mac, dev->dev_addr, dev->addr_len);
- 
- 	return 0;
- }
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index 5b225ff63b48..904ee1a7330b 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -702,6 +702,7 @@ enum {
- struct ifla_vf_mac {
- 	__u32 vf;
- 	__u8 mac[32]; /* MAX_ADDR_LEN */
-+	__u8 addr_len;
- };
- 
- struct ifla_vf_vlan {
 diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index cec60583931f..2e1b9ffbe602 100644
+index 2e1b9ffbe602..f70902b57a40 100644
 --- a/net/core/rtnetlink.c
 +++ b/net/core/rtnetlink.c
-@@ -1230,6 +1230,7 @@ static noinline_for_stack int rtnl_fill_vfinfo(struct sk_buff *skb,
- 		vf_rss_query_en.vf =
- 		vf_trust.vf = ivi.vf;
- 
-+	vf_mac.addr_len = dev->addr_len;
- 	memcpy(vf_mac.mac, ivi.mac, sizeof(ivi.mac));
- 	vf_vlan.vlan = ivi.vlan;
- 	vf_vlan.qos = ivi.qos;
+@@ -1248,6 +1248,7 @@ static noinline_for_stack int rtnl_fill_vfinfo(struct sk_buff *skb,
+ 	if (!vf)
+ 		goto nla_put_vfinfo_failure;
+ 	if (nla_put(skb, IFLA_VF_MAC, sizeof(vf_mac), &vf_mac) ||
++	    nla_put(skb, IFLA_BROADCAST, dev->addr_len, dev->broadcast) ||
+ 	    nla_put(skb, IFLA_VF_VLAN, sizeof(vf_vlan), &vf_vlan) ||
+ 	    nla_put(skb, IFLA_VF_RATE, sizeof(vf_rate),
+ 		    &vf_rate) ||
 -- 
 2.12.3
 
