@@ -2,177 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FEB424CA
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 13:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC7E424EE
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 14:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390916AbfFLLw4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 07:52:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:51610 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387878AbfFLLw4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Jun 2019 07:52:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 78BEC28;
-        Wed, 12 Jun 2019 04:52:55 -0700 (PDT)
-Received: from [10.1.196.72] (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E9883F246;
-        Wed, 12 Jun 2019 04:54:33 -0700 (PDT)
-Subject: Re: [PATCH v16 02/16] arm64: untag user pointers in access_ok and
- __uaccess_mask_ptr
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        linux-kselftest@vger.kernel.org,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        linux-media@vger.kernel.org, Kevin Brodsky <kevin.brodsky@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Kostya Serebryany <kcc@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-kernel@vger.kernel.org,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-References: <cover.1559580831.git.andreyknvl@google.com>
- <4327b260fb17c4776a1e3c844f388e4948cfb747.1559580831.git.andreyknvl@google.com>
- <20190610175326.GC25803@arrakis.emea.arm.com>
- <20190611145720.GA63588@arrakis.emea.arm.com>
- <d3dc2b1f-e8c9-c60d-f648-0bc9b08f20e4@arm.com>
- <20190612093158.GG10165@c02tf0j2hf1t.cambridge.arm.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <c760f34a-1b99-17bb-8cc8-ea8b0d63fe90@arm.com>
-Date:   Wed, 12 Jun 2019 12:52:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1727736AbfFLMBQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 08:01:16 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:47043 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727233AbfFLMBQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 08:01:16 -0400
+Received: by mail-qk1-f194.google.com with SMTP id a132so9899043qkb.13
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 05:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ytRyq9tD6/B2UUk+DlUG0EGvYLV7mqKpRopmhrX9MMA=;
+        b=etqhAyF+sK43iLfBcDQ5rnLpM3+o/s4U0M8rewYDO5GaupFZQ54jwPvPLm13DYrlAB
+         29JJj6NEQiVqK3wQW4AnZaAdlwEr1+r/wr+djAkKO0wTyVvHj+BgjsRFYSSqMffGqNVb
+         hGAbMeyOa+2PGsyPohcsecilgo/APPYCW1afuRagfi98EwVQPT2y+x00Ou10yazKlZ/k
+         qWxU9qKn9a3eBpmI5p/UBBvmlQcK5iXMUWSF3zmSkIoHCeMnPg6xqTjrsQdXysgS0Ga1
+         ugfd8gmzWDs52GSyPGcvGBu7epG4fWUajdBOOaiQjn/YN63g0kEM2LCS2kf+3TOcxizd
+         nQXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ytRyq9tD6/B2UUk+DlUG0EGvYLV7mqKpRopmhrX9MMA=;
+        b=Tbewr96rlnT/tLLCKUXKLWXiapJJw1srwtpFjxXD+LLngztcb9H9h6jiQp1nba5Qi3
+         DR3RhLNUhNR/ese9gntfuw3HI+9QMhbK/Hngsgk5bsbdGq0JN3k5F8zkKouuqdq/AhfU
+         uNwU6NGX2RDJcGq9OOJNu3Rvbl8AzP8YF/c/O/VMHJmew68iEMkmac9iCDOYYbBNcD9w
+         c/uaUy2vml34zDQA0K1XSdl8T3hFr7SgRdDB66fq3Q54UYhQbOZf2TwzQ6fRgLI1kKGA
+         YdpJQxQ8ME6r/v+rnD0VRina5WX1utlKP74Th6bjIKAk8l10pv81u0ztVMNYIYfScBEB
+         1Thg==
+X-Gm-Message-State: APjAAAXjhCFBGKHkICUwW5jOTq4W4193AoAcQHdg5i1r8CuuDTGkak1L
+        BTiWVAPbHBsl1cqWvy0c5tuJy02s57ifqg==
+X-Google-Smtp-Source: APXvYqwSae0AIwiRaLE1vzmLJQoahfZuZP3CM+jsF7jhYJmv1qvMKPLmlC+DAnnGVsxPxWfjZLj0Dw==
+X-Received: by 2002:a37:4ad7:: with SMTP id x206mr62518273qka.85.1560340875528;
+        Wed, 12 Jun 2019 05:01:15 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id s64sm7598542qkb.56.2019.06.12.05.01.14
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 12 Jun 2019 05:01:14 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hb1wI-0002PJ-Cg; Wed, 12 Jun 2019 09:01:14 -0300
+Date:   Wed, 12 Jun 2019 09:01:14 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-rc 2/2] RDMA/efa: Handle mmap insertions overflow
+Message-ID: <20190612120114.GD3876@ziepe.ca>
+References: <20190612072842.99285-1-galpress@amazon.com>
+ <20190612072842.99285-3-galpress@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20190612093158.GG10165@c02tf0j2hf1t.cambridge.arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190612072842.99285-3-galpress@amazon.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Catalin,
-
-On 12/06/2019 10:32, Catalin Marinas wrote:
-> Hi Vincenzo,
+On Wed, Jun 12, 2019 at 10:28:42AM +0300, Gal Pressman wrote:
+> When inserting a new mmap entry to the xarray we should check for
+> 'mmap_page' overflow as it is limited to 32 bits.
 > 
-> On Tue, Jun 11, 2019 at 06:09:10PM +0100, Vincenzo Frascino wrote:
->>> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
->>> index 3767fb21a5b8..69d0be1fc708 100644
->>> --- a/arch/arm64/kernel/process.c
->>> +++ b/arch/arm64/kernel/process.c
->>> @@ -30,6 +30,7 @@
->>>  #include <linux/kernel.h>
->>>  #include <linux/mm.h>
->>>  #include <linux/stddef.h>
->>> +#include <linux/sysctl.h>
->>>  #include <linux/unistd.h>
->>>  #include <linux/user.h>
->>>  #include <linux/delay.h>
->>> @@ -323,6 +324,7 @@ void flush_thread(void)
->>>  	fpsimd_flush_thread();
->>>  	tls_thread_flush();
->>>  	flush_ptrace_hw_breakpoint(current);
->>> +	clear_thread_flag(TIF_TAGGED_ADDR);
->>
->> Nit: in line we the other functions in thread_flush we could have something like
->> "tagged_addr_thread_flush", maybe inlined.
+> While at it, make sure to advance the mmap_page stored on the ucontext
+> only after a successful insertion.
 > 
-> The other functions do a lot more than clearing a TIF flag, so they
-> deserved their own place. We could do this when adding MTE support. I
-> think we also need to check what other TIF flags we may inadvertently
-> pass on execve(), maybe have a mask clearing.
+> Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
+>  drivers/infiniband/hw/efa/efa_verbs.c | 21 ++++++++++++++++-----
+>  1 file changed, 16 insertions(+), 5 deletions(-)
 > 
+> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+> index 0fea5d63fdbe..c463c683ae84 100644
+> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> @@ -204,6 +204,7 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+>  			     void *obj, u64 address, u64 length, u8 mmap_flag)
+>  {
+>  	struct efa_mmap_entry *entry;
+> +	u32 next_mmap_page;
+>  	int err;
+>  
+>  	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+> @@ -216,15 +217,19 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+>  	entry->mmap_flag = mmap_flag;
+>  
+>  	xa_lock(&ucontext->mmap_xa);
+> +	if (check_add_overflow(ucontext->mmap_xa_page,
+> +			       (u32)(length >> PAGE_SHIFT),
+> +			       &next_mmap_page))
+> +		goto err_unlock;
+> +
+>  	entry->mmap_page = ucontext->mmap_xa_page;
+> -	ucontext->mmap_xa_page += DIV_ROUND_UP(length, PAGE_SIZE);
+>  	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
+>  			  GFP_KERNEL);
+> +	if (err)
+> +		goto err_unlock;
+> +
+> +	ucontext->mmap_xa_page = next_mmap_page;
 
-Agreed. All the comments I provided are meant to simplify the addition of MTE
-support.
+This is not ordered right anymore, the xa_lock can be released inside
+__xa_insert, so to be atomic you must do everything before calling
+__xa_insert.
 
->>> diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
->>> index 094bb03b9cc2..2e927b3e9d6c 100644
->>> --- a/include/uapi/linux/prctl.h
->>> +++ b/include/uapi/linux/prctl.h
->>> @@ -229,4 +229,9 @@ struct prctl_mm_map {
->>>  # define PR_PAC_APDBKEY			(1UL << 3)
->>>  # define PR_PAC_APGAKEY			(1UL << 4)
->>>  
->>> +/* Tagged user address controls for arm64 */
->>> +#define PR_SET_TAGGED_ADDR_CTRL		55
->>> +#define PR_GET_TAGGED_ADDR_CTRL		56
->>> +# define PR_TAGGED_ADDR_ENABLE		(1UL << 0)
->>> +
->>>  #endif /* _LINUX_PRCTL_H */
->>> diff --git a/kernel/sys.c b/kernel/sys.c
->>> index 2969304c29fe..ec48396b4943 100644
->>> --- a/kernel/sys.c
->>> +++ b/kernel/sys.c
->>> @@ -124,6 +124,12 @@
->>>  #ifndef PAC_RESET_KEYS
->>>  # define PAC_RESET_KEYS(a, b)	(-EINVAL)
->>>  #endif
->>> +#ifndef SET_TAGGED_ADDR_CTRL
->>> +# define SET_TAGGED_ADDR_CTRL(a)	(-EINVAL)
->>> +#endif
->>> +#ifndef GET_TAGGED_ADDR_CTRL
->>> +# define GET_TAGGED_ADDR_CTRL()		(-EINVAL)
->>> +#endif
->>>  
->>>  /*
->>>   * this is where the system-wide overflow UID and GID are defined, for
->>> @@ -2492,6 +2498,16 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
->>>  			return -EINVAL;
->>>  		error = PAC_RESET_KEYS(me, arg2);
->>>  		break;
->>> +	case PR_SET_TAGGED_ADDR_CTRL:
->>> +		if (arg3 || arg4 || arg5)
->>> +			return -EINVAL;
->>> +		error = SET_TAGGED_ADDR_CTRL(arg2);
->>> +		break;
->>> +	case PR_GET_TAGGED_ADDR_CTRL:
->>> +		if (arg2 || arg3 || arg4 || arg5)
->>> +			return -EINVAL;
->>> +		error = GET_TAGGED_ADDR_CTRL();
->>> +		break;
->>
->> Why do we need two prctl here? We could have only one and use arg2 as set/get
->> and arg3 as a parameter. What do you think?
-> 
-> This follows the other PR_* options, e.g. PR_SET_VL/GET_VL,
-> PR_*_FP_MODE. We will use other bits in arg2, for example to set the
-> precise vs imprecise MTE trapping.
-> 
-
-Indeed. I was not questioning the pre-existing interface definition, but trying
-more to reduce the changes to the ABI to the minimum since:
- - prctl does not mandate how to use the arg[2-5]
- - prctl interface is flexible enough for the problem to be solved with only one
-   PR_ command.
-
-I agree on reusing the interface for MTE for the purposes you specified.
-
--- 
-Regards,
-Vincenzo
+Jason
