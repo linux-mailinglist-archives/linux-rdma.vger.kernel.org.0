@@ -2,116 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8344259D
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 14:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440DA425B7
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2019 14:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731217AbfFLM0J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jun 2019 08:26:09 -0400
-Received: from mail-ua1-f66.google.com ([209.85.222.66]:42475 "EHLO
-        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731204AbfFLM0I (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 08:26:08 -0400
-Received: by mail-ua1-f66.google.com with SMTP id a97so4020673uaa.9
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2019 05:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=7goNvhglzUO2C7xjkqDQYZkLXNCnrE6QZxOYE9iirMg=;
-        b=PI8YDnw3uUtj+5PSxCJUN9Mt10dWUuswZQbQmfrjW1h2+ZuLxEORSTfDBNYbXFC/34
-         C6bPlD1pj5Z7LAEvrCGlS4tv32l01lFu+mFDE8mY17grUO0OxTmfTN3SUstIYGOTqepr
-         D5j/tWhCRh+zMgsuTQnY/YNTROZIdktGE+WRDfqcy8h+qnHQ2rXWVtu/Y6l7UK0IL4g8
-         BYWMLJdiVB0RjOoyD7cKvc9PX365ZnpfikcglTFATQSuNIIXjbNHcRtoIGLSObZ7mhs8
-         FnvlkEa4HhelMXacq3doefoTFwxVLh1C9j/rggHGZ7gI+Z0zJgxICfHXfqhUj2nGFc8R
-         evMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=7goNvhglzUO2C7xjkqDQYZkLXNCnrE6QZxOYE9iirMg=;
-        b=mh8hez5Z7KJeiTqXPdLRKPMjORY7tnU9OW2sg5yxl+DLLw6+p5B8pTjw8jmKkwDpSt
-         Ko0E0OaRPTB1CK9iFqgEJdXStj/SFbiYcbUTPtbTnWpj5gt43Rdo670kbZM6nLIjclXj
-         MiSjUBMOYio7fk/NxpkmnSvAY9epIZEWBuRDiiJUYHVD0pSZXeoGmBpmcl9fG626h7BI
-         QA2Ww3or7yxkYA/KRJ7Y83PDKXURTQQhlfnHyAImjrVy5UrsffIt5Isaj3GSJvWUg+Gk
-         7RB+AozpC4yEwRlUpbxOv7Fy2dyVPOZEi3JEhEQceFhM08Lj7T+IUPjMiLb2ieqO0EWg
-         /Mxw==
-X-Gm-Message-State: APjAAAWGbKbXHAfYtxHCZQCsRx4GEl+SI+nr9Qei55P5oZ1ZOp6p4FvP
-        CEhh13MSRaO2VtIYzj+zzTmd96mOx0x/+bTYTWYJDg==
-X-Google-Smtp-Source: APXvYqynk/i4mwDYyq1YwQCoVDH2UoekfgAzWEDjsTxXRLr9MT2bobgcnziipLn/hbKAG3Ebca2LtGryZgNmE6HOrUs=
-X-Received: by 2002:ab0:734f:: with SMTP id k15mr28416792uap.28.1560342367656;
- Wed, 12 Jun 2019 05:26:07 -0700 (PDT)
+        id S2407479AbfFLM1u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jun 2019 08:27:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407161AbfFLM1r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Jun 2019 08:27:47 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF40A20874;
+        Wed, 12 Jun 2019 12:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560342466;
+        bh=d1thBi0V/V9LAtl7uoNhG9wkJ1GxR66QuX3NmcUE1XA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AYb7E7MVelfpOhd5vHw9Je2yCxrTRnbJvdHEo8RF68TYSdC+USSsEkTEmcP9wHVMr
+         AR2NiFFaUVzgiLKz0PAqCpHeuyUTRprgleB5g9t/MfcoXO5SYztachFa+qcLhEKBMA
+         GYju5ZkYSCb/IdACl4bebGxe8MwQfm69mczA+4fk=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: [PATCH rdma-next] RDMA: Convert destroy_wq to be void
+Date:   Wed, 12 Jun 2019 15:27:41 +0300
+Message-Id: <20190612122741.22850-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Received: by 2002:ab0:108a:0:0:0:0:0 with HTTP; Wed, 12 Jun 2019 05:26:07
- -0700 (PDT)
-X-Originating-IP: [5.35.24.158]
-In-Reply-To: <20190612120909.GI31797@unicorn.suse.cz>
-References: <20190612113348.59858-1-dkirjanov@suse.com> <20190612113348.59858-3-dkirjanov@suse.com>
- <20190612120909.GI31797@unicorn.suse.cz>
-From:   Denis Kirjanov <kda@linux-powerpc.org>
-Date:   Wed, 12 Jun 2019 15:26:07 +0300
-Message-ID: <CAOJe8K0x-OFg656266oc8ky6VtcX9tUOm03_gWtVBfiXgjJ73w@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] ipoib: correcly show a VF hardware address
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     davem@davemloft.net, dledford@redhat.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/12/19, Michal Kubecek <mkubecek@suse.cz> wrote:
-> On Wed, Jun 12, 2019 at 01:33:47PM +0200, Denis Kirjanov wrote:
->> in the case of IPoIB with SRIOV enabled hardware
->> ip link show command incorrecly prints
->> 0 instead of a VF hardware address. To correcly print the address
->> add a new field to specify an address length.
->>
->> Before:
->> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
->> state UP mode DEFAULT group default qlen 256
->>     link/infiniband
->> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
->> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
->>     vf 0 MAC 00:00:00:00:00:00, spoof checking off, link-state disable,
->> trust off, query_rss off
->> ...
->> After:
->> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
->> state UP mode DEFAULT group default qlen 256
->>     link/infiniband
->> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
->> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
->>     vf 0     link/infiniband
->> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
->> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
->> checking off, link-state disable, trust off, query_rss off
->> ...
->>
->> Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
->> ---
-> ...
->> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
->> index 5b225ff63b48..904ee1a7330b 100644
->> --- a/include/uapi/linux/if_link.h
->> +++ b/include/uapi/linux/if_link.h
->> @@ -702,6 +702,7 @@ enum {
->>  struct ifla_vf_mac {
->>  	__u32 vf;
->>  	__u8 mac[32]; /* MAX_ADDR_LEN */
->> +	__u8 addr_len;
->>  };
->
-> This structure is part of userspace API, adding a member would break
-> compatibility between new kernel and old iproute2 and vice versa. Do we
-> need to pass MAC address length for each VF if (AFAICS) it's always the
-> same as dev->addr_len?
+From: Leon Romanovsky <leonro@mellanox.com>
 
-I believe so, initially I thought that it's required to pass a length
-but looks like I can use RTA_DATA/RTA_PAYLOAD() for that.
+All callers of destroy WQ are always success and there is no need
+to check their return value, so convert destroy_wq to be void.
 
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/core/verbs.c      | 12 +++++-------
+ drivers/infiniband/hw/mlx4/mlx4_ib.h |  2 +-
+ drivers/infiniband/hw/mlx4/qp.c      |  4 +---
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 +-
+ drivers/infiniband/hw/mlx5/qp.c      |  4 +---
+ include/rdma/ib_verbs.h              |  2 +-
+ 6 files changed, 10 insertions(+), 16 deletions(-)
 
->
-> Michal
->
->
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 2fb834bb146c..d55f491be24f 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -2344,19 +2344,17 @@ EXPORT_SYMBOL(ib_create_wq);
+  */
+ int ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata)
+ {
+-	int err;
+ 	struct ib_cq *cq = wq->cq;
+ 	struct ib_pd *pd = wq->pd;
+ 
+ 	if (atomic_read(&wq->usecnt))
+ 		return -EBUSY;
+ 
+-	err = wq->device->ops.destroy_wq(wq, udata);
+-	if (!err) {
+-		atomic_dec(&pd->usecnt);
+-		atomic_dec(&cq->usecnt);
+-	}
+-	return err;
++	wq->device->ops.destroy_wq(wq, udata);
++	atomic_dec(&pd->usecnt);
++	atomic_dec(&cq->usecnt);
++
++	return 0;
+ }
+ EXPORT_SYMBOL(ib_destroy_wq);
+ 
+diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+index 81b3d85e5167..eb53bb4c0c91 100644
+--- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
++++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+@@ -906,7 +906,7 @@ void mlx4_ib_sl2vl_update(struct mlx4_ib_dev *mdev, int port);
+ struct ib_wq *mlx4_ib_create_wq(struct ib_pd *pd,
+ 				struct ib_wq_init_attr *init_attr,
+ 				struct ib_udata *udata);
+-int mlx4_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata);
++void mlx4_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata);
+ int mlx4_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
+ 		      u32 wq_attr_mask, struct ib_udata *udata);
+ 
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 5221c0794d1d..520364defa28 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -4248,7 +4248,7 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
+ 	return err;
+ }
+ 
+-int mlx4_ib_destroy_wq(struct ib_wq *ibwq, struct ib_udata *udata)
++void mlx4_ib_destroy_wq(struct ib_wq *ibwq, struct ib_udata *udata)
+ {
+ 	struct mlx4_ib_dev *dev = to_mdev(ibwq->device);
+ 	struct mlx4_ib_qp *qp = to_mqp((struct ib_qp *)ibwq);
+@@ -4259,8 +4259,6 @@ int mlx4_ib_destroy_wq(struct ib_wq *ibwq, struct ib_udata *udata)
+ 	destroy_qp_common(dev, qp, MLX4_IB_RWQ_SRC, udata);
+ 
+ 	kfree(qp);
+-
+-	return 0;
+ }
+ 
+ struct ib_rwq_ind_table
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index b256100d1e52..0bfc14ff8aed 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1222,7 +1222,7 @@ int mlx5_ib_check_mr_status(struct ib_mr *ibmr, u32 check_mask,
+ struct ib_wq *mlx5_ib_create_wq(struct ib_pd *pd,
+ 				struct ib_wq_init_attr *init_attr,
+ 				struct ib_udata *udata);
+-int mlx5_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata);
++void mlx5_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata);
+ int mlx5_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
+ 		      u32 wq_attr_mask, struct ib_udata *udata);
+ struct ib_rwq_ind_table *mlx5_ib_create_rwq_ind_table(struct ib_device *device,
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index cbd63ea41347..63d8f61e50e0 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -6161,7 +6161,7 @@ struct ib_wq *mlx5_ib_create_wq(struct ib_pd *pd,
+ 	return ERR_PTR(err);
+ }
+ 
+-int mlx5_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata)
++void mlx5_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(wq->device);
+ 	struct mlx5_ib_rwq *rwq = to_mrwq(wq);
+@@ -6169,8 +6169,6 @@ int mlx5_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata)
+ 	mlx5_core_destroy_rq_tracked(dev->mdev, &rwq->core_qp);
+ 	destroy_user_rq(dev, wq->pd, rwq, udata);
+ 	kfree(rwq);
+-
+-	return 0;
+ }
+ 
+ struct ib_rwq_ind_table *mlx5_ib_create_rwq_ind_table(struct ib_device *device,
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 255999488693..d902ff49b56e 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2428,7 +2428,7 @@ struct ib_device_ops {
+ 	struct ib_wq *(*create_wq)(struct ib_pd *pd,
+ 				   struct ib_wq_init_attr *init_attr,
+ 				   struct ib_udata *udata);
+-	int (*destroy_wq)(struct ib_wq *wq, struct ib_udata *udata);
++	void (*destroy_wq)(struct ib_wq *wq, struct ib_udata *udata);
+ 	int (*modify_wq)(struct ib_wq *wq, struct ib_wq_attr *attr,
+ 			 u32 wq_attr_mask, struct ib_udata *udata);
+ 	struct ib_rwq_ind_table *(*create_rwq_ind_table)(
+-- 
+2.20.1
+
