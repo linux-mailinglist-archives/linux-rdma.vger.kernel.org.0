@@ -2,191 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1747344D5A
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 22:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5E344D79
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 22:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbfFMUZY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 16:25:24 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:52358 "EHLO mx1.redhat.com"
+        id S1728728AbfFMUcq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 16:32:46 -0400
+Received: from mga17.intel.com ([192.55.52.151]:5160 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbfFMUZX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 16:25:23 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id D4E9D37F43;
-        Thu, 13 Jun 2019 20:25:22 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8B476600C1;
-        Thu, 13 Jun 2019 20:25:21 +0000 (UTC)
-Message-ID: <6e586118ad154204ad2e2cf2c1391b916cb4ee54.camel@redhat.com>
-Subject: Re: [PATCH v2] RDMA/cma: Make CM response timeout and # CM retries
- configurable
-From:   Doug Ledford <dledford@redhat.com>
-To:     =?ISO-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Steve Wise <swise@opengridcomputing.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 13 Jun 2019 16:25:15 -0400
-In-Reply-To: <67B4F337-4C3A-4193-B1EF-42FD4765CBB7@oracle.com>
-References: <20190226075722.1692315-1-haakon.bugge@oracle.com>
-         <174ccd37a9ffa05d0c7c03fe80ff7170a9270824.camel@redhat.com>
-         <67B4F337-4C3A-4193-B1EF-42FD4765CBB7@oracle.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-+O8VTt/oRz42SjEM1nOO"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S1726289AbfFMUco (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 16:32:44 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Jun 2019 13:32:43 -0700
+X-ExtLoop1: 1
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Jun 2019 13:32:43 -0700
+Date:   Thu, 13 Jun 2019 13:34:05 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190613203404.GA30404@iweiny-DESK2.sc.intel.com>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+ <20190607110426.GB12765@quack2.suse.cz>
+ <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+ <20190608001036.GF14308@dread.disaster.area>
+ <20190612123751.GD32656@bombadil.infradead.org>
+ <20190613002555.GH14363@dread.disaster.area>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.29]); Thu, 13 Jun 2019 20:25:23 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190613002555.GH14363@dread.disaster.area>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
+> On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
+> > On Sat, Jun 08, 2019 at 10:10:36AM +1000, Dave Chinner wrote:
+> > > On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
+> > > > Are you suggesting that we have something like this from user space?
+> > > > 
+> > > > 	fcntl(fd, F_SETLEASE, F_LAYOUT | F_UNBREAKABLE);
+> > > 
+> > > Rather than "unbreakable", perhaps a clearer description of the
+> > > policy it entails is "exclusive"?
+> > > 
+> > > i.e. what we are talking about here is an exclusive lease that
+> > > prevents other processes from changing the layout. i.e. the
+> > > mechanism used to guarantee a lease is exclusive is that the layout
+> > > becomes "unbreakable" at the filesystem level, but the policy we are
+> > > actually presenting to uses is "exclusive access"...
+> > 
+> > That's rather different from the normal meaning of 'exclusive' in the
+> > context of locks, which is "only one user can have access to this at
+> > a time".
+> 
+> 
+> Layout leases are not locks, they are a user access policy object.
+> It is the process/fd which holds the lease and it's the process/fd
+> that is granted exclusive access.  This is exactly the same semantic
+> as O_EXCL provides for granting exclusive access to a block device
+> via open(), yes?
+> 
+> > As I understand it, this is rather more like a 'shared' or
+> > 'read' lock.  The filesystem would be the one which wants an exclusive
+> > lock, so it can modify the mapping of logical to physical blocks.
+> 
+> ISTM that you're conflating internal filesystem implementation with
+> application visible semantics. Yes, the filesystem uses internal
+> locks to serialise the modification of the things the lease manages
+> access too, but that has nothing to do with the access policy the
+> lease provides to users.
+> 
+> e.g. Process A has an exclusive layout lease on file F. It does an
+> IO to file F. The filesystem IO path checks that Process A owns the
+> lease on the file and so skips straight through layout breaking
+> because it owns the lease and is allowed to modify the layout. It
+> then takes the inode metadata locks to allocate new space and write
+> new data.
+> 
+> Process B now tries to write to file F. The FS checks whether
+> Process B owns a layout lease on file F. It doesn't, so then it
+> tries to break the layout lease so the IO can proceed. The layout
+> breaking code sees that process A has an exclusive layout lease
+> granted, and so returns -ETXTBSY to process B - it is not allowed to
+> break the lease and so the IO fails with -ETXTBSY.
+> 
+> i.e. the exclusive layout lease prevents other processes from
+> performing operations that may need to modify the layout from
+> performing those operations. It does not "lock" the file/inode in
+> any way, it just changes how the layout lease breaking behaves.
 
---=-+O8VTt/oRz42SjEM1nOO
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Question: Do we expect Process A to get notified that Process B was attempting
+to change the layout?
 
-On Thu, 2019-06-13 at 18:58 +0200, H=C3=A5kon Bugge wrote:
-> > On 13 Jun 2019, at 16:25, Doug Ledford <dledford@redhat.com> wrote:
-> >=20
-> > On Tue, 2019-02-26 at 08:57 +0100, H=C3=A5kon Bugge wrote:
-> > > During certain workloads, the default CM response timeout is too
-> > > short, leading to excessive retries. Hence, make it configurable
-> > > through sysctl. While at it, also make number of CM retries
-> > > configurable.
-> > >=20
-> > > The defaults are not changed.
-> > >=20
-> > > Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
-> > > ---
-> > > v1 -> v2:
-> > >   * Added unregister_net_sysctl_table() in cma_cleanup()
-> > > ---
-> > > drivers/infiniband/core/cma.c | 52
-> > > ++++++++++++++++++++++++++++++---
-> > > --
-> > > 1 file changed, 45 insertions(+), 7 deletions(-)
-> >=20
-> > This has been sitting on patchworks since forever.  Presumably
-> > because
-> > Jason and I neither one felt like we really wanted it, but also
-> > couldn't justify flat refusing it.
->=20
-> I thought the agreement was to use NL and iproute2. But I haven't had
-> the capacity.
+This changes the exclusivity semantics.  While Process A has an exclusive lease
+it could release it if notified to allow process B temporary exclusivity.
 
-To be fair, the email thread was gone from my linux-rdma folder.  So, I
-just had to review the entry in patchworks, and there was no captured
-discussion there.  So, if the agreement was made, it must have been
-face to face some time and if I was involed, I had certainly forgotten
-by now.  But I still needed to clean up patchworks, hence my email ;-).
+Question 2: Do we expect other process' (say Process C) to also be able to map
+and pin the file?  I believe users will need this and for layout purposes it is
+ok to do so.  But this means that Process A does not have "exclusive" access to
+the lease.
 
-> >  Well, I've made up my mind, so
-> > unless Jason wants to argue the other side, I'm rejecting this
-> > patch.=20
-> > Here's why.  The whole concept of a timeout is to help recovery in
-> > a
-> > situation that overloads one end of the connection.  There is a
-> > relationship between the max queue backlog on the one host and the
-> > timeout on the other host. =20
->=20
-> If you refer to the backlog parameter in rdma_listen(), I cannot see
-> it being used at all for IB.
+So given Process C has also placed a layout lease on the file.  Indicating
+that it does not want the layout to change.  Both A and C need to be "broken"
+by Process B to change the layout.  If there is no Process B; A and C can run
+just fine with a "locked" layout.
 
-No, not exactly.  I was more referring to heavy load causing an
-overflow in the mad packet receive processing.  We have
-IB_MAD_QP_RECV_SIZE set to 512 by default, but it can be changed at
-module load time of the ib_core module and that represents the maximum
-number of backlogged mad packets we can have waiting to be processed
-before we just drop them on the floor.  There can be other places to
-drop them too, but this is the one I was referring to.
+Ira
 
-> For CX-3, which is paravirtualized wrt. MAD packets, it is the proxy
-> UD receive queue length for the PF driver that can be construed as a
-> backlog. Remember that any MAD packet being sent from a VF or the PF
-> itself, is sent to a proxy UD QP in the PF. Those packets are then
-> multiplexed out on the real QP0/1. Incoming MAD packets are
-> demultiplexed and sent once more to the proxy QP in the VF.
->=20
-> > Generally, in order for a request to get
-> > dropped and us to need to retransmit, the queue must already have a
-> > full backlog.  So, how long does it take a heavily loaded system to
-> > process a full backlog?  That, plus a fuzz for a margin of error,
-> > should be our timeout.  We shouldn't be asking users to configure
-> > it.
->=20
-> Customer configures #VMs and different workload may lead to way
-> different number of CM connections. The proxying of MAD packet
-> through the PF driver has a finite packet rate. With 64 VMs, 10.000
-> QPs on each, all going down due to a switch failing or similar, you
-> have 640.000 DREQs to be sent, and with the finite packet rate of MA
-> packets through the PF, this takes more than the current CM timeout.
-> And then you re-transmit and increase the burden of the PF proxying.
->=20
-> So, we can change the default to cope with this. But, a MAD packet is
-> unreliable, we may have transient loss. In this case, we want a short
-> timeout.
->=20
-> > However, if users change the default backlog queue on their
-> > systems,
-> > *then* it would make sense to have the users also change the
-> > timeout
-> > here, but I think guidance would be helpful.
-> >=20
-> > So, to revive this patch, what I'd like to see is some attempt to
-> > actually quantify a reasonable timeout for the default backlog
-> > depth,
-> > then the patch should actually change the default to that
-> > reasonable
-> > timeout, and then put in the ability to adjust the timeout with
-> > some
-> > sort of doc guidance on how to calculate a reasonable timeout based
-> > on
-> > configured backlog depth.
->=20
-> I can agree to this :-)
->=20
->=20
-> Thxs, H=C3=A5kon
->=20
-> > --=20
-> > Doug Ledford <dledford@redhat.com>
-> >    GPG KeyID: B826A3330E572FDD
-> >    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
-> > 2FDD
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
-2FDD
-
---=-+O8VTt/oRz42SjEM1nOO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0CsSsACgkQuCajMw5X
-L93Qnw//XiMtlCbAK0cVmGzfaTsPIhjBTzMbZp1TJB7HxlKPGgxvIkHXmZhDdqXG
-Gtm9ttKv7bmHAf0All8L9F/ZStpG4vAE3OrG0xY6c6Ru+5O9bSLIs6gMrUcj5aFH
-uKRYaIS75kvPsWD4hITaWws+mIxW/0mkn90Jz4b+aNzMfu9CrDXhASzcZtJj6UGQ
-IzHabjAzxSqqLuXwPPYyams8dBceOj8e3rmgD+k1DHV9NTlPT3wKB7oJjfvLJHRh
-2OPKBuf3u3d36s/P6dOCh6Tqg+EYrlZIP+mAR0dKXiV9xUwwQmqYINmLTMdpKny9
-j8VM8QUPWm01g60BLAB4BZszlBOW1Oi1FwN90JjfDxMB1TBlLANkX0TOz3KaCtLS
-BfUEeXzfufsN7plPHko+wHmrkmLdcwc5/9RYTJt0e+8okw8mW2VllINuHixow5Iz
-l74f+aKDsnqBqjwNgXSf+f1E35KYzz58/MJfOSeRZojGCYMXjWD61NlbN8+KsCvY
-Gp06TuAwzSUijm1NxfyQ7pDf+jZq6P+10k5I0nNCD7XiKIopbqpN5voFvZwRtPXo
-8ilP89CQ7jIKtlVcXXVS7gE3AmdzobyDPh6EAZpXXXn0OqqLCPOpMiinhD8ZFJlM
-IQdJgNUeG1PZi2ZE6y18wzghvL9RbP7Pi/1/8OgbxnAdThz3xKU=
-=clAS
------END PGP SIGNATURE-----
-
---=-+O8VTt/oRz42SjEM1nOO--
-
+> 
+> Further, the "exclusiveness" of a layout lease is completely
+> irrelevant to the filesystem that is indicating that an operation
+> that may need to modify the layout is about to be performed. All the
+> filesystem has to do is handle failures to break the lease
+> appropriately.  Yes, XFS serialises the layout lease validation
+> against other IO to the same file via it's IO locks, but that's an
+> internal data IO coherency requirement, not anything to do with
+> layout lease management.
+> 
+> Note that I talk about /writes/ here. This is interchangable with
+> any other operation that may need to modify the extent layout of the
+> file, be it truncate, fallocate, etc: the attempt to break the
+> layout lease by a non-owner should fail if the lease is "exclusive"
+> to the owner.
+> 
+> > The complication being that by default the filesystem has an exclusive
+> > lock on the mapping, and what we're trying to add is the ability for
+> > readers to ask the filesystem to give up its exclusive lock.
+> 
+> The filesystem doesn't even lock the "mapping" until after the
+> layout lease has been validated or broken.
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
