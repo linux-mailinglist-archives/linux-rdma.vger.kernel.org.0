@@ -2,115 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B86443D0
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A40444D1
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbfFMQce (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 12:32:34 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:49452 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392008AbfFMQcd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 12:32:33 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 5ABF2C04BE32;
-        Thu, 13 Jun 2019 16:32:28 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DC65B5C5F3;
-        Thu, 13 Jun 2019 16:32:26 +0000 (UTC)
-Message-ID: <08deb91f7516b4c8911211499a00a58392d65a8b.camel@redhat.com>
-Subject: Re: [PATCH v2] RDMA/cma: Make CM response timeout and # CM retries
- configurable
-From:   Doug Ledford <dledford@redhat.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        =?ISO-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Steve Wise <swise@opengridcomputing.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 13 Jun 2019 12:32:24 -0400
-In-Reply-To: <2c114313-01fe-6d4d-5134-592d1a7b829b@acm.org>
-References: <20190226075722.1692315-1-haakon.bugge@oracle.com>
-         <174ccd37a9ffa05d0c7c03fe80ff7170a9270824.camel@redhat.com>
-         <2c114313-01fe-6d4d-5134-592d1a7b829b@acm.org>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-0AQ/OTcN7UdTwkCoV3sM"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S1727068AbfFMQjo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 12:39:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42674 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2392609AbfFMQjo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 12:39:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id EACE0ADD9;
+        Thu, 13 Jun 2019 16:39:41 +0000 (UTC)
+Received: by unicorn.suse.cz (Postfix, from userid 1000)
+        id 4D0E1E00E3; Thu, 13 Jun 2019 18:39:41 +0200 (CEST)
+Date:   Thu, 13 Jun 2019 18:39:41 +0200
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Denis Kirjanov <kda@linux-powerpc.org>
+Cc:     davem@davemloft.net, dledford@redhat.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v2 2/2] ipoib: show VF broadcast address
+Message-ID: <20190613163941.GK31797@unicorn.suse.cz>
+References: <20190613142003.129391-1-dkirjanov@suse.com>
+ <20190613142003.129391-4-dkirjanov@suse.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Thu, 13 Jun 2019 16:32:33 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190613142003.129391-4-dkirjanov@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Jun 13, 2019 at 04:20:03PM +0200, Denis Kirjanov wrote:
+> in IPoIB case we can't see a VF broadcast address for but
+> can see for PF
+> 
+> Before:
+> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+> state UP mode DEFAULT group default qlen 256
+>     link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+>     vf 0 MAC 14:80:00:00:66:fe, spoof checking off, link-state disable,
+> trust off, query_rss off
+> ...
+> 
+> After:
+> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+> state UP mode DEFAULT group default qlen 256
+>     link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+>     vf 0     link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
+> checking off, link-state disable, trust off, query_rss off
+> 
+> Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
+> ---
+>  include/uapi/linux/if_link.h | 5 +++++
+>  net/core/rtnetlink.c         | 6 ++++++
+>  2 files changed, 11 insertions(+)
+> 
+> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+> index 5b225ff63b48..1f36dd3a45d6 100644
+> --- a/include/uapi/linux/if_link.h
+> +++ b/include/uapi/linux/if_link.h
+> @@ -681,6 +681,7 @@ enum {
+>  enum {
+>  	IFLA_VF_UNSPEC,
+>  	IFLA_VF_MAC,		/* Hardware queue specific attributes */
+> +	IFLA_VF_BROADCAST,
+>  	IFLA_VF_VLAN,		/* VLAN ID and QoS */
+>  	IFLA_VF_TX_RATE,	/* Max TX Bandwidth Allocation */
+>  	IFLA_VF_SPOOFCHK,	/* Spoof Checking on/off switch */
 
---=-0AQ/OTcN7UdTwkCoV3sM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Oops, I forgot to mention one important point when reviewing v1: the new
+attribute type must be added at the end (just before __IFLA_VF_MAX) so
+that you do not change value of existing IFLA_VF_* constants (this would
+break compatibility).
 
-On Thu, 2019-06-13 at 08:28 -0700, Bart Van Assche wrote:
-> On 6/13/19 7:25 AM, Doug Ledford wrote:
-> > So, to revive this patch, what I'd like to see is some attempt to
-> > actually quantify a reasonable timeout for the default backlog
-> > depth,
-> > then the patch should actually change the default to that
-> > reasonable
-> > timeout, and then put in the ability to adjust the timeout with
-> > some
-> > sort of doc guidance on how to calculate a reasonable timeout based
-> > on
-> > configured backlog depth.
->=20
-> How about following the approach of the SRP initiator driver? It
-> derives=20
-> the CM timeout from the subnet manager timeout. The assumption
-> behind=20
-> this is that in large networks the subnet manager timeout has to be
-> set=20
-> higher than its default to make communication work. See also=20
-> srp_get_subnet_timeout().
+> @@ -704,6 +705,10 @@ struct ifla_vf_mac {
+>  	__u8 mac[32]; /* MAX_ADDR_LEN */
+>  };
+>  
+> +struct ifla_vf_broadcast {
+> +	__u8 broadcast[32];
+> +};
+> +
+>  struct ifla_vf_vlan {
+>  	__u32 vf;
+>  	__u32 vlan; /* 0 - 4095, 0 disables VLAN filter */
 
-Theoretically, the subnet manager needs a longer timeout in a bigger
-network because it's handling more data as a single point of lookup for
-the entire subnet.  Individual machines, on the other hand, have the
-same backlog size (by default) regardless of the size of the network,
-and there is no guarantee that if the admin increased the subnet
-manager timeout, that they also increased the backlog queue depth size.
-So, while I like things that auto-tune like you are suggesting, the
-problem is that the one item does not directly correlate with the
-other.
+My first idea was that to question the need of a wrapping structure as
+we couldn't modify that structure in the future anyway so that there
+does not seem to be any gain against simply passing the address as a
+binary with attribute length equal to address length (like we do with
+IFLA_ADDRESS and IFLA_BROADCAST).
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
-2FDD
+But then I checked other IFLA_VF_* attributes and I'm confused. The
+structure seems to be
 
---=-0AQ/OTcN7UdTwkCoV3sM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+    IFLA_VF_INFO_LIST
+        IFLA_VF_INFO
+            IFLA_VF_MAC
+            IFLA_VF_VLAN
+            ...
+        IFLA_VF_INFO
+            IFLA_VF_MAC
+            IFLA_VF_VLAN
+            ...
+        ...
 
------BEGIN PGP SIGNATURE-----
+Each IFLA_VF_INFO corresponds to one virtual function but its number is
+not determined by an attribute within this nest. Instead, each of the
+neste IFLA_VF_* attributes is a structure containing "__u32 vf" and it's
+only matter of convention that within one IFLA_VF_INFO nest, all data
+belongs to the same VF, neither do_setlink() nor do_setvfinfo() check
+it.
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0CepgACgkQuCajMw5X
-L93+Mw/6A61mDk+ikAXS6vmFqzcWR0dtVmtxKeNB1/IKvTOJ4JZJxnaYaVIrCjzE
-dn3S3UH0Y3ulfyq90Rl3o9opmes7P0vuL+yvxV8Z75EfSObyrFddWfa3JubQ1j6+
-Qn5OygYPCpW6hL1xV8VjT9f4od+BKUglDkkD9SHIWPaZWVEwLzM1b3EDSLxLFX4u
-kk71uM2PEgxjc3ZSUOSGJrmWEQsM3G/nTshnDD47DJl9PcYx1CUQq6z4aouVQsD0
-IlBm6xnWjlfO5qNlCJDXEtKmZgKvI/r1r8+xdz8IicTtmDNaXxxoJX4kP5KNbo4l
-W0a9FogbmLhkpigzG0EqOkFUlJkvS/rPvancckDaNMX8YWh3uYrt1v+BKecgw0Rp
-tzGLkDJSoqsmsxZc2as0fUz4CmxA5cPypi+wPQ7LFc2JyfVpdYCGsoiwIwVP7r29
-R0dmZNfnVp78QEEcKHmRMVjaRNVzbEYiE2+4Y8MZ7IgB3YBqNgQqByhbha++wFry
-BXZlf8isVQdeZlYl1QFczlOENrPrYLcz8tPt4eFxheWy8mmLgBboX5otxI0nn4jQ
-jR7qBUtefDDwmDyOw1++jVg1TI9yTxtfD7W4avzg7Z7R7WlsipO3X91VZjWSFDXu
-qfE+tzXZx2jCudHaU5e4n0Hp8pE+f+GLERIhPcTAjr6RIuJl78k=
-=6Yw4
------END PGP SIGNATURE-----
+I guess you should either follow this weird pattern or introduce proper
+IFLA_VF_ID to be used for IFLA_VF_BROADCAST and all future IFLA_VF_*
+attributes. However, each new attribute makes IFLA_VF_INFO bigger and
+lowers the number of VFs that can be stored in an IFLA_VF_INFO_LIST nest
+without exceeding the hard limit of 65535 bytes so that we cannot afford
+to add too many.
 
---=-0AQ/OTcN7UdTwkCoV3sM--
+> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+> index cec60583931f..88304212f127 100644
+> --- a/net/core/rtnetlink.c
+> +++ b/net/core/rtnetlink.c
+...
+> @@ -1753,6 +1758,7 @@ static const struct nla_policy ifla_info_policy[IFLA_INFO_MAX+1] = {
+>  
+>  static const struct nla_policy ifla_vf_policy[IFLA_VF_MAX+1] = {
+>  	[IFLA_VF_MAC]		= { .len = sizeof(struct ifla_vf_mac) },
+> +	[IFLA_VF_BROADCAST]	= {. len = sizeof(struct ifla_vf_broadcast) },
+>  	[IFLA_VF_VLAN]		= { .len = sizeof(struct ifla_vf_vlan) },
+>  	[IFLA_VF_VLAN_LIST]     = { .type = NLA_NESTED },
+>  	[IFLA_VF_TX_RATE]	= { .len = sizeof(struct ifla_vf_tx_rate) },
 
+As you do not implement setting the broadcast address (is that possible
+at all?), NLA_REJECT would be more appropriate so that the request isn't
+silently ignored.
+
+Michal
