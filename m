@@ -2,85 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0CF438DE
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2B243ADB
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387604AbfFMPJN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 11:09:13 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:41889 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733145AbfFMPJM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 11:09:12 -0400
-Received: by mail-qt1-f194.google.com with SMTP id 33so14784170qtr.8
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 08:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vJfLZE5UZTU6x3qU+lIPPsXLCLkv4pp7jNH3cy3l6yY=;
-        b=ml3SmH5Hfmod46F81nMyG2P0NizdvJanAF7CyNFSkveEoGx2Z4cNoOL+Fto0ge6x1Y
-         JWF+MVW+3PILplBORK4V5CJNNQszkF1sfJ32ynl6XITtsV+ghGNggffuklXEwdgRtY5H
-         a/2jtAD9y2LEnWOX5n9mnScX0C/8WiTjSz6XqRdCPyRJi3Amxo9n8wg75s7b1bIWFIDn
-         T3Ib+FZ66vb5sdgan8v4rH2ZxWS+KgAdyBosWcGbnQ4LXTdtsmAUAJhta0DiPTKAU1Mj
-         Xs4/9FtrByNBEE8tH/VXcnn7LoUL09P6UY69gwBNbo+4Na5hQIkYWTka7rPSrvHPDN7y
-         fplw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vJfLZE5UZTU6x3qU+lIPPsXLCLkv4pp7jNH3cy3l6yY=;
-        b=Rfijd9W+16iUOBluRjSU7yPbRAWlpZHSi1Y0XaRXQpTpM7Fm1LOMJxQNvtsDlXnPoz
-         RRSaZrv5Z1uvhUpaWxTXMp3QRZIu+8DeXcc1aBZEcyHQP0qZ6qPPg49gaZrmmPuaRXTE
-         Xq7qMLTJ5cT1RBmRvHZXe/dq9kuOA4Ln9yU/7AlFSmZXZsvELdnq58PkHq6nUHfeUEiJ
-         N99HT9Su8S12iSAQkBEOIAMsIpkm62lvcc9hEPulxGaaVfN3lnL4Pln/IeHFHLlg9lA6
-         nTRs3NNo7aQgeGu2bNgDsMtUeXCukP16qH0KaH3p1Sh63X4MpKe+FyCAhzyFNGOgEUrL
-         adCA==
-X-Gm-Message-State: APjAAAUTJJc+QXUxpMmi9z2kCEwFM+euqptmoCs4/akjZ3xVtboSFs5q
-        ZrfZxMpxwdxBHu3vUvgmx4pwCA==
-X-Google-Smtp-Source: APXvYqyu+moY+mQF7g9DtJo06R1tzb7IdUz9DJ0JxTebf+F6pZff3NDQRwABkToIx5H7RYsxHMlPHQ==
-X-Received: by 2002:a0c:d0d4:: with SMTP id b20mr4136829qvh.38.1560438551211;
-        Thu, 13 Jun 2019 08:09:11 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id b5sm1701652qkk.45.2019.06.13.08.09.10
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Jun 2019 08:09:10 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hbRLi-0001pQ-2I; Thu, 13 Jun 2019 12:09:10 -0300
-Date:   Thu, 13 Jun 2019 12:09:10 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Tom Talpey <tom@talpey.com>
-Cc:     Bernard Metzler <BMT@zurich.ibm.com>, linux-rdma@vger.kernel.org
-Subject: Re: receive side CRC computation in siw.
-Message-ID: <20190613150910.GA22901@ziepe.ca>
-References: <OFBD80408B.8C25683E-ON00258416.0047A63B-00258416.00495B83@notes.na.collabserv.com>
- <a84cd017-fe4c-fecf-6414-db6a3f98c09c@talpey.com>
- <20190612152116.GI3876@ziepe.ca>
- <ea1e140d-f1a7-5d63-8b6e-e99d57264178@talpey.com>
- <20190612201345.GP3876@ziepe.ca>
- <20bd1d9d-5ca7-abb0-2d66-ea765b03550e@talpey.com>
- <20190612205917.GQ3876@ziepe.ca>
- <ca2b4441-f98f-46f8-a8e8-37013205dc0b@talpey.com>
+        id S1733310AbfFMPYO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 11:24:14 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:38956 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388244AbfFMPYN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 11:24:13 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id F3BD42F8BFD;
+        Thu, 13 Jun 2019 15:24:12 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0AF0619C67;
+        Thu, 13 Jun 2019 15:24:11 +0000 (UTC)
+Message-ID: <33dc8df3cb95e76c906ddb88041ba974bbe73a1c.camel@redhat.com>
+Subject: Re: [PATCH net-next v2 1/2] ipoib: correcly show a VF hardware
+ address
+From:   Doug Ledford <dledford@redhat.com>
+To:     Denis Kirjanov <kda@linux-powerpc.org>, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        mkubecek@suse.cz
+Date:   Thu, 13 Jun 2019 11:24:09 -0400
+In-Reply-To: <20190613142003.129391-3-dkirjanov@suse.com>
+References: <20190613142003.129391-1-dkirjanov@suse.com>
+         <20190613142003.129391-3-dkirjanov@suse.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-HdDD15E8H0DGo1j/KQ/U"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca2b4441-f98f-46f8-a8e8-37013205dc0b@talpey.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Thu, 13 Jun 2019 15:24:13 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 07:35:30AM -0400, Tom Talpey wrote:
-> > It may not be expressly specified as part of the IBA, but it is
-> > certainly wrong from a system design perspective.
-> 
-> I disagree, because the RDMA design specifically addresses this by
-> exposing only objects which are connection-specific. Meaning, the
-> application can only harm its own RDMA state, and cannot impact
-> other connections or the RNIC itself.
 
-Allowing an application to forge CRC errors is certainly not 'only
-harm its own RDMA state'.
+--=-HdDD15E8H0DGo1j/KQ/U
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Jason
+On Thu, 2019-06-13 at 16:20 +0200, Denis Kirjanov wrote:
+> in the case of IPoIB with SRIOV enabled hardware
+> ip link show command incorrecly prints
+> 0 instead of a VF hardware address. To correcly print the address
+> add a new field to specify an address length.
+>=20
+> Before:
+> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+> state UP mode DEFAULT group default qlen 256
+>     link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+>     vf 0 MAC 00:00:00:00:00:00, spoof checking off, link-state
+> disable,
+> trust off, query_rss off
+> ...
+> After:
+> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+> state UP mode DEFAULT group default qlen 256
+>     link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+>     vf 0     link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
+> checking off, link-state disable, trust off, query_rss off
+>=20
+> Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
+> ---
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c
+> b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+> index 9b5e11d3fb85..04ea7db08e87 100644
+> --- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
+> +++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+> @@ -1998,6 +1998,7 @@ static int ipoib_get_vf_config(struct
+> net_device *dev, int vf,
+>  		return err;
+> =20
+>  	ivf->vf =3D vf;
+> +	memcpy(ivf->mac, dev->dev_addr, dev->addr_len);
+> =20
+>  	return 0;
+>  }
+
+I'm ok with the patch, but your commit message does not match what the
+patch does at all.  You need to correct the commit message.
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
+2FDD
+
+--=-HdDD15E8H0DGo1j/KQ/U
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0CapkACgkQuCajMw5X
+L91/aA/+MR47RawkBMXJ/bSYCXW7AvbOUTMjz2UQxIf0GZmzzIrRgjlgMJEwpCRm
+/67/5C9MWE4T6rvcWKm0CgRnTj60iywwAUerkZ78u3n02Kw5gf9QvP73vXcQKKhB
+D802Nv2+cFjFsyDSyYnDsR+AhKVuTizufIJ6O6x7DIKT/6nzSF9+Wsu55TbRZ8bv
+HSCODKg8rrjzony1YQEJhzG75INnHPzo7sp5U3pofn1CaddwmLpTQS6UPIfd7FvR
+hk92P8Vgjj6PK11twdWXgv7CZCKvqnqdbfaLMd/Ty3GJ7CxVBxwy1ynRvPu2KVu/
+Z6tCgNv5Q8sp0hwguoEgmXXf2Wxr94cPafzLTor1oRMLQFlZHTkmKcS5djnl/3ee
+pVVa97Dg+qDZc6a58kiZ5A/Cpa5Sn7ECxPNCz+NmMdU39FwVYGaWxLQMeDYG07XJ
+pOINrrIsEFBMZZ7vPchHbFUCZPB/yKtOkL39jZW5z4+hrFscAT67eiQgaO+9KjYU
+UZAYxTPLVkR7ffQRGMeVt+FwNq00Id3XxaHCrnh5tHMQbxiTmTHielZmadGaM6/Y
+tiWvtR1wVYqGKBQ+tn8mKi0937mL+PP+2/D1+7nxe/Nqh1fwGoevz70m7EJRA6ny
+mQ4lopbC2xmu75oQdMs22IF6KdLIWQNvbwOaXcRjIWQxFyhFMJ4=
+=InDf
+-----END PGP SIGNATURE-----
+
+--=-HdDD15E8H0DGo1j/KQ/U--
+
