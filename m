@@ -2,162 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC3D44531
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C7B44201
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731762AbfFMQmr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 12:42:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730504AbfFMGr0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 02:47:26 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C83B7206E0;
-        Thu, 13 Jun 2019 06:47:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560408445;
-        bh=fgjcb64i4b3Pi9V4wVD3/0gEPhWHM+BcKKx9hlC4Ous=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ahOPu9f13VeEOOV2dhjd6PHyJBkp+7Or9ZkjcY3OJuKGD6PVkb3cya88256E1iUr0
-         bfPxqXR3kvm/JFQYNDpxQzcraJeGPAejhEuv9TDrLI2Mzg8ybB00fMcPgTZU0uh/+B
-         +dceR/k0N4uLBZlg4D4mcikWBnQrXnAG/621x5co=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: [PATCH rdma-next 12/12] IB/mlx5: Add DEVX support for CQ events
-Date:   Thu, 13 Jun 2019 09:46:39 +0300
-Message-Id: <20190613064639.30898-13-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190613064639.30898-1-leon@kernel.org>
-References: <20190613064639.30898-1-leon@kernel.org>
+        id S2391872AbfFMQSk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 12:18:40 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:38048 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731107AbfFMIkM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 04:40:12 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5D8Z0wP018316;
+        Thu, 13 Jun 2019 01:39:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=DTSeHnE/xj66NnyXEJvTaOx/+ILJ2hhvRaPXL+OcOTQ=;
+ b=b6MWXk5Aj83M7GfeHkDijOU0QHmJSrJfYjDZxWsfwmDs6vNWnKPOj/HGgR/cLtxxb4RI
+ cDa0p1NLzdpqwbzeVYx3muk9acYbolL4erY9TjTHyPzu7SkFF3GWCAf+wGQ40Qasen4c
+ SAld3wasm0GzVfmGm90BTi0sMib6bYrpehkmyBamTEyOOqLYM7zUAUhRj7hm9VYZiONI
+ vj0sN1okYn1oqXczsxSe8gS4XMuBswuX386ef7ssrgi20l0o3kDSPYAd7Zt/IUECOp50
+ zoudWWzsA8iXru/NXV0AaAc4XQe5x3NTBnUhvusniHgBthxh1do0FkPdQEz01Y99ZmdF XQ== 
+Received: from sc-exch04.marvell.com ([199.233.58.184])
+        by mx0a-0016f401.pphosted.com with ESMTP id 2t3j8206jd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jun 2019 01:39:37 -0700
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 13 Jun
+ 2019 01:39:37 -0700
+Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
+ Transport; Thu, 13 Jun 2019 01:39:37 -0700
+Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
+        by maili.marvell.com (Postfix) with ESMTP id 96E733F703F;
+        Thu, 13 Jun 2019 01:39:35 -0700 (PDT)
+From:   Michal Kalderon <michal.kalderon@marvell.com>
+To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
+        <jgg@ziepe.ca>, <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>
+Subject: [PATCH v3 rdma-next 0/3] RDMA/qedr: Use the doorbell overflow recovery mechanism for RDMA
+Date:   Thu, 13 Jun 2019 11:38:16 +0300
+Message-ID: <20190613083819.6998-1-michal.kalderon@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-13_05:,,
+ signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yishai Hadas <yishaih@mellanox.com>
+This patch series used the doorbell overflow recovery mechanism
+introduced in
+commit 36907cd5cd72 ("qed: Add doorbell overflow recovery mechanism")
+for rdma ( RoCE and iWARP )
 
-Add DEVX support for CQ events by creating and destroying the CQ via
-mlx5_core and set an handler to manage its completions.
+rdma-core pull request #493
 
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/devx.c | 40 +++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+Changes from V2:
+- Don't use long-lived kmap. Instead use user-trigger mmap for the
+  doorbell recovery entries.
+- Modify dpi_addr to be denoted with __iomem and avoid redundant
+  casts
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index b96420021b1d..c24c483d0d95 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -19,9 +19,12 @@
- #define UVERBS_MODULE_NAME mlx5_ib
- #include <rdma/uverbs_named_ioctl.h>
- 
-+static void dispatch_event_fd(struct list_head *fd_list, const void *data);
-+
- enum devx_obj_flags {
- 	DEVX_OBJ_FLAGS_INDIRECT_MKEY = 1 << 0,
- 	DEVX_OBJ_FLAGS_DCT = 1 << 1,
-+	DEVX_OBJ_FLAGS_CQ = 1 << 2,
- };
- 
- struct devx_async_data {
-@@ -92,6 +95,7 @@ struct devx_async_event_file {
- #define MLX5_MAX_DESTROY_INBOX_SIZE_DW MLX5_ST_SZ_DW(delete_fte_in)
- struct devx_obj {
- 	struct mlx5_core_dev	*mdev;
-+	struct mlx5_ib_dev	*ib_dev;
- 	u64			obj_id;
- 	u32			dinlen; /* destroy inbox length */
- 	u32			dinbox[MLX5_MAX_DESTROY_INBOX_SIZE_DW];
-@@ -99,6 +103,7 @@ struct devx_obj {
- 	union {
- 		struct mlx5_ib_devx_mr	devx_mr;
- 		struct mlx5_core_dct	core_dct;
-+		struct mlx5_core_cq	core_cq;
- 	};
- 	struct list_head event_sub; /* holds devx_event_subscription entries */
- };
-@@ -1341,6 +1346,8 @@ static int devx_obj_cleanup(struct ib_uobject *uobject,
- 
- 	if (obj->flags & DEVX_OBJ_FLAGS_DCT)
- 		ret = mlx5_core_destroy_dct(obj->mdev, &obj->core_dct);
-+	else if (obj->flags & DEVX_OBJ_FLAGS_CQ)
-+		ret = mlx5_core_destroy_cq(obj->mdev, &obj->core_cq);
- 	else
- 		ret = mlx5_cmd_exec(obj->mdev, obj->dinbox, obj->dinlen, out,
- 				    sizeof(out));
-@@ -1383,6 +1390,30 @@ static int devx_obj_cleanup(struct ib_uobject *uobject,
- 	return ret;
- }
- 
-+static void devx_cq_comp(struct mlx5_core_cq *mcq, struct mlx5_eqe *eqe)
-+{
-+	struct devx_obj *obj = container_of(mcq, struct devx_obj, core_cq);
-+	struct mlx5_devx_event_table *table;
-+	struct devx_event *event;
-+	struct devx_obj_event *obj_event;
-+	u32 obj_id = mcq->cqn;
-+
-+	table = &obj->ib_dev->devx_event_table;
-+	event = xa_load(&table->event_xa, MLX5_EVENT_TYPE_COMP);
-+	if (!event)
-+		return;
-+
-+	rcu_read_lock();
-+	obj_event = xa_load(&event->object_ids, obj_id);
-+	if (!obj_event) {
-+		rcu_read_unlock();
-+		return;
-+	}
-+
-+	dispatch_event_fd(&obj_event->obj_sub_list, eqe);
-+	rcu_read_unlock();
-+}
-+
- static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
- 	struct uverbs_attr_bundle *attrs)
- {
-@@ -1434,6 +1465,12 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
- 		err = mlx5_core_create_dct(dev->mdev, &obj->core_dct,
- 					   cmd_in, cmd_in_len,
- 					   cmd_out, cmd_out_len);
-+	} else if (opcode == MLX5_CMD_OP_CREATE_CQ) {
-+		obj->flags |= DEVX_OBJ_FLAGS_CQ;
-+		obj->core_cq.comp = devx_cq_comp;
-+		err = mlx5_core_create_cq(dev->mdev, &obj->core_cq,
-+					  cmd_in, cmd_in_len, cmd_out,
-+					  cmd_out_len);
- 	} else {
- 		err = mlx5_cmd_exec(dev->mdev, cmd_in,
- 				    cmd_in_len,
-@@ -1446,6 +1483,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
- 	uobj->object = obj;
- 	obj->mdev = dev->mdev;
- 	INIT_LIST_HEAD(&obj->event_sub);
-+	obj->ib_dev = dev;
- 	devx_obj_build_destroy_cmd(cmd_in, cmd_out, obj->dinbox, &obj->dinlen,
- 				   &obj_id);
- 	WARN_ON(obj->dinlen > MLX5_MAX_DESTROY_INBOX_SIZE_DW * sizeof(u32));
-@@ -1473,6 +1511,8 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
- obj_destroy:
- 	if (obj->flags & DEVX_OBJ_FLAGS_DCT)
- 		mlx5_core_destroy_dct(obj->mdev, &obj->core_dct);
-+	else if (obj->flags & DEVX_OBJ_FLAGS_CQ)
-+		mlx5_core_destroy_cq(obj->mdev, &obj->core_cq);
- 	else
- 		mlx5_cmd_exec(obj->mdev, obj->dinbox, obj->dinlen, out,
- 			      sizeof(out));
+Changes from V1:
+- call kmap to map virtual address into kernel space
+- modify db_rec_delete to be void
+- remove some cpu_to_le16 that were added to previous patch which are
+  correct but not related to the overflow recovery mechanism. Will be
+  submitted as part of a different patch
+
+
+Michal Kalderon (3):
+  qed*: Change dpi_addr to be denoted with __iomem
+  RDMA/qedr: Add doorbell overflow recovery support
+  RDMA/qedr: Add iWARP doorbell recovery support
+
+ drivers/infiniband/hw/qedr/main.c          |   2 +-
+ drivers/infiniband/hw/qedr/qedr.h          |  27 +-
+ drivers/infiniband/hw/qedr/verbs.c         | 387 ++++++++++++++++++++++++-----
+ drivers/net/ethernet/qlogic/qed/qed_rdma.c |   6 +-
+ include/linux/qed/qed_rdma_if.h            |   2 +-
+ include/uapi/rdma/qedr-abi.h               |  25 ++
+ 6 files changed, 378 insertions(+), 71 deletions(-)
+
 -- 
-2.20.1
+2.14.5
 
