@@ -2,114 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7464645046
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 01:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8ECB4504B
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 01:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727243AbfFMXpc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 19:45:32 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:46579 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbfFMXpc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 19:45:32 -0400
-Received: by mail-qt1-f195.google.com with SMTP id h21so431735qtn.13
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 16:45:31 -0700 (PDT)
+        id S1726784AbfFMXqf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 19:46:35 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:39888 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726349AbfFMXqf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 19:46:35 -0400
+Received: by mail-qt1-f194.google.com with SMTP id i34so476607qta.6
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 16:46:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3+t+8plqnMDu5LItEINv+R5LzGXlbnOEW8lA7KqYoSA=;
-        b=V4uYx3PC9/Kgy2M4ZekgvRKvGqR7t7tO5empinBcdD/vjjrTDNXNvOpJr4/tQqqwEv
-         pgwxcXIhwGK63QcFR+H2l9DHorWqNbCBtL/l6TDJJHIPYNsX9L9ltGsrgYOW3djbfTBk
-         +CXWBZJDK9oBlsTLuRXbHuNYYhdEA1G3FVTmNkzNArpZNxg9Y+HQQ0VSyzjYgYXSbRs9
-         dsl1IHcwMZEtpAJdgQWfZ90e/nLGeyYk/+rPuZQscIiBjl8tNgkwswTbzSy2Qj7AjBEY
-         8qq4PDFRq3uqJPA6SKTJGsY5tJs7i3mv34NRvdlqzlDhrOcr5qUMSiJ4ZEoA8UNdsYha
-         GrlA==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=RgGAoG+EFMf//zammLV8SqiSMpUtRnVhf4DpaWCHX7A=;
+        b=aWHGarpo0tIrRJnnHEvfX6dOp85DZ2yAXbWe98Gl1NCJG5FiDSUppC2+dI5ER7jYgw
+         YsSgypAots/APmu4ggVN84azOxccssTNrejU4vMPnfIV1Yqcu8wgKKPXFGobIaPurl/c
+         xtuA/tj/hPbjC7MKqxXRiA9dj8SNCLGjpJ51hSk7eI+7XeOqvTqtigoa5wCj964W53iz
+         SY8ML6JU8pDFx8ASD0vTDJaxQUD+h3IpnITBK3xHeGW3cDRUV/sgMaTqZIi8ZikIlfG+
+         Tl+RmI7ogX0qqxEJBSXZEENiSiYWVj3HxH9InOyRnOvAm0+DCx0VORB/VOkCv1xWMEtr
+         L55A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3+t+8plqnMDu5LItEINv+R5LzGXlbnOEW8lA7KqYoSA=;
-        b=mhm+LdsD3b0oEJyS3iqbTxOkyUAVJEeobz+e3jk++yhICyIqsngNOT7g2ng/rkNgmc
-         TBYWYju2seSiz2/DU/iT0J9JEfDWyRnGQxReWRr3z43HtRaV1o9VEaKRQ44Rve5Va0AA
-         TKWesiH63lvAyAHxsWDw/lUNITKQRHNXdC0gl4GmmEbhnGQHMOILWTgyZoC9cf+Mb9QD
-         Ct8Qaz5n3oOwNYgmT6WEbrr34CIAT1JZZ1T6fb87BOmkxyjAXXdJ781sLHsIZduPiEr1
-         RM/wnbLYKjpEOGXSp5DSrgRN3ravBxeO7JFtZfMWE0o4WZfX3EtXIFb9IpHK9KfNIlAk
-         AcjQ==
-X-Gm-Message-State: APjAAAVThucLw3DfWx1X2/Gh20/tx+Dtxft2HBXPbAFwrfyXgGbmURJ/
-        od3bEmhMwKLX25w9oeBxkQtAxw==
-X-Google-Smtp-Source: APXvYqyYGz8y4mU0RR/vAVXwfFNX88unrTDt/8bHx6WUKQJx5OGFlsQT6pP8kmmk4D4YyMl9wIuX5A==
-X-Received: by 2002:ac8:2f7b:: with SMTP id k56mr66798515qta.376.1560469531072;
-        Thu, 13 Jun 2019 16:45:31 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=RgGAoG+EFMf//zammLV8SqiSMpUtRnVhf4DpaWCHX7A=;
+        b=DAodP7nQUEydgw4TpRQoT0XLG7LPL2Yb9j5nKgbV5OJXZF4iEEEwOLEicWtrNyqgWB
+         D8XsPHxEuLTHH0Q0b3WEeFkRPWd+piRLtFbAvhkUtYB+6enGiu6AkhLgWo0HhfDW5R7I
+         l7X3vOoV0Jb6cvnighqKKR4HQgTntjXVMibghsZJJdu/krmcQUnGNrS5bOFnxU974no+
+         Dkt2i3L8iriHnM0HYBM9HZy6ZDr5jpXOScgmrXDhlpU3KHis/jTrZzcJ0Pt0Tobw4EYS
+         s12ULy38ZvOy3dgpoZ6s3xPZV1A/zYFuhWKN/eyxthr0dTDi+35yD9h4gMKWQ0u2I2VP
+         W/ow==
+X-Gm-Message-State: APjAAAWpbTf72jbNwWZBx9Ew5dajXSlxr9g2eFfO51J82hpHMwPDE7nc
+        diYQmJfeBYXyYqdWlRmvJPpp0A==
+X-Google-Smtp-Source: APXvYqy7v1SfVM+n642iOXecf/vv6RGRIGojTHovJbES5LjY20ZFEYPiWrYrOlaii9/jkMsM9sJAHg==
+X-Received: by 2002:a0c:a902:: with SMTP id y2mr5720330qva.42.1560469594029;
+        Thu, 13 Jun 2019 16:46:34 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id o6sm757625qtc.47.2019.06.13.16.45.30
+        by smtp.gmail.com with ESMTPSA id h40sm996749qth.4.2019.06.13.16.46.33
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Jun 2019 16:45:30 -0700 (PDT)
+        Thu, 13 Jun 2019 16:46:33 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hbZPO-00019B-4b; Thu, 13 Jun 2019 20:45:30 -0300
-Date:   Thu, 13 Jun 2019 20:45:30 -0300
+        id 1hbZQP-0001A4-11; Thu, 13 Jun 2019 20:46:33 -0300
+Date:   Thu, 13 Jun 2019 20:46:33 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190613234530.GK22901@ziepe.ca>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
- <20190608001036.GF14308@dread.disaster.area>
- <20190612123751.GD32656@bombadil.infradead.org>
- <20190613002555.GH14363@dread.disaster.area>
- <20190613152755.GI32656@bombadil.infradead.org>
- <20190613211321.GC32404@iweiny-DESK2.sc.intel.com>
+To:     =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Steve Wise <swise@opengridcomputing.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] RDMA/cma: Make CM response timeout and # CM retries
+ configurable
+Message-ID: <20190613234633.GL22901@ziepe.ca>
+References: <20190226075722.1692315-1-haakon.bugge@oracle.com>
+ <174ccd37a9ffa05d0c7c03fe80ff7170a9270824.camel@redhat.com>
+ <67B4F337-4C3A-4193-B1EF-42FD4765CBB7@oracle.com>
+ <20190613172355.GF22901@ziepe.ca>
+ <1D8E6B14-3336-42B3-B572-596DD2183D89@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190613211321.GC32404@iweiny-DESK2.sc.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1D8E6B14-3336-42B3-B572-596DD2183D89@oracle.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 02:13:21PM -0700, Ira Weiny wrote:
-> On Thu, Jun 13, 2019 at 08:27:55AM -0700, Matthew Wilcox wrote:
-> > On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
-> > > e.g. Process A has an exclusive layout lease on file F. It does an
-> > > IO to file F. The filesystem IO path checks that Process A owns the
-> > > lease on the file and so skips straight through layout breaking
-> > > because it owns the lease and is allowed to modify the layout. It
-> > > then takes the inode metadata locks to allocate new space and write
-> > > new data.
-> > > 
-> > > Process B now tries to write to file F. The FS checks whether
-> > > Process B owns a layout lease on file F. It doesn't, so then it
-> > > tries to break the layout lease so the IO can proceed. The layout
-> > > breaking code sees that process A has an exclusive layout lease
-> > > granted, and so returns -ETXTBSY to process B - it is not allowed to
-> > > break the lease and so the IO fails with -ETXTBSY.
-> > 
-> > This description doesn't match the behaviour that RDMA wants either.
-> > Even if Process A has a lease on the file, an IO from Process A which
-> > results in blocks being freed from the file is going to result in the
-> > RDMA device being able to write to blocks which are now freed (and
-> > potentially reallocated to another file).
+On Thu, Jun 13, 2019 at 07:39:24PM +0200, Håkon Bugge wrote:
 > 
-> I don't understand why this would not work for RDMA?  As long as the layout
-> does not change the page pins can remain in place.
+> 
+> > On 13 Jun 2019, at 19:23, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > 
+> > On Thu, Jun 13, 2019 at 06:58:30PM +0200, Håkon Bugge wrote:
+> > 
+> >> If you refer to the backlog parameter in rdma_listen(), I cannot see
+> >> it being used at all for IB.
+> >> 
+> >> For CX-3, which is paravirtualized wrt. MAD packets, it is the proxy
+> >> UD receive queue length for the PF driver that can be construed as a
+> >> backlog. 
+> > 
+> > No, in IB you can drop UD packets if your RQ is full - so the proxy RQ
+> > is really part of the overall RQ on QP1.
+> > 
+> > The backlog starts once packets are taken off the RQ and begin the
+> > connection accept processing.
+> 
+> Do think we say the same thing. If, incoming REQ processing is
+> severly delayed, the backlog is #entries in the QP1 receive queue in
+> the PF. I can call rdma_listen() with a backlog of a zillion, but it
+> will not help.
 
-Because process A had a layout lease (and presumably a MR) and the
-layout was still modified in way that invalidates the RDMA MR.
+backlog and queue depth are different things, we shouldn't confuse
+them together..
 
 Jason
