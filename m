@@ -2,26 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D98444730
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3DE4467B
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389808AbfFMQ5l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 12:57:41 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:60111 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729738AbfFMA4z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Jun 2019 20:56:55 -0400
-Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 3CE4F105FED4;
-        Thu, 13 Jun 2019 10:56:50 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hbE1w-0004JV-Dn; Thu, 13 Jun 2019 10:55:52 +1000
-Date:   Thu, 13 Jun 2019 10:55:52 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        id S2393030AbfFMQwB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 12:52:01 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:60620 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730127AbfFMDX2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jun 2019 23:23:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=QaIPZk5fG08PMipK2ZOjFgNMkP7/mE5EU+2hsa7y6lY=; b=VCF/wqwvWCkPBIrvCaL/D3G8l
+        tHqc/P5TR0jF4odv4tFa+eZycXtANJYw8npQGw1u7+6Uv8D3dPL6PSPWSss02vOD3RMl8SN9UE9tE
+        pgdev89Cvk50mX8MdLQMFzWKjT9ybPnHlvymKlhrDcAdtq9BjKibIVkW+vernB9b/39/CVM/w8KPZ
+        7eNO6yjjUerdEhluGAkQcubSLK9G/8N4d5w54XxHTAPHR/5HqmRB4lPvHLnyja2+Z1QV2Pr2MBWyz
+        OHrDRVCwX8aCx5s1LcyskUetCbhRrlq1e3Hk4+o+Gp2Qi2Fokqvsf6H+CAZFG91Ylp4HPDaT6v01i
+        r9dkL+CUQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1hbGKe-0003os-RJ; Thu, 13 Jun 2019 03:23:20 +0000
+Date:   Wed, 12 Jun 2019 20:23:20 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
         Dan Williams <dan.j.williams@intel.com>,
         Theodore Ts'o <tytso@mit.edu>,
         Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
@@ -33,7 +40,7 @@ Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
         linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
         linux-rdma@vger.kernel.org
 Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190613005552.GI14363@dread.disaster.area>
+Message-ID: <20190613032320.GG32656@bombadil.infradead.org>
 References: <20190606014544.8339-1-ira.weiny@intel.com>
  <20190606104203.GF7433@quack2.suse.cz>
  <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
@@ -41,96 +48,43 @@ References: <20190606014544.8339-1-ira.weiny@intel.com>
  <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
  <20190608001036.GF14308@dread.disaster.area>
  <20190612123751.GD32656@bombadil.infradead.org>
- <20190612233024.GD14336@iweiny-DESK2.sc.intel.com>
+ <20190613002555.GH14363@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190612233024.GD14336@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0 cx=a_idp_d
-        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
-        a=7-415B0cAAAA:8 a=S7HuRrsnkTe4mrBiyeoA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20190613002555.GH14363@dread.disaster.area>
+User-Agent: Mutt/1.9.2 (2017-12-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 04:30:24PM -0700, Ira Weiny wrote:
+On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
 > On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
-> > On Sat, Jun 08, 2019 at 10:10:36AM +1000, Dave Chinner wrote:
-> > > On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
-> > > > Are you suggesting that we have something like this from user space?
-> > > > 
-> > > > 	fcntl(fd, F_SETLEASE, F_LAYOUT | F_UNBREAKABLE);
-> > > 
-> > > Rather than "unbreakable", perhaps a clearer description of the
-> > > policy it entails is "exclusive"?
-> > > 
-> > > i.e. what we are talking about here is an exclusive lease that
-> > > prevents other processes from changing the layout. i.e. the
-> > > mechanism used to guarantee a lease is exclusive is that the layout
-> > > becomes "unbreakable" at the filesystem level, but the policy we are
-> > > actually presenting to uses is "exclusive access"...
-> > 
 > > That's rather different from the normal meaning of 'exclusive' in the
 > > context of locks, which is "only one user can have access to this at
-> > a time".  As I understand it, this is rather more like a 'shared' or
-> > 'read' lock.  The filesystem would be the one which wants an exclusive
-> > lock, so it can modify the mapping of logical to physical blocks.
-> > 
-> > The complication being that by default the filesystem has an exclusive
-> > lock on the mapping, and what we're trying to add is the ability for
-> > readers to ask the filesystem to give up its exclusive lock.
+> > a time".
 > 
-> This is an interesting view...
-> 
-> And after some more thought, exclusive does not seem like a good name for this
-> because technically F_WRLCK _is_ an exclusive lease...
-> 
-> In addition, the user does not need to take the "exclusive" write lease to be
-> notified of (broken by) an unexpected truncate.  A "read" lease is broken by
-> truncate.  (And "write" leases really don't do anything different WRT the
-> interaction of the FS and the user app.  Write leases control "exclusive"
-> access between other file descriptors.)
+> Layout leases are not locks, they are a user access policy object.
+> It is the process/fd which holds the lease and it's the process/fd
+> that is granted exclusive access.  This is exactly the same semantic
+> as O_EXCL provides for granting exclusive access to a block device
+> via open(), yes?
 
-I've been assuming that there is only one type of layout lease -
-there is no use case I've heard of for read/write layout leases, and
-like you say there is zero difference in behaviour at the filesystem
-level - they all have to be broken to allow a non-lease truncate to
-proceed.
+This isn't my understanding of how RDMA wants this to work, so we should
+probably clear that up before we get too far down deciding what name to
+give it.
 
-IMO, taking a "read lease" to be able to modify and write to the
-underlying mapping of a file makes absolutely no sense at all.
-IOWs, we're talking exaclty about a revokable layout lease vs an
-exclusive layout lease here, and so read/write really doesn't match
-the policy or semantics we are trying to provide.
+For the RDMA usage case, it is entirely possible that both process A
+and process B which don't know about each other want to perform RDMA to
+file F.  So there will be two layout leases active on this file at the
+same time.  It's fine for IOs to simultaneously be active to both leases.
+But if the filesystem wants to move blocks around, it has to break
+both leases.
 
-> Another thing to consider is that this patch set _allows_ a truncate/hole punch
-> to proceed _if_ the pages being affected are not actually pinned.  So the
-> unbreakable/exclusive nature of the lease is not absolute.
+If Process C tries to do a write to file F without a lease, there's no
+problem, unless a side-effect of the write would be to change the block
+mapping, in which case either the leases must break first, or the write
+must be denied.
 
-If you're talking about the process that owns the layout lease
-running the truncate, then that is fine.
-
-However, if you are talking about a process that does not own the
-layout lease being allowed to truncate a file without first breaking
-the layout lease, then that is fundamentally broken.
-
-i.e. If you don't own a layout lease, the layout leases must be
-broken before the truncate can proceed. If it's an exclusive lease,
-then you cannot break the lease and the truncate *must fail before
-it is started*. i.e.  the layout lease state must be correctly
-resolved before we start an operation that may modify a file layout.
-
-Determining if we can actually do the truncate based on page state
-occurs /after/ the lease says the truncate can proceed....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Jason, please correct me if I've misunderstood the RDMA needs here.
