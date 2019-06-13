@@ -2,208 +2,240 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEC743DE4
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E3443EEF
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389389AbfFMPqD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 11:46:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:43564 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389371AbfFMPqC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 11:46:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35647367;
-        Thu, 13 Jun 2019 08:46:01 -0700 (PDT)
-Received: from [10.1.196.72] (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA3A53F246;
-        Thu, 13 Jun 2019 08:45:55 -0700 (PDT)
-Subject: Re: [PATCH v17 03/15] arm64: Introduce prctl() options to control the
- tagged user addresses ABI
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-References: <cover.1560339705.git.andreyknvl@google.com>
- <a7a2933bea5fe57e504891b7eec7e9432e5e1c1a.1560339705.git.andreyknvl@google.com>
- <20190613111659.GX28398@e103592.cambridge.arm.com>
- <20190613153505.GU28951@C02TF0J2HF1T.local>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <99cc257d-5e99-922a-fbe7-3bbaf3621e38@arm.com>
-Date:   Thu, 13 Jun 2019 16:45:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1732451AbfFMPx6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 13 Jun 2019 11:53:58 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41074 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725809AbfFMPx5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 11:53:57 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5DFrpYW123289
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 11:53:55 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.82])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2t3sdq09wm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 11:53:52 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Thu, 13 Jun 2019 15:52:22 -0000
+Received: from us1a3-smtp02.a3.dal06.isc4sb.com (10.106.154.159)
+        by smtp.notes.na.collabserv.com (10.106.227.105) with smtp.notes.na.collabserv.com ESMTP;
+        Thu, 13 Jun 2019 15:52:19 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp02.a3.dal06.isc4sb.com
+          with ESMTP id 2019061315521883-745083 ;
+          Thu, 13 Jun 2019 15:52:18 +0000 
+In-Reply-To: <74190aa2-ff6a-67d4-51d1-05fa61442ebc@talpey.com>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Tom Talpey" <tom@talpey.com>
+Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Date:   Thu, 13 Jun 2019 15:52:18 +0000
 MIME-Version: 1.0
-In-Reply-To: <20190613153505.GU28951@C02TF0J2HF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <74190aa2-ff6a-67d4-51d1-05fa61442ebc@talpey.com>,<20bd1d9d-5ca7-abb0-2d66-ea765b03550e@talpey.com>
+ <OFBD80408B.8C25683E-ON00258416.0047A63B-00258416.00495B83@notes.na.collabserv.com>
+ <a84cd017-fe4c-fecf-6414-db6a3f98c09c@talpey.com>
+ <20190612152116.GI3876@ziepe.ca>
+ <ea1e140d-f1a7-5d63-8b6e-e99d57264178@talpey.com>
+ <20190612201345.GP3876@ziepe.ca>
+ <OFD69319F2.02960EC9-ON00258418.003DD0C1-00258418.003FC788@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-LLNOutbound: False
+X-Disclaimed: 24551
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19061315-5101-0000-0000-00000FFB066E
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.425523; ST=0; TS=0; UL=0; ISC=; MB=0.378676
+X-IBM-SpamModules-Versions: BY=3.00011255; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01217433; UDB=6.00640196; IPR=6.00998545;
+ BA=6.00006334; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
+ ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00027295; XFM=3.00000015;
+ UTC=2019-06-13 15:52:21
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-06-13 07:59:48 - 6.00010043
+x-cbparentid: 19061315-5102-0000-0000-0000722905EE
+Message-Id: <OFB20EF091.5D7C2301-ON00258418.0056DA60-00258418.00572FDD@notes.na.collabserv.com>
+Subject: Re:  Re: receive side CRC computation in siw.
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-13_10:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+-----"Tom Talpey" <tom@talpey.com> wrote: -----
 
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Tom Talpey" <tom@talpey.com>
+>Date: 06/13/2019 02:25PM
+>Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+>Subject: [EXTERNAL] Re: receive side CRC computation in siw.
+>
+>On 6/13/2019 7:36 AM, Bernard Metzler wrote:
+>> -----"Tom Talpey" <tom@talpey.com> wrote: -----
+>> 
+>>> To: "Jason Gunthorpe" <jgg@ziepe.ca>
+>>> From: "Tom Talpey" <tom@talpey.com>
+>>> Date: 06/12/2019 10:34PM
+>>> Cc: "Bernard Metzler" <BMT@zurich.ibm.com>,
+>>> linux-rdma@vger.kernel.org
+>>> Subject: [EXTERNAL] Re: receive side CRC computation in siw.
+>>>
+>>> On 6/12/2019 4:13 PM, Jason Gunthorpe wrote:
+>>>> On Wed, Jun 12, 2019 at 04:07:53PM -0400, Tom Talpey wrote:
+>>>>> On 6/12/2019 11:21 AM, Jason Gunthorpe wrote:
+>>>>>> On Tue, Jun 11, 2019 at 11:11:08AM -0400, Tom Talpey wrote:
+>>>>>>> On 6/11/2019 9:21 AM, Bernard Metzler wrote:
+>>>>>>>> Hi all,
+>>>>>>>>
+>>>>>>>> If enabled for siw, during receive operation, a crc32c over
+>>>>>>>> header and data is being generated and checked. So far, siw
+>>>>>>>> was generating that CRC from the content of the just written
+>>>>>>>> target buffer. What kept me busy last weekend were spurious
+>>>>>>>> CRC errors, if running qperf. I finally found the application
+>>>>>>>> is constantly writing the target buffer while data are placed
+>>>>>>>> concurrently, which sometimes races with the CRC computation
+>>>>>>>> for that buffer, and yields a broken CRC.
+>>>>>>>
+>>>>>>> Well, that's a clear bug in the application, assuming siw has
+>>>>>>> not yet delivered a send completion for the operation using
+>>>>>>> the buffer. This is a basic Verbs API contract.
+>>>>>>
+>>>>>> May be so, but a kernel driver must not make any assumptions
+>>> about the
+>>>>>> content of memory controlled by user. So it is clearly wrong to
+>>> write
+>>>>>> data to a user buffer and then read it again to compute a CRC.
+>>>>>
+>>>>> But it's not a user buffer. It's been mapped into the kernel for
+>>> the
+>>>>> purpose of registering and performing data transfer This is
+>>> standard
+>>>>> i/o processing. Both kernel and user have access.
+>>>>
+>>>> It is a user buffer because the user has access. In fact it may
+>not
+>>>> even be mapped into the kernel address space.
+>>>
+>>> Belaboring this point a bit, but SIW certainly maps it, in order
+>to
+>>> copy. An adapter maps it, via dma_map, in order to do the same. My
+>>> point is simply that if the kernel tried to prevent that, the
+>whole
+>>> i/o model would break down.
+>>>
+>>> In other words, if a hardware adapter were doing this same thing,
+>>> would you consider it out of spec? If so, why?
+>>>
+>>> Tom.
+>>>
+>>>>> Furthermore, an RDMA hardware adapter has zero notion of user
+>>> buffers.
+>>>>> All it gets is a registration, with memory described by dma
+>>> addresses.
+>>>>> It can perform whatever memory operations are required on them,
+>>> and the
+>>>>> kernel isn't even in the loop.
+>>>>
+>>>> Adapters cannot make assumptions about data they place in memory
+>>>> buffers - ie they cannot write something and then read it back on
+>>> the
+>>>> assumption it has not changed. They cannot read something twice
+>on
+>>> the
+>>>> assumption it has not changed, etc. It is a security requirement.
+>>>>
+>>>>>> All the applications touching buffers without waiting for a
+>>> completion
+>>>>>> are relying on some extended behavior outside the
+>specification,
+>>> but
+>>>>>> they cannot cause the kernel to malfunction and report bogus
+>data
+>>>>>> integrity errors.
+>>>>>
+>>>>> Ok, this I agree with, but the RDMA specifications were quite
+>>> careful
+>>>>> about it. And we *definitely* don't want to require that the
+>>> providers
+>>>>> all start double-buffering incoming data, in order to shield an
+>>>>> uncomplying application from itself. To double buffer RDMA
+>Writes
+>>> (and
+>>>>> Sends) would undo the entire direct data placement design!
+>>>>>
+>>>>> Bernard, I'd still welcome your thoughts on whether you can
+>>> compute
+>>>>> the MPA CRC inline in SIW during the copy_to_user. Avoiding the
+>>> overhead
+>>>>> of reading back the data after copying could be a speedup for
+>you?
+>> 
+>> It would have to be integrated into skb_copy_bits(). Best
+>> allowing the caller to provide a variable digets which gets
+>> updated on the go. So we might propose that to the right people?
+>> 
+>> In the mean time, I may have to accept a substantial
+>> throughput breakdown if the CRC is switched on. For large data
+>> chunks, perf is close to cut to half, compared to what I had
+>> before with CRC.
+>> 
+>> Interestingly, the penalty mainly comes from walking
+>> the skb again, and not from touching the data twice:
+>> If I would provide an intermediate scratch buffer where I
+>> copy into the skb content first, checksum it, and then
+>> memcpy it to the target, I would almost maintain current
+>> perf.
+>> 
+>> That obviously contradicts the RDMA concept ;) And it is
+>> not really nice. At the other hand, since we would need
+>> only one page size buffer per core (since siw RX runs in
+>> softirq), it might not be a big waste of memory though...
+>> What do others think?
+>
+>I hate the idea of forcing data through a bounce buffer. And I think
+>that the performance hit will increase in a realworld workload, since
+>in single-flow tests the CPU cache basically stays warm after your
+>skb_copy_bits(). Once the processor gets more busy, cache eviction
+>will change things for the worse - just when you least want it to.
+>
+>Tom.
+>
+Right. Sounds ugly. But I am not sure though about the
+bad caching effects. It would be a per-CPU buffer, not
+per-QP. Only one QP at a time would have access to that
+buffer and do skb_copy_bits() into it and memcpy()
+out of it back to back. siw rx path runs in softirq and
+does not get interrupted by RX of another QP on the same
+CPU.
 
-On 13/06/2019 16:35, Catalin Marinas wrote:
-> On Thu, Jun 13, 2019 at 12:16:59PM +0100, Dave P Martin wrote:
->> On Wed, Jun 12, 2019 at 01:43:20PM +0200, Andrey Konovalov wrote:
->>> From: Catalin Marinas <catalin.marinas@arm.com>
->>>
->>> It is not desirable to relax the ABI to allow tagged user addresses into
->>> the kernel indiscriminately. This patch introduces a prctl() interface
->>> for enabling or disabling the tagged ABI with a global sysctl control
->>> for preventing applications from enabling the relaxed ABI (meant for
->>> testing user-space prctl() return error checking without reconfiguring
->>> the kernel). The ABI properties are inherited by threads of the same
->>> application and fork()'ed children but cleared on execve().
->>>
->>> The PR_SET_TAGGED_ADDR_CTRL will be expanded in the future to handle
->>> MTE-specific settings like imprecise vs precise exceptions.
->>>
->>> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
->>> ---
->>>  arch/arm64/include/asm/processor.h   |  6 +++
->>>  arch/arm64/include/asm/thread_info.h |  1 +
->>>  arch/arm64/include/asm/uaccess.h     |  3 +-
->>>  arch/arm64/kernel/process.c          | 67 ++++++++++++++++++++++++++++
->>>  include/uapi/linux/prctl.h           |  5 +++
->>>  kernel/sys.c                         | 16 +++++++
->>>  6 files changed, 97 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
->>> index fcd0e691b1ea..fee457456aa8 100644
->>> --- a/arch/arm64/include/asm/processor.h
->>> +++ b/arch/arm64/include/asm/processor.h
->>> @@ -307,6 +307,12 @@ extern void __init minsigstksz_setup(void);
->>>  /* PR_PAC_RESET_KEYS prctl */
->>>  #define PAC_RESET_KEYS(tsk, arg)	ptrauth_prctl_reset_keys(tsk, arg)
->>>  
->>> +/* PR_TAGGED_ADDR prctl */
->>
->> (A couple of comments I missed in my last reply:)
->>
->> Name mismatch?
-> 
-> Yeah, it went through several names but it seems that I didn't update
-> all places.
-> 
->>> +long set_tagged_addr_ctrl(unsigned long arg);
->>> +long get_tagged_addr_ctrl(void);
->>> +#define SET_TAGGED_ADDR_CTRL(arg)	set_tagged_addr_ctrl(arg)
->>> +#define GET_TAGGED_ADDR_CTRL()		get_tagged_addr_ctrl()
->>> +
->>
->> [...]
->>
->>> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
->>> index 3767fb21a5b8..69d0be1fc708 100644
->>> --- a/arch/arm64/kernel/process.c
->>> +++ b/arch/arm64/kernel/process.c
->>> @@ -30,6 +30,7 @@
->>>  #include <linux/kernel.h>
->>>  #include <linux/mm.h>
->>>  #include <linux/stddef.h>
->>> +#include <linux/sysctl.h>
->>>  #include <linux/unistd.h>
->>>  #include <linux/user.h>
->>>  #include <linux/delay.h>
->>> @@ -323,6 +324,7 @@ void flush_thread(void)
->>>  	fpsimd_flush_thread();
->>>  	tls_thread_flush();
->>>  	flush_ptrace_hw_breakpoint(current);
->>> +	clear_thread_flag(TIF_TAGGED_ADDR);
->>>  }
->>>  
->>>  void release_thread(struct task_struct *dead_task)
->>> @@ -552,3 +554,68 @@ void arch_setup_new_exec(void)
->>>  
->>>  	ptrauth_thread_init_user(current);
->>>  }
->>> +
->>> +/*
->>> + * Control the relaxed ABI allowing tagged user addresses into the kernel.
->>> + */
->>> +static unsigned int tagged_addr_prctl_allowed = 1;
->>> +
->>> +long set_tagged_addr_ctrl(unsigned long arg)
->>> +{
->>> +	if (!tagged_addr_prctl_allowed)
->>> +		return -EINVAL;
->>
->> So, tagging can actually be locked on by having a process enable it and
->> then some possibly unrelated process clearing tagged_addr_prctl_allowed.
->> That feels a bit weird.
-> 
-> The problem is that if you disable the ABI globally, lots of
-> applications would crash. This sysctl is meant as a way to disable the
-> opt-in to the TBI ABI. Another option would be a kernel command line
-> option (I'm not keen on a Kconfig option).
+Thanks
+Bernard.
+>> 
+>> 
+>>>>
+>>>> Copy and CRC is obviously the right thing to do.
+>>>>
+>>>> Jason
+>>>>
+>> I think you mean CRC first and copy then.
+>> 
+>> Many thanks for that fruitful discussion.
+>> Bernard.
+>> 
+>> 
+>> 
+>
 >
 
-Why you are not keen on a Kconfig option?
-
->> Do we want to allow a process that has tagging on to be able to turn
->> it off at all?  Possibly things like CRIU might want to do that.
-> 
-> I left it in for symmetry but I don't expect it to be used. A potential
-> use-case is doing it per subsequent threads in an application.
-> 
->>> +	if (is_compat_task())
->>> +		return -EINVAL;
->>> +	if (arg & ~PR_TAGGED_ADDR_ENABLE)
->>> +		return -EINVAL;
->>
->> How do we expect this argument to be extended in the future?
-> 
-> Yes, for MTE. That's why I wouldn't allow random bits here.
-> 
->> I'm wondering whether this is really a bitmask or an enum, or a mixture
->> of the two.  Maybe it doesn't matter.
-> 
-> User may want to set PR_TAGGED_ADDR_ENABLE | PR_MTE_PRECISE in a single
-> call.
-> 
->>> +	if (arg & PR_TAGGED_ADDR_ENABLE)
->>> +		set_thread_flag(TIF_TAGGED_ADDR);
->>> +	else
->>> +		clear_thread_flag(TIF_TAGGED_ADDR);
->>
->> I think update_thread_flag() could be used here.
-> 
-> Yes. I forgot you added this.
-> 
-
--- 
-Regards,
-Vincenzo
