@@ -2,163 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D544444620
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89814461B
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730538AbfFMQt0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 12:49:26 -0400
-Received: from mail-eopbgr50060.outbound.protection.outlook.com ([40.107.5.60]:26968
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727643AbfFMEer (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 00:34:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C6dg8ebZCspA9SBalTiQqMB3jkF5JwK9tzroGEq/4L0=;
- b=dXA8XaQdCteckvsbG3ULAhSaDH4ivI+9OqgsyZ9usVTK3wKKhYDGsRAXFgfQgNnkc8gvIQwZaCAP2VGIlnEpmRyyfZpsVCdw6KtOGcF6Y1EOr21vJO1DdOnLskjMZqYjnW4JyYRjcLrDVKCSbKfvNhG6VqV7aSKWt3U2C/z542U=
-Received: from VI1PR0501MB2271.eurprd05.prod.outlook.com (10.169.134.149) by
- VI1PR0501MB2480.eurprd05.prod.outlook.com (10.168.136.144) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.11; Thu, 13 Jun 2019 04:34:42 +0000
-Received: from VI1PR0501MB2271.eurprd05.prod.outlook.com
- ([fe80::10d7:3b2d:5471:1eb6]) by VI1PR0501MB2271.eurprd05.prod.outlook.com
- ([fe80::10d7:3b2d:5471:1eb6%10]) with mapi id 15.20.1987.012; Thu, 13 Jun
- 2019 04:34:42 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-CC:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Mark Bloch <markb@mellanox.com>, Petr Vorel <pvorel@suse.cz>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>
-Subject: RE: [PATCH mlx5-next v1 2/4] net/mlx5: Expose eswitch encap mode
-Thread-Topic: [PATCH mlx5-next v1 2/4] net/mlx5: Expose eswitch encap mode
-Thread-Index: AQHVIRk3qF4KV1EKd0CJo1dhG6j6qKaZAE2A
-Date:   Thu, 13 Jun 2019 04:34:42 +0000
-Message-ID: <VI1PR0501MB2271FD29406927D5F4327A0DD1EF0@VI1PR0501MB2271.eurprd05.prod.outlook.com>
-References: <20190612122014.22359-1-leon@kernel.org>
- <20190612122014.22359-3-leon@kernel.org>
-In-Reply-To: <20190612122014.22359-3-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [122.182.253.99]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8950c7da-8b48-45ba-12fd-08d6efb8743e
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR0501MB2480;
-x-ms-traffictypediagnostic: VI1PR0501MB2480:
-x-microsoft-antispam-prvs: <VI1PR0501MB24800389BA4E3AD61B11A53CD1EF0@VI1PR0501MB2480.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-forefront-prvs: 0067A8BA2A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(136003)(346002)(376002)(366004)(396003)(199004)(189003)(13464003)(8676002)(229853002)(66476007)(73956011)(66946007)(486006)(6436002)(76116006)(478600001)(66446008)(81156014)(66556008)(33656002)(81166006)(64756008)(66066001)(9686003)(86362001)(8936002)(6506007)(6116002)(3846002)(14454004)(53546011)(54906003)(446003)(6246003)(25786009)(316002)(99286004)(52536014)(55016002)(107886003)(4326008)(476003)(102836004)(53936002)(6636002)(7736002)(110136005)(186003)(5660300002)(2906002)(305945005)(76176011)(71190400001)(7696005)(71200400001)(11346002)(68736007)(74316002)(256004)(26005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0501MB2480;H:VI1PR0501MB2271.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: EvoA+WqCb6nblIpqAVftfYkbd9TkgerQUVCvXhi3b2dSic2+fHxQpqdpR9/laflvzwORDD5vzPfYy5gzEG14FB233nivAvnk5JXMjVruMFbFVRfctgUwpoC7AmFf79iKwh0kQMgUweXyGzHGRCUdOcuHAsZm2zS6jruC6AvVXEJnImSWrdvx51zqbq86QHCOTQwV1yj4kobbPcBNs7/CxCL5I8oZXUN73FTbkxTKbjFF2pdWrLsMd2mao0LXEt9Gmgu9C3GD/PYgf4HE12cvuN5SXXEJwRuEXGByRyOAmDle3yXi567CvVPQ2EezA56MI95QutBRvXFUNVH9pcBEslIF0bG98RG4KWGx2QPQCuuFSRo0caR1NqO0GhjbPweA0bT63dnl3UrANLIqsmeKraPC2sOZY/rBTEqkZ5q4dg4=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1731887AbfFMQtG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 12:49:06 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:41045 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727662AbfFMEhz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 00:37:55 -0400
+Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id BEAB014A744;
+        Thu, 13 Jun 2019 14:37:47 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hbHTl-0005bp-W0; Thu, 13 Jun 2019 14:36:49 +1000
+Date:   Thu, 13 Jun 2019 14:36:49 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190613043649.GJ14363@dread.disaster.area>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+ <20190607110426.GB12765@quack2.suse.cz>
+ <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+ <20190608001036.GF14308@dread.disaster.area>
+ <20190612123751.GD32656@bombadil.infradead.org>
+ <20190613002555.GH14363@dread.disaster.area>
+ <20190613032320.GG32656@bombadil.infradead.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8950c7da-8b48-45ba-12fd-08d6efb8743e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jun 2019 04:34:42.1518
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: parav@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2480
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190613032320.GG32656@bombadil.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0 cx=a_idp_d
+        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
+        a=7-415B0cAAAA:8 a=VVmKscACqtQWyMykWwEA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Jun 12, 2019 at 08:23:20PM -0700, Matthew Wilcox wrote:
+> On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
+> > On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
+> > > That's rather different from the normal meaning of 'exclusive' in the
+> > > context of locks, which is "only one user can have access to this at
+> > > a time".
+> > 
+> > Layout leases are not locks, they are a user access policy object.
+> > It is the process/fd which holds the lease and it's the process/fd
+> > that is granted exclusive access.  This is exactly the same semantic
+> > as O_EXCL provides for granting exclusive access to a block device
+> > via open(), yes?
+> 
+> This isn't my understanding of how RDMA wants this to work, so we should
+> probably clear that up before we get too far down deciding what name to
+> give it.
+> 
+> For the RDMA usage case, it is entirely possible that both process A
+> and process B which don't know about each other want to perform RDMA to
+> file F.  So there will be two layout leases active on this file at the
+> same time.  It's fine for IOs to simultaneously be active to both leases.
 
+Yes, it is.
 
-> -----Original Message-----
-> From: Leon Romanovsky <leon@kernel.org>
-> Sent: Wednesday, June 12, 2019 5:50 PM
-> To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe
-> <jgg@mellanox.com>
-> Cc: Leon Romanovsky <leonro@mellanox.com>; RDMA mailing list <linux-
-> rdma@vger.kernel.org>; Maor Gottlieb <maorg@mellanox.com>; Mark Bloch
-> <markb@mellanox.com>; Parav Pandit <parav@mellanox.com>; Petr Vorel
-> <pvorel@suse.cz>; Saeed Mahameed <saeedm@mellanox.com>; linux-
-> netdev <netdev@vger.kernel.org>; Jiri Pirko <jiri@mellanox.com>
-> Subject: [PATCH mlx5-next v1 2/4] net/mlx5: Expose eswitch encap mode
->=20
-> From: Maor Gottlieb <maorg@mellanox.com>
->=20
-> Add API to get the current Eswitch encap mode.
-> It will be used in downstream patches to check if flow table can be creat=
-ed
-> with encap support or not.
->=20
-> Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/eswitch.c | 11 +++++++++++
->  include/linux/mlx5/eswitch.h                      | 12 ++++++++++++
->  2 files changed, 23 insertions(+)
->=20
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> index 9ea0ccfe5ef5..0c68d93bea79 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> @@ -2452,6 +2452,17 @@ u8 mlx5_eswitch_mode(struct mlx5_eswitch
-> *esw)  }  EXPORT_SYMBOL_GPL(mlx5_eswitch_mode);
->=20
-> +enum devlink_eswitch_encap_mode
-> +mlx5_eswitch_get_encap_mode(const struct mlx5_core_dev *dev) {
-> +	struct mlx5_eswitch *esw;
-> +
-> +	esw =3D dev->priv.eswitch;
-> +	return ESW_ALLOWED(esw) ? esw->offloads.encap :
-> +		DEVLINK_ESWITCH_ENCAP_MODE_NONE;
-> +}
-> +EXPORT_SYMBOL(mlx5_eswitch_get_encap_mode);
-> +
->  bool mlx5_esw_lag_prereq(struct mlx5_core_dev *dev0, struct
-> mlx5_core_dev *dev1)  {
->  	if ((dev0->priv.eswitch->mode =3D=3D SRIOV_NONE && diff --git
-> a/include/linux/mlx5/eswitch.h b/include/linux/mlx5/eswitch.h index
-> 0ca77dd1429c..f57c73e81267 100644
-> --- a/include/linux/mlx5/eswitch.h
-> +++ b/include/linux/mlx5/eswitch.h
-> @@ -7,6 +7,7 @@
->  #define _MLX5_ESWITCH_
->=20
->  #include <linux/mlx5/driver.h>
-> +#include <net/devlink.h>
->=20
->  #define MLX5_ESWITCH_MANAGER(mdev) MLX5_CAP_GEN(mdev,
-> eswitch_manager)
->=20
-> @@ -60,4 +61,15 @@ u8 mlx5_eswitch_mode(struct mlx5_eswitch *esw);
-> struct mlx5_flow_handle *  mlx5_eswitch_add_send_to_vport_rule(struct
-> mlx5_eswitch *esw,
->  				    int vport, u32 sqn);
-> +
-> +#ifdef CONFIG_MLX5_ESWITCH
-> +enum devlink_eswitch_encap_mode
-> +mlx5_eswitch_get_encap_mode(const struct mlx5_core_dev *dev); #else  /*
-> +CONFIG_MLX5_ESWITCH */ static inline enum
-> devlink_eswitch_encap_mode
-> +mlx5_eswitch_get_encap_mode(const struct mlx5_core_dev *dev) {
-> +	return DEVLINK_ESWITCH_ENCAP_MODE_NONE; } #endif /*
-> +CONFIG_MLX5_ESWITCH */
->  #endif
-> --
-> 2.20.1
-Reviewed-by: Parav Pandit <parav@mellanox.com>
+> But if the filesystem wants to move blocks around, it has to break
+> both leases.
 
+No, the _lease layer_ needs to break both leases when the filesystem
+calls break_layout().
+
+The filesystem is /completely unaware/ of whether a lease is held,
+how many leases are held, what is involved in revoking leases or
+whether they are exclusive or not. The filesystem only knows that it
+is about to perform an operation that may require a layout lease to
+be broken, so it's _asking permission_ from the layout lease layer
+whether it is OK to go ahead with the operation.
+
+See what I mean about the layout lease being an /access arbitration/
+layer? It's the layer that decides whether a modification can be
+made or not, not the filesystem. The layout lease layer tells the
+filesystem what it should do, the filesystem just has to ensure it
+adds layout breaking callouts in places that can block safely and
+are serialised to ensure operations from new layouts can't race with
+the operation that broke the existing layouts.
+
+> If Process C tries to do a write to file F without a lease, there's no
+> problem, unless a side-effect of the write would be to change the block
+> mapping,
+
+That's a side effect we cannot predict ahead of time. But it's
+also _completely irrelevant_ to the layout lease layer API and
+implementation.(*)
+
+> in which case either the leases must break first, or the write
+> must be denied.
+
+Which is exactly how I'm saying layout leases already interact with
+the filesystem: that if the lease cannot be broken, break_layout()
+returns -ETXTBSY to the filesystem, and the filesystem returns that
+to the application having made no changes at all. Layout leases are
+the policy engine, the filesystem just has to implement the
+break_layout() callouts such that layout breaking is consistent,
+correct, and robust....
+
+Cheers,
+
+Dave.
+
+(*) In the case of XFS, we don't know if a layout change will be
+necessary until we are deep inside the actual IO path and hold inode
+metadata locks. We can't block here to break the layout because IO
+completion and metadata commits need to occur to allow the
+application to release it's lease and IO completion requires that
+same inode metadata lock. i.e. if we block once we know a layout
+change needs to occur, we will deadlock the filesystem on the inode
+metadata lock.
+
+Hence the filesystem implementation dictates when the filesystem
+issues layout lease break notifications. However, these filesystem
+implementation issues do not dictate how applications interact with
+layout leases, how layout leases are managed, whether concurrent
+leases are allowed, whether leases can be broken, etc.  That's all
+managed by the layout lease layer and that's where the go/no go
+decision is made and communicated to the filesystem as the return
+value from the break_layout() call.
+
+-- 
+Dave Chinner
+david@fromorbit.com
