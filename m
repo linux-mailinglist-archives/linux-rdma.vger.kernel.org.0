@@ -2,146 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D126438B8
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739484385D
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732390AbfFMPH6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 11:07:58 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:58628 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727065AbfFMOBE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 10:01:04 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id DBF8C30BC591;
-        Thu, 13 Jun 2019 14:00:58 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BAC3119C67;
-        Thu, 13 Jun 2019 14:00:57 +0000 (UTC)
-Message-ID: <8f0573322765c3a0cf6843fc71136e2eb787f5bf.camel@redhat.com>
-Subject: Re: [PATCH] rdma: Remove nes
-From:   Doug Ledford <dledford@redhat.com>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Latif, Faisal" <faisal.latif@intel.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Date:   Thu, 13 Jun 2019 10:00:55 -0400
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7A5B2A8BB@fmsmsx124.amr.corp.intel.com>
-References: <20190610194911.12427-1-jgg@ziepe.ca>
-         <9DD61F30A802C4429A01CA4200E302A7A5B2A8BB@fmsmsx124.amr.corp.intel.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-bmHzgdF37ki7ml8Oxmht"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S1733074AbfFMPFS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 11:05:18 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:18569 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732447AbfFMOPp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 10:15:45 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 884B35EB88E6AF8D283F;
+        Thu, 13 Jun 2019 22:06:53 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Thu, 13 Jun 2019
+ 22:06:32 +0800
+Subject: Re: [PATCH] RDMA/hns: Fix an error code in
+ hns_roce_set_user_sq_size()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     "Wei Hu(Xavier)" <xavier.huwei@huawei.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+References: <20190608092714.GE28890@mwanda>
+ <20190612172316.GU6369@mtr-leonro.mtl.com> <20190613060517.GF1915@kadam>
+From:   oulijun <oulijun@huawei.com>
+Message-ID: <5c35d77f-c9e2-8fe0-86d4-2a1e5a3362e3@huawei.com>
+Date:   Thu, 13 Jun 2019 22:05:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Thu, 13 Jun 2019 14:01:04 +0000 (UTC)
+In-Reply-To: <20190613060517.GF1915@kadam>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+在 2019/6/13 14:05, Dan Carpenter 写道:
+> On Wed, Jun 12, 2019 at 08:23:16PM +0300, Leon Romanovsky wrote:
+>> On Sat, Jun 08, 2019 at 12:27:14PM +0300, Dan Carpenter wrote:
+>>> This function is supposed to return negative kernel error codes but here
+>>> it returns CMD_RST_PRC_EBUSY (2).  The error code eventually gets passed
+>>> to IS_ERR() and since it's not an error pointer it leads to an Oops in
+>>> hns_roce_v1_rsv_lp_qp()
+>>>
+>>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>>> ---
+>>> Static analysis.  Not tested.
+>>>
+>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++--
+>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>>> index ac017c24b200..018ff302ab9e 100644
+>>> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>>> @@ -1098,7 +1098,7 @@ static int hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
+>>>  	if (ret == CMD_RST_PRC_SUCCESS)
+>>>  		return 0;
+>>>  	if (ret == CMD_RST_PRC_EBUSY)
+>> The better fix will be to remove CMD_RST_PRC_* definitions in favor of
+>> normal errno.
+>>
+> Yes.
+>
+> I've looked at that idea and I would almost feel like it's easy enough
+> to send a patch like that without testing it at all.  But it would be
+> better if the people with the hardware sent it.  I reported this bug
+> months ago...
+>
+> regards,
+> dan carpenter
+>
+> .
+Hi, dan carpenter
+   Sorry to reply slowly. I have noticed before months ago when I see your email.
+But we are sorting through our entire process and haven't had time to deal with
+it yet.
 
---=-bmHzgdF37ki7ml8Oxmht
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+  We are agree with your modifications after analysis.   For leon's advice,  We are
+considering. If consider to use normal errno, it is not easy to review the entire
+reset for others.
+  We will give a patch for testing and send it.
 
-On Wed, 2019-06-12 at 18:48 +0000, Saleem, Shiraz wrote:
-> > Subject: [PATCH] rdma: Remove nes
-> >=20
-> > From: Jason Gunthorpe <jgg@mellanox.com>
-> >=20
-> > This driver was first merged over 10 years ago and has not seen
-> > major activity by
-> > the authors in the last 7 years. However, in that time it has been
-> > patched 150 times
-> > to adapt it to changing kernel APIs.
-> >=20
-> > Further, the hardware has several issues, like not supporting 64
-> > bit DMA, that make
-> > it rather uninteresting for use with modern systems and RDMA.
-> >=20
-> > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> > ---
-> >  .../ABI/stable/sysfs-class-infiniband         |   17 -
-> >  MAINTAINERS                                   |    8 -
-> >  drivers/infiniband/Kconfig                    |    1 -
-> >  drivers/infiniband/hw/Makefile                |    1 -
-> >  drivers/infiniband/hw/nes/Kconfig             |   15 -
-> >  drivers/infiniband/hw/nes/Makefile            |    3 -
-> >  drivers/infiniband/hw/nes/nes.c               | 1205 -----
-> >  drivers/infiniband/hw/nes/nes.h               |  574 ---
-> >  drivers/infiniband/hw/nes/nes_cm.c            | 3992 -----------
-> > ------
-> >  drivers/infiniband/hw/nes/nes_cm.h            |  470 --
-> >  drivers/infiniband/hw/nes/nes_context.h       |  193 -
-> >  drivers/infiniband/hw/nes/nes_hw.c            | 3887 -----------
-> > -----
-> >  drivers/infiniband/hw/nes/nes_hw.h            | 1380 ------
-> >  drivers/infiniband/hw/nes/nes_mgt.c           | 1155 -----
-> >  drivers/infiniband/hw/nes/nes_mgt.h           |   97 -
-> >  drivers/infiniband/hw/nes/nes_nic.c           | 1870 --------
-> >  drivers/infiniband/hw/nes/nes_utils.c         |  915 ----
-> >  drivers/infiniband/hw/nes/nes_verbs.c         | 3754 -----------
-> > -----
-> >  drivers/infiniband/hw/nes/nes_verbs.h         |  198 -
-> >  include/uapi/rdma/nes-abi.h                   |  115 -
-> >  20 files changed, 19850 deletions(-)
-> >  delete mode 100644 drivers/infiniband/hw/nes/Kconfig  delete mode
-> > 100644
-> > drivers/infiniband/hw/nes/Makefile
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes.c  delete mode
-> > 100644
-> > drivers/infiniband/hw/nes/nes.h  delete mode 100644
-> > drivers/infiniband/hw/nes/nes_cm.c
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes_cm.h
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes_context.h
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes_hw.c
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes_hw.h
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes_mgt.c
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes_mgt.h
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes_nic.c
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes_utils.c
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes_verbs.c
-> >  delete mode 100644 drivers/infiniband/hw/nes/nes_verbs.h
-> >  delete mode 100644 include/uapi/rdma/nes-abi.h
-> >=20
->=20
-> Thank you!
->=20
-> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Thanks.
+Lijun Ou
+   
 
-Straight forward enough.  Applied to for-next, thanks.
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
-2FDD
-
---=-bmHzgdF37ki7ml8Oxmht
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0CVxcACgkQuCajMw5X
-L927gA/+O6Z9t7R0ZUAmIukt9xf+u1GGfL0Fz2iJi0gXVTbudD/VfnNbRHb/7ZuN
-79YrCqQDcg3cJDDkFmxCofaufNG9uG3owWmP6x1XNPN+s0Lw5Ir1e85zRFLKgGGI
-6iUmap/DsNMCeCaLB8SWRjbxVu1LGLY+yx5+y3vwpFCJ51YGnxt9m+UWcXpcZXkG
-MOHrRB/qJYSm2wASms/kVyG/4zDeYXSEygzZPFcaTSErt0NcdzyobupJfPS+yUjq
-xCDepqYoxVltoLLjo1hF9p4UN6oLGjEfP81HRvBan/GZMScGkLrAob0MhhTyzieG
-Mztz5SOV8XzVEuNLeuFuhbznc3Z4XvcekboVIkxXMUUVEuBhzIErqoKt0atarL0g
-gqQK5v76JcM5pJxk8xWBIJ9E1VIIeTVAhdzr8cOUy5onqgjuiHgtdk5OTYufYJNI
-+HEw4m6VdIAB+SMmiEKmum+uzFXjzsz/JhtGGhOIVK0E1V/kcqGMfsnX5zFrSTus
-BG1iiDaaHyCdlftQJU6eq7HL6OLZiXVN85RJIf7XiuOWGe3rVqsBL2aMimK2C73q
-WAkLkroPhHZNeBnM5e+l5RCMWvxkmwX7YoUbB9PhA7HY+fsXmimvtwwMXln6Jony
-Ar6s4H9/iOd+WHM8qLwilik/7711kZHuUuG449YBr/PLRkzxHyE=
-=/iDI
------END PGP SIGNATURE-----
-
---=-bmHzgdF37ki7ml8Oxmht--
 
