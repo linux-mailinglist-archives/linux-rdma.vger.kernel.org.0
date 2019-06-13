@@ -2,125 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE501449C7
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 19:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CE0449ED
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 19:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbfFMRjq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 13:39:46 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53032 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726965AbfFMRjq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 13:39:46 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5DHd4Zg185540;
-        Thu, 13 Jun 2019 17:39:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2018-07-02; bh=mi9aElUTCRIiQJie6XA4eLpTipbeI9MjyOvAunbdU/M=;
- b=k6uPVU1rrtdvUJOhXKY7/nJHUkwHYhPS59cSDuKj3bHFVedl5PHcBifOfBvzSBqRfhq1
- iGBr93FhN3vuY+NxzWCIUb9oe2nXYsWjL5NeGByyht/ACIvyZyD18YqmpXMruT63zm2c
- lXaY5AbzZHjo5WDbvw8e3b0NQaUnjgP42EBQTFrgQmgHAnY8PyAC17eUzxcPlZgEXIbd
- 8hqxEEXHzCvin+m0tEN1i629+gYWI57BQII3y2PeOHJWY5OWHH0cCfbdQBgvmDLhYHc/
- lt2ZhJw5wE+yyuZ4AqVgNooUHR6nC42pZq8hSFC7EU3FLsgi3Cz4agGvc0hf9JVgbBpr qA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2t05nr32bg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Jun 2019 17:39:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5DHcFUY196011;
-        Thu, 13 Jun 2019 17:39:31 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2t0p9shnt2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Jun 2019 17:39:31 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5DHdTSR009412;
-        Thu, 13 Jun 2019 17:39:29 GMT
-Received: from [192.168.10.144] (/51.175.236.248)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 13 Jun 2019 10:39:29 -0700
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v2] RDMA/cma: Make CM response timeout and # CM retries
- configurable
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <20190613172355.GF22901@ziepe.ca>
-Date:   Thu, 13 Jun 2019 19:39:24 +0200
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Steve Wise <swise@opengridcomputing.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <1D8E6B14-3336-42B3-B572-596DD2183D89@oracle.com>
-References: <20190226075722.1692315-1-haakon.bugge@oracle.com>
- <174ccd37a9ffa05d0c7c03fe80ff7170a9270824.camel@redhat.com>
- <67B4F337-4C3A-4193-B1EF-42FD4765CBB7@oracle.com>
- <20190613172355.GF22901@ziepe.ca>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9287 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906130129
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9287 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906130129
+        id S1726519AbfFMRuL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 13:50:11 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45433 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbfFMRuL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 13:50:11 -0400
+Received: by mail-qt1-f196.google.com with SMTP id j19so23540135qtr.12
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 10:50:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CW8Dmkt0odT79Xf4+B/xbpKgEC6daDBVeyuQmTJJES8=;
+        b=P0/fYNP9ZcO3+OGBpONisUzkN8/fc+iUh8W32JiaGiFfNUt4qj3hrdWOLa/2kOC2Ga
+         uu/8ijXw30ur7PSRQYFk7Oe6OadCse1RRqrxDoqyNJlNajrnSqTh1ShrZ48X/c3/G4b1
+         9g+0Y3ZmUyd781bC8WLIAtVBzmwUTu3co6WnZDr4CXQvlI8tMzdoMpQOhxvEQuWv/dIr
+         FMHaFB6W/Smdy5NjElS5AmWr8tSHAPDVdpcJzzt7mZ8Ty3sqcvZGxCvSXRIoQ81pMrC3
+         kMb0362dUdKeGvJFK+wK54XHlEHfz16TwTLECzqd5j0SbpDhpcQWqdCP3c8gebNRqYEV
+         sAgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CW8Dmkt0odT79Xf4+B/xbpKgEC6daDBVeyuQmTJJES8=;
+        b=OYtavX4UUoHF2hgdXFpJQJVQeWLD5KM0r3arTkMAe5Achto1R9VekL+Rsf+cWg+iei
+         RhROOBwdxnJbNj/2ZcLhG+1X1k3GU2Q8E5GhM4GQ2Qhx+jpmYh5vuJN2tWYUGyaPXNC2
+         eY7HHQcO4/fIGbvFPzuolEFre3aXl5skcTB1sTzzfCcktzfoFJZtcVDmLaHpQ/wlg+kC
+         8pbGgkyKN/hT2zo4MmJD18qxfGSg3kesFeJ3f54mrKJkNH0abPCFBfrEr5JbEHjlO6wC
+         4UsSwvLfR4d82fbbTtxGsgKrXgk7/b7Sw6gUzsvt8Nwldf1/D+PGXs8PfWjIAoDzwqhb
+         lq6Q==
+X-Gm-Message-State: APjAAAWn56xC9VyTr1SLrUx4B8IASEz66zpM5ODJI3EBJDi4wuKGdulC
+        BRM42HDpDdu9wBckZmQxaSDROw==
+X-Google-Smtp-Source: APXvYqyiojsO9AL2I7FFH8QZQ3t97ZM/cVMsGf4rVJyZYQVaUkpxSashUx10y6Oje86asaNHv0rxLg==
+X-Received: by 2002:aed:254c:: with SMTP id w12mr79027848qtc.127.1560448210185;
+        Thu, 13 Jun 2019 10:50:10 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id c4sm137165qkd.24.2019.06.13.10.50.09
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 13 Jun 2019 10:50:09 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hbTrV-0006NJ-8F; Thu, 13 Jun 2019 14:50:09 -0300
+Date:   Thu, 13 Jun 2019 14:50:09 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Yang, Philip" <Philip.Yang@amd.com>
+Cc:     "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+Subject: Re: [PATCH v2 hmm 00/11] Various revisions from a locking/code review
+Message-ID: <20190613175009.GG22901@ziepe.ca>
+References: <20190606184438.31646-1-jgg@ziepe.ca>
+ <20190611194858.GA27792@ziepe.ca>
+ <5d3b0ae2-3662-cab2-5e6c-82912f32356a@amd.com>
+ <69bb7fe9-98e7-8a49-3e0b-f639010b8991@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <69bb7fe9-98e7-8a49-3e0b-f639010b8991@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Jun 12, 2019 at 09:49:12PM +0000, Yang, Philip wrote:
+> Rebase to https://github.com/jgunthorpe/linux.git hmm branch, need some 
+> changes because of interface hmm_range_register change. Then run a quick 
+> amdgpu_test. Test is finished, result is ok.
 
+Great! Thanks
 
-> On 13 Jun 2019, at 19:23, Jason Gunthorpe <jgg@ziepe.ca> wrote:
->=20
-> On Thu, Jun 13, 2019 at 06:58:30PM +0200, H=C3=A5kon Bugge wrote:
->=20
->> If you refer to the backlog parameter in rdma_listen(), I cannot see
->> it being used at all for IB.
->>=20
->> For CX-3, which is paravirtualized wrt. MAD packets, it is the proxy
->> UD receive queue length for the PF driver that can be construed as a
->> backlog.=20
->=20
-> No, in IB you can drop UD packets if your RQ is full - so the proxy RQ
-> is really part of the overall RQ on QP1.
->=20
-> The backlog starts once packets are taken off the RQ and begin the
-> connection accept processing.
+I'll add your Tested-by to the series
 
-Do think we say the same thing. If, incoming REQ processing is severly =
-delayed, the backlog is #entries in the QP1 receive queue in the PF. I =
-can call rdma_listen() with a backlog of a zillion, but it will not =
-help.
+>  But there is below kernel BUG message, seems hmm_free_rcu calls
+> down_write.....
+> 
+> [ 1171.919921] BUG: sleeping function called from invalid context at 
+> /home/yangp/git/compute_staging/kernel/kernel/locking/rwsem.c:65
+> [ 1171.919933] in_atomic(): 1, irqs_disabled(): 0, pid: 53, name: 
+> kworker/1:1
+> [ 1171.919938] 2 locks held by kworker/1:1/53:
+> [ 1171.919940]  #0: 000000001c7c19d4 ((wq_completion)rcu_gp){+.+.}, at: 
+> process_one_work+0x20e/0x630
+> [ 1171.919951]  #1: 00000000923f2cfa 
+> ((work_completion)(&sdp->work)){+.+.}, at: process_one_work+0x20e/0x630
+> [ 1171.919959] CPU: 1 PID: 53 Comm: kworker/1:1 Tainted: G        W 
+>     5.2.0-rc1-kfd-yangp #196
+> [ 1171.919961] Hardware name: ASUS All Series/Z97-PRO(Wi-Fi ac)/USB 3.1, 
+> BIOS 9001 03/07/2016
+> [ 1171.919965] Workqueue: rcu_gp srcu_invoke_callbacks
+> [ 1171.919968] Call Trace:
+> [ 1171.919974]  dump_stack+0x67/0x9b
+> [ 1171.919980]  ___might_sleep+0x149/0x230
+> [ 1171.919985]  down_write+0x1c/0x70
+> [ 1171.919989]  hmm_free_rcu+0x24/0x80
+> [ 1171.919993]  srcu_invoke_callbacks+0xc9/0x150
+> [ 1171.920000]  process_one_work+0x28e/0x630
+> [ 1171.920008]  worker_thread+0x39/0x3f0
+> [ 1171.920014]  ? process_one_work+0x630/0x630
+> [ 1171.920017]  kthread+0x11c/0x140
+> [ 1171.920021]  ? kthread_park+0x90/0x90
+> [ 1171.920026]  ret_from_fork+0x24/0x30
 
->> Customer configures #VMs and different workload may lead to way
->> different number of CM connections. The proxying of MAD packet
->> through the PF driver has a finite packet rate. With 64 VMs, 10.000
->> QPs on each, all going down due to a switch failing or similar, you
->> have 640.000 DREQs to be sent, and with the finite packet rate of MA
->> packets through the PF, this takes more than the current CM
->> timeout. And then you re-transmit and increase the burden of the PF
->> proxying.
->=20
-> I feel like the performance of all this proxying is too low to support
-> such a large work load :(
+Thank you Phillip, it seems the prior tests were not done with
+lockdep..
 
-That is what I am aiming at, for example to spread the =
-completion_vector(s) for said QPs ;-)
+Sigh, I will keep this with the gross pagetable_lock then. I updated
+the patches on the git with this modification. I think we have covered
+all the bases so I will send another V of the series to the list and
+if no more comments then it will move ahead to hmm.git. Thanks to all.
 
--h
-
->=20
-> Can it be improved?
->=20
-> Jason
-
+diff --git a/mm/hmm.c b/mm/hmm.c
+index 136c812faa2790..4c64d4c32f4825 100644
+--- a/mm/hmm.c
++++ b/mm/hmm.c
+@@ -49,16 +49,15 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+ 
+ 	lockdep_assert_held_exclusive(&mm->mmap_sem);
+ 
++	/* Abuse the page_table_lock to also protect mm->hmm. */
++	spin_lock(&mm->page_table_lock);
+ 	if (mm->hmm) {
+-		if (kref_get_unless_zero(&mm->hmm->kref))
++		if (kref_get_unless_zero(&mm->hmm->kref)) {
++			spin_unlock(&mm->page_table_lock);
+ 			return mm->hmm;
+-		/*
+-		 * The hmm is being freed by some other CPU and is pending a
+-		 * RCU grace period, but this CPU can NULL now it since we
+-		 * have the mmap_sem.
+-		 */
+-		mm->hmm = NULL;
++		}
+ 	}
++	spin_unlock(&mm->page_table_lock);
+ 
+ 	hmm = kmalloc(sizeof(*hmm), GFP_KERNEL);
+ 	if (!hmm)
+@@ -81,7 +80,14 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+ 	}
+ 
+ 	mmgrab(hmm->mm);
++
++	/*
++	 * We hold the exclusive mmap_sem here so we know that mm->hmm is
++	 * still NULL or 0 kref, and is safe to update.
++	 */
++	spin_lock(&mm->page_table_lock);
+ 	mm->hmm = hmm;
++	spin_unlock(&mm->page_table_lock);
+ 	return hmm;
+ }
+ 
+@@ -89,10 +95,14 @@ static void hmm_free_rcu(struct rcu_head *rcu)
+ {
+ 	struct hmm *hmm = container_of(rcu, struct hmm, rcu);
+ 
+-	down_write(&hmm->mm->mmap_sem);
++	/*
++	 * The mm->hmm pointer is kept valid while notifier ops can be running
++	 * so they don't have to deal with a NULL mm->hmm value
++	 */
++	spin_lock(&hmm->mm->page_table_lock);
+ 	if (hmm->mm->hmm == hmm)
+ 		hmm->mm->hmm = NULL;
+-	up_write(&hmm->mm->mmap_sem);
++	spin_unlock(&hmm->mm->page_table_lock);
+ 	mmdrop(hmm->mm);
+ 
+ 	kfree(hmm);
