@@ -2,93 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD0C44A21
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 20:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F5E44CBE
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 21:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbfFMSCX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 14:02:23 -0400
-Received: from mail-eopbgr60058.outbound.protection.outlook.com ([40.107.6.58]:24148
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726860AbfFMSCX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 14:02:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ei14I7/r6LbptSKJMUvSfwIxuKYpTA+k+N+a/nCPrLo=;
- b=DzY/CnpEqA8RLbLm0hR1aM21BIcrVFHEBuIPPB+PHEyp1iKKsWenvt/jkE4OvSR6xqQef1ZWbX8UnZoizmHvABao4+ZobKthkrBob9EMx0T9vGXwdEFARyG7nQ645oG9vb/6merSycpg40wWc5K4MnLXOcFztr8Y1V9b16navmM=
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
- DB6PR0501MB2214.eurprd05.prod.outlook.com (10.168.56.12) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.12; Thu, 13 Jun 2019 18:02:19 +0000
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::a901:6951:59de:3278]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::a901:6951:59de:3278%2]) with mapi id 15.20.1987.012; Thu, 13 Jun 2019
- 18:02:19 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Leon Romanovsky <leonro@mellanox.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next 00/16] Mellanox, mlx5 next updates 10-06-2019
-Thread-Topic: [PATCH mlx5-next 00/16] Mellanox, mlx5 next updates 10-06-2019
-Thread-Index: AQHVH+WQKUAaOLo+ckSVksYLubbYd6aZ5HkA
-Date:   Thu, 13 Jun 2019 18:02:19 +0000
-Message-ID: <c1c038bc012806e704a39b2debabe39f8d33796c.camel@mellanox.com>
-References: <20190610233733.12155-1-saeedm@mellanox.com>
-In-Reply-To: <20190610233733.12155-1-saeedm@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.32.2 (3.32.2-1.fc30) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [209.116.155.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 658d1079-1120-4ca4-f6f8-08d6f02946f4
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2214;
-x-ms-traffictypediagnostic: DB6PR0501MB2214:
-x-microsoft-antispam-prvs: <DB6PR0501MB22148A2384112C42726B509EBEEF0@DB6PR0501MB2214.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0067A8BA2A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(376002)(396003)(366004)(136003)(39860400002)(53754006)(189003)(199004)(11346002)(2616005)(446003)(476003)(478600001)(14454004)(486006)(71190400001)(6512007)(2906002)(73956011)(66946007)(86362001)(64756008)(66446008)(66476007)(6246003)(102836004)(3846002)(186003)(68736007)(26005)(53936002)(71200400001)(229853002)(6486002)(15650500001)(6116002)(66556008)(256004)(6436002)(6636002)(8936002)(76176011)(99286004)(8676002)(36756003)(7736002)(58126008)(37006003)(6862004)(316002)(4326008)(54906003)(5660300002)(76116006)(91956017)(4744005)(305945005)(81166006)(25786009)(81156014)(6506007)(118296001)(450100002)(66066001);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2214;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: AkuYJRMBRDi+tkqF/c1oFsUA3/bcjkOVYjGtQhKhbmtcw9JCnzGxZir7xygBM+dquiX8zakWv1bDheRiSUsLSExanqTYvF9DFkHI8kIJWXlEcPLOKjezW4GHX1id4z+oWFkHwg7vEC2SEha/72IRoNSm60PwHT9pMujfu7HJtN6pz9q+tbPFCaTw7ZPhdhYYu7jem0L4eDMwkrE+6I5tNmZ22n9lcexbbCI5f5BY6tK4uw+jJh7HiWrRvw9dfglaqhfwsasEqullaW/pal68Cj+pSj/9V2XNBmX8Luo9upUD8iten0XTQbNt/62FtkuKZm4EGOBYnT2lb5S9Z341YcKo0nQqL98kcW36gIpJoka4tevy7kRMTb1l503tMsuLz+eHJ+tnYut49En4L20k6c+l7XEKbKgd4iW1rNqlXn0=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F27127C8E97B5C489F24E500EE4090E7@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729638AbfFMT6u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 15:58:50 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:44164 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbfFMT6u (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 15:58:50 -0400
+Received: by mail-io1-f67.google.com with SMTP id s7so555499iob.11
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 12:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:references:in-reply-to:mime-version:thread-index:date
+         :message-id:subject:to:cc;
+        bh=0g3LShZij9OvLky32ww/mm8nsliTsm7gD3njRd6NCQk=;
+        b=VvRUdVRnyB4TuhZ+9+/oPM6pb8vxTclPrmvRFZ9PzavJCtkYfSYgjGNiCUQTux1nUl
+         9VjOQatdu+aPOowyvOuIY8hKioFj1wntgGyBXavSkEATXrC/5DcyjhYCe5Ag1uW/q8zp
+         fQGdKjxC19RzzJyIAL/Mw4avblUSP65mKGcmY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:references:in-reply-to:mime-version
+         :thread-index:date:message-id:subject:to:cc;
+        bh=0g3LShZij9OvLky32ww/mm8nsliTsm7gD3njRd6NCQk=;
+        b=bU3SzTbe3YjAM//3JWH/c6Ga48LvjZAZoroYLM61R3mykT2TlFIDyg0uexl3pBvlK1
+         ieJ9wITmsLHqfwqaRRdMYxpE8n7JF1qxy1kVtZtuhjl1wu5IRtGezMiq4/0+aDQwrVCx
+         enoCysGGG8/GYwsOjsS6Mss2Ad3e/qn8zaWxbz37afAQafDZA1iNv8WsdOSvbVnsGaVh
+         OzYiW0KCFWWO/EKyLDgUOoT1nslmu2kzFcDR3x9vXTAN0g0ojziR7twnswHu4nUOSeSD
+         Rcyrixr5CNxVulzeoRccQT7TmoJlqSpJrYfJ95oYrk7/LL4X64uXsiUFh6OksUXlBSr+
+         OgSg==
+X-Gm-Message-State: APjAAAW5UvrdpEfSMzjkVkdWGo/zyJpFAZk59Urbk/BL3LoWalnSNwJz
+        nQueq1Okt5Fpqw1o4uoThsGfE0p6LgYgnx37F0zo6A==
+X-Google-Smtp-Source: APXvYqxdGc8NyPROiaW5qZ3CjU9Mi5BWb0Y5+Ghq0hcByTKiBd2ar5O9a3Vi002QTGCiPnE/Sx2A/4naPXD8YwkquS4=
+X-Received: by 2002:a6b:f910:: with SMTP id j16mr7292522iog.256.1560455929090;
+ Thu, 13 Jun 2019 12:58:49 -0700 (PDT)
+From:   Kashyap Desai <kashyap.desai@broadcom.com>
+References: <20190605190836.32354-1-hch@lst.de> <20190605190836.32354-11-hch@lst.de>
+ <cd713506efb9579d1f69a719d831c28d@mail.gmail.com> <20190608081400.GA19573@lst.de>
+In-Reply-To: <20190608081400.GA19573@lst.de>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 658d1079-1120-4ca4-f6f8-08d6f02946f4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jun 2019 18:02:19.1766
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2214
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQNLjZIO2zMn7N+9xPobnDbFSu4o5gI2RJdJAgF+bYgBfxw4kaN/cE8Q
+Date:   Fri, 14 Jun 2019 01:28:47 +0530
+Message-ID: <98f6557ae91a7cdfe8069fcf7d788c88@mail.gmail.com>
+Subject: RE: [PATCH 10/13] megaraid_sas: set virt_boundary_mask in the scsi host
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Sebastian Ott <sebott@linux.ibm.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Oliver Neukum <oneukum@suse.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
+        PDL-MPT-FUSIONLINUX <mpt-fusionlinux.pdl@broadcom.com>,
+        linux-hyperv@vger.kernel.org, linux-usb@vger.kernel.org,
+        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gTW9uLCAyMDE5LTA2LTEwIGF0IDIzOjM4ICswMDAwLCBTYWVlZCBNYWhhbWVlZCB3cm90ZToN
-Cj4gSGkgQWxsLA0KPiANCj4gVGhpcyBzZXJpZXMgaXMgYWltZWQgbWx4NS1uZXh0IGJyYW5jaCwg
-aXQgaW5jbHVkZXMgYSBjb3VwbGUgb2YgbG93DQo+IGxldmVsDQo+IHVwZGF0ZXMgZm9yIG1seDVf
-Y29yZSBkcml2ZXIsIG5lZWRlZCBmb3IgYm90aCByZG1hIGFuZCBuZXQtbmV4dA0KPiB0cmVlcy4N
-Cj4gDQo+IDEpIEJvZG9uZyByZWZhY3RvcnMgcXVlcnkgZXN3IGZ1bmN0aW9ucyBzbyBoZSBjb3Vs
-ZCB1c2UgaXQgdG8gc3VwcG9ydA0KPiBxdWVyeWluZyBtYXggVkZzIGZyb20gZGV2aWNlLg0KPiAN
-Cj4gMikgVnUsIGhhbmRsZXMgVkYgcmVwcmVzZW50b3JzIGNyZWF0aW9uIGZyb20gVkYgY3JlYXRp
-b24gaGFuZGxlcg0KPiBjb250ZXh0Lg0KPiANCj4gMykgRGFuaWVsLCBpbmNyZWFzZWQgdGhlIGZ3
-IGluaXRpYWxpemF0aW9uIHdhaXQgdGltZW91dCBmb3IgbGFyZ2UNCj4gc3Jpb3YNCj4gY29uZmln
-dXJhdGlvbi4NCj4gDQo+IDQpIFl1dmFsLCByZWZhY3RvcnMgSVJRIHZlY3RvcnMgbWFuYWdlbWVu
-dCBhbmQgc2VwYXJhdGVzIHRoZW0gZnJvbQ0KPiBFUXMsDQo+IHNvIElSUXMgY2FuIGJlIHNoYXJl
-ZCBiZXR3ZWVuIGRpZmZlcmVudCBFUXMgdG8gc2F2ZSBzeXN0ZW0gcmVzb3VyY2VzLA0KPiBlc3Bl
-Y2lhbGx5IG9uIFZNcyBhbmQgVkYgZnVuY3Rpb25zLg0KPiANCj4gNSkgQXJpZWwsIGV4cGxvaXRz
-IFl1dmFsJ3Mgd29yayBhbmQgdXNlcyBvbmx5IG9uZSBJUlEgZm9yIHRoZSA0IGFzeW5jDQo+IEVR
-cyB3ZSBoYXZlIHBlciBmdW5jdGlvbiAoU28gd2UgY2FuIHNhdmUgMyBJUlEgdmVjdG9ycyBwZXIg
-ZnVuY3Rpb24pLg0KPiANCj4gVGhhbmtzLA0KPiBTYWVlZC4NCj4gDQoNCkFwcGxpZWQgdG8gbWx4
-NS1uZXh0LA0KDQpUaGFua3MhDQoNCg==
+>
+> On Thu, Jun 06, 2019 at 09:07:27PM +0530, Kashyap Desai wrote:
+> > Hi Christoph, Changes for <megaraid_sas> and <mpt3sas> looks good. We
+> > want to confirm few sanity before ACK. BTW, what benefit we will see
+> > moving virt_boundry setting to SCSI mid layer ? Is it just modular
+> > approach OR any functional fix ?
+>
+> The big difference is that virt_boundary now also changes the
+> max_segment_size, and this ensures that this limit is also communicated
+to
+> the DMA mapping layer.
+Is there any changes in API  blk_queue_virt_boundary? I could not find
+relevant code which account for this. Can you help ?
+Which git repo shall I use for testing ? That way I can confirm, I didn't
+miss relevant changes.
+
+From your above explanation, it means (after this patch) max segment size
+of the MR controller will be set to 4K.
+Earlier it is possible to receive single SGE of 64K datalength (Since max
+seg size was 64K), but now the same buffer will reach the driver having 16
+SGEs (Each SGE will contain 4K length).
+Right ?
+
+Kashyap
