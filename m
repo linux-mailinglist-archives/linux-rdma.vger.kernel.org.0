@@ -2,121 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6166743B85
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02B643C6A
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731923AbfFMP35 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 11:29:57 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:46499 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731713AbfFMP3z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 11:29:55 -0400
-Received: by mail-qt1-f196.google.com with SMTP id h21so22986904qtn.13
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 08:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zI+cml8WbrmbJ9toyFXRrApWdKeWP1klnItjSAKRPGg=;
-        b=ez3y4b43vsN45W2H2bDstmo6Om2wBZpYtJKgMMjQ9NBoecm8EqzxMc/rNSpmMUBedy
-         80Ex/NCrVk0GjamXc8tFY6oZxMeqGSAa2XxliMKTTtJWm/Hdv+7/O2TlnSRLVmYLMjc1
-         8QLaCJlqlQNIG4Wtw5O1fja9ybK4S3vwEG6x4PLpKGnKhfBKyUDjUSuJ7Daf2FmV0ukB
-         Fiy/FGLk6V0O5Od1WI6hEe1YQb2rKTshssT0ZDeknDIfsjbY9xOSOCaaERP1VJPOdnB9
-         Me1HNUVA3ivb0wrw4Jz0PdvTbXzAgXVoN/LwODHkV6bcRV7ByakROGDgfhqlpDrkzCce
-         zwyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zI+cml8WbrmbJ9toyFXRrApWdKeWP1klnItjSAKRPGg=;
-        b=EBdWk7tjcgf6YxcqxjVO8Rc6ZAkx3mVKH2T0ssDFbhlgIu374LS7NGZTT6XoLpmE4x
-         JnCLm8v0v2dK4DQGZw0opdBIaB48dL+/S4o3R8gNECZ+W2Wg+JFGIOisvPtsAKii+SaR
-         vZqQOpSAAKhhfWtlCoW+nUlAKJKHwVHaCc2UtVviEhXh4IPBA+X94eLSn4sLPmjDbiw+
-         fohp9ND43gf9/wJyp39H0LiebQ7vL619WU+4ekxGFyYV1bvMVxN+fn7DE/p0ZciJLImQ
-         8Xas+/ufxuQHN48fEyDJsjXAlrcJCA4Z2MjaFKyqZEqb+HCuGASeL1kkrajiuyF55sGP
-         6MoA==
-X-Gm-Message-State: APjAAAXD9GQZBSLg4GH3BNGYdNB+JTecIuWoVUlXT9avCrmSwFVD4aen
-        3M2Jw7DJ9847pERbwz2dL18VEUkR0Fuxjg==
-X-Google-Smtp-Source: APXvYqxumou76h8DgPuXHGACUFtVz1bj3RAtdr2UUPeKh8lpCv3ZK4QnjNs+8s/8x74HDjzAfBeu7Q==
-X-Received: by 2002:a0c:b163:: with SMTP id r32mr4246320qvc.169.1560439794791;
-        Thu, 13 Jun 2019 08:29:54 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id s66sm1645906qkh.17.2019.06.13.08.29.54
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Jun 2019 08:29:54 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hbRfl-0001zA-RQ; Thu, 13 Jun 2019 12:29:53 -0300
-Date:   Thu, 13 Jun 2019 12:29:53 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        id S1727935AbfFMPfy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 11:35:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:42934 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731876AbfFMPfa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 11:35:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF6F23EF;
+        Thu, 13 Jun 2019 08:35:29 -0700 (PDT)
+Received: from C02TF0J2HF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE4553F718;
+        Thu, 13 Jun 2019 08:35:11 -0700 (PDT)
+Date:   Thu, 13 Jun 2019 16:35:07 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190613152953.GD22901@ziepe.ca>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
- <20190608001036.GF14308@dread.disaster.area>
- <20190612123751.GD32656@bombadil.infradead.org>
- <20190613002555.GH14363@dread.disaster.area>
- <20190613032320.GG32656@bombadil.infradead.org>
+        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: [PATCH v17 03/15] arm64: Introduce prctl() options to control
+ the tagged user addresses ABI
+Message-ID: <20190613153505.GU28951@C02TF0J2HF1T.local>
+References: <cover.1560339705.git.andreyknvl@google.com>
+ <a7a2933bea5fe57e504891b7eec7e9432e5e1c1a.1560339705.git.andreyknvl@google.com>
+ <20190613111659.GX28398@e103592.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190613032320.GG32656@bombadil.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190613111659.GX28398@e103592.cambridge.arm.com>
+User-Agent: Mutt/1.11.2 (2019-01-07)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 08:23:20PM -0700, Matthew Wilcox wrote:
-> On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
-> > On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
-> > > That's rather different from the normal meaning of 'exclusive' in the
-> > > context of locks, which is "only one user can have access to this at
-> > > a time".
+On Thu, Jun 13, 2019 at 12:16:59PM +0100, Dave P Martin wrote:
+> On Wed, Jun 12, 2019 at 01:43:20PM +0200, Andrey Konovalov wrote:
+> > From: Catalin Marinas <catalin.marinas@arm.com>
 > > 
-> > Layout leases are not locks, they are a user access policy object.
-> > It is the process/fd which holds the lease and it's the process/fd
-> > that is granted exclusive access.  This is exactly the same semantic
-> > as O_EXCL provides for granting exclusive access to a block device
-> > via open(), yes?
+> > It is not desirable to relax the ABI to allow tagged user addresses into
+> > the kernel indiscriminately. This patch introduces a prctl() interface
+> > for enabling or disabling the tagged ABI with a global sysctl control
+> > for preventing applications from enabling the relaxed ABI (meant for
+> > testing user-space prctl() return error checking without reconfiguring
+> > the kernel). The ABI properties are inherited by threads of the same
+> > application and fork()'ed children but cleared on execve().
+> > 
+> > The PR_SET_TAGGED_ADDR_CTRL will be expanded in the future to handle
+> > MTE-specific settings like imprecise vs precise exceptions.
+> > 
+> > Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> > ---
+> >  arch/arm64/include/asm/processor.h   |  6 +++
+> >  arch/arm64/include/asm/thread_info.h |  1 +
+> >  arch/arm64/include/asm/uaccess.h     |  3 +-
+> >  arch/arm64/kernel/process.c          | 67 ++++++++++++++++++++++++++++
+> >  include/uapi/linux/prctl.h           |  5 +++
+> >  kernel/sys.c                         | 16 +++++++
+> >  6 files changed, 97 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
+> > index fcd0e691b1ea..fee457456aa8 100644
+> > --- a/arch/arm64/include/asm/processor.h
+> > +++ b/arch/arm64/include/asm/processor.h
+> > @@ -307,6 +307,12 @@ extern void __init minsigstksz_setup(void);
+> >  /* PR_PAC_RESET_KEYS prctl */
+> >  #define PAC_RESET_KEYS(tsk, arg)	ptrauth_prctl_reset_keys(tsk, arg)
+> >  
+> > +/* PR_TAGGED_ADDR prctl */
 > 
-> This isn't my understanding of how RDMA wants this to work, so we should
-> probably clear that up before we get too far down deciding what name to
-> give it.
+> (A couple of comments I missed in my last reply:)
 > 
-> For the RDMA usage case, it is entirely possible that both process A
-> and process B which don't know about each other want to perform RDMA to
-> file F.  So there will be two layout leases active on this file at the
-> same time.  It's fine for IOs to simultaneously be active to both leases.
-> But if the filesystem wants to move blocks around, it has to break
-> both leases.
-> 
-> If Process C tries to do a write to file F without a lease, there's no
-> problem, unless a side-effect of the write would be to change the block
-> mapping, in which case either the leases must break first, or the write
-> must be denied.
-> 
-> Jason, please correct me if I've misunderstood the RDMA needs here.
+> Name mismatch?
 
-Yes, I think you've captured it
+Yeah, it went through several names but it seems that I didn't update
+all places.
 
-Based on Dave's remarks how frequently a filesystem needs to break the
-lease will determine if it is usuable to be combined with RDMA or
-not...
+> > +long set_tagged_addr_ctrl(unsigned long arg);
+> > +long get_tagged_addr_ctrl(void);
+> > +#define SET_TAGGED_ADDR_CTRL(arg)	set_tagged_addr_ctrl(arg)
+> > +#define GET_TAGGED_ADDR_CTRL()		get_tagged_addr_ctrl()
+> > +
+> 
+> [...]
+> 
+> > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> > index 3767fb21a5b8..69d0be1fc708 100644
+> > --- a/arch/arm64/kernel/process.c
+> > +++ b/arch/arm64/kernel/process.c
+> > @@ -30,6 +30,7 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/mm.h>
+> >  #include <linux/stddef.h>
+> > +#include <linux/sysctl.h>
+> >  #include <linux/unistd.h>
+> >  #include <linux/user.h>
+> >  #include <linux/delay.h>
+> > @@ -323,6 +324,7 @@ void flush_thread(void)
+> >  	fpsimd_flush_thread();
+> >  	tls_thread_flush();
+> >  	flush_ptrace_hw_breakpoint(current);
+> > +	clear_thread_flag(TIF_TAGGED_ADDR);
+> >  }
+> >  
+> >  void release_thread(struct task_struct *dead_task)
+> > @@ -552,3 +554,68 @@ void arch_setup_new_exec(void)
+> >  
+> >  	ptrauth_thread_init_user(current);
+> >  }
+> > +
+> > +/*
+> > + * Control the relaxed ABI allowing tagged user addresses into the kernel.
+> > + */
+> > +static unsigned int tagged_addr_prctl_allowed = 1;
+> > +
+> > +long set_tagged_addr_ctrl(unsigned long arg)
+> > +{
+> > +	if (!tagged_addr_prctl_allowed)
+> > +		return -EINVAL;
+> 
+> So, tagging can actually be locked on by having a process enable it and
+> then some possibly unrelated process clearing tagged_addr_prctl_allowed.
+> That feels a bit weird.
 
-Jason
+The problem is that if you disable the ABI globally, lots of
+applications would crash. This sysctl is meant as a way to disable the
+opt-in to the TBI ABI. Another option would be a kernel command line
+option (I'm not keen on a Kconfig option).
+
+> Do we want to allow a process that has tagging on to be able to turn
+> it off at all?  Possibly things like CRIU might want to do that.
+
+I left it in for symmetry but I don't expect it to be used. A potential
+use-case is doing it per subsequent threads in an application.
+
+> > +	if (is_compat_task())
+> > +		return -EINVAL;
+> > +	if (arg & ~PR_TAGGED_ADDR_ENABLE)
+> > +		return -EINVAL;
+> 
+> How do we expect this argument to be extended in the future?
+
+Yes, for MTE. That's why I wouldn't allow random bits here.
+
+> I'm wondering whether this is really a bitmask or an enum, or a mixture
+> of the two.  Maybe it doesn't matter.
+
+User may want to set PR_TAGGED_ADDR_ENABLE | PR_MTE_PRECISE in a single
+call.
+
+> > +	if (arg & PR_TAGGED_ADDR_ENABLE)
+> > +		set_thread_flag(TIF_TAGGED_ADDR);
+> > +	else
+> > +		clear_thread_flag(TIF_TAGGED_ADDR);
+> 
+> I think update_thread_flag() could be used here.
+
+Yes. I forgot you added this.
+
+-- 
+Catalin
