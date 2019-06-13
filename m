@@ -2,19 +2,19 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 085034456D
+	by mail.lfdr.de (Postfix) with ESMTP id 72CF44456E
 	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392899AbfFMQnz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 12:43:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59638 "EHLO mail.kernel.org"
+        id S1730443AbfFMQn4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 12:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730439AbfFMG1N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S1730437AbfFMG1N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
         Thu, 13 Jun 2019 02:27:13 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A2482133D;
+        by mail.kernel.org (Postfix) with ESMTPSA id BF6472084D;
         Thu, 13 Jun 2019 06:27:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1560407232;
