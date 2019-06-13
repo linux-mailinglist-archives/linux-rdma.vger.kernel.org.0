@@ -2,121 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFC343806
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0CF438DE
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732734AbfFMPCn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 11:02:43 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:49484 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732506AbfFMOZh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 10:25:37 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 4BEE8308624B;
-        Thu, 13 Jun 2019 14:25:29 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1C03B1001B0F;
-        Thu, 13 Jun 2019 14:25:25 +0000 (UTC)
-Message-ID: <174ccd37a9ffa05d0c7c03fe80ff7170a9270824.camel@redhat.com>
-Subject: Re: [PATCH v2] RDMA/cma: Make CM response timeout and # CM retries
- configurable
-From:   Doug Ledford <dledford@redhat.com>
-To:     =?ISO-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Steve Wise <swise@opengridcomputing.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 13 Jun 2019 10:25:23 -0400
-In-Reply-To: <20190226075722.1692315-1-haakon.bugge@oracle.com>
-References: <20190226075722.1692315-1-haakon.bugge@oracle.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-ADbkA2BUesfdQDqwIlIL"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S2387604AbfFMPJN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 11:09:13 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:41889 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733145AbfFMPJM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 11:09:12 -0400
+Received: by mail-qt1-f194.google.com with SMTP id 33so14784170qtr.8
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 08:09:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vJfLZE5UZTU6x3qU+lIPPsXLCLkv4pp7jNH3cy3l6yY=;
+        b=ml3SmH5Hfmod46F81nMyG2P0NizdvJanAF7CyNFSkveEoGx2Z4cNoOL+Fto0ge6x1Y
+         JWF+MVW+3PILplBORK4V5CJNNQszkF1sfJ32ynl6XITtsV+ghGNggffuklXEwdgRtY5H
+         a/2jtAD9y2LEnWOX5n9mnScX0C/8WiTjSz6XqRdCPyRJi3Amxo9n8wg75s7b1bIWFIDn
+         T3Ib+FZ66vb5sdgan8v4rH2ZxWS+KgAdyBosWcGbnQ4LXTdtsmAUAJhta0DiPTKAU1Mj
+         Xs4/9FtrByNBEE8tH/VXcnn7LoUL09P6UY69gwBNbo+4Na5hQIkYWTka7rPSrvHPDN7y
+         fplw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vJfLZE5UZTU6x3qU+lIPPsXLCLkv4pp7jNH3cy3l6yY=;
+        b=Rfijd9W+16iUOBluRjSU7yPbRAWlpZHSi1Y0XaRXQpTpM7Fm1LOMJxQNvtsDlXnPoz
+         RRSaZrv5Z1uvhUpaWxTXMp3QRZIu+8DeXcc1aBZEcyHQP0qZ6qPPg49gaZrmmPuaRXTE
+         Xq7qMLTJ5cT1RBmRvHZXe/dq9kuOA4Ln9yU/7AlFSmZXZsvELdnq58PkHq6nUHfeUEiJ
+         N99HT9Su8S12iSAQkBEOIAMsIpkm62lvcc9hEPulxGaaVfN3lnL4Pln/IeHFHLlg9lA6
+         nTRs3NNo7aQgeGu2bNgDsMtUeXCukP16qH0KaH3p1Sh63X4MpKe+FyCAhzyFNGOgEUrL
+         adCA==
+X-Gm-Message-State: APjAAAUTJJc+QXUxpMmi9z2kCEwFM+euqptmoCs4/akjZ3xVtboSFs5q
+        ZrfZxMpxwdxBHu3vUvgmx4pwCA==
+X-Google-Smtp-Source: APXvYqyu+moY+mQF7g9DtJo06R1tzb7IdUz9DJ0JxTebf+F6pZff3NDQRwABkToIx5H7RYsxHMlPHQ==
+X-Received: by 2002:a0c:d0d4:: with SMTP id b20mr4136829qvh.38.1560438551211;
+        Thu, 13 Jun 2019 08:09:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id b5sm1701652qkk.45.2019.06.13.08.09.10
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 13 Jun 2019 08:09:10 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hbRLi-0001pQ-2I; Thu, 13 Jun 2019 12:09:10 -0300
+Date:   Thu, 13 Jun 2019 12:09:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tom Talpey <tom@talpey.com>
+Cc:     Bernard Metzler <BMT@zurich.ibm.com>, linux-rdma@vger.kernel.org
+Subject: Re: receive side CRC computation in siw.
+Message-ID: <20190613150910.GA22901@ziepe.ca>
+References: <OFBD80408B.8C25683E-ON00258416.0047A63B-00258416.00495B83@notes.na.collabserv.com>
+ <a84cd017-fe4c-fecf-6414-db6a3f98c09c@talpey.com>
+ <20190612152116.GI3876@ziepe.ca>
+ <ea1e140d-f1a7-5d63-8b6e-e99d57264178@talpey.com>
+ <20190612201345.GP3876@ziepe.ca>
+ <20bd1d9d-5ca7-abb0-2d66-ea765b03550e@talpey.com>
+ <20190612205917.GQ3876@ziepe.ca>
+ <ca2b4441-f98f-46f8-a8e8-37013205dc0b@talpey.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Thu, 13 Jun 2019 14:25:37 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca2b4441-f98f-46f8-a8e8-37013205dc0b@talpey.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Jun 13, 2019 at 07:35:30AM -0400, Tom Talpey wrote:
+> > It may not be expressly specified as part of the IBA, but it is
+> > certainly wrong from a system design perspective.
+> 
+> I disagree, because the RDMA design specifically addresses this by
+> exposing only objects which are connection-specific. Meaning, the
+> application can only harm its own RDMA state, and cannot impact
+> other connections or the RNIC itself.
 
---=-ADbkA2BUesfdQDqwIlIL
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Allowing an application to forge CRC errors is certainly not 'only
+harm its own RDMA state'.
 
-On Tue, 2019-02-26 at 08:57 +0100, H=C3=A5kon Bugge wrote:
-> During certain workloads, the default CM response timeout is too
-> short, leading to excessive retries. Hence, make it configurable
-> through sysctl. While at it, also make number of CM retries
-> configurable.
->=20
-> The defaults are not changed.
->=20
-> Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
-> ---
-> v1 -> v2:
->    * Added unregister_net_sysctl_table() in cma_cleanup()
-> ---
->  drivers/infiniband/core/cma.c | 52 ++++++++++++++++++++++++++++++---
-> --
->  1 file changed, 45 insertions(+), 7 deletions(-)
-
-This has been sitting on patchworks since forever.  Presumably because
-Jason and I neither one felt like we really wanted it, but also
-couldn't justify flat refusing it.  Well, I've made up my mind, so
-unless Jason wants to argue the other side, I'm rejecting this patch.=20
-Here's why.  The whole concept of a timeout is to help recovery in a
-situation that overloads one end of the connection.  There is a
-relationship between the max queue backlog on the one host and the
-timeout on the other host.  Generally, in order for a request to get
-dropped and us to need to retransmit, the queue must already have a
-full backlog.  So, how long does it take a heavily loaded system to
-process a full backlog?  That, plus a fuzz for a margin of error,
-should be our timeout.  We shouldn't be asking users to configure it.
-
-However, if users change the default backlog queue on their systems,
-*then* it would make sense to have the users also change the timeout
-here, but I think guidance would be helpful.
-
-So, to revive this patch, what I'd like to see is some attempt to
-actually quantify a reasonable timeout for the default backlog depth,
-then the patch should actually change the default to that reasonable
-timeout, and then put in the ability to adjust the timeout with some
-sort of doc guidance on how to calculate a reasonable timeout based on
-configured backlog depth.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
-2FDD
-
---=-ADbkA2BUesfdQDqwIlIL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0CXNMACgkQuCajMw5X
-L91KahAAkTk1tWxyrUqGuqR1JxRNYpkvoBGlCeat39+UBPeVsDo4lyHbKG9GxtDp
-gvjay636xZcSKUDh4RohTMfsQp+ckUc2nBsuB2ULpTykrpVbIHj4RxsbjXXoTuDr
-Dj709f6KgYeeQKHGEMv0VlmTjIGTkFeK4CsIByA4B+G17sEq3vwLiCX2KhvZQ+zU
-9Kgs/iJqY0qO53nVEodK18HzubvFCXamq0tBa8Bpm8smX6CvOFy66AamLpO+DTdv
-srJhldcGmgQHNm8qTd5emAvgAJr5NEMu2idxmjA5CBui4wyjGmbt3JTrB4L6SErw
-og8bPvlNziT0+u/VFnH0Q7kLfqEctrfRAj8/6zZnTwp6Cm9b9B86J2dd4xor95xI
-E6IdvpwJrvqV8s8cNB14ueRs0p199xNBIfRgn9+ofr8a0vzlfwMyvp/lxc3pKftg
-8VpVe2vjow2RIPkTC5AQOhSa7ZrxcsfccWGFwx//GNFTY4jciKL89IDH/N5PSNu8
-A9TlASC4uRAdsCPPJjyKp8UrCv8iSiMtpyTCf1CrMkMoZuToO3IwbsfRFBqcIr2q
-NmS1UX09WPYGQ8vwnP4+RLJbZ1fWViPZbqLmqWQe96QQnJNnS6WJI0jMjKwU0ZN3
-KPj/N2F5pESsz4eVuPZFWIlChA3iobMyWXF0VDXe8XSOsPkJCng=
-=ov9e
------END PGP SIGNATURE-----
-
---=-ADbkA2BUesfdQDqwIlIL--
-
+Jason
