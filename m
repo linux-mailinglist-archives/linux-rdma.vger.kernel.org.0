@@ -2,76 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D09D44591
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C075B4458A
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbfFMQo6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 12:44:58 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:18141 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730404AbfFMGOm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 02:14:42 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E567D21003BA1BAD2B0B;
-        Thu, 13 Jun 2019 14:14:35 +0800 (CST)
-Received: from [127.0.0.1] (10.61.25.96) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Thu, 13 Jun 2019
- 14:14:27 +0800
-Subject: Re: [PATCH] RDMA/hns: Fix an error code in
- hns_roce_set_user_sq_size()
-To:     Leon Romanovsky <leon@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-CC:     "Wei Hu(Xavier)" <xavier.huwei@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-References: <20190608092714.GE28890@mwanda>
- <20190612172316.GU6369@mtr-leonro.mtl.com>
-From:   oulijun <oulijun@huawei.com>
-Message-ID: <e4a4e905-2c9e-151b-e995-4920687b09c0@huawei.com>
-Date:   Thu, 13 Jun 2019 14:14:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.0
+        id S2404128AbfFMQog (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 12:44:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730418AbfFMG0t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 02:26:49 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C51972133D;
+        Thu, 13 Jun 2019 06:26:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560407208;
+        bh=QGdQR6kh9X5wXRpSXufQLqMsmqU/qEhPF5JoPzKl+24=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=O7JyDImY/Yol7vVDuvYLt8kS4OQ+ryGIy1g+RMwCpm34BGaQQcv1NgJUakQ/QSetp
+         Fscf9BKfWKq6/DGo+qHhJNrKBPNf95fpP5u/m8lzObV93HLGCU1HsP21ro7D02vC2s
+         +YfyjwFOswh4jxeA/SlqEQ8cDRjc3YkfhagFGheE=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: [PATCH mlx5-next 01/12] net/mlx5: Fix mlx5_core_destroy_cq() error flow
+Date:   Thu, 13 Jun 2019 09:26:29 +0300
+Message-Id: <20190613062640.28958-2-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190613062640.28958-1-leon@kernel.org>
+References: <20190613062640.28958-1-leon@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20190612172316.GU6369@mtr-leonro.mtl.com>
-Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.61.25.96]
-X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-ÔÚ 2019/6/13 1:23, Leon Romanovsky Ð´µÀ:
-> On Sat, Jun 08, 2019 at 12:27:14PM +0300, Dan Carpenter wrote:
->> This function is supposed to return negative kernel error codes but here
->> it returns CMD_RST_PRC_EBUSY (2).  The error code eventually gets passed
->> to IS_ERR() and since it's not an error pointer it leads to an Oops in
->> hns_roce_v1_rsv_lp_qp()
->>
->> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->> ---
->> Static analysis.  Not tested.
->>
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index ac017c24b200..018ff302ab9e 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -1098,7 +1098,7 @@ static int hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
->>  	if (ret == CMD_RST_PRC_SUCCESS)
->>  		return 0;
->>  	if (ret == CMD_RST_PRC_EBUSY)
-> The better fix will be to remove CMD_RST_PRC_* definitions in favor of
-> normal errno.
->
-> Thanks
->
-> .
->
-Sorry, Our guys are analyzing his influence. So the response is a bit late.
+From: Yishai Hadas <yishaih@mellanox.com>
 
+The firmware command to destroy a CQ might fail when the object is
+referenced by other object and the ref count is managed by the firmware.
+
+To enable a second successful destruction post the first failure need to
+change  mlx5_eq_del_cq() to be a void function.
+
+As an error in mlx5_eq_del_cq() is quite fatal from the option to
+recover, a debug message inside it should be good enough and it was
+changed to be void.
+
+Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Reviewed-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/cq.c     |  9 ++-------
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c     | 16 +++++++---------
+ drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h |  2 +-
+ 3 files changed, 10 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+index 713a17ee3751..703d88332bc6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+@@ -158,13 +158,8 @@ int mlx5_core_destroy_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq)
+ 	u32 in[MLX5_ST_SZ_DW(destroy_cq_in)] = {0};
+ 	int err;
+ 
+-	err = mlx5_eq_del_cq(mlx5_get_async_eq(dev), cq);
+-	if (err)
+-		return err;
+-
+-	err = mlx5_eq_del_cq(&cq->eq->core, cq);
+-	if (err)
+-		return err;
++	mlx5_eq_del_cq(mlx5_get_async_eq(dev), cq);
++	mlx5_eq_del_cq(&cq->eq->core, cq);
+ 
+ 	MLX5_SET(destroy_cq_in, in, opcode, MLX5_CMD_OP_DESTROY_CQ);
+ 	MLX5_SET(destroy_cq_in, in, cqn, cq->cqn);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index 23883d1fa22f..7c4213147541 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -382,7 +382,7 @@ int mlx5_eq_add_cq(struct mlx5_eq *eq, struct mlx5_core_cq *cq)
+ 	return err;
+ }
+ 
+-int mlx5_eq_del_cq(struct mlx5_eq *eq, struct mlx5_core_cq *cq)
++void mlx5_eq_del_cq(struct mlx5_eq *eq, struct mlx5_core_cq *cq)
+ {
+ 	struct mlx5_cq_table *table = &eq->cq_table;
+ 	struct mlx5_core_cq *tmp;
+@@ -392,16 +392,14 @@ int mlx5_eq_del_cq(struct mlx5_eq *eq, struct mlx5_core_cq *cq)
+ 	spin_unlock(&table->lock);
+ 
+ 	if (!tmp) {
+-		mlx5_core_warn(eq->dev, "cq 0x%x not found in eq 0x%x tree\n", eq->eqn, cq->cqn);
+-		return -ENOENT;
++		mlx5_core_dbg(eq->dev, "cq 0x%x not found in eq 0x%x tree\n",
++			      eq->eqn, cq->cqn);
++		return;
+ 	}
+ 
+-	if (tmp != cq) {
+-		mlx5_core_warn(eq->dev, "corruption on cqn 0x%x in eq 0x%x\n", eq->eqn, cq->cqn);
+-		return -EINVAL;
+-	}
+-
+-	return 0;
++	if (tmp != cq)
++		mlx5_core_dbg(eq->dev, "corruption on cqn 0x%x in eq 0x%x\n",
++			      eq->eqn, cq->cqn);
+ }
+ 
+ int mlx5_eq_table_init(struct mlx5_core_dev *dev)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
+index c0fb6d72b695..eb105338467d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
+@@ -70,7 +70,7 @@ int mlx5_eq_table_create(struct mlx5_core_dev *dev);
+ void mlx5_eq_table_destroy(struct mlx5_core_dev *dev);
+ 
+ int mlx5_eq_add_cq(struct mlx5_eq *eq, struct mlx5_core_cq *cq);
+-int mlx5_eq_del_cq(struct mlx5_eq *eq, struct mlx5_core_cq *cq);
++void mlx5_eq_del_cq(struct mlx5_eq *eq, struct mlx5_core_cq *cq);
+ struct mlx5_eq_comp *mlx5_eqn2comp_eq(struct mlx5_core_dev *dev, int eqn);
+ struct mlx5_eq *mlx5_get_async_eq(struct mlx5_core_dev *dev);
+ void mlx5_cq_tasklet_cb(unsigned long data);
+-- 
+2.20.1
 
