@@ -2,321 +2,989 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E1F43BBE
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1308043BAD
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732376AbfFMPbU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 11:31:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:37966 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728621AbfFMLCn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 07:02:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5543A3EF;
-        Thu, 13 Jun 2019 04:02:42 -0700 (PDT)
-Received: from e103592.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03BCD3F694;
-        Thu, 13 Jun 2019 04:04:20 -0700 (PDT)
-Date:   Thu, 13 Jun 2019 12:02:35 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: Re: [PATCH v17 03/15] arm64: Introduce prctl() options to control
- the tagged user addresses ABI
-Message-ID: <20190613110235.GW28398@e103592.cambridge.arm.com>
-References: <cover.1560339705.git.andreyknvl@google.com>
- <a7a2933bea5fe57e504891b7eec7e9432e5e1c1a.1560339705.git.andreyknvl@google.com>
+        id S1729050AbfFMPah (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 11:30:37 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:45484 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728689AbfFMLKl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 07:10:41 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5DB9b0P027706;
+        Thu, 13 Jun 2019 11:09:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2018-07-02; bh=SegmM1Ho1Cmhn/lzqBKXnMWo8gvaZ7SJcvY7+Ecyl3A=;
+ b=v41T5/nXOhRD4z7HwWTXBJklrD3zAd1d+swMRWZwjd20+wp5vd0JaPdzegwAla0OAQ9/
+ lsG/2otVQuwUutkXczKQ4RC1hbAj2cn57mqbpIGRQ1K3ijDh4BsbpcNTBh2luTGMWa7l
+ uB7fqgDYrZ9oqZOQBcfV1dCUQoX5H1bc34ICkfC8mhSGJuZKZeG+Ni6OrdH2041f56Qx
+ v5YiWJIBK6usQLBjqqQ0Poo/YyEFOLdAteXpIe3eKuf4+RKzyaY4uAtJEbSU+loawLA4
+ cufkl2TBtcOKbbT8nIGSlIrhjzYfx6tyuTApts6N1s0x6Z2T28B4SLM2/luvQ3dsZVtV Ug== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2t04eu0vr0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 Jun 2019 11:09:48 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5DB8qcZ051525;
+        Thu, 13 Jun 2019 11:09:48 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 2t1jpjg6yg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 Jun 2019 11:09:47 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5DB9h0D005653;
+        Thu, 13 Jun 2019 11:09:43 GMT
+Received: from host4.lan (/77.138.183.59)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 13 Jun 2019 04:09:42 -0700
+From:   Yuval Shaia <yuval.shaia@oracle.com>
+To:     yishaih@mellanox.com, dledford@redhat.com, jgg@ziepe.ca,
+        leon@kernel.org, linux-rdma@vger.kernel.org, jgg@mellanox.com,
+        mark.haywood@oracle.com
+Cc:     Yuval Shaia <yuval.shaia@oracle.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH v6 rdma-core] verbs: Introduce a new reg_mr API for virtual address space
+Date:   Thu, 13 Jun 2019 14:09:36 +0300
+Message-Id: <20190613110936.30535-1-yuval.shaia@oracle.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a7a2933bea5fe57e504891b7eec7e9432e5e1c1a.1560339705.git.andreyknvl@google.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9286 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=29 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906130086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9286 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=29 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906130087
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 01:43:20PM +0200, Andrey Konovalov wrote:
-> From: Catalin Marinas <catalin.marinas@arm.com>
-> 
-> It is not desirable to relax the ABI to allow tagged user addresses into
-> the kernel indiscriminately. This patch introduces a prctl() interface
-> for enabling or disabling the tagged ABI with a global sysctl control
-> for preventing applications from enabling the relaxed ABI (meant for
-> testing user-space prctl() return error checking without reconfiguring
-> the kernel). The ABI properties are inherited by threads of the same
-> application and fork()'ed children but cleared on execve().
-> 
-> The PR_SET_TAGGED_ADDR_CTRL will be expanded in the future to handle
-> MTE-specific settings like imprecise vs precise exceptions.
-> 
-> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-> ---
->  arch/arm64/include/asm/processor.h   |  6 +++
->  arch/arm64/include/asm/thread_info.h |  1 +
->  arch/arm64/include/asm/uaccess.h     |  3 +-
->  arch/arm64/kernel/process.c          | 67 ++++++++++++++++++++++++++++
->  include/uapi/linux/prctl.h           |  5 +++
->  kernel/sys.c                         | 16 +++++++
->  6 files changed, 97 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
-> index fcd0e691b1ea..fee457456aa8 100644
-> --- a/arch/arm64/include/asm/processor.h
-> +++ b/arch/arm64/include/asm/processor.h
-> @@ -307,6 +307,12 @@ extern void __init minsigstksz_setup(void);
->  /* PR_PAC_RESET_KEYS prctl */
->  #define PAC_RESET_KEYS(tsk, arg)	ptrauth_prctl_reset_keys(tsk, arg)
->  
-> +/* PR_TAGGED_ADDR prctl */
-> +long set_tagged_addr_ctrl(unsigned long arg);
-> +long get_tagged_addr_ctrl(void);
-> +#define SET_TAGGED_ADDR_CTRL(arg)	set_tagged_addr_ctrl(arg)
-> +#define GET_TAGGED_ADDR_CTRL()		get_tagged_addr_ctrl()
-> +
->  /*
->   * For CONFIG_GCC_PLUGIN_STACKLEAK
->   *
-> diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
-> index f1d032be628a..354a31d2b737 100644
-> --- a/arch/arm64/include/asm/thread_info.h
-> +++ b/arch/arm64/include/asm/thread_info.h
-> @@ -99,6 +99,7 @@ void arch_release_task_struct(struct task_struct *tsk);
->  #define TIF_SVE			23	/* Scalable Vector Extension in use */
->  #define TIF_SVE_VL_INHERIT	24	/* Inherit sve_vl_onexec across exec */
->  #define TIF_SSBD		25	/* Wants SSB mitigation */
-> +#define TIF_TAGGED_ADDR		26	/* Allow tagged user addresses */
->  
->  #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
->  #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
-> diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-> index df729afca0ba..995b9ea11a89 100644
-> --- a/arch/arm64/include/asm/uaccess.h
-> +++ b/arch/arm64/include/asm/uaccess.h
-> @@ -73,7 +73,8 @@ static inline unsigned long __range_ok(const void __user *addr, unsigned long si
->  {
->  	unsigned long ret, limit = current_thread_info()->addr_limit;
->  
-> -	addr = untagged_addr(addr);
-> +	if (test_thread_flag(TIF_TAGGED_ADDR))
-> +		addr = untagged_addr(addr);
->  
->  	__chk_user_ptr(addr);
->  	asm volatile(
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 3767fb21a5b8..69d0be1fc708 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -30,6 +30,7 @@
->  #include <linux/kernel.h>
->  #include <linux/mm.h>
->  #include <linux/stddef.h>
-> +#include <linux/sysctl.h>
->  #include <linux/unistd.h>
->  #include <linux/user.h>
->  #include <linux/delay.h>
-> @@ -323,6 +324,7 @@ void flush_thread(void)
->  	fpsimd_flush_thread();
->  	tls_thread_flush();
->  	flush_ptrace_hw_breakpoint(current);
-> +	clear_thread_flag(TIF_TAGGED_ADDR);
->  }
->  
->  void release_thread(struct task_struct *dead_task)
-> @@ -552,3 +554,68 @@ void arch_setup_new_exec(void)
->  
->  	ptrauth_thread_init_user(current);
->  }
-> +
-> +/*
-> + * Control the relaxed ABI allowing tagged user addresses into the kernel.
-> + */
-> +static unsigned int tagged_addr_prctl_allowed = 1;
-> +
-> +long set_tagged_addr_ctrl(unsigned long arg)
-> +{
-> +	if (!tagged_addr_prctl_allowed)
-> +		return -EINVAL;
-> +	if (is_compat_task())
-> +		return -EINVAL;
-> +	if (arg & ~PR_TAGGED_ADDR_ENABLE)
-> +		return -EINVAL;
-> +
-> +	if (arg & PR_TAGGED_ADDR_ENABLE)
-> +		set_thread_flag(TIF_TAGGED_ADDR);
-> +	else
-> +		clear_thread_flag(TIF_TAGGED_ADDR);
-> +
-> +	return 0;
-> +}
-> +
-> +long get_tagged_addr_ctrl(void)
-> +{
-> +	if (!tagged_addr_prctl_allowed)
-> +		return -EINVAL;
-> +	if (is_compat_task())
-> +		return -EINVAL;
-> +
-> +	if (test_thread_flag(TIF_TAGGED_ADDR))
-> +		return PR_TAGGED_ADDR_ENABLE;
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Global sysctl to disable the tagged user addresses support. This control
-> + * only prevents the tagged address ABI enabling via prctl() and does not
-> + * disable it for tasks that already opted in to the relaxed ABI.
-> + */
-> +static int zero;
-> +static int one = 1;
+The virtual address that is registered is used as a base for any address
+passed later in post_recv and post_send operations.
 
-!!!
+On some virtualized environment this is not correct.
 
-And these can't even be const without a cast.  Yuk.
+A guest cannot register its memory so hypervisor maps the guest physical
+address to a host virtual address and register it with the HW. Later on,
+at datapath phase, the guest fills the SGEs with addresses from its
+address space.
+Since HW cannot access guest virtual address space an extra translation
+is needed to map those addresses to be based on the host virtual address
+that was registered with the HW.
+This datapath interference affects performances.
 
-(Not your fault though, but it would be nice to have a proc_dobool() to
-avoid this.)
+To avoid this, a logical separation between the address that is
+registered and the address that is used as a offset at datapath phase is
+needed.
+This separation is already implemented in the lower layer part
+(ibv_cmd_reg_mr) but blocked at the API level.
 
-> +
-> +static struct ctl_table tagged_addr_sysctl_table[] = {
-> +	{
-> +		.procname	= "tagged_addr",
-> +		.mode		= 0644,
-> +		.data		= &tagged_addr_prctl_allowed,
-> +		.maxlen		= sizeof(int),
-> +		.proc_handler	= proc_dointvec_minmax,
-> +		.extra1		= &zero,
-> +		.extra2		= &one,
-> +	},
-> +	{ }
-> +};
-> +
-> +static int __init tagged_addr_init(void)
-> +{
-> +	if (!register_sysctl("abi", tagged_addr_sysctl_table))
-> +		return -EINVAL;
-> +	return 0;
-> +}
-> +
-> +core_initcall(tagged_addr_init);
-> diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-> index 094bb03b9cc2..2e927b3e9d6c 100644
-> --- a/include/uapi/linux/prctl.h
-> +++ b/include/uapi/linux/prctl.h
-> @@ -229,4 +229,9 @@ struct prctl_mm_map {
->  # define PR_PAC_APDBKEY			(1UL << 3)
->  # define PR_PAC_APGAKEY			(1UL << 4)
->  
-> +/* Tagged user address controls for arm64 */
-> +#define PR_SET_TAGGED_ADDR_CTRL		55
-> +#define PR_GET_TAGGED_ADDR_CTRL		56
-> +# define PR_TAGGED_ADDR_ENABLE		(1UL << 0)
-> +
+Fix it by introducing a new API function which accepts an address from
+guest virtual address space as well, to be used as offset for later
+datapath operations.
 
-Do we expect this prctl to be applicable to other arches, or is it
-strictly arm64-specific?
+Also update the PABI to v25
 
->  #endif /* _LINUX_PRCTL_H */
-> diff --git a/kernel/sys.c b/kernel/sys.c
-> index 2969304c29fe..ec48396b4943 100644
-> --- a/kernel/sys.c
-> +++ b/kernel/sys.c
-> @@ -124,6 +124,12 @@
->  #ifndef PAC_RESET_KEYS
->  # define PAC_RESET_KEYS(a, b)	(-EINVAL)
->  #endif
-> +#ifndef SET_TAGGED_ADDR_CTRL
-> +# define SET_TAGGED_ADDR_CTRL(a)	(-EINVAL)
-> +#endif
-> +#ifndef GET_TAGGED_ADDR_CTRL
-> +# define GET_TAGGED_ADDR_CTRL()		(-EINVAL)
-> +#endif
->  
->  /*
->   * this is where the system-wide overflow UID and GID are defined, for
-> @@ -2492,6 +2498,16 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
->  			return -EINVAL;
->  		error = PAC_RESET_KEYS(me, arg2);
->  		break;
-> +	case PR_SET_TAGGED_ADDR_CTRL:
-> +		if (arg3 || arg4 || arg5)
+Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+---
+v0 -> v1:
+	* Change reg_mr callback signature instead of adding new callback
+	* Add the new API to libibverbs/libibverbs.map.in
+v1 -> v2:
+	* Do not modify reg_mr signature for version 1.0
+	* Add note to man page
+v2 -> v3:
+	* Rename function to reg_mr_iova (and arg-name to iova)
+	* Some checkpatch issues not related to this fix but detected now
+		* s/__FUNCTION__/__func
+		* WARNING: function definition argument 'void *' should
+		  also have an identifier name
+v3 -> v4:
+	* Fix commit message as suggested by Adit Ranadiv
+	* Add support for efa
+v4 -> v5:
+	* Update PABI
+	* Update debian files
+v5 -> v6:
+	* Move the new API to section in libibverbs/libibverbs.map.in
+	  (IBVERBS_1.7) as pointed out by Mark Haywood
+---
+ CMakeLists.txt                    |  2 +-
+ debian/control                    |  2 +-
+ debian/libibverbs1.symbols        |  2 +-
+ libibverbs/driver.h               |  2 +-
+ libibverbs/dummy_ops.c            |  2 +-
+ libibverbs/libibverbs.map.in      |  5 +++++
+ libibverbs/man/ibv_reg_mr.3       | 15 +++++++++++++--
+ libibverbs/verbs.c                | 23 ++++++++++++++++++++++-
+ libibverbs/verbs.h                |  7 +++++++
+ providers/bnxt_re/verbs.c         |  6 +++---
+ providers/bnxt_re/verbs.h         |  2 +-
+ providers/cxgb3/iwch.h            |  4 ++--
+ providers/cxgb3/verbs.c           |  9 +++++----
+ providers/cxgb4/libcxgb4.h        |  4 ++--
+ providers/cxgb4/verbs.c           |  9 +++++----
+ providers/efa/verbs.c             |  4 ++--
+ providers/efa/verbs.h             |  2 +-
+ providers/hfi1verbs/hfiverbs.h    |  4 ++--
+ providers/hfi1verbs/verbs.c       |  8 ++++----
+ providers/hns/hns_roce_u.h        |  2 +-
+ providers/hns/hns_roce_u_verbs.c  |  6 +++---
+ providers/i40iw/i40iw_umain.h     |  3 ++-
+ providers/i40iw/i40iw_uverbs.c    |  8 ++++----
+ providers/ipathverbs/ipathverbs.h |  4 ++--
+ providers/ipathverbs/verbs.c      |  8 ++++----
+ providers/mlx4/mlx4.h             |  4 ++--
+ providers/mlx4/verbs.c            |  7 +++----
+ providers/mlx5/mlx5.h             |  4 ++--
+ providers/mlx5/verbs.c            |  7 +++----
+ providers/mthca/ah.c              |  3 ++-
+ providers/mthca/mthca.h           |  4 ++--
+ providers/mthca/verbs.c           |  6 +++---
+ providers/nes/nes_umain.h         |  3 ++-
+ providers/nes/nes_uverbs.c        |  9 ++++-----
+ providers/ocrdma/ocrdma_main.h    |  4 ++--
+ providers/ocrdma/ocrdma_verbs.c   | 10 ++++------
+ providers/qedr/qelr_main.h        |  4 ++--
+ providers/qedr/qelr_verbs.c       | 11 ++++-------
+ providers/qedr/qelr_verbs.h       |  4 ++--
+ providers/rxe/rxe.c               |  6 +++---
+ providers/vmw_pvrdma/pvrdma.h     |  4 ++--
+ providers/vmw_pvrdma/verbs.c      |  7 +++----
+ 42 files changed, 140 insertions(+), 100 deletions(-)
 
-<bikeshed>
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8bbbf5c4..5503c5cd 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -72,7 +72,7 @@ set(PACKAGE_VERSION "25.0")
+ # When this is changed the values in these files need changing too:
+ #   debian/control
+ #   debian/libibverbs1.symbols
+-set(IBVERBS_PABI_VERSION "22")
++set(IBVERBS_PABI_VERSION "25")
+ set(IBVERBS_PROVIDER_SUFFIX "-rdmav${IBVERBS_PABI_VERSION}.so")
+ 
+ #-------------------------
+diff --git a/debian/control b/debian/control
+index da8c6a48..58a2d4a8 100644
+--- a/debian/control
++++ b/debian/control
+@@ -160,7 +160,7 @@ Section: libs
+ Pre-Depends: ${misc:Pre-Depends}
+ Depends: adduser, ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ibverbs-providers
+-Breaks: ibverbs-providers (<< 22~)
++Breaks: ibverbs-providers (<< 25~)
+ Description: Library for direct userspace use of RDMA (InfiniBand/iWARP)
+  libibverbs is a library that allows userspace processes to use RDMA
+  "verbs" as described in the InfiniBand Architecture Specification and
+diff --git a/debian/libibverbs1.symbols b/debian/libibverbs1.symbols
+index a077f9ab..39b3d4a9 100644
+--- a/debian/libibverbs1.symbols
++++ b/debian/libibverbs1.symbols
+@@ -4,7 +4,7 @@ libibverbs.so.1 libibverbs1 #MINVER#
+  IBVERBS_1.1@IBVERBS_1.1 1.1.6
+  IBVERBS_1.5@IBVERBS_1.5 20
+  IBVERBS_1.6@IBVERBS_1.6 24
+- (symver)IBVERBS_PRIVATE_22 22
++ (symver)IBVERBS_PRIVATE_25 25
+  ibv_ack_async_event@IBVERBS_1.0 1.1.6
+  ibv_ack_async_event@IBVERBS_1.1 1.1.6
+  ibv_ack_cq_events@IBVERBS_1.0 1.1.6
+diff --git a/libibverbs/driver.h b/libibverbs/driver.h
+index 4d1d6746..69205875 100644
+--- a/libibverbs/driver.h
++++ b/libibverbs/driver.h
+@@ -338,7 +338,7 @@ struct verbs_context_ops {
+ 				    uint64_t dm_offset, size_t length,
+ 				    unsigned int access);
+ 	struct ibv_mr *(*reg_mr)(struct ibv_pd *pd, void *addr, size_t length,
+-				 int access);
++				 uint64_t hca_va, int access);
+ 	int (*req_notify_cq)(struct ibv_cq *cq, int solicited_only);
+ 	int (*rereg_mr)(struct verbs_mr *vmr, int flags, struct ibv_pd *pd,
+ 			void *addr, size_t length, int access);
+diff --git a/libibverbs/dummy_ops.c b/libibverbs/dummy_ops.c
+index ebc6eddd..6560371a 100644
+--- a/libibverbs/dummy_ops.c
++++ b/libibverbs/dummy_ops.c
+@@ -411,7 +411,7 @@ static struct ibv_mr *reg_dm_mr(struct ibv_pd *pd, struct ibv_dm *dm,
+ }
+ 
+ static struct ibv_mr *reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+-			     int access)
++			     uint64_t hca_va,  int access)
+ {
+ 	errno = ENOSYS;
+ 	return NULL;
+diff --git a/libibverbs/libibverbs.map.in b/libibverbs/libibverbs.map.in
+index 87a1b9fc..21d32343 100644
+--- a/libibverbs/libibverbs.map.in
++++ b/libibverbs/libibverbs.map.in
+@@ -116,6 +116,11 @@ IBVERBS_1.6 {
+ 		ibv_qp_to_qp_ex;
+ } IBVERBS_1.5;
+ 
++IBVERBS_1.7 {
++	global:
++		ibv_reg_mr_iova;
++} IBVERBS_1.6;
++
+ /* If any symbols in this stanza change ABI then the entire staza gets a new symbol
+    version. See the top level CMakeLists.txt for this setting. */
+ 
+diff --git a/libibverbs/man/ibv_reg_mr.3 b/libibverbs/man/ibv_reg_mr.3
+index 631e5fe8..6c4c1434 100644
+--- a/libibverbs/man/ibv_reg_mr.3
++++ b/libibverbs/man/ibv_reg_mr.3
+@@ -3,7 +3,7 @@
+ .\"
+ .TH IBV_REG_MR 3 2006-10-31 libibverbs "Libibverbs Programmer's Manual"
+ .SH "NAME"
+-ibv_reg_mr, ibv_dereg_mr \- register or deregister a memory region (MR)
++ibv_reg_mr, ibv_reg_mr_iova, ibv_dereg_mr \- register or deregister a memory region (MR)
+ .SH "SYNOPSIS"
+ .nf
+ .B #include <infiniband/verbs.h>
+@@ -11,6 +11,10 @@ ibv_reg_mr, ibv_dereg_mr \- register or deregister a memory region (MR)
+ .BI "struct ibv_mr *ibv_reg_mr(struct ibv_pd " "*pd" ", void " "*addr" ,
+ .BI "                          size_t " "length" ", int " "access" );
+ .sp
++.BI "struct ibv_mr *ibv_reg_mr_iova(struct ibv_pd " "*pd" ", void " "*addr" ,
++.BI "                               size_t " "length" ", uint64_t " "hca_va" ,
++.BI "                               int " "access" );
++.sp
+ .BI "int ibv_dereg_mr(struct ibv_mr " "*mr" );
+ .fi
+ .SH "DESCRIPTION"
+@@ -52,11 +56,18 @@ Local read access is always enabled for the MR.
+ .PP
+ To create an implicit ODP MR, IBV_ACCESS_ON_DEMAND should be set, addr should be 0 and length should be SIZE_MAX.
+ .PP
++.B ibv_reg_mr_iova()
++Special variant of memory registration used when addresses passed to
++ibv_post_send and ibv_post_recv are relative to base address from a
++different address space than
++.I addr\fR. The argument
++.I hca_va\fR is the new base address.
++.PP
+ .B ibv_dereg_mr()
+ deregisters the MR
+ .I mr\fR.
+ .SH "RETURN VALUE"
+-.B ibv_reg_mr()
++.B ibv_reg_mr() / ibv_reg_mr_iova()
+ returns a pointer to the registered MR, or NULL if the request fails.
+ The local key (\fBL_Key\fR) field
+ .B lkey
+diff --git a/libibverbs/verbs.c b/libibverbs/verbs.c
+index 1766b9f5..56502ea5 100644
+--- a/libibverbs/verbs.c
++++ b/libibverbs/verbs.c
+@@ -312,7 +312,28 @@ LATEST_SYMVER_FUNC(ibv_reg_mr, 1_1, "IBVERBS_1.1",
+ 	if (ibv_dontfork_range(addr, length))
+ 		return NULL;
+ 
+-	mr = get_ops(pd->context)->reg_mr(pd, addr, length, access);
++	mr = get_ops(pd->context)->reg_mr(pd, addr, length, (uint64_t) addr,
++					  access);
++	if (mr) {
++		mr->context = pd->context;
++		mr->pd      = pd;
++		mr->addr    = addr;
++		mr->length  = length;
++	} else
++		ibv_dofork_range(addr, length);
++
++	return mr;
++}
++
++struct ibv_mr *ibv_reg_mr_iova(struct ibv_pd *pd, void *addr, size_t length,
++			       uint64_t iova, int access)
++{
++	struct ibv_mr *mr;
++
++	if (ibv_dontfork_range(addr, length))
++		return NULL;
++
++	mr = get_ops(pd->context)->reg_mr(pd, addr, length, iova, access);
+ 	if (mr) {
+ 		mr->context = pd->context;
+ 		mr->pd      = pd;
+diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
+index 4e1feef4..5116afca 100644
+--- a/libibverbs/verbs.h
++++ b/libibverbs/verbs.h
+@@ -2374,6 +2374,13 @@ static inline int ibv_close_xrcd(struct ibv_xrcd *xrcd)
+ struct ibv_mr *ibv_reg_mr(struct ibv_pd *pd, void *addr,
+ 			  size_t length, int access);
+ 
++/**
++ * ibv_reg_mr_iova - Register a memory region with a virtual offset
++ * address
++ */
++struct ibv_mr *ibv_reg_mr_iova(struct ibv_pd *pd, void *addr, size_t length,
++			       uint64_t iova, int access);
++
+ 
+ enum ibv_rereg_mr_err_code {
+ 	/* Old MR is valid, invalid input */
+diff --git a/providers/bnxt_re/verbs.c b/providers/bnxt_re/verbs.c
+index ed7ddb6e..2218e3a0 100644
+--- a/providers/bnxt_re/verbs.c
++++ b/providers/bnxt_re/verbs.c
+@@ -131,7 +131,7 @@ int bnxt_re_free_pd(struct ibv_pd *ibvpd)
+ }
+ 
+ struct ibv_mr *bnxt_re_reg_mr(struct ibv_pd *ibvpd, void *sva, size_t len,
+-			      int access)
++			      uint64_t hca_va, int access)
+ {
+ 	struct bnxt_re_mr *mr;
+ 	struct ibv_reg_mr cmd;
+@@ -141,8 +141,8 @@ struct ibv_mr *bnxt_re_reg_mr(struct ibv_pd *ibvpd, void *sva, size_t len,
+ 	if (!mr)
+ 		return NULL;
+ 
+-	if (ibv_cmd_reg_mr(ibvpd, sva, len, (uintptr_t)sva, access, &mr->vmr,
+-			   &cmd, sizeof(cmd), &resp.ibv_resp, sizeof(resp))) {
++	if (ibv_cmd_reg_mr(ibvpd, sva, len, hca_va, access, &mr->vmr, &cmd,
++			   sizeof(cmd), &resp.ibv_resp, sizeof(resp))) {
+ 		free(mr);
+ 		return NULL;
+ 	}
+diff --git a/providers/bnxt_re/verbs.h b/providers/bnxt_re/verbs.h
+index b565d7e6..2e994880 100644
+--- a/providers/bnxt_re/verbs.h
++++ b/providers/bnxt_re/verbs.h
+@@ -61,7 +61,7 @@ int bnxt_re_query_port(struct ibv_context *uctx, uint8_t port,
+ struct ibv_pd *bnxt_re_alloc_pd(struct ibv_context *uctx);
+ int bnxt_re_free_pd(struct ibv_pd *ibvpd);
+ struct ibv_mr *bnxt_re_reg_mr(struct ibv_pd *ibvpd, void *buf, size_t len,
+-			      int ibv_access_flags);
++			      uint64_t hca_va, int ibv_access_flags);
+ int bnxt_re_dereg_mr(struct verbs_mr *vmr);
+ 
+ struct ibv_cq *bnxt_re_create_cq(struct ibv_context *uctx, int ncqe,
+diff --git a/providers/cxgb3/iwch.h b/providers/cxgb3/iwch.h
+index c8de44e9..c7d85d3a 100644
+--- a/providers/cxgb3/iwch.h
++++ b/providers/cxgb3/iwch.h
+@@ -150,8 +150,8 @@ extern int iwch_query_port(struct ibv_context *context, uint8_t port,
+ extern struct ibv_pd *iwch_alloc_pd(struct ibv_context *context);
+ extern int iwch_free_pd(struct ibv_pd *pd);
+ 
+-extern struct ibv_mr *iwch_reg_mr(struct ibv_pd *pd, void *addr,
+-				  size_t length, int access);
++extern struct ibv_mr *iwch_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++				  uint64_t hca_va, int access);
+ extern int iwch_dereg_mr(struct verbs_mr *mr);
+ 
+ struct ibv_cq *iwch_create_cq(struct ibv_context *context, int cqe,
+diff --git a/providers/cxgb3/verbs.c b/providers/cxgb3/verbs.c
+index 8b90482a..6af000e5 100644
+--- a/providers/cxgb3/verbs.c
++++ b/providers/cxgb3/verbs.c
+@@ -140,11 +140,12 @@ static struct ibv_mr *__iwch_reg_mr(struct ibv_pd *pd, void *addr,
+ 	return &mhp->vmr.ibv_mr;
+ }
+ 
+-struct ibv_mr *iwch_reg_mr(struct ibv_pd *pd, void *addr,
+-			   size_t length, int access)
++struct ibv_mr *iwch_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			   uint64_t hca_va, int access)
+ {
+-	PDBG("%s addr %p length %ld\n", __FUNCTION__, addr, length);
+-	return __iwch_reg_mr(pd, addr, length, (uintptr_t) addr, access);
++	PDBG("%s addr %p length %ld hca_va %p\n", __func__, addr, length,
++	     hca_va);
++	return __iwch_reg_mr(pd, addr, length, hca_va, access);
+ }
+ 
+ int iwch_dereg_mr(struct verbs_mr *vmr)
+diff --git a/providers/cxgb4/libcxgb4.h b/providers/cxgb4/libcxgb4.h
+index 0fbceab0..ce8f29dd 100644
+--- a/providers/cxgb4/libcxgb4.h
++++ b/providers/cxgb4/libcxgb4.h
+@@ -198,8 +198,8 @@ int c4iw_query_port(struct ibv_context *context, uint8_t port,
+ struct ibv_pd *c4iw_alloc_pd(struct ibv_context *context);
+ int c4iw_free_pd(struct ibv_pd *pd);
+ 
+-struct ibv_mr *c4iw_reg_mr(struct ibv_pd *pd, void *addr,
+-				  size_t length, int access);
++struct ibv_mr *c4iw_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			   uint64_t hca_va, int access);
+ int c4iw_dereg_mr(struct verbs_mr *vmr);
+ 
+ struct ibv_cq *c4iw_create_cq(struct ibv_context *context, int cqe,
+diff --git a/providers/cxgb4/verbs.c b/providers/cxgb4/verbs.c
+index 452e4f1f..cfdd0052 100644
+--- a/providers/cxgb4/verbs.c
++++ b/providers/cxgb4/verbs.c
+@@ -142,11 +142,12 @@ static struct ibv_mr *__c4iw_reg_mr(struct ibv_pd *pd, void *addr,
+ 	return &mhp->vmr.ibv_mr;
+ }
+ 
+-struct ibv_mr *c4iw_reg_mr(struct ibv_pd *pd, void *addr,
+-			   size_t length, int access)
++struct ibv_mr *c4iw_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			   uint64_t hca_va, int access)
+ {
+-	PDBG("%s addr %p length %ld\n", __func__, addr, length);
+-	return __c4iw_reg_mr(pd, addr, length, (uintptr_t) addr, access);
++	PDBG("%s addr %p length %ld hca_va %p\n", __func__, addr, length,
++	     hca_va);
++	return __c4iw_reg_mr(pd, addr, length, hca_va, access);
+ }
+ 
+ int c4iw_dereg_mr(struct verbs_mr *vmr)
+diff --git a/providers/efa/verbs.c b/providers/efa/verbs.c
+index 4d36f9e1..d2500ecb 100644
+--- a/providers/efa/verbs.c
++++ b/providers/efa/verbs.c
+@@ -126,7 +126,7 @@ int efa_dealloc_pd(struct ibv_pd *ibvpd)
+ }
+ 
+ struct ibv_mr *efa_reg_mr(struct ibv_pd *ibvpd, void *sva, size_t len,
+-			  int access)
++			  uint64_t hca_va, int access)
+ {
+ 	struct ib_uverbs_reg_mr_resp resp;
+ 	struct ibv_reg_mr cmd;
+@@ -136,7 +136,7 @@ struct ibv_mr *efa_reg_mr(struct ibv_pd *ibvpd, void *sva, size_t len,
+ 	if (!mr)
+ 		return NULL;
+ 
+-	if (ibv_cmd_reg_mr(ibvpd, sva, len, (uintptr_t)sva, access, &mr->vmr,
++	if (ibv_cmd_reg_mr(ibvpd, sva, len, hca_va, access, &mr->vmr,
+ 			   &cmd, sizeof(cmd), &resp, sizeof(resp))) {
+ 		free(mr);
+ 		return NULL;
+diff --git a/providers/efa/verbs.h b/providers/efa/verbs.h
+index 1a49653f..7b532adc 100644
+--- a/providers/efa/verbs.h
++++ b/providers/efa/verbs.h
+@@ -18,7 +18,7 @@ int efa_query_device_ex(struct ibv_context *context,
+ struct ibv_pd *efa_alloc_pd(struct ibv_context *uctx);
+ int efa_dealloc_pd(struct ibv_pd *ibvpd);
+ struct ibv_mr *efa_reg_mr(struct ibv_pd *ibvpd, void *buf, size_t len,
+-			  int ibv_access_flags);
++			  uint64_t hca_va, int ibv_access_flags);
+ int efa_dereg_mr(struct verbs_mr *vmr);
+ 
+ struct ibv_cq *efa_create_cq(struct ibv_context *uctx, int ncqe,
+diff --git a/providers/hfi1verbs/hfiverbs.h b/providers/hfi1verbs/hfiverbs.h
+index 070a01c9..b9e91d80 100644
+--- a/providers/hfi1verbs/hfiverbs.h
++++ b/providers/hfi1verbs/hfiverbs.h
+@@ -204,8 +204,8 @@ struct ibv_pd *hfi1_alloc_pd(struct ibv_context *pd);
+ 
+ int hfi1_free_pd(struct ibv_pd *pd);
+ 
+-struct ibv_mr *hfi1_reg_mr(struct ibv_pd *pd, void *addr,
+-			    size_t length, int access);
++struct ibv_mr *hfi1_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			   uint64_t hca_va, int access);
+ 
+ int hfi1_dereg_mr(struct verbs_mr *vmr);
+ 
+diff --git a/providers/hfi1verbs/verbs.c b/providers/hfi1verbs/verbs.c
+index ff001f6d..275f8d51 100644
+--- a/providers/hfi1verbs/verbs.c
++++ b/providers/hfi1verbs/verbs.c
+@@ -129,8 +129,8 @@ int hfi1_free_pd(struct ibv_pd *pd)
+ 	return 0;
+ }
+ 
+-struct ibv_mr *hfi1_reg_mr(struct ibv_pd *pd, void *addr,
+-			    size_t length, int access)
++struct ibv_mr *hfi1_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			   uint64_t hca_va, int access)
+ {
+ 	struct verbs_mr *vmr;
+ 	struct ibv_reg_mr cmd;
+@@ -141,8 +141,8 @@ struct ibv_mr *hfi1_reg_mr(struct ibv_pd *pd, void *addr,
+ 	if (!vmr)
+ 		return NULL;
+ 
+-	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr, access, vmr,
+-			     &cmd, sizeof cmd, &resp, sizeof resp);
++	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
++			     sizeof(cmd), &resp, sizeof(resp));
+ 
+ 	if (ret) {
+ 		free(vmr);
+diff --git a/providers/hns/hns_roce_u.h b/providers/hns/hns_roce_u.h
+index 93bc47c1..517d97b3 100644
+--- a/providers/hns/hns_roce_u.h
++++ b/providers/hns/hns_roce_u.h
+@@ -293,7 +293,7 @@ struct ibv_pd *hns_roce_u_alloc_pd(struct ibv_context *context);
+ int hns_roce_u_free_pd(struct ibv_pd *pd);
+ 
+ struct ibv_mr *hns_roce_u_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+-				 int access);
++				 uint64_t hca_va, int access);
+ int hns_roce_u_rereg_mr(struct verbs_mr *mr, int flags, struct ibv_pd *pd,
+ 			void *addr, size_t length, int access);
+ int hns_roce_u_dereg_mr(struct verbs_mr *mr);
+diff --git a/providers/hns/hns_roce_u_verbs.c b/providers/hns/hns_roce_u_verbs.c
+index 7e9b84d7..fc64ee30 100644
+--- a/providers/hns/hns_roce_u_verbs.c
++++ b/providers/hns/hns_roce_u_verbs.c
+@@ -120,7 +120,7 @@ int hns_roce_u_free_pd(struct ibv_pd *pd)
+ }
+ 
+ struct ibv_mr *hns_roce_u_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+-				 int access)
++				 uint64_t hca_va, int access)
+ {
+ 	int ret;
+ 	struct verbs_mr *vmr;
+@@ -141,8 +141,8 @@ struct ibv_mr *hns_roce_u_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+ 	if (!vmr)
+ 		return NULL;
+ 
+-	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr, access, vmr,
+-			     &cmd, sizeof(cmd), &resp, sizeof(resp));
++	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
++			     sizeof(cmd), &resp, sizeof(resp));
+ 	if (ret) {
+ 		free(vmr);
+ 		return NULL;
+diff --git a/providers/i40iw/i40iw_umain.h b/providers/i40iw/i40iw_umain.h
+index bd41b416..95e9cea5 100644
+--- a/providers/i40iw/i40iw_umain.h
++++ b/providers/i40iw/i40iw_umain.h
+@@ -160,7 +160,8 @@ int i40iw_uquery_device(struct ibv_context *, struct ibv_device_attr *);
+ int i40iw_uquery_port(struct ibv_context *, uint8_t, struct ibv_port_attr *);
+ struct ibv_pd *i40iw_ualloc_pd(struct ibv_context *);
+ int i40iw_ufree_pd(struct ibv_pd *);
+-struct ibv_mr *i40iw_ureg_mr(struct ibv_pd *, void *, size_t, int);
++struct ibv_mr *i40iw_ureg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			     uint64_t hca_va, int access);
+ int i40iw_udereg_mr(struct verbs_mr *vmr);
+ struct ibv_cq *i40iw_ucreate_cq(struct ibv_context *, int, struct ibv_comp_channel *, int);
+ int i40iw_uresize_cq(struct ibv_cq *, int);
+diff --git a/providers/i40iw/i40iw_uverbs.c b/providers/i40iw/i40iw_uverbs.c
+index 83b504fa..240150b9 100644
+--- a/providers/i40iw/i40iw_uverbs.c
++++ b/providers/i40iw/i40iw_uverbs.c
+@@ -149,7 +149,8 @@ int i40iw_ufree_pd(struct ibv_pd *pd)
+  * @length: length of the memory
+  * @access: access allowed on this mr
+  */
+-struct ibv_mr *i40iw_ureg_mr(struct ibv_pd *pd, void *addr, size_t length, int access)
++struct ibv_mr *i40iw_ureg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			     uint64_t hca_va, int access)
+ {
+ 	struct verbs_mr *vmr;
+ 	struct i40iw_ureg_mr cmd;
+@@ -161,9 +162,8 @@ struct ibv_mr *i40iw_ureg_mr(struct ibv_pd *pd, void *addr, size_t length, int a
+ 
+ 	cmd.reg_type = IW_MEMREG_TYPE_MEM;
+ 
+-	if (ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr,
+-			   access, vmr, &cmd.ibv_cmd, sizeof(cmd),
+-			   &resp, sizeof(resp))) {
++	if (ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd.ibv_cmd,
++			   sizeof(cmd), &resp, sizeof(resp))) {
+ 		fprintf(stderr, PFX "%s: Failed to register memory\n", __func__);
+ 		free(vmr);
+ 		return NULL;
+diff --git a/providers/ipathverbs/ipathverbs.h b/providers/ipathverbs/ipathverbs.h
+index cfb5cc38..694f1f44 100644
+--- a/providers/ipathverbs/ipathverbs.h
++++ b/providers/ipathverbs/ipathverbs.h
+@@ -183,8 +183,8 @@ struct ibv_pd *ipath_alloc_pd(struct ibv_context *pd);
+ 
+ int ipath_free_pd(struct ibv_pd *pd);
+ 
+-struct ibv_mr *ipath_reg_mr(struct ibv_pd *pd, void *addr,
+-			    size_t length, int access);
++struct ibv_mr *ipath_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			    uint64_t hca_va, int access);
+ 
+ int ipath_dereg_mr(struct verbs_mr *vmr);
+ 
+diff --git a/providers/ipathverbs/verbs.c b/providers/ipathverbs/verbs.c
+index de4722b2..505ea584 100644
+--- a/providers/ipathverbs/verbs.c
++++ b/providers/ipathverbs/verbs.c
+@@ -109,8 +109,8 @@ int ipath_free_pd(struct ibv_pd *pd)
+ 	return 0;
+ }
+ 
+-struct ibv_mr *ipath_reg_mr(struct ibv_pd *pd, void *addr,
+-			    size_t length, int access)
++struct ibv_mr *ipath_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			    uint64_t hca_va, int access)
+ {
+ 	struct verbs_mr *vmr;
+ 	struct ibv_reg_mr cmd;
+@@ -121,8 +121,8 @@ struct ibv_mr *ipath_reg_mr(struct ibv_pd *pd, void *addr,
+ 	if (!vmr)
+ 		return NULL;
+ 
+-	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr, access, vmr,
+-			     &cmd, sizeof cmd, &resp, sizeof resp);
++	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
++			     sizeof(cmd), &resp, sizeof(resp));
+ 	if (ret) {
+ 		free(vmr);
+ 		return NULL;
+diff --git a/providers/mlx4/mlx4.h b/providers/mlx4/mlx4.h
+index 9c21d775..3c161e8e 100644
+--- a/providers/mlx4/mlx4.h
++++ b/providers/mlx4/mlx4.h
+@@ -320,8 +320,8 @@ struct ibv_xrcd *mlx4_open_xrcd(struct ibv_context *context,
+ 				struct ibv_xrcd_init_attr *attr);
+ int mlx4_close_xrcd(struct ibv_xrcd *xrcd);
+ 
+-struct ibv_mr *mlx4_reg_mr(struct ibv_pd *pd, void *addr,
+-			    size_t length, int access);
++struct ibv_mr *mlx4_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			   uint64_t hca_va, int access);
+ int mlx4_rereg_mr(struct verbs_mr *vmr, int flags, struct ibv_pd *pd,
+ 		  void *addr, size_t length, int access);
+ int mlx4_dereg_mr(struct verbs_mr *vmr);
+diff --git a/providers/mlx4/verbs.c b/providers/mlx4/verbs.c
+index 9a5affe7..d814a2bc 100644
+--- a/providers/mlx4/verbs.c
++++ b/providers/mlx4/verbs.c
+@@ -275,7 +275,7 @@ int mlx4_close_xrcd(struct ibv_xrcd *ib_xrcd)
+ }
+ 
+ struct ibv_mr *mlx4_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+-			   int access)
++			   uint64_t hca_va, int access)
+ {
+ 	struct verbs_mr *vmr;
+ 	struct ibv_reg_mr cmd;
+@@ -286,9 +286,8 @@ struct ibv_mr *mlx4_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+ 	if (!vmr)
+ 		return NULL;
+ 
+-	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t) addr,
+-			     access, vmr, &cmd, sizeof(cmd),
+-			     &resp, sizeof(resp));
++	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
++			     sizeof(cmd), &resp, sizeof(resp));
+ 	if (ret) {
+ 		free(vmr);
+ 		return NULL;
+diff --git a/providers/mlx5/mlx5.h b/providers/mlx5/mlx5.h
+index a64d7024..0bc98139 100644
+--- a/providers/mlx5/mlx5.h
++++ b/providers/mlx5/mlx5.h
+@@ -816,8 +816,8 @@ void mlx5_async_event(struct ibv_context *context,
+ 		      struct ibv_async_event *event);
+ 
+ struct ibv_mr *mlx5_alloc_null_mr(struct ibv_pd *pd);
+-struct ibv_mr *mlx5_reg_mr(struct ibv_pd *pd, void *addr,
+-			   size_t length, int access);
++struct ibv_mr *mlx5_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			   uint64_t hca_va, int access);
+ int mlx5_rereg_mr(struct verbs_mr *mr, int flags, struct ibv_pd *pd, void *addr,
+ 		  size_t length, int access);
+ int mlx5_dereg_mr(struct verbs_mr *mr);
+diff --git a/providers/mlx5/verbs.c b/providers/mlx5/verbs.c
+index ee65ff3a..d08678e4 100644
+--- a/providers/mlx5/verbs.c
++++ b/providers/mlx5/verbs.c
+@@ -388,7 +388,7 @@ int mlx5_free_pd(struct ibv_pd *pd)
+ }
+ 
+ struct ibv_mr *mlx5_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+-			   int acc)
++			   uint64_t hca_va, int acc)
+ {
+ 	struct mlx5_mr *mr;
+ 	struct ibv_reg_mr cmd;
+@@ -400,9 +400,8 @@ struct ibv_mr *mlx5_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+ 	if (!mr)
+ 		return NULL;
+ 
+-	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr, access,
+-			     &mr->vmr, &cmd, sizeof(cmd), &resp,
+-			     sizeof resp);
++	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, &mr->vmr, &cmd,
++			     sizeof(cmd), &resp, sizeof(resp));
+ 	if (ret) {
+ 		mlx5_free_buf(&(mr->buf));
+ 		free(mr);
+diff --git a/providers/mthca/ah.c b/providers/mthca/ah.c
+index df0cb281..70fee9a6 100644
+--- a/providers/mthca/ah.c
++++ b/providers/mthca/ah.c
+@@ -61,7 +61,8 @@ static struct mthca_ah_page *__add_page(struct mthca_pd *pd, int page_size, int
+ 		return NULL;
+ 	}
+ 
+-	page->mr = mthca_reg_mr(&pd->ibv_pd, page->buf.buf, page_size, 0);
++	page->mr = mthca_reg_mr(&pd->ibv_pd, page->buf.buf, page_size,
++				(uint64_t) page->buf.buf, 0);
+ 	if (!page->mr) {
+ 		mthca_free_buf(&page->buf);
+ 		free(page);
+diff --git a/providers/mthca/mthca.h b/providers/mthca/mthca.h
+index 61042de3..b7df2f73 100644
+--- a/providers/mthca/mthca.h
++++ b/providers/mthca/mthca.h
+@@ -280,8 +280,8 @@ int mthca_query_port(struct ibv_context *context, uint8_t port,
+ struct ibv_pd *mthca_alloc_pd(struct ibv_context *context);
+ int mthca_free_pd(struct ibv_pd *pd);
+ 
+-struct ibv_mr *mthca_reg_mr(struct ibv_pd *pd, void *addr,
+-			    size_t length, int access);
++struct ibv_mr *mthca_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			    uint64_t hca_va, int access);
+ int mthca_dereg_mr(struct verbs_mr *mr);
+ 
+ struct ibv_cq *mthca_create_cq(struct ibv_context *context, int cqe,
+diff --git a/providers/mthca/verbs.c b/providers/mthca/verbs.c
+index e7a1c357..99e5ec66 100644
+--- a/providers/mthca/verbs.c
++++ b/providers/mthca/verbs.c
+@@ -145,10 +145,10 @@ static struct ibv_mr *__mthca_reg_mr(struct ibv_pd *pd, void *addr,
+ 	return &vmr->ibv_mr;
+ }
+ 
+-struct ibv_mr *mthca_reg_mr(struct ibv_pd *pd, void *addr,
+-			    size_t length, int access)
++struct ibv_mr *mthca_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			    uint64_t hca_va, int access)
+ {
+-	return __mthca_reg_mr(pd, addr, length, (uintptr_t) addr, access, 0);
++	return __mthca_reg_mr(pd, addr, length, hca_va, access, 0);
+ }
+ 
+ int mthca_dereg_mr(struct verbs_mr *vmr)
+diff --git a/providers/nes/nes_umain.h b/providers/nes/nes_umain.h
+index ac992407..1cfc87c1 100644
+--- a/providers/nes/nes_umain.h
++++ b/providers/nes/nes_umain.h
+@@ -355,7 +355,8 @@ int nes_uquery_device(struct ibv_context *, struct ibv_device_attr *);
+ int nes_uquery_port(struct ibv_context *, uint8_t, struct ibv_port_attr *);
+ struct ibv_pd *nes_ualloc_pd(struct ibv_context *);
+ int nes_ufree_pd(struct ibv_pd *);
+-struct ibv_mr *nes_ureg_mr(struct ibv_pd *, void *, size_t, int);
++struct ibv_mr *nes_ureg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			   uint64_t hca_va, int access);
+ int nes_udereg_mr(struct verbs_mr *vmr);
+ struct ibv_cq *nes_ucreate_cq(struct ibv_context *, int, struct ibv_comp_channel *, int);
+ int nes_uresize_cq(struct ibv_cq *, int);
+diff --git a/providers/nes/nes_uverbs.c b/providers/nes/nes_uverbs.c
+index 8523e923..2b78468b 100644
+--- a/providers/nes/nes_uverbs.c
++++ b/providers/nes/nes_uverbs.c
+@@ -165,8 +165,8 @@ int nes_ufree_pd(struct ibv_pd *pd)
+ /**
+  * nes_ureg_mr
+  */
+-struct ibv_mr *nes_ureg_mr(struct ibv_pd *pd, void *addr,
+-		size_t length, int access)
++struct ibv_mr *nes_ureg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			   uint64_t hca_va, int access)
+ {
+ 	struct verbs_mr *vmr;
+ 	struct nes_ureg_mr cmd;
+@@ -177,9 +177,8 @@ struct ibv_mr *nes_ureg_mr(struct ibv_pd *pd, void *addr,
+ 		return NULL;
+ 
+ 	cmd.reg_type = IWNES_MEMREG_TYPE_MEM;
+-	if (ibv_cmd_reg_mr(pd, addr, length, (uintptr_t) addr,
+-			access, vmr, &cmd.ibv_cmd, sizeof(cmd),
+-			&resp, sizeof(resp))) {
++	if (ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd.ibv_cmd,
++			   sizeof(cmd), &resp, sizeof(resp))) {
+ 		free(vmr);
+ 
+ 		return NULL;
+diff --git a/providers/ocrdma/ocrdma_main.h b/providers/ocrdma/ocrdma_main.h
+index 33def78c..aadefd96 100644
+--- a/providers/ocrdma/ocrdma_main.h
++++ b/providers/ocrdma/ocrdma_main.h
+@@ -269,8 +269,8 @@ int ocrdma_query_device(struct ibv_context *, struct ibv_device_attr *);
+ int ocrdma_query_port(struct ibv_context *, uint8_t, struct ibv_port_attr *);
+ struct ibv_pd *ocrdma_alloc_pd(struct ibv_context *);
+ int ocrdma_free_pd(struct ibv_pd *);
+-struct ibv_mr *ocrdma_reg_mr(struct ibv_pd *, void *, size_t,
+-			     int ibv_access_flags);
++struct ibv_mr *ocrdma_reg_mr(struct ibv_pd *pd, void *addr, size_t len,
++			     uint64_t hca_va, int access);
+ int ocrdma_dereg_mr(struct verbs_mr *vmr);
+ 
+ struct ibv_cq *ocrdma_create_cq(struct ibv_context *, int,
+diff --git a/providers/ocrdma/ocrdma_verbs.c b/providers/ocrdma/ocrdma_verbs.c
+index 3b3e1a60..4ae35be9 100644
+--- a/providers/ocrdma/ocrdma_verbs.c
++++ b/providers/ocrdma/ocrdma_verbs.c
+@@ -185,22 +185,20 @@ int ocrdma_free_pd(struct ibv_pd *ibpd)
+ /*
+  * ocrdma_reg_mr
+  */
+-struct ibv_mr *ocrdma_reg_mr(struct ibv_pd *pd, void *addr,
+-			     size_t len, int access)
++struct ibv_mr *ocrdma_reg_mr(struct ibv_pd *pd, void *addr, size_t len,
++			     uint64_t hca_va, int access)
+ {
+ 	struct ocrdma_mr *mr;
+ 	struct ibv_reg_mr cmd;
+ 	struct uocrdma_reg_mr_resp resp;
+-	uint64_t hca_va = (uintptr_t) addr;
+ 
+ 	mr = malloc(sizeof *mr);
+ 	if (!mr)
+ 		return NULL;
+ 	bzero(mr, sizeof *mr);
+ 
+-	if (ibv_cmd_reg_mr(pd, addr, len, hca_va,
+-			   access, &mr->vmr, &cmd, sizeof(cmd),
+-			   &resp.ibv_resp, sizeof(resp))) {
++	if (ibv_cmd_reg_mr(pd, addr, len, hca_va, access, &mr->vmr, &cmd,
++			   sizeof(cmd), &resp.ibv_resp, sizeof(resp))) {
+ 		free(mr);
+ 		return NULL;
+ 	}
+diff --git a/providers/qedr/qelr_main.h b/providers/qedr/qelr_main.h
+index 77aa9c2f..fae87130 100644
+--- a/providers/qedr/qelr_main.h
++++ b/providers/qedr/qelr_main.h
+@@ -46,8 +46,8 @@ int qelr_query_port(struct ibv_context *, uint8_t, struct ibv_port_attr *);
+ struct ibv_pd *qelr_alloc_pd(struct ibv_context *);
+ int qelr_dealloc_pd(struct ibv_pd *);
+ 
+-struct ibv_mr *qelr_reg_mr(struct ibv_pd *, void *, size_t,
+-			   int ibv_access_flags);
++struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr, size_t len,
++			   uint64_t hca_va, int access);
+ int qelr_dereg_mr(struct verbs_mr *vmr);
+ 
+ struct ibv_cq *qelr_create_cq(struct ibv_context *, int,
+diff --git a/providers/qedr/qelr_verbs.c b/providers/qedr/qelr_verbs.c
+index a347714d..4b19ccb0 100644
+--- a/providers/qedr/qelr_verbs.c
++++ b/providers/qedr/qelr_verbs.c
+@@ -156,8 +156,8 @@ int qelr_dealloc_pd(struct ibv_pd *ibpd)
+ 	return rc;
+ }
+ 
+-struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr,
+-			   size_t len, int access)
++struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr, size_t len,
++			   uint64_t hca_va, int access)
+ {
+ 	struct qelr_mr *mr;
+ 	struct ibv_reg_mr cmd;
+@@ -165,17 +165,14 @@ struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr,
+ 	struct qelr_pd *pd = get_qelr_pd(ibpd);
+ 	struct qelr_devctx *cxt = get_qelr_ctx(ibpd->context);
+ 
+-	uint64_t hca_va = (uintptr_t) addr;
+-
+ 	mr = malloc(sizeof(*mr));
+ 	if (!mr)
+ 		return NULL;
+ 
+ 	bzero(mr, sizeof(*mr));
+ 
+-	if (ibv_cmd_reg_mr(ibpd, addr, len, hca_va,
+-			   access, &mr->vmr, &cmd, sizeof(cmd),
+-			   &resp.ibv_resp, sizeof(resp))) {
++	if (ibv_cmd_reg_mr(ibpd, addr, len, hca_va, access, &mr->vmr, &cmd,
++			   sizeof(cmd), &resp.ibv_resp, sizeof(resp))) {
+ 		free(mr);
+ 		return NULL;
+ 	}
+diff --git a/providers/qedr/qelr_verbs.h b/providers/qedr/qelr_verbs.h
+index cf2ce047..d0eacbfe 100644
+--- a/providers/qedr/qelr_verbs.h
++++ b/providers/qedr/qelr_verbs.h
+@@ -48,8 +48,8 @@ int qelr_query_port(struct ibv_context *context, uint8_t port,
+ struct ibv_pd *qelr_alloc_pd(struct ibv_context *context);
+ int qelr_dealloc_pd(struct ibv_pd *ibpd);
+ 
+-struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr,
+-			   size_t len, int access);
++struct ibv_mr *qelr_reg_mr(struct ibv_pd *ibpd, void *addr, size_t len,
++			   uint64_t hca_va, int access);
+ int qelr_dereg_mr(struct verbs_mr *mr);
+ 
+ struct ibv_cq *qelr_create_cq(struct ibv_context *context, int cqe,
+diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+index 909c3f7b..c0fb32e3 100644
+--- a/providers/rxe/rxe.c
++++ b/providers/rxe/rxe.c
+@@ -123,7 +123,7 @@ static int rxe_dealloc_pd(struct ibv_pd *pd)
+ }
+ 
+ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+-				 int access)
++				 uint64_t hca_va, int access)
+ {
+ 	struct verbs_mr *vmr;
+ 	struct ibv_reg_mr cmd;
+@@ -134,8 +134,8 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+ 	if (!vmr)
+ 		return NULL;
+ 
+-	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t)addr, access, vmr,
+-			     &cmd, sizeof cmd, &resp, sizeof resp);
++	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
++			     sizeof(cmd), &resp, sizeof(resp));
+ 	if (ret) {
+ 		free(vmr);
+ 		return NULL;
+diff --git a/providers/vmw_pvrdma/pvrdma.h b/providers/vmw_pvrdma/pvrdma.h
+index ebd50ce1..d90bd809 100644
+--- a/providers/vmw_pvrdma/pvrdma.h
++++ b/providers/vmw_pvrdma/pvrdma.h
+@@ -281,8 +281,8 @@ int pvrdma_query_port(struct ibv_context *context, uint8_t port,
+ struct ibv_pd *pvrdma_alloc_pd(struct ibv_context *context);
+ int pvrdma_free_pd(struct ibv_pd *pd);
+ 
+-struct ibv_mr *pvrdma_reg_mr(struct ibv_pd *pd, void *addr,
+-			     size_t length, int access);
++struct ibv_mr *pvrdma_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
++			     uint64_t hca_va, int access);
+ int pvrdma_dereg_mr(struct verbs_mr *mr);
+ 
+ struct ibv_cq *pvrdma_create_cq(struct ibv_context *context, int cqe,
+diff --git a/providers/vmw_pvrdma/verbs.c b/providers/vmw_pvrdma/verbs.c
+index e27952bf..e8423c01 100644
+--- a/providers/vmw_pvrdma/verbs.c
++++ b/providers/vmw_pvrdma/verbs.c
+@@ -112,7 +112,7 @@ int pvrdma_free_pd(struct ibv_pd *pd)
+ }
+ 
+ struct ibv_mr *pvrdma_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+-			     int access)
++			     uint64_t hca_va, int access)
+ {
+ 	struct verbs_mr *vmr;
+ 	struct ibv_reg_mr cmd;
+@@ -123,9 +123,8 @@ struct ibv_mr *pvrdma_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+ 	if (!vmr)
+ 		return NULL;
+ 
+-	ret = ibv_cmd_reg_mr(pd, addr, length, (uintptr_t) addr,
+-			     access, vmr, &cmd, sizeof(cmd),
+-			     &resp, sizeof(resp));
++	ret = ibv_cmd_reg_mr(pd, addr, length, hca_va, access, vmr, &cmd,
++			     sizeof(cmd), &resp, sizeof(resp));
+ 	if (ret) {
+ 		free(vmr);
+ 		return NULL;
+-- 
+2.20.1
 
-How do you anticipate these arguments being used in the future?
-
-For the SVE prctls I took the view that "get" could only ever mean one
-thing, and "put" already had a flags argument with spare bits for future
-expansion anyway, so forcing the extra arguments to zero would be
-unnecessary.
-
-Opinions seem to differ on whether requiring surplus arguments to be 0
-is beneficial for hygiene, but the glibc prototype for prctl() is
-
-	int prctl (int __option, ...);
-
-so it seemed annoying to have to pass extra arguments to it just for the
-sake of it.  IMHO this also makes the code at the call site less
-readable, since it's not immediately apparent that all those 0s are
-meaningless.
-
-</bikeshed>
-
-(OTOH, the extra arguments are harmless and prctl is far from being a
-general-purpose syscall.)
-
-> +			return -EINVAL;
-> +		error = SET_TAGGED_ADDR_CTRL(arg2);
-> +		break;
-> +	case PR_GET_TAGGED_ADDR_CTRL:
-> +		if (arg2 || arg3 || arg4 || arg5)
-> +			return -EINVAL;
-> +		error = GET_TAGGED_ADDR_CTRL();
-
-Having a "get" prctl is probably a good idea, but is there a clear
-usecase for it?
-
-(The usecase for PR_SVE_GET_VL was always a bit dubious, since the
-VL can also be read via an SVE insn or a compiler intrinsic, which is
-less portable but much cheaper.  As for the PR_SVE_SET_VL_INHERIT flag
-that can be read via PR_SVE_GET_VL, I've never been sure how useful it
-is to be able to read that...)
-
-[...]
-
-Cheers
----Dave
