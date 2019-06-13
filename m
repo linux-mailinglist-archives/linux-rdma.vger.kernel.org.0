@@ -2,170 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C6D43C58
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71B243BEC
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 17:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbfFMPfV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 11:35:21 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:37322 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727783AbfFMK02 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 06:26:28 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5DADtuq179758;
-        Thu, 13 Jun 2019 10:26:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2018-07-02; bh=j1PtYE1zOHH9hfkOKIl3egKVJgazzXij8h70vplFa/E=;
- b=UdAqVv58Y3mOhqKwRk8KjFSDtaCw8hxy4yDTrwP5I3cMPMJ8U/C34j4pIxRmF6BngcIx
- bA8qPcRW3fsCY/ENQ7v2RQYfj3Zw0Z2R42o9WK0mZuzeynyUdDzUsZgHScXBZ8xfm13/
- n0d5k3pukQI0FA03HQAWwAehxqzqPXHttfBG5vqF5iD3LLjrbB7AiipcfZ2x3bJI5PkF
- /rvVx2h4noA775X/UPgqHe7Iceqj59J5ggJe47684V5ILwCQFH5JKV6xdWyQb5nBkFOF
- 3/VEc9PB87QqkIrzKOg0aT4UNzX8AbepH5HjA9HrTuEcy1iPGbnyPe9TK5HgIPrW3Y3i mg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2t04eu0q68-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Jun 2019 10:26:06 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5DAOE37082957;
-        Thu, 13 Jun 2019 10:26:05 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2t0p9sayhg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Jun 2019 10:26:05 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5DAQ5IN009506;
-        Thu, 13 Jun 2019 10:26:05 GMT
-Received: from dhcp-10-172-157-227.no.oracle.com (/10.172.157.227)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 13 Jun 2019 03:26:05 -0700
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [rdma-core ibacm v3] ibacm: only open InfiniBand port
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <20190611233325.3141-1-honli@redhat.com>
-Date:   Thu, 13 Jun 2019 12:26:01 +0200
-Cc:     OFED mailing list <linux-rdma@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C6024E50-C005-464B-A670-034B3F98AEA7@oracle.com>
-References: <20190611233325.3141-1-honli@redhat.com>
-To:     Honggang Li <honli@redhat.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9286 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906130081
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9286 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906130081
+        id S1726742AbfFMPcj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 11:32:39 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:41576 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728462AbfFMKrr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 06:47:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=GEs9TuIKz96lXRS7FnLGyqSMFlOm6a6Nuvp5RkrDbpg=; b=iMC2hvEIOcyryH8ttvBTFCIwJ
+        +/UTOZxleRRIx/Qk3yqPfUzPCOda7GErke13ZzFQak5ewSoRm8WulpfqNH7Zcz8Q/4E8j/T6eNEmH
+        zqn/a0VQTD+joB/VdqCU1xYbOG/t0Yt1iH7D4MVcM+JnmapUwUFZ9n9jOt8V0iESGcP+afyjOL9pH
+        +Z800XzTY/YS/+CM4flrqhchMwkDHfagPOomV5WMld5ChIy1boYvTjVntNNzTcy5LKpr/Bsx2mf7S
+        S446zK0y8A3V0fwGhTmnFSvXqbCAHfkut7f3C9ZExu7tOQe+5MbplKDwi6MAkqGaZIAtnEYCa3p8M
+        bMZjvH0qQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1hbNGh-0007DC-6o; Thu, 13 Jun 2019 10:47:43 +0000
+Date:   Thu, 13 Jun 2019 03:47:43 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190613104743.GH32656@bombadil.infradead.org>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+ <20190607110426.GB12765@quack2.suse.cz>
+ <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+ <20190608001036.GF14308@dread.disaster.area>
+ <20190612123751.GD32656@bombadil.infradead.org>
+ <20190613002555.GH14363@dread.disaster.area>
+ <20190613032320.GG32656@bombadil.infradead.org>
+ <20190613043649.GJ14363@dread.disaster.area>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190613043649.GJ14363@dread.disaster.area>
+User-Agent: Mutt/1.9.2 (2017-12-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Jun 13, 2019 at 02:36:49PM +1000, Dave Chinner wrote:
+> On Wed, Jun 12, 2019 at 08:23:20PM -0700, Matthew Wilcox wrote:
+> > On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
+> > > On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
+> > > > That's rather different from the normal meaning of 'exclusive' in the
+> > > > context of locks, which is "only one user can have access to this at
+> > > > a time".
+> > > 
+> > > Layout leases are not locks, they are a user access policy object.
+> > > It is the process/fd which holds the lease and it's the process/fd
+> > > that is granted exclusive access.  This is exactly the same semantic
+> > > as O_EXCL provides for granting exclusive access to a block device
+> > > via open(), yes?
+> > 
+> > This isn't my understanding of how RDMA wants this to work, so we should
+> > probably clear that up before we get too far down deciding what name to
+> > give it.
+> > 
+> > For the RDMA usage case, it is entirely possible that both process A
+> > and process B which don't know about each other want to perform RDMA to
+> > file F.  So there will be two layout leases active on this file at the
+> > same time.  It's fine for IOs to simultaneously be active to both leases.
+> 
+> Yes, it is.
+> 
+> > But if the filesystem wants to move blocks around, it has to break
+> > both leases.
+> 
+> No, the _lease layer_ needs to break both leases when the filesystem
+> calls break_layout().
 
+That's a distinction without a difference as far as userspace is
+concerned.  If process A asks for an exclusive lease (and gets it),
+then process B asks for an exclusive lease (and gets it), that lease
+isn't exclusive!  It's shared.
 
-> On 12 Jun 2019, at 01:33, Honggang Li <honli@redhat.com> wrote:
->=20
-> The low 64 bits of cxgb3 and cxgb4 devices' GID are zeros. If the
-> "provider" was set in the option file, ibacm will fail with
-> segment fault.
->=20
-> $ sed -i -e 's/# provider ibacmp 0xFE80000000000000/provider ibacmp =
-0xFE80000000000000/g' /etc/rdma/ibacm_opts.cfg
-> $ /usr/sbin/ibacm --systemd
-> Segmentation fault (core dumped)
-> $ gdb /usr/sbin/ibacm core.ibacm
-> (gdb) bt
-> 0  0x00005625a4809217 in acm_assign_provider (port=3D0x5625a4bc6f28) =
-at /usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2285
-> 1  acm_port_up (port=3D0x5625a4bc6f28) at =
-/usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2372
-> 2  0x00005625a48073d2 in acm_activate_devices () at =
-/usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2564
-> 3  main (argc=3D<optimized out>, argv=3D<optimized out>) at =
-/usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:3270
->=20
-> Note: The rpm was built with tarball generated from upstream repo. The =
-last
-> commit is aa41a65ec86bdb9c1c86e57885ee588b39558238.
->=20
-> acm_open_dev function should not open a umad port for iWARP or RoCE =
-devices.
-> Signed-off-by: Honggang Li <honli@redhat.com>
+I think the example you give of O_EXCL is more of a historical accident.
+It's a relatively recent Linuxism that O_EXCL on a block device means
+"this block device is not part of a filesystem", and I don't think
+most userspace programmers are aware of what it means when not paired
+with O_CREAT.
 
-Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
+> > If Process C tries to do a write to file F without a lease, there's no
+> > problem, unless a side-effect of the write would be to change the block
+> > mapping,
+> 
+> That's a side effect we cannot predict ahead of time. But it's
+> also _completely irrelevant_ to the layout lease layer API and
+> implementation.(*)
 
-
-Thxs, H=C3=A5kon
-
-> ---
-> ibacm/src/acm.c | 26 ++++++++++++++++++++++----
-> 1 file changed, 22 insertions(+), 4 deletions(-)
->=20
-> diff --git a/ibacm/src/acm.c b/ibacm/src/acm.c
-> index a21069d4..ad313075 100644
-> --- a/ibacm/src/acm.c
-> +++ b/ibacm/src/acm.c
-> @@ -2600,9 +2600,11 @@ static void acm_open_dev(struct ibv_device =
-*ibdev)
-> {
-> 	struct acmc_device *dev;
-> 	struct ibv_device_attr attr;
-> +	struct ibv_port_attr port_attr;
-> 	struct ibv_context *verbs;
-> 	size_t size;
-> 	int i, ret;
-> +	unsigned int opened_ib_port_cnt =3D 0;
->=20
-> 	acm_log(1, "%s\n", ibdev->name);
-> 	verbs =3D ibv_open_device(ibdev);
-> @@ -2628,13 +2630,29 @@ static void acm_open_dev(struct ibv_device =
-*ibdev)
-> 	list_head_init(&dev->prov_dev_context_list);
->=20
-> 	for (i =3D 0; i < dev->port_cnt; i++) {
-> +		acm_log(1, "%s port %d\n", ibdev->name, i + 1);
-> +		ret =3D ibv_query_port(dev->device.verbs, i + 1, =
-&port_attr);
-> +		if (ret) {
-> +			acm_log(0, "ERROR - ibv_query_port (%d)\n", =
-ret);
-> +			continue;
-> +		}
-> +		if (port_attr.link_layer !=3D IBV_LINK_LAYER_INFINIBAND) =
-{
-> +			acm_log(1, "not an InfiniBand port\n");
-> +			continue;
-> +		}
-> +
-> 		acm_open_port(&dev->port[i], dev, i + 1);
-> +		opened_ib_port_cnt++;
-> 	}
->=20
-> -	list_add(&dev_list, &dev->entry);
-> -
-> -	acm_log(1, "%s opened\n", ibdev->name);
-> -	return;
-> +	if (opened_ib_port_cnt) {
-> +		list_add(&dev_list, &dev->entry);
-> +		acm_log(1, "%d InfiniBand %s opened for %s\n",
-> +				opened_ib_port_cnt,
-> +				opened_ib_port_cnt =3D=3D 1 ? "port" : =
-"ports",
-> +				ibdev->name);
-> +		return;
-> +	}
->=20
-> err1:
-> 	ibv_close_device(verbs);
-> --=20
-> 2.20.1
->=20
+It's irrelevant to the naming, but you brought it up as part of the
+semantics.
 
