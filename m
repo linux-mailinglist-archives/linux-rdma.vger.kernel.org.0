@@ -2,151 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A40444D1
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 18:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BFC44A3A
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2019 20:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbfFMQjo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 12:39:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42674 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2392609AbfFMQjo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 12:39:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EACE0ADD9;
-        Thu, 13 Jun 2019 16:39:41 +0000 (UTC)
-Received: by unicorn.suse.cz (Postfix, from userid 1000)
-        id 4D0E1E00E3; Thu, 13 Jun 2019 18:39:41 +0200 (CEST)
-Date:   Thu, 13 Jun 2019 18:39:41 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Denis Kirjanov <kda@linux-powerpc.org>
-Cc:     davem@davemloft.net, dledford@redhat.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/2] ipoib: show VF broadcast address
-Message-ID: <20190613163941.GK31797@unicorn.suse.cz>
-References: <20190613142003.129391-1-dkirjanov@suse.com>
- <20190613142003.129391-4-dkirjanov@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190613142003.129391-4-dkirjanov@suse.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727085AbfFMSEf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 14:04:35 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33516 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726265AbfFMSEf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 14:04:35 -0400
+X-Greylist: delayed 3924 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Jun 2019 14:04:34 EDT
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5DGrpok004190;
+        Thu, 13 Jun 2019 16:58:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2018-07-02; bh=6+5uOXGUqpVe8l+j2JuRuHJpjiBJEwkfCvYqyjglD9c=;
+ b=ticmJkeSwDxOe8hD+GOtaTLPcoKN4trEF+RZaRTAB+fwTqYt0lJIy83KlVY0+AECVtkR
+ maulPoWxv3brp4qMdVvw1H6WbqSNRoE1eAnMOmHFN8luyGAVdTys31YUXpkaCy2aHSwF
+ Y4NqBPkj8g6koo5XGx+GofBIC5Qo0PCKu36jTVF9JAs9KAp6UnZmdtUVVQf7owQUTddd
+ YnSzubeVSWNg9p9BZvI/UumkA029RBlX3ImvrB1+E8REGKg8QY5aOwYzrRX2ApY/J8wx
+ R/aWZ/Hu+UIif/4q4z1o1lWQOaB8lAWimBmkpb106QY04C7Kv0JzycaEZ9sJ3TNHLOaT Cw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2t04yntsn2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 Jun 2019 16:58:40 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5DGviSH038486;
+        Thu, 13 Jun 2019 16:58:40 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 2t04j0jt0g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 Jun 2019 16:58:39 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5DGwbtW013038;
+        Thu, 13 Jun 2019 16:58:37 GMT
+Received: from [192.168.10.144] (/51.175.236.248)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 13 Jun 2019 09:58:37 -0700
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v2] RDMA/cma: Make CM response timeout and # CM retries
+ configurable
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <174ccd37a9ffa05d0c7c03fe80ff7170a9270824.camel@redhat.com>
+Date:   Thu, 13 Jun 2019 18:58:30 +0200
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Steve Wise <swise@opengridcomputing.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <67B4F337-4C3A-4193-B1EF-42FD4765CBB7@oracle.com>
+References: <20190226075722.1692315-1-haakon.bugge@oracle.com>
+ <174ccd37a9ffa05d0c7c03fe80ff7170a9270824.camel@redhat.com>
+To:     Doug Ledford <dledford@redhat.com>
+X-Mailer: Apple Mail (2.3445.104.11)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9287 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906130123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9287 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906130123
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 04:20:03PM +0200, Denis Kirjanov wrote:
-> in IPoIB case we can't see a VF broadcast address for but
-> can see for PF
-> 
-> Before:
-> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
-> state UP mode DEFAULT group default qlen 256
->     link/infiniband
-> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
-> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
->     vf 0 MAC 14:80:00:00:66:fe, spoof checking off, link-state disable,
-> trust off, query_rss off
-> ...
-> 
-> After:
-> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
-> state UP mode DEFAULT group default qlen 256
->     link/infiniband
-> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
-> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
->     vf 0     link/infiniband
-> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
-> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
-> checking off, link-state disable, trust off, query_rss off
-> 
-> Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
-> ---
->  include/uapi/linux/if_link.h | 5 +++++
->  net/core/rtnetlink.c         | 6 ++++++
->  2 files changed, 11 insertions(+)
-> 
-> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-> index 5b225ff63b48..1f36dd3a45d6 100644
-> --- a/include/uapi/linux/if_link.h
-> +++ b/include/uapi/linux/if_link.h
-> @@ -681,6 +681,7 @@ enum {
->  enum {
->  	IFLA_VF_UNSPEC,
->  	IFLA_VF_MAC,		/* Hardware queue specific attributes */
-> +	IFLA_VF_BROADCAST,
->  	IFLA_VF_VLAN,		/* VLAN ID and QoS */
->  	IFLA_VF_TX_RATE,	/* Max TX Bandwidth Allocation */
->  	IFLA_VF_SPOOFCHK,	/* Spoof Checking on/off switch */
 
-Oops, I forgot to mention one important point when reviewing v1: the new
-attribute type must be added at the end (just before __IFLA_VF_MAX) so
-that you do not change value of existing IFLA_VF_* constants (this would
-break compatibility).
 
-> @@ -704,6 +705,10 @@ struct ifla_vf_mac {
->  	__u8 mac[32]; /* MAX_ADDR_LEN */
->  };
->  
-> +struct ifla_vf_broadcast {
-> +	__u8 broadcast[32];
-> +};
-> +
->  struct ifla_vf_vlan {
->  	__u32 vf;
->  	__u32 vlan; /* 0 - 4095, 0 disables VLAN filter */
+> On 13 Jun 2019, at 16:25, Doug Ledford <dledford@redhat.com> wrote:
+>=20
+> On Tue, 2019-02-26 at 08:57 +0100, H=C3=A5kon Bugge wrote:
+>> During certain workloads, the default CM response timeout is too
+>> short, leading to excessive retries. Hence, make it configurable
+>> through sysctl. While at it, also make number of CM retries
+>> configurable.
+>>=20
+>> The defaults are not changed.
+>>=20
+>> Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
+>> ---
+>> v1 -> v2:
+>>   * Added unregister_net_sysctl_table() in cma_cleanup()
+>> ---
+>> drivers/infiniband/core/cma.c | 52 ++++++++++++++++++++++++++++++---
+>> --
+>> 1 file changed, 45 insertions(+), 7 deletions(-)
+>=20
+> This has been sitting on patchworks since forever.  Presumably because
+> Jason and I neither one felt like we really wanted it, but also
+> couldn't justify flat refusing it.
 
-My first idea was that to question the need of a wrapping structure as
-we couldn't modify that structure in the future anyway so that there
-does not seem to be any gain against simply passing the address as a
-binary with attribute length equal to address length (like we do with
-IFLA_ADDRESS and IFLA_BROADCAST).
+I thought the agreement was to use NL and iproute2. But I haven't had =
+the capacity.
 
-But then I checked other IFLA_VF_* attributes and I'm confused. The
-structure seems to be
+>  Well, I've made up my mind, so
+> unless Jason wants to argue the other side, I'm rejecting this patch.=20=
 
-    IFLA_VF_INFO_LIST
-        IFLA_VF_INFO
-            IFLA_VF_MAC
-            IFLA_VF_VLAN
-            ...
-        IFLA_VF_INFO
-            IFLA_VF_MAC
-            IFLA_VF_VLAN
-            ...
-        ...
+> Here's why.  The whole concept of a timeout is to help recovery in a
+> situation that overloads one end of the connection.  There is a
+> relationship between the max queue backlog on the one host and the
+> timeout on the other host. =20
 
-Each IFLA_VF_INFO corresponds to one virtual function but its number is
-not determined by an attribute within this nest. Instead, each of the
-neste IFLA_VF_* attributes is a structure containing "__u32 vf" and it's
-only matter of convention that within one IFLA_VF_INFO nest, all data
-belongs to the same VF, neither do_setlink() nor do_setvfinfo() check
-it.
+If you refer to the backlog parameter in rdma_listen(), I cannot see it =
+being used at all for IB.
 
-I guess you should either follow this weird pattern or introduce proper
-IFLA_VF_ID to be used for IFLA_VF_BROADCAST and all future IFLA_VF_*
-attributes. However, each new attribute makes IFLA_VF_INFO bigger and
-lowers the number of VFs that can be stored in an IFLA_VF_INFO_LIST nest
-without exceeding the hard limit of 65535 bytes so that we cannot afford
-to add too many.
+For CX-3, which is paravirtualized wrt. MAD packets, it is the proxy UD =
+receive queue length for the PF driver that can be construed as a =
+backlog. Remember that any MAD packet being sent from a VF or the PF =
+itself, is sent to a proxy UD QP in the PF. Those packets are then =
+multiplexed out on the real QP0/1. Incoming MAD packets are =
+demultiplexed and sent once more to the proxy QP in the VF.
 
-> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-> index cec60583931f..88304212f127 100644
-> --- a/net/core/rtnetlink.c
-> +++ b/net/core/rtnetlink.c
-...
-> @@ -1753,6 +1758,7 @@ static const struct nla_policy ifla_info_policy[IFLA_INFO_MAX+1] = {
->  
->  static const struct nla_policy ifla_vf_policy[IFLA_VF_MAX+1] = {
->  	[IFLA_VF_MAC]		= { .len = sizeof(struct ifla_vf_mac) },
-> +	[IFLA_VF_BROADCAST]	= {. len = sizeof(struct ifla_vf_broadcast) },
->  	[IFLA_VF_VLAN]		= { .len = sizeof(struct ifla_vf_vlan) },
->  	[IFLA_VF_VLAN_LIST]     = { .type = NLA_NESTED },
->  	[IFLA_VF_TX_RATE]	= { .len = sizeof(struct ifla_vf_tx_rate) },
+> Generally, in order for a request to get
+> dropped and us to need to retransmit, the queue must already have a
+> full backlog.  So, how long does it take a heavily loaded system to
+> process a full backlog?  That, plus a fuzz for a margin of error,
+> should be our timeout.  We shouldn't be asking users to configure it.
 
-As you do not implement setting the broadcast address (is that possible
-at all?), NLA_REJECT would be more appropriate so that the request isn't
-silently ignored.
+Customer configures #VMs and different workload may lead to way =
+different number of CM connections. The proxying of MAD packet through =
+the PF driver has a finite packet rate. With 64 VMs, 10.000 QPs on each, =
+all going down due to a switch failing or similar, you have 640.000 =
+DREQs to be sent, and with the finite packet rate of MA packets through =
+the PF, this takes more than the current CM timeout. And then you =
+re-transmit and increase the burden of the PF proxying.
 
-Michal
+So, we can change the default to cope with this. But, a MAD packet is =
+unreliable, we may have transient loss. In this case, we want a short =
+timeout.
+
+> However, if users change the default backlog queue on their systems,
+> *then* it would make sense to have the users also change the timeout
+> here, but I think guidance would be helpful.
+>=20
+> So, to revive this patch, what I'd like to see is some attempt to
+> actually quantify a reasonable timeout for the default backlog depth,
+> then the patch should actually change the default to that reasonable
+> timeout, and then put in the ability to adjust the timeout with some
+> sort of doc guidance on how to calculate a reasonable timeout based on
+> configured backlog depth.
+
+I can agree to this :-)
+
+
+Thxs, H=C3=A5kon
+
+>=20
+> --=20
+> Doug Ledford <dledford@redhat.com>
+>    GPG KeyID: B826A3330E572FDD
+>    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
+> 2FDD
+
