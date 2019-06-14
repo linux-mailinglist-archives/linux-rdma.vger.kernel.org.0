@@ -2,211 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3E7464D0
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 18:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BC546521
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 18:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbfFNQp6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 12:45:58 -0400
-Received: from mga14.intel.com ([192.55.52.115]:49994 "EHLO mga14.intel.com"
+        id S1726583AbfFNQzf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jun 2019 12:55:35 -0400
+Received: from mga02.intel.com ([134.134.136.20]:50969 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725846AbfFNQp5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Jun 2019 12:45:57 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
+        id S1726183AbfFNQze (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Jun 2019 12:55:34 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jun 2019 09:45:57 -0700
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jun 2019 09:55:34 -0700
 X-ExtLoop1: 1
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by fmsmga007.fm.intel.com with SMTP; 14 Jun 2019 09:45:50 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 14 Jun 2019 19:45:49 +0300
-Date:   Fri, 14 Jun 2019 19:45:49 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        linux-media@vger.kernel.org,
-        Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: [Intel-gfx] [PATCH 03/16] drm/i915: stop using drm_pci_alloc
-Message-ID: <20190614164549.GD5942@intel.com>
-References: <20190614134726.3827-1-hch@lst.de>
- <20190614134726.3827-4-hch@lst.de>
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.201.194]) ([10.254.201.194])
+  by fmsmga004.fm.intel.com with ESMTP; 14 Jun 2019 09:55:33 -0700
+Subject: Re: [PATCH for-next 0/9] IB/hfi1: Updates for 5.3
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org
+References: <20190614162724.44714.22604.stgit@awfm-01.aw.intel.com>
+Message-ID: <b1fbc081-4647-9759-c730-71aa20f03e01@intel.com>
+Date:   Fri, 14 Jun 2019 12:55:32 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190614134726.3827-4-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190614162724.44714.22604.stgit@awfm-01.aw.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 14, 2019 at 03:47:13PM +0200, Christoph Hellwig wrote:
-> Remove usage of the legacy drm PCI DMA wrappers, and with that the
-> incorrect usage cocktail of __GFP_COMP, virt_to_page on DMA allocation
-> and SetPageReserved.
+On 6/14/2019 12:27 PM, Dennis Dalessandro wrote:
+> This is the first round of fixes and updates for 5.3. There are some bugs but
+> nothing that really warranted making its way to RC. So this can all go to
+> next. Of note there is a patch for a fix Jason requested.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  drivers/gpu/drm/i915/i915_gem.c        | 30 +++++++++++++-------------
->  drivers/gpu/drm/i915/i915_gem_object.h |  3 ++-
->  drivers/gpu/drm/i915/intel_display.c   |  2 +-
->  3 files changed, 18 insertions(+), 17 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/i915/i915_gem.c b/drivers/gpu/drm/i915/i915_gem.c
-> index ad01c92aaf74..8f2053c91aff 100644
-> --- a/drivers/gpu/drm/i915/i915_gem.c
-> +++ b/drivers/gpu/drm/i915/i915_gem.c
-> @@ -228,7 +228,6 @@ i915_gem_get_aperture_ioctl(struct drm_device *dev, void *data,
->  static int i915_gem_object_get_pages_phys(struct drm_i915_gem_object *obj)
->  {
->  	struct address_space *mapping = obj->base.filp->f_mapping;
-> -	drm_dma_handle_t *phys;
->  	struct sg_table *st;
->  	struct scatterlist *sg;
->  	char *vaddr;
-> @@ -242,13 +241,13 @@ static int i915_gem_object_get_pages_phys(struct drm_i915_gem_object *obj)
->  	 * to handle all possible callers, and given typical object sizes,
->  	 * the alignment of the buddy allocation will naturally match.
->  	 */
-> -	phys = drm_pci_alloc(obj->base.dev,
-> -			     roundup_pow_of_two(obj->base.size),
-> -			     roundup_pow_of_two(obj->base.size));
-> -	if (!phys)
-> +	obj->phys_vaddr = dma_alloc_coherent(&obj->base.dev->pdev->dev,
-> +			roundup_pow_of_two(obj->base.size),
-> +			&obj->phys_handle, GFP_KERNEL);
-> +	if (!obj->phys_vaddr)
->  		return -ENOMEM;
->  
-> -	vaddr = phys->vaddr;
-> +	vaddr = obj->phys_vaddr;
->  	for (i = 0; i < obj->base.size / PAGE_SIZE; i++) {
->  		struct page *page;
->  		char *src;
-> @@ -286,18 +285,17 @@ static int i915_gem_object_get_pages_phys(struct drm_i915_gem_object *obj)
->  	sg->offset = 0;
->  	sg->length = obj->base.size;
->  
-> -	sg_dma_address(sg) = phys->busaddr;
-> +	sg_dma_address(sg) = obj->phys_handle;
->  	sg_dma_len(sg) = obj->base.size;
->  
-> -	obj->phys_handle = phys;
-> -
->  	__i915_gem_object_set_pages(obj, st, sg->length);
->  
->  	return 0;
->  
->  err_phys:
-> -	drm_pci_free(obj->base.dev, phys);
-> -
-> +	dma_free_coherent(&obj->base.dev->pdev->dev,
-> +			roundup_pow_of_two(obj->base.size), obj->phys_vaddr,
-> +			obj->phys_handle);
-
-Need to undo the damage to obj->phys_vaddr here since
-i915_gem_pwrite_ioctl() will now use that to determine if it's
-dealing with a phys obj.
-
->  	return err;
->  }
->  
-> @@ -335,7 +333,7 @@ i915_gem_object_put_pages_phys(struct drm_i915_gem_object *obj,
->  
->  	if (obj->mm.dirty) {
->  		struct address_space *mapping = obj->base.filp->f_mapping;
-> -		char *vaddr = obj->phys_handle->vaddr;
-> +		char *vaddr = obj->phys_vaddr;
->  		int i;
->  
->  		for (i = 0; i < obj->base.size / PAGE_SIZE; i++) {
-> @@ -363,7 +361,9 @@ i915_gem_object_put_pages_phys(struct drm_i915_gem_object *obj,
->  	sg_free_table(pages);
->  	kfree(pages);
->  
-> -	drm_pci_free(obj->base.dev, obj->phys_handle);
-> +	dma_free_coherent(&obj->base.dev->pdev->dev,
-> +			roundup_pow_of_two(obj->base.size), obj->phys_vaddr,
-> +			obj->phys_handle);
-
-This one is fine I think since the object remains a phys obj once
-turned into one. At least the current code isn't clearing
-phys_handle here. But my memory is a bit hazy on the details. Chris?
-
-Also maybe s/phys_handle/phys_busaddr/ all over?
-
->  }
->  
->  static void
-> @@ -603,7 +603,7 @@ i915_gem_phys_pwrite(struct drm_i915_gem_object *obj,
->  		     struct drm_i915_gem_pwrite *args,
->  		     struct drm_file *file)
->  {
-> -	void *vaddr = obj->phys_handle->vaddr + args->offset;
-> +	void *vaddr = obj->phys_vaddr + args->offset;
->  	char __user *user_data = u64_to_user_ptr(args->data_ptr);
->  
->  	/* We manually control the domain here and pretend that it
-> @@ -1431,7 +1431,7 @@ i915_gem_pwrite_ioctl(struct drm_device *dev, void *data,
->  		ret = i915_gem_gtt_pwrite_fast(obj, args);
->  
->  	if (ret == -EFAULT || ret == -ENOSPC) {
-> -		if (obj->phys_handle)
-> +		if (obj->phys_vaddr)
->  			ret = i915_gem_phys_pwrite(obj, args, file);
->  		else
->  			ret = i915_gem_shmem_pwrite(obj, args);
-> diff --git a/drivers/gpu/drm/i915/i915_gem_object.h b/drivers/gpu/drm/i915/i915_gem_object.h
-> index ca93a40c0c87..14bd2d61d0f6 100644
-> --- a/drivers/gpu/drm/i915/i915_gem_object.h
-> +++ b/drivers/gpu/drm/i915/i915_gem_object.h
-> @@ -290,7 +290,8 @@ struct drm_i915_gem_object {
->  	};
->  
->  	/** for phys allocated objects */
-> -	struct drm_dma_handle *phys_handle;
-> +	dma_addr_t phys_handle;
-> +	void *phys_vaddr;
->  
->  	struct reservation_object __builtin_resv;
->  };
-> diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
-> index 5098228f1302..4f8b368ac4e2 100644
-> --- a/drivers/gpu/drm/i915/intel_display.c
-> +++ b/drivers/gpu/drm/i915/intel_display.c
-> @@ -10066,7 +10066,7 @@ static u32 intel_cursor_base(const struct intel_plane_state *plane_state)
->  	u32 base;
->  
->  	if (INTEL_INFO(dev_priv)->display.cursor_needs_physical)
-> -		base = obj->phys_handle->busaddr;
-> +		base = obj->phys_handle;
->  	else
->  		base = intel_plane_ggtt_offset(plane_state);
->  
-> -- 
-> 2.20.1
+> Dennis Dalessandro (1):
+>        IB/hfi1: No need to use try_module_get for debugfs
 > 
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+> Kamenee Arumugam (1):
+>        IB/{hfi1,qib,rdmavt}: Put qp in error state when cq is full
+> 
+> Michael J. Ruhl (4):
+>        IB/rdmavt: Set QP allowed opcodes after QP allocation
+>        IB/{rdmavt, hfi1, qib}: Remove AH refcount for UD QPs
+>        IB/{rdmavt, hfi1, qib}: Add helpers to hide SWQE WR details
+>        IB/hfi1: Reduce excessive aspm inlines
+> 
+> Mike Marciniszyn (3):
+>        IB/hfi1: Add missing INVALIDATE opcodes for trace
+>        IB/rdmavt: Enhance trace information for FRWR debug
+>        IB/rdmavt: Add trace for map_mr_sg
+> 
+> 
+>   drivers/infiniband/hw/hfi1/Makefile       |    1
+>   drivers/infiniband/hw/hfi1/aspm.c         |  270 +++++++++++++++++++++++++++++
+>   drivers/infiniband/hw/hfi1/aspm.h         |  262 +---------------------------
+>   drivers/infiniband/hw/hfi1/debugfs.c      |    5 -
+>   drivers/infiniband/hw/hfi1/pcie.c         |    6 -
+>   drivers/infiniband/hw/hfi1/qp.c           |    4
+>   drivers/infiniband/hw/hfi1/rc.c           |    3
+>   drivers/infiniband/hw/hfi1/trace_ibhdrs.h |    2
+>   drivers/infiniband/hw/hfi1/uc.c           |    3
+>   drivers/infiniband/hw/hfi1/ud.c           |   36 ++--
+>   drivers/infiniband/hw/qib/qib_qp.c        |    4
+>   drivers/infiniband/hw/qib/qib_rc.c        |    3
+>   drivers/infiniband/hw/qib/qib_uc.c        |    3
+>   drivers/infiniband/hw/qib/qib_ud.c        |   28 ++-
+>   drivers/infiniband/sw/rdmavt/ah.c         |    6 -
+>   drivers/infiniband/sw/rdmavt/cq.c         |   15 +-
+>   drivers/infiniband/sw/rdmavt/mr.c         |    3
+>   drivers/infiniband/sw/rdmavt/qp.c         |   96 +++++++---
+>   drivers/infiniband/sw/rdmavt/trace_mr.h   |   56 ++++++
+>   drivers/infiniband/sw/rdmavt/vt.h         |    9 +
+>   include/rdma/rdma_vt.h                    |    3
+>   include/rdma/rdmavt_cq.h                  |    3
+>   include/rdma/rdmavt_qp.h                  |  119 ++++++++++++-
+>   23 files changed, 584 insertions(+), 356 deletions(-)
+>   create mode 100644 drivers/infiniband/hw/hfi1/aspm.c
 
--- 
-Ville Syrjälä
-Intel
+Note this needs the Completion rework patches to avoid conflicts.
+
+https://patchwork.kernel.org/patch/10992251/
+https://patchwork.kernel.org/patch/10992247/
+
+-Denny
+
+
