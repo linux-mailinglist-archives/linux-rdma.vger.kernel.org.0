@@ -2,61 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE254618E
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 16:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A70461BF
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 16:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728473AbfFNOuc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 10:50:32 -0400
-Received: from verein.lst.de ([213.95.11.211]:47594 "EHLO newverein.lst.de"
+        id S1728293AbfFNOzN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jun 2019 10:55:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727560AbfFNOuc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Jun 2019 10:50:32 -0400
-Received: by newverein.lst.de (Postfix, from userid 2407)
-        id 94A01227A82; Fri, 14 Jun 2019 16:50:02 +0200 (CEST)
-Date:   Fri, 14 Jun 2019 16:50:01 +0200
-From:   'Christoph Hellwig' <hch@lst.de>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Christoph Hellwig' <hch@lst.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        id S1726647AbfFNOzN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Jun 2019 10:55:13 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6666E21537;
+        Fri, 14 Jun 2019 14:55:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560524112;
+        bh=qPHCZhWtcqEgDltgHB7RybMnRvVYxJdmMQbDX1h+qNM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2ZKhN7rfbMH2nt9u5DB6cC1pmnjdP/PewuBTcd5bzVgUFiMZHL3q/b+2oQNSKue6G
+         5uPjmlDAzHSGM6+hQS1+Hb3uhlexta8eNeGMA/AZyXoUXQXhM/Qdp1U8iNu3QGnMti
+         wAh90U3HvSfKTtX1guYOLFeuDdlg2TRY+4RV/n94=
+Date:   Fri, 14 Jun 2019 16:55:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     "aarcange@redhat.com" <aarcange@redhat.com>,
+        "jannh@google.com" <jannh@google.com>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "jgg@mellanox.com" <jgg@mellanox.com>,
+        "mhocko@suse.com" <mhocko@suse.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "sean.hefty@intel.com" <sean.hefty@intel.com>,
+        "hal.rosenstock@gmail.com" <hal.rosenstock@gmail.com>,
+        "matanb@mellanox.com" <matanb@mellanox.com>,
+        "leonro@mellanox.com" <leonro@mellanox.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 16/16] dma-mapping: use exact allocation in
- dma_alloc_contiguous
-Message-ID: <20190614145001.GB9088@lst.de>
-References: <20190614134726.3827-1-hch@lst.de> <20190614134726.3827-17-hch@lst.de> <a90cf7ec5f1c4166b53c40e06d4d832a@AcuMS.aculab.com>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Srivatsa Bhat <srivatsab@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] [v4.14.y] infiniband: fix race condition between
+ infiniband mlx4, mlx5  driver and core dumping
+Message-ID: <20190614145510.GA14860@kroah.com>
+References: <1560199937-23476-1-git-send-email-akaher@vmware.com>
+ <9C189085-083D-46EA-98DB-B11AD62051B6@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a90cf7ec5f1c4166b53c40e06d4d832a@AcuMS.aculab.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9C189085-083D-46EA-98DB-B11AD62051B6@vmware.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 14, 2019 at 02:15:44PM +0000, David Laight wrote:
-> Does this still guarantee that requests for 16k will not cross a 16k boundary?
-> It looks like you are losing the alignment parameter.
+On Fri, Jun 14, 2019 at 02:41:39PM +0000, Ajay Kaher wrote:
+> 
+> ﻿On 10/06/19, 6:22 PM, "Ajay Kaher" <akaher@vmware.com> wrote:
+> 
+> > This patch is the extension of following upstream commit to fix
+> > the race condition between get_task_mm() and core dumping
+> > for IB->mlx4 and IB->mlx5 drivers:
+> > 
+> > commit 04f5866e41fb ("coredump: fix race condition between
+> > mmget_not_zero()/get_task_mm() and core dumping")'
+> >    
+> > Thanks to Jason for pointing this.
+> >    
+> > Signed-off-by: Ajay Kaher <akaher@vmware.com>
+> > Acked-by: Jason Gunthorpe <jgg@mellanox.com>
+> 
+> Greg, I hope you would like to review and proceed further with this patch.  
 
-The DMA API never gave you alignment guarantees to start with,
-and you can get not naturally aligned memory from many of our
-current implementations.
+If this is all calmed down now, I'll look at it next week, thanks.
+
+greg k-h
