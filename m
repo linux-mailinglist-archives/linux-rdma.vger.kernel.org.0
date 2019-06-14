@@ -2,182 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5A945316
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 05:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C807D453D8
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 07:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725807AbfFNDne (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 23:43:34 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:53103 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725616AbfFNDnd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 23:43:33 -0400
-Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 505E11AD622;
-        Fri, 14 Jun 2019 13:43:28 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hbd6k-0005oM-Ah; Fri, 14 Jun 2019 13:42:30 +1000
-Date:   Fri, 14 Jun 2019 13:42:30 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        id S1725973AbfFNFN5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jun 2019 01:13:57 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:33296 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725826AbfFNFN5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jun 2019 01:13:57 -0400
+Received: by mail-pf1-f194.google.com with SMTP id x15so687892pfq.0
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 22:13:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7L7uajw4KCsbL/S4E35UjNUKEFnxH/l2jD/CiFHPlB4=;
+        b=iVgLfh3u2rK3LSidDHhJBtdtNtpSlz4dIEb1BDsj4Re2fjkTLPAq5VHIrDbtF7rfc6
+         5a9vwqPeA/oCez/a3NCM+60PRvHQV0ltptm4u18TbaZDEEEiYlVGWcXj0ugZtZMkqFnM
+         ltnmFCb7F68lK6w+sv8Frqic/ZXdf9np/Ivm0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7L7uajw4KCsbL/S4E35UjNUKEFnxH/l2jD/CiFHPlB4=;
+        b=SQSECYyzjNWRFsq2U+e5YxUyAzT9TebsIJtjyUIuBNULLo9GrDBUhpB1vasnixfUpi
+         FRWTRZTTfZpkqAbpvZmo1JTWrZdeVZ0lR1x2I5ETerKaJE/GFLqZ2DnQLJJlTvPI8SvI
+         CJTbCAcpcCUYZld5MvRIJ/HdEDqboWu/zK+gYMqV0D9SEZNg+TP419LVIoxSP059jKLj
+         kXxbMniHfagQ2agFsZXOasXrtlVgSAg/j+W+HsZPCJHgCjI4Vl6UxO1PIZ+e2oZdDvpm
+         Rns5CKsiEAJIOYK3wM9CcC8W6wE77zY3qSimhUmMo023GqmgHhySNERaO3I0ivNeHIQF
+         cQwg==
+X-Gm-Message-State: APjAAAW/567scAdsF5S3kz6J4wreSPmBjwzRiLRvGxWU61S3PHDR8bRh
+        X4N1B2ElGEa1h6N3Fq8udm0gKQ==
+X-Google-Smtp-Source: APXvYqzTfasIXQ0R9bH+BHnjS/rxhZOCyiy3olY/JYV+P2HTQ7p4rEZDPtcIb7Np5EQm4YDFboUW8Q==
+X-Received: by 2002:a63:6948:: with SMTP id e69mr23166361pgc.441.1560489236782;
+        Thu, 13 Jun 2019 22:13:56 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f13sm1417022pje.11.2019.06.13.22.13.55
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 13 Jun 2019 22:13:55 -0700 (PDT)
+Date:   Thu, 13 Jun 2019 22:13:54 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Dave Martin <Dave.Martin@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190614034230.GP14363@dread.disaster.area>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
- <20190608001036.GF14308@dread.disaster.area>
- <20190612123751.GD32656@bombadil.infradead.org>
- <20190612233024.GD14336@iweiny-DESK2.sc.intel.com>
- <20190613005552.GI14363@dread.disaster.area>
- <20190613203406.GB32404@iweiny-DESK2.sc.intel.com>
+        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: [PATCH v17 03/15] arm64: Introduce prctl() options to control
+ the tagged user addresses ABI
+Message-ID: <201906132209.FC65A3C771@keescook>
+References: <cover.1560339705.git.andreyknvl@google.com>
+ <a7a2933bea5fe57e504891b7eec7e9432e5e1c1a.1560339705.git.andreyknvl@google.com>
+ <20190613110235.GW28398@e103592.cambridge.arm.com>
+ <20190613152632.GT28951@C02TF0J2HF1T.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190613203406.GB32404@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0 cx=a_idp_d
-        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
-        a=7-415B0cAAAA:8 a=k35vKodN1J5BDQ_Sz-4A:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20190613152632.GT28951@C02TF0J2HF1T.local>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 01:34:06PM -0700, Ira Weiny wrote:
-> On Thu, Jun 13, 2019 at 10:55:52AM +1000, Dave Chinner wrote:
-> > On Wed, Jun 12, 2019 at 04:30:24PM -0700, Ira Weiny wrote:
-> > > On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
-> > > > On Sat, Jun 08, 2019 at 10:10:36AM +1000, Dave Chinner wrote:
-> > > > > On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
-> > > > > > Are you suggesting that we have something like this from user space?
-> > > > > > 
-> > > > > > 	fcntl(fd, F_SETLEASE, F_LAYOUT | F_UNBREAKABLE);
-> > > > > 
-> > > > > Rather than "unbreakable", perhaps a clearer description of the
-> > > > > policy it entails is "exclusive"?
-> > > > > 
-> > > > > i.e. what we are talking about here is an exclusive lease that
-> > > > > prevents other processes from changing the layout. i.e. the
-> > > > > mechanism used to guarantee a lease is exclusive is that the layout
-> > > > > becomes "unbreakable" at the filesystem level, but the policy we are
-> > > > > actually presenting to uses is "exclusive access"...
-> > > > 
-> > > > That's rather different from the normal meaning of 'exclusive' in the
-> > > > context of locks, which is "only one user can have access to this at
-> > > > a time".  As I understand it, this is rather more like a 'shared' or
-> > > > 'read' lock.  The filesystem would be the one which wants an exclusive
-> > > > lock, so it can modify the mapping of logical to physical blocks.
-> > > > 
-> > > > The complication being that by default the filesystem has an exclusive
-> > > > lock on the mapping, and what we're trying to add is the ability for
-> > > > readers to ask the filesystem to give up its exclusive lock.
-> > > 
-> > > This is an interesting view...
-> > > 
-> > > And after some more thought, exclusive does not seem like a good name for this
-> > > because technically F_WRLCK _is_ an exclusive lease...
-> > > 
-> > > In addition, the user does not need to take the "exclusive" write lease to be
-> > > notified of (broken by) an unexpected truncate.  A "read" lease is broken by
-> > > truncate.  (And "write" leases really don't do anything different WRT the
-> > > interaction of the FS and the user app.  Write leases control "exclusive"
-> > > access between other file descriptors.)
+On Thu, Jun 13, 2019 at 04:26:32PM +0100, Catalin Marinas wrote:
+> On Thu, Jun 13, 2019 at 12:02:35PM +0100, Dave P Martin wrote:
+> > On Wed, Jun 12, 2019 at 01:43:20PM +0200, Andrey Konovalov wrote:
+> > > +static int zero;
+> > > +static int one = 1;
 > > 
-> > I've been assuming that there is only one type of layout lease -
-> > there is no use case I've heard of for read/write layout leases, and
-> > like you say there is zero difference in behaviour at the filesystem
-> > level - they all have to be broken to allow a non-lease truncate to
-> > proceed.
+> > !!!
 > > 
-> > IMO, taking a "read lease" to be able to modify and write to the
-> > underlying mapping of a file makes absolutely no sense at all.
-> > IOWs, we're talking exaclty about a revokable layout lease vs an
-> > exclusive layout lease here, and so read/write really doesn't match
-> > the policy or semantics we are trying to provide.
+> > And these can't even be const without a cast.  Yuk.
+> > 
+> > (Not your fault though, but it would be nice to have a proc_dobool() to
+> > avoid this.)
 > 
-> I humbly disagree, at least depending on how you look at it...  :-D
-> 
-> The patches as they stand expect the user to take a "read" layout lease which
-> indicates they are currently using "reading" the layout as is.
-> They are not
-> changing ("writing" to) the layout.
+> I had the same reaction. Maybe for another patch sanitising this pattern
+> across the kernel.
 
-As I said in a another email in the thread, a layout lease does not
-make the layout "read only". It just means the lease owner will be
-notified when someone else is about to modify it. The lease owner
-can modify the mapping themselves, and they will not get notified
-about their own modifications.
+That's actually already happening (via -mm tree last I looked). tl;dr:
+it ends up using a cast hidden in a macro. It's in linux-next already
+along with a checkpatch.pl addition to yell about doing what's being
+done here. ;)
 
-> They then pin pages which locks parts of
-> the layout and therefore they expect no "writers" to change the layout.
+https://lore.kernel.org/lkml/20190430180111.10688-1-mcroce@redhat.com/#r
 
-Except they can change the layout themselves. It's perfectly valid
-to get a layout lease, write() from offset 0 to EOF and fsync() to
-intiialise the file and allocate all the space in the file, then
-mmap() it and hand to off to RMDA, all while holding the layout
-lease.
-
-> The "write" layout lease breaks the "read" layout lease indicating that the
-> layout is being written to.
-
-Layout leases do not work this way.
-
-> In fact, this is what NFS does right now.  The lease it puts on the file is of
-> "read" type.
-> 
-> nfs4layouts.c:
-> static int
-> nfsd4_layout_setlease(struct nfs4_layout_stateid *ls)
-> {
-> ...
->         fl->fl_flags = FL_LAYOUT;
->         fl->fl_type = F_RDLCK;
-> ...
-> }
-
-Yes, the existing /implementation/ uses F_RDLCK, but that doesn't
-mean the layout is "read only". Look at the pNFS mapping layout code
-- the ->map_blocks export operation:
-
-       int (*map_blocks)(struct inode *inode, loff_t offset,
-                          u64 len, struct iomap *iomap,
-                          bool write, u32 *device_generation);
-                          ^^^^^^^^^^
-
-Yup, it has a write variable that, when set, causes the filesystem
-to _allocate_ blocks if the range to be written to falls over a hole
-in the file.  IOWs, a pNFS layout lease can modify the file layout -
-you're conflating use of a "read lock" API to mean that what the
-lease _manages_ is "read only". That is not correct.
-
-Layouts are /always writeable/ by the lease owner(s), the question
-here is what we do with third parties attempting to modify a layout
-covered by an "exclusive" layout lease. Hence, I'll repeat:
-
-> > we're talking exaclty about a revokable layout lease vs an
-> > exclusive layout lease here, and so read/write really doesn't match
-> > the policy or semantics we are trying to provide.
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Kees Cook
