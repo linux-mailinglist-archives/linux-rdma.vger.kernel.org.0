@@ -2,86 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 020C845FEA
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 16:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F324546063
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 16:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728585AbfFNOCm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 10:02:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728034AbfFNOCm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Jun 2019 10:02:42 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F10F42064A;
-        Fri, 14 Jun 2019 14:02:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560520961;
-        bh=yuQRJdK0c0k8QDLCPmaaUBPA4Gh5iMSc87ydddzUjLY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Adj/ubhVrddpf3XNZqH7bla3F/OQLtlWktGpnu78fRXaEWJVclE8EAVB7iVcwuXIj
-         MgEu3GKKHjwm4kv6V7mrBTfmdB65iAPolSabTzDn8Y8MigqQqnxVgShMq6aUvnqaEX
-         cqT5x9DBfftx8QKc8qPay9S9idxZcSOh+UlLdp+0=
-Date:   Fri, 14 Jun 2019 16:02:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        id S1728992AbfFNOPs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 14 Jun 2019 10:15:48 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:45113 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728422AbfFNOPs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Jun 2019 10:15:48 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-171-6ZL5OlDfPHWG6RvRpXiEQg-1; Fri, 14 Jun 2019 15:15:45 +0100
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 14 Jun 2019 15:15:44 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 14 Jun 2019 15:15:44 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <maxime.ripard@bootlin.com>,
         Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         Jani Nikula <jani.nikula@linux.intel.com>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        "Ian Abbott" <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>
+CC:     Intel Linux Wireless <linuxwifi@intel.com>,
         "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 12/16] staging/comedi: mark as broken
-Message-ID: <20190614140239.GA7234@kroah.com>
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 16/16] dma-mapping: use exact allocation in
+ dma_alloc_contiguous
+Thread-Topic: [PATCH 16/16] dma-mapping: use exact allocation in
+ dma_alloc_contiguous
+Thread-Index: AQHVIrfpTFjppS25RkWUhwqPPyqZ4qabLzdw
+Date:   Fri, 14 Jun 2019 14:15:44 +0000
+Message-ID: <a90cf7ec5f1c4166b53c40e06d4d832a@AcuMS.aculab.com>
 References: <20190614134726.3827-1-hch@lst.de>
- <20190614134726.3827-13-hch@lst.de>
+ <20190614134726.3827-17-hch@lst.de>
+In-Reply-To: <20190614134726.3827-17-hch@lst.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190614134726.3827-13-hch@lst.de>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+X-MC-Unique: 6ZL5OlDfPHWG6RvRpXiEQg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 14, 2019 at 03:47:22PM +0200, Christoph Hellwig wrote:
-> comedi_buf.c abuse the DMA API in gravely broken ways, as it assumes it
-> can call virt_to_page on the result, and the just remap it as uncached
-> using vmap.  Disable the driver until this API abuse has been fixed.
+From: Christoph Hellwig
+> Sent: 14 June 2019 14:47
+> 
+> Many architectures (e.g. arm, m68 and sh) have always used exact
+> allocation in their dma coherent allocator, which avoids a lot of
+> memory waste especially for larger allocations.  Lift this behavior
+> into the generic allocator so that dma-direct and the generic IOMMU
+> code benefit from this behavior as well.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  drivers/staging/comedi/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+>  include/linux/dma-contiguous.h |  8 +++++---
+>  kernel/dma/contiguous.c        | 17 +++++++++++------
+>  2 files changed, 16 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/staging/comedi/Kconfig b/drivers/staging/comedi/Kconfig
-> index 049b659fa6ad..e7c021d76cfa 100644
-> --- a/drivers/staging/comedi/Kconfig
-> +++ b/drivers/staging/comedi/Kconfig
-> @@ -1,6 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0
->  config COMEDI
->  	tristate "Data acquisition support (comedi)"
-> +	depends on BROKEN
+> diff --git a/include/linux/dma-contiguous.h b/include/linux/dma-contiguous.h
+> index c05d4e661489..2e542e314acf 100644
+> --- a/include/linux/dma-contiguous.h
+> +++ b/include/linux/dma-contiguous.h
+> @@ -161,15 +161,17 @@ static inline struct page *dma_alloc_contiguous(struct device *dev, size_t size,
+>  		gfp_t gfp)
+>  {
+>  	int node = dev ? dev_to_node(dev) : NUMA_NO_NODE;
+> -	size_t align = get_order(PAGE_ALIGN(size));
+> +	void *cpu_addr = alloc_pages_exact_node(node, size, gfp);
+> 
+> -	return alloc_pages_node(node, gfp, align);
+> +	if (!cpu_addr)
+> +		return NULL;
+> +	return virt_to_page(p);
+>  }
 
-Um, that's a huge sledgehammer.
+Does this still guarantee that requests for 16k will not cross a 16k boundary?
+It looks like you are losing the alignment parameter.
 
-Perhaps a hint as to how we can fix this up?  This is the first time
-I've heard of the comedi code not handling dma properly.
+There may be drivers and hardware that also require 12k allocates
+to not cross 16k boundaries (etc).
 
-thanks,
+	David
 
-greg k-h
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
