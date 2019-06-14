@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F86845FBC
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 16:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92EC45FBF
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 16:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728619AbfFNN6E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 09:58:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44150 "EHLO
+        id S1728378AbfFNN6F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jun 2019 09:58:05 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52562 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728569AbfFNN6D (ORCPT
+        by vger.kernel.org with ESMTP id S1728583AbfFNN6C (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Jun 2019 09:58:03 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5EDmsZL014124
+        Fri, 14 Jun 2019 09:58:02 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5EDnlOx080707
         for <linux-rdma@vger.kernel.org>; Fri, 14 Jun 2019 09:58:00 -0400
 Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2t4bv53dhv-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2t4ce9hkmm-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Jun 2019 09:58:00 -0400
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jun 2019 09:57:58 -0400
 Received: from localhost
         by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
-        Fri, 14 Jun 2019 14:57:56 +0100
+        Fri, 14 Jun 2019 14:57:55 +0100
 Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
         by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 14 Jun 2019 14:57:54 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5EDvrhS58327124
+        Fri, 14 Jun 2019 14:57:55 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5EDvrmj57671916
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Fri, 14 Jun 2019 13:57:53 GMT
 Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 71C264204B;
+        by IMSVA (Postfix) with ESMTP id B127742041;
         Fri, 14 Jun 2019 13:57:53 +0000 (GMT)
 Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3E5BF42047;
+        by IMSVA (Postfix) with ESMTP id 7DA2F4204D;
         Fri, 14 Jun 2019 13:57:53 +0000 (GMT)
 Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
         by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
@@ -43,20 +43,20 @@ Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
 From:   Bernard Metzler <bmt@zurich.ibm.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [PATCH v2 02/11] SIW main include file
-Date:   Fri, 14 Jun 2019 15:57:41 +0200
+Subject: [PATCH v2 03/11] SIW network and RDMA core interface
+Date:   Fri, 14 Jun 2019 15:57:42 +0200
 X-Mailer: git-send-email 2.17.2
 In-Reply-To: <20190614135750.15874-1-bmt@zurich.ibm.com>
 References: <20190614135750.15874-1-bmt@zurich.ibm.com>
 X-TM-AS-GCONF: 00
-x-cbid: 19061413-0020-0000-0000-0000034A2034
+x-cbid: 19061413-0020-0000-0000-0000034A2035
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19061413-0021-0000-0000-0000219D5D1F
-Message-Id: <20190614135750.15874-3-bmt@zurich.ibm.com>
+x-cbparentid: 19061413-0021-0000-0000-0000219D5D20
+Message-Id: <20190614135750.15874-4-bmt@zurich.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-14_06:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=4 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-1810050000 definitions=main-1906140118
@@ -67,761 +67,703 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
 ---
- drivers/infiniband/sw/siw/siw.h | 745 ++++++++++++++++++++++++++++++++
- 1 file changed, 745 insertions(+)
- create mode 100644 drivers/infiniband/sw/siw/siw.h
+ drivers/infiniband/sw/siw/siw_main.c | 687 +++++++++++++++++++++++++++
+ 1 file changed, 687 insertions(+)
+ create mode 100644 drivers/infiniband/sw/siw/siw_main.c
 
-diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
 new file mode 100644
-index 000000000000..3e9d8332f6a5
+index 000000000000..3f5f3d27ebe5
 --- /dev/null
-+++ b/drivers/infiniband/sw/siw/siw.h
-@@ -0,0 +1,745 @@
-+/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -0,0 +1,687 @@
++// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
 +
 +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
 +/* Copyright (c) 2008-2019, IBM Corporation */
 +
-+#ifndef _SIW_H
-+#define _SIW_H
++#include <linux/init.h>
++#include <linux/errno.h>
++#include <linux/netdevice.h>
++#include <linux/inetdevice.h>
++#include <net/net_namespace.h>
++#include <linux/rtnetlink.h>
++#include <linux/if_arp.h>
++#include <linux/list.h>
++#include <linux/kernel.h>
++#include <linux/sched.h>
++#include <linux/module.h>
++#include <linux/dma-mapping.h>
 +
 +#include <rdma/ib_verbs.h>
-+#include <linux/socket.h>
-+#include <linux/skbuff.h>
-+#include <crypto/hash.h>
-+#include <linux/crc32.h>
-+#include <linux/crc32c.h>
++#include <rdma/ib_user_verbs.h>
++#include <rdma/rdma_netlink.h>
++#include <linux/kthread.h>
 +
-+#include <rdma/siw-abi.h>
-+#include "iwarp.h"
++#include "siw.h"
++#include "siw_verbs.h"
 +
-+#define SIW_VENDOR_ID 0x626d74 /* ascii 'bmt' for now */
-+#define SIW_VENDORT_PART_ID 0
-+#define SIW_MAX_QP (1024 * 100)
-+#define SIW_MAX_QP_WR (1024 * 32)
-+#define SIW_MAX_ORD_QP 128
-+#define SIW_MAX_IRD_QP 128
-+#define SIW_MAX_SGE_PBL 256 /* max num sge's for PBL */
-+#define SIW_MAX_SGE_RD 1 /* iwarp limitation. we could relax */
-+#define SIW_MAX_CQ (1024 * 100)
-+#define SIW_MAX_CQE (SIW_MAX_QP_WR * 100)
-+#define SIW_MAX_MR (SIW_MAX_QP * 10)
-+#define SIW_MAX_PD SIW_MAX_QP
-+#define SIW_MAX_MW 0 /* to be set if MW's are supported */
-+#define SIW_MAX_FMR SIW_MAX_MR
-+#define SIW_MAX_SRQ SIW_MAX_QP
-+#define SIW_MAX_SRQ_WR (SIW_MAX_QP_WR * 10)
-+#define SIW_MAX_CONTEXT SIW_MAX_PD
++MODULE_AUTHOR("Bernard Metzler");
++MODULE_DESCRIPTION("Software iWARP Driver");
++MODULE_LICENSE("Dual BSD/GPL");
 +
-+/* Min number of bytes for using zero copy transmit */
-+#define SENDPAGE_THRESH PAGE_SIZE
++/* transmit from user buffer, if possible */
++const bool zcopy_tx = true;
 +
-+/* Maximum number of frames which can be send in one SQ processing */
-+#define SQ_USER_MAXBURST 100
-+
-+/* Maximum number of consecutive IRQ elements which get served
-+ * if SQ has pending work. Prevents starving local SQ processing
-+ * by serving peer Read Requests.
++/* Restrict usage of GSO, if hardware peer iwarp is unable to process
++ * large packets. try_gso = true lets siw try to use local GSO,
++ * if peer agrees.  Not using GSO severly limits siw maximum tx bandwidth.
 + */
-+#define SIW_IRQ_MAXBURST_SQ_ACTIVE 4
++const bool try_gso;
 +
-+struct siw_dev_cap {
-+	int max_qp;
-+	int max_qp_wr;
-+	int max_ord; /* max. outbound read queue depth */
-+	int max_ird; /* max. inbound read queue depth */
-+	int max_sge;
-+	int max_sge_rd;
-+	int max_cq;
-+	int max_cqe;
-+	int max_mr;
-+	int max_pd;
-+	int max_mw;
-+	int max_fmr;
-+	int max_srq;
-+	int max_srq_wr;
-+	int max_srq_sge;
-+};
++/* Attach siw also with loopback devices */
++const bool loopback_enabled = true;
 +
-+struct siw_pd {
-+	struct ib_pd base_pd;
-+};
++/* We try to negotiate CRC on, if true */
++const bool mpa_crc_required;
 +
-+struct siw_device {
-+	struct ib_device base_dev;
-+	struct net_device *netdev;
-+	struct siw_dev_cap attrs;
++/* MPA CRC on/off enforced */
++const bool mpa_crc_strict;
 +
-+	u32 vendor_part_id;
-+	int numa_node;
++/* Control TCP_NODELAY socket option */
++const bool siw_tcp_nagle;
 +
-+	/* physical port state (only one port per device) */
-+	enum ib_port_state state;
++/* Select MPA version to be used during connection setup */
++u_char mpa_version = MPA_REVISION_2;
 +
-+	spinlock_t lock;
-+
-+	struct xarray qp_xa;
-+	struct xarray mem_xa;
-+
-+	struct list_head cep_list;
-+	struct list_head qp_list;
-+
-+	/* active objects statistics to enforce limits */
-+	atomic_t num_qp;
-+	atomic_t num_cq;
-+	atomic_t num_pd;
-+	atomic_t num_mr;
-+	atomic_t num_srq;
-+	atomic_t num_ctx;
-+
-+	struct work_struct netdev_down;
-+};
-+
-+struct siw_uobj {
-+	void *addr;
-+	u32 size;
-+};
-+
-+struct siw_ucontext {
-+	struct ib_ucontext base_ucontext;
-+	struct siw_device *sdev;
-+
-+	/* xarray of user mappable objects */
-+	struct xarray xa;
-+	u32 uobj_nextkey;
-+};
-+
-+/*
-+ * The RDMA core does not define LOCAL_READ access, which is always
-+ * enabled implictely.
++/* Selects MPA P2P mode (additional handshake during connection
++ * setup, if true.
 + */
-+#define IWARP_ACCESS_MASK					\
-+	(IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE	|	\
-+	 IB_ACCESS_REMOTE_READ)
++const bool peer_to_peer;
 +
-+/*
-+ * siw presentation of user memory registered as source
-+ * or target of RDMA operations.
-+ */
++struct task_struct *siw_tx_thread[NR_CPUS];
++struct crypto_shash *siw_crypto_shash;
 +
-+struct siw_page_chunk {
-+	struct page **plist;
-+};
-+
-+struct siw_umem {
-+	struct siw_page_chunk *page_chunk;
-+	int num_pages;
-+	bool writable;
-+	u64 fp_addr; /* First page base address */
-+	struct mm_struct *owning_mm;
-+};
-+
-+struct siw_pble {
-+	u64 addr; /* Address of assigned user buffer */
-+	u64 size; /* Size of this entry */
-+	u64 pbl_off; /* Total offset from start of PBL */
-+};
-+
-+struct siw_pbl {
-+	unsigned int num_buf;
-+	unsigned int max_buf;
-+	struct siw_pble pbe[1];
-+};
-+
-+struct siw_mr;
-+
-+/*
-+ * Generic memory representation for registered siw memory.
-+ * Memory lookup always via higher 24 bit of STag (STag index).
-+ */
-+struct siw_mem {
-+	struct siw_device *sdev;
-+	struct kref ref;
-+	u64 va; /* VA of memory */
-+	u64 len; /* lenght of the memory buffer in bytes */
-+	u32 stag; /* iWarp memory access steering tag */
-+	u8 stag_valid; /* VALID or INVALID */
-+	u8 is_pbl; /* PBL or user space mem */
-+	u8 is_mw; /* Memory Region or Memory Window */
-+	enum ib_access_flags perms; /* local/remote READ & WRITE */
-+	union {
-+		struct siw_umem *umem;
-+		struct siw_pbl *pbl;
-+		void *mem_obj;
-+	};
-+	struct ib_pd *pd;
-+};
-+
-+struct siw_mr {
-+	struct ib_mr base_mr;
-+	struct siw_mem *mem;
-+	struct rcu_head rcu;
-+};
-+
-+/*
-+ * Error codes for local or remote
-+ * access to registered memory
-+ */
-+enum siw_access_state {
-+	E_ACCESS_OK,
-+	E_STAG_INVALID,
-+	E_BASE_BOUNDS,
-+	E_ACCESS_PERM,
-+	E_PD_MISMATCH
-+};
-+
-+enum siw_wr_state {
-+	SIW_WR_IDLE,
-+	SIW_WR_QUEUED, /* processing has not started yet */
-+	SIW_WR_INPROGRESS /* initiated processing of the WR */
-+};
-+
-+/* The WQE currently being processed (RX or TX) */
-+struct siw_wqe {
-+	/* Copy of applications SQE or RQE */
-+	union {
-+		struct siw_sqe sqe;
-+		struct siw_rqe rqe;
-+	};
-+	struct siw_mem *mem[SIW_MAX_SGE]; /* per sge's resolved mem */
-+	enum siw_wr_state wr_status;
-+	enum siw_wc_status wc_status;
-+	u32 bytes; /* total bytes to process */
-+	u32 processed; /* bytes processed */
-+};
-+
-+struct siw_cq {
-+	struct ib_cq base_cq;
-+	spinlock_t lock;
-+	u64 *notify;
-+	struct siw_cqe *queue;
-+	u32 cq_put;
-+	u32 cq_get;
-+	u32 num_cqe;
-+	bool kernel_verbs;
-+	u32 xa_cq_index; /* mmap information for CQE array */
-+	u32 id; /* For debugging only */
-+};
-+
-+enum siw_qp_state {
-+	SIW_QP_STATE_IDLE,
-+	SIW_QP_STATE_RTR,
-+	SIW_QP_STATE_RTS,
-+	SIW_QP_STATE_CLOSING,
-+	SIW_QP_STATE_TERMINATE,
-+	SIW_QP_STATE_ERROR,
-+	SIW_QP_STATE_COUNT
-+};
-+
-+enum siw_qp_flags {
-+	SIW_RDMA_BIND_ENABLED = (1 << 0),
-+	SIW_RDMA_WRITE_ENABLED = (1 << 1),
-+	SIW_RDMA_READ_ENABLED = (1 << 2),
-+	SIW_SIGNAL_ALL_WR = (1 << 3),
-+	SIW_MPA_CRC = (1 << 4),
-+	SIW_QP_IN_DESTROY = (1 << 5)
-+};
-+
-+enum siw_qp_attr_mask {
-+	SIW_QP_ATTR_STATE = (1 << 0),
-+	SIW_QP_ATTR_ACCESS_FLAGS = (1 << 1),
-+	SIW_QP_ATTR_LLP_HANDLE = (1 << 2),
-+	SIW_QP_ATTR_ORD = (1 << 3),
-+	SIW_QP_ATTR_IRD = (1 << 4),
-+	SIW_QP_ATTR_SQ_SIZE = (1 << 5),
-+	SIW_QP_ATTR_RQ_SIZE = (1 << 6),
-+	SIW_QP_ATTR_MPA = (1 << 7)
-+};
-+
-+struct siw_srq {
-+	struct ib_srq base_srq;
-+	spinlock_t lock;
-+	u32 max_sge;
-+	u32 limit; /* low watermark for async event */
-+	struct siw_rqe *recvq;
-+	u32 rq_put;
-+	u32 rq_get;
-+	u32 num_rqe; /* max # of wqe's allowed */
-+	u32 xa_srq_index; /* mmap information for SRQ array */
-+	char armed; /* inform user if limit hit */
-+	char kernel_verbs; /* '1' if kernel client */
-+};
-+
-+struct siw_qp_attrs {
-+	enum siw_qp_state state;
-+	u32 sq_size;
-+	u32 rq_size;
-+	u32 orq_size;
-+	u32 irq_size;
-+	u32 sq_max_sges;
-+	u32 rq_max_sges;
-+	enum siw_qp_flags flags;
-+
-+	struct socket *sk;
-+};
-+
-+enum siw_tx_ctx {
-+	SIW_SEND_HDR, /* start or continue sending HDR */
-+	SIW_SEND_DATA, /* start or continue sending DDP payload */
-+	SIW_SEND_TRAILER, /* start or continue sending TRAILER */
-+	SIW_SEND_SHORT_FPDU/* send whole FPDU hdr|data|trailer at once */
-+};
-+
-+enum siw_rx_state {
-+	SIW_GET_HDR, /* await new hdr or within hdr */
-+	SIW_GET_DATA_START, /* start of inbound DDP payload */
-+	SIW_GET_DATA_MORE, /* continuation of (misaligned) DDP payload */
-+	SIW_GET_TRAILER/* await new trailer or within trailer */
-+};
-+
-+struct siw_rx_stream {
-+	struct sk_buff *skb;
-+	int skb_new; /* pending unread bytes in skb */
-+	int skb_offset; /* offset in skb */
-+	int skb_copied; /* processed bytes in skb */
-+
-+	union iwarp_hdr hdr;
-+	struct mpa_trailer trailer;
-+
-+	enum siw_rx_state state;
-+
-+	/*
-+	 * For each FPDU, main RX loop runs through 3 stages:
-+	 * Receiving protocol headers, placing DDP payload and receiving
-+	 * trailer information (CRC + possibly padding).
-+	 * Next two variables keep state on receive status of the
-+	 * current FPDU part (hdr, data, trailer).
-+	 */
-+	int fpdu_part_rcvd; /* bytes in pkt part copied */
-+	int fpdu_part_rem; /* bytes in pkt part not seen */
-+
-+	/*
-+	 * Next expected DDP MSN for each QN +
-+	 * expected steering tag +
-+	 * expected DDP tagget offset (all HBO)
-+	 */
-+	u32 ddp_msn[RDMAP_UNTAGGED_QN_COUNT];
-+	u32 ddp_stag;
-+	u64 ddp_to;
-+	u32 inval_stag; /* Stag to be invalidated */
-+
-+	struct shash_desc *mpa_crc_hd;
-+	u8 rx_suspend : 1;
-+	u8 pad : 2; /* # of pad bytes expected */
-+	u8 rdmap_op : 4; /* opcode of current frame */
-+};
-+
-+struct siw_rx_fpdu {
-+	/*
-+	 * Local destination memory of inbound RDMA operation.
-+	 * Valid, according to wqe->wr_status
-+	 */
-+	struct siw_wqe wqe_active;
-+
-+	unsigned int pbl_idx; /* Index into current PBL */
-+	unsigned int sge_idx; /* current sge in rx */
-+	unsigned int sge_off; /* already rcvd in curr. sge */
-+
-+	char first_ddp_seg; /* this is the first DDP seg */
-+	char more_ddp_segs; /* more DDP segs expected */
-+	u8 prev_rdmap_op : 4; /* opcode of prev frame */
-+};
-+
-+/*
-+ * Shorthands for short packets w/o payload
-+ * to be transmitted more efficient.
-+ */
-+struct siw_send_pkt {
-+	struct iwarp_send send;
-+	__be32 crc;
-+};
-+
-+struct siw_write_pkt {
-+	struct iwarp_rdma_write write;
-+	__be32 crc;
-+};
-+
-+struct siw_rreq_pkt {
-+	struct iwarp_rdma_rreq rreq;
-+	__be32 crc;
-+};
-+
-+struct siw_rresp_pkt {
-+	struct iwarp_rdma_rresp rresp;
-+	__be32 crc;
-+};
-+
-+struct siw_iwarp_tx {
-+	union {
-+		union iwarp_hdr hdr;
-+
-+		/* Generic part of FPDU header */
-+		struct iwarp_ctrl ctrl;
-+		struct iwarp_ctrl_untagged c_untagged;
-+		struct iwarp_ctrl_tagged c_tagged;
-+
-+		/* FPDU headers */
-+		struct iwarp_rdma_write rwrite;
-+		struct iwarp_rdma_rreq rreq;
-+		struct iwarp_rdma_rresp rresp;
-+		struct iwarp_terminate terminate;
-+		struct iwarp_send send;
-+		struct iwarp_send_inv send_inv;
-+
-+		/* complete short FPDUs */
-+		struct siw_send_pkt send_pkt;
-+		struct siw_write_pkt write_pkt;
-+		struct siw_rreq_pkt rreq_pkt;
-+		struct siw_rresp_pkt rresp_pkt;
-+	} pkt;
-+
-+	struct mpa_trailer trailer;
-+	/* DDP MSN for untagged messages */
-+	u32 ddp_msn[RDMAP_UNTAGGED_QN_COUNT];
-+
-+	enum siw_tx_ctx state;
-+	u16 ctrl_len; /* ddp+rdmap hdr */
-+	u16 ctrl_sent;
-+	int burst;
-+	int bytes_unsent; /* ddp payload bytes */
-+
-+	struct shash_desc *mpa_crc_hd;
-+
-+	u8 do_crc : 1; /* do crc for segment */
-+	u8 use_sendpage : 1; /* send w/o copy */
-+	u8 tx_suspend : 1; /* stop sending DDP segs. */
-+	u8 pad : 2; /* # pad in current fpdu */
-+	u8 orq_fence : 1; /* ORQ full or Send fenced */
-+	u8 in_syscall : 1; /* TX out of user context */
-+	u8 zcopy_tx : 1; /* Use TCP_SENDPAGE if possible */
-+	u8 gso_seg_limit; /* Maximum segments for GSO, 0 = unbound */
-+
-+	u16 fpdu_len; /* len of FPDU to tx */
-+	unsigned int tcp_seglen; /* remaining tcp seg space */
-+
-+	struct siw_wqe wqe_active;
-+
-+	int pbl_idx; /* Index into current PBL */
-+	int sge_idx; /* current sge in tx */
-+	u32 sge_off; /* already sent in curr. sge */
-+};
-+
-+struct siw_qp {
-+	struct siw_device *sdev;
-+	struct ib_qp *ib_qp;
-+	struct kref ref;
-+	u32 qp_num;
-+	struct list_head devq;
-+	int tx_cpu;
-+	bool kernel_verbs;
-+	struct siw_qp_attrs attrs;
-+
-+	struct siw_cep *cep;
-+	struct rw_semaphore state_lock;
-+
-+	struct ib_pd *pd;
-+	struct siw_cq *scq;
-+	struct siw_cq *rcq;
-+	struct siw_srq *srq;
-+
-+	struct siw_iwarp_tx tx_ctx; /* Transmit context */
-+	spinlock_t sq_lock;
-+	struct siw_sqe *sendq; /* send queue element array */
-+	uint32_t sq_get; /* consumer index into sq array */
-+	uint32_t sq_put; /* kernel prod. index into sq array */
-+	struct llist_node tx_list;
-+
-+	struct siw_sqe *orq; /* outbound read queue element array */
-+	spinlock_t orq_lock;
-+	uint32_t orq_get; /* consumer index into orq array */
-+	uint32_t orq_put; /* shared producer index for ORQ */
-+
-+	struct siw_rx_stream rx_stream;
-+	struct siw_rx_fpdu *rx_fpdu;
-+	struct siw_rx_fpdu rx_tagged;
-+	struct siw_rx_fpdu rx_untagged;
-+	spinlock_t rq_lock;
-+	struct siw_rqe *recvq; /* recv queue element array */
-+	uint32_t rq_get; /* consumer index into rq array */
-+	uint32_t rq_put; /* kernel prod. index into rq array */
-+
-+	struct siw_sqe *irq; /* inbound read queue element array */
-+	uint32_t irq_get; /* consumer index into irq array */
-+	uint32_t irq_put; /* producer index into irq array */
-+	int irq_burst;
-+
-+	struct { /* information to be carried in TERMINATE pkt, if valid */
-+		u8 valid;
-+		u8 in_tx;
-+		u8 layer : 4, etype : 4;
-+		u8 ecode;
-+	} term_info;
-+	u32 xa_sq_index; /* mmap information for SQE array */
-+	u32 xa_rq_index; /* mmap information for RQE array */
-+	struct rcu_head rcu;
-+};
-+
-+struct siw_base_qp {
-+	struct ib_qp base_qp;
-+	struct siw_qp *qp;
-+};
-+
-+/* helper macros */
-+#define rx_qp(rx) container_of(rx, struct siw_qp, rx_stream)
-+#define tx_qp(tx) container_of(tx, struct siw_qp, tx_ctx)
-+#define tx_wqe(qp) (&(qp)->tx_ctx.wqe_active)
-+#define rx_wqe(rctx) (&(rctx)->wqe_active)
-+#define rx_mem(rctx) ((rctx)->wqe_active.mem[0])
-+#define tx_type(wqe) ((wqe)->sqe.opcode)
-+#define rx_type(wqe) ((wqe)->rqe.opcode)
-+#define tx_flags(wqe) ((wqe)->sqe.flags)
-+
-+struct iwarp_msg_info {
-+	int hdr_len;
-+	struct iwarp_ctrl ctrl;
-+	int (*rx_data)(struct siw_qp *qp);
-+};
-+
-+/* Global siw parameters. Currently set in siw_main.c */
-+extern const bool zcopy_tx;
-+extern const bool try_gso;
-+extern const bool loopback_enabled;
-+extern const bool mpa_crc_required;
-+extern const bool mpa_crc_strict;
-+extern const bool siw_tcp_nagle;
-+extern u_char mpa_version;
-+extern const bool peer_to_peer;
-+extern struct task_struct *siw_tx_thread[];
-+
-+extern struct crypto_shash *siw_crypto_shash;
-+extern struct iwarp_msg_info iwarp_pktinfo[RDMAP_TERMINATE + 1];
-+
-+/* QP general functions */
-+int siw_qp_modify(struct siw_qp *qp, struct siw_qp_attrs *attr,
-+		  enum siw_qp_attr_mask mask);
-+int siw_qp_mpa_rts(struct siw_qp *qp, enum mpa_v2_ctrl ctrl);
-+void siw_qp_llp_close(struct siw_qp *qp);
-+void siw_qp_cm_drop(struct siw_qp *qp, int schedule);
-+void siw_send_terminate(struct siw_qp *qp);
-+
-+void siw_qp_get_ref(struct ib_qp *qp);
-+void siw_qp_put_ref(struct ib_qp *qp);
-+int siw_qp_add(struct siw_device *sdev, struct siw_qp *qp);
-+void siw_free_qp(struct kref *ref);
-+
-+void siw_init_terminate(struct siw_qp *qp, enum term_elayer layer,
-+			u8 etype, u8 ecode, int in_tx);
-+enum ddp_ecode siw_tagged_error(enum siw_access_state state);
-+enum rdmap_ecode siw_rdmap_error(enum siw_access_state state);
-+
-+void siw_read_to_orq(struct siw_sqe *rreq, struct siw_sqe *sqe);
-+int siw_sqe_complete(struct siw_qp *qp, struct siw_sqe *sqe, u32 bytes,
-+		     enum siw_wc_status status);
-+int siw_rqe_complete(struct siw_qp *qp, struct siw_rqe *rqe, u32 bytes,
-+		     u32 inval_stag, enum siw_wc_status status);
-+void siw_qp_llp_data_ready(struct sock *sk);
-+void siw_qp_llp_write_space(struct sock *sk);
-+
-+/* QP TX path functions */
-+int siw_run_sq(void *arg);
-+int siw_qp_sq_process(struct siw_qp *qp);
-+int siw_sq_start(struct siw_qp *qp);
-+int siw_activate_tx(struct siw_qp *qp);
-+void siw_stop_tx_thread(int nr_cpu);
-+int siw_get_tx_cpu(struct siw_device *sdev);
-+void siw_put_tx_cpu(int cpu);
-+
-+/* QP RX path functions */
-+int siw_proc_send(struct siw_qp *qp);
-+int siw_proc_rreq(struct siw_qp *qp);
-+int siw_proc_rresp(struct siw_qp *qp);
-+int siw_proc_write(struct siw_qp *qp);
-+int siw_proc_terminate(struct siw_qp *qp);
-+
-+int siw_tcp_rx_data(read_descriptor_t *rd_desc, struct sk_buff *skb,
-+		    unsigned int off, size_t len);
-+
-+static inline void set_rx_fpdu_context(struct siw_qp *qp, u8 opcode)
++static int siw_device_register(struct siw_device *sdev, const char *name)
 +{
-+	if (opcode == RDMAP_RDMA_WRITE || opcode == RDMAP_RDMA_READ_RESP)
-+		qp->rx_fpdu = &qp->rx_tagged;
++	struct ib_device *base_dev = &sdev->base_dev;
++	static int dev_id = 1;
++	int rv;
++
++	rv = ib_register_device(base_dev, name);
++	if (rv) {
++		pr_warn("siw: device registration error %d\n", rv);
++		return rv;
++	}
++	sdev->vendor_part_id = dev_id++;
++
++	siw_dbg(base_dev, "HWaddr=%pM\n", sdev->netdev->dev_addr);
++
++	return 0;
++}
++
++static void siw_device_cleanup(struct ib_device *base_dev)
++{
++	struct siw_device *sdev = to_siw_dev(base_dev);
++
++	xa_destroy(&sdev->qp_xa);
++	xa_destroy(&sdev->mem_xa);
++}
++
++static int siw_create_tx_threads(void)
++{
++	int cpu, rv, assigned = 0;
++
++	for_each_online_cpu(cpu) {
++		/* Skip HT cores */
++		if (cpu % cpumask_weight(topology_sibling_cpumask(cpu)))
++			continue;
++
++		siw_tx_thread[cpu] =
++			kthread_create(siw_run_sq, (unsigned long *)(long)cpu,
++				       "siw_tx/%d", cpu);
++		if (IS_ERR(siw_tx_thread[cpu])) {
++			rv = PTR_ERR(siw_tx_thread[cpu]);
++			siw_tx_thread[cpu] = NULL;
++			pr_info("Creating TX thread for CPU %d failed", cpu);
++			continue;
++		}
++		kthread_bind(siw_tx_thread[cpu], cpu);
++
++		wake_up_process(siw_tx_thread[cpu]);
++		assigned++;
++	}
++	return assigned;
++}
++
++static int siw_dev_qualified(struct net_device *netdev)
++{
++	/*
++	 * Additional hardware support can be added here
++	 * (e.g. ARPHRD_FDDI, ARPHRD_ATM, ...) - see
++	 * <linux/if_arp.h> for type identifiers.
++	 */
++	if (netdev->type == ARPHRD_ETHER || netdev->type == ARPHRD_IEEE802 ||
++	    (netdev->type == ARPHRD_LOOPBACK && loopback_enabled))
++		return 1;
++
++	return 0;
++}
++
++static DEFINE_PER_CPU(atomic_t, use_cnt = ATOMIC_INIT(0));
++
++static struct {
++	struct cpumask **tx_valid_cpus;
++	int num_nodes;
++} siw_cpu_info;
++
++static int siw_init_cpulist(void)
++{
++	int i, num_nodes = num_possible_nodes();
++
++	memset(siw_tx_thread, 0, sizeof(siw_tx_thread));
++
++	siw_cpu_info.num_nodes = num_nodes;
++
++	siw_cpu_info.tx_valid_cpus =
++		kcalloc(num_nodes, sizeof(struct cpumask *), GFP_KERNEL);
++	if (!siw_cpu_info.tx_valid_cpus) {
++		siw_cpu_info.num_nodes = 0;
++		return -ENOMEM;
++	}
++	for (i = 0; i < siw_cpu_info.num_nodes; i++) {
++		siw_cpu_info.tx_valid_cpus[i] =
++			kzalloc(sizeof(struct cpumask), GFP_KERNEL);
++		if (!siw_cpu_info.tx_valid_cpus[i])
++			goto out_err;
++
++		cpumask_clear(siw_cpu_info.tx_valid_cpus[i]);
++	}
++	for_each_possible_cpu(i)
++		cpumask_set_cpu(i, siw_cpu_info.tx_valid_cpus[cpu_to_node(i)]);
++
++	return 0;
++
++out_err:
++	siw_cpu_info.num_nodes = 0;
++	while (i) {
++		kfree(siw_cpu_info.tx_valid_cpus[i]);
++		siw_cpu_info.tx_valid_cpus[i--] = NULL;
++	}
++	kfree(siw_cpu_info.tx_valid_cpus);
++	siw_cpu_info.tx_valid_cpus = NULL;
++
++	return -ENOMEM;
++}
++
++static void siw_destroy_cpulist(void)
++{
++	int i = 0;
++
++	while (i < siw_cpu_info.num_nodes)
++		kfree(siw_cpu_info.tx_valid_cpus[i++]);
++
++	kfree(siw_cpu_info.tx_valid_cpus);
++}
++
++/*
++ * Choose CPU with least number of active QP's from NUMA node of
++ * TX interface.
++ */
++int siw_get_tx_cpu(struct siw_device *sdev)
++{
++	const struct cpumask *tx_cpumask;
++	int i, num_cpus, cpu, min_use, node = sdev->numa_node, tx_cpu = -1;
++
++	if (node < 0)
++		tx_cpumask = cpu_online_mask;
 +	else
-+		qp->rx_fpdu = &qp->rx_untagged;
++		tx_cpumask = siw_cpu_info.tx_valid_cpus[node];
 +
-+	qp->rx_stream.rdmap_op = opcode;
-+}
-+
-+static inline struct siw_ucontext *to_siw_ctx(struct ib_ucontext *base_ctx)
-+{
-+	return container_of(base_ctx, struct siw_ucontext, base_ucontext);
-+}
-+
-+static inline struct siw_base_qp *to_siw_base_qp(struct ib_qp *base_qp)
-+{
-+	return container_of(base_qp, struct siw_base_qp, base_qp);
-+}
-+
-+static inline struct siw_qp *to_siw_qp(struct ib_qp *base_qp)
-+{
-+	return to_siw_base_qp(base_qp)->qp;
-+}
-+
-+static inline struct siw_cq *to_siw_cq(struct ib_cq *base_cq)
-+{
-+	return container_of(base_cq, struct siw_cq, base_cq);
-+}
-+
-+static inline struct siw_srq *to_siw_srq(struct ib_srq *base_srq)
-+{
-+	return container_of(base_srq, struct siw_srq, base_srq);
-+}
-+
-+static inline struct siw_device *to_siw_dev(struct ib_device *base_dev)
-+{
-+	return container_of(base_dev, struct siw_device, base_dev);
-+}
-+
-+static inline struct siw_mr *to_siw_mr(struct ib_mr *base_mr)
-+{
-+	return container_of(base_mr, struct siw_mr, base_mr);
-+}
-+
-+static inline struct siw_qp *siw_qp_id2obj(struct siw_device *sdev, int id)
-+{
-+	struct siw_qp *qp;
-+
-+	rcu_read_lock();
-+	qp = xa_load(&sdev->qp_xa, id);
-+	if (likely(qp && kref_get_unless_zero(&qp->ref))) {
-+		rcu_read_unlock();
-+		return qp;
++	num_cpus = cpumask_weight(tx_cpumask);
++	if (!num_cpus) {
++		/* no CPU on this NUMA node */
++		tx_cpumask = cpu_online_mask;
++		num_cpus = cpumask_weight(tx_cpumask);
 +	}
-+	rcu_read_unlock();
-+	return NULL;
++	if (!num_cpus)
++		goto out;
++
++	cpu = cpumask_first(tx_cpumask);
++
++	for (i = 0, min_use = SIW_MAX_QP; i < num_cpus;
++	     i++, cpu = cpumask_next(cpu, tx_cpumask)) {
++		int usage;
++
++		/* Skip any cores which have no TX thread */
++		if (!siw_tx_thread[cpu])
++			continue;
++
++		usage = atomic_read(&per_cpu(use_cnt, cpu));
++		if (usage <= min_use) {
++			tx_cpu = cpu;
++			min_use = usage;
++		}
++	}
++	siw_dbg(&sdev->base_dev,
++		"tx cpu %d, node %d, %d qp's\n", tx_cpu, node, min_use);
++
++out:
++	if (tx_cpu >= 0)
++		atomic_inc(&per_cpu(use_cnt, tx_cpu));
++	else
++		pr_warn("siw: no tx cpu found\n");
++
++	return tx_cpu;
 +}
 +
-+static inline u32 qp_id(struct siw_qp *qp)
++void siw_put_tx_cpu(int cpu)
 +{
-+	return qp->qp_num;
++	atomic_dec(&per_cpu(use_cnt, cpu));
 +}
 +
-+static inline void siw_qp_get(struct siw_qp *qp)
++static struct ib_qp *siw_get_base_qp(struct ib_device *base_dev, int id)
 +{
-+	kref_get(&qp->ref);
-+}
++	struct siw_qp *qp = siw_qp_id2obj(to_siw_dev(base_dev), id);
 +
-+static inline void siw_qp_put(struct siw_qp *qp)
-+{
-+	kref_put(&qp->ref, siw_free_qp);
-+}
-+
-+static inline int siw_sq_empty(struct siw_qp *qp)
-+{
-+	struct siw_sqe *sqe = &qp->sendq[qp->sq_get % qp->attrs.sq_size];
-+
-+	return READ_ONCE(sqe->flags) == 0;
-+}
-+
-+static inline struct siw_sqe *sq_get_next(struct siw_qp *qp)
-+{
-+	struct siw_sqe *sqe = &qp->sendq[qp->sq_get % qp->attrs.sq_size];
-+
-+	if (READ_ONCE(sqe->flags) & SIW_WQE_VALID)
-+		return sqe;
-+
-+	return NULL;
-+}
-+
-+static inline struct siw_sqe *orq_get_current(struct siw_qp *qp)
-+{
-+	return &qp->orq[qp->orq_get % qp->attrs.orq_size];
-+}
-+
-+static inline struct siw_sqe *orq_get_tail(struct siw_qp *qp)
-+{
-+	return &qp->orq[qp->orq_put % qp->attrs.orq_size];
-+}
-+
-+static inline struct siw_sqe *orq_get_free(struct siw_qp *qp)
-+{
-+	struct siw_sqe *orq_e = orq_get_tail(qp);
-+
-+	if (orq_e && READ_ONCE(orq_e->flags) == 0)
-+		return orq_e;
-+
-+	return NULL;
-+}
-+
-+static inline int siw_orq_empty(struct siw_qp *qp)
-+{
-+	return qp->orq[qp->orq_get % qp->attrs.orq_size].flags == 0 ? 1 : 0;
-+}
-+
-+static inline struct siw_sqe *irq_alloc_free(struct siw_qp *qp)
-+{
-+	struct siw_sqe *irq_e = &qp->irq[qp->irq_put % qp->attrs.irq_size];
-+
-+	if (READ_ONCE(irq_e->flags) == 0) {
-+		qp->irq_put++;
-+		return irq_e;
++	if (qp) {
++		/*
++		 * siw_qp_id2obj() increments object reference count
++		 */
++		siw_qp_put(qp);
++		return qp->ib_qp;
 +	}
 +	return NULL;
 +}
 +
-+static inline __wsum siw_csum_update(const void *buff, int len, __wsum sum)
++static void siw_verbs_sq_flush(struct ib_qp *base_qp)
 +{
-+	return (__force __wsum)crc32c((__force __u32)sum, buff, len);
++	struct siw_qp *qp = to_siw_qp(base_qp);
++
++	down_write(&qp->state_lock);
++	siw_sq_flush(qp);
++	up_write(&qp->state_lock);
 +}
 +
-+static inline __wsum siw_csum_combine(__wsum csum, __wsum csum2, int offset,
-+				      int len)
++static void siw_verbs_rq_flush(struct ib_qp *base_qp)
 +{
-+	return (__force __wsum)__crc32c_le_combine((__force __u32)csum,
-+						   (__force __u32)csum2, len);
++	struct siw_qp *qp = to_siw_qp(base_qp);
++
++	down_write(&qp->state_lock);
++	siw_rq_flush(qp);
++	up_write(&qp->state_lock);
 +}
 +
-+static inline void siw_crc_skb(struct siw_rx_stream *srx, unsigned int len)
-+{
-+	const struct skb_checksum_ops siw_cs_ops = {
-+		.update = siw_csum_update,
-+		.combine = siw_csum_combine,
-+	};
-+	__wsum crc = *(u32 *)shash_desc_ctx(srx->mpa_crc_hd);
++static const struct ib_device_ops siw_device_ops = {
++	.owner = THIS_MODULE,
++	.uverbs_abi_ver = SIW_ABI_VERSION,
++	.driver_id = RDMA_DRIVER_SIW,
 +
-+	crc = __skb_checksum(srx->skb, srx->skb_offset, len, crc,
-+			     &siw_cs_ops);
-+	*(u32 *)shash_desc_ctx(srx->mpa_crc_hd) = crc;
++	.alloc_mr = siw_alloc_mr,
++	.alloc_pd = siw_alloc_pd,
++	.alloc_ucontext = siw_alloc_ucontext,
++	.create_cq = siw_create_cq,
++	.create_qp = siw_create_qp,
++	.create_srq = siw_create_srq,
++	.dealloc_driver = siw_device_cleanup,
++	.dealloc_pd = siw_dealloc_pd,
++	.dealloc_ucontext = siw_dealloc_ucontext,
++	.dereg_mr = siw_dereg_mr,
++	.destroy_cq = siw_destroy_cq,
++	.destroy_qp = siw_destroy_qp,
++	.destroy_srq = siw_destroy_srq,
++	.drain_rq = siw_verbs_rq_flush,
++	.drain_sq = siw_verbs_sq_flush,
++	.get_dma_mr = siw_get_dma_mr,
++	.get_port_immutable = siw_get_port_immutable,
++	.iw_accept = siw_accept,
++	.iw_add_ref = siw_qp_get_ref,
++	.iw_connect = siw_connect,
++	.iw_create_listen = siw_create_listen,
++	.iw_destroy_listen = siw_destroy_listen,
++	.iw_get_qp = siw_get_base_qp,
++	.iw_reject = siw_reject,
++	.iw_rem_ref = siw_qp_put_ref,
++	.map_mr_sg = siw_map_mr_sg,
++	.mmap = siw_mmap,
++	.modify_qp = siw_verbs_modify_qp,
++	.modify_srq = siw_modify_srq,
++	.poll_cq = siw_poll_cq,
++	.post_recv = siw_post_receive,
++	.post_send = siw_post_send,
++	.post_srq_recv = siw_post_srq_recv,
++	.query_device = siw_query_device,
++	.query_gid = siw_query_gid,
++	.query_pkey = siw_query_pkey,
++	.query_port = siw_query_port,
++	.query_qp = siw_query_qp,
++	.query_srq = siw_query_srq,
++	.req_notify_cq = siw_req_notify_cq,
++	.reg_user_mr = siw_reg_user_mr,
++
++	INIT_RDMA_OBJ_SIZE(ib_cq, siw_cq, base_cq),
++	INIT_RDMA_OBJ_SIZE(ib_pd, siw_pd, base_pd),
++	INIT_RDMA_OBJ_SIZE(ib_srq, siw_srq, base_srq),
++	INIT_RDMA_OBJ_SIZE(ib_ucontext, siw_ucontext, base_ucontext),
++};
++
++static struct siw_device *siw_device_create(struct net_device *netdev)
++{
++	struct siw_device *sdev = NULL;
++	struct ib_device *base_dev;
++	struct device *parent = netdev->dev.parent;
++	int rv;
++
++	if (!parent) {
++		/*
++		 * The loopback device has no parent device,
++		 * so it appears as a top-level device. To support
++		 * loopback device connectivity, take this device
++		 * as the parent device. Skip all other devices
++		 * w/o parent device.
++		 */
++		if (netdev->type != ARPHRD_LOOPBACK) {
++			pr_warn("siw: device %s error: no parent device\n",
++				netdev->name);
++			return NULL;
++		}
++		parent = &netdev->dev;
++	}
++	sdev = ib_alloc_device(siw_device, base_dev);
++	if (!sdev)
++		return NULL;
++
++	base_dev = &sdev->base_dev;
++
++	sdev->netdev = netdev;
++
++	if (netdev->type != ARPHRD_LOOPBACK) {
++		memcpy(&base_dev->node_guid, netdev->dev_addr, 6);
++	} else {
++		/*
++		 * The loopback device does not have a HW address,
++		 * but connection mangagement lib expects gid != 0
++		 */
++		size_t gidlen = min_t(size_t, strlen(base_dev->name), 6);
++
++		memcpy(&base_dev->node_guid, base_dev->name, gidlen);
++	}
++	base_dev->uverbs_cmd_mask =
++		(1ull << IB_USER_VERBS_CMD_QUERY_DEVICE) |
++		(1ull << IB_USER_VERBS_CMD_QUERY_PORT) |
++		(1ull << IB_USER_VERBS_CMD_GET_CONTEXT) |
++		(1ull << IB_USER_VERBS_CMD_ALLOC_PD) |
++		(1ull << IB_USER_VERBS_CMD_DEALLOC_PD) |
++		(1ull << IB_USER_VERBS_CMD_REG_MR) |
++		(1ull << IB_USER_VERBS_CMD_DEREG_MR) |
++		(1ull << IB_USER_VERBS_CMD_CREATE_COMP_CHANNEL) |
++		(1ull << IB_USER_VERBS_CMD_CREATE_CQ) |
++		(1ull << IB_USER_VERBS_CMD_POLL_CQ) |
++		(1ull << IB_USER_VERBS_CMD_REQ_NOTIFY_CQ) |
++		(1ull << IB_USER_VERBS_CMD_DESTROY_CQ) |
++		(1ull << IB_USER_VERBS_CMD_CREATE_QP) |
++		(1ull << IB_USER_VERBS_CMD_QUERY_QP) |
++		(1ull << IB_USER_VERBS_CMD_MODIFY_QP) |
++		(1ull << IB_USER_VERBS_CMD_DESTROY_QP) |
++		(1ull << IB_USER_VERBS_CMD_POST_SEND) |
++		(1ull << IB_USER_VERBS_CMD_POST_RECV) |
++		(1ull << IB_USER_VERBS_CMD_CREATE_SRQ) |
++		(1ull << IB_USER_VERBS_CMD_POST_SRQ_RECV) |
++		(1ull << IB_USER_VERBS_CMD_MODIFY_SRQ) |
++		(1ull << IB_USER_VERBS_CMD_QUERY_SRQ) |
++		(1ull << IB_USER_VERBS_CMD_DESTROY_SRQ);
++
++	base_dev->node_type = RDMA_NODE_RNIC;
++	memcpy(base_dev->node_desc, SIW_NODE_DESC_COMMON,
++	       sizeof(SIW_NODE_DESC_COMMON));
++
++	/*
++	 * Current model (one-to-one device association):
++	 * One Softiwarp device per net_device or, equivalently,
++	 * per physical port.
++	 */
++	base_dev->phys_port_cnt = 1;
++	base_dev->dev.parent = parent;
++	base_dev->dev.dma_ops = &dma_virt_ops;
++	base_dev->num_comp_vectors = num_possible_cpus();
++
++	ib_set_device_ops(base_dev, &siw_device_ops);
++	rv = ib_device_set_netdev(base_dev, netdev, 1);
++	if (rv)
++		goto error;
++
++	memcpy(base_dev->iw_ifname, netdev->name,
++	       sizeof(base_dev->iw_ifname));
++
++	/* Disable TCP port mapping */
++	base_dev->iw_driver_flags = IW_F_NO_PORT_MAP,
++
++	sdev->attrs.max_qp = SIW_MAX_QP;
++	sdev->attrs.max_qp_wr = SIW_MAX_QP_WR;
++	sdev->attrs.max_ord = SIW_MAX_ORD_QP;
++	sdev->attrs.max_ird = SIW_MAX_IRD_QP;
++	sdev->attrs.max_sge = SIW_MAX_SGE;
++	sdev->attrs.max_sge_rd = SIW_MAX_SGE_RD;
++	sdev->attrs.max_cq = SIW_MAX_CQ;
++	sdev->attrs.max_cqe = SIW_MAX_CQE;
++	sdev->attrs.max_mr = SIW_MAX_MR;
++	sdev->attrs.max_pd = SIW_MAX_PD;
++	sdev->attrs.max_mw = SIW_MAX_MW;
++	sdev->attrs.max_fmr = SIW_MAX_FMR;
++	sdev->attrs.max_srq = SIW_MAX_SRQ;
++	sdev->attrs.max_srq_wr = SIW_MAX_SRQ_WR;
++	sdev->attrs.max_srq_sge = SIW_MAX_SGE;
++
++	xa_init_flags(&sdev->qp_xa, XA_FLAGS_ALLOC1);
++	xa_init_flags(&sdev->mem_xa, XA_FLAGS_ALLOC1);
++
++	INIT_LIST_HEAD(&sdev->cep_list);
++	INIT_LIST_HEAD(&sdev->qp_list);
++
++	atomic_set(&sdev->num_ctx, 0);
++	atomic_set(&sdev->num_srq, 0);
++	atomic_set(&sdev->num_qp, 0);
++	atomic_set(&sdev->num_cq, 0);
++	atomic_set(&sdev->num_mr, 0);
++	atomic_set(&sdev->num_pd, 0);
++
++	sdev->numa_node = dev_to_node(parent);
++	spin_lock_init(&sdev->lock);
++
++	return sdev;
++error:
++	ib_dealloc_device(base_dev);
++
++	return NULL;
 +}
 +
-+#define siw_dbg(ibdev, fmt, ...)                                               \
-+	ibdev_dbg(ibdev, "%s: " fmt, __func__, ##__VA_ARGS__)
++/*
++ * Network link becomes unavailable. Mark all
++ * affected QP's accordingly.
++ */
++static void siw_netdev_down(struct work_struct *work)
++{
++	struct siw_device *sdev =
++		container_of(work, struct siw_device, netdev_down);
 +
-+#define siw_dbg_qp(qp, fmt, ...)                                               \
-+	ibdev_dbg(&qp->sdev->base_dev, "QP[%u] %s: " fmt, qp_id(qp), __func__, \
-+		  ##__VA_ARGS__)
++	struct siw_qp_attrs qp_attrs;
++	struct list_head *pos, *tmp;
 +
-+#define siw_dbg_cq(cq, fmt, ...)                                               \
-+	ibdev_dbg(cq->base_cq.device, "CQ[%u] %s: " fmt, cq->id, __func__,     \
-+		  ##__VA_ARGS__)
++	memset(&qp_attrs, 0, sizeof(qp_attrs));
++	qp_attrs.state = SIW_QP_STATE_ERROR;
 +
-+#define siw_dbg_pd(pd, fmt, ...)                                               \
-+	ibdev_dbg(pd->device, "PD[%u] %s: " fmt, pd->res.id, __func__,         \
-+		  ##__VA_ARGS__)
++	list_for_each_safe(pos, tmp, &sdev->qp_list) {
++		struct siw_qp *qp = list_entry(pos, struct siw_qp, devq);
 +
-+#define siw_dbg_mem(mem, fmt, ...)                                             \
-+	ibdev_dbg(&mem->sdev->base_dev,                                        \
-+		  "MEM[0x%08x] %s: " fmt, mem->stag, __func__, ##__VA_ARGS__)
++		down_write(&qp->state_lock);
++		WARN_ON(siw_qp_modify(qp, &qp_attrs, SIW_QP_ATTR_STATE));
++		up_write(&qp->state_lock);
++	}
++	ib_device_put(&sdev->base_dev);
++}
 +
-+#define siw_dbg_cep(cep, fmt, ...)                                             \
-+	ibdev_dbg(&cep->sdev->base_dev, "CEP[0x%p] %s: " fmt,                  \
-+		  cep, __func__, ##__VA_ARGS__)
++static void siw_device_goes_down(struct siw_device *sdev)
++{
++	if (ib_device_try_get(&sdev->base_dev)) {
++		INIT_WORK(&sdev->netdev_down, siw_netdev_down);
++		schedule_work(&sdev->netdev_down);
++	}
++}
 +
-+void siw_cq_flush(struct siw_cq *cq);
-+void siw_sq_flush(struct siw_qp *qp);
-+void siw_rq_flush(struct siw_qp *qp);
-+int siw_reap_cqe(struct siw_cq *cq, struct ib_wc *wc);
++static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
++			    void *arg)
++{
++	struct net_device *netdev = netdev_notifier_info_to_dev(arg);
++	struct ib_device *base_dev;
++	struct siw_device *sdev;
 +
-+#endif
++	dev_dbg(&netdev->dev, "siw: event %lu\n", event);
++
++	if (dev_net(netdev) != &init_net)
++		return NOTIFY_OK;
++
++	base_dev = ib_device_get_by_netdev(netdev, RDMA_DRIVER_SIW);
++	if (!base_dev)
++		return NOTIFY_OK;
++
++	sdev = to_siw_dev(base_dev);
++
++	switch (event) {
++	case NETDEV_UP:
++		sdev->state = IB_PORT_ACTIVE;
++		siw_port_event(sdev, 1, IB_EVENT_PORT_ACTIVE);
++		break;
++
++	case NETDEV_GOING_DOWN:
++		siw_device_goes_down(sdev);
++		break;
++
++	case NETDEV_DOWN:
++		sdev->state = IB_PORT_DOWN;
++		siw_port_event(sdev, 1, IB_EVENT_PORT_ERR);
++		break;
++
++	case NETDEV_REGISTER:
++		/*
++		 * Device registration now handled only by
++		 * rdma netlink commands. So it shall be impossible
++		 * to end up here with a valid siw device.
++		 */
++		siw_dbg(base_dev, "unexpected NETDEV_REGISTER event\n");
++		break;
++
++	case NETDEV_UNREGISTER:
++		ib_unregister_device_queued(&sdev->base_dev);
++		break;
++
++	case NETDEV_CHANGEADDR:
++		siw_port_event(sdev, 1, IB_EVENT_LID_CHANGE);
++		break;
++	/*
++	 * Todo: Below netdev events are currently not handled.
++	 */
++	case NETDEV_CHANGEMTU:
++	case NETDEV_CHANGE:
++		break;
++
++	default:
++		break;
++	}
++	ib_device_put(&sdev->base_dev);
++
++	return NOTIFY_OK;
++}
++
++static struct notifier_block siw_netdev_nb = {
++	.notifier_call = siw_netdev_event,
++};
++
++static int siw_newlink(const char *basedev_name, struct net_device *netdev)
++{
++	struct ib_device *base_dev;
++	struct siw_device *sdev = NULL;
++	int rv = -ENOMEM;
++
++	if (!siw_dev_qualified(netdev))
++		return -EINVAL;
++
++	base_dev = ib_device_get_by_netdev(netdev, RDMA_DRIVER_SIW);
++	if (base_dev) {
++		ib_device_put(base_dev);
++		return -EEXIST;
++	}
++	sdev = siw_device_create(netdev);
++	if (sdev) {
++		dev_dbg(&netdev->dev, "siw: new device\n");
++
++		if (netif_running(netdev) && netif_carrier_ok(netdev))
++			sdev->state = IB_PORT_ACTIVE;
++		else
++			sdev->state = IB_PORT_DOWN;
++
++		rv = siw_device_register(sdev, basedev_name);
++		if (rv)
++			ib_dealloc_device(&sdev->base_dev);
++	}
++	return rv;
++}
++
++static struct rdma_link_ops siw_link_ops = {
++	.type = "siw",
++	.newlink = siw_newlink,
++};
++
++/*
++ * siw_init_module - Initialize Softiwarp module and register with netdev
++ *                   subsystem.
++ */
++static __init int siw_init_module(void)
++{
++	int rv;
++	int nr_cpu;
++
++	if (SENDPAGE_THRESH < SIW_MAX_INLINE) {
++		pr_info("siw: sendpage threshold too small: %u\n",
++			(int)SENDPAGE_THRESH);
++		rv = -EINVAL;
++		goto out_error;
++	}
++	rv = siw_init_cpulist();
++	if (rv)
++		goto out_error;
++
++	rv = siw_cm_init();
++	if (rv)
++		goto out_error;
++
++	if (!siw_create_tx_threads()) {
++		pr_info("siw: Could not start any TX thread\n");
++		goto out_error;
++	}
++	/*
++	 * Locate CRC32 algorithm. If unsuccessful, fail
++	 * loading siw only, if CRC is required.
++	 */
++	siw_crypto_shash = crypto_alloc_shash("crc32c", 0, 0);
++	if (IS_ERR(siw_crypto_shash)) {
++		pr_info("siw: Loading CRC32c failed: %ld\n",
++			PTR_ERR(siw_crypto_shash));
++		siw_crypto_shash = NULL;
++		if (mpa_crc_required) {
++			rv = -EOPNOTSUPP;
++			goto out_error;
++		}
++	}
++	rv = register_netdevice_notifier(&siw_netdev_nb);
++	if (rv)
++		goto out_error;
++
++	rdma_link_register(&siw_link_ops);
++
++	pr_info("SoftiWARP attached\n");
++	return 0;
++
++out_error:
++	for (nr_cpu = 0; nr_cpu < nr_cpu_ids; nr_cpu++) {
++		if (siw_tx_thread[nr_cpu]) {
++			siw_stop_tx_thread(nr_cpu);
++			siw_tx_thread[nr_cpu] = NULL;
++		}
++	}
++	if (siw_crypto_shash)
++		crypto_free_shash(siw_crypto_shash);
++
++	pr_info("SoftIWARP attach failed. Error: %d\n", rv);
++
++	siw_cm_exit();
++	siw_destroy_cpulist();
++
++	return rv;
++}
++
++static void __exit siw_exit_module(void)
++{
++	int cpu;
++
++	for_each_possible_cpu(cpu) {
++		if (siw_tx_thread[cpu]) {
++			siw_stop_tx_thread(cpu);
++			siw_tx_thread[cpu] = NULL;
++		}
++	}
++	unregister_netdevice_notifier(&siw_netdev_nb);
++	rdma_link_unregister(&siw_link_ops);
++	ib_unregister_driver(RDMA_DRIVER_SIW);
++
++	siw_cm_exit();
++
++	siw_destroy_cpulist();
++
++	if (siw_crypto_shash)
++		crypto_free_shash(siw_crypto_shash);
++
++	pr_info("SoftiWARP detached\n");
++}
++
++module_init(siw_init_module);
++module_exit(siw_exit_module);
++
++MODULE_ALIAS_RDMA_LINK("siw");
 -- 
 2.17.2
 
