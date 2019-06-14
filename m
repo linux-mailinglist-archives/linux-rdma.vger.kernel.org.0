@@ -2,132 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B3745118
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 03:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C04A451CA
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 04:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbfFNBRL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 21:17:11 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58108 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725616AbfFNBRL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jun 2019 21:17:11 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 46B4927CE27C36313A0D;
-        Fri, 14 Jun 2019 09:17:09 +0800 (CST)
-Received: from [127.0.0.1] (10.61.25.96) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.439.0; Fri, 14 Jun 2019
- 09:16:58 +0800
-From:   oulijun <oulijun@huawei.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <pandit.parav@gmail.com>
-CC:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: =?UTF-8?Q?=e3=80=90A_question_about_kernel_verbs_API=e3=80=91?=
-Message-ID: <8e80779d-7c1f-4644-3fa7-6fca24734eb8@huawei.com>
-Date:   Fri, 14 Jun 2019 09:16:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.0
+        id S1726653AbfFNCKZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 22:10:25 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:47003 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726167AbfFNCKZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 22:10:25 -0400
+Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 6E77A3DCE8B;
+        Fri, 14 Jun 2019 12:10:19 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hbbeb-0005G5-AA; Fri, 14 Jun 2019 12:09:21 +1000
+Date:   Fri, 14 Jun 2019 12:09:21 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190614020921.GM14363@dread.disaster.area>
+References: <20190606104203.GF7433@quack2.suse.cz>
+ <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+ <20190607110426.GB12765@quack2.suse.cz>
+ <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+ <20190608001036.GF14308@dread.disaster.area>
+ <20190612123751.GD32656@bombadil.infradead.org>
+ <20190613002555.GH14363@dread.disaster.area>
+ <20190613152755.GI32656@bombadil.infradead.org>
+ <20190613211321.GC32404@iweiny-DESK2.sc.intel.com>
+ <20190613234530.GK22901@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.61.25.96]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190613234530.GK22901@ziepe.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0 cx=a_idp_d
+        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
+        a=7-415B0cAAAA:8 a=MIoJepgKeDxvTzH8FPQA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi£¬ Jason Gunthorpe & Leon Romanovsky& Parav Pandit
-   Recently when I was learning kernel ofed code, I found an interesting thing about verbs, the implementation rely on
-roce driver,  taking ib_dereg_mr for example.
+On Thu, Jun 13, 2019 at 08:45:30PM -0300, Jason Gunthorpe wrote:
+> On Thu, Jun 13, 2019 at 02:13:21PM -0700, Ira Weiny wrote:
+> > On Thu, Jun 13, 2019 at 08:27:55AM -0700, Matthew Wilcox wrote:
+> > > On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
+> > > > e.g. Process A has an exclusive layout lease on file F. It does an
+> > > > IO to file F. The filesystem IO path checks that Process A owns the
+> > > > lease on the file and so skips straight through layout breaking
+> > > > because it owns the lease and is allowed to modify the layout. It
+> > > > then takes the inode metadata locks to allocate new space and write
+> > > > new data.
+> > > > 
+> > > > Process B now tries to write to file F. The FS checks whether
+> > > > Process B owns a layout lease on file F. It doesn't, so then it
+> > > > tries to break the layout lease so the IO can proceed. The layout
+> > > > breaking code sees that process A has an exclusive layout lease
+> > > > granted, and so returns -ETXTBSY to process B - it is not allowed to
+> > > > break the lease and so the IO fails with -ETXTBSY.
+> > > 
+> > > This description doesn't match the behaviour that RDMA wants either.
+> > > Even if Process A has a lease on the file, an IO from Process A which
+> > > results in blocks being freed from the file is going to result in the
+> > > RDMA device being able to write to blocks which are now freed (and
+> > > potentially reallocated to another file).
+> > 
+> > I don't understand why this would not work for RDMA?  As long as the layout
+> > does not change the page pins can remain in place.
+> 
+> Because process A had a layout lease (and presumably a MR) and the
+> layout was still modified in way that invalidates the RDMA MR.
 
-When the driver returns error, the reference count of rdma resource(pd, mr, etc.) won't be decreased. I worried that it
-will cause a memory leak.
+The lease holder is allowed to modify the mapping it has a lease
+over. That's necessary so lease holders can write data into
+unallocated space in the file. The lease is there to prevent third
+parties from modifying the layout without the lease holder being
+informed and taking appropriate action to allow that 3rd party
+modification to occur.
 
-int ib_dereg_mr(struct ib_mr *mr)
-{
-	struct ib_pd *pd = mr->pd;
-	struct ib_dm *dm = mr->dm;
-	int ret;
+If the lease holder modifies the mapping in a way that causes it's
+own internal state to screw up, then that's a bug in the lease
+holder application.
 
-	rdma_restrack_del(&mr->res);
-	ret = mr->device->ops.dereg_mr(mr);
-	if (!ret) {
-		atomic_dec(&pd->usecnt);
-		if (dm)
-			atomic_dec(&dm->usecnt);
-	}
+Cheers,
 
-	return ret;
-}
-
-and it is even worse in ib_destroy_qp, rdma_put_gid_attr is not called, so that the net_device will be hold all the time, and caused the
-pcie remove scenario hanging.
-
-The following code is:
-int ib_destroy_qp(struct ib_qp *qp)
-{
-	const struct ib_gid_attr *alt_path_sgid_attr = qp->alt_path_sgid_attr;
-	const struct ib_gid_attr *av_sgid_attr = qp->av_sgid_attr;
-	struct ib_pd *pd;
-	struct ib_cq *scq, *rcq;
-	struct ib_srq *srq;
-	struct ib_rwq_ind_table *ind_tbl;
-	struct ib_qp_security *sec;
-	int ret;
-
-	WARN_ON_ONCE(qp->mrs_used > 0);
-
-	if (atomic_read(&qp->usecnt))
-		return -EBUSY;
-
-	if (qp->real_qp != qp)
-		return __ib_destroy_shared_qp(qp);
-
-	pd   = qp->pd;
-	scq  = qp->send_cq;
-	rcq  = qp->recv_cq;
-	srq  = qp->srq;
-	ind_tbl = qp->rwq_ind_tbl;
-	sec  = qp->qp_sec;
-	if (sec)
-		ib_destroy_qp_security_begin(sec);
-
-	if (!qp->uobject)
-		rdma_rw_cleanup_mrs(qp);
-
-	rdma_restrack_del(&qp->res);
-	ret = qp->device->ops.destroy_qp(qp);
-	if (!ret) {
-		if (alt_path_sgid_attr)
-			rdma_put_gid_attr(alt_path_sgid_attr);
-		if (av_sgid_attr)
-			rdma_put_gid_attr(av_sgid_attr);
-		if (pd)
-			atomic_dec(&pd->usecnt);
-		if (scq)
-			atomic_dec(&scq->usecnt);
-		if (rcq)
-			atomic_dec(&rcq->usecnt);
-		if (srq)
-			atomic_dec(&srq->usecnt);
-		if (ind_tbl)
-			atomic_dec(&ind_tbl->usecnt);
-		if (sec)
-			ib_destroy_qp_security_end(sec);
-	} else {
-		if (sec)
-			ib_destroy_qp_security_abort(sec);
-	}
-
-	return ret;
-}
-
-
-My question is what the condieration about the  resource destroy mechanism when roce driver returns error?
-Or I understand it wrong?
-
-Thanks
-Lijun Ou
-
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
