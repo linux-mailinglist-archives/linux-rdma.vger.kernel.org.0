@@ -2,120 +2,247 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C807D453D8
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 07:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19BF64543A
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 07:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725973AbfFNFN5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 01:13:57 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:33296 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725826AbfFNFN5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jun 2019 01:13:57 -0400
-Received: by mail-pf1-f194.google.com with SMTP id x15so687892pfq.0
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 22:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7L7uajw4KCsbL/S4E35UjNUKEFnxH/l2jD/CiFHPlB4=;
-        b=iVgLfh3u2rK3LSidDHhJBtdtNtpSlz4dIEb1BDsj4Re2fjkTLPAq5VHIrDbtF7rfc6
-         5a9vwqPeA/oCez/a3NCM+60PRvHQV0ltptm4u18TbaZDEEEiYlVGWcXj0ugZtZMkqFnM
-         ltnmFCb7F68lK6w+sv8Frqic/ZXdf9np/Ivm0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7L7uajw4KCsbL/S4E35UjNUKEFnxH/l2jD/CiFHPlB4=;
-        b=SQSECYyzjNWRFsq2U+e5YxUyAzT9TebsIJtjyUIuBNULLo9GrDBUhpB1vasnixfUpi
-         FRWTRZTTfZpkqAbpvZmo1JTWrZdeVZ0lR1x2I5ETerKaJE/GFLqZ2DnQLJJlTvPI8SvI
-         CJTbCAcpcCUYZld5MvRIJ/HdEDqboWu/zK+gYMqV0D9SEZNg+TP419LVIoxSP059jKLj
-         kXxbMniHfagQ2agFsZXOasXrtlVgSAg/j+W+HsZPCJHgCjI4Vl6UxO1PIZ+e2oZdDvpm
-         Rns5CKsiEAJIOYK3wM9CcC8W6wE77zY3qSimhUmMo023GqmgHhySNERaO3I0ivNeHIQF
-         cQwg==
-X-Gm-Message-State: APjAAAW/567scAdsF5S3kz6J4wreSPmBjwzRiLRvGxWU61S3PHDR8bRh
-        X4N1B2ElGEa1h6N3Fq8udm0gKQ==
-X-Google-Smtp-Source: APXvYqzTfasIXQ0R9bH+BHnjS/rxhZOCyiy3olY/JYV+P2HTQ7p4rEZDPtcIb7Np5EQm4YDFboUW8Q==
-X-Received: by 2002:a63:6948:: with SMTP id e69mr23166361pgc.441.1560489236782;
-        Thu, 13 Jun 2019 22:13:56 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f13sm1417022pje.11.2019.06.13.22.13.55
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Jun 2019 22:13:55 -0700 (PDT)
-Date:   Thu, 13 Jun 2019 22:13:54 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Dave Martin <Dave.Martin@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: Re: [PATCH v17 03/15] arm64: Introduce prctl() options to control
- the tagged user addresses ABI
-Message-ID: <201906132209.FC65A3C771@keescook>
-References: <cover.1560339705.git.andreyknvl@google.com>
- <a7a2933bea5fe57e504891b7eec7e9432e5e1c1a.1560339705.git.andreyknvl@google.com>
- <20190613110235.GW28398@e103592.cambridge.arm.com>
- <20190613152632.GT28951@C02TF0J2HF1T.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190613152632.GT28951@C02TF0J2HF1T.local>
+        id S1725836AbfFNFrd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jun 2019 01:47:33 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:42138 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbfFNFrc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jun 2019 01:47:32 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5E5hhfN102544;
+        Fri, 14 Jun 2019 05:47:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2018-07-02; bh=y4vtHQoiiaREBCPC6LRq84b/VbCs7dfxb6NU71+a3aY=;
+ b=oPDvL0p0p8BVA/lt9uP5C9oJLaqWoDhtqCOpUPycdmg4L3g3d8u+joIeROsDunTvitQ4
+ l0/mqLRAEaNQefcWjwEQT2SbFeHFV+WV2um3edU9iL/6uIXHrtwv6jA0gjEyJFzJrywc
+ KKVCjeD6fAJp7uvUNrBGxaPVZBN2J+/CWgFpLLg/zXh2vrF73pbtdGMn4MHzsuBaKL6Y
+ Z9lGHdZes7cdit1bSABFytYw/y5DSYF356L1fsrG0KL5sk63BCkBrV3Ta1tjeDQ5VQWf
+ 6UvG121ZAyKV2K0pFKGmtSoJAqnuvc8iy+Niwapy4dNe8OtdsyzBt7enizkHMpL8ood6 7g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2t05nr5943-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Jun 2019 05:47:16 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5E5ixSJ126795;
+        Fri, 14 Jun 2019 05:45:15 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2t04j0v4d3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Jun 2019 05:45:15 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5E5jDIL026575;
+        Fri, 14 Jun 2019 05:45:14 GMT
+Received: from dhcp-10-65-137-200.vpn.oracle.com (/10.65.137.200)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 13 Jun 2019 22:45:13 -0700
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v2] RDMA/cma: Make CM response timeout and # CM retries
+ configurable
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <6e586118ad154204ad2e2cf2c1391b916cb4ee54.camel@redhat.com>
+Date:   Fri, 14 Jun 2019 07:44:57 +0200
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Steve Wise <swise@opengridcomputing.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <9B7C9353-39B6-4193-9ACD-AD0FA62E9433@oracle.com>
+References: <20190226075722.1692315-1-haakon.bugge@oracle.com>
+ <174ccd37a9ffa05d0c7c03fe80ff7170a9270824.camel@redhat.com>
+ <67B4F337-4C3A-4193-B1EF-42FD4765CBB7@oracle.com>
+ <6e586118ad154204ad2e2cf2c1391b916cb4ee54.camel@redhat.com>
+To:     Doug Ledford <dledford@redhat.com>
+X-Mailer: Apple Mail (2.3445.104.11)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9287 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906140047
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9287 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906140047
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 04:26:32PM +0100, Catalin Marinas wrote:
-> On Thu, Jun 13, 2019 at 12:02:35PM +0100, Dave P Martin wrote:
-> > On Wed, Jun 12, 2019 at 01:43:20PM +0200, Andrey Konovalov wrote:
-> > > +static int zero;
-> > > +static int one = 1;
-> > 
-> > !!!
-> > 
-> > And these can't even be const without a cast.  Yuk.
-> > 
-> > (Not your fault though, but it would be nice to have a proc_dobool() to
-> > avoid this.)
-> 
-> I had the same reaction. Maybe for another patch sanitising this pattern
-> across the kernel.
 
-That's actually already happening (via -mm tree last I looked). tl;dr:
-it ends up using a cast hidden in a macro. It's in linux-next already
-along with a checkpatch.pl addition to yell about doing what's being
-done here. ;)
 
-https://lore.kernel.org/lkml/20190430180111.10688-1-mcroce@redhat.com/#r
+> On 13 Jun 2019, at 22:25, Doug Ledford <dledford@redhat.com> wrote:
+>=20
+> On Thu, 2019-06-13 at 18:58 +0200, H=C3=A5kon Bugge wrote:
+>>> On 13 Jun 2019, at 16:25, Doug Ledford <dledford@redhat.com> wrote:
+>>>=20
+>>> On Tue, 2019-02-26 at 08:57 +0100, H=C3=A5kon Bugge wrote:
+>>>> During certain workloads, the default CM response timeout is too
+>>>> short, leading to excessive retries. Hence, make it configurable
+>>>> through sysctl. While at it, also make number of CM retries
+>>>> configurable.
+>>>>=20
+>>>> The defaults are not changed.
+>>>>=20
+>>>> Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
+>>>> ---
+>>>> v1 -> v2:
+>>>>  * Added unregister_net_sysctl_table() in cma_cleanup()
+>>>> ---
+>>>> drivers/infiniband/core/cma.c | 52
+>>>> ++++++++++++++++++++++++++++++---
+>>>> --
+>>>> 1 file changed, 45 insertions(+), 7 deletions(-)
+>>>=20
+>>> This has been sitting on patchworks since forever.  Presumably
+>>> because
+>>> Jason and I neither one felt like we really wanted it, but also
+>>> couldn't justify flat refusing it.
+>>=20
+>> I thought the agreement was to use NL and iproute2. But I haven't had
+>> the capacity.
+>=20
+> To be fair, the email thread was gone from my linux-rdma folder.  So, =
+I
+> just had to review the entry in patchworks, and there was no captured
+> discussion there.  So, if the agreement was made, it must have been
+> face to face some time and if I was involed, I had certainly forgotten
+> by now.  But I still needed to clean up patchworks, hence my email =
+;-).
 
--- 
-Kees Cook
+This is the "agreement" I was referring too:
+
+> On 4 Mar 2019, at 07:27, Parav Pandit <parav@mellanox.com> wrote:
+>=20
+>> []
+>=20
+> I think we should use rdma_nl_register(RDMA_NL_RDMA_CM, cma_cb_table) =
+which was removed as part of ID stats removal.
+> Because of below reasons.
+> 1. rdma netlink command auto loads the module
+> 2. we don't need to write any extra code to do register_net_sysctl () =
+in each netns.
+> Caller's skb's netns will read/write value of response_timeout in =
+'struct cma_pernet'.
+> 3. last time sysctl added in ipv6 was in 2017 in net/ipv6/addrconf.c, =
+however ipv4 was done in 2018.
+>=20
+> Currently rdma_cm/rdma_ucma has configfs, sysctl.
+> We are adding netlink sys params to ib_core.
+>=20
+> We already have 3 clients and infra built using rdma_nl_register() =
+netlink , so hooking up to netlink will provide unified way to set rdma =
+params.
+> Let's just use netlink for any new params unless it is not doable.
+
+
+
+>=20
+>>> Well, I've made up my mind, so
+>>> unless Jason wants to argue the other side, I'm rejecting this
+>>> patch.=20
+>>> Here's why.  The whole concept of a timeout is to help recovery in
+>>> a
+>>> situation that overloads one end of the connection.  There is a
+>>> relationship between the max queue backlog on the one host and the
+>>> timeout on the other host. =20
+>>=20
+>> If you refer to the backlog parameter in rdma_listen(), I cannot see
+>> it being used at all for IB.
+>=20
+> No, not exactly.  I was more referring to heavy load causing an
+> overflow in the mad packet receive processing.  We have
+> IB_MAD_QP_RECV_SIZE set to 512 by default, but it can be changed at
+> module load time of the ib_core module and that represents the maximum
+> number of backlogged mad packets we can have waiting to be processed
+> before we just drop them on the floor.  There can be other places to
+> drop them too, but this is the one I was referring to.
+
+That is another scenario than what I try to solve. What I see, is that =
+the MAD packets are delayed, not lost. The delay is longer than the CMA =
+timeout. Hence, the MAD packets are retried, adding more burden to the =
+PF proxying and inducing even longer delays. And excessive CM retries =
+are observed. See 2612d723aadc ("IB/mlx4: Increase the timeout for CM =
+cache") where I have some quantification thereof.
+
+Back to your scenario above, yes indeed, the queue sizes are module =
+params. If the MADs are tossed, we will see rq_num_udsdprd incrementing =
+on a CX-3.
+
+But I do not understand how the dots are connected. Assume one client =
+does rdma_listen(, backlog =3D 1000); Where are those 1000 REQs stored, =
+assuming an "infinite slow processor"?
+
+
+Thxs, H=C3=A5kon
+
+
+>=20
+>> For CX-3, which is paravirtualized wrt. MAD packets, it is the proxy
+>> UD receive queue length for the PF driver that can be construed as a
+>> backlog. Remember that any MAD packet being sent from a VF or the PF
+>> itself, is sent to a proxy UD QP in the PF. Those packets are then
+>> multiplexed out on the real QP0/1. Incoming MAD packets are
+>> demultiplexed and sent once more to the proxy QP in the VF.
+>>=20
+>>> Generally, in order for a request to get
+>>> dropped and us to need to retransmit, the queue must already have a
+>>> full backlog.  So, how long does it take a heavily loaded system to
+>>> process a full backlog?  That, plus a fuzz for a margin of error,
+>>> should be our timeout.  We shouldn't be asking users to configure
+>>> it.
+>>=20
+>> Customer configures #VMs and different workload may lead to way
+>> different number of CM connections. The proxying of MAD packet
+>> through the PF driver has a finite packet rate. With 64 VMs, 10.000
+>> QPs on each, all going down due to a switch failing or similar, you
+>> have 640.000 DREQs to be sent, and with the finite packet rate of MA
+>> packets through the PF, this takes more than the current CM timeout.
+>> And then you re-transmit and increase the burden of the PF proxying.
+>>=20
+>> So, we can change the default to cope with this. But, a MAD packet is
+>> unreliable, we may have transient loss. In this case, we want a short
+>> timeout.
+>>=20
+>>> However, if users change the default backlog queue on their
+>>> systems,
+>>> *then* it would make sense to have the users also change the
+>>> timeout
+>>> here, but I think guidance would be helpful.
+>>>=20
+>>> So, to revive this patch, what I'd like to see is some attempt to
+>>> actually quantify a reasonable timeout for the default backlog
+>>> depth,
+>>> then the patch should actually change the default to that
+>>> reasonable
+>>> timeout, and then put in the ability to adjust the timeout with
+>>> some
+>>> sort of doc guidance on how to calculate a reasonable timeout based
+>>> on
+>>> configured backlog depth.
+>>=20
+>> I can agree to this :-)
+>>=20
+>>=20
+>> Thxs, H=C3=A5kon
+>>=20
+>>> --=20
+>>> Doug Ledford <dledford@redhat.com>
+>>>   GPG KeyID: B826A3330E572FDD
+>>>   Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
+>>> 2FDD
+>=20
+> --=20
+> Doug Ledford <dledford@redhat.com>
+>    GPG KeyID: B826A3330E572FDD
+>    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
+> 2FDD
+
