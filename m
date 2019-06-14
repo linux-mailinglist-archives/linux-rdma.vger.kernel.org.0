@@ -2,37 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CCB46413
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 18:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767C246414
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 18:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725808AbfFNQ2o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 12:28:44 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52454 "EHLO mga07.intel.com"
+        id S1725908AbfFNQ2t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jun 2019 12:28:49 -0400
+Received: from mga14.intel.com ([192.55.52.115]:48930 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725801AbfFNQ2n (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Jun 2019 12:28:43 -0400
+        id S1725801AbfFNQ2t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Jun 2019 12:28:49 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jun 2019 09:28:43 -0700
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jun 2019 09:28:49 -0700
 X-ExtLoop1: 1
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga007.jf.intel.com with ESMTP; 14 Jun 2019 09:28:43 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 14 Jun 2019 09:28:49 -0700
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x5EGSgOH060730;
-        Fri, 14 Jun 2019 09:28:42 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x5EGSmvJ060733;
+        Fri, 14 Jun 2019 09:28:49 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x5EGSfip044882;
-        Fri, 14 Jun 2019 12:28:41 -0400
-Subject: [PATCH for-next 7/9] IB/rdmavt: Enhance trace information for FRWR
- debug
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x5EGSloa044891;
+        Fri, 14 Jun 2019 12:28:47 -0400
+Subject: [PATCH for-next 8/9] IB/rdmavt: Add trace for map_mr_sg
 From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
 Cc:     linux-rdma@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Kaike Wan <kaike.wan@intel.com>
-Date:   Fri, 14 Jun 2019 12:28:41 -0400
-Message-ID: <20190614162841.44714.15589.stgit@awfm-01.aw.intel.com>
+Date:   Fri, 14 Jun 2019 12:28:47 -0400
+Message-ID: <20190614162847.44714.70749.stgit@awfm-01.aw.intel.com>
 In-Reply-To: <20190614162724.44714.22604.stgit@awfm-01.aw.intel.com>
 References: <20190614162724.44714.22604.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.17.1-dirty
@@ -46,78 +45,80 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Mike Marciniszyn <mike.marciniszyn@intel.com>
 
-This patch enhances the MR trace information to enable
-more focused debug of MR issues.
+Add trace to debug map_mr_sg handling.
 
 Reviewed-by: Kaike Wan <kaike.wan@intel.com>
 Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 ---
- drivers/infiniband/sw/rdmavt/mr.c       |    2 +-
- drivers/infiniband/sw/rdmavt/trace_mr.h |   20 +++++++++++++++++---
- 2 files changed, 18 insertions(+), 4 deletions(-)
+ drivers/infiniband/sw/rdmavt/mr.c       |    1 +
+ drivers/infiniband/sw/rdmavt/trace_mr.h |   36 +++++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
 diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
-index 54f3f9c..068b23f 100644
+index 068b23f..783d451 100644
 --- a/drivers/infiniband/sw/rdmavt/mr.c
 +++ b/drivers/infiniband/sw/rdmavt/mr.c
-@@ -611,8 +611,8 @@ static int rvt_set_page(struct ib_mr *ibmr, u64 addr)
- 	n = mapped_segs % RVT_SEGSZ;
- 	mr->mr.map[m]->segs[n].vaddr = (void *)addr;
- 	mr->mr.map[m]->segs[n].length = ps;
--	trace_rvt_mr_page_seg(&mr->mr, m, n, (void *)addr, ps);
- 	mr->mr.length += ps;
-+	trace_rvt_mr_page_seg(&mr->mr, m, n, (void *)addr, ps);
- 
- 	return 0;
+@@ -641,6 +641,7 @@ int rvt_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
+ 	mr->mr.iova = ibmr->iova;
+ 	mr->mr.offset = ibmr->iova - (u64)mr->mr.map[0]->segs[0].vaddr;
+ 	mr->mr.length = (size_t)ibmr->length;
++	trace_rvt_map_mr_sg(ibmr, sg_nents, sg_offset);
+ 	return ret;
  }
+ 
 diff --git a/drivers/infiniband/sw/rdmavt/trace_mr.h b/drivers/infiniband/sw/rdmavt/trace_mr.h
-index 976e482..f43e477 100644
+index f43e477..95b8a0e 100644
 --- a/drivers/infiniband/sw/rdmavt/trace_mr.h
 +++ b/drivers/infiniband/sw/rdmavt/trace_mr.h
-@@ -64,8 +64,12 @@
- 		RDI_DEV_ENTRY(ib_to_rvt(mr->pd->device))
- 		__field(void *, vaddr)
- 		__field(struct page *, page)
+@@ -54,6 +54,8 @@
+ #include <rdma/rdma_vt.h>
+ #include <rdma/rdmavt_mr.h>
+ 
++#include "mr.h"
++
+ #undef TRACE_SYSTEM
+ #define TRACE_SYSTEM rvt_mr
+ DECLARE_EVENT_CLASS(
+@@ -179,6 +181,40 @@
+ 	TP_PROTO(struct rvt_sge *sge, struct ib_sge *isge),
+ 	TP_ARGS(sge, isge));
+ 
++TRACE_EVENT(
++	rvt_map_mr_sg,
++	TP_PROTO(struct ib_mr *ibmr, int sg_nents, unsigned int *sg_offset),
++	TP_ARGS(ibmr, sg_nents, sg_offset),
++	TP_STRUCT__entry(
++		RDI_DEV_ENTRY(ib_to_rvt(to_imr(ibmr)->mr.pd->device))
 +		__field(u64, iova)
++		__field(u64, ibmr_iova)
 +		__field(u64, user_base)
- 		__field(size_t, len)
-+		__field(size_t, length)
- 		__field(u32, lkey)
-+		__field(u32, offset)
- 		__field(u16, m)
- 		__field(u16, n)
- 	),
-@@ -73,18 +77,28 @@
- 		RDI_DEV_ASSIGN(ib_to_rvt(mr->pd->device));
- 		__entry->vaddr = v;
- 		__entry->page = virt_to_page(v);
-+		__entry->iova = mr->iova;
-+		__entry->user_base = mr->user_base;
-+		__entry->lkey = mr->lkey;
- 		__entry->m = m;
- 		__entry->n = n;
- 		__entry->len = len;
-+		__entry->length = mr->length;
-+		__entry->offset = mr->offset;
- 	),
- 	TP_printk(
--		"[%s] vaddr %p page %p m %u n %u len %ld",
-+		"[%s] lkey %x iova %llx user_base %llx mr_len %lu vaddr %llx page %p m %u n %u len %lu off %u",
- 		__get_str(dev),
--		__entry->vaddr,
-+		__entry->lkey,
++		__field(u64, ibmr_length)
++		__field(int, sg_nents)
++		__field(uint, sg_offset)
++	),
++	TP_fast_assign(
++		RDI_DEV_ASSIGN(ib_to_rvt(to_imr(ibmr)->mr.pd->device))
++		__entry->ibmr_iova = ibmr->iova;
++		__entry->iova = to_imr(ibmr)->mr.iova;
++		__entry->user_base = to_imr(ibmr)->mr.user_base;
++		__entry->ibmr_length = to_imr(ibmr)->mr.length;
++		__entry->sg_nents = sg_nents;
++		__entry->sg_offset = sg_offset ? *sg_offset : 0;
++	),
++	TP_printk(
++		"[%s] ibmr_iova %llx iova %llx user_base %llx length %llx sg_nents %d sg_offset %u",
++		__get_str(dev),
++		__entry->ibmr_iova,
 +		__entry->iova,
 +		__entry->user_base,
-+		__entry->length,
-+		(unsigned long long)__entry->vaddr,
- 		__entry->page,
- 		__entry->m,
- 		__entry->n,
--		__entry->len
-+		__entry->len,
-+		__entry->offset
- 	)
- );
++		__entry->ibmr_length,
++		__entry->sg_nents,
++		__entry->sg_offset
++	)
++);
++
+ #endif /* __RVT_TRACE_MR_H */
  
+ #undef TRACE_INCLUDE_PATH
 
