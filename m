@@ -2,92 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDCE45E7B
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 15:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE41445F7F
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 15:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbfFNNjp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 09:39:45 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:59919 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728033AbfFNNjp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jun 2019 09:39:45 -0400
-Received: from [192.168.1.110] ([77.4.92.40]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MPGJf-1i0txJ0cqj-00PaAc; Fri, 14 Jun 2019 15:39:16 +0200
-Subject: Re: [PATCH] RDMA/ucma: Use struct_size() helper
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190604154222.GA8938@embeddedor>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Organization: metux IT consult
-Message-ID: <f8d5dcb8-b665-b34e-3869-a720fd6f6899@metux.net>
-Date:   Fri, 14 Jun 2019 15:39:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        id S1728470AbfFNNrp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jun 2019 09:47:45 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:50618 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728583AbfFNNro (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jun 2019 09:47:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=2klM0787YOypidTxFFKkFXrGCXrbMhQ5qreI3X9Vu1k=; b=Cj3+LM9vIrA6nltYCay8yBPba
+        y6IkbYwpLx9JZh8kK5t2kLy0T8EhKYFLd4ni8FEoVyGRGa1u1i3grWUes4UAS9IJ9k3PGBxh0Ddkp
+        +eH6rF5lBzxCwQMwke6G/c2TJda2p6rGBomPUsGZBfRc0dQxUxHgwIel6XPax0+lxmSXe9hnoqneL
+        tM4WnvDTXZk0YQhKyEzCwXVDmrezpr/WzX/aQS4stZilw7GkSoqCXo2Zka98OqbC6gFV5/7OKNZNF
+        BKEvRnmiaTr9rp4o4Y6qOWysCXUmGZc3uHBgRcuKZdrN51a9q9TVTZ/wz3VsIWst8b5uTNKZ6nDin
+        VS2+DYitQ==;
+Received: from 213-225-9-13.nat.highway.a1.net ([213.225.9.13] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hbmYG-0004Xc-Jk; Fri, 14 Jun 2019 13:47:33 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>
+Cc:     Intel Linux Wireless <linuxwifi@intel.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-s390@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: use exact allocation for dma coherent memory
+Date:   Fri, 14 Jun 2019 15:47:10 +0200
+Message-Id: <20190614134726.3827-1-hch@lst.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20190604154222.GA8938@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:TyNnlCCne/1Ppqq1bYzrL6JZCGHTih8twwaASqDhXeiIa4I/XSy
- E4A5ttx7aDQau/tjbadApxfoHDkB2T5svbpfYmr2W8BDkQmSjf7XrAGtU0wUdN6Xf0fIStk
- U1SZ4C1VYX6rqqrwrAhfKxnXOV0Vat/fWVGmPYYWYML9wvys0/hMQIEDEAohZDrX+eM1WUq
- SgdCBw244hyQ6AhSu0XFg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UjmK0ABtvNc=:XVKD2tvTEcA8JMRMpy0Htt
- FURTKxjfIGc/KkFmVsLJL0pScwNlBoH84DzLmULSbZNiLfW1j1/U75nqxHMCw69r0koF1x3NS
- 1eOgDwYx3Idh3WZ2EQ1Wd1tbRW9LnBjC5loBJUOODwdcM7zjrsUezonaxWaD0vNqABE3CcgvB
- J0wsyqs1s3bmCmDroBEY0xKHLzcX3vIWczdBBSehV3oAd405VzXE0gLx7J75vjVSPfDrVu3TK
- l/ffJmemx9p/ynRX8CGMKVp0s4UmVHoo1gqtD2z6WuqxNP+yzGb+rfHEkAdKpQuDhNOmJ2YR1
- n/kX+yH/FcuffTYoFAfOM1oY2enBt+x3eXGrFu3uVI16Hb4fYVfuScp+znSCkaBB+6FdQ/tgh
- eiIUKrd//XE5EjjGNEvkziApCl31uZzfQvd+ejQhi4Pv3bLPetHK0F5+zxTDWyuWPFJJK5Fvk
- r6fw/pbY1edstTcVAE28wqQf2FfhPBpNHnybutpCq+HT+gdNt6OXBw6Gg05EOjLOdB9jGbDRt
- FAkdvtxDU5p2XQmP5bLi8Q+1QqcvYnfGQZsRGM1xowbyneNrUcEQ0MEaolXO3lW/4gwUlpZlZ
- mCJCuLIWh2NCvvxfMnwBjIKnj5HTFsQ/3YZuPJvmkA4Iqs8Yih2UuV/DQDCnRWorQPBfA/qXK
- +Kfl/PJDPO4+ipXO0xLOwaxBGKarddEpf2hX+t4IERfWhMZWoNETaeGuKHLT4srg++GNHhSpV
- W7x+rhROLzGd68qKQcywrBgTBr0Q+EYZt7HtwXa4OG7RTXM0evzPtFpIt/Q=
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 04.06.19 17:42, Gustavo A. R. Silva wrote:
+Hi all,
 
-Hi,
+various architectures have used exact memory allocations for dma
+allocations for a long time, but x86 and thus the common code based
+on it kept using our normal power of two allocator, which tends to
+waste a lot of memory for certain allocations.
 
-<snip>
-
-> diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-> index 140a338a135f..cbe460076611 100644
-> --- a/drivers/infiniband/core/ucma.c
-> +++ b/drivers/infiniband/core/ucma.c
-> @@ -951,8 +951,7 @@ static ssize_t ucma_query_path(struct ucma_context *ctx,
->  		}
->  	}
->  
-> -	if (copy_to_user(response, resp,
-> -			 sizeof(*resp) + (i * sizeof(struct ib_path_rec_data))))
-> +	if (copy_to_user(response, resp, struct_size(resp, path_data, i)))
->  		ret = -EFAULT;
-
-have you already considered further reducing the boilerplate by putting
-this into it's own helper macro, so it finally would look like this ?
-
-+	if (copy_to_user_structs(response, resp, resp, path_data, i)))
->  		ret = -EFAULT;
-
-You've posted similar patches that also affected things like kzalloc().
-Maybe for those it would be better candidates for putting everything
-into its own helper macro ? (I've already got that on my 2do list, but
-not sure whether maintainers really like to be bothered with those
-kind of patches ;-)).
-
-
---mtx
-
--- 
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Switching to a slightly cleaned up alloc_pages_exact is pretty easy,
+but it turns out that because we didn't filter valid gfp_t flags
+on the DMA allocator, a bunch of drivers were passing __GFP_COMP
+to it, which is rather bogus in too many ways to explain.  Arm has
+been filtering it for a while, but this series instead tries to fix
+the drivers and warn when __GFP_COMP is passed, which makes it much
+larger than just adding the functionality.
