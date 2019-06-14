@@ -2,69 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7442462E9
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 17:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9FAB463F8
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 18:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbfFNPfA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 11:35:00 -0400
-Received: from verein.lst.de ([213.95.11.211]:47942 "EHLO newverein.lst.de"
+        id S1725802AbfFNQZd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jun 2019 12:25:33 -0400
+Received: from mga04.intel.com ([192.55.52.120]:18718 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbfFNPfA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Jun 2019 11:35:00 -0400
-Received: by newverein.lst.de (Postfix, from userid 2407)
-        id DF91968AFE; Fri, 14 Jun 2019 17:34:28 +0200 (CEST)
-Date:   Fri, 14 Jun 2019 17:34:28 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 12/16] staging/comedi: mark as broken
-Message-ID: <20190614153428.GA10008@lst.de>
-References: <20190614134726.3827-1-hch@lst.de> <20190614134726.3827-13-hch@lst.de> <20190614140239.GA7234@kroah.com> <20190614144857.GA9088@lst.de> <20190614153032.GD18049@kroah.com>
+        id S1725801AbfFNQZd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Jun 2019 12:25:33 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jun 2019 09:25:32 -0700
+X-ExtLoop1: 1
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by fmsmga006.fm.intel.com with ESMTP; 14 Jun 2019 09:25:31 -0700
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x5EGPUYK060530;
+        Fri, 14 Jun 2019 09:25:31 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x5EGPS8u044673;
+        Fri, 14 Jun 2019 12:25:28 -0400
+Subject: [PATCH for-next v4 0/3] Clean up and refactor some CQ code
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org
+Date:   Fri, 14 Jun 2019 12:25:28 -0400
+Message-ID: <20190614162435.44620.72298.stgit@awfm-01.aw.intel.com>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190614153032.GD18049@kroah.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 14, 2019 at 05:30:32PM +0200, Greg KH wrote:
-> On Fri, Jun 14, 2019 at 04:48:57PM +0200, Christoph Hellwig wrote:
-> > On Fri, Jun 14, 2019 at 04:02:39PM +0200, Greg KH wrote:
-> > > Perhaps a hint as to how we can fix this up?  This is the first time
-> > > I've heard of the comedi code not handling dma properly.
-> > 
-> > It can be fixed by:
-> > 
-> >  a) never calling virt_to_page (or vmalloc_to_page for that matter)
-> >     on dma allocation
-> >  b) never remapping dma allocation with conflicting cache modes
-> >     (no remapping should be doable after a) anyway).
-> 
-> Ok, fair enough, have any pointers of drivers/core code that does this
-> correctly?  I can put it on my todo list, but might take a week or so...
+This is really a resubmit of some code clean up we floated a while back. The
+main goal here is to clean up some of the stuff which should be in the uapi
+directory vs in in the driver directory. Then to break the single lock for 
+recv wqe processing.
 
-Just about everyone else.  They just need to remove the vmap and
-either do one large allocation, or live with the fact that they need
-helpers to access multiple array elements instead of one net vmap,
-which most of the users already seem to do anyway, with just a few
-using the vmap (which might explain why we didn't see blowups yet).
+The accompanying user bits should already be in a PR on GitHub.
+
+Change log documented below each commit message.
+
+---
+
+Kamenee Arumugam (3):
+      IB/hfi1: Move rvt_cq_wc struct into uapi directory
+      IB/hfi1: Move receive work queue struct into uapi directory
+      IB/rdmavt: Fracture single lock used for posting and processing RWQEs
+
+
+ drivers/infiniband/hw/hfi1/qp.c    |    4 -
+ drivers/infiniband/sw/rdmavt/cq.c  |  191 ++++++++++++++++++-----------
+ drivers/infiniband/sw/rdmavt/qp.c  |  239 +++++++++++++++++++++++++-----------
+ drivers/infiniband/sw/rdmavt/qp.h  |    2 
+ drivers/infiniband/sw/rdmavt/rc.c  |   41 ++++--
+ drivers/infiniband/sw/rdmavt/srq.c |   69 ++++++----
+ include/rdma/rdmavt_cq.h           |   22 ++-
+ include/rdma/rdmavt_qp.h           |   91 +++++++++++---
+ include/uapi/rdma/rvt-abi.h        |   61 +++++++++
+ 9 files changed, 502 insertions(+), 218 deletions(-)
+ create mode 100644 include/uapi/rdma/rvt-abi.h
+
+--
+-Denny
