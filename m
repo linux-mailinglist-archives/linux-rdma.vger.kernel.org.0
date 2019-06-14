@@ -2,147 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B86E45F23
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 15:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9D445FBE
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 16:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbfFNNsl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 09:48:41 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:54198 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729065AbfFNNsk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jun 2019 09:48:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
-        :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ve9eOR0n9NYQG/06xL1T/7RN+D+EYosn1r01rGXCWe8=; b=oOXLpQSB9eTwi5cRnaIs3K9jSP
-        U3nYifQRasO4H8c9LydLZ7aFiLS8AmMO8L7HX1fSqc06MgW+WgkhhHaoKo2MKfTDNYkKunWyK4auH
-        sDEmoQgB8oqOU4hpKwhX2F52HvfX8JBk7RhqZQB3ZfChLLyBOjp1aO1CsWRbTm+0Fj1lVP/P78vhq
-        Q/tTXEXgky31g4PmH9ZYyI2SmqKT0gbaGOa4wj3ZMyfwF3m6qpJz2Hgvhxr+PiNdqUsIFqqBd/Bdq
-        t5+5nb9o2JxesKPlAa9uOOJPL3zGPLmnTYV+Z+YPjVKvRBW0T/H3FZDUMD4bcdC4PQzCFzjLGL6V3
-        kn/hUemg==;
-Received: from 213-225-9-13.nat.highway.a1.net ([213.225.9.13] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hbmZB-0005nI-Ab; Fri, 14 Jun 2019 13:48:30 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc:     Intel Linux Wireless <linuxwifi@intel.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-s390@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 16/16] dma-mapping: use exact allocation in dma_alloc_contiguous
-Date:   Fri, 14 Jun 2019 15:47:26 +0200
-Message-Id: <20190614134726.3827-17-hch@lst.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190614134726.3827-1-hch@lst.de>
-References: <20190614134726.3827-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        id S1728583AbfFNN6F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jun 2019 09:58:05 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44266 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728592AbfFNN6C (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Jun 2019 09:58:02 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5EDmuSv014265
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jun 2019 09:58:01 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2t4bv53dhw-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jun 2019 09:57:59 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
+        Fri, 14 Jun 2019 14:57:56 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 14 Jun 2019 14:57:54 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5EDvrYG58327120
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Jun 2019 13:57:53 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EFAD842047;
+        Fri, 14 Jun 2019 13:57:52 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CC60242042;
+        Fri, 14 Jun 2019 13:57:52 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 14 Jun 2019 13:57:52 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [PATCH v2 00/11] SIW: Software iWarp RDMA (siw) driver
+Date:   Fri, 14 Jun 2019 15:57:39 +0200
+X-Mailer: git-send-email 2.17.2
+X-TM-AS-GCONF: 00
+x-cbid: 19061413-0028-0000-0000-0000037A5223
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19061413-0029-0000-0000-0000243A4F57
+Message-Id: <20190614135750.15874-1-bmt@zurich.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-14_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=962 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906140118
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Many architectures (e.g. arm, m68 and sh) have always used exact
-allocation in their dma coherent allocator, which avoids a lot of
-memory waste especially for larger allocations.  Lift this behavior
-into the generic allocator so that dma-direct and the generic IOMMU
-code benefit from this behavior as well.
+This patch set contributes the SoftiWarp driver rebased for
+rdma for-next. SoftiWarp (siw) implements the iWarp RDMA
+protocol over kernel TCP sockets. The driver integrates with
+the linux-rdma framework.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/dma-contiguous.h |  8 +++++---
- kernel/dma/contiguous.c        | 17 +++++++++++------
- 2 files changed, 16 insertions(+), 9 deletions(-)
+Many thanks for reviewing and testing the driver, especially to Leon,
+Jason, Steve, Doug, Olga, Dennis, Gal. You all helped to significantly
+improve the driver over the last year.
 
-diff --git a/include/linux/dma-contiguous.h b/include/linux/dma-contiguous.h
-index c05d4e661489..2e542e314acf 100644
---- a/include/linux/dma-contiguous.h
-+++ b/include/linux/dma-contiguous.h
-@@ -161,15 +161,17 @@ static inline struct page *dma_alloc_contiguous(struct device *dev, size_t size,
- 		gfp_t gfp)
- {
- 	int node = dev ? dev_to_node(dev) : NUMA_NO_NODE;
--	size_t align = get_order(PAGE_ALIGN(size));
-+	void *cpu_addr = alloc_pages_exact_node(node, size, gfp);
- 
--	return alloc_pages_node(node, gfp, align);
-+	if (!cpu_addr)
-+		return NULL;
-+	return virt_to_page(p);
- }
- 
- static inline void dma_free_contiguous(struct device *dev, struct page *page,
- 		size_t size)
- {
--	__free_pages(page, get_order(size));
-+	free_pages_exact(page_address(page), get_order(size));
- }
- 
- #endif
-diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
-index bfc0c17f2a3d..84f41eea2741 100644
---- a/kernel/dma/contiguous.c
-+++ b/kernel/dma/contiguous.c
-@@ -232,9 +232,8 @@ struct page *dma_alloc_contiguous(struct device *dev, size_t size, gfp_t gfp)
- {
- 	int node = dev ? dev_to_node(dev) : NUMA_NO_NODE;
- 	size_t count = PAGE_ALIGN(size) >> PAGE_SHIFT;
--	size_t align = get_order(PAGE_ALIGN(size));
--	struct page *page = NULL;
- 	struct cma *cma = NULL;
-+	void *cpu_addr;
- 
- 	if (dev && dev->cma_area)
- 		cma = dev->cma_area;
-@@ -243,14 +242,20 @@ struct page *dma_alloc_contiguous(struct device *dev, size_t size, gfp_t gfp)
- 
- 	/* CMA can be used only in the context which permits sleeping */
- 	if (cma && gfpflags_allow_blocking(gfp)) {
-+		size_t align = get_order(PAGE_ALIGN(size));
-+		struct page *page;
-+
- 		align = min_t(size_t, align, CONFIG_CMA_ALIGNMENT);
- 		page = cma_alloc(cma, count, align, gfp & __GFP_NOWARN);
-+		if (page)
-+			return page;
- 	}
- 
- 	/* Fallback allocation of normal pages */
--	if (!page)
--		page = alloc_pages_node(node, gfp, align);
--	return page;
-+	cpu_addr = alloc_pages_exact_node(node, size, gfp);
-+	if (!cpu_addr)
-+		return NULL;
-+	return virt_to_page(cpu_addr);
- }
- 
- /**
-@@ -267,7 +272,7 @@ struct page *dma_alloc_contiguous(struct device *dev, size_t size, gfp_t gfp)
- void dma_free_contiguous(struct device *dev, struct page *page, size_t size)
- {
- 	if (!cma_release(dev_get_cma_area(dev), page, size >> PAGE_SHIFT))
--		__free_pages(page, get_order(size));
-+		free_pages_exact(page_address(page), get_order(size));
- }
- 
- /*
+Please find below a list of changes and comments, compared to older
+versions of the siw driver.
+
+Many thanks!
+Bernard.
+
+
+CHANGES:
+========
+
+v2 (this version)
+-----------------
+
+- Changed recieve path CRC calculation to compute CRC32c not
+  on target buffer after placement, but on original skbuf.
+  This change severely hurts performance, if CRC is switched
+  on, since skb must now be walked twice. It is planned to
+  work on an extension to skb_copy_bits() to fold in CRC
+  computation.
+
+- Moved debugging to using ibdev_dbg().
+
+- Dropped detailed packet debug printing.
+
+- Removed siw_debug.[ch] files.
+
+- Removed resource tracking, code now relies on restrack of
+  RDMA midlayer. Only object counting to enforce reported
+  device limits is left in place.
+
+- Removed all nested switch-case statements.
+
+- Cleaned up header file #include's
+
+- Moved CQ create/destroy to new semantics,
+  where midlayer creates/destroys containing object.
+
+- Set siw's ABI version to 1 (was 0 before)
+
+- Removed all enum initialization where not needed.
+
+- Fixed MAINTANERS entry for siw driver
+
+- This version stays with the current siw specific
+  management of user memory (siw_umem_get() vs.
+  ib_umem_get(), etc.). This, since the current ib_umem
+  implementation is less efficient for user page lookup
+  on the fast path, where effciency is important for a
+  SW RDMA driver. 
+  It is planned to contribute enhancements to the ib_umem
+  framework, wich makes it suitable for SW drivers as well.
+
+
+v1 (first version after v9 of siw RFC)
+--------------------------------------
+
+- Rebased to 5.2-rc1
+
+- All IDR code got removed.
+
+- Both MR and QP deallocation verbs now synchronously
+  free the resources referenced by the RDMA mid-layer.
+
+- IPv6 support was added.
+
+- For compatibility with Chelsio iWarp hardware, the RX
+  path was slightly reworked. It now allows packet intersection
+  between tagged and untagged RDMAP operations. While not
+  a defined behavior as of IETF RFC 5040/5041, some RDMA hardware
+  may intersect an ongoing outbound (large) tagged message, such
+  as an multisegment RDMA Read Response with sending an untagged
+  message, such as an RDMA Send frame. This behavior was only
+  detected in an NVMeF setup, where siw was used at target side,
+  and RDMA hardware at client side (during file write). siw now
+  implements two input paths for tagged and untagged messages each,
+  and allows the intersected placement of both messages.
+
+- The siw kernel abi file got renamed from siw_user.h to siw-abi.h.
+Bernard Metzler (11):
+  iWarp wire packet format
+  SIW main include file
+  SIW network and RDMA core interface
+  SIW connection management
+  SIW application interface
+  SIW application buffer management
+  SIW queue pair methods
+  SIW transmit path
+  SIW receive path
+  SIW completion queue methods
+  SIW addition to kernel build environment
+
+ MAINTAINERS                              |    7 +
+ drivers/infiniband/Kconfig               |    1 +
+ drivers/infiniband/sw/Makefile           |    1 +
+ drivers/infiniband/sw/siw/Kconfig        |   17 +
+ drivers/infiniband/sw/siw/Makefile       |   11 +
+ drivers/infiniband/sw/siw/iwarp.h        |  380 ++++
+ drivers/infiniband/sw/siw/siw.h          |  745 ++++++++
+ drivers/infiniband/sw/siw/siw_cm.c       | 2072 ++++++++++++++++++++++
+ drivers/infiniband/sw/siw/siw_cm.h       |  133 ++
+ drivers/infiniband/sw/siw/siw_cq.c       |  101 ++
+ drivers/infiniband/sw/siw/siw_main.c     |  687 +++++++
+ drivers/infiniband/sw/siw/siw_mem.c      |  460 +++++
+ drivers/infiniband/sw/siw/siw_mem.h      |   74 +
+ drivers/infiniband/sw/siw/siw_qp.c       | 1322 ++++++++++++++
+ drivers/infiniband/sw/siw/siw_qp_rx.c    | 1455 +++++++++++++++
+ drivers/infiniband/sw/siw/siw_qp_tx.c    | 1268 +++++++++++++
+ drivers/infiniband/sw/siw/siw_verbs.c    | 1752 ++++++++++++++++++
+ drivers/infiniband/sw/siw/siw_verbs.h    |   91 +
+ include/uapi/rdma/rdma_user_ioctl_cmds.h |    1 +
+ include/uapi/rdma/siw-abi.h              |  185 ++
+ 20 files changed, 10763 insertions(+)
+ create mode 100644 drivers/infiniband/sw/siw/Kconfig
+ create mode 100644 drivers/infiniband/sw/siw/Makefile
+ create mode 100644 drivers/infiniband/sw/siw/iwarp.h
+ create mode 100644 drivers/infiniband/sw/siw/siw.h
+ create mode 100644 drivers/infiniband/sw/siw/siw_cm.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_cm.h
+ create mode 100644 drivers/infiniband/sw/siw/siw_cq.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_main.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_mem.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_mem.h
+ create mode 100644 drivers/infiniband/sw/siw/siw_qp.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_qp_rx.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_qp_tx.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_verbs.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_verbs.h
+ create mode 100644 include/uapi/rdma/siw-abi.h
+
 -- 
-2.20.1
+2.17.2
 
