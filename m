@@ -2,158 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D5B461D7
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 16:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C287461F1
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 17:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbfFNO65 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 10:58:57 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:18608 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726693AbfFNO64 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Jun 2019 10:58:56 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 68F6F2DAA3E0FCE04162;
-        Fri, 14 Jun 2019 22:58:38 +0800 (CST)
-Received: from linux-ioko.site (10.71.200.31) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.439.0; Fri, 14 Jun 2019 22:58:32 +0800
-From:   Lijun Ou <oulijun@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH V3 for-next] RDMA/hns: reset function when removing module
-Date:   Fri, 14 Jun 2019 22:56:03 +0800
-Message-ID: <1560524163-94676-1-git-send-email-oulijun@huawei.com>
-X-Mailer: git-send-email 1.9.1
+        id S1727064AbfFNPBa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 14 Jun 2019 11:01:30 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:22869 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725814AbfFNPB2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Jun 2019 11:01:28 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-6-Ae-vvi9EMKOPr28p6sbQQA-1;
+ Fri, 14 Jun 2019 16:01:23 +0100
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b::d117) by AcuMS.aculab.com
+ (fd9f:af1c:a25b::d117) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri,
+ 14 Jun 2019 16:01:22 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 14 Jun 2019 16:01:22 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>
+CC:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        "Ian Abbott" <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 16/16] dma-mapping: use exact allocation in
+ dma_alloc_contiguous
+Thread-Topic: [PATCH 16/16] dma-mapping: use exact allocation in
+ dma_alloc_contiguous
+Thread-Index: AQHVIrfpTFjppS25RkWUhwqPPyqZ4qabLzdw///7eICAABIeYA==
+Date:   Fri, 14 Jun 2019 15:01:22 +0000
+Message-ID: <d93fd4c2c1584d92a05dd641929f6d63@AcuMS.aculab.com>
+References: <20190614134726.3827-1-hch@lst.de>
+ <20190614134726.3827-17-hch@lst.de>
+ <a90cf7ec5f1c4166b53c40e06d4d832a@AcuMS.aculab.com>
+ <20190614145001.GB9088@lst.de>
+In-Reply-To: <20190614145001.GB9088@lst.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.71.200.31]
-X-CFilter-Loop: Reflected
+X-MC-Unique: Ae-vvi9EMKOPr28p6sbQQA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+From: 'Christoph Hellwig'
+> Sent: 14 June 2019 15:50
+> To: David Laight
+> On Fri, Jun 14, 2019 at 02:15:44PM +0000, David Laight wrote:
+> > Does this still guarantee that requests for 16k will not cross a 16k boundary?
+> > It looks like you are losing the alignment parameter.
+> 
+> The DMA API never gave you alignment guarantees to start with,
+> and you can get not naturally aligned memory from many of our
+> current implementations.
 
-During removing the driver, we needs to notify the roce engine to
-stop working immediately,and symmetrically recycle the hardware
-resources requested during initialization.
+Hmmm...
+I thought that was even documented.
 
-The hardware provides a command called function clear that can package
-these operations,so that the driver can only focus on releasing
-resources that applied from the operating system.
-This patch implements the call of this command.
+I'm pretty sure there is a lot of code out there that makes that assumption.
+Without it many drivers will have to allocate almost double the
+amount of memory they actually need in order to get the required alignment.
+So instead of saving memory you'll actually make more be used.
 
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Lijun Ou <oulijun@huawei.com>
----
-V2->V3:
-1. Remove other reset state operations that are not related to
-   function clear
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 44 ++++++++++++++++++++++++++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 17 ++++++++++++
- 2 files changed, 61 insertions(+)
+	David
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index e7024b3..5c8551b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1130,6 +1130,47 @@ static int hns_roce_cmq_query_hw_info(struct hns_roce_dev *hr_dev)
- 	return 0;
- }
- 
-+static void hns_roce_function_clear(struct hns_roce_dev *hr_dev)
-+{
-+	bool fclr_write_fail_flag = false;
-+	struct hns_roce_func_clear *resp;
-+	struct hns_roce_cmq_desc desc;
-+	unsigned long end;
-+	int ret;
-+
-+	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_FUNC_CLEAR, false);
-+	resp = (struct hns_roce_func_clear *)desc.data;
-+
-+	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
-+	if (ret) {
-+		fclr_write_fail_flag = true;
-+		dev_err(hr_dev->dev, "Func clear write failed, ret = %d.\n",
-+			 ret);
-+		return;
-+	}
-+
-+	msleep(HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_INTERVAL);
-+	end = HNS_ROCE_V2_FUNC_CLEAR_TIMEOUT_MSECS;
-+	while (end) {
-+		msleep(HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT);
-+		end -= HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT;
-+
-+		hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_FUNC_CLEAR,
-+					      true);
-+
-+		ret = hns_roce_cmq_send(hr_dev, &desc, 1);
-+		if (ret)
-+			continue;
-+
-+		if (roce_get_bit(resp->func_done, FUNC_CLEAR_RST_FUN_DONE_S)) {
-+			hr_dev->is_reset = true;
-+			return;
-+		}
-+	}
-+
-+	dev_err(hr_dev->dev, "Func clear fail.\n");
-+}
-+
- static int hns_roce_query_fw_ver(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_query_fw_info *resp;
-@@ -1894,6 +1935,9 @@ static void hns_roce_v2_exit(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_v2_priv *priv = hr_dev->priv;
- 
-+	if (hr_dev->pci_dev->revision == 0x21)
-+		hns_roce_function_clear(hr_dev);
-+
- 	hns_roce_free_link_table(hr_dev, &priv->tpq);
- 	hns_roce_free_link_table(hr_dev, &priv->tsq);
- }
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index bce21fd..478f5a5 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -241,6 +241,7 @@ enum hns_roce_opcode_type {
- 	HNS_ROCE_OPC_POST_MB				= 0x8504,
- 	HNS_ROCE_OPC_QUERY_MB_ST			= 0x8505,
- 	HNS_ROCE_OPC_CFG_BT_ATTR			= 0x8506,
-+	HNS_ROCE_OPC_FUNC_CLEAR				= 0x8508,
- 	HNS_ROCE_OPC_CLR_SCCC				= 0x8509,
- 	HNS_ROCE_OPC_QUERY_SCCC				= 0x850a,
- 	HNS_ROCE_OPC_RESET_SCCC				= 0x850b,
-@@ -1230,6 +1231,22 @@ struct hns_roce_query_fw_info {
- 	__le32 rsv[5];
- };
- 
-+struct hns_roce_func_clear {
-+	__le32 rst_funcid_en;
-+	__le32 func_done;
-+	__le32 rsv[4];
-+};
-+
-+#define FUNC_CLEAR_RST_FUN_DONE_S 0
-+/* Each physical function manages up to 248 virtual functions；
-+ * it takes up to 100ms for each function to execute clear；
-+ * if an abnormal reset occurs, it is executed twice at most;
-+ * so it takes up to 249 * 2 * 100ms.
-+ */
-+#define HNS_ROCE_V2_FUNC_CLEAR_TIMEOUT_MSECS	(249 * 2 * 100)
-+#define HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_INTERVAL	40
-+#define HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT	20
-+
- struct hns_roce_cfg_llm_a {
- 	__le32 base_addr_l;
- 	__le32 base_addr_h;
--- 
-1.9.1
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
