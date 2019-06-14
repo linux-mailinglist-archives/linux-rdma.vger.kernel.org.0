@@ -2,90 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC096450E6
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 02:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B3745118
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 03:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727381AbfFNArE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jun 2019 20:47:04 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:44166 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbfFNArE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 20:47:04 -0400
-Received: by mail-qk1-f193.google.com with SMTP id p144so604484qke.11
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 17:47:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HtqvQYxioHMeLm/iJCQkrb9XOVms7ULSO8Ju2Fow8+4=;
-        b=T/fvljVc8i8gx5dgQSJh5uLpoLyCcxMNgfp06miIhhfMVEFOMjJaBdvzkOBsjs2fCz
-         oyZUeQCyKmlImPyEIh/ZO+R46wgf+wg0BiQw5QUgfEGxhdivSAEDgTgmAeidPKXocwbm
-         i8hD91eyDr3OJWN5YGuDlYzi7YAEUovdrRizIqB1/E1DFPet6p7nutOZKIpHh0dHQut/
-         Q1VGz0rtXYtk3L0PsbuQVZ6DFf4Qh5mTXyd5XTlqWP/W4UOveFJQK8ki+IQsqyPaKX4C
-         i/OXF6bmGHhP62bJGOdeYZ6jCRj7d5Yhf8KKt1qGdNWL/YoHGDNNIwKyoekHkty5GgdW
-         1jng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HtqvQYxioHMeLm/iJCQkrb9XOVms7ULSO8Ju2Fow8+4=;
-        b=B/hVco4mpyR8reQNXUEkt9NQ2eFKMmkf5XfeQAtzrfR5iCnL5dsyTfp3fEz9fZw3AJ
-         W2f9qIsFLz1pDQfhYsA+HCN0RvQgPsmQ5kXANeYcoiLHdHGiv04p2FH8RWoHSJGF55B7
-         i5VvSLiuxFY3eeqGuGa4mIbOOTWLLP4k4H1JWI6DvvNGaIPHm3i+1L5mjfw57/c0Eg/c
-         LXq5KdyYeUFjkneRKIFxkJswF7M1g9GGgu3yGD2/VaEFzeFovZZ8ms8dtFX1KW1Gv/fM
-         N5xZah88TKg7XcKwI1GqhCwNcIRkvvCrb/08ywR1+L0lgpjtd46uBYHTUtv4HTpJKBCR
-         J9/w==
-X-Gm-Message-State: APjAAAXYj6B0p1SGqA2bhqEDekQDnn7VZL+c3iXBjk6JIo6pon7IvfC8
-        710K4evWTBmPjqR2rsft/M2QogBLROdSrA==
-X-Google-Smtp-Source: APXvYqxG20RdacrLk+Tqh5DUn2uBLKVUw5Ze+3GCQpaiAzgxKNskFCNjQ8RtV5ablwKS6mRswp6h3g==
-X-Received: by 2002:ae9:c30e:: with SMTP id n14mr67771672qkg.220.1560473223226;
-        Thu, 13 Jun 2019 17:47:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id r186sm700104qkb.9.2019.06.13.17.47.02
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Jun 2019 17:47:02 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hbaMw-0005QD-EM; Thu, 13 Jun 2019 21:47:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH] RDMA/odp: Do not leak dma maps when working with huge pages
-Date:   Thu, 13 Jun 2019 21:46:45 -0300
-Message-Id: <20190614004644.20767-1-jgg@ziepe.ca>
-X-Mailer: git-send-email 2.21.0
+        id S1726252AbfFNBRL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jun 2019 21:17:11 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:58108 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725616AbfFNBRL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Jun 2019 21:17:11 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 46B4927CE27C36313A0D;
+        Fri, 14 Jun 2019 09:17:09 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.439.0; Fri, 14 Jun 2019
+ 09:16:58 +0800
+From:   oulijun <oulijun@huawei.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Parav Pandit <pandit.parav@gmail.com>
+CC:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: =?UTF-8?Q?=e3=80=90A_question_about_kernel_verbs_API=e3=80=91?=
+Message-ID: <8e80779d-7c1f-4644-3fa7-6fca24734eb8@huawei.com>
+Date:   Fri, 14 Jun 2019 09:16:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+Hi£¬ Jason Gunthorpe & Leon Romanovsky& Parav Pandit
+   Recently when I was learning kernel ofed code, I found an interesting thing about verbs, the implementation rely on
+roce driver,  taking ib_dereg_mr for example.
 
-The ib_dma_unmap_page() must match the length of the ib_dma_map_page(),
-which is based on odp_shift. Otherwise iommu resources under this API
-will not be properly freed.
+When the driver returns error, the reference count of rdma resource(pd, mr, etc.) won't be decreased. I worried that it
+will cause a memory leak.
 
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
----
- drivers/infiniband/core/umem_odp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+int ib_dereg_mr(struct ib_mr *mr)
+{
+	struct ib_pd *pd = mr->pd;
+	struct ib_dm *dm = mr->dm;
+	int ret;
 
-diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-index 9001cc10770a24..bcfa5c904a4bbf 100644
---- a/drivers/infiniband/core/umem_odp.c
-+++ b/drivers/infiniband/core/umem_odp.c
-@@ -726,7 +726,8 @@ void ib_umem_odp_unmap_dma_pages(struct ib_umem_odp *umem_odp, u64 virt,
- 
- 			WARN_ON(!dma_addr);
- 
--			ib_dma_unmap_page(dev, dma_addr, PAGE_SIZE,
-+			ib_dma_unmap_page(dev, dma_addr,
-+					  BIT(umem_odp->page_shift),
- 					  DMA_BIDIRECTIONAL);
- 			if (dma & ODP_WRITE_ALLOWED_BIT) {
- 				struct page *head_page = compound_head(page);
--- 
-2.21.0
+	rdma_restrack_del(&mr->res);
+	ret = mr->device->ops.dereg_mr(mr);
+	if (!ret) {
+		atomic_dec(&pd->usecnt);
+		if (dm)
+			atomic_dec(&dm->usecnt);
+	}
+
+	return ret;
+}
+
+and it is even worse in ib_destroy_qp, rdma_put_gid_attr is not called, so that the net_device will be hold all the time, and caused the
+pcie remove scenario hanging.
+
+The following code is:
+int ib_destroy_qp(struct ib_qp *qp)
+{
+	const struct ib_gid_attr *alt_path_sgid_attr = qp->alt_path_sgid_attr;
+	const struct ib_gid_attr *av_sgid_attr = qp->av_sgid_attr;
+	struct ib_pd *pd;
+	struct ib_cq *scq, *rcq;
+	struct ib_srq *srq;
+	struct ib_rwq_ind_table *ind_tbl;
+	struct ib_qp_security *sec;
+	int ret;
+
+	WARN_ON_ONCE(qp->mrs_used > 0);
+
+	if (atomic_read(&qp->usecnt))
+		return -EBUSY;
+
+	if (qp->real_qp != qp)
+		return __ib_destroy_shared_qp(qp);
+
+	pd   = qp->pd;
+	scq  = qp->send_cq;
+	rcq  = qp->recv_cq;
+	srq  = qp->srq;
+	ind_tbl = qp->rwq_ind_tbl;
+	sec  = qp->qp_sec;
+	if (sec)
+		ib_destroy_qp_security_begin(sec);
+
+	if (!qp->uobject)
+		rdma_rw_cleanup_mrs(qp);
+
+	rdma_restrack_del(&qp->res);
+	ret = qp->device->ops.destroy_qp(qp);
+	if (!ret) {
+		if (alt_path_sgid_attr)
+			rdma_put_gid_attr(alt_path_sgid_attr);
+		if (av_sgid_attr)
+			rdma_put_gid_attr(av_sgid_attr);
+		if (pd)
+			atomic_dec(&pd->usecnt);
+		if (scq)
+			atomic_dec(&scq->usecnt);
+		if (rcq)
+			atomic_dec(&rcq->usecnt);
+		if (srq)
+			atomic_dec(&srq->usecnt);
+		if (ind_tbl)
+			atomic_dec(&ind_tbl->usecnt);
+		if (sec)
+			ib_destroy_qp_security_end(sec);
+	} else {
+		if (sec)
+			ib_destroy_qp_security_abort(sec);
+	}
+
+	return ret;
+}
+
+
+My question is what the condieration about the  resource destroy mechanism when roce driver returns error?
+Or I understand it wrong?
+
+Thanks
+Lijun Ou
 
