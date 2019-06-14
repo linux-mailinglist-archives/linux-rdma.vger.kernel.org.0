@@ -2,57 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D697450C9
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 02:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 291D2450CA
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 02:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbfFNAiY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726959AbfFNAiY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 13 Jun 2019 20:38:24 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:44936 "EHLO
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:36137 "EHLO
         mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbfFNAiY (ORCPT
+        with ESMTP id S1726294AbfFNAiY (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jun 2019 20:38:24 -0400
-Received: by mail-qt1-f194.google.com with SMTP id x47so556107qtk.11
+Received: by mail-qt1-f194.google.com with SMTP id p15so609382qtl.3
         for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2019 17:38:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=F6kjrb260YIA5lboaMgrkZEAfd6w7ZU/fYDzMn1tPFU=;
-        b=d5egUJNuVcz68GaM2fcmbLcvUuxivn5s528xTvnOLcjSv+S49k2p65Q+Cyz0TaFfxF
-         fQxREClUzr69X0HdKuskK6hKO3Z8Yi5X8CX+KD6cvEe9XkV+UEYr8r0j5LazVLhvmvod
-         H6fakEj/g/H847hCYnuDD9NOe6isSAbvba/mqBdIi0DrunGtlTrsBH6ZADnH8UL6k4CT
-         YMrqk8vfHSrayPWx8HA7fHoSi2pyr6gGgVjbLYTPl6qqqgrukSwQHQxAY8P2rp6H9Ssh
-         Vsk/aB/4L6//cY/5+29wPr4QI/48GKKLgo4sKBzH2MoeDeXvyIhGKWQ6KSzXRgvIk4Yn
-         opMA==
+        bh=w5+MuWMmqvvi4WZWb5MbkQ/yvubQXuul1IxMKkOhuYI=;
+        b=Z3xhuFKdLX+CVud4yh3kRqXUKUwaHRPlFKfCEYLpHk+NyxVxQ3OIwMBzjDtD+1h7Oj
+         H9dxAhsUU9n82AbKOWC7jsuE8a529yrw4Lx22JyF0F7h8BPkTcwMiQC389dzXN+zOIB1
+         X87o9/+8ptx/jP6otRyuVBGItrY9XMWh0WScgX3UUonxcFclHGrvkxta06fMfBPHTV1M
+         rh+MING+VSrqWbMyMpwsLZDcNS0Vl8CLG2720pc7V1Y07bbDBbvrjtmiKaE2k47s4ExI
+         L/t46xxzqcIEdXN2/6YAT30PHF1Adi//rRHKmRP4ULle7d1lX57URPX6euTMvsH/kidk
+         TbDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=F6kjrb260YIA5lboaMgrkZEAfd6w7ZU/fYDzMn1tPFU=;
-        b=iRZRGcvlUTCM/ZKAzr0C7w3UW7u2CaJKGKO0DT4bemVnBl/PkqwuCB90OucPPVTshR
-         orbW2B5TCDEu1BzrWc7xbOmRQ3aYhccO2DFgjfHMd71K/D9q/RK+JK+CsTcmkhxg7Rly
-         sIfmwFMNRb+dil3GKygHwOBBAt3LSp+/XdDljbGo4qxb0MDzj9GF9Udi0rNqvnpSFWiv
-         5+N9y1ptwFJDCLUW46Y48julapSeZsE5C4Qv19IgJf/DkGWIolYQC/RzS0P2/Nd+0F4G
-         aPsyvpC2q88IyvJAVBDxdHHJFwrEXdLwpbqdJK6PtvDiDQ/BvDuHsnHWYT/rxixBNE7B
-         H9fg==
-X-Gm-Message-State: APjAAAW4Jd9+BfUUOblwVIK9ROGJGPbG5gh43O8R8Eppv+rXFvIU7XNu
-        YV6X2DHMBH6j5zY+/7AxIoFSQpU0SIlopA==
-X-Google-Smtp-Source: APXvYqx3lTkZPYjIQ1BqSU/HFKJon4gzF8o7gKOPc8YJOTVdYsd6B7uqw34kPtM6k4kDHCX9P+DS1Q==
-X-Received: by 2002:aed:21c6:: with SMTP id m6mr15134780qtc.173.1560472702662;
-        Thu, 13 Jun 2019 17:38:22 -0700 (PDT)
+        bh=w5+MuWMmqvvi4WZWb5MbkQ/yvubQXuul1IxMKkOhuYI=;
+        b=WKr2SnbzlEjeNSt9XWUrQ0lq9dpfIhaw9u+wXjHTJL+Mx19flApI1EEUMLqMXDLkE8
+         qZSbLyLx6kUwZ/jsdhr5bpQ092ezpcgZj8UyuVg9Psl9s+5CvT3WXUevobw6CSzgjD2D
+         biHa2R9ay438E/EqlFkS/IGErla4iblpwqWrCMGuymy6SNF/xwVdaxxgbDx2FWaRSPO9
+         MZYl9D5HTEWJnuiLlduiUU5vVa0DC+PsAyRDwBWGUJv/z/06pKMRMEgkpU1mIrFz7/2C
+         2Md14UZnkXRNKaX+7wocygn0cy1Fo6PWUAeT6OlD8gjkw9YmGYPHNqbD40fLZi84E7/0
+         LXKg==
+X-Gm-Message-State: APjAAAWf5budOkD4S4Zq1OYj/4Vdv4TSr3M+ZxDQDl7PRjEBSq4oNUi4
+        nfUBZyk+icn2498L3ObwakeA89+4rrZR8g==
+X-Google-Smtp-Source: APXvYqwgrIC3SpVW/vYMuf/oI+ZLDoADLg//8IzvFuEuH27lQvdREkg5+lj0odcMqsnZxn0gwCbNxQ==
+X-Received: by 2002:a0c:8927:: with SMTP id 36mr6091324qvp.131.1560472703036;
+        Thu, 13 Jun 2019 17:38:23 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id j141sm864608qke.28.2019.06.13.17.38.21
+        by smtp.gmail.com with ESMTPSA id e66sm539194qtb.55.2019.06.13.17.38.21
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Jun 2019 17:38:21 -0700 (PDT)
+        Thu, 13 Jun 2019 17:38:22 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hbaEX-0005E6-2d; Thu, 13 Jun 2019 21:38:21 -0300
+        id 1hbaEX-0005EC-3p; Thu, 13 Jun 2019 21:38:21 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v2 2/3] RDMA: Add NLDEV_GET_CHARDEV to allow char dev discovery and autoload
-Date:   Thu, 13 Jun 2019 21:38:18 -0300
-Message-Id: <20190614003819.19974-3-jgg@ziepe.ca>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH v2 3/3] RDMA: Report available cdevs through RDMA_NLDEV_CMD_GET_CHARDEV
+Date:   Thu, 13 Jun 2019 21:38:19 -0300
+Message-Id: <20190614003819.19974-4-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190614003819.19974-1-jgg@ziepe.ca>
 References: <20190614003819.19974-1-jgg@ziepe.ca>
@@ -65,334 +66,304 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-Allow userspace to issue a netlink query against the ib_device for
-something like "uverbs" and get back the char dev name, inode major/minor,
-and interface ABI information for "uverbs0".
+Update the struct ib_client for all modules exporting cdevs related to the
+ibdevice to also implement RDMA_NLDEV_CMD_GET_CHARDEV. All cdevs are now
+autoloadable and discoverable by userspace over netlink instead of relying
+on sysfs.
 
-Since we are now in netlink this can also trigger a module autoload to
-make the uverbs device come into existence.
-
-Largely this will let us replace searching and reading inside sysfs to
-setup devices, and provides an alternative (using driver_id) to device
-name based provider binding for things like rxe.
+uverbs also exposes the DRIVER_ID for drivers that are able to support
+driver id binding in rdma-core.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/core_priv.h |  9 +++
- drivers/infiniband/core/device.c    | 98 +++++++++++++++++++++++++++++
- drivers/infiniband/core/nldev.c     | 91 +++++++++++++++++++++++++++
- include/rdma/ib_verbs.h             |  4 ++
- include/rdma/rdma_netlink.h         |  2 +
- include/uapi/rdma/rdma_netlink.h    | 14 +++++
- 6 files changed, 218 insertions(+)
+ drivers/infiniband/core/device.c             |  3 ++
+ drivers/infiniband/core/ucma.c               | 23 +++++++++
+ drivers/infiniband/core/user_mad.c           | 51 ++++++++++++++++++--
+ drivers/infiniband/core/uverbs_main.c        | 32 +++++++++++-
+ drivers/infiniband/hw/cxgb3/iwch_provider.c  |  1 +
+ drivers/infiniband/hw/hns/hns_roce_main.c    |  1 +
+ drivers/infiniband/hw/mthca/mthca_provider.c |  1 +
+ include/rdma/ib_verbs.h                      |  1 +
+ include/uapi/rdma/rdma_netlink.h             |  1 +
+ 9 files changed, 109 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index ff40a450b5d28e..a953c2fa2e7811 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -88,6 +88,15 @@ typedef int (*nldev_callback)(struct ib_device *device,
- int ib_enum_all_devs(nldev_callback nldev_cb, struct sk_buff *skb,
- 		     struct netlink_callback *cb);
- 
-+struct ib_client_nl_info {
-+	struct sk_buff *nl_msg;
-+	struct device *cdev;
-+	unsigned int port;
-+	u64 abi;
-+};
-+int ib_get_client_nl_info(struct ib_device *ibdev, const char *client_name,
-+			  struct ib_client_nl_info *res);
-+
- enum ib_cache_gid_default_mode {
- 	IB_CACHE_GID_DEFAULT_MODE_SET,
- 	IB_CACHE_GID_DEFAULT_MODE_DELETE
 diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index abb169f31d0fe3..7db8566cdb8904 100644
+index 7db8566cdb8904..1de4ae5d5e0ef6 100644
 --- a/drivers/infiniband/core/device.c
 +++ b/drivers/infiniband/core/device.c
-@@ -1726,6 +1726,104 @@ void ib_unregister_client(struct ib_client *client)
- }
- EXPORT_SYMBOL(ib_unregister_client);
+@@ -2428,6 +2428,9 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+ 	if (ops->uverbs_abi_ver)
+ 		dev_ops->uverbs_abi_ver = ops->uverbs_abi_ver;
  
-+static int __ib_get_global_client_nl_info(const char *client_name,
-+					  struct ib_client_nl_info *res)
++	dev_ops->uverbs_no_driver_id_binding |=
++		ops->uverbs_no_driver_id_binding;
++
+ 	SET_DEVICE_OP(dev_ops, add_gid);
+ 	SET_DEVICE_OP(dev_ops, advise_mr);
+ 	SET_DEVICE_OP(dev_ops, alloc_dm);
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index 39823c842202db..0274e9b704be59 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -52,6 +52,8 @@
+ #include <rdma/rdma_cm_ib.h>
+ #include <rdma/ib_addr.h>
+ #include <rdma/ib.h>
++#include <rdma/rdma_netlink.h>
++#include "core_priv.h"
+ 
+ MODULE_AUTHOR("Sean Hefty");
+ MODULE_DESCRIPTION("RDMA Userspace Connection Manager Access");
+@@ -1788,6 +1790,19 @@ static struct miscdevice ucma_misc = {
+ 	.fops		= &ucma_fops,
+ };
+ 
++static int ucma_get_global_nl_info(struct ib_client_nl_info *res)
 +{
-+	struct ib_client *client;
-+	unsigned long index;
-+	int ret = -ENOENT;
-+
-+	down_read(&clients_rwsem);
-+	xa_for_each_marked (&clients, index, client, CLIENT_REGISTERED) {
-+		if (strcmp(client->name, client_name) != 0)
-+			continue;
-+		if (!client->get_global_nl_info) {
-+			ret = -EOPNOTSUPP;
-+			break;
-+		}
-+		ret = client->get_global_nl_info(res);
-+		if (WARN_ON(ret == -ENOENT))
-+			ret = -EINVAL;
-+		if (!ret && res->cdev)
-+			get_device(res->cdev);
-+		break;
-+	}
-+	up_read(&clients_rwsem);
-+	return ret;
-+}
-+
-+static int __ib_get_client_nl_info(struct ib_device *ibdev,
-+				   const char *client_name,
-+				   struct ib_client_nl_info *res)
-+{
-+	unsigned long index;
-+	void *client_data;
-+	int ret = -ENOENT;
-+
-+	down_read(&ibdev->client_data_rwsem);
-+	xan_for_each_marked (&ibdev->client_data, index, client_data,
-+			     CLIENT_DATA_REGISTERED) {
-+		struct ib_client *client = xa_load(&clients, index);
-+
-+		if (!client || strcmp(client->name, client_name) != 0)
-+			continue;
-+		if (!client->get_nl_info) {
-+			ret = -EOPNOTSUPP;
-+			break;
-+		}
-+		ret = client->get_nl_info(ibdev, client_data, res);
-+		if (WARN_ON(ret == -ENOENT))
-+			ret = -EINVAL;
-+
-+		/*
-+		 * The cdev is guaranteed valid as long as we are inside the
-+		 * client_data_rwsem as remove_one can't be called. Keep it
-+		 * valid for the caller.
-+		 */
-+		if (!ret && res->cdev)
-+			get_device(res->cdev);
-+		break;
-+	}
-+	up_read(&ibdev->client_data_rwsem);
-+
-+	return ret;
-+}
-+
-+/**
-+ * ib_get_client_nl_info - Fetch the nl_info from a client
-+ * @device - IB device
-+ * @client_name - Name of the client
-+ * @res - Result of the query
-+ */
-+int ib_get_client_nl_info(struct ib_device *ibdev, const char *client_name,
-+			  struct ib_client_nl_info *res)
-+{
-+	int ret;
-+
-+	if (ibdev)
-+		ret = __ib_get_client_nl_info(ibdev, client_name, res);
-+	else
-+		ret = __ib_get_global_client_nl_info(client_name, res);
-+#ifdef CONFIG_MODULES
-+	if (ret == -ENOENT) {
-+		request_module("rdma-client-%s", client_name);
-+		if (ibdev)
-+			ret = __ib_get_client_nl_info(ibdev, client_name, res);
-+		else
-+			ret = __ib_get_global_client_nl_info(client_name, res);
-+	}
-+#endif
-+	if (ret) {
-+		if (ret == -ENOENT)
-+			return -EOPNOTSUPP;
-+		return ret;
-+	}
-+
-+	if (WARN_ON(!res->cdev))
-+		return -EINVAL;
++	res->abi = RDMA_USER_CM_ABI_VERSION;
++	res->cdev = ucma_misc.this_device;
 +	return 0;
 +}
 +
- /**
-  * ib_set_client_data - Set IB client context
-  * @device:Device to set context for
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 69188cbbd99bd5..55eccea628e99f 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -120,6 +120,9 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_DEV_PROTOCOL]		= { .type = NLA_NUL_STRING,
- 				    .len = RDMA_NLDEV_ATTR_ENTRY_STRLEN },
- 	[RDMA_NLDEV_NET_NS_FD]			= { .type = NLA_U32 },
-+	[RDMA_NLDEV_ATTR_CHARDEV_TYPE]		= { .type = NLA_NUL_STRING,
-+				    .len = 128 },
-+	[RDMA_NLDEV_ATTR_PORT_INDEX]		= { .type = NLA_U32 },
++static struct ib_client rdma_cma_client = {
++	.name = "rdma_cm",
++	.get_global_nl_info = ucma_get_global_nl_info,
++};
++MODULE_ALIAS_RDMA_CLIENT("rdma_cm");
++
+ static ssize_t show_abi_version(struct device *dev,
+ 				struct device_attribute *attr,
+ 				char *buf)
+@@ -1816,7 +1831,14 @@ static int __init ucma_init(void)
+ 		ret = -ENOMEM;
+ 		goto err2;
+ 	}
++
++	ret = ib_register_client(&rdma_cma_client);
++	if (ret)
++		goto err3;
++
+ 	return 0;
++err3:
++	unregister_net_sysctl_table(ucma_ctl_table_hdr);
+ err2:
+ 	device_remove_file(ucma_misc.this_device, &dev_attr_abi_version);
+ err1:
+@@ -1826,6 +1848,7 @@ static int __init ucma_init(void)
+ 
+ static void __exit ucma_cleanup(void)
+ {
++	ib_unregister_client(&rdma_cma_client);
+ 	unregister_net_sysctl_table(ucma_ctl_table_hdr);
+ 	device_remove_file(ucma_misc.this_device, &dev_attr_abi_version);
+ 	misc_deregister(&ucma_misc);
+diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
+index 671f07ba1fad66..547090b41cfbb7 100644
+--- a/drivers/infiniband/core/user_mad.c
++++ b/drivers/infiniband/core/user_mad.c
+@@ -54,6 +54,7 @@
+ 
+ #include <rdma/ib_mad.h>
+ #include <rdma/ib_user_mad.h>
++#include <rdma/rdma_netlink.h>
+ 
+ #include "core_priv.h"
+ 
+@@ -1124,11 +1125,48 @@ static const struct file_operations umad_sm_fops = {
+ 	.llseek	 = no_llseek,
  };
  
- static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
-@@ -1347,6 +1350,91 @@ static int nldev_dellink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	return 0;
- }
- 
-+static int nldev_get_chardev(struct sk_buff *skb, struct nlmsghdr *nlh,
-+			     struct netlink_ext_ack *extack)
++static int ib_umad_get_nl_info(struct ib_device *ibdev, void *client_data,
++			       struct ib_client_nl_info *res)
 +{
-+	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
-+	char client_name[IB_DEVICE_NAME_MAX];
-+	struct ib_client_nl_info data = {};
-+	struct ib_device *ibdev = NULL;
-+	struct sk_buff *msg;
-+	u32 index;
-+	int err;
++	struct ib_umad_device *umad_dev = client_data;
 +
-+	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1, nldev_policy,
-+			  extack);
-+	if (err || !tb[RDMA_NLDEV_ATTR_CHARDEV_TYPE])
++	if (!rdma_is_port_valid(ibdev, res->port))
 +		return -EINVAL;
 +
-+	if (nla_strlcpy(client_name, tb[RDMA_NLDEV_ATTR_CHARDEV_TYPE],
-+			sizeof(client_name)) >= sizeof(client_name))
-+		return -EINVAL;
++	res->abi = IB_USER_MAD_ABI_VERSION;
++	res->cdev = &umad_dev->ports[res->port - rdma_start_port(ibdev)].dev;
 +
-+	if (tb[RDMA_NLDEV_ATTR_DEV_INDEX]) {
-+		index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
-+		ibdev = ib_device_get_by_index(sock_net(skb->sk), index);
-+		if (!ibdev)
-+			return -EINVAL;
-+
-+		if (tb[RDMA_NLDEV_ATTR_PORT_INDEX]) {
-+			data.port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
-+			if (!rdma_is_port_valid(ibdev, data.port)) {
-+				err = -EINVAL;
-+				goto out_put;
-+			}
-+		} else {
-+			data.port = -1;
-+		}
-+	} else if (tb[RDMA_NLDEV_ATTR_PORT_INDEX]) {
-+		return -EINVAL;
-+	}
-+
-+	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
-+	if (!msg) {
-+		err = -ENOMEM;
-+		goto out_put;
-+	}
-+	nlh = nlmsg_put(msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
-+			RDMA_NL_GET_TYPE(RDMA_NL_NLDEV,
-+					 RDMA_NLDEV_CMD_GET_CHARDEV),
-+			0, 0);
-+
-+	data.nl_msg = msg;
-+	err = ib_get_client_nl_info(ibdev, client_name, &data);
-+	if (err)
-+		goto out_nlmsg;
-+
-+	err = nla_put_u64_64bit(msg, RDMA_NLDEV_ATTR_CHARDEV,
-+				huge_encode_dev(data.cdev->devt),
-+				RDMA_NLDEV_ATTR_PAD);
-+	if (err)
-+		goto out_data;
-+	err = nla_put_u64_64bit(msg, RDMA_NLDEV_ATTR_CHARDEV_ABI, data.abi,
-+				RDMA_NLDEV_ATTR_PAD);
-+	if (err)
-+		goto out_data;
-+	if (nla_put_string(msg, RDMA_NLDEV_ATTR_CHARDEV_NAME,
-+			   dev_name(data.cdev))) {
-+		err = -EMSGSIZE;
-+		goto out_data;
-+	}
-+
-+	nlmsg_end(msg, nlh);
-+	put_device(data.cdev);
-+	if (ibdev)
-+		ib_device_put(ibdev);
-+	return rdma_nl_unicast(msg, NETLINK_CB(skb).portid);
-+
-+out_data:
-+	put_device(data.cdev);
-+out_nlmsg:
-+	nlmsg_free(msg);
-+out_put:
-+	if (ibdev)
-+		ib_device_put(ibdev);
-+	return err;
++	return 0;
 +}
 +
- static int nldev_sys_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 			      struct netlink_ext_ack *extack)
+ static struct ib_client umad_client = {
+ 	.name   = "umad",
+ 	.add    = ib_umad_add_one,
+-	.remove = ib_umad_remove_one
++	.remove = ib_umad_remove_one,
++	.get_nl_info = ib_umad_get_nl_info,
+ };
++MODULE_ALIAS_RDMA_CLIENT("umad");
++
++static int ib_issm_get_nl_info(struct ib_device *ibdev, void *client_data,
++			       struct ib_client_nl_info *res)
++{
++	struct ib_umad_device *umad_dev =
++		ib_get_client_data(ibdev, &umad_client);
++
++	if (!rdma_is_port_valid(ibdev, res->port))
++		return -EINVAL;
++
++	res->abi = IB_USER_MAD_ABI_VERSION;
++	res->cdev = &umad_dev->ports[res->port - rdma_start_port(ibdev)].sm_dev;
++
++	return 0;
++}
++
++static struct ib_client issm_client = {
++	.name = "issm",
++	.get_nl_info = ib_issm_get_nl_info,
++};
++MODULE_ALIAS_RDMA_CLIENT("issm");
+ 
+ static ssize_t ibdev_show(struct device *dev, struct device_attribute *attr,
+ 			  char *buf)
+@@ -1387,13 +1425,17 @@ static int __init ib_umad_init(void)
+ 	}
+ 
+ 	ret = ib_register_client(&umad_client);
+-	if (ret) {
+-		pr_err("couldn't register ib_umad client\n");
++	if (ret)
+ 		goto out_class;
+-	}
++
++	ret = ib_register_client(&issm_client);
++	if (ret)
++		goto out_client;
+ 
+ 	return 0;
+ 
++out_client:
++	ib_unregister_client(&umad_client);
+ out_class:
+ 	class_unregister(&umad_class);
+ 
+@@ -1411,6 +1453,7 @@ static int __init ib_umad_init(void)
+ 
+ static void __exit ib_umad_cleanup(void)
  {
-@@ -1404,6 +1492,9 @@ static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
- 		.doit = nldev_get_doit,
- 		.dump = nldev_get_dumpit,
- 	},
-+	[RDMA_NLDEV_CMD_GET_CHARDEV] = {
-+		.doit = nldev_get_chardev,
-+	},
- 	[RDMA_NLDEV_CMD_SET] = {
- 		.doit = nldev_set_doit,
- 		.flags = RDMA_NL_ADMIN_PERM,
++	ib_unregister_client(&issm_client);
+ 	ib_unregister_client(&umad_client);
+ 	class_unregister(&umad_class);
+ 	unregister_chrdev_region(base_umad_dev,
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 870b3dd35aac63..11c13c1381cf5c 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -51,6 +51,7 @@
+ 
+ #include <rdma/ib.h>
+ #include <rdma/uverbs_std_types.h>
++#include <rdma/rdma_netlink.h>
+ 
+ #include "uverbs.h"
+ #include "core_priv.h"
+@@ -1148,12 +1149,41 @@ static const struct file_operations uverbs_mmap_fops = {
+ 	.compat_ioctl = ib_uverbs_ioctl,
+ };
+ 
++static int ib_uverbs_get_nl_info(struct ib_device *ibdev, void *client_data,
++				 struct ib_client_nl_info *res)
++{
++	struct ib_uverbs_device *uverbs_dev = client_data;
++	int ret;
++
++	if (res->port != -1)
++		return -EINVAL;
++
++	res->abi = ibdev->ops.uverbs_abi_ver;
++	res->cdev = &uverbs_dev->dev;
++
++	/*
++	 * To support DRIVER_ID binding in userspace some of the driver need
++	 * upgrading to expose their PCI dependent revision information
++	 * through get_context instead of relying on modalias matching. When
++	 * the drivers are fixed they can drop this flag.
++	 */
++	if (!ibdev->ops.uverbs_no_driver_id_binding) {
++		ret = nla_put_u32(res->nl_msg, RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID,
++				  ibdev->ops.driver_id);
++		if (ret)
++			return ret;
++	}
++	return 0;
++}
++
+ static struct ib_client uverbs_client = {
+ 	.name   = "uverbs",
+ 	.no_kverbs_req = true,
+ 	.add    = ib_uverbs_add_one,
+-	.remove = ib_uverbs_remove_one
++	.remove = ib_uverbs_remove_one,
++	.get_nl_info = ib_uverbs_get_nl_info,
+ };
++MODULE_ALIAS_RDMA_CLIENT("uverbs");
+ 
+ static ssize_t ibdev_show(struct device *device, struct device_attribute *attr,
+ 			  char *buf)
+diff --git a/drivers/infiniband/hw/cxgb3/iwch_provider.c b/drivers/infiniband/hw/cxgb3/iwch_provider.c
+index acba96f289cc06..810fa96af2e9fd 100644
+--- a/drivers/infiniband/hw/cxgb3/iwch_provider.c
++++ b/drivers/infiniband/hw/cxgb3/iwch_provider.c
+@@ -1230,6 +1230,7 @@ static const struct ib_device_ops iwch_dev_ops = {
+ 	.owner = THIS_MODULE,
+ 	.driver_id = RDMA_DRIVER_CXGB3,
+ 	.uverbs_abi_ver = IWCH_UVERBS_ABI_VERSION,
++	.uverbs_no_driver_id_binding = 1,
+ 
+ 	.alloc_hw_stats	= iwch_alloc_stats,
+ 	.alloc_mr = iwch_alloc_mr,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index 3e45b119b0eba7..c0e819ed8c9be9 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -417,6 +417,7 @@ static const struct ib_device_ops hns_roce_dev_ops = {
+ 	.owner = THIS_MODULE,
+ 	.driver_id = RDMA_DRIVER_HNS,
+ 	.uverbs_abi_ver = 1,
++	.uverbs_no_driver_id_binding = 1,
+ 
+ 	.add_gid = hns_roce_add_gid,
+ 	.alloc_pd = hns_roce_alloc_pd,
+diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
+index efd4e3d13ae22c..d97124bee703d7 100644
+--- a/drivers/infiniband/hw/mthca/mthca_provider.c
++++ b/drivers/infiniband/hw/mthca/mthca_provider.c
+@@ -1147,6 +1147,7 @@ static const struct ib_device_ops mthca_dev_ops = {
+ 	.owner = THIS_MODULE,
+ 	.driver_id = RDMA_DRIVER_MTHCA,
+ 	.uverbs_abi_ver = MTHCA_UVERBS_ABI_VERSION,
++	.uverbs_no_driver_id_binding = 1,
+ 
+ 	.alloc_pd = mthca_alloc_pd,
+ 	.alloc_ucontext = mthca_alloc_ucontext,
 diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 973514ea17a79b..a1265e9ce2d11f 100644
+index a1265e9ce2d11f..6f09fcc21d7a41 100644
 --- a/include/rdma/ib_verbs.h
 +++ b/include/rdma/ib_verbs.h
-@@ -2684,10 +2684,14 @@ struct ib_device {
- 	u32 iw_driver_flags;
- };
+@@ -2321,6 +2321,7 @@ struct ib_device_ops {
+ 	struct module *owner;
+ 	enum rdma_driver_id driver_id;
+ 	u32 uverbs_abi_ver;
++	unsigned int uverbs_no_driver_id_binding:1;
  
-+struct ib_client_nl_info;
- struct ib_client {
- 	const char *name;
- 	void (*add)   (struct ib_device *);
- 	void (*remove)(struct ib_device *, void *client_data);
-+	int (*get_nl_info)(struct ib_device *ibdev, void *client_data,
-+			   struct ib_client_nl_info *res);
-+	int (*get_global_nl_info)(struct ib_client_nl_info *res);
- 
- 	/* Returns the net_dev belonging to this ib_client and matching the
- 	 * given parameters.
-diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
-index 10732ab31ba2f9..c7acbe08342828 100644
---- a/include/rdma/rdma_netlink.h
-+++ b/include/rdma/rdma_netlink.h
-@@ -110,4 +110,6 @@ void rdma_link_register(struct rdma_link_ops *ops);
- void rdma_link_unregister(struct rdma_link_ops *ops);
- 
- #define MODULE_ALIAS_RDMA_LINK(type) MODULE_ALIAS("rdma-link-" type)
-+#define MODULE_ALIAS_RDMA_CLIENT(type) MODULE_ALIAS("rdma-client-" type)
-+
- #endif /* _RDMA_NETLINK_H */
+ 	int (*post_send)(struct ib_qp *qp, const struct ib_send_wr *send_wr,
+ 			 const struct ib_send_wr **bad_send_wr);
 diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
-index f588e8551c6cea..9903db21a42c58 100644
+index 9903db21a42c58..b27c02185dcc19 100644
 --- a/include/uapi/rdma/rdma_netlink.h
 +++ b/include/uapi/rdma/rdma_netlink.h
-@@ -279,6 +279,8 @@ enum rdma_nldev_command {
+@@ -504,6 +504,7 @@ enum rdma_nldev_attr {
+ 	RDMA_NLDEV_ATTR_CHARDEV_NAME,		/* string */
+ 	RDMA_NLDEV_ATTR_CHARDEV_ABI,		/* u64 */
+ 	RDMA_NLDEV_ATTR_CHARDEV,		/* u64 */
++	RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID,       /* u64 */
  
- 	RDMA_NLDEV_CMD_RES_PD_GET, /* can dump */
- 
-+	RDMA_NLDEV_CMD_GET_CHARDEV,
-+
- 	RDMA_NLDEV_NUM_OPS
- };
- 
-@@ -491,6 +493,18 @@ enum rdma_nldev_attr {
- 	 */
- 	RDMA_NLDEV_NET_NS_FD,			/* u32 */
- 
-+	/*
-+	 * Information about a chardev.
-+	 * CHARDEV_TYPE is the name of the chardev ABI (ie uverbs, umad, etc)
-+	 * CHARDEV_ABI signals the ABI revision (historical)
-+	 * CHARDEV_NAME is the kernel name for the /dev/ file (no directory)
-+	 * CHARDEV is the 64 bit dev_t for the inode
-+	 */
-+	RDMA_NLDEV_ATTR_CHARDEV_TYPE,		/* string */
-+	RDMA_NLDEV_ATTR_CHARDEV_NAME,		/* string */
-+	RDMA_NLDEV_ATTR_CHARDEV_ABI,		/* u64 */
-+	RDMA_NLDEV_ATTR_CHARDEV,		/* u64 */
-+
  	/*
  	 * Always the end
- 	 */
 -- 
 2.21.0
 
