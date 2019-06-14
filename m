@@ -2,120 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B6446842
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 21:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CD4468E6
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 22:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725809AbfFNTqz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 15:46:55 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:54050 "EHLO mx1.redhat.com"
+        id S1726730AbfFNU3D (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jun 2019 16:29:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725808AbfFNTqy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Jun 2019 15:46:54 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726429AbfFNU3C (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Jun 2019 16:29:02 -0400
+Received: from sasha-vm.mshome.net (unknown [131.107.159.134])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 77BF83082134;
-        Fri, 14 Jun 2019 19:46:54 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C4A45D9D2;
-        Fri, 14 Jun 2019 19:46:53 +0000 (UTC)
-Message-ID: <ee0c017e93e28317791b7395e257801a208c7306.camel@redhat.com>
-Subject: Re: RDMA: Clean destroy CQ in drivers do not return errors
-From:   Doug Ledford <dledford@redhat.com>
-To:     Colin Ian King <colin.king@canonical.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Gal Pressman <galpress@amazon.com>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 0086921873;
+        Fri, 14 Jun 2019 20:29:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560544142;
+        bh=LI+O4mpeVa+XcNrWeBK/V2fe9YOgS5dNGYuxLgKcJlw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kv/s5JClfLMML1SSXEAfZeWBDzc8/nhKDm+QiWbUN2H7eH7EjxPqopDbQvOAvf6NS
+         cEfHCKWIjK5Xh9IsV5goscbOsnkuqPHKYMGSbxxMaelSujDAk+s1BoVT11sOLdCKS+
+         /hv/TiDWSyFpqIBXZWo0iFsR3yhCmvjldK2vIUBE=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>,
         Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        linux-rdma@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Date:   Fri, 14 Jun 2019 15:46:50 -0400
-In-Reply-To: <68d62660-902c-ca49-20fd-32e92830faa7@canonical.com>
-References: <68d62660-902c-ca49-20fd-32e92830faa7@canonical.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-oclBt3wpyL1/z9Jqf2cH"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.1 21/59] IB/rdmavt: Fix alloc_qpn() WARN_ON()
+Date:   Fri, 14 Jun 2019 16:28:05 -0400
+Message-Id: <20190614202843.26941-21-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190614202843.26941-1-sashal@kernel.org>
+References: <20190614202843.26941-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Fri, 14 Jun 2019 19:46:54 +0000 (UTC)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Mike Marciniszyn <mike.marciniszyn@intel.com>
 
---=-oclBt3wpyL1/z9Jqf2cH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+[ Upstream commit 2abae62a26a265129b364d8c1ef3be55e2c01309 ]
 
-On Fri, 2019-06-14 at 14:59 +0100, Colin Ian King wrote:
-> Hi,
->=20
-> Static analysis with Coverity reported an issue with the following
-> commit:
->=20
-> commit a52c8e2469c30cf7ac453d624aed9c168b23d1af
-> Author: Leon Romanovsky <leonro@mellanox.com>
-> Date:   Tue May 28 14:37:28 2019 +0300
->=20
->     RDMA: Clean destroy CQ in drivers do not return errors
->=20
-> In function bnxt_re_destroy_cq() contains the following:
->=20
->         if (!cq->umem)
->                 ib_umem_release(cq->umem);
+The qpn allocation logic has a WARN_ON() that intends to detect the use of
+an index that will introduce bits in the lower order bits of the QOS bits
+in the QPN.
 
-Given that the original test that was replaced was:
-	if (!IS_ERR_OR_NULL(cq->umem))
+Unfortunately, it has the following bugs:
+- it misfires when wrapping QPN allocation for non-QOS
+- it doesn't correctly detect low order QOS bits (despite the comment)
 
-we aren't really worried about a null cq, just that umem is valid.  So,
-the logic is inverted on the test (or possibly we shouldn't have
-replaced !IS_ERR_OR_NULL(cq->umem) at all).
+The WARN_ON() should not be applied to non-QOS (qos_shift == 1).
 
-But on closer inspection, the bnxt_re specific portion of this patch
-appears to have another problem in that it no longer checks the result
-of bnxt_qplib_destroy_cq() yet it does nothing to keep that function
-from failing.
+Additionally, it SHOULD test the qpn bits per the table below:
 
-Leon, can you send a followup fix?
+2 data VLs:   [qp7, qp6, qp5, qp4, qp3, qp2, qp1] ^
+              [  0,   0,   0,   0,   0,   0, sc0],  qp bit 1 always 0*
+3-4 data VLs: [qp7, qp6, qp5, qp4, qp3, qp2, qp1] ^
+              [  0,   0,   0,   0,   0, sc1, sc0], qp bits [21] always 0
+5-8 data VLs: [qp7, qp6, qp5, qp4, qp3, qp2, qp1] ^
+              [  0,   0,   0,   0, sc2, sc1, sc0] qp bits [321] always 0
 
-> Coverity detects this as a deference after null check on the null
-> pointer cq->umem:
->=20
-> "var_deref_model: Passing null pointer cq->umem to ib_umem_release,
-> which dereferences it"
->=20
-> Is the logic inverted on that null check?
->=20
-> Colin
+Fix by qualifying the warning for qos_shift > 1 and producing the correct
+mask to insure the above bits are zero without generating a superfluous
+warning.
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
-2FDD
+Fixes: 501edc42446e ("IB/rdmavt: Correct warning during QPN allocation")
+Reviewed-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/sw/rdmavt/qp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---=-oclBt3wpyL1/z9Jqf2cH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0D+aoACgkQuCajMw5X
-L92tOA//WBx64wApAfYYhQxaTRKXZLJQhiLjnObsbdbdnLBZbluvKdmWTQoWeuhz
-9AZD/okm8UQudNP94wn9wDJYTkrICHIB5rp/HDTD4h2Rvm4pqMwUwKD69C21kl3/
-b4Ggw+i9R3jRLR+jAJk+vsT8gVpUztnrDAPeqGf68dvH/Ms8se5nCP2FPTUfm0OD
-i65BNrbryB1sX1oHzkNWbf0APmPPbR1GNPlrjykwQEOFbfdsf/bJ9MUb58SnKtOP
-R2ntK1epLbIhPAYYOig4/JSdKfe/D5BS8BiXZiQeVH4COyyLiSxsCGqzVQ2Vtu71
-P3l27U6NaLiOW18XorOoc8J0GdEb+kS7zoas8blEdiJM48j0Pptp+wjiaOLwjTqZ
-4yL79btwVY8qYbMTXCbMttYRrvk3GEeTNQt226/Cv7xwpRbP8GV239BsetOWcLb8
-1Cvnu30q9cDwLOdpBC1BEyExOkHLDuWf6E3t9kaLuKhDEpt1QDPbkd6VNjNM1K3T
-Rsu/99cmxDSmzfIcLn8/5Xm/qAmJtTH1tvwvmumm32ZbGQk/gxjyQYxxGb/gusL1
-NJ3V+RgujDpIVmEk4oD5moeVeMILfyLHVFN7gwCOIpUq0t/qS63wyOB+TdCWmurV
-fOaqfxusOYqIFQ+Jr1VT0SL/DGQ3yfNyxD7IE/17Y38i8Bqo+cU=
-=B1SW
------END PGP SIGNATURE-----
-
---=-oclBt3wpyL1/z9Jqf2cH--
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index a34b9a2a32b6..a77436ee5ff7 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -594,7 +594,8 @@ static int alloc_qpn(struct rvt_dev_info *rdi, struct rvt_qpn_table *qpt,
+ 			offset = qpt->incr | ((offset & 1) ^ 1);
+ 		}
+ 		/* there can be no set bits in low-order QoS bits */
+-		WARN_ON(offset & (BIT(rdi->dparms.qos_shift) - 1));
++		WARN_ON(rdi->dparms.qos_shift > 1 &&
++			offset & ((BIT(rdi->dparms.qos_shift - 1) - 1) << 1));
+ 		qpn = mk_qpn(qpt, map, offset);
+ 	}
+ 
+-- 
+2.20.1
 
