@@ -2,149 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 757144706A
-	for <lists+linux-rdma@lfdr.de>; Sat, 15 Jun 2019 16:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F9747096
+	for <lists+linux-rdma@lfdr.de>; Sat, 15 Jun 2019 17:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbfFOOZV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 15 Jun 2019 10:25:21 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:54376 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbfFOOZV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 15 Jun 2019 10:25:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=SdWUCWylJzhzeM8QVNQHKHRjscfikWmZIAkgaxj+0Bw=; b=A7X2mxpnfBOFX0A60aP25q3n/
-        szKd4gAVZwsTrlyaIQc5xR24lEmlvmqS83JEsqzjL+AHehjxvbX9tH+sGx5b+/T/POdhFT1Xy7EQd
-        z9W2915h22nOnp+4mPxdGJjQST174K6/01OPoe8ioZOArCSmBX24iHJLukWtBCN5yrp7lgnCtL/If
-        1mfw9bWonbn4DfHzMmLdRA3xr91p9DvtZSE0qrB2lAlkJ5w/EDdE8D0zcUjdAQSONzDYM6FcFPb/k
-        YM/tCltM51daIP24UNpmoh0cZpWskqznE35632yXKH+R+QmO89o+nzwUgq0GJ1pb7OrMAPqMpErU/
-        dFBGPBDoQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hc9cG-0008Br-TX; Sat, 15 Jun 2019 14:25:12 +0000
-Date:   Sat, 15 Jun 2019 07:25:12 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Philip Yang <Philip.Yang@amd.com>
-Subject: Re: [PATCH v3 hmm 12/12] mm/hmm: Fix error flows in
- hmm_invalidate_range_start
-Message-ID: <20190615142512.GL17724@infradead.org>
-References: <20190614004450.20252-1-jgg@ziepe.ca>
- <20190614004450.20252-13-jgg@ziepe.ca>
+        id S1726614AbfFOPBo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 15 Jun 2019 11:01:44 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:43450 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725944AbfFOPBn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 15 Jun 2019 11:01:43 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 3F9B659451;
+        Sat, 15 Jun 2019 15:01:43 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 570F35D9E2;
+        Sat, 15 Jun 2019 15:01:42 +0000 (UTC)
+Message-ID: <40515f44202835618492dd992971ec808ca72ada.camel@redhat.com>
+Subject: Re: [PATCH v2 2/3] RDMA: Add NLDEV_GET_CHARDEV to allow char dev
+ discovery and autoload
+From:   Doug Ledford <dledford@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Jason Gunthorpe <jgg@mellanox.com>
+Date:   Sat, 15 Jun 2019 11:01:39 -0400
+In-Reply-To: <20190615071653.GB4694@mtr-leonro.mtl.com>
+References: <20190614003819.19974-1-jgg@ziepe.ca>
+         <20190614003819.19974-3-jgg@ziepe.ca>
+         <4b271896e1f3e643ccc5824ff6ac419787c52910.camel@redhat.com>
+         <20190615071653.GB4694@mtr-leonro.mtl.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-yWIeMGwGIsp3M37wH1GB"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190614004450.20252-13-jgg@ziepe.ca>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Sat, 15 Jun 2019 15:01:43 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 09:44:50PM -0300, Jason Gunthorpe wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> If the trylock on the hmm->mirrors_sem fails the function will return
-> without decrementing the notifiers that were previously incremented. Since
-> the caller will not call invalidate_range_end() on EAGAIN this will result
-> in notifiers becoming permanently incremented and deadlock.
-> 
-> If the sync_cpu_device_pagetables() required blocking the function will
-> not return EAGAIN even though the device continues to touch the
-> pages. This is a violation of the mmu notifier contract.
-> 
-> Switch, and rename, the ranges_lock to a spin lock so we can reliably
-> obtain it without blocking during error unwind.
-> 
-> The error unwind is necessary since the notifiers count must be held
-> incremented across the call to sync_cpu_device_pagetables() as we cannot
-> allow the range to become marked valid by a parallel
-> invalidate_start/end() pair while doing sync_cpu_device_pagetables().
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
-> Tested-by: Philip Yang <Philip.Yang@amd.com>
-> ---
->  include/linux/hmm.h |  2 +-
->  mm/hmm.c            | 77 +++++++++++++++++++++++++++------------------
->  2 files changed, 48 insertions(+), 31 deletions(-)
-> 
-> diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-> index bf013e96525771..0fa8ea34ccef6d 100644
-> --- a/include/linux/hmm.h
-> +++ b/include/linux/hmm.h
-> @@ -86,7 +86,7 @@
->  struct hmm {
->  	struct mm_struct	*mm;
->  	struct kref		kref;
-> -	struct mutex		lock;
-> +	spinlock_t		ranges_lock;
->  	struct list_head	ranges;
->  	struct list_head	mirrors;
->  	struct mmu_notifier	mmu_notifier;
-> diff --git a/mm/hmm.c b/mm/hmm.c
-> index c0d43302fd6b2f..1172a4f0206963 100644
-> --- a/mm/hmm.c
-> +++ b/mm/hmm.c
-> @@ -67,7 +67,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
->  	init_rwsem(&hmm->mirrors_sem);
->  	hmm->mmu_notifier.ops = NULL;
->  	INIT_LIST_HEAD(&hmm->ranges);
-> -	mutex_init(&hmm->lock);
-> +	spin_lock_init(&hmm->ranges_lock);
->  	kref_init(&hmm->kref);
->  	hmm->notifiers = 0;
->  	hmm->mm = mm;
-> @@ -124,18 +124,19 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->  {
->  	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
->  	struct hmm_mirror *mirror;
-> +	unsigned long flags;
->  
->  	/* Bail out if hmm is in the process of being freed */
->  	if (!kref_get_unless_zero(&hmm->kref))
->  		return;
->  
-> -	mutex_lock(&hmm->lock);
-> +	spin_lock_irqsave(&hmm->ranges_lock, flags);
->  	/*
->  	 * Since hmm_range_register() holds the mmget() lock hmm_release() is
->  	 * prevented as long as a range exists.
->  	 */
->  	WARN_ON(!list_empty(&hmm->ranges));
-> -	mutex_unlock(&hmm->lock);
-> +	spin_unlock_irqrestore(&hmm->ranges_lock, flags);
->  
->  	down_read(&hmm->mirrors_sem);
->  	list_for_each_entry(mirror, &hmm->mirrors, list) {
-> @@ -151,6 +152,23 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->  	hmm_put(hmm);
->  }
->  
-> +static void notifiers_decrement(struct hmm *hmm)
-> +{
-> +	lockdep_assert_held(&hmm->ranges_lock);
-> +
-> +	hmm->notifiers--;
-> +	if (!hmm->notifiers) {
 
-Nitpick, when doing dec and test or inc and test ops I find it much
-easier to read if they are merged into one line, i.e.
+--=-yWIeMGwGIsp3M37wH1GB
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-	if (!--hmm->notifiers) {
+On Sat, 2019-06-15 at 10:16 +0300, Leon Romanovsky wrote:
+> On Fri, Jun 14, 2019 at 03:00:32PM -0400, Doug Ledford wrote:
+> > On Thu, 2019-06-13 at 21:38 -0300, Jason Gunthorpe wrote:
+> > > +       if (ibdev)
+> > > +               ret =3D __ib_get_client_nl_info(ibdev, client_name,
+> > > res);
+> > > +       else
+> > > +               ret =3D __ib_get_global_client_nl_info(client_name,
+> > > res);
+> > > +#ifdef CONFIG_MODULES
+> > > +       if (ret =3D=3D -ENOENT) {
+> > > +               request_module("rdma-client-%s", client_name);
+> > > +               if (ibdev)
+> > > +                       ret =3D __ib_get_client_nl_info(ibdev,
+> > > client_name, res);
+> > > +               else
+> > > +                       ret =3D
+> > > __ib_get_global_client_nl_info(client_name, res);
+> > > +       }
+> > > +#endif
+> >=20
+> > I was trying to put my finger on something yesterday while reading
+> > the
+> > code, and this change makes it more clear for me.  Do we really
+> > want to
+> > limit the info type based on ibdev?  It seems to me that all global
+> > info retrieval should work whether you open a specific ibdev or
+> > not.
+> > It's only the things that need the ibdev to return the correct
+> > response
+> > that should require it.  Right now we only have one global info
+> > provider, but would it be better to do:
+> >=20
+> > 	if (!strcmp("rdma_cm", client_name))
+> > 		ret =3D __ib_get_global_client_nl_info(client_name, res);
+> > 	else
+> > 		ret =3D __ib_get_client_nl_info(ibdev, client_name, res);
+> >=20
+> > The other thing I was wondering about was the module
+> > loading.  Every
+> > attempt to load a module is a fork/exec cycle and a context switch
+> > over
+> > to modprobe and back, and we make no attempt here to keep each
+> > invocation of the netlink query from requesting a module.  I'm
+> > concerned this is actually a potential DoS attack vector.  I was
+> > thinking we should track each client name that's valid, and only
+> > try
+> > each name once.  I saw four module names: rdma_cm, umad, issm, and
+> > uverbs.  I'm wondering if we should have a static table in the
+> > netlink
+> > file with an entry for each of the client names and a variable to
+> > indicate we've attempted to load that module, and on -ENOENT, we
+> > check
+> > the table for a match to our passed in client_name, and only if we
+> > have
+> > a match, and it's load count is 0, do we call request_module() and
+> > increment the load count.  Thoughts?
+>=20
+> Isn't request_module privileged operation, so only root or his
+> friends
+> can do this DDoS?
 
-Otherwise this looks fine:
+=46rom what I can tell, SELinux *might* prevent a user from doing this,
+but it is the only thing I could find that even tries to stop it.=20
+Which of course means there are no protections for SELinux disabled
+case.  And I'm not sure SELinux stops it anyway.  In general, autoload
+isn't very useful if the only person that can trigger it is root.  I
+think in most cases, it is initiated by device file open or some such
+that regular users can do.  It's possible things are fine because the
+core code serializes module autoload and 1,000,000 simultaneous
+requests will result in one real request, and 999,999 waiters that wait
+for the result of the 1 and then take that back.  But as I read through
+stuff, it's enough of a head scratcher that I'm tempted to try writing
+an exploit and seeing what it does.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
+2FDD
+
+--=-yWIeMGwGIsp3M37wH1GB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0FCFMACgkQuCajMw5X
+L91Bmg/8DOLDRbwxd0yk9nh+GlQOklANJ2nOulPi8EGyGTrZoz0LUswldByA1DKT
+eAfaN30YDhxUCiF+yP40MyHmo+I0i/BB0ZPykFyNiNX5s3qD0J4HImsx/aYfyw6J
+VUO/07HvLW+7VYeOWk68K5gtiA9OWghU3s9+2Ag2dy+cTDOe33NKppxWxNVm+Hbo
+Zc/f6Qx771oWe5P3hpfW2GKMt9UGZMLbV5oZNQzjlcUrO218DL9RO9Rs57g5Oufu
+kgGUgZSZJA7aT9yjgFIRBonkZWhGZN1/4bxL9QAFaX8sXeVNzvO/EAQEwKsGgENi
+Ih2Sg51Hx9NcUj3c48AjQKSRwNoNWh4fKBG+GOimFB27+FFtX9obhzI9Pm8+FMSm
+aVwwFCyi+iDYEG6i6N/7aVdvsAH33iONgUgsRQN0BsxhENpIASKvAQrXKKSUs1K/
+yT8eNoXP/Go+kBa1m9iP0m6QE2NYtzC59PBC5ruLxE6zwm9wQzQTUSTohn3gZdo6
+bUIw266MXHoXIaygWkyZFFhclBZSagwx4xNiJuGqT/4onmxE12s5DXMXCHIE9kLy
+EObneI4FxPqHTLJ6UFQiF+YD9/DhDt3X3hyhCHTmZAH2J40ZOVPry3xWU4kZNoG8
+KE2iinjbhaVbIgtr3R93Tx428p7kwMNb5UMHK4baq85OtJ7rNfE=
+=h962
+-----END PGP SIGNATURE-----
+
+--=-yWIeMGwGIsp3M37wH1GB--
+
