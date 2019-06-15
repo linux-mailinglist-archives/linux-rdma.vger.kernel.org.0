@@ -2,109 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1768E4696A
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2019 22:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33DB46EAC
+	for <lists+linux-rdma@lfdr.de>; Sat, 15 Jun 2019 09:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbfFNUci (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jun 2019 16:32:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726779AbfFNUal (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Jun 2019 16:30:41 -0400
-Received: from sasha-vm.mshome.net (unknown [131.107.159.134])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 739882186A;
-        Fri, 14 Jun 2019 20:30:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560544240;
-        bh=FE+12g6ZJUC6swIQFvWgR1Ppf6wRJ7KMqJ61p+JFJ7w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lk/WDXosj/ykAvHLz+Pqqiqb0HM8NkIMheP5lPxypxBt4hqe9u3jdl/8Lnlm8yYwX
-         ocKL9hkonlIGjUXa1Cr8mj3kkLGTlZUvJrgPWiYeC0+54mnhtGPyLqRuzLN8/MCi0q
-         nqVN+iNxOlXvusaa/8vCdjXCRasrjKtkzeH1ocQA=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Josh Collier <josh.d.collier@intel.com>,
+        id S1725830AbfFOHMi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 15 Jun 2019 03:12:38 -0400
+Received: from mail-eopbgr70089.outbound.protection.outlook.com ([40.107.7.89]:41947
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725828AbfFOHMi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 15 Jun 2019 03:12:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Swih4FYc82qBLXxT8o6+ulKgup/1alXQeOXBJ3dcpZQ=;
+ b=XqPZTecAM9oAzl5OM7/hYxsLpGkZsd3YXOGXebI651JXXwmtyJ0WL7lUkfei+IrRpTe8S/CeblkQbKmoBnpr6rhJlfe/GSJ59ltndTciYn1SPiOhl2d1Lx+PE8xkGhdA9iAl4ppO8WBMQnDKlCLTwzp368PLjOZY7NLeYQORBBQ=
+Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.186.14) by
+ AM4PR05MB3185.eurprd05.prod.outlook.com (10.171.188.11) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1987.12; Sat, 15 Jun 2019 07:12:27 +0000
+Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
+ ([fe80::bc5a:ba8b:1a69:91b6]) by AM4PR05MB3137.eurprd05.prod.outlook.com
+ ([fe80::bc5a:ba8b:1a69:91b6%6]) with mapi id 15.20.1987.013; Sat, 15 Jun 2019
+ 07:12:27 +0000
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Doug Ledford <dledford@redhat.com>
+CC:     Colin Ian King <colin.king@canonical.com>,
+        Gal Pressman <galpress@amazon.com>,
         Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 06/18] IB/{qib, hfi1, rdmavt}: Correct ibv_devinfo max_mr value
-Date:   Fri, 14 Jun 2019 16:30:22 -0400
-Message-Id: <20190614203037.27910-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190614203037.27910-1-sashal@kernel.org>
-References: <20190614203037.27910-1-sashal@kernel.org>
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: RDMA: Clean destroy CQ in drivers do not return errors
+Thread-Topic: RDMA: Clean destroy CQ in drivers do not return errors
+Thread-Index: AQHVIrlo0Ha/lYZPxkOD3nwuzZMhyaabjl4AgAC/iwA=
+Date:   Sat, 15 Jun 2019 07:12:27 +0000
+Message-ID: <20190615071224.GA4694@mtr-leonro.mtl.com>
+References: <68d62660-902c-ca49-20fd-32e92830faa7@canonical.com>
+ <ee0c017e93e28317791b7395e257801a208c7306.camel@redhat.com>
+In-Reply-To: <ee0c017e93e28317791b7395e257801a208c7306.camel@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM7PR03CA0028.eurprd03.prod.outlook.com
+ (2603:10a6:20b:130::38) To AM4PR05MB3137.eurprd05.prod.outlook.com
+ (2603:10a6:205:3::14)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=leonro@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [37.142.3.125]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 57c18133-5702-4ada-b459-08d6f160d295
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM4PR05MB3185;
+x-ms-traffictypediagnostic: AM4PR05MB3185:
+x-microsoft-antispam-prvs: <AM4PR05MB3185B4FC092A7DBCBF846511B0E90@AM4PR05MB3185.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-forefront-prvs: 0069246B74
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(396003)(366004)(39860400002)(346002)(376002)(199004)(189003)(8676002)(71200400001)(71190400001)(73956011)(386003)(6506007)(52116002)(68736007)(99286004)(33656002)(229853002)(2906002)(186003)(6486002)(76176011)(102836004)(14454004)(26005)(6436002)(316002)(54906003)(478600001)(6916009)(256004)(486006)(476003)(3846002)(11346002)(6116002)(25786009)(446003)(4326008)(1076003)(66066001)(5660300002)(86362001)(53936002)(6246003)(8936002)(9686003)(64756008)(66556008)(66476007)(66446008)(66946007)(81166006)(81156014)(6512007)(7736002)(305945005);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3185;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: Pcs//go+y2P3i4orFTDScVm/gN0caT2aWTz4NI6ZWShvJUAWzZGrG0+AQqDQzQBzt0Jn826LQDu8SuJCx/pH7BtQMU2h5pkAgF+KGCjNdPDF1DNbP8FqXxLUgfNTvA6/H6lCduJIhGV3s4UyVNHU9ObtOCaNq2vI/TuEe19ANwq6Dxb/6SDlPFndqP3Byv5ArBFbHo8F1YKDVn1L+fGWwTQLDPHL914RqWSA7uV4r++tB/Am61M7oGz+lSIs4GxUQhkn7LnvlE2pbnka1dY8oy8S5fFYmZjCUzfRvzLYVsptw4WlKi9en+dF5i87XyqMpJGfweatRDS8tjpI5odpRwlJEJaRiS78HPjDx0cnAWWotgCxIlJIMv5z4TNc6PyWoxf43zijIRZCxGrYsug/Vo7WBlhdCV9p/iHlIclAalg=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C2621CA764179B4DAA30AD367EA0F07E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57c18133-5702-4ada-b459-08d6f160d295
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2019 07:12:27.8370
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: leonro@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3185
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@intel.com>
+On Fri, Jun 14, 2019 at 03:46:50PM -0400, Doug Ledford wrote:
+> On Fri, 2019-06-14 at 14:59 +0100, Colin Ian King wrote:
+> > Hi,
+> >
+> > Static analysis with Coverity reported an issue with the following
+> > commit:
+> >
+> > commit a52c8e2469c30cf7ac453d624aed9c168b23d1af
+> > Author: Leon Romanovsky <leonro@mellanox.com>
+> > Date:   Tue May 28 14:37:28 2019 +0300
+> >
+> >     RDMA: Clean destroy CQ in drivers do not return errors
+> >
+> > In function bnxt_re_destroy_cq() contains the following:
+> >
+> >         if (!cq->umem)
+> >                 ib_umem_release(cq->umem);
+>
+> Given that the original test that was replaced was:
+> 	if (!IS_ERR_OR_NULL(cq->umem))
+>
+> we aren't really worried about a null cq, just that umem is valid.  So,
+> the logic is inverted on the test (or possibly we shouldn't have
+> replaced !IS_ERR_OR_NULL(cq->umem) at all).
 
-[ Upstream commit 35164f5259a47ea756fa1deb3e463ac2a4f10dc9 ]
+I took a very brief look and think that the better way will be to put
+this "if (null)" check inside ib_umem_release() and make unconditional
+call to that function in all call sites.
 
-The command 'ibv_devinfo -v' reports 0 for max_mr.
+>
+> But on closer inspection, the bnxt_re specific portion of this patch
+> appears to have another problem in that it no longer checks the result
+> of bnxt_qplib_destroy_cq() yet it does nothing to keep that function
+> from failing.
 
-Fix by assigning the query values after the mr lkey_table has been built
-rather than early on in the driver.
+It was intentional for two reasons. First, bnxt_re already had exactly
+same logic without any checks of returned call inside bnxt_re_create_cq().
+Second, we need to release kernel memory without any relation to HW state.
 
-Fixes: 7b1e2099adc8 ("IB/rdmavt: Move memory registration into rdmavt")
-Reviewed-by: Josh Collier <josh.d.collier@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/hw/hfi1/verbs.c    | 2 --
- drivers/infiniband/hw/qib/qib_verbs.c | 2 --
- drivers/infiniband/sw/rdmavt/mr.c     | 2 ++
- 3 files changed, 2 insertions(+), 4 deletions(-)
+Maybe I should move bnxt_qplib_free_hwq() to be immediately after
+bnxt_qplib_rcfw_send_message() inside of bnxt_qplib_destroy_cq()?
 
-diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
-index d9c71750e22d..15054a0cbf6d 100644
---- a/drivers/infiniband/hw/hfi1/verbs.c
-+++ b/drivers/infiniband/hw/hfi1/verbs.c
-@@ -1344,8 +1344,6 @@ static void hfi1_fill_device_attr(struct hfi1_devdata *dd)
- 	rdi->dparms.props.max_cq = hfi1_max_cqs;
- 	rdi->dparms.props.max_ah = hfi1_max_ahs;
- 	rdi->dparms.props.max_cqe = hfi1_max_cqes;
--	rdi->dparms.props.max_mr = rdi->lkey_table.max;
--	rdi->dparms.props.max_fmr = rdi->lkey_table.max;
- 	rdi->dparms.props.max_map_per_fmr = 32767;
- 	rdi->dparms.props.max_pd = hfi1_max_pds;
- 	rdi->dparms.props.max_qp_rd_atom = HFI1_MAX_RDMA_ATOMIC;
-diff --git a/drivers/infiniband/hw/qib/qib_verbs.c b/drivers/infiniband/hw/qib/qib_verbs.c
-index 954f15064514..d6e183775e24 100644
---- a/drivers/infiniband/hw/qib/qib_verbs.c
-+++ b/drivers/infiniband/hw/qib/qib_verbs.c
-@@ -1568,8 +1568,6 @@ static void qib_fill_device_attr(struct qib_devdata *dd)
- 	rdi->dparms.props.max_cq = ib_qib_max_cqs;
- 	rdi->dparms.props.max_cqe = ib_qib_max_cqes;
- 	rdi->dparms.props.max_ah = ib_qib_max_ahs;
--	rdi->dparms.props.max_mr = rdi->lkey_table.max;
--	rdi->dparms.props.max_fmr = rdi->lkey_table.max;
- 	rdi->dparms.props.max_map_per_fmr = 32767;
- 	rdi->dparms.props.max_qp_rd_atom = QIB_MAX_RDMA_ATOMIC;
- 	rdi->dparms.props.max_qp_init_rd_atom = 255;
-diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
-index 49d55a0322f6..dbd4c0d268e9 100644
---- a/drivers/infiniband/sw/rdmavt/mr.c
-+++ b/drivers/infiniband/sw/rdmavt/mr.c
-@@ -94,6 +94,8 @@ int rvt_driver_mr_init(struct rvt_dev_info *rdi)
- 	for (i = 0; i < rdi->lkey_table.max; i++)
- 		RCU_INIT_POINTER(rdi->lkey_table.table[i], NULL);
- 
-+	rdi->dparms.props.max_mr = rdi->lkey_table.max;
-+	rdi->dparms.props.max_fmr = rdi->lkey_table.max;
- 	return 0;
- }
- 
--- 
-2.20.1
+>
+> Leon, can you send a followup fix?
+
+Sure, I'll do it tomorrow.
+
+>
+> > Coverity detects this as a deference after null check on the null
+> > pointer cq->umem:
+> >
+> > "var_deref_model: Passing null pointer cq->umem to ib_umem_release,
+> > which dereferences it"
+> >
+> > Is the logic inverted on that null check?
+> >
+> > Colin
+>
+> --
+> Doug Ledford <dledford@redhat.com>
+>     GPG KeyID: B826A3330E572FDD
+>     Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
+> 2FDD
+
 
