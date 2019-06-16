@@ -2,57 +2,243 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBEA4710C
-	for <lists+linux-rdma@lfdr.de>; Sat, 15 Jun 2019 17:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F35147418
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Jun 2019 12:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbfFOPvy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 15 Jun 2019 11:51:54 -0400
-Received: from smtp1.ono.com ([62.42.230.162]:57083 "EHLO smtp1.ono.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726405AbfFOPvx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 15 Jun 2019 11:51:53 -0400
-X-Junkmail-Premium-Raw: score=25/50,refid=2.7.2:2019.6.15.145116:17:25.923,ip=62.42.230.132,rules=__HAS_MSGID,
- __SANE_MSGID, MSGID_JMAIL_DEFAULT, INVALID_MSGID_NO_FQDN, __HAS_FROM,
- __HAS_REPLYTO, __FRAUD_WEBMAIL_REPLYTO, SUBJ_STARTS_IN_SPACE,
- __PHISH_SPEAR_SUBJ_ALERT, __MIME_VERSION, __CT, __CT_TEXT_PLAIN, __CTE,
- MISSING_HEADERS, __NO_HTML_TAG_RAW, BODYTEXTP_SIZE_400_LESS,
- BODY_SIZE_200_299, BODYTEXTP_SIZE_3000_LESS, __MIME_TEXT_P1,
- __MIME_TEXT_ONLY, HTML_00_01, HTML_00_10, BODY_SIZE_5000_LESS,
- __FRAUD_WEBMAIL, WEBMAIL_REPLYTO_NOT_FROM, FRAUD_WEBMAIL_R_NOT_F,
- __MIME_TEXT_P, NO_URI_FOUND, NO_CTA_URI_FOUND, FRAUD_LITTLE_BODY,
- __PHISH_SPEAR_STRUCTURE_1, BODY_SIZE_1000_LESS, BODY_SIZE_2000_LESS,
- SMALL_BODY, __PHISH_SPEAR_STRUCTURE_2, REPLYTO_FROM_DIFF_ADDY, NO_URI_HTTPS,
- BODY_SIZE_7000_LESS, TO_MALFORMED
-Received: from resprs02 (62.42.230.132) by smtp1.ono.com (9.0.019.09-1)
-        id 5C12554F098C1BD2; Sat, 15 Jun 2019 17:50:45 +0200
-Received: from (198.143.43.13) by webmailcpr02n.ono.com;  Sat, 15 Jun 2019 17:50:44 +0200
-Message-ID: <21177973.565011560613844906.JavaMail.defaultUser@defaultHost>
-Date:   Sat, 15 Jun 2019 17:50:44 +0200 (CEST)
-From:   Noora Abdul <cerramientos@ono.com>
-Reply-To: noora34abdul@gmail.com
-Subject:  Hello Dear.
+        id S1726121AbfFPKHM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 16 Jun 2019 06:07:12 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35511 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725888AbfFPKHM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Jun 2019 06:07:12 -0400
+Received: by mail-wr1-f66.google.com with SMTP id m3so6794461wrv.2
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Jun 2019 03:07:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/tZ1VPM4wCco1y5GKuvC+dv7ijWO0+hICFigJua7iFI=;
+        b=xKYet2Rz1EPmw1/tY7Nj8zOsmoke+43H1w1kXbvlpqcy2ocdPYfpyDCjqFdP5tZLNt
+         zUqSBph+cI5p/9psPgBjF9IizLDy+TRJDMro5ArosOePqT/WkN1AiOt29za7a+S4fGYP
+         0UWPX8gHgoedWQZBWvQLGzs/30ZwONbQuC+vF7w/2JpHhMYVYy7YzL5U4rHOqEAvL9QR
+         rfghguvGUdM7ioRXYcRqXMQYBPBParwvS7k5RC40iZdNsLh9EnQp+gnlP1qrrHYN/GDJ
+         D/tUAnP26d5wWLmpyBRi+xVii8psuP2BHFLuUXdt0VokQ7e+jnaaW5PZLzSQDi7ynKaM
+         na4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/tZ1VPM4wCco1y5GKuvC+dv7ijWO0+hICFigJua7iFI=;
+        b=T/afjln8h3KOgqCGE03cdLURsoH5QxdiptBN4mmTtDDmVYlxxoIXKrA4GYk2Hv3JNs
+         AjkhB622/Vx2brqlVrR1HYTFH1A7lOPQ9HD5jwEx/ohjZN8vG6j3PSZMYhKMkukbgNsd
+         skB1DNcAsy1Gxrz+3leMQkWUbendxVaHXkRA4jB0H5uvPpY7T+nc3bvTyZtaiMR8e1eS
+         teYcrQ3/dV+/y48jbR6GW/V2266+gEBnxfTNSmy4x3d4E4eI7r5mwQKFBezuQcq1XLc/
+         W3y2U9/j9NY19eh+CcQ8jdLENP4dhJPu62/1/0gZJFmxmoENweVRvHhzEXH0eASMLLJi
+         rWng==
+X-Gm-Message-State: APjAAAX4G88INhADHXVz2ermk6Rxr2r/CaWlvkkv8YZtgwM5byzUzx5L
+        7iD1u4zBMBeLKFgEqJSKuqKp8w==
+X-Google-Smtp-Source: APXvYqzB64i4cpyCK2sYMwVAeTXyqcOws/eZFJCQi2BxCjOE/rrbGzFRPvRUtRC8CJ7IiXhvLP6fwQ==
+X-Received: by 2002:adf:afde:: with SMTP id y30mr10526370wrd.197.1560679628814;
+        Sun, 16 Jun 2019 03:07:08 -0700 (PDT)
+Received: from localhost (ip-78-45-163-56.net.upcbroadband.cz. [78.45.163.56])
+        by smtp.gmail.com with ESMTPSA id j18sm6902190wre.23.2019.06.16.03.07.08
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sun, 16 Jun 2019 03:07:08 -0700 (PDT)
+Date:   Sun, 16 Jun 2019 12:07:07 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Parav Pandit <parav@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Mark Bloch <markb@mellanox.com>, Petr Vorel <pvorel@suse.cz>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>
+Subject: Re: [PATCH mlx5-next v1 1/4] net/mlx5: Declare more strictly devlink
+ encap mode
+Message-ID: <20190616100707.GB2511@nanopsycho>
+References: <20190612122014.22359-1-leon@kernel.org>
+ <20190612122014.22359-2-leon@kernel.org>
+ <VI1PR0501MB2271FF8A570DDBBD26CF7100D1EF0@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+ <20190613055954.GV6369@mtr-leonro.mtl.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190613055954.GV6369@mtr-leonro.mtl.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Thu, Jun 13, 2019 at 07:59:54AM CEST, leon@kernel.org wrote:
+>On Thu, Jun 13, 2019 at 04:32:25AM +0000, Parav Pandit wrote:
+>>
+>>
+>> > -----Original Message-----
+>> > From: Leon Romanovsky <leon@kernel.org>
+>> > Sent: Wednesday, June 12, 2019 5:50 PM
+>> > To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe
+>> > <jgg@mellanox.com>
+>> > Cc: Leon Romanovsky <leonro@mellanox.com>; RDMA mailing list <linux-
+>> > rdma@vger.kernel.org>; Maor Gottlieb <maorg@mellanox.com>; Mark Bloch
+>> > <markb@mellanox.com>; Parav Pandit <parav@mellanox.com>; Petr Vorel
+>> > <pvorel@suse.cz>; Saeed Mahameed <saeedm@mellanox.com>; linux-
+>> > netdev <netdev@vger.kernel.org>; Jiri Pirko <jiri@mellanox.com>
+>> > Subject: [PATCH mlx5-next v1 1/4] net/mlx5: Declare more strictly devlink
+>> > encap mode
+>> >
+>> > From: Leon Romanovsky <leonro@mellanox.com>
+>> >
+>> > Devlink has UAPI declaration for encap mode, so there is no need to be
+>> > loose on the data get/set by drivers.
+>> >
+>> > Update call sites to use enum devlink_eswitch_encap_mode instead of plain
+>> > u8.
+>> >
+>> > Suggested-by: Parav Pandit <parav@mellanox.com>
+>> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>> > ---
+>> >  drivers/net/ethernet/mellanox/mlx5/core/eswitch.h         | 8 +++++---
+>> >  .../net/ethernet/mellanox/mlx5/core/eswitch_offloads.c    | 6 ++++--
+>> >  include/net/devlink.h                                     | 6 ++++--
+>> >  net/core/devlink.c                                        | 6 ++++--
+>> >  4 files changed, 17 insertions(+), 9 deletions(-)
+>> >
+>> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+>> > b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+>> > index ed3fad689ec9..e264dfc64a6e 100644
+>> > --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+>> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+>> > @@ -175,7 +175,7 @@ struct mlx5_esw_offload {
+>> >  	DECLARE_HASHTABLE(mod_hdr_tbl, 8);
+>> >  	u8 inline_mode;
+>> >  	u64 num_flows;
+>> > -	u8 encap;
+>> > +	enum devlink_eswitch_encap_mode encap;
+>> >  };
+>> >
+>> >  /* E-Switch MC FDB table hash node */
+>> > @@ -356,9 +356,11 @@ int mlx5_devlink_eswitch_inline_mode_set(struct
+>> > devlink *devlink, u8 mode,
+>> >  					 struct netlink_ext_ack *extack);
+>> >  int mlx5_devlink_eswitch_inline_mode_get(struct devlink *devlink, u8
+>> > *mode);  int mlx5_eswitch_inline_mode_get(struct mlx5_eswitch *esw, int
+>> > nvfs, u8 *mode); -int mlx5_devlink_eswitch_encap_mode_set(struct devlink
+>> > *devlink, u8 encap,
+>> > +int mlx5_devlink_eswitch_encap_mode_set(struct devlink *devlink,
+>> > +					enum devlink_eswitch_encap_mode
+>> > encap,
+>> >  					struct netlink_ext_ack *extack);
+>> > -int mlx5_devlink_eswitch_encap_mode_get(struct devlink *devlink, u8
+>> > *encap);
+>> > +int mlx5_devlink_eswitch_encap_mode_get(struct devlink *devlink,
+>> > +					enum devlink_eswitch_encap_mode
+>> > *encap);
+>> >  void *mlx5_eswitch_get_uplink_priv(struct mlx5_eswitch *esw, u8
+>> > rep_type);
+>> >
+>> >  int mlx5_eswitch_add_vlan_action(struct mlx5_eswitch *esw, diff --git
+>> > a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+>> > b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+>> > index e09ae27485ee..f1571163143d 100644
+>> > --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+>> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+>> > @@ -2137,7 +2137,8 @@ int mlx5_eswitch_inline_mode_get(struct
+>> > mlx5_eswitch *esw, int nvfs, u8 *mode)
+>> >  	return 0;
+>> >  }
+>> >
+>> > -int mlx5_devlink_eswitch_encap_mode_set(struct devlink *devlink, u8
+>> > encap,
+>> > +int mlx5_devlink_eswitch_encap_mode_set(struct devlink *devlink,
+>> > +					enum devlink_eswitch_encap_mode
+>> > encap,
+>> >  					struct netlink_ext_ack *extack)
+>> >  {
+>> >  	struct mlx5_core_dev *dev = devlink_priv(devlink); @@ -2186,7
+>> > +2187,8 @@ int mlx5_devlink_eswitch_encap_mode_set(struct devlink
+>> > *devlink, u8 encap,
+>> >  	return err;
+>> >  }
+>> >
+>> > -int mlx5_devlink_eswitch_encap_mode_get(struct devlink *devlink, u8
+>> > *encap)
+>> > +int mlx5_devlink_eswitch_encap_mode_get(struct devlink *devlink,
+>> > +					enum devlink_eswitch_encap_mode
+>> > *encap)
+>> >  {
+>> >  	struct mlx5_core_dev *dev = devlink_priv(devlink);
+>> >  	struct mlx5_eswitch *esw = dev->priv.eswitch; diff --git
+>> > a/include/net/devlink.h b/include/net/devlink.h index
+>> > 1c4adfb4195a..7a34fc586def 100644
+>> > --- a/include/net/devlink.h
+>> > +++ b/include/net/devlink.h
+>> > @@ -530,8 +530,10 @@ struct devlink_ops {
+>> >  	int (*eswitch_inline_mode_get)(struct devlink *devlink, u8
+>> > *p_inline_mode);
+>> >  	int (*eswitch_inline_mode_set)(struct devlink *devlink, u8
+>> > inline_mode,
+>> >  				       struct netlink_ext_ack *extack);
+>> > -	int (*eswitch_encap_mode_get)(struct devlink *devlink, u8
+>> > *p_encap_mode);
+>> > -	int (*eswitch_encap_mode_set)(struct devlink *devlink, u8
+>> > encap_mode,
+>> > +	int (*eswitch_encap_mode_get)(struct devlink *devlink,
+>> > +				      enum devlink_eswitch_encap_mode
+>> > *p_encap_mode);
+>> > +	int (*eswitch_encap_mode_set)(struct devlink *devlink,
+>> > +				      enum devlink_eswitch_encap_mode
+>> > encap_mode,
+>> >  				      struct netlink_ext_ack *extack);
+>> >  	int (*info_get)(struct devlink *devlink, struct devlink_info_req *req,
+>> >  			struct netlink_ext_ack *extack);
+>> > diff --git a/net/core/devlink.c b/net/core/devlink.c index
+>> > d43bc52b8840..47ae69363b07 100644
+>> > --- a/net/core/devlink.c
+>> > +++ b/net/core/devlink.c
+>> > @@ -1552,7 +1552,8 @@ static int devlink_nl_eswitch_fill(struct sk_buff
+>> > *msg, struct devlink *devlink,
+>> >  				   u32 seq, int flags)
+>> >  {
+>> >  	const struct devlink_ops *ops = devlink->ops;
+>> > -	u8 inline_mode, encap_mode;
+>> > +	enum devlink_eswitch_encap_mode encap_mode;
+>> > +	u8 inline_mode;
+>> >  	void *hdr;
+>> >  	int err = 0;
+>> >  	u16 mode;
+>> > @@ -1628,7 +1629,8 @@ static int devlink_nl_cmd_eswitch_set_doit(struct
+>> > sk_buff *skb,  {
+>> >  	struct devlink *devlink = info->user_ptr[0];
+>> >  	const struct devlink_ops *ops = devlink->ops;
+>> > -	u8 inline_mode, encap_mode;
+>> > +	enum devlink_eswitch_encap_mode encap_mode;
+>> > +	u8 inline_mode;
+>> >  	int err = 0;
+>> >  	u16 mode;
+>> >
+>> > --
+>> > 2.20.1
+>>
+>> Netdev follows reverse Christmas tree, but otherwise,
+>
+>It was before this patch, if Jiri is ok with that, I'll change this
+>"const struct devlink_ops *ops = devlink->ops;" line while I'll apply
+>this patchset to mlx5-net. If not, I'll leave it as is.
+
+Change to what? I don't follow. The patch looks completely fine to me as
+it is.
+
+Acked-by: Jiri Pirko <jiri@mellanox.com>
 
 
---
-Hello Dear,
 
-Greetings and how is your day going?
-
-I am Miss Noora Abdul from South Sudan and I am also an orphan and I
-will like to discuss something very urgent with you when I hear from
-you.
-
-Regards
-
-Noora Abdul
---
-
+>
+>> Reviewed-by: Parav Pandit <parav@mellanox.com>
+>
+>Thanks
+>
+>>
