@@ -2,105 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E121647DF2
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2019 11:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348F04803F
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2019 13:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbfFQJK2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jun 2019 05:10:28 -0400
-Received: from mail-io1-f42.google.com ([209.85.166.42]:40025 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbfFQJK2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jun 2019 05:10:28 -0400
-Received: by mail-io1-f42.google.com with SMTP id n5so19521124ioc.7
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Jun 2019 02:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:references:in-reply-to:mime-version:thread-index:date
-         :message-id:subject:to:cc;
-        bh=Mj+s4plNnZbEVe10BIzmZ1IijmMEuCHawFgLwkcZqoI=;
-        b=ZVXe7pF/DKKbAtg0BLq1kHz+Yf8AmgubdjAQekKwZeBkWQQeo+lrwMdIAePBmlOgcE
-         WJ3paACJ9GsoxC9mAywQ6EfBHW7Qhb1RZpLg6OjDRo0//12nX9SRpN+HRZNsKHbLnYNY
-         mXR2sr52mBeN/pkOHc0Q5eeZBCOpWx8hMerKU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:references:in-reply-to:mime-version
-         :thread-index:date:message-id:subject:to:cc;
-        bh=Mj+s4plNnZbEVe10BIzmZ1IijmMEuCHawFgLwkcZqoI=;
-        b=WNEn/ax3rMTBmnMS4Y3woxHwVbUZRmC+Ufnzll1D78kbagvJ0vFkqXNaWsIYKjJNdX
-         hYGBFx4Zd8G7aBN0Nu4sPmj641Oay/u683yg/ki6u0zoDTivqIISs5w8DB62OCN147o/
-         Ba2IOhVpWMJWJBjDTuKfOmVdOgU3a0bWqBfBywP4lY1qPWsOEaw/JUn2Ang2kfrxycBX
-         iHc6ZiiNfHGEj67rSE9RceEDq6xjP9O0URyhtaL8ZqxMV1lTnctC+OdByis5Bsw/58uE
-         GwLg2KknFD4qVb9aMbBrKKf39wA+pBHCfRf2O6/FCO8hecT0jiqQXc4cx+Wjdj7vaEAi
-         tbQA==
-X-Gm-Message-State: APjAAAXBL9rNnLG37iWBcSUSqaNQJv8zKMXMgvv/2uJ1I49NjMqvixF4
-        II5dB78XHNxzhVdCi0PJ2f7jnkXPnCzuSIJmOry+lw==
-X-Google-Smtp-Source: APXvYqwKR2USXudxvvKfOK55glU2D5y5FMiBAo7oI/W/qo2pfnh4b2Kx5on0RhBtIfzYHBRJ2BHKN9CUkaC5PBmqWrM=
-X-Received: by 2002:a02:298b:: with SMTP id p133mr87239176jap.37.1560762627424;
- Mon, 17 Jun 2019 02:10:27 -0700 (PDT)
-From:   Kashyap Desai <kashyap.desai@broadcom.com>
-References: <20190605190836.32354-1-hch@lst.de> <20190605190836.32354-11-hch@lst.de>
- <cd713506efb9579d1f69a719d831c28d@mail.gmail.com> <20190608081400.GA19573@lst.de>
- <98f6557ae91a7cdfe8069fcf7d788c88@mail.gmail.com> <20190617084433.GA7969@lst.de>
-In-Reply-To: <20190617084433.GA7969@lst.de>
+        id S1727870AbfFQLJJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jun 2019 07:09:09 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:55229 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726730AbfFQLJJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jun 2019 07:09:09 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MZSym-1i5r5w3peI-00WRtT; Mon, 17 Jun 2019 13:08:59 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Oz Shlomo <ozsh@mellanox.com>,
+        Paul Blakey <paulb@mellanox.com>,
+        Eli Britstein <elibr@mellanox.com>,
+        Mark Bloch <markb@mellanox.com>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx5e: reduce stack usage in mlx5_eswitch_termtbl_create
+Date:   Mon, 17 Jun 2019 13:08:22 +0200
+Message-Id: <20190617110855.2085326-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQNLjZIO2zMn7N+9xPobnDbFSu4o5gI2RJdJAgF+bYgBfxw4kQGu5dmvAzKBgtajXfsrgA==
-Date:   Mon, 17 Jun 2019 14:40:25 +0530
-Message-ID: <e7443be50725bbdcdb6f1f4cc73955aa@mail.gmail.com>
-Subject: RE: [PATCH 10/13] megaraid_sas: set virt_boundary_mask in the scsi host
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Sebastian Ott <sebott@linux.ibm.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Oliver Neukum <oneukum@suse.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        PDL-MPT-FUSIONLINUX <mpt-fusionlinux.pdl@broadcom.com>,
-        linux-hyperv@vger.kernel.org, linux-usb@vger.kernel.org,
-        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:xpealiSDqaGMOSOW167AmUNZ9keZ5oPMTcByDXU0S+i0b4fbvlg
+ UJW7rl7HuiMTPTQXUHK4SEs+H2Cm0UCkKGBPGjL8RpVDWZhxHsDq941KnbmhxHV8dvUNpI7
+ U7YHMsPKWIFXcncEpu0dtswxPB3kZP/gPfKzFRxscff2Rfi/Vq/x4XaYEuyEhUJmJy3wsV2
+ l6dWCJfvRcK/lsafzoicg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8eSzBrY2/xk=:02bA9zm8tIK+y6WJJQ9r0q
+ Jk21B3ElC1T8zOiw1/+FRSDTbSbPzHXU8BAOwfUwwQkjf9m7HkjJbLlMio2zc/kKXIxlgLWkE
+ kfch+THVAbSVZVQ3Cv8jQEwFirU4EFac9SfJOJrMAIFoUzSoetUNLEnkEIEz29IBg7hmHVTwh
+ 24kK2OLa9M0t4JMoJnLUeVPgU5Gzxd1gJphvMujTVbj9D3KkSLAwoCNFZl7PvDC7h4XH+CoJY
+ +4YD1iGthGJM43udOXgXXEQg4vbI4fg+iQ/pUMDre5YWY5OOj/aDHRsQYqEln1FlvzDP8bP/8
+ YzzYNkhqudCtWEuBKLa8X0iIVRtS3GErHS9U/Z3VZmlTTlcT+fdyq2w6yA8LO9ogEDylMLpl6
+ 2SCRw+RCn9jmgyaLepxZNvBP+a4AspHY21m5uP8Vg8S75JcChXQ2YrvEOjQlwBNy7YXHDMQ8j
+ FiqpXod4HlHa9Lomgf3xcdRLyMvdHESSMnKSgM6FKyteP/ISoKModZ0P3lDmuXefOO/QvZFah
+ go8bY2xBs4qwr3YXA9So7cpfnMhZq+CAtzyCSRwuOOrsYEuBp+Fr17gZno1Efcad9gAeg0Tvp
+ fJ01fdQuGiLeRQfqvSh5Oluet/e25lAr72xC4Jl77+VxwcWK0VK2ljSaylYG9MzHRLg9rFHnh
+ Z4YLjGBHtquRucuxfdShoSChA0N4irT2h6E3U+R5Mhk0K8cZa0Twdmzh3xZA/vz73XQr2EBY0
+ /BOflpxH7K/NVHfm1ChxTdLnTS/R9PWxWK+ZvA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
->
-> On Fri, Jun 14, 2019 at 01:28:47AM +0530, Kashyap Desai wrote:
-> > Is there any changes in API  blk_queue_virt_boundary? I could not find
-> > relevant code which account for this. Can you help ?
-> > Which git repo shall I use for testing ? That way I can confirm, I
-> > didn't miss relevant changes.
->
-> Latest mainline plus the series (which is about to get resent).
-> blk_queue_virt_boundary now forced an unlimited max_hw_sectors as that
-is
-> how PRP-like schemes work, to work around a block driver merging bug.
-But
-> we also need to communicate that limit to the DMA layer so that we don't
-set
-> a smaller iommu segment size limitation.
->
-> > >From your above explanation, it means (after this patch) max segment
-> > >size
-> > of the MR controller will be set to 4K.
-> > Earlier it is possible to receive single SGE of 64K datalength (Since
-> > max seg size was 64K), but now the same buffer will reach the driver
-> > having 16 SGEs (Each SGE will contain 4K length).
->
-> No, there is no more limit for the size of the segment at all, as for
-PRPs each
-> PRP is sort of a segment from the hardware perspective.
-> We just require the segments to not have gaps, as PRPs don't allow for
-that.
-Thanks for clarification. I have also observed that max_segment_size Is
-unchanged and it is 64K.
->
-> That being said I think these patches are wrong for the case of megaraid
-or
-> mpt having both NVMe and SAS/ATA devices behind a single controller.
-> Is that a valid configuration?
-Yes. This is a valid configuration.
+Putting an empty 'mlx5_flow_spec' structure on the stack is a bit
+wasteful and causes a warning on 32-bit architectures when building
+with clang -fsanitize-coverage:
+
+drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c: In function 'mlx5_eswitch_termtbl_create':
+drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c:90:1: error: the frame size of 1032 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+
+Since the structure is never written to, we can statically allocate
+it to avoid the stack usage. To be on the safe side, mark all
+subsequent function arguments that we pass it into as 'const'
+as well.
+
+Fixes: 10caabdaad5a ("net/mlx5e: Use termination table for VLAN push actions")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ .../mlx5/core/eswitch_offloads_termtbl.c      |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/fs_core.c | 20 +++++++++----------
+ include/linux/mlx5/fs.h                       |  2 +-
+ 3 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
+index cb7d8ebe2c95..171f3d4ef9ac 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
+@@ -50,7 +50,7 @@ mlx5_eswitch_termtbl_create(struct mlx5_core_dev *dev,
+ 			    struct mlx5_flow_act *flow_act)
+ {
+ 	struct mlx5_flow_namespace *root_ns;
+-	struct mlx5_flow_spec spec = {};
++	static const struct mlx5_flow_spec spec = {};
+ 	int prio, flags;
+ 	int err;
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+index fe76c6fd6d80..739123e1363b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+@@ -584,7 +584,7 @@ static int insert_fte(struct mlx5_flow_group *fg, struct fs_fte *fte)
+ }
+ 
+ static struct fs_fte *alloc_fte(struct mlx5_flow_table *ft,
+-				u32 *match_value,
++				const u32 *match_value,
+ 				struct mlx5_flow_act *flow_act)
+ {
+ 	struct mlx5_flow_steering *steering = get_steering(&ft->node);
+@@ -612,7 +612,7 @@ static void dealloc_flow_group(struct mlx5_flow_steering *steering,
+ 
+ static struct mlx5_flow_group *alloc_flow_group(struct mlx5_flow_steering *steering,
+ 						u8 match_criteria_enable,
+-						void *match_criteria,
++						const void *match_criteria,
+ 						int start_index,
+ 						int end_index)
+ {
+@@ -642,7 +642,7 @@ static struct mlx5_flow_group *alloc_flow_group(struct mlx5_flow_steering *steer
+ 
+ static struct mlx5_flow_group *alloc_insert_flow_group(struct mlx5_flow_table *ft,
+ 						       u8 match_criteria_enable,
+-						       void *match_criteria,
++						       const void *match_criteria,
+ 						       int start_index,
+ 						       int end_index,
+ 						       struct list_head *prev)
+@@ -1285,7 +1285,7 @@ add_rule_fte(struct fs_fte *fte,
+ }
+ 
+ static struct mlx5_flow_group *alloc_auto_flow_group(struct mlx5_flow_table  *ft,
+-						     struct mlx5_flow_spec *spec)
++						     const struct mlx5_flow_spec *spec)
+ {
+ 	struct list_head *prev = &ft->node.children;
+ 	struct mlx5_flow_group *fg;
+@@ -1451,7 +1451,7 @@ static int check_conflicting_ftes(struct fs_fte *fte, const struct mlx5_flow_act
+ }
+ 
+ static struct mlx5_flow_handle *add_rule_fg(struct mlx5_flow_group *fg,
+-					    u32 *match_value,
++					    const u32 *match_value,
+ 					    struct mlx5_flow_act *flow_act,
+ 					    struct mlx5_flow_destination *dest,
+ 					    int dest_num,
+@@ -1536,7 +1536,7 @@ static void free_match_list(struct match_list_head *head)
+ 
+ static int build_match_list(struct match_list_head *match_head,
+ 			    struct mlx5_flow_table *ft,
+-			    struct mlx5_flow_spec *spec)
++			    const struct mlx5_flow_spec *spec)
+ {
+ 	struct rhlist_head *tmp, *list;
+ 	struct mlx5_flow_group *g;
+@@ -1589,7 +1589,7 @@ static u64 matched_fgs_get_version(struct list_head *match_head)
+ 
+ static struct fs_fte *
+ lookup_fte_locked(struct mlx5_flow_group *g,
+-		  u32 *match_value,
++		  const u32 *match_value,
+ 		  bool take_write)
+ {
+ 	struct fs_fte *fte_tmp;
+@@ -1622,7 +1622,7 @@ lookup_fte_locked(struct mlx5_flow_group *g,
+ static struct mlx5_flow_handle *
+ try_add_to_existing_fg(struct mlx5_flow_table *ft,
+ 		       struct list_head *match_head,
+-		       struct mlx5_flow_spec *spec,
++		       const struct mlx5_flow_spec *spec,
+ 		       struct mlx5_flow_act *flow_act,
+ 		       struct mlx5_flow_destination *dest,
+ 		       int dest_num,
+@@ -1715,7 +1715,7 @@ try_add_to_existing_fg(struct mlx5_flow_table *ft,
+ 
+ static struct mlx5_flow_handle *
+ _mlx5_add_flow_rules(struct mlx5_flow_table *ft,
+-		     struct mlx5_flow_spec *spec,
++		     const struct mlx5_flow_spec *spec,
+ 		     struct mlx5_flow_act *flow_act,
+ 		     struct mlx5_flow_destination *dest,
+ 		     int dest_num)
+@@ -1823,7 +1823,7 @@ static bool fwd_next_prio_supported(struct mlx5_flow_table *ft)
+ 
+ struct mlx5_flow_handle *
+ mlx5_add_flow_rules(struct mlx5_flow_table *ft,
+-		    struct mlx5_flow_spec *spec,
++		    const struct mlx5_flow_spec *spec,
+ 		    struct mlx5_flow_act *flow_act,
+ 		    struct mlx5_flow_destination *dest,
+ 		    int num_dest)
+diff --git a/include/linux/mlx5/fs.h b/include/linux/mlx5/fs.h
+index 2ddaa97f2179..c0c029664527 100644
+--- a/include/linux/mlx5/fs.h
++++ b/include/linux/mlx5/fs.h
+@@ -200,7 +200,7 @@ struct mlx5_flow_act {
+  */
+ struct mlx5_flow_handle *
+ mlx5_add_flow_rules(struct mlx5_flow_table *ft,
+-		    struct mlx5_flow_spec *spec,
++		    const struct mlx5_flow_spec *spec,
+ 		    struct mlx5_flow_act *flow_act,
+ 		    struct mlx5_flow_destination *dest,
+ 		    int num_dest);
+-- 
+2.20.0
+
