@@ -2,64 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC4547D2D
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2019 10:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D555E47D70
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2019 10:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbfFQIeP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jun 2019 04:34:15 -0400
-Received: from verein.lst.de ([213.95.11.211]:34287 "EHLO newverein.lst.de"
+        id S1727655AbfFQIpG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jun 2019 04:45:06 -0400
+Received: from verein.lst.de ([213.95.11.211]:34464 "EHLO newverein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbfFQIeO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 17 Jun 2019 04:34:14 -0400
+        id S1725971AbfFQIpG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 17 Jun 2019 04:45:06 -0400
 Received: by newverein.lst.de (Postfix, from userid 2407)
-        id D530F68D0E; Mon, 17 Jun 2019 10:33:42 +0200 (CEST)
-Date:   Mon, 17 Jun 2019 10:33:42 +0200
+        id 6715C68AFE; Mon, 17 Jun 2019 10:44:33 +0200 (CEST)
+Date:   Mon, 17 Jun 2019 10:44:33 +0200
 From:   Christoph Hellwig <hch@lst.de>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        linux-media@vger.kernel.org
-Subject: Re: use exact allocation for dma coherent memory
-Message-ID: <20190617083342.GA7883@lst.de>
-References: <20190614134726.3827-1-hch@lst.de> <20190617082148.GF28859@kadam>
+To:     Kashyap Desai <kashyap.desai@broadcom.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Sebastian Ott <sebott@linux.ibm.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Oliver Neukum <oneukum@suse.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
+        PDL-MPT-FUSIONLINUX <mpt-fusionlinux.pdl@broadcom.com>,
+        linux-hyperv@vger.kernel.org, linux-usb@vger.kernel.org,
+        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/13] megaraid_sas: set virt_boundary_mask in the scsi
+ host
+Message-ID: <20190617084433.GA7969@lst.de>
+References: <20190605190836.32354-1-hch@lst.de> <20190605190836.32354-11-hch@lst.de> <cd713506efb9579d1f69a719d831c28d@mail.gmail.com> <20190608081400.GA19573@lst.de> <98f6557ae91a7cdfe8069fcf7d788c88@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190617082148.GF28859@kadam>
+In-Reply-To: <98f6557ae91a7cdfe8069fcf7d788c88@mail.gmail.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> drivers/infiniband/hw/cxgb4/qp.c
->    129  static int alloc_host_sq(struct c4iw_rdev *rdev, struct t4_sq *sq)
->    130  {
->    131          sq->queue = dma_alloc_coherent(&(rdev->lldi.pdev->dev), sq->memsize,
->    132                                         &(sq->dma_addr), GFP_KERNEL);
->    133          if (!sq->queue)
->    134                  return -ENOMEM;
->    135          sq->phys_addr = virt_to_phys(sq->queue);
->    136          dma_unmap_addr_set(sq, mapping, sq->dma_addr);
->    137          return 0;
->    138  }
-> 
-> Is this a bug?
+On Fri, Jun 14, 2019 at 01:28:47AM +0530, Kashyap Desai wrote:
+> Is there any changes in API  blk_queue_virt_boundary? I could not find
+> relevant code which account for this. Can you help ?
+> Which git repo shall I use for testing ? That way I can confirm, I didn't
+> miss relevant changes.
 
-Yes.  This will blow up badly on many platforms, as sq->queue
-might be vmapped, ioremapped, come from a pool without page backing.
+Latest mainline plus the series (which is about to get resent).
+blk_queue_virt_boundary now forced an unlimited max_hw_sectors as that
+is how PRP-like schemes work, to work around a block driver merging
+bug.  But we also need to communicate that limit to the DMA layer so
+that we don't set a smaller iommu segment size limitation.
+
+> >From your above explanation, it means (after this patch) max segment size
+> of the MR controller will be set to 4K.
+> Earlier it is possible to receive single SGE of 64K datalength (Since max
+> seg size was 64K), but now the same buffer will reach the driver having 16
+> SGEs (Each SGE will contain 4K length).
+
+No, there is no more limit for the size of the segment at all,
+as for PRPs each PRP is sort of a segment from the hardware perspective.
+We just require the segments to not have gaps, as PRPs don't allow for
+that.
+
+That being said I think these patches are wrong for the case of megaraid
+or mpt having both NVMe and SAS/ATA devices behind a single controller.
+Is that a valid configuration?
