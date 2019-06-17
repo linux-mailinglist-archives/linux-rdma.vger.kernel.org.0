@@ -2,93 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 515B5484AE
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2019 15:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6458C484C8
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2019 16:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727678AbfFQN4q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jun 2019 09:56:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:50924 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbfFQN4p (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 17 Jun 2019 09:56:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCD2D28;
-        Mon, 17 Jun 2019 06:56:44 -0700 (PDT)
-Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1625E3F246;
-        Mon, 17 Jun 2019 06:56:39 -0700 (PDT)
-Date:   Mon, 17 Jun 2019 14:56:37 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        id S1726215AbfFQOBm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jun 2019 10:01:42 -0400
+Received: from andre.telenet-ops.be ([195.130.132.53]:51984 "EHLO
+        andre.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726005AbfFQOBm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jun 2019 10:01:42 -0400
+Received: from ramsan ([84.194.111.163])
+        by andre.telenet-ops.be with bizsmtp
+        id Rq1f2000J3XaVaC01q1fHF; Mon, 17 Jun 2019 16:01:40 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1hcsCZ-0002Ai-CR; Mon, 17 Jun 2019 16:01:39 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1hcsCZ-0000Ca-9x; Mon, 17 Jun 2019 16:01:39 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v17 03/15] arm64: Introduce prctl() options to control
- the tagged user addresses ABI
-Message-ID: <20190617135636.GC1367@arrakis.emea.arm.com>
-References: <cover.1560339705.git.andreyknvl@google.com>
- <a7a2933bea5fe57e504891b7eec7e9432e5e1c1a.1560339705.git.andreyknvl@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a7a2933bea5fe57e504891b7eec7e9432e5e1c1a.1560339705.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Jiri Kosina <trivial@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH trivial] IB/hfi1: Spelling s/statisfied/satisfied/
+Date:   Mon, 17 Jun 2019 16:01:38 +0200
+Message-Id: <20190617140138.734-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 01:43:20PM +0200, Andrey Konovalov wrote:
-> From: Catalin Marinas <catalin.marinas@arm.com>
-> 
-> It is not desirable to relax the ABI to allow tagged user addresses into
-> the kernel indiscriminately. This patch introduces a prctl() interface
-> for enabling or disabling the tagged ABI with a global sysctl control
-> for preventing applications from enabling the relaxed ABI (meant for
-> testing user-space prctl() return error checking without reconfiguring
-> the kernel). The ABI properties are inherited by threads of the same
-> application and fork()'ed children but cleared on execve().
-> 
-> The PR_SET_TAGGED_ADDR_CTRL will be expanded in the future to handle
-> MTE-specific settings like imprecise vs precise exceptions.
-> 
-> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/infiniband/hw/hfi1/tid_rdma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-A question for the user-space folk: if an application opts in to this
-ABI, would you want the sigcontext.fault_address and/or siginfo.si_addr
-to contain the tag? We currently clear it early in the arm64 entry.S but
-we could find a way to pass it down if needed.
-
+diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
+index 6fb93032fbefcb7e..24f30ff6b5fbc868 100644
+--- a/drivers/infiniband/hw/hfi1/tid_rdma.c
++++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+@@ -477,7 +477,7 @@ static struct rvt_qp *first_qp(struct hfi1_ctxtdata *rcd,
+  * Must hold the qp s_lock and the exp_lock.
+  *
+  * Return:
+- * false if either of the conditions below are statisfied:
++ * false if either of the conditions below are satisfied:
+  * 1. The list is empty or
+  * 2. The indicated qp is at the head of the list and the
+  *    HFI1_S_WAIT_TID_SPACE bit is set in qp->s_flags.
 -- 
-Catalin
+2.17.1
+
