@@ -2,72 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC026490A7
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2019 21:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC2649131
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2019 22:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbfFQT4j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jun 2019 15:56:39 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:52264 "EHLO mx1.redhat.com"
+        id S1726723AbfFQUTB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jun 2019 16:19:01 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:45260 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726048AbfFQT4j (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 17 Jun 2019 15:56:39 -0400
+        id S1726048AbfFQUTB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 17 Jun 2019 16:19:01 -0400
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E39EA30872F3;
-        Mon, 17 Jun 2019 19:56:38 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id EF27EC0524FB;
+        Mon, 17 Jun 2019 20:19:00 +0000 (UTC)
 Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DAF7180939;
-        Mon, 17 Jun 2019 19:56:36 +0000 (UTC)
-Message-ID: <92ef28dedfbe5adf7928caceeaa79b452492f44d.camel@redhat.com>
-Subject: Re: [PATCH] RDMA/odp: Fix missed unlock in non-blocking
- invalidate_start
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 37DEF9839;
+        Mon, 17 Jun 2019 20:18:59 +0000 (UTC)
+Message-ID: <51c50b108d2ab2fc7ff22bf7b38053adca0c365e.camel@redhat.com>
+Subject: Re: [PATCH rdma-next v1 0/4] Expose ENCAP mode to mlx5_ib
 From:   Doug Ledford <dledford@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, Moni Shoua <monis@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>, stable@vger.kernel.org
-Date:   Mon, 17 Jun 2019 15:56:34 -0400
-In-Reply-To: <20190612161536.GS6369@mtr-leonro.mtl.com>
-References: <20190611160951.23135-1-jgg@ziepe.ca>
-         <20190612161536.GS6369@mtr-leonro.mtl.com>
+To:     Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Mark Bloch <markb@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>, Petr Vorel <pvorel@suse.cz>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>
+Date:   Mon, 17 Jun 2019 16:18:56 -0400
+In-Reply-To: <20190616124357.GH4694@mtr-leonro.mtl.com>
+References: <20190612122014.22359-1-leon@kernel.org>
+         <20190616124357.GH4694@mtr-leonro.mtl.com>
 Organization: Red Hat, Inc.
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-ZWPd+e+sfldX6aOXW9Rd"
+        protocol="application/pgp-signature"; boundary="=-cDVk982+pcQY7caxNPz5"
 User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Mon, 17 Jun 2019 19:56:39 +0000 (UTC)
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Mon, 17 Jun 2019 20:19:01 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---=-ZWPd+e+sfldX6aOXW9Rd
+--=-cDVk982+pcQY7caxNPz5
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2019-06-12 at 19:15 +0300, Leon Romanovsky wrote:
-> On Tue, Jun 11, 2019 at 01:09:51PM -0300, Jason Gunthorpe wrote:
-> > From: Jason Gunthorpe <jgg@mellanox.com>
+On Sun, 2019-06-16 at 12:44 +0000, Leon Romanovsky wrote:
+> On Wed, Jun 12, 2019 at 03:20:10PM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@mellanox.com>
 > >=20
-> > If invalidate_start returns with EAGAIN then the umem_rwsem needs
-> > to be
-> > unlocked as no invalidate_end will be called.
+> > Changelog v0->v1:
+> >  * Added patch to devlink to use declared enum for encap mode
+> > instead of u8
+> >  * Constify input argumetn to encap mode function
+> >  * fix encap variable type to be boolean
 > >=20
-> > Cc: <stable@vger.kernel.org>
-> > Fixes: ca748c39ea3f ("RDMA/umem: Get rid of per_mm-
-> > >notifier_count")
-> > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> > ---
-> >  drivers/infiniband/core/umem_odp.c | 14 +++++++++-----
-> >  1 file changed, 9 insertions(+), 5 deletions(-)
+> > -----------------------------------------------------------------
+> > ----
+> > Hi,
 > >=20
+> > This is short series from Maor to expose and use enacap mode inside
+> > mlx5_ib.
+> >=20
+> > Thanks
+> >=20
+> > Leon Romanovsky (1):
+> >   net/mlx5: Declare more strictly devlink encap mode
+> >=20
+> > Maor Gottlieb (3):
+> >   net/mlx5: Expose eswitch encap mode
 >=20
-> Thanks,
-> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+> Those two applied to mlx5-next
+> 82b11f071936 net/mlx5: Expose eswitch encap mode
+> 98fdbea55037 net/mlx5: Declare more strictly devlink encap mode
+>=20
+> >   RDMA/mlx5: Consider eswitch encap mode
+> >   RDMA/mlx5: Enable decap and packet reformat on FDB
+>=20
+> Doug, Jason
+>=20
+> Can you please take those two patches in addition to latest mlx5-
+> next?
 
-Thanks, applied to for-next.
+Done, thanks.
+
 
 --=20
 Doug Ledford <dledford@redhat.com>
@@ -75,27 +98,27 @@ Doug Ledford <dledford@redhat.com>
     Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
 2FDD
 
---=-ZWPd+e+sfldX6aOXW9Rd
+--=-cDVk982+pcQY7caxNPz5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0H8HIACgkQuCajMw5X
-L91AnxAAgivoNirOgguwm5USGyeORAmKQo2bF3OadlT7XFwv1DEj8Vp0Cx27u0Hb
-oxzMn0V0HJ4CH142yS2bX8N7dhbzXmWqUs7/9n/yTufXHQOy3FB8l3Iu6MirmvCL
-iromXBKfVaFltxCXgpfHugk+76RRQgZevbjg3+NUfYqGVBp/98WKMdzJVo9oMmzO
-p+MrWpYR5/1xnm1XFdfmpGxrubZzhX/jNcgmlESD5BWEcqAIP+WFk11x4JthuH7J
-9uzgSbToQpiCd+qqoVael3yMbZBI5/zM0D5AdIfW6N8HWEpjH4y9HyN9r4xEj1ga
-cOAHYUfUCulzGkWrwq3Z+LvDzCirshsAmC+Zltmk3chSg//cyoHvj09XJvIVgK3P
-MMIJweBePpyrQ3uWW2o6SE5/uD3L/uHflyw5iHhFjXSrETNJzowJccE+zA6mEP0M
-k5k7TpZx/lnW2gvhLDyADydDhbbXORNTt738oK1G4pujKt3+M9kYLALhbgfqjlXC
-vSiBBDwZm0lJAxp+nCXtUBS3ZgsVmIrS1wyj59z24Txaqj8NGyJ3bIuAAOuiZ650
-Pn+8uZzKjU/TQ/1iGtt0hKIOPSPZOQBJZPN634F6tBntrsgvpQfGhuuGfJiUe8L9
-FiF1818NEdXftBDQBj7u+CmESbI2dWVHJNynO87TwY68sgNvl0I=
-=AFTM
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0H9bAACgkQuCajMw5X
+L917uA//e5x498U/O5qfHU6XmC/M8F30bbBP9608RzJTu6smZnw0HysLX98g9AeA
+99dod1NvL8XSm6vJkZDFeMuCVHTXSIbnujEWbk5hSnqmgFxG+Q2sIG1pxmNft7zy
+Bt+MWMoedRmuvQUgU3nQr8OcMRIXKaPuYCVaGvmhu5s4Q2Qy6SG3jK9ka/TN0lHP
+63ke/oNQyY9Y7gnxfJRBfCfcAe+iF94S1rdWhKhQNM8E0zBJ0axzC+JcJAlm8qd/
+eZX2++0FrBdDPInwWZfm8YZK41cTrit+jzZZr5EBuUdx1EoaBmUYOcXoL8kwUjM7
+Sg6VzGLWoKLhJhhF2obvVZwu51x2uu1gzr2GCIN14kslxsyoxSwhOaX6YAk7bVLT
+DJFcp21AEEVCi/2GZDPrWS55KI1uWy0azKfXKK9w7aDJXrs56MkJ/jII41c5IV9A
+YVj6YffTL5CjMQikq6cLcOIybL9tZZtQM8OPrBhY5V23P1kXF+ZU1GTG6tnjuG9v
+AHlUJ3XNCiMxtoxJfwXhhr4ifpwBeRoO7JVn3XPPIGTizAq53nNXb+QYNi3KPIYd
+JhCvywYgm5Fhs6tapHuqnsIgWu5ACLEOOACHtA6G/sjRjGIreX8pck25bqAESS//
+0M1XmdfGtCoInB/Zp8/pSW9dZD/pRVdh9+lY+yBiV+/LA8gcFvg=
+=wE8p
 -----END PGP SIGNATURE-----
 
---=-ZWPd+e+sfldX6aOXW9Rd--
+--=-cDVk982+pcQY7caxNPz5--
 
