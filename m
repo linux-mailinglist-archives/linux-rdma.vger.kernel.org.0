@@ -2,114 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EE84A9C1
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 20:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58EC94AA31
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 20:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729922AbfFRSZu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 14:25:50 -0400
-Received: from mail-eopbgr30052.outbound.protection.outlook.com ([40.107.3.52]:35707
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727616AbfFRSZu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 Jun 2019 14:25:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G1vbh2K593EGktkzPOJe05CCnv8JZbwF+VLdvrk2bcU=;
- b=Dy34YpZqCBNhY/9JNdZCGCtM4926K+1W+5+B/SHUrrIqeYkp7k3rzAIDPUahr9oYQqYQ315bsU9Or4qw/F06h6tCgA/mUrgNrzjPng68RDsVoiI/kXN6yc5yxUfCRiv9hkvQpHRdOpVfE8DRM0U0kj6rEWOjz6uRfs+9O9ImldQ=
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
- DB6PR0501MB2390.eurprd05.prod.outlook.com (10.168.75.144) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.11; Tue, 18 Jun 2019 18:25:46 +0000
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::a901:6951:59de:3278]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::a901:6951:59de:3278%2]) with mapi id 15.20.1987.014; Tue, 18 Jun 2019
- 18:25:46 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Parav Pandit <parav@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-CC:     Mark Bloch <markb@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Bodong Wang <bodong@mellanox.com>
-Subject: Re: [PATCH mlx5-next 14/15] {IB, net}/mlx5: E-Switch, Use index of
- rep for vport to IB port mapping
-Thread-Topic: [PATCH mlx5-next 14/15] {IB, net}/mlx5: E-Switch, Use index of
- rep for vport to IB port mapping
-Thread-Index: AQHVJUIpGI7fvdRK1U+ZsqwPxYsEnKahOoGAgAABfQCAAH/3gA==
-Date:   Tue, 18 Jun 2019 18:25:46 +0000
-Message-ID: <7b098b42a51e5b96eca99c024719eebafa775f7a.camel@mellanox.com>
-References: <20190617192247.25107-1-saeedm@mellanox.com>
-         <20190617192247.25107-15-saeedm@mellanox.com>
-         <20190618104220.GH4690@mtr-leonro.mtl.com>
-         <AM0PR05MB4866DF63BB7D80483630F0A9D1EA0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-In-Reply-To: <AM0PR05MB4866DF63BB7D80483630F0A9D1EA0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.32.2 (3.32.2-1.fc30) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [209.116.155.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 92900457-cfd7-4caf-c805-08d6f41a61ad
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2390;
-x-ms-traffictypediagnostic: DB6PR0501MB2390:
-x-microsoft-antispam-prvs: <DB6PR0501MB2390A5FEC57CE7BEAAC9F371BEEA0@DB6PR0501MB2390.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 007271867D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(346002)(366004)(396003)(376002)(39860400002)(199004)(189003)(13464003)(64756008)(86362001)(81166006)(478600001)(53546011)(5660300002)(486006)(6506007)(6636002)(76176011)(118296001)(54906003)(3846002)(68736007)(14454004)(53936002)(81156014)(8936002)(316002)(110136005)(2906002)(6116002)(229853002)(6486002)(58126008)(8676002)(6246003)(7736002)(476003)(66556008)(66476007)(71190400001)(446003)(102836004)(66446008)(186003)(6512007)(26005)(25786009)(305945005)(6436002)(11346002)(66946007)(76116006)(73956011)(91956017)(66066001)(2616005)(99286004)(4326008)(71200400001)(450100002)(107886003)(256004)(36756003);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2390;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: I7K8KybzyhaeDKRCpk9b/GbXYW74Qbqcnqxnb9MuC5f+zne8Bs/gOVinVWB4do123c6eT3M9JQFE6f7kA/rXPCWlhcbXhBRbF5JydiHhvQOlQioesNuK4foen5eyu8/b16R7dDKErZUQOA9XYgdAIuwTsMSXGmli46tWiYxXP6OfSWY77RHTvY/bQPwFK9fxVUQHmWZBtJdc0alkPzL53gY6/P6J5VBp+BNf/urdGeNK9sUeB4tiP1vEjR3oi1yy+F9DvfutpJhWAoWVxNdC3cya+krCLUKeYvk75HJN3aRAsdV8ihLsAeg+LCxqVSEo6AXYEgCTuAvjL5PO7wSbMylu8Ux36lYuKdN27DfoX5q4PvZo5DrA06hWKfZFdUtwR+0gQKosWYwARuO26lnXhf4FCGYV6c1GITyuRqi/upk=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <09BE78105BB32A4781F89EF5AA17F0AD@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1730060AbfFRSqz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 14:46:55 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:40526 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729964AbfFRSqz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 14:46:55 -0400
+Received: by mail-qt1-f195.google.com with SMTP id a15so16676698qtn.7
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2019 11:46:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ha2EyIfYXF22QF52W+p7tjwrs6cBRLT4vNGFSyQgHAQ=;
+        b=jEkp82rLcQvFwiVELqePHEzIxyTzWkp+U84b7P6NPOQC+XkgaAzDFozIe+diE6KxhQ
+         SmdvCRWtxnI8WPVz6ymVYe2nbcPRiNpLH6jQJ4b7cWamrFWdIUHah550ub7bGy2EBwvL
+         BjvM+3xOPPmuFqJ4ocq3DFrllLjcTpugXRfDnIir25VoyxkNUYxnvK6RQwtFOwAV3y65
+         W0b+SF654WZUcoXzKV0ufjmPK2SphiiVZOr0b/5T7xja04ryxT0/+fswOV0tgnI46wEb
+         qjxtpstzwm6PRCEKIvxqRGMl13zra9PNcX00Aufu0S8ixydMtFfFnT9vJAdtEgBeC2/K
+         QiuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ha2EyIfYXF22QF52W+p7tjwrs6cBRLT4vNGFSyQgHAQ=;
+        b=WA8RPcG0Y/W7m6VMWy3aY6lBeBb9pF7N8fY9+b+GIVsBvkIGa4WE/o9kjkMaEZT7Vi
+         Y2zK5ecV8l5rH1Rv1ZZ1UjLYM2RoDA3RrHlxaArOdMLSth5NEYQETvs7QV7P1M90hDM1
+         vQp/HvLsuogkeL2C7AcuuzwdBp6c18WwJLp6lbMXoflDxGVhvGfX+SQNZ7O7YFbYOTeL
+         gE3+iatHrs6SsEIQ/zv2+bvYfX9nCddGCGG9yTlfsgU/+4p+WY+zQ7NQ+jaMMvKwgHmd
+         zOWrCtF+nCa1Vsoh30fQNYQXeJpxUkE8fSADHAT0Fw/ZXdwgBNBu4DmIczroYEUvpIYI
+         o4Ug==
+X-Gm-Message-State: APjAAAUx/Oafr7kMV5stwIDcnxqyxeGp3l3B/+F6dZiFKFEEc/23zlkm
+        kyk/AaRMqW7PF5yRa1PwYiMpcQ==
+X-Google-Smtp-Source: APXvYqygkS11it+V7jC4U5BJsu98+uOSH4uLX+MaaEAAKPyWF7GN1eW4NVx2XzlxslDDwPinBoiMyg==
+X-Received: by 2002:ac8:520e:: with SMTP id r14mr99773776qtn.50.1560883614382;
+        Tue, 18 Jun 2019 11:46:54 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id s35sm9946969qth.79.2019.06.18.11.46.53
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 18 Jun 2019 11:46:53 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hdJ89-0008VZ-Cb; Tue, 18 Jun 2019 15:46:53 -0300
+Date:   Tue, 18 Jun 2019 15:46:53 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] RDMA: Add NLDEV_GET_CHARDEV to allow char dev
+ discovery and autoload
+Message-ID: <20190618184653.GM6961@ziepe.ca>
+References: <20190614003819.19974-1-jgg@ziepe.ca>
+ <20190614003819.19974-3-jgg@ziepe.ca>
+ <20190618121709.GK4690@mtr-leonro.mtl.com>
+ <20190618131019.GE6961@ziepe.ca>
+ <97a95f7e5447b0ddf4dee15c536d72bd9fb65780.camel@redhat.com>
+ <20190618165338.GO4690@mtr-leonro.mtl.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 92900457-cfd7-4caf-c805-08d6f41a61ad
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2019 18:25:46.3288
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2390
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190618165338.GO4690@mtr-leonro.mtl.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gVHVlLCAyMDE5LTA2LTE4IGF0IDEwOjQ3ICswMDAwLCBQYXJhdiBQYW5kaXQgd3JvdGU6DQo+
-IEhpIExlb24sDQo+IA0KPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gRnJvbTog
-TGVvbiBSb21hbm92c2t5DQo+ID4gU2VudDogVHVlc2RheSwgSnVuZSAxOCwgMjAxOSA0OjEyIFBN
-DQo+ID4gVG86IFNhZWVkIE1haGFtZWVkIDxzYWVlZG1AbWVsbGFub3guY29tPg0KPiA+IENjOiBu
-ZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZzsgQm9kb25n
-IFdhbmcNCj4gPiA8Ym9kb25nQG1lbGxhbm94LmNvbT47IFBhcmF2IFBhbmRpdCA8cGFyYXZAbWVs
-bGFub3guY29tPjsgTWFyaw0KPiA+IEJsb2NoDQo+ID4gPG1hcmtiQG1lbGxhbm94LmNvbT4NCj4g
-PiBTdWJqZWN0OiBSZTogW1BBVENIIG1seDUtbmV4dCAxNC8xNV0ge0lCLCBuZXR9L21seDU6IEUt
-U3dpdGNoLCBVc2UNCj4gPiBpbmRleCBvZiByZXANCj4gPiBmb3IgdnBvcnQgdG8gSUIgcG9ydCBt
-YXBwaW5nDQo+ID4gDQo+ID4gT24gTW9uLCBKdW4gMTcsIDIwMTkgYXQgMDc6MjM6MzdQTSArMDAw
-MCwgU2FlZWQgTWFoYW1lZWQgd3JvdGU6DQo+ID4gPiBGcm9tOiBCb2RvbmcgV2FuZyA8Ym9kb25n
-QG1lbGxhbm94LmNvbT4NCj4gPiA+IA0KPiA+ID4gSW4gdGhlIHNpbmdsZSBJQiBkZXZpY2UgbW9k
-ZSwgdGhlIG1hcHBpbmcgYmV0d2VlbiB2cG9ydCBudW1iZXINCj4gPiA+IGFuZCByZXANCj4gPiA+
-IHJlbGllcyBvbiBhIGNvdW50ZXIuIEhvd2V2ZXIgZm9yIGR5bmFtaWMgdnBvcnQgYWxsb2NhdGlv
-biwgaXQgaXMNCj4gPiA+IGRlc2lyZWQgdG8ga2VlcCBjb25zaXN0ZW50IG1hcCBvZiBlc3dpdGNo
-IHZwb3J0IGFuZCBJQiBwb3J0Lg0KPiA+ID4gDQo+ID4gPiBIZW5jZSwgc2ltcGxpZnkgY29kZSB0
-byByZW1vdmUgdGhlIGZyZWUgcnVubmluZyBjb3VudGVyIGFuZA0KPiA+ID4gaW5zdGVhZA0KPiA+
-ID4gdXNlIHRoZSBhdmFpbGFibGUgdnBvcnQgaW5kZXggZHVyaW5nIGxvYWQvdW5sb2FkIHNlcXVl
-bmNlIGZyb20NCj4gPiA+IHRoZQ0KPiA+ID4gZXN3aXRjaC4NCj4gPiA+IA0KPiA+ID4gU2lnbmVk
-LW9mZi1ieTogQm9kb25nIFdhbmcgPGJvZG9uZ0BtZWxsYW5veC5jb20+DQo+ID4gPiBTdWdnZXN0
-ZWQtYnk6IFBhcmF2IFBhbmRpdCA8cGFyYXZAbWVsbGFub3guY29tPg0KPiA+ID4gUmV2aWV3ZWQt
-Ynk6IFBhcmF2IFBhbmRpdCA8cGFyYXZAbWVsbGFub3guY29tPg0KPiA+IA0KPiA+IFdlIGFyZSBu
-b3QgYWRkaW5nIG11bHRpcGxlICIqLWJ5IiBmb3Igc2FtZSB1c2VyLCBwbGVhc2UgY2hvb3NlIG9u
-ZS4NCj4gPiANCj4gU3VnZ2VzdGVkLWJ5IHdhcyBhZGRlZCBieSBCb2RvbmcgZHVyaW5nIG91ciBk
-aXNjdXNzaW9uLiBMYXRlciBvbiB3aGVuDQo+IEkgZGlkIGdlcnJpdCArMSwgUkIgdGFnIGdvdCBh
-ZGRlZC4NCj4gDQoNCklzIHRoZXJlIGEgcnVsZSBhZ2FpbnN0IGhhdmluZyBtdWx0aXBsZSAiKi1i
-eSIgPyBpIGRvbid0IHRoaW5rIHNvICBhbmQNCnRoZXJlIHNob3VsZG4ndCBiZSwgdXNlcnMgbmVl
-ZCB0byBnZXQgdGhlIGV4YWN0IGFtb3VudCBvZiByZWNvZ25pdGlvbg0KYXMgdGhlIGFtb3VudCBv
-ZiB3b3JrIHRoZXkgcHV0IGludG8gdGhpcyBwYXRjaCwgaWYgdGhleSByZXZpZXdlZCBhbmQNCnRl
-c3RlZCBhIHBhdGNoIHRoZXkgZGVzZXJ2ZSB0d28gdGFncyAuLiANCg0KDQo=
+On Tue, Jun 18, 2019 at 07:53:38PM +0300, Leon Romanovsky wrote:
+> On Tue, Jun 18, 2019 at 11:55:08AM -0400, Doug Ledford wrote:
+> > On Tue, 2019-06-18 at 10:10 -0300, Jason Gunthorpe wrote:
+> > > On Tue, Jun 18, 2019 at 03:17:09PM +0300, Leon Romanovsky wrote:
+> > > > >  /**
+> > > > >   * ib_set_client_data - Set IB client context
+> > > > >   * @device:Device to set context for
+> > > > > diff --git a/drivers/infiniband/core/nldev.c
+> > > > > b/drivers/infiniband/core/nldev.c
+> > > > > index 69188cbbd99bd5..55eccea628e99f 100644
+> > > > > +++ b/drivers/infiniband/core/nldev.c
+> > > > > @@ -120,6 +120,9 @@ static const struct nla_policy
+> > > > > nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+> > > > >  	[RDMA_NLDEV_ATTR_DEV_PROTOCOL]		= { .type =
+> > > > > NLA_NUL_STRING,
+> > > > >  				    .len = RDMA_NLDEV_ATTR_ENTRY_STRLEN
+> > > > > },
+> > > > >  	[RDMA_NLDEV_NET_NS_FD]			= { .type =
+> > > > > NLA_U32 },
+> > > > > +	[RDMA_NLDEV_ATTR_CHARDEV_TYPE]		= { .type =
+> > > > > NLA_NUL_STRING,
+> > > > > +				    .len = 128 },
+> > > > > +	[RDMA_NLDEV_ATTR_PORT_INDEX]		= { .type = NLA_U32 },
+> > > >
+> > > > It is wrong, we already have RDMA_NLDEV_ATTR_PORT_INDEX declared in
+> > > > nla_policy.
+> > > > But we don't have other RDMA_NLDEV_ATTR_CHARDEV_* declarations
+> > > > here.
+> > >
+> > > Doug can you fix it?
+> >
+> > I haven't pushed my wip to for-next yet, so yeah, I can fix it.  We
+> > just need to decide on what the full fix is ;-)
+> >
+> > Drop the duplicate ATTR_PORT_INDEX, but what about a final decision on
+> > including the outputs for possible future type checking?  You and Leon
+> > seem to be going back and forth, and I don't have strong feelings
+> > either way on this one.  It's just a definition statement, not like
+> > it's a dead subroutine.
+> 
+> I have a very strong opinion about it.
+
+Then Doug should add the policies, here are the output values from the
+userspace:
+
+        [RDMA_NLDEV_ATTR_CHARDEV] = { .type = NLA_U64 },
+        [RDMA_NLDEV_ATTR_CHARDEV_ABI] = { .type = NLA_U64 },
+        [RDMA_NLDEV_ATTR_DEV_INDEX] = { .type = NLA_U32 },
+        [RDMA_NLDEV_ATTR_DEV_NODE_TYPE] = { .type = NLA_U8 },
+        [RDMA_NLDEV_ATTR_NODE_GUID] = { .type = NLA_U64 },
+        [RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID] = { .type = NLA_U32 },
+        [RDMA_NLDEV_ATTR_CHARDEV_NAME] = { .type = NLA_NUL_STRING },
+        [RDMA_NLDEV_ATTR_DEV_NAME] = { .type = NLA_NUL_STRING },
+        [RDMA_NLDEV_ATTR_DEV_PROTOCOL] = { .type = NLA_NUL_STRING },
+        [RDMA_NLDEV_ATTR_FW_VERSION] = { .type = NLA_NUL_STRING },
+
+Jason
