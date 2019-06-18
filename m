@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC8949655
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 02:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5AB49658
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 02:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbfFRAhB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jun 2019 20:37:01 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45274 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725829AbfFRAhB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jun 2019 20:37:01 -0400
-Received: by mail-qt1-f193.google.com with SMTP id j19so13149246qtr.12
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Jun 2019 17:37:00 -0700 (PDT)
+        id S1726741AbfFRAiK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jun 2019 20:38:10 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:45292 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbfFRAiJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jun 2019 20:38:09 -0400
+Received: by mail-qk1-f193.google.com with SMTP id s22so7436894qkj.12
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Jun 2019 17:38:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=DUhdu87n/RcFK2o2RKT7Xn6jZQqeitWARb0DhK6/xFo=;
-        b=Br9RdI5mPQREEmkYKTbqml22ch68dceGzZJ3NpqNGWnyOqMXHH3Vp3I8RbvWN+0dGG
-         +g1j7rLYevDrJD9u1C3ny612FtpBO3tbIePe350M5ElOwdk4pjJA8/R330jcc3+vtYpn
-         17S07MU/B/lrrFpSdr2NFsNSFXPEIP46dFGaUq3K6P/Gztn1b6znTuHTRL9kMCjl+OsE
-         E/SXSnxqH8z94kWuui++s5M1RdL+/flIEAt9fmVVYofcAVK2jbveGcEm8QPiuUNVzG1y
-         spSh4cwLvofbfJDRrinF0oVrVOFf22UKWIYy7Uyrxgd7cZ/rnvEbnjdjRkZxGdQjLAWX
-         AxQw==
+        bh=EFgy84qSqdB63j+sw5RQb8FlQ7olTwYiiqpzSjRkr8U=;
+        b=gEMe8OGDFmOz6H46yGNGMqF8pI5BwGDEcf+SCaHqb0Q7uRwuonwPVlWfdaht7QofIf
+         YtRgnZv2e9ADohWcFTRVNBYXno1F4xdqwANh3AoWhgQMpkk6q4C73j++QLk+F6iC/Wju
+         IPMl2CiAFZSvU7ydMedZlrsuuDZ/6Y0XEeYIDVixBngY8FE0gVLsWnlEJSLgpw6skcr+
+         zzYgJ2BJQj3dg2qGcz6M9TsKsHpszq25fWMd1XzmqaGMWCdE4XNQHbUtNhiHChs/I842
+         xkYSo0wFMFiReic1CZqd6S3jyFJPcJgNcxDLbu/6GrsVfkHd0kWkCTx4jW2kP6BEEWBL
+         gN8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DUhdu87n/RcFK2o2RKT7Xn6jZQqeitWARb0DhK6/xFo=;
-        b=PizPHODVKxQBIf4Omk8HG9uilsKtS/S4h6ihRkrxo6RlGAnIfDVmfX2A+DjaxVtr6O
-         J/f+I/KjAT451Y3cfOpS85eh1/uZHSs18zPs3CCvCDXj1I6WIDsuRALIqViOQP18IzcZ
-         erAzIgO+Xgno3orbiQquAzV44azQeMkXuRAJ1MOvFs4ZP0aORk0hwDsDGG3CjvrfiLXy
-         553HvvS4CtUGchyLafHX0Vm+bVWZGpiT8+d09lDIbuQ5fNM6ShmolCYaK3ecqc9aqas5
-         ga8e8r9FeBg4wjYkzqtHDK89XjZRbuB3sEKc9D/3cm3P2G2PHuZ+9YIwHNB5vi+7IaOZ
-         NGUg==
-X-Gm-Message-State: APjAAAXii1MB5Ntaqe9beuTPs+U6ZgU3YUNPxytxgsl88nYGpwvPmYU2
-        oqSZ9d6kzCSIvF3M1TjEnaRdqzoGM+lu7Q==
-X-Google-Smtp-Source: APXvYqwNKmMPGfd11Aoys/ex+FCBBx8y28tJjyO+G3ezjcr0a4wUE2AKBOFyQh6LE7vtVp6hp3BWOw==
-X-Received: by 2002:a0c:89a5:: with SMTP id 34mr4976222qvr.110.1560818219783;
-        Mon, 17 Jun 2019 17:36:59 -0700 (PDT)
+        bh=EFgy84qSqdB63j+sw5RQb8FlQ7olTwYiiqpzSjRkr8U=;
+        b=SOWvIg9eR0nGOR2SHFB2lfZsHOpkTfOQKX/9Z3CVpHZwSI1f8mxuNej6gsQVVimzu5
+         QvPGXRAmex11xY5khSp49lOt17++0yR+hBEz7FYZiQttTGvGRet4JLQtD2H5cPzwy5Yv
+         6iFEMDqInj36G2uVFxnBaIS9FRI/hJNKhuH+Quz/oIBSkrweOdRAz3KCATpjzQlZq/x5
+         p2BTv5K4au90Afv0NIT70D2ORT9vJLTuEn85Ry1JpWevgVczjEgifQVwX808pKMy/Yv0
+         vRgGR8H4drROOXRSthX7wGS5Z3rxo4IJbAM+0D09w3+Ff1JATvIy9kPrmXBoeyjtUGZi
+         WMVg==
+X-Gm-Message-State: APjAAAVAJT2QItevtAWbcLMK87Bwo6zr0oUZI1JgYQjoM/S0ThvnZJjs
+        9Q1DIQglQ4PyBaoa6WZ5yaP0aQXsvR+uHw==
+X-Google-Smtp-Source: APXvYqyeFBKaRlaV7l7eUdOweeWB83eOAxMhqF5BFWtungKZNloqqlhd+ctR1JGUO5HBcVp4eWezCA==
+X-Received: by 2002:a37:4793:: with SMTP id u141mr66063884qka.355.1560818288855;
+        Mon, 17 Jun 2019 17:38:08 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id 41sm9704086qtp.32.2019.06.17.17.36.59
+        by smtp.gmail.com with ESMTPSA id i22sm7653833qti.30.2019.06.17.17.38.08
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 17 Jun 2019 17:36:59 -0700 (PDT)
+        Mon, 17 Jun 2019 17:38:08 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hd27O-0000jS-MT; Mon, 17 Jun 2019 21:36:58 -0300
-Date:   Mon, 17 Jun 2019 21:36:58 -0300
+        id 1hd28V-0000kY-Jn; Mon, 17 Jun 2019 21:38:07 -0300
+Date:   Mon, 17 Jun 2019 21:38:07 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Christoph Hellwig <hch@infradead.org>
 Cc:     Jerome Glisse <jglisse@redhat.com>,
@@ -57,67 +57,48 @@ Cc:     Jerome Glisse <jglisse@redhat.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         Ben Skeggs <bskeggs@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Philip Yang <Philip.Yang@amd.com>
-Subject: Re: [PATCH v3 hmm 04/12] mm/hmm: Simplify hmm_get_or_create and make
- it reliable
-Message-ID: <20190618003658.GC30762@ziepe.ca>
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Ira Weiny <iweiny@intel.com>, Philip Yang <Philip.Yang@amd.com>
+Subject: Re: [PATCH v3 hmm 10/12] mm/hmm: Do not use list*_rcu() for
+ hmm->ranges
+Message-ID: <20190618003807.GD30762@ziepe.ca>
 References: <20190614004450.20252-1-jgg@ziepe.ca>
- <20190614004450.20252-5-jgg@ziepe.ca>
- <20190615141211.GD17724@infradead.org>
+ <20190614004450.20252-11-jgg@ziepe.ca>
+ <20190615141826.GJ17724@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190615141211.GD17724@infradead.org>
+In-Reply-To: <20190615141826.GJ17724@infradead.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 15, 2019 at 07:12:11AM -0700, Christoph Hellwig wrote:
-> > +	spin_lock(&mm->page_table_lock);
-> > +	if (mm->hmm) {
-> > +		if (kref_get_unless_zero(&mm->hmm->kref)) {
-> > +			spin_unlock(&mm->page_table_lock);
-> > +			return mm->hmm;
-> > +		}
-> > +	}
-> > +	spin_unlock(&mm->page_table_lock);
+On Sat, Jun 15, 2019 at 07:18:26AM -0700, Christoph Hellwig wrote:
+> On Thu, Jun 13, 2019 at 09:44:48PM -0300, Jason Gunthorpe wrote:
+> >  	range->hmm = hmm;
+> >  	kref_get(&hmm->kref);
+> > -	list_add_rcu(&range->list, &hmm->ranges);
+> > +	list_add(&range->list, &hmm->ranges);
+> >  
+> >  	/*
+> >  	 * If there are any concurrent notifiers we have to wait for them for
+> > @@ -934,7 +934,7 @@ void hmm_range_unregister(struct hmm_range *range)
+> >  	struct hmm *hmm = range->hmm;
+> >  
+> >  	mutex_lock(&hmm->lock);
+> > -	list_del_rcu(&range->list);
+> > +	list_del(&range->list);
+> >  	mutex_unlock(&hmm->lock);
 > 
-> This could become:
+> Looks fine:
 > 
-> 	spin_lock(&mm->page_table_lock);
-> 	hmm = mm->hmm
-> 	if (hmm && kref_get_unless_zero(&hmm->kref))
-> 		goto out_unlock;
-> 	spin_unlock(&mm->page_table_lock);
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > 
-> as the last two lines of the function already drop the page_table_lock
-> and then return hmm.  Or drop the "hmm = mm->hmm" asignment above and
-> return mm->hmm as that should be always identical to hmm at the end
-> to save another line.
+> Btw, is there any reason new ranges are added to the front and not the
+> tail of the list?
 
-Yeah, I can fuss it some more.
-
-> > +	/*
-> > +	 * The mm->hmm pointer is kept valid while notifier ops can be running
-> > +	 * so they don't have to deal with a NULL mm->hmm value
-> > +	 */
-> 
-> The comment confuses me.  How does the page_table_lock relate to
-> possibly running notifiers, as I can't find that we take
-> page_table_lock?  Or is it just about the fact that we only clear
-> mm->hmm in the free callback, and not in hmm_free?
-
-It was late when I wrote this fixup, the comment is faulty, and there
-is no reason to delay this until the SRCU cleanup at this point in the
-series.
-
-The ops all get their struct hmm from container_of, the only thing
-that refers to mm->hmm is hmm_get_or_create().
-
-I'll revise it tomorrow, the comment will go away and the =NULL will
-go to the release callback
+Couldn't find one. I think order on this list doesn't matter.
 
 Jason
