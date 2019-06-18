@@ -2,101 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E534F4AA7B
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 20:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DA14AA8A
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 21:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730435AbfFRS57 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 14:57:59 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34457 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730434AbfFRS57 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 14:57:59 -0400
-Received: by mail-qt1-f193.google.com with SMTP id m29so16759976qtu.1
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2019 11:57:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PttUnfJR2Mh5w8ZNX8UBClI5Uo9DGdQHvLC9b9+U4Hc=;
-        b=PXeS3vrprzJCfOdHHqzsyJuksx6Jm56D2ltYr60kDgSXAubt62volsRxeiJYH3eQEA
-         qkIDep9gBltu/VFi4HJjTckykz/IF/uFm7scvosf85B+lHsbj0dpRu3aDtM8neaO1TM8
-         jn75MRkzxtq6VT6WxVud/XCv4fiC/Hs/QuY23+nW+QuinJo8UTrJFA4I2rX38F3Pxeiw
-         eP9rL5iIlAFSNbpVdB19/9eqmpnvMNQsySfc/gSbru2YJ1r1laZ6myv5v4YTCDELSwVm
-         yt0NAobLw0i6IyHq1SKxS6BjkonU3m5GhldixnjUWA6n0jM3Ie3wseLt5i4fZPceHLH1
-         /ZTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PttUnfJR2Mh5w8ZNX8UBClI5Uo9DGdQHvLC9b9+U4Hc=;
-        b=Gcs5tphUHYkARGzEI3qgu+el/gCn8XyNBeoVXIeZ3vEO+/DjkL1aO5eUs6mFFRPi96
-         QnJTQLLkbkVTYI8siMkurEGP5MX30I+S3ZAj5EAud4CRG+tTkC9kF10aHRhbYex2w3sK
-         DnD/PXM31xpWdyrsTwo2zJEiiuTnmTStAzujxKYQNr2Nu02m5+68ia76zbZ89/oVlZhA
-         2VZH/nk4phHrogfclERKhJ6rOx1Y4RN81WShlVMSu7XMyPCQv1RJCwMLHBz/cLEIj06A
-         lxQy9PhqTBk77lFfQKQn/v6QrEyLBldaPaRG511t8DcbKJ5pbuc4aB399rFD9la3Fdx5
-         i6qQ==
-X-Gm-Message-State: APjAAAU3DxjMJKNhJ15ecfbEXWOxFgrSJzoFNWa9BrBp5b8bR4r7s+JC
-        eVBbBwHrcsZqbKpidjpd4AO6rA==
-X-Google-Smtp-Source: APXvYqwnCmKjPrstr3X9a/omza5K8iCghkX9+cWplH9fTwptdxDxjvrYmzpam1j8Twpi6fT6wctRWw==
-X-Received: by 2002:aed:21f0:: with SMTP id m45mr87408989qtc.391.1560884277919;
-        Tue, 18 Jun 2019 11:57:57 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id m44sm11840255qtm.54.2019.06.18.11.57.57
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 18 Jun 2019 11:57:57 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hdJIr-0000A8-2v; Tue, 18 Jun 2019 15:57:57 -0300
-Date:   Tue, 18 Jun 2019 15:57:57 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Philip Yang <Philip.Yang@amd.com>
-Subject: Re: [PATCH v3 hmm 08/12] mm/hmm: Remove racy protection against
- double-unregistration
-Message-ID: <20190618185757.GP6961@ziepe.ca>
-References: <20190614004450.20252-1-jgg@ziepe.ca>
- <20190614004450.20252-9-jgg@ziepe.ca>
- <20190615141612.GH17724@infradead.org>
- <20190618131324.GF6961@ziepe.ca>
- <20190618132722.GA1633@infradead.org>
+        id S1730208AbfFRTDA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 15:03:00 -0400
+Received: from mail-eopbgr150048.outbound.protection.outlook.com ([40.107.15.48]:3905
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727386AbfFRTDA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Jun 2019 15:03:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EoXDLsFrsdn0r7ejsSlX5l7GKcc7/TCPz/18AQWJ4Go=;
+ b=HZFhb20x4m9HxUBx1TJT308CrR+VjRsZOjuS4L5/3kJbecDNC+AAa0aAd7AKpwBC4kYJ3kdf0TdMxU7xhOExogVEedHupCutnsR976yZn+8bkr819hIUllR9P1bY69XBgobsNL0tDnaWAYsKMpr/ude/4T976PybRZgKGughLMQ=
+Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
+ DB6PR0501MB2695.eurprd05.prod.outlook.com (10.172.225.140) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1987.10; Tue, 18 Jun 2019 19:02:55 +0000
+Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
+ ([fe80::a901:6951:59de:3278]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
+ ([fe80::a901:6951:59de:3278%2]) with mapi id 15.20.1987.014; Tue, 18 Jun 2019
+ 19:02:55 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] net/mlx5: add missing void argument to function
+ mlx5_devlink_alloc
+Thread-Topic: [PATCH][next] net/mlx5: add missing void argument to function
+ mlx5_devlink_alloc
+Thread-Index: AQHVJeigp+yH7eURB0ynX/ql1MMSgKahxQoA
+Date:   Tue, 18 Jun 2019 19:02:54 +0000
+Message-ID: <cbf35c6557791aae0aec2eb3cb1b66cc5030ec9f.camel@mellanox.com>
+References: <20190618151510.18672-1-colin.king@canonical.com>
+In-Reply-To: <20190618151510.18672-1-colin.king@canonical.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [209.116.155.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9c454dc5-965c-45d0-a3e1-08d6f41f920f
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2695;
+x-ms-traffictypediagnostic: DB6PR0501MB2695:
+x-microsoft-antispam-prvs: <DB6PR0501MB26953F225197F98649DE7AC5BEEA0@DB6PR0501MB2695.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-forefront-prvs: 007271867D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(136003)(346002)(376002)(366004)(396003)(199004)(189003)(6116002)(3846002)(118296001)(6246003)(11346002)(2201001)(26005)(5660300002)(86362001)(6486002)(8676002)(54906003)(305945005)(256004)(99286004)(229853002)(14444005)(2906002)(71200400001)(7736002)(316002)(4326008)(53936002)(6436002)(76176011)(64756008)(66556008)(8936002)(91956017)(66476007)(66946007)(76116006)(66446008)(73956011)(6512007)(2616005)(4744005)(14454004)(81166006)(71190400001)(478600001)(6506007)(81156014)(66066001)(36756003)(102836004)(58126008)(68736007)(486006)(476003)(186003)(2501003)(110136005)(446003)(25786009);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2695;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: tQHUbyUzwKAS6YmQJnOSf66MBoNe8xFaOMewaz5fVi4uWjOVWjcMiRWNerggmI6rPfNgPlw6Dzh6VxToBMwN2cxxOzPVMKjqdJdRP0DvWuG+ky5iEGdo/QgcwmrWkaDWMDi3KSDimYHI7ETK7eA8XXu1+qw+uWiVdFOdz8heH40/ptxvifvSgKTCNYGrVSE8QBbXK+95/LRODeUYGyRTdbB2TDfN9wcn97ptzK1kbpAUFnjDtinB70ZaL52Wi6v7X1U4zLNjeU9LDKFt2LCGRjUpi4zesqgM+NSWTDtxrgqp+L6eEKmX8CJ2GGaCShOWWhBCmnr5zxY43ZvJAQ5FsTXs5MV0oT+x5r4WIXqw5yjhtCAJ/60UhenDctMOB/bZSesbThjWOoIqRMl3g81epbRYu7fbNpvcM3gwsdlDZkY=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7431CCDFE395F34992A12CBA4DCCED0E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190618132722.GA1633@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c454dc5-965c-45d0-a3e1-08d6f41f920f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2019 19:02:54.9734
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2695
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 18, 2019 at 06:27:22AM -0700, Christoph Hellwig wrote:
-> On Tue, Jun 18, 2019 at 10:13:24AM -0300, Jason Gunthorpe wrote:
-> > > I don't even think we even need to bother with the POISON, normal list
-> > > debugging will already catch a double unregistration anyway.
-> > 
-> > mirror->hmm isn't a list so list debugging won't help.
-> > 
-> > My concern when I wrote this was that one of the in flight patches I
-> > can't see might be depending on this double-unregister-is-safe
-> > behavior, so I wanted them to crash reliably.
-> > 
-> > It is a really overly conservative thing to do..
-> 
-> mirror->list is a list, and if we do a list_del on it during the
-> second unregistration it will trip up on the list poisoning.
-
-With the previous loose coupling of the mirror and the range some code
-might rance to try to create a range without a mirror, which will now
-reliably crash with the poison.
-
-It isn't so much the double unregister that worries me, but racing
-unregister with range functions.
-
-Jason
+T24gVHVlLCAyMDE5LTA2LTE4IGF0IDE2OjE1ICswMTAwLCBDb2xpbiBLaW5nIHdyb3RlOg0KPiBG
+cm9tOiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0KPiANCj4gRnVu
+Y3Rpb24gbWx4NV9kZXZsaW5rX2FsbG9jIGlzIG1pc3NpbmcgYSB2b2lkIGFyZ3VtZW50LCBhZGQg
+aXQNCj4gdG8gY2xlYW4gdXAgdGhlIG5vbi1BTlNJIGZ1bmN0aW9uIGRlY2xhcmF0aW9uLg0KPiAN
+Cj4gU2lnbmVkLW9mZi1ieTogQ29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNv
+bT4NCj4gLS0tDQo+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZGV2
+bGluay5jIHwgMiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0
+aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gv
+bWx4NS9jb3JlL2RldmxpbmsuYw0KPiBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21s
+eDUvY29yZS9kZXZsaW5rLmMNCj4gaW5kZXggZWQ0MjAyZTg4M2YwLi4xNTMzYzY1NzIyMGIgMTAw
+NjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9kZXZs
+aW5rLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Rl
+dmxpbmsuYw0KPiBAQCAtMzcsNyArMzcsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGRldmxpbmtf
+b3BzIG1seDVfZGV2bGlua19vcHMgPQ0KPiB7DQo+ICAJLmZsYXNoX3VwZGF0ZSA9IG1seDVfZGV2
+bGlua19mbGFzaF91cGRhdGUsDQo+ICB9Ow0KPiAgDQo+IC1zdHJ1Y3QgZGV2bGluayAqbWx4NV9k
+ZXZsaW5rX2FsbG9jKCkNCj4gK3N0cnVjdCBkZXZsaW5rICptbHg1X2RldmxpbmtfYWxsb2Modm9p
+ZCkNCj4gIHsNCj4gIAlyZXR1cm4gZGV2bGlua19hbGxvYygmbWx4NV9kZXZsaW5rX29wcywgc2l6
+ZW9mKHN0cnVjdA0KPiBtbHg1X2NvcmVfZGV2KSk7DQo+ICB9DQoNCkFja2VkLWJ5OiBTYWVlZCBN
+YWhhbWVlZCA8c2FlZWRtQG1lbGxhbm94LmNvbT4NCg0KRGF2ZSwgdGhpcyBvbmUgY2FuIGdvIHRv
+IG5ldC1uZXh0Lg0KDQpUaGFua3MsDQpTYWVlZC4NCg==
