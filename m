@@ -2,105 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E26804A185
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 15:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE9C4A1A0
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 15:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbfFRNES (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 09:04:18 -0400
-Received: from mail-eopbgr80081.outbound.protection.outlook.com ([40.107.8.81]:40773
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725913AbfFRNES (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 Jun 2019 09:04:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z2DRK8xVa8ANC5JDgcqTjbTM8RkBo4QKZ5YX24ni07M=;
- b=LfgTKbG1vB5SyRay8Io3TwYqwSB6Zm/rjx5RqRzxp4zNzXxqDfJmMZey9d2U3Ks1IGcj6REFAUopaB5wy8eHA4scseTZSD0lPeN01mzqjxstqN26ijrMWRdmyfe8Od325T0gdHzfaNZ9HSw1GhDbI4InynnigVqGnUuEXuUf+24=
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.186.14) by
- AM4PR05MB3283.eurprd05.prod.outlook.com (10.170.125.160) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.12; Tue, 18 Jun 2019 13:04:14 +0000
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::bc5a:ba8b:1a69:91b6]) by AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::bc5a:ba8b:1a69:91b6%6]) with mapi id 15.20.1987.014; Tue, 18 Jun 2019
- 13:04:14 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] RDMA: Report available cdevs through
- RDMA_NLDEV_CMD_GET_CHARDEV
-Thread-Topic: [PATCH v2 3/3] RDMA: Report available cdevs through
- RDMA_NLDEV_CMD_GET_CHARDEV
-Thread-Index: AQHVJdAFMtAvUj1NsEaredjo/1T89qahYFwAgAAAqIA=
-Date:   Tue, 18 Jun 2019 13:04:14 +0000
-Message-ID: <20190618130411.GM4690@mtr-leonro.mtl.com>
-References: <20190614003819.19974-1-jgg@ziepe.ca>
- <20190614003819.19974-4-jgg@ziepe.ca>
- <20190618121900.GL4690@mtr-leonro.mtl.com> <20190618130150.GB6961@ziepe.ca>
-In-Reply-To: <20190618130150.GB6961@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM6PR0202CA0033.eurprd02.prod.outlook.com
- (2603:10a6:209:15::46) To AM4PR05MB3137.eurprd05.prod.outlook.com
- (2603:10a6:205:3::14)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [193.47.165.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b7c30e3e-c1dc-4489-f803-08d6f3ed7688
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM4PR05MB3283;
-x-ms-traffictypediagnostic: AM4PR05MB3283:
-x-microsoft-antispam-prvs: <AM4PR05MB328327A9CA8EB0FE829DD68AB0EA0@AM4PR05MB3283.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2733;
-x-forefront-prvs: 007271867D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(376002)(396003)(39860400002)(136003)(366004)(199004)(189003)(14454004)(66946007)(66446008)(53936002)(66556008)(64756008)(66476007)(11346002)(6246003)(9686003)(4744005)(81156014)(8936002)(8676002)(71190400001)(26005)(1076003)(81166006)(386003)(102836004)(6506007)(71200400001)(6916009)(5660300002)(25786009)(86362001)(99286004)(4326008)(76176011)(2906002)(229853002)(68736007)(316002)(52116002)(73956011)(6116002)(3846002)(256004)(446003)(6512007)(186003)(7736002)(305945005)(66066001)(6486002)(33656002)(486006)(476003)(478600001)(6436002)(131093003);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3283;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: jYf/YV5J2bDlvucqMKGsrZIcNfkpSIs/G4+jE275SGL9XVTx43VZUNigcnI9kK0W1PtIJgx7ytpV8KIqP23ZsHNUXwpMa1xg8MFtV0YoW6cJUMgPca4arvQtY7gvnEqf53oTu6ZjuLBjjomEKEs1O6SrLfKiWIwnLyTLqt7dsygbw957pN7lP5AVA+KJKRCXL6KjGW4L/KMWyw1ura9rs1l9wp2B3VG4FmJnSZHne7Xs+wqPF5Fpxs2v/z5EQoM785tOfc9kdf+EDYw77Hsd+AYtYLYCp1kY5jYlx+Ng8+6m72PHnkBJQ+DqrF5oKLAKy7JwpPvC5L6KS47IqQjU6thj23ryJiiKcUAoo3Q/giHVTTO22hz/TzAAdoDaXFTFsjjCwDpHZHrf++QIe06Cbk0IC7sjMidxCGJmnzX6TYI=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B55F07A4FA75AA4ABB5F4F131D822A28@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1729098AbfFRNFq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 09:05:46 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:43984 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbfFRNFq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 09:05:46 -0400
+Received: by mail-qk1-f194.google.com with SMTP id m14so8453339qka.10
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2019 06:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TTs4qX/AlYeTgBhCVY6oKlnamVeM1+PLnw1E3BGPQ7k=;
+        b=HSw6uNWbQt7fjJEsOb5v36NS40qEnnvUQQOjF8RYBujsDACr03g6V1BCXbU+eBSqgE
+         PkA+PsoTe9P7s1R1QtqFnAPzo/EF0jJEZAr6tsjkwmr6bfdZ90QRfQscfOxkLlDOvybP
+         Swzg2ZlAGssU+HOBqU4mE1v3gbJZ/njoW2LtezmgzdRWxLtbcsPt+AxODrrQQ57lBck6
+         w1NOErizBGOfwHoHv6R+Rr9DtnvHuBJAl6gq8Zzn0we2Jq+p11rahAQx0yLw5X1G4Fb3
+         BYHFnuVdQJ8DB5EIRKcdRgWqsSU3aocFHyuDxLPSQ6xUqP+lxAtEF+CfR+M6EBbrnn2T
+         dTOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TTs4qX/AlYeTgBhCVY6oKlnamVeM1+PLnw1E3BGPQ7k=;
+        b=ldRUK06oxBqvs7FXUo57wSXWB/iyXxB4tRa603TXj80VZlKhV1+jLC1mBRxoR5hERe
+         wOmENn0Ja5gVCLVLQ7lP/kQ7SZ5Uy0m+wudcouEggKhNUmLkR9nbpTbbO+Kiy8ckz6R1
+         13AWSUBbKPrzqAl0fNjCVSdh1yT8oThSEahr2e/xneuw41f7JT+5VjVQqL+4DdAGZTMO
+         Ghd3PNlMDIm9IzTbSFIx4qKxKiaS6VedfZB7v3ZX5/3TY55JEP7EII8FPg3/hsxyCOI1
+         +dubsrF+UmiZV8NFKYt4FqKzvhjizVs8DdGArVDGChUls43Gz+AZTLMozm594ESfhB97
+         fWfg==
+X-Gm-Message-State: APjAAAXCyJQ8JNX3lsdS6BQuP3WOtiLU3WA71kHAOa2Qk/LdSUHY4mrF
+        0K6k36WYi/v/GQnYVv10HsmJ5mun+KxKCg==
+X-Google-Smtp-Source: APXvYqyTVmV2qJESAaYOKHbD1BjBEsgUZPM0i2g79H7bXawYK5ERfS0qh6JfLB9C36JFGw7C3yUXcw==
+X-Received: by 2002:ae9:ed0a:: with SMTP id c10mr91466247qkg.207.1560863145518;
+        Tue, 18 Jun 2019 06:05:45 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id k15sm7008956qtg.22.2019.06.18.06.05.45
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 18 Jun 2019 06:05:45 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hdDo0-0002Yh-HV; Tue, 18 Jun 2019 10:05:44 -0300
+Date:   Tue, 18 Jun 2019 10:05:44 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Philip Yang <Philip.Yang@amd.com>
+Subject: Re: [PATCH v3 hmm 02/12] mm/hmm: Use hmm_mirror not mm as an
+ argument for hmm_range_register
+Message-ID: <20190618130544.GC6961@ziepe.ca>
+References: <20190614004450.20252-1-jgg@ziepe.ca>
+ <20190614004450.20252-3-jgg@ziepe.ca>
+ <20190615135906.GB17724@infradead.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7c30e3e-c1dc-4489-f803-08d6f3ed7688
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2019 13:04:14.3708
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: leonro@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3283
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190615135906.GB17724@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 18, 2019 at 10:01:50AM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 18, 2019 at 12:19:04PM +0000, Leon Romanovsky wrote:
-> > > diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdm=
-a_netlink.h
-> > > index 9903db21a42c58..b27c02185dcc19 100644
-> > > +++ b/include/uapi/rdma/rdma_netlink.h
-> > > @@ -504,6 +504,7 @@ enum rdma_nldev_attr {
-> > >  	RDMA_NLDEV_ATTR_CHARDEV_NAME,		/* string */
-> > >  	RDMA_NLDEV_ATTR_CHARDEV_ABI,		/* u64 */
-> > >  	RDMA_NLDEV_ATTR_CHARDEV,		/* u64 */
-> > > +	RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID,       /* u64 */
-> >
-> > This should be inside nla_policy too.
->
-> It is an output, not an input. policy only checks inputs.
+On Sat, Jun 15, 2019 at 06:59:06AM -0700, Christoph Hellwig wrote:
+> On Thu, Jun 13, 2019 at 09:44:40PM -0300, Jason Gunthorpe wrote:
+> > From: Jason Gunthorpe <jgg@mellanox.com>
+> > 
+> > Ralph observes that hmm_range_register() can only be called by a driver
+> > while a mirror is registered. Make this clear in the API by passing in the
+> > mirror structure as a parameter.
+> > 
+> > This also simplifies understanding the lifetime model for struct hmm, as
+> > the hmm pointer must be valid as part of a registered mirror so all we
+> > need in hmm_register_range() is a simple kref_get.
+> 
+> Looks good, at least an an intermediate step:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
+> > index f6956d78e3cb25..22a97ada108b4e 100644
+> > +++ b/mm/hmm.c
+> > @@ -914,13 +914,13 @@ static void hmm_pfns_clear(struct hmm_range *range,
+> >   * Track updates to the CPU page table see include/linux/hmm.h
+> >   */
+> >  int hmm_range_register(struct hmm_range *range,
+> > -		       struct mm_struct *mm,
+> > +		       struct hmm_mirror *mirror,
+> >  		       unsigned long start,
+> >  		       unsigned long end,
+> >  		       unsigned page_shift)
+> >  {
+> >  	unsigned long mask = ((1UL << page_shift) - 1UL);
+> > -	struct hmm *hmm;
+> > +	struct hmm *hmm = mirror->hmm;
+> >  
+> >  	range->valid = false;
+> >  	range->hmm = NULL;
+> > @@ -934,20 +934,15 @@ int hmm_range_register(struct hmm_range *range,
+> >  	range->start = start;
+> >  	range->end = end;
+> 
+> But while you're at it:  the calling conventions of hmm_range_register
+> are still rather odd, as the staet, end and page_shift arguments are
+> only used to fill out fields in the range structure passed in.  Might
+> be worth cleaning up as well if we change the calling convention.
 
-We are putting in policy everything to ensure that it won't be forgotten
-once output field will be used as an input.
+I'm thinking to tackle that as part of the mmu notififer invlock
+idea.. Once the range looses the lock then we don't really need to
+register it at all.
 
-Thanks
-
->
-> Jason
+Thanks,
+Jason
