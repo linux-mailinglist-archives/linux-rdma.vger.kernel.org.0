@@ -2,82 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3644A7A2
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 18:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA974A7B0
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 18:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729856AbfFRQvw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 12:51:52 -0400
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:38285 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729774AbfFRQvv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 12:51:51 -0400
-Received: by mail-pl1-f173.google.com with SMTP id f98so373018plb.5
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2019 09:51:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FlltVR/XsALb+JL+y43zL1E8EKO/23686wqaMw7nrDM=;
-        b=qQw8YSEWz6fylwKdPZbuQCh4hGX5F3mes+iiy6woz8BRf7P8X+E+dfFDk5Q2ZRqlWq
-         JIb889J3fUnIt4nim3XITn38pYhpvTwr3AsMVltxlmr7EpfflKo4jIX9x2CkPGyU9Q1T
-         jMIXgn2u7cysh6fbS8ci/MmIrlThkQ+zJZfQxnBLqTYs6KQGHxMIxucjoJfhH5usGk6f
-         CNJAXnlPLQEESrX19KgAHSbZWwPnMX0xeE1a4m3cVx6tOpRCSinT6oOI9nK8+XFDjeoC
-         hM0AmUGtiIXB/jd+uwOw8/J4/6uXES5RD+y7nHbAT5edSeXPZL1E5C6IbgM3pk8GULPt
-         Eq6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FlltVR/XsALb+JL+y43zL1E8EKO/23686wqaMw7nrDM=;
-        b=VuJNk0vdiQlaju5LjUiiYdoVbszwGRiq29+JeMDsJZgJHx/3hRYbpPpKGITSbdWgvn
-         oDTrqqPFy6kxEiXrM/wUWZayhKKrbmqFDGXYh8g3rmfoiMnfKIBjVeOKOhTJ6tMZI4tb
-         jimsgZl7E0VJ0q+OV9Q1dud3F/HcrN+jXM7/wqOtRddVKNqGwkjI4BIpgjrREbz8Tz0F
-         gWe0QKWsAWcXioerAD6AZTJ0e9r29MxJsMi4Q6ZhhWnVg0JDgsHOB0mDBidvfzbHCRRw
-         GwUhVscibZw8t79Pxy79vWdnJCfVKvYNciXMtC5gnQ5CNUDyCbSAXck10Pj8jbqQUFZg
-         PGZQ==
-X-Gm-Message-State: APjAAAVhO7GCsX152tNMAtkh9P3ZiM/Ds65AUbPPsNNRQaFNz1vm8hvy
-        gMxnRP99ngwnJM01sE57FWk4rQ==
-X-Google-Smtp-Source: APXvYqzXdzzCqU4+WWmyhrTT/BwhEe9Jl4njGcfsCfF9Wckc0YMWrSri3z1my0Q6BJo5CjT6xL/TTw==
-X-Received: by 2002:a17:902:7d8d:: with SMTP id a13mr2110361plm.98.1560876710919;
-        Tue, 18 Jun 2019 09:51:50 -0700 (PDT)
-Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
-        by smtp.gmail.com with ESMTPSA id d5sm46075pgm.49.2019.06.18.09.51.50
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 18 Jun 2019 09:51:50 -0700 (PDT)
-Date:   Tue, 18 Jun 2019 09:51:44 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Denis Kirjanov <kda@linux-powerpc.org>
-Cc:     dledford@redhat.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, mkubecek@suse.cz
-Subject: Re: [iproute2] ipaddress: correctly print a VF hw address in the
- IPoIB case
-Message-ID: <20190618095144.4ef794a9@hermes.lan>
-In-Reply-To: <20190615114056.100808-2-dkirjanov@suse.com>
-References: <20190615114056.100808-1-dkirjanov@suse.com>
-        <20190615114056.100808-2-dkirjanov@suse.com>
+        id S1729774AbfFRQxm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 12:53:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729541AbfFRQxm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Jun 2019 12:53:42 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 790AA206E0;
+        Tue, 18 Jun 2019 16:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560876822;
+        bh=IzC1R0C/uHUMoriLwu1XY7YY9/mH5bktMnbNOktWruM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rtQaWWNQrpSlQz0nonKsViMGw1GATdtmjnlNJHUaPdIWdZmpAHkgT8L5YEUscaXXG
+         pCohcyNcVQ++7QToYqzVn1EVf4OmofXunZnrcX8u5eC++N3Rnb6mKnbsezwbCXhBY5
+         k2RiMexxY96pvgd2Klys5ybzcw6/NENogPp3D32A=
+Date:   Tue, 18 Jun 2019 19:53:38 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] RDMA: Add NLDEV_GET_CHARDEV to allow char dev
+ discovery and autoload
+Message-ID: <20190618165338.GO4690@mtr-leonro.mtl.com>
+References: <20190614003819.19974-1-jgg@ziepe.ca>
+ <20190614003819.19974-3-jgg@ziepe.ca>
+ <20190618121709.GK4690@mtr-leonro.mtl.com>
+ <20190618131019.GE6961@ziepe.ca>
+ <97a95f7e5447b0ddf4dee15c536d72bd9fb65780.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <97a95f7e5447b0ddf4dee15c536d72bd9fb65780.camel@redhat.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, 15 Jun 2019 13:40:56 +0200
-Denis Kirjanov <kda@linux-powerpc.org> wrote:
+On Tue, Jun 18, 2019 at 11:55:08AM -0400, Doug Ledford wrote:
+> On Tue, 2019-06-18 at 10:10 -0300, Jason Gunthorpe wrote:
+> > On Tue, Jun 18, 2019 at 03:17:09PM +0300, Leon Romanovsky wrote:
+> > > >  /**
+> > > >   * ib_set_client_data - Set IB client context
+> > > >   * @device:Device to set context for
+> > > > diff --git a/drivers/infiniband/core/nldev.c
+> > > > b/drivers/infiniband/core/nldev.c
+> > > > index 69188cbbd99bd5..55eccea628e99f 100644
+> > > > +++ b/drivers/infiniband/core/nldev.c
+> > > > @@ -120,6 +120,9 @@ static const struct nla_policy
+> > > > nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+> > > >  	[RDMA_NLDEV_ATTR_DEV_PROTOCOL]		= { .type =
+> > > > NLA_NUL_STRING,
+> > > >  				    .len = RDMA_NLDEV_ATTR_ENTRY_STRLEN
+> > > > },
+> > > >  	[RDMA_NLDEV_NET_NS_FD]			= { .type =
+> > > > NLA_U32 },
+> > > > +	[RDMA_NLDEV_ATTR_CHARDEV_TYPE]		= { .type =
+> > > > NLA_NUL_STRING,
+> > > > +				    .len = 128 },
+> > > > +	[RDMA_NLDEV_ATTR_PORT_INDEX]		= { .type = NLA_U32 },
+> > >
+> > > It is wrong, we already have RDMA_NLDEV_ATTR_PORT_INDEX declared in
+> > > nla_policy.
+> > > But we don't have other RDMA_NLDEV_ATTR_CHARDEV_* declarations
+> > > here.
+> >
+> > Doug can you fix it?
+>
+> I haven't pushed my wip to for-next yet, so yeah, I can fix it.  We
+> just need to decide on what the full fix is ;-)
+>
+> Drop the duplicate ATTR_PORT_INDEX, but what about a final decision on
+> including the outputs for possible future type checking?  You and Leon
+> seem to be going back and forth, and I don't have strong feelings
+> either way on this one.  It's just a definition statement, not like
+> it's a dead subroutine.
 
-> diff --git a/include/uapi/linux/netdevice.h b/include/uapi/linux/netdevice.h
-> index 86d961c9..aaa48818 100644
-> --- a/include/uapi/linux/netdevice.h
-> +++ b/include/uapi/linux/netdevice.h
-> @@ -30,7 +30,7 @@
->  #include <linux/if_ether.h>
->  #include <linux/if_packet.h>
->  #include <linux/if_link.h>
-> -
-> +#include <linux/if_infiniband.h>
+I have a very strong opinion about it.
 
-You can't modify kernel headers in iproute.
-These are updated by a script and your change will get overwritten.
+Thanks
 
-I did go ahead and put if_link.h and if_infiniband.h in already.
+>
+> --
+> Doug Ledford <dledford@redhat.com>
+>     GPG KeyID: B826A3330E572FDD
+>     Key fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
+> 2FDD
+
+
