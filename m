@@ -2,125 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE9C4A1A0
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 15:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F44F4A1B0
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 15:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729098AbfFRNFq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 09:05:46 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:43984 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726739AbfFRNFq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 09:05:46 -0400
-Received: by mail-qk1-f194.google.com with SMTP id m14so8453339qka.10
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2019 06:05:45 -0700 (PDT)
+        id S1725988AbfFRNHy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 09:07:54 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:20157 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725913AbfFRNHy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 09:07:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TTs4qX/AlYeTgBhCVY6oKlnamVeM1+PLnw1E3BGPQ7k=;
-        b=HSw6uNWbQt7fjJEsOb5v36NS40qEnnvUQQOjF8RYBujsDACr03g6V1BCXbU+eBSqgE
-         PkA+PsoTe9P7s1R1QtqFnAPzo/EF0jJEZAr6tsjkwmr6bfdZ90QRfQscfOxkLlDOvybP
-         Swzg2ZlAGssU+HOBqU4mE1v3gbJZ/njoW2LtezmgzdRWxLtbcsPt+AxODrrQQ57lBck6
-         w1NOErizBGOfwHoHv6R+Rr9DtnvHuBJAl6gq8Zzn0we2Jq+p11rahAQx0yLw5X1G4Fb3
-         BYHFnuVdQJ8DB5EIRKcdRgWqsSU3aocFHyuDxLPSQ6xUqP+lxAtEF+CfR+M6EBbrnn2T
-         dTOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TTs4qX/AlYeTgBhCVY6oKlnamVeM1+PLnw1E3BGPQ7k=;
-        b=ldRUK06oxBqvs7FXUo57wSXWB/iyXxB4tRa603TXj80VZlKhV1+jLC1mBRxoR5hERe
-         wOmENn0Ja5gVCLVLQ7lP/kQ7SZ5Uy0m+wudcouEggKhNUmLkR9nbpTbbO+Kiy8ckz6R1
-         13AWSUBbKPrzqAl0fNjCVSdh1yT8oThSEahr2e/xneuw41f7JT+5VjVQqL+4DdAGZTMO
-         Ghd3PNlMDIm9IzTbSFIx4qKxKiaS6VedfZB7v3ZX5/3TY55JEP7EII8FPg3/hsxyCOI1
-         +dubsrF+UmiZV8NFKYt4FqKzvhjizVs8DdGArVDGChUls43Gz+AZTLMozm594ESfhB97
-         fWfg==
-X-Gm-Message-State: APjAAAXCyJQ8JNX3lsdS6BQuP3WOtiLU3WA71kHAOa2Qk/LdSUHY4mrF
-        0K6k36WYi/v/GQnYVv10HsmJ5mun+KxKCg==
-X-Google-Smtp-Source: APXvYqyTVmV2qJESAaYOKHbD1BjBEsgUZPM0i2g79H7bXawYK5ERfS0qh6JfLB9C36JFGw7C3yUXcw==
-X-Received: by 2002:ae9:ed0a:: with SMTP id c10mr91466247qkg.207.1560863145518;
-        Tue, 18 Jun 2019 06:05:45 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id k15sm7008956qtg.22.2019.06.18.06.05.45
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 18 Jun 2019 06:05:45 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hdDo0-0002Yh-HV; Tue, 18 Jun 2019 10:05:44 -0300
-Date:   Tue, 18 Jun 2019 10:05:44 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Philip Yang <Philip.Yang@amd.com>
-Subject: Re: [PATCH v3 hmm 02/12] mm/hmm: Use hmm_mirror not mm as an
- argument for hmm_range_register
-Message-ID: <20190618130544.GC6961@ziepe.ca>
-References: <20190614004450.20252-1-jgg@ziepe.ca>
- <20190614004450.20252-3-jgg@ziepe.ca>
- <20190615135906.GB17724@infradead.org>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1560863273; x=1592399273;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tzViaEeDu91i5Xqgr1u81R1ilHwq3pz0JjrJIIsMnA8=;
+  b=ixSggYluFJiDe3/BTj7uHLuN8DNDCV3Pc5CwpdR0MYfedLDQ5/n/br8l
+   Re5a6lwWXkky4DVcUfypWqk9Jsvp/1Igxu/BUkaUad62GyPpKgDNDdGba
+   wjpZ+gQoHNK2wX3onjDM8yB/Bz2HvDkSDk4jiIE+GctuUBDqEuI+4aO3G
+   0=;
+X-IronPort-AV: E=Sophos;i="5.62,389,1554768000"; 
+   d="scan'208";a="401204472"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 18 Jun 2019 13:07:51 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id 56493A19F3;
+        Tue, 18 Jun 2019 13:07:51 +0000 (UTC)
+Received: from EX13D19EUB001.ant.amazon.com (10.43.166.229) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 18 Jun 2019 13:07:50 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (10.43.162.135) by
+ EX13D19EUB001.ant.amazon.com (10.43.166.229) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 18 Jun 2019 13:07:49 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.218.69.129) by
+ mail-relay.amazon.com (10.43.162.232) with Microsoft SMTP Server id
+ 15.0.1367.3 via Frontend Transport; Tue, 18 Jun 2019 13:07:46 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-rc v2] RDMA/efa: Handle mmap insertions overflow
+Date:   Tue, 18 Jun 2019 16:07:32 +0300
+Message-ID: <20190618130732.20895-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190615135906.GB17724@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 15, 2019 at 06:59:06AM -0700, Christoph Hellwig wrote:
-> On Thu, Jun 13, 2019 at 09:44:40PM -0300, Jason Gunthorpe wrote:
-> > From: Jason Gunthorpe <jgg@mellanox.com>
-> > 
-> > Ralph observes that hmm_range_register() can only be called by a driver
-> > while a mirror is registered. Make this clear in the API by passing in the
-> > mirror structure as a parameter.
-> > 
-> > This also simplifies understanding the lifetime model for struct hmm, as
-> > the hmm pointer must be valid as part of a registered mirror so all we
-> > need in hmm_register_range() is a simple kref_get.
-> 
-> Looks good, at least an an intermediate step:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-> > index f6956d78e3cb25..22a97ada108b4e 100644
-> > +++ b/mm/hmm.c
-> > @@ -914,13 +914,13 @@ static void hmm_pfns_clear(struct hmm_range *range,
-> >   * Track updates to the CPU page table see include/linux/hmm.h
-> >   */
-> >  int hmm_range_register(struct hmm_range *range,
-> > -		       struct mm_struct *mm,
-> > +		       struct hmm_mirror *mirror,
-> >  		       unsigned long start,
-> >  		       unsigned long end,
-> >  		       unsigned page_shift)
-> >  {
-> >  	unsigned long mask = ((1UL << page_shift) - 1UL);
-> > -	struct hmm *hmm;
-> > +	struct hmm *hmm = mirror->hmm;
-> >  
-> >  	range->valid = false;
-> >  	range->hmm = NULL;
-> > @@ -934,20 +934,15 @@ int hmm_range_register(struct hmm_range *range,
-> >  	range->start = start;
-> >  	range->end = end;
-> 
-> But while you're at it:  the calling conventions of hmm_range_register
-> are still rather odd, as the staet, end and page_shift arguments are
-> only used to fill out fields in the range structure passed in.  Might
-> be worth cleaning up as well if we change the calling convention.
+When inserting a new mmap entry to the xarray we should check for
+'mmap_page' overflow as it is limited to 32 bits.
 
-I'm thinking to tackle that as part of the mmu notififer invlock
-idea.. Once the range looses the lock then we don't really need to
-register it at all.
+Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
+Signed-off-by: Gal Pressman <galpress@amazon.com>
+---
+Changelog:
+v1->v2
+* Bring back the ucontext->mmap_xa_page assignment before __xa_insert
+---
+ drivers/infiniband/hw/efa/efa_verbs.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-Thanks,
-Jason
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 0fea5d63fdbe..fb6115244d4c 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -204,6 +204,7 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+ 			     void *obj, u64 address, u64 length, u8 mmap_flag)
+ {
+ 	struct efa_mmap_entry *entry;
++	u32 next_mmap_page;
+ 	int err;
+ 
+ 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+@@ -216,15 +217,19 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+ 	entry->mmap_flag = mmap_flag;
+ 
+ 	xa_lock(&ucontext->mmap_xa);
++	if (check_add_overflow(ucontext->mmap_xa_page,
++			       (u32)(length >> PAGE_SHIFT),
++			       &next_mmap_page))
++		goto err_unlock;
++
+ 	entry->mmap_page = ucontext->mmap_xa_page;
+-	ucontext->mmap_xa_page += DIV_ROUND_UP(length, PAGE_SIZE);
++	ucontext->mmap_xa_page = next_mmap_page;
+ 	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
+ 			  GFP_KERNEL);
++	if (err)
++		goto err_unlock;
++
+ 	xa_unlock(&ucontext->mmap_xa);
+-	if (err){
+-		kfree(entry);
+-		return EFA_MMAP_INVALID;
+-	}
+ 
+ 	ibdev_dbg(
+ 		&dev->ibdev,
+@@ -232,6 +237,12 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+ 		entry->obj, entry->address, entry->length, get_mmap_key(entry));
+ 
+ 	return get_mmap_key(entry);
++
++err_unlock:
++	xa_unlock(&ucontext->mmap_xa);
++	kfree(entry);
++	return EFA_MMAP_INVALID;
++
+ }
+ 
+ int efa_query_device(struct ib_device *ibdev,
+-- 
+2.22.0
+
