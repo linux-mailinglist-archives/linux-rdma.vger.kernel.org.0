@@ -2,119 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F44F4A1B0
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 15:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BE64A1BB
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 15:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbfFRNHy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 09:07:54 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:20157 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbfFRNHy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 09:07:54 -0400
+        id S1725955AbfFRNJy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 09:09:54 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:42898 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729123AbfFRNJx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 09:09:53 -0400
+Received: by mail-qk1-f196.google.com with SMTP id b18so8460812qkc.9
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2019 06:09:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1560863273; x=1592399273;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tzViaEeDu91i5Xqgr1u81R1ilHwq3pz0JjrJIIsMnA8=;
-  b=ixSggYluFJiDe3/BTj7uHLuN8DNDCV3Pc5CwpdR0MYfedLDQ5/n/br8l
-   Re5a6lwWXkky4DVcUfypWqk9Jsvp/1Igxu/BUkaUad62GyPpKgDNDdGba
-   wjpZ+gQoHNK2wX3onjDM8yB/Bz2HvDkSDk4jiIE+GctuUBDqEuI+4aO3G
-   0=;
-X-IronPort-AV: E=Sophos;i="5.62,389,1554768000"; 
-   d="scan'208";a="401204472"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 18 Jun 2019 13:07:51 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id 56493A19F3;
-        Tue, 18 Jun 2019 13:07:51 +0000 (UTC)
-Received: from EX13D19EUB001.ant.amazon.com (10.43.166.229) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 18 Jun 2019 13:07:50 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (10.43.162.135) by
- EX13D19EUB001.ant.amazon.com (10.43.166.229) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 18 Jun 2019 13:07:49 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.218.69.129) by
- mail-relay.amazon.com (10.43.162.232) with Microsoft SMTP Server id
- 15.0.1367.3 via Frontend Transport; Tue, 18 Jun 2019 13:07:46 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>
-Subject: [PATCH for-rc v2] RDMA/efa: Handle mmap insertions overflow
-Date:   Tue, 18 Jun 2019 16:07:32 +0300
-Message-ID: <20190618130732.20895-1-galpress@amazon.com>
-X-Mailer: git-send-email 2.22.0
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GJ7vqtKeJxHjsYlGQdIfaZLAJz4bfK60EqYMhIlyf3Q=;
+        b=pHH5ksTtRXUx+kZNA/sp/7FMv8fCr1D20QD+tDaOyTkWzttsq6bBZBWr3dVmjWNyJg
+         F3kDTEAhvW98zvzuD5np+iExxM4ptNzm+ZCfYb7LHcn85v7k+scEJMLwO1MIeII5S+Tx
+         fAUvG54qjUuN5By2RIcnYoFz0meWG8ScOZaIfG5Vdeq5cSNRAIOyLRSw7RBUxroWnYXV
+         6ECNbPm+DE4YJSU/0RPjgz9UM1VmtDZkadImMdaWNGogWdPFDouApc+w8/KB2IrafeOK
+         s0mHcKeZVIBK6xwHc3hfN5MuHCWyb6Q9/JcaIgO45dKRkl/7sW7QNPFhb99FtVk28kIK
+         e2bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GJ7vqtKeJxHjsYlGQdIfaZLAJz4bfK60EqYMhIlyf3Q=;
+        b=CwTBRNOCYW65TgyVtuY1zN2e6veV7W8LVJ08LA9SFNfPHPFy9GAtHEHM1EhQn8j6hV
+         SGzMHDKUBOvlUS4lLlUoEWpsl1rqbC0jnWK9JbtG7pAhTmiSvh2eN7Q43alSSGxCbqWc
+         FvjsJx/065UnUFsHFCCKHVZ8Ql7WkqcoIMFUCHP5PlhUiVOk1ohj16fnAdqDWTHzvTpW
+         oGZ2QZIQR926YGLvOYkuA0C8t2y0Lmk9dXz+UGUQrfM9dfIdPwJ/vB0fYwUrsz7W2Wqd
+         5Kc9ygj5DafYyPjJN/Qluh/MvMx+WtIjEdObPSpjv74ksIHD54mQLDtqG3uVv+P5wSxE
+         SLHw==
+X-Gm-Message-State: APjAAAUbOKKINbLWr9g5EQJ8gC0i0JojZ6SCKdP5RDuq8vhowjQfcJXD
+        mw1MFmmjkvCinVHFNF0yC1Q66C0YNurnww==
+X-Google-Smtp-Source: APXvYqyx8DEg0DOxaRaMNtmVya86cKGPC5BcDPZxathvPrtAMg3MKBm+qGu4gsCdchxkXH0o5UWdwQ==
+X-Received: by 2002:a37:a854:: with SMTP id r81mr17405657qke.53.1560863392616;
+        Tue, 18 Jun 2019 06:09:52 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id q36sm10372173qtc.12.2019.06.18.06.09.52
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 18 Jun 2019 06:09:52 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hdDrz-0002ao-N3; Tue, 18 Jun 2019 10:09:51 -0300
+Date:   Tue, 18 Jun 2019 10:09:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leonro@mellanox.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] RDMA: Report available cdevs through
+ RDMA_NLDEV_CMD_GET_CHARDEV
+Message-ID: <20190618130951.GD6961@ziepe.ca>
+References: <20190614003819.19974-1-jgg@ziepe.ca>
+ <20190614003819.19974-4-jgg@ziepe.ca>
+ <20190618121900.GL4690@mtr-leonro.mtl.com>
+ <20190618130150.GB6961@ziepe.ca>
+ <20190618130411.GM4690@mtr-leonro.mtl.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190618130411.GM4690@mtr-leonro.mtl.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When inserting a new mmap entry to the xarray we should check for
-'mmap_page' overflow as it is limited to 32 bits.
+On Tue, Jun 18, 2019 at 01:04:14PM +0000, Leon Romanovsky wrote:
+> On Tue, Jun 18, 2019 at 10:01:50AM -0300, Jason Gunthorpe wrote:
+> > On Tue, Jun 18, 2019 at 12:19:04PM +0000, Leon Romanovsky wrote:
+> > > > diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
+> > > > index 9903db21a42c58..b27c02185dcc19 100644
+> > > > +++ b/include/uapi/rdma/rdma_netlink.h
+> > > > @@ -504,6 +504,7 @@ enum rdma_nldev_attr {
+> > > >  	RDMA_NLDEV_ATTR_CHARDEV_NAME,		/* string */
+> > > >  	RDMA_NLDEV_ATTR_CHARDEV_ABI,		/* u64 */
+> > > >  	RDMA_NLDEV_ATTR_CHARDEV,		/* u64 */
+> > > > +	RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID,       /* u64 */
+> > >
+> > > This should be inside nla_policy too.
+> >
+> > It is an output, not an input. policy only checks inputs.
+> 
+> We are putting in policy everything to ensure that it won't be forgotten
+> once output field will be used as an input.
 
-Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
-Signed-off-by: Gal Pressman <galpress@amazon.com>
----
-Changelog:
-v1->v2
-* Bring back the ucontext->mmap_xa_page assignment before __xa_insert
----
- drivers/infiniband/hw/efa/efa_verbs.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+Adding dead never tested code is more likely to just get it wrong..
 
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 0fea5d63fdbe..fb6115244d4c 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -204,6 +204,7 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
- 			     void *obj, u64 address, u64 length, u8 mmap_flag)
- {
- 	struct efa_mmap_entry *entry;
-+	u32 next_mmap_page;
- 	int err;
- 
- 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-@@ -216,15 +217,19 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
- 	entry->mmap_flag = mmap_flag;
- 
- 	xa_lock(&ucontext->mmap_xa);
-+	if (check_add_overflow(ucontext->mmap_xa_page,
-+			       (u32)(length >> PAGE_SHIFT),
-+			       &next_mmap_page))
-+		goto err_unlock;
-+
- 	entry->mmap_page = ucontext->mmap_xa_page;
--	ucontext->mmap_xa_page += DIV_ROUND_UP(length, PAGE_SIZE);
-+	ucontext->mmap_xa_page = next_mmap_page;
- 	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
- 			  GFP_KERNEL);
-+	if (err)
-+		goto err_unlock;
-+
- 	xa_unlock(&ucontext->mmap_xa);
--	if (err){
--		kfree(entry);
--		return EFA_MMAP_INVALID;
--	}
- 
- 	ibdev_dbg(
- 		&dev->ibdev,
-@@ -232,6 +237,12 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
- 		entry->obj, entry->address, entry->length, get_mmap_key(entry));
- 
- 	return get_mmap_key(entry);
-+
-+err_unlock:
-+	xa_unlock(&ucontext->mmap_xa);
-+	kfree(entry);
-+	return EFA_MMAP_INVALID;
-+
- }
- 
- int efa_query_device(struct ib_device *ibdev,
--- 
-2.22.0
-
+Jason
