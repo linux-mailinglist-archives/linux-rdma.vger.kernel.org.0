@@ -2,124 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F854ABD0
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 22:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833B64AC69
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 22:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730358AbfFRU3G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 16:29:06 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:50402 "EHLO mx1.redhat.com"
+        id S1730176AbfFRU6U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 16:58:20 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:32842 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730176AbfFRU3G (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 Jun 2019 16:29:06 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        id S1730102AbfFRU6U (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Jun 2019 16:58:20 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id C4F4F300181C;
-        Tue, 18 Jun 2019 20:29:00 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id 4B1D230001D8;
+        Tue, 18 Jun 2019 20:58:20 +0000 (UTC)
 Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 23A6F10190A2;
-        Tue, 18 Jun 2019 20:29:00 +0000 (UTC)
-Message-ID: <b3cfa59d9d8e35ea56362d75d0d2be3f71c864dc.camel@redhat.com>
-Subject: Re: [PATCH for-rc v2] RDMA/efa: Handle mmap insertions overflow
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9A05360922;
+        Tue, 18 Jun 2019 20:58:19 +0000 (UTC)
+Message-ID: <1ec72297f837bf95fadaf846b7fe39a7b24de23c.camel@redhat.com>
+Subject: Re: [PATCH v2 2/3] RDMA: Add NLDEV_GET_CHARDEV to allow char dev
+ discovery and autoload
 From:   Doug Ledford <dledford@redhat.com>
-To:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
 Cc:     linux-rdma@vger.kernel.org
-Date:   Tue, 18 Jun 2019 16:28:48 -0400
-In-Reply-To: <82786c0b-510e-9aa7-cb18-28a84cec9420@amazon.com>
-References: <20190618130732.20895-1-galpress@amazon.com>
-         <20190618184808.GN6961@ziepe.ca>
-         <82786c0b-510e-9aa7-cb18-28a84cec9420@amazon.com>
+Date:   Tue, 18 Jun 2019 16:58:16 -0400
+In-Reply-To: <20190618184653.GM6961@ziepe.ca>
+References: <20190614003819.19974-1-jgg@ziepe.ca>
+         <20190614003819.19974-3-jgg@ziepe.ca>
+         <20190618121709.GK4690@mtr-leonro.mtl.com> <20190618131019.GE6961@ziepe.ca>
+         <97a95f7e5447b0ddf4dee15c536d72bd9fb65780.camel@redhat.com>
+         <20190618165338.GO4690@mtr-leonro.mtl.com> <20190618184653.GM6961@ziepe.ca>
 Organization: Red Hat, Inc.
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-dXZX6gv9M25ZRQx6lS7x"
+        protocol="application/pgp-signature"; boundary="=-GDQujJAflBoYPY2tB3z+"
 User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Tue, 18 Jun 2019 20:29:05 +0000 (UTC)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Tue, 18 Jun 2019 20:58:20 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---=-dXZX6gv9M25ZRQx6lS7x
+--=-GDQujJAflBoYPY2tB3z+
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2019-06-18 at 22:33 +0300, Gal Pressman wrote:
-> On 18/06/2019 21:48, Jason Gunthorpe wrote:
-> > On Tue, Jun 18, 2019 at 04:07:32PM +0300, Gal Pressman wrote:
-> > > When inserting a new mmap entry to the xarray we should check for
-> > > 'mmap_page' overflow as it is limited to 32 bits.
-> > >=20
-> > > Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
-> > > Signed-off-by: Gal Pressman <galpress@amazon.com>
-> > > Changelog:
-> > > v1->v2
-> > > * Bring back the ucontext->mmap_xa_page assignment before
-> > > __xa_insert
-> > >  drivers/infiniband/hw/efa/efa_verbs.c | 21 ++++++++++++++++-----
-> > >  1 file changed, 16 insertions(+), 5 deletions(-)
-> > >=20
-> > > diff --git a/drivers/infiniband/hw/efa/efa_verbs.c
-> > > b/drivers/infiniband/hw/efa/efa_verbs.c
-> > > index 0fea5d63fdbe..fb6115244d4c 100644
-> > > +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-> > > @@ -204,6 +204,7 @@ static u64 mmap_entry_insert(struct efa_dev
-> > > *dev, struct efa_ucontext *ucontext,
-> > >  			     void *obj, u64 address, u64 length, u8
-> > > mmap_flag)
-> > >  {
-> > >  	struct efa_mmap_entry *entry;
-> > > +	u32 next_mmap_page;
-> > >  	int err;
-> > > =20
-> > >  	entry =3D kmalloc(sizeof(*entry), GFP_KERNEL);
-> > > @@ -216,15 +217,19 @@ static u64 mmap_entry_insert(struct efa_dev
-> > > *dev, struct efa_ucontext *ucontext,
-> > >  	entry->mmap_flag =3D mmap_flag;
-> > > =20
-> > >  	xa_lock(&ucontext->mmap_xa);
-> > > +	if (check_add_overflow(ucontext->mmap_xa_page,
-> > > +			       (u32)(length >> PAGE_SHIFT),
-> > > +			       &next_mmap_page))
-> > > +		goto err_unlock;
-> > > +
-> > >  	entry->mmap_page =3D ucontext->mmap_xa_page;
-> > > -	ucontext->mmap_xa_page +=3D DIV_ROUND_UP(length, PAGE_SIZE);
+On Tue, 2019-06-18 at 15:46 -0300, Jason Gunthorpe wrote:
+> On Tue, Jun 18, 2019 at 07:53:38PM +0300, Leon Romanovsky wrote:
 > >=20
-> > Why did DIV_ROUND_UP become >> ?
+> > I have a very strong opinion about it.
 >=20
-> Since length is guaranteed to be a multiple of PAGE_SIZE.
+> Then Doug should add the policies, here are the output values from the
+> userspace:
+>=20
+>         [RDMA_NLDEV_ATTR_CHARDEV] =3D { .type =3D NLA_U64 },
+>         [RDMA_NLDEV_ATTR_CHARDEV_ABI] =3D { .type =3D NLA_U64 },
+>         [RDMA_NLDEV_ATTR_DEV_INDEX] =3D { .type =3D NLA_U32 },
+>         [RDMA_NLDEV_ATTR_DEV_NODE_TYPE] =3D { .type =3D NLA_U8 },
+>         [RDMA_NLDEV_ATTR_NODE_GUID] =3D { .type =3D NLA_U64 },
+>         [RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID] =3D { .type =3D NLA_U32 },
+>         [RDMA_NLDEV_ATTR_CHARDEV_NAME] =3D { .type =3D NLA_NUL_STRING },
+>         [RDMA_NLDEV_ATTR_DEV_NAME] =3D { .type =3D NLA_NUL_STRING },
+>         [RDMA_NLDEV_ATTR_DEV_PROTOCOL] =3D { .type =3D NLA_NUL_STRING },
+>         [RDMA_NLDEV_ATTR_FW_VERSION] =3D { .type =3D NLA_NUL_STRING },
 
-Thanks, applied to for-rc.
+Most of those were already in the policies.  Only the four that you
+added to enum rdma_nldev_attr needed added to the policies, and two of
+them your patch already added.  The only question I had is what the
+string length should be on ATTR_CHARDEV_NAME?  I throw in the default of
+.len =3D RDMA_NLDEV_ATTR_ENTRY_STRLEN, but I wasn't sure if that was right
+for this entry?
 
 --=20
 Doug Ledford <dledford@redhat.com>
     GPG KeyID: B826A3330E572FDD
     Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
---=-dXZX6gv9M25ZRQx6lS7x
+--=-GDQujJAflBoYPY2tB3z+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0JSYAACgkQuCajMw5X
-L90/oBAAvYZQsPblZ5a7TRjJjtumfdVum3fCDpswkw0F1GK4+CPqh7jP0lIgXBK9
-35QwxuPUGKQTm1fA35YL9ZVr3rdQECGNJGP4l/QuaKTGF12ViOV6rdEQ9OTovvVo
-SyV5OMe50NQI+ChIBTJQwkYimTyx2XhImziaqApoY7VZXKfNAizl7qQKSwqqFtd0
-YJQ37h3aalWRQUf4N1x6mH2KTowJzt1R4YfUWpnVxRj7xJsocSq7IA+C4SyfQ+P9
-QR0CjY3TFALjcb+yfyNRWWX/s6pqqH4iu653GB+xsK0x43wAZB5d0eZ+IcTgFNYO
-5MgnLe4KhWIUWPPV0xjlQcaDWX9bL5dgT5XU9NUVCqdWTf8UY03tTO8gkK0U8eMY
-6O1Q0LaCpsBcRgei7bkE7Sry3PbO8ZTIXaICrp9eKinV1qmd+O/zki18E3jRpCxI
-F0J6MIXZXNSyQb1XzD3R7QU81iBxPYempBHc6gm/vnmlx3svJ+rlanGodgaDbsMw
-6AhGk+xWDDCi3FrB3+5b0w+eTKNA+ZAARL4NLetbU/aPhQyQyXFr7/D8iNtMeD2f
-YEw9FXKiyUdQlJUgzxDkhrxRwcDbjlVm/5lRFxwPylD0EstScTnzcch+XIMpiPq7
-grv1onBqutNZbcBBbqqdTgMlomsp415RcBYhYMhMylIBh2S559Y=
-=BpE4
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0JUGgACgkQuCajMw5X
+L929XhAAphFBDTRT3xR0/Rh47quVhhZFoT7hWJ4+BRtPjhpGC1RX/+14HoLXUBfn
+IM1TdmTwd0QrRaZh1XQIhYMKCW7S2EKnZiEWzy8SNpVf22wpIXPJYLoWjfrHoq/r
+45m5Ue5W5C6/+nofarP52NOGTLGdLyUxzDwS5PHfIzcXBuehKQ5iC2kfFs9ndQ9d
+iXVLFScx2PGS+LxOa9LYLSXpvkhTxKZwdWh59hXvkD3OA+hhClq/9c67xaalttut
+CfvcL1xdeIu11kjay98JQclpszYHgX6gowcIsK3rgveq/0+5UOz6JP2csCKuYaeN
+rc8zSeO97skrSVrX5loXNdgrnWQt3p1GognCOIZK4zpnDyLs7gaY8gJom6GrWexX
+QyVTQfwvVk7UDFnk8VyYwdeXHE/MP748HepeuDaLFnDfjQYLmq0Vg3DcC0otZeug
+lk+WwYzw2cHZICXHHhh+9dN7PZZkFbhyj/hTih2PCcoVkfSL8A84Cc2+MpFZO9iv
+USTdL+88e1sdBsyB+pikmVEOBaX5M6tKvdd0HYelzVxPL2PTQUoH2t0jiIrvZXI3
+o+/m89uDTi9ArBGI3JOzLYXUybHIgdu4zlq2MIIobIlIHdQcvpJiXwlN0i3A31wS
+lM6JE0VhvSR7G8+HxOz/Li79+CJzsy1EFmocQiGoxlUDgaGRCYo=
+=98oo
 -----END PGP SIGNATURE-----
 
---=-dXZX6gv9M25ZRQx6lS7x--
+--=-GDQujJAflBoYPY2tB3z+--
 
