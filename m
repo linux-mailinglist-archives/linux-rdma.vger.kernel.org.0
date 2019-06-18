@@ -2,70 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC25A4A214
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 15:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9614A2AD
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 15:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726088AbfFRN1a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 09:27:30 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:47422 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbfFRN1a (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 09:27:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=R8Y3KUjrFsX7X/g2S4dMsmTowqPuT9Y71h6/+llmgw0=; b=n3ZDxpzbEjb8R1YKJLBpAmwI5
-        fg4UHLI0YBDL1Xe27VYvdUCGF95z2vAUdWoaWGPThlJIFk6rgNQuGjNp5TDE1LLU9ECS4LxQw96ML
-        +RCnUJDGNPupO5iWQgPgY71z5jdI6LT9v+5khZpolVw0InzMNQKiIn4/PHhnOF17eUM1E32oFnzqC
-        iWauMQoWTacJNZ46XZqRsJeWRwGpaq1/Dv10jtsfzimXcwJGM/5zSO47R/FPNsz/wwBuKwfpsz2uG
-        yZpfrSudQW9FDkAJR2C2gjZlV/jsEeePTa3LPRYnyVcRAYJnFrHd7UlJ5Qr1Dwk10+mVVNEVELOb+
-        AJSeWlhpA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hdE8w-0000uS-GG; Tue, 18 Jun 2019 13:27:22 +0000
-Date:   Tue, 18 Jun 2019 06:27:22 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Philip Yang <Philip.Yang@amd.com>
-Subject: Re: [PATCH v3 hmm 08/12] mm/hmm: Remove racy protection against
- double-unregistration
-Message-ID: <20190618132722.GA1633@infradead.org>
-References: <20190614004450.20252-1-jgg@ziepe.ca>
- <20190614004450.20252-9-jgg@ziepe.ca>
- <20190615141612.GH17724@infradead.org>
- <20190618131324.GF6961@ziepe.ca>
+        id S1729347AbfFRNrX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 09:47:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726248AbfFRNrW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Jun 2019 09:47:22 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D9202133F;
+        Tue, 18 Jun 2019 13:47:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560865641;
+        bh=39H7OvFmgadhEVbxit8UQXkp40Q0FT/4s+W9sQZsOxo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EKHSkbIZfa1DsUhMaWehUy/aahP3e+5NPu4acU9TA6ckjVCSZj+Bkp2CYxA0H6SkI
+         7XDl8PQ9HCT/rTNRpARmoiBeBjOZrYu5MCvbHFk8+uLxHgfvpw9rZHSDPzO/CgBJzv
+         SR+ew8N9Q7C103jEJthE8HrxWeqvoklV836dEX/g=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: [PATCH rdma-core] ibdiags: Fix linkage error on PPC platform due to typo
+Date:   Tue, 18 Jun 2019 16:47:17 +0300
+Message-Id: <20190618134717.8529-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190618131324.GF6961@ziepe.ca>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 18, 2019 at 10:13:24AM -0300, Jason Gunthorpe wrote:
-> > I don't even think we even need to bother with the POISON, normal list
-> > debugging will already catch a double unregistration anyway.
-> 
-> mirror->hmm isn't a list so list debugging won't help.
-> 
-> My concern when I wrote this was that one of the in flight patches I
-> can't see might be depending on this double-unregister-is-safe
-> behavior, so I wanted them to crash reliably.
-> 
-> It is a really overly conservative thing to do..
+From: Leon Romanovsky <leonro@mellanox.com>
 
-mirror->list is a list, and if we do a list_del on it during the
-second unregistration it will trip up on the list poisoning.
+Incorrect linkage type causes to linkage errors on PPC platform.
+
+[267/395] Linking C executable bin/mcm_rereg_test
+FAILED: bin/mcm_rereg_test
+: && /usr/bin/cc  -std=gnu11 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wmissing-prototypes -Wmissing-declarations
+-Wwrite-strings -Wformat=2 -Wformat-nonliteral -Wredundant-decls -Wnested-externs -Wshadow -Wno-missing-field-i
+nitializers -Wstrict-prototypes -Wold-style-definition -Wredundant-decls -O2 -g  -Wl,--as-needed -Wl,--no-undefined
+infiniband-diags/CMakeFiles/mcm_rereg_test.dir/mcm_rereg_test.c.o  -o bin/mcm_rereg_test  ccan/libccan.a util/librdma_util
+.a -lPRIVATE lib/libibumad.so.3.0.25.0 lib/libibmad.so.5.3.25.0 infiniband-diags/libibdiags_tools.a lib/libibumad.so.3.0.25.0
+-Wl,-rpath,/tmp/rdma-core/build/lib &&
+: /usr/bin/ld: cannot find -lPRIVATE
+collect2: error: ld returned 1 exit status
+
+Fixes: 58670e0a17ba ("ibdiags: Add cmake files for ibdiags components")
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ infiniband-diags/CMakeLists.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/infiniband-diags/CMakeLists.txt b/infiniband-diags/CMakeLists.txt
+index 6301e8e02..1fd9ef257 100644
+--- a/infiniband-diags/CMakeLists.txt
++++ b/infiniband-diags/CMakeLists.txt
+@@ -16,7 +16,7 @@ add_library(ibdiags_tools STATIC
+ function(ibdiag_programs)
+   foreach(I ${ARGN})
+     rdma_sbin_executable(${I} "${I}.c")
+-    target_link_libraries(${I} PRIVATE ${RT_LIBRARIES} ibumad ibmad ibdiags_tools ibnetdisc)
++    target_link_libraries(${I} LINK_PRIVATE ${RT_LIBRARIES} ibumad ibmad ibdiags_tools ibnetdisc)
+   endforeach()
+ endfunction()
+ 
+@@ -44,6 +44,6 @@ ibdiag_programs(
+   )
+ 
+ rdma_test_executable(ibsendtrap "ibsendtrap.c")
+-target_link_libraries(ibsendtrap PRIVATE ibumad ibmad ibdiags_tools)
++target_link_libraries(ibsendtrap LINK_PRIVATE ibumad ibmad ibdiags_tools)
+ rdma_test_executable(mcm_rereg_test "mcm_rereg_test.c")
+-target_link_libraries(mcm_rereg_test PRIVATE ibumad ibmad ibdiags_tools)
++target_link_libraries(mcm_rereg_test LINK_PRIVATE ibumad ibmad ibdiags_tools)
+-- 
+2.20.1
+
