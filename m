@@ -2,151 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BCD496E5
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 03:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C38E4991D
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 08:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727159AbfFRBjG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jun 2019 21:39:06 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:49484 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726331AbfFRBjG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 17 Jun 2019 21:39:06 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 25FE67FDF5;
-        Tue, 18 Jun 2019 01:39:05 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6137258C95;
-        Tue, 18 Jun 2019 01:39:04 +0000 (UTC)
-Message-ID: <99f5b2e51e071b8fd49a8e7b02b05628b7fcf24f.camel@redhat.com>
-Subject: Re: [PATCH for-rc 2/2] RDMA/efa: Handle mmap insertions overflow
-From:   Doug Ledford <dledford@redhat.com>
-To:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org
-Date:   Mon, 17 Jun 2019 21:39:01 -0400
-In-Reply-To: <57150f7f-fcca-5f59-6971-9afdd1cc2f72@amazon.com>
-References: <20190612072842.99285-1-galpress@amazon.com>
-         <20190612072842.99285-3-galpress@amazon.com>
-         <20190612120114.GD3876@ziepe.ca>
-         <eb0bbd15-cf37-eacc-a4ce-62becf045c38@amazon.com>
-         <57150f7f-fcca-5f59-6971-9afdd1cc2f72@amazon.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-01jCWCj59A8U1cimVwf/"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S1726685AbfFRGpK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 02:45:10 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:48120 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726546AbfFRGpK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 02:45:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=tV99K2d8GVHSoZ145rfgnhmZCC9mL4mRsMkgqsk8d2s=; b=VFk5UR+XIAvFhHNbE76I35I6f
+        5p7lqPrAl/jivCCXN+p+cSFmOz9NxFW3q/GzZH2CfzqBSKFufzN+JFGSDjo/dIxQTZiEPsvYYqzWD
+        YSzYy9RDgwu/UB1ROaPz1ZEl9EY5pV5O4miFLk1fx7AzfoNx82bqK+GrG6yR/3easJuI6lhk+jWT/
+        4WTD218PsDq6oZi0gydoz2rOi9QRbKG9GNJbOSSjtoKSEBW0xsg2awCi5ClkXapFLSGwx0lQwo/Em
+        qEOwti0M9nkgYlIwbAtaNtKKmOJzFmEocKqjXkQXMo5T/sbmnRuCRzbmL40TF3q9QQ/oln7clT4Xf
+        d4ZT4nuhg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1hd6oH-000393-RU; Tue, 18 Jun 2019 05:37:33 +0000
+Date:   Mon, 17 Jun 2019 22:37:33 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Philip Yang <Philip.Yang@amd.com>
+Subject: Re: [PATCH v3 hmm 11/12] mm/hmm: Remove confusing comment and logic
+ from hmm_release
+Message-ID: <20190618053733.GA25048@infradead.org>
+References: <20190614004450.20252-1-jgg@ziepe.ca>
+ <20190614004450.20252-12-jgg@ziepe.ca>
+ <20190615142106.GK17724@infradead.org>
+ <20190618004509.GE30762@ziepe.ca>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.27]); Tue, 18 Jun 2019 01:39:05 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190618004509.GE30762@ziepe.ca>
+User-Agent: Mutt/1.11.4 (2019-03-13)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Jun 17, 2019 at 09:45:09PM -0300, Jason Gunthorpe wrote:
+> Am I looking at the wrong thing? Looks like it calls it through a work
+> queue should should be OK..
 
---=-01jCWCj59A8U1cimVwf/
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Yes, it calls it through a work queue.  I guess that is fine because
+it needs to take the lock again.
 
-On Wed, 2019-06-12 at 16:42 +0300, Gal Pressman wrote:
-> On 12/06/2019 16:28, Gal Pressman wrote:
-> > On 12/06/2019 15:01, Jason Gunthorpe wrote:
-> > > On Wed, Jun 12, 2019 at 10:28:42AM +0300, Gal Pressman wrote:
-> > > > When inserting a new mmap entry to the xarray we should check
-> > > > for
-> > > > 'mmap_page' overflow as it is limited to 32 bits.
-> > > >=20
-> > > > While at it, make sure to advance the mmap_page stored on the
-> > > > ucontext
-> > > > only after a successful insertion.
-> > > >=20
-> > > > Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
-> > > > Signed-off-by: Gal Pressman <galpress@amazon.com>
-> > > >  drivers/infiniband/hw/efa/efa_verbs.c | 21 ++++++++++++++++---
-> > > > --
-> > > >  1 file changed, 16 insertions(+), 5 deletions(-)
-> > > >=20
-> > > > diff --git a/drivers/infiniband/hw/efa/efa_verbs.c
-> > > > b/drivers/infiniband/hw/efa/efa_verbs.c
-> > > > index 0fea5d63fdbe..c463c683ae84 100644
-> > > > +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-> > > > @@ -204,6 +204,7 @@ static u64 mmap_entry_insert(struct efa_dev
-> > > > *dev, struct efa_ucontext *ucontext,
-> > > >  			     void *obj, u64 address, u64
-> > > > length, u8 mmap_flag)
-> > > >  {
-> > > >  	struct efa_mmap_entry *entry;
-> > > > +	u32 next_mmap_page;
-> > > >  	int err;
-> > > > =20
-> > > >  	entry =3D kmalloc(sizeof(*entry), GFP_KERNEL);
-> > > > @@ -216,15 +217,19 @@ static u64 mmap_entry_insert(struct
-> > > > efa_dev *dev, struct efa_ucontext *ucontext,
-> > > >  	entry->mmap_flag =3D mmap_flag;
-> > > > =20
-> > > >  	xa_lock(&ucontext->mmap_xa);
-> > > > +	if (check_add_overflow(ucontext->mmap_xa_page,
-> > > > +			       (u32)(length >> PAGE_SHIFT),
-> > > > +			       &next_mmap_page))
-> > > > +		goto err_unlock;
-> > > > +
-> > > >  	entry->mmap_page =3D ucontext->mmap_xa_page;
-> > > > -	ucontext->mmap_xa_page +=3D DIV_ROUND_UP(length,
-> > > > PAGE_SIZE);
-> > > >  	err =3D __xa_insert(&ucontext->mmap_xa, entry->mmap_page,=20
-> > > > entry,
-> > > >  			  GFP_KERNEL);
-> > > > +	if (err)
-> > > > +		goto err_unlock;
-> > > > +
-> > > > +	ucontext->mmap_xa_page =3D next_mmap_page;
-> > >=20
-> > > This is not ordered right anymore, the xa_lock can be released
-> > > inside
-> > > __xa_insert, so to be atomic you must do everything before
-> > > calling
-> > > __xa_insert.
-> >=20
-> > Ah, missed the fact that __xa_insert could release the lock :\..
-> > Thanks Jason, will bring back the mmap_xa_page assignment before
-> > the __xa_insert
-> > call and unwind it in case of __xa_insert failure.
->=20
-> On second thought, unwinding the mmap_xa_page will cause other
-> issues.. Will
-> drop this part.
+> Though very strange that amdgpu only destroys the mirror via release,
+> that cannot be right.
 
-I wasn't sure what you intended to be the final patch on this one, so I
-just ignored it.  Please post a respin of this patch that drops
-whatever you want dropped.  Thanks.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Key fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
-2FDD
-
---=-01jCWCj59A8U1cimVwf/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0IQLUACgkQuCajMw5X
-L92Xgw//To0WHbxvGkSV6xn8wsF1kUPEdQKiBCTj4Nq4LHFiIKUL48bhrs7uK4jJ
-HGT6dkRiwgBsP54UkOVT6locMJlGLD7m1doUNEUemNpmg87yJFTH1nbXz0nK9zW2
-U4g8TBs+my2JRaaB40MidRG/BEVnZaV4t/F2MctJYWFGN+GKNa0OKic2r1/3QEW4
-ZBd4YxsC/t6GqI+0usA/iMJfyzoGb8PXEH8HgX6ypBnu3nUBRxVcAeHW7XiNiwz9
-ME6Ftjb9O633KKf6Q7b3b5GJVHqlI5rn8XnqsckHgV7Usus/G9nBYTurq44xahqj
-ZQn/vRSeCt0aassPDi9ZKwreTP0Yif7IQ0w+6wKJosetTHDc2IUJM+BIuXHbJ/1S
-ihzKwO7d9YsFSYIJWaom2MTMZIAhsz1otnonsJ+rC/zi5jtsSMcE/StnKdp/ual+
-tSFfnHgTuCPM6cexBDVxzSiwT/4AdRPkIyi39PXh00yelCHklKCQc99DBz2QFrOp
-268hzU/jRaTro49l5Hj/Rpxp418jLEyBEDOlMTxs6K77nQPwil+D/wy4M1ep7Rc7
-C307+MTIC8MvMLLDsDfPd6dt3ZvNdKjJFbsCNtkUsiKX7ilIWr8gzdC3lx1+c6nP
-2PXsgEAVNrNbwA0sktji7r4D+98IKH4Yb9wee8qFKA31lyGceMI=
-=5FaJ
------END PGP SIGNATURE-----
-
---=-01jCWCj59A8U1cimVwf/--
-
+As said the whole things looks rather odd to me.
