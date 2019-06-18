@@ -2,80 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BCF4A7E5
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 19:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B894A7FE
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 19:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730034AbfFRRIT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 13:08:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46144 "EHLO mail.kernel.org"
+        id S1729204AbfFRRPq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 13:15:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729491AbfFRRIT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 Jun 2019 13:08:19 -0400
+        id S1728572AbfFRRPp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Jun 2019 13:15:45 -0400
 Received: from localhost (unknown [37.142.3.125])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B989920B1F;
-        Tue, 18 Jun 2019 17:08:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DE0220B1F;
+        Tue, 18 Jun 2019 17:15:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560877698;
-        bh=6eA47NzHwxEI2Y3cl5itHi0gjKGG2Ah5hqB2AwqUx7E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lj4L4jENQAlroMhQlu2ke3O2f7o4Js66GvbEF7Bgc8Qer02JjapgJELctne+a/jyU
-         nDH8eL8F9gcWKTr21NajngOrgOS0ogadOobCVac9cH3Fb9ZLHyjT7Ub2ahQ5Bu9KxV
-         wtPMuPZzTmh3KMn3QRZioPU3nImtwbU4N9mm/wV4=
-Date:   Tue, 18 Jun 2019 20:08:14 +0300
+        s=default; t=1560878144;
+        bh=dHmsLXXqkIYVzGrtHgqZ4JwV7tZkFU4Y4SMb9svykTA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cNY+y6lxNupUQSL0OICq4HSK8oH3vSvAi05cpEeh0Ie967hggoPSdStWtPVIEY0Gp
+         uDOvuWG+FrPVlZvvUaSEjGljeeSikQalGUC+OZdcvtHNWA6WG6+gQ8H29KbnwzSEKj
+         8CRWf7gj/uEoJkTBoIpeocGVQD1WSrsRWZilZO40=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-core] ibdiags: Fix linkage error on PPC platform due
- to typo
-Message-ID: <20190618170814.GP4690@mtr-leonro.mtl.com>
-References: <20190618134717.8529-1-leon@kernel.org>
- <20190618144849.GH6961@ziepe.ca>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: [PATCH rdma-next v1 00/12] DEVX asynchronous events
+Date:   Tue, 18 Jun 2019 20:15:28 +0300
+Message-Id: <20190618171540.11729-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190618144849.GH6961@ziepe.ca>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 18, 2019 at 11:48:49AM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 18, 2019 at 04:47:17PM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > Incorrect linkage type causes to linkage errors on PPC platform.
-> >
-> > [267/395] Linking C executable bin/mcm_rereg_test
-> > FAILED: bin/mcm_rereg_test
-> > : && /usr/bin/cc  -std=gnu11 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wmissing-prototypes -Wmissing-declarations
-> > -Wwrite-strings -Wformat=2 -Wformat-nonliteral -Wredundant-decls -Wnested-externs -Wshadow -Wno-missing-field-i
-> > nitializers -Wstrict-prototypes -Wold-style-definition -Wredundant-decls -O2 -g  -Wl,--as-needed -Wl,--no-undefined
-> > infiniband-diags/CMakeFiles/mcm_rereg_test.dir/mcm_rereg_test.c.o  -o bin/mcm_rereg_test  ccan/libccan.a util/librdma_util
-> > .a -lPRIVATE lib/libibumad.so.3.0.25.0 lib/libibmad.so.5.3.25.0 infiniband-diags/libibdiags_tools.a lib/libibumad.so.3.0.25.0
-> > -Wl,-rpath,/tmp/rdma-core/build/lib &&
-> > : /usr/bin/ld: cannot find -lPRIVATE
-> > collect2: error: ld returned 1 exit status
->
-> Weird that only happens on PPC, IIRC'PRIVATE' is a valid cmake keyword but
-> it is archaic.
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Yes, I double checked it, maybe the reason was the really ancient system packages.
-
->
-> > Fixes: 58670e0a17ba ("ibdiags: Add cmake files for ibdiags components")
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> >  infiniband-diags/CMakeLists.txt | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-
-Ira approved too, so I merged.
+Changelog:
+ v0 -> v1:
+ * Fix the unbind / hot unplug flows to work properly.
+ * Fix Ref count handling on the eventfd mode in some flow.
+ * Rebased to latest rdma-next
 
 Thanks
 
->
-> Jason
+------------------------------------------------------------------------------------
+From Yishai:
+
+This series enables RDMA applications that use the DEVX interface to
+subscribe and read device asynchronous events.
+
+The solution is designed to allow extension of events in the future
+without need to perform any changes in the driver code.
+
+To enable that few changes had been done in mlx5_core, it includes:
+ * Reading device event capabilities that are user related
+   (affiliated and un-affiliated) and set the matching mask upon
+   creating the matching EQ.
+ * Enable DEVX/mlx5_ib to register for ANY event instead of the option to
+   get some hard-coded ones.
+ * Enable DEVX/mlx5_ib to get the device raw data for CQ completion events.
+ * Enhance mlx5_core_create/destroy CQ to enable DEVX using them so that CQ
+   events will be reported as well.
+
+In mlx5_ib layer the below changes were done:
+ * A new DEVX API was introduced to allocate an event channel by using
+   the uverbs FD object type.
+ * Implement the FD channel operations to enable read/poo/close over it.
+ * A new DEVX API was introduced to subscribe for specific events over an
+   event channel.
+ * Manage an internal data structure  over XA(s) to subscribe/dispatch events
+   over the different event channels.
+ * Use from DEVX the mlx5_core APIs to create/destroy a CQ to be able to
+   get its relevant events.
+
+Yishai
+
+Yishai Hadas (12):
+  net/mlx5: Fix mlx5_core_destroy_cq() error flow
+  net/mlx5: Use event mask based on device capabilities
+  net/mlx5: Expose the API to register for ANY event
+  net/mlx5: mlx5_core_create_cq() enhancements
+  net/mlx5: Report a CQ error event only when a handler was set
+  net/mlx5: Report EQE data upon CQ completion
+  net/mlx5: Expose device definitions for object events
+  IB/mlx5: Introduce MLX5_IB_OBJECT_DEVX_ASYNC_EVENT_FD
+  IB/mlx5: Register DEVX with mlx5_core to get async events
+  IB/mlx5: Enable subscription for device events over DEVX
+  IB/mlx5: Implement DEVX dispatching event
+  IB/mlx5: Add DEVX support for CQ events
+
+ drivers/infiniband/hw/mlx5/cq.c               |    5 +-
+ drivers/infiniband/hw/mlx5/devx.c             | 1082 ++++++++++++++++-
+ drivers/infiniband/hw/mlx5/main.c             |   10 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   12 +
+ drivers/infiniband/hw/mlx5/odp.c              |    3 +-
+ drivers/infiniband/hw/mlx5/qp.c               |    2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/cq.c  |   21 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |    2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |    3 +-
+ .../net/ethernet/mellanox/mlx5/core/en_txrx.c |    2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  |   68 +-
+ .../ethernet/mellanox/mlx5/core/fpga/conn.c   |    6 +-
+ drivers/net/ethernet/mellanox/mlx5/core/fw.c  |    6 +
+ .../net/ethernet/mellanox/mlx5/core/lib/eq.h  |    5 +-
+ include/linux/mlx5/cq.h                       |    6 +-
+ include/linux/mlx5/device.h                   |    6 +-
+ include/linux/mlx5/driver.h                   |    2 +
+ include/linux/mlx5/eq.h                       |    4 +-
+ include/linux/mlx5/mlx5_ifc.h                 |   34 +-
+ include/uapi/rdma/mlx5_user_ioctl_cmds.h      |   19 +
+ include/uapi/rdma/mlx5_user_ioctl_verbs.h     |    9 +
+ 21 files changed, 1237 insertions(+), 70 deletions(-)
+
+--
+2.20.1
+
