@@ -2,104 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 765864AA32
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 20:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46CC4AA35
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 20:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729964AbfFRSrc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 14:47:32 -0400
-Received: from mail-eopbgr20050.outbound.protection.outlook.com ([40.107.2.50]:15489
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730162AbfFRSrc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 Jun 2019 14:47:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wWSE8lJExkF6WTMy1f/heNuJbBFen2JAZ+j/WTKVxTE=;
- b=QTCsI1mjpqj1qQLi2xuUSQKm3b6hYzGqE7pbRuFChbW58cQQai/SoffGwXgBBHYmfKKfBVUzus8wL+ANlx7gSaDTHQHeQSa+dtGQ128UYxc2VcdWpjmRLOMkrmyshHQu8iTDRkbnqafvn9kgCGTBr5byNWfNfLwE4sdMdk3KzcM=
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
- DB6PR0501MB2472.eurprd05.prod.outlook.com (10.168.77.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.12; Tue, 18 Jun 2019 18:47:29 +0000
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::a901:6951:59de:3278]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::a901:6951:59de:3278%2]) with mapi id 15.20.1987.014; Tue, 18 Jun 2019
- 18:47:29 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-CC:     Mark Zhang <markz@mellanox.com>, Majd Dibbiny <majd@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next v4 01/17] net/mlx5: Add
- rts2rts_qp_counters_set_id field in hca cap
-Thread-Topic: [PATCH mlx5-next v4 01/17] net/mlx5: Add
- rts2rts_qp_counters_set_id field in hca cap
-Thread-Index: AQHVJfr9uGqIkfgg7UWzIj7bjfNbLKahwJaA
-Date:   Tue, 18 Jun 2019 18:47:28 +0000
-Message-ID: <183c4bbd4b9f78dec18c3cf41bdc6ee71512ed52.camel@mellanox.com>
-References: <20190618172625.13432-1-leon@kernel.org>
-         <20190618172625.13432-2-leon@kernel.org>
-In-Reply-To: <20190618172625.13432-2-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.32.2 (3.32.2-1.fc30) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [209.116.155.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 86cb0389-d2ba-415e-89d9-08d6f41d6a2a
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2472;
-x-ms-traffictypediagnostic: DB6PR0501MB2472:
-x-microsoft-antispam-prvs: <DB6PR0501MB2472121A69661E0632D50742BEEA0@DB6PR0501MB2472.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-forefront-prvs: 007271867D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(396003)(136003)(39860400002)(366004)(199004)(189003)(6436002)(4744005)(2501003)(76116006)(2201001)(99286004)(14454004)(86362001)(2906002)(3846002)(81166006)(8936002)(6486002)(91956017)(5660300002)(36756003)(81156014)(8676002)(53936002)(71190400001)(118296001)(68736007)(478600001)(71200400001)(6116002)(66556008)(14444005)(66476007)(66446008)(64756008)(256004)(73956011)(76176011)(305945005)(66066001)(7736002)(2616005)(102836004)(54906003)(58126008)(110136005)(476003)(486006)(316002)(229853002)(6506007)(6512007)(6246003)(26005)(186003)(4326008)(11346002)(446003)(66946007)(25786009);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2472;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: AkNXuI/SPNpydGOewjM7XuHw+K7Dfd57frauT0fq/O9ovCEWoslV9GVA0ZP672UhRtuJ8acn3KXry0uP1RZnN+DMpFP3ZsNcijWDn6N0YqIF2N7tdYs/8rl0pQO+AtQlj4/TEqsxCieqEnkeSlqpeiH+CZ3ep405XwRiEx9NJmxrbW3SkvfngO1Uk4RO1yF8cWvSjDnPuLHkjvnbWhteSItiIkQ6KWL99Kd585JO5NkPNnuFRtcvixFDTLLdB/IZDKAbvNz4sy+LrcEIIhDm1IQ7wel4Tgg+s75lkBoroPe9qJfc/aZVQ4URM5hQrzoactE8aKeYi1JkfXBFQTCGPPy6anfjpmf5lbTu0F7VZkuBbNOy0iTsKryBankOzKKsvJTgGCo0zYfaA1mDlyBOaKRqK+I6kN41tqDD8vY3ou4=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C17827FB5DF7BE419ACCFFE8FB0D86F0@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729981AbfFRSsK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jun 2019 14:48:10 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:34442 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730147AbfFRSsK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jun 2019 14:48:10 -0400
+Received: by mail-qt1-f194.google.com with SMTP id m29so16719742qtu.1
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2019 11:48:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LNUYSxSNmQUKvCt5SlSj4VUhgTvckTHE4NII56DdNFM=;
+        b=o8UAueg63RwB19WzkIRWBlyyO6GnrkrpOGZx1MuhG1XuWy4stkvJw6ZYFcc7u29UlK
+         d2rAVBruuIgyrkcwpKNDzwN7CASIsn5WL4PxGZlynOvOViMG/DNiw85RPawjzJQeEF9o
+         HGFi1SHvsHrrtQurbP212qOdicm5FK0AZX9jSh0QpYMIepr0XN3x2QsrhpV+W1hVN1FK
+         wOdM6PjHugaAS8qvJg8KALG7JNqvBDO0c4dsPitGzZEkJeh5BL5eNvDSO0He5Yp9EaaJ
+         Kr0Wean/R3ALljUArJUNJMcFcBRew/uEPpHPQ8xXe4HRFJjjQznWx4hWUOh+Z9hk6u74
+         NMgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LNUYSxSNmQUKvCt5SlSj4VUhgTvckTHE4NII56DdNFM=;
+        b=PzS2WzMcF5ieqwhulaUwUHVUalFROkwxroHV0ocuRgL5PjUNdjYsSxG0N91iNMuSwp
+         NLwl1UDJZX1az3zajd39YR76PQKN26JhB17Jq3pewJfvwML2yInhzOHqUUSXkM3faysj
+         WyKb4nQvujcdA/1UGwML4izuUKL1fr5oFYpuGrrA0//dyPPNQIFJKrpWOx8ActHSIv3e
+         97TbsM4l3w3gQS2B4ptBmNlZmcZUsSNq6uIFw9SMIscS8kIX+q9frFa/hgrrinxhp48X
+         lm+83kx34GFk/e3DjGF7SJVpBMW7LXfjSmfDJJs6kr6clPz5q/yPWbkAAPdSEOLVM/wQ
+         sLbw==
+X-Gm-Message-State: APjAAAVUucCpcNOMBpqIPKWNAfeFOGhJfzprFJx+WshNj1B/9fXiK7fb
+        KUYFiMTylKsqA8X72JQnBcVz4w==
+X-Google-Smtp-Source: APXvYqxUVDFxstN/WAauCDtGVCLAwK0X3MiA90DRxvYMN09+KUg2ASnRA5Alc36bJZPHn43DRy+9KA==
+X-Received: by 2002:a0c:bf47:: with SMTP id b7mr28958792qvj.4.1560883689379;
+        Tue, 18 Jun 2019 11:48:09 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id d123sm9719999qkb.94.2019.06.18.11.48.08
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 18 Jun 2019 11:48:08 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hdJ9M-00004v-Ak; Tue, 18 Jun 2019 15:48:08 -0300
+Date:   Tue, 18 Jun 2019 15:48:08 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-rc v2] RDMA/efa: Handle mmap insertions overflow
+Message-ID: <20190618184808.GN6961@ziepe.ca>
+References: <20190618130732.20895-1-galpress@amazon.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 86cb0389-d2ba-415e-89d9-08d6f41d6a2a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2019 18:47:28.9933
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2472
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190618130732.20895-1-galpress@amazon.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gVHVlLCAyMDE5LTA2LTE4IGF0IDIwOjI2ICswMzAwLCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6
-DQo+IEZyb206IE1hcmsgWmhhbmcgPG1hcmt6QG1lbGxhbm94LmNvbT4NCj4gDQo+IEFkZCBydHMy
-cnRzX3FwX2NvdW50ZXJzX3NldF9pZCBmaWVsZCBpbiBoY2EgY2FwIHNvIHRoYXQgUlRTMlJUUw0K
-PiBxcCBtb2RpZmljYXRpb24gY2FuIGJlIHVzZWQgdG8gY2hhbmdlIHRoZSBjb3VudGVyIG9mIGEg
-UVAuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBNYXJrIFpoYW5nIDxtYXJrekBtZWxsYW5veC5jb20+
-DQo+IFJldmlld2VkLWJ5OiBNYWpkIERpYmJpbnkgPG1hamRAbWVsbGFub3guY29tPg0KPiBTaWdu
-ZWQtb2ZmLWJ5OiBMZW9uIFJvbWFub3Zza3kgPGxlb25yb0BtZWxsYW5veC5jb20+DQo+IC0tLQ0K
-PiAgaW5jbHVkZS9saW51eC9tbHg1L21seDVfaWZjLmggfCA0ICsrKy0NCj4gIDEgZmlsZSBjaGFu
-Z2VkLCAzIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9p
-bmNsdWRlL2xpbnV4L21seDUvbWx4NV9pZmMuaA0KPiBiL2luY2x1ZGUvbGludXgvbWx4NS9tbHg1
-X2lmYy5oDQo+IGluZGV4IGUzYzE1NGI1NzNhMi4uMTYzNDg1MjhmZWY2IDEwMDY0NA0KPiAtLS0g
-YS9pbmNsdWRlL2xpbnV4L21seDUvbWx4NV9pZmMuaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L21s
-eDUvbWx4NV9pZmMuaA0KPiBAQCAtMTAyOCw3ICsxMDI4LDkgQEAgc3RydWN0IG1seDVfaWZjX2Nt
-ZF9oY2FfY2FwX2JpdHMgew0KPiAgCXU4ICAgICAgICAgY2NfbW9kaWZ5X2FsbG93ZWRbMHgxXTsN
-Cj4gIAl1OCAgICAgICAgIHN0YXJ0X3BhZFsweDFdOw0KPiAgCXU4ICAgICAgICAgY2FjaGVfbGlu
-ZV8xMjhieXRlWzB4MV07DQo+IC0JdTggICAgICAgICByZXNlcnZlZF9hdF8xNjVbMHhhXTsNCj4g
-Kwl1OCAgICAgICAgIHJlc2VydmVkX2F0XzE2NVsweDRdOw0KPiArCXU4ICAgICAgICAgcnRzMnJ0
-c19xcF9jb3VudGVyc19zZXRfaWRbMHgxXTsNCj4gKwl1OCAgICAgICAgIHJlc2VydmVkX2F0XzE2
-YVsweDVdOw0KPiAgCXU4ICAgICAgICAgcWNhbV9yZWdbMHgxXTsNCj4gIAl1OCAgICAgICAgIGdp
-ZF90YWJsZV9zaXplWzB4MTBdOw0KPiANCj4gLS0NCj4gMi4yMC4xDQo+IA0KDQpBY2tlZC1ieTog
-U2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBtZWxsYW5veC5jb20+DQo=
+On Tue, Jun 18, 2019 at 04:07:32PM +0300, Gal Pressman wrote:
+> When inserting a new mmap entry to the xarray we should check for
+> 'mmap_page' overflow as it is limited to 32 bits.
+> 
+> Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
+> Changelog:
+> v1->v2
+> * Bring back the ucontext->mmap_xa_page assignment before __xa_insert
+>  drivers/infiniband/hw/efa/efa_verbs.c | 21 ++++++++++++++++-----
+>  1 file changed, 16 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+> index 0fea5d63fdbe..fb6115244d4c 100644
+> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> @@ -204,6 +204,7 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+>  			     void *obj, u64 address, u64 length, u8 mmap_flag)
+>  {
+>  	struct efa_mmap_entry *entry;
+> +	u32 next_mmap_page;
+>  	int err;
+>  
+>  	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+> @@ -216,15 +217,19 @@ static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+>  	entry->mmap_flag = mmap_flag;
+>  
+>  	xa_lock(&ucontext->mmap_xa);
+> +	if (check_add_overflow(ucontext->mmap_xa_page,
+> +			       (u32)(length >> PAGE_SHIFT),
+> +			       &next_mmap_page))
+> +		goto err_unlock;
+> +
+>  	entry->mmap_page = ucontext->mmap_xa_page;
+> -	ucontext->mmap_xa_page += DIV_ROUND_UP(length, PAGE_SIZE);
+
+Why did DIV_ROUND_UP become >> ?
+
+Jason
