@@ -2,116 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9027A49665
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 02:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2665649667
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2019 02:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726023AbfFRApL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jun 2019 20:45:11 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:38825 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbfFRApL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jun 2019 20:45:11 -0400
-Received: by mail-qt1-f194.google.com with SMTP id n11so13206444qtl.5
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Jun 2019 17:45:10 -0700 (PDT)
+        id S1726048AbfFRAqy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jun 2019 20:46:54 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:33338 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbfFRAqy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jun 2019 20:46:54 -0400
+Received: by mail-wm1-f68.google.com with SMTP id h19so1100775wme.0;
+        Mon, 17 Jun 2019 17:46:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xyVcNd9oooqBQ01pz08myANSFTdx0SwnrW4fjYnawJM=;
-        b=EbwbRCaTtFd2OjM2jNOG+48iONnisGaulMgt8GBSlGmHHmNOKbiX/pQ5UIlGAp8yUz
-         vNA1zIvWXYK1S4TWgK+86NqYoCUVC/0ZevX6IRfWzWSNvQ8g+Og+/8wxKQstLAZ+revM
-         VL5EZh1MRj6Ew8rlA3u8Y12VqUKY0LSaNX6vUqI1xIiehSserEbesl80q+pA69T5mmHc
-         9ILTNBce92/Mo7e4Kup6uNkn8cC7R1Ht2U5myxg80c8SBX/Bf59IAzM3jiTwz6+ORmYB
-         TG1ZP8xw47a6bZF6oV577gILRTEpeuB3t1687rIrkCR/XgY0ASSrboWRYKGE3cjxdvtm
-         1zGA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8040MIo3hoL1siZlh+IJp6lN+yzLI4mFWNXimyvlAT8=;
+        b=icnDnXp2u0Gupr9hz5qzVK3sx/3roplA+0k5zd87GQng1nhz6SqoI9E/novxYoKwEE
+         lDapE2xsyKXmDEcfKzyyGSJO4UvZdJOviYjvwxqimwFPQ1Wa2/Ht/iE79Gmve6jMIEtC
+         Jvao9tinNnvRSJ5Zj1z/RquntQwL2Bria4lsckZyZPjw+qLyXD9VLXzZxG/6M+0Hwe8b
+         +qOcMZi/96TSSJ9iMyTLyNhuBaMOapSTjmP/ho9zdnB9PqViGM1v6uyXqEQAPL8vAtQ8
+         weaAmGBCWsrh+SFbRgt46IDw/hRb6T5hP9PQPFWkggP/47wl84BjQ2hQyAtgeD6z0c8K
+         Gf3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xyVcNd9oooqBQ01pz08myANSFTdx0SwnrW4fjYnawJM=;
-        b=k66OEriIaAWzNOdGkGlIiKJxpuPwTJfXmQarTISZNZL4Lfq6sjgqDZGy+iD2j+jYlh
-         Z53OyL0sPh+Ed503OWV7QKQZtLlr07kSX+DNAyeq8zwFXwoxX3P1XO+qeS2Ym/DgP1Th
-         zkJwn0H4Lm1/Ubyo+KJHCV2eqsxTFXyNopnyO4/yr8IESfDBx/lsSPof+eAikDZ9zHb6
-         HdmWWTrv42ZujcrYEKEhVQdyCjrE77vc5nstvo4Se7tutUz79sdh3W0mX/g+JPoo/Ycr
-         605NGkMBZNyNyWRB384cj/ayJFXAqgafGkbvPiFIvIK4DebpAJTw4l8g9jBB3Rt3Iib+
-         uamw==
-X-Gm-Message-State: APjAAAULUElpwu0k54wOx5JCbf78KZ4UUNVI9fA+mqRtDGTgu3Q7rslr
-        JuzdE2vJlKfY/7vgTTpdZv+y8Q==
-X-Google-Smtp-Source: APXvYqwWPeoiWiUq38eemfOuoOnFZtRLG1ij33tWBeptCPrHnF05gR5s5sk1ou0VyceV16bnn7ukkQ==
-X-Received: by 2002:ac8:2763:: with SMTP id h32mr99156393qth.350.1560818710425;
-        Mon, 17 Jun 2019 17:45:10 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id z57sm9460981qta.62.2019.06.17.17.45.09
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 17 Jun 2019 17:45:09 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hd2FJ-0000ob-FF; Mon, 17 Jun 2019 21:45:09 -0300
-Date:   Mon, 17 Jun 2019 21:45:09 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Philip Yang <Philip.Yang@amd.com>
-Subject: Re: [PATCH v3 hmm 11/12] mm/hmm: Remove confusing comment and logic
- from hmm_release
-Message-ID: <20190618004509.GE30762@ziepe.ca>
-References: <20190614004450.20252-1-jgg@ziepe.ca>
- <20190614004450.20252-12-jgg@ziepe.ca>
- <20190615142106.GK17724@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8040MIo3hoL1siZlh+IJp6lN+yzLI4mFWNXimyvlAT8=;
+        b=g6a3jcIr10lG78mzNFPDkSlvCptboKvI3zrBetvr4slCXMuJirzwm9415SgijUbhH8
+         tlb6rzjZuUgBvWcVKtVFxbX1P+/Vtxy8IuPyPVDxPpjLE0pg0Je3MAXiO1yUuEYmjyjp
+         0ql7KA5zxhMuHa/C1iJE+sYJ1/mTFyuL/JRwJAHCYIZi4Uo4433RvhGbCTDyQAug3zao
+         1FOqRnDyZEhSEA1G2GSVRfWXECXDhR69MN4UWxj1a6yFYkiDFLPmMzoa3/Z9xwRdIkpe
+         6dpMkP/lp5hKGqRURbTVAMuPc+72vxgld25otYdA/qX1tI1pefuzhT1cLuPGp/x4GPQX
+         w8Ww==
+X-Gm-Message-State: APjAAAUZzW1qNvg+mx6em+MVbKvLpTL0Y6S+WLs8BLhUTiWbhBXwD+rE
+        G6VOcmahaXkLaXibAgFsdJ70X635RAqHIyD/S+I=
+X-Google-Smtp-Source: APXvYqxMSUnTcEGSu/iiFpFg9Mxu8aSAdN3/6SxVGuAWKQLmuwThyhLKW85M76Jcf4jRiGyxe2H+tYw93p+WDXmfkhQ=
+X-Received: by 2002:a05:600c:204c:: with SMTP id p12mr813975wmg.121.1560818811702;
+ Mon, 17 Jun 2019 17:46:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190615142106.GK17724@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20190617122000.22181-1-hch@lst.de> <20190617122000.22181-8-hch@lst.de>
+In-Reply-To: <20190617122000.22181-8-hch@lst.de>
+From:   Ming Lei <tom.leiming@gmail.com>
+Date:   Tue, 18 Jun 2019 08:46:40 +0800
+Message-ID: <CACVXFVObpdjN6V9qS-C9NG5xcrPqmx-X22qVamOSZf81Vog6zw@mail.gmail.com>
+Subject: Re: [PATCH 7/8] mpt3sas: set an unlimited max_segment_size for SAS
+ 3.0 HBAs
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com,
+        linux-hyperv@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 15, 2019 at 07:21:06AM -0700, Christoph Hellwig wrote:
-> On Thu, Jun 13, 2019 at 09:44:49PM -0300, Jason Gunthorpe wrote:
-> > From: Jason Gunthorpe <jgg@mellanox.com>
-> > 
-> > hmm_release() is called exactly once per hmm. ops->release() cannot
-> > accidentally trigger any action that would recurse back onto
-> > hmm->mirrors_sem.
-> 
-> In linux-next amdgpu actually calls hmm_mirror_unregister from its
-> release function.  That whole release function looks rather sketchy,
-> but we probably need to sort that out first.
+On Mon, Jun 17, 2019 at 8:21 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> When using a virt_boundary_mask, as done for NVMe devices attached to
+> mpt3sas controllers we require an unlimited max_segment_size, as the
+> virt boundary merging code assumes that.  But we also need to propagate
+> that to the DMA mapping layer to make dma-debug happy.  The SCSI layer
+> takes care of that when using the per-host virt_boundary setting, but
+> given that mpt3sas only wants to set the virt_boundary for actual
+> NVMe devices we can't rely on that.  The DMA layer maximum segment
+> is global to the HBA however, so we have to set it explicitly.  This
+> patch assumes that mpt3sas does not have a segment size limitation,
+> which seems true based on the SGL format, but will need to be verified.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/scsi/mpt3sas/mpt3sas_scsih.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+> index 1ccfbc7eebe0..c719b807f6d8 100644
+> --- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+> +++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+> @@ -10222,6 +10222,7 @@ static struct scsi_host_template mpt3sas_driver_template = {
+>         .this_id                        = -1,
+>         .sg_tablesize                   = MPT3SAS_SG_DEPTH,
+>         .max_sectors                    = 32767,
+> +       .max_segment_size               = 0xffffffff,
 
-Does it? I see this:
+.max_segment_size should be aligned, either setting it here correctly or
+forcing to make it aligned in scsi-core.
 
-static void amdgpu_hmm_mirror_release(struct hmm_mirror *mirror)
-{
-        struct amdgpu_mn *amn = container_of(mirror, struct amdgpu_mn, mirror);
-
-        INIT_WORK(&amn->work, amdgpu_mn_destroy);
-        schedule_work(&amn->work);
-}
-
-static struct hmm_mirror_ops amdgpu_hmm_mirror_ops[] = {
-        [AMDGPU_MN_TYPE_GFX] = {
-                .sync_cpu_device_pagetables = amdgpu_mn_sync_pagetables_gfx,
-                .release = amdgpu_hmm_mirror_release
-        },
-        [AMDGPU_MN_TYPE_HSA] = {
-                .sync_cpu_device_pagetables = amdgpu_mn_sync_pagetables_hsa,
-                .release = amdgpu_hmm_mirror_release
-        },
-};
-
-
-Am I looking at the wrong thing? Looks like it calls it through a work
-queue should should be OK..
-
-Though very strange that amdgpu only destroys the mirror via release,
-that cannot be right.
-
-Jason
+Thanks,
+Ming Lei
