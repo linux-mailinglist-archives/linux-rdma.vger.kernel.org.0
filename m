@@ -2,212 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAC44B185
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 07:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FA24B1EF
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 08:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbfFSFm2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 01:42:28 -0400
-Received: from mail-eopbgr30075.outbound.protection.outlook.com ([40.107.3.75]:57542
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725854AbfFSFm1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Jun 2019 01:42:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WXn8OYcQjBJTCrZQyXEi6CkkkB5YVw7+o9gEX42fYNA=;
- b=m9UhkM0PICoag+oAuE2bCs6eOSOo/JmYJZiZa+K6cEE0kLEuUICRY+ojGOGdILnUZDwn/wQ4nvV3TamNO6Z3dnfWSZMIxkOKkDuVjw0P/4pH6Sk2iVIoYv4RmJ7UTt9bEDWGvxlkKF15DpGewuPvG7KcPQraL9iSiYLMRbMYCrg=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB6387.eurprd05.prod.outlook.com (20.179.35.140) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.11; Wed, 19 Jun 2019 05:42:23 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::217d:2cd7:c8da:9279]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::217d:2cd7:c8da:9279%5]) with mapi id 15.20.1987.014; Wed, 19 Jun 2019
- 05:42:23 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Jianbo Liu <jianbol@mellanox.com>
-CC:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Eli Britstein <elibr@mellanox.com>,
-        Roi Dayan <roid@mellanox.com>, Mark Bloch <markb@mellanox.com>
-Subject: RE: [PATCH mlx5-next 05/15] net/mlx5: E-Switch, Tag packet with vport
- number in VF vports and uplink ingress ACLs
-Thread-Topic: [PATCH mlx5-next 05/15] net/mlx5: E-Switch, Tag packet with
- vport number in VF vports and uplink ingress ACLs
-Thread-Index: AQHVJUIvQBC59cDDY02jRJJAncFB4KahNdeAgAE6x4CAAAdscA==
-Date:   Wed, 19 Jun 2019 05:42:23 +0000
-Message-ID: <AM0PR05MB48663F4F6C7CCA9F2DA37074D1E50@AM0PR05MB4866.eurprd05.prod.outlook.com>
-References: <20190617192247.25107-1-saeedm@mellanox.com>
- <20190617192247.25107-6-saeedm@mellanox.com>
- <AM0PR05MB48664868E0B89E582807830BD1EA0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <20190619051143.GB30694@mellanox.com>
-In-Reply-To: <20190619051143.GB30694@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [106.51.22.216]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 627b227d-ff01-4dbb-9338-08d6f478e758
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM0PR05MB6387;
-x-ms-traffictypediagnostic: AM0PR05MB6387:
-x-microsoft-antispam-prvs: <AM0PR05MB6387FD394F837FEE5E1A9578D1E50@AM0PR05MB6387.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-forefront-prvs: 0073BFEF03
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(346002)(39860400002)(136003)(366004)(376002)(13464003)(199004)(189003)(14454004)(99286004)(64756008)(33656002)(53936002)(9686003)(305945005)(26005)(229853002)(256004)(107886003)(14444005)(25786009)(6636002)(3846002)(2906002)(476003)(66446008)(6246003)(73956011)(5660300002)(54906003)(81166006)(486006)(66476007)(76116006)(6116002)(11346002)(4326008)(76176011)(74316002)(8676002)(81156014)(450100002)(66556008)(8936002)(66946007)(6862004)(7696005)(9456002)(52536014)(316002)(68736007)(186003)(86362001)(6436002)(55016002)(55236004)(6506007)(446003)(53546011)(102836004)(66066001)(7736002)(71190400001)(71200400001)(478600001)(78486014);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6387;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: iix4NSu+icgUcBLNxmKb/OI9CAiTzJI6WOq5bFAiQvU4mpNf1KHFsoMPHWfpXpUCAAIKeVbP0xALLNrAaTnL0X8+VV7NhgkwwS2dxhsEA8EvDIHSp7RFXQWRAgKetyp5z8XrNEhYmpK6K6Kq8KZYiMShCSehJS+4CBm5gW51brF9zCn4nDNhcC6C6/y3GNHvI+laor8Q1gnkiaEJmmNW/J76nzoKPo+F6zacyuOpxqdOz16DlQiDuy/QoBVXXyynpdM9wzY50f2FfnFeV40NmzjbQCpTQM1XORvzpEnJJYEAOk4S99GZRE1FGlwuyPAIKbbP2PgiFXen81Vw7V7thuSpZgjphyTyrkBA2VqC1g+H3pWogqlSDLZh7NMpf4r5lUxIFDC//Bug/aRpRYO/7JQzgi27f1RgSeS2leXlZ48=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726142AbfFSGHs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 02:07:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730337AbfFSGHs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Jun 2019 02:07:48 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DB6B20679;
+        Wed, 19 Jun 2019 06:07:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560924467;
+        bh=NkO49tgQdRCvMFENmhBhETbuwsvxmcQK4w1FtqSy4rc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GKDpvcXJS33/5nSaAFqUHmIeXeFv+zEEu4wTUkZS2vCbzAEU+Azv3MgHsMfBG2wdn
+         siYgwZq2C3zjfNmRC7eIsE+Rckn7fRdfpRNIHqMOBR26dmdQHLH5msZr1pOliGlRCd
+         QLziwra8wu0tplcCwHf3gjDnljAqilQE8ahzCxII=
+Date:   Wed, 19 Jun 2019 09:07:44 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] RDMA: Add NLDEV_GET_CHARDEV to allow char dev
+ discovery and autoload
+Message-ID: <20190619060744.GE11611@mtr-leonro.mtl.com>
+References: <20190614003819.19974-1-jgg@ziepe.ca>
+ <20190614003819.19974-3-jgg@ziepe.ca>
+ <20190618121709.GK4690@mtr-leonro.mtl.com>
+ <20190618131019.GE6961@ziepe.ca>
+ <97a95f7e5447b0ddf4dee15c536d72bd9fb65780.camel@redhat.com>
+ <20190618165338.GO4690@mtr-leonro.mtl.com>
+ <20190618184653.GM6961@ziepe.ca>
+ <1ec72297f837bf95fadaf846b7fe39a7b24de23c.camel@redhat.com>
+ <a936acff4501cd235735c1784bdbd7d2668fccfa.camel@redhat.com>
+ <af804744ff8bac383888bf9a07c0f260b070533f.camel@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 627b227d-ff01-4dbb-9338-08d6f478e758
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jun 2019 05:42:23.3288
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: parav@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6387
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af804744ff8bac383888bf9a07c0f260b070533f.camel@redhat.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmlhbmJvIExpdQ0KPiBT
-ZW50OiBXZWRuZXNkYXksIEp1bmUgMTksIDIwMTkgMTA6NDIgQU0NCj4gVG86IFBhcmF2IFBhbmRp
-dCA8cGFyYXZAbWVsbGFub3guY29tPg0KPiBDYzogU2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBtZWxs
-YW5veC5jb20+OyBMZW9uIFJvbWFub3Zza3kNCj4gPGxlb25yb0BtZWxsYW5veC5jb20+OyBuZXRk
-ZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC0NCj4gcmRtYUB2Z2VyLmtlcm5lbC5vcmc7IEVsaSBC
-cml0c3RlaW4gPGVsaWJyQG1lbGxhbm94LmNvbT47IFJvaSBEYXlhbg0KPiA8cm9pZEBtZWxsYW5v
-eC5jb20+OyBNYXJrIEJsb2NoIDxtYXJrYkBtZWxsYW5veC5jb20+DQo+IFN1YmplY3Q6IFJlOiBb
-UEFUQ0ggbWx4NS1uZXh0IDA1LzE1XSBuZXQvbWx4NTogRS1Td2l0Y2gsIFRhZyBwYWNrZXQgd2l0
-aA0KPiB2cG9ydCBudW1iZXIgaW4gVkYgdnBvcnRzIGFuZCB1cGxpbmsgaW5ncmVzcyBBQ0xzDQo+
-IA0KPiBUaGUgMDYvMTgvMjAxOSAxODozMSwgUGFyYXYgUGFuZGl0IHdyb3RlOg0KPiA+DQo+ID4N
-Cj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBuZXRkZXYtb3du
-ZXJAdmdlci5rZXJuZWwub3JnIDxuZXRkZXYtb3duZXJAdmdlci5rZXJuZWwub3JnPiBPbg0KPiA+
-ID4gQmVoYWxmIE9mIFNhZWVkIE1haGFtZWVkDQo+ID4gPiBTZW50OiBUdWVzZGF5LCBKdW5lIDE4
-LCAyMDE5IDEyOjUzIEFNDQo+ID4gPiBUbzogU2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBtZWxsYW5v
-eC5jb20+OyBMZW9uIFJvbWFub3Zza3kNCj4gPiA+IDxsZW9ucm9AbWVsbGFub3guY29tPg0KPiA+
-ID4gQ2M6IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3Jn
-OyBKaWFuYm8gTGl1DQo+ID4gPiA8amlhbmJvbEBtZWxsYW5veC5jb20+OyBFbGkgQnJpdHN0ZWlu
-IDxlbGlickBtZWxsYW5veC5jb20+OyBSb2kNCj4gPiA+IERheWFuIDxyb2lkQG1lbGxhbm94LmNv
-bT47IE1hcmsgQmxvY2ggPG1hcmtiQG1lbGxhbm94LmNvbT4NCj4gPiA+IFN1YmplY3Q6IFtQQVRD
-SCBtbHg1LW5leHQgMDUvMTVdIG5ldC9tbHg1OiBFLVN3aXRjaCwgVGFnIHBhY2tldCB3aXRoDQo+
-ID4gPiB2cG9ydCBudW1iZXIgaW4gVkYgdnBvcnRzIGFuZCB1cGxpbmsgaW5ncmVzcyBBQ0xzDQo+
-ID4gPg0KPiA+ID4gRnJvbTogSmlhbmJvIExpdSA8amlhbmJvbEBtZWxsYW5veC5jb20+DQo+ID4g
-Pg0KPiA+ID4gV2hlbiBhIGR1YWwtcG9ydCBWSENBIHNlbmRzIGEgUm9DRSBwYWNrZXQgb24gaXRz
-IG5vbi1uYXRpdmUgcG9ydCwNCj4gPiA+IGFuZCB0aGUgcGFja2V0IGFycml2ZXMgdG8gaXRzIGFm
-ZmlsaWF0ZWQgdnBvcnQgRkRCLCBhIG1pc21hdGNoIG1pZ2h0DQo+ID4gPiBvY2N1ciBvbiB0aGUg
-cnVsZXMgdGhhdCBtYXRjaCB0aGUgcGFja2V0IHNvdXJjZSB2cG9ydCBhcyBpdCBpcyBub3QNCj4g
-PiA+IHJlcHJlc2VudGVkIGJ5IHNpbmdsZSBWSENBIG9ubHkgaW4gdGhpcyBjYXNlLiBTbyB3ZSBj
-aGFuZ2UgdG8gbWF0Y2ggb24NCj4gbWV0YWRhdGEgaW5zdGVhZCBvZiBzb3VyY2UgdnBvcnQuDQo+
-ID4gPiBUbyBkbyB0aGF0LCBhIHJ1bGUgaXMgY3JlYXRlZCBpbiBhbGwgdnBvcnRzIGFuZCB1cGxp
-bmsgaW5ncmVzcyBBQ0xzLA0KPiA+ID4gdG8gc2F2ZSB0aGUgc291cmNlIHZwb3J0IG51bWJlciBh
-bmQgdmhjYSBpZCBpbiB0aGUgcGFja2V0J3MgbWV0YWRhdGENCj4gPiA+IGluIG9yZGVyIHRvIG1h
-dGNoIG9uIGl0IGxhdGVyLg0KPiA+ID4gVGhlIG1ldGFkYXRhIHJlZ2lzdGVyIHVzZWQgaXMgdGhl
-IGZpcnN0IG9mIHRoZSAzMi1iaXQgdHlwZSBDDQo+ID4gPiByZWdpc3RlcnMuIEl0IGNhbiBiZSB1
-c2VkIGZvciBtYXRjaGluZyBhbmQgaGVhZGVyIG1vZGlmeSBvcGVyYXRpb25zLg0KPiA+ID4gVGhl
-IGhpZ2hlciAxNiBiaXRzIG9mIHRoaXMgcmVnaXN0ZXIgYXJlIGZvciB2aGNhIGlkLCBhbmQgdGhl
-IGxvd2VyIDE2IG9uZXMgaXMNCj4gZm9yIHZwb3J0IG51bWJlci4NCj4gPiA+IFRoaXMgY2hhbmdl
-IGlzIG5vdCBmb3IgZHVhbC1wb3J0IFJvQ0Ugb25seS4gSWYgSFcgYW5kIEZXIGFsbG93LCB0aGUN
-Cj4gPiA+IHZwb3J0IG1ldGFkYXRhIG1hdGNoaW5nIGlzIGVuYWJsZWQgYnkgZGVmYXVsdC4NCj4g
-PiA+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBKaWFuYm8gTGl1IDxqaWFuYm9sQG1lbGxhbm94LmNv
-bT4NCj4gPiA+IFJldmlld2VkLWJ5OiBFbGkgQnJpdHN0ZWluIDxlbGlickBtZWxsYW5veC5jb20+
-DQo+ID4gPiBSZXZpZXdlZC1ieTogUm9pIERheWFuIDxyb2lkQG1lbGxhbm94LmNvbT4NCj4gPiA+
-IFJldmlld2VkLWJ5OiBNYXJrIEJsb2NoIDxtYXJrYkBtZWxsYW5veC5jb20+DQo+ID4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBTYWVlZCBNYWhhbWVlZCA8c2FlZWRtQG1lbGxhbm94LmNvbT4NCj4gPiA+IC0t
-LQ0KPiA+ID4gIC4uLi9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2guYyB8
-ICAgMiArDQo+ID4gPiAgLi4uL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZXN3aXRj
-aC5oIHwgICA5ICsNCj4gPiA+ICAuLi4vbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2hfb2ZmbG9h
-ZHMuYyAgICAgfCAxODMgKysrKysrKysrKysrKystLS0tDQo+ID4gPiAgaW5jbHVkZS9saW51eC9t
-bHg1L2Vzd2l0Y2guaCAgICAgICAgICAgICAgICAgIHwgICAzICsNCj4gPiA+ICA0IGZpbGVzIGNo
-YW5nZWQsIDE2MSBpbnNlcnRpb25zKCspLCAzNiBkZWxldGlvbnMoLSkNCj4gPiA+DQo+ID4gPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0
-Y2guYw0KPiA+ID4gYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZXN3
-aXRjaC5jDQo+ID4gPiBpbmRleCBhNDJhMjNlNTA1ZGYuLjEyMzVmZDg0YWUzYSAxMDA2NDQNCj4g
-PiA+IC0tLSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lc3dpdGNo
-LmMNCj4gPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9l
-c3dpdGNoLmMNCj4gPiA+IEBAIC0xMTY4LDYgKzExNjgsOCBAQCB2b2lkIGVzd192cG9ydF9jbGVh
-bnVwX2luZ3Jlc3NfcnVsZXMoc3RydWN0DQo+ID4gPiBtbHg1X2Vzd2l0Y2ggKmVzdywNCj4gPiA+
-DQo+ID4gPiAgCXZwb3J0LT5pbmdyZXNzLmRyb3BfcnVsZSA9IE5VTEw7DQo+ID4gPiAgCXZwb3J0
-LT5pbmdyZXNzLmFsbG93X3J1bGUgPSBOVUxMOw0KPiA+ID4gKw0KPiA+ID4gKwllc3dfdnBvcnRf
-ZGVsX2luZ3Jlc3NfYWNsX21vZGlmeV9tZXRhZGF0YShlc3csIHZwb3J0KTsNCj4gPiA+ICB9DQo+
-ID4gPg0KPiA+ID4gIHZvaWQgZXN3X3Zwb3J0X2Rpc2FibGVfaW5ncmVzc19hY2woc3RydWN0IG1s
-eDVfZXN3aXRjaCAqZXN3LCBkaWZmDQo+ID4gPiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0
-L21lbGxhbm94L21seDUvY29yZS9lc3dpdGNoLmgNCj4gPiA+IGIvZHJpdmVycy9uZXQvZXRoZXJu
-ZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2guaA0KPiA+ID4gaW5kZXggOGI5ZjJjZjU4ZTkx
-Li40NDE3YTE5NTgzMmUgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9t
-ZWxsYW5veC9tbHg1L2NvcmUvZXN3aXRjaC5oDQo+ID4gPiArKysgYi9kcml2ZXJzL25ldC9ldGhl
-cm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZXN3aXRjaC5oDQo+ID4gPiBAQCAtNjgsNiArNjgsOCBA
-QCBzdHJ1Y3QgdnBvcnRfaW5ncmVzcyB7DQo+ID4gPiAgCXN0cnVjdCBtbHg1X2Zsb3dfZ3JvdXAg
-KmFsbG93X3Nwb29mY2hrX29ubHlfZ3JwOw0KPiA+ID4gIAlzdHJ1Y3QgbWx4NV9mbG93X2dyb3Vw
-ICphbGxvd191bnRhZ2dlZF9vbmx5X2dycDsNCj4gPiA+ICAJc3RydWN0IG1seDVfZmxvd19ncm91
-cCAqZHJvcF9ncnA7DQo+ID4gPiArCWludCAgICAgICAgICAgICAgICAgICAgICBtb2RpZnlfbWV0
-YWRhdGFfaWQ7DQo+ID4gTm8gbmVlZCBmb3IgcmFuZG9tIGFsaWdubWVudC4gSnVzdCBoYXZlIG9u
-ZSB3aGl0ZSBzcGFjZSBhZnRlciBpbnQuDQo+IA0KPiBOb3QgcmFuZG9tLiBJdCdzIHRvIGFsaWdu
-IHdpdGggb3RoZXIgbGluZXMgaW4gdGhlIHRoaXMgc3RydWN0dXJlLg0KPiBUaGVyZSBhcmUgYWxz
-byBvdGhlciBmaWxlZHMgd2l0aCBtb3JlIHRoYW4gb25lIHNwYWNlcyBhZnRlciB0eXBlLg0KPiBJ
-dCBsb29rcyB1Z2x5IGlmIHRoZXJlIGFyZSBkaWZmZXJlbnQgc3R5bGVzIGluIHRoZSBzYW1lIHN0
-cnVjdHVyZS4NCj4gDQpXaGF0ZXZlciB3YXMgZG9uZSBpbiBwYXN0IHdhcyBkb25lLg0KVGhlcmUg
-d2lsbCBiZSBtaXhlZCBhbGlnbm1lbnQgYW55d2F5Lg0KDQo+ID4NCj4gPiA+ICsJc3RydWN0IG1s
-eDVfZmxvd19oYW5kbGUgICptb2RpZnlfbWV0YWRhdGFfcnVsZTsNCj4gPiA+ICAJc3RydWN0IG1s
-eDVfZmxvd19oYW5kbGUgICphbGxvd19ydWxlOw0KPiA+ID4gIAlzdHJ1Y3QgbWx4NV9mbG93X2hh
-bmRsZSAgKmRyb3BfcnVsZTsNCj4gPiA+ICAJc3RydWN0IG1seDVfZmMgICAgICAgICAgICpkcm9w
-X2NvdW50ZXI7DQo+ID4gPiBAQCAtMTk2LDYgKzE5OCwxMCBAQCBzdHJ1Y3QgbWx4NV9lc3dfZnVu
-Y3Rpb25zIHsNCj4gPiA+ICAJdTE2CQkJbnVtX3ZmczsNCj4gPiA+ICB9Ow0KPiA+ID4NCj4gPiA+
-ICtlbnVtIHsNCj4gPiA+ICsJTUxYNV9FU1dJVENIX1ZQT1JUX01BVENIX01FVEFEQVRBID0gQklU
-KDApLCB9Ow0KPiA+ID4gKw0KPiA+ID4gIHN0cnVjdCBtbHg1X2Vzd2l0Y2ggew0KPiA+ID4gIAlz
-dHJ1Y3QgbWx4NV9jb3JlX2RldiAgICAqZGV2Ow0KPiA+ID4gIAlzdHJ1Y3QgbWx4NV9uYiAgICAg
-ICAgICBuYjsNCj4gPiA+IEBAIC0yMDMsNiArMjA5LDcgQEAgc3RydWN0IG1seDVfZXN3aXRjaCB7
-DQo+ID4gPiAgCXN0cnVjdCBobGlzdF9oZWFkICAgICAgIG1jX3RhYmxlW01MWDVfTDJfQUREUl9I
-QVNIX1NJWkVdOw0KPiA+ID4gIAlzdHJ1Y3Qgd29ya3F1ZXVlX3N0cnVjdCAqd29ya19xdWV1ZTsN
-Cj4gPiA+ICAJc3RydWN0IG1seDVfdnBvcnQgICAgICAgKnZwb3J0czsNCj4gPiA+ICsJdTMyICAg
-ICAgICAgICAgICAgICAgICAgZmxhZ3M7DQo+ID4gU2FtZSBhcyBhYm92ZSwgbm8gbmVlZCBmb3Ig
-ZXh0cmEgYWxpZ21lbnQuDQo+IA0KPiBTYW1lIHJlYXNvbi4NCj4gDQo+ID4NCj4gPiA+ICAJaW50
-ICAgICAgICAgICAgICAgICAgICAgdG90YWxfdnBvcnRzOw0KPiA+ID4gIAlpbnQgICAgICAgICAg
-ICAgICAgICAgICBlbmFibGVkX3Zwb3J0czsNCj4gPiA+ICAJLyogU3luY2hyb25pemUgYmV0d2Vl
-biB2cG9ydCBjaGFuZ2UgZXZlbnRzIEBAIC0yNDAsNiArMjQ3LDggQEANCj4gPiA+IHZvaWQgZXN3
-X3Zwb3J0X2Rpc2FibGVfZWdyZXNzX2FjbChzdHJ1Y3QgbWx4NV9lc3dpdGNoICplc3csDQo+ID4g
-PiAgCQkJCSAgc3RydWN0IG1seDVfdnBvcnQgKnZwb3J0KTsNCj4gPiA+ICB2b2lkIGVzd192cG9y
-dF9kaXNhYmxlX2luZ3Jlc3NfYWNsKHN0cnVjdCBtbHg1X2Vzd2l0Y2ggKmVzdywNCj4gPiA+ICAJ
-CQkJICAgc3RydWN0IG1seDVfdnBvcnQgKnZwb3J0KTsNCj4gPiA+ICt2b2lkIGVzd192cG9ydF9k
-ZWxfaW5ncmVzc19hY2xfbW9kaWZ5X21ldGFkYXRhKHN0cnVjdCBtbHg1X2Vzd2l0Y2gNCj4gKmVz
-dywNCj4gPiA+ICsJCQkJCSAgICAgICBzdHJ1Y3QgbWx4NV92cG9ydCAqdnBvcnQpOw0KPiA+ID4N
-Cj4gPiA+ICAvKiBFLVN3aXRjaCBBUEkgKi8NCj4gPiA+ICBpbnQgbWx4NV9lc3dpdGNoX2luaXQo
-c3RydWN0IG1seDVfY29yZV9kZXYgKmRldik7IGRpZmYgLS1naXQNCj4gPiA+IGEvZHJpdmVycy9u
-ZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2hfb2ZmbG9hZHMuYw0KPiA+ID4g
-Yi9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZXN3aXRjaF9vZmZsb2Fk
-cy5jDQo+ID4gPiBpbmRleCAxN2FiYjk4YjQ4YWYuLjg3MWFlNDRkYzEzMiAxMDA2NDQNCj4gPiA+
-IC0tLSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lc3dpdGNoX29m
-ZmxvYWRzLmMNCj4gPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUv
-Y29yZS9lc3dpdGNoX29mZmxvYWRzLmMNCj4gDQo+IC4uLg0KPiANCj4gPiA+ICtzdGF0aWMgaW50
-IGVzd19jcmVhdGVfb2ZmbG9hZHNfYWNsX3RhYmxlcyhzdHJ1Y3QgbWx4NV9lc3dpdGNoICplc3cp
-IHsNCj4gPiA+ICsJc3RydWN0IG1seDVfdnBvcnQgKnZwb3J0Ow0KPiA+ID4gKwlpbnQgaSwgajsN
-Cj4gPiA+ICsJaW50IGVycjsNCj4gPiA+ICsNCj4gPiA+ICsJbWx4NV9lc3dfZm9yX2FsbF92cG9y
-dHMoZXN3LCBpLCB2cG9ydCkgew0KPiA+ID4gKwkJZXJyID0gZXN3X3Zwb3J0X2luZ3Jlc3NfY29t
-bW9uX2NvbmZpZyhlc3csIHZwb3J0KTsNCj4gPiA+ICAJCWlmIChlcnIpDQo+ID4gPiAtCQkJZ290
-byBlcnJfZWdyZXNzOw0KPiA+ID4gKwkJCWdvdG8gZXJyX2luZ3Jlc3M7DQo+ID4gPiArDQo+ID4g
-PiArCQlpZiAodnBvcnQtPnZwb3J0ID49IE1MWDVfVlBPUlRfRklSU1RfVkYgJiYNCj4gPiA+ICsJ
-CSAgICB2cG9ydC0+dnBvcnQgPD0gZXN3LT5kZXYtPnByaXYuc3Jpb3YubnVtX3Zmcykgew0KPiA+
-IEFkZCBhbiBoZWxwZXIgQVBJIG1seDVfZXN3X2lzX3Zwb3J0KGNvbnN0IHN0cnVjdCBtbHg1X2Vz
-dyAqZXN3LCBjb25zdA0KPiA+IHN0cnVjdCBtbHg1X3Zwb3J0ICp2cG9ydCkgYW5kIHVzZSBhdCB0
-d28gcGxhY2VzIGluIGluZ3Jlc3MgYW5kIGVncmVzcyBjb25maWcuDQo+IA0KPiBJdCdzIHZlcnkg
-c2ltcGxlIGxvZ2ljLCBidXQgbmV3IEFQSSBtYWtlIHRoaW5ncyBjb21wbGljYXRlZC4NCg0KTm8u
-IGl0IGRvZXNuJ3QuIFJpZ2h0IEFQSSBuYW1lIGlzLA0KbWx4NV9lc3dfaXNfdmZfdnBvcnQoKS4N
-Cm1seDVfZXN3X2lzX3ZmX3JlcCgpLi4uDQpldGMuDQoNCj4gSWYgYWRkaW5nIG1seDVfZXN3X2lz
-X3Zwb3J0KCkgYXMgeW91IHN1Z2dlc3RlZCwgbm8gb25lIGNhbiBrbm93IHdoYXQncyB0aGUgbWVh
-bmluZyBvZg0KPiB0aGlzIGZ1bmN0aW9uIGZyb20gbmFtZSwgYW5kIG5lZWQgdG8gY2hlY2sgdGhl
-IGltcGxlbWVudGF0aW9uIGFnYWluLCB3aGljaA0KPiB3aWxsIHdhc3RlIHRvbyBtdWNoIHRpbWUu
-DQo+IA0KbWx4NV9lc3dfaXNfdmZfdnBvcnQoKSBpcyBzZWxmLWV4cGxhbmF0b3J5IG5hbWUgd2hp
-Y2ggd29uJ3Qgd2FzdGUgdGltZS4NCg0KSSBhbSBhbHJlYWR5IGhhdmluZyB0aGlzIEFQSSBpbiBt
-eSB0d28gc2VyaWVzLCBidXQgc2luY2UgeW91cnMgaXMgYWxyZWFkeSBvdXQsIGl0IG1ha2Ugc2Vu
-c2UgdG8gaW50cm9kdWNlIGluIHRoaXMgcGF0Y2guDQo=
+On Tue, Jun 18, 2019 at 11:19:58PM -0400, Doug Ledford wrote:
+> On Tue, 2019-06-18 at 22:45 -0400, Doug Ledford wrote:
+> > On Tue, 2019-06-18 at 16:58 -0400, Doug Ledford wrote:
+> > > On Tue, 2019-06-18 at 15:46 -0300, Jason Gunthorpe wrote:
+> > > > On Tue, Jun 18, 2019 at 07:53:38PM +0300, Leon Romanovsky wrote:
+> > > > > I have a very strong opinion about it.
+> > > >
+> > > > Then Doug should add the policies, here are the output values from
+> > > > the
+> > > > userspace:
+> > > >
+> > > >         [RDMA_NLDEV_ATTR_CHARDEV] = { .type = NLA_U64 },
+> > > >         [RDMA_NLDEV_ATTR_CHARDEV_ABI] = { .type = NLA_U64 },
+> > > >         [RDMA_NLDEV_ATTR_DEV_INDEX] = { .type = NLA_U32 },
+> > > >         [RDMA_NLDEV_ATTR_DEV_NODE_TYPE] = { .type = NLA_U8 },
+> > > >         [RDMA_NLDEV_ATTR_NODE_GUID] = { .type = NLA_U64 },
+> > > >         [RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID] = { .type = NLA_U32 },
+> > > >         [RDMA_NLDEV_ATTR_CHARDEV_NAME] = { .type = NLA_NUL_STRING
+> > > > },
+> > > >         [RDMA_NLDEV_ATTR_DEV_NAME] = { .type = NLA_NUL_STRING },
+> > > >         [RDMA_NLDEV_ATTR_DEV_PROTOCOL] = { .type = NLA_NUL_STRING
+> > > > },
+> > > >         [RDMA_NLDEV_ATTR_FW_VERSION] = { .type = NLA_NUL_STRING },
+> > >
+> > > Most of those were already in the policies.  Only the four that you
+> > > added to enum rdma_nldev_attr needed added to the policies, and two
+> > > of
+> > > them your patch already added.  The only question I had is what the
+> > > string length should be on ATTR_CHARDEV_NAME?  I throw in the
+> > > default
+> > > of
+> > > .len = RDMA_NLDEV_ATTR_ENTRY_STRLEN, but I wasn't sure if that was
+> > > right
+> > > for this entry?
+> >
+> > First of all, let me say that this is a PITA.  I'm thinking we need to
+> > order all of the attributes in the policy array in alphabetical order
+> > so
+> > it's easier to tell what's there and what's missing.
+> >
+> > Also, I'm starting to not like adding items to the policy array before
+> > they are actually acceptable as inputs.  Sure, there's the argument
+> > that
+> > they won't get missed.  But there's the counter argument that until
+> > you
+> > define them as an input in some netlink function that reads them, at
+> > least for all of the string items, you can't actually set the real
+> > string length limit.  By adding them to the policy now, you make it a
+> > guarantee that you'll end up changing the API under userspace later
+> > when
+> > they become a legitimate input.  Not sure if that's actually
+> > wise.  The
+> > u32 and u64, sure, that's fine.  But the strings, that can cause
+> > problems later.,
+> >
+>
+> Maybe the best way to do string items if you add them ahead of time is
+> to give them an input length of 1.  Theoretically that's just the null
+> byte.  Then when you add a function to actually read the data, set the
+> size to something real.
+
+Like you said, it won't be needed till new input code is used, so from
+API perspective, it doesn't matter what size will be. I liked your idea
+to put it to be "1". It goes hand by hand to avoid possible addition
+of input handlers without update of update nla_policy.
+
+>
+> Anyway, pushed to wip/dl-for-next, check it to make sure you're happy
+> with the final results.
+
+It looks good, thanks.
+
+>
+> --
+> Doug Ledford <dledford@redhat.com>
+>     GPG KeyID: B826A3330E572FDD
+>     Fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+
