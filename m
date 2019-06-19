@@ -2,161 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1787B4B921
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 14:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FA94BAEC
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 16:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731328AbfFSMwc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 08:52:32 -0400
-Received: from mail-eopbgr20047.outbound.protection.outlook.com ([40.107.2.47]:15236
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727002AbfFSMwc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Jun 2019 08:52:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W7Om8YSM986taU+Qt2taJ6w5cCNP5WaQ5vGLTPkymQo=;
- b=ZdxlavRYyPfJuliROVBYBY/qvTvLBw0T/QTJ/u72Bj5LJoUs4WPwAs/gTqNwQHXjGL1J7a3nWKR6c1Bsjpz3mqYD9bL0j/oHQeJPpyPxbADnc916on39KJkHpPJ80mHf8LJkvT6BeE+tpiz6u6XLs6cmjWYZwJhf4NVoRSg2gPI=
-Received: from VI1PR05MB6255.eurprd05.prod.outlook.com (20.178.205.93) by
- VI1PR05MB6575.eurprd05.prod.outlook.com (20.179.25.213) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.13; Wed, 19 Jun 2019 12:52:27 +0000
-Received: from VI1PR05MB6255.eurprd05.prod.outlook.com
- ([fe80::1c71:b7b7:cf55:48bb]) by VI1PR05MB6255.eurprd05.prod.outlook.com
- ([fe80::1c71:b7b7:cf55:48bb%7]) with mapi id 15.20.1987.014; Wed, 19 Jun 2019
- 12:52:27 +0000
-From:   Jianbo Liu <jianbol@mellanox.com>
-To:     Parav Pandit <parav@mellanox.com>
-CC:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Eli Britstein <elibr@mellanox.com>,
-        Roi Dayan <roid@mellanox.com>, Mark Bloch <markb@mellanox.com>
-Subject: Re: [PATCH mlx5-next 05/15] net/mlx5: E-Switch, Tag packet with vport
- number in VF vports and uplink ingress ACLs
-Thread-Topic: [PATCH mlx5-next 05/15] net/mlx5: E-Switch, Tag packet with
- vport number in VF vports and uplink ingress ACLs
-Thread-Index: AQHVJUIe4CH/LI+8A02ewuMUSS8rDqahN3UAgAG5awA=
-Date:   Wed, 19 Jun 2019 12:52:27 +0000
-Message-ID: <20190619125122.GA14681@mellanox.com>
-References: <20190617192247.25107-1-saeedm@mellanox.com>
- <20190617192247.25107-6-saeedm@mellanox.com>
- <AM0PR05MB48664868E0B89E582807830BD1EA0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-In-Reply-To: <AM0PR05MB48664868E0B89E582807830BD1EA0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: LO2P265CA0310.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:a5::34) To VI1PR05MB6255.eurprd05.prod.outlook.com
- (2603:10a6:803:ed::29)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jianbol@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [37.142.13.130]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 16711847-9570-401e-bab2-08d6f4b4fb74
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6575;
-x-ms-traffictypediagnostic: VI1PR05MB6575:
-x-microsoft-antispam-prvs: <VI1PR05MB65758B0D4A7D22A5636D7EC3C8E50@VI1PR05MB6575.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-forefront-prvs: 0073BFEF03
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(39860400002)(366004)(376002)(346002)(396003)(189003)(199004)(13464003)(476003)(2906002)(6486002)(3846002)(25786009)(86362001)(6116002)(1076003)(66066001)(8676002)(4326008)(6862004)(14444005)(6436002)(6246003)(6636002)(68736007)(256004)(26005)(6512007)(53936002)(33656002)(478600001)(446003)(102836004)(66476007)(316002)(37006003)(8936002)(71200400001)(305945005)(73956011)(107886003)(76176011)(7736002)(64756008)(5660300002)(52116002)(450100002)(66446008)(186003)(229853002)(66556008)(386003)(81156014)(14454004)(11346002)(54906003)(2616005)(53546011)(99286004)(66946007)(6506007)(71190400001)(81166006)(36756003)(486006);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6575;H:VI1PR05MB6255.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: YA1pDN3p4stN6wm6WvRzelkwn3k0TvSbVd74wWgNdSaoQyGvYD2XqJudoAyodtj3tilj403Py8TRxYiPVhtiYR6xMPGpIze81ZvKfoVVJSPQ60hUSo/gZr9yiNLUA87zyAYW0DGjyHhAXXzd8HZ5Kfqd7HbeSGGjYYwMZdleiTAVdN14sezPSWVW/LmmO3o21jOQrUVCg2Ao4kibXIbfF/dKXGy8i0Q8S0NU8JJSPed+/BYe9PP8cwXOlCrMqHvVLG0FegoBzGZ+SPHbfARAcpW45/wsjTh18fxyV2+f2wN7MEHekEQTjHfH63EYBt74TavARLEmaleJcfDEu6V7D5uD0N2vi/l7yezT7yUJEbYJRympl+eYj9ivIcIH07Mps+UKTErhoThUBlgE6VU3KhhqoQYGN1ww8R+T8Q8gp8E=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C0C334EBD81F5C48B0C7DBBD260E1FC3@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16711847-9570-401e-bab2-08d6f4b4fb74
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jun 2019 12:52:27.2583
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jianbol@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6575
+        id S1727552AbfFSOOb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 10:14:31 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:36745 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbfFSOOb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 10:14:31 -0400
+Received: by mail-ed1-f65.google.com with SMTP id k21so27466877edq.3
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2019 07:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=/HYBIY590cdJS2RAEvrEQw5uxHga9dzdyPJdjb+NVxA=;
+        b=uLNntrvtIfGirEO8AEO56wnzF/PzZl3RwGkdiKRQ4CxeRIqzICSRYtlcRe3fThx1oh
+         2s6Xs7lYlU8sUXHgf31IhPkL0TLN7uCIXOw1FrNhBQsThyYCf8nMJOOrT79jw+/S+ohA
+         SaeYMgr6I2jn0rzK1uv2vqWHFwd8VJX0YpLkQ908yoLfeJwEiLSqC2CMqjrJaRKYr7lq
+         04Tf7On3pNILGlQdazLocV3ZYR6EDGtz+YDoa1Uq5yxQiyWr0+RRbnmnRtMFL4Ug6sjy
+         s1M4/Q2us7xv/hZ9g+iav6SyYZsIj6g5a5t1BQSXEDdxmgeJUoBp3d0pvQ63Mxg9T3Vh
+         UNCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/HYBIY590cdJS2RAEvrEQw5uxHga9dzdyPJdjb+NVxA=;
+        b=eSu/1ZeahlQSOx6Mk0U3iXVhQ/NUlqemkuySQKuwBKRNWleGtJdcpK9jdaaNcG0eqF
+         z71PhE1X/XODm/tdFmYFnmEP5kpV5F/N/fzkJPcVjvvozxf+oT3z20wey4OCElcNjRJi
+         /RTMBhawxyG57FoexsRxEkVtjW6kiYLA6CjJEgbBZBVrMqr3yIbVZi/OYzY5vx3PlbT8
+         h2646dH5eYm/+qN1MkBSqAxzTsatDX+tDWQcJSeJxATtL4M+R0zhPo7iarhXuVnefP4b
+         5QHyfTQlX69zZbImUD7QWS8GB3Vx2O+Q5ACpvC3amdEA9xvtCsTLXxgctaCLUlYDvM7n
+         1KAQ==
+X-Gm-Message-State: APjAAAXQ3H7yCmh+zU/Pq9Ouj6PnrMJeJ89hOsUViny4sQlW0dYiBhDL
+        kpKSc+1NoVK4Xy2vfnIwo9gvwQ==
+X-Google-Smtp-Source: APXvYqwY3G1QoJMH8Xvq5yGwhbIHOhEE0hqZprEzI2ce1zei9N5VFz3/eOz7/8RokfCjbt7qVsQoYQ==
+X-Received: by 2002:a17:906:4950:: with SMTP id f16mr22289578ejt.259.1560953668393;
+        Wed, 19 Jun 2019 07:14:28 -0700 (PDT)
+Received: from tegmen.arch.suse.de (nat.nue.novell.com. [195.135.221.2])
+        by smtp.gmail.com with ESMTPSA id y20sm49633ejj.75.2019.06.19.07.14.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 Jun 2019 07:14:27 -0700 (PDT)
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+X-Google-Original-From: Denis Kirjanov <dkirjanov@suse.com>
+To:     stephen@networkplumber.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        dledford@redhat.com, mkubecek@suse.cz,
+        Denis Kirjanov <kda@linux-powerpc.org>
+Subject: [PATCH iproute2 v2 1/2] ipaddress: correctly print a VF hw address in the IPoIB case
+Date:   Wed, 19 Jun 2019 16:14:13 +0200
+Message-Id: <20190619141414.4242-1-dkirjanov@suse.com>
+X-Mailer: git-send-email 2.12.3
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-VGhlIDA2LzE4LzIwMTkgMTg6MzEsIFBhcmF2IFBhbmRpdCB3cm90ZToNCj4gDQo+IA0KPiA+IC0t
-LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gRnJvbTogbmV0ZGV2LW93bmVyQHZnZXIua2Vy
-bmVsLm9yZyA8bmV0ZGV2LW93bmVyQHZnZXIua2VybmVsLm9yZz4gT24NCj4gPiBCZWhhbGYgT2Yg
-U2FlZWQgTWFoYW1lZWQNCj4gPiBTZW50OiBUdWVzZGF5LCBKdW5lIDE4LCAyMDE5IDEyOjUzIEFN
-DQo+ID4gVG86IFNhZWVkIE1haGFtZWVkIDxzYWVlZG1AbWVsbGFub3guY29tPjsgTGVvbiBSb21h
-bm92c2t5DQo+ID4gPGxlb25yb0BtZWxsYW5veC5jb20+DQo+ID4gQ2M6IG5ldGRldkB2Z2VyLmtl
-cm5lbC5vcmc7IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnOyBKaWFuYm8gTGl1DQo+ID4gPGpp
-YW5ib2xAbWVsbGFub3guY29tPjsgRWxpIEJyaXRzdGVpbiA8ZWxpYnJAbWVsbGFub3guY29tPjsg
-Um9pIERheWFuDQo+ID4gPHJvaWRAbWVsbGFub3guY29tPjsgTWFyayBCbG9jaCA8bWFya2JAbWVs
-bGFub3guY29tPg0KPiA+IFN1YmplY3Q6IFtQQVRDSCBtbHg1LW5leHQgMDUvMTVdIG5ldC9tbHg1
-OiBFLVN3aXRjaCwgVGFnIHBhY2tldCB3aXRoIHZwb3J0DQo+ID4gbnVtYmVyIGluIFZGIHZwb3J0
-cyBhbmQgdXBsaW5rIGluZ3Jlc3MgQUNMcw0KPiA+IA0KPiA+IEZyb206IEppYW5ibyBMaXUgPGpp
-YW5ib2xAbWVsbGFub3guY29tPg0KPiA+IA0KPiA+IFdoZW4gYSBkdWFsLXBvcnQgVkhDQSBzZW5k
-cyBhIFJvQ0UgcGFja2V0IG9uIGl0cyBub24tbmF0aXZlIHBvcnQsIGFuZCB0aGUNCj4gPiBwYWNr
-ZXQgYXJyaXZlcyB0byBpdHMgYWZmaWxpYXRlZCB2cG9ydCBGREIsIGEgbWlzbWF0Y2ggbWlnaHQg
-b2NjdXIgb24gdGhlIHJ1bGVzDQo+ID4gdGhhdCBtYXRjaCB0aGUgcGFja2V0IHNvdXJjZSB2cG9y
-dCBhcyBpdCBpcyBub3QgcmVwcmVzZW50ZWQgYnkgc2luZ2xlIFZIQ0Egb25seQ0KPiA+IGluIHRo
-aXMgY2FzZS4gU28gd2UgY2hhbmdlIHRvIG1hdGNoIG9uIG1ldGFkYXRhIGluc3RlYWQgb2Ygc291
-cmNlIHZwb3J0Lg0KPiA+IFRvIGRvIHRoYXQsIGEgcnVsZSBpcyBjcmVhdGVkIGluIGFsbCB2cG9y
-dHMgYW5kIHVwbGluayBpbmdyZXNzIEFDTHMsIHRvIHNhdmUgdGhlDQo+ID4gc291cmNlIHZwb3J0
-IG51bWJlciBhbmQgdmhjYSBpZCBpbiB0aGUgcGFja2V0J3MgbWV0YWRhdGEgaW4gb3JkZXIgdG8g
-bWF0Y2ggb24NCj4gPiBpdCBsYXRlci4NCj4gPiBUaGUgbWV0YWRhdGEgcmVnaXN0ZXIgdXNlZCBp
-cyB0aGUgZmlyc3Qgb2YgdGhlIDMyLWJpdCB0eXBlIEMgcmVnaXN0ZXJzLiBJdCBjYW4gYmUNCj4g
-PiB1c2VkIGZvciBtYXRjaGluZyBhbmQgaGVhZGVyIG1vZGlmeSBvcGVyYXRpb25zLiBUaGUgaGln
-aGVyIDE2IGJpdHMgb2YgdGhpcw0KPiA+IHJlZ2lzdGVyIGFyZSBmb3IgdmhjYSBpZCwgYW5kIHRo
-ZSBsb3dlciAxNiBvbmVzIGlzIGZvciB2cG9ydCBudW1iZXIuDQo+ID4gVGhpcyBjaGFuZ2UgaXMg
-bm90IGZvciBkdWFsLXBvcnQgUm9DRSBvbmx5LiBJZiBIVyBhbmQgRlcgYWxsb3csIHRoZSB2cG9y
-dA0KPiA+IG1ldGFkYXRhIG1hdGNoaW5nIGlzIGVuYWJsZWQgYnkgZGVmYXVsdC4NCj4gPiANCj4g
-PiBTaWduZWQtb2ZmLWJ5OiBKaWFuYm8gTGl1IDxqaWFuYm9sQG1lbGxhbm94LmNvbT4NCj4gPiBS
-ZXZpZXdlZC1ieTogRWxpIEJyaXRzdGVpbiA8ZWxpYnJAbWVsbGFub3guY29tPg0KPiA+IFJldmll
-d2VkLWJ5OiBSb2kgRGF5YW4gPHJvaWRAbWVsbGFub3guY29tPg0KPiA+IFJldmlld2VkLWJ5OiBN
-YXJrIEJsb2NoIDxtYXJrYkBtZWxsYW5veC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2FlZWQg
-TWFoYW1lZWQgPHNhZWVkbUBtZWxsYW5veC5jb20+DQo+ID4gLS0tDQo+ID4gIC4uLi9uZXQvZXRo
-ZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2guYyB8ICAgMiArDQo+ID4gIC4uLi9uZXQv
-ZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2guaCB8ICAgOSArDQo+ID4gIC4uLi9t
-ZWxsYW5veC9tbHg1L2NvcmUvZXN3aXRjaF9vZmZsb2Fkcy5jICAgICB8IDE4MyArKysrKysrKysr
-KysrKy0tLS0NCj4gPiAgaW5jbHVkZS9saW51eC9tbHg1L2Vzd2l0Y2guaCAgICAgICAgICAgICAg
-ICAgIHwgICAzICsNCj4gPiAgNCBmaWxlcyBjaGFuZ2VkLCAxNjEgaW5zZXJ0aW9ucygrKSwgMzYg
-ZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0
-L21lbGxhbm94L21seDUvY29yZS9lc3dpdGNoLmMNCj4gPiBiL2RyaXZlcnMvbmV0L2V0aGVybmV0
-L21lbGxhbm94L21seDUvY29yZS9lc3dpdGNoLmMNCj4gPiBpbmRleCBhNDJhMjNlNTA1ZGYuLjEy
-MzVmZDg0YWUzYSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5v
-eC9tbHg1L2NvcmUvZXN3aXRjaC5jDQo+ID4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVs
-bGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2guYw0KDQouLi4NCg0KPiA+ICsJCQllcnIgPSBlc3dfdnBv
-cnRfZWdyZXNzX3ByaW9fdGFnX2NvbmZpZyhlc3csIHZwb3J0KTsNCj4gPiArCQkJaWYgKGVycikN
-Cj4gPiArCQkJCWdvdG8gZXJyX2VncmVzczsNCj4gPiArCQl9DQo+ID4gIAl9DQo+ID4gDQo+ID4g
-KwlpZiAobWx4NV9lc3dpdGNoX3Zwb3J0X21hdGNoX21ldGFkYXRhX2VuYWJsZWQoZXN3KSkNCj4g
-PiArCQllc3dfaW5mbyhlc3ctPmRldiwgIlVzZSBtZXRhZGF0YSByZWdfYyBhcyBzb3VyY2UgdnBv
-cnQgdG8NCj4gPiBtYXRjaFxuIik7DQo+ID4gKw0KPiA+ICAJcmV0dXJuIDA7DQo+ID4gDQo+ID4g
-IGVycl9lZ3Jlc3M6DQo+ID4gIAllc3dfdnBvcnRfZGlzYWJsZV9pbmdyZXNzX2FjbChlc3csIHZw
-b3J0KTsNCj4gPiAgZXJyX2luZ3Jlc3M6DQo+ID4gLQltbHg1X2Vzd19mb3JfZWFjaF92Zl92cG9y
-dF9yZXZlcnNlKGVzdywgaiwgdnBvcnQsIGkgLSAxKSB7DQo+ID4gKwlmb3IgKGogPSBNTFg1X1ZQ
-T1JUX1BGOyBqIDwgaTsgaisrKSB7DQo+IEtlZXAgdGhlIHJldmVyc2Ugb3JkZXIgYXMgYmVmb3Jl
-Lg0KDQpUaGUgdnBvcnRzIGFyZSBpbmRlcGVuZGVudCBmcm9tIGVhY2ggb3RoZXIuIEl0IGRvZXNu
-J3QgbWF0dGVyIGRpc2FibGluZw0KdGhlbSBpbiBvciBvdXQgb2Ygb3JkZXIuIEkgZG9uJ3QgdW5k
-ZXJzdGFuZCB3aGF0J3MgdGhlIGJlbmlmaXQuDQoNCj4gDQo+ID4gKwkJdnBvcnQgPSAmZXN3LT52
-cG9ydHNbal07DQo+ID4gIAkJZXN3X3Zwb3J0X2Rpc2FibGVfZWdyZXNzX2FjbChlc3csIHZwb3J0
-KTsNCj4gPiAgCQllc3dfdnBvcnRfZGlzYWJsZV9pbmdyZXNzX2FjbChlc3csIHZwb3J0KTsNCj4g
-PiAgCX0NCj4gPiBAQCAtMTcwNCwxNSArMTgwMCwxNyBAQCBzdGF0aWMgaW50IGVzd19wcmlvX3Rh
-Z19hY2xzX2NvbmZpZyhzdHJ1Y3QNCj4gPiBtbHg1X2Vzd2l0Y2ggKmVzdywgaW50IG52cG9ydHMp
-DQo+ID4gIAlyZXR1cm4gZXJyOw0KPiA+ICB9DQo+ID4gDQo+ID4gLXN0YXRpYyB2b2lkIGVzd19w
-cmlvX3RhZ19hY2xzX2NsZWFudXAoc3RydWN0IG1seDVfZXN3aXRjaCAqZXN3KQ0KPiA+ICtzdGF0
-aWMgdm9pZCBlc3dfZGVzdHJveV9vZmZsb2Fkc19hY2xfdGFibGVzKHN0cnVjdCBtbHg1X2Vzd2l0
-Y2ggKmVzdykNCj4gPiAgew0KPiA+ICAJc3RydWN0IG1seDVfdnBvcnQgKnZwb3J0Ow0KPiA+ICAJ
-aW50IGk7DQo+ID4gDQo+ID4gLQltbHg1X2Vzd19mb3JfZWFjaF92Zl92cG9ydChlc3csIGksIHZw
-b3J0LCBlc3ctPm52cG9ydHMpIHsNCj4gPiArCW1seDVfZXN3X2Zvcl9hbGxfdnBvcnRzKGVzdywg
-aSwgdnBvcnQpIHsNCj4gSWYgeW91IGFyZSBjaGFuZ2luZyB0aGlzLCBwbGVhc2UgZG8gaW4gcmV2
-ZXJzZSBvcmRlciB0byBrZWVwIGl0IGV4YWN0IG1pcnJvciBvZiBjcmVhdGUvZW5hYmxlIHNlcXVl
-bmNlLg0KDQpTYW1lLi4uDQoNCj4gDQo+ID4gIAkJZXN3X3Zwb3J0X2Rpc2FibGVfZWdyZXNzX2Fj
-bChlc3csIHZwb3J0KTsNCj4gPiAgCQllc3dfdnBvcnRfZGlzYWJsZV9pbmdyZXNzX2FjbChlc3cs
-IHZwb3J0KTsNCj4gPiAgCX0NCj4gPiArDQo+ID4gKwllc3ctPmZsYWdzICY9IH5NTFg1X0VTV0lU
-Q0hfVlBPUlRfTUFUQ0hfTUVUQURBVEE7DQo+ID4gIH0NCj4gPiANCj4gPiAgc3RhdGljIGludCBl
-c3dfb2ZmbG9hZHNfc3RlZXJpbmdfaW5pdChzdHJ1Y3QgbWx4NV9lc3dpdGNoICplc3csIGludCBu
-dnBvcnRzKQ0K
+Current code assumes that we print Etheret mac and
+that doesn't work in IPoIB case with SRIOV-enabled hardware
+
+Before:
+11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+state UP mode DEFAULT group default qlen 256
+        link/infiniband
+80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+        vf 0 MAC 14:80:00:00:66:fe, spoof checking off, link-state disable,
+    trust off, query_rss off
+    ...
+
+After:
+11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+state UP mode DEFAULT group default qlen 256
+        link/infiniband
+80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+        vf 0     link/infiniband
+80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
+checking off, link-state disable, trust off, query_rss off
+
+v1->v2: updated kernel headers to uapi commit
+
+Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
+---
+ ip/ipaddress.c | 42 +++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 37 insertions(+), 5 deletions(-)
+
+diff --git a/ip/ipaddress.c b/ip/ipaddress.c
+index b504200b..13ad76dd 100644
+--- a/ip/ipaddress.c
++++ b/ip/ipaddress.c
+@@ -26,6 +26,7 @@
+ 
+ #include <linux/netdevice.h>
+ #include <linux/if_arp.h>
++#include <linux/if_infiniband.h>
+ #include <linux/sockios.h>
+ #include <linux/net_namespace.h>
+ 
+@@ -349,9 +350,10 @@ static void print_af_spec(FILE *fp, struct rtattr *af_spec_attr)
+ 
+ static void print_vf_stats64(FILE *fp, struct rtattr *vfstats);
+ 
+-static void print_vfinfo(FILE *fp, struct rtattr *vfinfo)
++static void print_vfinfo(struct ifinfomsg *ifi, FILE *fp, struct rtattr *vfinfo)
+ {
+ 	struct ifla_vf_mac *vf_mac;
++	struct ifla_vf_broadcast *vf_broadcast;
+ 	struct ifla_vf_tx_rate *vf_tx_rate;
+ 	struct rtattr *vf[IFLA_VF_MAX + 1] = {};
+ 
+@@ -365,13 +367,43 @@ static void print_vfinfo(FILE *fp, struct rtattr *vfinfo)
+ 	parse_rtattr_nested(vf, IFLA_VF_MAX, vfinfo);
+ 
+ 	vf_mac = RTA_DATA(vf[IFLA_VF_MAC]);
++	vf_broadcast = RTA_DATA(vf[IFLA_VF_BROADCAST]);
+ 	vf_tx_rate = RTA_DATA(vf[IFLA_VF_TX_RATE]);
+ 
+ 	print_string(PRINT_FP, NULL, "%s    ", _SL_);
+ 	print_int(PRINT_ANY, "vf", "vf %d ", vf_mac->vf);
+-	print_string(PRINT_ANY, "mac", "MAC %s",
+-		     ll_addr_n2a((unsigned char *) &vf_mac->mac,
+-				 ETH_ALEN, 0, b1, sizeof(b1)));
++
++	print_string(PRINT_ANY,
++			"link_type",
++			"    link/%s ",
++			ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)));
++
++	print_color_string(PRINT_ANY,
++				COLOR_MAC,
++				"address",
++				"%s",
++				ll_addr_n2a((unsigned char *) &vf_mac->mac,
++					ifi->ifi_type == ARPHRD_ETHER ? ETH_ALEN : INFINIBAND_ALEN,
++					ifi->ifi_type,
++					b1, sizeof(b1)));
++
++	if (vf[IFLA_VF_BROADCAST]) {
++		if (ifi->ifi_flags&IFF_POINTOPOINT) {
++			print_string(PRINT_FP, NULL, " peer ", NULL);
++			print_bool(PRINT_JSON,
++					"link_pointtopoint", NULL, true);
++                        } else {
++				print_string(PRINT_FP, NULL, " brd ", NULL);
++                        }
++                        print_color_string(PRINT_ANY,
++                                           COLOR_MAC,
++                                           "broadcast",
++                                           "%s",
++                                           ll_addr_n2a((unsigned char *) &vf_broadcast->broadcast,
++                                                       ifi->ifi_type == ARPHRD_ETHER ? ETH_ALEN : INFINIBAND_ALEN,
++                                                       ifi->ifi_type,
++                                                       b1, sizeof(b1)));
++	}
+ 
+ 	if (vf[IFLA_VF_VLAN_LIST]) {
+ 		struct rtattr *i, *vfvlanlist = vf[IFLA_VF_VLAN_LIST];
+@@ -1102,7 +1134,7 @@ int print_linkinfo(struct nlmsghdr *n, void *arg)
+ 		open_json_array(PRINT_JSON, "vfinfo_list");
+ 		for (i = RTA_DATA(vflist); RTA_OK(i, rem); i = RTA_NEXT(i, rem)) {
+ 			open_json_object(NULL);
+-			print_vfinfo(fp, i);
++			print_vfinfo(ifi, fp, i);
+ 			close_json_object();
+ 		}
+ 		close_json_array(PRINT_JSON, NULL);
+-- 
+2.12.3
+
