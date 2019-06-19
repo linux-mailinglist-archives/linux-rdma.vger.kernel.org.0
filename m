@@ -2,163 +2,491 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5933A4B264
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 08:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934E94B290
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 09:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730495AbfFSGvc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 02:51:32 -0400
-Received: from mail-eopbgr30074.outbound.protection.outlook.com ([40.107.3.74]:13191
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        id S1730756AbfFSHDo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 03:03:44 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:18642 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725980AbfFSGvc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Jun 2019 02:51:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D5NAJOQMc3XJ8wSknk3Sln2PeMt2j4DGHpfzT1Gy8wA=;
- b=CoJ0utbkDl//rAhP/T8QYHmcHd1QQohw5nXYFWDhB8GE5Cwh9XMo01tjbWs7g5u2Lw36ZpY0umqACd5i5T08w8kCMdJdiBoPfWfm1Odai2JYQsGb6oCD761aijofs/mDdeltEe4Gesz5CU+VwiT2Bjf8mtbZVKa+B+/kaRJF7Bw=
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.186.14) by
- AM4PR05MB3459.eurprd05.prod.outlook.com (10.171.187.152) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.10; Wed, 19 Jun 2019 06:51:28 +0000
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::bc5a:ba8b:1a69:91b6]) by AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::bc5a:ba8b:1a69:91b6%6]) with mapi id 15.20.1987.014; Wed, 19 Jun 2019
- 06:51:28 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Jianbo Liu <jianbol@mellanox.com>
-CC:     Saeed Mahameed <saeedm@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Roi Dayan <roid@mellanox.com>, Mark Bloch <markb@mellanox.com>
-Subject: Re: [PATCH mlx5-next 11/15] RDMA/mlx5: Add vport metadata matching
- for IB representors
-Thread-Topic: [PATCH mlx5-next 11/15] RDMA/mlx5: Add vport metadata matching
- for IB representors
-Thread-Index: AQHVJUIm1iT82BVB3kyl3BqmLAQTwaahNBoAgAE0ugCAAAWFAIAAGtgAgAADHYA=
-Date:   Wed, 19 Jun 2019 06:51:28 +0000
-Message-ID: <20190619065125.GF11611@mtr-leonro.mtl.com>
-References: <20190617192247.25107-1-saeedm@mellanox.com>
- <20190617192247.25107-12-saeedm@mellanox.com>
- <20190618101928.GE4690@mtr-leonro.mtl.com>
- <20190619044420.GA30694@mellanox.com>
- <20190619050412.GC11611@mtr-leonro.mtl.com>
- <20190619063941.GA5176@mellanox.com>
-In-Reply-To: <20190619063941.GA5176@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM7PR02CA0003.eurprd02.prod.outlook.com
- (2603:10a6:20b:100::13) To AM4PR05MB3137.eurprd05.prod.outlook.com
- (2603:10a6:205:3::14)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [37.142.3.125]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f92bebc8-9d82-47d0-79e1-08d6f4828d9b
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM4PR05MB3459;
-x-ms-traffictypediagnostic: AM4PR05MB3459:
-x-microsoft-antispam-prvs: <AM4PR05MB3459EE2A35D500E58925EF7CB0E50@AM4PR05MB3459.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 0073BFEF03
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(136003)(366004)(396003)(39860400002)(199004)(189003)(6116002)(3846002)(478600001)(229853002)(7736002)(256004)(446003)(9686003)(6486002)(476003)(11346002)(71190400001)(305945005)(33656002)(71200400001)(8936002)(8676002)(25786009)(6512007)(81166006)(81156014)(316002)(6636002)(486006)(4326008)(6436002)(66556008)(450100002)(86362001)(53936002)(64756008)(54906003)(186003)(6862004)(66946007)(2906002)(52116002)(73956011)(102836004)(6506007)(14454004)(6246003)(76176011)(26005)(1076003)(107886003)(386003)(5660300002)(66446008)(66066001)(66476007)(99286004)(68736007);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3459;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: auKJbsYgUOakZ4C2AYw83eJ2fJWhZ/VoGhXvpNMdmoW6yX4qUtxcg/qssNM5SMGIt1Yi0DKYXMATHpXd23VU0Up34yFkGGQE6JaNbeO5h8mboufWUQpkwpsltL1GXJYuQe5eWPsAulN2NjnH4HDZfiX4bECmkUvPiOkh0hYmTYQN509VIPMwXpDaaaqQHI8hX5/OD3x8COhMdOssNB9gXM+AnIXxkYcAKyCTY3MtwL4KC6UajAyq8rye607GHckvzRiE61Oksn+FvPUXGU1z2f3bbFTBEmKEiDFjIb2Q/wpygZIRuTTDKwSMBNlEhNiEMxWf10GBwcsaCTP+FKUVYpvPWHS2byF6aosyuw4Bd70p57+cnx44BcVBGiJfpVWYcFlXyKFG4wBQTRALGVKWIobxakFNCenJ+hXYoCYJJKk=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <70D3FC83AAAA164B970C3964AEF7EEDF@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1725854AbfFSHDn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Jun 2019 03:03:43 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 40E9E7C7EC0378551879;
+        Wed, 19 Jun 2019 15:03:38 +0800 (CST)
+Received: from linux-ioko.site (10.71.200.31) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.439.0; Wed, 19 Jun 2019 15:03:27 +0800
+From:   Lijun Ou <oulijun@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH V2 for-next] RDMA/hns: Cleanup unnecessary exported symbols
+Date:   Wed, 19 Jun 2019 15:00:47 +0800
+Message-ID: <1560927647-15788-1-git-send-email-oulijun@huawei.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f92bebc8-9d82-47d0-79e1-08d6f4828d9b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jun 2019 06:51:28.0984
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: leonro@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3459
+Content-Type: text/plain
+X-Originating-IP: [10.71.200.31]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 06:40:16AM +0000, Jianbo Liu wrote:
-> The 06/19/2019 13:04, Leon Romanovsky wrote:
-> > On Wed, Jun 19, 2019 at 04:44:26AM +0000, Jianbo Liu wrote:
-> > > The 06/18/2019 18:19, Leon Romanovsky wrote:
-> > > > On Mon, Jun 17, 2019 at 07:23:30PM +0000, Saeed Mahameed wrote:
-> > > > > From: Jianbo Liu <jianbol@mellanox.com>
-> > > > >
-> > > > > If vport metadata matching is enabled in eswitch, the rule create=
-d
-> > > > > must be changed to match on the metadata, instead of source port.
-> > > > >
-> > > > > Signed-off-by: Jianbo Liu <jianbol@mellanox.com>
-> > > > > Reviewed-by: Roi Dayan <roid@mellanox.com>
-> > > > > Reviewed-by: Mark Bloch <markb@mellanox.com>
-> > > > > Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-> > > > > ---
-> > > > >  drivers/infiniband/hw/mlx5/ib_rep.c | 11 +++++++
-> > > > >  drivers/infiniband/hw/mlx5/ib_rep.h | 16 ++++++++++
-> > > > >  drivers/infiniband/hw/mlx5/main.c   | 45 +++++++++++++++++++++++=
-------
-> > > > >  3 files changed, 63 insertions(+), 9 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infini=
-band/hw/mlx5/ib_rep.c
-> > > > > index 22e651cb5534..d4ed611de35d 100644
-> > > > > --- a/drivers/infiniband/hw/mlx5/ib_rep.c
-> > > > > +++ b/drivers/infiniband/hw/mlx5/ib_rep.c
-> > > > > @@ -131,6 +131,17 @@ struct mlx5_eswitch_rep *mlx5_ib_vport_rep(s=
-truct mlx5_eswitch *esw, int vport)
-> > > > >  	return mlx5_eswitch_vport_rep(esw, vport);
-> > > > >  }
-> > > > >
-> > > > > +u32 mlx5_ib_eswitch_vport_match_metadata_enabled(struct mlx5_esw=
-itch *esw)
-> > > > > +{
-> > > > > +	return mlx5_eswitch_vport_match_metadata_enabled(esw);
-> > > > > +}
-> > > > > +
-> > > > > +u32 mlx5_ib_eswitch_get_vport_metadata_for_match(struct mlx5_esw=
-itch *esw,
-> > > > > +						 u16 vport)
-> > > > > +{
-> > > > > +	return mlx5_eswitch_get_vport_metadata_for_match(esw, vport);
-> > > > > +}
-> > > >
-> > > > 1. There is no need to introduce one line functions, call to that c=
-ode directly.
-> > >
-> > > No. They are in IB, and we don't want them be mixed up by the origina=
-l
-> > > functions in eswitch. Please ask Mark more about it.
-> >
-> > Please enlighten me.
->
-> It was suggested by Mark in prevouis review.
-> I think it's because there are in different modules, and better to with
-> different names, so introduce there extra one line functions.
-> Please correct me if I'm wrong, Mark...
+This patch removes the hns-roce.ko for cleanup all the
+exported symbols in common part.
 
-mlx5_ib is full of direct function calls to mlx5_core and it is done on
-purpose for at least two reasons. First is to control in one place
-all compilation options and expose proper API interface with and without
-specific kernel config is on. Second is to emphasize that this is core
-function and save us time in refactoring and reviewing.
+Signed-off-by: Xi Wang <wangxi11@huawei.com>
+Signed-off-by: Lijun Ou <oulijun@huawei.com>
+---
+V1->V2:
+1.  Use the top level CONFIG_INFINIBAND_HNS tristate to control
+    whether hns_roce_hw_v1.ko and hns_roce_hw_v2.ko are both as
+    modules or both built in
+2.  Add Signed-off-by
+---
+ drivers/infiniband/hw/hns/Kconfig          | 15 +++++++--------
+ drivers/infiniband/hw/hns/Makefile         | 13 +++++++++----
+ drivers/infiniband/hw/hns/hns_roce_alloc.c |  2 --
+ drivers/infiniband/hw/hns/hns_roce_cmd.c   |  4 ----
+ drivers/infiniband/hw/hns/hns_roce_cq.c    |  5 -----
+ drivers/infiniband/hw/hns/hns_roce_db.c    |  4 ----
+ drivers/infiniband/hw/hns/hns_roce_hem.c   |  5 -----
+ drivers/infiniband/hw/hns/hns_roce_main.c  |  3 ---
+ drivers/infiniband/hw/hns/hns_roce_mr.c    |  3 ---
+ drivers/infiniband/hw/hns/hns_roce_pd.c    |  2 --
+ drivers/infiniband/hw/hns/hns_roce_qp.c    | 13 -------------
+ drivers/infiniband/hw/hns/hns_roce_srq.c   |  1 -
+ 12 files changed, 16 insertions(+), 54 deletions(-)
 
->
-> >
-> > >
-> > > > 2. It should be bool and not u32.
-> > > >
-> > > > Thanks
-> > >
-> > > --
->
-> --
+diff --git a/drivers/infiniband/hw/hns/Kconfig b/drivers/infiniband/hw/hns/Kconfig
+index fddb5fd..b548c00 100644
+--- a/drivers/infiniband/hw/hns/Kconfig
++++ b/drivers/infiniband/hw/hns/Kconfig
+@@ -7,25 +7,24 @@ config INFINIBAND_HNS
+ 	  is used in Hisilicon Hip06 and more further ICT SoC based on
+ 	  platform device.
+ 
+-	  To compile this driver as a module, choose M here: the module
+-	  will be called hns-roce.
++	  To compile HIP06 or HIP08 driver as module, choose M here.
+ 
+ config INFINIBAND_HNS_HIP06
+-	tristate "Hisilicon Hip06 Family RoCE support"
++	bool "Hisilicon Hip06 Family RoCE support"
+ 	depends on INFINIBAND_HNS && HNS && HNS_DSAF && HNS_ENET
+ 	---help---
+ 	  RoCE driver support for Hisilicon RoCE engine in Hisilicon Hip06 and
+ 	  Hip07 SoC. These RoCE engines are platform devices.
+ 
+-	  To compile this driver as a module, choose M here: the module
+-	  will be called hns-roce-hw-v1.
++	  To compile this driver, choose Y here: if INFINIBAND_HNS is m, this
++	  module will be called hns-roce-hw-v1
+ 
+ config INFINIBAND_HNS_HIP08
+-	tristate "Hisilicon Hip08 Family RoCE support"
++	bool "Hisilicon Hip08 Family RoCE support"
+ 	depends on INFINIBAND_HNS && PCI && HNS3
+ 	---help---
+ 	  RoCE driver support for Hisilicon RoCE engine in Hisilicon Hip08 SoC.
+ 	  The RoCE engine is a PCI device.
+ 
+-	  To compile this driver as a module, choose M here: the module
+-	  will be called hns-roce-hw-v2.
++	  To compile this driver, choose Y here: if INFINIBAND_HNS is m, this
++	  module will be called hns-roce-hw-v2.
+diff --git a/drivers/infiniband/hw/hns/Makefile b/drivers/infiniband/hw/hns/Makefile
+index eee5205..b956cf4 100644
+--- a/drivers/infiniband/hw/hns/Makefile
++++ b/drivers/infiniband/hw/hns/Makefile
+@@ -4,11 +4,16 @@
+ 
+ ccflags-y :=  -I $(srctree)/drivers/net/ethernet/hisilicon/hns3
+ 
+-obj-$(CONFIG_INFINIBAND_HNS) += hns-roce.o
+ hns-roce-objs := hns_roce_main.o hns_roce_cmd.o hns_roce_pd.o \
+ 	hns_roce_ah.o hns_roce_hem.o hns_roce_mr.o hns_roce_qp.o \
+ 	hns_roce_cq.o hns_roce_alloc.o hns_roce_db.o hns_roce_srq.o hns_roce_restrack.o
+-obj-$(CONFIG_INFINIBAND_HNS_HIP06) += hns-roce-hw-v1.o
++
++ifdef CONFIG_INFINIBAND_HNS_HIP06
+ hns-roce-hw-v1-objs := hns_roce_hw_v1.o
+-obj-$(CONFIG_INFINIBAND_HNS_HIP08) += hns-roce-hw-v2.o
+-hns-roce-hw-v2-objs := hns_roce_hw_v2.o hns_roce_hw_v2_dfx.o
++obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v1.o $(hns-roce-objs)
++endif
++
++ifdef CONFIG_INFINIBAND_HNS_HIP08
++hns-roce-hw-v2-objs := hns_roce_hw_v2.o hns_roce_hw_v2_dfx.o $(hns-roce-objs)
++obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v2.o
++endif
+diff --git a/drivers/infiniband/hw/hns/hns_roce_alloc.c b/drivers/infiniband/hw/hns/hns_roce_alloc.c
+index dac058d..aa2b570 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_alloc.c
++++ b/drivers/infiniband/hw/hns/hns_roce_alloc.c
+@@ -67,7 +67,6 @@ void hns_roce_bitmap_free(struct hns_roce_bitmap *bitmap, unsigned long obj,
+ {
+ 	hns_roce_bitmap_free_range(bitmap, obj, 1, rr);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_bitmap_free);
+ 
+ int hns_roce_bitmap_alloc_range(struct hns_roce_bitmap *bitmap, int cnt,
+ 				int align, unsigned long *obj)
+@@ -174,7 +173,6 @@ void hns_roce_buf_free(struct hns_roce_dev *hr_dev, u32 size,
+ 		kfree(buf->page_list);
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_buf_free);
+ 
+ int hns_roce_buf_alloc(struct hns_roce_dev *hr_dev, u32 size, u32 max_direct,
+ 		       struct hns_roce_buf *buf, u32 page_shift)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
+index 2acf946..b83d5bd 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
+@@ -103,7 +103,6 @@ void hns_roce_cmd_event(struct hns_roce_dev *hr_dev, u16 token, u8 status,
+ 	context->out_param = out_param;
+ 	complete(&context->done);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_cmd_event);
+ 
+ /* this should be called with "use_events" */
+ static int __hns_roce_cmd_mbox_wait(struct hns_roce_dev *hr_dev, u64 in_param,
+@@ -204,7 +203,6 @@ int hns_roce_cmd_mbox(struct hns_roce_dev *hr_dev, u64 in_param, u64 out_param,
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_cmd_mbox);
+ 
+ int hns_roce_cmd_init(struct hns_roce_dev *hr_dev)
+ {
+@@ -291,7 +289,6 @@ struct hns_roce_cmd_mailbox
+ 
+ 	return mailbox;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_alloc_cmd_mailbox);
+ 
+ void hns_roce_free_cmd_mailbox(struct hns_roce_dev *hr_dev,
+ 			       struct hns_roce_cmd_mailbox *mailbox)
+@@ -302,4 +299,3 @@ void hns_roce_free_cmd_mailbox(struct hns_roce_dev *hr_dev,
+ 	dma_pool_free(hr_dev->cmd.pool, mailbox->buf, mailbox->dma);
+ 	kfree(mailbox);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_free_cmd_mailbox);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+index 6e81ff3..6ea3206 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+@@ -205,7 +205,6 @@ void hns_roce_free_cq(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
+ 	hns_roce_table_put(hr_dev, &cq_table->table, hr_cq->cqn);
+ 	hns_roce_bitmap_free(&cq_table->bitmap, hr_cq->cqn, BITMAP_NO_RR);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_free_cq);
+ 
+ static int hns_roce_ib_get_cq_umem(struct hns_roce_dev *hr_dev,
+ 				   struct ib_udata *udata,
+@@ -441,7 +440,6 @@ struct ib_cq *hns_roce_ib_create_cq(struct ib_device *ib_dev,
+ 	kfree(hr_cq);
+ 	return ERR_PTR(ret);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_ib_create_cq);
+ 
+ int hns_roce_ib_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ {
+@@ -478,7 +476,6 @@ int hns_roce_ib_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_ib_destroy_cq);
+ 
+ void hns_roce_cq_completion(struct hns_roce_dev *hr_dev, u32 cqn)
+ {
+@@ -494,7 +491,6 @@ void hns_roce_cq_completion(struct hns_roce_dev *hr_dev, u32 cqn)
+ 	++cq->arm_sn;
+ 	cq->comp(cq);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_cq_completion);
+ 
+ void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
+ {
+@@ -516,7 +512,6 @@ void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
+ 	if (atomic_dec_and_test(&cq->refcount))
+ 		complete(&cq->free);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_cq_event);
+ 
+ int hns_roce_init_cq_table(struct hns_roce_dev *hr_dev)
+ {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_db.c b/drivers/infiniband/hw/hns/hns_roce_db.c
+index 3a040a9..627aa46 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_db.c
++++ b/drivers/infiniband/hw/hns/hns_roce_db.c
+@@ -51,7 +51,6 @@ int hns_roce_db_map_user(struct hns_roce_ucontext *context,
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL(hns_roce_db_map_user);
+ 
+ void hns_roce_db_unmap_user(struct hns_roce_ucontext *context,
+ 			    struct hns_roce_db *db)
+@@ -67,7 +66,6 @@ void hns_roce_db_unmap_user(struct hns_roce_ucontext *context,
+ 
+ 	mutex_unlock(&context->page_mutex);
+ }
+-EXPORT_SYMBOL(hns_roce_db_unmap_user);
+ 
+ static struct hns_roce_db_pgdir *hns_roce_alloc_db_pgdir(
+ 					struct device *dma_device)
+@@ -151,7 +149,6 @@ int hns_roce_alloc_db(struct hns_roce_dev *hr_dev, struct hns_roce_db *db,
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_alloc_db);
+ 
+ void hns_roce_free_db(struct hns_roce_dev *hr_dev, struct hns_roce_db *db)
+ {
+@@ -181,4 +178,3 @@ void hns_roce_free_db(struct hns_roce_dev *hr_dev, struct hns_roce_db *db)
+ 
+ 	mutex_unlock(&hr_dev->pgdir_mutex);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_free_db);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
+index 8490a86..d6ad8fe 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hem.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
+@@ -56,7 +56,6 @@ bool hns_roce_check_whether_mhop(struct hns_roce_dev *hr_dev, u32 type)
+ 
+ 	return false;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_check_whether_mhop);
+ 
+ static bool hns_roce_check_hem_null(struct hns_roce_hem **hem, u64 start_idx,
+ 			    u32 bt_chunk_num)
+@@ -234,7 +233,6 @@ int hns_roce_calc_hem_mhop(struct hns_roce_dev *hr_dev,
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_calc_hem_mhop);
+ 
+ static struct hns_roce_hem *hns_roce_alloc_hem(struct hns_roce_dev *hr_dev,
+ 					       int npages,
+@@ -621,7 +619,6 @@ int hns_roce_table_get(struct hns_roce_dev *hr_dev,
+ 	mutex_unlock(&table->mutex);
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_table_get);
+ 
+ static void hns_roce_table_mhop_put(struct hns_roce_dev *hr_dev,
+ 				    struct hns_roce_hem_table *table,
+@@ -764,7 +761,6 @@ void hns_roce_table_put(struct hns_roce_dev *hr_dev,
+ 
+ 	mutex_unlock(&table->mutex);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_table_put);
+ 
+ void *hns_roce_table_find(struct hns_roce_dev *hr_dev,
+ 			  struct hns_roce_hem_table *table,
+@@ -837,7 +833,6 @@ void *hns_roce_table_find(struct hns_roce_dev *hr_dev,
+ 	mutex_unlock(&table->mutex);
+ 	return addr;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_table_find);
+ 
+ int hns_roce_table_get_range(struct hns_roce_dev *hr_dev,
+ 			     struct hns_roce_hem_table *table,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index f07b2ec..28af1cd 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -57,7 +57,6 @@ int hns_get_gid_index(struct hns_roce_dev *hr_dev, u8 port, int gid_index)
+ {
+ 	return gid_index * hr_dev->caps.num_ports + port;
+ }
+-EXPORT_SYMBOL_GPL(hns_get_gid_index);
+ 
+ static int hns_roce_set_mac(struct hns_roce_dev *hr_dev, u8 port, u8 *addr)
+ {
+@@ -972,7 +971,6 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_init);
+ 
+ void hns_roce_exit(struct hns_roce_dev *hr_dev)
+ {
+@@ -993,7 +991,6 @@ void hns_roce_exit(struct hns_roce_dev *hr_dev)
+ 	if (hr_dev->hw->reset)
+ 		hr_dev->hw->reset(hr_dev, false);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_exit);
+ 
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Wei Hu <xavier.huwei@huawei.com>");
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index 38ed4ac..f67f453 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -47,7 +47,6 @@ unsigned long key_to_hw_index(u32 key)
+ {
+ 	return (key << 24) | (key >> 8);
+ }
+-EXPORT_SYMBOL_GPL(key_to_hw_index);
+ 
+ static int hns_roce_sw2hw_mpt(struct hns_roce_dev *hr_dev,
+ 			      struct hns_roce_cmd_mailbox *mailbox,
+@@ -66,7 +65,6 @@ int hns_roce_hw2sw_mpt(struct hns_roce_dev *hr_dev,
+ 				 mpt_index, !mailbox, HNS_ROCE_CMD_HW2SW_MPT,
+ 				 HNS_ROCE_CMD_TIMEOUT_MSECS);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_hw2sw_mpt);
+ 
+ static int hns_roce_buddy_alloc(struct hns_roce_buddy *buddy, int order,
+ 				unsigned long *seg)
+@@ -293,7 +291,6 @@ void hns_roce_mtt_cleanup(struct hns_roce_dev *hr_dev, struct hns_roce_mtt *mtt)
+ 		break;
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_mtt_cleanup);
+ 
+ static void hns_roce_loop_free(struct hns_roce_dev *hr_dev,
+ 			       struct hns_roce_mr *mr, int err_loop_index,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
+index 8134013..920ca76 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_pd.c
++++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
+@@ -83,13 +83,11 @@ int hns_roce_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_alloc_pd);
+ 
+ void hns_roce_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
+ {
+ 	hns_roce_pd_free(to_hr_dev(pd->device), to_hr_pd(pd)->pdn);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_dealloc_pd);
+ 
+ int hns_roce_uar_alloc(struct hns_roce_dev *hr_dev, struct hns_roce_uar *uar)
+ {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 8db2817..a6008c4 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -64,7 +64,6 @@ void hns_roce_qp_event(struct hns_roce_dev *hr_dev, u32 qpn, int event_type)
+ 	if (atomic_dec_and_test(&qp->refcount))
+ 		complete(&qp->free);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_qp_event);
+ 
+ static void hns_roce_ib_qp_event(struct hns_roce_qp *hr_qp,
+ 				 enum hns_roce_event type)
+@@ -139,7 +138,6 @@ enum hns_roce_qp_state to_hns_roce_state(enum ib_qp_state state)
+ 		return HNS_ROCE_QP_NUM_STATE;
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(to_hns_roce_state);
+ 
+ static int hns_roce_gsi_qp_alloc(struct hns_roce_dev *hr_dev, unsigned long qpn,
+ 				 struct hns_roce_qp *hr_qp)
+@@ -242,7 +240,6 @@ void hns_roce_qp_remove(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 	__xa_erase(xa, hr_qp->qpn & (hr_dev->caps.num_qps - 1));
+ 	xa_unlock_irqrestore(xa, flags);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_qp_remove);
+ 
+ void hns_roce_qp_free(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ {
+@@ -260,7 +257,6 @@ void hns_roce_qp_free(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 		hns_roce_table_put(hr_dev, &qp_table->qp_table, hr_qp->qpn);
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_qp_free);
+ 
+ void hns_roce_release_range_qp(struct hns_roce_dev *hr_dev, int base_qpn,
+ 			       int cnt)
+@@ -272,7 +268,6 @@ void hns_roce_release_range_qp(struct hns_roce_dev *hr_dev, int base_qpn,
+ 
+ 	hns_roce_bitmap_free_range(&qp_table->bitmap, base_qpn, cnt, BITMAP_RR);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_release_range_qp);
+ 
+ static int hns_roce_set_rq_size(struct hns_roce_dev *hr_dev,
+ 				struct ib_qp_cap *cap, bool is_user, int has_rq,
+@@ -923,7 +918,6 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
+ 
+ 	return &hr_qp->ibqp;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_create_qp);
+ 
+ int to_hr_qp_type(int qp_type)
+ {
+@@ -942,7 +936,6 @@ int to_hr_qp_type(int qp_type)
+ 
+ 	return transport_type;
+ }
+-EXPORT_SYMBOL_GPL(to_hr_qp_type);
+ 
+ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		       int attr_mask, struct ib_udata *udata)
+@@ -1062,7 +1055,6 @@ void hns_roce_lock_cqs(struct hns_roce_cq *send_cq, struct hns_roce_cq *recv_cq)
+ 		spin_lock_nested(&send_cq->lock, SINGLE_DEPTH_NESTING);
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_lock_cqs);
+ 
+ void hns_roce_unlock_cqs(struct hns_roce_cq *send_cq,
+ 			 struct hns_roce_cq *recv_cq) __releases(&send_cq->lock)
+@@ -1079,7 +1071,6 @@ void hns_roce_unlock_cqs(struct hns_roce_cq *send_cq,
+ 		spin_unlock_irq(&recv_cq->lock);
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_unlock_cqs);
+ 
+ static void *get_wqe(struct hns_roce_qp *hr_qp, int offset)
+ {
+@@ -1091,20 +1082,17 @@ void *get_recv_wqe(struct hns_roce_qp *hr_qp, int n)
+ {
+ 	return get_wqe(hr_qp, hr_qp->rq.offset + (n << hr_qp->rq.wqe_shift));
+ }
+-EXPORT_SYMBOL_GPL(get_recv_wqe);
+ 
+ void *get_send_wqe(struct hns_roce_qp *hr_qp, int n)
+ {
+ 	return get_wqe(hr_qp, hr_qp->sq.offset + (n << hr_qp->sq.wqe_shift));
+ }
+-EXPORT_SYMBOL_GPL(get_send_wqe);
+ 
+ void *get_send_extend_sge(struct hns_roce_qp *hr_qp, int n)
+ {
+ 	return hns_roce_buf_offset(&hr_qp->hr_buf, hr_qp->sge.offset +
+ 					(n << hr_qp->sge.sge_shift));
+ }
+-EXPORT_SYMBOL_GPL(get_send_extend_sge);
+ 
+ bool hns_roce_wq_overflow(struct hns_roce_wq *hr_wq, int nreq,
+ 			  struct ib_cq *ib_cq)
+@@ -1123,7 +1111,6 @@ bool hns_roce_wq_overflow(struct hns_roce_wq *hr_wq, int nreq,
+ 
+ 	return cur + nreq >= hr_wq->max_post;
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_wq_overflow);
+ 
+ int hns_roce_init_qp_table(struct hns_roce_dev *hr_dev)
+ {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
+index c222f24..787fbda 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_srq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
+@@ -30,7 +30,6 @@ void hns_roce_srq_event(struct hns_roce_dev *hr_dev, u32 srqn, int event_type)
+ 	if (atomic_dec_and_test(&srq->refcount))
+ 		complete(&srq->free);
+ }
+-EXPORT_SYMBOL_GPL(hns_roce_srq_event);
+ 
+ static void hns_roce_ib_srq_event(struct hns_roce_srq *srq,
+ 				  enum hns_roce_event event_type)
+-- 
+1.9.1
+
