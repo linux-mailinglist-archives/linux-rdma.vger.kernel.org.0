@@ -2,86 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F054C176
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 21:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60D74C185
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 21:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729988AbfFSTZQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 15:25:16 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:38441 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729659AbfFSTZQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 15:25:16 -0400
-Received: by mail-qt1-f196.google.com with SMTP id n11so409006qtl.5
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2019 12:25:16 -0700 (PDT)
+        id S1729659AbfFSTbG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 15:31:06 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:37827 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726479AbfFSTbG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 15:31:06 -0400
+Received: by mail-io1-f68.google.com with SMTP id e5so710860iok.4;
+        Wed, 19 Jun 2019 12:31:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=P/oSgKtbzJr/carmAkezMBnMSv82HWuWgIe/OFv6Mwo=;
-        b=mD5YJz4jvRy3QNAkq23a8kTZCag9CESbahVVFx8x+YyrG+hRYC8igpRKaSwchoXE6E
-         lzpncfqF76Su9EhYO9Fme/pygtuztYVNpsRrRSwLgDYoKEkA2LHozYyb02KChpsusIk/
-         zeSz+3Fm6Wl7b+muoCwE/22Z+AtFa9jKY3nNDPekrbZKoaaLmWblBqig+6F0GJR0Bb5g
-         MsvnNAWA/0FKC51TAJlE5Ueg+Ovb/qy+2yjTDOjOtCCdICcCOZUkocBKLTVa/KHM6VAu
-         EPEcPWaFtHe9rrRdsm+zLX3jh/caAIbqgkEv/vXbLOyOLG8S4Ke1DdXrkmjDEDiUpA3T
-         hqyg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OTPDBkCLe+rn37yNmxopVFQQaMHUyLf8iaXUpqyblqo=;
+        b=FVrjDHRQQ4aHyshoymHdpZF3cj2NPfgyuaNIqUh8qNkOFKV4P9uhN5WBLqrg1qUh74
+         3QuuwAZGR2fAwDidv70zduDox+emMb3PquoOjFINxRy8l7N7DjdXTHVRP0aBOulD9H5b
+         cae0pArYYEla1mdPEVSFbwP0ohRixnNzDkX82Z6U41O0OJZIO2GKqkSbycWFfHl8egzO
+         a0aQYmosH5FZCcqsqvuIG9RkgAG0wNHNJHjcXN4BfqZTawAjXHPt44RQYk2vptaD6LGx
+         UK6Xe+wVXnSwXqQNMeLhZ/mRdzQ/UF1u+B8d3s7HWDzSkevhY+96U3slKhxLFiIvqOtb
+         +OUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=P/oSgKtbzJr/carmAkezMBnMSv82HWuWgIe/OFv6Mwo=;
-        b=EEWlu1OSOHZYlPaTSVYuuDP4TGsrjnfhbXiun2y0Ng/CJApDPN4VoB8k4BGSlFXT4B
-         wwR3AloXGUWWaETBeruJn4DOq/MrEuci1MVgHnSfDQ3euvYKvYyY84KH0bIpJDByMijQ
-         UWg2QKbClv1UWZH5vOQccrYWkHSnwuPLsLzxN4ck/vAyF2rkCm8CVYN8GcWAlIcMpCiA
-         Hs3zhndFVCHzzzROb2XpVk1SqK/jW96yqPh8BpwszOpFf/dl76vVmO+MrFvE4dybsdfU
-         H5BMIs7qUfLvaz/65zTbccA32EQDg9a09oxrxZ0TVq0lCDRGBKIbWpct1eSbZLY2fHqR
-         i5Hw==
-X-Gm-Message-State: APjAAAWSpMn6mEu2NUHjhvKmjC2t7K00HBj6QHm5mt+/bPQ9WIenPIfV
-        hx4YkcNQwB9yTw1q3/dlzNLlyw==
-X-Google-Smtp-Source: APXvYqx7vBEWpDgbS1ppY2nyorwmGYPnFiKIZXSIGk5qgzrZ55RSNLIffJEqgAzFrltYhjChtOAkMA==
-X-Received: by 2002:ac8:26d9:: with SMTP id 25mr70859956qtp.377.1560972315602;
-        Wed, 19 Jun 2019 12:25:15 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id v41sm12063765qta.78.2019.06.19.12.25.15
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Jun 2019 12:25:15 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hdgCo-0003Vj-RY; Wed, 19 Jun 2019 16:25:14 -0300
-Date:   Wed, 19 Jun 2019 16:25:14 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 1/2] RDMA/netlink: Resort policy array
-Message-ID: <20190619192514.GA13464@ziepe.ca>
-References: <cover.1560957168.git.dledford@redhat.com>
- <a6504ecbb865862d2942d4d33ba92d7bac7b0b41.1560957168.git.dledford@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OTPDBkCLe+rn37yNmxopVFQQaMHUyLf8iaXUpqyblqo=;
+        b=gg/3UA3h/SUMdeYle1/A542Sr0KMHg/J0cXn7KnorMrfEjDdF4egM4MxdYvgev6amQ
+         YNCrlbRL15K5dRuSZSn9M8QcQgLSgJhKfa0yWlgpd+qr3jnVEDUDdKe6RtqrEJGouFJX
+         ioKamSpz9QEDApo9prZ6pTVrzGgny0v0OTEsG0ux7E3IJr69ftacNnq+WH8DBeJZ/43H
+         sazreD/0HB/ABqlH07dBs3S+8ekHnNTlUCmmWjBaPQ9pgAEfoBpboMB5ZZgkhBdyJmIv
+         QzvsvTbX8ClX6jgcAe66unlmpWaNi6mxoc2+t/gkNd5vM44SIujD79mlNtVW2CpYfY6j
+         SU8w==
+X-Gm-Message-State: APjAAAWKpT5xPQczmoZVq1Aml3f2J8ClO8PbQKdSDZSHDPm858aOPkW+
+        OzX3qIYwHfpxuSfp7WQfkbY=
+X-Google-Smtp-Source: APXvYqxrDN3ddKmrDiHXCdDeekdCUrbRM1k6hbu9mfrdRvSP6xD/dX/HdkHdCOa9U5GtMHujgY0ecg==
+X-Received: by 2002:a02:c918:: with SMTP id t24mr100216095jao.111.1560972665754;
+        Wed, 19 Jun 2019 12:31:05 -0700 (PDT)
+Received: from ?IPv6:2601:284:8200:5cfb:60fa:7b0e:5ad7:3d30? ([2601:284:8200:5cfb:60fa:7b0e:5ad7:3d30])
+        by smtp.googlemail.com with ESMTPSA id q1sm17447407ios.86.2019.06.19.12.31.03
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 Jun 2019 12:31:04 -0700 (PDT)
+Subject: Re: [PATCH iproute2 v2 2/2] uapi: update if_link.h
+To:     Stephen Hemminger <stephen@networkplumber.org>,
+        Denis Kirjanov <kda@linux-powerpc.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        dledford@redhat.com, mkubecek@suse.cz
+References: <20190619141414.4242-1-dkirjanov@suse.com>
+ <20190619141414.4242-2-dkirjanov@suse.com>
+ <20190619104652.4c71c33b@hermes.lan>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <f17e6784-c021-ce7a-c64b-1868e6d8b609@gmail.com>
+Date:   Wed, 19 Jun 2019 13:31:00 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6504ecbb865862d2942d4d33ba92d7bac7b0b41.1560957168.git.dledford@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190619104652.4c71c33b@hermes.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 11:16:11AM -0400, Doug Ledford wrote:
-> Sort the netlink policy array by netlink attribute name.  This will make
-> it easier in the future to find the entry you are looking for when you
-> need to make changes, or to make sure you don't add the same entry
-> twice.
+On 6/19/19 11:47 AM, Stephen Hemminger wrote:
+> On Wed, 19 Jun 2019 16:14:14 +0200
+> Denis Kirjanov <kda@linux-powerpc.org> wrote:
 > 
-> Fix the whitespace while we are there.
+>> update if_link.h to commit 75345f888f700c4ab2448287e35d48c760b202e6
+>> ("ipoib: show VF broadcast address")
+>>
+>> Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
 > 
-> Signed-off-by: Doug Ledford <dledford@redhat.com>
-> ---
->  drivers/infiniband/core/nldev.c | 153 ++++++++++++++++----------------
->  1 file changed, 78 insertions(+), 75 deletions(-)
+> This is only on net-next so the patches should target iproute2-next.
 > 
-> v0->v1: Move all whitespace changes to this patch
+> David can update from that.
+> 
 
-I always love sorted things
-
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-
-Jason
+Make uapi changes as a separate patch; don't worry about syncing the
+entire file. That patch is my hint to resync the kernel headers to top
+of tree before applying the rest of the set.
