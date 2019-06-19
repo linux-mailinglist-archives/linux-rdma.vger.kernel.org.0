@@ -2,126 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9429D4C21F
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 22:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B994C262
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 22:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbfFSUMA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 16:12:00 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:40129 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbfFSUMA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 16:12:00 -0400
-Received: by mail-qt1-f196.google.com with SMTP id a15so574400qtn.7
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2019 13:11:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FPz4fCD9I1nqLaGFZ73wl0iYMlV95hp392qM+38zx30=;
-        b=fhVBB9A7gzlrUi09IMku7RbSUHi0gr4pYy33DZOzGjtl0FA+AMYnHHlDrKITL/8bEu
-         pBOf8Bl3iODLm1X7bZImWgplG3fa7xDVsScKS3HVDDQSW7x+UNK0k2Iztug1hn2vVt4D
-         T6+PkxCRzgfxosV6J8qKXo+3ziwuUGoUsD1nzpU5qeo4kgTG5aPLEIOuxtyLFCA3f6Oi
-         eNRxDHZsl3yyw5uYi3PG93JvJdqhf6pY2lSnPOBPqN1UQRjaId6UMA4iZFAZDL2z3O7H
-         TMomz93YccKQBlrfoU7Vd7VPi7Q1PTSctTeupMiIvdLoMzgL3LXTofPp7RnwpNDZx5X0
-         tp4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FPz4fCD9I1nqLaGFZ73wl0iYMlV95hp392qM+38zx30=;
-        b=Dj5NwAyGTrYF+VYMHf/qkUIUv4SkkRzxATHE/uzUZrBJlmwJVQnhH77LWpwOCYONzE
-         6gvPSc/ESnpG7p4MsFxOsFUzdIZ/JegX4rVJnSDLn26SYZQxPtJky3UG+A4hQG1ul6Pl
-         FpTnsj8S4q+4RiJ8AkM+DdN75DBLwrwYS/qogRIqxOdQGIoZtSycZ8efkhiUxjUXXveV
-         6KiNz+sVWWHBi9cYMCVQ9TOqeMk8jcpIz0pwbPi73m7XBWAUCIe/fydmaPc5L6sXv9p8
-         MHyz2NISyygWdC8js/xDelx91uFh5Z+SHQEPY1auwY+a9x9yp4MrGTWcQKWhWCeewEyL
-         1rcg==
-X-Gm-Message-State: APjAAAVHM8V2ExjoMy0GrEECotPpxCW2yfwNu0f9AiILCEVQ5ekHVNQ6
-        sU3HaRj6NmB3A2tNr9oVIUyG8w==
-X-Google-Smtp-Source: APXvYqyqjMs/A15UUmOHDrBRWJ8TPAFMIcW9sul1ZDIjjIHJe3A0ojSOaJDQCrMj3BNrgCCckNjjTQ==
-X-Received: by 2002:a0c:ae50:: with SMTP id z16mr34400789qvc.60.1560975119282;
-        Wed, 19 Jun 2019 13:11:59 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id k5sm10764186qkc.75.2019.06.19.13.11.58
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Jun 2019 13:11:58 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hdgw2-0002kp-2L; Wed, 19 Jun 2019 17:11:58 -0300
-Date:   Wed, 19 Jun 2019 17:11:58 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 2/2] RDMA/netlink: Audit policy settings for netlink
- attributes
-Message-ID: <20190619201158.GK9360@ziepe.ca>
-References: <cover.1560957168.git.dledford@redhat.com>
- <5ef05339c1d799133076c24e616860a647e96148.1560957168.git.dledford@redhat.com>
- <20190619192431.GA13262@ziepe.ca>
- <b964f5286ad9d2c3f1fb2f4f0f3206ecf9da2ad7.camel@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b964f5286ad9d2c3f1fb2f4f0f3206ecf9da2ad7.camel@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726175AbfFSU0K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 16:26:10 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:47782 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726143AbfFSU0K (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 16:26:10 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5JKJUnC119159;
+        Wed, 19 Jun 2019 20:26:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2018-07-02; bh=7HuPfR1DT4zYEKdIZnnRrDSeTf8hQPocZvrAWmpzHUg=;
+ b=yB22p9ZzNxZWo07rFE7wIFK4Rw4WhBPQ15Cva5BXIKGClpJZT6bOSnjRhBEwAs2jCsx/
+ xukBG3KelLHIGH3Ldv1J0UJ6d5gO2xiBnJJ+r8ZhIwNiD8X25GMCyWEYanv9hK8K94nY
+ jE+PiDi+JkhbkSPh4qF+gFCmtPg3FZsVNPQdQADXK+RXMQgrqwqOsAOAeFcgiJD+EsXV
+ mnSdDEtoT4DQB/WEXYVOnVUr0g567Fy7S5B8h2xfVIyPy3YSYlJt/QP8ISsZvk5gG+iU
+ R3kbhbMihpywRqCORJZpVSxl2veXNOwaRRkoqXMtvui5YlCoSlr1pJU4k51R+15vGopB NQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 2t7809dj8d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Jun 2019 20:26:04 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5JKPFJ4046360;
+        Wed, 19 Jun 2019 20:26:03 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 2t7rdwudup-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Jun 2019 20:26:03 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5JKPw36017607;
+        Wed, 19 Jun 2019 20:26:02 GMT
+Received: from anon-dhcp-171.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 19 Jun 2019 13:25:58 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v2] svcrdma: Ignore source port when computing DRC hash
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20190611150116.4209.63309.stgit@klimt.1015granger.net>
+Date:   Wed, 19 Jun 2019 16:25:57 -0400
+Cc:     linux-rdma@vger.kernel.org,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <FAF5EE39-8B5D-4F5C-9E9E-8FCA6EED8378@oracle.com>
+References: <20190611150116.4209.63309.stgit@klimt.1015granger.net>
+To:     Bruce Fields <bfields@fieldses.org>
+X-Mailer: Apple Mail (2.3445.104.11)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9293 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906190167
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9293 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906190167
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 04:02:30PM -0400, Doug Ledford wrote:
-> On Wed, 2019-06-19 at 16:24 -0300, Jason Gunthorpe wrote:
-> > 
-> > > +	nla_strlcpy(client_name, tb[RDMA_NLDEV_ATTR_CHARDEV_TYPE],
-> > > +		    sizeof(client_name));
-> > 
-> > This seems really frail, it should at least have a
-> > 
-> > BUILD_BUG_ON(sizeof(client_name) ==
-> > nldev_policy[RDMA_NLDEV_ATTR_CHARDEV_TYPE].len));
-> > 
-> > But I don't think that can compile.
-> > 
-> > Are we sure we can't have a 0 length and just skip checking in policy?
-> > It seems like more danger than it is worth.
-> 
-> nla_strlcpy takes a size parameter as arg3 and guarantees to put no
-> more than arg3 bytes - 1 from the source into the dest and
-> guarantees it's null terminated.  The only difference between
-> nla_strlcpy and normal strncpy is that nla_strlcpy zeros out any
-> excess pad bytes that aren't used in the dest by the copy.  If
-> someone tries to pass in an oversized string, it doesn't matter.  If
-> someone modifes the function to change the size of client_name, our
-> nla_strlcpy() is safe because our dest and our len parameters are
-> always in sync.  I don't see the fragility.
 
-Silently truncating the user input string and not returning an error
-is a kernel bug.
+> On Jun 11, 2019, at 11:01 AM, Chuck Lever <chuck.lever@oracle.com> =
+wrote:
+>=20
+> The DRC appears to be effectively empty after an RPC/RDMA transport
+> reconnect. The problem is that each connection uses a different
+> source port, which defeats the DRC hash.
+>=20
+> Clients always have to disconnect before they send retransmissions
+> to reset the connection's credit accounting, thus every retransmit
+> on NFS/RDMA will miss the DRC.
+>=20
+> An NFS/RDMA client's IP source port is meaningless for RDMA
+> transports. The transport layer typically sets the source port value
+> on the connection to a random ephemeral port. The server already
+> ignores it for the "secure port" check. See commit 16e4d93f6de7
+> ("NFSD: Ignore client's source port on RDMA transports").
+>=20
+> The Linux NFS server's DRC resolves XID collisions from the same
+> source IP address by using the checksum of the first 200 bytes of
+> the RPC call header.
+>=20
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> Cc: stable@vger.kernel.org # v4.14+
+> ---
+> net/sunrpc/xprtrdma/svc_rdma_transport.c |    7 ++++++-
+> 1 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c =
+b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> index 027a3b0..0004535 100644
+> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> @@ -211,9 +211,14 @@ static void handle_connect_req(struct rdma_cm_id =
+*new_cma_id,
+> 	/* Save client advertised inbound read limit for use later in =
+accept. */
+> 	newxprt->sc_ord =3D param->initiator_depth;
+>=20
+> -	/* Set the local and remote addresses in the transport */
+> 	sa =3D (struct sockaddr =
+*)&newxprt->sc_cm_id->route.addr.dst_addr;
+> 	svc_xprt_set_remote(&newxprt->sc_xprt, sa, svc_addr_len(sa));
+> +	/* The remote port is arbitrary and not under the control of the
+> +	 * client ULP. Set it to a fixed value so that the DRC continues
+> +	 * to be effective after a reconnect.
+> +	 */
+> +	rpc_set_port((struct sockaddr *)&newxprt->sc_xprt.xpt_remote, =
+0);
+> +
+> 	sa =3D (struct sockaddr =
+*)&newxprt->sc_cm_id->route.addr.src_addr;
+> 	svc_xprt_set_local(&newxprt->sc_xprt, sa, svc_addr_len(sa));
 
-I dislike strlcpy and friends for the same reason everyone else does -
-they prevent security failures but create bugs with undetected
-truncated strings.
+Hi Bruce, what's the disposition of this patch?
 
-> > >  	if (tb[RDMA_NLDEV_ATTR_DEV_INDEX]) {
-> > >  		index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
-> > > diff --git a/include/uapi/rdma/rdma_netlink.h
-> > > b/include/uapi/rdma/rdma_netlink.h
-> > > index b27c02185dcc..24ff4ffa30dd 100644
-> > > +++ b/include/uapi/rdma/rdma_netlink.h
-> > > @@ -285,6 +285,7 @@ enum rdma_nldev_command {
-> > >  };
-> > >  
-> > >  enum {
-> > > +	RDMA_NLDEV_ATTR_EMPTY_STRING = 1,
-> > >  	RDMA_NLDEV_ATTR_ENTRY_STRLEN = 16,
-> > 
-> > The empty thing is just an internal implementation detail, should not
-> > leak into uapi
-> 
-> So was ENTRY_STRLEN.  Once I audited and set all non-input strings to
-> EMPTY_STRING, ENTRY_STRLEN isn't even used any more.  It happens to be
-> the same as IFNAMSIZ and so could be used in its place, but doesn't have
-> to be.
 
-Should move both then
+--
+Chuck Lever
 
-Jason
+
+
