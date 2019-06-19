@@ -2,86 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D60D74C185
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 21:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15E74C1FE
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 22:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729659AbfFSTbG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 15:31:06 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:37827 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbfFSTbG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 15:31:06 -0400
-Received: by mail-io1-f68.google.com with SMTP id e5so710860iok.4;
-        Wed, 19 Jun 2019 12:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OTPDBkCLe+rn37yNmxopVFQQaMHUyLf8iaXUpqyblqo=;
-        b=FVrjDHRQQ4aHyshoymHdpZF3cj2NPfgyuaNIqUh8qNkOFKV4P9uhN5WBLqrg1qUh74
-         3QuuwAZGR2fAwDidv70zduDox+emMb3PquoOjFINxRy8l7N7DjdXTHVRP0aBOulD9H5b
-         cae0pArYYEla1mdPEVSFbwP0ohRixnNzDkX82Z6U41O0OJZIO2GKqkSbycWFfHl8egzO
-         a0aQYmosH5FZCcqsqvuIG9RkgAG0wNHNJHjcXN4BfqZTawAjXHPt44RQYk2vptaD6LGx
-         UK6Xe+wVXnSwXqQNMeLhZ/mRdzQ/UF1u+B8d3s7HWDzSkevhY+96U3slKhxLFiIvqOtb
-         +OUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OTPDBkCLe+rn37yNmxopVFQQaMHUyLf8iaXUpqyblqo=;
-        b=gg/3UA3h/SUMdeYle1/A542Sr0KMHg/J0cXn7KnorMrfEjDdF4egM4MxdYvgev6amQ
-         YNCrlbRL15K5dRuSZSn9M8QcQgLSgJhKfa0yWlgpd+qr3jnVEDUDdKe6RtqrEJGouFJX
-         ioKamSpz9QEDApo9prZ6pTVrzGgny0v0OTEsG0ux7E3IJr69ftacNnq+WH8DBeJZ/43H
-         sazreD/0HB/ABqlH07dBs3S+8ekHnNTlUCmmWjBaPQ9pgAEfoBpboMB5ZZgkhBdyJmIv
-         QzvsvTbX8ClX6jgcAe66unlmpWaNi6mxoc2+t/gkNd5vM44SIujD79mlNtVW2CpYfY6j
-         SU8w==
-X-Gm-Message-State: APjAAAWKpT5xPQczmoZVq1Aml3f2J8ClO8PbQKdSDZSHDPm858aOPkW+
-        OzX3qIYwHfpxuSfp7WQfkbY=
-X-Google-Smtp-Source: APXvYqxrDN3ddKmrDiHXCdDeekdCUrbRM1k6hbu9mfrdRvSP6xD/dX/HdkHdCOa9U5GtMHujgY0ecg==
-X-Received: by 2002:a02:c918:: with SMTP id t24mr100216095jao.111.1560972665754;
-        Wed, 19 Jun 2019 12:31:05 -0700 (PDT)
-Received: from ?IPv6:2601:284:8200:5cfb:60fa:7b0e:5ad7:3d30? ([2601:284:8200:5cfb:60fa:7b0e:5ad7:3d30])
-        by smtp.googlemail.com with ESMTPSA id q1sm17447407ios.86.2019.06.19.12.31.03
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 19 Jun 2019 12:31:04 -0700 (PDT)
-Subject: Re: [PATCH iproute2 v2 2/2] uapi: update if_link.h
-To:     Stephen Hemminger <stephen@networkplumber.org>,
-        Denis Kirjanov <kda@linux-powerpc.org>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        dledford@redhat.com, mkubecek@suse.cz
-References: <20190619141414.4242-1-dkirjanov@suse.com>
- <20190619141414.4242-2-dkirjanov@suse.com>
- <20190619104652.4c71c33b@hermes.lan>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <f17e6784-c021-ce7a-c64b-1868e6d8b609@gmail.com>
-Date:   Wed, 19 Jun 2019 13:31:00 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+        id S1726482AbfFSUCZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 16:02:25 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:36286 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726143AbfFSUCY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 16:02:24 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5JJxCMh013084;
+        Wed, 19 Jun 2019 20:01:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=Vroyiiy2apNH9g1WQULlt3tAhqXh3qFzkC0thjbI/tY=;
+ b=tQKRrCMRIZFf76xHdG+OcQRJVCixkQdbl3HfJkhqJ6zQ5Fq71mORMALE81hvlqMU5cq2
+ K4F8SUycLHKVrHTiluUHLfebVsFtIV4u7NZst1BEEOGeJtKDYGfPNuGNBzsiq/6/sG1m
+ oHmWEWnqBcx8EHxc8VsLy1BXGGOzd4qHtZgUM3+RorIGLB7LeM8SEKQOzG7hpzi3tUIX
+ cBqz1T+7bPFIBDeruJWhgHUJUNTS7jmoeogb9Jt64Fnvc0VzloFKzLKS2q+3tVxVQSnx
+ bLlYN2Mg5EBeENllw30HSTJNHEAnYlsgKqvHUrkE60SZa/hI/hGzXCuuUFok8MhRdXuP yg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2t7809ddd7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Jun 2019 20:01:33 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5JK0U82055051;
+        Wed, 19 Jun 2019 20:01:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2t77yp1s13-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Jun 2019 20:01:32 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5JK1P5e025354;
+        Wed, 19 Jun 2019 20:01:25 GMT
+Received: from [10.65.164.174] (/10.65.164.174)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 19 Jun 2019 13:01:25 -0700
+Subject: Re: [PATCH v17 07/15] fs, arm64: untag user pointers in
+ copy_mount_options
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+References: <cover.1560339705.git.andreyknvl@google.com>
+ <4ed871e14cc265a519c6ba8660a1827844371791.1560339705.git.andreyknvl@google.com>
+From:   Khalid Aziz <khalid.aziz@oracle.com>
+Organization: Oracle Corp
+Message-ID: <14e49054-01dc-dab5-40cc-71434ea3852a@oracle.com>
+Date:   Wed, 19 Jun 2019 14:01:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190619104652.4c71c33b@hermes.lan>
+In-Reply-To: <4ed871e14cc265a519c6ba8660a1827844371791.1560339705.git.andreyknvl@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9293 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906190164
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9293 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906190164
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/19/19 11:47 AM, Stephen Hemminger wrote:
-> On Wed, 19 Jun 2019 16:14:14 +0200
-> Denis Kirjanov <kda@linux-powerpc.org> wrote:
-> 
->> update if_link.h to commit 75345f888f700c4ab2448287e35d48c760b202e6
->> ("ipoib: show VF broadcast address")
->>
->> Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
-> 
-> This is only on net-next so the patches should target iproute2-next.
-> 
-> David can update from that.
-> 
+On 6/12/19 5:43 AM, Andrey Konovalov wrote:
+> This patch is a part of a series that extends arm64 kernel ABI to allow=
+ to
+> pass tagged user pointers (with the top byte set to something else othe=
+r
+> than 0x00) as syscall arguments.
+>=20
+> In copy_mount_options a user address is being subtracted from TASK_SIZE=
+=2E
+> If the address is lower than TASK_SIZE, the size is calculated to not
+> allow the exact_copy_from_user() call to cross TASK_SIZE boundary.
+> However if the address is tagged, then the size will be calculated
+> incorrectly.
+>=20
+> Untag the address before subtracting.
+>=20
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> ---
 
-Make uapi changes as a separate patch; don't worry about syncing the
-entire file. That patch is my hint to resync the kernel headers to top
-of tree before applying the rest of the set.
+Please update commit log to make it not arm64 specific since this change
+affects other architectures as well. Other than that,
+
+Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
+
+
+>  fs/namespace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index b26778bdc236..2e85712a19ed 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -2993,7 +2993,7 @@ void *copy_mount_options(const void __user * data=
+)
+>  	 * the remainder of the page.
+>  	 */
+>  	/* copy_from_user cannot cross TASK_SIZE ! */
+> -	size =3D TASK_SIZE - (unsigned long)data;
+> +	size =3D TASK_SIZE - (unsigned long)untagged_addr(data);
+>  	if (size > PAGE_SIZE)
+>  		size =3D PAGE_SIZE;
+> =20
+>=20
+
+
