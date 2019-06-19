@@ -2,145 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FCD4B065
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 05:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2524B0EB
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 06:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbfFSDUC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jun 2019 23:20:02 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:44656 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726037AbfFSDUC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 Jun 2019 23:20:02 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 3A79B3087945;
-        Wed, 19 Jun 2019 03:20:02 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 646B119C69;
-        Wed, 19 Jun 2019 03:20:01 +0000 (UTC)
-Message-ID: <af804744ff8bac383888bf9a07c0f260b070533f.camel@redhat.com>
-Subject: Re: [PATCH v2 2/3] RDMA: Add NLDEV_GET_CHARDEV to allow char dev
- discovery and autoload
-From:   Doug Ledford <dledford@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org
-Date:   Tue, 18 Jun 2019 23:19:58 -0400
-In-Reply-To: <a936acff4501cd235735c1784bdbd7d2668fccfa.camel@redhat.com>
-References: <20190614003819.19974-1-jgg@ziepe.ca>
-         <20190614003819.19974-3-jgg@ziepe.ca>
-         <20190618121709.GK4690@mtr-leonro.mtl.com> <20190618131019.GE6961@ziepe.ca>
-         <97a95f7e5447b0ddf4dee15c536d72bd9fb65780.camel@redhat.com>
-         <20190618165338.GO4690@mtr-leonro.mtl.com> <20190618184653.GM6961@ziepe.ca>
-         <1ec72297f837bf95fadaf846b7fe39a7b24de23c.camel@redhat.com>
-         <a936acff4501cd235735c1784bdbd7d2668fccfa.camel@redhat.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-ZPvB8OGHU0fesQJ0Bj6Y"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S1725866AbfFSEob (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 00:44:31 -0400
+Received: from mail-eopbgr60089.outbound.protection.outlook.com ([40.107.6.89]:23460
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725854AbfFSEob (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Jun 2019 00:44:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=67DPACtE+iGsvGOLoLpGxTjx96UhjrQhn+21NKOCLLQ=;
+ b=JH6/MSucKN+13DiOPfb7EebDPjv4PJUenDLlzTDLqlRGcTbXA4uRlIw6QmFq6TOU1AAY1mHBd6Pw0STIjPFVpGb1cYuOjYGAhynsikREJLl5R3fDHnd9Yq10xYR0hJ22n4ghm27XcgyHf+GmxplT7o4Wokn0dq7OXbN7VA39gHU=
+Received: from VI1PR05MB6255.eurprd05.prod.outlook.com (20.178.205.93) by
+ VI1PR05MB6078.eurprd05.prod.outlook.com (20.178.204.92) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1987.13; Wed, 19 Jun 2019 04:44:27 +0000
+Received: from VI1PR05MB6255.eurprd05.prod.outlook.com
+ ([fe80::1c71:b7b7:cf55:48bb]) by VI1PR05MB6255.eurprd05.prod.outlook.com
+ ([fe80::1c71:b7b7:cf55:48bb%7]) with mapi id 15.20.1987.014; Wed, 19 Jun 2019
+ 04:44:27 +0000
+From:   Jianbo Liu <jianbol@mellanox.com>
+To:     Leon Romanovsky <leonro@mellanox.com>
+CC:     Saeed Mahameed <saeedm@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Roi Dayan <roid@mellanox.com>, Mark Bloch <markb@mellanox.com>
+Subject: Re: [PATCH mlx5-next 11/15] RDMA/mlx5: Add vport metadata matching
+ for IB representors
+Thread-Topic: [PATCH mlx5-next 11/15] RDMA/mlx5: Add vport metadata matching
+ for IB representors
+Thread-Index: AQHVJUIm5ZIZRgtBuE2Y5DQGvmXpk6ahNB6AgAE0sQA=
+Date:   Wed, 19 Jun 2019 04:44:26 +0000
+Message-ID: <20190619044420.GA30694@mellanox.com>
+References: <20190617192247.25107-1-saeedm@mellanox.com>
+ <20190617192247.25107-12-saeedm@mellanox.com>
+ <20190618101928.GE4690@mtr-leonro.mtl.com>
+In-Reply-To: <20190618101928.GE4690@mtr-leonro.mtl.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: LO2P265CA0262.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:8a::34) To VI1PR05MB6255.eurprd05.prod.outlook.com
+ (2603:10a6:803:ed::29)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jianbol@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [37.142.13.130]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d26e3ebe-5aa8-460c-b3ac-08d6f470ceee
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6078;
+x-ms-traffictypediagnostic: VI1PR05MB6078:
+x-microsoft-antispam-prvs: <VI1PR05MB60785F97D40D03DD0E20E449C8E50@VI1PR05MB6078.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0073BFEF03
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(39860400002)(366004)(136003)(396003)(199004)(189003)(446003)(37006003)(26005)(3846002)(107886003)(186003)(52116002)(53936002)(68736007)(76176011)(6512007)(478600001)(4326008)(86362001)(6636002)(99286004)(450100002)(6246003)(14454004)(8676002)(66946007)(486006)(316002)(7736002)(64756008)(25786009)(66066001)(476003)(6116002)(229853002)(386003)(71200400001)(102836004)(6506007)(305945005)(2616005)(6486002)(256004)(66556008)(66476007)(73956011)(54906003)(5660300002)(6436002)(6862004)(2906002)(81166006)(81156014)(1076003)(8936002)(66446008)(11346002)(36756003)(71190400001)(33656002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6078;H:VI1PR05MB6255.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: gETECxyYOthryShLeoyWxFfC+jColc0a5SRHmeJaWIE6jadX3jYtH+9ukhLTd2HXMustqBQzrzyb5kdGZUhUg4E2Q7s6pnCqTtEGdflmGR7CBF7xcC8jl8WYiqewoJKd9zu5ckzxbvywXA/tZpbHT/5PhYfbep3FX/RA1Ig6Zvrj1nckrK6tQGLm0CU2r2+iiz2gr+r2fc7xfphwiX55PVWXPMngTzVVJnYFzRH9vZx4GOgCd1a/syje4cvMVP1vVvBMkj3lT5SSElhlaIg7VetqNwhJeFiJWSSN/lwZYUGlyFbrb3pcKbStaJGQkBC2DPKemYUyWtsCVgIdstQPRLkqXnVF8R+URKPahmx2ciogGU9/s9A/iHAi60TbNHuUd7ZYFlXOaWN8iIhs1TejDstotvk/94GAdmJmY2S6/Zo=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5D53FAC4AD07764E8A73AD58D18FAD24@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Wed, 19 Jun 2019 03:20:02 +0000 (UTC)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d26e3ebe-5aa8-460c-b3ac-08d6f470ceee
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jun 2019 04:44:27.1134
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jianbol@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6078
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
---=-ZPvB8OGHU0fesQJ0Bj6Y
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2019-06-18 at 22:45 -0400, Doug Ledford wrote:
-> On Tue, 2019-06-18 at 16:58 -0400, Doug Ledford wrote:
-> > On Tue, 2019-06-18 at 15:46 -0300, Jason Gunthorpe wrote:
-> > > On Tue, Jun 18, 2019 at 07:53:38PM +0300, Leon Romanovsky wrote:
-> > > > I have a very strong opinion about it.
-> > >=20
-> > > Then Doug should add the policies, here are the output values from
-> > > the
-> > > userspace:
-> > >=20
-> > >         [RDMA_NLDEV_ATTR_CHARDEV] =3D { .type =3D NLA_U64 },
-> > >         [RDMA_NLDEV_ATTR_CHARDEV_ABI] =3D { .type =3D NLA_U64 },
-> > >         [RDMA_NLDEV_ATTR_DEV_INDEX] =3D { .type =3D NLA_U32 },
-> > >         [RDMA_NLDEV_ATTR_DEV_NODE_TYPE] =3D { .type =3D NLA_U8 },
-> > >         [RDMA_NLDEV_ATTR_NODE_GUID] =3D { .type =3D NLA_U64 },
-> > >         [RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID] =3D { .type =3D NLA_U32 },
-> > >         [RDMA_NLDEV_ATTR_CHARDEV_NAME] =3D { .type =3D NLA_NUL_STRING
-> > > },
-> > >         [RDMA_NLDEV_ATTR_DEV_NAME] =3D { .type =3D NLA_NUL_STRING },
-> > >         [RDMA_NLDEV_ATTR_DEV_PROTOCOL] =3D { .type =3D NLA_NUL_STRING
-> > > },
-> > >         [RDMA_NLDEV_ATTR_FW_VERSION] =3D { .type =3D NLA_NUL_STRING }=
-,
-> >=20
-> > Most of those were already in the policies.  Only the four that you
-> > added to enum rdma_nldev_attr needed added to the policies, and two
-> > of
-> > them your patch already added.  The only question I had is what the
-> > string length should be on ATTR_CHARDEV_NAME?  I throw in the
-> > default
-> > of
-> > .len =3D RDMA_NLDEV_ATTR_ENTRY_STRLEN, but I wasn't sure if that was
-> > right
-> > for this entry?
->=20
-> First of all, let me say that this is a PITA.  I'm thinking we need to
-> order all of the attributes in the policy array in alphabetical order
-> so
-> it's easier to tell what's there and what's missing.
->=20
-> Also, I'm starting to not like adding items to the policy array before
-> they are actually acceptable as inputs.  Sure, there's the argument
-> that
-> they won't get missed.  But there's the counter argument that until
-> you
-> define them as an input in some netlink function that reads them, at
-> least for all of the string items, you can't actually set the real
-> string length limit.  By adding them to the policy now, you make it a
-> guarantee that you'll end up changing the API under userspace later
-> when
-> they become a legitimate input.  Not sure if that's actually
-> wise.  The
-> u32 and u64, sure, that's fine.  But the strings, that can cause
-> problems later.,
->=20
-
-Maybe the best way to do string items if you add them ahead of time is
-to give them an input length of 1.  Theoretically that's just the null
-byte.  Then when you add a function to actually read the data, set the
-size to something real.
-
-Anyway, pushed to wip/dl-for-next, check it to make sure you're happy
-with the final results.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-ZPvB8OGHU0fesQJ0Bj6Y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0Jqd4ACgkQuCajMw5X
-L92DHg/+Nm3wJLI160MLvifWGkzIak9jwmajt8btvN34/XAMgMicjy15bYSGVqB+
-gzYelQTkwYyp9zR0R0iV82DoelWczK9trXR3a1+PqgdVzPPAiTDz0MGXvFcQwanm
-kf2n/oTpQQgzylKm5i+ytBkij3WtjGQko7WG3L8qL7Uwhsj21mUrgGTUwRvArWJk
-9nBtIrf0JPEKJ7fPXOs7nOhS4Wv12BVA83qTvCpyx2/iK3SOqny1muOsLXlMYc+a
-YNoQQuIUhIinfjLrC0yNQ28FmNLgs7Ul1EbCfon/SlsN8y0Q5rQBG0Vjpm9f/Lqj
-vMgqRWqQexP8+rCMUg+Yz7EE2YRDpOfJ3bV8PrqGuYjyVl8uAyWT11Ei60i6SP/I
-I/RseyTkvsWvkjBWNRh+VwBLE1kRxuyuF+pZusX0pvadxskzw42QYcvuo0NSYLzD
-iRINr/ft1M2htTk+q3jB+wXvgnG3xY2wd4FT+IpIsybwaQ8AmwegG72A+ocYjihu
-8I4iaXHM4CZqorxsopiv5hv/z0x4XvdL/ECPyeHLllg2JoQHzhTGFXw/ODS37FaO
-iX4ran5tVNKNNucl7iBliquS0lFO9BUkXaitYEzClqUVx5rLhPZ0jmGvwDuOaJGe
-5cKvoDWclIBVMGEk354mQ3C9YTu39wfaNheDlsm0oZ56E0qAsNs=
-=Qgpx
------END PGP SIGNATURE-----
-
---=-ZPvB8OGHU0fesQJ0Bj6Y--
-
+VGhlIDA2LzE4LzIwMTkgMTg6MTksIExlb24gUm9tYW5vdnNreSB3cm90ZToNCj4gT24gTW9uLCBK
+dW4gMTcsIDIwMTkgYXQgMDc6MjM6MzBQTSArMDAwMCwgU2FlZWQgTWFoYW1lZWQgd3JvdGU6DQo+
+ID4gRnJvbTogSmlhbmJvIExpdSA8amlhbmJvbEBtZWxsYW5veC5jb20+DQo+ID4NCj4gPiBJZiB2
+cG9ydCBtZXRhZGF0YSBtYXRjaGluZyBpcyBlbmFibGVkIGluIGVzd2l0Y2gsIHRoZSBydWxlIGNy
+ZWF0ZWQNCj4gPiBtdXN0IGJlIGNoYW5nZWQgdG8gbWF0Y2ggb24gdGhlIG1ldGFkYXRhLCBpbnN0
+ZWFkIG9mIHNvdXJjZSBwb3J0Lg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogSmlhbmJvIExpdSA8
+amlhbmJvbEBtZWxsYW5veC5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IFJvaSBEYXlhbiA8cm9pZEBt
+ZWxsYW5veC5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IE1hcmsgQmxvY2ggPG1hcmtiQG1lbGxhbm94
+LmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTYWVlZCBNYWhhbWVlZCA8c2FlZWRtQG1lbGxhbm94
+LmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvaWJfcmVwLmMg
+fCAxMSArKysrKysrDQo+ID4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg1L2liX3JlcC5oIHwg
+MTYgKysrKysrKysrKw0KPiA+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tYWluLmMgICB8
+IDQ1ICsrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tDQo+ID4gIDMgZmlsZXMgY2hhbmdlZCwg
+NjMgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9pYl9yZXAuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9o
+dy9tbHg1L2liX3JlcC5jDQo+ID4gaW5kZXggMjJlNjUxY2I1NTM0Li5kNGVkNjExZGUzNWQgMTAw
+NjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvaWJfcmVwLmMNCj4gPiAr
+KysgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9pYl9yZXAuYw0KPiA+IEBAIC0xMzEsNiAr
+MTMxLDE3IEBAIHN0cnVjdCBtbHg1X2Vzd2l0Y2hfcmVwICptbHg1X2liX3Zwb3J0X3JlcChzdHJ1
+Y3QgbWx4NV9lc3dpdGNoICplc3csIGludCB2cG9ydCkNCj4gPiAgCXJldHVybiBtbHg1X2Vzd2l0
+Y2hfdnBvcnRfcmVwKGVzdywgdnBvcnQpOw0KPiA+ICB9DQo+ID4NCj4gPiArdTMyIG1seDVfaWJf
+ZXN3aXRjaF92cG9ydF9tYXRjaF9tZXRhZGF0YV9lbmFibGVkKHN0cnVjdCBtbHg1X2Vzd2l0Y2gg
+KmVzdykNCj4gPiArew0KPiA+ICsJcmV0dXJuIG1seDVfZXN3aXRjaF92cG9ydF9tYXRjaF9tZXRh
+ZGF0YV9lbmFibGVkKGVzdyk7DQo+ID4gK30NCj4gPiArDQo+ID4gK3UzMiBtbHg1X2liX2Vzd2l0
+Y2hfZ2V0X3Zwb3J0X21ldGFkYXRhX2Zvcl9tYXRjaChzdHJ1Y3QgbWx4NV9lc3dpdGNoICplc3cs
+DQo+ID4gKwkJCQkJCSB1MTYgdnBvcnQpDQo+ID4gK3sNCj4gPiArCXJldHVybiBtbHg1X2Vzd2l0
+Y2hfZ2V0X3Zwb3J0X21ldGFkYXRhX2Zvcl9tYXRjaChlc3csIHZwb3J0KTsNCj4gPiArfQ0KPiAN
+Cj4gMS4gVGhlcmUgaXMgbm8gbmVlZCB0byBpbnRyb2R1Y2Ugb25lIGxpbmUgZnVuY3Rpb25zLCBj
+YWxsIHRvIHRoYXQgY29kZSBkaXJlY3RseS4NCg0KTm8uIFRoZXkgYXJlIGluIElCLCBhbmQgd2Ug
+ZG9uJ3Qgd2FudCB0aGVtIGJlIG1peGVkIHVwIGJ5IHRoZSBvcmlnaW5hbA0KZnVuY3Rpb25zIGlu
+IGVzd2l0Y2guIFBsZWFzZSBhc2sgTWFyayBtb3JlIGFib3V0IGl0Lg0KDQo+IDIuIEl0IHNob3Vs
+ZCBiZSBib29sIGFuZCBub3QgdTMyLg0KPiANCj4gVGhhbmtzDQoNCi0tIA0K
