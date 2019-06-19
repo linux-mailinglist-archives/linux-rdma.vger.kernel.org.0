@@ -2,491 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 934E94B290
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 09:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CD54B306
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 09:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730756AbfFSHDo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 03:03:44 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:18642 "EHLO huawei.com"
+        id S1726246AbfFSH1B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 03:27:01 -0400
+Received: from mail-eopbgr50070.outbound.protection.outlook.com ([40.107.5.70]:23272
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725854AbfFSHDn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Jun 2019 03:03:43 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 40E9E7C7EC0378551879;
-        Wed, 19 Jun 2019 15:03:38 +0800 (CST)
-Received: from linux-ioko.site (10.71.200.31) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.439.0; Wed, 19 Jun 2019 15:03:27 +0800
-From:   Lijun Ou <oulijun@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH V2 for-next] RDMA/hns: Cleanup unnecessary exported symbols
-Date:   Wed, 19 Jun 2019 15:00:47 +0800
-Message-ID: <1560927647-15788-1-git-send-email-oulijun@huawei.com>
-X-Mailer: git-send-email 1.9.1
+        id S1725854AbfFSH1A (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Jun 2019 03:27:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jOWJ2k3S9PtFg5rFQBenjWH8B8Ov5BTXQcEIwEDY84U=;
+ b=St8n3R6TRsGzjaMPb5N124eIlh6+IvIY1w7S/NSAF/eGEM78CC4mRJWiOxDgyxW9RqtWE5bt1KbZW6jSNaw8B1mdlgpZFmTXhq6kTV7YpzsY7f76qvLcEi0XvOlTw+R4D9ghzsmV7INBm/ns3oBzaY0wuxuWmbje2igMku56s10=
+Received: from AM0PR05MB4403.eurprd05.prod.outlook.com (52.134.125.139) by
+ AM0PR05MB6516.eurprd05.prod.outlook.com (20.179.35.84) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1987.12; Wed, 19 Jun 2019 07:26:54 +0000
+Received: from AM0PR05MB4403.eurprd05.prod.outlook.com
+ ([fe80::edf6:f68:cb6c:777f]) by AM0PR05MB4403.eurprd05.prod.outlook.com
+ ([fe80::edf6:f68:cb6c:777f%7]) with mapi id 15.20.1987.014; Wed, 19 Jun 2019
+ 07:26:54 +0000
+From:   Mark Bloch <markb@mellanox.com>
+To:     Leon Romanovsky <leonro@mellanox.com>,
+        Jianbo Liu <jianbol@mellanox.com>
+CC:     Saeed Mahameed <saeedm@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Roi Dayan <roid@mellanox.com>
+Subject: Re: [PATCH mlx5-next 11/15] RDMA/mlx5: Add vport metadata matching
+ for IB representors
+Thread-Topic: [PATCH mlx5-next 11/15] RDMA/mlx5: Add vport metadata matching
+ for IB representors
+Thread-Index: AQHVJUImPYK8Rls4yUKWAAzrbtRMrqahNB6AgAE0tgCAAAWJgIAAGtQAgAADIQCAAAk4AA==
+Date:   Wed, 19 Jun 2019 07:26:54 +0000
+Message-ID: <4e01d326-db6c-f746-acd6-06f65f311f5b@mellanox.com>
+References: <20190617192247.25107-1-saeedm@mellanox.com>
+ <20190617192247.25107-12-saeedm@mellanox.com>
+ <20190618101928.GE4690@mtr-leonro.mtl.com>
+ <20190619044420.GA30694@mellanox.com>
+ <20190619050412.GC11611@mtr-leonro.mtl.com>
+ <20190619063941.GA5176@mellanox.com>
+ <20190619065125.GF11611@mtr-leonro.mtl.com>
+In-Reply-To: <20190619065125.GF11611@mtr-leonro.mtl.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR11CA0067.namprd11.prod.outlook.com
+ (2603:10b6:a03:80::44) To AM0PR05MB4403.eurprd05.prod.outlook.com
+ (2603:10a6:208:65::11)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=markb@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [104.156.100.52]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6378b85f-db75-43fb-e030-08d6f4878111
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM0PR05MB6516;
+x-ms-traffictypediagnostic: AM0PR05MB6516:
+x-microsoft-antispam-prvs: <AM0PR05MB65168B6AE6CF07B557CED219D2E50@AM0PR05MB6516.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0073BFEF03
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(376002)(396003)(366004)(346002)(39860400002)(199004)(189003)(71190400001)(53936002)(64756008)(450100002)(66446008)(86362001)(26005)(11346002)(316002)(2906002)(486006)(14454004)(102836004)(99286004)(66946007)(386003)(53546011)(31696002)(2616005)(6246003)(68736007)(8936002)(446003)(476003)(6506007)(52116002)(66066001)(36756003)(73956011)(8676002)(66476007)(5660300002)(31686004)(7736002)(6636002)(6436002)(25786009)(186003)(66556008)(81166006)(6486002)(76176011)(81156014)(107886003)(71200400001)(6512007)(4326008)(6116002)(3846002)(478600001)(229853002)(110136005)(54906003)(14444005)(256004)(305945005);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6516;H:AM0PR05MB4403.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 2Le1bghO9B/VDCr4DiFlKJX3yXssyqHKb+DtKQ75/r1101O6sRVRqFaJPUncp4866cyMn7PWDbQ2dgH3bQ9Zme//GJeVK4C2zu2ozWg4+1kwa2SF6gSVLlSiaEf0IAYbBtsu5gh0lJymXyYvmt6jsCwZKLn5tKIIv8R5OVkOjCxMMctDBGOdo7fcfcSj/hRJeEkK+2zoDBOoa1LLUPSkgZHg7m04xOWVVeYMT0zTheGdovtgRZO+cxseXHj+SCr5n2V3byd54R96bh5URlfUs+HWmdr0APbp4V2BPNTcbbSwJqK2y61AkR9cKC+abROHVkucBFknrorUuf8HyTk5+3g5Yxjdv8e3aDK1c6S8SrEvJ+TuK1+1decFFnz+o9qda/IaLv6rgmNrJ5diGBRaOXsa1xwnmvxxoltIQdjLjws=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <28E3ED0E5AB7434A903E60D1F930C815@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.71.200.31]
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6378b85f-db75-43fb-e030-08d6f4878111
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jun 2019 07:26:54.5866
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: markb@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6516
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch removes the hns-roce.ko for cleanup all the
-exported symbols in common part.
-
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Lijun Ou <oulijun@huawei.com>
----
-V1->V2:
-1.  Use the top level CONFIG_INFINIBAND_HNS tristate to control
-    whether hns_roce_hw_v1.ko and hns_roce_hw_v2.ko are both as
-    modules or both built in
-2.  Add Signed-off-by
----
- drivers/infiniband/hw/hns/Kconfig          | 15 +++++++--------
- drivers/infiniband/hw/hns/Makefile         | 13 +++++++++----
- drivers/infiniband/hw/hns/hns_roce_alloc.c |  2 --
- drivers/infiniband/hw/hns/hns_roce_cmd.c   |  4 ----
- drivers/infiniband/hw/hns/hns_roce_cq.c    |  5 -----
- drivers/infiniband/hw/hns/hns_roce_db.c    |  4 ----
- drivers/infiniband/hw/hns/hns_roce_hem.c   |  5 -----
- drivers/infiniband/hw/hns/hns_roce_main.c  |  3 ---
- drivers/infiniband/hw/hns/hns_roce_mr.c    |  3 ---
- drivers/infiniband/hw/hns/hns_roce_pd.c    |  2 --
- drivers/infiniband/hw/hns/hns_roce_qp.c    | 13 -------------
- drivers/infiniband/hw/hns/hns_roce_srq.c   |  1 -
- 12 files changed, 16 insertions(+), 54 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/Kconfig b/drivers/infiniband/hw/hns/Kconfig
-index fddb5fd..b548c00 100644
---- a/drivers/infiniband/hw/hns/Kconfig
-+++ b/drivers/infiniband/hw/hns/Kconfig
-@@ -7,25 +7,24 @@ config INFINIBAND_HNS
- 	  is used in Hisilicon Hip06 and more further ICT SoC based on
- 	  platform device.
- 
--	  To compile this driver as a module, choose M here: the module
--	  will be called hns-roce.
-+	  To compile HIP06 or HIP08 driver as module, choose M here.
- 
- config INFINIBAND_HNS_HIP06
--	tristate "Hisilicon Hip06 Family RoCE support"
-+	bool "Hisilicon Hip06 Family RoCE support"
- 	depends on INFINIBAND_HNS && HNS && HNS_DSAF && HNS_ENET
- 	---help---
- 	  RoCE driver support for Hisilicon RoCE engine in Hisilicon Hip06 and
- 	  Hip07 SoC. These RoCE engines are platform devices.
- 
--	  To compile this driver as a module, choose M here: the module
--	  will be called hns-roce-hw-v1.
-+	  To compile this driver, choose Y here: if INFINIBAND_HNS is m, this
-+	  module will be called hns-roce-hw-v1
- 
- config INFINIBAND_HNS_HIP08
--	tristate "Hisilicon Hip08 Family RoCE support"
-+	bool "Hisilicon Hip08 Family RoCE support"
- 	depends on INFINIBAND_HNS && PCI && HNS3
- 	---help---
- 	  RoCE driver support for Hisilicon RoCE engine in Hisilicon Hip08 SoC.
- 	  The RoCE engine is a PCI device.
- 
--	  To compile this driver as a module, choose M here: the module
--	  will be called hns-roce-hw-v2.
-+	  To compile this driver, choose Y here: if INFINIBAND_HNS is m, this
-+	  module will be called hns-roce-hw-v2.
-diff --git a/drivers/infiniband/hw/hns/Makefile b/drivers/infiniband/hw/hns/Makefile
-index eee5205..b956cf4 100644
---- a/drivers/infiniband/hw/hns/Makefile
-+++ b/drivers/infiniband/hw/hns/Makefile
-@@ -4,11 +4,16 @@
- 
- ccflags-y :=  -I $(srctree)/drivers/net/ethernet/hisilicon/hns3
- 
--obj-$(CONFIG_INFINIBAND_HNS) += hns-roce.o
- hns-roce-objs := hns_roce_main.o hns_roce_cmd.o hns_roce_pd.o \
- 	hns_roce_ah.o hns_roce_hem.o hns_roce_mr.o hns_roce_qp.o \
- 	hns_roce_cq.o hns_roce_alloc.o hns_roce_db.o hns_roce_srq.o hns_roce_restrack.o
--obj-$(CONFIG_INFINIBAND_HNS_HIP06) += hns-roce-hw-v1.o
-+
-+ifdef CONFIG_INFINIBAND_HNS_HIP06
- hns-roce-hw-v1-objs := hns_roce_hw_v1.o
--obj-$(CONFIG_INFINIBAND_HNS_HIP08) += hns-roce-hw-v2.o
--hns-roce-hw-v2-objs := hns_roce_hw_v2.o hns_roce_hw_v2_dfx.o
-+obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v1.o $(hns-roce-objs)
-+endif
-+
-+ifdef CONFIG_INFINIBAND_HNS_HIP08
-+hns-roce-hw-v2-objs := hns_roce_hw_v2.o hns_roce_hw_v2_dfx.o $(hns-roce-objs)
-+obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v2.o
-+endif
-diff --git a/drivers/infiniband/hw/hns/hns_roce_alloc.c b/drivers/infiniband/hw/hns/hns_roce_alloc.c
-index dac058d..aa2b570 100644
---- a/drivers/infiniband/hw/hns/hns_roce_alloc.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_alloc.c
-@@ -67,7 +67,6 @@ void hns_roce_bitmap_free(struct hns_roce_bitmap *bitmap, unsigned long obj,
- {
- 	hns_roce_bitmap_free_range(bitmap, obj, 1, rr);
- }
--EXPORT_SYMBOL_GPL(hns_roce_bitmap_free);
- 
- int hns_roce_bitmap_alloc_range(struct hns_roce_bitmap *bitmap, int cnt,
- 				int align, unsigned long *obj)
-@@ -174,7 +173,6 @@ void hns_roce_buf_free(struct hns_roce_dev *hr_dev, u32 size,
- 		kfree(buf->page_list);
- 	}
- }
--EXPORT_SYMBOL_GPL(hns_roce_buf_free);
- 
- int hns_roce_buf_alloc(struct hns_roce_dev *hr_dev, u32 size, u32 max_direct,
- 		       struct hns_roce_buf *buf, u32 page_shift)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-index 2acf946..b83d5bd 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-@@ -103,7 +103,6 @@ void hns_roce_cmd_event(struct hns_roce_dev *hr_dev, u16 token, u8 status,
- 	context->out_param = out_param;
- 	complete(&context->done);
- }
--EXPORT_SYMBOL_GPL(hns_roce_cmd_event);
- 
- /* this should be called with "use_events" */
- static int __hns_roce_cmd_mbox_wait(struct hns_roce_dev *hr_dev, u64 in_param,
-@@ -204,7 +203,6 @@ int hns_roce_cmd_mbox(struct hns_roce_dev *hr_dev, u64 in_param, u64 out_param,
- 
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(hns_roce_cmd_mbox);
- 
- int hns_roce_cmd_init(struct hns_roce_dev *hr_dev)
- {
-@@ -291,7 +289,6 @@ struct hns_roce_cmd_mailbox
- 
- 	return mailbox;
- }
--EXPORT_SYMBOL_GPL(hns_roce_alloc_cmd_mailbox);
- 
- void hns_roce_free_cmd_mailbox(struct hns_roce_dev *hr_dev,
- 			       struct hns_roce_cmd_mailbox *mailbox)
-@@ -302,4 +299,3 @@ void hns_roce_free_cmd_mailbox(struct hns_roce_dev *hr_dev,
- 	dma_pool_free(hr_dev->cmd.pool, mailbox->buf, mailbox->dma);
- 	kfree(mailbox);
- }
--EXPORT_SYMBOL_GPL(hns_roce_free_cmd_mailbox);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index 6e81ff3..6ea3206 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -205,7 +205,6 @@ void hns_roce_free_cq(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 	hns_roce_table_put(hr_dev, &cq_table->table, hr_cq->cqn);
- 	hns_roce_bitmap_free(&cq_table->bitmap, hr_cq->cqn, BITMAP_NO_RR);
- }
--EXPORT_SYMBOL_GPL(hns_roce_free_cq);
- 
- static int hns_roce_ib_get_cq_umem(struct hns_roce_dev *hr_dev,
- 				   struct ib_udata *udata,
-@@ -441,7 +440,6 @@ struct ib_cq *hns_roce_ib_create_cq(struct ib_device *ib_dev,
- 	kfree(hr_cq);
- 	return ERR_PTR(ret);
- }
--EXPORT_SYMBOL_GPL(hns_roce_ib_create_cq);
- 
- int hns_roce_ib_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
- {
-@@ -478,7 +476,6 @@ int hns_roce_ib_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
- 
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(hns_roce_ib_destroy_cq);
- 
- void hns_roce_cq_completion(struct hns_roce_dev *hr_dev, u32 cqn)
- {
-@@ -494,7 +491,6 @@ void hns_roce_cq_completion(struct hns_roce_dev *hr_dev, u32 cqn)
- 	++cq->arm_sn;
- 	cq->comp(cq);
- }
--EXPORT_SYMBOL_GPL(hns_roce_cq_completion);
- 
- void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
- {
-@@ -516,7 +512,6 @@ void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
- 	if (atomic_dec_and_test(&cq->refcount))
- 		complete(&cq->free);
- }
--EXPORT_SYMBOL_GPL(hns_roce_cq_event);
- 
- int hns_roce_init_cq_table(struct hns_roce_dev *hr_dev)
- {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_db.c b/drivers/infiniband/hw/hns/hns_roce_db.c
-index 3a040a9..627aa46 100644
---- a/drivers/infiniband/hw/hns/hns_roce_db.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_db.c
-@@ -51,7 +51,6 @@ int hns_roce_db_map_user(struct hns_roce_ucontext *context,
- 
- 	return ret;
- }
--EXPORT_SYMBOL(hns_roce_db_map_user);
- 
- void hns_roce_db_unmap_user(struct hns_roce_ucontext *context,
- 			    struct hns_roce_db *db)
-@@ -67,7 +66,6 @@ void hns_roce_db_unmap_user(struct hns_roce_ucontext *context,
- 
- 	mutex_unlock(&context->page_mutex);
- }
--EXPORT_SYMBOL(hns_roce_db_unmap_user);
- 
- static struct hns_roce_db_pgdir *hns_roce_alloc_db_pgdir(
- 					struct device *dma_device)
-@@ -151,7 +149,6 @@ int hns_roce_alloc_db(struct hns_roce_dev *hr_dev, struct hns_roce_db *db,
- 
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(hns_roce_alloc_db);
- 
- void hns_roce_free_db(struct hns_roce_dev *hr_dev, struct hns_roce_db *db)
- {
-@@ -181,4 +178,3 @@ void hns_roce_free_db(struct hns_roce_dev *hr_dev, struct hns_roce_db *db)
- 
- 	mutex_unlock(&hr_dev->pgdir_mutex);
- }
--EXPORT_SYMBOL_GPL(hns_roce_free_db);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index 8490a86..d6ad8fe 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -56,7 +56,6 @@ bool hns_roce_check_whether_mhop(struct hns_roce_dev *hr_dev, u32 type)
- 
- 	return false;
- }
--EXPORT_SYMBOL_GPL(hns_roce_check_whether_mhop);
- 
- static bool hns_roce_check_hem_null(struct hns_roce_hem **hem, u64 start_idx,
- 			    u32 bt_chunk_num)
-@@ -234,7 +233,6 @@ int hns_roce_calc_hem_mhop(struct hns_roce_dev *hr_dev,
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(hns_roce_calc_hem_mhop);
- 
- static struct hns_roce_hem *hns_roce_alloc_hem(struct hns_roce_dev *hr_dev,
- 					       int npages,
-@@ -621,7 +619,6 @@ int hns_roce_table_get(struct hns_roce_dev *hr_dev,
- 	mutex_unlock(&table->mutex);
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(hns_roce_table_get);
- 
- static void hns_roce_table_mhop_put(struct hns_roce_dev *hr_dev,
- 				    struct hns_roce_hem_table *table,
-@@ -764,7 +761,6 @@ void hns_roce_table_put(struct hns_roce_dev *hr_dev,
- 
- 	mutex_unlock(&table->mutex);
- }
--EXPORT_SYMBOL_GPL(hns_roce_table_put);
- 
- void *hns_roce_table_find(struct hns_roce_dev *hr_dev,
- 			  struct hns_roce_hem_table *table,
-@@ -837,7 +833,6 @@ void *hns_roce_table_find(struct hns_roce_dev *hr_dev,
- 	mutex_unlock(&table->mutex);
- 	return addr;
- }
--EXPORT_SYMBOL_GPL(hns_roce_table_find);
- 
- int hns_roce_table_get_range(struct hns_roce_dev *hr_dev,
- 			     struct hns_roce_hem_table *table,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index f07b2ec..28af1cd 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -57,7 +57,6 @@ int hns_get_gid_index(struct hns_roce_dev *hr_dev, u8 port, int gid_index)
- {
- 	return gid_index * hr_dev->caps.num_ports + port;
- }
--EXPORT_SYMBOL_GPL(hns_get_gid_index);
- 
- static int hns_roce_set_mac(struct hns_roce_dev *hr_dev, u8 port, u8 *addr)
- {
-@@ -972,7 +971,6 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
- 
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(hns_roce_init);
- 
- void hns_roce_exit(struct hns_roce_dev *hr_dev)
- {
-@@ -993,7 +991,6 @@ void hns_roce_exit(struct hns_roce_dev *hr_dev)
- 	if (hr_dev->hw->reset)
- 		hr_dev->hw->reset(hr_dev, false);
- }
--EXPORT_SYMBOL_GPL(hns_roce_exit);
- 
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_AUTHOR("Wei Hu <xavier.huwei@huawei.com>");
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 38ed4ac..f67f453 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -47,7 +47,6 @@ unsigned long key_to_hw_index(u32 key)
- {
- 	return (key << 24) | (key >> 8);
- }
--EXPORT_SYMBOL_GPL(key_to_hw_index);
- 
- static int hns_roce_sw2hw_mpt(struct hns_roce_dev *hr_dev,
- 			      struct hns_roce_cmd_mailbox *mailbox,
-@@ -66,7 +65,6 @@ int hns_roce_hw2sw_mpt(struct hns_roce_dev *hr_dev,
- 				 mpt_index, !mailbox, HNS_ROCE_CMD_HW2SW_MPT,
- 				 HNS_ROCE_CMD_TIMEOUT_MSECS);
- }
--EXPORT_SYMBOL_GPL(hns_roce_hw2sw_mpt);
- 
- static int hns_roce_buddy_alloc(struct hns_roce_buddy *buddy, int order,
- 				unsigned long *seg)
-@@ -293,7 +291,6 @@ void hns_roce_mtt_cleanup(struct hns_roce_dev *hr_dev, struct hns_roce_mtt *mtt)
- 		break;
- 	}
- }
--EXPORT_SYMBOL_GPL(hns_roce_mtt_cleanup);
- 
- static void hns_roce_loop_free(struct hns_roce_dev *hr_dev,
- 			       struct hns_roce_mr *mr, int err_loop_index,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
-index 8134013..920ca76 100644
---- a/drivers/infiniband/hw/hns/hns_roce_pd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
-@@ -83,13 +83,11 @@ int hns_roce_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(hns_roce_alloc_pd);
- 
- void hns_roce_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
- {
- 	hns_roce_pd_free(to_hr_dev(pd->device), to_hr_pd(pd)->pdn);
- }
--EXPORT_SYMBOL_GPL(hns_roce_dealloc_pd);
- 
- int hns_roce_uar_alloc(struct hns_roce_dev *hr_dev, struct hns_roce_uar *uar)
- {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 8db2817..a6008c4 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -64,7 +64,6 @@ void hns_roce_qp_event(struct hns_roce_dev *hr_dev, u32 qpn, int event_type)
- 	if (atomic_dec_and_test(&qp->refcount))
- 		complete(&qp->free);
- }
--EXPORT_SYMBOL_GPL(hns_roce_qp_event);
- 
- static void hns_roce_ib_qp_event(struct hns_roce_qp *hr_qp,
- 				 enum hns_roce_event type)
-@@ -139,7 +138,6 @@ enum hns_roce_qp_state to_hns_roce_state(enum ib_qp_state state)
- 		return HNS_ROCE_QP_NUM_STATE;
- 	}
- }
--EXPORT_SYMBOL_GPL(to_hns_roce_state);
- 
- static int hns_roce_gsi_qp_alloc(struct hns_roce_dev *hr_dev, unsigned long qpn,
- 				 struct hns_roce_qp *hr_qp)
-@@ -242,7 +240,6 @@ void hns_roce_qp_remove(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 	__xa_erase(xa, hr_qp->qpn & (hr_dev->caps.num_qps - 1));
- 	xa_unlock_irqrestore(xa, flags);
- }
--EXPORT_SYMBOL_GPL(hns_roce_qp_remove);
- 
- void hns_roce_qp_free(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- {
-@@ -260,7 +257,6 @@ void hns_roce_qp_free(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 		hns_roce_table_put(hr_dev, &qp_table->qp_table, hr_qp->qpn);
- 	}
- }
--EXPORT_SYMBOL_GPL(hns_roce_qp_free);
- 
- void hns_roce_release_range_qp(struct hns_roce_dev *hr_dev, int base_qpn,
- 			       int cnt)
-@@ -272,7 +268,6 @@ void hns_roce_release_range_qp(struct hns_roce_dev *hr_dev, int base_qpn,
- 
- 	hns_roce_bitmap_free_range(&qp_table->bitmap, base_qpn, cnt, BITMAP_RR);
- }
--EXPORT_SYMBOL_GPL(hns_roce_release_range_qp);
- 
- static int hns_roce_set_rq_size(struct hns_roce_dev *hr_dev,
- 				struct ib_qp_cap *cap, bool is_user, int has_rq,
-@@ -923,7 +918,6 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 
- 	return &hr_qp->ibqp;
- }
--EXPORT_SYMBOL_GPL(hns_roce_create_qp);
- 
- int to_hr_qp_type(int qp_type)
- {
-@@ -942,7 +936,6 @@ int to_hr_qp_type(int qp_type)
- 
- 	return transport_type;
- }
--EXPORT_SYMBOL_GPL(to_hr_qp_type);
- 
- int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		       int attr_mask, struct ib_udata *udata)
-@@ -1062,7 +1055,6 @@ void hns_roce_lock_cqs(struct hns_roce_cq *send_cq, struct hns_roce_cq *recv_cq)
- 		spin_lock_nested(&send_cq->lock, SINGLE_DEPTH_NESTING);
- 	}
- }
--EXPORT_SYMBOL_GPL(hns_roce_lock_cqs);
- 
- void hns_roce_unlock_cqs(struct hns_roce_cq *send_cq,
- 			 struct hns_roce_cq *recv_cq) __releases(&send_cq->lock)
-@@ -1079,7 +1071,6 @@ void hns_roce_unlock_cqs(struct hns_roce_cq *send_cq,
- 		spin_unlock_irq(&recv_cq->lock);
- 	}
- }
--EXPORT_SYMBOL_GPL(hns_roce_unlock_cqs);
- 
- static void *get_wqe(struct hns_roce_qp *hr_qp, int offset)
- {
-@@ -1091,20 +1082,17 @@ void *get_recv_wqe(struct hns_roce_qp *hr_qp, int n)
- {
- 	return get_wqe(hr_qp, hr_qp->rq.offset + (n << hr_qp->rq.wqe_shift));
- }
--EXPORT_SYMBOL_GPL(get_recv_wqe);
- 
- void *get_send_wqe(struct hns_roce_qp *hr_qp, int n)
- {
- 	return get_wqe(hr_qp, hr_qp->sq.offset + (n << hr_qp->sq.wqe_shift));
- }
--EXPORT_SYMBOL_GPL(get_send_wqe);
- 
- void *get_send_extend_sge(struct hns_roce_qp *hr_qp, int n)
- {
- 	return hns_roce_buf_offset(&hr_qp->hr_buf, hr_qp->sge.offset +
- 					(n << hr_qp->sge.sge_shift));
- }
--EXPORT_SYMBOL_GPL(get_send_extend_sge);
- 
- bool hns_roce_wq_overflow(struct hns_roce_wq *hr_wq, int nreq,
- 			  struct ib_cq *ib_cq)
-@@ -1123,7 +1111,6 @@ bool hns_roce_wq_overflow(struct hns_roce_wq *hr_wq, int nreq,
- 
- 	return cur + nreq >= hr_wq->max_post;
- }
--EXPORT_SYMBOL_GPL(hns_roce_wq_overflow);
- 
- int hns_roce_init_qp_table(struct hns_roce_dev *hr_dev)
- {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index c222f24..787fbda 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -30,7 +30,6 @@ void hns_roce_srq_event(struct hns_roce_dev *hr_dev, u32 srqn, int event_type)
- 	if (atomic_dec_and_test(&srq->refcount))
- 		complete(&srq->free);
- }
--EXPORT_SYMBOL_GPL(hns_roce_srq_event);
- 
- static void hns_roce_ib_srq_event(struct hns_roce_srq *srq,
- 				  enum hns_roce_event event_type)
--- 
-1.9.1
-
+DQoNCk9uIDYvMTgvMjAxOSAyMzo1MSwgTGVvbiBSb21hbm92c2t5IHdyb3RlOg0KPiBPbiBXZWQs
+IEp1biAxOSwgMjAxOSBhdCAwNjo0MDoxNkFNICswMDAwLCBKaWFuYm8gTGl1IHdyb3RlOg0KPj4g
+VGhlIDA2LzE5LzIwMTkgMTM6MDQsIExlb24gUm9tYW5vdnNreSB3cm90ZToNCj4+PiBPbiBXZWQs
+IEp1biAxOSwgMjAxOSBhdCAwNDo0NDoyNkFNICswMDAwLCBKaWFuYm8gTGl1IHdyb3RlOg0KPj4+
+PiBUaGUgMDYvMTgvMjAxOSAxODoxOSwgTGVvbiBSb21hbm92c2t5IHdyb3RlOg0KPj4+Pj4gT24g
+TW9uLCBKdW4gMTcsIDIwMTkgYXQgMDc6MjM6MzBQTSArMDAwMCwgU2FlZWQgTWFoYW1lZWQgd3Jv
+dGU6DQo+Pj4+Pj4gRnJvbTogSmlhbmJvIExpdSA8amlhbmJvbEBtZWxsYW5veC5jb20+DQo+Pj4+
+Pj4NCj4+Pj4+PiBJZiB2cG9ydCBtZXRhZGF0YSBtYXRjaGluZyBpcyBlbmFibGVkIGluIGVzd2l0
+Y2gsIHRoZSBydWxlIGNyZWF0ZWQNCj4+Pj4+PiBtdXN0IGJlIGNoYW5nZWQgdG8gbWF0Y2ggb24g
+dGhlIG1ldGFkYXRhLCBpbnN0ZWFkIG9mIHNvdXJjZSBwb3J0Lg0KPj4+Pj4+DQo+Pj4+Pj4gU2ln
+bmVkLW9mZi1ieTogSmlhbmJvIExpdSA8amlhbmJvbEBtZWxsYW5veC5jb20+DQo+Pj4+Pj4gUmV2
+aWV3ZWQtYnk6IFJvaSBEYXlhbiA8cm9pZEBtZWxsYW5veC5jb20+DQo+Pj4+Pj4gUmV2aWV3ZWQt
+Ynk6IE1hcmsgQmxvY2ggPG1hcmtiQG1lbGxhbm94LmNvbT4NCj4+Pj4+PiBTaWduZWQtb2ZmLWJ5
+OiBTYWVlZCBNYWhhbWVlZCA8c2FlZWRtQG1lbGxhbm94LmNvbT4NCj4+Pj4+PiAtLS0NCj4+Pj4+
+PiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvaWJfcmVwLmMgfCAxMSArKysrKysrDQo+Pj4+
+Pj4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg1L2liX3JlcC5oIHwgMTYgKysrKysrKysrKw0K
+Pj4+Pj4+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tYWluLmMgICB8IDQ1ICsrKysrKysr
+KysrKysrKysrKysrKysrLS0tLS0tDQo+Pj4+Pj4gIDMgZmlsZXMgY2hhbmdlZCwgNjMgaW5zZXJ0
+aW9ucygrKSwgOSBkZWxldGlvbnMoLSkNCj4+Pj4+Pg0KPj4+Pj4+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9pYl9yZXAuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9t
+bHg1L2liX3JlcC5jDQo+Pj4+Pj4gaW5kZXggMjJlNjUxY2I1NTM0Li5kNGVkNjExZGUzNWQgMTAw
+NjQ0DQo+Pj4+Pj4gLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvaWJfcmVwLmMNCj4+
+Pj4+PiArKysgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9pYl9yZXAuYw0KPj4+Pj4+IEBA
+IC0xMzEsNiArMTMxLDE3IEBAIHN0cnVjdCBtbHg1X2Vzd2l0Y2hfcmVwICptbHg1X2liX3Zwb3J0
+X3JlcChzdHJ1Y3QgbWx4NV9lc3dpdGNoICplc3csIGludCB2cG9ydCkNCj4+Pj4+PiAgCXJldHVy
+biBtbHg1X2Vzd2l0Y2hfdnBvcnRfcmVwKGVzdywgdnBvcnQpOw0KPj4+Pj4+ICB9DQo+Pj4+Pj4N
+Cj4+Pj4+PiArdTMyIG1seDVfaWJfZXN3aXRjaF92cG9ydF9tYXRjaF9tZXRhZGF0YV9lbmFibGVk
+KHN0cnVjdCBtbHg1X2Vzd2l0Y2ggKmVzdykNCj4+Pj4+PiArew0KPj4+Pj4+ICsJcmV0dXJuIG1s
+eDVfZXN3aXRjaF92cG9ydF9tYXRjaF9tZXRhZGF0YV9lbmFibGVkKGVzdyk7DQo+Pj4+Pj4gK30N
+Cj4+Pj4+PiArDQo+Pj4+Pj4gK3UzMiBtbHg1X2liX2Vzd2l0Y2hfZ2V0X3Zwb3J0X21ldGFkYXRh
+X2Zvcl9tYXRjaChzdHJ1Y3QgbWx4NV9lc3dpdGNoICplc3csDQo+Pj4+Pj4gKwkJCQkJCSB1MTYg
+dnBvcnQpDQo+Pj4+Pj4gK3sNCj4+Pj4+PiArCXJldHVybiBtbHg1X2Vzd2l0Y2hfZ2V0X3Zwb3J0
+X21ldGFkYXRhX2Zvcl9tYXRjaChlc3csIHZwb3J0KTsNCj4+Pj4+PiArfQ0KPj4+Pj4NCj4+Pj4+
+IDEuIFRoZXJlIGlzIG5vIG5lZWQgdG8gaW50cm9kdWNlIG9uZSBsaW5lIGZ1bmN0aW9ucywgY2Fs
+bCB0byB0aGF0IGNvZGUgZGlyZWN0bHkuDQo+Pj4+DQo+Pj4+IE5vLiBUaGV5IGFyZSBpbiBJQiwg
+YW5kIHdlIGRvbid0IHdhbnQgdGhlbSBiZSBtaXhlZCB1cCBieSB0aGUgb3JpZ2luYWwNCj4+Pj4g
+ZnVuY3Rpb25zIGluIGVzd2l0Y2guIFBsZWFzZSBhc2sgTWFyayBtb3JlIGFib3V0IGl0Lg0KPj4+
+DQo+Pj4gUGxlYXNlIGVubGlnaHRlbiBtZS4NCj4+DQo+PiBJdCB3YXMgc3VnZ2VzdGVkIGJ5IE1h
+cmsgaW4gcHJldm91aXMgcmV2aWV3Lg0KPj4gSSB0aGluayBpdCdzIGJlY2F1c2UgdGhlcmUgYXJl
+IGluIGRpZmZlcmVudCBtb2R1bGVzLCBhbmQgYmV0dGVyIHRvIHdpdGgNCj4+IGRpZmZlcmVudCBu
+YW1lcywgc28gaW50cm9kdWNlIHRoZXJlIGV4dHJhIG9uZSBsaW5lIGZ1bmN0aW9ucy4NCj4+IFBs
+ZWFzZSBjb3JyZWN0IG1lIGlmIEknbSB3cm9uZywgTWFyay4uLg0KPiANCj4gbWx4NV9pYiBpcyBm
+dWxsIG9mIGRpcmVjdCBmdW5jdGlvbiBjYWxscyB0byBtbHg1X2NvcmUgYW5kIGl0IGlzIGRvbmUg
+b24NCj4gcHVycG9zZSBmb3IgYXQgbGVhc3QgdHdvIHJlYXNvbnMuIEZpcnN0IGlzIHRvIGNvbnRy
+b2wgaW4gb25lIHBsYWNlDQo+IGFsbCBjb21waWxhdGlvbiBvcHRpb25zIGFuZCBleHBvc2UgcHJv
+cGVyIEFQSSBpbnRlcmZhY2Ugd2l0aCBhbmQgd2l0aG91dA0KPiBzcGVjaWZpYyBrZXJuZWwgY29u
+ZmlnIGlzIG9uLiBTZWNvbmQgaXMgdG8gZW1waGFzaXplIHRoYXQgdGhpcyBpcyBjb3JlDQo+IGZ1
+bmN0aW9uIGFuZCBzYXZlIHVzIHRpbWUgaW4gcmVmYWN0b3JpbmcgYW5kIHJldmlld2luZy4NCg0K
+VGhpcyB3YXMgZG9uZSBpbiBvcmRlciB0byBhdm9pZCAjaWZkZWYgQ09ORklHX01MWDVfRVNXSVRD
+SCwNCkkgd2FudCB0byBoaWRlIChhcyBtdWNoIGFzIHBvc3NpYmxlKSB0aGUgaW50ZXJhY3Rpb25z
+IHdpdGggdGhlIGVzd2l0Y2ggbGV2ZWwgaW4gaWJfcmVwLmMvaWJfcmVwLmgNCnNvIGliX3JlcC5o
+IHdpbGwgcHJvdmlkZSB0aGUgc3R1YnMgbmVlZGVkIGluIGNhc2UgQ09ORklHX01MWDVfRVNXSVRD
+SCBpc24ndCBkZWZpbmVkLg0KKFRvZGF5IGluY2x1ZGUvbGludXgvbWx4NS9lc3dpdGNoLmgpIGRv
+ZXNuJ3QgcHJvdmlkZSBhbnkgc3R1YnMsIG1seDVfZXN3aXRjaF9nZXRfZW5jYXBfbW9kZSgpDQpz
+aG91bGQgaGF2ZSBwcm9iYWJseSBkb25lIHRoZSBzYW1lLg0KDQpBcyBteSBsb25nIHRlcm0gZ29h
+bCBpcyB0byBicmVhayBkcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tYWluLmMgKHRoYXQgZmls
+ZSBpcyBhbHJlYWR5IDcwMDAgTE9DKQ0KSSB3YW50IHRvIGdyb3VwIHRvZ2V0aGVyIHN0dWZmIGlu
+IHNlcGFyYXRlIGZpbGVzLg0KDQpJZiB5b3UgcHJlZmVyIGRpcmVjdCBjYWxscyB0aGF0J3Mgb2th
+eSBhcyB3ZWxsLg0KDQpNYXJrDQoNCj4gDQo+Pg0KPj4+DQo+Pj4+DQo+Pj4+PiAyLiBJdCBzaG91
+bGQgYmUgYm9vbCBhbmQgbm90IHUzMi4NCj4+Pj4+DQo+Pj4+PiBUaGFua3MNCj4+Pj4NCj4+Pj4g
+LS0NCj4+DQo+PiAtLQ0K
