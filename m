@@ -2,112 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C819B4BBF2
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 16:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E56F4BC9C
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 17:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729794AbfFSOpP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 10:45:15 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:33568 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729240AbfFSOpO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 10:45:14 -0400
-Received: by mail-pf1-f194.google.com with SMTP id x15so9905073pfq.0
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2019 07:45:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8fT/vuEA7OU0dJVEYE3r7kPp1EiCp3ty74wiME2Ad6k=;
-        b=EvIEznAc2XDTlXpBOjY12Pc2q1rIxcWk6U40JWRUJTQeG8doG5XM7cV9g4/aAvpAbm
-         r3Vk1xob0ZSfzJTTT+FaHc9R0h1eLHkawgh+Y2HeR9XjGIs5zVJz5vVbm53lpriaFfb7
-         WLyV/uAQNAYVDSY/FjIXmEn/qRI4X4yYKhErVQMtfpicAASkyevJQubb5nypERO8S2Td
-         5b/ik5O20WuHwXvtTFgmOoa0CziwFqCIOtcjre2VZ/5fgyUl+9VVN5r0dUvXPdBUWYAX
-         74ptz4qqjfqvUzObFkRm/Ek6sICgg7UMvCYbjzj6hCVv3sQaFa6vMFhwyadaNP4W/A/J
-         GtIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8fT/vuEA7OU0dJVEYE3r7kPp1EiCp3ty74wiME2Ad6k=;
-        b=iftSkoSTAsKJzifUiDOjFaWoohdo5+VvlMcZ2LenfQuXquvv0/AHsAMxW4FFV9H5DW
-         fq7TMpsPf9/qwrHEKMxYR+NSinQQLeZ6OST1dugpLtkFchTgpZ3lidd7BqNRNx/tQ9tY
-         eLnne05fepRujiqT33+c3ykesEV+G0Bta47cjD0YskKRFdW26A79RTGcgQv2qOUkYgXf
-         161s9FYlQLmq8HA1g+LUlTObdiJQw1ikfJ8lWSQw/+FwEeg6Rt4BDxGmCoGMDFpJNmOt
-         eiNhdO6buhyhbMfTvEMqV9/btX65hBniSq5w3crWA9d4ap0uhnxAN0Dk4q663FoslH/5
-         gXdg==
-X-Gm-Message-State: APjAAAXl5isr0IFG6MnUpz2Fz9VAZVGt8uD40qDzB8ZCrkXJT8ODFxxK
-        1KR/OQCszHbfPBg2K7n03nybEOT8HCuMRvvhiAXdug==
-X-Google-Smtp-Source: APXvYqxml1AJCp6VXxhzIr0ScKXgidc4P55u7fkRG0uKH1TmixS7V2epvHYKLjz4L0moJR3Tz7zj8BeYkr14oUMqT1c=
-X-Received: by 2002:a17:90a:a116:: with SMTP id s22mr11521374pjp.47.1560955513903;
- Wed, 19 Jun 2019 07:45:13 -0700 (PDT)
+        id S1726091AbfFSPQT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 11:16:19 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:42858 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbfFSPQT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Jun 2019 11:16:19 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 5F7523082263;
+        Wed, 19 Jun 2019 15:16:19 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8EA765C221;
+        Wed, 19 Jun 2019 15:16:18 +0000 (UTC)
+From:   Doug Ledford <dledford@redhat.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, jgg@ziepe.ca, leon@kernel.org
+Subject: [PATCH v1 0/2] RDMA/netlink: cleanups
+Date:   Wed, 19 Jun 2019 11:16:10 -0400
+Message-Id: <cover.1560957168.git.dledford@redhat.com>
 MIME-Version: 1.0
-References: <cover.1560339705.git.andreyknvl@google.com> <a7a2933bea5fe57e504891b7eec7e9432e5e1c1a.1560339705.git.andreyknvl@google.com>
-In-Reply-To: <a7a2933bea5fe57e504891b7eec7e9432e5e1c1a.1560339705.git.andreyknvl@google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 19 Jun 2019 16:45:02 +0200
-Message-ID: <CAAeHK+xvtqALY9DESF048mR17Po=W++QwWOUOOeSXKgriVTC-w@mail.gmail.com>
-Subject: Re: [PATCH v17 03/15] arm64: Introduce prctl() options to control the
- tagged user addresses ABI
-To:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Wed, 19 Jun 2019 15:16:19 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 1:43 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> From: Catalin Marinas <catalin.marinas@arm.com>
->
-> It is not desirable to relax the ABI to allow tagged user addresses into
-> the kernel indiscriminately. This patch introduces a prctl() interface
-> for enabling or disabling the tagged ABI with a global sysctl control
-> for preventing applications from enabling the relaxed ABI (meant for
-> testing user-space prctl() return error checking without reconfiguring
-> the kernel). The ABI properties are inherited by threads of the same
-> application and fork()'ed children but cleared on execve().
->
-> The PR_SET_TAGGED_ADDR_CTRL will be expanded in the future to handle
-> MTE-specific settings like imprecise vs precise exceptions.
->
-> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+In order to make it easier to add new netlink attributes into the policy
+array in the future while avoiding duplication, sort the array on the
+attribute name.  While at it, audit the policy settings for strings and
+make a few cleanups.
 
-Catalin, would you like to do the requested changes to this patch
-yourself and send it to me or should I do that?
+v0->v1: The first patch didn't contain the whitespace fixes, which made
+the second patch much noisier than it should be.  Move all of the
+whitespace and sorting changes to patch 1 with no functional changes,
+and make patch 2 only have functional changes.
+
+Doug Ledford (2):
+  RDMA/netlink: Resort policy array
+  RDMA/netlink: Audit policy settings for netlink attributes
+
+ drivers/infiniband/core/nldev.c  | 159 ++++++++++++++++---------------
+ include/uapi/rdma/rdma_netlink.h |   1 +
+ 2 files changed, 81 insertions(+), 79 deletions(-)
+
+-- 
+2.21.0
+
