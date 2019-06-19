@@ -2,282 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B404BD59
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 17:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6C04BE20
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2019 18:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbfFSP4w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 11:56:52 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:43922 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbfFSP4v (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 11:56:51 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5JFrt88113520;
-        Wed, 19 Jun 2019 15:56:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=SoDrd9n3X32J5yU22MXe5hxvbr0oADlAzco6AaNmPlY=;
- b=tiWkZ/w95Jnc750JE7NdIbSVLAxuNCJanB6vqjZPJ1aa3V8V1zz7hD/Mpir7yCJj4IkD
- UQZJ4T89Du+KDCmcxRn0ky0McpX+U/kGRnqOQRs9Q9lPNTQrXSPaHIcnrAd14qwTT+Ls
- CGw1pVAKq/48OOP4FVYkyfrOoPEKCzD3TVQpqowv9EXgafE2X+GyV2ycT9MSpTab4s91
- k+axl+0IYieWJcr4RyrP9FuovImoVA8NHW3+4dnQhyAVZXUqxpDMsH20ju5Zy1ck0hGd
- PWwheucUcbKKfNgIakqhbBRgWYJkSnvYDhZj4P1QxV3xVq7enCqaFO9qReDYFpCFmV9e cg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2t7809cba1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 Jun 2019 15:56:00 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5JFsVbp049987;
-        Wed, 19 Jun 2019 15:55:59 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2t77ynx8s0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 Jun 2019 15:55:59 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5JFtpTh010454;
-        Wed, 19 Jun 2019 15:55:51 GMT
-Received: from [10.65.164.174] (/10.65.164.174)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 19 Jun 2019 08:55:51 -0700
-Subject: Re: [PATCH v17 04/15] mm, arm64: untag user pointers passed to memory
- syscalls
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-References: <cover.1560339705.git.andreyknvl@google.com>
- <f9b50767d639b7116aa986dc67f158131b8d4169.1560339705.git.andreyknvl@google.com>
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-Organization: Oracle Corp
-Message-ID: <a5e0e465-89d5-91d0-c6a4-39674269bbf2@oracle.com>
-Date:   Wed, 19 Jun 2019 09:55:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1725843AbfFSQ3M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 12:29:12 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:38018 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729973AbfFSQ3F (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 12:29:05 -0400
+Received: by mail-qk1-f194.google.com with SMTP id a27so11297255qkk.5
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2019 09:29:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qnUOwWGBCAXAVLri1Ul0fDjUeERWKjKVp0Rio+t6Mw0=;
+        b=Mu7sgXi6O1BEfTzeAxDFiZq9WYAU+8GuA+frzMgX9hRk0/2Eo2VPU9VKN7SPqn7GLw
+         BMmvCbBlMZt8BrrdyjrzJb5mIwmN+Un5ohC6uh52oLeiu3fM9lYGSfsBxw2N/in8YFn5
+         94JBdMTWXqhPkHC5ogDkAk30Vj3tK2OB7FH+D8RuRjkNrh4KSwvNzZkKLQDt1o6UXnKk
+         akxzg79p5LQYrNgI6wQWhEDCa4i3Wr2Q3GuDm1M6C6XhuTkbEI5dQ8Rzs09QxzMXG/yv
+         86i6u7h1UReQ+1KLg8ARX3o5vtg8COFFdiinD/3xnzFLxOpaxmET6WHLpP1penmwv6Fz
+         qw4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qnUOwWGBCAXAVLri1Ul0fDjUeERWKjKVp0Rio+t6Mw0=;
+        b=g0BJgMhj8Mad1ihNi4VWJzP+EP02OTq89WMfbZw1wLCjxQj/C+4mtS19KGD6kwOeaF
+         abWDNvsuFh8dAW471gf7TEBBEAyYcLN3ayO98bFB/5VCNOaizuLfsM4lyoc6uTy7i7lH
+         42NDNVGR+a9jN/UUjwrFuHad1TPw1BEEtBOLAZCXc8RMPCMM1shCTID5S1LuGQ9GUQ7H
+         EZfhHOWgJ/ymfgz6CClvHMgqtmddmPqTcJGu3JSGYV88TST2ZzGD79fhruFAuurdl+mJ
+         MDN9KNBwYpD3scWrENXxtEggh5Siz0KK/MLKPyV7fJcWlXa1In/+/4cnwZk/SDRRpXOA
+         klBQ==
+X-Gm-Message-State: APjAAAX/H/eUkVk5YKz3uaRFbAmASmE+e/GiFgnOO1anACdoRJ06m2t0
+        DH0Q02/EeAl2B7BIND+JqR6xKA==
+X-Google-Smtp-Source: APXvYqxI2A2AbFb1+ZoFRIh7H3fg512a+PNV8rhMF80/TQ7Ui3RJ5j2fJJDqC3jWu2+hRHD8V09puw==
+X-Received: by 2002:a37:5444:: with SMTP id i65mr23556982qkb.263.1560961744340;
+        Wed, 19 Jun 2019 09:29:04 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id n5sm11854916qta.29.2019.06.19.09.29.03
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 19 Jun 2019 09:29:03 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hddSJ-0001sf-Di; Wed, 19 Jun 2019 13:29:03 -0300
+Date:   Wed, 19 Jun 2019 13:29:03 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@lst.de>,
+        Potnuri Bharat Teja <bharat@chelsio.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        linux-media@vger.kernel.org
+Subject: Re: use exact allocation for dma coherent memory
+Message-ID: <20190619162903.GF9360@ziepe.ca>
+References: <20190614134726.3827-1-hch@lst.de>
+ <20190617082148.GF28859@kadam>
+ <20190617083342.GA7883@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <f9b50767d639b7116aa986dc67f158131b8d4169.1560339705.git.andreyknvl@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9293 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906190128
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9293 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906190128
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190617083342.GA7883@lst.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/12/19 5:43 AM, Andrey Konovalov wrote:
-> This patch is a part of a series that extends arm64 kernel ABI to allow=
- to
-> pass tagged user pointers (with the top byte set to something else othe=
-r
-> than 0x00) as syscall arguments.
->=20
-> This patch allows tagged pointers to be passed to the following memory
-> syscalls: get_mempolicy, madvise, mbind, mincore, mlock, mlock2, mprote=
-ct,
-> mremap, msync, munlock, move_pages.
->=20
-> The mmap and mremap syscalls do not currently accept tagged addresses.
-> Architectures may interpret the tag as a background colour for the
-> corresponding vma.
->=20
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> ---
+On Mon, Jun 17, 2019 at 10:33:42AM +0200, Christoph Hellwig wrote:
+> > drivers/infiniband/hw/cxgb4/qp.c
+> >    129  static int alloc_host_sq(struct c4iw_rdev *rdev, struct t4_sq *sq)
+> >    130  {
+> >    131          sq->queue = dma_alloc_coherent(&(rdev->lldi.pdev->dev), sq->memsize,
+> >    132                                         &(sq->dma_addr), GFP_KERNEL);
+> >    133          if (!sq->queue)
+> >    134                  return -ENOMEM;
+> >    135          sq->phys_addr = virt_to_phys(sq->queue);
+> >    136          dma_unmap_addr_set(sq, mapping, sq->dma_addr);
+> >    137          return 0;
+> >    138  }
+> > 
+> > Is this a bug?
+> 
+> Yes.  This will blow up badly on many platforms, as sq->queue
+> might be vmapped, ioremapped, come from a pool without page backing.
 
-Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
+Gah, this addr gets fed into io_remap_pfn_range/remap_pfn_range too..
 
+Potnuri, you should fix this.. 
 
->  mm/madvise.c   | 2 ++
->  mm/mempolicy.c | 3 +++
->  mm/migrate.c   | 2 +-
->  mm/mincore.c   | 2 ++
->  mm/mlock.c     | 4 ++++
->  mm/mprotect.c  | 2 ++
->  mm/mremap.c    | 7 +++++++
->  mm/msync.c     | 2 ++
->  8 files changed, 23 insertions(+), 1 deletion(-)
->=20
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 628022e674a7..39b82f8a698f 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -810,6 +810,8 @@ SYSCALL_DEFINE3(madvise, unsigned long, start, size=
-_t, len_in, int, behavior)
->  	size_t len;
->  	struct blk_plug plug;
-> =20
-> +	start =3D untagged_addr(start);
-> +
->  	if (!madvise_behavior_valid(behavior))
->  		return error;
-> =20
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 01600d80ae01..78e0a88b2680 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -1360,6 +1360,7 @@ static long kernel_mbind(unsigned long start, uns=
-igned long len,
->  	int err;
->  	unsigned short mode_flags;
-> =20
-> +	start =3D untagged_addr(start);
->  	mode_flags =3D mode & MPOL_MODE_FLAGS;
->  	mode &=3D ~MPOL_MODE_FLAGS;
->  	if (mode >=3D MPOL_MAX)
-> @@ -1517,6 +1518,8 @@ static int kernel_get_mempolicy(int __user *polic=
-y,
->  	int uninitialized_var(pval);
->  	nodemask_t nodes;
-> =20
-> +	addr =3D untagged_addr(addr);
-> +
->  	if (nmask !=3D NULL && maxnode < nr_node_ids)
->  		return -EINVAL;
-> =20
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index f2ecc2855a12..d22c45cf36b2 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1616,7 +1616,7 @@ static int do_pages_move(struct mm_struct *mm, no=
-demask_t task_nodes,
->  			goto out_flush;
->  		if (get_user(node, nodes + i))
->  			goto out_flush;
-> -		addr =3D (unsigned long)p;
-> +		addr =3D (unsigned long)untagged_addr(p);
-> =20
->  		err =3D -ENODEV;
->  		if (node < 0 || node >=3D MAX_NUMNODES)
-> diff --git a/mm/mincore.c b/mm/mincore.c
-> index c3f058bd0faf..64c322ed845c 100644
-> --- a/mm/mincore.c
-> +++ b/mm/mincore.c
-> @@ -249,6 +249,8 @@ SYSCALL_DEFINE3(mincore, unsigned long, start, size=
-_t, len,
->  	unsigned long pages;
->  	unsigned char *tmp;
-> =20
-> +	start =3D untagged_addr(start);
-> +
->  	/* Check the start address: needs to be page-aligned.. */
->  	if (start & ~PAGE_MASK)
->  		return -EINVAL;
-> diff --git a/mm/mlock.c b/mm/mlock.c
-> index 080f3b36415b..e82609eaa428 100644
-> --- a/mm/mlock.c
-> +++ b/mm/mlock.c
-> @@ -674,6 +674,8 @@ static __must_check int do_mlock(unsigned long star=
-t, size_t len, vm_flags_t fla
->  	unsigned long lock_limit;
->  	int error =3D -ENOMEM;
-> =20
-> +	start =3D untagged_addr(start);
-> +
->  	if (!can_do_mlock())
->  		return -EPERM;
-> =20
-> @@ -735,6 +737,8 @@ SYSCALL_DEFINE2(munlock, unsigned long, start, size=
-_t, len)
->  {
->  	int ret;
-> =20
-> +	start =3D untagged_addr(start);
-> +
->  	len =3D PAGE_ALIGN(len + (offset_in_page(start)));
->  	start &=3D PAGE_MASK;
-> =20
-> diff --git a/mm/mprotect.c b/mm/mprotect.c
-> index bf38dfbbb4b4..19f981b733bc 100644
-> --- a/mm/mprotect.c
-> +++ b/mm/mprotect.c
-> @@ -465,6 +465,8 @@ static int do_mprotect_pkey(unsigned long start, si=
-ze_t len,
->  	const bool rier =3D (current->personality & READ_IMPLIES_EXEC) &&
->  				(prot & PROT_READ);
-> =20
-> +	start =3D untagged_addr(start);
-> +
->  	prot &=3D ~(PROT_GROWSDOWN|PROT_GROWSUP);
->  	if (grows =3D=3D (PROT_GROWSDOWN|PROT_GROWSUP)) /* can't be both */
->  		return -EINVAL;
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index fc241d23cd97..64c9a3b8be0a 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -606,6 +606,13 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsig=
-ned long, old_len,
->  	LIST_HEAD(uf_unmap_early);
->  	LIST_HEAD(uf_unmap);
-> =20
-> +	/*
-> +	 * Architectures may interpret the tag passed to mmap as a background=
+You probably need to use dma_mmap_from_dev_coherent() in the mmap ?
 
-> +	 * colour for the corresponding vma. For mremap we don't allow tagged=
-
-> +	 * new_addr to preserve similar behaviour to mmap.
-> +	 */
-> +	addr =3D untagged_addr(addr);
-> +
->  	if (flags & ~(MREMAP_FIXED | MREMAP_MAYMOVE))
->  		return ret;
-> =20
-> diff --git a/mm/msync.c b/mm/msync.c
-> index ef30a429623a..c3bd3e75f687 100644
-> --- a/mm/msync.c
-> +++ b/mm/msync.c
-> @@ -37,6 +37,8 @@ SYSCALL_DEFINE3(msync, unsigned long, start, size_t, =
-len, int, flags)
->  	int unmapped_error =3D 0;
->  	int error =3D -EINVAL;
-> =20
-> +	start =3D untagged_addr(start);
-> +
->  	if (flags & ~(MS_ASYNC | MS_INVALIDATE | MS_SYNC))
->  		goto out;
->  	if (offset_in_page(start))
->=20
-
-
+Jason
