@@ -2,22 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 660F14DBA2
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 22:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225644DDCD
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2019 01:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726008AbfFTUwK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 16:52:10 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:36444 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725913AbfFTUwK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 16:52:10 -0400
-Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
-        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <logang@deltatee.com>)
-        id 1he42J-0007rd-52; Thu, 20 Jun 2019 14:52:00 -0600
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
+        id S1725961AbfFTXkw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 19:40:52 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:45910 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725886AbfFTXkw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 19:40:52 -0400
+Received: by mail-oi1-f196.google.com with SMTP id m206so3396620oib.12
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 16:40:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=scNy0Tfe+BdKZYj5qpcGlHdmruocVLL136U7yeONjQY=;
+        b=0cnLFHw3wyYOy7GJtgs9QmCRnq9eswmVPzeiBI0nzxLIy08w2sne8Vna1Y1grmzkuK
+         orXF6GaJfScNIrL+CmEEjfEWeebyFY2BN5C/NjI21notoMZHMFZD8O85FX4FqZJ8Z8r9
+         c9WxGq/LLz3LwW3HtljqhWfi0h5SxokaderedRePsLiY444AX/karrDFsSoksoWcCCgZ
+         +7KfzBlJb6BYSae/aXYMhV6RyOh/BJhvk9JSH7sv18Mz9knbjhajd4FDNRnGNZuLTc2X
+         k/ws4WPi1RFgTyfCmAwHTUeSPhtAYFKNfpXRN3OehGFyz6DqnUc2COeygcoP24s922vi
+         ch3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=scNy0Tfe+BdKZYj5qpcGlHdmruocVLL136U7yeONjQY=;
+        b=P+xbiJKNmqGVyQuLVd+OeZKZh65YvD2/ObExgKJRQCEonjXcWkjXFDqoyLP8V1pUTA
+         wBysUdjyJ1vU9gibc3nWk5wPis8ERUgDXCE9wyXuQRwX9t7Xb3X+ukIarf5Hb7iUJj0u
+         c1ydX6Z66tY+FjLcj+NebAVJXttyKgnS72zJROQR/cnzjSgX6w8BF8vuK1CLsHA0I5vt
+         /RvkVYRuxBKjm5zOmxHTP9M2ig3dGvZL0gnUYC8HC6eYcIhhIdakfUcEOZXVszQcv2Fq
+         EX1VY3fw5WuRa1M2xZQPJIXeZT7OOtUoxYZQ63qXCf3ZpPvi0HDbse3L7xE27r07Md+1
+         i9uw==
+X-Gm-Message-State: APjAAAWnvsmHa3MV7dW0Sl3fcE8xkr9OVxFp0MxamRMS99YM3UouRbwV
+        WqF5knN44/PlDgINnPFEHeYX9z7qVSgY26UCUBd+rQ==
+X-Google-Smtp-Source: APXvYqy+dAobdNgdfPhzhP0DQIKrQv88wgGeAk/7F+FLUOR+10JaG31ibuPbYrW/Rv/5imGwwlnZKa4QroXz2NVXZYc=
+X-Received: by 2002:aca:ec82:: with SMTP id k124mr901169oih.73.1561074051695;
+ Thu, 20 Jun 2019 16:40:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190620161240.22738-1-logang@deltatee.com> <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
+ <91eba9a0-27b4-08b4-7c12-86e24e1bfe85@deltatee.com>
+In-Reply-To: <91eba9a0-27b4-08b4-7c12-86e24e1bfe85@deltatee.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 20 Jun 2019 16:40:40 -0700
+Message-ID: <CAPcyv4gPOXaL3qks6RMufu==O9RV2m_-7bBmJqKOFYTf4v_jXQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
+To:     Logan Gunthorpe <logang@deltatee.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
         linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
@@ -25,109 +56,60 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Sagi Grimberg <sagi@grimberg.me>,
         Keith Busch <kbusch@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Stephen Bates <sbates@raithlin.com>
-References: <20190620161240.22738-1-logang@deltatee.com>
- <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
- <20190620193353.GF19891@ziepe.ca>
- <CAPcyv4jyNRBvtWhr9+aHbzWP6=D4qAME+=hWMtOYJ17BVHdy2w@mail.gmail.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <8044000b-1105-4f5d-20c4-ea101b17cd19@deltatee.com>
-Date:   Thu, 20 Jun 2019 14:51:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
-MIME-Version: 1.0
-In-Reply-To: <CAPcyv4jyNRBvtWhr9+aHbzWP6=D4qAME+=hWMtOYJ17BVHdy2w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 68.147.80.180
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, kbusch@kernel.org, sagi@grimberg.me, bhelgaas@google.com, hch@lst.de, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca, dan.j.williams@intel.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Jun 20, 2019 at 12:35 PM Logan Gunthorpe <logang@deltatee.com> wrote:
+>
+>
+>
+> On 2019-06-20 12:45 p.m., Dan Williams wrote:
+> > On Thu, Jun 20, 2019 at 9:13 AM Logan Gunthorpe <logang@deltatee.com> wrote:
+> >>
+> >> For eons there has been a debate over whether or not to use
+> >> struct pages for peer-to-peer DMA transactions. Pro-pagers have
+> >> argued that struct pages are necessary for interacting with
+> >> existing code like scatterlists or the bio_vecs. Anti-pagers
+> >> assert that the tracking of the memory is unecessary and
+> >> allocating the pages is a waste of memory. Both viewpoints are
+> >> valid, however developers working on GPUs and RDMA tend to be
+> >> able to do away with struct pages relatively easily
+> >
+> > Presumably because they have historically never tried to be
+> > inter-operable with the block layer or drivers outside graphics and
+> > RDMA.
+>
+> Yes, but really there are three main sets of users for P2P right now:
+> graphics, RDMA and NVMe. And every time a patch set comes from GPU/RDMA
+> people they don't bother with struct page. I seem to be the only one
+> trying to push P2P with NVMe and it seems to be a losing battle.
+>
+> > Please spell out the value, it is not immediately obvious to me
+> > outside of some memory capacity savings.
+>
+> There are a few things:
+>
+> * Have consistency with P2P efforts as most other efforts have been
+> avoiding struct page. Nobody else seems to want
+> pci_p2pdma_add_resource() or any devm_memremap_pages() call.
+>
+> * Avoid all arch-specific dependencies for P2P. With struct page the IO
+> memory must fit in the linear mapping. This requires some work with
+> RISC-V and I remember some complaints from the powerpc people regarding
+> this. Certainly not all arches will be able to fit the IO region into
+> the linear mapping space.
+>
+> * Remove a bunch of PCI P2PDMA special case mapping stuff from the block
+> layer and RDMA interface (which I've been hearing complaints over).
 
-
-On 2019-06-20 2:18 p.m., Dan Williams wrote:
->> Since that thread was so DAX/pmem centric (and Linus did say he liked
->> the __pfn_t), maybe it is worth checking again, but not for DAX/pmem
->> users?
->>
->> This P2P is quite distinct from DAX as the struct page* would point to
->> non-cacheable weird memory that few struct page users would even be
->> able to work with, while I understand DAX use cases focused on CPU
->> cache coherent memory, and filesystem involvement.
-> 
-> What I'm poking at is whether this block layer capability can pick up
-> users outside of RDMA, more on this below...
-
-I assume you mean outside of P2PDMA....
-
-This new block layer capability is more likely to pick up additional
-users compared to the existing block layer changes that are *very*
-specific to PCI P2PDMA.
-
-I also have (probably significantly controversial) plans to use this to
-allow P2P through user space with O_DIRECT using an idea Jerome had in a
-previous patch set that was discussed a bit informally at LSF/MM this
-year. But that's a whole other RFC and requires a bunch of work I
-haven't done yet.
-
->>
->>> My primary concern with this is that ascribes a level of generality
->>> that just isn't there for peer-to-peer dma operations. "Peer"
->>> addresses are not "DMA" addresses, and the rules about what can and
->>> can't do peer-DMA are not generically known to the block layer.
->>
->> ?? The P2P infrastructure produces a DMA bus address for the
->> initiating device that is is absolutely a DMA address. There is some
->> intermediate CPU centric representation, but after mapping it is the
->> same as any other DMA bus address.
-> 
-> Right, this goes back to the confusion caused by the hardware / bus /
-> address that a dma-engine would consume directly, and Linux "DMA"
-> address as a device-specific translation of host memory.
-> 
-> Is the block layer representation of this address going to go through
-> a peer / "bus" address translation when it reaches the RDMA driver? In
-> other words if we tried to use this facility with other drivers how
-> would the driver know it was passed a traditional Linux DMA address,
-> vs a peer bus address that the device may not be able to handle?
-
-The idea is that the driver doesn't need to know. There's no distinction
-between a Linux DMA address and a peer bus address. They are both used
-for the same purpose: to program into a DMA engine. If the device cannot
-handle such a DMA address then it shouldn't indicate support for this
-feature or the P2PDMA layer needs a way to detect this. Really, this
-property depends more on the bus than the device and that's what all the
-P2PDMA code in the PCI tree handles.
-
->> The map function can tell if the device pair combination can do p2p or
->> not.
-> 
-> Ok, if this map step is still there then reduce a significant portion
-> of my concern and it becomes a quibble about the naming and how a
-> non-RDMA device driver might figure out if it was handled an address
-> it can't handle.
-
-Yes, there will always be a map step, but it should be done by the
-orchestrator because it requires both devices (the client and the
-provider) and the block layer really should not know about both devices.
-
-In this RFC, the map step is kind of hidden but would probably come back
-in the future. It's currently a call to pci_p2pmem_virt_to_bus() but
-would eventually need to be a pci_p2pmem_map_resource() or similar which
-takes a pointer to the pci_dev provider and the struct device client
-doing the mapping.
-
-Logan
-
+This seems to be the most salient point. I was missing the fact that
+this replaces custom hacks and "special" pages with an explicit "just
+pass this pre-mapped address down the stack". It's functionality that
+might plausibly be used outside of p2p, as long as the driver can
+assert that it never needs to touch the data with the cpu before
+handing it off to a dma-engine.
