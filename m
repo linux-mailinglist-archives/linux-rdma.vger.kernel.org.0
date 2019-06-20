@@ -2,100 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 976594D985
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 20:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD614D98D
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 20:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbfFTSib (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 14:38:31 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:33806 "EHLO ale.deltatee.com"
+        id S1725936AbfFTSiy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 14:38:54 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:60378 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726052AbfFTSib (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 14:38:31 -0400
-Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
-        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <logang@deltatee.com>)
-        id 1he1ws-000641-Jx; Thu, 20 Jun 2019 12:38:15 -0600
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20190620161240.22738-1-logang@deltatee.com>
- <20190620161240.22738-5-logang@deltatee.com>
- <20190620172347.GE19891@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <6e4caa21-a148-00d1-a46f-18517fb744d6@deltatee.com>
-Date:   Thu, 20 Jun 2019 12:38:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+        id S1726062AbfFTSiv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Jun 2019 14:38:51 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 9955388313;
+        Thu, 20 Jun 2019 18:38:51 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C5DB65C1A1;
+        Thu, 20 Jun 2019 18:38:48 +0000 (UTC)
+Message-ID: <f4854b3abea8604e6a1dea74baa6cc53042ed677.camel@redhat.com>
+Subject: Re: [PATCH rdma-next] RDMA: Convert destroy_wq to be void
+From:   Doug Ledford <dledford@redhat.com>
+To:     Yuval Shaia <yuval.shaia@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Date:   Thu, 20 Jun 2019 14:38:46 -0400
+In-Reply-To: <20190612125518.GA3358@lap1>
+References: <20190612122741.22850-1-leon@kernel.org>
+         <20190612124049.GA2448@lap1> <20190612125112.GR6369@mtr-leonro.mtl.com>
+         <20190612125518.GA3358@lap1>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-QYBi1/UnZ4GZsxXgUx7K"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <20190620172347.GE19891@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 68.147.80.180
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, kbusch@kernel.org, sagi@grimberg.me, dan.j.williams@intel.com, bhelgaas@google.com, hch@lst.de, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [RFC PATCH 04/28] block: Never bounce dma-direct bios
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.28]); Thu, 20 Jun 2019 18:38:51 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
+--=-QYBi1/UnZ4GZsxXgUx7K
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2019-06-20 11:23 a.m., Jason Gunthorpe wrote:
-> On Thu, Jun 20, 2019 at 10:12:16AM -0600, Logan Gunthorpe wrote:
->> It is expected the creator of the dma-direct bio will ensure the
->> target device can access the DMA address it's creating bios for.
->> It's also not possible to bounce a dma-direct bio seeing the block
->> layer doesn't have any way to access the underlying data behind
->> the DMA address.
->>
->> Thus, never bounce dma-direct bios.
-> 
-> I wonder how feasible it would be to implement a 'dma vec' copy
-> from/to? 
+On Wed, 2019-06-12 at 15:55 +0300, Yuval Shaia wrote:
+> On Wed, Jun 12, 2019 at 03:51:12PM +0300, Leon Romanovsky wrote:
+> > On Wed, Jun 12, 2019 at 03:40:50PM +0300, Yuval Shaia wrote:
+> > > On Wed, Jun 12, 2019 at 03:27:41PM +0300, Leon Romanovsky wrote:
+> > > > From: Leon Romanovsky <leonro@mellanox.com>
+> > > >=20
+> > > > All callers of destroy WQ are always success and there is no
+> > > > need
+> > > > to check their return value, so convert destroy_wq to be void.
+> > > >=20
+> > > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > > > ---
+> > > >  drivers/infiniband/core/verbs.c      | 12 +++++-------
+> > > >  drivers/infiniband/hw/mlx4/mlx4_ib.h |  2 +-
+> > > >  drivers/infiniband/hw/mlx4/qp.c      |  4 +---
+> > > >  drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 +-
+> > > >  drivers/infiniband/hw/mlx5/qp.c      |  4 +---
+> > > >  include/rdma/ib_verbs.h              |  2 +-
+> > > >  6 files changed, 10 insertions(+), 16 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/infiniband/core/verbs.c
+> > > > b/drivers/infiniband/core/verbs.c
+> > > > index 2fb834bb146c..d55f491be24f 100644
+> > > > --- a/drivers/infiniband/core/verbs.c
+> > > > +++ b/drivers/infiniband/core/verbs.c
+> > > > @@ -2344,19 +2344,17 @@ EXPORT_SYMBOL(ib_create_wq);
+> > > >   */
+> > > >  int ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata)
+> > >=20
+> > > So why this one left out of this change?
+> >=20
+> > This function can return -EBUSY.
+>=20
+> Missed that.
+>=20
+> > > >  {
+> > > > -	int err;
+> > > >  	struct ib_cq *cq =3D wq->cq;
+> > > >  	struct ib_pd *pd =3D wq->pd;
+> > > >=20
+> > > >  	if (atomic_read(&wq->usecnt))
+> > > >  		return -EBUSY;
+> >=20
+> > Thanks
+>=20
+> Reviewed-by: Yuval Shaia <yuval.shaia@oracle.com>
+>=20
 
-> That is about the only operation you could safely do on P2P BAR
-> memory. 
-> 
-> I wonder if a copy implementation could somehow query the iommu layer
-> to get a kmap of the memory pointed at by the dma address so we don't
-> need to carry struct page around?
+Applied to for-next, thanks.
 
-That sounds a bit nasty. First we'd have to determine what the
-dma_addr_t points to; and with P2P it may be a bus address or it may be
-an IOVA address and it would probably have to be based on whether the
-IOVA is reserved or not (PCI bus addresses should all be reserved).
-Second, if it is an IOVA then the we'd have to get the physical address
-back from the IOMMU tables and hope we can then get it back to a
-sensible kernel mapping -- and if it points to a PCI bus address we'd
-then have to somehow get back to the kernel mapping which could be
-anywhere in the VMALLOC region as we no longer have the linear mapping
-that struct page provides.
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-I think if we need access to the memory, then this is the wrong approach
-and we should keep struct page or try pfn_t so we can map the memory in
-a way that would perform better.
+--=-QYBi1/UnZ4GZsxXgUx7K
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-In theory, I could relatively easily do the same thing I did for dma_vec
-but with a pfn_t_vec. Though we'd still have the problem of determining
-virtual address from physical address for memory that isn't linearly
-mapped. We'd probably have to introduce some arch-specific thing to
-linearly map an io region or something which may be possible on some
-arches on not on others (same problems we have with struct page).
+-----BEGIN PGP SIGNATURE-----
 
-Logan
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0L0rYACgkQuCajMw5X
+L911Fw/9HQ2I9UU+nJjedKgigMOoZ5H4CiPvYVpaCGz8ViJrSq93gVrXyWKIpK92
+3xiewsr/tNDeIZCxly6iAke6kLAoqbX6yHzM9D2LtZsvrJREJRKlhX49D0BpHOm5
+JtDwWJatjrWD+lRnytChKNJyUeDBiBs48ABdmdxG1zzNKAPIGMni+yrQIyzPnsxm
+ykptWbuNagBR9iyhLYlIuaz7Ya+tyAxBhtEGOzUx0GzlL99cGRfBlj9PQnGJLwen
+EfkAzSKSDt+yeewQfucrdBc6rmloRLUT/AFIhg6bY1xp5jgPhUf0HSgJHOn8lGBL
+QsLsfCvpezHby1Bk4vwPzYLqfG8xSMs3sEtlTGuodz/T7JTy0zbaZBbhpEzfuIWE
+jmgsPFh5bxp8gSjV3gfm3ELhD7ck/EyzMAn4G3opJi3P48ICzj/gM8x9K/QW4gMP
+58ZwjwnLUuR9vQnO3InrBoz/sxduleG/RxFizOCrUqHrlGItX+F0u6Wx9/aWvoqn
+hlysfVZky9fckPaNzZw1Ry+Imei7Ivc00V48tyih3ij4DngZ+Joe8YFLrOMMqHu2
++xxD14EIbfARiVQPZ0sdMy5rRRUSu2M8IjU/uYMapmbbYgmEOFzl3NxR8QvnPoo0
+0hghB1Pidjf6lfg/OFd/ErITyuDZBOfFyfEgI9pjScjgoSV2Byw=
+=Z/28
+-----END PGP SIGNATURE-----
+
+--=-QYBi1/UnZ4GZsxXgUx7K--
+
