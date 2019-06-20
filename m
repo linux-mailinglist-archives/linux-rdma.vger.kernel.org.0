@@ -2,121 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B21DA4D9AD
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 20:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C83B4D9F8
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 21:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbfFTSpv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 14:45:51 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:32925 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbfFTSpu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 14:45:50 -0400
-Received: by mail-oi1-f194.google.com with SMTP id f80so2945272oib.0
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 11:45:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5VxtaXvavuIj/WSwZHnAHCDIqk0MlZk9aDQYd+gdFk4=;
-        b=PvhKM5V+6yqnt2aU5HxaJksE4uPAQmNs5skwhuJ6n8y5XgZlmqj3eeb150T7SBN6SE
-         gIm81w+vU1PtiVJorKQJeZTOHd5OFru39TU4SqL/hr3Rtekmt9KMOkokl1EdfE8VlZMk
-         1NkJs/r1WvgIbwR5DJQ0DbUyxIuHbh3jBXe8LKcbCXSMEinhkyK/xlaSv+78VovqYMtg
-         q1DEjNCTrdAytojICVF4MAcW1VhW5C6b2MEs9t9SRvlyLXj7Lh7Yhv74YAr6kla9u8Qp
-         j8ElcBqtPWtUqgwrRBxPPxQ++W67n8FbK6X2OdqDEGZA60ahsSfATor7gBkpcrk+yQzG
-         znqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5VxtaXvavuIj/WSwZHnAHCDIqk0MlZk9aDQYd+gdFk4=;
-        b=gplC13VHr836VgLuhH0nvqrNo2OC3/3moqDQEuFwEHXag3rCb4AyKW0O68LIc4Nqix
-         mPseYMn1xBw2v+ZzhIq9rscU3RytzoHhDlSPGVkW3E13kdAM68hMfG1byVSGjX5VCS9V
-         dY626K5LAorwg8YXLR90ZW3dCYDpk78rBEo/1WNFEk4ke0rl4HqUzkV46TmrCcw2QL7q
-         +heU2M2/Nla3UDUk1voNteO60H2VbDoWBB+XCbYJZwjfsSmOByqA2DMyVTAAyW9SBZ13
-         MpeVPoppn+iE0kGhUvCdVz8cPk6ncZW0rGPgHjJoYih1WWvvwSCLscnF8GeOXckiekRt
-         poSQ==
-X-Gm-Message-State: APjAAAUWzahcW6f5f9oBBgo6+jLM4NuSltYqOJW8mt8gYVsO7wyvBQgN
-        GlH3eTY+j53aBEPHUbHr6b5Hi4thvZlEg5CMrUmqTw==
-X-Google-Smtp-Source: APXvYqxzQJlp4UblxkfvTerY7hS4anNKGD6JaiZlLO54L7p3q2W7RUsf+utlNLQ8WFVB+mqDyi2X0jOIR79GoWAQb9A=
-X-Received: by 2002:aca:ec82:: with SMTP id k124mr222240oih.73.1561056349598;
- Thu, 20 Jun 2019 11:45:49 -0700 (PDT)
+        id S1726037AbfFTTJn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 15:09:43 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:51520 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725905AbfFTTJm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Jun 2019 15:09:42 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 2D67130860BA;
+        Thu, 20 Jun 2019 19:09:41 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 29B645C1A1;
+        Thu, 20 Jun 2019 19:09:40 +0000 (UTC)
+Message-ID: <d4ba310e1cb50abd3810032fc468797edd917c08.camel@redhat.com>
+Subject: Re: [PATCH V3 for-next] RDMA/hns: reset function when removing
+ module
+From:   Doug Ledford <dledford@redhat.com>
+To:     Lijun Ou <oulijun@huawei.com>, jgg@ziepe.ca
+Cc:     leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Date:   Thu, 20 Jun 2019 15:09:37 -0400
+In-Reply-To: <1560524163-94676-1-git-send-email-oulijun@huawei.com>
+References: <1560524163-94676-1-git-send-email-oulijun@huawei.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-lCbtIX+eSa6QSaNBO6lq"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-References: <20190620161240.22738-1-logang@deltatee.com>
-In-Reply-To: <20190620161240.22738-1-logang@deltatee.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 20 Jun 2019 11:45:38 -0700
-Message-ID: <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Stephen Bates <sbates@raithlin.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Thu, 20 Jun 2019 19:09:42 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 20, 2019 at 9:13 AM Logan Gunthorpe <logang@deltatee.com> wrote:
->
-> For eons there has been a debate over whether or not to use
-> struct pages for peer-to-peer DMA transactions. Pro-pagers have
-> argued that struct pages are necessary for interacting with
-> existing code like scatterlists or the bio_vecs. Anti-pagers
-> assert that the tracking of the memory is unecessary and
-> allocating the pages is a waste of memory. Both viewpoints are
-> valid, however developers working on GPUs and RDMA tend to be
-> able to do away with struct pages relatively easily
 
-Presumably because they have historically never tried to be
-inter-operable with the block layer or drivers outside graphics and
-RDMA.
+--=-lCbtIX+eSa6QSaNBO6lq
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->  compared to
-> those wanting to work with NVMe devices through the block layer.
-> So it would be of great value to be able to universally do P2PDMA
-> transactions without the use of struct pages.
+On Fri, 2019-06-14 at 22:56 +0800, Lijun Ou wrote:
+> From: Lang Cheng <chenglang@huawei.com>
+>=20
+> During removing the driver, we needs to notify the roce engine to
+> stop working immediately,and symmetrically recycle the hardware
+> resources requested during initialization.
+>=20
+> The hardware provides a command called function clear that can package
+> these operations,so that the driver can only focus on releasing
+> resources that applied from the operating system.
+> This patch implements the call of this command.
+>=20
+> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+> Signed-off-by: Lijun Ou <oulijun@huawei.com>
+> ---
+> V2->V3:
+> 1. Remove other reset state operations that are not related to
+>    function clear
 
-Please spell out the value, it is not immediately obvious to me
-outside of some memory capacity savings.
 
-> Previously, there have been multiple attempts[1][2] to replace
-> struct page usage with pfn_t but this has been unpopular seeing
-> it creates dangerous edge cases where unsuspecting code might
-> run accross pfn_t's they are not ready for.
 
-That's not the conclusion I arrived at because pfn_t is specifically
-an opaque type precisely to force "unsuspecting" code to throw
-compiler assertions. Instead pfn_t was dealt its death blow here:
+> +	msleep(HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_INTERVAL);
+> +	end =3D HNS_ROCE_V2_FUNC_CLEAR_TIMEOUT_MSECS;
+> +	while (end) {
+> +		msleep(HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT);
+> +		end -=3D HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT;
 
-https://lore.kernel.org/lkml/CA+55aFzON9617c2_Amep0ngLq91kfrPiSccdZakxir82iekUiA@mail.gmail.com/
 
-...and I think that feedback also reads on this proposal.
 
-> Currently, we have P2PDMA using struct pages through the block layer
-> and the dangerous cases are avoided by using a queue flag that
-> indicates support for the special pages.
->
-> This RFC proposes a new solution: allow the block layer to take
-> DMA addresses directly for queues that indicate support. This will
-> provide a more general path for doing P2PDMA-like requests and will
-> allow us to remove the struct pages that back P2PDMA memory thus paving
-> the way to build a more uniform P2PDMA ecosystem.
+> +#define HNS_ROCE_V2_FUNC_CLEAR_TIMEOUT_MSECS	(249 * 2 * 100)
+> +#define HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_INTERVAL	40
+> +#define HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT	20
 
-My primary concern with this is that ascribes a level of generality
-that just isn't there for peer-to-peer dma operations. "Peer"
-addresses are not "DMA" addresses, and the rules about what can and
-can't do peer-DMA are not generically known to the block layer. At
-least with a side object there's a chance to describe / recall those
-restrictions as these things get passed around the I/O stack, but an
-undecorated "DMA" address passed through the block layer with no other
-benefit to any subsystem besides RDMA does not feel like it advances
-the state of the art.
+I absolutely despise code that does a possible *50* second blocking
+delay using msleep.  However, because I suspect that this is something
+that should *rarely* ever happen, and instead the common case is that
+the reset will proceed much faster, and because this is in the
+teardown/shutdown path of the device where it is a little more
+acceptable to have a blocking delay, I've taken this to for-next.
 
-Again, what are the benefits of plumbing this RDMA special case?
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-lCbtIX+eSa6QSaNBO6lq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0L2fEACgkQuCajMw5X
+L90sAA//Q8yUJXzZhD1ELyMFk2gUBzHhzEDAN3AfcSPRRgi9q4rhYIX1AR4mq5VW
+YYOZ2urWabMjvMLrptIaV9pw0HbSJYEMOfK6oDlwChf2YTmiKezkyb1UdGaVo13j
+mZkTtza8XGWXy6pGIBeg2T8ddhhWN83Ybg4LXZAnk4OrrY3RJA2N1ANiKNMpwhjs
+rGG4S6Ysi0qTaXBqEuP8D1PQVIh6A9Vwb5ACDMBCn0OZnoQpjY1JBhuYZg3C6paI
+3S5J4dSBbRm3jN3BhR6JjtdSOMfxSmIAjUTAd1bboLrpWfFbzArBHaio3xIjms02
+QAHM6Z/2II/wELUrOqqRP/6eT6U+djMp3tY7lTKI+6rSIaTQO9mbi7HQ+jMNHtzV
+4zbUz5T7+dMlkpS7SuusjUfpylssAngEr/J2U9fASYHJgfj32zgIKsX1dKDP3vq0
+ToHMHzXeMrdoPLM6pFRd4gnY9DZ8GWF8l/4l4YB3g4ARy8NTNzxPtHM5Im7o6ZwG
+e7aA+T23bIimoPKkmnYZ5Z6bXPEunB8WJ018nFveuYZjZn2bGm2cGmqlDIKGBl8y
+nHUr3KlZPVtsu9WkLIoKLNdr+xHPzj6WmCO38YLgvu8PoxrU57hPCKAv2lXo4r0g
+ns8GhfEx5ispZGEzJwWlMVBZ+y3LBFA9mihPoh/oSyWxmaRABOk=
+=D0Zy
+-----END PGP SIGNATURE-----
+
+--=-lCbtIX+eSa6QSaNBO6lq--
+
