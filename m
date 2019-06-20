@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 804AD4D499
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 19:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2B04D4CF
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 19:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbfFTRLI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 13:11:08 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:47018 "EHLO
+        id S1731567AbfFTRX6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 13:23:58 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:39182 "EHLO
         mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726675AbfFTRLI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 13:11:08 -0400
-Received: by mail-qt1-f196.google.com with SMTP id h21so3888460qtn.13
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 10:11:07 -0700 (PDT)
+        with ESMTP id S1732300AbfFTRXu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 13:23:50 -0400
+Received: by mail-qt1-f196.google.com with SMTP id i34so3969548qta.6
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 10:23:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=B/Z1xHhYAjAI7ioTCGgFoDOmi7PSKcfXMaUReB0Dr1o=;
-        b=iDKiiByf/rCLVBiwQKacZOEFqluND5l/Q7B8xuyrYYiT8npctI6tkA6bd5Z3+X6WXJ
-         7gP3l17z5AQNjEKoghc1QQGWYYTQhxhcX9yGx54PMvjgvEHZEh7JKLlg64yxdauLIkD6
-         PlX1F93t1CtWxQ8kNNXs9JCH7/Ycn3pW7NdVjaUwoeBrG9xILQAk6iI0m+ngDTRaz0n2
-         KHM4oMsjPmMO77I7PU4GywcSoyfCFebua5oLxUE6W85UfxNuyOXg7jsaASQUndU7XOUT
-         zN203NLRIh3JOjlN2kSuwATpWhmPazDPI0SbRVShwbgeM2SVzNCO4ifAlBXeUKKBuJD+
-         jaDw==
+        bh=SfbKUCdSGF4+jFDRzcaQ+Fna6TrcXDnyta04yl7lq1Y=;
+        b=fDa+hMU4rcsLRRCH2gWRtgjYh9RFedwMwqv0Trz+YbWuMGaoX85v7I71KOkTii51uB
+         oO9IljJOAF7bcm1YYxdaerj3SB1eX+ROcV7aGqi3ZBwoKVBEGC2K9Gm0a4yLiiEn/uAk
+         fBk5sWnkPe6Qfa4DgWWmQRbh4XlFAlCgTAsATQPIvgIfBdORGI7YHDMsJoSK7wBXLdyk
+         G7L29YhKyUqgAQjd6fwdckTK5NEQcVswgxlSYd5TMwXXMxxdYk5swQozsEqhRL82kEHN
+         PYoc9M2dsT9k3d119XICrYvVvAjQcFqPNiWbp3QBf8xLIqoPCbUOF1ztjjMN/UPlCr8M
+         O9Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=B/Z1xHhYAjAI7ioTCGgFoDOmi7PSKcfXMaUReB0Dr1o=;
-        b=UJjGJF2sH2MeQw6N76sQ1A+wQb7s/Qs2HOVTnbXlWyt6vpYAqvBXsPFD1bcagXYk0J
-         6qS9eFsOOhxrOEvD1MYvzimnqhxbk8hBx246FeL+bHwruVEEmPThbmU7VVf8LKZHOZcv
-         3qQ1cuN89+h1bsZdptEF/BOOvtAkDlNFAsCKSLxalZUzDUH43QL7kS/2mdQRCHI0dyQJ
-         KCUBqwkS0j7PaI87g33AoJzRyAhw1Yb/yZUtB8bZ/1oAYMip55+USananKzNnC+laLZ2
-         /ZAcJpHruIxNet9oKN3DByImviO4xsyCIHdGvz/BWvmw64KDMabhB2cfjbjIeqyk5Dt9
-         +BUw==
-X-Gm-Message-State: APjAAAUrpF4k7L3QP304MT3F6WYIWk+kvmwyfTZ0XNIZCvb7N/sKlYTY
-        NtHgKSLXzM0Dnpk5ywaaZZeBPg==
-X-Google-Smtp-Source: APXvYqwc2iwZPScenX0v4jDBGu4RdLUTLz2n8sdXn8hwtd0G64nXQQ8UGnDbXfC6MHvJ9vTLmjr9lQ==
-X-Received: by 2002:ac8:2e5d:: with SMTP id s29mr105147696qta.70.1561050666885;
-        Thu, 20 Jun 2019 10:11:06 -0700 (PDT)
+        bh=SfbKUCdSGF4+jFDRzcaQ+Fna6TrcXDnyta04yl7lq1Y=;
+        b=pFHfMs5BUS4tmAuTn6cWREuwBRtG18b0fu28sPYGQy3vuzNs1yK4dVVzN6QdmN1ShJ
+         F8YdnkNvgor/5kWqxo33v5JRYJe9OfBhe3/9xoDa3iQJGs4EZB6Rf6O1IQoq/yq/5jWz
+         +Akfx4Vro2G/RiXD/bSFsFEas3O7kxXBMAIRDJPL6Y9+iK2NLp3VaAe62FTQSKjkFQn/
+         96ThBbWj7AfK8JfWb1vBy5lEoi3msSAT33C7mydIx8d9HIh4Z9L5swAnDBuMWNmQ5Gx/
+         hrMA63peTI/0LaxZqQbCX2ZWRb/3F+VDt1Wvo+LBXCZ3/rqzLr4X3cP9g7q3hTkfYGAG
+         WGfA==
+X-Gm-Message-State: APjAAAWd/TZs9itTA59sxzCJ0ivz7HX/yJyJkxom5TdRMYB4yrOrBQBQ
+        WN7oPjZoKRd83Av0wAwQPHRwFQ==
+X-Google-Smtp-Source: APXvYqw404QwKeABmWhU9qLItoqgwLK+kwwRuUpz/G8u1JQs97zHuMB8xnbcA0CiswhJAlAz0nkrug==
+X-Received: by 2002:ac8:2409:: with SMTP id c9mr53861547qtc.145.1561051428982;
+        Thu, 20 Jun 2019 10:23:48 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id t29sm152221qtt.42.2019.06.20.10.11.06
+        by smtp.gmail.com with ESMTPSA id c5sm109198qtj.27.2019.06.20.10.23.48
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 Jun 2019 10:11:06 -0700 (PDT)
+        Thu, 20 Jun 2019 10:23:48 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1he0aX-0005SU-RR; Thu, 20 Jun 2019 14:11:05 -0300
-Date:   Thu, 20 Jun 2019 14:11:05 -0300
+        id 1he0mq-0005eq-0K; Thu, 20 Jun 2019 14:23:48 -0300
+Date:   Thu, 20 Jun 2019 14:23:47 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Logan Gunthorpe <logang@deltatee.com>
 Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
@@ -59,102 +59,37 @@ Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
         Sagi Grimberg <sagi@grimberg.me>,
         Keith Busch <kbusch@kernel.org>,
         Stephen Bates <sbates@raithlin.com>
-Subject: Re: [RFC PATCH 20/28] IB/core: Introduce API for initializing a RW
- ctx from a DMA address
-Message-ID: <20190620171105.GD19891@ziepe.ca>
+Subject: Re: [RFC PATCH 04/28] block: Never bounce dma-direct bios
+Message-ID: <20190620172347.GE19891@ziepe.ca>
 References: <20190620161240.22738-1-logang@deltatee.com>
- <20190620161240.22738-21-logang@deltatee.com>
- <20190620164909.GC19891@ziepe.ca>
- <f9186b2b-7737-965f-2dca-25e40e566e64@deltatee.com>
+ <20190620161240.22738-5-logang@deltatee.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f9186b2b-7737-965f-2dca-25e40e566e64@deltatee.com>
+In-Reply-To: <20190620161240.22738-5-logang@deltatee.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 20, 2019 at 10:59:44AM -0600, Logan Gunthorpe wrote:
+On Thu, Jun 20, 2019 at 10:12:16AM -0600, Logan Gunthorpe wrote:
+> It is expected the creator of the dma-direct bio will ensure the
+> target device can access the DMA address it's creating bios for.
+> It's also not possible to bounce a dma-direct bio seeing the block
+> layer doesn't have any way to access the underlying data behind
+> the DMA address.
 > 
-> 
-> On 2019-06-20 10:49 a.m., Jason Gunthorpe wrote:
-> > On Thu, Jun 20, 2019 at 10:12:32AM -0600, Logan Gunthorpe wrote:
-> >> Introduce rdma_rw_ctx_dma_init() and rdma_rw_ctx_dma_destroy() which
-> >> peform the same operation as rdma_rw_ctx_init() and
-> >> rdma_rw_ctx_destroy() respectively except they operate on a DMA
-> >> address and length instead of an SGL.
-> >>
-> >> This will be used for struct page-less P2PDMA, but there's also
-> >> been opinions expressed to migrate away from SGLs and struct
-> >> pages in the RDMA APIs and this will likely fit with that
-> >> effort.
-> >>
-> >> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> >>  drivers/infiniband/core/rw.c | 74 ++++++++++++++++++++++++++++++------
-> >>  include/rdma/rw.h            |  6 +++
-> >>  2 files changed, 69 insertions(+), 11 deletions(-)
-> >>
-> >> diff --git a/drivers/infiniband/core/rw.c b/drivers/infiniband/core/rw.c
-> >> index 32ca8429eaae..cefa6b930bc8 100644
-> >> +++ b/drivers/infiniband/core/rw.c
-> >> @@ -319,6 +319,39 @@ int rdma_rw_ctx_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp, u8 port_num,
-> >>  }
-> >>  EXPORT_SYMBOL(rdma_rw_ctx_init);
-> >>  
-> >> +/**
-> >> + * rdma_rw_ctx_dma_init - initialize a RDMA READ/WRITE context from a
-> >> + *	DMA address instead of SGL
-> >> + * @ctx:	context to initialize
-> >> + * @qp:		queue pair to operate on
-> >> + * @port_num:	port num to which the connection is bound
-> >> + * @addr:	DMA address to READ/WRITE from/to
-> >> + * @len:	length of memory to operate on
-> >> + * @remote_addr:remote address to read/write (relative to @rkey)
-> >> + * @rkey:	remote key to operate on
-> >> + * @dir:	%DMA_TO_DEVICE for RDMA WRITE, %DMA_FROM_DEVICE for RDMA READ
-> >> + *
-> >> + * Returns the number of WQEs that will be needed on the workqueue if
-> >> + * successful, or a negative error code.
-> >> + */
-> >> +int rdma_rw_ctx_dma_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
-> >> +		u8 port_num, dma_addr_t addr, u32 len, u64 remote_addr,
-> >> +		u32 rkey, enum dma_data_direction dir)
-> > 
-> > Why not keep the same basic signature here but replace the scatterlist
-> > with the dma vec ?
-> 
-> Could do. At the moment, I had no need for dma_vec in this interface.
+> Thus, never bounce dma-direct bios.
 
-I think that is because you only did nvme not srp/iser :)
+I wonder how feasible it would be to implement a 'dma vec' copy
+from/to? 
 
-> >> +{
-> >> +	struct scatterlist sg;
-> >> +
-> >> +	sg_dma_address(&sg) = addr;
-> >> +	sg_dma_len(&sg) = len;
-> > 
-> > This needs to fail if the driver is one of the few that require
-> > struct page to work..
-> 
-> Yes, right. Currently P2PDMA checks for the use of dma_virt_ops. And
-> that probably should also be done here. But is that sufficient? You're
-> probably right that it'll take an audit of the RDMA tree to sort that out.
+That is about the only operation you could safely do on P2P BAR
+memory. 
 
-For this purpose I'd be fine if you added a flag to the struct
-ib_device_ops that is set on drivers that we know are OK.. We can make
-that list bigger over time.
-
-> > This is not so hard to do, as most drivers are already struct page
-> > free, but is pretty much blocked on needing some way to go from the
-> > block layer SGL world to the dma vec world that does not hurt storage
-> > performance.
-> 
-> Maybe I can end up helping with that if it helps push the ideas here
-> through. (And assuming people think it's an acceptable approach for the
-> block-layer side of things).
-
-Let us hope for a clear decision then
+I wonder if a copy implementation could somehow query the iommu layer
+to get a kmap of the memory pointed at by the dma address so we don't
+need to carry struct page around?
 
 Jason
