@@ -2,112 +2,219 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D534D31F
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 18:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BA94D392
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 18:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732206AbfFTQNA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 12:13:00 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:59512 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732202AbfFTQNA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 12:13:00 -0400
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1hdzg8-00046J-T8; Thu, 20 Jun 2019 10:12:58 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.89)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1hdzg6-0005xF-V3; Thu, 20 Jun 2019 10:12:47 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Stephen Bates <sbates@raithlin.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Thu, 20 Jun 2019 10:12:40 -0600
-Message-Id: <20190620161240.22738-29-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190620161240.22738-1-logang@deltatee.com>
-References: <20190620161240.22738-1-logang@deltatee.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, axboe@kernel.dk, hch@lst.de, bhelgaas@google.com, dan.j.williams@intel.com, sagi@grimberg.me, kbusch@kernel.org, jgg@ziepe.ca, sbates@raithlin.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,MYRULES_NO_TEXT autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: [RFC PATCH 28/28] memremap: Remove PCI P2PDMA page memory type
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+        id S1732051AbfFTQVv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 12:21:51 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43896 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726562AbfFTQVv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Jun 2019 12:21:51 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5KGJm0H126956
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 12:21:50 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2t8d9ygtwg-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 12:21:50 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
+        Thu, 20 Jun 2019 17:21:48 +0100
+Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 20 Jun 2019 17:21:46 +0100
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5KGLaHc32637254
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Jun 2019 16:21:36 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C022E11C054;
+        Thu, 20 Jun 2019 16:21:44 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C21911C04C;
+        Thu, 20 Jun 2019 16:21:44 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 20 Jun 2019 16:21:44 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [PATCH v3 00/11] SIW: Software iWarp RDMA (siw) driver
+Date:   Thu, 20 Jun 2019 18:21:22 +0200
+X-Mailer: git-send-email 2.17.2
+X-TM-AS-GCONF: 00
+x-cbid: 19062016-0028-0000-0000-0000037C17EB
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19062016-0029-0000-0000-0000243C2B30
+Message-Id: <20190620162133.13074-1-bmt@zurich.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-20_11:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906200119
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There are no more users of MEMORY_DEVICE_PCI_P2PDMA and
-is_pci_p2pdma_page(), so remove them.
+This patch set contributes the SoftiWarp driver rebased for
+latest rdma-next. SoftiWarp (siw) implements the iWarp RDMA
+protocol over kernel TCP sockets. The driver integrates with
+the linux-rdma framework.
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
----
- include/linux/memremap.h |  5 -----
- include/linux/mm.h       | 13 -------------
- 2 files changed, 18 deletions(-)
+A matching userlevel driver is available as PR at
+https://github.com/linux-rdma/rdma-core/pull/536
 
-diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-index 1732dea030b2..2e5d9fcd4d69 100644
---- a/include/linux/memremap.h
-+++ b/include/linux/memremap.h
-@@ -51,16 +51,11 @@ struct vmem_altmap {
-  * wakeup event whenever a page is unpinned and becomes idle. This
-  * wakeup is used to coordinate physical address space management (ex:
-  * fs truncate/hole punch) vs pinned pages (ex: device dma).
-- *
-- * MEMORY_DEVICE_PCI_P2PDMA:
-- * Device memory residing in a PCI BAR intended for use with Peer-to-Peer
-- * transactions.
-  */
- enum memory_type {
- 	MEMORY_DEVICE_PRIVATE = 1,
- 	MEMORY_DEVICE_PUBLIC,
- 	MEMORY_DEVICE_FS_DAX,
--	MEMORY_DEVICE_PCI_P2PDMA,
- };
- 
- /*
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index dd0b5f4e1e45..f5fa9ec440e3 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -966,19 +966,6 @@ static inline bool is_device_public_page(const struct page *page)
- 		page->pgmap->type == MEMORY_DEVICE_PUBLIC;
- }
- 
--#ifdef CONFIG_PCI_P2PDMA
--static inline bool is_pci_p2pdma_page(const struct page *page)
--{
--	return is_zone_device_page(page) &&
--		page->pgmap->type == MEMORY_DEVICE_PCI_P2PDMA;
--}
--#else /* CONFIG_PCI_P2PDMA */
--static inline bool is_pci_p2pdma_page(const struct page *page)
--{
--	return false;
--}
--#endif /* CONFIG_PCI_P2PDMA */
--
- #else /* CONFIG_DEV_PAGEMAP_OPS */
- static inline void dev_pagemap_get_ops(void)
- {
+Many thanks for reviewing and testing the driver, especially to Leon,
+Jason, Steve, Doug, Olga, Dennis, Gal. You all helped to significantly
+improve the driver over the last year.
+
+Please find below a list of changes and comments, compared to older
+versions of the siw driver.
+
+Many thanks!
+Bernard.
+
+
+CHANGES:
+========
+
+v3 (this version)
+-----------------
+
+- Rebased to rdma-next
+
+- Removed unneccessary initialization of enums in siw-abi.h
+
+- Added comment on sizing of all work queues to power of two.
+
+
+v2
+-----------------
+
+- Changed recieve path CRC calculation to compute CRC32c not
+  on target buffer after placement, but on original skbuf.
+  This change severely hurts performance, if CRC is switched
+  on, since skb must now be walked twice. It is planned to
+  work on an extension to skb_copy_bits() to fold in CRC
+  computation.
+
+- Moved debugging to using ibdev_dbg().
+
+- Dropped detailed packet debug printing.
+
+- Removed siw_debug.[ch] files.
+
+- Removed resource tracking, code now relies on restrack of
+  RDMA midlayer. Only object counting to enforce reported
+  device limits is left in place.
+
+- Removed all nested switch-case statements.
+
+- Cleaned up header file #include's
+
+- Moved CQ create/destroy to new semantics,
+  where midlayer creates/destroys containing object.
+
+- Set siw's ABI version to 1 (was 0 before)
+
+- Removed all enum initialization where not needed.
+
+- Fixed MAINTANERS entry for siw driver
+
+- This version stays with the current siw specific
+  management of user memory (siw_umem_get() vs.
+  ib_umem_get(), etc.). This, since the current ib_umem
+  implementation is less efficient for user page lookup
+  on the fast path, where effciency is important for a
+  SW RDMA driver. 
+  It is planned to contribute enhancements to the ib_umem
+  framework, wich makes it suitable for SW drivers as well.
+
+
+v1 (first version after v9 of siw RFC)
+--------------------------------------
+
+- Rebased to 5.2-rc1
+
+- All IDR code got removed.
+
+- Both MR and QP deallocation verbs now synchronously
+  free the resources referenced by the RDMA mid-layer.
+
+- IPv6 support was added.
+
+- For compatibility with Chelsio iWarp hardware, the RX
+  path was slightly reworked. It now allows packet intersection
+  between tagged and untagged RDMAP operations. While not
+  a defined behavior as of IETF RFC 5040/5041, some RDMA hardware
+  may intersect an ongoing outbound (large) tagged message, such
+  as an multisegment RDMA Read Response with sending an untagged
+  message, such as an RDMA Send frame. This behavior was only
+  detected in an NVMeF setup, where siw was used at target side,
+  and RDMA hardware at client side (during file write). siw now
+  implements two input paths for tagged and untagged messages each,
+  and allows the intersected placement of both messages.
+
+- The siw kernel abi file got renamed from siw_user.h to siw-abi.h.
+
+Bernard Metzler (11):
+  iWarp wire packet format
+  SIW main include file
+  SIW network and RDMA core interface
+  SIW connection management
+  SIW application interface
+  SIW application buffer management
+  SIW queue pair methods
+  SIW transmit path
+  SIW receive path
+  SIW completion queue methods
+  SIW addition to kernel build environment
+
+ MAINTAINERS                              |    7 +
+ drivers/infiniband/Kconfig               |    1 +
+ drivers/infiniband/sw/Makefile           |    1 +
+ drivers/infiniband/sw/siw/Kconfig        |   17 +
+ drivers/infiniband/sw/siw/Makefile       |   11 +
+ drivers/infiniband/sw/siw/iwarp.h        |  380 ++++
+ drivers/infiniband/sw/siw/siw.h          |  745 ++++++++
+ drivers/infiniband/sw/siw/siw_cm.c       | 2072 ++++++++++++++++++++++
+ drivers/infiniband/sw/siw/siw_cm.h       |  133 ++
+ drivers/infiniband/sw/siw/siw_cq.c       |  101 ++
+ drivers/infiniband/sw/siw/siw_main.c     |  687 +++++++
+ drivers/infiniband/sw/siw/siw_mem.c      |  460 +++++
+ drivers/infiniband/sw/siw/siw_mem.h      |   74 +
+ drivers/infiniband/sw/siw/siw_qp.c       | 1322 ++++++++++++++
+ drivers/infiniband/sw/siw/siw_qp_rx.c    | 1455 +++++++++++++++
+ drivers/infiniband/sw/siw/siw_qp_tx.c    | 1268 +++++++++++++
+ drivers/infiniband/sw/siw/siw_verbs.c    | 1760 ++++++++++++++++++
+ drivers/infiniband/sw/siw/siw_verbs.h    |   91 +
+ include/uapi/rdma/rdma_user_ioctl_cmds.h |    1 +
+ include/uapi/rdma/siw-abi.h              |  185 ++
+ 20 files changed, 10771 insertions(+)
+ create mode 100644 drivers/infiniband/sw/siw/Kconfig
+ create mode 100644 drivers/infiniband/sw/siw/Makefile
+ create mode 100644 drivers/infiniband/sw/siw/iwarp.h
+ create mode 100644 drivers/infiniband/sw/siw/siw.h
+ create mode 100644 drivers/infiniband/sw/siw/siw_cm.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_cm.h
+ create mode 100644 drivers/infiniband/sw/siw/siw_cq.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_main.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_mem.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_mem.h
+ create mode 100644 drivers/infiniband/sw/siw/siw_qp.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_qp_rx.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_qp_tx.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_verbs.c
+ create mode 100644 drivers/infiniband/sw/siw/siw_verbs.h
+ create mode 100644 include/uapi/rdma/siw-abi.h
+
 -- 
-2.20.1
+2.17.2
 
