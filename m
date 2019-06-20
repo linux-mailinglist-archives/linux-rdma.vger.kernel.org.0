@@ -2,101 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 828BE4D53C
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 19:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C8F4D82E
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 20:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbfFTR2e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 13:28:34 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:33800 "EHLO mx1.redhat.com"
+        id S1728446AbfFTSYn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 14:24:43 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:33686 "EHLO ale.deltatee.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732248AbfFTR2d (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 13:28:33 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7E13030832F4;
-        Thu, 20 Jun 2019 17:28:33 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6AECF608D0;
-        Thu, 20 Jun 2019 17:28:31 +0000 (UTC)
-Message-ID: <8dd66ca5a49c34ac118d5686a04512ddc0c65626.camel@redhat.com>
-Subject: Re: [PATCH V5 for-next 0/3] Add mix multihop addressing for
- supporting 32K
-From:   Doug Ledford <dledford@redhat.com>
-To:     Lijun Ou <oulijun@huawei.com>, jgg@ziepe.ca
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Date:   Thu, 20 Jun 2019 13:28:29 -0400
-In-Reply-To: <1559976370-46306-1-git-send-email-oulijun@huawei.com>
-References: <1559976370-46306-1-git-send-email-oulijun@huawei.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-t1x5hGmRMUzuv3ahC1cM"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S1726633AbfFTSYi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Jun 2019 14:24:38 -0400
+Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
+        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <logang@deltatee.com>)
+        id 1he1jU-0005yI-Se; Thu, 20 Jun 2019 12:24:26 -0600
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Stephen Bates <sbates@raithlin.com>
+References: <20190620161240.22738-1-logang@deltatee.com>
+ <20190620161240.22738-21-logang@deltatee.com>
+ <20190620164909.GC19891@ziepe.ca>
+ <f9186b2b-7737-965f-2dca-25e40e566e64@deltatee.com>
+ <20190620171105.GD19891@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <a3a8ad66-459c-d590-5ce7-ce593cd8f34a@deltatee.com>
+Date:   Thu, 20 Jun 2019 12:24:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Thu, 20 Jun 2019 17:28:33 +0000 (UTC)
+In-Reply-To: <20190620171105.GD19891@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 68.147.80.180
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, kbusch@kernel.org, sagi@grimberg.me, dan.j.williams@intel.com, bhelgaas@google.com, hch@lst.de, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH 20/28] IB/core: Introduce API for initializing a RW
+ ctx from a DMA address
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---=-t1x5hGmRMUzuv3ahC1cM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2019-06-08 at 14:46 +0800, Lijun Ou wrote:
-> This patch series mainly adds a mix multihop addressing for support
-> the 32K
-> specification of send wqe from UM.
->=20
-> It adds the MTR (memory translate region) design for unified
-> management of
-> MTT (memory translate table). The MTT design requires that the hopnum
-> of
-> the address space must be the same and cannot meet the requirements of
-> the
-> current max hopnum of the hip08. The hopnum of sqwqe up to 3 level and
-> the extend sge up to 1 level. As a result, we add an MTR based on mtt
-> to
-> solve this problem.
->=20
-> The MTR allows a contiguous address space to use different hopnums, so
-> that
-> the driver supports the mixed hop feature in UM.
->=20
-> Change from V4:
-> 1. Remove the unnecessary mb().
+On 2019-06-20 11:11 a.m., Jason Gunthorpe wrote:
+> On Thu, Jun 20, 2019 at 10:59:44AM -0600, Logan Gunthorpe wrote:
+>>
+>>
+>> On 2019-06-20 10:49 a.m., Jason Gunthorpe wrote:
+>>> On Thu, Jun 20, 2019 at 10:12:32AM -0600, Logan Gunthorpe wrote:
+>>>> Introduce rdma_rw_ctx_dma_init() and rdma_rw_ctx_dma_destroy() which
+>>>> peform the same operation as rdma_rw_ctx_init() and
+>>>> rdma_rw_ctx_destroy() respectively except they operate on a DMA
+>>>> address and length instead of an SGL.
+>>>>
+>>>> This will be used for struct page-less P2PDMA, but there's also
+>>>> been opinions expressed to migrate away from SGLs and struct
+>>>> pages in the RDMA APIs and this will likely fit with that
+>>>> effort.
+>>>>
+>>>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>>>>  drivers/infiniband/core/rw.c | 74 ++++++++++++++++++++++++++++++------
+>>>>  include/rdma/rw.h            |  6 +++
+>>>>  2 files changed, 69 insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/drivers/infiniband/core/rw.c b/drivers/infiniband/core/rw.c
+>>>> index 32ca8429eaae..cefa6b930bc8 100644
+>>>> +++ b/drivers/infiniband/core/rw.c
+>>>> @@ -319,6 +319,39 @@ int rdma_rw_ctx_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp, u8 port_num,
+>>>>  }
+>>>>  EXPORT_SYMBOL(rdma_rw_ctx_init);
+>>>>  
+>>>> +/**
+>>>> + * rdma_rw_ctx_dma_init - initialize a RDMA READ/WRITE context from a
+>>>> + *	DMA address instead of SGL
+>>>> + * @ctx:	context to initialize
+>>>> + * @qp:		queue pair to operate on
+>>>> + * @port_num:	port num to which the connection is bound
+>>>> + * @addr:	DMA address to READ/WRITE from/to
+>>>> + * @len:	length of memory to operate on
+>>>> + * @remote_addr:remote address to read/write (relative to @rkey)
+>>>> + * @rkey:	remote key to operate on
+>>>> + * @dir:	%DMA_TO_DEVICE for RDMA WRITE, %DMA_FROM_DEVICE for RDMA READ
+>>>> + *
+>>>> + * Returns the number of WQEs that will be needed on the workqueue if
+>>>> + * successful, or a negative error code.
+>>>> + */
+>>>> +int rdma_rw_ctx_dma_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
+>>>> +		u8 port_num, dma_addr_t addr, u32 len, u64 remote_addr,
+>>>> +		u32 rkey, enum dma_data_direction dir)
+>>>
+>>> Why not keep the same basic signature here but replace the scatterlist
+>>> with the dma vec ?
+>>
+>> Could do. At the moment, I had no need for dma_vec in this interface.
+> 
+> I think that is because you only did nvme not srp/iser :)
 
-It looks like you addressed all comments lef ton v4, so after looking
-through this eye bleeder, applied to for-next, thanks.
+I'm not sure that's true at least for the P2P case. With P2P we are able
+to  allocate one continuous region of memory for each transaction. It
+would be quite weird to allocate multiple regions for a single transaction.
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+>>>> +{
+>>>> +	struct scatterlist sg;
+>>>> +
+>>>> +	sg_dma_address(&sg) = addr;
+>>>> +	sg_dma_len(&sg) = len;
+>>>
+>>> This needs to fail if the driver is one of the few that require
+>>> struct page to work..
+>>
+>> Yes, right. Currently P2PDMA checks for the use of dma_virt_ops. And
+>> that probably should also be done here. But is that sufficient? You're
+>> probably right that it'll take an audit of the RDMA tree to sort that out.
+> 
+> For this purpose I'd be fine if you added a flag to the struct
+> ib_device_ops that is set on drivers that we know are OK.. We can make
+> that list bigger over time.
 
---=-t1x5hGmRMUzuv3ahC1cM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Ok, that would mirror what we did for the block layer. I'll look at
+doing something like that in the near future.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0Lwj0ACgkQuCajMw5X
-L92rtg//dnHoTAvB+Dv5wdtyLjywqN7darx+gighPRrJssxbq5a5KBq1aKmreCzM
-zGPNqYPjrfQkawnMUySqC02qXloYtye6uu/q2BtQHRRX/Xs8QgvSlTIqdqkjhKhe
-bVT/3bJd7Tp9s+aKsM9izvAZ3P0KHp/2O9P+5eRXLEqlG/d9fJEALloQH1KHcrkx
-cBAOvJfHjhszqCYe+mqNsYrxozj0SL4gGjx4MvIHkZSN7oFdWg2pRYwQ31WlryDv
-C+MZgGECc7ou/z7TmPX5utln9/1G+C+vfwVIKMsHK4KTkwFDlGg3MC+DVE20QEvm
-AAeT2JAnE0cKCc4IdNK7h1mu3RWK1hAVAGyC858qyOY5LyXN8PlEn/sgrdtqr2ww
-7j7DO9jPqSttO6NVPgtYzxLHa7gOtnqzWjGuts873ENmyo/Aw55Ir02WAsd/DrUE
-7Zc5/DT85HVBXmXijt0hzFvJCiGp4KRNltsRrsmu5YFL9ItfW6rwsUJf7umZC59H
-bPAoqpZ2mEZFlUvcRoEj1FYodhYLEvj+KLh1aOUxdbO7vQ+TH5JiHS5FBM3c6I6C
-1wf/1r6SjOOfP4X8D+UsL+0AvpOVsbUWdjHDm3rHpE0YK7Dem+4Siw3tYmg7AeNz
-3+mfHG9Prij7u5g7iM0IaoAcYZwTZ7B78RAh9m1Ib3f4Vt0Y3ww=
-=8aKm
------END PGP SIGNATURE-----
-
---=-t1x5hGmRMUzuv3ahC1cM--
-
+Logan
