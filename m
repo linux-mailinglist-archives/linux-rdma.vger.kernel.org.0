@@ -2,145 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3804DB12
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 22:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13BA94DB3B
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 22:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727064AbfFTUS2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 16:18:28 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:41521 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbfFTUS0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 16:18:26 -0400
-Received: by mail-ot1-f65.google.com with SMTP id 43so4012491otf.8
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 13:18:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/1ACPvah6cwlc4NoiRokzPOQoMSdzU57I7vjUDE0u7s=;
-        b=0EpvstXhVkgDZVnlntes/LFoX5DbZzZfI4fZKY04r9MHAG+jDljwalCR+pzVQcd5N+
-         jCgyhrr3z4Vih61nMLUyzbi6vguWMjoCs1yxx/m+W0PmEJEir3NhOjhOIncQC8xeJlnA
-         ScqRQG53Crt+W9L4aXkuF/pOTp6b6HcbioEWgVQ0Wdd8ra6AaL+LteJRGmJeMFvabjaQ
-         FrxPttS8gc75CExD+3TgsHNERiQopSJetDSK5cOZIibVeewsYrEdl3fG1sHBqc0jfOZ8
-         KAFi8QIcJEtIjVvj0Knw5iTcv8ArOmARLOERSJ98/s/7kGp4XUBuQ9hyjg2QbAGOBYHJ
-         8+Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/1ACPvah6cwlc4NoiRokzPOQoMSdzU57I7vjUDE0u7s=;
-        b=ZBjM51mRD2X680V05paO2bRj2FSIntUnwJE9/O13gmYSCFwknkQmEVBNOPKmAhR3P/
-         JGLw2ReDkSl+mGYtaf9zowektb56uYy0M4qG4W6BpkHptiKCfv+JW9s+4qd7D9IaKmvS
-         3dkuMkA9xzb7ypUlLj2bJJSvvtP2aRN33QdD01aZeuow20Vw7LSlJUI2dRyEx4yVzYTg
-         ozRyPVhY5wZiwiuIds8Lmpwk2PGbbFsIIdgIW0O84ZEjfjfnuHodIcw8lxVYtaguk2xw
-         EUz56TPMc8lIq7KfMt5M4zKu7MA6yLk4unOQwj1pW5fpdNu2eOvbRMAchnb4xpvyozeq
-         dDLg==
-X-Gm-Message-State: APjAAAUlcHxAknqETWZeIixDNrafAYKHbi/fJyoBB2f0wUkX+0XCy1n9
-        grFObhR8VYpQQtK6e3C/z1H8iV9hh07oAsqa0Tr/Tw==
-X-Google-Smtp-Source: APXvYqyamVcYjA+tR+olDR6UwLLdjY5DvyoCREZvBR4JUnDzN9QbxbjICVUWXIInA4FtacuQ6q6CVYes9j/gU6KU7Aw=
-X-Received: by 2002:a9d:470d:: with SMTP id a13mr40714284otf.126.1561061905657;
- Thu, 20 Jun 2019 13:18:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190620161240.22738-1-logang@deltatee.com> <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
- <20190620193353.GF19891@ziepe.ca>
-In-Reply-To: <20190620193353.GF19891@ziepe.ca>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 20 Jun 2019 13:18:13 -0700
-Message-ID: <CAPcyv4jyNRBvtWhr9+aHbzWP6=D4qAME+=hWMtOYJ17BVHdy2w@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
+        id S1726151AbfFTUaN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 16:30:13 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:38412 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726059AbfFTUaN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Jun 2019 16:30:13 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id D88B37E42C;
+        Thu, 20 Jun 2019 20:30:07 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1951219C77;
+        Thu, 20 Jun 2019 20:30:05 +0000 (UTC)
+Message-ID: <54fedcfc1ffc92a5446c2f720c7dd57776333ef1.camel@redhat.com>
+Subject: Re: [PATCH V3 for-next] RDMA/hns: reset function when removing
+ module
+From:   Doug Ledford <dledford@redhat.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Stephen Bates <sbates@raithlin.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Lijun Ou <oulijun@huawei.com>, leon@kernel.org,
+        linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Date:   Thu, 20 Jun 2019 16:30:03 -0400
+In-Reply-To: <20190620200533.GH19891@ziepe.ca>
+References: <1560524163-94676-1-git-send-email-oulijun@huawei.com>
+         <d4ba310e1cb50abd3810032fc468797edd917c08.camel@redhat.com>
+         <20190620193457.GG19891@ziepe.ca>
+         <9862d4db3e930bc12c059f8b04e1eb24c493519b.camel@redhat.com>
+         <20190620200533.GH19891@ziepe.ca>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-xjgCBBdOUQ9sDjQqOr7k"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.27]); Thu, 20 Jun 2019 20:30:13 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 20, 2019 at 12:34 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Thu, Jun 20, 2019 at 11:45:38AM -0700, Dan Williams wrote:
->
-> > > Previously, there have been multiple attempts[1][2] to replace
-> > > struct page usage with pfn_t but this has been unpopular seeing
-> > > it creates dangerous edge cases where unsuspecting code might
-> > > run accross pfn_t's they are not ready for.
-> >
-> > That's not the conclusion I arrived at because pfn_t is specifically
-> > an opaque type precisely to force "unsuspecting" code to throw
-> > compiler assertions. Instead pfn_t was dealt its death blow here:
-> >
-> > https://lore.kernel.org/lkml/CA+55aFzON9617c2_Amep0ngLq91kfrPiSccdZakxir82iekUiA@mail.gmail.com/
-> >
-> > ...and I think that feedback also reads on this proposal.
->
-> I read through Linus's remarks and it he seems completely right that
-> anything that touches a filesystem needs a struct page, because FS's
-> rely heavily on that.
->
-> It is much less clear to me why a GPU BAR or a NVME CMB that never
-> touches a filesystem needs a struct page.. The best reason I've seen
-> is that it must have struct page because the block layer heavily
-> depends on struct page.
->
-> Since that thread was so DAX/pmem centric (and Linus did say he liked
-> the __pfn_t), maybe it is worth checking again, but not for DAX/pmem
-> users?
->
-> This P2P is quite distinct from DAX as the struct page* would point to
-> non-cacheable weird memory that few struct page users would even be
-> able to work with, while I understand DAX use cases focused on CPU
-> cache coherent memory, and filesystem involvement.
 
-What I'm poking at is whether this block layer capability can pick up
-users outside of RDMA, more on this below...
+--=-xjgCBBdOUQ9sDjQqOr7k
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->
-> > My primary concern with this is that ascribes a level of generality
-> > that just isn't there for peer-to-peer dma operations. "Peer"
-> > addresses are not "DMA" addresses, and the rules about what can and
-> > can't do peer-DMA are not generically known to the block layer.
->
-> ?? The P2P infrastructure produces a DMA bus address for the
-> initiating device that is is absolutely a DMA address. There is some
-> intermediate CPU centric representation, but after mapping it is the
-> same as any other DMA bus address.
+On Thu, 2019-06-20 at 17:05 -0300, Jason Gunthorpe wrote:
+> On Thu, Jun 20, 2019 at 03:48:23PM -0400, Doug Ledford wrote:
+>=20
+> > It's an msleep() waiting for a hardware command to
+> > complete.  Waiting
+> > synchronously for a command that has the purpose of stopping the
+> > card's
+> > operation does not sound like an incorrect locking or concurrency
+> > model
+> > to me.  It sounds sane, albeit annoying.
+>=20
+> If it was the only sleep loop you might have a point, but it isn't,
+> every other patch series lately seems to be adding more sleep
+> loops. This sleep loop is already wrapping another sleep loop under
+> __hns_roce_cmq_send() - which, for some reason, doesn't have an
+> interrupt driven completion path.
+>=20
+> Nor is there any explanation why we need a sleep loop on top of a
+> sleep loop, or why the command is allowed to fail or why retrying the
+> failed command is even a good idea, or why it can't be properly
+> interrupt driven!
+>=20
+> I'm frankly sick of it, maybe you should review HNS patches for a
+> while..
 
-Right, this goes back to the confusion caused by the hardware / bus /
-address that a dma-engine would consume directly, and Linux "DMA"
-address as a device-specific translation of host memory.
+Are you sure this hasn't changed over time and you didn't realize it?=20
+I'm not seeing all the sleeps you are talking about. In fact, if I grep
+for "sleep" in hw/hns/ I only find 9 instances: 5 in hns_roce_hw_v1 and
+4 in hns_roce_hw_v2, so really only 5 at most as those two files are
+just duplicates of each other for the different hardware.  And even
+then, when I checked on all the sleeps in hw_v2, they were all in init
+or reset code paths, certainly none in send.  And I didn't find any
+include file wrappers that use sleeps.  I get how over use of sleeps can
+be a big issue, I guess I'm just having a hard time finding where it's
+being abused as badly as you say.  Of course, I may just not be looking
+in the right place...
 
-Is the block layer representation of this address going to go through
-a peer / "bus" address translation when it reaches the RDMA driver? In
-other words if we tried to use this facility with other drivers how
-would the driver know it was passed a traditional Linux DMA address,
-vs a peer bus address that the device may not be able to handle?
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-> The map function can tell if the device pair combination can do p2p or
-> not.
+--=-xjgCBBdOUQ9sDjQqOr7k
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Ok, if this map step is still there then reduce a significant portion
-of my concern and it becomes a quibble about the naming and how a
-non-RDMA device driver might figure out if it was handled an address
-it can't handle.
+-----BEGIN PGP SIGNATURE-----
 
->
-> > Again, what are the benefits of plumbing this RDMA special case?
->
-> It is not just RDMA, this is interesting for GPU and vfio use cases
-> too. RDMA is just the most complete in-tree user we have today.
->
-> ie GPU people wouuld really like to do read() and have P2P
-> transparently happen to on-GPU pages. With GPUs having huge amounts of
-> memory loading file data into them is really a performance critical
-> thing.
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0L7MsACgkQuCajMw5X
+L93dHhAAuXP4KLTnKetSl6qWxkaVuR2uyTZOL1CLAvJb22n0NoDUs7V0wXnBKrh5
+hFCT47xbhqOWOR4m1uA2d5t0KusnzJfxn2uCxhDv4JFr9HbK+VtCGLLJmnattHfz
+Ow6OzLitHEzcXZVYmegtq1jVmgMrpa6C9NtoToOHO/mnF6/zSv9Z2/Y+x5EE4+7M
+Mvrj+7LM35o8T2DUyFH4jJTG8gqgAePTCfjcoGx5lD2YfY6H/vo0Z/Ij6dbSHKFq
+W/tQvuCdlpV9Sq0ViM3MJs1NQX8yso0xuVco1QNngDuoTy6gvKHPxlTBwxh2kiYC
+0/CahQ7uVz8pdA8S9PTQpqbQCRjcvdP1LI5txI0U60nL2OjHktdd9oDIw25IIfNy
+zvcyqUKXyDSXQBYhrzOdFK9JmAy9lmZj5jVSnH+3yswMo/sLhmV+c7zknBSdMVHa
+g6mRmLzHkoW5WB92yjzJML9iIIVm2fnDTBI5KVWPRakPw+tFICYAcQAekOkONW0W
+PuLuXwEpzqkmQNurkez6uqzHBIOtmWq0w11+crRUoUYXIa8ZQWSYPfvs4PTzaHx1
+MyIuLQeCnrm8Kb6vK0zsAcnElqT0SPNR+vP8HUdYSQR20f9X9LbxOv0XhDYnegTK
+nOfyravokdM9T9frd/aV9Toy4En+y9GA0+JKTN9f2IpOVT8ry+o=
+=FJih
+-----END PGP SIGNATURE-----
 
-A direct-i/o read(2) into a page-less GPU mapping? Through a regular
-file or a device special file?
+--=-xjgCBBdOUQ9sDjQqOr7k--
+
