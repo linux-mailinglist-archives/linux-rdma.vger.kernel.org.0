@@ -2,117 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BA94DB3B
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 22:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660F14DBA2
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 22:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbfFTUaN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 16:30:13 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:38412 "EHLO mx1.redhat.com"
+        id S1726008AbfFTUwK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 16:52:10 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:36444 "EHLO ale.deltatee.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726059AbfFTUaN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 16:30:13 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id D88B37E42C;
-        Thu, 20 Jun 2019 20:30:07 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1951219C77;
-        Thu, 20 Jun 2019 20:30:05 +0000 (UTC)
-Message-ID: <54fedcfc1ffc92a5446c2f720c7dd57776333ef1.camel@redhat.com>
-Subject: Re: [PATCH V3 for-next] RDMA/hns: reset function when removing
- module
-From:   Doug Ledford <dledford@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Lijun Ou <oulijun@huawei.com>, leon@kernel.org,
-        linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Date:   Thu, 20 Jun 2019 16:30:03 -0400
-In-Reply-To: <20190620200533.GH19891@ziepe.ca>
-References: <1560524163-94676-1-git-send-email-oulijun@huawei.com>
-         <d4ba310e1cb50abd3810032fc468797edd917c08.camel@redhat.com>
-         <20190620193457.GG19891@ziepe.ca>
-         <9862d4db3e930bc12c059f8b04e1eb24c493519b.camel@redhat.com>
-         <20190620200533.GH19891@ziepe.ca>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-xjgCBBdOUQ9sDjQqOr7k"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S1725913AbfFTUwK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Jun 2019 16:52:10 -0400
+Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
+        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <logang@deltatee.com>)
+        id 1he42J-0007rd-52; Thu, 20 Jun 2019 14:52:00 -0600
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Stephen Bates <sbates@raithlin.com>
+References: <20190620161240.22738-1-logang@deltatee.com>
+ <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
+ <20190620193353.GF19891@ziepe.ca>
+ <CAPcyv4jyNRBvtWhr9+aHbzWP6=D4qAME+=hWMtOYJ17BVHdy2w@mail.gmail.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <8044000b-1105-4f5d-20c4-ea101b17cd19@deltatee.com>
+Date:   Thu, 20 Jun 2019 14:51:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.27]); Thu, 20 Jun 2019 20:30:13 +0000 (UTC)
+In-Reply-To: <CAPcyv4jyNRBvtWhr9+aHbzWP6=D4qAME+=hWMtOYJ17BVHdy2w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 68.147.80.180
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, kbusch@kernel.org, sagi@grimberg.me, bhelgaas@google.com, hch@lst.de, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca, dan.j.williams@intel.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---=-xjgCBBdOUQ9sDjQqOr7k
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2019-06-20 at 17:05 -0300, Jason Gunthorpe wrote:
-> On Thu, Jun 20, 2019 at 03:48:23PM -0400, Doug Ledford wrote:
->=20
-> > It's an msleep() waiting for a hardware command to
-> > complete.  Waiting
-> > synchronously for a command that has the purpose of stopping the
-> > card's
-> > operation does not sound like an incorrect locking or concurrency
-> > model
-> > to me.  It sounds sane, albeit annoying.
->=20
-> If it was the only sleep loop you might have a point, but it isn't,
-> every other patch series lately seems to be adding more sleep
-> loops. This sleep loop is already wrapping another sleep loop under
-> __hns_roce_cmq_send() - which, for some reason, doesn't have an
-> interrupt driven completion path.
->=20
-> Nor is there any explanation why we need a sleep loop on top of a
-> sleep loop, or why the command is allowed to fail or why retrying the
-> failed command is even a good idea, or why it can't be properly
-> interrupt driven!
->=20
-> I'm frankly sick of it, maybe you should review HNS patches for a
-> while..
+On 2019-06-20 2:18 p.m., Dan Williams wrote:
+>> Since that thread was so DAX/pmem centric (and Linus did say he liked
+>> the __pfn_t), maybe it is worth checking again, but not for DAX/pmem
+>> users?
+>>
+>> This P2P is quite distinct from DAX as the struct page* would point to
+>> non-cacheable weird memory that few struct page users would even be
+>> able to work with, while I understand DAX use cases focused on CPU
+>> cache coherent memory, and filesystem involvement.
+> 
+> What I'm poking at is whether this block layer capability can pick up
+> users outside of RDMA, more on this below...
 
-Are you sure this hasn't changed over time and you didn't realize it?=20
-I'm not seeing all the sleeps you are talking about. In fact, if I grep
-for "sleep" in hw/hns/ I only find 9 instances: 5 in hns_roce_hw_v1 and
-4 in hns_roce_hw_v2, so really only 5 at most as those two files are
-just duplicates of each other for the different hardware.  And even
-then, when I checked on all the sleeps in hw_v2, they were all in init
-or reset code paths, certainly none in send.  And I didn't find any
-include file wrappers that use sleeps.  I get how over use of sleeps can
-be a big issue, I guess I'm just having a hard time finding where it's
-being abused as badly as you say.  Of course, I may just not be looking
-in the right place...
+I assume you mean outside of P2PDMA....
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+This new block layer capability is more likely to pick up additional
+users compared to the existing block layer changes that are *very*
+specific to PCI P2PDMA.
 
---=-xjgCBBdOUQ9sDjQqOr7k
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+I also have (probably significantly controversial) plans to use this to
+allow P2P through user space with O_DIRECT using an idea Jerome had in a
+previous patch set that was discussed a bit informally at LSF/MM this
+year. But that's a whole other RFC and requires a bunch of work I
+haven't done yet.
 
------BEGIN PGP SIGNATURE-----
+>>
+>>> My primary concern with this is that ascribes a level of generality
+>>> that just isn't there for peer-to-peer dma operations. "Peer"
+>>> addresses are not "DMA" addresses, and the rules about what can and
+>>> can't do peer-DMA are not generically known to the block layer.
+>>
+>> ?? The P2P infrastructure produces a DMA bus address for the
+>> initiating device that is is absolutely a DMA address. There is some
+>> intermediate CPU centric representation, but after mapping it is the
+>> same as any other DMA bus address.
+> 
+> Right, this goes back to the confusion caused by the hardware / bus /
+> address that a dma-engine would consume directly, and Linux "DMA"
+> address as a device-specific translation of host memory.
+> 
+> Is the block layer representation of this address going to go through
+> a peer / "bus" address translation when it reaches the RDMA driver? In
+> other words if we tried to use this facility with other drivers how
+> would the driver know it was passed a traditional Linux DMA address,
+> vs a peer bus address that the device may not be able to handle?
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0L7MsACgkQuCajMw5X
-L93dHhAAuXP4KLTnKetSl6qWxkaVuR2uyTZOL1CLAvJb22n0NoDUs7V0wXnBKrh5
-hFCT47xbhqOWOR4m1uA2d5t0KusnzJfxn2uCxhDv4JFr9HbK+VtCGLLJmnattHfz
-Ow6OzLitHEzcXZVYmegtq1jVmgMrpa6C9NtoToOHO/mnF6/zSv9Z2/Y+x5EE4+7M
-Mvrj+7LM35o8T2DUyFH4jJTG8gqgAePTCfjcoGx5lD2YfY6H/vo0Z/Ij6dbSHKFq
-W/tQvuCdlpV9Sq0ViM3MJs1NQX8yso0xuVco1QNngDuoTy6gvKHPxlTBwxh2kiYC
-0/CahQ7uVz8pdA8S9PTQpqbQCRjcvdP1LI5txI0U60nL2OjHktdd9oDIw25IIfNy
-zvcyqUKXyDSXQBYhrzOdFK9JmAy9lmZj5jVSnH+3yswMo/sLhmV+c7zknBSdMVHa
-g6mRmLzHkoW5WB92yjzJML9iIIVm2fnDTBI5KVWPRakPw+tFICYAcQAekOkONW0W
-PuLuXwEpzqkmQNurkez6uqzHBIOtmWq0w11+crRUoUYXIa8ZQWSYPfvs4PTzaHx1
-MyIuLQeCnrm8Kb6vK0zsAcnElqT0SPNR+vP8HUdYSQR20f9X9LbxOv0XhDYnegTK
-nOfyravokdM9T9frd/aV9Toy4En+y9GA0+JKTN9f2IpOVT8ry+o=
-=FJih
------END PGP SIGNATURE-----
+The idea is that the driver doesn't need to know. There's no distinction
+between a Linux DMA address and a peer bus address. They are both used
+for the same purpose: to program into a DMA engine. If the device cannot
+handle such a DMA address then it shouldn't indicate support for this
+feature or the P2PDMA layer needs a way to detect this. Really, this
+property depends more on the bus than the device and that's what all the
+P2PDMA code in the PCI tree handles.
 
---=-xjgCBBdOUQ9sDjQqOr7k--
+>> The map function can tell if the device pair combination can do p2p or
+>> not.
+> 
+> Ok, if this map step is still there then reduce a significant portion
+> of my concern and it becomes a quibble about the naming and how a
+> non-RDMA device driver might figure out if it was handled an address
+> it can't handle.
+
+Yes, there will always be a map step, but it should be done by the
+orchestrator because it requires both devices (the client and the
+provider) and the block layer really should not know about both devices.
+
+In this RFC, the map step is kind of hidden but would probably come back
+in the future. It's currently a call to pci_p2pmem_virt_to_bus() but
+would eventually need to be a pci_p2pmem_map_resource() or similar which
+takes a pointer to the pci_dev provider and the struct device client
+doing the mapping.
+
+Logan
 
