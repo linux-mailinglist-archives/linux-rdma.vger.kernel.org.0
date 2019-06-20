@@ -2,92 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A614F4C44F
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 02:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C476C4C467
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 02:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbfFTAB0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 20:01:26 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:44420 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726322AbfFTAB0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 20:01:26 -0400
-Received: by mail-qt1-f195.google.com with SMTP id x47so1206921qtk.11
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2019 17:01:25 -0700 (PDT)
+        id S1726496AbfFTASB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 20:18:01 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:38315 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726479AbfFTASB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 20:18:01 -0400
+Received: by mail-qt1-f193.google.com with SMTP id n11so1295871qtl.5
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2019 17:18:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Sqbwy91llQPefonvV8hojpIN0xcDDpBbbCse1JqIdUo=;
-        b=QdbMA+elg5C6VGMvThUwpsLI7l/+4xPmhV/L6gRyX/b4I56fkeg6jJtXdG0WKu9TL/
-         L9zoMssH5TQwzMNNyiwgTveuFidckERm+BsqjCxzdWGdWGGedErG6UJQPBfII53sE2Ux
-         GRwrvH7f21aUV/AYqhnVDDaw3UL7MxAfg13r7Ky6Bf91XgHroqAAPx4Hvhg+rsfvKUHw
-         z2sOdyFsZXcXhGiggW2BfgrlW0TgtimJQhB7xM0yAFP9Zui2NhHQ9cPDVgDOEhkkrmSV
-         PxgK6MkWMFZOWv7xkgQec0wRwUuZ9aJN+aLPg2qqpg/j+dCDw3/hlfwhtpTNUL5rAo4H
-         SLUw==
+        bh=cIOGLozCJyBAki1gkh/WgkoTBRSsN+Kk2Vj57dMrMxA=;
+        b=clPXCMsByrA4vDpq71UT3gqte4TddGT2IUNH8vXNl1ldBYcpP11N9qodqtE5I7zpbN
+         Hshvdo7tMzzvOtpCdaY3T93/UP+7pTJo1HAlsGCSjfBEXMnwpOrmDgg+wp/hojB+cB27
+         1oooDkvl3W7hg8oFF0vsykrE0NvbakrD+VOU+wh8i82gPVa/vZUaLB8vp1WMBgqxcJH3
+         oxO2H9vOGKk/0etuPav99x4+rFRwH7HSSdp240JcKHNeJjW2RkgHXIwCdwN4QohUxFAf
+         drSqJZr9EJch6mqS5NpPwV2Decf3obu8nrno9kE+9W6F3d24rTtCCt9q1ujIvIpJ1pKV
+         hWYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Sqbwy91llQPefonvV8hojpIN0xcDDpBbbCse1JqIdUo=;
-        b=Lq6Fvm+csK/zYBSkTKPqsSdA8aeJmPuA8UaWtkdo/hPyTjUub8/O5v0ZtQWROqNJcP
-         X6XGGU/8wVi2RzJm8mEAOK5NdbXg5D9yfXpqFdyzLdJcXVgvqXqtn4E5BAy17LctLdfs
-         u/z+f9EL2D+ysWvbY/v4Bn0LU6yiMlgelJKf/qGZflBSnBCg7/CjdTmt5rCDQwWtlfYb
-         BxbR7n07WebKIt0raNpihR622thyadaz3UEhnbtfp7UY8JcANx1nRSal1Zn/D92k0lgB
-         8fDcrLlUGdCVAitMIJP5zHY1u52G+MynV53EKhgXv+1deVY2N0Ctw+jrBHckYbEybYN1
-         mT9Q==
-X-Gm-Message-State: APjAAAWGhpm/p+0iRrt/k3X6PqBl3Fqnx4QPxEwANwRokTC5pkD/cmR6
-        guBS9tESeOPDOlAERsRlxUOvTQ==
-X-Google-Smtp-Source: APXvYqzKyx6zBYzXLykhmiJLriRApnAEv+DYrCe+kjfeKxPk/Zu0FXoLmY7SEvqmrQTEDWJyS3R1vA==
-X-Received: by 2002:a0c:b163:: with SMTP id r32mr36768273qvc.169.1560988885408;
-        Wed, 19 Jun 2019 17:01:25 -0700 (PDT)
+        bh=cIOGLozCJyBAki1gkh/WgkoTBRSsN+Kk2Vj57dMrMxA=;
+        b=N627gXyMy0Rc35bnQUVR94g9aUl+XSa2d2BwrrpdDA39efV3AJYplGGQj53j4D5Ysk
+         laKEWDiJ57q7/F8tOa0QtOgsy8OowSCoozhxLHdLA/NICI8pJYDQ2GG+KGvNvgiZymYT
+         XPx2yJPJJuoXza4Ifx7Uvuh0W3cDrCqE8VUDRrFNy+Z3aCpfKjkSE4be8WoJHcge+J51
+         MyfpYnRFJAWkdC/J081w93KyDKWh/njvH35Neu9f+yKJ6gbSScgMr98LmDsEWexjv5Px
+         /KAVCarOZgc8wjKABlAQyOZeATtTZ2dG8UQBCtFoVlIzMm7Av198Pz+qOtFFeAATfwyQ
+         Tvxw==
+X-Gm-Message-State: APjAAAViEHwvIt2easrZ9WpqGt8XkeDTbMcfik9SIVGwFaBOpng9sIDf
+        zFRwRka0fG/MsPA34sRcqasBAwVAFRTi+Q==
+X-Google-Smtp-Source: APXvYqzwt/OjP7Ky2plH9mFU0FPC7aTgsEFbbyb0yc8qGCQ0u6jkvaDyaOu93YJ2cjQWypwgIFo9uQ==
+X-Received: by 2002:ac8:376e:: with SMTP id p43mr110013501qtb.354.1560989880517;
+        Wed, 19 Jun 2019 17:18:00 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id d3sm9896526qti.40.2019.06.19.17.01.24
+        by smtp.gmail.com with ESMTPSA id z12sm9749661qkf.20.2019.06.19.17.18.00
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Jun 2019 17:01:24 -0700 (PDT)
+        Wed, 19 Jun 2019 17:18:00 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hdkW4-0001Jm-Jc; Wed, 19 Jun 2019 21:01:24 -0300
-Date:   Wed, 19 Jun 2019 21:01:24 -0300
+        id 1hdkm7-0001Rw-Ll; Wed, 19 Jun 2019 21:17:59 -0300
+Date:   Wed, 19 Jun 2019 21:17:59 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Honggang Li <honli@redhat.com>
-Cc:     haakon.bugge@oracle.com, linux-rdma@vger.kernel.org
-Subject: Re: [rdma-core ibacm v3] ibacm: only open InfiniBand port
-Message-ID: <20190620000124.GA5039@ziepe.ca>
-References: <20190611233325.3141-1-honli@redhat.com>
+To:     Doug Ledford <dledford@redhat.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 2/2] RDMA/netlink: Audit policy settings for netlink
+ attributes
+Message-ID: <20190620001759.GC14968@ziepe.ca>
+References: <cover.1560957168.git.dledford@redhat.com>
+ <5ef05339c1d799133076c24e616860a647e96148.1560957168.git.dledford@redhat.com>
+ <20190619192431.GA13262@ziepe.ca>
+ <b964f5286ad9d2c3f1fb2f4f0f3206ecf9da2ad7.camel@redhat.com>
+ <20190619201158.GK9360@ziepe.ca>
+ <3695301f8ba9f8902c5c0a00171f6ca72f83faf2.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190611233325.3141-1-honli@redhat.com>
+In-Reply-To: <3695301f8ba9f8902c5c0a00171f6ca72f83faf2.camel@redhat.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 11, 2019 at 07:33:25PM -0400, Honggang Li wrote:
-> The low 64 bits of cxgb3 and cxgb4 devices' GID are zeros. If the
-> "provider" was set in the option file, ibacm will fail with
-> segment fault.
+On Wed, Jun 19, 2019 at 07:59:22PM -0400, Doug Ledford wrote:
+> On Wed, 2019-06-19 at 17:11 -0300, Jason Gunthorpe wrote:
+> > On Wed, Jun 19, 2019 at 04:02:30PM -0400, Doug Ledford wrote:
+> > > On Wed, 2019-06-19 at 16:24 -0300, Jason Gunthorpe wrote:
+> > > > > +	nla_strlcpy(client_name,
+> > > > > tb[RDMA_NLDEV_ATTR_CHARDEV_TYPE],
+> > > > > +		    sizeof(client_name));
+> > > > 
+> > > > This seems really frail, it should at least have a
+> > > > 
+> > > > BUILD_BUG_ON(sizeof(client_name) ==
+> > > > nldev_policy[RDMA_NLDEV_ATTR_CHARDEV_TYPE].len));
+> > > > 
+> > > > But I don't think that can compile.
+> > > > 
+> > > > Are we sure we can't have a 0 length and just skip checking in
+> > > > policy?
+> > > > It seems like more danger than it is worth.
+> > > 
+> > > nla_strlcpy takes a size parameter as arg3 and guarantees to put no
+> > > more than arg3 bytes - 1 from the source into the dest and
+> > > guarantees it's null terminated.  The only difference between
+> > > nla_strlcpy and normal strncpy is that nla_strlcpy zeros out any
+> > > excess pad bytes that aren't used in the dest by the copy.  If
+> > > someone tries to pass in an oversized string, it doesn't matter.  If
+> > > someone modifes the function to change the size of client_name, our
+> > > nla_strlcpy() is safe because our dest and our len parameters are
+> > > always in sync.  I don't see the fragility.
+> > 
+> > Silently truncating the user input string and not returning an error
+> > is a kernel bug.
 > 
-> $ sed -i -e 's/# provider ibacmp 0xFE80000000000000/provider ibacmp 0xFE80000000000000/g' /etc/rdma/ibacm_opts.cfg
-> $ /usr/sbin/ibacm --systemd
-> Segmentation fault (core dumped)
-> $ gdb /usr/sbin/ibacm core.ibacm
-> (gdb) bt
-> 0  0x00005625a4809217 in acm_assign_provider (port=0x5625a4bc6f28) at /usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2285
-> 1  acm_port_up (port=0x5625a4bc6f28) at /usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2372
-> 2  0x00005625a48073d2 in acm_activate_devices () at /usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:2564
-> 3  main (argc=<optimized out>, argv=<optimized out>) at /usr/src/debug/rdma-core-25.0-1.el8.x86_64/ibacm/src/acm.c:3270
-> 
-> Note: The rpm was built with tarball generated from upstream repo. The last
-> commit is aa41a65ec86bdb9c1c86e57885ee588b39558238.
-> 
-> acm_open_dev function should not open a umad port for iWARP or RoCE devices.
-> Signed-off-by: Honggang Li <honli@redhat.com>
-> ---
->  ibacm/src/acm.c | 26 ++++++++++++++++++++++----
->  1 file changed, 22 insertions(+), 4 deletions(-)
+> That's a matter of expectations.  Looking through all instances of
+> nla_strlcpy() in the kernel tree, only about 4 of the 25 or so uses
+> check the return code at all
 
-Applied to for-next, thanks
+Sadly the kernel is full of bugs :(
+
+Silent string truncation is a well known bug class, I guess Dan
+Carpenter just hasn't quite got to sending reports on these cases
+yet..
+
+> and only 1 of those returns an error code to the application.  This
+> mirrors the behavior people see when they try to do things like
+> rename a netdevice and pass in too long of a name.  As long as the
+> truncated name isn't taken, it succeeds at the truncated name.
+
+Returning ENOENT, or worse, the entirely wrong result instead of
+EINVAL, for a too long string is a straight up bug.
+
+The probability of any user hitting this is very low, but it is not
+some well thought out behavior...
+
+> > I dislike strlcpy and friends for the same reason everyone else does -
+> > they prevent security failures but create bugs with undetected
+> > truncated strings.
+> 
+> I think the net stack has a fairly well established behavior in regards
+> to truncating overly long strings.  
+
+I think it is just bugs. :(
+
+> truncation, or fix the perceived kernel bug?  I don't actually feel
+> strongly about it.  I'm used to the truncation behavior.  If you would
+> strongly prefer an error on overflow, I'll change the patch up.
+
+The client_name is a stack variable of a completely arbitrary size that
+is larger than all existing client_name statics in today's
+kernel. Tomorrow it may get bigger, or smaller. Its length absolutely
+does not form part of the uAPI contract, and truncation of the user
+provided string should always return EINVAL never any other result.
 
 Jason
