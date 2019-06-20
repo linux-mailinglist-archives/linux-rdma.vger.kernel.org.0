@@ -2,94 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2B04D4CF
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 19:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828BE4D53C
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 19:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731567AbfFTRX6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 13:23:58 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:39182 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732300AbfFTRXu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 13:23:50 -0400
-Received: by mail-qt1-f196.google.com with SMTP id i34so3969548qta.6
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 10:23:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SfbKUCdSGF4+jFDRzcaQ+Fna6TrcXDnyta04yl7lq1Y=;
-        b=fDa+hMU4rcsLRRCH2gWRtgjYh9RFedwMwqv0Trz+YbWuMGaoX85v7I71KOkTii51uB
-         oO9IljJOAF7bcm1YYxdaerj3SB1eX+ROcV7aGqi3ZBwoKVBEGC2K9Gm0a4yLiiEn/uAk
-         fBk5sWnkPe6Qfa4DgWWmQRbh4XlFAlCgTAsATQPIvgIfBdORGI7YHDMsJoSK7wBXLdyk
-         G7L29YhKyUqgAQjd6fwdckTK5NEQcVswgxlSYd5TMwXXMxxdYk5swQozsEqhRL82kEHN
-         PYoc9M2dsT9k3d119XICrYvVvAjQcFqPNiWbp3QBf8xLIqoPCbUOF1ztjjMN/UPlCr8M
-         O9Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SfbKUCdSGF4+jFDRzcaQ+Fna6TrcXDnyta04yl7lq1Y=;
-        b=pFHfMs5BUS4tmAuTn6cWREuwBRtG18b0fu28sPYGQy3vuzNs1yK4dVVzN6QdmN1ShJ
-         F8YdnkNvgor/5kWqxo33v5JRYJe9OfBhe3/9xoDa3iQJGs4EZB6Rf6O1IQoq/yq/5jWz
-         +Akfx4Vro2G/RiXD/bSFsFEas3O7kxXBMAIRDJPL6Y9+iK2NLp3VaAe62FTQSKjkFQn/
-         96ThBbWj7AfK8JfWb1vBy5lEoi3msSAT33C7mydIx8d9HIh4Z9L5swAnDBuMWNmQ5Gx/
-         hrMA63peTI/0LaxZqQbCX2ZWRb/3F+VDt1Wvo+LBXCZ3/rqzLr4X3cP9g7q3hTkfYGAG
-         WGfA==
-X-Gm-Message-State: APjAAAWd/TZs9itTA59sxzCJ0ivz7HX/yJyJkxom5TdRMYB4yrOrBQBQ
-        WN7oPjZoKRd83Av0wAwQPHRwFQ==
-X-Google-Smtp-Source: APXvYqw404QwKeABmWhU9qLItoqgwLK+kwwRuUpz/G8u1JQs97zHuMB8xnbcA0CiswhJAlAz0nkrug==
-X-Received: by 2002:ac8:2409:: with SMTP id c9mr53861547qtc.145.1561051428982;
-        Thu, 20 Jun 2019 10:23:48 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id c5sm109198qtj.27.2019.06.20.10.23.48
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 Jun 2019 10:23:48 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1he0mq-0005eq-0K; Thu, 20 Jun 2019 14:23:48 -0300
-Date:   Thu, 20 Jun 2019 14:23:47 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Stephen Bates <sbates@raithlin.com>
-Subject: Re: [RFC PATCH 04/28] block: Never bounce dma-direct bios
-Message-ID: <20190620172347.GE19891@ziepe.ca>
-References: <20190620161240.22738-1-logang@deltatee.com>
- <20190620161240.22738-5-logang@deltatee.com>
+        id S1726750AbfFTR2e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 13:28:34 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33800 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732248AbfFTR2d (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Jun 2019 13:28:33 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 7E13030832F4;
+        Thu, 20 Jun 2019 17:28:33 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6AECF608D0;
+        Thu, 20 Jun 2019 17:28:31 +0000 (UTC)
+Message-ID: <8dd66ca5a49c34ac118d5686a04512ddc0c65626.camel@redhat.com>
+Subject: Re: [PATCH V5 for-next 0/3] Add mix multihop addressing for
+ supporting 32K
+From:   Doug Ledford <dledford@redhat.com>
+To:     Lijun Ou <oulijun@huawei.com>, jgg@ziepe.ca
+Cc:     leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Date:   Thu, 20 Jun 2019 13:28:29 -0400
+In-Reply-To: <1559976370-46306-1-git-send-email-oulijun@huawei.com>
+References: <1559976370-46306-1-git-send-email-oulijun@huawei.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-t1x5hGmRMUzuv3ahC1cM"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190620161240.22738-5-logang@deltatee.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Thu, 20 Jun 2019 17:28:33 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 20, 2019 at 10:12:16AM -0600, Logan Gunthorpe wrote:
-> It is expected the creator of the dma-direct bio will ensure the
-> target device can access the DMA address it's creating bios for.
-> It's also not possible to bounce a dma-direct bio seeing the block
-> layer doesn't have any way to access the underlying data behind
-> the DMA address.
-> 
-> Thus, never bounce dma-direct bios.
 
-I wonder how feasible it would be to implement a 'dma vec' copy
-from/to? 
+--=-t1x5hGmRMUzuv3ahC1cM
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-That is about the only operation you could safely do on P2P BAR
-memory. 
+On Sat, 2019-06-08 at 14:46 +0800, Lijun Ou wrote:
+> This patch series mainly adds a mix multihop addressing for support
+> the 32K
+> specification of send wqe from UM.
+>=20
+> It adds the MTR (memory translate region) design for unified
+> management of
+> MTT (memory translate table). The MTT design requires that the hopnum
+> of
+> the address space must be the same and cannot meet the requirements of
+> the
+> current max hopnum of the hip08. The hopnum of sqwqe up to 3 level and
+> the extend sge up to 1 level. As a result, we add an MTR based on mtt
+> to
+> solve this problem.
+>=20
+> The MTR allows a contiguous address space to use different hopnums, so
+> that
+> the driver supports the mixed hop feature in UM.
+>=20
+> Change from V4:
+> 1. Remove the unnecessary mb().
 
-I wonder if a copy implementation could somehow query the iommu layer
-to get a kmap of the memory pointed at by the dma address so we don't
-need to carry struct page around?
+It looks like you addressed all comments lef ton v4, so after looking
+through this eye bleeder, applied to for-next, thanks.
 
-Jason
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-t1x5hGmRMUzuv3ahC1cM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0Lwj0ACgkQuCajMw5X
+L92rtg//dnHoTAvB+Dv5wdtyLjywqN7darx+gighPRrJssxbq5a5KBq1aKmreCzM
+zGPNqYPjrfQkawnMUySqC02qXloYtye6uu/q2BtQHRRX/Xs8QgvSlTIqdqkjhKhe
+bVT/3bJd7Tp9s+aKsM9izvAZ3P0KHp/2O9P+5eRXLEqlG/d9fJEALloQH1KHcrkx
+cBAOvJfHjhszqCYe+mqNsYrxozj0SL4gGjx4MvIHkZSN7oFdWg2pRYwQ31WlryDv
+C+MZgGECc7ou/z7TmPX5utln9/1G+C+vfwVIKMsHK4KTkwFDlGg3MC+DVE20QEvm
+AAeT2JAnE0cKCc4IdNK7h1mu3RWK1hAVAGyC858qyOY5LyXN8PlEn/sgrdtqr2ww
+7j7DO9jPqSttO6NVPgtYzxLHa7gOtnqzWjGuts873ENmyo/Aw55Ir02WAsd/DrUE
+7Zc5/DT85HVBXmXijt0hzFvJCiGp4KRNltsRrsmu5YFL9ItfW6rwsUJf7umZC59H
+bPAoqpZ2mEZFlUvcRoEj1FYodhYLEvj+KLh1aOUxdbO7vQ+TH5JiHS5FBM3c6I6C
+1wf/1r6SjOOfP4X8D+UsL+0AvpOVsbUWdjHDm3rHpE0YK7Dem+4Siw3tYmg7AeNz
+3+mfHG9Prij7u5g7iM0IaoAcYZwTZ7B78RAh9m1Ib3f4Vt0Y3ww=
+=8aKm
+-----END PGP SIGNATURE-----
+
+--=-t1x5hGmRMUzuv3ahC1cM--
+
