@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2CB4D156
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 17:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D4C4D154
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 17:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731655AbfFTPDs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 11:03:48 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:41051 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731733AbfFTPDr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 11:03:47 -0400
-Received: by mail-ed1-f67.google.com with SMTP id p15so5156396eds.8;
-        Thu, 20 Jun 2019 08:03:44 -0700 (PDT)
+        id S1731995AbfFTPDt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 11:03:49 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:38237 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726697AbfFTPDs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 11:03:48 -0400
+Received: by mail-ed1-f66.google.com with SMTP id r12so5190082edo.5;
+        Thu, 20 Jun 2019 08:03:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=4u7lee2B9jT1kccCfJ6KLeOPi4Lv46oaLkOWjUVlRZI=;
-        b=Lj5jZJhV9dcgwe0557mUDnheFeDudD5OAwKd7QwHNrAMSM1TIXVH4ucC7Il5x+ljUe
-         jEAQVEqv9v1ZWe4Qg+0arwjDDIQOeJof/d4g2s2n7oO72x333b8JX4iiYWb9meyJmT4B
-         yQMXFV+fiWNCssxEOL01s4qxQ4L/0abgNxr+mCI678Q8jGOmhR4wbugiEbecl0bBtNmL
-         Twg0/ggAJtZlUI6dzq8Xn1KO1tRvtYo+DxBnYEyDLTwSNDLp5rt6NmkTlKLHrNNdZGUS
-         LcT3oqZzYz5dazCNYbVpxh4JZv2jYHcL4Tbk7o/b4NlA61waAJ69noqKsWBMeZj3ObYq
-         LMfg==
+        bh=yzu5uv9RrCj8d0/XeTwCDu5bXzfZaepVMFi3UBsWNoU=;
+        b=P/NNI/Q8GBacO0Gt2qPTr7I7iQUojeOIH0AJGUsqPN38DlBvmrJWZLDhcXlze+60cr
+         0VnrYP0OYxw9bHE273M1J+CeH2aALu46INcgrtKuZmYTJlj5SfSjTExXeS7OTMbCqRXW
+         jlYsZTZTYI2hYu+rNvZU4AKq2knTo2JWymTrObR8nn3l1NVAJNIR0ZWzZ5yPHuskENrV
+         he0bfykBacGEMQKm+jzxrq/womVKcki2xo9CfzF0pBnOm7t24/BXWpRgk9mIW/nkAJyQ
+         rBpYLc6QCCfMYkMnFrH9sAzQ8V+YLNYHTAurOfh6RwPsA6qqDdZ9pol7ZUO7Fcg8G4zH
+         7V0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=4u7lee2B9jT1kccCfJ6KLeOPi4Lv46oaLkOWjUVlRZI=;
-        b=q+bAaA7kulGJDCy0AWvvGMZIYUKExP0z+BeQMtRj4Hz6Npe5GwBKOolwUp6kI/zDkX
-         1gWdH7EbijNqpTBHaZLT1Hr72bP7d7UDDV12XQQDZT6jhZs5XODrEEYvSNERE+a2If2Y
-         41bYPvT8jKC3EhwLP/hN4CMmO9ANwVcnkXCW2bD1DVU9wLogbD9GYZs1ddjb1m9K0sCF
-         XZuTQA5Wpwyy9ncns0vjBk4FQzTu6wd1sDLuMKdtO31lyr4QSyToSaA+GMh+p/yVDAOj
-         7Ay5/FRf43DLKV9Mp37YodMlYE9qpti0yl8Cj24EkKkHaPZJi9rqvoLbNG/TS+FsxCe7
-         cQ9A==
-X-Gm-Message-State: APjAAAU29Ph9Z7SX2HoThgrqXY3NAAwviUJvaHsHTOju8IHHoJ1biz0N
-        egqZh8p+lZxE6ASPfqfYR1qbS2YvDv8=
-X-Google-Smtp-Source: APXvYqxRiRB0pg2C/i3BzCBYNeDUVaPMp1BMXb6JPTBOiVsdoRwDRPETgGytIcsQIgsQpP7mh/TMZQ==
-X-Received: by 2002:a17:906:2a98:: with SMTP id l24mr68704906eje.150.1561043023856;
-        Thu, 20 Jun 2019 08:03:43 -0700 (PDT)
+        bh=yzu5uv9RrCj8d0/XeTwCDu5bXzfZaepVMFi3UBsWNoU=;
+        b=iNYV8yGwsB9enm8L0yBlKWtiOPHs1yBUw245fHi5TZKnyilsRauHCtAquAYrdda0Zp
+         zVKwid/NGpPFds0Ny9vGwa6QdBf1xyDn/W+/2zWvMKk8ecM1IsErZHAH6Ugu9uGYbGYU
+         Fl8QwmYnU2z5iMvGzS19FDVpRse1mxnN13efuEdUCnq9NvO9ieX3W6xuULI58cTRAJjm
+         fQrk/y4ExGib88VJPR6Gm0jEewZ25wsmvrkWBegj07hrriDdkbSmlTfIhmUTb7c9ga+q
+         I36yba+ApGPtYlDAE8IF/0OJwICtFlrCTtLUY28yuxXZtpsIrOUYYpAYeE1Qn0B3c/k0
+         4zug==
+X-Gm-Message-State: APjAAAWp8jWLbOsmhDr+07/FeVI3hGua7CF5X9XH7xQQ/vAFUIIn/GaD
+        n3RaQuAPKoE+CyjLJjFiCd6yGO3vOlk=
+X-Google-Smtp-Source: APXvYqzEpUHUCh0JuEvzJ5p07l8YNc+KaULiR91onq+alfdgBW3bo9MXibHWK/UFrboUM7ARsbZ1HA==
+X-Received: by 2002:a05:6402:397:: with SMTP id o23mr30311488edv.68.1561043024785;
+        Thu, 20 Jun 2019 08:03:44 -0700 (PDT)
 Received: from jwang-Latitude-5491.pb.local ([62.217.45.26])
-        by smtp.gmail.com with ESMTPSA id a20sm3855817ejj.21.2019.06.20.08.03.42
+        by smtp.gmail.com with ESMTPSA id a20sm3855817ejj.21.2019.06.20.08.03.43
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 20 Jun 2019 08:03:43 -0700 (PDT)
+        Thu, 20 Jun 2019 08:03:44 -0700 (PDT)
 From:   Jack Wang <jinpuwang@gmail.com>
 To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
@@ -50,9 +50,9 @@ Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
         Roman Pen <roman.penyaev@profitbricks.com>,
         Jack Wang <jinpu.wang@cloud.ionos.com>
-Subject: [PATCH v4 03/25] ibtrs: private headers with IBTRS protocol structs and helpers
-Date:   Thu, 20 Jun 2019 17:03:15 +0200
-Message-Id: <20190620150337.7847-4-jinpuwang@gmail.com>
+Subject: [PATCH v4 04/25] ibtrs: core: lib functions shared between client and server modules
+Date:   Thu, 20 Jun 2019 17:03:16 +0200
+Message-Id: <20190620150337.7847-5-jinpuwang@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190620150337.7847-1-jinpuwang@gmail.com>
 References: <20190620150337.7847-1-jinpuwang@gmail.com>
@@ -63,26 +63,27 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Roman Pen <roman.penyaev@profitbricks.com>
 
-These are common private headers with IBTRS protocol structures,
-logging, sysfs and other helper functions, which are used on
-both client and server sides.
+This is a set of library functions existing as a ibtrs-core module,
+used by client and server modules.
+
+Mainly these functions wrap IB and RDMA calls and provide a bit higher
+abstraction for implementing of IBTRS protocol on client or server
+sides.
 
 Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 ---
- drivers/infiniband/ulp/ibtrs/ibtrs-log.h |  84 ++++
- drivers/infiniband/ulp/ibtrs/ibtrs-pri.h | 463 +++++++++++++++++++++++
- 2 files changed, 547 insertions(+)
- create mode 100644 drivers/infiniband/ulp/ibtrs/ibtrs-log.h
- create mode 100644 drivers/infiniband/ulp/ibtrs/ibtrs-pri.h
+ drivers/infiniband/ulp/ibtrs/ibtrs.c | 610 +++++++++++++++++++++++++++
+ 1 file changed, 610 insertions(+)
+ create mode 100644 drivers/infiniband/ulp/ibtrs/ibtrs.c
 
-diff --git a/drivers/infiniband/ulp/ibtrs/ibtrs-log.h b/drivers/infiniband/ulp/ibtrs/ibtrs-log.h
+diff --git a/drivers/infiniband/ulp/ibtrs/ibtrs.c b/drivers/infiniband/ulp/ibtrs/ibtrs.c
 new file mode 100644
-index 000000000000..fec816c935bc
+index 000000000000..f6879daa5bb9
 --- /dev/null
-+++ b/drivers/infiniband/ulp/ibtrs/ibtrs-log.h
-@@ -0,0 +1,84 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
++++ b/drivers/infiniband/ulp/ibtrs/ibtrs.c
+@@ -0,0 +1,610 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * InfiniBand Transport Layer
 + *
@@ -104,537 +105,594 @@ index 000000000000..fec816c935bc
 + *          Danil Kipnis <danil.kipnis@cloud.ionos.com>
 + */
 +
-+#ifndef IBTRS_LOG_H
-+#define IBTRS_LOG_H
++#undef pr_fmt
++#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
 +
-+#define P1 )
-+#define P2 ))
-+#define P3 )))
-+#define P4 ))))
-+#define P(N) P ## N
++#include <linux/module.h>
++#include <linux/inet.h>
 +
-+#define CAT(a, ...) PRIMITIVE_CAT(a, __VA_ARGS__)
-+#define PRIMITIVE_CAT(a, ...) a ## __VA_ARGS__
++#include "ibtrs-pri.h"
++#include "ibtrs-log.h"
 +
-+#define LIST(...)						\
-+	__VA_ARGS__,						\
-+	({ unknown_type(); NULL; })				\
-+	CAT(P, COUNT_ARGS(__VA_ARGS__))				\
++MODULE_AUTHOR("ibnbd@profitbricks.com");
++MODULE_DESCRIPTION("IBTRS Core");
++MODULE_VERSION(IBTRS_VER_STRING);
++MODULE_LICENSE("GPL");
 +
-+#define EMPTY()
-+#define DEFER(id) id EMPTY()
++struct ibtrs_iu *ibtrs_iu_alloc(u32 tag, size_t size, gfp_t gfp_mask,
++				struct ib_device *dma_dev,
++				enum dma_data_direction direction,
++				void (*done)(struct ib_cq *cq,
++					     struct ib_wc *wc))
++{
++	struct ibtrs_iu *iu;
 +
-+#define _CASE(obj, type, member)				\
-+	__builtin_choose_expr(					\
-+	__builtin_types_compatible_p(				\
-+		typeof(obj), type),				\
-+		((type)obj)->member
-+#define CASE(o, t, m) DEFER(_CASE)(o, t, m)
++	iu = kmalloc(sizeof(*iu), gfp_mask);
++	if (unlikely(!iu))
++		return NULL;
 +
-+/*
-+ * Below we define retrieving of sessname from common IBTRS types.
-+ * Client or server related types have to be defined by special
-+ * TYPES_TO_SESSNAME macro.
-+ */
++	iu->buf = kzalloc(size, gfp_mask);
++	if (unlikely(!iu->buf))
++		goto err1;
 +
-+void unknown_type(void);
++	iu->dma_addr = ib_dma_map_single(dma_dev, iu->buf, size, direction);
++	if (unlikely(ib_dma_mapping_error(dma_dev, iu->dma_addr)))
++		goto err2;
 +
-+#ifndef TYPES_TO_SESSNAME
-+#define TYPES_TO_SESSNAME(...) ({ unknown_type(); NULL; })
-+#endif
++	iu->cqe.done  = done;
++	iu->size      = size;
++	iu->direction = direction;
++	iu->tag       = tag;
 +
-+#define ibtrs_prefix(obj)					\
-+	_CASE(obj, struct ibtrs_con *,  sess->sessname),	\
-+	_CASE(obj, struct ibtrs_sess *, sessname),		\
-+	TYPES_TO_SESSNAME(obj)					\
-+	))
++	return iu;
 +
-+#define ibtrs_log(fn, obj, fmt, ...)				\
-+	fn("<%s>: " fmt, ibtrs_prefix(obj), ##__VA_ARGS__)
++err2:
++	kfree(iu->buf);
++err1:
++	kfree(iu);
 +
-+#define ibtrs_err(obj, fmt, ...)	\
-+	ibtrs_log(pr_err, obj, fmt, ##__VA_ARGS__)
-+#define ibtrs_err_rl(obj, fmt, ...)	\
-+	ibtrs_log(pr_err_ratelimited, obj, fmt, ##__VA_ARGS__)
-+#define ibtrs_wrn(obj, fmt, ...)	\
-+	ibtrs_log(pr_warn, obj, fmt, ##__VA_ARGS__)
-+#define ibtrs_wrn_rl(obj, fmt, ...) \
-+	ibtrs_log(pr_warn_ratelimited, obj, fmt, ##__VA_ARGS__)
-+#define ibtrs_info(obj, fmt, ...) \
-+	ibtrs_log(pr_info, obj, fmt, ##__VA_ARGS__)
-+#define ibtrs_info_rl(obj, fmt, ...) \
-+	ibtrs_log(pr_info_ratelimited, obj, fmt, ##__VA_ARGS__)
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(ibtrs_iu_alloc);
 +
-+#endif /* IBTRS_LOG_H */
-diff --git a/drivers/infiniband/ulp/ibtrs/ibtrs-pri.h b/drivers/infiniband/ulp/ibtrs/ibtrs-pri.h
-new file mode 100644
-index 000000000000..5a180e5e19bc
---- /dev/null
-+++ b/drivers/infiniband/ulp/ibtrs/ibtrs-pri.h
-@@ -0,0 +1,463 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * InfiniBand Transport Layer
-+ *
-+ * Copyright (c) 2014 - 2017 ProfitBricks GmbH. All rights reserved.
-+ * Authors: Fabian Holler <mail@fholler.de>
-+ *          Jack Wang <jinpu.wang@profitbricks.com>
-+ *          Kleber Souza <kleber.souza@profitbricks.com>
-+ *          Danil Kipnis <danil.kipnis@profitbricks.com>
-+ *          Roman Penyaev <roman.penyaev@profitbricks.com>
-+ *          Milind Dumbare <Milind.dumbare@gmail.com>
-+ *
-+ * Copyright (c) 2017 - 2018 ProfitBricks GmbH. All rights reserved.
-+ * Authors: Danil Kipnis <danil.kipnis@profitbricks.com>
-+ *          Roman Penyaev <roman.penyaev@profitbricks.com>
-+ *          Swapnil Ingle <swapnil.ingle@profitbricks.com>
-+ *
-+ * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
-+ * Authors: Roman Penyaev <roman.penyaev@profitbricks.com>
-+ *          Jack Wang <jinpu.wang@cloud.ionos.com>
-+ *          Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+ */
-+
-+#ifndef IBTRS_PRI_H
-+#define IBTRS_PRI_H
-+
-+#include <linux/uuid.h>
-+#include <rdma/rdma_cm.h>
-+#include <rdma/ib_verbs.h>
-+#include <rdma/ib.h>
-+
-+#include "ibtrs.h"
-+
-+#define IBTRS_PROTO_VER_MAJOR 2
-+#define IBTRS_PROTO_VER_MINOR 0
-+
-+#define IBTRS_PROTO_VER_STRING __stringify(IBTRS_PROTO_VER_MAJOR) "." \
-+			       __stringify(IBTRS_PROTO_VER_MINOR)
-+
-+#ifndef IBTRS_VER_STRING
-+#define IBTRS_VER_STRING __stringify(IBTRS_PROTO_VER_MAJOR) "." \
-+			 __stringify(IBTRS_PROTO_VER_MINOR)
-+#endif
-+
-+enum ibtrs_imm_const {
-+	MAX_IMM_TYPE_BITS = 4,
-+	MAX_IMM_TYPE_MASK = ((1 << MAX_IMM_TYPE_BITS) - 1),
-+	MAX_IMM_PAYL_BITS = 28,
-+	MAX_IMM_PAYL_MASK = ((1 << MAX_IMM_PAYL_BITS) - 1),
-+};
-+
-+enum ibtrs_imm_type {
-+	IBTRS_IO_REQ_IMM       = 0, /* client to server */
-+	IBTRS_IO_RSP_IMM       = 1, /* server to client */
-+	IBTRS_IO_RSP_W_INV_IMM = 2, /* server to client */
-+
-+	IBTRS_HB_MSG_IMM = 8,
-+	IBTRS_HB_ACK_IMM = 9,
-+
-+	IBTRS_LAST_IMM,
-+};
-+
-+enum {
-+	SERVICE_CON_QUEUE_DEPTH = 512,
-+
-+	MIN_RTR_CNT = 1,
-+	MAX_RTR_CNT = 7,
-+
-+	MAX_PATHS_NUM = 128,
-+
-+	/*
-+	 * With the current size of the tag allocated on the client, 4K
-+	 * is the maximum number of tags we can allocate.  This number is
-+	 * also used on the client to allocate the IU for the user connection
-+	 * to receive the RDMA addresses from the server.
-+	 */
-+	MAX_SESS_QUEUE_DEPTH = 4096,
-+
-+	IBTRS_HB_INTERVAL_MS = 5000,
-+	IBTRS_HB_MISSED_MAX = 5,
-+
-+	IBTRS_MAGIC = 0x1BBD,
-+	IBTRS_PROTO_VER = (IBTRS_PROTO_VER_MAJOR << 8) | IBTRS_PROTO_VER_MINOR,
-+};
-+
-+struct ibtrs_ib_dev;
-+
-+struct ibtrs_ib_dev_pool_ops {
-+	struct ibtrs_ib_dev *(*alloc)(void);
-+	void (*free)(struct ibtrs_ib_dev *);
-+	int (*init)(struct ibtrs_ib_dev *);
-+	void (*deinit)(struct ibtrs_ib_dev *);
-+};
-+
-+struct ibtrs_ib_dev_pool {
-+	struct mutex		mutex;
-+	struct list_head	list;
-+	enum ib_pd_flags	pd_flags;
-+	const struct ibtrs_ib_dev_pool_ops *ops;
-+};
-+
-+struct ibtrs_ib_dev {
-+	struct ib_device	 *ib_dev;
-+	struct ib_pd		 *ib_pd;
-+	struct kref		 ref;
-+	struct list_head	 entry;
-+	struct ibtrs_ib_dev_pool *pool;
-+};
-+
-+struct ibtrs_con {
-+	struct ibtrs_sess	*sess;
-+	struct ib_qp		*qp;
-+	struct ib_cq		*cq;
-+	struct rdma_cm_id	*cm_id;
-+	u32			cid;
-+};
-+
-+typedef void (ibtrs_hb_handler_t)(struct ibtrs_con *con, int err);
-+
-+struct ibtrs_sess {
-+	struct list_head	entry;
-+	struct sockaddr_storage dst_addr;
-+	struct sockaddr_storage src_addr;
-+	char			sessname[NAME_MAX];
-+	uuid_t			uuid;
-+	struct ibtrs_con	**con;
-+	u32			con_num;
-+	u32		recon_cnt;
-+	struct ibtrs_ib_dev	*dev;
-+	int			dev_ref;
-+	struct ib_cqe		*hb_cqe;
-+	ibtrs_hb_handler_t	*hb_err_handler;
-+	struct workqueue_struct *hb_wq;
-+	struct delayed_work	hb_dwork;
-+	u32			hb_interval_ms;
-+	u32			hb_missed_cnt;
-+	u32			hb_missed_max;
-+};
-+
-+struct ibtrs_iu {
-+	struct list_head        list;
-+	struct ib_cqe           cqe;
-+	dma_addr_t              dma_addr;
-+	void                    *buf;
-+	size_t                  size;
-+	enum dma_data_direction direction;
-+	u32			tag;
-+};
-+
-+/**
-+ * enum ibtrs_msg_types - IBTRS message types.
-+ * @IBTRS_MSG_INFO_REQ:		Client additional info request to the server
-+ * @IBTRS_MSG_INFO_RSP:		Server additional info response to the client
-+ * @IBTRS_MSG_WRITE:		Client writes data per RDMA to server
-+ * @IBTRS_MSG_READ:		Client requests data transfer from server
-+ */
-+enum ibtrs_msg_types {
-+	IBTRS_MSG_INFO_REQ,
-+	IBTRS_MSG_INFO_RSP,
-+	IBTRS_MSG_WRITE,
-+	IBTRS_MSG_READ,
-+};
-+
-+/**
-+ * enum ibtrs_msg_flags - IBTRS message flags.
-+ * @IBTRS_NEED_INVAL:	Send invalidation in response.
-+ */
-+enum ibtrs_msg_flags {
-+	IBTRS_MSG_NEED_INVAL_F = 1<<0
-+};
-+
-+/**
-+ * struct ibtrs_sg_desc - RDMA-Buffer entry description
-+ * @addr:	Address of RDMA destination buffer
-+ * @key:	Authorization rkey to write to the buffer
-+ * @len:	Size of the buffer
-+ */
-+struct ibtrs_sg_desc {
-+	__le64			addr;
-+	__le32			key;
-+	__le32			len;
-+};
-+
-+/**
-+ * struct ibtrs_msg_conn_req - Client connection request to the server
-+ * @magic:	   IBTRS magic
-+ * @version:	   IBTRS protocol version
-+ * @cid:	   Current connection id
-+ * @cid_num:	   Number of connections per session
-+ * @recon_cnt:	   Reconnections counter
-+ * @sess_uuid:	   UUID of a session (path)
-+ * @paths_uuid:	   UUID of a group of sessions (paths)
-+ *
-+ * NOTE: max size 56 bytes, see man rdma_connect().
-+ */
-+struct ibtrs_msg_conn_req {
-+	u8		__cma_version; /* Is set to 0 by cma.c in case of
-+					* AF_IB, do not touch that. */
-+	u8		__ip_version;  /* On sender side that should be
-+					* set to 0, or cma_save_ip_info()
-+					* extract garbage and will fail. */
-+	__le16		magic;
-+	__le16		version;
-+	__le16		cid;
-+	__le16		cid_num;
-+	__le16		recon_cnt;
-+	uuid_t		sess_uuid;
-+	uuid_t		paths_uuid;
-+	u8		reserved[12];
-+};
-+
-+/**
-+ * struct ibtrs_msg_conn_rsp - Server connection response to the client
-+ * @magic:	   IBTRS magic
-+ * @version:	   IBTRS protocol version
-+ * @errno:	   If rdma_accept() then 0, if rdma_reject() indicates error
-+ * @queue_depth:   max inflight messages (queue-depth) in this session
-+ * @max_io_size:   max io size server supports
-+ * @max_hdr_size:  max msg header size server supports
-+ *
-+ * NOTE: size is 56 bytes, max possible is 136 bytes, see man rdma_accept().
-+ */
-+struct ibtrs_msg_conn_rsp {
-+	__le16		magic;
-+	__le16		version;
-+	__le16		errno;
-+	__le16		queue_depth;
-+	__le32		max_io_size;
-+	__le32		max_hdr_size;
-+	u8		reserved[40];
-+};
-+
-+/**
-+ * struct ibtrs_msg_info_req
-+ * @type:		@IBTRS_MSG_INFO_REQ
-+ * @sessname:		Session name chosen by client
-+ */
-+struct ibtrs_msg_info_req {
-+	__le16		type;
-+	u8		sessname[NAME_MAX];
-+	u8		reserved[15];
-+};
-+
-+/**
-+ * struct ibtrs_msg_info_rsp
-+ * @type:		@IBTRS_MSG_INFO_RSP
-+ * @sg_cnt:		Number of @desc entries
-+ * @desc:		RDMA buffers where the client can write to server
-+ */
-+struct ibtrs_msg_info_rsp {
-+	__le16		type;
-+	__le16          sg_cnt;
-+	u8              reserved[4];
-+	struct ibtrs_sg_desc desc[];
-+};
-+
-+/**
-+ * struct ibtrs_msg_rdma_read - RDMA data transfer request from client
-+ * @type:		always @IBTRS_MSG_READ
-+ * @usr_len:		length of user payload
-+ * @sg_cnt:		number of @desc entries
-+ * @desc:		RDMA buffers where the server can write the result to
-+ */
-+struct ibtrs_msg_rdma_read {
-+	__le16			type;
-+	__le16			usr_len;
-+	__le16			flags;
-+	__le16			sg_cnt;
-+	struct ibtrs_sg_desc    desc[];
-+};
-+
-+/**
-+ * struct_msg_rdma_write - Message transferred to server with RDMA-Write
-+ * @type:		always @IBTRS_MSG_WRITE
-+ * @usr_len:		length of user payload
-+ */
-+struct ibtrs_msg_rdma_write {
-+	__le16			type;
-+	__le16			usr_len;
-+};
-+
-+/**
-+ * struct_msg_rdma_hdr - header for read or write request
-+ * @type:		@IBTRS_MSG_WRITE | @IBTRS_MSG_READ
-+ */
-+struct ibtrs_msg_rdma_hdr {
-+	__le16			type;
-+};
-+
-+/* ibtrs.c */
-+
-+struct ibtrs_iu *ibtrs_iu_alloc(u32 tag, size_t size, gfp_t t,
-+				struct ib_device *dev, enum dma_data_direction,
-+				void (*done)(struct ib_cq *cq, struct ib_wc *wc));
 +void ibtrs_iu_free(struct ibtrs_iu *iu, enum dma_data_direction dir,
-+		   struct ib_device *dev);
-+int ibtrs_iu_post_recv(struct ibtrs_con *con, struct ibtrs_iu *iu);
++		   struct ib_device *ibdev)
++{
++	if (!iu)
++		return;
++
++	ib_dma_unmap_single(ibdev, iu->dma_addr, iu->size, dir);
++	kfree(iu->buf);
++	kfree(iu);
++}
++EXPORT_SYMBOL_GPL(ibtrs_iu_free);
++
++int ibtrs_iu_post_recv(struct ibtrs_con *con, struct ibtrs_iu *iu)
++{
++	struct ibtrs_sess *sess = con->sess;
++	struct ib_recv_wr wr;
++	const struct ib_recv_wr *bad_wr;
++	struct ib_sge list;
++
++	list.addr   = iu->dma_addr;
++	list.length = iu->size;
++	list.lkey   = sess->dev->ib_pd->local_dma_lkey;
++
++	if (WARN_ON(list.length == 0)) {
++		ibtrs_wrn(con, "Posting receive work request failed,"
++			  " sg list is empty\n");
++		return -EINVAL;
++	}
++
++	wr.next    = NULL;
++	wr.wr_cqe  = &iu->cqe;
++	wr.sg_list = &list;
++	wr.num_sge = 1;
++
++	return ib_post_recv(con->qp, &wr, &bad_wr);
++}
++EXPORT_SYMBOL_GPL(ibtrs_iu_post_recv);
++
++int ibtrs_post_recv_empty(struct ibtrs_con *con, struct ib_cqe *cqe)
++{
++	struct ib_recv_wr wr;
++	const struct ib_recv_wr *bad_wr;
++
++	wr.next    = NULL;
++	wr.wr_cqe  = cqe;
++	wr.sg_list = NULL;
++	wr.num_sge = 0;
++
++	return ib_post_recv(con->qp, &wr, &bad_wr);
++}
++EXPORT_SYMBOL_GPL(ibtrs_post_recv_empty);
++
++int ibtrs_post_recv_empty_x2(struct ibtrs_con *con, struct ib_cqe *cqe)
++{
++	struct ib_recv_wr wr_arr[2], *wr;
++	const struct ib_recv_wr *bad_wr;
++	int i;
++
++	memset(wr_arr, 0, sizeof(wr_arr));
++	for (i = 0; i < ARRAY_SIZE(wr_arr); i++) {
++		wr = &wr_arr[i];
++		wr->wr_cqe  = cqe;
++		if (i)
++			/* Chain backwards */
++			wr->next = &wr_arr[i - 1];
++	}
++
++	return ib_post_recv(con->qp, wr, &bad_wr);
++}
++EXPORT_SYMBOL_GPL(ibtrs_post_recv_empty_x2);
++
 +int ibtrs_iu_post_send(struct ibtrs_con *con, struct ibtrs_iu *iu, size_t size,
-+		       struct ib_send_wr *head);
++		       struct ib_send_wr *head)
++{
++	struct ibtrs_sess *sess = con->sess;
++	struct ib_send_wr wr;
++	const struct ib_send_wr *bad_wr;
++	struct ib_sge list;
++
++	if ((WARN_ON(size == 0)))
++		return -EINVAL;
++
++	list.addr   = iu->dma_addr;
++	list.length = size;
++	list.lkey   = sess->dev->ib_pd->local_dma_lkey;
++
++	memset(&wr, 0, sizeof(wr));
++	wr.next       = NULL;
++	wr.wr_cqe     = &iu->cqe;
++	wr.sg_list    = &list;
++	wr.num_sge    = 1;
++	wr.opcode     = IB_WR_SEND;
++	wr.send_flags = IB_SEND_SIGNALED;
++
++	if (head) {
++		struct ib_send_wr *tail = head;
++
++		while (tail->next)
++			tail = tail->next;
++		tail->next = &wr;
++	} else {
++		head = &wr;
++	}
++
++	return ib_post_send(con->qp, head, &bad_wr);
++}
++EXPORT_SYMBOL_GPL(ibtrs_iu_post_send);
++
 +int ibtrs_iu_post_rdma_write_imm(struct ibtrs_con *con, struct ibtrs_iu *iu,
 +				 struct ib_sge *sge, unsigned int num_sge,
 +				 u32 rkey, u64 rdma_addr, u32 imm_data,
 +				 enum ib_send_flags flags,
-+				 struct ib_send_wr *head);
++				 struct ib_send_wr *head)
++{
++	const struct ib_send_wr *bad_wr;
++	struct ib_rdma_wr wr;
++	int i;
 +
-+int ibtrs_post_recv_empty(struct ibtrs_con *con, struct ib_cqe *cqe);
-+int ibtrs_post_recv_empty_x2(struct ibtrs_con *con, struct ib_cqe *cqe);
++	wr.wr.next	  = NULL;
++	wr.wr.wr_cqe	  = &iu->cqe;
++	wr.wr.sg_list	  = sge;
++	wr.wr.num_sge	  = num_sge;
++	wr.rkey		  = rkey;
++	wr.remote_addr	  = rdma_addr;
++	wr.wr.opcode	  = IB_WR_RDMA_WRITE_WITH_IMM;
++	wr.wr.ex.imm_data = cpu_to_be32(imm_data);
++	wr.wr.send_flags  = flags;
++
++	/*
++	 * If one of the sges has 0 size, the operation will fail with an
++	 * length error
++	 */
++	for (i = 0; i < num_sge; i++)
++		if (WARN_ON(sge[i].length == 0))
++			return -EINVAL;
++
++	if (head) {
++		struct ib_send_wr *tail = head;
++
++		while (tail->next)
++			tail = tail->next;
++		tail->next = &wr.wr;
++	} else {
++		head = &wr.wr;
++	}
++
++	return ib_post_send(con->qp, head, &bad_wr);
++}
++EXPORT_SYMBOL_GPL(ibtrs_iu_post_rdma_write_imm);
++
 +int ibtrs_post_rdma_write_imm_empty(struct ibtrs_con *con, struct ib_cqe *cqe,
 +				    u32 imm_data, enum ib_send_flags flags,
-+				    struct ib_send_wr *head);
-+
-+int ibtrs_cq_qp_create(struct ibtrs_sess *ibtrs_sess, struct ibtrs_con *con,
-+		       u32 max_send_sge, int cq_vector, u16 cq_size,
-+		       u16 wr_queue_size, enum ib_poll_context poll_ctx);
-+void ibtrs_cq_qp_destroy(struct ibtrs_con *con);
-+
-+void ibtrs_init_hb(struct ibtrs_sess *sess, struct ib_cqe *cqe,
-+		   u32 interval_ms, u32 missed_max,
-+		   ibtrs_hb_handler_t *err_handler,
-+		   struct workqueue_struct *wq);
-+void ibtrs_start_hb(struct ibtrs_sess *sess);
-+void ibtrs_stop_hb(struct ibtrs_sess *sess);
-+void ibtrs_send_hb_ack(struct ibtrs_sess *sess);
-+
-+void ibtrs_ib_dev_pool_init(enum ib_pd_flags pd_flags,
-+			    struct ibtrs_ib_dev_pool *pool);
-+void ibtrs_ib_dev_pool_deinit(struct ibtrs_ib_dev_pool *pool);
-+
-+struct ibtrs_ib_dev *ibtrs_ib_dev_find_or_add(struct ib_device *ib_dev,
-+					      struct ibtrs_ib_dev_pool *pool);
-+int ibtrs_ib_dev_put(struct ibtrs_ib_dev *dev);
-+
-+static inline int sockaddr_cmp(const struct sockaddr *a,
-+			       const struct sockaddr *b)
++				    struct ib_send_wr *head)
 +{
-+	switch (a->sa_family) {
-+	case AF_IB:
-+		return memcmp(&((struct sockaddr_ib *)a)->sib_addr,
-+			      &((struct sockaddr_ib *)b)->sib_addr,
-+			      sizeof(struct ib_addr));
-+	case AF_INET:
-+		return memcmp(&((struct sockaddr_in *)a)->sin_addr,
-+			      &((struct sockaddr_in *)b)->sin_addr,
-+			      sizeof(struct in_addr));
-+	case AF_INET6:
-+		return memcmp(&((struct sockaddr_in6 *)a)->sin6_addr,
-+			      &((struct sockaddr_in6 *)b)->sin6_addr,
-+			      sizeof(struct in6_addr));
++	struct ib_send_wr wr;
++	const struct ib_send_wr *bad_wr;
++
++	memset(&wr, 0, sizeof(wr));
++	wr.wr_cqe	= cqe;
++	wr.send_flags	= flags;
++	wr.opcode	= IB_WR_RDMA_WRITE_WITH_IMM;
++	wr.ex.imm_data	= cpu_to_be32(imm_data);
++
++	if (head) {
++		struct ib_send_wr *tail = head;
++
++		while (tail->next)
++			tail = tail->next;
++		tail->next = &wr;
++	} else {
++		head = &wr;
++	}
++
++	return ib_post_send(con->qp, head, &bad_wr);
++}
++EXPORT_SYMBOL_GPL(ibtrs_post_rdma_write_imm_empty);
++
++static void qp_event_handler(struct ib_event *ev, void *ctx)
++{
++	struct ibtrs_con *con = ctx;
++
++	switch (ev->event) {
++	case IB_EVENT_COMM_EST:
++		ibtrs_info(con, "QP event %s (%d) received\n",
++			   ib_event_msg(ev->event), ev->event);
++		rdma_notify(con->cm_id, IB_EVENT_COMM_EST);
++		break;
 +	default:
-+		return -ENOENT;
++		ibtrs_info(con, "Unhandled QP event %s (%d) received\n",
++			   ib_event_msg(ev->event), ev->event);
++		break;
 +	}
 +}
 +
-+static inline int sockaddr_to_str(const struct sockaddr *addr,
-+				   char *buf, size_t len)
++static int create_cq(struct ibtrs_con *con, int cq_vector, u16 cq_size,
++		     enum ib_poll_context poll_ctx)
 +{
-+	int cnt;
++	struct rdma_cm_id *cm_id = con->cm_id;
++	struct ib_cq *cq;
 +
-+	switch (addr->sa_family) {
-+	case AF_IB:
-+		cnt = scnprintf(buf, len, "gid:%pI6",
-+			&((struct sockaddr_ib *)addr)->sib_addr.sib_raw);
-+		return cnt;
-+	case AF_INET:
-+		cnt = scnprintf(buf, len, "ip:%pI4",
-+			&((struct sockaddr_in *)addr)->sin_addr);
-+		return cnt;
-+	case AF_INET6:
-+		cnt = scnprintf(buf, len, "ip:%pI6c",
-+			  &((struct sockaddr_in6 *)addr)->sin6_addr);
-+		return cnt;
++	cq = ib_alloc_cq(cm_id->device, con, cq_size,
++			 cq_vector, poll_ctx);
++	if (unlikely(IS_ERR(cq))) {
++		ibtrs_err(con, "Creating completion queue failed, errno: %ld\n",
++			  PTR_ERR(cq));
++		return PTR_ERR(cq);
 +	}
-+	cnt = scnprintf(buf, len, "<invalid address family>");
-+	pr_err("Invalid address family\n");
-+	return cnt;
++	con->cq = cq;
++
++	return 0;
++}
++
++static int create_qp(struct ibtrs_con *con, struct ib_pd *pd,
++		     u16 wr_queue_size, u32 max_sge)
++{
++	struct ib_qp_init_attr init_attr = {NULL};
++	struct rdma_cm_id *cm_id = con->cm_id;
++	int ret;
++
++	init_attr.cap.max_send_wr = wr_queue_size;
++	init_attr.cap.max_recv_wr = wr_queue_size;
++	init_attr.cap.max_recv_sge = 1;
++	init_attr.event_handler = qp_event_handler;
++	init_attr.qp_context = con;
++#undef max_send_sge
++	init_attr.cap.max_send_sge = max_sge;
++
++	init_attr.qp_type = IB_QPT_RC;
++	init_attr.send_cq = con->cq;
++	init_attr.recv_cq = con->cq;
++	init_attr.sq_sig_type = IB_SIGNAL_REQ_WR;
++
++	ret = rdma_create_qp(cm_id, pd, &init_attr);
++	if (unlikely(ret)) {
++		ibtrs_err(con, "Creating QP failed, err: %d\n", ret);
++		return ret;
++	}
++	con->qp = cm_id->qp;
++
++	return ret;
++}
++
++int ibtrs_cq_qp_create(struct ibtrs_sess *sess, struct ibtrs_con *con,
++		       u32 max_send_sge, int cq_vector, u16 cq_size,
++		       u16 wr_queue_size, enum ib_poll_context poll_ctx)
++{
++	int err;
++
++	err = create_cq(con, cq_vector, cq_size, poll_ctx);
++	if (unlikely(err))
++		return err;
++
++	err = create_qp(con, sess->dev->ib_pd, wr_queue_size, max_send_sge);
++	if (unlikely(err)) {
++		ib_free_cq(con->cq);
++		con->cq = NULL;
++		return err;
++	}
++	con->sess = sess;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(ibtrs_cq_qp_create);
++
++void ibtrs_cq_qp_destroy(struct ibtrs_con *con)
++{
++	if (con->qp) {
++		rdma_destroy_qp(con->cm_id);
++		con->qp = NULL;
++	}
++	if (con->cq) {
++		ib_free_cq(con->cq);
++		con->cq = NULL;
++	}
++}
++EXPORT_SYMBOL_GPL(ibtrs_cq_qp_destroy);
++
++static void schedule_hb(struct ibtrs_sess *sess)
++{
++	queue_delayed_work(sess->hb_wq, &sess->hb_dwork,
++			   msecs_to_jiffies(sess->hb_interval_ms));
++}
++
++void ibtrs_send_hb_ack(struct ibtrs_sess *sess)
++{
++	struct ibtrs_con *usr_con = sess->con[0];
++	u32 imm;
++	int err;
++
++	imm = ibtrs_to_imm(IBTRS_HB_ACK_IMM, 0);
++	err = ibtrs_post_rdma_write_imm_empty(usr_con, sess->hb_cqe, imm,
++					      IB_SEND_SIGNALED, NULL);
++	if (unlikely(err)) {
++		sess->hb_err_handler(usr_con, err);
++		return;
++	}
++}
++EXPORT_SYMBOL_GPL(ibtrs_send_hb_ack);
++
++static void hb_work(struct work_struct *work)
++{
++	struct ibtrs_con *usr_con;
++	struct ibtrs_sess *sess;
++	u32 imm;
++	int err;
++
++	sess = container_of(to_delayed_work(work), typeof(*sess), hb_dwork);
++	usr_con = sess->con[0];
++
++	if (sess->hb_missed_cnt > sess->hb_missed_max) {
++		sess->hb_err_handler(usr_con, -ETIMEDOUT);
++		return;
++	}
++	if (sess->hb_missed_cnt++) {
++		/* Reschedule work without sending hb */
++		schedule_hb(sess);
++		return;
++	}
++	imm = ibtrs_to_imm(IBTRS_HB_MSG_IMM, 0);
++	err = ibtrs_post_rdma_write_imm_empty(usr_con, sess->hb_cqe, imm,
++					      IB_SEND_SIGNALED, NULL);
++	if (unlikely(err)) {
++		sess->hb_err_handler(usr_con, err);
++		return;
++	}
++
++	schedule_hb(sess);
++}
++
++void ibtrs_init_hb(struct ibtrs_sess *sess, struct ib_cqe *cqe,
++		   unsigned int interval_ms, unsigned int missed_max,
++		   ibtrs_hb_handler_t *err_handler,
++		   struct workqueue_struct *wq)
++{
++	sess->hb_cqe = cqe;
++	sess->hb_interval_ms = interval_ms;
++	sess->hb_err_handler = err_handler;
++	sess->hb_wq = wq;
++	sess->hb_missed_max = missed_max;
++	sess->hb_missed_cnt = 0;
++	INIT_DELAYED_WORK(&sess->hb_dwork, hb_work);
++}
++EXPORT_SYMBOL_GPL(ibtrs_init_hb);
++
++void ibtrs_start_hb(struct ibtrs_sess *sess)
++{
++	schedule_hb(sess);
++}
++EXPORT_SYMBOL_GPL(ibtrs_start_hb);
++
++void ibtrs_stop_hb(struct ibtrs_sess *sess)
++{
++	cancel_delayed_work_sync(&sess->hb_dwork);
++	sess->hb_missed_cnt = 0;
++	sess->hb_missed_max = 0;
++}
++EXPORT_SYMBOL_GPL(ibtrs_stop_hb);
++
++static int ibtrs_str_gid_to_sockaddr(const char *addr, size_t len,
++				     short port, struct sockaddr_storage *dst)
++{
++	struct sockaddr_ib *dst_ib = (struct sockaddr_ib *)dst;
++	int ret;
++
++	/*
++	 * We can use some of the I6 functions since GID is a valid
++	 * IPv6 address format
++	 */
++	ret = in6_pton(addr, len, dst_ib->sib_addr.sib_raw, '\0', NULL);
++	if (ret == 0)
++		return -EINVAL;
++
++	dst_ib->sib_family = AF_IB;
++	/*
++	 * Use the same TCP server port number as the IB service ID
++	 * on the IB port space range
++	 */
++	dst_ib->sib_sid = cpu_to_be64(RDMA_IB_IP_PS_IB | port);
++	dst_ib->sib_sid_mask = cpu_to_be64(0xffffffffffffffffULL);
++	dst_ib->sib_pkey = cpu_to_be16(0xffff);
++
++	return 0;
 +}
 +
 +/**
-+ * ibtrs_invalidate_flag() - returns proper flags for invalidation
++ * ibtrs_str_to_sockaddr() - Convert ibtrs address string to sockaddr
++ * @addr	String representation of an addr (IPv4, IPv6 or IB GID):
++ *              - "ip:192.168.1.1"
++ *              - "ip:fe80::200:5aee:feaa:20a2"
++ *              - "gid:fe80::200:5aee:feaa:20a2"
++ * @len         String address length
++ * @port	Destination port
++ * @dst		Destination sockaddr structure
 + *
-+ * NOTE: This function is needed for compat layer, so think twice before
-+ *       rename or remove.
++ * Returns 0 if conversion successful. Non-zero on error.
 + */
-+static inline u32 ibtrs_invalidate_flag(void)
++static int ibtrs_str_to_sockaddr(const char *addr, size_t len,
++				 short port, struct sockaddr_storage *dst)
 +{
-+	return IBTRS_MSG_NEED_INVAL_F;
++	if (strncmp(addr, "gid:", 4) == 0) {
++		return ibtrs_str_gid_to_sockaddr(addr + 4, len - 4, port, dst);
++	} else if (strncmp(addr, "ip:", 3) == 0) {
++		char port_str[8];
++		char *cpy;
++		int err;
++
++		snprintf(port_str, sizeof(port_str), "%u", port);
++		cpy = kstrndup(addr + 3, len - 3, GFP_KERNEL);
++		err = cpy ? inet_pton_with_scope(&init_net, AF_UNSPEC,
++						 cpy, port_str, dst) : -ENOMEM;
++		kfree(cpy);
++
++		return err;
++	}
++	return -EPROTONOSUPPORT;
 +}
 +
-+static inline u32 ibtrs_to_imm(u32 type, u32 payload)
++int ibtrs_addr_to_sockaddr(const char *str, size_t len, short port,
++			   struct ibtrs_addr *addr)
 +{
-+	BUILD_BUG_ON(MAX_IMM_PAYL_BITS + MAX_IMM_TYPE_BITS != 32);
-+	BUILD_BUG_ON(IBTRS_LAST_IMM > (1<<MAX_IMM_TYPE_BITS));
-+	return ((type & MAX_IMM_TYPE_MASK) << MAX_IMM_PAYL_BITS) |
-+		(payload & MAX_IMM_PAYL_MASK);
-+}
++	const char *d;
++	int ret;
 +
-+static inline void ibtrs_from_imm(u32 imm, u32 *type, u32 *payload)
++	d = strchr(str, ',');
++	if (!d)
++		d = strchr(str, '@');
++	if (d) {
++		if (ibtrs_str_to_sockaddr(str, d - str, 0, addr->src))
++			return -EINVAL;
++		d += 1;
++		len -= d - str;
++		str  = d;
++
++	} else {
++		addr->src = NULL;
++	}
++	ret = ibtrs_str_to_sockaddr(str, len, port, addr->dst);
++
++	return ret;
++}
++EXPORT_SYMBOL(ibtrs_addr_to_sockaddr);
++
++void ibtrs_ib_dev_pool_init(enum ib_pd_flags pd_flags,
++			    struct ibtrs_ib_dev_pool *pool)
 +{
-+	*payload = (imm & MAX_IMM_PAYL_MASK);
-+	*type = (imm >> MAX_IMM_PAYL_BITS);
++	WARN_ON(pool->ops && (!pool->ops->alloc ^ !pool->ops->free));
++	INIT_LIST_HEAD(&pool->list);
++	mutex_init(&pool->mutex);
++	pool->pd_flags = pd_flags;
 +}
++EXPORT_SYMBOL(ibtrs_ib_dev_pool_init);
 +
-+static inline u32 ibtrs_to_io_req_imm(u32 addr)
++void ibtrs_ib_dev_pool_deinit(struct ibtrs_ib_dev_pool *pool)
 +{
-+	return ibtrs_to_imm(IBTRS_IO_REQ_IMM, addr);
++	WARN_ON(!list_empty(&pool->list));
 +}
++EXPORT_SYMBOL(ibtrs_ib_dev_pool_deinit);
 +
-+static inline u32 ibtrs_to_io_rsp_imm(u32 msg_id, int errno, bool w_inval)
++static void dev_free(struct kref *ref)
 +{
-+	enum ibtrs_imm_type type;
-+	u32 payload;
++	struct ibtrs_ib_dev_pool *pool;
++	struct ibtrs_ib_dev *dev;
 +
-+	/* 9 bits for errno, 19 bits for msg_id */
-+	payload = (abs(errno) & 0x1ff) << 19 | (msg_id & 0x7ffff);
-+	type = (w_inval ? IBTRS_IO_RSP_W_INV_IMM : IBTRS_IO_RSP_IMM);
++	dev = container_of(ref, typeof(*dev), ref);
++	pool = dev->pool;
 +
-+	return ibtrs_to_imm(type, payload);
++	mutex_lock(&pool->mutex);
++	list_del(&dev->entry);
++	mutex_unlock(&pool->mutex);
++
++	if (pool->ops && pool->ops->deinit)
++		pool->ops->deinit(dev);
++
++	ib_dealloc_pd(dev->ib_pd);
++
++	if (pool->ops && pool->ops->free)
++		pool->ops->free(dev);
++	else
++		kfree(dev);
 +}
 +
-+static inline void ibtrs_from_io_rsp_imm(u32 payload, u32 *msg_id, int *errno)
++int ibtrs_ib_dev_put(struct ibtrs_ib_dev *dev)
 +{
-+	/* 9 bits for errno, 19 bits for msg_id */
-+	*msg_id = (payload & 0x7ffff);
-+	*errno = -(int)((payload >> 19) & 0x1ff);
++	return kref_put(&dev->ref, dev_free);
++}
++EXPORT_SYMBOL(ibtrs_ib_dev_put);
++
++static int ibtrs_ib_dev_get(struct ibtrs_ib_dev *dev)
++{
++	return kref_get_unless_zero(&dev->ref);
 +}
 +
-+#define STAT_STORE_FUNC(type, store, reset)				\
-+static ssize_t store##_store(struct kobject *kobj,			\
-+			     struct kobj_attribute *attr,		\
-+			     const char *buf, size_t count)		\
-+{									\
-+	int ret = -EINVAL;						\
-+	type *sess = container_of(kobj, type, kobj_stats);		\
-+									\
-+	if (sysfs_streq(buf, "1"))					\
-+		ret = reset(&sess->stats, true);			\
-+	else if (sysfs_streq(buf, "0"))					\
-+		ret = reset(&sess->stats, false);			\
-+	if (ret)							\
-+		return ret;						\
-+									\
-+	return count;							\
++struct ibtrs_ib_dev *
++ibtrs_ib_dev_find_or_add(struct ib_device *ib_dev,
++			 struct ibtrs_ib_dev_pool *pool)
++{
++	struct ibtrs_ib_dev *dev;
++
++	mutex_lock(&pool->mutex);
++	list_for_each_entry(dev, &pool->list, entry) {
++		if (dev->ib_dev->node_guid == ib_dev->node_guid &&
++		    ibtrs_ib_dev_get(dev))
++			goto out_unlock;
++	}
++	if (pool->ops && pool->ops->alloc)
++		dev = pool->ops->alloc();
++	else
++		dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (unlikely(IS_ERR_OR_NULL(dev)))
++		goto out_err;
++
++	kref_init(&dev->ref);
++	dev->pool = pool;
++	dev->ib_dev = ib_dev;
++	dev->ib_pd = ib_alloc_pd(ib_dev, pool->pd_flags);
++	if (unlikely(IS_ERR(dev->ib_pd)))
++		goto out_free_dev;
++
++	if (pool->ops && pool->ops->init && pool->ops->init(dev))
++		goto out_free_pd;
++
++	list_add(&dev->entry, &pool->list);
++out_unlock:
++	mutex_unlock(&pool->mutex);
++	return dev;
++
++out_free_pd:
++	ib_dealloc_pd(dev->ib_pd);
++out_free_dev:
++	if (pool->ops && pool->ops->free)
++		pool->ops->free(dev);
++	else
++		kfree(dev);
++out_err:
++	mutex_unlock(&pool->mutex);
++	return NULL;
 +}
-+
-+#define STAT_SHOW_FUNC(type, show, print)				\
-+static ssize_t show##_show(struct kobject *kobj,			\
-+			   struct kobj_attribute *attr,			\
-+			   char *page)					\
-+{									\
-+	type *sess = container_of(kobj, type, kobj_stats);		\
-+									\
-+	return print(&sess->stats, page, PAGE_SIZE);			\
-+}
-+
-+#define STAT_ATTR(type, stat, print, reset)				\
-+STAT_STORE_FUNC(type, stat, reset)					\
-+STAT_SHOW_FUNC(type, stat, print)					\
-+static struct kobj_attribute stat##_attr =				\
-+		__ATTR(stat, 0644,					\
-+		       stat##_show,					\
-+		       stat##_store)
-+
-+#endif /* IBTRS_PRI_H */
++EXPORT_SYMBOL(ibtrs_ib_dev_find_or_add);
 -- 
 2.17.1
 
