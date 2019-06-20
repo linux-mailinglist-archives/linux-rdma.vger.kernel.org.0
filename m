@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7FE4D328
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 18:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DF64D354
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 18:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732219AbfFTQOH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 12:14:07 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:59542 "EHLO ale.deltatee.com"
+        id S1732013AbfFTQMw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 12:12:52 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:59372 "EHLO ale.deltatee.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732209AbfFTQNB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 12:13:01 -0400
+        id S1731733AbfFTQMv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Jun 2019 12:12:51 -0400
 Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
         by ale.deltatee.com with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.89)
         (envelope-from <gunthorp@deltatee.com>)
-        id 1hdzg6-00046N-6A; Thu, 20 Jun 2019 10:12:59 -0600
+        id 1hdzg6-00046O-67; Thu, 20 Jun 2019 10:12:50 -0600
 Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.89)
         (envelope-from <gunthorp@deltatee.com>)
-        id 1hdzg4-0005wB-CX; Thu, 20 Jun 2019 10:12:44 -0600
+        id 1hdzg4-0005wE-FQ; Thu, 20 Jun 2019 10:12:44 -0600
 From:   Logan Gunthorpe <logang@deltatee.com>
 To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
         linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
@@ -31,8 +31,8 @@ Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Stephen Bates <sbates@raithlin.com>,
         Logan Gunthorpe <logang@deltatee.com>
-Date:   Thu, 20 Jun 2019 10:12:18 -0600
-Message-Id: <20190620161240.22738-7-logang@deltatee.com>
+Date:   Thu, 20 Jun 2019 10:12:19 -0600
+Message-Id: <20190620161240.22738-8-logang@deltatee.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190620161240.22738-1-logang@deltatee.com>
 References: <20190620161240.22738-1-logang@deltatee.com>
@@ -46,7 +46,7 @@ X-Spam-Level:
 X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
         GREYLIST_ISWHITE,MYRULES_NO_TEXT autolearn=ham autolearn_force=no
         version=3.4.2
-Subject: [RFC PATCH 06/28] block: Support dma-direct bios in bio_advance_iter()
+Subject: [RFC PATCH 07/28] block: Use dma_vec length in bio_cur_bytes() for dma-direct bios
 X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
 X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
@@ -54,27 +54,34 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dma-direct bio iterators need to be advanced using a similar
-dvec_iter_advance helper.
+For dma-direct bios, use the dv_len of the current vector
+seeing the bio_vec's are not valid in such a context.
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- include/linux/bio.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/bio.h | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/include/linux/bio.h b/include/linux/bio.h
-index 8180309123d7..e212e5958a75 100644
+index e212e5958a75..df7973932525 100644
 --- a/include/linux/bio.h
 +++ b/include/linux/bio.h
-@@ -134,6 +134,8 @@ static inline void bio_advance_iter(struct bio *bio, struct bvec_iter *iter,
+@@ -91,10 +91,12 @@ static inline bool bio_mergeable(struct bio *bio)
  
- 	if (bio_no_advance_iter(bio))
- 		iter->bi_size -= bytes;
+ static inline unsigned int bio_cur_bytes(struct bio *bio)
+ {
+-	if (bio_has_data(bio))
+-		return bio_iovec(bio).bv_len;
+-	else /* dataless requests such as discard */
++	if (!bio_has_data(bio)) /* dataless requests such as discard */
+ 		return bio->bi_iter.bi_size;
 +	else if (op_is_dma_direct(bio->bi_opf))
-+		dvec_iter_advance(bio->bi_dma_vec, iter, bytes);
- 	else
- 		bvec_iter_advance(bio->bi_io_vec, iter, bytes);
- 		/* TODO: It is reasonable to complete bio with error here. */
++		return bio_dma_vec(bio).dv_len;
++	else
++		return bio_iovec(bio).bv_len;
+ }
+ 
+ static inline void *bio_data(struct bio *bio)
 -- 
 2.20.1
 
