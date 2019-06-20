@@ -2,128 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD614D98D
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 20:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21DA4D9AD
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 20:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbfFTSiy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 14:38:54 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:60378 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726062AbfFTSiv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 14:38:51 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 9955388313;
-        Thu, 20 Jun 2019 18:38:51 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C5DB65C1A1;
-        Thu, 20 Jun 2019 18:38:48 +0000 (UTC)
-Message-ID: <f4854b3abea8604e6a1dea74baa6cc53042ed677.camel@redhat.com>
-Subject: Re: [PATCH rdma-next] RDMA: Convert destroy_wq to be void
-From:   Doug Ledford <dledford@redhat.com>
-To:     Yuval Shaia <yuval.shaia@oracle.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Date:   Thu, 20 Jun 2019 14:38:46 -0400
-In-Reply-To: <20190612125518.GA3358@lap1>
-References: <20190612122741.22850-1-leon@kernel.org>
-         <20190612124049.GA2448@lap1> <20190612125112.GR6369@mtr-leonro.mtl.com>
-         <20190612125518.GA3358@lap1>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-QYBi1/UnZ4GZsxXgUx7K"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S1726118AbfFTSpv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 14:45:51 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:32925 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726876AbfFTSpu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 14:45:50 -0400
+Received: by mail-oi1-f194.google.com with SMTP id f80so2945272oib.0
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 11:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5VxtaXvavuIj/WSwZHnAHCDIqk0MlZk9aDQYd+gdFk4=;
+        b=PvhKM5V+6yqnt2aU5HxaJksE4uPAQmNs5skwhuJ6n8y5XgZlmqj3eeb150T7SBN6SE
+         gIm81w+vU1PtiVJorKQJeZTOHd5OFru39TU4SqL/hr3Rtekmt9KMOkokl1EdfE8VlZMk
+         1NkJs/r1WvgIbwR5DJQ0DbUyxIuHbh3jBXe8LKcbCXSMEinhkyK/xlaSv+78VovqYMtg
+         q1DEjNCTrdAytojICVF4MAcW1VhW5C6b2MEs9t9SRvlyLXj7Lh7Yhv74YAr6kla9u8Qp
+         j8ElcBqtPWtUqgwrRBxPPxQ++W67n8FbK6X2OdqDEGZA60ahsSfATor7gBkpcrk+yQzG
+         znqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5VxtaXvavuIj/WSwZHnAHCDIqk0MlZk9aDQYd+gdFk4=;
+        b=gplC13VHr836VgLuhH0nvqrNo2OC3/3moqDQEuFwEHXag3rCb4AyKW0O68LIc4Nqix
+         mPseYMn1xBw2v+ZzhIq9rscU3RytzoHhDlSPGVkW3E13kdAM68hMfG1byVSGjX5VCS9V
+         dY626K5LAorwg8YXLR90ZW3dCYDpk78rBEo/1WNFEk4ke0rl4HqUzkV46TmrCcw2QL7q
+         +heU2M2/Nla3UDUk1voNteO60H2VbDoWBB+XCbYJZwjfsSmOByqA2DMyVTAAyW9SBZ13
+         MpeVPoppn+iE0kGhUvCdVz8cPk6ncZW0rGPgHjJoYih1WWvvwSCLscnF8GeOXckiekRt
+         poSQ==
+X-Gm-Message-State: APjAAAUWzahcW6f5f9oBBgo6+jLM4NuSltYqOJW8mt8gYVsO7wyvBQgN
+        GlH3eTY+j53aBEPHUbHr6b5Hi4thvZlEg5CMrUmqTw==
+X-Google-Smtp-Source: APXvYqxzQJlp4UblxkfvTerY7hS4anNKGD6JaiZlLO54L7p3q2W7RUsf+utlNLQ8WFVB+mqDyi2X0jOIR79GoWAQb9A=
+X-Received: by 2002:aca:ec82:: with SMTP id k124mr222240oih.73.1561056349598;
+ Thu, 20 Jun 2019 11:45:49 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.28]); Thu, 20 Jun 2019 18:38:51 +0000 (UTC)
+References: <20190620161240.22738-1-logang@deltatee.com>
+In-Reply-To: <20190620161240.22738-1-logang@deltatee.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 20 Jun 2019 11:45:38 -0700
+Message-ID: <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Stephen Bates <sbates@raithlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Jun 20, 2019 at 9:13 AM Logan Gunthorpe <logang@deltatee.com> wrote:
+>
+> For eons there has been a debate over whether or not to use
+> struct pages for peer-to-peer DMA transactions. Pro-pagers have
+> argued that struct pages are necessary for interacting with
+> existing code like scatterlists or the bio_vecs. Anti-pagers
+> assert that the tracking of the memory is unecessary and
+> allocating the pages is a waste of memory. Both viewpoints are
+> valid, however developers working on GPUs and RDMA tend to be
+> able to do away with struct pages relatively easily
 
---=-QYBi1/UnZ4GZsxXgUx7K
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Presumably because they have historically never tried to be
+inter-operable with the block layer or drivers outside graphics and
+RDMA.
 
-On Wed, 2019-06-12 at 15:55 +0300, Yuval Shaia wrote:
-> On Wed, Jun 12, 2019 at 03:51:12PM +0300, Leon Romanovsky wrote:
-> > On Wed, Jun 12, 2019 at 03:40:50PM +0300, Yuval Shaia wrote:
-> > > On Wed, Jun 12, 2019 at 03:27:41PM +0300, Leon Romanovsky wrote:
-> > > > From: Leon Romanovsky <leonro@mellanox.com>
-> > > >=20
-> > > > All callers of destroy WQ are always success and there is no
-> > > > need
-> > > > to check their return value, so convert destroy_wq to be void.
-> > > >=20
-> > > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > > > ---
-> > > >  drivers/infiniband/core/verbs.c      | 12 +++++-------
-> > > >  drivers/infiniband/hw/mlx4/mlx4_ib.h |  2 +-
-> > > >  drivers/infiniband/hw/mlx4/qp.c      |  4 +---
-> > > >  drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 +-
-> > > >  drivers/infiniband/hw/mlx5/qp.c      |  4 +---
-> > > >  include/rdma/ib_verbs.h              |  2 +-
-> > > >  6 files changed, 10 insertions(+), 16 deletions(-)
-> > > >=20
-> > > > diff --git a/drivers/infiniband/core/verbs.c
-> > > > b/drivers/infiniband/core/verbs.c
-> > > > index 2fb834bb146c..d55f491be24f 100644
-> > > > --- a/drivers/infiniband/core/verbs.c
-> > > > +++ b/drivers/infiniband/core/verbs.c
-> > > > @@ -2344,19 +2344,17 @@ EXPORT_SYMBOL(ib_create_wq);
-> > > >   */
-> > > >  int ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata)
-> > >=20
-> > > So why this one left out of this change?
-> >=20
-> > This function can return -EBUSY.
->=20
-> Missed that.
->=20
-> > > >  {
-> > > > -	int err;
-> > > >  	struct ib_cq *cq =3D wq->cq;
-> > > >  	struct ib_pd *pd =3D wq->pd;
-> > > >=20
-> > > >  	if (atomic_read(&wq->usecnt))
-> > > >  		return -EBUSY;
-> >=20
-> > Thanks
->=20
-> Reviewed-by: Yuval Shaia <yuval.shaia@oracle.com>
->=20
+>  compared to
+> those wanting to work with NVMe devices through the block layer.
+> So it would be of great value to be able to universally do P2PDMA
+> transactions without the use of struct pages.
 
-Applied to for-next, thanks.
+Please spell out the value, it is not immediately obvious to me
+outside of some memory capacity savings.
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+> Previously, there have been multiple attempts[1][2] to replace
+> struct page usage with pfn_t but this has been unpopular seeing
+> it creates dangerous edge cases where unsuspecting code might
+> run accross pfn_t's they are not ready for.
 
---=-QYBi1/UnZ4GZsxXgUx7K
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+That's not the conclusion I arrived at because pfn_t is specifically
+an opaque type precisely to force "unsuspecting" code to throw
+compiler assertions. Instead pfn_t was dealt its death blow here:
 
------BEGIN PGP SIGNATURE-----
+https://lore.kernel.org/lkml/CA+55aFzON9617c2_Amep0ngLq91kfrPiSccdZakxir82iekUiA@mail.gmail.com/
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0L0rYACgkQuCajMw5X
-L911Fw/9HQ2I9UU+nJjedKgigMOoZ5H4CiPvYVpaCGz8ViJrSq93gVrXyWKIpK92
-3xiewsr/tNDeIZCxly6iAke6kLAoqbX6yHzM9D2LtZsvrJREJRKlhX49D0BpHOm5
-JtDwWJatjrWD+lRnytChKNJyUeDBiBs48ABdmdxG1zzNKAPIGMni+yrQIyzPnsxm
-ykptWbuNagBR9iyhLYlIuaz7Ya+tyAxBhtEGOzUx0GzlL99cGRfBlj9PQnGJLwen
-EfkAzSKSDt+yeewQfucrdBc6rmloRLUT/AFIhg6bY1xp5jgPhUf0HSgJHOn8lGBL
-QsLsfCvpezHby1Bk4vwPzYLqfG8xSMs3sEtlTGuodz/T7JTy0zbaZBbhpEzfuIWE
-jmgsPFh5bxp8gSjV3gfm3ELhD7ck/EyzMAn4G3opJi3P48ICzj/gM8x9K/QW4gMP
-58ZwjwnLUuR9vQnO3InrBoz/sxduleG/RxFizOCrUqHrlGItX+F0u6Wx9/aWvoqn
-hlysfVZky9fckPaNzZw1Ry+Imei7Ivc00V48tyih3ij4DngZ+Joe8YFLrOMMqHu2
-+xxD14EIbfARiVQPZ0sdMy5rRRUSu2M8IjU/uYMapmbbYgmEOFzl3NxR8QvnPoo0
-0hghB1Pidjf6lfg/OFd/ErITyuDZBOfFyfEgI9pjScjgoSV2Byw=
-=Z/28
------END PGP SIGNATURE-----
+...and I think that feedback also reads on this proposal.
 
---=-QYBi1/UnZ4GZsxXgUx7K--
+> Currently, we have P2PDMA using struct pages through the block layer
+> and the dangerous cases are avoided by using a queue flag that
+> indicates support for the special pages.
+>
+> This RFC proposes a new solution: allow the block layer to take
+> DMA addresses directly for queues that indicate support. This will
+> provide a more general path for doing P2PDMA-like requests and will
+> allow us to remove the struct pages that back P2PDMA memory thus paving
+> the way to build a more uniform P2PDMA ecosystem.
 
+My primary concern with this is that ascribes a level of generality
+that just isn't there for peer-to-peer dma operations. "Peer"
+addresses are not "DMA" addresses, and the rules about what can and
+can't do peer-DMA are not generically known to the block layer. At
+least with a side object there's a chance to describe / recall those
+restrictions as these things get passed around the I/O stack, but an
+undecorated "DMA" address passed through the block layer with no other
+benefit to any subsystem besides RDMA does not feel like it advances
+the state of the art.
+
+Again, what are the benefits of plumbing this RDMA special case?
