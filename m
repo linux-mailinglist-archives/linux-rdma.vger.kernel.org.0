@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E0C4D174
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 17:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A504D171
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 17:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732113AbfFTPEH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 11:04:07 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:45983 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbfFTPEG (ORCPT
+        id S1731560AbfFTPEG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 11:04:06 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:33309 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732025AbfFTPEG (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 11:04:06 -0400
-Received: by mail-ed1-f66.google.com with SMTP id a14so5128337edv.12;
-        Thu, 20 Jun 2019 08:04:02 -0700 (PDT)
+Received: by mail-ed1-f68.google.com with SMTP id i11so5228930edq.0;
+        Thu, 20 Jun 2019 08:04:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=iVGSq8H+OcsM4cyws1u4vRKIXLdWEuyvHoeh05+bfl0=;
-        b=cXdsfQuQcTX81KpnIHfy/0+lWbZhoNfwU/vni472O5Dme06ayR5wBROM71HgPOk8h5
-         Jitzf8/2oRs5HkFx2mczGk+ljYLc7EKnIkJHuVEPd2n7rk8VYsxrzXk6sKlrqzxw8h13
-         UXHGVKRp5OEFRywLPk5U5FzXKCE+t4DxwfMofrsa5sjcS/TkaXY/iqhqc+ujWLX+vYVS
-         AJ6rV6Z6hn7y9VuRoLID5ri3FGA+7HEj3RXSz+Uw9YOSsrsRZscHV/HMlFTS2Q60tZRW
-         gd67C9VUirhC0+V6F2PTWVD8AFZtpsO1sUDrOWalB5yAVCK3lwiLVwUcNcfavfP7jgLT
-         2hHg==
+        bh=IFyODUk6cIjSUK8BmTeAttFkRDyOUQ2D0GqC81pxRAc=;
+        b=gdQt5sLAgRdZNALfi9E5RSf+lyi31WiuxHk5BHSjeRKWKoxkUOjh7JWefP09He4Fz5
+         MdH6TMpO/BS4O7Xp95jz0+C4vpUxyZzOlWDqboAc86xdjRczrNTF6fBJove10JMVN4DT
+         u6Cd0/SilVOwNEq0rSSId0epOnkq8FeTUlzWItTeHRn+M36sN4DPAWTf+NCImxVGpYnM
+         sLnGIbiXhAeLH/M5BHUMtK+AnXLCekcjLsBeXREl6Jid2zNnXX9rkdg4ZuRP+aFQgpb3
+         mm770lbtI4C+MoSZ45LvqVF6+z3NAEMbaAS86rOtM7poLr2+7JSQmDCP8SupDUWrhQZI
+         sHkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=iVGSq8H+OcsM4cyws1u4vRKIXLdWEuyvHoeh05+bfl0=;
-        b=S/04BZkSA3STo0NlIyf4Efb8kbt8UdceeoJzmRGP/wNVREJAoRFDbuNZEng8BW3KDA
-         EL/QBieGUQ6mJmtjHRaN3dJa3/rL9YdabBYp/tPgG+c1CVWJhm7bO0rfKLbFpBcmKLCC
-         +2IgNzAZXr+tBRcXUlPkkJDtkPGKNlNxBi9Sq2tGMvUT9SuoQuj/KqOdTq0uqcJwoP1Y
-         Z66vznz7jzHf2RFtVPlurckt93FUsfpR71x+USEvEzSQSYytyHmorfi3k5Heb8YnM3lv
-         hPzHSm5R/zmIiTYO0zmiXtFK2XTO5Egyv49vaQFDWDu7cEK8/jpt8tlwV+UXOBqbRY6p
-         EFiw==
-X-Gm-Message-State: APjAAAXgxbyRUgYM3Ho61EvAcmBNCg7shi+JdMj81sP4U7d48v8+BtX9
-        fOnPorcW4mcR/4PCt+LGJwpTASKjhf8=
-X-Google-Smtp-Source: APXvYqyKgm5kDN3q4Ws8FhW9xD2/PIOeORoj69uDvuPiwqGrqnPxYMTQl3MWdk2M1uvMGKoxafCkjg==
-X-Received: by 2002:aa7:d617:: with SMTP id c23mr58745362edr.54.1561043041360;
-        Thu, 20 Jun 2019 08:04:01 -0700 (PDT)
+        bh=IFyODUk6cIjSUK8BmTeAttFkRDyOUQ2D0GqC81pxRAc=;
+        b=ZeD8y1frOC6X6pxhngJGSmoHWWtiZOeDRrxiOb0mnztzkJl9j3VaWtkmJY9+xkVGY8
+         dIZ62bfW+6QX/99aHumUIpYzrRTva8AsAlv/3ZAfNrv/njkaNlHWC/Ju/O3ILhkWYq5h
+         8DPLP7IFPtPuajsfj6W/JdQ2pdqFza/n+6Uy7AaL7oOjASx3MXsJaedapnMCplchyA2G
+         xSYiET6UzuZgrxo8oxs6nLZA1Tvt7orXId0uq+WyzaYpatuE4fzFlmdGBa2EKxu8PEOu
+         Gi7Rhq9L4TO2C11OsZyApeiu2GAehZgys00OYsaZi8DmLxOFuYGn4XOAHFaoUVB2ISQp
+         IoCg==
+X-Gm-Message-State: APjAAAW+kLOd3IuO996OqLFkveykokMYuXa0OpL0TUhPFa3C5FQH8M6C
+        mJSfUHlKIZSAZobC/+7gBE7pDQXF29w=
+X-Google-Smtp-Source: APXvYqw+TUZLFtHGJ+p1fJ5b13TIP7vTWqanYW50vgWlpWA9/BQGBDYHlxDrHyVwG09lU51UEhMj3g==
+X-Received: by 2002:a50:aa7c:: with SMTP id p57mr91450473edc.179.1561043042800;
+        Thu, 20 Jun 2019 08:04:02 -0700 (PDT)
 Received: from jwang-Latitude-5491.pb.local ([62.217.45.26])
-        by smtp.gmail.com with ESMTPSA id a20sm3855817ejj.21.2019.06.20.08.03.59
+        by smtp.gmail.com with ESMTPSA id a20sm3855817ejj.21.2019.06.20.08.04.01
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 20 Jun 2019 08:04:00 -0700 (PDT)
+        Thu, 20 Jun 2019 08:04:02 -0700 (PDT)
 From:   Jack Wang <jinpuwang@gmail.com>
 To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
@@ -50,9 +50,9 @@ Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
         Roman Pen <roman.penyaev@profitbricks.com>,
         Jack Wang <jinpu.wang@cloud.ionos.com>
-Subject: [PATCH v4 17/25] ibnbd: client: main functionality
-Date:   Thu, 20 Jun 2019 17:03:29 +0200
-Message-Id: <20190620150337.7847-18-jinpuwang@gmail.com>
+Subject: [PATCH v4 18/25] ibnbd: client: sysfs interface functions
+Date:   Thu, 20 Jun 2019 17:03:30 +0200
+Message-Id: <20190620150337.7847-19-jinpuwang@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190620150337.7847-1-jinpuwang@gmail.com>
 References: <20190620150337.7847-1-jinpuwang@gmail.com>
@@ -63,23 +63,41 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Roman Pen <roman.penyaev@profitbricks.com>
 
-This is main functionality of ibnbd-client module, which provides
-interface to map remote device as local block device /dev/ibnbd<N>
-and feeds IBTRS with IO requests.
+This is the sysfs interface to IBNBD block devices on client side:
+
+  /sys/devices/virtual/ibnbd-client/ctl/
+    |- map_device
+    |  *** maps remote device
+    |
+    |- devices/
+       *** all mapped devices
+
+  /sys/block/ibnbd<N>/ibnbd_client/
+    |- unmap_device
+    |  *** unmaps device
+    |
+    |- state
+    |  *** device state
+    |
+    |- session
+    |  *** session name
+    |
+    |- mapping_path
+       *** path of the dev that was mapped on server
 
 Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 ---
- drivers/block/ibnbd/ibnbd-clt.c | 1832 +++++++++++++++++++++++++++++++
- 1 file changed, 1832 insertions(+)
- create mode 100644 drivers/block/ibnbd/ibnbd-clt.c
+ drivers/block/ibnbd/ibnbd-clt-sysfs.c | 691 ++++++++++++++++++++++++++
+ 1 file changed, 691 insertions(+)
+ create mode 100644 drivers/block/ibnbd/ibnbd-clt-sysfs.c
 
-diff --git a/drivers/block/ibnbd/ibnbd-clt.c b/drivers/block/ibnbd/ibnbd-clt.c
+diff --git a/drivers/block/ibnbd/ibnbd-clt-sysfs.c b/drivers/block/ibnbd/ibnbd-clt-sysfs.c
 new file mode 100644
-index 000000000000..b5675fac0a60
+index 000000000000..4fd365e68e0f
 --- /dev/null
-+++ b/drivers/block/ibnbd/ibnbd-clt.c
-@@ -0,0 +1,1832 @@
++++ b/drivers/block/ibnbd/ibnbd-clt-sysfs.c
+@@ -0,0 +1,691 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * InfiniBand Network Block Driver
@@ -106,1812 +124,671 @@ index 000000000000..b5675fac0a60
 +#undef pr_fmt
 +#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
 +
++#include <linux/types.h>
++#include <linux/ctype.h>
++#include <linux/parser.h>
 +#include <linux/module.h>
-+#include <linux/blkdev.h>
-+#include <linux/hdreg.h>
-+#include <linux/scatterlist.h>
-+#include <linux/idr.h>
++#include <linux/in6.h>
++#include <linux/fs.h>
++#include <linux/uaccess.h>
++#include <linux/device.h>
++#include <rdma/ib.h>
++#include <rdma/rdma_cm.h>
 +
 +#include "ibnbd-clt.h"
 +
-+MODULE_AUTHOR("ibnbd@profitbricks.com");
-+MODULE_DESCRIPTION("InfiniBand Network Block Device Client");
-+MODULE_VERSION(IBNBD_VER_STRING);
-+MODULE_LICENSE("GPL");
-+
-+/*
-+ * This is for closing devices when unloading the module:
-+ * we might be closing a lot (>256) of devices in parallel
-+ * and it is better not to use the system_wq.
-+ */
-+static struct workqueue_struct *unload_wq;
-+static int ibnbd_client_major;
-+static DEFINE_IDA(index_ida);
-+static DEFINE_MUTEX(ida_lock);
-+static DEFINE_MUTEX(sess_lock);
-+static LIST_HEAD(sess_list);
-+
-+static bool softirq_enable;
-+module_param(softirq_enable, bool, 0444);
-+MODULE_PARM_DESC(softirq_enable, "finish request in softirq_fn."
-+		 " (default: 0)");
-+/*
-+ * Maximum number of partitions an instance can have.
-+ * 6 bits = 64 minors = 63 partitions (one minor is used for the device itself)
-+ */
-+#define IBNBD_PART_BITS		6
-+#define KERNEL_SECTOR_SIZE      512
-+
-+static inline bool ibnbd_clt_get_sess(struct ibnbd_clt_session *sess)
-+{
-+	return refcount_inc_not_zero(&sess->refcount);
-+}
-+
-+static void free_sess(struct ibnbd_clt_session *sess);
-+
-+static void ibnbd_clt_put_sess(struct ibnbd_clt_session *sess)
-+{
-+	might_sleep();
-+
-+	if (refcount_dec_and_test(&sess->refcount))
-+		free_sess(sess);
-+}
-+
-+static inline bool ibnbd_clt_dev_is_mapped(struct ibnbd_clt_dev *dev)
-+{
-+	return dev->dev_state == DEV_STATE_MAPPED;
-+}
-+
-+static void ibnbd_clt_put_dev(struct ibnbd_clt_dev *dev)
-+{
-+	might_sleep();
-+
-+	if (refcount_dec_and_test(&dev->refcount)) {
-+		mutex_lock(&ida_lock);
-+		ida_simple_remove(&index_ida, dev->clt_device_id);
-+		mutex_unlock(&ida_lock);
-+		kfree(dev->hw_queues);
-+		ibnbd_clt_put_sess(dev->sess);
-+		kfree(dev);
-+	}
-+}
-+
-+static inline bool ibnbd_clt_get_dev(struct ibnbd_clt_dev *dev)
-+{
-+	return refcount_inc_not_zero(&dev->refcount);
-+}
-+
-+static int ibnbd_clt_set_dev_attr(struct ibnbd_clt_dev *dev,
-+				  const struct ibnbd_msg_open_rsp *rsp)
-+{
-+	struct ibnbd_clt_session *sess = dev->sess;
-+
-+	if (unlikely(!rsp->logical_block_size))
-+		return -EINVAL;
-+
-+	dev->device_id		    = le32_to_cpu(rsp->device_id);
-+	dev->nsectors		    = le64_to_cpu(rsp->nsectors);
-+	dev->logical_block_size	    = le16_to_cpu(rsp->logical_block_size);
-+	dev->physical_block_size    = le16_to_cpu(rsp->physical_block_size);
-+	dev->max_write_same_sectors = le32_to_cpu(rsp->max_write_same_sectors);
-+	dev->max_discard_sectors    = le32_to_cpu(rsp->max_discard_sectors);
-+	dev->discard_granularity    = le32_to_cpu(rsp->discard_granularity);
-+	dev->discard_alignment	    = le32_to_cpu(rsp->discard_alignment);
-+	dev->secure_discard	    = le16_to_cpu(rsp->secure_discard);
-+	dev->rotational		    = rsp->rotational;
-+	dev->remote_io_mode	    = rsp->io_mode;
-+
-+	dev->max_hw_sectors = sess->max_io_size / dev->logical_block_size;
-+	dev->max_segments = BMAX_SEGMENTS;
-+
-+	if (dev->remote_io_mode == IBNBD_BLOCKIO) {
-+		dev->max_hw_sectors = min_t(u32, dev->max_hw_sectors,
-+					    le32_to_cpu(rsp->max_hw_sectors));
-+		dev->max_segments = min_t(u16, dev->max_segments,
-+					  le16_to_cpu(rsp->max_segments));
-+	}
-+
-+	return 0;
-+}
-+
-+static int ibnbd_clt_revalidate_disk(struct ibnbd_clt_dev *dev,
-+				     size_t new_nsectors)
-+{
-+	int err = 0;
-+
-+	ibnbd_info(dev, "Device size changed from %zu to %zu sectors\n",
-+		   dev->nsectors, new_nsectors);
-+	dev->nsectors = new_nsectors;
-+	set_capacity(dev->gd,
-+		     dev->nsectors * (dev->logical_block_size /
-+				      KERNEL_SECTOR_SIZE));
-+	err = revalidate_disk(dev->gd);
-+	if (err)
-+		ibnbd_err(dev, "Failed to change device size from"
-+			  " %zu to %zu, err: %d\n", dev->nsectors,
-+			  new_nsectors, err);
-+	return err;
-+}
-+
-+static int process_msg_open_rsp(struct ibnbd_clt_dev *dev,
-+				struct ibnbd_msg_open_rsp *rsp)
-+{
-+	int err = 0;
-+
-+	mutex_lock(&dev->lock);
-+	if (dev->dev_state == DEV_STATE_UNMAPPED) {
-+		ibnbd_info(dev, "Ignoring Open-Response message from server for "
-+			   " unmapped device\n");
-+		err = -ENOENT;
-+		goto out;
-+	}
-+	if (dev->dev_state == DEV_STATE_MAPPED_DISCONNECTED) {
-+		u64 nsectors = le64_to_cpu(rsp->nsectors);
-+
-+		/*
-+		 * If the device was remapped and the size changed in the
-+		 * meantime we need to revalidate it
-+		 */
-+		if (dev->nsectors != nsectors)
-+			ibnbd_clt_revalidate_disk(dev, nsectors);
-+		ibnbd_info(dev, "Device online, device remapped successfully\n");
-+	}
-+	err = ibnbd_clt_set_dev_attr(dev, rsp);
-+	if (unlikely(err))
-+		goto out;
-+	dev->dev_state = DEV_STATE_MAPPED;
-+
-+out:
-+	mutex_unlock(&dev->lock);
-+
-+	return err;
-+}
-+
-+int ibnbd_clt_resize_disk(struct ibnbd_clt_dev *dev, size_t newsize)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&dev->lock);
-+	if (dev->dev_state != DEV_STATE_MAPPED) {
-+		pr_err("Failed to set new size of the device, "
-+		       "device is not opened\n");
-+		ret = -ENOENT;
-+		goto out;
-+	}
-+	ret = ibnbd_clt_revalidate_disk(dev, newsize);
-+
-+out:
-+	mutex_unlock(&dev->lock);
-+
-+	return ret;
-+}
-+
-+static inline void ibnbd_clt_dev_requeue(struct ibnbd_queue *q)
-+{
-+	if (WARN_ON(!q->hctx))
-+		return;
-+
-+	/* We can come here from interrupt, thus async=true */
-+	blk_mq_run_hw_queue(q->hctx, true);
-+}
++static struct device *ibnbd_dev;
++static struct class *ibnbd_dev_class;
++static struct kobject *ibnbd_devs_kobj;
 +
 +enum {
-+	IBNBD_DELAY_10ms   = 10,
-+	IBNBD_DELAY_IFBUSY = -1,
++	IBNBD_OPT_ERR		= 0,
++	IBNBD_OPT_PATH		= 1 << 0,
++	IBNBD_OPT_DEV_PATH	= 1 << 1,
++	IBNBD_OPT_ACCESS_MODE	= 1 << 3,
++	IBNBD_OPT_IO_MODE	= 1 << 5,
++	IBNBD_OPT_SESSNAME	= 1 << 6,
 +};
 +
-+/**
-+ * ibnbd_get_cpu_qlist() - finds a list with HW queues to be requeued
-+ *
-+ * Description:
-+ *     Each CPU has a list of HW queues, which needs to be requeed.  If a list
-+ *     is not empty - it is marked with a bit.  This function finds first
-+ *     set bit in a bitmap and returns corresponding CPU list.
-+ */
-+static struct ibnbd_cpu_qlist *
-+ibnbd_get_cpu_qlist(struct ibnbd_clt_session *sess, int cpu)
-+{
-+	int bit;
-+
-+	/* First half */
-+	bit = find_next_bit(sess->cpu_queues_bm, nr_cpu_ids, cpu);
-+	if (bit < nr_cpu_ids) {
-+		return per_cpu_ptr(sess->cpu_queues, bit);
-+	} else if (cpu != 0) {
-+		/* Second half */
-+		bit = find_next_bit(sess->cpu_queues_bm, cpu, 0);
-+		if (bit < cpu)
-+			return per_cpu_ptr(sess->cpu_queues, bit);
-+	}
-+
-+	return NULL;
-+}
-+
-+static inline int nxt_cpu(int cpu)
-+{
-+	return (cpu + 1) % nr_cpu_ids;
-+}
-+
-+/**
-+ * ibnbd_requeue_if_needed() - requeue if CPU queue is marked as non empty
-+ *
-+ * Description:
-+ *     Each CPU has it's own list of HW queues, which should be requeued.
-+ *     Function finds such list with HW queues, takes a list lock, picks up
-+ *     the first HW queue out of the list and requeues it.
-+ *
-+ * Return:
-+ *     True if the queue was requeued, false otherwise.
-+ *
-+ * Context:
-+ *     Does not matter.
-+ */
-+static inline bool ibnbd_requeue_if_needed(struct ibnbd_clt_session *sess)
-+{
-+	struct ibnbd_queue *q = NULL;
-+	struct ibnbd_cpu_qlist *cpu_q;
-+	unsigned long flags;
-+	int *cpup;
-+
-+	/*
-+	 * To keep fairness and not to let other queues starve we always
-+	 * try to wake up someone else in round-robin manner.  That of course
-+	 * increases latency but queues always have a chance to be executed.
-+	 */
-+	cpup = get_cpu_ptr(sess->cpu_rr);
-+	for (cpu_q = ibnbd_get_cpu_qlist(sess, nxt_cpu(*cpup)); cpu_q;
-+	     cpu_q = ibnbd_get_cpu_qlist(sess, nxt_cpu(cpu_q->cpu))) {
-+		if (!spin_trylock_irqsave(&cpu_q->requeue_lock, flags))
-+			continue;
-+		if (likely(test_bit(cpu_q->cpu, sess->cpu_queues_bm))) {
-+			q = list_first_entry_or_null(&cpu_q->requeue_list,
-+						     typeof(*q), requeue_list);
-+			if (WARN_ON(!q))
-+				goto clear_bit;
-+			list_del_init(&q->requeue_list);
-+			clear_bit_unlock(0, &q->in_list);
-+
-+			if (list_empty(&cpu_q->requeue_list)) {
-+				/* Clear bit if nothing is left */
-+clear_bit:
-+				clear_bit(cpu_q->cpu, sess->cpu_queues_bm);
-+			}
-+		}
-+		spin_unlock_irqrestore(&cpu_q->requeue_lock, flags);
-+
-+		if (q)
-+			break;
-+	}
-+
-+	/**
-+	 * Saves the CPU that is going to be requeued on the per-cpu var. Just
-+	 * incrementing it doesn't work because ibnbd_get_cpu_qlist() will
-+	 * always return the first CPU with something on the queue list when the
-+	 * value stored on the var is greater than the last CPU with something
-+	 * on the list.
-+	 */
-+	if (cpu_q)
-+		*cpup = cpu_q->cpu;
-+	put_cpu_var(sess->cpu_rr);
-+
-+	if (q)
-+		ibnbd_clt_dev_requeue(q);
-+
-+	return !!q;
-+}
-+
-+/**
-+ * ibnbd_requeue_all_if_idle() - requeue all queues left in the list if
-+ *     session is idling (there are no requests in-flight).
-+ *
-+ * Description:
-+ *     This function tries to rerun all stopped queues if there are no
-+ *     requests in-flight anymore.  This function tries to solve an obvious
-+ *     problem, when number of tags < than number of queues (hctx), which
-+ *     are stopped and put to sleep.  If last tag, which has been just put,
-+ *     does not wake up all left queues (hctxs), IO requests hang forever.
-+ *
-+ *     That can happen when all number of tags, say N, have been exhausted
-+ *     from one CPU, and we have many block devices per session, say M.
-+ *     Each block device has it's own queue (hctx) for each CPU, so eventually
-+ *     we can put that number of queues (hctxs) to sleep: M x nr_cpu_ids.
-+ *     If number of tags N < M x nr_cpu_ids finally we will get an IO hang.
-+ *
-+ *     To avoid this hang last caller of ibnbd_put_tag() (last caller is the
-+ *     one who observes sess->busy == 0) must wake up all remaining queues.
-+ *
-+ * Context:
-+ *     Does not matter.
-+ */
-+static inline void ibnbd_requeue_all_if_idle(struct ibnbd_clt_session *sess)
-+{
-+	bool requeued;
-+
-+	do {
-+		requeued = ibnbd_requeue_if_needed(sess);
-+	} while (atomic_read(&sess->busy) == 0 && requeued);
-+}
-+
-+static struct ibtrs_tag *ibnbd_get_tag(struct ibnbd_clt_session *sess,
-+				       enum ibtrs_clt_con_type con_type,
-+				       int wait)
-+{
-+	struct ibtrs_tag *tag;
-+
-+	tag = ibtrs_clt_get_tag(sess->ibtrs, con_type,
-+				wait ? IBTRS_TAG_WAIT : IBTRS_TAG_NOWAIT);
-+	if (likely(tag))
-+		/* We have a subtle rare case here, when all tags can be
-+		 * consumed before busy counter increased.  This is safe,
-+		 * because loser will get NULL as a tag, observe 0 busy
-+		 * counter and immediately restart the queue himself.
-+		 */
-+		atomic_inc(&sess->busy);
-+
-+	return tag;
-+}
-+
-+static void ibnbd_put_tag(struct ibnbd_clt_session *sess, struct ibtrs_tag *tag)
-+{
-+	ibtrs_clt_put_tag(sess->ibtrs, tag);
-+	atomic_dec(&sess->busy);
-+	/* Paired with ibnbd_clt_dev_add_to_requeue().  Decrement first
-+	 * and then check queue bits.
-+	 */
-+	smp_mb__after_atomic();
-+	ibnbd_requeue_all_if_idle(sess);
-+}
-+
-+static struct ibnbd_iu *ibnbd_get_iu(struct ibnbd_clt_session *sess,
-+				     enum ibtrs_clt_con_type con_type,
-+				     int wait)
-+{
-+	struct ibnbd_iu *iu;
-+	struct ibtrs_tag *tag;
-+
-+	tag = ibnbd_get_tag(sess, con_type,
-+			    wait ? IBTRS_TAG_WAIT : IBTRS_TAG_NOWAIT);
-+	if (unlikely(!tag))
-+		return NULL;
-+	iu = ibtrs_tag_to_pdu(tag);
-+	iu->tag = tag; /* yes, ibtrs_tag_from_pdu() can be nice here,
-+			* but also we have to think about MQ mode
-+			*/
-+	/*
-+	 * 1st reference is dropped after finishing sending a "user" message,
-+	 * 2nd reference is dropped after confirmation with the response is
-+	 * returned.
-+	 * 1st and 2nd can happen in any order, so the ibnbd_iu should be
-+	 * released (ibtrs_tag returned to ibbtrs) only leased after both
-+	 * are finished.
-+	 */
-+	atomic_set(&iu->refcount, 2);
-+	init_waitqueue_head(&iu->comp.wait);
-+	iu->comp.errno = INT_MAX;
-+
-+	return iu;
-+}
-+
-+static void ibnbd_put_iu(struct ibnbd_clt_session *sess, struct ibnbd_iu *iu)
-+{
-+	if (atomic_dec_and_test(&iu->refcount))
-+		ibnbd_put_tag(sess, iu->tag);
-+}
-+
-+static void ibnbd_softirq_done_fn(struct request *rq)
-+{
-+	struct ibnbd_clt_dev *dev	= rq->rq_disk->private_data;
-+	struct ibnbd_clt_session *sess	= dev->sess;
-+	struct ibnbd_iu *iu;
-+
-+	iu = blk_mq_rq_to_pdu(rq);
-+	ibnbd_put_tag(sess, iu->tag);
-+	blk_mq_end_request(rq, iu->status);
-+}
-+
-+static void msg_io_conf(void *priv, int errno)
-+{
-+	struct ibnbd_iu *iu = (struct ibnbd_iu *)priv;
-+	struct ibnbd_clt_dev *dev = iu->dev;
-+	struct request *rq = iu->rq;
-+
-+	iu->status = errno ? BLK_STS_IOERR : BLK_STS_OK;
-+
-+	if (softirq_enable) {
-+		blk_mq_complete_request(rq);
-+	} else {
-+		ibnbd_put_tag(dev->sess, iu->tag);
-+		blk_mq_end_request(rq, iu->status);
-+	}
-+
-+	if (errno)
-+		ibnbd_info_rl(dev, "%s I/O failed with err: %d\n",
-+			      rq_data_dir(rq) == READ ? "read" : "write",
-+			      errno);
-+}
-+
-+static void wake_up_iu_comp(struct ibnbd_iu *iu, int errno)
-+{
-+	iu->comp.errno = errno;
-+	wake_up(&iu->comp.wait);
-+}
-+
-+static void msg_conf(void *priv, int errno)
-+{
-+	struct ibnbd_iu *iu = (struct ibnbd_iu *)priv;
-+
-+	iu->errno = errno;
-+	schedule_work(&iu->work);
-+}
-+
-+enum {
-+	NO_WAIT = 0,
-+	WAIT    = 1
++static unsigned int ibnbd_opt_mandatory[] = {
++	IBNBD_OPT_PATH,
++	IBNBD_OPT_DEV_PATH,
++	IBNBD_OPT_SESSNAME,
 +};
 +
-+static int send_usr_msg(struct ibtrs_clt *ibtrs, int dir,
-+			struct ibnbd_iu *iu, struct kvec *vec, size_t nr,
-+			size_t len, struct scatterlist *sg, unsigned int sg_len,
-+			void (*conf)(struct work_struct *work),
-+			int *errno, bool wait)
-+{
-+	int err;
-+
-+	INIT_WORK(&iu->work, conf);
-+	err = ibtrs_clt_request(dir, msg_conf, ibtrs, iu->tag,
-+				iu, vec, nr, len, sg, sg_len);
-+	if (!err && wait) {
-+		wait_event(iu->comp.wait, iu->comp.errno != INT_MAX);
-+		*errno = iu->comp.errno;
-+	} else {
-+		*errno = 0;
-+	}
-+
-+	return err;
-+}
-+
-+static void msg_close_conf(struct work_struct *work)
-+{
-+	struct ibnbd_iu *iu = container_of(work, struct ibnbd_iu, work);
-+	struct ibnbd_clt_dev *dev = iu->dev;
-+
-+	wake_up_iu_comp(iu, iu->errno);
-+	ibnbd_put_iu(dev->sess, iu);
-+	ibnbd_clt_put_dev(dev);
-+}
-+
-+static int send_msg_close(struct ibnbd_clt_dev *dev, u32 device_id, bool wait)
-+{
-+	struct ibnbd_clt_session *sess = dev->sess;
-+	struct ibnbd_msg_close msg;
-+	struct ibnbd_iu *iu;
-+	struct kvec vec = {
-+		.iov_base = &msg,
-+		.iov_len  = sizeof(msg)
-+	};
-+	int err, errno;
-+
-+	iu = ibnbd_get_iu(sess, IBTRS_USR_CON, IBTRS_TAG_WAIT);
-+	if (unlikely(!iu))
-+		return -ENOMEM;
-+
-+	iu->buf = NULL;
-+	iu->dev = dev;
-+
-+	sg_mark_end(&iu->sglist[0]);
-+
-+	msg.hdr.type	= cpu_to_le16(IBNBD_MSG_CLOSE);
-+	msg.device_id	= cpu_to_le32(device_id);
-+
-+	WARN_ON(!ibnbd_clt_get_dev(dev));
-+	err = send_usr_msg(sess->ibtrs, WRITE, iu, &vec, 1, 0, NULL, 0,
-+			   msg_close_conf, &errno, wait);
-+	if (unlikely(err)) {
-+		ibnbd_clt_put_dev(dev);
-+		ibnbd_put_iu(sess, iu);
-+	} else {
-+		err = errno;
-+	}
-+
-+	ibnbd_put_iu(sess, iu);
-+	return err;
-+}
-+
-+static void msg_open_conf(struct work_struct *work)
-+{
-+	struct ibnbd_iu *iu = container_of(work, struct ibnbd_iu, work);
-+	struct ibnbd_msg_open_rsp *rsp = iu->buf;
-+	struct ibnbd_clt_dev *dev = iu->dev;
-+	int errno = iu->errno;
-+
-+	if (errno) {
-+		ibnbd_err(dev, "Opening failed, server responded: %d\n", errno);
-+	} else {
-+		errno = process_msg_open_rsp(dev, rsp);
-+		if (unlikely(errno)) {
-+			u32 device_id = le32_to_cpu(rsp->device_id);
-+			/*
-+			 * If server thinks its fine, but we fail to process
-+			 * then be nice and send a close to server.
-+			 */
-+			(void)send_msg_close(dev, device_id, NO_WAIT);
-+		}
-+	}
-+	kfree(rsp);
-+	wake_up_iu_comp(iu, errno);
-+	ibnbd_put_iu(dev->sess, iu);
-+	ibnbd_clt_put_dev(dev);
-+}
-+
-+static void msg_sess_info_conf(struct work_struct *work)
-+{
-+	struct ibnbd_iu *iu = container_of(work, struct ibnbd_iu, work);
-+	struct ibnbd_msg_sess_info_rsp *rsp = iu->buf;
-+	struct ibnbd_clt_session *sess = iu->sess;
-+
-+	if (likely(!iu->errno))
-+		sess->ver = min_t(u8, rsp->ver, IBNBD_PROTO_VER_MAJOR);
-+
-+	kfree(rsp);
-+	wake_up_iu_comp(iu, iu->errno);
-+	ibnbd_put_iu(sess, iu);
-+	ibnbd_clt_put_sess(sess);
-+}
-+
-+static int send_msg_open(struct ibnbd_clt_dev *dev, bool wait)
-+{
-+	struct ibnbd_clt_session *sess = dev->sess;
-+	struct ibnbd_msg_open_rsp *rsp;
-+	struct ibnbd_msg_open msg;
-+	struct ibnbd_iu *iu;
-+	struct kvec vec = {
-+		.iov_base = &msg,
-+		.iov_len  = sizeof(msg)
-+	};
-+	int err, errno;
-+
-+	rsp = kzalloc(sizeof(*rsp), GFP_KERNEL);
-+	if (unlikely(!rsp))
-+		return -ENOMEM;
-+
-+	iu = ibnbd_get_iu(sess, IBTRS_USR_CON, IBTRS_TAG_WAIT);
-+	if (unlikely(!iu)) {
-+		kfree(rsp);
-+		return -ENOMEM;
-+	}
-+
-+	iu->buf = rsp;
-+	iu->dev = dev;
-+
-+	sg_init_one(iu->sglist, rsp, sizeof(*rsp));
-+
-+	msg.hdr.type	= cpu_to_le16(IBNBD_MSG_OPEN);
-+	msg.access_mode	= dev->access_mode;
-+	msg.io_mode	= dev->io_mode;
-+	strlcpy(msg.dev_name, dev->pathname, sizeof(msg.dev_name));
-+
-+	WARN_ON(!ibnbd_clt_get_dev(dev));
-+	err = send_usr_msg(sess->ibtrs, READ, iu,
-+			   &vec, 1, sizeof(*rsp), iu->sglist, 1,
-+			   msg_open_conf, &errno, wait);
-+	if (unlikely(err)) {
-+		ibnbd_clt_put_dev(dev);
-+		ibnbd_put_iu(sess, iu);
-+		kfree(rsp);
-+	} else {
-+		err = errno;
-+	}
-+
-+	ibnbd_put_iu(sess, iu);
-+	return err;
-+}
-+
-+static int send_msg_sess_info(struct ibnbd_clt_session *sess, bool wait)
-+{
-+	struct ibnbd_msg_sess_info_rsp *rsp;
-+	struct ibnbd_msg_sess_info msg;
-+	struct ibnbd_iu *iu;
-+	struct kvec vec = {
-+		.iov_base = &msg,
-+		.iov_len  = sizeof(msg)
-+	};
-+	int err, errno;
-+
-+	rsp = kzalloc(sizeof(*rsp), GFP_KERNEL);
-+	if (unlikely(!rsp))
-+		return -ENOMEM;
-+
-+	iu = ibnbd_get_iu(sess, IBTRS_USR_CON, IBTRS_TAG_WAIT);
-+	if (unlikely(!iu)) {
-+		kfree(rsp);
-+		return -ENOMEM;
-+	}
-+
-+	iu->buf = rsp;
-+	iu->sess = sess;
-+
-+	sg_init_one(iu->sglist, rsp, sizeof(*rsp));
-+
-+	msg.hdr.type = cpu_to_le16(IBNBD_MSG_SESS_INFO);
-+	msg.ver      = IBNBD_PROTO_VER_MAJOR;
-+
-+	if (unlikely(!ibnbd_clt_get_sess(sess))) {
-+		/*
-+		 * That can happen only in one case, when IBTRS has restablished
-+		 * the connection and link_ev() is called, but session is almost
-+		 * dead, last reference on session is put and caller is waiting
-+		 * for IBTRS to close everything.
-+		 */
-+		err = -ENODEV;
-+		goto put_iu;
-+	}
-+	err = send_usr_msg(sess->ibtrs, READ, iu,
-+			   &vec, 1, sizeof(*rsp), iu->sglist, 1,
-+			   msg_sess_info_conf, &errno, wait);
-+	if (unlikely(err)) {
-+		ibnbd_clt_put_sess(sess);
-+put_iu:
-+		ibnbd_put_iu(sess, iu);
-+		kfree(rsp);
-+	} else {
-+		err = errno;
-+	}
-+
-+	ibnbd_put_iu(sess, iu);
-+	return err;
-+}
-+
-+static void set_dev_states_to_disconnected(struct ibnbd_clt_session *sess)
-+{
-+	struct ibnbd_clt_dev *dev;
-+
-+	mutex_lock(&sess->lock);
-+	list_for_each_entry(dev, &sess->devs_list, list) {
-+		ibnbd_err(dev, "Device disconnected.\n");
-+
-+		mutex_lock(&dev->lock);
-+		if (dev->dev_state == DEV_STATE_MAPPED)
-+			dev->dev_state = DEV_STATE_MAPPED_DISCONNECTED;
-+		mutex_unlock(&dev->lock);
-+	}
-+	mutex_unlock(&sess->lock);
-+}
-+
-+static void remap_devs(struct ibnbd_clt_session *sess)
-+{
-+	struct ibnbd_clt_dev *dev;
-+	struct ibtrs_attrs attrs;
-+	int err;
-+
-+	/*
-+	 * Careful here: we are called from IBTRS link event directly,
-+	 * thus we can't send any IBTRS request and wait for response
-+	 * or IBTRS will not be able to complete request with failure
-+	 * if something goes wrong (failing of outstanding requests
-+	 * happens exactly from the context where we are blocking now).
-+	 *
-+	 * So to avoid deadlocks each usr message sent from here must
-+	 * be asynchronous.
-+	 */
-+
-+	err = send_msg_sess_info(sess, NO_WAIT);
-+	if (unlikely(err)) {
-+		pr_err("send_msg_sess_info(\"%s\"): %d\n", sess->sessname, err);
-+		return;
-+	}
-+
-+	ibtrs_clt_query(sess->ibtrs, &attrs);
-+	mutex_lock(&sess->lock);
-+	sess->max_io_size = attrs.max_io_size;
-+
-+	list_for_each_entry(dev, &sess->devs_list, list) {
-+		bool skip;
-+
-+		mutex_lock(&dev->lock);
-+		skip = (dev->dev_state == DEV_STATE_INIT);
-+		mutex_unlock(&dev->lock);
-+		if (skip)
-+			/*
-+			 * When device is establishing connection for the first
-+			 * time - do not remap, it will be closed soon.
-+			 */
-+			continue;
-+
-+		ibnbd_info(dev, "session reconnected, remapping device\n");
-+		err = send_msg_open(dev, NO_WAIT);
-+		if (unlikely(err)) {
-+			ibnbd_err(dev, "send_msg_open(): %d\n", err);
-+			break;
-+		}
-+	}
-+	mutex_unlock(&sess->lock);
-+}
-+
-+static void ibnbd_clt_link_ev(void *priv, enum ibtrs_clt_link_ev ev)
-+{
-+	struct ibnbd_clt_session *sess = priv;
-+
-+	switch (ev) {
-+	case IBTRS_CLT_LINK_EV_DISCONNECTED:
-+		set_dev_states_to_disconnected(sess);
-+		break;
-+	case IBTRS_CLT_LINK_EV_RECONNECTED:
-+		remap_devs(sess);
-+		break;
-+	default:
-+		pr_err("Unknown session event received (%d), session: %s\n",
-+		       ev, sess->sessname);
-+	}
-+}
-+
-+static void ibnbd_init_cpu_qlists(struct ibnbd_cpu_qlist __percpu *cpu_queues)
-+{
-+	unsigned int cpu;
-+	struct ibnbd_cpu_qlist *cpu_q;
-+
-+	for_each_possible_cpu(cpu) {
-+		cpu_q = per_cpu_ptr(cpu_queues, cpu);
-+
-+		cpu_q->cpu = cpu;
-+		INIT_LIST_HEAD(&cpu_q->requeue_list);
-+		spin_lock_init(&cpu_q->requeue_lock);
-+	}
-+}
-+
-+static struct blk_mq_ops ibnbd_mq_ops;
-+static int setup_mq_tags(struct ibnbd_clt_session *sess)
-+{
-+	struct blk_mq_tag_set *tags = &sess->tag_set;
-+
-+	memset(tags, 0, sizeof(*tags));
-+	tags->ops		= &ibnbd_mq_ops;
-+	tags->queue_depth	= sess->queue_depth;
-+	tags->numa_node		= NUMA_NO_NODE;
-+	tags->flags		= BLK_MQ_F_SHOULD_MERGE |
-+				  BLK_MQ_F_TAG_SHARED;
-+	tags->cmd_size		= sizeof(struct ibnbd_iu);
-+	tags->nr_hw_queues	= num_online_cpus();
-+
-+	return blk_mq_alloc_tag_set(tags);
-+}
-+
-+static void destroy_mq_tags(struct ibnbd_clt_session *sess)
-+{
-+	if (sess->tag_set.tags)
-+		blk_mq_free_tag_set(&sess->tag_set);
-+}
-+
-+static inline void wake_up_ibtrs_waiters(struct ibnbd_clt_session *sess)
-+{
-+	/* paired with rmb() in wait_for_ibtrs_connection() */
-+	smp_wmb();
-+	sess->ibtrs_ready = true;
-+	wake_up_all(&sess->ibtrs_waitq);
-+}
-+
-+static void close_ibtrs(struct ibnbd_clt_session *sess)
-+{
-+	might_sleep();
-+
-+	if (!IS_ERR_OR_NULL(sess->ibtrs)) {
-+		ibtrs_clt_close(sess->ibtrs);
-+		sess->ibtrs = NULL;
-+		wake_up_ibtrs_waiters(sess);
-+	}
-+}
-+
-+static void free_sess(struct ibnbd_clt_session *sess)
-+{
-+	WARN_ON(!list_empty(&sess->devs_list));
-+
-+	might_sleep();
-+
-+	close_ibtrs(sess);
-+	destroy_mq_tags(sess);
-+	if (!list_empty(&sess->list)) {
-+		mutex_lock(&sess_lock);
-+		list_del(&sess->list);
-+		mutex_unlock(&sess_lock);
-+	}
-+	free_percpu(sess->cpu_queues);
-+	free_percpu(sess->cpu_rr);
-+	kfree(sess);
-+}
-+
-+static struct ibnbd_clt_session *alloc_sess(const char *sessname)
-+{
-+	struct ibnbd_clt_session *sess;
-+	int err, cpu;
-+
-+	sess = kzalloc_node(sizeof(*sess), GFP_KERNEL, NUMA_NO_NODE);
-+	if (unlikely(!sess)) {
-+		pr_err("Failed to create session %s,"
-+		       " allocating session struct failed\n", sessname);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+	strlcpy(sess->sessname, sessname, sizeof(sess->sessname));
-+	atomic_set(&sess->busy, 0);
-+	mutex_init(&sess->lock);
-+	INIT_LIST_HEAD(&sess->devs_list);
-+	INIT_LIST_HEAD(&sess->list);
-+	bitmap_zero(sess->cpu_queues_bm, NR_CPUS);
-+	init_waitqueue_head(&sess->ibtrs_waitq);
-+	refcount_set(&sess->refcount, 1);
-+
-+	sess->cpu_queues = alloc_percpu(struct ibnbd_cpu_qlist);
-+	if (unlikely(!sess->cpu_queues)) {
-+		pr_err("Failed to create session to %s,"
-+		       " alloc of percpu var (cpu_queues) failed\n", sessname);
-+		err = -ENOMEM;
-+		goto err;
-+	}
-+	ibnbd_init_cpu_qlists(sess->cpu_queues);
-+
-+	/**
-+	 * That is simple percpu variable which stores cpu indeces, which are
-+	 * incremented on each access.  We need that for the sake of fairness
-+	 * to wake up queues in a round-robin manner.
-+	 */
-+	sess->cpu_rr = alloc_percpu(int);
-+	if (unlikely(!sess->cpu_rr)) {
-+		pr_err("Failed to create session %s,"
-+		       " alloc of percpu var (cpu_rr) failed\n", sessname);
-+		err = -ENOMEM;
-+		goto err;
-+	}
-+	for_each_possible_cpu(cpu)
-+		*per_cpu_ptr(sess->cpu_rr, cpu) = cpu;
-+
-+	return sess;
-+
-+err:
-+	free_sess(sess);
-+
-+	return ERR_PTR(err);
-+}
-+
-+static int wait_for_ibtrs_connection(struct ibnbd_clt_session *sess)
-+{
-+	wait_event(sess->ibtrs_waitq, sess->ibtrs_ready);
-+	/* paired with wmb() in wake_up_ibtrs_waiters() */
-+	smp_rmb();
-+	if (unlikely(IS_ERR_OR_NULL(sess->ibtrs)))
-+		return -ECONNRESET;
-+
-+	return 0;
-+}
-+
-+static void wait_for_ibtrs_disconnection(struct ibnbd_clt_session *sess)
-+__releases(&sess_lock)
-+__acquires(&sess_lock)
-+{
-+	DEFINE_WAIT_FUNC(wait, autoremove_wake_function);
-+
-+	prepare_to_wait(&sess->ibtrs_waitq, &wait, TASK_UNINTERRUPTIBLE);
-+	if (IS_ERR_OR_NULL(sess->ibtrs)) {
-+		finish_wait(&sess->ibtrs_waitq, &wait);
-+		return;
-+	}
-+	mutex_unlock(&sess_lock);
-+	/* After unlock session can be freed, so careful */
-+	schedule();
-+	mutex_lock(&sess_lock);
-+}
-+
-+static struct ibnbd_clt_session *__find_and_get_sess(const char *sessname)
-+__releases(&sess_lock)
-+__acquires(&sess_lock)
-+{
-+	struct ibnbd_clt_session *sess;
-+	int err;
-+
-+again:
-+	list_for_each_entry(sess, &sess_list, list) {
-+		if (strcmp(sessname, sess->sessname))
-+			continue;
-+
-+		if (unlikely(sess->ibtrs_ready && IS_ERR_OR_NULL(sess->ibtrs)))
-+			/*
-+			 * No IBTRS connection, session is dying.
-+			 */
-+			continue;
-+
-+		if (likely(ibnbd_clt_get_sess(sess))) {
-+			/*
-+			 * Alive session is found, wait for IBTRS connection.
-+			 */
-+			mutex_unlock(&sess_lock);
-+			err = wait_for_ibtrs_connection(sess);
-+			if (unlikely(err))
-+				ibnbd_clt_put_sess(sess);
-+			mutex_lock(&sess_lock);
-+
-+			if (unlikely(err))
-+				/* Session is dying, repeat the loop */
-+				goto again;
-+
-+			return sess;
-+		}
-+		/*
-+		 * Ref is 0, session is dying, wait for IBTRS disconnect
-+		 * in order to avoid session names clashes.
-+		 */
-+		wait_for_ibtrs_disconnection(sess);
-+		/*
-+		 * IBTRS is disconnected and soon session will be freed,
-+		 * so repeat a loop.
-+		 */
-+		goto again;
-+	}
-+
-+	return NULL;
-+}
-+
-+static struct ibnbd_clt_session *find_and_get_sess(const char *sessname)
-+{
-+	struct ibnbd_clt_session *sess;
-+
-+	mutex_lock(&sess_lock);
-+	sess = __find_and_get_sess(sessname);
-+	mutex_unlock(&sess_lock);
-+
-+	return sess;
-+}
-+
-+static struct ibnbd_clt_session *
-+find_and_get_or_insert_sess(struct ibnbd_clt_session *sess)
-+{
-+	struct ibnbd_clt_session *found;
-+
-+	mutex_lock(&sess_lock);
-+	found = __find_and_get_sess(sess->sessname);
-+	if (!found)
-+		list_add(&sess->list, &sess_list);
-+	mutex_unlock(&sess_lock);
-+
-+	return found;
-+}
-+
-+static struct ibnbd_clt_session *
-+find_and_get_or_create_sess(const char *sessname,
-+			    const struct ibtrs_addr *paths,
-+			    size_t path_cnt)
-+{
-+	struct ibnbd_clt_session *sess, *found;
-+	struct ibtrs_attrs attrs;
-+	int err;
-+
-+	sess = find_and_get_sess(sessname);
-+	if (sess)
-+		return sess;
-+
-+	sess = alloc_sess(sessname);
-+	if (unlikely(IS_ERR(sess)))
-+		return sess;
-+
-+	found = find_and_get_or_insert_sess(sess);
-+	if (unlikely(found)) {
-+		free_sess(sess);
-+
-+		return found;
-+	}
-+	/*
-+	 * Nothing was found, establish ibtrs connection and proceed further.
-+	 */
-+	sess->ibtrs = ibtrs_clt_open(sess, ibnbd_clt_link_ev, sessname,
-+				     paths, path_cnt, IBTRS_PORT,
-+				     sizeof(struct ibnbd_iu),
-+				     RECONNECT_DELAY, BMAX_SEGMENTS,
-+				     MAX_RECONNECTS);
-+	if (unlikely(IS_ERR(sess->ibtrs))) {
-+		err = PTR_ERR(sess->ibtrs);
-+		goto wake_up_and_put;
-+	}
-+	ibtrs_clt_query(sess->ibtrs, &attrs);
-+	sess->max_io_size = attrs.max_io_size;
-+	sess->queue_depth = attrs.queue_depth;
-+
-+	err = setup_mq_tags(sess);
-+	if (unlikely(err))
-+		goto close_ibtrs;
-+
-+	err = send_msg_sess_info(sess, WAIT);
-+	if (unlikely(err))
-+		goto close_ibtrs;
-+
-+	wake_up_ibtrs_waiters(sess);
-+
-+	return sess;
-+
-+close_ibtrs:
-+	close_ibtrs(sess);
-+put_sess:
-+	ibnbd_clt_put_sess(sess);
-+
-+	return ERR_PTR(err);
-+
-+wake_up_and_put:
-+	wake_up_ibtrs_waiters(sess);
-+	goto put_sess;
-+}
-+
-+static int ibnbd_client_open(struct block_device *block_device, fmode_t mode)
-+{
-+	struct ibnbd_clt_dev *dev = block_device->bd_disk->private_data;
-+
-+	if (dev->read_only && (mode & FMODE_WRITE))
-+		return -EPERM;
-+
-+	if (dev->dev_state == DEV_STATE_UNMAPPED ||
-+	    !ibnbd_clt_get_dev(dev))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static void ibnbd_client_release(struct gendisk *gen, fmode_t mode)
-+{
-+	struct ibnbd_clt_dev *dev = gen->private_data;
-+
-+	ibnbd_clt_put_dev(dev);
-+}
-+
-+static int ibnbd_client_getgeo(struct block_device *block_device,
-+			       struct hd_geometry *geo)
-+{
-+	u64 size;
-+	struct ibnbd_clt_dev *dev;
-+
-+	dev = block_device->bd_disk->private_data;
-+	size = dev->size * (dev->logical_block_size / KERNEL_SECTOR_SIZE);
-+	geo->cylinders	= (size & ~0x3f) >> 6;	/* size/64 */
-+	geo->heads	= 4;
-+	geo->sectors	= 16;
-+	geo->start	= 0;
-+
-+	return 0;
-+}
-+
-+static const struct block_device_operations ibnbd_client_ops = {
-+	.owner		= THIS_MODULE,
-+	.open		= ibnbd_client_open,
-+	.release	= ibnbd_client_release,
-+	.getgeo		= ibnbd_client_getgeo
++static const match_table_t ibnbd_opt_tokens = {
++	{	IBNBD_OPT_PATH,		"path=%s"		},
++	{	IBNBD_OPT_DEV_PATH,	"device_path=%s"	},
++	{	IBNBD_OPT_ACCESS_MODE,	"access_mode=%s"	},
++	{	IBNBD_OPT_IO_MODE,	"io_mode=%s"		},
++	{	IBNBD_OPT_SESSNAME,	"sessname=%s"		},
++	{	IBNBD_OPT_ERR,		NULL			},
 +};
 +
-+static size_t ibnbd_clt_get_sg_size(struct scatterlist *sglist, u32 len)
++/* remove new line from string */
++static void strip(char *s)
 +{
-+	struct scatterlist *sg;
-+	size_t tsize = 0;
-+	int i;
++	char *p = s;
 +
-+	for_each_sg(sglist, sg, len, i)
-+		tsize += sg->length;
-+	return tsize;
-+}
-+
-+/*
-+ * Get iorio of current task
-+ */
-+static short ibnbd_current_ioprio(void)
-+{
-+	struct task_struct *tsp = current;
-+	unsigned short prio = IOPRIO_PRIO_VALUE(IOPRIO_CLASS_NONE, 0);
-+
-+	if (likely(tsp->io_context))
-+		prio = tsp->io_context->ioprio;
-+	return prio;
-+}
-+
-+static short ibnbd_ioprio_best(unsigned short prio1, unsigned short prio2)
-+{
-+	if (!ioprio_valid(prio1)) {
-+		if (!ioprio_valid(prio2))
-+			return IOPRIO_PRIO_VALUE(IOPRIO_CLASS_NONE, 0);
++	while (*s != '\0') {
++		if (*s != '\n')
++			*p++ = *s++;
 +		else
-+			return prio2;
++			++s;
 +	}
-+	if (!ioprio_valid(prio2))
-+		return prio1;
-+
-+	return min(prio1, prio2);
++	*p = '\0';
 +}
 +
-+static int ibnbd_client_xfer_request(struct ibnbd_clt_dev *dev,
-+				     struct request *rq,
-+				     struct ibnbd_iu *iu)
++static int ibnbd_clt_parse_map_options(const char *buf,
++				       char *sessname,
++				       struct ibtrs_addr *paths,
++				       size_t *path_cnt,
++				       size_t max_path_cnt,
++				       char *pathname,
++				       enum ibnbd_access_mode *access_mode,
++				       enum ibnbd_io_mode *io_mode)
 +{
-+	struct ibtrs_clt *ibtrs = dev->sess->ibtrs;
-+	struct ibtrs_tag *tag = iu->tag;
-+	struct ibnbd_msg_io msg;
-+	unsigned int sg_cnt = 0;
-+	struct kvec vec;
-+	size_t size;
++	char *options, *sep_opt;
++	char *p;
++	substring_t args[MAX_OPT_ARGS];
++	int opt_mask = 0;
++	int token;
++	int ret = -EINVAL;
++	int i;
++	int p_cnt = 0;
++
++	options = kstrdup(buf, GFP_KERNEL);
++	if (!options)
++		return -ENOMEM;
++
++	sep_opt = strstrip(options);
++	strip(sep_opt);
++	while ((p = strsep(&sep_opt, " ")) != NULL) {
++		if (!*p)
++			continue;
++
++		token = match_token(p, ibnbd_opt_tokens, args);
++		opt_mask |= token;
++
++		switch (token) {
++		case IBNBD_OPT_SESSNAME:
++			p = match_strdup(args);
++			if (!p) {
++				ret = -ENOMEM;
++				goto out;
++			}
++			if (strlen(p) > NAME_MAX) {
++				pr_err("map_device: sessname too long\n");
++				ret = -EINVAL;
++				kfree(p);
++				goto out;
++			}
++			strlcpy(sessname, p, NAME_MAX);
++			kfree(p);
++			break;
++
++		case IBNBD_OPT_PATH:
++			if (p_cnt >= max_path_cnt) {
++				pr_err("map_device: too many (> %zu) paths "
++				       "provided\n", max_path_cnt);
++				ret = -ENOMEM;
++				goto out;
++			}
++			p = match_strdup(args);
++			if (!p) {
++				ret = -ENOMEM;
++				goto out;
++			}
++
++			ret = ibtrs_addr_to_sockaddr(p, strlen(p), IBTRS_PORT,
++						     &paths[p_cnt]);
++			if (ret) {
++				pr_err("Can't parse path %s: %d\n", p, ret);
++				kfree(p);
++				goto out;
++			}
++
++			p_cnt++;
++
++			kfree(p);
++			break;
++
++		case IBNBD_OPT_DEV_PATH:
++			p = match_strdup(args);
++			if (!p) {
++				ret = -ENOMEM;
++				goto out;
++			}
++			if (strlen(p) > NAME_MAX) {
++				pr_err("map_device: Device path too long\n");
++				ret = -EINVAL;
++				kfree(p);
++				goto out;
++			}
++			strlcpy(pathname, p, NAME_MAX);
++			kfree(p);
++			break;
++
++		case IBNBD_OPT_ACCESS_MODE:
++			p = match_strdup(args);
++			if (!p) {
++				ret = -ENOMEM;
++				goto out;
++			}
++
++			if (!strcmp(p, "ro")) {
++				*access_mode = IBNBD_ACCESS_RO;
++			} else if (!strcmp(p, "rw")) {
++				*access_mode = IBNBD_ACCESS_RW;
++			} else if (!strcmp(p, "migration")) {
++				*access_mode = IBNBD_ACCESS_MIGRATION;
++			} else {
++				pr_err("map_device: Invalid access_mode:"
++				       " '%s'\n", p);
++				ret = -EINVAL;
++				kfree(p);
++				goto out;
++			}
++
++			kfree(p);
++			break;
++
++		case IBNBD_OPT_IO_MODE:
++			p = match_strdup(args);
++			if (!p) {
++				ret = -ENOMEM;
++				goto out;
++			}
++			if (!strcmp(p, "blockio")) {
++				*io_mode = IBNBD_BLOCKIO;
++			} else if (!strcmp(p, "fileio")) {
++				*io_mode = IBNBD_FILEIO;
++			} else {
++				pr_err("map_device: Invalid io_mode: '%s'.\n",
++				       p);
++				ret = -EINVAL;
++				kfree(p);
++				goto out;
++			}
++			kfree(p);
++			break;
++
++		default:
++			pr_err("map_device: Unknown parameter or missing value"
++			       " '%s'\n", p);
++			ret = -EINVAL;
++			goto out;
++		}
++	}
++
++	for (i = 0; i < ARRAY_SIZE(ibnbd_opt_mandatory); i++) {
++		if ((opt_mask & ibnbd_opt_mandatory[i])) {
++			ret = 0;
++		} else {
++			pr_err("map_device: Parameters missing\n");
++			ret = -EINVAL;
++			break;
++		}
++	}
++
++out:
++	*path_cnt = p_cnt;
++	kfree(options);
++	return ret;
++}
++
++static ssize_t ibnbd_clt_state_show(struct kobject *kobj,
++				    struct kobj_attribute *attr, char *page)
++{
++	struct ibnbd_clt_dev *dev;
++
++	dev = container_of(kobj, struct ibnbd_clt_dev, kobj);
++
++	switch (dev->dev_state) {
++	case (DEV_STATE_INIT):
++		return scnprintf(page, PAGE_SIZE, "init\n");
++	case (DEV_STATE_MAPPED):
++		/* TODO fix cli tool before changing to proper state */
++		return scnprintf(page, PAGE_SIZE, "open\n");
++	case (DEV_STATE_MAPPED_DISCONNECTED):
++		/* TODO fix cli tool before changing to proper state */
++		return scnprintf(page, PAGE_SIZE, "closed\n");
++	case (DEV_STATE_UNMAPPED):
++		return scnprintf(page, PAGE_SIZE, "unmapped\n");
++	default:
++		return scnprintf(page, PAGE_SIZE, "unknown\n");
++	}
++}
++
++static struct kobj_attribute ibnbd_clt_state_attr =
++	__ATTR(state, 0444, ibnbd_clt_state_show, NULL);
++
++static ssize_t ibnbd_clt_mapping_path_show(struct kobject *kobj,
++					   struct kobj_attribute *attr,
++					   char *page)
++{
++	struct ibnbd_clt_dev *dev;
++
++	dev = container_of(kobj, struct ibnbd_clt_dev, kobj);
++
++	return scnprintf(page, PAGE_SIZE, "%s\n", dev->pathname);
++}
++
++static struct kobj_attribute ibnbd_clt_mapping_path_attr =
++	__ATTR(mapping_path, 0444, ibnbd_clt_mapping_path_show, NULL);
++
++static ssize_t ibnbd_clt_io_mode_show(struct kobject *kobj,
++				      struct kobj_attribute *attr, char *page)
++{
++	struct ibnbd_clt_dev *dev;
++
++	dev = container_of(kobj, struct ibnbd_clt_dev, kobj);
++
++	return scnprintf(page, PAGE_SIZE, "%s\n",
++			 ibnbd_io_mode_str(dev->remote_io_mode));
++}
++
++static struct kobj_attribute ibnbd_clt_io_mode =
++	__ATTR(io_mode, 0444, ibnbd_clt_io_mode_show, NULL);
++
++static ssize_t ibnbd_clt_access_mode_show(struct kobject *kobj,
++					  struct kobj_attribute *attr,
++					  char *page)
++{
++	struct ibnbd_clt_dev *dev;
++
++	dev = container_of(kobj, struct ibnbd_clt_dev, kobj);
++
++	return scnprintf(page, PAGE_SIZE, "%s\n",
++			 ibnbd_access_mode_str(dev->access_mode));
++}
++
++static struct kobj_attribute ibnbd_clt_access_mode =
++	__ATTR(access_mode, 0444, ibnbd_clt_access_mode_show, NULL);
++
++static ssize_t ibnbd_clt_unmap_dev_show(struct kobject *kobj,
++					struct kobj_attribute *attr, char *page)
++{
++	return scnprintf(page, PAGE_SIZE, "Usage: echo <normal|force> > %s\n",
++			 attr->attr.name);
++}
++
++static ssize_t ibnbd_clt_unmap_dev_store(struct kobject *kobj,
++					 struct kobj_attribute *attr,
++					 const char *buf, size_t count)
++{
++	struct ibnbd_clt_dev *dev;
++	char *opt, *options;
++	bool force;
 +	int err;
 +
-+	iu->rq		= rq;
-+	iu->dev		= dev;
-+	msg.sector	= cpu_to_le64(blk_rq_pos(rq));
-+	msg.bi_size	= cpu_to_le32(blk_rq_bytes(rq));
-+	msg.rw		= cpu_to_le32(rq_to_ibnbd_flags(rq));
-+	msg.prio	= cpu_to_le16(ibnbd_ioprio_best(
-+						req_get_ioprio(rq),
-+						ibnbd_current_ioprio()));
++	opt = kstrdup(buf, GFP_KERNEL);
++	if (!opt)
++		return -ENOMEM;
++
++	options = strstrip(opt);
++	strip(options);
++
++	dev = container_of(kobj, struct ibnbd_clt_dev, kobj);
++
++	if (sysfs_streq(options, "normal")) {
++		force = false;
++	} else if (sysfs_streq(options, "force")) {
++		force = true;
++	} else {
++		ibnbd_err(dev, "unmap_device: Invalid value: %s\n", options);
++		err = -EINVAL;
++		goto out;
++	}
++
++	ibnbd_info(dev, "Unmapping device, option: %s.\n",
++		   force ? "force" : "normal");
 +
 +	/*
-+	 * We only support discards with single segment for now.
-+	 * See queue limits.
++	 * We take explicit module reference only for one reason: do not
++	 * race with lockless ibnbd_destroy_sessions().
 +	 */
-+	if (req_op(rq) != REQ_OP_DISCARD)
-+		sg_cnt = blk_rq_map_sg(dev->queue, rq, iu->sglist);
-+
-+	if (sg_cnt == 0)
-+		/* Do not forget to mark the end */
-+		sg_mark_end(&iu->sglist[0]);
-+
-+	msg.hdr.type	= cpu_to_le16(IBNBD_MSG_IO);
-+	msg.device_id	= cpu_to_le32(dev->device_id);
-+
-+	vec = (struct kvec) {
-+		.iov_base = &msg,
-+		.iov_len  = dev->sess->ver < IBNBD_PROTO_VER_MAJOR ?
-+				sizeof(struct ibnbd_msg_io_old) : sizeof(msg)
-+	};
-+	size = ibnbd_clt_get_sg_size(iu->sglist, sg_cnt);
-+	err = ibtrs_clt_request(rq_data_dir(rq), msg_io_conf, ibtrs, tag,
-+				iu, &vec, 1, size, iu->sglist, sg_cnt);
++	if (!try_module_get(THIS_MODULE)) {
++		err = -ENODEV;
++		goto out;
++	}
++	err = ibnbd_clt_unmap_device(dev, force, &attr->attr);
 +	if (unlikely(err)) {
-+		ibnbd_err_rl(dev, "IBTRS failed to transfer IO, err: %d\n",
-+			     err);
-+		return err;
++		if (unlikely(err != -EALREADY))
++			ibnbd_err(dev, "unmap_device: %d\n",  err);
++		goto module_put;
 +	}
 +
-+	return 0;
++	/*
++	 * Here device can be vanished!
++	 */
++
++	err = count;
++
++module_put:
++	module_put(THIS_MODULE);
++out:
++	kfree(opt);
++
++	return err;
 +}
 +
-+/**
-+ * ibnbd_clt_dev_add_to_requeue() - add device to requeue if session is busy
-+ *
-+ * Description:
-+ *     If session is busy, that means someone will requeue us when resources
-+ *     are freed.  If session is not doing anything - device is not added to
-+ *     the list and @false is returned.
-+ */
-+static inline bool ibnbd_clt_dev_add_to_requeue(struct ibnbd_clt_dev *dev,
-+						struct ibnbd_queue *q)
++static struct kobj_attribute ibnbd_clt_unmap_device_attr =
++	__ATTR(unmap_device, 0644, ibnbd_clt_unmap_dev_show,
++	       ibnbd_clt_unmap_dev_store);
++
++static ssize_t ibnbd_clt_resize_dev_show(struct kobject *kobj,
++					 struct kobj_attribute *attr,
++					 char *page)
 +{
-+	struct ibnbd_clt_session *sess = dev->sess;
-+	struct ibnbd_cpu_qlist *cpu_q;
-+	unsigned long flags;
-+	bool added = true;
-+	bool need_set;
-+
-+	cpu_q = get_cpu_ptr(sess->cpu_queues);
-+	spin_lock_irqsave(&cpu_q->requeue_lock, flags);
-+
-+	if (likely(!test_and_set_bit_lock(0, &q->in_list))) {
-+		if (WARN_ON(!list_empty(&q->requeue_list)))
-+			goto unlock;
-+
-+		need_set = !test_bit(cpu_q->cpu, sess->cpu_queues_bm);
-+		if (need_set) {
-+			set_bit(cpu_q->cpu, sess->cpu_queues_bm);
-+			/* Paired with ibnbd_put_tag().	 Set a bit first
-+			 * and then observe the busy counter.
-+			 */
-+			smp_mb__before_atomic();
-+		}
-+		if (likely(atomic_read(&sess->busy))) {
-+			list_add_tail(&q->requeue_list, &cpu_q->requeue_list);
-+		} else {
-+			/* Very unlikely, but possible: busy counter was
-+			 * observed as zero.  Drop all bits and return
-+			 * false to restart the queue by ourselves.
-+			 */
-+			if (need_set)
-+				clear_bit(cpu_q->cpu, sess->cpu_queues_bm);
-+			clear_bit_unlock(0, &q->in_list);
-+			added = false;
-+		}
-+	}
-+unlock:
-+	spin_unlock_irqrestore(&cpu_q->requeue_lock, flags);
-+	put_cpu_ptr(sess->cpu_queues);
-+
-+	return added;
++	return scnprintf(page, PAGE_SIZE,
++			 "Usage: echo <new size in sectors> > %s\n",
++			 attr->attr.name);
 +}
 +
-+static void ibnbd_clt_dev_kick_mq_queue(struct ibnbd_clt_dev *dev,
-+					struct blk_mq_hw_ctx *hctx,
-+					int delay)
++static ssize_t ibnbd_clt_resize_dev_store(struct kobject *kobj,
++					  struct kobj_attribute *attr,
++					  const char *buf, size_t count)
 +{
-+	struct ibnbd_queue *q = hctx->driver_data;
++	int ret;
++	unsigned long sectors;
++	struct ibnbd_clt_dev *dev;
 +
-+	if (delay != IBNBD_DELAY_IFBUSY)
-+		blk_mq_delay_run_hw_queue(hctx, delay);
-+	else if (unlikely(!ibnbd_clt_dev_add_to_requeue(dev, q)))
-+		/*
-+		 * If session is not busy we have to restart
-+		 * the queue ourselves.
-+		 */
-+		blk_mq_delay_run_hw_queue(hctx, IBNBD_DELAY_10ms);
++	dev = container_of(kobj, struct ibnbd_clt_dev, kobj);
++
++	ret = kstrtoul(buf, 0, &sectors);
++	if (ret)
++		return ret;
++
++	ret = ibnbd_clt_resize_disk(dev, (size_t)sectors);
++	if (ret)
++		return ret;
++
++	return count;
 +}
 +
-+static blk_status_t ibnbd_queue_rq(struct blk_mq_hw_ctx *hctx,
-+				   const struct blk_mq_queue_data *bd)
++static struct kobj_attribute ibnbd_clt_resize_dev_attr =
++	__ATTR(resize, 0644, ibnbd_clt_resize_dev_show,
++	       ibnbd_clt_resize_dev_store);
++
++static ssize_t ibnbd_clt_remap_dev_show(struct kobject *kobj,
++					struct kobj_attribute *attr, char *page)
 +{
-+	struct request *rq = bd->rq;
-+	struct ibnbd_clt_dev *dev = rq->rq_disk->private_data;
-+	struct ibnbd_iu *iu = blk_mq_rq_to_pdu(rq);
++	return scnprintf(page, PAGE_SIZE, "Usage: echo <1> > %s\n",
++			 attr->attr.name);
++}
++
++static ssize_t ibnbd_clt_remap_dev_store(struct kobject *kobj,
++					 struct kobj_attribute *attr,
++					 const char *buf, size_t count)
++{
++	struct ibnbd_clt_dev *dev;
++	char *opt, *options;
 +	int err;
 +
-+	if (unlikely(!ibnbd_clt_dev_is_mapped(dev)))
-+		return BLK_STS_IOERR;
++	opt = kstrdup(buf, GFP_KERNEL);
++	if (!opt)
++		return -ENOMEM;
 +
-+	iu->tag = ibnbd_get_tag(dev->sess, IBTRS_IO_CON, IBTRS_TAG_NOWAIT);
-+	if (unlikely(!iu->tag)) {
-+		ibnbd_clt_dev_kick_mq_queue(dev, hctx, IBNBD_DELAY_IFBUSY);
-+		return BLK_STS_RESOURCE;
++	options = strstrip(opt);
++	strip(options);
++
++	dev = container_of(kobj, struct ibnbd_clt_dev, kobj);
++	if (!sysfs_streq(options, "1")) {
++		ibnbd_err(dev, "remap_device: Invalid value: %s\n", options);
++		err = -EINVAL;
++		goto out;
 +	}
++	err = ibnbd_clt_remap_device(dev);
++	if (likely(!err))
++		err = count;
 +
-+	blk_mq_start_request(rq);
-+	err = ibnbd_client_xfer_request(dev, rq, iu);
-+	if (likely(err == 0))
-+		return BLK_STS_OK;
-+	if (unlikely(err == -EAGAIN || err == -ENOMEM)) {
-+		ibnbd_clt_dev_kick_mq_queue(dev, hctx, IBNBD_DELAY_10ms);
-+		ibnbd_put_tag(dev->sess, iu->tag);
-+		return BLK_STS_RESOURCE;
-+	}
++out:
++	kfree(opt);
 +
-+	ibnbd_put_tag(dev->sess, iu->tag);
-+	return BLK_STS_IOERR;
++	return err;
 +}
 +
-+static int ibnbd_init_request(struct blk_mq_tag_set *set, struct request *rq,
-+			      unsigned int hctx_idx, unsigned int numa_node)
++static struct kobj_attribute ibnbd_clt_remap_device_attr =
++	__ATTR(remap_device, 0644, ibnbd_clt_remap_dev_show,
++	       ibnbd_clt_remap_dev_store);
++
++static ssize_t ibnbd_clt_session_show(struct kobject *kobj,
++				      struct kobj_attribute *attr,
++				      char *page)
 +{
-+	struct ibnbd_iu *iu = blk_mq_rq_to_pdu(rq);
++	struct ibnbd_clt_dev *dev;
 +
-+	sg_init_table(iu->sglist, BMAX_SEGMENTS);
-+	return 0;
++	dev = container_of(kobj, struct ibnbd_clt_dev, kobj);
++
++	return scnprintf(page, PAGE_SIZE, "%s\n", dev->sess->sessname);
 +}
 +
-+static inline void ibnbd_init_hw_queue(struct ibnbd_clt_dev *dev,
-+				       struct ibnbd_queue *q,
-+				       struct blk_mq_hw_ctx *hctx)
-+{
-+	INIT_LIST_HEAD(&q->requeue_list);
-+	q->dev  = dev;
-+	q->hctx = hctx;
-+}
++static struct kobj_attribute ibnbd_clt_session_attr =
++	__ATTR(session, 0444, ibnbd_clt_session_show, NULL);
 +
-+static void ibnbd_init_mq_hw_queues(struct ibnbd_clt_dev *dev)
-+{
-+	int i;
-+	struct blk_mq_hw_ctx *hctx;
-+	struct ibnbd_queue *q;
-+
-+	queue_for_each_hw_ctx(dev->queue, hctx, i) {
-+		q = &dev->hw_queues[i];
-+		ibnbd_init_hw_queue(dev, q, hctx);
-+		hctx->driver_data = q;
-+	}
-+}
-+
-+static struct blk_mq_ops ibnbd_mq_ops = {
-+	.queue_rq	= ibnbd_queue_rq,
-+	.init_request	= ibnbd_init_request,
-+	.complete	= ibnbd_softirq_done_fn,
++static struct attribute *ibnbd_dev_attrs[] = {
++	&ibnbd_clt_unmap_device_attr.attr,
++	&ibnbd_clt_resize_dev_attr.attr,
++	&ibnbd_clt_remap_device_attr.attr,
++	&ibnbd_clt_mapping_path_attr.attr,
++	&ibnbd_clt_state_attr.attr,
++	&ibnbd_clt_session_attr.attr,
++	&ibnbd_clt_io_mode.attr,
++	&ibnbd_clt_access_mode.attr,
++	NULL,
 +};
 +
-+static int index_to_minor(int index)
++void ibnbd_clt_remove_dev_symlink(struct ibnbd_clt_dev *dev)
 +{
-+	return index << IBNBD_PART_BITS;
-+}
-+
-+static int minor_to_index(int minor)
-+{
-+	return minor >> IBNBD_PART_BITS;
-+}
-+
-+static int setup_mq_dev(struct ibnbd_clt_dev *dev)
-+{
-+	dev->queue = blk_mq_init_queue(&dev->sess->tag_set);
-+	if (IS_ERR(dev->queue)) {
-+		ibnbd_err(dev,
-+			  "Initializing multiqueue queue failed, err: %ld\n",
-+			  PTR_ERR(dev->queue));
-+		return PTR_ERR(dev->queue);
-+	}
-+	ibnbd_init_mq_hw_queues(dev);
-+	return 0;
-+}
-+
-+static void setup_request_queue(struct ibnbd_clt_dev *dev)
-+{
-+	blk_queue_logical_block_size(dev->queue, dev->logical_block_size);
-+	blk_queue_physical_block_size(dev->queue, dev->physical_block_size);
-+	blk_queue_max_hw_sectors(dev->queue, dev->max_hw_sectors);
-+	blk_queue_max_write_same_sectors(dev->queue,
-+					 dev->max_write_same_sectors);
-+
 +	/*
-+	 * we don't support discards to "discontiguous" segments
-+	 * in on request
++	 * The module_is_live() check is crucial and helps to avoid annoying
++	 * sysfs warning raised in sysfs_remove_link(), when the whole sysfs
++	 * path was just removed, see ibnbd_close_sessions().
 +	 */
-+	blk_queue_max_discard_segments(dev->queue, 1);
-+
-+	blk_queue_max_discard_sectors(dev->queue, dev->max_discard_sectors);
-+	dev->queue->limits.discard_granularity	= dev->discard_granularity;
-+	dev->queue->limits.discard_alignment	= dev->discard_alignment;
-+	if (dev->max_discard_sectors)
-+		blk_queue_flag_set(QUEUE_FLAG_DISCARD, dev->queue);
-+	if (dev->secure_discard)
-+		blk_queue_flag_set(QUEUE_FLAG_SECERASE, dev->queue);
-+
-+	blk_queue_flag_set(QUEUE_FLAG_SAME_COMP, dev->queue);
-+	blk_queue_flag_set(QUEUE_FLAG_SAME_FORCE, dev->queue);
-+	blk_queue_max_segments(dev->queue, dev->max_segments);
-+	blk_queue_io_opt(dev->queue, dev->sess->max_io_size);
-+	blk_queue_virt_boundary(dev->queue, 4095);
-+	blk_queue_write_cache(dev->queue, true, true);
-+	dev->queue->queuedata = dev;
++	if (strlen(dev->blk_symlink_name) && module_is_live(THIS_MODULE))
++		sysfs_remove_link(ibnbd_devs_kobj, dev->blk_symlink_name);
 +}
 +
-+static void ibnbd_clt_setup_gen_disk(struct ibnbd_clt_dev *dev, int idx)
++static struct kobj_type ibnbd_dev_ktype = {
++	.sysfs_ops      = &kobj_sysfs_ops,
++	.default_attrs  = ibnbd_dev_attrs,
++};
++
++static int ibnbd_clt_add_dev_kobj(struct ibnbd_clt_dev *dev)
 +{
-+	dev->gd->major		= ibnbd_client_major;
-+	dev->gd->first_minor	= index_to_minor(idx);
-+	dev->gd->fops		= &ibnbd_client_ops;
-+	dev->gd->queue		= dev->queue;
-+	dev->gd->private_data	= dev;
-+	snprintf(dev->gd->disk_name, sizeof(dev->gd->disk_name), "ibnbd%d",
-+		 idx);
-+	pr_debug("disk_name=%s, capacity=%zu\n",
-+		 dev->gd->disk_name,
-+		 dev->nsectors * (dev->logical_block_size / KERNEL_SECTOR_SIZE)
-+		 );
-+
-+	set_capacity(dev->gd, dev->nsectors * (dev->logical_block_size /
-+					       KERNEL_SECTOR_SIZE));
-+
-+	if (dev->access_mode == IBNBD_ACCESS_RO) {
-+		dev->read_only = true;
-+		set_disk_ro(dev->gd, true);
-+	} else {
-+		dev->read_only = false;
-+	}
-+
-+	if (!dev->rotational)
-+		blk_queue_flag_set(QUEUE_FLAG_NONROT, dev->queue);
-+}
-+
-+static void ibnbd_clt_add_gen_disk(struct ibnbd_clt_dev *dev)
-+{
-+	add_disk(dev->gd);
-+}
-+
-+static int ibnbd_client_setup_device(struct ibnbd_clt_session *sess,
-+				     struct ibnbd_clt_dev *dev, int idx)
-+{
-+	int err;
-+
-+	dev->size = dev->nsectors * dev->logical_block_size;
-+
-+	err = setup_mq_dev(dev);
-+	if (err)
-+		return err;
-+
-+	setup_request_queue(dev);
-+
-+	dev->gd = alloc_disk_node(1 << IBNBD_PART_BITS,	NUMA_NO_NODE);
-+	if (!dev->gd) {
-+		ibnbd_err(dev, "Failed to allocate disk node\n");
-+		blk_cleanup_queue(dev->queue);
-+		return -ENOMEM;
-+	}
-+
-+	ibnbd_clt_setup_gen_disk(dev, idx);
-+
-+	return 0;
-+}
-+
-+static struct ibnbd_clt_dev *init_dev(struct ibnbd_clt_session *sess,
-+				      enum ibnbd_access_mode access_mode,
-+				      enum ibnbd_io_mode io_mode,
-+				      const char *pathname)
-+{
-+	struct ibnbd_clt_dev *dev;
 +	int ret;
++	struct kobject *gd_kobj = &disk_to_dev(dev->gd)->kobj;
 +
-+	dev = kzalloc_node(sizeof(*dev), GFP_KERNEL, NUMA_NO_NODE);
-+	if (!dev)
-+		return ERR_PTR(-ENOMEM);
-+
-+	dev->hw_queues = kcalloc(nr_cpu_ids, sizeof(*dev->hw_queues),
-+				 GFP_KERNEL);
-+	if (unlikely(!dev->hw_queues)) {
-+		pr_err("Failed to initialize device '%s' from session"
-+		       " %s, allocating hw_queues failed.", pathname,
-+		       sess->sessname);
-+		ret = -ENOMEM;
-+		goto out_alloc;
-+	}
-+
-+	mutex_lock(&ida_lock);
-+	ret = ida_simple_get(&index_ida, 0, minor_to_index(1 << MINORBITS),
-+			     GFP_KERNEL);
-+	mutex_unlock(&ida_lock);
-+	if (ret < 0) {
-+		pr_err("Failed to initialize device '%s' from session %s,"
-+		       " allocating idr failed, err: %d\n", pathname,
-+		       sess->sessname, ret);
-+		goto out_queues;
-+	}
-+	dev->clt_device_id	= ret;
-+	dev->sess		= sess;
-+	dev->access_mode	= access_mode;
-+	dev->io_mode		= io_mode;
-+	strlcpy(dev->pathname, pathname, sizeof(dev->pathname));
-+	mutex_init(&dev->lock);
-+	refcount_set(&dev->refcount, 1);
-+	dev->dev_state = DEV_STATE_INIT;
-+
-+	/*
-+	 * Here we called from sysfs entry, thus clt-sysfs is
-+	 * responsible that session will not disappear.
-+	 */
-+	WARN_ON(!ibnbd_clt_get_sess(sess));
-+
-+	return dev;
-+
-+out_queues:
-+	kfree(dev->hw_queues);
-+out_alloc:
-+	kfree(dev);
-+	return ERR_PTR(ret);
-+}
-+
-+static bool __exists_dev(const char *pathname)
-+{
-+	struct ibnbd_clt_session *sess;
-+	struct ibnbd_clt_dev *dev;
-+	bool found = false;
-+
-+	list_for_each_entry(sess, &sess_list, list) {
-+		mutex_lock(&sess->lock);
-+		list_for_each_entry(dev, &sess->devs_list, list) {
-+			if (!strncmp(dev->pathname, pathname,
-+				     sizeof(dev->pathname))) {
-+				found = true;
-+				break;
-+			}
-+		}
-+		mutex_unlock(&sess->lock);
-+		if (found)
-+			break;
-+	}
-+
-+	return found;
-+}
-+
-+static bool exists_devpath(const char *pathname)
-+{
-+	bool found;
-+
-+	mutex_lock(&sess_lock);
-+	found = __exists_dev(pathname);
-+	mutex_unlock(&sess_lock);
-+
-+	return found;
-+}
-+
-+static bool insert_dev_if_not_exists_devpath(const char *pathname,
-+					     struct ibnbd_clt_session *sess,
-+					     struct ibnbd_clt_dev *dev)
-+{
-+	bool found;
-+
-+	mutex_lock(&sess_lock);
-+	found = __exists_dev(pathname);
-+	if (!found) {
-+		mutex_lock(&sess->lock);
-+		list_add_tail(&dev->list, &sess->devs_list);
-+		mutex_unlock(&sess->lock);
-+	}
-+	mutex_unlock(&sess_lock);
-+
-+	return found;
-+}
-+
-+static void delete_dev(struct ibnbd_clt_dev *dev)
-+{
-+	struct ibnbd_clt_session *sess = dev->sess;
-+
-+	mutex_lock(&sess->lock);
-+	list_del(&dev->list);
-+	mutex_unlock(&sess->lock);
-+}
-+
-+struct ibnbd_clt_dev *ibnbd_clt_map_device(const char *sessname,
-+					   struct ibtrs_addr *paths,
-+					   size_t path_cnt,
-+					   const char *pathname,
-+					   enum ibnbd_access_mode access_mode,
-+					   enum ibnbd_io_mode io_mode)
-+{
-+	struct ibnbd_clt_session *sess;
-+	struct ibnbd_clt_dev *dev;
-+	int ret;
-+
-+	if (unlikely(exists_devpath(pathname)))
-+		return ERR_PTR(-EEXIST);
-+
-+	sess = find_and_get_or_create_sess(sessname, paths, path_cnt);
-+	if (unlikely(IS_ERR(sess)))
-+		return ERR_CAST(sess);
-+
-+	dev = init_dev(sess, access_mode, io_mode, pathname);
-+	if (unlikely(IS_ERR(dev))) {
-+		pr_err("map_device: failed to map device '%s' from session %s,"
-+		       " can't initialize device, err: %ld\n", pathname,
-+		       sess->sessname, PTR_ERR(dev));
-+		ret = PTR_ERR(dev);
-+		goto put_sess;
-+	}
-+	if (unlikely(insert_dev_if_not_exists_devpath(pathname, sess, dev))) {
-+		ret = -EEXIST;
-+		goto put_dev;
-+	}
-+	ret = send_msg_open(dev, WAIT);
-+	if (unlikely(ret)) {
-+		ibnbd_err(dev, "map_device: failed, can't open remote device,"
-+			  " err: %d\n", ret);
-+		goto del_dev;
-+	}
-+	mutex_lock(&dev->lock);
-+	pr_debug("Opened remote device: session=%s, path='%s'\n",
-+		 sess->sessname, pathname);
-+	ret = ibnbd_client_setup_device(sess, dev, dev->clt_device_id);
-+	if (ret) {
-+		ibnbd_err(dev, "map_device: Failed to configure device, err: %d\n",
++	ret = kobject_init_and_add(&dev->kobj, &ibnbd_dev_ktype, gd_kobj, "%s",
++				   "ibnbd");
++	if (ret)
++		ibnbd_err(dev, "Failed to create device sysfs dir, err: %d\n",
 +			  ret);
-+		mutex_unlock(&dev->lock);
-+		goto del_dev;
-+	}
-+
-+	ibnbd_info(dev, "map_device: Device mapped as %s (nsectors: %zu,"
-+		   " logical_block_size: %d, physical_block_size: %d,"
-+		   " max_write_same_sectors: %d, max_discard_sectors: %d,"
-+		   " discard_granularity: %d, discard_alignment: %d, "
-+		   "secure_discard: %d, max_segments: %d, max_hw_sectors: %d, "
-+		   "rotational: %d)\n",
-+		   dev->gd->disk_name, dev->nsectors, dev->logical_block_size,
-+		   dev->physical_block_size, dev->max_write_same_sectors,
-+		   dev->max_discard_sectors, dev->discard_granularity,
-+		   dev->discard_alignment, dev->secure_discard,
-+		   dev->max_segments, dev->max_hw_sectors, dev->rotational);
-+
-+	mutex_unlock(&dev->lock);
-+
-+	ibnbd_clt_add_gen_disk(dev);
-+	ibnbd_clt_put_sess(sess);
-+
-+	return dev;
-+
-+del_dev:
-+	delete_dev(dev);
-+put_dev:
-+	ibnbd_clt_put_dev(dev);
-+put_sess:
-+	ibnbd_clt_put_sess(sess);
-+
-+	return ERR_PTR(ret);
-+}
-+
-+static void destroy_gen_disk(struct ibnbd_clt_dev *dev)
-+{
-+	del_gendisk(dev->gd);
-+	/*
-+	 * Before marking queue as dying (blk_cleanup_queue() does that)
-+	 * we have to be sure that everything in-flight has gone.
-+	 * Blink with freeze/unfreeze.
-+	 */
-+	blk_mq_freeze_queue(dev->queue);
-+	blk_mq_unfreeze_queue(dev->queue);
-+	blk_cleanup_queue(dev->queue);
-+	put_disk(dev->gd);
-+}
-+
-+static void destroy_sysfs(struct ibnbd_clt_dev *dev,
-+			  const struct attribute *sysfs_self)
-+{
-+	ibnbd_clt_remove_dev_symlink(dev);
-+	if (dev->kobj.state_initialized) {
-+		if (sysfs_self)
-+			/* To avoid deadlock firstly commit suicide */
-+			sysfs_remove_file_self(&dev->kobj, sysfs_self);
-+		kobject_del(&dev->kobj);
-+		kobject_put(&dev->kobj);
-+	}
-+}
-+
-+int ibnbd_clt_unmap_device(struct ibnbd_clt_dev *dev, bool force,
-+			   const struct attribute *sysfs_self)
-+{
-+	struct ibnbd_clt_session *sess = dev->sess;
-+	int refcount, ret = 0;
-+	bool was_mapped;
-+
-+	mutex_lock(&dev->lock);
-+	if (dev->dev_state == DEV_STATE_UNMAPPED) {
-+		ibnbd_info(dev, "Device is already being unmapped\n");
-+		ret = -EALREADY;
-+		goto err;
-+	}
-+	refcount = refcount_read(&dev->refcount);
-+	if (!force && refcount > 1) {
-+		ibnbd_err(dev, "Closing device failed, device is in use,"
-+			  " (%d device users)\n", refcount - 1);
-+		ret = -EBUSY;
-+		goto err;
-+	}
-+	was_mapped = (dev->dev_state == DEV_STATE_MAPPED);
-+	dev->dev_state = DEV_STATE_UNMAPPED;
-+	mutex_unlock(&dev->lock);
-+
-+	delete_dev(dev);
-+	destroy_sysfs(dev, sysfs_self);
-+	destroy_gen_disk(dev);
-+	if (was_mapped && sess->ibtrs)
-+		send_msg_close(dev, dev->device_id, WAIT);
-+
-+	ibnbd_info(dev, "Device is unmapped\n");
-+
-+	/* Likely last reference put */
-+	ibnbd_clt_put_dev(dev);
-+
-+	/*
-+	 * Here device and session can be vanished!
-+	 */
-+
-+	return 0;
-+err:
-+	mutex_unlock(&dev->lock);
 +
 +	return ret;
 +}
 +
-+int ibnbd_clt_remap_device(struct ibnbd_clt_dev *dev)
++static ssize_t ibnbd_clt_map_device_show(struct kobject *kobj,
++					 struct kobj_attribute *attr,
++					 char *page)
 +{
-+	int err;
-+
-+	mutex_lock(&dev->lock);
-+	if (likely(dev->dev_state == DEV_STATE_MAPPED_DISCONNECTED))
-+		err = 0;
-+	else if (dev->dev_state == DEV_STATE_UNMAPPED)
-+		err = -ENODEV;
-+	else if (dev->dev_state == DEV_STATE_MAPPED)
-+		err = -EALREADY;
-+	else
-+		err = -EBUSY;
-+	mutex_unlock(&dev->lock);
-+	if (likely(!err)) {
-+		ibnbd_info(dev, "Remapping device.\n");
-+		err = send_msg_open(dev, WAIT);
-+		if (unlikely(err))
-+			ibnbd_err(dev, "remap_device: %d\n", err);
-+	}
-+
-+	return err;
++	return scnprintf(page, PAGE_SIZE, "Usage: echo \""
++			 "sessname=<name of the ibtrs session>"
++			 " path=<[srcaddr,]dstaddr>"
++			 " [path=<[srcaddr,]dstaddr>]"
++			 " device_path=<full path on remote side>"
++			 " [access_mode=<ro|rw|migration>]"
++			 " [io_mode=<fileio|blockio>]\" > %s\n\n"
++			 "addr ::= [ ip:<ipv4> | ip:<ipv6> | gid:<gid> ]\n",
++			 attr->attr.name);
 +}
 +
-+static void unmap_device_work(struct work_struct *work)
++static int ibnbd_clt_get_path_name(struct ibnbd_clt_dev *dev, char *buf,
++				   size_t len)
 +{
-+	struct ibnbd_clt_dev *dev;
++	int ret;
++	char pathname[NAME_MAX], *s;
 +
-+	dev = container_of(work, typeof(*dev), unmap_on_rmmod_work);
-+	ibnbd_clt_unmap_device(dev, true, NULL);
++	strlcpy(pathname, dev->pathname, sizeof(pathname));
++	while ((s = strchr(pathname, '/')))
++		s[0] = '!';
++
++	ret = snprintf(buf, len, "%s", pathname);
++	if (ret >= len)
++		return -ENAMETOOLONG;
++
++	return 0;
 +}
 +
-+static void ibnbd_destroy_sessions(void)
++static int ibnbd_clt_add_dev_symlink(struct ibnbd_clt_dev *dev)
 +{
-+	struct ibnbd_clt_session *sess, *sn;
-+	struct ibnbd_clt_dev *dev, *tn;
++	struct kobject *gd_kobj = &disk_to_dev(dev->gd)->kobj;
++	int ret;
 +
-+	/* Firstly forbid access through sysfs interface */
-+	ibnbd_clt_destroy_default_group();
-+	ibnbd_clt_destroy_sysfs_files();
-+
-+	/*
-+	 * Here at this point there is no any concurrent access to sessions
-+	 * list and devices list:
-+	 *   1. New session or device can'be be created - session sysfs files
-+	 *      are removed.
-+	 *   2. Device or session can't be removed - module reference is taken
-+	 *      into account in unmap device sysfs callback.
-+	 *   3. No IO requests inflight - each file open of block_dev increases
-+	 *      module reference in get_disk().
-+	 *
-+	 * But still there can be user requests inflights, which are sent by
-+	 * asynchronous send_msg_*() functions, thus before unmapping devices
-+	 * IBTRS session must be explicitly closed.
-+	 */
-+
-+	list_for_each_entry_safe(sess, sn, &sess_list, list) {
-+		WARN_ON(!ibnbd_clt_get_sess(sess));
-+		close_ibtrs(sess);
-+		list_for_each_entry_safe(dev, tn, &sess->devs_list, list) {
-+			/*
-+			 * Here unmap happens in parallel for only one reason:
-+			 * blk_cleanup_queue() takes around half a second, so
-+			 * on huge amount of devices the whole module unload
-+			 * procedure takes minutes.
-+			 */
-+			INIT_WORK(&dev->unmap_on_rmmod_work, unmap_device_work);
-+			queue_work(unload_wq, &dev->unmap_on_rmmod_work);
-+		}
-+		ibnbd_clt_put_sess(sess);
-+	}
-+	/* Wait for all scheduled unmap works */
-+	flush_workqueue(unload_wq);
-+	WARN_ON(!list_empty(&sess_list));
-+}
-+
-+static int __init ibnbd_client_init(void)
-+{
-+	int err;
-+
-+	pr_info("Loading module %s, version %s, proto %s: "
-+		"(softirq_enable: %d)\n", KBUILD_MODNAME,
-+		IBNBD_VER_STRING, IBNBD_PROTO_VER_STRING,
-+		softirq_enable);
-+
-+	ibnbd_client_major = register_blkdev(ibnbd_client_major, "ibnbd");
-+	if (ibnbd_client_major <= 0) {
-+		pr_err("Failed to load module,"
-+		       " block device registration failed\n");
-+		err = -EBUSY;
-+		goto out;
++	ret = ibnbd_clt_get_path_name(dev, dev->blk_symlink_name,
++				      sizeof(dev->blk_symlink_name));
++	if (ret) {
++		ibnbd_err(dev, "Failed to get /sys/block symlink path, err: %d\n",
++			  ret);
++		goto out_err;
 +	}
 +
-+	err = ibnbd_clt_create_sysfs_files();
-+	if (err) {
-+		pr_err("Failed to load module,"
-+		       " creating sysfs device files failed, err: %d\n",
-+		       err);
-+		goto out_unregister_blk;
-+	}
-+
-+	unload_wq = alloc_workqueue("ibnbd_unload_wq", WQ_MEM_RECLAIM, 0);
-+	if (!unload_wq) {
-+		pr_err("Failed to load module, alloc ibnbd_unload_wq failed\n");
-+		goto out_destroy_sysfs_files;
++	ret = sysfs_create_link(ibnbd_devs_kobj, gd_kobj,
++				dev->blk_symlink_name);
++	if (ret) {
++		ibnbd_err(dev, "Creating /sys/block symlink failed, err: %d\n",
++			  ret);
++		goto out_err;
 +	}
 +
 +	return 0;
 +
-+out_destroy_sysfs_files:
-+	ibnbd_clt_destroy_sysfs_files();
-+out_unregister_blk:
-+	unregister_blkdev(ibnbd_client_major, "ibnbd");
++out_err:
++	dev->blk_symlink_name[0] = '\0';
++	return ret;
++}
++
++static ssize_t ibnbd_clt_map_device_store(struct kobject *kobj,
++					  struct kobj_attribute *attr,
++					  const char *buf, size_t count)
++{
++	struct ibnbd_clt_dev *dev;
++	int ret;
++	char pathname[NAME_MAX];
++	char sessname[NAME_MAX];
++	enum ibnbd_access_mode access_mode = IBNBD_ACCESS_RW;
++	enum ibnbd_io_mode io_mode = IBNBD_AUTOIO;
++
++	struct sockaddr_storage *addrs;
++	struct ibtrs_addr paths[6];
++	size_t path_cnt;
++
++	addrs = kcalloc(ARRAY_SIZE(paths) * 2, sizeof(*addrs), GFP_KERNEL);
++	if (!addrs)
++		return -ENOMEM;
++
++	for (path_cnt = 0; path_cnt < ARRAY_SIZE(paths); path_cnt++) {
++		paths[path_cnt].src = &addrs[path_cnt * 2];
++		paths[path_cnt].dst = &addrs[path_cnt * 2 + 1];
++	}
++
++	ret = ibnbd_clt_parse_map_options(buf, sessname, paths,
++					  &path_cnt, ARRAY_SIZE(paths),
++					  pathname, &access_mode, &io_mode);
++	if (ret)
++		goto out;
++
++	pr_info("Mapping device %s on session %s, (access_mode: %s, "
++		"io_mode: %s)\n", pathname, sessname,
++		ibnbd_access_mode_str(access_mode), ibnbd_io_mode_str(io_mode));
++
++	dev = ibnbd_clt_map_device(sessname, paths, path_cnt, pathname,
++				   access_mode, io_mode);
++	if (unlikely(IS_ERR(dev))) {
++		ret = PTR_ERR(dev);
++		goto out;
++	}
++
++	ret = ibnbd_clt_add_dev_kobj(dev);
++	if (unlikely(ret))
++		goto unmap_dev;
++
++	ret = ibnbd_clt_add_dev_symlink(dev);
++	if (ret)
++		goto unmap_dev;
++
++	kfree(addrs);
++	return count;
++
++unmap_dev:
++	ibnbd_clt_unmap_device(dev, true, NULL);
 +out:
++	kfree(addrs);
++	return ret;
++}
++
++static struct kobj_attribute ibnbd_clt_map_device_attr =
++	__ATTR(map_device, 0644,
++	       ibnbd_clt_map_device_show, ibnbd_clt_map_device_store);
++
++static struct attribute *default_attrs[] = {
++	&ibnbd_clt_map_device_attr.attr,
++	NULL,
++};
++
++static struct attribute_group default_attr_group = {
++	.attrs = default_attrs,
++};
++
++int ibnbd_clt_create_sysfs_files(void)
++{
++	int err;
++
++	ibnbd_dev_class = class_create(THIS_MODULE, "ibnbd-client");
++	if (unlikely(IS_ERR(ibnbd_dev_class)))
++		return PTR_ERR(ibnbd_dev_class);
++
++	ibnbd_dev = device_create(ibnbd_dev_class, NULL,
++				  MKDEV(0, 0), NULL, "ctl");
++	if (unlikely(IS_ERR(ibnbd_dev))) {
++		err = PTR_ERR(ibnbd_dev);
++		goto cls_destroy;
++	}
++	ibnbd_devs_kobj = kobject_create_and_add("devices", &ibnbd_dev->kobj);
++	if (unlikely(!ibnbd_devs_kobj)) {
++		err = -ENOMEM;
++		goto dev_destroy;
++	}
++	err = sysfs_create_group(&ibnbd_dev->kobj, &default_attr_group);
++	if (unlikely(err))
++		goto put_devs_kobj;
++
++	return 0;
++
++put_devs_kobj:
++	kobject_del(ibnbd_devs_kobj);
++	kobject_put(ibnbd_devs_kobj);
++dev_destroy:
++	device_destroy(ibnbd_dev_class, MKDEV(0, 0));
++cls_destroy:
++	class_destroy(ibnbd_dev_class);
++
 +	return err;
 +}
 +
-+static void __exit ibnbd_client_exit(void)
++void ibnbd_clt_destroy_default_group(void)
 +{
-+	pr_info("Unloading module\n");
-+	ibnbd_destroy_sessions();
-+	unregister_blkdev(ibnbd_client_major, "ibnbd");
-+	ida_destroy(&index_ida);
-+	destroy_workqueue(unload_wq);
-+	pr_info("Module unloaded\n");
++	sysfs_remove_group(&ibnbd_dev->kobj, &default_attr_group);
 +}
 +
-+module_init(ibnbd_client_init);
-+module_exit(ibnbd_client_exit);
++void ibnbd_clt_destroy_sysfs_files(void)
++{
++	kobject_del(ibnbd_devs_kobj);
++	kobject_put(ibnbd_devs_kobj);
++	device_destroy(ibnbd_dev_class, MKDEV(0, 0));
++	class_destroy(ibnbd_dev_class);
++}
 -- 
 2.17.1
 
