@@ -2,129 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A297A4DA8D
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 21:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965B94DAE3
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 22:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbfFTTs3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 15:48:29 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:48686 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbfFTTs2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 15:48:28 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 9C8CA3091DC1;
-        Thu, 20 Jun 2019 19:48:28 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 40C241001E61;
-        Thu, 20 Jun 2019 19:48:26 +0000 (UTC)
-Message-ID: <9862d4db3e930bc12c059f8b04e1eb24c493519b.camel@redhat.com>
-Subject: Re: [PATCH V3 for-next] RDMA/hns: reset function when removing
- module
-From:   Doug Ledford <dledford@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
+        id S1726420AbfFTUFg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 16:05:36 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:46365 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbfFTUFf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 16:05:35 -0400
+Received: by mail-qt1-f194.google.com with SMTP id h21so4449629qtn.13
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 13:05:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=knCs9srDHt7l15akpgSnFLDDh60Wu5Uq6lytiVry/kg=;
+        b=FjrjVRCuWgSFlTWzWHh+Oh0WUfGrrjaCybgwT/qXv1zz7bKkBeoUFcEuUShjHXnIwN
+         etWZrJt+Py0yUSi24MJUTzhM0e5EkKfHw9ILtvL8CUdhMVTg3ggozLh2GN2SsfyVo7Ju
+         DitWp1p/AFu6DibaFauSOUYdKWYD6T57qx4zbw5U0VSDAdjKb64pHB1EDo8phLgEcpdl
+         PHQhy3/lfAoPy0ek8T9cXil7ABU3eLgw+4WEwrIfAbtLqzEDUxjr+rKJDO5QO3LlfO9q
+         LbXwrnD245hkVUzP57WPXEEVbGGAKUonTJBSHr/trNq+ul3o4XFPi2cZE7agEAnZXUyF
+         DX8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=knCs9srDHt7l15akpgSnFLDDh60Wu5Uq6lytiVry/kg=;
+        b=s8B3xwmrGz7ga3pFW4cWrDYySNbOpA12fNv8iJfxSluT0DSxtIqncD8OpcL4jVJMFN
+         aphgf+8ktUPwsZQHxG9aIvqtyTxFgPDLDuNPRZAbtdQT818KAY5dwJsU7ytSRMg+R4mi
+         7a2ddoxanDwSNxxhP7/WxcJnjuJHdu8YUM4opZseNHR2mAHrAbHkW5u94qN4dQsKnlQy
+         PNWq0Dc0n6+mwtoTuWt4Avjz7AeLWqnir7khQ6RW8FooSb+cVLW3Y+dMT+KtI7xGn3DI
+         mB9aiQPNyqVgWQ2QGfgPOmDAecwMUSPS3nE6obGjtFBkNfjObbenKqO3wGDADMJ8Vs/Q
+         3wnA==
+X-Gm-Message-State: APjAAAUkjL4ClFp4wunZPN8KeiII8FfJiJx3j8agxIt4f61mWTXsH6pn
+        d9h9yFZepZ7SbI5JcE/Slwontg==
+X-Google-Smtp-Source: APXvYqx/uGWpc+vF4gIW3Ni9B6M6McfOfopK4pc1tf2Fg1z9/G6tYvLgzoXxt9dzvyfv7Btb98vmYQ==
+X-Received: by 2002:ac8:3078:: with SMTP id g53mr110808407qte.126.1561061134842;
+        Thu, 20 Jun 2019 13:05:34 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id z18sm382917qka.12.2019.06.20.13.05.34
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 20 Jun 2019 13:05:34 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1he3JN-0006wP-SN; Thu, 20 Jun 2019 17:05:33 -0300
+Date:   Thu, 20 Jun 2019 17:05:33 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Doug Ledford <dledford@redhat.com>
 Cc:     Lijun Ou <oulijun@huawei.com>, leon@kernel.org,
         linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Date:   Thu, 20 Jun 2019 15:48:23 -0400
-In-Reply-To: <20190620193457.GG19891@ziepe.ca>
+Subject: Re: [PATCH V3 for-next] RDMA/hns: reset function when removing module
+Message-ID: <20190620200533.GH19891@ziepe.ca>
 References: <1560524163-94676-1-git-send-email-oulijun@huawei.com>
-         <d4ba310e1cb50abd3810032fc468797edd917c08.camel@redhat.com>
-         <20190620193457.GG19891@ziepe.ca>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-viFqyOFb4RXIcdR1io/d"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+ <d4ba310e1cb50abd3810032fc468797edd917c08.camel@redhat.com>
+ <20190620193457.GG19891@ziepe.ca>
+ <9862d4db3e930bc12c059f8b04e1eb24c493519b.camel@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Thu, 20 Jun 2019 19:48:28 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9862d4db3e930bc12c059f8b04e1eb24c493519b.camel@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Jun 20, 2019 at 03:48:23PM -0400, Doug Ledford wrote:
 
---=-viFqyOFb4RXIcdR1io/d
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> It's an msleep() waiting for a hardware command to complete.  Waiting
+> synchronously for a command that has the purpose of stopping the card's
+> operation does not sound like an incorrect locking or concurrency model
+> to me.  It sounds sane, albeit annoying.
 
-On Thu, 2019-06-20 at 16:34 -0300, Jason Gunthorpe wrote:
-> On Thu, Jun 20, 2019 at 03:09:37PM -0400, Doug Ledford wrote:
-> > On Fri, 2019-06-14 at 22:56 +0800, Lijun Ou wrote:
-> > > From: Lang Cheng <chenglang@huawei.com>
-> > >=20
-> > > During removing the driver, we needs to notify the roce engine to
-> > > stop working immediately,and symmetrically recycle the hardware
-> > > resources requested during initialization.
-> > >=20
-> > > The hardware provides a command called function clear that can
-> > > package
-> > > these operations,so that the driver can only focus on releasing
-> > > resources that applied from the operating system.
-> > > This patch implements the call of this command.
-> > >=20
-> > > Signed-off-by: Lang Cheng <chenglang@huawei.com>
-> > > Signed-off-by: Lijun Ou <oulijun@huawei.com>
-> > > V2->V3:
-> > > 1. Remove other reset state operations that are not related to
-> > >    function clear
-> >=20
-> >=20
-> > > +	msleep(HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_INTERVAL);
-> > > +	end =3D HNS_ROCE_V2_FUNC_CLEAR_TIMEOUT_MSECS;
-> > > +	while (end) {
-> > > +		msleep(HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT);
-> > > +		end -=3D HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT;
-> >=20
-> >=20
-> > > +#define HNS_ROCE_V2_FUNC_CLEAR_TIMEOUT_MSECS	(249 * 2 * 100)
-> > > +#define HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_INTERVAL	40
-> > > +#define HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT	20
-> >=20
-> > I absolutely despise code that does a possible *50* second blocking
-> > delay using msleep.  However, because I suspect that this is
-> > something
-> > that should *rarely* ever happen, and instead the common case is
-> > that
-> > the reset will proceed much faster, and because this is in the
-> > teardown/shutdown path of the device where it is a little more
-> > acceptable to have a blocking delay, I've taken this to for-next.
->=20
-> I've been telling hns they have to do proper locking and wouldn't
-> accept these stupid msleep loops. No kernel code should ever do that,
-> it just shows the locking and concurrency model is wrong.
+If it was the only sleep loop you might have a point, but it isn't,
+every other patch series lately seems to be adding more sleep
+loops. This sleep loop is already wrapping another sleep loop under
+__hns_roce_cmq_send() - which, for some reason, doesn't have an
+interrupt driven completion path.
 
-It's an msleep() waiting for a hardware command to complete.  Waiting
-synchronously for a command that has the purpose of stopping the card's
-operation does not sound like an incorrect locking or concurrency model
-to me.  It sounds sane, albeit annoying.
+Nor is there any explanation why we need a sleep loop on top of a
+sleep loop, or why the command is allowed to fail or why retrying the
+failed command is even a good idea, or why it can't be properly
+interrupt driven!
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+I'm frankly sick of it, maybe you should review HNS patches for a
+while..
 
---=-viFqyOFb4RXIcdR1io/d
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0L4wcACgkQuCajMw5X
-L92PoxAArFxrY0iOwajrbOuhIBgl7QTNLZ8g+vuwpJl9zO+WqPkrhpqI0A/AJWoe
-JyRWuhU4UmfgQOxBQYqJdce9wLLKVeZ3SE3oWzAF7xk+cdy/MSMQ3qXjIo+682Fa
-PAaGF4pbkEdx4LxfzV4XjlEUCF4gKQdi1pgxEm8K9ajncusMqjMoI12dq//yJip9
-N+dSzPszEKqEQuROkjyQu54EupKf4tm2IpJkpBrg0WAZLBqGWKsWWcelrV30R1ZE
-wgnsWIXvw66sgfzp57cl3Ob5ePGUDtBhlZUBQC3WXLseRkW8iABuPsmXIkY7QeF0
-um2N6y+5dmbtlfS53tW4D7KsiVFEzD3X5szV8xAW/ByYlbbc8pS82V5ntIvL5m33
-ZE1nUG/e4j6c/lO31MpTzAsETRM+P9rE0a2RSf73hJkhjIuYbbHJ3u5lBYNXMfeP
-t5IYfMQYcHrZ+3/nOjtG61m8Bu9ingOO5PEKAhsD8r6PPGLP9yhMhPJi+ugNNpfZ
-YD+ElXqtwnL+Sqhw37+++wJFtVepSM4avD7Wt0yKobR+AvE452lVsGDN69fAcMgY
-m+E8wUzG7g6p7BexVSWF2YYnDfCV0AXgJnOw1pdG0Q3WhpdNN9riB+ycGe30+F6d
-tWWthvNIar22LReQELC8S64RbQi86+oKky3mcCb0z3jB8VsExZU=
-=UlmD
------END PGP SIGNATURE-----
-
---=-viFqyOFb4RXIcdR1io/d--
-
+Jason
