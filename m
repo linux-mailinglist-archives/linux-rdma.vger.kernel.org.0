@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 058834D177
+	by mail.lfdr.de (Postfix) with ESMTP id 999484D178
 	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 17:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732122AbfFTPEI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 11:04:08 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:46825 "EHLO
+        id S1732123AbfFTPEJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 11:04:09 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:38971 "EHLO
         mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732109AbfFTPEI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 11:04:08 -0400
-Received: by mail-ed1-f66.google.com with SMTP id d4so5112411edr.13;
-        Thu, 20 Jun 2019 08:04:06 -0700 (PDT)
+        with ESMTP id S1726654AbfFTPEJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 11:04:09 -0400
+Received: by mail-ed1-f66.google.com with SMTP id m10so5181748edv.6;
+        Thu, 20 Jun 2019 08:04:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=WYwfxUwrwhVqtQAmVClaStBfDDbCxtDqRcFDkSfkU78=;
-        b=PK1j1WblSg5LNLdf6wpvL5lfINMRD8r1URAzTbWpt/+DjwmZL6C7QLRqo9h8G/QwwG
-         OC3ckdfjwpnirmlM09ma7CGHPAppriJQzJjNMZuIYloYQG/CBVtEczPu6HsFSTluL7da
-         SRdPJYWPvn7/D9C9ajDkXUU8O1ibzk3aXMgngzKpEkKLHBI9RWtyVXooxWxK8mn2hk4Z
-         0W6yKrCrsNjxcZT/A9F4dsnJi2IPNYy1+mXMmH7gSeCKW1u+rCzWYHek8vtlZ0ZSIl4S
-         kforyH15f1cSoenlzakCE3H0S2gAnAyZP4wU4wL1xXDxgwsnOTCdy61cGq1zfv0mDMfP
-         W1GA==
+        bh=Q1AbZ9GXPjaD1sgBA+8WOzTIQzRxU2DSfKTYNm/EVrY=;
+        b=GB4P0UxzRTyu6TaSEzA4iFcKt9r7VdiVVv5RPqsQ/HblPs2J8VQYJPZ6Cm6KgTiCd9
+         z+w00Ywzxmhcvf9BcpJYoDLOFmH6cCrNHLJM/dBvG/HSWIgHGe8lS6eLzJiw9mRjBjmE
+         h6JhfAzCXpz96Z3kygB1s6k/r4jwr9aey/3/Gbjq7w0Gz3JKc0xhzUeOE7hV2AIrUxsY
+         zxTzaWwjhgQz5ZCMfIckUl1h60qjp33cLyEAf/v4T5oc2yoDbo0U7Rqp1rNlQpy34rDV
+         WplQJROi0Dy2FF3rnbQrzhAfVEb/AyceYvsd1TcGGbKAIq+ORCJ0DDzwO9BaUOl2C12a
+         sOQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=WYwfxUwrwhVqtQAmVClaStBfDDbCxtDqRcFDkSfkU78=;
-        b=T1vp5isg+wd2GqgM6mMoCNW36/x9FscxvmOA0ao+rW8jY0uw5sMrQX8v46UQ5CBPRt
-         VdvwDNEMlEdXfxoaU4buuvpLbT88skIFr0ufr4r6ECY4Jy4ahSg09olS9mG4ybf4l8QV
-         /MkPRbFn8lQCDzuR5FSWMUXaTA4MzZZnch8xEgIqwLnLhL217GBpCxn6Rba+DQxdfE0f
-         BEWt0L0cHYwHueN/2k9T5xNSkSNcrp3jTZGHAai7dk6xQkbCD2iKXRiQj1sNpnJo1atj
-         QkGKvG5p9MuT3VqOjS+IcnSZtQdcu7sl3+l7nm5cDxIz+pW6Rakma4WAHhyTzCFnjRjA
-         xYOw==
-X-Gm-Message-State: APjAAAUwaKDmdhZdpAcgFNqma3GivwcfWFZq389u7P4pHbTlOwHS1raQ
-        sUNvqUx800duu5q+/TMXe5/Xlce3m2E=
-X-Google-Smtp-Source: APXvYqyatoPPw3Y1gbJtQIXye5Fa3XAU8o6cWZ7M98wrj0A0k63O5GtBuiPkBoy2RVr3Yuq4BpxfvQ==
-X-Received: by 2002:a50:86b9:: with SMTP id r54mr112008910eda.162.1561043044829;
-        Thu, 20 Jun 2019 08:04:04 -0700 (PDT)
+        bh=Q1AbZ9GXPjaD1sgBA+8WOzTIQzRxU2DSfKTYNm/EVrY=;
+        b=FSy8QRp/VPsxLQ8Btl8zDivogRRqZZx15LjLN6xe2bfuF3mimTapR6+7O7MiJzoUSo
+         E1Z0xE5bkmnEv4rVcJZ9s25bvYu081tEwN0B4AzRiWxOVzML1xTfBK6atGEO+wU+2EoW
+         O5SHeSjqhu+JWGZUPAmCO7ba7kF3mRaVl/T3vSzHCV6wcCwKpWcwZIzsRNqZfBlM2Bxh
+         8HlvVuI1SbU8w9XZljXVPs5s++r3D+c1UgrUidRNm/8MNSjkTGK8Xvo69ptKX37PltHO
+         XcYyCv2IYScZ2efLuOFiT5A3e3n1jk1rmZ88GAE23Xo+Vmc8Ggol1GyPQX/ke9A3GObG
+         xLlA==
+X-Gm-Message-State: APjAAAWq4Ks55w6AOxdEO2f23qeZvqkDwPqaTGdEZPu4jCiuUcTexUYK
+        njbxIrUjCP6jw2WNSd5yv/yFQyr8/f4=
+X-Google-Smtp-Source: APXvYqyOLIPLqsdS189c/VFcxPyXDS9y/4U0ns1cK8kdnnvqcs3pitlTgfhFibJOvSFhhsM7HkCD0w==
+X-Received: by 2002:a17:906:3385:: with SMTP id v5mr110574990eja.301.1561043045962;
+        Thu, 20 Jun 2019 08:04:05 -0700 (PDT)
 Received: from jwang-Latitude-5491.pb.local ([62.217.45.26])
-        by smtp.gmail.com with ESMTPSA id a20sm3855817ejj.21.2019.06.20.08.04.03
+        by smtp.gmail.com with ESMTPSA id a20sm3855817ejj.21.2019.06.20.08.04.04
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 20 Jun 2019 08:04:04 -0700 (PDT)
+        Thu, 20 Jun 2019 08:04:05 -0700 (PDT)
 From:   Jack Wang <jinpuwang@gmail.com>
 To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
@@ -50,9 +50,9 @@ Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
         Roman Pen <roman.penyaev@profitbricks.com>,
         Jack Wang <jinpu.wang@cloud.ionos.com>
-Subject: [PATCH v4 20/25] ibnbd: server: main functionality
-Date:   Thu, 20 Jun 2019 17:03:32 +0200
-Message-Id: <20190620150337.7847-21-jinpuwang@gmail.com>
+Subject: [PATCH v4 21/25] ibnbd: server: functionality for IO submission to file or block dev
+Date:   Thu, 20 Jun 2019 17:03:33 +0200
+Message-Id: <20190620150337.7847-22-jinpuwang@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190620150337.7847-1-jinpuwang@gmail.com>
 References: <20190620150337.7847-1-jinpuwang@gmail.com>
@@ -63,24 +63,23 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Roman Pen <roman.penyaev@profitbricks.com>
 
-This is main functionality of ibnbd-server module, which handles IBTRS
-events and IBNBD protocol requests, like map (open) or unmap (close)
-device.  Also server side is responsible for processing incoming IBTRS
-IO requests and forward them to local mapped devices.
+This provides helper functions for IO submission to file or block dev.
 
 Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 ---
- drivers/block/ibnbd/ibnbd-srv.c | 945 ++++++++++++++++++++++++++++++++
- 1 file changed, 945 insertions(+)
- create mode 100644 drivers/block/ibnbd/ibnbd-srv.c
+ drivers/block/ibnbd/ibnbd-srv-dev.c | 408 ++++++++++++++++++++++++++++
+ drivers/block/ibnbd/ibnbd-srv-dev.h | 143 ++++++++++
+ 2 files changed, 551 insertions(+)
+ create mode 100644 drivers/block/ibnbd/ibnbd-srv-dev.c
+ create mode 100644 drivers/block/ibnbd/ibnbd-srv-dev.h
 
-diff --git a/drivers/block/ibnbd/ibnbd-srv.c b/drivers/block/ibnbd/ibnbd-srv.c
+diff --git a/drivers/block/ibnbd/ibnbd-srv-dev.c b/drivers/block/ibnbd/ibnbd-srv-dev.c
 new file mode 100644
-index 000000000000..07b4ae49fda2
+index 000000000000..5c1a518638b2
 --- /dev/null
-+++ b/drivers/block/ibnbd/ibnbd-srv.c
-@@ -0,0 +1,945 @@
++++ b/drivers/block/ibnbd/ibnbd-srv-dev.c
+@@ -0,0 +1,408 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * InfiniBand Network Block Driver
@@ -106,926 +105,538 @@ index 000000000000..07b4ae49fda2
 +#undef pr_fmt
 +#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
 +
-+#include <linux/module.h>
-+#include <linux/blkdev.h>
-+
-+#include "ibnbd-srv.h"
 +#include "ibnbd-srv-dev.h"
++#include "ibnbd-log.h"
 +
-+MODULE_AUTHOR("ibnbd@profitbricks.com");
-+MODULE_VERSION(IBNBD_VER_STRING);
-+MODULE_DESCRIPTION("InfiniBand Network Block Device Server");
-+MODULE_LICENSE("GPL");
++#define IBNBD_DEV_MAX_FILEIO_ACTIVE_WORKERS 0
 +
-+#define DEFAULT_DEV_SEARCH_PATH "/"
++struct ibnbd_dev_file_io_work {
++	struct ibnbd_dev	*dev;
++	void			*priv;
 +
-+static char dev_search_path[PATH_MAX] = DEFAULT_DEV_SEARCH_PATH;
++	sector_t		sector;
++	void			*data;
++	size_t			len;
++	size_t			bi_size;
++	enum ibnbd_io_flags	flags;
 +
-+static int dev_search_path_set(const char *val, const struct kernel_param *kp)
-+{
-+	char *dup;
-+
-+	if (strlen(val) >= sizeof(dev_search_path))
-+		return -EINVAL;
-+
-+	dup = kstrdup(val, GFP_KERNEL);
-+
-+	if (dup[strlen(dup) - 1] == '\n')
-+		dup[strlen(dup) - 1] = '\0';
-+
-+	strlcpy(dev_search_path, dup, sizeof(dev_search_path));
-+
-+	kfree(dup);
-+	pr_info("dev_search_path changed to '%s'\n", dev_search_path);
-+
-+	return 0;
-+}
-+
-+static struct kparam_string dev_search_path_kparam_str = {
-+	.maxlen	= sizeof(dev_search_path),
-+	.string	= dev_search_path
++	struct work_struct	work;
 +};
 +
-+static const struct kernel_param_ops dev_search_path_ops = {
-+	.set	= dev_search_path_set,
-+	.get	= param_get_string,
++struct ibnbd_dev_blk_io {
++	struct ibnbd_dev *dev;
++	void		 *priv;
 +};
 +
-+module_param_cb(dev_search_path, &dev_search_path_ops,
-+		&dev_search_path_kparam_str, 0444);
-+MODULE_PARM_DESC(dev_search_path, "Sets the dev_search_path."
-+		 " When a device is mapped this path is prepended to the"
-+		 " device path from the map device operation.  If %SESSNAME%"
-+		 " is specified in a path, then device will be searched in a"
-+		 " session namespace."
-+		 " (default: " DEFAULT_DEV_SEARCH_PATH ")");
++static struct workqueue_struct *fileio_wq;
 +
-+static int def_io_mode = IBNBD_BLOCKIO;
-+
-+static int def_io_mode_set(const char *val, const struct kernel_param *kp)
++int ibnbd_dev_init(void)
 +{
-+	int io_mode, rc;
-+
-+	rc = kstrtoint(val, 0, &io_mode);
-+	if (unlikely(rc))
-+		return rc;
-+
-+	switch (io_mode) {
-+	case IBNBD_FILEIO:
-+	case IBNBD_BLOCKIO:
-+		def_io_mode = io_mode;
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct kernel_param_ops def_io_mode_ops = {
-+	.set	= def_io_mode_set,
-+	.get	= param_get_int,
-+};
-+module_param_cb(def_io_mode, &def_io_mode_ops, &def_io_mode, 0444);
-+MODULE_PARM_DESC(def_io_mode, "By default, export devices in"
-+		 " blockio(" __stringify(_IBNBD_BLOCKIO) ") or"
-+		 " fileio(" __stringify(_IBNBD_FILEIO) ") mode."
-+		 " (default: " __stringify(_IBNBD_BLOCKIO) " (blockio))");
-+
-+static DEFINE_MUTEX(sess_lock);
-+static DEFINE_SPINLOCK(dev_lock);
-+
-+static LIST_HEAD(sess_list);
-+static LIST_HEAD(dev_list);
-+
-+struct ibnbd_io_private {
-+	struct ibtrs_srv_op		*id;
-+	struct ibnbd_srv_sess_dev	*sess_dev;
-+};
-+
-+static void ibnbd_sess_dev_release(struct kref *kref)
-+{
-+	struct ibnbd_srv_sess_dev *sess_dev;
-+
-+	sess_dev = container_of(kref, struct ibnbd_srv_sess_dev, kref);
-+	complete(sess_dev->destroy_comp);
-+}
-+
-+static inline void ibnbd_put_sess_dev(struct ibnbd_srv_sess_dev *sess_dev)
-+{
-+	kref_put(&sess_dev->kref, ibnbd_sess_dev_release);
-+}
-+
-+static void ibnbd_endio(void *priv, int error)
-+{
-+	struct ibnbd_io_private *ibnbd_priv = priv;
-+	struct ibnbd_srv_sess_dev *sess_dev = ibnbd_priv->sess_dev;
-+
-+	ibnbd_put_sess_dev(sess_dev);
-+
-+	ibtrs_srv_resp_rdma(ibnbd_priv->id, error);
-+
-+	kfree(priv);
-+}
-+
-+static struct ibnbd_srv_sess_dev *
-+ibnbd_get_sess_dev(int dev_id, struct ibnbd_srv_session *srv_sess)
-+{
-+	struct ibnbd_srv_sess_dev *sess_dev;
-+	int ret = 0;
-+
-+	read_lock(&srv_sess->index_lock);
-+	sess_dev = idr_find(&srv_sess->index_idr, dev_id);
-+	if (likely(sess_dev))
-+		ret = kref_get_unless_zero(&sess_dev->kref);
-+	read_unlock(&srv_sess->index_lock);
-+
-+	if (unlikely(!sess_dev || !ret))
-+		return ERR_PTR(-ENXIO);
-+
-+	return sess_dev;
-+}
-+
-+static int process_rdma(struct ibtrs_srv *sess,
-+			struct ibnbd_srv_session *srv_sess,
-+			struct ibtrs_srv_op *id, void *data, u32 datalen,
-+			const void *usr, size_t usrlen)
-+{
-+	const struct ibnbd_msg_io *msg = usr;
-+	struct ibnbd_io_private *priv;
-+	struct ibnbd_srv_sess_dev *sess_dev;
-+	u32 dev_id;
-+	int err;
-+
-+	priv = kmalloc(sizeof(*priv), GFP_KERNEL);
-+	if (unlikely(!priv))
++	fileio_wq = alloc_workqueue("%s", WQ_UNBOUND,
++				    IBNBD_DEV_MAX_FILEIO_ACTIVE_WORKERS,
++				    "ibnbd_server_fileio_wq");
++	if (!fileio_wq)
 +		return -ENOMEM;
 +
-+	dev_id = le32_to_cpu(msg->device_id);
-+
-+	sess_dev = ibnbd_get_sess_dev(dev_id, srv_sess);
-+	if (unlikely(IS_ERR(sess_dev))) {
-+		pr_err_ratelimited("Got I/O request on session %s for "
-+				   "unknown device id %d\n",
-+				   srv_sess->sessname, dev_id);
-+		err = -ENOTCONN;
-+		goto err;
-+	}
-+
-+	priv->sess_dev = sess_dev;
-+	priv->id = id;
-+
-+	err = ibnbd_dev_submit_io(sess_dev->ibnbd_dev, le64_to_cpu(msg->sector),
-+				  data, datalen, le32_to_cpu(msg->bi_size),
-+				  le32_to_cpu(msg->rw),
-+				  srv_sess->ver < IBNBD_PROTO_VER_MAJOR ||
-+				  usrlen < sizeof(*msg) ?
-+				  0 : le16_to_cpu(msg->prio), priv);
-+	if (unlikely(err)) {
-+		ibnbd_err(sess_dev,
-+			  "Submitting I/O to device failed, err: %d\n", err);
-+		goto sess_dev_put;
-+	}
-+
-+	return 0;
-+
-+sess_dev_put:
-+	ibnbd_put_sess_dev(sess_dev);
-+err:
-+	kfree(priv);
-+	return err;
-+}
-+
-+static void destroy_device(struct ibnbd_srv_dev *dev)
-+{
-+	WARN(!list_empty(&dev->sess_dev_list),
-+	     "Device %s is being destroyed but still in use!\n",
-+	     dev->id);
-+
-+	spin_lock(&dev_lock);
-+	list_del(&dev->list);
-+	spin_unlock(&dev_lock);
-+
-+	if (dev->dev_kobj.state_in_sysfs)
-+		/*
-+		 * Destroy kobj only if it was really created.
-+		 * The following call should be sync, because
-+		 *  we free the memory afterwards.
-+		 */
-+		ibnbd_srv_destroy_dev_sysfs(dev);
-+
-+	kfree(dev);
-+}
-+
-+static void destroy_device_cb(struct kref *kref)
-+{
-+	struct ibnbd_srv_dev *dev;
-+
-+	dev = container_of(kref, struct ibnbd_srv_dev, kref);
-+
-+	destroy_device(dev);
-+}
-+
-+static void ibnbd_put_srv_dev(struct ibnbd_srv_dev *dev)
-+{
-+	kref_put(&dev->kref, destroy_device_cb);
-+}
-+
-+static void ibnbd_destroy_sess_dev(struct ibnbd_srv_sess_dev *sess_dev)
-+{
-+	DECLARE_COMPLETION_ONSTACK(dc);
-+
-+	write_lock(&sess_dev->sess->index_lock);
-+	idr_remove(&sess_dev->sess->index_idr, sess_dev->device_id);
-+	write_unlock(&sess_dev->sess->index_lock);
-+
-+	sess_dev->destroy_comp = &dc;
-+	ibnbd_put_sess_dev(sess_dev);
-+	wait_for_completion(&dc);
-+
-+	ibnbd_dev_close(sess_dev->ibnbd_dev);
-+	list_del(&sess_dev->sess_list);
-+	mutex_lock(&sess_dev->dev->lock);
-+	list_del(&sess_dev->dev_list);
-+	if (sess_dev->open_flags & FMODE_WRITE)
-+		sess_dev->dev->open_write_cnt--;
-+	mutex_unlock(&sess_dev->dev->lock);
-+
-+	ibnbd_put_srv_dev(sess_dev->dev);
-+
-+	ibnbd_info(sess_dev, "Device closed\n");
-+	kfree(sess_dev);
-+}
-+
-+static void destroy_sess(struct ibnbd_srv_session *srv_sess)
-+{
-+	struct ibnbd_srv_sess_dev *sess_dev, *tmp;
-+
-+	if (list_empty(&srv_sess->sess_dev_list))
-+		goto out;
-+
-+	mutex_lock(&srv_sess->lock);
-+	list_for_each_entry_safe(sess_dev, tmp, &srv_sess->sess_dev_list,
-+				 sess_list) {
-+		ibnbd_srv_destroy_dev_session_sysfs(sess_dev);
-+		ibnbd_destroy_sess_dev(sess_dev);
-+	}
-+	mutex_unlock(&srv_sess->lock);
-+
-+out:
-+	idr_destroy(&srv_sess->index_idr);
-+	bioset_exit(&srv_sess->sess_bio_set);
-+
-+	pr_info("IBTRS Session %s disconnected\n", srv_sess->sessname);
-+
-+	mutex_lock(&sess_lock);
-+	list_del(&srv_sess->list);
-+	mutex_unlock(&sess_lock);
-+
-+	kfree(srv_sess);
-+}
-+
-+static int create_sess(struct ibtrs_srv *ibtrs)
-+{
-+	struct ibnbd_srv_session *srv_sess;
-+	char sessname[NAME_MAX];
-+	int err;
-+
-+	err = ibtrs_srv_get_sess_name(ibtrs, sessname, sizeof(sessname));
-+	if (unlikely(err)) {
-+		pr_err("ibtrs_srv_get_sess_name(%s): %d\n", sessname, err);
-+
-+		return err;
-+	}
-+	srv_sess = kzalloc(sizeof(*srv_sess), GFP_KERNEL);
-+	if (!srv_sess)
-+		return -ENOMEM;
-+	srv_sess->queue_depth = ibtrs_srv_get_queue_depth(ibtrs);
-+
-+	err = bioset_init(&srv_sess->sess_bio_set, srv_sess->queue_depth, 0,
-+			  BIOSET_NEED_BVECS);
-+	if (err) {
-+		pr_err("Allocating srv_session for session %s failed\n",
-+		       sessname);
-+		kfree(srv_sess);
-+		return err;
-+	}
-+
-+	idr_init(&srv_sess->index_idr);
-+	rwlock_init(&srv_sess->index_lock);
-+	INIT_LIST_HEAD(&srv_sess->sess_dev_list);
-+	mutex_init(&srv_sess->lock);
-+	mutex_lock(&sess_lock);
-+	list_add(&srv_sess->list, &sess_list);
-+	mutex_unlock(&sess_lock);
-+
-+	srv_sess->ibtrs = ibtrs;
-+	srv_sess->queue_depth = ibtrs_srv_get_queue_depth(ibtrs);
-+	strlcpy(srv_sess->sessname, sessname, sizeof(srv_sess->sessname));
-+
-+	ibtrs_srv_set_sess_priv(ibtrs, srv_sess);
-+
 +	return 0;
 +}
 +
-+static int ibnbd_srv_link_ev(struct ibtrs_srv *ibtrs,
-+			     enum ibtrs_srv_link_ev ev, void *priv)
++void ibnbd_dev_destroy(void)
 +{
-+	struct ibnbd_srv_session *srv_sess = priv;
++	destroy_workqueue(fileio_wq);
++}
 +
-+	switch (ev) {
-+	case IBTRS_SRV_LINK_EV_CONNECTED:
-+		return create_sess(ibtrs);
++static inline struct block_device *ibnbd_dev_open_bdev(const char *path,
++						       fmode_t flags)
++{
++	return blkdev_get_by_path(path, flags, THIS_MODULE);
++}
 +
-+	case IBTRS_SRV_LINK_EV_DISCONNECTED:
-+		if (WARN_ON(!srv_sess))
-+			return -EINVAL;
++static int ibnbd_dev_blk_open(struct ibnbd_dev *dev, const char *path,
++			      fmode_t flags)
++{
++	dev->bdev = ibnbd_dev_open_bdev(path, flags);
++	return PTR_ERR_OR_ZERO(dev->bdev);
++}
 +
-+		destroy_sess(srv_sess);
-+		return 0;
++static int ibnbd_dev_vfs_open(struct ibnbd_dev *dev, const char *path,
++			      fmode_t flags)
++{
++	int oflags = O_DSYNC; /* enable write-through */
 +
-+	default:
-+		pr_warn("Received unknown IBTRS session event %d from session"
-+			" %s\n", ev, srv_sess->sessname);
++	if (flags & FMODE_WRITE)
++		oflags |= O_RDWR;
++	else if (flags & FMODE_READ)
++		oflags |= O_RDONLY;
++	else
 +		return -EINVAL;
-+	}
++
++	dev->file = filp_open(path, oflags, 0);
++	return PTR_ERR_OR_ZERO(dev->file);
 +}
 +
-+static int process_msg_close(struct ibtrs_srv *ibtrs,
-+			     struct ibnbd_srv_session *srv_sess,
-+			     void *data, size_t datalen, const void *usr,
-+			     size_t usrlen)
++struct ibnbd_dev *ibnbd_dev_open(const char *path, fmode_t flags,
++				 enum ibnbd_io_mode mode, struct bio_set *bs,
++				 ibnbd_dev_io_fn io_cb)
 +{
-+	const struct ibnbd_msg_close *close_msg = usr;
-+	struct ibnbd_srv_sess_dev *sess_dev;
-+
-+	sess_dev = ibnbd_get_sess_dev(le32_to_cpu(close_msg->device_id),
-+				      srv_sess);
-+	if (unlikely(IS_ERR(sess_dev)))
-+		return 0;
-+
-+	ibnbd_srv_destroy_dev_session_sysfs(sess_dev);
-+	ibnbd_put_sess_dev(sess_dev);
-+	mutex_lock(&srv_sess->lock);
-+	ibnbd_destroy_sess_dev(sess_dev);
-+	mutex_unlock(&srv_sess->lock);
-+	return 0;
-+}
-+
-+static int process_msg_open(struct ibtrs_srv *ibtrs,
-+			    struct ibnbd_srv_session *srv_sess,
-+			    const void *msg, size_t len,
-+			    void *data, size_t datalen);
-+
-+static int process_msg_sess_info(struct ibtrs_srv *ibtrs,
-+				 struct ibnbd_srv_session *srv_sess,
-+				 const void *msg, size_t len,
-+				 void *data, size_t datalen);
-+
-+static int ibnbd_srv_rdma_ev(struct ibtrs_srv *ibtrs, void *priv,
-+			     struct ibtrs_srv_op *id, int dir,
-+			     void *data, size_t datalen, const void *usr,
-+			     size_t usrlen)
-+{
-+	struct ibnbd_srv_session *srv_sess = priv;
-+	const struct ibnbd_msg_hdr *hdr = usr;
-+	int ret = 0;
-+	u16 type;
-+
-+	if (unlikely(WARN_ON(!srv_sess)))
-+		return -ENODEV;
-+
-+	type = le16_to_cpu(hdr->type);
-+
-+	switch (type) {
-+	case IBNBD_MSG_IO:
-+		return process_rdma(ibtrs, srv_sess, id, data, datalen, usr,
-+				    usrlen);
-+	case IBNBD_MSG_CLOSE:
-+		ret = process_msg_close(ibtrs, srv_sess, data, datalen,
-+					usr, usrlen);
-+		break;
-+	case IBNBD_MSG_OPEN:
-+		ret = process_msg_open(ibtrs, srv_sess, usr, usrlen,
-+				       data, datalen);
-+		break;
-+	case IBNBD_MSG_SESS_INFO:
-+		ret = process_msg_sess_info(ibtrs, srv_sess, usr, usrlen,
-+					    data, datalen);
-+		break;
-+	default:
-+		pr_warn("Received unexpected message type %d with dir %d from"
-+			" session %s\n", type, dir, srv_sess->sessname);
-+		return -EINVAL;
-+	}
-+
-+	ibtrs_srv_resp_rdma(id, ret);
-+	return 0;
-+}
-+
-+static struct ibnbd_srv_sess_dev
-+*ibnbd_sess_dev_alloc(struct ibnbd_srv_session *srv_sess)
-+{
-+	struct ibnbd_srv_sess_dev *sess_dev;
-+	int error;
-+
-+	sess_dev = kzalloc(sizeof(*sess_dev), GFP_KERNEL);
-+	if (!sess_dev)
-+		return ERR_PTR(-ENOMEM);
-+
-+	idr_preload(GFP_KERNEL);
-+	write_lock(&srv_sess->index_lock);
-+
-+	error = idr_alloc(&srv_sess->index_idr, sess_dev, 0, -1, GFP_NOWAIT);
-+	if (error < 0) {
-+		pr_warn("Allocating idr failed, err: %d\n", error);
-+		goto out_unlock;
-+	}
-+
-+	sess_dev->device_id = error;
-+	error = 0;
-+
-+out_unlock:
-+	write_unlock(&srv_sess->index_lock);
-+	idr_preload_end();
-+	if (error) {
-+		kfree(sess_dev);
-+		return ERR_PTR(error);
-+	}
-+
-+	return sess_dev;
-+}
-+
-+static struct ibnbd_srv_dev *ibnbd_srv_init_srv_dev(const char *id,
-+						    enum ibnbd_io_mode mode)
-+{
-+	struct ibnbd_srv_dev *dev;
++	struct ibnbd_dev *dev;
++	int ret;
 +
 +	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 +	if (!dev)
 +		return ERR_PTR(-ENOMEM);
 +
-+	strlcpy(dev->id, id, sizeof(dev->id));
-+	dev->mode = mode;
-+	kref_init(&dev->kref);
-+	INIT_LIST_HEAD(&dev->sess_dev_list);
-+	mutex_init(&dev->lock);
++	if (mode == IBNBD_BLOCKIO) {
++		dev->blk_open_flags = flags;
++		ret = ibnbd_dev_blk_open(dev, path, dev->blk_open_flags);
++		if (ret)
++			goto err;
++	} else if (mode == IBNBD_FILEIO) {
++		dev->blk_open_flags = FMODE_READ;
++		ret = ibnbd_dev_blk_open(dev, path, dev->blk_open_flags);
++		if (ret)
++			goto err;
++
++		ret = ibnbd_dev_vfs_open(dev, path, flags);
++		if (ret)
++			goto blk_put;
++	} else {
++		ret = -EINVAL;
++		goto err;
++	}
++
++	dev->blk_open_flags	= flags;
++	dev->mode		= mode;
++	dev->io_cb		= io_cb;
++	bdevname(dev->bdev, dev->name);
++	dev->ibd_bio_set	= bs;
 +
 +	return dev;
++
++blk_put:
++	blkdev_put(dev->bdev, dev->blk_open_flags);
++err:
++	kfree(dev);
++	return ERR_PTR(ret);
 +}
 +
-+static struct ibnbd_srv_dev *
-+ibnbd_srv_find_or_add_srv_dev(struct ibnbd_srv_dev *new_dev)
++void ibnbd_dev_close(struct ibnbd_dev *dev)
 +{
-+	struct ibnbd_srv_dev *dev;
-+
-+	spin_lock(&dev_lock);
-+	list_for_each_entry(dev, &dev_list, list) {
-+		if (!strncmp(dev->id, new_dev->id, sizeof(dev->id))) {
-+			if (!kref_get_unless_zero(&dev->kref))
-+				/*
-+				 * We lost the race, device is almost dead.
-+				 *  Continue traversing to find a valid one.
-+				 */
-+				continue;
-+			spin_unlock(&dev_lock);
-+			return dev;
-+		}
-+	}
-+	list_add(&new_dev->list, &dev_list);
-+	spin_unlock(&dev_lock);
-+
-+	return new_dev;
++	flush_workqueue(fileio_wq);
++	blkdev_put(dev->bdev, dev->blk_open_flags);
++	if (dev->mode == IBNBD_FILEIO)
++		filp_close(dev->file, dev->file);
++	kfree(dev);
 +}
 +
-+static int ibnbd_srv_check_update_open_perm(struct ibnbd_srv_dev *srv_dev,
-+					    struct ibnbd_srv_session *srv_sess,
-+					    enum ibnbd_io_mode io_mode,
-+					    enum ibnbd_access_mode access_mode)
++static void ibnbd_dev_bi_end_io(struct bio *bio)
 +{
-+	int ret = -EPERM;
++	struct ibnbd_dev_blk_io *io = bio->bi_private;
 +
-+	mutex_lock(&srv_dev->lock);
++	io->dev->io_cb(io->priv, blk_status_to_errno(bio->bi_status));
++	bio_put(bio);
++	kfree(io);
++}
 +
-+	if (srv_dev->mode != io_mode) {
-+		pr_err("Mapping device '%s' for session %s in %s mode forbidden,"
-+		       " device is already mapped from other client(s) in"
-+		       " %s mode\n", srv_dev->id, srv_sess->sessname,
-+		       ibnbd_io_mode_str(io_mode),
-+		       ibnbd_io_mode_str(srv_dev->mode));
-+		goto out;
++static void bio_map_kern_endio(struct bio *bio)
++{
++	bio_put(bio);
++}
++
++/**
++ *	ibnbd_bio_map_kern	-	map kernel address into bio
++ *	@q: the struct request_queue for the bio
++ *	@data: pointer to buffer to map
++ *	@bs: bio_set to use.
++ *	@len: length in bytes
++ *	@gfp_mask: allocation flags for bio allocation
++ *
++ *	Map the kernel address into a bio suitable for io to a block
++ *	device. Returns an error pointer in case of error.
++ */
++static struct bio *ibnbd_bio_map_kern(struct request_queue *q, void *data,
++				      struct bio_set *bs,
++				      unsigned int len, gfp_t gfp_mask)
++{
++	unsigned long kaddr = (unsigned long)data;
++	unsigned long end = (kaddr + len + PAGE_SIZE - 1) >> PAGE_SHIFT;
++	unsigned long start = kaddr >> PAGE_SHIFT;
++	const int nr_pages = end - start;
++	int offset, i;
++	struct bio *bio;
++
++	bio = bio_alloc_bioset(gfp_mask, nr_pages, bs);
++	if (!bio)
++		return ERR_PTR(-ENOMEM);
++
++	offset = offset_in_page(kaddr);
++	for (i = 0; i < nr_pages; i++) {
++		unsigned int bytes = PAGE_SIZE - offset;
++
++		if (len <= 0)
++			break;
++
++		if (bytes > len)
++			bytes = len;
++
++		if (bio_add_pc_page(q, bio, virt_to_page(data), bytes,
++				    offset) < bytes) {
++			/* we don't support partial mappings */
++			bio_put(bio);
++			return ERR_PTR(-EINVAL);
++		}
++
++		data += bytes;
++		len -= bytes;
++		offset = 0;
 +	}
 +
-+	switch (access_mode) {
-+	case IBNBD_ACCESS_RO:
-+		ret = 0;
-+		break;
-+	case IBNBD_ACCESS_RW:
-+		if (srv_dev->open_write_cnt == 0)  {
-+			srv_dev->open_write_cnt++;
-+			ret = 0;
-+		} else {
-+			pr_err("Mapping device '%s' for session %s with"
-+			       " RW permissions failed. Device already opened"
-+			       " as 'RW' by %d client(s) in %s mode.\n",
-+			       srv_dev->id, srv_sess->sessname,
-+			       srv_dev->open_write_cnt,
-+			       ibnbd_io_mode_str(srv_dev->mode));
-+		}
-+		break;
-+	case IBNBD_ACCESS_MIGRATION:
-+		if (srv_dev->open_write_cnt < 2) {
-+			srv_dev->open_write_cnt++;
-+			ret = 0;
-+		} else {
-+			pr_err("Mapping device '%s' for session %s with"
-+			       " migration permissions failed. Device already"
-+			       " opened as 'RW' by %d client(s) in %s mode.\n",
-+			       srv_dev->id, srv_sess->sessname,
-+			       srv_dev->open_write_cnt,
-+			       ibnbd_io_mode_str(srv_dev->mode));
-+		}
-+		break;
-+	default:
-+		pr_err("Received mapping request for device '%s' on session %s"
-+		       " with invalid access mode: %d\n", srv_dev->id,
-+		       srv_sess->sessname, access_mode);
-+		ret = -EINVAL;
++	bio->bi_end_io = bio_map_kern_endio;
++	return bio;
++}
++
++static int ibnbd_dev_blk_submit_io(struct ibnbd_dev *dev, sector_t sector,
++				   void *data, size_t len, u32 bi_size,
++				   enum ibnbd_io_flags flags, short prio,
++				   void *priv)
++{
++	struct request_queue *q = bdev_get_queue(dev->bdev);
++	struct ibnbd_dev_blk_io *io;
++	struct bio *bio;
++
++	/* check if the buffer is suitable for bdev */
++	if (unlikely(WARN_ON(!blk_rq_aligned(q, (unsigned long)data, len))))
++		return -EINVAL;
++
++	/* Generate bio with pages pointing to the rdma buffer */
++	bio = ibnbd_bio_map_kern(q, data, dev->ibd_bio_set, len, GFP_KERNEL);
++	if (unlikely(IS_ERR(bio)))
++		return PTR_ERR(bio);
++
++	io = kmalloc(sizeof(*io), GFP_KERNEL);
++	if (unlikely(!io)) {
++		bio_put(bio);
++		return -ENOMEM;
 +	}
 +
-+out:
-+	mutex_unlock(&srv_dev->lock);
++	io->dev		= dev;
++	io->priv	= priv;
 +
++	bio->bi_end_io		= ibnbd_dev_bi_end_io;
++	bio->bi_private		= io;
++	bio->bi_opf		= ibnbd_to_bio_flags(flags);
++	bio->bi_iter.bi_sector	= sector;
++	bio->bi_iter.bi_size	= bi_size;
++	bio_set_prio(bio, prio);
++	bio_set_dev(bio, dev->bdev);
++
++	submit_bio(bio);
++
++	return 0;
++}
++
++static int ibnbd_dev_file_handle_flush(struct ibnbd_dev_file_io_work *w,
++				       loff_t start)
++{
++	int ret;
++	loff_t end;
++	int len = w->bi_size;
++
++	if (len)
++		end = start + len - 1;
++	else
++		end = LLONG_MAX;
++
++	ret = vfs_fsync_range(w->dev->file, start, end, 1);
++	if (unlikely(ret))
++		pr_info_ratelimited("I/O FLUSH failed on %s, vfs_sync err: %d\n",
++				    w->dev->name, ret);
 +	return ret;
 +}
 +
-+static struct ibnbd_srv_dev *
-+ibnbd_srv_get_or_create_srv_dev(struct ibnbd_dev *ibnbd_dev,
-+				struct ibnbd_srv_session *srv_sess,
-+				enum ibnbd_io_mode io_mode,
-+				enum ibnbd_access_mode access_mode)
++static int ibnbd_dev_file_handle_fua(struct ibnbd_dev_file_io_work *w,
++				     loff_t start)
 +{
 +	int ret;
-+	struct ibnbd_srv_dev *new_dev, *dev;
++	loff_t end;
++	int len = w->bi_size;
 +
-+	new_dev = ibnbd_srv_init_srv_dev(ibnbd_dev->name, io_mode);
-+	if (IS_ERR(new_dev))
-+		return new_dev;
++	if (len)
++		end = start + len - 1;
++	else
++		end = LLONG_MAX;
 +
-+	dev = ibnbd_srv_find_or_add_srv_dev(new_dev);
-+	if (dev != new_dev)
-+		kfree(new_dev);
++	ret = vfs_fsync_range(w->dev->file, start, end, 1);
++	if (unlikely(ret))
++		pr_info_ratelimited("I/O FUA failed on %s, vfs_sync err: %d\n",
++				    w->dev->name, ret);
++	return ret;
++}
 +
-+	ret = ibnbd_srv_check_update_open_perm(dev, srv_sess, io_mode,
-+					       access_mode);
-+	if (ret) {
-+		ibnbd_put_srv_dev(dev);
-+		return ERR_PTR(ret);
++static int ibnbd_dev_file_handle_write_same(struct ibnbd_dev_file_io_work *w)
++{
++	int i;
++
++	if (unlikely(WARN_ON(w->bi_size % w->len)))
++		return -EINVAL;
++
++	for (i = 1; i < w->bi_size / w->len; i++)
++		memcpy(w->data + i * w->len, w->data, w->len);
++
++	return 0;
++}
++
++static void ibnbd_dev_file_submit_io_worker(struct work_struct *w)
++{
++	struct ibnbd_dev_file_io_work *dev_work;
++	struct file *f;
++	int ret, len;
++	loff_t off;
++
++	dev_work = container_of(w, struct ibnbd_dev_file_io_work, work);
++	off = dev_work->sector * ibnbd_dev_get_logical_bsize(dev_work->dev);
++	f = dev_work->dev->file;
++	len = dev_work->bi_size;
++
++	if (ibnbd_op(dev_work->flags) == IBNBD_OP_FLUSH) {
++		ret = ibnbd_dev_file_handle_flush(dev_work, off);
++		if (unlikely(ret))
++			goto out;
 +	}
 +
-+	return dev;
-+}
-+
-+static void ibnbd_srv_fill_msg_open_rsp(struct ibnbd_msg_open_rsp *rsp,
-+					struct ibnbd_srv_sess_dev *sess_dev)
-+{
-+	struct ibnbd_dev *ibnbd_dev = sess_dev->ibnbd_dev;
-+
-+	rsp->hdr.type = cpu_to_le16(IBNBD_MSG_OPEN_RSP);
-+	rsp->device_id =
-+		cpu_to_le32(sess_dev->device_id);
-+	rsp->nsectors =
-+		cpu_to_le64(get_capacity(ibnbd_dev->bdev->bd_disk));
-+	rsp->logical_block_size	=
-+		cpu_to_le16(ibnbd_dev_get_logical_bsize(ibnbd_dev));
-+	rsp->physical_block_size =
-+		cpu_to_le16(ibnbd_dev_get_phys_bsize(ibnbd_dev));
-+	rsp->max_segments =
-+		cpu_to_le16(ibnbd_dev_get_max_segs(ibnbd_dev));
-+	rsp->max_hw_sectors =
-+		cpu_to_le32(ibnbd_dev_get_max_hw_sects(ibnbd_dev));
-+	rsp->max_write_same_sectors =
-+		cpu_to_le32(ibnbd_dev_get_max_write_same_sects(ibnbd_dev));
-+	rsp->max_discard_sectors =
-+		cpu_to_le32(ibnbd_dev_get_max_discard_sects(ibnbd_dev));
-+	rsp->discard_granularity =
-+		cpu_to_le32(ibnbd_dev_get_discard_granularity(ibnbd_dev));
-+	rsp->discard_alignment =
-+		cpu_to_le32(ibnbd_dev_get_discard_alignment(ibnbd_dev));
-+	rsp->secure_discard =
-+		cpu_to_le16(ibnbd_dev_get_secure_discard(ibnbd_dev));
-+	rsp->rotational =
-+		!blk_queue_nonrot(bdev_get_queue(ibnbd_dev->bdev));
-+	rsp->io_mode =
-+		ibnbd_dev->mode;
-+}
-+
-+static struct ibnbd_srv_sess_dev *
-+ibnbd_srv_create_set_sess_dev(struct ibnbd_srv_session *srv_sess,
-+			      const struct ibnbd_msg_open *open_msg,
-+			      struct ibnbd_dev *ibnbd_dev, fmode_t open_flags,
-+			      struct ibnbd_srv_dev *srv_dev)
-+{
-+	struct ibnbd_srv_sess_dev *sdev = ibnbd_sess_dev_alloc(srv_sess);
-+
-+	if (IS_ERR(sdev))
-+		return sdev;
-+
-+	kref_init(&sdev->kref);
-+
-+	strlcpy(sdev->pathname, open_msg->dev_name, sizeof(sdev->pathname));
-+
-+	sdev->ibnbd_dev		= ibnbd_dev;
-+	sdev->sess		= srv_sess;
-+	sdev->dev		= srv_dev;
-+	sdev->open_flags	= open_flags;
-+	sdev->access_mode	= open_msg->access_mode;
-+
-+	return sdev;
-+}
-+
-+static char *ibnbd_srv_get_full_path(struct ibnbd_srv_session *srv_sess,
-+				     const char *dev_name)
-+{
-+	char *full_path;
-+	char *a, *b;
-+
-+	full_path = kmalloc(PATH_MAX, GFP_KERNEL);
-+	if (!full_path)
-+		return ERR_PTR(-ENOMEM);
-+
-+	/*
-+	 * Replace %SESSNAME% with a real session name in order to
-+	 * create device namespace.
-+	 */
-+	a = strnstr(dev_search_path, "%SESSNAME%", sizeof(dev_search_path));
-+	if (a) {
-+		int len = a - dev_search_path;
-+
-+		len = snprintf(full_path, PATH_MAX, "%.*s/%s/%s", len,
-+			       dev_search_path, srv_sess->sessname, dev_name);
-+		if (len >= PATH_MAX) {
-+			pr_err("Tooooo looong path: %s, %s, %s\n",
-+			       dev_search_path, srv_sess->sessname, dev_name);
-+			kfree(full_path);
-+			return ERR_PTR(-EINVAL);
-+		}
-+	} else {
-+		snprintf(full_path, PATH_MAX, "%s/%s",
-+			 dev_search_path, dev_name);
++	if (ibnbd_op(dev_work->flags) == IBNBD_OP_WRITE_SAME) {
++		ret = ibnbd_dev_file_handle_write_same(dev_work);
++		if (unlikely(ret))
++			goto out;
 +	}
 +
-+	/* eliminitate duplicated slashes */
-+	a = strchr(full_path, '/');
-+	b = a;
-+	while (*b != '\0') {
-+		if (*b == '/' && *a == '/') {
-+			b++;
++	/* TODO Implement support for DIRECT */
++	if (dev_work->bi_size) {
++		loff_t off_tmp = off;
++
++		if (ibnbd_op(dev_work->flags) == IBNBD_OP_WRITE)
++			ret = kernel_write(f, dev_work->data, dev_work->bi_size,
++					   &off_tmp);
++		else
++			ret = kernel_read(f, dev_work->data, dev_work->bi_size,
++					  &off_tmp);
++
++		if (unlikely(ret < 0)) {
++			goto out;
++		} else if (unlikely(ret != dev_work->bi_size)) {
++			/* TODO implement support for partial completions */
++			ret = -EIO;
++			goto out;
 +		} else {
-+			a++;
-+			*a = *b;
-+			b++;
++			ret = 0;
 +		}
 +	}
-+	a++;
-+	*a = '\0';
 +
-+	return full_path;
++	if (dev_work->flags & IBNBD_F_FUA)
++		ret = ibnbd_dev_file_handle_fua(dev_work, off);
++out:
++	dev_work->dev->io_cb(dev_work->priv, ret);
++	kfree(dev_work);
 +}
 +
-+static int process_msg_sess_info(struct ibtrs_srv *ibtrs,
-+				 struct ibnbd_srv_session *srv_sess,
-+				 const void *msg, size_t len,
-+				 void *data, size_t datalen)
++static int ibnbd_dev_file_submit_io(struct ibnbd_dev *dev, sector_t sector,
++				    void *data, size_t len, size_t bi_size,
++				    enum ibnbd_io_flags flags, void *priv)
 +{
-+	const struct ibnbd_msg_sess_info *sess_info_msg = msg;
-+	struct ibnbd_msg_sess_info_rsp *rsp = data;
++	struct ibnbd_dev_file_io_work *w;
 +
-+	srv_sess->ver = min_t(u8, sess_info_msg->ver, IBNBD_PROTO_VER_MAJOR);
-+	pr_debug("Session %s using protocol version %d (client version: %d,"
-+		 " server version: %d)\n", srv_sess->sessname,
-+		 srv_sess->ver, sess_info_msg->ver, IBNBD_PROTO_VER_MAJOR);
++	if (!ibnbd_flags_supported(flags)) {
++		pr_info_ratelimited("Unsupported I/O flags: 0x%x on device "
++				    "%s\n", flags, dev->name);
++		return -ENOTSUPP;
++	}
 +
-+	rsp->hdr.type = cpu_to_le16(IBNBD_MSG_SESS_INFO_RSP);
-+	rsp->ver = srv_sess->ver;
++	w = kmalloc(sizeof(*w), GFP_KERNEL);
++	if (!w)
++		return -ENOMEM;
 +
++	w->dev		= dev;
++	w->priv		= priv;
++	w->sector	= sector;
++	w->data		= data;
++	w->len		= len;
++	w->bi_size	= bi_size;
++	w->flags	= flags;
++	INIT_WORK(&w->work, ibnbd_dev_file_submit_io_worker);
++
++	if (unlikely(!queue_work(fileio_wq, &w->work))) {
++		kfree(w);
++		return -EEXIST;
++	}
++
++	return 0;
++}
++
++int ibnbd_dev_submit_io(struct ibnbd_dev *dev, sector_t sector, void *data,
++			size_t len, u32 bi_size, enum ibnbd_io_flags flags,
++			short prio, void *priv)
++{
++	if (dev->mode == IBNBD_FILEIO)
++		return ibnbd_dev_file_submit_io(dev, sector, data, len, bi_size,
++						flags, priv);
++	else if (dev->mode == IBNBD_BLOCKIO)
++		return ibnbd_dev_blk_submit_io(dev, sector, data, len, bi_size,
++					       flags, prio, priv);
++
++	pr_warn("Submitting I/O to %s failed, dev->mode contains invalid "
++		"value: '%d', memory corrupted?", dev->name, dev->mode);
++
++	return -EINVAL;
++}
+diff --git a/drivers/block/ibnbd/ibnbd-srv-dev.h b/drivers/block/ibnbd/ibnbd-srv-dev.h
+new file mode 100644
+index 000000000000..131746e38a9d
+--- /dev/null
++++ b/drivers/block/ibnbd/ibnbd-srv-dev.h
+@@ -0,0 +1,143 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * InfiniBand Network Block Driver
++ *
++ * Copyright (c) 2014 - 2017 ProfitBricks GmbH. All rights reserved.
++ * Authors: Fabian Holler <mail@fholler.de>
++ *          Jack Wang <jinpu.wang@profitbricks.com>
++ *          Kleber Souza <kleber.souza@profitbricks.com>
++ *          Danil Kipnis <danil.kipnis@profitbricks.com>
++ *          Roman Penyaev <roman.penyaev@profitbricks.com>
++ *          Milind Dumbare <Milind.dumbare@gmail.com>
++ *
++ * Copyright (c) 2017 - 2018 ProfitBricks GmbH. All rights reserved.
++ * Authors: Danil Kipnis <danil.kipnis@profitbricks.com>
++ *          Roman Penyaev <roman.penyaev@profitbricks.com>
++ *
++ * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
++ * Authors: Roman Penyaev <roman.penyaev@profitbricks.com>
++ *          Jack Wang <jinpu.wang@cloud.ionos.com>
++ *          Danil Kipnis <danil.kipnis@cloud.ionos.com>
++ */
++
++#ifndef IBNBD_SRV_DEV_H
++#define IBNBD_SRV_DEV_H
++
++#include <linux/fs.h>
++#include "ibnbd-proto.h"
++
++typedef void ibnbd_dev_io_fn(void *priv, int error);
++
++struct ibnbd_dev {
++	struct block_device	*bdev;
++	struct bio_set		*ibd_bio_set;
++	struct file		*file;
++	fmode_t			blk_open_flags;
++	enum ibnbd_io_mode	mode;
++	char			name[BDEVNAME_SIZE];
++	ibnbd_dev_io_fn		*io_cb;
++};
++
++/** ibnbd_dev_init() - Initialize ibnbd_dev
++ *
++ * This functions initialized the ibnbd-dev component.
++ * It has to be called 1x time before ibnbd_dev_open() is used
++ */
++int ibnbd_dev_init(void);
++
++/** ibnbd_dev_destroy() - Destroy ibnbd_dev
++ *
++ * This functions destroys the ibnbd-dev component.
++ * It has to be called after the last device was closed.
++ */
++void ibnbd_dev_destroy(void);
++
++/**
++ * ibnbd_dev_open() - Open a device
++ * @flags:	open flags
++ * @mode:	open via VFS or block layer
++ * @bs:		bio_set to use during block io,
++ * @io_cb:	is called when I/O finished
++ */
++struct ibnbd_dev *ibnbd_dev_open(const char *path, fmode_t flags,
++				 enum ibnbd_io_mode mode, struct bio_set *bs,
++				 ibnbd_dev_io_fn io_cb);
++
++/**
++ * ibnbd_dev_close() - Close a device
++ */
++void ibnbd_dev_close(struct ibnbd_dev *dev);
++
++static inline int ibnbd_dev_get_logical_bsize(const struct ibnbd_dev *dev)
++{
++	return bdev_logical_block_size(dev->bdev);
++}
++
++static inline int ibnbd_dev_get_phys_bsize(const struct ibnbd_dev *dev)
++{
++	return bdev_physical_block_size(dev->bdev);
++}
++
++static inline int ibnbd_dev_get_max_segs(const struct ibnbd_dev *dev)
++{
++	return queue_max_segments(bdev_get_queue(dev->bdev));
++}
++
++static inline int ibnbd_dev_get_max_hw_sects(const struct ibnbd_dev *dev)
++{
++	return queue_max_hw_sectors(bdev_get_queue(dev->bdev));
++}
++
++static inline int
++ibnbd_dev_get_max_write_same_sects(const struct ibnbd_dev *dev)
++{
++	return bdev_write_same(dev->bdev);
++}
++
++static inline int ibnbd_dev_get_secure_discard(const struct ibnbd_dev *dev)
++{
++	if (dev->mode == IBNBD_BLOCKIO)
++		return blk_queue_secure_erase(bdev_get_queue(dev->bdev));
++	return 0;
++}
++
++static inline int ibnbd_dev_get_max_discard_sects(const struct ibnbd_dev *dev)
++{
++	if (!blk_queue_discard(bdev_get_queue(dev->bdev)))
++		return 0;
++
++	if (dev->mode == IBNBD_BLOCKIO)
++		return blk_queue_get_max_sectors(bdev_get_queue(dev->bdev),
++						 REQ_OP_DISCARD);
++	return 0;
++}
++
++static inline int ibnbd_dev_get_discard_granularity(const struct ibnbd_dev *dev)
++{
++	if (dev->mode == IBNBD_BLOCKIO)
++		return bdev_get_queue(dev->bdev)->limits.discard_granularity;
++	return 0;
++}
++
++static inline int ibnbd_dev_get_discard_alignment(const struct ibnbd_dev *dev)
++{
++	if (dev->mode == IBNBD_BLOCKIO)
++		return bdev_get_queue(dev->bdev)->limits.discard_alignment;
 +	return 0;
 +}
 +
 +/**
-+ * find_srv_sess_dev() - a dev is already opened by this name
-+ *
-+ * Return struct ibnbd_srv_sess_dev if srv_sess already opened the dev_name
-+ * NULL if the session didn't open the device yet.
++ * ibnbd_dev_submit_io() - Submit an I/O to the disk
++ * @dev:	device to that the I/O is submitted
++ * @sector:	address to read/write data to
++ * @data:	I/O data to write or buffer to read I/O date into
++ * @len:	length of @data
++ * @bi_size:	Amount of data that will be read/written
++ * @prio:       IO priority
++ * @priv:	private data passed to @io_fn
 + */
-+static struct ibnbd_srv_sess_dev *
-+find_srv_sess_dev(struct ibnbd_srv_session *srv_sess, const char *dev_name)
-+{
-+	struct ibnbd_srv_sess_dev *sess_dev;
++int ibnbd_dev_submit_io(struct ibnbd_dev *dev, sector_t sector, void *data,
++			size_t len, u32 bi_size, enum ibnbd_io_flags flags,
++			short prio, void *priv);
 +
-+	if (list_empty(&srv_sess->sess_dev_list))
-+		return NULL;
-+
-+	list_for_each_entry(sess_dev, &srv_sess->sess_dev_list, sess_list)
-+		if (!strcmp(sess_dev->pathname, dev_name))
-+			return sess_dev;
-+
-+	return NULL;
-+}
-+
-+static int process_msg_open(struct ibtrs_srv *ibtrs,
-+			    struct ibnbd_srv_session *srv_sess,
-+			    const void *msg, size_t len,
-+			    void *data, size_t datalen)
-+{
-+	int ret;
-+	struct ibnbd_srv_dev *srv_dev;
-+	struct ibnbd_srv_sess_dev *srv_sess_dev;
-+	const struct ibnbd_msg_open *open_msg = msg;
-+	fmode_t open_flags;
-+	char *full_path;
-+	struct ibnbd_dev *ibnbd_dev;
-+	enum ibnbd_io_mode io_mode;
-+	struct ibnbd_msg_open_rsp *rsp = data;
-+
-+	pr_debug("Open message received: session='%s' path='%s' access_mode=%d"
-+		 " io_mode=%d\n", srv_sess->sessname, open_msg->dev_name,
-+		 open_msg->access_mode, open_msg->io_mode);
-+	open_flags = FMODE_READ;
-+	if (open_msg->access_mode != IBNBD_ACCESS_RO)
-+		open_flags |= FMODE_WRITE;
-+
-+	mutex_lock(&srv_sess->lock);
-+
-+	srv_sess_dev = find_srv_sess_dev(srv_sess, open_msg->dev_name);
-+	if (srv_sess_dev)
-+		goto fill_response;
-+
-+	if ((strlen(dev_search_path) + strlen(open_msg->dev_name))
-+	    >= PATH_MAX) {
-+		pr_err("Opening device for session %s failed, device path too"
-+		       " long. '%s/%s' is longer than PATH_MAX (%d)\n",
-+		       srv_sess->sessname, dev_search_path, open_msg->dev_name,
-+		       PATH_MAX);
-+		ret = -EINVAL;
-+		goto reject;
-+	}
-+	full_path = ibnbd_srv_get_full_path(srv_sess, open_msg->dev_name);
-+	if (IS_ERR(full_path)) {
-+		ret = PTR_ERR(full_path);
-+		pr_err("Opening device '%s' for client %s failed,"
-+		       " failed to get device full path, err: %d\n",
-+		       open_msg->dev_name, srv_sess->sessname, ret);
-+		goto reject;
-+	}
-+
-+	if (open_msg->io_mode == IBNBD_BLOCKIO)
-+		io_mode = IBNBD_BLOCKIO;
-+	else if (open_msg->io_mode == IBNBD_FILEIO)
-+		io_mode = IBNBD_FILEIO;
-+	else
-+		io_mode = def_io_mode;
-+
-+	ibnbd_dev = ibnbd_dev_open(full_path, open_flags, io_mode,
-+				   &srv_sess->sess_bio_set, ibnbd_endio);
-+	if (IS_ERR(ibnbd_dev)) {
-+		pr_err("Opening device '%s' on session %s failed,"
-+		       " failed to open the block device, err: %ld\n",
-+		       full_path, srv_sess->sessname, PTR_ERR(ibnbd_dev));
-+		ret = PTR_ERR(ibnbd_dev);
-+		goto free_path;
-+	}
-+
-+	srv_dev = ibnbd_srv_get_or_create_srv_dev(ibnbd_dev, srv_sess, io_mode,
-+						  open_msg->access_mode);
-+	if (IS_ERR(srv_dev)) {
-+		pr_err("Opening device '%s' on session %s failed,"
-+		       " creating srv_dev failed, err: %ld\n",
-+		       full_path, srv_sess->sessname, PTR_ERR(srv_dev));
-+		ret = PTR_ERR(srv_dev);
-+		goto ibnbd_dev_close;
-+	}
-+
-+	srv_sess_dev = ibnbd_srv_create_set_sess_dev(srv_sess, open_msg,
-+						     ibnbd_dev, open_flags,
-+						     srv_dev);
-+	if (IS_ERR(srv_sess_dev)) {
-+		pr_err("Opening device '%s' on session %s failed,"
-+		       " creating sess_dev failed, err: %ld\n",
-+		       full_path, srv_sess->sessname, PTR_ERR(srv_sess_dev));
-+		ret = PTR_ERR(srv_sess_dev);
-+		goto srv_dev_put;
-+	}
-+
-+	/* Create the srv_dev sysfs files if they haven't been created yet. The
-+	 * reason to delay the creation is not to create the sysfs files before
-+	 * we are sure the device can be opened.
-+	 */
-+	mutex_lock(&srv_dev->lock);
-+	if (!srv_dev->dev_kobj.state_in_sysfs) {
-+		ret = ibnbd_srv_create_dev_sysfs(srv_dev, ibnbd_dev->bdev,
-+						 ibnbd_dev->name);
-+		if (ret) {
-+			mutex_unlock(&srv_dev->lock);
-+			ibnbd_err(srv_sess_dev, "Opening device failed, failed to"
-+				  " create device sysfs files, err: %d\n",
-+				  ret);
-+			goto free_srv_sess_dev;
-+		}
-+	}
-+
-+	ret = ibnbd_srv_create_dev_session_sysfs(srv_sess_dev);
-+	if (ret) {
-+		mutex_unlock(&srv_dev->lock);
-+		ibnbd_err(srv_sess_dev, "Opening device failed, failed to create"
-+			  " dev client sysfs files, err: %d\n", ret);
-+		goto free_srv_sess_dev;
-+	}
-+
-+	list_add(&srv_sess_dev->dev_list, &srv_dev->sess_dev_list);
-+	mutex_unlock(&srv_dev->lock);
-+
-+	list_add(&srv_sess_dev->sess_list, &srv_sess->sess_dev_list);
-+
-+	ibnbd_info(srv_sess_dev, "Opened device '%s' in %s mode\n",
-+		   srv_dev->id, ibnbd_io_mode_str(io_mode));
-+
-+	kfree(full_path);
-+
-+fill_response:
-+	ibnbd_srv_fill_msg_open_rsp(rsp, srv_sess_dev);
-+	mutex_unlock(&srv_sess->lock);
-+	return 0;
-+
-+free_srv_sess_dev:
-+	write_lock(&srv_sess->index_lock);
-+	idr_remove(&srv_sess->index_idr, srv_sess_dev->device_id);
-+	write_unlock(&srv_sess->index_lock);
-+	kfree(srv_sess_dev);
-+srv_dev_put:
-+	if (open_msg->access_mode != IBNBD_ACCESS_RO) {
-+		mutex_lock(&srv_dev->lock);
-+		srv_dev->open_write_cnt--;
-+		mutex_unlock(&srv_dev->lock);
-+	}
-+	ibnbd_put_srv_dev(srv_dev);
-+ibnbd_dev_close:
-+	ibnbd_dev_close(ibnbd_dev);
-+free_path:
-+	kfree(full_path);
-+reject:
-+	mutex_unlock(&srv_sess->lock);
-+	return ret;
-+}
-+
-+static struct ibtrs_srv_ctx *ibtrs_ctx;
-+
-+static int __init ibnbd_srv_init_module(void)
-+{
-+	int err;
-+
-+	pr_info("Loading module %s, version %s, proto %s\n",
-+		KBUILD_MODNAME, IBNBD_VER_STRING, IBNBD_PROTO_VER_STRING);
-+
-+	ibtrs_ctx = ibtrs_srv_open(ibnbd_srv_rdma_ev, ibnbd_srv_link_ev,
-+				   IBTRS_PORT);
-+	if (unlikely(IS_ERR(ibtrs_ctx))) {
-+		err = PTR_ERR(ibtrs_ctx);
-+		pr_err("ibtrs_srv_open(), err: %d\n", err);
-+		goto out;
-+	}
-+	err = ibnbd_dev_init();
-+	if (err) {
-+		pr_err("ibnbd_dev_init(), err: %d\n", err);
-+		goto srv_close;
-+	}
-+
-+	err = ibnbd_srv_create_sysfs_files();
-+	if (err) {
-+		pr_err("ibnbd_srv_create_sysfs_files(), err: %d\n", err);
-+		goto dev_destroy;
-+	}
-+
-+	return 0;
-+
-+dev_destroy:
-+	ibnbd_dev_destroy();
-+srv_close:
-+	ibtrs_srv_close(ibtrs_ctx);
-+out:
-+
-+	return err;
-+}
-+
-+static void __exit ibnbd_srv_cleanup_module(void)
-+{
-+	ibtrs_srv_close(ibtrs_ctx);
-+	WARN_ON(!list_empty(&sess_list));
-+	ibnbd_srv_destroy_sysfs_files();
-+	ibnbd_dev_destroy();
-+	pr_info("Module unloaded\n");
-+}
-+
-+module_init(ibnbd_srv_init_module);
-+module_exit(ibnbd_srv_cleanup_module);
++#endif /* IBNBD_SRV_DEV_H */
 -- 
 2.17.1
 
