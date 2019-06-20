@@ -2,125 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF114C46F
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 02:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE874C51D
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 03:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbfFTA3B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jun 2019 20:29:01 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:35401 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbfFTA3A (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jun 2019 20:29:00 -0400
-Received: by mail-qt1-f193.google.com with SMTP id d23so1347114qto.2
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2019 17:29:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EQv7U/+42zt5b8nOPF5NhYdyP4FJsGxh9RzZDxFOrjg=;
-        b=PnDkZuoAAUQUM1cJfafxHJyq+d7n4FyVSURfyen9se2MGh0KR5gnD9gzy/477SztwV
-         p57GTxG7up6ovDAKdXOm2/OQjGuhs9Hg/XFQF7/oUCxIkCXZn3IokCiOhHVYncquDisc
-         lfHhVJzspyqCzKwM69uJU4WNMcw9Jk/9F9ZXrclLIRl4uEIc6z876O1R2FW1XlCn1UC0
-         9EXRpolVIxvtRIYX7wUDyVXbplxS6CV3sXaT7Uuzs03uSzF02V2EYxeCSbc7amzgQdfl
-         n18uid03zxuNPhT8z48eQJvHqcJDlTy72/6AtxLob9Xke4HM72CACzGcL99Yz7rQrURb
-         hfOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EQv7U/+42zt5b8nOPF5NhYdyP4FJsGxh9RzZDxFOrjg=;
-        b=hR3cCsiV/19+h/QBS7rASYpCrBSqHUtBY7tAKdGd4EFXxXPUOVBxqWGicDbIPmiOxJ
-         r0Yx5j7BdIEZfJA04gwOfd939z5tU0dkCkjQ1LOOQGopDPj8xDFod43Rtfg7NfJrbnEY
-         Pg/RYqJOBRUeqPFni4thJlYF986R7ZFbrre/Jig0ICrNRl+otfyuA1LiEPJXto/Xxzjt
-         dOycRKqcYtYPle3KOn2rh8JjWDbyWmyJ7k1XpxoNaI14IywVny8clyOwxqZfcZpjHUZL
-         KkHCXFOuYXxZRF5kGlZlCRUfvSP+KLhFWRk6I0kN1mZXatJvGsGJk61VY9uK9se7WHOB
-         yOMA==
-X-Gm-Message-State: APjAAAXGNfAshhI2FmlSoeWsqs0+2xcrQmXNR6pL32uYthAigGunW2p2
-        J/ecHfDOmsymcRuux+1mJw4x1w==
-X-Google-Smtp-Source: APXvYqw1Pv0sR4CS1UCSphmCFGDQ+LzCb44tZQZNi+Jaxt02qUv63T3dqiVQ7OvS5KFrN9Ms5knmbw==
-X-Received: by 2002:ac8:3ffc:: with SMTP id v57mr82333621qtk.277.1560990539802;
-        Wed, 19 Jun 2019 17:28:59 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id t197sm11338715qke.2.2019.06.19.17.28.58
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Jun 2019 17:28:58 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hdkwk-0004CH-A9; Wed, 19 Jun 2019 21:28:58 -0300
-Date:   Wed, 19 Jun 2019 21:28:58 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Max Gurtovoy <maxg@mellanox.com>
-Cc:     leonro@mellanox.com, linux-rdma@vger.kernel.org, sagi@grimberg.me,
-        dledford@redhat.com, hch@lst.de, bvanassche@acm.org,
-        israelr@mellanox.com, idanb@mellanox.com, oren@mellanox.com,
-        vladimirk@mellanox.com, shlomin@mellanox.com
-Subject: Re: [PATCH 00/21 V6] Introduce new API for T10-PI offload
-Message-ID: <20190620002858.GA16100@ziepe.ca>
-References: <1560268377-26560-1-git-send-email-maxg@mellanox.com>
+        id S1726480AbfFTBvz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jun 2019 21:51:55 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:47488 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726370AbfFTBvz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Jun 2019 21:51:55 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id E50B0C057F3E;
+        Thu, 20 Jun 2019 01:51:54 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 518C95D719;
+        Thu, 20 Jun 2019 01:51:54 +0000 (UTC)
+Message-ID: <e19673d2233a8e38f3e74eb6760232df1a304f3a.camel@redhat.com>
+Subject: Re: [PATCH 2/2] RDMA/netlink: Audit policy settings for netlink
+ attributes
+From:   Doug Ledford <dledford@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Wed, 19 Jun 2019 21:51:51 -0400
+In-Reply-To: <20190620001759.GC14968@ziepe.ca>
+References: <cover.1560957168.git.dledford@redhat.com>
+         <5ef05339c1d799133076c24e616860a647e96148.1560957168.git.dledford@redhat.com>
+         <20190619192431.GA13262@ziepe.ca>
+         <b964f5286ad9d2c3f1fb2f4f0f3206ecf9da2ad7.camel@redhat.com>
+         <20190619201158.GK9360@ziepe.ca>
+         <3695301f8ba9f8902c5c0a00171f6ca72f83faf2.camel@redhat.com>
+         <20190620001759.GC14968@ziepe.ca>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-LHVrDwVhynYS79tGPwWS"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1560268377-26560-1-git-send-email-maxg@mellanox.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.32]); Thu, 20 Jun 2019 01:51:55 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 11, 2019 at 06:52:36PM +0300, Max Gurtovoy wrote:
-> Hello Sagi, Christoph, Keith, Jason, Doug, Leon and Co
-> 
-> This patchset adds a new verbs API for T10-PI offload and
-> implementation for iSER initiator and iSER target (NVMe-oF/RDMA host side
-> was completed and will be sent on a different patchset).
-> This set starts with a few preparation commits to the RDMA/core layer.
-> It continues with introducing a new MR type IB_MR_TYPE_INTEGRITY.
-> Using this MR all the needed mappings will be done in the low level drivers
-> and not be visible to the ULP. Later patches implement the needed functionality
-> in the mlx5 layer. As suggested by Sagi, in the new API, the mlx5 driver
-> will allocate a single internal memory region for the UMR operation to
-> register both PI and data SG lists and it will look like:
-> 
->     data start  meta start
->     |           |
->     |d1|d2|d3|d4|m1|m2|m3|m4|
-> 
-> The sig_mr stride block would be using the same lkey but different
-> offsets in it (offset 0 and offset d1+d2+d3+d4). The verbs layer will
-> use a special mr type that will describe everything and will replace
-> the old API, that enforce using 3 different memory regions (data_mr,
-> protection_mr, sig_mr) and their local invalidations. This will ease
-> the code in the ULP and will improve the abstraction of the HW (see
-> iSER code changes). 
-> The patchset contains also iSER initator and target patches that using
-> this new API.
-> 
-> For iSER, the code was tested vs. LIO iSER target using Mellanox's
-> ConnectX-4/ConnectX-5.
-> 
-> This series applies cleanly on top of kernel 5.2.0-rc4 tag plus patchest
-> "[PATCH 0/7] iser/isert/rw-api cleanups" that was applied to for-next (Jason).
-> We should aim to push this code during 5.3 merge window.
-> 
-> Next steps are:
->  - merge NVMe-oF/RDMA host side after merging this patchset
->  - Implement metadata support for NVMe-oF/RDMA target side with new API
-> 
-> Changes since v5:
-> 
->  - Rebase the code over kernel 5.2.0-rc4
->  - Change return value of ib_map_mr_sg_pi() to success/fail
->    (patches 4, 6, 11 and 16 were changed - Sagi).
->  - Squash and refactor "Validate signature handover device cap" and
->    "Move signature_en attribute from mlx5_qp to ib_qp".
->    (patch 15/21 - Christoph)
->  - Split out helper function at RW (patches 16/21 and 17/21 - Christoph)
->  - Rename signature qp create flag and signature device capability
->    (patch 14/21 - Sagi)
->  - Added Reviewed-by signatures
 
-It looks to me like we are done with this now, yes? I'll apply it
-tomorrow then.
+--=-LHVrDwVhynYS79tGPwWS
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Jason
+On Wed, 2019-06-19 at 21:17 -0300, Jason Gunthorpe wrote:
+> On Wed, Jun 19, 2019 at 07:59:22PM -0400, Doug Ledford wrote:
+> > On Wed, 2019-06-19 at 17:11 -0300, Jason Gunthorpe wrote:
+> > > On Wed, Jun 19, 2019 at 04:02:30PM -0400, Doug Ledford wrote:
+> > > > On Wed, 2019-06-19 at 16:24 -0300, Jason Gunthorpe wrote:
+> > > > > > +	nla_strlcpy(client_name,
+> > > > > > tb[RDMA_NLDEV_ATTR_CHARDEV_TYPE],
+> > > > > > +		    sizeof(client_name));
+> > > > >=20
+> > > > > This seems really frail, it should at least have a
+> > > > >=20
+> > > > > BUILD_BUG_ON(sizeof(client_name) =3D=3D
+> > > > > nldev_policy[RDMA_NLDEV_ATTR_CHARDEV_TYPE].len));
+> > > > >=20
+> > > > > But I don't think that can compile.
+> > > > >=20
+> > > > > Are we sure we can't have a 0 length and just skip checking in
+> > > > > policy?
+> > > > > It seems like more danger than it is worth.
+> > > >=20
+> > > > nla_strlcpy takes a size parameter as arg3 and guarantees to put
+> > > > no
+> > > > more than arg3 bytes - 1 from the source into the dest and
+> > > > guarantees it's null terminated.  The only difference between
+> > > > nla_strlcpy and normal strncpy is that nla_strlcpy zeros out any
+> > > > excess pad bytes that aren't used in the dest by the copy.  If
+> > > > someone tries to pass in an oversized string, it doesn't
+> > > > matter.  If
+> > > > someone modifes the function to change the size of client_name,
+> > > > our
+> > > > nla_strlcpy() is safe because our dest and our len parameters
+> > > > are
+> > > > always in sync.  I don't see the fragility.
+> > >=20
+> > > Silently truncating the user input string and not returning an
+> > > error
+> > > is a kernel bug.
+> >=20
+> > That's a matter of expectations.  Looking through all instances of
+> > nla_strlcpy() in the kernel tree, only about 4 of the 25 or so uses
+> > check the return code at all
+>=20
+> Sadly the kernel is full of bugs :(
+>=20
+> Silent string truncation is a well known bug class, I guess Dan
+> Carpenter just hasn't quite got to sending reports on these cases
+> yet..
+>=20
+> > and only 1 of those returns an error code to the application.  This
+> > mirrors the behavior people see when they try to do things like
+> > rename a netdevice and pass in too long of a name.  As long as the
+> > truncated name isn't taken, it succeeds at the truncated name.
+>=20
+> Returning ENOENT, or worse, the entirely wrong result instead of
+> EINVAL, for a too long string is a straight up bug.
+>=20
+> The probability of any user hitting this is very low, but it is not
+> some well thought out behavior...
+>=20
+> > > I dislike strlcpy and friends for the same reason everyone else
+> > > does -
+> > > they prevent security failures but create bugs with undetected
+> > > truncated strings.
+> >=20
+> > I think the net stack has a fairly well established behavior in
+> > regards
+> > to truncating overly long strings. =20
+>=20
+> I think it is just bugs. :(
+>=20
+> > truncation, or fix the perceived kernel bug?  I don't actually feel
+> > strongly about it.  I'm used to the truncation behavior.  If you
+> > would
+> > strongly prefer an error on overflow, I'll change the patch up.
+>=20
+> The client_name is a stack variable of a completely arbitrary size
+> that
+> is larger than all existing client_name statics in today's
+> kernel. Tomorrow it may get bigger, or smaller. Its length absolutely
+> does not form part of the uAPI contract, and truncation of the user
+> provided string should always return EINVAL never any other result.
+
+Ok.  I'll push out everything but this patch, and rework this patch
+tomorrow.
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-LHVrDwVhynYS79tGPwWS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0K5rcACgkQuCajMw5X
+L92+wg/+MhWDWRoKxs8Nt7YSVtFLaX8cU8/kkfdxKrH6UBXCMe4G1R99/5to/Qw9
+bWR0wWV0tCDcCoWEGDEG9CU1fUAtgLwh2eBlsH+qV26SKnCwZlfv1PapPYWUZJ2z
+unHBCjG382ADJYsTskzItMuvKMlFC+cBdz7YZvh/W3f18idCmQWNEWUkBVQ52iSG
+XFIsp9asiAraONbrJaDBf5MxasxgIYRK0LG7zwccoNhAnZ1ULF9OxWuUkldzOnqq
+EPmyQm0HzfA0OI753SNBLEXzcjRANS3lPCP/p+0VkS3zYO3uzTA6diXzJpPLrtiC
+8FKEt1RqWxetw1gEOn4k5ZSwdXwmVI620MdpxPRJt/9P8prWsVXVpYoEnYdmN985
+orkXq1YMxXOc6FYcE03Zezbmzby7ugCifD0aTctm0vY3IF8olP/avn8Ebd6BYzod
+6hDdZRlNIQtWXtrBANz5STpFUm8He9Ms/DYC/SF9Hz8YrS6paNj2gnem8TtI6Tas
+bGZQSR++5cMHQx6jLB/Jr8FSX6hlc2TuBm1Z6ONI7uT4QdYOxbkRiaPVZW0WZmqW
+fd7vvYi3UTUJh1ENelcqZyOOCE3BSlJ2DqPcnWVWTmkam7CkD7wrtt/PCvn8cHPt
+7ddu27A4LgYR0UJIZAzRU/x7LIDyzKcDyCZ5zQevzBIvlb8ZvRw=
+=wsyA
+-----END PGP SIGNATURE-----
+
+--=-LHVrDwVhynYS79tGPwWS--
+
