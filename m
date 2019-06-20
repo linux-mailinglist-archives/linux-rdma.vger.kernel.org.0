@@ -2,123 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AE24D465
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 18:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804AD4D499
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2019 19:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbfFTQ7y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 20 Jun 2019 12:59:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46238 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726562AbfFTQ7x (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 12:59:53 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5KGvF1Y071553
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 12:59:52 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2t8cg24akd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 12:59:52 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Thu, 20 Jun 2019 16:59:51 -0000
-Received: from us1b3-smtp06.a3dr.sjc01.isc4sb.com (10.122.203.184)
-        by smtp.notes.na.collabserv.com (10.122.47.46) with smtp.notes.na.collabserv.com ESMTP;
-        Thu, 20 Jun 2019 16:59:47 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp06.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019062016594656-629168 ;
-          Thu, 20 Jun 2019 16:59:46 +0000 
-In-Reply-To: <f805a19d-256f-fa60-fc2d-dbc0939ed5cf@acm.org>
-Subject: Re: Re: [PATCH v3 05/11] SIW application interface
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Bart Van Assche" <bvanassche@acm.org>
-Cc:     linux-rdma@vger.kernel.org
-Date:   Thu, 20 Jun 2019 16:59:46 +0000
+        id S1726877AbfFTRLI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 13:11:08 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:47018 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726675AbfFTRLI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jun 2019 13:11:08 -0400
+Received: by mail-qt1-f196.google.com with SMTP id h21so3888460qtn.13
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2019 10:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=B/Z1xHhYAjAI7ioTCGgFoDOmi7PSKcfXMaUReB0Dr1o=;
+        b=iDKiiByf/rCLVBiwQKacZOEFqluND5l/Q7B8xuyrYYiT8npctI6tkA6bd5Z3+X6WXJ
+         7gP3l17z5AQNjEKoghc1QQGWYYTQhxhcX9yGx54PMvjgvEHZEh7JKLlg64yxdauLIkD6
+         PlX1F93t1CtWxQ8kNNXs9JCH7/Ycn3pW7NdVjaUwoeBrG9xILQAk6iI0m+ngDTRaz0n2
+         KHM4oMsjPmMO77I7PU4GywcSoyfCFebua5oLxUE6W85UfxNuyOXg7jsaASQUndU7XOUT
+         zN203NLRIh3JOjlN2kSuwATpWhmPazDPI0SbRVShwbgeM2SVzNCO4ifAlBXeUKKBuJD+
+         jaDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=B/Z1xHhYAjAI7ioTCGgFoDOmi7PSKcfXMaUReB0Dr1o=;
+        b=UJjGJF2sH2MeQw6N76sQ1A+wQb7s/Qs2HOVTnbXlWyt6vpYAqvBXsPFD1bcagXYk0J
+         6qS9eFsOOhxrOEvD1MYvzimnqhxbk8hBx246FeL+bHwruVEEmPThbmU7VVf8LKZHOZcv
+         3qQ1cuN89+h1bsZdptEF/BOOvtAkDlNFAsCKSLxalZUzDUH43QL7kS/2mdQRCHI0dyQJ
+         KCUBqwkS0j7PaI87g33AoJzRyAhw1Yb/yZUtB8bZ/1oAYMip55+USananKzNnC+laLZ2
+         /ZAcJpHruIxNet9oKN3DByImviO4xsyCIHdGvz/BWvmw64KDMabhB2cfjbjIeqyk5Dt9
+         +BUw==
+X-Gm-Message-State: APjAAAUrpF4k7L3QP304MT3F6WYIWk+kvmwyfTZ0XNIZCvb7N/sKlYTY
+        NtHgKSLXzM0Dnpk5ywaaZZeBPg==
+X-Google-Smtp-Source: APXvYqwc2iwZPScenX0v4jDBGu4RdLUTLz2n8sdXn8hwtd0G64nXQQ8UGnDbXfC6MHvJ9vTLmjr9lQ==
+X-Received: by 2002:ac8:2e5d:: with SMTP id s29mr105147696qta.70.1561050666885;
+        Thu, 20 Jun 2019 10:11:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id t29sm152221qtt.42.2019.06.20.10.11.06
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 20 Jun 2019 10:11:06 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1he0aX-0005SU-RR; Thu, 20 Jun 2019 14:11:05 -0300
+Date:   Thu, 20 Jun 2019 14:11:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Stephen Bates <sbates@raithlin.com>
+Subject: Re: [RFC PATCH 20/28] IB/core: Introduce API for initializing a RW
+ ctx from a DMA address
+Message-ID: <20190620171105.GD19891@ziepe.ca>
+References: <20190620161240.22738-1-logang@deltatee.com>
+ <20190620161240.22738-21-logang@deltatee.com>
+ <20190620164909.GC19891@ziepe.ca>
+ <f9186b2b-7737-965f-2dca-25e40e566e64@deltatee.com>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <f805a19d-256f-fa60-fc2d-dbc0939ed5cf@acm.org>,<20190620162133.13074-1-bmt@zurich.ibm.com>
- <20190620162133.13074-6-bmt@zurich.ibm.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-KeepSent: BA96FEB0:843F4F0C-0025841F:005C79FD;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 61643
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19062016-3017-0000-0000-0000002C790E
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.188667
-X-IBM-SpamModules-Versions: BY=3.00011297; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01220783; UDB=6.00642223; IPR=6.01001922;
- MB=3.00027395; MTD=3.00000008; XFM=3.00000015; UTC=2019-06-20 16:59:49
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-06-20 15:20:15 - 6.00010071
-x-cbparentid: 19062016-3018-0000-0000-000000488419
-Message-Id: <OFBA96FEB0.843F4F0C-ON0025841F.005C79FD-0025841F.005D5CFD@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-20_12:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f9186b2b-7737-965f-2dca-25e40e566e64@deltatee.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Bart Van Assche" <bvanassche@acm.org> wrote: -----
+On Thu, Jun 20, 2019 at 10:59:44AM -0600, Logan Gunthorpe wrote:
+> 
+> 
+> On 2019-06-20 10:49 a.m., Jason Gunthorpe wrote:
+> > On Thu, Jun 20, 2019 at 10:12:32AM -0600, Logan Gunthorpe wrote:
+> >> Introduce rdma_rw_ctx_dma_init() and rdma_rw_ctx_dma_destroy() which
+> >> peform the same operation as rdma_rw_ctx_init() and
+> >> rdma_rw_ctx_destroy() respectively except they operate on a DMA
+> >> address and length instead of an SGL.
+> >>
+> >> This will be used for struct page-less P2PDMA, but there's also
+> >> been opinions expressed to migrate away from SGLs and struct
+> >> pages in the RDMA APIs and this will likely fit with that
+> >> effort.
+> >>
+> >> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> >>  drivers/infiniband/core/rw.c | 74 ++++++++++++++++++++++++++++++------
+> >>  include/rdma/rw.h            |  6 +++
+> >>  2 files changed, 69 insertions(+), 11 deletions(-)
+> >>
+> >> diff --git a/drivers/infiniband/core/rw.c b/drivers/infiniband/core/rw.c
+> >> index 32ca8429eaae..cefa6b930bc8 100644
+> >> +++ b/drivers/infiniband/core/rw.c
+> >> @@ -319,6 +319,39 @@ int rdma_rw_ctx_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp, u8 port_num,
+> >>  }
+> >>  EXPORT_SYMBOL(rdma_rw_ctx_init);
+> >>  
+> >> +/**
+> >> + * rdma_rw_ctx_dma_init - initialize a RDMA READ/WRITE context from a
+> >> + *	DMA address instead of SGL
+> >> + * @ctx:	context to initialize
+> >> + * @qp:		queue pair to operate on
+> >> + * @port_num:	port num to which the connection is bound
+> >> + * @addr:	DMA address to READ/WRITE from/to
+> >> + * @len:	length of memory to operate on
+> >> + * @remote_addr:remote address to read/write (relative to @rkey)
+> >> + * @rkey:	remote key to operate on
+> >> + * @dir:	%DMA_TO_DEVICE for RDMA WRITE, %DMA_FROM_DEVICE for RDMA READ
+> >> + *
+> >> + * Returns the number of WQEs that will be needed on the workqueue if
+> >> + * successful, or a negative error code.
+> >> + */
+> >> +int rdma_rw_ctx_dma_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
+> >> +		u8 port_num, dma_addr_t addr, u32 len, u64 remote_addr,
+> >> +		u32 rkey, enum dma_data_direction dir)
+> > 
+> > Why not keep the same basic signature here but replace the scatterlist
+> > with the dma vec ?
+> 
+> Could do. At the moment, I had no need for dma_vec in this interface.
 
->To: "Bernard Metzler" <bmt@zurich.ibm.com>,
->linux-rdma@vger.kernel.org
->From: "Bart Van Assche" <bvanassche@acm.org>
->Date: 06/20/2019 06:33PM
->Subject: [EXTERNAL] Re: [PATCH v3 05/11] SIW application interface
->
->On 6/20/19 9:21 AM, Bernard Metzler wrote:
->> diff --git a/include/uapi/rdma/siw-abi.h
->b/include/uapi/rdma/siw-abi.h
->> new file mode 100644
->> index 000000000000..3dd8071ace7b
->> --- /dev/null
->> +++ b/include/uapi/rdma/siw-abi.h
->> @@ -0,0 +1,185 @@
->> +/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
->> +
->> +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
->> +/* Copyright (c) 2008-2019, IBM Corporation */
->> +
->> +#ifndef _SIW_USER_H
->> +#define _SIW_USER_H
->> +
->> +#include <linux/types.h>
->> +
->> +#define SIW_NODE_DESC_COMMON "Software iWARP stack"
->
->How can the definition of a string like this be useful in an UAPI
->header
->file? If user space code doesn't need this string please move this
->definition away from include/uapi.
+I think that is because you only did nvme not srp/iser :)
 
+> >> +{
+> >> +	struct scatterlist sg;
+> >> +
+> >> +	sg_dma_address(&sg) = addr;
+> >> +	sg_dma_len(&sg) = len;
+> > 
+> > This needs to fail if the driver is one of the few that require
+> > struct page to work..
+> 
+> Yes, right. Currently P2PDMA checks for the use of dma_virt_ops. And
+> that probably should also be done here. But is that sufficient? You're
+> probably right that it'll take an audit of the RDMA tree to sort that out.
 
-OK, I had that in as another possible check from user lib if the
-kernel driver matches. Not really needed. I can remove it...
+For this purpose I'd be fine if you added a flag to the struct
+ib_device_ops that is set on drivers that we know are OK.. We can make
+that list bigger over time.
 
->
->> +#define SIW_ABI_VERSION 1
->
->Same question here: how can this definition be useful in an UAPI
->header
->file? As you know Linux user space APIs must be backwards compatible.
+> > This is not so hard to do, as most drivers are already struct page
+> > free, but is pretty much blocked on needing some way to go from the
+> > block layer SGL world to the dma vec world that does not hurt storage
+> > performance.
+> 
+> Maybe I can end up helping with that if it helps push the ideas here
+> through. (And assuming people think it's an acceptable approach for the
+> block-layer side of things).
 
-Don't get that one yet. The kernel driver announces its
-abi version (via uverbs_abi_ver) and user land lib get's checked
-if it is in range (between match_min_abi_version
-and match_max_abi_version). See e.g. efa, pvrdma, mqedr, bnxt ....
-other drivers. It's always in the shared abi file then.
+Let us hope for a clear decision then
 
-Thanks,
-Bernard.
-
+Jason
