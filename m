@@ -2,90 +2,190 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F684DF27
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2019 04:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A284E5E8
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2019 12:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbfFUChG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 22:37:06 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:37906 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725911AbfFUChG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 22:37:06 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 59A80307D90E;
-        Fri, 21 Jun 2019 02:37:06 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9EAD91001E80;
-        Fri, 21 Jun 2019 02:37:05 +0000 (UTC)
-Message-ID: <66f616ad351d0f1e0f4f711deae98ce8fd830679.camel@redhat.com>
-Subject: Re: [RESEND PATCH v2 0/2] Completion rework
-From:   Doug Ledford <dledford@redhat.com>
-To:     Mike Marciniszyn <mike.marciniszyn@intel.com>, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org
-Date:   Thu, 20 Jun 2019 22:37:03 -0400
-In-Reply-To: <20190613123013.5297.32797.stgit@awdrv-06.aw.intel.com>
-References: <20190613123013.5297.32797.stgit@awdrv-06.aw.intel.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-uvSLk0XX8n0WS5mCbr5y"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S1726438AbfFUKag (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Jun 2019 06:30:36 -0400
+Received: from mail-vk1-f196.google.com ([209.85.221.196]:40117 "EHLO
+        mail-vk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726282AbfFUKag (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Jun 2019 06:30:36 -0400
+Received: by mail-vk1-f196.google.com with SMTP id s16so1184872vke.7
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Jun 2019 03:30:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=EI8t6T/6+jeUJe3ag7opmiiNB/kHV5Pq6I8JuKgpxZw=;
+        b=lOc3A8tiNcD/NYwFlIsDajmUL807WO335nB6SDppp8K/JBhz/eUQJmMdDW+seDFeq8
+         W6rXJBqJFiP3rtp7qcj9kPXpIv5I7z+gFdkx0LDheZgPS8g62pLzNf08uLlZczHpsxCp
+         Lloe/BIwUA43qojuX5PPzZAkwNXABTHeFj73pSmFQnhp0hiLkWx+F9wzJuNa4+OQVQRt
+         6b48JdFs+aA1DICnuaOw9TD3eXnIYeW3ziHRjx1QWeeZSvaSbL/3mOeVGdBZSERFl8SB
+         7on5cw9oHcFYJzZXWfnjwb5ZkUBccRzbv8gJjg7f23OPNb2wkDExONMyncCUPV1vqwD3
+         qy9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=EI8t6T/6+jeUJe3ag7opmiiNB/kHV5Pq6I8JuKgpxZw=;
+        b=g6SltPDcIYgQirrpgfBB4tZDZsv8T1wyhm7qUA1ZYqUuPXAJEHjiGLSiL6jcdD9ESn
+         PZcxBEv4M2JD/WNbAdwAuKSms23ElI1fDeCW/tQCrUf901oqOpt6HUChUN0h8h1yIuki
+         CibfgqTAUISeeq/IsikDW4SIBMhywtYbLJL2lf9XR9sGe9ELruabEHzVc+uLZUN9mtGE
+         HF16DLBIbL7uh5QheHwyjqIhyUvrQ4148hgDKeDMFi7bMrbdvBTAdWzRuZyj2kOqPxbJ
+         +7Y7ZsE051WfZ376oEzz+sco7geZ0ssbeWURx62ws1pTLrTacAQAHWJDpkuYq66Ul1LD
+         Z1GQ==
+X-Gm-Message-State: APjAAAVUApX7UQHmv2jDSJNaaNG2GSLyuJEpNhFiJFBw+rh7Xu0vo891
+        yuUnli7QHp35k5+AHW/+oLSjmFbRwMJEoULxAdE5fA==
+X-Google-Smtp-Source: APXvYqwT2XTSUYNbyLe4kErqtt7gbdsZFKxyD2YEt9xQeg4JWbsZZ8kauxqAM34aCbA3HtgGFeNcI05z6HxzJqJzP+M=
+X-Received: by 2002:a1f:5302:: with SMTP id h2mr7039137vkb.37.1561113034959;
+ Fri, 21 Jun 2019 03:30:34 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.48]); Fri, 21 Jun 2019 02:37:06 +0000 (UTC)
+Received: by 2002:ab0:2616:0:0:0:0:0 with HTTP; Fri, 21 Jun 2019 03:30:34
+ -0700 (PDT)
+X-Originating-IP: [5.35.70.113]
+In-Reply-To: <20190620090249.106704-1-dkirjanov@suse.com>
+References: <20190620090249.106704-1-dkirjanov@suse.com>
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+Date:   Fri, 21 Jun 2019 13:30:34 +0300
+Message-ID: <CAOJe8K3ugk1SvBKOhv5d7C8gHjJ+Tjpi9UgqNQhEan=Pf9Qx2g@mail.gmail.com>
+Subject: Re: [PATCH iproute2-next v2 1/2] ipaddress: correctly print a VF hw
+ address in the IPoIB case
+To:     stephen@networkplumber.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        dledford@redhat.com, mkubecek@suse.cz,
+        Denis Kirjanov <kda@linux-powerpc.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 6/20/19, Denis Kirjanov <kda@linux-powerpc.org> wrote:
+> Current code assumes that we print Etheret mac and
+> that doesn't work in IPoIB case with SRIOV-enabled hardware
+>
+> Before:
+> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+> state UP mode DEFAULT group default qlen 256
+>         link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+>         vf 0 MAC 14:80:00:00:66:fe, spoof checking off, link-state disable,
+>     trust off, query_rss off
+>     ...
+>
+> After:
+> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+> state UP mode DEFAULT group default qlen 256
+>         link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+>         vf 0     link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
+> checking off, link-state disable, trust off, query_rss off
+>
+> v1->v2: updated kernel headers to uapi commit
+>
+> Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
 
---=-uvSLk0XX8n0WS5mCbr5y
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Stephen,
 
-On Thu, 2019-06-13 at 08:30 -0400, Mike Marciniszyn wrote:
-> This two patch patch series is resend of:
-> - https://marc.info/?l=3Dlinux-rdma&m=3D155499222312346&w=3D2
-> - https://marc.info/?l=3Dlinux-rdma&m=3D155499221212340&w=3D2
->=20
-> Jason raised issues in:
-> - https://marc.info/?l=3Dlinux-rdma&m=3D155611789008362&w=3D2
->=20
-> And Andrea and others surfaced issues with the post send
-> side API use in:
-> - https://marc.info/?a=3D152205460700001&r=3D1&w=3D2
->=20
-> These patches address those issues.
+are you going to take the patches?
 
-You indeed addressed the comments.  Series applied to for-next, thanks.
+Thanks!
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-uvSLk0XX8n0WS5mCbr5y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0MQs8ACgkQuCajMw5X
-L92x7Q//SqnUI43MvleS8mfR/tugnATdWa7nNDadtVxtokUgNNQdahdGAKbEnOFI
-U8JUUSQyK9dbobhA3Il+utxn+7e4jd7VyrYgiadUfM4xXbPzyOS/czx0tAsOYyY3
-CmFZGm2OxqxZJTQ4yQMur+4qceh6KOTP72HSJBT/PbvlSiqbAAz1rIL74NTh3Ku4
-m08cUpAr3T3bPZuJUyyUNL+bck43RDoItoUG9HivVcHdP0VSe1WB5mbv/SEGzLX2
-8a/6LN1aDE2iDtuY1aMvK8GF04YrajmHdAmcFpFHHelvSIoQ57QFauq7G2gbK72v
-rHJxPoKMQOY0XVzSb/cQmCRV3Ch324abFyzDVD0FMDnuxJMPnFlF1AgXWrpd5Tly
-ROAciilqPY/R+28uluTYEJeRMq8afC0AAWPipwGtc7P7M39KKPpIB1WySlyLv8R+
-yfz7765ZL8HI4x32iGm+/fYUcJLnQ1bAHYkz+lQjZZr7YGyuvcd6Ns7sc2bpEIdN
-1SPvyxtK6MAjjmor2s7yFzDIMHg4+0mAm4k6az+J2K7nZMgrI+60nIZnyoCg06EV
-cKlEQOT4fY0Giq+fZHb66yuK2WNBnZ2ahD4rJTIugFe7ZWSgzyZpb1G9iiwAAXOA
-MNqL4ghnOWT7C9ZLeNvdgU33X6pEu28fpD9bVZKH8w0DAeu0abo=
-=Dbpx
------END PGP SIGNATURE-----
-
---=-uvSLk0XX8n0WS5mCbr5y--
-
+> ---
+>  ip/ipaddress.c | 42 +++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 37 insertions(+), 5 deletions(-)
+>
+> diff --git a/ip/ipaddress.c b/ip/ipaddress.c
+> index b504200b..13ad76dd 100644
+> --- a/ip/ipaddress.c
+> +++ b/ip/ipaddress.c
+> @@ -26,6 +26,7 @@
+>
+>  #include <linux/netdevice.h>
+>  #include <linux/if_arp.h>
+> +#include <linux/if_infiniband.h>
+>  #include <linux/sockios.h>
+>  #include <linux/net_namespace.h>
+>
+> @@ -349,9 +350,10 @@ static void print_af_spec(FILE *fp, struct rtattr
+> *af_spec_attr)
+>
+>  static void print_vf_stats64(FILE *fp, struct rtattr *vfstats);
+>
+> -static void print_vfinfo(FILE *fp, struct rtattr *vfinfo)
+> +static void print_vfinfo(struct ifinfomsg *ifi, FILE *fp, struct rtattr
+> *vfinfo)
+>  {
+>  	struct ifla_vf_mac *vf_mac;
+> +	struct ifla_vf_broadcast *vf_broadcast;
+>  	struct ifla_vf_tx_rate *vf_tx_rate;
+>  	struct rtattr *vf[IFLA_VF_MAX + 1] = {};
+>
+> @@ -365,13 +367,43 @@ static void print_vfinfo(FILE *fp, struct rtattr
+> *vfinfo)
+>  	parse_rtattr_nested(vf, IFLA_VF_MAX, vfinfo);
+>
+>  	vf_mac = RTA_DATA(vf[IFLA_VF_MAC]);
+> +	vf_broadcast = RTA_DATA(vf[IFLA_VF_BROADCAST]);
+>  	vf_tx_rate = RTA_DATA(vf[IFLA_VF_TX_RATE]);
+>
+>  	print_string(PRINT_FP, NULL, "%s    ", _SL_);
+>  	print_int(PRINT_ANY, "vf", "vf %d ", vf_mac->vf);
+> -	print_string(PRINT_ANY, "mac", "MAC %s",
+> -		     ll_addr_n2a((unsigned char *) &vf_mac->mac,
+> -				 ETH_ALEN, 0, b1, sizeof(b1)));
+> +
+> +	print_string(PRINT_ANY,
+> +			"link_type",
+> +			"    link/%s ",
+> +			ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)));
+> +
+> +	print_color_string(PRINT_ANY,
+> +				COLOR_MAC,
+> +				"address",
+> +				"%s",
+> +				ll_addr_n2a((unsigned char *) &vf_mac->mac,
+> +					ifi->ifi_type == ARPHRD_ETHER ? ETH_ALEN : INFINIBAND_ALEN,
+> +					ifi->ifi_type,
+> +					b1, sizeof(b1)));
+> +
+> +	if (vf[IFLA_VF_BROADCAST]) {
+> +		if (ifi->ifi_flags&IFF_POINTOPOINT) {
+> +			print_string(PRINT_FP, NULL, " peer ", NULL);
+> +			print_bool(PRINT_JSON,
+> +					"link_pointtopoint", NULL, true);
+> +                        } else {
+> +				print_string(PRINT_FP, NULL, " brd ", NULL);
+> +                        }
+> +                        print_color_string(PRINT_ANY,
+> +                                           COLOR_MAC,
+> +                                           "broadcast",
+> +                                           "%s",
+> +                                           ll_addr_n2a((unsigned char *)
+> &vf_broadcast->broadcast,
+> +                                                       ifi->ifi_type ==
+> ARPHRD_ETHER ? ETH_ALEN : INFINIBAND_ALEN,
+> +                                                       ifi->ifi_type,
+> +                                                       b1, sizeof(b1)));
+> +	}
+>
+>  	if (vf[IFLA_VF_VLAN_LIST]) {
+>  		struct rtattr *i, *vfvlanlist = vf[IFLA_VF_VLAN_LIST];
+> @@ -1102,7 +1134,7 @@ int print_linkinfo(struct nlmsghdr *n, void *arg)
+>  		open_json_array(PRINT_JSON, "vfinfo_list");
+>  		for (i = RTA_DATA(vflist); RTA_OK(i, rem); i = RTA_NEXT(i, rem)) {
+>  			open_json_object(NULL);
+> -			print_vfinfo(fp, i);
+> +			print_vfinfo(ifi, fp, i);
+>  			close_json_object();
+>  		}
+>  		close_json_array(PRINT_JSON, NULL);
+> --
+> 2.12.3
+>
+>
