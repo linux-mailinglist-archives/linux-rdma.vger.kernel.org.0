@@ -2,70 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AEE4DDD5
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2019 01:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9514DED4
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2019 03:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbfFTXnH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jun 2019 19:43:07 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:39490 "EHLO ale.deltatee.com"
+        id S1725911AbfFUBye (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jun 2019 21:54:34 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:46294 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725886AbfFTXnG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Jun 2019 19:43:06 -0400
-Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
-        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <logang@deltatee.com>)
-        id 1he6hj-0001kp-Hh; Thu, 20 Jun 2019 17:42:56 -0600
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20190620161240.22738-1-logang@deltatee.com>
- <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
- <91eba9a0-27b4-08b4-7c12-86e24e1bfe85@deltatee.com>
- <CAPcyv4gPOXaL3qks6RMufu==O9RV2m_-7bBmJqKOFYTf4v_jXQ@mail.gmail.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <3379917c-0ebc-0019-a71c-12248f4668ee@deltatee.com>
-Date:   Thu, 20 Jun 2019 17:42:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+        id S1725906AbfFUBye (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Jun 2019 21:54:34 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id CBFEB31628F6;
+        Fri, 21 Jun 2019 01:54:33 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 19FFE60605;
+        Fri, 21 Jun 2019 01:54:32 +0000 (UTC)
+Message-ID: <8649cd04f9a73013416d8382274ad344f7a8b300.camel@redhat.com>
+Subject: Re: [PATCH] RDMA/odp: Do not leak dma maps when working with huge
+ pages
+From:   Doug Ledford <dledford@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@mellanox.com>
+Date:   Thu, 20 Jun 2019 21:54:30 -0400
+In-Reply-To: <20190614004644.20767-1-jgg@ziepe.ca>
+References: <20190614004644.20767-1-jgg@ziepe.ca>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-w7KkQlce4gxHbefmCpAa"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4gPOXaL3qks6RMufu==O9RV2m_-7bBmJqKOFYTf4v_jXQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 68.147.80.180
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, jgg@ziepe.ca, kbusch@kernel.org, sagi@grimberg.me, bhelgaas@google.com, hch@lst.de, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, dan.j.williams@intel.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Fri, 21 Jun 2019 01:54:33 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
+--=-w7KkQlce4gxHbefmCpAa
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2019-06-20 5:40 p.m., Dan Williams wrote:
-> This seems to be the most salient point. I was missing the fact that
-> this replaces custom hacks and "special" pages with an explicit "just
-> pass this pre-mapped address down the stack". It's functionality that
-> might plausibly be used outside of p2p, as long as the driver can
-> assert that it never needs to touch the data with the cpu before
-> handing it off to a dma-engine.
+On Thu, 2019-06-13 at 21:46 -0300, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+>=20
+> The ib_dma_unmap_page() must match the length of the
+> ib_dma_map_page(),
+> which is based on odp_shift. Otherwise iommu resources under this API
+> will not be properly freed.
+>=20
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 
-Yup, that's a good way to put it. If I resend this patchset, I'll
-include wording like yours in the cover letter.
+Thanks, applied to for-next.
 
-Logan
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-w7KkQlce4gxHbefmCpAa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0MONYACgkQuCajMw5X
+L91GzA/9FZ+0cdS3BGg0GgIgEvScrAFHuTcO47UYlSVreEEVAMPMyAXObE4r3Yzt
+RqjH88ZpM04oub/2YJDxo6gT4zji1xlauyIzAfU4D05iARAf0LWnsLSeeRUDpDTI
+dFZyOYoqDwc8y1tK2OzuRxWptO63HFtkvS1pl7vr+YxgDQQmSP/AfJagu8aFi/pM
+nEpWKaN/3idCOJWB0d3tl5EMeV13eGaeSpGwKQXiha2nxr0aC1yNSheK+11Mkl6Q
+QgHQt5IoVBFhvXowtlGXRwE0vjIfXtyRJ/XaMizSyJ0GS5EO1xZ/9LFhn8IIRe+7
+VNj3DMH/s5V+Ejgidi6saa1jXuOSZtmJUp48+lU1aTQtNhiQ/QvWLywaKT8H1x4m
+VOy68OcnblhzX/9gIzSIosYjmj14J6qIs1KsG5v33eJNESJeAhEQvZyHn6Ydo0vY
+Q9bEDFgeMe6ayTRGas7liiXNNohT60EFS/90lLrOmdl2lWL1pb+Iv6xVv5Hl2wIG
+U4uRexE6I5UxDtV9yFZnAnuEikStWJeMs3U1gAWkLP8h4HAUBntCmV2q77XKXvtp
+IW/HgDlIZHyn35XB6yJjMFzmSiDNXTMf7hMwYxFnc9fAoJTRfePmOgjSj7Dsb9xo
+J9b2yoKoWB3PKnb0GUhZ4XNi1GeI9LH/PmTvUYY3ciLSjOy/m6E=
+=20nE
+-----END PGP SIGNATURE-----
+
+--=-w7KkQlce4gxHbefmCpAa--
+
