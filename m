@@ -2,128 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C59E24EFB9
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2019 21:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE314F03C
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2019 23:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726063AbfFUT6X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Jun 2019 15:58:23 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:36631 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725992AbfFUT6V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Jun 2019 15:58:21 -0400
-Received: by mail-qt1-f196.google.com with SMTP id p15so8193798qtl.3
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Jun 2019 12:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+OL1EA4GCbl4Wh7y66sPCRx7u7qlJpiBT7Azs49rZ54=;
-        b=aDjgKXV6FnLW14ByDPqOBaeUXx6pK0vNdEQ7hSHyRGy0adxzZJMswyS6FCvLBj8M3w
-         q8ft14gQmSA2IgeSnnxvUIEclc1OgibEzbcHXIuEtkP31RryJ/kuEZHAV8U0lpctQ3YL
-         iEQxFJ9Mo7cX4+VeKO/1ik6lHUk1tQpuW5xLeNsVZLgKAqejRpG/0u4KfLbP4mtCLEA0
-         Ah0bF8UMrQt0pOTySqDq4X7My6Ft1mXlv2xGMlOIfYjLAQWnLdWO9Y6ml7NX/IQWv0Yk
-         E8qjVhqP4kHYaAziQ4RQSAGe/q8nNiJ5Bzmn1J9kaV+PQqmcBYWuHmB7dh6hvYL7hPvp
-         Y3Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+OL1EA4GCbl4Wh7y66sPCRx7u7qlJpiBT7Azs49rZ54=;
-        b=Pe3GHwdZPdKDbBanyBSv0yuzGfmsdWArY7QfhbdXRs2taNsGxEK1cn5LL8MosfXApF
-         lC1pSo+GquGh8yORNBDQv6z9jO1R2vs9XjylOmocHW1jYxMPX0A7799D8lXbxXnzsJIa
-         PRq7eUikYrQ1jseHiG3TKuhZ4zktixPSLsfB+xLCjeCIv2vING1DTpHAJNed1RoQWcup
-         MFGdKMm4YsyyN8LrP9Ur5NSy5q3QPYEa9lcwRqC8mcsrLSlPWT/aL0bjXwYYhHXYtT4N
-         zlyulA7jAtcV9Wd94ZDVCUXMebd5LybgM3pJmdhgOogW0G3GLbAvPgOnxGKBydAwaoFL
-         f7cA==
-X-Gm-Message-State: APjAAAUnsq/CpTa4xUDtHFeFQZCdgbaejSvxsoFSi64quFgpjKf6fCk0
-        gEgc/sFnmvofxEJ3wSi9+/Aw+Q==
-X-Google-Smtp-Source: APXvYqzXKKjFNghyDugBNIDlSQHmdWu+B3owSseXWV1iQfYGMMS+MpWqWx05AoM1Aw67ubtqFggDKA==
-X-Received: by 2002:a0c:8849:: with SMTP id 9mr15273062qvm.21.1561147099205;
-        Fri, 21 Jun 2019 12:58:19 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id y20sm1869495qka.14.2019.06.21.12.58.18
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 21 Jun 2019 12:58:18 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hePfu-00089L-8Q; Fri, 21 Jun 2019 16:58:18 -0300
-Date:   Fri, 21 Jun 2019 16:58:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michal Kalderon <mkalderon@marvell.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Ariel Elior <aelior@marvell.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v3 rdma-next 0/3] RDMA/qedr: Use the doorbell overflow
- recovery mechanism for RDMA
-Message-ID: <20190621195818.GY19891@ziepe.ca>
-References: <20190613083819.6998-1-michal.kalderon@marvell.com>
- <bda0321cb362bc93f5428b1df7daf69fed083656.camel@redhat.com>
- <MN2PR18MB3182498CA8C9C7EB3259F62FA1E70@MN2PR18MB3182.namprd18.prod.outlook.com>
+        id S1726031AbfFUVAx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Jun 2019 17:00:53 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:58550 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725992AbfFUVAx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 21 Jun 2019 17:00:53 -0400
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 8E5B13091755;
+        Fri, 21 Jun 2019 21:00:53 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D714660BEC;
+        Fri, 21 Jun 2019 21:00:51 +0000 (UTC)
+From:   Doug Ledford <dledford@redhat.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, jgg@ziepe.ca, leon@kernel.org
+Subject: [PATCH v3 2/2] RDMA/netlink: Audit policy settings for netlink attributes
+Date:   Fri, 21 Jun 2019 17:00:44 -0400
+Message-Id: <71b3f719c2cb7b3c91ee1ac419b389c97e06a9c1.1561150636.git.dledford@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MN2PR18MB3182498CA8C9C7EB3259F62FA1E70@MN2PR18MB3182.namprd18.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reference-To: <b77fa93a0a34dc0ae40bdbac83ea419a0d8879ff.1561048044.git.dledford@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Fri, 21 Jun 2019 21:00:53 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 21, 2019 at 07:49:39PM +0000, Michal Kalderon wrote:
-> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > owner@vger.kernel.org> On Behalf Of Doug Ledford
-> > 
-> > On Thu, 2019-06-13 at 11:38 +0300, Michal Kalderon wrote:
-> > > This patch series used the doorbell overflow recovery mechanism
-> > > introduced in commit 36907cd5cd72 ("qed: Add doorbell overflow
-> > > recovery mechanism") for rdma ( RoCE and iWARP )
-> > >
-> > > rdma-core pull request #493
-> > >
-> > > Changes from V2:
-> > > - Don't use long-lived kmap. Instead use user-trigger mmap for the
-> > >   doorbell recovery entries.
-> > > - Modify dpi_addr to be denoted with __iomem and avoid redundant
-> > >   casts
-> > >
-> > > Changes from V1:
-> > > - call kmap to map virtual address into kernel space
-> > > - modify db_rec_delete to be void
-> > > - remove some cpu_to_le16 that were added to previous patch which are
-> > >   correct but not related to the overflow recovery mechanism. Will be
-> > >   submitted as part of a different patch
-> > >
-> > >
-> > > Michal Kalderon (3):
-> > >   qed*: Change dpi_addr to be denoted with __iomem
-> > >   RDMA/qedr: Add doorbell overflow recovery support
-> > >   RDMA/qedr: Add iWARP doorbell recovery support
-> > >
-> > >  drivers/infiniband/hw/qedr/main.c          |   2 +-
-> > >  drivers/infiniband/hw/qedr/qedr.h          |  27 +-
-> > >  drivers/infiniband/hw/qedr/verbs.c         | 387
-> > > ++++++++++++++++++++++++-----
-> > >  drivers/net/ethernet/qlogic/qed/qed_rdma.c |   6 +-
-> > >  include/linux/qed/qed_rdma_if.h            |   2 +-
-> > >  include/uapi/rdma/qedr-abi.h               |  25 ++
-> > >  6 files changed, 378 insertions(+), 71 deletions(-)
-> > >
-> > 
-> > Hi Michal,
-> > 
-> > In patch 2 and 3 both, you still have quite a few casts to (u8 __iomem *).
-> > Why not just define the struct elements as u8 __iomem * instead of void
-> > __iomem * and avoid all the casts?
-> > 
-> Hi Doug, 
-> 
-> Thanks for the review. The remaining casts are due to pointer arithmetic and not variable assignments
-> as before. Removing the cast entirely will require quite a lot of changes in qed and in rdma-core
-> which I would be happy to avoid at this time. 
+For all string attributes for which we don't currently accept the
+element as input, we only use it as output, set the string length to
+RDMA_NLDEV_ATTR_EMPTY_STRING which is defined as 1.  That way we will
+only accept a null string for that element.  This will prevent someone
+from writing a new input routine that uses the element without also
+updating the policy to have a valid value.
 
-In linux pointer math on a void * acts the same as a u8 so you should
-never need to cast a void * to a u8 just to do math?
+Also while there, make sure the existing entries that are valid have the
+correct policy, if not, correct the policy.  Remove unnecessary checks
+for nla_strlcpy() overflow once the policy has been set correctly.
 
-Jason
+Signed-off-by: Doug Ledford <dledford@redhat.com>
+---
+ drivers/infiniband/core/nldev.c  | 25 ++++++++++++-------------
+ include/rdma/rdma_netlink.h      |  6 ++++++
+ include/uapi/rdma/rdma_netlink.h |  4 ----
+ 3 files changed, 18 insertions(+), 17 deletions(-)
+
+v0->v1: Remove all whitespace change noise from this patch, this patch
+is now all functional changes
+v1->v2: Instead of ignoring string overruns, return -EINVAL on string
+buffer overruns (JGunthorpe requested behavior)
+v2->v3: Go back to not checking for string overrun, but now add a
+specific attribute for the length of the client_name stack element so we
+will always know that it's size is properly represented in the policy,
+allowing us to safely remove its overflow check
+
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 6006d23d0410..5499f5629dc2 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -49,29 +49,29 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+ 	[RDMA_NLDEV_ATTR_CHARDEV]		= { .type = NLA_U64 },
+ 	[RDMA_NLDEV_ATTR_CHARDEV_ABI]		= { .type = NLA_U64 },
+ 	[RDMA_NLDEV_ATTR_CHARDEV_NAME]		= { .type = NLA_NUL_STRING,
+-					.len = RDMA_NLDEV_ATTR_ENTRY_STRLEN },
++					.len = RDMA_NLDEV_ATTR_EMPTY_STRING },
+ 	[RDMA_NLDEV_ATTR_CHARDEV_TYPE]		= { .type = NLA_NUL_STRING,
+-					.len = 128 },
++					.len = RDMA_NLDEV_ATTR_CHARDEV_TYPE_SIZE },
+ 	[RDMA_NLDEV_ATTR_DEV_INDEX]		= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_DEV_NAME]		= { .type = NLA_NUL_STRING,
+-					.len = IB_DEVICE_NAME_MAX - 1},
++					.len = IB_DEVICE_NAME_MAX },
+ 	[RDMA_NLDEV_ATTR_DEV_NODE_TYPE]		= { .type = NLA_U8 },
+ 	[RDMA_NLDEV_ATTR_DEV_PROTOCOL]		= { .type = NLA_NUL_STRING,
+-					.len = RDMA_NLDEV_ATTR_ENTRY_STRLEN },
++					.len = RDMA_NLDEV_ATTR_EMPTY_STRING },
+ 	[RDMA_NLDEV_ATTR_DRIVER]		= { .type = NLA_NESTED },
+ 	[RDMA_NLDEV_ATTR_DRIVER_ENTRY]		= { .type = NLA_NESTED },
+ 	[RDMA_NLDEV_ATTR_DRIVER_PRINT_TYPE]	= { .type = NLA_U8 },
+ 	[RDMA_NLDEV_ATTR_DRIVER_STRING]		= { .type = NLA_NUL_STRING,
+-					.len = RDMA_NLDEV_ATTR_ENTRY_STRLEN },
++					.len = RDMA_NLDEV_ATTR_EMPTY_STRING },
+ 	[RDMA_NLDEV_ATTR_DRIVER_S32]		= { .type = NLA_S32 },
+ 	[RDMA_NLDEV_ATTR_DRIVER_S64]		= { .type = NLA_S64 },
+ 	[RDMA_NLDEV_ATTR_DRIVER_U32]		= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_DRIVER_U64]		= { .type = NLA_U64 },
+ 	[RDMA_NLDEV_ATTR_FW_VERSION]		= { .type = NLA_NUL_STRING,
+-					.len = IB_FW_VERSION_NAME_MAX - 1},
++					.len = RDMA_NLDEV_ATTR_EMPTY_STRING },
+ 	[RDMA_NLDEV_ATTR_LID]			= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_LINK_TYPE]		= { .type = NLA_NUL_STRING,
+-					.len = RDMA_NLDEV_ATTR_ENTRY_STRLEN },
++					.len = IFNAMSIZ },
+ 	[RDMA_NLDEV_ATTR_LMC]			= { .type = NLA_U8 },
+ 	[RDMA_NLDEV_ATTR_NDEV_INDEX]		= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_NDEV_NAME]		= { .type = NLA_NUL_STRING,
+@@ -92,7 +92,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+ 			.len = sizeof(struct __kernel_sockaddr_storage) },
+ 	[RDMA_NLDEV_ATTR_RES_IOVA]		= { .type = NLA_U64 },
+ 	[RDMA_NLDEV_ATTR_RES_KERN_NAME]		= { .type = NLA_NUL_STRING,
+-					.len = TASK_COMM_LEN },
++					.len = RDMA_NLDEV_ATTR_EMPTY_STRING },
+ 	[RDMA_NLDEV_ATTR_RES_LKEY]		= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_RES_LOCAL_DMA_LKEY]	= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_RES_LQPN]		= { .type = NLA_U32 },
+@@ -120,7 +120,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+ 	[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY]	= { .type = NLA_NESTED },
+ 	[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_CURR]= { .type = NLA_U64 },
+ 	[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_NAME]= { .type = NLA_NUL_STRING,
+-					.len = 16 },
++					.len = RDMA_NLDEV_ATTR_EMPTY_STRING },
+ 	[RDMA_NLDEV_ATTR_RES_TYPE]		= { .type = NLA_U8 },
+ 	[RDMA_NLDEV_ATTR_RES_UNSAFE_GLOBAL_RKEY]= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_RES_USECNT]		= { .type = NLA_U64 },
+@@ -1361,7 +1361,7 @@ static int nldev_get_chardev(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 			     struct netlink_ext_ack *extack)
+ {
+ 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
+-	char client_name[IB_DEVICE_NAME_MAX];
++	char client_name[RDMA_NLDEV_ATTR_CHARDEV_TYPE_SIZE];
+ 	struct ib_client_nl_info data = {};
+ 	struct ib_device *ibdev = NULL;
+ 	struct sk_buff *msg;
+@@ -1373,9 +1373,8 @@ static int nldev_get_chardev(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	if (err || !tb[RDMA_NLDEV_ATTR_CHARDEV_TYPE])
+ 		return -EINVAL;
+ 
+-	if (nla_strlcpy(client_name, tb[RDMA_NLDEV_ATTR_CHARDEV_TYPE],
+-			sizeof(client_name)) >= sizeof(client_name))
+-		return -EINVAL;
++	nla_strlcpy(client_name, tb[RDMA_NLDEV_ATTR_CHARDEV_TYPE],
++		    sizeof(client_name));
+ 
+ 	if (tb[RDMA_NLDEV_ATTR_DEV_INDEX]) {
+ 		index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
+diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
+index c7acbe083428..6631624e4d7c 100644
+--- a/include/rdma/rdma_netlink.h
++++ b/include/rdma/rdma_netlink.h
+@@ -6,6 +6,12 @@
+ #include <linux/netlink.h>
+ #include <uapi/rdma/rdma_netlink.h>
+ 
++enum {
++	RDMA_NLDEV_ATTR_EMPTY_STRING = 1,
++	RDMA_NLDEV_ATTR_ENTRY_STRLEN = 16,
++	RDMA_NLDEV_ATTR_CHARDEV_TYPE_SIZE = 32,
++};
++
+ struct rdma_nl_cbs {
+ 	int (*doit)(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 		    struct netlink_ext_ack *extack);
+diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
+index b27c02185dcc..650cee8c4bf1 100644
+--- a/include/uapi/rdma/rdma_netlink.h
++++ b/include/uapi/rdma/rdma_netlink.h
+@@ -284,10 +284,6 @@ enum rdma_nldev_command {
+ 	RDMA_NLDEV_NUM_OPS
+ };
+ 
+-enum {
+-	RDMA_NLDEV_ATTR_ENTRY_STRLEN = 16,
+-};
+-
+ enum rdma_nldev_print_type {
+ 	RDMA_NLDEV_PRINT_TYPE_UNSPEC,
+ 	RDMA_NLDEV_PRINT_TYPE_HEX,
+-- 
+2.21.0
+
