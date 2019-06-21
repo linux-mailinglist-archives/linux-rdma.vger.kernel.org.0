@@ -2,153 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0399D4EF94
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2019 21:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE3D4EF97
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2019 21:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725992AbfFUTmN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Jun 2019 15:42:13 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:43654 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbfFUTmN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 21 Jun 2019 15:42:13 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 831463688E;
-        Fri, 21 Jun 2019 19:42:12 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9709860A97;
-        Fri, 21 Jun 2019 19:42:11 +0000 (UTC)
-Message-ID: <3ed43fc8399c5b8efa262699a1d3559cbe41fed5.camel@redhat.com>
-Subject: [PULL REQUEST] Please pull rdma.git
-From:   Doug Ledford <dledford@redhat.com>
-To:     "Torvalds, Linus" <torvalds@linux-foundation.org>
-Cc:     "Gunthorpe, Jason" <jgg@ziepe.ca>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 21 Jun 2019 15:42:09 -0400
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-BxiJK0wsevTO9MrcGUQb"
-User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+        id S1726017AbfFUTqu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Jun 2019 15:46:50 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:36644 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbfFUTqt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Jun 2019 15:46:49 -0400
+Received: by mail-qt1-f195.google.com with SMTP id p15so8159998qtl.3
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Jun 2019 12:46:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jDKOLvAZVK3p+ZWp8OuSqnDaO2OfqaqhbxDV60Rh4mU=;
+        b=JEI/LcRmtKhPwa+q5By5mEAN9GdgP8GV5eeetvS5rsYpAQHgVnG52rxonSPsGghvcg
+         PfAXBmiCbAeeJwxaS8mMBPv0Qad6VYvE8hSu+0aNjnl3EX/V5eJAvK4PfHNge16V9zIs
+         iXUASbX2PI8gxHgkVAze27YG8QYUpr2Z8TjwdaNJPj7X+wvht492EKBc7PyFT9rLMPB3
+         ua0dTLDkNSm2iwQiujgG2zrTvMVLY4XhrdCNGuyVG3Rcb07hC4DnLKXLTFMIOnd2+EgL
+         M40pn9tGg5tjeWIOOgBKtVK15LImjflWcgw91a0hi1FKlKgZlZuGiwkh89XwOkxCbq1E
+         vP+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jDKOLvAZVK3p+ZWp8OuSqnDaO2OfqaqhbxDV60Rh4mU=;
+        b=AjPzWanBw8PNc9EbslhErwLNnqa+4IQBh4077kH65q9xbGpiELkRRVSSKUmua7On6a
+         X5XUUmi8TKBNiTOeBqLu391uH+tKbnLfKleOgEcyOqIzTtvUntYCYdt9GdfflWxuqi/8
+         62XYvaXKz7ds0/ZwV93ZC7DSd7ar5z8/WzpqbkcFxXLRL6exB0gdjynkIZA28/7RjzmB
+         68QhNzJrxCq6f085DS2FvPv6qcbP3oqfdkqPV93MwSWttGYUaMmBuRVdpeXCmGKOCSKu
+         VE4Iu644gABRMDZ7k9w6rnZ8qJBEzA/Ka2I0V0y/qr4bPA5wTwZ6L8AWRfc/rhX+D66M
+         6u/g==
+X-Gm-Message-State: APjAAAUvwsoGxXUmCxl6Cm4xwCgK3MLmTNqtrMphgZ/MkGlaLIUqXpsh
+        ushVd0wJFqN5PXj9Vq1zdBST9A==
+X-Google-Smtp-Source: APXvYqyWE96lWOXmMBBhuad4N3T+HyL6X6eq4uUTz9OkKy2j98lhbe4T/QRibzhp91ygqiUaNkVGdg==
+X-Received: by 2002:ac8:7342:: with SMTP id q2mr25012759qtp.134.1561146408892;
+        Fri, 21 Jun 2019 12:46:48 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id d123sm2180313qkb.94.2019.06.21.12.46.48
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 21 Jun 2019 12:46:48 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hePUl-0007wR-Nm; Fri, 21 Jun 2019 16:46:47 -0300
+Date:   Fri, 21 Jun 2019 16:46:47 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Doug Ledford <dledford@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, leon@kernel.org
+Subject: Re: [PATCH v2 2/2] RDMA/netlink: Audit policy settings for netlink
+ attributes
+Message-ID: <20190621194647.GX19891@ziepe.ca>
+References: <b77fa93a0a34dc0ae40bdbac83ea419a0d8879ff.1561048044.git.dledford@redhat.com>
+ <20190621182028.GA22934@ziepe.ca>
+ <9864929b96df09102ec801b2e70806cdf266e107.camel@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.30]); Fri, 21 Jun 2019 19:42:12 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9864929b96df09102ec801b2e70806cdf266e107.camel@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Jun 21, 2019 at 03:34:28PM -0400, Doug Ledford wrote:
+> On Fri, 2019-06-21 at 15:20 -0300, Jason Gunthorpe wrote:
+> > On Thu, Jun 20, 2019 at 12:30:17PM -0400, Doug Ledford wrote:
+> > > For all string attributes for which we don't currently accept the
+> > > element as input, we only use it as output, set the string length to
+> > > RDMA_NLDEV_ATTR_EMPTY_STRING which is defined as 1.  That way we
+> > > will
+> > > only accept a null string for that element.  This will prevent
+> > > someone
+> > > from writing a new input routine that uses the element without also
+> > > updating the policy to have a valid value.
+> > > 
+> > > Also while there, make sure the existing entries that are valid have
+> > > the
+> > > correct policy, if not, correct the policy.  Remove unnecessary
+> > > checks
+> > > for nla_strlcpy() overflow once the policy has been set correctly.
+> > 
+> > The above commit message paragraph is out of date now.
+> > 
+> > Otherwise looks OK to me, it would be nice if we could avoid sizing
+> > the string in the policy, but OK otherwise.
+> > 
+> > FWIW this is probably how other netlink users in net are making their
+> > use of strings OK. The policy will reliably trigger the EINVAL if the
+> > policy length and the buffer length are identical.
+> 
+> If that's the case, then we can go back to the original patch and drop
+> all the checking of string copy overruns because I set all of the policy
+> elements on anything that was a valid input to the input size.
 
---=-BxiJK0wsevTO9MrcGUQb
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Which was fine for things with nice unfrail global values, but the
+client_name stack var was not like that.. Maybe just give it some
+global value?
 
-Hi Linus,
-
-This is probably our last -rc pull request.  We don't have anything else
-outstanding at the moment anyway, and with the summer months on us and
-people taking trips, I expect the next weeks leading up to the merge
-window to be pretty calm and sedate.
-
-This has two simple, no brainer fixes for the EFA driver.
-
-Then it has ten not quite so simple fixes for the hfi1 driver.  The
-problem with them is that they aren't simply one liner typo fixes.=20
-They're still fixes, but they're more complex issues like livelock under
-heavy load where the answer was to change work queue usage and spinlock
-usage to resolve the problem, or issues with orphaned requests during
-certain types of failures like link down which required some more
-complex work to fix too.  They all look like legitimate fixes to me,
-they just aren't small like I wish they were.
-
-Here's the boilerplate:
-
-The following changes since commit d1fdb6d8f6a4109a4263176c84b899076a5f8008=
-:
-
-  Linux 5.2-rc4 (2019-06-08 20:24:46 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linu=
-s
-
-for you to fetch changes up to 7a5834e456f7fb3eca9b63af2a6bc7f460ae482f:
-
-  RDMA/efa: Handle mmap insertions overflow (2019-06-18 16:27:24 -0400)
-
-----------------------------------------------------------------
-Pull request for 5.1-rc5
-
-- 2 minor EFA fixes
-- 10 hfi1 fixes related to scaling issues
-
-----------------------------------------------------------------
-Gal Pressman (2):
-      RDMA/efa: Fix success return value in case of error
-      RDMA/efa: Handle mmap insertions overflow
-
-Kaike Wan (1):
-      IB/hfi1: Validate fault injection opcode user input
-
-Mike Marciniszyn (9):
-      IB/hfi1: Close PSM sdma_progress sleep window
-      IB/hfi1: Correct tid qp rcd to match verbs context
-      IB/hfi1: Avoid hardlockup with flushlist_lock
-      IB/hfi1: Silence txreq allocation warnings
-      IB/hfi1: Create inline to get extended headers
-      IB/hfi1: Use aborts to trigger RC throttling
-      IB/hfi1: Wakeup QPs orphaned on wait list after flush
-      IB/hfi1: Handle wakeup of orphaned QPs for pio
-      IB/hfi1: Handle port down properly in pio
-
- drivers/infiniband/hw/efa/efa_com_cmd.c  | 24 +++++++++++----
- drivers/infiniband/hw/efa/efa_verbs.c    | 21 ++++++++++---
- drivers/infiniband/hw/hfi1/chip.c        | 13 ++++++++
- drivers/infiniband/hw/hfi1/chip.h        |  1 +
- drivers/infiniband/hw/hfi1/fault.c       |  5 +++
- drivers/infiniband/hw/hfi1/hfi.h         | 31 +++++++++++++++++++
- drivers/infiniband/hw/hfi1/pio.c         | 21 +++++++++++--
- drivers/infiniband/hw/hfi1/rc.c          | 53 +++++++++++++++++++---------=
-----
- drivers/infiniband/hw/hfi1/sdma.c        | 26 ++++++++++++----
- drivers/infiniband/hw/hfi1/tid_rdma.c    |  4 +--
- drivers/infiniband/hw/hfi1/ud.c          |  4 +--
- drivers/infiniband/hw/hfi1/user_sdma.c   | 12 +++-----
- drivers/infiniband/hw/hfi1/user_sdma.h   |  1 -
- drivers/infiniband/hw/hfi1/verbs.c       | 14 +++++----
- drivers/infiniband/hw/hfi1/verbs.h       |  1 +
- drivers/infiniband/hw/hfi1/verbs_txreq.c |  2 +-
- drivers/infiniband/hw/hfi1/verbs_txreq.h |  3 +-
- 17 files changed, 174 insertions(+), 62 deletions(-)
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-BxiJK0wsevTO9MrcGUQb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0NMxEACgkQuCajMw5X
-L90Ejw/9HNVIwSjBM02c0aSeSwBP2Ie4aasjlB/Kqg828G/DCbts1/ryVLZMSAWE
-FAHWRsvswPXZEbUgOV5w80SwHgoPfspHrkOXObTi5NQGwQISMVRnRyMeWu1a2guQ
-mP3vuhmTDhhB9gk3I19Tvmvn58TT99xdoebfPrYWjl53/llIta9JNgXwBZ5UNwkO
-r6iwbl3Yly9Sz72dfM2bapJ2r2bGIOUDDjBCPIv024yu4RIeQkHExTajy/CLnSMj
-Cjze2SrQL+VPNqm9Ro2ZJAWJh9WRrlHu366wwdT0ntH3zvcdrgENeUI4sMWCy4yg
-NLMwLJGBU//a7naY6Zqx3DYzGoGOyNBzYa6t3ni4lQoPWSmfvb9uuB9EzTIRd0x2
-9M8lL1xYdp++pOYf41ThlaeSd+whDBoRI2m4uK3V58FOQ3w3qL/i7y1t6J9ORuH7
-2e2NJeOENxN4SPdrDnJUVQ5268zLXh8mY4+T6rN9xwlKTYTO9w9GrqHR5TFLjldx
-k2UtC5zhV9fMnHoHsuHHZL2aD+QvwJaBiell2wF6hGen8cNU8DymKSAuEdXmx6cJ
-BESTZp1Ry+cLowNqI0GKAdto6Pz+5tHAmbC9f3pOnsUrYlPMDfeSwMtmL7mPs3Xe
-KHRpbVburKoCLzhWbeLoklAZ5nNyZMZfSflhtujyFxVT5cSGius=
-=WI49
------END PGP SIGNATURE-----
-
---=-BxiJK0wsevTO9MrcGUQb--
-
+Jason
