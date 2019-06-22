@@ -2,125 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CE94F726
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Jun 2019 18:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69F64F7B1
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Jun 2019 20:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbfFVQrS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sat, 22 Jun 2019 12:47:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19522 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726276AbfFVQrS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 22 Jun 2019 12:47:18 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5MGkgdq005862
-        for <linux-rdma@vger.kernel.org>; Sat, 22 Jun 2019 12:47:17 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2t9g70ake7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Sat, 22 Jun 2019 12:47:16 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Sat, 22 Jun 2019 16:47:15 -0000
-Received: from us1b3-smtp07.a3dr.sjc01.isc4sb.com (10.122.203.198)
-        by smtp.notes.na.collabserv.com (10.122.47.46) with smtp.notes.na.collabserv.com ESMTP;
-        Sat, 22 Jun 2019 16:47:12 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp07.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019062216471143-314667 ;
-          Sat, 22 Jun 2019 16:47:11 +0000 
-In-Reply-To: <9a894290bb24d0190e2a302f9d8e934f3dff7e1b.camel@redhat.com>
-Subject: Re: Re: [PATCH v3 05/11] SIW application interface
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Doug Ledford" <dledford@redhat.com>
-Cc:     "Bart Van Assche" <bvanassche@acm.org>, linux-rdma@vger.kernel.org
-Date:   Sat, 22 Jun 2019 16:47:11 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <9a894290bb24d0190e2a302f9d8e934f3dff7e1b.camel@redhat.com>,<20190620162133.13074-1-bmt@zurich.ibm.com>
- <20190620162133.13074-6-bmt@zurich.ibm.com>
- <f805a19d-256f-fa60-fc2d-dbc0939ed5cf@acm.org>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-KeepSent: 25CD8093:43AEF2B8-00258421:005C35E9;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 41431
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19062216-3017-0000-0000-000000302BC3
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.008982
-X-IBM-SpamModules-Versions: BY=3.00011309; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01221739; UDB=6.00642797; IPR=6.01002878;
- MB=3.00027423; MTD=3.00000008; XFM=3.00000015; UTC=2019-06-22 16:47:15
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-06-22 16:20:42 - 6.00010079
-x-cbparentid: 19062216-3018-0000-0000-0000004E2DA2
-Message-Id: <OF25CD8093.43AEF2B8-ON00258421.005C35E9-00258421.005C3600@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-22_11:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+        id S1726328AbfFVSAs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 22 Jun 2019 14:00:48 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:34255 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbfFVSAr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Jun 2019 14:00:47 -0400
+Received: by mail-ed1-f65.google.com with SMTP id s49so15041927edb.1
+        for <linux-rdma@vger.kernel.org>; Sat, 22 Jun 2019 11:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=+0dbgQdh1alJJ8L/rg8gILoxp7pGVLPVx2FbN8k3ou0=;
+        b=W6ocLpkY1BE3FvpAj/Jx2f6VWeoA/iUUTN/X2eIOvl27L6nCgo++0PqLtJy698W++x
+         g3jUlIBbvG1iFb6WM/8u36Es4C/l3yMRdZEHXifHH/j2EV9ls5hW7nFi8sm/D+RoU8qQ
+         sqW2j/YNTpMigadivf4KmQzFYQ6bqu16DMLJinQOswPpTY5woTM9ksjRpgYBRRfixz6S
+         WFDWbxA9vrUi+2Zc8RIN+Un9A4vb8CZbXmqhIGxstbAnzMa8ASWYP0iwDzs+OyAAiIDo
+         OaTsZtABQ5Tqkbxl8ttqxE2xIiBRTreYZyqytnmWURrPmbdV+L2nuPCOiily5NTSSqOQ
+         cM6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+0dbgQdh1alJJ8L/rg8gILoxp7pGVLPVx2FbN8k3ou0=;
+        b=PxN4UsZlAtd9U7vkV0dj79XU/JgTbEj0FpzcbSNnHlTJHTJZB3lU/lAUTTTXr1bM1F
+         pgSBYqv4kFcF3rZN8ex2XFryDmPeKW2+jsB3G5s/UGwvz4NmQRd0/J7KMu0kR81RMRjt
+         dZ71T7Omg+jQgWZFFqNODdErualb/+KzwFM+8pWpdRnf4TJZy/h8MMB74wHeqqummZoc
+         tRyubtXbkLvfVmuGOh0j5ew6RJNMg6+jnoCp5C1TTQjQpNyL5Q78+Uy3g14VGDZGMwkz
+         ssF91qMBRl/Lq4bi9T2D4ggTa06V6IaUorq+9DveTOxspSgGW+SX+OagkI/NRMOvuI45
+         degg==
+X-Gm-Message-State: APjAAAWOf8R3O1+pifGcVuAGL0uIHiKfapLEbK2HJVz+lOVwgDu1ubPn
+        r4YSJ5dvMGtMdfzw+xcEQLMdnA==
+X-Google-Smtp-Source: APXvYqwXlufYaLKyjX9Ki5Ml6RroaUqNe7GnNmZwa5YLKqKaBVznDoxRw1c5StvkWEmTouBHjnVOuQ==
+X-Received: by 2002:a50:86dc:: with SMTP id 28mr126658112edu.132.1561226445983;
+        Sat, 22 Jun 2019 11:00:45 -0700 (PDT)
+Received: from tegmen.arch.suse.de (charybdis-ext.suse.de. [195.135.221.2])
+        by smtp.gmail.com with ESMTPSA id a8sm1955560edt.56.2019.06.22.11.00.45
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 22 Jun 2019 11:00:45 -0700 (PDT)
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+X-Google-Original-From: Denis Kirjanov <dkirjanov@suse.com>
+To:     stephen@networkplumber.org, dsahern@gmail.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        dledford@redhat.com, mkubecek@suse.cz,
+        Denis Kirjanov <kda@linux-powerpc.org>
+Subject: [PATCH iproute2-next v3 1/2] ipaddress: correctly print a VF hw address in the IPoIB case
+Date:   Sat, 22 Jun 2019 20:00:34 +0200
+Message-Id: <20190622180035.40245-1-dkirjanov@suse.com>
+X-Mailer: git-send-email 2.12.3
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Doug Ledford" <dledford@redhat.com> wrote: -----
+Current code assumes that we print ethernet mac and
+that doesn't work in the IPoIB case with SRIOV-enabled hardware
 
->To: "Bart Van Assche" <bvanassche@acm.org>, "Bernard Metzler"
-><bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org
->From: "Doug Ledford" <dledford@redhat.com>
->Date: 06/22/2019 12:28AM
->Subject: [EXTERNAL] Re: [PATCH v3 05/11] SIW application interface
->
->On Thu, 2019-06-20 at 09:33 -0700, Bart Van Assche wrote:
->> On 6/20/19 9:21 AM, Bernard Metzler wrote:
->> > diff --git a/include/uapi/rdma/siw-abi.h b/include/uapi/rdma/siw-
->> > abi.h
->> > new file mode 100644
->> > index 000000000000..3dd8071ace7b
->> > --- /dev/null
->> > +++ b/include/uapi/rdma/siw-abi.h
->> > @@ -0,0 +1,185 @@
->> > +/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
->> > +
->> > +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
->> > +/* Copyright (c) 2008-2019, IBM Corporation */
->> > +
->> > +#ifndef _SIW_USER_H
->> > +#define _SIW_USER_H
->> > +
->> > +#include <linux/types.h>
->> > +
->> > +#define SIW_NODE_DESC_COMMON "Software iWARP stack"
->> 
->> How can the definition of a string like this be useful in an UAPI
->> header
->> file? If user space code doesn't need this string please move this
->> definition away from include/uapi.
->> 
->> > +#define SIW_ABI_VERSION 1
->> 
->> Same question here: how can this definition be useful in an UAPI
->> header
->> file? As you know Linux user space APIs must be backwards
->compatible.
->
->I moved both of these to sw/siw/siw.h instead of the uapi header.
->
+Before:
+11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+state UP mode DEFAULT group default qlen 256
+        link/infiniband
+80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+        vf 0 MAC 14:80:00:00:66:fe, spoof checking off, link-state disable,
+    trust off, query_rss off
+    ...
 
-Thanks Doug!
+After:
+11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+state UP mode DEFAULT group default qlen 256
+        link/infiniband
+80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+        vf 0     link/infiniband
+80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
+checking off, link-state disable, trust off, query_rss off
 
-Bernard.
->-- 
->Doug Ledford <dledford@redhat.com>
->    GPG KeyID: B826A3330E572FDD
->    Fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
->
-[attachment "signature.asc" removed by Bernard Metzler/Zurich/IBM]
+v1->v2: updated kernel headers to uapi commit
+v2->v3: fixed alignment
+
+Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
+---
+ ip/ipaddress.c | 44 +++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 39 insertions(+), 5 deletions(-)
+
+diff --git a/ip/ipaddress.c b/ip/ipaddress.c
+index b504200b..52078675 100644
+--- a/ip/ipaddress.c
++++ b/ip/ipaddress.c
+@@ -26,6 +26,7 @@
+ 
+ #include <linux/netdevice.h>
+ #include <linux/if_arp.h>
++#include <linux/if_infiniband.h>
+ #include <linux/sockios.h>
+ #include <linux/net_namespace.h>
+ 
+@@ -349,9 +350,10 @@ static void print_af_spec(FILE *fp, struct rtattr *af_spec_attr)
+ 
+ static void print_vf_stats64(FILE *fp, struct rtattr *vfstats);
+ 
+-static void print_vfinfo(FILE *fp, struct rtattr *vfinfo)
++static void print_vfinfo(struct ifinfomsg *ifi, FILE *fp, struct rtattr *vfinfo)
+ {
+ 	struct ifla_vf_mac *vf_mac;
++	struct ifla_vf_broadcast *vf_broadcast;
+ 	struct ifla_vf_tx_rate *vf_tx_rate;
+ 	struct rtattr *vf[IFLA_VF_MAX + 1] = {};
+ 
+@@ -365,13 +367,45 @@ static void print_vfinfo(FILE *fp, struct rtattr *vfinfo)
+ 	parse_rtattr_nested(vf, IFLA_VF_MAX, vfinfo);
+ 
+ 	vf_mac = RTA_DATA(vf[IFLA_VF_MAC]);
++	vf_broadcast = RTA_DATA(vf[IFLA_VF_BROADCAST]);
+ 	vf_tx_rate = RTA_DATA(vf[IFLA_VF_TX_RATE]);
+ 
+ 	print_string(PRINT_FP, NULL, "%s    ", _SL_);
+ 	print_int(PRINT_ANY, "vf", "vf %d ", vf_mac->vf);
+-	print_string(PRINT_ANY, "mac", "MAC %s",
+-		     ll_addr_n2a((unsigned char *) &vf_mac->mac,
+-				 ETH_ALEN, 0, b1, sizeof(b1)));
++
++	print_string(PRINT_ANY,
++			"link_type",
++			"    link/%s ",
++			ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)));
++
++	print_color_string(PRINT_ANY,
++				COLOR_MAC,
++				"address",
++				"%s",
++				ll_addr_n2a((unsigned char *) &vf_mac->mac,
++					ifi->ifi_type == ARPHRD_ETHER ?
++					ETH_ALEN : INFINIBAND_ALEN,
++					ifi->ifi_type,
++					b1, sizeof(b1)));
++
++	if (vf[IFLA_VF_BROADCAST]) {
++		if (ifi->ifi_flags&IFF_POINTOPOINT) {
++			print_string(PRINT_FP, NULL, " peer ", NULL);
++			print_bool(PRINT_JSON,
++					"link_pointtopoint", NULL, true);
++		} else
++			print_string(PRINT_FP, NULL, " brd ", NULL);
++
++		print_color_string(PRINT_ANY,
++				COLOR_MAC,
++				"broadcast",
++				"%s",
++				ll_addr_n2a((unsigned char *) &vf_broadcast->broadcast,
++					ifi->ifi_type == ARPHRD_ETHER ?
++					ETH_ALEN : INFINIBAND_ALEN,
++					ifi->ifi_type,
++					b1, sizeof(b1)));
++	}
+ 
+ 	if (vf[IFLA_VF_VLAN_LIST]) {
+ 		struct rtattr *i, *vfvlanlist = vf[IFLA_VF_VLAN_LIST];
+@@ -1102,7 +1136,7 @@ int print_linkinfo(struct nlmsghdr *n, void *arg)
+ 		open_json_array(PRINT_JSON, "vfinfo_list");
+ 		for (i = RTA_DATA(vflist); RTA_OK(i, rem); i = RTA_NEXT(i, rem)) {
+ 			open_json_object(NULL);
+-			print_vfinfo(fp, i);
++			print_vfinfo(ifi, fp, i);
+ 			close_json_object();
+ 		}
+ 		close_json_array(PRINT_JSON, NULL);
+-- 
+2.12.3
 
