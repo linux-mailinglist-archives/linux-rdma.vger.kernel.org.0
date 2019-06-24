@@ -2,128 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA8050B8E
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 15:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF6250BF0
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 15:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728382AbfFXNMi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 09:12:38 -0400
-Received: from mail-eopbgr50046.outbound.protection.outlook.com ([40.107.5.46]:16288
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727065AbfFXNMi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Jun 2019 09:12:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bJKNsiWuopGsFiwJtfSmHwT6t9upZDeCWjBmCmeA7XQ=;
- b=Z1jEVJMZeA2aVFeQjyVX7/o4DJ+7JCvRf4WB7j5DitZp9Eec4o34k6ZMPdBc8DRs9251E7fBsr40IgTR+/qGaLd5Ce2yN5fUuin90BVN/A4n61Dlhc8rIJpghdvWQbcEo+NvAKhD6BjynMtbuzDfvbufD3a3XZFwNSOsl4cwFyg=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB5662.eurprd05.prod.outlook.com (20.178.120.212) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2008.16; Mon, 24 Jun 2019 13:12:30 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2008.014; Mon, 24 Jun 2019
- 13:12:30 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Ajay Kaher <akaher@vmware.com>
-CC:     "aarcange@redhat.com" <aarcange@redhat.com>,
-        "jannh@google.com" <jannh@google.com>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "mhocko@suse.com" <mhocko@suse.com>,
-        "jglisse@redhat.com" <jglisse@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "riandrews@android.com" <riandrews@android.com>,
-        "arve@android.com" <arve@android.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "sean.hefty@intel.com" <sean.hefty@intel.com>,
-        "hal.rosenstock@gmail.com" <hal.rosenstock@gmail.com>,
-        Matan Barak <matanb@mellanox.com>,
+        id S1728745AbfFXNZm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 09:25:42 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:52258 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728636AbfFXNZm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 09:25:42 -0400
+Received: by mail-wm1-f68.google.com with SMTP id s3so12805935wms.2
+        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 06:25:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qhMDYDjYRAwO0ka1qjQKivAhHcbXDGT/j+MNTC6poVw=;
+        b=YlowwLODx7ZFt4VJWCZQZSJCZQ56pBoNr+/100lbHqwvnmgT+2W/xj8q+3HM0mGTb/
+         4gY6rc9o8sBRJmc+1L+PFzU9Xz8dxBn8dbusR0SvTj7FcRJf9HwGR09rVRCOWQq3cfzf
+         p2hdFscPio2jAJVyM4s9KGuwRHpjGL4DIjtX3ssKQkZDzz/aFqkom4jm0ZGhCPyefyzs
+         QjObEJiWZVBafsa3zAFpcwyNM4nolM0UPto8/7Pnzfpv1yj9yON5606htXIkQDxnz2n1
+         FS4s21S21t0Z22+MV772dbHf1dhZXGcVGxIsnPungzsqkVqzDZhY8RnOSHtldFydspmJ
+         GnJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qhMDYDjYRAwO0ka1qjQKivAhHcbXDGT/j+MNTC6poVw=;
+        b=sX/UPnROFleLi5r3g7CjxGlzu+e1K9vP6QYJiYp7MTm88JZvcnTPq+PWHZP2m1OHt1
+         I/qiAcNi8FOA9aJy//BZrUxcYH7IFlLCAXtj7OKwUxFNAuqBIvwV9IrnPHyFnn8CInQj
+         4rETMUHd5Sp2/0KPRDeupLF2QaB8ZMweN2eInx2eOzfGs3Vzleq8DwXPKnBL7oAcPpqg
+         7y7DhYk2caDYJ7qjAwACnz0NHZHn2sTvtuALm3zXRZMntVhEK+Vi4qbKYxbNjI12FFzI
+         AKYmZG703TxYqEoWx3l7ZpdfyIUt2yrXmtMLuiUGxQdL0YcX6ccq1itrJ+ReDwyfSu2C
+         HpMg==
+X-Gm-Message-State: APjAAAX3EHp28f1aa0t1WuHE4bPLc9/XhLYRFoJW53i1AySB6JwK5TTA
+        Fe1oy++G/mL9uXI9BVB2MKxMCg==
+X-Google-Smtp-Source: APXvYqwcUra2ij9ZRQ7+AQF/9qtFNAdWpROdrelVpuwSCUuFKCQaMR16X65GmyelmhmL4KcTPXfjqg==
+X-Received: by 2002:a1c:2907:: with SMTP id p7mr15849941wmp.100.1561382740205;
+        Mon, 24 Jun 2019 06:25:40 -0700 (PDT)
+Received: from [10.8.2.125] ([193.47.165.251])
+        by smtp.googlemail.com with ESMTPSA id u6sm12974247wml.9.2019.06.24.06.25.38
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 24 Jun 2019 06:25:39 -0700 (PDT)
+Subject: Re: [PATCH rdma-next v1 08/12] IB/mlx5: Introduce
+ MLX5_IB_OBJECT_DEVX_ASYNC_EVENT_FD
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
         Leon Romanovsky <leonro@mellanox.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "srivatsab@vmware.com" <srivatsab@vmware.com>,
-        "amakhalov@vmware.com" <amakhalov@vmware.com>
-Subject: Re: [PATCH v4 2/3][v4.9.y] coredump: fix race condition between
- mmget_not_zero()/get_task_mm() and core dumping
-Thread-Topic: [PATCH v4 2/3][v4.9.y] coredump: fix race condition between
- mmget_not_zero()/get_task_mm() and core dumping
-Thread-Index: AQHVKo0oRBGkKYxOxkqZ7SBtAl/moqaqx9UA
-Date:   Mon, 24 Jun 2019 13:12:30 +0000
-Message-ID: <20190624131226.GA7418@mellanox.com>
-References: <1561410186-3919-1-git-send-email-akaher@vmware.com>
- <1561410186-3919-2-git-send-email-akaher@vmware.com>
-In-Reply-To: <1561410186-3919-2-git-send-email-akaher@vmware.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: PR2P264CA0011.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101::23)
- To VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [66.187.232.66]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1279592d-f3e3-4d7c-f79c-08d6f8a59cb2
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5662;
-x-ms-traffictypediagnostic: VI1PR05MB5662:
-x-ld-processed: a652971c-7d2e-4d9b-a6a4-d149256f461b,ExtAddr
-x-microsoft-antispam-prvs: <VI1PR05MB5662688FC277DCA3E4A171D3CFE00@VI1PR05MB5662.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:407;
-x-forefront-prvs: 007814487B
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(376002)(346002)(136003)(396003)(366004)(199004)(189003)(5660300002)(478600001)(6506007)(53936002)(33656002)(2616005)(6486002)(81156014)(86362001)(14444005)(3846002)(256004)(8676002)(81166006)(7736002)(229853002)(2906002)(446003)(66446008)(11346002)(68736007)(6916009)(486006)(66556008)(66476007)(36756003)(71190400001)(71200400001)(476003)(73956011)(99286004)(64756008)(66946007)(54906003)(76176011)(6512007)(102836004)(1076003)(4744005)(52116002)(386003)(25786009)(6116002)(6246003)(6436002)(316002)(66066001)(14454004)(4326008)(7416002)(8936002)(186003)(26005)(305945005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5662;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 40jUzpU9CguJn2eIvgacEOcIi2CYrA0fIWmsrZEo49I+3EgVJp2pRrgkltjExJd0cjLBr/ZjZlNwxkj3odOMuDp291oxCEbrf3qoTyS3t50EwIjNffVdqGTeH6SCwGNP75qu35Wfr9Fgt5LrVmv2KNlC0hj671ZjeDtCZGFuGl7uZoYiJsrZdi4d6ionXc5Hiw4AyN1GqbfMpsRhTIk04KKLL4BQOMw0SERrzFPOOZ3ElIE3NiCP6fv0/k+bGED0ir5nSBe1nGavp8idteCEzizj2yiReEGiw+Jv1jpp3+eI21DhvKqarSVs8wjJQAGdjWFsi/LMX1xvw6PCN8mBZivSW/3TKHejjD7JWQl00Jp9rHUnCy4wwss0fSFbTacnV6ybN+BzydI38iRxeDsA2x+8r0/iw5rWc1H41b2zd7M=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <626B17CC09D07E449465C19358AB7DB5@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+References: <20190618171540.11729-1-leon@kernel.org>
+ <20190618171540.11729-9-leon@kernel.org> <20190624115059.GA5479@mellanox.com>
+From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
+Message-ID: <baae74b9-94ff-9f5a-0992-c1eec5049306@dev.mellanox.co.il>
+Date:   Mon, 24 Jun 2019 16:25:37 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1279592d-f3e3-4d7c-f79c-08d6f8a59cb2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2019 13:12:30.5998
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5662
+In-Reply-To: <20190624115059.GA5479@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 25, 2019 at 02:33:04AM +0530, Ajay Kaher wrote:
-> This patch is the extension of following upstream commit to fix
-> the race condition between get_task_mm() and core dumping
-> for IB->mlx4 and IB->mlx5 drivers:
->=20
-> commit 04f5866e41fb ("coredump: fix race condition between
-> mmget_not_zero()/get_task_mm() and core dumping")'
->=20
-> Thanks to Jason for pointing this.
->=20
-> Signed-off-by: Ajay Kaher <akaher@vmware.com>
-> ---
->  drivers/infiniband/hw/mlx4/main.c | 4 +++-
->  drivers/infiniband/hw/mlx5/main.c | 3 +++
->  2 files changed, 6 insertions(+), 1 deletion(-)
+On 6/24/2019 2:51 PM, Jason Gunthorpe wrote:
+> On Tue, Jun 18, 2019 at 08:15:36PM +0300, Leon Romanovsky wrote:
+>> From: Yishai Hadas <yishaih@mellanox.com>
+>>
+>> Introduce MLX5_IB_OBJECT_DEVX_ASYNC_EVENT_FD and its initial
+>> implementation.
+>>
+>> This object is from type class FD and will be used to read DEVX
+>> async events.
+>>
+>> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>>   drivers/infiniband/hw/mlx5/devx.c         | 112 ++++++++++++++++++++--
+>>   include/uapi/rdma/mlx5_user_ioctl_cmds.h  |  10 ++
+>>   include/uapi/rdma/mlx5_user_ioctl_verbs.h |   4 +
+>>   3 files changed, 116 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+>> index 80b42d069328..1815ce0f8daf 100644
+>> +++ b/drivers/infiniband/hw/mlx5/devx.c
+>> @@ -33,6 +33,24 @@ struct devx_async_data {
+>>   	struct mlx5_ib_uapi_devx_async_cmd_hdr hdr;
+>>   };
+>>   
+>> +struct devx_async_event_queue {
+> 
+> It seems to be a mistake to try and re-use the async_event_queue for
+> both cmd and event, as they use it very differently and don't even
+> store the same things in the event_list. I think it is bettter to just
+> inline this into devx_async_event_file (and inline the old struct in
+> the cmd file
+> 
 
-Looks OK
+How about having another struct with all the event's queue fields 
+together ? this has the benefit of having all those related fields in 
+one place and leave the cmd as is.
 
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Alternatively,
+We can inline the event stuff under devx_async_event_file and leave the 
+cmd for now under a struct as it's not directly related to this series.
 
-Thanks
-Jason
+What do you think ?
+
+
+>> +	spinlock_t		lock;
+>> +	wait_queue_head_t	poll_wait;
+>> +	struct list_head	event_list;
+>> +	atomic_t		bytes_in_use;
+>> +	u8			is_destroyed:1;
+>> +	u32			flags;
+>> +};
+> 
+> All the flags testing is ugly, why not just add another bitfield?
+
+The flags are coming from user space and have their different name 
+space, I prefer to not mix with kernel ones. (i.e. is_destroyed).
+Makes sense ?
+
+> 
+>> +
+>> +struct devx_async_event_file {
+>> +	struct ib_uobject		uobj;
+>> +	struct list_head subscribed_events_list; /* Head of events that are
+>> +						  * subscribed to this FD
+>> +						  */
+>> +	struct devx_async_event_queue	ev_queue;
+>> +	struct mlx5_ib_dev *dev;
+>> +};
+>> +
+> 
+> Crazy indenting
+> 
+OK, will handle.
+
+>> diff --git a/include/uapi/rdma/mlx5_user_ioctl_verbs.h b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
+>> index a8f34c237458..57beea4589e4 100644
+>> +++ b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
+>> @@ -63,5 +63,9 @@ enum mlx5_ib_uapi_dm_type {
+>>   	MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_SW_ICM,
+>>   };
+>>   
+>> +enum mlx5_ib_uapi_devx_create_event_channel_flags {
+>> +	MLX5_IB_UAPI_DEVX_CREATE_EVENT_CHANNEL_FLAGS_OMIT_EV_DATA = 1
+>> << 0,
+> 
+> Maybe this name is too long
+
+Quite long but follows the name scheme having the UAPI prefix.
+Any shorter suggestion ?
+
