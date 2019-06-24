@@ -2,87 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7640B50356
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 09:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784F750374
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 09:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbfFXH2Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 03:28:25 -0400
-Received: from verein.lst.de ([213.95.11.211]:53057 "EHLO newverein.lst.de"
+        id S1727779AbfFXHb7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 03:31:59 -0400
+Received: from verein.lst.de ([213.95.11.211]:53082 "EHLO newverein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726375AbfFXH2Z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Jun 2019 03:28:25 -0400
+        id S1726623AbfFXHb7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Jun 2019 03:31:59 -0400
 Received: by newverein.lst.de (Postfix, from userid 2407)
-        id 0DC7D68B02; Mon, 24 Jun 2019 09:27:53 +0200 (CEST)
-Date:   Mon, 24 Jun 2019 09:27:52 +0200
+        id 03A7A68B02; Mon, 24 Jun 2019 09:31:27 +0200 (CEST)
+Date:   Mon, 24 Jun 2019 09:31:26 +0200
 From:   Christoph Hellwig <hch@lst.de>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
         Sagi Grimberg <sagi@grimberg.me>,
         Keith Busch <kbusch@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
         Stephen Bates <sbates@raithlin.com>
 Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-Message-ID: <20190624072752.GA3954@lst.de>
-References: <20190620161240.22738-1-logang@deltatee.com>
+Message-ID: <20190624073126.GB3954@lst.de>
+References: <20190620161240.22738-1-logang@deltatee.com> <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com> <20190620193353.GF19891@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190620161240.22738-1-logang@deltatee.com>
+In-Reply-To: <20190620193353.GF19891@ziepe.ca>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is not going to fly.
+On Thu, Jun 20, 2019 at 04:33:53PM -0300, Jason Gunthorpe wrote:
+> > My primary concern with this is that ascribes a level of generality
+> > that just isn't there for peer-to-peer dma operations. "Peer"
+> > addresses are not "DMA" addresses, and the rules about what can and
+> > can't do peer-DMA are not generically known to the block layer.
+> 
+> ?? The P2P infrastructure produces a DMA bus address for the
+> initiating device that is is absolutely a DMA address. There is some
+> intermediate CPU centric representation, but after mapping it is the
+> same as any other DMA bus address.
+> 
+> The map function can tell if the device pair combination can do p2p or
+> not.
 
-For one passing a dma_addr_t through the block layer is a layering
-violation, and one that I think will also bite us in practice.
-The host physical to PCIe bus address mapping can have offsets, and
-those offsets absolutely can be different for differnet root ports.
-So with your caller generated dma_addr_t everything works fine with
-a switched setup as the one you are probably testing on, but on a
-sufficiently complicated setup with multiple root ports it can break.
-
-Also duplicating the whole block I/O stack, including hooks all over
-the fast path is pretty much a no-go.
-
-I've been pondering for a while if we wouldn't be better off just
-passing a phys_addr_t + len instead of the page, offset, len tuple
-in the bio_vec, though.  If you look at the normal I/O path here
-is what we normally do:
-
- - we get a page as input, either because we have it at hand (e.g.
-   from the page cache) or from get_user_pages (which actually caculates
-   it from a pfn in the page tables)
- - once in the bio all the merging decisions are based on the physical
-   address, so we have to convert it to the physical address there,
-   potentially multiple times
- - then dma mapping all works off the physical address, which it gets
-   from the page at the start
- - then only the dma address is used for the I/O
- - on I/O completion we often but not always need the page again.  In
-   the direct I/O case for reference counting and dirty status, in the
-   file system also for things like marking the page uptodate
-
-So if we move to a phys_addr_t we'd need to go back to the page at least
-once.  But because of how the merging works we really only need to do
-it once per segment, as we can just do pointer arithmerics do get the
-following pages.  As we generally go at least once from a physical
-address to a page in the merging code even a relatively expensive vmem_map
-looks shouldn't be too bad.  Even more so given that the super hot path
-(small blkdev direct I/O) can actually trivially cache the affected pages
-as well.
-
-Linus kinda hates the pfn approach, but part of that was really that
-it was proposed for file system data, which we all found out really
-can't work as-is without pages the hard way.  Another part probably
-was potential performance issue, but between the few page lookups, and
-the fact that using a single phys_addr_t instead of pfn/page + offset
-should avoid quite a few calculations performance should not actually
-be affected, although we'll have to be careful to actually verify that.
+At the PCIe level there is no such thing as a DMA address, it all
+is bus address with MMIO and DMA in the same address space (without
+that P2P would have not chance of actually working obviously).  But
+that bus address space is different per "bus" (which would be an
+root port in PCIe), and we need to be careful about that.
