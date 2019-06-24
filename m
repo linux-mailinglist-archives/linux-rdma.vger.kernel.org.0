@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B88351CB5
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B4051CAE
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727510AbfFXVCJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 17:02:09 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:52845 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728059AbfFXVCJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 17:02:09 -0400
-Received: by mail-wm1-f68.google.com with SMTP id s3so674330wms.2
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 14:02:07 -0700 (PDT)
+        id S1728372AbfFXVCH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 17:02:07 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:50183 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728059AbfFXVCH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 17:02:07 -0400
+Received: by mail-wm1-f67.google.com with SMTP id c66so688165wmf.0
+        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 14:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Y7+HSfyIPKIyVRlHiPSUTXfMPMA2cBMnzwF3/BJJWoM=;
-        b=i+h5jdKODrJM6HAgihfib7r1p3HTIoXotHgwp0BCzd39jXyo1BGTDGN5CpLNMF70TR
-         V6PVWeRW3fvAO6anYPbAasncAm2gfDig99onMjq8DGbcxmOsbdJoUx+UOv3Ew172buN4
-         Vpsbiiy/5q+1oRn8UdTlfhMTuBnx4G1ji+wcVIaoYK5Nbt5H8mqxT5v/JzerbsooORD5
-         HimcJCbD82rblSOa3TsdNlNx3R6AxGDFuxuK+lEyTuOggfGhT5ua5kBPNLimVjJkqu5U
-         RIddsbNK0RH7LIGRspoDR8r0YYISQuOycZZHVH/0xfxFXODjXkabiQ3hMa0QYuximxJ6
-         o2Mg==
+        bh=yY5nuWFfvtGdjXx5X0jOTLVoM6UrkzhjnRnf2/dFDmQ=;
+        b=F8IpBc2pCC9TRRcnAQyPopBTGejfFjN4O3manyf4o/rILQiqjMrQn93gZmQT0zfX3x
+         5Z+FOf3huG56JiHRxImMjpmYUHWLJoUWRxsyiLyvuER8NJ6yXAhiFhmoMeS3xXIFDdo2
+         S8cp9J0djUNYJQZ5sFZYQ/C2WzaQmeRBmrPgWsubS3c8Ie4OcoFe0BbQ1hX51zSmNWX8
+         jRx4QvWLtE9d+wLs0Pn2yh3tjD1LsHbOoGDIFKF99fyOS9uFazFhPFuBYcSfa5SLimKH
+         7oBiYCs7lU7Wqx9ujUyjct2anJPQXnJ7qZm2I66poFSkOkPL9DAIWEUtnwKp1WVc7xDc
+         HnQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Y7+HSfyIPKIyVRlHiPSUTXfMPMA2cBMnzwF3/BJJWoM=;
-        b=XltxyhcN8Kf1EQpGFO8uq8b8KCbxz7dCA6D5tks29Sltmjna9PCXRC44YmaBjctlol
-         u8Z6Y/4Q+eQt0/kQF90ang03M/jQvIilygS3tiZF0T7hQNSoK9crmuwSplvNMZYtOD0n
-         juqOTuwOImg5kzziXsxeMAzVHUvdqlKo/IW2Er6BKWp64JwzvhE24X6aavcamsXDnqSO
-         40TK/HU3acIgYm9UFJt2nXhQwtRcC11137JFp8dx4D/fnNHAHbrAHzBEkWwghpA56StN
-         MN4EYqgS6LNpvARkcB9nbYux/7+rpOUcTg9U0icWhwbIytEwhQjzqSfQ9q/EBRVnTMb8
-         FjHg==
-X-Gm-Message-State: APjAAAXg1B7HnPuZNsXRPwEK/CwLmDbraKrs8oi6lj6T7P1JqjyTLjBD
-        fXMFQRjERns71FtRDNuUdndWRQ==
-X-Google-Smtp-Source: APXvYqxYsEWfPj+ojP/Pdo0/oemDCD+9/xSgl5N/QS6OZzqvHa256HMQOw+3zV/4M5gAiwA2ZCoPBA==
-X-Received: by 2002:a1c:228b:: with SMTP id i133mr17321325wmi.140.1561410126760;
-        Mon, 24 Jun 2019 14:02:06 -0700 (PDT)
+        bh=yY5nuWFfvtGdjXx5X0jOTLVoM6UrkzhjnRnf2/dFDmQ=;
+        b=lqPzpCajTfqUCJIXSOLffUTIIvDfiablaiO35CnrOCEmHr9i3OhDtBNykq6XVLbxWI
+         e00K6Y0OzOafCEpjawGPlLdg7Jf+kaAgTl9DRpbNd3TGkP0+fiKEFu+Fq1oVHNA/dRsX
+         +e0aL2xYflW3II5ebZqZhKlJeC/iPHUxqP7cxroCehAwhmta/pGPgk/Pj3G1whMuUIbh
+         xogR473EOPhmF8P0HXcov1iqrZ5PqpQ92YEghlyQ0DUFeWVbjhWzTDJaYd+tvgPghYNi
+         c/r9fEHCEs177X8geOzZObUdoIAR6QJTlRaGRbMZHnGkwpM+Ob/YZ65w+/4tLlqhPdRY
+         1OKw==
+X-Gm-Message-State: APjAAAXvlbH9ihTXfGjGyf3eEkKr6o8MiDdqwlwJEw9V4YC2fA2fPE+a
+        hf6JX5n9Jd7rrlpE7hoPCq7WYQ==
+X-Google-Smtp-Source: APXvYqyRMuYsh8UNUKwpWttANdd8lJKeiEYwmSXHHDDyx29FbNSbr+pndqxDZmcjLhM+HZNLBH9CVQ==
+X-Received: by 2002:a1c:4054:: with SMTP id n81mr17413906wma.78.1561410125081;
+        Mon, 24 Jun 2019 14:02:05 -0700 (PDT)
 Received: from ziepe.ca ([66.187.232.66])
-        by smtp.gmail.com with ESMTPSA id k125sm600943wmf.41.2019.06.24.14.02.02
+        by smtp.gmail.com with ESMTPSA id f7sm6578766wrv.38.2019.06.24.14.02.02
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Mon, 24 Jun 2019 14:02:02 -0700 (PDT)
 Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hfW6D-0001Mv-3O; Mon, 24 Jun 2019 18:02:01 -0300
+        id 1hfW6D-0001N1-4V; Mon, 24 Jun 2019 18:02:01 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
@@ -58,16 +58,14 @@ Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Christoph Hellwig <hch@lst.de>,
         Philip Yang <Philip.Yang@amd.com>,
         Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH v4 hmm 10/12] mm/hmm: Poison hmm_range during unregister
-Date:   Mon, 24 Jun 2019 18:01:08 -0300
-Message-Id: <20190624210110.5098-11-jgg@ziepe.ca>
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH v4 hmm 11/12] mm/hmm: Remove confusing comment and logic from hmm_release
+Date:   Mon, 24 Jun 2019 18:01:09 -0300
+Message-Id: <20190624210110.5098-12-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190624210110.5098-1-jgg@ziepe.ca>
 References: <20190624210110.5098-1-jgg@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
@@ -76,60 +74,81 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-Trying to misuse a range outside its lifetime is a kernel bug. Use poison
-bytes to help detect this condition. Double unregister will reliably crash.
+hmm_release() is called exactly once per hmm. ops->release() cannot
+accidentally trigger any action that would recurse back onto
+hmm->mirrors_sem.
+
+This fixes a use after-free race of the form:
+
+       CPU0                                   CPU1
+                                           hmm_release()
+                                             up_write(&hmm->mirrors_sem);
+ hmm_mirror_unregister(mirror)
+  down_write(&hmm->mirrors_sem);
+  up_write(&hmm->mirrors_sem);
+  kfree(mirror)
+                                             mirror->ops->release(mirror)
+
+The only user we have today for ops->release is an empty function, so this
+is unambiguously safe.
+
+As a consequence of plugging this race drivers are not allowed to
+register/unregister mirrors from within a release op.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-Acked-by: Souptick Joarder <jrdr.linux@gmail.com>
-Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 Tested-by: Philip Yang <Philip.Yang@amd.com>
 ---
-v2
-- Keep range start/end valid after unregistration (Jerome)
-v3
-- Revise some comments (John)
-- Remove start/end WARN_ON (Souptick)
-v4
-- Fix tabs vs spaces in comment (Christoph)
----
- mm/hmm.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ mm/hmm.c | 28 +++++++++-------------------
+ 1 file changed, 9 insertions(+), 19 deletions(-)
 
 diff --git a/mm/hmm.c b/mm/hmm.c
-index 2ef14b2b5505f6..c30aa9403dbe4d 100644
+index c30aa9403dbe4d..b224ea635a7716 100644
 --- a/mm/hmm.c
 +++ b/mm/hmm.c
-@@ -925,19 +925,21 @@ void hmm_range_unregister(struct hmm_range *range)
- {
- 	struct hmm *hmm = range->hmm;
+@@ -130,26 +130,16 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+ 	 */
+ 	WARN_ON(!list_empty_careful(&hmm->ranges));
  
--	/* Sanity check this really should not happen. */
--	if (hmm == NULL || range->end <= range->start)
--		return;
--
- 	mutex_lock(&hmm->lock);
- 	list_del_init(&range->list);
- 	mutex_unlock(&hmm->lock);
+-	down_write(&hmm->mirrors_sem);
+-	mirror = list_first_entry_or_null(&hmm->mirrors, struct hmm_mirror,
+-					  list);
+-	while (mirror) {
+-		list_del_init(&mirror->list);
+-		if (mirror->ops->release) {
+-			/*
+-			 * Drop mirrors_sem so the release callback can wait
+-			 * on any pending work that might itself trigger a
+-			 * mmu_notifier callback and thus would deadlock with
+-			 * us.
+-			 */
+-			up_write(&hmm->mirrors_sem);
++	down_read(&hmm->mirrors_sem);
++	list_for_each_entry(mirror, &hmm->mirrors, list) {
++		/*
++		 * Note: The driver is not allowed to trigger
++		 * hmm_mirror_unregister() from this thread.
++		 */
++		if (mirror->ops->release)
+ 			mirror->ops->release(mirror);
+-			down_write(&hmm->mirrors_sem);
+-		}
+-		mirror = list_first_entry_or_null(&hmm->mirrors,
+-						  struct hmm_mirror, list);
+ 	}
+-	up_write(&hmm->mirrors_sem);
++	up_read(&hmm->mirrors_sem);
  
- 	/* Drop reference taken by hmm_range_register() */
--	range->valid = false;
- 	mmput(hmm->mm);
  	hmm_put(hmm);
--	range->hmm = NULL;
-+
-+	/*
-+	 * The range is now invalid and the ref on the hmm is dropped, so
-+	 * poison the pointer.  Leave other fields in place, for the caller's
-+	 * use.
-+	 */
-+	range->valid = false;
-+	memset(&range->hmm, POISON_INUSE, sizeof(range->hmm));
  }
- EXPORT_SYMBOL(hmm_range_unregister);
+@@ -279,7 +269,7 @@ void hmm_mirror_unregister(struct hmm_mirror *mirror)
+ 	struct hmm *hmm = mirror->hmm;
  
+ 	down_write(&hmm->mirrors_sem);
+-	list_del_init(&mirror->list);
++	list_del(&mirror->list);
+ 	up_write(&hmm->mirrors_sem);
+ 	hmm_put(hmm);
+ }
 -- 
 2.22.0
 
