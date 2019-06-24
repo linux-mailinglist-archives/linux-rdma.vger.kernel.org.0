@@ -2,283 +2,275 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B036851CB4
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A9E50B57
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 15:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728059AbfFXVCK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 17:02:10 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:40957 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728777AbfFXVCJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 17:02:09 -0400
-Received: by mail-wm1-f68.google.com with SMTP id v19so691777wmj.5
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 14:02:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=S3r5edHB129w6+WHP2qce1cv++fCEyzuU0DGZG/FVjU=;
-        b=hxllCZWingbWA/f5vgNASI2pGcmQkq+YMV0+41KqM+6SHez+NGQ1uJO082ws99YMd9
-         a02GfWbWiybTgkW5XKpp58ScKdfgpRyQkF+lx8bQgY/E0sad83Uy5xKeM+5fDXk5l+dn
-         kREAcw817qhEHGbJzh/JPNg+S+obDw/5JZAk7sJkD1VoJOjy+A9WMNZt4hUg76s0LIwA
-         7CnwGTdpr/y52OLSiCtTuB/yhZqVQPS2pkaGeOalh4K4i+1u3/L+S9jsgkydPV6oBOsv
-         +C7ZAWxMOYu5gNiQFVoJHSQaBp2JqH18fs4FjehP3vhAnvD2AIJi3c1yJBiWTS4qwHYX
-         +fIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=S3r5edHB129w6+WHP2qce1cv++fCEyzuU0DGZG/FVjU=;
-        b=UH6jTwDj2pwXZMh4HLuYSSYo6FdaXTA1J51owxL5B4dYF8cNWHChXz0Umq5XyDMGqC
-         tUzwoWDIH42//HuyWXxRlyBO/TeDZPLIonSYd72+iZR4kpiVJ+eq1n7rv2QP+7Ai9bVl
-         WFn1wn48RnRTAVdfX4CMcrtpdfzIpmpbyOgWMBLR4tRu5CcfcFc0VQD144NbgahOrx0a
-         2gzjYWQFI6IZ0VS6XcWzVa/1sARqXEHxMKQc73MvBpiJae6cRfTzGuvpS3C5jebRculU
-         h2afR+ZZpeKWvVeilauD44pQ0uMFLYC0HoaYAP1MPsgpjmrr/h2dQATz+pRYD9QIVBma
-         a2Nw==
-X-Gm-Message-State: APjAAAU8zc8t/5y1zL/bIkixmNyxGayVmwo6lOfcMOk2qRCk74JV5Hfl
-        5TTOett13QN3EjL4smMUxU4miA==
-X-Google-Smtp-Source: APXvYqyInST0pwmwLzJ/uxOPmS6zD6FzKVUhnIxI9FAO5JkPPLVhNSreFOU/LTKh9NST5RUcH7Pi3Q==
-X-Received: by 2002:a1c:3:: with SMTP id 3mr16798813wma.6.1561410127205;
-        Mon, 24 Jun 2019 14:02:07 -0700 (PDT)
-Received: from ziepe.ca ([66.187.232.66])
-        by smtp.gmail.com with ESMTPSA id l4sm411869wmh.18.2019.06.24.14.02.02
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 24 Jun 2019 14:02:02 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hfW6D-0001N7-5h; Mon, 24 Jun 2019 18:02:01 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com
-Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Philip Yang <Philip.Yang@amd.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v4 hmm 12/12] mm/hmm: Fix error flows in hmm_invalidate_range_start
-Date:   Mon, 24 Jun 2019 18:01:10 -0300
-Message-Id: <20190624210110.5098-13-jgg@ziepe.ca>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190624210110.5098-1-jgg@ziepe.ca>
-References: <20190624210110.5098-1-jgg@ziepe.ca>
+        id S1728360AbfFXNCn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 09:02:43 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:29986 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726801AbfFXNCn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Jun 2019 09:02:43 -0400
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Mon, 24 Jun 2019 06:02:38 -0700
+Received: from akaher-lnx-dev.eng.vmware.com (unknown [10.110.19.203])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 5A37440C84;
+        Mon, 24 Jun 2019 06:02:33 -0700 (PDT)
+From:   Ajay Kaher <akaher@vmware.com>
+To:     <aarcange@redhat.com>, <jannh@google.com>, <oleg@redhat.com>,
+        <peterx@redhat.com>, <rppt@linux.ibm.com>, <jgg@mellanox.com>,
+        <mhocko@suse.com>
+CC:     <jglisse@redhat.com>, <akpm@linux-foundation.org>,
+        <mike.kravetz@oracle.com>, <viro@zeniv.linux.org.uk>,
+        <riandrews@android.com>, <arve@android.com>,
+        <yishaih@mellanox.com>, <dledford@redhat.com>,
+        <sean.hefty@intel.com>, <hal.rosenstock@gmail.com>,
+        <matanb@mellanox.com>, <leonro@mellanox.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <devel@driverdev.osuosl.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <akaher@vmware.com>, <srivatsab@vmware.com>,
+        <amakhalov@vmware.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v4 1/3] [v4.9.y] coredump: fix race condition between mmget_not_zero()/get_task_mm() and core dumping
+Date:   Tue, 25 Jun 2019 02:33:03 +0530
+Message-ID: <1561410186-3919-1-git-send-email-akaher@vmware.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: akaher@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Andrea Arcangeli <aarcange@redhat.com>
 
-If the trylock on the hmm->mirrors_sem fails the function will return
-without decrementing the notifiers that were previously incremented. Since
-the caller will not call invalidate_range_end() on EAGAIN this will result
-in notifiers becoming permanently incremented and deadlock.
+commit 04f5866e41fb70690e28397487d8bd8eea7d712a upstream.
 
-If the sync_cpu_device_pagetables() required blocking the function will
-not return EAGAIN even though the device continues to touch the
-pages. This is a violation of the mmu notifier contract.
+The core dumping code has always run without holding the mmap_sem for
+writing, despite that is the only way to ensure that the entire vma
+layout will not change from under it.  Only using some signal
+serialization on the processes belonging to the mm is not nearly enough.
+This was pointed out earlier.  For example in Hugh's post from Jul 2017:
 
-Switch, and rename, the ranges_lock to a spin lock so we can reliably
-obtain it without blocking during error unwind.
+  https://lkml.kernel.org/r/alpine.LSU.2.11.1707191716030.2055@eggly.anvils
 
-The error unwind is necessary since the notifiers count must be held
-incremented across the call to sync_cpu_device_pagetables() as we cannot
-allow the range to become marked valid by a parallel
-invalidate_start/end() pair while doing sync_cpu_device_pagetables().
+  "Not strictly relevant here, but a related note: I was very surprised
+   to discover, only quite recently, how handle_mm_fault() may be called
+   without down_read(mmap_sem) - when core dumping. That seems a
+   misguided optimization to me, which would also be nice to correct"
 
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Tested-by: Philip Yang <Philip.Yang@amd.com>
+In particular because the growsdown and growsup can move the
+vm_start/vm_end the various loops the core dump does around the vma will
+not be consistent if page faults can happen concurrently.
+
+Pretty much all users calling mmget_not_zero()/get_task_mm() and then
+taking the mmap_sem had the potential to introduce unexpected side
+effects in the core dumping code.
+
+Adding mmap_sem for writing around the ->core_dump invocation is a
+viable long term fix, but it requires removing all copy user and page
+faults and to replace them with get_dump_page() for all binary formats
+which is not suitable as a short term fix.
+
+For the time being this solution manually covers the places that can
+confuse the core dump either by altering the vma layout or the vma flags
+while it runs.  Once ->core_dump runs under mmap_sem for writing the
+function mmget_still_valid() can be dropped.
+
+Allowing mmap_sem protected sections to run in parallel with the
+coredump provides some minor parallelism advantage to the swapoff code
+(which seems to be safe enough by never mangling any vma field and can
+keep doing swapins in parallel to the core dumping) and to some other
+corner case.
+
+In order to facilitate the backporting I added "Fixes: 86039bd3b4e6"
+however the side effect of this same race condition in /proc/pid/mem
+should be reproducible since before 2.6.12-rc2 so I couldn't add any
+other "Fixes:" because there's no hash beyond the git genesis commit.
+
+Because find_extend_vma() is the only location outside of the process
+context that could modify the "mm" structures under mmap_sem for
+reading, by adding the mmget_still_valid() check to it, all other cases
+that take the mmap_sem for reading don't need the new check after
+mmget_not_zero()/get_task_mm().  The expand_stack() in page fault
+context also doesn't need the new check, because all tasks under core
+dumping are frozen.
+
+Link: http://lkml.kernel.org/r/20190325224949.11068-1-aarcange@redhat.com
+Fixes: 86039bd3b4e6 ("userfaultfd: add new syscall to provide memory externalization")
+Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+Reported-by: Jann Horn <jannh@google.com>
+Suggested-by: Oleg Nesterov <oleg@redhat.com>
+Acked-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Reviewed-by: Jann Horn <jannh@google.com>
+Acked-by: Jason Gunthorpe <jgg@mellanox.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[akaher@vmware.com: stable 4.9 backport
+ -  handle binder_update_page_range - mhocko@suse.com]
+Signed-off-by: Ajay Kaher <akaher@vmware.com>
 ---
- include/linux/hmm.h |  2 +-
- mm/hmm.c            | 72 +++++++++++++++++++++++++++------------------
- 2 files changed, 45 insertions(+), 29 deletions(-)
+ drivers/android/binder.c |  6 ++++++
+ fs/proc/task_mmu.c       | 18 ++++++++++++++++++
+ fs/userfaultfd.c         |  9 +++++++++
+ include/linux/mm.h       | 21 +++++++++++++++++++++
+ mm/mmap.c                |  6 +++++-
+ 5 files changed, 59 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-index bf013e96525771..0fa8ea34ccef6d 100644
---- a/include/linux/hmm.h
-+++ b/include/linux/hmm.h
-@@ -86,7 +86,7 @@
- struct hmm {
- 	struct mm_struct	*mm;
- 	struct kref		kref;
--	struct mutex		lock;
-+	spinlock_t		ranges_lock;
- 	struct list_head	ranges;
- 	struct list_head	mirrors;
- 	struct mmu_notifier	mmu_notifier;
-diff --git a/mm/hmm.c b/mm/hmm.c
-index b224ea635a7716..89549eac03d506 100644
---- a/mm/hmm.c
-+++ b/mm/hmm.c
-@@ -64,7 +64,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
- 	init_rwsem(&hmm->mirrors_sem);
- 	hmm->mmu_notifier.ops = NULL;
- 	INIT_LIST_HEAD(&hmm->ranges);
--	mutex_init(&hmm->lock);
-+	spin_lock_init(&hmm->ranges_lock);
- 	kref_init(&hmm->kref);
- 	hmm->notifiers = 0;
- 	hmm->mm = mm;
-@@ -144,6 +144,23 @@ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
- 	hmm_put(hmm);
- }
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index 80499f4..f05ab8f 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -581,6 +581,12 @@ static int binder_update_page_range(struct binder_proc *proc, int allocate,
  
-+static void notifiers_decrement(struct hmm *hmm)
-+{
-+	lockdep_assert_held(&hmm->ranges_lock);
-+
-+	hmm->notifiers--;
-+	if (!hmm->notifiers) {
-+		struct hmm_range *range;
-+
-+		list_for_each_entry(range, &hmm->ranges, list) {
-+			if (range->valid)
-+				continue;
-+			range->valid = true;
+ 	if (mm) {
+ 		down_write(&mm->mmap_sem);
++		if (!mmget_still_valid(mm)) {
++			if (allocate == 0)
++				goto free_range;
++			goto err_no_vma;
 +		}
-+		wake_up_all(&hmm->wq);
-+	}
++
+ 		vma = proc->vma;
+ 		if (vma && mm != proc->vma_vm_mm) {
+ 			pr_err("%d: vma mm and task mm mismatch\n",
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 5138e78..4b207b1 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1057,6 +1057,24 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
+ 					count = -EINTR;
+ 					goto out_mm;
+ 				}
++				/*
++				 * Avoid to modify vma->vm_flags
++				 * without locked ops while the
++				 * coredump reads the vm_flags.
++				 */
++				if (!mmget_still_valid(mm)) {
++					/*
++					 * Silently return "count"
++					 * like if get_task_mm()
++					 * failed. FIXME: should this
++					 * function have returned
++					 * -ESRCH if get_task_mm()
++					 * failed like if
++					 * get_proc_task() fails?
++					 */
++					up_write(&mm->mmap_sem);
++					goto out_mm;
++				}
+ 				for (vma = mm->mmap; vma; vma = vma->vm_next) {
+ 					vma->vm_flags &= ~VM_SOFTDIRTY;
+ 					vma_set_page_prot(vma);
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 784d667..8bf425a 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -479,6 +479,8 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
+ 	 * taking the mmap_sem for writing.
+ 	 */
+ 	down_write(&mm->mmap_sem);
++	if (!mmget_still_valid(mm))
++		goto skip_mm;
+ 	prev = NULL;
+ 	for (vma = mm->mmap; vma; vma = vma->vm_next) {
+ 		cond_resched();
+@@ -501,6 +503,7 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
+ 		vma->vm_flags = new_flags;
+ 		vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
+ 	}
++skip_mm:
+ 	up_write(&mm->mmap_sem);
+ 	mmput(mm);
+ wakeup:
+@@ -802,6 +805,9 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
+ 		goto out;
+ 
+ 	down_write(&mm->mmap_sem);
++	if (!mmget_still_valid(mm))
++		goto out_unlock;
++
+ 	vma = find_vma_prev(mm, start, &prev);
+ 	if (!vma)
+ 		goto out_unlock;
+@@ -947,6 +953,9 @@ static int userfaultfd_unregister(struct userfaultfd_ctx *ctx,
+ 		goto out;
+ 
+ 	down_write(&mm->mmap_sem);
++	if (!mmget_still_valid(mm))
++		goto out_unlock;
++
+ 	vma = find_vma_prev(mm, start, &prev);
+ 	if (!vma)
+ 		goto out_unlock;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index e3c8d40..c239984 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1189,6 +1189,27 @@ void zap_page_range(struct vm_area_struct *vma, unsigned long address,
+ void unmap_vmas(struct mmu_gather *tlb, struct vm_area_struct *start_vma,
+ 		unsigned long start, unsigned long end);
+ 
++/*
++ * This has to be called after a get_task_mm()/mmget_not_zero()
++ * followed by taking the mmap_sem for writing before modifying the
++ * vmas or anything the coredump pretends not to change from under it.
++ *
++ * NOTE: find_extend_vma() called from GUP context is the only place
++ * that can modify the "mm" (notably the vm_start/end) under mmap_sem
++ * for reading and outside the context of the process, so it is also
++ * the only case that holds the mmap_sem for reading that must call
++ * this function. Generally if the mmap_sem is hold for reading
++ * there's no need of this check after get_task_mm()/mmget_not_zero().
++ *
++ * This function can be obsoleted and the check can be removed, after
++ * the coredump code will hold the mmap_sem for writing before
++ * invoking the ->core_dump methods.
++ */
++static inline bool mmget_still_valid(struct mm_struct *mm)
++{
++	return likely(!mm->core_state);
 +}
 +
- static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 			const struct mmu_notifier_range *nrange)
- {
-@@ -151,6 +168,7 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 	struct hmm_mirror *mirror;
- 	struct hmm_update update;
- 	struct hmm_range *range;
-+	unsigned long flags;
- 	int ret = 0;
- 
- 	if (!kref_get_unless_zero(&hmm->kref))
-@@ -161,12 +179,7 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 	update.event = HMM_UPDATE_INVALIDATE;
- 	update.blockable = mmu_notifier_range_blockable(nrange);
- 
--	if (mmu_notifier_range_blockable(nrange))
--		mutex_lock(&hmm->lock);
--	else if (!mutex_trylock(&hmm->lock)) {
--		ret = -EAGAIN;
--		goto out;
--	}
-+	spin_lock_irqsave(&hmm->ranges_lock, flags);
- 	hmm->notifiers++;
- 	list_for_each_entry(range, &hmm->ranges, list) {
- 		if (update.end < range->start || update.start >= range->end)
-@@ -174,7 +187,7 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 
- 		range->valid = false;
- 	}
--	mutex_unlock(&hmm->lock);
-+	spin_unlock_irqrestore(&hmm->ranges_lock, flags);
- 
- 	if (mmu_notifier_range_blockable(nrange))
- 		down_read(&hmm->mirrors_sem);
-@@ -182,16 +195,26 @@ static int hmm_invalidate_range_start(struct mmu_notifier *mn,
- 		ret = -EAGAIN;
- 		goto out;
- 	}
-+
- 	list_for_each_entry(mirror, &hmm->mirrors, list) {
--		int ret;
-+		int rc;
- 
--		ret = mirror->ops->sync_cpu_device_pagetables(mirror, &update);
--		if (!update.blockable && ret == -EAGAIN)
-+		rc = mirror->ops->sync_cpu_device_pagetables(mirror, &update);
-+		if (rc) {
-+			if (WARN_ON(update.blockable || rc != -EAGAIN))
-+				continue;
-+			ret = -EAGAIN;
- 			break;
-+		}
- 	}
- 	up_read(&hmm->mirrors_sem);
- 
- out:
-+	if (ret) {
-+		spin_lock_irqsave(&hmm->ranges_lock, flags);
-+		notifiers_decrement(hmm);
-+		spin_unlock_irqrestore(&hmm->ranges_lock, flags);
-+	}
- 	hmm_put(hmm);
- 	return ret;
- }
-@@ -200,23 +223,14 @@ static void hmm_invalidate_range_end(struct mmu_notifier *mn,
- 			const struct mmu_notifier_range *nrange)
- {
- 	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
-+	unsigned long flags;
- 
- 	if (!kref_get_unless_zero(&hmm->kref))
- 		return;
- 
--	mutex_lock(&hmm->lock);
--	hmm->notifiers--;
--	if (!hmm->notifiers) {
--		struct hmm_range *range;
--
--		list_for_each_entry(range, &hmm->ranges, list) {
--			if (range->valid)
--				continue;
--			range->valid = true;
--		}
--		wake_up_all(&hmm->wq);
--	}
--	mutex_unlock(&hmm->lock);
-+	spin_lock_irqsave(&hmm->ranges_lock, flags);
-+	notifiers_decrement(hmm);
-+	spin_unlock_irqrestore(&hmm->ranges_lock, flags);
- 
- 	hmm_put(hmm);
- }
-@@ -868,6 +882,7 @@ int hmm_range_register(struct hmm_range *range,
- {
- 	unsigned long mask = ((1UL << page_shift) - 1UL);
- 	struct hmm *hmm = mirror->hmm;
-+	unsigned long flags;
- 
- 	range->valid = false;
- 	range->hmm = NULL;
-@@ -886,7 +901,7 @@ int hmm_range_register(struct hmm_range *range,
- 		return -EFAULT;
- 
- 	/* Initialize range to track CPU page table updates. */
--	mutex_lock(&hmm->lock);
-+	spin_lock_irqsave(&hmm->ranges_lock, flags);
- 
- 	range->hmm = hmm;
- 	kref_get(&hmm->kref);
-@@ -898,7 +913,7 @@ int hmm_range_register(struct hmm_range *range,
- 	 */
- 	if (!hmm->notifiers)
- 		range->valid = true;
--	mutex_unlock(&hmm->lock);
-+	spin_unlock_irqrestore(&hmm->ranges_lock, flags);
- 
- 	return 0;
- }
-@@ -914,10 +929,11 @@ EXPORT_SYMBOL(hmm_range_register);
- void hmm_range_unregister(struct hmm_range *range)
- {
- 	struct hmm *hmm = range->hmm;
-+	unsigned long flags;
- 
--	mutex_lock(&hmm->lock);
-+	spin_lock_irqsave(&hmm->ranges_lock, flags);
- 	list_del_init(&range->list);
--	mutex_unlock(&hmm->lock);
-+	spin_unlock_irqrestore(&hmm->ranges_lock, flags);
- 
- 	/* Drop reference taken by hmm_range_register() */
- 	mmput(hmm->mm);
+ /**
+  * mm_walk - callbacks for walk_page_range
+  * @pmd_entry: if set, called for each non-empty PMD (3rd-level) entry
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 3f2314a..19368fb 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2448,7 +2448,8 @@ find_extend_vma(struct mm_struct *mm, unsigned long addr)
+ 	vma = find_vma_prev(mm, addr, &prev);
+ 	if (vma && (vma->vm_start <= addr))
+ 		return vma;
+-	if (!prev || expand_stack(prev, addr))
++	/* don't alter vm_end if the coredump is running */
++	if (!prev || !mmget_still_valid(mm) || expand_stack(prev, addr))
+ 		return NULL;
+ 	if (prev->vm_flags & VM_LOCKED)
+ 		populate_vma_page_range(prev, addr, prev->vm_end, NULL);
+@@ -2474,6 +2475,9 @@ find_extend_vma(struct mm_struct *mm, unsigned long addr)
+ 		return vma;
+ 	if (!(vma->vm_flags & VM_GROWSDOWN))
+ 		return NULL;
++	/* don't alter vm_start if the coredump is running */
++	if (!mmget_still_valid(mm))
++		return NULL;
+ 	start = vma->vm_start;
+ 	if (expand_stack(vma, addr))
+ 		return NULL;
 -- 
-2.22.0
+2.7.4
 
