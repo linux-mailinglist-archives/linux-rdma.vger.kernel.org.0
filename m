@@ -2,164 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0EC50C23
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 15:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF7B50C41
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 15:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731178AbfFXNkr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 09:40:47 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:48962 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726628AbfFXNkr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 09:40:47 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5ODd6aD182875;
-        Mon, 24 Jun 2019 13:40:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=K7gxshFfPe2+xR4//0ULdZekh1PFmPKPu4U8BpZy7mA=;
- b=yuYGx49Tzx/Jtm8s465BBJcEzBNkqNtBd40c78YE4O31ukp5rIf6N3L0m7FAbk+8MgPQ
- WvgNwQcn0V4gi4lLtQrtbL7AIwyIO0PrYTKdZqShSwo5whlCbi0D5qAc/eh0suGBqg/o
- Yuq7w2L87U02b5a+an6qjUBM0igjU/4LM+6EusScHP7CJzmAQv16DB/6UfBUG6v0VaC1
- zZWurWYMiGIS3rKEtnmwk8/DC2U2y111cu191sk4cxpl/cANWtzYoFXCrmaVJh3O66w5
- qaszDMICh2vnb31LM7job2wVJaHpg+/AczkvNY0SzjFkJdTZO/LfNNUAXuKoFRNFGCwC gQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2t9cyq6e2d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Jun 2019 13:40:19 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5ODdnAB027610;
-        Mon, 24 Jun 2019 13:40:19 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2t99f39d48-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Jun 2019 13:40:19 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5ODeH4k007088;
-        Mon, 24 Jun 2019 13:40:17 GMT
-Received: from [10.172.157.165] (/10.172.157.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Jun 2019 06:40:17 -0700
-Subject: Re: [PATCH] RDMA/core: Fix race when resolving IP address
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Parav Pandit <parav@mellanox.com>
-References: <1561126156-10162-1-git-send-email-dag.moxnes@oracle.com>
- <20190621145604.GS19891@ziepe.ca>
-From:   Dag Moxnes <dag.moxnes@oracle.com>
-Message-ID: <e9b4abe6-0acb-c169-fbac-4e62d2ad2808@oracle.com>
-Date:   Mon, 24 Jun 2019 15:40:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726773AbfFXNqq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 09:46:46 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:39500 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729608AbfFXNqq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 09:46:46 -0400
+Received: by mail-wm1-f66.google.com with SMTP id z23so13457301wma.4
+        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 06:46:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fHFQYC4IHk3DGA5SJeJSRcnBstbORPkvgUXGBQflcbU=;
+        b=dy6wSAbb5K7xDqB+qIUCmnIAgBnIXnelPM2aUTAgaGv7Z/NwA+zSpgAUfMS9EKnB/+
+         +jj7JCp465Y0rsmu4RcnTqmWLrwgYq05636vIGBfDYDKB9piVBgk3sYP3vO8O80X5Ppi
+         gXr/EmPgtc+YIs7rxsHSu+tsA2DF8jL90FXxaqGLvXS7oLANJUDvhJHNsVoOv99U4/mU
+         sWnSluDSDrpB/EEW9PGatqncUzFY2NrOlsDe7sfTqvDPc8e8tDQ6fx1eZaoms2T8YD7x
+         GUnijP4PW6FidRXywDiiWKdcmqDowPtjb7eRZz0QEhOw0Zj/S4RIfCuqo0pSkTI13xYP
+         kC3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fHFQYC4IHk3DGA5SJeJSRcnBstbORPkvgUXGBQflcbU=;
+        b=Oevg0Sycu9A2ftXnooKYsA3gAJGBhyFqiDpazbPkAZFd0CPda1BGEP55LSk8fuEAdB
+         KiVaAMJPu6743g9iDC/6L3rRjlhJhVcu0QNWvo8XbhpYaCOPcNsWI1TD1gSTVw2Px+Gh
+         z0LtLC04s8C1D4E8AMFS9Vy5Y8kQ4KNbQW13skLd0y3xCqEGGIcFRC1hRTmtAuiT13GQ
+         3UPQabO4mSCofWHydNkf4fQW5Spa175gNYmEUXn4SsatgTF77OzO4rIpPfzCSq6fnEae
+         3xNSVayVR7u6Oip5PRv5KAGGUcdalJMh2+1JOBRwgRE5ShH5wQn0DtvUBXU+NIUBsJP1
+         agEA==
+X-Gm-Message-State: APjAAAV2xlyiB4TQEZN1Up+CaA1nkotVvucTZvgYUzQSGGsJ2kDD0gMd
+        JXWCQGnlxEhSUD8tFMyh/XejcQ==
+X-Google-Smtp-Source: APXvYqxH/orChM1UzN6yhkjM24At3V8ziMHSnQNkMtcNe8WEW+S3OTMlvLt8dP4L6baO7ZUaKVoRkg==
+X-Received: by 2002:a1c:618a:: with SMTP id v132mr15948959wmb.17.1561384003630;
+        Mon, 24 Jun 2019 06:46:43 -0700 (PDT)
+Received: from ziepe.ca ([66.187.232.66])
+        by smtp.gmail.com with ESMTPSA id y2sm9626575wrl.4.2019.06.24.06.46.42
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 24 Jun 2019 06:46:42 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hfPIv-0002E2-9A; Mon, 24 Jun 2019 10:46:41 -0300
+Date:   Mon, 24 Jun 2019 10:46:41 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Stephen Bates <sbates@raithlin.com>
+Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
+Message-ID: <20190624134641.GA8268@ziepe.ca>
+References: <20190620161240.22738-1-logang@deltatee.com>
+ <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
+ <20190620193353.GF19891@ziepe.ca>
+ <20190624073126.GB3954@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20190621145604.GS19891@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9297 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906240112
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9297 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906240112
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190624073126.GB3954@lst.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason,
+On Mon, Jun 24, 2019 at 09:31:26AM +0200, Christoph Hellwig wrote:
+> On Thu, Jun 20, 2019 at 04:33:53PM -0300, Jason Gunthorpe wrote:
+> > > My primary concern with this is that ascribes a level of generality
+> > > that just isn't there for peer-to-peer dma operations. "Peer"
+> > > addresses are not "DMA" addresses, and the rules about what can and
+> > > can't do peer-DMA are not generically known to the block layer.
+> > 
+> > ?? The P2P infrastructure produces a DMA bus address for the
+> > initiating device that is is absolutely a DMA address. There is some
+> > intermediate CPU centric representation, but after mapping it is the
+> > same as any other DMA bus address.
+> > 
+> > The map function can tell if the device pair combination can do p2p or
+> > not.
+> 
+> At the PCIe level there is no such thing as a DMA address, it all
+> is bus address with MMIO and DMA in the same address space (without
+> that P2P would have not chance of actually working obviously).  But
+> that bus address space is different per "bus" (which would be an
+> root port in PCIe), and we need to be careful about that.
 
+Sure, that is how dma_addr_t is supposed to work - it is always a
+device specific value that can be used only by the device that it was
+created for, and different devices could have different dma_addr_t
+values for the same memory. 
 
-Thanks for the review.
+So when Logan goes and puts dma_addr_t into the block stack he must
+also invert things so that the DMA map happens at the start of the
+process to create the right dma_addr_t early.
 
+I'm not totally clear if this series did that inversion, if it didn't
+then it should not be using the dma_addr_t label at all, or refering
+to anything as a 'dma address' as it is just confusing.
 
-On 6/21/19 4:56 PM, Jason Gunthorpe wrote:
-> On Fri, Jun 21, 2019 at 04:09:16PM +0200, Dag Moxnes wrote:
->> Use neighbour lock when copying MAC address from neighbour data struct
->> in dst_fetch_ha.
->>
->> When not using the lock, it is possible for the function to race with
->> neigh_update, causing it to copy an invalid MAC address.
->>
->> It is possible to provoke this error by calling rdma_resolve_addr in a
->> tight loop, while deleting the corresponding ARP entry in another tight
->> loop.
->>
->> Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
->> Change-Id: I3c5f982b304457f0a83ea7def2fac70315ed38b4
->>   drivers/infiniband/core/addr.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
->> index 2f7d141598..e4945fd1bb 100644
->> +++ b/drivers/infiniband/core/addr.c
->> @@ -333,12 +333,16 @@ static int dst_fetch_ha(const struct dst_entry *dst,
->>   	if (!n)
->>   		return -ENODATA;
->>   
->> +	read_lock_bh(&n->lock)
-Miising semicolon at end of statement. Sorry about that.
->>   	if (!(n->nud_state & NUD_VALID)) {
->> -		neigh_event_send(n, NULL);
->>   		ret = -ENODATA;
->>   	} else {
->>   		memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
->>   	}
->> +	read_unlock_bh(&n->lock);
->> +
->> +	if (ret)
->> +		neigh_event_send(n, NULL);
->>   
->>   	neigh_release(n);
-> Can we write this with less spaghetti please, maybe:
->
-> static int dst_fetch_ha(const struct dst_entry *dst,
-> 			struct rdma_dev_addr *dev_addr,
-> 			const void *daddr)
-> {
-> 	struct neighbour *n;
-> 	int ret = 0;
->
-> 	n = dst_neigh_lookup(dst, daddr);
-> 	if (!n)
-> 		return -ENODATA;
->
-> 	read_lock_bh(&n->lock);
-> 	if (!(n->nud_state & NUD_VALID)) {
-> 		read_unlock_bh(&n->lock);
-> 		goto out_send;
-> 	}
-> 	memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
-> 	read_unlock_bh(&n->lock);
->
-> 	goto out_release;
->
-> out_send:
-> 	neigh_event_send(n, NULL);
-> 	ret = -ENODATA;
-> out_release:
-> 	neigh_release(n);
->
-> 	return ret;
-> }
+BTW, it is not just offset right? It is possible that the IOMMU can
+generate unique dma_addr_t values for each device?? Simple offset is
+just something we saw in certain embedded cases, IIRC.
 
-Personally I find it more readable when the unlock is done in one place,
-
-but sure, I can rewrite it the way you suggest if the reviewers agree that
-
-that way is preferable.
-
-Regards,
-
--Dag
-
-
-> Also, Parav should look at it.
->
-> Thanks,
-> Jason
+Jason
