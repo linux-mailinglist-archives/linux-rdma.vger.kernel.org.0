@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE9D51CAC
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9407651CAB
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbfFXVCG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 17:02:06 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:34365 "EHLO
+        id S1727775AbfFXVCF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 17:02:05 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:40749 "EHLO
         mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727510AbfFXVCF (ORCPT
+        with ESMTP id S1727172AbfFXVCF (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 17:02:05 -0400
-Received: by mail-wr1-f67.google.com with SMTP id k11so15401683wrl.1
+Received: by mail-wr1-f67.google.com with SMTP id p11so15361767wre.7
         for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 14:02:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2HyibpLykYkiKTwGwDVDE6Jz0uAzR58LFXlNi/YRy3U=;
-        b=o/tFvhN275Le/5WQ2vu2fc7dpnfllCtch7SunXoc0gfrceioMrV84vJNXj3fcaoXjc
-         qKdfy6+FErMOpWLLywUqcU/CCvqkzz60BPZVTd/0tIIXWv44kB8+wkXkIP3fIfmQuRfU
-         VCtdLewh0B23U6TTG5KtYq7rxUdtI/n6yUmErMCpp/rXPr3h474Gd7GbjYQ+iiDYdpy1
-         7shV4eVpmV49XoNejllG2+McGSuy2k7ZkrwJwBNEK6NQF3+JDLsqVqku3k4UUdsaGuab
-         CgCCYDDWmuYZ06PXgv5ghP0Ro725vIEY+j0ePamWI4Lrm/GuhZ/Rebt3wxbycRP+uaHI
-         i7Cw==
+        bh=rs1sEkzygtR6lbRJ0eUbAFkZlHYnT1CPNgA7awG9NQc=;
+        b=f0F8mUp38+BSw/O1WjANVXVVMw8zhFZORjdRX1RtgtwdBgUWBtS4DuFgknhtRckqjJ
+         fDPYac3PHVynkBRdhou+SH6UptVQIxVUIQifavRFZYv+BeWfES7diE3vVczt6RfpUEOL
+         HKyKRdDLLYkWyPF33zlBvSCxa/KBn2/+Y2Sy1hmyEQzxoSkWZdP4GxRWfGqLBUquGL9C
+         Ly8tJeOzyL9mpaDnKGNVFtycDXcnewWGVJEzIZFjBXuryCCVlKkVubMEGUB9qDKesfui
+         S5zt2wnmoNX0dsm2two3hmXge0XbsLY2LY0GsVP/TYD0CD+hqf8x5J0pMRR0Lz+jvG54
+         bukQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2HyibpLykYkiKTwGwDVDE6Jz0uAzR58LFXlNi/YRy3U=;
-        b=TtjBwmt1jGNn+81oyPy0cYvUTqzerABuyBOutKfoU5PQDovtC1PlbEqQTWhmnd/HOP
-         nHRyQsVBt4r4yMJy/ZJTkgA+LfwgZ3mse50ijcYNvPJybGeiiXi0emOWgxoUYPgXEmsN
-         XgP1mnQ5lZZjjiKNjcvXbAHf3QL6zpvPgED46H04SbsmSVM1WL4RZzkV6T2e7JmMebZc
-         wPGDn2OorShPSW3mKnIYon2cShf1h7w8Djy3BCtR/C/PfEB/F59/8l3Fg9KGo+25gyVC
-         J3ozi91NMS9SP30k6XRloG+AerBB3fbq8n2JO2Z7C22Wore5QdfrzSnaiLEe3+k/BbAd
-         cTPg==
-X-Gm-Message-State: APjAAAXXLZ8siprYdAashlpFAP+EW8xLgean1LnpW/m0ckuBUx3v4U9J
-        NcX7iIyI/Y7KSMetY9rSbG9YAg==
-X-Google-Smtp-Source: APXvYqxbykTnskxCEk6vJXnhGhJhL+Hc/YVg3s4yNHZO6Rq1Ef69wTB8s8QzzXVmzALZYfvIEAb5sA==
-X-Received: by 2002:adf:fa4c:: with SMTP id y12mr96903628wrr.282.1561410123670;
+        bh=rs1sEkzygtR6lbRJ0eUbAFkZlHYnT1CPNgA7awG9NQc=;
+        b=CGYkD8Ax6VhsPc7R9d9HbSPBdUg4kmNzf2NR1D8md1cYSBov1JwRfS0Wd0RWtJwz1A
+         6ZHfkag/zXHw50CstxHGgoY3WwkhiiBeHRYzWtBI1XItpF+Qbji0/cj+MSy1kAveaeK/
+         eKL5t38y/QhF91TEVBVL2RbNgQBdu0/kypsRP07hZiAO1+VZVLtlTQShDO+Wvv+2GSr9
+         3iPAjPhF4s+75vKkfPhz+tgmNKLShJBjjU9KxaftIBSRzgAne7QXCbcADq23bPClzIHn
+         5YrFFGg+8Zn67yqUQwfNIL5nRBXfkaMpBrfIMXSF5OsyYYMMPdJfD6WWSaIP4xnLM1cS
+         MQkg==
+X-Gm-Message-State: APjAAAUGkXIltfuBdGWrhsM+/ivQeJeizBTFxTzRKBITUmgiawhXQfe1
+        dmQgZm2SjXtX//uR1uMjYWZ8og==
+X-Google-Smtp-Source: APXvYqxoDaUcVHfte6JF2hIkD4U/Q2PNoEzAwuS3zYv3vRjkVzwDyM9fIRPi2AhLNMqFWzhsn/OFnQ==
+X-Received: by 2002:a5d:5446:: with SMTP id w6mr102260622wrv.164.1561410123399;
         Mon, 24 Jun 2019 14:02:03 -0700 (PDT)
 Received: from ziepe.ca ([66.187.232.66])
-        by smtp.gmail.com with ESMTPSA id x11sm469693wmg.23.2019.06.24.14.02.02
+        by smtp.gmail.com with ESMTPSA id h14sm11086221wrs.66.2019.06.24.14.02.02
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Mon, 24 Jun 2019 14:02:02 -0700 (PDT)
 Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hfW6D-0001Mb-0S; Mon, 24 Jun 2019 18:02:01 -0300
+        id 1hfW6D-0001Mp-1k; Mon, 24 Jun 2019 18:02:01 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
@@ -58,11 +58,10 @@ Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Christoph Hellwig <hch@lst.de>,
         Philip Yang <Philip.Yang@amd.com>,
         Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH v4 hmm 08/12] mm/hmm: Use lockdep instead of comments
-Date:   Mon, 24 Jun 2019 18:01:06 -0300
-Message-Id: <20190624210110.5098-9-jgg@ziepe.ca>
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH v4 hmm 09/12] mm/hmm: Remove racy protection against double-unregistration
+Date:   Mon, 24 Jun 2019 18:01:07 -0300
+Message-Id: <20190624210110.5098-10-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190624210110.5098-1-jgg@ziepe.ca>
 References: <20190624210110.5098-1-jgg@ziepe.ca>
@@ -76,40 +75,49 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-So we can check locking at runtime.
+No other register/unregister kernel API attempts to provide this kind of
+protection as it is inherently racy, so just drop it.
+
+Callers should provide their own protection, and it appears nouveau
+already does.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
 Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
-Acked-by: Souptick Joarder <jrdr.linux@gmail.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Tested-by: Philip Yang <Philip.Yang@amd.com>
 ---
-v2
-- Fix missing & in lockdeps (Jason)
+v3
+- Drop poison, looks like there are no new patches that will use this
+  wrong (Christoph)
 ---
- mm/hmm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/hmm.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
 diff --git a/mm/hmm.c b/mm/hmm.c
-index 1eddda45cefae7..6f5dc6d568feb1 100644
+index 6f5dc6d568feb1..2ef14b2b5505f6 100644
 --- a/mm/hmm.c
 +++ b/mm/hmm.c
-@@ -246,11 +246,11 @@ static const struct mmu_notifier_ops hmm_mmu_notifier_ops = {
-  *
-  * To start mirroring a process address space, the device driver must register
-  * an HMM mirror struct.
-- *
-- * THE mm->mmap_sem MUST BE HELD IN WRITE MODE !
+@@ -276,17 +276,11 @@ EXPORT_SYMBOL(hmm_mirror_register);
   */
- int hmm_mirror_register(struct hmm_mirror *mirror, struct mm_struct *mm)
+ void hmm_mirror_unregister(struct hmm_mirror *mirror)
  {
-+	lockdep_assert_held_exclusive(&mm->mmap_sem);
-+
- 	/* Sanity check */
- 	if (!mm || !mirror || !mirror->ops)
- 		return -EINVAL;
+-	struct hmm *hmm = READ_ONCE(mirror->hmm);
+-
+-	if (hmm == NULL)
+-		return;
++	struct hmm *hmm = mirror->hmm;
+ 
+ 	down_write(&hmm->mirrors_sem);
+ 	list_del_init(&mirror->list);
+-	/* To protect us against double unregister ... */
+-	mirror->hmm = NULL;
+ 	up_write(&hmm->mirrors_sem);
+-
+ 	hmm_put(hmm);
+ }
+ EXPORT_SYMBOL(hmm_mirror_unregister);
 -- 
 2.22.0
 
