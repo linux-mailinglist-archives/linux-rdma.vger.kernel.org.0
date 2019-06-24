@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C80051CB2
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0432651D24
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727172AbfFXVCI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 17:02:08 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:46236 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728119AbfFXVCI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 17:02:08 -0400
-Received: by mail-wr1-f67.google.com with SMTP id n4so15321826wrw.13
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 14:02:07 -0700 (PDT)
+        id S1727709AbfFXVdI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 17:33:08 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:56117 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727520AbfFXVdI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 17:33:08 -0400
+Received: by mail-wm1-f66.google.com with SMTP id a15so720762wmj.5
+        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 14:33:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Xvvvfm/iICt6EAx3A7hygYXF1jRJFUeMrawdTwOi4ns=;
-        b=oRmOk0Zjj6i+pMHvCNnVsb1wjfONs2JBTQnEE3rglcDcUQoG84gXWTDhq9ll76MAqu
-         NbvHm5LXP2Mk44izNVB3slQr8uyWefSSkQB31EfSp+uwq/HLZh/BdNDnY90d603FucOz
-         AC8Ce8Oh4o0dEDF5pq+h9XhIOGQHW9OrQOCgPMR6XEU0ePQEDlF6JmUB9j6v51IImlni
-         0CRtVjdLLAq8G7uZWcwboxDMUZIuPWUPunZLZVkEDI1o2Eb0mtkYKg08tRTwS/QFWzk2
-         3v3z9wVq/LNXCzMnbVfsewXyPw+o1BeCYz8bMIx9Jd6EvXRVTZY/u0AkUUg08yGiPfXO
-         xJgA==
+        bh=LXLRo2PPKRMD0FsdNO4kvH6cJWSg4ysuh5L5UkxtS4c=;
+        b=gMJNqHRIngzsRcDJSRqNGhhAFj5qszbwfHp7sWjkREH0cC5Wg+51IUv6Ztnp6y1sQJ
+         4s8sZl4zFkpY3KIjUkN7OCuNT+5pVhM4Z9P2VYMGh6zz+dgJPGQTFMmyTF8pYefOKxHb
+         RQC3U3vsTjMnbDULYbk6PEP2Dr94o6uyCpK8jOxwldZdOsr7VxS3+nUpYxsCXash5XQk
+         7PaTVmaPpwPfDGC4tTkJn+amRntW1ha7ej9YjFLte5PbAElDu2HZyg7aDGR1mtYjhEC4
+         a5es/TsjfPiC+icZkrWdCKcFqlYMm30vlAIazLUZsF/W2Ct6q9aWO4iYeVJJJbe9l0jw
+         3AYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Xvvvfm/iICt6EAx3A7hygYXF1jRJFUeMrawdTwOi4ns=;
-        b=GtHg9L2S4TwsGCOzAoj3+tIp6JFNtWZ4u76NTl3nStMXuK6yOjkhhHOHdi0pKqGnad
-         HjU+yCF0pkz4lqmtjLbhArRDmG1xto2F41LtKVfu3tnU7LB7vyfXhum8H0BDCS3QnNtJ
-         ZIj6UueNXdsZlJ2n9e9QwoNr4di5Fe9ld6M117yS26W89dnZwgqwXVuErOyR/s2E8xa4
-         XQzYIk0uXEW1f1OBHlCNB7kk1CUqRIDzSpWnIfU5bumWucMt4Yxi9nLJ4YOFfsz9tgQj
-         Oc0nZyEDb1M7bAiMrEt6A4AzbrjzcTfiGatU6fsAV6cEjFX4K0sIKoiYcIjBfvb2dvP0
-         p7hg==
-X-Gm-Message-State: APjAAAWx4Y5hF5zmhGst8ZVA6DtR1pJXjBO163N7nNARPwPiCJNL5rga
-        JCs4rSOA1qm3fgIPC2KQ1+xULA==
-X-Google-Smtp-Source: APXvYqxEB08pD22xw7z431fz4zoGHVSBNwMRdaiB40BUYEvmuPcR/sYQyqDcLZPR3XganfuFLHNJMQ==
-X-Received: by 2002:a5d:5283:: with SMTP id c3mr28666603wrv.268.1561410126403;
-        Mon, 24 Jun 2019 14:02:06 -0700 (PDT)
+        bh=LXLRo2PPKRMD0FsdNO4kvH6cJWSg4ysuh5L5UkxtS4c=;
+        b=JBpxu3F1nm00RTSAeKQ+zS4taXTqFllKKl38Ci/L6x5+GfK1w+0b5+9aKF+lKk1p/m
+         1FukcNXVU4yWfDOWLVOIVon08PvYTnVY9XdFd4/lcmhnxF9sMQcTU8TPwnx6v5Bz690n
+         ItsQ3PlpvPYsev2PuB/+Zw76Q/WKRHfPWSnRLBxkNSw9QW95d0jFZSG6UkbD4fcfQwGz
+         V01bO4ZlGBW+zwV4d/80dXcE0UZkE/CQffSjUFQn5tvpuSfQlQm7VtCjGKimXwYwksHt
+         ps66jB2kG71GcEx9sPtQGxJRKk6rdbAuV8gZu0zxZuHCofVBxVi4m+KIOza1jtQIaQiw
+         4QTQ==
+X-Gm-Message-State: APjAAAW9N3Qduq0eJ/vNg106WF00NE+Dv0mww3Rczn2icRM8+KxcZ/Pd
+        jlzdV+2Fw/ck3T25m5GKnSqhyQ==
+X-Google-Smtp-Source: APXvYqxpgSLdOjxG4AEMzxa4goOMrAbz+ND9ASIrtQwBg7DrjmWk1TBdaulquFyqhwOqbOtHtgBWrg==
+X-Received: by 2002:a1c:407:: with SMTP id 7mr18250094wme.113.1561411985569;
+        Mon, 24 Jun 2019 14:33:05 -0700 (PDT)
 Received: from ziepe.ca ([66.187.232.66])
-        by smtp.gmail.com with ESMTPSA id j7sm16820277wru.54.2019.06.24.14.02.02
+        by smtp.gmail.com with ESMTPSA id r4sm18908060wra.96.2019.06.24.14.33.04
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 24 Jun 2019 14:02:02 -0700 (PDT)
+        Mon, 24 Jun 2019 14:33:04 -0700 (PDT)
 Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hfW6C-0001MM-Sw; Mon, 24 Jun 2019 18:02:00 -0300
+        id 1hfW6C-0001MR-U4; Mon, 24 Jun 2019 18:02:00 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
@@ -58,14 +58,17 @@ Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Christoph Hellwig <hch@lst.de>,
         Philip Yang <Philip.Yang@amd.com>,
         Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v4 hmm 05/12] mm/hmm: Remove duplicate condition test before wait_event_timeout
-Date:   Mon, 24 Jun 2019 18:01:03 -0300
-Message-Id: <20190624210110.5098-6-jgg@ziepe.ca>
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Ira Weiny <iweiny@intel.com>
+Subject: [PATCH v4 hmm 06/12] mm/hmm: Do not use list*_rcu() for hmm->ranges
+Date:   Mon, 24 Jun 2019 18:01:04 -0300
+Message-Id: <20190624210110.5098-7-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190624210110.5098-1-jgg@ziepe.ca>
 References: <20190624210110.5098-1-jgg@ziepe.ca>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
@@ -74,58 +77,43 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-The wait_event_timeout macro already tests the condition as its first
-action, so there is no reason to open code another version of this, all
-that does is skip the might_sleep() debugging in common cases, which is
-not helpful.
-
-Further, based on prior patches, we can now simplify the required condition
-test:
- - If range is valid memory then so is range->hmm
- - If hmm_release() has run then range->valid is set to false
-   at the same time as dead, so no reason to check both.
- - A valid hmm has a valid hmm->mm.
-
-Allowing the return value of wait_event_timeout() (along with its internal
-barriers) to compute the result of the function.
+This list is always read and written while holding hmm->lock so there is
+no need for the confusing _rcu annotations.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
 Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Acked-by: Souptick Joarder <jrdr.linux@gmail.com>
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+Reviewed-by: Ira Weiny <iweiny@intel.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Tested-by: Philip Yang <Philip.Yang@amd.com>
 ---
-v3
-- Simplify the wait_event_timeout to not check valid
----
- include/linux/hmm.h | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ mm/hmm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-index 1d97b6d62c5bcf..26e7c477490c4e 100644
---- a/include/linux/hmm.h
-+++ b/include/linux/hmm.h
-@@ -209,17 +209,8 @@ static inline unsigned long hmm_range_page_size(const struct hmm_range *range)
- static inline bool hmm_range_wait_until_valid(struct hmm_range *range,
- 					      unsigned long timeout)
- {
--	/* Check if mm is dead ? */
--	if (range->hmm == NULL || range->hmm->dead || range->hmm->mm == NULL) {
--		range->valid = false;
--		return false;
--	}
--	if (range->valid)
--		return true;
--	wait_event_timeout(range->hmm->wq, range->valid || range->hmm->dead,
--			   msecs_to_jiffies(timeout));
--	/* Return current valid status just in case we get lucky */
--	return range->valid;
-+	return wait_event_timeout(range->hmm->wq, range->valid,
-+				  msecs_to_jiffies(timeout)) != 0;
- }
+diff --git a/mm/hmm.c b/mm/hmm.c
+index 0423f4ca3a7e09..73c8af4827fe87 100644
+--- a/mm/hmm.c
++++ b/mm/hmm.c
+@@ -912,7 +912,7 @@ int hmm_range_register(struct hmm_range *range,
  
- /*
+ 	range->hmm = hmm;
+ 	kref_get(&hmm->kref);
+-	list_add_rcu(&range->list, &hmm->ranges);
++	list_add(&range->list, &hmm->ranges);
+ 
+ 	/*
+ 	 * If there are any concurrent notifiers we have to wait for them for
+@@ -942,7 +942,7 @@ void hmm_range_unregister(struct hmm_range *range)
+ 		return;
+ 
+ 	mutex_lock(&hmm->lock);
+-	list_del_rcu(&range->list);
++	list_del(&range->list);
+ 	mutex_unlock(&hmm->lock);
+ 
+ 	/* Drop reference taken by hmm_range_register() */
 -- 
 2.22.0
 
