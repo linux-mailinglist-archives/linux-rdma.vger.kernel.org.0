@@ -2,116 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6461C51938
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 19:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6315519B8
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 19:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728271AbfFXRDP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 13:03:15 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:54421 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727839AbfFXRDN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 13:03:13 -0400
-Received: by mail-wm1-f66.google.com with SMTP id g135so87213wme.4
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 10:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0C2e1A1aXVp8J6zVjc9tXUTAJcFU7AL/DG7qB6u941o=;
-        b=NdwV/mIfMiC13hnlsDmxa3A9e4BdR437jykUHpAvUwNktsFbmfg2+mXgojOeXxqm/K
-         SacJQ1s+zF5+YWj454NaavpJ0iZaNabohE5OL5vxIbBOzTDcJIY7ckRygH01nIjSGrUC
-         nmCdaQmZCb+sTys3K4KQvBxKxTCNzEBbgAL6jmafbSEhih5cKFgN3V+pkm23gh5aTM/z
-         v0j/X/FiED/3hpY8DfJZXnDTGNUai07Zi+ZSRmK+jV2ny8w65MmqKMDVpU0NajgJ7Oti
-         BY8MI6QHKFaybP7BJ2qdpODNBlgUbB22612CwdwRALyj8kE8rkqKMj08QM6WMlFwpjPB
-         gFlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0C2e1A1aXVp8J6zVjc9tXUTAJcFU7AL/DG7qB6u941o=;
-        b=TYSZrGTbCuCcLOEIN8r2yojapr/J/1ybt8YTPJ92By+WFFKuMlWhX9uXg4ezvC7HgR
-         zhWLA6LhpQINoQjTCtdhd2PBBxt0ZD9kL99fWjpzMmgAZUNJcipUyyv7BWmZWEbT53jm
-         XbZBZXwb1tEXvBY5Nw+m6fAFsEHum2yOQ/aH7lDPh/Sjf60iCZMsE+v9iYTz/5yRuEcq
-         Zlv6aGSLscnz8VuxeOsfL4+wXJD7Z5QFx8cnoJCHfdeqdZK+O14qxreGlg/BQhq8amKK
-         i6+areYQWgAuKEmvXGpJmvmx8oIwGPqcwztq+KhHraL13i7wFPP23s0nMpppB1HeTkMR
-         Tzqw==
-X-Gm-Message-State: APjAAAXayvHjGGkxMcUv+VmLWnSBObK9b1ER0cXqU29qjAx8pRpst45x
-        ZT2qM1Cu50imIR4C9ZF5dQ6XwQ==
-X-Google-Smtp-Source: APXvYqx8hs9mDTHsoZYA0LY5tJx47I7TbUNJ6KTA5eE2Gt3MkpvlCrIShJDJjtUw+KyXch/6+BXcoA==
-X-Received: by 2002:a7b:c398:: with SMTP id s24mr12061681wmj.53.1561395791429;
-        Mon, 24 Jun 2019 10:03:11 -0700 (PDT)
-Received: from [10.8.2.125] ([193.47.165.251])
-        by smtp.googlemail.com with ESMTPSA id r4sm9774901wrv.34.2019.06.24.10.03.08
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 24 Jun 2019 10:03:11 -0700 (PDT)
-Subject: Re: [PATCH rdma-next v1 12/12] IB/mlx5: Add DEVX support for CQ
- events
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        id S1731656AbfFXRiO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 13:38:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:55710 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728762AbfFXRiN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Jun 2019 13:38:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 25282C0A;
+        Mon, 24 Jun 2019 10:38:13 -0700 (PDT)
+Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7895D3F718;
+        Mon, 24 Jun 2019 10:38:08 -0700 (PDT)
+Date:   Mon, 24 Jun 2019 18:38:06 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
         Yishai Hadas <yishaih@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-References: <20190618171540.11729-1-leon@kernel.org>
- <20190618171540.11729-13-leon@kernel.org>
- <20190624120416.GE5479@mellanox.com>
-From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
-Message-ID: <a076a050-871b-c468-f62e-95bb4f0ac2c2@dev.mellanox.co.il>
-Date:   Mon, 24 Jun 2019 20:03:07 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Subject: Re: [PATCH v18 15/15] selftests, arm64: add a selftest for passing
+ tagged pointers to kernel
+Message-ID: <20190624173805.GK29120@arrakis.emea.arm.com>
+References: <cover.1561386715.git.andreyknvl@google.com>
+ <0999c80cd639b78ae27c0674069d552833227564.1561386715.git.andreyknvl@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20190624120416.GE5479@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0999c80cd639b78ae27c0674069d552833227564.1561386715.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/24/2019 3:04 PM, Jason Gunthorpe wrote:
-> On Tue, Jun 18, 2019 at 08:15:40PM +0300, Leon Romanovsky wrote:
->> From: Yishai Hadas <yishaih@mellanox.com>
->>
->> Add DEVX support for CQ events by creating and destroying the CQ via
->> mlx5_core and set an handler to manage its completions.
->>
->> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
->> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->>   drivers/infiniband/hw/mlx5/devx.c | 40 +++++++++++++++++++++++++++++++
->>   1 file changed, 40 insertions(+)
->>
->> diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
->> index 49fdce95d6d9..91ccd58ebc05 100644
->> +++ b/drivers/infiniband/hw/mlx5/devx.c
->> @@ -19,9 +19,12 @@
->>   #define UVERBS_MODULE_NAME mlx5_ib
->>   #include <rdma/uverbs_named_ioctl.h>
->>   
->> +static void dispatch_event_fd(struct list_head *fd_list, const void *data);
->> +
->>   enum devx_obj_flags {
->>   	DEVX_OBJ_FLAGS_INDIRECT_MKEY = 1 << 0,
->>   	DEVX_OBJ_FLAGS_DCT = 1 << 1,
->> +	DEVX_OBJ_FLAGS_CQ = 1 << 2,
->>   };
->>   
->>   struct devx_async_data {
->> @@ -94,6 +97,7 @@ struct devx_async_event_file {
->>   #define MLX5_MAX_DESTROY_INBOX_SIZE_DW MLX5_ST_SZ_DW(delete_fte_in)
->>   struct devx_obj {
->>   	struct mlx5_core_dev	*mdev;
->> +	struct mlx5_ib_dev	*ib_dev;
-> 
-> This seems strange, why would we need to store the core_dev and the ib_dev
-> in a struct when ibdev->mdev == core_dev?
-> 
+On Mon, Jun 24, 2019 at 04:33:00PM +0200, Andrey Konovalov wrote:
+> --- /dev/null
+> +++ b/tools/testing/selftests/arm64/tags_test.c
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <stdint.h>
+> +#include <sys/prctl.h>
+> +#include <sys/utsname.h>
+> +
+> +#define SHIFT_TAG(tag)		((uint64_t)(tag) << 56)
+> +#define SET_TAG(ptr, tag)	(((uint64_t)(ptr) & ~SHIFT_TAG(0xff)) | \
+> +					SHIFT_TAG(tag))
+> +
+> +int main(void)
+> +{
+> +	static int tbi_enabled = 0;
+> +	struct utsname *ptr, *tagged_ptr;
+> +	int err;
+> +
+> +	if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) == 0)
+> +		tbi_enabled = 1;
 
-We need to add the ib_dev as we can't access it from the core_dev.
-Most of this patch we can probably go and drop the mdev and access it 
-from ib_dev, I preferred to not handle that in this patch.
+Nitpick: with the latest prctl() patch, you can skip the last three
+arguments as they are ignored.
 
+Either way:
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
