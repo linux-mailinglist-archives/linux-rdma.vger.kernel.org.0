@@ -2,45 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC2E51D79
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EED51DE5
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2019 00:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbfFXV5K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 17:57:10 -0400
-Received: from mail-eopbgr60055.outbound.protection.outlook.com ([40.107.6.55]:3918
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        id S1726362AbfFXWFi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 18:05:38 -0400
+Received: from mail-eopbgr50049.outbound.protection.outlook.com ([40.107.5.49]:32558
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726372AbfFXV5J (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Jun 2019 17:57:09 -0400
+        id S1725268AbfFXWFh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Jun 2019 18:05:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mVWeJvChTqJLvA5vhobksnWOT81SDJLcmFb0mIKOQoA=;
- b=GF5AdSxJqNhuSlzcC5oiI5eI+nE3eWxm7Pli8sSzdKoi3FulSvGjwcmx0g5iM9ow8polgsNg/5eCwY+sLdcTVepJwYoeD/2GmhHJEBKRWlYcA1YfI7qGGtmsKu/KCCF0pqhJbgTpZJ0swp+FjbTmYrsUYrJGeGBK1j2XOuBekjo=
+ bh=LTf/8UwMCfjjlyUS+WYjF3OItICmBmQevAUqotBasc0=;
+ b=USwXynNS4cZnyDZG61HzQFVANoNFMIi20CNWm4SIXqi1ToP1Foec8r7xdhE0EK8PRI61OYbXK1rmJp7b4M6dplP9aOGtltdtDq4AiWhe94DEqGPUsU8qDns88HkIXMMt9hJYxiGipIpHdFSQ4jencsgme+L6UM7ilP4/FXghVLU=
 Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
- DB6PR0501MB2392.eurprd05.prod.outlook.com (10.168.73.10) with Microsoft SMTP
+ DB6PR0501MB2389.eurprd05.prod.outlook.com (10.168.71.139) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2008.16; Mon, 24 Jun 2019 21:57:05 +0000
+ 15.20.2008.16; Mon, 24 Jun 2019 22:05:34 +0000
 Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
  ([fe80::a901:6951:59de:3278]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
  ([fe80::a901:6951:59de:3278%2]) with mapi id 15.20.2008.014; Mon, 24 Jun 2019
- 21:57:05 +0000
+ 22:05:34 +0000
 From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "leon@kernel.org" <leon@kernel.org>
+To:     Leon Romanovsky <leonro@mellanox.com>
 CC:     Jason Gunthorpe <jgg@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
+        "willy@infradead.org" <willy@infradead.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Subject: Re: [PATCH rdma-next v1 00/12] DEVX asynchronous events
-Thread-Topic: [PATCH rdma-next v1 00/12] DEVX asynchronous events
-Thread-Index: AQHVJfl5PSbKJXA400e2KA/0k+cTY6ahwcuAgACmBoCACPu5AA==
-Date:   Mon, 24 Jun 2019 21:57:05 +0000
-Message-ID: <a8de53f1acb069057dedc94fb8bd29ea3e658716.camel@mellanox.com>
-References: <20190618171540.11729-1-leon@kernel.org>
-         <19107c92279cf4ad4d870fa54514423c5e46b748.camel@mellanox.com>
-         <20190619044557.GA11611@mtr-leonro.mtl.com>
-In-Reply-To: <20190619044557.GA11611@mtr-leonro.mtl.com>
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH mlx5-next] net/mlx5: Convert mkey_table to XArray
+Thread-Topic: [PATCH mlx5-next] net/mlx5: Convert mkey_table to XArray
+Thread-Index: AQHVJzZOrdAeQY5FHUKmEjqAi8wYYaarY3OA
+Date:   Mon, 24 Jun 2019 22:05:33 +0000
+Message-ID: <18138852207dfcd26ed512482af2c5ea9de93277.camel@mellanox.com>
+References: <20190620070305.31632-1-saeedm@mellanox.com>
+In-Reply-To: <20190620070305.31632-1-saeedm@mellanox.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -50,50 +47,50 @@ authentication-results: spf=none (sender IP is )
  smtp.mailfrom=saeedm@mellanox.com; 
 x-originating-ip: [209.116.155.178]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 731e5227-23ef-4a14-0f3f-08d6f8eee59d
+x-ms-office365-filtering-correlation-id: e8a4d932-119c-4377-58e7-08d6f8f014a8
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2392;
-x-ms-traffictypediagnostic: DB6PR0501MB2392:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <DB6PR0501MB239274F3D46912ECD0876CD0BEE00@DB6PR0501MB2392.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2389;
+x-ms-traffictypediagnostic: DB6PR0501MB2389:
+x-microsoft-antispam-prvs: <DB6PR0501MB2389B21885ABAF716786CBF7BEE00@DB6PR0501MB2389.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-forefront-prvs: 007814487B
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(39860400002)(396003)(366004)(136003)(54534003)(189003)(199004)(2616005)(486006)(86362001)(476003)(54906003)(256004)(8936002)(81156014)(81166006)(1730700003)(73956011)(26005)(3846002)(6116002)(6512007)(25786009)(66066001)(68736007)(966005)(91956017)(66446008)(76116006)(64756008)(66556008)(71190400001)(8676002)(4326008)(102836004)(6916009)(4744005)(6506007)(229853002)(5660300002)(186003)(71200400001)(66476007)(7736002)(66946007)(6486002)(305945005)(2501003)(76176011)(118296001)(58126008)(2906002)(2351001)(36756003)(316002)(6306002)(6436002)(5640700003)(6246003)(14454004)(99286004)(446003)(11346002)(53936002)(478600001);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2392;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(39860400002)(376002)(366004)(396003)(346002)(199004)(189003)(71190400001)(6862004)(14444005)(66476007)(256004)(91956017)(81156014)(66556008)(73956011)(6506007)(6486002)(4326008)(81166006)(76116006)(446003)(66946007)(11346002)(71200400001)(64756008)(14454004)(66446008)(25786009)(5660300002)(478600001)(6436002)(8936002)(58126008)(37006003)(54906003)(6246003)(486006)(8676002)(66066001)(2616005)(36756003)(476003)(316002)(229853002)(7736002)(68736007)(102836004)(186003)(3846002)(305945005)(86362001)(26005)(6116002)(6512007)(76176011)(6636002)(53936002)(4744005)(2906002)(118296001)(99286004);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2389;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 254LJye8qPuerQ4ZWfhuhnSawcke/ErjtQpC1ivAXwrccWbKtw8mqeIJtPjonr2Mndxk4LRwQx8ECqs70xj+Oc14f2GsCaGWBX9AuBXOdUDLHP43Euc8VODsSOiTMNGfLB+p1j/EyCvXhMPJ0nkC3foK05KMKMiq1lWeU2fSrXNSAcB6/qoGNDaYPQnkvsAv/vWH2LxmBspx2/QZ64vo8HLLx2WYpxKwOjxtk611k+ISMVOxzWvSLE7Qipigz1yCCx3UW9aNj7g3+UpyoOjE2SAOX6ejvbMJyBB3DYCcTgXv//EXdQ5DD10hfVqYJG47XFT8JMw0rRFyMlaCqh4NHNr5vhepzCCPdjkuTrGPPvyqTa/oirw/eu9IukzOE6NvkunYehPlBhNUKEkMP2k+rh3s8nU7GFAkYQpRZBSSdm8=
+x-microsoft-antispam-message-info: ba+vQaUTkTZztNhP84GEgqHg2bPPGG7AEHg0YqQyAKmJnO5gyXdmm+VkVKZOtQ1XR+AYGMMVsh/nhe5PTTocH+oOYn9uiZ3avtd5rgAcZIidn7Mn40ubgUMoEm3xCJUjdlMlvQFyPposT2DgrYbMTwquflVh4GKD1y4YYOV64yAPc8aOPIX0UBjzpj94BJR7+PLXZqzl4VofrEo68GXnzEZ0wxTKHPUCE8kW6Df/Y5Ak5ZwcXqjU3d6q5qdHct4hhDFeS/tWTKNlBUlUds+MAXDjv6+2ew9sycVUTxuxIEmuvMm9E1JYr5YEzYWoVGnCht45Rg7bQJmoCtsVYHz15hkokzAEFu6v5yQaUxJyT5DAjrMPRwoRzV06YTiWEfuZslbiKIA1AQLGTRH49LrTEOPO0n/e1up576NuXqgrO9I=
 Content-Type: text/plain; charset="utf-8"
-Content-ID: <D58CD9665377FF479CD3B806169914B6@eurprd05.prod.outlook.com>
+Content-ID: <0FCFA3E0244E5A4E9DA00271DA13B946@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 731e5227-23ef-4a14-0f3f-08d6f8eee59d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2019 21:57:05.7033
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8a4d932-119c-4377-58e7-08d6f8f014a8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2019 22:05:34.0939
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2392
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2389
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gV2VkLCAyMDE5LTA2LTE5IGF0IDA3OjQ1ICswMzAwLCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6
-DQo+IE9uIFR1ZSwgSnVuIDE4LCAyMDE5IGF0IDA2OjUxOjQ1UE0gKzAwMDAsIFNhZWVkIE1haGFt
-ZWVkIHdyb3RlOg0KPiA+IE9uIFR1ZSwgMjAxOS0wNi0xOCBhdCAyMDoxNSArMDMwMCwgTGVvbiBS
-b21hbm92c2t5IHdyb3RlOg0KPiA+ID4gRnJvbTogTGVvbiBSb21hbm92c2t5IDxsZW9ucm9AbWVs
-bGFub3guY29tPg0KPiA+ID4gDQo+ID4gPiBDaGFuZ2Vsb2c6DQo+ID4gPiAgdjAgLT4gdjE6DQo+
-ID4gDQo+ID4gTm9ybWFsbHkgMXN0IHN1Ym1pc3Npb24gaXMgVjEgYW5kIDJuZCBpcyBWMi4NCj4g
-PiBzbyB0aGlzIHNob3VsZCBoYXZlIGJlZW4gdjEtPnYyLg0KPiANCj4gIk5vcm1hbGx5IiBkZXBl
-bmRzIG9uIHRoZSBsYW5ndWFnZSB5b3UgYXJlIHVzaW5nLiBJbiBDLCBldmVyeXRoaW5nDQo+IHN0
-YXJ0cyBmcm9tIDAsIGluY2x1ZGluZyB2ZXJzaW9uIG9mIHBhdGNoZXMgOikuDQo+IA0KDQpZb3Ug
-YXJlIHdyb25nOg0KcXVvdGluZzogaHR0cHM6Ly9rZXJuZWxuZXdiaWVzLm9yZy9QYXRjaFRpcHNB
-bmRUcmlja3MNCg0KIkZvciBleGFtcGxlLCBpZiB5b3UncmUgc2VuZGluZyB0aGUgc2Vjb25kIHJl
-dmlzaW9uIG9mIGEgcGF0Y2gsIHlvdQ0Kc2hvdWxkIHVzZSBbUEFUQ0ggdjJdLiINCg0Kbm93IGRv
-bid0IHRlbGwgbWUgdGhhdCBzZWNvbmQgcmV2aXNpb24gaXMgYWN0dWFsbHkgM3JkIHJldmlzaW9u
-IG9yIDFzdA0KaXMgMm5kIDopLi4gDQoNCj4gPiBGb3IgbWx4NS1uZXh0IHBhdGNoZXM6DQo+ID4g
-DQo+ID4gQWNrZWQtYnk6IFNhZWVkIE1haGFtZWVkIDxzYWVlZG1AbWVsbGFub3guY29tPg0KPiAN
-Cj4gVGhhbmtzDQo=
+T24gVGh1LCAyMDE5LTA2LTIwIGF0IDA3OjAzICswMDAwLCBTYWVlZCBNYWhhbWVlZCB3cm90ZToN
+Cj4gRnJvbTogTWF0dGhldyBXaWxjb3ggPHdpbGx5QGluZnJhZGVhZC5vcmc+DQo+IA0KPiBUaGUg
+bG9jayBwcm90ZWN0aW5nIHRoZSBkYXRhIHN0cnVjdHVyZSBkb2VzIG5vdCBuZWVkIHRvIGJlIGFu
+DQo+IHJ3bG9jay4gIFRoZQ0KPiBvbmx5IHJlYWQgYWNjZXNzIHRvIHRoZSBsb2NrIGlzIGluIGFu
+IGVycm9yIHBhdGgsIGFuZCBpZiB0aGF0J3MNCj4gbGltaXRpbmcNCj4geW91ciBzY2FsYWJpbGl0
+eSwgeW91IGhhdmUgYmlnZ2VyIHBlcmZvcm1hbmNlIHByb2JsZW1zLg0KPiANCj4gRWxpbWluYXRl
+IG1seDVfbWtleV90YWJsZSBpbiBmYXZvdXIgb2YgdXNpbmcgdGhlIHhhcnJheSBkaXJlY3RseS4N
+Cj4gcmVnX21yX2NhbGxiYWNrIG11c3QgdXNlIEdGUF9BVE9NSUMgZm9yIGFsbG9jYXRpbmcgWEFy
+cmF5IG5vZGVzIGFzIGl0DQo+IG1heQ0KPiBiZSBjYWxsZWQgaW4gaW50ZXJydXB0IGNvbnRleHQu
+DQo+IA0KPiBUaGlzIGFsc28gZml4ZXMgYSBtaW5vciBidWcgd2hlcmUgU1JDVSBsb2NraW5nIHdh
+cyBiZWluZyB1c2VkIG9uIHRoZQ0KPiByYWRpeA0KPiB0cmVlIHJlYWQgc2lkZSwgd2hlbiBSQ1Ug
+d2FzIG5lZWRlZCB0b28uDQo+IA0KPiBDaGFuZ2UtSWQ6IElmZWVkYmJjOGYyYzg1NmNjMDQ0MDk0
+ZDAzMTY3YWFlOWY5MTYyNDAwDQo+IFNpZ25lZC1vZmYtYnk6IE1hdHRoZXcgV2lsY294IDx3aWxs
+eUBpbmZyYWRlYWQub3JnPg0KPiBTaWduZWQtb2ZmLWJ5OiBKYXNvbiBHdW50aG9ycGUgPGpnZ0Bt
+ZWxsYW5veC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFNhZWVkIE1haGFtZWVkIDxzYWVlZG1AbWVs
+bGFub3guY29tPg0KPiAgDQoNCkFwcGxpZWQgdG8gbWx4NS1uZXh0Lg0KDQpUaGFua3MsDQpTYWVl
+ZC4NCg==
