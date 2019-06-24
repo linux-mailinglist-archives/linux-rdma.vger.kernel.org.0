@@ -2,84 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6683451C35
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 22:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACB751CAF
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbfFXUVx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 16:21:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726393AbfFXUVw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Jun 2019 16:21:52 -0400
-Received: from localhost (unknown [167.220.24.221])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6755E20645;
-        Mon, 24 Jun 2019 20:21:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561407711;
-        bh=/rV1TlvYuXOK2sFci2/p6W21rW/APz4/kUsj3EobUV4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2VPaEOiYLx/B1U7xl+3URPJW/PCnea+Hoo4lmR8kq/6n244//CX5FcosNOr1Dj3oq
-         kZ/WOwKR+mt0aTbDmzXkGDY61uNn7Pw8n0E1ZmPY1FmKSwRlrgS69rOqWLgsC9nNQT
-         I7qwRnBg2lc/TFX9Q7IzCpvfO5IQUktLdI8ucdSE=
-Date:   Mon, 24 Jun 2019 16:21:50 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Ajay Kaher <akaher@vmware.com>
-Cc:     aarcange@redhat.com, jannh@google.com, oleg@redhat.com,
-        peterx@redhat.com, rppt@linux.ibm.com, jgg@mellanox.com,
-        mhocko@suse.com, jglisse@redhat.com, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com, viro@zeniv.linux.org.uk,
-        riandrews@android.com, arve@android.com, yishaih@mellanox.com,
-        dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, matanb@mellanox.com, leonro@mellanox.com,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        devel@driverdev.osuosl.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        srivatsab@vmware.com, amakhalov@vmware.com
-Subject: Re: [PATCH v4 0/3] [v4.9.y] coredump: fix race condition between
- mmget_not_zero()/get_task_mm() and core dumping
-Message-ID: <20190624202150.GC3881@sasha-vm>
-References: <1561410186-3919-1-git-send-email-akaher@vmware.com>
- <1561410186-3919-4-git-send-email-akaher@vmware.com>
+        id S1731631AbfFXVCI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 17:02:08 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:39445 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727945AbfFXVCI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 17:02:08 -0400
+Received: by mail-wm1-f68.google.com with SMTP id z23so696714wma.4
+        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 14:02:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+TXg+V1PV7qytX0xwqixrcBsIlYVASLMn0QfVVkViw4=;
+        b=RTldUZCA/ujlOPqeFpIG1/oq7I0MMWuhfuWJToHG67t3OQXfVVzK17LY3kJ6F+Brer
+         lnz/th7nTkxS/2R+LqhfZEwU5MvrsZIu821B9utLccmxMdrak8HYApdsHFF6X5Hm9BeZ
+         Vo8kf7gnh3yt+gibgQeVYXuNFbbhYpUZLvfs+XYPYbnhZ2hu/dNSj1xBfyMpQjtX1doH
+         EZDWsi96WfqzpwW/fpPX43H1AiRarnXcaSLJUUvqCyT81nbN45aacsBUof6bL1BIOqTB
+         ajwQSV/zBBYiXqc83fyuqH5/tTOsWhrpi8aDboRkZhx14nYt1qY3C4UY4GvtasO88w1a
+         gS5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+TXg+V1PV7qytX0xwqixrcBsIlYVASLMn0QfVVkViw4=;
+        b=fPcBFtlXk6cnqIEjRewdrMk1gIaYEkp87y/e10EJAUOfOKDP0IA48WcylZcf4ZZ9bN
+         u7UEvYU5jjltunCrWB46rSnM9Tc3CRublBCxrc4v6Hq7nlthj9OZ9F3fuUM7zv8o8AeO
+         YibVbPYKt6OVQepOiEeVVWVBQTdO73RxxE0zxDMUwSsj5Q/JnAkiYuRnuT2Fxv9mWIKb
+         ce80Sqgws1t+cfGATCd/dCmldIX+iLVKy7XLalLeY+lbkt6f+cUXny8lmF4fGUjAACDf
+         hYy7zbSO/o/dwd4Q0wgbdemBKQvGaXju3K9p+B7FXXWGl5yO2U81f5te/3Sh51V37taX
+         58sg==
+X-Gm-Message-State: APjAAAWcasFv6lAEI46FNVXZt28+u+A1FJYty/MeV3pie+tbiTfdy8FA
+        6IMziFAeWfOE8qLyFIIV/899cg==
+X-Google-Smtp-Source: APXvYqzG1w8w/MlwN4mNnTDNK32BkM+Kopo5HpXOnXXh6GBim1Uqm95bmEpjBPM4rzRFOIIj8zgSlQ==
+X-Received: by 2002:a7b:cc93:: with SMTP id p19mr16950467wma.12.1561410125331;
+        Mon, 24 Jun 2019 14:02:05 -0700 (PDT)
+Received: from ziepe.ca ([66.187.232.66])
+        by smtp.gmail.com with ESMTPSA id l124sm464451wmf.36.2019.06.24.14.02.02
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 24 Jun 2019 14:02:02 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hfW6C-0001Lx-Mk; Mon, 24 Jun 2019 18:02:00 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com
+Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Philip Yang <Philip.Yang@amd.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH v4 hmm 00/12] 
+Date:   Mon, 24 Jun 2019 18:00:58 -0300
+Message-Id: <20190624210110.5098-1-jgg@ziepe.ca>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1561410186-3919-4-git-send-email-akaher@vmware.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 25, 2019 at 02:33:06AM +0530, Ajay Kaher wrote:
->coredump: fix race condition between mmget_not_zero()/get_task_mm()
->and core dumping
->
->[PATCH v4 1/3]:
->Backporting of commit 04f5866e41fb70690e28397487d8bd8eea7d712a upstream.
->
->[PATCH v4 2/3]:
->Extension of commit 04f5866e41fb to fix the race condition between
->get_task_mm() and core dumping for IB->mlx4 and IB->mlx5 drivers.
->
->[PATCH v4 3/3]
->Backporting of commit 59ea6d06cfa9247b586a695c21f94afa7183af74 upstream.
->
->[diff from v3]:
->- added [PATCH v4 3/3]
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-Why do all the patches have the same subject line?
+This patch series arised out of discussions with Jerome when looking at the
+ODP changes, particularly informed by use after free races we have already
+found and fixed in the ODP code (thanks to syzkaller) working with mmu
+notifiers, and the discussion with Ralph on how to resolve the lifetime model.
 
-I guess it's correct for the first one, but can you explain what's up
-with #2 and #3?
+Overall this brings in a simplified locking scheme and easy to explain
+lifetime model:
 
-If the second one isn't upstream, please explain in detail why not and
-how 4.9 differs from upstream so that it requires a custom backport.
+ If a hmm_range is valid, then the hmm is valid, if a hmm is valid then the mm
+ is allocated memory.
 
-The third one just looks like a different patch altogether with a wrong
-subject line?
+ If the mm needs to still be alive (ie to lock the mmap_sem, find a vma, etc)
+ then the mmget must be obtained via mmget_not_zero().
 
---
-Thanks,
-Sasha
+The use of unlocked reads on 'hmm->dead' are also eliminated in favour of
+using standard mmget() locking to prevent the mm from being released. Many of
+the debugging checks of !range->hmm and !hmm->mm are dropped in favour of
+poison - which is much clearer as to the lifetime intent.
+
+The trailing patches are just some random cleanups I noticed when reviewing
+this code.
+
+I'll apply this in the next few days - the only patch that doesn't have enough
+Reviewed-bys is 'mm/hmm: Remove confusing comment and logic from hmm_release',
+which had alot of questions, I still think it is good. If people really don't
+like it I'll drop it.
+
+Thanks to everyone who took time to look at this!
+
+Jason Gunthorpe (12):
+  mm/hmm: fix use after free with struct hmm in the mmu notifiers
+  mm/hmm: Use hmm_mirror not mm as an argument for hmm_range_register
+  mm/hmm: Hold a mmgrab from hmm to mm
+  mm/hmm: Simplify hmm_get_or_create and make it reliable
+  mm/hmm: Remove duplicate condition test before wait_event_timeout
+  mm/hmm: Do not use list*_rcu() for hmm->ranges
+  mm/hmm: Hold on to the mmget for the lifetime of the range
+  mm/hmm: Use lockdep instead of comments
+  mm/hmm: Remove racy protection against double-unregistration
+  mm/hmm: Poison hmm_range during unregister
+  mm/hmm: Remove confusing comment and logic from hmm_release
+  mm/hmm: Fix error flows in hmm_invalidate_range_start
+
+ drivers/gpu/drm/nouveau/nouveau_svm.c |   2 +-
+ include/linux/hmm.h                   |  52 +----
+ kernel/fork.c                         |   1 -
+ mm/hmm.c                              | 275 ++++++++++++--------------
+ 4 files changed, 130 insertions(+), 200 deletions(-)
+
+-- 
+2.22.0
+
