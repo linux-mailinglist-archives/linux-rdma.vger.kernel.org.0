@@ -2,53 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E572C508EE
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 12:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE63450909
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 12:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbfFXK3w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 06:29:52 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:4204 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726716AbfFXK3u (ORCPT
+        id S1728908AbfFXKg5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 06:36:57 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:29246 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726774AbfFXKg5 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Jun 2019 06:29:50 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5OATM0M025693;
-        Mon, 24 Jun 2019 03:29:45 -0700
+        Mon, 24 Jun 2019 06:36:57 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5OAV1Hr029003;
+        Mon, 24 Jun 2019 03:36:39 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=FAZZhQ5fv6TXabPyvi4g0Alx5MM8DK14uXaAXhV3Jos=;
- b=AQQYtdrwOiI86ddUBbRiC93YoWXRMf6JMXTRNstWTYkTh5wZzUQNLjrmIQcw3k8DA8TJ
- koCEgprgD1hQwfhopyyqjG/aqML3o+roVqO3kK+OZzPEy06E0aCdRnJ5pqKcAZ7O2YKp
- PH36PGD1aiznbNEpLz8T3jnsbNEpumdpcSy6moW19Sou293MNbN+wB73pekBjiyu1lJP
- bgp+IMLmZCaVVlwBc3sfDsVvuWvwhEcOEZql44B8qzrqHp7YN68aBZsR7bdIgv/M6i3Y
- +NQ1bgUOsK8J0Gjh9dzLpbJNWjGgXd7dA+fBLc6AWVrW9PgohyFrfS8SJfteVd2PkGdk lA== 
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0818;
+ bh=n8xvpJhSHEpJhSQUwHzBWcLEFLx7jkmRurAyQTccSRc=;
+ b=QB6sEOeJl48S6JPlzH+awhGqUXkhvNCugwbjPHJC+zkX6+aUPuZNB5lyzBKhL3p+9DKr
+ SfX484eudjjuAovScjdpX6ekgYiUW2pGtZnmNkYnMC4ARAMkTSx7INhgJa7TmE/2ERzX
+ ug24v1MXND0BQ2050Cy8WSHg9bC07L6bom440ENTwtn9jfFWF0YzFYUFTJ9V5oWZMWJX
+ HxPgvI9j1x1BP+7X5GPgU+vib2ik57JGFwxgFLbW0v7Ss/VGt0lJfP0/quXUZGmbnQWB
+ ISjB6EXaqGvbp2f/NLozh6dypP4Rw9U0vUlPmd4ohJTzdg2nZLFoRnSgdpLizyp+UXdm cw== 
 Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2tarxr8tks-1
+        by mx0b-0016f401.pphosted.com with ESMTP id 2t9kujeag4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jun 2019 03:29:45 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH03.marvell.com
+        Mon, 24 Jun 2019 03:36:37 -0700
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH03.marvell.com
  (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 24 Jun
- 2019 03:29:44 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Mon, 24 Jun 2019 03:29:44 -0700
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 5D96B3F7040;
-        Mon, 24 Jun 2019 03:29:42 -0700 (PDT)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
-        <jgg@ziepe.ca>, <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>
-Subject: [PATCH v4 rdma-next 3/3] RDMA/qedr: Add iWARP doorbell recovery support
-Date:   Mon, 24 Jun 2019 13:28:09 +0300
-Message-ID: <20190624102809.8793-4-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20190624102809.8793-1-michal.kalderon@marvell.com>
-References: <20190624102809.8793-1-michal.kalderon@marvell.com>
+ 2019 03:36:35 -0700
+Received: from NAM05-CO1-obe.outbound.protection.outlook.com (104.47.48.57) by
+ SC-EXCH03.marvell.com (10.93.176.83) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Mon, 24 Jun 2019 03:36:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n8xvpJhSHEpJhSQUwHzBWcLEFLx7jkmRurAyQTccSRc=;
+ b=OMvTmj45TcvBXn5OHZXJ/5uQBs+R7LQ6GiofCTi/onMq57u+VeokSmQYXbx68ZYwRM4TqzMIhp6JM9KP0DsuHSOheRTG0qZlOr6NfdiuGTRq7luplU5sh5sVhKKg4MYG90anx0RiAdAK5e78kw2BmxbZqI5sdFrDnMV9vJL36Tw=
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
+ MN2PR18MB3230.namprd18.prod.outlook.com (10.255.237.15) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.13; Mon, 24 Jun 2019 10:36:30 +0000
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::9880:2b8b:52e5:b413]) by MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::9880:2b8b:52e5:b413%3]) with mapi id 15.20.2008.014; Mon, 24 Jun 2019
+ 10:36:30 +0000
+From:   Michal Kalderon <mkalderon@marvell.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
+CC:     Ariel Elior <aelior@marvell.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [EXT] Re: [PATCH v3 rdma-next 0/3] RDMA/qedr: Use the doorbell
+ overflow recovery mechanism for RDMA
+Thread-Topic: [EXT] Re: [PATCH v3 rdma-next 0/3] RDMA/qedr: Use the doorbell
+ overflow recovery mechanism for RDMA
+Thread-Index: AQHVIcOPS8dQZZiCAk+T2CNQdiy87KamTmsAgABA6RCAAAR7AIAEGdzA
+Date:   Mon, 24 Jun 2019 10:36:29 +0000
+Message-ID: <MN2PR18MB3182104653BC4373602BE7B9A1E00@MN2PR18MB3182.namprd18.prod.outlook.com>
+References: <20190613083819.6998-1-michal.kalderon@marvell.com>
+ <bda0321cb362bc93f5428b1df7daf69fed083656.camel@redhat.com>
+ <MN2PR18MB3182498CA8C9C7EB3259F62FA1E70@MN2PR18MB3182.namprd18.prod.outlook.com>
+ <20190621195818.GY19891@ziepe.ca>
+In-Reply-To: <20190621195818.GY19891@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [212.199.69.1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5fe59707-26a9-4cc5-d029-08d6f88fd1e1
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR18MB3230;
+x-ms-traffictypediagnostic: MN2PR18MB3230:
+x-microsoft-antispam-prvs: <MN2PR18MB32306EEFCF30074B98B6CA67A1E00@MN2PR18MB3230.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 007814487B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(346002)(376002)(39850400004)(366004)(136003)(189003)(51914003)(199004)(486006)(7736002)(74316002)(14454004)(53936002)(478600001)(66946007)(110136005)(11346002)(305945005)(66446008)(26005)(66476007)(25786009)(476003)(229853002)(99286004)(73956011)(6436002)(4326008)(33656002)(446003)(8676002)(55016002)(5660300002)(6506007)(316002)(81156014)(81166006)(54906003)(6246003)(9686003)(2906002)(86362001)(71200400001)(71190400001)(8936002)(76116006)(68736007)(52536014)(256004)(186003)(7696005)(6116002)(14444005)(3846002)(76176011)(66066001)(64756008)(66556008)(102836004);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB3230;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: marvell.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: ddOmOGDtGjMG/zP1/7idYfwjaCHesg+qrSnj+49/Wh9Yk1bScK8IK1wfARKybTWWFFd1CrfFOlOp8n2Q9goxzcFTrvwBMNszhaZeMLUMd07ZsGCVz2mhSGXCo9SUyg74Xj6JangTgBK+jmGXKUXXoK78ENwjRs3J59stza1OSaPHQKB95DaY5+y9P+GyJB1vpDH4fnkfbJOXpc8zsgtM3ZqScqP4/WDtyGMSr6bvae8enB78I7UsdlViheIiIhsyoN8IxGH/4mxUJLHLF+bILWmcq98jEBwBqrwSMQqmdV/mLl0wTZLl5WktcGAHD40bfE525ZkpvKRx/LSMMKylmHt4n0q/8Sct3DuFSpA4/J6LcCP9tJVIEOOzUkzuQA/mBwNVtsq9UKD0hguQ3gvA1m2Kni53e53fsqq3cfN0sA0=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fe59707-26a9-4cc5-d029-08d6f88fd1e1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2019 10:36:30.2353
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mkalderon@marvell.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3230
+X-OriginatorOrg: marvell.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-24_08:,,
  signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
@@ -56,131 +101,75 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch adds the iWARP specific doorbells to the doorbell
-recovery mechanism
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Friday, June 21, 2019 10:58 PM
+>=20
+> External Email
+>=20
+> ----------------------------------------------------------------------
+> On Fri, Jun 21, 2019 at 07:49:39PM +0000, Michal Kalderon wrote:
+> > > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > > owner@vger.kernel.org> On Behalf Of Doug Ledford
+> > >
+> > > On Thu, 2019-06-13 at 11:38 +0300, Michal Kalderon wrote:
+> > > > This patch series used the doorbell overflow recovery mechanism
+> > > > introduced in commit 36907cd5cd72 ("qed: Add doorbell overflow
+> > > > recovery mechanism") for rdma ( RoCE and iWARP )
+> > > >
+> > > > rdma-core pull request #493
+> > > >
+> > > > Changes from V2:
+> > > > - Don't use long-lived kmap. Instead use user-trigger mmap for the
+> > > >   doorbell recovery entries.
+> > > > - Modify dpi_addr to be denoted with __iomem and avoid redundant
+> > > >   casts
+> > > >
+> > > > Changes from V1:
+> > > > - call kmap to map virtual address into kernel space
+> > > > - modify db_rec_delete to be void
+> > > > - remove some cpu_to_le16 that were added to previous patch which
+> are
+> > > >   correct but not related to the overflow recovery mechanism. Will =
+be
+> > > >   submitted as part of a different patch
+> > > >
+> > > >
+> > > > Michal Kalderon (3):
+> > > >   qed*: Change dpi_addr to be denoted with __iomem
+> > > >   RDMA/qedr: Add doorbell overflow recovery support
+> > > >   RDMA/qedr: Add iWARP doorbell recovery support
+> > > >
+> > > >  drivers/infiniband/hw/qedr/main.c          |   2 +-
+> > > >  drivers/infiniband/hw/qedr/qedr.h          |  27 +-
+> > > >  drivers/infiniband/hw/qedr/verbs.c         | 387
+> > > > ++++++++++++++++++++++++-----
+> > > >  drivers/net/ethernet/qlogic/qed/qed_rdma.c |   6 +-
+> > > >  include/linux/qed/qed_rdma_if.h            |   2 +-
+> > > >  include/uapi/rdma/qedr-abi.h               |  25 ++
+> > > >  6 files changed, 378 insertions(+), 71 deletions(-)
+> > > >
+> > >
+> > > Hi Michal,
+> > >
+> > > In patch 2 and 3 both, you still have quite a few casts to (u8 __iome=
+m *).
+> > > Why not just define the struct elements as u8 __iomem * instead of
+> > > void __iomem * and avoid all the casts?
+> > >
+> > Hi Doug,
+> >
+> > Thanks for the review. The remaining casts are due to pointer
+> > arithmetic and not variable assignments as before. Removing the cast
+> > entirely will require quite a lot of changes in qed and in rdma-core wh=
+ich I
+> would be happy to avoid at this time.
+>=20
+> In linux pointer math on a void * acts the same as a u8 so you should nev=
+er
+> need to cast a void * to a u8 just to do math?
+>=20
+Ok, thanks. Sent v4.
+Michal
 
-Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/infiniband/hw/qedr/qedr.h  | 12 +++++++-----
- drivers/infiniband/hw/qedr/verbs.c | 37 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 43 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index 006712ac1c88..6c5524d6b04e 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -238,6 +238,11 @@ struct qedr_ucontext {
- 	struct mutex mm_list_lock;
- };
- 
-+union db_prod32 {
-+	struct rdma_pwm_val16_data data;
-+	u32 raw;
-+};
-+
- union db_prod64 {
- 	struct rdma_pwm_val32_data data;
- 	u64 raw;
-@@ -268,6 +273,8 @@ struct qedr_userq {
- 	void __iomem *db_addr;
- 	struct qedr_user_db_rec *db_rec_data;
- 	u64 db_rec_phys;
-+	void __iomem *db_rec_db2_addr;
-+	union db_prod32 db_rec_db2_data;
- };
- 
- struct qedr_cq {
-@@ -317,11 +324,6 @@ struct qedr_mm {
- 	struct list_head entry;
- };
- 
--union db_prod32 {
--	struct rdma_pwm_val16_data data;
--	u32 raw;
--};
--
- struct qedr_qp_hwq_info {
- 	/* WQE Elements */
- 	struct qed_chain pbl;
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index cbf4cccd174d..c15196ce9662 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1767,6 +1767,10 @@ static void qedr_cleanup_user(struct qedr_dev *dev, struct qedr_qp *qp)
- 				     &qp->urq.db_rec_data->db_data);
- 		free_page((unsigned long)qp->urq.db_rec_data);
- 	}
-+
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+		qedr_db_recovery_del(dev, qp->urq.db_rec_db2_addr,
-+				     &qp->urq.db_rec_db2_data);
- }
- 
- static int qedr_create_user_qp(struct qedr_dev *dev,
-@@ -1841,6 +1845,17 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 	qp->usq.db_addr = ctx->dpi_addr + uresp.sq_db_offset;
- 	qp->urq.db_addr = ctx->dpi_addr + uresp.rq_db_offset;
- 
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		qp->urq.db_rec_db2_addr = ctx->dpi_addr + uresp.rq_db2_offset;
-+
-+		/* calculate the db_rec_db2 data since it is constant so no
-+		 *  need to reflect from user
-+		 */
-+		qp->urq.db_rec_db2_data.data.icid = cpu_to_le16(qp->icid);
-+		qp->urq.db_rec_db2_data.data.value =
-+			cpu_to_le16(DQ_TCM_IWARP_POST_RQ_CF_CMD);
-+	}
-+
- 	rc = qedr_db_recovery_add(dev, qp->usq.db_addr,
- 				  &qp->usq.db_rec_data->db_data,
- 				  DB_REC_WIDTH_32B,
-@@ -1854,6 +1869,15 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 				  DB_REC_USER);
- 	if (rc)
- 		goto err;
-+
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		rc = qedr_db_recovery_add(dev, qp->urq.db_rec_db2_addr,
-+					  &qp->urq.db_rec_db2_data,
-+					  DB_REC_WIDTH_32B,
-+					  DB_REC_USER);
-+		if (rc)
-+			goto err;
-+	}
- 	qedr_qp_user_print(dev, qp);
- 
- 	return rc;
-@@ -1894,7 +1918,13 @@ static int qedr_set_iwarp_db_info(struct qedr_dev *dev, struct qedr_qp *qp)
- 				  &qp->rq.db_data,
- 				  DB_REC_WIDTH_32B,
- 				  DB_REC_KERNEL);
-+	if (rc)
-+		return rc;
- 
-+	rc = qedr_db_recovery_add(dev, qp->rq.iwarp_db2,
-+				  &qp->rq.iwarp_db2_data,
-+				  DB_REC_WIDTH_32B,
-+				  DB_REC_KERNEL);
- 	return rc;
- }
- 
-@@ -2023,8 +2053,13 @@ static void qedr_cleanup_kernel(struct qedr_dev *dev, struct qedr_qp *qp)
- 
- 	qedr_db_recovery_del(dev, qp->sq.db, &qp->sq.db_data);
- 
--	if (!qp->srq)
-+	if (!qp->srq) {
- 		qedr_db_recovery_del(dev, qp->rq.db, &qp->rq.db_data);
-+
-+		if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+			qedr_db_recovery_del(dev, qp->rq.iwarp_db2,
-+					     &qp->rq.iwarp_db2_data);
-+	}
- }
- 
- static int qedr_create_kernel_qp(struct qedr_dev *dev,
--- 
-2.14.5
+> Jason
 
