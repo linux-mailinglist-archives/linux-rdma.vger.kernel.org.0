@@ -2,98 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE885189B
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 18:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FE05190F
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 18:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbfFXQ0z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 12:26:55 -0400
-Received: from mga07.intel.com ([134.134.136.100]:12112 "EHLO mga07.intel.com"
+        id S1732257AbfFXQxt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 12:53:49 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:37724 "EHLO ale.deltatee.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726393AbfFXQ0z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Jun 2019 12:26:55 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Jun 2019 09:26:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,412,1557212400"; 
-   d="scan'208";a="155204162"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga008.jf.intel.com with ESMTP; 24 Jun 2019 09:26:54 -0700
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x5OGQsPE053509;
-        Mon, 24 Jun 2019 09:26:54 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x5OGQNTP184378;
-        Mon, 24 Jun 2019 12:26:24 -0400
-Subject: [PATCH] IB/hfi1: Avoid hardlockup with flushlist_lock
-To:     stable@vger.kernel.org
-From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
-Cc:     linux-rdma@vger.kernel.org, stable-commits@vger.kernel.org
-Date:   Mon, 24 Jun 2019 12:26:23 -0400
-Message-ID: <20190624162623.184356.72785.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.16
+        id S1728010AbfFXQxs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Jun 2019 12:53:48 -0400
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.89)
+        (envelope-from <logang@deltatee.com>)
+        id 1hfSDs-0008FP-JW; Mon, 24 Jun 2019 10:53:41 -0600
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Stephen Bates <sbates@raithlin.com>
+References: <20190620161240.22738-1-logang@deltatee.com>
+ <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
+ <20190620193353.GF19891@ziepe.ca> <20190624073126.GB3954@lst.de>
+ <20190624134641.GA8268@ziepe.ca> <20190624135024.GA11248@lst.de>
+ <20190624135550.GB8268@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <7210ba39-c923-79ca-57bb-7cf9afe21d54@deltatee.com>
+Date:   Mon, 24 Jun 2019 10:53:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20190624135550.GB8268@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, kbusch@kernel.org, sagi@grimberg.me, bhelgaas@google.com, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, dan.j.williams@intel.com, hch@lst.de, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-commit cf131a81967583ae737df6383a0893b9fee75b4e upstream.
 
-Heavy contention of the sde flushlist_lock can cause hard lockups at
-extreme scale when the flushing logic is under stress.
 
-Mitigate by replacing the item at a time copy to the local list with
-an O(1) list_splice_init() and using the high priority work queue to
-do the flushes.
+On 2019-06-24 7:55 a.m., Jason Gunthorpe wrote:
+> On Mon, Jun 24, 2019 at 03:50:24PM +0200, Christoph Hellwig wrote:
+>> On Mon, Jun 24, 2019 at 10:46:41AM -0300, Jason Gunthorpe wrote:
+>>> BTW, it is not just offset right? It is possible that the IOMMU can
+>>> generate unique dma_addr_t values for each device?? Simple offset is
+>>> just something we saw in certain embedded cases, IIRC.
+>>
+>> Yes, it could.  If we are trying to do P2P between two devices on
+>> different root ports and with the IOMMU enabled we'll generate
+>> a new bus address for the BAR on the other side dynamically everytime
+>> we map.
+> 
+> Even with the same root port if ACS is turned on could behave like this.
 
-Ported to linux-4.19.y.
+Yup.
 
-Fixes: 7724105686e7 ("IB/hfi1: add driver files")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Doug Ledford <dledford@redhat.com>
----
- drivers/infiniband/hw/hfi1/sdma.c |    9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+> It is only a very narrow case where you can take shortcuts with
+> dma_addr_t, and I don't think shortcuts like are are appropriate for
+> the mainline kernel..
 
-diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index 88e326d..d648a41 100644
---- a/drivers/infiniband/hw/hfi1/sdma.c
-+++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -410,10 +410,7 @@ static void sdma_flush(struct sdma_engine *sde)
- 	sdma_flush_descq(sde);
- 	spin_lock_irqsave(&sde->flushlist_lock, flags);
- 	/* copy flush list */
--	list_for_each_entry_safe(txp, txp_next, &sde->flushlist, list) {
--		list_del_init(&txp->list);
--		list_add_tail(&txp->list, &flushlist);
--	}
-+	list_splice_init(&sde->flushlist, &flushlist);
- 	spin_unlock_irqrestore(&sde->flushlist_lock, flags);
- 	/* flush from flush list */
- 	list_for_each_entry_safe(txp, txp_next, &flushlist, list)
-@@ -2426,7 +2423,7 @@ int sdma_send_txreq(struct sdma_engine *sde,
- 		wait->tx_count++;
- 		wait->count += tx->num_desc;
- 	}
--	schedule_work(&sde->flush_worker);
-+	queue_work_on(sde->cpu, system_highpri_wq, &sde->flush_worker);
- 	ret = -ECOMM;
- 	goto unlock;
- nodesc:
-@@ -2526,7 +2523,7 @@ int sdma_send_txlist(struct sdma_engine *sde, struct iowait *wait,
- 		}
- 	}
- 	spin_unlock(&sde->flushlist_lock);
--	schedule_work(&sde->flush_worker);
-+	queue_work_on(sde->cpu, system_highpri_wq, &sde->flush_worker);
- 	ret = -ECOMM;
- 	goto update_tail;
- nodesc:
+I don't think it's that narrow and it opens up a lot of avenues for
+system design that people are wanting to go. If your high speed data
+path can avoid the root complex and CPU, you can design a system which a
+much smaller CPU and fewer lanes directed at the CPU.
 
+Logan
