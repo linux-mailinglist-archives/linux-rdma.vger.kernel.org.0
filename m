@@ -2,272 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9A450DC1
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 16:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4E650E09
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 16:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbfFXOWq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 10:22:46 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:34825 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726376AbfFXOWq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 10:22:46 -0400
-Received: by mail-pl1-f193.google.com with SMTP id p1so6992492plo.2
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 07:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gAszyd6Rkh0AyBVnY2MGQeafDGFV/B/Xjwc7nOHGBTU=;
-        b=km7JeQ3vyTD2UtwSHCAAp4q4at1sY/ltJPO5wzrrkqMzNLeQZPjXSnOQ7VtkWA81dl
-         HEFVLO9l5VlkdkocDhA+ezC7dKtBn4IeaF4UZLWnOmGq0Ok4r2E9GR7Hoa79HLNOGJVe
-         0AHZ3EJWZEjcDwF6xOVW5nBJXR6vOtRMH7oBaouWSEKGFrWAIrbWb9kQA+Hlo7SIhUEB
-         uGLPh5fQQfh1ibByxQrZM4UE+cDk+UJmRIBMFqrJwcIDdYtIIT+tU41CsIi86+tplFna
-         0qMXAZhS5viMtSm5pwtZ6YrDben3dB8l27s4Hd+Xtz7mclZlxhwdWOJHEC5Ft/EzKQyl
-         VZSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gAszyd6Rkh0AyBVnY2MGQeafDGFV/B/Xjwc7nOHGBTU=;
-        b=YZ5Hs1NkNXb2TFyTl6OcFdduZnb1WucWg1wEvqjY29ifr10DQu0zjDOFy7spqjJsE3
-         7jhqLtQtXaGRK1Sh1th9eKszJ2FbfcsAPKayp8emDROrXl1TbMkUNsaQnTK7CIK9rGnM
-         Z/FYr3on+QAxCo3CvqEZ/qgho/qDXu1K87zM7B2VO6o/zKFmIsfBlWsgTUHKCMWmVWsH
-         OwMS/l4abexJzusOglYtKMmA2+2N8ii9dCbDhRPNqIU4hRU9Sc4/Mu/VDgvvz96fuSdi
-         lyAaUvsnMMiodYF6B/I1nOcH294DYfHTyRJSIdRhuOwZHPWrh4PC9RTtWaM9bTDIsdPB
-         GtJQ==
-X-Gm-Message-State: APjAAAVwHOvoLNdhVQYYWW6Jgj5LGYxbf9ihtrU70clIDWJxEgSucPdI
-        Dt48coT5YKapzzkE9JrNOKFxPZkt5OdRziVlBcKQXl3rmeI=
-X-Google-Smtp-Source: APXvYqx/7NbeFZuwI48tclTUh11xegUV5UsdKc2ldTOnN03zOVYnpDOwlkZEMuzBYRoM7kFvSzXnjLxRZwjrOwVDnPw=
-X-Received: by 2002:a17:902:4183:: with SMTP id f3mr32179784pld.336.1561386165165;
- Mon, 24 Jun 2019 07:22:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1560339705.git.andreyknvl@google.com> <f9b50767d639b7116aa986dc67f158131b8d4169.1560339705.git.andreyknvl@google.com>
- <a5e0e465-89d5-91d0-c6a4-39674269bbf2@oracle.com> <c4bdd767-eb3f-6668-0f49-4aaf4bc7689d@oracle.com>
-In-Reply-To: <c4bdd767-eb3f-6668-0f49-4aaf4bc7689d@oracle.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 24 Jun 2019 16:22:34 +0200
-Message-ID: <CAAeHK+zceAZ0Mqhz3t6Ob71-Dgk4DNHRrzr72r+qEsUugwzTsg@mail.gmail.com>
-Subject: Re: [PATCH v17 04/15] mm, arm64: untag user pointers passed to memory syscalls
-To:     Khalid Aziz <khalid.aziz@oracle.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
+        id S1726402AbfFXOa1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 10:30:27 -0400
+Received: from mail-eopbgr130070.outbound.protection.outlook.com ([40.107.13.70]:63591
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726414AbfFXOa1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Jun 2019 10:30:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zCmyGIYHMIPe32FIAvv283iZUKVBPbIp4xb/mOs+UEE=;
+ b=hTWQmoIPM3nVxvwjiYV+w60VvzuPA6quC5p1U9i44TwKRnx5lTDFaZ/tO1FzmCQNwN7id9TvF9b0vc17/5/8WA0tv3oWRuvm7XqnTnO+9jLo7Mh2zIfWL0MkDo1O8qYbZE4tan/MY1WPmctVIY5R9EhTfLI4pmcRVAwYYP8OjIc=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB5375.eurprd05.prod.outlook.com (20.178.8.80) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.16; Mon, 24 Jun 2019 14:30:20 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2008.014; Mon, 24 Jun 2019
+ 14:30:20 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Yishai Hadas <yishaih@dev.mellanox.co.il>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
         Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v1 08/12] IB/mlx5: Introduce
+ MLX5_IB_OBJECT_DEVX_ASYNC_EVENT_FD
+Thread-Topic: [PATCH rdma-next v1 08/12] IB/mlx5: Introduce
+ MLX5_IB_OBJECT_DEVX_ASYNC_EVENT_FD
+Thread-Index: AQHVJfmIbRVZTelD0EOIZCO31FHay6aqujqAgAAacYCAABIQAA==
+Date:   Mon, 24 Jun 2019 14:30:19 +0000
+Message-ID: <20190624143016.GC7418@mellanox.com>
+References: <20190618171540.11729-1-leon@kernel.org>
+ <20190618171540.11729-9-leon@kernel.org> <20190624115059.GA5479@mellanox.com>
+ <baae74b9-94ff-9f5a-0992-c1eec5049306@dev.mellanox.co.il>
+In-Reply-To: <baae74b9-94ff-9f5a-0992-c1eec5049306@dev.mellanox.co.il>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: PR1PR01CA0002.eurprd01.prod.exchangelabs.com
+ (2603:10a6:102::15) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [66.187.232.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 070ce8c0-7cf4-4716-c546-08d6f8b07be7
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5375;
+x-ms-traffictypediagnostic: VI1PR05MB5375:
+x-microsoft-antispam-prvs: <VI1PR05MB5375E58ACCCE5791A0A1D260CFE00@VI1PR05MB5375.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 007814487B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(396003)(136003)(346002)(366004)(376002)(39860400002)(189003)(199004)(7736002)(33656002)(86362001)(53936002)(446003)(99286004)(6246003)(6512007)(316002)(76176011)(486006)(53546011)(386003)(6506007)(6436002)(66066001)(26005)(6486002)(25786009)(229853002)(8676002)(2616005)(476003)(4326008)(102836004)(8936002)(6862004)(81156014)(68736007)(81166006)(2906002)(186003)(54906003)(52116002)(5660300002)(11346002)(3846002)(14454004)(478600001)(36756003)(71190400001)(256004)(6116002)(66446008)(1076003)(73956011)(66476007)(66946007)(66556008)(64756008)(71200400001)(305945005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5375;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: AB2DheajiG01OD3srnRS+EDl5Bdgd3NMoGdSOsfOb43yTu2wxx4wkq7OyBWt7AWnOf226C5zldWKHpB2iFZt2BH9uRtLlbret88b0jyTO4wj/RWMqGdJ2niZpw+JYvUomgwn4rLbJWzZsW0aZuwMpIAent97BiyplnBue7pkWa/+svRfrbzYY4HLkJHnejkfF5D0VumLsengKnU6y9PJ0vFAi0xZnQNeXF+PWi9REpQuZGsqWIjM85qlDSi/rKGh8BejrMazVIj4GGic3o/CIuIlE7V/Z2IiGqtcRZmJgvQpX2itHXHGBXDfL2uOv3pZZrU9ZhYmrAorYJG31aQX4zXK7dcpFxzOoAVAzHw4YYwsY8bgSgIYiLmaBfa/e/f95VmtjZfIn7PCk4srfyQa+QAMHo7YeHBI+Jykj63g2zE=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C5E69717CEF56D4CA091E76CCD5397A4@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 070ce8c0-7cf4-4716-c546-08d6f8b07be7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2019 14:30:20.0171
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5375
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 6:46 PM Khalid Aziz <khalid.aziz@oracle.com> wrote:
->
-> On 6/19/19 9:55 AM, Khalid Aziz wrote:
-> > On 6/12/19 5:43 AM, Andrey Konovalov wrote:
-> >> This patch is a part of a series that extends arm64 kernel ABI to allow to
-> >> pass tagged user pointers (with the top byte set to something else other
-> >> than 0x00) as syscall arguments.
-> >>
-> >> This patch allows tagged pointers to be passed to the following memory
-> >> syscalls: get_mempolicy, madvise, mbind, mincore, mlock, mlock2, mprotect,
-> >> mremap, msync, munlock, move_pages.
-> >>
-> >> The mmap and mremap syscalls do not currently accept tagged addresses.
-> >> Architectures may interpret the tag as a background colour for the
-> >> corresponding vma.
-> >>
-> >> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> >> Reviewed-by: Kees Cook <keescook@chromium.org>
-> >> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> >> ---
-> >
-> > Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
-> >
-> >
->
-> I would also recommend updating commit log for all the patches in this
-> series that are changing files under mm/ as opposed to arch/arm64 to not
-> reference arm64 kernel ABI since the change applies to every
-> architecture. So something along the lines of "This patch is part of a
-> series that extends kernel ABI to allow......."
+On Mon, Jun 24, 2019 at 04:25:37PM +0300, Yishai Hadas wrote:
+> On 6/24/2019 2:51 PM, Jason Gunthorpe wrote:
+> > On Tue, Jun 18, 2019 at 08:15:36PM +0300, Leon Romanovsky wrote:
+> > > From: Yishai Hadas <yishaih@mellanox.com>
+> > >=20
+> > > Introduce MLX5_IB_OBJECT_DEVX_ASYNC_EVENT_FD and its initial
+> > > implementation.
+> > >=20
+> > > This object is from type class FD and will be used to read DEVX
+> > > async events.
+> > >=20
+> > > Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+> > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > >   drivers/infiniband/hw/mlx5/devx.c         | 112 +++++++++++++++++++=
++--
+> > >   include/uapi/rdma/mlx5_user_ioctl_cmds.h  |  10 ++
+> > >   include/uapi/rdma/mlx5_user_ioctl_verbs.h |   4 +
+> > >   3 files changed, 116 insertions(+), 10 deletions(-)
+> > >=20
+> > > diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/h=
+w/mlx5/devx.c
+> > > index 80b42d069328..1815ce0f8daf 100644
+> > > +++ b/drivers/infiniband/hw/mlx5/devx.c
+> > > @@ -33,6 +33,24 @@ struct devx_async_data {
+> > >   	struct mlx5_ib_uapi_devx_async_cmd_hdr hdr;
+> > >   };
+> > > +struct devx_async_event_queue {
+> >=20
+> > It seems to be a mistake to try and re-use the async_event_queue for
+> > both cmd and event, as they use it very differently and don't even
+> > store the same things in the event_list. I think it is bettter to just
+> > inline this into devx_async_event_file (and inline the old struct in
+> > the cmd file
+> >=20
+>=20
+> How about having another struct with all the event's queue fields togethe=
+r ?
+> this has the benefit of having all those related fields in one place and
+> leave the cmd as is.
+>=20
+> Alternatively,
+> We can inline the event stuff under devx_async_event_file and leave the c=
+md
+> for now under a struct as it's not directly related to this series.
 
-Sure, will do in v18, thanks!
+I would probbaly do this
 
->
-> --
-> Khalid
->
->
-> >>  mm/madvise.c   | 2 ++
-> >>  mm/mempolicy.c | 3 +++
-> >>  mm/migrate.c   | 2 +-
-> >>  mm/mincore.c   | 2 ++
-> >>  mm/mlock.c     | 4 ++++
-> >>  mm/mprotect.c  | 2 ++
-> >>  mm/mremap.c    | 7 +++++++
-> >>  mm/msync.c     | 2 ++
-> >>  8 files changed, 23 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/mm/madvise.c b/mm/madvise.c
-> >> index 628022e674a7..39b82f8a698f 100644
-> >> --- a/mm/madvise.c
-> >> +++ b/mm/madvise.c
-> >> @@ -810,6 +810,8 @@ SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
-> >>      size_t len;
-> >>      struct blk_plug plug;
-> >>
-> >> +    start = untagged_addr(start);
-> >> +
-> >>      if (!madvise_behavior_valid(behavior))
-> >>              return error;
-> >>
-> >> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> >> index 01600d80ae01..78e0a88b2680 100644
-> >> --- a/mm/mempolicy.c
-> >> +++ b/mm/mempolicy.c
-> >> @@ -1360,6 +1360,7 @@ static long kernel_mbind(unsigned long start, unsigned long len,
-> >>      int err;
-> >>      unsigned short mode_flags;
-> >>
-> >> +    start = untagged_addr(start);
-> >>      mode_flags = mode & MPOL_MODE_FLAGS;
-> >>      mode &= ~MPOL_MODE_FLAGS;
-> >>      if (mode >= MPOL_MAX)
-> >> @@ -1517,6 +1518,8 @@ static int kernel_get_mempolicy(int __user *policy,
-> >>      int uninitialized_var(pval);
-> >>      nodemask_t nodes;
-> >>
-> >> +    addr = untagged_addr(addr);
-> >> +
-> >>      if (nmask != NULL && maxnode < nr_node_ids)
-> >>              return -EINVAL;
-> >>
-> >> diff --git a/mm/migrate.c b/mm/migrate.c
-> >> index f2ecc2855a12..d22c45cf36b2 100644
-> >> --- a/mm/migrate.c
-> >> +++ b/mm/migrate.c
-> >> @@ -1616,7 +1616,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
-> >>                      goto out_flush;
-> >>              if (get_user(node, nodes + i))
-> >>                      goto out_flush;
-> >> -            addr = (unsigned long)p;
-> >> +            addr = (unsigned long)untagged_addr(p);
-> >>
-> >>              err = -ENODEV;
-> >>              if (node < 0 || node >= MAX_NUMNODES)
-> >> diff --git a/mm/mincore.c b/mm/mincore.c
-> >> index c3f058bd0faf..64c322ed845c 100644
-> >> --- a/mm/mincore.c
-> >> +++ b/mm/mincore.c
-> >> @@ -249,6 +249,8 @@ SYSCALL_DEFINE3(mincore, unsigned long, start, size_t, len,
-> >>      unsigned long pages;
-> >>      unsigned char *tmp;
-> >>
-> >> +    start = untagged_addr(start);
-> >> +
-> >>      /* Check the start address: needs to be page-aligned.. */
-> >>      if (start & ~PAGE_MASK)
-> >>              return -EINVAL;fixup_user_fault
-> >> diff --git a/mm/mlock.c b/mm/mlock.c
-> >> index 080f3b36415b..e82609eaa428 100644
-> >> --- a/mm/mlock.c
-> >> +++ b/mm/mlock.c
-> >> @@ -674,6 +674,8 @@ static __must_check int do_mlock(unsigned long start, size_t len, vm_flags_t fla
-> >>      unsigned long lock_limit;
-> >>      int error = -ENOMEM;
-> >>
-> >> +    start = untagged_addr(start);
-> >> +
-> >>      if (!can_do_mlock())
-> >>              return -EPERM;
-> >>
-> >> @@ -735,6 +737,8 @@ SYSCALL_DEFINE2(munlock, unsigned long, start, size_t, len)
-> >>  {
-> >>      int ret;
-> >>
-> >> +    start = untagged_addr(start);
-> >> +
-> >>      len = PAGE_ALIGN(len + (offset_in_page(start)));
-> >>      start &= PAGE_MASK;
-> >>
-> >> diff --git a/mm/mprotect.c b/mm/mprotect.c
-> >> index bf38dfbbb4b4..19f981b733bc 100644
-> >> --- a/mm/mprotect.c
-> >> +++ b/mm/mprotect.c
-> >> @@ -465,6 +465,8 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
-> >>      const bool rier = (current->personality & READ_IMPLIES_EXEC) &&
-> >>                              (prot & PROT_READ);
-> >>
-> >> +    start = untagged_addr(start);
-> >> +
-> >>      prot &= ~(PROT_GROWSDOWN|PROT_GROWSUP);
-> >>      if (grows == (PROT_GROWSDOWN|PROT_GROWSUP)) /* can't be both */
-> >>              return -EINVAL;
-> >> diff --git a/mm/mremap.c b/mm/mremap.c
-> >> index fc241d23cd97..64c9a3b8be0a 100644
-> >> --- a/mm/mremap.c
-> >> +++ b/mm/mremap.c
-> >> @@ -606,6 +606,13 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
-> >>      LIST_HEAD(uf_unmap_early);
-> >>      LIST_HEAD(uf_unmap);
-> >>
-> >> +    /*
-> >> +     * Architectures may interpret the tag passed to mmap as a background
-> >> +     * colour for the corresponding vma. For mremap we don't allow tagged
-> >> +     * new_addr to preserve similar behaviour to mmap.
-> >> +     */
-> >> +    addr = untagged_addr(addr);
-> >> +
-> >>      if (flags & ~(MREMAP_FIXED | MREMAP_MAYMOVE))
-> >>              return ret;
-> >>
-> >> diff --git a/mm/msync.c b/mm/msync.c
-> >> index ef30a429623a..c3bd3e75f687 100644
-> >> --- a/mm/msync.c
-> >> +++ b/mm/msync.c
-> >> @@ -37,6 +37,8 @@ SYSCALL_DEFINE3(msync, unsigned long, start, size_t, len, int, flags)
-> >>      int unmapped_error = 0;
-> >>      int error = -EINVAL;
-> >>
-> >> +    start = untagged_addr(start);
-> >> +
-> >>      if (flags & ~(MS_ASYNC | MS_INVALIDATE | MS_SYNC))
-> >>              goto out;
-> >>      if (offset_in_page(start))
-> >>
-> >
-> >
->
->
+> > > +	spinlock_t		lock;
+> > > +	wait_queue_head_t	poll_wait;
+> > > +	struct list_head	event_list;
+> > > +	atomic_t		bytes_in_use;
+> > > +	u8			is_destroyed:1;
+> > > +	u32			flags;
+> > > +};
+> >=20
+> > All the flags testing is ugly, why not just add another bitfield?
+>=20
+> The flags are coming from user space and have their different name space,=
+ I
+> prefer to not mix with kernel ones. (i.e. is_destroyed).
+> Makes sense ?
+
+No, better to add a bitfield than store the raw flags and another
+bitfield.
+
+> > > diff --git a/include/uapi/rdma/mlx5_user_ioctl_verbs.h b/include/uapi=
+/rdma/mlx5_user_ioctl_verbs.h
+> > > index a8f34c237458..57beea4589e4 100644
+> > > +++ b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
+> > > @@ -63,5 +63,9 @@ enum mlx5_ib_uapi_dm_type {
+> > >   	MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_SW_ICM,
+> > >   };
+> > > +enum mlx5_ib_uapi_devx_create_event_channel_flags {
+> > > +	MLX5_IB_UAPI_DEVX_CREATE_EVENT_CHANNEL_FLAGS_OMIT_EV_DATA =3D 1
+> > > << 0,
+> >=20
+> > Maybe this name is too long
+>=20
+> Quite long but follows the name scheme having the UAPI prefix.
+> Any shorter suggestion ?
+>=20
+
+I think you should shorten it
+
+Jason
