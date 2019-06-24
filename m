@@ -2,97 +2,272 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31DBE50CD2
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 15:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9A450DC1
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 16:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729470AbfFXNzy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 09:55:54 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:46344 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726788AbfFXNzy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 09:55:54 -0400
-Received: by mail-wr1-f67.google.com with SMTP id n4so13981245wrw.13
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 06:55:53 -0700 (PDT)
+        id S1727893AbfFXOWq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 10:22:46 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:34825 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726376AbfFXOWq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 10:22:46 -0400
+Received: by mail-pl1-f193.google.com with SMTP id p1so6992492plo.2
+        for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 07:22:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4arsaGDEjSkzwzRA/N3Hrna2lOLzq+94osMUbrje5jk=;
-        b=cJBb3LyGWz6a+ZF24Q16t+Jq3jubo4POkzoEuwTFa4igkYIIZ4CrGKhq/VBGSLDgV+
-         R7Qz58xlo8mcgCaXGv296xJUBZk0kWkrSICXHD+irx4lidxzIbN8xeAzmwBMImqBYIpY
-         eKFlA/0ylT8ZbBmEkDh730eMD4FA8fcWvKTGfH4JHJLvK+2niN/exKVnrdWX/8BhWAz4
-         bZ2BbBnoA8Mr6mt2PHPtpxxftqUTUr2xGiNQoaqGGYpEUiqP7/4eyzizTnR9LgxPrsPr
-         x8q9l52SIByDD9HRQrHa5Lq2pgJt2cdno3mf8cN1oJgNelLCxmbQs+mZSVmwfkhnre+z
-         rPNA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gAszyd6Rkh0AyBVnY2MGQeafDGFV/B/Xjwc7nOHGBTU=;
+        b=km7JeQ3vyTD2UtwSHCAAp4q4at1sY/ltJPO5wzrrkqMzNLeQZPjXSnOQ7VtkWA81dl
+         HEFVLO9l5VlkdkocDhA+ezC7dKtBn4IeaF4UZLWnOmGq0Ok4r2E9GR7Hoa79HLNOGJVe
+         0AHZ3EJWZEjcDwF6xOVW5nBJXR6vOtRMH7oBaouWSEKGFrWAIrbWb9kQA+Hlo7SIhUEB
+         uGLPh5fQQfh1ibByxQrZM4UE+cDk+UJmRIBMFqrJwcIDdYtIIT+tU41CsIi86+tplFna
+         0qMXAZhS5viMtSm5pwtZ6YrDben3dB8l27s4Hd+Xtz7mclZlxhwdWOJHEC5Ft/EzKQyl
+         VZSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4arsaGDEjSkzwzRA/N3Hrna2lOLzq+94osMUbrje5jk=;
-        b=IcV9HHIa4wV7Hyt7G+UldJ1jD178fcvoLrW1CPgHpsYT8VH7HfofC1cDShGCdX2p6I
-         6KkvmRTTFori9Fnqb/DGbPfZs4i3lybv0O58sAbdAgfVg4ANYD3tF4Yg/myfllEVA7zF
-         S+Rsdt+ByX9n99Bmys1uurwEs2N4S2cNhk5XM+V1TpWT8hnrZfXy2IclJcKvff0UF6VS
-         dGMn5M3Cliswuyax1iPa5Ihi/Fd4w83DzJ2qyXvYL/Rd/3aJEpRA1Soecod025A/HJwe
-         gyrWzf5YL3AdM4QgaTZ6bYRsDi/Kgn+jnTBToMLNqq6liTMSykCTC9e/UUBVXufDNKD/
-         nm8w==
-X-Gm-Message-State: APjAAAVGwY3fuk1K2CFe38l2FAZuH8+WmoqglkgPCjf7Pmaoa4nEeVyg
-        d/NBzSphVosfs821jXPz7DXMdQ==
-X-Google-Smtp-Source: APXvYqxyF5Zhdd0NS3TPvQio00kP/UH+k9ryunX9HaO9qRhzgHE2KVHkhfUxKG/64BxafxMuhrmCmQ==
-X-Received: by 2002:a5d:4008:: with SMTP id n8mr49233669wrp.353.1561384552634;
-        Mon, 24 Jun 2019 06:55:52 -0700 (PDT)
-Received: from ziepe.ca ([66.187.232.66])
-        by smtp.gmail.com with ESMTPSA id q20sm25473349wra.36.2019.06.24.06.55.51
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 24 Jun 2019 06:55:52 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hfPRm-0002Fc-Bp; Mon, 24 Jun 2019 10:55:50 -0300
-Date:   Mon, 24 Jun 2019 10:55:50 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Stephen Bates <sbates@raithlin.com>
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-Message-ID: <20190624135550.GB8268@ziepe.ca>
-References: <20190620161240.22738-1-logang@deltatee.com>
- <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
- <20190620193353.GF19891@ziepe.ca>
- <20190624073126.GB3954@lst.de>
- <20190624134641.GA8268@ziepe.ca>
- <20190624135024.GA11248@lst.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gAszyd6Rkh0AyBVnY2MGQeafDGFV/B/Xjwc7nOHGBTU=;
+        b=YZ5Hs1NkNXb2TFyTl6OcFdduZnb1WucWg1wEvqjY29ifr10DQu0zjDOFy7spqjJsE3
+         7jhqLtQtXaGRK1Sh1th9eKszJ2FbfcsAPKayp8emDROrXl1TbMkUNsaQnTK7CIK9rGnM
+         Z/FYr3on+QAxCo3CvqEZ/qgho/qDXu1K87zM7B2VO6o/zKFmIsfBlWsgTUHKCMWmVWsH
+         OwMS/l4abexJzusOglYtKMmA2+2N8ii9dCbDhRPNqIU4hRU9Sc4/Mu/VDgvvz96fuSdi
+         lyAaUvsnMMiodYF6B/I1nOcH294DYfHTyRJSIdRhuOwZHPWrh4PC9RTtWaM9bTDIsdPB
+         GtJQ==
+X-Gm-Message-State: APjAAAVwHOvoLNdhVQYYWW6Jgj5LGYxbf9ihtrU70clIDWJxEgSucPdI
+        Dt48coT5YKapzzkE9JrNOKFxPZkt5OdRziVlBcKQXl3rmeI=
+X-Google-Smtp-Source: APXvYqx/7NbeFZuwI48tclTUh11xegUV5UsdKc2ldTOnN03zOVYnpDOwlkZEMuzBYRoM7kFvSzXnjLxRZwjrOwVDnPw=
+X-Received: by 2002:a17:902:4183:: with SMTP id f3mr32179784pld.336.1561386165165;
+ Mon, 24 Jun 2019 07:22:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190624135024.GA11248@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <cover.1560339705.git.andreyknvl@google.com> <f9b50767d639b7116aa986dc67f158131b8d4169.1560339705.git.andreyknvl@google.com>
+ <a5e0e465-89d5-91d0-c6a4-39674269bbf2@oracle.com> <c4bdd767-eb3f-6668-0f49-4aaf4bc7689d@oracle.com>
+In-Reply-To: <c4bdd767-eb3f-6668-0f49-4aaf4bc7689d@oracle.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 24 Jun 2019 16:22:34 +0200
+Message-ID: <CAAeHK+zceAZ0Mqhz3t6Ob71-Dgk4DNHRrzr72r+qEsUugwzTsg@mail.gmail.com>
+Subject: Re: [PATCH v17 04/15] mm, arm64: untag user pointers passed to memory syscalls
+To:     Khalid Aziz <khalid.aziz@oracle.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 03:50:24PM +0200, Christoph Hellwig wrote:
-> On Mon, Jun 24, 2019 at 10:46:41AM -0300, Jason Gunthorpe wrote:
-> > BTW, it is not just offset right? It is possible that the IOMMU can
-> > generate unique dma_addr_t values for each device?? Simple offset is
-> > just something we saw in certain embedded cases, IIRC.
-> 
-> Yes, it could.  If we are trying to do P2P between two devices on
-> different root ports and with the IOMMU enabled we'll generate
-> a new bus address for the BAR on the other side dynamically everytime
-> we map.
+On Wed, Jun 19, 2019 at 6:46 PM Khalid Aziz <khalid.aziz@oracle.com> wrote:
+>
+> On 6/19/19 9:55 AM, Khalid Aziz wrote:
+> > On 6/12/19 5:43 AM, Andrey Konovalov wrote:
+> >> This patch is a part of a series that extends arm64 kernel ABI to allow to
+> >> pass tagged user pointers (with the top byte set to something else other
+> >> than 0x00) as syscall arguments.
+> >>
+> >> This patch allows tagged pointers to be passed to the following memory
+> >> syscalls: get_mempolicy, madvise, mbind, mincore, mlock, mlock2, mprotect,
+> >> mremap, msync, munlock, move_pages.
+> >>
+> >> The mmap and mremap syscalls do not currently accept tagged addresses.
+> >> Architectures may interpret the tag as a background colour for the
+> >> corresponding vma.
+> >>
+> >> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> >> Reviewed-by: Kees Cook <keescook@chromium.org>
+> >> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> >> ---
+> >
+> > Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
+> >
+> >
+>
+> I would also recommend updating commit log for all the patches in this
+> series that are changing files under mm/ as opposed to arch/arm64 to not
+> reference arm64 kernel ABI since the change applies to every
+> architecture. So something along the lines of "This patch is part of a
+> series that extends kernel ABI to allow......."
 
-Even with the same root port if ACS is turned on could behave like this.
+Sure, will do in v18, thanks!
 
-It is only a very narrow case where you can take shortcuts with
-dma_addr_t, and I don't think shortcuts like are are appropriate for
-the mainline kernel..
-
-Jason
+>
+> --
+> Khalid
+>
+>
+> >>  mm/madvise.c   | 2 ++
+> >>  mm/mempolicy.c | 3 +++
+> >>  mm/migrate.c   | 2 +-
+> >>  mm/mincore.c   | 2 ++
+> >>  mm/mlock.c     | 4 ++++
+> >>  mm/mprotect.c  | 2 ++
+> >>  mm/mremap.c    | 7 +++++++
+> >>  mm/msync.c     | 2 ++
+> >>  8 files changed, 23 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/mm/madvise.c b/mm/madvise.c
+> >> index 628022e674a7..39b82f8a698f 100644
+> >> --- a/mm/madvise.c
+> >> +++ b/mm/madvise.c
+> >> @@ -810,6 +810,8 @@ SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
+> >>      size_t len;
+> >>      struct blk_plug plug;
+> >>
+> >> +    start = untagged_addr(start);
+> >> +
+> >>      if (!madvise_behavior_valid(behavior))
+> >>              return error;
+> >>
+> >> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> >> index 01600d80ae01..78e0a88b2680 100644
+> >> --- a/mm/mempolicy.c
+> >> +++ b/mm/mempolicy.c
+> >> @@ -1360,6 +1360,7 @@ static long kernel_mbind(unsigned long start, unsigned long len,
+> >>      int err;
+> >>      unsigned short mode_flags;
+> >>
+> >> +    start = untagged_addr(start);
+> >>      mode_flags = mode & MPOL_MODE_FLAGS;
+> >>      mode &= ~MPOL_MODE_FLAGS;
+> >>      if (mode >= MPOL_MAX)
+> >> @@ -1517,6 +1518,8 @@ static int kernel_get_mempolicy(int __user *policy,
+> >>      int uninitialized_var(pval);
+> >>      nodemask_t nodes;
+> >>
+> >> +    addr = untagged_addr(addr);
+> >> +
+> >>      if (nmask != NULL && maxnode < nr_node_ids)
+> >>              return -EINVAL;
+> >>
+> >> diff --git a/mm/migrate.c b/mm/migrate.c
+> >> index f2ecc2855a12..d22c45cf36b2 100644
+> >> --- a/mm/migrate.c
+> >> +++ b/mm/migrate.c
+> >> @@ -1616,7 +1616,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+> >>                      goto out_flush;
+> >>              if (get_user(node, nodes + i))
+> >>                      goto out_flush;
+> >> -            addr = (unsigned long)p;
+> >> +            addr = (unsigned long)untagged_addr(p);
+> >>
+> >>              err = -ENODEV;
+> >>              if (node < 0 || node >= MAX_NUMNODES)
+> >> diff --git a/mm/mincore.c b/mm/mincore.c
+> >> index c3f058bd0faf..64c322ed845c 100644
+> >> --- a/mm/mincore.c
+> >> +++ b/mm/mincore.c
+> >> @@ -249,6 +249,8 @@ SYSCALL_DEFINE3(mincore, unsigned long, start, size_t, len,
+> >>      unsigned long pages;
+> >>      unsigned char *tmp;
+> >>
+> >> +    start = untagged_addr(start);
+> >> +
+> >>      /* Check the start address: needs to be page-aligned.. */
+> >>      if (start & ~PAGE_MASK)
+> >>              return -EINVAL;fixup_user_fault
+> >> diff --git a/mm/mlock.c b/mm/mlock.c
+> >> index 080f3b36415b..e82609eaa428 100644
+> >> --- a/mm/mlock.c
+> >> +++ b/mm/mlock.c
+> >> @@ -674,6 +674,8 @@ static __must_check int do_mlock(unsigned long start, size_t len, vm_flags_t fla
+> >>      unsigned long lock_limit;
+> >>      int error = -ENOMEM;
+> >>
+> >> +    start = untagged_addr(start);
+> >> +
+> >>      if (!can_do_mlock())
+> >>              return -EPERM;
+> >>
+> >> @@ -735,6 +737,8 @@ SYSCALL_DEFINE2(munlock, unsigned long, start, size_t, len)
+> >>  {
+> >>      int ret;
+> >>
+> >> +    start = untagged_addr(start);
+> >> +
+> >>      len = PAGE_ALIGN(len + (offset_in_page(start)));
+> >>      start &= PAGE_MASK;
+> >>
+> >> diff --git a/mm/mprotect.c b/mm/mprotect.c
+> >> index bf38dfbbb4b4..19f981b733bc 100644
+> >> --- a/mm/mprotect.c
+> >> +++ b/mm/mprotect.c
+> >> @@ -465,6 +465,8 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
+> >>      const bool rier = (current->personality & READ_IMPLIES_EXEC) &&
+> >>                              (prot & PROT_READ);
+> >>
+> >> +    start = untagged_addr(start);
+> >> +
+> >>      prot &= ~(PROT_GROWSDOWN|PROT_GROWSUP);
+> >>      if (grows == (PROT_GROWSDOWN|PROT_GROWSUP)) /* can't be both */
+> >>              return -EINVAL;
+> >> diff --git a/mm/mremap.c b/mm/mremap.c
+> >> index fc241d23cd97..64c9a3b8be0a 100644
+> >> --- a/mm/mremap.c
+> >> +++ b/mm/mremap.c
+> >> @@ -606,6 +606,13 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+> >>      LIST_HEAD(uf_unmap_early);
+> >>      LIST_HEAD(uf_unmap);
+> >>
+> >> +    /*
+> >> +     * Architectures may interpret the tag passed to mmap as a background
+> >> +     * colour for the corresponding vma. For mremap we don't allow tagged
+> >> +     * new_addr to preserve similar behaviour to mmap.
+> >> +     */
+> >> +    addr = untagged_addr(addr);
+> >> +
+> >>      if (flags & ~(MREMAP_FIXED | MREMAP_MAYMOVE))
+> >>              return ret;
+> >>
+> >> diff --git a/mm/msync.c b/mm/msync.c
+> >> index ef30a429623a..c3bd3e75f687 100644
+> >> --- a/mm/msync.c
+> >> +++ b/mm/msync.c
+> >> @@ -37,6 +37,8 @@ SYSCALL_DEFINE3(msync, unsigned long, start, size_t, len, int, flags)
+> >>      int unmapped_error = 0;
+> >>      int error = -EINVAL;
+> >>
+> >> +    start = untagged_addr(start);
+> >> +
+> >>      if (flags & ~(MS_ASYNC | MS_INVALIDATE | MS_SYNC))
+> >>              goto out;
+> >>      if (offset_in_page(start))
+> >>
+> >
+> >
+>
+>
