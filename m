@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3F051CB0
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8059551CAD
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 23:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbfFXVCI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 17:02:08 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:36567 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728053AbfFXVCI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 17:02:08 -0400
-Received: by mail-wr1-f68.google.com with SMTP id n4so14179162wrs.3
+        id S1728090AbfFXVCG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 17:02:06 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:39442 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727172AbfFXVCG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jun 2019 17:02:06 -0400
+Received: by mail-wm1-f65.google.com with SMTP id z23so696685wma.4
         for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2019 14:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bvrLwS8goK61NFHHKG+L59ElQQ6a+tjA3TuLNO1hols=;
-        b=eVFuqGal7MmrKBtKN1rp7PO9U9nA5Z3G5ySp7ACdyjU8KPVJwiMhZOX3ijBDCcRL1S
-         GTWW6OsNpDRwAQ99IpOKbjE4ke8ZJxp+O8FP/MG8xEtB6bNNyhoddDXqx09MksC3ucTO
-         oJ93yVe3SvCZh0B9cLyVmwFyg4NWK+yvtmHIR5Ht19fKXdc1deBlAadM2MfQOo7DpfxL
-         u45+uLrEWPgz5VW+SYVHONBoIIEBy3hHaaX9UXvxqchVA5MxvXU51AT2KJdXKstwNhpK
-         HS8SeD4+RAjEkcCeH/9NHi+z2QOq0pKZI8APHroOaypyHDbREEEL9MVSPuU3viLHbv3C
-         +MFg==
+        bh=MJQSyx5I9WQIuat3hBB7cHn44HQ02+T6fWrOLMHDIpE=;
+        b=oMvQEeOW3jlA/jInbebXvBiNOpipgFRfSGqcRm7zQTy9n0fBZhNWc+HqRdsBGvfoas
+         9ZagIA6tsA27jF8jJhsuzXhsn1FXmqG0j5xv4shnb4nwTXoKwmM7oJ2k65yF3t5gXBSE
+         xlXz3qHDEErdU0D2pMcseGextk7OdhnOkqInYbmQI1gUO7qrtJE1uX0pyvlz3YlLnknO
+         sqCZVvuYR+lhn6UVq6Z9jO7x/rArDqufw9dwJ5VG1vfgusW9/rg/xQREUYZgy4+U1mqN
+         JQUgexOwqWQrBjbYL4JVl6Alf5y/LhMUNGKdzg0+gQVKP467Kb+hNL89aBTa4xHO/0eq
+         Mg5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bvrLwS8goK61NFHHKG+L59ElQQ6a+tjA3TuLNO1hols=;
-        b=II2Afs9J/5PsiRYPUQOqJCMPRqv2XwbBYx2+mIfGBpXy0S+FoBmkhZcVJnxPuRSPHo
-         mCXGJZyXWMaYuFufVJJf7dRo9LhLeX6EnWavEpUzbOqJ99J3GCX5BJv/zwuDnC+NOjYN
-         crJaFyhwjzaDT1qsBuztX0wZAP6KiKvHnPxSjF1sJTVd0bRjN4lyyzOsw4i81TLdIVLx
-         Nv6EfmzK8NxoBKktSZyePse2jG5iqiEXje80b2CqT5KKLwa9ZBo/UiXL/7pQlAyUUssf
-         8qexU8M89tIQ6Tn7yXEk+f0Tinq8MZ3GxQxtWEX81Co6azUsxe5su8BxCsQJQv3sw6+1
-         pIJg==
-X-Gm-Message-State: APjAAAWhijI1fMFsVhVOpAas+0l7e3WJtt5q+J8Zuwt5C2Ea+K4HoEDI
-        nfmuzMGi2d9q0WJuUXeujcQfQg==
-X-Google-Smtp-Source: APXvYqzXxflttImXsUfCwAd7r65RK1DVJZBGVN7mipcY4Irf1EG1vjNhQIrTK0Km8IeO1SnCpwVb8g==
-X-Received: by 2002:adf:b1ca:: with SMTP id r10mr34168985wra.156.1561410124460;
+        bh=MJQSyx5I9WQIuat3hBB7cHn44HQ02+T6fWrOLMHDIpE=;
+        b=O56F+h6CtbrqALf3MwspBXYJ7LDBuRYMEJ7y/E2OrXBWmvLhoxwk7lxiCRz5ab9kSY
+         9UdeYindI2dyGF555paXhhwZ1uxqtz10JLYOE0VcgaYEYYfy56KCu9i7xLrTMhileDgj
+         AWLm09DhlXB9PZaV/eXne5rAfBCwRBajARrGHy1ySSQDrjM9oS8lwi5xsjh8Hh8cl8EA
+         c+4zRedOGU5y/yZC5W+JcWd0qi6nxj/f7saslEoZoF362uVwWYCg60SQAbup0ZEbScex
+         5BKv6eCzjriauNQACfPEs3F9s+SAUZfh1yRjhGBdeqtxTfAiN+kNhW0uQpns6Ui1HMwU
+         pFbg==
+X-Gm-Message-State: APjAAAUsHYJSQ/chIYBnJU4bV2qh7lbAhaajtiUbfrHhRpJg3O4/hmkm
+        K+BW9x+6CCwf6KyMo+WmJdaLVg==
+X-Google-Smtp-Source: APXvYqy/o9BJkcVraqWn87goYHtDioMKUZC2UcYj3qjd4Ok68R0RasKDzib4jR1bwJteEjTWcnZR4g==
+X-Received: by 2002:a05:600c:20c3:: with SMTP id y3mr17777867wmm.3.1561410124814;
         Mon, 24 Jun 2019 14:02:04 -0700 (PDT)
 Received: from ziepe.ca ([66.187.232.66])
-        by smtp.gmail.com with ESMTPSA id n14sm26883973wra.75.2019.06.24.14.02.02
+        by smtp.gmail.com with ESMTPSA id l8sm26977546wrg.40.2019.06.24.14.02.02
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Mon, 24 Jun 2019 14:02:02 -0700 (PDT)
 Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hfW6C-0001M7-PX; Mon, 24 Jun 2019 18:02:00 -0300
+        id 1hfW6C-0001MC-Qe; Mon, 24 Jun 2019 18:02:00 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
@@ -59,13 +59,14 @@ Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Philip Yang <Philip.Yang@amd.com>,
         Ira Weiny <ira.weiny@intel.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v4 hmm 02/12] mm/hmm: Use hmm_mirror not mm as an argument for hmm_range_register
-Date:   Mon, 24 Jun 2019 18:01:00 -0300
-Message-Id: <20190624210110.5098-3-jgg@ziepe.ca>
+Subject: [PATCH v4 hmm 03/12] mm/hmm: Hold a mmgrab from hmm to mm
+Date:   Mon, 24 Jun 2019 18:01:01 -0300
+Message-Id: <20190624210110.5098-4-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190624210110.5098-1-jgg@ziepe.ca>
 References: <20190624210110.5098-1-jgg@ziepe.ca>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
@@ -74,118 +75,121 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-Ralph observes that hmm_range_register() can only be called by a driver
-while a mirror is registered. Make this clear in the API by passing in the
-mirror structure as a parameter.
+So long as a struct hmm pointer exists, so should the struct mm it is
+linked too. Hold the mmgrab() as soon as a hmm is created, and mmdrop() it
+once the hmm refcount goes to zero.
 
-This also simplifies understanding the lifetime model for struct hmm, as
-the hmm pointer must be valid as part of a registered mirror so all we
-need in hmm_register_range() is a simple kref_get.
+Since mmdrop() (ie a 0 kref on struct mm) is now impossible with a !NULL
+mm->hmm delete the hmm_hmm_destroy().
 
-Suggested-by: Ralph Campbell <rcampbell@nvidia.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
 Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
 Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Tested-by: Philip Yang <Philip.Yang@amd.com>
 ---
-v2
-- Include the oneline patch to nouveau_svm.c
+v2:
+ - Fix error unwind paths in hmm_get_or_create (Jerome/Jason)
 ---
- drivers/gpu/drm/nouveau/nouveau_svm.c |  2 +-
- include/linux/hmm.h                   |  7 ++++---
- mm/hmm.c                              | 13 ++++---------
- 3 files changed, 9 insertions(+), 13 deletions(-)
+ include/linux/hmm.h |  3 ---
+ kernel/fork.c       |  1 -
+ mm/hmm.c            | 22 ++++------------------
+ 3 files changed, 4 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
-index 93ed43c413f0bb..8c92374afcf227 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-@@ -649,7 +649,7 @@ nouveau_svm_fault(struct nvif_notify *notify)
- 		range.values = nouveau_svm_pfn_values;
- 		range.pfn_shift = NVIF_VMM_PFNMAP_V0_ADDR_SHIFT;
- again:
--		ret = hmm_vma_fault(&range, true);
-+		ret = hmm_vma_fault(&svmm->mirror, &range, true);
- 		if (ret == 0) {
- 			mutex_lock(&svmm->mutex);
- 			if (!hmm_vma_range_done(&range)) {
 diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-index cb01cf1fa3c08b..1fba6979adf460 100644
+index 1fba6979adf460..1d97b6d62c5bcf 100644
 --- a/include/linux/hmm.h
 +++ b/include/linux/hmm.h
-@@ -496,7 +496,7 @@ static inline bool hmm_mirror_mm_is_alive(struct hmm_mirror *mirror)
-  * Please see Documentation/vm/hmm.rst for how to use the range API.
-  */
- int hmm_range_register(struct hmm_range *range,
--		       struct mm_struct *mm,
-+		       struct hmm_mirror *mirror,
- 		       unsigned long start,
- 		       unsigned long end,
- 		       unsigned page_shift);
-@@ -532,7 +532,8 @@ static inline bool hmm_vma_range_done(struct hmm_range *range)
+@@ -577,14 +577,11 @@ static inline int hmm_vma_fault(struct hmm_mirror *mirror,
  }
  
- /* This is a temporary helper to avoid merge conflict between trees. */
--static inline int hmm_vma_fault(struct hmm_range *range, bool block)
-+static inline int hmm_vma_fault(struct hmm_mirror *mirror,
-+				struct hmm_range *range, bool block)
+ /* Below are for HMM internal use only! Not to be used by device driver! */
+-void hmm_mm_destroy(struct mm_struct *mm);
+-
+ static inline void hmm_mm_init(struct mm_struct *mm)
  {
- 	long ret;
+ 	mm->hmm = NULL;
+ }
+ #else /* IS_ENABLED(CONFIG_HMM_MIRROR) */
+-static inline void hmm_mm_destroy(struct mm_struct *mm) {}
+ static inline void hmm_mm_init(struct mm_struct *mm) {}
+ #endif /* IS_ENABLED(CONFIG_HMM_MIRROR) */
  
-@@ -545,7 +546,7 @@ static inline int hmm_vma_fault(struct hmm_range *range, bool block)
- 	range->default_flags = 0;
- 	range->pfn_flags_mask = -1UL;
- 
--	ret = hmm_range_register(range, range->vma->vm_mm,
-+	ret = hmm_range_register(range, mirror,
- 				 range->start, range->end,
- 				 PAGE_SHIFT);
- 	if (ret)
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 75675b9bf6dfd3..c704c3cedee78d 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -673,7 +673,6 @@ void __mmdrop(struct mm_struct *mm)
+ 	WARN_ON_ONCE(mm == current->active_mm);
+ 	mm_free_pgd(mm);
+ 	destroy_context(mm);
+-	hmm_mm_destroy(mm);
+ 	mmu_notifier_mm_destroy(mm);
+ 	check_mm(mm);
+ 	put_user_ns(mm->user_ns);
 diff --git a/mm/hmm.c b/mm/hmm.c
-index f6956d78e3cb25..22a97ada108b4e 100644
+index 22a97ada108b4e..080b17a2e87e2d 100644
 --- a/mm/hmm.c
 +++ b/mm/hmm.c
-@@ -914,13 +914,13 @@ static void hmm_pfns_clear(struct hmm_range *range,
-  * Track updates to the CPU page table see include/linux/hmm.h
-  */
- int hmm_range_register(struct hmm_range *range,
--		       struct mm_struct *mm,
-+		       struct hmm_mirror *mirror,
- 		       unsigned long start,
- 		       unsigned long end,
- 		       unsigned page_shift)
- {
- 	unsigned long mask = ((1UL << page_shift) - 1UL);
+@@ -20,6 +20,7 @@
+ #include <linux/swapops.h>
+ #include <linux/hugetlb.h>
+ #include <linux/memremap.h>
++#include <linux/sched/mm.h>
+ #include <linux/jump_label.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/mmu_notifier.h>
+@@ -73,6 +74,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+ 	hmm->notifiers = 0;
+ 	hmm->dead = false;
+ 	hmm->mm = mm;
++	mmgrab(hmm->mm);
+ 
+ 	spin_lock(&mm->page_table_lock);
+ 	if (!mm->hmm)
+@@ -100,6 +102,7 @@ static struct hmm *hmm_get_or_create(struct mm_struct *mm)
+ 		mm->hmm = NULL;
+ 	spin_unlock(&mm->page_table_lock);
+ error:
++	mmdrop(hmm->mm);
+ 	kfree(hmm);
+ 	return NULL;
+ }
+@@ -121,6 +124,7 @@ static void hmm_free(struct kref *kref)
+ 		mm->hmm = NULL;
+ 	spin_unlock(&mm->page_table_lock);
+ 
++	mmdrop(hmm->mm);
+ 	mmu_notifier_call_srcu(&hmm->rcu, hmm_free_rcu);
+ }
+ 
+@@ -129,24 +133,6 @@ static inline void hmm_put(struct hmm *hmm)
+ 	kref_put(&hmm->kref, hmm_free);
+ }
+ 
+-void hmm_mm_destroy(struct mm_struct *mm)
+-{
 -	struct hmm *hmm;
-+	struct hmm *hmm = mirror->hmm;
- 
- 	range->valid = false;
- 	range->hmm = NULL;
-@@ -934,20 +934,15 @@ int hmm_range_register(struct hmm_range *range,
- 	range->start = start;
- 	range->end = end;
- 
--	hmm = hmm_get_or_create(mm);
--	if (!hmm)
--		return -EFAULT;
 -
- 	/* Check if hmm_mm_destroy() was call. */
--	if (hmm->mm == NULL || hmm->dead) {
+-	spin_lock(&mm->page_table_lock);
+-	hmm = mm_get_hmm(mm);
+-	mm->hmm = NULL;
+-	if (hmm) {
+-		hmm->mm = NULL;
+-		hmm->dead = true;
+-		spin_unlock(&mm->page_table_lock);
 -		hmm_put(hmm);
-+	if (hmm->mm == NULL || hmm->dead)
- 		return -EFAULT;
+-		return;
 -	}
- 
- 	/* Initialize range to track CPU page table updates. */
- 	mutex_lock(&hmm->lock);
- 
- 	range->hmm = hmm;
-+	kref_get(&hmm->kref);
- 	list_add_rcu(&range->list, &hmm->ranges);
- 
- 	/*
+-
+-	spin_unlock(&mm->page_table_lock);
+-}
+-
+ static void hmm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+ {
+ 	struct hmm *hmm = container_of(mn, struct hmm, mmu_notifier);
 -- 
 2.22.0
 
