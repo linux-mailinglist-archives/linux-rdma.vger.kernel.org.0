@@ -2,92 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C6D51B7B
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 21:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46ECE51C19
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2019 22:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730537AbfFXTh0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jun 2019 15:37:26 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:41078 "EHLO ale.deltatee.com"
+        id S1727829AbfFXUPk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jun 2019 16:15:40 -0400
+Received: from mga11.intel.com ([192.55.52.93]:5618 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729405AbfFXThZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Jun 2019 15:37:25 -0400
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.89)
-        (envelope-from <logang@deltatee.com>)
-        id 1hfUm8-0002Af-EH; Mon, 24 Jun 2019 13:37:13 -0600
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20190620161240.22738-1-logang@deltatee.com>
- <CAPcyv4ijztOK1FUjLuFing7ps4LOHt=6z=eO=98HHWauHA+yog@mail.gmail.com>
- <20190620193353.GF19891@ziepe.ca> <20190624073126.GB3954@lst.de>
- <20190624134641.GA8268@ziepe.ca> <20190624135024.GA11248@lst.de>
- <20190624135550.GB8268@ziepe.ca>
- <7210ba39-c923-79ca-57bb-7cf9afe21d54@deltatee.com>
- <20190624181632.GC8268@ziepe.ca>
- <bbd81ef9-b4f7-3ba7-7f93-85f602495e19@deltatee.com>
- <20190624185444.GD8268@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <980b6d6b-0232-51b6-5aae-03fa8e7fc8e5@deltatee.com>
-Date:   Mon, 24 Jun 2019 13:37:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+        id S1725916AbfFXUPk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Jun 2019 16:15:40 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Jun 2019 13:15:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,413,1557212400"; 
+   d="scan'208";a="360124684"
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by fmsmga006.fm.intel.com with ESMTP; 24 Jun 2019 13:15:39 -0700
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x5OKFcET022978;
+        Mon, 24 Jun 2019 13:15:39 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x5OKFbCZ170308;
+        Mon, 24 Jun 2019 16:15:37 -0400
+Subject: [PATCH] IB/hfi1: Close PSM sdma_progress sleep window
+To:     stable@vger.kernel.org
+From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     linux-rdma@vger.kernel.org, stable-commits@vger.kernel.org
+Date:   Mon, 24 Jun 2019 16:15:37 -0400
+Message-ID: <20190624201537.170286.13849.stgit@awfm-01.aw.intel.com>
+User-Agent: StGit/0.16
 MIME-Version: 1.0
-In-Reply-To: <20190624185444.GD8268@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, kbusch@kernel.org, sagi@grimberg.me, bhelgaas@google.com, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, dan.j.williams@intel.com, hch@lst.de, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+commit da9de5f8527f4b9efc82f967d29a583318c034c7 upstream.
 
+The call to sdma_progress() is called outside the wait lock.
 
-On 2019-06-24 12:54 p.m., Jason Gunthorpe wrote:
-> On Mon, Jun 24, 2019 at 12:28:33PM -0600, Logan Gunthorpe wrote:
-> 
->>> Sounded like this series does generate the dma_addr for the correct
->>> device..
->>
->> This series doesn't generate any DMA addresses with dma_map(). The
->> current p2pdma code ensures everything is behind the same root port and
->> only uses the pci bus address. This is valid and correct, but yes it's
->> something to expand upon.
-> 
-> I think if you do this it still has to be presented as the same API
-> like dma_map that takes in the target device * and produces the device
-> specific dma_addr_t
+In this case, there is a race condition where sdma_progress() can return
+false and the sdma_engine can idle.  If that happens, there will be no
+more sdma interrupts to cause the wakeup and the user_sdma xmit will hang.
 
-Yes, once we consider the case where it can go through the root complex,
-we will need an API similar to dma_map(). We got rid of that API because
-it wasn't yet required or used by anything and, per our best practices,
-we don't add features that aren't used as that is more confusing for
-people reading/reworking the code.
+Fix by moving the lock to enclose the sdma_progress() call.
 
-> Otherwise this whole thing is confusing and looks like *all* of it can
-> only work under the switch assumption
+Also, delete busycount. The need for this was removed by:
+commit bcad29137a97 ("IB/hfi1: Serve the most starved iowait entry first")
 
-Hopefully it'll be clearer once we do the work to map for going through
-the root complex. It's not that confusing to me. But it's all orthogonal
-to the dma_addr_t through the block layer concept.
+Ported to linux-4.9.y.
 
-Logan
+Cc: <stable@vger.kernel.org>
+Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+Reviewed-by: Gary Leshner <Gary.S.Leshner@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ drivers/infiniband/hw/hfi1/user_sdma.c |   13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/user_sdma.c b/drivers/infiniband/hw/hfi1/user_sdma.c
+index 4c11116..098296a 100644
+--- a/drivers/infiniband/hw/hfi1/user_sdma.c
++++ b/drivers/infiniband/hw/hfi1/user_sdma.c
+@@ -260,7 +260,6 @@ struct user_sdma_txreq {
+ 	struct list_head list;
+ 	struct user_sdma_request *req;
+ 	u16 flags;
+-	unsigned busycount;
+ 	u64 seqnum;
+ };
+ 
+@@ -323,25 +322,22 @@ static int defer_packet_queue(
+ 	struct hfi1_user_sdma_pkt_q *pq =
+ 		container_of(wait, struct hfi1_user_sdma_pkt_q, busy);
+ 	struct hfi1_ibdev *dev = &pq->dd->verbs_dev;
+-	struct user_sdma_txreq *tx =
+-		container_of(txreq, struct user_sdma_txreq, txreq);
+ 
+-	if (sdma_progress(sde, seq, txreq)) {
+-		if (tx->busycount++ < MAX_DEFER_RETRY_COUNT)
+-			goto eagain;
+-	}
++	write_seqlock(&dev->iowait_lock);
++	if (sdma_progress(sde, seq, txreq))
++		goto eagain;
+ 	/*
+ 	 * We are assuming that if the list is enqueued somewhere, it
+ 	 * is to the dmawait list since that is the only place where
+ 	 * it is supposed to be enqueued.
+ 	 */
+ 	xchg(&pq->state, SDMA_PKT_Q_DEFERRED);
+-	write_seqlock(&dev->iowait_lock);
+ 	if (list_empty(&pq->busy.list))
+ 		list_add_tail(&pq->busy.list, &sde->dmawait);
+ 	write_sequnlock(&dev->iowait_lock);
+ 	return -EBUSY;
+ eagain:
++	write_sequnlock(&dev->iowait_lock);
+ 	return -EAGAIN;
+ }
+ 
+@@ -925,7 +921,6 @@ static int user_sdma_send_pkts(struct user_sdma_request *req, unsigned maxpkts)
+ 
+ 		tx->flags = 0;
+ 		tx->req = req;
+-		tx->busycount = 0;
+ 		INIT_LIST_HEAD(&tx->list);
+ 
+ 		if (req->seqnum == req->info.npkts - 1)
+
