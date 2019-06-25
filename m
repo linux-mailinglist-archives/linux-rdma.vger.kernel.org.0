@@ -2,133 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B152055830
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2019 21:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAB75585B
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2019 22:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727284AbfFYTyk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Jun 2019 15:54:40 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:37308 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726712AbfFYTyk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 25 Jun 2019 15:54:40 -0400
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.89)
-        (envelope-from <logang@deltatee.com>)
-        id 1hfrWI-0007CW-Rp; Tue, 25 Jun 2019 13:54:23 -0600
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20190620161240.22738-1-logang@deltatee.com>
- <20190624072752.GA3954@lst.de>
- <558a27ba-e7c9-9d94-cad0-377b8ee374a6@deltatee.com>
- <20190625072008.GB30350@lst.de>
- <f0f002bf-2b94-cd18-d18f-5d0b08311495@deltatee.com>
- <20190625170115.GA9746@lst.de>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <41235a05-8ed1-e69a-e7cd-48cae7d8a676@deltatee.com>
-Date:   Tue, 25 Jun 2019 13:54:21 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726772AbfFYUEN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Jun 2019 16:04:13 -0400
+Received: from mail-eopbgr70040.outbound.protection.outlook.com ([40.107.7.40]:4702
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726393AbfFYUEN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 25 Jun 2019 16:04:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CsdCdiJO+pHsc1eJ3dApby8/H9x/BcSYn24k4wJDQZw=;
+ b=HqE85HsrpzZL1WM26a+aj2Ni0N9GMZDEu2YGkVGUMEwlzxXONasvh5CAOb1ZpOb/skvqWNRKD3ukq+uBqECjjTx5BqLtbJrHxfRjqVPjc7Vk4dad8gudgQD/sOp0WUefXjD7JejAw1QNTmQS9OF7axPchlaZReZcEyLhG2pTvnc=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB6525.eurprd05.prod.outlook.com (20.179.26.210) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.17; Tue, 25 Jun 2019 20:04:08 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2008.014; Tue, 25 Jun 2019
+ 20:04:08 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Michal Kalderon <michal.kalderon@marvell.com>
+CC:     "ariel.elior@marvell.com" <ariel.elior@marvell.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v4 rdma-next 2/3] RDMA/qedr: Add doorbell overflow
+ recovery support
+Thread-Topic: [PATCH v4 rdma-next 2/3] RDMA/qedr: Add doorbell overflow
+ recovery support
+Thread-Index: AQHVK5EleJHZu3WXtUqklh5HNdMtxQ==
+Date:   Tue, 25 Jun 2019 20:04:08 +0000
+Message-ID: <20190625200404.GA17378@mellanox.com>
+References: <20190624102809.8793-1-michal.kalderon@marvell.com>
+ <20190624102809.8793-3-michal.kalderon@marvell.com>
+In-Reply-To: <20190624102809.8793-3-michal.kalderon@marvell.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM4PR07CA0025.eurprd07.prod.outlook.com
+ (2603:10a6:205:1::38) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [66.187.232.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 56fe609a-35b9-4642-f38a-08d6f9a847fc
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6525;
+x-ms-traffictypediagnostic: VI1PR05MB6525:
+x-microsoft-antispam-prvs: <VI1PR05MB65257983FBD75A415F307DFFCFE30@VI1PR05MB6525.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0079056367
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(136003)(346002)(39860400002)(396003)(376002)(189003)(199004)(3846002)(446003)(6116002)(68736007)(6436002)(11346002)(2616005)(386003)(486006)(99286004)(6916009)(6246003)(1076003)(102836004)(256004)(52116002)(6506007)(76176011)(476003)(14444005)(26005)(73956011)(66556008)(64756008)(66446008)(14454004)(66476007)(316002)(36756003)(66946007)(5660300002)(54906003)(8676002)(33656002)(7736002)(4326008)(71190400001)(71200400001)(25786009)(478600001)(66066001)(8936002)(186003)(81166006)(81156014)(6512007)(86362001)(2906002)(53936002)(305945005)(229853002)(6486002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6525;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: vS7xszmCDRU+EDYu0amcE2DRoraklyJNQkNbFyPGw3RMbUew9FZRvivIPQU66BvYlDsZ2jrdI9Vzahm2HC1Iij80/rfmZW9x5QlNtjzjo0zOfkBTDGU1IjbbixSJXLR9DptCQKEd6qkqJIj027ZiJLGo48nUtE5XEgrnUYFOFd3ErsPLN9ld5WMBzdftXLI/XHtzbQCyip6qJb92ZTHb0Yf90V0ZpTqs2K816jOx9O8zxO5r4r+QFLqwgAw4zgO4rTQTYhatxdXZ5ttWrnmLQU03psY5B0tzHAcFncrOo2+1vBH0PRvLo9Quq4WlP8oBZJKAcF7wPVUc4408LUSMV5+gkCmPfuFstTpHYJUMrdmz6lwahJy4e8K/dJFtEXXpEkqdAW9hrgOmBnuvZqNdQXwqX+IIeaY5NJSjWS21NyI=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <78478FDD0C3D784E8B2F45758E4C374E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20190625170115.GA9746@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, jgg@ziepe.ca, kbusch@kernel.org, sagi@grimberg.me, dan.j.williams@intel.com, bhelgaas@google.com, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56fe609a-35b9-4642-f38a-08d6f9a847fc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jun 2019 20:04:08.1532
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6525
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Jun 24, 2019 at 01:28:08PM +0300, Michal Kalderon wrote:
 
+> +/* Map the kernel doorbell recovery memory entry */
+> +int qedr_mmap_db_rec(struct vm_area_struct *vma)
+> +{
+> +	unsigned long len =3D vma->vm_end - vma->vm_start;
+> +
+> +	return remap_pfn_range(vma, vma->vm_start,
+> +			       vma->vm_pgoff,
+> +			       len, vma->vm_page_prot);
+> +}
+> +
+>  int qedr_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
+>  {
+>  	struct qedr_ucontext *ucontext =3D get_qedr_ucontext(context);
+> @@ -390,6 +446,8 @@ int qedr_mmap(struct ib_ucontext *context, struct vm_=
+area_struct *vma)
+>  	unsigned long phys_addr =3D vma->vm_pgoff << PAGE_SHIFT;
+>  	unsigned long len =3D (vma->vm_end - vma->vm_start);
+>  	unsigned long dpi_start;
+> +	struct qedr_mm *mm;
+> +	int rc;
+> =20
+>  	dpi_start =3D dev->db_phys_addr + (ucontext->dpi * ucontext->dpi_size);
+> =20
+> @@ -405,29 +463,28 @@ int qedr_mmap(struct ib_ucontext *context, struct v=
+m_area_struct *vma)
+>  		return -EINVAL;
+>  	}
+> =20
+> -	if (!qedr_search_mmap(ucontext, phys_addr, len)) {
+> -		DP_ERR(dev, "failed mmap, vm_pgoff=3D0x%lx is not authorized\n",
+> +	mm =3D qedr_remove_mmap(ucontext, phys_addr, len);
+> +	if (!mm) {
+> +		DP_ERR(dev, "failed to remove mmap, vm_pgoff=3D0x%lx\n",
+>  		       vma->vm_pgoff);
+>  		return -EINVAL;
+>  =09
 
-On 2019-06-25 11:01 a.m., Christoph Hellwig wrote:
-> On Tue, Jun 25, 2019 at 09:57:52AM -0600, Logan Gunthorpe wrote:
->>> You assume all addressing is done by the PCI bus address.  If a device
->>> is addressing its own BAR there is no reason to use the PCI bus address,
->>> as it might have much more intelligent schemes (usually bar + offset).
->>
->> Yes, that will be a bit tricky regardless of what we do.
-> 
-> At least right now it isn't at all.  I've implemented support for
-> a draft NVMe proposal for that, and it basically boils down to this
-> in the p2p path:
-> 
-> 	addr = sg_phys(sg);
-> 
-> 	if (page->pgmap->dev == ctrl->dev && HAS_RELATIVE_ADDRESSING)
-> 		addr -= ctrl->cmb_start_addr;
-> 
-> 		// set magic flag in the SGL
-> 	} else {
-> 		addr -= pgmap->pci_p2pdma_bus_offset;
-> 	}
-> 
-> without the pagemap it would require a range compare instead, which
-> isn't all that hard either.
-> 
->>>>> Also duplicating the whole block I/O stack, including hooks all over
->>>>> the fast path is pretty much a no-go.
->>>>
->>>> There was very little duplicate code in the patch set. (Really just the
->>>> mapping code). There are a few hooks, but in practice not that many if
->>>> we ignore the WARN_ONs. We might be able to work to reduce this further.
->>>> The main hooks are: when we skip bouncing, when we skip integrity prep,
->>>> when we split, and when we map. And the patchset drops the PCI_P2PDMA
->>>> hook when we map. So we're talking about maybe three or four extra ifs
->>>> that would likely normally be fast due to the branch predictor.
->>>
->>> And all of those add code to the block layer fast path.
->>
->> If we can't add any ifs to the block layer, there's really nothing we
->> can do.
-> 
-> That is not what I said.  Of course we can.  But we rather have a
-> really good reason.  And adding a parallel I/O path violating the
-> highlevel model is not one.
-> 
->> So then we're committed to using struct page for P2P?
-> 
-> Only until we have a significantly better soltution.  And I think
-> using physical address in some form instead of pages is that,
-> adding a parallel path with dma_addr_t is not, it actually is worse
-> than the current code in many respects.
+This is so gross, please follow the pattern other drivers use for
+managing the mmap cookie
 
-Well whether it's dma_addr_t, phys_addr_t, pfn_t the result isn't all
-that different. You still need roughly the same 'if' hooks for any
-backed memory that isn't in the linear mapping and you can't get a
-kernel mapping for directly.
+In fact I am sick of seeing drivers wrongly re-implement this, so you
+now get the job to make some proper core helpers to manage mmap
+cookies for drivers.
 
-It wouldn't be too hard to do a similar patch set that uses something
-like phys_addr_t instead and have a request and queue flag for support
-of non-mappable memory. But you'll end up with very similar 'if' hooks
-and we'd have to clean up all bio-using drivers that access the struct
-pages directly.
+The EFA driver is probably the best example, I suggest you move that
+code to a common file in ib-core and use it here instead of redoing
+yet again another broken version.
 
-Though, we'd also still have the problem of how to recognize when the
-address points to P2PDMA and needs to be translated to the bus offset.
-The map-first inversion was what helped here because the driver
-submitting the requests had all the information. Though it could be
-another request flag and indicating non-mappable memory could be a flag
-group like REQ_NOMERGE_FLAGS -- REQ_NOMAP_FLAGS.
+siw has another copy of basically the same thing.
 
-If you think any of the above ideas sound workable I'd be happy to try
-to code up another prototype.
+> +static int qedr_init_user_db_rec(struct ib_udata *udata,
+> +				 struct qedr_dev *dev, struct qedr_userq *q,
+> +				 bool requires_db_rec)
+> +{
+> +	struct qedr_ucontext *uctx =3D
+> +		rdma_udata_to_drv_context(udata, struct qedr_ucontext,
+> +					  ibucontext);
+> +
+> +	/* Aborting for non doorbell userqueue (SRQ) or non-supporting lib */
+> +	if (requires_db_rec =3D=3D 0 || !uctx->db_rec)
+> +		return 0;
+> +
+> +	/* Allocate a page for doorbell recovery, add to mmap ) */
+> +	q->db_rec_data =3D (void *)get_zeroed_page(GFP_KERNEL);
 
-Logan
+Pages obtained by get_zeroed_page shuld not be inserted by
+remap_pfn_range, those cases need to use vm_insert_page instead.
+
+>  struct qedr_alloc_ucontext_resp {
+>  	__aligned_u64 db_pa;
+> @@ -74,6 +83,7 @@ struct qedr_create_cq_uresp {
+>  	__u32 db_offset;
+>  	__u16 icid;
+>  	__u16 reserved;
+> +	__u64 db_rec_addr;
+>  };
+
+All uapi u64s need to be __aligned_u64 in this file.
+
+> +/* doorbell recovery entry allocated and populated by userspace doorbell=
+ing
+> + * entities and mapped to kernel. Kernel uses this to register doorbell
+> + * information with doorbell drop recovery mechanism.
+> + */
+> +struct qedr_user_db_rec {
+> +	__aligned_u64 db_data; /* doorbell data */
+> +};
+
+like this one :\
+
+Jason
