@@ -2,178 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAB75585B
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2019 22:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0CA558AB
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2019 22:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbfFYUEN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Jun 2019 16:04:13 -0400
-Received: from mail-eopbgr70040.outbound.protection.outlook.com ([40.107.7.40]:4702
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        id S1726455AbfFYUXa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Jun 2019 16:23:30 -0400
+Received: from mail-eopbgr150089.outbound.protection.outlook.com ([40.107.15.89]:14901
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726393AbfFYUEN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 25 Jun 2019 16:04:13 -0400
+        id S1726447AbfFYUXa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 25 Jun 2019 16:23:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CsdCdiJO+pHsc1eJ3dApby8/H9x/BcSYn24k4wJDQZw=;
- b=HqE85HsrpzZL1WM26a+aj2Ni0N9GMZDEu2YGkVGUMEwlzxXONasvh5CAOb1ZpOb/skvqWNRKD3ukq+uBqECjjTx5BqLtbJrHxfRjqVPjc7Vk4dad8gudgQD/sOp0WUefXjD7JejAw1QNTmQS9OF7axPchlaZReZcEyLhG2pTvnc=
+ bh=EZlKUCWlkassRC2e4xFMg023+Pcx9HbYR4AxRtg6uSM=;
+ b=ZAdA2q6+L/zRfbSnEscMPrzkgOEfgAPr9HdbmEMgqlNOBpY8s0ojQGn5JA7tAL/wy/s0aKgNv0e5qylvNBjeCtnkMvV9MSr/1Kuqr9ZIJIUNMGYNxiiMMDJYHDbM0Gm7tI4veI5P2WzhI20PZH5wt2XNmrozCGVBNdeAGEsx7FE=
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB6525.eurprd05.prod.outlook.com (20.179.26.210) with Microsoft SMTP
+ VI1PR05MB6286.eurprd05.prod.outlook.com (20.179.24.86) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2008.17; Tue, 25 Jun 2019 20:04:08 +0000
+ 15.20.2008.16; Tue, 25 Jun 2019 20:23:25 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2008.014; Tue, 25 Jun 2019
- 20:04:08 +0000
+ 20:23:25 +0000
 From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Michal Kalderon <michal.kalderon@marvell.com>
-CC:     "ariel.elior@marvell.com" <ariel.elior@marvell.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v4 rdma-next 2/3] RDMA/qedr: Add doorbell overflow
- recovery support
-Thread-Topic: [PATCH v4 rdma-next 2/3] RDMA/qedr: Add doorbell overflow
- recovery support
-Thread-Index: AQHVK5EleJHZu3WXtUqklh5HNdMtxQ==
-Date:   Tue, 25 Jun 2019 20:04:08 +0000
-Message-ID: <20190625200404.GA17378@mellanox.com>
-References: <20190624102809.8793-1-michal.kalderon@marvell.com>
- <20190624102809.8793-3-michal.kalderon@marvell.com>
-In-Reply-To: <20190624102809.8793-3-michal.kalderon@marvell.com>
+To:     Yishai Hadas <yishaih@dev.mellanox.co.il>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v1 11/12] IB/mlx5: Implement DEVX dispatching
+ event
+Thread-Topic: [PATCH rdma-next v1 11/12] IB/mlx5: Implement DEVX dispatching
+ event
+Thread-Index: AQHVJfmOhAl6cjxbGkeHYVIPFHC63aaqvcMAgABRjgCAABOuAIABWUuAgABfawA=
+Date:   Tue, 25 Jun 2019 20:23:24 +0000
+Message-ID: <20190625202320.GJ3607@mellanox.com>
+References: <20190618171540.11729-1-leon@kernel.org>
+ <20190618171540.11729-12-leon@kernel.org>
+ <20190624120338.GD5479@mellanox.com>
+ <3a2e53f8-e7dd-3e01-c7c7-99d41f711d87@dev.mellanox.co.il>
+ <20190624180558.GL7418@mellanox.com>
+ <a2380ea6-4542-c72c-96f7-e68786847ccc@dev.mellanox.co.il>
+In-Reply-To: <a2380ea6-4542-c72c-96f7-e68786847ccc@dev.mellanox.co.il>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM4PR07CA0025.eurprd07.prod.outlook.com
- (2603:10a6:205:1::38) To VI1PR05MB4141.eurprd05.prod.outlook.com
+x-clientproxiedby: AM4PR0701CA0040.eurprd07.prod.outlook.com
+ (2603:10a6:200:42::50) To VI1PR05MB4141.eurprd05.prod.outlook.com
  (2603:10a6:803:4d::16)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [66.187.232.66]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 56fe609a-35b9-4642-f38a-08d6f9a847fc
+x-ms-office365-filtering-correlation-id: 44be5860-3d99-4cb6-00c4-08d6f9aaf96b
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6525;
-x-ms-traffictypediagnostic: VI1PR05MB6525:
-x-microsoft-antispam-prvs: <VI1PR05MB65257983FBD75A415F307DFFCFE30@VI1PR05MB6525.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6286;
+x-ms-traffictypediagnostic: VI1PR05MB6286:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <VI1PR05MB628634AE2ED0ED56148C3D62CFE30@VI1PR05MB6286.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-forefront-prvs: 0079056367
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(136003)(346002)(39860400002)(396003)(376002)(189003)(199004)(3846002)(446003)(6116002)(68736007)(6436002)(11346002)(2616005)(386003)(486006)(99286004)(6916009)(6246003)(1076003)(102836004)(256004)(52116002)(6506007)(76176011)(476003)(14444005)(26005)(73956011)(66556008)(64756008)(66446008)(14454004)(66476007)(316002)(36756003)(66946007)(5660300002)(54906003)(8676002)(33656002)(7736002)(4326008)(71190400001)(71200400001)(25786009)(478600001)(66066001)(8936002)(186003)(81166006)(81156014)(6512007)(86362001)(2906002)(53936002)(305945005)(229853002)(6486002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6525;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(376002)(39860400002)(366004)(396003)(346002)(189003)(199004)(14454004)(229853002)(99286004)(7736002)(305945005)(966005)(52116002)(86362001)(386003)(6512007)(26005)(6486002)(3846002)(6116002)(6436002)(8676002)(8936002)(316002)(71190400001)(53936002)(54906003)(6246003)(71200400001)(33656002)(4326008)(73956011)(81156014)(64756008)(25786009)(36756003)(66476007)(6306002)(66446008)(66556008)(68736007)(76176011)(66946007)(6862004)(81166006)(11346002)(476003)(2616005)(486006)(2906002)(66066001)(5660300002)(446003)(186003)(102836004)(478600001)(1076003)(256004)(6506007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6286;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: vS7xszmCDRU+EDYu0amcE2DRoraklyJNQkNbFyPGw3RMbUew9FZRvivIPQU66BvYlDsZ2jrdI9Vzahm2HC1Iij80/rfmZW9x5QlNtjzjo0zOfkBTDGU1IjbbixSJXLR9DptCQKEd6qkqJIj027ZiJLGo48nUtE5XEgrnUYFOFd3ErsPLN9ld5WMBzdftXLI/XHtzbQCyip6qJb92ZTHb0Yf90V0ZpTqs2K816jOx9O8zxO5r4r+QFLqwgAw4zgO4rTQTYhatxdXZ5ttWrnmLQU03psY5B0tzHAcFncrOo2+1vBH0PRvLo9Quq4WlP8oBZJKAcF7wPVUc4408LUSMV5+gkCmPfuFstTpHYJUMrdmz6lwahJy4e8K/dJFtEXXpEkqdAW9hrgOmBnuvZqNdQXwqX+IIeaY5NJSjWS21NyI=
+x-microsoft-antispam-message-info: 58IfWk/pGS39okTNyhpi6dBqB+vwZQzEmsHRFzBuHgL4vhP1yqEHH5tffj8uFmtl1VlagmguetnKSk6mgb6msxsLRIwnewBroyPggU+hY+55ALEh6lixenmVPktYz5GuYf1YYBiFBF694rPlHZ3/xJUqP0tX3Zo0gPE57e3JjK/aH/GG1AhfosFL3WGKUHX1RvtePxmbWTdpNvQx0za2rE+KaLyD7HwNQd+oi7GoTvRWgJFAPXACU10tVgZr31TuVM6Lb8B4ZEtH+kHLHOiJZcGxMP4Qs/rTCw12LfwWxXXajuB81gMediR00W0hKIIijvocnnElSi+/l3jjkuowlcxxzx1WGRIHvyhPQhYoD28ZGK8jCMJAt2ApztgDG6LxhK5yYa1P+wRlmTTYNcDdFfLVWcihUA4hCEyNkvdSh2U=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <78478FDD0C3D784E8B2F45758E4C374E@eurprd05.prod.outlook.com>
+Content-ID: <40E9C00191753E49BCF30A92BCDAD487@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56fe609a-35b9-4642-f38a-08d6f9a847fc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jun 2019 20:04:08.1532
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44be5860-3d99-4cb6-00c4-08d6f9aaf96b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jun 2019 20:23:25.0046
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6525
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6286
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 01:28:08PM +0300, Michal Kalderon wrote:
+On Tue, Jun 25, 2019 at 05:41:49PM +0300, Yishai Hadas wrote:
+> > > > Why don't we return EIO as soon as is-destroyed happens? What is th=
+e
+> > > > point of flushing out the accumulated events?
+> > >=20
+> > > It follows the above uverb code/logic that returns existing events ev=
+en in
+> > > that case, also the async command events in this file follows that lo=
+gic, I
+> > > suggest to stay consistent.
+> >=20
+> > Don't follow broken uverbs stuff...
+>=20
+> May it be that there is some event that we still want to deliver post
+> unbind/hot-unplug ? for example IB_EVENT_DEVICE_FATAL in uverbs and other=
+s
+> from the driver code.
 
-> +/* Map the kernel doorbell recovery memory entry */
-> +int qedr_mmap_db_rec(struct vm_area_struct *vma)
-> +{
-> +	unsigned long len =3D vma->vm_end - vma->vm_start;
-> +
-> +	return remap_pfn_range(vma, vma->vm_start,
-> +			       vma->vm_pgoff,
-> +			       len, vma->vm_page_prot);
-> +}
-> +
->  int qedr_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
->  {
->  	struct qedr_ucontext *ucontext =3D get_qedr_ucontext(context);
-> @@ -390,6 +446,8 @@ int qedr_mmap(struct ib_ucontext *context, struct vm_=
-area_struct *vma)
->  	unsigned long phys_addr =3D vma->vm_pgoff << PAGE_SHIFT;
->  	unsigned long len =3D (vma->vm_end - vma->vm_start);
->  	unsigned long dpi_start;
-> +	struct qedr_mm *mm;
-> +	int rc;
-> =20
->  	dpi_start =3D dev->db_phys_addr + (ucontext->dpi * ucontext->dpi_size);
-> =20
-> @@ -405,29 +463,28 @@ int qedr_mmap(struct ib_ucontext *context, struct v=
-m_area_struct *vma)
->  		return -EINVAL;
->  	}
-> =20
-> -	if (!qedr_search_mmap(ucontext, phys_addr, len)) {
-> -		DP_ERR(dev, "failed mmap, vm_pgoff=3D0x%lx is not authorized\n",
-> +	mm =3D qedr_remove_mmap(ucontext, phys_addr, len);
-> +	if (!mm) {
-> +		DP_ERR(dev, "failed to remove mmap, vm_pgoff=3D0x%lx\n",
->  		       vma->vm_pgoff);
->  		return -EINVAL;
->  =09
+EIO is DEVICE_FATAL.
 
-This is so gross, please follow the pattern other drivers use for
-managing the mmap cookie
+> Not sure that we want to change this logic.
+> What do you think ?
 
-In fact I am sick of seeing drivers wrongly re-implement this, so you
-now get the job to make some proper core helpers to manage mmap
-cookies for drivers.
+I think this code should exit immediately with EIO if the device is
+disassociated.
 
-The EFA driver is probably the best example, I suggest you move that
-code to a common file in ib-core and use it here instead of redoing
-yet again another broken version.
+> > > > Maybe the event should be re-added on error? Tricky.
+> > >=20
+> > > What will happen if another copy_to_user may then fail again (loop ?)=
+ ...
+> > > not sure that we want to get into this tricky handling ...
+> > >=20
+> > > As of above, It follows the logic from uverbs at that area.
+> > > https://elixir.bootlin.com/linux/latest/source/drivers/infiniband/cor=
+e/uverbs_main.c#L267
+> >=20
+> > again it is wrong...
+> >=20
+> > There is no loop if you just stick the item back on the head of the
+> > list and exit, which is probably the right thing to do..
+> >=20
+>=20
+> What if copy_to_user() will fail again just later on ? we might end-up wi=
+th
+> loop of read(s) that always find an event as it was put back.
 
-siw has another copy of basically the same thing.
+That is clearly an application bug and is not the concern of the
+kernel..
 
-> +static int qedr_init_user_db_rec(struct ib_udata *udata,
-> +				 struct qedr_dev *dev, struct qedr_userq *q,
-> +				 bool requires_db_rec)
-> +{
-> +	struct qedr_ucontext *uctx =3D
-> +		rdma_udata_to_drv_context(udata, struct qedr_ucontext,
-> +					  ibucontext);
-> +
-> +	/* Aborting for non doorbell userqueue (SRQ) or non-supporting lib */
-> +	if (requires_db_rec =3D=3D 0 || !uctx->db_rec)
-> +		return 0;
-> +
-> +	/* Allocate a page for doorbell recovery, add to mmap ) */
-> +	q->db_rec_data =3D (void *)get_zeroed_page(GFP_KERNEL);
+> I suggest to leave this flow as it's now, at least for this series
+> submission.
+>=20
+> Agree ?
 
-Pages obtained by get_zeroed_page shuld not be inserted by
-remap_pfn_range, those cases need to use vm_insert_page instead.
-
->  struct qedr_alloc_ucontext_resp {
->  	__aligned_u64 db_pa;
-> @@ -74,6 +83,7 @@ struct qedr_create_cq_uresp {
->  	__u32 db_offset;
->  	__u16 icid;
->  	__u16 reserved;
-> +	__u64 db_rec_addr;
->  };
-
-All uapi u64s need to be __aligned_u64 in this file.
-
-> +/* doorbell recovery entry allocated and populated by userspace doorbell=
-ing
-> + * entities and mapped to kernel. Kernel uses this to register doorbell
-> + * information with doorbell drop recovery mechanism.
-> + */
-> +struct qedr_user_db_rec {
-> +	__aligned_u64 db_data; /* doorbell data */
-> +};
-
-like this one :\
+I don't think you can actually fix this, so maybe we have to leave
+it. But add a comment explaining=20
 
 Jason
