@@ -2,210 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DAD55246
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2019 16:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585B7553D5
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2019 17:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731506AbfFYOly (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Jun 2019 10:41:54 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:55664 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731016AbfFYOly (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jun 2019 10:41:54 -0400
-Received: by mail-wm1-f65.google.com with SMTP id a15so3112532wmj.5
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Jun 2019 07:41:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=n0d0Ae+gSGnxl88/UU21Zsil+h14+9dBRPmEv3CyqL0=;
-        b=LhAgCPctl/m5O0Vc6d9e/xtYSilZmhLLaeFYpVW74acBkRtSLVHY3p9GXOw6caEKMd
-         mtDqDZSk15+RBC7LCOCk1QuDcKkjMiY7+B+QRoW1nJbaueAhUxON7WWy/VXfklns0ywd
-         pkSGLa82+sBKdbaRZGTuea84+l70xCweV6i3TK9HvPNsCyj+7pLS1zWnE3lSFW+fHtvk
-         SOsn8s6le8K2hrVQ+aP4l0v4Bpap8pQERb4ZUOs69RO2Zp0VS6bb+Da8pBaU0rW5bume
-         t9Z/TXHBa6fB4G1MJ7aytDteFxnohuW/rQCvRheYjWAWB0R9IclRzm2OCPQksG3N7iAY
-         Jl+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n0d0Ae+gSGnxl88/UU21Zsil+h14+9dBRPmEv3CyqL0=;
-        b=kNTZ1fsd71ujAcQIQ8h9xzHYFFpnz4RBC6Ybf3hD+ViVrz6oTX8fk0n6J1nzBu3ati
-         B+HOwbHrHadz0Xl8DN769TcOOQhCo8yQscAyneDbXs3ua00WIbxMSVUq7Rda752eMpnV
-         MpMEVI4BYQ3WI9ln6godh8XTB3vg6ZpcFlWgwn+KU1qT62Gjpg8c20icQmZJ1SHYJ1cs
-         Si6J1rwI0RjLQJ3sb5NjhXYeqOZU5afLg7+86J/bV7PydXrHFFNarTIJEopsdJ4A9f5P
-         0PxY9T+qzl+Suf3muLFLb3VnTKdZd1AFwGFFRl84LG/WgPvnsPUnZuBRfg+AzFIwrSTa
-         c8cw==
-X-Gm-Message-State: APjAAAVmA7vdLorasWUdkGfr6lvv0cOlD8lmnSEYFa8sfmoLa6dbKih4
-        ILM/C/RlTdJ8N6M+9zo+Fqfuag==
-X-Google-Smtp-Source: APXvYqzErTbZkrZpCWohh9Nh6olaNAg1q/fowQr7ZYvw8rVdlN/W9IRu6pU5+0j7ltBB7Hai6tiQyg==
-X-Received: by 2002:a05:600c:1008:: with SMTP id c8mr20641579wmc.133.1561473711671;
-        Tue, 25 Jun 2019 07:41:51 -0700 (PDT)
-Received: from [10.8.2.125] ([193.47.165.251])
-        by smtp.googlemail.com with ESMTPSA id a7sm14889670wrs.94.2019.06.25.07.41.50
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 Jun 2019 07:41:51 -0700 (PDT)
-Subject: Re: [PATCH rdma-next v1 11/12] IB/mlx5: Implement DEVX dispatching
- event
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-References: <20190618171540.11729-1-leon@kernel.org>
- <20190618171540.11729-12-leon@kernel.org>
- <20190624120338.GD5479@mellanox.com>
- <3a2e53f8-e7dd-3e01-c7c7-99d41f711d87@dev.mellanox.co.il>
- <20190624180558.GL7418@mellanox.com>
-From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
-Message-ID: <a2380ea6-4542-c72c-96f7-e68786847ccc@dev.mellanox.co.il>
-Date:   Tue, 25 Jun 2019 17:41:49 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1731329AbfFYP6S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Jun 2019 11:58:18 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:35340 "EHLO ale.deltatee.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728442AbfFYP6R (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 25 Jun 2019 11:58:17 -0400
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.89)
+        (envelope-from <logang@deltatee.com>)
+        id 1hfnpU-00047F-3d; Tue, 25 Jun 2019 09:57:57 -0600
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Stephen Bates <sbates@raithlin.com>
+References: <20190620161240.22738-1-logang@deltatee.com>
+ <20190624072752.GA3954@lst.de>
+ <558a27ba-e7c9-9d94-cad0-377b8ee374a6@deltatee.com>
+ <20190625072008.GB30350@lst.de>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <f0f002bf-2b94-cd18-d18f-5d0b08311495@deltatee.com>
+Date:   Tue, 25 Jun 2019 09:57:52 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-In-Reply-To: <20190624180558.GL7418@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20190625072008.GB30350@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, jgg@ziepe.ca, kbusch@kernel.org, sagi@grimberg.me, dan.j.williams@intel.com, bhelgaas@google.com, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/24/2019 9:06 PM, Jason Gunthorpe wrote:
-> On Mon, Jun 24, 2019 at 07:55:32PM +0300, Yishai Hadas wrote:
-> 
->>>> +	/* Explicit filtering to kernel events which may occur frequently */
->>>> +	if (event_type == MLX5_EVENT_TYPE_CMD ||
->>>> +	    event_type == MLX5_EVENT_TYPE_PAGE_REQUEST)
->>>> +		return NOTIFY_OK;
->>>> +
->>>> +	table = container_of(nb, struct mlx5_devx_event_table, devx_nb.nb);
->>>> +	dev = container_of(table, struct mlx5_ib_dev, devx_event_table);
->>>> +	is_unaffiliated = is_unaffiliated_event(dev->mdev, event_type);
->>>> +
->>>> +	if (!is_unaffiliated)
->>>> +		obj_type = get_event_obj_type(event_type, data);
->>>> +	event = xa_load(&table->event_xa, event_type | (obj_type << 16));
->>>> +	if (!event)
->>>> +		return NOTIFY_DONE;
->>>
->>> event should be in the rcu as well
+
+
+On 2019-06-25 1:20 a.m., Christoph Hellwig wrote:
+> On Mon, Jun 24, 2019 at 10:07:56AM -0600, Logan Gunthorpe wrote:
+>>> For one passing a dma_addr_t through the block layer is a layering
+>>> violation, and one that I think will also bite us in practice.
+>>> The host physical to PCIe bus address mapping can have offsets, and
+>>> those offsets absolutely can be different for differnet root ports.
+>>> So with your caller generated dma_addr_t everything works fine with
+>>> a switched setup as the one you are probably testing on, but on a
+>>> sufficiently complicated setup with multiple root ports it can break.
 >>
->> Do we really need this ? I didn't see a flow that really requires
->> that.
+>> I don't follow this argument. Yes, I understand PCI Bus offsets and yes
+>> I understand that they only apply beyond the bus they're working with.
+>> But this isn't *that* complicated and it should be the responsibility of
+>> the P2PDMA code to sort out and provide a dma_addr_t for. The dma_addr_t
+>> that's passed through the block layer could be a bus address or it could
+>> be the result of a dma_map_* request (if the transaction is found to go
+>> through an RC) depending on the requirements of the devices being used.
 > 
-> I think there are no frees left? Even so it makes much more sense to
-> include the event in the rcu as if we ever did need to kfree it would
-> have to be via rcu
-> 
+> You assume all addressing is done by the PCI bus address.  If a device
+> is addressing its own BAR there is no reason to use the PCI bus address,
+> as it might have much more intelligent schemes (usually bar + offset).
 
-OK
+Yes, that will be a bit tricky regardless of what we do.
 
->>>> +	while (list_empty(&ev_queue->event_list)) {
->>>> +		spin_unlock_irq(&ev_queue->lock);
->>>> +
->>>> +		if (filp->f_flags & O_NONBLOCK)
->>>> +			return -EAGAIN;
->>>> +
->>>> +		if (wait_event_interruptible(ev_queue->poll_wait,
->>>> +			    (!list_empty(&ev_queue->event_list) ||
->>>> +			     ev_queue->is_destroyed))) {
->>>> +			return -ERESTARTSYS;
->>>> +		}
->>>> +
->>>> +		if (list_empty(&ev_queue->event_list) &&
->>>> +		    ev_queue->is_destroyed)
->>>> +			return -EIO;
->>>
->>> All these tests should be under the lock.
+>>> Also duplicating the whole block I/O stack, including hooks all over
+>>> the fast path is pretty much a no-go.
 >>
->> We can't call wait_event_interruptible() above which may sleep under the
->> lock, correct ? are you referring to the list_empty() and
->> is_destroyed ?
+>> There was very little duplicate code in the patch set. (Really just the
+>> mapping code). There are a few hooks, but in practice not that many if
+>> we ignore the WARN_ONs. We might be able to work to reduce this further.
+>> The main hooks are: when we skip bouncing, when we skip integrity prep,
+>> when we split, and when we map. And the patchset drops the PCI_P2PDMA
+>> hook when we map. So we're talking about maybe three or four extra ifs
+>> that would likely normally be fast due to the branch predictor.
 > 
-> yes
-> 
->> By the way looking in uverb code [1], similar code which is not done under
->> the lock as of here..
->>
->> [1] https://elixir.bootlin.com/linux/latest/source/drivers/infiniband/core/uverbs_main.c#L244
-> 
-> Also not a good idea
-> 
->>> Why don't we return EIO as soon as is-destroyed happens? What is the
->>> point of flushing out the accumulated events?
->>
->> It follows the above uverb code/logic that returns existing events even in
->> that case, also the async command events in this file follows that logic, I
->> suggest to stay consistent.
-> 
-> Don't follow broken uverbs stuff...
+> And all of those add code to the block layer fast path.
 
-May it be that there is some event that we still want to deliver post 
-unbind/hot-unplug ? for example IB_EVENT_DEVICE_FATAL in uverbs and 
-others from the driver code.
+If we can't add any ifs to the block layer, there's really nothing we
+can do.
 
-Not sure that we want to change this logic.
-What do you think ?
+So then we're committed to using struct page for P2P?
 
-> 
->>> Maybe the event should be re-added on error? Tricky.
->>
->> What will happen if another copy_to_user may then fail again (loop ?) ...
->> not sure that we want to get into this tricky handling ...
->>
->> As of above, It follows the logic from uverbs at that area.
->> https://elixir.bootlin.com/linux/latest/source/drivers/infiniband/core/uverbs_main.c#L267
-> 
-> again it is wrong...
-> 
-> There is no loop if you just stick the item back on the head of the
-> list and exit, which is probably the right thing to do..
-> 
-
-What if copy_to_user() will fail again just later on ? we might end-up 
-with loop of read(s) that always find an event as it was put back.
-I suggest to leave this flow as it's now, at least for this series 
-submission.
-
-Agree ?
-
-
->>>> @@ -2374,6 +2705,17 @@ static int devx_hot_unplug_async_cmd_event_file(struct ib_uobject *uobj,
->>>>    static int devx_hot_unplug_async_event_file(struct ib_uobject *uobj,
->>>>    					    enum rdma_remove_reason why)
->>>>    {
->>>> +	struct devx_async_event_file *ev_file =
->>>> +		container_of(uobj, struct devx_async_event_file,
->>>> +			     uobj);
->>>> +	struct devx_async_event_queue *ev_queue = &ev_file->ev_queue;
->>>> +
->>>> +	spin_lock_irq(&ev_queue->lock);
->>>> +	ev_queue->is_destroyed = 1;
->>>> +	spin_unlock_irq(&ev_queue->lock);
->>>> +
->>>> +	if (why == RDMA_REMOVE_DRIVER_REMOVE)
->>>> +		wake_up_interruptible(&ev_queue->poll_wait);
->>>
->>> Why isn't this wakeup always done?
->>
->> Maybe you are right and this can be always done to wake up any readers as
->> the 'is_destroyed' was set.
->>
->> By the way, any idea why it was done as such in uverbs [1] for similar flow
->> ? also the command events follows that.
-> 
-> I don't know, it is probably pointless too.
-> 
-> If we don't need it here then we shouldn't have it.
-> 
-> These random pointless ifs bother me as we have to spend time trying
-> to figure out that they are pointless down the road.
-> 
-
-OK, will drop this if.
-
+Logan
