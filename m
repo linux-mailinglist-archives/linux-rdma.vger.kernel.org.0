@@ -2,91 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2EC56E99
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2019 18:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4269556F01
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2019 18:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbfFZQV0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jun 2019 12:21:26 -0400
-Received: from mga14.intel.com ([192.55.52.115]:29361 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726227AbfFZQV0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 26 Jun 2019 12:21:26 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Jun 2019 09:21:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,420,1557212400"; 
-   d="scan'208";a="167091039"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.205.204]) ([10.254.205.204])
-  by orsmga006.jf.intel.com with ESMTP; 26 Jun 2019 09:21:19 -0700
-Subject: Re: [PATCH for-next v4 0/3] Clean up and refactor some CQ code
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20190614162435.44620.72298.stgit@awfm-01.aw.intel.com>
- <20190625173144.GA27947@mellanox.com>
- <1e0ba685-5ae8-d97d-1555-e4832258cc91@intel.com>
- <20190626160843.GA8420@mellanox.com>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <1cecef65-ea23-646c-d40b-191f58c6f8cb@intel.com>
-Date:   Wed, 26 Jun 2019 12:21:19 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726293AbfFZQoP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jun 2019 12:44:15 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55904 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726006AbfFZQoP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jun 2019 12:44:15 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+        (Exim 4.76)
+        (envelope-from <colin.king@canonical.com>)
+        id 1hgB1n-00016o-Ah; Wed, 26 Jun 2019 16:44:11 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx5: remove redundant assignment to ret
+Date:   Wed, 26 Jun 2019 17:44:11 +0100
+Message-Id: <20190626164411.20403-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20190626160843.GA8420@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/26/2019 12:08 PM, Jason Gunthorpe wrote:
-> On Wed, Jun 26, 2019 at 12:00:54PM -0400, Dennis Dalessandro wrote:
->> On 6/25/2019 1:31 PM, Jason Gunthorpe wrote:
->>> On Fri, Jun 14, 2019 at 12:25:28PM -0400, Dennis Dalessandro wrote:
->>>> This is really a resubmit of some code clean up we floated a while back. The
->>>> main goal here is to clean up some of the stuff which should be in the uapi
->>>> directory vs in in the driver directory. Then to break the single lock for
->>>> recv wqe processing.
->>>>
->>>> The accompanying user bits should already be in a PR on GitHub.
->>>>
->>>> Change log documented below each commit message.
->>>
->>> The conflicts with other hfi patches are too big for me, please respin
->>> this on wip/for-testing and resend.
->>>
->>> Thanks,
->>> Jason
->>>
->>
->> Jason, can you pull in f56044d ("IB/rdmavt: Add new completion inline") and
->> 4a9ceb7 ("IB/{rdmavt, qib, hfi1}: Convert to new completion API") from
->> Doug's wip/dl-for-next branch?
-> 
-> This was already done
-> 
-> Jason
+From: Colin Ian King <colin.king@canonical.com>
 
-Hmm... I'm not seeing it:
+Variable ret is being initialized with a value that is never read and
+ret is being re-assigned later on.  The initialization is redundant
+and can be removed.
 
-Here they are in Doug's branch:
-$ git log --pretty=oneline -n 100 rdma/wip/dl-for-next include/rdma | 
-grep -e "Add new completion\|Convert to new"
-4a9ceb7dbadf9e1435644b1f49720ee87431ce26 IB/{rdmavt, qib, hfi1}: Convert 
-to new completion API
-f56044d686c82bd31713fc0398d68e322813dc62 IB/rdmavt: Add new completion 
-inline
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Here is the for-testing:
-$ git log --pretty=oneline -n 100 rdma/wip/for-testing include/rdma | 
-grep -e "Add new completion\|Convert to new"
-awfm-01 $ echo $?
-1
-
--Denny
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index 072b56fda27e..dd47c6d03dad 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -1477,7 +1477,7 @@ static const struct pci_error_handlers mlx5_err_handler = {
+ static int mlx5_try_fast_unload(struct mlx5_core_dev *dev)
+ {
+ 	bool fast_teardown = false, force_teardown = false;
+-	int ret = 1;
++	int ret;
+ 
+ 	fast_teardown = MLX5_CAP_GEN(dev, fast_teardown);
+ 	force_teardown = MLX5_CAP_GEN(dev, force_teardown);
+-- 
+2.20.1
 
