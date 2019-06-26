@@ -2,56 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2A657322
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2019 22:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D059857326
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2019 22:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbfFZUzB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jun 2019 16:55:01 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:44954 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbfFZUzA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jun 2019 16:55:00 -0400
-Received: by mail-pl1-f196.google.com with SMTP id t7so2071698plr.11
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Jun 2019 13:55:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bMxdvEdLjD1A9AKJa7buamnua6ndE13zHk8/3SA0xpk=;
-        b=TBi220P0cqoilOs0VNo/aK3h3vIh4DHqMWYM3/xsM7rxg8vRC9vB3FeKKle7xEF+Ub
-         c/A2Ia6QYlSw7cwbMBQyfBdYv54uyZ6xKUQ+QkDRfgWgo5RypRkGjFaWm2ykPW6JTo8F
-         AnNSsV+rqWfslkCLRdq/e71/2TQZYL1quvSzRdMEfoUwlhYKvfJFQIhaWQUK4ia+k7eR
-         cgPQ5KRJ0Rg5DrgjBR3TmHFiMZKA7Ljeag/N58i2HxUNVWt0ybAgynqXMm44Jvtl115E
-         cwHup5Tv7BqDlSNc2j2kshgnuFrTydujMQM6+FISacSwwNM9jBiIB0QzVlt2S/qrgn6h
-         p0yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bMxdvEdLjD1A9AKJa7buamnua6ndE13zHk8/3SA0xpk=;
-        b=ZwUZLr4eg/Z8angorrwfSwCtvcXIsZ7yFq77dzGh1JB1xiFSf01jQrFR0PLk1dThHK
-         uGutpgu8aMSI7UM46QDNE5TwbIpTU/wPs0ohU5+eXeT8dOHWTotIPKXKJUq9J/K6OnXS
-         eJKNHyXAw5sawPrEUStLuJfj0nf7zj4vxNK6wXNMv8Q8m2ivdBx+cph60a54wtElcfaU
-         nikia/tM6Pv3Bnh20c2TKOfYTbAyVaxWPrg6cn+XhDZeZRvMGLpRUyJZIMWSIYvvyjZh
-         8SX9645g5ILV+JUINlKgDnaqf07tcAUvcuihhR7CK8bRVwYo/6pEBRpnDI0bOpfv91V+
-         +JCQ==
-X-Gm-Message-State: APjAAAXU8BopiOAPvVzbVXega7amQYy4nCIgog6dZQfB/8Jov9G/05XN
-        bSIEwrJ7HBEwca9t1b2qJWbWkw==
-X-Google-Smtp-Source: APXvYqzgDH5/ikCzES5M0MRO5K7K3ifgbGjP1mRuUaIUZdDHCGw68bO7qf91SGAx47qMnghFOmD8Fw==
-X-Received: by 2002:a17:902:9a87:: with SMTP id w7mr65029plp.221.1561582500008;
-        Wed, 26 Jun 2019 13:55:00 -0700 (PDT)
-Received: from ziepe.ca ([148.87.23.38])
-        by smtp.gmail.com with ESMTPSA id t13sm3856107pjo.13.2019.06.26.13.54.59
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 26 Jun 2019 13:54:59 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hgEwU-0001lK-9d; Wed, 26 Jun 2019 17:54:58 -0300
-Date:   Wed, 26 Jun 2019 17:54:58 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Christoph Hellwig <hch@lst.de>,
+        id S1726408AbfFZUzU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jun 2019 16:55:20 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:49686 "EHLO ale.deltatee.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726387AbfFZUzU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 26 Jun 2019 16:55:20 -0400
+Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
+        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <logang@deltatee.com>)
+        id 1hgEwg-0002X1-D5; Wed, 26 Jun 2019 14:55:11 -0600
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Christoph Hellwig <hch@lst.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
         linux-pci@vger.kernel.org, linux-rdma <linux-rdma@vger.kernel.org>,
@@ -60,9 +27,8 @@ Cc:     Logan Gunthorpe <logang@deltatee.com>,
         Sagi Grimberg <sagi@grimberg.me>,
         Keith Busch <kbusch@kernel.org>,
         Stephen Bates <sbates@raithlin.com>
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-Message-ID: <20190626205458.GA6392@ziepe.ca>
-References: <20190624072752.GA3954@lst.de>
+References: <20190620161240.22738-1-logang@deltatee.com>
+ <20190624072752.GA3954@lst.de>
  <558a27ba-e7c9-9d94-cad0-377b8ee374a6@deltatee.com>
  <20190625072008.GB30350@lst.de>
  <f0f002bf-2b94-cd18-d18f-5d0b08311495@deltatee.com>
@@ -72,23 +38,83 @@ References: <20190624072752.GA3954@lst.de>
  <c15d5997-9ba4-f7db-0e7a-a69e75df316c@deltatee.com>
  <20190626202107.GA5850@ziepe.ca>
  <CAPcyv4hCNoMeFyOE588=kuNUXaPS-rzaXnF2cN2TFejso1SGRw@mail.gmail.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <a17acf94-e19f-e478-27ac-93f6d2a34af4@deltatee.com>
+Date:   Wed, 26 Jun 2019 14:55:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <CAPcyv4hCNoMeFyOE588=kuNUXaPS-rzaXnF2cN2TFejso1SGRw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 68.147.80.180
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, kbusch@kernel.org, sagi@grimberg.me, bhelgaas@google.com, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de, jgg@ziepe.ca, dan.j.williams@intel.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 01:39:01PM -0700, Dan Williams wrote:
+
+
+On 2019-06-26 2:39 p.m., Dan Williams wrote:
+> On Wed, Jun 26, 2019 at 1:21 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>>
+>> On Wed, Jun 26, 2019 at 12:31:08PM -0600, Logan Gunthorpe wrote:
+>>>> we have a hole behind len where we could store flag.  Preferably
+>>>> optionally based on a P2P or other magic memory types config
+>>>> option so that 32-bit systems with 32-bit phys_addr_t actually
+>>>> benefit from the smaller and better packing structure.
+>>>
+>>> That seems sensible. The one thing that's unclear though is how to get
+>>> the PCI Bus address when appropriate. Can we pass that in instead of the
+>>> phys_addr with an appropriate flag? Or will we need to pass the actual
+>>> physical address and then, at the map step, the driver has to some how
+>>> lookup the PCI device to figure out the bus offset?
+>>
+>> I agree with CH, if we go down this path it is a layering violation
+>> for the thing injecting bio's into the block stack to know what struct
+>> device they egress&dma map on just to be able to do the dma_map up
+>> front.
+>>
+>> So we must be able to go from this new phys_addr_t&flags to some BAR
+>> information during dma_map.
+>>
+>> For instance we could use a small hash table of the upper phys addr
+>> bits, or an interval tree, to do the lookup.
+> 
 > Hmm, that sounds like dev_pagemap without the pages.
 
-Yes, and other page related overhead. Maybe both ideas can exist in
-the pagemap code?
+Yup, that's why I'd like to avoid it, but IMO it would still be an
+improvement to use a interval tree over struct pages because without
+struct page we just have a range and a length and it's relatively easy
+to check that the whole range belongs to a specific pci_dev. To be
+correct with the struct page approach we really have to loop through all
+pages to ensure they all belong to the same pci_dev which is a big pain.
 
-All that is needed here is to map a bar phys_addr_t to some 'bar info'
-that helps the mapping.
+> There's already no requirement that dev_pagemap point to real /
+> present pages (DEVICE_PRIVATE) seems a straightforward extension to
+> use it for helping coordinate phys_addr_t in 'struct bio'. Then
+> Logan's future plans to let userspace coordinate p2p operations could
+> build on PTE_DEVMAP.
 
-Jason
+Well I think the biggest difficulty with struct page for user space is
+dealing with cases when the struct pages of different types get mixed
+together (or even struct pages that are all P2P pages but from different
+PCI devices). We'd have to go through each page and ensure that each
+type gets it's own bio_vec with appropriate flags.
+
+Though really, the whole mixed IO from userspace poses a bunch of
+problems. I'd prefer to just be able to say that a single IO can be all
+or nothing P2P memory from a single device.
+
+Logan
+
