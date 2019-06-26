@@ -2,33 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5043C56F77
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2019 19:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08ACB56FF8
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2019 19:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbfFZRS1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jun 2019 13:18:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:37610 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726006AbfFZRS1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 26 Jun 2019 13:18:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BC85360;
-        Wed, 26 Jun 2019 10:18:26 -0700 (PDT)
-Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 876353F718;
-        Wed, 26 Jun 2019 10:18:21 -0700 (PDT)
-Date:   Wed, 26 Jun 2019 18:18:19 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        id S1726730AbfFZRvm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jun 2019 13:51:42 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:44468 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbfFZRvm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jun 2019 13:51:42 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5QHd3BJ070052;
+        Wed, 26 Jun 2019 17:50:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=pJtn37VVzLHGgxTNqg1ZlS6RKLrOq382izwrBCZb3DI=;
+ b=EcEEEMWgDEbMDuMxTOR2oYeCSXUOQKHZ4+B/a0CiekDLmP8Z1U885QaSBhgXo+/oVJZ3
+ SGbnV6cXs+U0YG4HT3njZ/iUUzFIuHHOFK70cZEOdOGApbgKUYX3eCJLdfQ3dKwGSNIl
+ owHPVd1m79tjE2KLbk7nGdMWhkLr/F3ZBkkDI9hHrhy/y/e6IptZoUUgS8HTk7grA8Ud
+ Bf4hJAICEUZKsbR/1JYmjjWhp4n+uI1QfmV/GKfsvqZ6rJZc12bBVgqeF5v8xkJ16pFz
+ 7wdP2Bakv0UvCbjPcmfUTGeqmf+Xk2K6+wWohnQ4b4rai+Y/+koOAVyMxoOJaa/ojH8K NA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2t9cyqks50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Jun 2019 17:50:48 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5QHolV1005117;
+        Wed, 26 Jun 2019 17:50:47 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2t9p6uwkss-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Jun 2019 17:50:47 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5QHofTs013200;
+        Wed, 26 Jun 2019 17:50:42 GMT
+Received: from [10.65.138.107] (/10.65.138.107)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 26 Jun 2019 10:50:41 -0700
+Subject: Re: [PATCH v18 10/15] drm/radeon: untag user pointers in
+ radeon_gem_userptr_ioctl
+To:     Andrey Konovalov <andreyknvl@google.com>,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
         linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Will Deacon <will.deacon@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kees Cook <keescook@chromium.org>,
         Yishai Hadas <yishaih@mellanox.com>,
@@ -40,8 +64,7 @@ Cc:     Andrey Konovalov <andreyknvl@google.com>,
         Alex Williamson <alex.williamson@redhat.com>,
         Leon Romanovsky <leon@kernel.org>,
         Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Dave Martin <Dave.Martin@arm.com>, enh <enh@google.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Christoph Hellwig <hch@infradead.org>,
         Dmitry Vyukov <dvyukov@google.com>,
@@ -54,83 +77,79 @@ Cc:     Andrey Konovalov <andreyknvl@google.com>,
         Robin Murphy <robin.murphy@arm.com>,
         Kevin Brodsky <kevin.brodsky@arm.com>,
         Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v18 00/15] arm64: untag user pointers passed to the kernel
-Message-ID: <20190626171819.GG29672@arrakis.emea.arm.com>
 References: <cover.1561386715.git.andreyknvl@google.com>
+ <61d800c35a4f391218fbca6f05ec458557d8d097.1561386715.git.andreyknvl@google.com>
+From:   Khalid Aziz <khalid.aziz@oracle.com>
+Organization: Oracle Corp
+Message-ID: <28554e21-04b8-2461-e576-5abe0b53cd59@oracle.com>
+Date:   Wed, 26 Jun 2019 11:50:39 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1561386715.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <61d800c35a4f391218fbca6f05ec458557d8d097.1561386715.git.andreyknvl@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9300 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906260208
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9300 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906260208
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Andrew,
+On 6/24/19 8:32 AM, Andrey Konovalov wrote:
+> This patch is a part of a series that extends kernel ABI to allow to pa=
+ss
+> tagged user pointers (with the top byte set to something else other tha=
+n
+> 0x00) as syscall arguments.
+>=20
+> In radeon_gem_userptr_ioctl() an MMU notifier is set up with a (tagged)=
 
-On Mon, Jun 24, 2019 at 04:32:45PM +0200, Andrey Konovalov wrote:
-> Andrey Konovalov (14):
->   arm64: untag user pointers in access_ok and __uaccess_mask_ptr
->   lib: untag user pointers in strn*_user
->   mm: untag user pointers passed to memory syscalls
->   mm: untag user pointers in mm/gup.c
->   mm: untag user pointers in get_vaddr_frames
->   fs/namespace: untag user pointers in copy_mount_options
->   userfaultfd: untag user pointers
->   drm/amdgpu: untag user pointers
->   drm/radeon: untag user pointers in radeon_gem_userptr_ioctl
->   IB/mlx4: untag user pointers in mlx4_get_umem_mr
->   media/v4l2-core: untag user pointers in videobuf_dma_contig_user_get
->   tee/shm: untag user pointers in tee_shm_register
->   vfio/type1: untag user pointers in vaddr_get_pfn
->   selftests, arm64: add a selftest for passing tagged pointers to kernel
-> 
-> Catalin Marinas (1):
->   arm64: Introduce prctl() options to control the tagged user addresses
->     ABI
-> 
->  arch/arm64/Kconfig                            |  9 +++
->  arch/arm64/include/asm/processor.h            |  8 +++
->  arch/arm64/include/asm/thread_info.h          |  1 +
->  arch/arm64/include/asm/uaccess.h              | 12 +++-
->  arch/arm64/kernel/process.c                   | 72 +++++++++++++++++++
->  .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c  |  2 +-
->  drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c       |  2 +
->  drivers/gpu/drm/radeon/radeon_gem.c           |  2 +
->  drivers/infiniband/hw/mlx4/mr.c               |  7 +-
->  drivers/media/v4l2-core/videobuf-dma-contig.c |  9 +--
->  drivers/tee/tee_shm.c                         |  1 +
->  drivers/vfio/vfio_iommu_type1.c               |  2 +
->  fs/namespace.c                                |  2 +-
->  fs/userfaultfd.c                              | 22 +++---
->  include/uapi/linux/prctl.h                    |  5 ++
->  kernel/sys.c                                  | 12 ++++
->  lib/strncpy_from_user.c                       |  3 +-
->  lib/strnlen_user.c                            |  3 +-
->  mm/frame_vector.c                             |  2 +
->  mm/gup.c                                      |  4 ++
->  mm/madvise.c                                  |  2 +
->  mm/mempolicy.c                                |  3 +
->  mm/migrate.c                                  |  2 +-
->  mm/mincore.c                                  |  2 +
->  mm/mlock.c                                    |  4 ++
->  mm/mprotect.c                                 |  2 +
->  mm/mremap.c                                   |  7 ++
->  mm/msync.c                                    |  2 +
->  tools/testing/selftests/arm64/.gitignore      |  1 +
->  tools/testing/selftests/arm64/Makefile        | 11 +++
->  .../testing/selftests/arm64/run_tags_test.sh  | 12 ++++
->  tools/testing/selftests/arm64/tags_test.c     | 29 ++++++++
->  32 files changed, 232 insertions(+), 25 deletions(-)
+> userspace pointer. The untagged address should be used so that MMU
+> notifiers for the untagged address get correctly matched up with the ri=
+ght
+> BO. This funcation also calls radeon_ttm_tt_pin_userptr(), which uses
+> provided user pointers for vma lookups, which can only by done with
+> untagged pointers.
+>=20
+> This patch untags user pointers in radeon_gem_userptr_ioctl().
+>=20
+> Suggested-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> ---
 
-It looks like we got to an agreement on how to deal with tagged user
-addresses between SPARC ADI and ARM Memory Tagging. If there are no
-other objections, what's your preferred way of getting this series into
--next first and then mainline? Are you ok to merge them into the mm
-tree?
+Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
 
-Thanks.
 
--- 
-Catalin
+>  drivers/gpu/drm/radeon/radeon_gem.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/radeon/radeon_gem.c b/drivers/gpu/drm/rade=
+on/radeon_gem.c
+> index 44617dec8183..90eb78fb5eb2 100644
+> --- a/drivers/gpu/drm/radeon/radeon_gem.c
+> +++ b/drivers/gpu/drm/radeon/radeon_gem.c
+> @@ -291,6 +291,8 @@ int radeon_gem_userptr_ioctl(struct drm_device *dev=
+, void *data,
+>  	uint32_t handle;
+>  	int r;
+> =20
+> +	args->addr =3D untagged_addr(args->addr);
+> +
+>  	if (offset_in_page(args->addr | args->size))
+>  		return -EINVAL;
+> =20
+>=20
+
+
