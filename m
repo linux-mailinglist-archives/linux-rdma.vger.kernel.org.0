@@ -2,104 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71812584BE
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 16:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3720E58501
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 16:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbfF0Oqj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 10:46:39 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:3879 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726425AbfF0Oqj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jun 2019 10:46:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1561646798; x=1593182798;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=SN/gUAzQ8Ww77H20ovBk9WMBXogDUTRW+1L1OLwS468=;
-  b=R17VwcvgiF6OlD9L4lYQUoMTvaAActYD+2K4/Th7KQ1gXjsV50qjmIrs
-   OOalF11n10+4U6MHvcH1uszJmXZnFeql7Rkh9A8vWCQ9Itv2jLhr/qxKK
-   p6f3WIGIjMdsgn/T3XrAwSAGAcinnplHcdkpiV7jObWtpDF10/wrBRizi
-   U=;
-X-IronPort-AV: E=Sophos;i="5.62,424,1554768000"; 
-   d="scan'208";a="813095848"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2b-3714e498.us-west-2.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 27 Jun 2019 14:46:36 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-3714e498.us-west-2.amazon.com (Postfix) with ESMTPS id BC571A1DD7;
-        Thu, 27 Jun 2019 14:46:35 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 27 Jun 2019 14:46:35 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.65) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 27 Jun 2019 14:46:31 +0000
-Subject: Re: [RFC rdma 1/3] RDMA/core: Create a common mmap function
-To:     Michal Kalderon <michal.kalderon@marvell.com>, <jgg@ziepe.ca>,
-        <dledford@redhat.com>, <leon@kernel.org>, <sleybo@amazon.com>,
-        <ariel.elior@marvell.com>
-CC:     <linux-rdma@vger.kernel.org>
-References: <20190627135825.4924-1-michal.kalderon@marvell.com>
- <20190627135825.4924-2-michal.kalderon@marvell.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <2933b9d9-7b54-78a3-ba1f-e47c354b154e@amazon.com>
-Date:   Thu, 27 Jun 2019 17:46:25 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+        id S1726441AbfF0O6e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jun 2019 10:58:34 -0400
+Received: from dynamic-37-142-13-130.hotnet.net.il ([37.142.13.130]:28250 "EHLO
+        git-send-mailer.rdmz.labs.mlnx" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726370AbfF0O6e (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Jun 2019 10:58:34 -0400
+X-Greylist: delayed 538 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Jun 2019 10:58:34 EDT
+From:   Ali Alnubani <alialnu@mellanox.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     sean.hefty@intel.com
+Subject: [PATCH] rsockets: fix variable initialization
+Date:   Thu, 27 Jun 2019 17:49:18 +0300
+Message-Id: <20190627144918.4453-1-alialnu@mellanox.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-In-Reply-To: <20190627135825.4924-2-michal.kalderon@marvell.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.65]
-X-ClientProxiedBy: EX13D18UWC004.ant.amazon.com (10.43.162.77) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 27/06/2019 16:58, Michal Kalderon wrote:
-> +/*
-> + * Note this locking scheme cannot support removal of entries, except during
-> + * ucontext destruction when the core code guarentees no concurrency.
-> + */
-> +u64 rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext, void *obj,
-> +				u64 address, u64 length, u8 mmap_flag)
-> +{
-> +	struct rdma_user_mmap_entry *entry;
-> +	int err;
-> +
-> +	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-> +	if (!entry)
-> +		return RDMA_USER_MMAP_INVALID;
-> +
-> +	entry->obj = obj;
-> +	entry->address = address;
-> +	entry->length = length;
-> +	entry->mmap_flag = mmap_flag;
-> +
-> +	xa_lock(&ucontext->mmap_xa);
-> +	entry->mmap_page = ucontext->mmap_xa_page;
-> +	ucontext->mmap_xa_page += DIV_ROUND_UP(length, PAGE_SIZE);
+This is to fix the error:
+  ```
+  [117/380] Building C object librdmacm/CMakeFiles/rdmacm.dir/rsocket.c.o
+  FAILED: librdmacm/CMakeFiles/rdmacm.dir/rsocket.c.o
+  /usr/bin/cc  -D_FILE_OFFSET_BITS=64 -Drdmacm_EXPORTS -Werror -m32
+  -std=gnu11 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter
+  -Wmissing-prototypes -Wmissing-declarations -Wwrite-strings -Wformat=2
+  -Wformat-nonliteral -Wredundant-decls -Wnested-externs -Wshadow
+  -Wno-missing-field-initializers -Wstrict-prototypes
+  -Wold-style-definition -Wredundant-decls -O2 -g  -fPIC -Iinclude -MMD
+  -MT librdmacm/CMakeFiles/rdmacm.dir/rsocket.c.o -MF
+  "librdmacm/CMakeFiles/rdmacm.dir/rsocket.c.o.d" -o
+  librdmacm/CMakeFiles/rdmacm.dir/rsocket.c.o   -c ../librdmacm/rsocket.c
+  ../librdmacm/rsocket.c: In function ‘rs_get_comp’:
+  ../librdmacm/rsocket.c:2148:15: error: ‘start_time’ may be used
+  uninitialized in this function [-Werror=maybe-uninitialized]
+     poll_time = (uint32_t) (rs_time_us() - start_time);
+                 ^
+  ../librdmacm/rsocket.c: In function ‘ds_get_comp’:
+  ../librdmacm/rsocket.c:2307:15: error: ‘start_time’ may be used
+  uninitialized in this function [-Werror=maybe-uninitialized]
+     poll_time = (uint32_t) (rs_time_us() - start_time);
+                 ^
+  ../librdmacm/rsocket.c: In function ‘rpoll’:
+  ../librdmacm/rsocket.c:3321:15: error: ‘start_time’ may be used
+  uninitialized in this function [-Werror=maybe-uninitialized]
+     poll_time = (uint32_t) (rs_time_us() - start_time);
+                 ^
+  cc1: all warnings being treated as errors
+  [122/380] Building C object providers/efa/CMakeFiles/efa.dir/verbs.c.o
+  ninja: build stopped: subcommand failed.
+  ```
+Which reproduces on RHEL7.5 with 4.8.5 20150623 (Red Hat 4.8.5-28)
+and 32-bit libraries.
 
-Hi Michal,
-I fixed this part to handle mmap_xa_page overflow:
-7a5834e456f7 ("RDMA/efa: Handle mmap insertions overflow")
+Build steps to reproduce:
+  ```
+  mkdir build32 && cd build32 && CFLAGS="-Werror -m32" cmake -GNinja \
+  -DENABLE_RESOLVE_NEIGH=0 -DIOCTL_MODE=both -DNO_PYVERBS=1 && \
+  ninja-build
+  ```
 
-> +	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
-> +			  GFP_KERNEL);
-> +	xa_unlock(&ucontext->mmap_xa);
-> +	if (err) {
-> +		kfree(entry);
-> +		return RDMA_USER_MMAP_INVALID;
-> +	}
-> +
-> +	ibdev_dbg(ucontext->device,
-> +		  "mmap: obj[0x%p] addr[%#llx], len[%#llx], key[%#llx] inserted\n",
-> +		  entry->obj, entry->address, entry->length,
-> +		  rdma_user_mmap_get_key(entry));
-> +
-> +	return rdma_user_mmap_get_key(entry);
-> +}
-> +EXPORT_SYMBOL(rdma_user_mmap_entry_insert);
+meson version: 0.47.2
+ninja-build version: 1.7.2
+
+Fixes: 38c49232b67a ("rsockets: Replace gettimeofday with clock_gettime")
+Cc: sean.hefty@intel.com
+
+Signed-off-by: Ali Alnubani <alialnu@mellanox.com>
+---
+ librdmacm/rsocket.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/librdmacm/rsocket.c b/librdmacm/rsocket.c
+index 58de2856..aa912c1a 100644
+--- a/librdmacm/rsocket.c
++++ b/librdmacm/rsocket.c
+@@ -2133,7 +2133,7 @@ static int rs_process_cq(struct rsocket *rs, int nonblock, int (*test)(struct rs
+ 
+ static int rs_get_comp(struct rsocket *rs, int nonblock, int (*test)(struct rsocket *rs))
+ {
+-	uint64_t start_time;
++	uint64_t start_time = 0;
+ 	uint32_t poll_time = 0;
+ 	int ret;
+ 
+@@ -2292,7 +2292,7 @@ static int ds_process_cqs(struct rsocket *rs, int nonblock, int (*test)(struct r
+ 
+ static int ds_get_comp(struct rsocket *rs, int nonblock, int (*test)(struct rsocket *rs))
+ {
+-	uint64_t start_time;
++	uint64_t start_time = 0;
+ 	uint32_t poll_time = 0;
+ 	int ret;
+ 
+@@ -3306,7 +3306,7 @@ static int rs_poll_events(struct pollfd *rfds, struct pollfd *fds, nfds_t nfds)
+ int rpoll(struct pollfd *fds, nfds_t nfds, int timeout)
+ {
+ 	struct pollfd *rfds;
+-	uint64_t start_time;
++	uint64_t start_time = 0;
+ 	uint32_t poll_time = 0;
+ 	int pollsleep, ret;
+ 
+-- 
+2.22.0
+
