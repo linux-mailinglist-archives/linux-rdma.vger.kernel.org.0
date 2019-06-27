@@ -2,109 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D1358653
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 17:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B82F586A1
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 18:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbfF0PwV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 11:52:21 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:40075 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbfF0PwV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jun 2019 11:52:21 -0400
-Received: by mail-pf1-f196.google.com with SMTP id p184so1440064pfp.7
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jun 2019 08:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VLLd6K0vqyBNbkQVwgp5BZXO/LT3WOmaSUwZO5QWDrg=;
-        b=knTQPbK6G+svsmWdrj/2PXhQkHj5UhNU+/qMResMeicO7+l39HTC0p2xvP5nrzFn7x
-         Q2pH+5it2QAQM4Q6UUebNuwyQQIUNSfDiyOoE05K/6LF4LMBnQERJrJP4gljUBaKR5d0
-         5Xngb90Wc/iPMZBYW4KHC/u9vcxHDwRv2Qb/DMEnWPfEZEwjg+eLqnGd11PSNt+JYFub
-         9pw9VGakW7HR+4aunXxJBrlJwxmfM0SG4HFT9StI/pKXxj+pA657ZkFxHsAkq2KK9yQf
-         C6m8s2pqtFUs01BrfbSfjD3ptQYJc6AZJyT5O5nU1C647yKNy0o0UE+qoBKqQ/QQfeHQ
-         0+XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VLLd6K0vqyBNbkQVwgp5BZXO/LT3WOmaSUwZO5QWDrg=;
-        b=tZI3V417EBODNWyUUcw5KLvszGkeYJndZn14serHAZ2+GMjgtbjNSdUIcaCBE31SU5
-         ICA5sH9NJgMQ369cboNwOqp6r3xq7b7X5Fl4o1WcNrC2aJcfgp7VQtU+Jqpql6q04d5d
-         AximHjSBZ/NgCK3knIW8KJchGjRYyOTEbja8z9TUXVWySbE+GoABZ7NEdFrQgE+zf2Ez
-         I0BhraQuWi+ympgqP+N90iwAntPTutnscTbWRHOPH9NT9qN8yfh8EaCtMfA64hjTUWHm
-         Kxzo9GKu+cj5nE3wiyTKul9jLTDSrrkpKeJT5T+3Rnk02Ee4GUvitG9z2fRjnnwOS5mN
-         wbWQ==
-X-Gm-Message-State: APjAAAU/koJDoQc3IhGZLUQsmB7xhj27QcjSOM01RFWbe7/Bi+IfpyKV
-        uYD1S+ULms7g24/iKiiaVm1h/Q==
-X-Google-Smtp-Source: APXvYqwCVKsMztKGVGBRcG9r0gNZ3vTgg2wxpx17R5TVCC+vnaxuhJCcJB1h6/HcKe9TwsXmPIdXtA==
-X-Received: by 2002:a17:90a:a410:: with SMTP id y16mr6998519pjp.62.1561650740801;
-        Thu, 27 Jun 2019 08:52:20 -0700 (PDT)
-Received: from ziepe.ca ([12.199.206.50])
-        by smtp.gmail.com with ESMTPSA id x25sm3185282pfm.48.2019.06.27.08.52.19
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 27 Jun 2019 08:52:20 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hgWh9-0002XN-Do; Thu, 27 Jun 2019 12:52:19 -0300
-Date:   Thu, 27 Jun 2019 12:52:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Michal Kalderon <michal.kalderon@marvell.com>, dledford@redhat.com,
-        leon@kernel.org, sleybo@amazon.com, ariel.elior@marvell.com,
-        linux-rdma@vger.kernel.org
-Subject: Re: [RFC rdma 1/3] RDMA/core: Create a common mmap function
-Message-ID: <20190627155219.GA9568@ziepe.ca>
-References: <20190627135825.4924-1-michal.kalderon@marvell.com>
- <20190627135825.4924-2-michal.kalderon@marvell.com>
- <d6e9bc3b-215b-c6ea-11d2-01ae8f956bfa@amazon.com>
+        id S1726431AbfF0QFv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jun 2019 12:05:51 -0400
+Received: from mga01.intel.com ([192.55.52.88]:4296 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726384AbfF0QFv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Jun 2019 12:05:51 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Jun 2019 09:05:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,424,1557212400"; 
+   d="scan'208";a="164379711"
+Received: from orsmsx110.amr.corp.intel.com ([10.22.240.8])
+  by fmsmga007.fm.intel.com with ESMTP; 27 Jun 2019 09:05:40 -0700
+Received: from orsmsx116.amr.corp.intel.com (10.22.240.14) by
+ ORSMSX110.amr.corp.intel.com (10.22.240.8) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 27 Jun 2019 09:05:39 -0700
+Received: from orsmsx109.amr.corp.intel.com ([169.254.11.17]) by
+ ORSMSX116.amr.corp.intel.com ([169.254.7.109]) with mapi id 14.03.0439.000;
+ Thu, 27 Jun 2019 09:05:39 -0700
+From:   "Hefty, Sean" <sean.hefty@intel.com>
+To:     Ali Alnubani <alialnu@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH] rsockets: fix variable initialization
+Thread-Topic: [PATCH] rsockets: fix variable initialization
+Thread-Index: AQHVLPhU9fQYhKi0uEW2GchrIipZraavqFXw
+Date:   Thu, 27 Jun 2019 16:05:38 +0000
+Message-ID: <1828884A29C6694DAF28B7E6B8A82373B3EB0374@ORSMSX109.amr.corp.intel.com>
+References: <20190627145451.4591-1-alialnu@mellanox.com>
+In-Reply-To: <20190627145451.4591-1-alialnu@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiODAwNDI3NGYtNzdlZi00Mzc1LWEzYjYtOTdiMGRiMTViZmNkIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoicG9ObUwzWlpZQjBtMHpxMW11RWIwaXNVbitVNHFlRUZKaVVCc1lNNmNRcXdudHIzWFFGa3VXRzJhdlhmZlhyQSJ9
+x-ctpclassification: CTP_NT
+dlp-product: dlpe-windows
+dlp-version: 11.0.600.7
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.138]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d6e9bc3b-215b-c6ea-11d2-01ae8f956bfa@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 06:25:37PM +0300, Gal Pressman wrote:
-> On 27/06/2019 16:58, Michal Kalderon wrote:
-> > Create a common API for adding entries to a xa_mmap.
-> > This API can be used by drivers that don't require special
-> > mapping for user mapped memory.
-> > 
-> > The code was copied from the efa driver almost as is, just renamed
-> > function to be generic and not efa specific.
-> 
-> I don't think we should force the mmap flags to be the same for all drivers..
-> Take a look at mlx5 for example:
-> 
-> enum mlx5_ib_mmap_cmd {
-> 	MLX5_IB_MMAP_REGULAR_PAGE               = 0,
-> 	MLX5_IB_MMAP_GET_CONTIGUOUS_PAGES       = 1,
-> 	MLX5_IB_MMAP_WC_PAGE                    = 2,
-> 	MLX5_IB_MMAP_NC_PAGE                    = 3,
-> 	/* 5 is chosen in order to be compatible with old versions of libmlx5 */
-> 	MLX5_IB_MMAP_CORE_CLOCK                 = 5,
-> 	MLX5_IB_MMAP_ALLOC_WC                   = 6,
-> 	MLX5_IB_MMAP_CLOCK_INFO                 = 7,
-> 	MLX5_IB_MMAP_DEVICE_MEM                 = 8,
-> };
-> 
-> The flags taken from EFA aren't necessarily going to work for other drivers.
-> Maybe the flags bits should be opaque to ib_core and leave the actual mmap
-> callbacks in the drivers. Not sure how dealloc_ucontext is going to work with
-> opaque flags though?
-
-Yes, the driver will have to take care of masking the flags before
-lookup
-
-We should probably store the struct page * in the
-rdma_user_mmap_entry() and use that to key struct page behavior.
-
-Do you think we should go further and provide a generic mmap() that
-does the right thing? It would not be hard to provide a callback that
-computes the pgprot flags 
-
-Jason
+PiBkaWZmIC0tZ2l0IGEvbGlicmRtYWNtL3Jzb2NrZXQuYyBiL2xpYnJkbWFjbS9yc29ja2V0LmMN
+Cj4gaW5kZXggNThkZTI4NTYuLmFhOTEyYzFhIDEwMDY0NA0KPiAtLS0gYS9saWJyZG1hY20vcnNv
+Y2tldC5jDQo+ICsrKyBiL2xpYnJkbWFjbS9yc29ja2V0LmMNCj4gQEAgLTIxMzMsNyArMjEzMyw3
+IEBAIHN0YXRpYyBpbnQgcnNfcHJvY2Vzc19jcShzdHJ1Y3QgcnNvY2tldCAqcnMsIGludCBub25i
+bG9jaywgaW50DQo+ICgqdGVzdCkoc3RydWN0IHJzDQo+IA0KPiAgc3RhdGljIGludCByc19nZXRf
+Y29tcChzdHJ1Y3QgcnNvY2tldCAqcnMsIGludCBub25ibG9jaywgaW50ICgqdGVzdCkoc3RydWN0
+IHJzb2NrZXQNCj4gKnJzKSkNCj4gIHsNCj4gLQl1aW50NjRfdCBzdGFydF90aW1lOw0KPiArCXVp
+bnQ2NF90IHN0YXJ0X3RpbWUgPSAwOw0KPiAgCXVpbnQzMl90IHBvbGxfdGltZSA9IDA7DQo+ICAJ
+aW50IHJldDsNCj4gDQo+IEBAIC0yMjkyLDcgKzIyOTIsNyBAQCBzdGF0aWMgaW50IGRzX3Byb2Nl
+c3NfY3FzKHN0cnVjdCByc29ja2V0ICpycywgaW50IG5vbmJsb2NrLCBpbnQNCj4gKCp0ZXN0KShz
+dHJ1Y3Qgcg0KPiANCj4gIHN0YXRpYyBpbnQgZHNfZ2V0X2NvbXAoc3RydWN0IHJzb2NrZXQgKnJz
+LCBpbnQgbm9uYmxvY2ssIGludCAoKnRlc3QpKHN0cnVjdCByc29ja2V0DQo+ICpycykpDQo+ICB7
+DQo+IC0JdWludDY0X3Qgc3RhcnRfdGltZTsNCj4gKwl1aW50NjRfdCBzdGFydF90aW1lID0gMDsN
+Cj4gIAl1aW50MzJfdCBwb2xsX3RpbWUgPSAwOw0KPiAgCWludCByZXQ7DQo+IA0KPiBAQCAtMzMw
+Niw3ICszMzA2LDcgQEAgc3RhdGljIGludCByc19wb2xsX2V2ZW50cyhzdHJ1Y3QgcG9sbGZkICpy
+ZmRzLCBzdHJ1Y3QgcG9sbGZkDQo+ICpmZHMsIG5mZHNfdCBuZmRzKQ0KPiAgaW50IHJwb2xsKHN0
+cnVjdCBwb2xsZmQgKmZkcywgbmZkc190IG5mZHMsIGludCB0aW1lb3V0KQ0KPiAgew0KPiAgCXN0
+cnVjdCBwb2xsZmQgKnJmZHM7DQo+IC0JdWludDY0X3Qgc3RhcnRfdGltZTsNCj4gKwl1aW50NjRf
+dCBzdGFydF90aW1lID0gMDsNCj4gIAl1aW50MzJfdCBwb2xsX3RpbWUgPSAwOw0KPiAgCWludCBw
+b2xsc2xlZXAsIHJldDsNCg0KQmVjYXVzZSBwb2xsX3RpbWUgaXMgaW5pdGlhbGl6ZWQgdG8gMCwg
+dGhlc2UgZW5kIHVwIGJlaW5nIGZhbHNlIHdhcm5pbmdzLiAgSG93ZXZlciwgaXQgbWF5IGJlIGNs
+ZWFuZXIgdG8gaW5pdCBzdGFydF90aW1lID0gMCwgbGVhdmUgcG9sbF90aW1lIHVuaXRpYWxpemVk
+LCBhbmQgY2hhbmdlIHRoZSBmb2xsb3dpbmcgY2hlY2sgZnVydGhlciBkb3duIGluIHRoZSBjb2Rl
+Og0KDQoJaWYgKCFwb2xsX3RpbWUpIC0tPiBpZiAoIXN0YXJ0X3RpbWUpDQoJCXN0YXJ0X3RpbWUg
+PSByc190aW1lX3VzKCk7DQoNClRoYXQgc2hvdWxkIGVsaW1pbmF0ZSB0aGUgd2FybmluZyBhbmQg
+bGVhdmUgdGhlIGNvZGUgd2l0aCB0aGUgc2FtZSBudW1iZXIgb2YgYXNzaWdubWVudHMuDQoNCi0g
+U2Vhbg0K
