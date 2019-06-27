@@ -2,144 +2,247 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D355852E
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 17:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4CB58582
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 17:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbfF0PGf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 11:06:35 -0400
-Received: from mail-eopbgr70077.outbound.protection.outlook.com ([40.107.7.77]:63118
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726441AbfF0PGe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Jun 2019 11:06:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RHm4SR7pthYPI+zzjRrdoNWigsm54TVGNowg51vhMdk=;
- b=S+qOZ20q5W3Lx7UwuJxsf09TDZMQSJ3xEaf05m2SnRJLGFcVQyr4Tizvev0s1jqzqqF6ZF5uAFPImBVcscX1LFAQTdnkdApS0SVe6cSOhUlXsJAgnC2gce6ykWU16SBYh4k5CLQ3/7rk6kZn96jTkfowI44JusUcCKo1mE0h6Sg=
-Received: from DB6PR0501MB2167.eurprd05.prod.outlook.com (10.168.58.144) by
- DB6PR0501MB2343.eurprd05.prod.outlook.com (10.168.56.136) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2008.17; Thu, 27 Jun 2019 15:06:28 +0000
-Received: from DB6PR0501MB2167.eurprd05.prod.outlook.com
- ([fe80::f46e:3c7c:f7ff:a8f7]) by DB6PR0501MB2167.eurprd05.prod.outlook.com
- ([fe80::f46e:3c7c:f7ff:a8f7%7]) with mapi id 15.20.2008.017; Thu, 27 Jun 2019
- 15:06:28 +0000
-From:   Ali Alnubani <alialnu@mellanox.com>
-To:     Ali Alnubani <alialnu@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     "sean.hefty@intel.com" <sean.hefty@intel.com>
-Subject: RE: [PATCH] rsockets: fix variable initialization
-Thread-Topic: [PATCH] rsockets: fix variable initialization
-Thread-Index: AQHVLPjOIcKwZSkjj0yFTRmzKKOCbKavmaiQ
-Date:   Thu, 27 Jun 2019 15:06:28 +0000
-Message-ID: <DB6PR0501MB2167F64CF8BD84F618424E65D7FD0@DB6PR0501MB2167.eurprd05.prod.outlook.com>
-References: <20190627144918.4453-1-alialnu@mellanox.com>
-In-Reply-To: <20190627144918.4453-1-alialnu@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=alialnu@mellanox.com; 
-x-originating-ip: [212.29.221.74]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a44169b6-5332-4b37-6943-08d6fb1107f0
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2343;
-x-ms-traffictypediagnostic: DB6PR0501MB2343:
-x-microsoft-antispam-prvs: <DB6PR0501MB2343D22503D939878E4E757ED7FD0@DB6PR0501MB2343.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 008184426E
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(396003)(376002)(346002)(39860400002)(136003)(13464003)(199004)(189003)(74316002)(66556008)(8936002)(186003)(26005)(476003)(71200400001)(102836004)(71190400001)(14454004)(2501003)(486006)(5660300002)(33656002)(110136005)(6436002)(4326008)(66946007)(73956011)(76176011)(66446008)(64756008)(66476007)(76116006)(81156014)(81166006)(66066001)(99286004)(7736002)(305945005)(7696005)(11346002)(25786009)(6246003)(316002)(9686003)(478600001)(55016002)(8676002)(68736007)(6506007)(53546011)(53936002)(86362001)(256004)(229853002)(6116002)(2906002)(52536014)(3846002)(446003);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2343;H:DB6PR0501MB2167.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: h5bBO8QVZp5DV05rgtCsGt+0ZhBD0MlhWmWFeTLuwZp/ZzwS6FjI/XRwQDPbTwPb8W8PuWnURn7vSNUR1Q4QjUDl0y3txDcv88a6LOODqksW2Z/xQb92eGdDgTTezyPr1QU82WcBaMPJeAvynOfZvbaa865GtfrkRsgrhtqRF7y90ReXyMpI9uwUZqoE4Ynebzr6LmjotGCGYWcXSmuNgJKVGSKj0mBxPCOuIOIpF+QSVfKWPHgGmedfXKhwb5ug5CWpjhzc4S/Y48bxd/0yJ19LNFn+D0BGHvghDovHdHPv4xDgkH3VgRTTqK8yR5nE0JLaYdj6dwMX/dTXtLPnD7ZJhTKbsP5eo2T/rz8i9BbeE+ppnOlyiLNlt3JivdlqPB2q2hEKBOAqiA8KqhcPzGVlhe+DX6PowIi36Nc0yVs=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726431AbfF0PZw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jun 2019 11:25:52 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:43831 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726187AbfF0PZw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jun 2019 11:25:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1561649149; x=1593185149;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=4fM0UaTNwa7CP32lvbvZJVm78YMxDUaXZMehVlG7QL4=;
+  b=DhAQrUi//UseQ2jQc0TXKZ3WRWGbQVbXm4Zn5rbRxIvZ2frYPS+moQRq
+   ovoqq3E7dk/V3uA/PR6qriCSvz+PgfDGzao6o1ty5KZaO17TI/U5hDX4J
+   MfGcwhwBOey0ApLJHPt6zi9Xa2oDaEC11A3sYLglRHHWk3hI00UlF2y22
+   c=;
+X-IronPort-AV: E=Sophos;i="5.62,424,1554768000"; 
+   d="scan'208";a="772329959"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 27 Jun 2019 15:25:47 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com (Postfix) with ESMTPS id 0581AA2377;
+        Thu, 27 Jun 2019 15:25:46 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 27 Jun 2019 15:25:46 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.109) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 27 Jun 2019 15:25:42 +0000
+Subject: Re: [RFC rdma 1/3] RDMA/core: Create a common mmap function
+To:     Michal Kalderon <michal.kalderon@marvell.com>, <jgg@ziepe.ca>,
+        <dledford@redhat.com>, <leon@kernel.org>, <sleybo@amazon.com>,
+        <ariel.elior@marvell.com>
+CC:     <linux-rdma@vger.kernel.org>
+References: <20190627135825.4924-1-michal.kalderon@marvell.com>
+ <20190627135825.4924-2-michal.kalderon@marvell.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <d6e9bc3b-215b-c6ea-11d2-01ae8f956bfa@amazon.com>
+Date:   Thu, 27 Jun 2019 18:25:37 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a44169b6-5332-4b37-6943-08d6fb1107f0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jun 2019 15:06:28.4124
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: alialnu@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2343
+In-Reply-To: <20190627135825.4924-2-michal.kalderon@marvell.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.109]
+X-ClientProxiedBy: EX13D01UWA003.ant.amazon.com (10.43.160.107) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SSBhcG9sb2dpemUgZm9yIHNlbmRpbmcgdGhpcyB0d2ljZS4gSSB0aG91Z2h0IGl0IHdhc24ndCBy
-ZWNlaXZlZCB0aGUgZmlyc3QgdGltZS4NClBsZWFzZSBpZ25vcmUgdGhpcyB0aHJlYWQuDQoNClRo
-YW5rcywNCkFsaQ0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IGxpbnV4
-LXJkbWEtb3duZXJAdmdlci5rZXJuZWwub3JnIDxsaW51eC1yZG1hLQ0KPiBvd25lckB2Z2VyLmtl
-cm5lbC5vcmc+IE9uIEJlaGFsZiBPZiBBbGkgQWxudWJhbmkNCj4gU2VudDogVGh1cnNkYXksIEp1
-bmUgMjcsIDIwMTkgNTo0OSBQTQ0KPiBUbzogbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmcNCj4g
-Q2M6IHNlYW4uaGVmdHlAaW50ZWwuY29tDQo+IFN1YmplY3Q6IFtQQVRDSF0gcnNvY2tldHM6IGZp
-eCB2YXJpYWJsZSBpbml0aWFsaXphdGlvbg0KPiANCj4gVGhpcyBpcyB0byBmaXggdGhlIGVycm9y
-Og0KPiAgIGBgYA0KPiAgIFsxMTcvMzgwXSBCdWlsZGluZyBDIG9iamVjdCBsaWJyZG1hY20vQ01h
-a2VGaWxlcy9yZG1hY20uZGlyL3Jzb2NrZXQuYy5vDQo+ICAgRkFJTEVEOiBsaWJyZG1hY20vQ01h
-a2VGaWxlcy9yZG1hY20uZGlyL3Jzb2NrZXQuYy5vDQo+ICAgL3Vzci9iaW4vY2MgIC1EX0ZJTEVf
-T0ZGU0VUX0JJVFM9NjQgLURyZG1hY21fRVhQT1JUUyAtV2Vycm9yIC1tMzINCj4gICAtc3RkPWdu
-dTExIC1XYWxsIC1XZXh0cmEgLVduby1zaWduLWNvbXBhcmUgLVduby11bnVzZWQtcGFyYW1ldGVy
-DQo+ICAgLVdtaXNzaW5nLXByb3RvdHlwZXMgLVdtaXNzaW5nLWRlY2xhcmF0aW9ucyAtV3dyaXRl
-LXN0cmluZ3MgLVdmb3JtYXQ9Mg0KPiAgIC1XZm9ybWF0LW5vbmxpdGVyYWwgLVdyZWR1bmRhbnQt
-ZGVjbHMgLVduZXN0ZWQtZXh0ZXJucyAtV3NoYWRvdw0KPiAgIC1Xbm8tbWlzc2luZy1maWVsZC1p
-bml0aWFsaXplcnMgLVdzdHJpY3QtcHJvdG90eXBlcw0KPiAgIC1Xb2xkLXN0eWxlLWRlZmluaXRp
-b24gLVdyZWR1bmRhbnQtZGVjbHMgLU8yIC1nICAtZlBJQyAtSWluY2x1ZGUgLU1NRA0KPiAgIC1N
-VCBsaWJyZG1hY20vQ01ha2VGaWxlcy9yZG1hY20uZGlyL3Jzb2NrZXQuYy5vIC1NRg0KPiAgICJs
-aWJyZG1hY20vQ01ha2VGaWxlcy9yZG1hY20uZGlyL3Jzb2NrZXQuYy5vLmQiIC1vDQo+ICAgbGli
-cmRtYWNtL0NNYWtlRmlsZXMvcmRtYWNtLmRpci9yc29ja2V0LmMubyAgIC1jIC4uL2xpYnJkbWFj
-bS9yc29ja2V0LmMNCj4gICAuLi9saWJyZG1hY20vcnNvY2tldC5jOiBJbiBmdW5jdGlvbiDigJhy
-c19nZXRfY29tcOKAmToNCj4gICAuLi9saWJyZG1hY20vcnNvY2tldC5jOjIxNDg6MTU6IGVycm9y
-OiDigJhzdGFydF90aW1l4oCZIG1heSBiZSB1c2VkDQo+ICAgdW5pbml0aWFsaXplZCBpbiB0aGlz
-IGZ1bmN0aW9uIFstV2Vycm9yPW1heWJlLXVuaW5pdGlhbGl6ZWRdDQo+ICAgICAgcG9sbF90aW1l
-ID0gKHVpbnQzMl90KSAocnNfdGltZV91cygpIC0gc3RhcnRfdGltZSk7DQo+ICAgICAgICAgICAg
-ICAgICAgXg0KPiAgIC4uL2xpYnJkbWFjbS9yc29ja2V0LmM6IEluIGZ1bmN0aW9uIOKAmGRzX2dl
-dF9jb21w4oCZOg0KPiAgIC4uL2xpYnJkbWFjbS9yc29ja2V0LmM6MjMwNzoxNTogZXJyb3I6IOKA
-mHN0YXJ0X3RpbWXigJkgbWF5IGJlIHVzZWQNCj4gICB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVu
-Y3Rpb24gWy1XZXJyb3I9bWF5YmUtdW5pbml0aWFsaXplZF0NCj4gICAgICBwb2xsX3RpbWUgPSAo
-dWludDMyX3QpIChyc190aW1lX3VzKCkgLSBzdGFydF90aW1lKTsNCj4gICAgICAgICAgICAgICAg
-ICBeDQo+ICAgLi4vbGlicmRtYWNtL3Jzb2NrZXQuYzogSW4gZnVuY3Rpb24g4oCYcnBvbGzigJk6
-DQo+ICAgLi4vbGlicmRtYWNtL3Jzb2NrZXQuYzozMzIxOjE1OiBlcnJvcjog4oCYc3RhcnRfdGlt
-ZeKAmSBtYXkgYmUgdXNlZA0KPiAgIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbiBbLVdl
-cnJvcj1tYXliZS11bmluaXRpYWxpemVkXQ0KPiAgICAgIHBvbGxfdGltZSA9ICh1aW50MzJfdCkg
-KHJzX3RpbWVfdXMoKSAtIHN0YXJ0X3RpbWUpOw0KPiAgICAgICAgICAgICAgICAgIF4NCj4gICBj
-YzE6IGFsbCB3YXJuaW5ncyBiZWluZyB0cmVhdGVkIGFzIGVycm9ycw0KPiAgIFsxMjIvMzgwXSBC
-dWlsZGluZyBDIG9iamVjdCBwcm92aWRlcnMvZWZhL0NNYWtlRmlsZXMvZWZhLmRpci92ZXJicy5j
-Lm8NCj4gICBuaW5qYTogYnVpbGQgc3RvcHBlZDogc3ViY29tbWFuZCBmYWlsZWQuDQo+ICAgYGBg
-DQo+IFdoaWNoIHJlcHJvZHVjZXMgb24gUkhFTDcuNSB3aXRoIDQuOC41IDIwMTUwNjIzIChSZWQg
-SGF0IDQuOC41LTI4KSBhbmQgMzItDQo+IGJpdCBsaWJyYXJpZXMuDQo+IA0KPiBCdWlsZCBzdGVw
-cyB0byByZXByb2R1Y2U6DQo+ICAgYGBgDQo+ICAgbWtkaXIgYnVpbGQzMiAmJiBjZCBidWlsZDMy
-ICYmIENGTEFHUz0iLVdlcnJvciAtbTMyIiBjbWFrZSAtR05pbmphIFwNCj4gICAtREVOQUJMRV9S
-RVNPTFZFX05FSUdIPTAgLURJT0NUTF9NT0RFPWJvdGggLUROT19QWVZFUkJTPTEgJiYNCj4gXA0K
-PiAgIG5pbmphLWJ1aWxkDQo+ICAgYGBgDQo+IA0KPiBtZXNvbiB2ZXJzaW9uOiAwLjQ3LjINCj4g
-bmluamEtYnVpbGQgdmVyc2lvbjogMS43LjINCj4gDQo+IEZpeGVzOiAzOGM0OTIzMmI2N2EgKCJy
-c29ja2V0czogUmVwbGFjZSBnZXR0aW1lb2ZkYXkgd2l0aCBjbG9ja19nZXR0aW1lIikNCj4gQ2M6
-IHNlYW4uaGVmdHlAaW50ZWwuY29tDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBBbGkgQWxudWJhbmkg
-PGFsaWFsbnVAbWVsbGFub3guY29tPg0KPiAtLS0NCj4gIGxpYnJkbWFjbS9yc29ja2V0LmMgfCA2
-ICsrKy0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMo
-LSkNCj4gDQo+IGRpZmYgLS1naXQgYS9saWJyZG1hY20vcnNvY2tldC5jIGIvbGlicmRtYWNtL3Jz
-b2NrZXQuYyBpbmRleA0KPiA1OGRlMjg1Ni4uYWE5MTJjMWEgMTAwNjQ0DQo+IC0tLSBhL2xpYnJk
-bWFjbS9yc29ja2V0LmMNCj4gKysrIGIvbGlicmRtYWNtL3Jzb2NrZXQuYw0KPiBAQCAtMjEzMyw3
-ICsyMTMzLDcgQEAgc3RhdGljIGludCByc19wcm9jZXNzX2NxKHN0cnVjdCByc29ja2V0ICpycywg
-aW50DQo+IG5vbmJsb2NrLCBpbnQgKCp0ZXN0KShzdHJ1Y3QgcnMNCj4gDQo+ICBzdGF0aWMgaW50
-IHJzX2dldF9jb21wKHN0cnVjdCByc29ja2V0ICpycywgaW50IG5vbmJsb2NrLCBpbnQgKCp0ZXN0
-KShzdHJ1Y3QNCj4gcnNvY2tldCAqcnMpKSAgew0KPiAtCXVpbnQ2NF90IHN0YXJ0X3RpbWU7DQo+
-ICsJdWludDY0X3Qgc3RhcnRfdGltZSA9IDA7DQo+ICAJdWludDMyX3QgcG9sbF90aW1lID0gMDsN
-Cj4gIAlpbnQgcmV0Ow0KPiANCj4gQEAgLTIyOTIsNyArMjI5Miw3IEBAIHN0YXRpYyBpbnQgZHNf
-cHJvY2Vzc19jcXMoc3RydWN0IHJzb2NrZXQgKnJzLCBpbnQNCj4gbm9uYmxvY2ssIGludCAoKnRl
-c3QpKHN0cnVjdCByDQo+IA0KPiAgc3RhdGljIGludCBkc19nZXRfY29tcChzdHJ1Y3QgcnNvY2tl
-dCAqcnMsIGludCBub25ibG9jaywgaW50ICgqdGVzdCkoc3RydWN0DQo+IHJzb2NrZXQgKnJzKSkg
-IHsNCj4gLQl1aW50NjRfdCBzdGFydF90aW1lOw0KPiArCXVpbnQ2NF90IHN0YXJ0X3RpbWUgPSAw
-Ow0KPiAgCXVpbnQzMl90IHBvbGxfdGltZSA9IDA7DQo+ICAJaW50IHJldDsNCj4gDQo+IEBAIC0z
-MzA2LDcgKzMzMDYsNyBAQCBzdGF0aWMgaW50IHJzX3BvbGxfZXZlbnRzKHN0cnVjdCBwb2xsZmQg
-KnJmZHMsIHN0cnVjdA0KPiBwb2xsZmQgKmZkcywgbmZkc190IG5mZHMpICBpbnQgcnBvbGwoc3Ry
-dWN0IHBvbGxmZCAqZmRzLCBuZmRzX3QgbmZkcywgaW50IHRpbWVvdXQpDQo+IHsNCj4gIAlzdHJ1
-Y3QgcG9sbGZkICpyZmRzOw0KPiAtCXVpbnQ2NF90IHN0YXJ0X3RpbWU7DQo+ICsJdWludDY0X3Qg
-c3RhcnRfdGltZSA9IDA7DQo+ICAJdWludDMyX3QgcG9sbF90aW1lID0gMDsNCj4gIAlpbnQgcG9s
-bHNsZWVwLCByZXQ7DQo+IA0KPiAtLQ0KPiAyLjIyLjANCg0K
+On 27/06/2019 16:58, Michal Kalderon wrote:
+> Create a common API for adding entries to a xa_mmap.
+> This API can be used by drivers that don't require special
+> mapping for user mapped memory.
+> 
+> The code was copied from the efa driver almost as is, just renamed
+> function to be generic and not efa specific.
+
+I don't think we should force the mmap flags to be the same for all drivers..
+Take a look at mlx5 for example:
+
+enum mlx5_ib_mmap_cmd {
+	MLX5_IB_MMAP_REGULAR_PAGE               = 0,
+	MLX5_IB_MMAP_GET_CONTIGUOUS_PAGES       = 1,
+	MLX5_IB_MMAP_WC_PAGE                    = 2,
+	MLX5_IB_MMAP_NC_PAGE                    = 3,
+	/* 5 is chosen in order to be compatible with old versions of libmlx5 */
+	MLX5_IB_MMAP_CORE_CLOCK                 = 5,
+	MLX5_IB_MMAP_ALLOC_WC                   = 6,
+	MLX5_IB_MMAP_CLOCK_INFO                 = 7,
+	MLX5_IB_MMAP_DEVICE_MEM                 = 8,
+};
+
+The flags taken from EFA aren't necessarily going to work for other drivers.
+Maybe the flags bits should be opaque to ib_core and leave the actual mmap
+callbacks in the drivers. Not sure how dealloc_ucontext is going to work with
+opaque flags though?
+
+> 
+> Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+> ---
+>  drivers/infiniband/core/rdma_core.c   |   1 +
+>  drivers/infiniband/core/uverbs_cmd.c  |   1 +
+>  drivers/infiniband/core/uverbs_main.c | 177 ++++++++++++++++++++++++++++++++++
+>  include/rdma/ib_verbs.h               |  29 ++++++
+>  4 files changed, 208 insertions(+)
+> 
+> diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
+> index ccf4d069c25c..7166741834c8 100644
+> --- a/drivers/infiniband/core/rdma_core.c
+> +++ b/drivers/infiniband/core/rdma_core.c
+> @@ -817,6 +817,7 @@ static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
+>  	rdma_restrack_del(&ucontext->res);
+>  
+>  	ib_dev->ops.dealloc_ucontext(ucontext);
+> +	rdma_user_mmap_entries_remove_free(ucontext);
+
+Should this happen before calling dealloc_ucontext?
+
+>  	kfree(ucontext);
+>  
+>  	ufile->ucontext = NULL;
+> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+> index 911533081db5..53cd38e4c509 100644
+> --- a/drivers/infiniband/core/uverbs_cmd.c
+> +++ b/drivers/infiniband/core/uverbs_cmd.c
+> @@ -243,6 +243,7 @@ static int ib_uverbs_get_context(struct uverbs_attr_bundle *attrs)
+>  
+>  	mutex_init(&ucontext->per_mm_list_lock);
+>  	INIT_LIST_HEAD(&ucontext->per_mm_list);
+> +	xa_init(&ucontext->mmap_xa);
+>  
+>  	ret = get_unused_fd_flags(O_CLOEXEC);
+>  	if (ret < 0)
+> diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+> index 11c13c1381cf..e7ba855e137b 100644
+> --- a/drivers/infiniband/core/uverbs_main.c
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -932,6 +932,18 @@ static const struct vm_operations_struct rdma_umap_ops = {
+>   * their mmap() functions if they wish to send something like PCI-E BAR memory
+>   * to userspace.
+>   */
+> +
+> +struct rdma_user_mmap_entry {
+> +	void  *obj;
+> +	u64 address;
+> +	u64 length;
+> +	u32 mmap_page;
+> +	u8 mmap_flag;
+> +};
+> +
+> +#define RDMA_USER_MMAP_FLAG_SHIFT 56
+> +#define RDMA_USER_MMAP_PAGE_MASK GENMASK(RDMA_USER_MMAP_FLAG_SHIFT - 1, 0)
+> +
+>  int rdma_user_mmap_io(struct ib_ucontext *ucontext, struct vm_area_struct *vma,
+>  		      unsigned long pfn, unsigned long size, pgprot_t prot)
+>  {
+> @@ -965,6 +977,171 @@ int rdma_user_mmap_io(struct ib_ucontext *ucontext, struct vm_area_struct *vma,
+>  }
+>  EXPORT_SYMBOL(rdma_user_mmap_io);
+>  
+> +static inline u64
+> +rdma_user_mmap_get_key(const struct rdma_user_mmap_entry *entry)
+> +{
+> +	return ((u64)entry->mmap_flag << RDMA_USER_MMAP_FLAG_SHIFT) |
+> +	       ((u64)entry->mmap_page << PAGE_SHIFT);
+> +}
+> +
+> +static struct rdma_user_mmap_entry *
+> +rdma_user_mmap_entry_get(struct ib_ucontext *ucontext, u64 key, u64 len)
+> +{
+> +	struct rdma_user_mmap_entry *entry;
+> +	u64 mmap_page;
+> +
+> +	mmap_page = (key & RDMA_USER_MMAP_PAGE_MASK) >> PAGE_SHIFT;
+> +	if (mmap_page > U32_MAX)
+> +		return NULL;
+> +
+> +	entry = xa_load(&ucontext->mmap_xa, mmap_page);
+> +	if (!entry || rdma_user_mmap_get_key(entry) != key ||
+> +	    entry->length != len)
+> +		return NULL;
+> +
+> +	ibdev_dbg(ucontext->device,
+> +		  "mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx] removed\n",
+> +		  entry->obj, key, entry->address, entry->length);
+> +
+> +	return entry;
+> +}
+> +
+> +/*
+> + * Note this locking scheme cannot support removal of entries, except during
+> + * ucontext destruction when the core code guarentees no concurrency.
+> + */
+> +u64 rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext, void *obj,
+> +				u64 address, u64 length, u8 mmap_flag)
+> +{
+> +	struct rdma_user_mmap_entry *entry;
+> +	int err;
+> +
+> +	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+> +	if (!entry)
+> +		return RDMA_USER_MMAP_INVALID;
+> +
+> +	entry->obj = obj;
+> +	entry->address = address;
+> +	entry->length = length;
+> +	entry->mmap_flag = mmap_flag;
+> +
+> +	xa_lock(&ucontext->mmap_xa);
+> +	entry->mmap_page = ucontext->mmap_xa_page;
+> +	ucontext->mmap_xa_page += DIV_ROUND_UP(length, PAGE_SIZE);
+> +	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
+> +			  GFP_KERNEL);
+> +	xa_unlock(&ucontext->mmap_xa);
+> +	if (err) {
+> +		kfree(entry);
+> +		return RDMA_USER_MMAP_INVALID;
+> +	}
+> +
+> +	ibdev_dbg(ucontext->device,
+> +		  "mmap: obj[0x%p] addr[%#llx], len[%#llx], key[%#llx] inserted\n",
+> +		  entry->obj, entry->address, entry->length,
+> +		  rdma_user_mmap_get_key(entry));
+> +
+> +	return rdma_user_mmap_get_key(entry);
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entry_insert);
+
+Line break here.
+
+> +/*
+> + * This is only called when the ucontext is destroyed and there can be no
+> + * concurrent query via mmap or allocate on the xarray, thus we can be sure no
+> + * other thread is using the entry pointer. We also know that all the BAR
+> + * pages have either been zap'd or munmaped at this point.  Normal pages are
+> + * refcounted and will be freed at the proper time.
+> + */
+> +void rdma_user_mmap_entries_remove_free(struct ib_ucontext *ucontext)
+> +{
+> +	struct rdma_user_mmap_entry *entry;
+> +	unsigned long mmap_page;
+> +
+> +	xa_for_each(&ucontext->mmap_xa, mmap_page, entry) {
+> +		xa_erase(&ucontext->mmap_xa, mmap_page);
+> +
+> +		ibdev_dbg(ucontext->device,
+> +			  "mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx] removed\n",
+> +			  entry->obj, rdma_user_mmap_get_key(entry),
+> +			  entry->address, entry->length);
+> +		if (entry->mmap_flag == RDMA_USER_MMAP_DMA_PAGE)
+> +			/* DMA mapping is already gone, now free the pages */
+> +			free_pages_exact(phys_to_virt(entry->address),
+> +					 entry->length);
+> +		kfree(entry);
+> +	}
+> +}
