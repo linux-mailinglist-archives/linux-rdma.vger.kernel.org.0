@@ -2,99 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F39B57B6C
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 07:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E24657C39
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 08:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbfF0F3i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 01:29:38 -0400
-Received: from mail-eopbgr30086.outbound.protection.outlook.com ([40.107.3.86]:5893
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725385AbfF0F3i (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Jun 2019 01:29:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I+4WzajZb2NolRYdTtemqYgBTB4DS0H+K2EV+WZ6lRg=;
- b=rdpUwYVk8vABPb+9vTA0k6+ijz3eYzGEZqQbw3dD436BnTjNHfJEH+1SILj52lM1ZbBrE7KY7mgLNPQMxP7rDkGw88JfepxsSG0xVuVWv3Px9c2L7FzpVmmn+ETLJCrxBGzILO2V5APGbXn06SgTOPsgxwd/7a2ZL0M93KQdAbU=
-Received: from AM4PR0501MB2257.eurprd05.prod.outlook.com (10.165.45.27) by
- AM4PR0501MB2642.eurprd05.prod.outlook.com (10.172.215.148) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2032.17; Thu, 27 Jun 2019 05:29:35 +0000
-Received: from AM4PR0501MB2257.eurprd05.prod.outlook.com
- ([fe80::4d19:2bbc:edde:4baf]) by AM4PR0501MB2257.eurprd05.prod.outlook.com
- ([fe80::4d19:2bbc:edde:4baf%7]) with mapi id 15.20.2008.014; Thu, 27 Jun 2019
- 05:29:35 +0000
-From:   Yamin Friedman <yaminf@mellanox.com>
-To:     Sagi Grimberg <sagi@grimberg.me>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-CC:     Leon Romanovsky <leonro@mellanox.com>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Tal Gilboa <talgi@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [for-next V2 09/10] RDMA/nldev: Added configuration of RDMA
- dynamic interrupt moderation to netlink
-Thread-Topic: [for-next V2 09/10] RDMA/nldev: Added configuration of RDMA
- dynamic interrupt moderation to netlink
-Thread-Index: AQHVK5in78ka7kEMeUiDy0OdQxEiQ6as3xQAgAIcUwA=
-Date:   Thu, 27 Jun 2019 05:29:35 +0000
-Message-ID: <1c110b74-1731-936e-f4f2-2c880c453eb1@mellanox.com>
-References: <20190625205701.17849-1-saeedm@mellanox.com>
- <20190625205701.17849-10-saeedm@mellanox.com>
- <f621af3b-37a3-eb97-368a-3201fa49f338@grimberg.me>
-In-Reply-To: <f621af3b-37a3-eb97-368a-3201fa49f338@grimberg.me>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: PR2P264CA0021.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101::33)
- To AM4PR0501MB2257.eurprd05.prod.outlook.com (2603:10a6:200:50::27)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=yaminf@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [193.47.165.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e3612d6c-de51-4ca7-22ae-08d6fac070c0
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:AM4PR0501MB2642;
-x-ms-traffictypediagnostic: AM4PR0501MB2642:
-x-microsoft-antispam-prvs: <AM4PR0501MB26420341F81A14EA7B371491B1FD0@AM4PR0501MB2642.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-forefront-prvs: 008184426E
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(396003)(376002)(39860400002)(346002)(366004)(199004)(189003)(31686004)(186003)(14454004)(4326008)(110136005)(478600001)(25786009)(7736002)(26005)(11346002)(54906003)(66556008)(446003)(229853002)(6116002)(2616005)(53936002)(3846002)(66946007)(68736007)(64756008)(66476007)(66446008)(316002)(73956011)(256004)(8676002)(71190400001)(71200400001)(52116002)(81156014)(81166006)(31696002)(86362001)(2906002)(99286004)(305945005)(386003)(53546011)(66066001)(6506007)(6512007)(36756003)(486006)(102836004)(6486002)(476003)(6636002)(6246003)(5660300002)(76176011)(8936002)(4744005)(14444005)(6436002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR0501MB2642;H:AM4PR0501MB2257.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: n4xX/eubHkGRLLYvNmbu8tktboM+ZRVkWNI9YIH/O7IDCx0pZOVgn13qkfU6afAD5WD2nB1hx/Ra4oADrkfULUY0lVsbSiRp20io1ndkA5LrWYDsACTsO5Df6paC2YQd8Cm5I+oMHrEWkFWMM9dXOavyVul8qE4HzzTGAzDWPRzzAW7JOV+y/o580eDXuWIjfL5uOc2yBp92P8IiZ6aisbvu88YjgXVv9YYNSt1MJoBPzeyqG/MrBojWFgGk1BrpbbxHXbxKwTqnTgb0OFLGNnV6cQycMX5MvvvBhnLOhwYPkM3R7NTf0jMn4YD+m3syYPuBAsGqSLtIAu8OjTunKXB8G2C2W78/pd9B/KeWBxWO7QS8qPYpp0CUbFKWAgCdCa3pdRHhcAU0jTYXqXiUjMitOHF2mIZzdJbS8p0cY/o=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <898047FE2FDA7E4995C79E55B19E088E@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726369AbfF0GcZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jun 2019 02:32:25 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:35813 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbfF0GcZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jun 2019 02:32:25 -0400
+Received: by mail-pl1-f194.google.com with SMTP id w24so719935plp.2
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Jun 2019 23:32:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CxcmhcduYl1f+p8Q6K2P2tN31Ue+lZEcvfx29yQXcTA=;
+        b=m4qtlRsuSk58BwN1KjuVxv1OBILIvoJnLL/W5x8gKQGKClqscPAZtSz5HIvZkBZeaP
+         3YNDZbTITdkT9d4NODS4YBRtUWymp+dc1Frl9vN52KgPgeSBy8PuVOd1wpDqdViUXGuU
+         TaoL6w12s1LCWVE6nAVStEUf6ToOh2LrH0l4rAjW0YWcykR1wBUiW/kiHYkRyaFw/b+m
+         5RKkHPbZrlfJtX/jysSBDiQyarjXby+MLOi6XZdFtLwkUxPqEd3s89nrZCy07o0cLs07
+         /nNhohMH1gqtNbY5OQLkVy7sE3hn5AauPYz18DSUKOmknEkjo7985c+vomp74sOA3gvV
+         PN8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CxcmhcduYl1f+p8Q6K2P2tN31Ue+lZEcvfx29yQXcTA=;
+        b=j3SFIEH1deHkUfKRCuX+iHXNyxxSAABPzBvM4F5i2O8EdLTFdUJRyKZ9ctmcQbY5nR
+         Qnl7k/P2fmeYc187fRxVHIPnpLI1dUaIq882BbepEkDW3BCaPUXZMvzvyn4R4tTG1cuT
+         U/zxBXpbfg7IZr49Tyajg5mEjRZ8jSui+AReMwW1HfLFr2s7NFYagvvLDtE7+F7z0/hz
+         uQ8qiDkzEsTA2QwtGbVstSr3gUfhtj0/kVrquZ6wEKgey/foORR3hiM2XenR4lmMOPKr
+         j6sm9FmpdImLrp41yatu7vFgArGh0Zsni1fyAKju7OcX7pEWlKN08rMytnsjfxq6TrFd
+         eoUg==
+X-Gm-Message-State: APjAAAWbU6ud46DEJt9JtP2kfWFiBHvpKdZysmyS9U6BPIlA9fTHiaki
+        EjCUf5Ft/FyAeKkP0rav0UujsA==
+X-Google-Smtp-Source: APXvYqwZ07G5863ndEAB+RksF+e+99jGlEHoSljL/kmhY9ivkki8aBvxOy/aBdnHgI3TPZQaVOsxJA==
+X-Received: by 2002:a17:902:549:: with SMTP id 67mr2700794plf.86.1561617144785;
+        Wed, 26 Jun 2019 23:32:24 -0700 (PDT)
+Received: from ziepe.ca ([12.199.206.50])
+        by smtp.gmail.com with ESMTPSA id k184sm1017237pgk.7.2019.06.26.23.32.24
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 26 Jun 2019 23:32:24 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hgNxH-00029V-At; Thu, 27 Jun 2019 03:32:23 -0300
+Date:   Thu, 27 Jun 2019 03:32:23 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Stephen Bates <sbates@raithlin.com>
+Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
+Message-ID: <20190627063223.GA7736@ziepe.ca>
+References: <20190625072008.GB30350@lst.de>
+ <f0f002bf-2b94-cd18-d18f-5d0b08311495@deltatee.com>
+ <20190625170115.GA9746@lst.de>
+ <41235a05-8ed1-e69a-e7cd-48cae7d8a676@deltatee.com>
+ <20190626065708.GB24531@lst.de>
+ <c15d5997-9ba4-f7db-0e7a-a69e75df316c@deltatee.com>
+ <20190626202107.GA5850@ziepe.ca>
+ <8a0a08c3-a537-bff6-0852-a5f337a70688@deltatee.com>
+ <20190626210018.GB6392@ziepe.ca>
+ <c25d3333-dcd5-3313-089b-7fbbd6fbd876@deltatee.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e3612d6c-de51-4ca7-22ae-08d6fac070c0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jun 2019 05:29:35.4861
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yaminf@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR0501MB2642
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c25d3333-dcd5-3313-089b-7fbbd6fbd876@deltatee.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQpPbiA2LzI2LzIwMTkgMTI6MTUgQU0sIFNhZ2kgR3JpbWJlcmcgd3JvdGU6DQo+DQo+DQo+IE9u
-IDYvMjUvMTkgMTo1NyBQTSwgU2FlZWQgTWFoYW1lZWQgd3JvdGU6DQo+PiBGcm9tOiBZYW1pbiBG
-cmllZG1hbiA8eWFtaW5mQG1lbGxhbm94LmNvbT4NCj4+DQo+PiBBZGRlZCBwYXJhbWV0ZXIgaW4g
-aWJfZGV2aWNlIGZvciBlbmFibGluZyBkeW5hbWljIGludGVycnVwdCANCj4+IG1vZGVyYXRpb24g
-c28NCj4+IHRoYXQgaXQgY2FuIGJlIGNvbmZpZ3VyZWQgaW4gdXNlcnNwYWNlIHVzaW5nIHJkbWEg
-dG9vbC4NCj4+DQo+PiBJbiBvcmRlciB0byBzZXQgZGltIGZvciBhbiBpYiBkZXZpY2UgdGhlIGNv
-bW1hbmQgaXM6DQo+PiByZG1hIGRldiBzZXQgW0RFVl0gZGltIFtvbnxvZmZdDQo+PiBQbGVhc2Ug
-c2V0IG9uL29mZi4NCj4NCj4gSXMgImRpbSIgd2hhdCB5b3Ugd2FudCB0byBleHBvc2UgdG8gdGhl
-IHVzZXI/IG1heWJlDQo+ICJhZGFwdGl2ZS1tb2RlcmF0aW9uIiBpcyBtb3JlIGZyaWVuZGx5Pw0K
-VGhhdCBtYWtlcyBzZW5zZSwgSSB3aWxsIGNoYW5nZSBpdC4NCg==
+On Wed, Jun 26, 2019 at 03:18:07PM -0600, Logan Gunthorpe wrote:
+> > I don't think we should make drives do that. What if it got CMB memory
+> > on some other device?
+> 
+> Huh? A driver submitting P2P requests finds appropriate memory to use
+> based on the DMA device that will be doing the mapping. It *has* to. It
+> doesn't necessarily have control over which P2P provider it might find
+> (ie. it may get CMB memory from a random NVMe device), but it easily
+> knows the NVMe device it got the CMB memory for. Look at the existing
+> code in the nvme target.
+
+No, this all thinking about things from the CMB perspective. With CMB
+you don't care about the BAR location because it is just a temporary
+buffer. That is a unique use model.
+
+Every other case has data residing in BAR memory that can really only
+reside in that one place (ie on a GPU/FPGA DRAM or something). When an IO
+against that is run it should succeed, even if that means bounce
+buffering the IO - as the user has really asked for this transfer to
+happen.
+
+We certainly don't get to generally pick where the data resides before
+starting the IO, that luxury is only for CMB.
+
+> > I think with some simple caching this will become negligible for cases
+> > you care about
+> 
+> Well *maybe* it will be negligible performance wise, but it's also a lot
+> more complicated, code wise. Tree lookups will always be a lot more
+> expensive than just checking a flag.
+
+Interval trees are pretty simple API wise, and if we only populate
+them with P2P providers you probably find the tree depth is negligible
+in current systems with one or two P2P providers.
+
+Jason
