@@ -2,98 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75724587EB
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 19:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29E85889D
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 19:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726464AbfF0RFP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 13:05:15 -0400
-Received: from mga06.intel.com ([134.134.136.31]:47771 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726405AbfF0RFP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Jun 2019 13:05:15 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Jun 2019 10:05:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,424,1557212400"; 
-   d="scan'208";a="185340006"
-Received: from orsmsx109.amr.corp.intel.com ([10.22.240.7])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Jun 2019 10:05:12 -0700
-Received: from orsmsx160.amr.corp.intel.com (10.22.226.43) by
- ORSMSX109.amr.corp.intel.com (10.22.240.7) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 27 Jun 2019 10:05:12 -0700
-Received: from orsmsx109.amr.corp.intel.com ([169.254.11.17]) by
- ORSMSX160.amr.corp.intel.com ([169.254.13.41]) with mapi id 14.03.0439.000;
- Thu, 27 Jun 2019 10:05:12 -0700
-From:   "Hefty, Sean" <sean.hefty@intel.com>
-To:     Ali Alnubani <alialnu@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH v2] rsockets: fix variable initialization
-Thread-Topic: [PATCH v2] rsockets: fix variable initialization
-Thread-Index: AQHVLQUFI7uyxcyygUuZc6gEB6qXz6avupgQ
-Date:   Thu, 27 Jun 2019 17:05:11 +0000
-Message-ID: <1828884A29C6694DAF28B7E6B8A82373B3EB0432@ORSMSX109.amr.corp.intel.com>
-References: <1828884A29C6694DAF28B7E6B8A82373B3EB0374@ORSMSX109.amr.corp.intel.com>
- <20190627162523.5734-1-alialnu@mellanox.com>
-In-Reply-To: <20190627162523.5734-1-alialnu@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiYzIxM2I3OTEtNmIwYi00OWRkLWE3MzctZjk5ZWEyMTQzYmJmIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiSm9ZZThjUlwvUXhQcVpLS2dSUENsUEdPTSt1XC9xalJCaWtOb3N0NlQ1dFZxdWtKT0ViQWlIYnlqc2hVWmhzUGhlIn0=
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.0.600.7
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.139]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        id S1726719AbfF0RhI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jun 2019 13:37:08 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:42170 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726606AbfF0RhI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jun 2019 13:37:08 -0400
+Received: by mail-pg1-f194.google.com with SMTP id k13so1330242pgq.9;
+        Thu, 27 Jun 2019 10:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=4pFcqCKesKooJPGpC0eii+1Zl+R/M9LpbHQRdWKt710=;
+        b=QSNkZWgqAoq76YJMoNIQ6voFVS5kgLO8yHt7Zd4qXf+q45yFbvf0G0JLcc3YZEz/MK
+         fx2u6WMYj1s581bEBu/NmffrVuqr99v0KDzD7uIUwDfundY/7fzLrtPY8yfzg6fsT58C
+         hdRZIPcHmibYiAOehFGJwYOkatwbJtvj/iJLfh8k4DERd+UNGWESAb5qNO8B7T6H/YJr
+         7hn4Tr4tdMgTXOWg3Z2K+16eU2UUL0bcRpm+PVb1BD70X4oIBxly46nkWdA1R8ljK0H7
+         dnoZLZdt4SQU62nxHeb9sMGo6/MVRyiKtPitAfTSf0E/rDr8YcmuUwEOqT5H74mVo4yc
+         70hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=4pFcqCKesKooJPGpC0eii+1Zl+R/M9LpbHQRdWKt710=;
+        b=hyZzXeDZR7HBlwZWB9lFB1JO80BUo+ZJViXlYbbmocx12ec2fAGrtqxJFL+neefqQf
+         xxe9D0mYrgE5DnjHo1FdrRzgY3kWNTq5DrSEU3fEF03ez++l588qdiPUuAUW7/372N5z
+         fK5md0SP5c50LA6Mr6ohF5FF8ibhU4hUqRK6cSKTBtv8lzhwZaFlmVDy9O1j4Aors/Pa
+         xVl4yB/NvWlSOUVUgzz7ie12Ku/ljD/aLy5do4OGZdVdAIQVgB2QyUO4/6xNol3uBiYM
+         i7T5jLTmbrRExEKk33fmM6whsb4UgnH92v1GAVIDj+hWFWIpWdzad7vPe6WgEh/1CmZy
+         erYA==
+X-Gm-Message-State: APjAAAWcl2eEDbjYLhT5/Rr1lkDRryUtM8SxkVGab8Ep4JaVMHhnPOdx
+        5Qd7+Udroc7R2Og9x5bSK6I=
+X-Google-Smtp-Source: APXvYqx7EUnSxGX/HUDHKbJMmpCIoNjUT7AKVZGdghR14KNxPFtfZERkIsC4RbDLIdZ1V5I3JhPz3A==
+X-Received: by 2002:a17:90a:2163:: with SMTP id a90mr7081610pje.3.1561657027401;
+        Thu, 27 Jun 2019 10:37:07 -0700 (PDT)
+Received: from hfq-skylake.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+        by smtp.googlemail.com with ESMTPSA id q1sm3947721pfg.84.2019.06.27.10.37.05
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 Jun 2019 10:37:07 -0700 (PDT)
+From:   Fuqian Huang <huangfq.daxian@gmail.com>
+Cc:     Fuqian Huang <huangfq.daxian@gmail.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 20/87] infiniband: cxgb3: Remove call to memset after dma_alloc_coherent in cxio_hal.c
+Date:   Fri, 28 Jun 2019 01:37:00 +0800
+Message-Id: <20190627173700.2887-1-huangfq.daxian@gmail.com>
+X-Mailer: git-send-email 2.11.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiBUaGlzIGlzIHRvIGZpeCB0aGUgZXJyb3I6DQo+ICAgYGBgDQo+ICAgWzExNy8zODBdIEJ1aWxk
-aW5nIEMgb2JqZWN0IGxpYnJkbWFjbS9DTWFrZUZpbGVzL3JkbWFjbS5kaXIvcnNvY2tldC5jLm8N
-Cj4gICBGQUlMRUQ6IGxpYnJkbWFjbS9DTWFrZUZpbGVzL3JkbWFjbS5kaXIvcnNvY2tldC5jLm8N
-Cj4gICAvdXNyL2Jpbi9jYyAgLURfRklMRV9PRkZTRVRfQklUUz02NCAtRHJkbWFjbV9FWFBPUlRT
-IC1XZXJyb3IgLW0zMg0KPiAgIC1zdGQ9Z251MTEgLVdhbGwgLVdleHRyYSAtV25vLXNpZ24tY29t
-cGFyZSAtV25vLXVudXNlZC1wYXJhbWV0ZXINCj4gICAtV21pc3NpbmctcHJvdG90eXBlcyAtV21p
-c3NpbmctZGVjbGFyYXRpb25zIC1Xd3JpdGUtc3RyaW5ncyAtV2Zvcm1hdD0yDQo+ICAgLVdmb3Jt
-YXQtbm9ubGl0ZXJhbCAtV3JlZHVuZGFudC1kZWNscyAtV25lc3RlZC1leHRlcm5zIC1Xc2hhZG93
-DQo+ICAgLVduby1taXNzaW5nLWZpZWxkLWluaXRpYWxpemVycyAtV3N0cmljdC1wcm90b3R5cGVz
-DQo+ICAgLVdvbGQtc3R5bGUtZGVmaW5pdGlvbiAtV3JlZHVuZGFudC1kZWNscyAtTzIgLWcgIC1m
-UElDIC1JaW5jbHVkZSAtTU1EDQo+ICAgLU1UIGxpYnJkbWFjbS9DTWFrZUZpbGVzL3JkbWFjbS5k
-aXIvcnNvY2tldC5jLm8gLU1GDQo+ICAgImxpYnJkbWFjbS9DTWFrZUZpbGVzL3JkbWFjbS5kaXIv
-cnNvY2tldC5jLm8uZCIgLW8NCj4gICBsaWJyZG1hY20vQ01ha2VGaWxlcy9yZG1hY20uZGlyL3Jz
-b2NrZXQuYy5vICAgLWMgLi4vbGlicmRtYWNtL3Jzb2NrZXQuYw0KPiAgIC4uL2xpYnJkbWFjbS9y
-c29ja2V0LmM6IEluIGZ1bmN0aW9uIOKAmHJzX2dldF9jb21w4oCZOg0KPiAgIC4uL2xpYnJkbWFj
-bS9yc29ja2V0LmM6MjE0ODoxNTogZXJyb3I6IOKAmHN0YXJ0X3RpbWXigJkgbWF5IGJlIHVzZWQN
-Cj4gICB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24gWy1XZXJyb3I9bWF5YmUtdW5pbml0
-aWFsaXplZF0NCj4gICAgICBwb2xsX3RpbWUgPSAodWludDMyX3QpIChyc190aW1lX3VzKCkgLSBz
-dGFydF90aW1lKTsNCj4gICAgICAgICAgICAgICAgICBeDQo+ICAgLi4vbGlicmRtYWNtL3Jzb2Nr
-ZXQuYzogSW4gZnVuY3Rpb24g4oCYZHNfZ2V0X2NvbXDigJk6DQo+ICAgLi4vbGlicmRtYWNtL3Jz
-b2NrZXQuYzoyMzA3OjE1OiBlcnJvcjog4oCYc3RhcnRfdGltZeKAmSBtYXkgYmUgdXNlZA0KPiAg
-IHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbiBbLVdlcnJvcj1tYXliZS11bmluaXRpYWxp
-emVkXQ0KPiAgICAgIHBvbGxfdGltZSA9ICh1aW50MzJfdCkgKHJzX3RpbWVfdXMoKSAtIHN0YXJ0
-X3RpbWUpOw0KPiAgICAgICAgICAgICAgICAgIF4NCj4gICAuLi9saWJyZG1hY20vcnNvY2tldC5j
-OiBJbiBmdW5jdGlvbiDigJhycG9sbOKAmToNCj4gICAuLi9saWJyZG1hY20vcnNvY2tldC5jOjMz
-MjE6MTU6IGVycm9yOiDigJhzdGFydF90aW1l4oCZIG1heSBiZSB1c2VkDQo+ICAgdW5pbml0aWFs
-aXplZCBpbiB0aGlzIGZ1bmN0aW9uIFstV2Vycm9yPW1heWJlLXVuaW5pdGlhbGl6ZWRdDQo+ICAg
-ICAgcG9sbF90aW1lID0gKHVpbnQzMl90KSAocnNfdGltZV91cygpIC0gc3RhcnRfdGltZSk7DQo+
-ICAgICAgICAgICAgICAgICAgXg0KPiAgIGNjMTogYWxsIHdhcm5pbmdzIGJlaW5nIHRyZWF0ZWQg
-YXMgZXJyb3JzDQo+ICAgWzEyMi8zODBdIEJ1aWxkaW5nIEMgb2JqZWN0IHByb3ZpZGVycy9lZmEv
-Q01ha2VGaWxlcy9lZmEuZGlyL3ZlcmJzLmMubw0KPiAgIG5pbmphOiBidWlsZCBzdG9wcGVkOiBz
-dWJjb21tYW5kIGZhaWxlZC4NCj4gICBgYGANCj4gV2hpY2ggcmVwcm9kdWNlcyBvbiBSSEVMNy41
-IHdpdGggNC44LjUgMjAxNTA2MjMgKFJlZCBIYXQgNC44LjUtMjgpDQo+IGFuZCAzMi1iaXQgbGli
-cmFyaWVzLg0KPiANCj4gQnVpbGQgc3RlcHMgdG8gcmVwcm9kdWNlOg0KPiAgIGBgYA0KPiAgIG1r
-ZGlyIGJ1aWxkMzIgJiYgY2QgYnVpbGQzMiAmJiBDRkxBR1M9Ii1XZXJyb3IgLW0zMiIgY21ha2Ug
-LUdOaW5qYSBcDQo+ICAgLURFTkFCTEVfUkVTT0xWRV9ORUlHSD0wIC1ESU9DVExfTU9ERT1ib3Ro
-IC1ETk9fUFlWRVJCUz0xICYmIFwNCj4gICBuaW5qYS1idWlsZA0KPiAgIGBgYA0KPiANCj4gbWVz
-b24gdmVyc2lvbjogMC40Ny4yDQo+IG5pbmphLWJ1aWxkIHZlcnNpb246IDEuNy4yDQo+IA0KPiBG
-aXhlczogMzhjNDkyMzJiNjdhICgicnNvY2tldHM6IFJlcGxhY2UgZ2V0dGltZW9mZGF5IHdpdGgg
-Y2xvY2tfZ2V0dGltZSIpDQo+IENjOiBzZWFuLmhlZnR5QGludGVsLmNvbQ0KPiANCj4gU2lnbmVk
-LW9mZi1ieTogQWxpIEFsbnViYW5pIDxhbGlhbG51QG1lbGxhbm94LmNvbT4NCg0KVGhhbmtzDQoN
-CkFja2VkLWJ5OiBTZWFuIEhlZnR5IDxzZWFuLmhlZnR5QGludGVsLmNvbT4NCg==
+In commit af7ddd8a627c
+("Merge tag 'dma-mapping-4.21' of git://git.infradead.org/users/hch/dma-mapping"),
+dma_alloc_coherent has already zeroed the memory.
+So memset is not needed.
+
+Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
+---
+ drivers/infiniband/hw/cxgb3/cxio_hal.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/cxgb3/cxio_hal.c b/drivers/infiniband/hw/cxgb3/cxio_hal.c
+index 8ac72ac7cbac..0e37f55678f8 100644
+--- a/drivers/infiniband/hw/cxgb3/cxio_hal.c
++++ b/drivers/infiniband/hw/cxgb3/cxio_hal.c
+@@ -174,7 +174,6 @@ int cxio_create_cq(struct cxio_rdev *rdev_p, struct t3_cq *cq, int kernel)
+ 		return -ENOMEM;
+ 	}
+ 	dma_unmap_addr_set(cq, mapping, cq->dma_addr);
+-	memset(cq->queue, 0, size);
+ 	setup.id = cq->cqid;
+ 	setup.base_addr = (u64) (cq->dma_addr);
+ 	setup.size = 1UL << cq->size_log2;
+@@ -538,8 +537,6 @@ static int cxio_hal_init_ctrl_qp(struct cxio_rdev *rdev_p)
+ 	dma_unmap_addr_set(&rdev_p->ctrl_qp, mapping,
+ 			   rdev_p->ctrl_qp.dma_addr);
+ 	rdev_p->ctrl_qp.doorbell = (void __iomem *)rdev_p->rnic_info.kdb_addr;
+-	memset(rdev_p->ctrl_qp.workq, 0,
+-	       (1 << T3_CTRL_QP_SIZE_LOG2) * sizeof(union t3_wr));
+ 
+ 	mutex_init(&rdev_p->ctrl_qp.lock);
+ 	init_waitqueue_head(&rdev_p->ctrl_qp.waitq);
+-- 
+2.11.0
+
