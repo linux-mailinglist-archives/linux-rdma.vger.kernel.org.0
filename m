@@ -2,102 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10222586B6
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 18:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D239A586FB
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 18:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbfF0QJ6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 12:09:58 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:35960 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726384AbfF0QJ6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Jun 2019 12:09:58 -0400
-Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
-        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <logang@deltatee.com>)
-        id 1hgWy1-0002ZY-Gh; Thu, 27 Jun 2019 10:09:46 -0600
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20190625072008.GB30350@lst.de>
- <f0f002bf-2b94-cd18-d18f-5d0b08311495@deltatee.com>
- <20190625170115.GA9746@lst.de>
- <41235a05-8ed1-e69a-e7cd-48cae7d8a676@deltatee.com>
- <20190626065708.GB24531@lst.de>
- <c15d5997-9ba4-f7db-0e7a-a69e75df316c@deltatee.com>
- <20190626202107.GA5850@ziepe.ca>
- <8a0a08c3-a537-bff6-0852-a5f337a70688@deltatee.com>
- <20190626210018.GB6392@ziepe.ca>
- <c25d3333-dcd5-3313-089b-7fbbd6fbd876@deltatee.com>
- <20190627063223.GA7736@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <6afe4027-26c8-df4e-65ce-49df07dec54d@deltatee.com>
-Date:   Thu, 27 Jun 2019 10:09:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20190627063223.GA7736@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
+        id S1726476AbfF0QZt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jun 2019 12:25:49 -0400
+Received: from mail-eopbgr50043.outbound.protection.outlook.com ([40.107.5.43]:44513
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726315AbfF0QZt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Jun 2019 12:25:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BEWmuh/BOFaAFzKnC37Ua7cECluw/97XhiJQMVrBvnI=;
+ b=hsPbT873Yt/9/Ydjdf9dmM3tgBSvNPXhApBIPdXxGVgvvvoxKP3YupYLx6KyP266mj8fIzTtYvcZQtDLmjPgaorxku1f1HcYbLyCIFIwg76qK4e1B90Y1mCxrCLUqB1O0ueODuJkK2JtqolxlRfk1sbQEGk7SQwumtAk0XMIHbo=
+Received: from DB6PR0501MB2167.eurprd05.prod.outlook.com (10.168.58.144) by
+ DB6PR0501MB2838.eurprd05.prod.outlook.com (10.172.226.17) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.16; Thu, 27 Jun 2019 16:25:45 +0000
+Received: from DB6PR0501MB2167.eurprd05.prod.outlook.com
+ ([fe80::f46e:3c7c:f7ff:a8f7]) by DB6PR0501MB2167.eurprd05.prod.outlook.com
+ ([fe80::f46e:3c7c:f7ff:a8f7%7]) with mapi id 15.20.2008.017; Thu, 27 Jun 2019
+ 16:25:45 +0000
+From:   Ali Alnubani <alialnu@mellanox.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     "sean.hefty@intel.com" <sean.hefty@intel.com>
+Subject: [PATCH v2] rsockets: fix variable initialization
+Thread-Topic: [PATCH v2] rsockets: fix variable initialization
+Thread-Index: AQHVLQT4Gfa/GmwqbUeYLlEN/n8GAQ==
+Date:   Thu, 27 Jun 2019 16:25:45 +0000
+Message-ID: <20190627162523.5734-1-alialnu@mellanox.com>
+References: <1828884A29C6694DAF28B7E6B8A82373B3EB0374@ORSMSX109.amr.corp.intel.com>
+In-Reply-To: <1828884A29C6694DAF28B7E6B8A82373B3EB0374@ORSMSX109.amr.corp.intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 68.147.80.180
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, kbusch@kernel.org, sagi@grimberg.me, dan.j.williams@intel.com, bhelgaas@google.com, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.22.0
+x-clientproxiedby: VI1P18901CA0012.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:801::22) To DB6PR0501MB2167.eurprd05.prod.outlook.com
+ (2603:10a6:4:51::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=alialnu@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [37.142.13.130]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3279aa2e-5954-4b6d-e8d3-08d6fb1c1aaa
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2838;
+x-ms-traffictypediagnostic: DB6PR0501MB2838:
+x-microsoft-antispam-prvs: <DB6PR0501MB283822F99F35A42C3934C499D7FD0@DB6PR0501MB2838.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 008184426E
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(376002)(346002)(366004)(136003)(396003)(199004)(189003)(3846002)(256004)(1076003)(73956011)(186003)(26005)(50226002)(2351001)(66556008)(6116002)(71200400001)(478600001)(66476007)(5660300002)(102836004)(25786009)(66446008)(5640700003)(2501003)(53936002)(99286004)(86362001)(386003)(6436002)(6486002)(8676002)(66066001)(6512007)(66946007)(36756003)(81156014)(81166006)(316002)(14454004)(11346002)(4326008)(52116002)(6506007)(2906002)(68736007)(6916009)(71190400001)(2616005)(7736002)(476003)(486006)(64756008)(446003)(305945005)(76176011)(8936002);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2838;H:DB6PR0501MB2167.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: MogfWhZ8fdsoQo1D2bLkvYwlLZ6UdpqzUmO2VB/WYFnTp4oW5SMoeS9qjfZQyw5d0W3KzA0vSYSG9mtR79dCQ5n7+57MEfpS8rjfu3pU6rcKvBN4utEmqlYrjlM9sqIV6m3DxrY34XUg0M107Q1RDDWEgpHS4rtL0/tMVHxAW2VxXj8WBO5f7QAXMvrlmuAdSiy/JhGdzQkrcEWYEV1Nefd95zAUD/6PXgu480jE3fT61f0ULQI8024HXPpm1Zo/04eCRrGA7TFhvY9O3EoC8Vckg1etrBrA5Y1j8ZYggAQRrUmQQdrB7bad/qvRHEUAiMgWeovPbqd1x5uiGz9k4vYOtzzSWkCTxnRLCUVYAFByUSvunzwxzNB6MpBmFxJdPSBN3mcwqpMFSe+w0TFqUQXkkMtE+fU0F5fzUXFcWJM=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4480C1625AC2664E8566FF188C3BB6F7@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3279aa2e-5954-4b6d-e8d3-08d6fb1c1aaa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jun 2019 16:25:45.0933
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: alialnu@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2838
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2019-06-27 12:32 a.m., Jason Gunthorpe wrote:
-> On Wed, Jun 26, 2019 at 03:18:07PM -0600, Logan Gunthorpe wrote:
->>> I don't think we should make drives do that. What if it got CMB memory
->>> on some other device?
->>
->> Huh? A driver submitting P2P requests finds appropriate memory to use
->> based on the DMA device that will be doing the mapping. It *has* to. It
->> doesn't necessarily have control over which P2P provider it might find
->> (ie. it may get CMB memory from a random NVMe device), but it easily
->> knows the NVMe device it got the CMB memory for. Look at the existing
->> code in the nvme target.
-> 
-> No, this all thinking about things from the CMB perspective. With CMB
-> you don't care about the BAR location because it is just a temporary
-> buffer. That is a unique use model.
-> 
-> Every other case has data residing in BAR memory that can really only
-> reside in that one place (ie on a GPU/FPGA DRAM or something). When an IO
-> against that is run it should succeed, even if that means bounce
-> buffering the IO - as the user has really asked for this transfer to
-> happen.
-> 
-> We certainly don't get to generally pick where the data resides before
-> starting the IO, that luxury is only for CMB.
-
-I disagree. If we we're going to implement a "bounce" we'd probably want
-to do it in two DMA requests. So the GPU/FPGA driver would first decide
-whether it can do it P2P directly and, if it can't, would want to submit
-a DMA request copy the data to host memory and then submit an IO
-normally to the data's final destination.
-
-I think it would be a larger layering violation to have the NVMe driver
-(for example) memcpy data off a GPU's bar during a dma_map step to
-support this bouncing. And it's even crazier to expect a DMA transfer to
-be setup in the map step.
-
-Logan
+VGhpcyBpcyB0byBmaXggdGhlIGVycm9yOg0KICBgYGANCiAgWzExNy8zODBdIEJ1aWxkaW5nIEMg
+b2JqZWN0IGxpYnJkbWFjbS9DTWFrZUZpbGVzL3JkbWFjbS5kaXIvcnNvY2tldC5jLm8NCiAgRkFJ
+TEVEOiBsaWJyZG1hY20vQ01ha2VGaWxlcy9yZG1hY20uZGlyL3Jzb2NrZXQuYy5vDQogIC91c3Iv
+YmluL2NjICAtRF9GSUxFX09GRlNFVF9CSVRTPTY0IC1EcmRtYWNtX0VYUE9SVFMgLVdlcnJvciAt
+bTMyDQogIC1zdGQ9Z251MTEgLVdhbGwgLVdleHRyYSAtV25vLXNpZ24tY29tcGFyZSAtV25vLXVu
+dXNlZC1wYXJhbWV0ZXINCiAgLVdtaXNzaW5nLXByb3RvdHlwZXMgLVdtaXNzaW5nLWRlY2xhcmF0
+aW9ucyAtV3dyaXRlLXN0cmluZ3MgLVdmb3JtYXQ9Mg0KICAtV2Zvcm1hdC1ub25saXRlcmFsIC1X
+cmVkdW5kYW50LWRlY2xzIC1XbmVzdGVkLWV4dGVybnMgLVdzaGFkb3cNCiAgLVduby1taXNzaW5n
+LWZpZWxkLWluaXRpYWxpemVycyAtV3N0cmljdC1wcm90b3R5cGVzDQogIC1Xb2xkLXN0eWxlLWRl
+ZmluaXRpb24gLVdyZWR1bmRhbnQtZGVjbHMgLU8yIC1nICAtZlBJQyAtSWluY2x1ZGUgLU1NRA0K
+ICAtTVQgbGlicmRtYWNtL0NNYWtlRmlsZXMvcmRtYWNtLmRpci9yc29ja2V0LmMubyAtTUYNCiAg
+ImxpYnJkbWFjbS9DTWFrZUZpbGVzL3JkbWFjbS5kaXIvcnNvY2tldC5jLm8uZCIgLW8NCiAgbGli
+cmRtYWNtL0NNYWtlRmlsZXMvcmRtYWNtLmRpci9yc29ja2V0LmMubyAgIC1jIC4uL2xpYnJkbWFj
+bS9yc29ja2V0LmMNCiAgLi4vbGlicmRtYWNtL3Jzb2NrZXQuYzogSW4gZnVuY3Rpb24g4oCYcnNf
+Z2V0X2NvbXDigJk6DQogIC4uL2xpYnJkbWFjbS9yc29ja2V0LmM6MjE0ODoxNTogZXJyb3I6IOKA
+mHN0YXJ0X3RpbWXigJkgbWF5IGJlIHVzZWQNCiAgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0
+aW9uIFstV2Vycm9yPW1heWJlLXVuaW5pdGlhbGl6ZWRdDQogICAgIHBvbGxfdGltZSA9ICh1aW50
+MzJfdCkgKHJzX3RpbWVfdXMoKSAtIHN0YXJ0X3RpbWUpOw0KICAgICAgICAgICAgICAgICBeDQog
+IC4uL2xpYnJkbWFjbS9yc29ja2V0LmM6IEluIGZ1bmN0aW9uIOKAmGRzX2dldF9jb21w4oCZOg0K
+ICAuLi9saWJyZG1hY20vcnNvY2tldC5jOjIzMDc6MTU6IGVycm9yOiDigJhzdGFydF90aW1l4oCZ
+IG1heSBiZSB1c2VkDQogIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbiBbLVdlcnJvcj1t
+YXliZS11bmluaXRpYWxpemVkXQ0KICAgICBwb2xsX3RpbWUgPSAodWludDMyX3QpIChyc190aW1l
+X3VzKCkgLSBzdGFydF90aW1lKTsNCiAgICAgICAgICAgICAgICAgXg0KICAuLi9saWJyZG1hY20v
+cnNvY2tldC5jOiBJbiBmdW5jdGlvbiDigJhycG9sbOKAmToNCiAgLi4vbGlicmRtYWNtL3Jzb2Nr
+ZXQuYzozMzIxOjE1OiBlcnJvcjog4oCYc3RhcnRfdGltZeKAmSBtYXkgYmUgdXNlZA0KICB1bmlu
+aXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24gWy1XZXJyb3I9bWF5YmUtdW5pbml0aWFsaXplZF0N
+CiAgICAgcG9sbF90aW1lID0gKHVpbnQzMl90KSAocnNfdGltZV91cygpIC0gc3RhcnRfdGltZSk7
+DQogICAgICAgICAgICAgICAgIF4NCiAgY2MxOiBhbGwgd2FybmluZ3MgYmVpbmcgdHJlYXRlZCBh
+cyBlcnJvcnMNCiAgWzEyMi8zODBdIEJ1aWxkaW5nIEMgb2JqZWN0IHByb3ZpZGVycy9lZmEvQ01h
+a2VGaWxlcy9lZmEuZGlyL3ZlcmJzLmMubw0KICBuaW5qYTogYnVpbGQgc3RvcHBlZDogc3ViY29t
+bWFuZCBmYWlsZWQuDQogIGBgYA0KV2hpY2ggcmVwcm9kdWNlcyBvbiBSSEVMNy41IHdpdGggNC44
+LjUgMjAxNTA2MjMgKFJlZCBIYXQgNC44LjUtMjgpDQphbmQgMzItYml0IGxpYnJhcmllcy4NCg0K
+QnVpbGQgc3RlcHMgdG8gcmVwcm9kdWNlOg0KICBgYGANCiAgbWtkaXIgYnVpbGQzMiAmJiBjZCBi
+dWlsZDMyICYmIENGTEFHUz0iLVdlcnJvciAtbTMyIiBjbWFrZSAtR05pbmphIFwNCiAgLURFTkFC
+TEVfUkVTT0xWRV9ORUlHSD0wIC1ESU9DVExfTU9ERT1ib3RoIC1ETk9fUFlWRVJCUz0xICYmIFwN
+CiAgbmluamEtYnVpbGQNCiAgYGBgDQoNCm1lc29uIHZlcnNpb246IDAuNDcuMg0KbmluamEtYnVp
+bGQgdmVyc2lvbjogMS43LjINCg0KRml4ZXM6IDM4YzQ5MjMyYjY3YSAoInJzb2NrZXRzOiBSZXBs
+YWNlIGdldHRpbWVvZmRheSB3aXRoIGNsb2NrX2dldHRpbWUiKQ0KQ2M6IHNlYW4uaGVmdHlAaW50
+ZWwuY29tDQoNClNpZ25lZC1vZmYtYnk6IEFsaSBBbG51YmFuaSA8YWxpYWxudUBtZWxsYW5veC5j
+b20+DQotLS0NCkNoYW5nZXMgaW4gdjI6DQoJLSBLZXB0IHRoZSBzYW1lIG51bWJlciBvZiBhc3Np
+Z25tZW50cyAoc3VnZ2VzdGVkIGJ5IFNlYW4pLg0KDQogbGlicmRtYWNtL3Jzb2NrZXQuYyB8IDE4
+ICsrKysrKysrKy0tLS0tLS0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDkg
+ZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9saWJyZG1hY20vcnNvY2tldC5jIGIvbGlicmRt
+YWNtL3Jzb2NrZXQuYw0KaW5kZXggNThkZTI4NTYuLjg5YWUyMTM5IDEwMDY0NA0KLS0tIGEvbGli
+cmRtYWNtL3Jzb2NrZXQuYw0KKysrIGIvbGlicmRtYWNtL3Jzb2NrZXQuYw0KQEAgLTIxMzMsOCAr
+MjEzMyw4IEBAIHN0YXRpYyBpbnQgcnNfcHJvY2Vzc19jcShzdHJ1Y3QgcnNvY2tldCAqcnMsIGlu
+dCBub25ibG9jaywgaW50ICgqdGVzdCkoc3RydWN0IHJzDQogDQogc3RhdGljIGludCByc19nZXRf
+Y29tcChzdHJ1Y3QgcnNvY2tldCAqcnMsIGludCBub25ibG9jaywgaW50ICgqdGVzdCkoc3RydWN0
+IHJzb2NrZXQgKnJzKSkNCiB7DQotCXVpbnQ2NF90IHN0YXJ0X3RpbWU7DQotCXVpbnQzMl90IHBv
+bGxfdGltZSA9IDA7DQorCXVpbnQ2NF90IHN0YXJ0X3RpbWUgPSAwOw0KKwl1aW50MzJfdCBwb2xs
+X3RpbWU7DQogCWludCByZXQ7DQogDQogCWRvIHsNCkBAIC0yMTQyLDcgKzIxNDIsNyBAQCBzdGF0
+aWMgaW50IHJzX2dldF9jb21wKHN0cnVjdCByc29ja2V0ICpycywgaW50IG5vbmJsb2NrLCBpbnQg
+KCp0ZXN0KShzdHJ1Y3QgcnNvYw0KIAkJaWYgKCFyZXQgfHwgbm9uYmxvY2sgfHwgZXJybm8gIT0g
+RVdPVUxEQkxPQ0spDQogCQkJcmV0dXJuIHJldDsNCiANCi0JCWlmICghcG9sbF90aW1lKQ0KKwkJ
+aWYgKCFzdGFydF90aW1lKQ0KIAkJCXN0YXJ0X3RpbWUgPSByc190aW1lX3VzKCk7DQogDQogCQlw
+b2xsX3RpbWUgPSAodWludDMyX3QpIChyc190aW1lX3VzKCkgLSBzdGFydF90aW1lKTsNCkBAIC0y
+MjkyLDggKzIyOTIsOCBAQCBzdGF0aWMgaW50IGRzX3Byb2Nlc3NfY3FzKHN0cnVjdCByc29ja2V0
+ICpycywgaW50IG5vbmJsb2NrLCBpbnQgKCp0ZXN0KShzdHJ1Y3Qgcg0KIA0KIHN0YXRpYyBpbnQg
+ZHNfZ2V0X2NvbXAoc3RydWN0IHJzb2NrZXQgKnJzLCBpbnQgbm9uYmxvY2ssIGludCAoKnRlc3Qp
+KHN0cnVjdCByc29ja2V0ICpycykpDQogew0KLQl1aW50NjRfdCBzdGFydF90aW1lOw0KLQl1aW50
+MzJfdCBwb2xsX3RpbWUgPSAwOw0KKwl1aW50NjRfdCBzdGFydF90aW1lID0gMDsNCisJdWludDMy
+X3QgcG9sbF90aW1lOw0KIAlpbnQgcmV0Ow0KIA0KIAlkbyB7DQpAQCAtMjMwMSw3ICsyMzAxLDcg
+QEAgc3RhdGljIGludCBkc19nZXRfY29tcChzdHJ1Y3QgcnNvY2tldCAqcnMsIGludCBub25ibG9j
+aywgaW50ICgqdGVzdCkoc3RydWN0IHJzb2MNCiAJCWlmICghcmV0IHx8IG5vbmJsb2NrIHx8IGVy
+cm5vICE9IEVXT1VMREJMT0NLKQ0KIAkJCXJldHVybiByZXQ7DQogDQotCQlpZiAoIXBvbGxfdGlt
+ZSkNCisJCWlmICghc3RhcnRfdGltZSkNCiAJCQlzdGFydF90aW1lID0gcnNfdGltZV91cygpOw0K
+IA0KIAkJcG9sbF90aW1lID0gKHVpbnQzMl90KSAocnNfdGltZV91cygpIC0gc3RhcnRfdGltZSk7
+DQpAQCAtMzMwNiw4ICszMzA2LDggQEAgc3RhdGljIGludCByc19wb2xsX2V2ZW50cyhzdHJ1Y3Qg
+cG9sbGZkICpyZmRzLCBzdHJ1Y3QgcG9sbGZkICpmZHMsIG5mZHNfdCBuZmRzKQ0KIGludCBycG9s
+bChzdHJ1Y3QgcG9sbGZkICpmZHMsIG5mZHNfdCBuZmRzLCBpbnQgdGltZW91dCkNCiB7DQogCXN0
+cnVjdCBwb2xsZmQgKnJmZHM7DQotCXVpbnQ2NF90IHN0YXJ0X3RpbWU7DQotCXVpbnQzMl90IHBv
+bGxfdGltZSA9IDA7DQorCXVpbnQ2NF90IHN0YXJ0X3RpbWUgPSAwOw0KKwl1aW50MzJfdCBwb2xs
+X3RpbWU7DQogCWludCBwb2xsc2xlZXAsIHJldDsNCiANCiAJZG8gew0KQEAgLTMzMTUsNyArMzMx
+NSw3IEBAIGludCBycG9sbChzdHJ1Y3QgcG9sbGZkICpmZHMsIG5mZHNfdCBuZmRzLCBpbnQgdGlt
+ZW91dCkNCiAJCWlmIChyZXQgfHwgIXRpbWVvdXQpDQogCQkJcmV0dXJuIHJldDsNCiANCi0JCWlm
+ICghcG9sbF90aW1lKQ0KKwkJaWYgKCFzdGFydF90aW1lKQ0KIAkJCXN0YXJ0X3RpbWUgPSByc190
+aW1lX3VzKCk7DQogDQogCQlwb2xsX3RpbWUgPSAodWludDMyX3QpIChyc190aW1lX3VzKCkgLSBz
+dGFydF90aW1lKTsNCi0tIA0KMi4yMi4wDQoNCg==
