@@ -2,136 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8595879A
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 18:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B950587F0
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 19:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbfF0Qt4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 12:49:56 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:36648 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726426AbfF0Qt4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Jun 2019 12:49:56 -0400
-Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
-        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <logang@deltatee.com>)
-        id 1hgXak-000303-OD; Thu, 27 Jun 2019 10:49:47 -0600
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
+        id S1726464AbfF0RGw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jun 2019 13:06:52 -0400
+Received: from verein.lst.de ([213.95.11.210]:40347 "EHLO newverein.lst.de"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726405AbfF0RGw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Jun 2019 13:06:52 -0400
+X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Jun 2019 13:06:51 EDT
+Received: by newverein.lst.de (Postfix, from userid 2407)
+        id 991F9227A8B; Thu, 27 Jun 2019 19:00:27 +0200 (CEST)
+Date:   Thu, 27 Jun 2019 19:00:27 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Dan Williams <dan.j.williams@intel.com>,
         Sagi Grimberg <sagi@grimberg.me>,
         Keith Busch <kbusch@kernel.org>,
         Stephen Bates <sbates@raithlin.com>
-References: <20190625170115.GA9746@lst.de>
- <41235a05-8ed1-e69a-e7cd-48cae7d8a676@deltatee.com>
- <20190626065708.GB24531@lst.de>
- <c15d5997-9ba4-f7db-0e7a-a69e75df316c@deltatee.com>
- <20190626202107.GA5850@ziepe.ca>
- <8a0a08c3-a537-bff6-0852-a5f337a70688@deltatee.com>
- <20190626210018.GB6392@ziepe.ca>
- <c25d3333-dcd5-3313-089b-7fbbd6fbd876@deltatee.com>
- <20190627063223.GA7736@ziepe.ca>
- <6afe4027-26c8-df4e-65ce-49df07dec54d@deltatee.com>
- <20190627163504.GB9568@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <4894142c-3233-a3bb-f9a3-4a4985136e9b@deltatee.com>
-Date:   Thu, 27 Jun 2019 10:49:43 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20190627163504.GB9568@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 68.147.80.180
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, kbusch@kernel.org, sagi@grimberg.me, dan.j.williams@intel.com, bhelgaas@google.com, axboe@kernel.dk, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
 Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Message-ID: <20190627170027.GE10652@lst.de>
+References: <20190625072008.GB30350@lst.de> <f0f002bf-2b94-cd18-d18f-5d0b08311495@deltatee.com> <20190625170115.GA9746@lst.de> <41235a05-8ed1-e69a-e7cd-48cae7d8a676@deltatee.com> <20190626065708.GB24531@lst.de> <c15d5997-9ba4-f7db-0e7a-a69e75df316c@deltatee.com> <20190626202107.GA5850@ziepe.ca> <8a0a08c3-a537-bff6-0852-a5f337a70688@deltatee.com> <20190627090843.GB11548@lst.de> <89889319-e778-7772-ab36-dc55b59826be@deltatee.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <89889319-e778-7772-ab36-dc55b59826be@deltatee.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2019-06-27 10:35 a.m., Jason Gunthorpe wrote:
-> On Thu, Jun 27, 2019 at 10:09:41AM -0600, Logan Gunthorpe wrote:
->>
->>
->> On 2019-06-27 12:32 a.m., Jason Gunthorpe wrote:
->>> On Wed, Jun 26, 2019 at 03:18:07PM -0600, Logan Gunthorpe wrote:
->>>>> I don't think we should make drives do that. What if it got CMB memory
->>>>> on some other device?
->>>>
->>>> Huh? A driver submitting P2P requests finds appropriate memory to use
->>>> based on the DMA device that will be doing the mapping. It *has* to. It
->>>> doesn't necessarily have control over which P2P provider it might find
->>>> (ie. it may get CMB memory from a random NVMe device), but it easily
->>>> knows the NVMe device it got the CMB memory for. Look at the existing
->>>> code in the nvme target.
->>>
->>> No, this all thinking about things from the CMB perspective. With CMB
->>> you don't care about the BAR location because it is just a temporary
->>> buffer. That is a unique use model.
->>>
->>> Every other case has data residing in BAR memory that can really only
->>> reside in that one place (ie on a GPU/FPGA DRAM or something). When an IO
->>> against that is run it should succeed, even if that means bounce
->>> buffering the IO - as the user has really asked for this transfer to
->>> happen.
->>>
->>> We certainly don't get to generally pick where the data resides before
->>> starting the IO, that luxury is only for CMB.
->>
->> I disagree. If we we're going to implement a "bounce" we'd probably want
->> to do it in two DMA requests.
+On Thu, Jun 27, 2019 at 10:30:42AM -0600, Logan Gunthorpe wrote:
+> >  (a) a range is normal RAM, DMA mapping works as usual
+> >  (b) a range is another devices BAR, in which case we need to do a
+> >      map_resource equivalent (which really just means don't bother with
+> >      cache flush on non-coherent architectures) and apply any needed
+> >      offset, fixed or iommu based
 > 
-> How do you mean?
+> Well I would split this into two cases: (b1) ranges in another device's
+> BAR that will pass through the root complex and require a map_resource
+> equivalent and (b2) ranges in another device's bar that don't pass
+> through the root complex and require applying an offset to the bus
+> address. Both require rather different handling and the submitting
+> driver should already know ahead of time what type we have.
+
+True.
+
 > 
->> So the GPU/FPGA driver would first decide whether it can do it P2P
->> directly and, if it can't, would want to submit a DMA request copy
->> the data to host memory and then submit an IO normally to the data's
->> final destination.
+> >  (c) a range points to a BAR on the acting device. In which case we
+> >      don't need to DMA map at all, because no dma is happening but just an
+> >      internal transfer.  And depending on the device that might also require
+> >      a different addressing mode
 > 
-> I don't think a GPU/FPGA driver will be involved, this would enter the
-> block layer through the O_DIRECT path or something generic.. This the
-> general flow I was suggesting to Dan earlier
+> I think (c) is actually just a special case of (b2). Any device that has
+> a special protocol for addressing the local BAR can just do a range
+> compare on the address to determine if it's local or not. Devices that
+> don't have a special protocol for this would handle both (c) and (b2)
+> the same.
 
-I would say the O_DIRECT path has to somehow call into the driver
-backing the VMA to get an address to appropriate memory (in some way
-vaguely similar to how we were discussing at LSF/MM). If P2P can't be
-done at that point, then the provider driver would do the copy to system
-memory, in the most appropriate way, and return regular pages for
-O_DIRECT to submit to the block device.
+It is not.  (c) is fundamentally very different as it is not actually
+an operation that ever goes out to the wire at all, and which is why the
+actual physical address on the wire does not matter at all.
+Some interfaces like NVMe have designed it in a way that it the commands
+used to do this internal transfer look like (b2), but that is just their
+(IMHO very questionable) interface design choice, that produces a whole
+chain of problems.
 
->> I think it would be a larger layering violation to have the NVMe driver
->> (for example) memcpy data off a GPU's bar during a dma_map step to
->> support this bouncing. And it's even crazier to expect a DMA transfer to
->> be setup in the map step.
+> > I guess it might make sense to just have a block layer flag that (b) or
+> > (c) might be contained in a bio.  Then we always look up the data
+> > structure, but can still fall back to (a) if nothing was found.  That
+> > even allows free mixing and matching of memory types, at least as long
+> > as they are contained to separate bio_vec segments.
 > 
-> Why? Don't we already expect the DMA mapper to handle bouncing for
-> lots of cases, how is this case different? This is the best place to
-> place it to make it shared.
+> IMO these three cases should be reflected in flags in the bio_vec. We'd
+> probably still need a queue flag to indicate support for mapping these,
+> but a flag on the bio that indicates special cases *might* exist in the
+> bio_vec and the driver has to do extra work to somehow distinguish the
+> three types doesn't seem useful. bio_vec flags also make it easy to
+> support mixing segments from different memory types.
 
-This is different because it's special memory where the DMA mapper can't
-possibly know the best way to transfer the data. The best way to
-transfer the data is almost certainly going to be a DMA request handled
-by the GPU/FPGA. So, one way or another, the GPU/FPGA driver has to be
-involved.
-
-One could argue that the hook to the GPU/FPGA driver could be in the
-mapping step but then we'd have to do lookups based on an address --
-where as the VMA could more easily have a hook back to whatever driver
-exported it.
-
-Logan
+So I іnitially suggested these flags.  But without a pgmap we absolutely
+need a lookup operation to find which phys address ranges map to which
+device.  And once we do that the data structure the only thing we need
+is a flag saying that we need that information, and everything else
+can be in the data structure returned from that lookup.
