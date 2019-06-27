@@ -2,92 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E535844F
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 16:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71812584BE
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 16:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbfF0OPR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 10:15:17 -0400
-Received: from edge10.ethz.ch ([82.130.75.186]:57150 "EHLO edge10.ethz.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726443AbfF0OPR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Jun 2019 10:15:17 -0400
-X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Jun 2019 10:15:14 EDT
-Received: from mailm214.d.ethz.ch (129.132.139.38) by edge10.ethz.ch
- (82.130.75.186) with Microsoft SMTP Server (TLS) id 14.3.439.0; Thu, 27 Jun
- 2019 16:06:57 +0200
-Received: from ktaranov-laptop.wifi.oracle.com (209.17.40.23) by
- mailm214.d.ethz.ch (2001:67c:10ec:5603::28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 27 Jun 2019 16:07:02 +0200
-From:   Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
-To:     <monis@mellanox.com>
-CC:     <linux-rdma@vger.kernel.org>,
-        Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
-Subject: [PATCH] Make rxe driver to calculate correct byte_len on receiving side when work completion is generated with IB_WC_RECV_RDMA_WITH_IMM opcode.
-Date:   Thu, 27 Jun 2019 16:06:43 +0200
-Message-ID: <20190627140643.6191-1-konstantin.taranov@inf.ethz.ch>
-X-Mailer: git-send-email 2.17.1
+        id S1726431AbfF0Oqj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jun 2019 10:46:39 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:3879 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726425AbfF0Oqj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jun 2019 10:46:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1561646798; x=1593182798;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=SN/gUAzQ8Ww77H20ovBk9WMBXogDUTRW+1L1OLwS468=;
+  b=R17VwcvgiF6OlD9L4lYQUoMTvaAActYD+2K4/Th7KQ1gXjsV50qjmIrs
+   OOalF11n10+4U6MHvcH1uszJmXZnFeql7Rkh9A8vWCQ9Itv2jLhr/qxKK
+   p6f3WIGIjMdsgn/T3XrAwSAGAcinnplHcdkpiV7jObWtpDF10/wrBRizi
+   U=;
+X-IronPort-AV: E=Sophos;i="5.62,424,1554768000"; 
+   d="scan'208";a="813095848"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2b-3714e498.us-west-2.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 27 Jun 2019 14:46:36 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-3714e498.us-west-2.amazon.com (Postfix) with ESMTPS id BC571A1DD7;
+        Thu, 27 Jun 2019 14:46:35 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 27 Jun 2019 14:46:35 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.65) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 27 Jun 2019 14:46:31 +0000
+Subject: Re: [RFC rdma 1/3] RDMA/core: Create a common mmap function
+To:     Michal Kalderon <michal.kalderon@marvell.com>, <jgg@ziepe.ca>,
+        <dledford@redhat.com>, <leon@kernel.org>, <sleybo@amazon.com>,
+        <ariel.elior@marvell.com>
+CC:     <linux-rdma@vger.kernel.org>
+References: <20190627135825.4924-1-michal.kalderon@marvell.com>
+ <20190627135825.4924-2-michal.kalderon@marvell.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <2933b9d9-7b54-78a3-ba1f-e47c354b154e@amazon.com>
+Date:   Thu, 27 Jun 2019 17:46:25 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [209.17.40.23]
-X-ClientProxiedBy: mailm113.d.ethz.ch (2001:67c:10ec:5602::25) To
- mailm214.d.ethz.ch (2001:67c:10ec:5603::28)
-X-TM-SNTS-SMTP: 71F0F69EFD8D260647BE368A89C5D9FC1E9D3BBB6B0511BCEDD71816AF0D984A2000:8
+In-Reply-To: <20190627135825.4924-2-michal.kalderon@marvell.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.65]
+X-ClientProxiedBy: EX13D18UWC004.ant.amazon.com (10.43.162.77) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Make softRoce to calculate correct byte_len on receiving side when work completion
-is generated with IB_WC_RECV_RDMA_WITH_IMM opcode.
+On 27/06/2019 16:58, Michal Kalderon wrote:
+> +/*
+> + * Note this locking scheme cannot support removal of entries, except during
+> + * ucontext destruction when the core code guarentees no concurrency.
+> + */
+> +u64 rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext, void *obj,
+> +				u64 address, u64 length, u8 mmap_flag)
+> +{
+> +	struct rdma_user_mmap_entry *entry;
+> +	int err;
+> +
+> +	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+> +	if (!entry)
+> +		return RDMA_USER_MMAP_INVALID;
+> +
+> +	entry->obj = obj;
+> +	entry->address = address;
+> +	entry->length = length;
+> +	entry->mmap_flag = mmap_flag;
+> +
+> +	xa_lock(&ucontext->mmap_xa);
+> +	entry->mmap_page = ucontext->mmap_xa_page;
+> +	ucontext->mmap_xa_page += DIV_ROUND_UP(length, PAGE_SIZE);
 
-According to documentation byte_len must indicate the number of written
-bytes, whereas it was always equal to zero for IB_WC_RECV_RDMA_WITH_IMM opcode.
+Hi Michal,
+I fixed this part to handle mmap_xa_page overflow:
+7a5834e456f7 ("RDMA/efa: Handle mmap insertions overflow")
 
-The patch proposes to remember the length of an RDMA request from the RETH header, and use it 
-as byte_len when the work completion with IB_WC_RECV_RDMA_WITH_IMM opcode is generated.
-
-Signed-off-by: Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
----
- drivers/infiniband/sw/rxe/rxe_resp.c  | 5 ++++-
- drivers/infiniband/sw/rxe/rxe_verbs.h | 1 +
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index aca9f60f9b21..1cbfbd98eb22 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -431,6 +431,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
- 			qp->resp.va = reth_va(pkt);
- 			qp->resp.rkey = reth_rkey(pkt);
- 			qp->resp.resid = reth_len(pkt);
-+			qp->resp.length = reth_len(pkt);
- 		}
- 		access = (pkt->mask & RXE_READ_MASK) ? IB_ACCESS_REMOTE_READ
- 						     : IB_ACCESS_REMOTE_WRITE;
-@@ -856,7 +857,9 @@ static enum resp_states do_complete(struct rxe_qp *qp,
- 				pkt->mask & RXE_WRITE_MASK) ?
- 					IB_WC_RECV_RDMA_WITH_IMM : IB_WC_RECV;
- 		wc->vendor_err = 0;
--		wc->byte_len = wqe->dma.length - wqe->dma.resid;
-+		wc->byte_len = (pkt->mask & RXE_IMMDT_MASK &&
-+				pkt->mask & RXE_WRITE_MASK) ?
-+					qp->resp.length : wqe->dma.length - wqe->dma.resid;
- 
- 		/* fields after byte_len are different between kernel and user
- 		 * space
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index e8be7f44e3be..28bfb3ece104 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -213,6 +213,7 @@ struct rxe_resp_info {
- 	struct rxe_mem		*mr;
- 	u32			resid;
- 	u32			rkey;
-+	u32			length;
- 	u64			atomic_orig;
- 
- 	/* SRQ only */
--- 
-2.17.1
-
+> +	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
+> +			  GFP_KERNEL);
+> +	xa_unlock(&ucontext->mmap_xa);
+> +	if (err) {
+> +		kfree(entry);
+> +		return RDMA_USER_MMAP_INVALID;
+> +	}
+> +
+> +	ibdev_dbg(ucontext->device,
+> +		  "mmap: obj[0x%p] addr[%#llx], len[%#llx], key[%#llx] inserted\n",
+> +		  entry->obj, entry->address, entry->length,
+> +		  rdma_user_mmap_get_key(entry));
+> +
+> +	return rdma_user_mmap_get_key(entry);
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entry_insert);
