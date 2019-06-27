@@ -2,69 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 605D257EFB
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 11:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984BC57FF9
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 12:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbfF0JJS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 05:09:18 -0400
-Received: from verein.lst.de ([213.95.11.211]:50859 "EHLO newverein.lst.de"
+        id S1726382AbfF0KNu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jun 2019 06:13:50 -0400
+Received: from smtp2.ono.com ([62.42.230.179]:30323 "EHLO smtp2.ono.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725385AbfF0JJR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Jun 2019 05:09:17 -0400
-Received: by newverein.lst.de (Postfix, from userid 2407)
-        id 7C50668B20; Thu, 27 Jun 2019 11:08:43 +0200 (CEST)
-Date:   Thu, 27 Jun 2019 11:08:43 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Stephen Bates <sbates@raithlin.com>
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-Message-ID: <20190627090843.GB11548@lst.de>
-References: <20190624072752.GA3954@lst.de> <558a27ba-e7c9-9d94-cad0-377b8ee374a6@deltatee.com> <20190625072008.GB30350@lst.de> <f0f002bf-2b94-cd18-d18f-5d0b08311495@deltatee.com> <20190625170115.GA9746@lst.de> <41235a05-8ed1-e69a-e7cd-48cae7d8a676@deltatee.com> <20190626065708.GB24531@lst.de> <c15d5997-9ba4-f7db-0e7a-a69e75df316c@deltatee.com> <20190626202107.GA5850@ziepe.ca> <8a0a08c3-a537-bff6-0852-a5f337a70688@deltatee.com>
+        id S1726187AbfF0KNu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Jun 2019 06:13:50 -0400
+X-Junkmail-Premium-Raw: score=26/50,refid=2.7.2:2019.6.27.94517:17:26.894,ip=62.42.230.144,rules=__HAS_MSGID,
+ __SANE_MSGID, MSGID_JMAIL_DEFAULT, INVALID_MSGID_NO_FQDN, __HAS_FROM,
+ FROM_NAME_PHRASE, FROM_NAME_ALLCAPS, __HAS_REPLYTO, __FRAUD_WEBMAIL_REPLYTO,
+ __SUBJECT_NOLC, __SUBJECT_ALLCAPS, SUBJ_1WORD, __MIME_VERSION, __CT,
+ __CT_TEXT_PLAIN, __CTE, MISSING_HEADERS, __ANY_URI, __FRAUD_BODY_WEBMAIL,
+ __URI_NO_WWW, __NO_HTML_TAG_RAW, BODYTEXTP_SIZE_400_LESS, BODY_SIZE_200_299,
+ BODYTEXTP_SIZE_3000_LESS, __MIME_TEXT_P1, __MIME_TEXT_ONLY, __URI_NS,
+ HTML_00_01, HTML_00_10, BODY_SIZE_5000_LESS, __FRAUD_WEBMAIL,
+ WEBMAIL_REPLYTO_NOT_FROM, FRAUD_WEBMAIL_R_NOT_F, __MIME_TEXT_P,
+ FRAUD_LITTLE_BODY, __PHISH_SPEAR_STRUCTURE_1, BODY_SIZE_1000_LESS,
+ BODY_SIZE_2000_LESS, SMALL_BODY, __PHISH_SPEAR_STRUCTURE_2,
+ REPLYTO_FROM_DIFF_ADDY, NO_URI_HTTPS, BODY_SIZE_7000_LESS, TO_MALFORMED
+Received: from resprs05 (62.42.230.144) by smtp2.ono.com (9.0.019.09-1)
+        id 5CAF0F5D03C867A2; Thu, 27 Jun 2019 12:13:45 +0200
+Received: from (149.126.75.7) by webmailcpr05n.ono.com;  Thu, 27 Jun 2019 12:13:44 +0200
+Message-ID: <21336663.1149931561630424807.JavaMail.defaultUser@defaultHost>
+Date:   Thu, 27 Jun 2019 12:13:44 +0200 (CEST)
+From:   DR ALBERT ZONGO <rjpd@ono.com>
+Reply-To: dralbertddzongo@gmail.com
+Subject: HI
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a0a08c3-a537-bff6-0852-a5f337a70688@deltatee.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain;charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 02:45:38PM -0600, Logan Gunthorpe wrote:
-> > The bar info would give the exporting struct device and any other info
-> > we need to make the iommu mapping.
-> 
-> Well, the IOMMU mapping is the normal thing the mapping driver will
-> always do. We'd really just need the submitting driver to, when
-> appropriate, inform the mapping driver that this is a pci bus address
-> and not to call dma_map_xxx(). Then, for special mappings for the CMB
-> like Christoph is talking about, it's simply a matter of doing a range
-> compare on the PCI Bus address and converting the bus address to a BAR
-> and offset.
 
-Well, range compare on the physical address.  We have a few different
-options here:
 
- (a) a range is normal RAM, DMA mapping works as usual
- (b) a range is another devices BAR, in which case we need to do a
-     map_resource equivalent (which really just means don't bother with
-     cache flush on non-coherent architectures) and apply any needed
-     offset, fixed or iommu based
- (c) a range points to a BAR on the acting device. In which case we
-     don't need to DMA map at all, because no dma is happening but just an
-     internal transfer.  And depending on the device that might also require
-     a different addressing mode
 
-I guess it might make sense to just have a block layer flag that (b) or
-(c) might be contained in a bio.  Then we always look up the data
-structure, but can still fall back to (a) if nothing was found.  That
-even allows free mixing and matching of memory types, at least as long
-as they are contained to separate bio_vec segments.
+--
+
+Greetings,
+
+I have an intending proposal for you please i need you to contact my 
+private
+
+ E-mail(dralbertddzongo@gmail.com) for more updates,
+
+Best Wishes.
+
+DR ALBERT ZONGO
+--
+
