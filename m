@@ -2,299 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29ADC5840B
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 16:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E535844F
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2019 16:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbfF0OA0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 10:00:26 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:10876 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726511AbfF0OA0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Jun 2019 10:00:26 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5RDtiTj002081;
-        Thu, 27 Jun 2019 07:00:04 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=bpJrHrIhzsC/YY2kFenA0LclSvh3ytxA2Z3uDjwIFkE=;
- b=lxzg3tVqfB9jOmtvQxkC9zTn1k7iad47VOkrAb6HCw4WlsxlmcZVtRlGp6R9A4heOWUN
- QjBjKWeej0oP/fLfYAlBa3kiZ1vOmZb2NrqZ1uBSAnWO2cMSTO/GqMBiEMitV2mx/l2g
- M16fNN6v/uV6CGGJD7wO7CCZQ/kgSuT6x6h/2w8iRx0v06651v/qWuzlbQwhFYb/2YZa
- n2oXpTmtYOTTFdqBrT6Kh3nbtTcYCU8OJu4V9XmrZZW+9qtjGz9/I4+KBi3Kp555yJKY
- UpR19yNprsQGyb0xQ2BKRhPJebPPc8+GmH9WGCpcrynyFeEr4ZcyqI8sLkiQUG59QbFC xg== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2tcvnh8k5d-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jun 2019 07:00:04 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 27 Jun
- 2019 07:00:02 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Thu, 27 Jun 2019 07:00:02 -0700
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id C3B253F703F;
-        Thu, 27 Jun 2019 06:59:59 -0700 (PDT)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <galpress@amazon.com>, <jgg@ziepe.ca>, <dledford@redhat.com>,
-        <leon@kernel.org>, <sleybo@amazon.com>,
-        <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>
-CC:     <linux-rdma@vger.kernel.org>
-Subject: [RFC rdma 3/3] RDMA/qedr: User the common mmap API
-Date:   Thu, 27 Jun 2019 16:58:25 +0300
-Message-ID: <20190627135825.4924-4-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20190627135825.4924-1-michal.kalderon@marvell.com>
-References: <20190627135825.4924-1-michal.kalderon@marvell.com>
+        id S1726465AbfF0OPR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jun 2019 10:15:17 -0400
+Received: from edge10.ethz.ch ([82.130.75.186]:57150 "EHLO edge10.ethz.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726443AbfF0OPR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Jun 2019 10:15:17 -0400
+X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Jun 2019 10:15:14 EDT
+Received: from mailm214.d.ethz.ch (129.132.139.38) by edge10.ethz.ch
+ (82.130.75.186) with Microsoft SMTP Server (TLS) id 14.3.439.0; Thu, 27 Jun
+ 2019 16:06:57 +0200
+Received: from ktaranov-laptop.wifi.oracle.com (209.17.40.23) by
+ mailm214.d.ethz.ch (2001:67c:10ec:5603::28) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 27 Jun 2019 16:07:02 +0200
+From:   Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
+To:     <monis@mellanox.com>
+CC:     <linux-rdma@vger.kernel.org>,
+        Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
+Subject: [PATCH] Make rxe driver to calculate correct byte_len on receiving side when work completion is generated with IB_WC_RECV_RDMA_WITH_IMM opcode.
+Date:   Thu, 27 Jun 2019 16:06:43 +0200
+Message-ID: <20190627140643.6191-1-konstantin.taranov@inf.ethz.ch>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-27_07:,,
- signatures=0
+X-Originating-IP: [209.17.40.23]
+X-ClientProxiedBy: mailm113.d.ethz.ch (2001:67c:10ec:5602::25) To
+ mailm214.d.ethz.ch (2001:67c:10ec:5603::28)
+X-TM-SNTS-SMTP: 71F0F69EFD8D260647BE368A89C5D9FC1E9D3BBB6B0511BCEDD71816AF0D984A2000:8
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Remove all function related to mmap from qedr and use the common
-API
+Make softRoce to calculate correct byte_len on receiving side when work completion
+is generated with IB_WC_RECV_RDMA_WITH_IMM opcode.
 
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+According to documentation byte_len must indicate the number of written
+bytes, whereas it was always equal to zero for IB_WC_RECV_RDMA_WITH_IMM opcode.
+
+The patch proposes to remember the length of an RDMA request from the RETH header, and use it 
+as byte_len when the work completion with IB_WC_RECV_RDMA_WITH_IMM opcode is generated.
+
+Signed-off-by: Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
 ---
- drivers/infiniband/hw/qedr/main.c  |   2 +-
- drivers/infiniband/hw/qedr/qedr.h  |  13 ----
- drivers/infiniband/hw/qedr/verbs.c | 125 +++----------------------------------
- drivers/infiniband/hw/qedr/verbs.h |   1 -
- 4 files changed, 9 insertions(+), 132 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 5 ++++-
+ drivers/infiniband/sw/rxe/rxe_verbs.h | 1 +
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/qedr/main.c b/drivers/infiniband/hw/qedr/main.c
-index a0a7ba0a5af4..07a68daef4bc 100644
---- a/drivers/infiniband/hw/qedr/main.c
-+++ b/drivers/infiniband/hw/qedr/main.c
-@@ -205,7 +205,7 @@ static const struct ib_device_ops qedr_dev_ops = {
- 	.get_dma_mr = qedr_get_dma_mr,
- 	.get_link_layer = qedr_link_layer,
- 	.map_mr_sg = qedr_map_mr_sg,
--	.mmap = qedr_mmap,
-+	.mmap = rdma_user_mmap,
- 	.modify_port = qedr_modify_port,
- 	.modify_qp = qedr_modify_qp,
- 	.modify_srq = qedr_modify_srq,
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index 6175d1e98717..97c90d1e525d 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -231,11 +231,6 @@ struct qedr_ucontext {
- 	u64 dpi_phys_addr;
- 	u32 dpi_size;
- 	u16 dpi;
--
--	struct list_head mm_head;
--
--	/* Lock to protect mm list */
--	struct mutex mm_list_lock;
- };
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index aca9f60f9b21..1cbfbd98eb22 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -431,6 +431,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 			qp->resp.va = reth_va(pkt);
+ 			qp->resp.rkey = reth_rkey(pkt);
+ 			qp->resp.resid = reth_len(pkt);
++			qp->resp.length = reth_len(pkt);
+ 		}
+ 		access = (pkt->mask & RXE_READ_MASK) ? IB_ACCESS_REMOTE_READ
+ 						     : IB_ACCESS_REMOTE_WRITE;
+@@ -856,7 +857,9 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+ 				pkt->mask & RXE_WRITE_MASK) ?
+ 					IB_WC_RECV_RDMA_WITH_IMM : IB_WC_RECV;
+ 		wc->vendor_err = 0;
+-		wc->byte_len = wqe->dma.length - wqe->dma.resid;
++		wc->byte_len = (pkt->mask & RXE_IMMDT_MASK &&
++				pkt->mask & RXE_WRITE_MASK) ?
++					qp->resp.length : wqe->dma.length - wqe->dma.resid;
  
- union db_prod64 {
-@@ -298,14 +293,6 @@ struct qedr_pd {
- 	struct qedr_ucontext *uctx;
- };
+ 		/* fields after byte_len are different between kernel and user
+ 		 * space
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index e8be7f44e3be..28bfb3ece104 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -213,6 +213,7 @@ struct rxe_resp_info {
+ 	struct rxe_mem		*mr;
+ 	u32			resid;
+ 	u32			rkey;
++	u32			length;
+ 	u64			atomic_orig;
  
--struct qedr_mm {
--	struct {
--		u64 phy_addr;
--		unsigned long len;
--	} key;
--	struct list_head entry;
--};
--
- union db_prod32 {
- 	struct rdma_pwm_val16_data data;
- 	u32 raw;
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 27d90a84ea01..d2600c3b3d07 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -256,60 +256,6 @@ int qedr_modify_port(struct ib_device *ibdev, u8 port, int mask,
- 	return 0;
- }
- 
--static int qedr_add_mmap(struct qedr_ucontext *uctx, u64 phy_addr,
--			 unsigned long len)
--{
--	struct qedr_mm *mm;
--
--	mm = kzalloc(sizeof(*mm), GFP_KERNEL);
--	if (!mm)
--		return -ENOMEM;
--
--	mm->key.phy_addr = phy_addr;
--	/* This function might be called with a length which is not a multiple
--	 * of PAGE_SIZE, while the mapping is PAGE_SIZE grained and the kernel
--	 * forces this granularity by increasing the requested size if needed.
--	 * When qedr_mmap is called, it will search the list with the updated
--	 * length as a key. To prevent search failures, the length is rounded up
--	 * in advance to PAGE_SIZE.
--	 */
--	mm->key.len = roundup(len, PAGE_SIZE);
--	INIT_LIST_HEAD(&mm->entry);
--
--	mutex_lock(&uctx->mm_list_lock);
--	list_add(&mm->entry, &uctx->mm_head);
--	mutex_unlock(&uctx->mm_list_lock);
--
--	DP_DEBUG(uctx->dev, QEDR_MSG_MISC,
--		 "added (addr=0x%llx,len=0x%lx) for ctx=%p\n",
--		 (unsigned long long)mm->key.phy_addr,
--		 (unsigned long)mm->key.len, uctx);
--
--	return 0;
--}
--
--static bool qedr_search_mmap(struct qedr_ucontext *uctx, u64 phy_addr,
--			     unsigned long len)
--{
--	bool found = false;
--	struct qedr_mm *mm;
--
--	mutex_lock(&uctx->mm_list_lock);
--	list_for_each_entry(mm, &uctx->mm_head, entry) {
--		if (len != mm->key.len || phy_addr != mm->key.phy_addr)
--			continue;
--
--		found = true;
--		break;
--	}
--	mutex_unlock(&uctx->mm_list_lock);
--	DP_DEBUG(uctx->dev, QEDR_MSG_MISC,
--		 "searched for (addr=0x%llx,len=0x%lx) for ctx=%p, result=%d\n",
--		 mm->key.phy_addr, mm->key.len, uctx, found);
--
--	return found;
--}
--
- int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
- {
- 	struct ib_device *ibdev = uctx->device;
-@@ -318,6 +264,7 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
- 	struct qedr_alloc_ucontext_resp uresp = {};
- 	struct qedr_dev *dev = get_qedr_dev(ibdev);
- 	struct qed_rdma_add_user_out_params oparams;
-+	u64 key;
- 
- 	if (!udata)
- 		return -EFAULT;
-@@ -334,13 +281,17 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
- 	ctx->dpi_addr = oparams.dpi_addr;
- 	ctx->dpi_phys_addr = oparams.dpi_phys_addr;
- 	ctx->dpi_size = oparams.dpi_size;
--	INIT_LIST_HEAD(&ctx->mm_head);
--	mutex_init(&ctx->mm_list_lock);
-+
-+	key = rdma_user_mmap_entry_insert(uctx, ctx,
-+					  ctx->dpi_phys_addr, ctx->dpi_size,
-+					  RDMA_USER_MMAP_IO_WC);
-+	if (key == RDMA_USER_MMAP_INVALID)
-+		return -ENOMEM;
- 
- 	uresp.dpm_enabled = dev->user_dpm_enabled;
- 	uresp.wids_enabled = 1;
- 	uresp.wid_count = oparams.wid_count;
--	uresp.db_pa = ctx->dpi_phys_addr;
-+	uresp.db_pa = key;
- 	uresp.db_size = ctx->dpi_size;
- 	uresp.max_send_wr = dev->attr.max_sqe;
- 	uresp.max_recv_wr = dev->attr.max_rqe;
-@@ -356,10 +307,6 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
- 
- 	ctx->dev = dev;
- 
--	rc = qedr_add_mmap(ctx, ctx->dpi_phys_addr, ctx->dpi_size);
--	if (rc)
--		return rc;
--
- 	DP_DEBUG(dev, QEDR_MSG_INIT, "Allocating user context %p\n",
- 		 &ctx->ibucontext);
- 	return 0;
-@@ -368,66 +315,10 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
- void qedr_dealloc_ucontext(struct ib_ucontext *ibctx)
- {
- 	struct qedr_ucontext *uctx = get_qedr_ucontext(ibctx);
--	struct qedr_mm *mm, *tmp;
- 
- 	DP_DEBUG(uctx->dev, QEDR_MSG_INIT, "Deallocating user context %p\n",
- 		 uctx);
- 	uctx->dev->ops->rdma_remove_user(uctx->dev->rdma_ctx, uctx->dpi);
--
--	list_for_each_entry_safe(mm, tmp, &uctx->mm_head, entry) {
--		DP_DEBUG(uctx->dev, QEDR_MSG_MISC,
--			 "deleted (addr=0x%llx,len=0x%lx) for ctx=%p\n",
--			 mm->key.phy_addr, mm->key.len, uctx);
--		list_del(&mm->entry);
--		kfree(mm);
--	}
--}
--
--int qedr_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
--{
--	struct qedr_ucontext *ucontext = get_qedr_ucontext(context);
--	struct qedr_dev *dev = get_qedr_dev(context->device);
--	unsigned long phys_addr = vma->vm_pgoff << PAGE_SHIFT;
--	unsigned long len = (vma->vm_end - vma->vm_start);
--	unsigned long dpi_start;
--
--	dpi_start = dev->db_phys_addr + (ucontext->dpi * ucontext->dpi_size);
--
--	DP_DEBUG(dev, QEDR_MSG_INIT,
--		 "mmap invoked with vm_start=0x%pK, vm_end=0x%pK,vm_pgoff=0x%pK; dpi_start=0x%pK dpi_size=0x%x\n",
--		 (void *)vma->vm_start, (void *)vma->vm_end,
--		 (void *)vma->vm_pgoff, (void *)dpi_start, ucontext->dpi_size);
--
--	if ((vma->vm_start & (PAGE_SIZE - 1)) || (len & (PAGE_SIZE - 1))) {
--		DP_ERR(dev,
--		       "failed mmap, addresses must be page aligned: start=0x%pK, end=0x%pK\n",
--		       (void *)vma->vm_start, (void *)vma->vm_end);
--		return -EINVAL;
--	}
--
--	if (!qedr_search_mmap(ucontext, phys_addr, len)) {
--		DP_ERR(dev, "failed mmap, vm_pgoff=0x%lx is not authorized\n",
--		       vma->vm_pgoff);
--		return -EINVAL;
--	}
--
--	if (phys_addr < dpi_start ||
--	    ((phys_addr + len) > (dpi_start + ucontext->dpi_size))) {
--		DP_ERR(dev,
--		       "failed mmap, pages are outside of dpi; page address=0x%pK, dpi_start=0x%pK, dpi_size=0x%x\n",
--		       (void *)phys_addr, (void *)dpi_start,
--		       ucontext->dpi_size);
--		return -EINVAL;
--	}
--
--	if (vma->vm_flags & VM_READ) {
--		DP_ERR(dev, "failed mmap, cannot map doorbell bar for read\n");
--		return -EINVAL;
--	}
--
--	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
--	return io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff, len,
--				  vma->vm_page_prot);
- }
- 
- int qedr_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-diff --git a/drivers/infiniband/hw/qedr/verbs.h b/drivers/infiniband/hw/qedr/verbs.h
-index 9aaa90283d6e..37087bf2f5eb 100644
---- a/drivers/infiniband/hw/qedr/verbs.h
-+++ b/drivers/infiniband/hw/qedr/verbs.h
-@@ -46,7 +46,6 @@ int qedr_query_pkey(struct ib_device *, u8 port, u16 index, u16 *pkey);
- int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata);
- void qedr_dealloc_ucontext(struct ib_ucontext *uctx);
- 
--int qedr_mmap(struct ib_ucontext *, struct vm_area_struct *vma);
- int qedr_alloc_pd(struct ib_pd *pd, struct ib_udata *udata);
- void qedr_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
- 
+ 	/* SRQ only */
 -- 
-2.14.5
+2.17.1
 
