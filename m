@@ -2,151 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5D45919E
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 04:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533845928F
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 06:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726818AbfF1Csb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jun 2019 22:48:31 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:35106 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbfF1Csb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jun 2019 22:48:31 -0400
-Received: by mail-pf1-f193.google.com with SMTP id d126so2195804pfd.2;
-        Thu, 27 Jun 2019 19:48:30 -0700 (PDT)
+        id S1726497AbfF1EVp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Jun 2019 00:21:45 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:45581 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbfF1EVp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Jun 2019 00:21:45 -0400
+Received: by mail-pg1-f195.google.com with SMTP id z19so1981569pgl.12
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jun 2019 21:21:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=prlSiId7QUiI+gwDR3lnnk/Z2jqfqNZ31yKhyD9ZPF8=;
-        b=IBlKG/Q8XveEB6OeIWXJy2mRovNArp+euqYYCB2YnENrgJ4K8qRb9kUUSc/UHJmeJu
-         QsgSBPekbDw/x1bLXzP2Q77Wq1Q0dku1gHinyiGfE/Qh6OVZZD9ifqeH99zH+MpEXSBL
-         uDj7rb/wlynrgxiHvCB2JrTRi8JMUNOcQCxwGi9gha2X7khlIu7nfxVrUf7KZr+v9Kz8
-         b3U30Fx5ygo/xlcEpmpbaBlIUZALg5WWvFmpyv8PdFzklI0aof7ShafkNvKYvaTh+RAW
-         zxP/+Jfm4Uoi4fm0x8JlMFf7sCU9ypqgoM6iQxkXDSCfh9+s2slFIYFwHLF1NI6Mh40I
-         d7nA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/XpMubTKWEVE1kXy+59OWuJCKgRmN4x1Bk/PveL5YOg=;
+        b=QY2k8KLz8FVg003CFkG1XXJA+uvFmGsbbUlzsqFK8h2JhiIaJAqVMr0EvKpOLYNzKe
+         Rx9GA9VY2j4eyu7u8k14zt8r+iZcRObcCYiHmtha7SRIbLxF+WQWBucSa8Ttbw0k38sp
+         U4WQzfDnFLUJ678PUUy2Cnj6ihXkTEWghmeHTkveyILL8kfCFCshj5NKWy/0scG56Hch
+         U7dghtfSzw3SJ00IG/8u0K8zBeKWyoC/4g0awMGDJrysXCuOq91DBCwePEXiCFj3ePie
+         w+OCf1/7mIKwB2irietRt8DRSnCIZvIBZMv+J2za6gJLGNSswiI3+BEOXzqwUGNbHAnt
+         LGFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=prlSiId7QUiI+gwDR3lnnk/Z2jqfqNZ31yKhyD9ZPF8=;
-        b=TBGdYYIE1wmP4YgI7YPRTzDPXL9O6RBtdLuDdxgi3DzUjUAoKn6cI1pePZb9wSX7i7
-         8adPpf8pn2DDAGaas7Ye2YUF9w4zevmY9i/Z2GdAAfYTCi1k4BuF8/JVi7zNGwmlvJkG
-         0mfasnOxI5fpkx7INZNtFtmmYy6u2653nu+fD9V5ygJFqEE/IAI3qcPop7QW2MT7/TN/
-         zjNFiLCsTpOr3JwvzPCpGtM5Wh4CuX3R9jebpSd2odJrNQyNME4N3OnuMR8YSEaDuXxZ
-         aOSa52i4yjDJuhFzjG75vQMmXiuMlFkXmL9w/p9Plf7RjRGhrS9pGZP/HiinnivQQ58a
-         wuWg==
-X-Gm-Message-State: APjAAAVemTcjw/iMLPtqD8nxh8N7M94omLiEcloVged5wpKWWLXC53ku
-        d5Q7ZMyVSKQsw8sRo41SJP3dpDaKZNdlXw==
-X-Google-Smtp-Source: APXvYqy+DgQ8zAryFrqOja9lxR8wZdey0asEb3QKzT72OcwoSboTb2UzSP+g6tk8HDCaq4BNSZEJqw==
-X-Received: by 2002:a17:90a:b011:: with SMTP id x17mr10189290pjq.113.1561690110442;
-        Thu, 27 Jun 2019 19:48:30 -0700 (PDT)
-Received: from hfq-skylake.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.googlemail.com with ESMTPSA id q198sm451906pfq.155.2019.06.27.19.48.27
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Jun 2019 19:48:30 -0700 (PDT)
-From:   Fuqian Huang <huangfq.daxian@gmail.com>
-Cc:     Fuqian Huang <huangfq.daxian@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Derek Chickles <dchickles@marvell.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH v2 15/27] net: use zeroing allocator rather than allocator followed by memset zero
-Date:   Fri, 28 Jun 2019 10:48:22 +0800
-Message-Id: <20190628024824.15581-1-huangfq.daxian@gmail.com>
-X-Mailer: git-send-email 2.11.0
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/XpMubTKWEVE1kXy+59OWuJCKgRmN4x1Bk/PveL5YOg=;
+        b=Ubjz8Eu8+f/+EFyjLn2T5uw4ubYmcB53RDecOr2Id7z4cfBFWPEzQLIP0VJidghnyT
+         H5odROrbOmEl1wdhgJptpfuVeIzZZfedol59HV2Gz18zMOME+afVJZg80HZyXPNRbFDl
+         ElI3eAf3POrKnpWf22C19fNX65burBPSQv+oh76mOt42xPh46DCJ95vpL4qPa4exLoOu
+         Ws6ydqWuuPW5sWDvK2ARu5tMOHqBCdbErrH7RGaBzY7drbbO9uJgMWl58smEKeXSVF8N
+         aLauNt/czXoNSMt8vqo0BzXM4ZaAnBBl8jmfT9dffHhjUUsydXYVbHyfz/nzZV221n0c
+         VvSQ==
+X-Gm-Message-State: APjAAAX3DZQwC0BoxManiBptZVO0xzSNRXXaENwfQeDlaYKC5XurUE6t
+        EX59b4rGL9nQQOLA+GRPjv2BDg==
+X-Google-Smtp-Source: APXvYqyv2tAjSzml0G00TZQjj6VsPj/I5aLRnZ27UFg+JC95CuGttkftQPpQkgYXq0dOxFlMZx7sRA==
+X-Received: by 2002:a63:514e:: with SMTP id r14mr7130706pgl.71.1561695704414;
+        Thu, 27 Jun 2019 21:21:44 -0700 (PDT)
+Received: from ziepe.ca ([38.88.19.130])
+        by smtp.gmail.com with ESMTPSA id f10sm644815pfd.151.2019.06.27.21.21.43
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 27 Jun 2019 21:21:43 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hgiON-0000zC-5o; Fri, 28 Jun 2019 01:21:43 -0300
+Date:   Fri, 28 Jun 2019 01:21:43 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Michal Kalderon <mkalderon@marvell.com>
+Cc:     Gal Pressman <galpress@amazon.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        Ariel Elior <aelior@marvell.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [RFC rdma 1/3] RDMA/core: Create a common mmap function
+Message-ID: <20190628042143.GB3705@ziepe.ca>
+References: <20190627135825.4924-1-michal.kalderon@marvell.com>
+ <20190627135825.4924-2-michal.kalderon@marvell.com>
+ <d6e9bc3b-215b-c6ea-11d2-01ae8f956bfa@amazon.com>
+ <20190627155219.GA9568@ziepe.ca>
+ <MN2PR18MB3182402E20F3A908B700CB62A1FD0@MN2PR18MB3182.namprd18.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR18MB3182402E20F3A908B700CB62A1FD0@MN2PR18MB3182.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replace allocator followed by memset with 0 with zeroing allocator.
+On Thu, Jun 27, 2019 at 09:35:16PM +0000, Michal Kalderon wrote:
+> > > The flags taken from EFA aren't necessarily going to work for other drivers.
+> > > Maybe the flags bits should be opaque to ib_core and leave the actual
+> > > mmap callbacks in the drivers. Not sure how dealloc_ucontext is going
+> > > to work with opaque flags though?
+> > 
+> > Yes, the driver will have to take care of masking the flags before lookup
+> 
+> The efa flags seemed pretty generic, perhaps we should have two sets ? 
+> This way if a driver ( like mlx5) has additional flags it can have it's own
+> Mmap function and for the generic flags call the common mmap function. 
 
-Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
----
- drivers/net/eql.c                                       | 3 +--
- drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c | 4 +---
- drivers/net/ethernet/cavium/liquidio/cn23xx_vf_device.c | 4 +---
- drivers/net/ethernet/mellanox/mlx4/en_rx.c              | 3 +--
- 4 files changed, 4 insertions(+), 10 deletions(-)
+The flags are part of the driver ABI, so to convert anything to use
+this new common code still requires the driver to process its
+historical flag values somehow...
 
-diff --git a/drivers/net/eql.c b/drivers/net/eql.c
-index 74263f8efe1a..2f101a6036e6 100644
---- a/drivers/net/eql.c
-+++ b/drivers/net/eql.c
-@@ -419,14 +419,13 @@ static int eql_enslave(struct net_device *master_dev, slaving_request_t __user *
- 	if ((master_dev->flags & IFF_UP) == IFF_UP) {
- 		/* slave is not a master & not already a slave: */
- 		if (!eql_is_master(slave_dev) && !eql_is_slave(slave_dev)) {
--			slave_t *s = kmalloc(sizeof(*s), GFP_KERNEL);
-+			slave_t *s = kzalloc(sizeof(*s), GFP_KERNEL);
- 			equalizer_t *eql = netdev_priv(master_dev);
- 			int ret;
- 
- 			if (!s)
- 				return -ENOMEM;
- 
--			memset(s, 0, sizeof(*s));
- 			s->dev = slave_dev;
- 			s->priority = srq.priority;
- 			s->priority_bps = srq.priority;
-diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-index 43d11c38b38a..cf3835da32c8 100644
---- a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-+++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-@@ -719,12 +719,10 @@ static int cn23xx_setup_pf_mbox(struct octeon_device *oct)
- 	for (i = 0; i < oct->sriov_info.max_vfs; i++) {
- 		q_no = i * oct->sriov_info.rings_per_vf;
- 
--		mbox = vmalloc(sizeof(*mbox));
-+		mbox = vzalloc(sizeof(*mbox));
- 		if (!mbox)
- 			goto free_mbox;
- 
--		memset(mbox, 0, sizeof(struct octeon_mbox));
--
- 		spin_lock_init(&mbox->lock);
- 
- 		mbox->oct_dev = oct;
-diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_vf_device.c b/drivers/net/ethernet/cavium/liquidio/cn23xx_vf_device.c
-index fda49404968c..b3bd2767d3dd 100644
---- a/drivers/net/ethernet/cavium/liquidio/cn23xx_vf_device.c
-+++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_vf_device.c
-@@ -279,12 +279,10 @@ static int cn23xx_setup_vf_mbox(struct octeon_device *oct)
- {
- 	struct octeon_mbox *mbox = NULL;
- 
--	mbox = vmalloc(sizeof(*mbox));
-+	mbox = vzalloc(sizeof(*mbox));
- 	if (!mbox)
- 		return 1;
- 
--	memset(mbox, 0, sizeof(struct octeon_mbox));
--
- 	spin_lock_init(&mbox->lock);
- 
- 	mbox->oct_dev = oct;
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-index 6c01314e87b0..f1dff5c47676 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-@@ -1062,7 +1062,7 @@ static int mlx4_en_config_rss_qp(struct mlx4_en_priv *priv, int qpn,
- 	struct mlx4_qp_context *context;
- 	int err = 0;
- 
--	context = kmalloc(sizeof(*context), GFP_KERNEL);
-+	context = kzalloc(sizeof(*context), GFP_KERNEL);
- 	if (!context)
- 		return -ENOMEM;
- 
-@@ -1073,7 +1073,6 @@ static int mlx4_en_config_rss_qp(struct mlx4_en_priv *priv, int qpn,
- 	}
- 	qp->event = mlx4_en_sqp_event;
- 
--	memset(context, 0, sizeof(*context));
- 	mlx4_en_fill_qp_context(priv, ring->actual_size, ring->stride, 0, 0,
- 				qpn, ring->cqn, -1, context);
- 	context->db_rec_addr = cpu_to_be64(ring->wqres.db.dma);
--- 
-2.11.0
-
+Jason
