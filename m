@@ -2,43 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C5959ACA
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 14:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0FC59AAD
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 14:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbfF1MXW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Jun 2019 08:23:22 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:58774 "EHLO
+        id S1726982AbfF1MWX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Jun 2019 08:22:23 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:58908 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726789AbfF1MUq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Jun 2019 08:20:46 -0400
+        with ESMTP id S1726852AbfF1MUs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Jun 2019 08:20:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
         Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
         To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Wqq/Z+X4ksZt2A+1tBR82tvkrdmJET6qkC5w+cL940E=; b=oTWdhqKa1en3vJZPQmNydBxwaC
-        snHg32jRL+dMpZZ7D1P/ALFhNBSzG6qYGCIMusSi9hi5Vi76IYEPkCkvdab/iWr9AJ42lREw5INA1
-        x6B9sxcR/VjOGuB6/zudNEM4o0xRge3qeaPtkzW+/5I+ubtFRHSmX8/LGg+2z7lJI1JIDCgp20HUE
-        n6U/2vo8RspkfodtTZzicvnYvBwZxY7t9CYwj0pA9/glCTIWMa/9AxfTeCMuCnwfiId1SWYInadEI
-        vqUauDLa53wNMnPUYakEJa8Kelh0CRTA3FnNqYLnk7EcQHmhVgYRYTkUCbpO15NWCIQd+P63uQP4C
-        Gvi/qE9g==;
+        bh=qkhet7OJPhqYTXJia+FfbMRM/fFZ50idnQmiBZJ6gC0=; b=Wu2XSgm+FeYIqTDaHxUvHCJ2JM
+        Ota7M9Ny5X7u3sTgHp0GZF692hfin/5HEjSiLxkz5dz68IofCNbSbYAnC9jfOrtwPYHJ9bQzBOPDw
+        HlHRLLeEn76cJBIrhvnsqwUZ0bgAAaHxnFVUY5Uq6riQEg6mLInDa/xMksQLpO14AuuQeGusZUJhR
+        tJ8sG0usx00aID9jDZyUxYUAg63Q7x2aLq89DKETw8pkn1aGEDerx/XCr7b8Lsin66xjnk6da39+n
+        lfeIHfoqjVXXqtIs5jksMl2d5sQQLwf28ROq41HkucMZh49hH1k+ci0JvwaCioDbNy0nOQj0naD+x
+        RAHj/ZMQ==;
 Received: from [186.213.242.156] (helo=bombadil.infradead.org)
         by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hgprv-00009o-2v; Fri, 28 Jun 2019 12:20:43 +0000
+        id 1hgprv-0000AL-UQ; Fri, 28 Jun 2019 12:20:45 +0000
 Received: from mchehab by bombadil.infradead.org with local (Exim 4.92)
         (envelope-from <mchehab@bombadil.infradead.org>)
-        id 1hgprt-00056r-0C; Fri, 28 Jun 2019 09:20:41 -0300
+        id 1hgprt-00059S-VC; Fri, 28 Jun 2019 09:20:41 -0300
 From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
         Mauro Carvalho Chehab <mchehab@infradead.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 01/43] docs: infiniband: convert docs to ReST and rename to *.rst
-Date:   Fri, 28 Jun 2019 09:19:57 -0300
-Message-Id: <4d843d0361e245861f7051e2c736a18dfaae7601.1561723980.git.mchehab+samsung@kernel.org>
+Subject: [PATCH 33/43] docs: ioctl-number.txt: convert it to ReST format
+Date:   Fri, 28 Jun 2019 09:20:29 -0300
+Message-Id: <16818d580fcb1efcefeb5752433768aed7b2d772.1561723980.git.mchehab+samsung@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <cover.1561723979.git.mchehab+samsung@kernel.org>
 References: <cover.1561723979.git.mchehab+samsung@kernel.org>
@@ -50,701 +53,819 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The InfiniBand docs are plain text with no markups.
-So, all we needed to do were to add the title markups and
-some markup sequences in order to properly parse tables,
-lists and literal blocks.
+The conversion itself is simple: add a markup for the
+title of this file and add markups for both tables.
 
-At its new index.rst, let's add a :orphan: while this is not linked to
-the main index.rst file, in order to avoid build warnings.
+Yet, the big table here with IOCTL numbers is badly formatted:
+on several lines, the "Include File" column has some values that
+are bigger than the reserved space there.
+
+Also, on several places, a comment was misplaced at the "Include
+File" space.
+
+So, most of the work here is to actually ensure that each field
+will be properly fixed.
+
+Also worth to mention that some URLs have the asterisk character
+on it. Well, Sphinx has an issue with asterisks in the middle
+of an string. As this is URL, use the alternate format: %2A.
+
+As a side effect of this patch, it is now a lot easier to see that
+some reserved ioctl numbers are missing the include files
+where it is supposed to be used.
+
+PS.: While this is part of a subdir, I opted to convert this
+single file alone, as this file has a potential of conflicts,
+as most subsystem maintainers touch it.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 ---
- .../{core_locking.txt => core_locking.rst}    |  64 ++++++-----
- Documentation/infiniband/index.rst            |  23 ++++
- .../infiniband/{ipoib.txt => ipoib.rst}       |  24 ++--
- .../infiniband/{opa_vnic.txt => opa_vnic.rst} | 108 +++++++++---------
- .../infiniband/{sysfs.txt => sysfs.rst}       |   4 +-
- .../{tag_matching.txt => tag_matching.rst}    |   5 +
- .../infiniband/{user_mad.txt => user_mad.rst} |  33 ++++--
- .../{user_verbs.txt => user_verbs.rst}        |  12 +-
- drivers/infiniband/core/user_mad.c            |   2 +-
- drivers/infiniband/ulp/ipoib/Kconfig          |   2 +-
- 10 files changed, 174 insertions(+), 103 deletions(-)
- rename Documentation/infiniband/{core_locking.txt => core_locking.rst} (78%)
- create mode 100644 Documentation/infiniband/index.rst
- rename Documentation/infiniband/{ipoib.txt => ipoib.rst} (90%)
- rename Documentation/infiniband/{opa_vnic.txt => opa_vnic.rst} (63%)
- rename Documentation/infiniband/{sysfs.txt => sysfs.rst} (69%)
- rename Documentation/infiniband/{tag_matching.txt => tag_matching.rst} (98%)
- rename Documentation/infiniband/{user_mad.txt => user_mad.rst} (90%)
- rename Documentation/infiniband/{user_verbs.txt => user_verbs.rst} (93%)
+ Documentation/ioctl/ioctl-number.rst          | 362 ++++++++++++++++++
+ Documentation/ioctl/ioctl-number.txt          | 350 -----------------
+ Documentation/process/submit-checklist.rst    |   2 +-
+ .../it_IT/process/submit-checklist.rst        |   2 +-
+ .../zh_CN/process/submit-checklist.rst        |   2 +-
+ include/uapi/rdma/rdma_user_ioctl_cmds.h      |   2 +-
+ 6 files changed, 366 insertions(+), 354 deletions(-)
+ create mode 100644 Documentation/ioctl/ioctl-number.rst
+ delete mode 100644 Documentation/ioctl/ioctl-number.txt
 
-diff --git a/Documentation/infiniband/core_locking.txt b/Documentation/infiniband/core_locking.rst
-similarity index 78%
-rename from Documentation/infiniband/core_locking.txt
-rename to Documentation/infiniband/core_locking.rst
-index 4b1f36b6ada0..f34669beb4fe 100644
---- a/Documentation/infiniband/core_locking.txt
-+++ b/Documentation/infiniband/core_locking.rst
-@@ -1,4 +1,6 @@
--INFINIBAND MIDLAYER LOCKING
-+===========================
-+InfiniBand Midlayer Locking
-+===========================
- 
-   This guide is an attempt to make explicit the locking assumptions
-   made by the InfiniBand midlayer.  It describes the requirements on
-@@ -6,45 +8,47 @@ INFINIBAND MIDLAYER LOCKING
-   protocols that use the midlayer.
- 
- Sleeping and interrupt context
-+==============================
- 
-   With the following exceptions, a low-level driver implementation of
-   all of the methods in struct ib_device may sleep.  The exceptions
-   are any methods from the list:
- 
--    create_ah
--    modify_ah
--    query_ah
--    destroy_ah
--    post_send
--    post_recv
--    poll_cq
--    req_notify_cq
--    map_phys_fmr
-+    - create_ah
-+    - modify_ah
-+    - query_ah
-+    - destroy_ah
-+    - post_send
-+    - post_recv
-+    - poll_cq
-+    - req_notify_cq
-+    - map_phys_fmr
- 
-   which may not sleep and must be callable from any context.
- 
-   The corresponding functions exported to upper level protocol
-   consumers:
- 
--    ib_create_ah
--    ib_modify_ah
--    ib_query_ah
--    ib_destroy_ah
--    ib_post_send
--    ib_post_recv
--    ib_req_notify_cq
--    ib_map_phys_fmr
-+    - ib_create_ah
-+    - ib_modify_ah
-+    - ib_query_ah
-+    - ib_destroy_ah
-+    - ib_post_send
-+    - ib_post_recv
-+    - ib_req_notify_cq
-+    - ib_map_phys_fmr
- 
-   are therefore safe to call from any context.
- 
-   In addition, the function
- 
--    ib_dispatch_event
-+    - ib_dispatch_event
- 
-   used by low-level drivers to dispatch asynchronous events through
-   the midlayer is also safe to call from any context.
- 
- Reentrancy
-+----------
- 
-   All of the methods in struct ib_device exported by a low-level
-   driver must be fully reentrant.  The low-level driver is required to
-@@ -62,6 +66,7 @@ Reentrancy
-   information between different calls of ib_poll_cq() is not defined.
- 
- Callbacks
-+---------
- 
-   A low-level driver must not perform a callback directly from the
-   same callchain as an ib_device method call.  For example, it is not
-@@ -74,18 +79,18 @@ Callbacks
-   completion event handlers for the same CQ are not called
-   simultaneously.  The driver must guarantee that only one CQ event
-   handler for a given CQ is running at a time.  In other words, the
--  following situation is not allowed:
-+  following situation is not allowed::
- 
--        CPU1                                    CPU2
-+          CPU1                                    CPU2
- 
--  low-level driver ->
--    consumer CQ event callback:
--      /* ... */
--      ib_req_notify_cq(cq, ...);
--                                        low-level driver ->
--      /* ... */                           consumer CQ event callback:
--                                            /* ... */
--      return from CQ event handler
-+    low-level driver ->
-+      consumer CQ event callback:
-+        /* ... */
-+        ib_req_notify_cq(cq, ...);
-+                                          low-level driver ->
-+        /* ... */                           consumer CQ event callback:
-+                                              /* ... */
-+        return from CQ event handler
- 
-   The context in which completion event and asynchronous event
-   callbacks run is not defined.  Depending on the low-level driver, it
-@@ -93,6 +98,7 @@ Callbacks
-   Upper level protocol consumers may not sleep in a callback.
- 
- Hot-plug
-+--------
- 
-   A low-level driver announces that a device is ready for use by
-   consumers when it calls ib_register_device(), all initialization
-diff --git a/Documentation/infiniband/index.rst b/Documentation/infiniband/index.rst
+diff --git a/Documentation/ioctl/ioctl-number.rst b/Documentation/ioctl/ioctl-number.rst
 new file mode 100644
-index 000000000000..22eea64de722
+index 000000000000..e6d07badafb1
 --- /dev/null
-+++ b/Documentation/infiniband/index.rst
-@@ -0,0 +1,23 @@
++++ b/Documentation/ioctl/ioctl-number.rst
+@@ -0,0 +1,362 @@
 +:orphan:
 +
-+==========
-+InfiniBand
-+==========
++=============
++Ioctl Numbers
++=============
 +
-+.. toctree::
-+   :maxdepth: 1
++19 October 1999
 +
-+   core_locking
-+   ipoib
-+   opa_vnic
-+   sysfs
-+   tag_matching
-+   user_mad
-+   user_verbs
++Michael Elizabeth Chastain
++<mec@shout.net>
 +
-+.. only::  subproject and html
++If you are adding new ioctl's to the kernel, you should use the _IO
++macros defined in <linux/ioctl.h>:
 +
-+   Indices
-+   =======
++    ====== == ============================================
++    _IO    an ioctl with no parameters
++    _IOW   an ioctl with write parameters (copy_from_user)
++    _IOR   an ioctl with read parameters  (copy_to_user)
++    _IOWR  an ioctl with both write and read parameters.
++    ====== == ============================================
 +
-+   * :ref:`genindex`
-diff --git a/Documentation/infiniband/ipoib.txt b/Documentation/infiniband/ipoib.rst
-similarity index 90%
-rename from Documentation/infiniband/ipoib.txt
-rename to Documentation/infiniband/ipoib.rst
-index 47c1dd9818f2..0dd36154c0c9 100644
---- a/Documentation/infiniband/ipoib.txt
-+++ b/Documentation/infiniband/ipoib.rst
-@@ -1,4 +1,6 @@
--IP OVER INFINIBAND
-+==================
-+IP over InfiniBand
-+==================
- 
-   The ib_ipoib driver is an implementation of the IP over InfiniBand
-   protocol as specified by RFC 4391 and 4392, issued by the IETF ipoib
-@@ -8,16 +10,17 @@ IP OVER INFINIBAND
-   masqueraded to the kernel as ethernet interfaces).
- 
- Partitions and P_Keys
-+=====================
- 
-   When the IPoIB driver is loaded, it creates one interface for each
-   port using the P_Key at index 0.  To create an interface with a
-   different P_Key, write the desired P_Key into the main interface's
--  /sys/class/net/<intf name>/create_child file.  For example:
-+  /sys/class/net/<intf name>/create_child file.  For example::
- 
-     echo 0x8001 > /sys/class/net/ib0/create_child
- 
-   This will create an interface named ib0.8001 with P_Key 0x8001.  To
--  remove a subinterface, use the "delete_child" file:
-+  remove a subinterface, use the "delete_child" file::
- 
-     echo 0x8001 > /sys/class/net/ib0/delete_child
- 
-@@ -28,6 +31,7 @@ Partitions and P_Keys
-   rtnl_link_ops, where children created using either way behave the same.
- 
- Datagram vs Connected modes
-+===========================
- 
-   The IPoIB driver supports two modes of operation: datagram and
-   connected.  The mode is set and read through an interface's
-@@ -51,6 +55,7 @@ Datagram vs Connected modes
-   networking stack to use the smaller UD MTU for these neighbours.
- 
- Stateless offloads
-+==================
- 
-   If the IB HW supports IPoIB stateless offloads, IPoIB advertises
-   TCP/IP checksum and/or Large Send (LSO) offloading capability to the
-@@ -60,9 +65,10 @@ Stateless offloads
-   on/off using ethtool calls.  Currently LRO is supported only for
-   checksum offload capable devices.
- 
--  Stateless offloads are supported only in datagram mode.  
-+  Stateless offloads are supported only in datagram mode.
- 
- Interrupt moderation
-+====================
- 
-   If the underlying IB device supports CQ event moderation, one can
-   use ethtool to set interrupt mitigation parameters and thus reduce
-@@ -71,6 +77,7 @@ Interrupt moderation
-   moderation is supported.
- 
- Debugging Information
-+=====================
- 
-   By compiling the IPoIB driver with CONFIG_INFINIBAND_IPOIB_DEBUG set
-   to 'y', tracing messages are compiled into the driver.  They are
-@@ -79,7 +86,7 @@ Debugging Information
-   runtime through files in /sys/module/ib_ipoib/.
- 
-   CONFIG_INFINIBAND_IPOIB_DEBUG also enables files in the debugfs
--  virtual filesystem.  By mounting this filesystem, for example with
-+  virtual filesystem.  By mounting this filesystem, for example with::
- 
-     mount -t debugfs none /sys/kernel/debug
- 
-@@ -96,10 +103,13 @@ Debugging Information
-   performance, because it adds tests to the fast path.
- 
- References
-+==========
- 
-   Transmission of IP over InfiniBand (IPoIB) (RFC 4391)
--    http://ietf.org/rfc/rfc4391.txt 
-+    http://ietf.org/rfc/rfc4391.txt
++'Write' and 'read' are from the user's point of view, just like the
++system calls 'write' and 'read'.  For example, a SET_FOO ioctl would
++be _IOW, although the kernel would actually read data from user space;
++a GET_FOO ioctl would be _IOR, although the kernel would actually write
++data to user space.
 +
-   IP over InfiniBand (IPoIB) Architecture (RFC 4392)
--    http://ietf.org/rfc/rfc4392.txt 
-+    http://ietf.org/rfc/rfc4392.txt
++The first argument to _IO, _IOW, _IOR, or _IOWR is an identifying letter
++or number from the table below.  Because of the large number of drivers,
++many drivers share a partial letter with other drivers.
 +
-   IP over InfiniBand: Connected Mode (RFC 4755)
-     http://ietf.org/rfc/rfc4755.txt
-diff --git a/Documentation/infiniband/opa_vnic.txt b/Documentation/infiniband/opa_vnic.rst
-similarity index 63%
-rename from Documentation/infiniband/opa_vnic.txt
-rename to Documentation/infiniband/opa_vnic.rst
-index 282e17be798a..2f888d9ffec0 100644
---- a/Documentation/infiniband/opa_vnic.txt
-+++ b/Documentation/infiniband/opa_vnic.rst
-@@ -1,3 +1,7 @@
-+=================================================================
-+Intel Omni-Path (OPA) Virtual Network Interface Controller (VNIC)
-+=================================================================
++If you are writing a driver for a new device and need a letter, pick an
++unused block with enough room for expansion: 32 to 256 ioctl commands.
++You can register the block by patching this file and submitting the
++patch to Linus Torvalds.  Or you can e-mail me at <mec@shout.net> and
++I'll register one for you.
 +
- Intel Omni-Path (OPA) Virtual Network Interface Controller (VNIC) feature
- supports Ethernet functionality over Omni-Path fabric by encapsulating
- the Ethernet packets between HFI nodes.
-@@ -17,70 +21,72 @@ an independent Ethernet network. The configuration is performed by an
- Ethernet Manager (EM) which is part of the trusted Fabric Manager (FM)
- application. HFI nodes can have multiple VNICs each connected to a
- different virtual Ethernet switch. The below diagram presents a case
--of two virtual Ethernet switches with two HFI nodes.
-+of two virtual Ethernet switches with two HFI nodes::
- 
--                             +-------------------+
--                             |      Subnet/      |
--                             |     Ethernet      |
--                             |      Manager      |
--                             +-------------------+
--                                /          /
--                              /           /
--                            /            /
--                          /             /
--+-----------------------------+  +------------------------------+
--|  Virtual Ethernet Switch    |  |  Virtual Ethernet Switch     |
--|  +---------+    +---------+ |  | +---------+    +---------+   |
--|  | VPORT   |    |  VPORT  | |  | |  VPORT  |    |  VPORT  |   |
--+--+---------+----+---------+-+  +-+---------+----+---------+---+
--         |                 \        /                 |
--         |                   \    /                   |
--         |                     \/                     |
--         |                    /  \                    |
--         |                  /      \                  |
--     +-----------+------------+  +-----------+------------+
--     |   VNIC    |    VNIC    |  |    VNIC   |    VNIC    |
--     +-----------+------------+  +-----------+------------+
--     |          HFI           |  |          HFI           |
--     +------------------------+  +------------------------+
-+                               +-------------------+
-+                               |      Subnet/      |
-+                               |     Ethernet      |
-+                               |      Manager      |
-+                               +-------------------+
-+                                  /          /
-+                                /           /
-+                              /            /
-+                            /             /
-+  +-----------------------------+  +------------------------------+
-+  |  Virtual Ethernet Switch    |  |  Virtual Ethernet Switch     |
-+  |  +---------+    +---------+ |  | +---------+    +---------+   |
-+  |  | VPORT   |    |  VPORT  | |  | |  VPORT  |    |  VPORT  |   |
-+  +--+---------+----+---------+-+  +-+---------+----+---------+---+
-+           |                 \        /                 |
-+           |                   \    /                   |
-+           |                     \/                     |
-+           |                    /  \                    |
-+           |                  /      \                  |
-+       +-----------+------------+  +-----------+------------+
-+       |   VNIC    |    VNIC    |  |    VNIC   |    VNIC    |
-+       +-----------+------------+  +-----------+------------+
-+       |          HFI           |  |          HFI           |
-+       +------------------------+  +------------------------+
- 
- 
- The Omni-Path encapsulated Ethernet packet format is as described below.
- 
--Bits          Field
--------------------------------------
-+==================== ================================
-+Bits                 Field
-+==================== ================================
- Quad Word 0:
--0-19      SLID (lower 20 bits)
--20-30     Length (in Quad Words)
--31        BECN bit
--32-51     DLID (lower 20 bits)
--52-56     SC (Service Class)
--57-59     RC (Routing Control)
--60        FECN bit
--61-62     L2 (=10, 16B format)
--63        LT (=1, Link Transfer Head Flit)
-+0-19                 SLID (lower 20 bits)
-+20-30                Length (in Quad Words)
-+31                   BECN bit
-+32-51                DLID (lower 20 bits)
-+52-56                SC (Service Class)
-+57-59                RC (Routing Control)
-+60                   FECN bit
-+61-62                L2 (=10, 16B format)
-+63                   LT (=1, Link Transfer Head Flit)
- 
- Quad Word 1:
--0-7       L4 type (=0x78 ETHERNET)
--8-11      SLID[23:20]
--12-15     DLID[23:20]
--16-31     PKEY
--32-47     Entropy
--48-63     Reserved
-+0-7                  L4 type (=0x78 ETHERNET)
-+8-11                 SLID[23:20]
-+12-15                DLID[23:20]
-+16-31                PKEY
-+32-47                Entropy
-+48-63                Reserved
- 
- Quad Word 2:
--0-15      Reserved
--16-31     L4 header
--32-63     Ethernet Packet
-+0-15                 Reserved
-+16-31                L4 header
-+32-63                Ethernet Packet
- 
- Quad Words 3 to N-1:
--0-63      Ethernet packet (pad extended)
-+0-63                 Ethernet packet (pad extended)
- 
- Quad Word N (last):
--0-23      Ethernet packet (pad extended)
--24-55     ICRC
--56-61     Tail
--62-63     LT (=01, Link Transfer Tail Flit)
-+0-23                 Ethernet packet (pad extended)
-+24-55                ICRC
-+56-61                Tail
-+62-63                LT (=01, Link Transfer Tail Flit)
-+==================== ================================
- 
- Ethernet packet is padded on the transmit side to ensure that the VNIC OPA
- packet is quad word aligned. The 'Tail' field contains the number of bytes
-@@ -123,7 +129,7 @@ operation. It also handles the encapsulation of Ethernet packets with an
- Omni-Path header in the transmit path. For each VNIC interface, the
- information required for encapsulation is configured by the EM via VEMA MAD
- interface. It also passes any control information to the HW dependent driver
--by invoking the RDMA netdev control operations.
-+by invoking the RDMA netdev control operations::
- 
-         +-------------------+ +----------------------+
-         |                   | |       Linux          |
-diff --git a/Documentation/infiniband/sysfs.txt b/Documentation/infiniband/sysfs.rst
-similarity index 69%
-rename from Documentation/infiniband/sysfs.txt
-rename to Documentation/infiniband/sysfs.rst
-index 9fab5062f84b..f0abd6fa48f4 100644
---- a/Documentation/infiniband/sysfs.txt
-+++ b/Documentation/infiniband/sysfs.rst
-@@ -1,4 +1,6 @@
--SYSFS FILES
-+===========
-+Sysfs files
-+===========
- 
- The sysfs interface has moved to
- Documentation/ABI/stable/sysfs-class-infiniband.
-diff --git a/Documentation/infiniband/tag_matching.txt b/Documentation/infiniband/tag_matching.rst
-similarity index 98%
-rename from Documentation/infiniband/tag_matching.txt
-rename to Documentation/infiniband/tag_matching.rst
-index d2a3bf819226..ef56ea585f92 100644
---- a/Documentation/infiniband/tag_matching.txt
-+++ b/Documentation/infiniband/tag_matching.rst
-@@ -1,12 +1,16 @@
-+==================
- Tag matching logic
-+==================
- 
- The MPI standard defines a set of rules, known as tag-matching, for matching
- source send operations to destination receives.  The following parameters must
- match the following source and destination parameters:
++The second argument to _IO, _IOW, _IOR, or _IOWR is a sequence number
++to distinguish ioctls from each other.  The third argument to _IOW,
++_IOR, or _IOWR is the type of the data going into the kernel or coming
++out of the kernel (e.g.  'int' or 'struct foo').  NOTE!  Do NOT use
++sizeof(arg) as the third argument as this results in your ioctl thinking
++it passes an argument of type size_t.
 +
- *	Communicator
- *	User tag - wild card may be specified by the receiver
- *	Source rank – wild car may be specified by the receiver
- *	Destination rank – wild
++Some devices use their major number as the identifier; this is OK, as
++long as it is unique.  Some devices are irregular and don't follow any
++convention at all.
 +
- The ordering rules require that when more than one pair of send and receive
- message envelopes may match, the pair that includes the earliest posted-send
- and the earliest posted-receive is the pair that must be used to satisfy the
-@@ -35,6 +39,7 @@ the header to initiate an RDMA READ operation directly to the matching buffer.
- A fin message needs to be received in order for the buffer to be reused.
- 
- Tag matching implementation
-+===========================
- 
- There are two types of matching objects used, the posted receive list and the
- unexpected message list. The application posts receive buffers through calls
-diff --git a/Documentation/infiniband/user_mad.txt b/Documentation/infiniband/user_mad.rst
-similarity index 90%
-rename from Documentation/infiniband/user_mad.txt
-rename to Documentation/infiniband/user_mad.rst
-index 7aca13a54a3a..d88abfc0e370 100644
---- a/Documentation/infiniband/user_mad.txt
-+++ b/Documentation/infiniband/user_mad.rst
-@@ -1,6 +1,9 @@
--USERSPACE MAD ACCESS
-+====================
-+Userspace MAD access
-+====================
- 
- Device files
-+============
- 
-   Each port of each InfiniBand device has a "umad" device and an
-   "issm" device attached.  For example, a two-port HCA will have two
-@@ -8,12 +11,13 @@ Device files
-   device of each type (for switch port 0).
- 
- Creating MAD agents
-+===================
- 
-   A MAD agent can be created by filling in a struct ib_user_mad_reg_req
-   and then calling the IB_USER_MAD_REGISTER_AGENT ioctl on a file
-   descriptor for the appropriate device file.  If the registration
-   request succeeds, a 32-bit id will be returned in the structure.
--  For example:
-+  For example::
- 
- 	struct ib_user_mad_reg_req req = { /* ... */ };
- 	ret = ioctl(fd, IB_USER_MAD_REGISTER_AGENT, (char *) &req);
-@@ -26,12 +30,14 @@ Creating MAD agents
-   ioctl.  Also, all agents registered through a file descriptor will
-   be unregistered when the descriptor is closed.
- 
--  2014 -- a new registration ioctl is now provided which allows additional
-+  2014
-+       a new registration ioctl is now provided which allows additional
-        fields to be provided during registration.
-        Users of this registration call are implicitly setting the use of
-        pkey_index (see below).
- 
- Receiving MADs
-+==============
- 
-   MADs are received using read().  The receive side now supports
-   RMPP. The buffer passed to read() must be at least one
-@@ -41,7 +47,8 @@ Receiving MADs
-   MAD (RMPP), the errno is set to ENOSPC and the length of the
-   buffer needed is set in mad.length.
- 
--  Example for normal MAD (non RMPP) reads:
-+  Example for normal MAD (non RMPP) reads::
++Following this convention is good because:
 +
- 	struct ib_user_mad *mad;
- 	mad = malloc(sizeof *mad + 256);
- 	ret = read(fd, mad, sizeof *mad + 256);
-@@ -50,7 +57,8 @@ Receiving MADs
- 		free(mad);
- 	}
- 
--  Example for RMPP reads:
-+  Example for RMPP reads::
++(1) Keeping the ioctl's globally unique helps error checking:
++    if a program calls an ioctl on the wrong device, it will get an
++    error rather than some unexpected behaviour.
 +
- 	struct ib_user_mad *mad;
- 	mad = malloc(sizeof *mad + 256);
- 	ret = read(fd, mad, sizeof *mad + 256);
-@@ -76,11 +84,12 @@ Receiving MADs
-   poll()/select() may be used to wait until a MAD can be read.
++(2) The 'strace' build procedure automatically finds ioctl numbers
++    defined with _IO, _IOW, _IOR, or _IOWR.
++
++(3) 'strace' can decode numbers back into useful names when the
++    numbers are unique.
++
++(4) People looking for ioctls can grep for them more easily when
++    this convention is used to define the ioctl numbers.
++
++(5) When following the convention, the driver code can use generic
++    code to copy the parameters between user and kernel space.
++
++This table lists ioctls visible from user land for Linux/x86.  It contains
++most drivers up to 2.6.31, but I know I am missing some.  There has been
++no attempt to list non-X86 architectures or ioctls from drivers/staging/.
++
++====  =====  ======================================================= ================================================================
++Code  Seq#    Include File                                           Comments
++      (hex)
++====  =====  ======================================================= ================================================================
++0x00  00-1F  linux/fs.h                                              conflict!
++0x00  00-1F  scsi/scsi_ioctl.h                                       conflict!
++0x00  00-1F  linux/fb.h                                              conflict!
++0x00  00-1F  linux/wavefront.h                                       conflict!
++0x02  all    linux/fd.h
++0x03  all    linux/hdreg.h
++0x04  D2-DC  linux/umsdos_fs.h                                       Dead since 2.6.11, but don't reuse these.
++0x06  all    linux/lp.h
++0x09  all    linux/raid/md_u.h
++0x10  00-0F  drivers/char/s390/vmcp.h
++0x10  10-1F  arch/s390/include/uapi/sclp_ctl.h
++0x10  20-2F  arch/s390/include/uapi/asm/hypfs.h
++0x12  all    linux/fs.h
++             linux/blkpg.h
++0x1b  all                                                            InfiniBand Subsystem
++                                                                     <http://infiniband.sourceforge.net/>
++0x20  all    drivers/cdrom/cm206.h
++0x22  all    scsi/sg.h
++'!'   00-1F  uapi/linux/seccomp.h
++'#'   00-3F                                                          IEEE 1394 Subsystem
++                                                                     Block for the entire subsystem
++'$'   00-0F  linux/perf_counter.h, linux/perf_event.h
++'%'   00-0F  include/uapi/linux/stm.h                                System Trace Module subsystem
++                                                                     <mailto:alexander.shishkin@linux.intel.com>
++'&'   00-07  drivers/firewire/nosy-user.h
++'1'   00-1F  linux/timepps.h                                         PPS kit from Ulrich Windl
++                                                                     <ftp://ftp.de.kernel.org/pub/linux/daemons/ntp/PPS/>
++'2'   01-04  linux/i2o.h
++'3'   00-0F  drivers/s390/char/raw3270.h                             conflict!
++'3'   00-1F  linux/suspend_ioctls.h,                                 conflict!
++             kernel/power/user.c
++'8'   all                                                            SNP8023 advanced NIC card
++                                                                     <mailto:mcr@solidum.com>
++';'   64-7F  linux/vfio.h
++'@'   00-0F  linux/radeonfb.h                                        conflict!
++'@'   00-0F  drivers/video/aty/aty128fb.c                            conflict!
++'A'   00-1F  linux/apm_bios.h                                        conflict!
++'A'   00-0F  linux/agpgart.h,                                        conflict!
++             drivers/char/agp/compat_ioctl.h
++'A'   00-7F  sound/asound.h                                          conflict!
++'B'   00-1F  linux/cciss_ioctl.h                                     conflict!
++'B'   00-0F  include/linux/pmu.h                                     conflict!
++'B'   C0-FF  advanced bbus                                           <mailto:maassen@uni-freiburg.de>
++'C'   all    linux/soundcard.h                                       conflict!
++'C'   01-2F  linux/capi.h                                            conflict!
++'C'   F0-FF  drivers/net/wan/cosa.h                                  conflict!
++'D'   all    arch/s390/include/asm/dasd.h
++'D'   40-5F  drivers/scsi/dpt/dtpi_ioctl.h
++'D'   05     drivers/scsi/pmcraid.h
++'E'   all    linux/input.h                                           conflict!
++'E'   00-0F  xen/evtchn.h                                            conflict!
++'F'   all    linux/fb.h                                              conflict!
++'F'   01-02  drivers/scsi/pmcraid.h                                  conflict!
++'F'   20     drivers/video/fsl-diu-fb.h                              conflict!
++'F'   20     drivers/video/intelfb/intelfb.h                         conflict!
++'F'   20     linux/ivtvfb.h                                          conflict!
++'F'   20     linux/matroxfb.h                                        conflict!
++'F'   20     drivers/video/aty/atyfb_base.c                          conflict!
++'F'   00-0F  video/da8xx-fb.h                                        conflict!
++'F'   80-8F  linux/arcfb.h                                           conflict!
++'F'   DD     video/sstfb.h                                           conflict!
++'G'   00-3F  drivers/misc/sgi-gru/grulib.h                           conflict!
++'G'   00-0F  linux/gigaset_dev.h                                     conflict!
++'H'   00-7F  linux/hiddev.h                                          conflict!
++'H'   00-0F  linux/hidraw.h                                          conflict!
++'H'   01     linux/mei.h                                             conflict!
++'H'   02     linux/mei.h                                             conflict!
++'H'   03     linux/mei.h                                             conflict!
++'H'   00-0F  sound/asound.h                                          conflict!
++'H'   20-40  sound/asound_fm.h                                       conflict!
++'H'   80-8F  sound/sfnt_info.h                                       conflict!
++'H'   10-8F  sound/emu10k1.h                                         conflict!
++'H'   10-1F  sound/sb16_csp.h                                        conflict!
++'H'   10-1F  sound/hda_hwdep.h                                       conflict!
++'H'   40-4F  sound/hdspm.h                                           conflict!
++'H'   40-4F  sound/hdsp.h                                            conflict!
++'H'   90     sound/usb/usx2y/usb_stream.h
++'H'   A0     uapi/linux/usb/cdc-wdm.h
++'H'   C0-F0  net/bluetooth/hci.h                                     conflict!
++'H'   C0-DF  net/bluetooth/hidp/hidp.h                               conflict!
++'H'   C0-DF  net/bluetooth/cmtp/cmtp.h                               conflict!
++'H'   C0-DF  net/bluetooth/bnep/bnep.h                               conflict!
++'H'   F1     linux/hid-roccat.h                                      <mailto:erazor_de@users.sourceforge.net>
++'H'   F8-FA  sound/firewire.h
++'I'   all    linux/isdn.h                                            conflict!
++'I'   00-0F  drivers/isdn/divert/isdn_divert.h                       conflict!
++'I'   40-4F  linux/mISDNif.h                                         conflict!
++'J'   00-1F  drivers/scsi/gdth_ioctl.h
++'K'   all    linux/kd.h
++'L'   00-1F  linux/loop.h                                            conflict!
++'L'   10-1F  drivers/scsi/mpt3sas/mpt3sas_ctl.h                      conflict!
++'L'   20-2F  linux/lightnvm.h
++'L'   E0-FF  linux/ppdd.h                                            encrypted disk device driver
++                                                                     <http://linux01.gwdg.de/~alatham/ppdd.html>
++'M'   all    linux/soundcard.h                                       conflict!
++'M'   01-16  mtd/mtd-abi.h                                           conflict!
++      and    drivers/mtd/mtdchar.c
++'M'   01-03  drivers/scsi/megaraid/megaraid_sas.h
++'M'   00-0F  drivers/video/fsl-diu-fb.h                              conflict!
++'N'   00-1F  drivers/usb/scanner.h
++'N'   40-7F  drivers/block/nvme.c
++'O'   00-06  mtd/ubi-user.h                                          UBI
++'P'   all    linux/soundcard.h                                       conflict!
++'P'   60-6F  sound/sscape_ioctl.h                                    conflict!
++'P'   00-0F  drivers/usb/class/usblp.c                               conflict!
++'P'   01-09  drivers/misc/pci_endpoint_test.c                        conflict!
++'Q'   all    linux/soundcard.h
++'R'   00-1F  linux/random.h                                          conflict!
++'R'   01     linux/rfkill.h                                          conflict!
++'R'   C0-DF  net/bluetooth/rfcomm.h
++'S'   all    linux/cdrom.h                                           conflict!
++'S'   80-81  scsi/scsi_ioctl.h                                       conflict!
++'S'   82-FF  scsi/scsi.h                                             conflict!
++'S'   00-7F  sound/asequencer.h                                      conflict!
++'T'   all    linux/soundcard.h                                       conflict!
++'T'   00-AF  sound/asound.h                                          conflict!
++'T'   all    arch/x86/include/asm/ioctls.h                           conflict!
++'T'   C0-DF  linux/if_tun.h                                          conflict!
++'U'   all    sound/asound.h                                          conflict!
++'U'   00-CF  linux/uinput.h                                          conflict!
++'U'   00-EF  linux/usbdevice_fs.h
++'U'   C0-CF  drivers/bluetooth/hci_uart.h
++'V'   all    linux/vt.h                                              conflict!
++'V'   all    linux/videodev2.h                                       conflict!
++'V'   C0     linux/ivtvfb.h                                          conflict!
++'V'   C0     linux/ivtv.h                                            conflict!
++'V'   C0     media/davinci/vpfe_capture.h                            conflict!
++'V'   C0     media/si4713.h                                          conflict!
++'W'   00-1F  linux/watchdog.h                                        conflict!
++'W'   00-1F  linux/wanrouter.h                                       conflict! (pre 3.9)
++'W'   00-3F  sound/asound.h                                          conflict!
++'W'   40-5F  drivers/pci/switch/switchtec.c
++'X'   all    fs/xfs/xfs_fs.h,                                        conflict!
++             fs/xfs/linux-2.6/xfs_ioctl32.h,
++             include/linux/falloc.h,
++             linux/fs.h,
++'X'   all    fs/ocfs2/ocfs_fs.h                                      conflict!
++'X'   01     linux/pktcdvd.h                                         conflict!
++'Y'   all    linux/cyclades.h
++'Z'   14-15  drivers/message/fusion/mptctl.h
++'['   00-3F  linux/usb/tmc.h                                         USB Test and Measurement Devices
++                                                                     <mailto:gregkh@linuxfoundation.org>
++'a'   all    linux/atm*.h, linux/sonet.h                             ATM on linux
++                                                                     <http://lrcwww.epfl.ch/>
++'a'   00-0F  drivers/crypto/qat/qat_common/adf_cfg_common.h          conflict! qat driver
++'b'   00-FF                                                          conflict! bit3 vme host bridge
++                                                                     <mailto:natalia@nikhefk.nikhef.nl>
++'c'   all    linux/cm4000_cs.h                                       conflict!
++'c'   00-7F  linux/comstats.h                                        conflict!
++'c'   00-7F  linux/coda.h                                            conflict!
++'c'   00-1F  linux/chio.h                                            conflict!
++'c'   80-9F  arch/s390/include/asm/chsc.h                            conflict!
++'c'   A0-AF  arch/x86/include/asm/msr.h conflict!
++'d'   00-FF  linux/char/drm/drm.h                                    conflict!
++'d'   02-40  pcmcia/ds.h                                             conflict!
++'d'   F0-FF  linux/digi1.h
++'e'   all    linux/digi1.h                                           conflict!
++'f'   00-1F  linux/ext2_fs.h                                         conflict!
++'f'   00-1F  linux/ext3_fs.h                                         conflict!
++'f'   00-0F  fs/jfs/jfs_dinode.h                                     conflict!
++'f'   00-0F  fs/ext4/ext4.h                                          conflict!
++'f'   00-0F  linux/fs.h                                              conflict!
++'f'   00-0F  fs/ocfs2/ocfs2_fs.h                                     conflict!
++'g'   00-0F  linux/usb/gadgetfs.h
++'g'   20-2F  linux/usb/g_printer.h
++'h'   00-7F                                                          conflict! Charon filesystem
++                                                                     <mailto:zapman@interlan.net>
++'h'   00-1F  linux/hpet.h                                            conflict!
++'h'   80-8F  fs/hfsplus/ioctl.c
++'i'   00-3F  linux/i2o-dev.h                                         conflict!
++'i'   0B-1F  linux/ipmi.h                                            conflict!
++'i'   80-8F  linux/i8k.h
++'j'   00-3F  linux/joystick.h
++'k'   00-0F  linux/spi/spidev.h                                      conflict!
++'k'   00-05  video/kyro.h                                            conflict!
++'k'   10-17  linux/hsi/hsi_char.h                                    HSI character device
++'l'   00-3F  linux/tcfs_fs.h                                         transparent cryptographic file system
++                                                                     <http://web.archive.org/web/%2A/http://mikonos.dia.unisa.it/tcfs>
++'l'   40-7F  linux/udf_fs_i.h                                        in development:
++                                                                     <http://sourceforge.net/projects/linux-udf/>
++'m'   00-09  linux/mmtimer.h                                         conflict!
++'m'   all    linux/mtio.h                                            conflict!
++'m'   all    linux/soundcard.h                                       conflict!
++'m'   all    linux/synclink.h                                        conflict!
++'m'   00-19  drivers/message/fusion/mptctl.h                         conflict!
++'m'   00     drivers/scsi/megaraid/megaraid_ioctl.h                  conflict!
++'n'   00-7F  linux/ncp_fs.h and fs/ncpfs/ioctl.c
++'n'   80-8F  uapi/linux/nilfs2_api.h                                 NILFS2
++'n'   E0-FF  linux/matroxfb.h                                        matroxfb
++'o'   00-1F  fs/ocfs2/ocfs2_fs.h                                     OCFS2
++'o'   00-03  mtd/ubi-user.h                                          conflict! (OCFS2 and UBI overlaps)
++'o'   40-41  mtd/ubi-user.h                                          UBI
++'o'   01-A1  `linux/dvb/*.h`                                         DVB
++'p'   00-0F  linux/phantom.h                                         conflict! (OpenHaptics needs this)
++'p'   00-1F  linux/rtc.h                                             conflict!
++'p'   00-3F  linux/mc146818rtc.h                                     conflict!
++'p'   40-7F  linux/nvram.h
++'p'   80-9F  linux/ppdev.h                                           user-space parport
++                                                                     <mailto:tim@cyberelk.net>
++'p'   A1-A5  linux/pps.h                                             LinuxPPS
++                                                                     <mailto:giometti@linux.it>
++'q'   00-1F  linux/serio.h
++'q'   80-FF  linux/telephony.h                                       Internet PhoneJACK, Internet LineJACK
++             linux/ixjuser.h                                         <http://web.archive.org/web/%2A/http://www.quicknet.net>
++'r'   00-1F  linux/msdos_fs.h and fs/fat/dir.c
++'s'   all    linux/cdk.h
++'t'   00-7F  linux/ppp-ioctl.h
++'t'   80-8F  linux/isdn_ppp.h
++'t'   90-91  linux/toshiba.h                                         toshiba and toshiba_acpi SMM
++'u'   00-1F  linux/smb_fs.h                                          gone
++'u'   20-3F  linux/uvcvideo.h                                        USB video class host driver
++'u'   40-4f  linux/udmabuf.h                                         userspace dma-buf misc device
++'v'   00-1F  linux/ext2_fs.h                                         conflict!
++'v'   00-1F  linux/fs.h                                              conflict!
++'v'   00-0F  linux/sonypi.h                                          conflict!
++'v'   00-0F  media/v4l2-subdev.h                                     conflict!
++'v'   C0-FF  linux/meye.h                                            conflict!
++'w'   all                                                            CERN SCI driver
++'y'   00-1F                                                          packet based user level communications
++                                                                     <mailto:zapman@interlan.net>
++'z'   00-3F                                                          CAN bus card conflict!
++                                                                     <mailto:hdstich@connectu.ulm.circular.de>
++'z'   40-7F                                                          CAN bus card conflict!
++                                                                     <mailto:oe@port.de>
++'z'   10-4F  drivers/s390/crypto/zcrypt_api.h                        conflict!
++'|'   00-7F  linux/media.h
++0x80  00-1F  linux/fb.h
++0x89  00-06  arch/x86/include/asm/sockios.h
++0x89  0B-DF  linux/sockios.h
++0x89  E0-EF  linux/sockios.h                                         SIOCPROTOPRIVATE range
++0x89  E0-EF  linux/dn.h                                              PROTOPRIVATE range
++0x89  F0-FF  linux/sockios.h                                         SIOCDEVPRIVATE range
++0x8B  all    linux/wireless.h
++0x8C  00-3F                                                          WiNRADiO driver
++                                                                     <http://www.winradio.com.au/>
++0x90  00     drivers/cdrom/sbpcd.h
++0x92  00-0F  drivers/usb/mon/mon_bin.c
++0x93  60-7F  linux/auto_fs.h
++0x94  all    fs/btrfs/ioctl.h                                        Btrfs filesystem
++             and linux/fs.h                                          some lifted to vfs/generic
++0x97  00-7F  fs/ceph/ioctl.h                                         Ceph file system
++0x99  00-0F                                                          537-Addinboard driver
++                                                                     <mailto:buk@buks.ipn.de>
++0xA0  all    linux/sdp/sdp.h                                         Industrial Device Project
++                                                                     <mailto:kenji@bitgate.com>
++0xA1  0      linux/vtpm_proxy.h                                      TPM Emulator Proxy Driver
++0xA3  80-8F                                                          Port ACL  in development:
++                                                                     <mailto:tlewis@mindspring.com>
++0xA3  90-9F  linux/dtlk.h
++0xA4  00-1F  uapi/linux/tee.h                                        Generic TEE subsystem
++0xAA  00-3F  linux/uapi/linux/userfaultfd.h
++0xAB  00-1F  linux/nbd.h
++0xAC  00-1F  linux/raw.h
++0xAD  00                                                             Netfilter device in development:
++                                                                     <mailto:rusty@rustcorp.com.au>
++0xAE  all    linux/kvm.h                                             Kernel-based Virtual Machine
++                                                                     <mailto:kvm@vger.kernel.org>
++0xAF  00-1F  linux/fsl_hypervisor.h                                  Freescale hypervisor
++0xB0  all                                                            RATIO devices in development:
++                                                                     <mailto:vgo@ratio.de>
++0xB1  00-1F                                                          PPPoX
++                                                                     <mailto:mostrows@styx.uwaterloo.ca>
++0xB3  00     linux/mmc/ioctl.h
++0xB4  00-0F  linux/gpio.h                                            <mailto:linux-gpio@vger.kernel.org>
++0xB5  00-0F  uapi/linux/rpmsg.h                                      <mailto:linux-remoteproc@vger.kernel.org>
++0xB6  all    linux/fpga-dfl.h
++0xC0  00-0F  linux/usb/iowarrior.h
++0xCA  00-0F  uapi/misc/cxl.h
++0xCA  10-2F  uapi/misc/ocxl.h
++0xCA  80-BF  uapi/scsi/cxlflash_ioctl.h
++0xCB  00-1F                                                          CBM serial IEC bus in development:
++                                                                     <mailto:michael.klein@puffin.lb.shuttle.de>
++0xCC  00-0F  drivers/misc/ibmvmc.h                                   pseries VMC driver
++0xCD  01     linux/reiserfs_fs.h
++0xCF  02     fs/cifs/ioctl.c
++0xDB  00-0F  drivers/char/mwave/mwavepub.h
++0xDD  00-3F                                                          ZFCP device driver see drivers/s390/scsi/
++                                                                     <mailto:aherrman@de.ibm.com>
++0xE5  00-3F  linux/fuse.h
++0xEC  00-01  drivers/platform/chrome/cros_ec_dev.h                   ChromeOS EC driver
++0xF3  00-3F  drivers/usb/misc/sisusbvga/sisusb.h                     sisfb (in development)
++                                                                     <mailto:thomas@winischhofer.net>
++0xF4  00-1F  video/mbxfb.h                                           mbxfb
++                                                                     <mailto:raph@8d.com>
++0xF6  all                                                            LTTng Linux Trace Toolkit Next Generation
++                                                                     <mailto:mathieu.desnoyers@efficios.com>
++0xFD  all    linux/dm-ioctl.h
++====  =====  ======================================================= ================================================================
+diff --git a/Documentation/ioctl/ioctl-number.txt b/Documentation/ioctl/ioctl-number.txt
+deleted file mode 100644
+index c9558146ac58..000000000000
+--- a/Documentation/ioctl/ioctl-number.txt
++++ /dev/null
+@@ -1,350 +0,0 @@
+-Ioctl Numbers
+-19 October 1999
+-Michael Elizabeth Chastain
+-<mec@shout.net>
+-
+-If you are adding new ioctl's to the kernel, you should use the _IO
+-macros defined in <linux/ioctl.h>:
+-
+-    _IO    an ioctl with no parameters
+-    _IOW   an ioctl with write parameters (copy_from_user)
+-    _IOR   an ioctl with read parameters  (copy_to_user)
+-    _IOWR  an ioctl with both write and read parameters.
+-
+-'Write' and 'read' are from the user's point of view, just like the
+-system calls 'write' and 'read'.  For example, a SET_FOO ioctl would
+-be _IOW, although the kernel would actually read data from user space;
+-a GET_FOO ioctl would be _IOR, although the kernel would actually write
+-data to user space.
+-
+-The first argument to _IO, _IOW, _IOR, or _IOWR is an identifying letter
+-or number from the table below.  Because of the large number of drivers,
+-many drivers share a partial letter with other drivers.
+-
+-If you are writing a driver for a new device and need a letter, pick an
+-unused block with enough room for expansion: 32 to 256 ioctl commands.
+-You can register the block by patching this file and submitting the
+-patch to Linus Torvalds.  Or you can e-mail me at <mec@shout.net> and
+-I'll register one for you.
+-
+-The second argument to _IO, _IOW, _IOR, or _IOWR is a sequence number
+-to distinguish ioctls from each other.  The third argument to _IOW,
+-_IOR, or _IOWR is the type of the data going into the kernel or coming
+-out of the kernel (e.g.  'int' or 'struct foo').  NOTE!  Do NOT use
+-sizeof(arg) as the third argument as this results in your ioctl thinking
+-it passes an argument of type size_t.
+-
+-Some devices use their major number as the identifier; this is OK, as
+-long as it is unique.  Some devices are irregular and don't follow any
+-convention at all.
+-
+-Following this convention is good because:
+-
+-(1) Keeping the ioctl's globally unique helps error checking:
+-    if a program calls an ioctl on the wrong device, it will get an
+-    error rather than some unexpected behaviour.
+-
+-(2) The 'strace' build procedure automatically finds ioctl numbers
+-    defined with _IO, _IOW, _IOR, or _IOWR.
+-
+-(3) 'strace' can decode numbers back into useful names when the
+-    numbers are unique.
+-
+-(4) People looking for ioctls can grep for them more easily when
+-    this convention is used to define the ioctl numbers.
+-
+-(5) When following the convention, the driver code can use generic
+-    code to copy the parameters between user and kernel space.
+-
+-This table lists ioctls visible from user land for Linux/x86.  It contains
+-most drivers up to 2.6.31, but I know I am missing some.  There has been
+-no attempt to list non-X86 architectures or ioctls from drivers/staging/.
+-
+-Code  Seq#(hex)	Include File		Comments
+-========================================================
+-0x00	00-1F	linux/fs.h		conflict!
+-0x00	00-1F	scsi/scsi_ioctl.h	conflict!
+-0x00	00-1F	linux/fb.h		conflict!
+-0x00	00-1F	linux/wavefront.h	conflict!
+-0x02	all	linux/fd.h
+-0x03	all	linux/hdreg.h
+-0x04	D2-DC	linux/umsdos_fs.h	Dead since 2.6.11, but don't reuse these.
+-0x06	all	linux/lp.h
+-0x09	all	linux/raid/md_u.h
+-0x10	00-0F	drivers/char/s390/vmcp.h
+-0x10	10-1F	arch/s390/include/uapi/sclp_ctl.h
+-0x10	20-2F	arch/s390/include/uapi/asm/hypfs.h
+-0x12	all	linux/fs.h
+-		linux/blkpg.h
+-0x1b	all	InfiniBand Subsystem	<http://infiniband.sourceforge.net/>
+-0x20	all	drivers/cdrom/cm206.h
+-0x22	all	scsi/sg.h
+-'!'	00-1F	uapi/linux/seccomp.h
+-'#'	00-3F	IEEE 1394 Subsystem	Block for the entire subsystem
+-'$'	00-0F	linux/perf_counter.h, linux/perf_event.h
+-'%'	00-0F	include/uapi/linux/stm.h
+-					System Trace Module subsystem
+-					<mailto:alexander.shishkin@linux.intel.com>
+-'&'	00-07	drivers/firewire/nosy-user.h
+-'1'	00-1F	<linux/timepps.h>	PPS kit from Ulrich Windl
+-					<ftp://ftp.de.kernel.org/pub/linux/daemons/ntp/PPS/>
+-'2'	01-04	linux/i2o.h
+-'3'	00-0F	drivers/s390/char/raw3270.h	conflict!
+-'3'	00-1F	linux/suspend_ioctls.h	conflict!
+-		and kernel/power/user.c
+-'8'	all				SNP8023 advanced NIC card
+-					<mailto:mcr@solidum.com>
+-';'	64-7F	linux/vfio.h
+-'@'	00-0F	linux/radeonfb.h	conflict!
+-'@'	00-0F	drivers/video/aty/aty128fb.c	conflict!
+-'A'	00-1F	linux/apm_bios.h	conflict!
+-'A'	00-0F	linux/agpgart.h		conflict!
+-		and drivers/char/agp/compat_ioctl.h
+-'A'	00-7F	sound/asound.h		conflict!
+-'B'	00-1F	linux/cciss_ioctl.h	conflict!
+-'B'	00-0F	include/linux/pmu.h	conflict!
+-'B'	C0-FF				advanced bbus
+-					<mailto:maassen@uni-freiburg.de>
+-'C'	all	linux/soundcard.h	conflict!
+-'C'	01-2F	linux/capi.h		conflict!
+-'C'	F0-FF	drivers/net/wan/cosa.h	conflict!
+-'D'	all	arch/s390/include/asm/dasd.h
+-'D'	40-5F	drivers/scsi/dpt/dtpi_ioctl.h
+-'D'	05	drivers/scsi/pmcraid.h
+-'E'	all	linux/input.h		conflict!
+-'E'	00-0F	xen/evtchn.h		conflict!
+-'F'	all	linux/fb.h		conflict!
+-'F'	01-02	drivers/scsi/pmcraid.h	conflict!
+-'F'	20	drivers/video/fsl-diu-fb.h	conflict!
+-'F'	20	drivers/video/intelfb/intelfb.h	conflict!
+-'F'	20	linux/ivtvfb.h		conflict!
+-'F'	20	linux/matroxfb.h	conflict!
+-'F'	20	drivers/video/aty/atyfb_base.c	conflict!
+-'F'	00-0F	video/da8xx-fb.h	conflict!
+-'F'	80-8F	linux/arcfb.h		conflict!
+-'F'	DD	video/sstfb.h		conflict!
+-'G'	00-3F	drivers/misc/sgi-gru/grulib.h	conflict!
+-'G'	00-0F	linux/gigaset_dev.h	conflict!
+-'H'	00-7F	linux/hiddev.h		conflict!
+-'H'	00-0F	linux/hidraw.h		conflict!
+-'H'	01	linux/mei.h		conflict!
+-'H'	02	linux/mei.h		conflict!
+-'H'	03	linux/mei.h		conflict!
+-'H'	00-0F	sound/asound.h		conflict!
+-'H'	20-40	sound/asound_fm.h	conflict!
+-'H'	80-8F	sound/sfnt_info.h	conflict!
+-'H'	10-8F	sound/emu10k1.h		conflict!
+-'H'	10-1F	sound/sb16_csp.h	conflict!
+-'H'	10-1F	sound/hda_hwdep.h	conflict!
+-'H'	40-4F	sound/hdspm.h		conflict!
+-'H'	40-4F	sound/hdsp.h		conflict!
+-'H'	90	sound/usb/usx2y/usb_stream.h
+-'H'	A0	uapi/linux/usb/cdc-wdm.h
+-'H'	C0-F0	net/bluetooth/hci.h	conflict!
+-'H'	C0-DF	net/bluetooth/hidp/hidp.h	conflict!
+-'H'	C0-DF	net/bluetooth/cmtp/cmtp.h	conflict!
+-'H'	C0-DF	net/bluetooth/bnep/bnep.h	conflict!
+-'H'	F1	linux/hid-roccat.h	<mailto:erazor_de@users.sourceforge.net>
+-'H'	F8-FA	sound/firewire.h
+-'I'	all	linux/isdn.h		conflict!
+-'I'	00-0F	drivers/isdn/divert/isdn_divert.h	conflict!
+-'I'	40-4F	linux/mISDNif.h		conflict!
+-'J'	00-1F	drivers/scsi/gdth_ioctl.h
+-'K'	all	linux/kd.h
+-'L'	00-1F	linux/loop.h		conflict!
+-'L'	10-1F	drivers/scsi/mpt3sas/mpt3sas_ctl.h	conflict!
+-'L'	20-2F	linux/lightnvm.h
+-'L'	E0-FF	linux/ppdd.h		encrypted disk device driver
+-					<http://linux01.gwdg.de/~alatham/ppdd.html>
+-'M'	all	linux/soundcard.h	conflict!
+-'M'	01-16	mtd/mtd-abi.h		conflict!
+-		and drivers/mtd/mtdchar.c
+-'M'	01-03	drivers/scsi/megaraid/megaraid_sas.h
+-'M'	00-0F	drivers/video/fsl-diu-fb.h	conflict!
+-'N'	00-1F	drivers/usb/scanner.h
+-'N'	40-7F	drivers/block/nvme.c
+-'O'     00-06   mtd/ubi-user.h		UBI
+-'P'	all	linux/soundcard.h	conflict!
+-'P'	60-6F	sound/sscape_ioctl.h	conflict!
+-'P'	00-0F	drivers/usb/class/usblp.c	conflict!
+-'P'	01-09	drivers/misc/pci_endpoint_test.c	conflict!
+-'Q'	all	linux/soundcard.h
+-'R'	00-1F	linux/random.h		conflict!
+-'R'	01	linux/rfkill.h		conflict!
+-'R'	C0-DF	net/bluetooth/rfcomm.h
+-'S'	all	linux/cdrom.h		conflict!
+-'S'	80-81	scsi/scsi_ioctl.h	conflict!
+-'S'	82-FF	scsi/scsi.h		conflict!
+-'S'	00-7F	sound/asequencer.h	conflict!
+-'T'	all	linux/soundcard.h	conflict!
+-'T'	00-AF	sound/asound.h		conflict!
+-'T'	all	arch/x86/include/asm/ioctls.h	conflict!
+-'T'	C0-DF	linux/if_tun.h		conflict!
+-'U'	all	sound/asound.h		conflict!
+-'U'	00-CF	linux/uinput.h		conflict!
+-'U'	00-EF	linux/usbdevice_fs.h
+-'U'	C0-CF	drivers/bluetooth/hci_uart.h
+-'V'	all	linux/vt.h		conflict!
+-'V'	all	linux/videodev2.h	conflict!
+-'V'	C0	linux/ivtvfb.h		conflict!
+-'V'	C0	linux/ivtv.h		conflict!
+-'V'	C0	media/davinci/vpfe_capture.h	conflict!
+-'V'	C0	media/si4713.h		conflict!
+-'W'	00-1F	linux/watchdog.h	conflict!
+-'W'	00-1F	linux/wanrouter.h	conflict!		(pre 3.9)
+-'W'	00-3F	sound/asound.h		conflict!
+-'W'	40-5F   drivers/pci/switch/switchtec.c
+-'X'	all	fs/xfs/xfs_fs.h		conflict!
+-		and fs/xfs/linux-2.6/xfs_ioctl32.h
+-		and include/linux/falloc.h
+-		and linux/fs.h
+-'X'	all	fs/ocfs2/ocfs_fs.h	conflict!
+-'X'	01	linux/pktcdvd.h		conflict!
+-'Y'	all	linux/cyclades.h
+-'Z'	14-15	drivers/message/fusion/mptctl.h
+-'['	00-3F	linux/usb/tmc.h		USB Test and Measurement Devices
+-					<mailto:gregkh@linuxfoundation.org>
+-'a'	all	linux/atm*.h, linux/sonet.h	ATM on linux
+-					<http://lrcwww.epfl.ch/>
+-'a'	00-0F	drivers/crypto/qat/qat_common/adf_cfg_common.h	conflict! qat driver
+-'b'	00-FF				conflict! bit3 vme host bridge
+-					<mailto:natalia@nikhefk.nikhef.nl>
+-'c'	all	linux/cm4000_cs.h	conflict!
+-'c'	00-7F	linux/comstats.h	conflict!
+-'c'	00-7F	linux/coda.h		conflict!
+-'c'	00-1F	linux/chio.h		conflict!
+-'c'	80-9F	arch/s390/include/asm/chsc.h	conflict!
+-'c'	A0-AF   arch/x86/include/asm/msr.h	conflict!
+-'d'	00-FF	linux/char/drm/drm.h	conflict!
+-'d'	02-40	pcmcia/ds.h		conflict!
+-'d'	F0-FF	linux/digi1.h
+-'e'	all	linux/digi1.h		conflict!
+-'f'	00-1F	linux/ext2_fs.h		conflict!
+-'f'	00-1F	linux/ext3_fs.h		conflict!
+-'f'	00-0F	fs/jfs/jfs_dinode.h	conflict!
+-'f'	00-0F	fs/ext4/ext4.h		conflict!
+-'f'	00-0F	linux/fs.h		conflict!
+-'f'	00-0F	fs/ocfs2/ocfs2_fs.h	conflict!
+-'g'	00-0F	linux/usb/gadgetfs.h
+-'g'	20-2F	linux/usb/g_printer.h
+-'h'	00-7F				conflict! Charon filesystem
+-					<mailto:zapman@interlan.net>
+-'h'	00-1F	linux/hpet.h		conflict!
+-'h'	80-8F	fs/hfsplus/ioctl.c
+-'i'	00-3F	linux/i2o-dev.h		conflict!
+-'i'	0B-1F	linux/ipmi.h		conflict!
+-'i'	80-8F	linux/i8k.h
+-'j'	00-3F	linux/joystick.h
+-'k'	00-0F	linux/spi/spidev.h	conflict!
+-'k'	00-05	video/kyro.h		conflict!
+-'k'	10-17	linux/hsi/hsi_char.h	HSI character device
+-'l'	00-3F	linux/tcfs_fs.h		transparent cryptographic file system
+-					<http://web.archive.org/web/*/http://mikonos.dia.unisa.it/tcfs>
+-'l'	40-7F	linux/udf_fs_i.h	in development:
+-					<http://sourceforge.net/projects/linux-udf/>
+-'m'	00-09	linux/mmtimer.h		conflict!
+-'m'	all	linux/mtio.h		conflict!
+-'m'	all	linux/soundcard.h	conflict!
+-'m'	all	linux/synclink.h	conflict!
+-'m'	00-19	drivers/message/fusion/mptctl.h	conflict!
+-'m'	00	drivers/scsi/megaraid/megaraid_ioctl.h	conflict!
+-'n'	00-7F	linux/ncp_fs.h and fs/ncpfs/ioctl.c
+-'n'	80-8F	uapi/linux/nilfs2_api.h	NILFS2
+-'n'	E0-FF	linux/matroxfb.h	matroxfb
+-'o'	00-1F	fs/ocfs2/ocfs2_fs.h	OCFS2
+-'o'     00-03   mtd/ubi-user.h		conflict! (OCFS2 and UBI overlaps)
+-'o'     40-41   mtd/ubi-user.h		UBI
+-'o'     01-A1   linux/dvb/*.h		DVB
+-'p'	00-0F	linux/phantom.h		conflict! (OpenHaptics needs this)
+-'p'	00-1F	linux/rtc.h		conflict!
+-'p'	00-3F	linux/mc146818rtc.h	conflict!
+-'p'	40-7F	linux/nvram.h
+-'p'	80-9F	linux/ppdev.h		user-space parport
+-					<mailto:tim@cyberelk.net>
+-'p'	A1-A5	linux/pps.h		LinuxPPS
+-					<mailto:giometti@linux.it>
+-'q'	00-1F	linux/serio.h
+-'q'	80-FF	linux/telephony.h	Internet PhoneJACK, Internet LineJACK
+-		linux/ixjuser.h		<http://web.archive.org/web/*/http://www.quicknet.net>
+-'r'	00-1F	linux/msdos_fs.h and fs/fat/dir.c
+-'s'	all	linux/cdk.h
+-'t'	00-7F	linux/ppp-ioctl.h
+-'t'	80-8F	linux/isdn_ppp.h
+-'t'	90-91	linux/toshiba.h		toshiba and toshiba_acpi SMM
+-'u'	00-1F	linux/smb_fs.h		gone
+-'u'	20-3F	linux/uvcvideo.h	USB video class host driver
+-'u'	40-4f	linux/udmabuf.h		userspace dma-buf misc device
+-'v'	00-1F	linux/ext2_fs.h		conflict!
+-'v'	00-1F	linux/fs.h		conflict!
+-'v'	00-0F	linux/sonypi.h		conflict!
+-'v'	00-0F	media/v4l2-subdev.h	conflict!
+-'v'	C0-FF	linux/meye.h		conflict!
+-'w'	all				CERN SCI driver
+-'y'	00-1F				packet based user level communications
+-					<mailto:zapman@interlan.net>
+-'z'	00-3F				CAN bus card	conflict!
+-					<mailto:hdstich@connectu.ulm.circular.de>
+-'z'	40-7F				CAN bus card	conflict!
+-					<mailto:oe@port.de>
+-'z'	10-4F	drivers/s390/crypto/zcrypt_api.h	conflict!
+-'|'	00-7F	linux/media.h
+-0x80	00-1F	linux/fb.h
+-0x89	00-06	arch/x86/include/asm/sockios.h
+-0x89	0B-DF	linux/sockios.h
+-0x89	E0-EF	linux/sockios.h		SIOCPROTOPRIVATE range
+-0x89	E0-EF	linux/dn.h		PROTOPRIVATE range
+-0x89	F0-FF	linux/sockios.h		SIOCDEVPRIVATE range
+-0x8B	all	linux/wireless.h
+-0x8C	00-3F				WiNRADiO driver
+-					<http://www.winradio.com.au/>
+-0x90	00	drivers/cdrom/sbpcd.h
+-0x92	00-0F	drivers/usb/mon/mon_bin.c
+-0x93	60-7F	linux/auto_fs.h
+-0x94	all	fs/btrfs/ioctl.h	Btrfs filesystem
+-		and linux/fs.h		some lifted to vfs/generic
+-0x97	00-7F	fs/ceph/ioctl.h		Ceph file system
+-0x99	00-0F				537-Addinboard driver
+-					<mailto:buk@buks.ipn.de>
+-0xA0	all	linux/sdp/sdp.h		Industrial Device Project
+-					<mailto:kenji@bitgate.com>
+-0xA1	0	linux/vtpm_proxy.h	TPM Emulator Proxy Driver
+-0xA3	80-8F	Port ACL		in development:
+-					<mailto:tlewis@mindspring.com>
+-0xA3	90-9F	linux/dtlk.h
+-0xA4	00-1F	uapi/linux/tee.h	Generic TEE subsystem
+-0xAA	00-3F	linux/uapi/linux/userfaultfd.h
+-0xAB	00-1F	linux/nbd.h
+-0xAC	00-1F	linux/raw.h
+-0xAD	00	Netfilter device	in development:
+-					<mailto:rusty@rustcorp.com.au>
+-0xAE	all	linux/kvm.h		Kernel-based Virtual Machine
+-					<mailto:kvm@vger.kernel.org>
+-0xAF	00-1F	linux/fsl_hypervisor.h	Freescale hypervisor
+-0xB0	all	RATIO devices		in development:
+-					<mailto:vgo@ratio.de>
+-0xB1	00-1F	PPPoX			<mailto:mostrows@styx.uwaterloo.ca>
+-0xB3	00	linux/mmc/ioctl.h
+-0xB4	00-0F	linux/gpio.h		<mailto:linux-gpio@vger.kernel.org>
+-0xB5	00-0F	uapi/linux/rpmsg.h	<mailto:linux-remoteproc@vger.kernel.org>
+-0xB6	all	linux/fpga-dfl.h
+-0xC0	00-0F	linux/usb/iowarrior.h
+-0xCA	00-0F	uapi/misc/cxl.h
+-0xCA	10-2F	uapi/misc/ocxl.h
+-0xCA	80-BF	uapi/scsi/cxlflash_ioctl.h
+-0xCB	00-1F	CBM serial IEC bus	in development:
+-					<mailto:michael.klein@puffin.lb.shuttle.de>
+-0xCC	00-0F	drivers/misc/ibmvmc.h    pseries VMC driver
+-0xCD	01	linux/reiserfs_fs.h
+-0xCF	02	fs/cifs/ioctl.c
+-0xDB	00-0F	drivers/char/mwave/mwavepub.h
+-0xDD	00-3F	ZFCP device driver	see drivers/s390/scsi/
+-					<mailto:aherrman@de.ibm.com>
+-0xE5	00-3F	linux/fuse.h
+-0xEC	00-01	drivers/platform/chrome/cros_ec_dev.h	ChromeOS EC driver
+-0xF3	00-3F	drivers/usb/misc/sisusbvga/sisusb.h	sisfb (in development)
+-					<mailto:thomas@winischhofer.net>
+-0xF4	00-1F	video/mbxfb.h		mbxfb
+-					<mailto:raph@8d.com>
+-0xF6	all	LTTng			Linux Trace Toolkit Next Generation
+-					<mailto:mathieu.desnoyers@efficios.com>
+-0xFD	all	linux/dm-ioctl.h
+diff --git a/Documentation/process/submit-checklist.rst b/Documentation/process/submit-checklist.rst
+index 365efc9e4aa8..8e56337d422d 100644
+--- a/Documentation/process/submit-checklist.rst
++++ b/Documentation/process/submit-checklist.rst
+@@ -107,7 +107,7 @@ and elsewhere regarding submitting Linux kernel patches.
+     and why.
  
- Sending MADs
-+============
+ 26) If any ioctl's are added by the patch, then also update
+-    ``Documentation/ioctl/ioctl-number.txt``.
++    ``Documentation/ioctl/ioctl-number.rst``.
  
-   MADs are sent using write().  The agent ID for sending should be
-   filled into the id field of the MAD, the destination LID should be
-   filled into the lid field, and so on.  The send side does support
--  RMPP so arbitrary length MAD can be sent. For example:
-+  RMPP so arbitrary length MAD can be sent. For example::
+ 27) If your modified source code depends on or uses any of the kernel
+     APIs or features that are related to the following ``Kconfig`` symbols,
+diff --git a/Documentation/translations/it_IT/process/submit-checklist.rst b/Documentation/translations/it_IT/process/submit-checklist.rst
+index ea74cae958d7..995ee69fab11 100644
+--- a/Documentation/translations/it_IT/process/submit-checklist.rst
++++ b/Documentation/translations/it_IT/process/submit-checklist.rst
+@@ -117,7 +117,7 @@ sottomissione delle patch, in particolare
+     sorgenti che ne spieghi la logica: cosa fanno e perché.
  
- 	struct ib_user_mad *mad;
+ 25) Se la patch aggiunge nuove chiamate ioctl, allora aggiornate
+-    ``Documentation/ioctl/ioctl-number.txt``.
++    ``Documentation/ioctl/ioctl-number.rst``.
  
-@@ -97,6 +106,7 @@ Sending MADs
- 		perror("write");
+ 26) Se il codice che avete modificato dipende o usa una qualsiasi interfaccia o
+     funzionalità del kernel che è associata a uno dei seguenti simboli
+diff --git a/Documentation/translations/zh_CN/process/submit-checklist.rst b/Documentation/translations/zh_CN/process/submit-checklist.rst
+index f4785d2b0491..8738c55e42a2 100644
+--- a/Documentation/translations/zh_CN/process/submit-checklist.rst
++++ b/Documentation/translations/zh_CN/process/submit-checklist.rst
+@@ -97,7 +97,7 @@ Linux内核补丁提交清单
+ 24) 所有内存屏障例如 ``barrier()``, ``rmb()``, ``wmb()`` 都需要源代码中的注
+     释来解释它们正在执行的操作及其原因的逻辑。
  
- Transaction IDs
-+===============
+-25) 如果补丁添加了任何ioctl，那么也要更新 ``Documentation/ioctl/ioctl-number.txt``
++25) 如果补丁添加了任何ioctl，那么也要更新 ``Documentation/ioctl/ioctl-number.rst``
  
-   Users of the umad devices can use the lower 32 bits of the
-   transaction ID field (that is, the least significant half of the
-@@ -105,6 +115,7 @@ Transaction IDs
-   the kernel and will be overwritten before a MAD is sent.
+ 26) 如果修改后的源代码依赖或使用与以下 ``Kconfig`` 符号相关的任何内核API或
+     功能，则在禁用相关 ``Kconfig`` 符号和/或 ``=m`` （如果该选项可用）的情况
+diff --git a/include/uapi/rdma/rdma_user_ioctl_cmds.h b/include/uapi/rdma/rdma_user_ioctl_cmds.h
+index 26213f49f5c8..54e16a589472 100644
+--- a/include/uapi/rdma/rdma_user_ioctl_cmds.h
++++ b/include/uapi/rdma/rdma_user_ioctl_cmds.h
+@@ -36,7 +36,7 @@
+ #include <linux/types.h>
+ #include <linux/ioctl.h>
  
- P_Key Index Handling
-+====================
- 
-   The old ib_umad interface did not allow setting the P_Key index for
-   MADs that are sent and did not provide a way for obtaining the P_Key
-@@ -119,6 +130,7 @@ P_Key Index Handling
-   default, and the IB_USER_MAD_ENABLE_PKEY ioctl will be removed.
- 
- Setting IsSM Capability Bit
-+===========================
- 
-   To set the IsSM capability bit for a port, simply open the
-   corresponding issm device file.  If the IsSM bit is already set,
-@@ -129,25 +141,26 @@ Setting IsSM Capability Bit
-   the issm file.
- 
- /dev files
-+==========
- 
-   To create the appropriate character device files automatically with
--  udev, a rule like
-+  udev, a rule like::
- 
-     KERNEL=="umad*", NAME="infiniband/%k"
-     KERNEL=="issm*", NAME="infiniband/%k"
- 
--  can be used.  This will create device nodes named
-+  can be used.  This will create device nodes named::
- 
-     /dev/infiniband/umad0
-     /dev/infiniband/issm0
- 
-   for the first port, and so on.  The InfiniBand device and port
--  associated with these devices can be determined from the files
-+  associated with these devices can be determined from the files::
- 
-     /sys/class/infiniband_mad/umad0/ibdev
-     /sys/class/infiniband_mad/umad0/port
- 
--  and
-+  and::
- 
-     /sys/class/infiniband_mad/issm0/ibdev
-     /sys/class/infiniband_mad/issm0/port
-diff --git a/Documentation/infiniband/user_verbs.txt b/Documentation/infiniband/user_verbs.rst
-similarity index 93%
-rename from Documentation/infiniband/user_verbs.txt
-rename to Documentation/infiniband/user_verbs.rst
-index 47ebf2f80b2b..8ddc4b1cfef2 100644
---- a/Documentation/infiniband/user_verbs.txt
-+++ b/Documentation/infiniband/user_verbs.rst
-@@ -1,4 +1,6 @@
--USERSPACE VERBS ACCESS
-+======================
-+Userspace verbs access
-+======================
- 
-   The ib_uverbs module, built by enabling CONFIG_INFINIBAND_USER_VERBS,
-   enables direct userspace access to IB hardware via "verbs," as
-@@ -13,6 +15,7 @@ USERSPACE VERBS ACCESS
-   libmthca userspace driver be installed.
- 
- User-kernel communication
-+=========================
- 
-   Userspace communicates with the kernel for slow path, resource
-   management operations via the /dev/infiniband/uverbsN character
-@@ -28,6 +31,7 @@ User-kernel communication
-   system call.
- 
- Resource management
-+===================
- 
-   Since creation and destruction of all IB resources is done by
-   commands passed through a file descriptor, the kernel can keep track
-@@ -41,6 +45,7 @@ Resource management
-   prevent one process from touching another process's resources.
- 
- Memory pinning
-+==============
- 
-   Direct userspace I/O requires that memory regions that are potential
-   I/O targets be kept resident at the same physical address.  The
-@@ -54,13 +59,14 @@ Memory pinning
-   number of pages pinned by a process.
- 
- /dev files
-+==========
- 
-   To create the appropriate character device files automatically with
--  udev, a rule like
-+  udev, a rule like::
- 
-     KERNEL=="uverbs*", NAME="infiniband/%k"
- 
--  can be used.  This will create device nodes named
-+  can be used.  This will create device nodes named::
- 
-     /dev/infiniband/uverbs0
- 
-diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-index 547090b41cfb..9f8a48016b41 100644
---- a/drivers/infiniband/core/user_mad.c
-+++ b/drivers/infiniband/core/user_mad.c
-@@ -745,7 +745,7 @@ static int ib_umad_reg_agent(struct ib_umad_file *file, void __user *arg,
- 				"process %s did not enable P_Key index support.\n",
- 				current->comm);
- 			dev_warn(&file->port->dev,
--				"   Documentation/infiniband/user_mad.txt has info on the new ABI.\n");
-+				"   Documentation/infiniband/user_mad.rst has info on the new ABI.\n");
- 		}
- 	}
- 
-diff --git a/drivers/infiniband/ulp/ipoib/Kconfig b/drivers/infiniband/ulp/ipoib/Kconfig
-index 4760ce465d89..7af68604af77 100644
---- a/drivers/infiniband/ulp/ipoib/Kconfig
-+++ b/drivers/infiniband/ulp/ipoib/Kconfig
-@@ -7,7 +7,7 @@ config INFINIBAND_IPOIB
- 	  transports IP packets over InfiniBand so you can use your IB
- 	  device as a fancy NIC.
- 
--	  See Documentation/infiniband/ipoib.txt for more information
-+	  See Documentation/infiniband/ipoib.rst for more information
- 
- config INFINIBAND_IPOIB_CM
- 	bool "IP-over-InfiniBand Connected Mode support"
+-/* Documentation/ioctl/ioctl-number.txt */
++/* Documentation/ioctl/ioctl-number.rst */
+ #define RDMA_IOCTL_MAGIC	0x1b
+ #define RDMA_VERBS_IOCTL \
+ 	_IOWR(RDMA_IOCTL_MAGIC, 1, struct ib_uverbs_ioctl_hdr)
 -- 
 2.21.0
 
