@@ -2,62 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C9B59419
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 08:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A20F59667
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 10:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbfF1GRn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Jun 2019 02:17:43 -0400
-Received: from mga12.intel.com ([192.55.52.136]:38939 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726553AbfF1GRn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 28 Jun 2019 02:17:43 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Jun 2019 23:17:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,426,1557212400"; 
-   d="scan'208";a="173385189"
-Received: from jerryopenix.sh.intel.com (HELO jerryopenix) ([10.239.158.171])
-  by orsmga002.jf.intel.com with ESMTP; 27 Jun 2019 23:17:40 -0700
-Date:   Fri, 28 Jun 2019 14:16:13 +0800
-From:   "Liu, Changcheng" <changcheng.liu@intel.com>
-To:     faisal.latif@intel.com, shiraz.saleem@intel.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH] RDMA/i40iw: set queue pair state when being queried
-Message-ID: <20190628061613.GA17802@jerryopenix>
+        id S1726508AbfF1Ite (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Jun 2019 04:49:34 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:35882 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726240AbfF1Ite (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Jun 2019 04:49:34 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5S8mxHV040376;
+        Fri, 28 Jun 2019 08:49:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2018-07-02;
+ bh=4D8QFL/3XbTVzEiMWzUU7hVQJVuawiGGxMYhiOpgGyY=;
+ b=yMzomvOvUm+rN7I3ED3veGQ+SjgwPUkyq4CrtnZOsBPhSqvSVgmpGlmdc1wVaLFC13AY
+ 2amGjNEHP9B4veJ50Pz2Leo9Rio8iMFvVkCDp2eY08D4OK4CENV49G88buqSvQ6iojMu
+ v0jV1hN6whtoWD2acAwl3XY5Fc2dqqu4ZjAJ/ssdFMkt908BrDaYmsG47TRoUUxzSyBp
+ QkqGCD6aH70sCnwdz2sG3+j8OKh73L4SuGOOuAIEtOcHuFRRDZzhYhHMdQEY3vf2UoLD
+ DQ/T7cPRL738G9/RATjUgphoP2Uw85QkFCRKNHQJJ9zPuZqc+XRKMuldGEMsKaU+VDXT eQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2t9brtmj18-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Jun 2019 08:49:12 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5S8mIAv109968;
+        Fri, 28 Jun 2019 08:49:12 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2t99f5fjgv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Jun 2019 08:49:12 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5S8nAId024954;
+        Fri, 28 Jun 2019 08:49:10 GMT
+Received: from dm-oel.no.oracle.com (/10.172.157.165)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 28 Jun 2019 01:49:10 -0700
+From:   Dag Moxnes <dag.moxnes@oracle.com>
+To:     dag.moxnes@oracle.com, dledford@redhat.com, jgg@ziepe.ca,
+        leon@kernel.org, parav@mellanox.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] RDMA/core: Fix race when resolving IP address
+Date:   Fri, 28 Jun 2019 10:49:23 +0200
+Message-Id: <1561711763-24705-1-git-send-email-dag.moxnes@oracle.com>
+X-Mailer: git-send-email 1.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9301 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906280104
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9301 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906280104
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-1. queue pair state should be clear when querying RDMA/i40iw state.
-attr is allocated from kmalloc with unclear value. resp.qp_state
-isn't clear if attr->qp_state isn't set.
-2. attr->qp_state should be set to be iwqp->ibqp_state.
-3. attr->cur_qp_state should be set to be attr->qp_state when querying
-queue pair state.
+Use neighbour lock when copying MAC address from neighbour data struct
+in dst_fetch_ha.
 
-Signed-off-by: Changcheng Liu <changcheng.liu@aliyun.com>
+When not using the lock, it is possible for the function to race with
+neigh_update, causing it to copy an invalid MAC address.
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-index 5689d742bafb..4c88d6f72574 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-@@ -772,6 +772,8 @@ static int i40iw_query_qp(struct ib_qp *ibqp,
- 	struct i40iw_qp *iwqp = to_iwqp(ibqp);
- 	struct i40iw_sc_qp *qp = &iwqp->sc_qp;
+It is possible to provoke this error by calling rdma_resolve_addr in a
+tight loop, while deleting the corresponding ARP entry in another tight
+loop.
+
+Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+
+---
+v1 -> v2:
+   * Modified implementation to improve readability
+---
+ drivers/infiniband/core/addr.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index 2f7d141598..51323ffbc5 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -333,11 +333,14 @@ static int dst_fetch_ha(const struct dst_entry *dst,
+ 	if (!n)
+ 		return -ENODATA;
  
-+	attr->qp_state = iwqp->ibqp_state;
-+	attr->cur_qp_state = attr->qp_state;
- 	attr->qp_access_flags = 0;
- 	attr->cap.max_send_wr = qp->qp_uk.sq_size;
- 	attr->cap.max_recv_wr = qp->qp_uk.rq_size;
+-	if (!(n->nud_state & NUD_VALID)) {
++	read_lock_bh(&n->lock);
++	if (n->nud_state & NUD_VALID) {
++		memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
++		read_unlock_bh(&n->lock);
++	} else {
++		read_unlock_bh(&n->lock);
+ 		neigh_event_send(n, NULL);
+ 		ret = -ENODATA;
+-	} else {
+-		memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
+ 	}
+ 
+ 	neigh_release(n);
 -- 
-2.17.1
+2.20.1
 
