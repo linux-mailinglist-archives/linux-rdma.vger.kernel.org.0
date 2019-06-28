@@ -2,39 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 264F85A319
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 20:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA9D5A31B
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 20:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbfF1SEV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Jun 2019 14:04:21 -0400
-Received: from mga14.intel.com ([192.55.52.115]:6589 "EHLO mga14.intel.com"
+        id S1726829AbfF1SEb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Jun 2019 14:04:31 -0400
+Received: from mga02.intel.com ([134.134.136.20]:51948 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726416AbfF1SEV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 28 Jun 2019 14:04:21 -0400
+        id S1726416AbfF1SEb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 28 Jun 2019 14:04:31 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Jun 2019 11:04:20 -0700
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Jun 2019 11:04:26 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.63,428,1557212400"; 
-   d="scan'208";a="189523404"
+   d="scan'208";a="314201893"
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Jun 2019 11:04:20 -0700
+  by orsmga004.jf.intel.com with ESMTP; 28 Jun 2019 11:04:26 -0700
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x5SI4J6L055085;
-        Fri, 28 Jun 2019 11:04:19 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x5SI4Ps5055094;
+        Fri, 28 Jun 2019 11:04:25 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x5SI4HBx067650;
-        Fri, 28 Jun 2019 14:04:17 -0400
-Subject: [PATCH for-next v5 1/3] IB/hfi1: Move rvt_cq_wc struct into uapi
- directory
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x5SI4Oxo067659;
+        Fri, 28 Jun 2019 14:04:24 -0400
+Subject: [PATCH for-next v5 2/3] IB/hfi1: Move receive work queue struct
+ into uapi directory
 From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
 Cc:     linux-rdma@vger.kernel.org,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Kamenee Arumugam <kamenee.arumugam@intel.com>
-Date:   Fri, 28 Jun 2019 14:04:17 -0400
-Message-ID: <20190628180417.67586.48860.stgit@awfm-01.aw.intel.com>
+Date:   Fri, 28 Jun 2019 14:04:24 -0400
+Message-ID: <20190628180424.67586.44331.stgit@awfm-01.aw.intel.com>
 In-Reply-To: <20190628180316.67586.73737.stgit@awfm-01.aw.intel.com>
 References: <20190628180316.67586.73737.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.17.1-dirty
@@ -48,506 +49,676 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Kamenee Arumugam <kamenee.arumugam@intel.com>
 
-The rvt_cq_wc struct elements are shared between rdmavt
-and the providers but not in uapi directory.
+The rvt_rwqe and rvt_rwq struct elements are shared between
+rdmavt and the providers but are not in uapi directory.
 As per the comment in
-https://marc.info/?l=linux-rdma&m=152296522708522&w=2
+https://marc.info/?l=linux-rdma&m=152296522708522&w=2,
 The hfi1 driver and the rdma core driver are not using
 shared structures in the uapi directory.
 
-In that case, move rvt_cq_wc struct into the rvt-abi.h
-header file and create a rvt_k_cq_w for the kernel
-completion queue.
+Move rvt_rwqe and rvt_rwq struct into rvt-abi.h header in uapi
+directory.
 
-Signed-off-by: Kamenee Arumugam <kamenee.arumugam@intel.com>
 Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+Signed-off-by: Kamenee Arumugam <kamenee.arumugam@intel.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
----
- drivers/infiniband/hw/hfi1/qp.c   |    4 -
- drivers/infiniband/sw/rdmavt/cq.c |  192 ++++++++++++++++++++++++-------------
- include/rdma/rdmavt_cq.h          |   22 +++-
- include/rdma/rdmavt_qp.h          |   32 ++++++
- include/uapi/rdma/rvt-abi.h       |   32 ++++++
- 5 files changed, 205 insertions(+), 77 deletions(-)
- create mode 100644 include/uapi/rdma/rvt-abi.h
 
-diff --git a/drivers/infiniband/hw/hfi1/qp.c b/drivers/infiniband/hw/hfi1/qp.c
-index 4e0e9fc..41261e7 100644
---- a/drivers/infiniband/hw/hfi1/qp.c
-+++ b/drivers/infiniband/hw/hfi1/qp.c
-@@ -702,8 +702,8 @@ void qp_iter_print(struct seq_file *s, struct rvt_qp_iter *iter)
- 		   sde ? sde->this_idx : 0,
- 		   send_context,
- 		   send_context ? send_context->sw_index : 0,
--		   ibcq_to_rvtcq(qp->ibqp.send_cq)->queue->head,
--		   ibcq_to_rvtcq(qp->ibqp.send_cq)->queue->tail,
-+		   ib_cq_head(qp->ibqp.send_cq),
-+		   ib_cq_tail(qp->ibqp.send_cq),
- 		   qp->pid,
- 		   qp->s_state,
- 		   qp->s_ack_state,
-diff --git a/drivers/infiniband/sw/rdmavt/cq.c b/drivers/infiniband/sw/rdmavt/cq.c
-index b46714a..2602ad8 100644
---- a/drivers/infiniband/sw/rdmavt/cq.c
-+++ b/drivers/infiniband/sw/rdmavt/cq.c
-@@ -63,19 +63,33 @@
-  */
- void rvt_cq_enter(struct rvt_cq *cq, struct ib_wc *entry, bool solicited)
- {
--	struct rvt_cq_wc *wc;
-+	struct ib_uverbs_wc *uqueue = NULL;
-+	struct ib_wc *kqueue = NULL;
-+	struct rvt_cq_wc *u_wc = NULL;
-+	struct rvt_k_cq_wc *k_wc = NULL;
- 	unsigned long flags;
- 	u32 head;
- 	u32 next;
-+	u32 tail;
- 
- 	spin_lock_irqsave(&cq->lock, flags);
- 
-+	if (cq->ip) {
-+		u_wc = cq->queue;
-+		uqueue = &u_wc->uqueue[0];
-+		head = RDMA_READ_UAPI_ATOMIC(u_wc->head);
-+		tail = RDMA_READ_UAPI_ATOMIC(u_wc->tail);
-+	} else {
-+		k_wc = cq->kqueue;
-+		kqueue = &k_wc->kqueue[0];
-+		head = k_wc->head;
-+		tail = k_wc->tail;
-+	}
-+
- 	/*
--	 * Note that the head pointer might be writable by user processes.
--	 * Take care to verify it is a sane value.
-+	 * Note that the head pointer might be writable by
-+	 * user processes.Take care to verify it is a sane value.
- 	 */
--	wc = cq->queue;
--	head = wc->head;
- 	if (head >= (unsigned)cq->ibcq.cqe) {
- 		head = cq->ibcq.cqe;
- 		next = 0;
-@@ -83,7 +97,7 @@ void rvt_cq_enter(struct rvt_cq *cq, struct ib_wc *entry, bool solicited)
- 		next = head + 1;
- 	}
- 
--	if (unlikely(next == wc->tail)) {
-+	if (unlikely(next == tail)) {
- 		spin_unlock_irqrestore(&cq->lock, flags);
- 		if (cq->ibcq.event_handler) {
- 			struct ib_event ev;
-@@ -96,27 +110,27 @@ void rvt_cq_enter(struct rvt_cq *cq, struct ib_wc *entry, bool solicited)
- 		return;
- 	}
- 	trace_rvt_cq_enter(cq, entry, head);
--	if (cq->ip) {
--		wc->uqueue[head].wr_id = entry->wr_id;
--		wc->uqueue[head].status = entry->status;
--		wc->uqueue[head].opcode = entry->opcode;
--		wc->uqueue[head].vendor_err = entry->vendor_err;
--		wc->uqueue[head].byte_len = entry->byte_len;
--		wc->uqueue[head].ex.imm_data = entry->ex.imm_data;
--		wc->uqueue[head].qp_num = entry->qp->qp_num;
--		wc->uqueue[head].src_qp = entry->src_qp;
--		wc->uqueue[head].wc_flags = entry->wc_flags;
--		wc->uqueue[head].pkey_index = entry->pkey_index;
--		wc->uqueue[head].slid = ib_lid_cpu16(entry->slid);
--		wc->uqueue[head].sl = entry->sl;
--		wc->uqueue[head].dlid_path_bits = entry->dlid_path_bits;
--		wc->uqueue[head].port_num = entry->port_num;
-+	if (uqueue) {
-+		uqueue[head].wr_id = entry->wr_id;
-+		uqueue[head].status = entry->status;
-+		uqueue[head].opcode = entry->opcode;
-+		uqueue[head].vendor_err = entry->vendor_err;
-+		uqueue[head].byte_len = entry->byte_len;
-+		uqueue[head].ex.imm_data = entry->ex.imm_data;
-+		uqueue[head].qp_num = entry->qp->qp_num;
-+		uqueue[head].src_qp = entry->src_qp;
-+		uqueue[head].wc_flags = entry->wc_flags;
-+		uqueue[head].pkey_index = entry->pkey_index;
-+		uqueue[head].slid = ib_lid_cpu16(entry->slid);
-+		uqueue[head].sl = entry->sl;
-+		uqueue[head].dlid_path_bits = entry->dlid_path_bits;
-+		uqueue[head].port_num = entry->port_num;
- 		/* Make sure entry is written before the head index. */
--		smp_wmb();
-+		RDMA_WRITE_UAPI_ATOMIC(u_wc->head, next);
- 	} else {
--		wc->kqueue[head] = *entry;
-+		kqueue[head] = *entry;
-+		k_wc->head = next;
- 	}
--	wc->head = next;
- 
- 	if (cq->notify == IB_CQ_NEXT_COMP ||
- 	    (cq->notify == IB_CQ_SOLICITED &&
-@@ -179,8 +193,9 @@ int rvt_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- {
- 	struct ib_device *ibdev = ibcq->device;
- 	struct rvt_dev_info *rdi = ib_to_rvt(ibdev);
--	struct rvt_cq *cq = container_of(ibcq, struct rvt_cq, ibcq);
--	struct rvt_cq_wc *wc;
-+	struct rvt_cq *cq = ibcq_to_rvtcq(ibcq);
-+	struct rvt_cq_wc *u_wc = NULL;
-+	struct rvt_k_cq_wc *k_wc = NULL;
- 	u32 sz;
- 	unsigned int entries = attr->cqe;
- 	int comp_vector = attr->comp_vector;
-@@ -204,22 +219,28 @@ int rvt_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	 * We need to use vmalloc() in order to support mmap and large
- 	 * numbers of entries.
- 	 */
--	sz = sizeof(*wc);
--	if (udata && udata->outlen >= sizeof(__u64))
--		sz += sizeof(struct ib_uverbs_wc) * (entries + 1);
--	else
--		sz += sizeof(struct ib_wc) * (entries + 1);
--	wc = udata ?
--		vmalloc_user(sz) :
--		vzalloc_node(sz, rdi->dparms.node);
--	if (!wc)
--		return -ENOMEM;
-+	if (udata && udata->outlen >= sizeof(__u64)) {
-+		sz = sizeof(struct ib_uverbs_wc) * (entries + 1);
-+		sz += sizeof(*u_wc);
-+		u_wc = vmalloc_user(sz);
-+		if (!u_wc)
-+			return -ENOMEM;
-+	} else {
-+		sz = sizeof(struct ib_wc) * (entries + 1);
-+		sz += sizeof(*k_wc);
-+		k_wc = vzalloc_node(sz, rdi->dparms.node);
-+		if (!k_wc)
-+			return -ENOMEM;
-+	}
-+
- 	/*
- 	 * Return the address of the WC as the offset to mmap.
- 	 * See rvt_mmap() for details.
- 	 */
- 	if (udata && udata->outlen >= sizeof(__u64)) {
--		cq->ip = rvt_create_mmap_info(rdi, sz, udata, wc);
-+		int err;
-+
-+		cq->ip = rvt_create_mmap_info(rdi, sz, udata, u_wc);
- 		if (!cq->ip) {
- 			err = -ENOMEM;
- 			goto bail_wc;
-@@ -264,7 +285,10 @@ int rvt_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	cq->notify = RVT_CQ_NONE;
- 	spin_lock_init(&cq->lock);
- 	INIT_WORK(&cq->comptask, send_complete);
--	cq->queue = wc;
-+	if (u_wc)
-+		cq->queue = u_wc;
-+	else
-+		cq->kqueue = k_wc;
- 
- 	trace_rvt_create_cq(cq, attr);
- 	return 0;
-@@ -272,7 +296,8 @@ int rvt_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- bail_ip:
- 	kfree(cq->ip);
- bail_wc:
--	vfree(wc);
-+	vfree(u_wc);
-+	vfree(k_wc);
- 	return err;
+---
+Changes from v2
+Added all the changes related to moving receive work queue into uapi
+directory into this patch.
+
+Changes from v1
+Fix u32 data types in rvt-abi.h to use __u32.
+Changed zero length array to flexible array defined in rvt-abi.h
+header file.
+---
+ drivers/infiniband/sw/rdmavt/qp.c  |  152 ++++++++++++++++++++++++++----------
+ drivers/infiniband/sw/rdmavt/qp.h  |    2 
+ drivers/infiniband/sw/rdmavt/rc.c  |   10 ++
+ drivers/infiniband/sw/rdmavt/srq.c |   59 ++++++++------
+ include/rdma/rdmavt_qp.h           |   52 +++++++-----
+ include/uapi/rdma/rvt-abi.h        |   29 +++++++
+ 6 files changed, 212 insertions(+), 92 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 0d804a5..1384060 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -803,6 +803,46 @@ static void rvt_remove_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp)
  }
  
-@@ -322,9 +347,16 @@ int rvt_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags notify_flags)
- 	if (cq->notify != IB_CQ_NEXT_COMP)
- 		cq->notify = notify_flags & IB_CQ_SOLICITED_MASK;
- 
--	if ((notify_flags & IB_CQ_REPORT_MISSED_EVENTS) &&
--	    cq->queue->head != cq->queue->tail)
--		ret = 1;
-+	if (notify_flags & IB_CQ_REPORT_MISSED_EVENTS) {
-+		if (cq->queue) {
-+			if (RDMA_READ_UAPI_ATOMIC(cq->queue->head) !=
-+				RDMA_READ_UAPI_ATOMIC(cq->queue->tail))
-+				ret = 1;
-+		} else {
-+			if (cq->kqueue->head != cq->kqueue->tail)
-+				ret = 1;
-+		}
-+	}
- 
- 	spin_unlock_irqrestore(&cq->lock, flags);
- 
-@@ -340,12 +372,14 @@ int rvt_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags notify_flags)
- int rvt_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
- {
- 	struct rvt_cq *cq = ibcq_to_rvtcq(ibcq);
--	struct rvt_cq_wc *old_wc;
--	struct rvt_cq_wc *wc;
- 	u32 head, tail, n;
- 	int ret;
- 	u32 sz;
- 	struct rvt_dev_info *rdi = cq->rdi;
-+	struct rvt_cq_wc *u_wc = NULL;
-+	struct rvt_cq_wc *old_u_wc = NULL;
-+	struct rvt_k_cq_wc *k_wc = NULL;
-+	struct rvt_k_cq_wc *old_k_wc = NULL;
- 
- 	if (cqe < 1 || cqe > rdi->dparms.props.max_cqe)
- 		return -EINVAL;
-@@ -353,17 +387,19 @@ int rvt_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
- 	/*
- 	 * Need to use vmalloc() if we want to support large #s of entries.
- 	 */
--	sz = sizeof(*wc);
--	if (udata && udata->outlen >= sizeof(__u64))
--		sz += sizeof(struct ib_uverbs_wc) * (cqe + 1);
--	else
--		sz += sizeof(struct ib_wc) * (cqe + 1);
--	wc = udata ?
--		vmalloc_user(sz) :
--		vzalloc_node(sz, rdi->dparms.node);
--	if (!wc)
--		return -ENOMEM;
--
-+	if (udata && udata->outlen >= sizeof(__u64)) {
-+		sz = sizeof(struct ib_uverbs_wc) * (cqe + 1);
-+		sz += sizeof(*u_wc);
-+		u_wc = vmalloc_user(sz);
-+		if (!u_wc)
-+			return -ENOMEM;
-+	} else {
-+		sz = sizeof(struct ib_wc) * (cqe + 1);
-+		sz += sizeof(*k_wc);
-+		k_wc = vzalloc_node(sz, rdi->dparms.node);
-+		if (!k_wc)
-+			return -ENOMEM;
-+	}
- 	/* Check that we can write the offset to mmap. */
- 	if (udata && udata->outlen >= sizeof(__u64)) {
- 		__u64 offset = 0;
-@@ -378,11 +414,18 @@ int rvt_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
- 	 * Make sure head and tail are sane since they
- 	 * might be user writable.
- 	 */
--	old_wc = cq->queue;
--	head = old_wc->head;
-+	if (u_wc) {
-+		old_u_wc = cq->queue;
-+		head = RDMA_READ_UAPI_ATOMIC(old_u_wc->head);
-+		tail = RDMA_READ_UAPI_ATOMIC(old_u_wc->tail);
-+	} else {
-+		old_k_wc = cq->kqueue;
-+		head = old_k_wc->head;
-+		tail = old_k_wc->tail;
-+	}
-+
- 	if (head > (u32)cq->ibcq.cqe)
- 		head = (u32)cq->ibcq.cqe;
--	tail = old_wc->tail;
- 	if (tail > (u32)cq->ibcq.cqe)
- 		tail = (u32)cq->ibcq.cqe;
- 	if (head < tail)
-@@ -394,27 +437,36 @@ int rvt_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
- 		goto bail_unlock;
- 	}
- 	for (n = 0; tail != head; n++) {
--		if (cq->ip)
--			wc->uqueue[n] = old_wc->uqueue[tail];
-+		if (u_wc)
-+			u_wc->uqueue[n] = old_u_wc->uqueue[tail];
- 		else
--			wc->kqueue[n] = old_wc->kqueue[tail];
-+			k_wc->kqueue[n] = old_k_wc->kqueue[tail];
- 		if (tail == (u32)cq->ibcq.cqe)
- 			tail = 0;
- 		else
- 			tail++;
- 	}
- 	cq->ibcq.cqe = cqe;
--	wc->head = n;
--	wc->tail = 0;
--	cq->queue = wc;
-+	if (u_wc) {
-+		RDMA_WRITE_UAPI_ATOMIC(u_wc->head, n);
-+		RDMA_WRITE_UAPI_ATOMIC(u_wc->tail, 0);
-+		cq->queue = u_wc;
-+	} else {
-+		k_wc->head = n;
-+		k_wc->tail = 0;
-+		cq->kqueue = k_wc;
-+	}
- 	spin_unlock_irq(&cq->lock);
- 
--	vfree(old_wc);
-+	if (u_wc)
-+		vfree(old_u_wc);
-+	else
-+		vfree(old_k_wc);
- 
- 	if (cq->ip) {
- 		struct rvt_mmap_info *ip = cq->ip;
- 
--		rvt_update_mmap_info(rdi, ip, sz, wc);
-+		rvt_update_mmap_info(rdi, ip, sz, u_wc);
- 
- 		/*
- 		 * Return the offset to mmap.
-@@ -438,7 +490,9 @@ int rvt_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
- bail_unlock:
- 	spin_unlock_irq(&cq->lock);
- bail_free:
--	vfree(wc);
-+	vfree(u_wc);
-+	vfree(k_wc);
-+
- 	return ret;
- }
- 
-@@ -456,7 +510,7 @@ int rvt_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
- int rvt_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *entry)
- {
- 	struct rvt_cq *cq = ibcq_to_rvtcq(ibcq);
--	struct rvt_cq_wc *wc;
-+	struct rvt_k_cq_wc *wc;
- 	unsigned long flags;
- 	int npolled;
- 	u32 tail;
-@@ -467,7 +521,7 @@ int rvt_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *entry)
- 
- 	spin_lock_irqsave(&cq->lock, flags);
- 
--	wc = cq->queue;
-+	wc = cq->kqueue;
- 	tail = wc->tail;
- 	if (tail > (u32)cq->ibcq.cqe)
- 		tail = (u32)cq->ibcq.cqe;
-diff --git a/include/rdma/rdmavt_cq.h b/include/rdma/rdmavt_cq.h
-index 75dc65c..ab22860 100644
---- a/include/rdma/rdmavt_cq.h
-+++ b/include/rdma/rdmavt_cq.h
-@@ -61,18 +61,27 @@
- #define RVT_CQ_NONE      (IB_CQ_NEXT_COMP + 1)
- 
- /*
-+ * Define read macro that apply smp_load_acquire memory barrier
-+ * when reading indice of circular buffer that mmaped to user space.
-+ */
-+#define RDMA_READ_UAPI_ATOMIC(member) smp_load_acquire(&(member).val)
-+
-+/*
-+ * Define write macro that uses smp_store_release memory barrier
-+ * when writing indice of circular buffer that mmaped to user space.
-+ */
-+#define RDMA_WRITE_UAPI_ATOMIC(member, x) smp_store_release(&(member).val, x)
-+#include <rdma/rvt-abi.h>
-+
-+/*
-  * This structure is used to contain the head pointer, tail pointer,
-  * and completion queue entries as a single memory allocation so
-  * it can be mmap'ed into user space.
-  */
--struct rvt_cq_wc {
-+struct rvt_k_cq_wc {
- 	u32 head;               /* index of next entry to fill */
- 	u32 tail;               /* index of next ib_poll_cq() entry */
--	union {
--		/* these are actually size ibcq.cqe + 1 */
--		struct ib_uverbs_wc uqueue[0];
--		struct ib_wc kqueue[0];
--	};
-+	struct ib_wc kqueue[];
- };
- 
- /*
-@@ -88,6 +97,7 @@ struct rvt_cq {
- 	struct rvt_dev_info *rdi;
- 	struct rvt_cq_wc *queue;
- 	struct rvt_mmap_info *ip;
-+	struct rvt_k_cq_wc *kqueue;
- };
- 
- static inline struct rvt_cq *ibcq_to_rvtcq(struct ib_cq *ibcq)
-diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
-index 84d0f36..7fcd687 100644
---- a/include/rdma/rdmavt_qp.h
-+++ b/include/rdma/rdmavt_qp.h
-@@ -820,6 +820,38 @@ struct rvt_qp_iter {
- 	int n;
- };
- 
-+/**
-+ * ib_cq_tail - Return tail index of cq buffer
-+ * @send_cq - The cq for send
+ /**
++ * rvt_alloc_rq - allocate memory for user or kernel buffer
++ * @rq: receive queue data structure
++ * @size: number of request queue entries
++ * @node: The NUMA node
++ * @udata: True if user data is available or not false
 + *
-+ * This is called in qp_iter_print to get tail
-+ * of cq buffer.
++ * Return: If memory allocation failed, return -ENONEM
++ * This function is used by both shared receive
++ * queues and non-shared receive queues to allocate
++ * memory.
 + */
-+static inline u32 ib_cq_tail(struct ib_cq *send_cq)
++int rvt_alloc_rq(struct rvt_rq *rq, u32 size, int node,
++		 struct ib_udata *udata)
 +{
-+	struct rvt_cq *cq = ibcq_to_rvtcq(send_cq);
++	if (udata) {
++		rq->wq = vmalloc_user(sizeof(struct rvt_rwq) + size);
++		if (!rq->wq)
++			goto bail;
++		/* need kwq with no buffers */
++		rq->kwq = kzalloc_node(sizeof(*rq->kwq), GFP_KERNEL, node);
++		if (!rq->kwq)
++			goto bail;
++		rq->kwq->curr_wq = rq->wq->wq;
++	} else {
++		/* need kwq with buffers */
++		rq->kwq =
++			vzalloc_node(sizeof(struct rvt_krwq) + size, node);
++		if (!rq->kwq)
++			goto bail;
++		rq->kwq->curr_wq = rq->kwq->wq;
++	}
 +
-+	return ibcq_to_rvtcq(send_cq)->ip ?
-+	       RDMA_READ_UAPI_ATOMIC(cq->queue->tail) :
-+	       ibcq_to_rvtcq(send_cq)->kqueue->tail;
++	spin_lock_init(&rq->lock);
++	return 0;
++bail:
++	rvt_free_rq(rq);
++	return -ENOMEM;
 +}
 +
 +/**
-+ * ib_cq_head - Return head index of cq buffer
-+ * @send_cq - The cq for send
+  * rvt_init_qp - initialize the QP state to the reset state
+  * @qp: the QP to init or reinit
+  * @type: the QP type
+@@ -852,10 +892,6 @@ static void rvt_init_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
+ 	qp->s_tail_ack_queue = 0;
+ 	qp->s_acked_ack_queue = 0;
+ 	qp->s_num_rd_atomic = 0;
+-	if (qp->r_rq.wq) {
+-		qp->r_rq.wq->head = 0;
+-		qp->r_rq.wq->tail = 0;
+-	}
+ 	qp->r_sge.num_sge = 0;
+ 	atomic_set(&qp->s_reserved_used, 0);
+ }
+@@ -1046,17 +1082,12 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 			qp->r_rq.max_sge = init_attr->cap.max_recv_sge;
+ 			sz = (sizeof(struct ib_sge) * qp->r_rq.max_sge) +
+ 				sizeof(struct rvt_rwqe);
+-			if (udata)
+-				qp->r_rq.wq = vmalloc_user(
+-						sizeof(struct rvt_rwq) +
+-						qp->r_rq.size * sz);
+-			else
+-				qp->r_rq.wq = vzalloc_node(
+-						sizeof(struct rvt_rwq) +
+-						qp->r_rq.size * sz,
+-						rdi->dparms.node);
+-			if (!qp->r_rq.wq)
++			err = rvt_alloc_rq(&qp->r_rq, qp->r_rq.size * sz,
++					   rdi->dparms.node, udata);
++			if (err) {
++				ret = ERR_PTR(err);
+ 				goto bail_driver_priv;
++			}
+ 		}
+ 
+ 		/*
+@@ -1202,8 +1233,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 	rvt_free_qpn(&rdi->qp_dev->qpn_table, qp->ibqp.qp_num);
+ 
+ bail_rq_wq:
+-	if (!qp->ip)
+-		vfree(qp->r_rq.wq);
++	rvt_free_rq(&qp->r_rq);
+ 
+ bail_driver_priv:
+ 	rdi->driver_f.qp_priv_free(rdi, qp);
+@@ -1269,19 +1299,26 @@ int rvt_error_qp(struct rvt_qp *qp, enum ib_wc_status err)
+ 	}
+ 	wc.status = IB_WC_WR_FLUSH_ERR;
+ 
+-	if (qp->r_rq.wq) {
+-		struct rvt_rwq *wq;
++	if (qp->r_rq.kwq) {
+ 		u32 head;
+ 		u32 tail;
++		struct rvt_rwq *wq = NULL;
++		struct rvt_krwq *kwq = NULL;
+ 
+ 		spin_lock(&qp->r_rq.lock);
+-
++		/* qp->ip used to validate if there is a  user buffer mmaped */
++		if (qp->ip) {
++			wq = qp->r_rq.wq;
++			head = RDMA_READ_UAPI_ATOMIC(wq->head);
++			tail = RDMA_READ_UAPI_ATOMIC(wq->tail);
++		} else {
++			kwq = qp->r_rq.kwq;
++			head = kwq->head;
++			tail = kwq->tail;
++		}
+ 		/* sanity check pointers before trusting them */
+-		wq = qp->r_rq.wq;
+-		head = wq->head;
+ 		if (head >= qp->r_rq.size)
+ 			head = 0;
+-		tail = wq->tail;
+ 		if (tail >= qp->r_rq.size)
+ 			tail = 0;
+ 		while (tail != head) {
+@@ -1290,8 +1327,10 @@ int rvt_error_qp(struct rvt_qp *qp, enum ib_wc_status err)
+ 				tail = 0;
+ 			rvt_cq_enter(ibcq_to_rvtcq(qp->ibqp.recv_cq), &wc, 1);
+ 		}
+-		wq->tail = tail;
+-
++		if (qp->ip)
++			RDMA_WRITE_UAPI_ATOMIC(wq->tail, tail);
++		else
++			kwq->tail = tail;
+ 		spin_unlock(&qp->r_rq.lock);
+ 	} else if (qp->ibqp.event_handler) {
+ 		ret = 1;
+@@ -1634,8 +1673,7 @@ int rvt_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 
+ 	if (qp->ip)
+ 		kref_put(&qp->ip->ref, rvt_release_mmap_info);
+-	else
+-		vfree(qp->r_rq.wq);
++	kvfree(qp->r_rq.kwq);
+ 	rdi->driver_f.qp_priv_free(rdi, qp);
+ 	kfree(qp->s_ack_queue);
+ 	rdma_destroy_ah_attr(&qp->remote_ah_attr);
+@@ -1721,7 +1759,7 @@ int rvt_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 		  const struct ib_recv_wr **bad_wr)
+ {
+ 	struct rvt_qp *qp = ibqp_to_rvtqp(ibqp);
+-	struct rvt_rwq *wq = qp->r_rq.wq;
++	struct rvt_krwq *wq = qp->r_rq.kwq;
+ 	unsigned long flags;
+ 	int qp_err_flush = (ib_rvt_state_ops[qp->state] & RVT_FLUSH_RECV) &&
+ 				!qp->ibqp.srq;
+@@ -1746,7 +1784,7 @@ int rvt_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 		next = wq->head + 1;
+ 		if (next >= qp->r_rq.size)
+ 			next = 0;
+-		if (next == wq->tail) {
++		if (next == READ_ONCE(wq->tail)) {
+ 			spin_unlock_irqrestore(&qp->r_rq.lock, flags);
+ 			*bad_wr = wr;
+ 			return -ENOMEM;
+@@ -1770,8 +1808,7 @@ int rvt_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 			 * Make sure queue entry is written
+ 			 * before the head index.
+ 			 */
+-			smp_wmb();
+-			wq->head = next;
++			smp_store_release(&wq->head, next);
+ 		}
+ 		spin_unlock_irqrestore(&qp->r_rq.lock, flags);
+ 	}
+@@ -2141,7 +2178,7 @@ int rvt_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 		      const struct ib_recv_wr **bad_wr)
+ {
+ 	struct rvt_srq *srq = ibsrq_to_rvtsrq(ibsrq);
+-	struct rvt_rwq *wq;
++	struct rvt_krwq *wq;
+ 	unsigned long flags;
+ 
+ 	for (; wr; wr = wr->next) {
+@@ -2155,11 +2192,11 @@ int rvt_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 		}
+ 
+ 		spin_lock_irqsave(&srq->rq.lock, flags);
+-		wq = srq->rq.wq;
++		wq = srq->rq.kwq;
+ 		next = wq->head + 1;
+ 		if (next >= srq->rq.size)
+ 			next = 0;
+-		if (next == wq->tail) {
++		if (next == READ_ONCE(wq->tail)) {
+ 			spin_unlock_irqrestore(&srq->rq.lock, flags);
+ 			*bad_wr = wr;
+ 			return -ENOMEM;
+@@ -2171,8 +2208,7 @@ int rvt_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 		for (i = 0; i < wr->num_sge; i++)
+ 			wqe->sg_list[i] = wr->sg_list[i];
+ 		/* Make sure queue entry is written before the head index. */
+-		smp_wmb();
+-		wq->head = next;
++		smp_store_release(&wq->head, next);
+ 		spin_unlock_irqrestore(&srq->rq.lock, flags);
+ 	}
+ 	return 0;
+@@ -2230,6 +2266,25 @@ static int init_sge(struct rvt_qp *qp, struct rvt_rwqe *wqe)
+ }
+ 
+ /**
++ * get_rvt_head - get head indices of the circular buffer
++ * @rq: data structure for request queue entry
++ * @ip: the QP
 + *
-+ * This is called in qp_iter_print to get head
-+ * of cq buffer.
++ * Return - head index value
 + */
-+static inline u32 ib_cq_head(struct ib_cq *send_cq)
++static inline u32 get_rvt_head(struct rvt_rq *rq, void *ip)
 +{
-+	struct rvt_cq *cq = ibcq_to_rvtcq(send_cq);
++	u32 head;
 +
-+	return ibcq_to_rvtcq(send_cq)->ip ?
-+	       RDMA_READ_UAPI_ATOMIC(cq->queue->head) :
-+	       ibcq_to_rvtcq(send_cq)->kqueue->head;
++	if (ip)
++		head = RDMA_READ_UAPI_ATOMIC(rq->wq->head);
++	else
++		head = rq->kwq->head;
++
++	return head;
++}
++
++/**
+  * rvt_get_rwqe - copy the next RWQE into the QP's RWQE
+  * @qp: the QP
+  * @wr_id_only: update qp->r_wr_id only, not qp->r_sge
+@@ -2243,21 +2298,26 @@ int rvt_get_rwqe(struct rvt_qp *qp, bool wr_id_only)
+ {
+ 	unsigned long flags;
+ 	struct rvt_rq *rq;
++	struct rvt_krwq *kwq;
+ 	struct rvt_rwq *wq;
+ 	struct rvt_srq *srq;
+ 	struct rvt_rwqe *wqe;
+ 	void (*handler)(struct ib_event *, void *);
+ 	u32 tail;
++	u32 head;
+ 	int ret;
++	void *ip = NULL;
+ 
+ 	if (qp->ibqp.srq) {
+ 		srq = ibsrq_to_rvtsrq(qp->ibqp.srq);
+ 		handler = srq->ibsrq.event_handler;
+ 		rq = &srq->rq;
++		ip = srq->ip;
+ 	} else {
+ 		srq = NULL;
+ 		handler = NULL;
+ 		rq = &qp->r_rq;
++		ip = qp->ip;
+ 	}
+ 
+ 	spin_lock_irqsave(&rq->lock, flags);
+@@ -2265,17 +2325,24 @@ int rvt_get_rwqe(struct rvt_qp *qp, bool wr_id_only)
+ 		ret = 0;
+ 		goto unlock;
+ 	}
++	if (ip) {
++		wq = rq->wq;
++		tail = RDMA_READ_UAPI_ATOMIC(wq->tail);
++	} else {
++		kwq = rq->kwq;
++		tail = kwq->tail;
++	}
+ 
+-	wq = rq->wq;
+-	tail = wq->tail;
+ 	/* Validate tail before using it since it is user writable. */
+ 	if (tail >= rq->size)
+ 		tail = 0;
+-	if (unlikely(tail == wq->head)) {
++
++	head = get_rvt_head(rq, ip);
++	if (unlikely(tail == head)) {
+ 		ret = 0;
+ 		goto unlock;
+ 	}
+-	/* Make sure entry is read after head index is read. */
++	/* Make sure entry is read after the count is read. */
+ 	smp_rmb();
+ 	wqe = rvt_get_rwqe_ptr(rq, tail);
+ 	/*
+@@ -2285,7 +2352,10 @@ int rvt_get_rwqe(struct rvt_qp *qp, bool wr_id_only)
+ 	 */
+ 	if (++tail >= rq->size)
+ 		tail = 0;
+-	wq->tail = tail;
++	if (ip)
++		RDMA_WRITE_UAPI_ATOMIC(wq->tail, tail);
++	else
++		kwq->tail = tail;
+ 	if (!wr_id_only && !init_sge(qp, wqe)) {
+ 		ret = -1;
+ 		goto unlock;
+@@ -2301,7 +2371,7 @@ int rvt_get_rwqe(struct rvt_qp *qp, bool wr_id_only)
+ 		 * Validate head pointer value and compute
+ 		 * the number of remaining WQEs.
+ 		 */
+-		n = wq->head;
++		n = get_rvt_head(rq, ip);
+ 		if (n >= rq->size)
+ 			n = 0;
+ 		if (n < tail)
+diff --git a/drivers/infiniband/sw/rdmavt/qp.h b/drivers/infiniband/sw/rdmavt/qp.h
+index 6db1619..2cdba12 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.h
++++ b/drivers/infiniband/sw/rdmavt/qp.h
+@@ -68,4 +68,6 @@ int rvt_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 		      const struct ib_recv_wr **bad_wr);
+ int rvt_wss_init(struct rvt_dev_info *rdi);
+ void rvt_wss_exit(struct rvt_dev_info *rdi);
++int rvt_alloc_rq(struct rvt_rq *rq, u32 size, int node,
++		 struct ib_udata *udata);
+ #endif          /* DEF_RVTQP_H */
+diff --git a/drivers/infiniband/sw/rdmavt/rc.c b/drivers/infiniband/sw/rdmavt/rc.c
+index 09f0cf5..44cc7ee 100644
+--- a/drivers/infiniband/sw/rdmavt/rc.c
++++ b/drivers/infiniband/sw/rdmavt/rc.c
+@@ -104,15 +104,19 @@ __be32 rvt_compute_aeth(struct rvt_qp *qp)
+ 	} else {
+ 		u32 min, max, x;
+ 		u32 credits;
+-		struct rvt_rwq *wq = qp->r_rq.wq;
+ 		u32 head;
+ 		u32 tail;
+ 
+ 		/* sanity check pointers before trusting them */
+-		head = wq->head;
++		if (qp->ip) {
++			head = RDMA_READ_UAPI_ATOMIC(qp->r_rq.wq->head);
++			tail = RDMA_READ_UAPI_ATOMIC(qp->r_rq.wq->tail);
++		} else {
++			head = READ_ONCE(qp->r_rq.kwq->head);
++			tail = READ_ONCE(qp->r_rq.kwq->tail);
++		}
+ 		if (head >= qp->r_rq.size)
+ 			head = 0;
+-		tail = wq->tail;
+ 		if (tail >= qp->r_rq.size)
+ 			tail = 0;
+ 		/*
+diff --git a/drivers/infiniband/sw/rdmavt/srq.c b/drivers/infiniband/sw/rdmavt/srq.c
+index 8d6b3e7..d306f65 100644
+--- a/drivers/infiniband/sw/rdmavt/srq.c
++++ b/drivers/infiniband/sw/rdmavt/srq.c
+@@ -52,7 +52,7 @@
+ 
+ #include "srq.h"
+ #include "vt.h"
+-
++#include "qp.h"
+ /**
+  * rvt_driver_srq_init - init srq resources on a per driver basis
+  * @rdi: rvt dev structure
+@@ -97,11 +97,8 @@ int rvt_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *srq_init_attr,
+ 	srq->rq.max_sge = srq_init_attr->attr.max_sge;
+ 	sz = sizeof(struct ib_sge) * srq->rq.max_sge +
+ 		sizeof(struct rvt_rwqe);
+-	srq->rq.wq = udata ?
+-		vmalloc_user(sizeof(struct rvt_rwq) + srq->rq.size * sz) :
+-		vzalloc_node(sizeof(struct rvt_rwq) + srq->rq.size * sz,
+-			     dev->dparms.node);
+-	if (!srq->rq.wq) {
++	if (rvt_alloc_rq(&srq->rq, srq->rq.size * sz,
++			 dev->dparms.node, udata)) {
+ 		ret = -ENOMEM;
+ 		goto bail_srq;
+ 	}
+@@ -152,7 +149,7 @@ int rvt_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *srq_init_attr,
+ bail_ip:
+ 	kfree(srq->ip);
+ bail_wq:
+-	vfree(srq->rq.wq);
++	rvt_free_rq(&srq->rq);
+ bail_srq:
+ 	return ret;
+ }
+@@ -172,11 +169,12 @@ int rvt_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+ {
+ 	struct rvt_srq *srq = ibsrq_to_rvtsrq(ibsrq);
+ 	struct rvt_dev_info *dev = ib_to_rvt(ibsrq->device);
+-	struct rvt_rwq *wq;
++	struct rvt_rq tmp_rq = {};
+ 	int ret = 0;
+ 
+ 	if (attr_mask & IB_SRQ_MAX_WR) {
+-		struct rvt_rwq *owq;
++		struct rvt_krwq *okwq = NULL;
++		struct rvt_rwq *owq = NULL;
+ 		struct rvt_rwqe *p;
+ 		u32 sz, size, n, head, tail;
+ 
+@@ -185,17 +183,12 @@ int rvt_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+ 		    ((attr_mask & IB_SRQ_LIMIT) ?
+ 		     attr->srq_limit : srq->limit) > attr->max_wr)
+ 			return -EINVAL;
+-
+ 		sz = sizeof(struct rvt_rwqe) +
+ 			srq->rq.max_sge * sizeof(struct ib_sge);
+ 		size = attr->max_wr + 1;
+-		wq = udata ?
+-			vmalloc_user(sizeof(struct rvt_rwq) + size * sz) :
+-			vzalloc_node(sizeof(struct rvt_rwq) + size * sz,
+-				     dev->dparms.node);
+-		if (!wq)
++		if (rvt_alloc_rq(&tmp_rq, size * sz, dev->dparms.node,
++				 udata))
+ 			return -ENOMEM;
+-
+ 		/* Check that we can write the offset to mmap. */
+ 		if (udata && udata->inlen >= sizeof(__u64)) {
+ 			__u64 offset_addr;
+@@ -218,9 +211,15 @@ int rvt_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+ 		 * validate head and tail pointer values and compute
+ 		 * the number of remaining WQEs.
+ 		 */
+-		owq = srq->rq.wq;
+-		head = owq->head;
+-		tail = owq->tail;
++		if (udata) {
++			owq = srq->rq.wq;
++			head = RDMA_READ_UAPI_ATOMIC(owq->head);
++			tail = RDMA_READ_UAPI_ATOMIC(owq->tail);
++		} else {
++			okwq = srq->rq.kwq;
++			head = okwq->head;
++			tail = okwq->tail;
++		}
+ 		if (head >= srq->rq.size || tail >= srq->rq.size) {
+ 			ret = -EINVAL;
+ 			goto bail_unlock;
+@@ -235,7 +234,7 @@ int rvt_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+ 			goto bail_unlock;
+ 		}
+ 		n = 0;
+-		p = wq->wq;
++		p = tmp_rq.kwq->curr_wq;
+ 		while (tail != head) {
+ 			struct rvt_rwqe *wqe;
+ 			int i;
+@@ -250,22 +249,29 @@ int rvt_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+ 			if (++tail >= srq->rq.size)
+ 				tail = 0;
+ 		}
+-		srq->rq.wq = wq;
++		srq->rq.kwq = tmp_rq.kwq;
++		if (udata) {
++			srq->rq.wq = tmp_rq.wq;
++			RDMA_WRITE_UAPI_ATOMIC(tmp_rq.wq->head, n);
++			RDMA_WRITE_UAPI_ATOMIC(tmp_rq.wq->tail, 0);
++		} else {
++			tmp_rq.kwq->head = n;
++			tmp_rq.kwq->tail = 0;
++		}
+ 		srq->rq.size = size;
+-		wq->head = n;
+-		wq->tail = 0;
+ 		if (attr_mask & IB_SRQ_LIMIT)
+ 			srq->limit = attr->srq_limit;
+ 		spin_unlock_irq(&srq->rq.lock);
+ 
+ 		vfree(owq);
++		kvfree(okwq);
+ 
+ 		if (srq->ip) {
+ 			struct rvt_mmap_info *ip = srq->ip;
+ 			struct rvt_dev_info *dev = ib_to_rvt(srq->ibsrq.device);
+ 			u32 s = sizeof(struct rvt_rwq) + size * sz;
+ 
+-			rvt_update_mmap_info(dev, ip, s, wq);
++			rvt_update_mmap_info(dev, ip, s, tmp_rq.wq);
+ 
+ 			/*
+ 			 * Return the offset to mmap.
+@@ -301,7 +307,7 @@ int rvt_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+ bail_unlock:
+ 	spin_unlock_irq(&srq->rq.lock);
+ bail_free:
+-	vfree(wq);
++	rvt_free_rq(&tmp_rq);
+ 	return ret;
+ }
+ 
+@@ -336,6 +342,5 @@ void rvt_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
+ 	spin_unlock(&dev->n_srqs_lock);
+ 	if (srq->ip)
+ 		kref_put(&srq->ip->ref, rvt_release_mmap_info);
+-	else
+-		vfree(srq->rq.wq);
++	kvfree(srq->rq.kwq);
+ }
+diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
+index 7fcd687..ee55fd0 100644
+--- a/include/rdma/rdmavt_qp.h
++++ b/include/rdma/rdmavt_qp.h
+@@ -52,6 +52,7 @@
+ #include <rdma/ib_pack.h>
+ #include <rdma/ib_verbs.h>
+ #include <rdma/rdmavt_cq.h>
++#include <rdma/rvt-abi.h>
+ /*
+  * Atomic bit definitions for r_aflags.
+  */
+@@ -177,33 +178,27 @@ struct rvt_swqe {
+ 	struct rvt_sge sg_list[0];
+ };
+ 
+-/*
+- * Receive work request queue entry.
+- * The size of the sg_list is determined when the QP (or SRQ) is created
+- * and stored in qp->r_rq.max_sge (or srq->rq.max_sge).
++/**
++ * struct rvt_krwq - kernel struct receive work request
++ * @head: index of next entry to fill
++ * @tail: index of next entry to pull
++ * @count: count is aproximate of total receive enteries posted
++ * @rvt_rwqe: struct of receive work request queue entry
++ *
++ * This structure is used to contain the head pointer,
++ * tail pointer and receive work queue entries for kernel
++ * mode user.
+  */
+-struct rvt_rwqe {
+-	u64 wr_id;
+-	u8 num_sge;
+-	struct ib_sge sg_list[0];
+-};
+-
+-/*
+- * This structure is used to contain the head pointer, tail pointer,
+- * and receive work queue entries as a single memory allocation so
+- * it can be mmap'ed into user space.
+- * Note that the wq array elements are variable size so you can't
+- * just index into the array to get the N'th element;
+- * use get_rwqe_ptr() instead.
+- */
+-struct rvt_rwq {
++struct rvt_krwq {
+ 	u32 head;               /* new work requests posted to the head */
+ 	u32 tail;               /* receives pull requests from here. */
+-	struct rvt_rwqe wq[0];
++	struct rvt_rwqe *curr_wq;
++	struct rvt_rwqe wq[];
+ };
+ 
+ struct rvt_rq {
+ 	struct rvt_rwq *wq;
++	struct rvt_krwq *kwq;
+ 	u32 size;               /* size of RWQE array */
+ 	u8 max_sge;
+ 	/* protect changes in this struct */
+@@ -472,7 +467,7 @@ static inline struct rvt_swqe *rvt_get_swqe_ptr(struct rvt_qp *qp,
+ static inline struct rvt_rwqe *rvt_get_rwqe_ptr(struct rvt_rq *rq, unsigned n)
+ {
+ 	return (struct rvt_rwqe *)
+-		((char *)rq->wq->wq +
++		((char *)rq->kwq->curr_wq +
+ 		 (sizeof(struct rvt_rwqe) +
+ 		  rq->max_sge * sizeof(struct ib_sge)) * n);
+ }
+@@ -852,6 +847,21 @@ static inline u32 ib_cq_head(struct ib_cq *send_cq)
+ 	       ibcq_to_rvtcq(send_cq)->kqueue->head;
+ }
+ 
++/**
++ * rvt_free_rq - free memory allocated for rvt_rq struct
++ * @rvt_rq: request queue data structure
++ *
++ * This function should only be called if the rvt_mmap_info()
++ * has not succeeded.
++ */
++static inline void rvt_free_rq(struct rvt_rq *rq)
++{
++	kvfree(rq->kwq);
++	rq->kwq = NULL;
++	vfree(rq->wq);
++	rq->wq = NULL;
 +}
 +
  struct rvt_qp_iter *rvt_qp_iter_init(struct rvt_dev_info *rdi,
  				     u64 v,
  				     void (*cb)(struct rvt_qp *qp, u64 v));
 diff --git a/include/uapi/rdma/rvt-abi.h b/include/uapi/rdma/rvt-abi.h
-new file mode 100644
-index 0000000..8e5f7e0
---- /dev/null
+index 8e5f7e0..d2e35d2 100644
+--- a/include/uapi/rdma/rvt-abi.h
 +++ b/include/uapi/rdma/rvt-abi.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-+
+@@ -10,6 +10,7 @@
+ 
+ #include <linux/types.h>
+ #include <rdma/ib_user_verbs.h>
++#include <rdma/ib_verbs.h>
+ #ifndef RDMA_ATOMIC_UAPI
+ #define RDMA_ATOMIC_UAPI(_type, _name) struct{ _type val; } _name
+ #endif
+@@ -29,4 +30,32 @@ struct rvt_cq_wc {
+ 	struct ib_uverbs_wc uqueue[];
+ };
+ 
 +/*
-+ * This file contains defines, structures, etc. that are used
-+ * to communicate between kernel and user code.
++ * Receive work request queue entry.
++ * The size of the sg_list is determined when the QP (or SRQ) is created
++ * and stored in qp->r_rq.max_sge (or srq->rq.max_sge).
 + */
-+
-+#ifndef RVT_ABI_USER_H
-+#define RVT_ABI_USER_H
-+
-+#include <linux/types.h>
-+#include <rdma/ib_user_verbs.h>
-+#ifndef RDMA_ATOMIC_UAPI
-+#define RDMA_ATOMIC_UAPI(_type, _name) struct{ _type val; } _name
-+#endif
++struct rvt_rwqe {
++	__u64 wr_id;
++	__u8 num_sge;
++	__u8 padding[7];
++	struct ib_sge sg_list[];
++};
 +
 +/*
 + * This structure is used to contain the head pointer, tail pointer,
-+ * and completion queue entries as a single memory allocation so
++ * and receive work queue entries as a single memory allocation so
 + * it can be mmap'ed into user space.
++ * Note that the wq array elements are variable size so you can't
++ * just index into the array to get the N'th element;
++ * use get_rwqe_ptr() for user space and rvt_get_rwqe_ptr()
++ * for kernel space.
 + */
-+struct rvt_cq_wc {
-+	/* index of next entry to fill */
++struct rvt_rwq {
++	/* new work requests posted to the head */
 +	RDMA_ATOMIC_UAPI(__u32, head);
-+	/* index of next ib_poll_cq() entry */
++	/* receives pull requests from here. */
 +	RDMA_ATOMIC_UAPI(__u32, tail);
-+
-+	/* these are actually size ibcq.cqe + 1 */
-+	struct ib_uverbs_wc uqueue[];
++	struct rvt_rwqe wq[];
 +};
-+
-+#endif /* RVT_ABI_USER_H */
+ #endif /* RVT_ABI_USER_H */
 
