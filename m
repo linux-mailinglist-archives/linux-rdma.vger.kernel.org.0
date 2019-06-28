@@ -2,81 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FD35A30C
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 20:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E55B5A316
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 20:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbfF1SBa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 28 Jun 2019 14:01:30 -0400
-Received: from mga05.intel.com ([192.55.52.43]:36474 "EHLO mga05.intel.com"
+        id S1726752AbfF1SEP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Jun 2019 14:04:15 -0400
+Received: from mga12.intel.com ([192.55.52.136]:27226 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726525AbfF1SBa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 28 Jun 2019 14:01:30 -0400
+        id S1726416AbfF1SEP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 28 Jun 2019 14:04:15 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Jun 2019 11:01:29 -0700
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Jun 2019 11:04:14 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.63,428,1557212400"; 
-   d="scan'208";a="314201127"
-Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
-  by orsmga004.jf.intel.com with ESMTP; 28 Jun 2019 11:01:28 -0700
-Received: from fmsmsx162.amr.corp.intel.com (10.18.125.71) by
- FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 28 Jun 2019 11:01:28 -0700
-Received: from fmsmsx123.amr.corp.intel.com ([169.254.7.123]) by
- fmsmsx162.amr.corp.intel.com ([169.254.5.43]) with mapi id 14.03.0439.000;
- Fri, 28 Jun 2019 11:01:28 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     oulijun <oulijun@huawei.com>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [BUGReport for rdma in kernel5.2-rc4]
-Thread-Topic: [BUGReport for rdma in kernel5.2-rc4]
-Thread-Index: AQHVLcuxTkykfRtkqk2UuoXnRYz1BaaxWaVA
-Date:   Fri, 28 Jun 2019 18:01:28 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7A6838463@fmsmsx123.amr.corp.intel.com>
-References: <eaa1f156-c9df-f2f6-3c23-f2c1b23e484c@huawei.com>
-In-Reply-To: <eaa1f156-c9df-f2f6-3c23-f2c1b23e484c@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMzk0MDUzZTAtMTY0Yi00NWU5LWFkNDgtOGQ5OTgxYWExYmZhIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiZllHcEttQmVsbWt3VHdqaHRhM2tiVXpcL3dIR25RNTNJbDMyNEx6MUt2NDB0cmpQMUZpUWFQMjlLZVFIUVwvR3FIIn0=
-dlp-product: dlpe-windows
-dlp-version: 11.0.600.7
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.108]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+   d="scan'208";a="185714302"
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by fmsmga004.fm.intel.com with ESMTP; 28 Jun 2019 11:04:14 -0700
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x5SI4DMt055082;
+        Fri, 28 Jun 2019 11:04:13 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x5SI4Aow067637;
+        Fri, 28 Jun 2019 14:04:11 -0400
+Subject: [PATCH for-next v5 0/3] IB/hfi1: Clean up and refactor some CQ code
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org
+Date:   Fri, 28 Jun 2019 14:04:10 -0400
+Message-ID: <20190628180316.67586.73737.stgit@awfm-01.aw.intel.com>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: [BUGReport for rdma in kernel5.2-rc4]
-> 
-> 
-> Hi Shiraz & Jason,
-> 
-> We have observed a crash when run perftest on a hisilicon arm64 platform in
-> kernel-5.2-rc4.
-> 
-> We also tested with different kernel version and found it started from the the
-> following commit:
->    d10bcf947a3e ("RDMA/umem: Combine contiguous PAGE_SIZE regions in
-> SGEs")
-> 
-> Could you please share any hint how to resolve this kind issue?
-> Thanks!
-> 
+Hi Doug and Jason,
 
-Hi Lijun - I am presuming you had this fix too?
+This is really a resubmit of some code clean up we floated a while back. The
+main goal here is to clean up some of the stuff which should be in the uapi
+directory vs in in the driver directory. Then to break the single lock for 
+recv wqe processing.
 
-"RDMA/umem: Handle page combining avoidance correctly in ib_umem_add_sg_table()"
-https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/drivers/infiniband/core/umem.c?h=v5.2-rc4&id=7872168a839144dbbfb33125262dab0673f9ddf5
+The accompanying user bits should already be in a PR on GitHub.
 
-As Jason mentioned, provide the stack backtrace.
+Change log documented below each commit message.
 
-Shiraz
+This latest update is a rebase ontop of wip/for-testing also a small change
+in the first patch to remove the open coded container_of in favor of the
+helper routine.
+
+---
+
+Kamenee Arumugam (3):
+      IB/hfi1: Move rvt_cq_wc struct into uapi directory
+      IB/hfi1: Move receive work queue struct into uapi directory
+      IB/rdmavt: Fracture single lock used for posting and processing RWQEs
+
+
+ drivers/infiniband/hw/hfi1/qp.c    |    4 -
+ drivers/infiniband/sw/rdmavt/cq.c  |  192 +++++++++++++++++++----------
+ drivers/infiniband/sw/rdmavt/qp.c  |  239 +++++++++++++++++++++++++-----------
+ drivers/infiniband/sw/rdmavt/qp.h  |    2 
+ drivers/infiniband/sw/rdmavt/rc.c  |   41 ++++--
+ drivers/infiniband/sw/rdmavt/srq.c |   69 ++++++----
+ include/rdma/rdmavt_cq.h           |   22 ++-
+ include/rdma/rdmavt_qp.h           |   91 +++++++++++---
+ include/uapi/rdma/rvt-abi.h        |   61 +++++++++
+ 9 files changed, 503 insertions(+), 218 deletions(-)
+ create mode 100644 include/uapi/rdma/rvt-abi.h
+
+--
+-Denny
