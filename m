@@ -2,113 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A20F59667
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 10:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316C459698
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jun 2019 10:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbfF1Ite (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Jun 2019 04:49:34 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:35882 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726240AbfF1Ite (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Jun 2019 04:49:34 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5S8mxHV040376;
-        Fri, 28 Jun 2019 08:49:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2018-07-02;
- bh=4D8QFL/3XbTVzEiMWzUU7hVQJVuawiGGxMYhiOpgGyY=;
- b=yMzomvOvUm+rN7I3ED3veGQ+SjgwPUkyq4CrtnZOsBPhSqvSVgmpGlmdc1wVaLFC13AY
- 2amGjNEHP9B4veJ50Pz2Leo9Rio8iMFvVkCDp2eY08D4OK4CENV49G88buqSvQ6iojMu
- v0jV1hN6whtoWD2acAwl3XY5Fc2dqqu4ZjAJ/ssdFMkt908BrDaYmsG47TRoUUxzSyBp
- QkqGCD6aH70sCnwdz2sG3+j8OKh73L4SuGOOuAIEtOcHuFRRDZzhYhHMdQEY3vf2UoLD
- DQ/T7cPRL738G9/RATjUgphoP2Uw85QkFCRKNHQJJ9zPuZqc+XRKMuldGEMsKaU+VDXT eQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2t9brtmj18-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 Jun 2019 08:49:12 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5S8mIAv109968;
-        Fri, 28 Jun 2019 08:49:12 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2t99f5fjgv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 Jun 2019 08:49:12 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5S8nAId024954;
-        Fri, 28 Jun 2019 08:49:10 GMT
-Received: from dm-oel.no.oracle.com (/10.172.157.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 28 Jun 2019 01:49:10 -0700
-From:   Dag Moxnes <dag.moxnes@oracle.com>
-To:     dag.moxnes@oracle.com, dledford@redhat.com, jgg@ziepe.ca,
-        leon@kernel.org, parav@mellanox.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] RDMA/core: Fix race when resolving IP address
-Date:   Fri, 28 Jun 2019 10:49:23 +0200
-Message-Id: <1561711763-24705-1-git-send-email-dag.moxnes@oracle.com>
-X-Mailer: git-send-email 1.7.1
+        id S1726502AbfF1I4g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Jun 2019 04:56:36 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:39258 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726426AbfF1I4g (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Jun 2019 04:56:36 -0400
+Received: by mail-ua1-f66.google.com with SMTP id j8so1916319uan.6
+        for <linux-rdma@vger.kernel.org>; Fri, 28 Jun 2019 01:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=jFt+h6QhqsysQ+3ej2gYu2ussJB8+V6+0nyzTBAQWVU=;
+        b=sRomXfU1wtxo+CvKVEtL2foLKb+tDncXrAzh9nepTIaNcvxZo3c6IAszYhQs/cS6ss
+         s1n0APzNWbssBIi2T1hz2ALI7FKcaYMK3mQdcg1Fq0oXylWHK7hUlP/HafTBZClnN9Dg
+         mrFNU4FxXKhc/ao82790XuXxFnfRM3922GoWgHvpt1lDxXZqkC254zBvSB5VwI4FRdid
+         MfLaaJ0qOqN9DK+OnAvpnUPlvxypEaTQXkGj/B7TLac8htx1uo2duNrJHmuORzpmZ/Hs
+         Atr2J9r6Os5+fYbasRnslxzWNkNoYwGvfhpap9kAj5jzndw8vpqk1+iGZJLdkPBfeh4h
+         On1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=jFt+h6QhqsysQ+3ej2gYu2ussJB8+V6+0nyzTBAQWVU=;
+        b=XgG+ivqgeaFxWBCXBxtypd2QveKeSzGA7qaKd8t/A7bS15V+klaQU0M23wsdjMuHD9
+         opFkBHGWpXC4QM7aj0dstiOMdMHiEzMVa0NmLqOzucRu8xxrwnJgr9SacH9II2QsrmBO
+         S2s1SHzO78V+6ZtfTg1+l38oP32zEccqTSZzBF+KKqX+hCjARvwXOFWnXck5puLhL2bz
+         Q2v1F+bkwzU69VlgOLoVSil6AyJ0n3H/YOP6hG2TLWpHVM7MNZr2yMFuhq+VY7Ate3/H
+         nW/HwpQt0I68Mhm184rONrqixsy9wb13ch4vOjmc1gTfZ3bbszPwnhlL8NU3t3zsUCGS
+         2XwA==
+X-Gm-Message-State: APjAAAVyYclS7sMYqzPjloUcp1SlF05UB+fhHi8tCss9B6tsSnVcRXlE
+        QH+SPuyNN6JLmb9ZIBiiljq/IHGaLMYVmsS7WCizfw==
+X-Google-Smtp-Source: APXvYqytbXxpHEyjgLIst4RZwsT+xFHHbRswbgLcIyoEJD9OhEbOpgjEGJW0gKaPwxZDwrE+Oyte0MpmYkZNLzE7WFQ=
+X-Received: by 2002:ab0:66:: with SMTP id 93mr4959579uai.135.1561712195310;
+ Fri, 28 Jun 2019 01:56:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9301 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906280104
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9301 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906280104
+Received: by 2002:ab0:2616:0:0:0:0:0 with HTTP; Fri, 28 Jun 2019 01:56:34
+ -0700 (PDT)
+X-Originating-IP: [5.35.70.113]
+In-Reply-To: <a669939c-d8f3-f3c8-15f4-efa236e00954@gmail.com>
+References: <20190622180035.40245-1-dkirjanov@suse.com> <a669939c-d8f3-f3c8-15f4-efa236e00954@gmail.com>
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+Date:   Fri, 28 Jun 2019 11:56:34 +0300
+Message-ID: <CAOJe8K33TOtnwbsw2vq6gGWOstrW-D-tC+kdHnTygmdCreSX6Q@mail.gmail.com>
+Subject: Re: [PATCH iproute2-next v3 1/2] ipaddress: correctly print a VF hw
+ address in the IPoIB case
+To:     David Ahern <dsahern@gmail.com>
+Cc:     stephen@networkplumber.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, dledford@redhat.com, mkubecek@suse.cz
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use neighbour lock when copying MAC address from neighbour data struct
-in dst_fetch_ha.
+On 6/24/19, David Ahern <dsahern@gmail.com> wrote:
+> On 6/22/19 12:00 PM, Denis Kirjanov wrote:
+>> @@ -365,13 +367,45 @@ static void print_vfinfo(FILE *fp, struct rtattr
+>> *vfinfo)
+>>  	parse_rtattr_nested(vf, IFLA_VF_MAX, vfinfo);
+>>
+>>  	vf_mac = RTA_DATA(vf[IFLA_VF_MAC]);
+>> +	vf_broadcast = RTA_DATA(vf[IFLA_VF_BROADCAST]);
+>>  	vf_tx_rate = RTA_DATA(vf[IFLA_VF_TX_RATE]);
+>>
+>>  	print_string(PRINT_FP, NULL, "%s    ", _SL_);
+>>  	print_int(PRINT_ANY, "vf", "vf %d ", vf_mac->vf);
+>> -	print_string(PRINT_ANY, "mac", "MAC %s",
+>> -		     ll_addr_n2a((unsigned char *) &vf_mac->mac,
+>> -				 ETH_ALEN, 0, b1, sizeof(b1)));
+>> +
+>> +	print_string(PRINT_ANY,
+>> +			"link_type",
+>> +			"    link/%s ",
+>> +			ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)));
+>> +
+>> +	print_color_string(PRINT_ANY,
+>> +				COLOR_MAC,
+>> +				"address",
+>> +				"%s",
+>> +				ll_addr_n2a((unsigned char *) &vf_mac->mac,
+>> +					ifi->ifi_type == ARPHRD_ETHER ?
+>> +					ETH_ALEN : INFINIBAND_ALEN,
+>> +					ifi->ifi_type,
+>> +					b1, sizeof(b1)));
+>
+> you still have a lot of lines that are not lined up column wise. See how
+> the COLOR_MAC is offset to the right from PRINT_ANY?
+>
+>> +
+>> +	if (vf[IFLA_VF_BROADCAST]) {
+>> +		if (ifi->ifi_flags&IFF_POINTOPOINT) {
+>> +			print_string(PRINT_FP, NULL, " peer ", NULL);
+>> +			print_bool(PRINT_JSON,
+>> +					"link_pointtopoint", NULL, true);
+>> +		} else
+>> +			print_string(PRINT_FP, NULL, " brd ", NULL);
+>> +
+>> +		print_color_string(PRINT_ANY,
+>> +				COLOR_MAC,
+>> +				"broadcast",
+>> +				"%s",
+>> +				ll_addr_n2a((unsigned char *) &vf_broadcast->broadcast,
+>> +					ifi->ifi_type == ARPHRD_ETHER ?
+>> +					ETH_ALEN : INFINIBAND_ALEN,
+>> +					ifi->ifi_type,
+>> +					b1, sizeof(b1)));
+>
+> And then these lines are offset to the left.
 
-When not using the lock, it is possible for the function to race with
-neigh_update, causing it to copy an invalid MAC address.
+Hi David,
 
-It is possible to provoke this error by calling rdma_resolve_addr in a
-tight loop, while deleting the corresponding ARP entry in another tight
-loop.
+I've just sent a new version and I've formatted strings in the similar
+way as it used through the source.
 
-Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+Thank you.
 
----
-v1 -> v2:
-   * Modified implementation to improve readability
----
- drivers/infiniband/core/addr.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index 2f7d141598..51323ffbc5 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -333,11 +333,14 @@ static int dst_fetch_ha(const struct dst_entry *dst,
- 	if (!n)
- 		return -ENODATA;
- 
--	if (!(n->nud_state & NUD_VALID)) {
-+	read_lock_bh(&n->lock);
-+	if (n->nud_state & NUD_VALID) {
-+		memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
-+		read_unlock_bh(&n->lock);
-+	} else {
-+		read_unlock_bh(&n->lock);
- 		neigh_event_send(n, NULL);
- 		ret = -ENODATA;
--	} else {
--		memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
- 	}
- 
- 	neigh_release(n);
--- 
-2.20.1
-
+>
