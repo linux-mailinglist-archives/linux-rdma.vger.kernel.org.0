@@ -2,143 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A58375A70E
-	for <lists+linux-rdma@lfdr.de>; Sat, 29 Jun 2019 00:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4445A787
+	for <lists+linux-rdma@lfdr.de>; Sat, 29 Jun 2019 01:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbfF1Wgu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Jun 2019 18:36:50 -0400
-Received: from mail-eopbgr70049.outbound.protection.outlook.com ([40.107.7.49]:23750
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727074AbfF1Wgu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 28 Jun 2019 18:36:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=testarcselector01; d=microsoft.com; cv=none;
- b=yXERfPUn0uO6Y+EguzP8VmibOj8Rht3olIy42Cf/3lFejH6ILu97fTGa+GISUuMQfnXAO7v08ztHJaTkXgVusIKGOmvR+HWfc53FJx1hq5JuoyzVK+FfixVSH0esGQ+qjt+Zn3/YpV32gUtBoH2GBZVKt3ccpAXHxehN6Vot0Gs=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=testarcselector01;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xSFZ5A8TZfI4dMYNG28NJ+MK2Q8sR1zCq+auD1Z1EQE=;
- b=Q3QgpntFOt9qI5/JVDCHahgOe3Nf7SM5tsB+1zagKBnhYOP/lm4JQvlOW+qB+5vKIc79xCCbIucTL7XkMqkczfAA5c/0c4e5YA5Zwjkr1j0lIZuFGsw+WjkVKd7eBmwG+c1/RfqCp8Z9sEe1xJ5T9ezIPF/nhRHaY9JzaUhX9iM=
-ARC-Authentication-Results: i=1; test.office365.com
- 1;spf=none;dmarc=none;dkim=none;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xSFZ5A8TZfI4dMYNG28NJ+MK2Q8sR1zCq+auD1Z1EQE=;
- b=m1g3fgPFQpy2OaG4aoGUM1wrd+NEnx7w3Dn91fjmunVBY9t5VKcSXETeix1wJSUJ4BS6RE067b1h4syKjIUfNBnsxI00YDoQD1a+x6wTbChjJNwmKg8DgYC0b2D/Nqc8jsNgCHueTS0jQjkqOCVjbhvPaB/Quc7ADbha2bvQ8r8=
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
- DB6PR0501MB2357.eurprd05.prod.outlook.com (10.168.56.24) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2008.17; Fri, 28 Jun 2019 22:36:23 +0000
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::a901:6951:59de:3278]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::a901:6951:59de:3278%2]) with mapi id 15.20.2008.014; Fri, 28 Jun 2019
- 22:36:23 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Bodong Wang <bodong@mellanox.com>
-Subject: [PATCH mlx5-next 18/18] net/mlx5: E-Switch, Handle UC address change
- in switchdev mode
-Thread-Topic: [PATCH mlx5-next 18/18] net/mlx5: E-Switch, Handle UC address
- change in switchdev mode
-Thread-Index: AQHVLgHq3WJ4LGI5dU6mL4Zjscg9Ig==
-Date:   Fri, 28 Jun 2019 22:36:23 +0000
-Message-ID: <20190628223516.9368-19-saeedm@mellanox.com>
-References: <20190628223516.9368-1-saeedm@mellanox.com>
-In-Reply-To: <20190628223516.9368-1-saeedm@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.21.0
-x-originating-ip: [209.116.155.178]
-x-clientproxiedby: BY5PR13CA0035.namprd13.prod.outlook.com
- (2603:10b6:a03:180::48) To DB6PR0501MB2759.eurprd05.prod.outlook.com
- (2603:10a6:4:84::7)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e52a8292-a84e-4497-9b41-08d6fc190c5b
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2357;
-x-ms-traffictypediagnostic: DB6PR0501MB2357:
-x-microsoft-antispam-prvs: <DB6PR0501MB2357831CC3D23130B54AF3FFBEFC0@DB6PR0501MB2357.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-forefront-prvs: 00826B6158
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(396003)(346002)(366004)(136003)(376002)(189003)(199004)(107886003)(6436002)(1076003)(3846002)(6116002)(256004)(66446008)(50226002)(6636002)(66066001)(53936002)(36756003)(71200400001)(71190400001)(186003)(8676002)(52116002)(4326008)(5660300002)(26005)(6506007)(305945005)(450100002)(11346002)(446003)(478600001)(76176011)(64756008)(99286004)(386003)(102836004)(6512007)(110136005)(2906002)(316002)(66476007)(68736007)(14454004)(81166006)(486006)(86362001)(81156014)(73956011)(66946007)(2616005)(6486002)(476003)(66556008)(8936002)(25786009)(54906003)(7736002);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2357;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: LSxzV+EXcoP7mG5TYmiAoxyeBFt6jxIsnSrhc/4nGFYE7n+YO7cZSEUBizjYQXINzVRmu7LaS+e80SKmRMx0YZ2zd5Kjer+zylGQkP/HlV+/MGFhXbHV0nFwv7vnPWX8IjcMUcX+okjTUFW8DuIRJkRQFa1Yw4LAEsYIL4QwvSikNh8KoL35O6Qol+JJ+K/Qkfs9mt+zfczmGVdrlMOd3t07jX2020I2Wsqh0REvweErs//QOuEJPq3G33EM7zkcwgvvHPCYFN4rvgYmQa2In+g7M5XqkGimZYoCH4nbNCUg741IMEnpq2AvqSYAlUHxAOHWi/p/6FfuLKlDXDpyAPbVJpbKb1LB12ElrQJMeSa+tS3Q8ffQia2XVdLWeogLBnViaClvbwkjUDx1K62Oj6z7A+uhCFByL4bURnIZIZg=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726643AbfF1XVq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Jun 2019 19:21:46 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:45536 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbfF1XVq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Jun 2019 19:21:46 -0400
+Received: by mail-io1-f66.google.com with SMTP id e3so15905547ioc.12;
+        Fri, 28 Jun 2019 16:21:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5imOLuCkEnTncHEfbSbR3RE3vi1mxjLFWo4/kKHfOWM=;
+        b=fQ2RRgVqreR4oLT3k6wPGXZewVg3nSP4si8Q59Egw/7fmaIO+3PPY+z2w3hYy4Y4dc
+         pgtF0rnUV6QfR5oIVDd/cuYBpXpbtxUoHsc42uA+9AdiDXlHdhkzor2lbeGy3WE/7jvV
+         tsNkqK7ssvBpn5endTcGgpkrDTpYlCn19Djyw03eqz7XNrB5huc+CEccxpk9/pQNkcEX
+         4Q+4u8p+sE2uw4EtyfR3oX5gC9lSbP/vKsCw3+rQzMovSUPCS/Jd4ipfdjH+1m7ux+Wy
+         yyZuLk9VzXfqqiRRGItE6hK8wnaxV12Q2HQ+9EVIOSsEpB0f6toPP1TZwSU1lmGr/ilH
+         mCWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5imOLuCkEnTncHEfbSbR3RE3vi1mxjLFWo4/kKHfOWM=;
+        b=EOtFPK8jrS+VrM4uTKuQVO7CDGTv1Nr+L/ebI+sLXgd/fnV2SKGawgM6jOiaSbL2TR
+         PMQjBFrLwTtfPuU+Xpu6a4vUN3DxwJEKp5DcZo6HxSJjCF6XCWT3Hpu4MfWtkUxfZsbS
+         k9YRUSt9I2B/CH11eWLpnfR8nYstcyDAAYOjEAoHbXh9xy1ixfa6tQJnbQKBiSC5StQ0
+         Mi2/8Tk4lJv1HjoOmkTn+zhNSgHwPOvzXk2p2olm+yf/bf0RR31cxUsqqyC7tym9uvC8
+         RIIu2MWrtIJ8YEKtX3KVO/mAYZZIQo8YEUqK2eI8Mpo2uX7qCjJAKudjgLcbD26ZCw8F
+         5gSA==
+X-Gm-Message-State: APjAAAVzbtC1qTYmITBIku3Qzb2B+xttqllXTKPpvAn9AcHFXPyQh2Zs
+        bBKZ0bUdZrPiwO5xvRMqmQXM5nes
+X-Google-Smtp-Source: APXvYqwn2Grerjkb9E2B5YxkN1qWXAiqOm4rqhAkh/9zFLxJ7tk8QhHdjShwQlP3XVw4YxbBW8bT5g==
+X-Received: by 2002:a6b:ee15:: with SMTP id i21mr12858559ioh.281.1561764105701;
+        Fri, 28 Jun 2019 16:21:45 -0700 (PDT)
+Received: from ?IPv6:2601:282:800:fd80:a468:85d6:9e2b:8578? ([2601:282:800:fd80:a468:85d6:9e2b:8578])
+        by smtp.googlemail.com with ESMTPSA id f4sm7577757iok.56.2019.06.28.16.21.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 28 Jun 2019 16:21:45 -0700 (PDT)
+Subject: Re: [PATCH iproute2-next v4 1/2] ipaddress: correctly print a VF hw
+ address in the IPoIB case
+To:     Denis Kirjanov <kda@linux-powerpc.org>, stephen@networkplumber.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        dledford@redhat.com, mkubecek@suse.cz
+References: <20190628095426.2819-1-dkirjanov@suse.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <10ad5a7d-b539-4847-c588-4c1a647e3c29@gmail.com>
+Date:   Fri, 28 Jun 2019 17:21:41 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e52a8292-a84e-4497-9b41-08d6fc190c5b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jun 2019 22:36:23.3768
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2357
+In-Reply-To: <20190628095426.2819-1-dkirjanov@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-RnJvbTogQm9kb25nIFdhbmcgPGJvZG9uZ0BtZWxsYW5veC5jb20+DQoNCldoZW4gTlZNRSBkZXZp
-Y2UgZW11bGF0aW9uIG1vZGUgaXMgZW5hYmxlZCwgbW9yZSB0aGFuIG9uZSBQRnMgdXNlIHRoZQ0K
-c2FtZSBwaHlzaWNhbCBwb3J0LiBJbiB0aGlzIGNhc2UsIE1QRlMgaXMgcmVxdWlyZWQgdG8gcHJv
-Z3JhbSBMMg0KYWRkcmVzc2VzLg0KDQpJdCB1c2VkIHRvIHJlbHkgb24gbmV0ZGV2IHNldF9yeF9t
-b2RlIGluIHN3aXRjaGRldiBtb2RlLCBidXQgZHJpdmVyDQpsYXRlciBjaGFuZ2VkIHRvIG5vdCBj
-cmVhdGUgbmV0ZGV2IGZvciBlc3dpdGNoIG1hbmFnZXIgb25jZSBpbg0Kc3dpdGNoZGV2IG1vZGUu
-IFNvLCBVQyBhZGRyZXNzIGV2ZW50IHNob3VsZCBiZSBoYW5kbGVkLg0KDQpTaWduZWQtb2ZmLWJ5
-OiBCb2RvbmcgV2FuZyA8Ym9kb25nQG1lbGxhbm94LmNvbT4NClNpZ25lZC1vZmYtYnk6IFNhZWVk
-IE1haGFtZWVkIDxzYWVlZG1AbWVsbGFub3guY29tPg0KLS0tDQogLi4uL25ldC9ldGhlcm5ldC9t
-ZWxsYW5veC9tbHg1L2NvcmUvZXN3aXRjaC5jIHwgMjEgKysrKysrKystLS0tLS0tLS0tLQ0KIDEg
-ZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDEyIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2guYyBi
-L2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lc3dpdGNoLmMNCmluZGV4
-IDkzNWI5NDI5YmIyYS4uODlmNTIzNzBlNzcwIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9uZXQvZXRo
-ZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2guYw0KKysrIGIvZHJpdmVycy9uZXQvZXRo
-ZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2guYw0KQEAgLTE3MjcsMTAgKzE3MjcsMTAg
-QEAgaW50IG1seDVfZXN3X3F1ZXJ5X2Z1bmN0aW9ucyhzdHJ1Y3QgbWx4NV9jb3JlX2RldiAqZGV2
-LCB1MzIgKm91dCwgaW50IG91dGxlbikNCiANCiBzdGF0aWMgdm9pZCBtbHg1X2Vzd2l0Y2hfZXZl
-bnRfaGFuZGxlcnNfcmVnaXN0ZXIoc3RydWN0IG1seDVfZXN3aXRjaCAqZXN3KQ0KIHsNCi0JaWYg
-KGVzdy0+bW9kZSA9PSBNTFg1X0VTV0lUQ0hfTEVHQUNZKSB7DQotCQlNTFg1X05CX0lOSVQoJmVz
-dy0+bmIsIGVzd2l0Y2hfdnBvcnRfZXZlbnQsIE5JQ19WUE9SVF9DSEFOR0UpOw0KLQkJbWx4NV9l
-cV9ub3RpZmllcl9yZWdpc3Rlcihlc3ctPmRldiwgJmVzdy0+bmIpOw0KLQl9IGVsc2UgaWYgKG1s
-eDVfZXN3aXRjaF9pc19mdW5jc19oYW5kbGVyKGVzdy0+ZGV2KSkgew0KKwlNTFg1X05CX0lOSVQo
-JmVzdy0+bmIsIGVzd2l0Y2hfdnBvcnRfZXZlbnQsIE5JQ19WUE9SVF9DSEFOR0UpOw0KKwltbHg1
-X2VxX25vdGlmaWVyX3JlZ2lzdGVyKGVzdy0+ZGV2LCAmZXN3LT5uYik7DQorDQorCWlmIChlc3ct
-Pm1vZGUgPT0gTUxYNV9FU1dJVENIX09GRkxPQURTICYmIG1seDVfZXN3aXRjaF9pc19mdW5jc19o
-YW5kbGVyKGVzdy0+ZGV2KSkgew0KIAkJTUxYNV9OQl9JTklUKCZlc3ctPmVzd19mdW5jcy5uYiwg
-bWx4NV9lc3dfZnVuY3NfY2hhbmdlZF9oYW5kbGVyLA0KIAkJCSAgICAgRVNXX0ZVTkNUSU9OU19D
-SEFOR0VEKTsNCiAJCW1seDVfZXFfbm90aWZpZXJfcmVnaXN0ZXIoZXN3LT5kZXYsICZlc3ctPmVz
-d19mdW5jcy5uYik7DQpAQCAtMTczOSwxMSArMTczOSwxMSBAQCBzdGF0aWMgdm9pZCBtbHg1X2Vz
-d2l0Y2hfZXZlbnRfaGFuZGxlcnNfcmVnaXN0ZXIoc3RydWN0IG1seDVfZXN3aXRjaCAqZXN3KQ0K
-IA0KIHN0YXRpYyB2b2lkIG1seDVfZXN3aXRjaF9ldmVudF9oYW5kbGVyc191bnJlZ2lzdGVyKHN0
-cnVjdCBtbHg1X2Vzd2l0Y2ggKmVzdykNCiB7DQotCWlmIChlc3ctPm1vZGUgPT0gTUxYNV9FU1dJ
-VENIX0xFR0FDWSkNCi0JCW1seDVfZXFfbm90aWZpZXJfdW5yZWdpc3Rlcihlc3ctPmRldiwgJmVz
-dy0+bmIpOw0KLQllbHNlIGlmIChtbHg1X2Vzd2l0Y2hfaXNfZnVuY3NfaGFuZGxlcihlc3ctPmRl
-dikpDQorCWlmIChlc3ctPm1vZGUgPT0gTUxYNV9FU1dJVENIX09GRkxPQURTICYmIG1seDVfZXN3
-aXRjaF9pc19mdW5jc19oYW5kbGVyKGVzdy0+ZGV2KSkNCiAJCW1seDVfZXFfbm90aWZpZXJfdW5y
-ZWdpc3Rlcihlc3ctPmRldiwgJmVzdy0+ZXN3X2Z1bmNzLm5iKTsNCiANCisJbWx4NV9lcV9ub3Rp
-Zmllcl91bnJlZ2lzdGVyKGVzdy0+ZGV2LCAmZXN3LT5uYik7DQorDQogCWZsdXNoX3dvcmtxdWV1
-ZShlc3ctPndvcmtfcXVldWUpOw0KIH0NCiANCkBAIC0xNzg5LDExICsxNzg5LDggQEAgaW50IG1s
-eDVfZXN3aXRjaF9lbmFibGUoc3RydWN0IG1seDVfZXN3aXRjaCAqZXN3LCBpbnQgbW9kZSkNCiAJ
-aWYgKGVycikNCiAJCWVzd193YXJuKGVzdy0+ZGV2LCAiRmFpbGVkIHRvIGNyZWF0ZSBlc3dpdGNo
-IFRTQVIiKTsNCiANCi0JLyogRG9uJ3QgZW5hYmxlIHZwb3J0IGV2ZW50cyB3aGVuIGluIE1MWDVf
-RVNXSVRDSF9PRkZMT0FEUyBtb2RlLCBzaW5jZToNCi0JICogMS4gTDIgdGFibGUgKE1QRlMpIGlz
-IHByb2dyYW1tZWQgYnkgUEYvVkYgcmVwcmVzZW50b3JzIG5ldGRldnMgc2V0X3J4X21vZGUNCi0J
-ICogMi4gRkRCL0Vzd2l0Y2ggaXMgcHJvZ3JhbW1lZCBieSB1c2VyIHNwYWNlIHRvb2xzDQotCSAq
-Lw0KLQllbmFibGVkX2V2ZW50cyA9IChtb2RlID09IE1MWDVfRVNXSVRDSF9MRUdBQ1kpID8gU1JJ
-T1ZfVlBPUlRfRVZFTlRTIDogMDsNCisJZW5hYmxlZF9ldmVudHMgPSAobW9kZSA9PSBNTFg1X0VT
-V0lUQ0hfTEVHQUNZKSA/IFNSSU9WX1ZQT1JUX0VWRU5UUyA6DQorCQlVQ19BRERSX0NIQU5HRTsN
-CiANCiAJLyogRW5hYmxlIFBGIHZwb3J0ICovDQogCXZwb3J0ID0gbWx4NV9lc3dpdGNoX2dldF92
-cG9ydChlc3csIE1MWDVfVlBPUlRfUEYpOw0KLS0gDQoyLjIxLjANCg0K
+On 6/28/19 3:54 AM, Denis Kirjanov wrote:
+> Current code assumes that we print ethernet mac and
+> that doesn't work in the IPoIB case with SRIOV-enabled hardware
+> 
+> Before:
+> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+> state UP mode DEFAULT group default qlen 256
+>         link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+>         vf 0 MAC 14:80:00:00:66:fe, spoof checking off, link-state
+> disable,
+>     trust off, query_rss off
+>     ...
+> 
+> After:
+> 11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+> state UP mode DEFAULT group default qlen 256
+>         link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+>         vf 0     link/infiniband
+> 80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+> 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
+> checking off, link-state disable, trust off, query_rss off
+> 
+> v1->v2: updated kernel headers to uapi commit
+> v2->v3: fixed alignment
+> v3->v4: aligned print statements as used through the source
+> 
+> Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
+> ---
+>  ip/ipaddress.c | 40 +++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 35 insertions(+), 5 deletions(-)
+> 
+
+Fixed the alignment issues and applied.
+
