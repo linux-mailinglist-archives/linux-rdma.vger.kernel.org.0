@@ -2,108 +2,213 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB2C5ADE0
-	for <lists+linux-rdma@lfdr.de>; Sun, 30 Jun 2019 02:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B285AF44
+	for <lists+linux-rdma@lfdr.de>; Sun, 30 Jun 2019 09:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbfF3Ak5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 29 Jun 2019 20:40:57 -0400
-Received: from mail-eopbgr80085.outbound.protection.outlook.com ([40.107.8.85]:22173
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726956AbfF3Ak5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 29 Jun 2019 20:40:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SDlT/ipm1a/uqPT5WV7HzNtaQLZpb9RUfvKoyGWedA0=;
- b=IgHSG80jocTowmc7hqwQLR4ITfY5EXTCqMHfxXKEjKvFqzcUe58LDxYFyTDWocLqZEoI2qK2irFY5GBQ/hux3K+wxkXQhM3K69QnKSFo6M7B11mXBwhgnD4lG6kBEpTs9zvGXyA2qQQ9iwiCNGWe16iu/cM4vkSysOzjgAazsYo=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB4879.eurprd05.prod.outlook.com (20.177.51.12) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2032.20; Sun, 30 Jun 2019 00:40:54 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2032.019; Sun, 30 Jun 2019
- 00:40:54 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
+        id S1726523AbfF3HxC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 30 Jun 2019 03:53:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725959AbfF3HxC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 30 Jun 2019 03:53:02 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38483208C4;
+        Sun, 30 Jun 2019 07:53:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1561881180;
+        bh=cfSVzD0L9ocehuDxiWqQphAUsNV1J6H8e2mjpM3dupk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=wYLQQPJhxpPg1A3wUAXOGk9l19sg6YylK1+JU8iiPEhXHdaaaKxGKjzpVjiFCEHqH
+         cYuiKpX6ANHVnhFG1UZhh29gi4KohsfQJP/UsMfOnN3xqtPLFOcQlERYd7xOYKRIx4
+         rB0ummeQphqcTPgaT5WvggMpfiDjczSiLfH79EM0=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Parav Pandit <parav@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Majd Dibbiny <majd@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v4 06/17] RDMA/counter: Add "auto" configuration
- mode support
-Thread-Topic: [PATCH rdma-next v4 06/17] RDMA/counter: Add "auto"
- configuration mode support
-Thread-Index: AQHVJfsE3tKh9oGpaUGuOuzrE5Gb8KazbPUA
-Date:   Sun, 30 Jun 2019 00:40:54 +0000
-Message-ID: <20190630004048.GB7173@mellanox.com>
-References: <20190618172625.13432-1-leon@kernel.org>
- <20190618172625.13432-7-leon@kernel.org>
-In-Reply-To: <20190618172625.13432-7-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BL0PR1501CA0022.namprd15.prod.outlook.com
- (2603:10b6:207:17::35) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2e10c5d3-4460-45f7-961f-08d6fcf39b95
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4879;
-x-ms-traffictypediagnostic: VI1PR05MB4879:
-x-microsoft-antispam-prvs: <VI1PR05MB4879AFDA96D5B624D9653075CFFE0@VI1PR05MB4879.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-forefront-prvs: 008421A8FF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(366004)(396003)(376002)(136003)(39860400002)(199004)(189003)(99286004)(102836004)(53936002)(76176011)(1076003)(8676002)(6486002)(3846002)(6512007)(6116002)(316002)(6436002)(14454004)(386003)(52116002)(71190400001)(26005)(8936002)(186003)(81166006)(81156014)(54906003)(5660300002)(229853002)(6916009)(6246003)(71200400001)(25786009)(4326008)(6506007)(478600001)(446003)(66066001)(256004)(14444005)(36756003)(11346002)(2616005)(476003)(68736007)(7736002)(4744005)(66556008)(66446008)(486006)(64756008)(73956011)(86362001)(66946007)(66476007)(2906002)(305945005)(33656002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4879;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: XTQqBfcdD5kXx7p+qSbV5Q0Idx6IU/nvjbc5tlGzTP/oxpwsBmnpeDFmNQoIKX2f7QlgZZGJN86a5782vbb+9KKel1v3x0j/S/79b5Aca+UMRiq3XloCoLBOP4eg3wCxu1qlvpmdbKSG/yey9/cI1RxwGOjiabc6byNoXDHErpefRzyKqx0S9S10QeJoSv1xZuBo4lTnrP9T5IiLCCLd+KrOZjt2ctGQgtu79S/T7JjQ9Ss+7dV6pwbqMTW3pS5pp9fOcHzl/tb0Tl8ziVqQGJiP+ObWlSSWFAYJsW2ZJz+pWXbZtjlbYZG4agFjeUy+7+O6SWqyUzDtpUN656ewUl2PAC3FQZ+/fbw5I89VN1OV2iFbvy7D8fAVggyDGbku1Oen3BR7uJqdbh98mrqqkhIM8tAin71fykJR0etAVSw=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A3580C98FF1F4F49ABD1124336F20483@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Daniel Jurgens <danielj@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH rdma-next] IB/mlx5: Fixed reporting counters on 2nd port for Dual port RoCE
+Date:   Sun, 30 Jun 2019 10:52:52 +0300
+Message-Id: <20190630075252.9833-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e10c5d3-4460-45f7-961f-08d6fcf39b95
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2019 00:40:54.1205
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4879
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 18, 2019 at 08:26:14PM +0300, Leon Romanovsky wrote:
+From: Parav Pandit <parav@mellanox.com>
 
-> +static void __rdma_counter_dealloc(struct rdma_counter *counter)
-> +{
-> +	mutex_lock(&counter->lock);
-> +	counter->device->ops.counter_dealloc(counter);
-> +	mutex_unlock(&counter->lock);
-> +}
+Currently during dual port IB device registration in below code flow,
 
-Does this lock do anything? The kref is 0 at this point, so no other
-thread can have a pointer to this lock.
+ib_register_device()
+  ib_device_register_sysfs()
+    ib_setup_port_attrs()
+      add_port()
+        get_counter_table()
+          get_perf_mad()
+            process_mad()
+              mlx5_ib_process_mad()
 
-> +
-> +static void rdma_counter_dealloc(struct rdma_counter *counter)
-> +{
-> +	if (!counter)
-> +		return;
+mlx5_ib_process_mad() fails on 2nd port when both the ports are not
+fully setup at the device level (because 2nd port is unaffiliated).
 
-Counter is never NULL.
+As a result, get_perf_mad() registers different PMA counter group for
+1st and 2nd port, namely pma_counter_ext and pma_counter. However both
+ports have the same capability and counter offsets.
 
-Jason
+Due to this when counters are read by the user via sysfs in below code
+flow, counters are queried from wrong location from the device mainly
+from PPCNT instead of VPORT counters.
+
+show_pma_counter()
+  get_perf_mad()
+    process_mad()
+      mlx5_ib_process_mad()
+        process_pma_cmd()
+
+This shows all zero counters for 2nd port.
+
+To overcome this, process_pma_cmd() is invoked, and when unaffiliated port is not
+yet setup during device registration phase, make the query on the first port.
+while at it, only process_pma_cmd() needs to work on the native port
+number and underlying mdev, so shift the get, put calls to where its needed
+inside process_pma_cmd().
+
+Fixes: 212f2a87b74f ("IB/mlx5: Route MADs for dual port RoCE")
+Signed-off-by: Parav Pandit <parav@mellanox.com>
+Reviewed-by: Daniel Jurgens <danielj@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/hw/mlx5/mad.c | 60 +++++++++++++++++++-------------
+ 1 file changed, 36 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/mad.c b/drivers/infiniband/hw/mlx5/mad.c
+index 6c529e6f3a01..348c1df69cdc 100644
+--- a/drivers/infiniband/hw/mlx5/mad.c
++++ b/drivers/infiniband/hw/mlx5/mad.c
+@@ -200,19 +200,33 @@ static void pma_cnt_assign(struct ib_pma_portcounters *pma_cnt,
+ 			     vl_15_dropped);
+ }
+
+-static int process_pma_cmd(struct mlx5_core_dev *mdev, u8 port_num,
++static int process_pma_cmd(struct mlx5_ib_dev *dev, u8 port_num,
+ 			   const struct ib_mad *in_mad, struct ib_mad *out_mad)
+ {
+-	int err;
++	struct mlx5_core_dev *mdev;
++	bool native_port = true;
++	u8 mdev_port_num;
+ 	void *out_cnt;
++	int err;
+
++	mdev = mlx5_ib_get_native_port_mdev(dev, port_num, &mdev_port_num);
++	if (!mdev) {
++		/* Fail to get the native port, likely due to 2nd port is still
++		 * unaffiliated. In such case default to 1st port and attached
++		 * PF device.
++		 */
++		native_port = false;
++		mdev = dev->mdev;
++		mdev_port_num = 1;
++	}
+ 	/* Declaring support of extended counters */
+ 	if (in_mad->mad_hdr.attr_id == IB_PMA_CLASS_PORT_INFO) {
+ 		struct ib_class_port_info cpi = {};
+
+ 		cpi.capability_mask = IB_PMA_CLASS_CAP_EXT_WIDTH;
+ 		memcpy((out_mad->data + 40), &cpi, sizeof(cpi));
+-		return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
++		err = IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
++		goto done;
+ 	}
+
+ 	if (in_mad->mad_hdr.attr_id == IB_PMA_PORT_COUNTERS_EXT) {
+@@ -221,11 +235,13 @@ static int process_pma_cmd(struct mlx5_core_dev *mdev, u8 port_num,
+ 		int sz = MLX5_ST_SZ_BYTES(query_vport_counter_out);
+
+ 		out_cnt = kvzalloc(sz, GFP_KERNEL);
+-		if (!out_cnt)
+-			return IB_MAD_RESULT_FAILURE;
++		if (!out_cnt) {
++			err = IB_MAD_RESULT_FAILURE;
++			goto done;
++		}
+
+ 		err = mlx5_core_query_vport_counter(mdev, 0, 0,
+-						    port_num, out_cnt, sz);
++						    mdev_port_num, out_cnt, sz);
+ 		if (!err)
+ 			pma_cnt_ext_assign(pma_cnt_ext, out_cnt);
+ 	} else {
+@@ -234,20 +250,23 @@ static int process_pma_cmd(struct mlx5_core_dev *mdev, u8 port_num,
+ 		int sz = MLX5_ST_SZ_BYTES(ppcnt_reg);
+
+ 		out_cnt = kvzalloc(sz, GFP_KERNEL);
+-		if (!out_cnt)
+-			return IB_MAD_RESULT_FAILURE;
++		if (!out_cnt) {
++			err = IB_MAD_RESULT_FAILURE;
++			goto done;
++		}
+
+-		err = mlx5_core_query_ib_ppcnt(mdev, port_num,
++		err = mlx5_core_query_ib_ppcnt(mdev, mdev_port_num,
+ 					       out_cnt, sz);
+ 		if (!err)
+ 			pma_cnt_assign(pma_cnt, out_cnt);
+-		}
+-
++	}
+ 	kvfree(out_cnt);
+-	if (err)
+-		return IB_MAD_RESULT_FAILURE;
+-
+-	return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
++	err = err ? IB_MAD_RESULT_FAILURE :
++		    IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
++done:
++	if (native_port)
++		mlx5_ib_put_native_port_mdev(dev, port_num);
++	return err;
+ }
+
+ int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port_num,
+@@ -259,8 +278,6 @@ int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port_num,
+ 	struct mlx5_ib_dev *dev = to_mdev(ibdev);
+ 	const struct ib_mad *in_mad = (const struct ib_mad *)in;
+ 	struct ib_mad *out_mad = (struct ib_mad *)out;
+-	struct mlx5_core_dev *mdev;
+-	u8 mdev_port_num;
+ 	int ret;
+
+ 	if (WARN_ON_ONCE(in_mad_size != sizeof(*in_mad) ||
+@@ -269,19 +286,14 @@ int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port_num,
+
+ 	memset(out_mad->data, 0, sizeof(out_mad->data));
+
+-	mdev = mlx5_ib_get_native_port_mdev(dev, port_num, &mdev_port_num);
+-	if (!mdev)
+-		return IB_MAD_RESULT_FAILURE;
+-
+-	if (MLX5_CAP_GEN(mdev, vport_counters) &&
++	if (MLX5_CAP_GEN(dev->mdev, vport_counters) &&
+ 	    in_mad->mad_hdr.mgmt_class == IB_MGMT_CLASS_PERF_MGMT &&
+ 	    in_mad->mad_hdr.method == IB_MGMT_METHOD_GET) {
+-		ret = process_pma_cmd(mdev, mdev_port_num, in_mad, out_mad);
++		ret = process_pma_cmd(dev, port_num, in_mad, out_mad);
+ 	} else {
+ 		ret =  process_mad(ibdev, mad_flags, port_num, in_wc, in_grh,
+ 				   in_mad, out_mad);
+ 	}
+-	mlx5_ib_put_native_port_mdev(dev, port_num);
+ 	return ret;
+ }
+
+--
+2.20.1
+
