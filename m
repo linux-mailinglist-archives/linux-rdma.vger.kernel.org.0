@@ -2,686 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA21A5A915
-	for <lists+linux-rdma@lfdr.de>; Sat, 29 Jun 2019 06:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8E65ADDC
+	for <lists+linux-rdma@lfdr.de>; Sun, 30 Jun 2019 02:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbfF2En4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 29 Jun 2019 00:43:56 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8243 "EHLO huawei.com"
+        id S1726957AbfF3AcM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 29 Jun 2019 20:32:12 -0400
+Received: from mail-eopbgr80082.outbound.protection.outlook.com ([40.107.8.82]:49085
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726022AbfF2En4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 29 Jun 2019 00:43:56 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E2121625181A7B8D6E81
-        for <linux-rdma@vger.kernel.org>; Sat, 29 Jun 2019 12:43:31 +0800 (CST)
-Received: from [127.0.0.1] (10.65.94.163) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Sat, 29 Jun 2019
- 12:43:25 +0800
-Subject: Re: [BUGReport for rdma in kernel5.2-rc4]
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        oulijun <oulijun@huawei.com>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-References: <eaa1f156-c9df-f2f6-3c23-f2c1b23e484c@huawei.com>
- <9DD61F30A802C4429A01CA4200E302A7A6838463@fmsmsx123.amr.corp.intel.com>
-From:   wangxi <wangxi11@huawei.com>
-Message-ID: <d57c3f16-6a9a-d0a2-1984-1aba99259cc7@huawei.com>
-Date:   Sat, 29 Jun 2019 12:42:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.6.0
+        id S1726952AbfF3AcM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 29 Jun 2019 20:32:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+CuV7FV+5ZfTNZixnzmdi/OyhjL7LvTIKS3rpPAWtqw=;
+ b=KcYtI2klo8/JTqNbqC3JioIqcG3jfWUHltf+g/4cWRBYR3zkCueieQhriBCLHWVURGdrncNYn0xDPAVsgvMgBqgJk1wpDLeCNbE+hEgCAu3/xPIjFH/9CXt2ybayzsftiHmvrxEL6y52sQUgiAhyapgrcpJH7MsrvrKvfqstUuk=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB4944.eurprd05.prod.outlook.com (20.177.51.29) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2032.18; Sun, 30 Jun 2019 00:32:08 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2032.019; Sun, 30 Jun 2019
+ 00:32:08 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Majd Dibbiny <majd@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v4 06/17] RDMA/counter: Add "auto" configuration
+ mode support
+Thread-Topic: [PATCH rdma-next v4 06/17] RDMA/counter: Add "auto"
+ configuration mode support
+Thread-Index: AQHVJfsE3tKh9oGpaUGuOuzrE5Gb8Kazan8A
+Date:   Sun, 30 Jun 2019 00:32:08 +0000
+Message-ID: <20190630003200.GA7173@mellanox.com>
+References: <20190618172625.13432-1-leon@kernel.org>
+ <20190618172625.13432-7-leon@kernel.org>
+In-Reply-To: <20190618172625.13432-7-leon@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR01CA0006.prod.exchangelabs.com (2603:10b6:208:10c::19)
+ To VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 59d54927-0236-4345-328f-08d6fcf26208
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4944;
+x-ms-traffictypediagnostic: VI1PR05MB4944:
+x-microsoft-antispam-prvs: <VI1PR05MB49440572A6068FBFE3FB7842CFFE0@VI1PR05MB4944.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 008421A8FF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(136003)(366004)(346002)(39860400002)(376002)(199004)(189003)(25786009)(68736007)(8676002)(36756003)(305945005)(7736002)(53936002)(1076003)(6916009)(478600001)(6246003)(8936002)(71190400001)(71200400001)(3846002)(73956011)(2906002)(99286004)(6116002)(5660300002)(66556008)(64756008)(66476007)(316002)(66446008)(54906003)(66946007)(4326008)(14454004)(66066001)(81156014)(33656002)(6486002)(6512007)(86362001)(26005)(256004)(6506007)(386003)(446003)(76176011)(11346002)(486006)(186003)(102836004)(81166006)(229853002)(52116002)(2616005)(476003)(6436002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4944;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: ZXeDRSTRs9TjuU8KBTlKqZ/JcX/gMjthPcE2WFLk2eT2f4hmxvU/k9zzeLvrdiyfirK0FeUNq+NKvcEHChHiRo3SIMBNVk+hl3huJugg1U2EWTnhiBGc1Ha0BgitTm20Fy0h3NUgOXc25T5JZNJrNvB+cgcdZrEeYDfu3eXFRFczAJpT+axQQPdTCa7/eMUjKTmVkEXpdvKKPWIov+EPT+jz0Da0CZeQvaBbesqqv0GmBh+tIp8Vsdj2zszN6fAbHAuFo0c1UNA827Uz2NwEWCsM2xz7lOVw6CxyWahwCULAd7GRmpffPbxmQQmo9dzzIcqcOHvZQBejQp7cRRb3PcZH7LBMzJKs3btSwxb5/1LldT4Jn855HV3mtV4NiEnW4kg+DgXF9ebiEjQx3au6EyiZEFBy73RWL7fZL7DvnXA=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3B0F99AFCC5F4B44A12EFD058D50D00C@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7A6838463@fmsmsx123.amr.corp.intel.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.65.94.163]
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59d54927-0236-4345-328f-08d6fcf26208
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2019 00:32:08.1250
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4944
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Jun 18, 2019 at 08:26:14PM +0300, Leon Romanovsky wrote:
 
+> +/**
+> + * rdma_counter_bind_qp_auto - Check and bind the QP to a counter base o=
+n
+> + *   the auto-mode rule
+> + */
+> +int rdma_counter_bind_qp_auto(struct ib_qp *qp, u8 port)
+> +{
+> +	struct rdma_port_counter *port_counter;
+> +	struct ib_device *dev =3D qp->device;
+> +	struct rdma_counter *counter;
+> +	int ret;
+> +
+> +	if (!rdma_is_port_valid(dev, port))
+> +		return -EINVAL;
+> +
+> +	port_counter =3D &dev->port_data[port].port_counter;
+> +	if (port_counter->mode.mode !=3D RDMA_COUNTER_MODE_AUTO)
+> +		return 0;
+> +
+> +	counter =3D rdma_get_counter_auto_mode(qp, port);
+> +	if (counter) {
+> +		ret =3D __rdma_counter_bind_qp(counter, qp);
+> +		if (ret) {
+> +			rdma_restrack_put(&counter->res);
+> +			return ret;
+> +		}
+> +		kref_get(&counter->kref);
 
-ÔÚ 2019/6/29 2:01, Saleem, Shiraz Ð´µÀ:
->> Subject: [BUGReport for rdma in kernel5.2-rc4]
->>
->>
->> Hi Shiraz & Jason,
->>
->> We have observed a crash when run perftest on a hisilicon arm64 platform in
->> kernel-5.2-rc4.
->>
->> We also tested with different kernel version and found it started from the the
->> following commit:
->>    d10bcf947a3e ("RDMA/umem: Combine contiguous PAGE_SIZE regions in
->> SGEs")
->>
->> Could you please share any hint how to resolve this kind issue?
->> Thanks!
->>
-> 
-> Hi Lijun - I am presuming you had this fix too?
-> 
-> "RDMA/umem: Handle page combining avoidance correctly in ib_umem_add_sg_table()"
-> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/drivers/infiniband/core/umem.c?h=v5.2-rc4&id=7872168a839144dbbfb33125262dab0673f9ddf5
-> 
-> As Jason mentioned, provide the stack backtrace.
-> 
-I have confirmed that the kernel version used in our test already contains this patch, but the phenomenon
-still exists on our platform. The previous log is recorded under the condition that the interval of the
-perftest test is long, and the system will hang. Calltrace will be available when the test interval is short.
+The counter is left in the xarray while the kref is zero, this
+kref_get is wrong..
 
-the kernel version as following:
-commit dc75d8f9bf27647013bbfae1e2f1d114546994c4
-Author: Jason Gunthorpe <jgg@mellanox.com>
-Date:   Wed Jun 5 14:39:26 2019 -0300
+Using two kref like things at the same time is a bad idea, the
+'rdma_get_counter_auto_mode' should return the kref held, not the
+restrack get. The restrack_del doesn't happen as long as the kref is
+positive, so we don't need the retrack thing here..
 
-    {fromtree} RDMA: Move owner into struct ib_device_ops
+> +	} else {
+> +		counter =3D rdma_counter_alloc(dev, port, RDMA_COUNTER_MODE_AUTO);
+> +		if (!counter)
+> +			return -ENOMEM;
+> +
+> +		auto_mode_init_counter(counter, qp, port_counter->mode.mask);
+> +
+> +		ret =3D __rdma_counter_bind_qp(counter, qp);
+> +		if (ret)
+> +			goto err_bind;
+> +
+> +		rdma_counter_res_add(counter, qp);
+> +		if (!rdma_restrack_get(&counter->res)) {
+> +			ret =3D -EINVAL;
+> +			goto err_get;
+> +		}
 
-    This more closely follows how other subsytems work, with owner being a
-    member of the structure containing the function pointers.
+and this shouldn't be needed as the kref is inited to 1 by the
+rdma_counter_alloc..
 
-    Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-    Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-    Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> +	}
+> +
+> +	return 0;
+> +
+> +err_get:
+> +	 __rdma_counter_unbind_qp(qp);
+> +	__rdma_counter_dealloc(counter);
+> +err_bind:
+> +	rdma_counter_free(counter);
+> +	return ret;
+> +}
 
-the calltrace log as following:
-root@(none)$ uname -a
-Linux (none) 5.2.0-rc4-gdc75d8f9 #1 SMP PREEMPT Sat Jun 29 11:23:58 HKT 2019 aarch64 GNU/Linux
-root@(none)$ ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-[1] 1143
-root@(none)$ ib_read_bw -d hns_2 -n 5 192.168.10.110
----------------------------------------------------------------------------------------
-Device not recognized to implement inline feature. Disabling it
-cqe = 5, less than minimum CQE number.
----------------------------------------------------------------------------------------
-                    RDMA_Read BW Test
- Dual-port       : OFF		Device         : hns_2
- Number of qps   : 1		Transport type : IB
- Connection type : RC		Using SRQ      : OFF
- TX depth        : 5
- CQ Moderation   : 5
- Mtu             : 1024[B]
- Link type       : Ethernet
- GID index       : 2
- Outstand reads  : 128
- rdma_cm QPs	 : OFF
- Data ex. method : Ethernet
----------------------------------------------------------------------------------------
- local address: LID 0000 QPN 0x0009 PSN 0x6340e6 OUT 0x80 RKey 0x000300 VAddr 0x00ffffa271f000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
- remote address: LID 0000 QPN 0x0008 PSN 0xbd1845 OUT 0x80 RKey 0x000200 VAddr 0x00ffff98244000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
----------------------------------------------------------------------------------------
- #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
- 65536      5                6469.94            6468.60		   0.103498
----------------------------------------------------------------------------------------
-[1]+  Done                    ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1
-root@(none)$ ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-[[1] 1145
-   87.412596] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   87.412596] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   87.426751] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
-[   87.426751] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
-root@(none)$ ib_read_bw -d hns_2 -n 5 192.168.10.110
----------------------------------------------------------------------------------------
-Device not recognized to implement inline feature. Disabling it
-cqe = 5, less than minimum CQE number.
----------------------------------------------------------------------------------------
-                    RDMA_Read BW Test
- Dual-port       : OFF		Device         : hns_2
- Number of qps   : 1		Transport type : IB
- Connection type : RC		Using SRQ      : OFF
- TX depth        : 5
- CQ Moderation   : 5
- Mtu             : 1024[B]
- Link type       : Ethernet
- GID index       : 2
- Outstand reads  : 128
- rdma_cm QPs	 : OFF
- Data ex. method : Ethernet
----------------------------------------------------------------------------------------
- local address: LID 0000 QPN 0x000b PSN 0xef5421 OUT 0x80 RKey 0x000300 VAddr 0x00ffff9f7b8000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
- remote address: LID 0000 QPN 0x000a PSN 0xd2b849 OUT 0x80 RKey 0x000200 VAddr 0x00ffff822e7000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
----------------------------------------------------------------------------------------
- #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
- 65536      5                9044.77            9044.77		   0.144716
----------------------------------------------------------------------------------------
-[1]+  Done                    ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1
-root@(none)$ ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-[1] 1147
-root@(none)$ ib_read_bw -d hns_2 -n 5 192.168.10.110
-[   88.772598] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   88.772598] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   88.785887] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
-[   88.785887] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
----------------------------------------------------------------------------------------
-Device not recognized to implement inline feature. Disabling it
-cqe = 5, less than minimum CQE number.
----------------------------------------------------------------------------------------
-                    RDMA_Read BW Test
- Dual-port       : OFF		Device         : hns_2
- Number of qps   : 1		Transport type : IB
- Connection type : RC		Using SRQ      : OFF
- TX depth        : 5
- CQ Moderation   : 5
- Mtu             : 1024[B]
- Link type       : Ethernet
- GID index       : 2
- Outstand reads  : 128
- rdma_cm QPs	 : OFF
- Data ex. method : Ethernet
----------------------------------------------------------------------------------------
- local address: LID 0000 QPN 0x000d PSN 0x553436 OUT 0x80 RKey 0x000200 VAddr 0x00ffffa302c000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
- remote address: LID 0000 QPN 0x000c PSN 0xc22528 OUT 0x80 RKey 0x000300 VAddr 0x00ffffa2a0c000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
----------------------------------------------------------------------------------------
- #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
- 65536      5                8966.88            8966.88		   0.143470
----------------------------------------------------------------------------------------
-[1]+  Done                    ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1
-root@(none)$ ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-[1] 1149
-root@(none)$ ib_read_bw -d hns_2 -n 5 192.168.10.110
-[   90.064588] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   90.064588] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   90.077875] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
-[   90.077875] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
----------------------------------------------------------------------------------------
-Device not recognized to implement inline feature. Disabling it
-cqe = 5, less than minimum CQE number.
----------------------------------------------------------------------------------------
-                    RDMA_Read BW Test
- Dual-port       : OFF		Device         : hns_2
- Number of qps   : 1		Transport type : IB
- Connection type : RC		Using SRQ      : OFF
- TX depth        : 5
- CQ Moderation   : 5
- Mtu             : 1024[B]
- Link type       : Ethernet
- GID index       : 2
- Outstand reads  : 128
- rdma_cm QPs	 : OFF
- Data ex. method : Ethernet
----------------------------------------------------------------------------------------
- local address: LID 0000 QPN 0x000f PSN 0xae6ff8 OUT 0x80 RKey 0x000300 VAddr 0x00ffffb89e7000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
- remote address: LID 0000 QPN 0x000e PSN 0x2e7a7d OUT 0x80 RKey 0x000200 VAddr 0x00ffffbe2e5000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
----------------------------------------------------------------------------------------
- #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
- 65536      5                9057.91            9047.42		   0.144759
----------------------------------------------------------------------------------------
-[1]+  Done                    ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1
-root@(none)$ ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-[[1] 1151
-   91.192578] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   91.192578] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   91.206731] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
-[   91.206731] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
-root@(none)$ ib_read_bw -d hns_2 -n 5 192.168.10.110
----------------------------------------------------------------------------------------
-Device not recognized to implement inline feature. Disabling it
-cqe = 5, less than minimum CQE number.
----------------------------------------------------------------------------------------
-                    RDMA_Read BW Test
- Dual-port       : OFF		Device         : hns_2
- Number of qps   : 1		Transport type : IB
- Connection type : RC		Using SRQ      : OFF
- TX depth        : 5
- CQ Moderation   : 5
- Mtu             : 1024[B]
- Link type       : Ethernet
- GID index       : 2
- Outstand reads  : 128
- rdma_cm QPs	 : OFF
- Data ex. method : Ethernet
----------------------------------------------------------------------------------------
- local address: LID 0000 QPN 0x0011 PSN 0xb4d02e OUT 0x80 RKey 0x000300 VAddr 0x00ffffb75c5000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
- remote address: LID 0000 QPN 0x0010 PSN 0xbe677c OUT 0x80 RKey 0x000200 VAddr 0x00ffffb82f6000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
----------------------------------------------------------------------------------------
- #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
- 65536      5                8815.15            8805.21		   0.140883
----------------------------------------------------------------------------------------
-[1]+  Done                    ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1
-root@(none)$ ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-[1] 1153
-root@(none)$ ib_read_bw -d hns_2 -n 5 192.168.10.110
-[   92.580588] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-2
-[   92.580588] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-2
-[   92.593874] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:2
-[   92.593874] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:2
----------------------------------------------------------------------------------------
-Device not recognized to implement inline feature. Disabling it
-cqe = 5, less than minimum CQE number.
----------------------------------------------------------------------------------------
-                    RDMA_Read BW Test
- Dual-port       : OFF		Device         : hns_2
- Number of qps   : 1		Transport type : IB
- Connection type : RC		Using SRQ      : OFF
- TX depth        : 5
- CQ Moderation   : 5
- Mtu             : 1024[B]
- Link type       : Ethernet
- GID index       : 2
- Outstand reads  : 128
- rdma_cm QPs	 : OFF
- Data ex. method : Ethernet
----------------------------------------------------------------------------------------
- local address: LID 0000 QPN 0x0013 PSN 0x94fd3e OUT 0x80 RKey 0x000300 VAddr 0x00ffffb0ec9000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
- remote address: LID 0000 QPN 0x0012 PSN 0x282156 OUT 0x80 RKey 0x000200 VAddr 0x00ffff8f99d000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
----------------------------------------------------------------------------------------
- #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
- 65536      5                8890.35            8887.82		   0.142205
----------------------------------------------------------------------------------------
-[1]+  Done                    ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1
-root@(none)$ ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-[1] 1155
-root@(none)$ ib_read_bw -d hns_2 -n 5 192.168.10.110
----------------------------------------------------------------------------------------
-Device not recognized to implement inline feature. Disabling it
-cqe = 5, less than minimum CQE number.
----------------------------------------------------------------------------------------
-                    RDMA_Read BW Test
- Dual-port       : OFF		Device         : hns_2
- Number of qps   : 1		Transport type : IB
- Connection type : RC		Using SRQ      : OFF
- TX depth        : 5
- CQ Moderation   : 5
- Mtu             : 1024[B]
- Link type       : Ethernet
- GID index       : 2
- Outstand reads  : 128
- rdma_cm QPs	 : OFF
- Data ex. method : Ethernet
----------------------------------------------------------------------------------------
- local address: LID 0000 QPN 0x0015 PSN 0x4ef728 OUT 0x80 RKey 0x000300 VAddr 0x00ffffb46a4000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
- remote address: LID 0000 QPN 0x0014 PSN 0x6ba809 OUT 0x80 RKey 0x000200 VAddr 0x00ffff88787000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
----------------------------------------------------------------------------------------
- #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
- 65536      5                9204.54            9204.54		   0.147273
----------------------------------------------------------------------------------------
-[1]+  Done                    ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1
-root@(none)$ ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-[1] 1157
-root@(none)$ ib_read_bw -d hns_2 -n 5 192.168.10.110
-[   95.192596] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   95.192596] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   95.205883] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
-[   95.205883] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
----------------------------------------------------------------------------------------
-Device not recognized to implement inline feature. Disabling it
-cqe = 5, less than minimum CQE number.
----------------------------------------------------------------------------------------
-                    RDMA_Read BW Test
- Dual-port       : OFF		Device         : hns_2
- Number of qps   : 1		Transport type : IB
- Connection type : RC		Using SRQ      : OFF
- TX depth        : 5
- CQ Moderation   : 5
- Mtu             : 1024[B]
- Link type       : Ethernet
- GID index       : 2
- Outstand reads  : 128
- rdma_cm QPs	 : OFF
- Data ex. method : Ethernet
----------------------------------------------------------------------------------------
- local address: LID 0000 QPN 0x0016 PSN 0xafe673 OUT 0x80 RKey 0x000200 VAddr 0x00ffffb96fc000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
- remote address: LID 0000 QPN 0x0017 PSN 0xdfb0e7 OUT 0x80 RKey 0x000300 VAddr 0x00ffff927a6000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
----------------------------------------------------------------------------------------
- #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
- 65536      5                8765.63            8758.26		   0.140132
----------------------------------------------------------------------------------------
-[1]+  Done                    ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1
-root@(none)$ ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-[[1] 1159
-   96.192577] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   96.192577] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   96.206731] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
-[   96.206731] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
-root@(none)$ ib_read_bw -d hns_2 -n 5 192.168.10.110
----------------------------------------------------------------------------------------
-Device not recognized to implement inline feature. Disabling it
-cqe = 5, less than minimum CQE number.
----------------------------------------------------------------------------------------
-                    RDMA_Read BW Test
- Dual-port       : OFF		Device         : hns_2
- Number of qps   : 1		Transport type : IB
- Connection type : RC		Using SRQ      : OFF
- TX depth        : 5
- CQ Moderation   : 5
- Mtu             : 1024[B]
- Link type       : Ethernet
- GID index       : 2
- Outstand reads  : 128
- rdma_cm QPs	 : OFF
- Data ex. method : Ethernet
----------------------------------------------------------------------------------------
- local address: LID 0000 QPN 0x0019 PSN 0xa607e OUT 0x80 RKey 0x000300 VAddr 0x00ffffb6020000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
- remote address: LID 0000 QPN 0x0018 PSN 0xc3b7bc OUT 0x80 RKey 0x000200 VAddr 0x00ffffbe95e000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
----------------------------------------------------------------------------------------
- #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
- 65536      5                8620.62            8611.12		   0.137778
----------------------------------------------------------------------------------------
-[1]+  Done                    ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1
-root@(none)$ ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-[1] 1161
-root@(none)$ ib_read_bw -d hns_2 -n 5 192.168.10.110
-[   97.540585] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   97.540585] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-[   97.553871] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
-[   97.553871] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
----------------------------------------------------------------------------------------
-Device not recognized to implement inline feature. Disabling it
-cqe = 5, less than minimum CQE number.
----------------------------------------------------------------------------------------
-                    RDMA_Read BW Test
- Dual-port       : OFF		Device         : hns_2
- Number of qps   : 1		Transport type : IB
- Connection type : RC		Using SRQ      : OFF
- TX depth        : 5
- CQ Moderation   : 5
- Mtu             : 1024[B]
- Link type       : Ethernet
- GID index       : 2
- Outstand reads  : 128
- rdma_cm QPs	 : OFF
- Data ex. method : Ethernet
----------------------------------------------------------------------------------------
- local address: LID 0000 QPN 0x001b PSN 0x3ea763 OUT 0x80 RKey 0x000300 VAddr 0x00ffffb8bde000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
- remote address: LID 0000 QPN 0x001a PSN 0x818b6a OUT 0x80 RKey 0x000200 VAddr 0x00ffffb8df2000
- GID: 00:00:00:00:00:00:00:00:00:00:255:255:192:168:10:110
----------------------------------------------------------------------------------------
- #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
- 65536      5                9070.99            9068.36		   0.145094
----------------------------------------------------------------------------------------
-[1]+  Done             [       ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1
-   97.812496] BUG: Bad page state in process swapper/99  pfn:203f958e4
-[   97.812496] BUG: Bad page state in process swapper/99  pfn:203f958e4
-[   97.812498] BUG: Bad page state in process swapper/100  pfn:203f9597a
-[   97.812498] BUG: Bad page state in process swapper/100  pfn:203f9597a
-[   97.812502] page:ffff7e80fe565e80 refcount:-1 mapcount:0 mapping:0000000000000000 index:0x1
-[   97.812502] page:ffff7e80fe565e80 refcount:-1 mapcount:0 mapping:0000000000000000 index:0x1
-[   97.831388] page:ffff7e80fe563900 reroot@(none)$ fcount:-1 mapcount:0 mapping:0000000000000000 index:0x1
-[   97.831388] page:ffff7e80fe563900 refcount:-1 mapcount:0 mapping:0000000000000000 index:0x1
-[   97.844317] flags: 0xdfffe0000000000a(referenced|dirty)
-[   97.844317] flags: 0xdfffe0000000000a(referenced|dirty)
-[   97.861087] flags: 0xdfffe00000000000()
-[   97.861087] flags: 0xdfffe00000000000()
-[   97.861091] raw: dfffe00000000000 dead000000000100 dead000000000200 0000000000000000
-[   97.861091] raw: dfffe00000000000 dead000000000100 dead000000000200 0000000000000000
-[   97.879857] raw: dfffe0000000000a dead000000000100 dead000000000200 0000000000000000
-[   97.879857] raw: dfffe0000000000a dead000000000100 dead000000000200 0000000000000000
-[   97.890339] raw: 0000000000000001 0000000000000000 ffffffffffffffff 0000000000000000
-[   97.890339] raw: 0000000000000001 0000000000000000 ffffffffffffffff 0000000000000000
-[   97.898027] raw: 0000000000000001 0000000000000000 ffffffffffffffff 0000000000000000
-[   97.898027] raw: 0000000000000001 0000000000000000 ffffffffffffffff 0000000000000000
-[   97.913576] page dumped because: nonzero _refcount
-[   97.913576] page dumped because: nonzero _refcount
-[   97.929124] page dumped because: nonzero _refcount
-[   97.929124] page dumped because: nonzero _refcount
-[   97.929125] Modules linked in: hns_roce_hw_v2 hns_roce hclge hns3 hnae3
-[   97.929125] Modules linked in: hns_roce_hw_v2 hns_roce hclge hns3 hnae3
-[   97.944673] Modules linked in: hns_roce_hw_v2 hns_roce hclge hns3 hnae3
-[   97.944673] Modules linked in: hns_roce_hw_v2 hns_roce hclge hns3 hnae3
-[   97.960225] CPU: 100 PID: 0 Comm: swapper/100 Not tainted 5.2.0-rc4-gdc75d8f9 #1
-[   97.960225] CPU: 100 PID: 0 Comm: swapper/100 Not tainted 5.2.0-rc4-gdc75d8f9 #1
-[   98.020847] Hardware name: Huawei TaiShan 2280 V2/BC82AMDA, BIOS TA BIOS 2280-A CS V2.26.01 06/13/2019
-[   98.020847] Hardware name: Huawei TaiShan 2280 V2/BC82AMDA, BIOS TA BIOS 2280-A CS V2.26.01 06/13/2019
-[   98.039542] Call trace:
-[   98.039542] Call trace:
-[   98.044440]  dump_backtrace+0x0/0x140
-[   98.044440]  dump_backtrace+0x0/0x140
-[   98.051779]  show_stack+0x14/0x20
-[   98.051779]  show_stack+0x14/0x20
-[   98.058422]  dump_stack+0xa8/0xcc
-[   98.058422]  dump_stack+0xa8/0xcc
-[   98.065065]  bad_page+0xe8/0x150
-[   98.065065]  bad_page+0xe8/0x150
-[   98.071532]  free_pages_check_bad+0x70/0xa8
-[   98.071532]  free_pages_check_bad+0x70/0xa8
-[   98.079920]  free_pcppages_bulk+0x430/0x6d8
-[   98.079920]  free_pcppages_bulk+0x430/0x6d8
-[   98.088308]  free_unref_page_commit+0xc0/0xf8
-[   98.088308]  free_unref_page_commit+0xc0/0xf8
-[   98.097045]  free_unref_page+0x78/0x98
-[   98.097045]  free_unref_page+0x78/0x98
-[   98.104561]  __put_page+0x44/0x50
-[   98.104561]  __put_page+0x44/0x50
-[   98.111202]  free_page_and_swap_cache+0xac/0x100
-[   98.111202]  free_page_and_swap_cache+0xac/0x100
-[   98.120463]  tlb_remove_table_rcu+0x30/0x58
-[   98.120463]  tlb_remove_table_rcu+0x30/0x58
-[   98.128852]  rcu_core+0x2d8/0x5d8
-[   98.128852]  rcu_core+0x2d8/0x5d8
-[   98.135493]  __do_softirq+0x11c/0x3a0
-[   98.135493]  __do_softirq+0x11c/0x3a0
-[   98.142834]  irq_exit+0xd0/0xd8
-[   98.142834]  irq_exit+0xd0/0xd8
-[   98.149127]  __handle_domain_irq+0x60/0xb0
-[   98.149127]  __handle_domain_irq+0x60/0xb0
-[   98.157339]  gic_handle_irq+0x5c/0x154
-[   98.157339]  gic_handle_irq+0x5c/0x154
-[   98.164853]  el1_irq+0xb8/0x180
-[   98.164853]  el1_irq+0xb8/0x180
-[   98.171144]  arch_cpu_idle+0x30/0x230
-[   98.171144]  arch_cpu_idle+0x30/0x230
-[   98.178484]  default_idle_call+0x1c/0x38
-[   98.178484]  default_idle_call+0x1c/0x38
-[   98.186349]  do_idle+0x1f0/0x2d0
-[   98.186349]  do_idle+0x1f0/0x2d0
-[   98.192815]  cpu_startup_entry+0x24/0x28
-[   98.192815]  cpu_startup_entry+0x24/0x28
-[   98.200679]  secondary_start_kernel+0x18c/0x1d0
-[   98.200679]  secondary_start_kernel+0x18c/0x1d0
-[   98.209765] Disabling lock debugging due to kernel taint
-[   98.209765] Disabling lock debugging due to kernel taint
-[   98.209767] CPU: 99 PID: 0 Comm: swapper/99 Not tainted 5.2.0-rc4-gdc75d8f9 #1
-[   98.209767] CPU: 99 PID: 0 Comm: swapper/99 Not tainted 5.2.0-rc4-gdc75d8f9 #1
-[   98.209768] Hardware name: Huawei TaiShan 2280 V2/BC82AMDA, BIOS TA BIOS 2280-A CS V2.26.01 06/13/2019
-[   98.209768] Hardware name: Huawei TaiShan 2280 V2/BC82AMDA, BIOS TA BIOS 2280-A CS V2.26.01 06/13/2019
-[   98.220425] BUG: Bad page state in process swapper/100  pfn:203f95977
-[   98.220425] BUG: Bad page state in process swapper/100  pfn:203f95977
-[   98.234925] Call trace:
-[   98.234925] Call trace:
-[   98.253619] page:ffff7e80fe565dc0 refcount:-1 mapcount:0 mapping:0000000000000000 index:0x1
-[   98.253619] page:ffff7e80fe565dc0 refcount:-1 mapcount:0 mapping:0000000000000000 index:0x1
-[   98.266550]  dump_backtrace+0x0/0x140
-[   98.266550]  dump_backtrace+0x0/0x140
-[   98.271441] flags: 0xdfffe00000000000()
-[   98.271441] flags: 0xdfffe00000000000()
-[   98.271442] raw: dfffe00000000000 dead000000000100 dead000000000200 0000000000000000
-[   98.271442] raw: dfffe00000000000 dead000000000100 dead000000000200 0000000000000000
-[   98.288214]  show_stack+0x14/0x20
-[   98.288214]  show_stack+0x14/0x20
-[   98.295552] raw: 0000000000000001 0000000000000000 ffffffffffffffff 0000000000000000
-[   98.295552] raw: 0000000000000001 0000000000000000 ffffffffffffffff 0000000000000000
-[   98.303241]  dump_stack+0xa8/0xcc
-[   98.303241]  dump_stack+0xa8/0xcc
-[   98.318788] page dumped because: nonzero _refcount
-[   98.318788] page dumped because: nonzero _refcount
-[   98.325429]  bad_page+0xe8/0x150
-[   98.325429]  bad_page+0xe8/0x150
-[   98.325431]  free_pages_check_bad+0x70/0xa8
-[   98.325431]  free_pages_check_bad+0x70/0xa8
-[   98.340978] Modules linked in: hns_roce_hw_v2 hns_roce hclge hns3 hnae3
-[   98.340978] Modules linked in: hns_roce_hw_v2 hns_roce hclge hns3 hnae3
-[   98.347620]  free_pcppages_bulk+0x430/0x6d8
-[   98.347620]  free_pcppages_bulk+0x430/0x6d8
-[   98.393743]  free_unref_page_commit+0xc0/0xf8
-[   98.393743]  free_unref_page_commit+0xc0/0xf8
-[   98.402480]  free_unref_page+0x78/0x98
-[   98.402480]  free_unref_page+0x78/0x98
-[   98.409994]  __free_pages+0x44/0x50
-[   98.409994]  __free_pages+0x44/0x50
-[   98.416985]  free_pages.part.5+0x1c/0x28
-[   98.416985]  free_pages.part.5+0x1c/0x28
-[   98.424848]  free_pages+0x14/0x20
-[   98.424848]  free_pages+0x14/0x20
-[   98.431488]  tlb_remove_table_rcu+0x4c/0x58
-[   98.431488]  tlb_remove_table_rcu+0x4c/0x58
-[   98.439876]  rcu_core+0x2d8/0x5d8
-[   98.439876]  rcu_core+0x2d8/0x5d8
-[   98.446517]  __do_softirq+0x11c/0x3a0
-[   98.446517]  __do_softirq+0x11c/0x3a0
-[   98.453858]  irq_exit+0xd0/0xd8
-[   98.453858]  irq_exit+0xd0/0xd8
-[   98.460150]  __handle_domain_irq+0x60/0xb0
-[   98.460150]  __handle_domain_irq+0x60/0xb0
-[   98.468363]  gic_handle_irq+0x5c/0x154
-[   98.468363]  gic_handle_irq+0x5c/0x154
-[   98.475876]  el1_irq+0xb8/0x180
-[   98.475876]  el1_irq+0xb8/0x180
-[   98.482168]  arch_cpu_idle+0x30/0x230
-[   98.482168]  arch_cpu_idle+0x30/0x230
-[   98.489507]  default_idle_call+0x1c/0x38
-[   98.489507]  default_idle_call+0x1c/0x38
-[   98.497371]  do_idle+0x1f0/0x2d0
-[   98.497371]  do_idle+0x1f0/0x2d0
-[   98.503837]  cpu_startup_entry+0x24/0x28
-[   98.503837]  cpu_startup_entry+0x24/0x28
-[   98.511701]  secondary_start_kernel+0x18c/0x1d0
-[   98.511701]  secondary_start_kernel+0x18c/0x1d0
-[   98.520788] CPU: 100 PID: 0 Comm: swapper/100 Tainted: G    B             5.2.0-rc4-gdc75d8f9 #1
-[   98.520788] CPU: 100 PID: 0 Comm: swapper/100 Tainted: G    B             5.2.0-rc4-gdc75d8f9 #1
-[   98.520789] BUG: Bad page state in process swapper/99  pfn:203f96a5a
-[   98.520789] BUG: Bad page state in process swapper/99  pfn:203f96a5a
-[   98.520791] page:ffff7e80fe5a9680 refcount:-1 mapcount:0 mapping:0000000000000000 index:0x1
-[   98.520791] page:ffff7e80fe5a9680 refcount:-1 mapcount:0 mapping:0000000000000000 index:0x1
-[   98.538435] Hardware name: Huawei TaiShan 2280 V2/BC82AMDA, BIOS TA BIOS 2280-A CS V2.26.01 06/13/2019
-[   98.538435] Hardware name: Huawei TaiShan 2280 V2/BC82AMDA, BIOS TA BIOS 2280-A CS V2.26.01 06/13/2019
-[   98.538436] Call trace:
-[   98.538436] Call trace:
-[   98.551189] flags: 0xdfffe0000000000a(referenced|dirty)
-[   98.551189] flags: 0xdfffe0000000000a(referenced|dirty)
-[   98.551191] raw: dfffe0000000000a dead000000000100 dead000000000200 0000000000000000
-[   98.551191] raw: dfffe0000000000a dead000000000100 dead000000000200 0000000000000000
-[   98.567962]  dump_backtrace+0x0/0x140
-[   98.567962]  dump_backtrace+0x0/0x140
-[   98.567963]  show_stack+0x14/0x20
-[   98.567963]  show_stack+0x14/0x20
-[   98.586656] raw: 0000000000000001 0000000000000000 ffffffffffffffff 0000000000000000
-[   98.586656] raw: 0000000000000001 0000000000000000 ffffffffffffffff 0000000000000000
-[   98.591549]  dump_stack+0xa8/0xcc
-[   98.591549]  dump_stack+0xa8/0xcc
-[   98.602031] page dumped because: nonzero _refcount
-[   98.602031] page dumped because: nonzero _refcount
-[   98.617581]  bad_page+0xe8/0x150
-[   98.617581]  bad_page+0xe8/0x150
-[   98.624918] Modules linked in: hns_roce_hw_v2 hns_roce hclge hns3 hnae3
-[   98.624918] Modules linked in: hns_roce_hw_v2 hns_roce hclge hns3 hnae3
-[   98.631559]  free_pages_check_bad+0x70/0xa8
-[   98.631559]  free_pages_check_bad+0x70/0xa8
-[   98.631560]  free_pcppages_bulk+0x430/0x6d8
-[   98.631560]  free_pcppages_bulk+0x430/0x6d8
-[   98.699872]  free_unref_page_commit+0xc0/0xf8
-[   98.699872]  free_unref_page_commit+0xc0/0xf8
-[   98.708610]  free_unref_page+0x78/0x98
-[   98.708610]  free_unref_page+0x78/0x98
-[   98.716123]  __put_page+0x44/0x50
-[   98.716123]  __put_page+0x44/0x50
-[   98.722764]  free_page_and_swap_cache+0xac/0x100
-[   98.722764]  free_page_and_swap_cache+0xac/0x100
-[   98.732025]  tlb_remove_table_rcu+0x30/0x58
-[   98.732025]  tlb_remove_table_rcu+0x30/0x58
-[ib_read_bw -d hns_2 -n 5 > /dev/null 2>&1 &
-   98.740412]  rcu_core+0x2d8/0x5d8
-[   98.740412]  rcu_core+0x2d8/0x5d8
-[   98.750959]  __do_softirq+0x11c/0x3a0
-[   98.750959]  __do_softirq+0x11c/0x3a0
-[   98.758298]  irq_exit+0xd0/0xd8
-[   98.758298]  irq_exit+0xd0/0xd8
-[   98.764589]  __handle_domain_irq+0x60/0xb0
-[   98.764589]  __handle_domain_irq+0x60/0xb0
-[   98.772802]  gic_handle_irq+0x5c/0x154
-[   98.772802]  gic_handle_irq+0x5c/0x154
-[   98.780316]  el1_irq+0xb8/0x180
-[   98.780316]  el1_irq+0xb8/0x180
-[   98.786608]  arch_cp[1] 1163
-u_idle+0x30/0x230
-[   98.786608]  arch_cpu_idle+0x30/0x230
-[   98.794815]  default_idle_call+0x1c/0x38
-[   98.794815]  default_idle_call+0x1c/0x38
-[   98.802678]  do_idle+0x1f0/0x2d0
-[   98.802678]  do_idle+0x1f0/0x2d0
-[   98.809144]  cpu_startup_entry+0x24/0x28
-[   98.809144]  cpu_startup_entry+0x24/0x28
-[   98.817008]  secondary_start_kernel+0x18c/0x1d0
-[   98.817008]  secondary_start_kernel+0x18c/0x1d0
-[   98.826095] CPU: 99 PID: 0 Comm: swapper/99 Tainted: G    B             5.2.0-rc4-gdc75d8f9 #1
-[   98.826095] CPU: 99 PID: 0 Comm: swapper/99 Tainted: G    B             5.2.0-rc4-gdc75d8f9 #1
-[root@(none)$    98.843392] Hardware name: Huawei TaiShan 2280 V2/BC82AMDA, BIOS TA BIOS 2280-A CS V2.26.01 06/13/2019
-[   98.843392] Hardware name: Huawei TaiShan 2280 V2/BC82AMDA, BIOS TA BIOS 2280-A CS V2.26.01 06/13/2019
-[   98.864082] Call trace:
-[   98.864082] Call trace:
-[   98.868976]  dump_backtrace+0x0/0x140
-[   98.868976]  dump_backtrace+0x0/0x140
-[   98.876315]  show_stack+0x14/0x20
-[   98.876315]  show_stack+0x14/0x20
-[   98.882955]  dump_stack+0xa8/0xcc
-[   98.882955]  dump_stack+0xa8/0xcc
-[   98.889596]  bad_page+0xe8/0x150
-[   98.889596]  bad_page+0xe8/0x150
-[   98.896062]  free_pages_check_bad+0x70/0xa8
-[   98.896062]  free_pages_check_bad+0x70/0xa8
-[   98.904450]  free_pcppages_bulk+0x430/0x6d8
-[   98.904450]  free_pcppages_bulk+0x430/0x6d8
-[   98.912838]  free_unref_page_commit+0xc0/0xf8
-[   98.912838]  free_unref_page_commit+0xc0/0xf8
-[   98.921575]  free_unref_page+0x78/0x98
-[   98.921575]  free_unref_page+0x78/0x98
-[   98.929089]  __free_pages+0x44/0x50
-[   98.929089]  __free_pages+0x44/0x50
-[   98.936079]  free_pages.part.5+0x1c/0x28
-[   98.936079]  free_pages.part.5+0x1c/0x28
-[   98.943943]  free_pages+0x14/0x20
-[   98.943943]  free_pages+0x14/0x20
-[   98.950583]  tlb_remove_table_rcu+0x4c/0x58
-[   98.950583]  tlb_remove_table_rcu+0x4c/0x58
-[   98.958970]  rcu_core+0x2d8/0x5d8
-[   98.958970]  rcu_core+0x2d8/0x5d8
-[   98.965611]  __do_softirq+0x11c/0x3a0
-[   98.965611]  __do_softirq+0x11c/0x3a0
-[   98.972951]  irq_exit+0xd0/0xd8
-[   98.972951]  irq_exit+0xd0/0xd8
-[   98.979242]  __handle_domain_irq+0x60/0xb0
-[   98.979242]  __handle_domain_irq+0x60/0xb0
-[   98.987455]  gic_handle_irq+0x5c/0x154
-[   98.987455]  gic_handle_irq+0x5c/0x154
-[   98.994968]  el1_irq+0xb8/0x180
-[   98.994968]  el1_irq+0xb8/0x180
-[   99.001260]  arch_cpu_idle+0x30/0x230
-[   99.001260]  arch_cpu_idle+0x30/0x230
-[   99.008599]  default_idle_call+0x1c/0x38
-[   99.008599]  default_idle_call+0x1c/0x38
-[   99.016462]  do_idle+0x1f0/0x2d0
-[   99.016462]  do_idle+0x1f0/0x2d0
-[   99.022927]  cpu_startup_entry+0x24/0x28
-[   99.022927]  cpu_startup_entry+0x24/0x28
-[   99.030791]  secondary_start_kernel+0x18c/0x1d0
-[   99.030791]  secondary_start_kernel+0x18c/0x1d0
-[   99.039878] BUG: Bad page state in process swapper/99  pfn:203f958ec
-[   99.039878] BUG: Bad page state in process swapper/99  pfn:203f958ec
-[ib_read_bw -d hns_2 -n 5 192.168.10.110
-> Shiraz
-> _______________________________________________
-> Linuxarm mailing list
-> Linuxarm@huawei.com
-> http://hulk.huawei.com/mailman/listinfo/linuxarm
-> .
-> 
+And then all this error unwind and all the twisty __ functions should
+just be a single kref_put and the release should handle everything.
 
+Jason
