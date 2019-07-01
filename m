@@ -2,213 +2,256 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDA55BB2A
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jul 2019 14:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036BD5BD65
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jul 2019 15:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727256AbfGAMEC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Jul 2019 08:04:02 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:42958 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727189AbfGAMEB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jul 2019 08:04:01 -0400
-Received: by mail-pg1-f173.google.com with SMTP id t132so2592251pgb.9
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Jul 2019 05:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=HgIPncYobqGNIvMdEM3blNbzxXOvLKdvFIiyRn4eKDU=;
-        b=lX4roXfX3c8ET8wgWhtd24mRZ5ClNJlcP2KLxyeCZdWvIR4pq9Pkmm/mL8Lck9eWsX
-         Bs+CXM/PDd5IBRy6H/TeE543+HuVpreQn6Lve6a4A5EyKpOeJ1QNjXDkbWIzeQLBovPx
-         JRkdiBQnGJ2YLwY7943CCRr1S/MT0gHgeFb6l+N9/1Y3goybREyEU9AQHAiwzrcnEnZf
-         +oAkspZkhgcDCvmLcF4gfZd4uvegD4aoSeMt8IAInmcpqsgj8SL+iNV9o7srYszaPq/1
-         Ar5KVxMIt4vlJ0nPJdWSH/hFicEYPAGqEaSnP66IL25xaxjtS7qhgcQpx+8fpwxGcB/T
-         gd8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=HgIPncYobqGNIvMdEM3blNbzxXOvLKdvFIiyRn4eKDU=;
-        b=dSNaQUFgM/TiG03o66+nEHYfauF8I3nOnRmMLHl+5TMsxLmLJLG/f623kfaHRszXDJ
-         USjkoUV0Y2QtPQUaP+uMscCTCV12Xml/XtwVBX5MEA+fQx1cKiXgL84J/lYnaytXLcww
-         GqPySiWs6R5bhjNjR7nNr91O2aI4pmzi0u8efVaJPN++LtcyH0Fu8yHORhVB9vyrq0Ln
-         HVtG/G2d3FysYY4emlAd3nB79XPd9XiebUrEG2EHtqt3Za3d13NEDSqTFit00RprhvZL
-         FKHx9OV6W8R/Kj4EkzOv4MViWoMNlBnDe8ZR80cIZUtiOJZvvShHbIbFdskdkKisj0Aa
-         zoLg==
-X-Gm-Message-State: APjAAAV671QMLLNlqlpMY8Z7vANX0E/4wKqaoBaYQ3JTTwAyPOBRwKQw
-        ZFHPfPZkoyeVtcsfAUk7wKA=
-X-Google-Smtp-Source: APXvYqxEuHLijdlZk00n6wV5Y4FUZdw2/xaW4DFcw5IMmcEtLrmAXHdaXsopv87eoAwn9CQNVyOJpw==
-X-Received: by 2002:a63:b555:: with SMTP id u21mr2529121pgo.222.1561982641058;
-        Mon, 01 Jul 2019 05:04:01 -0700 (PDT)
-Received: from [0.0.0.0] ([47.244.239.6])
-        by smtp.gmail.com with ESMTPSA id i36sm10887851pgl.70.2019.07.01.05.03.58
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Jul 2019 05:04:00 -0700 (PDT)
-To:     linux-rdma@vger.kernel.org
-Cc:     leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca
-From:   Jianchao Wang <jianchao.wan9@gmail.com>
-Subject: RDMA on Mellanox ConnectX-4 Lx cannot work
-Message-ID: <13dde97d-77a7-7663-1766-068082342e05@gmail.com>
-Date:   Mon, 1 Jul 2019 20:03:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101
- Thunderbird/67.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1729251AbfGAN4b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Jul 2019 09:56:31 -0400
+Received: from smtp6out.l-3com.com ([166.20.51.117]:14758 "EHLO
+        smtp6out.l-3com.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727707AbfGAN4b (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jul 2019 09:56:31 -0400
+X-Greylist: delayed 301 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jul 2019 09:56:29 EDT
+X-filenames: 
+X-filesizes: None
+X-filetypes: 
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,439,1557187200"; 
+   d="scan'208";a="397149174"
+X-L3Internal: true
+Subject: RE:  RDMA on Mellanox ConnectX-4 Lx cannot work
+Received: from ex09dag01azusva.rootforest.com (HELO mail.l3t.com) ([141.199.128.139])
+  by smtp6out.l-3com.com with ESMTP; 01 Jul 2019 13:51:27 +0000
+Received: from EX13DAG01AZUSVA.rootforest.com (141.199.128.143) by
+ EX09DAG01AZUSVA.rootforest.com (141.199.128.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 1 Jul 2019 13:51:26 +0000
+Received: from USG02-BN3-obe.outbound.protection.office365.us (23.103.199.150)
+ by smtp.l3t.com (141.199.128.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Mon, 1 Jul 2019 13:51:27 +0000
+Received: from CY1P110MB0295.NAMP110.PROD.OUTLOOK.COM (23.103.32.214) by
+ CY1P110MB0566.NAMP110.PROD.OUTLOOK.COM (52.145.2.17) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2032.20; Mon, 1 Jul 2019 13:51:24 +0000
+Received: from CY1P110MB0295.NAMP110.PROD.OUTLOOK.COM ([23.103.32.214]) by
+ CY1P110MB0295.NAMP110.PROD.OUTLOOK.COM ([23.103.32.214]) with mapi id
+ 15.20.2032.019; Mon, 1 Jul 2019 13:51:24 +0000
+From:   <ANDREW.LUCAS@L3T.com>
+To:     <linux-rdma@vger.kernel.org>
+Thread-Topic: [EXT] RDMA on Mellanox ConnectX-4 Lx cannot work
+Thread-Index: AQHVMAUX6qEsKoLOmUe/rj1pv2afVaa1x9RA
+Date:   Mon, 1 Jul 2019 13:51:24 +0000
+Message-ID: <CY1P110MB02959640B7FD04E6F09B9A72D3F90@CY1P110MB0295.NAMP110.PROD.OUTLOOK.COM>
+References: <13dde97d-77a7-7663-1766-068082342e05@gmail.com>
+In-Reply-To: <13dde97d-77a7-7663-1766-068082342e05@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=ANDREW.LUCAS@L3T.com; 
+x-originating-ip: [128.170.224.13]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ad76cfe0-0848-44ef-6a35-08d6fe2b34e3
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:CY1P110MB0566;
+x-ms-traffictypediagnostic: CY1P110MB0566:
+x-ms-exchange-purlcount: 2
+x-microsoft-antispam-prvs: <CY1P110MB056698A640F4A3FA72569279D3F90@CY1P110MB0566.NAMP110.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 00851CA28B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(13464003)(51874003)(189003)(199004)(26005)(186003)(6246003)(86362001)(72206003)(256004)(14444005)(966005)(2906002)(2351001)(498600001)(33656002)(8936002)(81166006)(25786009)(68736007)(81156014)(2501003)(8676002)(305945005)(74316002)(7736002)(66946007)(73956011)(76116006)(66476007)(6436002)(66556008)(64756008)(66446008)(71190400001)(5660300002)(486006)(5640700003)(229853002)(53936002)(6916009)(6306002)(55016002)(7696005)(99286004)(9686003)(11346002)(52536014)(956004)(76176011)(66066001)(446003)(6116002)(53546011)(3846002)(6506007)(71200400001)(102836004)(476003);DIR:OUT;SFP:1102;SCL:1;SRVR:CY1P110MB0566;H:CY1P110MB0295.NAMP110.PROD.OUTLOOK.COM;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:3;A:3;
+x-ms-exchange-senderadcheck: 1
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad76cfe0-0848-44ef-6a35-08d6fe2b34e3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2019 13:51:24.2500
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: ba488c5e-f105-4a2b-a8b1-b57b26a44117
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ANDREW.LUCAS@is.L3T.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY1P110MB0566
+X-OriginatorOrg: l3t.com
+Content-Transfer-Encoding: base64
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi RDMA guys
-
-This is my first time to try to setup a rdma environment.
-Would anyone please give some comment here and many thanks in advance.
-
-I have nodes with a Mellanox CX4121A card as following
-
-01:00.0 Ethernet controller: Mellanox Technologies MT27710 Family [ConnectX-4 Lx]
-01:00.1 Ethernet controller: Mellanox Technologies MT27710 Family [ConnectX-4 Lx]
-
-It could work well with normal tcp/ip on it. But the rdma doesn't.
-The mlx5_ib module is loaded, but /sys/class/infiniband is empty
-[root@node91 eth2]# lsmod | grep mlx5
-mlx5_ib               123666  0 
-ib_core                98787  15 rdma_cm,ib_cm,ib_sa,iw_cm,xprtrdma,mlx5_ib,ib_mad,ib_srp,ib_ucm,ib_iser,ib_srpt,ib_umad,ib_uverbs,ib_ipoib,ib_isert
-mlx5_core             160250  1 mlx5_ib
-
-And here is the ouput of mstconfig.
-
-There is _no_ LINK_TYPE_P1, does it mean this is a Ethernet-only card or I just miss some configuration ?
-
-Device #1:
-----------
-
-Device type:    ConnectX4LX     
-Name:           N/A             
-Description:    N/A             
-Device:         01:00.1         
-
-Configurations:                              Next Boot
-         MEMIC_BAR_SIZE                      0               
-         MEMIC_SIZE_LIMIT                    _256KB(1)       
-         ROCE_NEXT_PROTOCOL                  254             
-         NON_PREFETCHABLE_PF_BAR             False(0)        
-         NUM_OF_VFS                          8               
-         SRIOV_EN                            True(1)         
-         PF_LOG_BAR_SIZE                     5               
-         VF_LOG_BAR_SIZE                     0               
-         NUM_PF_MSIX                         63              
-         NUM_VF_MSIX                         11              
-         INT_LOG_MAX_PAYLOAD_SIZE            AUTOMATIC(0)    
-         SW_RECOVERY_ON_ERRORS               False(0)        
-         RESET_WITH_HOST_ON_ERRORS           False(0)        
-         CQE_COMPRESSION                     BALANCED(0)     
-         IP_OVER_VXLAN_EN                    False(0)        
-         LRO_LOG_TIMEOUT0                    6               
-         LRO_LOG_TIMEOUT1                    7               
-         LRO_LOG_TIMEOUT2                    8               
-         LRO_LOG_TIMEOUT3                    13              
-         LOG_DCR_HASH_TABLE_SIZE             14              
-         DCR_LIFO_SIZE                       16384           
-         ROCE_CC_PRIO_MASK_P1                255             
-         ROCE_CC_ALGORITHM_P1                ECN(0)          
-         ROCE_CC_PRIO_MASK_P2                255             
-         ROCE_CC_ALGORITHM_P2                ECN(0)          
-         CLAMP_TGT_RATE_AFTER_TIME_INC_P1    True(1)         
-         CLAMP_TGT_RATE_P1                   False(0)        
-         RPG_TIME_RESET_P1                   300             
-         RPG_BYTE_RESET_P1                   32767           
-         RPG_THRESHOLD_P1                    1               
-         RPG_MAX_RATE_P1                     0               
-         RPG_AI_RATE_P1                      5               
-         RPG_HAI_RATE_P1                     50              
-         RPG_GD_P1                           11              
-         RPG_MIN_DEC_FAC_P1                  50              
-         RPG_MIN_RATE_P1                     1               
-         RATE_TO_SET_ON_FIRST_CNP_P1         0               
-         DCE_TCP_G_P1                        1019            
-         DCE_TCP_RTT_P1                      1               
-         RATE_REDUCE_MONITOR_PERIOD_P1       4               
-         INITIAL_ALPHA_VALUE_P1              1023            
-         MIN_TIME_BETWEEN_CNPS_P1            0               
-         CNP_802P_PRIO_P1                    6               
-         CNP_DSCP_P1                         48              
-         CLAMP_TGT_RATE_AFTER_TIME_INC_P2    True(1)         
-         CLAMP_TGT_RATE_P2                   False(0)        
-         RPG_TIME_RESET_P2                   300             
-         RPG_BYTE_RESET_P2                   32767           
-         RPG_THRESHOLD_P2                    1               
-         RPG_MAX_RATE_P2                     0               
-         RPG_AI_RATE_P2                      5               
-         RPG_HAI_RATE_P2                     50              
-         RPG_GD_P2                           11              
-         RPG_MIN_DEC_FAC_P2                  50              
-         RPG_MIN_RATE_P2                     1               
-         RATE_TO_SET_ON_FIRST_CNP_P2         0               
-         DCE_TCP_G_P2                        1019            
-         DCE_TCP_RTT_P2                      1               
-         RATE_REDUCE_MONITOR_PERIOD_P2       4               
-         INITIAL_ALPHA_VALUE_P2              1023            
-         MIN_TIME_BETWEEN_CNPS_P2            0               
-         CNP_802P_PRIO_P2                    6               
-         CNP_DSCP_P2                         48              
-         LLDP_NB_DCBX_P1                     False(0)        
-         LLDP_NB_RX_MODE_P1                  OFF(0)          
-         LLDP_NB_TX_MODE_P1                  OFF(0)          
-         LLDP_NB_DCBX_P2                     False(0)        
-         LLDP_NB_RX_MODE_P2                  OFF(0)          
-         LLDP_NB_TX_MODE_P2                  OFF(0)          
-         DCBX_IEEE_P1                        True(1)         
-         DCBX_CEE_P1                         True(1)         
-         DCBX_WILLING_P1                     True(1)         
-         DCBX_IEEE_P2                        True(1)         
-         DCBX_CEE_P2                         True(1)         
-         DCBX_WILLING_P2                     True(1)         
-         KEEP_ETH_LINK_UP_P1                 True(1)         
-         KEEP_IB_LINK_UP_P1                  False(0)        
-         KEEP_LINK_UP_ON_BOOT_P1             False(0)        
-         KEEP_LINK_UP_ON_STANDBY_P1          False(0)        
-         KEEP_ETH_LINK_UP_P2                 True(1)         
-         KEEP_IB_LINK_UP_P2                  False(0)        
-         KEEP_LINK_UP_ON_BOOT_P2             False(0)        
-         KEEP_LINK_UP_ON_STANDBY_P2          False(0)        
-         NUM_OF_VL_P1                        _4_VLs(3)       
-         NUM_OF_TC_P1                        _8_TCs(0)       
-         NUM_OF_PFC_P1                       8               
-         NUM_OF_VL_P2                        _4_VLs(3)       
-         NUM_OF_TC_P2                        _8_TCs(0)       
-         NUM_OF_PFC_P2                       8               
-         DUP_MAC_ACTION_P1                   LAST_CFG(0)     
-         SRIOV_IB_ROUTING_MODE_P1            True(1)         
-         IB_ROUTING_MODE_P1                  LID(1)          
-         DUP_MAC_ACTION_P2                   LAST_CFG(0)     
-         SRIOV_IB_ROUTING_MODE_P2            True(1)         
-         IB_ROUTING_MODE_P2                  LID(1)          
-         PCI_WR_ORDERING                     per_mkey(0)     
-         MULTI_PORT_VHCA_EN                  False(0)        
-         PORT_OWNER                          True(1)         
-         ALLOW_RD_COUNTERS                   True(1)         
-         RENEG_ON_CHANGE                     True(1)         
-         TRACER_ENABLE                       True(1)         
-         IP_VER                              IPv4(0)         
-         UEFI_HII_EN                         False(0)        
-         BOOT_VLAN                           1               
-         LEGACY_BOOT_PROTOCOL                PXE(1)          
-         BOOT_RETRY_CNT                      NONE(0)         
-         BOOT_LACP_DIS                       True(1)         
-         BOOT_VLAN_EN                        False(0)        
-         BOOT_PKEY                           0               
-         BOOT_DBG_LOG                        False(0)        
-         UEFI_LOGS                           DISABLED(0)     
-         EXP_ROM_UEFI_ARM_ENABLE             False(0)        
-         EXP_ROM_UEFI_x86_ENABLE             False(0)        
-         EXP_ROM_PXE_ENABLE                  True(1)         
-         ADVANCED_PCI_SETTINGS               False(0)   
-
-
-Linux node91 3.10.0-327.el7.centos.scst72.x86_64 #1 SMP Thu Jan 10 09:33:22 CST 2019 x86_64 x86_64 x86_64 GNU/Linux
-
-
+VGhhdCBpcyBhbiBFTiBjYXJkLCBzbyBpdCB3b24ndCBkbyBwdXJlIEluZmluaWJhbmQuIFRoZSBW
+UEkgdmFyaWFudCBpcyB0aGUgb25lIHRoYXQgZG9lcyBFdGhlcm5ldCBvciBJbmZpbmliYW5kLiBU
+aGUgRU4ganVzdCBkb2VzIHRoZSBFdGhlcm5ldC4NCkl0IGRvZXMgaG93ZXZlciBkbyBSb0NFIGFu
+ZCBSRE1BIG92ZXIgUm9DRS4NCk1ha2Ugc3VyZSB5b3UgaW5zdGFsbGVkIHRoZSBjb3JyZWN0IE9G
+RUQgZnJvbSBNZWxsYW5veC4gVGhleSBoYXZlIEVOIGFuZCBWUEkgdmFyaWFudHMuIFRoZXkgcmVh
+bGx5IGFyZW4ndCBpbnRlcmNoYW5nZWFibGUuDQpTZWU6IGh0dHBzOi8vZG9jcy5tZWxsYW5veC5j
+b20vZGlzcGxheS9DWDRMeEVOL1Ryb3VibGVzaG9vdGluZw0KVGhlIE9GRUQgaW5zdGFsbGF0aW9u
+IHdpbGwgdXBkYXRlIHRoZSBmaXJtd2FyZS4gSSdtIG5vdCBzdXJlIEknZCBtZXNzIHdpdGggdGhl
+IHN0YW5kYWxvbmUgTUZULg0KQWxzbyBzZWU6DQpodHRwczovL2RvY3MubWVsbGFub3guY29tL2Rp
+c3BsYXkvQ1g0THhFTi9MaW51eCtEcml2ZXIrSW5zdGFsbGF0aW9uI0xpbnV4RHJpdmVySW5zdGFs
+bGF0aW9uLURvd25sb2FkaW5nTWVsbGFub3hPRkVEDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
+LS0tDQpGcm9tOiBsaW51eC1yZG1hLW93bmVyQHZnZXIua2VybmVsLm9yZyA8bGludXgtcmRtYS1v
+d25lckB2Z2VyLmtlcm5lbC5vcmc+IE9uIEJlaGFsZiBPZiBKaWFuY2hhbyBXYW5nDQpTZW50OiBN
+b25kYXksIEp1bHkgMSwgMjAxOSA3OjA0IEFNDQpUbzogbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5v
+cmcNCkNjOiBsZW9uQGtlcm5lbC5vcmc7IGRsZWRmb3JkQHJlZGhhdC5jb207IGpnZ0B6aWVwZS5j
+YQ0KU3ViamVjdDogW0VYVF0gUkRNQSBvbiBNZWxsYW5veCBDb25uZWN0WC00IEx4IGNhbm5vdCB3
+b3JrDQoNCkhpIFJETUEgZ3V5cw0KDQpUaGlzIGlzIG15IGZpcnN0IHRpbWUgdG8gdHJ5IHRvIHNl
+dHVwIGEgcmRtYSBlbnZpcm9ubWVudC4NCldvdWxkIGFueW9uZSBwbGVhc2UgZ2l2ZSBzb21lIGNv
+bW1lbnQgaGVyZSBhbmQgbWFueSB0aGFua3MgaW4gYWR2YW5jZS4NCg0KSSBoYXZlIG5vZGVzIHdp
+dGggYSBNZWxsYW5veCBDWDQxMjFBIGNhcmQgYXMgZm9sbG93aW5nDQoNCjAxOjAwLjAgRXRoZXJu
+ZXQgY29udHJvbGxlcjogTWVsbGFub3ggVGVjaG5vbG9naWVzIE1UMjc3MTAgRmFtaWx5IFtDb25u
+ZWN0WC00IEx4XQ0KMDE6MDAuMSBFdGhlcm5ldCBjb250cm9sbGVyOiBNZWxsYW5veCBUZWNobm9s
+b2dpZXMgTVQyNzcxMCBGYW1pbHkgW0Nvbm5lY3RYLTQgTHhdDQoNCkl0IGNvdWxkIHdvcmsgd2Vs
+bCB3aXRoIG5vcm1hbCB0Y3AvaXAgb24gaXQuIEJ1dCB0aGUgcmRtYSBkb2Vzbid0Lg0KVGhlIG1s
+eDVfaWIgbW9kdWxlIGlzIGxvYWRlZCwgYnV0IC9zeXMvY2xhc3MvaW5maW5pYmFuZCBpcyBlbXB0
+eQ0KW3Jvb3RAbm9kZTkxIGV0aDJdIyBsc21vZCB8IGdyZXAgbWx4NQ0KbWx4NV9pYiAgICAgICAg
+ICAgICAgIDEyMzY2NiAgMCANCmliX2NvcmUgICAgICAgICAgICAgICAgOTg3ODcgIDE1IHJkbWFf
+Y20saWJfY20saWJfc2EsaXdfY20seHBydHJkbWEsbWx4NV9pYixpYl9tYWQsaWJfc3JwLGliX3Vj
+bSxpYl9pc2VyLGliX3NycHQsaWJfdW1hZCxpYl91dmVyYnMsaWJfaXBvaWIsaWJfaXNlcnQNCm1s
+eDVfY29yZSAgICAgICAgICAgICAxNjAyNTAgIDEgbWx4NV9pYg0KDQpBbmQgaGVyZSBpcyB0aGUg
+b3VwdXQgb2YgbXN0Y29uZmlnLg0KDQpUaGVyZSBpcyBfbm9fIExJTktfVFlQRV9QMSwgZG9lcyBp
+dCBtZWFuIHRoaXMgaXMgYSBFdGhlcm5ldC1vbmx5IGNhcmQgb3IgSSBqdXN0IG1pc3Mgc29tZSBj
+b25maWd1cmF0aW9uID8NCg0KRGV2aWNlICMxOg0KLS0tLS0tLS0tLQ0KDQpEZXZpY2UgdHlwZTog
+ICAgQ29ubmVjdFg0TFggICAgIA0KTmFtZTogICAgICAgICAgIE4vQSAgICAgICAgICAgICANCkRl
+c2NyaXB0aW9uOiAgICBOL0EgICAgICAgICAgICAgDQpEZXZpY2U6ICAgICAgICAgMDE6MDAuMSAg
+ICAgICAgIA0KDQpDb25maWd1cmF0aW9uczogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBO
+ZXh0IEJvb3QNCiAgICAgICAgIE1FTUlDX0JBUl9TSVpFICAgICAgICAgICAgICAgICAgICAgIDAg
+ICAgICAgICAgICAgICANCiAgICAgICAgIE1FTUlDX1NJWkVfTElNSVQgICAgICAgICAgICAgICAg
+ICAgIF8yNTZLQigxKSAgICAgICANCiAgICAgICAgIFJPQ0VfTkVYVF9QUk9UT0NPTCAgICAgICAg
+ICAgICAgICAgIDI1NCAgICAgICAgICAgICANCiAgICAgICAgIE5PTl9QUkVGRVRDSEFCTEVfUEZf
+QkFSICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIE5VTV9PRl9WRlMgICAg
+ICAgICAgICAgICAgICAgICAgICAgIDggICAgICAgICAgICAgICANCiAgICAgICAgIFNSSU9WX0VO
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIFBG
+X0xPR19CQVJfU0laRSAgICAgICAgICAgICAgICAgICAgIDUgICAgICAgICAgICAgICANCiAgICAg
+ICAgIFZGX0xPR19CQVJfU0laRSAgICAgICAgICAgICAgICAgICAgIDAgICAgICAgICAgICAgICAN
+CiAgICAgICAgIE5VTV9QRl9NU0lYICAgICAgICAgICAgICAgICAgICAgICAgIDYzICAgICAgICAg
+ICAgICANCiAgICAgICAgIE5VTV9WRl9NU0lYICAgICAgICAgICAgICAgICAgICAgICAgIDExICAg
+ICAgICAgICAgICANCiAgICAgICAgIElOVF9MT0dfTUFYX1BBWUxPQURfU0laRSAgICAgICAgICAg
+IEFVVE9NQVRJQygwKSAgICANCiAgICAgICAgIFNXX1JFQ09WRVJZX09OX0VSUk9SUyAgICAgICAg
+ICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIFJFU0VUX1dJVEhfSE9TVF9PTl9FUlJP
+UlMgICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIENRRV9DT01QUkVTU0lPTiAg
+ICAgICAgICAgICAgICAgICAgIEJBTEFOQ0VEKDApICAgICANCiAgICAgICAgIElQX09WRVJfVlhM
+QU5fRU4gICAgICAgICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIExST19M
+T0dfVElNRU9VVDAgICAgICAgICAgICAgICAgICAgIDYgICAgICAgICAgICAgICANCiAgICAgICAg
+IExST19MT0dfVElNRU9VVDEgICAgICAgICAgICAgICAgICAgIDcgICAgICAgICAgICAgICANCiAg
+ICAgICAgIExST19MT0dfVElNRU9VVDIgICAgICAgICAgICAgICAgICAgIDggICAgICAgICAgICAg
+ICANCiAgICAgICAgIExST19MT0dfVElNRU9VVDMgICAgICAgICAgICAgICAgICAgIDEzICAgICAg
+ICAgICAgICANCiAgICAgICAgIExPR19EQ1JfSEFTSF9UQUJMRV9TSVpFICAgICAgICAgICAgIDE0
+ICAgICAgICAgICAgICANCiAgICAgICAgIERDUl9MSUZPX1NJWkUgICAgICAgICAgICAgICAgICAg
+ICAgIDE2Mzg0ICAgICAgICAgICANCiAgICAgICAgIFJPQ0VfQ0NfUFJJT19NQVNLX1AxICAgICAg
+ICAgICAgICAgIDI1NSAgICAgICAgICAgICANCiAgICAgICAgIFJPQ0VfQ0NfQUxHT1JJVEhNX1Ax
+ICAgICAgICAgICAgICAgIEVDTigwKSAgICAgICAgICANCiAgICAgICAgIFJPQ0VfQ0NfUFJJT19N
+QVNLX1AyICAgICAgICAgICAgICAgIDI1NSAgICAgICAgICAgICANCiAgICAgICAgIFJPQ0VfQ0Nf
+QUxHT1JJVEhNX1AyICAgICAgICAgICAgICAgIEVDTigwKSAgICAgICAgICANCiAgICAgICAgIENM
+QU1QX1RHVF9SQVRFX0FGVEVSX1RJTUVfSU5DX1AxICAgIFRydWUoMSkgICAgICAgICANCiAgICAg
+ICAgIENMQU1QX1RHVF9SQVRFX1AxICAgICAgICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICAN
+CiAgICAgICAgIFJQR19USU1FX1JFU0VUX1AxICAgICAgICAgICAgICAgICAgIDMwMCAgICAgICAg
+ICAgICANCiAgICAgICAgIFJQR19CWVRFX1JFU0VUX1AxICAgICAgICAgICAgICAgICAgIDMyNzY3
+ICAgICAgICAgICANCiAgICAgICAgIFJQR19USFJFU0hPTERfUDEgICAgICAgICAgICAgICAgICAg
+IDEgICAgICAgICAgICAgICANCiAgICAgICAgIFJQR19NQVhfUkFURV9QMSAgICAgICAgICAgICAg
+ICAgICAgIDAgICAgICAgICAgICAgICANCiAgICAgICAgIFJQR19BSV9SQVRFX1AxICAgICAgICAg
+ICAgICAgICAgICAgIDUgICAgICAgICAgICAgICANCiAgICAgICAgIFJQR19IQUlfUkFURV9QMSAg
+ICAgICAgICAgICAgICAgICAgIDUwICAgICAgICAgICAgICANCiAgICAgICAgIFJQR19HRF9QMSAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIDExICAgICAgICAgICAgICANCiAgICAgICAgIFJQR19N
+SU5fREVDX0ZBQ19QMSAgICAgICAgICAgICAgICAgIDUwICAgICAgICAgICAgICANCiAgICAgICAg
+IFJQR19NSU5fUkFURV9QMSAgICAgICAgICAgICAgICAgICAgIDEgICAgICAgICAgICAgICANCiAg
+ICAgICAgIFJBVEVfVE9fU0VUX09OX0ZJUlNUX0NOUF9QMSAgICAgICAgIDAgICAgICAgICAgICAg
+ICANCiAgICAgICAgIERDRV9UQ1BfR19QMSAgICAgICAgICAgICAgICAgICAgICAgIDEwMTkgICAg
+ICAgICAgICANCiAgICAgICAgIERDRV9UQ1BfUlRUX1AxICAgICAgICAgICAgICAgICAgICAgIDEg
+ICAgICAgICAgICAgICANCiAgICAgICAgIFJBVEVfUkVEVUNFX01PTklUT1JfUEVSSU9EX1AxICAg
+ICAgIDQgICAgICAgICAgICAgICANCiAgICAgICAgIElOSVRJQUxfQUxQSEFfVkFMVUVfUDEgICAg
+ICAgICAgICAgIDEwMjMgICAgICAgICAgICANCiAgICAgICAgIE1JTl9USU1FX0JFVFdFRU5fQ05Q
+U19QMSAgICAgICAgICAgIDAgICAgICAgICAgICAgICANCiAgICAgICAgIENOUF84MDJQX1BSSU9f
+UDEgICAgICAgICAgICAgICAgICAgIDYgICAgICAgICAgICAgICANCiAgICAgICAgIENOUF9EU0NQ
+X1AxICAgICAgICAgICAgICAgICAgICAgICAgIDQ4ICAgICAgICAgICAgICANCiAgICAgICAgIENM
+QU1QX1RHVF9SQVRFX0FGVEVSX1RJTUVfSU5DX1AyICAgIFRydWUoMSkgICAgICAgICANCiAgICAg
+ICAgIENMQU1QX1RHVF9SQVRFX1AyICAgICAgICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICAN
+CiAgICAgICAgIFJQR19USU1FX1JFU0VUX1AyICAgICAgICAgICAgICAgICAgIDMwMCAgICAgICAg
+ICAgICANCiAgICAgICAgIFJQR19CWVRFX1JFU0VUX1AyICAgICAgICAgICAgICAgICAgIDMyNzY3
+ICAgICAgICAgICANCiAgICAgICAgIFJQR19USFJFU0hPTERfUDIgICAgICAgICAgICAgICAgICAg
+IDEgICAgICAgICAgICAgICANCiAgICAgICAgIFJQR19NQVhfUkFURV9QMiAgICAgICAgICAgICAg
+ICAgICAgIDAgICAgICAgICAgICAgICANCiAgICAgICAgIFJQR19BSV9SQVRFX1AyICAgICAgICAg
+ICAgICAgICAgICAgIDUgICAgICAgICAgICAgICANCiAgICAgICAgIFJQR19IQUlfUkFURV9QMiAg
+ICAgICAgICAgICAgICAgICAgIDUwICAgICAgICAgICAgICANCiAgICAgICAgIFJQR19HRF9QMiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIDExICAgICAgICAgICAgICANCiAgICAgICAgIFJQR19N
+SU5fREVDX0ZBQ19QMiAgICAgICAgICAgICAgICAgIDUwICAgICAgICAgICAgICANCiAgICAgICAg
+IFJQR19NSU5fUkFURV9QMiAgICAgICAgICAgICAgICAgICAgIDEgICAgICAgICAgICAgICANCiAg
+ICAgICAgIFJBVEVfVE9fU0VUX09OX0ZJUlNUX0NOUF9QMiAgICAgICAgIDAgICAgICAgICAgICAg
+ICANCiAgICAgICAgIERDRV9UQ1BfR19QMiAgICAgICAgICAgICAgICAgICAgICAgIDEwMTkgICAg
+ICAgICAgICANCiAgICAgICAgIERDRV9UQ1BfUlRUX1AyICAgICAgICAgICAgICAgICAgICAgIDEg
+ICAgICAgICAgICAgICANCiAgICAgICAgIFJBVEVfUkVEVUNFX01PTklUT1JfUEVSSU9EX1AyICAg
+ICAgIDQgICAgICAgICAgICAgICANCiAgICAgICAgIElOSVRJQUxfQUxQSEFfVkFMVUVfUDIgICAg
+ICAgICAgICAgIDEwMjMgICAgICAgICAgICANCiAgICAgICAgIE1JTl9USU1FX0JFVFdFRU5fQ05Q
+U19QMiAgICAgICAgICAgIDAgICAgICAgICAgICAgICANCiAgICAgICAgIENOUF84MDJQX1BSSU9f
+UDIgICAgICAgICAgICAgICAgICAgIDYgICAgICAgICAgICAgICANCiAgICAgICAgIENOUF9EU0NQ
+X1AyICAgICAgICAgICAgICAgICAgICAgICAgIDQ4ICAgICAgICAgICAgICANCiAgICAgICAgIExM
+RFBfTkJfRENCWF9QMSAgICAgICAgICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAg
+ICAgIExMRFBfTkJfUlhfTU9ERV9QMSAgICAgICAgICAgICAgICAgIE9GRigwKSAgICAgICAgICAN
+CiAgICAgICAgIExMRFBfTkJfVFhfTU9ERV9QMSAgICAgICAgICAgICAgICAgIE9GRigwKSAgICAg
+ICAgICANCiAgICAgICAgIExMRFBfTkJfRENCWF9QMiAgICAgICAgICAgICAgICAgICAgIEZhbHNl
+KDApICAgICAgICANCiAgICAgICAgIExMRFBfTkJfUlhfTU9ERV9QMiAgICAgICAgICAgICAgICAg
+IE9GRigwKSAgICAgICAgICANCiAgICAgICAgIExMRFBfTkJfVFhfTU9ERV9QMiAgICAgICAgICAg
+ICAgICAgIE9GRigwKSAgICAgICAgICANCiAgICAgICAgIERDQlhfSUVFRV9QMSAgICAgICAgICAg
+ICAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIERDQlhfQ0VFX1AxICAgICAg
+ICAgICAgICAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIERDQlhfV0lMTElO
+R19QMSAgICAgICAgICAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIERDQlhf
+SUVFRV9QMiAgICAgICAgICAgICAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAg
+IERDQlhfQ0VFX1AyICAgICAgICAgICAgICAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAg
+ICAgICAgIERDQlhfV0lMTElOR19QMiAgICAgICAgICAgICAgICAgICAgIFRydWUoMSkgICAgICAg
+ICANCiAgICAgICAgIEtFRVBfRVRIX0xJTktfVVBfUDEgICAgICAgICAgICAgICAgIFRydWUoMSkg
+ICAgICAgICANCiAgICAgICAgIEtFRVBfSUJfTElOS19VUF9QMSAgICAgICAgICAgICAgICAgIEZh
+bHNlKDApICAgICAgICANCiAgICAgICAgIEtFRVBfTElOS19VUF9PTl9CT09UX1AxICAgICAgICAg
+ICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIEtFRVBfTElOS19VUF9PTl9TVEFOREJZX1Ax
+ICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIEtFRVBfRVRIX0xJTktfVVBfUDIg
+ICAgICAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIEtFRVBfSUJfTElOS19V
+UF9QMiAgICAgICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIEtFRVBfTElO
+S19VUF9PTl9CT09UX1AyICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIEtF
+RVBfTElOS19VUF9PTl9TVEFOREJZX1AyICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAg
+ICAgIE5VTV9PRl9WTF9QMSAgICAgICAgICAgICAgICAgICAgICAgIF80X1ZMcygzKSAgICAgICAN
+CiAgICAgICAgIE5VTV9PRl9UQ19QMSAgICAgICAgICAgICAgICAgICAgICAgIF84X1RDcygwKSAg
+ICAgICANCiAgICAgICAgIE5VTV9PRl9QRkNfUDEgICAgICAgICAgICAgICAgICAgICAgIDggICAg
+ICAgICAgICAgICANCiAgICAgICAgIE5VTV9PRl9WTF9QMiAgICAgICAgICAgICAgICAgICAgICAg
+IF80X1ZMcygzKSAgICAgICANCiAgICAgICAgIE5VTV9PRl9UQ19QMiAgICAgICAgICAgICAgICAg
+ICAgICAgIF84X1RDcygwKSAgICAgICANCiAgICAgICAgIE5VTV9PRl9QRkNfUDIgICAgICAgICAg
+ICAgICAgICAgICAgIDggICAgICAgICAgICAgICANCiAgICAgICAgIERVUF9NQUNfQUNUSU9OX1Ax
+ICAgICAgICAgICAgICAgICAgIExBU1RfQ0ZHKDApICAgICANCiAgICAgICAgIFNSSU9WX0lCX1JP
+VVRJTkdfTU9ERV9QMSAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIElCX1JP
+VVRJTkdfTU9ERV9QMSAgICAgICAgICAgICAgICAgIExJRCgxKSAgICAgICAgICANCiAgICAgICAg
+IERVUF9NQUNfQUNUSU9OX1AyICAgICAgICAgICAgICAgICAgIExBU1RfQ0ZHKDApICAgICANCiAg
+ICAgICAgIFNSSU9WX0lCX1JPVVRJTkdfTU9ERV9QMiAgICAgICAgICAgIFRydWUoMSkgICAgICAg
+ICANCiAgICAgICAgIElCX1JPVVRJTkdfTU9ERV9QMiAgICAgICAgICAgICAgICAgIExJRCgxKSAg
+ICAgICAgICANCiAgICAgICAgIFBDSV9XUl9PUkRFUklORyAgICAgICAgICAgICAgICAgICAgIHBl
+cl9ta2V5KDApICAgICANCiAgICAgICAgIE1VTFRJX1BPUlRfVkhDQV9FTiAgICAgICAgICAgICAg
+ICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIFBPUlRfT1dORVIgICAgICAgICAgICAgICAg
+ICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIEFMTE9XX1JEX0NPVU5URVJTICAg
+ICAgICAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIFJFTkVHX09OX0NIQU5H
+RSAgICAgICAgICAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIFRSQUNFUl9F
+TkFCTEUgICAgICAgICAgICAgICAgICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIElQ
+X1ZFUiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIElQdjQoMCkgICAgICAgICANCiAgICAg
+ICAgIFVFRklfSElJX0VOICAgICAgICAgICAgICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICAN
+CiAgICAgICAgIEJPT1RfVkxBTiAgICAgICAgICAgICAgICAgICAgICAgICAgIDEgICAgICAgICAg
+ICAgICANCiAgICAgICAgIExFR0FDWV9CT09UX1BST1RPQ09MICAgICAgICAgICAgICAgIFBYRSgx
+KSAgICAgICAgICANCiAgICAgICAgIEJPT1RfUkVUUllfQ05UICAgICAgICAgICAgICAgICAgICAg
+IE5PTkUoMCkgICAgICAgICANCiAgICAgICAgIEJPT1RfTEFDUF9ESVMgICAgICAgICAgICAgICAg
+ICAgICAgIFRydWUoMSkgICAgICAgICANCiAgICAgICAgIEJPT1RfVkxBTl9FTiAgICAgICAgICAg
+ICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIEJPT1RfUEtFWSAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIDAgICAgICAgICAgICAgICANCiAgICAgICAgIEJPT1RfREJHX0xP
+RyAgICAgICAgICAgICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAgICAgICAgIFVFRklf
+TE9HUyAgICAgICAgICAgICAgICAgICAgICAgICAgIERJU0FCTEVEKDApICAgICANCiAgICAgICAg
+IEVYUF9ST01fVUVGSV9BUk1fRU5BQkxFICAgICAgICAgICAgIEZhbHNlKDApICAgICAgICANCiAg
+ICAgICAgIEVYUF9ST01fVUVGSV94ODZfRU5BQkxFICAgICAgICAgICAgIEZhbHNlKDApICAgICAg
+ICANCiAgICAgICAgIEVYUF9ST01fUFhFX0VOQUJMRSAgICAgICAgICAgICAgICAgIFRydWUoMSkg
+ICAgICAgICANCiAgICAgICAgIEFEVkFOQ0VEX1BDSV9TRVRUSU5HUyAgICAgICAgICAgICAgIEZh
+bHNlKDApICAgDQoNCg0KTGludXggbm9kZTkxIDMuMTAuMC0zMjcuZWw3LmNlbnRvcy5zY3N0NzIu
+eDg2XzY0ICMxIFNNUCBUaHUgSmFuIDEwIDA5OjMzOjIyIENTVCAyMDE5IHg4Nl82NCB4ODZfNjQg
+eDg2XzY0IEdOVS9MaW51eA0KDQoNCg0KCiAgCgpDT05GSURFTlRJQUxJVFkgTk9USUNFOiBUaGlz
+IGVtYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgYXJlIGZvciB0aGUgc29sZSB1c2Ugb2YgdGhlIGlu
+dGVuZGVkIHJlY2lwaWVudCBhbmQgbWF5IGNvbnRhaW4gbWF0ZXJpYWwgdGhhdCBpcyBwcm9wcmll
+dGFyeSwgY29uZmlkZW50aWFsLCBwcml2aWxlZ2VkIG9yIG90aGVyd2lzZSBsZWdhbGx5IHByb3Rl
+Y3RlZCBvciByZXN0cmljdGVkIHVuZGVyIGFwcGxpY2FibGUgZ292ZXJubWVudCBsYXdzLiBBbnkg
+cmV2aWV3LCBkaXNjbG9zdXJlLCBkaXN0cmlidXRpbmcgb3Igb3RoZXIgdXNlIHdpdGhvdXQgZXhw
+cmVzc2VkIHBlcm1pc3Npb24gb2YgdGhlIHNlbmRlciBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJ
+ZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBwbGVhc2UgY29udGFjdCB0aGUg
+c2VuZGVyIGFuZCBkZWxldGUgYWxsIGNvcGllcyB3aXRob3V0IHJlYWRpbmcsIHByaW50aW5nLCBv
+ciBzYXZpbmcuCgo=
 
