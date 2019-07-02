@@ -2,94 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E244A5DAE5
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 03:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270A05D90E
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 02:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbfGCBcU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jul 2019 21:32:20 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:17748 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727508AbfGCBcU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jul 2019 21:32:20 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d1bba730000>; Tue, 02 Jul 2019 13:11:31 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 02 Jul 2019 13:11:32 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 02 Jul 2019 13:11:32 -0700
-Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Jul
- 2019 20:11:28 +0000
-Subject: Re: [RFC] mm/hmm: pass mmu_notifier_range to
- sync_cpu_device_pagetables
-To:     Jason Gunthorpe <jgg@mellanox.com>, Christoph Hellwig <hch@lst.de>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-References: <20190608001452.7922-1-rcampbell@nvidia.com>
- <20190702195317.GT31718@mellanox.com>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <b0252869-588f-0333-1878-1f90b8b0c17b@nvidia.com>
-Date:   Tue, 2 Jul 2019 13:11:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <20190702195317.GT31718@mellanox.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S1727320AbfGCAd3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Jul 2019 20:33:29 -0400
+Received: from mail-eopbgr780085.outbound.protection.outlook.com ([40.107.78.85]:27713
+        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727127AbfGCAd2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 2 Jul 2019 20:33:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=netapp.onmicrosoft.com; s=selector2-netapp-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=InuIGeQYX4OnOaooMnLaUU/WhOkkmHfo3tQCUiCKsiU=;
+ b=jgrflCAW0Wj15A5wjbH7lOjkEOSc6imQCRO1SOylIjYjWjg5BYiGwxFZIBQDFpfrA3hmFjk2aQ+i8e2yD71Ie5ebY6hYfCfl+7MiZXpOs4AMbewiErVCgSduextKou+i8kFTwPpHF79z8nUczwoJt3rWPUW/qonQWzYhTma2Lic=
+Received: from CY4PR06MB3479.namprd06.prod.outlook.com (10.175.117.23) by
+ CY4PR06MB2887.namprd06.prod.outlook.com (10.175.117.139) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2052.16; Tue, 2 Jul 2019 20:35:25 +0000
+Received: from CY4PR06MB3479.namprd06.prod.outlook.com
+ ([fe80::4910:c5de:ec74:995]) by CY4PR06MB3479.namprd06.prod.outlook.com
+ ([fe80::4910:c5de:ec74:995%2]) with mapi id 15.20.2032.018; Tue, 2 Jul 2019
+ 20:35:25 +0000
+From:   "Schumaker, Anna" <Anna.Schumaker@netapp.com>
+To:     "trondmy@hammerspace.com" <trondmy@hammerspace.com>
+CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: [GIT PULL] Please pull NFSoRDMA updates for Linux 5.3
+Thread-Topic: [GIT PULL] Please pull NFSoRDMA updates for Linux 5.3
+Thread-Index: AQHVMRWtUitNYWZf40a4s7CQZrEEUw==
+Date:   Tue, 2 Jul 2019 20:35:25 +0000
+Message-ID: <b2cabbe76eecc8db717cccd84067d78f8c3a7d0f.camel@netapp.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1562098291; bh=pJF5x4345qO6YQIaFfIRkH4NCd5wxJwRshnLYN1SQEs=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=IUcePnf0Csnlm1B5f0YiScyxFBIq1oVLcXkX1R9Dzr/JAedpYocU+1YoARltFSzXL
-         iLdan7eOA9VcM2WT0J99ARUqKv5co1QJpNjVJxlyi6VrWEaAa0ctcAejwHVY5FPzkK
-         6qPdataKyAZrPuuUre4m/2Ync8rx0qmtlLizKB0GuEBNOc7D6cSYMtShRnxwP6YfbL
-         3wiZCF40d0ZkSYRtNGF6wQbfuTiye4gz/az2kzjXcRQxdB6y8stFF9aKIkrjk41ZR6
-         r8/YZuQpFxYBeyEUBl5MVMoyTkBxn2IdZdr2j6jfNvfE62puz7tcnkRFcL9kLfVfv5
-         5CgD7awfl1YKw==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.3 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Anna.Schumaker@netapp.com; 
+x-originating-ip: [23.28.75.121]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4c336e4f-fba2-49a9-27e2-08d6ff2cd051
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:CY4PR06MB2887;
+X-MS-TrafficTypeDiagnostic: CY4PR06MB2887:|CY4PR06MB2887:|CY4PR06MB2887:|CY4PR06MB2887:
+x-microsoft-antispam-prvs: <CY4PR06MB28876FAC6DCDA5F9A581D806F8F80@CY4PR06MB2887.namprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1013;
+x-forefront-prvs: 008663486A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(39860400002)(346002)(376002)(136003)(396003)(189003)(199004)(486006)(316002)(86362001)(476003)(2616005)(4326008)(6916009)(186003)(26005)(3846002)(6116002)(14454004)(2351001)(25786009)(118296001)(2501003)(14444005)(256004)(478600001)(58126008)(54906003)(72206003)(99286004)(6486002)(6436002)(5660300002)(1730700003)(8936002)(5640700003)(6512007)(66066001)(2906002)(71200400001)(68736007)(15650500001)(66476007)(64756008)(91956017)(76116006)(73956011)(71190400001)(66946007)(66446008)(66556008)(53936002)(305945005)(36756003)(7736002)(8676002)(102836004)(81156014)(81166006)(6506007);DIR:OUT;SFP:1101;SCL:1;SRVR:CY4PR06MB2887;H:CY4PR06MB3479.namprd06.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: netapp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 4DX/sxawhNEgNWZTIGddz6RgYzUTw7+ACTsIjG9BKt3AjQ4N9TE0WRwvjmQfP/9+bRJ7ZGM2ZrQ3Mg/E0hjsfjp32+e+O3m0N0ePMe30ZQaN/K21WxKKQcmaFMyTA37wzmbKpCfWLMkwIfS9S2TqvKVyOlYotnsxMqqHnWFeyjY85J/PITYwCzQSvH2BsWyTP3EcqD/cgErbZCKhZvZCLVS9tsyJZsXmgAbBcBjopFhfnt8OIw6VCcLIc72gi7ktubw5WOsb5xuIvlrQfRQfSvV8BIQWOYmUeDO6zdN92u0Kv/FqNqNGVsPmyDAsVp6Vo7oEli5HRthoIaUzPVcbqP5BlCltshH7AyKNrRmZ7hCSPD+kmN3IUmMXevzE7VdjyX1Diwb7OEytpEnDoR8IC+xMR9IPypqo4LUJLeMOEo0=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CD2783FBF8DD8B4BB90922EFB979A863@namprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c336e4f-fba2-49a9-27e2-08d6ff2cd051
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2019 20:35:25.7316
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4b0911a0-929b-4715-944b-c03745165b3a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bjschuma@netapp.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR06MB2887
+X-OriginatorOrg: netapp.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 7/2/19 12:53 PM, Jason Gunthorpe wrote:
-> On Fri, Jun 07, 2019 at 05:14:52PM -0700, Ralph Campbell wrote:
->> HMM defines its own struct hmm_update which is passed to the
->> sync_cpu_device_pagetables() callback function. This is
->> sufficient when the only action is to invalidate. However,
->> a device may want to know the reason for the invalidation and
->> be able to see the new permissions on a range, update device access
->> rights or range statistics. Since sync_cpu_device_pagetables()
->> can be called from try_to_unmap(), the mmap_sem may not be held
->> and find_vma() is not safe to be called.
->> Pass the struct mmu_notifier_range to sync_cpu_device_pagetables()
->> to allow the full invalidation information to be used.
->>
->> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->> ---
->>
->> I'm sending this out now since we are updating many of the HMM APIs
->> and I think it will be useful.
-> 
-> This make so much sense, I'd like to apply this in hmm.git, is there
-> any objection?
-> 
-> Jason
-> 
-Not from me. :-)
-
-Thanks!
+SGkgVHJvbmQsDQoNClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQNCjllMGJhYmYy
+YzA2YzczY2RhMmMwY2QzN2ExNjUzZDgyM2FkYjQwZWM6DQoNCiAgTGludXggNS4yLXJjNSAoMjAx
+OS0wNi0xNiAwODo0OTo0NSAtMTAwMCkNCg0KYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9z
+aXRvcnkgYXQ6DQoNCiAgZ2l0Oi8vZ2l0LmxpbnV4LW5mcy5vcmcvcHJvamVjdHMvYW5uYS9saW51
+eC1uZnMuZ2l0IHRhZ3MvbmZzLXJkbWEtDQpmb3ItNS4zLTENCg0KZm9yIHlvdSB0byBmZXRjaCBj
+aGFuZ2VzIHVwIHRvDQoxYThmMWVkM2ViMWFjMmZkZGMxZDJjNzUyOTRkYjA4YWNlODhjMWNiOg0K
+DQogIE5GUzogUmVjb3JkIHRhc2ssIGNsaWVudCBJRCwgYW5kIFhJRCBpbiB4ZHJfc3RhdHVzIHRy
+YWNlIHBvaW50cw0KKDIwMTktMDctMDIgMTY6Mjk6MjIgLTA0MDApDQoNClRoYW5rcywNCkFubmEN
+Cg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQ0KQ2h1Y2sgTGV2ZXIgKDE5KToNCiAgICAgIHhwcnRyZG1hOiBGaXggYSBCVUcg
+d2hlbiB0cmFjaW5nIGlzIGVuYWJsZWQgd2l0aCBORlN2NC4xIG9uIFJETUENCiAgICAgIHhwcnRy
+ZG1hOiBGaXggdXNlLWFmdGVyLWZyZWUgaW4gcnBjcmRtYV9wb3N0X3JlY3ZzDQogICAgICB4cHJ0
+cmRtYTogUmVwbGFjZSB1c2Ugb2YgeGRyX3N0cmVhbV9wb3MgaW4gcnBjcmRtYV9tYXJzaGFsX3Jl
+cQ0KICAgICAgeHBydHJkbWE6IEZpeCBvY2Nhc2lvbmFsIHRyYW5zcG9ydCBkZWFkbG9jaw0KICAg
+ICAgeHBydHJkbWE6IFJlbW92ZSB0aGUgUlBDUkRNQV9SRVFfRl9QRU5ESU5HIGZsYWcNCiAgICAg
+IHhwcnRyZG1hOiBSZW1vdmUgZnJfc3RhdGUNCiAgICAgIHhwcnRyZG1hOiBBZGQgbWVjaGFuaXNt
+IHRvIHBsYWNlIE1ScyBiYWNrIG9uIHRoZSBmcmVlIGxpc3QNCiAgICAgIHhwcnRyZG1hOiBSZWR1
+Y2UgY29udGV4dCBzd2l0Y2hpbmcgZHVlIHRvIExvY2FsIEludmFsaWRhdGlvbg0KICAgICAgeHBy
+dHJkbWE6IFdha2UgUlBDcyBkaXJlY3RseSBpbiBycGNyZG1hX3djX3NlbmQgcGF0aA0KICAgICAg
+eHBydHJkbWE6IFNpbXBsaWZ5IHJwY3JkbWFfcmVwX2NyZWF0ZQ0KICAgICAgeHBydHJkbWE6IFN0
+cmVhbWxpbmUgcnBjcmRtYV9wb3N0X3JlY3ZzDQogICAgICB4cHJ0cmRtYTogUmVmYWN0b3IgY2h1
+bmsgZW5jb2RpbmcNCiAgICAgIHhwcnRyZG1hOiBSZW1vdmUgcnBjcmRtYV9yZXE6OnJsX2J1ZmZl
+cg0KICAgICAgeHBydHJkbWE6IE1vZGVybml6ZSBvcHMtPmNvbm5lY3QNCiAgICAgIE5GUzQ6IEFk
+ZCBhIHRyYWNlIGV2ZW50IHRvIHJlY29yZCBpbnZhbGlkIENCIHNlcXVlbmNlIElEcw0KICAgICAg
+TkZTOiBGaXggc2hvd19uZnNfZXJyb3JzIG1hY3JvcyBhZ2Fpbg0KICAgICAgTkZTOiBEaXNwbGF5
+IHN5bWJvbGljIHN0YXR1cyBjb2RlIG5hbWVzIGluIHRyYWNlIGxvZw0KICAgICAgTkZTOiBVcGRh
+dGUgc3ltYm9saWMgZmxhZ3MgZGlzcGxheWVkIGJ5IHRyYWNlIGV2ZW50cw0KICAgICAgTkZTOiBS
+ZWNvcmQgdGFzaywgY2xpZW50IElELCBhbmQgWElEIGluIHhkcl9zdGF0dXMgdHJhY2UgcG9pbnRz
+DQoNCiBmcy9uZnMvY2FsbGJhY2tfcHJvYy5jICAgICAgICAgIHwgIDI4ICsrKysrKysrLS0tDQog
+ZnMvbmZzL25mczJ4ZHIuYyAgICAgICAgICAgICAgICB8ICAgMiArLQ0KIGZzL25mcy9uZnMzeGRy
+LmMgICAgICAgICAgICAgICAgfCAgIDIgKy0NCiBmcy9uZnMvbmZzNHRyYWNlLmggICAgICAgICAg
+ICAgIHwgMjA3DQorKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KLS0tLQ0KIGZzL25mcy9uZnM0eGRyLmMgICAgICAg
+ICAgICAgICAgfCAgIDIgKy0NCiBmcy9uZnMvbmZzdHJhY2UuaCAgICAgICAgICAgICAgIHwgMjMz
+DQorKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKy0tLS0tLS0tLQ0KLS0tLS0tLS0tLS0tLQ0KIGluY2x1ZGUvbGludXgvc3VucnBjL3hw
+cnQuaCAgICAgfCAgIDMgKysNCiBpbmNsdWRlL3RyYWNlL2V2ZW50cy9ycGNyZG1hLmggIHwgIDkw
+ICsrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tDQotDQogbmV0L3N1bnJwYy9zY2hlZC5j
+ICAgICAgICAgICAgICB8ICAgMSArDQogbmV0L3N1bnJwYy94cHJ0LmMgICAgICAgICAgICAgICB8
+ICAzMiArKysrKysrKysrKysNCiBuZXQvc3VucnBjL3hwcnRyZG1hL2Zyd3Jfb3BzLmMgIHwgMzI3
+DQorKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKw0KKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0NCiBuZXQvc3VucnBjL3hwcnRyZG1hL3JwY19yZG1hLmMgIHwgMTQ4ICsrKysrKysr
+KysrKysrKysrKysrKysrLS0tLS0tLS0tDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiBuZXQvc3Vu
+cnBjL3hwcnRyZG1hL3RyYW5zcG9ydC5jIHwgIDgzICsrKysrKysrKysrKysrKysrKysrKysrLS0t
+LS0tLQ0KIG5ldC9zdW5ycGMveHBydHJkbWEvdmVyYnMuYyAgICAgfCAxMTUgKysrKysrKysrKysr
+KysrKysrKy0tLS0tLS0tLS0tLS0NCi0tLS0tLS0tLS0NCiBuZXQvc3VucnBjL3hwcnRyZG1hL3hw
+cnRfcmRtYS5oIHwgIDQ0ICsrKysrLS0tLS0tLS0tLS0NCiBuZXQvc3VucnBjL3hwcnRzb2NrLmMg
+ICAgICAgICAgIHwgIDIzICstLS0tLS0tLQ0KIDE2IGZpbGVzIGNoYW5nZWQsIDgzNyBpbnNlcnRp
+b25zKCspLCA1MDMgZGVsZXRpb25zKC0pDQo=
