@@ -2,123 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 270A05D90E
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 02:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6725DA04
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 02:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727320AbfGCAd3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jul 2019 20:33:29 -0400
-Received: from mail-eopbgr780085.outbound.protection.outlook.com ([40.107.78.85]:27713
-        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727127AbfGCAd2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 2 Jul 2019 20:33:28 -0400
+        id S1727179AbfGCA7L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Jul 2019 20:59:11 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:45426 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727082AbfGCA7K (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jul 2019 20:59:10 -0400
+Received: by mail-qk1-f196.google.com with SMTP id s22so422356qkj.12
+        for <linux-rdma@vger.kernel.org>; Tue, 02 Jul 2019 17:59:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=netapp.onmicrosoft.com; s=selector2-netapp-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=InuIGeQYX4OnOaooMnLaUU/WhOkkmHfo3tQCUiCKsiU=;
- b=jgrflCAW0Wj15A5wjbH7lOjkEOSc6imQCRO1SOylIjYjWjg5BYiGwxFZIBQDFpfrA3hmFjk2aQ+i8e2yD71Ie5ebY6hYfCfl+7MiZXpOs4AMbewiErVCgSduextKou+i8kFTwPpHF79z8nUczwoJt3rWPUW/qonQWzYhTma2Lic=
-Received: from CY4PR06MB3479.namprd06.prod.outlook.com (10.175.117.23) by
- CY4PR06MB2887.namprd06.prod.outlook.com (10.175.117.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.16; Tue, 2 Jul 2019 20:35:25 +0000
-Received: from CY4PR06MB3479.namprd06.prod.outlook.com
- ([fe80::4910:c5de:ec74:995]) by CY4PR06MB3479.namprd06.prod.outlook.com
- ([fe80::4910:c5de:ec74:995%2]) with mapi id 15.20.2032.018; Tue, 2 Jul 2019
- 20:35:25 +0000
-From:   "Schumaker, Anna" <Anna.Schumaker@netapp.com>
-To:     "trondmy@hammerspace.com" <trondmy@hammerspace.com>
-CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=aes/lBIyhGrIclhmY3CKw8tfrF9ew6U+hjN/igz1kPw=;
+        b=DST95VOkZbqEUf9rwHFr+9h/xK7HQs7A4rhs3Ns3C6s7pAQRk+hNt4iJIbEu46bIHG
+         /crrRYl/ZzQ/OG7Du/qPtRC2FkysgD/Xaz802qtnTcFdRVs0Y3url+q/GoVf0XwWuCN/
+         /ftRZxwZgtpQDnjScdQxHslUPm5QBQ1DRyr5eJSUNewlX4Tk3Lslkt+Ifn66V/Pg/5F6
+         iDzhtZaj80Z6zhGWtskugkBooeN6sIO8pXv/DLF5AhwqiYEeFw7RD389pxenTKkfiQEK
+         aj2hhpsz0L0TDrTpOf/j5HClW5lZ8zLXH/MXwAO0+40EaYwTVdG2PDZsjKpB22s/k82Y
+         SJjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aes/lBIyhGrIclhmY3CKw8tfrF9ew6U+hjN/igz1kPw=;
+        b=F6vLCKCsjPahekw68iSId07ep3gAZSRA/oYCUtC6YyW2LCNyMA/RqNXN+bg00lhD2r
+         qhbFwffKc+oLIlKXMf33fjYDr/NvBDBkMftIB4lWfYy6xBAt3bBEV36DOIrWtUPrRZbn
+         1AhvCxELYPTkYKZEEXAH2hVfteLoZ5aD9EmJJYiKgZs6aM+rSVSjDSYyiMXyjTLCMuFu
+         2EEP9+ol+OaRgWT5Z7ZA3xqcXlu55054jPctvrVoXzYE0HnSQ8j5XMoyU2xXBGAkFzGE
+         7dOs/3NI1AkloiWverYhr3xu157KDPPZNeTEBXI12UEe6MztvQ/N4Aw/6Me6iCD9F3es
+         /M4w==
+X-Gm-Message-State: APjAAAUTJiR22K3dvpDmpGCU0kOGg5urygxqdxBlgKk9u8PhiYMud443
+        M3pmUZcrpB0NjMxrWyYnS1jV78JmOP/meQ==
+X-Google-Smtp-Source: APXvYqwnoW+/a2xHbBFZa+ognemxP/HCkEIaL/1SjSfdAsqMdMxOu2MZfjhnaHURQExMHvqV/pJz6Q==
+X-Received: by 2002:a37:c408:: with SMTP id d8mr27313201qki.18.1562106687957;
+        Tue, 02 Jul 2019 15:31:27 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id a21sm87851qkg.47.2019.07.02.15.31.27
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 02 Jul 2019 15:31:27 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hiRJ8-0003Eu-JD; Tue, 02 Jul 2019 19:31:26 -0300
+Date:   Tue, 2 Jul 2019 19:31:26 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Michal Kalderon <mkalderon@marvell.com>
+Cc:     Gal Pressman <galpress@amazon.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        Ariel Elior <aelior@marvell.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: [GIT PULL] Please pull NFSoRDMA updates for Linux 5.3
-Thread-Topic: [GIT PULL] Please pull NFSoRDMA updates for Linux 5.3
-Thread-Index: AQHVMRWtUitNYWZf40a4s7CQZrEEUw==
-Date:   Tue, 2 Jul 2019 20:35:25 +0000
-Message-ID: <b2cabbe76eecc8db717cccd84067d78f8c3a7d0f.camel@netapp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.32.3 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Anna.Schumaker@netapp.com; 
-x-originating-ip: [23.28.75.121]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4c336e4f-fba2-49a9-27e2-08d6ff2cd051
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:CY4PR06MB2887;
-X-MS-TrafficTypeDiagnostic: CY4PR06MB2887:|CY4PR06MB2887:|CY4PR06MB2887:|CY4PR06MB2887:
-x-microsoft-antispam-prvs: <CY4PR06MB28876FAC6DCDA5F9A581D806F8F80@CY4PR06MB2887.namprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1013;
-x-forefront-prvs: 008663486A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(39860400002)(346002)(376002)(136003)(396003)(189003)(199004)(486006)(316002)(86362001)(476003)(2616005)(4326008)(6916009)(186003)(26005)(3846002)(6116002)(14454004)(2351001)(25786009)(118296001)(2501003)(14444005)(256004)(478600001)(58126008)(54906003)(72206003)(99286004)(6486002)(6436002)(5660300002)(1730700003)(8936002)(5640700003)(6512007)(66066001)(2906002)(71200400001)(68736007)(15650500001)(66476007)(64756008)(91956017)(76116006)(73956011)(71190400001)(66946007)(66446008)(66556008)(53936002)(305945005)(36756003)(7736002)(8676002)(102836004)(81156014)(81166006)(6506007);DIR:OUT;SFP:1101;SCL:1;SRVR:CY4PR06MB2887;H:CY4PR06MB3479.namprd06.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: netapp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 4DX/sxawhNEgNWZTIGddz6RgYzUTw7+ACTsIjG9BKt3AjQ4N9TE0WRwvjmQfP/9+bRJ7ZGM2ZrQ3Mg/E0hjsfjp32+e+O3m0N0ePMe30ZQaN/K21WxKKQcmaFMyTA37wzmbKpCfWLMkwIfS9S2TqvKVyOlYotnsxMqqHnWFeyjY85J/PITYwCzQSvH2BsWyTP3EcqD/cgErbZCKhZvZCLVS9tsyJZsXmgAbBcBjopFhfnt8OIw6VCcLIc72gi7ktubw5WOsb5xuIvlrQfRQfSvV8BIQWOYmUeDO6zdN92u0Kv/FqNqNGVsPmyDAsVp6Vo7oEli5HRthoIaUzPVcbqP5BlCltshH7AyKNrRmZ7hCSPD+kmN3IUmMXevzE7VdjyX1Diwb7OEytpEnDoR8IC+xMR9IPypqo4LUJLeMOEo0=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CD2783FBF8DD8B4BB90922EFB979A863@namprd06.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Subject: Re: [RFC rdma 1/3] RDMA/core: Create a common mmap function
+Message-ID: <20190702223126.GA11860@ziepe.ca>
+References: <20190627135825.4924-1-michal.kalderon@marvell.com>
+ <20190627135825.4924-2-michal.kalderon@marvell.com>
+ <d6e9bc3b-215b-c6ea-11d2-01ae8f956bfa@amazon.com>
+ <20190627155219.GA9568@ziepe.ca>
+ <14e60be7-ae3a-8e86-c377-3bf126a215f0@amazon.com>
+ <MN2PR18MB318228F0D3DA5EA03A56573DA1FC0@MN2PR18MB3182.namprd18.prod.outlook.com>
+ <MN2PR18MB3182EC9EA3E330E0751836FDA1F80@MN2PR18MB3182.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c336e4f-fba2-49a9-27e2-08d6ff2cd051
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2019 20:35:25.7316
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4b0911a0-929b-4715-944b-c03745165b3a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bjschuma@netapp.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR06MB2887
-X-OriginatorOrg: netapp.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR18MB3182EC9EA3E330E0751836FDA1F80@MN2PR18MB3182.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SGkgVHJvbmQsDQoNClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQNCjllMGJhYmYy
-YzA2YzczY2RhMmMwY2QzN2ExNjUzZDgyM2FkYjQwZWM6DQoNCiAgTGludXggNS4yLXJjNSAoMjAx
-OS0wNi0xNiAwODo0OTo0NSAtMTAwMCkNCg0KYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9z
-aXRvcnkgYXQ6DQoNCiAgZ2l0Oi8vZ2l0LmxpbnV4LW5mcy5vcmcvcHJvamVjdHMvYW5uYS9saW51
-eC1uZnMuZ2l0IHRhZ3MvbmZzLXJkbWEtDQpmb3ItNS4zLTENCg0KZm9yIHlvdSB0byBmZXRjaCBj
-aGFuZ2VzIHVwIHRvDQoxYThmMWVkM2ViMWFjMmZkZGMxZDJjNzUyOTRkYjA4YWNlODhjMWNiOg0K
-DQogIE5GUzogUmVjb3JkIHRhc2ssIGNsaWVudCBJRCwgYW5kIFhJRCBpbiB4ZHJfc3RhdHVzIHRy
-YWNlIHBvaW50cw0KKDIwMTktMDctMDIgMTY6Mjk6MjIgLTA0MDApDQoNClRoYW5rcywNCkFubmEN
-Cg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQ0KQ2h1Y2sgTGV2ZXIgKDE5KToNCiAgICAgIHhwcnRyZG1hOiBGaXggYSBCVUcg
-d2hlbiB0cmFjaW5nIGlzIGVuYWJsZWQgd2l0aCBORlN2NC4xIG9uIFJETUENCiAgICAgIHhwcnRy
-ZG1hOiBGaXggdXNlLWFmdGVyLWZyZWUgaW4gcnBjcmRtYV9wb3N0X3JlY3ZzDQogICAgICB4cHJ0
-cmRtYTogUmVwbGFjZSB1c2Ugb2YgeGRyX3N0cmVhbV9wb3MgaW4gcnBjcmRtYV9tYXJzaGFsX3Jl
-cQ0KICAgICAgeHBydHJkbWE6IEZpeCBvY2Nhc2lvbmFsIHRyYW5zcG9ydCBkZWFkbG9jaw0KICAg
-ICAgeHBydHJkbWE6IFJlbW92ZSB0aGUgUlBDUkRNQV9SRVFfRl9QRU5ESU5HIGZsYWcNCiAgICAg
-IHhwcnRyZG1hOiBSZW1vdmUgZnJfc3RhdGUNCiAgICAgIHhwcnRyZG1hOiBBZGQgbWVjaGFuaXNt
-IHRvIHBsYWNlIE1ScyBiYWNrIG9uIHRoZSBmcmVlIGxpc3QNCiAgICAgIHhwcnRyZG1hOiBSZWR1
-Y2UgY29udGV4dCBzd2l0Y2hpbmcgZHVlIHRvIExvY2FsIEludmFsaWRhdGlvbg0KICAgICAgeHBy
-dHJkbWE6IFdha2UgUlBDcyBkaXJlY3RseSBpbiBycGNyZG1hX3djX3NlbmQgcGF0aA0KICAgICAg
-eHBydHJkbWE6IFNpbXBsaWZ5IHJwY3JkbWFfcmVwX2NyZWF0ZQ0KICAgICAgeHBydHJkbWE6IFN0
-cmVhbWxpbmUgcnBjcmRtYV9wb3N0X3JlY3ZzDQogICAgICB4cHJ0cmRtYTogUmVmYWN0b3IgY2h1
-bmsgZW5jb2RpbmcNCiAgICAgIHhwcnRyZG1hOiBSZW1vdmUgcnBjcmRtYV9yZXE6OnJsX2J1ZmZl
-cg0KICAgICAgeHBydHJkbWE6IE1vZGVybml6ZSBvcHMtPmNvbm5lY3QNCiAgICAgIE5GUzQ6IEFk
-ZCBhIHRyYWNlIGV2ZW50IHRvIHJlY29yZCBpbnZhbGlkIENCIHNlcXVlbmNlIElEcw0KICAgICAg
-TkZTOiBGaXggc2hvd19uZnNfZXJyb3JzIG1hY3JvcyBhZ2Fpbg0KICAgICAgTkZTOiBEaXNwbGF5
-IHN5bWJvbGljIHN0YXR1cyBjb2RlIG5hbWVzIGluIHRyYWNlIGxvZw0KICAgICAgTkZTOiBVcGRh
-dGUgc3ltYm9saWMgZmxhZ3MgZGlzcGxheWVkIGJ5IHRyYWNlIGV2ZW50cw0KICAgICAgTkZTOiBS
-ZWNvcmQgdGFzaywgY2xpZW50IElELCBhbmQgWElEIGluIHhkcl9zdGF0dXMgdHJhY2UgcG9pbnRz
-DQoNCiBmcy9uZnMvY2FsbGJhY2tfcHJvYy5jICAgICAgICAgIHwgIDI4ICsrKysrKysrLS0tDQog
-ZnMvbmZzL25mczJ4ZHIuYyAgICAgICAgICAgICAgICB8ICAgMiArLQ0KIGZzL25mcy9uZnMzeGRy
-LmMgICAgICAgICAgICAgICAgfCAgIDIgKy0NCiBmcy9uZnMvbmZzNHRyYWNlLmggICAgICAgICAg
-ICAgIHwgMjA3DQorKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KLS0tLQ0KIGZzL25mcy9uZnM0eGRyLmMgICAgICAg
-ICAgICAgICAgfCAgIDIgKy0NCiBmcy9uZnMvbmZzdHJhY2UuaCAgICAgICAgICAgICAgIHwgMjMz
-DQorKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKy0tLS0tLS0tLQ0KLS0tLS0tLS0tLS0tLQ0KIGluY2x1ZGUvbGludXgvc3VucnBjL3hw
-cnQuaCAgICAgfCAgIDMgKysNCiBpbmNsdWRlL3RyYWNlL2V2ZW50cy9ycGNyZG1hLmggIHwgIDkw
-ICsrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tDQotDQogbmV0L3N1bnJwYy9zY2hlZC5j
-ICAgICAgICAgICAgICB8ICAgMSArDQogbmV0L3N1bnJwYy94cHJ0LmMgICAgICAgICAgICAgICB8
-ICAzMiArKysrKysrKysrKysNCiBuZXQvc3VucnBjL3hwcnRyZG1hL2Zyd3Jfb3BzLmMgIHwgMzI3
-DQorKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKw0KKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0NCiBuZXQvc3VucnBjL3hwcnRyZG1hL3JwY19yZG1hLmMgIHwgMTQ4ICsrKysrKysr
-KysrKysrKysrKysrKysrLS0tLS0tLS0tDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiBuZXQvc3Vu
-cnBjL3hwcnRyZG1hL3RyYW5zcG9ydC5jIHwgIDgzICsrKysrKysrKysrKysrKysrKysrKysrLS0t
-LS0tLQ0KIG5ldC9zdW5ycGMveHBydHJkbWEvdmVyYnMuYyAgICAgfCAxMTUgKysrKysrKysrKysr
-KysrKysrKy0tLS0tLS0tLS0tLS0NCi0tLS0tLS0tLS0NCiBuZXQvc3VucnBjL3hwcnRyZG1hL3hw
-cnRfcmRtYS5oIHwgIDQ0ICsrKysrLS0tLS0tLS0tLS0NCiBuZXQvc3VucnBjL3hwcnRzb2NrLmMg
-ICAgICAgICAgIHwgIDIzICstLS0tLS0tLQ0KIDE2IGZpbGVzIGNoYW5nZWQsIDgzNyBpbnNlcnRp
-b25zKCspLCA1MDMgZGVsZXRpb25zKC0pDQo=
+On Tue, Jul 02, 2019 at 12:22:26PM +0000, Michal Kalderon wrote:
+> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > owner@vger.kernel.org> On Behalf Of Michal Kalderon
+> > 
+> > > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > > owner@vger.kernel.org> On Behalf Of Gal Pressman
+> > >
+> > > On 27/06/2019 18:52, Jason Gunthorpe wrote:
+> > > > On Thu, Jun 27, 2019 at 06:25:37PM +0300, Gal Pressman wrote:
+> > > >> On 27/06/2019 16:58, Michal Kalderon wrote:
+> > > >>> Create a common API for adding entries to a xa_mmap.
+> > > >>> This API can be used by drivers that don't require special mapping
+> > > >>> for user mapped memory.
+> > > >>>
+> > > >>> The code was copied from the efa driver almost as is, just renamed
+> > > >>> function to be generic and not efa specific.
+> > > >>
+> > > >> I don't think we should force the mmap flags to be the same for all
+> > > drivers..
+> > > >> Take a look at mlx5 for example:
+> > > >>
+> > > >> enum mlx5_ib_mmap_cmd {
+> > > >> 	MLX5_IB_MMAP_REGULAR_PAGE               = 0,
+> > > >> 	MLX5_IB_MMAP_GET_CONTIGUOUS_PAGES       = 1,
+> > > >> 	MLX5_IB_MMAP_WC_PAGE                    = 2,
+> > > >> 	MLX5_IB_MMAP_NC_PAGE                    = 3,
+> > > >> 	/* 5 is chosen in order to be compatible with old versions of
+> > > >> libmlx5
+> > > */
+> > > >> 	MLX5_IB_MMAP_CORE_CLOCK                 = 5,
+> > > >> 	MLX5_IB_MMAP_ALLOC_WC                   = 6,
+> > > >> 	MLX5_IB_MMAP_CLOCK_INFO                 = 7,
+> > > >> 	MLX5_IB_MMAP_DEVICE_MEM                 = 8,
+> > > >> };
+> > > >>
+> > > >> The flags taken from EFA aren't necessarily going to work for other
+> > > drivers.
+> > > >> Maybe the flags bits should be opaque to ib_core and leave the
+> > > >> actual mmap callbacks in the drivers. Not sure how dealloc_ucontext
+> > > >> is going to work with opaque flags though?
+> > > >
+> > > > Yes, the driver will have to take care of masking the flags before
+> > > > lookup
+> > > >
+> > > > We should probably store the struct page * in the
+> > > > rdma_user_mmap_entry() and use that to key struct page behavior.
+> > > I don't follow why we need the struct page? How will this work for MMIO?
+> > >
+> > > >
+> > > > Do you think we should go further and provide a generic mmap() that
+> > > > does the right thing? It would not be hard to provide a callback
+> > > > that computes the pgprot flags
+> > >
+> > > I think a generic mmap with a driver callback to do the actual
+> > > rdma_user_mmap_io/vm_insert_page/... according to the flags is a good
+> > > approach.
+> > >
+> > > If the flags are opaque to ib_core we'll need another callback to tell
+> > > the driver when the entries are being freed. This way, if the entry is
+> > > a DMA page for example (stated by the flags), the driver can free these
+> > buffers.
+> > 
+> > I think we'll still end up with a fair amount of duplicated code between a few
+> > drivers.
+> > How about an optional driver callback to override the default one ?
+> > We can start the new flags from a new range that isn't used by the other
+> > drivers, If the flag is in a "driver-specific" range and a driver callback for mmap
+> > is provided We'll call that function. We can also store in the
+> > rdma_user_mmap_entry whether The memory was mapped using driver
+> > opaque fields or not, and call the driver Free buffer functions accordingly.
+> 
+> Jason, 
+> 
+> Seems except Mellanox + hns the mmap flags aren't ABI. 
+> Also, current Mellanox code seems like it won't benefit from 
+> mmap cookie helper functions in any case as the mmap function is very specific and the flags used indicate 
+> the address and not just how to map it.
+
+IMHO, mlx5 has a goofy implementaiton here as it codes all of the object
+type, handle and cachability flags in one thing.
+
+> For most drivers (efa, qedr, siw, cxgb3/4, ocrdma) mmap is called on
+> address received by kernel in some response. Meaning driver can
+> write anything in the response that will serve as the key / flag.
+> Other drivers ( i40iw ) have a simple mmap function that doesn't
+> require a mmap database at all.
+
+Are you sure? I thought the reason to have to flags at all was so that
+userspace could specify different cachability..
+
+Otherwise the offset should just be an opaque cookie and internal xa
+should specify the cachability mode..
+
+Jason
