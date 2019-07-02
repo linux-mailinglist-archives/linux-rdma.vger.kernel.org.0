@@ -2,223 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D15E5CD42
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jul 2019 12:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61A55CE89
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jul 2019 13:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbfGBKDw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jul 2019 06:03:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727297AbfGBKDw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 2 Jul 2019 06:03:52 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3C562064A;
-        Tue,  2 Jul 2019 10:03:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562061831;
-        bh=jQ6lXt4YvBAQ8TCAGN2X9Qi0gslm+ul4Psv7NOiZhAY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fv82kuZ9lFSjs+UQWV9WCFWKN/vW0PkNVuxD0tdLUsKlFm3O1jznE0i8S4mIr769M
-         Zt0xA09hf8YApracHgSAixP1T9J5/XQpjICklC0u01oo+E9gCdAD5Rt6bm0GsJ7fno
-         4T+OmR6ftuWWTAg1yxUK9yq4O0wuLTwG1/BO9XfI=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Majd Dibbiny <majd@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: [PATCH rdma-next v5 17/17] RDMA/nldev: Allow get default counter statistics through RDMA netlink
-Date:   Tue,  2 Jul 2019 13:02:46 +0300
-Message-Id: <20190702100246.17382-18-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190702100246.17382-1-leon@kernel.org>
-References: <20190702100246.17382-1-leon@kernel.org>
+        id S1726046AbfGBLjP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Jul 2019 07:39:15 -0400
+Received: from os.inf.tu-dresden.de ([141.76.48.99]:37244 "EHLO
+        os.inf.tu-dresden.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbfGBLjP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jul 2019 07:39:15 -0400
+Received: from [195.176.96.212] (helo=[10.3.4.72])
+        by os.inf.tu-dresden.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92)
+        id 1hiH7w-0002le-Sh; Tue, 02 Jul 2019 13:39:12 +0200
+From:   Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
+Subject: [infiniband/rxe] Inconsistent locking in SoftRoCE
+To:     monis@mellanox.com, yanjun.zhu@oracle.com
+Cc:     linux-rdma@vger.kernel.org, jgg@ziepe.ca, dledford@redhat.com
+Message-ID: <3e349129-5de6-88a5-1ef9-b7a34c242769@os.inf.tu-dresden.de>
+Date:   Tue, 2 Jul 2019 13:39:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mark Zhang <markz@mellanox.com>
+Dear All,
 
-This patch adds the ability to return the hwstats of per-port default
-counters (which can also be queried through sysfs nodes).
+I'm reading through SoftRoCE implementation further and I stumbled 
+across following inconsistent locking.
 
-Signed-off-by: Mark Zhang <markz@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/nldev.c | 98 ++++++++++++++++++++++++++++++++-
- drivers/infiniband/core/sysfs.c |  6 ++
- include/rdma/ib_verbs.h         |  1 +
- 3 files changed, 104 insertions(+), 1 deletion(-)
+Sometimes access to qp->req.state is protected by lock qp->state_lock, 
+like for example here: 
+https://elixir.bootlin.com/linux/v5.2-rc7/source/drivers/infiniband/sw/rxe/rxe_comp.c#L488
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 4993f47b0731..a4431ed566b6 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -1799,6 +1799,99 @@ static int nldev_stat_del_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	return ret;
- }
- 
-+static int stat_get_doit_default_counter(struct sk_buff *skb,
-+					 struct nlmsghdr *nlh,
-+					 struct netlink_ext_ack *extack,
-+					 struct nlattr *tb[])
-+{
-+	struct rdma_hw_stats *stats;
-+	struct nlattr *table_attr;
-+	struct ib_device *device;
-+	int ret, num_cnts, i;
-+	struct sk_buff *msg;
-+	u32 index, port;
-+	u64 v;
-+
-+	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
-+		return -EINVAL;
-+
-+	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
-+	device = ib_device_get_by_index(sock_net(skb->sk), index);
-+	if (!device)
-+		return -EINVAL;
-+
-+	if (!device->ops.alloc_hw_stats || !device->ops.get_hw_stats) {
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
-+	if (!rdma_is_port_valid(device, port)) {
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
-+	if (!msg) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	nlh = nlmsg_put(msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
-+			RDMA_NL_GET_TYPE(RDMA_NL_NLDEV,
-+					 RDMA_NLDEV_CMD_STAT_GET),
-+			0, 0);
-+
-+	if (fill_nldev_handle(msg, device) ||
-+	    nla_put_u32(msg, RDMA_NLDEV_ATTR_PORT_INDEX, port)) {
-+		ret = -EMSGSIZE;
-+		goto err_msg;
-+	}
-+
-+	stats = device->port_data ? device->port_data[port].hw_stats : NULL;
-+	if (stats == NULL) {
-+		ret = -EINVAL;
-+		goto err_msg;
-+	}
-+	mutex_lock(&stats->lock);
-+
-+	num_cnts = device->ops.get_hw_stats(device, stats, port, 0);
-+	if (num_cnts < 0) {
-+		ret = -EINVAL;
-+		goto err_stats;
-+	}
-+
-+	table_attr = nla_nest_start(msg, RDMA_NLDEV_ATTR_STAT_HWCOUNTERS);
-+	if (!table_attr) {
-+		ret = -EMSGSIZE;
-+		goto err_stats;
-+	}
-+	for (i = 0; i < num_cnts; i++) {
-+		v = stats->value[i] +
-+			rdma_counter_get_hwstat_value(device, port, i);
-+		if (fill_stat_hwcounter_entry(msg, stats->names[i], v)) {
-+			ret = -EMSGSIZE;
-+			goto err_table;
-+		}
-+	}
-+	nla_nest_end(msg, table_attr);
-+
-+	mutex_unlock(&stats->lock);
-+	nlmsg_end(msg, nlh);
-+	ib_device_put(device);
-+	return rdma_nl_unicast(msg, NETLINK_CB(skb).portid);
-+
-+err_table:
-+	nla_nest_cancel(msg, table_attr);
-+err_stats:
-+	mutex_unlock(&stats->lock);
-+err_msg:
-+	nlmsg_free(msg);
-+err:
-+	ib_device_put(device);
-+	return ret;
-+}
-+
- static int stat_get_doit_qp(struct sk_buff *skb, struct nlmsghdr *nlh,
- 			    struct netlink_ext_ack *extack, struct nlattr *tb[])
- 
-@@ -1871,9 +1964,12 @@ static int nldev_stat_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 
- 	ret = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
- 			  nldev_policy, extack);
--	if (ret || !tb[RDMA_NLDEV_ATTR_STAT_RES])
-+	if (ret)
- 		return -EINVAL;
- 
-+	if (!tb[RDMA_NLDEV_ATTR_STAT_RES])
-+		return stat_get_doit_default_counter(skb, nlh, extack, tb);
-+
- 	switch (nla_get_u32(tb[RDMA_NLDEV_ATTR_STAT_RES])) {
- 	case RDMA_NLDEV_ATTR_RES_QP:
- 		ret = stat_get_doit_qp(skb, nlh, extack, tb);
-diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-index c59b80e0a740..b477295a96c2 100644
---- a/drivers/infiniband/core/sysfs.c
-+++ b/drivers/infiniband/core/sysfs.c
-@@ -1003,6 +1003,8 @@ static void setup_hw_stats(struct ib_device *device, struct ib_port *port,
- 			goto err;
- 		port->hw_stats_ag = hsag;
- 		port->hw_stats = stats;
-+		if (device->port_data)
-+			device->port_data[port_num].hw_stats = stats;
- 	} else {
- 		struct kobject *kobj = &device->dev.kobj;
- 		ret = sysfs_create_group(kobj, hsag);
-@@ -1293,6 +1295,8 @@ const struct attribute_group ib_dev_attr_group = {
- 
- void ib_free_port_attrs(struct ib_core_device *coredev)
- {
-+	struct ib_device *device = rdma_device_to_ibdev(&coredev->dev);
-+	bool is_full_dev = &device->coredev == coredev;
- 	struct kobject *p, *t;
- 
- 	list_for_each_entry_safe(p, t, &coredev->port_list, entry) {
-@@ -1302,6 +1306,8 @@ void ib_free_port_attrs(struct ib_core_device *coredev)
- 		if (port->hw_stats_ag)
- 			free_hsag(&port->kobj, port->hw_stats_ag);
- 		kfree(port->hw_stats);
-+		if (device->port_data && is_full_dev)
-+			device->port_data[port->port_num].hw_stats = NULL;
- 
- 		if (port->pma_table)
- 			sysfs_remove_group(p, port->pma_table);
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 0c5151a12ae4..50806bef9f20 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2124,6 +2124,7 @@ struct ib_port_data {
- 	struct net_device __rcu *netdev;
- 	struct hlist_node ndev_hash_link;
- 	struct rdma_port_counter port_counter;
-+	struct rdma_hw_stats *hw_stats;
- };
- 
- /* rdma netdev type - specifies protocol type */
+But it is not protected inside rxe_qp_error function here:
+
+https://elixir.bootlin.com/linux/v5.2-rc7/source/drivers/infiniband/sw/rxe/rxe_qp.c#L574
+
+Moreover the comment to the state_lock says it protects both requester 
+and completer. First, completer does not have "state" variable inside 
+rxe_comp_info structure. Second, there is such variable inside 
+"rxe_resp_info" structure that is not protected.
+
+If the goal is to protect only the state of requster, th it makes sense 
+to keep state_lock inside struct rxe_req_info.
+
+If the goal is to protect all state variables, then state inside struct 
+rxe_resp_info should be protected.
+
 -- 
-2.20.1
-
+Regards,
+Maksym Planeta
