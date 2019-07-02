@@ -2,93 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2688C5D2E5
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jul 2019 17:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C705D412
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jul 2019 18:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbfGBP3j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jul 2019 11:29:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725835AbfGBP3i (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 2 Jul 2019 11:29:38 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D4FF2184C;
-        Tue,  2 Jul 2019 15:29:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562081377;
-        bh=8qUm6lbGEuRk5JL1KZKlQ/j+/DnAZtaH/I96238AzC0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SjT3o8niS7ALH8UvBDsISjJnv4KYvjlu4FFxdh6yPg/Kzgu15hxds33AlFq64B+Uw
-         oVBMwkcVmfYi370veC1clZkj8uhRCQvbf5ptqPDUsvQq25XEneMkDTsz0eHfFgEsvF
-         7TSDdNcuNjpNRJUrkBXhvEAomLn0xL4Q+MVo6UP0=
-Date:   Tue, 2 Jul 2019 18:29:33 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
-Cc:     Moni Shoua <monis@mellanox.com>,
+        id S1726103AbfGBQPq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Jul 2019 12:15:46 -0400
+Received: from xavier.telenet-ops.be ([195.130.132.52]:45778 "EHLO
+        xavier.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726418AbfGBQPq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jul 2019 12:15:46 -0400
+Received: from ramsan ([84.194.98.4])
+        by xavier.telenet-ops.be with bizsmtp
+        id XsFi2000t05gfCL01sFiK5; Tue, 02 Jul 2019 18:15:44 +0200
+Received: from geert (helo=localhost)
+        by ramsan with local-esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1hiLRW-0003TW-LY; Tue, 02 Jul 2019 18:15:42 +0200
+Date:   Tue, 2 Jul 2019 18:15:42 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Tal Gilboa <talgi@mellanox.com>
+cc:     "David S. Miller" <davem@davemloft.net>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] ibverbs/rxe: Remove variable self-initialization
-Message-ID: <20190702152933.GW4727@mtr-leonro.mtl.com>
-References: <20190702134928.31534-1-mplaneta@os.inf.tu-dresden.de>
- <20190702140643.GV4727@mtr-leonro.mtl.com>
- <87010175-9072-b0e6-afc0-4e632587503a@os.inf.tu-dresden.de>
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [for-next V2 06/10] linux/dim: Move implementation to .c files
+In-Reply-To: <20190625205701.17849-7-saeedm@mellanox.com>
+Message-ID: <alpine.DEB.2.21.1907021810220.13058@ramsan.of.borg>
+References: <20190625205701.17849-1-saeedm@mellanox.com> <20190625205701.17849-7-saeedm@mellanox.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87010175-9072-b0e6-afc0-4e632587503a@os.inf.tu-dresden.de>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 02, 2019 at 04:14:11PM +0200, Maksym Planeta wrote:
->
->
-> On 02/07/2019 16:06, Leon Romanovsky wrote:
-> > On Tue, Jul 02, 2019 at 03:49:28PM +0200, Maksym Planeta wrote:
-> > > In some cases (not in this particular one) variable self-initialization
-> > > can lead to undefined behavior. In this case, it is just obscure code.
-> > >
-> > > Signed-off-by: Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
-> > > ---
-> > >   drivers/infiniband/sw/rxe/rxe_comp.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-> > > index 00eb99d3df86..116cafc9afcf 100644
-> > > --- a/drivers/infiniband/sw/rxe/rxe_comp.c
-> > > +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-> > > @@ -558,7 +558,7 @@ int rxe_completer(void *arg)
-> > >   {
-> > >   	struct rxe_qp *qp = (struct rxe_qp *)arg;
-> > >   	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-> > > -	struct rxe_send_wqe *wqe = wqe;
-> > > +	struct rxe_send_wqe *wqe = NULL;
-> >
-> > This can't work, for example call to do_read() will crash the system,
-> > due to pointer dereference.
-> >
->
-> wqe will be properly initialized before actual usage.
->
-> Before do_read can be called, first there is necessary COMPST_GET_ACK, and
-> then necessary COMPST_GET_WQE. Then get_wqe will be called, that sets proper
-> value for wqe.
+ 	Hi Saeed, Tal,
 
-I see it now, thanks
-
-
+On Tue, 25 Jun 2019, Saeed Mahameed wrote:
+> From: Tal Gilboa <talgi@mellanox.com>
 >
-> > >   	struct sk_buff *skb = NULL;
-> > >   	struct rxe_pkt_info *pkt = NULL;
-> > >   	enum comp_state state;
-> > > --
-> > > 2.20.1
-> > >
+> Moved all logic from dim.h and net_dim.h to dim.c and net_dim.c.
+> This is both more structurally appealing and would allow to only
+> expose externally used functions.
 >
-> --
-> Regards,
-> Maksym Planeta
+> Signed-off-by: Tal Gilboa <talgi@mellanox.com>
+> Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+
+This is now commit 4f75da3666c0c572 ("linux/dim: Move implementation to
+.c files") in net-next.
+
+> --- a/drivers/net/ethernet/broadcom/Kconfig
+> +++ b/drivers/net/ethernet/broadcom/Kconfig
+> @@ -8,6 +8,7 @@ config NET_VENDOR_BROADCOM
+> 	default y
+> 	depends on (SSB_POSSIBLE && HAS_DMA) || PCI || BCM63XX || \
+> 		   SIBYTE_SB1xxx_SOC
+> +	select DIMLIB
+
+Merely enabling a NET_VENDOR_* symbol should not enable inclusion of
+any additional code, cfr. the help text for the NET_VENDOR_BROADCOM
+option.
+
+Hence please move the select to the config symbol(s) for the driver(s)
+that need it.
+
+> --- a/lib/Kconfig
+> +++ b/lib/Kconfig
+> @@ -562,6 +562,14 @@ config SIGNATURE
+> 	  Digital signature verification. Currently only RSA is supported.
+> 	  Implementation is done using GnuPG MPI library
+>
+> +config DIMLIB
+> +	bool "DIM library"
+> +	default y
+
+Please drop this line, as optional library code should never be included
+by default.
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
