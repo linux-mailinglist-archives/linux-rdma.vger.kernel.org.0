@@ -2,170 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6725DA04
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 02:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500F65DB01
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 03:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727179AbfGCA7L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jul 2019 20:59:11 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:45426 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727082AbfGCA7K (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jul 2019 20:59:10 -0400
-Received: by mail-qk1-f196.google.com with SMTP id s22so422356qkj.12
-        for <linux-rdma@vger.kernel.org>; Tue, 02 Jul 2019 17:59:09 -0700 (PDT)
+        id S1727049AbfGCBhk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Jul 2019 21:37:40 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:35823 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726930AbfGCBhk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jul 2019 21:37:40 -0400
+Received: by mail-qt1-f194.google.com with SMTP id d23so831765qto.2
+        for <linux-rdma@vger.kernel.org>; Tue, 02 Jul 2019 18:37:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=aes/lBIyhGrIclhmY3CKw8tfrF9ew6U+hjN/igz1kPw=;
-        b=DST95VOkZbqEUf9rwHFr+9h/xK7HQs7A4rhs3Ns3C6s7pAQRk+hNt4iJIbEu46bIHG
-         /crrRYl/ZzQ/OG7Du/qPtRC2FkysgD/Xaz802qtnTcFdRVs0Y3url+q/GoVf0XwWuCN/
-         /ftRZxwZgtpQDnjScdQxHslUPm5QBQ1DRyr5eJSUNewlX4Tk3Lslkt+Ifn66V/Pg/5F6
-         iDzhtZaj80Z6zhGWtskugkBooeN6sIO8pXv/DLF5AhwqiYEeFw7RD389pxenTKkfiQEK
-         aj2hhpsz0L0TDrTpOf/j5HClW5lZ8zLXH/MXwAO0+40EaYwTVdG2PDZsjKpB22s/k82Y
-         SJjw==
+        bh=n6Cr/2TTE7sXeLBBF+y17Nyc+Rmb7wg0ZYDpvKpdMZo=;
+        b=ILpe1sm7yeBmxdmgGnui8zJdUwwsL5/Awh9sP+1Urt25Tyueb+6L9qfd1M1aDlCK5A
+         VC7T1u9YeM//gggooGZjmqecH+oPZOXQgQXJDmnRM3X90QC9YdDpMJP8iod7yU9q5MfG
+         kPqSf85t7OPwCxqJJeSg9wLorF/Kx0s/lfqigjr7D4pZ4dFCj9xG1Q2OQgFNLsVXQlci
+         f5QSqwlNx3Y1OODy/vkFZiJp+vuOPm9zUXt3fJDz5GiHSAcyJryCxwgZoaE9AJw+aOu3
+         aSWWcXs8HqDNFO6eMXgvMnmuYYTDysfZm7aT1DtoJoAUHI8uEq6jctdIOooedu7S9b8u
+         w8zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aes/lBIyhGrIclhmY3CKw8tfrF9ew6U+hjN/igz1kPw=;
-        b=F6vLCKCsjPahekw68iSId07ep3gAZSRA/oYCUtC6YyW2LCNyMA/RqNXN+bg00lhD2r
-         qhbFwffKc+oLIlKXMf33fjYDr/NvBDBkMftIB4lWfYy6xBAt3bBEV36DOIrWtUPrRZbn
-         1AhvCxELYPTkYKZEEXAH2hVfteLoZ5aD9EmJJYiKgZs6aM+rSVSjDSYyiMXyjTLCMuFu
-         2EEP9+ol+OaRgWT5Z7ZA3xqcXlu55054jPctvrVoXzYE0HnSQ8j5XMoyU2xXBGAkFzGE
-         7dOs/3NI1AkloiWverYhr3xu157KDPPZNeTEBXI12UEe6MztvQ/N4Aw/6Me6iCD9F3es
-         /M4w==
-X-Gm-Message-State: APjAAAUTJiR22K3dvpDmpGCU0kOGg5urygxqdxBlgKk9u8PhiYMud443
-        M3pmUZcrpB0NjMxrWyYnS1jV78JmOP/meQ==
-X-Google-Smtp-Source: APXvYqwnoW+/a2xHbBFZa+ognemxP/HCkEIaL/1SjSfdAsqMdMxOu2MZfjhnaHURQExMHvqV/pJz6Q==
-X-Received: by 2002:a37:c408:: with SMTP id d8mr27313201qki.18.1562106687957;
-        Tue, 02 Jul 2019 15:31:27 -0700 (PDT)
+        bh=n6Cr/2TTE7sXeLBBF+y17Nyc+Rmb7wg0ZYDpvKpdMZo=;
+        b=KV2dJF62yKI2B5821olW4Hk9uL9RsM57X6KXZsLaRsJFTzlrBPb0SSPE1zuy6Btftq
+         utr7BcuoVwz+HyguAu3xYd6205NAqAODyFQ7EiwfokPz4cCYBdnpBGpoPWXNFZnMVS28
+         NUA2Frncb0VtKyhrZYDMtbFV7GDXaKB8ClzxQBqMOH2OLYLZvo7c2j6J0CCpPGMcfqN4
+         5dMhy77DkYFDK2yfeL8Z8WGrOUkgT2/MMLmid7koRmb02e5Cppz9C9KUP36XUNJbpLFf
+         KBV3fBj5VUWt2X4cAo6qUDWyyE2lIDARDAZYL36SilRrjdxwQ3Ifo3EZ0T1VbzD7jCyi
+         TAbg==
+X-Gm-Message-State: APjAAAVeWrEIuCkVm5zMEQfRidNb7H7jmSpDwu9V9/Ak/Ym47GNigh6O
+        wYQvlmQvAN9g2F3MxMr2GdJlyQJQolujXw==
+X-Google-Smtp-Source: APXvYqzahrIGBxJr0L734X837Aw/jUrFoyRV1Ja6eoxxNEtWFXGhBkcoV4Wto4Fl7pfF0jnNQlcvcw==
+X-Received: by 2002:ac8:2f7b:: with SMTP id k56mr27448392qta.376.1562107285605;
+        Tue, 02 Jul 2019 15:41:25 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id a21sm87851qkg.47.2019.07.02.15.31.27
+        by smtp.gmail.com with ESMTPSA id a21sm98861qkg.47.2019.07.02.15.41.25
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Jul 2019 15:31:27 -0700 (PDT)
+        Tue, 02 Jul 2019 15:41:25 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hiRJ8-0003Eu-JD; Tue, 02 Jul 2019 19:31:26 -0300
-Date:   Tue, 2 Jul 2019 19:31:26 -0300
+        id 1hiRSm-0003JP-Pu; Tue, 02 Jul 2019 19:41:24 -0300
+Date:   Tue, 2 Jul 2019 19:41:24 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michal Kalderon <mkalderon@marvell.com>
-Cc:     Gal Pressman <galpress@amazon.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
-        Ariel Elior <aelior@marvell.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [RFC rdma 1/3] RDMA/core: Create a common mmap function
-Message-ID: <20190702223126.GA11860@ziepe.ca>
-References: <20190627135825.4924-1-michal.kalderon@marvell.com>
- <20190627135825.4924-2-michal.kalderon@marvell.com>
- <d6e9bc3b-215b-c6ea-11d2-01ae8f956bfa@amazon.com>
- <20190627155219.GA9568@ziepe.ca>
- <14e60be7-ae3a-8e86-c377-3bf126a215f0@amazon.com>
- <MN2PR18MB318228F0D3DA5EA03A56573DA1FC0@MN2PR18MB3182.namprd18.prod.outlook.com>
- <MN2PR18MB3182EC9EA3E330E0751836FDA1F80@MN2PR18MB3182.namprd18.prod.outlook.com>
+To:     Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Cc:     Yuval Shaia <yuval.shaia@oracle.com>, yishaih@mellanox.com,
+        dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        mark.haywood@oracle.com, Leon Romanovsky <leonro@mellanox.com>
+Subject: Re: [PATCH v6 rdma-core] verbs: Introduce a new reg_mr API for
+ virtual address space
+Message-ID: <20190702224124.GC11860@ziepe.ca>
+References: <20190613110936.30535-1-yuval.shaia@oracle.com>
+ <20190701081542.GA30149@srabinov-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MN2PR18MB3182EC9EA3E330E0751836FDA1F80@MN2PR18MB3182.namprd18.prod.outlook.com>
+In-Reply-To: <20190701081542.GA30149@srabinov-laptop>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 02, 2019 at 12:22:26PM +0000, Michal Kalderon wrote:
-> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > owner@vger.kernel.org> On Behalf Of Michal Kalderon
+On Mon, Jul 01, 2019 at 11:15:42AM +0300, Shamir Rabinovitch wrote:
+> On Thu, Jun 13, 2019 at 02:09:36PM +0300, Yuval Shaia wrote:
+> > The virtual address that is registered is used as a base for any address
+> > passed later in post_recv and post_send operations.
 > > 
-> > > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > > owner@vger.kernel.org> On Behalf Of Gal Pressman
-> > >
-> > > On 27/06/2019 18:52, Jason Gunthorpe wrote:
-> > > > On Thu, Jun 27, 2019 at 06:25:37PM +0300, Gal Pressman wrote:
-> > > >> On 27/06/2019 16:58, Michal Kalderon wrote:
-> > > >>> Create a common API for adding entries to a xa_mmap.
-> > > >>> This API can be used by drivers that don't require special mapping
-> > > >>> for user mapped memory.
-> > > >>>
-> > > >>> The code was copied from the efa driver almost as is, just renamed
-> > > >>> function to be generic and not efa specific.
-> > > >>
-> > > >> I don't think we should force the mmap flags to be the same for all
-> > > drivers..
-> > > >> Take a look at mlx5 for example:
-> > > >>
-> > > >> enum mlx5_ib_mmap_cmd {
-> > > >> 	MLX5_IB_MMAP_REGULAR_PAGE               = 0,
-> > > >> 	MLX5_IB_MMAP_GET_CONTIGUOUS_PAGES       = 1,
-> > > >> 	MLX5_IB_MMAP_WC_PAGE                    = 2,
-> > > >> 	MLX5_IB_MMAP_NC_PAGE                    = 3,
-> > > >> 	/* 5 is chosen in order to be compatible with old versions of
-> > > >> libmlx5
-> > > */
-> > > >> 	MLX5_IB_MMAP_CORE_CLOCK                 = 5,
-> > > >> 	MLX5_IB_MMAP_ALLOC_WC                   = 6,
-> > > >> 	MLX5_IB_MMAP_CLOCK_INFO                 = 7,
-> > > >> 	MLX5_IB_MMAP_DEVICE_MEM                 = 8,
-> > > >> };
-> > > >>
-> > > >> The flags taken from EFA aren't necessarily going to work for other
-> > > drivers.
-> > > >> Maybe the flags bits should be opaque to ib_core and leave the
-> > > >> actual mmap callbacks in the drivers. Not sure how dealloc_ucontext
-> > > >> is going to work with opaque flags though?
-> > > >
-> > > > Yes, the driver will have to take care of masking the flags before
-> > > > lookup
-> > > >
-> > > > We should probably store the struct page * in the
-> > > > rdma_user_mmap_entry() and use that to key struct page behavior.
-> > > I don't follow why we need the struct page? How will this work for MMIO?
-> > >
-> > > >
-> > > > Do you think we should go further and provide a generic mmap() that
-> > > > does the right thing? It would not be hard to provide a callback
-> > > > that computes the pgprot flags
-> > >
-> > > I think a generic mmap with a driver callback to do the actual
-> > > rdma_user_mmap_io/vm_insert_page/... according to the flags is a good
-> > > approach.
-> > >
-> > > If the flags are opaque to ib_core we'll need another callback to tell
-> > > the driver when the entries are being freed. This way, if the entry is
-> > > a DMA page for example (stated by the flags), the driver can free these
-> > buffers.
+> > On some virtualized environment this is not correct.
 > > 
-> > I think we'll still end up with a fair amount of duplicated code between a few
-> > drivers.
-> > How about an optional driver callback to override the default one ?
-> > We can start the new flags from a new range that isn't used by the other
-> > drivers, If the flag is in a "driver-specific" range and a driver callback for mmap
-> > is provided We'll call that function. We can also store in the
-> > rdma_user_mmap_entry whether The memory was mapped using driver
-> > opaque fields or not, and call the driver Free buffer functions accordingly.
+> > A guest cannot register its memory so hypervisor maps the guest physical
+> > address to a host virtual address and register it with the HW. Later on,
+> > at datapath phase, the guest fills the SGEs with addresses from its
+> > address space.
+> > Since HW cannot access guest virtual address space an extra translation
+> > is needed to map those addresses to be based on the host virtual address
+> > that was registered with the HW.
+> > This datapath interference affects performances.
+> > 
+> > To avoid this, a logical separation between the address that is
+> > registered and the address that is used as a offset at datapath phase is
+> > needed.
+> > This separation is already implemented in the lower layer part
+> > (ibv_cmd_reg_mr) but blocked at the API level.
+> > 
+> > Fix it by introducing a new API function which accepts an address from
+> > guest virtual address space as well, to be used as offset for later
+> > datapath operations.
+> > 
+> > Also update the PABI to v25
+> > 
+> > Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
+> > Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+> > v0 -> v1:
+> > 	* Change reg_mr callback signature instead of adding new callback
+> > 	* Add the new API to libibverbs/libibverbs.map.in
+> > v1 -> v2:
+> > 	* Do not modify reg_mr signature for version 1.0
+> > 	* Add note to man page
+> > v2 -> v3:
+> > 	* Rename function to reg_mr_iova (and arg-name to iova)
+> > 	* Some checkpatch issues not related to this fix but detected now
+> > 		* s/__FUNCTION__/__func
+> > 		* WARNING: function definition argument 'void *' should
+> > 		  also have an identifier name
+> > v3 -> v4:
+> > 	* Fix commit message as suggested by Adit Ranadiv
+> > 	* Add support for efa
+> > v4 -> v5:
+> > 	* Update PABI
+> > 	* Update debian files
+> > v5 -> v6:
+> > 	* Move the new API to section in libibverbs/libibverbs.map.in
+> > 	  (IBVERBS_1.7) as pointed out by Mark Haywood
 > 
-> Jason, 
+> When will this be pulled in to rdma-core master ?
 > 
-> Seems except Mellanox + hns the mmap flags aren't ABI. 
-> Also, current Mellanox code seems like it won't benefit from 
-> mmap cookie helper functions in any case as the mmap function is very specific and the flags used indicate 
-> the address and not just how to map it.
+> I can use this API for the shared PD demo app.
 
-IMHO, mlx5 has a goofy implementaiton here as it codes all of the object
-type, handle and cachability flags in one thing.
-
-> For most drivers (efa, qedr, siw, cxgb3/4, ocrdma) mmap is called on
-> address received by kernel in some response. Meaning driver can
-> write anything in the response that will serve as the key / flag.
-> Other drivers ( i40iw ) have a simple mmap function that doesn't
-> require a mmap database at all.
-
-Are you sure? I thought the reason to have to flags at all was so that
-userspace could specify different cachability..
-
-Otherwise the offset should just be an opaque cookie and internal xa
-should specify the cachability mode..
+I was happy with it, but haven't checked every detail yet
 
 Jason
