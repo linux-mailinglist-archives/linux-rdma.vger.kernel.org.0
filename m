@@ -2,105 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C205D8BE
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 02:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE925D8CC
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 02:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbfGCA2G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jul 2019 20:28:06 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:34169 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727213AbfGCA2G (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jul 2019 20:28:06 -0400
-Received: by mail-qk1-f193.google.com with SMTP id t8so409011qkt.1
-        for <linux-rdma@vger.kernel.org>; Tue, 02 Jul 2019 17:28:05 -0700 (PDT)
+        id S1727199AbfGCA3f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Jul 2019 20:29:35 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35658 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727083AbfGCA3f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jul 2019 20:29:35 -0400
+Received: by mail-qk1-f194.google.com with SMTP id r21so111230qke.2
+        for <linux-rdma@vger.kernel.org>; Tue, 02 Jul 2019 17:29:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=MdOAu5KOREG+EbRK6Nq+YrKhvJXs3HmUBDCrdZ5KiX8=;
-        b=AAxljt6pnpE2phFv0au/KMXwtndrEkpi/j2/EJsMk1Ltm/znau8U4oC61EO2/d59Sk
-         xJPU1u0BtjEPFESekQuX2BJ1u/SqIZ7bMflpffyt+/cccxx1yOrusUEn8yOp2ywWrOCf
-         Lld5MDyXgnJIr3ve2Fh/w5j5fkwVyTxgAGins3VH29cEQcbzt+qyDR2bHhjmFSi3jbg6
-         /F7F3gPexkQQQsNw63xYHhsOrFz2Bzyo6kl0n9KIvQtP8bxrPZ5QJz8X1GXONm3VkV3X
-         NKNrdqQe5b84FicJ1h0fFR5CFdrR9SaWP/732ngOtvNn+h+/TB30mAQ6Zl96yTI1xlw7
-         I9fQ==
+        bh=PHSbzNrU7eGGZXZD0AacWMBlI/Op9clHTfYxssXMqi0=;
+        b=jWXR3BvgSRojUrHckKoThkxxy/8IZPDG/erYKRHDkY+Ld18hMCQVQ5/kDgVBYr4FPG
+         qm94DH5oQaYLrDn4hZx8/FIazaZ3KNuIWd6gH6wJaM6yA7Y0PPqP7b9rjbTYCnEpP7Cj
+         pwVhWkflABcJCLKXKrbt5IhJyw1ZgvR0v5b2DKbJ35rDJ2opPZ9z3lLurj6wYxKy4BCJ
+         pZ8Zian8CEFR6B3LPvlXYA4vwSd1KLh1tBCa/H3Wv2+WmYrtRTsrOR4/Rb3vFMay2a2Z
+         oaqPTVGZzukwrGkFKeH8eAkeJxPxBRyR8Cz2cCVwyQvCCLoXpls4wA6Y2d+y4/ix5QkQ
+         jtSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MdOAu5KOREG+EbRK6Nq+YrKhvJXs3HmUBDCrdZ5KiX8=;
-        b=oO0vEvTVMt6lyurf90kJ5BB1Rjav1WXO9Nm/Q45tdIHN7x6gav8k8YZRd2M+lcM37X
-         luYmC2VKyAUF4P7qPnzuZb4ZMFSnSZrhpBDK3XNmMzLXD5W3IvelFUvUeF+tBaW8/FyM
-         n+klrCS++1F3bTgAnpmgIurMgWOkc+KyN+lyKziicjPCtt3GDUf0SJ7jRDL7Ci+TQxE4
-         DWc8h5q5sEIRXAOoHllVusQYtMRMraTL2+wnGrUsIO79buyrpEaHfDP8Nhi6FyU4xPdY
-         BrZJqD4PDoCt55PY2+Pe53BRtkK6X02wncwEhkOwsy605JV6D1bIUtguRaeoegAn2EH6
-         SSVQ==
-X-Gm-Message-State: APjAAAUNv+oKFgMK/Dgytzb8l48zWagteAwcbrEldOFTAmqL/AKrDvTL
-        pvhx4iM8Z67ITNv/C352Jc7mmw==
-X-Google-Smtp-Source: APXvYqzUcLNxWLj8a1mpiDGB2K6z0y2WfLWUEsAEOQWJszxbWpBMhPdailzBeKZol6g1VGK7JNoCSA==
-X-Received: by 2002:a37:9904:: with SMTP id b4mr26656775qke.159.1562107531140;
-        Tue, 02 Jul 2019 15:45:31 -0700 (PDT)
+        bh=PHSbzNrU7eGGZXZD0AacWMBlI/Op9clHTfYxssXMqi0=;
+        b=SR4+x3pRm8j1oJfyMwtFhQC3LZFWO/pcaidJQLCCXZSkpzjudyi+WbP4HWPO9nw/cr
+         OhSwzztrPlzoa8wnoTQ6kF/Gv6QNdhA0a71ex3q0yUjvjterPkeq2y7f6qRmxTvzsqEY
+         EuqSzGTvHfnMJjDXKa00b+CZBEMwkxx0h4gDS8fZMBw03eCDKjkO1+SbqpFT4puoXVXx
+         rTVYvb4w0hYVhxnM7+5d45zLrYdfnxA/c2UH5gk4nTX5QH+Zj58YrEtDbfdtP00jZA4x
+         KZhLWNCaNtBoI1X1BUbd6kfysAA8AvLoS9UBo25pzx3nwxXcOpg8nsDgLbgiYXBcgZjx
+         fSYg==
+X-Gm-Message-State: APjAAAVBoi1T7ovTdURVlnhxbL9ZGg+kJ4dTAfiyQnfkUTUs5rvGbnf9
+        fkRMkf2HrVopef7DVlkR1lza/zLaMg2TqA==
+X-Google-Smtp-Source: APXvYqwPshAz/jzHQvxq4m19H4+qdpHEysTjK67YJYXkIMhAJOCpUmmXQt5l2TE0Ryz5LW+CJWUucQ==
+X-Received: by 2002:a37:6a87:: with SMTP id f129mr27709475qkc.183.1562107688624;
+        Tue, 02 Jul 2019 15:48:08 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id j3sm141576qki.5.2019.07.02.15.45.30
+        by smtp.gmail.com with ESMTPSA id j79sm87486qke.112.2019.07.02.15.48.08
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Jul 2019 15:45:30 -0700 (PDT)
+        Tue, 02 Jul 2019 15:48:08 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hiRWk-0003Lm-82; Tue, 02 Jul 2019 19:45:30 -0300
-Date:   Tue, 2 Jul 2019 19:45:30 -0300
+        id 1hiRZH-0003N8-Sr; Tue, 02 Jul 2019 19:48:07 -0300
+Date:   Tue, 2 Jul 2019 19:48:07 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Stephen Bates <sbates@raithlin.com>
-Subject: Re: [RFC PATCH 00/28] Removing struct page from P2PDMA
-Message-ID: <20190702224530.GD11860@ziepe.ca>
-References: <20190627063223.GA7736@ziepe.ca>
- <6afe4027-26c8-df4e-65ce-49df07dec54d@deltatee.com>
- <20190627163504.GB9568@ziepe.ca>
- <4894142c-3233-a3bb-f9a3-4a4985136e9b@deltatee.com>
- <20190628045705.GD3705@ziepe.ca>
- <8022a2a4-4069-d256-11da-e6d9b2ffbf60@deltatee.com>
- <20190628172926.GA3877@ziepe.ca>
- <25a87c72-630b-e1f1-c858-9c8b417506fc@deltatee.com>
- <20190628190931.GC3877@ziepe.ca>
- <cb680437-9615-da42-ebc5-4751e024a45f@deltatee.com>
+To:     Yuval Shaia <yuval.shaia@oracle.com>
+Cc:     Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
+        linux-rdma@vger.kernel.org, leon@kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Subject: Re: [RFC rdma-core] verbs: add ibv_export_to_fd man page
+Message-ID: <20190702224807.GE11860@ziepe.ca>
+References: <20190626083614.23688-1-shamir.rabinovitch@oracle.com>
+ <20190626124637.GA3091@lap1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cb680437-9615-da42-ebc5-4751e024a45f@deltatee.com>
+In-Reply-To: <20190626124637.GA3091@lap1>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 28, 2019 at 01:35:42PM -0600, Logan Gunthorpe wrote:
-
-> > However, I'd feel more comfortable about that assumption if we had
-> > code to support the IOMMU case, and know for sure it doesn't require
-> > more info :(
+On Wed, Jun 26, 2019 at 03:46:39PM +0300, Yuval Shaia wrote:
+> On Wed, Jun 26, 2019 at 11:36:14AM +0300, Shamir Rabinovitch wrote:
+> > Add the ibv_export_to_fd man page.
 > 
-> The example I posted *does* support the IOMMU case. That was case (b1)
-> in the description. The idea is that pci_p2pdma_dist() returns a
-> distance with a high bit set (PCI_P2PDMA_THRU_HOST_BRIDGE) when an IOMMU
-> mapping is required and the appropriate flag tells it to call
-> dma_map_resource(). This way, it supports both same-segment and
-> different-segments without needing any look ups in the map step.
+> This is RFC but still suggesting to give some words here.
+> 
+> Also, subject is incorrect since man page is for all functions involved in
+> the shared-obj mechanism, not only the export_to_fd.
+> 
+> > 
+> > Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+> >  libibverbs/man/ibv_export_to_fd.3.md | 109 +++++++++++++++++++++++++++
+> >  1 file changed, 109 insertions(+)
+> >  create mode 100644 libibverbs/man/ibv_export_to_fd.3.md
+> > 
+> > diff --git a/libibverbs/man/ibv_export_to_fd.3.md b/libibverbs/man/ibv_export_to_fd.3.md
+> > new file mode 100644
+> > index 00000000..8e3f0fb2
+> > +++ b/libibverbs/man/ibv_export_to_fd.3.md
+> > @@ -0,0 +1,109 @@
+> > +---
+> > +date: 2018-06-26
+> > +footer: libibverbs
+> > +header: "Libibverbs Programmer's Manual"
+> > +layout: page
+> > +license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
+> > +section: 3
+> > +title: ibv_export_to_fd
+> > +tagline: Verbs
+> > +---
+> > +
+> > +# NAME
+> > +
+> > +**ibv_export_to_fd**, **ibv_import_pd**, **ibv_import_mr** - export & import ib hw objects.
+> > +
+> > +# SYNOPSIS
+> > +
+> > +```c
+> > +#include <infiniband/verbs.h>
+> > +
+> > +int ibv_export_to_fd(uint32_t fd,
+> > +                     uint32_t *new_handle,
+> > +                     struct ibv_context *context,
+> > +                     enum uverbs_default_objects type,
+> > +                     uint32_t handle);
 
-I mean we actually have some iommu drivers that can setup P2P in real
-HW. I'm worried that real IOMMUs will need to have the BDF of the
-completer to route completions back to the requester - which we can't
-trivially get through this scheme.
+This should probably be some internal function and the exports should
+be type safe just like the imports.
 
-However, maybe that is just a future problem, and certainly we can see
-that with an interval tree or otherwise such a IOMMU could get the
-information it needs.
+> > +struct ibv_pd *ibv_import_pd(struct ibv_context *context,
+> > +                             uint32_t fd,
+> > +                             uint32_t handle);
+> > +
+> > +struct ibv_mr *ibv_import_mr(struct ibv_context *context,
+> > +                             uint32_t fd,
+> > +                             uint32_t handle);
+> > +
+> > +uint32_t ibv_context_to_fd(struct ibv_context *context);
+> > +
+> > +uint32_t ibv_pd_to_handle(struct ibv_pd *pd);
+> > +
+> > +uint32_t ibv_mr_to_handle(struct ibv_mr *mr);
+> 
+> Do you know if extra stuff besides this new file needs to be done so i can
+> do ex man ibv_context_to_fd and get this man page?
+
+Yes, they need to be setup in cmake with aliases.
+
+I think this man page is kind of terse for such a complicated
+thing. 
+
+Ie it doesn't talk about what happens when close() or ibv_destroy_X()
+is called.
 
 Jason
