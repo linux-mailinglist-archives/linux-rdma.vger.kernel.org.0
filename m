@@ -2,155 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 792365EB17
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 20:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86255EB24
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 20:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbfGCSEm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jul 2019 14:04:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726430AbfGCSEm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 3 Jul 2019 14:04:42 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74DE1218B6;
-        Wed,  3 Jul 2019 18:04:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562177081;
-        bh=l8eNhkHQxTiY2MmgR4n+pQPmU054D9+HZx11u36S4VQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kUOfZkb8NTiUCpj1XicSLLFdIFLp/JpnK7uybuVQJ4SiRrOwnWpSxzWWWmSR+jjEb
-         njbMLy4fIP9KXivGeeEuHvYPOqeiWoj7aocX9yhM4PEi/v3QgjKqqW6y9JB2iFf7dw
-         xpi9SAOA8PSWTFPYVtuZ5l+car/qOalMw+Gn2iXo=
-Date:   Wed, 3 Jul 2019 21:04:37 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v2 00/13] DEVX asynchronous events
-Message-ID: <20190703180437.GE4727@mtr-leonro.mtl.com>
-References: <20190630162334.22135-1-leon@kernel.org>
- <20190703152902.GA582@ziepe.ca>
+        id S1726951AbfGCSGn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jul 2019 14:06:43 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:45673 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbfGCSGn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jul 2019 14:06:43 -0400
+Received: by mail-qt1-f193.google.com with SMTP id j19so4773636qtr.12
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Jul 2019 11:06:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ToftDpk3YrcSbBZhtnBxGsKO2ZP07D/2OfTgI0i0uPI=;
+        b=W3wPhHmpTQ43DiEhpXLLpfWad0m3QcjtIlsFSFaMhtWLP5fQYEzH4zXlqA/lvP/mAj
+         rsx0I37l8Lgk5EimoRQmZrZDEu6ptuT3udBUftMKrCY7eX9ZzdzG8vt5MPnflGX8vpOE
+         hS3RF6p05vccc9yKrZoIAghr9p6qcGrvQQL2tGWoRzkV+q/A1bbvv+vKhi/wZKl4xjsc
+         GINvnUu3PRMf9i8ZRlgmDwS9hz8Y26HrGV+qoRXI1NeVO0NvhRZAhiAkpX9gXpNzsCyX
+         D9o3hUYM9CqVMVLLN7DAd+0vumokHTUU90t+S7T/WgnheaqjjgFJRzBn9zGSuAWHc3ba
+         9szQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ToftDpk3YrcSbBZhtnBxGsKO2ZP07D/2OfTgI0i0uPI=;
+        b=GaKGqnMrvgYof3vD2RXnJP+HB+94EIqDrshonPm3++dwHPnyDEBW+K+z8IPLJZwWfY
+         0jpyN/O4f4mYXfVuRsR6GMXu6K9dKoCLP7mQK9cRPIE14LKP9lAdZqjToJ1pOgq6zax+
+         0GaN+Ao8EbWC6VKHR8KzAbhCy2io+BETOpTiR0fK7v5LaS8UHUP5SyoWN4/BOy25vdIc
+         3mbMLN80f8rfakWh/1DF3u8oUg6RCqnPnH4P71Mi70Z7N8JHIK3AN5WIFWxJMTG8B6eh
+         dAN6ZlUSGgu6sEziE9AwxGGOVLUZtp1qZdvV2mIfkd7VYewLCHtEV/t6VI+ePzaL1dW2
+         h61A==
+X-Gm-Message-State: APjAAAUScNPDp9pJ0ofAPTFnIcOeLGAO3uERSiuU66HHupEK46pPMrjV
+        zieA2hNqokNxwJ+QEX4Vz4V02Q==
+X-Google-Smtp-Source: APXvYqxfAdl/rS1zkdiwnCoG6FZnVkmECzM4PdHMcOUfOstYGpg6luDIqyyrZyV+wr1IBsMgo3nk7A==
+X-Received: by 2002:ac8:70cf:: with SMTP id g15mr30724496qtp.254.1562177202306;
+        Wed, 03 Jul 2019 11:06:42 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id g13sm1183325qkm.17.2019.07.03.11.06.41
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 03 Jul 2019 11:06:41 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hijeT-0006sw-IA; Wed, 03 Jul 2019 15:06:41 -0300
+Date:   Wed, 3 Jul 2019 15:06:41 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 01/43] docs: infiniband: convert docs to ReST and rename
+ to *.rst
+Message-ID: <20190703180641.GA26394@ziepe.ca>
+References: <cover.1561723979.git.mchehab+samsung@kernel.org>
+ <4d843d0361e245861f7051e2c736a18dfaae7601.1561723980.git.mchehab+samsung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190703152902.GA582@ziepe.ca>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <4d843d0361e245861f7051e2c736a18dfaae7601.1561723980.git.mchehab+samsung@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 03, 2019 at 12:29:03PM -0300, Jason Gunthorpe wrote:
-> On Sun, Jun 30, 2019 at 07:23:21PM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > Changelog:
-> >  v1 -> v2:
-> >  * Added Saeed's ack to net patches
-> >  * Patch #2:
-> >   * Fix to gather user asynchronous events on top of kernel events.
-> >  * Patch #7:
-> >   * Fix obj_id to be 32 bits.
-> >  * Patch #8:
-> >   * Inline async_event_queue applicable fields into devx_async_event_file.
-> >   * Move to use bitfields in few places rather than flags.
-> >   * Shorten name of UAPI attribute.
-> >  * Patch #10:
-> >   * Use explicitly 'struct file *' instead of void *
-> >   * Store struct devx_async_event_file * instead of uobj * on the subscription.
-> >   * Drop 'is_obj_related' and use list_empty instead.
-> >   * Drop the temp arrays as part of the subscription API and move to simpler logic.
-> >   * Revise devx_cleanup_subscription() to be success oriented without
-> >     the is_close flag.
-> >   * Leave key level 1 in the tree upon bad flow to prevent a race with IRQ flow.
-> >   * Fix some styling notes.
-> >  * Patch #11:
-> >   * Use rcu read lock also for the un-affiliated event flow.
-> >   * Improve locking scheme as part of read events.
-> >   * Return -EIO as soon as destroyed occurred.
-> >   * Use a better errno as part read event failure when the buffer size
-> >     was too small.
-> >   * Upon hot unplug call wake_up_interruptible() unconditionally.
-> >   * Use eqe->data for affiliated events header.
-> >   * Fix some styling notes.
-> >  * Patch #12:
-> >   * Use rcu read lock also for the first XA layer.
-> >  * Patch #13:
-> >   * A new patch to clean up mdev usage from devx code, it can be accessed
-> >     from ib_dev now.
-> >  v0 -> v1:
-> >  * Fix the unbind / hot unplug flows to work properly.
-> >  * Fix Ref count handling on the eventfd mode in some flow.
-> >  * Rebased to latest rdma-next
-> >
-> > Thanks
-> >
-> > >From Yishai:
-> >
-> > This series enables RDMA applications that use the DEVX interface to
-> > subscribe and read device asynchronous events.
-> >
-> > The solution is designed to allow extension of events in the future
-> > without need to perform any changes in the driver code.
-> >
-> > To enable that few changes had been done in mlx5_core, it includes:
-> >  * Reading device event capabilities that are user related
-> >    (affiliated and un-affiliated) and set the matching mask upon
-> >    creating the matching EQ.
-> >  * Enable DEVX/mlx5_ib to register for ANY event instead of the option to
-> >    get some hard-coded ones.
-> >  * Enable DEVX/mlx5_ib to get the device raw data for CQ completion events.
-> >  * Enhance mlx5_core_create/destroy CQ to enable DEVX using them so that CQ
-> >    events will be reported as well.
-> >
-> > In mlx5_ib layer the below changes were done:
-> >  * A new DEVX API was introduced to allocate an event channel by using
-> >    the uverbs FD object type.
-> >  * Implement the FD channel operations to enable read/poo/close over it.
-> >  * A new DEVX API was introduced to subscribe for specific events over an
-> >    event channel.
-> >  * Manage an internal data structure  over XA(s) to subscribe/dispatch events
-> >    over the different event channels.
-> >  * Use from DEVX the mlx5_core APIs to create/destroy a CQ to be able to
-> >    get its relevant events.
-> >
-> > Yishai
-> >
-> > Yishai Hadas (13):
-> >   net/mlx5: Fix mlx5_core_destroy_cq() error flow
-> >   net/mlx5: Use event mask based on device capabilities
-> >   net/mlx5: Expose the API to register for ANY event
-> >   net/mlx5: mlx5_core_create_cq() enhancements
-> >   net/mlx5: Report a CQ error event only when a handler was set
-> >   net/mlx5: Report EQE data upon CQ completion
-> >   net/mlx5: Expose device definitions for object events
-> >   IB/mlx5: Introduce MLX5_IB_OBJECT_DEVX_ASYNC_EVENT_FD
-> >   IB/mlx5: Register DEVX with mlx5_core to get async events
-> >   IB/mlx5: Enable subscription for device events over DEVX
-> >   IB/mlx5: Implement DEVX dispatching event
-> >   IB/mlx5: Add DEVX support for CQ events
-> >   IB/mlx5: DEVX cleanup mdev
->
-> This looks OK now, can you please apply the net patches to the shared
-> branch
+On Fri, Jun 28, 2019 at 09:19:57AM -0300, Mauro Carvalho Chehab wrote:
+> The InfiniBand docs are plain text with no markups.
+> So, all we needed to do were to add the title markups and
+> some markup sequences in order to properly parse tables,
+> lists and literal blocks.
+> 
+> At its new index.rst, let's add a :orphan: while this is not linked to
+> the main index.rst file, in order to avoid build warnings.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> ---
+>  .../{core_locking.txt => core_locking.rst}    |  64 ++++++-----
+>  Documentation/infiniband/index.rst            |  23 ++++
+>  .../infiniband/{ipoib.txt => ipoib.rst}       |  24 ++--
+>  .../infiniband/{opa_vnic.txt => opa_vnic.rst} | 108 +++++++++---------
+>  .../infiniband/{sysfs.txt => sysfs.rst}       |   4 +-
+>  .../{tag_matching.txt => tag_matching.rst}    |   5 +
+>  .../infiniband/{user_mad.txt => user_mad.rst} |  33 ++++--
+>  .../{user_verbs.txt => user_verbs.rst}        |  12 +-
+>  drivers/infiniband/core/user_mad.c            |   2 +-
+>  drivers/infiniband/ulp/ipoib/Kconfig          |   2 +-
+>  10 files changed, 174 insertions(+), 103 deletions(-)
+>  rename Documentation/infiniband/{core_locking.txt => core_locking.rst} (78%)
+>  create mode 100644 Documentation/infiniband/index.rst
+>  rename Documentation/infiniband/{ipoib.txt => ipoib.rst} (90%)
+>  rename Documentation/infiniband/{opa_vnic.txt => opa_vnic.rst} (63%)
+>  rename Documentation/infiniband/{sysfs.txt => sysfs.rst} (69%)
+>  rename Documentation/infiniband/{tag_matching.txt => tag_matching.rst} (98%)
+>  rename Documentation/infiniband/{user_mad.txt => user_mad.rst} (90%)
+>  rename Documentation/infiniband/{user_verbs.txt => user_verbs.rst} (93%)
 
-Pushed to mlx5-next branch:
+I'm not sure anymore if I sent a note or not, but this patch was
+already applied to the rdma.git:
 
-e4075c442876 net/mlx5: Expose device definitions for object events
-4e0e2ea1886a net/mlx5: Report EQE data upon CQ completion
-70a43d3fd4ef net/mlx5: Report a CQ error event only when a handler was set
-38164b771947 net/mlx5: mlx5_core_create_cq() enhancements
-c0670781f548 net/mlx5: Expose the API to register for ANY event
-b9a7ba556207 net/mlx5: Use event mask based on device capabilities
-1d49ce1e05f8 net/mlx5: Fix mlx5_core_destroy_cq() error flow
+commit 97162a1ee8a1735fc7a7159fe08de966d88354ce
+Author: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Date:   Sat Jun 8 23:27:03 2019 -0300
 
-Thanks
+    docs: infiniband: convert docs to ReST and rename to *.rst
+    
+    The InfiniBand docs are plain text with no markups.  So, all we needed to
+    do were to add the title markups and some markup sequences in order to
+    properly parse tables, lists and literal blocks.
+    
+    At its new index.rst, let's add a :orphan: while this is not linked to the
+    main index.rst file, in order to avoid build warnings.
+    
+    Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+    Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 
->
-> Thanks,
-> Jason
+Thanks,
+Jason
