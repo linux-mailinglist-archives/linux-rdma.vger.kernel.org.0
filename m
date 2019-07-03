@@ -2,86 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD795EAF0
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 19:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792365EB17
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 20:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbfGCRyp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jul 2019 13:54:45 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45168 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbfGCRyp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jul 2019 13:54:45 -0400
-Received: by mail-qt1-f193.google.com with SMTP id j19so4703429qtr.12
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Jul 2019 10:54:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xYbWxbQ9bU/COmgfpbJvDysro2k80ZAmR6BetjJdynA=;
-        b=IXR7dcANSTpJ6izWqwpNiIII3NYPGoxld/ncaXoycL2TE3+T/r/iu6wo1GOHu6r4Vq
-         EgVgGaW1m7pvjeBxhhWkjbsL/qTV+R7g2wXwkP4IfoO2mkhmvXY5j4qszyuJL2KxEhED
-         gCAGXKpuwpzAfvtjW6zL8+pNhwmaZdeUUYDp3kgbDkP1HOxsb3oXBxCErHi9R1bnWmWD
-         jMukYsa1NbGumrRYnxMTmcTFZ3fbcvgPUHI4jUA9qXn0xdDuwnz/y9+npio22pNjQlwo
-         iGwwWgl8JuCzZOmWFHTJzKRwiX1yLij4Ey9ED2oW9N9cnqWTwdNN9BwRENCk6wcqjfJY
-         +gyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xYbWxbQ9bU/COmgfpbJvDysro2k80ZAmR6BetjJdynA=;
-        b=WVivj6verhzncPJsMqltzSz/H1d2MFUQ8W5+fnPq5wq74t9Z8qSVkWE9F6gDng1V+i
-         Gyeek3hUOJXuLdctW5kghVUurwDxyW8+C50apAie2bLVDKCyWjWyHKJg/2DY7zAofFeU
-         MWpUyKULvMoFXNmBzyVTXyRCG/Xn3ARUP3phLNNmUzl2c+LRkr3SYmCnor+7G9UNKfG0
-         SXMjG4O0AfVW1be/gLSfeWCLfYEWiF85mq1QgV0ahlxoW6RzJdpT+rjMBQ3WRJ23lDTd
-         PUKhY7QPWnQq7S0SZAZcz+PqbZuqGY7FHJvszQF9vLOr3iXZ281vJvBxxJNhoONpUha7
-         ZYXg==
-X-Gm-Message-State: APjAAAUTcr/fh4rgloVt9F11er/5qAogr+4m9G3c6McgW9yXiTLpuhLH
-        P33IKNWo/lBJPRwVFviurEJxBA==
-X-Google-Smtp-Source: APXvYqwthrZmSP1wtsuemifvdr68BnT1eWw5pu7E9dXAn8otZVJFzfmyU3bc3980Jcq5gaQHRIq5Uw==
-X-Received: by 2002:a0c:95c6:: with SMTP id t6mr34220109qvt.134.1562176484398;
-        Wed, 03 Jul 2019 10:54:44 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id l123sm1280163qkc.9.2019.07.03.10.54.43
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 03 Jul 2019 10:54:43 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hijSt-0006jA-IA; Wed, 03 Jul 2019 14:54:43 -0300
-Date:   Wed, 3 Jul 2019 14:54:43 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     Lijun Ou <oulijun@huawei.com>,
-        "Wei Hu(Xavier)" <xavier.huwei@huawei.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] RDMA/hns: Remove set but not used variable
- 'fclr_write_fail_flag'
-Message-ID: <20190703175443.GA25838@ziepe.ca>
-References: <20190703031021.14896-1-yuehaibing@huawei.com>
+        id S1726581AbfGCSEm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jul 2019 14:04:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726430AbfGCSEm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 3 Jul 2019 14:04:42 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74DE1218B6;
+        Wed,  3 Jul 2019 18:04:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562177081;
+        bh=l8eNhkHQxTiY2MmgR4n+pQPmU054D9+HZx11u36S4VQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kUOfZkb8NTiUCpj1XicSLLFdIFLp/JpnK7uybuVQJ4SiRrOwnWpSxzWWWmSR+jjEb
+         njbMLy4fIP9KXivGeeEuHvYPOqeiWoj7aocX9yhM4PEi/v3QgjKqqW6y9JB2iFf7dw
+         xpi9SAOA8PSWTFPYVtuZ5l+car/qOalMw+Gn2iXo=
+Date:   Wed, 3 Jul 2019 21:04:37 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2 00/13] DEVX asynchronous events
+Message-ID: <20190703180437.GE4727@mtr-leonro.mtl.com>
+References: <20190630162334.22135-1-leon@kernel.org>
+ <20190703152902.GA582@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190703031021.14896-1-yuehaibing@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190703152902.GA582@ziepe.ca>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 03, 2019 at 03:10:21AM +0000, YueHaibing wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
-> 
-> drivers/infiniband/hw/hns/hns_roce_hw_v2.c: In function 'hns_roce_function_clear':
-> drivers/infiniband/hw/hns/hns_roce_hw_v2.c:1135:7: warning:
->  variable 'fclr_write_fail_flag' set but not used [-Wunused-but-set-variable]
-> 
-> It is never used, so can be removed.
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 --
->  1 file changed, 2 deletions(-)
+On Wed, Jul 03, 2019 at 12:29:03PM -0300, Jason Gunthorpe wrote:
+> On Sun, Jun 30, 2019 at 07:23:21PM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@mellanox.com>
+> >
+> > Changelog:
+> >  v1 -> v2:
+> >  * Added Saeed's ack to net patches
+> >  * Patch #2:
+> >   * Fix to gather user asynchronous events on top of kernel events.
+> >  * Patch #7:
+> >   * Fix obj_id to be 32 bits.
+> >  * Patch #8:
+> >   * Inline async_event_queue applicable fields into devx_async_event_file.
+> >   * Move to use bitfields in few places rather than flags.
+> >   * Shorten name of UAPI attribute.
+> >  * Patch #10:
+> >   * Use explicitly 'struct file *' instead of void *
+> >   * Store struct devx_async_event_file * instead of uobj * on the subscription.
+> >   * Drop 'is_obj_related' and use list_empty instead.
+> >   * Drop the temp arrays as part of the subscription API and move to simpler logic.
+> >   * Revise devx_cleanup_subscription() to be success oriented without
+> >     the is_close flag.
+> >   * Leave key level 1 in the tree upon bad flow to prevent a race with IRQ flow.
+> >   * Fix some styling notes.
+> >  * Patch #11:
+> >   * Use rcu read lock also for the un-affiliated event flow.
+> >   * Improve locking scheme as part of read events.
+> >   * Return -EIO as soon as destroyed occurred.
+> >   * Use a better errno as part read event failure when the buffer size
+> >     was too small.
+> >   * Upon hot unplug call wake_up_interruptible() unconditionally.
+> >   * Use eqe->data for affiliated events header.
+> >   * Fix some styling notes.
+> >  * Patch #12:
+> >   * Use rcu read lock also for the first XA layer.
+> >  * Patch #13:
+> >   * A new patch to clean up mdev usage from devx code, it can be accessed
+> >     from ib_dev now.
+> >  v0 -> v1:
+> >  * Fix the unbind / hot unplug flows to work properly.
+> >  * Fix Ref count handling on the eventfd mode in some flow.
+> >  * Rebased to latest rdma-next
+> >
+> > Thanks
+> >
+> > >From Yishai:
+> >
+> > This series enables RDMA applications that use the DEVX interface to
+> > subscribe and read device asynchronous events.
+> >
+> > The solution is designed to allow extension of events in the future
+> > without need to perform any changes in the driver code.
+> >
+> > To enable that few changes had been done in mlx5_core, it includes:
+> >  * Reading device event capabilities that are user related
+> >    (affiliated and un-affiliated) and set the matching mask upon
+> >    creating the matching EQ.
+> >  * Enable DEVX/mlx5_ib to register for ANY event instead of the option to
+> >    get some hard-coded ones.
+> >  * Enable DEVX/mlx5_ib to get the device raw data for CQ completion events.
+> >  * Enhance mlx5_core_create/destroy CQ to enable DEVX using them so that CQ
+> >    events will be reported as well.
+> >
+> > In mlx5_ib layer the below changes were done:
+> >  * A new DEVX API was introduced to allocate an event channel by using
+> >    the uverbs FD object type.
+> >  * Implement the FD channel operations to enable read/poo/close over it.
+> >  * A new DEVX API was introduced to subscribe for specific events over an
+> >    event channel.
+> >  * Manage an internal data structure  over XA(s) to subscribe/dispatch events
+> >    over the different event channels.
+> >  * Use from DEVX the mlx5_core APIs to create/destroy a CQ to be able to
+> >    get its relevant events.
+> >
+> > Yishai
+> >
+> > Yishai Hadas (13):
+> >   net/mlx5: Fix mlx5_core_destroy_cq() error flow
+> >   net/mlx5: Use event mask based on device capabilities
+> >   net/mlx5: Expose the API to register for ANY event
+> >   net/mlx5: mlx5_core_create_cq() enhancements
+> >   net/mlx5: Report a CQ error event only when a handler was set
+> >   net/mlx5: Report EQE data upon CQ completion
+> >   net/mlx5: Expose device definitions for object events
+> >   IB/mlx5: Introduce MLX5_IB_OBJECT_DEVX_ASYNC_EVENT_FD
+> >   IB/mlx5: Register DEVX with mlx5_core to get async events
+> >   IB/mlx5: Enable subscription for device events over DEVX
+> >   IB/mlx5: Implement DEVX dispatching event
+> >   IB/mlx5: Add DEVX support for CQ events
+> >   IB/mlx5: DEVX cleanup mdev
+>
+> This looks OK now, can you please apply the net patches to the shared
+> branch
 
-Applied to for-next, thanks
+Pushed to mlx5-next branch:
 
-Jason
+e4075c442876 net/mlx5: Expose device definitions for object events
+4e0e2ea1886a net/mlx5: Report EQE data upon CQ completion
+70a43d3fd4ef net/mlx5: Report a CQ error event only when a handler was set
+38164b771947 net/mlx5: mlx5_core_create_cq() enhancements
+c0670781f548 net/mlx5: Expose the API to register for ANY event
+b9a7ba556207 net/mlx5: Use event mask based on device capabilities
+1d49ce1e05f8 net/mlx5: Fix mlx5_core_destroy_cq() error flow
+
+Thanks
+
+>
+> Thanks,
+> Jason
