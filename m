@@ -2,102 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA635EC07
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 20:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D8B5ED60
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 22:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbfGCS4J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jul 2019 14:56:09 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:42534 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbfGCS4I (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jul 2019 14:56:08 -0400
-Received: by mail-ot1-f41.google.com with SMTP id l15so3454453otn.9;
-        Wed, 03 Jul 2019 11:56:08 -0700 (PDT)
+        id S1726550AbfGCUSn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jul 2019 16:18:43 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:45058 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726490AbfGCUSn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jul 2019 16:18:43 -0400
+Received: by mail-qk1-f194.google.com with SMTP id s22so3851720qkj.12
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Jul 2019 13:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bkikyEsPp/F/lyGTUMYkhINszh6ssHACtXvD7E7R8r0=;
+        b=iMtFvdN/HLQUVN2/izzHHh77KwximeFqU/BT9eVWVDqXcyM4ZpubaPk0Q4FlF6iGxa
+         s3buYLskL9gE8ojKQPoHgqWptw9wAWoMp8SLIvXqzzcAmEb9jpEt/nr8808MmvfFFegp
+         qQ83BN34LORm1e8VlXqQWnK+3oxp5ovi96oTMEiJ9+tEuVCSUNx+mVgFGBYpZ6kqrpie
+         5dfkEvgV7kqdUAAG22YYJv0Lcc2Dynyr1HN5HNM4POjceXTFtq+32q+xNV0N/2ogSugS
+         BzSKaeGxE6Jkd37bsz0uB/NfwbTGwmzpfF4QfzaRpmQjSNvYSynnJ7RrSp24Ez6TiTTq
+         mjGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XbGfq/PAiJTXoAc1HjE+sQp+PXQfka3LFi4ll00sUJw=;
-        b=S/hl3o1gh6ILV9qkxZYeEv+8Y7vmbXoFaUUJtfV0nzlKvJ0qvRaxdggBR2WgmMXDjf
-         bwrpS9oPtwhkL/zdY0jYnG8Q+QHHYAj+IBI7aqpGsc9OLuTJrTf3K6U0KX/HxqY9Jaqs
-         CjfxR07s+CMFaUHWN/DlMvgrsHNhikW7jTxItnliBCx0itoVvJ74L18JYG4058gnMjnN
-         +0goD2JSfGlHBbZizagd+RgXsuAfneZslf/P3ygME1Yl94on67P2lDXkcioxfetMaT2s
-         4hhAVvVTJChDFk6Nq4QsyCJBMzeW6pvUi9lzHEASOQcezsTpl3mjb0AIUyQeCen0DoVy
-         +VgQ==
-X-Gm-Message-State: APjAAAVJxhRsPbNuu3JV6D7PUTO5uFXJd6n2rRA34k79L64XBfRDa4s5
-        A2ruz6Ig1r4yAapwX8PNgYQ=
-X-Google-Smtp-Source: APXvYqy2R9aumMpDTLirR1puM7NSB+IwaCirVNlXze9r0ln+QvNiL7ZvSmD67CEBitnhsgEzHCYAqw==
-X-Received: by 2002:a9d:7451:: with SMTP id p17mr31392726otk.204.1562180168075;
-        Wed, 03 Jul 2019 11:56:08 -0700 (PDT)
-Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
-        by smtp.gmail.com with ESMTPSA id k10sm1012084otn.58.2019.07.03.11.56.05
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Jul 2019 11:56:07 -0700 (PDT)
-Subject: Re: [for-next V2 10/10] RDMA/core: Provide RDMA DIM support for ULPs
-To:     Leon Romanovsky <leonro@mellanox.com>
-Cc:     Idan Burstein <idanb@mellanox.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bkikyEsPp/F/lyGTUMYkhINszh6ssHACtXvD7E7R8r0=;
+        b=iOCsw2wIuS/sDvm0hAYooQf/x2GHCLthhP6kATeHIT1bZ4zSd83J1hHWYqAoYnegz0
+         mGTpmXSfpTtiGQ/RUELvFfcHUUSzm6XMSk3u91DdY03Jk2Dl6RXclYD7jcZokbJIHx1g
+         QWY3WhBqgP5E/rOtV1CDoOUR7WqT5oY1+KlZTw0idY6DAm8mQVLsetf0vAym4NVYGB1K
+         4A27pjCAqxUOet2Ao6wHAFKOeeXJxlm+4fGBYenjguUEOKn4mLDLlnCfOKSC3fwlhtW+
+         xcO4GbFzRXx3e4s933+T4i54S1e2audls8APo04Ercl61/kfR8FnDRrBIejJ2vZXJwDw
+         i/7w==
+X-Gm-Message-State: APjAAAWOO/AImRACj046kLnLUB57w8/eH6sKYjHVsCEWOAckE+Zo1syR
+        DQ7aPkRmKV0jl13Wkb3HEfWVGg==
+X-Google-Smtp-Source: APXvYqx5L3IJiCJXtOOcMAtf3QcBzfoutHFawXK/gtVmcoc5gUhnOz7mQExGxwqmiHHoDosSMczpyQ==
+X-Received: by 2002:a37:9cc2:: with SMTP id f185mr1989999qke.172.1562185121606;
+        Wed, 03 Jul 2019 13:18:41 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id y6sm1277932qki.67.2019.07.03.13.18.41
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 03 Jul 2019 13:18:41 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hiliC-0007Gr-Nm; Wed, 03 Jul 2019 17:18:40 -0300
+Date:   Wed, 3 Jul 2019 17:18:40 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
         Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Tal Gilboa <talgi@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>
-References: <20190625205701.17849-1-saeedm@mellanox.com>
- <20190625205701.17849-11-saeedm@mellanox.com>
- <adb3687a-6db3-b1a4-cd32-8b4889550c81@grimberg.me>
- <AM5PR0501MB248327B260F97EF97CD5B80EC5E20@AM5PR0501MB2483.eurprd05.prod.outlook.com>
- <9d26c90c-8e0b-656f-341f-a67251549126@grimberg.me>
- <20190702064107.GS4727@mtr-leonro.mtl.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <8d525d64-6da1-48c3-952d-8c6b0d541859@grimberg.me>
-Date:   Wed, 3 Jul 2019 11:56:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Yishai Hadas <yishaih@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2 10/13] IB/mlx5: Enable subscription for
+ device events over DEVX
+Message-ID: <20190703201840.GA27910@ziepe.ca>
+References: <20190630162334.22135-1-leon@kernel.org>
+ <20190630162334.22135-11-leon@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20190702064107.GS4727@mtr-leonro.mtl.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190630162334.22135-11-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-> Hi Sagi,
+On Sun, Jun 30, 2019 at 07:23:31PM +0300, Leon Romanovsky wrote:
+> From: Yishai Hadas <yishaih@mellanox.com>
 > 
-> I'm not sharing your worries about bad out-of-the-box experience for a
-> number of reasons.
+> Enable subscription for device events over DEVX.
 > 
-> First of all, this code is part of upstream kernel and will take time
-> till users actually start to use it as is and not as part of some distro
-> backports or MOFED packages.
+> Each subscription is added to the two level XA data structure according
+> to its event number and the DEVX object information in case was given
+> with the given target fd.
+> 
+> Those events will be reported over the given fd once will occur.
+> Downstream patches will mange the dispatching to any subscription.
 
-True, but I am still saying that this feature is damaging sync IO which
-represents the majority of the users. It might not be an extreme impact
-but it is still a degradation (from a very limited testing I did this
-morning I'm seeing a consistent 5%-10% latency increase for low QD
-workloads which is consistent with what Yamin reported AFAIR).
+BTW Matt,
 
-But having said that, the call is for you guys to make as this is a
-Mellanox device. I absolutely think that this is useful (as I said
-before), I just don't think its necessarily a good idea to opt it by
-default given that only a limited set of users would take full advantage
-of it while the rest would see a negative impact (even if its 10%).
+Here is another vote for a 64 bit indexing xarray in the kernel.. Any
+further thought on doing that?
 
-I don't have  a hard objection here, just wanted to give you my
-opinion on this because mlx5 is an important driver for rdma
-users.
-
-> Second, Yamin did extensive testing and worked very close with Or G.
-> and I have very high confident in the results of their team work.
-
-Has anyone tested other RDMA ulps? NFS/RDMA or SRP/iSER?
-
-Would be interesting to understand how other subsystems with different
-characteristics behave with this.
+Jason
