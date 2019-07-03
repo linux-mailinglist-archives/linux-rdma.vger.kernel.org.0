@@ -2,167 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 964BB5E76D
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 17:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71B05E7D6
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 17:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbfGCPIr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jul 2019 11:08:47 -0400
-Received: from mail-eopbgr80049.outbound.protection.outlook.com ([40.107.8.49]:40421
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725944AbfGCPIr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 3 Jul 2019 11:08:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4A4a5FfKWFEl4y6HvDegBvo5QJ9gJlXgx2xduCl6h5Y=;
- b=kY+5iWQbbxLWKp0tqgTmPpt5tRxyIus3ZsKPmVmcLnNrHuDGgMxv59SizeIQiBH0IMeZnOsv/DMoILISYgrqKUs5+ckpiveRZvQjG10Esz6Usy5KLwc+ji4a7aTaWiLSsClhhx0Jeza5fSBi6Q7x+98dp/cSTYBF5fUh7F3LDdI=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB6351.eurprd05.prod.outlook.com (20.179.25.203) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2032.20; Wed, 3 Jul 2019 15:08:41 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2032.019; Wed, 3 Jul 2019
- 15:08:41 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     "Kuehling, Felix" <Felix.Kuehling@amd.com>
-CC:     Christoph Hellwig <hch@lst.de>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Subject: Re: [RFC] mm/hmm: pass mmu_notifier_range to
- sync_cpu_device_pagetables
-Thread-Topic: [RFC] mm/hmm: pass mmu_notifier_range to
- sync_cpu_device_pagetables
-Thread-Index: AQHVHY87cnj6rYaF00uB6DOqwK5J5aa35HaAgAAxJwCAAALKgIAAOioAgADUsAA=
-Date:   Wed, 3 Jul 2019 15:08:41 +0000
-Message-ID: <20190703150836.GM18688@mellanox.com>
-References: <20190608001452.7922-1-rcampbell@nvidia.com>
- <20190702195317.GT31718@mellanox.com> <20190702224912.GA24043@lst.de>
- <20190702225911.GA11833@mellanox.com>
- <1dc82dc8-3e6f-1d6f-b14d-41ae3c1b2709@amd.com>
-In-Reply-To: <1dc82dc8-3e6f-1d6f-b14d-41ae3c1b2709@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: YTOPR0101CA0030.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:15::43) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b5b764d1-dc0d-4af0-1bf8-08d6ffc85584
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6351;
-x-ms-traffictypediagnostic: VI1PR05MB6351:
-x-microsoft-antispam-prvs: <VI1PR05MB635194713022BC0BC06D7F16CFFB0@VI1PR05MB6351.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2733;
-x-forefront-prvs: 00872B689F
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(136003)(376002)(39860400002)(366004)(346002)(189003)(199004)(386003)(6506007)(25786009)(7416002)(53546011)(316002)(8936002)(26005)(68736007)(76176011)(102836004)(486006)(476003)(2616005)(186003)(5660300002)(14454004)(66476007)(2906002)(4326008)(11346002)(6116002)(3846002)(54906003)(99286004)(52116002)(36756003)(33656002)(7736002)(66446008)(1076003)(8676002)(14444005)(6246003)(64756008)(256004)(86362001)(305945005)(478600001)(53936002)(66946007)(81166006)(71200400001)(66556008)(73956011)(6512007)(6486002)(71190400001)(229853002)(6436002)(81156014)(446003)(6916009)(66066001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6351;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: td0S6w4mHfCpfIiwq60twZyFZcsKDyypieDB8FahsjvXOncVtvZwm1IzVFYnIeWYVhnUUAhoGNboHpppDK4NYN5sWo4WY0k/RfzbuXciuXnTm8teFPegBZQJfPq+aA0UM74aKEgAKeaYbx1/PlikKwR5rgu+ZikULKOirR2H5ibffF0p2vSXVQS8TcqW8WkduqizhaS7qXX7A7WAlhuyWd/yHocH7Fj1OEXkuiriDidvL48WjKUejgR4i6pgsmZ6jfTWrQRiKg4rQmb3Lx8vp8pq/bspE06qzMZRGUC2uioevyKu4VPCpryhTmGFrbNzaZ2Me/Si1l4i8Mww5JqYxD7VH/9jCuUR0cFU3MjxKccrFIXn/pmb5o67h3BY3dcId0vINr7DiRUk9a6bhCj9xECu4ASFEntY23RP+eLFvZE=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5850BAD4694CCA479493175E5B4779A2@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726652AbfGCP3F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jul 2019 11:29:05 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:38596 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726473AbfGCP3F (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jul 2019 11:29:05 -0400
+Received: by mail-qt1-f195.google.com with SMTP id n11so3866106qtl.5
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Jul 2019 08:29:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6ITfgvCoSDquYzNHx50rE0eTR8cXMCjfYa33YYyA+tI=;
+        b=TnLbUwYle2MzE4+4LC6Y7RdNmlRh1uybKz5e3u1RxNObo1Zsq/k5RndgT1J4A9GGaK
+         w3On5jV0RtoKJCMno1sVlHBMKOPoiC89SJNTOPyBxzsEvn9LI87d7KaElhRj7Rg5MuwU
+         DvkNM5Q14qVmMv5McIMgU2kfGaRpEle6fPWgmLfTC7zFr2ms2J1h3YGYxiVSGbrB3iRD
+         iTVMTP7rc9JGP0v0a6YVA3UWg1LX3U+LQ7j2q1lCqWQHFbDSUGZ8sTPd2sQQiQ7CA4fX
+         PZRvV99ljdBDcKYxoyLcmRlm1/PxZzg+/wfuYo3C7553j6suurW15ix8xB/+bfpZPjLn
+         sKGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6ITfgvCoSDquYzNHx50rE0eTR8cXMCjfYa33YYyA+tI=;
+        b=lD8CZ6TGRbtiHsEWMjg6W1l7oe6EfiPDmHseJVPuvoNbH+OBwzWYiDwpV6c+6miYQh
+         0PXSG2+J3Qp6yBQz/j9DZAcxkmUEIs6QnZeW/YHmBP8iA1Sv81qM43hfmlJ1E6vj2h+A
+         aThSXV6niBVDci9acI+7ITCSOI0VB3uAuPRu/fYOaN6RA6AiCvDaJ5LSm+GimGo2vGJc
+         /F01CbjbPJCCkxUzGxmPxCHi7EFTY4NCsVUc5AAjv/XOfl+NOqwkezmBB70V7ptAwhP4
+         BVM4/rwNJHmLzikqZbRaKimfZeYBGJn5ZpRp+xNj9h+Lxw5czmiqiCMPgfskH0VTX5Fv
+         R65Q==
+X-Gm-Message-State: APjAAAW/j40gpu7kt6uiM7dWBWnczPu0V/AAqXzFJk8aSU9EsXszFyY6
+        vf9idqSgP5pSGDZ7Iw74T+uI/Q==
+X-Google-Smtp-Source: APXvYqwAuc7UEfIDHechO/jvBiVuRjhU6so0LdDMnPpFWwShwUOdiDH4g5R1okJt/iH7VGdpNIi2yQ==
+X-Received: by 2002:a05:6214:1249:: with SMTP id q9mr32193857qvv.154.1562167744166;
+        Wed, 03 Jul 2019 08:29:04 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id b67sm1097108qkd.82.2019.07.03.08.29.03
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 03 Jul 2019 08:29:03 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hihBv-00009v-0f; Wed, 03 Jul 2019 12:29:03 -0300
+Date:   Wed, 3 Jul 2019 12:29:03 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2 00/13] DEVX asynchronous events
+Message-ID: <20190703152902.GA582@ziepe.ca>
+References: <20190630162334.22135-1-leon@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5b764d1-dc0d-4af0-1bf8-08d6ffc85584
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jul 2019 15:08:41.6325
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6351
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190630162334.22135-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 03, 2019 at 02:27:22AM +0000, Kuehling, Felix wrote:
-> On 2019-07-02 6:59 p.m., Jason Gunthorpe wrote:
-> > On Wed, Jul 03, 2019 at 12:49:12AM +0200, Christoph Hellwig wrote:
-> >> On Tue, Jul 02, 2019 at 07:53:23PM +0000, Jason Gunthorpe wrote:
-> >>>> I'm sending this out now since we are updating many of the HMM APIs
-> >>>> and I think it will be useful.
-> >>> This make so much sense, I'd like to apply this in hmm.git, is there
-> >>> any objection?
-> >> As this creates a somewhat hairy conflict for amdgpu, wouldn't it be
-> >> a better idea to wait a bit and apply it first thing for next merge
-> >> window?
-> > My thinking is that AMD GPU already has a monster conflict from this:
-> >
-> >   int hmm_range_register(struct hmm_range *range,
-> > -                      struct mm_struct *mm,
-> > +                      struct hmm_mirror *mirror,
-> >                         unsigned long start,
-> >                         unsigned long end,
-> >                         unsigned page_shift);
-> >
-> > So, depending on how that is resolved we might want to do both API
-> > changes at once.
->=20
-> I just sent out a fix for the hmm_mirror API change.
+On Sun, Jun 30, 2019 at 07:23:21PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Changelog:
+>  v1 -> v2:
+>  * Added Saeed's ack to net patches
+>  * Patch #2:
+>   * Fix to gather user asynchronous events on top of kernel events.
+>  * Patch #7:
+>   * Fix obj_id to be 32 bits.
+>  * Patch #8:
+>   * Inline async_event_queue applicable fields into devx_async_event_file.
+>   * Move to use bitfields in few places rather than flags.
+>   * Shorten name of UAPI attribute.
+>  * Patch #10:
+>   * Use explicitly 'struct file *' instead of void *
+>   * Store struct devx_async_event_file * instead of uobj * on the subscription.
+>   * Drop 'is_obj_related' and use list_empty instead.
+>   * Drop the temp arrays as part of the subscription API and move to simpler logic.
+>   * Revise devx_cleanup_subscription() to be success oriented without
+>     the is_close flag.
+>   * Leave key level 1 in the tree upon bad flow to prevent a race with IRQ flow.
+>   * Fix some styling notes.
+>  * Patch #11:
+>   * Use rcu read lock also for the un-affiliated event flow.
+>   * Improve locking scheme as part of read events.
+>   * Return -EIO as soon as destroyed occurred.
+>   * Use a better errno as part read event failure when the buffer size
+>     was too small.
+>   * Upon hot unplug call wake_up_interruptible() unconditionally.
+>   * Use eqe->data for affiliated events header.
+>   * Fix some styling notes.
+>  * Patch #12:
+>   * Use rcu read lock also for the first XA layer.
+>  * Patch #13:
+>   * A new patch to clean up mdev usage from devx code, it can be accessed
+>     from ib_dev now.
+>  v0 -> v1:
+>  * Fix the unbind / hot unplug flows to work properly.
+>  * Fix Ref count handling on the eventfd mode in some flow.
+>  * Rebased to latest rdma-next
+> 
+> Thanks
+> 
+> >From Yishai:
+> 
+> This series enables RDMA applications that use the DEVX interface to
+> subscribe and read device asynchronous events.
+> 
+> The solution is designed to allow extension of events in the future
+> without need to perform any changes in the driver code.
+> 
+> To enable that few changes had been done in mlx5_core, it includes:
+>  * Reading device event capabilities that are user related
+>    (affiliated and un-affiliated) and set the matching mask upon
+>    creating the matching EQ.
+>  * Enable DEVX/mlx5_ib to register for ANY event instead of the option to
+>    get some hard-coded ones.
+>  * Enable DEVX/mlx5_ib to get the device raw data for CQ completion events.
+>  * Enhance mlx5_core_create/destroy CQ to enable DEVX using them so that CQ
+>    events will be reported as well.
+> 
+> In mlx5_ib layer the below changes were done:
+>  * A new DEVX API was introduced to allocate an event channel by using
+>    the uverbs FD object type.
+>  * Implement the FD channel operations to enable read/poo/close over it.
+>  * A new DEVX API was introduced to subscribe for specific events over an
+>    event channel.
+>  * Manage an internal data structure  over XA(s) to subscribe/dispatch events
+>    over the different event channels.
+>  * Use from DEVX the mlx5_core APIs to create/destroy a CQ to be able to
+>    get its relevant events.
+> 
+> Yishai
+> 
+> Yishai Hadas (13):
+>   net/mlx5: Fix mlx5_core_destroy_cq() error flow
+>   net/mlx5: Use event mask based on device capabilities
+>   net/mlx5: Expose the API to register for ANY event
+>   net/mlx5: mlx5_core_create_cq() enhancements
+>   net/mlx5: Report a CQ error event only when a handler was set
+>   net/mlx5: Report EQE data upon CQ completion
+>   net/mlx5: Expose device definitions for object events
+>   IB/mlx5: Introduce MLX5_IB_OBJECT_DEVX_ASYNC_EVENT_FD
+>   IB/mlx5: Register DEVX with mlx5_core to get async events
+>   IB/mlx5: Enable subscription for device events over DEVX
+>   IB/mlx5: Implement DEVX dispatching event
+>   IB/mlx5: Add DEVX support for CQ events
+>   IB/mlx5: DEVX cleanup mdev
 
-I think if you follow my suggestion to apply a prep patch to AMD GPU
-to make the conflict resolution simple, we should defer this patch
-until next kernel for the reasons CH gave.
+This looks OK now, can you please apply the net patches to the shared
+branch
 
-> > Or we may have to revert the above change at this late date.
-> >
-> > Waiting for AMDGPU team to discuss what process they want to use.
->=20
-> Yeah, I'm wondering what the process is myself. With HMM and driver=20
-> development happening on different branches these kinds of API changes=20
-> are painful. There seems to be a built-in assumption in the current=20
-> process, that code flows mostly in one direction amd-staging-drm-next ->=
-=20
-> drm-next -> linux-next -> linux. That assumption is broken with HMM code=
-=20
-> evolving rapidly in both amdgpu and mm.
-
-It looks to me like AMD GPU uses a pull request model. So a goal as a
-tree runner should be to work with the other trees (ie hmm.git, etc)
-to minimize conflicts between the PR you will send and the PR other
-trees will send.
-
-Do not focus on linux-next, that is just an 'early warning system'
-that conflicts are on the horizon, we knew about this one :) (well,
-mostly, I was surprised how big it was, my bad)
-
-So we must stay in co-ordination with patches in-flight on the list
-and make the right decision, depending on the situation. Communication
-here is key :)
-
-We have lots of strategies available to deal with these situations.
-
-> If we want to continue developing HMM driver changes in
-> amd-staging-drm-next, we'll need to synchronize with hmm.git more=20
-> frequently, both ways.
-
-It can't really go both ways. hmm.git has to be only the hmm topic,
-otherwise it doesn't really work.
-
-> I believe part of the problem is, that there is a fairly long
-> lead-time from getting changes from amd-staging-drm-next into
-> linux-next, as they are held for one release cycle in drm-next.
-> Pushing HMM-related changes through drm-fixes may offer a kind of
-> shortcut. Philip and my latest fixup is just bypassing drm-next
-> completely and going straight into linux-next, though.
-
-I'm not so familiar with the DRM work flow to give you advice on this.
-
+Thanks,
 Jason
