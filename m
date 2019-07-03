@@ -2,132 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5425DAB0
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 03:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1253E5DC83
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 04:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727409AbfGCBXv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jul 2019 21:23:51 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49010 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727025AbfGCBXv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jul 2019 21:23:51 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x631NhV8023496;
-        Wed, 3 Jul 2019 01:23:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=7Nm9CSI5HR0hTGAjfQ61L0EQBsXNDp/GCS1+kHAU9io=;
- b=cG4HLmv5YpJ1GUANn4oCbrR1kZGewIFTjfm4QsKyFi8Mq1XJqbeBVTkxkjbyIpinynCv
- U0S8mXjmAu6bM+Ks7Dc6+A5Pz8LE0cu0ibgi5uWZ5xK9IwHwSg+CMm/IAa67XWidLiRN
- Iv+lnEcW5DRDUZ8Yln4NotoU5dqm9oSvAoCBHNi67+c+0l8DuDVuC3JpGBsB8iu8Q4u+
- wNYbEf1Y1FXJJntixnuhHL/9kHrtGoR8jEUOY0epE1HvCcOEG7ItH0F8xr232/54laff
- wucwBdV8fWy9pE3UH5nZOaJtAnsDz9mecMZ9+VMuBSxuAQTusykQ2tMac6IxvNZlH/mw NQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2te5tbpn3u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jul 2019 01:23:43 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x631NGvM178318;
-        Wed, 3 Jul 2019 01:23:42 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 2tebqgtx65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jul 2019 01:23:42 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x631NdvE021882;
-        Wed, 3 Jul 2019 01:23:39 GMT
-Received: from [10.182.69.170] (/10.182.69.170)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jul 2019 18:23:39 -0700
-Subject: Re: [PATCH] Make rxe driver to calculate correct byte_len on
- receiving side when work completion is generated with
- IB_WC_RECV_RDMA_WITH_IMM opcode.
-To:     Konstantin Taranov <konstantin.taranov@inf.ethz.ch>,
-        monis@mellanox.com
-Cc:     linux-rdma@vger.kernel.org
-References: <20190627140643.6191-1-konstantin.taranov@inf.ethz.ch>
-From:   Yanjun Zhu <yanjun.zhu@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <d149da15-523a-438a-1550-095b4b1a840b@oracle.com>
-Date:   Wed, 3 Jul 2019 09:24:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20190627140643.6191-1-konstantin.taranov@inf.ethz.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S1727124AbfGCC10 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Jul 2019 22:27:26 -0400
+Received: from mail-eopbgr750084.outbound.protection.outlook.com ([40.107.75.84]:7061
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727100AbfGCC10 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 2 Jul 2019 22:27:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector1-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wy8FO9Kpq0mYscU2pRZ988JGN5ZGYBRBcI9oCJCrgeY=;
+ b=c7vT3JqHuw5GLWBbDW+KTW8nsyMU+XPiZAj5jbIgC/Ke4rsXrkwaI4CY/X58owwLlI4pT3IPzHdc1BD0OcCVtz4lnqWodvOvvqe6Ceqsy46RoQBp30rTcYToq0d97i68u0BVTG2y2jGlJMPoUIcDUXld7eu8tGSSnKELVL6NEp4=
+Received: from DM6PR12MB3947.namprd12.prod.outlook.com (10.255.174.156) by
+ DM6PR12MB2873.namprd12.prod.outlook.com (20.179.71.82) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2032.20; Wed, 3 Jul 2019 02:27:22 +0000
+Received: from DM6PR12MB3947.namprd12.prod.outlook.com
+ ([fe80::91a2:f9e7:8c86:f927]) by DM6PR12MB3947.namprd12.prod.outlook.com
+ ([fe80::91a2:f9e7:8c86:f927%7]) with mapi id 15.20.2032.019; Wed, 3 Jul 2019
+ 02:27:22 +0000
+From:   "Kuehling, Felix" <Felix.Kuehling@amd.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>, Christoph Hellwig <hch@lst.de>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        David Airlie <airlied@linux.ie>
+CC:     Ralph Campbell <rcampbell@nvidia.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+Subject: Re: [RFC] mm/hmm: pass mmu_notifier_range to
+ sync_cpu_device_pagetables
+Thread-Topic: [RFC] mm/hmm: pass mmu_notifier_range to
+ sync_cpu_device_pagetables
+Thread-Index: AQHVHY88L0Ra3sy2MEC8cRT/FiJ1Iqa35H2AgAAxIACAAALQAIAAOiIA
+Date:   Wed, 3 Jul 2019 02:27:22 +0000
+Message-ID: <1dc82dc8-3e6f-1d6f-b14d-41ae3c1b2709@amd.com>
+References: <20190608001452.7922-1-rcampbell@nvidia.com>
+ <20190702195317.GT31718@mellanox.com> <20190702224912.GA24043@lst.de>
+ <20190702225911.GA11833@mellanox.com>
+In-Reply-To: <20190702225911.GA11833@mellanox.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9306 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907030017
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9306 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907030017
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [165.204.55.251]
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+x-clientproxiedby: YTXPR0101CA0037.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:1::14) To DM6PR12MB3947.namprd12.prod.outlook.com
+ (2603:10b6:5:1cb::28)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Felix.Kuehling@amd.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f4c43e91-ac3d-445c-4f9c-08d6ff5dfa93
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DM6PR12MB2873;
+x-ms-traffictypediagnostic: DM6PR12MB2873:
+x-microsoft-antispam-prvs: <DM6PR12MB28738436ECA864445C0B152292FB0@DM6PR12MB2873.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1443;
+x-forefront-prvs: 00872B689F
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(136003)(346002)(39860400002)(366004)(376002)(189003)(199004)(486006)(2906002)(4326008)(476003)(36756003)(256004)(99286004)(2616005)(65956001)(64126003)(446003)(71200400001)(11346002)(64756008)(66556008)(53546011)(6486002)(65826007)(66446008)(66946007)(110136005)(66476007)(86362001)(478600001)(3846002)(58126008)(31696002)(6116002)(5660300002)(71190400001)(66066001)(6246003)(25786009)(65806001)(73956011)(186003)(229853002)(7736002)(53936002)(52116002)(6436002)(7416002)(6512007)(26005)(8936002)(68736007)(6506007)(316002)(76176011)(102836004)(81156014)(8676002)(81166006)(31686004)(54906003)(386003)(14454004)(305945005)(72206003);DIR:OUT;SFP:1101;SCL:1;SRVR:DM6PR12MB2873;H:DM6PR12MB3947.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: T4A0SOEZuvMXDc2GJkaoVOja/4vmbBgDv1OJqL5jnyITlxTrHw/QCxACcsNEfaG5ELCf+S4PdsOwcmvxwy7ueYuhuwQ/YE/QSw6R7nwaGysRm8t3sNeJmVjbvNGkecAK7BTu1+S52Q4Zw1QqD0CP36p1De2eqy05E3XOfFty0OEgqJWFfDNXFh9gQ0+nNNFZz2cjKaH7C8TLsfNrS16JZtux4j8kh7hRy7JY2aJeBHEAXABU5nBpjUJXjaRs7aeNFKDGypocWd5pEWx0alb3pUFmeTpMpnn74Y0jCz3RYBQkGc4y8B0kYHC37wkqxAiYbHcmvOk53x/BvVO0t2BjjSKzKnP8mtWNBi7CKrKc9J39MoxF+0teiggKcPalSBQIlP28lGydZQJpdDTG/y+xbZkUAdOZEzJXlGyRT66pLoo=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <545ED388DC4B924F8D65E5F30ACEE5DA@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4c43e91-ac3d-445c-4f9c-08d6ff5dfa93
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jul 2019 02:27:22.3841
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fkuehlin@amd.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2873
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 2019/6/27 22:06, Konstantin Taranov wrote:
-> Make softRoce to calculate correct byte_len on receiving side when work completion
-> is generated with IB_WC_RECV_RDMA_WITH_IMM opcode.
->
-> According to documentation byte_len must indicate the number of written
-> bytes, whereas it was always equal to zero for IB_WC_RECV_RDMA_WITH_IMM opcode.
-
-With roce NIC, what is the byte_len? Thanks a lot.
-
-Zhu Yanjun
-
->
-> The patch proposes to remember the length of an RDMA request from the RETH header, and use it
-> as byte_len when the work completion with IB_WC_RECV_RDMA_WITH_IMM opcode is generated.
->
-> Signed-off-by: Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
-> ---
->   drivers/infiniband/sw/rxe/rxe_resp.c  | 5 ++++-
->   drivers/infiniband/sw/rxe/rxe_verbs.h | 1 +
->   2 files changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index aca9f60f9b21..1cbfbd98eb22 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -431,6 +431,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
->   			qp->resp.va = reth_va(pkt);
->   			qp->resp.rkey = reth_rkey(pkt);
->   			qp->resp.resid = reth_len(pkt);
-> +			qp->resp.length = reth_len(pkt);
->   		}
->   		access = (pkt->mask & RXE_READ_MASK) ? IB_ACCESS_REMOTE_READ
->   						     : IB_ACCESS_REMOTE_WRITE;
-> @@ -856,7 +857,9 @@ static enum resp_states do_complete(struct rxe_qp *qp,
->   				pkt->mask & RXE_WRITE_MASK) ?
->   					IB_WC_RECV_RDMA_WITH_IMM : IB_WC_RECV;
->   		wc->vendor_err = 0;
-> -		wc->byte_len = wqe->dma.length - wqe->dma.resid;
-> +		wc->byte_len = (pkt->mask & RXE_IMMDT_MASK &&
-> +				pkt->mask & RXE_WRITE_MASK) ?
-> +					qp->resp.length : wqe->dma.length - wqe->dma.resid;
->   
->   		/* fields after byte_len are different between kernel and user
->   		 * space
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index e8be7f44e3be..28bfb3ece104 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -213,6 +213,7 @@ struct rxe_resp_info {
->   	struct rxe_mem		*mr;
->   	u32			resid;
->   	u32			rkey;
-> +	u32			length;
->   	u64			atomic_orig;
->   
->   	/* SRQ only */
+T24gMjAxOS0wNy0wMiA2OjU5IHAubS4sIEphc29uIEd1bnRob3JwZSB3cm90ZToNCj4gT24gV2Vk
+LCBKdWwgMDMsIDIwMTkgYXQgMTI6NDk6MTJBTSArMDIwMCwgQ2hyaXN0b3BoIEhlbGx3aWcgd3Jv
+dGU6DQo+PiBPbiBUdWUsIEp1bCAwMiwgMjAxOSBhdCAwNzo1MzoyM1BNICswMDAwLCBKYXNvbiBH
+dW50aG9ycGUgd3JvdGU6DQo+Pj4+IEknbSBzZW5kaW5nIHRoaXMgb3V0IG5vdyBzaW5jZSB3ZSBh
+cmUgdXBkYXRpbmcgbWFueSBvZiB0aGUgSE1NIEFQSXMNCj4+Pj4gYW5kIEkgdGhpbmsgaXQgd2ls
+bCBiZSB1c2VmdWwuDQo+Pj4gVGhpcyBtYWtlIHNvIG11Y2ggc2Vuc2UsIEknZCBsaWtlIHRvIGFw
+cGx5IHRoaXMgaW4gaG1tLmdpdCwgaXMgdGhlcmUNCj4+PiBhbnkgb2JqZWN0aW9uPw0KPj4gQXMg
+dGhpcyBjcmVhdGVzIGEgc29tZXdoYXQgaGFpcnkgY29uZmxpY3QgZm9yIGFtZGdwdSwgd291bGRu
+J3QgaXQgYmUNCj4+IGEgYmV0dGVyIGlkZWEgdG8gd2FpdCBhIGJpdCBhbmQgYXBwbHkgaXQgZmly
+c3QgdGhpbmcgZm9yIG5leHQgbWVyZ2UNCj4+IHdpbmRvdz8NCj4gTXkgdGhpbmtpbmcgaXMgdGhh
+dCBBTUQgR1BVIGFscmVhZHkgaGFzIGEgbW9uc3RlciBjb25mbGljdCBmcm9tIHRoaXM6DQo+DQo+
+ICAgaW50IGhtbV9yYW5nZV9yZWdpc3RlcihzdHJ1Y3QgaG1tX3JhbmdlICpyYW5nZSwNCj4gLSAg
+ICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgbW1fc3RydWN0ICptbSwNCj4gKyAgICAgICAgICAg
+ICAgICAgICAgICBzdHJ1Y3QgaG1tX21pcnJvciAqbWlycm9yLA0KPiAgICAgICAgICAgICAgICAg
+ICAgICAgICB1bnNpZ25lZCBsb25nIHN0YXJ0LA0KPiAgICAgICAgICAgICAgICAgICAgICAgICB1
+bnNpZ25lZCBsb25nIGVuZCwNCj4gICAgICAgICAgICAgICAgICAgICAgICAgdW5zaWduZWQgcGFn
+ZV9zaGlmdCk7DQo+DQo+IFNvLCBkZXBlbmRpbmcgb24gaG93IHRoYXQgaXMgcmVzb2x2ZWQgd2Ug
+bWlnaHQgd2FudCB0byBkbyBib3RoIEFQSQ0KPiBjaGFuZ2VzIGF0IG9uY2UuDQoNCkkganVzdCBz
+ZW50IG91dCBhIGZpeCBmb3IgdGhlIGhtbV9taXJyb3IgQVBJIGNoYW5nZS4NCg0KDQo+DQo+IE9y
+IHdlIG1heSBoYXZlIHRvIHJldmVydCB0aGUgYWJvdmUgY2hhbmdlIGF0IHRoaXMgbGF0ZSBkYXRl
+Lg0KPg0KPiBXYWl0aW5nIGZvciBBTURHUFUgdGVhbSB0byBkaXNjdXNzIHdoYXQgcHJvY2VzcyB0
+aGV5IHdhbnQgdG8gdXNlLg0KDQpZZWFoLCBJJ20gd29uZGVyaW5nIHdoYXQgdGhlIHByb2Nlc3Mg
+aXMgbXlzZWxmLiBXaXRoIEhNTSBhbmQgZHJpdmVyIA0KZGV2ZWxvcG1lbnQgaGFwcGVuaW5nIG9u
+IGRpZmZlcmVudCBicmFuY2hlcyB0aGVzZSBraW5kcyBvZiBBUEkgY2hhbmdlcyANCmFyZSBwYWlu
+ZnVsLiBUaGVyZSBzZWVtcyB0byBiZSBhIGJ1aWx0LWluIGFzc3VtcHRpb24gaW4gdGhlIGN1cnJl
+bnQgDQpwcm9jZXNzLCB0aGF0IGNvZGUgZmxvd3MgbW9zdGx5IGluIG9uZSBkaXJlY3Rpb24gYW1k
+LXN0YWdpbmctZHJtLW5leHQgLT4gDQpkcm0tbmV4dCAtPiBsaW51eC1uZXh0IC0+IGxpbnV4LiBU
+aGF0IGFzc3VtcHRpb24gaXMgYnJva2VuIHdpdGggSE1NIGNvZGUgDQpldm9sdmluZyByYXBpZGx5
+IGluIGJvdGggYW1kZ3B1IGFuZCBtbS4NCg0KSWYgd2Ugd2FudCB0byBjb250aW51ZSBkZXZlbG9w
+aW5nIEhNTSBkcml2ZXIgY2hhbmdlcyBpbiANCmFtZC1zdGFnaW5nLWRybS1uZXh0LCB3ZSdsbCBu
+ZWVkIHRvIHN5bmNocm9uaXplIHdpdGggaG1tLmdpdCBtb3JlIA0KZnJlcXVlbnRseSwgYm90aCB3
+YXlzLiBJIGJlbGlldmUgcGFydCBvZiB0aGUgcHJvYmxlbSBpcywgdGhhdCB0aGVyZSBpcyBhIA0K
+ZmFpcmx5IGxvbmcgbGVhZC10aW1lIGZyb20gZ2V0dGluZyBjaGFuZ2VzIGZyb20gYW1kLXN0YWdp
+bmctZHJtLW5leHQgDQppbnRvIGxpbnV4LW5leHQsIGFzIHRoZXkgYXJlIGhlbGQgZm9yIG9uZSBy
+ZWxlYXNlIGN5Y2xlIGluIGRybS1uZXh0LiANClB1c2hpbmcgSE1NLXJlbGF0ZWQgY2hhbmdlcyB0
+aHJvdWdoIGRybS1maXhlcyBtYXkgb2ZmZXIgYSBraW5kIG9mIA0Kc2hvcnRjdXQuIFBoaWxpcCBh
+bmQgbXkgbGF0ZXN0IGZpeHVwIGlzIGp1c3QgYnlwYXNzaW5nIGRybS1uZXh0IA0KY29tcGxldGVs
+eSBhbmQgZ29pbmcgc3RyYWlnaHQgaW50byBsaW51eC1uZXh0LCB0aG91Z2guDQoNClJlZ2FyZHMs
+DQogwqAgRmVsaXgNCg0KDQo+DQo+IEphc29uDQo=
