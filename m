@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE415EDE4
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 22:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1195EDEB
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2019 22:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbfGCUvy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jul 2019 16:51:54 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:46469 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727006AbfGCUvx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jul 2019 16:51:53 -0400
-Received: by mail-ot1-f68.google.com with SMTP id z23so3778320ote.13
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Jul 2019 13:51:53 -0700 (PDT)
+        id S1727006AbfGCUzI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jul 2019 16:55:08 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:45055 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726955AbfGCUzI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jul 2019 16:55:08 -0400
+Received: by mail-ot1-f66.google.com with SMTP id b7so3779380otl.11
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Jul 2019 13:55:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=zW1OwnYVOooizraWdaGGJJpOfe0feNTO95gb0InqYU0=;
-        b=JU/G4KlCf5+qIg2c/GtWp5H/XiDUv/70KDD4HoqCo/T0qtrc5tuzuVlXnYJu80Co9r
-         K2GuokAtnIxYEJuIM/2MWzNgaAR8jmWTsFogXcLgbpZrT483mS2PIROSd562LeNIlYKj
-         CaohSvxXNvrs5VOO7u5pwa+hOCqfJo2E5IFqvr+Ut6Q/I6IKtAJJTgEutFFOub3tQ9wl
-         7Y0PNUjY//KPCBjPgQBauGq3fcq4Sz4R5LUQMULRGa5oHHVJM6i5NL6EhxPtjCKa8bXf
-         rhSKRFmkDgCO3HMV8gYSk3DOhyA5V+6yb4PZ+2Pwf/m3iLm/9bOmZvOA7j6GA2nI2T/n
-         jijg==
-X-Gm-Message-State: APjAAAXmdWOo0NuJ5LXl/27CDcF98Ou5Jh7uoaJkQ4cVJhN5sN23gwH8
-        +E0zuveBg/6xgjgAp74Og3o=
-X-Google-Smtp-Source: APXvYqxht4FztF21IKWHJbXlcXztJjQ74V6WGu1IiODWdBqpwmtdZAYki/WU6+jRx6rvviIdFjczVA==
-X-Received: by 2002:a9d:144:: with SMTP id 62mr26565224otu.180.1562187113234;
-        Wed, 03 Jul 2019 13:51:53 -0700 (PDT)
+        bh=LAqcKetmVJkHlyzw0Yg03PnxEAS+R1PpYvL0//WJ3Dw=;
+        b=OXYerhk/4KiBXlK4WZQE/1636M01ZKas5W1G6WY6kpKYxMaUGZPgv+Ng3ZWLxRdpdg
+         uqk7LnN8m3ESh4LniI5x0iA7j9je4JmXChvYwRMaQK+m/pYiQrSdJM/SjcubeygHQUBB
+         /STZPkENk+UDS8eJhXU/lHmMQtpYmg4oD3L+tRgZpGwcYN2mS2ImivBRyXHsC23lJaDp
+         D5ySxJ+iG/WJxhVqo7VTbl3VeP+QkTCddvDgeMzaOXN1uubm8SAMe2xKUOG7e5jFw9gz
+         vp0JSR6fddoVMVbbeTCPSIe6ohCE4lBId+M9TXviSVzf07p1gN4SMGxF2Urn3ZDIjeuK
+         Kl/Q==
+X-Gm-Message-State: APjAAAWZGqwq+x27cEyrA1wriujoA7ETpftbPazQX3dVHjG4dDPWaSbP
+        nrA0JvFj5mobjnby97+muIc=
+X-Google-Smtp-Source: APXvYqxmffx/SMwYfgda0+NH6kegAlJecyYB+/Ig2FuYT3AS6zS9PpXjWRDEEAZrpLNbZvJBFa8Big==
+X-Received: by 2002:a9d:a76:: with SMTP id 109mr28893479otg.252.1562187307564;
+        Wed, 03 Jul 2019 13:55:07 -0700 (PDT)
 Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
-        by smtp.gmail.com with ESMTPSA id y184sm1033194oie.33.2019.07.03.13.51.51
+        by smtp.gmail.com with ESMTPSA id c64sm1265737otb.79.2019.07.03.13.55.05
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Jul 2019 13:51:52 -0700 (PDT)
-Subject: Re: [PATCH rdma-next v3 1/3] linux/dim: Implement RDMA adaptive
- moderation (DIM)
+        Wed, 03 Jul 2019 13:55:06 -0700 (PDT)
+Subject: Re: [PATCH rdma-next v3 2/3] RDMA/core: Provide RDMA DIM support for
+ ULPs
 To:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -46,14 +46,14 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Yamin Friedman <yaminf@mellanox.com>,
         Or Gerlitz <ogerlitz@mellanox.com>
 References: <20190630091057.11507-1-leon@kernel.org>
- <20190630091057.11507-2-leon@kernel.org>
+ <20190630091057.11507-3-leon@kernel.org>
 From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <2b8e1c1c-a80a-bf02-0ca7-5124bcef2419@grimberg.me>
-Date:   Wed, 3 Jul 2019 13:51:51 -0700
+Message-ID: <bb69524a-d90c-e456-b07d-720cf11e617c@grimberg.me>
+Date:   Wed, 3 Jul 2019 13:55:03 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190630091057.11507-2-leon@kernel.org>
+In-Reply-To: <20190630091057.11507-3-leon@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -62,51 +62,26 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Can you please split the mlx5 to its own patch?
 
-> From: Yamin Friedman <yaminf@mellanox.com>
-> 
-> RDMA DIM implements a different algorithm from net DIM and is based on
-> completions which is how we can implement interrupt moderation in RDMA.
-> 
-> The algorithm optimizes for number of completions and ratio between
-> completions and events. In order to avoid long latencies, the
-> implementation performs fast reduction of moderation level when the
-> traffic changes.
-> 
-> Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
-> Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-> Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->   include/linux/dim.h |  36 +++++++++++++++
->   lib/dim/Makefile    |   6 +--
->   lib/dim/rdma_dim.c  | 108 ++++++++++++++++++++++++++++++++++++++++++++
->   3 files changed, 146 insertions(+), 4 deletions(-)
->   create mode 100644 lib/dim/rdma_dim.c
-> 
-> diff --git a/include/linux/dim.h b/include/linux/dim.h
-> index aa9bdd47a648..1ae32835723a 100644
-> --- a/include/linux/dim.h
-> +++ b/include/linux/dim.h
-> @@ -82,6 +82,7 @@ struct dim_stats {
->    * @prev_stats: Measured rates from previous iteration (for comparison)
->    * @start_sample: Sampled data at start of current iteration
->    * @work: Work to perform on action required
-> + * @dim_owner: A pointer to the struct that points to dim
->    * @profile_ix: Current moderation profile
->    * @mode: CQ period count mode
->    * @tune_state: Algorithm tuning state (see below)
-> @@ -95,6 +96,7 @@ struct dim {
->   	struct dim_sample start_sample;
->   	struct dim_sample measuring_sample;
->   	struct work_struct work;
-> +	void *dim_owner;
+> +static void ib_cq_rdma_dim_work(struct work_struct *w)
+> +{
+> +	struct dim *dim = container_of(w, struct dim, work);
+> +	struct ib_cq *cq = (struct ib_cq *)dim->dim_owner;
 
-This is different than the net consumers that init an embedded dim
-struct. I imagine that the reason is to not have this dim space in every
-ib_cq struct?
+No need to cast a void pointer
 
-Would suggest to name it to 'priv' or 'dim_priv'
+>   static int __ib_process_cq(struct ib_cq *cq, int budget, struct ib_wc *wcs,
+>   			   int batch)
+>   {
+> @@ -78,6 +112,7 @@ static void ib_cq_completion_direct(struct ib_cq *cq, void *private)
+>   static int ib_poll_handler(struct irq_poll *iop, int budget)
+>   {
+>   	struct ib_cq *cq = container_of(iop, struct ib_cq, iop);
+> +	struct dim *dim = cq->dim;
+>   	int completed;
 
-Otherwise,
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Is there really a need for this local variable? I'd say you can safely
+drop it.
+
+The rest looks fine.
