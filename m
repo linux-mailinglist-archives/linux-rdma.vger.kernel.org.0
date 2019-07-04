@@ -2,236 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 072785FCB6
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 20:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 760575FCD7
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 20:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbfGDSJZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 14:09:25 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:34576 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727018AbfGDSJZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 14:09:25 -0400
-Received: by mail-qt1-f194.google.com with SMTP id k10so1142617qtq.1
-        for <linux-rdma@vger.kernel.org>; Thu, 04 Jul 2019 11:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jdGpfeBvSLIUSv4SWY60s3IcV/TCFzpZhLcU3Os+HvE=;
-        b=fF+60+UI+VkXU0cMTk25qB4ilIQ3KXpJWtNMMxJe+eI264u3hxUwra4vXbldow27jH
-         V7MYWT6ZGZVU6bdIesR1HVbqdcjZwOZdPZCVYt/tovg7oS72T3vugB6AbYDc+bxkz+2p
-         pHlDQikJGWjojBsInGSrEduIvGs0QiZLQZAPBQMH5aVzUkqhIL26LkpwCZ4A0lvKKTKT
-         6VMuS+Vyw7IscUeuhq7Pd8LCRIB2A8YR8+sLI+Ta803coVIiSun3pxtzWuUDoj9uqmCN
-         OO3r5PJ45H5CUWSP12FioWGeNm9WbONdlhDyh7IZ1nWY53Sb6XxXUADJtlL0JJjAjimT
-         MqoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jdGpfeBvSLIUSv4SWY60s3IcV/TCFzpZhLcU3Os+HvE=;
-        b=pm2FmGwIGhagGzDPRO1WQTXdqqpymsjzMtPEGWqiNWVi615ZOzTuYq/6rfIU4CQqZP
-         a1YssfkQozGap/hJRkgKG/EHeGthXst9mPZXriXDS5aKJEm5uXxV3YThO9UEzJ2OG6l+
-         XQfAnmhrE0SwRv0zZHZfQzYV+/M8SKBVZDAWUgiNCdohvfJPAsCN5kLiM3+b6BP2DhP1
-         tSf655l9rIJCFZkX7g3rjiNZ05hm70LxBXrJXK+z/pXKG8cSXJ02F5wD6Lhg1ruuhQm6
-         nb/m46DHiBkCl7SYItHbO+cmyyp+e//qO1CyWJt0cca8mLdmajAZ2dpxEO/ITAxP+Y1E
-         JBDg==
-X-Gm-Message-State: APjAAAVsphw3dimzO8cD2wHxdNICJUJtbEP9GXe6PLThQSymDB6RQ/KX
-        5bceqcj+ufotDcfc0jWtK7PKzw==
-X-Google-Smtp-Source: APXvYqwHn2utmDIgUPQtRrRQlBXxAtsZ6AeJzT1Bwfbuh4+hTxVBFTaLS3rwbAfvG6uxZ1W34UKR3w==
-X-Received: by 2002:ac8:354d:: with SMTP id z13mr37723850qtb.340.1562263764004;
-        Thu, 04 Jul 2019 11:09:24 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id d12sm1377888qtj.50.2019.07.04.11.09.23
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 04 Jul 2019 11:09:23 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hj6Ad-0001MD-4p; Thu, 04 Jul 2019 15:09:23 -0300
-Date:   Thu, 4 Jul 2019 15:09:23 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Majd Dibbiny <majd@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v5 06/17] RDMA/counter: Add "auto"
- configuration mode support
-Message-ID: <20190704180923.GA2700@ziepe.ca>
-References: <20190702100246.17382-1-leon@kernel.org>
- <20190702100246.17382-7-leon@kernel.org>
+        id S1725894AbfGDSVd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 14:21:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725882AbfGDSVd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Jul 2019 14:21:33 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B91721738;
+        Thu,  4 Jul 2019 18:21:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562264492;
+        bh=ww8m1xV7CM9m57rdSK+MAGheGY/bPXOI0pBbNppAWjA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rQou53LgkclnN4Quq3olY9xjYgbWzAV8hWryC+XLpdJraAiaLLV5C4k3RCnmJJMpV
+         K4fGUumw+tSEU5z2N8m4Cl94PaQQwjimlOZkYmpCwJENwpcWwYIEKI8seB7gJQuLly
+         p64pBXFX+yUvGE54YkNjjtLBmDEZ5IdQekEhvaIU=
+Date:   Thu, 4 Jul 2019 21:21:13 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Saeed Mahameed <saeedm@dev.mellanox.co.il>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Tariq Toukan <tariqt@mellanox.com>
+Subject: Re: [PATCH mlx5-next 4/5] net/mlx5: Introduce TLS TX offload
+ hardware bits and structures
+Message-ID: <20190704182113.GG7212@mtr-leonro.mtl.com>
+References: <20190703073909.14965-1-saeedm@mellanox.com>
+ <20190703073909.14965-5-saeedm@mellanox.com>
+ <20190703092735.GZ4727@mtr-leonro.mtl.com>
+ <CALzJLG-em1w+Lgf2UutbG2Lzq8bx3zUqoLGx26H2_EXOuuk+jg@mail.gmail.com>
+ <20190704171519.GE7212@mtr-leonro.mtl.com>
+ <CALzJLG--k3z2HuV09tivJuOtU-BFAyCEV1vJbPqYX+OyskggmQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190702100246.17382-7-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CALzJLG--k3z2HuV09tivJuOtU-BFAyCEV1vJbPqYX+OyskggmQ@mail.gmail.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 02, 2019 at 01:02:35PM +0300, Leon Romanovsky wrote:
-> From: Mark Zhang <markz@mellanox.com>
-> 
-> In auto mode all QPs belong to one category are bind automatically to
-> a single counter set. Currently only "qp type" is supported.
-> 
-> In this mode the qp counter is set in RST2INIT modification, and when
-> a qp is destroyed the counter is unbound.
-> 
-> Signed-off-by: Mark Zhang <markz@mellanox.com>
-> Reviewed-by: Majd Dibbiny <majd@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->  drivers/infiniband/core/counters.c | 221 +++++++++++++++++++++++++++++
->  drivers/infiniband/core/device.c   |   3 +
->  drivers/infiniband/core/verbs.c    |   9 ++
->  include/rdma/ib_verbs.h            |  18 +++
->  include/rdma/rdma_counter.h        |   8 ++
->  5 files changed, 259 insertions(+)
-> 
-> diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-> index 6167914fba06..60639452669c 100644
-> +++ b/drivers/infiniband/core/counters.c
-> @@ -54,6 +54,227 @@ int rdma_counter_set_auto_mode(struct ib_device *dev, u8 port,
->  	return ret;
->  }
->  
-> +static struct rdma_counter *rdma_counter_alloc(struct ib_device *dev, u8 port,
-> +					       enum rdma_nl_counter_mode mode)
-> +{
-> +	struct rdma_counter *counter;
-> +
-> +	if (!dev->ops.counter_dealloc)
-> +		return NULL;
-> +
-> +	counter = kzalloc(sizeof(*counter), GFP_KERNEL);
-> +	if (!counter)
-> +		return NULL;
-> +
-> +	counter->device    = dev;
-> +	counter->port      = port;
-> +	counter->res.type  = RDMA_RESTRACK_COUNTER;
-> +	counter->mode.mode = mode;
-> +	kref_init(&counter->kref);
-> +	mutex_init(&counter->lock);
-> +
-> +	return counter;
-> +}
-> +
-> +static void rdma_counter_free(struct rdma_counter *counter)
-> +{
-> +	rdma_restrack_del(&counter->res);
-> +	kfree(counter);
-> +}
-> +
-> +static void auto_mode_init_counter(struct rdma_counter *counter,
-> +				   const struct ib_qp *qp,
-> +				   enum rdma_nl_counter_mask new_mask)
-> +{
-> +	struct auto_mode_param *param = &counter->mode.param;
-> +
-> +	counter->mode.mode = RDMA_COUNTER_MODE_AUTO;
-> +	counter->mode.mask = new_mask;
-> +
-> +	if (new_mask & RDMA_COUNTER_MASK_QP_TYPE)
-> +		param->qp_type = qp->qp_type;
-> +}
-> +
-> +static bool auto_mode_match(struct ib_qp *qp, struct rdma_counter *counter,
-> +			    enum rdma_nl_counter_mask auto_mask)
-> +{
-> +	struct auto_mode_param *param = &counter->mode.param;
-> +	bool match = true;
-> +
-> +	if (rdma_is_kernel_res(&counter->res) != rdma_is_kernel_res(&qp->res))
-> +		return false;
-> +
-> +	/* Ensure that counter belong to right PID */
-> +	if (!rdma_is_kernel_res(&counter->res) &&
-> +	    !rdma_is_kernel_res(&qp->res) &&
-> +	    (task_pid_vnr(counter->res.task) != current->pid))
-> +		return false;
-> +
-> +	if (auto_mask & RDMA_COUNTER_MASK_QP_TYPE)
-> +		match &= (param->qp_type == qp->qp_type);
-> +
-> +	return match;
-> +}
-> +
-> +static int __rdma_counter_bind_qp(struct rdma_counter *counter,
-> +				  struct ib_qp *qp)
-> +{
-> +	int ret;
-> +
-> +	if (qp->counter)
-> +		return -EINVAL;
-> +
-> +	if (!qp->device->ops.counter_bind_qp)
-> +		return -EOPNOTSUPP;
-> +
-> +	mutex_lock(&counter->lock);
-> +	ret = qp->device->ops.counter_bind_qp(counter, qp);
-> +	mutex_unlock(&counter->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static int __rdma_counter_unbind_qp(struct ib_qp *qp)
-> +{
-> +	struct rdma_counter *counter = qp->counter;
-> +	int ret;
-> +
-> +	if (!qp->device->ops.counter_unbind_qp)
-> +		return -EOPNOTSUPP;
-> +
-> +	mutex_lock(&counter->lock);
-> +	ret = qp->device->ops.counter_unbind_qp(qp);
-> +	mutex_unlock(&counter->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * rdma_get_counter_auto_mode - Find the counter that @qp should be bound
-> + *     with in auto mode
-> + *
-> + * Return: The counter (with ref-count increased) if found
-> + */
-> +static struct rdma_counter *rdma_get_counter_auto_mode(struct ib_qp *qp,
-> +						       u8 port)
-> +{
-> +	struct rdma_port_counter *port_counter;
-> +	struct rdma_counter *counter = NULL;
-> +	struct ib_device *dev = qp->device;
-> +	struct rdma_restrack_entry *res;
-> +	struct rdma_restrack_root *rt;
-> +	unsigned long id = 0;
-> +
-> +	port_counter = &dev->port_data[port].port_counter;
-> +	rt = &dev->res[RDMA_RESTRACK_COUNTER];
-> +	xa_lock(&rt->xa);
-> +	xa_for_each(&rt->xa, id, res) {
-> +		if (!rdma_is_visible_in_pid_ns(res))
-> +			continue;
-> +
-> +		counter = container_of(res, struct rdma_counter, res);
-> +		if ((counter->device != qp->device) || (counter->port != port))
-> +			goto next;
-> +
-> +		if (auto_mode_match(qp, counter, port_counter->mode.mask))
-> +			break;
-> +next:
-> +		counter = NULL;
-> +	}
-> +
-> +	if (counter)
-> +		kref_get(&counter->kref);
+On Thu, Jul 04, 2019 at 01:21:04PM -0400, Saeed Mahameed wrote:
+> On Thu, Jul 4, 2019 at 1:15 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Thu, Jul 04, 2019 at 01:06:58PM -0400, Saeed Mahameed wrote:
+> > > On Wed, Jul 3, 2019 at 5:27 AM <leon@kernel.org> wrote:
+> > > >
+> > > > On Wed, Jul 03, 2019 at 07:39:32AM +0000, Saeed Mahameed wrote:
+> > > > > From: Eran Ben Elisha <eranbe@mellanox.com>
+> > > > >
+> > > > > Add TLS offload related IFC structs, layouts and enumerations.
+> > > > >
+> > > > > Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
+> > > > > Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
+> > > > > Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+> > > > > ---
+> > > > >  include/linux/mlx5/device.h   |  14 +++++
+> > > > >  include/linux/mlx5/mlx5_ifc.h | 104 ++++++++++++++++++++++++++++++++--
+> > > > >  2 files changed, 114 insertions(+), 4 deletions(-)
+> > > >
+> > > > <...>
+> > > >
+> > > > > @@ -2725,7 +2739,8 @@ struct mlx5_ifc_traffic_counter_bits {
+> > > > >
+> > > > >  struct mlx5_ifc_tisc_bits {
+> > > > >       u8         strict_lag_tx_port_affinity[0x1];
+> > > > > -     u8         reserved_at_1[0x3];
+> > > > > +     u8         tls_en[0x1];
+> > > > > +     u8         reserved_at_1[0x2];
+> > > >
+> > > > It should be reserved_at_2.
+> > > >
+> > >
+> > > it should be at_1.
+> >
+> > Why? See mlx5_ifc_flow_table_prop_layout_bits, mlx5_ifc_roce_cap_bits, e.t.c.
+> >
+>
+> they are all at_1 .. so i don't really understand what you want from me,
+> Leon the code is good, please double check you comments..
 
-This still needs to be kref_get_unless_zero:
+Saeed,
 
-	if (counter && !kref_get_unless_zero(&counter->kref))
-		counter = NULL;
+reserved_at_1 should be renamed to be reserved_at_2.
 
-Jason
+strict_lag_tx_port_affinity[0x1] + tls_en[0x1] = 0x2
+
+>
+> > Thanks
+> >
+> > >
+> > > > Thanks
