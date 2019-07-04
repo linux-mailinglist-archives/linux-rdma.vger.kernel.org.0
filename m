@@ -2,61 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D80145F88B
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 14:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A22A5F8A4
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 14:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbfGDMua (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 08:50:30 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42388 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbfGDMua (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 08:50:30 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-        (Exim 4.76)
-        (envelope-from <colin.king@canonical.com>)
-        id 1hj1Bz-0005US-L7; Thu, 04 Jul 2019 12:50:27 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/uverbs: remove redundant assignment to variable ret
-Date:   Thu,  4 Jul 2019 13:50:27 +0100
-Message-Id: <20190704125027.4514-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727198AbfGDM5s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 08:57:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726791AbfGDM5s (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Jul 2019 08:57:48 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F7672189E;
+        Thu,  4 Jul 2019 12:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562245068;
+        bh=L+505R5nN9hY0PrBl0VtyIfGZw+NiWTLqAURX5FrqhY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Th8RB/fQ+3BitA2a0wZpm5JXXbs8STdgfUMJVrj4N+DG06yoc0eecUA5JaNQNg8ty
+         KE5/6FiTDCTXTcON6SlU3p+rw0+GBs1OmaMTNHxSKmsYmu2SxVPhZMxUH2agY7sVAm
+         1+6NiX2qh/y3TKptH+0ZRFxX4g4EqsN+y2m8e4kE=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Yamin Friedman <yaminf@mellanox.com>
+Subject: [PATCH rdma-next v4 0/3] Use RDMA adaptive moderation library
+Date:   Thu,  4 Jul 2019 15:57:40 +0300
+Message-Id: <20190704125743.7814-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-The variable ret is being initialized with a value that is never
-read and it is being updated later with a new value. The
-initialization is redundant and can be removed.
+Hi,
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/infiniband/core/uverbs_cmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is RDMA part of previously sent DIM library improvements series
+[1], which was pulled by Dave. It needs to be pulled to RDMA too as
+a pre-requirements.
 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 750c4d484329..7ddd0e5bc6b3 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -2548,7 +2548,7 @@ static int ib_uverbs_detach_mcast(struct uverbs_attr_bundle *attrs)
- 	struct ib_uqp_object         *obj;
- 	struct ib_qp                 *qp;
- 	struct ib_uverbs_mcast_entry *mcast;
--	int                           ret = -EINVAL;
-+	int                           ret;
- 	bool                          found = false;
- 
- 	ret = uverbs_request(attrs, &cmd, sizeof(cmd));
--- 
+Changes since v3:
+ * Renamed dim_owner to be priv
+ * Added Sagi's ROBs
+ * Removed casting of void pointer.
+
+Changes since v2:
+- renamed user-space knob from dim to adaptive-moderation (Sagi)
+- some minor code clean ups (Sagi)
+- Reordered patches to ensure that netlink expose is last in the series.
+- Slightly cleaned commit messages
+- Changed "bool use_cq_dim" flag to be bitwise to save space.
+
+Changes since v1:
+- added per ib device configuration knob for rdma-dim (Sagi)
+- add NL directives for user-space / rdma tool to configure rdma dim
+  (Sagi/Leon)
+- use one header file for DIM implementations (Leon)
+- various point changes in the rdma dim related code in the IB core
+  (Leon)
+- removed the RDMA specific patches form this pull request\
+
+Thanks
+
+[1] https://www.spinics.net/lists/netdev/msg581046.html
+
+Yamin Friedman (3):
+  linux/dim: Implement RDMA adaptive moderation (DIM)
+  RDMA/core: Provide RDMA DIM support for ULPs
+  RDMA/nldev: Added configuration of RDMA dynamic interrupt moderation
+    to netlink
+
+ drivers/infiniband/Kconfig          |   1 +
+ drivers/infiniband/core/core_priv.h |   1 +
+ drivers/infiniband/core/cq.c        |  45 ++++++++++++
+ drivers/infiniband/core/device.c    |   9 +++
+ drivers/infiniband/core/nldev.c     |  14 ++++
+ drivers/infiniband/hw/mlx5/main.c   |   2 +
+ include/linux/dim.h                 |  36 ++++++++++
+ include/rdma/ib_verbs.h             |   4 ++
+ include/uapi/rdma/rdma_netlink.h    |   5 ++
+ lib/dim/Makefile                    |   6 +-
+ lib/dim/rdma_dim.c                  | 108 ++++++++++++++++++++++++++++
+ 11 files changed, 227 insertions(+), 4 deletions(-)
+ create mode 100644 lib/dim/rdma_dim.c
+
+--
 2.20.1
 
