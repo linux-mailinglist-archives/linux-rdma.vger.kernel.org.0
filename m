@@ -2,90 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6738B5F8E0
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 15:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140E95F944
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 15:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbfGDNJp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 09:09:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727087AbfGDNJp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 4 Jul 2019 09:09:45 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F33DD218A6;
-        Thu,  4 Jul 2019 13:09:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562245784;
-        bh=pUG09UF0OY+eEOCKnenHq38XwXbGc686vfzXR6Zxp+U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DmNBGkmN8XVikKUM2nvNA201J7jZ7JHkBLuc7KX7PhPioetqPhwYguf16f9q4Jf9s
-         x4tY9RiSmdg2GllBIuw5CdVlZjpXVNSe1kgWvWYk6n9e2M39mucjRPwYIkuAgDOnfP
-         wwGO7sJFN7zL9/Rf28NHjEKkJJ1oCAvgxL2t4wMU=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: [PATCH rdma-next 2/2] RDMA/mlx4: Annotate boolean arguments as bool and not int
-Date:   Thu,  4 Jul 2019 16:09:36 +0300
-Message-Id: <20190704130936.8705-3-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190704130936.8705-1-leon@kernel.org>
-References: <20190704130936.8705-1-leon@kernel.org>
+        id S1727154AbfGDNlz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 09:41:55 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:42512 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727026AbfGDNlz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 09:41:55 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x64DYCEB088053;
+        Thu, 4 Jul 2019 13:41:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=Dlw2BZECljrRb5zUVHmug4KRAXeIKZcZd3eoMR7F2jw=;
+ b=dxvRBSmOwJYJOj+1kzzrB/UlFSsn9ovy2cSNxoryrPzJo/JG/b/OfeTpulg4AuiPgoHo
+ DTEl6gQ4ZC+j7xvNvb5OL1rtqV2dNNI8kXEktbRSPdGn97L4Elhl68bR/VeVSKfwG8C1
+ 5os9k8eOQjWSO7/ImIOZppLt2IO2K/msBWfuJ23rz9m4spwImnXU8cCnACag7YFq+wDO
+ mGO3nJleY9NBaaBL4xiTaCzTqcHCIhJ40pR9pRA7t4pzGhj/XDbU00k8Mq7ouU464h7w
+ eHW/6nSKAr3G1jKYJJ36A7JpeEZY/1MXSkx/LhDEtPB1TeEXshunlm4bBFb4udljviei 7A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2te5tby0jk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Jul 2019 13:41:51 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x64DWSrF011487;
+        Thu, 4 Jul 2019 13:41:51 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2th9ec003b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Jul 2019 13:41:51 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x64DfnED014896;
+        Thu, 4 Jul 2019 13:41:50 GMT
+Received: from lap1 (/77.138.183.59)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 04 Jul 2019 06:41:48 -0700
+Date:   Thu, 4 Jul 2019 16:41:38 +0300
+From:   Yuval Shaia <yuval.shaia@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
+        linux-rdma@vger.kernel.org, leon@kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Subject: Re: [RFC rdma-core] verbs: add ibv_export_to_fd man page
+Message-ID: <20190704134136.GA5711@lap1>
+References: <20190626083614.23688-1-shamir.rabinovitch@oracle.com>
+ <20190626124637.GA3091@lap1>
+ <20190702224807.GE11860@ziepe.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190702224807.GE11860@ziepe.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9307 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1907040170
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9307 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1907040171
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On Tue, Jul 02, 2019 at 07:48:07PM -0300, Jason Gunthorpe wrote:
+> On Wed, Jun 26, 2019 at 03:46:39PM +0300, Yuval Shaia wrote:
+> > On Wed, Jun 26, 2019 at 11:36:14AM +0300, Shamir Rabinovitch wrote:
+> > > Add the ibv_export_to_fd man page.
+> > 
+> > This is RFC but still suggesting to give some words here.
+> > 
+> > Also, subject is incorrect since man page is for all functions involved in
+> > the shared-obj mechanism, not only the export_to_fd.
+> > 
+> > > 
+> > > Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+> > >  libibverbs/man/ibv_export_to_fd.3.md | 109 +++++++++++++++++++++++++++
+> > >  1 file changed, 109 insertions(+)
+> > >  create mode 100644 libibverbs/man/ibv_export_to_fd.3.md
+> > > 
+> > > diff --git a/libibverbs/man/ibv_export_to_fd.3.md b/libibverbs/man/ibv_export_to_fd.3.md
+> > > new file mode 100644
+> > > index 00000000..8e3f0fb2
+> > > +++ b/libibverbs/man/ibv_export_to_fd.3.md
+> > > @@ -0,0 +1,109 @@
+> > > +---
+> > > +date: 2018-06-26
+> > > +footer: libibverbs
+> > > +header: "Libibverbs Programmer's Manual"
+> > > +layout: page
+> > > +license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
+> > > +section: 3
+> > > +title: ibv_export_to_fd
+> > > +tagline: Verbs
+> > > +---
+> > > +
+> > > +# NAME
+> > > +
+> > > +**ibv_export_to_fd**, **ibv_import_pd**, **ibv_import_mr** - export & import ib hw objects.
+> > > +
+> > > +# SYNOPSIS
+> > > +
+> > > +```c
+> > > +#include <infiniband/verbs.h>
+> > > +
+> > > +int ibv_export_to_fd(uint32_t fd,
+> > > +                     uint32_t *new_handle,
+> > > +                     struct ibv_context *context,
+> > > +                     enum uverbs_default_objects type,
+> > > +                     uint32_t handle);
+> 
+> This should probably be some internal function and the exports should
+> be type safe just like the imports.
 
-Information provided by qp_has_rq() and used latter is boolean,
-so update callers to proper type.
+So you suggesting something like this (instead of passing handle as arg):
 
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx4/qp.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+int ibv_export_pd(uint32_t fd,
+		  uint32_t *new_handle,
+		  struct ibv_context *context,
+		  struct ib_pd* pd);
 
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index e409adac4e2e..bd4aa04416c6 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -325,7 +325,7 @@ static int send_wqe_overhead(enum mlx4_ib_qp_type type, u32 flags)
- }
- 
- static int set_rq_size(struct mlx4_ib_dev *dev, struct ib_qp_cap *cap,
--		       bool is_user, int has_rq, struct mlx4_ib_qp *qp,
-+		       bool is_user, bool has_rq, struct mlx4_ib_qp *qp,
- 		       u32 inl_recv_sz)
- {
- 	/* Sanity check RQ size before proceeding */
-@@ -506,10 +506,10 @@ static void free_proxy_bufs(struct ib_device *dev, struct mlx4_ib_qp *qp)
- 	kfree(qp->sqp_proxy_rcv);
- }
- 
--static int qp_has_rq(struct ib_qp_init_attr *attr)
-+static bool qp_has_rq(struct ib_qp_init_attr *attr)
- {
- 	if (attr->qp_type == IB_QPT_XRC_INI || attr->qp_type == IB_QPT_XRC_TGT)
--		return 0;
-+		return false;
- 
- 	return !attr->srq;
- }
-@@ -906,7 +906,7 @@ static int create_rq(struct ib_pd *pd, struct ib_qp_init_attr *init_attr,
- 	if (init_attr->create_flags & IB_QP_CREATE_SCATTER_FCS)
- 		qp->flags |= MLX4_IB_QP_SCATTER_FCS;
- 
--	err = set_rq_size(dev, &init_attr->cap, true, 1, qp, qp->inl_recv_sz);
-+	err = set_rq_size(dev, &init_attr->cap, true, true, qp, qp->inl_recv_sz);
- 	if (err)
- 		goto err;
- 
--- 
-2.20.1
+int ibv_export_mr(uint32_t fd,
+		  uint32_t *new_handle,
+		  struct ibv_context *context,
+		  struct ib_mr* mr);
 
+So the handle is taken internally from the pd or mr  arg.
+
+Are you still ok with new_handle? asking as this is what is used in the
+ibv_import_xxx functions.
+
+> 
+> > > +struct ibv_pd *ibv_import_pd(struct ibv_context *context,
+> > > +                             uint32_t fd,
+> > > +                             uint32_t handle);
+> > > +
+> > > +struct ibv_mr *ibv_import_mr(struct ibv_context *context,
+> > > +                             uint32_t fd,
+> > > +                             uint32_t handle);
+> > > +
+> > > +uint32_t ibv_context_to_fd(struct ibv_context *context);
+> > > +
+> > > +uint32_t ibv_pd_to_handle(struct ibv_pd *pd);
+> > > +
+> > > +uint32_t ibv_mr_to_handle(struct ibv_mr *mr);
+> > 
+> > Do you know if extra stuff besides this new file needs to be done so i can
+> > do ex man ibv_context_to_fd and get this man page?
+> 
+> Yes, they need to be setup in cmake with aliases.
+
+Will take care of it, thanks.
+
+> 
+> I think this man page is kind of terse for such a complicated
+> thing. 
+> 
+> Ie it doesn't talk about what happens when close() or ibv_destroy_X()
+> is called.
+
+We've mentioned that the returned object is like a regular object returned
+from (ex) ibv_create_pd and should be destroyed with the corresponding
+destroy function.
+We can add a note saying that the HW object will be destroyed only when all
+reference to it will be destroyed.
+Is that enough?
+
+> 
+> Jason
