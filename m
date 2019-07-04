@@ -2,93 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCBF5FC3B
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 19:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A965FC3F
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 19:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbfGDRHL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 13:07:11 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:33738 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727040AbfGDRHL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 13:07:11 -0400
-Received: by mail-lj1-f194.google.com with SMTP id h10so6802284ljg.0
-        for <linux-rdma@vger.kernel.org>; Thu, 04 Jul 2019 10:07:10 -0700 (PDT)
+        id S1727185AbfGDRHy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 13:07:54 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:36551 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727117AbfGDRHy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 13:07:54 -0400
+Received: by mail-qt1-f193.google.com with SMTP id z4so5161403qtc.3
+        for <linux-rdma@vger.kernel.org>; Thu, 04 Jul 2019 10:07:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rwlsawBHLhO/lSrvWfCS3hDj6UzmtEvVKJ6+9BqzQD4=;
-        b=ornLwSqjOwu359EGsEEWvC6DrdBXTPWnS62YSpws7rNtbKdlUtoLjRQ5WpwvIQRZJY
-         0cvBEhqOwpWkhVd7YPAwrqqRYnaipK7npk4mXHpiJ/jEczmHrjKvlvoHLr/xMGnlLmSO
-         zkz/bQPI56vUAlcB/pnOFZq7JJXf5BcH31Aj4jpd58/GIgUnslPX2ooiiJ4iyUCJtDlZ
-         YPoZsR2ekw+ePwKRfcN2LMoH0RlutfRfPXZeFdjdm/oLXUt+8KuIS82Iot1/J4piQB2o
-         d7WwFADRjccd9uJtvDcBwLT/SaxyO0AJK4aNR8zKPJrpDaagbvSGQtZdQ8YA+PQI4F49
-         HcAQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XqfKYWKGSYLgbJr6fPQ+lFHdBqt7mzzp7w7+/NgGtDk=;
+        b=X6NiXeAMF1OwtlTW4QqugOJ53ZeaHYD/sLo9k8HcbCwSQByg/XZqvCY4YZ+NYEl7+p
+         iNzSMGDWZ5tSIXvWCBaZgIICKztGnisde/lW/EA7/5qeHQu+15yWvVUsJRLIZmnz8wha
+         FFQqyPZ2lh/7vbQ1YNZqInN11zwc/aPBlJbKnEheIYIs5DRlEPuNf2j32b7lU2Cr/rcQ
+         96vKhTR4yz256EpG20zwOf0ABEaIZ5Hm7+BC+Ly7ve2P51vGNgxR6r8d9luBnVSDGfnC
+         hecuC40wXSVrpqNgLK4oewKcZuEQsgqJRuOyJclwZzjzgTs41CxzCm22YgsyxzVDu9Bi
+         dJSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rwlsawBHLhO/lSrvWfCS3hDj6UzmtEvVKJ6+9BqzQD4=;
-        b=IoAzr85dsMqWcoS0cAZdgv3nl2p35Uec78OGDDaf2S4rCfrBDSjQZs3wXg2uajA+PG
-         marKApgv+ftQBxSFiA+Bm9kfg00Le3OueljknYkhqpZyiShNjKaf6OuDyoURlZsTXc5G
-         MnCqPxzCjTk/mg6MQVlHOKLri2i02HijXoWwVAn8Q5hHJaxFbI25obVXptg3xU69u1Nz
-         EmBsUcMQ9CUA+6vdU/066QEMF257+/bhqusF9aRAoVoh5mJ8BFXe0r72PHR06mOItm0U
-         TIj0XBEyprI/fDGHDLeaXViMinSTm3Y5/nBWOlNKxpN+3kFwi9ybJw8pTIJDSo4l5P0B
-         5qyw==
-X-Gm-Message-State: APjAAAXb3rSbGzH0VJTvNocn+RGvzt9BhsSo2hN3WDfnit1yB6k5EQMg
-        nInmBULuCnlt5FLR60xjO5LPHFG0zSWHftFysoq/kQ==
-X-Google-Smtp-Source: APXvYqxz3IdnYqLxGB1i3BZb0JjRA5+VfZj4Yx5GDXEmAPqu5MmboscK6jWq9SmP/GdXVE4Gpc/GhUaDIlFJJu6H/AY=
-X-Received: by 2002:a2e:2993:: with SMTP id p19mr24500471ljp.202.1562260029660;
- Thu, 04 Jul 2019 10:07:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XqfKYWKGSYLgbJr6fPQ+lFHdBqt7mzzp7w7+/NgGtDk=;
+        b=k3DA87n9kpaOtKEtKpAti8BTHFhiRQRqWkOVOO40MFwwNfs3pDdvmpaKvmdyNYrxNA
+         67n+Ejnk75as/6ZW7hJOK1vtr0ESjn9QjJ5Hwhr/WXn+xTD72ppVrErTNX3Co6YMq8tt
+         Xmo1xcanOhrhY84Hh1v9amaVgMq8kvgavRAieC6MwWRks8964Fl1QVE+IXiHGlSvPcg7
+         W9ZqqbuQxMqAsJJhrNJbvPXQZsgipDDpEiDSdMmt+2aiO5CCXwM+jf4h+UQZ4tBCSI5S
+         gG9fdh5dnaUzbNL26WJ4IFkfHQhEhr90JCnHI2xy+5DoIEG75nqioT/IsuugqZ+ZUHRf
+         JyaQ==
+X-Gm-Message-State: APjAAAUMIi6mhVtTo3pd/mMiDFuKa5bzFfJN/CS5082vDaTfIYElKGnF
+        OFV5oFVucabJfazYRqarOT/WjQ==
+X-Google-Smtp-Source: APXvYqxtr+v0L2/2WEquOomQKVdBZ8+LLKmCnbiOU43dpww5W7vo+SURvHo2eSQslH/YdnPX0elgpQ==
+X-Received: by 2002:aed:36c5:: with SMTP id f63mr36872490qtb.239.1562260073519;
+        Thu, 04 Jul 2019 10:07:53 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id b67sm2660401qkd.82.2019.07.04.10.07.53
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Jul 2019 10:07:53 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hj5D6-000348-Ib; Thu, 04 Jul 2019 14:07:52 -0300
+Date:   Thu, 4 Jul 2019 14:07:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/uverbs: remove redundant assignment to variable ret
+Message-ID: <20190704170752.GA11760@ziepe.ca>
+References: <20190704125027.4514-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20190703073909.14965-1-saeedm@mellanox.com> <20190703073909.14965-5-saeedm@mellanox.com>
- <20190703092735.GZ4727@mtr-leonro.mtl.com>
-In-Reply-To: <20190703092735.GZ4727@mtr-leonro.mtl.com>
-From:   Saeed Mahameed <saeedm@dev.mellanox.co.il>
-Date:   Thu, 4 Jul 2019 13:06:58 -0400
-Message-ID: <CALzJLG-em1w+Lgf2UutbG2Lzq8bx3zUqoLGx26H2_EXOuuk+jg@mail.gmail.com>
-Subject: Re: [PATCH mlx5-next 4/5] net/mlx5: Introduce TLS TX offload hardware
- bits and structures
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190704125027.4514-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 3, 2019 at 5:27 AM <leon@kernel.org> wrote:
->
-> On Wed, Jul 03, 2019 at 07:39:32AM +0000, Saeed Mahameed wrote:
-> > From: Eran Ben Elisha <eranbe@mellanox.com>
-> >
-> > Add TLS offload related IFC structs, layouts and enumerations.
-> >
-> > Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-> > Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
-> > Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-> > ---
-> >  include/linux/mlx5/device.h   |  14 +++++
-> >  include/linux/mlx5/mlx5_ifc.h | 104 ++++++++++++++++++++++++++++++++--
-> >  2 files changed, 114 insertions(+), 4 deletions(-)
->
-> <...>
->
-> > @@ -2725,7 +2739,8 @@ struct mlx5_ifc_traffic_counter_bits {
-> >
-> >  struct mlx5_ifc_tisc_bits {
-> >       u8         strict_lag_tx_port_affinity[0x1];
-> > -     u8         reserved_at_1[0x3];
-> > +     u8         tls_en[0x1];
-> > +     u8         reserved_at_1[0x2];
->
-> It should be reserved_at_2.
->
+On Thu, Jul 04, 2019 at 01:50:27PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable ret is being initialized with a value that is never
+> read and it is being updated later with a new value. The
+> initialization is redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/infiniband/core/uverbs_cmd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-it should be at_1.
+Applied to for-next, thanks
 
-> Thanks
+Jason
