@@ -2,114 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 308C35F83A
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 14:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEC85F849
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 14:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727632AbfGDMfP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 08:35:15 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:37871 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727700AbfGDMfP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 08:35:15 -0400
-Received: by mail-qt1-f196.google.com with SMTP id y57so5618044qtk.4
-        for <linux-rdma@vger.kernel.org>; Thu, 04 Jul 2019 05:35:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IVY1pcyCJulBaS/fc7mcf7xjVKtIv4rSr6Am9jZ+u08=;
-        b=lWnmRVP45blMUF3fqTmFaqZrncVfwoIRbYlGtI+jvxXK1xsN4tlVv3p9+3F8pxoBqZ
-         nqBhhm8ksFyoD9Z01+8cWLoLiR4ON5gAzH5xhSpXE6exww3cznn0lGYFQQS6BBufQW4w
-         TcjUfLTzobl4qIcmkoIYyEcWvb4O3B9/R3Y03LQmipK7jryvfzgIOQKebDn37IIminG0
-         I2+Z0Q20m5nBG0MxW3mDQWomikNHnerrudldSXm06YtnUPiWJd1TdLqUvo+2vnpGS6dT
-         NlHrcHlk5XQ8wMDfnr5zlml6ey7BLRTwR0gF120yOo5D3qj47QjPS6HC5t2WnWhZR0lK
-         adFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IVY1pcyCJulBaS/fc7mcf7xjVKtIv4rSr6Am9jZ+u08=;
-        b=pfO5XPBnCPyuodaIGPXalYvuOsRMfHkzoODZoIIuvPxYpw9TKRx9nDWXl80BiHkkah
-         nSUihsyIoyGxni4Mj7z9b8j9C8+D9CSyQ23YhuxAMi8mx6yqqVSTz+H6KDu2O1HkfE/7
-         ztyd+hj9vMrWZAUaWlCftBd/t6tdJzDWpWV2TpY5rm+MCzzmHycuuRoZdvezB8qwsT5Y
-         5xCPP6gOmCm7blFKP8QpdyfZrGospAE6HUddpUf5PgGAHZAbW6DIECKeTBaw5D/H6rEF
-         GNhwJuKDQ4SLEOSE+R/pL1q9hDSwykZyKYwe04IHorwZUBGHvF2wVfc+NLOk/IY1LuiL
-         oZDw==
-X-Gm-Message-State: APjAAAXN4Ka12v7/UoREqMApfjk6G9NT3neibwzZE0Csnl0x2JOveYaS
-        Gozul2fmm1uPgO0HQat7Ah9R/Q==
-X-Google-Smtp-Source: APXvYqwROslVKirIM99mu8mzmZacyZTPcc9uMCwNJZx0fAlSXAv5+BJw6UBJ57BhmaQyHUlSUByLMw==
-X-Received: by 2002:ac8:156:: with SMTP id f22mr34479950qtg.58.1562243714162;
-        Thu, 04 Jul 2019 05:35:14 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id v2sm2355479qtf.24.2019.07.04.05.35.12
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 04 Jul 2019 05:35:12 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hj0xD-0001K7-Ny; Thu, 04 Jul 2019 09:35:11 -0300
-Date:   Thu, 4 Jul 2019 09:35:11 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Michal Kalderon <mkalderon@marvell.com>,
+        id S1727686AbfGDMhg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 08:37:36 -0400
+Received: from mail-eopbgr140079.outbound.protection.outlook.com ([40.107.14.79]:24622
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727632AbfGDMhg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Jul 2019 08:37:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mb0G0kYWIjDFLIa52A1USNtVHtoYh7p6DHJE8NesGSk=;
+ b=DdauWu4LnWxxDgNXuUmg1BgVlx5iD5PxxBuJgNHgbZJ4xz++dduYZfR5IXIlMOcyQrRbdcOCJ7BFOVGHE446sKxAihFeYq2s0ocrL8h6LERGqZfyfhqNcWgCHKw9D+55HqUbDChEOFL0/9N8t9O1v6e02mL4Ozeigo7AsVb5Tk0=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB4127.eurprd05.prod.outlook.com (10.171.182.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2032.20; Thu, 4 Jul 2019 12:37:33 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2032.019; Thu, 4 Jul 2019
+ 12:37:33 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
         "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
-        Ariel Elior <aelior@marvell.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [RFC rdma 1/3] RDMA/core: Create a common mmap function
-Message-ID: <20190704123511.GA3447@ziepe.ca>
-References: <20190627135825.4924-1-michal.kalderon@marvell.com>
- <20190627135825.4924-2-michal.kalderon@marvell.com>
- <d6e9bc3b-215b-c6ea-11d2-01ae8f956bfa@amazon.com>
- <20190627155219.GA9568@ziepe.ca>
- <14e60be7-ae3a-8e86-c377-3bf126a215f0@amazon.com>
- <MN2PR18MB318228F0D3DA5EA03A56573DA1FC0@MN2PR18MB3182.namprd18.prod.outlook.com>
- <MN2PR18MB3182EC9EA3E330E0751836FDA1F80@MN2PR18MB3182.namprd18.prod.outlook.com>
- <20190702223126.GA11860@ziepe.ca>
- <85247f12-1d78-0e66-fadc-d04862511ca7@amazon.com>
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "poswald@suse.com" <poswald@suse.com>,
+        "mustafa.ismail@intel.com" <mustafa.ismail@intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>
+Subject: Re: [net-next 1/3] ice: Initialize and register platform device to
+ provide RDMA
+Thread-Topic: [net-next 1/3] ice: Initialize and register platform device to
+ provide RDMA
+Thread-Index: AQHVMg3rTq5orI7nM0W8xdFRWAzlRqa6YIUAgAADtwCAAAIkgA==
+Date:   Thu, 4 Jul 2019 12:37:33 +0000
+Message-ID: <20190704123729.GF3401@mellanox.com>
+References: <20190704021252.15534-1-jeffrey.t.kirsher@intel.com>
+ <20190704021252.15534-2-jeffrey.t.kirsher@intel.com>
+ <20190704121632.GB3401@mellanox.com> <20190704122950.GA6007@kroah.com>
+In-Reply-To: <20190704122950.GA6007@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR10CA0011.namprd10.prod.outlook.com
+ (2603:10b6:208:120::24) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b3d41838-0718-4b97-cd6d-08d7007c62e8
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4127;
+x-ms-traffictypediagnostic: VI1PR05MB4127:
+x-microsoft-antispam-prvs: <VI1PR05MB4127F23B478A8C37A3B82410CFFA0@VI1PR05MB4127.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0088C92887
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(346002)(366004)(376002)(396003)(136003)(189003)(199004)(446003)(7736002)(305945005)(478600001)(11346002)(5660300002)(66476007)(66556008)(64756008)(66446008)(86362001)(66946007)(486006)(476003)(8936002)(66066001)(81166006)(81156014)(8676002)(2616005)(52116002)(99286004)(76176011)(6116002)(3846002)(73956011)(54906003)(6246003)(33656002)(6916009)(6486002)(229853002)(1076003)(71200400001)(71190400001)(6512007)(316002)(14454004)(7416002)(4326008)(25786009)(6506007)(2906002)(102836004)(386003)(26005)(36756003)(6436002)(53936002)(68736007)(256004)(14444005)(186003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4127;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: jpgutqyNeQHwhXZsfmdvFWa9SngH9MpWsGfQNfYXlsySVph8hbEOav2xZ3L/vrpS1k18jNiKtetfVttyGIbjwmyhwPKwKbJYjGZGM3GWQZqQSWwjxhhqxFI+/80MTopyxrJPVF6kSuzUC9dOSPa86JTrtBowbyPlcodmXGePZFwFq4yEP7Z9XvtwB5+Z7sOk3u8+cBDyz+t+yuZhMPgB/RqLfFe1ah0m57DKvAEz+TJj3eMEjYJPouY/t+3CW4ghBjyTDtcBXABfFpq3c6s3yLemKRNQi9fYG/BDZg6S9aGz33m+kFoWiyI0OpjU3jwIsMCf3GAK06AwEyKiQK7TJTelWcxgzxUcOC4ugjpn3nGc33350xNo8uwEgWs1IUC2JJSjpr4yuoAFjad4WyQW/+53tdz/ADbKZ9tkt4j90gw=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <09E1FD57259BC54B92285BA15701C14E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85247f12-1d78-0e66-fadc-d04862511ca7@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3d41838-0718-4b97-cd6d-08d7007c62e8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jul 2019 12:37:33.4281
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4127
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 03, 2019 at 11:19:34AM +0300, Gal Pressman wrote:
-> On 03/07/2019 1:31, Jason Gunthorpe wrote:
-> >> Seems except Mellanox + hns the mmap flags aren't ABI. 
-> >> Also, current Mellanox code seems like it won't benefit from 
-> >> mmap cookie helper functions in any case as the mmap function is very specific and the flags used indicate 
-> >> the address and not just how to map it.
-> > 
-> > IMHO, mlx5 has a goofy implementaiton here as it codes all of the object
-> > type, handle and cachability flags in one thing.
-> 
-> Do we need object type flags as well in the generic mmap code?
+On Thu, Jul 04, 2019 at 02:29:50PM +0200, Greg KH wrote:
+> On Thu, Jul 04, 2019 at 12:16:41PM +0000, Jason Gunthorpe wrote:
+> > On Wed, Jul 03, 2019 at 07:12:50PM -0700, Jeff Kirsher wrote:
+> > > From: Tony Nguyen <anthony.l.nguyen@intel.com>
+> > >=20
+> > > The RDMA block does not advertise on the PCI bus or any other bus.
+> > > Thus the ice driver needs to provide access to the RDMA hardware bloc=
+k
+> > > via a virtual bus; utilize the platform bus to provide this access.
+> > >=20
+> > > This patch initializes the driver to support RDMA as well as creates
+> > > and registers a platform device for the RDMA driver to register to. A=
+t
+> > > this point the driver is fully initialized to register a platform
+> > > driver, however, can not yet register as the ops have not been
+> > > implemented.
+> >=20
+> > I think you need Greg's ack on all this driver stuff - particularly
+> > that a platform_device is OK.
+>=20
+> A platform_device is almost NEVER ok.
+>=20
+> Don't abuse it, make a real device on a real bus.  If you don't have a
+> real bus and just need to create a device to hang other things off of,
+> then use the virtual one, that's what it is there for.
 
-At the end of the day the driver needs to know what page to map during
-the mmap syscall.
+Ideally I'd like to see all the RDMA drivers that connect to ethernet
+drivers use some similar scheme.
 
-mlx5 does this by encoding the page type in the address, and then many
-types have seperate lookups based onthe offset for the actual page.
+Should it be some generic virtual bus?
 
-IMHO the single lookup and opaque offset is generally better..
-
-Since the mlx5 scheme is ABI it can't be changed unfortunately.
-
-If you want to do user controlled cachability flags, or not, is a fair
-question, but they still become ABI..
-
-I'm wondering if it really makes sense to do that during the mmap, or
-if the cachability should be set as part of creating the cookie?
-
-> Another issue is that these flags aren't exposed in an ABI file, so
-> a userspace library can't really make use of it in current state.
-
-Woops.
-
-Ah, this is all ABI so you need to dig out of this hole ASAP :)
+This is for a PCI device that plugs into multiple subsystems in the
+kernel, ie it has net driver functionality, rdma functionality, some
+even have SCSI functionality
 
 Jason
