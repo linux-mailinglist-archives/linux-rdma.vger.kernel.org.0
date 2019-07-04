@@ -2,104 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 212D65F19C
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 04:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98325F2C9
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 08:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbfGDCvk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jul 2019 22:51:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727004AbfGDCvk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 3 Jul 2019 22:51:40 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D26962187F;
-        Thu,  4 Jul 2019 02:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562208699;
-        bh=jGhk6MtvBCeLFveN8/6kXa1ri4KxUPeZQ0ZdpfHRamI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UFi8s5naJs4CfiqrSmEspUJRTNjqwBTEb+uS9Zx6exY52EZBgQuxSFxQ9xyE7QkU5
-         4BtDvdKZEdrsnTX5h2SykQla7CqTGF9ZWs7shsqyFBrtVtifYWTEnAx+vlQO/5LcIH
-         ZgEg2yoqn0ytiBtcb9MJXRhrhknizjGgDmAuEW8w=
-Date:   Thu, 4 Jul 2019 05:51:25 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Or Gerlitz <ogerlitz@mellanox.com>
-Subject: Re: [PATCH rdma-next v3 1/3] linux/dim: Implement RDMA adaptive
- moderation (DIM)
-Message-ID: <20190704025125.GF4727@mtr-leonro.mtl.com>
-References: <20190630091057.11507-1-leon@kernel.org>
- <20190630091057.11507-2-leon@kernel.org>
- <2b8e1c1c-a80a-bf02-0ca7-5124bcef2419@grimberg.me>
+        id S1726085AbfGDG0Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 02:26:16 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:34986 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725879AbfGDG0Q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Jul 2019 02:26:16 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E0BC66B07F6697DD95CE;
+        Thu,  4 Jul 2019 14:26:13 +0800 (CST)
+Received: from linux-ioko.site (10.71.200.31) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.439.0; Thu, 4 Jul 2019 14:26:03 +0800
+From:   Lijun Ou <oulijun@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Bugfix for hns Makefile
+Date:   Thu, 4 Jul 2019 14:22:58 +0800
+Message-ID: <1562221378-73312-1-git-send-email-oulijun@huawei.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b8e1c1c-a80a-bf02-0ca7-5124bcef2419@grimberg.me>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+Content-Type: text/plain
+X-Originating-IP: [10.71.200.31]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 03, 2019 at 01:51:51PM -0700, Sagi Grimberg wrote:
->
-> > From: Yamin Friedman <yaminf@mellanox.com>
-> >
-> > RDMA DIM implements a different algorithm from net DIM and is based on
-> > completions which is how we can implement interrupt moderation in RDMA.
-> >
-> > The algorithm optimizes for number of completions and ratio between
-> > completions and events. In order to avoid long latencies, the
-> > implementation performs fast reduction of moderation level when the
-> > traffic changes.
-> >
-> > Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
-> > Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-> > Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > ---
-> >   include/linux/dim.h |  36 +++++++++++++++
-> >   lib/dim/Makefile    |   6 +--
-> >   lib/dim/rdma_dim.c  | 108 ++++++++++++++++++++++++++++++++++++++++++++
-> >   3 files changed, 146 insertions(+), 4 deletions(-)
-> >   create mode 100644 lib/dim/rdma_dim.c
-> >
-> > diff --git a/include/linux/dim.h b/include/linux/dim.h
-> > index aa9bdd47a648..1ae32835723a 100644
-> > --- a/include/linux/dim.h
-> > +++ b/include/linux/dim.h
-> > @@ -82,6 +82,7 @@ struct dim_stats {
-> >    * @prev_stats: Measured rates from previous iteration (for comparison)
-> >    * @start_sample: Sampled data at start of current iteration
-> >    * @work: Work to perform on action required
-> > + * @dim_owner: A pointer to the struct that points to dim
-> >    * @profile_ix: Current moderation profile
-> >    * @mode: CQ period count mode
-> >    * @tune_state: Algorithm tuning state (see below)
-> > @@ -95,6 +96,7 @@ struct dim {
-> >   	struct dim_sample start_sample;
-> >   	struct dim_sample measuring_sample;
-> >   	struct work_struct work;
-> > +	void *dim_owner;
->
-> This is different than the net consumers that init an embedded dim
-> struct. I imagine that the reason is to not have this dim space in every
-> ib_cq struct?
+Here has a bug for hns Makefile and will lead to a build error
+when use allmodconfig to build hns driver.
 
-Yes, it was changed based on my review inputs.
+The build log as follows:
+After merging the rdma tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
->
-> Would suggest to name it to 'priv' or 'dim_priv'
->
-> Otherwise,
-> Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_ah.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_alloc.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_cmd.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_cq.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_db.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_hem.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_mr.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_pd.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_qp.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_restrack.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_srq.o
+see include/linux/module.h for more information
+ERROR: "hns_roce_bitmap_cleanup" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
+ERROR: "hns_roce_bitmap_init" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
+ERROR: "hns_roce_free_cmd_mailbox" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
+ERROR: "hns_roce_alloc_cmd_mailbox" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
+ERROR: "hns_roce_table_get" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
+ERROR: "hns_roce_bitmap_alloc" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
+ERROR: "hns_roce_table_find" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
 
-Thanks a lot.
+Fixes: e9816ddf2a33 ("RDMA/hns: Cleanup unnecessary exported symbols")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Xi Wang <wangxi11@huawei.com>
+Signed-off-by: Lijun Ou <oulijun@huawei.com>
+---
+ drivers/infiniband/hw/hns/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/Makefile b/drivers/infiniband/hw/hns/Makefile
+index b956cf4..b06125f 100644
+--- a/drivers/infiniband/hw/hns/Makefile
++++ b/drivers/infiniband/hw/hns/Makefile
+@@ -9,8 +9,8 @@ hns-roce-objs := hns_roce_main.o hns_roce_cmd.o hns_roce_pd.o \
+ 	hns_roce_cq.o hns_roce_alloc.o hns_roce_db.o hns_roce_srq.o hns_roce_restrack.o
+ 
+ ifdef CONFIG_INFINIBAND_HNS_HIP06
+-hns-roce-hw-v1-objs := hns_roce_hw_v1.o
+-obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v1.o $(hns-roce-objs)
++hns-roce-hw-v1-objs := hns_roce_hw_v1.o $(hns-roce-objs)
++obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v1.o
+ endif
+ 
+ ifdef CONFIG_INFINIBAND_HNS_HIP08
+-- 
+1.9.1
+
