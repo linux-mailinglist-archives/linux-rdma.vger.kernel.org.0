@@ -2,98 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C98325F2C9
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 08:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C5F5F3F8
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 09:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbfGDG0Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 02:26:16 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:34986 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725879AbfGDG0Q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 4 Jul 2019 02:26:16 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E0BC66B07F6697DD95CE;
-        Thu,  4 Jul 2019 14:26:13 +0800 (CST)
-Received: from linux-ioko.site (10.71.200.31) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.439.0; Thu, 4 Jul 2019 14:26:03 +0800
-From:   Lijun Ou <oulijun@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Bugfix for hns Makefile
-Date:   Thu, 4 Jul 2019 14:22:58 +0800
-Message-ID: <1562221378-73312-1-git-send-email-oulijun@huawei.com>
-X-Mailer: git-send-email 1.9.1
+        id S1726267AbfGDHkZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 03:40:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726199AbfGDHkZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Jul 2019 03:40:25 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D91A2133F;
+        Thu,  4 Jul 2019 07:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562226024;
+        bh=cpEKmomI1qco2Y1+UNn5Q5duVRzevtRlz/bSZ6oJVWw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pP8hR1LapyiJvVnAHqMn1tozUemvOAzKh0mJWYzZ5lZQnSP+vksyuKQlutYX5QgZy
+         +Tu6xCVxnSs+UHhHu2oC9S82KqoSC9kcgYf8iT1+T94UWA0Zq6l0Qirk1TZzVtkNBg
+         WMg2sDsRQt6Ac5FV+EKr9ErXYfq9cJrBBGAK7zOs=
+Date:   Thu, 4 Jul 2019 10:40:21 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     dledford@redhat.com, jgg@mellanox.com, davem@davemloft.net,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        nhorman@redhat.com, sassmann@redhat.com, poswald@suse.com,
+        david.m.ertman@intel.com, Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: Re: [rdma 14/16] RDMA/irdma: Add ABI definitions
+Message-ID: <20190704074021.GH4727@mtr-leonro.mtl.com>
+References: <20190704021259.15489-1-jeffrey.t.kirsher@intel.com>
+ <20190704021259.15489-16-jeffrey.t.kirsher@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.71.200.31]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190704021259.15489-16-jeffrey.t.kirsher@intel.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Here has a bug for hns Makefile and will lead to a build error
-when use allmodconfig to build hns driver.
+On Wed, Jul 03, 2019 at 07:12:57PM -0700, Jeff Kirsher wrote:
+> From: Mustafa Ismail <mustafa.ismail@intel.com>
+>
+> Add ABI definitions for irdma.
+>
+> Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> ---
+>  include/uapi/rdma/irdma-abi.h | 130 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 130 insertions(+)
+>  create mode 100644 include/uapi/rdma/irdma-abi.h
+>
+> diff --git a/include/uapi/rdma/irdma-abi.h b/include/uapi/rdma/irdma-abi.h
+> new file mode 100644
+> index 000000000000..bdfbda4c829e
+> --- /dev/null
+> +++ b/include/uapi/rdma/irdma-abi.h
+> @@ -0,0 +1,130 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+> +/* Copyright (c) 2006 - 2019 Intel Corporation.  All rights reserved.
+> + * Copyright (c) 2005 Topspin Communications.  All rights reserved.
+> + * Copyright (c) 2005 Cisco Systems.  All rights reserved.
+> + * Copyright (c) 2005 Open Grid Computing, Inc. All rights reserved.
+> + */
+> +
+> +#ifndef IRDMA_ABI_H
+> +#define IRDMA_ABI_H
+> +
+> +#include <linux/types.h>
+> +
+> +/* irdma must support legacy GEN_1 i40iw kernel
+> + * and user-space whose last ABI ver is 5
+> + */
+> +#define IRDMA_ABI_VER 6
 
-The build log as follows:
-After merging the rdma tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Can you please elaborate about it more?
+There is no irdma code in RDMA yet, so it makes me wonder why new define
+shouldn't start from 1.
 
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_ah.o
-see include/linux/module.h for more information
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_alloc.o
-see include/linux/module.h for more information
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_cmd.o
-see include/linux/module.h for more information
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_cq.o
-see include/linux/module.h for more information
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_db.o
-see include/linux/module.h for more information
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_hem.o
-see include/linux/module.h for more information
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_mr.o
-see include/linux/module.h for more information
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_pd.o
-see include/linux/module.h for more information
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_qp.o
-see include/linux/module.h for more information
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_restrack.o
-see include/linux/module.h for more information
-WARNING: modpost: missing MODULE_LICENSE() in drivers/infiniband/hw/hns/hns_roce_srq.o
-see include/linux/module.h for more information
-ERROR: "hns_roce_bitmap_cleanup" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
-ERROR: "hns_roce_bitmap_init" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
-ERROR: "hns_roce_free_cmd_mailbox" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
-ERROR: "hns_roce_alloc_cmd_mailbox" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
-ERROR: "hns_roce_table_get" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
-ERROR: "hns_roce_bitmap_alloc" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
-ERROR: "hns_roce_table_find" [drivers/infiniband/hw/hns/hns_roce_srq.ko] undefined!
-
-Fixes: e9816ddf2a33 ("RDMA/hns: Cleanup unnecessary exported symbols")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Lijun Ou <oulijun@huawei.com>
----
- drivers/infiniband/hw/hns/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/Makefile b/drivers/infiniband/hw/hns/Makefile
-index b956cf4..b06125f 100644
---- a/drivers/infiniband/hw/hns/Makefile
-+++ b/drivers/infiniband/hw/hns/Makefile
-@@ -9,8 +9,8 @@ hns-roce-objs := hns_roce_main.o hns_roce_cmd.o hns_roce_pd.o \
- 	hns_roce_cq.o hns_roce_alloc.o hns_roce_db.o hns_roce_srq.o hns_roce_restrack.o
- 
- ifdef CONFIG_INFINIBAND_HNS_HIP06
--hns-roce-hw-v1-objs := hns_roce_hw_v1.o
--obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v1.o $(hns-roce-objs)
-+hns-roce-hw-v1-objs := hns_roce_hw_v1.o $(hns-roce-objs)
-+obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v1.o
- endif
- 
- ifdef CONFIG_INFINIBAND_HNS_HIP08
--- 
-1.9.1
-
+Thanks
