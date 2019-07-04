@@ -2,106 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 574C05FC65
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 19:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07235FC84
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 19:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbfGDRVS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 13:21:18 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:44088 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727174AbfGDRVR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 13:21:17 -0400
-Received: by mail-lj1-f195.google.com with SMTP id k18so6791415ljc.11
-        for <linux-rdma@vger.kernel.org>; Thu, 04 Jul 2019 10:21:16 -0700 (PDT)
+        id S1727232AbfGDRaN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 13:30:13 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:36544 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726601AbfGDRaM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 13:30:12 -0400
+Received: by mail-qk1-f195.google.com with SMTP id g18so6061730qkl.3
+        for <linux-rdma@vger.kernel.org>; Thu, 04 Jul 2019 10:30:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GyJqn0odoy4KxK9kDIUV4CGw/44cSup/XVwMYoO7VIU=;
-        b=Vl0BKeMiNBBsH1BrmNnKuWcjHHkcxM2s2wHrImfDu8uC80477KAUZfD6waji45Pra3
-         0meFUwyO7+lK+wwWTtKuSyORqoz95O03VMCjGrBqAM30aijq2T/Rrm5bjC9dMxSxDTJ1
-         BdiZMMXazh8PGAzPUkFXO90Mj1g5VbEE23G4TO+G1SZmRrzNjI4sPDig5k8/xP6raHnA
-         ZYStBy6VWoI1D3xIf8cxpFYyaewpWUDDwKyoV4mKQKVh99cWtyeo2T+QVq2s4a3QKko8
-         /A+U9hppv1+vGLOEb1Zg6h8Oebwb1e8U3/Dam7E/oCfK5TOhpXzkWwMVUFCcz02pOPEs
-         XQJw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5q0dDx33/YE5pj986ibJMOf1Bz5Zjii/LSoueRiS+zE=;
+        b=UZL9J5ek2xQLCi0Aoo8g6VcubpXYg0vIA3CwPKQzHhoh/ZEB924XR/Z/jftFwOktag
+         hQiQheGWYlThc89gM+0wOfk/P5m/XkIckGeMBQ4VB41EF5/+4sqNWyCz3QBJiJNfndRF
+         JwqFMctPsb7gj/t6/yZ0yIyOPiS7qsZDnYWoG9oFd6CsaVc5S22N9bQhJTKBfmfAErYa
+         pdKorGi9Fq6/7WYJsbMt1WrKsnuA5OtdJexCpOvlbnYQwusKK4QCOWODM4Mouxo3kuaJ
+         AZNmZNujjqGWkNbdgc6YFQIZZuH0dDY+xOAaUSFFXqUy+7SPsHfmQqsWWocvvWDurYDd
+         wZZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GyJqn0odoy4KxK9kDIUV4CGw/44cSup/XVwMYoO7VIU=;
-        b=TC4uFNtrkU+0G/qwt9xMw8eh4wIWfYHD0OBjT3tTetNxzG00NidbDkHZBgxnWLCe4r
-         hrnqGy5ZZqq/yQbgca98ZbosRjBDUFrNLb6x/1CZ220W7TH7Bd/FGn82FoJXgYWf3k+y
-         0bLBjKEHxqw2H6QbXJPO/cO1yjwvW7oF4/ocdF5TcbwF7cJA5a+u/U3OmiGKTUrNS6TM
-         XpNyNICHG2Lfe7jlxAaZGQgAnOjNrbDtWAdK5biThLCvFSiaiCb5Z2yDcNdLIzTkLYgm
-         GUKFh/uzl+IxE0z/mYVPUe8BhIyZ1WkPz2N5LtRq/RZhJSdnFJkJQIuTLMiuIFvcCoFM
-         fgeg==
-X-Gm-Message-State: APjAAAVx22rPGrc4ETnO6aYGhMYYRIo8zcTCrZhDk9OJB3yA+qI5p4EZ
-        mAYBTuzH8pNF+++43U5p7rJQwC3NLsM+oGMZc9e5IQ==
-X-Google-Smtp-Source: APXvYqxG8EGJ3TE/BC+N8U4oMR5cLRohyhv+yxO1wsbI238a1eV6ROg/8xQVF8oQw/4QnpW5lPA3qNGFeDZU7hEYBO8=
-X-Received: by 2002:a2e:5d5a:: with SMTP id r87mr25319924ljb.196.1562260875337;
- Thu, 04 Jul 2019 10:21:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190703073909.14965-1-saeedm@mellanox.com> <20190703073909.14965-5-saeedm@mellanox.com>
- <20190703092735.GZ4727@mtr-leonro.mtl.com> <CALzJLG-em1w+Lgf2UutbG2Lzq8bx3zUqoLGx26H2_EXOuuk+jg@mail.gmail.com>
- <20190704171519.GE7212@mtr-leonro.mtl.com>
-In-Reply-To: <20190704171519.GE7212@mtr-leonro.mtl.com>
-From:   Saeed Mahameed <saeedm@dev.mellanox.co.il>
-Date:   Thu, 4 Jul 2019 13:21:04 -0400
-Message-ID: <CALzJLG--k3z2HuV09tivJuOtU-BFAyCEV1vJbPqYX+OyskggmQ@mail.gmail.com>
-Subject: Re: [PATCH mlx5-next 4/5] net/mlx5: Introduce TLS TX offload hardware
- bits and structures
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5q0dDx33/YE5pj986ibJMOf1Bz5Zjii/LSoueRiS+zE=;
+        b=WN4l+W3NQFm5mKdNKewku4YJ9AXlnpXbHDxFxi2jUqEWKYjUxaaNs9uW9C+Czo8Kl4
+         VurAvRENFyGyw8+LpOAnnBv2ypkku+EXPgsK1lvmNJ91phMlFAFUnM260S1F5PS4m/Y9
+         Dy9NOTq1BEDndzIVWB0l1vAoa7LGcnAs3qC3v4NDx9kXGKBR1GBbM2Z7QmoqIt/keV0U
+         vqv06Sk6csPShwtlKZ7lG5kXOGmQAQt+aVte8aRTMq8fRHcsnz0Qqkd0coJ1MpG6vNWP
+         caBKiRtJaJoyYeGlMTcb2JVI0SNelKgnhMDUEzxy07S5gIXAzT5dujqygY9v19AgNKhU
+         SpVg==
+X-Gm-Message-State: APjAAAUSTE1/KLETF1MLsmn1//iyFJscM4LEDhqNRqStpkmrSFpOk3V9
+        Rb9TQ+5GvnC054lMdX15tL5Kxg==
+X-Google-Smtp-Source: APXvYqwKGZhPIz5haogDw/7+wXHXKCSTtyhpcNENAM3ALqRWmvkcJj4oSihCuJk86YltAifOEEUz5g==
+X-Received: by 2002:a05:620a:16b2:: with SMTP id s18mr35251882qkj.323.1562261412071;
+        Thu, 04 Jul 2019 10:30:12 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id 195sm989473qke.90.2019.07.04.10.30.11
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Jul 2019 10:30:11 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hj5Yg-0004Pw-VW; Thu, 04 Jul 2019 14:30:10 -0300
+Date:   Thu, 4 Jul 2019 14:30:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Valentine Fatiev <valentinef@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Feras Daoud <ferasda@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: Re: [PATCH rdma-next] IB/ipoib: Add child to parent list only if
+ device initialized
+Message-ID: <20190704173010.GA16955@ziepe.ca>
+References: <20190630134841.19413-1-leon@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190630134841.19413-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 4, 2019 at 1:15 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Thu, Jul 04, 2019 at 01:06:58PM -0400, Saeed Mahameed wrote:
-> > On Wed, Jul 3, 2019 at 5:27 AM <leon@kernel.org> wrote:
-> > >
-> > > On Wed, Jul 03, 2019 at 07:39:32AM +0000, Saeed Mahameed wrote:
-> > > > From: Eran Ben Elisha <eranbe@mellanox.com>
-> > > >
-> > > > Add TLS offload related IFC structs, layouts and enumerations.
-> > > >
-> > > > Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-> > > > Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
-> > > > Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-> > > > ---
-> > > >  include/linux/mlx5/device.h   |  14 +++++
-> > > >  include/linux/mlx5/mlx5_ifc.h | 104 ++++++++++++++++++++++++++++++++--
-> > > >  2 files changed, 114 insertions(+), 4 deletions(-)
-> > >
-> > > <...>
-> > >
-> > > > @@ -2725,7 +2739,8 @@ struct mlx5_ifc_traffic_counter_bits {
-> > > >
-> > > >  struct mlx5_ifc_tisc_bits {
-> > > >       u8         strict_lag_tx_port_affinity[0x1];
-> > > > -     u8         reserved_at_1[0x3];
-> > > > +     u8         tls_en[0x1];
-> > > > +     u8         reserved_at_1[0x2];
-> > >
-> > > It should be reserved_at_2.
-> > >
-> >
-> > it should be at_1.
->
-> Why? See mlx5_ifc_flow_table_prop_layout_bits, mlx5_ifc_roce_cap_bits, e.t.c.
->
+On Sun, Jun 30, 2019 at 04:48:41PM +0300, Leon Romanovsky wrote:
+> From: Valentine Fatiev <valentinef@mellanox.com>
+> 
+> Despite failure in ipoib_dev_init() we continue with initialization
+> flow and creation of child device. It causes to the situation
+> where this child device is added too early to parent device list.
+> 
+> change the logic, so in case of failure we properly return error
+> from ipoib_dev_init() and add child only in success path.
+> 
+> Fixes: eaeb39842508 ("IB/ipoib: Move init code to ndo_init")
+> Signed-off-by: Valentine Fatiev <valentinef@mellanox.com>
+> Reviewed-by: Feras Daoud <ferasda@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c | 34 +++++++++++++----------
+>  1 file changed, 20 insertions(+), 14 deletions(-)
 
-they are all at_1 .. so i don't really understand what you want from me,
-Leon the code is good, please double check you comments..
+Applied to for-next, thanks
 
-> Thanks
->
-> >
-> > > Thanks
+Jason
