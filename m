@@ -2,136 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B275F81E
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 14:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308C35F83A
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 14:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727602AbfGDMa2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 08:30:28 -0400
-Received: from mail-eopbgr00052.outbound.protection.outlook.com ([40.107.0.52]:25778
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727682AbfGDMa2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 4 Jul 2019 08:30:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lvfNd1jxKJ+8aLdqZ+r/vqn7CKeQaxqOt4a6QoPqHZE=;
- b=qzEqm+BzjldkVAyFqcU/n5xWmjuoPCLovPWMxsqQyGooWQDgiiGtPzdv7qTBXa/m/oEJ9pa9bZ7J1rKfi/q2w8oK69XteTUvqPn7Vh/NP4tOWU+T4e3/KVAHAV8GIWapUQIEdjO7j2woj+MJvCl0IEaZvUAFJH/aXLg44/icTEY=
-Received: from DB6PR0501MB2485.eurprd05.prod.outlook.com (10.168.74.142) by
- DB6PR0501MB2790.eurprd05.prod.outlook.com (10.172.227.15) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.18; Thu, 4 Jul 2019 12:30:23 +0000
-Received: from DB6PR0501MB2485.eurprd05.prod.outlook.com
- ([fe80::b1bb:696d:7e43:7987]) by DB6PR0501MB2485.eurprd05.prod.outlook.com
- ([fe80::b1bb:696d:7e43:7987%6]) with mapi id 15.20.2052.010; Thu, 4 Jul 2019
- 12:30:23 +0000
-From:   Idan Burstein <idanb@mellanox.com>
-To:     Sagi Grimberg <sagi@grimberg.me>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-CC:     Leon Romanovsky <leonro@mellanox.com>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Tal Gilboa <talgi@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>
-Subject: RE: [for-next V2 10/10] RDMA/core: Provide RDMA DIM support for ULPs
-Thread-Topic: [for-next V2 10/10] RDMA/core: Provide RDMA DIM support for ULPs
-Thread-Index: AQHVK5iv/PlxMrwrIkOzzXe+rsY0A6as3rOAgACxQjCACUkZgIADlmTA
-Date:   Thu, 4 Jul 2019 12:30:17 +0000
-Deferred-Delivery: Thu, 4 Jul 2019 12:29:55 +0000
-Message-ID: <DB6PR0501MB2485EDCDEA5F8A5E0FADBBDCC5FA0@DB6PR0501MB2485.eurprd05.prod.outlook.com>
-References: <20190625205701.17849-1-saeedm@mellanox.com>
- <20190625205701.17849-11-saeedm@mellanox.com>
- <adb3687a-6db3-b1a4-cd32-8b4889550c81@grimberg.me>
- <AM5PR0501MB248327B260F97EF97CD5B80EC5E20@AM5PR0501MB2483.eurprd05.prod.outlook.com>
- <9d26c90c-8e0b-656f-341f-a67251549126@grimberg.me>
-In-Reply-To: <9d26c90c-8e0b-656f-341f-a67251549126@grimberg.me>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=idanb@mellanox.com; 
-x-originating-ip: [193.47.165.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 15f350ce-c3ac-492a-9d74-08d7007b62e0
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2790;
-x-ms-traffictypediagnostic: DB6PR0501MB2790:
-x-microsoft-antispam-prvs: <DB6PR0501MB279047044B706419BC72EEB6C5FA0@DB6PR0501MB2790.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0088C92887
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(136003)(396003)(39860400002)(346002)(376002)(13464003)(199004)(189003)(99286004)(33656002)(7696005)(107886003)(5660300002)(53546011)(6246003)(2906002)(486006)(55016002)(6506007)(53936002)(76176011)(110136005)(305945005)(54906003)(7736002)(446003)(476003)(11346002)(66556008)(66066001)(6436002)(66446008)(64756008)(52536014)(14454004)(74316002)(76116006)(6666004)(316002)(9686003)(478600001)(66946007)(66476007)(73956011)(102836004)(81166006)(4326008)(86362001)(8676002)(71200400001)(229853002)(8936002)(25786009)(186003)(81156014)(256004)(26005)(3846002)(6116002)(71190400001)(68736007)(6636002);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2790;H:DB6PR0501MB2485.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: xcFLqyonB9cy6Y/oGqMYoRTy7Y8gmOONRGp3klWWBUd9bW7ZEKdAoFz5ER9w94zoPcUiEF44RNOba4roODIIsp3B3eprkBWlq9vivpWYcGdSH2nGGeJGQLtnC7zQqwsXGI+U2wux/huv2QvkSHLHKsFwe2VLLbrXOVMpm5jh+5XBy8TcHJniJGlpb85pb5eOhodXhggD85tZ0q/x9MV0+KKwvbgbvXOiHda/OprUA+9GXgLH6jWANFj5/LQBm0/e4UXDoa+rVdXynrJxrUcma4FXxxiyOMZLK6V83kRi7FhOPcNa4cU2Uhswbk62FVJESEBiXGrVT/+7UXl52GXrrmo3KwwKz0teE1T7nkQRqYIlobwoR0hSpsc6CQMdJTLJEorcXuGcrstZ7Gr6NfkEPZj4hrDEQ4HTWUi2xJhsv04=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727632AbfGDMfP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 08:35:15 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:37871 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727700AbfGDMfP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 08:35:15 -0400
+Received: by mail-qt1-f196.google.com with SMTP id y57so5618044qtk.4
+        for <linux-rdma@vger.kernel.org>; Thu, 04 Jul 2019 05:35:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IVY1pcyCJulBaS/fc7mcf7xjVKtIv4rSr6Am9jZ+u08=;
+        b=lWnmRVP45blMUF3fqTmFaqZrncVfwoIRbYlGtI+jvxXK1xsN4tlVv3p9+3F8pxoBqZ
+         nqBhhm8ksFyoD9Z01+8cWLoLiR4ON5gAzH5xhSpXE6exww3cznn0lGYFQQS6BBufQW4w
+         TcjUfLTzobl4qIcmkoIYyEcWvb4O3B9/R3Y03LQmipK7jryvfzgIOQKebDn37IIminG0
+         I2+Z0Q20m5nBG0MxW3mDQWomikNHnerrudldSXm06YtnUPiWJd1TdLqUvo+2vnpGS6dT
+         NlHrcHlk5XQ8wMDfnr5zlml6ey7BLRTwR0gF120yOo5D3qj47QjPS6HC5t2WnWhZR0lK
+         adFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IVY1pcyCJulBaS/fc7mcf7xjVKtIv4rSr6Am9jZ+u08=;
+        b=pfO5XPBnCPyuodaIGPXalYvuOsRMfHkzoODZoIIuvPxYpw9TKRx9nDWXl80BiHkkah
+         nSUihsyIoyGxni4Mj7z9b8j9C8+D9CSyQ23YhuxAMi8mx6yqqVSTz+H6KDu2O1HkfE/7
+         ztyd+hj9vMrWZAUaWlCftBd/t6tdJzDWpWV2TpY5rm+MCzzmHycuuRoZdvezB8qwsT5Y
+         5xCPP6gOmCm7blFKP8QpdyfZrGospAE6HUddpUf5PgGAHZAbW6DIECKeTBaw5D/H6rEF
+         GNhwJuKDQ4SLEOSE+R/pL1q9hDSwykZyKYwe04IHorwZUBGHvF2wVfc+NLOk/IY1LuiL
+         oZDw==
+X-Gm-Message-State: APjAAAXN4Ka12v7/UoREqMApfjk6G9NT3neibwzZE0Csnl0x2JOveYaS
+        Gozul2fmm1uPgO0HQat7Ah9R/Q==
+X-Google-Smtp-Source: APXvYqwROslVKirIM99mu8mzmZacyZTPcc9uMCwNJZx0fAlSXAv5+BJw6UBJ57BhmaQyHUlSUByLMw==
+X-Received: by 2002:ac8:156:: with SMTP id f22mr34479950qtg.58.1562243714162;
+        Thu, 04 Jul 2019 05:35:14 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id v2sm2355479qtf.24.2019.07.04.05.35.12
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Jul 2019 05:35:12 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hj0xD-0001K7-Ny; Thu, 04 Jul 2019 09:35:11 -0300
+Date:   Thu, 4 Jul 2019 09:35:11 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Michal Kalderon <mkalderon@marvell.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        Ariel Elior <aelior@marvell.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [RFC rdma 1/3] RDMA/core: Create a common mmap function
+Message-ID: <20190704123511.GA3447@ziepe.ca>
+References: <20190627135825.4924-1-michal.kalderon@marvell.com>
+ <20190627135825.4924-2-michal.kalderon@marvell.com>
+ <d6e9bc3b-215b-c6ea-11d2-01ae8f956bfa@amazon.com>
+ <20190627155219.GA9568@ziepe.ca>
+ <14e60be7-ae3a-8e86-c377-3bf126a215f0@amazon.com>
+ <MN2PR18MB318228F0D3DA5EA03A56573DA1FC0@MN2PR18MB3182.namprd18.prod.outlook.com>
+ <MN2PR18MB3182EC9EA3E330E0751836FDA1F80@MN2PR18MB3182.namprd18.prod.outlook.com>
+ <20190702223126.GA11860@ziepe.ca>
+ <85247f12-1d78-0e66-fadc-d04862511ca7@amazon.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15f350ce-c3ac-492a-9d74-08d7007b62e0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jul 2019 12:30:23.4658
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: idanb@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2790
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85247f12-1d78-0e66-fadc-d04862511ca7@amazon.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-VGhlIGVzc2VuY2Ugb2YgdGhlIGR5bmFtaWMgaW4gRElNIGlzIHRoYXQgaXQgd291bGQgZml0IHRv
-IHRoZSB3b3JrbG9hZCBydW5uaW5nIG9uIHRoZSBjb3Jlcy4gRm9yIHVzZXIgbm90IHRvIHRyYWRl
-IGJhbmR3aWR0aC9jcXUlIGFuZCBsYXRlbmN5IHdpdGggYSBtb2R1bGUgcGFyYW1ldGVyIHRoZXkg
-ZG9uJ3Qga25vdyBob3cgdG8gY29uZmlnLiBJZiBESU0gY29uc2lzdGVudGx5IGh1cnRzIGxhdGVu
-Y3kgb2YgbGF0ZW5jeSBjcml0aWNhbCB3b3JrbG9hZHMgd2Ugc2hvdWxkIGRlYnVnIGFuZCBmaXgu
-DQoNClRoaXMgaXMgd2hlcmUgd2Ugc2hvdWxkIGdvLiBFbmQgZ29hbCBvZiBubyBjb25maWd1cmF0
-ZSB3aXRoIG91dCBvZiB0aGUgYm94IHBlcmZvcm1hbmNlIGluIHRlcm1zIG9mIGJvdGggYmFuZHdp
-ZHRoL2NwdSUgYW5kIGxhdGVuY3kuDQoNCldlIGNvdWxkIG1ha2Ugc2V2ZXJhbCBzdGVwcyB0b3dh
-cmRzIHRoaXMgZGlyZWN0aW9uIGlmIHdlIGFyZSBub3QgbWF0dXJlIGVub3VnaCB0b2RheSBidXQg
-bGV0J3MgZGVmaW5lIHRoZW0gKGUuZy4gdGVzdHMgb24gZGlmZmVyZW50IHVscHMpLg0KDQotLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogbGludXgtcmRtYS1vd25lckB2Z2VyLmtlcm5l
-bC5vcmcgPGxpbnV4LXJkbWEtb3duZXJAdmdlci5rZXJuZWwub3JnPiBPbiBCZWhhbGYgT2YgU2Fn
-aSBHcmltYmVyZw0KU2VudDogVHVlc2RheSwgSnVseSAyLCAyMDE5IDg6MzcgQU0NClRvOiBJZGFu
-IEJ1cnN0ZWluIDxpZGFuYkBtZWxsYW5veC5jb20+OyBTYWVlZCBNYWhhbWVlZCA8c2FlZWRtQG1l
-bGxhbm94LmNvbT47IERhdmlkIFMuIE1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IERvdWcg
-TGVkZm9yZCA8ZGxlZGZvcmRAcmVkaGF0LmNvbT47IEphc29uIEd1bnRob3JwZSA8amdnQG1lbGxh
-bm94LmNvbT4NCkNjOiBMZW9uIFJvbWFub3Zza3kgPGxlb25yb0BtZWxsYW5veC5jb20+OyBPciBH
-ZXJsaXR6IDxvZ2VybGl0ekBtZWxsYW5veC5jb20+OyBUYWwgR2lsYm9hIDx0YWxnaUBtZWxsYW5v
-eC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9y
-ZzsgWWFtaW4gRnJpZWRtYW4gPHlhbWluZkBtZWxsYW5veC5jb20+OyBNYXggR3VydG92b3kgPG1h
-eGdAbWVsbGFub3guY29tPg0KU3ViamVjdDogUmU6IFtmb3ItbmV4dCBWMiAxMC8xMF0gUkRNQS9j
-b3JlOiBQcm92aWRlIFJETUEgRElNIHN1cHBvcnQgZm9yIFVMUHMNCg0KSGV5IElkYW4sDQoNCj4g
-IiBQbGVhc2UgZG9uJ3QuIFRoaXMgaXMgYSBiYWQgY2hvaWNlIHRvIG9wdCBpdCBpbiBieSBkZWZh
-dWx0LiINCj4gDQo+IEkgZGlzYWdyZWUgaGVyZS4gSSdkIHByZWZlciBMaW51eCB0byBoYXZlIGdv
-b2Qgb3V0IG9mIHRoZSBib3ggZXhwZXJpZW5jZSAoZS5nLiByZWFjaCAxMDBHIGluIDRLIE5WTWVP
-RiBvbiBJbnRlbCBzZXJ2ZXJzKSB3aXRoIHRoZSBkZWZhdWx0IHBhcmFtZXRlcnMuIEVzcGVjaWFs
-bHkgc2luY2UgWWFtaW4gaGF2ZSBzaG93biBpdCBpcyBiZW5lZmljaWFsIC8gbm90IGh1cnRpbmcg
-aW4gdGVybXMgb2YgcGVyZm9ybWFuY2UgZm9yIHZhcmlldHkgb2YgdXNlIGNhc2VzLiBUaGUgd2hv
-bGUgY29uY2VwdCBvZiBESU0gaXMgdGhhdCBpdCBhZGFwdHMgdG8gdGhlIHdvcmtsb2FkIHJlcXVp
-cmVtZW50cyBpbiB0ZXJtcyBvZiBiYW5kd2lkdGggYW5kIGxhdGVuY3kuDQoNCldlbGwsIGl0cyBh
-IE1lbGxhbm94IGRldmljZSBkcml2ZXIgYWZ0ZXIgYWxsLg0KDQpCdXQgZG8gbm90ZSB0aGF0IGJ5
-IGZhciwgdGhlIHZhc3QgbWFqb3JpdHkgb2YgdXNlcnMgYXJlIG5vdCBzYXR1cmF0aW5nIDEwMEcg
-b2YgNEsgSS9PLiBUaGUgYWJzb2x1dGUgdmFzdCBtYWpvcml0eSBvZiB1c2VycyBhcmUgcHJpbWFy
-aWx5IHNlbnNpdGl2ZSB0byBzeW5jaHJvbm91cyBRRD0xIEkvTyBsYXRlbmN5LCBhbmQgd2hlbiB0
-aGUgd29ya2xvYWQgaXMgbXVjaCBtb3JlIGR5bmFtaWMgdGhhbiB0aGUgc3ludGhldGljIDEwMCUv
-NTAlLzAlIHJlYWQgbWl4Lg0KDQpBcyBtdWNoIGFzIEknbSBhIGZhbiAoSUlSQyBJIHdhcyB0aGUg
-b25lIGdpdmluZyBhIGZpcnN0IHBhc3MgYXQgdGhpcyksIHRoZSBkaW0gZGVmYXVsdCBvcHQtaW4g
-aXMgbm90IG9ubHkgbm90IGJlbmVmaWNpYWwsIGJ1dCBwb3RlbnRpYWxseSBoYXJtZnVsIHRvIHRo
-ZSBtYWpvcml0eSBvZiB1c2VycyBvdXQtb2YtdGhlLWJveCBleHBlcmllbmNlLg0KDQpHaXZlbiB0
-aGF0IHRoaXMgaXMgYSBmcmVzaCBjb2RlIHdpdGggYWxtb3N0IG5vIGV4cG9zdXJlLCBhbmQgdGhh
-dCB3YXMgbm90IHRlc3RlZCBvdXRzaWRlIG9mIFlhbWluIHJ1bm5pbmcgbGltaXRlZCBwZXJmb3Jt
-YW5jZSB0ZXN0aW5nLCBJIHRoaW5rIGl0IHdvdWxkIGJlIGEgbWlzdGFrZSB0byBhZGQgaXQgYXMg
-YSBkZWZhdWx0IG9wdC1pbiwgdGhhdCBjYW4gY29tZSBhcyBhbiBpbmNyZW1lbnRhbCBzdGFnZS4N
-Cg0KT2J2aW91c2x5LCBJIGNhbm5vdCB0ZWxsIHdoYXQgTWVsbGFub3ggc2hvdWxkL3Nob3VsZG4n
-dCBkbyBpbiBpdHMgb3duIGRldmljZSBkcml2ZXIgb2YgY291cnNlLCBidXQgSSBqdXN0IHdhbnRl
-ZCB0byBlbXBoYXNpemUgdGhhdCBJIHRoaW5rIHRoaXMgaXMgYSBtaXN0YWtlLg0KDQo+IE1vcmVv
-dmVyLCBuZXQtZGltIGlzIGVuYWJsZWQgYnkgZGVmYXVsdCwgSSBkb24ndCBzZWUgd2h5IFJETUEg
-aXMgZGlmZmVyZW50Lg0KDQpWZXJ5IGRpZmZlcmVudCBhbmltYWxzLg0K
+On Wed, Jul 03, 2019 at 11:19:34AM +0300, Gal Pressman wrote:
+> On 03/07/2019 1:31, Jason Gunthorpe wrote:
+> >> Seems except Mellanox + hns the mmap flags aren't ABI. 
+> >> Also, current Mellanox code seems like it won't benefit from 
+> >> mmap cookie helper functions in any case as the mmap function is very specific and the flags used indicate 
+> >> the address and not just how to map it.
+> > 
+> > IMHO, mlx5 has a goofy implementaiton here as it codes all of the object
+> > type, handle and cachability flags in one thing.
+> 
+> Do we need object type flags as well in the generic mmap code?
+
+At the end of the day the driver needs to know what page to map during
+the mmap syscall.
+
+mlx5 does this by encoding the page type in the address, and then many
+types have seperate lookups based onthe offset for the actual page.
+
+IMHO the single lookup and opaque offset is generally better..
+
+Since the mlx5 scheme is ABI it can't be changed unfortunately.
+
+If you want to do user controlled cachability flags, or not, is a fair
+question, but they still become ABI..
+
+I'm wondering if it really makes sense to do that during the mmap, or
+if the cachability should be set as part of creating the cookie?
+
+> Another issue is that these flags aren't exposed in an ABI file, so
+> a userspace library can't really make use of it in current state.
+
+Woops.
+
+Ah, this is all ABI so you need to dig out of this hole ASAP :)
+
+Jason
