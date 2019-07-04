@@ -2,139 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A97955F422
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 09:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE225F7C3
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 14:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbfGDHwF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 03:52:05 -0400
-Received: from mail-eopbgr150081.outbound.protection.outlook.com ([40.107.15.81]:62883
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        id S1727651AbfGDMPI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 08:15:08 -0400
+Received: from mail-eopbgr40065.outbound.protection.outlook.com ([40.107.4.65]:60643
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726087AbfGDHwE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 4 Jul 2019 03:52:04 -0400
+        id S1727627AbfGDMPH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Jul 2019 08:15:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uHdO7VBEkgOdtAvs6RwEc6xshBRio1RnZAVROBLGKiQ=;
- b=Jwr74QFIBgTNDKmxUQyhht08r4R0VUuCUPJMt6mJ4OAqiKldIGyQI9bsSy9GrR3BBBll7/lkZ6SbC9AtrLM0GdGgQ9zOuLstpzwzeYk5ZWHmrLICQETBB0lFOJSJGd7KgRxqfHO2oIcKtnIXt8aCvFsSmN/CWTf6KY3/vTFUdhM=
-Received: from VI1PR05MB3152.eurprd05.prod.outlook.com (10.170.237.145) by
- VI1PR05MB5677.eurprd05.prod.outlook.com (20.178.121.19) with Microsoft SMTP
+ bh=xZ9LU80A3VbdChpLqWcRwhdwQ0iuuTQJsGQEGYm2kjg=;
+ b=LDa4J1t7r5CqxSFpxg7hAk8xeEflTlPif8m8Dd0azUTSCDeXTWH8vC8+zEbSUHkb7doaqKWvN8zHQeDAbV+1f9adOu8opVKyEbZLfsw6Harxo3gPSZmcf+v/K2nxBdfCFoS0fbVcUYFCkDaZOKvJb/0r5Pt/HJvK9dYSxmB+8dc=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB5966.eurprd05.prod.outlook.com (20.178.126.223) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.18; Thu, 4 Jul 2019 07:51:59 +0000
-Received: from VI1PR05MB3152.eurprd05.prod.outlook.com
- ([fe80::1044:d313:989:d54d]) by VI1PR05MB3152.eurprd05.prod.outlook.com
- ([fe80::1044:d313:989:d54d%5]) with mapi id 15.20.2032.019; Thu, 4 Jul 2019
- 07:51:59 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Sagi Grimberg <sagi@grimberg.me>
-CC:     Idan Burstein <idanb@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Tal Gilboa <talgi@mellanox.com>,
+ 15.20.2052.18; Thu, 4 Jul 2019 12:15:04 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2032.019; Thu, 4 Jul 2019
+ 12:15:04 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "dledford@redhat.com" <dledford@redhat.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>
-Subject: Re: [for-next V2 10/10] RDMA/core: Provide RDMA DIM support for ULPs
-Thread-Topic: [for-next V2 10/10] RDMA/core: Provide RDMA DIM support for ULPs
-Thread-Index: AQHVK5ipN3jilxV+8U2qs/jSBNzPpaas3rOAgACzgACACUbbgIAAEgGAgAJfrQCAANjGAA==
-Date:   Thu, 4 Jul 2019 07:51:59 +0000
-Message-ID: <20190704075156.GI4727@mtr-leonro.mtl.com>
-References: <20190625205701.17849-1-saeedm@mellanox.com>
- <20190625205701.17849-11-saeedm@mellanox.com>
- <adb3687a-6db3-b1a4-cd32-8b4889550c81@grimberg.me>
- <AM5PR0501MB248327B260F97EF97CD5B80EC5E20@AM5PR0501MB2483.eurprd05.prod.outlook.com>
- <9d26c90c-8e0b-656f-341f-a67251549126@grimberg.me>
- <20190702064107.GS4727@mtr-leonro.mtl.com>
- <8d525d64-6da1-48c3-952d-8c6b0d541859@grimberg.me>
-In-Reply-To: <8d525d64-6da1-48c3-952d-8c6b0d541859@grimberg.me>
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "mustafa.ismail@intel.com" <mustafa.ismail@intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        "david.m.ertman@intel.com" <david.m.ertman@intel.com>
+Subject: Re: [net-next 0/3][pull request] Intel Wired LAN ver Updates
+ 2019-07-03
+Thread-Topic: [net-next 0/3][pull request] Intel Wired LAN ver Updates
+ 2019-07-03
+Thread-Index: AQHVMg3qgzSU8AU2JE++yC4LeoOxy6a6YBaA
+Date:   Thu, 4 Jul 2019 12:15:04 +0000
+Message-ID: <20190704121459.GA3401@mellanox.com>
+References: <20190704021252.15534-1-jeffrey.t.kirsher@intel.com>
+In-Reply-To: <20190704021252.15534-1-jeffrey.t.kirsher@intel.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM5PR0701CA0067.eurprd07.prod.outlook.com
- (2603:10a6:203:2::29) To VI1PR05MB3152.eurprd05.prod.outlook.com
- (2603:10a6:802:1b::17)
+x-clientproxiedby: MN2PR13CA0018.namprd13.prod.outlook.com
+ (2603:10b6:208:160::31) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
 authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
+ smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [193.47.165.251]
+x-originating-ip: [156.34.55.100]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3b1d8d5d-0694-4ad9-5ce3-08d700547e54
+x-ms-office365-filtering-correlation-id: 18c429c9-7f48-4c1d-df03-08d700793e9e
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5677;
-x-ms-traffictypediagnostic: VI1PR05MB5677:
-x-microsoft-antispam-prvs: <VI1PR05MB56771EF3F012AF47A84C8542B0FA0@VI1PR05MB5677.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5966;
+x-ms-traffictypediagnostic: VI1PR05MB5966:
+x-microsoft-antispam-prvs: <VI1PR05MB596688E6B66065991CAD3FAFCFFA0@VI1PR05MB5966.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3276;
 x-forefront-prvs: 0088C92887
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(396003)(346002)(366004)(136003)(376002)(199004)(189003)(229853002)(316002)(6436002)(102836004)(6506007)(386003)(26005)(6916009)(53936002)(2906002)(478600001)(76176011)(54906003)(8676002)(6486002)(71190400001)(71200400001)(81166006)(81156014)(7736002)(305945005)(66066001)(14454004)(8936002)(1076003)(14444005)(256004)(86362001)(3846002)(68736007)(66946007)(73956011)(6116002)(25786009)(11346002)(5660300002)(476003)(486006)(4326008)(33656002)(9686003)(6512007)(107886003)(66446008)(99286004)(186003)(66476007)(66556008)(52116002)(446003)(6246003)(64756008);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5677;H:VI1PR05MB3152.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(376002)(136003)(39860400002)(366004)(396003)(189003)(199004)(25786009)(36756003)(386003)(6506007)(14454004)(6246003)(86362001)(3846002)(6486002)(6116002)(68736007)(1076003)(186003)(2906002)(7416002)(66066001)(305945005)(7736002)(229853002)(102836004)(71190400001)(2616005)(66556008)(6916009)(446003)(478600001)(486006)(66446008)(64756008)(73956011)(81156014)(66946007)(15650500001)(8676002)(5660300002)(8936002)(6436002)(81166006)(33656002)(54906003)(71200400001)(52116002)(53936002)(316002)(76176011)(99286004)(26005)(476003)(4326008)(11346002)(66476007)(256004)(6512007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5966;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: ycY6Loh0o8/tI67lXsBxvadsseYfcRf/CItekpQzUM6V3D8t+lw8JozGMHri6iNZEXCME3rAIRZQYsKolBWWkL7winLMfYekGD+phx+JP3NaPySCP4hxFhT611s0KBwl8VKo2JI1qfeftUZGEQKutOoE30SvwL2fr4IedfuNUCHDuJghWOzjMchHZO3uBpbqpiT8mOY21CMTmv9M5vbkTOIfm8q/Qr31i5hKS6/bI+hrcEhPNTEcGF9QEiYcCGaiMN3o5LXTJiPMvJTqSLrAL5RxqNvsibNIO8XszY9PzKKZd4MaCiWl7YYHGIlzmDNrnzx5YxYi6Ga7xytE+Cfi+vk2MpZxNtseyahi1zUNdI+g3hQYR3CNk19ZhhGKU+T2VPSdfx5nFmYQ2faJD+XYQpE2KdEXl90FZcw01qGTeDI=
+x-microsoft-antispam-message-info: tVGIyG8eceRxFl+J585VZuhEROpkxQ8HG/APWZHF53vLulYU3ecfwl33Pfbj0RzzswfnxqmXsQ5Yff262uGwXtECVm6sRaGCuiGgr7xhMmWmsnB2FIh4grjSYkqi2yk18glMHgV9Bm8y+E2zRO0Pu3J8QAxMI7zSUhnZIsQJdc+Maa87KFUOPey7xUJQQH97L1JFNa8yyXyROmiXceP4aABniDNy6zwgD4xR31cWesRYX+KbWxsDk5cxTqWTUIsWJbddVKNXV4X1PYMmmq7v9rMYWHfAe/iDwRgJGqlZc70bF3JplMCwpB3EhXIANXP8P9i8F51UBd8TMmRkSbba+jkd4TOZzT/Qs+BQ0iu+VM5h5tjKhl7SgpkMhWBfNcy0gFlAoAJMm7iAapidGQgVb+rK2Kv5Q2Dj041jym9/mKk=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B421801F2F9C31429E873489784ECECF@eurprd05.prod.outlook.com>
+Content-ID: <E130730340F0C748BE69613E70F4E45A@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b1d8d5d-0694-4ad9-5ce3-08d700547e54
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jul 2019 07:51:59.6583
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18c429c9-7f48-4c1d-df03-08d700793e9e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jul 2019 12:15:04.1914
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: leonro@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5677
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5966
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 03, 2019 at 11:56:04AM -0700, Sagi Grimberg wrote:
->
-> > Hi Sagi,
-> >
-> > I'm not sharing your worries about bad out-of-the-box experience for a
-> > number of reasons.
-> >
-> > First of all, this code is part of upstream kernel and will take time
-> > till users actually start to use it as is and not as part of some distr=
-o
-> > backports or MOFED packages.
->
-> True, but I am still saying that this feature is damaging sync IO which
-> represents the majority of the users. It might not be an extreme impact
-> but it is still a degradation (from a very limited testing I did this
-> morning I'm seeing a consistent 5%-10% latency increase for low QD
-> workloads which is consistent with what Yamin reported AFAIR).
->
-> But having said that, the call is for you guys to make as this is a
-> Mellanox device. I absolutely think that this is useful (as I said
-> before), I just don't think its necessarily a good idea to opt it by
-> default given that only a limited set of users would take full advantage
-> of it while the rest would see a negative impact (even if its 10%).
->
-> I don't have  a hard objection here, just wanted to give you my
-> opinion on this because mlx5 is an important driver for rdma
-> users.
+On Wed, Jul 03, 2019 at 07:12:49PM -0700, Jeff Kirsher wrote:
+> This series contains updates to i40e an ice drivers only and is required
+> for a series of changes being submitted to the RDMA maintainer/tree.
+> Vice Versa, the Intel RDMA driver patches could not be applied to
+> net-next due to dependencies to the changes currently in the for-next
+> branch of the rdma git tree.
 
-Your opinion is very valuable for us and we started internal thread to
-challenge this "enable by default", it just takes time and I prefer to
-enable this code to get test coverage as wide as possible.
+RDMA driver code is not to be applied to the net-next tree. We've
+learned this causes too many work flow problems.=20
 
->
-> > Second, Yamin did extensive testing and worked very close with Or G.
-> > and I have very high confident in the results of their team work.
->
-> Has anyone tested other RDMA ulps? NFS/RDMA or SRP/iSER?
->
-> Would be interesting to understand how other subsystems with different
-> characteristics behave with this.
+You must co-ordinate your driver with a shared git tree as Mellanox is
+doing, or wait for alternating kernel releases.
 
-Me too, and I'll revert this default if needed.
+I'm not sure what to do with this PR, it is far too late in the cycle
+to submit a new driver so most likely net should not go ahead with
+this prep work until this new driver model scheme is properly
+reviewed.
 
-Thanks
+> The following are changes since commit a51df9f8da43e8bf9e508143630849b7d6=
+96e053:
+>   gve: fix -ENOMEM null check on a page allocation
+> and are available in the git repository at:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/jkirsher/next-queue 100Gb=
+E
 
+And if you expect anything to be shared with rdma you need to produce
+pull requests that are based on some sensible -rc tag.
+
+Jason
