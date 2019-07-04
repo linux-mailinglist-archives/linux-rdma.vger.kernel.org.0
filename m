@@ -2,154 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 598085F144
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 04:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212D65F19C
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 04:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727400AbfGDCMw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jul 2019 22:12:52 -0400
-Received: from mga07.intel.com ([134.134.136.100]:32361 "EHLO mga07.intel.com"
+        id S1727063AbfGDCvk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jul 2019 22:51:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727341AbfGDCMf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 3 Jul 2019 22:12:35 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Jul 2019 19:12:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,449,1557212400"; 
-   d="scan'208";a="169319129"
-Received: from jtkirshe-desk1.jf.intel.com ([134.134.177.96])
-  by orsmga006.jf.intel.com with ESMTP; 03 Jul 2019 19:12:26 -0700
-From:   Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-To:     dledford@redhat.com, jgg@mellanox.com, davem@davemloft.net
-Cc:     Shiraz Saleem <shiraz.saleem@intel.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        nhorman@redhat.com, sassmann@redhat.com, poswald@suse.com,
-        david.m.ertman@intel.com, mustafa.ismail@intel.com
-Subject: [rdma 16/16] RDMA/irdma: Add Kconfig and Makefile
-Date:   Wed,  3 Jul 2019 19:12:59 -0700
-Message-Id: <20190704021259.15489-18-jeffrey.t.kirsher@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190704021259.15489-1-jeffrey.t.kirsher@intel.com>
-References: <20190704021259.15489-1-jeffrey.t.kirsher@intel.com>
+        id S1727004AbfGDCvk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 3 Jul 2019 22:51:40 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D26962187F;
+        Thu,  4 Jul 2019 02:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562208699;
+        bh=jGhk6MtvBCeLFveN8/6kXa1ri4KxUPeZQ0ZdpfHRamI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UFi8s5naJs4CfiqrSmEspUJRTNjqwBTEb+uS9Zx6exY52EZBgQuxSFxQ9xyE7QkU5
+         4BtDvdKZEdrsnTX5h2SykQla7CqTGF9ZWs7shsqyFBrtVtifYWTEnAx+vlQO/5LcIH
+         ZgEg2yoqn0ytiBtcb9MJXRhrhknizjGgDmAuEW8w=
+Date:   Thu, 4 Jul 2019 05:51:25 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Or Gerlitz <ogerlitz@mellanox.com>
+Subject: Re: [PATCH rdma-next v3 1/3] linux/dim: Implement RDMA adaptive
+ moderation (DIM)
+Message-ID: <20190704025125.GF4727@mtr-leonro.mtl.com>
+References: <20190630091057.11507-1-leon@kernel.org>
+ <20190630091057.11507-2-leon@kernel.org>
+ <2b8e1c1c-a80a-bf02-0ca7-5124bcef2419@grimberg.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b8e1c1c-a80a-bf02-0ca7-5124bcef2419@grimberg.me>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Shiraz Saleem <shiraz.saleem@intel.com>
+On Wed, Jul 03, 2019 at 01:51:51PM -0700, Sagi Grimberg wrote:
+>
+> > From: Yamin Friedman <yaminf@mellanox.com>
+> >
+> > RDMA DIM implements a different algorithm from net DIM and is based on
+> > completions which is how we can implement interrupt moderation in RDMA.
+> >
+> > The algorithm optimizes for number of completions and ratio between
+> > completions and events. In order to avoid long latencies, the
+> > implementation performs fast reduction of moderation level when the
+> > traffic changes.
+> >
+> > Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
+> > Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
+> > Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > ---
+> >   include/linux/dim.h |  36 +++++++++++++++
+> >   lib/dim/Makefile    |   6 +--
+> >   lib/dim/rdma_dim.c  | 108 ++++++++++++++++++++++++++++++++++++++++++++
+> >   3 files changed, 146 insertions(+), 4 deletions(-)
+> >   create mode 100644 lib/dim/rdma_dim.c
+> >
+> > diff --git a/include/linux/dim.h b/include/linux/dim.h
+> > index aa9bdd47a648..1ae32835723a 100644
+> > --- a/include/linux/dim.h
+> > +++ b/include/linux/dim.h
+> > @@ -82,6 +82,7 @@ struct dim_stats {
+> >    * @prev_stats: Measured rates from previous iteration (for comparison)
+> >    * @start_sample: Sampled data at start of current iteration
+> >    * @work: Work to perform on action required
+> > + * @dim_owner: A pointer to the struct that points to dim
+> >    * @profile_ix: Current moderation profile
+> >    * @mode: CQ period count mode
+> >    * @tune_state: Algorithm tuning state (see below)
+> > @@ -95,6 +96,7 @@ struct dim {
+> >   	struct dim_sample start_sample;
+> >   	struct dim_sample measuring_sample;
+> >   	struct work_struct work;
+> > +	void *dim_owner;
+>
+> This is different than the net consumers that init an embedded dim
+> struct. I imagine that the reason is to not have this dim space in every
+> ib_cq struct?
 
-Add Kconfig and Makefile to build irdma driver and mark i40iw
-deprecated/obsolete, since the irdma driver is replacing it and supports
-x722 devices.
+Yes, it was changed based on my review inputs.
 
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- drivers/infiniband/Kconfig           |  1 +
- drivers/infiniband/hw/Makefile       |  1 +
- drivers/infiniband/hw/i40iw/Kconfig  |  4 +++-
- drivers/infiniband/hw/irdma/Kconfig  | 11 ++++++++++
- drivers/infiniband/hw/irdma/Makefile | 31 ++++++++++++++++++++++++++++
- 5 files changed, 47 insertions(+), 1 deletion(-)
- create mode 100644 drivers/infiniband/hw/irdma/Kconfig
- create mode 100644 drivers/infiniband/hw/irdma/Makefile
+>
+> Would suggest to name it to 'priv' or 'dim_priv'
+>
+> Otherwise,
+> Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 
-diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-index 0fe6f76e8fdc..40b032a764f5 100644
---- a/drivers/infiniband/Kconfig
-+++ b/drivers/infiniband/Kconfig
-@@ -84,6 +84,7 @@ source "drivers/infiniband/hw/cxgb3/Kconfig"
- source "drivers/infiniband/hw/cxgb4/Kconfig"
- source "drivers/infiniband/hw/efa/Kconfig"
- source "drivers/infiniband/hw/i40iw/Kconfig"
-+source "drivers/infiniband/hw/irdma/Kconfig"
- source "drivers/infiniband/hw/mlx4/Kconfig"
- source "drivers/infiniband/hw/mlx5/Kconfig"
- source "drivers/infiniband/hw/ocrdma/Kconfig"
-diff --git a/drivers/infiniband/hw/Makefile b/drivers/infiniband/hw/Makefile
-index 433fca59febd..d61d690ec0d4 100644
---- a/drivers/infiniband/hw/Makefile
-+++ b/drivers/infiniband/hw/Makefile
-@@ -5,6 +5,7 @@ obj-$(CONFIG_INFINIBAND_CXGB3)		+= cxgb3/
- obj-$(CONFIG_INFINIBAND_CXGB4)		+= cxgb4/
- obj-$(CONFIG_INFINIBAND_EFA)		+= efa/
- obj-$(CONFIG_INFINIBAND_I40IW)		+= i40iw/
-+obj-$(CONFIG_INFINIBAND_IRDMA)		+= irdma/
- obj-$(CONFIG_MLX4_INFINIBAND)		+= mlx4/
- obj-$(CONFIG_MLX5_INFINIBAND)		+= mlx5/
- obj-$(CONFIG_INFINIBAND_OCRDMA)		+= ocrdma/
-diff --git a/drivers/infiniband/hw/i40iw/Kconfig b/drivers/infiniband/hw/i40iw/Kconfig
-index d867ef1ac72a..7454b84b74be 100644
---- a/drivers/infiniband/hw/i40iw/Kconfig
-+++ b/drivers/infiniband/hw/i40iw/Kconfig
-@@ -1,8 +1,10 @@
- config INFINIBAND_I40IW
--	tristate "Intel(R) Ethernet X722 iWARP Driver"
-+	tristate "Intel(R) Ethernet X722 iWARP Driver (DEPRECATED)"
- 	depends on INET && I40E
- 	depends on IPV6 || !IPV6
- 	depends on PCI
-+	depends on !(INFINBAND_IRDMA=y || INFINIBAND_IRDMA=m)
- 	select GENERIC_ALLOCATOR
- 	---help---
- 	Intel(R) Ethernet X722 iWARP Driver
-+	This driver is being replaced by irdma.
-diff --git a/drivers/infiniband/hw/irdma/Kconfig b/drivers/infiniband/hw/irdma/Kconfig
-new file mode 100644
-index 000000000000..652f5f978ce2
---- /dev/null
-+++ b/drivers/infiniband/hw/irdma/Kconfig
-@@ -0,0 +1,11 @@
-+config INFINIBAND_IRDMA
-+       tristate "Intel(R) Ethernet Connection RDMA Driver"
-+       depends on INET && (I40E || ICE)
-+       depends on IPV6 || !IPV6
-+       depends on PCI
-+       select GENERIC_ALLOCATOR
-+       ---help---
-+       This is an Ethernet RDMA driver that supports E810 (iWARP/RoCE)
-+       and X722 (iWARP) network devices.
-+       To compile this driver as a module, choose M here. The module
-+       will be called irdma.
-diff --git a/drivers/infiniband/hw/irdma/Makefile b/drivers/infiniband/hw/irdma/Makefile
-new file mode 100644
-index 000000000000..455940d7cc69
---- /dev/null
-+++ b/drivers/infiniband/hw/irdma/Makefile
-@@ -0,0 +1,31 @@
-+# SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+# Copyright (c) 2019, Intel Corporation.
-+
-+#
-+# Makefile for the Intel(R) Ethernet Connection RDMA Linux Driver
-+#
-+
-+ccflags-y := -I $(srctree)/drivers/net/ethernet/intel/i40e
-+ccflags-y += -I $(srctree)/drivers/net/ethernet/intel/ice
-+
-+obj-$(CONFIG_INFINIBAND_IRDMA) += irdma.o
-+
-+irdma-objs := cm.o        \
-+              ctrl.o      \
-+              hmc.o       \
-+              hw.o        \
-+              i40iw_hw.o  \
-+              i40iw_if.o  \
-+              icrdma_hw.o \
-+              irdma_if.o  \
-+              main.o      \
-+              pble.o      \
-+              puda.o      \
-+              trace.o     \
-+              uda.o       \
-+              uk.o        \
-+              utils.o     \
-+              verbs.o     \
-+              ws.o        \
-+
-+CFLAGS_trace.o = -I$(src)
--- 
-2.21.0
-
+Thanks a lot.
