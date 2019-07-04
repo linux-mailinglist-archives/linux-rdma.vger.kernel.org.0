@@ -2,178 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 140E95F944
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 15:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4FC5F94C
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 15:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbfGDNlz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 09:41:55 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:42512 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727026AbfGDNlz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 09:41:55 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x64DYCEB088053;
-        Thu, 4 Jul 2019 13:41:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=Dlw2BZECljrRb5zUVHmug4KRAXeIKZcZd3eoMR7F2jw=;
- b=dxvRBSmOwJYJOj+1kzzrB/UlFSsn9ovy2cSNxoryrPzJo/JG/b/OfeTpulg4AuiPgoHo
- DTEl6gQ4ZC+j7xvNvb5OL1rtqV2dNNI8kXEktbRSPdGn97L4Elhl68bR/VeVSKfwG8C1
- 5os9k8eOQjWSO7/ImIOZppLt2IO2K/msBWfuJ23rz9m4spwImnXU8cCnACag7YFq+wDO
- mGO3nJleY9NBaaBL4xiTaCzTqcHCIhJ40pR9pRA7t4pzGhj/XDbU00k8Mq7ouU464h7w
- eHW/6nSKAr3G1jKYJJ36A7JpeEZY/1MXSkx/LhDEtPB1TeEXshunlm4bBFb4udljviei 7A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2te5tby0jk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Jul 2019 13:41:51 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x64DWSrF011487;
-        Thu, 4 Jul 2019 13:41:51 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 2th9ec003b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Jul 2019 13:41:51 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x64DfnED014896;
-        Thu, 4 Jul 2019 13:41:50 GMT
-Received: from lap1 (/77.138.183.59)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 04 Jul 2019 06:41:48 -0700
-Date:   Thu, 4 Jul 2019 16:41:38 +0300
-From:   Yuval Shaia <yuval.shaia@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
-        linux-rdma@vger.kernel.org, leon@kernel.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Subject: Re: [RFC rdma-core] verbs: add ibv_export_to_fd man page
-Message-ID: <20190704134136.GA5711@lap1>
-References: <20190626083614.23688-1-shamir.rabinovitch@oracle.com>
- <20190626124637.GA3091@lap1>
- <20190702224807.GE11860@ziepe.ca>
+        id S1727044AbfGDNqR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 09:46:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727026AbfGDNqR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Jul 2019 09:46:17 -0400
+Received: from localhost (unknown [89.205.128.15])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E675D2189E;
+        Thu,  4 Jul 2019 13:46:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562247976;
+        bh=AXnRNQUafGRHcVyDEFkv9IFuGasR/5dXwZzfCjSG21g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c9gN5a25Ci2ryGM/qjco9FAXQ28FFwIWklshW6JvuayZ7exndB4KeQZnzjHeMvRAF
+         kah2IZqSOISeKMlyEUE6xNN9wwD0M17rswD+MwapyW3Wnbqur/iMm4ezIU5R/fpe8/
+         Iss8Yf6nE2N3NZUxJOYkE6MvqHu9dTg+uO/rFh6I=
+Date:   Thu, 4 Jul 2019 15:46:12 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "poswald@suse.com" <poswald@suse.com>,
+        "mustafa.ismail@intel.com" <mustafa.ismail@intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>
+Subject: Re: [net-next 1/3] ice: Initialize and register platform device to
+ provide RDMA
+Message-ID: <20190704134612.GB10963@kroah.com>
+References: <20190704021252.15534-1-jeffrey.t.kirsher@intel.com>
+ <20190704021252.15534-2-jeffrey.t.kirsher@intel.com>
+ <20190704121632.GB3401@mellanox.com>
+ <20190704122950.GA6007@kroah.com>
+ <20190704123729.GF3401@mellanox.com>
+ <20190704124247.GA6807@kroah.com>
+ <20190704124824.GK3401@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190702224807.GE11860@ziepe.ca>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9307 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907040170
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9307 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907040171
+In-Reply-To: <20190704124824.GK3401@mellanox.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 02, 2019 at 07:48:07PM -0300, Jason Gunthorpe wrote:
-> On Wed, Jun 26, 2019 at 03:46:39PM +0300, Yuval Shaia wrote:
-> > On Wed, Jun 26, 2019 at 11:36:14AM +0300, Shamir Rabinovitch wrote:
-> > > Add the ibv_export_to_fd man page.
-> > 
-> > This is RFC but still suggesting to give some words here.
-> > 
-> > Also, subject is incorrect since man page is for all functions involved in
-> > the shared-obj mechanism, not only the export_to_fd.
-> > 
+On Thu, Jul 04, 2019 at 12:48:29PM +0000, Jason Gunthorpe wrote:
+> On Thu, Jul 04, 2019 at 02:42:47PM +0200, Greg KH wrote:
+> > On Thu, Jul 04, 2019 at 12:37:33PM +0000, Jason Gunthorpe wrote:
+> > > On Thu, Jul 04, 2019 at 02:29:50PM +0200, Greg KH wrote:
+> > > > On Thu, Jul 04, 2019 at 12:16:41PM +0000, Jason Gunthorpe wrote:
+> > > > > On Wed, Jul 03, 2019 at 07:12:50PM -0700, Jeff Kirsher wrote:
+> > > > > > From: Tony Nguyen <anthony.l.nguyen@intel.com>
+> > > > > > 
+> > > > > > The RDMA block does not advertise on the PCI bus or any other bus.
+> > > > > > Thus the ice driver needs to provide access to the RDMA hardware block
+> > > > > > via a virtual bus; utilize the platform bus to provide this access.
+> > > > > > 
+> > > > > > This patch initializes the driver to support RDMA as well as creates
+> > > > > > and registers a platform device for the RDMA driver to register to. At
+> > > > > > this point the driver is fully initialized to register a platform
+> > > > > > driver, however, can not yet register as the ops have not been
+> > > > > > implemented.
+> > > > > 
+> > > > > I think you need Greg's ack on all this driver stuff - particularly
+> > > > > that a platform_device is OK.
+> > > > 
+> > > > A platform_device is almost NEVER ok.
+> > > > 
+> > > > Don't abuse it, make a real device on a real bus.  If you don't have a
+> > > > real bus and just need to create a device to hang other things off of,
+> > > > then use the virtual one, that's what it is there for.
 > > > 
-> > > Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-> > >  libibverbs/man/ibv_export_to_fd.3.md | 109 +++++++++++++++++++++++++++
-> > >  1 file changed, 109 insertions(+)
-> > >  create mode 100644 libibverbs/man/ibv_export_to_fd.3.md
-> > > 
-> > > diff --git a/libibverbs/man/ibv_export_to_fd.3.md b/libibverbs/man/ibv_export_to_fd.3.md
-> > > new file mode 100644
-> > > index 00000000..8e3f0fb2
-> > > +++ b/libibverbs/man/ibv_export_to_fd.3.md
-> > > @@ -0,0 +1,109 @@
-> > > +---
-> > > +date: 2018-06-26
-> > > +footer: libibverbs
-> > > +header: "Libibverbs Programmer's Manual"
-> > > +layout: page
-> > > +license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
-> > > +section: 3
-> > > +title: ibv_export_to_fd
-> > > +tagline: Verbs
-> > > +---
-> > > +
-> > > +# NAME
-> > > +
-> > > +**ibv_export_to_fd**, **ibv_import_pd**, **ibv_import_mr** - export & import ib hw objects.
-> > > +
-> > > +# SYNOPSIS
-> > > +
-> > > +```c
-> > > +#include <infiniband/verbs.h>
-> > > +
-> > > +int ibv_export_to_fd(uint32_t fd,
-> > > +                     uint32_t *new_handle,
-> > > +                     struct ibv_context *context,
-> > > +                     enum uverbs_default_objects type,
-> > > +                     uint32_t handle);
-> 
-> This should probably be some internal function and the exports should
-> be type safe just like the imports.
-
-So you suggesting something like this (instead of passing handle as arg):
-
-int ibv_export_pd(uint32_t fd,
-		  uint32_t *new_handle,
-		  struct ibv_context *context,
-		  struct ib_pd* pd);
-
-int ibv_export_mr(uint32_t fd,
-		  uint32_t *new_handle,
-		  struct ibv_context *context,
-		  struct ib_mr* mr);
-
-So the handle is taken internally from the pd or mr  arg.
-
-Are you still ok with new_handle? asking as this is what is used in the
-ibv_import_xxx functions.
-
-> 
-> > > +struct ibv_pd *ibv_import_pd(struct ibv_context *context,
-> > > +                             uint32_t fd,
-> > > +                             uint32_t handle);
-> > > +
-> > > +struct ibv_mr *ibv_import_mr(struct ibv_context *context,
-> > > +                             uint32_t fd,
-> > > +                             uint32_t handle);
-> > > +
-> > > +uint32_t ibv_context_to_fd(struct ibv_context *context);
-> > > +
-> > > +uint32_t ibv_pd_to_handle(struct ibv_pd *pd);
-> > > +
-> > > +uint32_t ibv_mr_to_handle(struct ibv_mr *mr);
+> > > Ideally I'd like to see all the RDMA drivers that connect to ethernet
+> > > drivers use some similar scheme.
 > > 
-> > Do you know if extra stuff besides this new file needs to be done so i can
-> > do ex man ibv_context_to_fd and get this man page?
+> > Why?  They should be attached to a "real" device, why make any up?
 > 
-> Yes, they need to be setup in cmake with aliases.
+> ? A "real" device, like struct pci_device, can only bind to one
+> driver. How can we bind it concurrently to net, rdma, scsi, etc?
 
-Will take care of it, thanks.
+MFD was designed for this very problem.
 
+> > > This is for a PCI device that plugs into multiple subsystems in the
+> > > kernel, ie it has net driver functionality, rdma functionality, some
+> > > even have SCSI functionality
+> > 
+> > Sounds like a MFD device, why aren't you using that functionality
+> > instead?
 > 
-> I think this man page is kind of terse for such a complicated
-> thing. 
+> This was also my advice, but in another email Jeff says:
 > 
-> Ie it doesn't talk about what happens when close() or ibv_destroy_X()
-> is called.
+>   MFD architecture was also considered, and we selected the simpler
+>   platform model. Supporting a MFD architecture would require an
+>   additional MFD core driver, individual platform netdev, RDMA function
+>   drivers, and stripping a large portion of the netdev drivers into
+>   MFD core. The sub-devices registered by MFD core for function
+>   drivers are indeed platform devices.  
 
-We've mentioned that the returned object is like a regular object returned
-from (ex) ibv_create_pd and should be destroyed with the corresponding
-destroy function.
-We can add a note saying that the HW object will be destroyed only when all
-reference to it will be destroyed.
-Is that enough?
+So, "mfd is too hard, let's abuse a platform device" is ok?
 
-> 
-> Jason
+People have been wanting to do MFD drivers for PCI devices for a long
+time, it's about time someone actually did the work for it, I bet it
+will not be all that complex if tiny embedded drivers can do it :)
+
+thanks,
+
+greg k-h
