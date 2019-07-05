@@ -2,138 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5BD5FD09
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2019 20:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07675FF6C
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2019 04:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbfGDSjY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Jul 2019 14:39:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726881AbfGDSjY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 4 Jul 2019 14:39:24 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A0EF2189E;
-        Thu,  4 Jul 2019 18:39:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562265563;
-        bh=kmsUmHiYtovjV+TzUMycaQqX1N/BN6kBGjDDo116WqI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g07dwtkkB6Bl4DN+elUOFmPCmZWe6tfuyy8l7BzN3YjxfzMU/VJddLpDyufgq632a
-         RB6bmgeCR5HNYxUXuRijCU2ccjs+QRxiVqICLCmhMRUGdmH0vh46pD5BeuGoe7/VUe
-         2n/4+KqO1BcnuWUrOiN/lqbEtb7To2lRqoD6oq1w=
-Date:   Thu, 4 Jul 2019 21:39:09 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Majd Dibbiny <majd@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v5 00/17] Statistics counter support
-Message-ID: <20190704183909.GL7212@mtr-leonro.mtl.com>
-References: <20190702100246.17382-1-leon@kernel.org>
- <20190704182529.GA20631@ziepe.ca>
+        id S1727115AbfGECM4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Jul 2019 22:12:56 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:40804 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726404AbfGECM4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jul 2019 22:12:56 -0400
+Received: by mail-io1-f65.google.com with SMTP id h6so7845520iom.7
+        for <linux-rdma@vger.kernel.org>; Thu, 04 Jul 2019 19:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+i+rWpWM4CxLTsXoxrblls6Y6nuSgSt1B6piLDXksQM=;
+        b=OvqyFOeFRZh3yx2Qm/toca2DHR0OoQhUXTaQYkw0QnttoqQqP84i0m0gGRe5XhI9pR
+         lGntF5NZpCAcOhqEmTVgdMlMh18W4Vcsg4icpPGB2csRo/yaa7jC0gKRUafmEdyxKM+T
+         +pHEt6fHyWxKhAJTNCCSD/oXH4qwthbWbrnsy/wz1BqEhPvUT2aDpGQPQTV4BLndQBD+
+         d6lyM4iIQ9n9IcUfg313tqhfIwczwVLP4iMU1bc3brWMTf6MI12dq5WBrgYc4gY1s+x4
+         t+sVhRVi1BwZGijF+awKTXhBQKs55tPHNQ4Y1OC/0b5/13fVMzJ6X6uXVGSAJdyRTcow
+         vXww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+i+rWpWM4CxLTsXoxrblls6Y6nuSgSt1B6piLDXksQM=;
+        b=Mmf2iNM+ysTe9y4MNrO4Ua/lMM3HUvvJTwwJB4xhNQfPuTII9BtxuU4T78Fof2Ted4
+         MnS7hM6ZSnv6R3ODWaw9U4Lb8YfjfUUgTfc7Fz1dWlT9BEnGxlKdaAX7vn1c3Y3udW4W
+         WI14XIeiA0T/+nxErFOQwBWHZ5U74s1XniWRjrKyLxOHwEQXXgDl98tvKdhIW5d+IKkv
+         goidoJgrMN80l0TSjX7AI6vN+kaqFupkz65ZDdqIDlhQhyX5BsCr6anQdSMXxH0ePVj9
+         NUXAuOt+YC79MUhdWnHuYYwP2ZxenXTUyNFNPHWdiXFrpip0JHx3e8AQ6xAbTvn8J4Wu
+         FalQ==
+X-Gm-Message-State: APjAAAUsRH/wkgpdmLuOchDw1jH+hhEAbjFk8FVu/+/lEqISJ1sHP2OV
+        VPaKbyAu9H/eLQg7/j3zU9OYJ8B0ntilgc17laluCVA7
+X-Google-Smtp-Source: APXvYqwxpez2ygitEY+qTIoTFJe6v/Ma8PdGk2xC7R1VCIlwhG/AufnrA5UnLrM+sJTCBHcIt6o200zZXnBfbRgfYQU=
+X-Received: by 2002:a5d:8049:: with SMTP id b9mr1431472ior.199.1562292775077;
+ Thu, 04 Jul 2019 19:12:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190704182529.GA20631@ziepe.ca>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+References: <20190704130402.8431-1-leon@kernel.org> <20190704173403.GA20921@ziepe.ca>
+In-Reply-To: <20190704173403.GA20921@ziepe.ca>
+From:   Parav Pandit <pandit.parav@gmail.com>
+Date:   Fri, 5 Jul 2019 07:42:44 +0530
+Message-ID: <CAG53R5UjQzJs+sCPt2BS2iii1NUWELxRStN0xGF1rQNKh7DiPw@mail.gmail.com>
+Subject: Re: [PATCH rdma-next 0/2] Allow netlink commands in non init_net net namespace
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Steve Wise <swise@opengridcomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 04, 2019 at 03:25:29PM -0300, Jason Gunthorpe wrote:
-> On Tue, Jul 02, 2019 at 01:02:29PM +0300, Leon Romanovsky wrote:
+On Thu, Jul 4, 2019 at 11:46 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Thu, Jul 04, 2019 at 04:04:00PM +0300, Leon Romanovsky wrote:
 > > From: Leon Romanovsky <leonro@mellanox.com>
 > >
-> > Changelog:
-> >  v4 -> v5:
-> >  * Patch #6 and #14 - consolidated many counter release functions,
-> >    removed mutex lock protection from dealloc_counter() call
-> >    and simplified kref_put/kref_get operations.
-> >  * Added Saeed's ACK tags.
-> >  v3 -> v4:
-> >  * Add counter_dealloc() callback function
-> >  * Moved to kref implementation
-> >  * Fixed lock during spinlock
-> >  v2 -> v3:
-> >  * We didn't change use of atomics over kref for management of unbind
-> >    counter from QP. The reason to it that bind and unbind are non-symmetric
-> >    in regards of put and get, so we need to count differently memory
-> >    release flows of HW objects (restrack) and SW bind operations.
-> >  * Everything else was addressed.
-> >  v1 -> v2:
-> >  * Rebased to latest rdma-next
-> >  v0 -> v1:
-> >  * Changed wording of counter comment
-> >  * Removed unneeded assignments
-> >  * Added extra patch to present global counters
+> > Now that RDMA devices can be attached to specific net namespace,
+> > allow netlink commands in non init_net namespace.
 > >
-> >
-> > Hi,
-> >
-> > This series from Mark provides dynamic statistics infrastructure.
-> > He uses netlink interface to configure and retrieve those counters.
-> >
-> > This infrastructure allows to users monitor various objects by binding
-> > to them counters. As the beginning, we used QP object as target for
-> > those counters, but future patches will include ODP MR information too.
-> >
-> > Two binding modes are supported:
-> >  - Auto: This allows a user to build automatic set of objects to a counter
-> >    according to common criteria. For example in a per-type scheme, where in
-> >    one process all QPs with same QP type are bound automatically to a single
-> >    counter.
-> >  - Manual: This allows a user to manually bind objects on a counter.
-> >
-> > Those two modes are mutual-exclusive with separation between processes,
-> > objects created by different processes cannot be bound to a same counter.
-> >
-> > For objects which don't support counter binding, we will return
-> > pre-allocated counters.
-> >
-> > $ rdma statistic qp set link mlx5_2/1 auto type on
-> > $ rdma statistic qp set link mlx5_2/1 auto off
-> > $ rdma statistic qp bind link mlx5_2/1 lqpn 178
-> > $ rdma statistic qp unbind link mlx5_2/1 cntn 4 lqpn 178
-> > $ rdma statistic show
-> > $ rdma statistic qp mode
-> >
-> > Thanks
-> >
-> >
-> > Mark Zhang (17):
-> >   net/mlx5: Add rts2rts_qp_counters_set_id field in hca cap
-> >   RDMA/restrack: Introduce statistic counter
-> >   RDMA/restrack: Add an API to attach a task to a resource
-> >   RDMA/restrack: Make is_visible_in_pid_ns() as an API
-> >   RDMA/counter: Add set/clear per-port auto mode support
-> >   RDMA/counter: Add "auto" configuration mode support
-> >   IB/mlx5: Support set qp counter
-> >   IB/mlx5: Add counter set id as a parameter for
-> >     mlx5_ib_query_q_counters()
-> >   IB/mlx5: Support statistic q counter configuration
-> >   RDMA/nldev: Allow counter auto mode configration through RDMA netlink
-> >   RDMA/netlink: Implement counter dumpit calback
-> >   IB/mlx5: Add counter_alloc_stats() and counter_update_stats() support
-> >   RDMA/core: Get sum value of all counters when perform a sysfs stat
-> >     read
-> >   RDMA/counter: Allow manual mode configuration support
-> >   RDMA/nldev: Allow counter manual mode configration through RDMA
-> >     netlink
-> >   RDMA/nldev: Allow get counter mode through RDMA netlink
-> >   RDMA/nldev: Allow get default counter statistics through RDMA netlink
+> > Parav Pandit (2):
+> >   IB/core: Work on the caller socket net namespace in nldev_newlink()
+> >   IB: Support netlink commands in non init_net net namespaces
 >
-> Well, I can made the needed edits, can you apply the the first patch
-> to the shared branch?
-
-Thanks, pushed
-f8efee08dd9d net/mlx5: Add rts2rts_qp_counters_set_id field in hca cap
-
+> Could someone please confirm that all the new libibverbs stuff works
+> properly in a container after this series?
 >
-> Thanks,
-> Jason
+Hi Jason,
+
+I tested rping using rdma-core from [1] where I had to skip siw
+compilation due to a compile error.
+I used kernel from [2].
+
+[1] https://github.com/jgunthorpe/rdma-plumbing.git branch netlink
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/leon/linux-rdma.git/log/?h=rdma-next
+
+Test were done in non init_net net namespace.
+It looks good.
+A sample kernel frace to double confirm below.
+
+Due to our internal net-next-mlx5 behind of nldev patches, I couldn't
+test mdev devices yet with this series.
+
+19)               |  rdma_nl_rcv [ib_core]() {
+19)               |    rdma_nl_rcv_msg [ib_core]() {
+19)               |      nldev_get_chardev [ib_core]() {
+19)   2.220 us    |        ib_device_get_by_index [ib_core]();
+19)               |        ib_get_client_nl_info [ib_core]() {
+19)               |          __ib_get_client_nl_info [ib_core]() {
+19)   1.697 us    |            xan_find_marked.constprop.26 [ib_core]();
+19)   1.024 us    |            xan_find_marked.constprop.26 [ib_core]();
+19)   1.023 us    |            xan_find_marked.constprop.26 [ib_core]();
+19)   1.153 us    |            xan_find_marked.constprop.26 [ib_core]();
+19)   0.574 us    |            ib_uverbs_get_nl_info [ib_uverbs]();
+19) + 12.507 us   |          }
+19) + 13.533 us   |        }
+19)   0.380 us    |        ib_device_put [ib_core]();
+19)   4.600 us    |        rdma_nl_unicast [ib_core]();
+19) + 26.533 us   |      }
+19) + 27.457 us   |    }
+
+Some issue with my outlook email. So replying from gmail..
+Thanks.
