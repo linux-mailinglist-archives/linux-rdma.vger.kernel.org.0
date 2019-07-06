@@ -2,79 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1098360E79
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jul 2019 04:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3460360F0A
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jul 2019 07:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725813AbfGFBr1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Jul 2019 21:47:27 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8714 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725776AbfGFBr1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 5 Jul 2019 21:47:27 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E0754A215B055AB3337A;
-        Sat,  6 Jul 2019 09:47:24 +0800 (CST)
-Received: from [127.0.0.1] (10.61.25.96) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Sat, 6 Jul 2019
- 09:47:14 +0800
-Subject: Re: [PATCH for-next 5/8] RDMA/hns: Bugfix for calculating qp buffer
- size
-From:   oulijun <oulijun@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <1561376872-111496-1-git-send-email-oulijun@huawei.com>
- <1561376872-111496-6-git-send-email-oulijun@huawei.com>
-Message-ID: <997bdd68-8be1-9684-5d4d-d0b5bf202b80@huawei.com>
-Date:   Sat, 6 Jul 2019 09:47:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.0
+        id S1725900AbfGFFJC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 6 Jul 2019 01:09:02 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:52897 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725883AbfGFFJC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Jul 2019 01:09:02 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 391FB20E7B;
+        Sat,  6 Jul 2019 01:09:01 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sat, 06 Jul 2019 01:09:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=rp0B1rpce/PlxIypONFH/+e8UDi
+        2FDwQaPb/lmlhDLY=; b=mXGpAyHD4+0NMFu888WlnbFje8Dl+Qe6yfdgXeueVSI
+        hwKVLTA05KoovXEIBCa1Km7jHivB+ZffXXGoT3OR+pVTWCKIJ1L08eg5z+bT690w
+        nJuusymgD4Jd4oPgUF7leJqNZnKRWxX2zpN0HivwIVPskwCHJBIvSLSo2aqyc4fw
+        1kfLRRDb3tiU7bSwbuf3oeLokh2NJ3nboRwF31TRIAV68498EhzzbXVpCzTed5uC
+        +x/Iwa8OJg7oDa0JUsdtwFXsdOECqatK+/v8TArj72F57ie/uJyEIWKG6Q7cFZuG
+        h3N5NvJQEkNuhsABDDz1+jl258+UTpORVw1TniBbdyw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rp0B1r
+        pce/PlxIypONFH/+e8UDi2FDwQaPb/lmlhDLY=; b=rBKCfUyq5e3KLfigfUsGr5
+        4R4kcuFOjB07NlAVtlaY7gTeYCTFn9C0ckjE/p5xgeQdzjEkIpFEQ6s4KZfCgT0v
+        sSgd4b9or5ahXNfz/63pr99M3RoeJGYC3tP6SJdYAlfMZgppxZakAolLn1EsqOih
+        utRUSbkV4mMgFx+p10+n9Dh3TcUSE535SkAm3MtTKJm5qeVLDHbkvi9Bq9W1HLjc
+        iWPdvSi61vpyUs6d/PCoYuUO/wLembGngv7gHMu5wCbt0mambNiKNA4lxaXddLgQ
+        LvjaXl9ow5pDqABwWMu/w2FFoJaHdRXrrzNrFs/XPB+N7rJ7Co0G6rY2ofhtWcDQ
+        ==
+X-ME-Sender: <xms:7CwgXeU5xNVrc8EH-sdxBas1gXHFVzH2RZYoM72JDUSlCEGKs3urvg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrfeehgdelfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujggfsehttdertddtredvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucfkphepkeefrdekiedrkeelrddutd
+    ejnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomhenucev
+    lhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:7CwgXVvHFs2r9ERjSOqU-wDHsxKeslnXOJSxBqCeUSbslSwjQ3sFDA>
+    <xmx:7CwgXRzoi9Cs4bHCT8IlnEC4_Lq_MDeiftU4FxqkL0NXTHgL3xoKWw>
+    <xmx:7CwgXUnqfLa9A64ITx_8VxvAEmZvzIV7sB2VHOFJXXa-VvZcbVqFdw>
+    <xmx:7SwgXVl24_T_9d6mELCWyRdubZImDq1hrSiIjoUWwdUzGC3eo0-HOQ>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 52F2E8005B;
+        Sat,  6 Jul 2019 01:09:00 -0400 (EDT)
+Date:   Sat, 6 Jul 2019 07:08:57 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     stable@vger.kernel.org, linux-rdma@vger.kernel.org,
+        stable-commits@vger.kernel.org
+Subject: Re: [PATCH] IB/hfi1: Close PSM sdma_progress sleep window
+Message-ID: <20190706050857.GA5322@kroah.com>
+References: <20190624201537.170286.13849.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1561376872-111496-6-git-send-email-oulijun@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.61.25.96]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190624201537.170286.13849.stgit@awfm-01.aw.intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2019/6/24 19:47, Lijun Ou 写道:
-> From: o00290482 <o00290482@huawei.com>
-Hi, Jason
-   May be my local configuration error causing the wroong author.  How should I make changes?
+On Mon, Jun 24, 2019 at 04:15:37PM -0400, Mike Marciniszyn wrote:
+> commit da9de5f8527f4b9efc82f967d29a583318c034c7 upstream.
+> 
+> The call to sdma_progress() is called outside the wait lock.
+> 
+> In this case, there is a race condition where sdma_progress() can return
+> false and the sdma_engine can idle.  If that happens, there will be no
+> more sdma interrupts to cause the wakeup and the user_sdma xmit will hang.
+> 
+> Fix by moving the lock to enclose the sdma_progress() call.
+> 
+> Also, delete busycount. The need for this was removed by:
+> commit bcad29137a97 ("IB/hfi1: Serve the most starved iowait entry first")
+> 
+> Ported to linux-4.9.y.
 
-The correct as follows:
-From: Lijun Ou <oulijun@huawei.com>
-> The buffer size of qp which used to allocate qp buffer space for
-> storing sqwqe and rqwqe will be the length of buffer space. The
-> kernel driver will use the buffer address and the same size to
-> get the user memory. The same size named buff_size of qp. According
-> the algorithm of calculating, The size of the two is not equal
-> when users set the max sge of sq.
->
-> Fixes: b28ca7cceff8 ("RDMA/hns: Limit extend sq sge num")
-> Signed-off-by: Lijun Ou <oulijun@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_qp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> index 305be42..d56c03d 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> @@ -392,8 +392,8 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
->  					     hr_qp->sq.wqe_shift), PAGE_SIZE);
->  	} else {
->  		page_size = 1 << (hr_dev->caps.mtt_buf_pg_sz + PAGE_SHIFT);
-> -		hr_qp->sge.sge_cnt =
-> -		       max(page_size / (1 << hr_qp->sge.sge_shift), ex_sge_num);
-> +		hr_qp->sge.sge_cnt = ex_sge_num ?
-> +		   max(page_size / (1 << hr_qp->sge.sge_shift), ex_sge_num) : 0;
->  		hr_qp->buff_size = HNS_ROCE_ALOGN_UP((hr_qp->rq.wqe_cnt <<
->  					     hr_qp->rq.wqe_shift), page_size) +
->  				   HNS_ROCE_ALOGN_UP((hr_qp->sge.sge_cnt <<
+Now applied, thanks.
 
+Note, this already is in 4.14.132 and 4.19.57 so I didn't need the
+backports for those kernels.
 
-
+greg k-h
