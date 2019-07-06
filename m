@@ -2,131 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A14D36121C
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jul 2019 18:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC9F61231
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jul 2019 18:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbfGFQPV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sat, 6 Jul 2019 12:15:21 -0400
-Received: from mga17.intel.com ([192.55.52.151]:61174 "EHLO mga17.intel.com"
+        id S1726702AbfGFQfs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 6 Jul 2019 12:35:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726760AbfGFQPV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 6 Jul 2019 12:15:21 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Jul 2019 09:15:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,459,1557212400"; 
-   d="scan'208";a="165071593"
-Received: from fmsmsx104.amr.corp.intel.com ([10.18.124.202])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Jul 2019 09:15:20 -0700
-Received: from fmsmsx158.amr.corp.intel.com (10.18.116.75) by
- fmsmsx104.amr.corp.intel.com (10.18.124.202) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Sat, 6 Jul 2019 09:15:20 -0700
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.213]) by
- fmsmsx158.amr.corp.intel.com ([169.254.15.188]) with mapi id 14.03.0439.000;
- Sat, 6 Jul 2019 09:15:20 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+        id S1725945AbfGFQfr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 6 Jul 2019 12:35:47 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8023820659;
+        Sat,  6 Jul 2019 16:35:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562430946;
+        bh=jskFX0Dbol/S3QOZhJl9/jt9RHE56eX0jCokgo1eLkQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O2y+Zy1tqBYCDTGhj1gPWah8nfChosGWPh0y3vMAJv1sVZCti7XbrfQI3p4zz+jOP
+         h+qOmkzBzMdH/m6xWKeN55NO84c6reHWBZMH4DgR+HPAPWIL16286psp/3dn8rkRjK
+         UBIjM9ZYBKjQQgsN2M8wlHN60dtxSvrilbHXvbts=
+Date:   Sat, 6 Jul 2019 19:35:23 +0300
+From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "poswald@suse.com" <poswald@suse.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>
-Subject: RE: [rdma 14/16] RDMA/irdma: Add ABI definitions
-Thread-Topic: [rdma 14/16] RDMA/irdma: Add ABI definitions
-Thread-Index: AQHVMg3zRd8VsRoltkutexKRUKIO/aa6iLSAgABOBQCAAWQucIAAgTaAgAEIy0A=
-Date:   Sat, 6 Jul 2019 16:15:20 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7A68512AA@fmsmsx124.amr.corp.intel.com>
-References: <20190704021259.15489-1-jeffrey.t.kirsher@intel.com>
- <20190704021259.15489-16-jeffrey.t.kirsher@intel.com>
- <20190704074021.GH4727@mtr-leonro.mtl.com>
- <20190704121933.GD3401@mellanox.com>
- <9DD61F30A802C4429A01CA4200E302A7A684DAAA@fmsmsx124.amr.corp.intel.com>
- <20190705171650.GI31525@mellanox.com>
-In-Reply-To: <20190705171650.GI31525@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMWQ0YjdjYTQtZWY1Ni00NjcxLWE4NmEtNTAwOTBkNzBmYWViIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiMmhhYW5PNnphWlZcL0V3XC9PeEpXbFwvTWtFazFTdUJRejhiUGtPMlBub3FYNEpIZ3o4SzVzY0h4a2JUazZGcVNBTCJ9
-dlp-product: dlpe-windows
-dlp-version: 11.0.600.7
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.106]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Danit Goldberg <danitg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: Re: [PATCH rdma-next] IB/mlx5: Report correctly tag matching
+ rendezvous capability
+Message-ID: <20190706163523.GA18182@mtr-leonro.mtl.com>
+References: <20190705162157.17336-1-leon@kernel.org>
+ <20190705171555.GH31525@mellanox.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190705171555.GH31525@mellanox.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [rdma 14/16] RDMA/irdma: Add ABI definitions
-> 
-> On Fri, Jul 05, 2019 at 04:42:19PM +0000, Saleem, Shiraz wrote:
-> > > Subject: Re: [rdma 14/16] RDMA/irdma: Add ABI definitions
-> > >
-> > > On Thu, Jul 04, 2019 at 10:40:21AM +0300, Leon Romanovsky wrote:
-> > > > On Wed, Jul 03, 2019 at 07:12:57PM -0700, Jeff Kirsher wrote:
-> > > > > From: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > > >
-> > > > > Add ABI definitions for irdma.
-> > > > >
-> > > > > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > > > include/uapi/rdma/irdma-abi.h | 130
-> > > > > ++++++++++++++++++++++++++++++++++
-> > > > >  1 file changed, 130 insertions(+)  create mode 100644
-> > > > > include/uapi/rdma/irdma-abi.h
-> > > > >
-> > > > > diff --git a/include/uapi/rdma/irdma-abi.h
-> > > > > b/include/uapi/rdma/irdma-abi.h new file mode 100644 index
-> > > > > 000000000000..bdfbda4c829e
-> > > > > +++ b/include/uapi/rdma/irdma-abi.h
-> > > > > @@ -0,0 +1,130 @@
-> > > > > +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-> > > > > +/* Copyright (c) 2006 - 2019 Intel Corporation.  All rights reserved.
-> > > > > + * Copyright (c) 2005 Topspin Communications.  All rights reserved.
-> > > > > + * Copyright (c) 2005 Cisco Systems.  All rights reserved.
-> > > > > + * Copyright (c) 2005 Open Grid Computing, Inc. All rights reserved.
-> > > > > + */
-> > > > > +
-> > > > > +#ifndef IRDMA_ABI_H
-> > > > > +#define IRDMA_ABI_H
-> > > > > +
-> > > > > +#include <linux/types.h>
-> > > > > +
-> > > > > +/* irdma must support legacy GEN_1 i40iw kernel
-> > > > > + * and user-space whose last ABI ver is 5  */ #define
-> > > > > +IRDMA_ABI_VER
-> > > > > +6
-> > > >
-> > > > Can you please elaborate about it more?
-> > > > There is no irdma code in RDMA yet, so it makes me wonder why new
-> > > > define shouldn't start from 1.
-> > >
-> > > It is because they are ABI compatible with the current user space,
-> > > which raises the question why we even have this confusing header file..
+On Fri, Jul 05, 2019 at 05:15:59PM +0000, Jason Gunthorpe wrote:
+> On Fri, Jul 05, 2019 at 07:21:57PM +0300, Leon Romanovsky wrote:
+> > From: Danit Goldberg <danitg@mellanox.com>
 > >
-> > It is because we need to support current providers/i40iw user-space.
-> > Our user-space patch series will introduce a new provider (irdma)
-> > whose ABI ver. is also 6 (capable of supporting X722 and which will
-> > work with i40iw driver on older kernels) and removes providers/i40iw from rdma-
-> core.
-> 
-> Why on earth would we do that?
-> 
-A unified library providers/irdma to go in hand with the driver irdma and uses the ABI header.
-It can support the new network device e810 and existing x722 iWARP device. It obsoletes
-providers/i40iw and extends its ABI. So why keep providers/i40iw around in rdma-core?
+> > Tag matching with rendezvous offload for RC transport is controlled
+> > by FW and before this change, it was advertised to user as supported
+> > without any relation to FW.
+> >
+> > Separate tag matching for rendezvous and eager protocols, so users
+> > will see real capabilities.
+> >
+> > Cc: <stable@vger.kernel.org> # 4.13
+> > Fixes: eb761894351d ("IB/mlx5: Fill XRQ capabilities")
+> > Signed-off-by: Danit Goldberg <danitg@mellanox.com>
+> > Reviewed-by: Yishai Hadas <yishaih@mellanox.com>
+> > Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> >  drivers/infiniband/hw/mlx5/main.c | 8 ++++++--
+> >  include/rdma/ib_verbs.h           | 4 ++--
+> >  2 files changed, 8 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+> > index 07a05b0b9e42..c2a5780cb394 100644
+> > +++ b/drivers/infiniband/hw/mlx5/main.c
+> > @@ -1046,15 +1046,19 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+> >  	}
+> >
+> >  	if (MLX5_CAP_GEN(mdev, tag_matching)) {
+> > -		props->tm_caps.max_rndv_hdr_size = MLX5_TM_MAX_RNDV_MSG_SIZE;
+> >  		props->tm_caps.max_num_tags =
+> >  			(1 << MLX5_CAP_GEN(mdev, log_tag_matching_list_sz)) - 1;
+> > -		props->tm_caps.flags = IB_TM_CAP_RC;
+> >  		props->tm_caps.max_ops =
+> >  			1 << MLX5_CAP_GEN(mdev, log_max_qp_sz);
+> >  		props->tm_caps.max_sge = MLX5_TM_MAX_SGE;
+> >  	}
+> >
+> > +	if (MLX5_CAP_GEN(mdev, tag_matching) &&
+> > +	    MLX5_CAP_GEN(mdev, rndv_offload_rc)) {
+> > +		props->tm_caps.flags = IB_TM_CAP_RNDV_RC;
+> > +		props->tm_caps.max_rndv_hdr_size = MLX5_TM_MAX_RNDV_MSG_SIZE;
+> > +	}
+> > +
+> >  	if (MLX5_CAP_GEN(dev->mdev, cq_moderation)) {
+> >  		props->cq_caps.max_cq_moderation_count =
+> >  						MLX5_MAX_CQ_COUNT;
+> > diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> > index 30eb68f36109..c5f8a9f17063 100644
+> > +++ b/include/rdma/ib_verbs.h
+> > @@ -308,8 +308,8 @@ struct ib_rss_caps {
+> >  };
+> >
+> >  enum ib_tm_cap_flags {
+> > -	/*  Support tag matching on RC transport */
+> > -	IB_TM_CAP_RC		    = 1 << 0,
+> > +	/*  Support tag matching with rendezvous offload for RC transport */
+> > +	IB_TM_CAP_RNDV_RC = 1 << 0,
+> >  };
+>
+> This is in the wrong header, right?
 
-Shiraz 
+It predates our all-to-uapi headers approach and moving to UAPI this struct
+is definitely too much for a fix which should go to stable@.
 
+Thanks
+
+>
+> Jason
