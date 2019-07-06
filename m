@@ -2,171 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2697760F71
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jul 2019 10:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2388A6103A
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jul 2019 13:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725934AbfGFIZ3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 6 Jul 2019 04:25:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbfGFIZ3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 6 Jul 2019 04:25:29 -0400
-Received: from localhost (unknown [62.119.166.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 346A620989;
-        Sat,  6 Jul 2019 08:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562401528;
-        bh=b98nN4JNq6saIDTsKmDicyJKC3+th7WUAwVzPS21I0U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vb/JaB1fq1ghXZphPlB6Ctmfx2SzNM5ocv5U84XGoI9zqhBdFU/PDsqJK8OKmy7ZP
-         AfeiPeF9+ip86fVcyBtQI3LyVgdo4FxYBcIB9D5kEwtvKHrAF2ZP/wACuEeo/BgQoi
-         YpUCsgUg5AWPRqsv3+T6lL2qmFSaQd9pdCV9mP/M=
-Date:   Sat, 6 Jul 2019 10:25:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "poswald@suse.com" <poswald@suse.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Bowers, AndrewX" <andrewx.bowers@intel.com>
-Subject: Re: [net-next 1/3] ice: Initialize and register platform device to
- provide RDMA
-Message-ID: <20190706082523.GA8727@kroah.com>
-References: <20190704021252.15534-1-jeffrey.t.kirsher@intel.com>
- <20190704021252.15534-2-jeffrey.t.kirsher@intel.com>
- <20190704121632.GB3401@mellanox.com>
- <20190704122950.GA6007@kroah.com>
- <20190704123729.GF3401@mellanox.com>
- <20190704124247.GA6807@kroah.com>
- <20190704124824.GK3401@mellanox.com>
- <20190704134612.GB10963@kroah.com>
- <9DD61F30A802C4429A01CA4200E302A7A684DA23@fmsmsx124.amr.corp.intel.com>
+        id S1726065AbfGFLCg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 6 Jul 2019 07:02:36 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:42672 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726001AbfGFLCf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Jul 2019 07:02:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+        From:Date:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=8bLQc4+RPGotEzco/YjdaD/+helrJCqU8PeAI1M0qSQ=; b=ZPP5RO11GzD09S5etzsYF1wXu
+        /fKzci7MtBLdaysUHf5o5RClkPbEs6X2shUpRPUREakJM8OL/smrTQGfLlVHpWHxZDEcHkX999Ai3
+        CYNOjPthN/zWYU2K7y16WSh6SyGOOsgUKV3ELg3bICDCVoaYl9A6e5VKRybKX4YBwR2UC95pdkRme
+        p5aMawg+IspThiUHeA3XDtlb7/DX3SyjKy1WkXuC2AdJXI3daYj/aMIa15VAo192R+nWjSRWF79iv
+        oXnBDB3RU7i7P9FKffe9FdFPch8l0XCptogdlC+Ad0NOSv35P4xyoMg9MYT0M+TW5+Mu8NTEVlnbx
+        DmLwUy9Hw==;
+Received: from 177.205.70.5.dynamic.adsl.gvt.net.br ([177.205.70.5] helo=coco.lan)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hjiSg-00067V-KD; Sat, 06 Jul 2019 11:02:35 +0000
+Date:   Sat, 6 Jul 2019 08:02:30 -0300
+From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 01/43] docs: infiniband: convert docs to ReST and rename
+ to *.rst
+Message-ID: <20190706080230.6e34bda2@coco.lan>
+In-Reply-To: <20190703180641.GA26394@ziepe.ca>
+References: <cover.1561723979.git.mchehab+samsung@kernel.org>
+        <4d843d0361e245861f7051e2c736a18dfaae7601.1561723980.git.mchehab+samsung@kernel.org>
+        <20190703180641.GA26394@ziepe.ca>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7A684DA23@fmsmsx124.amr.corp.intel.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 05, 2019 at 04:33:07PM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [net-next 1/3] ice: Initialize and register platform device to provide
-> > RDMA
+Em Wed, 3 Jul 2019 15:06:41 -0300
+Jason Gunthorpe <jgg@ziepe.ca> escreveu:
+
+> On Fri, Jun 28, 2019 at 09:19:57AM -0300, Mauro Carvalho Chehab wrote:
+> > The InfiniBand docs are plain text with no markups.
+> > So, all we needed to do were to add the title markups and
+> > some markup sequences in order to properly parse tables,
+> > lists and literal blocks.
 > > 
-> > On Thu, Jul 04, 2019 at 12:48:29PM +0000, Jason Gunthorpe wrote:
-> > > On Thu, Jul 04, 2019 at 02:42:47PM +0200, Greg KH wrote:
-> > > > On Thu, Jul 04, 2019 at 12:37:33PM +0000, Jason Gunthorpe wrote:
-> > > > > On Thu, Jul 04, 2019 at 02:29:50PM +0200, Greg KH wrote:
-> > > > > > On Thu, Jul 04, 2019 at 12:16:41PM +0000, Jason Gunthorpe wrote:
-> > > > > > > On Wed, Jul 03, 2019 at 07:12:50PM -0700, Jeff Kirsher wrote:
-> > > > > > > > From: Tony Nguyen <anthony.l.nguyen@intel.com>
-> > > > > > > >
-> > > > > > > > The RDMA block does not advertise on the PCI bus or any other bus.
-> > > > > > > > Thus the ice driver needs to provide access to the RDMA
-> > > > > > > > hardware block via a virtual bus; utilize the platform bus to provide this
-> > access.
-> > > > > > > >
-> > > > > > > > This patch initializes the driver to support RDMA as well as
-> > > > > > > > creates and registers a platform device for the RDMA driver
-> > > > > > > > to register to. At this point the driver is fully
-> > > > > > > > initialized to register a platform driver, however, can not
-> > > > > > > > yet register as the ops have not been implemented.
-> > > > > > >
-> > > > > > > I think you need Greg's ack on all this driver stuff -
-> > > > > > > particularly that a platform_device is OK.
-> > > > > >
-> > > > > > A platform_device is almost NEVER ok.
-> > > > > >
-> > > > > > Don't abuse it, make a real device on a real bus.  If you don't
-> > > > > > have a real bus and just need to create a device to hang other
-> > > > > > things off of, then use the virtual one, that's what it is there for.
-> > > > >
-> > > > > Ideally I'd like to see all the RDMA drivers that connect to
-> > > > > ethernet drivers use some similar scheme.
-> > > >
-> > > > Why?  They should be attached to a "real" device, why make any up?
-> > >
-> > > ? A "real" device, like struct pci_device, can only bind to one
-> > > driver. How can we bind it concurrently to net, rdma, scsi, etc?
+> > At its new index.rst, let's add a :orphan: while this is not linked to
+> > the main index.rst file, in order to avoid build warnings.
 > > 
-> > MFD was designed for this very problem.
-> > 
-> > > > > This is for a PCI device that plugs into multiple subsystems in
-> > > > > the kernel, ie it has net driver functionality, rdma
-> > > > > functionality, some even have SCSI functionality
-> > > >
-> > > > Sounds like a MFD device, why aren't you using that functionality
-> > > > instead?
-> > >
-> > > This was also my advice, but in another email Jeff says:
-> > >
-> > >   MFD architecture was also considered, and we selected the simpler
-> > >   platform model. Supporting a MFD architecture would require an
-> > >   additional MFD core driver, individual platform netdev, RDMA function
-> > >   drivers, and stripping a large portion of the netdev drivers into
-> > >   MFD core. The sub-devices registered by MFD core for function
-> > >   drivers are indeed platform devices.
-> > 
-> > So, "mfd is too hard, let's abuse a platform device" is ok?
-> > 
-> > People have been wanting to do MFD drivers for PCI devices for a long time, it's
-> > about time someone actually did the work for it, I bet it will not be all that complex
-> > if tiny embedded drivers can do it :)
-> > 
-> Hi Greg - Thanks for your feedback!
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> > ---
+> >  .../{core_locking.txt => core_locking.rst}    |  64 ++++++-----
+> >  Documentation/infiniband/index.rst            |  23 ++++
+> >  .../infiniband/{ipoib.txt => ipoib.rst}       |  24 ++--
+> >  .../infiniband/{opa_vnic.txt => opa_vnic.rst} | 108 +++++++++---------
+> >  .../infiniband/{sysfs.txt => sysfs.rst}       |   4 +-
+> >  .../{tag_matching.txt => tag_matching.rst}    |   5 +
+> >  .../infiniband/{user_mad.txt => user_mad.rst} |  33 ++++--
+> >  .../{user_verbs.txt => user_verbs.rst}        |  12 +-
+> >  drivers/infiniband/core/user_mad.c            |   2 +-
+> >  drivers/infiniband/ulp/ipoib/Kconfig          |   2 +-
+> >  10 files changed, 174 insertions(+), 103 deletions(-)
+> >  rename Documentation/infiniband/{core_locking.txt => core_locking.rst} (78%)
+> >  create mode 100644 Documentation/infiniband/index.rst
+> >  rename Documentation/infiniband/{ipoib.txt => ipoib.rst} (90%)
+> >  rename Documentation/infiniband/{opa_vnic.txt => opa_vnic.rst} (63%)
+> >  rename Documentation/infiniband/{sysfs.txt => sysfs.rst} (69%)
+> >  rename Documentation/infiniband/{tag_matching.txt => tag_matching.rst} (98%)
+> >  rename Documentation/infiniband/{user_mad.txt => user_mad.rst} (90%)
+> >  rename Documentation/infiniband/{user_verbs.txt => user_verbs.rst} (93%)  
 > 
-> We currently have 2 PCI function netdev drivers in the kernel (i40e & ice) that support devices (x722 & e810)
-> which are RDMA capable. Our objective is to add a single unified RDMA driver
-> (as this a subsystem specific requirement) which needs to access HW resources from the
-> netdev PF drivers. Attaching platform devices from the netdev drivers to the platform bus
-> and having a single RDMA platform driver bind to them and access these resources seemed
-> like a simple approach to realize our objective. But seems like attaching platform devices is
-> wrong. I would like to understand why. 
+> I'm not sure anymore if I sent a note or not, but this patch was
+> already applied to the rdma.git:
+> 
+> commit 97162a1ee8a1735fc7a7159fe08de966d88354ce
+> Author: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> Date:   Sat Jun 8 23:27:03 2019 -0300
+> 
+>     docs: infiniband: convert docs to ReST and rename to *.rst
+>     
+>     The InfiniBand docs are plain text with no markups.  So, all we needed to
+>     do were to add the title markups and some markup sequences in order to
+>     properly parse tables, lists and literal blocks.
+>     
+>     At its new index.rst, let's add a :orphan: while this is not linked to the
+>     main index.rst file, in order to avoid build warnings.
+>     
+>     Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+>     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 
-Because that is NOT what a platform device is for.
+Ah, ok, thanks!
 
-It was originally created for those types of devices that live on the
-"platform" bus, i.e. things that are hard-wired and you just "know" are
-in your system because they are located at specific locations.  We used
-to generate them from board files, and then when we got DT, we create
-them from the resources that DT says where the locations of the devices
-are.
+Not sure why but this one still applies on the top of -next.
+Probably just the usual merge noise that happens close to
+a new merge window.
 
-They are NOT to be abused and used whenever someone wants to put them
-somewhere in the "middle" of the device tree because they feel like they
-are easier to use instead of creating a real bus and drivers.
-
-Yes, they do get abused, and I need to sweep the tree again and fix up
-all of the places where this has crept back in.  But now that I know you
-are thinking of doing this, I'll keep saying to NOT do it for your use
-case either :)
-
-> Are platform sub devices only to be added from an MFD core driver? I
-> am also wondering if MFD arch.  would allow for realizing a single
-> RDMA driver and whether we need an MFD core driver for each device,
-> x722 & e810 or whether it can be a single driver.
-
-I do not know the details of how MFD works, please ask those developers
-for specifics.  If MFD doesn't work, then create a tiny virtual bus and
-make sub-devices out of that.  If you need a "generic" way to do this
-for PCI devices, then please create that as you are not the only one
-that keeps wanting this, as for some reason PCI hardware vendors don't
-like dividing up their devices in ways that would have made it much
-simpler to create individual devices (probably saves some gates and
-firmware complexity on the device).
-
-thanks,
-
-greg k-h
+Thanks,
+Mauro
