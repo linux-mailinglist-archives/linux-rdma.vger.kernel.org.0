@@ -2,62 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDDF60D8C
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jul 2019 00:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1098360E79
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jul 2019 04:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbfGEWAM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Jul 2019 18:00:12 -0400
-Received: from out176.e-adjacentdigital.co.uk ([178.156.202.12]:54896 "EHLO
-        slot0.mathewsons.ga" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1728208AbfGEWAM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Jul 2019 18:00:12 -0400
-X-Greylist: delayed 639 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Jul 2019 18:00:12 EDT
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=mathewsons.ga;
- h=Content-Type:MIME-Version:Content-Transfer-Encoding:Content-Description:Subject:To:From:Date:Reply-To:Message-ID; i=purchase@mathewsons.ga;
- bh=onxYcir3NvpNjk2I/gjm/O+ljxo=;
- b=XnkAaSIxd0qTYZUm01UkN3X352zLzgsEuZ97lGDgYfdZ9xSbRPrGPfv1Mn2P5WwbayPqhrF+z4Mo
-   BhrIv3bNiFzJ9zg+/boAe9uFTh6GOkYFcTroTT9iQdV1+E3Ds243osNQypnPbsde2bzFrzldnILt
-   BDAh1YxIOXGN7lgD1qZf2jioV2X2/oUvCLfRfmjznbbCZmRYbEZOUF0gYzsXSIM2J6+CMq+UHSIs
-   27SGWmMq+Yp4QORzRmDkrfNG49b6XB8Hvy6Zlc1FbMLyRlmFMD8p28ZhE9jIR6hHV6ZXGV1nur/4
-   xIJLISP+nmAseXmxC5DTNjiBd7RekhgOOUs4Vw==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=mathewsons.ga;
- b=VbkCgarfUhTBIvSts42vDuxHRMZtirBwk+MsMoRiweKV4TLwgNg6TlCC10IA7jlUN419I5T8Pk60
-   /7f6pBnLd8jGv1KMBdSucrDLFkETUAMh4bsxQTUs6yot6+67mNoogHTb4Tz6PIUkR2pf8e+JIQOD
-   BPZgD7StCgwvjG983k2Y/46EwH8u90/Ie4k5Kfv/r8L5kVnSBTAFb2GZC8eQuGaPSblu4QUz1+X+
-   fNqYDbZEAxBCX0W50fZ4Vu5/9PGB1TyhiRrU1JwxSooHXDiPmTpjVgiKw08b3eDbWzLYoeqP56KK
-   Xi1PB5aEC9CVnjJq7SseiE2svkmOJXkdrlriqg==;
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1725813AbfGFBr1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Jul 2019 21:47:27 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8714 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725776AbfGFBr1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 5 Jul 2019 21:47:27 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id E0754A215B055AB3337A;
+        Sat,  6 Jul 2019 09:47:24 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Sat, 6 Jul 2019
+ 09:47:14 +0800
+Subject: Re: [PATCH for-next 5/8] RDMA/hns: Bugfix for calculating qp buffer
+ size
+From:   oulijun <oulijun@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1561376872-111496-1-git-send-email-oulijun@huawei.com>
+ <1561376872-111496-6-git-send-email-oulijun@huawei.com>
+Message-ID: <997bdd68-8be1-9684-5d4d-d0b5bf202b80@huawei.com>
+Date:   Sat, 6 Jul 2019 09:47:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Quotes needed For July Shipments
-To:     Recipients <purchase@mathewsons.ga>
-From:   "Sales -Jpexcc." <purchase@mathewsons.ga>
-Date:   Sat, 06 Jul 2019 00:48:19 +0300
-Reply-To: jpexcc@aol.com
-Message-ID: <0.0.4D.54A.1D5337B2A0086A6.0@slot0.mathewsons.ga>
+In-Reply-To: <1561376872-111496-6-git-send-email-oulijun@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello dear,
- =
+在 2019/6/24 19:47, Lijun Ou 写道:
+> From: o00290482 <o00290482@huawei.com>
+Hi, Jason
+   May be my local configuration error causing the wroong author.  How should I make changes?
 
-We are in the market for your products after meeting at your stand during l=
-ast expo.
- =
+The correct as follows:
+From: Lijun Ou <oulijun@huawei.com>
+> The buffer size of qp which used to allocate qp buffer space for
+> storing sqwqe and rqwqe will be the length of buffer space. The
+> kernel driver will use the buffer address and the same size to
+> get the user memory. The same size named buff_size of qp. According
+> the algorithm of calculating, The size of the two is not equal
+> when users set the max sge of sq.
+>
+> Fixes: b28ca7cceff8 ("RDMA/hns: Limit extend sq sge num")
+> Signed-off-by: Lijun Ou <oulijun@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_qp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> index 305be42..d56c03d 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> @@ -392,8 +392,8 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
+>  					     hr_qp->sq.wqe_shift), PAGE_SIZE);
+>  	} else {
+>  		page_size = 1 << (hr_dev->caps.mtt_buf_pg_sz + PAGE_SHIFT);
+> -		hr_qp->sge.sge_cnt =
+> -		       max(page_size / (1 << hr_qp->sge.sge_shift), ex_sge_num);
+> +		hr_qp->sge.sge_cnt = ex_sge_num ?
+> +		   max(page_size / (1 << hr_qp->sge.sge_shift), ex_sge_num) : 0;
+>  		hr_qp->buff_size = HNS_ROCE_ALOGN_UP((hr_qp->rq.wqe_cnt <<
+>  					     hr_qp->rq.wqe_shift), page_size) +
+>  				   HNS_ROCE_ALOGN_UP((hr_qp->sge.sge_cnt <<
 
-Please kindly send us your latest catalog and price list so as to start a n=
-ew project/order as promised during the exhibition. =
 
- =
 
-I would appreciate your response about the above details required so we can=
- revert back to you asap.
- =
-
-Kind regards
- =
-
-Rhema Zoeh
