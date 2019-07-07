@@ -2,285 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C0461533
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jul 2019 16:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB358617B7
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jul 2019 23:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbfGGOV1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 7 Jul 2019 10:21:27 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:10353 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbfGGOV0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 7 Jul 2019 10:21:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1562509284; x=1594045284;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ICsoZfmUY9k7UlGUQSlbOYXn5DTseK7kHMgxrFhJj7k=;
-  b=MRVOAaiRQSHajBYYtBCHxscgpQSFHDtoGulu5xCceN39XqODvlyuO4u5
-   Szf9CQLaSmGeQ0s4mgellcxfUVrr0K051xjjzUydWp9G1LEOxxqt6kXvK
-   0TvM6WQTdhmOFdPsgm+gzY1YhRumPrFpVmcxaTSNv/dhnEFrj+EIEpIUk
-   4=;
-X-IronPort-AV: E=Sophos;i="5.62,462,1554768000"; 
-   d="scan'208";a="403869409"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-87a10be6.us-west-2.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 07 Jul 2019 14:21:22 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-87a10be6.us-west-2.amazon.com (Postfix) with ESMTPS id 2F7E7A21C2;
-        Sun,  7 Jul 2019 14:21:22 +0000 (UTC)
-Received: from EX13D13EUB001.ant.amazon.com (10.43.166.101) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 7 Jul 2019 14:21:21 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
- EX13D13EUB001.ant.amazon.com (10.43.166.101) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 7 Jul 2019 14:21:20 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.218.69.134) by
- mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP Server id
- 15.0.1367.3 via Frontend Transport; Sun, 7 Jul 2019 14:21:17 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>,
-        "Firas JahJah" <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: [PATCH for-next] RDMA/efa: Expose device statistics
-Date:   Sun, 7 Jul 2019 17:20:38 +0300
-Message-ID: <20190707142038.23191-1-galpress@amazon.com>
-X-Mailer: git-send-email 2.22.0
+        id S1727522AbfGGVbK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 7 Jul 2019 17:31:10 -0400
+Received: from edge20.ethz.ch ([82.130.99.26]:11428 "EHLO edge20.ethz.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727521AbfGGVbK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 7 Jul 2019 17:31:10 -0400
+X-Greylist: delayed 368 seconds by postgrey-1.27 at vger.kernel.org; Sun, 07 Jul 2019 17:31:09 EDT
+Received: from mailm214.d.ethz.ch (129.132.139.38) by edge20.ethz.ch
+ (82.130.99.26) with Microsoft SMTP Server (TLS) id 14.3.439.0; Sun, 7 Jul
+ 2019 23:24:09 +0200
+Received: from ktaranov-laptop (209.17.40.23) by mailm214.d.ethz.ch
+ (2001:67c:10ec:5603::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Sun, 7 Jul 2019
+ 23:23:34 +0200
+Date:   Sun, 7 Jul 2019 23:23:31 +0200
+From:   Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
+To:     Yanjun Zhu <yanjun.zhu@oracle.com>
+CC:     <monis@mellanox.com>, <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] Make rxe driver to calculate correct byte_len on
+ receiving side when work completion is generated with
+ IB_WC_RECV_RDMA_WITH_IMM opcode.
+Message-ID: <20190707231126.774bdd6e@ktaranov-laptop>
+In-Reply-To: <d149da15-523a-438a-1550-095b4b1a840b@oracle.com>
+References: <20190627140643.6191-1-konstantin.taranov@inf.ethz.ch>
+ <d149da15-523a-438a-1550-095b4b1a840b@oracle.com>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [209.17.40.23]
+X-ClientProxiedBy: mailm215.d.ethz.ch (2001:67c:10ec:5603::29) To
+ mailm214.d.ethz.ch (2001:67c:10ec:5603::28)
+X-TM-SNTS-SMTP: 4D81165952664C1D04AE67D65F90729D56AF5BDF793DC19688AF2A16CC9E746A2000:8
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Expose hardware statistics through the sysfs api:
-/sys/class/infiniband/efa_0/hw_counters/*.
+On Wed, 3 Jul 2019 09:24:54 +0800
+Yanjun Zhu <yanjun.zhu@oracle.com> wrote:
 
-Reviewed-by: Firas JahJah <firasj@amazon.com>
-Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
-Signed-off-by: Gal Pressman <galpress@amazon.com>
----
- drivers/infiniband/hw/efa/efa.h         |  3 +
- drivers/infiniband/hw/efa/efa_com_cmd.c | 35 +++++++++++
- drivers/infiniband/hw/efa/efa_com_cmd.h | 23 +++++++
- drivers/infiniband/hw/efa/efa_main.c    |  2 +
- drivers/infiniband/hw/efa/efa_verbs.c   | 79 +++++++++++++++++++++++++
- 5 files changed, 142 insertions(+)
+> On 2019/6/27 22:06, Konstantin Taranov wrote:
+> > Make softRoce to calculate correct byte_len on receiving side when work completion
+> > is generated with IB_WC_RECV_RDMA_WITH_IMM opcode.
+> >
+> > According to documentation byte_len must indicate the number of written
+> > bytes, whereas it was always equal to zero for IB_WC_RECV_RDMA_WITH_IMM opcode.  
+> 
+> With roce NIC, what is the byte_len? Thanks a lot.
 
-diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-index 119f8efec564..2283e432693e 100644
---- a/drivers/infiniband/hw/efa/efa.h
-+++ b/drivers/infiniband/hw/efa/efa.h
-@@ -156,5 +156,8 @@ int efa_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 		  int qp_attr_mask, struct ib_udata *udata);
- enum rdma_link_layer efa_port_link_layer(struct ib_device *ibdev,
- 					 u8 port_num);
-+struct rdma_hw_stats *efa_alloc_hw_stats(struct ib_device *ibdev, u8 port_num);
-+int efa_get_hw_stats(struct ib_device *ibdev, struct rdma_hw_stats *stats,
-+		     u8 port_num, int index);
- 
- #endif /* _EFA_H_ */
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 62345d8abf3c..16b115df63e8 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -702,3 +702,38 @@ int efa_com_dealloc_uar(struct efa_com_dev *edev,
- 
- 	return 0;
- }
-+
-+int efa_com_get_stats(struct efa_com_dev *edev,
-+		      struct efa_com_get_stats_params *params,
-+		      union efa_com_get_stats_result *result)
-+{
-+	struct efa_com_admin_queue *aq = &edev->aq;
-+	struct efa_admin_aq_get_stats_cmd cmd = {};
-+	struct efa_admin_acq_get_stats_resp resp;
-+	int err;
-+
-+	cmd.aq_common_descriptor.opcode = EFA_ADMIN_GET_STATS;
-+	cmd.type = params->type;
-+	cmd.scope = params->scope;
-+	cmd.scope_modifier = params->scope_modifier;
-+
-+	err = efa_com_cmd_exec(aq,
-+			       (struct efa_admin_aq_entry *)&cmd,
-+			       sizeof(cmd),
-+			       (struct efa_admin_acq_entry *)&resp,
-+			       sizeof(resp));
-+	if (err) {
-+		ibdev_err(edev->efa_dev,
-+			  "Failed to get stats type-%u scope-%u.%u [%d]\n",
-+			  cmd.type, cmd.scope, cmd.scope_modifier, err);
-+		return err;
-+	}
-+
-+	result->basic_stats.tx_bytes = resp.basic_stats.tx_bytes;
-+	result->basic_stats.tx_pkts = resp.basic_stats.tx_pkts;
-+	result->basic_stats.rx_bytes = resp.basic_stats.rx_bytes;
-+	result->basic_stats.rx_pkts = resp.basic_stats.rx_pkts;
-+	result->basic_stats.rx_drops = resp.basic_stats.rx_drops;
-+
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
-index a1174380462c..7f6c13052f49 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.h
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-@@ -225,6 +225,26 @@ struct efa_com_dealloc_uar_params {
- 	u16 uarn;
- };
- 
-+struct efa_com_get_stats_params {
-+	/* see enum efa_admin_get_stats_type */
-+	u8 type;
-+	/* see enum efa_admin_get_stats_scope */
-+	u8 scope;
-+	u16 scope_modifier;
-+};
-+
-+struct efa_com_basic_stats {
-+	u64 tx_bytes;
-+	u64 tx_pkts;
-+	u64 rx_bytes;
-+	u64 rx_pkts;
-+	u64 rx_drops;
-+};
-+
-+union efa_com_get_stats_result {
-+	struct efa_com_basic_stats basic_stats;
-+};
-+
- void efa_com_set_dma_addr(dma_addr_t addr, u32 *addr_high, u32 *addr_low);
- int efa_com_create_qp(struct efa_com_dev *edev,
- 		      struct efa_com_create_qp_params *params,
-@@ -266,5 +286,8 @@ int efa_com_alloc_uar(struct efa_com_dev *edev,
- 		      struct efa_com_alloc_uar_result *result);
- int efa_com_dealloc_uar(struct efa_com_dev *edev,
- 			struct efa_com_dealloc_uar_params *params);
-+int efa_com_get_stats(struct efa_com_dev *edev,
-+		      struct efa_com_get_stats_params *params,
-+		      union efa_com_get_stats_result *result);
- 
- #endif /* _EFA_COM_CMD_H_ */
-diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index dd1c6d49466f..83858f7e83d0 100644
---- a/drivers/infiniband/hw/efa/efa_main.c
-+++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -201,6 +201,7 @@ static const struct ib_device_ops efa_dev_ops = {
- 	.driver_id = RDMA_DRIVER_EFA,
- 	.uverbs_abi_ver = EFA_UVERBS_ABI_VERSION,
- 
-+	.alloc_hw_stats = efa_alloc_hw_stats,
- 	.alloc_pd = efa_alloc_pd,
- 	.alloc_ucontext = efa_alloc_ucontext,
- 	.create_ah = efa_create_ah,
-@@ -212,6 +213,7 @@ static const struct ib_device_ops efa_dev_ops = {
- 	.destroy_ah = efa_destroy_ah,
- 	.destroy_cq = efa_destroy_cq,
- 	.destroy_qp = efa_destroy_qp,
-+	.get_hw_stats = efa_get_hw_stats,
- 	.get_link_layer = efa_port_link_layer,
- 	.get_port_immutable = efa_get_port_immutable,
- 	.mmap = efa_mmap,
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index df77bc312a25..3c10e733758e 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -41,6 +41,33 @@ static inline u64 get_mmap_key(const struct efa_mmap_entry *efa)
- 	       ((u64)efa->mmap_page << PAGE_SHIFT);
- }
- 
-+#define EFA_DEFINE_STATS(op) \
-+	op(EFA_TX_BYTES, "tx_bytes") \
-+	op(EFA_TX_PKTS, "tx_pkts") \
-+	op(EFA_RX_BYTES, "rx_bytes") \
-+	op(EFA_RX_PKTS, "rx_pkts") \
-+	op(EFA_RX_DROPS, "rx_drops") \
-+	op(EFA_SUBMITTED_CMDS, "submitted_cmds") \
-+	op(EFA_COMPLETED_CMDS, "completed_cmds") \
-+	op(EFA_NO_COMPLETION_CMDS, "no_completion_cmds") \
-+	op(EFA_KEEP_ALIVE_RCVD, "keep_alive_rcvd") \
-+	op(EFA_ALLOC_PD_ERR, "alloc_pd_err") \
-+	op(EFA_CREATE_QP_ERR, "create_qp_err") \
-+	op(EFA_REG_MR_ERR, "reg_mr_err") \
-+	op(EFA_ALLOC_UCONTEXT_ERR, "alloc_ucontext_err") \
-+	op(EFA_CREATE_AH_ERR, "create_ah_err")
-+
-+#define EFA_STATS_ENUM(ename, name) ename,
-+#define EFA_STATS_STR(ename, name) [ename] = name,
-+
-+enum efa_hw_stats {
-+	EFA_DEFINE_STATS(EFA_STATS_ENUM)
-+};
-+
-+static const char *const efa_stats_names[] = {
-+	EFA_DEFINE_STATS(EFA_STATS_STR)
-+};
-+
- #define EFA_CHUNK_PAYLOAD_SHIFT       12
- #define EFA_CHUNK_PAYLOAD_SIZE        BIT(EFA_CHUNK_PAYLOAD_SHIFT)
- #define EFA_CHUNK_PAYLOAD_PTR_SIZE    8
-@@ -1727,6 +1754,58 @@ void efa_destroy_ah(struct ib_ah *ibah, u32 flags)
- 	efa_ah_destroy(dev, ah);
- }
- 
-+struct rdma_hw_stats *efa_alloc_hw_stats(struct ib_device *ibdev, u8 port_num)
-+{
-+	/* Stats are per device */
-+	if (port_num)
-+		return NULL;
-+
-+	return rdma_alloc_hw_stats_struct(efa_stats_names,
-+					  ARRAY_SIZE(efa_stats_names),
-+					  RDMA_HW_STATS_DEFAULT_LIFESPAN);
-+}
-+
-+int efa_get_hw_stats(struct ib_device *ibdev, struct rdma_hw_stats *stats,
-+		     u8 port_num, int index)
-+{
-+	struct efa_com_get_stats_params params = {};
-+	union efa_com_get_stats_result result;
-+	struct efa_dev *dev = to_edev(ibdev);
-+	struct efa_com_basic_stats *bs;
-+	struct efa_com_stats_admin *as;
-+	struct efa_stats *s;
-+	int err;
-+
-+	params.type = EFA_ADMIN_GET_STATS_TYPE_BASIC;
-+	params.scope = EFA_ADMIN_GET_STATS_SCOPE_ALL;
-+
-+	err = efa_com_get_stats(&dev->edev, &params, &result);
-+	if (err)
-+		return err;
-+
-+	bs = &result.basic_stats;
-+	stats->value[EFA_TX_BYTES] = bs->tx_bytes;
-+	stats->value[EFA_TX_PKTS] = bs->tx_pkts;
-+	stats->value[EFA_RX_BYTES] = bs->rx_bytes;
-+	stats->value[EFA_RX_PKTS] = bs->rx_pkts;
-+	stats->value[EFA_RX_DROPS] = bs->rx_drops;
-+
-+	as = &dev->edev.aq.stats;
-+	stats->value[EFA_SUBMITTED_CMDS] = atomic64_read(&as->submitted_cmd);
-+	stats->value[EFA_COMPLETED_CMDS] = atomic64_read(&as->completed_cmd);
-+	stats->value[EFA_NO_COMPLETION_CMDS] = atomic64_read(&as->no_completion);
-+
-+	s = &dev->stats;
-+	stats->value[EFA_KEEP_ALIVE_RCVD] = atomic64_read(&s->keep_alive_rcvd);
-+	stats->value[EFA_ALLOC_PD_ERR] = atomic64_read(&s->sw_stats.alloc_pd_err);
-+	stats->value[EFA_CREATE_QP_ERR] = atomic64_read(&s->sw_stats.create_qp_err);
-+	stats->value[EFA_REG_MR_ERR] = atomic64_read(&s->sw_stats.reg_mr_err);
-+	stats->value[EFA_ALLOC_UCONTEXT_ERR] = atomic64_read(&s->sw_stats.alloc_ucontext_err);
-+	stats->value[EFA_CREATE_AH_ERR] = atomic64_read(&s->sw_stats.create_ah_err);
-+
-+	return ARRAY_SIZE(efa_stats_names);
-+}
-+
- enum rdma_link_layer efa_port_link_layer(struct ib_device *ibdev,
- 					 u8 port_num)
- {
--- 
-2.22.0
+byte_len is a field of a work completion (struct ib_uverbs_wc or struct ibv_wc). It is defined in verbs and stores
+the number of written bytes to the destination memory. In case of IB_WC_RECV_RDMA_WITH_IMM
+completion event, the field byte_len must store the number of written bytes for incoming
+RDMA_WRITE_WITH_IMM request. 
+
+> 
+> Zhu Yanjun
+> 
+> >
+> > The patch proposes to remember the length of an RDMA request from the RETH header, and use it
+> > as byte_len when the work completion with IB_WC_RECV_RDMA_WITH_IMM opcode is generated.
+> >
+> > Signed-off-by: Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
+> > ---
+> >   drivers/infiniband/sw/rxe/rxe_resp.c  | 5 ++++-
+> >   drivers/infiniband/sw/rxe/rxe_verbs.h | 1 +
+> >   2 files changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+> > index aca9f60f9b21..1cbfbd98eb22 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> > @@ -431,6 +431,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+> >   			qp->resp.va = reth_va(pkt);
+> >   			qp->resp.rkey = reth_rkey(pkt);
+> >   			qp->resp.resid = reth_len(pkt);
+> > +			qp->resp.length = reth_len(pkt);
+> >   		}
+> >   		access = (pkt->mask & RXE_READ_MASK) ? IB_ACCESS_REMOTE_READ
+> >   						     : IB_ACCESS_REMOTE_WRITE;
+> > @@ -856,7 +857,9 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+> >   				pkt->mask & RXE_WRITE_MASK) ?
+> >   					IB_WC_RECV_RDMA_WITH_IMM : IB_WC_RECV;
+> >   		wc->vendor_err = 0;
+> > -		wc->byte_len = wqe->dma.length - wqe->dma.resid;
+> > +		wc->byte_len = (pkt->mask & RXE_IMMDT_MASK &&
+> > +				pkt->mask & RXE_WRITE_MASK) ?
+> > +					qp->resp.length : wqe->dma.length - wqe->dma.resid;
+> >   
+> >   		/* fields after byte_len are different between kernel and user
+> >   		 * space
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > index e8be7f44e3be..28bfb3ece104 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > @@ -213,6 +213,7 @@ struct rxe_resp_info {
+> >   	struct rxe_mem		*mr;
+> >   	u32			resid;
+> >   	u32			rkey;
+> > +	u32			length;
+> >   	u64			atomic_orig;
+> >   
+> >   	/* SRQ only */  
 
