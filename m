@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEC761FB5
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 15:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1040A61FB7
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 15:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731409AbfGHNox (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jul 2019 09:44:53 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2182 "EHLO huawei.com"
+        id S1731415AbfGHNo4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jul 2019 09:44:56 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2180 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729866AbfGHNox (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 8 Jul 2019 09:44:53 -0400
+        id S1729856AbfGHNo4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 8 Jul 2019 09:44:56 -0400
 Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6D2C342BED579F5C855D;
+        by Forcepoint Email with ESMTP id 5E1A76AB677ECD6CFA26;
         Mon,  8 Jul 2019 21:44:49 +0800 (CST)
 Received: from linux-ioko.site (10.71.200.31) by
  DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.439.0; Mon, 8 Jul 2019 21:44:38 +0800
+ 14.3.439.0; Mon, 8 Jul 2019 21:44:39 +0800
 From:   Lijun Ou <oulijun@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH for-next 1/9] RDMA/hns: Package the flow of creating cq
-Date:   Mon, 8 Jul 2019 21:41:17 +0800
-Message-ID: <1562593285-8037-2-git-send-email-oulijun@huawei.com>
+Subject: [PATCH for-next 2/9] RDMA/hns: Refactor the code of creating srq
+Date:   Mon, 8 Jul 2019 21:41:18 +0800
+Message-ID: <1562593285-8037-3-git-send-email-oulijun@huawei.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1562593285-8037-1-git-send-email-oulijun@huawei.com>
 References: <1562593285-8037-1-git-send-email-oulijun@huawei.com>
@@ -36,243 +36,370 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Here moves the relatived codes of creating cq into the separated
-functions in order to comprehensibility.
+Here moves the relatived codes of creating user srq and
+kernel srq into the two independent functions as well as
+removes some unused codes and optimizes some codes.
 
 Signed-off-by: Lijun Ou <oulijun@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_cq.c | 186 +++++++++++++++++++++-----------
- 1 file changed, 124 insertions(+), 62 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_srq.c | 310 ++++++++++++++++++-------------
+ 1 file changed, 183 insertions(+), 127 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index 4e50c22..507d3c4 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -298,21 +298,132 @@ static void hns_roce_ib_free_cq_buf(struct hns_roce_dev *hr_dev,
- 			  &buf->hr_buf);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
+index 38bb548..c011422 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_srq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
+@@ -175,6 +175,91 @@ static void hns_roce_srq_free(struct hns_roce_dev *hr_dev,
+ 	hns_roce_bitmap_free(&srq_table->bitmap, srq->srqn, BITMAP_NO_RR);
  }
  
-+static int create_user_cq(struct hns_roce_dev *hr_dev,
-+			  struct hns_roce_cq *hr_cq,
-+			  struct ib_udata *udata,
-+			  struct hns_roce_ib_create_cq_resp *resp,
-+			  struct hns_roce_uar *uar,
-+			  int cq_entries)
++static int create_user_srq(struct hns_roce_srq *srq, struct ib_udata *udata,
++			   int srq_buf_size)
 +{
-+	struct hns_roce_ib_create_cq ucmd;
-+	struct device *dev = hr_dev->dev;
++	struct hns_roce_dev *hr_dev = to_hr_dev(srq->ibsrq.device);
++	struct hns_roce_ib_create_srq  ucmd;
++	u32 page_shift;
++	u32 npages;
 +	int ret;
-+	struct hns_roce_ucontext *context = rdma_udata_to_drv_context(
-+				   udata, struct hns_roce_ucontext, ibucontext);
 +
-+	if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd))) {
-+		dev_err(dev, "Failed to copy_from_udata.\n");
++	if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd)))
 +		return -EFAULT;
++
++	srq->umem = ib_umem_get(udata, ucmd.buf_addr, srq_buf_size, 0, 0);
++	if (IS_ERR(srq->umem))
++		return PTR_ERR(srq->umem);
++
++	if (hr_dev->caps.srqwqe_buf_pg_sz) {
++		npages = (ib_umem_page_count(srq->umem) +
++			 (1 << hr_dev->caps.srqwqe_buf_pg_sz) - 1) /
++			 (1 << hr_dev->caps.srqwqe_buf_pg_sz);
++		page_shift = PAGE_SHIFT + hr_dev->caps.srqwqe_buf_pg_sz;
++		ret = hns_roce_mtt_init(hr_dev, npages, page_shift, &srq->mtt);
++	} else
++		ret = hns_roce_mtt_init(hr_dev, ib_umem_page_count(srq->umem),
++					PAGE_SHIFT, &srq->mtt);
++	if (ret)
++		goto err_user_buf;
++
++	ret = hns_roce_ib_umem_write_mtt(hr_dev, &srq->mtt, srq->umem);
++	if (ret)
++		goto err_user_srq_mtt;
++
++	/* config index queue BA */
++	srq->idx_que.umem = ib_umem_get(udata, ucmd.que_addr,
++					srq->idx_que.buf_size, 0, 0);
++	if (IS_ERR(srq->idx_que.umem)) {
++		dev_err(hr_dev->dev, "ib_umem_get error for index queue\n");
++		ret = PTR_ERR(srq->idx_que.umem);
++		goto err_user_srq_mtt;
 +	}
 +
-+	/* Get user space address, write it into mtt table */
-+	ret = hns_roce_ib_get_cq_umem(hr_dev, udata, &hr_cq->hr_buf,
-+				      &hr_cq->umem, ucmd.buf_addr,
-+				      cq_entries);
++	if (hr_dev->caps.idx_buf_pg_sz) {
++		npages = (ib_umem_page_count(srq->idx_que.umem) +
++			 (1 << hr_dev->caps.idx_buf_pg_sz) - 1) /
++			 (1 << hr_dev->caps.idx_buf_pg_sz);
++		page_shift = PAGE_SHIFT + hr_dev->caps.idx_buf_pg_sz;
++		ret = hns_roce_mtt_init(hr_dev, npages, page_shift,
++					&srq->idx_que.mtt);
++	} else {
++		ret = hns_roce_mtt_init(hr_dev,
++					ib_umem_page_count(srq->idx_que.umem),
++					PAGE_SHIFT,
++					&srq->idx_que.mtt);
++	}
++
 +	if (ret) {
-+		dev_err(dev, "Failed to get_cq_umem.\n");
-+		return ret;
++		dev_err(hr_dev->dev, "hns_roce_mtt_init error for idx que\n");
++		goto err_user_idx_mtt;
 +	}
 +
-+	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) &&
-+	    (udata->outlen >= sizeof(*resp))) {
-+		ret = hns_roce_db_map_user(context, udata, ucmd.db_addr,
-+					   &hr_cq->db);
-+		if (ret) {
-+			dev_err(dev, "cq record doorbell map failed!\n");
-+			goto err_mtt;
-+		}
-+		hr_cq->db_en = 1;
-+		resp->cap_flags |= HNS_ROCE_SUPPORT_CQ_RECORD_DB;
++	ret = hns_roce_ib_umem_write_mtt(hr_dev, &srq->idx_que.mtt,
++					 srq->idx_que.umem);
++	if (ret) {
++		dev_err(hr_dev->dev,
++			"hns_roce_ib_umem_write_mtt error for idx que\n");
++		goto err_user_idx_buf;
 +	}
-+
-+	/* Get user space parameters */
-+	uar = &context->uar;
 +
 +	return 0;
 +
-+err_mtt:
-+	hns_roce_mtt_cleanup(hr_dev, &hr_cq->hr_buf.hr_mtt);
-+	ib_umem_release(hr_cq->umem);
++err_user_idx_buf:
++	hns_roce_mtt_cleanup(hr_dev, &srq->idx_que.mtt);
++
++err_user_idx_mtt:
++	ib_umem_release(srq->idx_que.umem);
++
++err_user_srq_mtt:
++	hns_roce_mtt_cleanup(hr_dev, &srq->mtt);
++
++err_user_buf:
++	ib_umem_release(srq->umem);
 +
 +	return ret;
 +}
 +
-+static int create_kernel_cq(struct hns_roce_dev *hr_dev,
-+			    struct hns_roce_cq *hr_cq, struct hns_roce_uar *uar,
-+			    int cq_entries)
+ static int hns_roce_create_idx_que(struct ib_pd *pd, struct hns_roce_srq *srq,
+ 				   u32 page_shift)
+ {
+@@ -196,6 +281,93 @@ static int hns_roce_create_idx_que(struct ib_pd *pd, struct hns_roce_srq *srq,
+ 	return 0;
+ }
+ 
++static int create_kernel_srq(struct hns_roce_srq *srq, int srq_buf_size)
 +{
-+	struct device *dev = hr_dev->dev;
++	struct hns_roce_dev *hr_dev = to_hr_dev(srq->ibsrq.device);
++	u32 page_shift = PAGE_SHIFT + hr_dev->caps.srqwqe_buf_pg_sz;
 +	int ret;
 +
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) {
-+		ret = hns_roce_alloc_db(hr_dev, &hr_cq->db, 1);
-+		if (ret)
-+			return ret;
++	if (hns_roce_buf_alloc(hr_dev, srq_buf_size, (1 << page_shift) * 2,
++			       &srq->buf, page_shift))
++		return -ENOMEM;
 +
-+		hr_cq->set_ci_db = hr_cq->db.db_record;
-+		*hr_cq->set_ci_db = 0;
-+		hr_cq->db_en = 1;
-+	}
++	srq->head = 0;
++	srq->tail = srq->max - 1;
 +
-+	/* Init mtt table and write buff address to mtt table */
-+	ret = hns_roce_ib_alloc_cq_buf(hr_dev, &hr_cq->hr_buf, cq_entries);
++	ret = hns_roce_mtt_init(hr_dev, srq->buf.npages, srq->buf.page_shift,
++				&srq->mtt);
++	if (ret)
++		goto err_kernel_buf;
++
++	ret = hns_roce_buf_write_mtt(hr_dev, &srq->mtt, &srq->buf);
++	if (ret)
++		goto err_kernel_srq_mtt;
++
++	page_shift = PAGE_SHIFT + hr_dev->caps.idx_buf_pg_sz;
++	ret = hns_roce_create_idx_que(srq->ibsrq.pd, srq, page_shift);
 +	if (ret) {
-+		dev_err(dev, "Failed to alloc_cq_buf.\n");
-+		goto err_db;
++		dev_err(hr_dev->dev, "Create idx queue fail(%d)!\n", ret);
++		goto err_kernel_srq_mtt;
 +	}
 +
-+	uar = &hr_dev->priv_uar;
-+	hr_cq->cq_db_l = hr_dev->reg_base + hr_dev->odb_offset +
-+			 DB_REG_OFFSET * uar->index;
++	/* Init mtt table for idx_que */
++	ret = hns_roce_mtt_init(hr_dev, srq->idx_que.idx_buf.npages,
++				srq->idx_que.idx_buf.page_shift,
++				&srq->idx_que.mtt);
++	if (ret)
++		goto err_kernel_create_idx;
++
++	/* Write buffer address into the mtt table */
++	ret = hns_roce_buf_write_mtt(hr_dev, &srq->idx_que.mtt,
++				     &srq->idx_que.idx_buf);
++	if (ret)
++		goto err_kernel_idx_buf;
++
++	srq->wrid = kvmalloc_array(srq->max, sizeof(u64), GFP_KERNEL);
++	if (!srq->wrid) {
++		ret = -ENOMEM;
++		goto err_kernel_idx_buf;
++	}
 +
 +	return 0;
 +
-+err_db:
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB)
-+		hns_roce_free_db(hr_dev, &hr_cq->db);
++err_kernel_idx_buf:
++	hns_roce_mtt_cleanup(hr_dev, &srq->idx_que.mtt);
++
++err_kernel_create_idx:
++	hns_roce_buf_free(hr_dev, srq->idx_que.buf_size,
++			  &srq->idx_que.idx_buf);
++	kfree(srq->idx_que.bitmap);
++
++err_kernel_srq_mtt:
++	hns_roce_mtt_cleanup(hr_dev, &srq->mtt);
++
++err_kernel_buf:
++	hns_roce_buf_free(hr_dev, srq_buf_size, &srq->buf);
 +
 +	return ret;
 +}
 +
-+static void destroy_user_cq(struct hns_roce_dev *hr_dev,
-+			    struct hns_roce_cq *hr_cq,
-+			    struct ib_udata *udata,
-+			    struct hns_roce_ib_create_cq_resp *resp)
++static void destroy_user_srq(struct hns_roce_dev *hr_dev,
++			     struct hns_roce_srq *srq)
 +{
-+	struct hns_roce_ucontext *context = rdma_udata_to_drv_context(
-+				   udata, struct hns_roce_ucontext, ibucontext);
-+
-+	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) &&
-+	    (udata->outlen >= sizeof(*resp)))
-+		hns_roce_db_unmap_user(context, &hr_cq->db);
-+
-+	hns_roce_mtt_cleanup(hr_dev, &hr_cq->hr_buf.hr_mtt);
-+	ib_umem_release(hr_cq->umem);
++	hns_roce_mtt_cleanup(hr_dev, &srq->idx_que.mtt);
++	ib_umem_release(srq->idx_que.umem);
++	hns_roce_mtt_cleanup(hr_dev, &srq->mtt);
++	ib_umem_release(srq->umem);
 +}
 +
-+static void destroy_kernel_cq(struct hns_roce_dev *hr_dev,
-+			      struct hns_roce_cq *hr_cq)
++static void destroy_kernel_srq(struct hns_roce_dev *hr_dev,
++			       struct hns_roce_srq *srq, int srq_buf_size)
 +{
-+	hns_roce_mtt_cleanup(hr_dev, &hr_cq->hr_buf.hr_mtt);
-+	hns_roce_ib_free_cq_buf(hr_dev, &hr_cq->hr_buf, hr_cq->ib_cq.cqe);
-+
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB)
-+		hns_roce_free_db(hr_dev, &hr_cq->db);
++	kvfree(srq->wrid);
++	hns_roce_mtt_cleanup(hr_dev, &srq->idx_que.mtt);
++	hns_roce_buf_free(hr_dev, srq->idx_que.buf_size, &srq->idx_que.idx_buf);
++	kfree(srq->idx_que.bitmap);
++	hns_roce_mtt_cleanup(hr_dev, &srq->mtt);
++	hns_roce_buf_free(hr_dev, srq_buf_size, &srq->buf);
 +}
 +
- int hns_roce_ib_create_cq(struct ib_cq *ib_cq,
- 			  const struct ib_cq_init_attr *attr,
- 			  struct ib_udata *udata)
- {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ib_cq->device);
- 	struct device *dev = hr_dev->dev;
--	struct hns_roce_ib_create_cq ucmd;
- 	struct hns_roce_ib_create_cq_resp resp = {};
- 	struct hns_roce_cq *hr_cq = to_hr_cq(ib_cq);
- 	struct hns_roce_uar *uar = NULL;
- 	int vector = attr->comp_vector;
- 	int cq_entries = attr->cqe;
- 	int ret;
--	struct hns_roce_ucontext *context = rdma_udata_to_drv_context(
--		udata, struct hns_roce_ucontext, ibucontext);
+ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 			struct ib_srq_init_attr *srq_init_attr,
+ 			struct ib_udata *udata)
+@@ -205,9 +377,7 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 	struct hns_roce_srq *srq = to_hr_srq(ib_srq);
+ 	int srq_desc_size;
+ 	int srq_buf_size;
+-	u32 page_shift;
+ 	int ret = 0;
+-	u32 npages;
+ 	u32 cqn;
  
- 	if (cq_entries < 1 || cq_entries > hr_dev->caps.max_cqes) {
- 		dev_err(dev, "Creat CQ failed. entries=%d, max=%d\n",
-@@ -328,57 +439,18 @@ int hns_roce_ib_create_cq(struct ib_cq *ib_cq,
- 	spin_lock_init(&hr_cq->lock);
+ 	/* Check the actual SRQ wqe and SRQ sge num */
+@@ -233,115 +403,16 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 	srq->idx_que.mtt.mtt_type = MTT_TYPE_IDX;
  
  	if (udata) {
--		if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd))) {
--			dev_err(dev, "Failed to copy_from_udata.\n");
--			ret = -EFAULT;
--			goto err_cq;
+-		struct hns_roce_ib_create_srq  ucmd;
+-
+-		if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd)))
+-			return -EFAULT;
+-
+-		srq->umem =
+-			ib_umem_get(udata, ucmd.buf_addr, srq_buf_size, 0, 0);
+-		if (IS_ERR(srq->umem))
+-			return PTR_ERR(srq->umem);
+-
+-		if (hr_dev->caps.srqwqe_buf_pg_sz) {
+-			npages = (ib_umem_page_count(srq->umem) +
+-				  (1 << hr_dev->caps.srqwqe_buf_pg_sz) - 1) /
+-				  (1 << hr_dev->caps.srqwqe_buf_pg_sz);
+-			page_shift = PAGE_SHIFT + hr_dev->caps.srqwqe_buf_pg_sz;
+-			ret = hns_roce_mtt_init(hr_dev, npages,
+-						page_shift,
+-						&srq->mtt);
+-		} else
+-			ret = hns_roce_mtt_init(hr_dev,
+-						ib_umem_page_count(srq->umem),
+-						PAGE_SHIFT, &srq->mtt);
+-		if (ret)
+-			goto err_buf;
+-
+-		ret = hns_roce_ib_umem_write_mtt(hr_dev, &srq->mtt, srq->umem);
+-		if (ret)
+-			goto err_srq_mtt;
+-
+-		/* config index queue BA */
+-		srq->idx_que.umem = ib_umem_get(udata, ucmd.que_addr,
+-						srq->idx_que.buf_size, 0, 0);
+-		if (IS_ERR(srq->idx_que.umem)) {
+-			dev_err(hr_dev->dev,
+-				"ib_umem_get error for index queue\n");
+-			ret = PTR_ERR(srq->idx_que.umem);
+-			goto err_srq_mtt;
 -		}
 -
--		/* Get user space address, write it into mtt table */
--		ret = hns_roce_ib_get_cq_umem(hr_dev, udata, &hr_cq->hr_buf,
--					      &hr_cq->umem, ucmd.buf_addr,
--					      cq_entries);
-+		ret = create_user_cq(hr_dev, hr_cq, udata, &resp, uar,
-+				     cq_entries);
+-		if (hr_dev->caps.idx_buf_pg_sz) {
+-			npages = (ib_umem_page_count(srq->idx_que.umem) +
+-				  (1 << hr_dev->caps.idx_buf_pg_sz) - 1) /
+-				  (1 << hr_dev->caps.idx_buf_pg_sz);
+-			page_shift = PAGE_SHIFT + hr_dev->caps.idx_buf_pg_sz;
+-			ret = hns_roce_mtt_init(hr_dev, npages,
+-						page_shift, &srq->idx_que.mtt);
+-		} else {
+-			ret = hns_roce_mtt_init(
+-				hr_dev, ib_umem_page_count(srq->idx_que.umem),
+-				PAGE_SHIFT, &srq->idx_que.mtt);
+-		}
+-
+-		if (ret) {
+-			dev_err(hr_dev->dev,
+-				"hns_roce_mtt_init error for idx que\n");
+-			goto err_idx_mtt;
+-		}
+-
+-		ret = hns_roce_ib_umem_write_mtt(hr_dev, &srq->idx_que.mtt,
+-						 srq->idx_que.umem);
++		ret = create_user_srq(srq, udata, srq_buf_size);
  		if (ret) {
--			dev_err(dev, "Failed to get_cq_umem.\n");
-+			dev_err(dev, "Create cq failed in user mode!\n");
- 			goto err_cq;
+-			dev_err(hr_dev->dev,
+-			      "hns_roce_ib_umem_write_mtt error for idx que\n");
+-			goto err_idx_buf;
++			dev_err(hr_dev->dev, "Create user srq failed\n");
++			goto err_srq;
  		}
--
--		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) &&
--		    (udata->outlen >= sizeof(resp))) {
--			ret = hns_roce_db_map_user(context, udata, ucmd.db_addr,
--						   &hr_cq->db);
--			if (ret) {
--				dev_err(dev, "cq record doorbell map failed!\n");
--				goto err_mtt;
--			}
--			hr_cq->db_en = 1;
--			resp.cap_flags |= HNS_ROCE_SUPPORT_CQ_RECORD_DB;
--		}
--
--		/* Get user space parameters */
--		uar = &context->uar;
  	} else {
--		if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) {
--			ret = hns_roce_alloc_db(hr_dev, &hr_cq->db, 1);
--			if (ret)
--				goto err_cq;
+-		page_shift = PAGE_SHIFT + hr_dev->caps.srqwqe_buf_pg_sz;
+-		if (hns_roce_buf_alloc(hr_dev, srq_buf_size,
+-				       (1 << page_shift) * 2, &srq->buf,
+-				       page_shift))
+-			return -ENOMEM;
 -
--			hr_cq->set_ci_db = hr_cq->db.db_record;
--			*hr_cq->set_ci_db = 0;
--			hr_cq->db_en = 1;
+-		srq->head = 0;
+-		srq->tail = srq->max - 1;
+-
+-		ret = hns_roce_mtt_init(hr_dev, srq->buf.npages,
+-					srq->buf.page_shift, &srq->mtt);
+-		if (ret)
+-			goto err_buf;
+-
+-		ret = hns_roce_buf_write_mtt(hr_dev, &srq->mtt, &srq->buf);
+-		if (ret)
+-			goto err_srq_mtt;
+-
+-		page_shift = PAGE_SHIFT + hr_dev->caps.idx_buf_pg_sz;
+-		ret = hns_roce_create_idx_que(ib_srq->pd, srq, page_shift);
++		ret = create_kernel_srq(srq, srq_buf_size);
+ 		if (ret) {
+-			dev_err(hr_dev->dev, "Create idx queue fail(%d)!\n",
+-				ret);
+-			goto err_srq_mtt;
 -		}
 -
--		/* Init mmt table and write buff address to mtt table */
--		ret = hns_roce_ib_alloc_cq_buf(hr_dev, &hr_cq->hr_buf,
--					       cq_entries);
-+		ret = create_kernel_cq(hr_dev, hr_cq, uar, cq_entries);
- 		if (ret) {
--			dev_err(dev, "Failed to alloc_cq_buf.\n");
--			goto err_db;
-+			dev_err(dev, "Create cq failed in kernel mode!\n");
-+			goto err_cq;
- 		}
+-		/* Init mtt table for idx_que */
+-		ret = hns_roce_mtt_init(hr_dev, srq->idx_que.idx_buf.npages,
+-					srq->idx_que.idx_buf.page_shift,
+-					&srq->idx_que.mtt);
+-		if (ret)
+-			goto err_create_idx;
 -
--		uar = &hr_dev->priv_uar;
--		hr_cq->cq_db_l = hr_dev->reg_base + hr_dev->odb_offset +
--				DB_REG_OFFSET * uar->index;
+-		/* Write buffer address into the mtt table */
+-		ret = hns_roce_buf_write_mtt(hr_dev, &srq->idx_que.mtt,
+-					     &srq->idx_que.idx_buf);
+-		if (ret)
+-			goto err_idx_buf;
+-
+-		srq->wrid = kvmalloc_array(srq->max, sizeof(u64), GFP_KERNEL);
+-		if (!srq->wrid) {
+-			ret = -ENOMEM;
+-			goto err_idx_buf;
++			dev_err(hr_dev->dev, "Create kernel srq failed\n");
++			goto err_srq;
+ 		}
  	}
  
- 	/* Allocate cq index, fill cq_context */
-@@ -416,20 +488,10 @@ int hns_roce_ib_create_cq(struct ib_cq *ib_cq,
- 	hns_roce_free_cq(hr_dev, hr_cq);
+@@ -373,27 +444,12 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 	hns_roce_srq_free(hr_dev, srq);
  
- err_dbmap:
--	if (udata && (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) &&
--	    (udata->outlen >= sizeof(resp)))
--		hns_roce_db_unmap_user(context, &hr_cq->db);
+ err_wrid:
+-	kvfree(srq->wrid);
 -
--err_mtt:
--	hns_roce_mtt_cleanup(hr_dev, &hr_cq->hr_buf.hr_mtt);
--	ib_umem_release(hr_cq->umem);
+-err_idx_buf:
+-	hns_roce_mtt_cleanup(hr_dev, &srq->idx_que.mtt);
+-
+-err_idx_mtt:
+-	ib_umem_release(srq->idx_que.umem);
+-
+-err_create_idx:
+-	hns_roce_buf_free(hr_dev, srq->idx_que.buf_size,
+-			  &srq->idx_que.idx_buf);
+-	bitmap_free(srq->idx_que.bitmap);
+-
+-err_srq_mtt:
+-	hns_roce_mtt_cleanup(hr_dev, &srq->mtt);
+-
+-err_buf:
+-	ib_umem_release(srq->umem);
 -	if (!udata)
--		hns_roce_ib_free_cq_buf(hr_dev, &hr_cq->hr_buf,
--					hr_cq->ib_cq.cqe);
--
--err_db:
--	if (!udata && (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB))
--		hns_roce_free_db(hr_dev, &hr_cq->db);
+-		hns_roce_buf_free(hr_dev, srq_buf_size, &srq->buf);
 +	if (udata)
-+		destroy_user_cq(hr_dev, hr_cq, udata, &resp);
++		destroy_user_srq(hr_dev, srq);
 +	else
-+		destroy_kernel_cq(hr_dev, hr_cq);
++		destroy_kernel_srq(hr_dev, srq, srq_buf_size);
  
- err_cq:
++err_srq:
  	return ret;
+ }
+ 
 -- 
 1.9.1
 
