@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1040A61FB7
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 15:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67C761FB4
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 15:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731415AbfGHNo4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jul 2019 09:44:56 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2180 "EHLO huawei.com"
+        id S1728124AbfGHNox (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jul 2019 09:44:53 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2183 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729856AbfGHNo4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 8 Jul 2019 09:44:56 -0400
+        id S1731409AbfGHNox (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 8 Jul 2019 09:44:53 -0400
 Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 5E1A76AB677ECD6CFA26;
+        by Forcepoint Email with ESMTP id 72BF59E27B738303031A;
         Mon,  8 Jul 2019 21:44:49 +0800 (CST)
 Received: from linux-ioko.site (10.71.200.31) by
  DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Lijun Ou <oulijun@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH for-next 2/9] RDMA/hns: Refactor the code of creating srq
-Date:   Mon, 8 Jul 2019 21:41:18 +0800
-Message-ID: <1562593285-8037-3-git-send-email-oulijun@huawei.com>
+Subject: [PATCH for-next 3/9] RDMA/hns: Refactor for hns_roce_v2_modify_qp function
+Date:   Mon, 8 Jul 2019 21:41:19 +0800
+Message-ID: <1562593285-8037-4-git-send-email-oulijun@huawei.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1562593285-8037-1-git-send-email-oulijun@huawei.com>
 References: <1562593285-8037-1-git-send-email-oulijun@huawei.com>
@@ -36,370 +36,431 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Here moves the relatived codes of creating user srq and
-kernel srq into the two independent functions as well as
-removes some unused codes and optimizes some codes.
+This patch packages some lines which exist hns_roce_v2_modify_qp
+function into the new function. The codes refactored mainly
+include some absolute fields of qp context and some optional
+fields of qp context.
 
 Signed-off-by: Lijun Ou <oulijun@huawei.com>
+Signed-off-by: Xi Wang <wangxi11@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_srq.c | 310 ++++++++++++++++++-------------
- 1 file changed, 183 insertions(+), 127 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 356 +++++++++++++++++------------
+ 1 file changed, 206 insertions(+), 150 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index 38bb548..c011422 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -175,6 +175,91 @@ static void hns_roce_srq_free(struct hns_roce_dev *hr_dev,
- 	hns_roce_bitmap_free(&srq_table->bitmap, srq->srqn, BITMAP_NO_RR);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index b76e3be..edc5dd2 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -3974,30 +3974,119 @@ static inline bool hns_roce_v2_check_qp_stat(enum ib_qp_state cur_state,
+ 
  }
  
-+static int create_user_srq(struct hns_roce_srq *srq, struct ib_udata *udata,
-+			   int srq_buf_size)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(srq->ibsrq.device);
-+	struct hns_roce_ib_create_srq  ucmd;
-+	u32 page_shift;
-+	u32 npages;
-+	int ret;
-+
-+	if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd)))
-+		return -EFAULT;
-+
-+	srq->umem = ib_umem_get(udata, ucmd.buf_addr, srq_buf_size, 0, 0);
-+	if (IS_ERR(srq->umem))
-+		return PTR_ERR(srq->umem);
-+
-+	if (hr_dev->caps.srqwqe_buf_pg_sz) {
-+		npages = (ib_umem_page_count(srq->umem) +
-+			 (1 << hr_dev->caps.srqwqe_buf_pg_sz) - 1) /
-+			 (1 << hr_dev->caps.srqwqe_buf_pg_sz);
-+		page_shift = PAGE_SHIFT + hr_dev->caps.srqwqe_buf_pg_sz;
-+		ret = hns_roce_mtt_init(hr_dev, npages, page_shift, &srq->mtt);
-+	} else
-+		ret = hns_roce_mtt_init(hr_dev, ib_umem_page_count(srq->umem),
-+					PAGE_SHIFT, &srq->mtt);
-+	if (ret)
-+		goto err_user_buf;
-+
-+	ret = hns_roce_ib_umem_write_mtt(hr_dev, &srq->mtt, srq->umem);
-+	if (ret)
-+		goto err_user_srq_mtt;
-+
-+	/* config index queue BA */
-+	srq->idx_que.umem = ib_umem_get(udata, ucmd.que_addr,
-+					srq->idx_que.buf_size, 0, 0);
-+	if (IS_ERR(srq->idx_que.umem)) {
-+		dev_err(hr_dev->dev, "ib_umem_get error for index queue\n");
-+		ret = PTR_ERR(srq->idx_que.umem);
-+		goto err_user_srq_mtt;
-+	}
-+
-+	if (hr_dev->caps.idx_buf_pg_sz) {
-+		npages = (ib_umem_page_count(srq->idx_que.umem) +
-+			 (1 << hr_dev->caps.idx_buf_pg_sz) - 1) /
-+			 (1 << hr_dev->caps.idx_buf_pg_sz);
-+		page_shift = PAGE_SHIFT + hr_dev->caps.idx_buf_pg_sz;
-+		ret = hns_roce_mtt_init(hr_dev, npages, page_shift,
-+					&srq->idx_que.mtt);
-+	} else {
-+		ret = hns_roce_mtt_init(hr_dev,
-+					ib_umem_page_count(srq->idx_que.umem),
-+					PAGE_SHIFT,
-+					&srq->idx_que.mtt);
-+	}
-+
-+	if (ret) {
-+		dev_err(hr_dev->dev, "hns_roce_mtt_init error for idx que\n");
-+		goto err_user_idx_mtt;
-+	}
-+
-+	ret = hns_roce_ib_umem_write_mtt(hr_dev, &srq->idx_que.mtt,
-+					 srq->idx_que.umem);
-+	if (ret) {
-+		dev_err(hr_dev->dev,
-+			"hns_roce_ib_umem_write_mtt error for idx que\n");
-+		goto err_user_idx_buf;
-+	}
-+
-+	return 0;
-+
-+err_user_idx_buf:
-+	hns_roce_mtt_cleanup(hr_dev, &srq->idx_que.mtt);
-+
-+err_user_idx_mtt:
-+	ib_umem_release(srq->idx_que.umem);
-+
-+err_user_srq_mtt:
-+	hns_roce_mtt_cleanup(hr_dev, &srq->mtt);
-+
-+err_user_buf:
-+	ib_umem_release(srq->umem);
-+
-+	return ret;
-+}
-+
- static int hns_roce_create_idx_que(struct ib_pd *pd, struct hns_roce_srq *srq,
- 				   u32 page_shift)
+-static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+-				 const struct ib_qp_attr *attr,
+-				 int attr_mask, enum ib_qp_state cur_state,
+-				 enum ib_qp_state new_state)
++static int hns_roce_v2_set_path(struct ib_qp *ibqp,
++				const struct ib_qp_attr *attr,
++				int attr_mask,
++				struct hns_roce_v2_qp_context *context,
++				struct hns_roce_v2_qp_context *qpc_mask)
  {
-@@ -196,6 +281,93 @@ static int hns_roce_create_idx_que(struct ib_pd *pd, struct hns_roce_srq *srq,
- 	return 0;
- }
- 
-+static int create_kernel_srq(struct hns_roce_srq *srq, int srq_buf_size)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(srq->ibsrq.device);
-+	u32 page_shift = PAGE_SHIFT + hr_dev->caps.srqwqe_buf_pg_sz;
++	const struct ib_global_route *grh = rdma_ah_read_grh(&attr->ah_attr);
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
+ 	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+-	struct hns_roce_v2_qp_context *context;
+-	struct hns_roce_v2_qp_context *qpc_mask;
+-	struct device *dev = hr_dev->dev;
+-	int ret = -EINVAL;
++	const struct ib_gid_attr *gid_attr = NULL;
++	int is_roce_protocol;
++	bool is_udp = false;
++	u16 vlan = 0xffff;
++	u8 ib_port;
++	u8 hr_port;
 +	int ret;
+ 
+-	context = kcalloc(2, sizeof(*context), GFP_ATOMIC);
+-	if (!context)
+-		return -ENOMEM;
++	ib_port = (attr_mask & IB_QP_PORT) ? attr->port_num : hr_qp->port + 1;
++	hr_port = ib_port - 1;
++	is_roce_protocol = rdma_cap_eth_ah(&hr_dev->ib_dev, ib_port) &&
++			   rdma_ah_get_ah_flags(&attr->ah_attr) & IB_AH_GRH;
 +
-+	if (hns_roce_buf_alloc(hr_dev, srq_buf_size, (1 << page_shift) * 2,
-+			       &srq->buf, page_shift))
-+		return -ENOMEM;
++	if (is_roce_protocol) {
++		gid_attr = attr->ah_attr.grh.sgid_attr;
++		ret = rdma_read_gid_l2_fields(gid_attr, &vlan, NULL);
++		if (ret)
++			return ret;
 +
-+	srq->head = 0;
-+	srq->tail = srq->max - 1;
-+
-+	ret = hns_roce_mtt_init(hr_dev, srq->buf.npages, srq->buf.page_shift,
-+				&srq->mtt);
-+	if (ret)
-+		goto err_kernel_buf;
-+
-+	ret = hns_roce_buf_write_mtt(hr_dev, &srq->mtt, &srq->buf);
-+	if (ret)
-+		goto err_kernel_srq_mtt;
-+
-+	page_shift = PAGE_SHIFT + hr_dev->caps.idx_buf_pg_sz;
-+	ret = hns_roce_create_idx_que(srq->ibsrq.pd, srq, page_shift);
-+	if (ret) {
-+		dev_err(hr_dev->dev, "Create idx queue fail(%d)!\n", ret);
-+		goto err_kernel_srq_mtt;
++		if (gid_attr)
++			is_udp = (gid_attr->gid_type ==
++				 IB_GID_TYPE_ROCE_UDP_ENCAP);
 +	}
 +
-+	/* Init mtt table for idx_que */
-+	ret = hns_roce_mtt_init(hr_dev, srq->idx_que.idx_buf.npages,
-+				srq->idx_que.idx_buf.page_shift,
-+				&srq->idx_que.mtt);
-+	if (ret)
-+		goto err_kernel_create_idx;
-+
-+	/* Write buffer address into the mtt table */
-+	ret = hns_roce_buf_write_mtt(hr_dev, &srq->idx_que.mtt,
-+				     &srq->idx_que.idx_buf);
-+	if (ret)
-+		goto err_kernel_idx_buf;
-+
-+	srq->wrid = kvmalloc_array(srq->max, sizeof(u64), GFP_KERNEL);
-+	if (!srq->wrid) {
-+		ret = -ENOMEM;
-+		goto err_kernel_idx_buf;
++	if (vlan < VLAN_CFI_MASK) {
++		roce_set_bit(context->byte_76_srqn_op_en,
++			     V2_QPC_BYTE_76_RQ_VLAN_EN_S, 1);
++		roce_set_bit(qpc_mask->byte_76_srqn_op_en,
++			     V2_QPC_BYTE_76_RQ_VLAN_EN_S, 0);
++		roce_set_bit(context->byte_168_irrl_idx,
++			     V2_QPC_BYTE_168_SQ_VLAN_EN_S, 1);
++		roce_set_bit(qpc_mask->byte_168_irrl_idx,
++			     V2_QPC_BYTE_168_SQ_VLAN_EN_S, 0);
 +	}
++
++	roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_VLAN_ID_M,
++		       V2_QPC_BYTE_24_VLAN_ID_S, vlan);
++	roce_set_field(qpc_mask->byte_24_mtu_tc, V2_QPC_BYTE_24_VLAN_ID_M,
++		       V2_QPC_BYTE_24_VLAN_ID_S, 0);
++
++	if (grh->sgid_index >= hr_dev->caps.gid_table_len[hr_port]) {
++		dev_err(hr_dev->dev, "sgid_index(%u) too large. max is %d\n",
++			grh->sgid_index, hr_dev->caps.gid_table_len[hr_port]);
++		return -EINVAL;
++	}
++
++	if (attr->ah_attr.type != RDMA_AH_ATTR_TYPE_ROCE) {
++		dev_err(hr_dev->dev, "ah attr is not RDMA roce type\n");
++		return -EINVAL;
++	}
++
++	roce_set_field(context->byte_52_udpspn_dmac, V2_QPC_BYTE_52_UDPSPN_M,
++		       V2_QPC_BYTE_52_UDPSPN_S,
++		       is_udp ? 0x12b7 : 0);
++
++	roce_set_field(qpc_mask->byte_52_udpspn_dmac, V2_QPC_BYTE_52_UDPSPN_M,
++		       V2_QPC_BYTE_52_UDPSPN_S, 0);
++
++	roce_set_field(context->byte_20_smac_sgid_idx,
++		       V2_QPC_BYTE_20_SGID_IDX_M, V2_QPC_BYTE_20_SGID_IDX_S,
++		       grh->sgid_index);
++
++	roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
++		       V2_QPC_BYTE_20_SGID_IDX_M, V2_QPC_BYTE_20_SGID_IDX_S, 0);
++
++	roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_HOP_LIMIT_M,
++		       V2_QPC_BYTE_24_HOP_LIMIT_S, grh->hop_limit);
++	roce_set_field(qpc_mask->byte_24_mtu_tc, V2_QPC_BYTE_24_HOP_LIMIT_M,
++		       V2_QPC_BYTE_24_HOP_LIMIT_S, 0);
++
++	if (hr_dev->pci_dev->revision == 0x21 && is_udp)
++		roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_TC_M,
++			       V2_QPC_BYTE_24_TC_S, grh->traffic_class >> 2);
++	else
++		roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_TC_M,
++			       V2_QPC_BYTE_24_TC_S, grh->traffic_class);
++	roce_set_field(qpc_mask->byte_24_mtu_tc, V2_QPC_BYTE_24_TC_M,
++		       V2_QPC_BYTE_24_TC_S, 0);
++	roce_set_field(context->byte_28_at_fl, V2_QPC_BYTE_28_FL_M,
++		       V2_QPC_BYTE_28_FL_S, grh->flow_label);
++	roce_set_field(qpc_mask->byte_28_at_fl, V2_QPC_BYTE_28_FL_M,
++		       V2_QPC_BYTE_28_FL_S, 0);
++	memcpy(context->dgid, grh->dgid.raw, sizeof(grh->dgid.raw));
++	memset(qpc_mask->dgid, 0, sizeof(grh->dgid.raw));
++	roce_set_field(context->byte_28_at_fl, V2_QPC_BYTE_28_SL_M,
++		       V2_QPC_BYTE_28_SL_S, rdma_ah_get_sl(&attr->ah_attr));
++	roce_set_field(qpc_mask->byte_28_at_fl, V2_QPC_BYTE_28_SL_M,
++		       V2_QPC_BYTE_28_SL_S, 0);
++	hr_qp->sl = rdma_ah_get_sl(&attr->ah_attr);
 +
 +	return 0;
++}
 +
-+err_kernel_idx_buf:
-+	hns_roce_mtt_cleanup(hr_dev, &srq->idx_que.mtt);
-+
-+err_kernel_create_idx:
-+	hns_roce_buf_free(hr_dev, srq->idx_que.buf_size,
-+			  &srq->idx_que.idx_buf);
-+	kfree(srq->idx_que.bitmap);
-+
-+err_kernel_srq_mtt:
-+	hns_roce_mtt_cleanup(hr_dev, &srq->mtt);
-+
-+err_kernel_buf:
-+	hns_roce_buf_free(hr_dev, srq_buf_size, &srq->buf);
-+
++static int hns_roce_v2_set_abs_fields(struct ib_qp *ibqp,
++				      const struct ib_qp_attr *attr,
++				      int attr_mask,
++				      enum ib_qp_state cur_state,
++				      enum ib_qp_state new_state,
++				      struct hns_roce_v2_qp_context *context,
++				      struct hns_roce_v2_qp_context *qpc_mask)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	int ret = 0;
+ 
+-	qpc_mask = context + 1;
+-	/*
+-	 * In v2 engine, software pass context and context mask to hardware
+-	 * when modifying qp. If software need modify some fields in context,
+-	 * we should set all bits of the relevant fields in context mask to
+-	 * 0 at the same time, else set them to 0x1.
+-	 */
+-	memset(qpc_mask, 0xff, sizeof(*qpc_mask));
+ 	if (cur_state == IB_QPS_RESET && new_state == IB_QPS_INIT) {
+ 		memset(qpc_mask, 0, sizeof(*qpc_mask));
+ 		modify_qp_reset_to_init(ibqp, attr, attr_mask, context,
+@@ -4019,134 +4108,30 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+ 		/* Nothing */
+ 		;
+ 	} else {
+-		dev_err(dev, "Illegal state for QP!\n");
++		dev_err(hr_dev->dev, "Illegal state for QP!\n");
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+ 
+-	/* When QP state is err, SQ and RQ WQE should be flushed */
+-	if (new_state == IB_QPS_ERR) {
+-		roce_set_field(context->byte_160_sq_ci_pi,
+-			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
+-			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S,
+-			       hr_qp->sq.head);
+-		roce_set_field(qpc_mask->byte_160_sq_ci_pi,
+-			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
+-			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S, 0);
++out:
 +	return ret;
 +}
-+
-+static void destroy_user_srq(struct hns_roce_dev *hr_dev,
-+			     struct hns_roce_srq *srq)
-+{
-+	hns_roce_mtt_cleanup(hr_dev, &srq->idx_que.mtt);
-+	ib_umem_release(srq->idx_que.umem);
-+	hns_roce_mtt_cleanup(hr_dev, &srq->mtt);
-+	ib_umem_release(srq->umem);
-+}
-+
-+static void destroy_kernel_srq(struct hns_roce_dev *hr_dev,
-+			       struct hns_roce_srq *srq, int srq_buf_size)
-+{
-+	kvfree(srq->wrid);
-+	hns_roce_mtt_cleanup(hr_dev, &srq->idx_que.mtt);
-+	hns_roce_buf_free(hr_dev, srq->idx_que.buf_size, &srq->idx_que.idx_buf);
-+	kfree(srq->idx_que.bitmap);
-+	hns_roce_mtt_cleanup(hr_dev, &srq->mtt);
-+	hns_roce_buf_free(hr_dev, srq_buf_size, &srq->buf);
-+}
-+
- int hns_roce_create_srq(struct ib_srq *ib_srq,
- 			struct ib_srq_init_attr *srq_init_attr,
- 			struct ib_udata *udata)
-@@ -205,9 +377,7 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
- 	struct hns_roce_srq *srq = to_hr_srq(ib_srq);
- 	int srq_desc_size;
- 	int srq_buf_size;
--	u32 page_shift;
- 	int ret = 0;
--	u32 npages;
- 	u32 cqn;
  
- 	/* Check the actual SRQ wqe and SRQ sge num */
-@@ -233,115 +403,16 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
- 	srq->idx_que.mtt.mtt_type = MTT_TYPE_IDX;
+-		if (!ibqp->srq) {
+-			roce_set_field(context->byte_84_rq_ci_pi,
+-			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
+-			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S,
+-			       hr_qp->rq.head);
+-			roce_set_field(qpc_mask->byte_84_rq_ci_pi,
+-			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
+-			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S, 0);
+-		}
+-	}
++static int hns_roce_v2_set_opt_fields(struct ib_qp *ibqp,
++				      const struct ib_qp_attr *attr,
++				      int attr_mask,
++				      struct hns_roce_v2_qp_context *context,
++				      struct hns_roce_v2_qp_context *qpc_mask)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
++	int ret = 0;
  
- 	if (udata) {
--		struct hns_roce_ib_create_srq  ucmd;
+ 	if (attr_mask & IB_QP_AV) {
+-		const struct ib_global_route *grh =
+-					    rdma_ah_read_grh(&attr->ah_attr);
+-		const struct ib_gid_attr *gid_attr = NULL;
+-		int is_roce_protocol;
+-		u16 vlan = 0xffff;
+-		u8 ib_port;
+-		u8 hr_port;
 -
--		if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd)))
--			return -EFAULT;
+-		ib_port = (attr_mask & IB_QP_PORT) ? attr->port_num :
+-			   hr_qp->port + 1;
+-		hr_port = ib_port - 1;
+-		is_roce_protocol = rdma_cap_eth_ah(&hr_dev->ib_dev, ib_port) &&
+-			       rdma_ah_get_ah_flags(&attr->ah_attr) & IB_AH_GRH;
 -
--		srq->umem =
--			ib_umem_get(udata, ucmd.buf_addr, srq_buf_size, 0, 0);
--		if (IS_ERR(srq->umem))
--			return PTR_ERR(srq->umem);
+-		if (is_roce_protocol) {
+-			gid_attr = attr->ah_attr.grh.sgid_attr;
+-			ret = rdma_read_gid_l2_fields(gid_attr, &vlan, NULL);
+-			if (ret)
+-				goto out;
+-		}
 -
--		if (hr_dev->caps.srqwqe_buf_pg_sz) {
--			npages = (ib_umem_page_count(srq->umem) +
--				  (1 << hr_dev->caps.srqwqe_buf_pg_sz) - 1) /
--				  (1 << hr_dev->caps.srqwqe_buf_pg_sz);
--			page_shift = PAGE_SHIFT + hr_dev->caps.srqwqe_buf_pg_sz;
--			ret = hns_roce_mtt_init(hr_dev, npages,
--						page_shift,
--						&srq->mtt);
--		} else
--			ret = hns_roce_mtt_init(hr_dev,
--						ib_umem_page_count(srq->umem),
--						PAGE_SHIFT, &srq->mtt);
--		if (ret)
--			goto err_buf;
+-		if (vlan < VLAN_CFI_MASK) {
+-			roce_set_bit(context->byte_76_srqn_op_en,
+-				     V2_QPC_BYTE_76_RQ_VLAN_EN_S, 1);
+-			roce_set_bit(qpc_mask->byte_76_srqn_op_en,
+-				     V2_QPC_BYTE_76_RQ_VLAN_EN_S, 0);
+-			roce_set_bit(context->byte_168_irrl_idx,
+-				     V2_QPC_BYTE_168_SQ_VLAN_EN_S, 1);
+-			roce_set_bit(qpc_mask->byte_168_irrl_idx,
+-				     V2_QPC_BYTE_168_SQ_VLAN_EN_S, 0);
+-		}
 -
--		ret = hns_roce_ib_umem_write_mtt(hr_dev, &srq->mtt, srq->umem);
--		if (ret)
--			goto err_srq_mtt;
+-		roce_set_field(context->byte_24_mtu_tc,
+-			       V2_QPC_BYTE_24_VLAN_ID_M,
+-			       V2_QPC_BYTE_24_VLAN_ID_S, vlan);
+-		roce_set_field(qpc_mask->byte_24_mtu_tc,
+-			       V2_QPC_BYTE_24_VLAN_ID_M,
+-			       V2_QPC_BYTE_24_VLAN_ID_S, 0);
 -
--		/* config index queue BA */
--		srq->idx_que.umem = ib_umem_get(udata, ucmd.que_addr,
--						srq->idx_que.buf_size, 0, 0);
--		if (IS_ERR(srq->idx_que.umem)) {
+-		if (grh->sgid_index >= hr_dev->caps.gid_table_len[hr_port]) {
 -			dev_err(hr_dev->dev,
--				"ib_umem_get error for index queue\n");
--			ret = PTR_ERR(srq->idx_que.umem);
--			goto err_srq_mtt;
+-				"sgid_index(%u) too large. max is %d\n",
+-				grh->sgid_index,
+-				hr_dev->caps.gid_table_len[hr_port]);
+-			ret = -EINVAL;
+-			goto out;
 -		}
 -
--		if (hr_dev->caps.idx_buf_pg_sz) {
--			npages = (ib_umem_page_count(srq->idx_que.umem) +
--				  (1 << hr_dev->caps.idx_buf_pg_sz) - 1) /
--				  (1 << hr_dev->caps.idx_buf_pg_sz);
--			page_shift = PAGE_SHIFT + hr_dev->caps.idx_buf_pg_sz;
--			ret = hns_roce_mtt_init(hr_dev, npages,
--						page_shift, &srq->idx_que.mtt);
--		} else {
--			ret = hns_roce_mtt_init(
--				hr_dev, ib_umem_page_count(srq->idx_que.umem),
--				PAGE_SHIFT, &srq->idx_que.mtt);
+-		if (attr->ah_attr.type != RDMA_AH_ATTR_TYPE_ROCE) {
+-			dev_err(hr_dev->dev, "ah attr is not RDMA roce type\n");
+-			ret = -EINVAL;
+-			goto out;
 -		}
 -
--		if (ret) {
--			dev_err(hr_dev->dev,
--				"hns_roce_mtt_init error for idx que\n");
--			goto err_idx_mtt;
--		}
+-		roce_set_field(context->byte_52_udpspn_dmac,
+-			   V2_QPC_BYTE_52_UDPSPN_M, V2_QPC_BYTE_52_UDPSPN_S,
+-			   (gid_attr->gid_type != IB_GID_TYPE_ROCE_UDP_ENCAP) ?
+-			   0 : 0x12b7);
 -
--		ret = hns_roce_ib_umem_write_mtt(hr_dev, &srq->idx_que.mtt,
--						 srq->idx_que.umem);
-+		ret = create_user_srq(srq, udata, srq_buf_size);
- 		if (ret) {
--			dev_err(hr_dev->dev,
--			      "hns_roce_ib_umem_write_mtt error for idx que\n");
--			goto err_idx_buf;
-+			dev_err(hr_dev->dev, "Create user srq failed\n");
-+			goto err_srq;
- 		}
- 	} else {
--		page_shift = PAGE_SHIFT + hr_dev->caps.srqwqe_buf_pg_sz;
--		if (hns_roce_buf_alloc(hr_dev, srq_buf_size,
--				       (1 << page_shift) * 2, &srq->buf,
--				       page_shift))
--			return -ENOMEM;
+-		roce_set_field(qpc_mask->byte_52_udpspn_dmac,
+-			       V2_QPC_BYTE_52_UDPSPN_M,
+-			       V2_QPC_BYTE_52_UDPSPN_S, 0);
 -
--		srq->head = 0;
--		srq->tail = srq->max - 1;
+-		roce_set_field(context->byte_20_smac_sgid_idx,
+-			       V2_QPC_BYTE_20_SGID_IDX_M,
+-			       V2_QPC_BYTE_20_SGID_IDX_S, grh->sgid_index);
 -
--		ret = hns_roce_mtt_init(hr_dev, srq->buf.npages,
--					srq->buf.page_shift, &srq->mtt);
--		if (ret)
--			goto err_buf;
+-		roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
+-			       V2_QPC_BYTE_20_SGID_IDX_M,
+-			       V2_QPC_BYTE_20_SGID_IDX_S, 0);
 -
--		ret = hns_roce_buf_write_mtt(hr_dev, &srq->mtt, &srq->buf);
--		if (ret)
--			goto err_srq_mtt;
+-		roce_set_field(context->byte_24_mtu_tc,
+-			       V2_QPC_BYTE_24_HOP_LIMIT_M,
+-			       V2_QPC_BYTE_24_HOP_LIMIT_S, grh->hop_limit);
+-		roce_set_field(qpc_mask->byte_24_mtu_tc,
+-			       V2_QPC_BYTE_24_HOP_LIMIT_M,
+-			       V2_QPC_BYTE_24_HOP_LIMIT_S, 0);
 -
--		page_shift = PAGE_SHIFT + hr_dev->caps.idx_buf_pg_sz;
--		ret = hns_roce_create_idx_que(ib_srq->pd, srq, page_shift);
-+		ret = create_kernel_srq(srq, srq_buf_size);
- 		if (ret) {
--			dev_err(hr_dev->dev, "Create idx queue fail(%d)!\n",
--				ret);
--			goto err_srq_mtt;
--		}
--
--		/* Init mtt table for idx_que */
--		ret = hns_roce_mtt_init(hr_dev, srq->idx_que.idx_buf.npages,
--					srq->idx_que.idx_buf.page_shift,
--					&srq->idx_que.mtt);
--		if (ret)
--			goto err_create_idx;
--
--		/* Write buffer address into the mtt table */
--		ret = hns_roce_buf_write_mtt(hr_dev, &srq->idx_que.mtt,
--					     &srq->idx_que.idx_buf);
--		if (ret)
--			goto err_idx_buf;
--
--		srq->wrid = kvmalloc_array(srq->max, sizeof(u64), GFP_KERNEL);
--		if (!srq->wrid) {
--			ret = -ENOMEM;
--			goto err_idx_buf;
-+			dev_err(hr_dev->dev, "Create kernel srq failed\n");
-+			goto err_srq;
+-		if (hr_dev->pci_dev->revision == 0x21 &&
+-		    gid_attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP)
+-			roce_set_field(context->byte_24_mtu_tc,
+-				       V2_QPC_BYTE_24_TC_M, V2_QPC_BYTE_24_TC_S,
+-				       grh->traffic_class >> 2);
+-		else
+-			roce_set_field(context->byte_24_mtu_tc,
+-				       V2_QPC_BYTE_24_TC_M, V2_QPC_BYTE_24_TC_S,
+-				       grh->traffic_class);
+-		roce_set_field(qpc_mask->byte_24_mtu_tc, V2_QPC_BYTE_24_TC_M,
+-			       V2_QPC_BYTE_24_TC_S, 0);
+-		roce_set_field(context->byte_28_at_fl, V2_QPC_BYTE_28_FL_M,
+-			       V2_QPC_BYTE_28_FL_S, grh->flow_label);
+-		roce_set_field(qpc_mask->byte_28_at_fl, V2_QPC_BYTE_28_FL_M,
+-			       V2_QPC_BYTE_28_FL_S, 0);
+-		memcpy(context->dgid, grh->dgid.raw, sizeof(grh->dgid.raw));
+-		memset(qpc_mask->dgid, 0, sizeof(grh->dgid.raw));
+-		roce_set_field(context->byte_28_at_fl, V2_QPC_BYTE_28_SL_M,
+-			       V2_QPC_BYTE_28_SL_S,
+-			       rdma_ah_get_sl(&attr->ah_attr));
+-		roce_set_field(qpc_mask->byte_28_at_fl, V2_QPC_BYTE_28_SL_M,
+-			       V2_QPC_BYTE_28_SL_S, 0);
+-		hr_qp->sl = rdma_ah_get_sl(&attr->ah_attr);
++		ret = hns_roce_v2_set_path(ibqp, attr, attr_mask, context,
++					   qpc_mask);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	if (attr_mask & IB_QP_TIMEOUT) {
+@@ -4158,7 +4143,8 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+ 				       V2_QPC_BYTE_28_AT_M, V2_QPC_BYTE_28_AT_S,
+ 				       0);
+ 		} else {
+-			dev_warn(dev, "Local ACK timeout shall be 0 to 30.\n");
++			dev_warn(hr_dev->dev,
++				 "Local ACK timeout shall be 0 to 30.\n");
  		}
  	}
  
-@@ -373,27 +444,12 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
- 	hns_roce_srq_free(hr_dev, srq);
+@@ -4196,6 +4182,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+ 			       V2_QPC_BYTE_244_RNR_CNT_S, 0);
+ 	}
  
- err_wrid:
--	kvfree(srq->wrid);
--
--err_idx_buf:
--	hns_roce_mtt_cleanup(hr_dev, &srq->idx_que.mtt);
--
--err_idx_mtt:
--	ib_umem_release(srq->idx_que.umem);
--
--err_create_idx:
--	hns_roce_buf_free(hr_dev, srq->idx_que.buf_size,
--			  &srq->idx_que.idx_buf);
--	bitmap_free(srq->idx_que.bitmap);
--
--err_srq_mtt:
--	hns_roce_mtt_cleanup(hr_dev, &srq->mtt);
--
--err_buf:
--	ib_umem_release(srq->umem);
--	if (!udata)
--		hns_roce_buf_free(hr_dev, srq_buf_size, &srq->buf);
-+	if (udata)
-+		destroy_user_srq(hr_dev, srq);
-+	else
-+		destroy_kernel_srq(hr_dev, srq, srq_buf_size);
++	/* RC&UC&UD required attr */
+ 	if (attr_mask & IB_QP_SQ_PSN) {
+ 		roce_set_field(context->byte_172_sq_psn,
+ 			       V2_QPC_BYTE_172_SQ_CUR_PSN_M,
+@@ -4295,6 +4282,83 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+ 		hr_qp->qkey = attr->qkey;
+ 	}
  
-+err_srq:
- 	return ret;
- }
++	return ret;
++}
++
++static void hns_roce_v2_record_opt_fields(struct ib_qp *ibqp,
++					  const struct ib_qp_attr *attr,
++					  int attr_mask)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
++
++	if (attr_mask & IB_QP_ACCESS_FLAGS)
++		hr_qp->atomic_rd_en = attr->qp_access_flags;
++
++	if (attr_mask & IB_QP_MAX_DEST_RD_ATOMIC)
++		hr_qp->resp_depth = attr->max_dest_rd_atomic;
++	if (attr_mask & IB_QP_PORT) {
++		hr_qp->port = attr->port_num - 1;
++		hr_qp->phy_port = hr_dev->iboe.phy_port[hr_qp->port];
++	}
++}
++
++static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
++				 const struct ib_qp_attr *attr,
++				 int attr_mask, enum ib_qp_state cur_state,
++				 enum ib_qp_state new_state)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
++	struct hns_roce_v2_qp_context *context;
++	struct hns_roce_v2_qp_context *qpc_mask;
++	struct device *dev = hr_dev->dev;
++	int ret = -EINVAL;
++
++	context = kcalloc(2, sizeof(*context), GFP_ATOMIC);
++	if (!context)
++		return -ENOMEM;
++
++	qpc_mask = context + 1;
++	/*
++	 * In v2 engine, software pass context and context mask to hardware
++	 * when modifying qp. If software need modify some fields in context,
++	 * we should set all bits of the relevant fields in context mask to
++	 * 0 at the same time, else set them to 0x1.
++	 */
++	memset(qpc_mask, 0xff, sizeof(*qpc_mask));
++	ret = hns_roce_v2_set_abs_fields(ibqp, attr, attr_mask, cur_state,
++					 new_state, context, qpc_mask);
++	if (ret)
++		goto out;
++
++	/* When QP state is err, SQ and RQ WQE should be flushed */
++	if (new_state == IB_QPS_ERR) {
++		roce_set_field(context->byte_160_sq_ci_pi,
++			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
++			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S,
++			       hr_qp->sq.head);
++		roce_set_field(qpc_mask->byte_160_sq_ci_pi,
++			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
++			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S, 0);
++
++		if (!ibqp->srq) {
++			roce_set_field(context->byte_84_rq_ci_pi,
++			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
++			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S,
++			       hr_qp->rq.head);
++			roce_set_field(qpc_mask->byte_84_rq_ci_pi,
++			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
++			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S, 0);
++		}
++	}
++
++	/* Configure the optional fields */
++	ret = hns_roce_v2_set_opt_fields(ibqp, attr, attr_mask, context,
++					 qpc_mask);
++	if (ret)
++		goto out;
++
+ 	roce_set_bit(context->byte_108_rx_reqepsn, V2_QPC_BYTE_108_INV_CREDIT_S,
+ 		     ibqp->srq ? 1 : 0);
+ 	roce_set_bit(qpc_mask->byte_108_rx_reqepsn,
+@@ -4316,15 +4380,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
  
+ 	hr_qp->state = new_state;
+ 
+-	if (attr_mask & IB_QP_ACCESS_FLAGS)
+-		hr_qp->atomic_rd_en = attr->qp_access_flags;
+-
+-	if (attr_mask & IB_QP_MAX_DEST_RD_ATOMIC)
+-		hr_qp->resp_depth = attr->max_dest_rd_atomic;
+-	if (attr_mask & IB_QP_PORT) {
+-		hr_qp->port = attr->port_num - 1;
+-		hr_qp->phy_port = hr_dev->iboe.phy_port[hr_qp->port];
+-	}
++	hns_roce_v2_record_opt_fields(ibqp, attr, attr_mask);
+ 
+ 	if (new_state == IB_QPS_RESET && !ibqp->uobject) {
+ 		hns_roce_v2_cq_clean(to_hr_cq(ibqp->recv_cq), hr_qp->qpn,
 -- 
 1.9.1
 
