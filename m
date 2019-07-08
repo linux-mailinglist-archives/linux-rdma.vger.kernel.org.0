@@ -2,165 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A97FF6190B
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 03:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62F161C45
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 11:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbfGHB4W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 7 Jul 2019 21:56:22 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:40302 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727218AbfGHB4V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 7 Jul 2019 21:56:21 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x681t9bl115921;
-        Mon, 8 Jul 2019 01:56:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=m3qd6oEHUwG6qOic4yZ/JimABNvPi3n/CxRS7BWd6JQ=;
- b=Erkv6ElLNsOhNSu10C4mg+bA+VFlBCQ6gOq0nqt75EhUJjUHVEOgq6vSrYnLBNzhxR1D
- L9P2aoFhQYZf8wQRFs/tUKSMlCuzRISwYxue1IfXTwyzJtgWlgY/igdAb8szgwIM4RMF
- 1d3SceVAIwCWYmdtaxfu5WxA3R0IMFOODwLXxlz9vmqu0ph60faoOFTtGwHQy6XGCoOA
- 1Jx0zFUmJV1nMbtlOv1eESPYQ5LciH44D5//pNEHQ7k8za7lxX8EdLx/fo7bGFfv5onn
- PvIjhS56ityTyDBuGF3+IRIX53bkvIj2v5wc2jXXvZ0mfbjOMUjbXHubYPFXRiK2TZ3D Cg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2tjkkpbnh7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jul 2019 01:56:10 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x681rDtQ190844;
-        Mon, 8 Jul 2019 01:56:09 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2tjjyjyp2g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jul 2019 01:56:09 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x681u6dw001262;
-        Mon, 8 Jul 2019 01:56:07 GMT
-Received: from [10.182.69.170] (/10.182.69.170)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 07 Jul 2019 18:56:06 -0700
-Subject: Re: [PATCH] Make rxe driver to calculate correct byte_len on
- receiving side when work completion is generated with
- IB_WC_RECV_RDMA_WITH_IMM opcode.
-To:     Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
-Cc:     monis@mellanox.com, linux-rdma@vger.kernel.org
-References: <20190627140643.6191-1-konstantin.taranov@inf.ethz.ch>
- <d149da15-523a-438a-1550-095b4b1a840b@oracle.com>
- <20190707231126.774bdd6e@ktaranov-laptop>
- <a58291a3-8b04-49bf-6c10-202b8ba426ac@oracle.com>
- <20190708034621.101b25dc@ktaranov-laptop>
-From:   Yanjun Zhu <yanjun.zhu@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <2850a772-1a91-07dd-eb01-8e6e4d8aa690@oracle.com>
-Date:   Mon, 8 Jul 2019 09:57:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729781AbfGHJRO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jul 2019 05:17:14 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:12302 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729748AbfGHJRO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Jul 2019 05:17:14 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x689FSOK013243;
+        Mon, 8 Jul 2019 02:16:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=wUHTRFgmJ0XZTTjqXXgwrbh+jS1o0zASftJ2Quajh1E=;
+ b=P1298bTcdm3h53VTUCGjG5HYZFBPe+UTDCg0REznsqYxqIV1erECX76fI+gTU6YeYnWL
+ QrRiNtAeYuZdWjYfqOk7HkOogMiMPmcuxO1RlL3HpDovMsLLoguRgXLuUuDn4Nr8Xixf
+ vTOOHRJ5/ywto32SkWZSoPlz8QkQhbzD5GkxcbgVAdwqdUtAbcHvVtE6AEgPjhytpnTf
+ 9RO0eUdn8c9KnC16j7gWvORo7JuPToSg007cblKf7qSrjiWbsg1R3U62wE00olfsMWI+
+ 3yJv1FMWNLQlc4siXXaJKPBduvXBwpIeGfAHsqNSco8C8fOqy5G291CIjQKaGAjXRheE qA== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2tju5j6f8g-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 08 Jul 2019 02:16:39 -0700
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 8 Jul
+ 2019 02:16:38 -0700
+Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
+ Transport; Mon, 8 Jul 2019 02:16:38 -0700
+Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
+        by maili.marvell.com (Postfix) with ESMTP id D72563F7040;
+        Mon,  8 Jul 2019 02:16:35 -0700 (PDT)
+From:   Michal Kalderon <michal.kalderon@marvell.com>
+To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
+        <jgg@ziepe.ca>, <dledford@redhat.com>, <galpress@amazon.com>
+CC:     <linux-rdma@vger.kernel.org>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>
+Subject: [PATCH v5 rdma-next 0/6] RDMA/qedr: Use the doorbell overflow recovery mechanism for RDMA
+Date:   Mon, 8 Jul 2019 12:14:57 +0300
+Message-ID: <20190708091503.14723-1-michal.kalderon@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
-In-Reply-To: <20190708034621.101b25dc@ktaranov-laptop>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9311 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907080023
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9311 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907080023
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-08_02:,,
+ signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This patch series uses the doorbell overflow recovery mechanism
+introduced in
+commit 36907cd5cd72 ("qed: Add doorbell overflow recovery mechanism")
+for rdma ( RoCE and iWARP )
 
-On 2019/7/8 9:46, Konstantin Taranov wrote:
-> On Mon, 8 Jul 2019 07:35:24 +0800
-> Zhu Yanjun <yanjun.zhu@oracle.com> wrote:
->
->> 在 2019/7/8 5:23, Konstantin Taranov 写道:
->>> On Wed, 3 Jul 2019 09:24:54 +0800
->>> Yanjun Zhu <yanjun.zhu@oracle.com> wrote:
->>>   
->>>> On 2019/6/27 22:06, Konstantin Taranov wrote:
->>>>> Make softRoce to calculate correct byte_len on receiving side when work completion
->>>>> is generated with IB_WC_RECV_RDMA_WITH_IMM opcode.
->>>>>
->>>>> According to documentation byte_len must indicate the number of written
->>>>> bytes, whereas it was always equal to zero for IB_WC_RECV_RDMA_WITH_IMM opcode.
->>>> With roce NIC, what is the byte_len? Thanks a lot.
->>> byte_len is a field of a work completion (struct ib_uverbs_wc or struct ibv_wc). It is defined in verbs and stores
->>> the number of written bytes to the destination memory. In case of IB_WC_RECV_RDMA_WITH_IMM
->>> completion event, the field byte_len must store the number of written bytes for incoming
->>> RDMA_WRITE_WITH_IMM request.
->> Cool. Thanks for your explanations.
->>
->> The above is the test result of physical RoCE NIC?
->>
-> Yes. When I use physical nics, the byte_len indicates the number of received bytes.
-> It is also fully complies with what is written in https://www.rdmamojo.com/2013/02/15/ibv_poll_cq/ about the byte_len field.
+The first three patches modify the core code to contain helper
+functions for managing mmap_xa inserting, getting and freeing
+entries. The code was taken almost as is from the efa driver.
+There is still an open discussion on whether we should take
+this even further and make the entire mmap generic. Until a
+decision is made, I only created the database API and modified 
+the efa and qedr driver to use it. The doorbell recovery code will be based
+on the common code.
 
-Nice. I am fine with this patch.
+Efa driver was compile tested only.
 
-Thanks a lot.
+rdma-core pull request #493
 
-Zhu Yanjun
+Changes from V4:
+- Add common mmap database and cookie helper functions.
 
->   
->
->
->> Thanks.
->>
->> Zhu Yanjun
->>
->>>   
->>>> Zhu Yanjun
->>>>   
->>>>> The patch proposes to remember the length of an RDMA request from the RETH header, and use it
->>>>> as byte_len when the work completion with IB_WC_RECV_RDMA_WITH_IMM opcode is generated.
->>>>>
->>>>> Signed-off-by: Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
->>>>> ---
->>>>>     drivers/infiniband/sw/rxe/rxe_resp.c  | 5 ++++-
->>>>>     drivers/infiniband/sw/rxe/rxe_verbs.h | 1 +
->>>>>     2 files changed, 5 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
->>>>> index aca9f60f9b21..1cbfbd98eb22 100644
->>>>> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
->>>>> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
->>>>> @@ -431,6 +431,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
->>>>>     			qp->resp.va = reth_va(pkt);
->>>>>     			qp->resp.rkey = reth_rkey(pkt);
->>>>>     			qp->resp.resid = reth_len(pkt);
->>>>> +			qp->resp.length = reth_len(pkt);
->>>>>     		}
->>>>>     		access = (pkt->mask & RXE_READ_MASK) ? IB_ACCESS_REMOTE_READ
->>>>>     						     : IB_ACCESS_REMOTE_WRITE;
->>>>> @@ -856,7 +857,9 @@ static enum resp_states do_complete(struct rxe_qp *qp,
->>>>>     				pkt->mask & RXE_WRITE_MASK) ?
->>>>>     					IB_WC_RECV_RDMA_WITH_IMM : IB_WC_RECV;
->>>>>     		wc->vendor_err = 0;
->>>>> -		wc->byte_len = wqe->dma.length - wqe->dma.resid;
->>>>> +		wc->byte_len = (pkt->mask & RXE_IMMDT_MASK &&
->>>>> +				pkt->mask & RXE_WRITE_MASK) ?
->>>>> +					qp->resp.length : wqe->dma.length - wqe->dma.resid;
->>>>>     
->>>>>     		/* fields after byte_len are different between kernel and user
->>>>>     		 * space
->>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
->>>>> index e8be7f44e3be..28bfb3ece104 100644
->>>>> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
->>>>> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
->>>>> @@ -213,6 +213,7 @@ struct rxe_resp_info {
->>>>>     	struct rxe_mem		*mr;
->>>>>     	u32			resid;
->>>>>     	u32			rkey;
->>>>> +	u32			length;
->>>>>     	u64			atomic_orig;
->>>>>     
->>>>>     	/* SRQ only */
+Changes from V3:
+- Remove casts from void to u8. Pointer arithmetic can be done on void
+- rebase to tip of rdma-next
+
+Changes from V2:
+- Don't use long-lived kmap. Instead use user-trigger mmap for the
+  doorbell recovery entries.
+- Modify dpi_addr to be denoted with __iomem and avoid redundant
+  casts
+
+Changes from V1:
+- call kmap to map virtual address into kernel space
+- modify db_rec_delete to be void
+- remove some cpu_to_le16 that were added to previous patch which are
+  correct but not related to the overflow recovery mechanism. Will be
+  submitted as part of a different patch
+
+
+Michal Kalderon (6):
+  RDMA/core: Create mmap database and cookie helper functions
+  RDMA/efa: Use the common mmap_xa helpers
+  RDMA/qedr: Use the common mmap API
+  qed*: Change dpi_addr to be denoted with __iomem
+  RDMA/qedr: Add doorbell overflow recovery support
+  RDMA/qedr: Add iWARP doorbell recovery support
+
+ drivers/infiniband/core/device.c           |   1 +
+ drivers/infiniband/core/rdma_core.c        |   1 +
+ drivers/infiniband/core/uverbs_cmd.c       |   1 +
+ drivers/infiniband/core/uverbs_main.c      | 105 +++++++
+ drivers/infiniband/hw/efa/efa.h            |   3 +-
+ drivers/infiniband/hw/efa/efa_main.c       |   1 +
+ drivers/infiniband/hw/efa/efa_verbs.c      | 183 +++---------
+ drivers/infiniband/hw/qedr/main.c          |   3 +-
+ drivers/infiniband/hw/qedr/qedr.h          |  32 +-
+ drivers/infiniband/hw/qedr/verbs.c         | 463 ++++++++++++++++++++---------
+ drivers/infiniband/hw/qedr/verbs.h         |   4 +-
+ drivers/net/ethernet/qlogic/qed/qed_rdma.c |   5 +-
+ include/linux/qed/qed_rdma_if.h            |   2 +-
+ include/rdma/ib_verbs.h                    |  32 ++
+ include/uapi/rdma/qedr-abi.h               |  25 ++
+ 15 files changed, 554 insertions(+), 307 deletions(-)
+
+-- 
+2.14.5
+
