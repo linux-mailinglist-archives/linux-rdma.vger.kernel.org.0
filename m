@@ -2,71 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0DC61D57
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 12:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258AA61DB8
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 13:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730226AbfGHK7Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jul 2019 06:59:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbfGHK7Y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 8 Jul 2019 06:59:24 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4220A208C4;
-        Mon,  8 Jul 2019 10:59:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562583563;
-        bh=BDn46YWg9Ux5XLJL1GOLw5fuk9ok46YM5fj3zmq/3Dg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hW1Yc/KTFVAGV2XmvlHyRQkyAj8rBUVkK1lQHV9B6x/MgJa0PaWm3mjStrU1lwcAe
-         i1x3OFrJOgJhUz7NLs4FMCksRmXoQabm7pAymqtH7u3uScMkHgf0xE14nO3qgLp1AL
-         fnaw7G4pE1go7mxJQg77BYl/LH6SDvAdbxAbw8Ps=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Yamin Friedman <yaminf@mellanox.com>
-Subject: [PATCH rdma-next v5 4/4] RDMA/mlx5: Set RDMA DIM to be enabled by default
-Date:   Mon,  8 Jul 2019 13:59:05 +0300
-Message-Id: <20190708105905.27468-5-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190708105905.27468-1-leon@kernel.org>
-References: <20190708105905.27468-1-leon@kernel.org>
+        id S1730409AbfGHLRR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jul 2019 07:17:17 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:39644 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730258AbfGHLRR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Jul 2019 07:17:17 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x68BEbUZ144983;
+        Mon, 8 Jul 2019 11:16:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2018-07-02;
+ bh=wyEdXnjJ8jw6sAdU9BtEeTeNAhQPGnvYdqq4Yf+RfmY=;
+ b=EYrfpujejJTqx0+2HHciLdDO2gGPwyoRRmV3E7Nh2ivAl011KySpBHyaPVtBRkkzTTbW
+ uhdORuYHtWrZ1c0PKLoyLwQsz6A0rqrIewH6meH2Z523hDUPBQyQCl+30IBQRjqLju90
+ P3q31NT3cg0pgKnxrG3qRwaHA2MJ5xuwV+nHRy4/Xb6ix094srK+x1d/R8O3KLk/jeaz
+ sY6bQkSlOplZ90iUa0nmelpzKRDgBI9L0pE3dE0i7xB7V7J4za2pBG4fJQk4mU2xh7Lf
+ fES+O8cbpF7edN5wfSFrNFDnY+XlJlUCuyTv0AAZXotZaV3kEimOK+ivCQqQGI4DomXG hA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2tjkkpdsw8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Jul 2019 11:16:54 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x68BD0nE176139;
+        Mon, 8 Jul 2019 11:16:54 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2tjjyk57pc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Jul 2019 11:16:53 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x68BGqmU015176;
+        Mon, 8 Jul 2019 11:16:52 GMT
+Received: from dm-oel.no.oracle.com (/10.172.157.165)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 08 Jul 2019 04:16:51 -0700
+From:   Dag Moxnes <dag.moxnes@oracle.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        parav@mellanox.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] RDMA/core: Fix race when resolving IP address
+Date:   Mon,  8 Jul 2019 13:16:24 +0200
+Message-Id: <1562584584-13132-1-git-send-email-dag.moxnes@oracle.com>
+X-Mailer: git-send-email 1.7.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9311 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1907080145
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9311 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1907080145
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+Use neighbour lock when copying MAC address from neighbour data struct
+in dst_fetch_ha.
 
-Enable RDMA DIM by default for better user experience.
+When not using the lock, it is possible for the function to race with
+neigh_update, causing it to copy an invalid MAC address.
 
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+It is possible to provoke this error by calling rdma_resolve_addr in a
+tight loop, while deleting the corresponding ARP entry in another tight
+loop.
+
+This will cause the race shown it the following sample trace:
+
+rdma_resolve_addr()
+  rdma_resolve_ip()
+    addr_resolve()
+      addr_resolve_neigh()
+        fetch_ha()
+          dst_fetch_ha()
+            n->nud_state == NUD_VALID
+
+and
+
+net_ioctl()
+  arp_ioctl()
+    arp_rec_delete()
+      arp_invalidate()
+        neigh_update()
+          __neigh_update()
+            neigh->nud_state = new;
+
+Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+Reviewed-by: Parav Pandit <parav@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/main.c | 2 ++
- 1 file changed, 2 insertions(+)
+v1 -> v2:
+   * Modified implementation to improve readability
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 7581571bd9cd..07a05b0b9e42 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -6424,6 +6424,8 @@ static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
- 	     MLX5_CAP_GEN(dev->mdev, disable_local_lb_mc)))
- 		mutex_init(&dev->lb.mutex);
+v2 -> v3:
+   * Added sample trace as suggested by Parav Pandit
+   * Added Reviewed-by
+
+
+---
+ drivers/infiniband/core/addr.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index 2f7d141598..51323ffbc5 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -333,11 +333,14 @@ static int dst_fetch_ha(const struct dst_entry *dst,
+ 	if (!n)
+ 		return -ENODATA;
  
-+	dev->ib_dev.use_cq_dim = true;
-+
- 	return 0;
- }
+-	if (!(n->nud_state & NUD_VALID)) {
++	read_lock_bh(&n->lock);
++	if (n->nud_state & NUD_VALID) {
++		memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
++		read_unlock_bh(&n->lock);
++	} else {
++		read_unlock_bh(&n->lock);
+ 		neigh_event_send(n, NULL);
+ 		ret = -ENODATA;
+-	} else {
+-		memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
+ 	}
  
+ 	neigh_release(n);
 -- 
 2.20.1
 
