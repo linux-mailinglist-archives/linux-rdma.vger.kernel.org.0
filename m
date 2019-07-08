@@ -2,139 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 258AA61DB8
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 13:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4257561F0A
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 14:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730409AbfGHLRR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jul 2019 07:17:17 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:39644 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730258AbfGHLRR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Jul 2019 07:17:17 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x68BEbUZ144983;
-        Mon, 8 Jul 2019 11:16:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2018-07-02;
- bh=wyEdXnjJ8jw6sAdU9BtEeTeNAhQPGnvYdqq4Yf+RfmY=;
- b=EYrfpujejJTqx0+2HHciLdDO2gGPwyoRRmV3E7Nh2ivAl011KySpBHyaPVtBRkkzTTbW
- uhdORuYHtWrZ1c0PKLoyLwQsz6A0rqrIewH6meH2Z523hDUPBQyQCl+30IBQRjqLju90
- P3q31NT3cg0pgKnxrG3qRwaHA2MJ5xuwV+nHRy4/Xb6ix094srK+x1d/R8O3KLk/jeaz
- sY6bQkSlOplZ90iUa0nmelpzKRDgBI9L0pE3dE0i7xB7V7J4za2pBG4fJQk4mU2xh7Lf
- fES+O8cbpF7edN5wfSFrNFDnY+XlJlUCuyTv0AAZXotZaV3kEimOK+ivCQqQGI4DomXG hA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2tjkkpdsw8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jul 2019 11:16:54 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x68BD0nE176139;
-        Mon, 8 Jul 2019 11:16:54 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2tjjyk57pc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jul 2019 11:16:53 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x68BGqmU015176;
-        Mon, 8 Jul 2019 11:16:52 GMT
-Received: from dm-oel.no.oracle.com (/10.172.157.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 08 Jul 2019 04:16:51 -0700
-From:   Dag Moxnes <dag.moxnes@oracle.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        parav@mellanox.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] RDMA/core: Fix race when resolving IP address
-Date:   Mon,  8 Jul 2019 13:16:24 +0200
-Message-Id: <1562584584-13132-1-git-send-email-dag.moxnes@oracle.com>
-X-Mailer: git-send-email 1.7.1
+        id S1730963AbfGHM4Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jul 2019 08:56:24 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:57603 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728892AbfGHM4Y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Jul 2019 08:56:24 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MbBQU-1iLzrJ3Egy-00bXQy; Mon, 08 Jul 2019 14:55:57 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xdp-newbies@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] [net-next] net/mlx5e: xsk: dynamically allocate mlx5e_channel_param
+Date:   Mon,  8 Jul 2019 14:55:41 +0200
+Message-Id: <20190708125554.3863901-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9311 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907080145
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9311 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907080145
+X-Provags-ID: V03:K1:4ftv1gHczqjAf8xH9IXsCPbra/fMKRspDTr8cIcpEuGznocAdGy
+ iZhmNDyoSPnpnBZOyDHtT8Ynn4XQ9kQfpsqHva0dKZA5Ld4hMScUjAMHEbG6PrAbwLC6ASg
+ g539BORMN8W974gKpYHP5K9v2Y2f956yutZO9dA6870giJkCXQ71FrqA8iO4eyLCZFzDhgI
+ VQdm2P+yiXXKN+C7144Mw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:S7/kq/cX7g0=:jQ0xc1zhHRNbrh7x+xMeHd
+ cA/orRXHrovfvXEwHXZJ26K0GbHxI2WZd/m4ZhxS4FbYUQCEDMUNy2qB1IFuJjaqe4Ok79Rw+
+ xsVajdjRZLKA8iteii1S1tU6D3sQnjcMYzK9cBDLynaRMXbMijhwmTSSWvoElvXCgDhCTHqgW
+ w0ZKb8UsaLYUJXJV+rtGWcvRINaruEIKSrH6zyPkiFs/7W8mhOpuPxnLYfSic/nmn9RqgeY16
+ 9PpuKCJVcOTuXrv7FXqdCpcEkbg09EeepsRjKkKsJ9YvEiTXd49QbJ9EalG6aIK2+5SXA2OCH
+ FfCwVe4ZWBH2Bf3cWn+IvsRaj/wv13R9p3joz6YNOZAPX0H5LLXq2sA6ckW2FC+QvSKaef0FP
+ IGttL7qBy2wgExG+3GFBaWQHx5wWeH3fnAslbBWvM6JvbHjCUMueZa6l/jnSzleM8dgP1n2dF
+ 3Kb7dt3tQKmc2ANAboFjOqOfOZqzpiye/4XZ1aBxc0wFo6nao0p9Xw+RjcYWxsEBKIY+2US1E
+ Q7A0Ivd4/DgYN0zZDRXUko+thJnndO3/iuaeeJi9C0fcbmplbWvxWHZqPB94wdycirbrWGTbF
+ 4BEHT3RgOKgOABrcp2tsqgnipoNcJTPr1Bq+Up14Mf3MERyrLi7AS4bXJNtz9L2BBMWBbtb/D
+ pVfYxu7EZc+0WEYxD2gQWQwH4ouF7OYRnkAuotdjafrWCeio59oFCnNdU4D/4x9PfSKA6DpwF
+ 7+b1dGFK0pTWht8vSCelCEwDbGj1EbJRNNE0DA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use neighbour lock when copying MAC address from neighbour data struct
-in dst_fetch_ha.
+The structure is too large to put on the stack, resulting in a
+warning on 32-bit ARM:
 
-When not using the lock, it is possible for the function to race with
-neigh_update, causing it to copy an invalid MAC address.
+drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c:59:5: error: stack frame size of 1344 bytes in function
+      'mlx5e_open_xsk' [-Werror,-Wframe-larger-than=]
 
-It is possible to provoke this error by calling rdma_resolve_addr in a
-tight loop, while deleting the corresponding ARP entry in another tight
-loop.
+Use kzalloc() instead.
 
-This will cause the race shown it the following sample trace:
-
-rdma_resolve_addr()
-  rdma_resolve_ip()
-    addr_resolve()
-      addr_resolve_neigh()
-        fetch_ha()
-          dst_fetch_ha()
-            n->nud_state == NUD_VALID
-
-and
-
-net_ioctl()
-  arp_ioctl()
-    arp_rec_delete()
-      arp_invalidate()
-        neigh_update()
-          __neigh_update()
-            neigh->nud_state = new;
-
-Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-Reviewed-by: Parav Pandit <parav@mellanox.com>
+Fixes: a038e9794541 ("net/mlx5e: Add XSK zero-copy support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v1 -> v2:
-   * Modified implementation to improve readability
+ .../mellanox/mlx5/core/en/xsk/setup.c         | 25 ++++++++++++-------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-v2 -> v3:
-   * Added sample trace as suggested by Parav Pandit
-   * Added Reviewed-by
-
-
----
- drivers/infiniband/core/addr.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index 2f7d141598..51323ffbc5 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -333,11 +333,14 @@ static int dst_fetch_ha(const struct dst_entry *dst,
- 	if (!n)
- 		return -ENODATA;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+index aaffa6f68dc0..db9bbec68dbf 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+@@ -60,24 +60,28 @@ int mlx5e_open_xsk(struct mlx5e_priv *priv, struct mlx5e_params *params,
+ 		   struct mlx5e_xsk_param *xsk, struct xdp_umem *umem,
+ 		   struct mlx5e_channel *c)
+ {
+-	struct mlx5e_channel_param cparam = {};
++	struct mlx5e_channel_param *cparam;
+ 	struct dim_cq_moder icocq_moder = {};
+ 	int err;
  
--	if (!(n->nud_state & NUD_VALID)) {
-+	read_lock_bh(&n->lock);
-+	if (n->nud_state & NUD_VALID) {
-+		memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
-+		read_unlock_bh(&n->lock);
-+	} else {
-+		read_unlock_bh(&n->lock);
- 		neigh_event_send(n, NULL);
- 		ret = -ENODATA;
--	} else {
--		memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
- 	}
+ 	if (!mlx5e_validate_xsk_param(params, xsk, priv->mdev))
+ 		return -EINVAL;
  
- 	neigh_release(n);
+-	mlx5e_build_xsk_cparam(priv, params, xsk, &cparam);
++	cparam = kzalloc(sizeof(*cparam), GFP_KERNEL);
++	if (!cparam)
++		return -ENOMEM;
+ 
+-	err = mlx5e_open_cq(c, params->rx_cq_moderation, &cparam.rx_cq, &c->xskrq.cq);
++	mlx5e_build_xsk_cparam(priv, params, xsk, cparam);
++
++	err = mlx5e_open_cq(c, params->rx_cq_moderation, &cparam->rx_cq, &c->xskrq.cq);
+ 	if (unlikely(err))
+-		return err;
++		goto err_kfree_cparam;
+ 
+-	err = mlx5e_open_rq(c, params, &cparam.rq, xsk, umem, &c->xskrq);
++	err = mlx5e_open_rq(c, params, &cparam->rq, xsk, umem, &c->xskrq);
+ 	if (unlikely(err))
+ 		goto err_close_rx_cq;
+ 
+-	err = mlx5e_open_cq(c, params->tx_cq_moderation, &cparam.tx_cq, &c->xsksq.cq);
++	err = mlx5e_open_cq(c, params->tx_cq_moderation, &cparam->tx_cq, &c->xsksq.cq);
+ 	if (unlikely(err))
+ 		goto err_close_rq;
+ 
+@@ -87,18 +91,18 @@ int mlx5e_open_xsk(struct mlx5e_priv *priv, struct mlx5e_params *params,
+ 	 * is disabled and then reenabled, but the SQ continues receiving CQEs
+ 	 * from the old UMEM.
+ 	 */
+-	err = mlx5e_open_xdpsq(c, params, &cparam.xdp_sq, umem, &c->xsksq, true);
++	err = mlx5e_open_xdpsq(c, params, &cparam->xdp_sq, umem, &c->xsksq, true);
+ 	if (unlikely(err))
+ 		goto err_close_tx_cq;
+ 
+-	err = mlx5e_open_cq(c, icocq_moder, &cparam.icosq_cq, &c->xskicosq.cq);
++	err = mlx5e_open_cq(c, icocq_moder, &cparam->icosq_cq, &c->xskicosq.cq);
+ 	if (unlikely(err))
+ 		goto err_close_sq;
+ 
+ 	/* Create a dedicated SQ for posting NOPs whenever we need an IRQ to be
+ 	 * triggered and NAPI to be called on the correct CPU.
+ 	 */
+-	err = mlx5e_open_icosq(c, params, &cparam.icosq, &c->xskicosq);
++	err = mlx5e_open_icosq(c, params, &cparam->icosq, &c->xskicosq);
+ 	if (unlikely(err))
+ 		goto err_close_icocq;
+ 
+@@ -123,6 +127,9 @@ int mlx5e_open_xsk(struct mlx5e_priv *priv, struct mlx5e_params *params,
+ err_close_rx_cq:
+ 	mlx5e_close_cq(&c->xskrq.cq);
+ 
++err_kfree_cparam:
++	kfree(cparam);
++
+ 	return err;
+ }
+ 
 -- 
-2.20.1
+2.20.0
 
