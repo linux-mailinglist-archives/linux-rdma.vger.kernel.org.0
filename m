@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC09061FB2
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 15:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA2361FB6
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 15:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728860AbfGHNox (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jul 2019 09:44:53 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2181 "EHLO huawei.com"
+        id S1729866AbfGHNoy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jul 2019 09:44:54 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2240 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731410AbfGHNox (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S1729815AbfGHNox (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
         Mon, 8 Jul 2019 09:44:53 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 68D5A578EF4A1672D726;
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 997953B5A8A123DBA30E;
         Mon,  8 Jul 2019 21:44:49 +0800 (CST)
 Received: from linux-ioko.site (10.71.200.31) by
  DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Lijun Ou <oulijun@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH for-next 4/9] RDMA/hns: Use a separated function for setting extend sge paramters
-Date:   Mon, 8 Jul 2019 21:41:20 +0800
-Message-ID: <1562593285-8037-5-git-send-email-oulijun@huawei.com>
+Subject: [PATCH for-next 5/9] RDMA/hns: optimize the duplicated code for qpc setting flow
+Date:   Mon, 8 Jul 2019 21:41:21 +0800
+Message-ID: <1562593285-8037-6-git-send-email-oulijun@huawei.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1562593285-8037-1-git-send-email-oulijun@huawei.com>
 References: <1562593285-8037-1-git-send-email-oulijun@huawei.com>
@@ -36,131 +36,152 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Here moves the related lines of setting extend sge size into
-the separate function as well as removes the unused variables.
+From: Xi Wang <wangxi11@huawei.com>
 
-Signed-off-by: Lijun Ou <oulijun@huawei.com>
+Currently, more than 20 lines of duplicate code exist in function
+'modify_qp_init_to_init' and function 'modify_qp_reset_to_init',
+which affects the readability of the code.
+
+Signed-off-by: Xi Wang <wangxi11@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h |  2 -
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 61 ++++++++++++++++++-----------
- 2 files changed, 38 insertions(+), 25 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 96 ++++++++++++------------------
+ 1 file changed, 38 insertions(+), 58 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index a548b28..b39497a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -654,8 +654,6 @@ struct hns_roce_qp {
- 	u32			doorbell_qpn;
- 	__le32			sq_signal_bits;
- 	u32			sq_next_wqe;
--	int			sq_max_wqes_per_wr;
--	int			sq_spare_wqes;
- 	struct hns_roce_wq	sq;
- 
- 	struct ib_umem		*umem;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index c109602..d35033b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -502,6 +502,35 @@ static int calc_wqe_bt_page_shift(struct hns_roce_dev *hr_dev,
- 	return bt_pg_shift - PAGE_SHIFT;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index edc5dd2..c2ddfc1 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -3118,6 +3118,43 @@ static void set_access_flags(struct hns_roce_qp *hr_qp,
+ 	roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S, 0);
  }
  
-+static int set_extend_sge_param(struct hns_roce_dev *hr_dev,
-+				struct hns_roce_qp *hr_qp)
++static void set_qpc_wqe_cnt(struct hns_roce_qp *hr_qp,
++			    struct hns_roce_v2_qp_context *context,
++			    struct hns_roce_v2_qp_context *qpc_mask)
 +{
-+	struct device *dev = hr_dev->dev;
++	if (hr_qp->ibqp.qp_type == IB_QPT_GSI)
++		roce_set_field(context->byte_4_sqpn_tst,
++			       V2_QPC_BYTE_4_SGE_SHIFT_M,
++			       V2_QPC_BYTE_4_SGE_SHIFT_S,
++			       ilog2((unsigned int)hr_qp->sge.sge_cnt));
++	else
++		roce_set_field(context->byte_4_sqpn_tst,
++			       V2_QPC_BYTE_4_SGE_SHIFT_M,
++			       V2_QPC_BYTE_4_SGE_SHIFT_S,
++			       hr_qp->sq.max_gs >
++			       HNS_ROCE_V2_UC_RC_SGE_NUM_IN_WQE ?
++			       ilog2((unsigned int)hr_qp->sge.sge_cnt) : 0);
 +
-+	if (hr_qp->sq.max_gs > 2) {
-+		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
-+				     (hr_qp->sq.max_gs - 2));
-+		hr_qp->sge.sge_shift = 4;
-+	}
++	roce_set_field(qpc_mask->byte_4_sqpn_tst, V2_QPC_BYTE_4_SGE_SHIFT_M,
++		       V2_QPC_BYTE_4_SGE_SHIFT_S, 0);
 +
-+	/* ud sqwqe's sge use extend sge */
-+	if (hr_dev->caps.max_sq_sg > 2 && hr_qp->ibqp.qp_type == IB_QPT_GSI) {
-+		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
-+				     hr_qp->sq.max_gs);
-+		hr_qp->sge.sge_shift = 4;
-+	}
++	roce_set_field(context->byte_20_smac_sgid_idx,
++		       V2_QPC_BYTE_20_SQ_SHIFT_M, V2_QPC_BYTE_20_SQ_SHIFT_S,
++		       ilog2((unsigned int)hr_qp->sq.wqe_cnt));
++	roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
++		       V2_QPC_BYTE_20_SQ_SHIFT_M, V2_QPC_BYTE_20_SQ_SHIFT_S, 0);
 +
-+	if ((hr_qp->sq.max_gs > 2) && hr_dev->pci_dev->revision == 0x20) {
-+		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
-+			dev_err(dev, "The extended sge cnt error! sge_cnt=%d\n",
-+				hr_qp->sge.sge_cnt);
-+			return -EINVAL;
-+		}
-+	}
++	roce_set_field(context->byte_20_smac_sgid_idx,
++		       V2_QPC_BYTE_20_RQ_SHIFT_M, V2_QPC_BYTE_20_RQ_SHIFT_S,
++		       (hr_qp->ibqp.qp_type == IB_QPT_XRC_INI ||
++		       hr_qp->ibqp.qp_type == IB_QPT_XRC_TGT ||
++		       hr_qp->ibqp.srq) ? 0 :
++		       ilog2((unsigned int)hr_qp->rq.wqe_cnt));
 +
-+	return 0;
++	roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
++		       V2_QPC_BYTE_20_RQ_SHIFT_M, V2_QPC_BYTE_20_RQ_SHIFT_S, 0);
 +}
 +
- static int hns_roce_set_kernel_sq_size(struct hns_roce_dev *hr_dev,
- 				       struct ib_qp_cap *cap,
- 				       struct hns_roce_qp *hr_qp)
-@@ -510,6 +539,7 @@ static int hns_roce_set_kernel_sq_size(struct hns_roce_dev *hr_dev,
- 	u32 page_size;
- 	u32 max_cnt;
- 	int size;
-+	int ret;
+ static void modify_qp_reset_to_init(struct ib_qp *ibqp,
+ 				    const struct ib_qp_attr *attr,
+ 				    int attr_mask,
+@@ -3138,21 +3175,6 @@ static void modify_qp_reset_to_init(struct ib_qp *ibqp,
+ 	roce_set_field(qpc_mask->byte_4_sqpn_tst, V2_QPC_BYTE_4_TST_M,
+ 		       V2_QPC_BYTE_4_TST_S, 0);
  
- 	if (cap->max_send_wr  > hr_dev->caps.max_wqes  ||
- 	    cap->max_send_sge > hr_dev->caps.max_sq_sg ||
-@@ -519,8 +549,6 @@ static int hns_roce_set_kernel_sq_size(struct hns_roce_dev *hr_dev,
+-	if (ibqp->qp_type == IB_QPT_GSI)
+-		roce_set_field(context->byte_4_sqpn_tst,
+-			       V2_QPC_BYTE_4_SGE_SHIFT_M,
+-			       V2_QPC_BYTE_4_SGE_SHIFT_S,
+-			       ilog2((unsigned int)hr_qp->sge.sge_cnt));
+-	else
+-		roce_set_field(context->byte_4_sqpn_tst,
+-			       V2_QPC_BYTE_4_SGE_SHIFT_M,
+-			       V2_QPC_BYTE_4_SGE_SHIFT_S,
+-			       hr_qp->sq.max_gs > 2 ?
+-			       ilog2((unsigned int)hr_qp->sge.sge_cnt) : 0);
+-
+-	roce_set_field(qpc_mask->byte_4_sqpn_tst, V2_QPC_BYTE_4_SGE_SHIFT_M,
+-		       V2_QPC_BYTE_4_SGE_SHIFT_S, 0);
+-
+ 	roce_set_field(context->byte_4_sqpn_tst, V2_QPC_BYTE_4_SQPN_M,
+ 		       V2_QPC_BYTE_4_SQPN_S, hr_qp->qpn);
+ 	roce_set_field(qpc_mask->byte_4_sqpn_tst, V2_QPC_BYTE_4_SQPN_M,
+@@ -3168,19 +3190,7 @@ static void modify_qp_reset_to_init(struct ib_qp *ibqp,
+ 	roce_set_field(qpc_mask->byte_20_smac_sgid_idx, V2_QPC_BYTE_20_RQWS_M,
+ 		       V2_QPC_BYTE_20_RQWS_S, 0);
+ 
+-	roce_set_field(context->byte_20_smac_sgid_idx,
+-		       V2_QPC_BYTE_20_SQ_SHIFT_M, V2_QPC_BYTE_20_SQ_SHIFT_S,
+-		       ilog2((unsigned int)hr_qp->sq.wqe_cnt));
+-	roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
+-		       V2_QPC_BYTE_20_SQ_SHIFT_M, V2_QPC_BYTE_20_SQ_SHIFT_S, 0);
+-
+-	roce_set_field(context->byte_20_smac_sgid_idx,
+-		       V2_QPC_BYTE_20_RQ_SHIFT_M, V2_QPC_BYTE_20_RQ_SHIFT_S,
+-		       (hr_qp->ibqp.qp_type == IB_QPT_XRC_INI ||
+-		       hr_qp->ibqp.qp_type == IB_QPT_XRC_TGT || ibqp->srq) ? 0 :
+-		       ilog2((unsigned int)hr_qp->rq.wqe_cnt));
+-	roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
+-		       V2_QPC_BYTE_20_RQ_SHIFT_M, V2_QPC_BYTE_20_RQ_SHIFT_S, 0);
++	set_qpc_wqe_cnt(hr_qp, context, qpc_mask);
+ 
+ 	/* No VLAN need to set 0xFFF */
+ 	roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_VLAN_ID_M,
+@@ -3456,22 +3466,6 @@ static void modify_qp_init_to_init(struct ib_qp *ibqp,
+ 	roce_set_field(qpc_mask->byte_4_sqpn_tst, V2_QPC_BYTE_4_TST_M,
+ 		       V2_QPC_BYTE_4_TST_S, 0);
+ 
+-	if (ibqp->qp_type == IB_QPT_GSI)
+-		roce_set_field(context->byte_4_sqpn_tst,
+-			       V2_QPC_BYTE_4_SGE_SHIFT_M,
+-			       V2_QPC_BYTE_4_SGE_SHIFT_S,
+-			       ilog2((unsigned int)hr_qp->sge.sge_cnt));
+-	else
+-		roce_set_field(context->byte_4_sqpn_tst,
+-			       V2_QPC_BYTE_4_SGE_SHIFT_M,
+-			       V2_QPC_BYTE_4_SGE_SHIFT_S,
+-			       hr_qp->sq.max_gs >
+-			       HNS_ROCE_V2_UC_RC_SGE_NUM_IN_WQE ?
+-			       ilog2((unsigned int)hr_qp->sge.sge_cnt) : 0);
+-
+-	roce_set_field(qpc_mask->byte_4_sqpn_tst, V2_QPC_BYTE_4_SGE_SHIFT_M,
+-		       V2_QPC_BYTE_4_SGE_SHIFT_S, 0);
+-
+ 	if (attr_mask & IB_QP_ACCESS_FLAGS) {
+ 		roce_set_bit(context->byte_76_srqn_op_en, V2_QPC_BYTE_76_RRE_S,
+ 			     !!(attr->qp_access_flags & IB_ACCESS_REMOTE_READ));
+@@ -3506,20 +3500,6 @@ static void modify_qp_init_to_init(struct ib_qp *ibqp,
+ 			     0);
  	}
  
- 	hr_qp->sq.wqe_shift = ilog2(hr_dev->caps.max_sq_desc_sz);
--	hr_qp->sq_max_wqes_per_wr = 1;
--	hr_qp->sq_spare_wqes = 0;
- 
- 	if (hr_dev->caps.min_wqes)
- 		max_cnt = max(cap->max_send_wr, hr_dev->caps.min_wqes);
-@@ -540,25 +568,10 @@ static int hns_roce_set_kernel_sq_size(struct hns_roce_dev *hr_dev,
- 	else
- 		hr_qp->sq.max_gs = max_cnt;
- 
--	if (hr_qp->sq.max_gs > 2) {
--		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
--				     (hr_qp->sq.max_gs - 2));
--		hr_qp->sge.sge_shift = 4;
--	}
+-	roce_set_field(context->byte_20_smac_sgid_idx,
+-		       V2_QPC_BYTE_20_SQ_SHIFT_M, V2_QPC_BYTE_20_SQ_SHIFT_S,
+-		       ilog2((unsigned int)hr_qp->sq.wqe_cnt));
+-	roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
+-		       V2_QPC_BYTE_20_SQ_SHIFT_M, V2_QPC_BYTE_20_SQ_SHIFT_S, 0);
 -
--	/* ud sqwqe's sge use extend sge */
--	if (hr_dev->caps.max_sq_sg > 2 && hr_qp->ibqp.qp_type == IB_QPT_GSI) {
--		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
--				     hr_qp->sq.max_gs);
--		hr_qp->sge.sge_shift = 4;
--	}
+-	roce_set_field(context->byte_20_smac_sgid_idx,
+-		       V2_QPC_BYTE_20_RQ_SHIFT_M, V2_QPC_BYTE_20_RQ_SHIFT_S,
+-		       (hr_qp->ibqp.qp_type == IB_QPT_XRC_INI ||
+-		       hr_qp->ibqp.qp_type == IB_QPT_XRC_TGT || ibqp->srq) ? 0 :
+-		       ilog2((unsigned int)hr_qp->rq.wqe_cnt));
+-	roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
+-		       V2_QPC_BYTE_20_RQ_SHIFT_M, V2_QPC_BYTE_20_RQ_SHIFT_S, 0);
 -
--	if ((hr_qp->sq.max_gs > 2) && hr_dev->pci_dev->revision == 0x20) {
--		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
--			dev_err(dev, "The extended sge cnt error! sge_cnt=%d\n",
--				hr_qp->sge.sge_cnt);
--			return -EINVAL;
--		}
-+	ret = set_extend_sge_param(hr_dev, hr_qp);
-+	if (ret) {
-+		dev_err(dev, "set extend sge parameters fail\n");
-+		return ret;
- 	}
- 
- 	/* Get buf size, SQ and RQ are aligned to PAGE_SIZE */
-@@ -943,11 +956,13 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		hns_roce_free_db(hr_dev, &hr_qp->rdb);
- 
- err_rq_sge_list:
--	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE)
-+	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
-+	     hns_roce_qp_has_rq(init_attr))
- 		kfree(hr_qp->rq_inl_buf.wqe_list[0].sg_list);
- 
- err_wqe_list:
--	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE)
-+	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
-+	     hns_roce_qp_has_rq(init_attr))
- 		kfree(hr_qp->rq_inl_buf.wqe_list);
- 
- err_out:
+ 	roce_set_field(context->byte_16_buf_ba_pg_sz, V2_QPC_BYTE_16_PD_M,
+ 		       V2_QPC_BYTE_16_PD_S, to_hr_pd(ibqp->pd)->pdn);
+ 	roce_set_field(qpc_mask->byte_16_buf_ba_pg_sz, V2_QPC_BYTE_16_PD_M,
 -- 
 1.9.1
 
