@@ -2,111 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7A3628AF
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 20:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA78628E3
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 21:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389249AbfGHSse (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jul 2019 14:48:34 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:41134 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729103AbfGHSse (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Jul 2019 14:48:34 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x68IhsaO030527;
-        Mon, 8 Jul 2019 18:47:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=9L+6tNo6/Js/Fs+4rHNN6VA6XVt717PhOqy1iR6GuTg=;
- b=iKTnDohQ0owkh/1YSZxfbGThctmkgoarMRF073cvJ0mgkoe75xLPdWrdcACD44FRVaPd
- 0/s+Ohw4TnbwqRmpJMprfHHOa9U1lGrEmYs6sbwPpTEhFFjbs/BWPsUNoQHr+3mDWAE3
- 8mKx0fMJf/ovlBFSQNorfNnDjYtouk5Gfk/YG1hQA4kLR+iXhFNoTAlN82mU6o1j8nVs
- QfamXZZmm2MbAmz6e9FBocoJbkY7ZY2hiafaht3AywRvyl7n8b/h50OnroShsgrKQu43
- 1y8Z3an9KwSoIwHvhIgMxZi5AIbiO4CFuQreMvFz3Hwv1OsoK6PYMrhFg4yQdhxJbPNN hA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2tjk2tg6ew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jul 2019 18:47:44 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x68Ilf27061727;
-        Mon, 8 Jul 2019 18:47:43 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2tjkf2btpc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jul 2019 18:47:43 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x68IlgYt029228;
-        Mon, 8 Jul 2019 18:47:42 GMT
-Received: from [10.65.147.235] (/10.65.147.235)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 08 Jul 2019 11:47:42 -0700
-Subject: Re: [PATCH v3] RDMA/core: Fix race when resolving IP address
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     dledford@redhat.com, leon@kernel.org, parav@mellanox.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1562584584-13132-1-git-send-email-dag.moxnes@oracle.com>
- <20190708175025.GA6976@ziepe.ca>
-From:   Dag Moxnes <dag.moxnes@oracle.com>
-Message-ID: <4b9ae7b8-310c-e0b6-7a8e-33e6d5bef83d@oracle.com>
-Date:   Mon, 8 Jul 2019 20:47:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1729035AbfGHTCX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jul 2019 15:02:23 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:34142 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728461AbfGHTCX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Jul 2019 15:02:23 -0400
+Received: by mail-qt1-f193.google.com with SMTP id k10so11502911qtq.1
+        for <linux-rdma@vger.kernel.org>; Mon, 08 Jul 2019 12:02:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5Bv3a+k+weXIsoOIfX6xYLi7BPcDGeL7bSx8Y44AnG0=;
+        b=UqVil77bLlZTCF011zC65Jp3jozJ7J5aDO+QvVu/soKylnvcg7KYXcNZB3RcP6wGZ9
+         szugoo/ApyXppOTzxzXeRyNMnNWybTlHyqn1tWhsYA2JIrnru8jL06rA24IHvyPlonYW
+         oFR+6ziHisJV7FV63r2KhfI6dqCctKdASOXvxP2oKyhGBayvf9zokQob0yEC+RNDJstG
+         6YiHGotML9Eosx3WgC7fDM6sp7X5RVo1VvC+PR3LMkAhmPIY22LYcVaP6a9r0al1XG5d
+         yewkPotJci3yXTdMYUruQlkYJNqSbfq0FAv+vEmN39sunE4H6lA5qHpT/tXT9KRRZyP/
+         O3Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5Bv3a+k+weXIsoOIfX6xYLi7BPcDGeL7bSx8Y44AnG0=;
+        b=k6ciu76hJzoLt4nDDqrKKneKRXFNhjmPY1KD9SvHuTp1XCVgC7S8GD7QMuh0gsLElR
+         /5yBNGXAPRPAPLtkXLzadSfIxfYP1fdeWm/t3hqDTT0NTtSfs3ucjhuypC/wPeOPDads
+         d6gc4yXieGpuahnhKAH0Z2xSxtgksPf/L3uE5eFblW3an7r2fMQ6vhetfUkFeL+Iw07W
+         BtPdSLLQb6Sp1neXXLpSKOrPXbgOVIJ9WHc+dtI+qYNbSIiO/Z8UwXBH50Srvhv5k6ro
+         rlVvd/bTqZlJv2N6OFkdfOpW2tcqyMwrXEHYmYhj4qUhgHlEwNm5sYGVK7X0YE5kjSRJ
+         Iy/w==
+X-Gm-Message-State: APjAAAWe7mX3IAXiuQnstn4ngUpv3ACBSkoNjDIic07cXr1skUFR/5Pp
+        sET7ox2zS0Yc4evdbaE3yRn6qw==
+X-Google-Smtp-Source: APXvYqw2gjl0N4eIrmelGKvMkv2edMphnYCu/SD/rqHccreC+MOyiOMq8xykfPsIlFvkUFn/MdMhEg==
+X-Received: by 2002:a0c:b59c:: with SMTP id g28mr16532451qve.244.1562612542775;
+        Mon, 08 Jul 2019 12:02:22 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id s7sm6560737qtq.8.2019.07.08.12.02.22
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 08 Jul 2019 12:02:22 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hkYu5-0006XU-Kz; Mon, 08 Jul 2019 16:02:21 -0300
+Date:   Mon, 8 Jul 2019 16:02:21 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Yamin Friedman <yaminf@mellanox.com>
+Subject: Re: [PATCH rdma-next v5 0/4] Use RDMA adaptive moderation library
+Message-ID: <20190708190221.GA25057@ziepe.ca>
+References: <20190708105905.27468-1-leon@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20190708175025.GA6976@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9312 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907080233
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9312 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907080232
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190708105905.27468-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thanks Jason,
+On Mon, Jul 08, 2019 at 01:59:01PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Hi,
+> 
+> This is RDMA part of previously sent DIM library improvements series
+> [1], which was pulled by Dave. It needs to be pulled to RDMA too as
+> a pre-requirements.
+> 
+> Changes since v4:
+>  * Separated mlx5 change from IB/core changes.
+> 
+> Changes since v3:
+>  * Renamed dim_owner to be priv
+>  * Added Sagi's ROBs
+>  * Removed casting of void pointer.
+> 
+> Changes since v2:
+> - renamed user-space knob from dim to adaptive-moderation (Sagi)
+> - some minor code clean ups (Sagi)
+> - Reordered patches to ensure that netlink expose is last in the series.
+> - Slightly cleaned commit messages
+> - Changed "bool use_cq_dim" flag to be bitwise to save space.
+> 
+> Changes since v1:
+> - added per ib device configuration knob for rdma-dim (Sagi)
+> - add NL directives for user-space / rdma tool to configure rdma dim
+>   (Sagi/Leon)
+> - use one header file for DIM implementations (Leon)
+> - various point changes in the rdma dim related code in the IB core
+>   (Leon)
+> - removed the RDMA specific patches form this pull request\
+> 
+> Thanks
+> 
+> [1] https://www.spinics.net/lists/netdev/msg581046.html
+> 
+> Leon Romanovsky (1):
+>   RDMA/mlx5: Set RDMA DIM to be enabled by default
+> 
+> Yamin Friedman (3):
+>   linux/dim: Implement RDMA adaptive moderation (DIM)
+>   RDMA/core: Provide RDMA DIM support for ULPs
+>   RDMA/nldev: Added configuration of RDMA dynamic interrupt moderation
+>     to netlink
 
-Regards,
-Dag
+Applied to for-next
 
-Den 08.07.2019 19:50, skrev Jason Gunthorpe:
-> On Mon, Jul 08, 2019 at 01:16:24PM +0200, Dag Moxnes wrote:
->> Use neighbour lock when copying MAC address from neighbour data struct
->> in dst_fetch_ha.
->>
->> When not using the lock, it is possible for the function to race with
->> neigh_update, causing it to copy an invalid MAC address.
->>
->> It is possible to provoke this error by calling rdma_resolve_addr in a
->> tight loop, while deleting the corresponding ARP entry in another tight
->> loop.
->>
->> This will cause the race shown it the following sample trace:
->>
->> rdma_resolve_addr()
->>    rdma_resolve_ip()
->>      addr_resolve()
->>        addr_resolve_neigh()
->>          fetch_ha()
->>            dst_fetch_ha()
->>              n->nud_state == NUD_VALID
-> It isn't nud_state that is the problem here, it is the parallel
-> memcpy's onto ha. I fixed the commit message
->
-> This could also have been solved by using the ha_lock, but I don't
-> think we have a reason to particularly over-optimize this.
->
->>   drivers/infiniband/core/addr.c | 9 ++++++---
->>   1 file changed, 6 insertions(+), 3 deletions(-)
-> Applied to for-next, thanks
->
-> Jason
-
+Thanks,
+Jason
