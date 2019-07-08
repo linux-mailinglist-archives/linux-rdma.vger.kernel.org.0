@@ -2,89 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3F6626BF
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 18:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9BA62707
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2019 19:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389564AbfGHQ6h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jul 2019 12:58:37 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:37795 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387616AbfGHQ6h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Jul 2019 12:58:37 -0400
-Received: by mail-qk1-f194.google.com with SMTP id d15so13852686qkl.4
-        for <linux-rdma@vger.kernel.org>; Mon, 08 Jul 2019 09:58:36 -0700 (PDT)
+        id S2389799AbfGHRZa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jul 2019 13:25:30 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:34651 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389945AbfGHRZa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Jul 2019 13:25:30 -0400
+Received: by mail-qt1-f193.google.com with SMTP id k10so11194568qtq.1
+        for <linux-rdma@vger.kernel.org>; Mon, 08 Jul 2019 10:25:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=5Ebyoxq/yn+DRjEU74h3naMVVQ17vsFmrjVrB5vr7B8=;
-        b=XcgeHnse3Si2wTlq+Rk3mfqIfyHt8lSo9WF3Ye21psC0X/7EtD5+fISJKFaCIrRXrZ
-         w0bkWGw88++TnELZn3XBIQzzxeGJUZXGAh8r4AaQ/QJUzYX1r8oidbPjIWIMneQCV2KF
-         flkRHhksUGDzwGFhv51tjd8chtsT9+ki1yC/tNV469Hr9qKcmv6tQG8sC1/JUVV8MUuZ
-         u3J4gQd77DyRHuuE2XvRnZ5FVqW6FVIuuIw9k47ZzWQP9oMTzke0pzlKhKVPMs20EQy7
-         NqhOj4Zsrcj7gSUj7A9bfNrYgNfKPPRZthnwhCehMQ0y6lwKuzbhjJFIJXJQvYY4SLLr
-         i03g==
+        bh=ku/o68pleqE6un6ZW/BvkhdW//GDmVPordPUQ3yzu6U=;
+        b=aE8JZ4oLuploE3xF/JrOpdr9AoVRhkEOsLUz30R2UjWMXOkivBepSb7ZtC0ZX+KsXy
+         3jJydV56/hO6tGXVAMdnk5HMzPdKt86jE10qCn/1Gf88ooDqWjePCTTNZ0F+BSMBygqX
+         YPq3EkN9XpWd27tk+5DaiRPVF5jljyVG7WLFWT1raAYswkHluQ+WIivkJ/9MijGIrDSx
+         woUAgC/OYAaDLs3ChTeqeOT97WIiKsdJIuVECqzzDxRRnFjmfYc0TVVKBO4QBv1Yc2gL
+         zNp5fGpXei7QgoOsN3bD6RPxGHKUtvFfX0ZuijlV/H08KY1uKgW6HuDlLPmodBgLWv82
+         dkKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5Ebyoxq/yn+DRjEU74h3naMVVQ17vsFmrjVrB5vr7B8=;
-        b=mTU1XEjhfPVgl79753ypuX77s2LzuiwLOb8nhIcIBJB00zWZR8SHEAI9qMkFlYInOL
-         C7GiVTrQJjLyCI8TYfSJX8FmH3zNRGyhJX3wQeou9QvMINuM2N45t4eP4zS8K/NnY5Jb
-         /KHsTtKPPS10KGqU4kDCOebQrCDSzce5gT8Q9n/vkUaVhxXF/uz9wkOO73umhwPqKQky
-         1yxCPEL0zdEzFY747Dm7M6azkxR0QqSCqSJy6P8lzqob3EGzDisMBSXWybyLOurj2FIA
-         9UJxuNCtDCwRw1NoZy6GQ9f3OSPoH6TVlzKEWx+OwKgxJHFpNsvZY8wz8GhHAII+I1Yp
-         iWRg==
-X-Gm-Message-State: APjAAAVvgmDf/V128PGajHb/K8aTJM40l7vE9NjBygviZlXxZedwUF/0
-        Ow0KxDztRDjDcLSxJeDkqWIPOw==
-X-Google-Smtp-Source: APXvYqwiVoKd8WgJppn59ELRHUHd8xrASKJL6VpsuG0lJoacQvAmtko2SeJ4vsGbFTqzqjUWBf8OwQ==
-X-Received: by 2002:a05:620a:1107:: with SMTP id o7mr13470563qkk.324.1562605116461;
-        Mon, 08 Jul 2019 09:58:36 -0700 (PDT)
+        bh=ku/o68pleqE6un6ZW/BvkhdW//GDmVPordPUQ3yzu6U=;
+        b=lMrwMbPKpbp65f7/+JXu4alvmNZVM9/LxRMtjvJh7TAinrE7RKreGTKKRaZJpcwS57
+         V7OIIEHBbFlL0cjKyplN3L7taDHux/+L9Pz5b/ihapFFKhOCpop4Bwn/9RD2DTy2OBc7
+         RNowjqbL4s+W/0386Cm4bd2j9tAw4yzlVpwJDBpTYzKR/LmVgvDdLUrmcow2A4GgBVW2
+         s5fzHTv/uVijeG3nmJ6g62PKDYRozjPHkQ6jeaK0Db5R9ZNl6X91Dq9QqyngzYiMyXDo
+         45WhIRrnSfFGW5Ve+68AMNoSeyhs7WMylqB2IX2ECEmRL7aYOL+NYWDnuF3eZRSB3DTL
+         DS+A==
+X-Gm-Message-State: APjAAAVLHTU8F6T9ZMSUtUInWOfh8k82vtdCa4F17wPTyOYTVu2QyiR7
+        YmpdBGOn93ILPjICj3iL7qFFMQ==
+X-Google-Smtp-Source: APXvYqxo7P6BBN+I5qF/OaEb7YKPon028ElmrspccvTXQPbFVXwjbGN4QtHkhSa38AtF7UfZ251zUw==
+X-Received: by 2002:ac8:1c42:: with SMTP id j2mr15087393qtk.68.1562606729322;
+        Mon, 08 Jul 2019 10:25:29 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id h26sm8781298qta.58.2019.07.08.09.58.35
+        by smtp.gmail.com with ESMTPSA id t2sm9809926qth.33.2019.07.08.10.25.28
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 08 Jul 2019 09:58:35 -0700 (PDT)
+        Mon, 08 Jul 2019 10:25:28 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hkWyJ-0004vs-F8; Mon, 08 Jul 2019 13:58:35 -0300
-Date:   Mon, 8 Jul 2019 13:58:35 -0300
+        id 1hkXOK-0007Ke-A9; Mon, 08 Jul 2019 14:25:28 -0300
+Date:   Mon, 8 Jul 2019 14:25:28 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 0/2] DEVX VHCA tunnel support
-Message-ID: <20190708165835.GA18937@ziepe.ca>
-References: <20190701181402.25286-1-leon@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 35/39] docs: infiniband: add it to the driver-api bookset
+Message-ID: <20190708172528.GC23996@ziepe.ca>
+References: <cover.1561724493.git.mchehab+samsung@kernel.org>
+ <12743088687a9b0b305c05b62a5093056a4190b8.1561724493.git.mchehab+samsung@kernel.org>
+ <20190703180802.GA26557@ziepe.ca>
+ <20190706081950.4a629537@coco.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190701181402.25286-1-leon@kernel.org>
+In-Reply-To: <20190706081950.4a629537@coco.lan>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 01, 2019 at 09:14:00PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On Sat, Jul 06, 2019 at 08:19:50AM -0300, Mauro Carvalho Chehab wrote:
+> Em Wed, 3 Jul 2019 15:08:02 -0300
+> Jason Gunthorpe <jgg@ziepe.ca> escreveu:
 > 
-> Hi,
+> > On Fri, Jun 28, 2019 at 09:30:28AM -0300, Mauro Carvalho Chehab wrote:
+> > > While this contains some uAPI stuff, it was intended to be
+> > > read by a kernel doc. So, let's not move it to a different
+> > > dir, but, instead, just add it to the driver-api bookset.
+> > > 
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> > >  Documentation/index.rst            | 1 +
+> > >  Documentation/infiniband/index.rst | 2 +-
+> > >  2 files changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/Documentation/index.rst b/Documentation/index.rst
+> > > index ea33cbbccd9d..e69d2fde7735 100644
+> > > +++ b/Documentation/index.rst
+> > > @@ -96,6 +96,7 @@ needed).
+> > >     block/index
+> > >     hid/index
+> > >     iio/index
+> > > +   infiniband/index
+> > >     leds/index
+> > >     media/index
+> > >     networking/index
+> > > diff --git a/Documentation/infiniband/index.rst b/Documentation/infiniband/index.rst
+> > > index 22eea64de722..9cd7615438b9 100644
+> > > +++ b/Documentation/infiniband/index.rst
+> > > @@ -1,4 +1,4 @@
+> > > -:orphan:
+> > > +.. SPDX-License-Identifier: GPL-2.0
+> > >  
+> > >  ==========
+> > >  InfiniBand  
+> > 
+> > Should this one go to the rdma.git as well? It looks like yes
 > 
-> Those two patches introduce VHCA tunnel mechanism to DEVX interface
-> needed for Bluefield SOC. See extensive commit messages for more
-> information.
-> 
-> Thanks
-> 
-> Max Gurtovoy (2):
->   net/mlx5: Introduce VHCA tunnel device capability
->   IB/mlx5: Implement VHCA tunnel mechanism in DEVX
+> I'm OK if you want to add to rdma.git. However, this will likely rise 
+> conflicts, though, as this series has lots of other patches touching
+> Documentation/index.rst. 
 
-Thanks, applied to for-next
+Applied now, it seems better to keep everything consistent
 
 Jason
