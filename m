@@ -2,123 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B59638E7
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 17:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0390E63908
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 18:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbfGIPv7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jul 2019 11:51:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726197AbfGIPv6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 9 Jul 2019 11:51:58 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B06D721670;
-        Tue,  9 Jul 2019 15:51:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562687517;
-        bh=4GpBHZa2kVh9ioJ55uMeuM395cuzV+Q2J8LQxGrQRIE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X+/Rb6rKAWxqhlu5+f2pECcXpxS9U8xzEvC6rLI9ZymvQN0bmfgQoGKykk6VxxE+c
-         vgaSeZcdzvByvf6oGbbhC46IRPounX9PPDKrxlMg2+0+QMCOpsjl2TsUUGAuMVzt+z
-         cxbPEHftb0/g2Bs0Y9eDdzbu++qA6Z/MzPCnVtH8=
-Date:   Tue, 9 Jul 2019 18:51:53 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de,
-        Roman Pen <roman.penyaev@profitbricks.com>
-Subject: Re: [PATCH v4 25/25] MAINTAINERS: Add maintainer for IBNBD/IBTRS
- modules
-Message-ID: <20190709155153.GX7034@mtr-leonro.mtl.com>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <20190620150337.7847-26-jinpuwang@gmail.com>
- <20190709151013.GW7034@mtr-leonro.mtl.com>
- <CAMGffEmeH7-oEENYLQ3tEnkKbO4pcb7omPeavNscVJteEnupyw@mail.gmail.com>
+        id S1726218AbfGIQEu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jul 2019 12:04:50 -0400
+Received: from mail-eopbgr690061.outbound.protection.outlook.com ([40.107.69.61]:46407
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726133AbfGIQEu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 9 Jul 2019 12:04:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=netapp.onmicrosoft.com; s=selector2-netapp-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2RGcy4XwdoSq0tCSxc+Wqxd3j0ETmDOt6HXq3UC2+XE=;
+ b=j8UJ926//iwOba9oQpB29tHbNtjk3rEpUiUY/i4lhroT2PTrQ05VpQazbU6VeRadShpfIWBVUzCkKZD8boLRMeiFzaCbP5LhUMa3+GD9J+9WL21UkkM+qWXnEXqR+/nPEm9OjtX5cZDFmpgMM0T0gIjdtwxO2IUDgi8HsUnfTz0=
+Received: from CY4PR06MB3479.namprd06.prod.outlook.com (10.175.117.23) by
+ CY4PR06MB2376.namprd06.prod.outlook.com (10.169.185.17) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2052.18; Tue, 9 Jul 2019 16:03:08 +0000
+Received: from CY4PR06MB3479.namprd06.prod.outlook.com
+ ([fe80::80e9:7afd:2cd6:2b5e]) by CY4PR06MB3479.namprd06.prod.outlook.com
+ ([fe80::80e9:7afd:2cd6:2b5e%2]) with mapi id 15.20.2052.020; Tue, 9 Jul 2019
+ 16:03:07 +0000
+From:   "Schumaker, Anna" <Anna.Schumaker@netapp.com>
+To:     "trondmy@hammerspace.com" <trondmy@hammerspace.com>
+CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: [GIT PULL] Please pull NFSoRDMA updates for Linux 5.3 (v2)
+Thread-Topic: [GIT PULL] Please pull NFSoRDMA updates for Linux 5.3 (v2)
+Thread-Index: AQHVNm/MQA5pVOOVkk+NmkwdFvsvJg==
+Date:   Tue, 9 Jul 2019 16:03:07 +0000
+Message-ID: <f06a1223274768b4ef4f3712382d34bfd11186f4.camel@netapp.com>
+References: <b2cabbe76eecc8db717cccd84067d78f8c3a7d0f.camel@netapp.com>
+In-Reply-To: <b2cabbe76eecc8db717cccd84067d78f8c3a7d0f.camel@netapp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.3 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Anna.Schumaker@netapp.com; 
+x-originating-ip: [23.28.75.121]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e582b138-0a5a-49b2-e324-08d70486ef15
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:CY4PR06MB2376;
+x-ms-traffictypediagnostic: CY4PR06MB2376:
+x-microsoft-antispam-prvs: <CY4PR06MB23766CB2F34D6ABC16373075F8F10@CY4PR06MB2376.namprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:565;
+x-forefront-prvs: 0093C80C01
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(346002)(136003)(39860400002)(376002)(366004)(189003)(199004)(66556008)(2501003)(73956011)(478600001)(118296001)(66476007)(4326008)(5640700003)(6436002)(66446008)(64756008)(66066001)(15650500001)(256004)(102836004)(14444005)(6506007)(53936002)(36756003)(6512007)(5660300002)(72206003)(8936002)(99286004)(54906003)(316002)(2906002)(71190400001)(91956017)(86362001)(68736007)(6116002)(76176011)(7736002)(2351001)(305945005)(25786009)(186003)(6486002)(446003)(476003)(8676002)(81166006)(2616005)(6916009)(1730700003)(14454004)(66946007)(486006)(26005)(11346002)(58126008)(76116006)(81156014)(71200400001)(3846002);DIR:OUT;SFP:1101;SCL:1;SRVR:CY4PR06MB2376;H:CY4PR06MB3479.namprd06.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: netapp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: n2KrC1tc1KL0gSApa3QorZH04VFY/rvm7aXZ/Perr9CTVuWiE1n4RODKLVt0BlrqKZ9BUi6pL2kFvZvIFFeWkNx/zJqQirC8qTW4F8MUy67BJTJt8JByijn9V/FtSdFW07nmC534E9+41nBtOPd0dqyF8NcMLo2VepG2JWfQ8U90152dndXLgsKSTM9AMEoI8xVOJ9039fXIyPZ/7Rq3gdIZbvlr7BBdTsRQyAv686gjfnRQ8Co4bWMgy/zYexrL9CvmlM9PtDYnD2YR8Cxq9So47WHYq/VJLUt8xYcYpsPuqHMj+c3Z38wqOPasBczgJug4c/ekz2RxOnYM6heFEghhaZSGVZodXABpIAKOIsun2DZrRON8SwdLo3IitICUCbli1dEPcRtXSxZBgnDkd1iocYghF+ivmiq8lo1XfwY=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B8579858C3876F4CBE064622FEE32BE2@namprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMGffEmeH7-oEENYLQ3tEnkKbO4pcb7omPeavNscVJteEnupyw@mail.gmail.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+X-OriginatorOrg: netapp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e582b138-0a5a-49b2-e324-08d70486ef15
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2019 16:03:07.7910
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4b0911a0-929b-4715-944b-c03745165b3a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bjschuma@netapp.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR06MB2376
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 09, 2019 at 05:18:37PM +0200, Jinpu Wang wrote:
-> On Tue, Jul 9, 2019 at 5:10 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Thu, Jun 20, 2019 at 05:03:37PM +0200, Jack Wang wrote:
-> > > From: Roman Pen <roman.penyaev@profitbricks.com>
-> > >
-> > > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > ---
-> > >  MAINTAINERS | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > >
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index a6954776a37e..0b7fd93f738d 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -7590,6 +7590,20 @@ IBM ServeRAID RAID DRIVER
-> > >  S:   Orphan
-> > >  F:   drivers/scsi/ips.*
-> > >
-> > > +IBNBD BLOCK DRIVERS
-> > > +M:   IBNBD/IBTRS Storage Team <ibnbd@cloud.ionos.com>
-> > > +L:   linux-block@vger.kernel.org
-> > > +S:   Maintained
-> > > +T:   git git://github.com/profitbricks/ibnbd.git
-> > > +F:   drivers/block/ibnbd/
-> > > +
-> > > +IBTRS TRANSPORT DRIVERS
-> > > +M:   IBNBD/IBTRS Storage Team <ibnbd@cloud.ionos.com>
-> >
-> > I don't know if it rule or not, but can you please add real
-> > person/persons to Maintainers list? Many times, those global
-> > support lists are simply ignored.
->
-> Sure, we can use my and Danil 's name in next round.
->
-> >
-> > > +L:   linux-rdma@vger.kernel.org
-> > > +S:   Maintained
-> > > +T:   git git://github.com/profitbricks/ibnbd.git
-> >
-> > How did you imagine patch flow for ULP, while your tree is
-> > external to RDMA tree?
->
-> Plan was we gather the patch in the git tree, and
-> send patches to the list via git send email, do we accept pull request
-> from github?
-> What the preferred way?
-
-The preferred way is to start with sending patches directly
-to the mailing and allow RDMA maintainers to collect and
-apply them by themselves. It gives an easy way to other people
-to do cross-subsystem changes and we are doing a lot of them.
-
-Till you will be asked to send PRs the "T:" link should point to RDMA subsystem.
-
-Thanks
-
->
-> Thanks Leon.
-> Jack
-> >
-> > > +F:   drivers/infiniband/ulp/ibtrs/
-> > > +
-> > >  ICH LPC AND GPIO DRIVER
-> > >  M:   Peter Tyser <ptyser@xes-inc.com>
-> > >  S:   Maintained
-> > > --
-> > > 2.17.1
-> > >
+SGkgVHJvbmQsDQoNClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQNCjllMGJhYmYy
+YzA2YzczY2RhMmMwY2QzN2ExNjUzZDgyM2FkYjQwZWM6DQoNCiAgTGludXggNS4yLXJjNSAoMjAx
+OS0wNi0xNiAwODo0OTo0NSAtMTAwMCkNCg0KYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9z
+aXRvcnkgYXQ6DQoNCiAgZ2l0Oi8vZ2l0LmxpbnV4LW5mcy5vcmcvcHJvamVjdHMvYW5uYS9saW51
+eC1uZnMuZ2l0IHRhZ3MvbmZzLXJkbWEtDQpmb3ItNS4zLTENCg0KZm9yIHlvdSB0byBmZXRjaCBj
+aGFuZ2VzIHVwIHRvDQo2MmE5MmJhOTdhMzFjNTQ0ODAyYmJmMTNkM2E5OThlODY3OTZkNTQ4Og0K
+DQogIE5GUzogUmVjb3JkIHRhc2ssIGNsaWVudCBJRCwgYW5kIFhJRCBpbiB4ZHJfc3RhdHVzIHRy
+YWNlIHBvaW50cw0KKDIwMTktMDctMDkgMTA6MzA6MjUgLTA0MDApDQoNCi0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCnYyOiBB
+ZGQgbWlzc2luZyBzaWduZWQtb2ZmLWJ5IGxpbmVzDQoNClRoYW5rcywNCkFubmENCg0KLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQ0KDQpDaHVjayBMZXZlciAoMTkpOg0KICAgICAgeHBydHJkbWE6IEZpeCBhIEJVRyB3aGVuIHRy
+YWNpbmcgaXMgZW5hYmxlZCB3aXRoIE5GU3Y0LjEgb24gUkRNQQ0KICAgICAgeHBydHJkbWE6IEZp
+eCB1c2UtYWZ0ZXItZnJlZSBpbiBycGNyZG1hX3Bvc3RfcmVjdnMNCiAgICAgIHhwcnRyZG1hOiBS
+ZXBsYWNlIHVzZSBvZiB4ZHJfc3RyZWFtX3BvcyBpbiBycGNyZG1hX21hcnNoYWxfcmVxDQogICAg
+ICB4cHJ0cmRtYTogRml4IG9jY2FzaW9uYWwgdHJhbnNwb3J0IGRlYWRsb2NrDQogICAgICB4cHJ0
+cmRtYTogUmVtb3ZlIHRoZSBSUENSRE1BX1JFUV9GX1BFTkRJTkcgZmxhZw0KICAgICAgeHBydHJk
+bWE6IFJlbW92ZSBmcl9zdGF0ZQ0KICAgICAgeHBydHJkbWE6IEFkZCBtZWNoYW5pc20gdG8gcGxh
+Y2UgTVJzIGJhY2sgb24gdGhlIGZyZWUgbGlzdA0KICAgICAgeHBydHJkbWE6IFJlZHVjZSBjb250
+ZXh0IHN3aXRjaGluZyBkdWUgdG8gTG9jYWwgSW52YWxpZGF0aW9uDQogICAgICB4cHJ0cmRtYTog
+V2FrZSBSUENzIGRpcmVjdGx5IGluIHJwY3JkbWFfd2Nfc2VuZCBwYXRoDQogICAgICB4cHJ0cmRt
+YTogU2ltcGxpZnkgcnBjcmRtYV9yZXBfY3JlYXRlDQogICAgICB4cHJ0cmRtYTogU3RyZWFtbGlu
+ZSBycGNyZG1hX3Bvc3RfcmVjdnMNCiAgICAgIHhwcnRyZG1hOiBSZWZhY3RvciBjaHVuayBlbmNv
+ZGluZw0KICAgICAgeHBydHJkbWE6IFJlbW92ZSBycGNyZG1hX3JlcTo6cmxfYnVmZmVyDQogICAg
+ICB4cHJ0cmRtYTogTW9kZXJuaXplIG9wcy0+Y29ubmVjdA0KICAgICAgTkZTNDogQWRkIGEgdHJh
+Y2UgZXZlbnQgdG8gcmVjb3JkIGludmFsaWQgQ0Igc2VxdWVuY2UgSURzDQogICAgICBORlM6IEZp
+eCBzaG93X25mc19lcnJvcnMgbWFjcm9zIGFnYWluDQogICAgICBORlM6IERpc3BsYXkgc3ltYm9s
+aWMgc3RhdHVzIGNvZGUgbmFtZXMgaW4gdHJhY2UgbG9nDQogICAgICBORlM6IFVwZGF0ZSBzeW1i
+b2xpYyBmbGFncyBkaXNwbGF5ZWQgYnkgdHJhY2UgZXZlbnRzDQogICAgICBORlM6IFJlY29yZCB0
+YXNrLCBjbGllbnQgSUQsIGFuZCBYSUQgaW4geGRyX3N0YXR1cyB0cmFjZSBwb2ludHMNCg0KIGZz
+L25mcy9jYWxsYmFja19wcm9jLmMgICAgICAgICAgfCAgMjggKysrKysrKystLS0NCiBmcy9uZnMv
+bmZzMnhkci5jICAgICAgICAgICAgICAgIHwgICAyICstDQogZnMvbmZzL25mczN4ZHIuYyAgICAg
+ICAgICAgICAgICB8ICAgMiArLQ0KIGZzL25mcy9uZnM0dHJhY2UuaCAgICAgICAgICAgICAgfCAy
+MDcNCisrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tDQotLS0tDQogZnMvbmZzL25mczR4ZHIuYyAgICAgICAgICAgICAg
+ICB8ICAgMiArLQ0KIGZzL25mcy9uZnN0cmFjZS5oICAgICAgICAgICAgICAgfCAyMzMNCisrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+LS0tLS0tLS0tDQotLS0tLS0tLS0tLS0tDQogaW5jbHVkZS9saW51eC9zdW5ycGMveHBydC5oICAg
+ICB8ICAgMyArKw0KIGluY2x1ZGUvdHJhY2UvZXZlbnRzL3JwY3JkbWEuaCAgfCAgOTAgKysrKysr
+KysrKysrKysrKysrKysrKysrKy0tLS0tLS0NCi0NCiBuZXQvc3VucnBjL3NjaGVkLmMgICAgICAg
+ICAgICAgIHwgICAxICsNCiBuZXQvc3VucnBjL3hwcnQuYyAgICAgICAgICAgICAgIHwgIDMyICsr
+KysrKysrKysrKw0KIG5ldC9zdW5ycGMveHBydHJkbWEvZnJ3cl9vcHMuYyAgfCAzMjcNCisrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrDQorKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQ0KIG5ldC9zdW5ycGMveHBydHJkbWEvcnBjX3JkbWEuYyAgfCAxNDggKysrKysrKysrKysrKysr
+KysrKysrKystLS0tLS0tLS0NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KIG5ldC9zdW5ycGMveHBy
+dHJkbWEvdHJhbnNwb3J0LmMgfCAgODMgKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tDQog
+bmV0L3N1bnJwYy94cHJ0cmRtYS92ZXJicy5jICAgICB8IDExNSArKysrKysrKysrKysrKysrKysr
+LS0tLS0tLS0tLS0tLQ0KLS0tLS0tLS0tLQ0KIG5ldC9zdW5ycGMveHBydHJkbWEveHBydF9yZG1h
+LmggfCAgNDQgKysrKystLS0tLS0tLS0tLQ0KIG5ldC9zdW5ycGMveHBydHNvY2suYyAgICAgICAg
+ICAgfCAgMjMgKy0tLS0tLS0tDQogMTYgZmlsZXMgY2hhbmdlZCwgODM3IGluc2VydGlvbnMoKyks
+IDUwMyBkZWxldGlvbnMoLSkNCg0KDQpPbiBUdWUsIDIwMTktMDctMDIgYXQgMTY6MzUgLTA0MDAs
+IEFubmEgU2NodW1ha2VyIHdyb3RlOg0KPiBIaSBUcm9uZCwNCj4gDQo+IFRoZSBmb2xsb3dpbmcg
+Y2hhbmdlcyBzaW5jZSBjb21taXQNCj4gOWUwYmFiZjJjMDZjNzNjZGEyYzBjZDM3YTE2NTNkODIz
+YWRiNDBlYzoNCj4gDQo+ICAgTGludXggNS4yLXJjNSAoMjAxOS0wNi0xNiAwODo0OTo0NSAtMTAw
+MCkNCj4gDQo+IGFyZSBhdmFpbGFibGUgaW4gdGhlIEdpdCByZXBvc2l0b3J5IGF0Og0KPiANCj4g
+ICBnaXQ6Ly9naXQubGludXgtbmZzLm9yZy9wcm9qZWN0cy9hbm5hL2xpbnV4LW5mcy5naXQgdGFn
+cy9uZnMtcmRtYS0NCj4gZm9yLTUuMy0xDQo+IA0KPiBmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMg
+dXAgdG8NCj4gMWE4ZjFlZDNlYjFhYzJmZGRjMWQyYzc1Mjk0ZGIwOGFjZTg4YzFjYjoNCj4gDQo+
+ICAgTkZTOiBSZWNvcmQgdGFzaywgY2xpZW50IElELCBhbmQgWElEIGluIHhkcl9zdGF0dXMgdHJh
+Y2UgcG9pbnRzDQo+ICgyMDE5LTA3LTAyIDE2OjI5OjIyIC0wNDAwKQ0KPiANCj4gVGhhbmtzLA0K
+PiBBbm5hDQo+IA0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IENodWNrIExldmVyICgxOSk6DQo+ICAgICAgIHhwcnRy
+ZG1hOiBGaXggYSBCVUcgd2hlbiB0cmFjaW5nIGlzIGVuYWJsZWQgd2l0aCBORlN2NC4xIG9uDQo+
+IFJETUENCj4gICAgICAgeHBydHJkbWE6IEZpeCB1c2UtYWZ0ZXItZnJlZSBpbiBycGNyZG1hX3Bv
+c3RfcmVjdnMNCj4gICAgICAgeHBydHJkbWE6IFJlcGxhY2UgdXNlIG9mIHhkcl9zdHJlYW1fcG9z
+IGluIHJwY3JkbWFfbWFyc2hhbF9yZXENCj4gICAgICAgeHBydHJkbWE6IEZpeCBvY2Nhc2lvbmFs
+IHRyYW5zcG9ydCBkZWFkbG9jaw0KPiAgICAgICB4cHJ0cmRtYTogUmVtb3ZlIHRoZSBSUENSRE1B
+X1JFUV9GX1BFTkRJTkcgZmxhZw0KPiAgICAgICB4cHJ0cmRtYTogUmVtb3ZlIGZyX3N0YXRlDQo+
+ICAgICAgIHhwcnRyZG1hOiBBZGQgbWVjaGFuaXNtIHRvIHBsYWNlIE1ScyBiYWNrIG9uIHRoZSBm
+cmVlIGxpc3QNCj4gICAgICAgeHBydHJkbWE6IFJlZHVjZSBjb250ZXh0IHN3aXRjaGluZyBkdWUg
+dG8gTG9jYWwgSW52YWxpZGF0aW9uDQo+ICAgICAgIHhwcnRyZG1hOiBXYWtlIFJQQ3MgZGlyZWN0
+bHkgaW4gcnBjcmRtYV93Y19zZW5kIHBhdGgNCj4gICAgICAgeHBydHJkbWE6IFNpbXBsaWZ5IHJw
+Y3JkbWFfcmVwX2NyZWF0ZQ0KPiAgICAgICB4cHJ0cmRtYTogU3RyZWFtbGluZSBycGNyZG1hX3Bv
+c3RfcmVjdnMNCj4gICAgICAgeHBydHJkbWE6IFJlZmFjdG9yIGNodW5rIGVuY29kaW5nDQo+ICAg
+ICAgIHhwcnRyZG1hOiBSZW1vdmUgcnBjcmRtYV9yZXE6OnJsX2J1ZmZlcg0KPiAgICAgICB4cHJ0
+cmRtYTogTW9kZXJuaXplIG9wcy0+Y29ubmVjdA0KPiAgICAgICBORlM0OiBBZGQgYSB0cmFjZSBl
+dmVudCB0byByZWNvcmQgaW52YWxpZCBDQiBzZXF1ZW5jZSBJRHMNCj4gICAgICAgTkZTOiBGaXgg
+c2hvd19uZnNfZXJyb3JzIG1hY3JvcyBhZ2Fpbg0KPiAgICAgICBORlM6IERpc3BsYXkgc3ltYm9s
+aWMgc3RhdHVzIGNvZGUgbmFtZXMgaW4gdHJhY2UgbG9nDQo+ICAgICAgIE5GUzogVXBkYXRlIHN5
+bWJvbGljIGZsYWdzIGRpc3BsYXllZCBieSB0cmFjZSBldmVudHMNCj4gICAgICAgTkZTOiBSZWNv
+cmQgdGFzaywgY2xpZW50IElELCBhbmQgWElEIGluIHhkcl9zdGF0dXMgdHJhY2UgcG9pbnRzDQo+
+IA0KPiAgZnMvbmZzL2NhbGxiYWNrX3Byb2MuYyAgICAgICAgICB8ICAyOCArKysrKysrKy0tLQ0K
+PiAgZnMvbmZzL25mczJ4ZHIuYyAgICAgICAgICAgICAgICB8ICAgMiArLQ0KPiAgZnMvbmZzL25m
+czN4ZHIuYyAgICAgICAgICAgICAgICB8ICAgMiArLQ0KPiAgZnMvbmZzL25mczR0cmFjZS5oICAg
+ICAgICAgICAgICB8IDIwNw0KPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gLS0NCj4gLS0tLQ0KPiAgZnMvbmZz
+L25mczR4ZHIuYyAgICAgICAgICAgICAgICB8ICAgMiArLQ0KPiAgZnMvbmZzL25mc3RyYWNlLmgg
+ICAgICAgICAgICAgICB8IDIzMw0KPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0NCj4gLS0NCj4gLS0tLS0tLS0tLS0t
+LQ0KPiAgaW5jbHVkZS9saW51eC9zdW5ycGMveHBydC5oICAgICB8ICAgMyArKw0KPiAgaW5jbHVk
+ZS90cmFjZS9ldmVudHMvcnBjcmRtYS5oICB8ICA5MCArKysrKysrKysrKysrKysrKysrKysrKysr
+LS0tLS0NCj4gLS0NCj4gLQ0KPiAgbmV0L3N1bnJwYy9zY2hlZC5jICAgICAgICAgICAgICB8ICAg
+MSArDQo+ICBuZXQvc3VucnBjL3hwcnQuYyAgICAgICAgICAgICAgIHwgIDMyICsrKysrKysrKysr
+Kw0KPiAgbmV0L3N1bnJwYy94cHJ0cmRtYS9mcndyX29wcy5jICB8IDMyNw0KPiArKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysNCj4gKysNCj4gKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0NCj4gIG5ldC9zdW5ycGMveHBydHJkbWEvcnBjX3JkbWEuYyAgfCAxNDggKysrKysrKysrKysr
+KysrKysrKysrKystLS0tLS0tDQo+IC0tDQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAgbmV0
+L3N1bnJwYy94cHJ0cmRtYS90cmFuc3BvcnQuYyB8ICA4MyArKysrKysrKysrKysrKysrKysrKysr
+Ky0tLS0tLS0NCj4gIG5ldC9zdW5ycGMveHBydHJkbWEvdmVyYnMuYyAgICAgfCAxMTUgKysrKysr
+KysrKysrKysrKysrKy0tLS0tLS0tLS0tDQo+IC0tDQo+IC0tLS0tLS0tLS0NCj4gIG5ldC9zdW5y
+cGMveHBydHJkbWEveHBydF9yZG1hLmggfCAgNDQgKysrKystLS0tLS0tLS0tLQ0KPiAgbmV0L3N1
+bnJwYy94cHJ0c29jay5jICAgICAgICAgICB8ICAyMyArLS0tLS0tLS0NCj4gIDE2IGZpbGVzIGNo
+YW5nZWQsIDgzNyBpbnNlcnRpb25zKCspLCA1MDMgZGVsZXRpb25zKC0pDQo=
