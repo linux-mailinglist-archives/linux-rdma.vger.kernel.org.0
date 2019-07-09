@@ -2,171 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5019963625
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 14:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7AA6369A
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 15:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbfGIMql (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jul 2019 08:46:41 -0400
-Received: from mail-eopbgr150047.outbound.protection.outlook.com ([40.107.15.47]:16353
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726025AbfGIMql (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 9 Jul 2019 08:46:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4/N5PJixRF/pzBsNfOzO9seIwSzPAxNM9h76EGIig/Q=;
- b=Y5Kdx6o4j2kPdk2Ud3AqxFSbO57IML2hrgvE2cOEs5QpEPTrlvfYpV30Z+erh63MlhLxRcv0GavbbmlQSTCH1+tx0UuED4XXNa7hEY8kdqvzDh/nT6bX3DuZpXx1bg6xiE5ID9COCc408H2SgSmEOgtmBWvzUz8H7/GOnchDuwU=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB3488.eurprd05.prod.outlook.com (10.170.239.30) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.19; Tue, 9 Jul 2019 12:46:35 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2052.020; Tue, 9 Jul 2019
- 12:46:35 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leonro@mellanox.com>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Doug Ledford <dledford@redhat.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Majd Dibbiny <majd@mellanox.com>,
-        asahiro Yamada <yamada.masahiro@socionext.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rdma tree
-Thread-Topic: linux-next: build failure after merge of the rdma tree
-Thread-Index: AQHVNgammxAPVHu9ZUGmGGyqfZIntqbB3P0AgAAD1gCAAFvJgA==
-Date:   Tue, 9 Jul 2019 12:46:34 +0000
-Message-ID: <20190709124631.GG3436@mellanox.com>
-References: <20190709133019.25a8cd27@canb.auug.org.au>
- <ba1dd3e2-3091-816c-c308-2f9dd4385596@mellanox.com>
- <20190709071758.GI7034@mtr-leonro.mtl.com>
-In-Reply-To: <20190709071758.GI7034@mtr-leonro.mtl.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BL0PR05CA0010.namprd05.prod.outlook.com
- (2603:10b6:208:91::20) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cbf098bc-1611-42c0-b5ab-08d7046b79d6
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB3488;
-x-ms-traffictypediagnostic: VI1PR05MB3488:
-x-microsoft-antispam-prvs: <VI1PR05MB34880B3AA105A8D17848F79ECFF10@VI1PR05MB3488.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-forefront-prvs: 0093C80C01
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(136003)(376002)(39860400002)(396003)(189003)(199004)(476003)(229853002)(4326008)(5660300002)(25786009)(486006)(64756008)(73956011)(66446008)(2906002)(66476007)(33656002)(66556008)(11346002)(2616005)(446003)(66946007)(6862004)(256004)(316002)(6636002)(66066001)(52116002)(6436002)(6116002)(478600001)(8936002)(3846002)(6512007)(102836004)(6246003)(99286004)(305945005)(86362001)(6486002)(76176011)(71190400001)(71200400001)(1076003)(81156014)(37006003)(14454004)(54906003)(26005)(186003)(68736007)(7736002)(53546011)(6506007)(386003)(53936002)(36756003)(8676002)(81166006);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3488;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Q0UqfFoLS3o2pYajh3rlfdUaJbBtTDK6D216rdolM2MLlCWQBk4QpVwZJEn89oa+KCgmpmzk1Wcp832iVcTaRcYLVTNDbWZgKqa3MJfSvU+4VX7syUPGpADHiYcj6uqvi7PXTV0vwDLU3KOt75mNpsmCravOQb2VDNRGczd1w86wMLoBviN4jVLY5RUawIpneN6bATl3SaPvMghTK5cFLSzlUWRIjN4osDKDgmNdgKTV1OTnIeq6gZuqFoHHiWy3TpxyA+IJZKE4S2ZWt9CGSjWR10ZjrN1yt6OLhWSH8QTFtc0D7O3LjWa45T12OL4XvuAiYJvZi3rgSFZ0vyXpDuX9SGvzBoz2cHIwU0f+n8FnTJCnFD8syvCGi+vZ4fKD3l265b6hq+i1dVQFR672Pb9H/NW7IHZWAFqkHcQU8BQ=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D0FB6701F9C8824F8CE3DC494613D3C9@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726792AbfGINQA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jul 2019 09:16:00 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41371 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbfGINQA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jul 2019 09:16:00 -0400
+Received: by mail-wr1-f66.google.com with SMTP id c2so20970934wrm.8
+        for <linux-rdma@vger.kernel.org>; Tue, 09 Jul 2019 06:15:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DR+iw3jiOls1ly6DI3iEvDPkfswNzVapBNDYht5pgmA=;
+        b=W6clf6hWXguUz8IzAQlguZY19CAOUBYkS4gU7d4So0nFjvwHKPDd0k05x5RPs15U/Q
+         472untSuJDGB3sfOZFzH497MGWBiqU68iHXn2eZwZZxx2QLoTWEMQfUYeYBpkPM3OKx/
+         oNI0hOP+WiWQNzcNkEmDOMgZZkvITKZqk7VJbO5xO8JG3wfCFe+ZyOPsUAnSyvvSzHoS
+         jO1RP3bqCG0fxe+V8yKn3HhJNmJ9Ub9bYtH0mMhRVF1O4u9NV1rcoVC/x8prMYWFbtnT
+         e+/eoRkqP+tnvH7KPNJicM8l6y31wFAoNvsnOrMubTZPE0y8J3EG0rwi5gIgq/oJkn8a
+         5ivA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DR+iw3jiOls1ly6DI3iEvDPkfswNzVapBNDYht5pgmA=;
+        b=Z20JMON0WZrRuTEPGSGMFW3TnF19CRc5gxjPHv3HNKdpNS0uLuqulOgeCI4etrK1SA
+         PvfrLT7hxkHUObzUCwUyfBz/KrlAemxqjlTp1RGNZ+XP1y3kAJKGvXk5hnrLz2rV5wk9
+         xTJnyd4MhCqB6hve6hTKGjjz7h1q6N/8V6XML2lKKFAJoXHibmvxp8EtT0rzmGbh9ZkI
+         dFeFUm+tUYh/qixM1lPYSJLQBh9xuAIVFapaPL4UY2e7qdjbU90fStlAbANWZUh/moDP
+         U6KXYc+NAQTBvzctdtA+wMA3UL53Wkw9ujhW7X5RmJXDxFaCveqTaJ4JjMxe+Nk7tHgE
+         sSIA==
+X-Gm-Message-State: APjAAAW4zGV3Ujot9xkAF1IOdRFrB4EH4slrhtrAmmYeFpAjjPgl0Ybw
+        W0rOUn5sSTYMBnK88L2qFv8GX/oLkwN74NSx7MMPcw==
+X-Google-Smtp-Source: APXvYqw+XYqKJTPx3Mr7LNQ8uTaqhN0ca7Mtfo3k+JQ4GsSUk9od0CRL1Q8ePqHdoGJHYT85+mMjOFplTode8RkqR1Q=
+X-Received: by 2002:adf:8069:: with SMTP id 96mr4885118wrk.74.1562678157805;
+ Tue, 09 Jul 2019 06:15:57 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbf098bc-1611-42c0-b5ab-08d7046b79d6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2019 12:46:35.0069
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3488
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
+ <20190709110036.GQ7034@mtr-leonro.mtl.com> <CAD9gYJL=fo4Oa2hmU4WZgQrzypRbzoPrrFjNQKP2EZFXYxYNCA@mail.gmail.com>
+ <20190709120606.GB3436@mellanox.com>
+In-Reply-To: <20190709120606.GB3436@mellanox.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Tue, 9 Jul 2019 15:15:46 +0200
+Message-ID: <CAMGffE=T+FVfVzV5cCtVrm_6ikdJ9pjpFsPgx+t0EUpegoZELQ@mail.gmail.com>
+Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
+ Device (IBNBD)
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jinpu Wang <jinpuwang@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Roman Pen <r.peniaev@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 09, 2019 at 04:18:00AM -0300, Leon Romanovsky wrote:
-> On Tue, Jul 09, 2019 at 10:04:16AM +0300, Mark Zhang wrote:
-> > Hi Stephen,
->=20
-> Stephen,
->=20
-> For some reason, I wasn't in initial email report, can you please check w=
-hy?
->=20
-> I need to be aware of any issues related to patches with my name on it
-> for tracking and improving internal submission flows/checks.
->=20
+On Tue, Jul 9, 2019 at 2:06 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
+>
+> On Tue, Jul 09, 2019 at 01:37:39PM +0200, Jinpu Wang wrote:
+> > Leon Romanovsky <leon@kernel.org> =E4=BA=8E2019=E5=B9=B47=E6=9C=889=E6=
+=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=881:00=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > On Tue, Jul 09, 2019 at 11:55:03AM +0200, Danil Kipnis wrote:
+> > > > Hallo Doug, Hallo Jason, Hallo Jens, Hallo Greg,
+> > > >
+> > > > Could you please provide some feedback to the IBNBD driver and the
+> > > > IBTRS library?
+> > > > So far we addressed all the requests provided by the community and
+> > > > continue to maintain our code up-to-date with the upstream kernel
+> > > > while having an extra compatibility layer for older kernels in our
+> > > > out-of-tree repository.
+> > > > I understand that SRP and NVMEoF which are in the kernel already do
+> > > > provide equivalent functionality for the majority of the use cases.
+> > > > IBNBD on the other hand is showing higher performance and more
+> > > > importantly includes the IBTRS - a general purpose library to
+> > > > establish connections and transport BIO-like read/write sg-lists ov=
+er
+> > > > RDMA, while SRP is targeting SCSI and NVMEoF is addressing NVME. Wh=
+ile
+> > > > I believe IBNBD does meet the kernel coding standards, it doesn't h=
+ave
+> > > > a lot of users, while SRP and NVMEoF are widely accepted. Do you th=
+ink
+> > > > it would make sense for us to rework our patchset and try pushing i=
+t
+> > > > for staging tree first, so that we can proof IBNBD is well maintain=
+ed,
+> > > > beneficial for the eco-system, find a proper location for it within
+> > > > block/rdma subsystems? This would make it easier for people to try =
+it
+> > > > out and would also be a huge step for us in terms of maintenance
+> > > > effort.
+> > > > The names IBNBD and IBTRS are in fact misleading. IBTRS sits on top=
+ of
+> > > > RDMA and is not bound to IB (We will evaluate IBTRS with ROCE in th=
+e
+> > > > near future). Do you think it would make sense to rename the driver=
+ to
+> > > > RNBD/RTRS?
+> > >
+> > > It is better to avoid "staging" tree, because it will lack attention =
+of
+> > > relevant people and your efforts will be lost once you will try to mo=
+ve
+> > > out of staging. We are all remembering Lustre and don't want to see i=
+t
+> > > again.
+> > >
+> > > Back then, you was asked to provide support for performance superiori=
+ty.
+> > > Can you please share any numbers with us?
+> > Hi Leon,
 > >
-> > Can you please try the patch below, thank you.
->=20
-> Jason, Doug,
->=20
-> Can you please take this patch?
+> > Thanks for you feedback.
+> >
+> > For performance numbers,  Danil did intensive benchmark, and create
+> > some PDF with graphes here:
+> > https://github.com/ionos-enterprise/ibnbd/tree/master/performance/v4-v5=
+.2-rc3
+> >
+> > It includes both single path results also different multipath policy re=
+sults.
+> >
+> > If you have any question regarding the results, please let us know.
+>
+> I kind of recall that last time the perf numbers were skewed toward
+> IBNBD because the invalidation model for MR was wrong - did this get
+> fixed?
+>
+> Jason
 
-It isn't quite enough to make the header compile stand alone, I'm
-adding this instead.
+Thanks Jason for feedback.
+Can you be  more specific about  "the invalidation model for MR was wrong"
 
-From 37c1e072276b03b080eb24ff24c39080aeaf49ef Mon Sep 17 00:00:00 2001
-From: Jason Gunthorpe <jgg@mellanox.com>
-Date: Tue, 9 Jul 2019 09:44:47 -0300
-Subject: [PATCH] RDMA/counters: Make rdma_counter.h compile stand alone
+I checked in the history of the email thread, only found
+"I think from the RDMA side, before we accept something like this, I'd
+like to hear from Christoph, Chuck or Sagi that the dataplane
+implementation of this is correct, eg it uses the MRs properly and
+invalidates at the right time, sequences with dma_ops as required,
+etc.
+"
+And no reply from any of you since then.
 
-5.4-rc1 will have new compile time debugging to test that headers can be
-compiled stand alone. Many rdma headers are already broken and excluded
-from the mechanism, however to avoid compile failures during the merge
-window fix enough so that the newly added header compiles clean.
-
-Fixes: 413d3347503b ("RDMA/counter: Add set/clear per-port auto mode suppor=
-t")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Mark Zhang <markz@mellanox.com>
----
- include/rdma/rdma_counter.h | 2 +-
- include/rdma/restrack.h     | 5 +++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/include/rdma/rdma_counter.h b/include/rdma/rdma_counter.h
-index 68827700ba957e..eb99856e8b3078 100644
---- a/include/rdma/rdma_counter.h
-+++ b/include/rdma/rdma_counter.h
-@@ -9,10 +9,10 @@
- #include <linux/mutex.h>
- #include <linux/pid_namespace.h>
-=20
--#include <rdma/ib_verbs.h>
- #include <rdma/restrack.h>
- #include <rdma/rdma_netlink.h>
-=20
-+struct ib_device;
- struct ib_qp;
-=20
- struct auto_mode_param {
-diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
-index 4041a4d96524b4..b0fc6b26bdf531 100644
---- a/include/rdma/restrack.h
-+++ b/include/rdma/restrack.h
-@@ -14,6 +14,9 @@
- #include <uapi/rdma/rdma_netlink.h>
- #include <linux/xarray.h>
-=20
-+struct ib_device;
-+struct sk_buff;
-+
- /**
-  * enum rdma_restrack_type - HW objects to track
-  */
-@@ -52,8 +55,6 @@ enum rdma_restrack_type {
- 	RDMA_RESTRACK_MAX
- };
-=20
--struct ib_device;
--
- /**
-  * struct rdma_restrack_entry - metadata per-entry
-  */
---=20
-2.21.0
-
+Thanks,
+Jack
