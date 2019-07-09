@@ -2,110 +2,194 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0AB636FF
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 15:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859B163794
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 16:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbfGINct (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jul 2019 09:32:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbfGINct (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 9 Jul 2019 09:32:49 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE1B720844;
-        Tue,  9 Jul 2019 13:32:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562679168;
-        bh=MCYnuJfEscac9g8Nz2a9rq95rRvzJOa4Z7pZxI2FS9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UEGTAPpYktq4n9WZVG7zQMWWXfc5+Rod/zYUn0twUgGoKDXLGC1hzMIGwCvzAWeai
-         Tm88GrTXHY6mfVIziUVjThuuwgQYelcjEdoGaY4WgrOyyG0pQUkawfBUP5qSyl/JK9
-         XO6j8um5pjkcX6N8yaBGSJ/a0RTR/PgxRyws0CKI=
-Date:   Tue, 9 Jul 2019 16:32:45 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, axboe@kernel.dk,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>, bvanassche@acm.org,
-        jgg@mellanox.com, dledford@redhat.com,
-        Roman Pen <r.peniaev@gmail.com>
+        id S1726046AbfGIORV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jul 2019 10:17:21 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:38949 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbfGIORV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jul 2019 10:17:21 -0400
+Received: by mail-wr1-f67.google.com with SMTP id x4so21219201wrt.6
+        for <linux-rdma@vger.kernel.org>; Tue, 09 Jul 2019 07:17:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ihAKPWnieId+qKVCfau5qTiytguyF5R9ui15t377qac=;
+        b=FiG6jhAtkrn0uWaUNwk3gU//0grYdL1Io1xZAI9A5iUo+wqBhPNCZ50hc3RBVwlkQJ
+         HhV2wYJ+qDVSvFp96fanh/ueIcj8EpzMCYqNP2ZPZ84ej3ECWzaGOtcHI294VAW7qKIc
+         GXAQHlh1KIVLIKOL7iqo/MVyxyE3tD1An+cQ7pQaS3F6Nb0CQnDYtvDHi+CpzMCJFPyk
+         /nRms7K/xWkKfjXhN4kX91mKkMoYLI7bikm4lYAQK+OfWN9YrerZ+yLh8C/J+F5Jszoz
+         lBI++OfVoe8LzdxZ9JxfMp23oD6AYoQd2P6xzNmUeDSaDuvJw3Et1C98mNpfLM3+w8RY
+         xb/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ihAKPWnieId+qKVCfau5qTiytguyF5R9ui15t377qac=;
+        b=Nzp/cihVLjNg6Pr/Iy3DNFZiEaQyTnYAIokXOYPBz1Mm6j12aK+frG4K1RfZyXPtOo
+         xoZmXBn0HZSTYjJPFqCW6Xk0PUKex0g2DkpqY8HHeOTdqoxTK22x6uam/ZAFqW3wTyqb
+         h7iYtVkPjn/MdOq7WD9ZOaqcuXL2/Fro5daKVAgb+k4eVeTOFx1n4lXBhtkgn3UQOJ1k
+         ch1KKB+3OiMZZUI//y08hCwwptKzYDox1zYsV9awq4NCKF08tqtoBEg74FPD4CLb0wud
+         lJeoocPT0VPovZsgJesYnF6NrAR4ktEdvvVfHRuCETUZqQF5bJ/CirrEDfaUVaX2Ipfh
+         XXag==
+X-Gm-Message-State: APjAAAUQx7jGSFAIwZ2XgkxRjaoCS31EizSKDKyFnB6RhoF/Z5B5a2qh
+        PraByavj0HukD7eeSoJgUBk93mqkRRdCJcvCGuQP5Q==
+X-Google-Smtp-Source: APXvYqyT5+VMNZt+6XVpKpLgiY1UhgFDlLrpZz2kfpvy5WmC2hujvZbiDY91aYt9TfIJBBipIWvTPPwpXpt5HiA7ujs=
+X-Received: by 2002:adf:ea87:: with SMTP id s7mr26175882wrm.24.1562681838630;
+ Tue, 09 Jul 2019 07:17:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
+ <20190709110036.GQ7034@mtr-leonro.mtl.com> <CAD9gYJL=fo4Oa2hmU4WZgQrzypRbzoPrrFjNQKP2EZFXYxYNCA@mail.gmail.com>
+ <20190709120606.GB3436@mellanox.com> <CAMGffE=T+FVfVzV5cCtVrm_6ikdJ9pjpFsPgx+t0EUpegoZELQ@mail.gmail.com>
+ <20190709131932.GI3436@mellanox.com>
+In-Reply-To: <20190709131932.GI3436@mellanox.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Tue, 9 Jul 2019 16:17:07 +0200
+Message-ID: <CAMGffEnhyoxtpu=tHgTfEX5n5=Ckw+jMBYnF6q5cxqkq9UnSVQ@mail.gmail.com>
 Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
  Device (IBNBD)
-Message-ID: <20190709133245.GT7034@mtr-leonro.mtl.com>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
- <20190709110036.GQ7034@mtr-leonro.mtl.com>
- <20190709111737.GB6719@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190709111737.GB6719@kroah.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "bvanassche@acm.org" <bvanassche@acm.org>, chuck.lever@oracle.com
+Cc:     Jinpu Wang <jinpuwang@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Roman Pen <r.peniaev@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 09, 2019 at 01:17:37PM +0200, Greg KH wrote:
-> On Tue, Jul 09, 2019 at 02:00:36PM +0300, Leon Romanovsky wrote:
-> > On Tue, Jul 09, 2019 at 11:55:03AM +0200, Danil Kipnis wrote:
-> > > Hallo Doug, Hallo Jason, Hallo Jens, Hallo Greg,
+On Tue, Jul 9, 2019 at 3:19 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
+>
+> On Tue, Jul 09, 2019 at 03:15:46PM +0200, Jinpu Wang wrote:
+> > On Tue, Jul 9, 2019 at 2:06 PM Jason Gunthorpe <jgg@mellanox.com> wrote=
+:
 > > >
-> > > Could you please provide some feedback to the IBNBD driver and the
-> > > IBTRS library?
-> > > So far we addressed all the requests provided by the community and
-> > > continue to maintain our code up-to-date with the upstream kernel
-> > > while having an extra compatibility layer for older kernels in our
-> > > out-of-tree repository.
-> > > I understand that SRP and NVMEoF which are in the kernel already do
-> > > provide equivalent functionality for the majority of the use cases.
-> > > IBNBD on the other hand is showing higher performance and more
-> > > importantly includes the IBTRS - a general purpose library to
-> > > establish connections and transport BIO-like read/write sg-lists over
-> > > RDMA, while SRP is targeting SCSI and NVMEoF is addressing NVME. While
-> > > I believe IBNBD does meet the kernel coding standards, it doesn't have
-> > > a lot of users, while SRP and NVMEoF are widely accepted. Do you think
-> > > it would make sense for us to rework our patchset and try pushing it
-> > > for staging tree first, so that we can proof IBNBD is well maintained,
-> > > beneficial for the eco-system, find a proper location for it within
-> > > block/rdma subsystems? This would make it easier for people to try it
-> > > out and would also be a huge step for us in terms of maintenance
-> > > effort.
-> > > The names IBNBD and IBTRS are in fact misleading. IBTRS sits on top of
-> > > RDMA and is not bound to IB (We will evaluate IBTRS with ROCE in the
-> > > near future). Do you think it would make sense to rename the driver to
-> > > RNBD/RTRS?
+> > > On Tue, Jul 09, 2019 at 01:37:39PM +0200, Jinpu Wang wrote:
+> > > > Leon Romanovsky <leon@kernel.org> =E4=BA=8E2019=E5=B9=B47=E6=9C=889=
+=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=881:00=E5=86=99=E9=81=93=EF=BC=
+=9A
+> > > > >
+> > > > > On Tue, Jul 09, 2019 at 11:55:03AM +0200, Danil Kipnis wrote:
+> > > > > > Hallo Doug, Hallo Jason, Hallo Jens, Hallo Greg,
+> > > > > >
+> > > > > > Could you please provide some feedback to the IBNBD driver and =
+the
+> > > > > > IBTRS library?
+> > > > > > So far we addressed all the requests provided by the community =
+and
+> > > > > > continue to maintain our code up-to-date with the upstream kern=
+el
+> > > > > > while having an extra compatibility layer for older kernels in =
+our
+> > > > > > out-of-tree repository.
+> > > > > > I understand that SRP and NVMEoF which are in the kernel alread=
+y do
+> > > > > > provide equivalent functionality for the majority of the use ca=
+ses.
+> > > > > > IBNBD on the other hand is showing higher performance and more
+> > > > > > importantly includes the IBTRS - a general purpose library to
+> > > > > > establish connections and transport BIO-like read/write sg-list=
+s over
+> > > > > > RDMA, while SRP is targeting SCSI and NVMEoF is addressing NVME=
+. While
+> > > > > > I believe IBNBD does meet the kernel coding standards, it doesn=
+'t have
+> > > > > > a lot of users, while SRP and NVMEoF are widely accepted. Do yo=
+u think
+> > > > > > it would make sense for us to rework our patchset and try pushi=
+ng it
+> > > > > > for staging tree first, so that we can proof IBNBD is well main=
+tained,
+> > > > > > beneficial for the eco-system, find a proper location for it wi=
+thin
+> > > > > > block/rdma subsystems? This would make it easier for people to =
+try it
+> > > > > > out and would also be a huge step for us in terms of maintenanc=
+e
+> > > > > > effort.
+> > > > > > The names IBNBD and IBTRS are in fact misleading. IBTRS sits on=
+ top of
+> > > > > > RDMA and is not bound to IB (We will evaluate IBTRS with ROCE i=
+n the
+> > > > > > near future). Do you think it would make sense to rename the dr=
+iver to
+> > > > > > RNBD/RTRS?
+> > > > >
+> > > > > It is better to avoid "staging" tree, because it will lack attent=
+ion of
+> > > > > relevant people and your efforts will be lost once you will try t=
+o move
+> > > > > out of staging. We are all remembering Lustre and don't want to s=
+ee it
+> > > > > again.
+> > > > >
+> > > > > Back then, you was asked to provide support for performance super=
+iority.
+> > > > > Can you please share any numbers with us?
+> > > > Hi Leon,
+> > > >
+> > > > Thanks for you feedback.
+> > > >
+> > > > For performance numbers,  Danil did intensive benchmark, and create
+> > > > some PDF with graphes here:
+> > > > https://github.com/ionos-enterprise/ibnbd/tree/master/performance/v=
+4-v5.2-rc3
+> > > >
+> > > > It includes both single path results also different multipath polic=
+y results.
+> > > >
+> > > > If you have any question regarding the results, please let us know.
+> > >
+> > > I kind of recall that last time the perf numbers were skewed toward
+> > > IBNBD because the invalidation model for MR was wrong - did this get
+> > > fixed?
+> > >
+> > > Jason
 > >
-> > It is better to avoid "staging" tree, because it will lack attention of
-> > relevant people and your efforts will be lost once you will try to move
-> > out of staging. We are all remembering Lustre and don't want to see it
-> > again.
+> > Thanks Jason for feedback.
+> > Can you be  more specific about  "the invalidation model for MR was wro=
+ng"
 >
-> That's up to the developers, that had nothing to do with the fact that
-> the code was in the staging tree.  If the Lustre developers had actually
-> done the requested work, it would have moved out of the staging tree.
+> MR's must be invalidated before data is handed over to the block
+> layer. It can't leave MRs open for access and then touch the memory
+> the MR covers.
 >
-> So if these developers are willing to do the work to get something out
-> of staging, and into the "real" part of the kernel, I will gladly take
-> it.
+> IMHO this is the most likely explanation for any performance difference
+> from nvme..
+>
+> > I checked in the history of the email thread, only found
+> > "I think from the RDMA side, before we accept something like this, I'd
+> > like to hear from Christoph, Chuck or Sagi that the dataplane
+> > implementation of this is correct, eg it uses the MRs properly and
+> > invalidates at the right time, sequences with dma_ops as required,
+> > etc.
+> > "
+> > And no reply from any of you since then.
+>
+> This task still needs to happen..
+>
+> Jason
 
-Greg,
+We did extensive testing and cross-checked how iser and nvmeof does
+invalidation of MR,
+doesn't find a problem.
 
-It is not matter of how much *real* work developers will do, but
-it is a matter of guidance to do *right* thing, which is hard to achieve
-if people mentioned in the beginning of this thread wouldn't look on
-staging code.
++ Chuck
+It will be appreciated if Christoph, Chuck, Sagi or Bart could give a
+check, thank you in advance.
 
->
-> But I will note that it is almost always easier to just do the work
-> ahead of time, and merge it in "correctly" than to go from staging into
-> the real part of the kernel.  But it's up to the developers what they
-> want to do.
->
-> thanks,
->
-> greg k-h
+Thanks
+Jack
