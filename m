@@ -2,144 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB3B6353D
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 13:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659C86355E
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 14:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbfGIL5v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jul 2019 07:57:51 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:38102 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbfGIL5u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jul 2019 07:57:50 -0400
-Received: by mail-lf1-f68.google.com with SMTP id h28so8876602lfj.5;
-        Tue, 09 Jul 2019 04:57:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/XAhcYHwMbTulMxmFEY/uaD2wPcEzXkHjPashXwEZxU=;
-        b=rmWohzyeVWX+3UG6zvRtA7OxjSokbHkr8OKqSxty80VSdAxWAZBOBf9nNhTIzC9lWM
-         hsXh3XU7KcdPzQNddavF5CoCK42jiZI4HM3enTx53UuzcPS5HkQF5vASJXsPN/Xb6MKp
-         7see0R8HjKpzk6Cyl2fGFvGvj6u7mLfFuDst5Pa0kuJjWyCaRdIWjlxuPW/2v95hvoR5
-         E0idi2ZDT4eIlUB0RJd7LBA+QYWymeDTQAgRcbxfPOT3gaSoA3qntOuZP63GLiNpg48Q
-         YSUzq34alhr1vItyLMA6LGRaS/PMbNlncsjOBAEhLcY4V5BgQzckjm6e0cUJI/4qzb3z
-         YKwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/XAhcYHwMbTulMxmFEY/uaD2wPcEzXkHjPashXwEZxU=;
-        b=ZbTlEfRUGPap5sKjrLk1pa0MniAnQWYyGDYDQRyTo92RGHxtguUJc/d4HpWz1Mo1Qs
-         ycr9CeLstsnI8YKLgpXX339d6P2+0d+xFoGe0b/VJgYkQOyZ0FtZCdMtasXaDjFKdrt2
-         LqU0UNsGCHnial4WW9QorYpvjdGBrHk4yjNe2InDvZB1y5l1fqkkoM7QEAVR2WTHFjdt
-         1yVNwqGsYk7pK/EfXuePIN743vo6PLKqWwyChya3wpAR/UsbbkfTJJZG0Ccc1fCM2SdN
-         yrhf7vyuj/FMEn52zWvUdX6juOkxSG+56cwHOf+6YBp/We00vprmfubVW+v4BPOysauF
-         f7Kw==
-X-Gm-Message-State: APjAAAWdFksJ8zK72vBLRBRrgfgCm4BAqdQDm0HhvxkYmJDIr67RC3A+
-        GUaWSxLGZPk8DtGwF4p2nziAR9xZmRsmNNR7wMY=
-X-Google-Smtp-Source: APXvYqzN+LsD4JZSMy0GEi5KyXlXVV3dg2xTVlIXCP5IMjmEXjv1UGJgYBKAEaUD6plu/CeaJy9XmLYw/0fn3qZQkFg=
-X-Received: by 2002:ac2:5337:: with SMTP id f23mr11678322lfh.15.1562673468580;
- Tue, 09 Jul 2019 04:57:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
- <20190709110036.GQ7034@mtr-leonro.mtl.com> <20190709111737.GB6719@kroah.com>
-In-Reply-To: <20190709111737.GB6719@kroah.com>
-From:   Jinpu Wang <jinpuwang@gmail.com>
-Date:   Tue, 9 Jul 2019 13:57:37 +0200
-Message-ID: <CAD9gYJ+-XZ-zYMY9sYppKVNV2D2yKTt879FmpZkVaDJqF1eM2g@mail.gmail.com>
+        id S1726229AbfGIMEv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jul 2019 08:04:51 -0400
+Received: from mail-eopbgr20064.outbound.protection.outlook.com ([40.107.2.64]:14060
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726030AbfGIMEv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 9 Jul 2019 08:04:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=w74PIkAyhY3XKkmg15CZFUzu5n5EF719VaPP9bTtq5w=;
+ b=jvxsTlGgvNjRMbubetgaB++fE5oujMvHkRxWvLTLU+rh1puO+mAhcDlvkVUUrV049iWnV/N/X/3Gb06s9v6OL36ACZbYNQ049mupoOn2tv8ptcVUx5YYRKuoN16HRYRFOeYkF4559BJun0DUL4ancJItWAElCreo2ejvy/FyvvQ=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB4974.eurprd05.prod.outlook.com (20.177.52.19) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2052.18; Tue, 9 Jul 2019 12:04:46 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2052.020; Tue, 9 Jul 2019
+ 12:04:46 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
+CC:     Jack Wang <jinpuwang@gmail.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Roman Pen <r.peniaev@gmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
 Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
  Device (IBNBD)
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>, bvanassche@acm.org,
-        jgg@mellanox.com, dledford@redhat.com,
-        Roman Pen <r.peniaev@gmail.com>,
-        Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Thread-Topic: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
+ Device (IBNBD)
+Thread-Index: AQHVJ3lZV9PpgZHYIUmJKGJeUubTI6bCKc+AgAAkOoA=
+Date:   Tue, 9 Jul 2019 12:04:46 +0000
+Message-ID: <20190709120443.GA3436@mellanox.com>
+References: <20190620150337.7847-1-jinpuwang@gmail.com>
+ <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
+In-Reply-To: <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BL0PR0102CA0022.prod.exchangelabs.com
+ (2603:10b6:207:18::35) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 828b3d88-2d53-4904-c8af-08d70465a2e8
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4974;
+x-ms-traffictypediagnostic: VI1PR05MB4974:
+x-microsoft-antispam-prvs: <VI1PR05MB4974D2FBAF787C6801D92F7ECFF10@VI1PR05MB4974.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-forefront-prvs: 0093C80C01
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(39860400002)(136003)(346002)(396003)(366004)(189003)(199004)(76176011)(73956011)(52116002)(66066001)(68736007)(99286004)(4326008)(386003)(6506007)(36756003)(66946007)(66556008)(66476007)(66446008)(64756008)(107886003)(6916009)(11346002)(2616005)(6246003)(7736002)(486006)(81156014)(476003)(8676002)(8936002)(4744005)(14454004)(81166006)(5660300002)(1076003)(25786009)(256004)(33656002)(2906002)(53936002)(86362001)(71190400001)(6486002)(102836004)(26005)(305945005)(186003)(6116002)(54906003)(229853002)(6512007)(316002)(71200400001)(446003)(3846002)(6436002)(478600001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4974;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: eJRzXmiALd89U00OSTNTfL66sJlfMXl4UV7IYPUrkUDDDsozZ5ukv37dNrUna5X2p86j2FBNLHabxYU1wJJOJgYPP5C0NArYAQLRM7O7lrWh+NhZ9QpLN02MTm4BUPUamK5MLJOEgKw6+PlbF/LtpgVos/JcC8UgZvIZ1YQ2hJ0wpmlVxp4V1F2fXnv9GqnwG3TzAp4ajdwo9m/6QLI+l80A5KB4qBZe00P/gi4l+zetUwqnW4o3zRCUUQOh0avU9JgbDR8S75PPj/O2dWAHCNKHHvwpIC5Xdy0zgJXeGOHRctxuYXiu+Zl+w0//e7s2uQyfb6JLmuZ8InMu6/0HNVAUkXacQehgtx/8aliSCiL4KJwXfzF/2IzsYMHvTnK5m9Bpy5haNUx0Vtret1RZ5C26iAfM60iJI5hlbm9qUqM=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <569BEEF6F97FCE4E8D00274A33717E56@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 828b3d88-2d53-4904-c8af-08d70465a2e8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2019 12:04:46.9536
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4974
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Greg KH <gregkh@linuxfoundation.org> =E4=BA=8E2019=E5=B9=B47=E6=9C=889=E6=
-=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=881:17=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Tue, Jul 09, 2019 at 02:00:36PM +0300, Leon Romanovsky wrote:
-> > On Tue, Jul 09, 2019 at 11:55:03AM +0200, Danil Kipnis wrote:
-> > > Hallo Doug, Hallo Jason, Hallo Jens, Hallo Greg,
-> > >
-> > > Could you please provide some feedback to the IBNBD driver and the
-> > > IBTRS library?
-> > > So far we addressed all the requests provided by the community and
-> > > continue to maintain our code up-to-date with the upstream kernel
-> > > while having an extra compatibility layer for older kernels in our
-> > > out-of-tree repository.
-> > > I understand that SRP and NVMEoF which are in the kernel already do
-> > > provide equivalent functionality for the majority of the use cases.
-> > > IBNBD on the other hand is showing higher performance and more
-> > > importantly includes the IBTRS - a general purpose library to
-> > > establish connections and transport BIO-like read/write sg-lists over
-> > > RDMA, while SRP is targeting SCSI and NVMEoF is addressing NVME. Whil=
-e
-> > > I believe IBNBD does meet the kernel coding standards, it doesn't hav=
-e
-> > > a lot of users, while SRP and NVMEoF are widely accepted. Do you thin=
-k
-> > > it would make sense for us to rework our patchset and try pushing it
-> > > for staging tree first, so that we can proof IBNBD is well maintained=
-,
-> > > beneficial for the eco-system, find a proper location for it within
-> > > block/rdma subsystems? This would make it easier for people to try it
-> > > out and would also be a huge step for us in terms of maintenance
-> > > effort.
-> > > The names IBNBD and IBTRS are in fact misleading. IBTRS sits on top o=
-f
-> > > RDMA and is not bound to IB (We will evaluate IBTRS with ROCE in the
-> > > near future). Do you think it would make sense to rename the driver t=
-o
-> > > RNBD/RTRS?
-> >
-> > It is better to avoid "staging" tree, because it will lack attention of
-> > relevant people and your efforts will be lost once you will try to move
-> > out of staging. We are all remembering Lustre and don't want to see it
-> > again.
->
-> That's up to the developers, that had nothing to do with the fact that
-> the code was in the staging tree.  If the Lustre developers had actually
-> done the requested work, it would have moved out of the staging tree.
->
-> So if these developers are willing to do the work to get something out
-> of staging, and into the "real" part of the kernel, I will gladly take
-> it.
-Thanks Greg,
+On Tue, Jul 09, 2019 at 11:55:03AM +0200, Danil Kipnis wrote:
+> Hallo Doug, Hallo Jason, Hallo Jens, Hallo Greg,
+>=20
+> Could you please provide some feedback to the IBNBD driver and the
+> IBTRS library?
 
-This is encouraging, we ARE willing to do the work to get IBNBD/IBTRS merge=
-d to
-upstream kernel. We regularly contribute to stable kernel also
-upsteam, backport patches, testing
-stable rc release etc. We believe in opensource and the power of community.
+From my perspective you need to get people from the block community to
+go over this.
 
-Sure, we will try to go with so called real kernel, this is also what
-we are doing
-and did in the past, but since v3, we did not receive any real feedback.
+It is the merge window right now so nobody is really looking at
+patches, you may need to resend it after rc1 to get attention.
 
-We will see how thing will go.
-
-Thanks again!
-Jack Wang @ 1 & 1 IONOS Cloud GmbH
-
-
->
-> But I will note that it is almost always easier to just do the work
-> ahead of time, and merge it in "correctly" than to go from staging into
-> the real part of the kernel.  But it's up to the developers what they
-> want to do.
->
-> thanks,
->
-> greg k-h
+Jason
