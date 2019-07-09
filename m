@@ -2,86 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B648663D4B
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 23:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386CD63DC2
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 00:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbfGIV1p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jul 2019 17:27:45 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:32972 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbfGIV1p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jul 2019 17:27:45 -0400
-Received: by mail-oi1-f194.google.com with SMTP id u15so16549741oiv.0;
-        Tue, 09 Jul 2019 14:27:44 -0700 (PDT)
+        id S1726133AbfGIWNt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jul 2019 18:13:49 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:43410 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbfGIWNs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jul 2019 18:13:48 -0400
+Received: by mail-wr1-f66.google.com with SMTP id p13so376458wru.10;
+        Tue, 09 Jul 2019 15:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qFvDzlxiFD6DDZKfIlqp1XR84wt2H+iEO1EU/utM7ok=;
+        b=NhWK3RQHETf/QaeVtOQQeGPxiWXIRlWK9GlmEbc9kCQTYfmTxL9k/5WnzEOQSmoust
+         i06Ncbo+LwREnCrn7iwGdnUfXfB00AXy5LsKYTyMUehkxiehTHOBktTfx6w0SmhLtVbn
+         yH5x1vaby5TYWXbfSQvbKVFZYoC6LPmFg0bItiRNGHsottgaeMWtFwGQRlDbGhNfLd66
+         NDS1vFah4pafXjwmAx6hD17M1HAwp4t605yPiPLvjf73C70Fe8P+B9ZEtji85z3Egj3X
+         TEHIQocyJH+lJyLZEozeJoRRHxAFAIuENcpNBsUhAcziNYnnQ2hTkZGFAFarJSJJj4A5
+         XIEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JFmZc74oeeM35zjBvo4+BukpLYLvklQy3qJm+E2OtJU=;
-        b=KlBUku48coRkOcM346aG1N84w+w094WErXhf3NDNsJ8Ev4ofPfyJ84st/VXAHZ+qWN
-         hbjUjMNtuFYssDOkZVmwQd3jjZ2aRHB7LzZXMudOMxdKhUXjQvgE99NClgNPIO9Hpbsn
-         DIzB9bQbLC40kM7pMc6/KHr5SMVkYeHFCvBdMqfHphhwbUtugNsyLNSNokIRfza2ig2X
-         /PMvJE1angF7Z5mFBMnIgt+z1vmKeipku7Z9X8AxWGgPHhFuGAHgyr6b+hgeRoZvAitO
-         MaMZtVMtexu/mDiDaPJDmIj/PXEPssl8OybHTMF+x7fDOqDtGMhu4cZlWCM+hLUEM+WA
-         /zRg==
-X-Gm-Message-State: APjAAAVI9Ye44jivetFVqOZCFmvvH+8LUTdSKcFV7Un8OFJwL0f6DqB6
-        JHSlWrWIbWHqb/KJfPSj59g=
-X-Google-Smtp-Source: APXvYqxDF0A6yCgF0FCviLWVZqNRm5Hbs7TmfD5YpmIKbBad5iRl8KSOywojmloSncHdk6BuyEh3eg==
-X-Received: by 2002:aca:d7d5:: with SMTP id o204mr1337022oig.16.1562707664103;
-        Tue, 09 Jul 2019 14:27:44 -0700 (PDT)
-Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
-        by smtp.gmail.com with ESMTPSA id o18sm140782ote.63.2019.07.09.14.27.42
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Jul 2019 14:27:43 -0700 (PDT)
-Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
- Device (IBNBD)
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Jinpu Wang <jinpuwang@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        Roman Pen <r.peniaev@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
- <20190709110036.GQ7034@mtr-leonro.mtl.com>
- <CAD9gYJL=fo4Oa2hmU4WZgQrzypRbzoPrrFjNQKP2EZFXYxYNCA@mail.gmail.com>
- <20190709120606.GB3436@mellanox.com>
- <CAMGffE=T+FVfVzV5cCtVrm_6ikdJ9pjpFsPgx+t0EUpegoZELQ@mail.gmail.com>
- <20190709131932.GI3436@mellanox.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <1cd86f4b-7cd1-4e00-7111-5c8e09ba06be@grimberg.me>
-Date:   Tue, 9 Jul 2019 14:27:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        bh=qFvDzlxiFD6DDZKfIlqp1XR84wt2H+iEO1EU/utM7ok=;
+        b=tEqjmf2UxjtvB2MQcxBe0wkfpvs1/dmvmgjdBPQmrEAmCXplS/4PZyM4NZE0yTglID
+         t1OEgg7t+g5RsxWFXzfIo60bx6oAc/dTkfwLWCYh8pB+LUfkrkLtPpo7YQoSUWF1Gw8u
+         RQKXOD/oJM3gWSpOb7J+jScELnUpoiCCBH1H71kW69EkIEyejSZ9bBV7ip+UQO2N66Ur
+         uGlbrQQJsQBRJdD8NGSrLOp3GE8MRKDvopzOMWs4i1jaGGr/L4ZuIbN1w/Oc2Ba08z1z
+         INavroL241mHrabxqOdNM5UbvunWx8oagn+OtylPT6A6AuIIkifh+hwshtWwE3gSDgmi
+         Bv2g==
+X-Gm-Message-State: APjAAAWAJpEsH+Z2DwsAntxyufwnPzcKVysWCrDpVYPnbPsrDDXvr5gs
+        yFRW7n6p2lq9rbzOR228BZ0=
+X-Google-Smtp-Source: APXvYqw7UqVFmBGFIMkjrblY90I3+y3Lqh2r976LXSkatfh1QjD6z91brm36mJ935w9lFickK6l0gQ==
+X-Received: by 2002:adf:f646:: with SMTP id x6mr22912454wrp.18.1562710426876;
+        Tue, 09 Jul 2019 15:13:46 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:4f8:222:2f1b::2])
+        by smtp.gmail.com with ESMTPSA id t6sm258623wmb.29.2019.07.09.15.13.45
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 09 Jul 2019 15:13:46 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Kamenee Arumugam <kamenee.arumugam@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] IB/rdmavt: Remove err declaration in if statement in rvt_create_cq
+Date:   Tue,  9 Jul 2019 15:13:12 -0700
+Message-Id: <20190709221312.7089-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-In-Reply-To: <20190709131932.GI3436@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+clang warns:
 
->> Thanks Jason for feedback.
->> Can you be  more specific about  "the invalidation model for MR was wrong"
-> 
-> MR's must be invalidated before data is handed over to the block
-> layer. It can't leave MRs open for access and then touch the memory
-> the MR covers.
+drivers/infiniband/sw/rdmavt/cq.c:260:7: warning: variable 'err' is used
+uninitialized whenever 'if' condition is true
+[-Wsometimes-uninitialized]
+                if (err)
+                    ^~~
+drivers/infiniband/sw/rdmavt/cq.c:310:9: note: uninitialized use occurs
+here
+        return err;
+               ^~~
+drivers/infiniband/sw/rdmavt/cq.c:260:3: note: remove the 'if' if its
+condition is always false
+                if (err)
+                ^~~~~~~~
+drivers/infiniband/sw/rdmavt/cq.c:253:7: warning: variable 'err' is used
+uninitialized whenever 'if' condition is true
+[-Wsometimes-uninitialized]
+                if (!cq->ip) {
+                    ^~~~~~~
+drivers/infiniband/sw/rdmavt/cq.c:310:9: note: uninitialized use occurs
+here
+        return err;
+               ^~~
+drivers/infiniband/sw/rdmavt/cq.c:253:3: note: remove the 'if' if its
+condition is always false
+                if (!cq->ip) {
+                ^~~~~~~~~~~~~~
+drivers/infiniband/sw/rdmavt/cq.c:211:9: note: initialize the variable
+'err' to silence this warning
+        int err;
+               ^
+                = 0
+2 warnings generated.
 
-Jason is referring to these fixes:
-2f122e4f5107 ("nvme-rdma: wait for local invalidation before completing 
-a request")
-4af7f7ff92a4 ("nvme-rdma: don't complete requests before a send work 
-request has completed")
-b4b591c87f2b ("nvme-rdma: don't suppress send completions")
+There are two err declarations in this function: at the top and within
+an if statement; clang warns because the assignments to err in the if
+statement are local to the if statement so err will be used
+uninitialized if this error handling is used. Remove the if statement's
+err declaration so that everything works properly.
+
+Fixes: 239b0e52d8aa ("IB/hfi1: Move rvt_cq_wc struct into uapi directory")
+Link: https://github.com/ClangBuiltLinux/linux/issues/594
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/infiniband/sw/rdmavt/cq.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rdmavt/cq.c b/drivers/infiniband/sw/rdmavt/cq.c
+index fac87b13329d..a85571a4cf57 100644
+--- a/drivers/infiniband/sw/rdmavt/cq.c
++++ b/drivers/infiniband/sw/rdmavt/cq.c
+@@ -247,8 +247,6 @@ int rvt_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	 * See rvt_mmap() for details.
+ 	 */
+ 	if (udata && udata->outlen >= sizeof(__u64)) {
+-		int err;
+-
+ 		cq->ip = rvt_create_mmap_info(rdi, sz, udata, u_wc);
+ 		if (!cq->ip) {
+ 			err = -ENOMEM;
+-- 
+2.22.0
+
