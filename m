@@ -2,129 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0089063CF7
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 22:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B648663D4B
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 23:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729872AbfGIU4b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jul 2019 16:56:31 -0400
-Received: from mga12.intel.com ([192.55.52.136]:23270 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729852AbfGIU43 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 9 Jul 2019 16:56:29 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Jul 2019 13:56:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,472,1557212400"; 
-   d="scan'208";a="173673832"
-Received: from horosco-mobl2.amr.corp.intel.com (HELO horosco-MOBL2) ([10.122.74.43])
-  by FMSMGA003.fm.intel.com with SMTP; 09 Jul 2019 13:56:27 -0700
-Received: by horosco-MOBL2 (sSMTP sendmail emulation); Tue, 09 Jul 2019 15:56:26 -0500
-Date:   Tue, 9 Jul 2019 15:56:13 -0500
-From:   Henry Orosco <henry.orosco@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        id S1726601AbfGIV1p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jul 2019 17:27:45 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:32972 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbfGIV1p (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jul 2019 17:27:45 -0400
+Received: by mail-oi1-f194.google.com with SMTP id u15so16549741oiv.0;
+        Tue, 09 Jul 2019 14:27:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JFmZc74oeeM35zjBvo4+BukpLYLvklQy3qJm+E2OtJU=;
+        b=KlBUku48coRkOcM346aG1N84w+w094WErXhf3NDNsJ8Ev4ofPfyJ84st/VXAHZ+qWN
+         hbjUjMNtuFYssDOkZVmwQd3jjZ2aRHB7LzZXMudOMxdKhUXjQvgE99NClgNPIO9Hpbsn
+         DIzB9bQbLC40kM7pMc6/KHr5SMVkYeHFCvBdMqfHphhwbUtugNsyLNSNokIRfza2ig2X
+         /PMvJE1angF7Z5mFBMnIgt+z1vmKeipku7Z9X8AxWGgPHhFuGAHgyr6b+hgeRoZvAitO
+         MaMZtVMtexu/mDiDaPJDmIj/PXEPssl8OybHTMF+x7fDOqDtGMhu4cZlWCM+hLUEM+WA
+         /zRg==
+X-Gm-Message-State: APjAAAVI9Ye44jivetFVqOZCFmvvH+8LUTdSKcFV7Un8OFJwL0f6DqB6
+        JHSlWrWIbWHqb/KJfPSj59g=
+X-Google-Smtp-Source: APXvYqxDF0A6yCgF0FCviLWVZqNRm5Hbs7TmfD5YpmIKbBad5iRl8KSOywojmloSncHdk6BuyEh3eg==
+X-Received: by 2002:aca:d7d5:: with SMTP id o204mr1337022oig.16.1562707664103;
+        Tue, 09 Jul 2019 14:27:44 -0700 (PDT)
+Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
+        by smtp.gmail.com with ESMTPSA id o18sm140782ote.63.2019.07.09.14.27.42
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Jul 2019 14:27:43 -0700 (PDT)
+Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
+ Device (IBNBD)
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Jinpu Wang <jinpuwang@gmail.com>,
         Leon Romanovsky <leon@kernel.org>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "poswald@suse.com" <poswald@suse.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>
-Subject: Re: [rdma 14/16] RDMA/irdma: Add ABI definitions
-Message-ID: <20190709205613.GA7440@horosco-MOBL2.amr.corp.intel.com>
-References: <20190704021259.15489-1-jeffrey.t.kirsher@intel.com>
- <20190704021259.15489-16-jeffrey.t.kirsher@intel.com>
- <20190704074021.GH4727@mtr-leonro.mtl.com>
- <20190704121933.GD3401@mellanox.com>
- <9DD61F30A802C4429A01CA4200E302A7A684DAAA@fmsmsx124.amr.corp.intel.com>
- <20190705171650.GI31525@mellanox.com>
- <9DD61F30A802C4429A01CA4200E302A7A68512AA@fmsmsx124.amr.corp.intel.com>
- <20190708141336.GF23966@mellanox.com>
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Roman Pen <r.peniaev@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20190620150337.7847-1-jinpuwang@gmail.com>
+ <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
+ <20190709110036.GQ7034@mtr-leonro.mtl.com>
+ <CAD9gYJL=fo4Oa2hmU4WZgQrzypRbzoPrrFjNQKP2EZFXYxYNCA@mail.gmail.com>
+ <20190709120606.GB3436@mellanox.com>
+ <CAMGffE=T+FVfVzV5cCtVrm_6ikdJ9pjpFsPgx+t0EUpegoZELQ@mail.gmail.com>
+ <20190709131932.GI3436@mellanox.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <1cd86f4b-7cd1-4e00-7111-5c8e09ba06be@grimberg.me>
+Date:   Tue, 9 Jul 2019 14:27:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190708141336.GF23966@mellanox.com>
-User-Agent: Mutt/1.7.0 (2016-08-17)
+In-Reply-To: <20190709131932.GI3436@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 08, 2019 at 02:13:39PM +0000, Jason Gunthorpe wrote:
-> On Sat, Jul 06, 2019 at 04:15:20PM +0000, Saleem, Shiraz wrote:
-> > > Subject: Re: [rdma 14/16] RDMA/irdma: Add ABI definitions
-> > > 
-> > > On Fri, Jul 05, 2019 at 04:42:19PM +0000, Saleem, Shiraz wrote:
-> > > > > Subject: Re: [rdma 14/16] RDMA/irdma: Add ABI definitions
-> > > > >
-> > > > > On Thu, Jul 04, 2019 at 10:40:21AM +0300, Leon Romanovsky wrote:
-> > > > > > On Wed, Jul 03, 2019 at 07:12:57PM -0700, Jeff Kirsher wrote:
-> > > > > > > From: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > > > > >
-> > > > > > > Add ABI definitions for irdma.
-> > > > > > >
-> > > > > > > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > > > > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > > > > > include/uapi/rdma/irdma-abi.h | 130
-> > > > > > > ++++++++++++++++++++++++++++++++++
-> > > > > > >  1 file changed, 130 insertions(+)  create mode 100644
-> > > > > > > include/uapi/rdma/irdma-abi.h
-> > > > > > >
-> > > > > > > diff --git a/include/uapi/rdma/irdma-abi.h
-> > > > > > > b/include/uapi/rdma/irdma-abi.h new file mode 100644 index
-> > > > > > > 000000000000..bdfbda4c829e
-> > > > > > > +++ b/include/uapi/rdma/irdma-abi.h
-> > > > > > > @@ -0,0 +1,130 @@
-> > > > > > > +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-> > > > > > > +/* Copyright (c) 2006 - 2019 Intel Corporation.  All rights reserved.
-> > > > > > > + * Copyright (c) 2005 Topspin Communications.  All rights reserved.
-> > > > > > > + * Copyright (c) 2005 Cisco Systems.  All rights reserved.
-> > > > > > > + * Copyright (c) 2005 Open Grid Computing, Inc. All rights reserved.
-> > > > > > > + */
-> > > > > > > +
-> > > > > > > +#ifndef IRDMA_ABI_H
-> > > > > > > +#define IRDMA_ABI_H
-> > > > > > > +
-> > > > > > > +#include <linux/types.h>
-> > > > > > > +
-> > > > > > > +/* irdma must support legacy GEN_1 i40iw kernel
-> > > > > > > + * and user-space whose last ABI ver is 5  */ #define
-> > > > > > > +IRDMA_ABI_VER
-> > > > > > > +6
-> > > > > >
-> > > > > > Can you please elaborate about it more?
-> > > > > > There is no irdma code in RDMA yet, so it makes me wonder why new
-> > > > > > define shouldn't start from 1.
-> > > > >
-> > > > > It is because they are ABI compatible with the current user space,
-> > > > > which raises the question why we even have this confusing header file..
-> > > >
-> > > > It is because we need to support current providers/i40iw user-space.
-> > > > Our user-space patch series will introduce a new provider (irdma)
-> > > > whose ABI ver. is also 6 (capable of supporting X722 and which will
-> > > > work with i40iw driver on older kernels) and removes providers/i40iw from rdma-
-> > > core.
-> > > 
-> > > Why on earth would we do that?
-> > > 
-> > A unified library providers/irdma to go in hand with the driver irdma and uses the ABI header.
-> > It can support the new network device e810 and existing x722 iWARP device. It obsoletes
-> > providers/i40iw and extends its ABI. So why keep providers/i40iw around in rdma-core?
-> 
-> Why rewrite a perfectly good userspace that is compatible with the
-> future and past kernels?
-> 
-> Is there something so wrong with the userspace provider to need this?
->
 
-Yes, the issue is that providers/i40iw was never designed to work with a unified driver
-which supports multiple hardware generations.
+>> Thanks Jason for feedback.
+>> Can you be  more specific about  "the invalidation model for MR was wrong"
+> 
+> MR's must be invalidated before data is handed over to the block
+> layer. It can't leave MRs open for access and then touch the memory
+> the MR covers.
 
-Henry 
+Jason is referring to these fixes:
+2f122e4f5107 ("nvme-rdma: wait for local invalidation before completing 
+a request")
+4af7f7ff92a4 ("nvme-rdma: don't complete requests before a send work 
+request has completed")
+b4b591c87f2b ("nvme-rdma: don't suppress send completions")
