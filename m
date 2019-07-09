@@ -2,154 +2,358 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D10B63170
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 09:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832F96333F
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 11:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726018AbfGIHCs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jul 2019 03:02:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbfGIHCs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 9 Jul 2019 03:02:48 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CEAA216FD;
-        Tue,  9 Jul 2019 07:02:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562655768;
-        bh=Ug6RXcRHmm9WmNE4ejMdaxf6EbLLOGYlcFlH8vv28zY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oo1Yyn7y5IilfJ4mIGRZPUWCgEYk48/FkqEUKqrEqguTD67Lwp30QGKmxHL+jvgqO
-         qSOb26DEhakEjz7XAE3cc80xCxkDfDfkNQjKcjb+F83CCKND9AIBrMUBbZIamek1mT
-         rQXYr++NcsL2wmOP0uMKjsFTnnTumgPLMdkgtrrk=
-Date:   Tue, 9 Jul 2019 10:02:44 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Michal Kalderon <michal.kalderon@marvell.com>
-Cc:     ariel.elior@marvell.com, jgg@ziepe.ca, dledford@redhat.com,
-        galpress@amazon.com, linux-rdma@vger.kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org
-Subject: Re: [PATCH v5 rdma-next 1/6] RDMA/core: Create mmap database and
- cookie helper functions
-Message-ID: <20190709070244.GH7034@mtr-leonro.mtl.com>
+        id S1726025AbfGIJDG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jul 2019 05:03:06 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:2843 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbfGIJDG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jul 2019 05:03:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1562662983; x=1594198983;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=z45SGeJ4QK5ENsEwNAvIn+nkO8FnF/WVnqKYAkzY+hg=;
+  b=tNp16O5OczS/nG9M0lUlBhAmuRd7qWMZT60rdgNFNSEoHxi8DigCHtiQ
+   LN59GNYwuUEZzc9tvmSFlYxMOoZ6nZYGIWUzU8hSoC8NuVDQR7qRnAYaC
+   3GK7MYe95TxFCUz4nRBacmEEy82Yr23o5dNCFP3vtCgW7AdoRweT9ubC9
+   c=;
+X-IronPort-AV: E=Sophos;i="5.62,470,1554768000"; 
+   d="scan'208";a="810130510"
+Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com) ([10.47.22.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 09 Jul 2019 09:02:57 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com (Postfix) with ESMTPS id 135CAA185E;
+        Tue,  9 Jul 2019 09:02:57 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 9 Jul 2019 09:02:56 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.187) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 9 Jul 2019 09:02:51 +0000
+Subject: Re: [PATCH v5 rdma-next 2/6] RDMA/efa: Use the common mmap_xa helpers
+To:     Michal Kalderon <michal.kalderon@marvell.com>,
+        <ariel.elior@marvell.com>, <jgg@ziepe.ca>, <dledford@redhat.com>,
+        <galpress@amazon.com>
+CC:     <linux-rdma@vger.kernel.org>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>
 References: <20190708091503.14723-1-michal.kalderon@marvell.com>
- <20190708091503.14723-2-michal.kalderon@marvell.com>
+ <20190708091503.14723-3-michal.kalderon@marvell.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <0a28f174-1875-452e-ea0a-c8db2d243ce5@amazon.com>
+Date:   Tue, 9 Jul 2019 12:02:46 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190708091503.14723-2-michal.kalderon@marvell.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <20190708091503.14723-3-michal.kalderon@marvell.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.187]
+X-ClientProxiedBy: EX13D02UWC001.ant.amazon.com (10.43.162.243) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 08, 2019 at 12:14:58PM +0300, Michal Kalderon wrote:
-> Create some common API's for adding entries to a xa_mmap.
-> Searching for an entry and freeing one.
->
-> The code was copied from the efa driver almost as is, just renamed
-> function to be generic and not efa specific.
->
+On 08/07/2019 12:14, Michal Kalderon wrote:
+
+Hi, a few nits:
+
+> Remove the functions related to managing the mmap_xa database.
+> This code was copied to the ib_core. Use the common API's instead.
+> 
 > Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 > ---
->  drivers/infiniband/core/device.c      |   1 +
->  drivers/infiniband/core/rdma_core.c   |   1 +
->  drivers/infiniband/core/uverbs_cmd.c  |   1 +
->  drivers/infiniband/core/uverbs_main.c | 105 ++++++++++++++++++++++++++++++++++
->  include/rdma/ib_verbs.h               |  32 +++++++++++
->  5 files changed, 140 insertions(+)
->
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index 8a6ccb936dfe..a830c2c5d691 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -2521,6 +2521,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
->  	SET_DEVICE_OP(dev_ops, map_mr_sg_pi);
->  	SET_DEVICE_OP(dev_ops, map_phys_fmr);
->  	SET_DEVICE_OP(dev_ops, mmap);
-> +	SET_DEVICE_OP(dev_ops, mmap_free);
->  	SET_DEVICE_OP(dev_ops, modify_ah);
->  	SET_DEVICE_OP(dev_ops, modify_cq);
->  	SET_DEVICE_OP(dev_ops, modify_device);
-> diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-> index ccf4d069c25c..7166741834c8 100644
-> --- a/drivers/infiniband/core/rdma_core.c
-> +++ b/drivers/infiniband/core/rdma_core.c
-> @@ -817,6 +817,7 @@ static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
->  	rdma_restrack_del(&ucontext->res);
->
->  	ib_dev->ops.dealloc_ucontext(ucontext);
-> +	rdma_user_mmap_entries_remove_free(ucontext);
->  	kfree(ucontext);
->
->  	ufile->ucontext = NULL;
-> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-> index 7ddd0e5bc6b3..44c0600245e4 100644
-> --- a/drivers/infiniband/core/uverbs_cmd.c
-> +++ b/drivers/infiniband/core/uverbs_cmd.c
-> @@ -254,6 +254,7 @@ static int ib_uverbs_get_context(struct uverbs_attr_bundle *attrs)
->
->  	mutex_init(&ucontext->per_mm_list_lock);
->  	INIT_LIST_HEAD(&ucontext->per_mm_list);
-> +	xa_init(&ucontext->mmap_xa);
->
->  	ret = get_unused_fd_flags(O_CLOEXEC);
->  	if (ret < 0)
-> diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-> index 11c13c1381cf..37507cc27e8c 100644
-> --- a/drivers/infiniband/core/uverbs_main.c
-> +++ b/drivers/infiniband/core/uverbs_main.c
-> @@ -965,6 +965,111 @@ int rdma_user_mmap_io(struct ib_ucontext *ucontext, struct vm_area_struct *vma,
+>  drivers/infiniband/hw/efa/efa.h       |   3 +-
+>  drivers/infiniband/hw/efa/efa_main.c  |   1 +
+>  drivers/infiniband/hw/efa/efa_verbs.c | 183 ++++++++--------------------------
+>  3 files changed, 42 insertions(+), 145 deletions(-)
+> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+> index df77bc312a25..5dff892da161 100644
+> --- a/drivers/infiniband/hw/efa/efa_verbs.c
+> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> @@ -13,34 +13,15 @@
+>  
+>  #include "efa.h"
+>  
+> -#define EFA_MMAP_FLAG_SHIFT 56
+> -#define EFA_MMAP_PAGE_MASK GENMASK(EFA_MMAP_FLAG_SHIFT - 1, 0)
+> -#define EFA_MMAP_INVALID U64_MAX
+> -
+
+Don't delete the blank line please.
+
+>  enum {
+>  	EFA_MMAP_DMA_PAGE = 0,
+>  	EFA_MMAP_IO_WC,
+>  	EFA_MMAP_IO_NC,
+>  };
+> -
+>  #define EFA_AENQ_ENABLED_GROUPS \
+>  	(BIT(EFA_ADMIN_FATAL_ERROR) | BIT(EFA_ADMIN_WARNING) | \
+>  	 BIT(EFA_ADMIN_NOTIFICATION) | BIT(EFA_ADMIN_KEEP_ALIVE))
+>  
+> -struct efa_mmap_entry {
+> -	void  *obj;
+> -	u64 address;
+> -	u64 length;
+> -	u32 mmap_page;
+> -	u8 mmap_flag;
+> -};
+> -
+> -static inline u64 get_mmap_key(const struct efa_mmap_entry *efa)
+> -{
+> -	return ((u64)efa->mmap_flag << EFA_MMAP_FLAG_SHIFT) |
+> -	       ((u64)efa->mmap_page << PAGE_SHIFT);
+> -}
+> -
+>  #define EFA_CHUNK_PAYLOAD_SHIFT       12
+>  #define EFA_CHUNK_PAYLOAD_SIZE        BIT(EFA_CHUNK_PAYLOAD_SHIFT)
+>  #define EFA_CHUNK_PAYLOAD_PTR_SIZE    8
+> @@ -145,105 +126,7 @@ static void *efa_zalloc_mapped(struct efa_dev *dev, dma_addr_t *dma_addr,
+>  	return addr;
 >  }
->  EXPORT_SYMBOL(rdma_user_mmap_io);
->
-> +static inline u64
-> +rdma_user_mmap_get_key(const struct rdma_user_mmap_entry *entry)
+>  
+> -/*
+> - * This is only called when the ucontext is destroyed and there can be no
+> - * concurrent query via mmap or allocate on the xarray, thus we can be sure no
+> - * other thread is using the entry pointer. We also know that all the BAR
+> - * pages have either been zap'd or munmaped at this point.  Normal pages are
+> - * refcounted and will be freed at the proper time.
+> - */
+> -static void mmap_entries_remove_free(struct efa_dev *dev,
+> -				     struct efa_ucontext *ucontext)
+> -{
+> -	struct efa_mmap_entry *entry;
+> -	unsigned long mmap_page;
+>  
+> -	xa_for_each(&ucontext->mmap_xa, mmap_page, entry) {
+> -		xa_erase(&ucontext->mmap_xa, mmap_page);
+> -
+> -		ibdev_dbg(
+> -			&dev->ibdev,
+> -			"mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx] removed\n",
+> -			entry->obj, get_mmap_key(entry), entry->address,
+> -			entry->length);
+> -		if (entry->mmap_flag == EFA_MMAP_DMA_PAGE)
+> -			/* DMA mapping is already gone, now free the pages */
+> -			free_pages_exact(phys_to_virt(entry->address),
+> -					 entry->length);
+> -		kfree(entry);
+> -	}
+> -}
+> -
+> -static struct efa_mmap_entry *mmap_entry_get(struct efa_dev *dev,
+> -					     struct efa_ucontext *ucontext,
+> -					     u64 key, u64 len)
+> -{
+> -	struct efa_mmap_entry *entry;
+> -	u64 mmap_page;
+> -
+> -	mmap_page = (key & EFA_MMAP_PAGE_MASK) >> PAGE_SHIFT;
+> -	if (mmap_page > U32_MAX)
+> -		return NULL;
+> -
+> -	entry = xa_load(&ucontext->mmap_xa, mmap_page);
+> -	if (!entry || get_mmap_key(entry) != key || entry->length != len)
+> -		return NULL;
+> -
+> -	ibdev_dbg(&dev->ibdev,
+> -		  "mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx] removed\n",
+> -		  entry->obj, key, entry->address, entry->length);
+> -
+> -	return entry;
+> -}
+> -
+> -/*
+> - * Note this locking scheme cannot support removal of entries, except during
+> - * ucontext destruction when the core code guarentees no concurrency.
+> - */
+> -static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
+> -			     void *obj, u64 address, u64 length, u8 mmap_flag)
+> -{
+> -	struct efa_mmap_entry *entry;
+> -	u32 next_mmap_page;
+> -	int err;
+> -
+> -	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+> -	if (!entry)
+> -		return EFA_MMAP_INVALID;
+> -
+> -	entry->obj = obj;
+> -	entry->address = address;
+> -	entry->length = length;
+> -	entry->mmap_flag = mmap_flag;
+> -
+> -	xa_lock(&ucontext->mmap_xa);
+> -	if (check_add_overflow(ucontext->mmap_xa_page,
+> -			       (u32)(length >> PAGE_SHIFT),
+> -			       &next_mmap_page))
+> -		goto err_unlock;
+> -
+> -	entry->mmap_page = ucontext->mmap_xa_page;
+> -	ucontext->mmap_xa_page = next_mmap_page;
+> -	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
+> -			  GFP_KERNEL);
+> -	if (err)
+> -		goto err_unlock;
+> -
+> -	xa_unlock(&ucontext->mmap_xa);
+> -
+> -	ibdev_dbg(
+> -		&dev->ibdev,
+> -		"mmap: obj[0x%p] addr[%#llx], len[%#llx], key[%#llx] inserted\n",
+> -		entry->obj, entry->address, entry->length, get_mmap_key(entry));
+> -
+> -	return get_mmap_key(entry);
+> -
+> -err_unlock:
+> -	xa_unlock(&ucontext->mmap_xa);
+> -	kfree(entry);
+> -	return EFA_MMAP_INVALID;
+> -
+> -}
+>  
+
+You left two extra blank lines between efa_zalloc_mapped and efa_query_device.
+
+>  int efa_query_device(struct ib_device *ibdev,
+>  		     struct ib_device_attr *props,
+> @@ -488,45 +371,52 @@ static int qp_mmap_entries_setup(struct efa_qp *qp,
+>  				 struct efa_com_create_qp_params *params,
+>  				 struct efa_ibv_create_qp_resp *resp)
+>  {
+> +	u64 address;
+> +	u64 length;
+
+Line break.
+
+>  	/*
+>  	 * Once an entry is inserted it might be mmapped, hence cannot be
+>  	 * cleaned up until dealloc_ucontext.
+>  	 */
+>  	resp->sq_db_mmap_key =
+> -		mmap_entry_insert(dev, ucontext, qp,
+> -				  dev->db_bar_addr + resp->sq_db_offset,
+> -				  PAGE_SIZE, EFA_MMAP_IO_NC);
+> -	if (resp->sq_db_mmap_key == EFA_MMAP_INVALID)
+> +		rdma_user_mmap_entry_insert(&ucontext->ibucontext, qp,
+> +					    dev->db_bar_addr +
+> +					    resp->sq_db_offset,
+> +					    PAGE_SIZE, EFA_MMAP_IO_NC);
+> +	if (resp->sq_db_mmap_key == RDMA_USER_MMAP_INVALID)
+>  		return -ENOMEM;
+>  
+>  	resp->sq_db_offset &= ~PAGE_MASK;
+>  
+> +	address = dev->mem_bar_addr + resp->llq_desc_offset;
+> +	length = PAGE_ALIGN(params->sq_ring_size_in_bytes +
+> +			    (resp->llq_desc_offset & ~PAGE_MASK));
+>  	resp->llq_desc_mmap_key =
+> -		mmap_entry_insert(dev, ucontext, qp,
+> -				  dev->mem_bar_addr + resp->llq_desc_offset,
+> -				  PAGE_ALIGN(params->sq_ring_size_in_bytes +
+> -					     (resp->llq_desc_offset & ~PAGE_MASK)),
+> -				  EFA_MMAP_IO_WC);
+> -	if (resp->llq_desc_mmap_key == EFA_MMAP_INVALID)
+> +		rdma_user_mmap_entry_insert(&ucontext->ibucontext, qp,
+> +					    address,
+> +					    length,
+> +					    EFA_MMAP_IO_WC);
+> +	if (resp->llq_desc_mmap_key == RDMA_USER_MMAP_INVALID)
+>  		return -ENOMEM;
+>  
+>  	resp->llq_desc_offset &= ~PAGE_MASK;
+>  
+>  	if (qp->rq_size) {
+> +		address = dev->db_bar_addr + resp->rq_db_offset;
+>  		resp->rq_db_mmap_key =
+> -			mmap_entry_insert(dev, ucontext, qp,
+> -					  dev->db_bar_addr + resp->rq_db_offset,
+> -					  PAGE_SIZE, EFA_MMAP_IO_NC);
+> -		if (resp->rq_db_mmap_key == EFA_MMAP_INVALID)
+> +			rdma_user_mmap_entry_insert(&ucontext->ibucontext, qp,
+> +						    address, PAGE_SIZE,
+> +						    EFA_MMAP_IO_NC);
+> +		if (resp->rq_db_mmap_key == RDMA_USER_MMAP_INVALID)
+>  			return -ENOMEM;
+>  
+>  		resp->rq_db_offset &= ~PAGE_MASK;
+>  
+> +		address = virt_to_phys(qp->rq_cpu_addr);
+>  		resp->rq_mmap_key =
+> -			mmap_entry_insert(dev, ucontext, qp,
+> -					  virt_to_phys(qp->rq_cpu_addr),
+> -					  qp->rq_size, EFA_MMAP_DMA_PAGE);
+> -		if (resp->rq_mmap_key == EFA_MMAP_INVALID)
+> +			rdma_user_mmap_entry_insert(&ucontext->ibucontext, qp,
+> +						    address, qp->rq_size,
+> +						    EFA_MMAP_DMA_PAGE);
+> +		if (resp->rq_mmap_key == RDMA_USER_MMAP_INVALID)
+>  			return -ENOMEM;
+>  
+>  		resp->rq_mmap_size = qp->rq_size;
+> @@ -875,11 +765,13 @@ void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+>  static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
+>  				 struct efa_ibv_create_cq_resp *resp)
+>  {
+> +	struct efa_ucontext *ucontext = cq->ucontext;
+
+Line break.
+
+>  	resp->q_mmap_size = cq->size;
+> -	resp->q_mmap_key = mmap_entry_insert(dev, cq->ucontext, cq,
+> -					     virt_to_phys(cq->cpu_addr),
+> -					     cq->size, EFA_MMAP_DMA_PAGE);
+> -	if (resp->q_mmap_key == EFA_MMAP_INVALID)
+> +	resp->q_mmap_key =
+> +		rdma_user_mmap_entry_insert(&ucontext->ibucontext, cq,
+> +					    virt_to_phys(cq->cpu_addr),
+> +					    cq->size, EFA_MMAP_DMA_PAGE);
+> +	if (resp->q_mmap_key == RDMA_USER_MMAP_INVALID)
+>  		return -ENOMEM;
+>  
+>  	return 0;
+> @@ -1531,7 +1423,6 @@ int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata)
+>  		goto err_out;
+>  
+>  	ucontext->uarn = result.uarn;
+> -	xa_init(&ucontext->mmap_xa);
+>  
+>  	resp.cmds_supp_udata_mask |= EFA_USER_CMDS_SUPP_UDATA_QUERY_DEVICE;
+>  	resp.cmds_supp_udata_mask |= EFA_USER_CMDS_SUPP_UDATA_CREATE_AH;
+> @@ -1560,19 +1451,25 @@ void efa_dealloc_ucontext(struct ib_ucontext *ibucontext)
+>  	struct efa_ucontext *ucontext = to_eucontext(ibucontext);
+>  	struct efa_dev *dev = to_edev(ibucontext->device);
+>  
+> -	mmap_entries_remove_free(dev, ucontext);
+>  	efa_dealloc_uar(dev, ucontext->uarn);
+>  }
+>  
+> +void efa_mmap_free(u64 address, u64 length, u8 mmap_flag)
 > +{
-> +	return (u64)entry->mmap_page << PAGE_SHIFT;
+> +	/* DMA mapping is already gone, now free the pages */
+> +	if (mmap_flag == EFA_MMAP_DMA_PAGE)
+> +		free_pages_exact(phys_to_virt(address), length);
 > +}
 > +
-> +struct rdma_user_mmap_entry *
-> +rdma_user_mmap_entry_get(struct ib_ucontext *ucontext, u64 key, u64 len)
-> +{
+>  static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
+>  		      struct vm_area_struct *vma, u64 key, u64 length)
+>  {
+> -	struct efa_mmap_entry *entry;
 > +	struct rdma_user_mmap_entry *entry;
-> +	u64 mmap_page;
-> +
-> +	mmap_page = key >> PAGE_SHIFT;
-> +	if (mmap_page > U32_MAX)
-> +		return NULL;
-> +
-> +	entry = xa_load(&ucontext->mmap_xa, mmap_page);
-> +	if (!entry || rdma_user_mmap_get_key(entry) != key ||
-> +	    entry->length != len)
-> +		return NULL;
-> +
-> +	ibdev_dbg(ucontext->device,
-> +		  "mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx] removed\n",
-> +		  entry->obj, key, entry->address, entry->length);
-> +
-> +	return entry;
-> +}
-> +EXPORT_SYMBOL(rdma_user_mmap_entry_get);
-
-Please add function description in kernel doc format for all newly EXPORT_SYMBOL()
-functions you introduced in RDMA/core.
-
-> +
-> +/*
-> + * Note this locking scheme cannot support removal of entries, except during
-> + * ucontext destruction when the core code guarentees no concurrency.
-> + */
-> +u64 rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext, void *obj,
-> +				u64 address, u64 length, u8 mmap_flag)
-> +{
-> +	struct rdma_user_mmap_entry *entry;
-> +	u32 next_mmap_page;
-> +	int err;
-> +
-> +	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-
-It is worth to use kzalloc and not kmalloc.
-
-Thanks
+>  	unsigned long va;
+>  	u64 pfn;
+>  	int err;
+>  
+> -	entry = mmap_entry_get(dev, ucontext, key, length);
+> +	entry = rdma_user_mmap_entry_get(&ucontext->ibucontext, key, length);
+>  	if (!entry) {
+>  		ibdev_dbg(&dev->ibdev, "key[%#llx] does not have valid entry\n",
+>  			  key);
+> 
