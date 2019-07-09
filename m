@@ -2,54 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C13D634CF
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 13:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF3E63503
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2019 13:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbfGILRk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jul 2019 07:17:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbfGILRk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 9 Jul 2019 07:17:40 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFBE22082A;
-        Tue,  9 Jul 2019 11:17:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562671059;
-        bh=DJ74fwGLtV8C8xuECfnoLYhmXuGJU8f3DjdzbcHXtS0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R/RfQ6JA9EZ5R4LqZu+FJVmuVqCz+wzEngnKU4+qrUM6r5bP01NTL51juRovdwizE
-         +sL01SAUJ1g915qT1RK2/9WPcNL2+vrh22o9o6O3GerhsEGd1j18XosAfAeVjOYtD9
-         caeDNdG/WtqiF2yTsW+xAWD0jcyaLI/2Wl2KRTns=
-Date:   Tue, 9 Jul 2019 13:17:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
+        id S1726089AbfGILhw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jul 2019 07:37:52 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:35866 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbfGILhw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jul 2019 07:37:52 -0400
+Received: by mail-lj1-f196.google.com with SMTP id i21so19244275ljj.3;
+        Tue, 09 Jul 2019 04:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eXuAcsZj8lH825K/Jt8pgKNcMQ9+3B8whnfrb97eZcU=;
+        b=gMux+3BhPRhfGcy7dk+oxHD8JDvbAuG8ocasnIeFhpzFJ2KiL6DbfPNBwFgEOHQYj6
+         +uPpNhbtnJ0Ps5kVTf2LvMrPsJ1s/1mDUMDYfzv9i1g3L8bftywmC2BW3E9rCbXAQfxH
+         gXSYRdSU9rcAI+p4Q2hTnHULdgUTecq1X7J+MWWgOkqpw+Da2KvLY4dpvTAtoWPubOne
+         Wi2slGaZFbIEv8JNQ0ge+fzJxAolOxVbShF4f9jdqm0FBwdtt36PUDTHW+Q/9wMqWjzL
+         8+nZZUDkYri8W0FsJE2x7cIaq+XE/9LpcaNAb7Thi04X6hVMCT+Pwm43E4czLMAUBZnU
+         GDDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eXuAcsZj8lH825K/Jt8pgKNcMQ9+3B8whnfrb97eZcU=;
+        b=Gsi1kqKtRs4Nqh5G9qxVmy3KDgaEaTMw+9BYoa65D/rEzeUVZ/7NAA24LCxyJzUJye
+         tXEvbjWB7OvDt+R/ooQGU0QIkdl8Q60PpvZD4RRl2CcR5BwHC3XpyblQosEP8bSGoxhH
+         aggw7qV+Ajlwr2qxEFW9iSh/gldt5Z5+EksNBdFbnMuNREj3c54NOy2n3haCpvP5B0A3
+         pVhJKFdlAurES/hI6HMpAxSrxzl86O7s3A/8hmNLqhTVmZllN4OQ5Ha808Obe8PRcl++
+         JfQz7osDc1Jig3mdHaO0peoTpqi31tkGXG0kWvnj1q9LEXw5jt9TkfJlAMAht2c0ZutK
+         QoXA==
+X-Gm-Message-State: APjAAAVog/y0cUqIOig3+wzRhGKhdmrzFOlFeiEsEs2sKVM1Q0uyK2FC
+        5TpIafKg4To5XhZNdvtBT2JUuBh2WX5Uab/+9GE=
+X-Google-Smtp-Source: APXvYqwgFbXo5eZhN8IW0SQ+H6h7yZNifc56FxUdlvAIM8aocQ8CM2yTOgJHQ37x8HRWLwYYJP+03TnTbtlXhy2MxJU=
+X-Received: by 2002:a2e:2c07:: with SMTP id s7mr13728713ljs.44.1562672270509;
+ Tue, 09 Jul 2019 04:37:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
+ <20190709110036.GQ7034@mtr-leonro.mtl.com>
+In-Reply-To: <20190709110036.GQ7034@mtr-leonro.mtl.com>
+From:   Jinpu Wang <jinpuwang@gmail.com>
+Date:   Tue, 9 Jul 2019 13:37:39 +0200
+Message-ID: <CAD9gYJL=fo4Oa2hmU4WZgQrzypRbzoPrrFjNQKP2EZFXYxYNCA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
+ Device (IBNBD)
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         Sagi Grimberg <sagi@grimberg.me>, bvanassche@acm.org,
         jgg@mellanox.com, dledford@redhat.com,
-        Roman Pen <r.peniaev@gmail.com>
-Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
- Device (IBNBD)
-Message-ID: <20190709111737.GB6719@kroah.com>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
- <20190709110036.GQ7034@mtr-leonro.mtl.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190709110036.GQ7034@mtr-leonro.mtl.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        Roman Pen <r.peniaev@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 09, 2019 at 02:00:36PM +0300, Leon Romanovsky wrote:
+Leon Romanovsky <leon@kernel.org> =E4=BA=8E2019=E5=B9=B47=E6=9C=889=E6=97=
+=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=881:00=E5=86=99=E9=81=93=EF=BC=9A
+>
 > On Tue, Jul 09, 2019 at 11:55:03AM +0200, Danil Kipnis wrote:
 > > Hallo Doug, Hallo Jason, Hallo Jens, Hallo Greg,
 > >
@@ -77,25 +96,30 @@ On Tue, Jul 09, 2019 at 02:00:36PM +0300, Leon Romanovsky wrote:
 > > RDMA and is not bound to IB (We will evaluate IBTRS with ROCE in the
 > > near future). Do you think it would make sense to rename the driver to
 > > RNBD/RTRS?
-> 
+>
 > It is better to avoid "staging" tree, because it will lack attention of
 > relevant people and your efforts will be lost once you will try to move
 > out of staging. We are all remembering Lustre and don't want to see it
 > again.
+>
+> Back then, you was asked to provide support for performance superiority.
+> Can you please share any numbers with us?
+Hi Leon,
 
-That's up to the developers, that had nothing to do with the fact that
-the code was in the staging tree.  If the Lustre developers had actually
-done the requested work, it would have moved out of the staging tree.
+Thanks for you feedback.
 
-So if these developers are willing to do the work to get something out
-of staging, and into the "real" part of the kernel, I will gladly take
-it.
+For performance numbers,  Danil did intensive benchmark, and create
+some PDF with graphes here:
+https://github.com/ionos-enterprise/ibnbd/tree/master/performance/v4-v5.2-r=
+c3
 
-But I will note that it is almost always easier to just do the work
-ahead of time, and merge it in "correctly" than to go from staging into
-the real part of the kernel.  But it's up to the developers what they
-want to do.
+It includes both single path results also different multipath policy result=
+s.
 
-thanks,
+If you have any question regarding the results, please let us know.
 
-greg k-h
+>
+> Thanks
+
+Thanks
+Jack Wang
