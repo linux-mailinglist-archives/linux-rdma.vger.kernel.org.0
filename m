@@ -2,66 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A6063F02
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 03:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DEA6400F
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 06:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725941AbfGJBv1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jul 2019 21:51:27 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:45100 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725807AbfGJBv1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 9 Jul 2019 21:51:27 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 48FCA33D463FEB7EBE02;
-        Wed, 10 Jul 2019 09:51:24 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.439.0; Wed, 10 Jul 2019
- 09:51:18 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <bmt@zurich.ibm.com>, <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] RDMA/siw: Print error code while kthread_create failed
-Date:   Wed, 10 Jul 2019 09:50:09 +0800
-Message-ID: <20190710015009.57120-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1725912AbfGJEY7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Jul 2019 00:24:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725871AbfGJEY7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Jul 2019 00:24:59 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E40E20838;
+        Wed, 10 Jul 2019 04:24:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562732698;
+        bh=4FdvBTrd6aaIrNkb5WVHmme5xSc6VGxXjEjCFOP6XLY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g5uk2FqiNoyYWFK0+7CgTfGD+95ZstYT7cOUMZ98ezviEt4PmI+nQjvFKhhzZBdQq
+         fIXuoHwz/RcMEzGAoTotMq8ESW/DTaOEaLQCR/AOSG0NekD/dGCBpxHOQPbdDa6Pyn
+         xCQgWfGImwxrhUo/fjBHhSPiFlmOgWKogPELIZjE=
+Date:   Wed, 10 Jul 2019 07:24:53 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Boris Pismenny <borisp@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] net/mlx5e: Return in default case statement in
+ tx_post_resync_params
+Message-ID: <20190710042453.GZ7034@mtr-leonro.mtl.com>
+References: <20190708231154.89969-1-natechancellor@gmail.com>
+ <CAKwvOdkYdNiKorJAKHZ7LTfk9eOpMqe6F4QSmJWQ=-YNuPAyrw@mail.gmail.com>
+ <20190709231024.GA61953@archlinux-threadripper>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190709231024.GA61953@archlinux-threadripper>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In iw_create_tx_threads(), if we failed to create kthread,
-we should print the 'rv', this fix gcc warning:
+On Tue, Jul 09, 2019 at 04:10:24PM -0700, Nathan Chancellor wrote:
+> On Tue, Jul 09, 2019 at 03:44:59PM -0700, Nick Desaulniers wrote:
+> > On Mon, Jul 8, 2019 at 4:13 PM Nathan Chancellor
+> > <natechancellor@gmail.com> wrote:
+> > >
+> > > clang warns:
+> > >
+> > > drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c:251:2:
+> > > warning: variable 'rec_seq_sz' is used uninitialized whenever switch
+> > > default is taken [-Wsometimes-uninitialized]
+> > >         default:
+> > >         ^~~~~~~
+> > > drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c:255:46: note:
+> > > uninitialized use occurs here
+> > >         skip_static_post = !memcmp(rec_seq, &rn_be, rec_seq_sz);
+> > >                                                     ^~~~~~~~~~
+> > > drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c:239:16: note:
+> > > initialize the variable 'rec_seq_sz' to silence this warning
+> > >         u16 rec_seq_sz;
+> > >                       ^
+> > >                        = 0
+> > > 1 warning generated.
+> > >
+> > > This case statement was clearly designed to be one that should not be
+> > > hit during runtime because of the WARN_ON statement so just return early
+> > > to prevent copying uninitialized memory up into rn_be.
+> > >
+> > > Fixes: d2ead1f360e8 ("net/mlx5e: Add kTLS TX HW offload support")
+> > > Link: https://github.com/ClangBuiltLinux/linux/issues/590
+> > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> > > ---
+> > >  drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
+> > > index 3f5f4317a22b..5c08891806f0 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
+> > > @@ -250,6 +250,7 @@ tx_post_resync_params(struct mlx5e_txqsq *sq,
+> > >         }
+> > >         default:
+> > >                 WARN_ON(1);
+> > > +               return;
+> > >         }
+> >
+> > hmm...a switch statement with a single case is a code smell.  How
+> > about a single conditional with early return?  Then the "meat" of the
+> > happy path doesn't need an additional level of indentation.
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+>
+> I assume that the reason for this is there may be other cipher types
+> added in the future? I suppose the maintainers can give more clarity to
+> that.
 
-drivers/infiniband/sw/siw/siw_main.c: In function 'siw_create_tx_threads':
-drivers/infiniband/sw/siw/siw_main.c:91:11: warning:
- variable 'rv' set but not used [-Wunused-but-set-variable]
+Our devices supports extra ciphers, for example TLS_CIPHER_AES_GCM_256.
+So I assume this was the reason for switch<->case, but because such
+implementation doesn't exist in any driver, I recommend to rewrite the
+code to have "if" statement and return early.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/infiniband/sw/siw/siw_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index fd2552a..2a70830d 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -101,7 +101,8 @@ static int siw_create_tx_threads(void)
- 		if (IS_ERR(siw_tx_thread[cpu])) {
- 			rv = PTR_ERR(siw_tx_thread[cpu]);
- 			siw_tx_thread[cpu] = NULL;
--			pr_info("Creating TX thread for CPU %d failed", cpu);
-+			pr_info("Creating TX thread for CPU%d failed %d\n",
-+				cpu, rv);
- 			continue;
- 		}
- 		kthread_bind(siw_tx_thread[cpu], cpu);
--- 
-2.7.4
-
-
+>
+> Furthermore, if they want the switch statements to remain, it looks like
+> fill_static_params_ctx also returns in the default statement so it seems
+> like this is the right fix.
+>
+> Cheers,
+> Nathan
