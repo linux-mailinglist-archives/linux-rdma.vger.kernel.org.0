@@ -2,57 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3529E64606
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 14:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B4A6461B
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 14:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725929AbfGJMKL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Jul 2019 08:10:11 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:31786 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbfGJMKL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 08:10:11 -0400
+        id S1725956AbfGJMUF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Jul 2019 08:20:05 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:18541 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbfGJMUF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 08:20:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1562760610; x=1594296610;
+  t=1562761204; x=1594297204;
   h=subject:to:cc:references:from:message-id:date:
    mime-version:in-reply-to:content-transfer-encoding;
-  bh=keN8EFn+IHg5hXYYMmmGsxMpxiPk60sc+gcoGB+dD7M=;
-  b=NW36NFr+XI9CRjcQrsBKodDRWC9uNX8Q+9E0nbrQAP0qm7xot1lCQaBy
-   QcuOXJPsx8zs2FMbH16NPu2J9RabeZFtoxfHrakuVx9BWEoagn7JdwztR
-   nrlQb37ixVHOHxj5M/wEkN0PtFPtFBJmAf29kcqG2EAHyL+V4iaH7FA4N
-   Q=;
+  bh=RJd+M170NMyymr0uvu5N2zRMOfJPbBOC+IfsjxL4iwQ=;
+  b=hspuyUBoucFwm+W7WPKF7v1qq2RQE8vE61PlOKuQAAboClB8pCZ63WLY
+   yL/lhQqMc6byxkKyVUiKInSYrYo1BO/jYavatv6FmOzUl2p4R2DWqcEnt
+   qAgIaoHix4By2+CNdP5AuT6X2iKNAOy6cI0B6MY4SFzIpEv7lVd96BrJG
+   8=;
 X-IronPort-AV: E=Sophos;i="5.62,474,1554768000"; 
-   d="scan'208";a="815382902"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 10 Jul 2019 12:10:03 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id C5405A2362;
-        Wed, 10 Jul 2019 12:10:02 +0000 (UTC)
+   d="scan'208";a="774007494"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-397e131e.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 10 Jul 2019 12:20:02 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-397e131e.us-west-2.amazon.com (Postfix) with ESMTPS id E2230A2714;
+        Wed, 10 Jul 2019 12:20:01 +0000 (UTC)
 Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 10 Jul 2019 12:10:02 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.115) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 10 Jul 2019 12:20:01 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.88) by
  EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 10 Jul 2019 12:09:58 +0000
-Subject: Re: [PATCH v6 rdma-next 2/6] RDMA/efa: Use the common mmap_xa helpers
+ id 15.0.1367.3; Wed, 10 Jul 2019 12:19:57 +0000
+Subject: Re: [PATCH v6 rdma-next 1/6] RDMA/core: Create mmap database and
+ cookie helper functions
 To:     Michal Kalderon <michal.kalderon@marvell.com>,
         <ariel.elior@marvell.com>, <jgg@ziepe.ca>, <dledford@redhat.com>
 CC:     <linux-rdma@vger.kernel.org>, <davem@davemloft.net>,
         <netdev@vger.kernel.org>
 References: <20190709141735.19193-1-michal.kalderon@marvell.com>
- <20190709141735.19193-3-michal.kalderon@marvell.com>
+ <20190709141735.19193-2-michal.kalderon@marvell.com>
 From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <ba7809c0-5ab1-ac5e-bcf9-57d2930d21ed@amazon.com>
-Date:   Wed, 10 Jul 2019 15:09:52 +0300
+Message-ID: <11697fe6-a9e1-2a3d-a239-eebfe2b6a911@amazon.com>
+Date:   Wed, 10 Jul 2019 15:19:52 +0300
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
  Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190709141735.19193-3-michal.kalderon@marvell.com>
+In-Reply-To: <20190709141735.19193-2-michal.kalderon@marvell.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.115]
-X-ClientProxiedBy: EX13D06UWA001.ant.amazon.com (10.43.160.220) To
+X-Originating-IP: [10.43.161.88]
+X-ClientProxiedBy: EX13D07UWA001.ant.amazon.com (10.43.160.145) To
  EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
@@ -60,11 +61,13 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 09/07/2019 17:17, Michal Kalderon wrote:
-> Remove the functions related to managing the mmap_xa database.
-> This code was copied to the ib_core. Use the common API's instead.
+> Create some common API's for adding entries to a xa_mmap.
+> Searching for an entry and freeing one.
+> 
+> The code was copied from the efa driver almost as is, just renamed
+> function to be generic and not efa specific.
 > 
 > Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
 > Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 
-Thanks Michal,
-Acked-by: Gal Pressman <galpress@amazon.com>
+Reviewed-by: Gal Pressman <galpress@amazon.com>
