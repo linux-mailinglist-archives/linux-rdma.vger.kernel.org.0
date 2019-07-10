@@ -2,89 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8754F63E4A
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 01:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6370A63EC7
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 03:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727136AbfGIXQt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jul 2019 19:16:49 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:32786 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726218AbfGIXQt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jul 2019 19:16:49 -0400
-Received: by mail-pg1-f193.google.com with SMTP id m4so222066pgk.0
-        for <linux-rdma@vger.kernel.org>; Tue, 09 Jul 2019 16:16:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=awoEQfWGapBaj0Tp+LlSdruFxp5j9H2c6orS7eInq0Y=;
-        b=W7h81HWxl41Yr3Uga46NxLjRsvpDv4dSeW445Z0IATWZ1bhCnuHT+wpnkG31Xfbxw/
-         tS6Gm+Qm5Er+pejDfy7o/d/ETBwxS/DGvQwSmRTyYSq3wO/M5XxynHRbB1IYPvDvpn0D
-         dYa0mMCLkFjMerp31H/gmw8kYQQ2oZwb4YHWD59EnYbXANtA3jitC5olNcZ72yKoBcrR
-         5MkfMzwJkR5pFA5/aLonME/d8CqdyrWNYRsvqps7PlrQrJxnHRjdKraxIF9Qf3VrdJm7
-         QDPZ6kZOBIXubDhXQvfbajz6lltXo4ZMZKKwWta5BwX1KqnaM9tcMc/jDqP4uAD4hd0J
-         zHjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=awoEQfWGapBaj0Tp+LlSdruFxp5j9H2c6orS7eInq0Y=;
-        b=Mi1BQFlxdMBV23cuRTEytugGDBWcIBLB36XOH+PYGXj849FLl3w6Nj42gtspgw/q3a
-         t+MjM9TkXExc4uaAnuryu6c4qltErQrYV8RI0B8a9K7zSdluTJi2MuFkFg2XMAoHqdxP
-         Grho56QC1+XwB2fHGnaOAOLr/gM2l+MT8VCKjBi+xYz3wYiLdkHHvyj6LTsE4aplpJIF
-         LFHFpIzvglWQ8kDOCSUeSKzxMcdIUHnyCbHriNHPcm07Xzybxutw1iL36F6jN44shelt
-         2SJ8THORgXkxsQ0uh0+i1+KajxVDP4RGh5R4SIBJ0pR7O5bEknuB8XQkGona0mLeViAP
-         jKtA==
-X-Gm-Message-State: APjAAAUM9Q7/m3CzuSEMfHozLtnVtoT0zWQPWkiC4pneHjk3Y2VWFjip
-        ENTnd6oGVz6KF+kf9Qyu5XmMpkDNE8N8ShSBBNpSkg==
-X-Google-Smtp-Source: APXvYqzuij9P82r9Vkxg6ekoZihPhgvYFuu7uAZGBt/qVM63kAALo74dY78klfYLo/XtbqSd67/EdIjHnt2H8hJ/lDE=
-X-Received: by 2002:a17:90a:bf02:: with SMTP id c2mr2872161pjs.73.1562714208253;
- Tue, 09 Jul 2019 16:16:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190709221312.7089-1-natechancellor@gmail.com> <20190709230552.61842-1-natechancellor@gmail.com>
-In-Reply-To: <20190709230552.61842-1-natechancellor@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 9 Jul 2019 16:16:37 -0700
-Message-ID: <CAKwvOdkBshMOSezpbu_CV6CuK23W42Vgw=dNS1X6aga+KaL_cQ@mail.gmail.com>
-Subject: Re: [PATCH v2] IB/rdmavt: Fix variable shadowing issue in rvt_create_cq
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        id S1726900AbfGJBEr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jul 2019 21:04:47 -0400
+Received: from ozlabs.org ([203.11.71.1]:45661 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726218AbfGJBEr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 9 Jul 2019 21:04:47 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 45k1Dr04l5z9sNf;
+        Wed, 10 Jul 2019 11:04:44 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1562720684;
+        bh=TQR0GcQ36S035CtDAlaimOx2Kh2rr7zoQ9d5zOLqMgw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CR8b8ol+4YW7RxwEBW6ekFtajem3SLsA5zjXGXXNLUbp2ca72zkLQWel/BzO/P60B
+         jWdndw34LXKz2BUe0mVM6VqBPYkKdm36CmHLK1uudxTQ3LxJtHhAgZSybh0fKJ9wEW
+         QNDhBdZoXzpRx8vAo7Si0mBrqxyk3scVDWLDKSgoljqoTI66Oo9jSspquNnsHTTWsW
+         eNzAt1/lr8LByS0ufKBqzgh+FSfncSL6edBvl2WGz0C7he8AKS73BqAlM4V+wRJX0O
+         dpJvkqmegRGgSsaK50OAUqBCZ4tcKmFlLSkWlbpAwdT99ei6tm3zOyey2qrA1lToVz
+         CzIA7A6gQIICA==
+Date:   Wed, 10 Jul 2019 11:04:43 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kamenee Arumugam <kamenee.arumugam@intel.com>,
-        linux-rdma@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mark Zhang <markz@mellanox.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Majd Dibbiny <majd@mellanox.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rdma tree
+Message-ID: <20190710110443.002220c8@canb.auug.org.au>
+In-Reply-To: <20190709124631.GG3436@mellanox.com>
+References: <20190709133019.25a8cd27@canb.auug.org.au>
+        <ba1dd3e2-3091-816c-c308-2f9dd4385596@mellanox.com>
+        <20190709071758.GI7034@mtr-leonro.mtl.com>
+        <20190709124631.GG3436@mellanox.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/hi2rpc5Dd+yZzkhXjD3njhm"; protocol="application/pgp-signature"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 9, 2019 at 4:06 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
-> The function scoped err variable is uninitialized when the flow jumps
-> into the if statement. The if scoped err variable shadows the function
-> scoped err variable, preventing the err assignments within the if
-> statement to be reflected at the function level, which will cause
-> uninitialized use when the goto statements are taken.
->
-> Just remove the if scoped err declaration so that there is only one
-> copy of the err variable for this function.
->
-> Fixes: 239b0e52d8aa ("IB/hfi1: Move rvt_cq_wc struct into uapi directory")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/594
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> ---
->
-> v1 -> v2:
->
-> * Updated the wording of the commit message to use proper terms like
->   scoping and shadowing, thanks to review from Nick (let me know if the
->   wording isn't up to snuff).
+--Sig_/hi2rpc5Dd+yZzkhXjD3njhm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-LGTM thanks for following up w/ v2.
--- 
-Thanks,
-~Nick Desaulniers
+Hi Jason,
+
+On Tue, 9 Jul 2019 12:46:34 +0000 Jason Gunthorpe <jgg@mellanox.com> wrote:
+>
+> It isn't quite enough to make the header compile stand alone, I'm
+> adding this instead.
+>=20
+> From 37c1e072276b03b080eb24ff24c39080aeaf49ef Mon Sep 17 00:00:00 2001
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> Date: Tue, 9 Jul 2019 09:44:47 -0300
+> Subject: [PATCH] RDMA/counters: Make rdma_counter.h compile stand alone
+
+I will apply this to linux-next today and reenable the stand alone
+building for rdma_counter.h
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/hi2rpc5Dd+yZzkhXjD3njhm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl0lOasACgkQAVBC80lX
+0GyBPAf+KwnFQFn+T7H3mJspDCclYT1OTlcBVNEiGGah4HETQyR89ZleqPNOYEAO
+l9q/jxzwae54yR1p1nzO0SRkW7sokBRUMa/scO8TQIWULG5VvTNo9bCgVy+w29HA
+02pCRBtMB2AZfjZYD+uhzJ8K7ToEdJkdFtG3oZ8ZUxn36k9Ay2u8eZ05fE2Zf2Ua
+dXk04FSis6gPXiKqtsgv8lKdswOFXTMvSQ8W4nKSmznkEFcMZmdrv89vE45mHprj
+R4+84/KJCAqxe9t6wvOTJfY7JF71lFYpjO4jA/fRjz9/uBMNDYaqZCbdXfcjM82A
+rt+Z+qoHmAPDFSkKYd3JpkIp4e0nEg==
+=fUKg
+-----END PGP SIGNATURE-----
+
+--Sig_/hi2rpc5Dd+yZzkhXjD3njhm--
