@@ -2,95 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B444564BA5
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 19:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3453564C0C
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 20:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727330AbfGJRsh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Jul 2019 13:48:37 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37551 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727215AbfGJRsh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 13:48:37 -0400
-Received: by mail-wr1-f66.google.com with SMTP id n9so3400979wrr.4;
-        Wed, 10 Jul 2019 10:48:35 -0700 (PDT)
+        id S1727460AbfGJS01 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Jul 2019 14:26:27 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:42627 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727416AbfGJS01 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 14:26:27 -0400
+Received: by mail-qk1-f194.google.com with SMTP id 201so2664466qkm.9
+        for <linux-rdma@vger.kernel.org>; Wed, 10 Jul 2019 11:26:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H8fIYGOnbY2PFzbfnUK43tHMN478L4aKmgR2+ZvIFyU=;
-        b=QrfRaAD2NzhyjaCy8AgC3Q460qjKsJumT+IyPq9HD6bJLGc8cR/rFR15KrTc1yGKpR
-         nIQgJu/aQD+zMUsIh+l36K+BN20OGjBqcnbefTEATYWqi+3gOoGSsdMb8oCa7n79eWZW
-         A6xCyISMInyBuaIYus9jjQ1N/E8FlHuJP110RQ2ZOTYFIB7AXU2xCRtg3qhHQwIeWsOz
-         gLIjZrLaCOnStVswQrfIlquE3e13y05+wsIGDrw9f+Sen/uZHRBS5jlVQROyaYIzAOh/
-         YnN2rzodcHzb6V2OzeQjA5FXlVXPloGSXSCb+q+l7xciqeOm0ASKaOhrYmkoIr5CYqaa
-         vEjQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=g2+6yeYN+3vI29rODOmLOhqDB3fSrrUGXJ7yMKJfWBA=;
+        b=nHTREbiykhoxsXUKbKVDSyCrN9c1C+4e+EPeTqBJfniHHpLXBTAQ5/6FJhrlG0OmNy
+         LDI2ZrHB/YWFEeYno4nlYcqMMaDxG4p4vYKjpcHX4m0wvU+VutA5sAu+1FKcIboPjp41
+         LejgcDFeqRGHyOLQu/6AQE5ocMW13bW9Apj1L5NtqlCf8ihRJuu3a3cuo6+EbaX/DnmJ
+         s3LWaYjPB56WRS2bDdv1euUVESWEecbR6ZQ5ML+GERIcgeHFPSCmtJrvsVHaB7w2/Zdc
+         cduq0R8tdGcJAstHZW75gbZNvWoWVS5SwWgfu5xj0kvrk0lUcMqvbZ71FudVk1n/0vRZ
+         cGOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H8fIYGOnbY2PFzbfnUK43tHMN478L4aKmgR2+ZvIFyU=;
-        b=Wljlys2VQ84/xvKnpols6GM8+HSTTMNKbUuUGGJoFzDW5IqQgVXPwsK+c3xnMIfo3B
-         csjJLs4vi+ltZ2fUZuxSLWfT3YdpfqOV+z41VQsWo5gvMyaHVLsY9jXHpezZ2BGHTD6R
-         8vcjBnygPy3ay+fyFi1dTS9r8TKoanLFhqVObd/9/IW1Q9agnJE4DPXfWzqNahoPR/ky
-         m8a8edTnW3+U6mga5AGhfiRg061xlFCFEwNPmDJVv7PFh8kWJVdFzrHwVG85U2spuRnz
-         hQatxW41hxZAvb2FpvFQIXdcLl4NONGcUTOsct1nxC97gom8RXWyZXXpFOCR5xHZ3nI7
-         xPCQ==
-X-Gm-Message-State: APjAAAUvkm33CowPsZlKtqGjpNz8xJVvNDDzme/MDQbpZKOixu+R7UrD
-        lhw06dZSYQireipH+WP3Pxk=
-X-Google-Smtp-Source: APXvYqyYhmfI3q92p3NtWJwfqP9FVTkXjTcUvhddEfjVskY9dIeDfZmO5T3ij8BrMHQ32adyFskNdA==
-X-Received: by 2002:adf:dc51:: with SMTP id m17mr5346474wrj.256.1562780915011;
-        Wed, 10 Jul 2019 10:48:35 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:4f8:222:2f1b::2])
-        by smtp.gmail.com with ESMTPSA id t1sm3891228wra.74.2019.07.10.10.48.34
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 10 Jul 2019 10:48:34 -0700 (PDT)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] rdma/siw: Use proper enumerated type in map_cqe_status
-Date:   Wed, 10 Jul 2019 10:48:00 -0700
-Message-Id: <20190710174800.34451-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.22.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=g2+6yeYN+3vI29rODOmLOhqDB3fSrrUGXJ7yMKJfWBA=;
+        b=PJDocB4hoQzXQ2z4twxCq4D1Z4oZyvE0n16MNHlNN6WhOhpesA/Wakj3CMgyyHQfhf
+         iOE8uAgcImREP1YmBD4mv9vME28oRBjH7RzGw5baRypAYEVjMTOYBmLQqQZ4D/3Ilem2
+         OuvKPUX2lln9FW9+L1pvdcT74XoZOcauar7HZWryRcM3xbjZcR7I7LyvYxOTjtn5OtEi
+         Fp1D4NOqpORQlbzgqD8rJgT6KBf26LDHRKJ7LDIZjZU+krdaaHC/6cobpbVYD3FgHntU
+         n792tXYOZYXE8dzaF2lZvPVS2OytxDLoUWfmVGogvRxMEkFiZ/ZvdEkS6Mo/aZ7IFEdI
+         jSTg==
+X-Gm-Message-State: APjAAAWlp4vdUtCY9aEYYWUDGhJYPRzi35zntopkNo8RT4S3QmRHN2cS
+        e7IzfO+qqqNLMScWW5YpAe4rNw==
+X-Google-Smtp-Source: APXvYqwfZcwhFY9pJB/xMLdQlIh6iSHBKEb0/JDEEeFmpBZa/4TMmX4e2vCJC6uxFdd/4HVuFcZjsg==
+X-Received: by 2002:a37:4e8f:: with SMTP id c137mr24147053qkb.127.1562783186289;
+        Wed, 10 Jul 2019 11:26:26 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id w16sm1303926qki.36.2019.07.10.11.26.25
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Jul 2019 11:26:25 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hlHIO-00023S-VL; Wed, 10 Jul 2019 15:26:24 -0300
+Date:   Wed, 10 Jul 2019 15:26:24 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] rdma/siw: Use proper enumerated type in map_cqe_status
+Message-ID: <20190710182624.GG4051@ziepe.ca>
+References: <20190710174800.34451-1-natechancellor@gmail.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190710174800.34451-1-natechancellor@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-clang warns several times:
+On Wed, Jul 10, 2019 at 10:48:00AM -0700, Nathan Chancellor wrote:
+> clang warns several times:
+> 
+> drivers/infiniband/sw/siw/siw_cq.c:31:4: warning: implicit conversion
+> from enumeration type 'enum siw_wc_status' to different enumeration type
+> 'enum siw_opcode' [-Wenum-conversion]
+>         { SIW_WC_SUCCESS, IB_WC_SUCCESS },
+>         ~ ^~~~~~~~~~~~~~
+> 
+> Fixes: b0fff7317bb4 ("rdma/siw: completion queue methods")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/596
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  drivers/infiniband/sw/siw/siw_cq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-drivers/infiniband/sw/siw/siw_cq.c:31:4: warning: implicit conversion
-from enumeration type 'enum siw_wc_status' to different enumeration type
-'enum siw_opcode' [-Wenum-conversion]
-        { SIW_WC_SUCCESS, IB_WC_SUCCESS },
-        ~ ^~~~~~~~~~~~~~
+Weird that gcc doesn't warn on this by default..
 
-Fixes: b0fff7317bb4 ("rdma/siw: completion queue methods")
-Link: https://github.com/ClangBuiltLinux/linux/issues/596
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
- drivers/infiniband/sw/siw/siw_cq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied to for-next, thanks
 
-diff --git a/drivers/infiniband/sw/siw/siw_cq.c b/drivers/infiniband/sw/siw/siw_cq.c
-index e2a0ee40d5b5..e381ae9b7d62 100644
---- a/drivers/infiniband/sw/siw/siw_cq.c
-+++ b/drivers/infiniband/sw/siw/siw_cq.c
-@@ -25,7 +25,7 @@ static int map_wc_opcode[SIW_NUM_OPCODES] = {
- };
- 
- static struct {
--	enum siw_opcode siw;
-+	enum siw_wc_status siw;
- 	enum ib_wc_status ib;
- } map_cqe_status[SIW_NUM_WC_STATUS] = {
- 	{ SIW_WC_SUCCESS, IB_WC_SUCCESS },
--- 
-2.22.0
-
+Jason
