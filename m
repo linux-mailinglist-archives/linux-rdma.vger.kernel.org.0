@@ -2,109 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F5064B0E
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 18:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85D964B22
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 19:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727414AbfGJQ6U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Jul 2019 12:58:20 -0400
-Received: from mail-eopbgr50064.outbound.protection.outlook.com ([40.107.5.64]:44252
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727382AbfGJQ6U (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Jul 2019 12:58:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W0m6yUFOKOqoGyRcM8xOVjgI4hx3oHZIYc5m952pjYE=;
- b=QUOBkhuZ0HxL6SsRmIoQ+NPgwiSFdlZS0buiOwbkuII6blSUbjGqtJyUtR8ppxWZeYpPyUXv1N0aKtmbsKfdizZAcYc8ydomIQm3udJeTde9NIfVdaM46vT1tbwS+eHnsqhYDBiM0MTldJTfAIcxZc5CUySskwZAUVk7N9c56JU=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB3152.eurprd05.prod.outlook.com (10.170.237.145) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.20; Wed, 10 Jul 2019 16:58:16 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2052.020; Wed, 10 Jul 2019
- 16:58:16 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        id S1727500AbfGJRCT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Jul 2019 13:02:19 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:44514 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725956AbfGJRCT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 13:02:19 -0400
+Received: by mail-qk1-f195.google.com with SMTP id d79so2433200qke.11
+        for <linux-rdma@vger.kernel.org>; Wed, 10 Jul 2019 10:02:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UWdZTbRnsOfkrH/gcvFB0nmiNziCHTNBkuYxVNvSC3M=;
+        b=KFJ/rKJQwuFx0QxloQPg04YGFgrbogfNGTtlA0hv0mx17Fgjb0tQzdyrvEOK6kRqVz
+         7V+L2vZL5axYHxpKV6n8NETnuOFvx37FqA1KdIe6t63DBxAo22WEW+NpazyKt4W7PU/F
+         YZzlSjdDYOdL3qw4wSMRS05iRP/9F4VmlH4tG7RF5aVEXY+YbdicYqx3DAno8CHzgENV
+         SYKHLnQgX6VR0QBtv7MzB0XcgF6wjcJGjL9NZuoMmbuz/5xH8ETaL64soSZk1BSbyJjw
+         nJGUnB+cpnt2ly4hneJjgHp1qcMCq54f6L/fSPsxE+Z6xDxHcFLHJvjgE17iWIeMLTi3
+         TQBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UWdZTbRnsOfkrH/gcvFB0nmiNziCHTNBkuYxVNvSC3M=;
+        b=oX0Q9g0CKM9kVHRfAnu5xDyBGVycesJeSxOfqMlD5u+mOkXboODdAwuL/3Qic1PVai
+         Mxkr3oYi0v/McY56gwiAbM7cUiZ7GgB7eQKUwZJMYpxfuwlMKRg+EW3dxAfD3LNWrVpU
+         EAhVKSwIq6ngjXNvz4bA37o4p47ncw7IFU2OqkJSC0JRAMAokEdRw/F9qWqIA86jcGlc
+         hX/a2MlbpqCNRSLJiXZWp9Z3CWjhL5YI8icwSQsjtBV+1k9Ef4uxoZ2d1CLxgIwAfaQ4
+         wJPvHAryjzEX3KwOehI5HY5GSwk85aaQozIZfGGcc2g0RC53ikhoYYlDTJCg+XsdwgFJ
+         7mtQ==
+X-Gm-Message-State: APjAAAWGF8uFUdjxr2EyOb3ZxX4B/47gQu/RbnFdlc6cmsqo6wJvr7EU
+        RyxzXhfSVI4dQ/BbLWUam2+UVg==
+X-Google-Smtp-Source: APXvYqwQRvMw1qmf0I+iflnwNBy81igr/lgAIC0lwckLUWcLDJy+FXVNnTw++UOx4c3kGykVJaBT3g==
+X-Received: by 2002:a37:a343:: with SMTP id m64mr24438145qke.75.1562778138173;
+        Wed, 10 Jul 2019 10:02:18 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id r205sm1587546qke.115.2019.07.10.10.02.17
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Jul 2019 10:02:17 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hlFyy-0003xQ-Ve; Wed, 10 Jul 2019 14:02:16 -0300
+Date:   Wed, 10 Jul 2019 14:02:16 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Doug Ledford <dledford@redhat.com>,
-        "Arumugam, Kamenee" <kamenee.arumugam@intel.com>,
-        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] [net-next] IB/hfi1: removed shadowed 'err' variable
-Thread-Topic: [PATCH] [net-next] IB/hfi1: removed shadowed 'err' variable
-Thread-Index: AQHVNyCL8gWLq33pp0CVlUvl0SDSG6bEEgqAgAABBQA=
-Date:   Wed, 10 Jul 2019 16:58:16 +0000
-Message-ID: <20190710165812.GK2887@mellanox.com>
-References: <20190710130802.1878874-1-arnd@arndb.de>
- <32E1700B9017364D9B60AED9960492BC70E0B90C@fmsmsx120.amr.corp.intel.com>
-In-Reply-To: <32E1700B9017364D9B60AED9960492BC70E0B90C@fmsmsx120.amr.corp.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR10CA0012.namprd10.prod.outlook.com
- (2603:10b6:208:120::25) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8ca153bf-a58c-409c-2793-08d70557cd38
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB3152;
-x-ms-traffictypediagnostic: VI1PR05MB3152:
-x-microsoft-antispam-prvs: <VI1PR05MB3152D270FB41D93D84415892CFF00@VI1PR05MB3152.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0094E3478A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(376002)(346002)(39860400002)(136003)(366004)(189003)(199004)(3846002)(478600001)(305945005)(8676002)(6116002)(4744005)(7736002)(71200400001)(36756003)(14454004)(5660300002)(66066001)(1076003)(256004)(71190400001)(6916009)(66556008)(66476007)(66446008)(66946007)(6486002)(52116002)(476003)(6512007)(81156014)(229853002)(2906002)(102836004)(6506007)(386003)(8936002)(81166006)(53936002)(186003)(6246003)(7416002)(4326008)(6436002)(54906003)(316002)(68736007)(25786009)(99286004)(11346002)(446003)(76176011)(33656002)(26005)(2616005)(64756008)(486006)(86362001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3152;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: swVU5bi1dgly2kkI6qO1uGM4LQWT2VRc6oklILB9dvZSZiUfkKTvVfdHXuZiGpU9yAYWSA23crMNtrKNWbrT6AmLEtnBiyNQxzr3NT4n25ef88ZlAeKMZSwope7W3ywX2WqrsOHk86qMMcv1mCQ8yWXP8IsumKv0OBlI4W892ZtMGSYBgzUDSSM5TZGBbhTCRcUvNOyNj98SdwGTV8mGhXV/APFYrNBWG8KQulaodZGUI6/3TgLT1EjQWcvGopFO72Yuyw3OpgFYjmxQ/+HELEZmUtgG+wiBRFR6NedKJBAHQD2mR+kS975EhBO2MiuaZQMZBKvVVGVuOf9MDPqNTJ94+r6SZyjLWjCukSkv/E6Ht7go7opM4/4grgw1+8ajAtwG8vMkkUv/KgAL1YjClQcxZ3GxNCKuHpdb2I4+CrE=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3D54867C670E644EA7BE2CB5090D2E5E@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Kamenee Arumugam <kamenee.arumugam@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2] IB/rdmavt: Fix variable shadowing issue in
+ rvt_create_cq
+Message-ID: <20190710170216.GA15103@ziepe.ca>
+References: <20190709221312.7089-1-natechancellor@gmail.com>
+ <20190709230552.61842-1-natechancellor@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ca153bf-a58c-409c-2793-08d70557cd38
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jul 2019 16:58:16.0686
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3152
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190709230552.61842-1-natechancellor@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 10, 2019 at 04:54:33PM +0000, Marciniszyn, Mike wrote:
-> > Subject: [PATCH] [net-next] IB/hfi1: removed shadowed 'err' variable
-> >=20
-> > I can't think of any reason for the inner variable declaration, so
-> > remove it to avoid the issue.
-> >=20
->=20
-> I agree!
->=20
-> > Fixes: 239b0e52d8aa ("IB/hfi1: Move rvt_cq_wc struct into uapi director=
-y")
->=20
-> Thanks for catching this!
->=20
-> Acked-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+On Tue, Jul 09, 2019 at 04:05:53PM -0700, Nathan Chancellor wrote:
+> clang warns:
+> 
+> drivers/infiniband/sw/rdmavt/cq.c:260:7: warning: variable 'err' is used
+> uninitialized whenever 'if' condition is true
+> [-Wsometimes-uninitialized]
+>                 if (err)
+>                     ^~~
+> drivers/infiniband/sw/rdmavt/cq.c:310:9: note: uninitialized use occurs
+> here
+>         return err;
+>                ^~~
+> drivers/infiniband/sw/rdmavt/cq.c:260:3: note: remove the 'if' if its
+> condition is always false
+>                 if (err)
+>                 ^~~~~~~~
+> drivers/infiniband/sw/rdmavt/cq.c:253:7: warning: variable 'err' is used
+> uninitialized whenever 'if' condition is true
+> [-Wsometimes-uninitialized]
+>                 if (!cq->ip) {
+>                     ^~~~~~~
+> drivers/infiniband/sw/rdmavt/cq.c:310:9: note: uninitialized use occurs
+> here
+>         return err;
+>                ^~~
+> drivers/infiniband/sw/rdmavt/cq.c:253:3: note: remove the 'if' if its
+> condition is always false
+>                 if (!cq->ip) {
+>                 ^~~~~~~~~~~~~~
+> drivers/infiniband/sw/rdmavt/cq.c:211:9: note: initialize the variable
+> 'err' to silence this warning
+>         int err;
+>                ^
+>                 = 0
+> 2 warnings generated.
+> 
+> The function scoped err variable is uninitialized when the flow jumps
+> into the if statement. The if scoped err variable shadows the function
+> scoped err variable, preventing the err assignments within the if
+> statement to be reflected at the function level, which will cause
+> uninitialized use when the goto statements are taken.
+> 
+> Just remove the if scoped err declaration so that there is only one
+> copy of the err variable for this function.
+> 
+> Fixes: 239b0e52d8aa ("IB/hfi1: Move rvt_cq_wc struct into uapi directory")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/594
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Thanks, I'm going to take Nathan's identical patch though, it arrived
-first
+Applied to for-next with Mike's ack
 
+Thanks,
 Jason
