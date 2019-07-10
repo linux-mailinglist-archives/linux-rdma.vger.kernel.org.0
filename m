@@ -2,72 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B4A6461B
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 14:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 611F5646C1
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 15:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725956AbfGJMUF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Jul 2019 08:20:05 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:18541 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726411AbfGJMUF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 08:20:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1562761204; x=1594297204;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=RJd+M170NMyymr0uvu5N2zRMOfJPbBOC+IfsjxL4iwQ=;
-  b=hspuyUBoucFwm+W7WPKF7v1qq2RQE8vE61PlOKuQAAboClB8pCZ63WLY
-   yL/lhQqMc6byxkKyVUiKInSYrYo1BO/jYavatv6FmOzUl2p4R2DWqcEnt
-   qAgIaoHix4By2+CNdP5AuT6X2iKNAOy6cI0B6MY4SFzIpEv7lVd96BrJG
-   8=;
-X-IronPort-AV: E=Sophos;i="5.62,474,1554768000"; 
-   d="scan'208";a="774007494"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-397e131e.us-west-2.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 10 Jul 2019 12:20:02 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2c-397e131e.us-west-2.amazon.com (Postfix) with ESMTPS id E2230A2714;
-        Wed, 10 Jul 2019 12:20:01 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 10 Jul 2019 12:20:01 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.88) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 10 Jul 2019 12:19:57 +0000
-Subject: Re: [PATCH v6 rdma-next 1/6] RDMA/core: Create mmap database and
- cookie helper functions
-To:     Michal Kalderon <michal.kalderon@marvell.com>,
-        <ariel.elior@marvell.com>, <jgg@ziepe.ca>, <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>
-References: <20190709141735.19193-1-michal.kalderon@marvell.com>
- <20190709141735.19193-2-michal.kalderon@marvell.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <11697fe6-a9e1-2a3d-a239-eebfe2b6a911@amazon.com>
-Date:   Wed, 10 Jul 2019 15:19:52 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+        id S1727009AbfGJNGs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Jul 2019 09:06:48 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:38051 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725956AbfGJNGs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 09:06:48 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1M3D7V-1hm2JW3OeL-003g8Z; Wed, 10 Jul 2019 15:06:39 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Tariq Toukan <tariqt@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Boris Pismenny <borisp@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] [net-next] net/mlx5e: avoid uninitialized variable use
+Date:   Wed, 10 Jul 2019 15:06:25 +0200
+Message-Id: <20190710130638.1846846-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-In-Reply-To: <20190709141735.19193-2-michal.kalderon@marvell.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.88]
-X-ClientProxiedBy: EX13D07UWA001.ant.amazon.com (10.43.160.145) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:OagwmaqadWf3LLlQrhjJSVaeSjbS3TmtJcZ3CrnuAX5DMD8ITzm
+ ktDnEOx8Fav3TkBNgGmRuBDQcd+O3uMS/DPb2l7nlkQq5APDDTOu0xhxM/FosKfuEiwQ3FX
+ esCE9oodv/0lVTx8ELKsL5sepuUzlb3hNy3apL9fStL50eDfVCFs7TawPDuvRFZoDD0Hizj
+ i8NqlXEBkMxuxPLUImkdw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oIx5To/fs4o=:lfiVVCDpGws6UHS6mAlZTB
+ jEFGRZpVp2MJvuVB+0yviZaF37r7+EmQuWVHNU1N1L7/TEKw5kfsCgDL/f8LSoii/cFfdVDaA
+ 7ASsNalRexdaRr8JTNNPlJ4ZbpZaP8vjlzUIeQZfGUbL8g7OOKPhHEUi+PNNWYkQkHwcn9eet
+ 56ONXWrSxn4J6vQJhzPysXJHBg5Ek0Ez6EFpL418qaKMF8ML0qbOQa6Vqt1AyHeFzfjnrjyE1
+ xH5Ry0K2d5F95OWo3Xotiq+CTS59LoNXRM/NH8BsU5DIRXcaILh4epHgKBd+DcI3a69V1NuSC
+ RIPyB3YAOVnfijM8JWyjGoMUXtNs7FDImBLCT7dg+nOWLtjd8n6noZUCWSgwmDbsEmIDIM+Jd
+ vJbEhl4WdIVsENmwCl/Nv+/yxooqpizffGwd6P1vB5jC5ru04Ejz4YAQWPFdi/8bjKkasWRPK
+ +oUFIYM78QYVgZqey5MguGbG6C4m6dyxZdv0lVWoQLCjznBCpXPuc1aNTa8pRhkSTtjHcAaf/
+ wa5vFC3AAS21irUkxEPtwpxztJxU8w34SNIRDaTBzMFA0Rg3VAb4Y6ongwXEyof8075tmG794
+ PqRQVYh2sBew32Z+Z85umbqN42uM9QmEv6idXzARiXxM75EnxTyeczOhKOq3gGvhAO0nKxwNn
+ lYyeaXbGC6rUms044EuYhd2QcppJqJ2Pc4jAbg/E1aWhijn+dbShVYLmo1mXA9D/WMcv3cYYl
+ il78i9PP1ey995GCxW3PltDZ64R40fUG1g1VMA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 09/07/2019 17:17, Michal Kalderon wrote:
-> Create some common API's for adding entries to a xa_mmap.
-> Searching for an entry and freeing one.
-> 
-> The code was copied from the efa driver almost as is, just renamed
-> function to be generic and not efa specific.
-> 
-> Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-> Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+clang points to a variable being used in an unexpected
+code path:
 
-Reviewed-by: Gal Pressman <galpress@amazon.com>
+drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c:251:2: warning: variable 'rec_seq_sz' is used uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
+        default:
+        ^~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c:255:46: note: uninitialized use occurs here
+        skip_static_post = !memcmp(rec_seq, &rn_be, rec_seq_sz);
+                                                    ^~~~~~~~~~
+
+From looking at the function logic, it seems that there is no
+sensible way to continue here, so just return early and hope
+for the best.
+
+Fixes: d2ead1f360e8 ("net/mlx5e: Add kTLS TX HW offload support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
+index 3f5f4317a22b..5c08891806f0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
+@@ -250,6 +250,7 @@ tx_post_resync_params(struct mlx5e_txqsq *sq,
+ 	}
+ 	default:
+ 		WARN_ON(1);
++		return;
+ 	}
+ 
+ 	skip_static_post = !memcmp(rec_seq, &rn_be, rec_seq_sz);
+-- 
+2.20.0
+
