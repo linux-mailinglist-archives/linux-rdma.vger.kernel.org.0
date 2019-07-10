@@ -2,87 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 611F5646C1
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 15:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5F9646CD
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 15:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbfGJNGs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Jul 2019 09:06:48 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:38051 "EHLO
+        id S1726184AbfGJNIY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Jul 2019 09:08:24 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:52727 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbfGJNGs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 09:06:48 -0400
+        with ESMTP id S1725956AbfGJNIY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 09:08:24 -0400
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
  (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1M3D7V-1hm2JW3OeL-003g8Z; Wed, 10 Jul 2019 15:06:39 +0200
+ 1MT9zD-1hvHLv1pVf-00UWdp; Wed, 10 Jul 2019 15:08:04 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Tariq Toukan <tariqt@mellanox.com>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Boris Pismenny <borisp@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] [net-next] net/mlx5e: avoid uninitialized variable use
-Date:   Wed, 10 Jul 2019 15:06:25 +0200
-Message-Id: <20190710130638.1846846-1-arnd@arndb.de>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Kamenee Arumugam <kamenee.arumugam@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] [net-next] IB/hfi1: removed shadowed 'err' variable
+Date:   Wed, 10 Jul 2019 15:07:51 +0200
+Message-Id: <20190710130802.1878874-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:OagwmaqadWf3LLlQrhjJSVaeSjbS3TmtJcZ3CrnuAX5DMD8ITzm
- ktDnEOx8Fav3TkBNgGmRuBDQcd+O3uMS/DPb2l7nlkQq5APDDTOu0xhxM/FosKfuEiwQ3FX
- esCE9oodv/0lVTx8ELKsL5sepuUzlb3hNy3apL9fStL50eDfVCFs7TawPDuvRFZoDD0Hizj
- i8NqlXEBkMxuxPLUImkdw==
+X-Provags-ID: V03:K1:KkQQx8DbdUAeEoiZ4dYi+5NkNEKv2SgbU+HJttadWoj6WJJyCL6
+ sIVYpTHXvGhQ/eSTFB5EwdD+YKjqIhJKH2Tw4C7ZvviaK3SfFYkw5tF8WohilXIz6SjQ42U
+ TlAyZSlmLeQ919CjlfeUBjm68ud+/2t2B8L+h8ACU+efARBFY2lVb+VA9jOM4t6swldiVW6
+ RH66axC5tDxrPc5gl30Gw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oIx5To/fs4o=:lfiVVCDpGws6UHS6mAlZTB
- jEFGRZpVp2MJvuVB+0yviZaF37r7+EmQuWVHNU1N1L7/TEKw5kfsCgDL/f8LSoii/cFfdVDaA
- 7ASsNalRexdaRr8JTNNPlJ4ZbpZaP8vjlzUIeQZfGUbL8g7OOKPhHEUi+PNNWYkQkHwcn9eet
- 56ONXWrSxn4J6vQJhzPysXJHBg5Ek0Ez6EFpL418qaKMF8ML0qbOQa6Vqt1AyHeFzfjnrjyE1
- xH5Ry0K2d5F95OWo3Xotiq+CTS59LoNXRM/NH8BsU5DIRXcaILh4epHgKBd+DcI3a69V1NuSC
- RIPyB3YAOVnfijM8JWyjGoMUXtNs7FDImBLCT7dg+nOWLtjd8n6noZUCWSgwmDbsEmIDIM+Jd
- vJbEhl4WdIVsENmwCl/Nv+/yxooqpizffGwd6P1vB5jC5ru04Ejz4YAQWPFdi/8bjKkasWRPK
- +oUFIYM78QYVgZqey5MguGbG6C4m6dyxZdv0lVWoQLCjznBCpXPuc1aNTa8pRhkSTtjHcAaf/
- wa5vFC3AAS21irUkxEPtwpxztJxU8w34SNIRDaTBzMFA0Rg3VAb4Y6ongwXEyof8075tmG794
- PqRQVYh2sBew32Z+Z85umbqN42uM9QmEv6idXzARiXxM75EnxTyeczOhKOq3gGvhAO0nKxwNn
- lYyeaXbGC6rUms044EuYhd2QcppJqJ2Pc4jAbg/E1aWhijn+dbShVYLmo1mXA9D/WMcv3cYYl
- il78i9PP1ey995GCxW3PltDZ64R40fUG1g1VMA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zECRC6kMYdA=:9tSX5Ea1rKb7S91ddPQyVz
+ gg/zpmly8nKnhW6vo+Tzvx62YfsMqTTNtQbjXn3lnxe7mnfGB94kmQ9QjpStn9EAuFL0U2e8+
+ O9qsKHjbM9caD/MoH6rwA1knKrwTrBizT2cd+86qkN65zaXcFMFnt80BeInYyND4Lqss3kQtZ
+ 0xqbZvv/hhT3Vao1zVLwlag/DEdiZDdK8rPhNuLP199HCu4+1H1UlstaZpcRnIlw32qx0uLy7
+ kRMfQsJjclztQ4C7cob9ksh95ZqiXKfaCCE/Y/zfiFUP6mIzGpl66oHjQk8LXZvsXgRWj3zAb
+ hLTm0nwW1OOi4vRqf/JhhQH3PVNVnRQYlOdLg36ynXSgaAgvbR0TbpJDglSwnaQf3W/vs+B5o
+ ZLMRjDzZvlY4Uc0c3Ln3Md76EctKxwa4OuqZ6hRxHBumL+Nscu88XPZfh7aBdDG5D5btUGZfe
+ 8W812KGMYFXclNdPApk9DsS1gfPoZdRQGa9e7Wl7NdQom55Nugj6/qOFlG6ttBwgGCfJcOeZ7
+ ZlcLPp53zzCfS0ZgPy0uPn8PMyNnraOkWp41XI8C31PqNAY67eDy1LhGCSnX91YfzsOJUfiY2
+ YtUyhwYXmxRCyINLWEm/j5kqVNNPYi4Is6ndt0kVcbeqKkTom/OwxPPxpJ37IvIVI61ykF030
+ 0UK6Ce/PPFBrEM+xKEhXduLZTkhWUsbyT0Qq22mJU2NIOWKN5sulHle8xCeaJFslBQ5/gUPNb
+ RxlvgFgvrrPGiD19ERpHdXshpvTFaaM7/M6J9Q==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-clang points to a variable being used in an unexpected
-code path:
+As clang reports, rvt_create_cq() may return an uninitialized
+variable, because the 'err' variable is shadowed by another
+local declaration:
 
-drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c:251:2: warning: variable 'rec_seq_sz' is used uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
-        default:
-        ^~~~~~~
-drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c:255:46: note: uninitialized use occurs here
-        skip_static_post = !memcmp(rec_seq, &rn_be, rec_seq_sz);
-                                                    ^~~~~~~~~~
+drivers/infiniband/sw/rdmavt/cq.c:260:7: warning: variable 'err' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+                if (err)
+                    ^~~
+drivers/infiniband/sw/rdmavt/cq.c:310:9: note: uninitialized use occurs here
+        return err;
+               ^~~
+drivers/infiniband/sw/rdmavt/cq.c:260:3: note: remove the 'if' if its condition is always false
+                if (err)
+                ^~~~~~~~
+drivers/infiniband/sw/rdmavt/cq.c:253:7: warning: variable 'err' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+                if (!cq->ip) {
+                    ^~~~~~~
+drivers/infiniband/sw/rdmavt/cq.c:310:9: note: uninitialized use occurs here
+        return err;
+               ^~~
+drivers/infiniband/sw/rdmavt/cq.c:253:3: note: remove the 'if' if its condition is always false
+                if (!cq->ip) {
+                ^~~~~~~~~~~~~~
+drivers/infiniband/sw/rdmavt/cq.c:211:9: note: initialize the variable 'err' to silence this warning
+        int err;
+               ^
+                = 0
 
-From looking at the function logic, it seems that there is no
-sensible way to continue here, so just return early and hope
-for the best.
+I can't think of any reason for the inner variable declaration, so
+remove it to avoid the issue.
 
-Fixes: d2ead1f360e8 ("net/mlx5e: Add kTLS TX HW offload support")
+Fixes: 239b0e52d8aa ("IB/hfi1: Move rvt_cq_wc struct into uapi directory")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/sw/rdmavt/cq.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-index 3f5f4317a22b..5c08891806f0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-@@ -250,6 +250,7 @@ tx_post_resync_params(struct mlx5e_txqsq *sq,
- 	}
- 	default:
- 		WARN_ON(1);
-+		return;
- 	}
- 
- 	skip_static_post = !memcmp(rec_seq, &rn_be, rec_seq_sz);
+diff --git a/drivers/infiniband/sw/rdmavt/cq.c b/drivers/infiniband/sw/rdmavt/cq.c
+index fac87b13329d..a85571a4cf57 100644
+--- a/drivers/infiniband/sw/rdmavt/cq.c
++++ b/drivers/infiniband/sw/rdmavt/cq.c
+@@ -247,8 +247,6 @@ int rvt_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	 * See rvt_mmap() for details.
+ 	 */
+ 	if (udata && udata->outlen >= sizeof(__u64)) {
+-		int err;
+-
+ 		cq->ip = rvt_create_mmap_info(rdi, sz, udata, u_wc);
+ 		if (!cq->ip) {
+ 			err = -ENOMEM;
 -- 
 2.20.0
 
