@@ -2,61 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2171664470
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 11:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B324664E77
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 00:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbfGJJbp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Jul 2019 05:31:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727064AbfGJJbp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Jul 2019 05:31:45 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C01A020838;
-        Wed, 10 Jul 2019 09:31:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562751104;
-        bh=vy0Mr4Uol6rxl9Ul5HNef3JkghGVfMZzH2ZYvBEDPNM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v3AUO4eYGlcdf0/mRSZxPbZ2Xs+pJEVLj+7ECL67ahfXbHScUC+ItJ93D0h1evUJv
-         X4xwiL//KM6HoaGu1aq2/XwMq3fleodsYyTzpDjOQ25Ie/Vz+b4bt39sAJRumpGlLl
-         PWR5BVOMD3BBROb3E3q6OTjafSO/4YRLR5rXa9ME=
-Date:   Wed, 10 Jul 2019 12:31:39 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Boris Pismenny <borisp@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH net-next v3] net/mlx5e: Convert single case statement
- switch statements into if statements
-Message-ID: <20190710093139.GG7034@mtr-leonro.mtl.com>
-References: <20190710044748.3924-1-natechancellor@gmail.com>
- <20190710060614.6155-1-natechancellor@gmail.com>
+        id S1728016AbfGJWEm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 10 Jul 2019 18:04:42 -0400
+Received: from 50-244-196-250-static.hfc.comcastbusiness.net ([50.244.196.250]:56929
+        "EHLO hometime.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727884AbfGJWE3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 18:04:29 -0400
+X-Greylist: delayed 18198 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jul 2019 18:04:22 EDT
+Received: from [100.120.45.199] ([195.181.172.132]) by hometime.com with Microsoft SMTPSVC(6.0.3790.4675);
+         Wed, 10 Jul 2019 00:08:20 -0500
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190710060614.6155-1-natechancellor@gmail.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Greetings!
+To:     Recipients <fuqingzheng@asia.com>
+From:   fuqingzheng@asia.com
+Date:   Wed, 10 Jul 2019 07:07:46 +0200
+Reply-To: zhengfuqing@yandex.com
+X-Antivirus: Avast (VPS 190709-4, 09-07-2019), Outbound message
+X-Antivirus-Status: Clean
+Message-ID: <SBSthhOjcdEc83LUEM700008fed@hometime.com>
+X-OriginalArrivalTime: 10 Jul 2019 05:08:20.0906 (UTC) FILETIME=[7E20F8A0:01D536DD]
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 09, 2019 at 11:06:15PM -0700, Nathan Chancellor wrote:
-> During the review of commit 1ff2f0fa450e ("net/mlx5e: Return in default
-> case statement in tx_post_resync_params"), Leon and Nick pointed out
-> that the switch statements can be converted to single if statements
-> that return early so that the code is easier to follow.
->
-> Suggested-by: Leon Romanovsky <leon@kernel.org>
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> ---
+Good day,
 
-Thanks again,
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+  I have a mutual business proposal, which refers to the transfer of a large amount of money to an account abroad, with your help as a foreign partner as a beneficiary of the funds. Everything about this transaction will be legal without any bridge of financial authority both in my country and yours. If you are interested and I will give you more information about the project as soon as I receive your positive response.
+
+Best regards,
+
+Executive Director.
+ 
+ICBC. China
+
+---
+Dit e-mailbericht is gecontroleerd op virussen met Avast antivirussoftware.
+https://www.avast.com/antivirus
+
