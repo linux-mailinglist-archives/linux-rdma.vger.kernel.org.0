@@ -2,100 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA7D647A8
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 15:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4965664834
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 16:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727658AbfGJNzV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Jul 2019 09:55:21 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38017 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727552AbfGJNzV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 09:55:21 -0400
-Received: by mail-qk1-f193.google.com with SMTP id a27so1928343qkk.5
-        for <linux-rdma@vger.kernel.org>; Wed, 10 Jul 2019 06:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=i4ZDIYYMpB4xI6JA/ZkqGYa48YuxcupLaiYzrYpkWgE=;
-        b=HnF7coioS3LLcQQ0tjurgS0gTfwhOIoV/gglwo4ytxPOY/5BXXEVZFc1lw8GMb5iIb
-         xHmvHXcBj355CsMazSyAuzO3dO6OOSuUiMc5B/YVDL1605H4nBBQP563jXc/dxxbZKId
-         xvYYJ5ZxXMQmZZHrFkfgC4/5x4zJnhFSMXPDms/xU1x1mdYjG4pQzq1zmVRWxLqDeB3p
-         VyXjA4Oq/FDR4InAQqsbe9Od20VwgaH6r/I+FYCu7UjwhIVjcPlrts7MV9WDG774FJSd
-         LO0/XtgTm6mBO3l2lnm0l/EGT1T5xNYvqOodPYu0sDJR+W7RxqbQlIuZ+wpPu1hEcNiZ
-         IRWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=i4ZDIYYMpB4xI6JA/ZkqGYa48YuxcupLaiYzrYpkWgE=;
-        b=hrnoi1tJ5QQ35YCZSY6IxtRODJIWjyW6pPTLofOgu57mTFh9RLeuK1Lopw5gar1gSu
-         jHxHIjuBpJ1uqRESU2YSfVfXkUNZF3otdVwvgYv6LIu9Pc5wYkbU/CZVaAA+ks/3Kk+2
-         1C7AqrCNCIzJoJY186eE4fYtVpkHoLJDBS2YRGNQfm1Nk1SLizUBXxrpM0FzkUOU3wyZ
-         MOTFCjaQHtmFpJIksHSdAqwWir3J7XJ27fFdpU+GnUeMxHpsEeDijaPVuGh7XulY7Tpf
-         aGLq2XjIuVAm2TDXE8e5O1P/7t3ytf0VUw1g958yW+tofGSu2klIp81/kHhD4/6quPRo
-         hTyg==
-X-Gm-Message-State: APjAAAWkyhi9y0ckAS/adpBgurdWd2OVmNi7YDx8ngHEd+bqH2oowAoY
-        ExopFI3sIEIyt8PsJA73QgAjIbQxfScozg==
-X-Google-Smtp-Source: APXvYqxEsUY67bXs0nm8Rdn9s1J51pbL4D8MfdK1/zrb6tDJPB6XV1iPys5n79RzmSFIQWvAUuFJMw==
-X-Received: by 2002:a37:474b:: with SMTP id u72mr24149105qka.470.1562766920522;
-        Wed, 10 Jul 2019 06:55:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id c82sm1198530qkb.112.2019.07.10.06.55.19
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 10 Jul 2019 06:55:20 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hlD43-00016H-IJ; Wed, 10 Jul 2019 10:55:19 -0300
-Date:   Wed, 10 Jul 2019 10:55:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, axboe@kernel.dk,
-        Christoph Hellwig <hch@infradead.org>, bvanassche@acm.org,
-        dledford@redhat.com, Roman Pen <r.peniaev@gmail.com>,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
- Device (IBNBD)
-Message-ID: <20190710135519.GA4051@ziepe.ca>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
- <a8f2f1d2-b5d9-92fc-40c8-090af0487723@grimberg.me>
+        id S1727505AbfGJOWg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Jul 2019 10:22:36 -0400
+Received: from mail-eopbgr130077.outbound.protection.outlook.com ([40.107.13.77]:36352
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726458AbfGJOWg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Jul 2019 10:22:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WlXGswaZ/5zL+0Zngylny5MOfThBYNZMFUGClamJQc4=;
+ b=IG4lusor55i/60H7144lY0Y1KgEFF1XeCmxOYC33jlWy7TcMJLqDod4vgYMQJt+slR9nnH/hNHNfvUUxL746kRkrvIVPQtv/trtETfY7f1FliWciMFe8dhZxjq0c0erefFqO6cxzIF13JV74e+g0D7NgfL67dzwwWYz9+Z27e3s=
+Received: from DBBPR05MB6283.eurprd05.prod.outlook.com (20.179.40.84) by
+ DBBPR05MB6284.eurprd05.prod.outlook.com (20.179.40.85) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2052.18; Wed, 10 Jul 2019 14:22:32 +0000
+Received: from DBBPR05MB6283.eurprd05.prod.outlook.com
+ ([fe80::2833:939d:2b5c:4a2d]) by DBBPR05MB6283.eurprd05.prod.outlook.com
+ ([fe80::2833:939d:2b5c:4a2d%6]) with mapi id 15.20.2052.020; Wed, 10 Jul 2019
+ 14:22:32 +0000
+From:   Tariq Toukan <tariqt@mellanox.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     Tariq Toukan <tariqt@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Boris Pismenny <borisp@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] [net-next] net/mlx5e: avoid uninitialized variable use
+Thread-Topic: [PATCH] [net-next] net/mlx5e: avoid uninitialized variable use
+Thread-Index: AQHVNyBRVwVX0gwDIkCUs29jQk2dLKbD54yA
+Date:   Wed, 10 Jul 2019 14:22:32 +0000
+Message-ID: <ff44dab2-3955-25a8-e14e-a21e8826010b@mellanox.com>
+References: <20190710130638.1846846-1-arnd@arndb.de>
+In-Reply-To: <20190710130638.1846846-1-arnd@arndb.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM6PR10CA0061.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:209:80::38) To DBBPR05MB6283.eurprd05.prod.outlook.com
+ (2603:10a6:10:c1::20)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=tariqt@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [193.47.165.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 45cf00b1-638f-4c12-ae4c-08d705420ba3
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DBBPR05MB6284;
+x-ms-traffictypediagnostic: DBBPR05MB6284:
+x-microsoft-antispam-prvs: <DBBPR05MB62842A78A3A45EFE4AB4C65BAEF00@DBBPR05MB6284.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 0094E3478A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(199004)(189003)(476003)(486006)(25786009)(446003)(11346002)(8676002)(81156014)(6512007)(68736007)(36756003)(316002)(102836004)(81166006)(2906002)(6246003)(26005)(52116002)(66066001)(4326008)(53546011)(110136005)(54906003)(2616005)(478600001)(8936002)(71190400001)(31686004)(6506007)(99286004)(386003)(186003)(305945005)(53936002)(66946007)(256004)(31696002)(14444005)(86362001)(14454004)(229853002)(5660300002)(66476007)(66556008)(66446008)(64756008)(6116002)(3846002)(6486002)(6436002)(71200400001)(76176011)(7736002);DIR:OUT;SFP:1101;SCL:1;SRVR:DBBPR05MB6284;H:DBBPR05MB6283.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 0NmcMLRHii1F9T4YUCN+jaMAQAYICLL0l71TE9VgYnGhpATwIMrSJjmq7szoZPrKb9X1RQ78lxZp0MSJULyGewYsXSd9e130TMpzR84da6LaQr+eI/Qfm734A3hXYx1fHBeB0cLmDjNAuvwGskG7184piFevST3Fa+R/TjfEVWa1JprAQXxlg+/skRByn30Dbx/Et2URIVwZnJXeutmmduFsoHjOW70ZC3oTxj8V+WYddckGVHTEB9hzjQtIbScE7SMtQhlze58ybgCEYWDGhBt0OJ3k8OUd7jsEAJLnFl0FqXbR9mOMPo0BNN/Yq0v2XanAWdNqr9C5mF2rOGPr7s7TkPUleEaG4SLeKkGmdLrPSB8V4Pso8o24dO8XOpyWwa8xvpCkpYTLnuZF9vuemvp0DmMAKMcj8LSjY7N9PUg=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4102A4EFDB3ED24CA8D41EA9F9003CF4@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a8f2f1d2-b5d9-92fc-40c8-090af0487723@grimberg.me>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45cf00b1-638f-4c12-ae4c-08d705420ba3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jul 2019 14:22:32.0179
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tariqt@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR05MB6284
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 09, 2019 at 12:45:57PM -0700, Sagi Grimberg wrote:
-
-> Another question, from what I understand from the code, the client
-> always rdma_writes data on writes (with imm) from a remote pool of
-> server buffers dedicated to it. Essentially all writes are immediate (no
-> rdma reads ever). How is that different than using send wrs to a set of
-> pre-posted recv buffers (like all others are doing)? Is it faster?
-
-RDMA WRITE only is generally a bit faster, and if you use a buffer
-pool in a smart way it is possible to get very good data packing. With
-SEND the number of recvq entries dictates how big the rx buffer can
-be, or you waste even more memory by using partial send buffers..
-
-A scheme like this seems like a high performance idea, but on the
-other side, I have no idea how you could possibly manage invalidations
-efficiently with a shared RX buffer pool...
-
-The RXer has to push out an invalidation for the shared buffer pool
-MR, but we don't have protocols for partial MR invalidation.
-
-Which is back to my earlier thought that the main reason this perfoms
-better is because it doesn't have synchronous MR invalidation.
-
-Maybe this is fine, but it needs to be made very clear that it uses
-this insecure operating model to get higher performance..
-
-Jason
+DQoNCk9uIDcvMTAvMjAxOSA0OjA2IFBNLCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0KPiBjbGFuZyBw
+b2ludHMgdG8gYSB2YXJpYWJsZSBiZWluZyB1c2VkIGluIGFuIHVuZXhwZWN0ZWQNCj4gY29kZSBw
+YXRoOg0KPiANCj4gZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2Fj
+Y2VsL2t0bHNfdHguYzoyNTE6Mjogd2FybmluZzogdmFyaWFibGUgJ3JlY19zZXFfc3onIGlzIHVz
+ZWQgdW5pbml0aWFsaXplZCB3aGVuZXZlciBzd2l0Y2ggZGVmYXVsdCBpcyB0YWtlbiBbLVdzb21l
+dGltZXMtdW5pbml0aWFsaXplZF0NCj4gICAgICAgICAgZGVmYXVsdDoNCj4gICAgICAgICAgXn5+
+fn5+fg0KPiBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fYWNjZWwv
+a3Rsc190eC5jOjI1NTo0Njogbm90ZTogdW5pbml0aWFsaXplZCB1c2Ugb2NjdXJzIGhlcmUNCj4g
+ICAgICAgICAgc2tpcF9zdGF0aWNfcG9zdCA9ICFtZW1jbXAocmVjX3NlcSwgJnJuX2JlLCByZWNf
+c2VxX3N6KTsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBefn5+fn5+fn5+DQo+IA0KPiAgRnJvbSBsb29raW5nIGF0IHRoZSBmdW5jdGlvbiBs
+b2dpYywgaXQgc2VlbXMgdGhhdCB0aGVyZSBpcyBubw0KPiBzZW5zaWJsZSB3YXkgdG8gY29udGlu
+dWUgaGVyZSwgc28ganVzdCByZXR1cm4gZWFybHkgYW5kIGhvcGUNCj4gZm9yIHRoZSBiZXN0Lg0K
+PiANCj4gRml4ZXM6IGQyZWFkMWYzNjBlOCAoIm5ldC9tbHg1ZTogQWRkIGtUTFMgVFggSFcgb2Zm
+bG9hZCBzdXBwb3J0IikNCj4gU2lnbmVkLW9mZi1ieTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5k
+Yi5kZT4NCj4gLS0tDQo+ICAgZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3Jl
+L2VuX2FjY2VsL2t0bHNfdHguYyB8IDEgKw0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlv
+bigrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21s
+eDUvY29yZS9lbl9hY2NlbC9rdGxzX3R4LmMgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5v
+eC9tbHg1L2NvcmUvZW5fYWNjZWwva3Rsc190eC5jDQo+IGluZGV4IDNmNWY0MzE3YTIyYi4uNWMw
+ODg5MTgwNmYwIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9t
+bHg1L2NvcmUvZW5fYWNjZWwva3Rsc190eC5jDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0
+L21lbGxhbm94L21seDUvY29yZS9lbl9hY2NlbC9rdGxzX3R4LmMNCj4gQEAgLTI1MCw2ICsyNTAs
+NyBAQCB0eF9wb3N0X3Jlc3luY19wYXJhbXMoc3RydWN0IG1seDVlX3R4cXNxICpzcSwNCj4gICAJ
+fQ0KPiAgIAlkZWZhdWx0Og0KPiAgIAkJV0FSTl9PTigxKTsNCj4gKwkJcmV0dXJuOw0KPiAgIAl9
+DQo+ICAgDQo+ICAgCXNraXBfc3RhdGljX3Bvc3QgPSAhbWVtY21wKHJlY19zZXEsICZybl9iZSwg
+cmVjX3NlcV9zeik7DQo+IA0KDQpSZXZpZXdlZC1ieTogVGFyaXEgVG91a2FuIDx0YXJpcXRAbWVs
+bGFub3guY29tPg0KDQpUaGFua3MhDQo=
