@@ -2,109 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CA764C7F
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 21:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48E064C92
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 21:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbfGJTFI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Jul 2019 15:05:08 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:34885 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbfGJTFH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 15:05:07 -0400
-Received: by mail-wr1-f68.google.com with SMTP id y4so3630029wrm.2;
-        Wed, 10 Jul 2019 12:05:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QpN5CHwpzVqFTlvbsrr+q70h5+rFXHepQXU4UwgW+ak=;
-        b=iPGy1Jrmt2gRxtF412YFifkUTN9fK7qKNXNPavYbpyRr3ZQ8LCSQBTWs9DNI5a7qBj
-         1f42sTxWjq7PCoeTG3rGjaBr9eo4WoqGdTuhHO2somI7t8Vspvudrwu57a+wy2GZj+pj
-         AzTFnz6zHKdD0YtnWo+Es9N/jsq+n8rmlNCzLY95WxC6GGA2oxgU/C8fJiBgdlMve0sz
-         DpaSU6WLDNviqMvV4fuUs/PYlL1lu2vxv+l4lRQ5sRszzJvNx38VzxlhJ1EFGAWIpDJZ
-         CWhms+nFQhkNKGPgMNC/NLfDrtcF27mVxrxrXeVLvxXM1UF4HJpDIWbItUV1eUnKzqzQ
-         u8hg==
+        id S1728166AbfGJTLW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Jul 2019 15:11:22 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:35109 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727923AbfGJTLW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 15:11:22 -0400
+Received: by mail-oi1-f196.google.com with SMTP id a127so2523995oii.2;
+        Wed, 10 Jul 2019 12:11:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=QpN5CHwpzVqFTlvbsrr+q70h5+rFXHepQXU4UwgW+ak=;
-        b=X2fqjZ1OEoMsgxFISrQKob9nK4ulby9m/Hm0WOnZdEvGNmZqlLWGNWxkqyDvBB+m96
-         c10EmN0T5/Y5j9uwsXQVTPtw/j8IHjif4P86pDJEJ8Uhnd4v6mLWFjGK0SVi1cc3QEO3
-         Jn/9/9XqW+l0vqNIB6gfs6nwvPOtzSO4YmaFBvTkaEZ+Ly4inWYUDfDK7IVRIsvtSyKt
-         PVHgs7Hk9AV5p2Wu9aE3fS/4yYUiY70/4641Ik9ujR9GAkX7alzxyzCb3VEP04lOjBh0
-         Qn6MRBf5Jo3C5e5tJjDXUSiCCYnbKH6QU3tet8YOVRrSUrj4vksasjViIrIvi55pILnN
-         duqQ==
-X-Gm-Message-State: APjAAAVPb0sB4kJAtTPYLVYY/baXoRlUlXQ79MHMT+pAyhX7Ys524ixa
-        fnNFa14WqXxdXCQLjf0suJMGxIalfxCVxg==
-X-Google-Smtp-Source: APXvYqyLA5hi4rqSfStW9zfDiOCykfIKuz4yycIzUOpHzjDAzYmb0ho1+ZaBmLj+T0pW1JsF0/IzFQ==
-X-Received: by 2002:adf:f904:: with SMTP id b4mr34063592wrr.291.1562785504941;
-        Wed, 10 Jul 2019 12:05:04 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:4f8:222:2f1b::2])
-        by smtp.gmail.com with ESMTPSA id b2sm3727191wrp.72.2019.07.10.12.05.04
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 10 Jul 2019 12:05:04 -0700 (PDT)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] net/mlx5e: Move priv variable into case statement in mlx5e_setup_tc
-Date:   Wed, 10 Jul 2019 12:05:02 -0700
-Message-Id: <20190710190502.104010-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.22.0
+        bh=KQsowOAJzdxitXTMpH3lblSmCoy4bvYraioAuVTlH0E=;
+        b=ZbA5rjTt/8pELagnPJKbktXwu1A0spTpj+EWh0U6z8UhCzmzyd1w+P2O4CQn+0YcBM
+         8WdWmSTYTST6gEHeX8HXk3RPHJl8qh9bEltssWme22uG0cnfwYpaEmJtiq9/OPnXjAMf
+         rAjLDGrIJ5gBSwb/4i3YnxfZCayJ910dtxp8F5g6VF9Cs3t4PMP30LMdqFrJ1nUOSdvP
+         XSUmsqK0KFznmhthc3KFRUcZx/EFlQvVUyg6ALa7x9hx5cHUg/WcqRZ+faXn5utt+ZOl
+         UFT8isp0CBX/YhYRJ85FsGZJ3owygGAIi8l+P2FRg4D7an8DWs0sou4JhjyNce1ghtmC
+         emAQ==
+X-Gm-Message-State: APjAAAVNEBbGyNpQYNf9M/978UTcuB20//Suo3Sg4CJECuzCmxInMLUJ
+        +jlHiMdLC5DsXw3nQ1ScEzM=
+X-Google-Smtp-Source: APXvYqzhi60ZA8pBUMOpA7Q5O/i+52Fm54ujejeqfbXfJdwFQBqaZlwX8Hf448W4XQP0ePWxsPbU8A==
+X-Received: by 2002:aca:3006:: with SMTP id w6mr4486266oiw.5.1562785881206;
+        Wed, 10 Jul 2019 12:11:21 -0700 (PDT)
+Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
+        by smtp.gmail.com with ESMTPSA id o26sm1001874otl.34.2019.07.10.12.11.18
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Jul 2019 12:11:20 -0700 (PDT)
+Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
+ Device (IBNBD)
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, axboe@kernel.dk,
+        Christoph Hellwig <hch@infradead.org>, bvanassche@acm.org,
+        dledford@redhat.com, Roman Pen <r.peniaev@gmail.com>,
+        gregkh@linuxfoundation.org
+References: <20190620150337.7847-1-jinpuwang@gmail.com>
+ <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
+ <a8f2f1d2-b5d9-92fc-40c8-090af0487723@grimberg.me>
+ <20190710135519.GA4051@ziepe.ca>
+ <c49bf227-5274-9d13-deba-a405c75d1358@grimberg.me>
+ <20190710172505.GD4051@ziepe.ca>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <930e0bc6-8c5c-97b5-c500-0bd1706b32c1@grimberg.me>
+Date:   Wed, 10 Jul 2019 12:11:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190710172505.GD4051@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There is an unused variable warning on arm64 defconfig when
-CONFIG_MLX5_ESWITCH is unset:
 
-drivers/net/ethernet/mellanox/mlx5/core/en_main.c:3467:21: warning:
-unused variable 'priv' [-Wunused-variable]
-        struct mlx5e_priv *priv = netdev_priv(dev);
-                           ^
-1 warning generated.
+>> I still do not understand why this should give any notice-able
+>> performance advantage.
+> 
+> Usually omitting invalidations gives a healthy bump.
+> 
+> Also, RDMA WRITE is generally faster than READ at the HW level in
+> various ways.
 
-Move it down into the case statement where it is used.
+Yes, but this should be essentially identical to running nvme-rdma
+with 512KB of immediate-data (the nvme term is in-capsule data).
 
-Fixes: 4e95bc268b91 ("net: flow_offload: add flow_block_cb_setup_simple()")
-Link: https://github.com/ClangBuiltLinux/linux/issues/597
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 6d0ae87c8ded..651eb714eb5b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -3464,15 +3464,16 @@ static LIST_HEAD(mlx5e_block_cb_list);
- static int mlx5e_setup_tc(struct net_device *dev, enum tc_setup_type type,
- 			  void *type_data)
- {
--	struct mlx5e_priv *priv = netdev_priv(dev);
--
- 	switch (type) {
- #ifdef CONFIG_MLX5_ESWITCH
--	case TC_SETUP_BLOCK:
-+	case TC_SETUP_BLOCK: {
-+		struct mlx5e_priv *priv = netdev_priv(dev);
-+
- 		return flow_block_cb_setup_simple(type_data,
- 						  &mlx5e_block_cb_list,
- 						  mlx5e_setup_tc_block_cb,
- 						  priv, priv, true);
-+	}
- #endif
- 	case TC_SETUP_QDISC_MQPRIO:
- 		return mlx5e_setup_tc_mqprio(dev, type_data);
--- 
-2.22.0
-
+In the upstream nvme target we have inline_data_size port attribute
+that is tunable for that (defaults to PAGE_SIZE).
