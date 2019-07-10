@@ -2,123 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF38F640AF
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 07:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5163D640B4
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2019 07:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbfGJF1v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Jul 2019 01:27:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
+        id S1727032AbfGJFae (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Jul 2019 01:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725932AbfGJF1v (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Jul 2019 01:27:51 -0400
-Received: from localhost (unknown [37.142.3.125])
+        id S1725932AbfGJFae (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Jul 2019 01:30:34 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3709A20665;
-        Wed, 10 Jul 2019 05:27:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B078320665;
+        Wed, 10 Jul 2019 05:30:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562736470;
-        bh=7L1PogGoEpn5Kd8aneV8mLaxZSNCTpPPc2eMzKiOKO8=;
+        s=default; t=1562736632;
+        bh=mnyPrRPrkI7hIlrlYJGYMSU3A/sC+kozNSHgEhVuV/o=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fao99MZDLEPFpKcxGrLYlGStt4Rk2hTF5HhRtch8AOxm+g9/mUQ/wO5/Z3zZmnlEr
-         2nNEaOsqg3pxr4Gn58O/0DyiAcnOnw6tThQ6oqSpJEmmdRH3R/v8zLiP0vXX9c+LKb
-         bAriiEFNCFE2oNeIpB5PBb6sdD0EeZuV/ykrW8Xo=
-Date:   Wed, 10 Jul 2019 08:27:46 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "saeedm@dev.mellanox.co.il" <saeedm@dev.mellanox.co.il>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Tariq Toukan <tariqt@mellanox.com>
-Subject: Re: [PATCH mlx5-next 4/5] net/mlx5: Introduce TLS TX offload
- hardware bits and structures
-Message-ID: <20190710052746.GE7034@mtr-leonro.mtl.com>
-References: <20190703073909.14965-1-saeedm@mellanox.com>
- <20190703073909.14965-5-saeedm@mellanox.com>
- <20190703092735.GZ4727@mtr-leonro.mtl.com>
- <CALzJLG-em1w+Lgf2UutbG2Lzq8bx3zUqoLGx26H2_EXOuuk+jg@mail.gmail.com>
- <20190704171519.GE7212@mtr-leonro.mtl.com>
- <CALzJLG--k3z2HuV09tivJuOtU-BFAyCEV1vJbPqYX+OyskggmQ@mail.gmail.com>
- <20190704182113.GG7212@mtr-leonro.mtl.com>
- <c5cc4604e5759e5b8a056a3baefb8a3d3caf4f74.camel@mellanox.com>
+        b=TaJrhTv5tj+C1aAIwl9T2mcPRZpB2q8WigVib+0FvJNei0LY8KxZTp7vUDzhXjCJv
+         tBZy2dXMxQ5E3Lgr4nCbyv61A71PMU8wxZYPbIFVCVsxtWh1hIjxLRzsvAGcJ+Cqdc
+         xK88pHsO23X9IXmOGv0Ry+vAiJdkOemRczm55xn0=
+Date:   Tue, 9 Jul 2019 22:30:30 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        syzbot <syzbot+6f39a9deb697359fe520@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: BUG: MAX_STACK_TRACE_ENTRIES too low! (2)
+Message-ID: <20190710053030.GB2152@sol.localdomain>
+Mail-Followup-To: Bart Van Assche <bvanassche@acm.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        syzbot <syzbot+6f39a9deb697359fe520@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com
+References: <00000000000089a718058556e1d8@google.com>
+ <f71aaffa-ecf4-1def-fe50-91f37c677537@acm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <c5cc4604e5759e5b8a056a3baefb8a3d3caf4f74.camel@mellanox.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f71aaffa-ecf4-1def-fe50-91f37c677537@acm.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 09, 2019 at 08:54:58PM +0000, Saeed Mahameed wrote:
-> On Thu, 2019-07-04 at 21:21 +0300, Leon Romanovsky wrote:
-> > On Thu, Jul 04, 2019 at 01:21:04PM -0400, Saeed Mahameed wrote:
-> > > On Thu, Jul 4, 2019 at 1:15 PM Leon Romanovsky <leon@kernel.org>
-> > > wrote:
-> > > > On Thu, Jul 04, 2019 at 01:06:58PM -0400, Saeed Mahameed wrote:
-> > > > > On Wed, Jul 3, 2019 at 5:27 AM <leon@kernel.org> wrote:
-> > > > > > On Wed, Jul 03, 2019 at 07:39:32AM +0000, Saeed Mahameed
-> > > > > > wrote:
-> > > > > > > From: Eran Ben Elisha <eranbe@mellanox.com>
-> > > > > > >
-> > > > > > > Add TLS offload related IFC structs, layouts and
-> > > > > > > enumerations.
-> > > > > > >
-> > > > > > > Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-> > > > > > > Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
-> > > > > > > Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-> > > > > > > ---
-> > > > > > >  include/linux/mlx5/device.h   |  14 +++++
-> > > > > > >  include/linux/mlx5/mlx5_ifc.h | 104
-> > > > > > > ++++++++++++++++++++++++++++++++--
-> > > > > > >  2 files changed, 114 insertions(+), 4 deletions(-)
-> > > > > >
-> > > > > > <...>
-> > > > > >
-> > > > > > > @@ -2725,7 +2739,8 @@ struct mlx5_ifc_traffic_counter_bits
-> > > > > > > {
-> > > > > > >
-> > > > > > >  struct mlx5_ifc_tisc_bits {
-> > > > > > >       u8         strict_lag_tx_port_affinity[0x1];
-> > > > > > > -     u8         reserved_at_1[0x3];
-> > > > > > > +     u8         tls_en[0x1];
-> > > > > > > +     u8         reserved_at_1[0x2];
-> > > > > >
-> > > > > > It should be reserved_at_2.
-> > > > > >
-> > > > >
-> > > > > it should be at_1.
-> > > >
-> > > > Why? See mlx5_ifc_flow_table_prop_layout_bits,
-> > > > mlx5_ifc_roce_cap_bits, e.t.c.
-> > > >
-> > >
-> > > they are all at_1 .. so i don't really understand what you want
-> > > from me,
-> > > Leon the code is good, please double check you comments..
-> >
-> > Saeed,
-> >
-> > reserved_at_1 should be renamed to be reserved_at_2.
-> >
-> > strict_lag_tx_port_affinity[0x1] + tls_en[0x1] = 0x2
-> >
->
-> Ok now it is clear, i trusted the developer on this one :)
-> anyway you have to admit that you mislead me with your examples:
-> mx5_ifc_flow_table_prop_layout_bits and mlx5_ifc_roce_cap_bits, they
-> both are fine so i though this was fine too.
->
-> I will fix it up.
+[Moved most people to Bcc; syzbot added way too many random people to this.]
 
-Thanks
+Hi Bart,
 
->
-> Thanks,
-> Saeed.
->
-> > > > Thanks
-> > > >
-> > > > > > Thanks
+On Sat, Mar 30, 2019 at 07:17:09PM -0700, Bart Van Assche wrote:
+> On 3/30/19 2:58 PM, syzbot wrote:
+> > syzbot has bisected this bug to:
+> > 
+> > commit 669de8bda87b92ab9a2fc663b3f5743c2ad1ae9f
+> > Author: Bart Van Assche <bvanassche@acm.org>
+> > Date:   Thu Feb 14 23:00:54 2019 +0000
+> > 
+> >      kernel/workqueue: Use dynamic lockdep keys for workqueues
+> > 
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17f1bacd200000
+> > start commit:   0e40da3e Merge tag 'kbuild-fixes-v5.1' of
+> > git://git.kernel..
+> > git tree:       upstream
+> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=1409bacd200000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1009bacd200000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=8dcdce25ea72bedf
+> > dashboard link:
+> > https://syzkaller.appspot.com/bug?extid=6f39a9deb697359fe520
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e1bacd200000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1120fe0f200000
+> > 
+> > Reported-by: syzbot+6f39a9deb697359fe520@syzkaller.appspotmail.com
+> > Fixes: 669de8bda87b ("kernel/workqueue: Use dynamic lockdep keys for
+> > workqueues")
+> > 
+> > For information about bisection process see:
+> > https://goo.gl/tpsmEJ#bisection
+> 
+> Hi Dmitry,
+> 
+> This bisection result doesn't make sense to me. As one can see, the message
+> "BUG: MAX_STACK_TRACE_ENTRIES too low!" does not occur in the console output
+> the above console output URL points at.
+> 
+> Bart.
+
+This is still happening on mainline, and I think this bisection result is
+probably correct.  syzbot did start hitting something different at the very end
+of the bisection ("WARNING: CPU: 0 PID: 9153 at kernel/locking/lockdep.c:747")
+but that seems to be just because your commit had a lot of bugs in it, which had
+to be fixed by later commits.  In particular, the WARNING seems to have been
+fixed by commit 28d49e282665e ("locking/lockdep: Shrink struct lock_class_key").
+
+What seems to still be happening is that the dynamic lockdep keys which you
+added make it possible for an unbounded number of entries to be added to the
+fixed length stack_trace[] array in kernel/locking/lockdep.c.  Hence the "BUG:
+MAX_STACK_TRACE_ENTRIES too low!".
+
+Am I understanding it correctly?  How did you intend this to work?
+
+- Eric
