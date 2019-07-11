@@ -2,132 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B042651B5
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 08:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A36651E1
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 08:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbfGKGJM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Jul 2019 02:09:12 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:36923 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726363AbfGKGJM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 02:09:12 -0400
-Received: by mail-wm1-f65.google.com with SMTP id f17so4399890wme.2;
-        Wed, 10 Jul 2019 23:09:10 -0700 (PDT)
+        id S1727248AbfGKGgN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jul 2019 02:36:13 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:5233 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726997AbfGKGgM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 02:36:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DxU4NDGj7+LedYgqXtgps+S6xA8I2Zxp+hJPjIb5+Zg=;
-        b=UKVvEwgFYOj+lH7N/zeP46wV1RgqVIi/vvhU/8owpDy6XNP21uzoC214VqgueVgQUs
-         KZHg0yUnvxBAwU5azFmxlyvQ/tW/OXJr/rqwEqtqc0Ig1I24GfVq6hSGtfCUj+/LQDyY
-         CmORPvIVodqgaYUKFyX3XmSO3FVpxH0Cc8CIsoQFsas3+4MOcOqjOU36gM9iZ9c6Ft1B
-         5lK9RuF9ckmVxYb4CqoNkwKKt2jH8Kh6pRavTiKIeMs6sqYOvVfKphHhIhSdOl9HdiFr
-         yaJLNsXvzfI+XFX5cNuD6JBiWZ60kiT4+p25QFbBK0ElEdvyu6JX6HwHwDILkEni4KOU
-         bY8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DxU4NDGj7+LedYgqXtgps+S6xA8I2Zxp+hJPjIb5+Zg=;
-        b=R9RLmS69/CUTV6erHnLNpGVs453Eblvym00PF8sWHlKV+4wiCNhGcG3xLNtmKf8zG9
-         eQ2XpdAVyqLVxzgSSg3KAyFHbCjKAIN0ZgjlOq1/oDzPw8hHsHYhh9uemWsGIe6hcANR
-         YpHZiZAGfqux8cHv3rSejzYn6awW6MAv4tx95v/bPxtsdB9gJWHcr2WPB3NWSWAz+leW
-         jX2COA/mRstapyIkwGssvWga8cc/iN4zCVC2MBJHyNPR9uEzZXwX+hI1LmCA6N8fAlLN
-         y//U/PkS4p8roLerguiGwvtM0qYPy1e6QhklRQZRp/xNfPSnGZQUXmXCuq/qBiXE+XO7
-         mfRg==
-X-Gm-Message-State: APjAAAWNn512tYmDUnLVFeTIG5rGmviL6xM1c4EvpnmvKdPP5ANAO1m5
-        X4wTXNvWNG4rNXIjL3BYxQs=
-X-Google-Smtp-Source: APXvYqyf27KFztCU1OEa/3veH1hwu7VtYutQ0u3AzJWujweE+gQJQMZe7zSO2dr8HjtJv3FlTcb3Yw==
-X-Received: by 2002:a05:600c:212:: with SMTP id 18mr1887413wmi.88.1562825349529;
-        Wed, 10 Jul 2019 23:09:09 -0700 (PDT)
-Received: from archlinux-threadripper ([2a01:4f8:222:2f1b::2])
-        by smtp.gmail.com with ESMTPSA id o185sm3828748wmo.45.2019.07.10.23.09.08
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 10 Jul 2019 23:09:08 -0700 (PDT)
-Date:   Wed, 10 Jul 2019 23:09:07 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Saeed Mahameed <saeedm@dev.mellanox.co.il>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] net/mlx5e: Move priv variable into case statement in
- mlx5e_setup_tc
-Message-ID: <20190711060907.GA103505@archlinux-threadripper>
-References: <20190710190502.104010-1-natechancellor@gmail.com>
- <CALzJLG9Aw=sVPDiewHr+4Jiuaod_1q=10vzMzCUVg-rCCXD6cQ@mail.gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1562826971; x=1594362971;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=NVIGbX/snCKITENIgdT1+y01Kao7Uf3nBpPEAeUMyks=;
+  b=l+KhnupJYtICQG1pb+hWrd2Mydkf+Cxs5azm84S4rW8ZJMpqOZmWU4J3
+   LT/XpO19QjsxoQH60l0FHX4XJLHeU+wNIAnJO0vE7f+kplCpfqPYjeDAb
+   Cd4QTyBiugBbo/ZTWIpvIRv0QVhVfa0FhIz4Z/RaNADheAK44ebjHA4U5
+   I=;
+X-IronPort-AV: E=Sophos;i="5.62,476,1554768000"; 
+   d="scan'208";a="410224801"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 11 Jul 2019 06:36:09 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com (Postfix) with ESMTPS id 4165EA21BB;
+        Thu, 11 Jul 2019 06:36:09 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 11 Jul 2019 06:36:08 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.106) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 11 Jul 2019 06:36:05 +0000
+Subject: Re: failed armel build of rdma-core 24.0-1
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Benjamin Drung <benjamin.drung@cloud.ionos.com>
+CC:     <linux-rdma@vger.kernel.org>
+References: <156275862123.1841.4329369138979653018@wuiet.debian.org>
+ <20190710192316.GH4051@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <92fc16f9-d9f2-a05f-b049-137550ab4bfd@amazon.com>
+Date:   Thu, 11 Jul 2019 09:35:59 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALzJLG9Aw=sVPDiewHr+4Jiuaod_1q=10vzMzCUVg-rCCXD6cQ@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190710192316.GH4051@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.106]
+X-ClientProxiedBy: EX13D23UWA004.ant.amazon.com (10.43.160.72) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 10, 2019 at 11:02:00PM -0700, Saeed Mahameed wrote:
-> On Wed, Jul 10, 2019 at 12:05 PM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > There is an unused variable warning on arm64 defconfig when
-> > CONFIG_MLX5_ESWITCH is unset:
-> >
-> > drivers/net/ethernet/mellanox/mlx5/core/en_main.c:3467:21: warning:
-> > unused variable 'priv' [-Wunused-variable]
-> >         struct mlx5e_priv *priv = netdev_priv(dev);
-> >                            ^
-> > 1 warning generated.
-> >
-> > Move it down into the case statement where it is used.
-> >
-> > Fixes: 4e95bc268b91 ("net: flow_offload: add flow_block_cb_setup_simple()")
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/597
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > index 6d0ae87c8ded..651eb714eb5b 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > @@ -3464,15 +3464,16 @@ static LIST_HEAD(mlx5e_block_cb_list);
-> >  static int mlx5e_setup_tc(struct net_device *dev, enum tc_setup_type type,
-> >                           void *type_data)
-> >  {
-> > -       struct mlx5e_priv *priv = netdev_priv(dev);
-> > -
-> >         switch (type) {
-> >  #ifdef CONFIG_MLX5_ESWITCH
-> > -       case TC_SETUP_BLOCK:
-> > +       case TC_SETUP_BLOCK: {
-> > +               struct mlx5e_priv *priv = netdev_priv(dev);
-> > +
-> >                 return flow_block_cb_setup_simple(type_data,
-> >                                                   &mlx5e_block_cb_list,
-> >                                                   mlx5e_setup_tc_block_cb,
-> >                                                   priv, priv, true);
-> > +       }
+On 10/07/2019 22:23, Jason Gunthorpe wrote:
+> Benjamin,
 > 
-> Hi Nathan,
+> Can you confirm that something like this fixes these build problems?
 > 
-> We have another patch internally that fixes this, and it is already
-> queued up in my queue.
-> it works differently as we want to pass priv instead of netdev to
-> mlx5e_setup_tc_mqprio below,
-> which will also solve warning ..
+> diff --git a/debian/rules b/debian/rules
+> index 07c9c145ff090c..facb45170eacfc 100755
+> --- a/debian/rules
+> +++ b/debian/rules
+> @@ -63,6 +63,7 @@ ifneq (,$(filter-out $(COHERENT_DMA_ARCHS),$(DEB_HOST_ARCH)))
+>  		test -e debian/$$package.install.backup || cp debian/$$package.install debian/$$package.install.backup; \
+>  	done
+>  	sed -i '/mlx[45]/d' debian/ibverbs-providers.install debian/libibverbs-dev.install debian/rdma-core.install
+> +	sed -i '/efa/d' debian/ibverbs-providers.install debian/libibverbs-dev.install debian/rdma-core.install
+>  endif
+>  	DESTDIR=$(CURDIR)/debian/tmp ninja -C build-deb install
+>  
 > 
-> So i would like to submit that patch if it is ok with you ?
+> 
+> On Wed, Jul 10, 2019 at 11:37:01AM -0000, Debian buildds wrote:
+>>  * Source package: rdma-core
+>>  * Version: 24.0-1
+>>  * Architecture: armel
+>>  * State: failed
+>>  * Suite: sid
+>>  * Builder: antheil.debian.org
+>>  * Build log: https://buildd.debian.org/status/fetch.php?pkg=rdma-core&arch=armel&ver=24.0-1&stamp=1562758620&file=log
+>>
+>> Please note that these notifications do not necessarily mean bug reports
+>> in your package but could also be caused by other packages, temporary
+>> uninstallabilities and arch-specific breakages.  A look at the build log
+>> despite this disclaimer would be appreciated however.
 
-Hi Saeed,
-
-Whatever works best for you, I just care that the warning gets fixed,
-not how it is done :) I wouldn't mind being put on CC so I can pick it
-up for my local tests.
-
-Thanks for the follow up!
-Nathan
+Was this error supposed to be reported by travis as well? I'm pretty sure all
+tests passed.
