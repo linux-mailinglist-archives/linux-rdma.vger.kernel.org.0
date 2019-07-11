@@ -2,77 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3440565E60
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 19:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D72565EA0
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 19:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728549AbfGKRT3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Jul 2019 13:19:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726213AbfGKRT3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Jul 2019 13:19:29 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B29D20863;
-        Thu, 11 Jul 2019 17:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562865568;
-        bh=cfGwtCgFYXuc/G/uPXo6y9PwKJja4bwjO41HTbLMF20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N0bwNm0m2LjHeXBSNu2GXD9Bfu8I/5ejXNGi6Tt3uN8haPGefjtBeIvdLVgcLzyiH
-         Ee//Lj52pbUQYqgrsSb9qaYAEuyoG2iv9OkmR2HyAALsJAY2syLtNp7zAtE+G177Th
-         l3lAPVlw96ZqqbPdHnEOd+jrZ0xGpby3f+XNSpeQ=
-Date:   Thu, 11 Jul 2019 20:19:22 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Yamin Friedman <yaminf@mellanox.com>
-Subject: Re: [PATCH rdma-next] lib/dim: Prevent overflow in calculation of
- ratio statistics
-Message-ID: <20190711171922.GJ23598@mtr-leonro.mtl.com>
-References: <20190711153118.14635-1-leon@kernel.org>
- <20190711154324.GK25821@mellanox.com>
- <20190711154734.GI23598@mtr-leonro.mtl.com>
- <20190711161103.GL25821@mellanox.com>
+        id S1728443AbfGKRaf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jul 2019 13:30:35 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:35647 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728413AbfGKRaf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 13:30:35 -0400
+Received: by mail-wr1-f67.google.com with SMTP id y4so7201626wrm.2;
+        Thu, 11 Jul 2019 10:30:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=U3b0G1E1maoK6A4e9Ca/0e/KTMO66Xm7oZqBqZ5gCxk=;
+        b=TKv2sJnddYV0SAh+0b25B0nWCvHDEp0nnayzul0ypf+gYb78r4UALyCCXmyeh68S/m
+         sjP6uWt6XmfRcwXRmgGIaKwlUSAZzvz53a63//yW2whDjrf/6C+me2WXbjMrlmMN4Bjb
+         I9Z1gXRMyU9ijAsFrOosCFBUaSdU+6VVK5lVAPDwWzpPQDqqDeFIsQPB3tmmooIh9ba6
+         Z0kn2DXQm4CVS+vfU0zlPIfnfjTBdUJgFMfkb+wqXBKTEDtzl9x1bcnE24sJaHK3vjtf
+         DLeXLpYO0DrHvwK6apIx/3ugeAzRva63nTwZDd6HrqHMQJ/VZAFvC3GzlNc1w0z5mKTh
+         kmRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=U3b0G1E1maoK6A4e9Ca/0e/KTMO66Xm7oZqBqZ5gCxk=;
+        b=YPbYacoRBN3GKXlHPvhivqhhyJoGQVIL/ZFHFw2+086hLDYlh+zfjn37u1rZTGlpgy
+         Tg3l+qn5jz9eLfmvXXjnAFEqLeXYjUZFwcb9CCcdYMAgBi5XmqnC5Qa8dTh+YuT3qztM
+         aaNKlpb1aBOH2+WXqQggVEX7z+IjRpOvHgPnVTyFxZPaNhyzHSGONQYZpK3N7a6/fuGR
+         mRYuYc93j0FSykrcD8uT79PHiDmfhb9OVY1t7kIGRKxk/FeQeWGL1pmGkgMNmasi7nIS
+         3rNFx8kC3P+wZE9DpExBOLru94uFT9x6CWISRe7GGcbIP6FecAExX/+1L0uA7Wfc5/TY
+         rFwg==
+X-Gm-Message-State: APjAAAWpxj1e4tMdDkKw/KbvydW2AQHo8oP2OyjPS3ENqHKcQ3DAhEul
+        5SkP0eXhAne70PgqBxjnGa4=
+X-Google-Smtp-Source: APXvYqzo3byxyxCxShNQCAttoD2gEStU3rn0zpqaJflGhfsxBtoj91oh78aSJNGNESC/oRF2RhYVPg==
+X-Received: by 2002:adf:90e7:: with SMTP id i94mr5935660wri.224.1562866232510;
+        Thu, 11 Jul 2019 10:30:32 -0700 (PDT)
+Received: from archlinux-threadripper ([2a01:4f8:222:2f1b::2])
+        by smtp.gmail.com with ESMTPSA id y7sm4588363wmm.19.2019.07.11.10.30.31
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 11 Jul 2019 10:30:31 -0700 (PDT)
+Date:   Thu, 11 Jul 2019 10:30:30 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Bernard Metzler <BMT@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] rdma/siw: Use proper enumerated type in map_cqe_status
+Message-ID: <20190711173030.GA844@archlinux-threadripper>
+References: <20190710174800.34451-1-natechancellor@gmail.com>
+ <OFE93E0F86.E35CE856-ON00258434.002A83CE-00258434.002A83DF@notes.na.collabserv.com>
+ <20190711081434.GA86557@archlinux-threadripper>
+ <20190711133915.GA25807@ziepe.ca>
+ <CAKwvOdnHz3uH4ZM20LGQJ3FYhLQQUYn4Lg0B-YMr7Y1L66TAsA@mail.gmail.com>
+ <20190711171808.GF25807@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190711161103.GL25821@mellanox.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <20190711171808.GF25807@ziepe.ca>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 11, 2019 at 04:11:07PM +0000, Jason Gunthorpe wrote:
-> On Thu, Jul 11, 2019 at 06:47:34PM +0300, Leon Romanovsky wrote:
-> > > > diff --git a/lib/dim/dim.c b/lib/dim/dim.c
-> > > > index 439d641ec796..38045d6d0538 100644
-> > > > +++ b/lib/dim/dim.c
-> > > > @@ -74,8 +74,8 @@ void dim_calc_stats(struct dim_sample *start, struct dim_sample *end,
-> > > >  					delta_us);
-> > > >  	curr_stats->cpms = DIV_ROUND_UP(ncomps * USEC_PER_MSEC, delta_us);
-> > > >  	if (curr_stats->epms != 0)
-> > > > -		curr_stats->cpe_ratio =
-> > > > -				(curr_stats->cpms * 100) / curr_stats->epms;
-> > > > +		curr_stats->cpe_ratio = DIV_ROUND_DOWN_ULL(
-> > > > +			curr_stats->cpms * 100, curr_stats->epms);
+On Thu, Jul 11, 2019 at 02:18:08PM -0300, Jason Gunthorpe wrote:
+> On Thu, Jul 11, 2019 at 10:16:44AM -0700, Nick Desaulniers wrote:
+> > On Thu, Jul 11, 2019 at 6:39 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 > > >
-> > > This will still potentially overfow the 'int' for cpe_ratio if epms <
-> > > 100 ?
-> >
-> > I assumed that assignment to "unsigned long long" will do the trick.
-> > https://elixir.bootlin.com/linux/latest/source/include/linux/kernel.h#L94
->
-> That only protects the multiply, the result of DIV_ROUND_DOWN_ULL is
-> casted to int.
-
-It is ok, the result is "int" and it will be small, 100 in multiply
-represents percentage.
-
-Thanks
-
->
+> > > On Thu, Jul 11, 2019 at 01:14:34AM -0700, Nathan Chancellor wrote:
+> > > > Maybe time to start plumbing Clang into your test flow until it can get
+> > > > intergrated with more CI setups? :) It can catch some pretty dodgy
+> > > > behavior that GCC doesn't:
+> > >
+> > > I keep asking how to use clang to build the kernel and last I was told
+> > > it still wasn't ready..
+> > >
+> > > Is it ready now? Is there some flow that will compile with clang
+> > > warning free, on any arch? (at least the portion of the kernel I check)
+> > 
+> > $ make CC=clang ...
+> > 
+> > Let us know if you find something we haven't already.
+> > https://clangbuiltlinux.github.io/
+> > https://github.com/ClangBuiltLinux/linux/issues
+> 
+> What clang version?
+> 
 > Jason
+
+You'll need clang-9 for x86 because of the asm-goto requirement (or a
+selective set of reverts for clang-8) but everything else should be
+good with clang-8:
+
+https://travis-ci.com/ClangBuiltLinux/continuous-integration/builds/118745131
+
+We wrote a Python script that builds an LLVM 9 toolchain suitable for
+kernel development that is self contained (doesn't install anything to
+your system):
+
+https://github.com/ClangBuiltLinux/tc-build
+
+Let me know if there are any issues with it if you give it a go, I've
+already fixed one from Thomas Gleixner:
+
+https://lore.kernel.org/lkml/alpine.DEB.2.21.1906262140570.32342@nanos.tec.linutronix.de/
+
+Cheers,
+Nathan
