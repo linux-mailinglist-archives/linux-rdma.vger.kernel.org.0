@@ -2,101 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B45D652F2
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 10:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC936530C
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 10:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbfGKIOk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Jul 2019 04:14:40 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38410 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728237AbfGKIOj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 04:14:39 -0400
-Received: by mail-wr1-f66.google.com with SMTP id g17so5216391wrr.5;
-        Thu, 11 Jul 2019 01:14:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EBNvFukZ7/NgqmL3xXApO1AFyylxTtfZ1K1rGvSfK44=;
-        b=prH0vyvv4OLNS3zAqZHn3+FYdgW9OjZ+S4TdQTdJkDjAnzMgDy1hx0JGJPrLdhQ9CI
-         V2r9Y2mfQbNoxYPE66LHkFXmvI0Z3++qwhCYtAxfT001nWzpaVKBw28fZlnXoJkUBdv/
-         wWVZvg18ANbFwmrMqej6a24AtPfFnboO4CJlpIrc3FKJgL0EGc7zYJE4LsnHtww82HMt
-         whRYv2gXXhU293VdSfYcL6PIDjjkuYC5JX9oCYkM+x/pwHGJnuweRl0//W4ZBS+Kz8ZK
-         aLtOaA7J62q2ctU79b7mC+pa6mkfSF49Wxd3wfFxaIbHg9LXXRe0bD8rNsG/hDADlCPH
-         GMTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EBNvFukZ7/NgqmL3xXApO1AFyylxTtfZ1K1rGvSfK44=;
-        b=O/wLGAOgyBQ+i/qRZwpyige7++dgzq2w6LcGI3+z0xw0hzKwc/Y3n8uj4eX0fYHvGC
-         li3aPB0W9sjVUn7A6xdsy9uctCFy2xdaIwtCcSR+gBaXj2b6Kl/H2KTjlTjEXUHEYc5n
-         XJp7DiSC3Pgi/GyvUBU4avtieHz2y6S0vayUT/Ybpx0eVN6IFh/hBy6PbSL8fq9278th
-         0mHKOwT/mNlK1SrW13ayGd2Nku44lerv1n+VufeOwenw82mN1BRAwLThAyues7xRbjdX
-         L81GAMlyYjuh3LupDQjAlXr0pKZ9kSZXdPsGUOZz0MzdTxY79GsDqeu8Rnj2GvH+x0pE
-         GwiQ==
-X-Gm-Message-State: APjAAAVSU6e5KYTtYVqYN8NRuDxrB6UFeZKd7qaJ1BRrnkZzqQTQpu7h
-        h3ZTaDs0oBzci7wviGmwumM=
-X-Google-Smtp-Source: APXvYqzx6C/agFrZs2zKfV/BzdVwHzifwsFzqKKkGP1IEhFxy4LuEztUi6hwMa9M2mK74Kh/v25u+g==
-X-Received: by 2002:adf:ebcd:: with SMTP id v13mr3314591wrn.263.1562832877025;
-        Thu, 11 Jul 2019 01:14:37 -0700 (PDT)
-Received: from archlinux-threadripper ([2a01:4f8:222:2f1b::2])
-        by smtp.gmail.com with ESMTPSA id x16sm3143957wmj.4.2019.07.11.01.14.35
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 11 Jul 2019 01:14:35 -0700 (PDT)
-Date:   Thu, 11 Jul 2019 01:14:34 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] rdma/siw: Use proper enumerated type in map_cqe_status
-Message-ID: <20190711081434.GA86557@archlinux-threadripper>
-References: <20190710174800.34451-1-natechancellor@gmail.com>
- <OFE93E0F86.E35CE856-ON00258434.002A83CE-00258434.002A83DF@notes.na.collabserv.com>
+        id S1728144AbfGKIW3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 11 Jul 2019 04:22:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48770 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725963AbfGKIW2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 11 Jul 2019 04:22:28 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6B8MQAU128082
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 04:22:27 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.113])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tp0q3261n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 04:22:26 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Thu, 11 Jul 2019 08:22:16 -0000
+Received: from us1b3-smtp06.a3dr.sjc01.isc4sb.com (10.122.203.184)
+        by smtp.notes.na.collabserv.com (10.122.47.56) with smtp.notes.na.collabserv.com ESMTP;
+        Thu, 11 Jul 2019 08:22:11 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp06.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019071108221042-166196 ;
+          Thu, 11 Jul 2019 08:22:10 +0000 
+In-Reply-To: <20190711071213.57880-1-yuehaibing@huawei.com>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "YueHaibing" <yuehaibing@huawei.com>
+Cc:     <dledford@redhat.com>, <jgg@ziepe.ca>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
+Date:   Thu, 11 Jul 2019 08:22:10 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OFE93E0F86.E35CE856-ON00258434.002A83CE-00258434.002A83DF@notes.na.collabserv.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190711071213.57880-1-yuehaibing@huawei.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-KeepSent: 7C58670D:824A65B3-00258434:002DF9B8;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 33595
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19071108-1529-0000-0000-000006734F2D
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.026953
+X-IBM-SpamModules-Versions: BY=3.00011408; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01230538; UDB=6.00648159; IPR=6.01011814;
+ BA=6.00006354; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
+ ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00027677; XFM=3.00000015;
+ UTC=2019-07-11 08:22:14
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-07-11 03:28:48 - 6.00010150
+x-cbparentid: 19071108-1530-0000-0000-0000737676C2
+Message-Id: <OF7C58670D.824A65B3-ON00258434.002DF9B8-00258434.002DF9C1@notes.na.collabserv.com>
+Subject: Re:  [PATCH -next] rdma/siw: remove set but not used variable 's'
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-11_01:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Bernard,
+-----"YueHaibing" <yuehaibing@huawei.com> wrote: -----
 
-On Thu, Jul 11, 2019 at 07:44:22AM +0000, Bernard Metzler wrote:
-> Nathan, thanks very much. That's correct.
+>To: <bmt@zurich.ibm.com>, <dledford@redhat.com>, <jgg@ziepe.ca>
+>From: "YueHaibing" <yuehaibing@huawei.com>
+>Date: 07/11/2019 09:13AM
+>Cc: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+>"YueHaibing" <yuehaibing@huawei.com>
+>Subject: [EXTERNAL] [PATCH -next] rdma/siw: remove set but not used
+>variable 's'
+>
+>Fixes gcc '-Wunused-but-set-variable' warning:
+>
+>drivers/infiniband/sw/siw/siw_cm.c: In function
+>siw_cm_llp_state_change:
+>drivers/infiniband/sw/siw/siw_cm.c:1278:17: warning: variable s set
+>but not used [-Wunused-but-set-variable]
+>
+>Reported-by: Hulk Robot <hulkci@huawei.com>
+>Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>---
+> drivers/infiniband/sw/siw/siw_cm.c | 3 ---
+> 1 file changed, 3 deletions(-)
+>
+>diff --git a/drivers/infiniband/sw/siw/siw_cm.c
+>b/drivers/infiniband/sw/siw/siw_cm.c
+>index c883bf5..7d87a78 100644
+>--- a/drivers/infiniband/sw/siw/siw_cm.c
+>+++ b/drivers/infiniband/sw/siw/siw_cm.c
+>@@ -1275,7 +1275,6 @@ static void siw_cm_llp_error_report(struct sock
+>*sk)
+> static void siw_cm_llp_state_change(struct sock *sk)
+> {
+> 	struct siw_cep *cep;
+>-	struct socket *s;
+> 	void (*orig_state_change)(struct sock *s);
+> 
+> 	read_lock(&sk->sk_callback_lock);
+>@@ -1288,8 +1287,6 @@ static void siw_cm_llp_state_change(struct sock
+>*sk)
+> 	}
+> 	orig_state_change = cep->sk_state_change;
+> 
+>-	s = sk->sk_socket;
+>-
+> 	siw_dbg_cep(cep, "state: %d\n", cep->state);
+> 
+> 	switch (sk->sk_state) {
+>-- 
+>2.7.4
+>
+>
+>
 
-Thanks for the confirmation that the fix was correct.
+Another bad leftover from excessive debugging times...
 
-> I don't know how this could pass w/o warning.
+Thanks alot Yue!
+Bernard.
 
-Unfortunately, it appears that GCC only warns when two different
-enumerated types are directly compared, not when they are implicitly
-converted between.
-
-https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wenum-compare
-
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=78736
-
-If it did, I wouldn't have fixed as many warnings as I have.
-
-https://github.com/ClangBuiltLinux/linux/issues?q=is%3Aissue+is%3Aclosed+label%3A-Wenum-conversion
-
-Maybe time to start plumbing Clang into your test flow until it can get
-intergrated with more CI setups? :) It can catch some pretty dodgy
-behavior that GCC doesn't:
-
-https://github.com/ClangBuiltLinux/linux/issues/390
-
-https://github.com/ClangBuiltLinux/linux/issues/544
-
-Kernel CI has added support for it (although they don't email the
-authors of patches individually) and 0day is currently working on it.
-Feel free to reach out if you decide to explore it, I'm always happy
-to help.
-
-Cheers,
-Nathan
