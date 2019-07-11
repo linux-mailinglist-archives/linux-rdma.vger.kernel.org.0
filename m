@@ -2,141 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D3165B96
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 18:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992D265B47
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 18:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbfGKQeT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Jul 2019 12:34:19 -0400
-Received: from gateway24.websitewelcome.com ([192.185.51.251]:35121 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726213AbfGKQeT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Jul 2019 12:34:19 -0400
-X-Greylist: delayed 1318 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Jul 2019 12:34:18 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 4158DBD99
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 11:12:20 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id lbgChk4g290onlbgChf4w4; Thu, 11 Jul 2019 11:12:20 -0500
-X-Authority-Reason: nr=8
-Received: from cablelink-187-160-61-213.pcs.intercable.net ([187.160.61.213]:11787 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1hlbgB-002TCu-9Q; Thu, 11 Jul 2019 11:12:19 -0500
-Date:   Thu, 11 Jul 2019 11:12:18 -0500
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] RDMA/siw: Mark expected switch fall-throughs
-Message-ID: <20190711161218.GA4989@embeddedor>
+        id S1728178AbfGKQNp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jul 2019 12:13:45 -0400
+Received: from mail-pf1-f180.google.com ([209.85.210.180]:42195 "EHLO
+        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727612AbfGKQNo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 12:13:44 -0400
+Received: by mail-pf1-f180.google.com with SMTP id q10so2971929pff.9
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 09:13:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cL/X5NWFWdpnoYati0e4ynEWFOKwvnTNd7do68BUFSI=;
+        b=IPQdPzoK1xVzj8Yk3AhpYboRDlLmFDXMKHTjb5PJXxLAzKbuEmXcOmN5czhqSYlyfr
+         UqUgyfysflLUbd8bx14dbsR072Hz748tlgkAPpl0bGk8PVY7LljXp9N9YIQrwl6BOcuQ
+         fMrNLD8LTHgMYwo80YU6kQH/XLqCST3accTh9jKj7I9IQNofMCUYIB3p9UBUhBK4eYIz
+         MQpNvBksrb/eLX/DQfp/40XDWrZqnkd0uZQjdCkiTPmHUzXmDA9xG1F/h7yo11qDNXI5
+         U/5QBmS4iSba955VOHqUf9VgSy0Q09ooKiPuq8fdv6odGmyqmzZtgiJhtwpEUVnESv2+
+         pl/w==
+X-Gm-Message-State: APjAAAWunOV8ospm+mkB9j7LdkSmYaFewFPOIISj+iTzwOSyL2lgjUxG
+        KPBXhUsM5RA4pCC2F3/YlsC6YnFY
+X-Google-Smtp-Source: APXvYqyovg84n56ALe90eTRcaqvHSGjGsiS1t6ROazoXWQqOeQYdKCgb+X3Tp9zfcZNO+iOAcaLIeA==
+X-Received: by 2002:a63:c508:: with SMTP id f8mr5384491pgd.48.1562861623638;
+        Thu, 11 Jul 2019 09:13:43 -0700 (PDT)
+Received: from ?IPv6:2601:647:4800:973f:10a0:43d6:25f7:7bc3? ([2601:647:4800:973f:10a0:43d6:25f7:7bc3])
+        by smtp.gmail.com with ESMTPSA id a10sm5093314pgq.2.2019.07.11.09.13.42
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 11 Jul 2019 09:13:42 -0700 (PDT)
+Subject: Re: regression: nvme rdma with bnxt_re0 broken
+To:     Yi Zhang <yi.zhang@redhat.com>, linux-nvme@lists.infradead.org
+Cc:     danielj@mellanox.com, parav@mellanox.com,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <619411460.27128070.1562838433020.JavaMail.zimbra@redhat.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <648e86db-864f-9eb1-5275-564a1ef535fb@grimberg.me>
+Date:   Thu, 11 Jul 2019 09:13:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.160.61.213
-X-Source-L: No
-X-Exim-ID: 1hlbgB-002TCu-9Q
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: cablelink-187-160-61-213.pcs.intercable.net (embeddedor) [187.160.61.213]:11787
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+In-Reply-To: <619411460.27128070.1562838433020.JavaMail.zimbra@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In preparation to enabling -Wimplicit-fallthrough, mark switch
-cases where we are expecting to fall through.
+CC linux-rdma
 
-This patch fixes the following warnings:
-
-drivers/infiniband/sw/siw/siw_qp_rx.c: In function ‘siw_rdmap_complete’:
-drivers/infiniband/sw/siw/siw_qp_rx.c:1214:18: warning: this statement may fall through [-Wimplicit-fallthrough=]
-   wqe->rqe.flags |= SIW_WQE_SOLICITED;
-   ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
-drivers/infiniband/sw/siw/siw_qp_rx.c:1215:2: note: here
-  case RDMAP_SEND:
-  ^~~~
-
-drivers/infiniband/sw/siw/siw_qp_tx.c: In function ‘siw_qp_sq_process’:
-drivers/infiniband/sw/siw/siw_qp_tx.c:1044:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
-    siw_wqe_put_mem(wqe, tx_type);
-    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/infiniband/sw/siw/siw_qp_tx.c:1045:3: note: here
-   case SIW_OP_INVAL_STAG:
-   ^~~~
-drivers/infiniband/sw/siw/siw_qp_tx.c:1128:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
-    siw_wqe_put_mem(wqe, tx_type);
-    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/infiniband/sw/siw/siw_qp_tx.c:1129:3: note: here
-   case SIW_OP_INVAL_STAG:
-   ^~~~
-
-Warning level 3 was used: -Wimplicit-fallthrough=3
-
-This patch is part of the ongoing efforts to enable
--Wimplicit-fallthrough.
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
-
-NOTE: -Wimplicit-fallthrough will be enabled globally in v5.3. So, I
-      suggest you to take this patch for 5.3-rc1.
-
- drivers/infiniband/sw/siw/siw_qp_rx.c | 2 ++
- drivers/infiniband/sw/siw/siw_qp_tx.c | 4 ++++
- 2 files changed, 6 insertions(+)
-
-diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
-index 682a290bc11e..f87657a11657 100644
---- a/drivers/infiniband/sw/siw/siw_qp_rx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
-@@ -1212,6 +1212,8 @@ static int siw_rdmap_complete(struct siw_qp *qp, int error)
- 	case RDMAP_SEND_SE:
- 	case RDMAP_SEND_SE_INVAL:
- 		wqe->rqe.flags |= SIW_WQE_SOLICITED;
-+		/* Fall through */
-+
- 	case RDMAP_SEND:
- 	case RDMAP_SEND_INVAL:
- 		if (wqe->wr_status == SIW_WR_IDLE)
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index f0d949e2e318..43020d2040fc 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -1042,6 +1042,8 @@ int siw_qp_sq_process(struct siw_qp *qp)
- 		case SIW_OP_SEND_REMOTE_INV:
- 		case SIW_OP_WRITE:
- 			siw_wqe_put_mem(wqe, tx_type);
-+			/* Fall through */
-+
- 		case SIW_OP_INVAL_STAG:
- 		case SIW_OP_REG_MR:
- 			if (tx_flags(wqe) & SIW_WQE_SIGNALLED)
-@@ -1126,6 +1128,8 @@ int siw_qp_sq_process(struct siw_qp *qp)
- 		case SIW_OP_READ:
- 		case SIW_OP_READ_LOCAL_INV:
- 			siw_wqe_put_mem(wqe, tx_type);
-+			/* Fall through */
-+
- 		case SIW_OP_INVAL_STAG:
- 		case SIW_OP_REG_MR:
- 			siw_sqe_complete(qp, &wqe->sqe, wqe->bytes,
--- 
-2.21.0
-
+On 7/11/19 2:47 AM, Yi Zhang wrote:
+> Hello
+> 
+> 'nvme connect' failed when use bnxt_re0 on latest upstream build[1], by bisecting I found it was introduced from v5.2.0-rc1 with [2], it works after I revert it.
+> Let me know if you need more info, thanks.
+> 
+> [1]
+> [root@rdma-perf-07 ~]$ nvme connect -t rdma -a 172.31.40.125 -s 4420 -n testnqn
+> Failed to write to /dev/nvme-fabrics: Bad address
+> 
+> [root@rdma-perf-07 ~]$ dmesg
+> [  476.320742] bnxt_en 0000:19:00.0: QPLIB: cmdq[0x4b9]=0x15 status 0x5
+> [  476.327103] infiniband bnxt_re0: Failed to allocate HW AH
+> [  476.332525] nvme nvme2: rdma_connect failed (-14).
+> [  476.343552] nvme nvme2: rdma connection establishment failed (-14)
+> 
+> [root@rdma-perf-07 ~]$ lspci  | grep -i Broadcom
+> 01:00.0 Ethernet controller: Broadcom Inc. and subsidiaries NetXtreme BCM5720 2-port Gigabit Ethernet PCIe
+> 01:00.1 Ethernet controller: Broadcom Inc. and subsidiaries NetXtreme BCM5720 2-port Gigabit Ethernet PCIe
+> 18:00.0 RAID bus controller: Broadcom / LSI MegaRAID SAS-3 3008 [Fury] (rev 02)
+> 19:00.0 Ethernet controller: Broadcom Inc. and subsidiaries BCM57412 NetXtreme-E 10Gb RDMA Ethernet Controller (rev 01)
+> 19:00.1 Ethernet controller: Broadcom Inc. and subsidiaries BCM57412 NetXtreme-E 10Gb RDMA Ethernet Controller (rev 01)
+> 
+> 
+> [2]
+> commit 823b23da71132b80d9f41ab667c68b112455f3b6
+> Author: Parav Pandit <parav@mellanox.com>
+> Date:   Wed Apr 10 11:23:03 2019 +0300
+> 
+>      IB/core: Allow vlan link local address based RoCE GIDs
+>      
+>      IPv6 link local address for a VLAN netdevice has nothing to do with its
+>      resemblance with the default GID, because VLAN link local GID is in
+>      different layer 2 domain.
+>      
+>      Now that RoCE MAD packet processing and route resolution consider the
+>      right GID index, there is no need for an unnecessary check which prevents
+>      the addition of vlan based IPv6 link local GIDs.
+>      
+>      Signed-off-by: Parav Pandit <parav@mellanox.com>
+>      Reviewed-by: Daniel Jurgens <danielj@mellanox.com>
+>      Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>      Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> 
+> 
+> 
+> Best Regards,
+>    Yi Zhang
+> 
+> 
+> 
+> _______________________________________________
+> Linux-nvme mailing list
+> Linux-nvme@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-nvme
+> 
