@@ -2,133 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5776B65EA7
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 19:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B75A65F4E
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 20:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728335AbfGKRbT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Jul 2019 13:31:19 -0400
-Received: from mail-eopbgr00053.outbound.protection.outlook.com ([40.107.0.53]:13782
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728294AbfGKRbT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Jul 2019 13:31:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SllCRS8ZK/zfEYIaSxVYQKhmIL2sDtckiAGYeaXRnndBueFclIoBbE9bzlk1te8spcwyzPBaEq+y4NdhV1QL+D0cUWBTcmOSj5Y1ZKSNVtvcIunCqZeMXS9EFhXtcc6DZBpDT6bwBN2eUZfxnG3PhWFWir4rUYUbwdWn4DZQ9cnUPxBWM4h7K1BCty8pSncS5hYhicWLoLOWoDbMVCWsskjV8i0tYokg+NkXrasHBRqxWQW81krqqsNkEtD21bSv0bqkha5b6Z3yWtYHz0l/wdGuwVBPBO/eBFXU70wHC/Oe+WMUtzbnG/lnzoHz4PJrKnIyVSEGG3UKMRSNfl9Zww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/bMoTn7nLiMTGmnPksZ19pAHJFJ/PEGE4oe7/UO8XFU=;
- b=IyoCDWkbITTHo4sT7s3BN9Lg9kJ6Q7rURkfp53SrznFvcnLa/GBPNUvVrR2ncHWMQ8dDp+EqG/sqarX+aImMCa6DA9sn3FdMuvxCz9TDbzhjdHN0svSh+Vzlm2iZcPAiMLbcpm3TYxoYFLpIxlQy8PRg1uialga0ImejUMtjOiRbP1aJA0rq+sRpltKw4ajCIu1tH8CxAwdKY7u/Zou0M26B3Z0zma4Pll7zoCHo4TjZdKRaSoR4BljPeF9J489/uw6gHjzR+2iMqTaiG+AgKQ1zaD59QkbZX4qnzte0ICHurs/PhIW1s4JDNMWcSx7tc70Xz+gvO9rFR7ozvWKYlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=mellanox.com;dmarc=pass action=none
- header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/bMoTn7nLiMTGmnPksZ19pAHJFJ/PEGE4oe7/UO8XFU=;
- b=G7V/JPvTbuTMAW160IXc0cDIJxMwMwgxIF01/RKGGZ1ncEmnyqa1ahlKfYTANTF67OGGcrARnQHV0BbrK5L/eSAJXmeOIdAvPjfcj1l+SAAGCEFuTYE8yiYVEreHTPu+brGcfcYFInYEyVFhIcddLBYTUUwEFauziE7F3ggkpEc=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB4477.eurprd05.prod.outlook.com (52.133.13.144) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2073.14; Thu, 11 Jul 2019 17:31:15 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2052.020; Thu, 11 Jul 2019
- 17:31:14 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Yamin Friedman <yaminf@mellanox.com>
-Subject: Re: [PATCH rdma-next] lib/dim: Prevent overflow in calculation of
- ratio statistics
-Thread-Topic: [PATCH rdma-next] lib/dim: Prevent overflow in calculation of
- ratio statistics
-Thread-Index: AQHVN/21HuAr6Ssdm0+h3g3lp6E1KKbFjsQAgAABKgCAAAaPgIAAExcAgAADTAA=
-Date:   Thu, 11 Jul 2019 17:31:14 +0000
-Message-ID: <20190711173110.GN25821@mellanox.com>
-References: <20190711153118.14635-1-leon@kernel.org>
- <20190711154324.GK25821@mellanox.com>
- <20190711154734.GI23598@mtr-leonro.mtl.com>
- <20190711161103.GL25821@mellanox.com>
- <20190711171922.GJ23598@mtr-leonro.mtl.com>
-In-Reply-To: <20190711171922.GJ23598@mtr-leonro.mtl.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR10CA0014.namprd10.prod.outlook.com
- (2603:10b6:208:120::27) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f606c5b9-5526-43cb-0ab7-08d7062592ef
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4477;
-x-ms-traffictypediagnostic: VI1PR05MB4477:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <VI1PR05MB44779098E6AB29FCABDEA371CFF30@VI1PR05MB4477.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3383;
-x-forefront-prvs: 0095BCF226
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(346002)(376002)(396003)(366004)(199004)(189003)(6116002)(25786009)(6436002)(3846002)(8936002)(6486002)(966005)(86362001)(478600001)(68736007)(8676002)(102836004)(26005)(386003)(6506007)(14454004)(186003)(33656002)(52116002)(76176011)(11346002)(2616005)(476003)(305945005)(446003)(54906003)(2906002)(7736002)(316002)(53936002)(66446008)(1076003)(256004)(4326008)(229853002)(6246003)(5660300002)(107886003)(64756008)(486006)(6306002)(36756003)(6916009)(99286004)(66946007)(71190400001)(66476007)(66556008)(71200400001)(66066001)(6512007)(81156014)(81166006);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4477;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: wOZNUgod54rL3zx/9RfVkvgfVsDCbAKCjXegO+bb8ZkMZHXy6gNaQ9BFuCLUhYJ62UZPEi6Ru6RGRKzH7EI0H3pXCvOayhSaSW/pIan3UUN4/RB9yOHzrGqivh8/m0WwANAl27lXpVlDz+ZBXvbG6o+8NwoEnOsVzYSqJrRsNE7UAOrDcCu6bMgIgtXDSJWg7dqvySPIhIRdQyDpcSKpo371mZC3vuOlQex10JeAYAo3txoXjtqmYLIrdCni94NYmR/D8Ui6c5/SFHqdZOSu/86hA9akKxFeImBUDvo9xHsPXIO9yM58NvXEJBa52EibUNKPZVplxPRPB6zMzaTrTc3vp+LzyrRDabXmjKlYIky8eVw2vtXolelxRCIHA5D2C8UBSwVFoUECMT+w+M20BAL8KXNqyfD/89IhxOKlrz4=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D7546AD13C0BA747B73EFCD5E2697462@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1728877AbfGKSFN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jul 2019 14:05:13 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:37096 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728549AbfGKSFN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 14:05:13 -0400
+Received: by mail-qk1-f193.google.com with SMTP id d15so4350693qkl.4
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 11:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=1D45VDmCAbr+E4SZBzLB6VIycjDuXVw9dZK5gxi0EWc=;
+        b=D0oxmZqNliGmZXYrGlhIuUh88RZXZ6IhsMAFjAuLmDmNgjdEH+q+K6YnRJrxj7arH8
+         ibDZ7U1n+0tp6aNzpggOFouDSSYnHYAgfPUKAbSjef7i4GZxiBjOBtSx6GyLsCG7I8Gs
+         3/nzEU52dHNo4HusV+6Qin1Wu1zmfGeiNhJFM51AbW2JxISWIxPoigumd2UMuNYyUbkq
+         HQs82H7FdUQfp1nyOXzSwBKVDw2umbdNTDuBDd1Dei8y+sOUVydROMLgz9de2iphEO20
+         x8ZsHURXfb0KYVdcJtWqFA4sItPUKHyTuyTeUp9pK4wUGCeP0d7cslj2oo39SjrAqRa+
+         aYKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=1D45VDmCAbr+E4SZBzLB6VIycjDuXVw9dZK5gxi0EWc=;
+        b=FvDNFgV2l9YlvyHysyKGd9sD3IU36qANNhP56vxWMQdSo/Ger2hlDi841VXaO5YQ7C
+         tNwLIOigmz4RMNsIS96PQR3BLsKO/ivkkVBaZGhCvrr/dYyGKdVCT0Ch9j/XLURlfOE6
+         UUtff6NjvuGj1jJbvaeXE6qeSe6wGotJxcJKZ3WFW1W1l6SJlwe75fdzzjUcqCGtCfol
+         MIjPMTQKT250L7XDZG8Z4a/dZKHcmqPBYDvWy8ZpmaNf2Joe5FdOyp2QsMjgepe7H3B3
+         0eCJ+VMffiKGuQZ4GgBmqUH18lGNEaf6TInZCAXd016rU9VKnhr5judntpkVwgVRqSde
+         EV0A==
+X-Gm-Message-State: APjAAAUOXeHbuBkNRtBLG0adpy8Neccq8pHJc+WAB1lVXo3ddJwGFPks
+        c7quE53NgR38Ne6s4uBYb+ccgw==
+X-Google-Smtp-Source: APXvYqy+KfKKXdR19a3uizpOypAq/2/Z4gaxG2jfIxckyfMiRmNY9/ODZSym3MEcVj/1lDRN0YQD1A==
+X-Received: by 2002:a05:620a:310:: with SMTP id s16mr2827756qkm.420.1562868312483;
+        Thu, 11 Jul 2019 11:05:12 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id z21sm2034477qto.48.2019.07.11.11.05.12
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Jul 2019 11:05:12 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hldRP-0000Da-MZ; Thu, 11 Jul 2019 15:05:11 -0300
+Date:   Thu, 11 Jul 2019 15:05:11 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/siw: Mark expected switch fall-throughs
+Message-ID: <20190711180511.GA816@ziepe.ca>
+References: <20190711161218.GA4989@embeddedor>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f606c5b9-5526-43cb-0ab7-08d7062592ef
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jul 2019 17:31:14.7489
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4477
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190711161218.GA4989@embeddedor>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 11, 2019 at 08:19:22PM +0300, Leon Romanovsky wrote:
-> On Thu, Jul 11, 2019 at 04:11:07PM +0000, Jason Gunthorpe wrote:
-> > On Thu, Jul 11, 2019 at 06:47:34PM +0300, Leon Romanovsky wrote:
-> > > > > diff --git a/lib/dim/dim.c b/lib/dim/dim.c
-> > > > > index 439d641ec796..38045d6d0538 100644
-> > > > > +++ b/lib/dim/dim.c
-> > > > > @@ -74,8 +74,8 @@ void dim_calc_stats(struct dim_sample *start, s=
-truct dim_sample *end,
-> > > > >  					delta_us);
-> > > > >  	curr_stats->cpms =3D DIV_ROUND_UP(ncomps * USEC_PER_MSEC, delta=
-_us);
-> > > > >  	if (curr_stats->epms !=3D 0)
-> > > > > -		curr_stats->cpe_ratio =3D
-> > > > > -				(curr_stats->cpms * 100) / curr_stats->epms;
-> > > > > +		curr_stats->cpe_ratio =3D DIV_ROUND_DOWN_ULL(
-> > > > > +			curr_stats->cpms * 100, curr_stats->epms);
-> > > >
-> > > > This will still potentially overfow the 'int' for cpe_ratio if epms=
- <
-> > > > 100 ?
-> > >
-> > > I assumed that assignment to "unsigned long long" will do the trick.
-> > > https://elixir.bootlin.com/linux/latest/source/include/linux/kernel.h=
-#L94
-> >
-> > That only protects the multiply, the result of DIV_ROUND_DOWN_ULL is
-> > casted to int.
->=20
-> It is ok, the result is "int" and it will be small, 100 in multiply
-> represents percentage.
+On Thu, Jul 11, 2019 at 11:12:18AM -0500, Gustavo A. R. Silva wrote:
+> In preparation to enabling -Wimplicit-fallthrough, mark switch
+> cases where we are expecting to fall through.
+> 
+> This patch fixes the following warnings:
+> 
+> drivers/infiniband/sw/siw/siw_qp_rx.c: In function ‘siw_rdmap_complete’:
+> drivers/infiniband/sw/siw/siw_qp_rx.c:1214:18: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>    wqe->rqe.flags |= SIW_WQE_SOLICITED;
+>    ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+> drivers/infiniband/sw/siw/siw_qp_rx.c:1215:2: note: here
+>   case RDMAP_SEND:
+>   ^~~~
+> 
+> drivers/infiniband/sw/siw/siw_qp_tx.c: In function ‘siw_qp_sq_process’:
+> drivers/infiniband/sw/siw/siw_qp_tx.c:1044:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>     siw_wqe_put_mem(wqe, tx_type);
+>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/infiniband/sw/siw/siw_qp_tx.c:1045:3: note: here
+>    case SIW_OP_INVAL_STAG:
+>    ^~~~
+> drivers/infiniband/sw/siw/siw_qp_tx.c:1128:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>     siw_wqe_put_mem(wqe, tx_type);
+>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/infiniband/sw/siw/siw_qp_tx.c:1129:3: note: here
+>    case SIW_OP_INVAL_STAG:
+>    ^~~~
+> 
+> Warning level 3 was used: -Wimplicit-fallthrough=3
+> 
+> This patch is part of the ongoing efforts to enable
+> -Wimplicit-fallthrough.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> 
+> NOTE: -Wimplicit-fallthrough will be enabled globally in v5.3. So, I
+>       suggest you to take this patch for 5.3-rc1.
 
-Percentage would be divide by 100..
-
-Like I said it will overflow if epms < 100 ...
+Okay, I queued this for the current merge window then
 
 Jason
