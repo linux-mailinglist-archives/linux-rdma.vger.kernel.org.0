@@ -2,103 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D39876596C
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 16:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E81465A7F
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 17:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbfGKOyG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Jul 2019 10:54:06 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:45100 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbfGKOyG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 10:54:06 -0400
-Received: by mail-vs1-f66.google.com with SMTP id h28so4353929vsl.12
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 07:54:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OSRL99BIaLodkBG8Ur8XBaGK7O8DpdxuI0IXmHEfTNw=;
-        b=lMbDPIbb0vvyUGWQdnCiasoDr4Yy47wih84OLLO3r9IgeHn7AFQirkDsZ+9bZv6a+X
-         DJEbz83leO6ygDTze7wSrzwTG8b303QISowRG65eVyF3T+qaRAD97sq//wM3/4jpKRQH
-         aHJYj7vqQUIQ92pFm8jlret5UmI8TNCWExeMqDLj6SM+yz0lJDsUEPy9ql4ZK/mymEY2
-         C/lYAWQe9OeEl1jh9NtOjpnr3J0/mSWN6rpdBR3WGPbPaKQT6CJT6hAvOFDJdQziH1wH
-         6od1oUQ52AMEnuaTZLM6eWhyh/Sw+Mb1IzzbgWpP9Ng+oJkpeLSGW9ubE23lLgR2MP0k
-         dY7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OSRL99BIaLodkBG8Ur8XBaGK7O8DpdxuI0IXmHEfTNw=;
-        b=p0dik+Ft/g3wDAC68kNdKzRF9t4lNXRcgGReZejySw97HyB75gp0scqM4QYPKNOEFe
-         xhsSle8j4H5RpL7HOXiKapeVs0Ufu/td7xmZT2ACKnEnK/jMEPmAKlUMSpG/vuRrg/IV
-         YK8gKqlbuq9QEtUanJrnYv1vB0WeRL7VwtFszQcy+uolC0RccpHTpmvEqEC8mAM+P4KB
-         /mMiO2e+8rOGIizgTVqZz3d46ONEMB9OzEbxCjcpgaIHP+9dLw3+9OlR/Rh0JNsqQsgr
-         eg+8OPMdu3CqdRJDM+22IHRUTaKHtQx/8TJgdBXdlM5q+VkVLc/F0NGNJBgIWpWPyVTN
-         tbbQ==
-X-Gm-Message-State: APjAAAUeL+CmUkTqCGzTbz7p3X+NX6DFS1FnSkYQ0+DtWiitzJTUZArQ
-        6WjpsuHLg0oGxpT3fj9HtngnGQ==
-X-Google-Smtp-Source: APXvYqzGv5XLpzcelYU2tuSxvoVuhMY+giJViUABBr/Bp/cZiVAevwOuDoKjZcXPaQJW1DVRDkKdnA==
-X-Received: by 2002:a67:f492:: with SMTP id o18mr4970890vsn.62.1562856845452;
-        Thu, 11 Jul 2019 07:54:05 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id l20sm2290597vkl.2.2019.07.11.07.54.04
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 11 Jul 2019 07:54:04 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hlaSS-00068i-61; Thu, 11 Jul 2019 11:54:04 -0300
-Date:   Thu, 11 Jul 2019 11:54:04 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Qian Cai <cai@lca.pw>
-Cc:     leonro@mellanox.com, saeedm@mellanox.com, talgi@mellanox.com,
-        yaminf@mellanox.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] RDMA/core: fix -Wunused-const-variable warnings
-Message-ID: <20190711145404.GA23576@ziepe.ca>
-References: <1562853356-11595-1-git-send-email-cai@lca.pw>
+        id S1728824AbfGKPb1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jul 2019 11:31:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728594AbfGKPb0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 11 Jul 2019 11:31:26 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 821F220872;
+        Thu, 11 Jul 2019 15:31:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562859085;
+        bh=/zldxXN87fLAkTbaszKZ1CbgPWDSRVbD3U9UW6tf0k8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=H/5yDDSd46camYy8lPijB7i2PnnbEJFlXIfyCtETZb0pYH93nHJ+ltGJoakS8chev
+         Oj6XusfdeYvJjjnDUSo+iCwchxM3WamBhbv0qN2DzdnAm13PtG92xRMwXt/k5Ov4PN
+         ybT8edr42ilmbK9TyaAFYp/9HF6TY2Bf1wJ+MPwY=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Yamin Friedman <yaminf@mellanox.com>
+Subject: [PATCH rdma-next] lib/dim: Prevent overflow in calculation of ratio statistics
+Date:   Thu, 11 Jul 2019 18:31:18 +0300
+Message-Id: <20190711153118.14635-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1562853356-11595-1-git-send-email-cai@lca.pw>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 11, 2019 at 09:55:56AM -0400, Qian Cai wrote:
-> The linux-next commit "linux/dim: Implement RDMA adaptive moderation
-> (DIM)" [1] introduced a few compilation warnings.
-> 
-> In file included from ./include/rdma/ib_verbs.h:64,
->                  from ./include/linux/mlx5/device.h:37,
->                  from ./include/linux/mlx5/driver.h:51,
->                  from drivers/net/ethernet/mellanox/mlx5/core/uar.c:36:
-> ./include/linux/dim.h:378:1: warning: 'rdma_dim_prof' defined but not
-> used [-Wunused-const-variable=]
->  rdma_dim_prof[RDMA_DIM_PARAMS_NUM_PROFILES] = {
->  ^~~~~~~~~~~~~
-> In file included from ./include/rdma/ib_verbs.h:64,
->                  from ./include/linux/mlx5/device.h:37,
->                  from ./include/linux/mlx5/driver.h:51,
->                  from
-> drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c:37:
-> ./include/linux/dim.h:378:1: warning: 'rdma_dim_prof' defined but not
-> used [-Wunused-const-variable=]
->  rdma_dim_prof[RDMA_DIM_PARAMS_NUM_PROFILES] = {
->  ^~~~~~~~~~~~~
-> 
-> Since only ib_cq_rdma_dim_work() in drivers/infiniband/core/cq.c uses
-> it, just move the definition over there.
-> 
-> [1] https://patchwork.kernel.org/patch/11031455/
-> 
-> Signed-off-by: Qian Cai <cai@lca.pw>
-> ---
->  drivers/infiniband/core/cq.c | 13 +++++++++++++
->  include/linux/dim.h          | 13 -------------
->  2 files changed, 13 insertions(+), 13 deletions(-)
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Applied to for-next, thanks
+Multiply by 100 can potentially overflow cpms value and will produce
+incorrect wrong ratio statistics. Update code to use built-in division
+macro, so it will fix the following UBSAN warning.
 
-Jason
+ [ 1040.120129] ================================================================================
+ [ 1040.127124] UBSAN: Undefined behaviour in lib/dim/dim.c:78:23
+ [ 1040.130118] signed integer overflow:
+ [ 1040.131643] 134718714 * 100 cannot be represented in type 'int'
+ [ 1040.134374] CPU: 0 PID: 22846 Comm: iperf3 Not tainted 5.2.0-rc6-for-upstream-dbg-2019-06-29_03-18-13-29 #1
+ [ 1040.139068] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+ [ 1040.144469] Call Trace:
+ [ 1040.145897]  <IRQ>
+ [ 1040.147366]  dump_stack+0x9a/0xeb
+ [ 1040.149061]  ubsan_epilogue+0x9/0x7c
+ [ 1040.150462]  handle_overflow+0x16d/0x198
+ [ 1040.151911]  ? __ubsan_handle_negate_overflow+0x15c/0x15c
+ [ 1040.153679]  ? sk_free+0x15/0x30
+ [ 1040.155011]  ? kvm_clock_read+0x14/0x30
+ [ 1040.156433]  ? kvm_sched_clock_read+0x5/0x10
+ [ 1040.157952]  ? sched_clock+0x5/0x10
+ [ 1040.159318]  ? sched_clock_cpu+0x18/0x260
+ [ 1040.160801]  dim_calc_stats+0x4a1/0x4c0
+ [ 1040.162274]  net_dim+0x147/0x920
+ [ 1040.163592]  ? net_dim_stats_compare+0x330/0x330
+ [ 1040.165283]  mlx5e_napi_poll+0x410/0x1030 [mlx5_core]
+ [ 1040.166876]  ? lock_stats+0xd41/0x1740
+ [ 1040.168266]  ? mlx5e_trigger_irq+0x550/0x550 [mlx5_core]
+ [ 1040.169918]  ? __module_text_address+0x13/0x140
+ [ 1040.171409]  ? lock_stats+0xd41/0x1740
+ [ 1040.172757]  ? net_rx_action+0x262/0xda0
+ [ 1040.174156]  net_rx_action+0x421/0xda0
+ [ 1040.175519]  ? napi_complete_done+0x370/0x370
+ [ 1040.176979]  ? kvm_clock_read+0x14/0x30
+ [ 1040.178316]  ? kvm_sched_clock_read+0x5/0x10
+ [ 1040.179690]  ? sched_clock+0x5/0x10
+ [ 1040.180920]  ? sched_clock_cpu+0x18/0x260
+ [ 1040.182286]  __do_softirq+0x287/0xb4e
+ [ 1040.183581]  ? irqtime_account_irq+0x1d5/0x3b0
+ [ 1040.184998]  irq_exit+0x17d/0x1d0
+ [ 1040.186212]  do_IRQ+0x129/0x220
+ [ 1040.187412]  common_interrupt+0xf/0xf
+ [ 1040.188673]  </IRQ>
+ [ 1040.189685] RIP: 0033:0x7f092c41a07a
+ [ 1040.190884] Code: 45 31 f6 e9 8a 00 00 00 0f 1f 84 00 00 00 00 00 48
+89 df ff 93 88 01 00 00 85 c0 0f 88 c7 00 00 00 48 98 48 01 85 88 02 00
+00 <48> 8b 85 c8 02 00 00 48 83 85 90 02 00 00 01 48 83 78 10 00 74 0b
+ [ 1040.195584] RSP: 002b:00007fffbebe7870 EFLAGS: 00000206 ORIG_RAX: ffffffffffffffd7
+ [ 1040.197933] RAX: 0000000000020000 RBX: 0000000000e239b0 RCX: 000000000006b280
+ [ 1040.199740] RDX: 0000000000020000 RSI: 00007f092c805000 RDI: 0000000000000007
+ [ 1040.201525] RBP: 0000000000e21260 R08: 0000000000000000 R09: 00007fffbebfb0a0
+ [ 1040.203237] R10: 0000000000000380 R11: 0000000000000246 R12: 00007fffbebe7950
+ [ 1040.204944] R13: 0000000000000007 R14: 0000000000000001 R15: 00007fffbebe7870
+ [ 1040.206686] ================================================================================
+
+Fixes: 398c2b05bbee ("linux/dim: Add completions count to dim_sample")
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ lib/dim/dim.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/dim/dim.c b/lib/dim/dim.c
+index 439d641ec796..38045d6d0538 100644
+--- a/lib/dim/dim.c
++++ b/lib/dim/dim.c
+@@ -74,8 +74,8 @@ void dim_calc_stats(struct dim_sample *start, struct dim_sample *end,
+ 					delta_us);
+ 	curr_stats->cpms = DIV_ROUND_UP(ncomps * USEC_PER_MSEC, delta_us);
+ 	if (curr_stats->epms != 0)
+-		curr_stats->cpe_ratio =
+-				(curr_stats->cpms * 100) / curr_stats->epms;
++		curr_stats->cpe_ratio = DIV_ROUND_DOWN_ULL(
++			curr_stats->cpms * 100, curr_stats->epms);
+ 	else
+ 		curr_stats->cpe_ratio = 0;
+
+--
+2.20.1
+
