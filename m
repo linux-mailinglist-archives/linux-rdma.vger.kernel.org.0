@@ -2,130 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F9E6529B
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 09:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B235E652B4
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 09:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbfGKHoa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 11 Jul 2019 03:44:30 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42628 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726088AbfGKHoa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Jul 2019 03:44:30 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6B7i8S9118925
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 03:44:29 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.119])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tp035j89k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 03:44:29 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Thu, 11 Jul 2019 07:44:28 -0000
-Received: from us1b3-smtp01.a3dr.sjc01.isc4sb.com (10.122.7.174)
-        by smtp.notes.na.collabserv.com (10.122.182.123) with smtp.notes.na.collabserv.com ESMTP;
-        Thu, 11 Jul 2019 07:44:23 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp01.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019071107442246-171529 ;
-          Thu, 11 Jul 2019 07:44:22 +0000 
-In-Reply-To: <20190710174800.34451-1-natechancellor@gmail.com>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Nathan Chancellor" <natechancellor@gmail.com>
-Cc:     "Doug Ledford" <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Date:   Thu, 11 Jul 2019 07:44:22 +0000
+        id S1727595AbfGKH66 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jul 2019 03:58:58 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:44672 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725963AbfGKH66 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 03:58:58 -0400
+Received: by mail-oi1-f193.google.com with SMTP id e189so3763013oib.11;
+        Thu, 11 Jul 2019 00:58:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YfAMEG8L/owsmlbfRme+xFoHE9pScAhhFraw9xAGnXw=;
+        b=HnQdzQnPbHoAadBXZ5W8Oosf2VALObPgnrRxEZYRNjTRT+FQnzp4tHGWASqFsf0SfZ
+         GJ8DKhpgj1Gph0JfwuepjVmwnF4abKP5CAZ5YWfj4/iRmzZZ3ubpPDc3cEttpc8tl03B
+         9UCemc7dozLq4SryJewR3yQP5tzu5GlZLxs2xv/+lCpHiUswJ//J6V6ojGVZ2tjn3Msa
+         0e+05GWzddB+qw31lnsLGs2MAT/u6MM3K08SjmjcMNwIFVTi5/iGL5ONc116rPiRmkmG
+         iduqbFi1hppnpFu7EFhGG7b602HwghUasxoaT6tOLUEbjsKSbBYPlkkruH2YYHq3J8T4
+         /uHA==
+X-Gm-Message-State: APjAAAUNAXzj3Z3ZCIYFH7UwdlCgZtPaFGShAIzT+yagJmriqMsFtl36
+        5GsItXPOIHLLNBWXrPSH6zNdKpqX5hvQRbM3O8U=
+X-Google-Smtp-Source: APXvYqy+qhB+skKoLFhPAEjb4GZrKBj+3TQMMBpCauOxz49hztroQJQAGrQPnhc/7czzr1iT/kmzGTHYyw3wfMVw7Vw=
+X-Received: by 2002:aca:bd43:: with SMTP id n64mr1483995oif.148.1562831937398;
+ Thu, 11 Jul 2019 00:58:57 -0700 (PDT)
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190710174800.34451-1-natechancellor@gmail.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-KeepSent: E93E0F86:E35CE856-00258434:002A83CE;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 22511
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19071107-6115-0000-0000-000006627147
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.378364; ST=0; TS=0; UL=0; ISC=; MB=0.000118
-X-IBM-SpamModules-Versions: BY=3.00011408; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01230525; UDB=6.00648152; IPR=6.01011801;
- BA=6.00006354; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
- ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00027677; XFM=3.00000015;
- UTC=2019-07-11 07:44:27
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-07-11 02:51:54 - 6.00010150
-x-cbparentid: 19071107-6116-0000-0000-0000B1669CB6
-Message-Id: <OFE93E0F86.E35CE856-ON00258434.002A83CE-00258434.002A83DF@notes.na.collabserv.com>
-Subject: Re:  [PATCH] rdma/siw: Use proper enumerated type in map_cqe_status
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-11_01:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+References: <20190710133930.26591-1-geert@linux-m68k.org> <20190710144636.GC4051@ziepe.ca>
+In-Reply-To: <20190710144636.GC4051@ziepe.ca>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 11 Jul 2019 09:58:46 +0200
+Message-ID: <CAMuHMdW4GP5FDhDuY1w3u0NypSCE84pPB-T7JoA+4odaPnhT5Q@mail.gmail.com>
+Subject: Re: [PATCH -next] rdma/siw: Add missing dependencies on LIBCRC32C and DMA_VIRT_OPS
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Next <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Nathan Chancellor" <natechancellor@gmail.com> wrote: -----
+Hi Jason,
 
->To: "Bernard Metzler" <bmt@zurich.ibm.com>, "Doug Ledford"
-><dledford@redhat.com>, "Jason Gunthorpe" <jgg@ziepe.ca>
->From: "Nathan Chancellor" <natechancellor@gmail.com>
->Date: 07/10/2019 07:48PM
->Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
->clang-built-linux@googlegroups.com, "Nathan Chancellor"
-><natechancellor@gmail.com>
->Subject: [EXTERNAL] [PATCH] rdma/siw: Use proper enumerated type in
->map_cqe_status
+On Wed, Jul 10, 2019 at 4:46 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> On Wed, Jul 10, 2019 at 03:39:30PM +0200, Geert Uytterhoeven wrote:
+> > If LIBCRC32C and DMA_VIRT_OPS are not enabled:
+> >
+> >     drivers/infiniband/sw/siw/siw_main.o: In function `siw_newlink':
+> >     siw_main.c:(.text+0x35c): undefined reference to `dma_virt_ops'
+> >     drivers/infiniband/sw/siw/siw_qp_rx.o: In function `siw_csum_update':
+> >     siw_qp_rx.c:(.text+0x16): undefined reference to `crc32c'
+> >
+> > Fix the first issue by adding a select of DMA_VIRT_OPS.
+> > Fix the second issue by replacing the unneeded dependency on
+> > CRYPTO_CRC32 by a dependency on LIBCRC32C.
+> >
+> > Reported-by: noreply@ellerman.id.au (first issue)
+> > Fixes: c0cf5bdde46c664d ("rdma/siw: addition to kernel build environment")
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >  drivers/infiniband/sw/siw/Kconfig | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/infiniband/sw/siw/Kconfig b/drivers/infiniband/sw/siw/Kconfig
+> > index 94f684174ce3556e..b622fc62f2cd6d46 100644
+> > +++ b/drivers/infiniband/sw/siw/Kconfig
+> > @@ -1,6 +1,7 @@
+> >  config RDMA_SIW
+> >       tristate "Software RDMA over TCP/IP (iWARP) driver"
+> > -     depends on INET && INFINIBAND && CRYPTO_CRC32
+> > +     depends on INET && INFINIBAND && LIBCRC32C
 >
->clang warns several times:
+> Is this the best practice?
 >
->drivers/infiniband/sw/siw/siw_cq.c:31:4: warning: implicit conversion
->from enumeration type 'enum siw_wc_status' to different enumeration
->type
->'enum siw_opcode' [-Wenum-conversion]
->        { SIW_WC_SUCCESS, IB_WC_SUCCESS },
->        ~ ^~~~~~~~~~~~~~
->
->Fixes: b0fff7317bb4 ("rdma/siw: completion queue methods")
->Link:
->https://urldefense.proofpoint.com/v2/url?u=https-3A__github.com_Clang
->BuiltLinux_linux_issues_596&d=DwIDAg&c=jf_iaSHvJObTbx-siA1ZOg&r=2TaYX
->Q0T-r8ZO1PP1alNwU_QJcRRLfmYTAgd3QCvqSc&m=1dqKSwiEVgePsLNbxXRmdhXDxww4
->AEGxKq-g-MmQHBo&s=IFwaU5yLu598NLBtKkAxLXzRNmACfnhxCpg3QVeJpB0&e= 
->Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
->---
-> drivers/infiniband/sw/siw/siw_cq.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/drivers/infiniband/sw/siw/siw_cq.c
->b/drivers/infiniband/sw/siw/siw_cq.c
->index e2a0ee40d5b5..e381ae9b7d62 100644
->--- a/drivers/infiniband/sw/siw/siw_cq.c
->+++ b/drivers/infiniband/sw/siw/siw_cq.c
->@@ -25,7 +25,7 @@ static int map_wc_opcode[SIW_NUM_OPCODES] = {
-> };
-> 
-> static struct {
->-	enum siw_opcode siw;
->+	enum siw_wc_status siw;
-> 	enum ib_wc_status ib;
-> } map_cqe_status[SIW_NUM_WC_STATUS] = {
-> 	{ SIW_WC_SUCCESS, IB_WC_SUCCESS },
->-- 
->2.22.0
->
->
->
-Nathan, thanks very much. That's correct.
-I don't know how this could pass w/o warning.
+> siw is using both the libcrc32c API and the
+> 'crypto_alloc_shash("crc32c", 0, 0);' version. Is it right to get that
+> transitively through LIBCRC32C?
 
-Many thanks,
-Bernard.
+Yes, I think so.
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
