@@ -2,130 +2,198 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC936530C
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 10:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002F06535E
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 10:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbfGKIW3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 11 Jul 2019 04:22:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48770 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725963AbfGKIW2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Jul 2019 04:22:28 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6B8MQAU128082
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 04:22:27 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.113])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tp0q3261n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 04:22:26 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Thu, 11 Jul 2019 08:22:16 -0000
-Received: from us1b3-smtp06.a3dr.sjc01.isc4sb.com (10.122.203.184)
-        by smtp.notes.na.collabserv.com (10.122.47.56) with smtp.notes.na.collabserv.com ESMTP;
-        Thu, 11 Jul 2019 08:22:11 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp06.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019071108221042-166196 ;
-          Thu, 11 Jul 2019 08:22:10 +0000 
-In-Reply-To: <20190711071213.57880-1-yuehaibing@huawei.com>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "YueHaibing" <yuehaibing@huawei.com>
-Cc:     <dledford@redhat.com>, <jgg@ziepe.ca>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-Date:   Thu, 11 Jul 2019 08:22:10 +0000
+        id S1728006AbfGKIyP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jul 2019 04:54:15 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:34930 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727595AbfGKIyP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 04:54:15 -0400
+Received: by mail-io1-f65.google.com with SMTP id m24so10918162ioo.2
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 01:54:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xB7gk9GV4LWD0anuaWOfarGLjo+bG9F97Mtskx4V/Hw=;
+        b=WkvGTnj8CGB7fL8BikYeBlqTCQ057+a3pULdM5uKVpcvXnQdFbte3ikKyd7nb3+gjs
+         2Ejwwk7QdEBWLQSC8W6u1mG6PA//3+GBQ9BPP+ShensmB0NO1j5leJByivlOExenf/Mk
+         KMafUef//v4s8JTxuHUHsbhZkfZ2Pf95N8RWO4ndOwZP3jLSKlhChHDXsr82mOb+NEzp
+         i4pX2wBYuoCm5K1eGgDnkssmIZVYb1NMerQ4xbCl74WXA/UJgogS9YSZ3f1dAYbR5dEL
+         FAyFsUJQha71pAqbc05epNCeU0/6yRvK6Y/JIyBFshAenxuhWLc83V5mw15GD5iqfa3K
+         E9pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xB7gk9GV4LWD0anuaWOfarGLjo+bG9F97Mtskx4V/Hw=;
+        b=Vh+zJEDS0xctnt/sM2TGXiFb/YewLqo3tJ8PpvtilCdcPz3keb8Rx6McSqnd05uVQl
+         orFvo9191baaZ8LUoHYHshQJx40FRdK5MkddCjYC2ydN8tDqQPadvNWZ32++4NxrIn5w
+         9YT6dL4ihZuLL4sIg4m4We/SPBR0IYFJJ1wwFWQqqWcUiDUrRAqBal+x8bLT+SWxFr3B
+         smolsWX8JNb8GEx/aNPFBK6VRIfP5REYaZLZNDSeYEXuhNrmmQl147hd21p4qIEdcUsj
+         5/YZ2DbOKD2vBQVE/FwN3/Zem8HqkeRjPCgD2ki2kQIGXdw0Wln6+xzL2WDhr4HDxR0l
+         FesA==
+X-Gm-Message-State: APjAAAXE4x9QBQlygBJ7vaRMAwhWo6w3OXPsJFPSn69WjUFhUSitXE9E
+        4Cq+dFlJOb5DUijmX36Cjwv4Ex7Hzha09TkgYotn
+X-Google-Smtp-Source: APXvYqyWgsLLfKCpK5w/OwXMN+gzsFDhaFJYaKpDGrf45/1NkZTG0xJ1JEyZs0Umaj0wr0weFx59ptW2BSP1BKO30CQ=
+X-Received: by 2002:a6b:ce19:: with SMTP id p25mr3186764iob.201.1562835253969;
+ Thu, 11 Jul 2019 01:54:13 -0700 (PDT)
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190711071213.57880-1-yuehaibing@huawei.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-KeepSent: 7C58670D:824A65B3-00258434:002DF9B8;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 33595
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19071108-1529-0000-0000-000006734F2D
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.026953
-X-IBM-SpamModules-Versions: BY=3.00011408; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01230538; UDB=6.00648159; IPR=6.01011814;
- BA=6.00006354; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
- ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00027677; XFM=3.00000015;
- UTC=2019-07-11 08:22:14
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-07-11 03:28:48 - 6.00010150
-x-cbparentid: 19071108-1530-0000-0000-0000737676C2
-Message-Id: <OF7C58670D.824A65B3-ON00258434.002DF9B8-00258434.002DF9C1@notes.na.collabserv.com>
-Subject: Re:  [PATCH -next] rdma/siw: remove set but not used variable 's'
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-11_01:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
+ <a8f2f1d2-b5d9-92fc-40c8-090af0487723@grimberg.me>
+In-Reply-To: <a8f2f1d2-b5d9-92fc-40c8-090af0487723@grimberg.me>
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Date:   Thu, 11 Jul 2019 10:54:02 +0200
+Message-ID: <CAHg0HuxZvXH899=M4vC7BTH-bP2J35aTwsGhiGoC8AamD8gOyA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
+ Device (IBNBD)
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, axboe@kernel.dk,
+        Christoph Hellwig <hch@infradead.org>, bvanassche@acm.org,
+        jgg@mellanox.com, dledford@redhat.com,
+        Roman Pen <r.peniaev@gmail.com>, gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"YueHaibing" <yuehaibing@huawei.com> wrote: -----
+Hi Sagi,
 
->To: <bmt@zurich.ibm.com>, <dledford@redhat.com>, <jgg@ziepe.ca>
->From: "YueHaibing" <yuehaibing@huawei.com>
->Date: 07/11/2019 09:13AM
->Cc: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
->"YueHaibing" <yuehaibing@huawei.com>
->Subject: [EXTERNAL] [PATCH -next] rdma/siw: remove set but not used
->variable 's'
->
->Fixes gcc '-Wunused-but-set-variable' warning:
->
->drivers/infiniband/sw/siw/siw_cm.c: In function
->siw_cm_llp_state_change:
->drivers/infiniband/sw/siw/siw_cm.c:1278:17: warning: variable s set
->but not used [-Wunused-but-set-variable]
->
->Reported-by: Hulk Robot <hulkci@huawei.com>
->Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->---
-> drivers/infiniband/sw/siw/siw_cm.c | 3 ---
-> 1 file changed, 3 deletions(-)
->
->diff --git a/drivers/infiniband/sw/siw/siw_cm.c
->b/drivers/infiniband/sw/siw/siw_cm.c
->index c883bf5..7d87a78 100644
->--- a/drivers/infiniband/sw/siw/siw_cm.c
->+++ b/drivers/infiniband/sw/siw/siw_cm.c
->@@ -1275,7 +1275,6 @@ static void siw_cm_llp_error_report(struct sock
->*sk)
-> static void siw_cm_llp_state_change(struct sock *sk)
-> {
-> 	struct siw_cep *cep;
->-	struct socket *s;
-> 	void (*orig_state_change)(struct sock *s);
-> 
-> 	read_lock(&sk->sk_callback_lock);
->@@ -1288,8 +1287,6 @@ static void siw_cm_llp_state_change(struct sock
->*sk)
-> 	}
-> 	orig_state_change = cep->sk_state_change;
-> 
->-	s = sk->sk_socket;
->-
-> 	siw_dbg_cep(cep, "state: %d\n", cep->state);
-> 
-> 	switch (sk->sk_state) {
->-- 
->2.7.4
->
->
->
+thanks a lot for the detailed reply. Answers inline below:
 
-Another bad leftover from excessive debugging times...
+On Tue, Jul 9, 2019 at 9:46 PM Sagi Grimberg <sagi@grimberg.me> wrote:
+>
+> Hi Danil and Jack,
+>
+> > Hallo Doug, Hallo Jason, Hallo Jens, Hallo Greg,
+> >
+> > Could you please provide some feedback to the IBNBD driver and the
+> > IBTRS library?
+> > So far we addressed all the requests provided by the community
+>
+> That is not exactly correct AFAIR,
+>
+> My main issues which were raised before are:
+> - IMO there isn't any justification to this ibtrs layering separation
+>    given that the only user of this is your ibnbd. Unless you are
+>    trying to submit another consumer, you should avoid adding another
+>    subsystem that is not really general purpose.
+We designed ibtrs not only with the IBNBD in mind but also as the
+transport layer for a distributed SDS. We'd like to be able to do what
+ceph is capable of (automatic up/down scaling of the storage cluster,
+automatic recovery) but using in-kernel rdma-based IO transport
+drivers, thin-provisioned volume managers, etc. to keep the highest
+possible performance. That modest plan of ours should among others
+cover for the following:
+When using IBNBD/SRP/NVMEoF to export devices (say, thin-provisioned
+volumes) from server to client and building an (md-)raid on top of the
+imported devices on client side in order to provide for redundancy
+across different machines, one gets very decent throughput and low
+latency, since the IOs are sent in parallel to the storage machines.
+One downside of this setup, is that the resync traffic has to flow
+over the client, where the md-raid is sitting. Ideally the resync
+traffic should flow directly between the two "legs" (storage machines)
+of the raid. The server side of such a "distributed raid" capable of
+this direct syncing between the array members would necessarily
+require to have some logic on server side and hence could also sit on
+top of ibtrs. (To continue the analogy, the "server" side of an
+md-raid build on top of say two NVMEoF devices are just two block
+devices, which couldn't communicate with each other)
+All in all itbrs is a library to establish a "fat", multipath,
+autoreconnectable connection between two hosts on top of rdma,
+optimized for transport of IO traffic.
 
-Thanks alot Yue!
-Bernard.
+> - ibtrs in general is using almost no infrastructure from the existing
+>    kernel subsystems. Examples are:
+>    - tag allocation mechanism (which I'm not clear why its needed)
+As you correctly noticed our client manages the buffers allocated and
+registered by the server on the connection establishment. Our tags are
+just a mechanism to take and release those buffers for incoming
+requests on client side. Since the buffers allocated by the server are
+to be shared between all the devices mapped from that server and all
+their HW queues (each having num_cpus of them) the mechanism behind
+get_tag/put_tag also takes care of the fairness.
 
+>    - rdma rw abstraction similar to what we have in the core
+On the one hand we have only single IO related function:
+ibtrs_clt_request(READ/WRITE, session,...), which executes rdma write
+with imm, or requests an rdma write with imm to be executed by the
+server. On the other hand we provide an abstraction to establish and
+manage what we call "session", which consist of multiple paths (to do
+failover and multipath with different policies), where each path
+consists of num_cpu rdma connections. Once you established a session
+you can add or remove paths from it on the fly. In case the connection
+to server is lost, the client does periodic attempts to reconnect
+automatically. On the server side you get just sg-lists with a
+direction READ or WRITE as requested by the client. We designed this
+interface not only as the minimum required to build a block device on
+top of rdma but also with a distributed raid in mind.
+
+>    - list_next_or_null_rr_rcu ??
+We use that for multipath. The macro (and more importantly the way we
+use it) has been reviewed by Linus and quit closely by Paul E.
+McKenney. AFAIR the conclusion was that Romans implementation is
+correct, but too tricky to use correctly in order to be included into
+kernel as a public interface. See https://lkml.org/lkml/2018/5/18/659
+
+>    - few other examples sprinkled around..
+To my best knowledge we addressed everything we got comments on and
+will definitely do so in the future.
+
+> Another question, from what I understand from the code, the client
+> always rdma_writes data on writes (with imm) from a remote pool of
+> server buffers dedicated to it. Essentially all writes are immediate (no
+> rdma reads ever). How is that different than using send wrs to a set of
+> pre-posted recv buffers (like all others are doing)? Is it faster?
+At the very beginning of the project we did some measurements and saw,
+that it is faster. I'm not sure if this is still true, since the
+hardware and the drivers and rdma subsystem did change in that time.
+Also it seemed to make the code simpler.
+
+> Also, given that the server pre-allocate a substantial amount of memory
+> for each connection, is it documented the requirements from the server
+> side? Usually kernel implementations (especially upstream ones) will
+> avoid imposing such large longstanding memory requirements on the system
+> by default. I don't have a firm stand on this, but wanted to highlight
+> this as you are sending this for upstream inclusion.
+We definitely need to stress that somewhere. Will include into readme
+and add to the cover letter next time. Our memory management is indeed
+basically absent in favor of performance: The server reserves
+queue_depth of say 512K buffers. Each buffer is used by client for
+single IO only, no matter how big the request is. So if client only
+issues 4K IOs, we do waste 508*queue_depth K of memory. We were aiming
+for lowest possible latency from the beginning. It is probably
+possible to implement some clever allocator on the server side which
+wouldn't affect the performance a lot.
+
+>
+>   and
+> > continue to maintain our code up-to-date with the upstream kernel
+> > while having an extra compatibility layer for older kernels in our
+> > out-of-tree repository.
+>
+> Overall, while I absolutely support your cause to lower your maintenance
+> overhead by having this sit upstream, I don't see why this can be
+> helpful to anyone else in the rdma community. If instead you can
+> crystallize why/how ibnbd is faster than anything else, and perhaps
+> contribute a common infrastructure piece (or enhance an existing one)
+> such that other existing ulps can leverage, it will be a lot more
+> compelling to include it upstream.
+>
+> > I understand that SRP and NVMEoF which are in the kernel already do
+> > provide equivalent functionality for the majority of the use cases.
+> > IBNBD on the other hand is showing higher performance and more
+> > importantly includes the IBTRS - a general purpose library to
+> > establish connections and transport BIO-like read/write sg-lists over
+> > RDMA,
+>
+> But who needs it? Can other ulps use it or pieces of it? I keep failing
+> to understand why is this a benefit if its specific to your ibnbd?
+See above and please ask if you have more questions to this.
+
+Thank you,
+Danil.
