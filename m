@@ -2,92 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0ADD65055
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 05:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1E2651AD
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 08:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbfGKDCk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Jul 2019 23:02:40 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:55901 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbfGKDCk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Jul 2019 23:02:40 -0400
-Received: by mail-wm1-f68.google.com with SMTP id a15so4118316wmj.5;
-        Wed, 10 Jul 2019 20:02:39 -0700 (PDT)
+        id S1727680AbfGKGCN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jul 2019 02:02:13 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:44945 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbfGKGCN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 02:02:13 -0400
+Received: by mail-lj1-f196.google.com with SMTP id k18so4453189ljc.11
+        for <linux-rdma@vger.kernel.org>; Wed, 10 Jul 2019 23:02:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QmmkRcrRHhvKDL3E6Ed88MV7KQW+R+f2hke0bRgH+sM=;
-        b=HeCsIwr79uKlTQ4IXQ2ZXeHGgfBduGZUp6NhDFkb7iSyJyT2kYg4d22BhIvU83sXFK
-         DrTL3ufbkBtaWFyhD4dQusuNLER1rle54jeMzwJytaQGyDkGkNuTwDktVDdeTVtG/INO
-         ojkygY+Sdcvd6UdFPVf5zmeF3CB68IzVZtXtS0Yl8dColS4YwXtHGC2rlNnbi2hxvEIe
-         UHzxXWg3gGkJaVVFa2ip1yfkb+Et7Q1pLQNIS3PuMSy/KHDAbAWvgsWzPByGLVrZKh0E
-         AEYuiT+ZLz8nVUfT1Ma/2QY2ZnlhZhUubvC0zutDMAJbXn3xxVPLEtvS66VCIlKYO4Uu
-         ZlXA==
+        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5wfpCOZ83nI7HCRBNZYdSqgK08vpf3gVcSTnau6UYac=;
+        b=BcNT1qKADluKUbaLesg1b4t+d4/iFYu5N8uvYFQrG2v7R4F/dqtkef3BhfnifY1XED
+         uXCUzTzxiPb8fHnKmsGuGRQSGqeTp3WhYhS0adjv8D/cAjxgmZqFEd8Za/ZVPdpDzwAz
+         Pko4W66+AGPjlyfXom/A7dW0sv9+sMcG+UTLB8cYN4Fz6E4e40Uf758G3DOP7j1kVNms
+         a39z8cLDtR3qDXhyIsdfPJ2CWxz7Y42b4yEo+vifNNaraJ/Wx8T/bh3xYto7nl3I8waI
+         BM7pf6kV+6OcUTwokyPlJQPiarEVIiVFwMn9Q341AoonwERkgPQA5aL7NyG3h+5U8ZaM
+         O1og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QmmkRcrRHhvKDL3E6Ed88MV7KQW+R+f2hke0bRgH+sM=;
-        b=d3uXc2msP6CgbQzRFvmj8N5LoX2iAwAOmdEY4mhvoqlqkAqNPQ+FNYqUJ8lekWLj6J
-         lLhMzbLs+G0vxwB1x7Be9dkA/svX0KvyFTtFIR16BkMarJTTu4HwpqfAgRDS0xIxyOq8
-         sw7N2Dm4mqIqFnh+7phGiJuk2dJAqz6JnZEkSuQhFgpNNH4G/tIRj9pqK394L8Zglrqz
-         YV2narz/Z5FWAQ3VIf3fkOC8dTT4NvbD1oYRyiGdN9YkKnVXvCAUJaJiGaBGjRgsZfjN
-         X6ZO5CorNI58sdAgiREXbt8S/r1fv1kmYW1aRZtaykqCo2EDEUcC4Q+WZ10SRTZpA0e8
-         hIxg==
-X-Gm-Message-State: APjAAAUo+Bx1G7sWkChHyVlUVsplmFmy+85D1I1+QmIFKBABrP25+TSX
-        hIeYZELq4XG3msNHdUeL4kc=
-X-Google-Smtp-Source: APXvYqzoQoA1pDhCxOLwzbyiQ0J/ctBrxUXsA6CqoPWinuJIkt5Upu2sIpM+D7TuvrM+iFferPT7Sw==
-X-Received: by 2002:a1c:96c7:: with SMTP id y190mr868171wmd.87.1562814158394;
-        Wed, 10 Jul 2019 20:02:38 -0700 (PDT)
-Received: from archlinux-threadripper ([2a01:4f8:222:2f1b::2])
-        by smtp.gmail.com with ESMTPSA id r11sm5213340wre.14.2019.07.10.20.02.36
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 10 Jul 2019 20:02:37 -0700 (PDT)
-Date:   Wed, 10 Jul 2019 20:02:35 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] rdma/siw: Use proper enumerated type in map_cqe_status
-Message-ID: <20190711030235.GA12012@archlinux-threadripper>
-References: <20190710174800.34451-1-natechancellor@gmail.com>
- <20190710182624.GG4051@ziepe.ca>
- <CAKwvOd=yJQgzjQBKW7=en_YnF6OCAg0MXy5c6c9tBLSjGgorPA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5wfpCOZ83nI7HCRBNZYdSqgK08vpf3gVcSTnau6UYac=;
+        b=osZaCs/zhWXIWYrj7UW9NRS05Rvo7SNH9yKIvUDyqnwX5XMro5819J5y9AFfGMODqb
+         XlDN/IqOh6+kMGKfNz4qjkyAs6QWrc9eh+4rLf1ikks5309jbo46H4BaUe0U0X3ivpLs
+         B+CbEx57dn5ymAu/Yp2aAFwUAf9Sg97shWgCFKv0RSqRb3m1DXqFps1Twz36H8CfKjtq
+         w7yhr/m6ydQeaaoQwLyeh+AWkHFaP71E42qWuo4X9KJe5vNjCymlp74faupAetEnDsn9
+         pKqescIOZbzvlN/IBa2D0Q2JUm/zfkhAcbQxnuwJ347HzN33Xb+g9KCKyqokW7OjAO1h
+         JWig==
+X-Gm-Message-State: APjAAAU4ZzllnanRLTgWIE4ssorIxrgcXktbY3ik8OPwUnt5bkL/WeOn
+        AFk1jhLTjc+ySWvmVurz2g6RW/Zf+eCsEh2ExEU=
+X-Google-Smtp-Source: APXvYqw/SKkWcDJJYhzh9Foxv18y0Hev4hCuXDzlEy58M1Sxo6DuPPrWfqWCtEi7kWCI77FTG7mPXUosCqvzTtc9cBI=
+X-Received: by 2002:a2e:3604:: with SMTP id d4mr1227030lja.85.1562824931191;
+ Wed, 10 Jul 2019 23:02:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=yJQgzjQBKW7=en_YnF6OCAg0MXy5c6c9tBLSjGgorPA@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20190710190502.104010-1-natechancellor@gmail.com>
+In-Reply-To: <20190710190502.104010-1-natechancellor@gmail.com>
+From:   Saeed Mahameed <saeedm@dev.mellanox.co.il>
+Date:   Wed, 10 Jul 2019 23:02:00 -0700
+Message-ID: <CALzJLG9Aw=sVPDiewHr+4Jiuaod_1q=10vzMzCUVg-rCCXD6cQ@mail.gmail.com>
+Subject: Re: [PATCH] net/mlx5e: Move priv variable into case statement in mlx5e_setup_tc
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 10, 2019 at 04:53:50PM -0700, Nick Desaulniers wrote:
-> On Wed, Jul 10, 2019 at 11:26 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Wed, Jul 10, 2019 at 10:48:00AM -0700, Nathan Chancellor wrote:
-> > > clang warns several times:
-> > >
-> > > drivers/infiniband/sw/siw/siw_cq.c:31:4: warning: implicit conversion
-> > > from enumeration type 'enum siw_wc_status' to different enumeration type
-> > > 'enum siw_opcode' [-Wenum-conversion]
-> > Weird that gcc doesn't warn on this by default..
-> 
-> Based on the sheer number of -Wenum-conversion that Nathan has fixed,
-> I don't think gcc has -Wenum-conversion (or it's somehow disabled just
-> for gcc).
-> -- 
-> Thanks,
-> ~Nick Desaulniers
+On Wed, Jul 10, 2019 at 12:05 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> There is an unused variable warning on arm64 defconfig when
+> CONFIG_MLX5_ESWITCH is unset:
+>
+> drivers/net/ethernet/mellanox/mlx5/core/en_main.c:3467:21: warning:
+> unused variable 'priv' [-Wunused-variable]
+>         struct mlx5e_priv *priv = netdev_priv(dev);
+>                            ^
+> 1 warning generated.
+>
+> Move it down into the case statement where it is used.
+>
+> Fixes: 4e95bc268b91 ("net: flow_offload: add flow_block_cb_setup_simple()")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/597
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index 6d0ae87c8ded..651eb714eb5b 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -3464,15 +3464,16 @@ static LIST_HEAD(mlx5e_block_cb_list);
+>  static int mlx5e_setup_tc(struct net_device *dev, enum tc_setup_type type,
+>                           void *type_data)
+>  {
+> -       struct mlx5e_priv *priv = netdev_priv(dev);
+> -
+>         switch (type) {
+>  #ifdef CONFIG_MLX5_ESWITCH
+> -       case TC_SETUP_BLOCK:
+> +       case TC_SETUP_BLOCK: {
+> +               struct mlx5e_priv *priv = netdev_priv(dev);
+> +
+>                 return flow_block_cb_setup_simple(type_data,
+>                                                   &mlx5e_block_cb_list,
+>                                                   mlx5e_setup_tc_block_cb,
+>                                                   priv, priv, true);
+> +       }
 
-Yes, as far as I am aware, GCC does not warn on implicit enum
-conversions (which I think defeats the purpose of enumerated types
-*shrugs*).
+Hi Nathan,
 
-Cheers,
-Nathan
+We have another patch internally that fixes this, and it is already
+queued up in my queue.
+it works differently as we want to pass priv instead of netdev to
+mlx5e_setup_tc_mqprio below,
+which will also solve warning ..
+
+So i would like to submit that patch if it is ok with you ?
+
+>  #endif
+>         case TC_SETUP_QDISC_MQPRIO:
+>                 return mlx5e_setup_tc_mqprio(dev, type_data);
+> --
+> 2.22.0
+>
