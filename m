@@ -2,161 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC75E65B5D
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 18:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B66D65B88
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2019 18:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728643AbfGKQSv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Jul 2019 12:18:51 -0400
-Received: from mail-eopbgr40061.outbound.protection.outlook.com ([40.107.4.61]:30275
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728045AbfGKQSv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Jul 2019 12:18:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zrs9gP1tD9ItrYMGihphFukQCo31jKf/OVD/GB+TPfULifepSGR3UGxsGLtUVjlglo/4ZAxMdtl6MFzxBltTyHDxxYB4CVeUl5v+4rgcdt/0l/1vktueFggAkOgwyh6izlkNC/K1adtVsMQUPHyqjSOAM4Echkeab3DC1wyY9rsUv+XKOC1/5v5hUojBAQsKjn0+mCUKd0+kkb0aG3ztW3gYxT4ULIx+FzLCCKRMUazgXl6U6X4sLYOp5Oq2L8CLNwNwABmV9m/3mSZj+zAWwqpHiMLM1n15D63iDOC8x2a7HrLDfLwVvmGTAaan8vynD+wbppj5MeWYN4v73gyjlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+HvnIk+80qWWKXe+ojnEDXJ1snfbHtfV8m4VtYKZFks=;
- b=BIChcD/ByR7jeLRRT8BrQkKr+gKCtcjQiFtLevokHKGvM05GhtUT1FVJMjzJnh/r2g9RYVMcSzQ2vEbd7KsodY/AlV3yVh2YOjut4l8Bj/7OXczVhAc18tPyczGBIDcJ17olTeyj1V5i7ZsilRsvCg+w1XOEv4Csts/m0hNtLQz0fhoLPUdMNK+BExwO86ab454eSf7Z4OHxkfh6wKx42yz/PGafDV060guc7yVQB+kDsG1DVkdLM5OJXygQwoZe5+O+jEEcxbr41aHLBf/dR0MPk3z0sxhKn2ad7DtodAcU/5WOLiHB4i+WcH7cP09IvBQ00tkmIMMHV1u3c2Wd6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=mellanox.com;dmarc=pass action=none
- header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+HvnIk+80qWWKXe+ojnEDXJ1snfbHtfV8m4VtYKZFks=;
- b=CyUjlCW+Q9DRbjhwuL2wrnlQTKA247RZoKAxbVSYYt+FxEYsW1jQsg9YziUpGV36llXS7cYYXC4Mcum8KO840zuOBokQeJ477KQDWO34uKXSFf8vubDNHNRqc7uSPIdii0jQ06fswJ0aSy2gR7R17/8ByGAYgbZlqAXi/gJWEx4=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB6434.eurprd05.prod.outlook.com (20.179.32.84) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2073.10; Thu, 11 Jul 2019 16:18:46 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::217d:2cd7:c8da:9279]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::217d:2cd7:c8da:9279%5]) with mapi id 15.20.2052.020; Thu, 11 Jul 2019
- 16:18:46 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Yi Zhang <yi.zhang@redhat.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-CC:     Daniel Jurgens <danielj@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>
-Subject: RE: regression: nvme rdma with bnxt_re0 broken
-Thread-Topic: regression: nvme rdma with bnxt_re0 broken
-Thread-Index: 2UfSPBB7aurhIBgBOMtlZZ/Acg5lQJrLV3lwgAA5BsA=
-Date:   Thu, 11 Jul 2019 16:18:45 +0000
-Message-ID: <AM0PR05MB4866070FBADCCABD1F84E42ED1F30@AM0PR05MB4866.eurprd05.prod.outlook.com>
-References: <1310083272.27124086.1562836112586.JavaMail.zimbra@redhat.com>
- <619411460.27128070.1562838433020.JavaMail.zimbra@redhat.com>
- <AM0PR05MB48664657022ECA8526E3C967D1F30@AM0PR05MB4866.eurprd05.prod.outlook.com>
-In-Reply-To: <AM0PR05MB48664657022ECA8526E3C967D1F30@AM0PR05MB4866.eurprd05.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [49.207.52.95]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0e9cdeef-6933-46d0-a320-08d7061b730c
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM0PR05MB6434;
-x-ms-traffictypediagnostic: AM0PR05MB6434:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <AM0PR05MB643466E437C7BF2985148778D1F30@AM0PR05MB6434.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:241;
-x-forefront-prvs: 0095BCF226
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(346002)(366004)(39860400002)(396003)(376002)(189003)(199004)(13464003)(66476007)(66066001)(6436002)(71190400001)(71200400001)(55016002)(14454004)(66556008)(66946007)(66446008)(76116006)(33656002)(54906003)(2940100002)(2906002)(229853002)(64756008)(7696005)(99286004)(25786009)(6116002)(53936002)(3846002)(7736002)(6246003)(305945005)(2501003)(8936002)(52536014)(9686003)(6306002)(81166006)(14444005)(5660300002)(966005)(74316002)(186003)(76176011)(26005)(6506007)(53546011)(102836004)(55236004)(11346002)(476003)(486006)(316002)(446003)(68736007)(256004)(86362001)(478600001)(110136005)(81156014)(8676002)(4326008);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6434;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: eLCjRMtAzIfBdi0qltIJdSZZNi/lpWZDVal/fuAkyP3jui0K7y4wHm8IzaHujcr/QKNglN4M++U2bGWApYW0aW44KItts8MvgA5DF5q6mhsPJnOI/e25+szVh5r9J1chPlPVs08zTzxWL1aZmcKfcuo/AJtmlJLATYEk92CpgxodcJhhO5V7d3xv4ksLalaeJJWS5boJEpTSmwQQ7ezWZlqVtfs8JsZsGSQ45mx3CP/mplwv0sk6EP1uevemLLk6rkfNf1ES9nYoG3kR6xIVDkQ0qGeRb+s2SoT5/NEYf7gVFTijqg6oPMGL6TJ7Avfw2+qoW5GOJtZc+YzRr4ioNnrTkYgD/xgWqtpjHQVM0LUxOyAla7HsC/oK4frfAiDgWMiHBZKP/3O/86ju9mVZkOfQU4RXiTXZ22FPSrr5VzI=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726116AbfGKQ2U convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 11 Jul 2019 12:28:20 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53056 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728226AbfGKQ2T (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 11 Jul 2019 12:28:19 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6BGNDvn004002
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 12:28:18 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.109])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tp7nqjxwc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 12:28:18 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Thu, 11 Jul 2019 16:28:17 -0000
+Received: from us1b3-smtp06.a3dr.sjc01.isc4sb.com (10.122.203.184)
+        by smtp.notes.na.collabserv.com (10.122.47.48) with smtp.notes.na.collabserv.com ESMTP;
+        Thu, 11 Jul 2019 16:28:11 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp06.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019071116281124-603891 ;
+          Thu, 11 Jul 2019 16:28:11 +0000 
+In-Reply-To: <20190711161218.GA4989@embeddedor>
+Subject: Re: [PATCH] RDMA/siw: Mark expected switch fall-throughs
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     "Doug Ledford" <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 11 Jul 2019 16:28:10 +0000
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e9cdeef-6933-46d0-a320-08d7061b730c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jul 2019 16:18:45.9366
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: parav@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6434
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190711161218.GA4989@embeddedor>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-KeepSent: BB618A17:F92ECEDA-00258434:005A1205;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 62223
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19071116-3721-0000-0000-000006F3A05C
+X-IBM-SpamModules-Scores: BY=0.002733; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000100
+X-IBM-SpamModules-Versions: BY=3.00011410; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01230700; UDB=6.00648256; IPR=6.01011975;
+ BA=6.00006355; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
+ ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00027681; XFM=3.00000015;
+ UTC=2019-07-11 16:28:15
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-07-11 16:14:30 - 6.00010152
+x-cbparentid: 19071116-3722-0000-0000-0000FEA2B324
+Message-Id: <OFBB618A17.F92ECEDA-ON00258434.005A1205-00258434.005A7884@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-11_04:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-U2FnaSwNCg0KVGhpcyBpcyBiZXR0ZXIgb25lIHRvIGNjIHRvIGxpbnV4LXJkbWEuDQoNCisgRGV2
-ZXNoLCBTZWx2aW4uDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUGFy
-YXYgUGFuZGl0DQo+IFNlbnQ6IFRodXJzZGF5LCBKdWx5IDExLCAyMDE5IDY6MjUgUE0NCj4gVG86
-IFlpIFpoYW5nIDx5aS56aGFuZ0ByZWRoYXQuY29tPjsgbGludXgtbnZtZUBsaXN0cy5pbmZyYWRl
-YWQub3JnDQo+IENjOiBEYW5pZWwgSnVyZ2VucyA8ZGFuaWVsakBtZWxsYW5veC5jb20+DQo+IFN1
-YmplY3Q6IFJFOiByZWdyZXNzaW9uOiBudm1lIHJkbWEgd2l0aCBibnh0X3JlMCBicm9rZW4NCj4g
-DQo+IEhpIFlpIFpoYW5nLA0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+
-IEZyb206IFlpIFpoYW5nIDx5aS56aGFuZ0ByZWRoYXQuY29tPg0KPiA+IFNlbnQ6IFRodXJzZGF5
-LCBKdWx5IDExLCAyMDE5IDM6MTcgUE0NCj4gPiBUbzogbGludXgtbnZtZUBsaXN0cy5pbmZyYWRl
-YWQub3JnDQo+ID4gQ2M6IERhbmllbCBKdXJnZW5zIDxkYW5pZWxqQG1lbGxhbm94LmNvbT47IFBh
-cmF2IFBhbmRpdA0KPiA+IDxwYXJhdkBtZWxsYW5veC5jb20+DQo+ID4gU3ViamVjdDogcmVncmVz
-c2lvbjogbnZtZSByZG1hIHdpdGggYm54dF9yZTAgYnJva2VuDQo+ID4NCj4gPiBIZWxsbw0KPiA+
-DQo+ID4gJ252bWUgY29ubmVjdCcgZmFpbGVkIHdoZW4gdXNlIGJueHRfcmUwIG9uIGxhdGVzdCB1
-cHN0cmVhbSBidWlsZFsxXSwNCj4gPiBieSBiaXNlY3RpbmcgSSBmb3VuZCBpdCB3YXMgaW50cm9k
-dWNlZCBmcm9tIHY1LjIuMC1yYzEgd2l0aCBbMl0sIGl0DQo+ID4gd29ya3MgYWZ0ZXIgSSByZXZl
-cnQgaXQuDQo+ID4gTGV0IG1lIGtub3cgaWYgeW91IG5lZWQgbW9yZSBpbmZvLCB0aGFua3MuDQo+
-ID4NCj4gPiBbMV0NCj4gPiBbcm9vdEByZG1hLXBlcmYtMDcgfl0kIG52bWUgY29ubmVjdCAtdCBy
-ZG1hIC1hIDE3Mi4zMS40MC4xMjUgLXMgNDQyMA0KPiA+IC1uIHRlc3RucW4gRmFpbGVkIHRvIHdy
-aXRlIHRvIC9kZXYvbnZtZS1mYWJyaWNzOiBCYWQgYWRkcmVzcw0KPiA+DQo+ID4gW3Jvb3RAcmRt
-YS1wZXJmLTA3IH5dJCBkbWVzZw0KPiA+IFsgIDQ3Ni4zMjA3NDJdIGJueHRfZW4gMDAwMDoxOTow
-MC4wOiBRUExJQjogY21kcVsweDRiOV09MHgxNSBzdGF0dXMNCj4gPiAweDUgWyA0NzYuMzI3MTAz
-XSBpbmZpbmliYW5kIGJueHRfcmUwOiBGYWlsZWQgdG8gYWxsb2NhdGUgSFcgQUggWw0KPiA+IDQ3
-Ni4zMzI1MjVdIG52bWUgbnZtZTI6IHJkbWFfY29ubmVjdCBmYWlsZWQgKC0xNCkuDQo+ID4gWyAg
-NDc2LjM0MzU1Ml0gbnZtZSBudm1lMjogcmRtYSBjb25uZWN0aW9uIGVzdGFibGlzaG1lbnQgZmFp
-bGVkICgtMTQpDQo+ID4NCj4gPiBbcm9vdEByZG1hLXBlcmYtMDcgfl0kIGxzcGNpICB8IGdyZXAg
-LWkgQnJvYWRjb20NCj4gPiAwMTowMC4wIEV0aGVybmV0IGNvbnRyb2xsZXI6IEJyb2FkY29tIElu
-Yy4gYW5kIHN1YnNpZGlhcmllcyBOZXRYdHJlbWUNCj4gPiBCQ001NzIwIDItcG9ydCBHaWdhYml0
-IEV0aGVybmV0IFBDSWUNCj4gPiAwMTowMC4xIEV0aGVybmV0IGNvbnRyb2xsZXI6IEJyb2FkY29t
-IEluYy4gYW5kIHN1YnNpZGlhcmllcyBOZXRYdHJlbWUNCj4gPiBCQ001NzIwIDItcG9ydCBHaWdh
-Yml0IEV0aGVybmV0IFBDSWUNCj4gPiAxODowMC4wIFJBSUQgYnVzIGNvbnRyb2xsZXI6IEJyb2Fk
-Y29tIC8gTFNJIE1lZ2FSQUlEIFNBUy0zIDMwMDggW0Z1cnldDQo+ID4gKHJldg0KPiA+IDAyKQ0K
-PiA+IDE5OjAwLjAgRXRoZXJuZXQgY29udHJvbGxlcjogQnJvYWRjb20gSW5jLiBhbmQgc3Vic2lk
-aWFyaWVzIEJDTTU3NDEyDQo+ID4gTmV0WHRyZW1lLUUgMTBHYiBSRE1BIEV0aGVybmV0IENvbnRy
-b2xsZXIgKHJldiAwMSkNCj4gPiAxOTowMC4xIEV0aGVybmV0IGNvbnRyb2xsZXI6IEJyb2FkY29t
-IEluYy4gYW5kIHN1YnNpZGlhcmllcyBCQ001NzQxMg0KPiA+IE5ldFh0cmVtZS1FIDEwR2IgUkRN
-QSBFdGhlcm5ldCBDb250cm9sbGVyIChyZXYgMDEpDQo+ID4NCj4gPg0KPiA+IFsyXQ0KPiA+IGNv
-bW1pdCA4MjNiMjNkYTcxMTMyYjgwZDlmNDFhYjY2N2M2OGIxMTI0NTVmM2I2DQo+ID4gQXV0aG9y
-OiBQYXJhdiBQYW5kaXQgPHBhcmF2QG1lbGxhbm94LmNvbT4NCj4gPiBEYXRlOiAgIFdlZCBBcHIg
-MTAgMTE6MjM6MDMgMjAxOSArMDMwMA0KPiA+DQo+ID4gICAgIElCL2NvcmU6IEFsbG93IHZsYW4g
-bGluayBsb2NhbCBhZGRyZXNzIGJhc2VkIFJvQ0UgR0lEcw0KPiA+DQo+ID4gICAgIElQdjYgbGlu
-ayBsb2NhbCBhZGRyZXNzIGZvciBhIFZMQU4gbmV0ZGV2aWNlIGhhcyBub3RoaW5nIHRvIGRvIHdp
-dGggaXRzDQo+ID4gICAgIHJlc2VtYmxhbmNlIHdpdGggdGhlIGRlZmF1bHQgR0lELCBiZWNhdXNl
-IFZMQU4gbGluayBsb2NhbCBHSUQgaXMgaW4NCj4gPiAgICAgZGlmZmVyZW50IGxheWVyIDIgZG9t
-YWluLg0KPiA+DQo+ID4gICAgIE5vdyB0aGF0IFJvQ0UgTUFEIHBhY2tldCBwcm9jZXNzaW5nIGFu
-ZCByb3V0ZSByZXNvbHV0aW9uIGNvbnNpZGVyIHRoZQ0KPiA+ICAgICByaWdodCBHSUQgaW5kZXgs
-IHRoZXJlIGlzIG5vIG5lZWQgZm9yIGFuIHVubmVjZXNzYXJ5IGNoZWNrIHdoaWNoIHByZXZlbnRz
-DQo+ID4gICAgIHRoZSBhZGRpdGlvbiBvZiB2bGFuIGJhc2VkIElQdjYgbGluayBsb2NhbCBHSURz
-Lg0KPiA+DQo+ID4gICAgIFNpZ25lZC1vZmYtYnk6IFBhcmF2IFBhbmRpdCA8cGFyYXZAbWVsbGFu
-b3guY29tPg0KPiA+ICAgICBSZXZpZXdlZC1ieTogRGFuaWVsIEp1cmdlbnMgPGRhbmllbGpAbWVs
-bGFub3guY29tPg0KPiA+ICAgICBTaWduZWQtb2ZmLWJ5OiBMZW9uIFJvbWFub3Zza3kgPGxlb25y
-b0BtZWxsYW5veC5jb20+DQo+ID4gICAgIFNpZ25lZC1vZmYtYnk6IEphc29uIEd1bnRob3JwZSA8
-amdnQG1lbGxhbm94LmNvbT4NCj4gPg0KPiA+DQo+ID4NCj4gPiBCZXN0IFJlZ2FyZHMsDQo+ID4g
-ICBZaSBaaGFuZw0KPiA+DQo+IA0KPiBJIG5lZWQgc29tZSBtb3JlIGluZm9ybWF0aW9uIGZyb20g
-eW91IHRvIGRlYnVnIHRoaXMgaXNzdWUgYXMgSSBkb27igJl0IGhhdmUgdGhlDQo+IGh3Lg0KPiBU
-aGUgaGlnaGxpZ2h0ZWQgcGF0Y2ggYWRkZWQgc3VwcG9ydCBmb3IgSVB2NiBsaW5rIGxvY2FsIGFk
-ZHJlc3MgZm9yIHZsYW4uIEkgYW0NCj4gdW5zdXJlIGhvdyB0aGlzIGNhbiBhZmZlY3QgSVB2NCBB
-SCBjcmVhdGlvbiBmb3Igd2hpY2ggdGhlcmUgaXMgZmFpbHVyZS4NCj4gDQo+IDEuIEJlZm9yZSB5
-b3UgYXNzaWduIHRoZSBJUCBhZGRyZXNzIHRvIHRoZSBuZXRkZXZpY2UsIFBsZWFzZSBkbywgZWNo
-byAtbg0KPiAibW9kdWxlIGliX2NvcmUgK3AiID4gL3N5cy9rZXJuZWwvZGVidWcvZHluYW1pY19k
-ZWJ1Zy9jb250cm9sDQo+IA0KPiBQbGVhc2Ugc2hhcmUgYmVsb3cgb3V0cHV0IGJlZm9yZSBkb2lu
-ZyBudm1lIGNvbm5lY3QuDQo+IDIuIE91dHB1dCBvZiBzY3JpcHQgWzFdDQo+ICQgc2hvd19naWRz
-IHNjcmlwdA0KPiBJZiBnZXR0aW5nIHRoaXMgc2NyaXB0IGlzIHByb2JsZW1hdGljLCBzaGFyZSB0
-aGUgb3V0cHV0IG9mLA0KPiANCj4gJCBjYXQgL3N5cy9jbGFzcy9pbmZpbmliYW5kL2JueHRfcmUw
-L3BvcnRzLzEvZ2lkcy8qDQo+ICQgY2F0IC9zeXMvY2xhc3MvaW5maW5pYmFuZC9ibnh0X3JlMC9w
-b3J0cy8xL2dpZF9hdHRycy9uZGV2cy8qDQo+ICQgaXAgbGluayBzaG93DQo+ICRpcCBhZGRyIHNo
-b3cNCj4gJCBkbWVzZw0KPiANCj4gWzFdIGh0dHBzOi8vY29tbXVuaXR5Lm1lbGxhbm94LmNvbS9z
-L2FydGljbGUvdW5kZXJzdGFuZGluZy1zaG93LWdpZHMtDQo+IHNjcmlwdCNqaXZlX2NvbnRlbnRf
-aWRfVGhlX1NjcmlwdA0KPiANCj4gSSBzdXNwZWN0IHRoYXQgZHJpdmVyJ3MgYXNzdW1wdGlvbiBh
-Ym91dCBHSUQgaW5kaWNlcyBtaWdodCBoYXZlIGdvbmUgd3JvbmcNCj4gaGVyZSBpbiBkcml2ZXJz
-L2luZmluaWJhbmQvaHcvYm54dF9yZS9pYl92ZXJicy5jLg0KPiBMZXRzIHNlZSBhYm91dCByZXN1
-bHRzIHRvIGNvbmZpcm0gdGhhdC4NCg==
+-----"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote: -----
+
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>, "Doug Ledford"
+><dledford@redhat.com>, "Jason Gunthorpe" <jgg@ziepe.ca>
+>From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+>Date: 07/11/2019 06:12PM
+>Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+>"Gustavo A. R. Silva" <gustavo@embeddedor.com>
+>Subject: [EXTERNAL] [PATCH] RDMA/siw: Mark expected switch
+>fall-throughs
+>
+>In preparation to enabling -Wimplicit-fallthrough, mark switch
+>cases where we are expecting to fall through.
+>
+>This patch fixes the following warnings:
+>
+>drivers/infiniband/sw/siw/siw_qp_rx.c: In function
+>‘siw_rdmap_complete’:
+>drivers/infiniband/sw/siw/siw_qp_rx.c:1214:18: warning: this
+>statement may fall through [-Wimplicit-fallthrough=]
+>   wqe->rqe.flags |= SIW_WQE_SOLICITED;
+>   ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+>drivers/infiniband/sw/siw/siw_qp_rx.c:1215:2: note: here
+>  case RDMAP_SEND:
+>  ^~~~
+>
+>drivers/infiniband/sw/siw/siw_qp_tx.c: In function
+>‘siw_qp_sq_process’:
+>drivers/infiniband/sw/siw/siw_qp_tx.c:1044:4: warning: this statement
+>may fall through [-Wimplicit-fallthrough=]
+>    siw_wqe_put_mem(wqe, tx_type);
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>drivers/infiniband/sw/siw/siw_qp_tx.c:1045:3: note: here
+>   case SIW_OP_INVAL_STAG:
+>   ^~~~
+>drivers/infiniband/sw/siw/siw_qp_tx.c:1128:4: warning: this statement
+>may fall through [-Wimplicit-fallthrough=]
+>    siw_wqe_put_mem(wqe, tx_type);
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>drivers/infiniband/sw/siw/siw_qp_tx.c:1129:3: note: here
+>   case SIW_OP_INVAL_STAG:
+>   ^~~~
+>
+>Warning level 3 was used: -Wimplicit-fallthrough=3
+>
+>This patch is part of the ongoing efforts to enable
+>-Wimplicit-fallthrough.
+>
+>Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+>---
+>
+>NOTE: -Wimplicit-fallthrough will be enabled globally in v5.3. So, I
+>      suggest you to take this patch for 5.3-rc1.
+>
+> drivers/infiniband/sw/siw/siw_qp_rx.c | 2 ++
+> drivers/infiniband/sw/siw/siw_qp_tx.c | 4 ++++
+> 2 files changed, 6 insertions(+)
+>
+>diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c
+>b/drivers/infiniband/sw/siw/siw_qp_rx.c
+>index 682a290bc11e..f87657a11657 100644
+>--- a/drivers/infiniband/sw/siw/siw_qp_rx.c
+>+++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
+>@@ -1212,6 +1212,8 @@ static int siw_rdmap_complete(struct siw_qp
+>*qp, int error)
+> 	case RDMAP_SEND_SE:
+> 	case RDMAP_SEND_SE_INVAL:
+> 		wqe->rqe.flags |= SIW_WQE_SOLICITED;
+>+		/* Fall through */
+>+
+> 	case RDMAP_SEND:
+> 	case RDMAP_SEND_INVAL:
+> 		if (wqe->wr_status == SIW_WR_IDLE)
+>diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c
+>b/drivers/infiniband/sw/siw/siw_qp_tx.c
+>index f0d949e2e318..43020d2040fc 100644
+>--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
+>+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+>@@ -1042,6 +1042,8 @@ int siw_qp_sq_process(struct siw_qp *qp)
+> 		case SIW_OP_SEND_REMOTE_INV:
+> 		case SIW_OP_WRITE:
+> 			siw_wqe_put_mem(wqe, tx_type);
+>+			/* Fall through */
+>+
+> 		case SIW_OP_INVAL_STAG:
+> 		case SIW_OP_REG_MR:
+> 			if (tx_flags(wqe) & SIW_WQE_SIGNALLED)
+>@@ -1126,6 +1128,8 @@ int siw_qp_sq_process(struct siw_qp *qp)
+> 		case SIW_OP_READ:
+> 		case SIW_OP_READ_LOCAL_INV:
+> 			siw_wqe_put_mem(wqe, tx_type);
+>+			/* Fall through */
+>+
+> 		case SIW_OP_INVAL_STAG:
+> 		case SIW_OP_REG_MR:
+> 			siw_sqe_complete(qp, &wqe->sqe, wqe->bytes,
+>-- 
+>2.21.0
+>
+>
+Thanks Gustavo. Didn't know that becomes mandatory. Had it here and there
+only, where I thought it is not obvious...but better to keep the rules
+simple.
+
+Thanks,
+Bernard.
+
