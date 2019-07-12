@@ -2,120 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 193C96719B
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 16:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0506721C
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 17:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727158AbfGLOnA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Jul 2019 10:43:00 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:35086 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726992AbfGLOm7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Jul 2019 10:42:59 -0400
-Received: by mail-qk1-f193.google.com with SMTP id r21so6583518qke.2
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Jul 2019 07:42:59 -0700 (PDT)
+        id S1726984AbfGLPOZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Jul 2019 11:14:25 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:34890 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726945AbfGLPOZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Jul 2019 11:14:25 -0400
+Received: by mail-qt1-f196.google.com with SMTP id d23so8447837qto.2
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Jul 2019 08:14:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=c3BdLjsUkgLwHfdAsKdRe62P0E0PJoOA0Fuha9hcEks=;
-        b=QOEsPXPs/lkmtClQEqCWD2PByv8luGSKD7glXzSwu8n9xHK8eP7l9Nz7VxMP+dgpQZ
-         qVt7cABY3efBX0yb1aliiIl0/W41qPs/TM6/fVjlXBl/bkIuDI7AeoPm8UdZb6/KrnVN
-         CdjzVLYtvsLTECEdKD83FTAcxu25liR75c2DgFdBsd94ztwb+PijBlBUQ1Cmiyk6MuAA
-         y48Xn+z1WWX9I1qcC2KO8mLCNUnVkIcsQcmK4sxttJsKe+f+iWnTYr9O8RARpxIaBASI
-         TLnpK3kgRTPdcts3zst0PAXGUo4qZbVxZTyixyxRarYgg8OA1a/8Pk8JYXfpRzt7CIwg
-         xHHA==
+        bh=1NndeDHC4SKCtD2njC25wcF/fpw0ZFMG+wxyiwc8W7Y=;
+        b=l45/aiqYWpvyQ1RtFqL4X2dgQ4zP4rHvDqXZDf+brdvNfOSxkqU5NzKU7E56br/H+e
+         zoJ7wBWrL//znBKcRoro1c9RrDoLsxUlUGt0b3WHUvQ1gaOavfbEMrsCEBBw0Zj0iuxp
+         41/CfFkA8o6kRCiaXTE1ZeevDGmvF41ji1PiODQU8nizvAgIpiAJdoSlHvLbKodPZb4L
+         gXoFZpa+1EKQHdqp9CrqPvV49ZfSKr4i/QcQdaGpudb1mnXU6gXicDgbomjMdopnFJPH
+         PXqnAt74gvGMDuT5DzQeeHxli7baf1lzNYDqPHzPlzYkhpOAjqk+jqXegqzk1GCB+A1q
+         sECQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=c3BdLjsUkgLwHfdAsKdRe62P0E0PJoOA0Fuha9hcEks=;
-        b=cRB86WH92z+e89lN20lDei4Ey0jZfmRR3twrTNEip6/JHmH6apAsRhxFm+OMNpakop
-         QuP44IMSQAmf+VHPfVtzaxIPwVrUBc0gzMHvjLSt6kuFZP+m22LgRQTBSlwZH2CLbXwf
-         xidmfXgyf0BZYeQNCoPvkWolfzrsMRw5nqUQ2cfGx55vIS3IKCx90+O3WtTQ1/+zFzwh
-         KiOqg7xp8rxqSnpsUPAOj/cKhdvw9k53tTZ5ix5fAlJoBHKiYDqWnXJwSIzpTL5EB8yD
-         4BG0x10Y8y7I7zBKWKr2WmKUyi8X8y4LxqmD+NZGTLdBWTkh5hwW5N4soJpZ6EtNkmD+
-         3vVQ==
-X-Gm-Message-State: APjAAAXBCBONzpyRxmeScovce69OCHFLB8cRzuWSkXinavusDGTG10hc
-        KIUDu1eZ7qRNQHxuPkoQKJstOg==
-X-Google-Smtp-Source: APXvYqy/Pcvk8vVNUL2Et1UN+2Fg3a/OfJoXceL8cmfop9PGLqawx6jAHDxYaoDBtMhcGI2fvtYt3Q==
-X-Received: by 2002:a37:c448:: with SMTP id h8mr6570665qkm.308.1562942578921;
-        Fri, 12 Jul 2019 07:42:58 -0700 (PDT)
+        bh=1NndeDHC4SKCtD2njC25wcF/fpw0ZFMG+wxyiwc8W7Y=;
+        b=LZbVrVxLy4NKUjqmwI5Lq3h5jWYwjFZSCBWXLOQd8yoUaD2yZM/m2X+y+vmuTOuMXE
+         UmJeibT9LchZd9jec0W1zvPwxUyjy3r/s5fvAtqOyJABh6MTT3GjSPLs6rivMU22F1Tl
+         JOmiavBQ4XIu4AQhzQDf22q+sE06jQuf8AFNhIDa5fUsHwCpeDlxA2MrlfRTrFYQNN3s
+         Uz54OVuIueYOiNpqlIBKfik0uUeoczvZzR4b66p0qeyofwkO/gpT2gfSA3MvihgaVUYK
+         pQm7Ihw1scbR+a0OCTrjmYyHfZdI4NIv9W/zaL18p7mYNSxLcJfBwgROmE5OnOZtJHaz
+         JXXA==
+X-Gm-Message-State: APjAAAUbo0HoRP9cTaOq4B85rUJ7ZS9cvqETzHkUSpR+g2k7iHNw2iup
+        5Vmx0qRtM16FlkRBKcZIpxZrKw==
+X-Google-Smtp-Source: APXvYqzVsPvT5muHqZYRh1ti9OhEbH2ZE+gb0xXnUhlfTc2I3i5b2FRluj/KK3RazAZvETosrH8YnA==
+X-Received: by 2002:a05:6214:1447:: with SMTP id b7mr7231470qvy.89.1562944464279;
+        Fri, 12 Jul 2019 08:14:24 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id j78sm3781711qke.102.2019.07.12.07.42.58
+        by smtp.gmail.com with ESMTPSA id d25sm3518972qko.96.2019.07.12.08.14.23
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Jul 2019 07:42:58 -0700 (PDT)
+        Fri, 12 Jul 2019 08:14:23 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hlwlF-0001tF-Iv; Fri, 12 Jul 2019 11:42:57 -0300
-Date:   Fri, 12 Jul 2019 11:42:57 -0300
+        id 1hlxFf-0002BK-4s; Fri, 12 Jul 2019 12:14:23 -0300
+Date:   Fri, 12 Jul 2019 12:14:23 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Doug Ledford <dledford@redhat.com>,
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Bernard Metzler <BMT@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: Re: [PATCH] rdma/siw: avoid smp_store_mb() on a u64
-Message-ID: <20190712144257.GE27512@ziepe.ca>
-References: <20190712135339.GC27512@ziepe.ca>
- <20190712120328.GB27512@ziepe.ca>
- <20190712085212.3901785-1-arnd@arndb.de>
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH] rdma/siw: avoid smp_store_mb() on a u64
+Message-ID: <20190712151423.GG27512@ziepe.ca>
+References: <20190712085212.3901785-1-arnd@arndb.de>
  <OF05C1A780.433E36D1-ON00258435.003381DA-00258435.003F847E@notes.na.collabserv.com>
+ <20190712120328.GB27512@ziepe.ca>
  <OF36428621.B839DE8B-ON00258435.00461748-00258435.0047E413@notes.na.collabserv.com>
- <OF3D069E00.E0996A14-ON00258435.004DD8C8-00258435.00502F8C@notes.na.collabserv.com>
+ <CAK8P3a3ZqY_qLSN1gw12EvzLS49RAnmG4nT9=N+Qj9XngQd0CA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OF3D069E00.E0996A14-ON00258435.004DD8C8-00258435.00502F8C@notes.na.collabserv.com>
+In-Reply-To: <CAK8P3a3ZqY_qLSN1gw12EvzLS49RAnmG4nT9=N+Qj9XngQd0CA@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 12, 2019 at 02:35:50PM +0000, Bernard Metzler wrote:
-
-> >This looks wrong to me.. a userspace notification re-arm cannot be
-> >lost, so have a split READ/TEST/WRITE sequence can't possibly work?
-> >
-> >I'd expect an atomic test and clear here?
+On Fri, Jul 12, 2019 at 03:22:35PM +0200, Arnd Bergmann wrote:
+> On Fri, Jul 12, 2019 at 3:05 PM Bernard Metzler <BMT@zurich.ibm.com> wrote:
 > 
-> We cannot avoid the case that the application re-arms the
-> CQ only after a CQE got placed. That is why folks are polling the
-> CQ once after re-arming it - to make sure they do not miss the
-> very last and single CQE which would have produced a CQ event.
-
-That is different, that is re-arm happing after a CQE placement and
-this can't be fixed.
-
-What I said is that a re-arm from userspace cannot be lost. So you
-can't blindly clear the arm flag with the WRITE_ONCE. It might be OK
-beacuse of the if, but...
-
-It is just goofy to write it without a 'test and clear' atomic. If the
-writer side consumes the notify it should always be done atomically.
-
-And then I think all the weird barriers go away
-
-> >> @@ -1141,11 +1145,17 @@ int siw_req_notify_cq(struct ib_cq
-> >*base_cq, enum ib_cq_notify_flags flags)
-> >>  	siw_dbg_cq(cq, "flags: 0x%02x\n", flags);
-> >>  
-> >>  	if ((flags & IB_CQ_SOLICITED_MASK) == IB_CQ_SOLICITED)
-> >> -		/* CQ event for next solicited completion */
-> >> -		smp_store_mb(*cq->notify, SIW_NOTIFY_SOLICITED);
-> >> +		/*
-> >> +		 * Enable CQ event for next solicited completion.
-> >> +		 * and make it visible to all associated producers.
-> >> +		 */
-> >> +		smp_store_mb(cq->notify->flags, SIW_NOTIFY_SOLICITED);
 > >
-> >But what is the 2nd piece of data to motivate the smp_store_mb?
+> > We share CQ (completion queue) notification flags between application
+> > (which may be user land) and producer (kernel QP's (queue pairs)).
+> > Those flags can be written by both application and QP's. The application
+> > writes those flags to let the driver know if it shall inform about new
+> > work completions. It can write those flags at any time.
+> > Only a kernel producer reads those flags to decide if
+> > the CQ notification handler shall be kicked, if a new CQ element gets
+> > added to the CQ. When kicking the completion handler, the driver resets the
+> > notification flag, which must get re-armed by the application.
+> >
+> > We use READ_ONCE() and WRITE_ONCE(), since the flags are potentially
+> > shared (mmap'd) between user and kernel land.
+> >
+> > siw_req_notify_cq() is being called only by kernel consumers to change
+> > (write) the CQ notification state. We use smp_store_mb() to make sure
+> > the new value becomes visible to all kernel producers (QP's) asap.
+> >
+> >
+> > From cfb861a09dcfb24a98ba0f1e26bdaa1529d1b006 Mon Sep 17 00:00:00 2001
+> > From: Bernard Metzler <bmt@zurich.ibm.com>
+> > Date: Fri, 12 Jul 2019 13:19:27 +0200
+> > Subject: [PATCH] Make shared CQ notification flags 32bit to respect 32bit
+> >  architectures
+> >
+> > Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
 > 
-> Another core (such as a concurrent RX operation) shall see this
-> CQ being re-armed asap.
+> This fixes the build for me, thanks!
+> 
+> Tested-by: Arnd Bergmann <arnd@arndb.de>
 
-'ASAP' is not a '2nd piece of data'. 
+Since this is coming up so late in the merge window, I'm inclined to
+take the simple path while Bernard makes a complete solution
+here. What do you think Arnd?
 
-AFAICT this requirement is just a normal atomic set_bit which does
-also expedite making the change visible?
- 
-Jason
+From 0b043644c0ca601cb19943a81aa1f1455dbe9461 Mon Sep 17 00:00:00 2001
+From: Jason Gunthorpe <jgg@mellanox.com>
+Date: Fri, 12 Jul 2019 12:12:06 -0300
+Subject: [PATCH] RMDA/siw: Require a 64 bit arch
+
+The new siw driver fails to build on i386 with
+
+drivers/infiniband/sw/siw/siw_qp.c:1025:3: error: invalid output size for constraint '+q'
+                smp_store_mb(*cq->notify, SIW_NOTIFY_NOT);
+
+As it is using 64 bit values with the smp_store_mb.
+
+Since the entire scheme here seems questionable, and we are in the merge
+window, fix the compile failures by disabling 32 bit support on this
+driver.
+
+A proper fix will be reviewed post merge window.
+
+Fixes: c0cf5bdde46c ("rdma/siw: addition to kernel build environment")
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ drivers/infiniband/sw/siw/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/sw/siw/Kconfig b/drivers/infiniband/sw/siw/Kconfig
+index b622fc62f2cd6d..dace276aea1413 100644
+--- a/drivers/infiniband/sw/siw/Kconfig
++++ b/drivers/infiniband/sw/siw/Kconfig
+@@ -1,6 +1,6 @@
+ config RDMA_SIW
+ 	tristate "Software RDMA over TCP/IP (iWARP) driver"
+-	depends on INET && INFINIBAND && LIBCRC32C
++	depends on INET && INFINIBAND && LIBCRC32C && 64BIT
+ 	select DMA_VIRT_OPS
+ 	help
+ 	This driver implements the iWARP RDMA transport over
+-- 
+2.21.0
+
+
