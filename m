@@ -2,165 +2,269 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3F966F34
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 14:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEE366F87
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 15:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727148AbfGLMw3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Jul 2019 08:52:29 -0400
-Received: from mail-eopbgr130088.outbound.protection.outlook.com ([40.107.13.88]:60995
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726466AbfGLMw3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 12 Jul 2019 08:52:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OLKR3QY2bGyt2XUAm+GG5qk8P4MJSItKWt538zo4Q1o=;
- b=lZQ69Piq8W/JYarxgfyHLzQZro9/0rHAbeYe1LYF/qdfV06DEM8/h8rf7LE4kjS/1LGbnOhVIZFUTaubYpNTvSTsgSY4HfXeN9dheErLurQVsY8uhB79QlifDPu6F1DFVWWoIQ+smkkzY/37ht8Vy6ZsaNcBb/bqipvQ0L2YSjo=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB5940.eurprd05.prod.outlook.com (20.178.202.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.19; Fri, 12 Jul 2019 12:52:24 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::217d:2cd7:c8da:9279]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::217d:2cd7:c8da:9279%5]) with mapi id 15.20.2052.020; Fri, 12 Jul 2019
- 12:52:24 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Yi Zhang <yi.zhang@redhat.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-CC:     Daniel Jurgens <danielj@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-Subject: RE: regression: nvme rdma with bnxt_re0 broken
-Thread-Topic: regression: nvme rdma with bnxt_re0 broken
-Thread-Index: 2UfSPBB7aurhIBgBOMtlZZ/Acg5lQJrLV3lwgAA5BsCAAKCFgIAAD6MggAAPzICAAF+3EIAAAyXAgAACz1CAAB8vgIAAE91w
-Date:   Fri, 12 Jul 2019 12:52:24 +0000
-Message-ID: <AM0PR05MB48666463325E1D0E25D63F57D1F20@AM0PR05MB4866.eurprd05.prod.outlook.com>
-References: <1310083272.27124086.1562836112586.JavaMail.zimbra@redhat.com>
- <619411460.27128070.1562838433020.JavaMail.zimbra@redhat.com>
- <AM0PR05MB48664657022ECA8526E3C967D1F30@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <AM0PR05MB4866070FBADCCABD1F84E42ED1F30@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <66d43fd8-18e8-8b9d-90e3-ee2804d56889@redhat.com>
- <AM0PR05MB4866DEDB9DE4379F6A6EF15BD1F20@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <CA+sbYW17PGAW57pyRmQB9KsDA9Q+7FFgSseSTTWE_h6vffa7UQ@mail.gmail.com>
- <AM0PR05MB4866CFEDCDF3CDA1D7D18AA5D1F20@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <AM0PR05MB4866CCD487C9D99BD9526BA8D1F20@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <AM0PR05MB4866665D5CACB34AE885BCA2D1F20@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <ef6a01a1-9163-ef4e-29ac-4f4130c682f1@redhat.com>
-In-Reply-To: <ef6a01a1-9163-ef4e-29ac-4f4130c682f1@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [49.207.52.95]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d94203a3-fc62-4423-be83-08d706c7c980
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM0PR05MB5940;
-x-ms-traffictypediagnostic: AM0PR05MB5940:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <AM0PR05MB5940AC959257071131CB9431D1F20@AM0PR05MB5940.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 00963989E5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(396003)(366004)(376002)(346002)(189003)(199004)(13464003)(71190400001)(486006)(8936002)(68736007)(8676002)(110136005)(81166006)(33656002)(2906002)(14454004)(54906003)(71200400001)(966005)(86362001)(316002)(3846002)(229853002)(6116002)(81156014)(14444005)(74316002)(7736002)(256004)(305945005)(6506007)(53546011)(52536014)(26005)(66446008)(66556008)(66066001)(476003)(66946007)(76116006)(55236004)(66476007)(5660300002)(53936002)(64756008)(55016002)(99286004)(6436002)(25786009)(9686003)(4326008)(102836004)(6306002)(7696005)(186003)(11346002)(76176011)(6246003)(446003)(478600001)(10126625002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB5940;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: JNavzv5UpUYeyU0aiSefwGFzFo4B8zQC+TTnb3Z1xlQIVh99mKBlQhjEXoUqyD1EPcpoujecw/xkb264FeC04eaO4Qf5pixZYG1obWmyxr5BwzeSJY5PKASZZPF/wmQJX+gqM9Shp0gCJ/VYn6BvwJf6k5U4WAx4bBUyTBwOP6zlujL8DZBu/I3R6lbrxMD2HnKh90vGaiU1z1SHkrmSbJDG/t9mRRFXtnlrvCCsgkd5Vw9+9/kCIrxilOYj5n4sSrn2rIpCsyHaOHAeFCPm/LpCClulom9iqD1JM4SVJhog8Ilr6hM6C4MeWr221dHNM6AKeixQ7Y5VWLe6Pl3aXcWcmQ4xyRkf/eF7FLG8VeTchEAQCCvveWCLYC7+qxPfwLrIKSwvOspb/m6dl733izc1l0Fp8vuRDhegIS8B9L8=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727433AbfGLNF0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 12 Jul 2019 09:05:26 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61962 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727336AbfGLNFZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 12 Jul 2019 09:05:25 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6CD2lLx067152
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Jul 2019 09:05:24 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tpswbtbcy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Jul 2019 09:05:24 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 12 Jul 2019 13:05:23 -0000
+Received: from us1a3-smtp03.a3.dal06.isc4sb.com (10.106.154.98)
+        by smtp.notes.na.collabserv.com (10.106.227.158) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 12 Jul 2019 13:05:15 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp03.a3.dal06.isc4sb.com
+          with ESMTP id 2019071213051539-475857 ;
+          Fri, 12 Jul 2019 13:05:15 +0000 
+In-Reply-To: <20190712120328.GB27512@ziepe.ca>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     "Arnd Bergmann" <arnd@arndb.de>,
+        "Doug Ledford" <dledford@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 12 Jul 2019 13:05:14 +0000
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d94203a3-fc62-4423-be83-08d706c7c980
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2019 12:52:24.4601
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: parav@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5940
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190712120328.GB27512@ziepe.ca>,<20190712085212.3901785-1-arnd@arndb.de>
+ <OF05C1A780.433E36D1-ON00258435.003381DA-00258435.003F847E@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-LLNOutbound: False
+X-Disclaimed: 22835
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19071213-1335-0000-0000-00000099771C
+X-IBM-SpamModules-Scores: BY=0.030638; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.002329
+X-IBM-SpamModules-Versions: BY=3.00011415; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01231103; UDB=6.00648504; IPR=6.01012387;
+ MB=3.00027691; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-12 13:05:21
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-07-12 09:20:14 - 6.00010155
+x-cbparentid: 19071213-1336-0000-0000-000001597D84
+Message-Id: <OF36428621.B839DE8B-ON00258435.00461748-00258435.0047E413@notes.na.collabserv.com>
+Subject: Re:  Re: [PATCH] rdma/siw: avoid smp_store_mb() on a u64
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-12_04:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogWWkgWmhhbmcgPHlpLnpo
-YW5nQHJlZGhhdC5jb20+DQo+IFNlbnQ6IEZyaWRheSwgSnVseSAxMiwgMjAxOSA1OjExIFBNDQo+
-IFRvOiBQYXJhdiBQYW5kaXQgPHBhcmF2QG1lbGxhbm94LmNvbT47IFNlbHZpbiBYYXZpZXINCj4g
-PHNlbHZpbi54YXZpZXJAYnJvYWRjb20uY29tPg0KPiBDYzogRGFuaWVsIEp1cmdlbnMgPGRhbmll
-bGpAbWVsbGFub3guY29tPjsgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc7DQo+IERldmVzaCBT
-aGFybWEgPGRldmVzaC5zaGFybWFAYnJvYWRjb20uY29tPjsgbGludXgtDQo+IG52bWVAbGlzdHMu
-aW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogcmVncmVzc2lvbjogbnZtZSByZG1hIHdpdGgg
-Ym54dF9yZTAgYnJva2VuDQo+IA0KPiBIaSBQYXJhdg0KPiBUaGUgbnZtZSBjb25uZWN0IHN0aWxs
-IGZhaWxlZFsxXSwgSSd2ZSBwYXN0ZSBhbGwgdGhlIGRtZXNnIGxvZyB0b1syXSwgcGxzIGNoZWNr
-IGl0Lg0KPiANCj4gDQo+IFsxXQ0KPiBbcm9vdEByZG1hLXBlcmYtMDcgfl0kIG52bWUgY29ubmVj
-dCAtdCByZG1hIC1hIDE3Mi4zMS40MC4xMjUgLXMgNDQyMCAtbg0KPiB0ZXN0bnFuDQo+IEZhaWxl
-ZCB0byB3cml0ZSB0byAvZGV2L252bWUtZmFicmljczogQ29ubmVjdGlvbiByZXNldCBieSBwZWVy
-DQo+IFsyXQ0KPiBodHRwczovL3Bhc3RlYmluLmNvbS9pcHZhazBTcA0KPiANCg0KSSB0aGluayB2
-bGFuX2lkIGlzIG5vdCBpbml0aWFsaXplZCB0byAweGZmZmYgZHVlIHRvIHdoaWNoIGlwdjQgZW50
-cnkgYWRkaXRpb24gYWxzbyBmYWlsZWQgd2l0aCBteSBwYXRjaC4NClRoaXMgaXMgcHJvYmFibHkg
-c29sdmVzIGl0LiBOb3Qgc3VyZS4gSSBhbSBub3QgbXVjaCBmYW1pbGlhciB3aXRoIGl0Lg0KDQpT
-ZWx2aW4sDQpDYW4geW91IHBsZWFzZSB0YWtlIGEgbG9vaz8NCg0KRnJvbSA3YjU1ZTFkNDUwMDI1
-OWNmN2MwMmZiNGQ5ZmJiZWI1YWQxY2ZjNjIzIE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KRnJv
-bTogUGFyYXYgUGFuZGl0IDxwYXJhdkBtZWxsYW5veC5jb20+DQpEYXRlOiBGcmksIDEyIEp1bCAy
-MDE5IDA0OjM0OjUyIC0wNTAwDQpTdWJqZWN0OiBbUEFUQ0ggdjFdIElCL2JueHRfcmU6IEhvbm9y
-IHZsYW5faWQgaW4gR0lEIGVudHJ5IGNvbXBhcmlzb24NCg0KR0lEIGVudHJ5IGNvbnNpc3Qgb2Yg
-R0lELCB2bGFuLCBuZXRkZXYgYW5kIHNtYWMuDQpFeHRlbmQgR0lEIGR1cGxpY2F0ZSBjaGVjayBj
-b21wYW5pb25zIHRvIGNvbnNpZGVyIHZsYW5faWQgYXMgd2VsbA0KdG8gc3VwcG9ydCBJUHY2IFZM
-QU4gYmFzZWQgbGluayBsb2NhbCBhZGRyZXNzZXMuDQoNCkdJRCBkZWxldGlvbiBiYXNlZCBvbiBv
-bmx5IEdJRCBjb21wYXJpc2lvbiBpcyBub3QgY29ycmVjdC4NCkl0IG5lZWRzIGZ1cnRoZXIgZml4
-ZXMuDQoNCkZpeGVzOiA4MjNiMjNkYTcxMTMgKCJJQi9jb3JlOiBBbGxvdyB2bGFuIGxpbmsgbG9j
-YWwgYWRkcmVzcyBiYXNlZCBSb0NFIEdJRHMiKQ0KQ2hhbmdlLUlkOiBJMmUwMjZlYzgwNjVjODQy
-NWJhMjRmYWQ4NTI1MzIzZDExMmEyZjRlNA0KU2lnbmVkLW9mZi1ieTogUGFyYXYgUGFuZGl0IDxw
-YXJhdkBtZWxsYW5veC5jb20+DQotLS0NCiBkcml2ZXJzL2luZmluaWJhbmQvaHcvYm54dF9yZS9x
-cGxpYl9yZXMuYyB8IDUgKysrKysNCiBkcml2ZXJzL2luZmluaWJhbmQvaHcvYm54dF9yZS9xcGxp
-Yl9zcC5jICB8IDcgKysrKysrLQ0KIGRyaXZlcnMvaW5maW5pYmFuZC9ody9ibnh0X3JlL3FwbGli
-X3NwLmggIHwgMSArDQogMyBmaWxlcyBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0
-aW9uKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvYm54dF9yZS9xcGxp
-Yl9yZXMuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9ibnh0X3JlL3FwbGliX3Jlcy5jDQppbmRl
-eCAzNzkyOGIxMTExZGYuLjIxNjY0OGI2NDBjZSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvaW5maW5p
-YmFuZC9ody9ibnh0X3JlL3FwbGliX3Jlcy5jDQorKysgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcv
-Ym54dF9yZS9xcGxpYl9yZXMuYw0KQEAgLTQ4OCw2ICs0ODgsOCBAQCBzdGF0aWMgaW50IGJueHRf
-cXBsaWJfYWxsb2Nfc2dpZF90Ymwoc3RydWN0IGJueHRfcXBsaWJfcmVzICpyZXMsDQogCQkJCSAg
-ICAgc3RydWN0IGJueHRfcXBsaWJfc2dpZF90YmwgKnNnaWRfdGJsLA0KIAkJCQkgICAgIHUxNiBt
-YXgpDQogew0KKwl1MTYgaTsNCisNCiAJc2dpZF90YmwtPnRibCA9IGtjYWxsb2MobWF4LCBzaXpl
-b2Yoc3RydWN0IGJueHRfcXBsaWJfZ2lkKSwgR0ZQX0tFUk5FTCk7DQogCWlmICghc2dpZF90Ymwt
-PnRibCkNCiAJCXJldHVybiAtRU5PTUVNOw0KQEAgLTUwMCw2ICs1MDIsOSBAQCBzdGF0aWMgaW50
-IGJueHRfcXBsaWJfYWxsb2Nfc2dpZF90Ymwoc3RydWN0IGJueHRfcXBsaWJfcmVzICpyZXMsDQog
-CWlmICghc2dpZF90YmwtPmN0eCkNCiAJCWdvdG8gb3V0X2ZyZWUyOw0KIA0KKwlmb3IgKGkgPSAw
-OyBpIDwgbWF4OyBpKyspDQorCQlzZ2lkX3RibC0+dGJsW2ldLnZsYW5faWQgPSAweGZmZmY7DQor
-DQogCXNnaWRfdGJsLT52bGFuID0ga2NhbGxvYyhtYXgsIHNpemVvZih1OCksIEdGUF9LRVJORUwp
-Ow0KIAlpZiAoIXNnaWRfdGJsLT52bGFuKQ0KIAkJZ290byBvdXRfZnJlZTM7DQpkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L2JueHRfcmUvcXBsaWJfc3AuYyBiL2RyaXZlcnMvaW5m
-aW5pYmFuZC9ody9ibnh0X3JlL3FwbGliX3NwLmMNCmluZGV4IDQ4NzkzZDM1MTJhYy4uMGQ5MGJl
-ODg2ODVmIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L2JueHRfcmUvcXBsaWJf
-c3AuYw0KKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L2JueHRfcmUvcXBsaWJfc3AuYw0KQEAg
-LTIzNiw2ICsyMzYsOSBAQCBpbnQgYm54dF9xcGxpYl9kZWxfc2dpZChzdHJ1Y3QgYm54dF9xcGxp
-Yl9zZ2lkX3RibCAqc2dpZF90YmwsDQogCQlyZXR1cm4gLUVOT01FTTsNCiAJfQ0KIAlmb3IgKGlu
-ZGV4ID0gMDsgaW5kZXggPCBzZ2lkX3RibC0+bWF4OyBpbmRleCsrKSB7DQorCQkvKiBGSVhNRTog
-R0lEIGRlbGV0ZSBzaG91bGQgaGFwcGVuIGJhc2VkIG9uIGluZGV4DQorCQkgKiBhbmQgcmVmY291
-bnQNCisJCSAqLw0KIAkJaWYgKCFtZW1jbXAoJnNnaWRfdGJsLT50YmxbaW5kZXhdLCBnaWQsIHNp
-emVvZigqZ2lkKSkpDQogCQkJYnJlYWs7DQogCX0NCkBAIC0yOTYsNyArMjk5LDggQEAgaW50IGJu
-eHRfcXBsaWJfYWRkX3NnaWQoc3RydWN0IGJueHRfcXBsaWJfc2dpZF90YmwgKnNnaWRfdGJsLA0K
-IAl9DQogCWZyZWVfaWR4ID0gc2dpZF90YmwtPm1heDsNCiAJZm9yIChpID0gMDsgaSA8IHNnaWRf
-dGJsLT5tYXg7IGkrKykgew0KLQkJaWYgKCFtZW1jbXAoJnNnaWRfdGJsLT50YmxbaV0sIGdpZCwg
-c2l6ZW9mKCpnaWQpKSkgew0KKwkJaWYgKCFtZW1jbXAoJnNnaWRfdGJsLT50YmxbaV0sIGdpZCwg
-c2l6ZW9mKCpnaWQpKSAmJg0KKwkJICAgIHNnaWRfdGJsLT50YmxbaV0udmxhbl9pZCA9PSB2bGFu
-X2lkKSB7DQogCQkJZGV2X2RiZygmcmVzLT5wZGV2LT5kZXYsDQogCQkJCSJTR0lEIGVudHJ5IGFs
-cmVhZHkgZXhpc3QgaW4gZW50cnkgJWQhXG4iLCBpKTsNCiAJCQkqaW5kZXggPSBpOw0KQEAgLTM1
-MSw2ICszNTUsNyBAQCBpbnQgYm54dF9xcGxpYl9hZGRfc2dpZChzdHJ1Y3QgYm54dF9xcGxpYl9z
-Z2lkX3RibCAqc2dpZF90YmwsDQogCX0NCiAJLyogQWRkIEdJRCB0byB0aGUgc2dpZF90YmwgKi8N
-CiAJbWVtY3B5KCZzZ2lkX3RibC0+dGJsW2ZyZWVfaWR4XSwgZ2lkLCBzaXplb2YoKmdpZCkpOw0K
-KwlzZ2lkX3RibC0+dGJsW2ZyZWVfaWR4XS52bGFuX2lkID0gdmxhbl9pZDsNCiAJc2dpZF90Ymwt
-PmFjdGl2ZSsrOw0KIAlpZiAodmxhbl9pZCAhPSAweEZGRkYpDQogCQlzZ2lkX3RibC0+dmxhbltm
-cmVlX2lkeF0gPSAxOw0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9ibnh0X3Jl
-L3FwbGliX3NwLmggYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvYm54dF9yZS9xcGxpYl9zcC5oDQpp
-bmRleCAwZWMzYjEyYjBiY2QuLjdhMTk1N2M5ZGM2ZiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvaW5m
-aW5pYmFuZC9ody9ibnh0X3JlL3FwbGliX3NwLmgNCisrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9o
-dy9ibnh0X3JlL3FwbGliX3NwLmgNCkBAIC04Miw2ICs4Miw3IEBAIHN0cnVjdCBibnh0X3FwbGli
-X3BkIHsNCiANCiBzdHJ1Y3QgYm54dF9xcGxpYl9naWQgew0KIAl1OAkJCQlkYXRhWzE2XTsNCisJ
-dTE2IHZsYW5faWQ7DQogfTsNCiANCiBzdHJ1Y3QgYm54dF9xcGxpYl9haCB7DQotLSANCjIuMTku
-Mg0K
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
+
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 07/12/2019 02:03PM
+>Cc: "Arnd Bergmann" <arnd@arndb.de>, "Doug Ledford"
+><dledford@redhat.com>, "Peter Zijlstra" <peterz@infradead.org>,
+>linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+>Subject: [EXTERNAL] Re: [PATCH] rdma/siw: avoid smp_store_mb() on a
+>u64
+>
+>On Fri, Jul 12, 2019 at 11:33:46AM +0000, Bernard Metzler wrote:
+>> >diff --git a/drivers/infiniband/sw/siw/siw_verbs.c
+>> >b/drivers/infiniband/sw/siw/siw_verbs.c
+>> >index 32dc79d0e898..41c5ab293fe1 100644
+>> >+++ b/drivers/infiniband/sw/siw/siw_verbs.c
+>> >@@ -1142,10 +1142,11 @@ int siw_req_notify_cq(struct ib_cq
+>*base_cq,
+>> >enum ib_cq_notify_flags flags)
+>> > 
+>> > 	if ((flags & IB_CQ_SOLICITED_MASK) == IB_CQ_SOLICITED)
+>> > 		/* CQ event for next solicited completion */
+>> >-		smp_store_mb(*cq->notify, SIW_NOTIFY_SOLICITED);
+>> >+		WRITE_ONCE(*cq->notify, SIW_NOTIFY_SOLICITED);
+>> > 	else
+>> > 		/* CQ event for any signalled completion */
+>> >-		smp_store_mb(*cq->notify, SIW_NOTIFY_ALL);
+>> >+		WRITE_ONCE(*cq->notify, SIW_NOTIFY_ALL);
+>> >+	smp_wmb();
+>> > 
+>> > 	if (flags & IB_CQ_REPORT_MISSED_EVENTS)
+>> > 		return cq->cq_put - cq->cq_get;
+>> 
+>> 
+>> Hi Arnd,
+>> Many thanks for pointing that out! Indeed, this CQ notification
+>> mechanism does not take 32 bit architectures into account.
+>> Since we have only three flags to hold here, it's probably better
+>> to make it a 32bit value. That would remove the issue w/o
+>> introducing extra smp_wmb(). 
+>
+>I also prefer not to see smp_wmb() in drivers..
+>
+>> I'd prefer smp_store_mb(), since on some architectures it shall be
+>> more efficient.  That would also make it sufficient to use
+>> READ_ONCE.
+>
+>The READ_ONCE is confusing to me too, if you need store_release
+>semantics then the reader also needs to pair with load_acquite -
+>otherwise it doesn't work.
+>
+>Still, we need to do something rapidly to fix the i386 build, please
+>revise right away..
+>
+>Jason
+>
+>
+
+We share CQ (completion queue) notification flags between application
+(which may be user land) and producer (kernel QP's (queue pairs)).
+Those flags can be written by both application and QP's. The application
+writes those flags to let the driver know if it shall inform about new
+work completions. It can write those flags at any time.
+Only a kernel producer reads those flags to decide if
+the CQ notification handler shall be kicked, if a new CQ element gets
+added to the CQ. When kicking the completion handler, the driver resets the
+notification flag, which must get re-armed by the application.
+
+We use READ_ONCE() and WRITE_ONCE(), since the flags are potentially
+shared (mmap'd) between user and kernel land.
+
+siw_req_notify_cq() is being called only by kernel consumers to change
+(write) the CQ notification state. We use smp_store_mb() to make sure
+the new value becomes visible to all kernel producers (QP's) asap.
+
+
+From cfb861a09dcfb24a98ba0f1e26bdaa1529d1b006 Mon Sep 17 00:00:00 2001
+From: Bernard Metzler <bmt@zurich.ibm.com>
+Date: Fri, 12 Jul 2019 13:19:27 +0200
+Subject: [PATCH] Make shared CQ notification flags 32bit to respect 32bit
+ architectures
+
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw.h       |  2 +-
+ drivers/infiniband/sw/siw/siw_qp.c    | 12 ++++++++----
+ drivers/infiniband/sw/siw/siw_verbs.c | 20 +++++++++++++++-----
+ include/uapi/rdma/siw-abi.h           |  3 ++-
+ 4 files changed, 26 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+index 409e2987cd45..d59d81f4d86b 100644
+--- a/drivers/infiniband/sw/siw/siw.h
++++ b/drivers/infiniband/sw/siw/siw.h
+@@ -216,7 +216,7 @@ struct siw_wqe {
+ struct siw_cq {
+ struct ib_cq base_cq;
+ 	spinlock_t lock;
+-	u64 *notify;
++	struct siw_cq_ctrl *notify;
+ 	struct siw_cqe *queue;
+ 	u32 cq_put;
+ 	u32 cq_get;
+diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
+index 83e50fe8e48b..f4b8d55839a7 100644
+--- a/drivers/infiniband/sw/siw/siw_qp.c
++++ b/drivers/infiniband/sw/siw/siw_qp.c
+@@ -1011,18 +1011,22 @@ int siw_activate_tx(struct siw_qp *qp)
+  */
+ static bool siw_cq_notify_now(struct siw_cq *cq, u32 flags)
+ {
+-	u64 cq_notify;
++	u32 cq_notify;
+ 
+ 	if (!cq->base_cq.comp_handler)
+ 		return false;
+ 
+-	cq_notify = READ_ONCE(*cq->notify);
++	/* Read application shared notification state */
++	cq_notify = READ_ONCE(cq->notify->flags);
+ 
+ 	if ((cq_notify & SIW_NOTIFY_NEXT_COMPLETION) ||
+ 	    ((cq_notify & SIW_NOTIFY_SOLICITED) &&
+ 	     (flags & SIW_WQE_SOLICITED))) {
+-		/* dis-arm CQ */
+-		smp_store_mb(*cq->notify, SIW_NOTIFY_NOT);
++		/*
++		 * dis-arm CQ: write (potentially user land)
++		 * application shared notification state.
++		 */
++		WRITE_ONCE(cq->notify->flags, SIW_NOTIFY_NOT);
+ 
+ 		return true;
+ 	}
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index d4fb78780765..cda92e4c7cc9 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -1049,7 +1049,7 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+
+ 	spin_lock_init(&cq->lock);
+ 
+-	cq->notify = &((struct siw_cq_ctrl *)&cq->queue[size])->notify;
++	cq->notify = (struct siw_cq_ctrl *)&cq->queue[size];
+
+ 	if (udata) {
+ 		struct siw_uresp_create_cq uresp = {};
+@@ -1131,6 +1131,10 @@ int siw_poll_cq(struct ib_cq *base_cq, int num_cqe, struct ib_wc *wc)
+  *   number of not reaped CQE's regardless of its notification
+  *   type and current or new CQ notification settings.
+  *
++ * This function gets called only by kernel consumers.
++ * Notification state must immediately become visible to all
++ * associated kernel producers (QP's).
++ *
+  * @base_cq:   Base CQ contained in siw CQ.
+  * @flags:     Requested notification flags.
+  */
+@@ -1141,11 +1145,17 @@ int siw_req_notify_cq(struct ib_cq *base_cq, enum ib_cq_notify_flags flags)
+ 	siw_dbg_cq(cq, "flags: 0x%02x\n", flags);
+ 
+ 	if ((flags & IB_CQ_SOLICITED_MASK) == IB_CQ_SOLICITED)
+-		/* CQ event for next solicited completion */
+-		smp_store_mb(*cq->notify, SIW_NOTIFY_SOLICITED);
++		/*
++		 * Enable CQ event for next solicited completion.
++		 * and make it visible to all associated producers.
++		 */
++		smp_store_mb(cq->notify->flags, SIW_NOTIFY_SOLICITED);
+ 	else
+-		/* CQ event for any signalled completion */
+-		smp_store_mb(*cq->notify, SIW_NOTIFY_ALL);
++		/*
++		 * Enable CQ event for any signalled completion.
++		 * and make it visible to all associated producers.
++		 */
++		smp_store_mb(cq->notify->flags, SIW_NOTIFY_ALL);
+ 
+ 	if (flags & IB_CQ_REPORT_MISSED_EVENTS)
+ 		return cq->cq_put - cq->cq_get;
+diff --git a/include/uapi/rdma/siw-abi.h b/include/uapi/rdma/siw-abi.h
+index ba4d5315cb76..93298980d3a7 100644
+--- a/include/uapi/rdma/siw-abi.h
++++ b/include/uapi/rdma/siw-abi.h
+@@ -178,6 +178,7 @@ struct siw_cqe {
+  * to control CQ arming.
+  */
+ struct siw_cq_ctrl {
+-	__aligned_u64 notify;
++	__u32 flags;
++	__u32 pad;
+ };
+ #endif
+-- 
+2.17.2
+
+
+
