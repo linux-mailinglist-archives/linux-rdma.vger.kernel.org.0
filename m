@@ -2,256 +2,308 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E54664A5
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 04:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000876652D
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 05:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbfGLCt1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Jul 2019 22:49:27 -0400
-Received: from mail-eopbgr140071.outbound.protection.outlook.com ([40.107.14.71]:54848
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726880AbfGLCt1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Jul 2019 22:49:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GeHgtMFO9a89EPBVgVkCCDn+Z2HZh5jQRpCwbBt8yTfrmqhklQtxlR5ZVX8HRkdFoJdGV5TmV4ZpSlUEpf3ctN8eqL+qfeuKrV3UTKS5nfwVY3SsMdopEukW97yS4uguF3ggeAOhiyOqAPHBnP9FyxZ5y7jDtU3Ot7SbLgiUCDZSX0phe4pT3eshxih0w+Qsr6t127kVO+WK8uqsSdqvWnxFTVgEkfPQjYGWCZOeCq4PYIuheAv3JLvxuXX0wih/eyfO8StvHpAjRmyFQHkA6PXV6TEuu28ytqR6Kba5igkEQT+jKeCYZAT89hsZcmoqRedD9jL8X++7ydMhu0pf5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YuXoMfxduBN9FkZ6l7DZzMb7zw22IyBS+uEVMjjxW/w=;
- b=bB6dRMEMqrs5LFQeX5wsUNDHJLYIo8lmah6GfhOJBuqjiC/eETKyWms9z9GDei7VT8Bfdsb7/AwlAwVTC5BYRR+6Trt9EUH3h6z98jr++WA7ppY6Rcj8ueYiaPpN29MvsSPW+RMSmp+xUMq3ZMzvGzBC4iT5GfhGwStKlLysGUeJS+GBbTTsEYomfP34A3N7mfoAHGAi7Yx3T2tpYSv6k9arVd3/O2Y73bjn+MEMM/5g9kLsRlChjoVOmPHXwiemE0WKIkTj0s2bUJW9l3XhIluZ0W/my6BFvvxtM81OU6TjxNjqYZCDXWoYKMFcP2QMZDS69DkJmsfW8FwpmqCQew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=mellanox.com;dmarc=pass action=none
- header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YuXoMfxduBN9FkZ6l7DZzMb7zw22IyBS+uEVMjjxW/w=;
- b=USjH5O+2u0lC4Cavl2qhLh31p9chyTtoIef5kFhBTKV13D+aelU++OuzCt+ZHjNG/NHCvF6eDYw845BsfgfSaaTOYqVs54XEjCHrS8PgxMwBNi9d4j/PmzrVmmbDfSGsrfKmmZZv/3uXXG+m4VU/YnfyzuAUpGt3p0PdUXJGR5s=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB5249.eurprd05.prod.outlook.com (20.178.19.220) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2073.10; Fri, 12 Jul 2019 02:49:16 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::217d:2cd7:c8da:9279]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::217d:2cd7:c8da:9279%5]) with mapi id 15.20.2052.020; Fri, 12 Jul 2019
- 02:49:16 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Yi Zhang <yi.zhang@redhat.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-CC:     Daniel Jurgens <danielj@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>
-Subject: RE: regression: nvme rdma with bnxt_re0 broken
-Thread-Topic: regression: nvme rdma with bnxt_re0 broken
-Thread-Index: 2UfSPBB7aurhIBgBOMtlZZ/Acg5lQJrLV3lwgAA5BsCAAKCFgIAAD6Mg
-Date:   Fri, 12 Jul 2019 02:49:16 +0000
-Message-ID: <AM0PR05MB4866DEDB9DE4379F6A6EF15BD1F20@AM0PR05MB4866.eurprd05.prod.outlook.com>
+        id S1729447AbfGLDqB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jul 2019 23:46:01 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:38428 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729419AbfGLDqB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 23:46:01 -0400
+Received: by mail-ot1-f65.google.com with SMTP id d17so8111971oth.5
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2019 20:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+/z2au3Kq93/20tmrzD/LzmZT99OasT7caKEOHpW7j8=;
+        b=EtBTFECb3AQZcjE/3yj4GR/kNGgnyAb5Dk2+UAq2+uRvPqi98cQnxA5kUaPIHQN6w1
+         XSTVBvx5EvmLhQcDu4K2rPSalo40PCer16bfVxr7iepQwxWxxnWGyZDQOuprA2s8foK2
+         WOQMd1XU4EoyWyvBoHAzDDTpXvTmpgt6YaEZE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+/z2au3Kq93/20tmrzD/LzmZT99OasT7caKEOHpW7j8=;
+        b=miX8xJqvByXw7zSVBONTMbym/BiimZw+Z8zq8aJsOL4fZ5q81loPJ3a5jl5ol5rLF/
+         Wt1F2wsscM9+prkat88CU4Drq3aoRvNbbjhCJ6d5eeaVIfPpgRWo77tIDtHDa6avgm6q
+         LnrvwytmZ/5yrP6hDOyU/rsEA6ni8aHg44Ppbmq/Qnl2W+n2EnwXAUKFAJ+HQkq0nfZi
+         7+0kxyj01OC8I/5ndq7a0tChYuM/lOm0DtbiyefPDnRR0hFw0UyMyg1jbIAqdQPCZFa7
+         YFggf+I4EEL0hzXvzdQqfIuMO9duGBLc46cTLR9ZeB4RYY7N2vM/ppAEFylJVFYALWjo
+         JsOQ==
+X-Gm-Message-State: APjAAAWAIxHRsbrCNFcZgLlZLxvsPOHL+3EKj9oOA84Qr8cUhaIwQ2iB
+        bELsuGfcIw5ArBDo8fLomYBHvi0mL50dbCYqRNEtTA==
+X-Google-Smtp-Source: APXvYqw554RhA2Oy46+Sh+ZCs5XB41fc7EdLsbyjtWNq/fE2pBqeQYaftZpijiCP5q1y2NJFLzkK94/vCG/nx/Vez3E=
+X-Received: by 2002:a05:6830:117:: with SMTP id i23mr6045533otp.47.1562903159907;
+ Thu, 11 Jul 2019 20:45:59 -0700 (PDT)
+MIME-Version: 1.0
 References: <1310083272.27124086.1562836112586.JavaMail.zimbra@redhat.com>
  <619411460.27128070.1562838433020.JavaMail.zimbra@redhat.com>
  <AM0PR05MB48664657022ECA8526E3C967D1F30@AM0PR05MB4866.eurprd05.prod.outlook.com>
  <AM0PR05MB4866070FBADCCABD1F84E42ED1F30@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <66d43fd8-18e8-8b9d-90e3-ee2804d56889@redhat.com>
-In-Reply-To: <66d43fd8-18e8-8b9d-90e3-ee2804d56889@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [49.207.52.95]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 42b4be53-49b7-4b91-f1d7-08d7067387df
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM0PR05MB5249;
-x-ms-traffictypediagnostic: AM0PR05MB5249:
-x-ms-exchange-purlcount: 2
-x-microsoft-antispam-prvs: <AM0PR05MB52498EDCCF072DCADC7561D2D1F20@AM0PR05MB5249.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:125;
-x-forefront-prvs: 00963989E5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(346002)(376002)(39860400002)(396003)(366004)(199004)(189003)(13464003)(6506007)(53546011)(102836004)(55236004)(76176011)(7696005)(316002)(14444005)(110136005)(11346002)(99286004)(8936002)(446003)(229853002)(26005)(186003)(68736007)(25786009)(486006)(4326008)(33656002)(74316002)(54906003)(476003)(256004)(81156014)(81166006)(8676002)(2501003)(66446008)(478600001)(53936002)(55016002)(66556008)(7736002)(3846002)(6436002)(64756008)(14454004)(6116002)(66066001)(76116006)(66946007)(5660300002)(71190400001)(52536014)(966005)(66476007)(2906002)(9686003)(6306002)(6246003)(86362001)(71200400001)(305945005);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB5249;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: VhjqY8aL7aEcX2PXCRqDdsvmnlYI1gxYhw3gzllG6XoTqp/1aHec7YGiIi1YARhoCaOWcCpeoMcJ3QE0sUzSFUjcE02fKhx1X6DcnLQTLsdHngEVC0SuJcodrh61QoGHbuu1VG/0ltbbhaRUnpcMfYSpUSVyrfE4GK84JWuUtrPW5JbZKAmV1z3FFw39JVNGeIDWTLYjVaQDy2VV3gjxbUz3KfbO9EQWZ7R2DODgwoBroaz5c/jSmqHf+AyOVdXOewe0ssLIX0rSg4vCaFEOiTup1xazoaNfeBlRFWFtOKTxLqmTaBkIdsUZpSSpadN1qg9oZOUaXrbZgoK6SMSX88ntp5/EJPNRSz62fm0uLDz4X9AVAK5Omkrg6vekkTq6ER1YcbU93AxyVUpuaxTxBNtn2f7WaJVX4U3hhrETszQ=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42b4be53-49b7-4b91-f1d7-08d7067387df
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2019 02:49:16.5761
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: parav@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5249
+ <66d43fd8-18e8-8b9d-90e3-ee2804d56889@redhat.com> <AM0PR05MB4866DEDB9DE4379F6A6EF15BD1F20@AM0PR05MB4866.eurprd05.prod.outlook.com>
+In-Reply-To: <AM0PR05MB4866DEDB9DE4379F6A6EF15BD1F20@AM0PR05MB4866.eurprd05.prod.outlook.com>
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+Date:   Fri, 12 Jul 2019 09:15:47 +0530
+Message-ID: <CA+sbYW17PGAW57pyRmQB9KsDA9Q+7FFgSseSTTWE_h6vffa7UQ@mail.gmail.com>
+Subject: Re: regression: nvme rdma with bnxt_re0 broken
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     Yi Zhang <yi.zhang@redhat.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Devesh Sharma <devesh.sharma@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SGkgWWkgWmhhbmcsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbGlu
-dXgtcmRtYS1vd25lckB2Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LXJkbWEtDQo+IG93bmVyQHZnZXIu
-a2VybmVsLm9yZz4gT24gQmVoYWxmIE9mIFlpIFpoYW5nDQo+IFNlbnQ6IEZyaWRheSwgSnVseSAx
-MiwgMjAxOSA3OjIzIEFNDQo+IFRvOiBQYXJhdiBQYW5kaXQgPHBhcmF2QG1lbGxhbm94LmNvbT47
-IGxpbnV4LW52bWVAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBDYzogRGFuaWVsIEp1cmdlbnMgPGRh
-bmllbGpAbWVsbGFub3guY29tPjsgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc7DQo+IERldmVz
-aCBTaGFybWEgPGRldmVzaC5zaGFybWFAYnJvYWRjb20uY29tPjsNCj4gc2VsdmluLnhhdmllckBi
-cm9hZGNvbS5jb20NCj4gU3ViamVjdDogUmU6IHJlZ3Jlc3Npb246IG52bWUgcmRtYSB3aXRoIGJu
-eHRfcmUwIGJyb2tlbg0KPiANCj4gSGkgUGFyYXYNCj4gDQo+IEhlcmUgaXMgdGhlIGluZm8sIGxl
-dCBtZSBrbm93IGlmIGl0J3MgZW5vdWdoLCB0aGFua3MuDQo+IA0KPiBbcm9vdEByZG1hLXBlcmYt
-MDcgfl0kIGVjaG8gLW4gIm1vZHVsZSBpYl9jb3JlICtwIiA+DQo+IC9zeXMva2VybmVsL2RlYnVn
-L2R5bmFtaWNfZGVidWcvY29udHJvbA0KPiBbcm9vdEByZG1hLXBlcmYtMDcgfl0kIGlmZG93biBi
-bnh0X3JvY2UNCj4gRGV2aWNlICdibnh0X3JvY2UnIHN1Y2Nlc3NmdWxseSBkaXNjb25uZWN0ZWQu
-DQo+IFtyb290QHJkbWEtcGVyZi0wNyB+XSQgaWZ1cCBibnh0X3JvY2UNCj4gQ29ubmVjdGlvbiBz
-dWNjZXNzZnVsbHkgYWN0aXZhdGVkIChELUJ1cyBhY3RpdmUgcGF0aDoNCj4gL29yZy9mcmVlZGVz
-a3RvcC9OZXR3b3JrTWFuYWdlci9BY3RpdmVDb25uZWN0aW9uLzE2KQ0KPiBbcm9vdEByZG1hLXBl
-cmYtMDcgfl0kIHNoIGEuc2gNCj4gREVWwqDCoMKgIFBPUlTCoMKgwqAgSU5ERVjCoMKgwqAgR0lE
-wqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCBJUHY0IMKgwqDCoCDCoMKgwqAgVkVS
-IERFVg0KPiAtLS3CoMKgwqAgLS0tLcKgwqDCoCAtLS0tLcKgwqDCoCAtLS3CoMKgwqAgwqDCoMKg
-IMKgwqDCoCDCoMKgwqAgwqDCoMKgIC0tLS0tLS0tLS0tLSAtLS3CoMKgwqAgLS0tDQo+IGJueHRf
-cmUwwqDCoMKgIDHCoMKgwqAgMMKgwqDCoCBmZTgwOjAwMDA6MDAwMDowMDAwOjAyMGE6ZjdmZjpm
-ZWUzOjZlMzINCj4gdjHCoMKgwqAgYm54dF9yb2NlDQo+IGJueHRfcmUwwqDCoMKgIDHCoMKgwqAg
-McKgwqDCoCBmZTgwOjAwMDA6MDAwMDowMDAwOjAyMGE6ZjdmZjpmZWUzOjZlMzINCj4gdjLCoMKg
-wqAgYm54dF9yb2NlDQo+IGJueHRfcmUwwqDCoMKgIDHCoMKgwqAgMTDCoMKgwqAgMDAwMDowMDAw
-OjAwMDA6MDAwMDowMDAwOmZmZmY6YWMxZjoyYmJiDQo+IDE3Mi4zMS40My4xODcgwqDCoMKgIHYx
-wqDCoMKgIGJueHRfcm9jZS40Mw0KPiBibnh0X3JlMMKgwqDCoCAxwqDCoMKgIDExwqDCoMKgIDAw
-MDA6MDAwMDowMDAwOjAwMDA6MDAwMDpmZmZmOmFjMWY6MmJiYg0KPiAxNzIuMzEuNDMuMTg3IMKg
-wqDCoCB2MsKgwqDCoCBibnh0X3JvY2UuNDMNCj4gYm54dF9yZTDCoMKgwqAgMcKgwqDCoCAywqDC
-oMKgIGZlODA6MDAwMDowMDAwOjAwMDA6MDIwYTpmN2ZmOmZlZTM6NmUzMg0KPiB2McKgwqDCoCBi
-bnh0X3JvY2UuNDUNCj4gYm54dF9yZTDCoMKgwqAgMcKgwqDCoCAzwqDCoMKgIGZlODA6MDAwMDow
-MDAwOjAwMDA6MDIwYTpmN2ZmOmZlZTM6NmUzMg0KPiB2MsKgwqDCoCBibnh0X3JvY2UuNDUNCj4g
-Ym54dF9yZTDCoMKgwqAgMcKgwqDCoCA0wqDCoMKgIGZlODA6MDAwMDowMDAwOjAwMDA6MDIwYTpm
-N2ZmOmZlZTM6NmUzMg0KPiB2McKgwqDCoCBibnh0X3JvY2UuNDMNCj4gYm54dF9yZTDCoMKgwqAg
-McKgwqDCoCA1wqDCoMKgIGZlODA6MDAwMDowMDAwOjAwMDA6MDIwYTpmN2ZmOmZlZTM6NmUzMg0K
-PiB2MsKgwqDCoCBibnh0X3JvY2UuNDMNCj4gYm54dF9yZTDCoMKgwqAgMcKgwqDCoCA2wqDCoMKg
-IDAwMDA6MDAwMDowMDAwOjAwMDA6MDAwMDpmZmZmOmFjMWY6MjhiYg0KPiAxNzIuMzEuNDAuMTg3
-IMKgwqDCoCB2McKgwqDCoCBibnh0X3JvY2UNCj4gYm54dF9yZTDCoMKgwqAgMcKgwqDCoCA3wqDC
-oMKgIDAwMDA6MDAwMDowMDAwOjAwMDA6MDAwMDpmZmZmOmFjMWY6MjhiYg0KPiAxNzIuMzEuNDAu
-MTg3IMKgwqDCoCB2MsKgwqDCoCBibnh0X3JvY2UNCj4gYm54dF9yZTDCoMKgwqAgMcKgwqDCoCA4
-wqDCoMKgIDAwMDA6MDAwMDowMDAwOjAwMDA6MDAwMDpmZmZmOmFjMWY6MmRiYg0KPiAxNzIuMzEu
-NDUuMTg3IMKgwqDCoCB2McKgwqDCoCBibnh0X3JvY2UuNDUNCj4gYm54dF9yZTDCoMKgwqAgMcKg
-wqDCoCA5wqDCoMKgIDAwMDA6MDAwMDowMDAwOjAwMDA6MDAwMDpmZmZmOmFjMWY6MmRiYg0KPiAx
-NzIuMzEuNDUuMTg3IMKgwqDCoCB2MsKgwqDCoCBibnh0X3JvY2UuNDUNCj4gYm54dF9yZTHCoMKg
-wqAgMcKgwqDCoCAwwqDCoMKgIGZlODA6MDAwMDowMDAwOjAwMDA6MDIwYTpmN2ZmOmZlZTM6NmUz
-Mw0KPiB2McKgwqDCoCBsb21fMg0KPiBibnh0X3JlMcKgwqDCoCAxwqDCoMKgIDHCoMKgwqAgZmU4
-MDowMDAwOjAwMDA6MDAwMDowMjBhOmY3ZmY6ZmVlMzo2ZTMzDQo+IHYywqDCoMKgIGxvbV8yDQo+
-IGN4Z2I0XzDCoMKgwqAgMcKgwqDCoCAwwqDCoMKgIDAwMDc6NDMzYjpmNWIwOjAwMDA6MDAwMDow
-MDAwOjAwMDA6MDAwMCDCoMKgwqAgwqDCoMKgIHYxDQo+IGN4Z2I0XzDCoMKgwqAgMsKgwqDCoCAw
-wqDCoMKgIDAwMDc6NDMzYjpmNWI4OjAwMDA6MDAwMDowMDAwOjAwMDA6MDAwMCDCoMKgwqAgwqDC
-oMKgIHYxDQo+IGhmaTFfMMKgwqDCoCAxwqDCoMKgIDDCoMKgwqAgZmU4MDowMDAwOjAwMDA6MDAw
-MDowMDExOjc1MDE6MDEwOTo2YzYwIMKgwqDCoCB2MQ0KPiBoZmkxXzDCoMKgwqAgMcKgwqDCoCAx
-wqDCoMKgIGZlODA6MDAwMDowMDAwOjAwMDA6MDAwNjo2YTAwOjAwMDA6MDAwNSDCoMKgwqAgdjEN
-Cj4gbWx4NV8wwqDCoMKgIDHCoMKgwqAgMMKgwqDCoCBmZTgwOjAwMDA6MDAwMDowMDAwOjUwNmI6
-NGIwMzowMGYzOjhhMzggwqDCoMKgIHYxDQo+IG5fZ2lkc19mb3VuZD0xOQ0KPiANCj4gW3Jvb3RA
-cmRtYS1wZXJmLTA3IH5dJCBkbWVzZyB8IHRhaWwgLTE1DQo+IFvCoMKgIDE5Ljc0NDQyMV0gSVB2
-NjogQUREUkNPTkYoTkVUREVWX0NIQU5HRSk6IG1seDVfaWIwLjgwMDI6IGxpbmsNCj4gYmVjb21l
-cyByZWFkeSBbwqDCoCAxOS43NTgzNzFdIElQdjY6IEFERFJDT05GKE5FVERFVl9DSEFOR0UpOg0K
-PiBtbHg1X2liMC44MDA0OiBsaW5rIGJlY29tZXMgcmVhZHkgW8KgwqAgMjAuMDEwNDY5XSBoZmkx
-IDAwMDA6ZDg6MDAuMDogaGZpMV8wOg0KPiBTd2l0Y2hpbmcgdG8gTk9fRE1BX1JUQUlMIFvCoMKg
-IDIwLjQ0MDU4MF0gSVB2NjoNCj4gQUREUkNPTkYoTkVUREVWX0NIQU5HRSk6IG1seDVfaWIwLjgw
-MDY6IGxpbmsgYmVjb21lcyByZWFkeQ0KPiBbwqDCoCAyMS4wOTg1MTBdIGJueHRfZW4gMDAwMDox
-OTowMC4wIGJueHRfcm9jZTogVG9vIG1hbnkgdHJhZmZpYyBjbGFzc2VzDQo+IHJlcXVlc3RlZDog
-OC4gTWF4IHN1cHBvcnRlZCBpcyAyLg0KPiBbwqDCoCAyMS4zMjQzNDFdIGJueHRfZW4gMDAwMDox
-OTowMC4wIGJueHRfcm9jZTogVG9vIG1hbnkgdHJhZmZpYyBjbGFzc2VzDQo+IHJlcXVlc3RlZDog
-OC4gTWF4IHN1cHBvcnRlZCBpcyAyLg0KPiBbwqDCoCAyMi4wNTg2NDddIElQdjY6IEFERFJDT05G
-KE5FVERFVl9DSEFOR0UpOiBoZmkxX29wYTA6IGxpbmsgYmVjb21lcw0KPiByZWFkeSBbwqAgMjEx
-LjQwNzMyOV0gX2liX2NhY2hlX2dpZF9kZWw6IGNhbid0IGRlbGV0ZSBnaWQNCj4gZmU4MDowMDAw
-OjAwMDA6MDAwMDowMjBhOmY3ZmY6ZmVlMzo2ZTMyIGVycm9yPS0yMiBbwqAgMjExLjQwNzMzNF0N
-Cj4gX2liX2NhY2hlX2dpZF9kZWw6IGNhbid0IGRlbGV0ZSBnaWQNCj4gZmU4MDowMDAwOjAwMDA6
-MDAwMDowMjBhOmY3ZmY6ZmVlMzo2ZTMyIGVycm9yPS0yMiBbwqAgMjExLjQyNTI3NV0gaW5maW5p
-YmFuZA0KPiBibnh0X3JlMDogZGVsX2dpZCBwb3J0PTEgaW5kZXg9NiBnaWQNCj4gMDAwMDowMDAw
-OjAwMDA6MDAwMDowMDAwOmZmZmY6YWMxZjoyOGJiDQo+IFvCoCAyMTEuNDI1MjgwXSBpbmZpbmli
-YW5kIGJueHRfcmUwOiBmcmVlX2dpZF9lbnRyeV9sb2NrZWQgcG9ydD0xIGluZGV4PTYgZ2lkDQo+
-IDAwMDA6MDAwMDowMDAwOjAwMDA6MDAwMDpmZmZmOmFjMWY6MjhiYg0KPiBbwqAgMjExLjQyNTI5
-Ml0gaW5maW5pYmFuZCBibnh0X3JlMDogZGVsX2dpZCBwb3J0PTEgaW5kZXg9NyBnaWQNCj4gMDAw
-MDowMDAwOjAwMDA6MDAwMDowMDAwOmZmZmY6YWMxZjoyOGJiDQo+IFvCoCAyMTEuNDI1NDYxXSBp
-bmZpbmliYW5kIGJueHRfcmUwOiBmcmVlX2dpZF9lbnRyeV9sb2NrZWQgcG9ydD0xIGluZGV4PTcg
-Z2lkDQo+IDAwMDA6MDAwMDowMDAwOjAwMDA6MDAwMDpmZmZmOmFjMWY6MjhiYg0KPiBbwqAgMjI1
-LjQ3NDA2MV0gaW5maW5pYmFuZCBibnh0X3JlMDogc3RvcmVfZ2lkX2VudHJ5IHBvcnQ9MSBpbmRl
-eD02IGdpZA0KPiAwMDAwOjAwMDA6MDAwMDowMDAwOjAwMDA6ZmZmZjphYzFmOjI4YmINCj4gW8Kg
-IDIyNS40NzQwNzVdIGluZmluaWJhbmQgYm54dF9yZTA6IHN0b3JlX2dpZF9lbnRyeSBwb3J0PTEg
-aW5kZXg9NyBnaWQNCj4gMDAwMDowMDAwOjAwMDA6MDAwMDowMDAwOmZmZmY6YWMxZjoyOGJiDQo+
-IA0KPiANCkdJRCB0YWJsZSBsb29rcyBmaW5lLg0KDQo+IE9uIDcvMTIvMTkgMTI6MTggQU0sIFBh
-cmF2IFBhbmRpdCB3cm90ZToNCj4gPiBTYWdpLA0KPiA+DQo+ID4gVGhpcyBpcyBiZXR0ZXIgb25l
-IHRvIGNjIHRvIGxpbnV4LXJkbWEuDQo+ID4NCj4gPiArIERldmVzaCwgU2VsdmluLg0KPiA+DQo+
-ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+IEZyb206IFBhcmF2IFBhbmRpdA0K
-PiA+PiBTZW50OiBUaHVyc2RheSwgSnVseSAxMSwgMjAxOSA2OjI1IFBNDQo+ID4+IFRvOiBZaSBa
-aGFuZyA8eWkuemhhbmdAcmVkaGF0LmNvbT47IGxpbnV4LW52bWVAbGlzdHMuaW5mcmFkZWFkLm9y
-Zw0KPiA+PiBDYzogRGFuaWVsIEp1cmdlbnMgPGRhbmllbGpAbWVsbGFub3guY29tPg0KPiA+PiBT
-dWJqZWN0OiBSRTogcmVncmVzc2lvbjogbnZtZSByZG1hIHdpdGggYm54dF9yZTAgYnJva2VuDQo+
-ID4+DQo+ID4+IEhpIFlpIFpoYW5nLA0KPiA+Pg0KPiA+Pj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdl
-LS0tLS0NCj4gPj4+IEZyb206IFlpIFpoYW5nIDx5aS56aGFuZ0ByZWRoYXQuY29tPg0KPiA+Pj4g
-U2VudDogVGh1cnNkYXksIEp1bHkgMTEsIDIwMTkgMzoxNyBQTQ0KPiA+Pj4gVG86IGxpbnV4LW52
-bWVAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiA+Pj4gQ2M6IERhbmllbCBKdXJnZW5zIDxkYW5pZWxq
-QG1lbGxhbm94LmNvbT47IFBhcmF2IFBhbmRpdA0KPiA+Pj4gPHBhcmF2QG1lbGxhbm94LmNvbT4N
-Cj4gPj4+IFN1YmplY3Q6IHJlZ3Jlc3Npb246IG52bWUgcmRtYSB3aXRoIGJueHRfcmUwIGJyb2tl
-bg0KPiA+Pj4NCj4gPj4+IEhlbGxvDQo+ID4+Pg0KPiA+Pj4gJ252bWUgY29ubmVjdCcgZmFpbGVk
-IHdoZW4gdXNlIGJueHRfcmUwIG9uIGxhdGVzdCB1cHN0cmVhbSBidWlsZFsxXSwNCj4gPj4+IGJ5
-IGJpc2VjdGluZyBJIGZvdW5kIGl0IHdhcyBpbnRyb2R1Y2VkIGZyb20gdjUuMi4wLXJjMSB3aXRo
-IFsyXSwgaXQNCj4gPj4+IHdvcmtzIGFmdGVyIEkgcmV2ZXJ0IGl0Lg0KPiA+Pj4gTGV0IG1lIGtu
-b3cgaWYgeW91IG5lZWQgbW9yZSBpbmZvLCB0aGFua3MuDQo+ID4+Pg0KPiA+Pj4gWzFdDQo+ID4+
-PiBbcm9vdEByZG1hLXBlcmYtMDcgfl0kIG52bWUgY29ubmVjdCAtdCByZG1hIC1hIDE3Mi4zMS40
-MC4xMjUgLXMgNDQyMA0KPiA+Pj4gLW4gdGVzdG5xbiBGYWlsZWQgdG8gd3JpdGUgdG8gL2Rldi9u
-dm1lLWZhYnJpY3M6IEJhZCBhZGRyZXNzDQo+ID4+Pg0KPiA+Pj4gW3Jvb3RAcmRtYS1wZXJmLTA3
-IH5dJCBkbWVzZw0KPiA+Pj4gWyAgNDc2LjMyMDc0Ml0gYm54dF9lbiAwMDAwOjE5OjAwLjA6IFFQ
-TElCOiBjbWRxWzB4NGI5XT0weDE1IHN0YXR1cyAweDUgDQoNCkRldmVzaCwgU2VsdmluLA0KDQpX
-aGF0IGRvZXMgdGhpcyBlcnJvciBtZWFuPw0KYm54dF9xcGxpYl9jcmVhdGVfYWgoKSBpcyBmYWls
-aW5nLg0KDQo+ID4+PiBbIDQ3Ni4zMjcxMDNdIGluZmluaWJhbmQgYm54dF9yZTA6IEZhaWxlZCB0
-byBhbGxvY2F0ZSBIVyBBSCBbDQo+ID4+PiA0NzYuMzMyNTI1XSBudm1lIG52bWUyOiByZG1hX2Nv
-bm5lY3QgZmFpbGVkICgtMTQpLg0KPiA+Pj4gWyAgNDc2LjM0MzU1Ml0gbnZtZSBudm1lMjogcmRt
-YSBjb25uZWN0aW9uIGVzdGFibGlzaG1lbnQgZmFpbGVkDQo+ID4+PiAoLTE0KQ0KPiA+Pj4NCj4g
-Pj4+IFtyb290QHJkbWEtcGVyZi0wNyB+XSQgbHNwY2kgIHwgZ3JlcCAtaSBCcm9hZGNvbQ0KPiA+
-Pj4gMDE6MDAuMCBFdGhlcm5ldCBjb250cm9sbGVyOiBCcm9hZGNvbSBJbmMuIGFuZCBzdWJzaWRp
-YXJpZXMNCj4gPj4+IE5ldFh0cmVtZQ0KPiA+Pj4gQkNNNTcyMCAyLXBvcnQgR2lnYWJpdCBFdGhl
-cm5ldCBQQ0llDQo+ID4+PiAwMTowMC4xIEV0aGVybmV0IGNvbnRyb2xsZXI6IEJyb2FkY29tIElu
-Yy4gYW5kIHN1YnNpZGlhcmllcw0KPiA+Pj4gTmV0WHRyZW1lDQo+ID4+PiBCQ001NzIwIDItcG9y
-dCBHaWdhYml0IEV0aGVybmV0IFBDSWUNCj4gPj4+IDE4OjAwLjAgUkFJRCBidXMgY29udHJvbGxl
-cjogQnJvYWRjb20gLyBMU0kgTWVnYVJBSUQgU0FTLTMgMzAwOA0KPiA+Pj4gW0Z1cnldIChyZXYN
-Cj4gPj4+IDAyKQ0KPiA+Pj4gMTk6MDAuMCBFdGhlcm5ldCBjb250cm9sbGVyOiBCcm9hZGNvbSBJ
-bmMuIGFuZCBzdWJzaWRpYXJpZXMgQkNNNTc0MTINCj4gPj4+IE5ldFh0cmVtZS1FIDEwR2IgUkRN
-QSBFdGhlcm5ldCBDb250cm9sbGVyIChyZXYgMDEpDQo+ID4+PiAxOTowMC4xIEV0aGVybmV0IGNv
-bnRyb2xsZXI6IEJyb2FkY29tIEluYy4gYW5kIHN1YnNpZGlhcmllcyBCQ001NzQxMg0KPiA+Pj4g
-TmV0WHRyZW1lLUUgMTBHYiBSRE1BIEV0aGVybmV0IENvbnRyb2xsZXIgKHJldiAwMSkNCj4gPj4+
-DQo+ID4+Pg0KPiA+Pj4gWzJdDQo+ID4+PiBjb21taXQgODIzYjIzZGE3MTEzMmI4MGQ5ZjQxYWI2
-NjdjNjhiMTEyNDU1ZjNiNg0KPiA+Pj4gQXV0aG9yOiBQYXJhdiBQYW5kaXQgPHBhcmF2QG1lbGxh
-bm94LmNvbT4NCj4gPj4+IERhdGU6ICAgV2VkIEFwciAxMCAxMToyMzowMyAyMDE5ICswMzAwDQo+
-ID4+Pg0KPiA+Pj4gICAgICBJQi9jb3JlOiBBbGxvdyB2bGFuIGxpbmsgbG9jYWwgYWRkcmVzcyBi
-YXNlZCBSb0NFIEdJRHMNCj4gPj4+DQo+ID4+PiAgICAgIElQdjYgbGluayBsb2NhbCBhZGRyZXNz
-IGZvciBhIFZMQU4gbmV0ZGV2aWNlIGhhcyBub3RoaW5nIHRvIGRvIHdpdGggaXRzDQo+ID4+PiAg
-ICAgIHJlc2VtYmxhbmNlIHdpdGggdGhlIGRlZmF1bHQgR0lELCBiZWNhdXNlIFZMQU4gbGluayBs
-b2NhbCBHSUQgaXMgaW4NCj4gPj4+ICAgICAgZGlmZmVyZW50IGxheWVyIDIgZG9tYWluLg0KPiA+
-Pj4NCj4gPj4+ICAgICAgTm93IHRoYXQgUm9DRSBNQUQgcGFja2V0IHByb2Nlc3NpbmcgYW5kIHJv
-dXRlIHJlc29sdXRpb24gY29uc2lkZXINCj4gdGhlDQo+ID4+PiAgICAgIHJpZ2h0IEdJRCBpbmRl
-eCwgdGhlcmUgaXMgbm8gbmVlZCBmb3IgYW4gdW5uZWNlc3NhcnkgY2hlY2sgd2hpY2gNCj4gcHJl
-dmVudHMNCj4gPj4+ICAgICAgdGhlIGFkZGl0aW9uIG9mIHZsYW4gYmFzZWQgSVB2NiBsaW5rIGxv
-Y2FsIEdJRHMuDQo+ID4+Pg0KPiA+Pj4gICAgICBTaWduZWQtb2ZmLWJ5OiBQYXJhdiBQYW5kaXQg
-PHBhcmF2QG1lbGxhbm94LmNvbT4NCj4gPj4+ICAgICAgUmV2aWV3ZWQtYnk6IERhbmllbCBKdXJn
-ZW5zIDxkYW5pZWxqQG1lbGxhbm94LmNvbT4NCj4gPj4+ICAgICAgU2lnbmVkLW9mZi1ieTogTGVv
-biBSb21hbm92c2t5IDxsZW9ucm9AbWVsbGFub3guY29tPg0KPiA+Pj4gICAgICBTaWduZWQtb2Zm
-LWJ5OiBKYXNvbiBHdW50aG9ycGUgPGpnZ0BtZWxsYW5veC5jb20+DQo+ID4+Pg0KPiA+Pj4NCj4g
-Pj4+DQo+ID4+PiBCZXN0IFJlZ2FyZHMsDQo+ID4+PiAgICBZaSBaaGFuZw0KPiA+Pj4NCj4gPj4g
-SSBuZWVkIHNvbWUgbW9yZSBpbmZvcm1hdGlvbiBmcm9tIHlvdSB0byBkZWJ1ZyB0aGlzIGlzc3Vl
-IGFzIEkgZG9u4oCZdA0KPiA+PiBoYXZlIHRoZSBody4NCj4gPj4gVGhlIGhpZ2hsaWdodGVkIHBh
-dGNoIGFkZGVkIHN1cHBvcnQgZm9yIElQdjYgbGluayBsb2NhbCBhZGRyZXNzIGZvcg0KPiA+PiB2
-bGFuLiBJIGFtIHVuc3VyZSBob3cgdGhpcyBjYW4gYWZmZWN0IElQdjQgQUggY3JlYXRpb24gZm9y
-IHdoaWNoIHRoZXJlIGlzDQo+IGZhaWx1cmUuDQo+ID4+DQo+ID4+IDEuIEJlZm9yZSB5b3UgYXNz
-aWduIHRoZSBJUCBhZGRyZXNzIHRvIHRoZSBuZXRkZXZpY2UsIFBsZWFzZSBkbywgZWNobw0KPiA+
-PiAtbiAibW9kdWxlIGliX2NvcmUgK3AiID4gL3N5cy9rZXJuZWwvZGVidWcvZHluYW1pY19kZWJ1
-Zy9jb250cm9sDQo+ID4+DQo+ID4+IFBsZWFzZSBzaGFyZSBiZWxvdyBvdXRwdXQgYmVmb3JlIGRv
-aW5nIG52bWUgY29ubmVjdC4NCj4gPj4gMi4gT3V0cHV0IG9mIHNjcmlwdCBbMV0NCj4gPj4gJCBz
-aG93X2dpZHMgc2NyaXB0DQo+ID4+IElmIGdldHRpbmcgdGhpcyBzY3JpcHQgaXMgcHJvYmxlbWF0
-aWMsIHNoYXJlIHRoZSBvdXRwdXQgb2YsDQo+ID4+DQo+ID4+ICQgY2F0IC9zeXMvY2xhc3MvaW5m
-aW5pYmFuZC9ibnh0X3JlMC9wb3J0cy8xL2dpZHMvKg0KPiA+PiAkIGNhdCAvc3lzL2NsYXNzL2lu
-ZmluaWJhbmQvYm54dF9yZTAvcG9ydHMvMS9naWRfYXR0cnMvbmRldnMvKg0KPiA+PiAkIGlwIGxp
-bmsgc2hvdw0KPiA+PiAkaXAgYWRkciBzaG93DQo+ID4+ICQgZG1lc2cNCj4gPj4NCj4gPj4gWzFd
-IGh0dHBzOi8vY29tbXVuaXR5Lm1lbGxhbm94LmNvbS9zL2FydGljbGUvdW5kZXJzdGFuZGluZy1z
-aG93LWdpZHMtDQo+ID4+IHNjcmlwdCNqaXZlX2NvbnRlbnRfaWRfVGhlX1NjcmlwdA0KPiA+Pg0K
-PiA+PiBJIHN1c3BlY3QgdGhhdCBkcml2ZXIncyBhc3N1bXB0aW9uIGFib3V0IEdJRCBpbmRpY2Vz
-IG1pZ2h0IGhhdmUgZ29uZQ0KPiA+PiB3cm9uZyBoZXJlIGluIGRyaXZlcnMvaW5maW5pYmFuZC9o
-dy9ibnh0X3JlL2liX3ZlcmJzLmMuDQo+ID4+IExldHMgc2VlIGFib3V0IHJlc3VsdHMgdG8gY29u
-ZmlybSB0aGF0Lg0KPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fDQo+ID4gTGludXgtbnZtZSBtYWlsaW5nIGxpc3QNCj4gPiBMaW51eC1udm1lQGxpc3Rz
-LmluZnJhZGVhZC5vcmcNCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW52bWUNCg==
+On Fri, Jul 12, 2019 at 8:19 AM Parav Pandit <parav@mellanox.com> wrote:
+>
+> Hi Yi Zhang,
+>
+> > -----Original Message-----
+> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > owner@vger.kernel.org> On Behalf Of Yi Zhang
+> > Sent: Friday, July 12, 2019 7:23 AM
+> > To: Parav Pandit <parav@mellanox.com>; linux-nvme@lists.infradead.org
+> > Cc: Daniel Jurgens <danielj@mellanox.com>; linux-rdma@vger.kernel.org;
+> > Devesh Sharma <devesh.sharma@broadcom.com>;
+> > selvin.xavier@broadcom.com
+> > Subject: Re: regression: nvme rdma with bnxt_re0 broken
+> >
+> > Hi Parav
+> >
+> > Here is the info, let me know if it's enough, thanks.
+> >
+> > [root@rdma-perf-07 ~]$ echo -n "module ib_core +p" >
+> > /sys/kernel/debug/dynamic_debug/control
+> > [root@rdma-perf-07 ~]$ ifdown bnxt_roce
+> > Device 'bnxt_roce' successfully disconnected.
+> > [root@rdma-perf-07 ~]$ ifup bnxt_roce
+> > Connection successfully activated (D-Bus active path:
+> > /org/freedesktop/NetworkManager/ActiveConnection/16)
+> > [root@rdma-perf-07 ~]$ sh a.sh
+> > DEV    PORT    INDEX    GID                    IPv4         VER DEV
+> > ---    ----    -----    ---                    ------------ ---    ---
+> > bnxt_re0    1    0    fe80:0000:0000:0000:020a:f7ff:fee3:6e32
+> > v1    bnxt_roce
+> > bnxt_re0    1    1    fe80:0000:0000:0000:020a:f7ff:fee3:6e32
+> > v2    bnxt_roce
+> > bnxt_re0    1    10    0000:0000:0000:0000:0000:ffff:ac1f:2bbb
+> > 172.31.43.187     v1    bnxt_roce.43
+> > bnxt_re0    1    11    0000:0000:0000:0000:0000:ffff:ac1f:2bbb
+> > 172.31.43.187     v2    bnxt_roce.43
+> > bnxt_re0    1    2    fe80:0000:0000:0000:020a:f7ff:fee3:6e32
+> > v1    bnxt_roce.45
+> > bnxt_re0    1    3    fe80:0000:0000:0000:020a:f7ff:fee3:6e32
+> > v2    bnxt_roce.45
+> > bnxt_re0    1    4    fe80:0000:0000:0000:020a:f7ff:fee3:6e32
+> > v1    bnxt_roce.43
+> > bnxt_re0    1    5    fe80:0000:0000:0000:020a:f7ff:fee3:6e32
+> > v2    bnxt_roce.43
+> > bnxt_re0    1    6    0000:0000:0000:0000:0000:ffff:ac1f:28bb
+> > 172.31.40.187     v1    bnxt_roce
+> > bnxt_re0    1    7    0000:0000:0000:0000:0000:ffff:ac1f:28bb
+> > 172.31.40.187     v2    bnxt_roce
+> > bnxt_re0    1    8    0000:0000:0000:0000:0000:ffff:ac1f:2dbb
+> > 172.31.45.187     v1    bnxt_roce.45
+> > bnxt_re0    1    9    0000:0000:0000:0000:0000:ffff:ac1f:2dbb
+> > 172.31.45.187     v2    bnxt_roce.45
+> > bnxt_re1    1    0    fe80:0000:0000:0000:020a:f7ff:fee3:6e33
+> > v1    lom_2
+> > bnxt_re1    1    1    fe80:0000:0000:0000:020a:f7ff:fee3:6e33
+> > v2    lom_2
+> > cxgb4_0    1    0    0007:433b:f5b0:0000:0000:0000:0000:0000         v1
+> > cxgb4_0    2    0    0007:433b:f5b8:0000:0000:0000:0000:0000         v1
+> > hfi1_0    1    0    fe80:0000:0000:0000:0011:7501:0109:6c60     v1
+> > hfi1_0    1    1    fe80:0000:0000:0000:0006:6a00:0000:0005     v1
+> > mlx5_0    1    0    fe80:0000:0000:0000:506b:4b03:00f3:8a38     v1
+> > n_gids_found=3D19
+> >
+> > [root@rdma-perf-07 ~]$ dmesg | tail -15
+> > [   19.744421] IPv6: ADDRCONF(NETDEV_CHANGE): mlx5_ib0.8002: link
+> > becomes ready [   19.758371] IPv6: ADDRCONF(NETDEV_CHANGE):
+> > mlx5_ib0.8004: link becomes ready [   20.010469] hfi1 0000:d8:00.0: hfi=
+1_0:
+> > Switching to NO_DMA_RTAIL [   20.440580] IPv6:
+> > ADDRCONF(NETDEV_CHANGE): mlx5_ib0.8006: link becomes ready
+> > [   21.098510] bnxt_en 0000:19:00.0 bnxt_roce: Too many traffic classes
+> > requested: 8. Max supported is 2.
+> > [   21.324341] bnxt_en 0000:19:00.0 bnxt_roce: Too many traffic classes
+> > requested: 8. Max supported is 2.
+> > [   22.058647] IPv6: ADDRCONF(NETDEV_CHANGE): hfi1_opa0: link becomes
+> > ready [  211.407329] _ib_cache_gid_del: can't delete gid
+> > fe80:0000:0000:0000:020a:f7ff:fee3:6e32 error=3D-22 [  211.407334]
+> > _ib_cache_gid_del: can't delete gid
+> > fe80:0000:0000:0000:020a:f7ff:fee3:6e32 error=3D-22 [  211.425275] infi=
+niband
+> > bnxt_re0: del_gid port=3D1 index=3D6 gid
+> > 0000:0000:0000:0000:0000:ffff:ac1f:28bb
+> > [  211.425280] infiniband bnxt_re0: free_gid_entry_locked port=3D1 inde=
+x=3D6 gid
+> > 0000:0000:0000:0000:0000:ffff:ac1f:28bb
+> > [  211.425292] infiniband bnxt_re0: del_gid port=3D1 index=3D7 gid
+> > 0000:0000:0000:0000:0000:ffff:ac1f:28bb
+> > [  211.425461] infiniband bnxt_re0: free_gid_entry_locked port=3D1 inde=
+x=3D7 gid
+> > 0000:0000:0000:0000:0000:ffff:ac1f:28bb
+> > [  225.474061] infiniband bnxt_re0: store_gid_entry port=3D1 index=3D6 =
+gid
+> > 0000:0000:0000:0000:0000:ffff:ac1f:28bb
+> > [  225.474075] infiniband bnxt_re0: store_gid_entry port=3D1 index=3D7 =
+gid
+> > 0000:0000:0000:0000:0000:ffff:ac1f:28bb
+> >
+> >
+> GID table looks fine.
+>
+The GID table has  fe80:0000:0000:0000:020a:f7ff:fee3:6e32 entry
+repeated 6 times. 2 for each interface
+bnxt_roce, bnxt_roce.43 and bnxt_roce.45. Is this expected to have
+same gid entries for vlan and base interfaces? As you mentioned
+earlier, driver's assumption
+that only 2 GID entries identical (one for RoCE v1 and one for RoCE
+v2)   is breaking here.
+
+> > On 7/12/19 12:18 AM, Parav Pandit wrote:
+> > > Sagi,
+> > >
+> > > This is better one to cc to linux-rdma.
+> > >
+> > > + Devesh, Selvin.
+> > >
+> > >> -----Original Message-----
+> > >> From: Parav Pandit
+> > >> Sent: Thursday, July 11, 2019 6:25 PM
+> > >> To: Yi Zhang <yi.zhang@redhat.com>; linux-nvme@lists.infradead.org
+> > >> Cc: Daniel Jurgens <danielj@mellanox.com>
+> > >> Subject: RE: regression: nvme rdma with bnxt_re0 broken
+> > >>
+> > >> Hi Yi Zhang,
+> > >>
+> > >>> -----Original Message-----
+> > >>> From: Yi Zhang <yi.zhang@redhat.com>
+> > >>> Sent: Thursday, July 11, 2019 3:17 PM
+> > >>> To: linux-nvme@lists.infradead.org
+> > >>> Cc: Daniel Jurgens <danielj@mellanox.com>; Parav Pandit
+> > >>> <parav@mellanox.com>
+> > >>> Subject: regression: nvme rdma with bnxt_re0 broken
+> > >>>
+> > >>> Hello
+> > >>>
+> > >>> 'nvme connect' failed when use bnxt_re0 on latest upstream build[1]=
+,
+> > >>> by bisecting I found it was introduced from v5.2.0-rc1 with [2], it
+> > >>> works after I revert it.
+> > >>> Let me know if you need more info, thanks.
+> > >>>
+> > >>> [1]
+> > >>> [root@rdma-perf-07 ~]$ nvme connect -t rdma -a 172.31.40.125 -s 442=
+0
+> > >>> -n testnqn Failed to write to /dev/nvme-fabrics: Bad address
+> > >>>
+> > >>> [root@rdma-perf-07 ~]$ dmesg
+> > >>> [  476.320742] bnxt_en 0000:19:00.0: QPLIB: cmdq[0x4b9]=3D0x15 stat=
+us 0x5
+>
+> Devesh, Selvin,
+>
+> What does this error mean?
+> bnxt_qplib_create_ah() is failing.
+>
+We are passing a wrong index for the GID to FW because of the
+assumption mentioned earlier.
+FW is failing command due to this.
+
+> > >>> [ 476.327103] infiniband bnxt_re0: Failed to allocate HW AH [
+> > >>> 476.332525] nvme nvme2: rdma_connect failed (-14).
+> > >>> [  476.343552] nvme nvme2: rdma connection establishment failed
+> > >>> (-14)
+> > >>>
+> > >>> [root@rdma-perf-07 ~]$ lspci  | grep -i Broadcom
+> > >>> 01:00.0 Ethernet controller: Broadcom Inc. and subsidiaries
+> > >>> NetXtreme
+> > >>> BCM5720 2-port Gigabit Ethernet PCIe
+> > >>> 01:00.1 Ethernet controller: Broadcom Inc. and subsidiaries
+> > >>> NetXtreme
+> > >>> BCM5720 2-port Gigabit Ethernet PCIe
+> > >>> 18:00.0 RAID bus controller: Broadcom / LSI MegaRAID SAS-3 3008
+> > >>> [Fury] (rev
+> > >>> 02)
+> > >>> 19:00.0 Ethernet controller: Broadcom Inc. and subsidiaries BCM5741=
+2
+> > >>> NetXtreme-E 10Gb RDMA Ethernet Controller (rev 01)
+> > >>> 19:00.1 Ethernet controller: Broadcom Inc. and subsidiaries BCM5741=
+2
+> > >>> NetXtreme-E 10Gb RDMA Ethernet Controller (rev 01)
+> > >>>
+> > >>>
+> > >>> [2]
+> > >>> commit 823b23da71132b80d9f41ab667c68b112455f3b6
+> > >>> Author: Parav Pandit <parav@mellanox.com>
+> > >>> Date:   Wed Apr 10 11:23:03 2019 +0300
+> > >>>
+> > >>>      IB/core: Allow vlan link local address based RoCE GIDs
+> > >>>
+> > >>>      IPv6 link local address for a VLAN netdevice has nothing to do=
+ with its
+> > >>>      resemblance with the default GID, because VLAN link local GID =
+is in
+> > >>>      different layer 2 domain.
+> > >>>
+> > >>>      Now that RoCE MAD packet processing and route resolution consi=
+der
+> > the
+> > >>>      right GID index, there is no need for an unnecessary check whi=
+ch
+> > prevents
+> > >>>      the addition of vlan based IPv6 link local GIDs.
+> > >>>
+> > >>>      Signed-off-by: Parav Pandit <parav@mellanox.com>
+> > >>>      Reviewed-by: Daniel Jurgens <danielj@mellanox.com>
+> > >>>      Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > >>>      Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> > >>>
+> > >>>
+> > >>>
+> > >>> Best Regards,
+> > >>>    Yi Zhang
+> > >>>
+> > >> I need some more information from you to debug this issue as I don=
+=E2=80=99t
+> > >> have the hw.
+> > >> The highlighted patch added support for IPv6 link local address for
+> > >> vlan. I am unsure how this can affect IPv4 AH creation for which the=
+re is
+> > failure.
+> > >>
+> > >> 1. Before you assign the IP address to the netdevice, Please do, ech=
+o
+> > >> -n "module ib_core +p" > /sys/kernel/debug/dynamic_debug/control
+> > >>
+> > >> Please share below output before doing nvme connect.
+> > >> 2. Output of script [1]
+> > >> $ show_gids script
+> > >> If getting this script is problematic, share the output of,
+> > >>
+> > >> $ cat /sys/class/infiniband/bnxt_re0/ports/1/gids/*
+> > >> $ cat /sys/class/infiniband/bnxt_re0/ports/1/gid_attrs/ndevs/*
+> > >> $ ip link show
+> > >> $ip addr show
+> > >> $ dmesg
+> > >>
+> > >> [1] https://community.mellanox.com/s/article/understanding-show-gids=
+-
+> > >> script#jive_content_id_The_Script
+> > >>
+> > >> I suspect that driver's assumption about GID indices might have gone
+> > >> wrong here in drivers/infiniband/hw/bnxt_re/ib_verbs.c.
+> > >> Lets see about results to confirm that.
+> > > _______________________________________________
+> > > Linux-nvme mailing list
+> > > Linux-nvme@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-nvme
