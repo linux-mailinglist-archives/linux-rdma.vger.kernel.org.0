@@ -2,73 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1BF6729C
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 17:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853EF672CA
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 17:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbfGLPlb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Jul 2019 11:41:31 -0400
-Received: from mail-qt1-f178.google.com ([209.85.160.178]:36015 "EHLO
-        mail-qt1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbfGLPla (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Jul 2019 11:41:30 -0400
-Received: by mail-qt1-f178.google.com with SMTP id z4so8531871qtc.3
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Jul 2019 08:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pYpyIQhiJ9WMOZjoLQTBbnoP77ToHOVObyV+FTX7eek=;
-        b=etmCSMmqdzH/RJX9Tk4hR9rhXEstx44a+nIga2cIojE25N3D0H1/z/kAftqw0k7CY7
-         J2OSgFaLe1xk7DnE9tDBoHHsotqXQ7QVDwYIlQM3JRwiC8wtqcJTmzSC8ZUN+77flWPc
-         j0HWNZbgP7cJ5Fzt/V79eZt/XwqvFD8j72Nc3oOQDjPFk8rseG6+HslRSm3o1gLAgO4B
-         gKJf2sWAa7tAT8T7IoLvrshk7HKWR0vM3wVpUWpmOQTvu1oZgTrHgGcCBp9Q6XfiTcoB
-         1/G+gyGmamRyg9Hx9VUlQdg9WpLE+WSZYUyGsL8f/I4uX9Eza1DH3UAgisf68DASnwRb
-         cjaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pYpyIQhiJ9WMOZjoLQTBbnoP77ToHOVObyV+FTX7eek=;
-        b=mufPUbA1i4r1Ga52b3L9szVcrFaQoRlzZ2Ei8p9NFO7MjWWQjdaZSUP6Eg2lmXgcWI
-         plv8ebl05624HyMGyKVl75yILVve9r8F1uwTFqNSAhWJgHJUnGYYl/9oLmnd7oJ3SPu2
-         VzjtEWrPKjiS2ix8FSxK0rPbflMLTP8lVO+OtUZCvucG+qZPnVqGodBigQ1qhbeDzBEJ
-         /3DTOVoHIB89lPTwEAAHuMsmVADz0GmHFlDKhxBlGSy0tsVQU9D/FfsJL4CnmC85v+z0
-         PZMaNMStgykn7Ti/HCPZ7FKjueUDABJEIrFzU74heUMN0edDM0kCiT01zE768WXhTnep
-         2UMQ==
-X-Gm-Message-State: APjAAAV3pAgInKjOG5yn9v9KF8kVwXdBRQQr4TluTdh/KaIhm3DlYAsw
-        BSYX/Sbm4BGg6xHCPB5nIjpatw==
-X-Google-Smtp-Source: APXvYqxP2e+qQnYvrWA0mo7GuHh8nKLr/4eZS7HwBSQmnrpRfZSqcq0PkErJ1BQRu0646UPA8JkyHA==
-X-Received: by 2002:ad4:5311:: with SMTP id y17mr7222101qvr.1.1562946089944;
-        Fri, 12 Jul 2019 08:41:29 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id 123sm3437534qkm.61.2019.07.12.08.41.29
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Jul 2019 08:41:29 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hlxft-0002x6-1w; Fri, 12 Jul 2019 12:41:29 -0300
-Date:   Fri, 12 Jul 2019 12:41:29 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Honggang Li <honli@redhat.com>
-Cc:     bvanassche@acm.org, linux-rdma@vger.kernel.org
-Subject: Re: [rdma-core patch v2] srp_daemon: improve the debug message for
- is_enabled_by_rules_file
-Message-ID: <20190712154129.GK27512@ziepe.ca>
-References: <20190712143147.10414-1-honli@redhat.com>
+        id S1727149AbfGLPxH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Jul 2019 11:53:07 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:38771 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726984AbfGLPxH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Jul 2019 11:53:07 -0400
+Received: from localhost (mehrangarh.blr.asicdesigners.com [10.193.185.169])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x6CFr0lU029840;
+        Fri, 12 Jul 2019 08:53:01 -0700
+Date:   Fri, 12 Jul 2019 21:22:59 +0530
+From:   Potnuri Bharat Teja <bharat@chelsio.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "BMT@zurich.ibm.com" <BMT@zurich.ibm.com>,
+        "monis@mellanox.com" <monis@mellanox.com>,
+        Nirranjan Kirubaharan <nirranjan@chelsio.com>
+Subject: Re: User SIW fails matching device
+Message-ID: <20190712155258.GA1827@chelsio.com>
+References: <20190712142718.GA26697@chelsio.com>
+ <20190712143546.GD27512@ziepe.ca>
+ <20190712152418.GA16331@chelsio.com>
+ <20190712153032.GH27512@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190712143147.10414-1-honli@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190712153032.GH27512@ziepe.ca>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 12, 2019 at 10:31:47AM -0400, Honggang Li wrote:
-> Signed-off-by: Honggang Li <honli@redhat.com>
-
-This really needs some commit message explaining why this should be
-done
-
-Jason
+On Friday, July 07/12/19, 2019 at 21:00:32 +0530, Jason Gunthorpe wrote:
+> On Fri, Jul 12, 2019 at 08:54:20PM +0530, Potnuri Bharat Teja wrote:
+> > On Friday, July 07/12/19, 2019 at 20:05:46 +0530, Jason Gunthorpe wrote:
+> > > On Fri, Jul 12, 2019 at 07:57:19PM +0530, Potnuri Bharat Teja wrote:
+> > > > Hi all,
+> > > > I observe the following behavior on one of my machines configured for siw.
+> > > > 
+> > > > Issue:
+> > > > SIW device gets wrong device ops (HW/real rdma driver device ops) instead of
+> > > > siw device ops due to improper device matching.
+> > > > 
+> > > > Root-cause:
+> > > > In libibverbs, during user cma initialisation, for each entry from the driver 
+> > > > list, sysfs device is checked for matching name or device.
+> > > > If the siw/rxe driver is at the head of the list, then sysfs device matches 
+> > > > properly with the corresponding siw driver and gets the corresponding siw/rxe 
+> > > > device ops. Now, If the siw/rxe driver is after the real HW driver cxgb4/mlx5 
+> > > > respectively in the driver list, then siw sysfs device matches pci device and 
+> > > > wrongly gets the device ops of HW driver (cxgb4/mlx5).
+> > > > 
+> > > > Below debug prints from verbs_register_driver() and driver_list entries, where 
+> > > > siw is after cxgb4. I see verbs alloc context landing in cxgb4_alloc_context 
+> > > > instead of siw_alloc_context, thus breaking user siw.
+> > > > 
+> > > > <debug> verbs_register_driver_22: 184: driver 0x176e370
+> > > > <debug> verbs_register_driver_22: 185: name ipathverbs
+> > > > <debug> verbs_register_driver_22: 184: driver 0x176f6a0
+> > > > <debug> verbs_register_driver_22: 185: name cxgb4
+> > > > <debug> verbs_register_driver_22: 184: driver 0x176fd50
+> > > > <debug> verbs_register_driver_22: 185: name cxgb3
+> > > > <debug> verbs_register_driver_22: 184: driver 0x1777020
+> > > > <debug> verbs_register_driver_22: 185: name rxe
+> > > > <debug> verbs_register_driver_22: 184: driver 0x1770a30
+> > > > <debug> verbs_register_driver_22: 185: name siw
+> > > > <debug> verbs_register_driver_22: 184: driver 0x1771120
+> > > > <debug> verbs_register_driver_22: 185: name mlx4
+> > > > <debug> verbs_register_driver_22: 184: driver 0x1771990
+> > > > <debug> verbs_register_driver_22: 185: name mlx5
+> > > > <debug> verbs_register_driver_22: 184: driver 0x1771ff0
+> > > > <debug> verbs_register_driver_22: 185: name efa
+> > > > 
+> > > > <debug> try_drivers: 372: driver 0x176e370, sysfs_dev 0x1776b20, name: ipathverbs
+> > > > <debug> try_drivers: 372: driver 0x176f6a0, sysfs_dev 0x1776b20, name: cxgb4
+> > > > <debug> try_drivers: 372: driver 0x176fd50, sysfs_dev 0x1776b20, name: cxgb3
+> > > > <debug> try_drivers: 372: driver 0x1777020, sysfs_dev 0x1776b20, name: rxe
+> > > > <debug> try_drivers: 372: driver 0x1770a30, sysfs_dev 0x1776b20, name: siw
+> > > > <debug> try_drivers: 372: driver 0x1771120, sysfs_dev 0x1776b20, name: mlx4
+> > > > <debug> try_drivers: 372: driver 0x1771990, sysfs_dev 0x1776b20, name: mlx5
+> > > > <debug> try_drivers: 372: driver 0x1771ff0, sysfs_dev 0x1776b20, name: efa
+> > > > 
+> > > > Proposed fix:
+> > > > I have the below fix that works. It adds siw/rxe driver to the HEAD of the 
+> > > > driver list and the rest to the tail. I am not sure if this fix is the ideal 
+> > > > one, so I am attaching it to this mail.
+> > > 
+> > > Update your rdma-core to latest and this will be fixed fully by using
+> > > netlink to match the siw device..
+> > > 
+> > I pulled the latest rdma-core, still see the issue.
+> > 
+> > commit 7ef6077ec3201f661458297fea776746ba752843 (HEAD, upstream/master)
+> > Merge: 837954ff677c 95934b61a74e
+> > Author: Jason Gunthorpe <jgg@mellanox.com>
+> > Date:   Thu Jul 11 16:18:06 2019 -0300
+> > 
+> >     Merge pull request #539 from jgunthorpe/netlink
+> > 
+> >         Use netlink to learn about ibdevs and their related chardevs
+> > 
+> > 
+> > Is there any corresponding kernel change or package dependency? I am currently 
+> > on Doug's wip/dl-for-next branch.
+> 
+> That should be good enough for the kernel.. Hmm.. The siw stuff didn't
+> get updated, you need this rdma-core patch too. Please confirm
+> 
+> diff --git a/providers/siw/siw.c b/providers/siw/siw.c
+> index 23e4dd976caf84..41f33fa16123e9 100644
+> --- a/providers/siw/siw.c
+> +++ b/providers/siw/siw.c
+> @@ -907,7 +907,7 @@ static void siw_device_free(struct verbs_device *vdev)
+>  }
+>  
+>  static const struct verbs_match_ent rnic_table[] = {
+> -	VERBS_NAME_MATCH("siw", NULL),
+> +	VERBS_DRIVER_ID(RDMA_DRIVER_SIW),
+>  	{},
+>  };
+>
+It works with above change. Thanks!
