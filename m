@@ -2,158 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0866725C
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 17:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369E467266
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 17:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbfGLPaf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Jul 2019 11:30:35 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:36457 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726602AbfGLPaf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Jul 2019 11:30:35 -0400
-Received: by mail-qt1-f195.google.com with SMTP id z4so8493610qtc.3
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Jul 2019 08:30:34 -0700 (PDT)
+        id S1726967AbfGLPcp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Jul 2019 11:32:45 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:40275 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726724AbfGLPcp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Jul 2019 11:32:45 -0400
+Received: by mail-qt1-f193.google.com with SMTP id a15so8467185qtn.7
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Jul 2019 08:32:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=YJ/+LW14h5PFSqCKr1eb/ddIgOkInv8e3XJEl7TjNcs=;
-        b=YB+N3Q0nAevDPPyqzdRro0hFF255pqhq3sxHdslRe/U73Yzr0Iy5IvejuL7iEoNq4v
-         ZS17zDqipea0ycOS+2aZwAbOnlf2d1H+55hNqY/Hg1h2oWylLuRCIg5qZOvy9MlFis9y
-         soia7URUHky/SUl2qq91vz2DmE0hJRZUGOjH8LDKIQ217zh9Aj0v9kz0leXfj+zdr5GB
-         TgiWzrQG2Et8HS5SZfphuZfqg3q1KPhKzELe3xOLHbQRYgWLnP+XYQ4/U2fk6Kp2mD5h
-         rc/XKR9FjKNljo14zb8Ng4SKEULSgwUlQ04qvm/Ho5KUP7+gkRUtpgMxOh0NPqUwiq/N
-         X7xA==
+        bh=6zUuNAxC0W8UA4PyJfN+NTLv2uHwtQW0uxPeJFySWhY=;
+        b=WhHL4nEaSeEd0vRZOuyDcURKZ0cIDxWXvxDZbS9TJi+X/uea1BzMCjEV3BPQDBS7kF
+         Dpkkz2XDk8Cq31X6ysMikLsVpO4/A6/XX+9SpUG+W1O09Ph1QgZt6F95E72Jvv5xOz7E
+         q7g3yVOFNmZDNJiyrLb7uSW1KGLl0Q1+OFgPCeLMQs4aOOlyJ3DLJmK3xFUpVrkpjcsB
+         QQY6IbgORFPsALQkh8diwYLGK2Iijn5DUi7LcqCzPyJj5Pixni0GPZh99oEQHA9a1HDc
+         QuLsPci3N/i5e6QkqSbRmroGlDOqP8DKDJE1pkprzCZ4CQ2YDpVXaUlmhimtsJwtsYcH
+         a6bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YJ/+LW14h5PFSqCKr1eb/ddIgOkInv8e3XJEl7TjNcs=;
-        b=ZVFVfr/eco/ECiPqD/M9ZfGVH4A2z9JnFLFPBgZ7WwbZUTe7H7IqYeQBztexFgExZ3
-         ye6m4Jg43d60QwGe8C5K/akTgRXJTUtwTz81IL8zirZh9p90i2z0Fv5N7GInAtaO01V+
-         Ip1s5zae8L2um21J7LmgpfiKGtTy8PA9Y0f8wzvR+LqgDxSla429u6xhtPQiH+9L5wr9
-         wWHEZZRjYXzYSld3FvGxFiRfgRpt4IkO9Fk+cYm1pqVKPxcSUrxso41m3v81R8LGuLH3
-         Y7I08T33Bv4j9Uqasq/Axbyf+5LwYhUMks4TO97VolSj1By59X+ihjRngqnbk4uTq2nf
-         1Bug==
-X-Gm-Message-State: APjAAAVMC+dmb6c62Q1G41mtYYAGMISU5fClzKSPvGQcgVhWNNNJXlHA
-        RL0MCYmZ5sKMl4NhjzlB8boP5Q==
-X-Google-Smtp-Source: APXvYqzzTtDX3314BAZra1NA9rbfqxeByCyDxshGoomklGXOLXWgmHSeRnm1XFBKa1tSqpmNah/FvA==
-X-Received: by 2002:a0c:d610:: with SMTP id c16mr7361366qvj.22.1562945433793;
-        Fri, 12 Jul 2019 08:30:33 -0700 (PDT)
+        bh=6zUuNAxC0W8UA4PyJfN+NTLv2uHwtQW0uxPeJFySWhY=;
+        b=eUziXqFfOKlLD/+sXfkISpdbOzcnxeD7k/vWLzDQbD/n66DkNiEgqB8H3gLejT5m2A
+         qQh5uE89iYiSu1Qbj4lDnWGI5rJY8d5lbN6nVnRKlqWyZibWcsnOrQLhSh90IVtUJKzj
+         yoLwDmVZmvIbGsL+wR7xGYQugyKR0hJBQe8JrHkqNflY9ZUeP0eC4qlEecPnnkR+t8QB
+         F5CxByr9geXlC6m9x99uYbancZTK0pHRjRvlPmk+IlmYbZ/WZoq/RabY5xRpWl1CvaAn
+         kl0GJvnqHchvdM4n2k+B9JiOfkk6vbz4m79+OoZMI7NYVCMXWsGvl+T8RB+cNBtVuaPO
+         BH7w==
+X-Gm-Message-State: APjAAAWfpwm22SFCJGLP9JTA17M1Pb1+w0fsVk4RRr5If+mUYmHamXvY
+        +NA4KyjrL+YdBoh9ZQBS1Tyivw==
+X-Google-Smtp-Source: APXvYqzEwIAjKS3Em026GIl/n6OaECDF5z0P7UjmcJEJgVEtwMvAC0d3LOiyLBn306FibVuHBvyEHQ==
+X-Received: by 2002:ac8:444c:: with SMTP id m12mr6913649qtn.306.1562945564475;
+        Fri, 12 Jul 2019 08:32:44 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id i5sm3306946qtp.20.2019.07.12.08.30.33
+        by smtp.gmail.com with ESMTPSA id v75sm4201337qka.38.2019.07.12.08.32.44
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Jul 2019 08:30:33 -0700 (PDT)
+        Fri, 12 Jul 2019 08:32:44 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hlxVI-0002Sf-VE; Fri, 12 Jul 2019 12:30:32 -0300
-Date:   Fri, 12 Jul 2019 12:30:32 -0300
+        id 1hlxXP-0002Tp-KZ; Fri, 12 Jul 2019 12:32:43 -0300
+Date:   Fri, 12 Jul 2019 12:32:43 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Potnuri Bharat Teja <bharat@chelsio.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "BMT@zurich.ibm.com" <BMT@zurich.ibm.com>,
-        "monis@mellanox.com" <monis@mellanox.com>,
-        Nirranjan Kirubaharan <nirranjan@chelsio.com>
-Subject: Re: User SIW fails matching device
-Message-ID: <20190712153032.GH27512@ziepe.ca>
-References: <20190712142718.GA26697@chelsio.com>
- <20190712143546.GD27512@ziepe.ca>
- <20190712152418.GA16331@chelsio.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Doug Ledford <dledford@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: Re: Re: [PATCH] rdma/siw: avoid smp_store_mb() on a u64
+Message-ID: <20190712153243.GI27512@ziepe.ca>
+References: <20190712144257.GE27512@ziepe.ca>
+ <20190712135339.GC27512@ziepe.ca>
+ <20190712120328.GB27512@ziepe.ca>
+ <20190712085212.3901785-1-arnd@arndb.de>
+ <OF05C1A780.433E36D1-ON00258435.003381DA-00258435.003F847E@notes.na.collabserv.com>
+ <OF36428621.B839DE8B-ON00258435.00461748-00258435.0047E413@notes.na.collabserv.com>
+ <OF3D069E00.E0996A14-ON00258435.004DD8C8-00258435.00502F8C@notes.na.collabserv.com>
+ <OF9F46C3F6.DC3E03FF-ON00258435.00521546-00258435.00549C01@notes.na.collabserv.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190712152418.GA16331@chelsio.com>
+In-Reply-To: <OF9F46C3F6.DC3E03FF-ON00258435.00521546-00258435.00549C01@notes.na.collabserv.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 12, 2019 at 08:54:20PM +0530, Potnuri Bharat Teja wrote:
-> On Friday, July 07/12/19, 2019 at 20:05:46 +0530, Jason Gunthorpe wrote:
-> > On Fri, Jul 12, 2019 at 07:57:19PM +0530, Potnuri Bharat Teja wrote:
-> > > Hi all,
-> > > I observe the following behavior on one of my machines configured for siw.
-> > > 
-> > > Issue:
-> > > SIW device gets wrong device ops (HW/real rdma driver device ops) instead of
-> > > siw device ops due to improper device matching.
-> > > 
-> > > Root-cause:
-> > > In libibverbs, during user cma initialisation, for each entry from the driver 
-> > > list, sysfs device is checked for matching name or device.
-> > > If the siw/rxe driver is at the head of the list, then sysfs device matches 
-> > > properly with the corresponding siw driver and gets the corresponding siw/rxe 
-> > > device ops. Now, If the siw/rxe driver is after the real HW driver cxgb4/mlx5 
-> > > respectively in the driver list, then siw sysfs device matches pci device and 
-> > > wrongly gets the device ops of HW driver (cxgb4/mlx5).
-> > > 
-> > > Below debug prints from verbs_register_driver() and driver_list entries, where 
-> > > siw is after cxgb4. I see verbs alloc context landing in cxgb4_alloc_context 
-> > > instead of siw_alloc_context, thus breaking user siw.
-> > > 
-> > > <debug> verbs_register_driver_22: 184: driver 0x176e370
-> > > <debug> verbs_register_driver_22: 185: name ipathverbs
-> > > <debug> verbs_register_driver_22: 184: driver 0x176f6a0
-> > > <debug> verbs_register_driver_22: 185: name cxgb4
-> > > <debug> verbs_register_driver_22: 184: driver 0x176fd50
-> > > <debug> verbs_register_driver_22: 185: name cxgb3
-> > > <debug> verbs_register_driver_22: 184: driver 0x1777020
-> > > <debug> verbs_register_driver_22: 185: name rxe
-> > > <debug> verbs_register_driver_22: 184: driver 0x1770a30
-> > > <debug> verbs_register_driver_22: 185: name siw
-> > > <debug> verbs_register_driver_22: 184: driver 0x1771120
-> > > <debug> verbs_register_driver_22: 185: name mlx4
-> > > <debug> verbs_register_driver_22: 184: driver 0x1771990
-> > > <debug> verbs_register_driver_22: 185: name mlx5
-> > > <debug> verbs_register_driver_22: 184: driver 0x1771ff0
-> > > <debug> verbs_register_driver_22: 185: name efa
-> > > 
-> > > <debug> try_drivers: 372: driver 0x176e370, sysfs_dev 0x1776b20, name: ipathverbs
-> > > <debug> try_drivers: 372: driver 0x176f6a0, sysfs_dev 0x1776b20, name: cxgb4
-> > > <debug> try_drivers: 372: driver 0x176fd50, sysfs_dev 0x1776b20, name: cxgb3
-> > > <debug> try_drivers: 372: driver 0x1777020, sysfs_dev 0x1776b20, name: rxe
-> > > <debug> try_drivers: 372: driver 0x1770a30, sysfs_dev 0x1776b20, name: siw
-> > > <debug> try_drivers: 372: driver 0x1771120, sysfs_dev 0x1776b20, name: mlx4
-> > > <debug> try_drivers: 372: driver 0x1771990, sysfs_dev 0x1776b20, name: mlx5
-> > > <debug> try_drivers: 372: driver 0x1771ff0, sysfs_dev 0x1776b20, name: efa
-> > > 
-> > > Proposed fix:
-> > > I have the below fix that works. It adds siw/rxe driver to the HEAD of the 
-> > > driver list and the rest to the tail. I am not sure if this fix is the ideal 
-> > > one, so I am attaching it to this mail.
-> > 
-> > Update your rdma-core to latest and this will be fixed fully by using
-> > netlink to match the siw device..
-> > 
-> I pulled the latest rdma-core, still see the issue.
+On Fri, Jul 12, 2019 at 03:24:09PM +0000, Bernard Metzler wrote:
 > 
-> commit 7ef6077ec3201f661458297fea776746ba752843 (HEAD, upstream/master)
-> Merge: 837954ff677c 95934b61a74e
-> Author: Jason Gunthorpe <jgg@mellanox.com>
-> Date:   Thu Jul 11 16:18:06 2019 -0300
-> 
->     Merge pull request #539 from jgunthorpe/netlink
-> 
->         Use netlink to learn about ibdevs and their related chardevs
-> 
-> 
-> Is there any corresponding kernel change or package dependency? I am currently 
-> on Doug's wip/dl-for-next branch.
+> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+> >Date: 07/12/2019 04:43PM
+> >Cc: "Arnd Bergmann" <arnd@arndb.de>, "Doug Ledford"
+> ><dledford@redhat.com>, "Peter Zijlstra" <peterz@infradead.org>,
+> >linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+> >Subject: [EXTERNAL] Re: Re: Re: [PATCH] rdma/siw: avoid
+> >smp_store_mb() on a u64
+> >
+> >On Fri, Jul 12, 2019 at 02:35:50PM +0000, Bernard Metzler wrote:
+> >
+> >> >This looks wrong to me.. a userspace notification re-arm cannot be
+> >> >lost, so have a split READ/TEST/WRITE sequence can't possibly
+> >work?
+> >> >
+> >> >I'd expect an atomic test and clear here?
+> >> 
+> >> We cannot avoid the case that the application re-arms the
+> >> CQ only after a CQE got placed. That is why folks are polling the
+> >> CQ once after re-arming it - to make sure they do not miss the
+> >> very last and single CQE which would have produced a CQ event.
+> >
+> >That is different, that is re-arm happing after a CQE placement and
+> >this can't be fixed.
+> >
+> >What I said is that a re-arm from userspace cannot be lost. So you
+> >can't blindly clear the arm flag with the WRITE_ONCE. It might be OK
+> >beacuse of the if, but...
+> >
+> >It is just goofy to write it without a 'test and clear' atomic. If
+> >the
+> >writer side consumes the notify it should always be done atomically.
+> >
+> Hmmm, I don't yet get why we should test and clear atomically, if we
+> clear anyway - is it because we want to avoid clearing a re-arm which
+> happens just after testing and before clearing?
 
-That should be good enough for the kernel.. Hmm.. The siw stuff didn't
-get updated, you need this rdma-core patch too. Please confirm
+It is just clearer as to the intent.. 
 
-diff --git a/providers/siw/siw.c b/providers/siw/siw.c
-index 23e4dd976caf84..41f33fa16123e9 100644
---- a/providers/siw/siw.c
-+++ b/providers/siw/siw.c
-@@ -907,7 +907,7 @@ static void siw_device_free(struct verbs_device *vdev)
- }
- 
- static const struct verbs_match_ent rnic_table[] = {
--	VERBS_NAME_MATCH("siw", NULL),
-+	VERBS_DRIVER_ID(RDMA_DRIVER_SIW),
- 	{},
- };
- 
+Are you trying to optimize away an atomic or something? That might
+work better as a dual counter scheme.
+
+> Another complication -- test_and_set_bit() operates on a single
+> bit, but we have to test two bits, and reset both, if one is
+> set.
+
+Why are two bits needed to represent armed and !armed?
+
+Jason
