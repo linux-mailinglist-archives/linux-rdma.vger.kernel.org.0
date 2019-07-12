@@ -2,160 +2,237 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E12662C5
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 02:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F2E6637D
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2019 03:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730520AbfGLAWa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Jul 2019 20:22:30 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34040 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728102AbfGLAWa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jul 2019 20:22:30 -0400
-Received: by mail-ot1-f65.google.com with SMTP id n5so7762767otk.1;
-        Thu, 11 Jul 2019 17:22:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jXZQvwZ+WxHloRkZdb0DMVv7eaNNsxBD6ps2KyCl09Y=;
-        b=P6xsbYPqutA2TM1WAD/JWrYqrTyijMZgu6r4uqMgG5+0/ODz7/29rl+dKC8IY0V4vC
-         i4+TG6fM3MvXa2MBs/bAiE+kArTCUKJ8o7+rT2ZeXrRCud689T9+8YiNEzgL15GxKh9m
-         G3wURS0ib6DvnphB63fm+jMSLBZsOvktqs0D/tovXJylA/PUEa50H+xDEHnA7DM9Efd9
-         pQRsYvLWS5F5u9Q/qxDJdprU6Mo7ITU8jRM6bbLOxebWPZJpFcZHFk5PDlbsMEQiG6EV
-         MPYpWQF7yfVit5dmZamEBWmMIh0N6kia3kTvVTCMNN28IxRbGUm37co1vYgGqrOeYuSK
-         glag==
-X-Gm-Message-State: APjAAAX/Fa06j4Ij5f94kxLWMVIEuQLlyLyj8XB2X9ckSfP0l6aM6zaQ
-        lZEYyZf6brRJtLFvik3U1Tg=
-X-Google-Smtp-Source: APXvYqxzFkcd+fCSstleSDxY7LurqciKea5lf41DlefWqIyWr15+e48X2y5oaegjnRVEng15aayIcg==
-X-Received: by 2002:a9d:51cf:: with SMTP id d15mr6137989oth.206.1562890949154;
-        Thu, 11 Jul 2019 17:22:29 -0700 (PDT)
-Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
-        by smtp.gmail.com with ESMTPSA id a20sm2539222otl.44.2019.07.11.17.22.27
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Jul 2019 17:22:28 -0700 (PDT)
-Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
- Device (IBNBD)
-To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, axboe@kernel.dk,
-        Christoph Hellwig <hch@infradead.org>, bvanassche@acm.org,
-        jgg@mellanox.com, dledford@redhat.com,
-        Roman Pen <r.peniaev@gmail.com>, gregkh@linuxfoundation.org
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
- <a8f2f1d2-b5d9-92fc-40c8-090af0487723@grimberg.me>
- <CAHg0HuxZvXH899=M4vC7BTH-bP2J35aTwsGhiGoC8AamD8gOyA@mail.gmail.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <aef765ed-4bb9-2211-05d0-b320cc3ac275@grimberg.me>
-Date:   Thu, 11 Jul 2019 17:22:26 -0700
+        id S1729205AbfGLBxe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jul 2019 21:53:34 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:44562 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729202AbfGLBxe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 11 Jul 2019 21:53:34 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id E3CCA308338F;
+        Fri, 12 Jul 2019 01:53:33 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-12-47.pek2.redhat.com [10.72.12.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2F2BE1001B2B;
+        Fri, 12 Jul 2019 01:53:24 +0000 (UTC)
+Subject: Re: regression: nvme rdma with bnxt_re0 broken
+To:     Parav Pandit <parav@mellanox.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
+Cc:     Daniel Jurgens <danielj@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>
+References: <1310083272.27124086.1562836112586.JavaMail.zimbra@redhat.com>
+ <619411460.27128070.1562838433020.JavaMail.zimbra@redhat.com>
+ <AM0PR05MB48664657022ECA8526E3C967D1F30@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <AM0PR05MB4866070FBADCCABD1F84E42ED1F30@AM0PR05MB4866.eurprd05.prod.outlook.com>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Message-ID: <66d43fd8-18e8-8b9d-90e3-ee2804d56889@redhat.com>
+Date:   Fri, 12 Jul 2019 09:53:17 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAHg0HuxZvXH899=M4vC7BTH-bP2J35aTwsGhiGoC8AamD8gOyA@mail.gmail.com>
+In-Reply-To: <AM0PR05MB4866070FBADCCABD1F84E42ED1F30@AM0PR05MB4866.eurprd05.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Fri, 12 Jul 2019 01:53:34 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hi Parav
 
->> My main issues which were raised before are:
->> - IMO there isn't any justification to this ibtrs layering separation
->>     given that the only user of this is your ibnbd. Unless you are
->>     trying to submit another consumer, you should avoid adding another
->>     subsystem that is not really general purpose.
-> We designed ibtrs not only with the IBNBD in mind but also as the
-> transport layer for a distributed SDS. We'd like to be able to do what
-> ceph is capable of (automatic up/down scaling of the storage cluster,
-> automatic recovery) but using in-kernel rdma-based IO transport
-> drivers, thin-provisioned volume managers, etc. to keep the highest
-> possible performance.
+Here is the info, let me know if it's enough, thanks.
 
-Sounds lovely, but still very much bound to your ibnbd. And that part
-is not included in the patch set, so I still don't see why should this
-be considered as a "generic" transport subsystem (it clearly isn't).
+[root@rdma-perf-07 ~]$ echo -n "module ib_core +p" > 
+/sys/kernel/debug/dynamic_debug/control
+[root@rdma-perf-07 ~]$ ifdown bnxt_roce
+Device 'bnxt_roce' successfully disconnected.
+[root@rdma-perf-07 ~]$ ifup bnxt_roce
+Connection successfully activated (D-Bus active path: 
+/org/freedesktop/NetworkManager/ActiveConnection/16)
+[root@rdma-perf-07 ~]$ sh a.sh
+DEV    PORT    INDEX    GID                    IPv4         VER DEV
+---    ----    -----    ---                    ------------ ---    ---
+bnxt_re0    1    0    fe80:0000:0000:0000:020a:f7ff:fee3:6e32         
+v1    bnxt_roce
+bnxt_re0    1    1    fe80:0000:0000:0000:020a:f7ff:fee3:6e32         
+v2    bnxt_roce
+bnxt_re0    1    10    0000:0000:0000:0000:0000:ffff:ac1f:2bbb 
+172.31.43.187     v1    bnxt_roce.43
+bnxt_re0    1    11    0000:0000:0000:0000:0000:ffff:ac1f:2bbb 
+172.31.43.187     v2    bnxt_roce.43
+bnxt_re0    1    2    fe80:0000:0000:0000:020a:f7ff:fee3:6e32         
+v1    bnxt_roce.45
+bnxt_re0    1    3    fe80:0000:0000:0000:020a:f7ff:fee3:6e32         
+v2    bnxt_roce.45
+bnxt_re0    1    4    fe80:0000:0000:0000:020a:f7ff:fee3:6e32         
+v1    bnxt_roce.43
+bnxt_re0    1    5    fe80:0000:0000:0000:020a:f7ff:fee3:6e32         
+v2    bnxt_roce.43
+bnxt_re0    1    6    0000:0000:0000:0000:0000:ffff:ac1f:28bb 
+172.31.40.187     v1    bnxt_roce
+bnxt_re0    1    7    0000:0000:0000:0000:0000:ffff:ac1f:28bb 
+172.31.40.187     v2    bnxt_roce
+bnxt_re0    1    8    0000:0000:0000:0000:0000:ffff:ac1f:2dbb 
+172.31.45.187     v1    bnxt_roce.45
+bnxt_re0    1    9    0000:0000:0000:0000:0000:ffff:ac1f:2dbb 
+172.31.45.187     v2    bnxt_roce.45
+bnxt_re1    1    0    fe80:0000:0000:0000:020a:f7ff:fee3:6e33         
+v1    lom_2
+bnxt_re1    1    1    fe80:0000:0000:0000:020a:f7ff:fee3:6e33         
+v2    lom_2
+cxgb4_0    1    0    0007:433b:f5b0:0000:0000:0000:0000:0000         v1
+cxgb4_0    2    0    0007:433b:f5b8:0000:0000:0000:0000:0000         v1
+hfi1_0    1    0    fe80:0000:0000:0000:0011:7501:0109:6c60     v1
+hfi1_0    1    1    fe80:0000:0000:0000:0006:6a00:0000:0005     v1
+mlx5_0    1    0    fe80:0000:0000:0000:506b:4b03:00f3:8a38     v1
+n_gids_found=19
 
-> All in all itbrs is a library to establish a "fat", multipath,
-> autoreconnectable connection between two hosts on top of rdma,
-> optimized for transport of IO traffic.
+[root@rdma-perf-07 ~]$ dmesg | tail -15
+[   19.744421] IPv6: ADDRCONF(NETDEV_CHANGE): mlx5_ib0.8002: link 
+becomes ready
+[   19.758371] IPv6: ADDRCONF(NETDEV_CHANGE): mlx5_ib0.8004: link 
+becomes ready
+[   20.010469] hfi1 0000:d8:00.0: hfi1_0: Switching to NO_DMA_RTAIL
+[   20.440580] IPv6: ADDRCONF(NETDEV_CHANGE): mlx5_ib0.8006: link 
+becomes ready
+[   21.098510] bnxt_en 0000:19:00.0 bnxt_roce: Too many traffic classes 
+requested: 8. Max supported is 2.
+[   21.324341] bnxt_en 0000:19:00.0 bnxt_roce: Too many traffic classes 
+requested: 8. Max supported is 2.
+[   22.058647] IPv6: ADDRCONF(NETDEV_CHANGE): hfi1_opa0: link becomes ready
+[  211.407329] _ib_cache_gid_del: can't delete gid 
+fe80:0000:0000:0000:020a:f7ff:fee3:6e32 error=-22
+[  211.407334] _ib_cache_gid_del: can't delete gid 
+fe80:0000:0000:0000:020a:f7ff:fee3:6e32 error=-22
+[  211.425275] infiniband bnxt_re0: del_gid port=1 index=6 gid 
+0000:0000:0000:0000:0000:ffff:ac1f:28bb
+[  211.425280] infiniband bnxt_re0: free_gid_entry_locked port=1 index=6 
+gid 0000:0000:0000:0000:0000:ffff:ac1f:28bb
+[  211.425292] infiniband bnxt_re0: del_gid port=1 index=7 gid 
+0000:0000:0000:0000:0000:ffff:ac1f:28bb
+[  211.425461] infiniband bnxt_re0: free_gid_entry_locked port=1 index=7 
+gid 0000:0000:0000:0000:0000:ffff:ac1f:28bb
+[  225.474061] infiniband bnxt_re0: store_gid_entry port=1 index=6 gid 
+0000:0000:0000:0000:0000:ffff:ac1f:28bb
+[  225.474075] infiniband bnxt_re0: store_gid_entry port=1 index=7 gid 
+0000:0000:0000:0000:0000:ffff:ac1f:28bb
 
-That is also dictating a wire-protocol which makes it useless to pretty
-much any other consumer. Personally, I don't see how this library
-would ever be used outside of your ibnbd.
 
->> - ibtrs in general is using almost no infrastructure from the existing
->>     kernel subsystems. Examples are:
->>     - tag allocation mechanism (which I'm not clear why its needed)
-> As you correctly noticed our client manages the buffers allocated and
-> registered by the server on the connection establishment. Our tags are
-> just a mechanism to take and release those buffers for incoming
-> requests on client side. Since the buffers allocated by the server are
-> to be shared between all the devices mapped from that server and all
-> their HW queues (each having num_cpus of them) the mechanism behind
-> get_tag/put_tag also takes care of the fairness.
-
-We have infrastructure for this, sbitmaps.
-
->>     - rdma rw abstraction similar to what we have in the core
-> On the one hand we have only single IO related function:
-> ibtrs_clt_request(READ/WRITE, session,...), which executes rdma write
-> with imm, or requests an rdma write with imm to be executed by the
-> server.
-
-For sure you can enhance the rw API to have imm support?
-
-> On the other hand we provide an abstraction to establish and
-> manage what we call "session", which consist of multiple paths (to do
-> failover and multipath with different policies), where each path
-> consists of num_cpu rdma connections.
-
-That's fine, but it doesn't mean that it also needs to re-write
-infrastructure that we already have.
-
-> Once you established a session
-> you can add or remove paths from it on the fly. In case the connection
-> to server is lost, the client does periodic attempts to reconnect
-> automatically. On the server side you get just sg-lists with a
-> direction READ or WRITE as requested by the client. We designed this
-> interface not only as the minimum required to build a block device on
-> top of rdma but also with a distributed raid in mind.
-
-I suggest you take a look at the rw API and use that in your transport.
-
->> Another question, from what I understand from the code, the client
->> always rdma_writes data on writes (with imm) from a remote pool of
->> server buffers dedicated to it. Essentially all writes are immediate (no
->> rdma reads ever). How is that different than using send wrs to a set of
->> pre-posted recv buffers (like all others are doing)? Is it faster?
-> At the very beginning of the project we did some measurements and saw,
-> that it is faster. I'm not sure if this is still true
-
-Its not significantly faster (can't imagine why it would be).
-What could make a difference is probably the fact that you never
-do rdma reads for I/O writes which might be better. Also perhaps the
-fact that you normally don't wait for send completions before completing
-I/O (which is broken), and the fact that you batch recv operations.
-
-I would be interested to understand what indeed makes ibnbd run faster
-though.
-
->> Also, given that the server pre-allocate a substantial amount of memory
->> for each connection, is it documented the requirements from the server
->> side? Usually kernel implementations (especially upstream ones) will
->> avoid imposing such large longstanding memory requirements on the system
->> by default. I don't have a firm stand on this, but wanted to highlight
->> this as you are sending this for upstream inclusion.
-> We definitely need to stress that somewhere. Will include into readme
-> and add to the cover letter next time. Our memory management is indeed
-> basically absent in favor of performance: The server reserves
-> queue_depth of say 512K buffers. Each buffer is used by client for
-> single IO only, no matter how big the request is. So if client only
-> issues 4K IOs, we do waste 508*queue_depth K of memory. We were aiming
-> for lowest possible latency from the beginning. It is probably
-> possible to implement some clever allocator on the server side which
-> wouldn't affect the performance a lot.
-
-Or you can fallback to rdma_read like the rest of the ulps.
+On 7/12/19 12:18 AM, Parav Pandit wrote:
+> Sagi,
+>
+> This is better one to cc to linux-rdma.
+>
+> + Devesh, Selvin.
+>
+>> -----Original Message-----
+>> From: Parav Pandit
+>> Sent: Thursday, July 11, 2019 6:25 PM
+>> To: Yi Zhang <yi.zhang@redhat.com>; linux-nvme@lists.infradead.org
+>> Cc: Daniel Jurgens <danielj@mellanox.com>
+>> Subject: RE: regression: nvme rdma with bnxt_re0 broken
+>>
+>> Hi Yi Zhang,
+>>
+>>> -----Original Message-----
+>>> From: Yi Zhang <yi.zhang@redhat.com>
+>>> Sent: Thursday, July 11, 2019 3:17 PM
+>>> To: linux-nvme@lists.infradead.org
+>>> Cc: Daniel Jurgens <danielj@mellanox.com>; Parav Pandit
+>>> <parav@mellanox.com>
+>>> Subject: regression: nvme rdma with bnxt_re0 broken
+>>>
+>>> Hello
+>>>
+>>> 'nvme connect' failed when use bnxt_re0 on latest upstream build[1],
+>>> by bisecting I found it was introduced from v5.2.0-rc1 with [2], it
+>>> works after I revert it.
+>>> Let me know if you need more info, thanks.
+>>>
+>>> [1]
+>>> [root@rdma-perf-07 ~]$ nvme connect -t rdma -a 172.31.40.125 -s 4420
+>>> -n testnqn Failed to write to /dev/nvme-fabrics: Bad address
+>>>
+>>> [root@rdma-perf-07 ~]$ dmesg
+>>> [  476.320742] bnxt_en 0000:19:00.0: QPLIB: cmdq[0x4b9]=0x15 status
+>>> 0x5 [ 476.327103] infiniband bnxt_re0: Failed to allocate HW AH [
+>>> 476.332525] nvme nvme2: rdma_connect failed (-14).
+>>> [  476.343552] nvme nvme2: rdma connection establishment failed (-14)
+>>>
+>>> [root@rdma-perf-07 ~]$ lspci  | grep -i Broadcom
+>>> 01:00.0 Ethernet controller: Broadcom Inc. and subsidiaries NetXtreme
+>>> BCM5720 2-port Gigabit Ethernet PCIe
+>>> 01:00.1 Ethernet controller: Broadcom Inc. and subsidiaries NetXtreme
+>>> BCM5720 2-port Gigabit Ethernet PCIe
+>>> 18:00.0 RAID bus controller: Broadcom / LSI MegaRAID SAS-3 3008 [Fury]
+>>> (rev
+>>> 02)
+>>> 19:00.0 Ethernet controller: Broadcom Inc. and subsidiaries BCM57412
+>>> NetXtreme-E 10Gb RDMA Ethernet Controller (rev 01)
+>>> 19:00.1 Ethernet controller: Broadcom Inc. and subsidiaries BCM57412
+>>> NetXtreme-E 10Gb RDMA Ethernet Controller (rev 01)
+>>>
+>>>
+>>> [2]
+>>> commit 823b23da71132b80d9f41ab667c68b112455f3b6
+>>> Author: Parav Pandit <parav@mellanox.com>
+>>> Date:   Wed Apr 10 11:23:03 2019 +0300
+>>>
+>>>      IB/core: Allow vlan link local address based RoCE GIDs
+>>>
+>>>      IPv6 link local address for a VLAN netdevice has nothing to do with its
+>>>      resemblance with the default GID, because VLAN link local GID is in
+>>>      different layer 2 domain.
+>>>
+>>>      Now that RoCE MAD packet processing and route resolution consider the
+>>>      right GID index, there is no need for an unnecessary check which prevents
+>>>      the addition of vlan based IPv6 link local GIDs.
+>>>
+>>>      Signed-off-by: Parav Pandit <parav@mellanox.com>
+>>>      Reviewed-by: Daniel Jurgens <danielj@mellanox.com>
+>>>      Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>>>      Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+>>>
+>>>
+>>>
+>>> Best Regards,
+>>>    Yi Zhang
+>>>
+>> I need some more information from you to debug this issue as I don’t have the
+>> hw.
+>> The highlighted patch added support for IPv6 link local address for vlan. I am
+>> unsure how this can affect IPv4 AH creation for which there is failure.
+>>
+>> 1. Before you assign the IP address to the netdevice, Please do, echo -n
+>> "module ib_core +p" > /sys/kernel/debug/dynamic_debug/control
+>>
+>> Please share below output before doing nvme connect.
+>> 2. Output of script [1]
+>> $ show_gids script
+>> If getting this script is problematic, share the output of,
+>>
+>> $ cat /sys/class/infiniband/bnxt_re0/ports/1/gids/*
+>> $ cat /sys/class/infiniband/bnxt_re0/ports/1/gid_attrs/ndevs/*
+>> $ ip link show
+>> $ip addr show
+>> $ dmesg
+>>
+>> [1] https://community.mellanox.com/s/article/understanding-show-gids-
+>> script#jive_content_id_The_Script
+>>
+>> I suspect that driver's assumption about GID indices might have gone wrong
+>> here in drivers/infiniband/hw/bnxt_re/ib_verbs.c.
+>> Lets see about results to confirm that.
+> _______________________________________________
+> Linux-nvme mailing list
+> Linux-nvme@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-nvme
