@@ -2,218 +2,238 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 474E068FA1
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 16:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9DE68FE0
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 16:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389060AbfGOOPs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jul 2019 10:15:48 -0400
-Received: from mail-eopbgr40066.outbound.protection.outlook.com ([40.107.4.66]:6062
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389027AbfGOOPs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:15:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b6eSHBBOueHd/Hr8Bp9vKeDO2R4zJtVhtkCzB3ta7SltSwKJhL7gM0/fv0rK0jSgUlwqh8o6DVZac5EDOTmo5TJxf2zI4pf6Z2cUqOmYcIqAxNCP3fWTvmlotUaFJHnrXNJCi0As1gQi90TNyPpydGH4w6cwr232jlke/QoCig3yXF7D+Td9rF2HUmIJZ3cMfo7fD58uZvEBWAJlX0MODlQvKwfT9CNXiMCoI8HlVGTIeKcpPLtimPkKdh4IQr2dBjVFkdhSK72rO2PglNY5C9ufeWpICYkiQdw+vnc32EP6nK0swh81hJLycpjT+2DCKBnfWXaSptEYvBb77xn5Ag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VM4V/szzW8CCFyAtGRTrIjiCbyFTB4ZV/Ct97PiiDvI=;
- b=H0dE/1HY9m7Y4fYviG4/NPvMLlWdQEZeVMubIwjk1cYnSQdlrnr7hKerZnmhFYtUcvjMvLllQkDk9LLeAQ8d5U5oqqlwjR9XWQzkg1/UxOq4bvEQuEX5pw7shGZohMTjdlqoPTb5TnDg/rtrovo6AjQnuLuurZCxdEZfwfqOz+dDH+ueipmPz6P4MoNCD3ldOVfdBm8Y2nKB0DGdIK7vH+Jz4X8CVT/ijSlMMchrCbgZFKlcgdbQ1fFDiMyxq+TUCRWFauJgVBlCu1EoX5FxU/VHubRGqY5vgYYPQwt8QDhyEtaJiFsux3Cq+8DqAsC8edG3KloR+DCYV/70OuHhPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=mellanox.com;dmarc=pass action=none
- header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VM4V/szzW8CCFyAtGRTrIjiCbyFTB4ZV/Ct97PiiDvI=;
- b=ep9axi0e2+ePle7rtfAZKrEK7kMylIjaYYHD6vqz5IP1wVs8HK9JiohEXRl+aFg5bo8Cu4ZZ/v+ePleXJQNH52gyoDFY0NXCRO1JfROr4e4rjWk16NSB0qvT9Deai5UkJk2k94ZP9zobNr0t9P0QNsNNgi2qdrnzVez79iKgUuY=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB5854.eurprd05.prod.outlook.com (20.178.125.83) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2073.14; Mon, 15 Jul 2019 14:15:43 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::f5d8:df9:731:682e%5]) with mapi id 15.20.2073.012; Mon, 15 Jul 2019
- 14:15:43 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Yuval Shaia <yuval.shaia@oracle.com>
-CC:     Yishai Hadas <yishaih@mellanox.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "mark.haywood@oracle.com" <mark.haywood@oracle.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v8] verbs: Introduce a new reg_mr API for virtual address
- space
-Thread-Topic: [PATCH v8] verbs: Introduce a new reg_mr API for virtual address
- space
-Thread-Index: AQHVOxeFpOSMFAeAn0SylCM6S7x2q6bLuV4A
-Date:   Mon, 15 Jul 2019 14:15:42 +0000
-Message-ID: <20190715141538.GC15202@mellanox.com>
-References: <20190715141328.15872-1-yuval.shaia@oracle.com>
-In-Reply-To: <20190715141328.15872-1-yuval.shaia@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR02CA0011.namprd02.prod.outlook.com
- (2603:10b6:208:fc::24) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1eb73497-0767-4fbd-8121-08d7092eebe6
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5854;
-x-ms-traffictypediagnostic: VI1PR05MB5854:
-x-microsoft-antispam-prvs: <VI1PR05MB5854EFA3F254DD8780A30ADECFCF0@VI1PR05MB5854.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2201;
-x-forefront-prvs: 00997889E7
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(376002)(346002)(136003)(366004)(39860400002)(189003)(199004)(316002)(33656002)(4326008)(54906003)(68736007)(229853002)(6486002)(86362001)(6116002)(81156014)(7736002)(305945005)(81166006)(25786009)(8936002)(8676002)(2906002)(76176011)(256004)(102836004)(386003)(6506007)(66066001)(64756008)(99286004)(14444005)(476003)(486006)(14454004)(446003)(478600001)(6916009)(66556008)(6436002)(66946007)(66476007)(66446008)(52116002)(6246003)(36756003)(1076003)(71200400001)(71190400001)(6512007)(5660300002)(53936002)(2616005)(11346002)(26005)(3846002)(186003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5854;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: R/wVwk1oX/AuCGWRn6ZAfdLjn8jTKjNnokcAAmRD5nfAeanAKFoebhjCv9dVofH449zsts8qi40R5Dv7NJO0q+i+cawCfQSCcs/Zc8L54gNF/0yoMx6LkdCWUCTsai4WS+dTm86svuQZINx5C/1Tgx/vVADDN2l+n4tBuzdq7rcXDu+/ch7A5///xF6pn7N8pjneko66EN9eXjopJywlD3i0r4HZwStTwtRgn209bcyI5WP3lkqAQ0lFqg5hctu91y1BJvXmqA8FHcD3iIUio1vNm4yFgoJM2z/seMfvCY64cTBYUvoKR8tT3MTY1Zll+nM6wwn0QOhUQBQ7PrIEh4e2zLjZ2VoNGc7v9yyhnLF2BvRn+3iDZ4VHoOThZVc2jdLzEqvDZMB5uDHAyu9xMu27xELZ6XOHH5LllO4CGYU=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <F28AB14755C12647B56F5DD5ADD3986A@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S2389326AbfGOORX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jul 2019 10:17:23 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:34192 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388990AbfGOORW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:17:22 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id BAF193092647;
+        Mon, 15 Jul 2019 14:17:21 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-12-65.pek2.redhat.com [10.72.12.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1CAAF60DDF;
+        Mon, 15 Jul 2019 14:17:16 +0000 (UTC)
+Subject: Re: [PATCH for-rc] RDMA/bnxt_re: Honor vlan_id in GID entry
+ comparison
+To:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        linux-rdma@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca
+Cc:     stable@vger.kernel.org, linux-nvme@lists.infradead.org,
+        Parav Pandit <parav@mellanox.com>
+References: <20190715091913.15726-1-selvin.xavier@broadcom.com>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Message-ID: <bdac6832-ba92-2609-a678-982413a87307@redhat.com>
+Date:   Mon, 15 Jul 2019 22:17:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1eb73497-0767-4fbd-8121-08d7092eebe6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2019 14:15:42.9930
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5854
+In-Reply-To: <20190715091913.15726-1-selvin.xavier@broadcom.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.43]); Mon, 15 Jul 2019 14:17:21 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 15, 2019 at 05:13:28PM +0300, Yuval Shaia wrote:
-> The virtual address that is registered is used as a base for any address
-> passed later in post_recv and post_send operations.
->=20
-> On some virtualized environment this is not correct.
->=20
-> A guest cannot register its memory so hypervisor maps the guest physical
-> address to a host virtual address and register it with the HW. Later on,
-> at datapath phase, the guest fills the SGEs with addresses from its
-> address space.
-> Since HW cannot access guest virtual address space an extra translation
-> is needed to map those addresses to be based on the host virtual address
-> that was registered with the HW.
-> This datapath interference affects performances.
->=20
-> To avoid this, a logical separation between the address that is
-> registered and the address that is used as a offset at datapath phase is
-> needed.
-> This separation is already implemented in the lower layer part
-> (ibv_cmd_reg_mr) but blocked at the API level.
->=20
-> Fix it by introducing a new API function which accepts an address from
-> guest virtual address space as well, to be used as offset for later
-> datapath operations.
->=20
-> Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
-> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-> v0 -> v1:
-> 	* Change reg_mr callback signature instead of adding new callback
-> 	* Add the new API to libibverbs/libibverbs.map.in
-> v1 -> v2:
-> 	* Do not modify reg_mr signature for version 1.0
-> 	* Add note to man page
-> v2 -> v3:
-> 	* Rename function to reg_mr_iova (and arg-name to iova)
-> 	* Some checkpatch issues not related to this fix but detected now
-> 		* s/__FUNCTION__/__func
-> 		* WARNING: function definition argument 'void *' should
-> 		  also have an identifier name
-> v3 -> v4:
-> 	* Fix commit message as suggested by Adit Ranadiv
-> 	* Add support for efa
-> v4 -> v5:
-> 	* Update PABI
-> 	* Update debian files
-> v5 -> v6:
-> 	* Move the new API to section in libibverbs/libibverbs.map.in
-> 	  (IBVERBS_1.7) as pointed out by Mark Haywood
-> v6 -> v7:
-> 	*=20
-> v7 -> v8:
-> 	* Update also redhat and suse specfiles so now all CI checks in
-> 	  github passed.
-> 	* Leon, i have your r-b from v5, appriciate if you can take a look
-> 	  again now, with all the latest changes
->  CMakeLists.txt                    |  4 ++--
->  buildlib/cbuild                   |  6 ++++++
->  debian/control                    |  2 +-
->  debian/libibverbs1.symbols        |  4 +++-
->  libibverbs/CMakeLists.txt         |  2 +-
->  libibverbs/driver.h               |  2 +-
->  libibverbs/dummy_ops.c            |  2 +-
->  libibverbs/libibverbs.map.in      |  5 +++++
->  libibverbs/man/ibv_reg_mr.3       | 15 +++++++++++++--
->  libibverbs/verbs.c                | 23 ++++++++++++++++++++++-
->  libibverbs/verbs.h                |  7 +++++++
->  providers/bnxt_re/verbs.c         |  6 +++---
->  providers/bnxt_re/verbs.h         |  2 +-
->  providers/cxgb3/iwch.h            |  4 ++--
->  providers/cxgb3/verbs.c           | 15 +++++----------
->  providers/cxgb4/libcxgb4.h        |  4 ++--
->  providers/cxgb4/verbs.c           | 15 +++++----------
->  providers/efa/verbs.c             |  4 ++--
->  providers/efa/verbs.h             |  2 +-
->  providers/hfi1verbs/hfiverbs.h    |  4 ++--
->  providers/hfi1verbs/verbs.c       |  8 ++++----
->  providers/hns/hns_roce_u.h        |  2 +-
->  providers/hns/hns_roce_u_verbs.c  |  6 +++---
->  providers/i40iw/i40iw_umain.h     |  3 ++-
->  providers/i40iw/i40iw_uverbs.c    |  8 ++++----
->  providers/ipathverbs/ipathverbs.h |  4 ++--
->  providers/ipathverbs/verbs.c      |  8 ++++----
->  providers/mlx4/mlx4.h             |  4 ++--
->  providers/mlx4/verbs.c            |  7 +++----
->  providers/mlx5/mlx5.h             |  4 ++--
->  providers/mlx5/verbs.c            |  7 +++----
->  providers/mthca/ah.c              |  3 ++-
->  providers/mthca/mthca.h           |  4 ++--
->  providers/mthca/verbs.c           |  6 +++---
->  providers/nes/nes_umain.h         |  3 ++-
->  providers/nes/nes_uverbs.c        |  9 ++++-----
->  providers/ocrdma/ocrdma_main.h    |  4 ++--
->  providers/ocrdma/ocrdma_verbs.c   | 10 ++++------
->  providers/qedr/qelr_main.h        |  4 ++--
->  providers/qedr/qelr_verbs.c       | 11 ++++-------
->  providers/qedr/qelr_verbs.h       |  4 ++--
->  providers/rxe/rxe.c               |  6 +++---
->  providers/siw/siw.c               |  4 ++--
->  providers/vmw_pvrdma/pvrdma.h     |  4 ++--
->  providers/vmw_pvrdma/verbs.c      |  7 +++----
->  redhat/rdma-core.spec             |  2 +-
->  suse/rdma-core.spec               |  2 +-
->  47 files changed, 154 insertions(+), 118 deletions(-)
->=20
-> diff --git a/CMakeLists.txt b/CMakeLists.txt
-> index b2613284..67112ae3 100644
-> +++ b/CMakeLists.txt
-> @@ -68,11 +68,11 @@ endif()
->  set(PACKAGE_NAME "RDMA")
-> =20
->  # See Documentation/versioning.md
-> -set(PACKAGE_VERSION "25.0")
-> +set(PACKAGE_VERSION "26.0")
->  # When this is changed the values in these files need changing too:
->  #   debian/control
->  #   debian/libibverbs1.symbols
-> -set(IBVERBS_PABI_VERSION "25")
-> +set(IBVERBS_PABI_VERSION "26")
->  set(IBVERBS_PROVIDER_SUFFIX "-rdmav${IBVERBS_PABI_VERSION}.so")
+Verified this patch on my nvme rdma bnxt_re environment, thanks.
 
-'25' is still the current release-in progress.
+Tested-by: Yi Zhang <yi.zhang@redhat.com>
 
-Jason
+On 7/15/19 5:19 PM, Selvin Xavier wrote:
+> GID entry consist of GID, vlan, netdev and smac.
+> Extend GID duplicate check companions to consider vlan_id as well
+> to support IPv6 VLAN based link local addresses. Introduce
+> a new structure (bnxt_qplib_gid_info) to hold gid and vlan_id information.
+>
+> The issue is discussed in the following thread
+> https://www.spinics.net/lists/linux-rdma/msg81594.html
+>
+> Fixes: 823b23da7113 ("IB/core: Allow vlan link local address based RoCE GIDs")
+> Cc: <stable@vger.kernel.org> # v5.2+
+> Reported-by: Yi Zhang <yi.zhang@redhat.com>
+> Co-developed-by: Parav Pandit <parav@mellanox.com>
+> Signed-off-by: Parav Pandit <parav@mellanox.com>
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>   drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  7 +++++--
+>   drivers/infiniband/hw/bnxt_re/qplib_res.c | 13 +++++++++----
+>   drivers/infiniband/hw/bnxt_re/qplib_res.h |  2 +-
+>   drivers/infiniband/hw/bnxt_re/qplib_sp.c  | 14 +++++++++-----
+>   drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  7 ++++++-
+>   5 files changed, 30 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> index 2c3685faa57a..a4a9f90f2482 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> @@ -308,6 +308,7 @@ int bnxt_re_del_gid(const struct ib_gid_attr *attr, void **context)
+>   	struct bnxt_re_dev *rdev = to_bnxt_re_dev(attr->device, ibdev);
+>   	struct bnxt_qplib_sgid_tbl *sgid_tbl = &rdev->qplib_res.sgid_tbl;
+>   	struct bnxt_qplib_gid *gid_to_del;
+> +	u16 vlan_id = 0xFFFF;
+>   
+>   	/* Delete the entry from the hardware */
+>   	ctx = *context;
+> @@ -317,7 +318,8 @@ int bnxt_re_del_gid(const struct ib_gid_attr *attr, void **context)
+>   	if (sgid_tbl && sgid_tbl->active) {
+>   		if (ctx->idx >= sgid_tbl->max)
+>   			return -EINVAL;
+> -		gid_to_del = &sgid_tbl->tbl[ctx->idx];
+> +		gid_to_del = &sgid_tbl->tbl[ctx->idx].gid;
+> +		vlan_id = sgid_tbl->tbl[ctx->idx].vlan_id;
+>   		/* DEL_GID is called in WQ context(netdevice_event_work_handler)
+>   		 * or via the ib_unregister_device path. In the former case QP1
+>   		 * may not be destroyed yet, in which case just return as FW
+> @@ -335,7 +337,8 @@ int bnxt_re_del_gid(const struct ib_gid_attr *attr, void **context)
+>   		}
+>   		ctx->refcnt--;
+>   		if (!ctx->refcnt) {
+> -			rc = bnxt_qplib_del_sgid(sgid_tbl, gid_to_del, true);
+> +			rc = bnxt_qplib_del_sgid(sgid_tbl, gid_to_del,
+> +						 vlan_id,  true);
+>   			if (rc) {
+>   				dev_err(rdev_to_dev(rdev),
+>   					"Failed to remove GID: %#x", rc);
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+> index 37928b1111df..bdbde8e22420 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+> @@ -488,7 +488,7 @@ static int bnxt_qplib_alloc_sgid_tbl(struct bnxt_qplib_res *res,
+>   				     struct bnxt_qplib_sgid_tbl *sgid_tbl,
+>   				     u16 max)
+>   {
+> -	sgid_tbl->tbl = kcalloc(max, sizeof(struct bnxt_qplib_gid), GFP_KERNEL);
+> +	sgid_tbl->tbl = kcalloc(max, sizeof(*sgid_tbl->tbl), GFP_KERNEL);
+>   	if (!sgid_tbl->tbl)
+>   		return -ENOMEM;
+>   
+> @@ -526,9 +526,10 @@ static void bnxt_qplib_cleanup_sgid_tbl(struct bnxt_qplib_res *res,
+>   	for (i = 0; i < sgid_tbl->max; i++) {
+>   		if (memcmp(&sgid_tbl->tbl[i], &bnxt_qplib_gid_zero,
+>   			   sizeof(bnxt_qplib_gid_zero)))
+> -			bnxt_qplib_del_sgid(sgid_tbl, &sgid_tbl->tbl[i], true);
+> +			bnxt_qplib_del_sgid(sgid_tbl, &sgid_tbl->tbl[i].gid,
+> +					    sgid_tbl->tbl[i].vlan_id, true);
+>   	}
+> -	memset(sgid_tbl->tbl, 0, sizeof(struct bnxt_qplib_gid) * sgid_tbl->max);
+> +	memset(sgid_tbl->tbl, 0, sizeof(*sgid_tbl->tbl) * sgid_tbl->max);
+>   	memset(sgid_tbl->hw_id, -1, sizeof(u16) * sgid_tbl->max);
+>   	memset(sgid_tbl->vlan, 0, sizeof(u8) * sgid_tbl->max);
+>   	sgid_tbl->active = 0;
+> @@ -537,7 +538,11 @@ static void bnxt_qplib_cleanup_sgid_tbl(struct bnxt_qplib_res *res,
+>   static void bnxt_qplib_init_sgid_tbl(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+>   				     struct net_device *netdev)
+>   {
+> -	memset(sgid_tbl->tbl, 0, sizeof(struct bnxt_qplib_gid) * sgid_tbl->max);
+> +	u32 i;
+> +
+> +	for (i = 0; i < sgid_tbl->max; i++)
+> +		sgid_tbl->tbl[i].vlan_id = 0xffff;
+> +
+>   	memset(sgid_tbl->hw_id, -1, sizeof(u16) * sgid_tbl->max);
+>   }
+>   
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+> index 30c42c92fac7..fbda11a7ab1a 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+> @@ -111,7 +111,7 @@ struct bnxt_qplib_pd_tbl {
+>   };
+>   
+>   struct bnxt_qplib_sgid_tbl {
+> -	struct bnxt_qplib_gid		*tbl;
+> +	struct bnxt_qplib_gid_info	*tbl;
+>   	u16				*hw_id;
+>   	u16				max;
+>   	u16				active;
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+> index 48793d3512ac..40296b97d21e 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+> @@ -213,12 +213,12 @@ int bnxt_qplib_get_sgid(struct bnxt_qplib_res *res,
+>   			index, sgid_tbl->max);
+>   		return -EINVAL;
+>   	}
+> -	memcpy(gid, &sgid_tbl->tbl[index], sizeof(*gid));
+> +	memcpy(gid, &sgid_tbl->tbl[index].gid, sizeof(*gid));
+>   	return 0;
+>   }
+>   
+>   int bnxt_qplib_del_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+> -			struct bnxt_qplib_gid *gid, bool update)
+> +			struct bnxt_qplib_gid *gid, u16 vlan_id, bool update)
+>   {
+>   	struct bnxt_qplib_res *res = to_bnxt_qplib(sgid_tbl,
+>   						   struct bnxt_qplib_res,
+> @@ -236,7 +236,8 @@ int bnxt_qplib_del_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+>   		return -ENOMEM;
+>   	}
+>   	for (index = 0; index < sgid_tbl->max; index++) {
+> -		if (!memcmp(&sgid_tbl->tbl[index], gid, sizeof(*gid)))
+> +		if (!memcmp(&sgid_tbl->tbl[index].gid, gid, sizeof(*gid)) &&
+> +		    vlan_id == sgid_tbl->tbl[index].vlan_id)
+>   			break;
+>   	}
+>   	if (index == sgid_tbl->max) {
+> @@ -262,8 +263,9 @@ int bnxt_qplib_del_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+>   		if (rc)
+>   			return rc;
+>   	}
+> -	memcpy(&sgid_tbl->tbl[index], &bnxt_qplib_gid_zero,
+> +	memcpy(&sgid_tbl->tbl[index].gid, &bnxt_qplib_gid_zero,
+>   	       sizeof(bnxt_qplib_gid_zero));
+> +	sgid_tbl->tbl[index].vlan_id = 0xFFFF;
+>   	sgid_tbl->vlan[index] = 0;
+>   	sgid_tbl->active--;
+>   	dev_dbg(&res->pdev->dev,
+> @@ -296,7 +298,8 @@ int bnxt_qplib_add_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+>   	}
+>   	free_idx = sgid_tbl->max;
+>   	for (i = 0; i < sgid_tbl->max; i++) {
+> -		if (!memcmp(&sgid_tbl->tbl[i], gid, sizeof(*gid))) {
+> +		if (!memcmp(&sgid_tbl->tbl[i], gid, sizeof(*gid)) &&
+> +		    sgid_tbl->tbl[i].vlan_id == vlan_id) {
+>   			dev_dbg(&res->pdev->dev,
+>   				"SGID entry already exist in entry %d!\n", i);
+>   			*index = i;
+> @@ -351,6 +354,7 @@ int bnxt_qplib_add_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+>   	}
+>   	/* Add GID to the sgid_tbl */
+>   	memcpy(&sgid_tbl->tbl[free_idx], gid, sizeof(*gid));
+> +	sgid_tbl->tbl[free_idx].vlan_id = vlan_id;
+>   	sgid_tbl->active++;
+>   	if (vlan_id != 0xFFFF)
+>   		sgid_tbl->vlan[free_idx] = 1;
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+> index 0ec3b12b0bcd..13d9432d5ce2 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+> @@ -84,6 +84,11 @@ struct bnxt_qplib_gid {
+>   	u8				data[16];
+>   };
+>   
+> +struct bnxt_qplib_gid_info {
+> +	struct bnxt_qplib_gid gid;
+> +	u16 vlan_id;
+> +};
+> +
+>   struct bnxt_qplib_ah {
+>   	struct bnxt_qplib_gid		dgid;
+>   	struct bnxt_qplib_pd		*pd;
+> @@ -221,7 +226,7 @@ int bnxt_qplib_get_sgid(struct bnxt_qplib_res *res,
+>   			struct bnxt_qplib_sgid_tbl *sgid_tbl, int index,
+>   			struct bnxt_qplib_gid *gid);
+>   int bnxt_qplib_del_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+> -			struct bnxt_qplib_gid *gid, bool update);
+> +			struct bnxt_qplib_gid *gid, u16 vlan_id, bool update);
+>   int bnxt_qplib_add_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+>   			struct bnxt_qplib_gid *gid, u8 *mac, u16 vlan_id,
+>   			bool update, u32 *index);
