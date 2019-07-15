@@ -2,64 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E84068264
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 05:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794E268288
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 05:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728999AbfGODAP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Jul 2019 23:00:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728927AbfGODAP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 14 Jul 2019 23:00:15 -0400
-Subject: Re: [GIT PULL] Please pull hmm changes
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563159614;
-        bh=Ar2oLzYPfNRIJ/cKktihwM03Q0D3KOFaf7zQt3uCrhY=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=g0DVxuH0O8BwZfaSxEtLyRsfEYPSCQdWnn2yhetG2F8mg12jeSXAQTnuntXE+E6hh
-         3jRqBcH7Oh1Z/vN6zC0AHX0l+UoWFpMiIlodt+M38nbijWqBr0neCq5SSuXJhz8Czi
-         Qp2nslOyUee5Z2RZI2rVwJKKf+p22oV15OzeaA5A=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20190709192418.GA13677@ziepe.ca>
-References: <20190709192418.GA13677@ziepe.ca>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20190709192418.GA13677@ziepe.ca>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
- tags/for-linus-hmm
-X-PR-Tracked-Commit-Id: cc5dfd59e375f4d0f2b64643723d16b38b2f2d78
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fec88ab0af9706b2201e5daf377c5031c62d11f7
-Message-Id: <156315961463.2012.6385315659069176378.pr-tracker-bot@kernel.org>
-Date:   Mon, 15 Jul 2019 03:00:14 +0000
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        id S1729152AbfGODRw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 14 Jul 2019 23:17:52 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:38638 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbfGODRw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 14 Jul 2019 23:17:52 -0400
+Received: by mail-pf1-f194.google.com with SMTP id y15so6737624pfn.5;
+        Sun, 14 Jul 2019 20:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=OHd9Gj1NXZziz3dxXYZkOlR2we6FjZ7KaJ1LbxYLKIQ=;
+        b=VTWUsO+yBwtBB7RQyLiHu1HrtZoePeRGZ2rQ1viBoc7EvixAYcbTQqb71HaJn6uU80
+         9n4luCtpd58rqt6PRNBLRu6FqVNGKZ7wKz1mj6OVx/rAtXZMbFkH099rlzbT3QvvFBXo
+         hTIFi1y/2mwJV32WyPRi1S4hKl2wAxQ/yii+QeKzPJPRh6G2RwO69FBrO8PLENOpr59C
+         LoIemjE0sw0ORIbCUeYDoaSff2GSCbCUHqm+ZL1gWuBh4GtzF9LCK0iQHkuCvJO2KCr+
+         9fQtcT4CbcVNRO56qsXMN3zQzYSCKv+h4tx//r7w+NWjjV7LD1ibfuG/vU6e/1Bu5f/h
+         QAFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=OHd9Gj1NXZziz3dxXYZkOlR2we6FjZ7KaJ1LbxYLKIQ=;
+        b=njrYKFXwFzjZzfmqGf68PoemIQzEiqM7jFBnhkDYwQic9QT7z9Pt6eiO+f9PBeSZyq
+         pm+cViYcpA9Lz03cRHsE/GydHTPD/oYXhPwBvphqLnz7xcZNmOi9d0Um2TXPr2PCsGAK
+         a/E+8H2srVMWYdXMepO+oYn8RrN3Gqd/QkThnsnpygb4S0a58qHH/9NECUsRaFW4DVUh
+         Thy5ijwz88M9crn1hf7P0Xo8U+VyB7v66RlB1DBVI0D6HtrgMfPywkNy0ZwxfrQVdQ95
+         +Yyhv3C8j7Lu2FYDs5l+9bj2T17GxcW7U+N9u4ox7YPkxT3wUINp4pWR/ndyW/QwERM2
+         oLlw==
+X-Gm-Message-State: APjAAAUpv6Q29biEqj4GkFoc2flPn/pNNectd7wNEl4EmsFIBHT0amc+
+        JZ+8S7Prhb+NhKifTctZ5SQSMU719o8=
+X-Google-Smtp-Source: APXvYqy3gszgrnb7LI/UUiG1ZPlAKmEXD6r8pNLBxg0ZvGhSO7CNei6Al5BnSvNwXFeY8S858slnVA==
+X-Received: by 2002:a65:430a:: with SMTP id j10mr25272177pgq.374.1563160671841;
+        Sun, 14 Jul 2019 20:17:51 -0700 (PDT)
+Received: from hfq-skylake.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+        by smtp.googlemail.com with ESMTPSA id a15sm1926403pfg.102.2019.07.14.20.17.49
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 14 Jul 2019 20:17:51 -0700 (PDT)
+From:   Fuqian Huang <huangfq.daxian@gmail.com>
+Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Fuqian Huang <huangfq.daxian@gmail.com>
+Subject: [PATCH v3 07/24] rdma/cxgb3: Remove call to memset after dma_alloc_coherent
+Date:   Mon, 15 Jul 2019 11:17:46 +0800
+Message-Id: <20190715031746.6514-1-huangfq.daxian@gmail.com>
+X-Mailer: git-send-email 2.11.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Tue, 9 Jul 2019 19:24:21 +0000:
+In commit 518a2f1925c3
+("dma-mapping: zero memory returned from dma_alloc_*"),
+dma_alloc_coherent has already zeroed the memory.
+So memset is not needed.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus-hmm
+Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
+---
+Changes in v3:
+  - Use actual commit rather than the merge commit in the commit message
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fec88ab0af9706b2201e5daf377c5031c62d11f7
+ drivers/infiniband/hw/cxgb3/cxio_hal.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Thank you!
-
+diff --git a/drivers/infiniband/hw/cxgb3/cxio_hal.c b/drivers/infiniband/hw/cxgb3/cxio_hal.c
+index 8ac72ac7cbac..0e37f55678f8 100644
+--- a/drivers/infiniband/hw/cxgb3/cxio_hal.c
++++ b/drivers/infiniband/hw/cxgb3/cxio_hal.c
+@@ -174,7 +174,6 @@ int cxio_create_cq(struct cxio_rdev *rdev_p, struct t3_cq *cq, int kernel)
+ 		return -ENOMEM;
+ 	}
+ 	dma_unmap_addr_set(cq, mapping, cq->dma_addr);
+-	memset(cq->queue, 0, size);
+ 	setup.id = cq->cqid;
+ 	setup.base_addr = (u64) (cq->dma_addr);
+ 	setup.size = 1UL << cq->size_log2;
+@@ -538,8 +537,6 @@ static int cxio_hal_init_ctrl_qp(struct cxio_rdev *rdev_p)
+ 	dma_unmap_addr_set(&rdev_p->ctrl_qp, mapping,
+ 			   rdev_p->ctrl_qp.dma_addr);
+ 	rdev_p->ctrl_qp.doorbell = (void __iomem *)rdev_p->rnic_info.kdb_addr;
+-	memset(rdev_p->ctrl_qp.workq, 0,
+-	       (1 << T3_CTRL_QP_SIZE_LOG2) * sizeof(union t3_wr));
+ 
+ 	mutex_init(&rdev_p->ctrl_qp.lock);
+ 	init_waitqueue_head(&rdev_p->ctrl_qp.waitq);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.11.0
+
