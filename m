@@ -2,42 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0E268D64
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 15:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D28F68EF0
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 16:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732879AbfGON6Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jul 2019 09:58:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37372 "EHLO mail.kernel.org"
+        id S2388693AbfGOOK4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jul 2019 10:10:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733106AbfGON6O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 15 Jul 2019 09:58:14 -0400
+        id S2388774AbfGOOJx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:09:53 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91A52212F5;
-        Mon, 15 Jul 2019 13:58:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6054A20868;
+        Mon, 15 Jul 2019 14:09:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563199093;
-        bh=Dods9Xqg4wn68YBG3bujgJMAonGAUVFm9QOofA2/0RI=;
+        s=default; t=1563199793;
+        bh=e6jWqEeEv1aQrTQ5oESajo6naB0+APSVXMatpHaJegg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YuSsyK3ADSmpR/96j/H6rAVzHkrXXReKVnkpQlI+hs/ycap1znhcRH4WNn4esskHZ
-         K5ZI0p3NmEP1ckbovQuSHS8AbF4P6hlOU5eAdS4zh7iKqpXX2ogS2ZWjTXSjo6gCDb
-         DnVrkqp8xFqeKiM3QJFoJO7rC4tnZlwkkhV4wu2k=
+        b=QDwliex7Ga8dmGpGzIqCkmH/hu/VFkKzvKz3ua19lcO/MexSBY/cGsiy7ZC15LtNa
+         PG1Nd6/cBOeSi/mn9wyiGL9kSBInsCAWsk8XVOSxPPRdsl6Cy8ErVoR2nKlPNYmmCL
+         XWB6LHt1sSGifZ4JiYPkCCZvMZ1qNeZo7s+0CF60=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 189/249] net/mlx5e: Attach/detach XDP program safely
-Date:   Mon, 15 Jul 2019 09:45:54 -0400
-Message-Id: <20190715134655.4076-189-sashal@kernel.org>
+Cc:     Denis Kirjanov <kda@linux-powerpc.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.1 107/219] ipoib: correcly show a VF hardware address
+Date:   Mon, 15 Jul 2019 10:01:48 -0400
+Message-Id: <20190715140341.6443-107-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715134655.4076-1-sashal@kernel.org>
-References: <20190715134655.4076-1-sashal@kernel.org>
+In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
+References: <20190715140341.6443-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -47,86 +44,57 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@mellanox.com>
+From: Denis Kirjanov <kda@linux-powerpc.org>
 
-[ Upstream commit e18953240de8b46360a67090c87ee1ef8160b35d ]
+[ Upstream commit 64d701c608fea362881e823b666327f5d28d7ffd ]
 
-When an XDP program is set, a full reopen of all channels happens in two
-cases:
+in the case of IPoIB with SRIOV enabled hardware
+ip link show command incorrecly prints
+0 instead of a VF hardware address.
 
-1. When there was no program set, and a new one is being set.
+Before:
+11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+state UP mode DEFAULT group default qlen 256
+    link/infiniband
+80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+    vf 0 MAC 00:00:00:00:00:00, spoof checking off, link-state disable,
+trust off, query_rss off
+...
+After:
+11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
+state UP mode DEFAULT group default qlen 256
+    link/infiniband
+80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+    vf 0     link/infiniband
+80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
+00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
+checking off, link-state disable, trust off, query_rss off
 
-2. When there was a program set, but it's being unset.
+v1->v2: just copy an address without modifing ifla_vf_mac
+v2->v3: update the changelog
 
-The full reopen is necessary, because the channel parameters may change
-if XDP is enabled or disabled. However, it's performed in an unsafe way:
-if the new channels fail to open, the old ones are already closed, and
-the interface goes down. Use the safe way to switch channels instead.
-The same way is already used for other configuration changes.
-
-Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
+Acked-by: Doug Ledford <dledford@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 31 ++++++++++++-------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ drivers/infiniband/ulp/ipoib/ipoib_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index a8e8350b38aa..8db9fdbc03ea 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -4192,8 +4192,6 @@ static int mlx5e_xdp_set(struct net_device *netdev, struct bpf_prog *prog)
- 	/* no need for full reset when exchanging programs */
- 	reset = (!priv->channels.params.xdp_prog || !prog);
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+index 9b5e11d3fb85..04ea7db08e87 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+@@ -1998,6 +1998,7 @@ static int ipoib_get_vf_config(struct net_device *dev, int vf,
+ 		return err;
  
--	if (was_opened && reset)
--		mlx5e_close_locked(netdev);
- 	if (was_opened && !reset) {
- 		/* num_channels is invariant here, so we can take the
- 		 * batched reference right upfront.
-@@ -4205,20 +4203,31 @@ static int mlx5e_xdp_set(struct net_device *netdev, struct bpf_prog *prog)
- 		}
- 	}
+ 	ivf->vf = vf;
++	memcpy(ivf->mac, dev->dev_addr, dev->addr_len);
  
--	/* exchange programs, extra prog reference we got from caller
--	 * as long as we don't fail from this point onwards.
--	 */
--	old_prog = xchg(&priv->channels.params.xdp_prog, prog);
-+	if (was_opened && reset) {
-+		struct mlx5e_channels new_channels = {};
-+
-+		new_channels.params = priv->channels.params;
-+		new_channels.params.xdp_prog = prog;
-+		mlx5e_set_rq_type(priv->mdev, &new_channels.params);
-+		old_prog = priv->channels.params.xdp_prog;
-+
-+		err = mlx5e_safe_switch_channels(priv, &new_channels, NULL);
-+		if (err)
-+			goto unlock;
-+	} else {
-+		/* exchange programs, extra prog reference we got from caller
-+		 * as long as we don't fail from this point onwards.
-+		 */
-+		old_prog = xchg(&priv->channels.params.xdp_prog, prog);
-+	}
-+
- 	if (old_prog)
- 		bpf_prog_put(old_prog);
- 
--	if (reset) /* change RQ type according to priv->xdp_prog */
-+	if (!was_opened && reset) /* change RQ type according to priv->xdp_prog */
- 		mlx5e_set_rq_type(priv->mdev, &priv->channels.params);
- 
--	if (was_opened && reset)
--		err = mlx5e_open_locked(netdev);
--
--	if (!test_bit(MLX5E_STATE_OPENED, &priv->state) || reset)
-+	if (!was_opened || reset)
- 		goto unlock;
- 
- 	/* exchanging programs w/o reset, we update ref counts on behalf
+ 	return 0;
+ }
 -- 
 2.20.1
 
