@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 352EA69951
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA6169952
 	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 18:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731460AbfGOQpn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jul 2019 12:45:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:25464 "EHLO mga14.intel.com"
+        id S1731220AbfGOQpt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jul 2019 12:45:49 -0400
+Received: from mga04.intel.com ([192.55.52.120]:30287 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729941AbfGOQpn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 15 Jul 2019 12:45:43 -0400
+        id S1729941AbfGOQps (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 15 Jul 2019 12:45:48 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Jul 2019 09:45:42 -0700
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Jul 2019 09:45:48 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.63,493,1557212400"; 
-   d="scan'208";a="169659552"
+   d="scan'208";a="168996016"
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga003.jf.intel.com with ESMTP; 15 Jul 2019 09:45:42 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 15 Jul 2019 09:45:48 -0700
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x6FGjf57033153;
-        Mon, 15 Jul 2019 09:45:42 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x6FGjlik033159;
+        Mon, 15 Jul 2019 09:45:48 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x6FGjexd074286;
-        Mon, 15 Jul 2019 12:45:40 -0400
-Subject: [PATCH 4/6] IB/hfi1: Drop all TID RDMA READ RESP packets after
- r_next_psn
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x6FGjkS1074296;
+        Mon, 15 Jul 2019 12:45:46 -0400
+Subject: [PATCH 5/6] IB/hfi1: Do not update hcrc for a KDETH packet during
+ fault injection
 To:     jgg@ziepe.ca, dledford@redhat.com
 From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
 Cc:     linux-rdma@vger.kernel.org
-Date:   Mon, 15 Jul 2019 12:45:40 -0400
-Message-ID: <20190715164540.74174.54702.stgit@awfm-01.aw.intel.com>
+Date:   Mon, 15 Jul 2019 12:45:46 -0400
+Message-ID: <20190715164546.74174.99296.stgit@awfm-01.aw.intel.com>
 In-Reply-To: <20190715164423.74174.4994.stgit@awfm-01.aw.intel.com>
 References: <20190715164423.74174.4994.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.16
@@ -46,86 +46,66 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Kaike Wan <kaike.wan@intel.com>
 
-When a TID sequence error occurs while receiving TID RDMA READ RESP
-packets, all packets after flow->flow_state.r_next_psn should be
-dropped, including those response packets for subsequent segments.
+When a KDETH packet is subject to fault injection during transmission,
+HCRC is supposed to be omitted from the packet so that the hardware on
+the receiver side would drop the packet. When creating pbc, the
+PbcInsertHcrc field is set to be PBC_IHCRC_NONE if the KDETH packet is
+subject to fault injection, but overwritten with PBC_IHCRC_LKDETH when
+update_hcrc() is called later.
 
-The current implementation will drop the subsequent response packets
-for the segment to complete next, but may accept packets for subsequent
-segments and therefore mistakenly advance the r_next_psn fields
-for the corresponding software flows. This may result in failures
-to complete subsequent segments after the current segment is completed.
+This problem is fixed by not calling update_hcrc() when the packet is
+subject to fault injection.
 
-The fix is to only use the flow pointed by req->clear_tail for checking
-KDETH PSN instead of finding a flow from the request's flow array.
-
-Fixes: b885d5be9ca1 ("IB/hfi1: Unify the software PSN check for TID RDMA READ/WRITE")
+Fixes: 6b6cf9357f78 ("IB/hfi1: Set PbcInsertHcrc for TID RDMA packets")
 Cc: <stable@vger.kernel.org>
 Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 Signed-off-by: Kaike Wan <kaike.wan@intel.com>
 Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 ---
- drivers/infiniband/hw/hfi1/tid_rdma.c |   42 +--------------------------------
- 1 file changed, 1 insertion(+), 41 deletions(-)
+ drivers/infiniband/hw/hfi1/verbs.c |   17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
-index 7fcbeee..996fc2982 100644
---- a/drivers/infiniband/hw/hfi1/tid_rdma.c
-+++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
-@@ -1674,34 +1674,6 @@ static struct tid_rdma_flow *find_flow_ib(struct tid_rdma_request *req,
- 	return NULL;
- }
+diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+index c4b243f..f4ca436 100644
+--- a/drivers/infiniband/hw/hfi1/verbs.c
++++ b/drivers/infiniband/hw/hfi1/verbs.c
+@@ -873,16 +873,17 @@ int hfi1_verbs_send_dma(struct rvt_qp *qp, struct hfi1_pkt_state *ps,
+ 			else
+ 				pbc |= (ib_is_sc5(sc5) << PBC_DC_INFO_SHIFT);
  
--static struct tid_rdma_flow *
--__find_flow_ranged(struct tid_rdma_request *req, u16 head, u16 tail,
--		   u32 psn, u16 *fidx)
--{
--	for ( ; CIRC_CNT(head, tail, MAX_FLOWS);
--	      tail = CIRC_NEXT(tail, MAX_FLOWS)) {
--		struct tid_rdma_flow *flow = &req->flows[tail];
--		u32 spsn, lpsn;
+-			if (unlikely(hfi1_dbg_should_fault_tx(qp, ps->opcode)))
+-				pbc = hfi1_fault_tx(qp, ps->opcode, pbc);
+ 			pbc = create_pbc(ppd,
+ 					 pbc,
+ 					 qp->srate_mbps,
+ 					 vl,
+ 					 plen);
+ 
+-			/* Update HCRC based on packet opcode */
+-			pbc = update_hcrc(ps->opcode, pbc);
++			if (unlikely(hfi1_dbg_should_fault_tx(qp, ps->opcode)))
++				pbc = hfi1_fault_tx(qp, ps->opcode, pbc);
++			else
++				/* Update HCRC based on packet opcode */
++				pbc = update_hcrc(ps->opcode, pbc);
+ 		}
+ 		tx->wqe = qp->s_wqe;
+ 		ret = build_verbs_tx_desc(tx->sde, len, tx, ahg_info, pbc);
+@@ -1029,12 +1030,12 @@ int hfi1_verbs_send_pio(struct rvt_qp *qp, struct hfi1_pkt_state *ps,
+ 		else
+ 			pbc |= (ib_is_sc5(sc5) << PBC_DC_INFO_SHIFT);
+ 
++		pbc = create_pbc(ppd, pbc, qp->srate_mbps, vl, plen);
+ 		if (unlikely(hfi1_dbg_should_fault_tx(qp, ps->opcode)))
+ 			pbc = hfi1_fault_tx(qp, ps->opcode, pbc);
+-		pbc = create_pbc(ppd, pbc, qp->srate_mbps, vl, plen);
 -
--		spsn = full_flow_psn(flow, flow->flow_state.spsn);
--		lpsn = full_flow_psn(flow, flow->flow_state.lpsn);
--
--		if (cmp_psn(psn, spsn) >= 0 && cmp_psn(psn, lpsn) <= 0) {
--			if (fidx)
--				*fidx = tail;
--			return flow;
--		}
--	}
--	return NULL;
--}
--
--static struct tid_rdma_flow *find_flow(struct tid_rdma_request *req,
--				       u32 psn, u16 *fidx)
--{
--	return __find_flow_ranged(req, req->setup_head, req->clear_tail, psn,
--				  fidx);
--}
--
- /* TID RDMA READ functions */
- u32 hfi1_build_tid_rdma_read_packet(struct rvt_swqe *wqe,
- 				    struct ib_other_headers *ohdr, u32 *bth1,
-@@ -2789,19 +2761,7 @@ static bool handle_read_kdeth_eflags(struct hfi1_ctxtdata *rcd,
- 			 * to prevent continuous Flow Sequence errors for any
- 			 * packets that could be still in the fabric.
- 			 */
--			flow = find_flow(req, psn, NULL);
--			if (!flow) {
--				/*
--				 * We can't find the IB PSN matching the
--				 * received KDETH PSN. The only thing we can
--				 * do at this point is report the error to
--				 * the QP.
--				 */
--				hfi1_kern_read_tid_flow_free(qp);
--				spin_unlock(&qp->s_lock);
--				rvt_rc_error(qp, IB_WC_LOC_QP_OP_ERR);
--				return ret;
--			}
-+			flow = &req->flows[req->clear_tail];
- 			if (priv->s_flags & HFI1_R_TID_SW_PSN) {
- 				diff = cmp_psn(psn,
- 					       flow->flow_state.r_next_psn);
+-		/* Update HCRC based on packet opcode */
+-		pbc = update_hcrc(ps->opcode, pbc);
++		else
++			/* Update HCRC based on packet opcode */
++			pbc = update_hcrc(ps->opcode, pbc);
+ 	}
+ 	if (cb)
+ 		iowait_pio_inc(&priv->s_iowait);
 
