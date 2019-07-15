@@ -2,39 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF6269473
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 16:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538FE6971F
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 17:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391038AbfGOOcH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jul 2019 10:32:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46740 "EHLO mail.kernel.org"
+        id S1732666AbfGON54 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jul 2019 09:57:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390581AbfGOOcG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:32:06 -0400
+        id S1731845AbfGON5y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 15 Jul 2019 09:57:54 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A73E82086C;
-        Mon, 15 Jul 2019 14:32:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E709621537;
+        Mon, 15 Jul 2019 13:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563201124;
-        bh=VBtT/0+mo1BPzLzr4zR0g9iWWb/Ym7yqgqhG2h035p8=;
+        s=default; t=1563199073;
+        bh=VZ5dWzfU6DSYKWxr1/oUs1EfkFOuTXkKsTHfV3kSy6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bdEslbUInYF0V53IyX67ai7sHB950rtLBfgKsV0WThUqos70DtpgUjlZFdcGlwYVP
-         g+3UAhbs8Jzjj85RDuoJRqzQnSppyVLEVH3ng/FFyHB97ijmaE6kzQQXedE4Iocb7p
-         cTttXOblYvaH7o6PWdz5MLd3m89JfbfuNGD7iufw=
+        b=bByhmE0Oobrh4dDymk3I6KpP/uK4sJ1CwolFfwxqBomof7zKDZNTK+kESYWua7yqD
+         mW2LWm0dgtkNpoyU70d41GtXudZ1beleMAHTkJhIR38tS7TPBqWVw3ibbnL9GFvxT7
+         MkeaBXToZidQ977/Cgv2ulb3aN+Ai/omQ4+mh5/A=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Denis Kirjanov <kda@linux-powerpc.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 057/105] ipoib: correcly show a VF hardware address
-Date:   Mon, 15 Jul 2019 10:27:51 -0400
-Message-Id: <20190715142839.9896-57-sashal@kernel.org>
+Cc:     Jianbo Liu <jianbol@mellanox.com>, Oz Shlomo <ozsh@mellanox.com>,
+        Eli Britstein <elibr@mellanox.com>,
+        Roi Dayan <roid@mellanox.com>, Mark Bloch <markb@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.2 181/249] net/mlx5: Get vport ACL namespace by vport index
+Date:   Mon, 15 Jul 2019 09:45:46 -0400
+Message-Id: <20190715134655.4076-181-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715142839.9896-1-sashal@kernel.org>
-References: <20190715142839.9896-1-sashal@kernel.org>
+In-Reply-To: <20190715134655.4076-1-sashal@kernel.org>
+References: <20190715134655.4076-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,57 +46,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Denis Kirjanov <kda@linux-powerpc.org>
+From: Jianbo Liu <jianbol@mellanox.com>
 
-[ Upstream commit 64d701c608fea362881e823b666327f5d28d7ffd ]
+[ Upstream commit f53297d67800feb5fafd94abd926c889aefee690 ]
 
-in the case of IPoIB with SRIOV enabled hardware
-ip link show command incorrecly prints
-0 instead of a VF hardware address.
+The ingress and egress ACL root namespaces are created per vport and
+stored into arrays. However, the vport number is not the same as the
+index. Passing the array index, instead of vport number, to get the
+correct ingress and egress acl namespace.
 
-Before:
-11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
-state UP mode DEFAULT group default qlen 256
-    link/infiniband
-80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
-00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
-    vf 0 MAC 00:00:00:00:00:00, spoof checking off, link-state disable,
-trust off, query_rss off
-...
-After:
-11: ib1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc pfifo_fast
-state UP mode DEFAULT group default qlen 256
-    link/infiniband
-80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
-00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
-    vf 0     link/infiniband
-80:00:00:66:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a4:3e:7c brd
-00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff, spoof
-checking off, link-state disable, trust off, query_rss off
-
-v1->v2: just copy an address without modifing ifla_vf_mac
-v2->v3: update the changelog
-
-Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
-Acked-by: Doug Ledford <dledford@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 9b93ab981e3b ("net/mlx5: Separate ingress/egress namespaces for each vport")
+Signed-off-by: Jianbo Liu <jianbol@mellanox.com>
+Reviewed-by: Oz Shlomo <ozsh@mellanox.com>
+Reviewed-by: Eli Britstein <elibr@mellanox.com>
+Reviewed-by: Roi Dayan <roid@mellanox.com>
+Reviewed-by: Mark Bloch <markb@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/ipoib/ipoib_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-index e6ff16b27acd..1a93d3d58c8a 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-@@ -1833,6 +1833,7 @@ static int ipoib_get_vf_config(struct net_device *dev, int vf,
- 		return err;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+index 6a921e24cd5e..acab26b88261 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+@@ -939,7 +939,7 @@ int esw_vport_enable_egress_acl(struct mlx5_eswitch *esw,
+ 		  vport->vport, MLX5_CAP_ESW_EGRESS_ACL(dev, log_max_ft_size));
  
- 	ivf->vf = vf;
-+	memcpy(ivf->mac, dev->dev_addr, dev->addr_len);
+ 	root_ns = mlx5_get_flow_vport_acl_namespace(dev, MLX5_FLOW_NAMESPACE_ESW_EGRESS,
+-						    vport->vport);
++			mlx5_eswitch_vport_num_to_index(esw, vport->vport));
+ 	if (!root_ns) {
+ 		esw_warn(dev, "Failed to get E-Switch egress flow namespace for vport (%d)\n", vport->vport);
+ 		return -EOPNOTSUPP;
+@@ -1057,7 +1057,7 @@ int esw_vport_enable_ingress_acl(struct mlx5_eswitch *esw,
+ 		  vport->vport, MLX5_CAP_ESW_INGRESS_ACL(dev, log_max_ft_size));
  
- 	return 0;
- }
+ 	root_ns = mlx5_get_flow_vport_acl_namespace(dev, MLX5_FLOW_NAMESPACE_ESW_INGRESS,
+-						    vport->vport);
++			mlx5_eswitch_vport_num_to_index(esw, vport->vport));
+ 	if (!root_ns) {
+ 		esw_warn(dev, "Failed to get E-Switch ingress flow namespace for vport (%d)\n", vport->vport);
+ 		return -EOPNOTSUPP;
 -- 
 2.20.1
 
