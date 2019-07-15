@@ -2,55 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 794E268288
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 05:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C242C6828B
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 05:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729152AbfGODRw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Jul 2019 23:17:52 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:38638 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbfGODRw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 14 Jul 2019 23:17:52 -0400
-Received: by mail-pf1-f194.google.com with SMTP id y15so6737624pfn.5;
-        Sun, 14 Jul 2019 20:17:52 -0700 (PDT)
+        id S1729172AbfGODSA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 14 Jul 2019 23:18:00 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:41631 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbfGODR7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 14 Jul 2019 23:17:59 -0400
+Received: by mail-pl1-f194.google.com with SMTP id m9so7510668pls.8;
+        Sun, 14 Jul 2019 20:17:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=OHd9Gj1NXZziz3dxXYZkOlR2we6FjZ7KaJ1LbxYLKIQ=;
-        b=VTWUsO+yBwtBB7RQyLiHu1HrtZoePeRGZ2rQ1viBoc7EvixAYcbTQqb71HaJn6uU80
-         9n4luCtpd58rqt6PRNBLRu6FqVNGKZ7wKz1mj6OVx/rAtXZMbFkH099rlzbT3QvvFBXo
-         hTIFi1y/2mwJV32WyPRi1S4hKl2wAxQ/yii+QeKzPJPRh6G2RwO69FBrO8PLENOpr59C
-         LoIemjE0sw0ORIbCUeYDoaSff2GSCbCUHqm+ZL1gWuBh4GtzF9LCK0iQHkuCvJO2KCr+
-         9fQtcT4CbcVNRO56qsXMN3zQzYSCKv+h4tx//r7w+NWjjV7LD1ibfuG/vU6e/1Bu5f/h
-         QAFw==
+        bh=MWph+F2q7pgDhwwto0Vrel41tbz5XzXP/KFnu14R0Fo=;
+        b=WFrAcQp8JxCVJVtIpdDo6UBTHTNY7ZRNwH3xBIaG24g+JJJAaK85QR9iBl2V/AE9qG
+         xIqSZtDB2Ge/3DUskhgzGXITeJXJk1q1n8eb4xmKMzi5oBgbDynXU6hh2Q3Y0fitF7Jm
+         Eh9KPKUuk0icCwkTnW0DK54Od98Y6PAm83fVt0dPndRdiHeS/iZCqMc8OCEYjmsS2AfK
+         UFeM2r5mic0Ui7Dd6LpZXICP6jU5TqR1zFHI5uLCaeJMlTfdj6EaRA53pyzZ3x2qyTZu
+         H2tfkJson1o9yDO3bvNmX4dTceZE5PQNV9xCriyp0ulcE3z5SD+8U0GU+/3QnoIglIlm
+         Lc8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=OHd9Gj1NXZziz3dxXYZkOlR2we6FjZ7KaJ1LbxYLKIQ=;
-        b=njrYKFXwFzjZzfmqGf68PoemIQzEiqM7jFBnhkDYwQic9QT7z9Pt6eiO+f9PBeSZyq
-         pm+cViYcpA9Lz03cRHsE/GydHTPD/oYXhPwBvphqLnz7xcZNmOi9d0Um2TXPr2PCsGAK
-         a/E+8H2srVMWYdXMepO+oYn8RrN3Gqd/QkThnsnpygb4S0a58qHH/9NECUsRaFW4DVUh
-         Thy5ijwz88M9crn1hf7P0Xo8U+VyB7v66RlB1DBVI0D6HtrgMfPywkNy0ZwxfrQVdQ95
-         +Yyhv3C8j7Lu2FYDs5l+9bj2T17GxcW7U+N9u4ox7YPkxT3wUINp4pWR/ndyW/QwERM2
-         oLlw==
-X-Gm-Message-State: APjAAAUpv6Q29biEqj4GkFoc2flPn/pNNectd7wNEl4EmsFIBHT0amc+
-        JZ+8S7Prhb+NhKifTctZ5SQSMU719o8=
-X-Google-Smtp-Source: APXvYqy3gszgrnb7LI/UUiG1ZPlAKmEXD6r8pNLBxg0ZvGhSO7CNei6Al5BnSvNwXFeY8S858slnVA==
-X-Received: by 2002:a65:430a:: with SMTP id j10mr25272177pgq.374.1563160671841;
-        Sun, 14 Jul 2019 20:17:51 -0700 (PDT)
+        bh=MWph+F2q7pgDhwwto0Vrel41tbz5XzXP/KFnu14R0Fo=;
+        b=O9ntGGFoxh5Yz05K36DJoVaqRz+jNI5SnG2ZgzxLoU//W59dtMHecqdbbu1bVsX0ln
+         0mFET05F3dGiznPsn9u4ZvORTjKMm/Og9kN+vUxLdpjSwgOPESr7SNQMhSXfsjIaX3vY
+         0T8wFcUem9wVDlJfb8PqpLZQg3LV0odxXyJ/eTCzRWB3YdFg0uh8YtPym316YWMroccX
+         vpSx2C12zOWcoTIcEYWM7XB0HNPCuEZcrMLyMu0V1ckUBFjApe8Tn+kHEUejGwuzgGJL
+         4ANbQYJA1IuAdChM2XLx5Z7U7QOsSpF5QG5trsGBMYg3yw23ig3dMBrChIqLWDvTNXI0
+         AjPA==
+X-Gm-Message-State: APjAAAWaRQQuVPBt7BjqmuHvjcLRgunJXH7/l3E89i1CHAAag/Wr8Kxg
+        QQxxiGsjlFXwu0i6QDl1pgg=
+X-Google-Smtp-Source: APXvYqxUh3eCid6DOB1tllsOgHS0lEhRftUZfBotJVlPTz8pebE8d2CEoDlTAdMSXdhG77M3o19p/w==
+X-Received: by 2002:a17:902:9004:: with SMTP id a4mr25968124plp.109.1563160678856;
+        Sun, 14 Jul 2019 20:17:58 -0700 (PDT)
 Received: from hfq-skylake.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.googlemail.com with ESMTPSA id a15sm1926403pfg.102.2019.07.14.20.17.49
+        by smtp.googlemail.com with ESMTPSA id 21sm15113420pjh.25.2019.07.14.20.17.56
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 14 Jul 2019 20:17:51 -0700 (PDT)
+        Sun, 14 Jul 2019 20:17:58 -0700 (PDT)
 From:   Fuqian Huang <huangfq.daxian@gmail.com>
 Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Fuqian Huang <huangfq.daxian@gmail.com>
-Subject: [PATCH v3 07/24] rdma/cxgb3: Remove call to memset after dma_alloc_coherent
-Date:   Mon, 15 Jul 2019 11:17:46 +0800
-Message-Id: <20190715031746.6514-1-huangfq.daxian@gmail.com>
+Subject: [PATCH v3 08/24] rdma/cxgb4: Remove call to memset after dma_alloc_coherent
+Date:   Mon, 15 Jul 2019 11:17:52 +0800
+Message-Id: <20190715031752.6560-1-huangfq.daxian@gmail.com>
 X-Mailer: git-send-email 2.11.0
 To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
@@ -68,30 +68,34 @@ Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
 Changes in v3:
   - Use actual commit rather than the merge commit in the commit message
 
- drivers/infiniband/hw/cxgb3/cxio_hal.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/infiniband/hw/cxgb4/cq.c | 1 -
+ drivers/infiniband/hw/cxgb4/qp.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/cxgb3/cxio_hal.c b/drivers/infiniband/hw/cxgb3/cxio_hal.c
-index 8ac72ac7cbac..0e37f55678f8 100644
---- a/drivers/infiniband/hw/cxgb3/cxio_hal.c
-+++ b/drivers/infiniband/hw/cxgb3/cxio_hal.c
-@@ -174,7 +174,6 @@ int cxio_create_cq(struct cxio_rdev *rdev_p, struct t3_cq *cq, int kernel)
- 		return -ENOMEM;
+diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
+index 52ce586621c6..fcd161e3495b 100644
+--- a/drivers/infiniband/hw/cxgb4/cq.c
++++ b/drivers/infiniband/hw/cxgb4/cq.c
+@@ -104,7 +104,6 @@ static int create_cq(struct c4iw_rdev *rdev, struct t4_cq *cq,
+ 		goto err3;
  	}
  	dma_unmap_addr_set(cq, mapping, cq->dma_addr);
--	memset(cq->queue, 0, size);
- 	setup.id = cq->cqid;
- 	setup.base_addr = (u64) (cq->dma_addr);
- 	setup.size = 1UL << cq->size_log2;
-@@ -538,8 +537,6 @@ static int cxio_hal_init_ctrl_qp(struct cxio_rdev *rdev_p)
- 	dma_unmap_addr_set(&rdev_p->ctrl_qp, mapping,
- 			   rdev_p->ctrl_qp.dma_addr);
- 	rdev_p->ctrl_qp.doorbell = (void __iomem *)rdev_p->rnic_info.kdb_addr;
--	memset(rdev_p->ctrl_qp.workq, 0,
--	       (1 << T3_CTRL_QP_SIZE_LOG2) * sizeof(union t3_wr));
+-	memset(cq->queue, 0, cq->memsize);
  
- 	mutex_init(&rdev_p->ctrl_qp.lock);
- 	init_waitqueue_head(&rdev_p->ctrl_qp.waitq);
+ 	if (user && ucontext->is_32b_cqe) {
+ 		cq->qp_errp = &((struct t4_status_page *)
+diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
+index e92b9544357a..4882dcbb7d20 100644
+--- a/drivers/infiniband/hw/cxgb4/qp.c
++++ b/drivers/infiniband/hw/cxgb4/qp.c
+@@ -274,7 +274,6 @@ static int create_qp(struct c4iw_rdev *rdev, struct t4_wq *wq,
+ 			 (unsigned long long)virt_to_phys(wq->sq.queue),
+ 			 wq->rq.queue,
+ 			 (unsigned long long)virt_to_phys(wq->rq.queue));
+-		memset(wq->rq.queue, 0, wq->rq.memsize);
+ 		dma_unmap_addr_set(&wq->rq, mapping, wq->rq.dma_addr);
+ 	}
+ 
 -- 
 2.11.0
 
