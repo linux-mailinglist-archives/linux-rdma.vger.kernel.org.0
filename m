@@ -2,123 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B3A698D0
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 18:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880466994D
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jul 2019 18:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730933AbfGOQBp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jul 2019 12:01:45 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:37206 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731306AbfGOQBm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Jul 2019 12:01:42 -0400
-Received: by mail-pg1-f194.google.com with SMTP id g15so7931704pgi.4
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Jul 2019 09:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lChEEghQFkJA0ae9eAwhZ0QJmvdqy/WLUOFz361BXCQ=;
-        b=m3ylaWA1nfDKOLFQBZbi5lVR91/hvH9n6ddTo7/UGe/KLQTke6nfJGGnTYTOxi8VCA
-         HfS0hKS7p+bVQo6gCnikJZrIRnFAsBOo76vo66MNNR76VN9RpCPaB5uiN9mXzb/wKBaC
-         2YPMCtyHAVUy8c0n2Hy0noVhGDDAso8pOP+OWaQofcmHPvFQjxyIKXwz5wkCf0bTrn7S
-         NzX5/+eAUp4zqkWQrLjg7UELrWGHhufD8/uShStHD6i3q1aY9KquzAKDzGkmcTnssS5F
-         Z3nCiKnfqdcqBaEFScvEV6fXgwg7XscQvG1/2qeAbDEIc8Yoj5aguZfuLCcnlHXlWZQG
-         m73g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lChEEghQFkJA0ae9eAwhZ0QJmvdqy/WLUOFz361BXCQ=;
-        b=GOVX6GSmOJCSHpFJb0NPoB4hKEDHxgZFvfHveNYbQQtU/WhGbTsS7KQbJaekiqvT1d
-         oAzaTQ+WVxnqS7d5ei/hReOo9Ksf2D9EyswQ2RrYBnLo8PwES1Eyrmx9LfyjwnQxDT78
-         10BwPO2pDtT5/eqQFSzG96cQIoan6t0nM1jKncwgL4KMqxh1SNcFoKvKS3/shszwJRpm
-         itDe3HHLHFzwtkQGn4q13zK7g06w4FYmbnLooKxzs5YVCBqywku7hHdldfXysEqv8KKn
-         x/7Mnj0fx/3Iabh/xQJ1j2vxij1P/EOYdjvgU9ZynlHBaf7wxg8BoxeC07oNUtMa89mY
-         vPHg==
-X-Gm-Message-State: APjAAAWzLbA5Bl1N7casKiwkJZDth1YU1HjUe6HhDLHN+DsXtzZdpMAf
-        9ehjZvKqAm9Y455wX+5j7xiv+81hpN1plcnzS4Qb+A==
-X-Google-Smtp-Source: APXvYqyLZ0wS0QgBngEcy3YbbCLzw5RatJ3FtyfhyqUYHKhFv456jIze9R6yuxvC6+RP9cmNsJEN8HfxXPuILyhJ/1w=
-X-Received: by 2002:a17:90a:a116:: with SMTP id s22mr29861239pjp.47.1563206500702;
- Mon, 15 Jul 2019 09:01:40 -0700 (PDT)
+        id S1730071AbfGOQpT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jul 2019 12:45:19 -0400
+Received: from mga09.intel.com ([134.134.136.24]:41346 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729941AbfGOQpT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 15 Jul 2019 12:45:19 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Jul 2019 09:45:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,493,1557212400"; 
+   d="scan'208";a="178271001"
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by orsmga002.jf.intel.com with ESMTP; 15 Jul 2019 09:45:18 -0700
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x6FGjGMd033140;
+        Mon, 15 Jul 2019 09:45:17 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x6FGjEn3074245;
+        Mon, 15 Jul 2019 12:45:14 -0400
+Subject: [PATCH 0/6] More 5.3 patches
+To:     jgg@ziepe.ca, dledford@redhat.com
+From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Mon, 15 Jul 2019 12:45:14 -0400
+Message-ID: <20190715164423.74174.4994.stgit@awfm-01.aw.intel.com>
+User-Agent: StGit/0.16
 MIME-Version: 1.0
-References: <cover.1561386715.git.andreyknvl@google.com> <ea0ff94ef2b8af12ea6c222c5ebd970e0849b6dd.1561386715.git.andreyknvl@google.com>
- <20190624174015.GL29120@arrakis.emea.arm.com>
-In-Reply-To: <20190624174015.GL29120@arrakis.emea.arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 15 Jul 2019 18:01:29 +0200
-Message-ID: <CAAeHK+y8vE=G_odK6KH=H064nSQcVgkQkNwb2zQD9swXxKSyUQ@mail.gmail.com>
-Subject: Re: [PATCH v18 11/15] IB/mlx4: untag user pointers in mlx4_get_umem_mr
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 7:40 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Mon, Jun 24, 2019 at 04:32:56PM +0200, Andrey Konovalov wrote:
-> > This patch is a part of a series that extends kernel ABI to allow to pass
-> > tagged user pointers (with the top byte set to something else other than
-> > 0x00) as syscall arguments.
-> >
-> > mlx4_get_umem_mr() uses provided user pointers for vma lookups, which can
-> > only by done with untagged pointers.
-> >
-> > Untag user pointers in this function.
-> >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > ---
-> >  drivers/infiniband/hw/mlx4/mr.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
->
-> This patch also needs an ack from the infiniband maintainers (Jason).
+The following series contains fixes and a cleanup.
 
-Hi Jason,
+I noticed that 5.3 rc1 hasn't happened yet? So I'm not quite sure of
+the destination here.
 
-Could you take a look and give your acked-by?
+5 of the patches are stable, and should be held for the rc or pulled for 5.3.
 
-Thanks!
+Deleting the unused define can wait if necessary.
 
->
-> --
-> Catalin
+---
+
+John Fleck (1):
+      IB/hfi1: Check for error on call to alloc_rsm_map_table
+
+Kaike Wan (4):
+      IB/hfi1: Unreserve a flushed OPFN request
+      IB/hfi1: Field not zero-ed when allocating TID flow memory
+      IB/hfi1: Drop all TID RDMA READ RESP packets after r_next_psn
+      IB/hfi1: Do not update hcrc for a KDETH packet during fault injection
+
+Mike Marciniszyn (1):
+      IB/hfi1: Remove unused define
+
+
+ drivers/infiniband/hw/hfi1/chip.c      |   11 +++++++-
+ drivers/infiniband/hw/hfi1/rc.c        |    2 -
+ drivers/infiniband/hw/hfi1/tid_rdma.c  |   43 +-------------------------------
+ drivers/infiniband/hw/hfi1/user_sdma.h |    6 ----
+ drivers/infiniband/hw/hfi1/verbs.c     |   17 +++++++------
+ include/rdma/rdmavt_qp.h               |    9 +++----
+ 6 files changed, 24 insertions(+), 64 deletions(-)
+
+-- 
+Mike
