@@ -2,129 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D8C6AF80
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 21:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BDA06B1CF
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 00:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388526AbfGPTBg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jul 2019 15:01:36 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:40572 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388494AbfGPTBf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 15:01:35 -0400
-Received: by mail-pf1-f196.google.com with SMTP id p184so9548234pfp.7
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Jul 2019 12:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BWIbzxSA7URw2KomYKGJvPyHtNEDhxY/2R80Q7H8wmg=;
-        b=GtnzJZlX5U7uGAyRvDby/8uuD3lzllEvwEbPNHzIKsrVIhwEhQRXycROPL9pOvJZx3
-         9rxaCBq1dIjA9NqN0p80Ax2iWsDTvnqZNo5jC5Ebq+rOH+Y21fxsfgeUfvDIaZTo3Lbr
-         f+9+EOwa5MGZcFEZHAYrw9mv9NYFTm5MAcjQRp751zofaK97AnVV7ab7vDspEAR3N+CW
-         o8IO/M3obJq4+juvu2teTH5I1eEnOdRUAo/lYInaV0oJ8ZbZ6O71Wb2axAUJ2XA23cPz
-         7LiAAEsooseZDKPdWYZi+laklQikEmDKuPiqEcP6V3fknCcllAWvpjRYd9wjzalgStmq
-         KtIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BWIbzxSA7URw2KomYKGJvPyHtNEDhxY/2R80Q7H8wmg=;
-        b=fdFCHrhdkY61BMD2aL0RrvLiQ/TziBzIpkQWIM4k2bwBMxyHHm+kCBbJMM5YmzuWMb
-         NlExZ97wnrCpYr6vJiM7Yl7J1GF8EwzmGWZDGrUqp85liQGK88v2OJwzrnKqT2hic10M
-         VOh2qQk4VqE98EE4tInfsaq3hfOJQP0cjEpOvC0GdfFf6GaazGG+Gjr/Aj5ty48fSZKU
-         Ko1HbTXMcS4PeyqyoX+UjQw4jqGn3cELZ4H2sM6A4i8SOsjZ/YbZhIubDO7XuJue2fDb
-         VXSWukMUCSJIrzfNiL7R/sNmespbLiO/hkDpMKvgEZ7+uhs5K/r+jNW4QV2V1etea4dY
-         lSPQ==
-X-Gm-Message-State: APjAAAVQXhGiw5xhhTvr4PkpBnK9feX9JL8x029BJ2yb28rL0WcEu0Wd
-        Ey4AFFXk6NQp7Mli/QKWa2U=
-X-Google-Smtp-Source: APXvYqyeTqUPdnh1qrKYnkb/2/4hthhKH+JShMoOCdcjcvbrTTjGpwP8ohC74IEZtXcmK9zUId0Ffg==
-X-Received: by 2002:a17:90a:1b48:: with SMTP id q66mr37038674pjq.83.1563303695136;
-        Tue, 16 Jul 2019 12:01:35 -0700 (PDT)
-Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
-        by smtp.gmail.com with ESMTPSA id g66sm21891830pfb.44.2019.07.16.12.01.34
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 16 Jul 2019 12:01:35 -0700 (PDT)
-Date:   Tue, 16 Jul 2019 12:01:28 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        netdev <netdev@vger.kernel.org>, David Ahern <dsahern@gmail.com>,
-        Mark Zhang <markz@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH iproute2-rc 2/8] rdma: Add "stat qp show" support
-Message-ID: <20190716120128.6beab22e@hermes.lan>
-In-Reply-To: <20190710072455.9125-3-leon@kernel.org>
-References: <20190710072455.9125-1-leon@kernel.org>
-        <20190710072455.9125-3-leon@kernel.org>
+        id S1728434AbfGPW26 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jul 2019 18:28:58 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:44262 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728566AbfGPW24 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 18:28:56 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GMDmTt109905;
+        Tue, 16 Jul 2019 22:28:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ cc : message-id : date : mime-version : content-type :
+ content-transfer-encoding; s=corp-2018-07-02;
+ bh=fBqQSLWxnoVlHiuschLf4pxHxPE3fTPbmNAmMqYdX1Y=;
+ b=0BCqiFj1OtLSIjtBOaURmw2LHDKidDRMihL2bOuSC95MakdE/7VnjhmpmODpyDNZEtV1
+ ekqop0cFj4GK4g+7rRj1lV/N/iz8dt6JXDmCzm3O4e97a0eBm/mxr4+23QCbvC+PwgkE
+ W5VKBLUvFD/b+9uc8NYjUh4l39um0uqyrJwCHp72YvWzSNWn1cYoNrV6XEkzOWVWDfFq
+ UemwtW/sZ9CZStLnsCz5mk+nc0QPtmOd7QKuoWB93LcyILO+azd+ib0Z9uvh57j51Rh3
+ Yy0M1CXGD8Yz5ACrGKoRIJM3aagjNHIv3dgrOlTXNTKuP0rVvBjDTv7VtpIOMp938NaT HA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2tq7xqy4eh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Jul 2019 22:28:47 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GMCg30064546;
+        Tue, 16 Jul 2019 22:28:47 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 2tq5bcnrvt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 16 Jul 2019 22:28:46 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6GMSkF8096156;
+        Tue, 16 Jul 2019 22:28:46 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 2tq5bcnrvp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Jul 2019 22:28:46 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x6GMSjiE017566;
+        Tue, 16 Jul 2019 22:28:45 GMT
+Received: from [10.211.55.164] (/10.211.55.164)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 16 Jul 2019 22:28:43 +0000
+From:   Gerd Rausch <gerd.rausch@oracle.com>
+Subject: [PATCH net v3 0/7] net/rds: RDMA fixes
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Cc:     David Miller <davem@davemloft.net>
+Message-ID: <3fd6ddd1-97e2-2c64-1772-b689eb3ee7ba@oracle.com>
+Date:   Tue, 16 Jul 2019 15:28:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9320 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1907160261
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 10 Jul 2019 10:24:49 +0300
-Leon Romanovsky <leon@kernel.org> wrote:
+A number of net/rds fixes necessary to make "rds_rdma.ko"
+pass some basic Oracle internal tests.
 
-> From: Mark Zhang <markz@mellanox.com>
-> 
-> This patch presents link, id, task name, lqpn, as well as all sub
-> counters of a QP counter.
-> A QP counter is a dynamically allocated statistic counter that is
-> bound with one or more QPs. It has several sub-counters, each is
-> used for a different purpose.
-> 
-> Examples:
-> $ rdma stat qp show
-> link mlx5_2/1 cntn 5 pid 31609 comm client.1 rx_write_requests 0
-> rx_read_requests 0 rx_atomic_requests 0 out_of_buffer 0 out_of_sequence 0
-> duplicate_request 0 rnr_nak_retry_err 0 packet_seq_err 0
-> implied_nak_seq_err 0 local_ack_timeout_err 0 resp_local_length_error 0
-> resp_cqe_error 0 req_cqe_error 0 req_remote_invalid_request 0
-> req_remote_access_errors 0 resp_remote_access_errors 0
-> resp_cqe_flush_error 0 req_cqe_flush_error 0
->     LQPN: <178>
-> $ rdma stat show link rocep1s0f5/1
-> link rocep1s0f5/1 rx_write_requests 0 rx_read_requests 0 rx_atomic_requests 0 out_of_buffer 0 duplicate_request 0
-> rnr_nak_retry_err 0 packet_seq_err 0 implied_nak_seq_err 0 local_ack_timeout_err 0 resp_local_length_error 0 resp_cqe_error 0
-> req_cqe_error 0 req_remote_invalid_request 0 req_remote_access_errors 0 resp_remote_access_errors 0 resp_cqe_flush_error 0
-> req_cqe_flush_error 0 rp_cnp_ignored 0 rp_cnp_handled 0 np_ecn_marked_roce_packets 0 np_cnp_sent 0
-> $ rdma stat show link rocep1s0f5/1 -p
-> link rocep1s0f5/1
->     rx_write_requests 0
->     rx_read_requests 0
->     rx_atomic_requests 0
->     out_of_buffer 0
->     duplicate_request 0
->     rnr_nak_retry_err 0
->     packet_seq_err 0
->     implied_nak_seq_err 0
->     local_ack_timeout_err 0
->     resp_local_length_error 0
->     resp_cqe_error 0
->     req_cqe_error 0
->     req_remote_invalid_request 0
->     req_remote_access_errors 0
->     resp_remote_access_errors 0
->     resp_cqe_flush_error 0
->     req_cqe_flush_error 0
->     rp_cnp_ignored 0
->     rp_cnp_handled 0
->     np_ecn_marked_roce_packets 0
->     np_cnp_sent 0
-> 
-> Signed-off-by: Mark Zhang <markz@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  rdma/Makefile |   2 +-
->  rdma/rdma.c   |   3 +-
->  rdma/rdma.h   |   1 +
->  rdma/stat.c   | 268 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  rdma/utils.c  |   7 ++
->  5 files changed, 279 insertions(+), 2 deletions(-)
->  create mode 100644 rdma/stat.c
-> 
+Gerd Rausch (7):
+  net/rds: Give fr_state a chance to transition to FRMR_IS_FREE
+  net/rds: Get rid of "wait_clean_list_grace" and add locking
+  net/rds: Wait for the FRMR_IS_FREE (or FRMR_IS_STALE) transition after
+    posting IB_WR_LOCAL_INV
+  net/rds: Fix NULL/ERR_PTR inconsistency
+  net/rds: Set fr_state only to FRMR_IS_FREE if IB_WR_LOCAL_INV had been
+    successful
+  net/rds: Keep track of and wait for FRWR segments in use upon shutdown
+  net/rds: Initialize ic->i_fastreg_wrs upon allocation
 
-Headers have been merged, but this patch does not apply cleanly to current iproute2
+ net/rds/ib.h      |  1 +
+ net/rds/ib_cm.c   |  9 ++++-
+ net/rds/ib_frmr.c | 84 ++++++++++++++++++++++++++++++++++++++++++-----
+ net/rds/ib_mr.h   |  4 +++
+ net/rds/ib_rdma.c | 60 +++++++++++----------------------
+ 5 files changed, 109 insertions(+), 49 deletions(-)
 
+-- 
+
+Changes in submitted patch v3:
+* Use "wait_event" instead of "wait_event_timeout" in order to
+  not have a deadline for the HCA firmware to respond.
