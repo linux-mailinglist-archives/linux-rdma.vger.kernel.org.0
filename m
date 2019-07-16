@@ -2,54 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3556A6AC
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 12:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CF26A840
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 14:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733203AbfGPKmU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jul 2019 06:42:20 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:47079 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733151AbfGPKmT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 06:42:19 -0400
-Received: by mail-pg1-f195.google.com with SMTP id i8so9223110pgm.13
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Jul 2019 03:42:19 -0700 (PDT)
+        id S1733196AbfGPMG1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jul 2019 08:06:27 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:44182 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728137AbfGPMG0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 08:06:26 -0400
+Received: by mail-qt1-f196.google.com with SMTP id 44so19169666qtg.11
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jul 2019 05:06:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pcaSKUptakKKj3J2cwfnG8UjZ2PIKf/cDSDsIedAL2o=;
-        b=s+OFL3WXkvuRlzxrd5bE1Ngy+XgzRf65DCow2JPQVmoncUwZbVCqMBlaegEFH9OjoE
-         hGCT+agVZt6o7c1dpbisMO2uuxLS4ocd2/ZDN7N4RlgjJBFJVqurL7o3Ajgq9RawIe5i
-         iUUC4MErBeuJi9C5qq1rXWHueETWBI6Hzy/jstfQMgqGCotgu8bx7AIz25MV6uvB/uMd
-         AEZz6pOzM1SLevN2MhBCQnN+Ls0p0A8Ke9oO9L3/oytDbjyhFG4BNaIQGs6zmciV6uIC
-         B6Z1DPnQPaMXlwFS2CsRvlNBpOj4ZTVcwcFW3en9/NlOTRMUXcMVVd3220XqOCAD3ZI0
-         4G+A==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QhpcQElL3lG0JSgeqXLUe/9qK61Ylnz+wgQS3Fp7AjE=;
+        b=D1pZEppikXtQIEAGheASyppn4vPK1DguzWZpiaVk939PKpSlX+xsQppOI0OBkx+nKq
+         1JMeoAeO2RtNcmtGWYdKLbdcc2TbWA6drTUMGhZaq0sz3Geu8LfsJw1hCEqbsa4Bc/j+
+         JrOL+39tH0pc4sSRyK3u0NuDnGgXAecwBuMSo8RvbrqgC5vpbNsoC1TREtbzabbzYUMS
+         k9WxSC0qQS+DehVxRxUbV/PWa/pVTJQcjtukye20Ck/yNfMpOiGdSRCyc7pAxi48HA7M
+         W3ECRyTg6vWSNWsyBv8+jZrvPzt1c26ISNAUAqR3Nk0GH9Y/cYJuNImJ996hTYW3Y9ab
+         lyPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pcaSKUptakKKj3J2cwfnG8UjZ2PIKf/cDSDsIedAL2o=;
-        b=taRklk80ApuXVSw3+3bhI+86/8+Ae9vG1IkBYdROxJ7ZKKacBvfzIYBHbAgAifKB9F
-         kzWfXVG1WqaXaQLM5kK1+QiEhGMSTcLtdRE9sNjXLCgkLXUYDl1v+O8mLjCiuS2Uoif6
-         lt7BCmbw8Vvv/9tQEVDOm/FEbpe5UU/GgD5M3ivqnKSoZcXwRci8R926pvKtgOZlhbwc
-         PAe6MoVlB2+7qR6SQvPK52HY9fEv4jX5fvW196eFDm8LDYTl04bgBXc/G45QVroNWjsm
-         nQ+zyL8p1ynkJ0QvEwrlYIOpxPfnDQxpfmpWgVyHpyAaRbT3nYEE+cr8pQlG9WncBZRM
-         NMCw==
-X-Gm-Message-State: APjAAAVAlcRrteCqzROnX/+guk8Rl8o1Bwxmz/scLe8BptM6IwXERf2K
-        QYHga/snws/l7ZmiBUCx82YBoOuZsLI/+REjku3lEg==
-X-Google-Smtp-Source: APXvYqxbAU3TJ3lRd6aOUwZ5wuALN9pC6/wjaLV/0rVHNmhI9zipeP18fROsGNN7fnnNJ7wIdpoSB0T+fWzH5C49P+M=
-X-Received: by 2002:a65:4b8b:: with SMTP id t11mr32488026pgq.130.1563273738850;
- Tue, 16 Jul 2019 03:42:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1561386715.git.andreyknvl@google.com> <ea0ff94ef2b8af12ea6c222c5ebd970e0849b6dd.1561386715.git.andreyknvl@google.com>
- <20190624174015.GL29120@arrakis.emea.arm.com> <CAAeHK+y8vE=G_odK6KH=H064nSQcVgkQkNwb2zQD9swXxKSyUQ@mail.gmail.com>
- <20190715180510.GC4970@ziepe.ca>
-In-Reply-To: <20190715180510.GC4970@ziepe.ca>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 16 Jul 2019 12:42:07 +0200
-Message-ID: <CAAeHK+xPQqJP7p_JFxc4jrx9k7N0TpBWEuB8Px7XHvrfDU1_gw@mail.gmail.com>
-Subject: Re: [PATCH v18 11/15] IB/mlx4: untag user pointers in mlx4_get_umem_mr
-To:     Jason Gunthorpe <jgg@ziepe.ca>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QhpcQElL3lG0JSgeqXLUe/9qK61Ylnz+wgQS3Fp7AjE=;
+        b=PGczJ0V4LwYKoOOeFrRTiRZtA7tIuKZ8pwoZ2EePi1KpsdwjDwnHVvirhexQLHzkqn
+         KsVnL09bumeM8J9nmnmFfyvqfe6zq9RkpAiZcrep2NJq3CNWlLkwg0iOO9L1Z00etxby
+         OeV1BDtV0vD9Dg3kiOcFWvYRYv9+5lmtIgAZBoefhznsurlhJCp9nUckN7XV6+kuLuCL
+         lOyXySKyBQsR+3F7RB/zyFt76jDd37VXvkWVoiFcos2LvWfa64uKJJdFULblEqXAlOZC
+         5D32W+pJcvKEDvFulWO41xXR5/oeTY/N4txn05h2LvanUeeidHtbpzNvcry+sVn85r/s
+         p/TA==
+X-Gm-Message-State: APjAAAVQ4UdAFaJ7wEa7yCZcK8/un6BKuycCAj1lHxnQ8abMITl7MOJL
+        S+4koxg1R0NzGqn1VLv3IyG8iA==
+X-Google-Smtp-Source: APXvYqwaXFZZiwZu977J+QGokWcpz5v06kUp2glLI/ZNMEHnjOvZ6hmUglcng9VwXT1727jmbSrxcg==
+X-Received: by 2002:a0c:e703:: with SMTP id d3mr22592037qvn.194.1563278785764;
+        Tue, 16 Jul 2019 05:06:25 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id a6sm8577367qkn.59.2019.07.16.05.06.25
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 16 Jul 2019 05:06:25 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hnMDw-0007mK-JQ; Tue, 16 Jul 2019 09:06:24 -0300
+Date:   Tue, 16 Jul 2019 09:06:24 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Andrey Konovalov <andreyknvl@google.com>
 Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Memory Management List <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -87,49 +87,63 @@ Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Kevin Brodsky <kevin.brodsky@arm.com>,
         Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v18 11/15] IB/mlx4: untag user pointers in
+ mlx4_get_umem_mr
+Message-ID: <20190716120624.GA29727@ziepe.ca>
+References: <cover.1561386715.git.andreyknvl@google.com>
+ <ea0ff94ef2b8af12ea6c222c5ebd970e0849b6dd.1561386715.git.andreyknvl@google.com>
+ <20190624174015.GL29120@arrakis.emea.arm.com>
+ <CAAeHK+y8vE=G_odK6KH=H064nSQcVgkQkNwb2zQD9swXxKSyUQ@mail.gmail.com>
+ <20190715180510.GC4970@ziepe.ca>
+ <CAAeHK+xPQqJP7p_JFxc4jrx9k7N0TpBWEuB8Px7XHvrfDU1_gw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+xPQqJP7p_JFxc4jrx9k7N0TpBWEuB8Px7XHvrfDU1_gw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 15, 2019 at 8:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Mon, Jul 15, 2019 at 06:01:29PM +0200, Andrey Konovalov wrote:
-> > On Mon, Jun 24, 2019 at 7:40 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > >
-> > > On Mon, Jun 24, 2019 at 04:32:56PM +0200, Andrey Konovalov wrote:
-> > > > This patch is a part of a series that extends kernel ABI to allow to pass
-> > > > tagged user pointers (with the top byte set to something else other than
-> > > > 0x00) as syscall arguments.
-> > > >
-> > > > mlx4_get_umem_mr() uses provided user pointers for vma lookups, which can
-> > > > only by done with untagged pointers.
-> > > >
-> > > > Untag user pointers in this function.
-> > > >
-> > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > > >  drivers/infiniband/hw/mlx4/mr.c | 7 ++++---
-> > > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > >
-> > > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> > >
-> > > This patch also needs an ack from the infiniband maintainers (Jason).
+On Tue, Jul 16, 2019 at 12:42:07PM +0200, Andrey Konovalov wrote:
+> On Mon, Jul 15, 2019 at 8:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 > >
-> > Hi Jason,
+> > On Mon, Jul 15, 2019 at 06:01:29PM +0200, Andrey Konovalov wrote:
+> > > On Mon, Jun 24, 2019 at 7:40 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > >
+> > > > On Mon, Jun 24, 2019 at 04:32:56PM +0200, Andrey Konovalov wrote:
+> > > > > This patch is a part of a series that extends kernel ABI to allow to pass
+> > > > > tagged user pointers (with the top byte set to something else other than
+> > > > > 0x00) as syscall arguments.
+> > > > >
+> > > > > mlx4_get_umem_mr() uses provided user pointers for vma lookups, which can
+> > > > > only by done with untagged pointers.
+> > > > >
+> > > > > Untag user pointers in this function.
+> > > > >
+> > > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > > >  drivers/infiniband/hw/mlx4/mr.c | 7 ++++---
+> > > > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > > >
+> > > > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > >
+> > > > This patch also needs an ack from the infiniband maintainers (Jason).
+> > >
+> > > Hi Jason,
+> > >
+> > > Could you take a look and give your acked-by?
 > >
-> > Could you take a look and give your acked-by?
->
-> Oh, I think I did this a long time ago. Still looks OK.
+> > Oh, I think I did this a long time ago. Still looks OK.
+> 
+> Hm, maybe that was we who lost it. Thanks!
+> 
+> > You will send it?
+> 
+> I will resend the patchset once the merge window is closed, if that's
+> what you mean.
 
-Hm, maybe that was we who lost it. Thanks!
+No.. I mean who send it to Linus's tree? ie do you want me to take
+this patch into rdma?
 
-> You will send it?
-
-I will resend the patchset once the merge window is closed, if that's
-what you mean.
-
->
-> Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
->
-> Jason
+Jason
