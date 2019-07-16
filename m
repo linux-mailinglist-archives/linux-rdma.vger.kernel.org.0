@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8036C6AE32
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 20:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 243096AE36
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 20:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388172AbfGPSNE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jul 2019 14:13:04 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:42452 "EHLO
+        id S1728190AbfGPSNL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jul 2019 14:13:11 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:42590 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728190AbfGPSND (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 14:13:03 -0400
+        with ESMTP id S2388346AbfGPSNL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 14:13:11 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GI9oQD108279;
-        Tue, 16 Jul 2019 18:12:47 GMT
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2tq6qtp8hg-1
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GI9aRk108197;
+        Tue, 16 Jul 2019 18:12:55 GMT
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2tq6qtp8jn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jul 2019 18:12:47 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GICUvU136998;
-        Tue, 16 Jul 2019 18:12:46 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 2tsctwcbrn-1
+        Tue, 16 Jul 2019 18:12:55 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GICV6O027488;
+        Tue, 16 Jul 2019 18:12:55 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 2tq4du2u33-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jul 2019 18:12:46 +0000
+        Tue, 16 Jul 2019 18:12:55 +0000
 Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6GICi7Q023964;
-        Tue, 16 Jul 2019 18:12:44 GMT
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x6GICrRQ030495;
+        Tue, 16 Jul 2019 18:12:53 GMT
 Received: from host5.lan (/77.138.183.59)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 16 Jul 2019 18:12:44 +0000
+        with ESMTP ; Tue, 16 Jul 2019 18:12:50 +0000
 From:   Shamir Rabinovitch <srabinov7@gmail.com>
 To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
         monis@mellanox.com, parav@mellanox.com, danielj@mellanox.com,
@@ -44,22 +44,22 @@ To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
         dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
         jgg@mellanox.com, linux-rdma@vger.kernel.org
 Cc:     Shamir Rabinovitch <srabinov7@gmail.com>
-Subject: [PATCH 03/25] RDMA/nldev: ib_pd can be pointed by multiple ib_ucontext
-Date:   Tue, 16 Jul 2019 21:11:38 +0300
-Message-Id: <20190716181200.4239-4-srabinov7@gmail.com>
+Subject: [PATCH 04/25] IB/{core,hw}: ib_pd should not have ib_uobject pointer
+Date:   Tue, 16 Jul 2019 21:11:39 +0300
+Message-Id: <20190716181200.4239-5-srabinov7@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190716181200.4239-1-srabinov7@gmail.com>
 References: <20190716181200.4239-1-srabinov7@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9320 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1810050000 definitions=main-1907160223
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9320 signatures=668688
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1034
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1034
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
  definitions=main-1907160222
@@ -70,203 +70,94 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
 
-In shared object model ib_pd can belong to 1 or more ib_ucontext.
-Fix the nldev code so it could report multiple context ids.
+As a preparation step to shared PD, where ib_pd object will be pointed
+by one or more ib_uobjects, remove ib_uobject pointer from ib_pd struct.
 
 Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
 Signed-off-by: Shamir Rabinovitch <srabinov7@gmail.com>
 ---
- drivers/infiniband/core/nldev.c  | 127 +++++++++++++++++++++++++++++--
- include/uapi/rdma/rdma_netlink.h |   3 +
- 2 files changed, 125 insertions(+), 5 deletions(-)
+ drivers/infiniband/core/uverbs_cmd.c       | 1 -
+ drivers/infiniband/core/verbs.c            | 1 -
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 1 -
+ drivers/infiniband/hw/mlx5/main.c          | 1 -
+ drivers/infiniband/hw/mthca/mthca_qp.c     | 3 ++-
+ include/rdma/ib_verbs.h                    | 1 -
+ 6 files changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 783e465e7c41..5167228dea1c 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -41,6 +41,7 @@
- #include "core_priv.h"
- #include "cma_priv.h"
- #include "restrack.h"
-+#include "uverbs.h"
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 204a93305f1c..d1f0c04f0ae8 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -432,7 +432,6 @@ static int ib_uverbs_alloc_pd(struct uverbs_attr_bundle *attrs)
+ 	}
  
- /*
-  * Sort array elements by the netlink attribute name
-@@ -141,6 +142,8 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID]	= { .type = NLA_U32 },
- 	[RDMA_NLDEV_NET_NS_FD]			= { .type = NLA_U32 },
- 	[RDMA_NLDEV_SYS_ATTR_NETNS_MODE]	= { .type = NLA_U8 },
-+	[RDMA_NLDEV_ATTR_RES_CTX]		= { .type = NLA_NESTED },
-+	[RDMA_NLDEV_ATTR_RES_CTX_ENTRY]		= { .type = NLA_NESTED },
- };
+ 	pd->device  = ib_dev;
+-	pd->uobject = uobj;
+ 	pd->__internal_mr = NULL;
+ 	atomic_set(&pd->usecnt, 0);
+ 	pd->res.type = RDMA_RESTRACK_PD;
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 92349bf37589..56341f514914 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -263,7 +263,6 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
+ 		return ERR_PTR(-ENOMEM);
  
- static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
-@@ -611,11 +614,84 @@ static int fill_res_mr_entry(struct sk_buff *msg, bool has_cap_net_admin,
- err:	return -EMSGSIZE;
- }
+ 	pd->device = device;
+-	pd->uobject = NULL;
+ 	pd->__internal_mr = NULL;
+ 	atomic_set(&pd->usecnt, 0);
+ 	pd->flags = flags;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index 1a2c7dad2a0d..247f8939914c 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -760,7 +760,6 @@ static int hns_roce_v1_rsv_lp_qp(struct hns_roce_dev *hr_dev)
  
-+struct context_id {
-+	struct list_head list;
-+	u32 id;
-+};
-+
-+static void pd_context(struct ib_pd *pd, struct list_head *list, int *count)
-+{
-+	struct ib_device *device = pd->device;
-+	struct rdma_restrack_entry *res;
-+	struct rdma_restrack_root *rt;
-+	struct ib_uverbs_file *ufile;
-+	struct ib_ucontext *ucontext;
-+	struct ib_uobject *uobj;
-+	unsigned long flags;
-+	unsigned long id;
-+	bool found;
-+
-+	rt = &device->res[RDMA_RESTRACK_CTX];
-+
-+	xa_lock(&rt->xa);
-+
-+	xa_for_each(&rt->xa, id, res) {
-+		if (!rdma_is_visible_in_pid_ns(res))
-+			continue;
-+
-+		if (!rdma_restrack_get(res))
-+			continue;
-+
-+		xa_unlock(&rt->xa);
-+
-+		ucontext = container_of(res, struct ib_ucontext, res);
-+		ufile = ucontext->ufile;
-+		found = false;
-+
-+		/* See locking requirements in struct ib_uverbs_file */
-+		down_read(&ufile->hw_destroy_rwsem);
-+		spin_lock_irqsave(&ufile->uobjects_lock, flags);
-+
-+		list_for_each_entry(uobj, &ufile->uobjects, list) {
-+			if (uobj->object == pd) {
-+				found = true;
-+				goto found;
-+			}
-+		}
-+
-+found:		spin_unlock_irqrestore(&ufile->uobjects_lock, flags);
-+		up_read(&ufile->hw_destroy_rwsem);
-+
-+		if (found) {
-+			struct context_id *ctx_id =
-+				kmalloc(sizeof(*ctx_id), GFP_KERNEL);
-+
-+			if (WARN_ON_ONCE(!ctx_id))
-+				goto next;
-+
-+			ctx_id->id = ucontext->res.id;
-+			list_add(&ctx_id->list, list);
-+			(*count)++;
-+		}
-+
-+next:		rdma_restrack_put(res);
-+		xa_lock(&rt->xa);
-+	}
-+
-+	xa_unlock(&rt->xa);
-+}
-+
- static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
- 			     struct rdma_restrack_entry *res, uint32_t port)
+ 	free_mr->mr_free_pd = to_hr_pd(pd);
+ 	free_mr->mr_free_pd->ibpd.device  = &hr_dev->ib_dev;
+-	free_mr->mr_free_pd->ibpd.uobject = NULL;
+ 	free_mr->mr_free_pd->ibpd.__internal_mr = NULL;
+ 	atomic_set(&free_mr->mr_free_pd->ibpd.usecnt, 0);
+ 
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index c2a5780cb394..34378acb28d4 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -4937,7 +4937,6 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
+ 		return -ENOMEM;
+ 
+ 	devr->p0->device  = ibdev;
+-	devr->p0->uobject = NULL;
+ 	atomic_set(&devr->p0->usecnt, 0);
+ 
+ 	ret = mlx5_ib_alloc_pd(devr->p0, NULL);
+diff --git a/drivers/infiniband/hw/mthca/mthca_qp.c b/drivers/infiniband/hw/mthca/mthca_qp.c
+index d04c245359eb..b1a9169e3af6 100644
+--- a/drivers/infiniband/hw/mthca/mthca_qp.c
++++ b/drivers/infiniband/hw/mthca/mthca_qp.c
+@@ -956,7 +956,8 @@ static int mthca_max_data_size(struct mthca_dev *dev, struct mthca_qp *qp, int d
+ static inline int mthca_max_inline_data(struct mthca_pd *pd, int max_data_size)
  {
- 	struct ib_pd *pd = container_of(res, struct ib_pd, res);
- 	struct ib_device *dev = pd->device;
-+	struct nlattr *table_attr = NULL;
-+	struct nlattr *entry_attr = NULL;
-+	struct context_id *ctx_id;
-+	struct context_id *tmp;
-+	LIST_HEAD(pd_context_ids);
-+	int ctx_count = 0;
- 
- 	if (has_cap_net_admin) {
- 		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_LOCAL_DMA_LKEY,
-@@ -633,10 +709,38 @@ static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
- 	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, res->id))
- 		goto err;
- 
--	if (!rdma_is_kernel_res(res) &&
--	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
--			pd->uobject->context->res.id))
--		goto err;
-+	if (!rdma_is_kernel_res(res)) {
-+		pd_context(pd, &pd_context_ids, &ctx_count);
-+		if (ctx_count == 1) {
-+			/* user pd, not shared */
-+			ctx_id = list_first_entry(&pd_context_ids,
-+						  struct context_id, list);
-+			if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
-+					ctx_id->id))
-+				goto err;
-+		} else if (ctx_count > 1) {
-+			/* user pd, shared */
-+			table_attr = nla_nest_start(msg,
-+					RDMA_NLDEV_ATTR_RES_CTX);
-+			if (!table_attr)
-+				goto err;
-+
-+			list_for_each_entry(ctx_id, &pd_context_ids, list) {
-+				entry_attr = nla_nest_start(msg,
-+						RDMA_NLDEV_ATTR_RES_CTX_ENTRY);
-+				if (!entry_attr)
-+					goto err;
-+				if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
-+						ctx_id->id))
-+					goto err;
-+				nla_nest_end(msg, entry_attr);
-+				entry_attr = NULL;
-+			}
-+
-+			nla_nest_end(msg, table_attr);
-+			table_attr = NULL;
-+		}
-+	}
- 
- 	if (fill_res_name_pid(msg, res))
- 		goto err;
-@@ -644,9 +748,22 @@ static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
- 	if (fill_res_entry(dev, msg, res))
- 		goto err;
- 
-+	list_for_each_entry_safe(ctx_id, tmp, &pd_context_ids, list)
-+		kfree(ctx_id);
-+
- 	return 0;
- 
--err:	return -EMSGSIZE;
-+err:
-+	if (entry_attr)
-+		nla_nest_end(msg, entry_attr);
-+
-+	if (table_attr)
-+		nla_nest_end(msg, table_attr);
-+
-+	list_for_each_entry_safe(ctx_id, tmp, &pd_context_ids, list)
-+		kfree(ctx_id);
-+
-+	return -EMSGSIZE;
+ 	/* We don't support inline data for kernel QPs (yet). */
+-	return pd->ibpd.uobject ? max_data_size - MTHCA_INLINE_HEADER_SIZE : 0;
++	return !rdma_is_kernel_res(&pd->ibpd.res) ?
++		max_data_size - MTHCA_INLINE_HEADER_SIZE : 0;
  }
  
- static int fill_stat_counter_mode(struct sk_buff *msg,
-diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
-index 8e277783fa96..7fbbfb07f071 100644
---- a/include/uapi/rdma/rdma_netlink.h
-+++ b/include/uapi/rdma/rdma_netlink.h
-@@ -525,6 +525,9 @@ enum rdma_nldev_attr {
- 	 */
- 	RDMA_NLDEV_ATTR_DEV_DIM,                /* u8 */
+ static void mthca_adjust_qp_caps(struct mthca_dev *dev,
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index c5f8a9f17063..0900952d9b1f 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1457,7 +1457,6 @@ struct ib_pd {
+ 	u32			local_dma_lkey;
+ 	u32			flags;
+ 	struct ib_device       *device;
+-	struct ib_uobject      *uobject;
+ 	atomic_t          	usecnt; /* count all resources */
  
-+	RDMA_NLDEV_ATTR_RES_CTX,		/* nested table */
-+	RDMA_NLDEV_ATTR_RES_CTX_ENTRY,		/* nested table */
-+
- 	/*
- 	 * Always the end
- 	 */
+ 	u32			unsafe_global_rkey;
 -- 
 2.20.1
 
