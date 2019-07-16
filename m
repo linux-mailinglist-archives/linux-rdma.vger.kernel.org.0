@@ -2,90 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 931DC6A40D
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 10:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD47A6A495
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 11:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbfGPIlb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jul 2019 04:41:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
+        id S1728015AbfGPJJV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jul 2019 05:09:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726465AbfGPIlb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 16 Jul 2019 04:41:31 -0400
-Received: from localhost (unknown [193.47.165.251])
+        id S1727105AbfGPJJV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 16 Jul 2019 05:09:21 -0400
+Received: from localhost (unknown [113.157.217.50])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87236206C2;
-        Tue, 16 Jul 2019 08:41:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEEF420659;
+        Tue, 16 Jul 2019 09:09:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563266490;
-        bh=DBB35/iLHNMA2FqwsQw7nORQLk+gotkl4bG0qEae5FE=;
+        s=default; t=1563268160;
+        bh=4r33a+xYn3ykb/9WpoGUpLWaTO2guXYpyiU6YoPdW3k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GcbF00sNNjwSXPu5gKOghSSg4FUS77FkWYXLH2OHtiZsRL7sw0/HdavXE6cD9RaAd
-         z/cH/IXOeLS7+aHtptJbgGtIPZg017FReeS8eayIXTg3k2B9IFa15jlllMiSXKCLK0
-         EdEtZQP/o8VexmZoG3PiLmEjXwWp8ZO+N0gToid0=
-Date:   Tue, 16 Jul 2019 11:41:26 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
+        b=Jmdj/QvypWhbnaUAwaauhhH92Mjm0uH79cqHp+cZtRtDGlrr4Jy/yf6CR36m9e38F
+         88776BYX1Do8bHeS+YZcAiI3spoEUhwE5T0NjvfN4LY1iYUhGOMNVGyfplTm8ux6Cn
+         xSNHFXhNlwb2JaRfdgSFxL9GEOaq12kCqS7VPT60=
+Date:   Tue, 16 Jul 2019 18:09:17 +0900
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
         linux-rdma@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
         linux-nvme@lists.infradead.org, stable@vger.kernel.org,
         Parav Pandit <parav@mellanox.com>
 Subject: Re: [PATCH for-rc] RDMA/bnxt_re: Honor vlan_id in GID entry
  comparison
-Message-ID: <20190716084126.GJ10130@mtr-leonro.mtl.com>
+Message-ID: <20190716090917.GA11964@kroah.com>
 References: <20190715091913.15726-1-selvin.xavier@broadcom.com>
  <20190716071030.GH10130@mtr-leonro.mtl.com>
  <20190716071644.GA21780@kroah.com>
+ <20190716084126.GJ10130@mtr-leonro.mtl.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190716071644.GA21780@kroah.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <20190716084126.GJ10130@mtr-leonro.mtl.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 16, 2019 at 04:16:44PM +0900, Greg KH wrote:
-> On Tue, Jul 16, 2019 at 10:10:30AM +0300, Leon Romanovsky wrote:
-> > On Mon, Jul 15, 2019 at 05:19:13AM -0400, Selvin Xavier wrote:
-> > > GID entry consist of GID, vlan, netdev and smac.
-> > > Extend GID duplicate check companions to consider vlan_id as well
-> > > to support IPv6 VLAN based link local addresses. Introduce
-> > > a new structure (bnxt_qplib_gid_info) to hold gid and vlan_id information.
+On Tue, Jul 16, 2019 at 11:41:26AM +0300, Leon Romanovsky wrote:
+> On Tue, Jul 16, 2019 at 04:16:44PM +0900, Greg KH wrote:
+> > On Tue, Jul 16, 2019 at 10:10:30AM +0300, Leon Romanovsky wrote:
+> > > On Mon, Jul 15, 2019 at 05:19:13AM -0400, Selvin Xavier wrote:
+> > > > GID entry consist of GID, vlan, netdev and smac.
+> > > > Extend GID duplicate check companions to consider vlan_id as well
+> > > > to support IPv6 VLAN based link local addresses. Introduce
+> > > > a new structure (bnxt_qplib_gid_info) to hold gid and vlan_id information.
+> > > >
+> > > > The issue is discussed in the following thread
+> > > > https://www.spinics.net/lists/linux-rdma/msg81594.html
+> > > >
+> > > > Fixes: 823b23da7113 ("IB/core: Allow vlan link local address based RoCE GIDs")
+> > > > Cc: <stable@vger.kernel.org> # v5.2+
+> > > > Reported-by: Yi Zhang <yi.zhang@redhat.com>
 > > >
-> > > The issue is discussed in the following thread
-> > > https://www.spinics.net/lists/linux-rdma/msg81594.html
+> > > > Co-developed-by: Parav Pandit <parav@mellanox.com>
+> > > > Signed-off-by: Parav Pandit <parav@mellanox.com>
 > > >
-> > > Fixes: 823b23da7113 ("IB/core: Allow vlan link local address based RoCE GIDs")
-> > > Cc: <stable@vger.kernel.org> # v5.2+
-> > > Reported-by: Yi Zhang <yi.zhang@redhat.com>
+> > > I never understood why bad habits are so stinky.
+> > >
+> > > Can you please explain us what does it mean Co-developed-by and
+> > > Signed-off-by of the same person in the same patch?
 > >
-> > > Co-developed-by: Parav Pandit <parav@mellanox.com>
-> > > Signed-off-by: Parav Pandit <parav@mellanox.com>
-> >
-> > I never understood why bad habits are so stinky.
-> >
-> > Can you please explain us what does it mean Co-developed-by and
-> > Signed-off-by of the same person in the same patch?
->
-> See Documentation/process/submitting-patches.rst for what that tag
-> means.
+> > See Documentation/process/submitting-patches.rst for what that tag
+> > means.
+> 
+> Read it, it doesn't help me to understand if I should now add
+> Co-developed-by tag to most of RDMA Mellanox upstreamed patches,
+> which already care my Signed-off-by, because I'm changing and fixing
+> them many times.
 
-Read it, it doesn't help me to understand if I should now add
-Co-developed-by tag to most of RDMA Mellanox upstreamed patches,
-which already care my Signed-off-by, because I'm changing and fixing
-them many times.
+It depends, it's your call, if you think you deserve the credit, sure,
+add it.  If you are just doing basic "review" where you tell people what
+needs to be done better, that's probably not what you need to do here.
 
-Maybe I should write for my upstreamed patched something like this?
-Co-developed-by: Leon R...
-Reviewed-By: Leon R...
-Tested-by: Leon R...
-Signed-by: Leon R...
+One example, where I just added myself to a patch happened last week
+where the developer submitted one solution, I took it and rewrote the
+whole implementation (from raw kobjects to using the driver model).  The
+original author got the "From:" and I got a Co-developed-by line.
 
-Thanks
+Does that help?
 
->
-> thanks,
->
-> greg k-h
+thanks,
+
+greg k-h
