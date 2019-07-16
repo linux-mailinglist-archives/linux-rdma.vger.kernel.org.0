@@ -2,88 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF756A88F
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 14:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4086ADA6
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 19:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbfGPMTT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jul 2019 08:19:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726997AbfGPMTT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 16 Jul 2019 08:19:19 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C047C2173B;
-        Tue, 16 Jul 2019 12:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563279558;
-        bh=lrWk+JZhasTAk5BmCfEGcdc4Dspc4aW5y4VZiVwlzUM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vl+yfag3DrI+u15Rab7NBOnvuqb0wquz/VuNzqDDKSGhy5R4ey0+50KGAx1WYQA+P
-         ZX9C1M9jr5El6dg+GiKm8Z7wV6s7ThvByOUmbWTUZmFV6EEO07a1z8el3paTNK85e5
-         nHbFk8uQTw0xoGAAlOhko250KmrkxXdTQFwf5p74=
-Date:   Tue, 16 Jul 2019 15:19:15 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        netdev <netdev@vger.kernel.org>, David Ahern <dsahern@gmail.com>,
-        Mark Zhang <markz@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH iproute2-rc 8/8] rdma: Document counter statistic
-Message-ID: <20190716121915.GM10130@mtr-leonro.mtl.com>
-References: <20190710072455.9125-1-leon@kernel.org>
- <20190710072455.9125-9-leon@kernel.org>
- <92db561d-e89c-0e09-ef2e-9eb9535d504f@amazon.com>
+        id S2387934AbfGPR3c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jul 2019 13:29:32 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:34174 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728124AbfGPR3c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 13:29:32 -0400
+Received: by mail-pg1-f196.google.com with SMTP id n9so3553539pgc.1;
+        Tue, 16 Jul 2019 10:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=iFsg7zgErG7qPu+qK+vn8Dl0lcUvmaJEqbe5euJxvQo=;
+        b=bJHmxF/wDfkcxpPQa+kixCbcwLFC9m1Q3qpzVmgxC8udYiSLJj52BTGIr0ZXNeboyN
+         xj4s6+vyb7pdmf/KK6TQavUzo3NETbx1pcKYtwAUT9dHYJBqNGkbF+GDQuEnTqfu3OLv
+         MsluebH82XPNZXjEndd+cdnzdTY2ah4P+XBeolGYmPbVOtxsD6NrcE9A63BUVkI7ji8M
+         SjroM3A19LR+xnW8TKP6rXsih7kc0MF6HYSqsx4K4QZp+AvIQTRVitWulFVxRPmhKQjZ
+         aNlsJFhiCMlODaiRKO3e1BC5WH3rZgO6+AHNcD3w62zrKd9U3ksy9Enwby29DrtwpD/y
+         AyNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=iFsg7zgErG7qPu+qK+vn8Dl0lcUvmaJEqbe5euJxvQo=;
+        b=FP8eGvjxPUt2IkNvBpFTJA6ec0SKIFCPMpABaYUBKJKkjPVG3YEYDGDmYf0sVWfT2D
+         IMh9dVaY7je7jGfYDP5cjjDpAjMdmb67kPRrUVxjKNTLgRBwOwIU9Fe06R6sG1kCIY4q
+         KEkmv+4xku4sZltAlvmAEitGYB+5Lh/czsqfjzgutwbxNGTJpr2DMhNYhD6PCZyaLJqH
+         fFHT9NqwDT8XHRmzjslHN0l25TYpeh7wlS6QzFlilDjcwIkMSzeOh5m6tdetJ+52t6KP
+         whdftzmDUpuOqimKZOu/+LZ2YHn9EPWEO5gZMtfmy7Cma2d8BkNZ1HLg5o4GeaPWG66D
+         5hnQ==
+X-Gm-Message-State: APjAAAU/xRdfGma7JyCXaqF2qa8ycnetjBM8Ho9mprE6KXAe8BD4nhYP
+        iDXbfVq0/yhjPVEi2YAqEDo=
+X-Google-Smtp-Source: APXvYqxBKqWUm1cOx4GABfPPUq2U6TC9lPoGvk2pRh0AJkgEWJlinxI/cvKvypfJ1dyLvzBkaRC9WA==
+X-Received: by 2002:a17:90a:80c4:: with SMTP id k4mr38638700pjw.74.1563298171637;
+        Tue, 16 Jul 2019 10:29:31 -0700 (PDT)
+Received: from hari-Inspiron-1545 ([183.83.86.126])
+        by smtp.gmail.com with ESMTPSA id 21sm10104389pfj.76.2019.07.16.10.29.28
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Jul 2019 10:29:30 -0700 (PDT)
+Date:   Tue, 16 Jul 2019 22:59:25 +0530
+From:   Hariprasad Kelam <hariprasad.kelam@gmail.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] infiniband: hw: qib: Unneeded variable ret
+Message-ID: <20190716172924.GA12241@hari-Inspiron-1545>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <92db561d-e89c-0e09-ef2e-9eb9535d504f@amazon.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 16, 2019 at 11:19:26AM +0300, Gal Pressman wrote:
-> On 10/07/2019 10:24, Leon Romanovsky wrote:
-> > +.SH "EXAMPLES"
-> > +.PP
-> > +rdma statistic show
-> > +.RS 4
-> > +Shows the state of the default counter of all RDMA devices on the system.
-> > +.RE
-> > +.PP
-> > +rdma statistic show link mlx5_2/1
-> > +.RS 4
-> > +Shows the state of the default counter of specified RDMA port
-> > +.RE
-> > +.PP
-> > +rdma statistic qp show
-> > +.RS 4
-> > +Shows the state of all qp counters of all RDMA devices on the system.
-> > +.RE
-> > +.PP
-> > +rdma statistic qp show link mlx5_2/1
-> > +.RS 4
-> > +Shows the state of all qp counters of specified RDMA port.
-> > +.RE
-> > +.PP
-> > +rdma statistic qp show link mlx5_2 pid 30489
-> > +.RS 4
-> > +Shows the state of all qp counters of specified RDMA port and belonging to pid 30489
-> > +.RE
-> > +.PP
-> > +rdma statistic qp mode
-> > +.RS 4
-> > +List current counter mode on all deivces
->
-> "deivces" -> "devices".
+fix below issue reported by coccicheck
+drivers/infiniband/hw/qib/qib_file_ops.c:1792:5-8: Unneeded variable:
+"ret". Return "0" on line 1876
 
-Thanks,
+Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+---
+ drivers/infiniband/hw/qib/qib_file_ops.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Stephen,
+diff --git a/drivers/infiniband/hw/qib/qib_file_ops.c b/drivers/infiniband/hw/qib/qib_file_ops.c
+index 27b6e66..b014422 100644
+--- a/drivers/infiniband/hw/qib/qib_file_ops.c
++++ b/drivers/infiniband/hw/qib/qib_file_ops.c
+@@ -1789,7 +1789,6 @@ static void unlock_expected_tids(struct qib_ctxtdata *rcd)
+ 
+ static int qib_close(struct inode *in, struct file *fp)
+ {
+-	int ret = 0;
+ 	struct qib_filedata *fd;
+ 	struct qib_ctxtdata *rcd;
+ 	struct qib_devdata *dd;
+@@ -1873,7 +1872,7 @@ static int qib_close(struct inode *in, struct file *fp)
+ 
+ bail:
+ 	kfree(fd);
+-	return ret;
++	return 0;
+ }
+ 
+ static int qib_ctxt_info(struct file *fp, struct qib_ctxt_info __user *uinfo)
+-- 
+2.7.4
 
-Can you please fix this typo while you are applying the series?
-
-Thanks
