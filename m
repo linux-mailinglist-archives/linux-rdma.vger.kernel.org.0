@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C356AE48
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 20:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E52E6AE49
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 20:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387773AbfGPSOs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jul 2019 14:14:48 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:44196 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728608AbfGPSOs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 14:14:48 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GIEVY7112536;
-        Tue, 16 Jul 2019 18:14:31 GMT
+        id S1728608AbfGPSOu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jul 2019 14:14:50 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:60550 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388184AbfGPSOu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 14:14:50 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GIEONA006533;
+        Tue, 16 Jul 2019 18:14:37 GMT
 Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2tq6qtp8tg-1
+        by aserp2120.oracle.com with ESMTP id 2tq78pp5e0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jul 2019 18:14:31 +0000
+        Tue, 16 Jul 2019 18:14:37 +0000
 Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GICU9c114428;
-        Tue, 16 Jul 2019 18:14:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 2tq6mn1n8t-1
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GICUxd114415;
+        Tue, 16 Jul 2019 18:14:36 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2tq6mn1n9j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jul 2019 18:14:31 +0000
+        Tue, 16 Jul 2019 18:14:36 +0000
 Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6GIETWx024987;
-        Tue, 16 Jul 2019 18:14:29 GMT
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x6GIEZPK031143;
+        Tue, 16 Jul 2019 18:14:35 GMT
 Received: from host5.lan (/77.138.183.59)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 16 Jul 2019 18:14:28 +0000
+        with ESMTP ; Tue, 16 Jul 2019 18:14:34 +0000
 From:   Shamir Rabinovitch <srabinov7@gmail.com>
 To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
         monis@mellanox.com, parav@mellanox.com, danielj@mellanox.com,
@@ -43,9 +43,9 @@ To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
         galpress@amazon.com, denisd@mellanox.com, yuvalav@mellanox.com,
         dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
         jgg@mellanox.com, linux-rdma@vger.kernel.org
-Subject: [PATCH 20/25] IB/core: Install clone ib_mr in device ops
-Date:   Tue, 16 Jul 2019 21:11:55 +0300
-Message-Id: <20190716181200.4239-21-srabinov7@gmail.com>
+Subject: [PATCH 21/25] IB/mlx4: Add implementation of clone_pd callback
+Date:   Tue, 16 Jul 2019 21:11:56 +0300
+Message-Id: <20190716181200.4239-22-srabinov7@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190716181200.4239-1-srabinov7@gmail.com>
 References: <20190716181200.4239-1-srabinov7@gmail.com>
@@ -69,25 +69,26 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Yuval Shaia <yuval.shaia@oracle.com>
 
-Install clone_ib_mr in the device ops.
+No special handling in for object cloning, utilize the trivial
+implementation.
 
 Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
 ---
- drivers/infiniband/core/device.c | 1 +
+ drivers/infiniband/hw/mlx4/main.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index d4996e0f2976..66e3d91d56c4 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2573,6 +2573,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, set_vf_link_state);
- 	SET_DEVICE_OP(dev_ops, unmap_fmr);
- 	SET_DEVICE_OP(dev_ops, clone_ib_pd);
-+	SET_DEVICE_OP(dev_ops, clone_ib_mr);
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index 53fa102dc455..5c807e686eed 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -2575,6 +2575,7 @@ static const struct ib_device_ops mlx4_ib_dev_ops = {
  
- 	SET_OBJ_SIZE(dev_ops, ib_ah);
- 	SET_OBJ_SIZE(dev_ops, ib_cq);
+ 	/* Object sharing callbacks */
+ 	.clone_ib_pd = mlx4_ib_clone_pd,
++	.clone_ib_mr = trivial_clone_ib_mr,
+ 
+ 	INIT_RDMA_OBJ_SIZE(ib_ah, mlx4_ib_ah, ibah),
+ 	INIT_RDMA_OBJ_SIZE(ib_cq, mlx4_ib_cq, ibcq),
 -- 
 2.20.1
 
