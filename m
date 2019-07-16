@@ -2,74 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C69D16A2BB
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 09:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D41B6A3B5
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jul 2019 10:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbfGPHRS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jul 2019 03:17:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbfGPHRS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 16 Jul 2019 03:17:18 -0400
-Received: from localhost (unknown [113.157.217.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70B5520880;
-        Tue, 16 Jul 2019 07:17:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563261437;
-        bh=ivmkYK87VvmWfwPxJ42xkGY8yxoOqLZyFPSJsjyYH8g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PdYkRnKFI8BpFImebLmZjpoYxZvey+sR4PqUZI45mlNqCICAp8KEdn9O9jC6nURVf
-         3nWumJTDL8jd2+pbS2SFBcfr+YJxfdD5UVUU23Ml6Ojqzb4BAnKsD/OI6sVfw4GGVR
-         c0FdnfV0ov755dlSVXxGJ7BCa1KPibpctfO3dsyE=
-Date:   Tue, 16 Jul 2019 16:16:44 +0900
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
-        linux-rdma@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
-        linux-nvme@lists.infradead.org, stable@vger.kernel.org,
-        Parav Pandit <parav@mellanox.com>
-Subject: Re: [PATCH for-rc] RDMA/bnxt_re: Honor vlan_id in GID entry
- comparison
-Message-ID: <20190716071644.GA21780@kroah.com>
-References: <20190715091913.15726-1-selvin.xavier@broadcom.com>
- <20190716071030.GH10130@mtr-leonro.mtl.com>
+        id S1726537AbfGPITl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jul 2019 04:19:41 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:42353 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbfGPITl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 04:19:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1563265180; x=1594801180;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Jh6xClsdaLwicVbTKrHqdmsiuSDX9G9DLNiqVhM/SwU=;
+  b=lX5y9sinwWhB2PCUaRy/UaqPaIdfPubqFpWnWFT9/us94eX/Gdyn+wVX
+   daArAV55PE5duI88ZnC+7o465S5h0Vy4kfrss66cLbhbaNoaeiIVmSfcO
+   oizhT3eUiDF+MmPOcuxuNGxbPf0vqGVfBrDexYr6mMU/g8A2Z6WEmz3DV
+   8=;
+X-IronPort-AV: E=Sophos;i="5.62,497,1554768000"; 
+   d="scan'208";a="774720069"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 16 Jul 2019 08:19:38 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id 42C64141704;
+        Tue, 16 Jul 2019 08:19:36 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 16 Jul 2019 08:19:36 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.115) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 16 Jul 2019 08:19:31 +0000
+Subject: Re: [PATCH iproute2-rc 8/8] rdma: Document counter statistic
+To:     Leon Romanovsky <leon@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>
+CC:     Leon Romanovsky <leonro@mellanox.com>,
+        netdev <netdev@vger.kernel.org>, David Ahern <dsahern@gmail.com>,
+        Mark Zhang <markz@mellanox.com>,
+        "RDMA mailing list" <linux-rdma@vger.kernel.org>
+References: <20190710072455.9125-1-leon@kernel.org>
+ <20190710072455.9125-9-leon@kernel.org>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <92db561d-e89c-0e09-ef2e-9eb9535d504f@amazon.com>
+Date:   Tue, 16 Jul 2019 11:19:26 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190716071030.GH10130@mtr-leonro.mtl.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190710072455.9125-9-leon@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.115]
+X-ClientProxiedBy: EX13D07UWA001.ant.amazon.com (10.43.160.145) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 16, 2019 at 10:10:30AM +0300, Leon Romanovsky wrote:
-> On Mon, Jul 15, 2019 at 05:19:13AM -0400, Selvin Xavier wrote:
-> > GID entry consist of GID, vlan, netdev and smac.
-> > Extend GID duplicate check companions to consider vlan_id as well
-> > to support IPv6 VLAN based link local addresses. Introduce
-> > a new structure (bnxt_qplib_gid_info) to hold gid and vlan_id information.
-> >
-> > The issue is discussed in the following thread
-> > https://www.spinics.net/lists/linux-rdma/msg81594.html
-> >
-> > Fixes: 823b23da7113 ("IB/core: Allow vlan link local address based RoCE GIDs")
-> > Cc: <stable@vger.kernel.org> # v5.2+
-> > Reported-by: Yi Zhang <yi.zhang@redhat.com>
-> 
-> > Co-developed-by: Parav Pandit <parav@mellanox.com>
-> > Signed-off-by: Parav Pandit <parav@mellanox.com>
-> 
-> I never understood why bad habits are so stinky.
-> 
-> Can you please explain us what does it mean Co-developed-by and
-> Signed-off-by of the same person in the same patch?
+On 10/07/2019 10:24, Leon Romanovsky wrote:
+> +.SH "EXAMPLES"
+> +.PP
+> +rdma statistic show
+> +.RS 4
+> +Shows the state of the default counter of all RDMA devices on the system.
+> +.RE
+> +.PP
+> +rdma statistic show link mlx5_2/1
+> +.RS 4
+> +Shows the state of the default counter of specified RDMA port
+> +.RE
+> +.PP
+> +rdma statistic qp show
+> +.RS 4
+> +Shows the state of all qp counters of all RDMA devices on the system.
+> +.RE
+> +.PP
+> +rdma statistic qp show link mlx5_2/1
+> +.RS 4
+> +Shows the state of all qp counters of specified RDMA port.
+> +.RE
+> +.PP
+> +rdma statistic qp show link mlx5_2 pid 30489
+> +.RS 4
+> +Shows the state of all qp counters of specified RDMA port and belonging to pid 30489
+> +.RE
+> +.PP
+> +rdma statistic qp mode
+> +.RS 4
+> +List current counter mode on all deivces
 
-See Documentation/process/submitting-patches.rst for what that tag
-means.
-
-thanks,
-
-greg k-h
+"deivces" -> "devices".
