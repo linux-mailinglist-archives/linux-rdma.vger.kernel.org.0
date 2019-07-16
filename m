@@ -2,110 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D626B1DE
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 00:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BBC6B25C
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 01:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbfGPW33 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jul 2019 18:29:29 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:35580 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388741AbfGPW33 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 18:29:29 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GMDcgF192359;
-        Tue, 16 Jul 2019 22:29:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
- cc : message-id : date : mime-version : content-type :
- content-transfer-encoding; s=corp-2018-07-02;
- bh=fD3leGdXwkgNZkk6X9CTPoezfJX1ZF5DtRYazqP0ofo=;
- b=wvLNDCwDh+WWe+P7F7uJI7yeAM6wEbcp2zSHllNuzK3B6tKpzx/ZCHNcFrpXiH7YLGmo
- jGT4M/bIQRpoTPaftVChPnQDyEdDsRuWI0oVA7dUA308lQiArHUf2wY6k5o/cI9d1Arg
- qXgPpafR8Ahtn7QGQCJJRov1qedVr220dAqG4NdZHDtbMElpB6r8tT9bzS4R5GAf/Aic
- 4HwXt2TBsmg69xP/XNnczinIKApNLtoB39lje2yuGnY7XfyLN0oAxzwfXOcQdRnHbrqo
- Q7stQV4QdXZTBIhBGhRAX7bQ3o3bmkmS4gM8yz3qVGMZDvbZP5SOEug6K9N6ZmyI8YzH UQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2tq78pq5hq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jul 2019 22:29:26 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GMCn9i139858;
-        Tue, 16 Jul 2019 22:29:26 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 2tq4du65j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Jul 2019 22:29:26 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6GMTPqg172412;
-        Tue, 16 Jul 2019 22:29:25 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2tq4du65hy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jul 2019 22:29:25 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6GMTO4J003858;
-        Tue, 16 Jul 2019 22:29:24 GMT
-Received: from [10.211.55.164] (/10.211.55.164)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 16 Jul 2019 22:29:24 +0000
-From:   Gerd Rausch <gerd.rausch@oracle.com>
-Subject: [PATCH net v3 7/7] net/rds: Initialize ic->i_fastreg_wrs upon
- allocation
-To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com
-Cc:     David Miller <davem@davemloft.net>
-Message-ID: <94bc1575-1772-3619-e8d5-b74463308e0f@oracle.com>
-Date:   Tue, 16 Jul 2019 15:29:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S2389048AbfGPX2U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jul 2019 19:28:20 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:41511 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728414AbfGPX2T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 16 Jul 2019 19:28:19 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 45pGmJ2zpSz9s3l;
+        Wed, 17 Jul 2019 09:28:16 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1563319696;
+        bh=rwxKbah4VfF7BG5Oj6ZkNXpTV6etHJFRWQvfPcRHh/M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ka16flw1aRM5RL34BTfjnFB5oXVz0mnkGzNRqCRCPMOzgeF2cyHLOfAXOMcS4CAfT
+         SojmXzZJJzEAyi0BiUof3x+e2qvBxDjfNDJaWFkoctgs7tcT44PwLfg+0ARhQfLqgA
+         FXSRaHPDUhpBjTJ3YzChLzpyifdn83P8kal2RqI8DR8y3MfWb194oLxMvSRproA251
+         Fz79n6JSEe/JTOCFHyR0ZQzyOEgBRk6NG3vlpiKgaN0EDQRYJKJlgHNim1K4AxVwMM
+         YtMBIR+I1S61cYwwc681nTuRk31ZQYfRq5wapE8MprvFivMgt8ck+K+tARjkERHGrh
+         xf3fVxbVb0YMA==
+Date:   Wed, 17 Jul 2019 09:28:01 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Mark Zhang <markz@mellanox.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Majd Dibbiny <majd@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rdma tree
+Message-ID: <20190717092801.77037015@canb.auug.org.au>
+In-Reply-To: <20190710143036.1582c79d@canb.auug.org.au>
+References: <20190709133019.25a8cd27@canb.auug.org.au>
+        <ba1dd3e2-3091-816c-c308-2f9dd4385596@mellanox.com>
+        <20190709071758.GI7034@mtr-leonro.mtl.com>
+        <20190709124631.GG3436@mellanox.com>
+        <20190710110443.002220c8@canb.auug.org.au>
+        <20190710143036.1582c79d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9320 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907160261
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/KoH5lVAefuFawhjo7irS3qR"; protocol="application/pgp-signature"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Otherwise, if an IB connection is torn down before "rds_ib_setup_qp"
-is called, the value of "ic->i_fastreg_wrs" is still at zero
-(as it wasn't initialized by "rds_ib_setup_qp").
-Consequently "rds_ib_conn_path_shutdown" will spin forever,
-waiting for it to go back to "RDS_IB_DEFAULT_FR_WR",
-which of course will never happen as there are no
-outstanding work requests.
+--Sig_/KoH5lVAefuFawhjo7irS3qR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+Hi,
+
+On Wed, 10 Jul 2019 14:30:36 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Wed, 10 Jul 2019 11:04:43 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > On Tue, 9 Jul 2019 12:46:34 +0000 Jason Gunthorpe <jgg@mellanox.com> wr=
+ote: =20
+> > >
+> > > It isn't quite enough to make the header compile stand alone, I'm
+> > > adding this instead.
+> > >=20
+> > > From 37c1e072276b03b080eb24ff24c39080aeaf49ef Mon Sep 17 00:00:00 2001
+> > > From: Jason Gunthorpe <jgg@mellanox.com>
+> > > Date: Tue, 9 Jul 2019 09:44:47 -0300
+> > > Subject: [PATCH] RDMA/counters: Make rdma_counter.h compile stand alo=
+ne   =20
+> >=20
+> > I will apply this to linux-next today and reenable the stand alone
+> > building for rdma_counter.h =20
+>=20
+> That worked for me ...
+
+rdma_counter.h should be able to be removed from the exceptions list now.
+
+I have been building linux-next with this patch for a while, so maybe
+it could be applied to the kbuild tree?
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 10 Jul 2019 13:03:16 +1000
+Subject: [PATCH] rdma: attempt to build rdma_counter.h stand alone again
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- net/rds/ib_cm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/Kbuild | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
-index 1b6fd6c8b12b..4de0214da63c 100644
---- a/net/rds/ib_cm.c
-+++ b/net/rds/ib_cm.c
-@@ -527,7 +527,6 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
- 	attr.qp_type = IB_QPT_RC;
- 	attr.send_cq = ic->i_send_cq;
- 	attr.recv_cq = ic->i_recv_cq;
--	atomic_set(&ic->i_fastreg_wrs, RDS_IB_DEFAULT_FR_WR);
- 
- 	/*
- 	 * XXX this can fail if max_*_wr is too large?  Are we supposed
-@@ -1139,6 +1138,7 @@ int rds_ib_conn_alloc(struct rds_connection *conn, gfp_t gfp)
- 	spin_lock_init(&ic->i_ack_lock);
- #endif
- 	atomic_set(&ic->i_signaled_sends, 0);
-+	atomic_set(&ic->i_fastreg_wrs, RDS_IB_DEFAULT_FR_WR);
- 
- 	/*
- 	 * rds_ib_conn_shutdown() waits for these to be emptied so they
--- 
-2.22.0
+diff --git a/include/Kbuild b/include/Kbuild
+index 7e9f1acb9dd5..765ff864130d 100644
+--- a/include/Kbuild
++++ b/include/Kbuild
+@@ -949,7 +949,6 @@ header-test-			+=3D pcmcia/ds.h
+ header-test-			+=3D rdma/ib.h
+ header-test-			+=3D rdma/iw_portmap.h
+ header-test-			+=3D rdma/opa_port_info.h
+-header-test-			+=3D rdma/rdma_counter.h
+ header-test-			+=3D rdma/rdmavt_cq.h
+ header-test-			+=3D rdma/restrack.h
+ header-test-			+=3D rdma/signature.h
+--=20
+2.20.1
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/KoH5lVAefuFawhjo7irS3qR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl0uXYEACgkQAVBC80lX
+0GzDtAf/XyHO+dBLQ6dMUwGRO8Nb0lKbujqapttpU/NtqcBv5FrD6kOrlVJplXDB
+UL+DCm8LEp33pb2FRchB2pPzDSWrJSR1YIW0MeJ9+0u+rPjqlq/duncNDm2eQKCZ
+YhdmcoTpkbCO8YVt6EMddoZzBJq+cWVFf0f4JNpj5ZjiZdjIyV2EqQ0EyvSzsHkI
+M1SN7p5H86XM3+1bKoHB5wIcsQODFJYAbGdTrXO4ySQmfz3hqmpnZOGcdnClsN27
+VUjkIm4hDzbfhfT0QV+kVfShz3EtpUdNtO5sUDWMQ+Mm89F87W56nZC2gPiz9cII
+RWLPpIIFYIxxp6rpGSlIYY3Xa2NtbA==
+=9q44
+-----END PGP SIGNATURE-----
+
+--Sig_/KoH5lVAefuFawhjo7irS3qR--
