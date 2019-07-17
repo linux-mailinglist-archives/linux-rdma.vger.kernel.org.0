@@ -2,87 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D916BB1E
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 13:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4706BBAA
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 13:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726063AbfGQLKC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jul 2019 07:10:02 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:32789 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725873AbfGQLKC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jul 2019 07:10:02 -0400
-Received: by mail-io1-f65.google.com with SMTP id z3so45107505iog.0
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jul 2019 04:10:01 -0700 (PDT)
+        id S1731149AbfGQLnE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jul 2019 07:43:04 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:39013 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731044AbfGQLnD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jul 2019 07:43:03 -0400
+Received: by mail-pl1-f195.google.com with SMTP id b7so11852362pls.6
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jul 2019 04:43:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iUSZtZnyufm364FYvM4rEWW0SxESwuvM6YcV0s51TZs=;
-        b=YtTLrxqMnxmV3rFSX3lIOG7/yNSYfCE1lGJYylQgzTYp5eoYEKg6RbBtjl5L7jiGom
-         uAAEe1HHhoFV94pV1GhzbXgLe/5QlM4gSSKFA96p914MzjfP5h3b48BjGDl1NeHQEqcF
-         3ltYaxsk0AuxyTyuwvOeT67y4x7MAoVNEguelpa8MZYaOAHK6qJ/Tgy72Zscb7aHzr5+
-         23aDdKilMNsUS7s1/eIXDimm2ULoetYyeEWGrtJ4ObFgYyQgut6/xTEMzFQk9ZhapbEj
-         gwezt5whgJ8PMApPC6Xd//IdHCTKpkT1z6rWG/el+fkyqblefiVshA62aAl8iUgWSzqp
-         nHiA==
+        bh=Grx9Ph9cpPxnp5U6FBRGOs65Gt1iaoMhcGq5W71SZXw=;
+        b=dPqGbc0mQ4L1HVZkSH8ToVI8fJKg/9UNHDO/j/ERbXAicYMzOFznsbpKlaHUysv6li
+         HI+ov6aZkI81aTTtxCqQqgB/bUVOpQn9oyTV62JlPhH7/hgOpXEwCdWu9ddqQHOpZpdv
+         vvSbjVE/k6KiaC4iA854H6gt6BntwHIeZhW6TlwY6wZ/6+elD6DGPCHZxZrxLz2uCTHc
+         8iFhpa9H1Y4EYvcxgufIOEc+0j2fY1DuwRMYeLwfiF/zvSCA0YG2Xctd4B7QhffRyXW7
+         79B+/AUSAWe5ZZuaO+yAHuZlFSQxsBpNhxsDDOkk9SiW6k2AqHelqnkNry2oBYROn4ta
+         qk0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iUSZtZnyufm364FYvM4rEWW0SxESwuvM6YcV0s51TZs=;
-        b=T22fp7TDEEl2a6XkTBCxJgcnfz0YV70ttNYrBe2NregWbjeYWGkUPG7YXXpcVx+xpB
-         UtqdWFlDOB7aLox73S3fDeyTxTVVbFBgKHa1uxxVlN2TlzrP2HXqdncNmnuAr9b89Crh
-         LuDCAsc6UrBJCwUeNtdJC6/WeFs+ZfXJqT/kouzXennKAhLYDX/Z6uVzGtQtXTc3pKh+
-         ADpWcddufxiou/oRGzedc8TvUcC54MFrAblQdph6433rs6iDslZGSDtgmbfnsb7+3ZBj
-         qBgi0yqVUJIp4A9OySJdkqY+0TFOEDGmyYjR/R3vr12wS7X7vRhjBoR7iC3e6mMqUra0
-         18uA==
-X-Gm-Message-State: APjAAAVcoZ3WEz7NdbhULSC+xT+CZotfmrBKvscIaw4zYQNou76MaXWx
-        qf7i8FZVi5wb2Ra42B3hSntyJyRPY8OyLZqE9p0=
-X-Google-Smtp-Source: APXvYqxW9PRhpxmRp9PoFHFDWjPNSMr8i9VZggTfGDOrwggk45qs/G+7yeFfVriQLB6wfxlgq3Y2G65aK7Wl9Q2HYNY=
-X-Received: by 2002:a5d:9643:: with SMTP id d3mr37947005ios.227.1563361801363;
- Wed, 17 Jul 2019 04:10:01 -0700 (PDT)
+        bh=Grx9Ph9cpPxnp5U6FBRGOs65Gt1iaoMhcGq5W71SZXw=;
+        b=Mp6C3FvE9hls1zHgEgtwkNtfuZFxSEihwpus1to6pPcPe7PP8CwdWiKogwplB4Iple
+         Zy3VvKeuA6iX9jjmVntXsdCCwxxY6OrxXFNPsvLtoKPV6n0X9zp9B+PbyXIp9qZyt37F
+         XV0Yg19dGFxaGbEEW7ElSvnlg78HiRSMCkas/MaT5D10VkJmKE90rWKzBTZUIjRahmFc
+         /ZmON20z+S/2HhJzwyqyJ+k81hsffcb3tMinsTexwXqj+4z1AE3ZAnb+IWwuAVVxkrsN
+         CHATFWwxCMNUCXG42e5lhJ9ZPltb0F1B5ZLgTTmlgOpaAeYUx0NBFzj3/geW25WCtCMI
+         WCiA==
+X-Gm-Message-State: APjAAAXWTTR8E2Day+1PxGwiDMq3Bt5Eu7wwFNLWhPKe0VLsfI0wN6fy
+        nf0dOcHKdVL5wO2RFPiKZ/+6lKDZYswotIUU0wOWMA==
+X-Google-Smtp-Source: APXvYqwmLG+YoWbUJiFaN+0PkmRQxPro9175aUMwlEodu495a+iL+q6DhBuBElFNfaLl03HSknMS7Mny75X+YTtbitI=
+X-Received: by 2002:a17:902:8689:: with SMTP id g9mr39719354plo.252.1563363782037;
+ Wed, 17 Jul 2019 04:43:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190716181200.4239-1-srabinov7@gmail.com> <20190717050931.GA18936@infradead.org>
-In-Reply-To: <20190717050931.GA18936@infradead.org>
-From:   Shamir Rabinovitch <srabinov7@gmail.com>
-Date:   Wed, 17 Jul 2019 14:09:50 +0300
-Message-ID: <CA+KVoo7oSdpX2j1hRT1gPFFrxkHLBfcxXh4HaxkjjNKD550sYg@mail.gmail.com>
-Subject: Re: [PATCH 00/25] Shared PD and MR
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        monis@mellanox.com, parav@mellanox.com, danielj@mellanox.com,
-        kamalheib1@gmail.com, markz@mellanox.com,
-        swise@opengridcomputing.com, shamir.rabinovitch@oracle.com,
-        johannes.berg@intel.com, willy@infradead.org,
-        michaelgur@mellanox.com, markb@mellanox.com,
-        yuval.shaia@oracle.com, dan.carpenter@oracle.com,
-        bvanassche@acm.org, maxg@mellanox.com, israelr@mellanox.com,
-        galpress@amazon.com, denisd@mellanox.com, yuvalav@mellanox.com,
-        dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
-        jgg@mellanox.com, linux-rdma@vger.kernel.org
+References: <cover.1561386715.git.andreyknvl@google.com> <ea0ff94ef2b8af12ea6c222c5ebd970e0849b6dd.1561386715.git.andreyknvl@google.com>
+ <20190624174015.GL29120@arrakis.emea.arm.com> <CAAeHK+y8vE=G_odK6KH=H064nSQcVgkQkNwb2zQD9swXxKSyUQ@mail.gmail.com>
+ <20190715180510.GC4970@ziepe.ca> <CAAeHK+xPQqJP7p_JFxc4jrx9k7N0TpBWEuB8Px7XHvrfDU1_gw@mail.gmail.com>
+ <20190716120624.GA29727@ziepe.ca>
+In-Reply-To: <20190716120624.GA29727@ziepe.ca>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 17 Jul 2019 13:42:50 +0200
+Message-ID: <CAAeHK+xGfCSNgJ1FA1Bi3-6iVZNa5-cPJF54SY9rETqSqnrOTw@mail.gmail.com>
+Subject: Re: [PATCH v18 11/15] IB/mlx4: untag user pointers in mlx4_get_umem_mr
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 17, 2019 at 8:09 AM Christoph Hellwig <hch@infradead.org> wrote:
+On Tue, Jul 16, 2019 at 2:06 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> On Tue, Jul 16, 2019 at 09:11:35PM +0300, Shamir Rabinovitch wrote:
-> > Following patch-set introduce the shared object feature.
+> On Tue, Jul 16, 2019 at 12:42:07PM +0200, Andrey Konovalov wrote:
+> > On Mon, Jul 15, 2019 at 8:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Mon, Jul 15, 2019 at 06:01:29PM +0200, Andrey Konovalov wrote:
+> > > > On Mon, Jun 24, 2019 at 7:40 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > > >
+> > > > > On Mon, Jun 24, 2019 at 04:32:56PM +0200, Andrey Konovalov wrote:
+> > > > > > This patch is a part of a series that extends kernel ABI to allow to pass
+> > > > > > tagged user pointers (with the top byte set to something else other than
+> > > > > > 0x00) as syscall arguments.
+> > > > > >
+> > > > > > mlx4_get_umem_mr() uses provided user pointers for vma lookups, which can
+> > > > > > only by done with untagged pointers.
+> > > > > >
+> > > > > > Untag user pointers in this function.
+> > > > > >
+> > > > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > > > >  drivers/infiniband/hw/mlx4/mr.c | 7 ++++---
+> > > > > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > > > >
+> > > > > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > > >
+> > > > > This patch also needs an ack from the infiniband maintainers (Jason).
+> > > >
+> > > > Hi Jason,
+> > > >
+> > > > Could you take a look and give your acked-by?
+> > >
+> > > Oh, I think I did this a long time ago. Still looks OK.
 > >
-> > A shared object feature allows one process to create HW objects (currently
-> > PD and MR) so that a second process can import.
+> > Hm, maybe that was we who lost it. Thanks!
+> >
+> > > You will send it?
+> >
+> > I will resend the patchset once the merge window is closed, if that's
+> > what you mean.
 >
-> That sounds like a major complication, so you'd better also explain
-> the use case very well.
-
-The main use case was that there is a server that has giant shared
-memory that is shared across many processes (lots of mtts).
-Each process needs the same memory registration (lots of mrs that
-register same memory).
-In such scenario, the HCA runs out of mtts.
-To solve this problem, an single memory registration is shared across
-all the process in that server saving hca mtts.
-Future expansion of this can be done on top of the new infrastructure
-to any HW object that is suitable for sharing (mainly those that are
-not saving important data in the user context).
+> No.. I mean who send it to Linus's tree? ie do you want me to take
+> this patch into rdma?
+>
+> Jason
