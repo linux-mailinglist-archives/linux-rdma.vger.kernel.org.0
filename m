@@ -2,106 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1EF6C3A8
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jul 2019 01:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0046C3B0
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jul 2019 01:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbfGQXva (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jul 2019 19:51:30 -0400
-Received: from mga18.intel.com ([134.134.136.126]:54562 "EHLO mga18.intel.com"
+        id S1727746AbfGQXz2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jul 2019 19:55:28 -0400
+Received: from mga11.intel.com ([192.55.52.93]:8083 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728049AbfGQXva (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Jul 2019 19:51:30 -0400
+        id S1727741AbfGQXz2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Jul 2019 19:55:28 -0400
 X-Amp-Result: UNKNOWN
 X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Jul 2019 16:51:29 -0700
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Jul 2019 16:55:27 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.64,276,1559545200"; 
-   d="scan'208";a="187663757"
+   d="scan'208";a="319475088"
 Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Jul 2019 16:51:29 -0700
-Date:   Wed, 17 Jul 2019 16:51:29 -0700
+  by orsmga004.jf.intel.com with ESMTP; 17 Jul 2019 16:55:26 -0700
+Date:   Wed, 17 Jul 2019 16:55:26 -0700
 From:   Ira Weiny <ira.weiny@intel.com>
-To:     Yuval Shaia <yuval.shaia@oracle.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Shamir Rabinovitch <srabinov7@gmail.com>, dledford@redhat.com,
+To:     Shamir Rabinovitch <srabinov7@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>, dledford@redhat.com,
         leon@kernel.org, monis@mellanox.com, parav@mellanox.com,
         danielj@mellanox.com, kamalheib1@gmail.com, markz@mellanox.com,
-        swise@opengridcomputing.com, johannes.berg@intel.com,
+        swise@opengridcomputing.com, shamir.rabinovitch@oracle.com,
+        johannes.berg@intel.com, willy@infradead.org,
         michaelgur@mellanox.com, markb@mellanox.com,
-        dan.carpenter@oracle.com, bvanassche@acm.org, maxg@mellanox.com,
-        israelr@mellanox.com, galpress@amazon.com, denisd@mellanox.com,
-        yuvalav@mellanox.com, dennis.dalessandro@intel.com,
-        will@kernel.org, ereza@mellanox.com, linux-rdma@vger.kernel.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Subject: Re: [PATCH 08/25] IB/uverbs: ufile must be freed only when not used
- anymore
-Message-ID: <20190717235128.GA4936@iweiny-DESK2.sc.intel.com>
+        yuval.shaia@oracle.com, dan.carpenter@oracle.com,
+        bvanassche@acm.org, maxg@mellanox.com, israelr@mellanox.com,
+        galpress@amazon.com, denisd@mellanox.com, yuvalav@mellanox.com,
+        dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 00/25] Shared PD and MR
+Message-ID: <20190717235526.GB4936@iweiny-DESK2.sc.intel.com>
 References: <20190716181200.4239-1-srabinov7@gmail.com>
- <20190716181200.4239-9-srabinov7@gmail.com>
- <20190717115354.GC12119@ziepe.ca>
- <20190717192525.GA2515@shamir-ThinkPad-X240>
- <20190717193313.GN12119@ziepe.ca>
- <20190717203112.GA7307@lap1>
- <20190717204505.GD32320@bombadil.infradead.org>
- <20190717213636.GA2797@lap1>
+ <20190717050931.GA18936@infradead.org>
+ <CA+KVoo7oSdpX2j1hRT1gPFFrxkHLBfcxXh4HaxkjjNKD550sYg@mail.gmail.com>
+ <20190717115507.GD12119@ziepe.ca>
+ <CA+KVoo5wVzUovQvAXyZzsA8rK9=FuMEkNJDDwJteXe9-eLFu3A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190717213636.GA2797@lap1>
+In-Reply-To: <CA+KVoo5wVzUovQvAXyZzsA8rK9=FuMEkNJDDwJteXe9-eLFu3A@mail.gmail.com>
 User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 18, 2019 at 12:36:37AM +0300, Yuval Shaia wrote:
-> On Wed, Jul 17, 2019 at 01:45:05PM -0700, Matthew Wilcox wrote:
-> > On Wed, Jul 17, 2019 at 11:31:12PM +0300, Yuval Shaia wrote:
-> > > On Wed, Jul 17, 2019 at 04:33:13PM -0300, Jason Gunthorpe wrote:
-> > > > Like I said, drivers that require the creating ucontext as part of the
-> > > > PD and MR cannot support sharing.
-> > > 
-> > > Even if we can make sure the process that creates the MR stays alive until
-> > > all reference to this MR completes?
-> > 
-> > The kernel can't rely on userspace to do that.
+On Wed, Jul 17, 2019 at 04:35:30PM +0300, Shamir Rabinovitch wrote:
+> On Wed, Jul 17, 2019 at 2:55 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Wed, Jul 17, 2019 at 02:09:50PM +0300, Shamir Rabinovitch wrote:
+> > > On Wed, Jul 17, 2019 at 8:09 AM Christoph Hellwig <hch@infradead.org> wrote:
+> > > >
+> > > > On Tue, Jul 16, 2019 at 09:11:35PM +0300, Shamir Rabinovitch wrote:
+> > > > > Following patch-set introduce the shared object feature.
+> > > > >
+> > > > > A shared object feature allows one process to create HW objects (currently
+> > > > > PD and MR) so that a second process can import.
+> > > >
+> > > > That sounds like a major complication, so you'd better also explain
+> > > > the use case very well.
+> > >
+> > > The main use case was that there is a server that has giant shared
+> > > memory that is shared across many processes (lots of mtts).
+> > > Each process needs the same memory registration (lots of mrs that
+> > > register same memory).
+> > > In such scenario, the HCA runs out of mtts.
+> > > To solve this problem, an single memory registration is shared across
+> > > all the process in that server saving hca mtts.
+> >
+> > Well, why not just share the entire uverbs FD then? Once the PD is
+> > shared all security is lost anyhow..
+> >
+> > This is not the model that was explained to me last year
+> >
+> > Jason
 > 
-> ok, how about this: we know that for MR to be shared the memory behinds it
-> should also be shared.
+> We do share the whole uvrbs FD (context) with the second process and
+> let that process to instantiate the PD & MR from the shared FD.
+
+Then the first (both) process(es) should have access to the MR right?
+
+> The instantiation include creating new uobject in the second process
+> context that points to the same ib_x HW objects.
+> The second process does not own the shared context.
+> It just use it to get access to the shared ib_x objects and then it
+> mark those & shared FD as shared.
+
+I'm not following this?
+
 > 
-> In this case, i know it sounds horrifying but do we care that the process
-> that originally created this MR exits? i.e. how about just before the
-> process leaves this world we will find some other ucontext to hold these
-> memory mappings that driver holds?
+> What was the expectation from "import_from_xxx" ?
 
-Could you create a better cover letter for this.
-
-What is the use case for all this?
-What protections are in place for accesses between processes?
-Why is it not sufficient to share the entire IB context with another process
-using SCM_RIGHTS?
-
-
-I've been trying to create a reliable method for an admin to identify processes
-which may have pinned file backed pages (specifically with FS DAX).  The best
-idea I have involves using the struct file of the ucontext to track the file
-pins through procfs.  Jason and I discussed it here:
-
-https://lkml.org/lkml/2019/6/7/548
-
-Therefore, sharing to another ucontext _might_ work.  But only if the file pin
-information is properly duplicated to the new ucontext.  This complicates (at a
-minimum) having the generic GUP code handle the tracking of this information...
-
-Generically, this whole thread scares me because now we are proposing something
-even more obscure than just the sharing of a file descriptor to other processes
-which point to the same IB context.  (Or at least that is what I infer from
-reading the very short cover letter.)  But if there is a good use case ...  we
-need to starting thinking about something generic to track these "memory maps"
-which are not mmaps.
+... and I don't understand this question.
 
 Ira
 
