@@ -2,215 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C26AE6BBC4
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 13:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812EF6BBEF
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 13:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730863AbfGQLrE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jul 2019 07:47:04 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:34672 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729604AbfGQLrE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jul 2019 07:47:04 -0400
-Received: by mail-pl1-f195.google.com with SMTP id i2so11866115plt.1
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jul 2019 04:47:03 -0700 (PDT)
+        id S1725936AbfGQLx4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jul 2019 07:53:56 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:44357 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbfGQLxz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jul 2019 07:53:55 -0400
+Received: by mail-qt1-f196.google.com with SMTP id 44so22902715qtg.11
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jul 2019 04:53:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XH7pgHFzkwihJR5psn/ZNzGH7d1Hcpwg4ypt2aGmLUk=;
-        b=q9rg5oP+7QfRryee4CQfI+zTuO8vcNkAU+Zb8S/XX5gbQKX1OYbsUUbB3B8KK9hFmU
-         UHgvh4Mz+Kyv0D5E5zvwH3nJNYoE2P1kzcK2Rg1yMoExsViP4+PURLjfYPF2WZhrd0MF
-         a+zGI8yxCxdvE8nZGITXCK8/RaYQDCnkR7z8XELwz+GgVBZndcqvcfCaF4ihTHl0HyVo
-         bFY7Esho++ViErb2avPSuS/M58xcsz7oUebcD6xLNGIpCphqGpuQ31GuhoMHpSqGmldC
-         ZKZZNvAff0cBNn4NnOvQXzgW64bJR2BOmy7dIGzstZ5vq+Xgsj3OiBdAV2LIo/WRsiLm
-         aMOQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=iKP7Oqv0B09hxBqnnuswVhE5SrGFXYTIj6JSY10OutA=;
+        b=ixlmq5UCyVGtZFXD5RQ0V43N/+GVBcD+eTUl/pB6DQIeN8nFxYgtom0Ygi8iwE+nWP
+         O/FtoAsMz6ZPbmQyj3tSoHw7ZzdIxAs5J8PtCqK3KZ2S8aoqEteUbsRVDLiuP3Ok8gYo
+         jI1Z4nvmontHWkvclPn4RC6gaKbzuayVZqkHLo4YATfBEmeDJn19uKXl4BmlfaY1tlB6
+         V+9evJchspl/qcK7cYBQGLJBweQx8PQsMnhmwPVnSXclGPiO+nGS8j2duYeCUGG4fudB
+         Qi5EzJYZEZr5mWfLaPyHczgyHK8nra7HzG+vlEgYXwYHe7otvcwKPr2idQblJbHm50ih
+         /18Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XH7pgHFzkwihJR5psn/ZNzGH7d1Hcpwg4ypt2aGmLUk=;
-        b=PBN4VBmpm5SweJBL4+POpBc/WBoZXXMGiGpjdRQqQcYF9Onsvo0GYY0MftdJiqqvkF
-         lyA9wnTUp/YGnHCtTi8TcqgYEqeooX6ZJfbbCkNBnsVyxnOMPfga8UuGaZ/Lrtls7kP2
-         +jb2VlPdC5EDlTuTeCS3/F2ia3GjEp4K2aYMh8ixBA8IyapSSWj9W6zm9drRJNdZSbNO
-         FnsHJXhPqDk/VpMDcKjudyex9A6BoQkR+U4ZarTxPC4rurARSHvkzCdPwzqLgzkW0vio
-         lSIDpsZEFJvjYiA6iaipt8AxSIYXApsfJnMcjdZC0dJZ0FKivGtF1KkAePlqKYkdd/Uw
-         +nQQ==
-X-Gm-Message-State: APjAAAWcUV9RhkRaGrhUCH0VK2ys2iNQI3FNDhuyP5ZgWmB1Z9wRTIVH
-        AGJgBJiFYye5aRm4TgPE3R1fqqB0qu8IDFzd/CzalA==
-X-Google-Smtp-Source: APXvYqz8S3jyPxed+oPtsIDmi9g4NsD5ItlfcVysZ7+qze2pU/edo+3e3aBEztJRj4XnLTpHjY2eNg/431rKCehxHqk=
-X-Received: by 2002:a17:902:8689:: with SMTP id g9mr39736837plo.252.1563364023206;
- Wed, 17 Jul 2019 04:47:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=iKP7Oqv0B09hxBqnnuswVhE5SrGFXYTIj6JSY10OutA=;
+        b=NbOz60zDk/iEJDGZrwvA53s6z5ohUBU/iBjqdzMbIecU7Z+rBY5RBEzWn9BM6N+hYI
+         FV82Y+oxo6fNbb3k8dYJ4+cMIDn73IXkWAZ7FxGUXknHm1m4bE6HhIiL9RoDOYeKbJJU
+         L8EgpgD9BmHoUyXfM0iTvigJ3WVlvE5hdeMLVwyK5EFJGcHk5tSIgwsCimgwzNlvOS7U
+         pnfty32t1WPWwZNXQzpOVFVCDy78phqo6W3v7wDub6oqlKgpRCNq4vX3pNfzgd67/z72
+         19kYITUoLsbYODjmacm1rkE+U7GqaPUsbKt7bv5lW+ZZRDSqyLVXLguXcGUqAypttiRc
+         f7pA==
+X-Gm-Message-State: APjAAAVSytKa4eNJbI+jYnkIUga2dwCqE3YdKL18xLJ0gRZWj+QKifga
+        C2STrTwg/k4Gqhw2MyUqeeOPjQ==
+X-Google-Smtp-Source: APXvYqyclZw7PHgwGk5QzSm59coNb2PtBjloRhMKGql6SaKx1GPNVx6lLbJ0s7hY1WiyJ0KCPNjyRg==
+X-Received: by 2002:ac8:34aa:: with SMTP id w39mr27852382qtb.118.1563364435072;
+        Wed, 17 Jul 2019 04:53:55 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id b202sm10772187qkg.83.2019.07.17.04.53.54
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 17 Jul 2019 04:53:54 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hniVO-0003TM-2K; Wed, 17 Jul 2019 08:53:54 -0300
+Date:   Wed, 17 Jul 2019 08:53:54 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Shamir Rabinovitch <srabinov7@gmail.com>
+Cc:     dledford@redhat.com, leon@kernel.org, monis@mellanox.com,
+        parav@mellanox.com, danielj@mellanox.com, kamalheib1@gmail.com,
+        markz@mellanox.com, swise@opengridcomputing.com,
+        shamir.rabinovitch@oracle.com, johannes.berg@intel.com,
+        willy@infradead.org, michaelgur@mellanox.com, markb@mellanox.com,
+        yuval.shaia@oracle.com, dan.carpenter@oracle.com,
+        bvanassche@acm.org, maxg@mellanox.com, israelr@mellanox.com,
+        galpress@amazon.com, denisd@mellanox.com, yuvalav@mellanox.com,
+        dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 08/25] IB/uverbs: ufile must be freed only when not used
+ anymore
+Message-ID: <20190717115354.GC12119@ziepe.ca>
+References: <20190716181200.4239-1-srabinov7@gmail.com>
+ <20190716181200.4239-9-srabinov7@gmail.com>
 MIME-Version: 1.0
-References: <cover.1561386715.git.andreyknvl@google.com> <d8e3b9a819e98d6527e506027b173b128a148d3c.1561386715.git.andreyknvl@google.com>
- <20190624175120.GN29120@arrakis.emea.arm.com> <20190717110910.GA12017@rapoport-lnx>
-In-Reply-To: <20190717110910.GA12017@rapoport-lnx>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 17 Jul 2019 13:46:52 +0200
-Message-ID: <CAAeHK+yB=d_oXOVZ2TuVe2UkBAx-GM_f+mu88JeVWqPO95xVHQ@mail.gmail.com>
-Subject: Re: [PATCH v18 08/15] userfaultfd: untag user pointers
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190716181200.4239-9-srabinov7@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 17, 2019 at 1:09 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
->
-> On Mon, Jun 24, 2019 at 06:51:21PM +0100, Catalin Marinas wrote:
-> > On Mon, Jun 24, 2019 at 04:32:53PM +0200, Andrey Konovalov wrote:
-> > > This patch is a part of a series that extends kernel ABI to allow to pass
-> > > tagged user pointers (with the top byte set to something else other than
-> > > 0x00) as syscall arguments.
-> > >
-> > > userfaultfd code use provided user pointers for vma lookups, which can
-> > > only by done with untagged pointers.
-> > >
-> > > Untag user pointers in validate_range().
-> > >
-> > > Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > > ---
-> > >  fs/userfaultfd.c | 22 ++++++++++++----------
-> > >  1 file changed, 12 insertions(+), 10 deletions(-)
-> >
-> > Same here, it needs an ack from Al Viro.
->
-> The userfault patches usually go via -mm tree, not sure if Al looks at them :)
+On Tue, Jul 16, 2019 at 09:11:43PM +0300, Shamir Rabinovitch wrote:
+> From: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+> 
+> ufile (&ucontext) with the process who own them must not be released
+> when there are other ufile (&ucontext) that depens at them.
 
-Ah, OK, I guess than Andrew will take a look at them when merging.
+We already have a kref, why do we need more? Especially wrongly done
+refcounts with atomics?
 
->
-> FWIW, you can add
->
-> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Trying to sequence the destroy of the ucontext seems inherently wrong
+to me. If the driver has to link the PD/MR to data in the ucontext it
+can't support sharing.
 
-I will, thanks!
+> Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+> Signed-off-by: Shamir Rabinovitch <srabinov7@gmail.com>
+>  drivers/infiniband/core/rdma_core.c   | 29 +++++++++++++++++++++++++++
+>  drivers/infiniband/core/uverbs.h      | 22 ++++++++++++++++++++
+>  drivers/infiniband/core/uverbs_cmd.c  | 16 +++++++++++++++
+>  drivers/infiniband/core/uverbs_main.c |  4 ++++
+>  4 files changed, 71 insertions(+)
+> 
+> diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
+> index 651625f632d7..c81ff8e28fc6 100644
+> +++ b/drivers/infiniband/core/rdma_core.c
+> @@ -841,6 +841,33 @@ static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
+>  	ufile->ucontext = NULL;
+>  }
+>  
+> +static void __uverbs_ufile_refcount(struct ib_uverbs_file *ufile)
+> +{
+> +	int wait;
+> +
+> +	if (ufile->parent) {
+> +		pr_debug("%s: release parent ufile. ufile %p parent %p\n",
+> +			 __func__, ufile, ufile->parent);
+> +		if (atomic_dec_and_test(&ufile->parent->refcount))
+> +			complete(&ufile->parent->context_released);
+> +	}
+> +
+> +	if (!atomic_dec_and_test(&ufile->refcount)) {
+> +wait:
+> +		wait = wait_for_completion_interruptible_timeout(
+> +			&ufile->context_released, 3*HZ);
+> +		if (wait == -ERESTARTSYS) {
+> +			WARN_ONCE(1,
+> +			"signal while waiting for context release! ufile %p\n",
+> +				ufile);
 
->
-> > > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> > > index ae0b8b5f69e6..c2be36a168ca 100644
-> > > --- a/fs/userfaultfd.c
-> > > +++ b/fs/userfaultfd.c
-> > > @@ -1261,21 +1261,23 @@ static __always_inline void wake_userfault(struct userfaultfd_ctx *ctx,
-> > >  }
-> > >
-> > >  static __always_inline int validate_range(struct mm_struct *mm,
-> > > -                                     __u64 start, __u64 len)
-> > > +                                     __u64 *start, __u64 len)
-> > >  {
-> > >     __u64 task_size = mm->task_size;
-> > >
-> > > -   if (start & ~PAGE_MASK)
-> > > +   *start = untagged_addr(*start);
-> > > +
-> > > +   if (*start & ~PAGE_MASK)
-> > >             return -EINVAL;
-> > >     if (len & ~PAGE_MASK)
-> > >             return -EINVAL;
-> > >     if (!len)
-> > >             return -EINVAL;
-> > > -   if (start < mmap_min_addr)
-> > > +   if (*start < mmap_min_addr)
-> > >             return -EINVAL;
-> > > -   if (start >= task_size)
-> > > +   if (*start >= task_size)
-> > >             return -EINVAL;
-> > > -   if (len > task_size - start)
-> > > +   if (len > task_size - *start)
-> > >             return -EINVAL;
-> > >     return 0;
-> > >  }
-> > > @@ -1325,7 +1327,7 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
-> > >             goto out;
-> > >     }
-> > >
-> > > -   ret = validate_range(mm, uffdio_register.range.start,
-> > > +   ret = validate_range(mm, &uffdio_register.range.start,
-> > >                          uffdio_register.range.len);
-> > >     if (ret)
-> > >             goto out;
-> > > @@ -1514,7 +1516,7 @@ static int userfaultfd_unregister(struct userfaultfd_ctx *ctx,
-> > >     if (copy_from_user(&uffdio_unregister, buf, sizeof(uffdio_unregister)))
-> > >             goto out;
-> > >
-> > > -   ret = validate_range(mm, uffdio_unregister.start,
-> > > +   ret = validate_range(mm, &uffdio_unregister.start,
-> > >                          uffdio_unregister.len);
-> > >     if (ret)
-> > >             goto out;
-> > > @@ -1665,7 +1667,7 @@ static int userfaultfd_wake(struct userfaultfd_ctx *ctx,
-> > >     if (copy_from_user(&uffdio_wake, buf, sizeof(uffdio_wake)))
-> > >             goto out;
-> > >
-> > > -   ret = validate_range(ctx->mm, uffdio_wake.start, uffdio_wake.len);
-> > > +   ret = validate_range(ctx->mm, &uffdio_wake.start, uffdio_wake.len);
-> > >     if (ret)
-> > >             goto out;
-> > >
-> > > @@ -1705,7 +1707,7 @@ static int userfaultfd_copy(struct userfaultfd_ctx *ctx,
-> > >                        sizeof(uffdio_copy)-sizeof(__s64)))
-> > >             goto out;
-> > >
-> > > -   ret = validate_range(ctx->mm, uffdio_copy.dst, uffdio_copy.len);
-> > > +   ret = validate_range(ctx->mm, &uffdio_copy.dst, uffdio_copy.len);
-> > >     if (ret)
-> > >             goto out;
-> > >     /*
-> > > @@ -1761,7 +1763,7 @@ static int userfaultfd_zeropage(struct userfaultfd_ctx *ctx,
-> > >                        sizeof(uffdio_zeropage)-sizeof(__s64)))
-> > >             goto out;
-> > >
-> > > -   ret = validate_range(ctx->mm, uffdio_zeropage.range.start,
-> > > +   ret = validate_range(ctx->mm, &uffdio_zeropage.range.start,
-> > >                          uffdio_zeropage.range.len);
-> > >     if (ret)
-> > >             goto out;
-> > > --
-> > > 2.22.0.410.gd8fdbe21b5-goog
->
-> --
-> Sincerely yours,
-> Mike.
->
+????
+
+Jason
