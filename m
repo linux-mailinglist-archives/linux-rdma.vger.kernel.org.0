@@ -2,93 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8246B2E1
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 02:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4E76B4E3
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 05:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388880AbfGQAa4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jul 2019 20:30:56 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47210 "EHLO
+        id S1728310AbfGQDI3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jul 2019 23:08:29 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:57436 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729521AbfGQAa4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 20:30:56 -0400
+        with ESMTP id S1726069AbfGQDI2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 23:08:28 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6H0T5DW086898;
-        Wed, 17 Jul 2019 00:30:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=+OmuX5IMIfqkKElSKCZFFVvvAf/NERvIolG+tzD78/M=;
- b=k6LZW+9K7+TsmuWNKKqOC4AdhAxz8+IFXcy4d2D0s6fPCNmiq0NCgHv83SwK+amIHyOo
- 7kPlc0RKY1YZ4ptEMzuoLMkNuVLaI26h6vfJitnhkztpBtFoIF/f+PyjIonLFPbxRNfi
- +O4O+1+6iV7GucxGuvEnSil+jAQKbWQ+gZZFdC1rivVHGj4aYveXormXL2INRSoqNR5O
- iXFQBcwKTtTKUDPx3wCxO/DlpiApkGmzKZcCDmw5lylXXd5KBkcfDfnF/SbchhTeb0PP
- 99geX5GhAPz8nEjwjIIfv3Bq+nrF5Mrn+GoTGVefRyoPxr4zeRLrfVryVwl+p7Nf7Fnt fQ== 
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6H35cca191468;
+        Wed, 17 Jul 2019 03:08:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2018-07-02;
+ bh=UEaaAVvgCGyb+7Yj61X9MJGTm0YgTvSRv1ONnMOutJQ=;
+ b=GOiTdgfTFSbb/EFuPcJN7jTYkY32Qmns5pYKAj8sb8IUcHKX3AiiAvu0KZr2DhGuUTjl
+ Q+ViMT+0FbMmKkcPnICdmmxs+N+7nfidYVrJDJsF3cXRn0PLLpbAfF2s3M7HLZv0gYfj
+ WNqq+LZR5C8T+WQ0Vdks5WvoyMpZaAnPccg6+SN5MIYBLpU6kfSOxxbmnsSvzWTTdLZM
+ brw8TGVSUYnNBT4KD2ukTj6IdHno3pnlq/aIADGZlnIFmhVSgz3vb9x1y5cGcIIffbgh
+ jvOO1we7rSUyeE9/yl0uH6nLZFtLVSeZ7ecKJmDL0/wp2mT4NG3B8YXVUcdziP4fQpvR 0g== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2tq78pqfeh-1
+        by aserp2120.oracle.com with ESMTP id 2tq78pquay-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Jul 2019 00:30:50 +0000
+        Wed, 17 Jul 2019 03:08:00 +0000
 Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6H0SAdG192559;
-        Wed, 17 Jul 2019 00:28:49 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 2tq4du7e1w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 17 Jul 2019 00:28:49 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6H0Snkj193501;
-        Wed, 17 Jul 2019 00:28:49 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2tq4du7e1t-1
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6H32jv8038951;
+        Wed, 17 Jul 2019 03:08:00 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 2tq4du8s0c-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Jul 2019 00:28:49 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6H0SmkM010024;
-        Wed, 17 Jul 2019 00:28:48 GMT
-Received: from [192.168.86.192] (/69.181.241.203)
+        Wed, 17 Jul 2019 03:08:00 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x6H37wC2022960;
+        Wed, 17 Jul 2019 03:07:58 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 17 Jul 2019 00:28:48 +0000
-Subject: Re: [PATCH net v3 6/7] net/rds: Keep track of and wait for FRWR
- segments in use upon shutdown
-To:     Gerd Rausch <gerd.rausch@oracle.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Cc:     David Miller <davem@davemloft.net>
-References: <28ded44a-bce9-8632-d7e8-fe843140658e@oracle.com>
-From:   santosh.shilimkar@oracle.com
+        with ESMTP ; Wed, 17 Jul 2019 03:07:58 +0000
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: properly communicate queue limits to the DMA layer v2
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
 Organization: Oracle Corporation
-Message-ID: <ab50c07c-ed8c-c747-89b9-32cac2146645@oracle.com>
-Date:   Tue, 16 Jul 2019 17:28:47 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+References: <20190617122000.22181-1-hch@lst.de>
+        <20190715165823.GA10029@lst.de> <yq1tvbn2ofc.fsf@oracle.com>
+        <20190715174617.GA11094@lst.de>
+Date:   Tue, 16 Jul 2019 23:07:55 -0400
+In-Reply-To: <20190715174617.GA11094@lst.de> (Christoph Hellwig's message of
+        "Mon, 15 Jul 2019 19:46:17 +0200")
+Message-ID: <yq1y30xxss4.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <28ded44a-bce9-8632-d7e8-fe843140658e@oracle.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9320 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=907
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1907170036
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9320 signatures=668688
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=953 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907170004
+ definitions=main-1907170036
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/16/19 3:29 PM, Gerd Rausch wrote:
-> Since "rds_ib_free_frmr" and "rds_ib_free_frmr_list" simply put
-> the FRMR memory segments on the "drop_list" or "free_list",
-> and it is the job of "rds_ib_flush_mr_pool" to reap those entries
-> by ultimately issuing a "IB_WR_LOCAL_INV" work-request,
-> we need to trigger and then wait for all those memory segments
-> attached to a particular connection to be fully released before
-> we can move on to release the QP, CQ, etc.
-> 
-> So we make "rds_ib_conn_path_shutdown" wait for one more
-> atomic_t called "i_fastreg_inuse_count" that keeps track of how
-> many FRWR memory segments are out there marked "FRMR_IS_INUSE"
-> (and also wake_up rds_ib_ring_empty_wait, as they go away).
-> 
-> Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-> ---
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+
+Christoph,
+
+> I think all the patches on the block side went into 5.2, but it's been
+> a while, so I might misremember..
+
+I checked my notes and the reason I held them back was that I was
+waiting for a response from Broadcom wrt. the megaraid segment size
+limitation.  However, given that mpt3sas was acked, I assume it's the
+same thing.
+
+I'm not so keen on how big the last batch of patches for the merge
+window is getting. But I queued your fixes up for 5.3.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
