@@ -2,103 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C05746BBF6
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 13:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEEEE6BBFD
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 13:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbfGQLzJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jul 2019 07:55:09 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:32799 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbfGQLzJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jul 2019 07:55:09 -0400
-Received: by mail-qk1-f195.google.com with SMTP id r6so17235767qkc.0
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jul 2019 04:55:09 -0700 (PDT)
+        id S1726729AbfGQL6b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jul 2019 07:58:31 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:43397 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbfGQL6b (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jul 2019 07:58:31 -0400
+Received: by mail-qt1-f193.google.com with SMTP id w17so22964770qto.10
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jul 2019 04:58:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=H98SbFvDoh/ZsLjX/3wH4GmQSw3t4ma1NWM0ytiLkZA=;
-        b=C8/Ib3O839qW/TZGyS1VdW/vO8zfbjPXJalPiDazk695/Uoyw3Na5FlDsE6RQAUT7L
-         YvSRav3bL74vpROtLDjJV/lxchhRXVcg03NtKoesMTkLKZxirhN913P3A9sujC5pvWbm
-         m5Tqo/2X2Q3NVyMgPRY2WbutzEXetlnrMQWoS2nuE8u5/ybu+jaBcIhdxx0a4Y8Jl6to
-         KJxtqVXtTjZy5NocjPrmltrdIKPijLzttwQglzKOiCR6fEKZJwvMrjZIastmDm2Rw7rk
-         7ehT2XI451tH9nRg8IVOy+WQGnNQ7pp4kSuTXmoqHfiZ2R03+aAi5H7xje+p04qyhv6v
-         xnOQ==
+        bh=CtIW38CyixiEAESJE2x/hR6vvP9ZY7lyz3jE6erJEA4=;
+        b=WsXmWAFNLS9Y5gyPmjyVBufuKshUnoz9oYQO3m2Kyy2wMtQLDRqxhz084Ma4sggKxA
+         VrwuLzOtiAy8rszSQKzE18fvnWZV7M1q7YnEAmJigLzdicTLpZGoNiZ3Gar/CFdANUGQ
+         +gt0fDflhj1oNluiZIVGuibWAh1JTcQepAsHP/YRP7PCiQsEbkufbX49wfrYCtAj9p/q
+         ZpOMd9vVDGljJ+MPyoKgDKJFbWpQx34cZ14/YkYB9E0gHWhEQolXuspRkMtBiWOO9Km7
+         Ew1EzqQInlJf4dxI+ivorIznpDm2P9V/p9lWf5oiX205bEqIkGxkVFU6X6xClAOP44Zp
+         QzPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=H98SbFvDoh/ZsLjX/3wH4GmQSw3t4ma1NWM0ytiLkZA=;
-        b=YVsaexfOnNaYr8u1H8hOY3GurRqO3CFn3g0nGiH4hXf2/bWFa9p10Uz8saklxFTpog
-         QKxVQc1FkjaAUrws0mS9ukXP0lTvPZWDwrzmMbrOcPHEHHpZbW/lBVq0GvNW1pb1Wr5I
-         sKXyLlHz4sgwkAUe7QeCN23ugZ/CYsAEuMIstmMRxvrVX9mzdnALv5YV/c0fBrfThA4d
-         VtbvO7U1/0F9u2gX7A/6Uu45SZaV1ar04XSzmy79Dq1ZpZ5fFHcD+SMNMIzWyC60lOCf
-         j2sm5lB+i1fE9A/SUzpao1zwN2+lU/xCpYKf9K+GK8bvIyLYEKRAC/MsNruB1RmMYIhM
-         YTsg==
-X-Gm-Message-State: APjAAAU+z/Cm5n1pIhaQ98eywT0FJr4uOgHA4pOHVt3trb9brJoes7tw
-        WkFbQ5qiPnDuM/nQexp/V/d7TQ==
-X-Google-Smtp-Source: APXvYqzG5Nu6QaINSq20xjJohAdLB6gx7B0BGJgAX45NVX5yib/QJcyLfkLigPtZmgHrWlDKZ9T28A==
-X-Received: by 2002:ae9:f21a:: with SMTP id m26mr26626638qkg.430.1563364508627;
-        Wed, 17 Jul 2019 04:55:08 -0700 (PDT)
+        bh=CtIW38CyixiEAESJE2x/hR6vvP9ZY7lyz3jE6erJEA4=;
+        b=tPwwq+Mfw18N6V4g4axbQDMFkkuUJ3O5i2gA6T423KicXdOStCj6iO+TY81c1jyZGN
+         WJKJQT4by2ifoSUhEUXuKbhfOw9rdjzEMFbJfB84rdfCgY5bbZ4nzaoB952dzQvF8TZU
+         5nJUZFPZ7oGdNrODp2DYDDA1+YAb7dV4bU5wrGFO45eVzVCP6nD1/linlK+Z9S8WZJJN
+         FVcVXFjgUhEYU+YVojPGWmXT3hT/IKrhwvSZ7ZpqT/Xeo+6TfY5Fks1Wx+P3uXzEHBkV
+         3troxWrcPcptxx0euCNUFl0FrVx8P83wkEraCKQaA//IOKeMvLxYU+LcZv9p0LSQB5Y3
+         AHtQ==
+X-Gm-Message-State: APjAAAWY+Ff8B2IDfsMicoZE6FfdLB1qzYCEujQbkZC5f7eHdGJpn+tG
+        3CQmE9DZ+ry6p5c+kfMOn6sq2FxLuRJCDA==
+X-Google-Smtp-Source: APXvYqx+j7x9Tmvjx0AtdL0JLRa2IEARVY42fsMnhsZXPsgl7xwQHvLdp4tWEgHcwSJhOki+ORlGpQ==
+X-Received: by 2002:ac8:394b:: with SMTP id t11mr26922427qtb.286.1563364709720;
+        Wed, 17 Jul 2019 04:58:29 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id d20sm9874714qto.59.2019.07.17.04.55.08
+        by smtp.gmail.com with ESMTPSA id n18sm10459998qtr.28.2019.07.17.04.58.29
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 17 Jul 2019 04:55:08 -0700 (PDT)
+        Wed, 17 Jul 2019 04:58:29 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hniWZ-0003To-Ns; Wed, 17 Jul 2019 08:55:07 -0300
-Date:   Wed, 17 Jul 2019 08:55:07 -0300
+        id 1hniZo-0003Vz-Og; Wed, 17 Jul 2019 08:58:28 -0300
+Date:   Wed, 17 Jul 2019 08:58:28 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Shamir Rabinovitch <srabinov7@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, dledford@redhat.com,
-        leon@kernel.org, monis@mellanox.com, parav@mellanox.com,
-        danielj@mellanox.com, kamalheib1@gmail.com, markz@mellanox.com,
-        swise@opengridcomputing.com, shamir.rabinovitch@oracle.com,
-        johannes.berg@intel.com, willy@infradead.org,
-        michaelgur@mellanox.com, markb@mellanox.com,
-        yuval.shaia@oracle.com, dan.carpenter@oracle.com,
-        bvanassche@acm.org, maxg@mellanox.com, israelr@mellanox.com,
-        galpress@amazon.com, denisd@mellanox.com, yuvalav@mellanox.com,
-        dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 00/25] Shared PD and MR
-Message-ID: <20190717115507.GD12119@ziepe.ca>
-References: <20190716181200.4239-1-srabinov7@gmail.com>
- <20190717050931.GA18936@infradead.org>
- <CA+KVoo7oSdpX2j1hRT1gPFFrxkHLBfcxXh4HaxkjjNKD550sYg@mail.gmail.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v18 11/15] IB/mlx4: untag user pointers in
+ mlx4_get_umem_mr
+Message-ID: <20190717115828.GE12119@ziepe.ca>
+References: <cover.1561386715.git.andreyknvl@google.com>
+ <ea0ff94ef2b8af12ea6c222c5ebd970e0849b6dd.1561386715.git.andreyknvl@google.com>
+ <20190624174015.GL29120@arrakis.emea.arm.com>
+ <CAAeHK+y8vE=G_odK6KH=H064nSQcVgkQkNwb2zQD9swXxKSyUQ@mail.gmail.com>
+ <20190715180510.GC4970@ziepe.ca>
+ <CAAeHK+xPQqJP7p_JFxc4jrx9k7N0TpBWEuB8Px7XHvrfDU1_gw@mail.gmail.com>
+ <20190716120624.GA29727@ziepe.ca>
+ <CAAeHK+xPPQ9QjAksbfWG-Zmnawt-cdw9eO_6GVxjEYcaDGvaRA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+KVoo7oSdpX2j1hRT1gPFFrxkHLBfcxXh4HaxkjjNKD550sYg@mail.gmail.com>
+In-Reply-To: <CAAeHK+xPPQ9QjAksbfWG-Zmnawt-cdw9eO_6GVxjEYcaDGvaRA@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 17, 2019 at 02:09:50PM +0300, Shamir Rabinovitch wrote:
-> On Wed, Jul 17, 2019 at 8:09 AM Christoph Hellwig <hch@infradead.org> wrote:
+On Wed, Jul 17, 2019 at 01:44:07PM +0200, Andrey Konovalov wrote:
+> On Tue, Jul 16, 2019 at 2:06 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 > >
-> > On Tue, Jul 16, 2019 at 09:11:35PM +0300, Shamir Rabinovitch wrote:
-> > > Following patch-set introduce the shared object feature.
+> > On Tue, Jul 16, 2019 at 12:42:07PM +0200, Andrey Konovalov wrote:
+> > > On Mon, Jul 15, 2019 at 8:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Mon, Jul 15, 2019 at 06:01:29PM +0200, Andrey Konovalov wrote:
+> > > > > On Mon, Jun 24, 2019 at 7:40 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > > > >
+> > > > > > On Mon, Jun 24, 2019 at 04:32:56PM +0200, Andrey Konovalov wrote:
+> > > > > > > This patch is a part of a series that extends kernel ABI to allow to pass
+> > > > > > > tagged user pointers (with the top byte set to something else other than
+> > > > > > > 0x00) as syscall arguments.
+> > > > > > >
+> > > > > > > mlx4_get_umem_mr() uses provided user pointers for vma lookups, which can
+> > > > > > > only by done with untagged pointers.
+> > > > > > >
+> > > > > > > Untag user pointers in this function.
+> > > > > > >
+> > > > > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > > > > >  drivers/infiniband/hw/mlx4/mr.c | 7 ++++---
+> > > > > > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > > > > >
+> > > > > > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > > > >
+> > > > > > This patch also needs an ack from the infiniband maintainers (Jason).
+> > > > >
+> > > > > Hi Jason,
+> > > > >
+> > > > > Could you take a look and give your acked-by?
+> > > >
+> > > > Oh, I think I did this a long time ago. Still looks OK.
 > > >
-> > > A shared object feature allows one process to create HW objects (currently
-> > > PD and MR) so that a second process can import.
+> > > Hm, maybe that was we who lost it. Thanks!
+> > >
+> > > > You will send it?
+> > >
+> > > I will resend the patchset once the merge window is closed, if that's
+> > > what you mean.
 > >
-> > That sounds like a major complication, so you'd better also explain
-> > the use case very well.
+> > No.. I mean who send it to Linus's tree? ie do you want me to take
+> > this patch into rdma?
 > 
-> The main use case was that there is a server that has giant shared
-> memory that is shared across many processes (lots of mtts).
-> Each process needs the same memory registration (lots of mrs that
-> register same memory).
-> In such scenario, the HCA runs out of mtts.
-> To solve this problem, an single memory registration is shared across
-> all the process in that server saving hca mtts.
+> I think the plan was to merge the whole series through the mm tree.
+> But I don't mind if you want to take this patch into your tree. It's
+> just that this patch doesn't make much sense without the rest of the
+> series.
 
-Well, why not just share the entire uverbs FD then? Once the PD is
-shared all security is lost anyhow..
-
-This is not the model that was explained to me last year
+Generally I prefer if subsystem changes stay in subsystem trees. If
+the patch is good standalone, and the untag API has already been
+merged, this is a better strategy.
 
 Jason
