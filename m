@@ -2,135 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BBC6B25C
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 01:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AC16B2CA
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 02:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389048AbfGPX2U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jul 2019 19:28:20 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41511 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728414AbfGPX2T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 16 Jul 2019 19:28:19 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 45pGmJ2zpSz9s3l;
-        Wed, 17 Jul 2019 09:28:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1563319696;
-        bh=rwxKbah4VfF7BG5Oj6ZkNXpTV6etHJFRWQvfPcRHh/M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ka16flw1aRM5RL34BTfjnFB5oXVz0mnkGzNRqCRCPMOzgeF2cyHLOfAXOMcS4CAfT
-         SojmXzZJJzEAyi0BiUof3x+e2qvBxDjfNDJaWFkoctgs7tcT44PwLfg+0ARhQfLqgA
-         FXSRaHPDUhpBjTJ3YzChLzpyifdn83P8kal2RqI8DR8y3MfWb194oLxMvSRproA251
-         Fz79n6JSEe/JTOCFHyR0ZQzyOEgBRk6NG3vlpiKgaN0EDQRYJKJlgHNim1K4AxVwMM
-         YtMBIR+I1S61cYwwc681nTuRk31ZQYfRq5wapE8MprvFivMgt8ck+K+tARjkERHGrh
-         xf3fVxbVb0YMA==
-Date:   Wed, 17 Jul 2019 09:28:01 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Majd Dibbiny <majd@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rdma tree
-Message-ID: <20190717092801.77037015@canb.auug.org.au>
-In-Reply-To: <20190710143036.1582c79d@canb.auug.org.au>
-References: <20190709133019.25a8cd27@canb.auug.org.au>
-        <ba1dd3e2-3091-816c-c308-2f9dd4385596@mellanox.com>
-        <20190709071758.GI7034@mtr-leonro.mtl.com>
-        <20190709124631.GG3436@mellanox.com>
-        <20190710110443.002220c8@canb.auug.org.au>
-        <20190710143036.1582c79d@canb.auug.org.au>
+        id S1728793AbfGQA0R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jul 2019 20:26:17 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57356 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728699AbfGQA0R (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jul 2019 20:26:17 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6H0OvvK001163;
+        Wed, 17 Jul 2019 00:26:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=fHEoOqqR2/nWXFYbhP+3p4B7SA93U5PxyaUELIp60so=;
+ b=w60fmZYvc0+JGEdFbJTC0RG848u2LMPxkWiKSmMZqqj3lO84wJS77uth9vi9i2LaEJxz
+ qa2nj1ZWhxlRcW9gYzJI8xW41kqdgbWJBbAd+KArtpnYb7i2e1C2mSk2LW/LqEIXOhEe
+ KUc3sZJUtsO4r/FXts9Sb593ehu0R1v+ZXPhHb/gK86hOUr140KWikQF2QKB3GeyjB+1
+ 6FoJ3OuPTVn2ULYBHAT5yW2MTeaHlrzjIktkkz7uWTfS2hJKVnw7DViU7jdMmV85yxVA
+ KAL8xVpz4v08terunH86v1NiTaL42lC6MpuThaPVZcHNoF27NFLM1ExGiV8RFoZ9lmO/ bA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2tq7xqye35-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Jul 2019 00:26:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6H0MxTK110046;
+        Wed, 17 Jul 2019 00:26:06 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 2tq5bcq0xr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 17 Jul 2019 00:26:06 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6H0Q6bA114555;
+        Wed, 17 Jul 2019 00:26:06 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2tq5bcq0xn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Jul 2019 00:26:06 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x6H0Q5XX001141;
+        Wed, 17 Jul 2019 00:26:05 GMT
+Received: from [192.168.86.192] (/69.181.241.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 17 Jul 2019 00:26:05 +0000
+Subject: Re: [PATCH net v3 1/7] net/rds: Give fr_state a chance to transition
+ to FRMR_IS_FREE
+To:     Gerd Rausch <gerd.rausch@oracle.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
+Cc:     David Miller <davem@davemloft.net>
+References: <491db13c-3843-b57a-c9c5-9c7e7c18381a@oracle.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <88c45c78-13fb-9774-6397-397b5d08c78e@oracle.com>
+Date:   Tue, 16 Jul 2019 17:26:04 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/KoH5lVAefuFawhjo7irS3qR"; protocol="application/pgp-signature"
+In-Reply-To: <491db13c-3843-b57a-c9c5-9c7e7c18381a@oracle.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9320 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1907170003
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---Sig_/KoH5lVAefuFawhjo7irS3qR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 7/16/19 3:28 PM, Gerd Rausch wrote:
+> In the context of FRMR (ib_frmr.c):
+> 
+> Memory regions make it onto the "clean_list" via "rds_ib_flush_mr_pool",
+> after the memory region has been posted for invalidation via
+> "rds_ib_post_inv".
+> 
+> At that point in time, "fr_state" may still be in state "FRMR_IS_INUSE",
+> since the only place where "fr_state" transitions to "FRMR_IS_FREE"
+> is in "rds_ib_mr_cqe_handler", which is triggered by a tasklet.
+> 
+> So in case we notice that "fr_state != FRMR_IS_FREE" (see below),
+> we wait for "fr_inv_done" to trigger with a maximum of 10msec.
+> Then we check again, and only put the memory region onto the drop_list
+> (via "rds_ib_free_frmr") in case the situation remains unchanged.
+> 
+> This avoids the problem of memory-regions bouncing between "clean_list"
+> and "drop_list" before they even have a chance to be properly invalidated.
+> 
+> Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+> ---
+Thanks for the update.
 
-Hi,
-
-On Wed, 10 Jul 2019 14:30:36 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Wed, 10 Jul 2019 11:04:43 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > On Tue, 9 Jul 2019 12:46:34 +0000 Jason Gunthorpe <jgg@mellanox.com> wr=
-ote: =20
-> > >
-> > > It isn't quite enough to make the header compile stand alone, I'm
-> > > adding this instead.
-> > >=20
-> > > From 37c1e072276b03b080eb24ff24c39080aeaf49ef Mon Sep 17 00:00:00 2001
-> > > From: Jason Gunthorpe <jgg@mellanox.com>
-> > > Date: Tue, 9 Jul 2019 09:44:47 -0300
-> > > Subject: [PATCH] RDMA/counters: Make rdma_counter.h compile stand alo=
-ne   =20
-> >=20
-> > I will apply this to linux-next today and reenable the stand alone
-> > building for rdma_counter.h =20
->=20
-> That worked for me ...
-
-rdma_counter.h should be able to be removed from the exceptions list now.
-
-I have been building linux-next with this patch for a while, so maybe
-it could be applied to the kbuild tree?
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 10 Jul 2019 13:03:16 +1000
-Subject: [PATCH] rdma: attempt to build rdma_counter.h stand alone again
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- include/Kbuild | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/include/Kbuild b/include/Kbuild
-index 7e9f1acb9dd5..765ff864130d 100644
---- a/include/Kbuild
-+++ b/include/Kbuild
-@@ -949,7 +949,6 @@ header-test-			+=3D pcmcia/ds.h
- header-test-			+=3D rdma/ib.h
- header-test-			+=3D rdma/iw_portmap.h
- header-test-			+=3D rdma/opa_port_info.h
--header-test-			+=3D rdma/rdma_counter.h
- header-test-			+=3D rdma/rdmavt_cq.h
- header-test-			+=3D rdma/restrack.h
- header-test-			+=3D rdma/signature.h
---=20
-2.20.1
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/KoH5lVAefuFawhjo7irS3qR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl0uXYEACgkQAVBC80lX
-0GzDtAf/XyHO+dBLQ6dMUwGRO8Nb0lKbujqapttpU/NtqcBv5FrD6kOrlVJplXDB
-UL+DCm8LEp33pb2FRchB2pPzDSWrJSR1YIW0MeJ9+0u+rPjqlq/duncNDm2eQKCZ
-YhdmcoTpkbCO8YVt6EMddoZzBJq+cWVFf0f4JNpj5ZjiZdjIyV2EqQ0EyvSzsHkI
-M1SN7p5H86XM3+1bKoHB5wIcsQODFJYAbGdTrXO4ySQmfz3hqmpnZOGcdnClsN27
-VUjkIm4hDzbfhfT0QV+kVfShz3EtpUdNtO5sUDWMQ+Mm89F87W56nZC2gPiz9cII
-RWLPpIIFYIxxp6rpGSlIYY3Xa2NtbA==
-=9q44
------END PGP SIGNATURE-----
-
---Sig_/KoH5lVAefuFawhjo7irS3qR--
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
