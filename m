@@ -2,95 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7603B6B775
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 09:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939266B7D0
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2019 10:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbfGQHpW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jul 2019 03:45:22 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:37671 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725890AbfGQHpW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Jul 2019 03:45:22 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 45pTnp5rQhz9s8m;
-        Wed, 17 Jul 2019 17:45:18 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1563349519;
-        bh=bl60vOig14zWA2evz/r+S3XrkL3DivP5HljgKsG8JkI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RILUrEmX+/fB7xdTBBla9ngVqWnAEGA/VeV/IHLrWkyXdKaZMoVRRSqGAKAOUXsQ9
-         nXPcLYlI2hci/BUCO9tifKs4WKvTVZl/Voq5Wi2L9qXYKDy+AHItse4rb0x2eut4rS
-         P0m0WTR6nxnCecyNc2EZLeciFlPW4MmQ9NFAbL21Hr6y19tAEoB3byEe4Qp/cGmks7
-         mlzEiwGFTc2rneo2xYn1Fh/mErGSN8w600aFIJytsglcz0NWtDY2DJHVCbNLOpiy89
-         eWk3TkA5LTvs+kbPVPNLQTAqiW6IUh4IB5MEYhw9GhL7RRBmk1nO97ZT2CgDOyGK6L
-         hlfkru4tdaH0g==
-Date:   Wed, 17 Jul 2019 17:45:11 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Majd Dibbiny <majd@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rdma tree
-Message-ID: <20190717174511.67e64609@canb.auug.org.au>
-In-Reply-To: <CAK7LNARZqi-QcGaTEaoTEASbnBaGzYchgDoWeuthR+G8jxQHMg@mail.gmail.com>
-References: <20190709133019.25a8cd27@canb.auug.org.au>
-        <ba1dd3e2-3091-816c-c308-2f9dd4385596@mellanox.com>
-        <20190709071758.GI7034@mtr-leonro.mtl.com>
-        <20190709124631.GG3436@mellanox.com>
-        <20190710110443.002220c8@canb.auug.org.au>
-        <20190710143036.1582c79d@canb.auug.org.au>
-        <20190717092801.77037015@canb.auug.org.au>
-        <CAK7LNARZqi-QcGaTEaoTEASbnBaGzYchgDoWeuthR+G8jxQHMg@mail.gmail.com>
+        id S1725980AbfGQIDp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jul 2019 04:03:45 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:45214 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725799AbfGQIDp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jul 2019 04:03:45 -0400
+Received: by mail-pg1-f196.google.com with SMTP id o13so10743807pgp.12;
+        Wed, 17 Jul 2019 01:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2QQA3vCexTn2frwX9oyaSyj/otI+PVKWAPqRt9xz/tI=;
+        b=mMRLX4vd9rAOrjLK91NV8g2jlkCx3xJaU2OcazQoxMCK2uQXVArVpft9CPKPpqbFM/
+         rrD099qPhOMLuCV1/g87WIEBAZgSEMY3clCtKASRrzsesFzTCODuztCmFmVD1RjEQ+IF
+         uZiNfWEMScgQMyGfLB5FO6u2QlrbJnSVApVUxCifUxJPWfuy3+Q8OtjuThQTgFK4GmrG
+         TwE8M0jztpLh36qWBtyTZ+A+udw/YLUvPDHD/fKlIXalce/oK9pXXk64aWn0JfRU3E4p
+         DUCop+I3+UQEzoMYSOkjXOMgSjw5ccXpsc58WM9C0MlrEaTnArS1p8FUl/T9HELLboEr
+         mVng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2QQA3vCexTn2frwX9oyaSyj/otI+PVKWAPqRt9xz/tI=;
+        b=atALVDJst69s2yHVMtZMslL6mJw37SdXRLSJzz0odnmgixVanYgsg9Hcqpz8q93zc5
+         1x9jDG1bx7GrCKsXcMpQe+97S/o0/nnlAagq6snsvGCSxAMO4jSrI/69gYZ0/S+nZ3LI
+         Dg3GKj5ZA0RmQDqhCUEr+WDZBwgOhCJ6/oDOuz3Povid6Uew9KXiMvbc4dD2BT3XXrZh
+         H7LzdMjNJjkBlRc2t/+8kPNpqnwomFOYVNUpzOqrUWSkO1GUx/1bTDGAWnRz9591fAzW
+         ihPm5KOKZWPR2fRGQwLpuJz89l5wSURCg4THt26iQKaaR0fjH1xXUNVR2piHJ+VxFB02
+         GSDw==
+X-Gm-Message-State: APjAAAXX7zYOBGE1+Kbm28FRZj07S9HVUwg01YiHQCvmH/pqWi4fD71C
+        QDsgj0f/sjXXQ1qsZRVIVsY=
+X-Google-Smtp-Source: APXvYqxDN1G3bzBqD87mS88HozaTAIPTkQtuuVcqf/+I4IBdSowWubpAA0iomTS8usiVu23dzXx4iQ==
+X-Received: by 2002:a17:90a:3724:: with SMTP id u33mr41943097pjb.19.1563350624551;
+        Wed, 17 Jul 2019 01:03:44 -0700 (PDT)
+Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+        by smtp.gmail.com with ESMTPSA id y11sm27348761pfb.119.2019.07.17.01.03.41
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 17 Jul 2019 01:03:43 -0700 (PDT)
+From:   Chuhong Yuan <hslester96@gmail.com>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chuhong Yuan <hslester96@gmail.com>
+Subject: [PATCH] net/mlx5: Replace kfree with kvfree
+Date:   Wed, 17 Jul 2019 16:03:22 +0800
+Message-Id: <20190717080322.13631-1-hslester96@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/wuxKlRL/Cq6k9EEPfnjU2QV"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---Sig_/wuxKlRL/Cq6k9EEPfnjU2QV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Variable allocated by kvmalloc should not be freed by kfree.
+Because it may be allocated by vmalloc.
+So replace kfree with kvfree here.
 
-Hi Masahiro,
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/health.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Wed, 17 Jul 2019 15:33:28 +0900 Masahiro Yamada <yamada.masahiro@socione=
-xt.com> wrote:
->
-> Yes, this is just a one-liner fix-up,
-> so I'd like to fold it into this:
->=20
-> https://patchwork.kernel.org/patch/11047283/
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+index 2fe6923f7ce0..9314777d99e3 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+@@ -597,7 +597,7 @@ mlx5_fw_fatal_reporter_dump(struct devlink_health_reporter *reporter,
+ 	err = devlink_fmsg_arr_pair_nest_end(fmsg);
+ 
+ free_data:
+-	kfree(cr_data);
++	kvfree(cr_data);
+ 	return err;
+ }
+ 
+-- 
+2.20.1
 
-Fine by me.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/wuxKlRL/Cq6k9EEPfnjU2QV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl0u0gcACgkQAVBC80lX
-0GwWQQgAjcYWFWotF20wXVads8YJF5lZpSVBWK2za6mGL6y3PMs6sNetT/N7Nvt8
-gYriTJ5znXShX/htF+P+HlWX+ZAPRull/2E+vXjHlH6VZIYWHoC6wq/u7g4xnxav
-/090YXWwXqbWv7T0rv0fNliSfbIfu9bZgF60scgFObF2Y0/CwmFgmw1cqN2hySLN
-oNQd8iCGNpkIcmjx3CMK/DeVovLi44YnPbNx3pA5JHbyWtI2CnPvc9ep//veYviW
-62wLK8Fz4c/cbVat4f9DzEBmBfmEdGP9WZbYCOQN2OgWDLonQuhdVfL4nh2kt124
-pm1mQh4lFmEz1IKdakRNUhsvHwC+Hg==
-=HsqA
------END PGP SIGNATURE-----
-
---Sig_/wuxKlRL/Cq6k9EEPfnjU2QV--
