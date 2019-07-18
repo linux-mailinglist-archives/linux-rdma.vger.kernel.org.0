@@ -2,104 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0046C3B0
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jul 2019 01:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DAA56CBC5
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jul 2019 11:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727746AbfGQXz2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jul 2019 19:55:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:8083 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727741AbfGQXz2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Jul 2019 19:55:28 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Jul 2019 16:55:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,276,1559545200"; 
-   d="scan'208";a="319475088"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga004.jf.intel.com with ESMTP; 17 Jul 2019 16:55:26 -0700
-Date:   Wed, 17 Jul 2019 16:55:26 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Shamir Rabinovitch <srabinov7@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>, dledford@redhat.com,
-        leon@kernel.org, monis@mellanox.com, parav@mellanox.com,
-        danielj@mellanox.com, kamalheib1@gmail.com, markz@mellanox.com,
-        swise@opengridcomputing.com, shamir.rabinovitch@oracle.com,
-        johannes.berg@intel.com, willy@infradead.org,
-        michaelgur@mellanox.com, markb@mellanox.com,
-        yuval.shaia@oracle.com, dan.carpenter@oracle.com,
-        bvanassche@acm.org, maxg@mellanox.com, israelr@mellanox.com,
-        galpress@amazon.com, denisd@mellanox.com, yuvalav@mellanox.com,
-        dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 00/25] Shared PD and MR
-Message-ID: <20190717235526.GB4936@iweiny-DESK2.sc.intel.com>
-References: <20190716181200.4239-1-srabinov7@gmail.com>
- <20190717050931.GA18936@infradead.org>
- <CA+KVoo7oSdpX2j1hRT1gPFFrxkHLBfcxXh4HaxkjjNKD550sYg@mail.gmail.com>
- <20190717115507.GD12119@ziepe.ca>
- <CA+KVoo5wVzUovQvAXyZzsA8rK9=FuMEkNJDDwJteXe9-eLFu3A@mail.gmail.com>
+        id S2389708AbfGRJVi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Jul 2019 05:21:38 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:48670 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727609AbfGRJVi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 18 Jul 2019 05:21:38 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id B26A67D8B5E5106D9814;
+        Thu, 18 Jul 2019 17:21:35 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.439.0; Thu, 18 Jul 2019 17:21:26 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>, <linux-rdma@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+Subject: [PATCH] RDMA/siw: fix error return code in siw_init_module()
+Date:   Thu, 18 Jul 2019 09:27:10 +0000
+Message-ID: <20190718092710.85709-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+KVoo5wVzUovQvAXyZzsA8rK9=FuMEkNJDDwJteXe9-eLFu3A@mail.gmail.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 17, 2019 at 04:35:30PM +0300, Shamir Rabinovitch wrote:
-> On Wed, Jul 17, 2019 at 2:55 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Wed, Jul 17, 2019 at 02:09:50PM +0300, Shamir Rabinovitch wrote:
-> > > On Wed, Jul 17, 2019 at 8:09 AM Christoph Hellwig <hch@infradead.org> wrote:
-> > > >
-> > > > On Tue, Jul 16, 2019 at 09:11:35PM +0300, Shamir Rabinovitch wrote:
-> > > > > Following patch-set introduce the shared object feature.
-> > > > >
-> > > > > A shared object feature allows one process to create HW objects (currently
-> > > > > PD and MR) so that a second process can import.
-> > > >
-> > > > That sounds like a major complication, so you'd better also explain
-> > > > the use case very well.
-> > >
-> > > The main use case was that there is a server that has giant shared
-> > > memory that is shared across many processes (lots of mtts).
-> > > Each process needs the same memory registration (lots of mrs that
-> > > register same memory).
-> > > In such scenario, the HCA runs out of mtts.
-> > > To solve this problem, an single memory registration is shared across
-> > > all the process in that server saving hca mtts.
-> >
-> > Well, why not just share the entire uverbs FD then? Once the PD is
-> > shared all security is lost anyhow..
-> >
-> > This is not the model that was explained to me last year
-> >
-> > Jason
-> 
-> We do share the whole uvrbs FD (context) with the second process and
-> let that process to instantiate the PD & MR from the shared FD.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Then the first (both) process(es) should have access to the MR right?
+Fixes: bdcf26bf9b3a ("rdma/siw: network and RDMA core interface")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/infiniband/sw/siw/siw_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> The instantiation include creating new uobject in the second process
-> context that points to the same ib_x HW objects.
-> The second process does not own the shared context.
-> It just use it to get access to the shared ib_x objects and then it
-> mark those & shared FD as shared.
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index fd2552a9091d..9040692f83d7 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -614,6 +614,7 @@ static __init int siw_init_module(void)
+ 
+ 	if (!siw_create_tx_threads()) {
+ 		pr_info("siw: Could not start any TX thread\n");
++		rv = -ENOMEM;
+ 		goto out_error;
+ 	}
+ 	/*
 
-I'm not following this?
 
-> 
-> What was the expectation from "import_from_xxx" ?
-
-... and I don't understand this question.
-
-Ira
 
