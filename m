@@ -2,112 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C6F6CCEC
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jul 2019 12:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3484A6CDED
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jul 2019 14:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733131AbfGRKl6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 18 Jul 2019 06:41:58 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16258 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726513AbfGRKl5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 18 Jul 2019 06:41:57 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6IAbhSe004891
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Jul 2019 06:41:56 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.104])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ttnrxkr7g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Jul 2019 06:41:56 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Thu, 18 Jul 2019 10:41:56 -0000
-Received: from us1b3-smtp05.a3dr.sjc01.isc4sb.com (10.122.203.183)
-        by smtp.notes.na.collabserv.com (10.122.47.44) with smtp.notes.na.collabserv.com ESMTP;
-        Thu, 18 Jul 2019 10:41:50 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp05.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019071810414460-324980 ;
-          Thu, 18 Jul 2019 10:41:44 +0000 
-In-Reply-To: <20190718092710.85709-1-weiyongjun1@huawei.com>
-Subject: Re: [PATCH] RDMA/siw: fix error return code in siw_init_module()
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Wei Yongjun" <weiyongjun1@huawei.com>
-Cc:     "Doug Ledford" <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-Date:   Thu, 18 Jul 2019 10:41:44 +0000
+        id S1726715AbfGRMQQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Jul 2019 08:16:16 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:42959 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726608AbfGRMQQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Jul 2019 08:16:16 -0400
+Received: by mail-qt1-f193.google.com with SMTP id h18so26856127qtm.9
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Jul 2019 05:16:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3J3MRmHmnv8k8+kmMeTh8muNGIQlmefFOA4kZv7Gu5A=;
+        b=Uh2uLgw2En/h60LbWt6F/7IU/rMARug7ZvEfqRxTmKL6YyJ92Dsst9hJDwkwjBjVCA
+         ov2f/o+/sRpW5iC6D4BCYxkpiU3WmowkionHlImkUqf38juRLejTv1LBoqW22bOhl8G9
+         BQb3MHWq+Zogra7BfoV+7rpxJ0ddbleJQ/chdytY3QtfzgIaVkaEES6pE695TSMVGUrP
+         rj5yKr69wuE3dqU8uSK+dpcUSjoYb2Re3ftvYRJcTPe6QO/JZ90wy0rRYoFyEl9+eKeF
+         7Wd6Q/KTtNKJWyOMIlTziNQhd2oonzh2vjsli2ATxYPxQhIes7wHj4iPWgpAHuGH63s6
+         2n6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3J3MRmHmnv8k8+kmMeTh8muNGIQlmefFOA4kZv7Gu5A=;
+        b=Puv3xLv5gM/5Gf2UK4AbjLpK7NL9j7Dz+3w6mi+ZQvY7tBPc6ba+cGqIon2mvkDdxs
+         TU1P9YU/jP4IaPwQgb7iNaeqw0iP9DpFK31jh00QXCF0nSiOHHA8BDvf8GWk7mYV7h2W
+         lb+EUl1BeGPdfr7QOYXzIpftRu5hPfjdbsj+OP2xn0gjz+aGaWT6jM72OU4xgx/bgC8A
+         MNeuXZyVSaL9MIHTCgshzaawyGFlVJdn32+cnUvNN4UvMnQRm7LCz/n0rDMOxpjJsspo
+         Cnn7EI9c/sJUIM20LlFQjMoEAVHwhLYRXd/+3jyPEqGQVqZvB/r/bXGB0Ku/LIIoVQr2
+         iBWA==
+X-Gm-Message-State: APjAAAVwAHEbwrmmqaLzI6UQMtnIo+ytKSMQQVVoX/GAalYloVjwVh4V
+        Zgm0KXK0yBvxisWHWr8/ClmN6A==
+X-Google-Smtp-Source: APXvYqwYo65EZoMV0waPGFUtY95zhNnk3DFsOTwAclRYrqwqxp8kFVkvrj5t5JWZgn07/5dl0EOUsA==
+X-Received: by 2002:ac8:7555:: with SMTP id b21mr31113909qtr.292.1563452175348;
+        Thu, 18 Jul 2019 05:16:15 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id w9sm11928383qts.25.2019.07.18.05.16.14
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 18 Jul 2019 05:16:14 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ho5KY-0000To-24; Thu, 18 Jul 2019 09:16:14 -0300
+Date:   Thu, 18 Jul 2019 09:16:14 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Shamir Rabinovitch <srabinov7@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, dledford@redhat.com,
+        leon@kernel.org, monis@mellanox.com, parav@mellanox.com,
+        danielj@mellanox.com, kamalheib1@gmail.com, markz@mellanox.com,
+        swise@opengridcomputing.com, shamir.rabinovitch@oracle.com,
+        johannes.berg@intel.com, willy@infradead.org,
+        michaelgur@mellanox.com, markb@mellanox.com,
+        yuval.shaia@oracle.com, dan.carpenter@oracle.com,
+        bvanassche@acm.org, maxg@mellanox.com, israelr@mellanox.com,
+        galpress@amazon.com, denisd@mellanox.com, yuvalav@mellanox.com,
+        dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 00/25] Shared PD and MR
+Message-ID: <20190718121614.GA1667@ziepe.ca>
+References: <20190716181200.4239-1-srabinov7@gmail.com>
+ <20190717050931.GA18936@infradead.org>
+ <CA+KVoo7oSdpX2j1hRT1gPFFrxkHLBfcxXh4HaxkjjNKD550sYg@mail.gmail.com>
+ <20190717115507.GD12119@ziepe.ca>
+ <CA+KVoo5wVzUovQvAXyZzsA8rK9=FuMEkNJDDwJteXe9-eLFu3A@mail.gmail.com>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190718092710.85709-1-weiyongjun1@huawei.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-KeepSent: 35A9F852:4EA5883B-0025843B:0035B005;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 1183
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19071810-5525-0000-0000-0000005802EE
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000062
-X-IBM-SpamModules-Versions: BY=3.00011451; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01233881; UDB=6.00650192; IPR=6.01015209;
- MB=3.00027775; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-18 10:41:54
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-07-18 10:27:10 - 6.00010179
-x-cbparentid: 19071810-5526-0000-0000-0000009204F2
-Message-Id: <OF35A9F852.4EA5883B-ON0025843B.0035B005-0025843B.003AC0D0@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-18_05:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+KVoo5wVzUovQvAXyZzsA8rK9=FuMEkNJDDwJteXe9-eLFu3A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Wei Yongjun" <weiyongjun1@huawei.com> wrote: -----
-
->To: "Bernard Metzler" <bmt@zurich.ibm.com>, "Doug Ledford"
-><dledford@redhat.com>, "Jason Gunthorpe" <jgg@ziepe.ca>
->From: "Wei Yongjun" <weiyongjun1@huawei.com>
->Date: 07/18/2019 11:21AM
->Cc: "Wei Yongjun" <weiyongjun1@huawei.com>,
-><linux-rdma@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
->Subject: [EXTERNAL] [PATCH] RDMA/siw: fix error return code in
->siw_init_module()
->
->Fix to return a negative error code from the error handling
->case instead of 0, as done elsewhere in this function.
->
->Fixes: bdcf26bf9b3a ("rdma/siw: network and RDMA core interface")
->Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
->---
-> drivers/infiniband/sw/siw/siw_main.c | 1 +
-> 1 file changed, 1 insertion(+)
->
->diff --git a/drivers/infiniband/sw/siw/siw_main.c
->b/drivers/infiniband/sw/siw/siw_main.c
->index fd2552a9091d..9040692f83d7 100644
->--- a/drivers/infiniband/sw/siw/siw_main.c
->+++ b/drivers/infiniband/sw/siw/siw_main.c
->@@ -614,6 +614,7 @@ static __init int siw_init_module(void)
+On Wed, Jul 17, 2019 at 04:35:30PM +0300, Shamir Rabinovitch wrote:
+> On Wed, Jul 17, 2019 at 2:55 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Wed, Jul 17, 2019 at 02:09:50PM +0300, Shamir Rabinovitch wrote:
+> > > On Wed, Jul 17, 2019 at 8:09 AM Christoph Hellwig <hch@infradead.org> wrote:
+> > > >
+> > > > On Tue, Jul 16, 2019 at 09:11:35PM +0300, Shamir Rabinovitch wrote:
+> > > > > Following patch-set introduce the shared object feature.
+> > > > >
+> > > > > A shared object feature allows one process to create HW objects (currently
+> > > > > PD and MR) so that a second process can import.
+> > > >
+> > > > That sounds like a major complication, so you'd better also explain
+> > > > the use case very well.
+> > >
+> > > The main use case was that there is a server that has giant shared
+> > > memory that is shared across many processes (lots of mtts).
+> > > Each process needs the same memory registration (lots of mrs that
+> > > register same memory).
+> > > In such scenario, the HCA runs out of mtts.
+> > > To solve this problem, an single memory registration is shared across
+> > > all the process in that server saving hca mtts.
+> >
+> > Well, why not just share the entire uverbs FD then? Once the PD is
+> > shared all security is lost anyhow..
+> >
+> > This is not the model that was explained to me last year
+> >
+> > Jason
 > 
-> 	if (!siw_create_tx_threads()) {
-> 		pr_info("siw: Could not start any TX thread\n");
->+		rv = -ENOMEM;
-> 		goto out_error;
-> 	}
-> 	/*
->
->
->
->
-Yes, thanks Wei!
+> We do share the whole uvrbs FD (context) with the second process and
+> let that process to instantiate the PD & MR from the shared FD.
+> The instantiation include creating new uobject in the second process
+> context that points to the same ib_x HW objects.
+> The second process does not own the shared context.
+> It just use it to get access to the shared ib_x objects and then it
+> mark those & shared FD as shared.
+> 
+> What was the expectation from "import_from_xxx" ?
 
-Bernard.
+None of this discussion makes any sense to me, or matches the use
+model that I thought this was targetting
 
+Jason
