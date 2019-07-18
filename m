@@ -2,123 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3484A6CDED
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jul 2019 14:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A15D6CDF5
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jul 2019 14:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbfGRMQQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Jul 2019 08:16:16 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42959 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbfGRMQQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Jul 2019 08:16:16 -0400
-Received: by mail-qt1-f193.google.com with SMTP id h18so26856127qtm.9
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Jul 2019 05:16:15 -0700 (PDT)
+        id S2390258AbfGRMRw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Jul 2019 08:17:52 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:35483 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727794AbfGRMRw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Jul 2019 08:17:52 -0400
+Received: by mail-qt1-f194.google.com with SMTP id d23so26896196qto.2
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Jul 2019 05:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=3J3MRmHmnv8k8+kmMeTh8muNGIQlmefFOA4kZv7Gu5A=;
-        b=Uh2uLgw2En/h60LbWt6F/7IU/rMARug7ZvEfqRxTmKL6YyJ92Dsst9hJDwkwjBjVCA
-         ov2f/o+/sRpW5iC6D4BCYxkpiU3WmowkionHlImkUqf38juRLejTv1LBoqW22bOhl8G9
-         BQb3MHWq+Zogra7BfoV+7rpxJ0ddbleJQ/chdytY3QtfzgIaVkaEES6pE695TSMVGUrP
-         rj5yKr69wuE3dqU8uSK+dpcUSjoYb2Re3ftvYRJcTPe6QO/JZ90wy0rRYoFyEl9+eKeF
-         7Wd6Q/KTtNKJWyOMIlTziNQhd2oonzh2vjsli2ATxYPxQhIes7wHj4iPWgpAHuGH63s6
-         2n6A==
+        bh=N9OHbaXIVnD5HYmXh2ZV597R04zlW0jKbtB8472RTcE=;
+        b=J8T3eXs8ibFY1AHSa6g5SNT+ggWhfprtqCPLljFG4+o9RFV1hfjDnUY4lair/bSD1+
+         KBmAl7Tf4wZHpxCEhpOwe+AN3bRr19B1ex5N1b6e5Ja3Sz1Qm8cpOq7G4TayRZPAH4C1
+         3ZBWKYDH4V8ViDodJaoA0Ya4r8clgxfZaWJJJ+ZjoTFu8HrBdzuniu9E1WirJJOtDNQh
+         YsoXP2p7ivd/vajfihsXEtD6TKU9OE2H8gSWgftkTDbRIvd4peF+OjD3dtnDKUp3e6Vm
+         At3xa52aB53TWKDpHbR+CVRYNg0pF3yS2PdPgaaDGV6Bf8oshAlx69S3O/Ltgi00O/fA
+         D2mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3J3MRmHmnv8k8+kmMeTh8muNGIQlmefFOA4kZv7Gu5A=;
-        b=Puv3xLv5gM/5Gf2UK4AbjLpK7NL9j7Dz+3w6mi+ZQvY7tBPc6ba+cGqIon2mvkDdxs
-         TU1P9YU/jP4IaPwQgb7iNaeqw0iP9DpFK31jh00QXCF0nSiOHHA8BDvf8GWk7mYV7h2W
-         lb+EUl1BeGPdfr7QOYXzIpftRu5hPfjdbsj+OP2xn0gjz+aGaWT6jM72OU4xgx/bgC8A
-         MNeuXZyVSaL9MIHTCgshzaawyGFlVJdn32+cnUvNN4UvMnQRm7LCz/n0rDMOxpjJsspo
-         Cnn7EI9c/sJUIM20LlFQjMoEAVHwhLYRXd/+3jyPEqGQVqZvB/r/bXGB0Ku/LIIoVQr2
-         iBWA==
-X-Gm-Message-State: APjAAAVwAHEbwrmmqaLzI6UQMtnIo+ytKSMQQVVoX/GAalYloVjwVh4V
-        Zgm0KXK0yBvxisWHWr8/ClmN6A==
-X-Google-Smtp-Source: APXvYqwYo65EZoMV0waPGFUtY95zhNnk3DFsOTwAclRYrqwqxp8kFVkvrj5t5JWZgn07/5dl0EOUsA==
-X-Received: by 2002:ac8:7555:: with SMTP id b21mr31113909qtr.292.1563452175348;
-        Thu, 18 Jul 2019 05:16:15 -0700 (PDT)
+        bh=N9OHbaXIVnD5HYmXh2ZV597R04zlW0jKbtB8472RTcE=;
+        b=PB6qRnJOGvPW20kiTZMHi4+D3wvyFwZezXFor9lNTlChJdBs2PPJQBQ/Do9Ty/rxqx
+         6z3UkY6PA6pBZTPWdPdCJJd/kms/E09HqrL+4CUDlAwcoty6H/0PLC8+eAi5yjypvnuA
+         16RI8T72FHTxrzYfyJwaU8opHs/nSWQKjL4hHjYbQJX1NgfgayJbQLQtaCqou7MkneYT
+         2YHtWzMpNK7n+2se2NnVEKW1mw9SWqmAhBumgsd5sJ2OaGdDrdKRWTIhru/0sAzj4n6+
+         jfsdvFCknCfQFripfUTFYcCpmFqRwK2RsmLS7PaS8YR5rKa9H1YRXdKHZjpVJKriJqEt
+         CWyw==
+X-Gm-Message-State: APjAAAXfQLltDiB7/gjMcXFCW1tCrECUrKf1Ufr9P5VOZROLUGOnjSPk
+        LlsANvCzq0IcdQWUilsyXZzYBA==
+X-Google-Smtp-Source: APXvYqy8aL9hvIO/4j8x9Z/a94ee5k6Mqjf8LocpZuSU70C9jxZXfwpRxBhsAFwUQcDS4cYr9ouTaw==
+X-Received: by 2002:ac8:74cb:: with SMTP id j11mr27960622qtr.67.1563452268126;
+        Thu, 18 Jul 2019 05:17:48 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id w9sm11928383qts.25.2019.07.18.05.16.14
+        by smtp.gmail.com with ESMTPSA id h1sm13671294qkh.101.2019.07.18.05.17.47
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 18 Jul 2019 05:16:14 -0700 (PDT)
+        Thu, 18 Jul 2019 05:17:47 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1ho5KY-0000To-24; Thu, 18 Jul 2019 09:16:14 -0300
-Date:   Thu, 18 Jul 2019 09:16:14 -0300
+        id 1ho5M3-0000eh-3A; Thu, 18 Jul 2019 09:17:47 -0300
+Date:   Thu, 18 Jul 2019 09:17:47 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Shamir Rabinovitch <srabinov7@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, dledford@redhat.com,
+To:     Yuval Shaia <yuval.shaia@oracle.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Shamir Rabinovitch <srabinov7@gmail.com>, dledford@redhat.com,
         leon@kernel.org, monis@mellanox.com, parav@mellanox.com,
         danielj@mellanox.com, kamalheib1@gmail.com, markz@mellanox.com,
-        swise@opengridcomputing.com, shamir.rabinovitch@oracle.com,
-        johannes.berg@intel.com, willy@infradead.org,
+        swise@opengridcomputing.com, johannes.berg@intel.com,
         michaelgur@mellanox.com, markb@mellanox.com,
-        yuval.shaia@oracle.com, dan.carpenter@oracle.com,
-        bvanassche@acm.org, maxg@mellanox.com, israelr@mellanox.com,
-        galpress@amazon.com, denisd@mellanox.com, yuvalav@mellanox.com,
-        dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 00/25] Shared PD and MR
-Message-ID: <20190718121614.GA1667@ziepe.ca>
+        dan.carpenter@oracle.com, bvanassche@acm.org, maxg@mellanox.com,
+        israelr@mellanox.com, galpress@amazon.com, denisd@mellanox.com,
+        yuvalav@mellanox.com, dennis.dalessandro@intel.com,
+        will@kernel.org, ereza@mellanox.com, linux-rdma@vger.kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Subject: Re: [PATCH 08/25] IB/uverbs: ufile must be freed only when not used
+ anymore
+Message-ID: <20190718121747.GB1667@ziepe.ca>
 References: <20190716181200.4239-1-srabinov7@gmail.com>
- <20190717050931.GA18936@infradead.org>
- <CA+KVoo7oSdpX2j1hRT1gPFFrxkHLBfcxXh4HaxkjjNKD550sYg@mail.gmail.com>
- <20190717115507.GD12119@ziepe.ca>
- <CA+KVoo5wVzUovQvAXyZzsA8rK9=FuMEkNJDDwJteXe9-eLFu3A@mail.gmail.com>
+ <20190716181200.4239-9-srabinov7@gmail.com>
+ <20190717115354.GC12119@ziepe.ca>
+ <20190717192525.GA2515@shamir-ThinkPad-X240>
+ <20190717193313.GN12119@ziepe.ca>
+ <20190717203112.GA7307@lap1>
+ <20190717204505.GD32320@bombadil.infradead.org>
+ <20190717213636.GA2797@lap1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+KVoo5wVzUovQvAXyZzsA8rK9=FuMEkNJDDwJteXe9-eLFu3A@mail.gmail.com>
+In-Reply-To: <20190717213636.GA2797@lap1>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 17, 2019 at 04:35:30PM +0300, Shamir Rabinovitch wrote:
-> On Wed, Jul 17, 2019 at 2:55 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Wed, Jul 17, 2019 at 02:09:50PM +0300, Shamir Rabinovitch wrote:
-> > > On Wed, Jul 17, 2019 at 8:09 AM Christoph Hellwig <hch@infradead.org> wrote:
-> > > >
-> > > > On Tue, Jul 16, 2019 at 09:11:35PM +0300, Shamir Rabinovitch wrote:
-> > > > > Following patch-set introduce the shared object feature.
-> > > > >
-> > > > > A shared object feature allows one process to create HW objects (currently
-> > > > > PD and MR) so that a second process can import.
-> > > >
-> > > > That sounds like a major complication, so you'd better also explain
-> > > > the use case very well.
-> > >
-> > > The main use case was that there is a server that has giant shared
-> > > memory that is shared across many processes (lots of mtts).
-> > > Each process needs the same memory registration (lots of mrs that
-> > > register same memory).
-> > > In such scenario, the HCA runs out of mtts.
-> > > To solve this problem, an single memory registration is shared across
-> > > all the process in that server saving hca mtts.
-> >
-> > Well, why not just share the entire uverbs FD then? Once the PD is
-> > shared all security is lost anyhow..
-> >
-> > This is not the model that was explained to me last year
-> >
-> > Jason
+On Thu, Jul 18, 2019 at 12:36:37AM +0300, Yuval Shaia wrote:
+> On Wed, Jul 17, 2019 at 01:45:05PM -0700, Matthew Wilcox wrote:
+> > On Wed, Jul 17, 2019 at 11:31:12PM +0300, Yuval Shaia wrote:
+> > > On Wed, Jul 17, 2019 at 04:33:13PM -0300, Jason Gunthorpe wrote:
+> > > > Like I said, drivers that require the creating ucontext as part of the
+> > > > PD and MR cannot support sharing.
+> > > 
+> > > Even if we can make sure the process that creates the MR stays alive until
+> > > all reference to this MR completes?
+> > 
+> > The kernel can't rely on userspace to do that.
 > 
-> We do share the whole uvrbs FD (context) with the second process and
-> let that process to instantiate the PD & MR from the shared FD.
-> The instantiation include creating new uobject in the second process
-> context that points to the same ib_x HW objects.
-> The second process does not own the shared context.
-> It just use it to get access to the shared ib_x objects and then it
-> mark those & shared FD as shared.
+> ok, how about this: we know that for MR to be shared the memory behinds it
+> should also be shared.
 > 
-> What was the expectation from "import_from_xxx" ?
+> In this case, i know it sounds horrifying but do we care that the process
+> that originally created this MR exits? i.e. how about just before the
+> process leaves this world we will find some other ucontext to hold these
+> memory mappings that driver holds?
+> Or how about moving this mapping from ucontext pointed by ib_mr directly to
+> ib_mr?
 
-None of this discussion makes any sense to me, or matches the use
-model that I thought this was targetting
+What are you worrying about? My point is we don't need to *anything*
+if the driver objects for PD and MR don't rely on the ucontext. This
+appears to be the normal case.
+
+MRs already work fine if they outlive the creating process.
 
 Jason
