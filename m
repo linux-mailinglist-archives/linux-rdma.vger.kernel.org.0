@@ -2,221 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B81DE6DEA2
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jul 2019 06:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2851B6E52B
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jul 2019 13:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730381AbfGSE3n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Jul 2019 00:29:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731658AbfGSEF1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Jul 2019 00:05:27 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B02B3218A3;
-        Fri, 19 Jul 2019 04:05:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563509126;
-        bh=RnpYIfsmVQzw+RTCY/meZ6Kjw8GaVvaz5MFpeWecvx8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C1eHW7pJFv4OWLeUtqApGHTsqOLGqidkx0yAqimutlTVF0WguaPuPcRG6d8Gh+SDF
-         tDlvCgpIT7UY8/14sRAbJEzG1CGVtUQKfdB5Y+hZ1tUluXdO/WLLhIq0XE2lh/dBrU
-         a8rC7BX0wUQebGJSINkw9lapoQ5IrRHW23vOtkpY=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Parav Pandit <parav@mellanox.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 085/141] IB/mlx5: Fixed reporting counters on 2nd port for Dual port RoCE
-Date:   Fri, 19 Jul 2019 00:01:50 -0400
-Message-Id: <20190719040246.15945-85-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190719040246.15945-1-sashal@kernel.org>
-References: <20190719040246.15945-1-sashal@kernel.org>
+        id S1728034AbfGSLqz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Jul 2019 07:46:55 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:41185 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbfGSLqz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Jul 2019 07:46:55 -0400
+Received: by mail-qt1-f195.google.com with SMTP id d17so30510923qtj.8
+        for <linux-rdma@vger.kernel.org>; Fri, 19 Jul 2019 04:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=O0jjdFiNkuhqvchRHcGPsH0wilH8Gr779DZhO2v0yAM=;
+        b=RdYYPjgFXt84MxWQpA/qfrN+EJDTa9rrTndOvR8uYUggRYxMr3CgbZNKnOglA/J+sG
+         PRI+/muDSuH0SL3OZGleJlUtKDyKEnTMSACsDVbbvGR1FBVjgj+2R9tekjfptsxZ9+pc
+         PrTVg62NYBKMAPNqOaw1He6jAuYgfLWPbmT26/d1W8ZKkqcBa+CYOMHuPiPFq3crJTF4
+         VtvsJE0GNwJoGy4DlcoidUoyLodIJQwP+9W+Qjeftqk/UjyPlzj1YqAucsDEYojah+tO
+         ihVu7VmMnKu7VKMY2O+oBfSnmprqqvs/0fdmLqivNLE12yC+LM8EaeR1ZrPK1YRbMNXJ
+         eDUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=O0jjdFiNkuhqvchRHcGPsH0wilH8Gr779DZhO2v0yAM=;
+        b=App+qTYJyK4/E6A18GBsYik6gEvSkbV/JMiRoyUhT1Gg2LbLhqtINRAKx1xhn+aFhn
+         C0TCU3DSHMTT2/XHkuaxzEH6nKWbWO26S4/gqd9aESnlfP/8/2eZamWFu0s64lEuBBkY
+         qjyNt8scISfto3i9ptSjp4PicAdftwI1SelULpNRJxuwht6kPBYSP4zfDTkgKM2RaGk9
+         9vqed7wCJMRU0/5pFOokEDTcxupYMN+jttB8NZHMlOXE/z7ij3S3XmbnYKscitEQG4WA
+         hAajOwW3M7N7M75ifUJu6IWvcFu5ku3B1cd7OyUGpMRIGDESDxUPQWGiS4uUYoDkVce/
+         vRfg==
+X-Gm-Message-State: APjAAAUk+jQG9QCwrAcGT3j1K6B1iu3qCh7VMuBiMKLXdkNUdhe5BWaD
+        PR59GY2+YWggeDrrw1YskKhxEw==
+X-Google-Smtp-Source: APXvYqw+DoelgWqF+sf2FJBzeu5MZkcOMSmEGnTRlWydQmmWOISapKniAPR3tnLoiwu8g9V+lVI7IA==
+X-Received: by 2002:ac8:f91:: with SMTP id b17mr36341307qtk.352.1563536814571;
+        Fri, 19 Jul 2019 04:46:54 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id y42sm20591453qtc.66.2019.07.19.04.46.53
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 19 Jul 2019 04:46:53 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hoRLh-00049m-Ax; Fri, 19 Jul 2019 08:46:53 -0300
+Date:   Fri, 19 Jul 2019 08:46:53 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Yuval Shaia <yuval.shaia@oracle.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Shamir Rabinovitch <srabinov7@gmail.com>, dledford@redhat.com,
+        leon@kernel.org, monis@mellanox.com, parav@mellanox.com,
+        danielj@mellanox.com, kamalheib1@gmail.com, markz@mellanox.com,
+        swise@opengridcomputing.com, johannes.berg@intel.com,
+        michaelgur@mellanox.com, markb@mellanox.com,
+        dan.carpenter@oracle.com, bvanassche@acm.org, maxg@mellanox.com,
+        israelr@mellanox.com, galpress@amazon.com, denisd@mellanox.com,
+        yuvalav@mellanox.com, dennis.dalessandro@intel.com,
+        will@kernel.org, ereza@mellanox.com, linux-rdma@vger.kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Subject: Re: [PATCH 08/25] IB/uverbs: ufile must be freed only when not used
+ anymore
+Message-ID: <20190719114653.GA15816@ziepe.ca>
+References: <20190716181200.4239-1-srabinov7@gmail.com>
+ <20190716181200.4239-9-srabinov7@gmail.com>
+ <20190717115354.GC12119@ziepe.ca>
+ <20190717192525.GA2515@shamir-ThinkPad-X240>
+ <20190717193313.GN12119@ziepe.ca>
+ <20190717203112.GA7307@lap1>
+ <20190717204505.GD32320@bombadil.infradead.org>
+ <20190717213636.GA2797@lap1>
+ <20190718121747.GB1667@ziepe.ca>
+ <20190718204551.GA5043@lap1>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190718204551.GA5043@lap1>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@mellanox.com>
+On Thu, Jul 18, 2019 at 11:45:52PM +0300, Yuval Shaia wrote:
+> On Thu, Jul 18, 2019 at 09:17:47AM -0300, Jason Gunthorpe wrote:
+> > On Thu, Jul 18, 2019 at 12:36:37AM +0300, Yuval Shaia wrote:
+> > > On Wed, Jul 17, 2019 at 01:45:05PM -0700, Matthew Wilcox wrote:
+> > > > On Wed, Jul 17, 2019 at 11:31:12PM +0300, Yuval Shaia wrote:
+> > > > > On Wed, Jul 17, 2019 at 04:33:13PM -0300, Jason Gunthorpe wrote:
+> > > > > > Like I said, drivers that require the creating ucontext as part of the
+> > > > > > PD and MR cannot support sharing.
+> > > > > 
+> > > > > Even if we can make sure the process that creates the MR stays alive until
+> > > > > all reference to this MR completes?
+> > > > 
+> > > > The kernel can't rely on userspace to do that.
+> > > 
+> > > ok, how about this: we know that for MR to be shared the memory behinds it
+> > > should also be shared.
+> > > 
+> > > In this case, i know it sounds horrifying but do we care that the process
+> > > that originally created this MR exits? i.e. how about just before the
+> > > process leaves this world we will find some other ucontext to hold these
+> > > memory mappings that driver holds?
+> > > Or how about moving this mapping from ucontext pointed by ib_mr directly to
+> > > ib_mr?
+> > 
+> > What are you worrying about? My point is we don't need to *anything*
+> > if the driver objects for PD and MR don't rely on the ucontext. This
+> > appears to be the normal case.
+> 
+> but we saw that mlx4 (and i think also 5) do use the ucontext, i think to
+> undo umem_get stuff.
 
-[ Upstream commit 2f40cf30c8644360d37287861d5288f00eab35e5 ]
+It is unnecessary, remove it.
 
-Currently during dual port IB device registration in below code flow,
+> > MRs already work fine if they outlive the creating process.
+> 
+> You mean if we leave the creating process alive?
 
-ib_register_device()
-  ib_device_register_sysfs()
-    ib_setup_port_attrs()
-      add_port()
-        get_counter_table()
-          get_perf_mad()
-            process_mad()
-              mlx5_ib_process_mad()
+No, let it die, it is fine
 
-mlx5_ib_process_mad() fails on 2nd port when both the ports are not fully
-setup at the device level (because 2nd port is unaffiliated).
-
-As a result, get_perf_mad() registers different PMA counter group for 1st
-and 2nd port, namely pma_counter_ext and pma_counter. However both ports
-have the same capability and counter offsets.
-
-Due to this when counters are read by the user via sysfs in below code
-flow, counters are queried from wrong location from the device mainly from
-PPCNT instead of VPORT counters.
-
-show_pma_counter()
-  get_perf_mad()
-    process_mad()
-      mlx5_ib_process_mad()
-        process_pma_cmd()
-
-This shows all zero counters for 2nd port.
-
-To overcome this, process_pma_cmd() is invoked, and when unaffiliated port
-is not yet setup during device registration phase, make the query on the
-first port.  while at it, only process_pma_cmd() needs to work on the
-native port number and underlying mdev, so shift the get, put calls to
-where its needed inside process_pma_cmd().
-
-Fixes: 212f2a87b74f ("IB/mlx5: Route MADs for dual port RoCE")
-Signed-off-by: Parav Pandit <parav@mellanox.com>
-Reviewed-by: Daniel Jurgens <danielj@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/hw/mlx5/mad.c | 60 +++++++++++++++++++-------------
- 1 file changed, 36 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/mad.c b/drivers/infiniband/hw/mlx5/mad.c
-index 6c529e6f3a01..348c1df69cdc 100644
---- a/drivers/infiniband/hw/mlx5/mad.c
-+++ b/drivers/infiniband/hw/mlx5/mad.c
-@@ -200,19 +200,33 @@ static void pma_cnt_assign(struct ib_pma_portcounters *pma_cnt,
- 			     vl_15_dropped);
- }
- 
--static int process_pma_cmd(struct mlx5_core_dev *mdev, u8 port_num,
-+static int process_pma_cmd(struct mlx5_ib_dev *dev, u8 port_num,
- 			   const struct ib_mad *in_mad, struct ib_mad *out_mad)
- {
--	int err;
-+	struct mlx5_core_dev *mdev;
-+	bool native_port = true;
-+	u8 mdev_port_num;
- 	void *out_cnt;
-+	int err;
- 
-+	mdev = mlx5_ib_get_native_port_mdev(dev, port_num, &mdev_port_num);
-+	if (!mdev) {
-+		/* Fail to get the native port, likely due to 2nd port is still
-+		 * unaffiliated. In such case default to 1st port and attached
-+		 * PF device.
-+		 */
-+		native_port = false;
-+		mdev = dev->mdev;
-+		mdev_port_num = 1;
-+	}
- 	/* Declaring support of extended counters */
- 	if (in_mad->mad_hdr.attr_id == IB_PMA_CLASS_PORT_INFO) {
- 		struct ib_class_port_info cpi = {};
- 
- 		cpi.capability_mask = IB_PMA_CLASS_CAP_EXT_WIDTH;
- 		memcpy((out_mad->data + 40), &cpi, sizeof(cpi));
--		return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
-+		err = IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
-+		goto done;
- 	}
- 
- 	if (in_mad->mad_hdr.attr_id == IB_PMA_PORT_COUNTERS_EXT) {
-@@ -221,11 +235,13 @@ static int process_pma_cmd(struct mlx5_core_dev *mdev, u8 port_num,
- 		int sz = MLX5_ST_SZ_BYTES(query_vport_counter_out);
- 
- 		out_cnt = kvzalloc(sz, GFP_KERNEL);
--		if (!out_cnt)
--			return IB_MAD_RESULT_FAILURE;
-+		if (!out_cnt) {
-+			err = IB_MAD_RESULT_FAILURE;
-+			goto done;
-+		}
- 
- 		err = mlx5_core_query_vport_counter(mdev, 0, 0,
--						    port_num, out_cnt, sz);
-+						    mdev_port_num, out_cnt, sz);
- 		if (!err)
- 			pma_cnt_ext_assign(pma_cnt_ext, out_cnt);
- 	} else {
-@@ -234,20 +250,23 @@ static int process_pma_cmd(struct mlx5_core_dev *mdev, u8 port_num,
- 		int sz = MLX5_ST_SZ_BYTES(ppcnt_reg);
- 
- 		out_cnt = kvzalloc(sz, GFP_KERNEL);
--		if (!out_cnt)
--			return IB_MAD_RESULT_FAILURE;
-+		if (!out_cnt) {
-+			err = IB_MAD_RESULT_FAILURE;
-+			goto done;
-+		}
- 
--		err = mlx5_core_query_ib_ppcnt(mdev, port_num,
-+		err = mlx5_core_query_ib_ppcnt(mdev, mdev_port_num,
- 					       out_cnt, sz);
- 		if (!err)
- 			pma_cnt_assign(pma_cnt, out_cnt);
--		}
--
-+	}
- 	kvfree(out_cnt);
--	if (err)
--		return IB_MAD_RESULT_FAILURE;
--
--	return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
-+	err = err ? IB_MAD_RESULT_FAILURE :
-+		    IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
-+done:
-+	if (native_port)
-+		mlx5_ib_put_native_port_mdev(dev, port_num);
-+	return err;
- }
- 
- int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port_num,
-@@ -259,8 +278,6 @@ int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port_num,
- 	struct mlx5_ib_dev *dev = to_mdev(ibdev);
- 	const struct ib_mad *in_mad = (const struct ib_mad *)in;
- 	struct ib_mad *out_mad = (struct ib_mad *)out;
--	struct mlx5_core_dev *mdev;
--	u8 mdev_port_num;
- 	int ret;
- 
- 	if (WARN_ON_ONCE(in_mad_size != sizeof(*in_mad) ||
-@@ -269,19 +286,14 @@ int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port_num,
- 
- 	memset(out_mad->data, 0, sizeof(out_mad->data));
- 
--	mdev = mlx5_ib_get_native_port_mdev(dev, port_num, &mdev_port_num);
--	if (!mdev)
--		return IB_MAD_RESULT_FAILURE;
--
--	if (MLX5_CAP_GEN(mdev, vport_counters) &&
-+	if (MLX5_CAP_GEN(dev->mdev, vport_counters) &&
- 	    in_mad->mad_hdr.mgmt_class == IB_MGMT_CLASS_PERF_MGMT &&
- 	    in_mad->mad_hdr.method == IB_MGMT_METHOD_GET) {
--		ret = process_pma_cmd(mdev, mdev_port_num, in_mad, out_mad);
-+		ret = process_pma_cmd(dev, port_num, in_mad, out_mad);
- 	} else {
- 		ret =  process_mad(ibdev, mad_flags, port_num, in_wc, in_grh,
- 				   in_mad, out_mad);
- 	}
--	mlx5_ib_put_native_port_mdev(dev, port_num);
- 	return ret;
- }
- 
--- 
-2.20.1
-
+Jason
