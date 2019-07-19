@@ -2,41 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1396DB10
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jul 2019 06:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E686DCB3
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jul 2019 06:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732077AbfGSEGT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Jul 2019 00:06:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39298 "EHLO mail.kernel.org"
+        id S1727376AbfGSESA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Jul 2019 00:18:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732073AbfGSEGS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Jul 2019 00:06:18 -0400
+        id S2389384AbfGSENz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 19 Jul 2019 00:13:55 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C894C21873;
-        Fri, 19 Jul 2019 04:06:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B274421851;
+        Fri, 19 Jul 2019 04:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563509177;
-        bh=bZZC5OJ2ldg7kQh44V/WwpdOG7mtNTIKY7rjVmIV2Ww=;
+        s=default; t=1563509634;
+        bh=e4DUiC3IJQIlg6RB+KwWEYdjlw+uFfszomFqe2CdiC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FhUtGdcxvNHcUDffJJr0yjxkZQL/OeNI/Jm8xceEgVGWFjHZ1v8rfwkPERli1sbVL
-         XFV2J9OOwQe3watLvN42GMwV6ntNDp10ypbPTHSFoODjocq1BDD+PGnf5jrK1EROYl
-         jx5NDjoXRqT8RR7uToieV+F1Iy8Rs6mC7zusvc4k=
+        b=j+tJxmyCWnYbq2nl9dMPe+51V4mV+53uoT483rhva1HyIQ/5hLimHxxWqWPQnzpYb
+         tuq8i3wic8s7nEceSOD7+64f0rJ1aASqQDrIEfwT+sDZJGRCCfX5S+a+Aa5qZN7dmI
+         VKwBYpYdvWKhA2yL0HWBNi5clkj/CQnIHegvlWJw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dag Moxnes <dag.moxnes@oracle.com>,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+Cc:     "Liu, Changcheng" <changcheng.liu@intel.com>,
+        Changcheng Liu <changcheng.liu@aliyun.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 107/141] RDMA/core: Fix race when resolving IP address
-Date:   Fri, 19 Jul 2019 00:02:12 -0400
-Message-Id: <20190719040246.15945-107-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 30/45] RDMA/i40iw: Set queue pair state when being queried
+Date:   Fri, 19 Jul 2019 00:12:49 -0400
+Message-Id: <20190719041304.18849-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190719040246.15945-1-sashal@kernel.org>
-References: <20190719040246.15945-1-sashal@kernel.org>
+In-Reply-To: <20190719041304.18849-1-sashal@kernel.org>
+References: <20190719041304.18849-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,61 +45,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dag Moxnes <dag.moxnes@oracle.com>
+From: "Liu, Changcheng" <changcheng.liu@intel.com>
 
-[ Upstream commit d8d9ec7dc5abbb3f11d866e983c4984f5c2de9d6 ]
+[ Upstream commit 2e67e775845373905d2c2aecb9062c2c4352a535 ]
 
-Use the neighbour lock when copying the MAC address from the neighbour
-data struct in dst_fetch_ha.
+The API for ib_query_qp requires the driver to set qp_state and
+cur_qp_state on return, add the missing sets.
 
-When not using the lock, it is possible for the function to race with
-neigh_update(), causing it to copy an torn MAC address:
-
-rdma_resolve_addr()
-  rdma_resolve_ip()
-    addr_resolve()
-      addr_resolve_neigh()
-        fetch_ha()
-          dst_fetch_ha()
-	     memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN)
-
-and
-
-net_ioctl()
-  arp_ioctl()
-    arp_rec_delete()
-      arp_invalidate()
-        neigh_update()
-          __neigh_update()
-	    memcpy(&neigh->ha, lladdr, dev->addr_len)
-
-It is possible to provoke this error by calling rdma_resolve_addr() in a
-tight loop, while deleting the corresponding ARP entry in another tight
-loop.
-
-Fixes: 51d45974515c ("infiniband: addr: Consolidate code to fetch neighbour hardware address from dst.")
-Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+Fixes: d37498417947 ("i40iw: add files for iwarp interface")
+Signed-off-by: Changcheng Liu <changcheng.liu@aliyun.com>
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
 Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/addr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index d0b04b0d309f..4ca31ce29a29 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -336,7 +336,7 @@ static int dst_fetch_ha(const struct dst_entry *dst,
- 		neigh_event_send(n, NULL);
- 		ret = -ENODATA;
- 	} else {
--		memcpy(dev_addr->dst_dev_addr, n->ha, MAX_ADDR_LEN);
-+		neigh_ha_snapshot(dev_addr->dst_dev_addr, n, dst->dev);
- 	}
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+index 095912fb3201..c3d2400e36b9 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+@@ -812,6 +812,8 @@ static int i40iw_query_qp(struct ib_qp *ibqp,
+ 	struct i40iw_qp *iwqp = to_iwqp(ibqp);
+ 	struct i40iw_sc_qp *qp = &iwqp->sc_qp;
  
- 	neigh_release(n);
++	attr->qp_state = iwqp->ibqp_state;
++	attr->cur_qp_state = attr->qp_state;
+ 	attr->qp_access_flags = 0;
+ 	attr->cap.max_send_wr = qp->qp_uk.sq_size;
+ 	attr->cap.max_recv_wr = qp->qp_uk.rq_size;
 -- 
 2.20.1
 
