@@ -2,107 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 701C26E621
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jul 2019 15:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9957C6EA60
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jul 2019 19:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbfGSNM6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Jul 2019 09:12:58 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:47005 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727354AbfGSNM6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Jul 2019 09:12:58 -0400
-Received: by mail-io1-f68.google.com with SMTP id i10so58196567iol.13
-        for <linux-rdma@vger.kernel.org>; Fri, 19 Jul 2019 06:12:57 -0700 (PDT)
+        id S1729117AbfGSRxr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Jul 2019 13:53:47 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:45321 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728079AbfGSRxr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Jul 2019 13:53:47 -0400
+Received: by mail-pf1-f193.google.com with SMTP id r1so14483816pfq.12
+        for <linux-rdma@vger.kernel.org>; Fri, 19 Jul 2019 10:53:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s91tKYIQeKJmNASGzuZv62jiVZtvz7cNLDd/Mhsd4sI=;
-        b=Eq21zHlTIxuHyTj24874Uia3TBD6JWRoJBGL8HEpwLYwO0hdt4FpurhceTYVlMceuu
-         sP9U8EaERO10hICk89qjaOP5X4UzWG+rM0z9WeO4UO1DgkioRYhU6vqTH+tugxhSOPwE
-         MvP+eupf7S88R3RtL/u5B0LFSxabJCoHMbqeDX3C9TtSYw9REmt8wJJp5u2M5ICuc8ru
-         PamhdpDm4iWuSCqYszFDWpnsLqlvZxLA72wOdzY3n0iFPxBFh4/enjoHLMni5AowZyfU
-         OcRwWSpjcAXnFHQ0V+Yet0W4wc/RYIZzTH1oHviTAcdEhfd3Zd82+LEvr0KbPwUiFZAI
-         I2Ow==
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=iGPvaS6tOep7fRaUDJWwY9IkFV0/KggdJvA3ALwITQw=;
+        b=hvQROMCLq3L5eZAkxO/KIRlTY9DIpBChOD6/tojKLvSA3S2yX1Z1aO8F+rZ2e4hUJg
+         nMpoffYWm9TP1diQlKqHZHrFnDsvozVjUkYKNbETQZBMyytHkDFPKNbJVQ6sAZTXXT9e
+         FCsLO/e2s4b8Tg5ozVsFhsGnlxx7g0YK99SgBLvG4Rb+FK0XBQaRO8fczVA6LQxv68dQ
+         ScRCxQVoRCk6F9VZhs6Mz0T0IRIteNYUbyKISbk8aRskxTxFqI6HPYY93RPwsuQ5dSLM
+         vzxaUhsXq0W4kusG5qehPxJJpiPUDobSMcZCJeZQS//QLU9CvTBEaOKNvG2SEh5ZqcnF
+         9vDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s91tKYIQeKJmNASGzuZv62jiVZtvz7cNLDd/Mhsd4sI=;
-        b=hsfoQb60FlNtxON826ymnpHEhSrmpTr4NI5cmUFFtlxapq+FpWkQubsQbpZncjcXwO
-         3/lHW5JZ7BXZv9u7S+3Re4JH41mW/7SNI5l3OSn+1C0LiNtfusP1v4m85dgDGkOFm12M
-         moGNFDb3g4eC0Aq08H9SZSxir4oRL5FQo8TjEwmIi55x7z7PXifMeglcmSJ+aI5kRC/k
-         eJMYREL/33jHLaOodbaIlg4ictMKPS/fbd/bB5Yk2geJDyCpRmwYy/3ojSi2FBjYM6Hy
-         x7gevIB8yHUSI704oz+PWhqeCTtTllrdfN47LkoyA1OvWSkNlzAYP+HWYpwFhMW7aGh7
-         46Nw==
-X-Gm-Message-State: APjAAAUfn+FSOYkeY7EumX7r22rdsQX48N11paYI9pNK84IgxPZCY8ys
-        27ejIGF8NUJ6qyhlmGIb3i1zmTAz+DSFNxX92HKt
-X-Google-Smtp-Source: APXvYqx1oWVR2cuAetmaPy1R06U3aM9TtEWw/74jY3DbA4y4W2lGaVACp9491HJ2avHInLSMczhmXCExrEmelimPS54=
-X-Received: by 2002:a6b:f216:: with SMTP id q22mr10710978ioh.65.1563541977484;
- Fri, 19 Jul 2019 06:12:57 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=iGPvaS6tOep7fRaUDJWwY9IkFV0/KggdJvA3ALwITQw=;
+        b=RSLKVuWIuBBDnxxR+eE3Vyg+aU1j4Aw51SwHcZdDolKhts5FiKLdhNL2Yh7oaZKjT7
+         driqxkh8T3B5B0nIEOVrHMmIyGs/i1BfADz+iXv96ykd0PchkJaFBxStIhjYnl9IEUPc
+         sl2grV9CHuOH4CJ6l32LtMkbNrqdAcPCo3srZ7kTwkPTpOvb+ex4ip/hVyo4ieYIX/xN
+         gfcsgLVTY+dK+AXAoIRkVaswgOyc5hL3YcYijdq9qIC8oQaVpN9kKPuDDIVo2irl5GeH
+         oV7xaKJ1IhEEfIXn2jppidHSeKLHcbwPNqvQkXQYe+WE8GJbirPX8MJvmMQMRfCdonME
+         Aapg==
+X-Gm-Message-State: APjAAAWGerqU/bl3HxnkmK+5phAT7plThFWGxtw4jXi87yGfAKCqAQCV
+        /aMymobK+BlTHWlrcvLv8iOkWoum
+X-Google-Smtp-Source: APXvYqwib9BkocGO+RxsJnw9zvThJEdIsAOzsdb7zIqPuBLadwJZmCDwMhH0B/wItsIJyQIMkkPewg==
+X-Received: by 2002:a17:90a:2305:: with SMTP id f5mr62219338pje.128.1563558826591;
+        Fri, 19 Jul 2019 10:53:46 -0700 (PDT)
+Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id a20sm26261877pjo.0.2019.07.19.10.53.46
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 19 Jul 2019 10:53:46 -0700 (PDT)
+Date:   Fri, 19 Jul 2019 10:53:39 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        netdev <netdev@vger.kernel.org>, David Ahern <dsahern@gmail.com>,
+        Mark Zhang <markz@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH iproute2-rc v1 0/7] Statistics counter support
+Message-ID: <20190719105339.36432e1b@hermes.lan>
+In-Reply-To: <20190717143157.27205-1-leon@kernel.org>
+References: <20190717143157.27205-1-leon@kernel.org>
 MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <CAHg0HuzUaKs-ACHah-VdNHbot0_usx4ErMesVAw8+DFR63FFqw@mail.gmail.com>
- <20190709110036.GQ7034@mtr-leonro.mtl.com> <CAD9gYJL=fo4Oa2hmU4WZgQrzypRbzoPrrFjNQKP2EZFXYxYNCA@mail.gmail.com>
- <20190709120606.GB3436@mellanox.com> <CAMGffE=T+FVfVzV5cCtVrm_6ikdJ9pjpFsPgx+t0EUpegoZELQ@mail.gmail.com>
- <20190709131932.GI3436@mellanox.com> <1cd86f4b-7cd1-4e00-7111-5c8e09ba06be@grimberg.me>
-In-Reply-To: <1cd86f4b-7cd1-4e00-7111-5c8e09ba06be@grimberg.me>
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Date:   Fri, 19 Jul 2019 15:12:46 +0200
-Message-ID: <CAHg0HuxJn8Uv7jJKyTd36udqvMF+ajECjpOhnTJcnHV_PFrdRg@mail.gmail.com>
-Subject: Re: [PATCH v4 00/25] InfiniBand Transport (IBTRS) and Network Block
- Device (IBNBD)
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Jinpu Wang <jinpu.wang@cloud.ionos.com>,
-        Jinpu Wang <jinpuwang@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        Roman Pen <r.peniaev@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Sagi,
+On Wed, 17 Jul 2019 17:31:49 +0300
+Leon Romanovsky <leon@kernel.org> wrote:
 
-thanks a lot for the information. We are doing the right thing
-regarding the invalidation (your 2f122e4f5107), but we do use
-unsignalled sends and need to fix that. Please correct me if I'm
-wrong: The patches (b4b591c87f2b, b4b591c87f2b) fix the problem that
-if the ack from target is lost for some reason, the initiators HCA
-will resend it even after the request is completed.
-But doesn't the same problem persist also other way around: for the
-lost acks from client? I mean, target is did a send for the "read"
-IOs; client completed the request (after invalidation, refcount
-dropped to 0, etc), but the ack is not delivered to the HCA of the
-target, so the target will also resend it. This seems unfixable, since
-the client can't possible know if the server received his ack or not?
-Doesn't the problem go away, if rdma_conn_param.retry_count is just set to 0?
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Changelog v0->v1:
+>  * Fixed typo in manual page (Gal)
+>  * Rebased on top of d035cc1b "ip tunnel: warn when changing IPv6 tunnel without tunnel name"
+>  * Dropped update header file because it was already merged.
+> 
+> ---------------------------------------------------------------------------------------
+> 
+> Hi,
+> 
+> This is supplementary part of accepted to rdma-next kernel series,
+> that kernel series provided an option to get various counters: global
+> and per-objects.
+> 
+> Currently, all counters are printed in format similar to other
+> device/link properties, while "-p" option will print them in table like
+> format.
+> 
+> [leonro@server ~]$ rdma stat show
+> link mlx5_0/1 rx_write_requests 0 rx_read_requests 0 rx_atomic_requests
+> 0 out_of_buffer 0 duplicate_request 0 rnr_nak_retry_err 0 packet_seq_err
+> 0 implied_nak_seq_err 0 local_ack_timeout_err 0 resp_local_length_error
+> 0 resp_cqe_error 0 req_cqe_error 0 req_remote_invalid_request 0
+> req_remote_access_errors 0 resp_remote_access_errors 0
+> resp_cqe_flush_error 0 req_cqe_flush_error 0 rp_cnp_ignored 0
+> rp_cnp_handled 0 np_ecn_marked_roce_packets 0 np_cnp_sent 0
+> 
+> [leonro@server ~]$ rdma stat show -p
+> link mlx5_0/1
+> 	rx_write_requests 0
+> 	rx_read_requests 0
+> 	rx_atomic_requests 0
+> 	out_of_buffer 0
+> 	duplicate_request 0
+> 	rnr_nak_retry_err 0
+> 	packet_seq_err 0
+> 	implied_nak_seq_err 0
+> 	local_ack_timeout_err 0
+> 	resp_local_length_error 0
+> 	resp_cqe_error 0
+> 	req_cqe_error 0
+> 	req_remote_invalid_request 0
+> 	req_remote_access_errors 0
+> 	resp_remote_access_errors 0
+> 	resp_cqe_flush_error 0
+> 	req_cqe_flush_error 0
+> 	rp_cnp_ignored 0
+> 	rp_cnp_handled 0
+> 	np_ecn_marked_roce_packets 0
+> 	np_cnp_sent 0
+> 
+> Thanks
+> 
+> Mark Zhang (7):
+>   rdma: Add "stat qp show" support
+>   rdma: Add get per-port counter mode support
+>   rdma: Add rdma statistic counter per-port auto mode support
+>   rdma: Make get_port_from_argv() returns valid port in strict port mode
+>   rdma: Add stat manual mode support
+>   rdma: Add default counter show support
+>   rdma: Document counter statistic
+> 
+>  man/man8/rdma-dev.8       |   1 +
+>  man/man8/rdma-link.8      |   1 +
+>  man/man8/rdma-resource.8  |   1 +
+>  man/man8/rdma-statistic.8 | 167 +++++++++
+>  man/man8/rdma.8           |   7 +-
+>  rdma/Makefile             |   2 +-
+>  rdma/rdma.c               |   3 +-
+>  rdma/rdma.h               |   1 +
+>  rdma/stat.c               | 759 ++++++++++++++++++++++++++++++++++++++
+>  rdma/utils.c              |  17 +-
+>  10 files changed, 954 insertions(+), 5 deletions(-)
+>  create mode 100644 man/man8/rdma-statistic.8
+>  create mode 100644 rdma/stat.c
+> 
+> --
+> 2.20.1
+> 
 
-Thanks for your help,
-Best,
-Danil.
-
-On Tue, Jul 9, 2019 at 11:27 PM Sagi Grimberg <sagi@grimberg.me> wrote:
->
->
-> >> Thanks Jason for feedback.
-> >> Can you be  more specific about  "the invalidation model for MR was wrong"
-> >
-> > MR's must be invalidated before data is handed over to the block
-> > layer. It can't leave MRs open for access and then touch the memory
-> > the MR covers.
->
-> Jason is referring to these fixes:
-> 2f122e4f5107 ("nvme-rdma: wait for local invalidation before completing
-> a request")
-> 4af7f7ff92a4 ("nvme-rdma: don't complete requests before a send work
-> request has completed")
-> b4b591c87f2b ("nvme-rdma: don't suppress send completions")
+Applied now, thanks
