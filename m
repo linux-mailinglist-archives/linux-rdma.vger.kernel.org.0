@@ -2,39 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8086DF64
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jul 2019 06:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2956DE9F
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jul 2019 06:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729723AbfGSEea (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Jul 2019 00:34:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33684 "EHLO mail.kernel.org"
+        id S1731614AbfGSEFY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Jul 2019 00:05:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729693AbfGSEBx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Jul 2019 00:01:53 -0400
+        id S1731593AbfGSEFY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 19 Jul 2019 00:05:24 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D5A321851;
-        Fri, 19 Jul 2019 04:01:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CE98218BA;
+        Fri, 19 Jul 2019 04:05:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563508912;
-        bh=+hCM6REWCGyOM6ATFUsntBdajWBPV6AdXDvS2mwE8Qg=;
+        s=default; t=1563509123;
+        bh=NYkSxEIeir9aZN0kE1CzhBw5NrjJZv98gZeE7OX9fLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fzWYcQuMN9EAw0u2vd5/2Q+4CK1ltGJPIP/ygvB+bUP4cS38CHYs0xHZa3UzNPY5O
-         GSqqkvR9NRCzYGPKYvqmFrMz4OzZD1/zF0YCUOlENOw8xzOBLY51cDvPPQpYk6/tYH
-         A/nO+OMQjzuiiUYOXPD9q+zxuJzw6NmeliD7AY0k=
+        b=VujGr2NgVyJdza39W5CLi0AzcxRujfBQxOBYOHwjb0XuppGWKwDxF0AbtgNZSLtpd
+         5fZa+RfMTSEarPX83wlGQi4lrp9vaimnfTpQlFEWfYGm1y0An/UWjqaDh3sYovNN5J
+         gSHZncJcE/G/cUmuJWc9ilq2dwL/OYHwx7z72VNE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maor Gottlieb <maorg@mellanox.com>, Roi Dayan <roid@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 155/171] net/mlx5: E-Switch, Fix default encap mode
-Date:   Thu, 18 Jul 2019 23:56:26 -0400
-Message-Id: <20190719035643.14300-155-sashal@kernel.org>
+Cc:     "Liu, Changcheng" <changcheng.liu@intel.com>,
+        Changcheng Liu <changcheng.liu@aliyun.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.1 082/141] RDMA/i40iw: Set queue pair state when being queried
+Date:   Fri, 19 Jul 2019 00:01:47 -0400
+Message-Id: <20190719040246.15945-82-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190719035643.14300-1-sashal@kernel.org>
-References: <20190719035643.14300-1-sashal@kernel.org>
+In-Reply-To: <20190719040246.15945-1-sashal@kernel.org>
+References: <20190719040246.15945-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,66 +45,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@mellanox.com>
+From: "Liu, Changcheng" <changcheng.liu@intel.com>
 
-[ Upstream commit 9a64144d683a4395f57562d90247c61a0bf5105f ]
+[ Upstream commit 2e67e775845373905d2c2aecb9062c2c4352a535 ]
 
-Encap mode is related to switchdev mode only. Move the init of
-the encap mode to eswitch_offloads. Before this change, we reported
-that eswitch supports encap, even tough the device was in non
-SRIOV mode.
+The API for ib_query_qp requires the driver to set qp_state and
+cur_qp_state on return, add the missing sets.
 
-Fixes: 7768d1971de67 ('net/mlx5: E-Switch, Add control for encapsulation')
-Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-Reviewed-by: Roi Dayan <roid@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Fixes: d37498417947 ("i40iw: add files for iwarp interface")
+Signed-off-by: Changcheng Liu <changcheng.liu@aliyun.com>
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.c          | 5 -----
- drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 7 +++++++
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-index 6a921e24cd5e..e9339e7d6a18 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-@@ -1882,11 +1882,6 @@ int mlx5_eswitch_init(struct mlx5_core_dev *dev)
- 	esw->enabled_vports = 0;
- 	esw->mode = SRIOV_NONE;
- 	esw->offloads.inline_mode = MLX5_INLINE_MODE_NONE;
--	if (MLX5_CAP_ESW_FLOWTABLE_FDB(dev, reformat) &&
--	    MLX5_CAP_ESW_FLOWTABLE_FDB(dev, decap))
--		esw->offloads.encap = DEVLINK_ESWITCH_ENCAP_MODE_BASIC;
--	else
--		esw->offloads.encap = DEVLINK_ESWITCH_ENCAP_MODE_NONE;
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+index a8352e3ca23d..f8cc0eacc221 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+@@ -773,6 +773,8 @@ static int i40iw_query_qp(struct ib_qp *ibqp,
+ 	struct i40iw_qp *iwqp = to_iwqp(ibqp);
+ 	struct i40iw_sc_qp *qp = &iwqp->sc_qp;
  
- 	dev->priv.eswitch = esw;
- 	return 0;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-index 47b446d30f71..c2beadc41c40 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-@@ -1840,6 +1840,12 @@ int esw_offloads_init(struct mlx5_eswitch *esw, int vf_nvports,
- {
- 	int err;
- 
-+	if (MLX5_CAP_ESW_FLOWTABLE_FDB(esw->dev, reformat) &&
-+	    MLX5_CAP_ESW_FLOWTABLE_FDB(esw->dev, decap))
-+		esw->offloads.encap = DEVLINK_ESWITCH_ENCAP_MODE_BASIC;
-+	else
-+		esw->offloads.encap = DEVLINK_ESWITCH_ENCAP_MODE_NONE;
-+
- 	err = esw_offloads_steering_init(esw, vf_nvports, total_nvports);
- 	if (err)
- 		return err;
-@@ -1901,6 +1907,7 @@ void esw_offloads_cleanup(struct mlx5_eswitch *esw)
- 	esw_offloads_devcom_cleanup(esw);
- 	esw_offloads_unload_all_reps(esw, num_vfs);
- 	esw_offloads_steering_cleanup(esw);
-+	esw->offloads.encap = DEVLINK_ESWITCH_ENCAP_MODE_NONE;
- }
- 
- static int esw_mode_from_devlink(u16 mode, u16 *mlx5_mode)
++	attr->qp_state = iwqp->ibqp_state;
++	attr->cur_qp_state = attr->qp_state;
+ 	attr->qp_access_flags = 0;
+ 	attr->cap.max_send_wr = qp->qp_uk.sq_size;
+ 	attr->cap.max_recv_wr = qp->qp_uk.rq_size;
 -- 
 2.20.1
 
