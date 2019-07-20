@@ -2,149 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9957C6EA60
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jul 2019 19:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4870A6EE14
+	for <lists+linux-rdma@lfdr.de>; Sat, 20 Jul 2019 08:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729117AbfGSRxr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Jul 2019 13:53:47 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:45321 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728079AbfGSRxr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Jul 2019 13:53:47 -0400
-Received: by mail-pf1-f193.google.com with SMTP id r1so14483816pfq.12
-        for <linux-rdma@vger.kernel.org>; Fri, 19 Jul 2019 10:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iGPvaS6tOep7fRaUDJWwY9IkFV0/KggdJvA3ALwITQw=;
-        b=hvQROMCLq3L5eZAkxO/KIRlTY9DIpBChOD6/tojKLvSA3S2yX1Z1aO8F+rZ2e4hUJg
-         nMpoffYWm9TP1diQlKqHZHrFnDsvozVjUkYKNbETQZBMyytHkDFPKNbJVQ6sAZTXXT9e
-         FCsLO/e2s4b8Tg5ozVsFhsGnlxx7g0YK99SgBLvG4Rb+FK0XBQaRO8fczVA6LQxv68dQ
-         ScRCxQVoRCk6F9VZhs6Mz0T0IRIteNYUbyKISbk8aRskxTxFqI6HPYY93RPwsuQ5dSLM
-         vzxaUhsXq0W4kusG5qehPxJJpiPUDobSMcZCJeZQS//QLU9CvTBEaOKNvG2SEh5ZqcnF
-         9vDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iGPvaS6tOep7fRaUDJWwY9IkFV0/KggdJvA3ALwITQw=;
-        b=RSLKVuWIuBBDnxxR+eE3Vyg+aU1j4Aw51SwHcZdDolKhts5FiKLdhNL2Yh7oaZKjT7
-         driqxkh8T3B5B0nIEOVrHMmIyGs/i1BfADz+iXv96ykd0PchkJaFBxStIhjYnl9IEUPc
-         sl2grV9CHuOH4CJ6l32LtMkbNrqdAcPCo3srZ7kTwkPTpOvb+ex4ip/hVyo4ieYIX/xN
-         gfcsgLVTY+dK+AXAoIRkVaswgOyc5hL3YcYijdq9qIC8oQaVpN9kKPuDDIVo2irl5GeH
-         oV7xaKJ1IhEEfIXn2jppidHSeKLHcbwPNqvQkXQYe+WE8GJbirPX8MJvmMQMRfCdonME
-         Aapg==
-X-Gm-Message-State: APjAAAWGerqU/bl3HxnkmK+5phAT7plThFWGxtw4jXi87yGfAKCqAQCV
-        /aMymobK+BlTHWlrcvLv8iOkWoum
-X-Google-Smtp-Source: APXvYqwib9BkocGO+RxsJnw9zvThJEdIsAOzsdb7zIqPuBLadwJZmCDwMhH0B/wItsIJyQIMkkPewg==
-X-Received: by 2002:a17:90a:2305:: with SMTP id f5mr62219338pje.128.1563558826591;
-        Fri, 19 Jul 2019 10:53:46 -0700 (PDT)
-Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
-        by smtp.gmail.com with ESMTPSA id a20sm26261877pjo.0.2019.07.19.10.53.46
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 19 Jul 2019 10:53:46 -0700 (PDT)
-Date:   Fri, 19 Jul 2019 10:53:39 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        netdev <netdev@vger.kernel.org>, David Ahern <dsahern@gmail.com>,
-        Mark Zhang <markz@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH iproute2-rc v1 0/7] Statistics counter support
-Message-ID: <20190719105339.36432e1b@hermes.lan>
-In-Reply-To: <20190717143157.27205-1-leon@kernel.org>
-References: <20190717143157.27205-1-leon@kernel.org>
+        id S1726504AbfGTGzB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 20 Jul 2019 02:55:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2685 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726476AbfGTGzB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 20 Jul 2019 02:55:01 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 03A546626494DDE4A0FD;
+        Sat, 20 Jul 2019 14:54:59 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Sat, 20 Jul 2019
+ 14:54:56 +0800
+From:   oulijun <oulijun@huawei.com>
+To:     Bart Van Assche <Bart.VanAssche@wdc.com>, <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>
+CC:     linux-rdma <linux-rdma@vger.kernel.org>
+Subject: =?UTF-8?Q?=e3=80=90Question_for_srpt_in_kernel-4.14=e3=80=91?=
+Message-ID: <16008407-2ffd-0bbb-717e-7e874a3a5ee0@huawei.com>
+Date:   Sat, 20 Jul 2019 14:54:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 17 Jul 2019 17:31:49 +0300
-Leon Romanovsky <leon@kernel.org> wrote:
+Hi, Bart Van Assche & Doug Ledford
+  I am targeting a problem about RoCE and SCSI over RDMA from srpt in kernel-4.14. When insmod srpt.ko and insmod hns-roce-hw-v2.ko, it will
+report a warning in srpt_add_one:
+  ib_srpt srpt_add_one(hns_0) failed.
 
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Changelog v0->v1:
->  * Fixed typo in manual page (Gal)
->  * Rebased on top of d035cc1b "ip tunnel: warn when changing IPv6 tunnel without tunnel name"
->  * Dropped update header file because it was already merged.
-> 
-> ---------------------------------------------------------------------------------------
-> 
-> Hi,
-> 
-> This is supplementary part of accepted to rdma-next kernel series,
-> that kernel series provided an option to get various counters: global
-> and per-objects.
-> 
-> Currently, all counters are printed in format similar to other
-> device/link properties, while "-p" option will print them in table like
-> format.
-> 
-> [leonro@server ~]$ rdma stat show
-> link mlx5_0/1 rx_write_requests 0 rx_read_requests 0 rx_atomic_requests
-> 0 out_of_buffer 0 duplicate_request 0 rnr_nak_retry_err 0 packet_seq_err
-> 0 implied_nak_seq_err 0 local_ack_timeout_err 0 resp_local_length_error
-> 0 resp_cqe_error 0 req_cqe_error 0 req_remote_invalid_request 0
-> req_remote_access_errors 0 resp_remote_access_errors 0
-> resp_cqe_flush_error 0 req_cqe_flush_error 0 rp_cnp_ignored 0
-> rp_cnp_handled 0 np_ecn_marked_roce_packets 0 np_cnp_sent 0
-> 
-> [leonro@server ~]$ rdma stat show -p
-> link mlx5_0/1
-> 	rx_write_requests 0
-> 	rx_read_requests 0
-> 	rx_atomic_requests 0
-> 	out_of_buffer 0
-> 	duplicate_request 0
-> 	rnr_nak_retry_err 0
-> 	packet_seq_err 0
-> 	implied_nak_seq_err 0
-> 	local_ack_timeout_err 0
-> 	resp_local_length_error 0
-> 	resp_cqe_error 0
-> 	req_cqe_error 0
-> 	req_remote_invalid_request 0
-> 	req_remote_access_errors 0
-> 	resp_remote_access_errors 0
-> 	resp_cqe_flush_error 0
-> 	req_cqe_flush_error 0
-> 	rp_cnp_ignored 0
-> 	rp_cnp_handled 0
-> 	np_ecn_marked_roce_packets 0
-> 	np_cnp_sent 0
-> 
-> Thanks
-> 
-> Mark Zhang (7):
->   rdma: Add "stat qp show" support
->   rdma: Add get per-port counter mode support
->   rdma: Add rdma statistic counter per-port auto mode support
->   rdma: Make get_port_from_argv() returns valid port in strict port mode
->   rdma: Add stat manual mode support
->   rdma: Add default counter show support
->   rdma: Document counter statistic
-> 
->  man/man8/rdma-dev.8       |   1 +
->  man/man8/rdma-link.8      |   1 +
->  man/man8/rdma-resource.8  |   1 +
->  man/man8/rdma-statistic.8 | 167 +++++++++
->  man/man8/rdma.8           |   7 +-
->  rdma/Makefile             |   2 +-
->  rdma/rdma.c               |   3 +-
->  rdma/rdma.h               |   1 +
->  rdma/stat.c               | 759 ++++++++++++++++++++++++++++++++++++++
->  rdma/utils.c              |  17 +-
->  10 files changed, 954 insertions(+), 5 deletions(-)
->  create mode 100644 man/man8/rdma-statistic.8
->  create mode 100644 rdma/stat.c
-> 
-> --
-> 2.20.1
-> 
+  I am tracking the error from ib_cm_listen in srpt_add_one.I found it returned an error when doing server_id validation
+the error code as follows:
+  static int __ib_cm_listen(struct ib_cm_id *cm_id, __be64 service_id,
+			  __be64 service_mask)
+{
+	struct cm_id_private *cm_id_priv, *cur_cm_id_priv;
+	int ret = 0;
 
-Applied now, thanks
+	service_mask = service_mask ? service_mask : ~cpu_to_be64(0);
+	service_id &= service_mask;
+	if ((service_id & IB_SERVICE_ID_AGN_MASK) == IB_CM_ASSIGN_SERVICE_ID &&
+	    (service_id != IB_CM_ASSIGN_SERVICE_ID))
+		return -EINVAL;
+ 	......
+ }
+
+static void srpt_add_one(struct ib_device *device)
+{
+	struct srpt_device *sdev;
+	struct srpt_port *sport;
+	int i;
+
+	pr_debug("device = %p\n", device);
+
+	sdev = kzalloc(sizeof(*sdev), GFP_KERNEL);
+	if (!sdev)
+		goto err;
+
+	sdev->device = device;
+	mutex_init(&sdev->sdev_mutex);
+
+	sdev->pd = ib_alloc_pd(device, 0);
+	if (IS_ERR(sdev->pd))
+		goto free_dev;
+
+	sdev->lkey = sdev->pd->local_dma_lkey;
+
+	sdev->srq_size = min(srpt_srq_size, sdev->device->attrs.max_srq_wr);
+
+	srpt_use_srq(sdev, sdev->port[0].port_attrib.use_srq);
+
+	if (!srpt_service_guid)
+		srpt_service_guid = be64_to_cpu(device->node_guid);
+
+	sdev->cm_id = ib_create_cm_id(device, srpt_cm_handler, sdev);
+	if (IS_ERR(sdev->cm_id))
+		goto err_ring;
+
+	/* print out target login information */
+	pr_debug("Target login info: id_ext=%016llx,ioc_guid=%016llx,"
+		 "pkey=ffff,service_id=%016llx\n", srpt_service_guid,
+		 srpt_service_guid, srpt_service_guid);
+
+	/*
+	 * We do not have a consistent service_id (ie. also id_ext of target_id)
+	 * to identify this target. We currently use the guid of the first HCA
+	 * in the system as service_id; therefore, the target_id will change
+	 * if this HCA is gone bad and replaced by different HCA
+	 */
+	if (ib_cm_listen(sdev->cm_id, cpu_to_be64(srpt_service_guid), 0))
+		goto err_cm;
+
+	......
+}
+
+However, I check the srpt_service_guid is obtained by device->node_guid. I think that the compute algorithm is ok for device->node_guid.
+In addition, I analyzed a patch in kernel-4.17(IB/srpt: Add RDMA/CM support). As a result, I can understand that the previous srpt is not supported by RDMA/CM?
+So, all RoCE will failed when use kernel-4.14 version to run srpt.ko?
+
+Thanks
+Lijun Ou
+
+
+
