@@ -2,86 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7E87081C
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 20:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8002D7081E
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 20:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbfGVSHQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 14:07:16 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:38271 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbfGVSHQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 14:07:16 -0400
-Received: by mail-pf1-f193.google.com with SMTP id y15so17754773pfn.5
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jul 2019 11:07:15 -0700 (PDT)
+        id S1727367AbfGVSHt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 14:07:49 -0400
+Received: from mail-vs1-f66.google.com ([209.85.217.66]:34449 "EHLO
+        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726770AbfGVSHt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 14:07:49 -0400
+Received: by mail-vs1-f66.google.com with SMTP id m23so26869843vso.1
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Jul 2019 11:07:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cmW+iIJBcAPXYuBJ0X70RuJw3nKWx6Ck24ISTbz4CEs=;
+        b=ecr7HpkJ/GPjpuVFLx7tTl5nq1d1iUDbKwdlnIYeT6V8ma1d+wg9/MJjuQwtyKqzih
+         QeHMj6zOIBFJhbLoTvcDZGPbJSferveTR0mu/KI/setje9er6O5qXDyom3wHCufV7/Pi
+         3UQymcesV8YMc+MJ0dOZcKfviFC5gRKW1JnakN5ef7VDFeCkicby89KgbFRCg0yaM4C/
+         o1j3+ySz3Lkbzfti+4RHITgEG9bqsPDppPOfcTvMhnuz7JyPwElNZSI371i7FV0IYolf
+         mofl8nmvAiy33e4bbe8MvQ3PZsA+U642zpBMIy3r5E++TuInZ8ltgdP0Mgt+Rbzndl5u
+         Ff1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RmKXpzSGzlv2f/5wd55UXo3Dlpyrvwn8M7HGQt3Gerw=;
-        b=kyb+mYFdq0hS5a8O9M1VBc0v0o9hNbXDdEF4BFaO0h7eSqTBR0+N/6c2vXSiKacc6s
-         8q6YBw4e6Swrb2fPgfRbFGu0gq9BDV2F6ujJr5kg2FWPhzEDS5cB0YMIgWFVPguInqRd
-         eyB4cjAMLjWeIAyaGPaRqZyNH3ZpxiBJh3qYc5C4GmI7j5tWzY/2Y/a359g9tglEphfv
-         ZtmLQM746Q8ubrtJgmBfmvqW5loFMQgDCU//rQl0F8PQWV3G3pImYzVgJB13v5t/XWMw
-         skdHwcMUfFgFR/t8/mDVZNMG6fGKp+AFj0IpbwkwJI527eHyEl3IRHFBfvnA/PdAgOox
-         qvpA==
-X-Gm-Message-State: APjAAAXlUrdmJP/gWSbt/W38JT2UvYHygAR7mSn31K9gc17ui8Zxgord
-        +mHnFH962NlL34LjFGvj/tTJfUpG
-X-Google-Smtp-Source: APXvYqw07UbDq3DlpOaeGMjDaf69rcL7t23pw20aCo97hE9vfFJtBV/AiTOg2RngAbZgeYXnWVxbYg==
-X-Received: by 2002:a63:b64:: with SMTP id a36mr62875211pgl.215.1563818834795;
-        Mon, 22 Jul 2019 11:07:14 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id b136sm45658972pfb.73.2019.07.22.11.07.13
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Jul 2019 11:07:13 -0700 (PDT)
-Subject: =?UTF-8?B?UmU6IOOAkFF1ZXN0aW9uIGZvciBzcnB0IGluIGtlcm5lbC00LjE044CR?=
-To:     oulijun <oulijun@huawei.com>, dledford@redhat.com,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>
-References: <16008407-2ffd-0bbb-717e-7e874a3a5ee0@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <d4b60eb6-9e61-987e-d7ba-e3806faceedd@acm.org>
-Date:   Mon, 22 Jul 2019 11:07:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cmW+iIJBcAPXYuBJ0X70RuJw3nKWx6Ck24ISTbz4CEs=;
+        b=ZP0brv582nbpqao9u0NxXbs3D0mwKZUjgSqyfM0iA41HEbsBxbsZU2KJft37bPG+7Y
+         Vz/WRSMn+6rm/hwob4bxceeCeW/p7cdhLKHpDJcoXwJHb7LjH37mHfghybO59AVV9LNV
+         9CEq3UyKBIE2/Vd3yY1hRz81oelSfa608OtVKwXeP3M6kspRAT3xPM/TbqAgDWERmZZj
+         ZXjY/guEkVeosONwGfgqulNpwO6VqZEAAqYudgKvzFr3trKqASc55cExHKI7bTZxBPS+
+         b/7XSNi/b/sw9gPy6dxiYe4gQJ5eX6XyhXtiw268mrvWp4+21CMcSI7WAB0QmNMguSY8
+         tuwQ==
+X-Gm-Message-State: APjAAAXQqeAbB1ScMzf9PNMzqCexl7UcKfsVYISjIQ7BhCth6K2rtrez
+        SWi0ltyvXEPhKvXxbzaMJnaEZw==
+X-Google-Smtp-Source: APXvYqx5Od80W34I1fDAgrOP6mzw1I8zF4ZN9uUihErCnhuyEo+zpkg3qx27zyPVZSVitQtTLpxDGg==
+X-Received: by 2002:a67:eb93:: with SMTP id e19mr44004699vso.208.1563818868687;
+        Mon, 22 Jul 2019 11:07:48 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id u8sm15170119vke.34.2019.07.22.11.07.47
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Jul 2019 11:07:48 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hpciw-0002TP-Hf; Mon, 22 Jul 2019 15:07:46 -0300
+Date:   Mon, 22 Jul 2019 15:07:46 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     linux-rdma@vger.kernel.org, dledford@redhat.com,
+        linux-nvme@lists.infradead.org, stable@vger.kernel.org,
+        Parav Pandit <parav@mellanox.com>
+Subject: Re: [PATCH for-rc] RDMA/bnxt_re: Honor vlan_id in GID entry
+ comparison
+Message-ID: <20190722180746.GA9441@ziepe.ca>
+References: <20190715091913.15726-1-selvin.xavier@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <16008407-2ffd-0bbb-717e-7e874a3a5ee0@huawei.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190715091913.15726-1-selvin.xavier@broadcom.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/19/19 11:54 PM, oulijun wrote:
-> I am targeting a problem about RoCE and SCSI over RDMA from srpt in kernel-4.14. When insmod srpt.ko and insmod hns-roce-hw-v2.ko, it will
-> report a warning in srpt_add_one:
->    ib_srpt srpt_add_one(hns_0) failed.
+On Mon, Jul 15, 2019 at 05:19:13AM -0400, Selvin Xavier wrote:
+> GID entry consist of GID, vlan, netdev and smac.
+> Extend GID duplicate check companions to consider vlan_id as well
+> to support IPv6 VLAN based link local addresses. Introduce
+> a new structure (bnxt_qplib_gid_info) to hold gid and vlan_id information.
+> 
+> The issue is discussed in the following thread
+> https://www.spinics.net/lists/linux-rdma/msg81594.html
+> 
+> Fixes: 823b23da7113 ("IB/core: Allow vlan link local address based RoCE GIDs")
+> Cc: <stable@vger.kernel.org> # v5.2+
+> Reported-by: Yi Zhang <yi.zhang@redhat.com>
+> Co-developed-by: Parav Pandit <parav@mellanox.com>
+> Signed-off-by: Parav Pandit <parav@mellanox.com>
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> Tested-by: Yi Zhang <yi.zhang@redhat.com>
+> Reviewed-By: Leon R...
+> Tested-by: Leon R...
+> ---
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  7 +++++--
+>  drivers/infiniband/hw/bnxt_re/qplib_res.c | 13 +++++++++----
+>  drivers/infiniband/hw/bnxt_re/qplib_res.h |  2 +-
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.c  | 14 +++++++++-----
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  7 ++++++-
+>  5 files changed, 30 insertions(+), 13 deletions(-)
 
-How about the following patch?
+Applied to for-rc, thanks
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 1a039f16d315..e2a4a14763b8 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -3109,7 +3109,8 @@ static void srpt_add_one(struct ib_device *device)
-  	srpt_use_srq(sdev, sdev->port[0].port_attrib.use_srq);
+Please also fix that sketchy use of the gid_index
 
-  	if (!srpt_service_guid)
--		srpt_service_guid = be64_to_cpu(device->node_guid);
-+		srpt_service_guid = be64_to_cpu(device->node_guid) &
-+			~IB_SERVICE_ID_AGN_MASK;
-
-  	if (rdma_port_get_link_layer(device, 1) == IB_LINK_LAYER_INFINIBAND)
-  		sdev->cm_id = ib_create_cm_id(device, srpt_cm_handler, sdev);
-
-> In addition, I analyzed a patch in kernel-4.17(IB/srpt: Add RDMA/CM support). As a result, I can understand that the previous srpt is not supported by RDMA/CM?
-> So, all RoCE will failed when use kernel-4.14 version to run srpt.ko?
-
-That's correct. The upstream SRP drivers only support RoCE in kernel versions
-v4.17 and later.
-
-Thanks,
-
-Bart.
+Jason
