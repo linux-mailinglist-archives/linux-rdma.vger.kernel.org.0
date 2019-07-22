@@ -2,181 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 040C96F882
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 06:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3696F93E
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 08:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbfGVEaV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 00:30:21 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:38300 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727756AbfGVEaU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 00:30:20 -0400
-Received: by mail-pf1-f196.google.com with SMTP id y15so16743333pfn.5;
-        Sun, 21 Jul 2019 21:30:19 -0700 (PDT)
+        id S1725920AbfGVGBF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 02:01:05 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:35759 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbfGVGBF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 02:01:05 -0400
+Received: by mail-wr1-f68.google.com with SMTP id y4so38004615wrm.2;
+        Sun, 21 Jul 2019 23:01:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Buo/x1ku3lZhKwc/x7LZHJLCV0/VJfVJkEd+jUfSemQ=;
-        b=t+zktHb7vIG4ts5I2ltkQHV48J0ZrgypJDZXuh8Drmfq8ZU2ILeEdq1vHcQdIM9gdw
-         V6T9AQozh+PvM/HqMIqy5Tm11lI/PpLyTVp0Vd74SuF5mClFEjFXDGjMIfpge1xQoCsm
-         IhnhiaeU9cdQMTgVUWSOM6j8abtFujQkLro/ZEGxc5vfgAlJ/A2fXKxi+6ua/RqGJsAJ
-         aF9WRDRmvUFsceuLPU8ZX2StoJI42RECfxqG70NX1cGm7d70CaK3aiDy2ueHCoMs6WN3
-         fMhhkyT7kmlOi6Ja/WZU2mwWlGLAtDglCCekSpcUu5Vy9dQccxZDeZv6fJknPIHGCBXz
-         Jv+w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=37hfVhLnIa1r6NGFMm8G0EEpkeWfL8ItIfeqkfN0XWo=;
+        b=J4pcGSVR+pUnkaC5agCYVX670aS1EMHlDf7aOpRo3ia4EFQjZDZcSgUP/v+GZPRtqj
+         4om3zTyntyQnfYZ1ZFLhUSgRDsho+hlUo6FH9MVveM0O9Ar+WfOMav+2H0DHi4VO0dfB
+         AMuXo/JiHcESdhbcOIM0sgpraKsh1Ax3xtSl8zR+ZqEZzfEdNlKIXZqIQsYfapFEhKuA
+         mvLjKnItaTjdoDat+6js8yq2UIK1ZM9kOICyNYlhftxQ06w9a7HPXT3l+HhN0ESyy5T/
+         A84wEaLkjc2LSLqwuEufI0owb+aKvpJuvE48b4a0/RwXHvWPFqXn4qorUEADSbdgF9+W
+         Jaog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Buo/x1ku3lZhKwc/x7LZHJLCV0/VJfVJkEd+jUfSemQ=;
-        b=L7fNY9E6SKsbeWDuG4LRGILKao+vdZ1OjN3+rsiCkZ+uW+e9mS4Wc3kyfPKQ3Pv1W7
-         brAzVyoyWYnhemCZvJ8lR2UeKpFtd/KoPAiZRwhtrRu7EIA++o2nydrTeXinyE7nOUw8
-         AB/VSA7b472UTf1QoweYhkI7Nyw77XLA97fMNQ1oKYIEXAS/C3KIg0sVm4xJLVXcdgke
-         MpYCTdsDY7whGYyaxakRcX1WXstPlymTVukN6S9Lr6T9HeTOFtnoTdHZcUNvXMJ+RwPc
-         prf1zVwenkvRVTuMrltY6x+cBeMe7vAEcrXHLq/C+ChYJHOIb0teDQVa4LaozwKwVvCP
-         7zIA==
-X-Gm-Message-State: APjAAAUm7urgIGHQ2ixKpUI4Jk5xpdIswvJphfBjaqhe8dUuHzImkcD+
-        5Kc753cM+dJSKEvC1/VODT4=
-X-Google-Smtp-Source: APXvYqz665JUdaZ8/qhWBT5//AwERdP9iGLvt+InEi3nlWem4n0SFx0hcOfAG8MfqjlewAESAxZqZQ==
-X-Received: by 2002:a17:90a:9488:: with SMTP id s8mr76721358pjo.2.1563769819486;
-        Sun, 21 Jul 2019 21:30:19 -0700 (PDT)
-Received: from blueforge.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id t96sm34285690pjb.1.2019.07.21.21.30.18
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sun, 21 Jul 2019 21:30:19 -0700 (PDT)
-From:   john.hubbard@gmail.com
-X-Google-Original-From: jhubbard@nvidia.com
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Boaz Harrosh <boaz@plexistor.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH 3/3] gup: new put_user_page_dirty*() helpers
-Date:   Sun, 21 Jul 2019 21:30:12 -0700
-Message-Id: <20190722043012.22945-4-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190722043012.22945-1-jhubbard@nvidia.com>
-References: <20190722043012.22945-1-jhubbard@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=37hfVhLnIa1r6NGFMm8G0EEpkeWfL8ItIfeqkfN0XWo=;
+        b=VJMPwp2FhNfaG36l6ly8/sVTxbTXlaNMoGFPZ3lss1qXugGmKNuWxOdmGjvCq3WMru
+         vSjMPD0LMf0UA1/yvNar676vUbK4K1+MIh4kr+pCFzzk8KxM21F/9Y/qjqd7aMSSVZID
+         I0FfsWLxF0Hl9GpAkpcDrqJ6waUjmJMKRBVeflUOi1xdcATXbxGqxOzbqdWBhO52FviO
+         rohdP13D5jwegZjti2Al0U5VU8X+ucnwhcDuA3jUcCWyFNc8l0WiC7cik4ecVoMzdBD3
+         NUQUL8Eaig32xQxrd8Od/iOsEBAI1kKM9kW1i0LYKh9szqOi2/o85GpIydJPnw3Zn1Y2
+         WdUw==
+X-Gm-Message-State: APjAAAUI/+WQGbeA1Hpkf4Ts2ZrYorWJNhDDl5VupRcxlc9ujK1qzu/p
+        B64xon48C+/EkXXGzPCT0CZuuxP5ICkNzWexKTVr2tPulrRHDA==
+X-Google-Smtp-Source: APXvYqxRw9caGGBAMDV6+dJ4KfufK/4O1gQP8+o+uyG+5KKxIOoYwVdMP8Zud5H7axQkNLSdJmz/t0mGsBcxsv7w3ZM=
+X-Received: by 2002:adf:f088:: with SMTP id n8mr28707513wro.58.1563775261860;
+ Sun, 21 Jul 2019 23:01:01 -0700 (PDT)
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
+References: <20190617122000.22181-1-hch@lst.de> <20190617122000.22181-3-hch@lst.de>
+ <5d143a03-edd5-5878-780b-45d87313a813@acm.org>
+In-Reply-To: <5d143a03-edd5-5878-780b-45d87313a813@acm.org>
+From:   Ming Lei <tom.leiming@gmail.com>
+Date:   Mon, 22 Jul 2019 14:00:48 +0800
+Message-ID: <CACVXFVMWM3xg6EEyoyNjkLPv=8+wQKiHj6erMS_gGX25f-Ot4g@mail.gmail.com>
+Subject: Re: [PATCH 2/8] scsi: take the DMA max mapping size into account
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com,
+        linux-hyperv@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: John Hubbard <jhubbard@nvidia.com>
+On Tue, Jun 18, 2019 at 4:57 AM Bart Van Assche <bvanassche@acm.org> wrote:
+>
+> On 6/17/19 5:19 AM, Christoph Hellwig wrote:
+> > We need to limit the devices max_sectors to what the DMA mapping
+> > implementation can support.  If not we risk running out of swiotlb
+> > buffers easily.
+> >
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >   drivers/scsi/scsi_lib.c | 2 ++
+> >   1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+> > index d333bb6b1c59..f233bfd84cd7 100644
+> > --- a/drivers/scsi/scsi_lib.c
+> > +++ b/drivers/scsi/scsi_lib.c
+> > @@ -1768,6 +1768,8 @@ void __scsi_init_queue(struct Scsi_Host *shost, struct request_queue *q)
+> >               blk_queue_max_integrity_segments(q, shost->sg_prot_tablesize);
+> >       }
+> >
+> > +     shost->max_sectors = min_t(unsigned int, shost->max_sectors,
+> > +                     dma_max_mapping_size(dev) << SECTOR_SHIFT);
+> >       blk_queue_max_hw_sectors(q, shost->max_sectors);
+> >       if (shost->unchecked_isa_dma)
+> >               blk_queue_bounce_limit(q, BLK_BOUNCE_ISA);
+>
+> Does dma_max_mapping_size() return a value in bytes? Is
+> shost->max_sectors a number of sectors? If so, are you sure that "<<
+> SECTOR_SHIFT" is the proper conversion? Shouldn't that be ">>
+> SECTOR_SHIFT" instead?
 
-While converting call sites to use put_user_page*() [1], quite a few
-places ended up needing a single-page routine to put and dirty a
-page.
+Now the patch has been committed, '<< SECTOR_SHIFT' needs to be fixed.
 
-Provide put_user_page_dirty() and put_user_page_dirty_lock(),
-and use them in a few places: net/xdp, drm/via/, drivers/infiniband.
+Also the following kernel oops is triggered on qemu, and looks
+device->dma_mask is NULL.
 
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Jan Kara <jack@suse.cz>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- drivers/gpu/drm/via/via_dmablit.c        |  2 +-
- drivers/infiniband/core/umem.c           |  2 +-
- drivers/infiniband/hw/usnic/usnic_uiom.c |  2 +-
- include/linux/mm.h                       | 10 ++++++++++
- net/xdp/xdp_umem.c                       |  2 +-
- 5 files changed, 14 insertions(+), 4 deletions(-)
+[    5.826483] scsi host0: Virtio SCSI HBA
+[    5.829302] st: Version 20160209, fixed bufsize 32768, s/g segs 256
+[    5.831042] SCSI Media Changer driver v0.25
+[    5.832491] ==================================================================
+[    5.833332] BUG: KASAN: null-ptr-deref in
+dma_direct_max_mapping_size+0x30/0x94
+[    5.833332] Read of size 8 at addr 0000000000000000 by task kworker/u17:0/7
+[    5.835506] nvme nvme0: pci function 0000:00:07.0
+[    5.833332]
+[    5.833332] CPU: 2 PID: 7 Comm: kworker/u17:0 Not tainted 5.3.0-rc1 #1328
+[    5.836999] ahci 0000:00:1f.2: version 3.0
+[    5.833332] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS ?-20180724_192412-buildhw-07.phx4
+[    5.833332] Workqueue: events_unbound async_run_entry_fn
+[    5.833332] Call Trace:
+[    5.833332]  dump_stack+0x6f/0x9d
+[    5.833332]  ? dma_direct_max_mapping_size+0x30/0x94
+[    5.833332]  __kasan_report+0x161/0x189
+[    5.833332]  ? dma_direct_max_mapping_size+0x30/0x94
+[    5.833332]  kasan_report+0xe/0x12
+[    5.833332]  dma_direct_max_mapping_size+0x30/0x94
+[    5.833332]  __scsi_init_queue+0xd8/0x1f3
+[    5.833332]  scsi_mq_alloc_queue+0x62/0x89
+[    5.833332]  scsi_alloc_sdev+0x38c/0x479
+[    5.833332]  scsi_probe_and_add_lun+0x22d/0x1093
+[    5.833332]  ? kobject_set_name_vargs+0xa4/0xb2
+[    5.833332]  ? mutex_lock+0x88/0xc4
+[    5.833332]  ? scsi_free_host_dev+0x4a/0x4a
+[    5.833332]  ? _raw_spin_lock_irqsave+0x8c/0xde
+[    5.833332]  ? _raw_write_unlock_irqrestore+0x23/0x23
+[    5.833332]  ? ata_tdev_match+0x22/0x45
+[    5.833332]  ? attribute_container_add_device+0x160/0x17e
+[    5.833332]  ? rpm_resume+0x26a/0x7c0
+[    5.833332]  ? kobject_get+0x12/0x43
+[    5.833332]  ? rpm_put_suppliers+0x7e/0x7e
+[    5.833332]  ? _raw_spin_lock_irqsave+0x8c/0xde
+[    5.833332]  ? _raw_write_unlock_irqrestore+0x23/0x23
+[    5.833332]  ? scsi_target_destroy+0x135/0x135
+[    5.833332]  __scsi_scan_target+0x14b/0x6aa
+[    5.833332]  ? pvclock_clocksource_read+0xc0/0x14e
+[    5.833332]  ? scsi_add_device+0x20/0x20
+[    5.833332]  ? rpm_resume+0x1ae/0x7c0
+[    5.833332]  ? rpm_put_suppliers+0x7e/0x7e
+[    5.833332]  ? _raw_spin_lock_irqsave+0x8c/0xde
+[    5.833332]  ? _raw_write_unlock_irqrestore+0x23/0x23
+[    5.833332]  ? pick_next_task_fair+0x976/0xa3d
+[    5.833332]  ? mutex_lock+0x88/0xc4
+[    5.833332]  scsi_scan_channel+0x76/0x9e
+[    5.833332]  scsi_scan_host_selected+0x131/0x176
+[    5.833332]  ? scsi_scan_host+0x241/0x241
+[    5.833332]  do_scan_async+0x27/0x219
+[    5.833332]  ? scsi_scan_host+0x241/0x241
+[    5.833332]  async_run_entry_fn+0xdc/0x23d
+[    5.833332]  process_one_work+0x327/0x539
+[    5.833332]  worker_thread+0x330/0x492
+[    5.833332]  ? rescuer_thread+0x41f/0x41f
+[    5.833332]  kthread+0x1c6/0x1d5
+[    5.833332]  ? kthread_park+0xd3/0xd3
+[    5.833332]  ret_from_fork+0x1f/0x30
+[    5.833332] ==================================================================
 
-diff --git a/drivers/gpu/drm/via/via_dmablit.c b/drivers/gpu/drm/via/via_dmablit.c
-index 219827ae114f..d30b2d75599f 100644
---- a/drivers/gpu/drm/via/via_dmablit.c
-+++ b/drivers/gpu/drm/via/via_dmablit.c
-@@ -189,7 +189,7 @@ via_free_sg_info(struct pci_dev *pdev, drm_via_sg_info_t *vsg)
- 		for (i = 0; i < vsg->num_pages; ++i) {
- 			if (NULL != (page = vsg->pages[i])) {
- 				if (!PageReserved(page) && (DMA_FROM_DEVICE == vsg->direction))
--					put_user_pages_dirty(&page, 1);
-+					put_user_page_dirty(page);
- 				else
- 					put_user_page(page);
- 			}
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 08da840ed7ee..a7337cc3ca20 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -55,7 +55,7 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
- 	for_each_sg_page(umem->sg_head.sgl, &sg_iter, umem->sg_nents, 0) {
- 		page = sg_page_iter_page(&sg_iter);
- 		if (umem->writable && dirty)
--			put_user_pages_dirty_lock(&page, 1);
-+			put_user_page_dirty_lock(page);
- 		else
- 			put_user_page(page);
- 	}
-diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
-index 0b0237d41613..d2ded624fb2a 100644
---- a/drivers/infiniband/hw/usnic/usnic_uiom.c
-+++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
-@@ -76,7 +76,7 @@ static void usnic_uiom_put_pages(struct list_head *chunk_list, int dirty)
- 			page = sg_page(sg);
- 			pa = sg_phys(sg);
- 			if (dirty)
--				put_user_pages_dirty_lock(&page, 1);
-+				put_user_page_dirty_lock(page);
- 			else
- 				put_user_page(page);
- 			usnic_dbg("pa: %pa\n", &pa);
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 0334ca97c584..c0584c6d9d78 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1061,6 +1061,16 @@ void put_user_pages_dirty(struct page **pages, unsigned long npages);
- void put_user_pages_dirty_lock(struct page **pages, unsigned long npages);
- void put_user_pages(struct page **pages, unsigned long npages);
- 
-+static inline void put_user_page_dirty(struct page *page)
-+{
-+	put_user_pages_dirty(&page, 1);
-+}
-+
-+static inline void put_user_page_dirty_lock(struct page *page)
-+{
-+	put_user_pages_dirty_lock(&page, 1);
-+}
-+
- #if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
- #define SECTION_IN_PAGE_FLAGS
- #endif
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 9cbbb96c2a32..1d122e52c6de 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -171,7 +171,7 @@ static void xdp_umem_unpin_pages(struct xdp_umem *umem)
- 	for (i = 0; i < umem->npgs; i++) {
- 		struct page *page = umem->pgs[i];
- 
--		put_user_pages_dirty_lock(&page, 1);
-+		put_user_page_dirty_lock(page);
- 	}
- 
- 	kfree(umem->pgs);
--- 
-2.22.0
 
+
+Thanks,
+Ming Lei
