@@ -2,127 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF1970CBF
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 00:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705D470CF7
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 01:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733277AbfGVWee (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 18:34:34 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:45556 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733248AbfGVWeX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 18:34:23 -0400
-Received: by mail-pg1-f195.google.com with SMTP id o13so18325311pgp.12;
-        Mon, 22 Jul 2019 15:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/ofa5EhPy5N+KM7nweAsOE7rWC5Duznu1d2IMlN4I/Y=;
-        b=Sw0HvJJTDmzbJlbRnGPA0tEKa9wBsoXOpSBSyyCpXXoTDy/oLlPojLp975N/iZT3Rt
-         8jfBQuYyMJoyHlJ2fyV7WUkxYIldTegTihpxRiAvNY8zRba3PO9qS3NZSvTUxei06Rk0
-         uOGdeG1FwadWsIBYlsr2yV0g+UwUeH2FEFiAyASHNNXam+5nvwUOaLXqS8GitFl6ninp
-         eVYAIz6e9bu5JJNLX4jLtYsSme3OBg4qojzmnb1QA+ka0SBTx6a2p/N+h2SdySOnbmnd
-         qH6vvH98sRnmJjM2M9uSzbppXdvFGZyQFLd9B0l+ZOt4ywhtBFZH/zZ3Y6U5IOl5jKuB
-         XGJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/ofa5EhPy5N+KM7nweAsOE7rWC5Duznu1d2IMlN4I/Y=;
-        b=nQt9Bnhijl78wihrIrOnFKmCFYUnu+x8HxtHt8m4TeO104UJziZrGVWZY0UAXs0KOO
-         XO8/WVxyHVBG5ixf98t40r1P1DrSt7NUE3UunuVsWXwoIP8LT3p0aR43V/aW8Op+N4H5
-         cbpl2BjeuTbAaLOgiRwBeMlfYIeZtjTgcaMMAtPX5J2lfmAEG0eHEM1iuRndHZ83e0yq
-         eh4QWL8UMx3bwRsCu/eAPYJ69TUIsqvnOoeAt/NNUihVWOHoOAYFFsLgLbrsrEEq3ecQ
-         0VJ39BxrEeER1ZWG7f/dLjEUlsv5larFeIKBe9DtHORW4ia7N35IdXGA8NDzts0g5qpg
-         TkMA==
-X-Gm-Message-State: APjAAAW1RyKoMQ6V4NLv/JvmQv8m7v8pLLu5MxYdd8N7Ae+zTAHwZRFE
-        KiGi45FnS1H7Byuw4PJFVsY=
-X-Google-Smtp-Source: APXvYqwVaJn+EzirdPn13F0RFZ1U5rQgVF9dbTt0Dcd+iQUjCIySQADzRQKVKnRyYTBRNLHQ9Mrw9A==
-X-Received: by 2002:a62:7990:: with SMTP id u138mr2390135pfc.191.1563834863230;
-        Mon, 22 Jul 2019 15:34:23 -0700 (PDT)
-Received: from blueforge.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id r18sm30597570pfg.77.2019.07.22.15.34.21
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 22 Jul 2019 15:34:22 -0700 (PDT)
-From:   john.hubbard@gmail.com
-X-Google-Original-From: jhubbard@nvidia.com
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Boaz Harrosh <boaz@plexistor.com>,
+        id S2387411AbfGVXJU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 19:09:20 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:40374 "EHLO ale.deltatee.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733309AbfGVXJT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 22 Jul 2019 19:09:19 -0400
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1hphQb-0002jv-Dk; Mon, 22 Jul 2019 17:09:18 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.89)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1hphQU-0001Qe-Cs; Mon, 22 Jul 2019 17:09:02 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
         Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH 3/3] net/xdp: convert put_page() to put_user_page*()
-Date:   Mon, 22 Jul 2019 15:34:15 -0700
-Message-Id: <20190722223415.13269-4-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190722223415.13269-1-jhubbard@nvidia.com>
-References: <20190722223415.13269-1-jhubbard@nvidia.com>
+        Eric Pilmore <epilmore@gigaio.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Mon, 22 Jul 2019 17:08:46 -0600
+Message-Id: <20190722230859.5436-2-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190722230859.5436-1-logang@deltatee.com>
+References: <20190722230859.5436-1-logang@deltatee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, bhelgaas@google.com, hch@lst.de, Christian.Koenig@amd.com, jgg@mellanox.com, sagi@grimberg.me, kbusch@kernel.org, axboe@fb.com, dan.j.williams@intel.com, epilmore@gigaio.com, sbates@raithlin.com, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,MYRULES_NO_TEXT autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: [PATCH 01/14] PCI/P2PDMA: Add constants for not-supported result upstream_bridge_distance()
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: John Hubbard <jhubbard@nvidia.com>
+Add constant flags to indicate two devices are not supported or whether
+the data path goes through the host bridge instead of using the negative
+values -1 and -2.
 
-For pages that were retained via get_user_pages*(), release those pages
-via the new put_user_page*() routines, instead of via put_page() or
-release_pages().
+This helps annotate the code better, but the main reason is so we
+can cache the result in an xarray which does not allow us to store
+negative values.
 
-This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-("mm: introduce put_user_page*(), placeholder versions").
-
-Cc: Björn Töpel <bjorn.topel@intel.com>
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- net/xdp/xdp_umem.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ drivers/pci/p2pdma.c | 52 ++++++++++++++++++++++++++------------------
+ 1 file changed, 31 insertions(+), 21 deletions(-)
 
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 83de74ca729a..0325a17915de 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -166,14 +166,7 @@ void xdp_umem_clear_dev(struct xdp_umem *umem)
+diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+index 234476226529..e8ec86e1dd00 100644
+--- a/drivers/pci/p2pdma.c
++++ b/drivers/pci/p2pdma.c
+@@ -273,6 +273,20 @@ static bool root_complex_whitelist(struct pci_dev *dev)
+ 	return false;
+ }
  
- static void xdp_umem_unpin_pages(struct xdp_umem *umem)
- {
--	unsigned int i;
--
--	for (i = 0; i < umem->npgs; i++) {
--		struct page *page = umem->pgs[i];
--
--		set_page_dirty_lock(page);
--		put_page(page);
--	}
-+	put_user_pages_dirty_lock(umem->pgs, umem->npgs);
++enum {
++	/*
++	 * Thes arbitrary offset are or'd onto the upstream distance
++	 * calculation for the following conditions:
++	 */
++
++	/* The data path includes the host-bridge */
++	P2PDMA_THRU_HOST_BRIDGE		= 0x02000000,
++	/* The data path is forced through the host-bridge due to ACS */
++	P2PDMA_ACS_FORCES_UPSTREAM	= 0x04000000,
++	/* The data path is not supported by P2PDMA */
++	P2PDMA_NOT_SUPPORTED		= 0x08000000,
++};
++
+ /*
+  * Find the distance through the nearest common upstream bridge between
+  * two PCI devices.
+@@ -297,22 +311,17 @@ static bool root_complex_whitelist(struct pci_dev *dev)
+  * port of the switch, to the common upstream port, back up to the second
+  * downstream port and then to Device B.
+  *
+- * Any two devices that don't have a common upstream bridge will return -1.
+- * In this way devices on separate PCIe root ports will be rejected, which
+- * is what we want for peer-to-peer seeing each PCIe root port defines a
+- * separate hierarchy domain and there's no way to determine whether the root
+- * complex supports forwarding between them.
++ * Any two devices that cannot communicate using p2pdma will return the distance
++ * with the flag P2PDMA_NOT_SUPPORTED.
+  *
+- * In the case where two devices are connected to different PCIe switches,
+- * this function will still return a positive distance as long as both
+- * switches eventually have a common upstream bridge. Note this covers
+- * the case of using multiple PCIe switches to achieve a desired level of
+- * fan-out from a root port. The exact distance will be a function of the
+- * number of switches between Device A and Device B.
++ * Any two devices that have a data path that goes through the host bridge
++ * will consult a whitelist. If the host bridges are on the whitelist,
++ * then the distance will be returned with the flag P2PDMA_THRU_HOST_BRIDGE set.
++ * If either bridge is not on the whitelist, the flag P2PDMA_NOT_SUPPORTED will
++ * be set.
+  *
+  * If a bridge which has any ACS redirection bits set is in the path
+- * then this functions will return -2. This is so we reject any
+- * cases where the TLPs are forwarded up into the root complex.
++ * then this functions will flag the result with P2PDMA_ACS_FORCES_UPSTREAM.
+  * In this case, a list of all infringing bridge addresses will be
+  * populated in acs_list (assuming it's non-null) for printk purposes.
+  */
+@@ -359,9 +368,9 @@ static int upstream_bridge_distance(struct pci_dev *provider,
+ 	 */
+ 	if (root_complex_whitelist(provider) &&
+ 	    root_complex_whitelist(client))
+-		return 0x1000 + dist_a + dist_b;
++		return (dist_a + dist_b) | P2PDMA_THRU_HOST_BRIDGE;
  
- 	kfree(umem->pgs);
- 	umem->pgs = NULL;
+-	return -1;
++	return (dist_a + dist_b) | P2PDMA_NOT_SUPPORTED;
+ 
+ check_b_path_acs:
+ 	bb = b;
+@@ -379,7 +388,7 @@ static int upstream_bridge_distance(struct pci_dev *provider,
+ 	}
+ 
+ 	if (acs_cnt)
+-		return -2;
++		return P2PDMA_NOT_SUPPORTED | P2PDMA_ACS_FORCES_UPSTREAM;
+ 
+ 	return dist_a + dist_b;
+ }
+@@ -395,16 +404,17 @@ static int upstream_bridge_distance_warn(struct pci_dev *provider,
+ 		return -ENOMEM;
+ 
+ 	ret = upstream_bridge_distance(provider, client, &acs_list);
+-	if (ret == -2) {
+-		pci_warn(client, "cannot be used for peer-to-peer DMA as ACS redirect is set between the client and provider (%s)\n",
++	if (ret & P2PDMA_ACS_FORCES_UPSTREAM) {
++		pci_warn(client, "ACS redirect is set between the client and provider (%s)\n",
+ 			 pci_name(provider));
+ 		/* Drop final semicolon */
+ 		acs_list.buffer[acs_list.len-1] = 0;
+ 		pci_warn(client, "to disable ACS redirect for this path, add the kernel parameter: pci=disable_acs_redir=%s\n",
+ 			 acs_list.buffer);
++	}
+ 
+-	} else if (ret < 0) {
+-		pci_warn(client, "cannot be used for peer-to-peer DMA as the client and provider (%s) do not share an upstream bridge\n",
++	if (ret & P2PDMA_NOT_SUPPORTED) {
++		pci_warn(client, "cannot be used for peer-to-peer DMA as the client and provider (%s) do not share an upstream bridge or whitelisted host bridge\n",
+ 			 pci_name(provider));
+ 	}
+ 
+@@ -468,7 +478,7 @@ int pci_p2pdma_distance_many(struct pci_dev *provider, struct device **clients,
+ 
+ 		pci_dev_put(pci_client);
+ 
+-		if (ret < 0)
++		if (ret & P2PDMA_NOT_SUPPORTED)
+ 			not_supported = true;
+ 
+ 		if (not_supported && !verbose)
 -- 
-2.22.0
+2.20.1
 
