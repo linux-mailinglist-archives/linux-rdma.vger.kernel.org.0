@@ -2,219 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6592C702F7
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 17:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E8570327
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 17:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727129AbfGVPCR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 11:02:17 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:33839 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbfGVPCQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 11:02:16 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1N62mG-1iVD5437Oa-016OS8; Mon, 22 Jul 2019 17:02:06 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Tariq Toukan <tariqt@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Erez Alfasi <ereza@mellanox.com>,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Eli Cohen <eli@mellanox.co.il>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH net-next] [net-next] mlx4: avoid large stack usage in mlx4_init_hca()
-Date:   Mon, 22 Jul 2019 17:01:55 +0200
-Message-Id: <20190722150204.1157315-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.20.0
+        id S1726516AbfGVPKR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 11:10:17 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:60229 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbfGVPKR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 11:10:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1563808216; x=1595344216;
+  h=from:subject:to:cc:message-id:date:mime-version:
+   content-transfer-encoding;
+  bh=Zo2Igarj1GAzEmOaCGbUf/leup9wmlSiWH9NxpMdJvA=;
+  b=BE/tX7QJmNdd5PakYU0e5lXMPf4yLS3+AT+rHKs1byVQ1QPoONOZVZN3
+   2IkOr/DB5svCKz7Jmkxrt6oIpxI9uzcPHxRSsVxbPB8NYJdKCIIGKwrq7
+   zSWeklCqmKtHW1Jskpk3vTQitu/bvXCFk8MfASBU+i2G/2vZHP9g7vBge
+   8=;
+X-IronPort-AV: E=Sophos;i="5.64,295,1559520000"; 
+   d="scan'208";a="686984879"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 22 Jul 2019 15:10:11 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id EE920C13AC;
+        Mon, 22 Jul 2019 15:10:09 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Mon, 22 Jul 2019 15:10:09 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.25) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Mon, 22 Jul 2019 15:10:06 +0000
+From:   Gal Pressman <galpress@amazon.com>
+Subject: BUG: KASAN: null-ptr-deref in
+ rdma_counter_get_hwstat_value+0x19d/0x260 in for-next branch
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        "Mark Zhang" <markz@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>
+Message-ID: <137e1a30-1c78-27f7-2466-070867b97256@amazon.com>
+Date:   Mon, 22 Jul 2019 18:10:01 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:6RlucjjmypJnt310jjgPEHPw68PZk7JE9z3FBrybaR+ep+3Cv2d
- TBKM7TP/YWkndjanU7YKLhR2TifdwV0foLbZ5UlTUO+hGYkMRh+C93ObXysjdI7QxSFPI2F
- pBJrTNZ7/Gm0SQFN5C4zfqhGJPUwg3M/RMwcAzAxb+UmuOcoA/EYDqk03djOZqCCEVHSmpX
- GFmCeJX+SdJ6/lH09y44g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QNMfdsxYVMU=:W+Eq/wKucjnDuLN9OlFSmC
- Cr6G9LVL6ma0mHIDCeKMSLOmtyhEJvZ0TLZ5vNuRgB/KwlCwWcxqNqEIGD1qgUSEv5xwWBD7Q
- kHRZmP3nZ/1zHDI2rHudA88kOuwoIJ6oGMsvhQf2mNZV4kimzFVvhGYhWyNVLL6hVGlduO/0b
- CFBl3ptJbN1h1ya5W3sLhi5O4Hhss0c5KUg/tETZRsET9SOCb54epamEHnIQT+Z7O2OdcN/Lb
- vbXZwqMLV7z8Z01+9Y17FSHs5fVr28upA4miQF+m7ccD+SQ3nIoX5DHusi1KyHsYL3Rvyk8ic
- gJSOppGWRwYjA96l3myhSAmRLhoUCjTY+vMzlA1yPtnYXwFJNiRmZxs0JXf8CmtVtM6vl0OjE
- g7vHpW/rfGWiayZXD9/YWIPgsr2Wtl72OrAtHrAGqeTctQIGYVlVSo/VB4hmzqjpPqoA/zyD+
- W4GdznEkaIYju5TeydC+hoDMzE277BoGkBZhKv08N3P/FN7VgfQFRQL8IX8fMQlRh92pC/C24
- QHhOx2uJFSvNLaLT1qBUlPs8xA3J9PideNF9lVbtCqqx+VAfzetGgirzxuEVcF+IQ6E3x2k5/
- C3AbsZT3jHSdFWLITSwbUO93WZbMtWhjUxKO4tPMtNqi1U2nbruv9l2azJDUA80xwGVMMqZ20
- mzfJDMvJd8UBG22Wp/htbIEzdtML913YzLPaOQVYk1F+A93zmLU1d/E35GI9xgZpriP1Tcfd6
- tQPwnb95MmkRSje2xZwCoujHY5E8Zem2gNcKOw==
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.25]
+X-ClientProxiedBy: EX13D08UWC004.ant.amazon.com (10.43.162.90) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The mlx4_dev_cap and mlx4_init_hca_param are really too large
-to be put on the kernel stack, as shown by this clang warning:
+Hi,
 
-drivers/net/ethernet/mellanox/mlx4/main.c:3304:12: error: stack frame size of 1088 bytes in function 'mlx4_load_one' [-Werror,-Wframe-larger-than=]
+I pulled the latest for-next branch (5.3-rc1) which includes the new stats stuff
+and applied a patch to enable EFA stats [1], and I'm getting the following trace
+[2]. The EFA patch isn't merged yet so it could cause some extra noise, but this
+did not happen before the core statistics patches were merged.
 
-With gcc, the problem is the same, but it does not warn because
-it does not inline this function, and therefore stays just below
-the warning limit, while clang is just above it.
+From a quick look it seems that 'port_counter->hstats' is only initialized for
+ports 1..num_ports (i.e not initialized for port 0, device stats) in
+rdma_counter_init rdma_for_each_port loop.
 
-Use kzalloc for dynamic allocation instead of putting them
-on stack. This gets the combined stack frame down to 424 bytes.
+As a result, rdma_counter_get_hwstat_value hits a NULL pointer dereference when
+querying device statistics as it tries to access an uninitialized hstats field in:
+sum += port_counter->hstats->value[index];
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/mellanox/mlx4/main.c | 66 +++++++++++++----------
- 1 file changed, 39 insertions(+), 27 deletions(-)
+I'm thinking of adding a check similar to the one that exists in
+counter_history_stat_update and return 0 in case of !port_counter->hstats.
+What do you guys think?
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index 1f6e16d5ea6b..07c204bd3fc4 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -2292,23 +2292,31 @@ static int mlx4_init_fw(struct mlx4_dev *dev)
- static int mlx4_init_hca(struct mlx4_dev *dev)
- {
- 	struct mlx4_priv	  *priv = mlx4_priv(dev);
-+	struct mlx4_init_hca_param *init_hca = NULL;
-+	struct mlx4_dev_cap	  *dev_cap = NULL;
- 	struct mlx4_adapter	   adapter;
--	struct mlx4_dev_cap	   dev_cap;
- 	struct mlx4_profile	   profile;
--	struct mlx4_init_hca_param init_hca;
- 	u64 icm_size;
- 	struct mlx4_config_dev_params params;
- 	int err;
- 
- 	if (!mlx4_is_slave(dev)) {
--		err = mlx4_dev_cap(dev, &dev_cap);
-+		dev_cap = kzalloc(sizeof(*dev_cap), GFP_KERNEL);
-+		init_hca = kzalloc(sizeof(*init_hca), GFP_KERNEL);
-+
-+		if (!dev_cap || !init_hca) {
-+			err = -ENOMEM;
-+			goto out_free;
-+		}
-+
-+		err = mlx4_dev_cap(dev, dev_cap);
- 		if (err) {
- 			mlx4_err(dev, "QUERY_DEV_CAP command failed, aborting\n");
--			return err;
-+			goto out_free;
- 		}
- 
--		choose_steering_mode(dev, &dev_cap);
--		choose_tunnel_offload_mode(dev, &dev_cap);
-+		choose_steering_mode(dev, dev_cap);
-+		choose_tunnel_offload_mode(dev, dev_cap);
- 
- 		if (dev->caps.dmfs_high_steer_mode == MLX4_STEERING_DMFS_A0_STATIC &&
- 		    mlx4_is_master(dev))
-@@ -2331,48 +2339,48 @@ static int mlx4_init_hca(struct mlx4_dev *dev)
- 		    MLX4_STEERING_MODE_DEVICE_MANAGED)
- 			profile.num_mcg = MLX4_FS_NUM_MCG;
- 
--		icm_size = mlx4_make_profile(dev, &profile, &dev_cap,
--					     &init_hca);
-+		icm_size = mlx4_make_profile(dev, &profile, dev_cap,
-+					     init_hca);
- 		if ((long long) icm_size < 0) {
- 			err = icm_size;
--			return err;
-+			goto out_free;
- 		}
- 
- 		dev->caps.max_fmr_maps = (1 << (32 - ilog2(dev->caps.num_mpts))) - 1;
- 
- 		if (enable_4k_uar || !dev->persist->num_vfs) {
--			init_hca.log_uar_sz = ilog2(dev->caps.num_uars) +
-+			init_hca->log_uar_sz = ilog2(dev->caps.num_uars) +
- 						    PAGE_SHIFT - DEFAULT_UAR_PAGE_SHIFT;
--			init_hca.uar_page_sz = DEFAULT_UAR_PAGE_SHIFT - 12;
-+			init_hca->uar_page_sz = DEFAULT_UAR_PAGE_SHIFT - 12;
- 		} else {
--			init_hca.log_uar_sz = ilog2(dev->caps.num_uars);
--			init_hca.uar_page_sz = PAGE_SHIFT - 12;
-+			init_hca->log_uar_sz = ilog2(dev->caps.num_uars);
-+			init_hca->uar_page_sz = PAGE_SHIFT - 12;
- 		}
- 
--		init_hca.mw_enabled = 0;
-+		init_hca->mw_enabled = 0;
- 		if (dev->caps.flags & MLX4_DEV_CAP_FLAG_MEM_WINDOW ||
- 		    dev->caps.bmme_flags & MLX4_BMME_FLAG_TYPE_2_WIN)
--			init_hca.mw_enabled = INIT_HCA_TPT_MW_ENABLE;
-+			init_hca->mw_enabled = INIT_HCA_TPT_MW_ENABLE;
- 
--		err = mlx4_init_icm(dev, &dev_cap, &init_hca, icm_size);
-+		err = mlx4_init_icm(dev, dev_cap, init_hca, icm_size);
- 		if (err)
--			return err;
-+			goto out_free;
- 
--		err = mlx4_INIT_HCA(dev, &init_hca);
-+		err = mlx4_INIT_HCA(dev, init_hca);
- 		if (err) {
- 			mlx4_err(dev, "INIT_HCA command failed, aborting\n");
- 			goto err_free_icm;
- 		}
- 
--		if (dev_cap.flags2 & MLX4_DEV_CAP_FLAG2_SYS_EQS) {
--			err = mlx4_query_func(dev, &dev_cap);
-+		if (dev_cap->flags2 & MLX4_DEV_CAP_FLAG2_SYS_EQS) {
-+			err = mlx4_query_func(dev, dev_cap);
- 			if (err < 0) {
- 				mlx4_err(dev, "QUERY_FUNC command failed, aborting.\n");
- 				goto err_close;
- 			} else if (err & MLX4_QUERY_FUNC_NUM_SYS_EQS) {
--				dev->caps.num_eqs = dev_cap.max_eqs;
--				dev->caps.reserved_eqs = dev_cap.reserved_eqs;
--				dev->caps.reserved_uars = dev_cap.reserved_uars;
-+				dev->caps.num_eqs = dev_cap->max_eqs;
-+				dev->caps.reserved_eqs = dev_cap->reserved_eqs;
-+				dev->caps.reserved_uars = dev_cap->reserved_uars;
- 			}
- 		}
- 
-@@ -2381,14 +2389,13 @@ static int mlx4_init_hca(struct mlx4_dev *dev)
- 		 * read HCA frequency by QUERY_HCA command
- 		 */
- 		if (dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_TS) {
--			memset(&init_hca, 0, sizeof(init_hca));
--			err = mlx4_QUERY_HCA(dev, &init_hca);
-+			err = mlx4_QUERY_HCA(dev, init_hca);
- 			if (err) {
- 				mlx4_err(dev, "QUERY_HCA command failed, disable timestamp\n");
- 				dev->caps.flags2 &= ~MLX4_DEV_CAP_FLAG2_TS;
- 			} else {
- 				dev->caps.hca_core_clock =
--					init_hca.hca_core_clock;
-+					init_hca->hca_core_clock;
- 			}
- 
- 			/* In case we got HCA frequency 0 - disable timestamping
-@@ -2464,7 +2471,8 @@ static int mlx4_init_hca(struct mlx4_dev *dev)
- 	priv->eq_table.inta_pin = adapter.inta_pin;
- 	memcpy(dev->board_id, adapter.board_id, sizeof(dev->board_id));
- 
--	return 0;
-+	err = 0;
-+	goto out_free;
- 
- unmap_bf:
- 	unmap_internal_clock(dev);
-@@ -2483,6 +2491,10 @@ static int mlx4_init_hca(struct mlx4_dev *dev)
- 	if (!mlx4_is_slave(dev))
- 		mlx4_free_icms(dev);
- 
-+out_free:
-+	kfree(dev_cap);
-+	kfree(init_hca);
-+
- 	return err;
- }
- 
--- 
-2.20.0
+[1] https://patchwork.kernel.org/patch/11034123/
 
+[2] cat /sys/class/infiniband/efa_0/hw_counters/completed_cmds
+[   82.519451] ==================================================================
+[   82.522782] BUG: KASAN: null-ptr-deref in
+rdma_counter_get_hwstat_value+0x19d/0x260 [ib_core]
+[   82.526374] Read of size 8 at addr 00000000000000d0 by task cat/14604
+
+[   82.530133] CPU: 44 PID: 14604 Comm: cat Tainted: G            E
+5.3.0-rc1-dirty #101
+[   82.533613] Hardware name: Amazon EC2 c5n.18xlarge/, BIOS 1.0 10/16/2017
+[   82.536505] Call Trace:
+[   82.537837]  dump_stack+0x91/0xeb
+[   82.539487]  __kasan_report+0x1be/0x220
+[   82.541396]  ? rdma_counter_get_hwstat_value+0x19d/0x260 [ib_core]
+[   82.544206]  ? rdma_counter_get_hwstat_value+0x19d/0x260 [ib_core]
+[   82.546965]  kasan_report+0xe/0x20
+[   82.548659]  rdma_counter_get_hwstat_value+0x19d/0x260 [ib_core]
+[   82.552753]  ? rdma_counter_query_stats+0x70/0x70 [ib_core]
+[   82.556629]  ? lock_acquire+0x100/0x260
+[   82.559905]  show_hw_stats+0xdc/0x1d0 [ib_core]
+[   82.563420]  dev_attr_show+0x34/0x70
+[   82.566588]  sysfs_kf_seq_show+0x12b/0x1c0
+[   82.569917]  ? device_match_of_node+0x30/0x30
+[   82.573355]  seq_read+0x171/0x6d0
+[   82.576415]  vfs_read+0xc9/0x1e0
+[   82.579409]  ksys_read+0xca/0x180
+[   82.582443]  ? kernel_write+0xb0/0xb0
+[   82.585618]  ? trace_hardirqs_on_thunk+0x1a/0x20
+[   82.589119]  ? mark_held_locks+0x25/0xc0
+[   82.592387]  ? do_syscall_64+0x14/0x2b0
+[   82.595648]  do_syscall_64+0x68/0x2b0
+[   82.598886]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[   82.602612] RIP: 0033:0x7fa96127afe0
+[   82.605800] Code: 0b 31 c0 48 83 c4 08 e9 be fe ff ff 48 8d 3d 17 bf 09 00 e8
+52 8a 02 00 66 90 83 3d bd cf 2d 00 00 75 10 b8 00 00 00 00 0f 05 <48> 3d 01 f0
+ff ff 73 31 c3 48 83 ec 08 e8 4e cc 01 00 48 89 04 24
+[   82.617434] RSP: 002b:00007ffc04ceea48 EFLAGS: 00000246 ORIG_RAX:
+0000000000000000
+[   82.623423] RAX: ffffffffffffffda RBX: 0000000000010000 RCX: 00007fa96127afe0
+[   82.629319] RDX: 0000000000010000 RSI: 0000000000ebf000 RDI: 0000000000000003
+[   82.635142] RBP: 0000000000ebf000 R08: 0000000000000000 R09: 0000000000010fff
+[   82.641030] R10: 00007ffc04cede20 R11: 0000000000000246 R12: 0000000000ebf000
+[   82.646915] R13: 0000000000000003 R14: 0000000000000000 R15: 0000000000000fff
+[   82.652804] ==================================================================
+
+Thanks
