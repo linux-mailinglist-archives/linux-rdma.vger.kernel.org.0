@@ -2,85 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A367708BF
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 20:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1909708F3
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 20:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731448AbfGVSgL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 14:36:11 -0400
-Received: from mail-vk1-f169.google.com ([209.85.221.169]:43934 "EHLO
-        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727744AbfGVSgL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 14:36:11 -0400
-Received: by mail-vk1-f169.google.com with SMTP id b200so8083303vkf.10
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jul 2019 11:36:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=AaGq+Qn5ipyvNclhgXPtbHGUf3PKYP2ypbtdsfvuGPE=;
-        b=osk9Sq49PC6jweSqvDPGNpTawDqfETyCe1tAbu9VOkLFzFTsAr+zL99VHezfFVOUWF
-         3YFzTuckiUTd/d0mXDXqH1R9tfxs9b1EljM+F3B0BoKUyUkupKr37Di0RpbFTk3+LnlC
-         pSrnYiutyvFubFi4x0xaJbbIpXT97zAd05k0WFYQ6oHIpMqOpkhI7Yxb/hdOCxZcDBV9
-         dxiYxnYhoJb9leiHgnlMbjMOPnPvG1au8vSgXPvNh74s8sPUxdGJiM/f/r8IVZlCbWKv
-         LMXx07kFL2gb6EnB9xQcZQR7mVet8ltHHkeK2Rr/ge8mbCaCnFpwvcDZsc5hkxe0p7mp
-         k1Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AaGq+Qn5ipyvNclhgXPtbHGUf3PKYP2ypbtdsfvuGPE=;
-        b=kL8xPuJ0UBh8/4fqNgE5AYL7bcIB0P7TAbqlFpVHyQlNiy8QzDyVmEhbqHEdSdeCxu
-         bh5MuAF6+JOd7fhjCI049xoaMziqCCgZQSXknstpd9yNeqbKXJYUPERWXMvj6Tv/6gG3
-         p1jUgHBLk+5T+x3GXl48JnObjS+nsbyXb9s3K8BdDTfqGOG7WlfEtNovo71zQztlcNOc
-         szIq7RUHXojGwaKtW4EbUhGnjZp7CiUZaDlYBNQaN2BY6xeYuM5fs+Wh4528ho3iWJi6
-         tLrmMJJwFaquzA7PoYu/j5QFsMJZ4WJX9RaciWzzaImaTHtrTQF3xvcAjoVAe9EXtKJK
-         wQeQ==
-X-Gm-Message-State: APjAAAVRT8oj9ZewrhQK5W1hLS7Zzuhqvnc/m2fUh3qVLDodiXyxshcD
-        ShCyMeeC/xvOWNelNzyrZ9DwYw==
-X-Google-Smtp-Source: APXvYqzg05DBMl1FiOOEi+BcDj9oMatgFoRzOcxe2TWC1iSrYrMwZsPdQYO2OOGlW8dYgZ2eC5r1aA==
-X-Received: by 2002:a1f:5945:: with SMTP id n66mr26924124vkb.58.1563820570049;
-        Mon, 22 Jul 2019 11:36:10 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id w12sm15578233vso.32.2019.07.22.11.36.09
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 22 Jul 2019 11:36:09 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hpdAO-00068P-L1; Mon, 22 Jul 2019 15:36:08 -0300
-Date:   Mon, 22 Jul 2019 15:36:08 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Mao Wenan <maowenan@huawei.com>
-Cc:     bmt@zurich.ibm.com, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] infiniband: siw: remove set but not used variables
- 'rv'
-Message-ID: <20190722183608.GA23553@ziepe.ca>
-References: <20190719012938.100628-1-maowenan@huawei.com>
+        id S1730192AbfGVSx4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 14:53:56 -0400
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:3507 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727821AbfGVSx4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 14:53:56 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5d3606400002>; Mon, 22 Jul 2019 11:53:52 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 22 Jul 2019 11:53:55 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 22 Jul 2019 11:53:55 -0700
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 22 Jul
+ 2019 18:53:54 +0000
+Subject: Re: [PATCH 1/3] drivers/gpu/drm/via: convert put_page() to
+ put_user_page*()
+To:     Christoph Hellwig <hch@lst.de>, <john.hubbard@gmail.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Boaz Harrosh <boaz@plexistor.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Yan Zheng <zyan@redhat.com>, <netdev@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-mm@kvack.org>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20190722043012.22945-1-jhubbard@nvidia.com>
+ <20190722043012.22945-2-jhubbard@nvidia.com> <20190722093355.GB29538@lst.de>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <397ff3e4-e857-037a-1aee-ff6242e024b2@nvidia.com>
+Date:   Mon, 22 Jul 2019 11:53:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190719012938.100628-1-maowenan@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190722093355.GB29538@lst.de>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1563821632; bh=dVEAb2CGI+Rcq3kPxf1ySX9mPnHE1aqM1bmhIjbORUc=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=HArRmCgkrni3Mv1zhHNTOrkORst1xu/RkKpSHN9NJ6eHvsCKnyilmR14o7Vu/72+2
+         KzGoGeJ5LPaTaA997Z1lTeEX5TN0QxgL9zU0E1stVph1kaJP/CjI3G/fZC7Su8uSDP
+         zQdMp40Hd3vz1tqkE44dAhr5RuD9olYTaUe61D28D1sEpt/q0j8DDbdv6B2ii7KaIW
+         3XKa/T3Q4mkn6zgOvtasGsucgAaQQ3F4SWgLkmtCnVrJI8UW8FhQBhBRF+eCjxAZDo
+         DjdQKgIytgBgEr6BmAqoJ/KeCGoQ826d60sYBB87S4A1fHrwdDnuUDjUmWCd/fqdhR
+         fU5s088Wpq8BA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 19, 2019 at 09:29:38AM +0800, Mao Wenan wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
+On 7/22/19 2:33 AM, Christoph Hellwig wrote:
+> On Sun, Jul 21, 2019 at 09:30:10PM -0700, john.hubbard@gmail.com wrote:
+>>  		for (i = 0; i < vsg->num_pages; ++i) {
+>>  			if (NULL != (page = vsg->pages[i])) {
+>>  				if (!PageReserved(page) && (DMA_FROM_DEVICE == vsg->direction))
+>> -					SetPageDirty(page);
+>> -				put_page(page);
+>> +					put_user_pages_dirty(&page, 1);
+>> +				else
+>> +					put_user_page(page);
+>>  			}
 > 
-> drivers/infiniband/sw/siw/siw_cm.c: In function siw_cep_set_inuse:
-> drivers/infiniband/sw/siw/siw_cm.c:223:6: warning: variable rv set but not used [-Wunused-but-set-variable]
-> 
-> It is not used since commit 6c52fdc244b5("rdma/siw: connection management")
-> 
-> Signed-off-by: Mao Wenan <maowenan@huawei.com>
-> ---
->  drivers/infiniband/sw/siw/siw_cm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> Can't just pass a dirty argument to put_user_pages?  Also do we really
 
-Applied to for-rc
+Yes, and in fact that would help a lot more than the single page case,
+which is really just cosmetic after all.
 
-Thanks,
-Jason
+> need a separate put_user_page for the single page case?
+> put_user_pages_dirty?
+
+Not really. I'm still zeroing in on the ideal API for all these call sites,
+and I agree that the approach below is cleaner.
+
+> 
+> Also the PageReserved check looks bogus, as I can't see how a reserved
+> page can end up here.  So IMHO the above snippled should really look
+> something like this:
+> 
+> 	put_user_pages(vsg->pages[i], vsg->num_pages,
+> 			vsg->direction == DMA_FROM_DEVICE);
+> 
+> in the end.
+> 
+
+Agreed.
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
