@@ -2,125 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5246EE5C
-	for <lists+linux-rdma@lfdr.de>; Sat, 20 Jul 2019 10:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03946F88D
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 06:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbfGTICJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sat, 20 Jul 2019 04:02:09 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54300 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726780AbfGTICI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 20 Jul 2019 04:02:08 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6K7vSje066387
-        for <linux-rdma@vger.kernel.org>; Sat, 20 Jul 2019 04:02:07 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.67])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tux4d1gt3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Sat, 20 Jul 2019 04:02:07 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Sat, 20 Jul 2019 08:02:06 -0000
-Received: from us1a3-smtp07.a3.dal06.isc4sb.com (10.146.103.14)
-        by smtp.notes.na.collabserv.com (10.106.227.16) with smtp.notes.na.collabserv.com ESMTP;
-        Sat, 20 Jul 2019 08:02:00 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp07.a3.dal06.isc4sb.com
-          with ESMTP id 2019072008015996-126596 ;
-          Sat, 20 Jul 2019 08:01:59 +0000 
-In-Reply-To: <20190719012938.100628-1-maowenan@huawei.com>
-Subject: Re: [PATCH -next] infiniband: siw: remove set but not used variables 'rv'
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Mao Wenan" <maowenan@huawei.com>
-Cc:     <dledford@redhat.com>, <jgg@ziepe.ca>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-Date:   Sat, 20 Jul 2019 08:01:59 +0000
+        id S1727422AbfGVEaQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 00:30:16 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:33227 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbfGVEaQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 00:30:16 -0400
+Received: by mail-pg1-f196.google.com with SMTP id f20so7797551pgj.0;
+        Sun, 21 Jul 2019 21:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JVt6ZsruZdEjCeuPEiZoevmx4LJB3+Wj53DW9JaZ1Yk=;
+        b=VOdsVprSu9cGW1iqrmfPQX3xmYU5Z1o9cHF6pOzbJltiYhuYCge33pdD6CwMEXjvNM
+         sFi5J1se+WaXJ91/TKlPNrLGUHwxnpIw4qn7UAwShRFJ/W8Nr1RUSKFA7n+45aPr6x5C
+         WXA+RxInAR0EH7vDnRS0n0aIDe479ShZenlcHSFgtmJCj4AKpuj0qM5VYVp+YAGkHdwE
+         O4cIZ7alr6idAM7ATqKQj8tHNYN+A4KH9dTbPVf+Boq9vCTQQ+AaVmGwBppTWRbLCXxn
+         GvquR0RX9Yva+IepmKTElD2ekCLJhgD/84GbCKePJ9GNR9JpwzZV3DJPl7z/yc4lJjwJ
+         ABng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JVt6ZsruZdEjCeuPEiZoevmx4LJB3+Wj53DW9JaZ1Yk=;
+        b=NO+X1840YjipeTX9e7QqUJ5bnfCBv8G5tVALj6POnogMDhbSOxfyx25rbyNGowq+Ge
+         5LLDusijfx+tCQCF8qNDaZL+4bhish+XXw0kG737pMSnmMY8IUY6dRf+63C0hIPS7wx1
+         i/+q2QgQoSa2xXx5X68mM9PfTaKJA/hKii9Jvf3MZaF9k9GpTjfsWzGuTVxqAM3JPoOF
+         HfnmmJc4TeGs0V6/sv7VMzeKDDGEa9e64Ow2Uf2rSjwe5eYsRMgIdldMt5iRyhxQ9JPe
+         yeWvh/+TAiuu7jLu48XP7Rdv9KfJ5r4+n4NVYdS79e5qZTryhoTn7Bq7q8MILDTerkp8
+         eSZA==
+X-Gm-Message-State: APjAAAWEzM7bNSeu3wseysHDtBsEnFJsPBgxDli45BVSZcIJSRDE0agQ
+        YNKnQvWGyYLKGF9gSmh2KCU=
+X-Google-Smtp-Source: APXvYqztu+uwlucjHIzVmQ0L57MjZIIjZ2e8k8CcXoJiraVsvVA60l6ON4zhkWJGUUfJVOo89G9VTA==
+X-Received: by 2002:a17:90a:e397:: with SMTP id b23mr74049775pjz.140.1563769815699;
+        Sun, 21 Jul 2019 21:30:15 -0700 (PDT)
+Received: from blueforge.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id t96sm34285690pjb.1.2019.07.21.21.30.14
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sun, 21 Jul 2019 21:30:15 -0700 (PDT)
+From:   john.hubbard@gmail.com
+X-Google-Original-From: jhubbard@nvidia.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Boaz Harrosh <boaz@plexistor.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH 0/4] put_user_page: new put_user_page_dirty*() helpers
+Date:   Sun, 21 Jul 2019 21:30:09 -0700
+Message-Id: <20190722043012.22945-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190719012938.100628-1-maowenan@huawei.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-LLNOutbound: False
-X-Disclaimed: 775
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
 Content-Type: text/plain; charset=UTF-8
-x-cbid: 19072008-0327-0000-0000-00000C071D23
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.017273
-X-IBM-SpamModules-Versions: BY=3.00011461; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01234777; UDB=6.00650736; IPR=6.01016115;
- BA=6.00006356; NDR=6.00000001; ZLA=6.00000005; ZF=6.00000009; ZB=6.00000000;
- ZP=6.00000000; ZH=6.00000000; ZU=6.00000002; MB=3.00027814; XFM=3.00000015;
- UTC=2019-07-20 08:02:04
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-07-20 01:42:31 - 6.00010186
-x-cbparentid: 19072008-0328-0000-0000-0000183448A0
-Message-Id: <OF77C0BA7B.17273086-ON0025843D.002C20A5-0025843D.002C20AD@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-20_05:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Mao Wenan" <maowenan@huawei.com> wrote: -----
+From: John Hubbard <jhubbard@nvidia.com>
 
->To: <bmt@zurich.ibm.com>, <dledford@redhat.com>, <jgg@ziepe.ca>
->From: "Mao Wenan" <maowenan@huawei.com>
->Date: 07/19/2019 03:24AM
->Cc: <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-><kernel-janitors@vger.kernel.org>, "Mao Wenan" <maowenan@huawei.com>
->Subject: [EXTERNAL] [PATCH -next] infiniband: siw: remove set but not
->used variables 'rv'
->
->Fixes gcc '-Wunused-but-set-variable' warning:
->
->drivers/infiniband/sw/siw/siw_cm.c: In function siw_cep_set_inuse:
->drivers/infiniband/sw/siw/siw_cm.c:223:6: warning: variable rv set
->but not used [-Wunused-but-set-variable]
->
->It is not used since commit 6c52fdc244b5("rdma/siw: connection
->management")
->
->Signed-off-by: Mao Wenan <maowenan@huawei.com>
->---
-> drivers/infiniband/sw/siw/siw_cm.c | 3 +--
-> 1 file changed, 1 insertion(+), 2 deletions(-)
->
->diff --git a/drivers/infiniband/sw/siw/siw_cm.c
->b/drivers/infiniband/sw/siw/siw_cm.c
->index a7cde98..9ce8a1b 100644
->--- a/drivers/infiniband/sw/siw/siw_cm.c
->+++ b/drivers/infiniband/sw/siw/siw_cm.c
->@@ -220,13 +220,12 @@ static void siw_put_work(struct siw_cm_work
->*work)
-> static void siw_cep_set_inuse(struct siw_cep *cep)
-> {
-> 	unsigned long flags;
->-	int rv;
-> retry:
-> 	spin_lock_irqsave(&cep->lock, flags);
-> 
-> 	if (cep->in_use) {
-> 		spin_unlock_irqrestore(&cep->lock, flags);
->-		rv = wait_event_interruptible(cep->waitq, !cep->in_use);
->+		wait_event_interruptible(cep->waitq, !cep->in_use);
-> 		if (signal_pending(current))
-> 			flush_signals(current);
-> 		goto retry;
->-- 
->2.7.4
->
->
+Hi,
 
-Mao, many thanks for finding that. So, yes, 'rv'  shall be removed.
+Here is the first small batch of call site conversions for put_page()
+to put_user_page().
 
-Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+This batch includes some, but not all of the places that benefit from the
+two new put_user_page_dirty*() helper functions. (The ordering of call site
+conversion patch submission makes it better to wait until later, to convert
+the rest.)
+
+There are about 50+ patches in my tree [1], and I'll be sending out the
+remaining ones in a few more groups:
+
+    * The block/bio related changes (Jerome mostly wrote those, but I've
+      had to move stuff around extensively, and add a little code)
+
+    * mm/ changes
+
+    * other subsystem patches
+
+    * an RFC that shows the current state of the tracking patch set. That
+      can only be applied after all call sites are converted, but it's
+      good to get an early look at it.
+
+This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+("mm: introduce put_user_page*(), placeholder versions").
+
+[1] https://github.com/johnhubbard/linux/tree/gup_dma_core
+
+John Hubbard (4):
+  drivers/gpu/drm/via: convert put_page() to put_user_page*()
+  net/xdp: convert put_page() to put_user_page*()
+  net/rds: convert put_page() to put_user_page*()
+  gup: new put_user_page_dirty*() helpers
+
+ drivers/gpu/drm/via/via_dmablit.c        |  5 +++--
+ drivers/infiniband/core/umem.c           |  2 +-
+ drivers/infiniband/hw/usnic/usnic_uiom.c |  2 +-
+ include/linux/mm.h                       | 10 ++++++++++
+ net/rds/info.c                           |  5 ++---
+ net/rds/message.c                        |  2 +-
+ net/rds/rdma.c                           | 15 +++++++--------
+ net/xdp/xdp_umem.c                       |  3 +--
+ 8 files changed, 26 insertions(+), 18 deletions(-)
+
+-- 
+2.22.0
 
