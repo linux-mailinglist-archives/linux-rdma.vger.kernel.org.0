@@ -2,97 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 287A4709F5
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 21:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F1F70CB4
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 00:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbfGVTnI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 15:43:08 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:34215 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728183AbfGVTnH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 15:43:07 -0400
-Received: by mail-lj1-f193.google.com with SMTP id p17so38760718ljg.1
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jul 2019 12:43:06 -0700 (PDT)
+        id S1728972AbfGVWeU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 18:34:20 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:46416 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727381AbfGVWeT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 18:34:19 -0400
+Received: by mail-pl1-f195.google.com with SMTP id c2so19731796plz.13;
+        Mon, 22 Jul 2019 15:34:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yDcZGwhuKZu3iHdLJjjZrDjT2mDiJYa3/PCuflSwhmE=;
-        b=JH+WTPvGR1uJXOfkLig+2OnrW2RKgN80CBOlHfHzmzd4O+bmVrzCRVv79MtxWactpN
-         5AQJgh8/hKUCP0JLKzw9h/Ia3Zucxwt24sq0z1NWzgC9D7F9JM39IuPnlfeD8HuVZjgZ
-         df1gbXNdbJqX60F6+Y/PKNW/1fE0l4GJwD+5qqqbYRcIBhraAj8DB6QvLVW+D4BcwoSy
-         XbY47a81+I07ouFEfhrSnksjfYHY98ImOhSJYDBYtWMQ1Mjelr3fU9T1Oy9gC9xOVFkv
-         9z7hQlZHI374PYI2T6OQwIYP1EKvSEMpTqTekwepqb6IjDkwfgi3/YVva8PPoL2m8Qmh
-         Yl4g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QIVVOI9gQsNqxVjPu4etuG1LAE6h//kEaksqjz3X+CU=;
+        b=BMDsv5gG591HtpdOHiM5RyNT1mlqGKuDllYZiTvtfU6CS37Na6fH30nZ9rafb98EIN
+         Wlx6iYo9w1xSehuO8cIJ4H5bGxghqyq/GdTmn8CtSOjBrKbVjiTCAavuri+1MJ+5Lp9e
+         ObaapI4WPRlWLRFRAe0E0R3/VMrPOqGwFLm0iaeIqT1zZr/EjHzUVR61q43igVVjThf5
+         hfxKwYURdgHOehai2YXnoTuh01yL6YImTUqYbD+uXPyZT1gjMy3KpQ/FF0BCGEDZoSoL
+         09JhKrG9WJuSpUXM5gobrsghXz+1i6xd9uKLZ5Miti6aS5v9RD3RibWcoah6SPr4u6OX
+         ZMcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yDcZGwhuKZu3iHdLJjjZrDjT2mDiJYa3/PCuflSwhmE=;
-        b=ch+i29YoSdaByy3zjZMfzeVVezSWqcUyf5QMV4Txw8ViyuFjHs7zM0bIliClVe/grS
-         vruiY1jw2LeyxQdZw2IifUsM0XTCKc6/SfSi9nxo/meDF1xo6tdonXNKC+roqoa7aavB
-         IJXjBX+VZJO+UYxn8nDxZoPqTQTjogwKW42wj26sC47pfx3n3jpssSkSVqOpZk0x8frF
-         XOscv1jM/S0ObPzIGXvSjds8O5v67hVCYKxzoOhBRxO2EeImz17D7p8r689/nYBxnXV7
-         YiVsPwFUQSTaQO+NQtMXvW/uPMqSFciLt1ZWz3KMvtIt+PJQbYjz9+smSj7MMw7yLWqB
-         1QJQ==
-X-Gm-Message-State: APjAAAUj3Diy4rEKjYMuxtx/guGcjDPNb/riCMmbDLlD0W8lYae8a9Gs
-        e0SkdP+r+1JbWKzgxVei28gzeNjliR9KraO4QZTdYg==
-X-Google-Smtp-Source: APXvYqxYj26MsmsL+EUr6K7HJeh4VOAk6pAdE7CkRMdt0FiDft3k4b/ODkmGcqVb0AGyHNqMuSc+O0XivAmJeX8kyWM=
-X-Received: by 2002:a2e:3604:: with SMTP id d4mr36892450lja.85.1563824585693;
- Mon, 22 Jul 2019 12:43:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QIVVOI9gQsNqxVjPu4etuG1LAE6h//kEaksqjz3X+CU=;
+        b=lqrdojt/VOGpZQAL0fEj0iJ5o8td0pqhVNbPUfygb1U/fle0lhMWHOLtlUcF6CkKGX
+         uqpVEQ8piRw9FnS3RGlkGdxScuYsjpvTwrkRWPn/uevJr47mIRAoftJehOcpKR5DtK1S
+         k0rpXZiYoIPfXtUOE8ZTAuqvuda6lIkI/FVUlvNK9rMeNyc3zwt4b4oeo46jZsnkqbFD
+         091It22kbvLnqnDQCBoYBtg5If8NE+t6VI93MJmYC/a7ymIkyBPZanv7q9mw9/VBDGwF
+         65irFD7lFOuOJAq8KG1FbpAmUDLovfCyiMYdQL3Di1JVtVLNBYWpgyTNyfo9xIZP3UDJ
+         a01g==
+X-Gm-Message-State: APjAAAVZzk04mr2XOmYuerCt7moKwkwTX6hi5lLpY6v5YoBiIbTA410N
+        jmholzBwLg1oFcN6m8DYlck=
+X-Google-Smtp-Source: APXvYqxp+r9/TLSrU0csTSoFktj9yzfPPZmms2rTPYm/o4pShtHwmlaILQQ11XVVhMCGVRsd5PF4qg==
+X-Received: by 2002:a17:902:820c:: with SMTP id x12mr78020390pln.216.1563834859258;
+        Mon, 22 Jul 2019 15:34:19 -0700 (PDT)
+Received: from blueforge.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id r18sm30597570pfg.77.2019.07.22.15.34.17
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 22 Jul 2019 15:34:18 -0700 (PDT)
+From:   john.hubbard@gmail.com
+X-Google-Original-From: jhubbard@nvidia.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Boaz Harrosh <boaz@plexistor.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH 0/3] introduce __put_user_pages(), convert a few call sites
+Date:   Mon, 22 Jul 2019 15:34:12 -0700
+Message-Id: <20190722223415.13269-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-References: <1563820482-10302-1-git-send-email-cai@lca.pw> <20190722.120901.1770656295609872438.davem@davemloft.net>
-In-Reply-To: <20190722.120901.1770656295609872438.davem@davemloft.net>
-From:   Saeed Mahameed <saeedm@dev.mellanox.co.il>
-Date:   Mon, 22 Jul 2019 12:42:54 -0700
-Message-ID: <CALzJLG81NvsSbv7Qv11QnX3pvogeSmO-vsn1uYP13p5T14irig@mail.gmail.com>
-Subject: Re: [PATCH] net/mlx5: fix -Wtype-limits compilation warnings
-To:     David Miller <davem@davemloft.net>
-Cc:     Qian Cai <cai@lca.pw>, Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 22, 2019 at 12:09 PM David Miller <davem@davemloft.net> wrote:
->
-> From: Qian Cai <cai@lca.pw>
-> Date: Mon, 22 Jul 2019 14:34:42 -0400
->
-> > The commit b9a7ba556207 ("net/mlx5: Use event mask based on device
-> > capabilities") introduced a few compilation warnings due to it bumps
-> > MLX5_EVENT_TYPE_MAX from 0x27 to 0x100 which is always greater than
-> > an "struct {mlx5_eqe|mlx5_nb}.type" that is an "u8".
-> >
-> > drivers/net/ethernet/mellanox/mlx5/core/eq.c: In function
-> > 'mlx5_eq_notifier_register':
-> > drivers/net/ethernet/mellanox/mlx5/core/eq.c:948:21: warning: comparison
-> > is always false due to limited range of data type [-Wtype-limits]
-> >   if (nb->event_type >= MLX5_EVENT_TYPE_MAX)
-> >                      ^~
-> > drivers/net/ethernet/mellanox/mlx5/core/eq.c: In function
-> > 'mlx5_eq_notifier_unregister':
-> > drivers/net/ethernet/mellanox/mlx5/core/eq.c:959:21: warning: comparison
-> > is always false due to limited range of data type [-Wtype-limits]
-> >   if (nb->event_type >= MLX5_EVENT_TYPE_MAX)
-> >
-> > Fix them by removing unnecessary checkings.
-> >
-> > Fixes: b9a7ba556207 ("net/mlx5: Use event mask based on device capabilities")
-> > Signed-off-by: Qian Cai <cai@lca.pw>
->
-> Saeed, I am assuming that you will take this.
+From: John Hubbard <jhubbard@nvidia.com>
 
-Yes, will take it.
-The patch LGTM, though not applying it yet so others get the chance to
-review it.
-will apply it in a couple of days.
+As discussed in [1] just now, this adds a more capable variation of
+put_user_pages() to the API set, and uses it to simplify both the
+main implementation, and (especially) the call sites.
 
-Thanks,
-Saeed.
+Thanks to Christoph for the simplifying ideas, and Matthew for (again)
+recommending an enum in the API. Matthew, I seem to recall you asked
+for enums before this, so I'm sorry it took until now for me to add
+them. :)
+
+The new __put_user_pages() takes an enum that handles the various
+combinations of needing to call set_page_dirty() or
+set_page_dirty_lock(), before calling put_user_page().
+
+I'm using the same CC list as in [1], even though IB is no longer
+included in the series. That's everyone can see what the end result
+turns out to be.
+
+Notes about the remaining patches to come:
+
+There are about 50+ patches in my tree [2], and I'll be sending out the
+remaining ones in a few more groups:
+
+    * The block/bio related changes (Jerome mostly wrote those, but I've
+      had to move stuff around extensively, and add a little code)
+
+    * mm/ changes
+
+    * other subsystem patches
+
+    * an RFC that shows the current state of the tracking patch set. That
+      can only be applied after all call sites are converted, but it's
+      good to get an early look at it.
+
+This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+("mm: introduce put_user_page*(), placeholder versions").
+
+[1] https://lore.kernel.org/r/20190722093355.GB29538@lst.de
+[2] https://github.com/johnhubbard/linux/tree/gup_dma_core
+
+John Hubbard (3):
+  mm/gup: introduce __put_user_pages()
+  drivers/gpu/drm/via: convert put_page() to put_user_page*()
+  net/xdp: convert put_page() to put_user_page*()
+
+ drivers/gpu/drm/via/via_dmablit.c |  11 +--
+ include/linux/mm.h                |  58 +++++++++++-
+ mm/gup.c                          | 149 +++++++++++++++---------------
+ net/xdp/xdp_umem.c                |   9 +-
+ 4 files changed, 135 insertions(+), 92 deletions(-)
+
+-- 
+2.22.0
+
