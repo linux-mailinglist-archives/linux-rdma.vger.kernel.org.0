@@ -2,153 +2,187 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B2E705A5
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 18:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D71270655
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 19:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728833AbfGVQqJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 12:46:09 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:43998 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbfGVQqJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 12:46:09 -0400
-Received: by mail-pg1-f194.google.com with SMTP id f25so17915708pgv.10
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jul 2019 09:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F8BugWPvgcU2u1kFFZKMyP/IOkg4/qodeykECt+PCWA=;
-        b=VX6SSuVoSHuo5NAioif+DJtSSs1RJl179j5hlo4DTfAYF66Jgcx0vpiJB8eR+9HEL8
-         +f/45Mc4lQN3jKnZezfzKg+yOPAVpcviTazcgmREFQYvaP41eWd/rYtiTmOP5jut4IGW
-         UsbCxeU7Nx57xcR3YkKPrTzMk7AWS/2VcXYuY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F8BugWPvgcU2u1kFFZKMyP/IOkg4/qodeykECt+PCWA=;
-        b=DWYKmk4jbSQueCChtX8LxskRwwQuxNfOdtj0JNU17+88mtyB4SMjgYMnE7ek7zep4g
-         akucIuccVRK+Hh5q3jDAzKKhmc7d7nAdH9P5uxe2zuHfLOBmLpAMIGLZHJ1fcpLAHBO9
-         mH3T/UB/2iT0qUiZM7/ixrxblFtlGIiXgC5zVYVC0ERzFGQe859FwKfGyj44BD+uj3nA
-         VL+cb7A9E1qWmUnbBc9y9RpeidGgRDwbFGdslVEMv6RxfZNUE3yAQPZCGsSoBNlojJdM
-         GgXhO+F9LpnZMSUg+Y0kW567S6vRJqGq4EotPzfTkWiDoOwZmJwYn+w2n2MfQtdJjYTg
-         rnFQ==
-X-Gm-Message-State: APjAAAUc8fO+EFVbzAfz9cMHhfQCLX3ByJMZrPbyYRIiXf8Ra9OG566P
-        F9Bi4HqAcSSsbG7J0715IbUZsw==
-X-Google-Smtp-Source: APXvYqzl1okfrN5zPZDspTEQta/i5+YABh20qrSg3GL1AN5406TswuRoR6v+V+I5B+11TbFoYh/o0Q==
-X-Received: by 2002:a17:90a:ff17:: with SMTP id ce23mr77676431pjb.47.1563813968675;
-        Mon, 22 Jul 2019 09:46:08 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 4sm48411440pfc.92.2019.07.22.09.46.07
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 22 Jul 2019 09:46:07 -0700 (PDT)
-Date:   Mon, 22 Jul 2019 09:46:06 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v18 07/15] fs/namespace: untag user pointers in
- copy_mount_options
-Message-ID: <201907220944.5821C92518@keescook>
-References: <cover.1561386715.git.andreyknvl@google.com>
- <41e0a911e4e4d533486a1468114e6878e21f9f84.1561386715.git.andreyknvl@google.com>
- <20190624175009.GM29120@arrakis.emea.arm.com>
- <CAAeHK+x2TL057Fr0K7FZBTYgeEPVU3cC6scEeiSYk-Jkb3xgfg@mail.gmail.com>
+        id S1727805AbfGVRCR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 13:02:17 -0400
+Received: from mail-eopbgr80050.outbound.protection.outlook.com ([40.107.8.50]:17827
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727916AbfGVRCQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 22 Jul 2019 13:02:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ljo7GwnsvrBpP427MU216gI/WU5zKeu8ZX2fYBJP6AqaiRA4Iz8qmOc5X8VBNWpoD66HtevwtFgaas4aRUY4z2DcdQ2tsesTLjyKLzfyeJRcJ2XrXvbGFPm/HLAfxgerKz2he386noykfUVB3czzKACbr14s2eVX22Eq8YIC5uLjnzabgfDSoUU7tLUAtJwfzFAUtT7aw8PH00w0X5IOK/aLSMblExGEDsimfGEDC4bS14GDUSXdUmxk2bhx58PwKI/WHtipM8K2YrZ9LtXui2XSSLacKY+2vhB2OfLtjth20hpd3kU0/Y+ZHaEHnA93sgnWGO0QY/nR1Vn/cEBqCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3drec8ImyFwGLcWhfzd/GaDQ6zMxEzL1nnwlLxpKnQA=;
+ b=UA7WJ9unMTr58otCBHtiGyxHt7kJi0GV1LoDhSaIlhT9wMV0VJH8IW5LkW+PT7tP1Pa7XquJhAVuUHxwWUCDWS/QjiHSgWmjQLH6SqvPQmzma5Qbg+Q9Yisz+2ck9iu7I7LadqCMmRXl647TCZ4TFkzKyIFirld8QgMwMUE//5fWuOFl7QUZanDAlKwWo4JXHCwlseSyz7stqA8yC7XhMUT5aqzVPvO80C7v6Q9QYDwZVyCkNwNAlFO9ZiQ2HKNwuaXs3KeQGXR/Y21X+4RTGEMeCdiilGFTZMiZvaFw/+TC0kLct8uy/cp0HJUaFrbAISpIxhjsOKOhMZyTsE0q8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=mellanox.com;dmarc=pass action=none
+ header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3drec8ImyFwGLcWhfzd/GaDQ6zMxEzL1nnwlLxpKnQA=;
+ b=rMgR3c5mEAMhdF3sLejN3dN25Fmu8IHgzHwdDHPKVapDJDAVZZNn/abdVS+Yu5svdaeIIGC1sIajBqQv8SeBk6ogGvyeDO1CSPn9ScFfFI9k7bmUfATpsoP6t3Bw/O+tM4c+FgNo8mmbBCBhECfve4MFTcFU1yDQXXZhn4zDOLs=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB5485.eurprd05.prod.outlook.com (20.177.63.215) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2094.15; Mon, 22 Jul 2019 17:01:30 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::5c6f:6120:45cd:2880]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::5c6f:6120:45cd:2880%4]) with mapi id 15.20.2094.013; Mon, 22 Jul 2019
+ 17:01:30 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>
+Subject: [PATCH] RDMA: Make most headers compile stand alone
+Thread-Topic: [PATCH] RDMA: Make most headers compile stand alone
+Thread-Index: AQHVQK8bNjkekawdNkeecDoUCAURRA==
+Date:   Mon, 22 Jul 2019 17:01:30 +0000
+Message-ID: <20190722170126.GA16453@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR20CA0005.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::18) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f2f00566-2cf7-4c4e-8e50-08d70ec63e34
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5485;
+x-ms-traffictypediagnostic: VI1PR05MB5485:
+x-microsoft-antispam-prvs: <VI1PR05MB54856D177DE6C74C4E88A3BACFC40@VI1PR05MB5485.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:418;
+x-forefront-prvs: 01068D0A20
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(366004)(346002)(39860400002)(396003)(376002)(199004)(189003)(316002)(52116002)(6486002)(14454004)(25786009)(2351001)(6916009)(2501003)(54906003)(8676002)(305945005)(102836004)(99286004)(186003)(476003)(26005)(3846002)(6116002)(7736002)(386003)(6506007)(2906002)(9686003)(4326008)(81166006)(81156014)(68736007)(8936002)(53936002)(66066001)(66476007)(66946007)(66446008)(64756008)(86362001)(256004)(5660300002)(66556008)(1076003)(71190400001)(71200400001)(6436002)(5640700003)(36756003)(478600001)(33656002)(6512007)(486006);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5485;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: eTzlpET2DSJPWgAxC/sj41EkrNtlpOlxOeKoXKQ6RqE8o47ytSm4n6MKuncuzfo9qcfkvaaJ4zdWteCNWZi+zWu20LbrTwdgGJqtgxQfBuKo0ewlBLncnSutmMcMupo0YOED2WBRVW+5dtsR7WwFfobLG30jz/vMjQwf6oIpA+r4/t/SaSmWeBrVypdQIMKwwa2OMm7Fa/ZjAqqjnOoOmW8YB5c9EdBdEEB4jhxG4/EWcZMK4W10qKccY18VtzYKPeN3bk2W55vWkWoJfrwhmj4180ofmtJb/ucBbhpJWjUo/ChjBx6n7MOMM1rsyRdNpWqUIF/0k+dxyG4kWbCDg+GyZOmmMaTvgSKMBuwgttSWODVMDGMA+F1EINLUeWdbiOisgz3JGnitkrRdPrdQfqNKIvylFrB+ni9+qjVG3oo=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3E5DAE2BF8BBE34A944F7642C668AC5E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAeHK+x2TL057Fr0K7FZBTYgeEPVU3cC6scEeiSYk-Jkb3xgfg@mail.gmail.com>
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2f00566-2cf7-4c4e-8e50-08d70ec63e34
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2019 17:01:30.7868
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5485
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-+Eric Biederman too, who might be able to Ack this...
+So that rdma can work with CONFIG_KERNEL_HEADER_TEST and
+CONFIG_HEADERS_CHECK.
 
-On Mon, Jul 15, 2019 at 06:00:04PM +0200, Andrey Konovalov wrote:
-> On Mon, Jun 24, 2019 at 7:50 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> >
-> > On Mon, Jun 24, 2019 at 04:32:52PM +0200, Andrey Konovalov wrote:
-> > > This patch is a part of a series that extends kernel ABI to allow to pass
-> > > tagged user pointers (with the top byte set to something else other than
-> > > 0x00) as syscall arguments.
-> > >
-> > > In copy_mount_options a user address is being subtracted from TASK_SIZE.
-> > > If the address is lower than TASK_SIZE, the size is calculated to not
-> > > allow the exact_copy_from_user() call to cross TASK_SIZE boundary.
-> > > However if the address is tagged, then the size will be calculated
-> > > incorrectly.
-> > >
-> > > Untag the address before subtracting.
-> > >
-> > > Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
-> > > Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > > ---
-> > >  fs/namespace.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/fs/namespace.c b/fs/namespace.c
-> > > index 7660c2749c96..ec78f7223917 100644
-> > > --- a/fs/namespace.c
-> > > +++ b/fs/namespace.c
-> > > @@ -2994,7 +2994,7 @@ void *copy_mount_options(const void __user * data)
-> > >        * the remainder of the page.
-> > >        */
-> > >       /* copy_from_user cannot cross TASK_SIZE ! */
-> > > -     size = TASK_SIZE - (unsigned long)data;
-> > > +     size = TASK_SIZE - (unsigned long)untagged_addr(data);
-> > >       if (size > PAGE_SIZE)
-> > >               size = PAGE_SIZE;
-> >
-> > I think this patch needs an ack from Al Viro (cc'ed).
-> >
-> > --
-> > Catalin
-> 
-> Hi Al,
-> 
-> Could you take a look and give your acked-by?
-> 
-> Thanks!
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ include/Kbuild               | 6 ------
+ include/rdma/ib.h            | 2 ++
+ include/rdma/iw_portmap.h    | 3 +++
+ include/rdma/opa_port_info.h | 2 ++
+ include/rdma/rdmavt_cq.h     | 1 +
+ include/rdma/signature.h     | 2 ++
+ 6 files changed, 10 insertions(+), 6 deletions(-)
 
--- 
-Kees Cook
+HFI guys: you need to fix the problems around tid_rdma_defs.h
+
+diff --git a/include/Kbuild b/include/Kbuild
+index c38f0d46b267cb..fc2aa4e2065811 100644
+--- a/include/Kbuild
++++ b/include/Kbuild
+@@ -945,12 +945,6 @@ header-test-			+=3D net/xdp.h
+ header-test-			+=3D net/xdp_priv.h
+ header-test-			+=3D pcmcia/cistpl.h
+ header-test-			+=3D pcmcia/ds.h
+-header-test-			+=3D rdma/ib.h
+-header-test-			+=3D rdma/iw_portmap.h
+-header-test-			+=3D rdma/opa_port_info.h
+-header-test-			+=3D rdma/rdmavt_cq.h
+-header-test-			+=3D rdma/restrack.h
+-header-test-			+=3D rdma/signature.h
+ header-test-			+=3D rdma/tid_rdma_defs.h
+ header-test-			+=3D scsi/fc/fc_encaps.h
+ header-test-			+=3D scsi/fc/fc_fc2.h
+diff --git a/include/rdma/ib.h b/include/rdma/ib.h
+index 4f385ec54f80ce..fe2fc9e91588de 100644
+--- a/include/rdma/ib.h
++++ b/include/rdma/ib.h
+@@ -36,6 +36,8 @@
+ #include <linux/types.h>
+ #include <linux/sched.h>
+ #include <linux/cred.h>
++#include <linux/uaccess.h>
++#include <linux/fs.h>
+=20
+ struct ib_addr {
+ 	union {
+diff --git a/include/rdma/iw_portmap.h b/include/rdma/iw_portmap.h
+index b9fee7feeeb5a5..c89535047c42cd 100644
+--- a/include/rdma/iw_portmap.h
++++ b/include/rdma/iw_portmap.h
+@@ -33,6 +33,9 @@
+ #ifndef _IW_PORTMAP_H
+ #define _IW_PORTMAP_H
+=20
++#include <linux/socket.h>
++#include <linux/netlink.h>
++
+ #define IWPM_ULIBNAME_SIZE	32
+ #define IWPM_DEVNAME_SIZE	32
+ #define IWPM_IFNAME_SIZE	16
+diff --git a/include/rdma/opa_port_info.h b/include/rdma/opa_port_info.h
+index 7147a92630114d..bdbfe25d38548b 100644
+--- a/include/rdma/opa_port_info.h
++++ b/include/rdma/opa_port_info.h
+@@ -33,6 +33,8 @@
+ #if !defined(OPA_PORT_INFO_H)
+ #define OPA_PORT_INFO_H
+=20
++#include <rdma/opa_smi.h>
++
+ #define OPA_PORT_LINK_MODE_NOP	0		/* No change */
+ #define OPA_PORT_LINK_MODE_OPA	4		/* Port mode is OPA */
+=20
+diff --git a/include/rdma/rdmavt_cq.h b/include/rdma/rdmavt_cq.h
+index 04c519ef6d715b..574eb7278f468f 100644
+--- a/include/rdma/rdmavt_cq.h
++++ b/include/rdma/rdmavt_cq.h
+@@ -53,6 +53,7 @@
+=20
+ #include <linux/kthread.h>
+ #include <rdma/ib_user_verbs.h>
++#include <rdma/ib_verbs.h>
+=20
+ /*
+  * Define an ib_cq_notify value that is not valid so we know when CQ
+diff --git a/include/rdma/signature.h b/include/rdma/signature.h
+index f24cc2a1d3c5d9..d16b0fcc8344b3 100644
+--- a/include/rdma/signature.h
++++ b/include/rdma/signature.h
+@@ -6,6 +6,8 @@
+ #ifndef _RDMA_SIGNATURE_H_
+ #define _RDMA_SIGNATURE_H_
+=20
++#include <linux/types.h>
++
+ enum ib_signature_prot_cap {
+ 	IB_PROT_T10DIF_TYPE_1 =3D 1,
+ 	IB_PROT_T10DIF_TYPE_2 =3D 1 << 1,
+--=20
+2.22.0
+
