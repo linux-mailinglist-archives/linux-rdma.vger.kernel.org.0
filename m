@@ -2,80 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F498703CC
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 17:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A06703D0
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 17:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728802AbfGVPbW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 11:31:22 -0400
-Received: from os.inf.tu-dresden.de ([141.76.48.99]:59226 "EHLO
-        os.inf.tu-dresden.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728794AbfGVPbW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 11:31:22 -0400
-Received: from [195.176.96.199] (helo=[10.3.5.139])
-        by os.inf.tu-dresden.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92)
-        id 1hpaHZ-0008Pe-5b; Mon, 22 Jul 2019 17:31:21 +0200
-Subject: Re: [PATCH 07/10] Pass the return value of kref_put further
-To:     Jason Gunthorpe <jgg@ziepe.ca>
+        id S1728927AbfGVPcH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 11:32:07 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:43234 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728845AbfGVPcH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 11:32:07 -0400
+Received: by mail-vs1-f65.google.com with SMTP id j26so26387983vsn.10
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Jul 2019 08:32:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=83LVMuHoHjqhSQNZ1FrJgpxiHmtCkL35yfYZrLhbZjo=;
+        b=LqJPpEmUB0a9Ke4CAk6JPoucs8wmtb+02DEs9QL9U+BbOfYQbgVeFVIqqlr7oQQAq8
+         3S/c31fXk9q8SoWg6oP7zCkjauQxi8XdeFPuuQU1NEBI6kkLLcblRlt8GzFe/je8gjix
+         vOHkm5H5D1AnV47vAB88S13Je7Hl7mpBe3uFaxmZnvAvkAkKIX9vchXENhZeppe+VvUl
+         MuaQ06MGkLEsK+UrErQamKgEpMwyq8lwf16j83TMQILggK/TJgS+7d8jfQRFFXYWYeGB
+         2JhobIzAQZt5zssUMglTgRGluDpjdCgIkrPqKnHvg060jjILe0hrONl32QrLFG+ZcDZh
+         wPfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=83LVMuHoHjqhSQNZ1FrJgpxiHmtCkL35yfYZrLhbZjo=;
+        b=EjkWlueEV44fJNU1K5/BsjscgMNhyAOvGKVq55sjDgm/BZ+ngZuj4PpslUUeLi3wwS
+         lCI67xKVsaWmvqwzv1P+2BpMDk6F4v0n+6ojqz54YsZ4zrJdndf4SIO+wVY/97mIsTiF
+         QvzkdY+ZndcF83dWi8tnjtLdzWj6ZyheJyQ3HHvgvQ9t4RUd/wVkozye+T6/svhxiMNR
+         vZR6wSGZ2A+1ot/jbtCJI1Pp2DHpzNmyyVZGdq9YC5vg0Dam2HEl8Z3pXhEpV8ZTIXpe
+         n7mslfq8PcGWKSbAm0BEIRHRcc2iWrcVxvWff65qno4zVtqR54TstRgTXNVabincxbGM
+         5vSQ==
+X-Gm-Message-State: APjAAAVZcaFbmz8Gw89FT5ddK339+02zsAj1rl07cyGohb9kQN+skVnY
+        /CmVimZPeBpU+TTq4lHNa5JhDdX7uljrqg==
+X-Google-Smtp-Source: APXvYqwfMx7NNtKhAko8Xc/SzCmuGCf752a2RG6dd2WSCibeWR5f56T3h9COdwohxrypQTGs8RQ6+Q==
+X-Received: by 2002:a05:6102:1041:: with SMTP id h1mr42912194vsq.153.1563809526346;
+        Mon, 22 Jul 2019 08:32:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id l184sm18097130vsl.8.2019.07.22.08.32.05
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Jul 2019 08:32:05 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hpaIH-0004t3-Av; Mon, 22 Jul 2019 12:32:05 -0300
+Date:   Mon, 22 Jul 2019 12:32:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
 Cc:     Moni Shoua <monis@mellanox.com>,
         Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/10] Replace tasklets with workqueues
+Message-ID: <20190722153205.GG7607@ziepe.ca>
 References: <20190722151426.5266-1-mplaneta@os.inf.tu-dresden.de>
- <20190722151426.5266-8-mplaneta@os.inf.tu-dresden.de>
- <20190722152947.GF7607@ziepe.ca>
-From:   Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
-Message-ID: <8956ccbb-f45e-692c-5208-ec52a3062680@os.inf.tu-dresden.de>
-Date:   Mon, 22 Jul 2019 17:31:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ <20190722151426.5266-11-mplaneta@os.inf.tu-dresden.de>
 MIME-Version: 1.0
-In-Reply-To: <20190722152947.GF7607@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190722151426.5266-11-mplaneta@os.inf.tu-dresden.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In a later patch I need to know if the dependency to QP object still 
-exists or not.
+On Mon, Jul 22, 2019 at 05:14:26PM +0200, Maksym Planeta wrote:
+> Replace tasklets with workqueues in rxe driver.
+> 
+> Ensure that task is called only through a workqueue. This allows to
+> simplify task logic.
+> 
+> Add additional dependencies to make sure that cleanup tasks do not
+> happen after object's memory is already reclaimed.
+> 
+> Improve overal stability of the driver by removing multiple race
+> conditions and use-after-free situations.
 
-On 22/07/2019 17:29, Jason Gunthorpe wrote:
-> On Mon, Jul 22, 2019 at 05:14:23PM +0200, Maksym Planeta wrote:
->> Used in a later patch.
->>
->> Signed-off-by: Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
->>   drivers/infiniband/sw/rxe/rxe_pool.c | 3 ++-
->>   drivers/infiniband/sw/rxe/rxe_pool.h | 2 +-
->>   2 files changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
->> index 30a887cf9200..711d7d7f3692 100644
->> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
->> @@ -541,7 +541,7 @@ static void rxe_dummy_release(struct kref *kref)
->>   {
->>   }
->>   
->> -void rxe_drop_ref(struct rxe_pool_entry *pelem)
->> +int rxe_drop_ref(struct rxe_pool_entry *pelem)
->>   {
->>   	int res;
->>   	struct rxe_pool *pool = pelem->pool;
->> @@ -553,4 +553,5 @@ void rxe_drop_ref(struct rxe_pool_entry *pelem)
->>   	if (res) {
->>   		rxe_elem_release(&pelem->ref_cnt);
->>   	}
->> +	return res;
->>   }
-> 
-> Using the return value of kref_put at all is super sketchy. Are you
-> sure this is actually a kref usage pattern?
-> 
-> Why would this be needed?
-> 
-> Jason
-> 
+This should be described more precisely
 
--- 
-Regards,
-Maksym Planeta
+Jason
