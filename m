@@ -2,101 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A771707ED
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 19:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF3270818
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 20:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730452AbfGVRyY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 13:54:24 -0400
-Received: from mail-ua1-f66.google.com ([209.85.222.66]:44663 "EHLO
-        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730598AbfGVRyY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 13:54:24 -0400
-Received: by mail-ua1-f66.google.com with SMTP id 8so15707669uaz.11
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jul 2019 10:54:23 -0700 (PDT)
+        id S1731164AbfGVSDW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 14:03:22 -0400
+Received: from mail-vk1-f196.google.com ([209.85.221.196]:35255 "EHLO
+        mail-vk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731022AbfGVSDV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 14:03:21 -0400
+Received: by mail-vk1-f196.google.com with SMTP id m17so8080087vkl.2
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Jul 2019 11:03:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=iGeOaY3hIaY8aHRyewGNw/uGxEKnAwe4AhNgerMtQ74=;
-        b=aYRI0R3PbdVkHVuARyX3UaCa+HAs+6zFQUFFL7odTyXeLoE1N+YXRyca94bOSWY1ah
-         f+Jo8bDgTaP1PG3UHgWbzQBwCnsntecv/7frbx33ujZgB6K1fLc6LHWrdCjgomKTARCT
-         8FYauUrCR5yyimwrzAweQBOvsS6qaTG0EfJchpPDbH2NG7rgOkRex8d87n2hre3z7KAc
-         o27mVLVVCNAHc+g8OAyqMboSVvbnUBv8a9LspVy91cmGFMTNEwgibFg1JcioyogVFwTu
-         5AMFKwSnNFOqLxZy3PKWHuIzSYxBpcI/qgkMoTaCApjn2BX8G4d1qbfT9NY0uFyos318
-         c2kQ==
+        bh=PtVsp5R4X3Cifs8oN1ZbP8YBmEIQmGYZPPCIn5eJUBs=;
+        b=o4iJARTZECPNsKjjdvIeY8N25C78qD3q8Y2i2b9ikHVpd+96GNPyRYFAgNS23LwRGm
+         cM1tc8LCa4mA0xrhZaC2tUMgUVUmXWJg/htmQuBIt7/T+ksvjMDjUGX4IM3CDuW//QMF
+         CIsowAOOq8f9Esb4dhD6bOYPRsAfb8vEsRFZYxwNABP6oHposIGxWfs1HbT/V7iLzXh6
+         DGUQoMMbwuGx+/6VfR0xlp3TqMKcZF0WxAwhzXIxm6SjviO/hgZj7bPc5cWKAqS3PKZc
+         2tL7tkQvqwrwv+bo/168osxFOZ+/j78tbX8gRXnZeJ7TAZVqCSAW9p8c7OHZcFHA/ysC
+         cQPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iGeOaY3hIaY8aHRyewGNw/uGxEKnAwe4AhNgerMtQ74=;
-        b=bpWBCyxIJJcdTsfN84TEvK96wK78cIPjsGWouhUFoei/iQDHYQePyzH0iybfnjevMT
-         r/UNVpzgZ0VgpIWNFzlmrAk3Ex5pb/bDQZXInzMU57guAi8I3nRT3KcSpKV95zMrmjyV
-         fE5XnTAIx6r5yyDmn+pnxeNdgdulaVV5QbVTPPIW3Wdt1MKZlIYaLsA/wHBi5E9rCKgh
-         eZCCG2l8S1HZs3pUmwPip40sYQl4h6ujF8XlaXaCVg20p3jkscpGfDNVQvW9nikiHQkT
-         AxCvG8mhcctsB6yvM8OUvB9qQ2TGGCOPPb21Jehon5w11wiD9zu6QnmKZPSSjiowB2FP
-         0HhQ==
-X-Gm-Message-State: APjAAAXP3qTjMoCva3e8mksY/JKwkGTF1SQ2hOKHEX8mj+/aEuPqE+NH
-        5oeUQ5HB3YY1lyO9UqlsS2osUQ==
-X-Google-Smtp-Source: APXvYqwl3UKBzw58hlNd6Iegw4rjbKiJAvR7R/IgiJVJ7D5pNsVsWKnL+xE0b8Zub8LJq9T9PD1C9Q==
-X-Received: by 2002:ab0:760e:: with SMTP id o14mr25387134uap.93.1563818063182;
-        Mon, 22 Jul 2019 10:54:23 -0700 (PDT)
+        bh=PtVsp5R4X3Cifs8oN1ZbP8YBmEIQmGYZPPCIn5eJUBs=;
+        b=mOqj0HMDB4PnkXWxPCeMMFqG1LQnXVpy1poB/Rbt374we/P/t5BcJHRPp4FJmttQjO
+         FHJjIz6d7Fh/3j5UkrIGCulg7SFI0uypK5w9zqmI1OXkfLuXyYDXiH74c0qIITnXpj/7
+         rNc+gxHvu81J9XAlGd9yWuOWvoYlB1TuJtjtMvKmpa0UFlP98E2UR/FActiJybjs8ttu
+         Ep4U2vWyBODO5oHyjtQf6xBgh3qheR/fLbXP3J4UI3PSnmBKcQeGOv3UrfA23mbR9onV
+         2Lf2LJ2xU3nE2952uK1XmpUglrTHRDv+z1cVg2fjILBOI7NgxLOtmBuIwpkAgOWGglhs
+         cl2w==
+X-Gm-Message-State: APjAAAWZdlX6UupoK7RBdAN/u4KWwozsoOrf3VD7uPMU1GFNZAF+bGwz
+        l9WHIBghIPoxfvlNMdIczvmIEg==
+X-Google-Smtp-Source: APXvYqxCSFEBqIlkFHFBXEWyDgRgyQuKpQf6WKCwCAo2wbL1je4NcR/T/ts+A5cZTBKA54NPiUYePg==
+X-Received: by 2002:a1f:acc5:: with SMTP id v188mr26410355vke.16.1563818600640;
+        Mon, 22 Jul 2019 11:03:20 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id z24sm6396819vso.4.2019.07.22.10.54.22
+        by smtp.gmail.com with ESMTPSA id w187sm11046574vkb.4.2019.07.22.11.03.19
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 22 Jul 2019 10:54:22 -0700 (PDT)
+        Mon, 22 Jul 2019 11:03:19 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hpcVy-0003Rd-5R; Mon, 22 Jul 2019 14:54:22 -0300
-Date:   Mon, 22 Jul 2019 14:54:22 -0300
+        id 1hpced-0006sd-2W; Mon, 22 Jul 2019 15:03:19 -0300
+Date:   Mon, 22 Jul 2019 15:03:19 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lijun Ou <oulijun@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-rc] RDMA/hns: Fix sg offset non-zero issue
-Message-ID: <20190722175422.GA13190@ziepe.ca>
-References: <1562808737-45723-1-git-send-email-oulijun@huawei.com>
+To:     Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 0/6] More 5.3 patches
+Message-ID: <20190722180319.GA13959@ziepe.ca>
+References: <20190715164423.74174.4994.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1562808737-45723-1-git-send-email-oulijun@huawei.com>
+In-Reply-To: <20190715164423.74174.4994.stgit@awfm-01.aw.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 11, 2019 at 09:32:17AM +0800, Lijun Ou wrote:
-> From: Xi Wang <wangxi11@huawei.com>
+On Mon, Jul 15, 2019 at 12:45:14PM -0400, Mike Marciniszyn wrote:
+> The following series contains fixes and a cleanup.
 > 
-> When run perftest in many times, the system will report a BUG as follows:
+> I noticed that 5.3 rc1 hasn't happened yet? So I'm not quite sure of
+> the destination here.
 > 
-> [ 2312.559759] BUG: Bad rss-counter state mm:(____ptrval____) idx:0 val:-1
-> [ 2312.574803] BUG: Bad rss-counter state mm:(____ptrval____) idx:1 val:1
+> 5 of the patches are stable, and should be held for the rc or pulled for 5.3.
 > 
-> We tested with different kernel version and found it started from the the
-> following commit:
+> Deleting the unused define can wait if necessary.
 > 
-> commit d10bcf947a3e ("RDMA/umem: Combine contiguous PAGE_SIZE regions in
-> SGEs")
 > 
-> In this commit, the sg->offset is always 0 when sg_set_page() is called in
-> ib_umem_get() and the drivers are not allowed to change the sgl, otherwise
-> it will get bad page descriptor when unfolding SGEs in __ib_umem_release()
-> as sg_page_count() will get wrong result while sgl->offset is not 0.
+> John Fleck (1):
+>       IB/hfi1: Check for error on call to alloc_rsm_map_table
 > 
-> However, there is a weird sgl usage in the current hns driver, the driver
-> modified sg->offset after calling ib_umem_get(), which caused we iterate
-> past the wrong number of pages in for_each_sg_page iterator.
-> 
-> This patch fixes it by correcting the non-standard sgl usage found in the
-> hns_roce_db_map_user() function.
-> 
-> Fixes: 0425e3e6e0c7 ("RDMA/hns: Support flush cqe for hip08 in kernel space")
-> Signed-off-by: Xi Wang <wangxi11@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_db.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
+> Kaike Wan (4):
+>       IB/hfi1: Unreserve a flushed OPFN request
+>       IB/hfi1: Field not zero-ed when allocating TID flow memory
+>       IB/hfi1: Drop all TID RDMA READ RESP packets after r_next_psn
 
-Applied to for-rc
+These four look OK for -rc, applied
 
+>       IB/hfi1: Do not update hcrc for a KDETH packet during fault injection
+
+This looks like it is just debugging fixing, it can go to -next
+
+So all 6 applied
+
+Thanks,
 Jason
