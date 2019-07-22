@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF7D70360
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 17:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BADEB70362
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 17:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728161AbfGVPOs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 11:14:48 -0400
-Received: from os.inf.tu-dresden.de ([141.76.48.99]:58316 "EHLO
+        id S1728275AbfGVPOt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 11:14:49 -0400
+Received: from os.inf.tu-dresden.de ([141.76.48.99]:58324 "EHLO
         os.inf.tu-dresden.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728274AbfGVPOp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 11:14:45 -0400
+        with ESMTP id S1728128AbfGVPOs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 11:14:48 -0400
 Received: from [195.176.96.199] (helo=jupiter)
         by os.inf.tu-dresden.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.92)
-        id 1hpa1O-0008AD-6i; Mon, 22 Jul 2019 17:14:38 +0200
+        id 1hpa1O-0008AN-OI; Mon, 22 Jul 2019 17:14:38 +0200
 From:   Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
 To:     Moni Shoua <monis@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
-Subject: [PATCH 08/10] Move responsibility of cleaning up pool elements
-Date:   Mon, 22 Jul 2019 17:14:24 +0200
-Message-Id: <20190722151426.5266-9-mplaneta@os.inf.tu-dresden.de>
+Subject: [PATCH 09/10] Consolidate resetting of QP's tasks into one place
+Date:   Mon, 22 Jul 2019 17:14:25 +0200
+Message-Id: <20190722151426.5266-10-mplaneta@os.inf.tu-dresden.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190722151426.5266-1-mplaneta@os.inf.tu-dresden.de>
 References: <20190722151426.5266-1-mplaneta@os.inf.tu-dresden.de>
@@ -33,90 +33,120 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Specific implementations must finish off the cleanup of pool elements
-when it is the right moment. Reason for that is that a concreate cleanup
-function may want postpone and schedule part of object destruction to
-later time.
+Used in a later patch.
 
 Signed-off-by: Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
 ---
- drivers/infiniband/sw/rxe/rxe_cq.c    | 2 ++
- drivers/infiniband/sw/rxe/rxe_mcast.c | 2 ++
- drivers/infiniband/sw/rxe/rxe_mr.c    | 2 ++
- drivers/infiniband/sw/rxe/rxe_pool.c  | 9 ++++++++-
- drivers/infiniband/sw/rxe/rxe_pool.h  | 2 ++
- 5 files changed, 16 insertions(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_loc.h  |  1 +
+ drivers/infiniband/sw/rxe/rxe_qp.c   | 17 +----------------
+ drivers/infiniband/sw/rxe/rxe_req.c  |  1 +
+ drivers/infiniband/sw/rxe/rxe_resp.c | 25 ++++++++++++++-----------
+ 4 files changed, 17 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
-index ad3090131126..5693986c8c1b 100644
---- a/drivers/infiniband/sw/rxe/rxe_cq.c
-+++ b/drivers/infiniband/sw/rxe/rxe_cq.c
-@@ -182,4 +182,6 @@ void rxe_cq_cleanup(struct rxe_pool_entry *arg)
- 
- 	if (cq->queue)
- 		rxe_queue_cleanup(cq->queue);
-+
-+	rxe_elem_cleanup(arg);
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index b7159d9d5107..e37adde2bced 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -205,6 +205,7 @@ static inline int rcv_wqe_size(int max_sge)
  }
-diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-index 24ebc4ca1b99..6453ae97653f 100644
---- a/drivers/infiniband/sw/rxe/rxe_mcast.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-@@ -187,4 +187,6 @@ void rxe_mc_cleanup(struct rxe_pool_entry *arg)
  
- 	rxe_drop_key(&grp->pelem);
- 	rxe_mcast_delete(rxe, &grp->mgid);
-+
-+	rxe_elem_cleanup(arg);
+ void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res);
++void cleanup_rd_atomic_resources(struct rxe_qp *qp);
+ 
+ static inline void rxe_advance_resp_resource(struct rxe_qp *qp)
+ {
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 7cd929185581..2fccdede8869 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -161,7 +161,7 @@ void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
+ 	res->type = 0;
  }
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 441b01e30afa..1c0940655df1 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -104,6 +104,8 @@ void rxe_mem_cleanup(struct rxe_pool_entry *arg)
  
- 		kfree(mem->map);
+-static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
++void cleanup_rd_atomic_resources(struct rxe_qp *qp)
+ {
+ 	int i;
+ 	struct resp_res *res;
+@@ -526,21 +526,6 @@ static void rxe_qp_reset(struct rxe_qp *qp)
+ 
+ 	/* cleanup attributes */
+ 	atomic_set(&qp->ssn, 0);
+-	qp->req.opcode = -1;
+-	qp->req.need_retry = 0;
+-	qp->req.noack_pkts = 0;
+-	qp->resp.msn = 0;
+-	qp->resp.opcode = -1;
+-	qp->resp.drop_msg = 0;
+-	qp->resp.goto_error = 0;
+-	qp->resp.sent_psn_nak = 0;
+-
+-	if (qp->resp.mr) {
+-		rxe_drop_ref(&qp->resp.mr->pelem);
+-		qp->resp.mr = NULL;
+-	}
+-
+-	cleanup_rd_atomic_resources(qp);
+ 
+ 	/* reenable tasks */
+ 	rxe_enable_task(&qp->resp.task);
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index c63e66873757..3bb9afdeaee1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -599,6 +599,7 @@ int rxe_requester(void *arg)
+ 		goto exit;
+ 
+ 	if (unlikely(qp->req.state == QP_STATE_RESET)) {
++		qp->req.noack_pkts = 0;
+ 		qp->req.wqe_index = consumer_index(qp->sq.queue);
+ 		qp->req.opcode = -1;
+ 		qp->req.need_rd_atomic = 0;
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 7be8a362d2ef..eaee68d718ce 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -1214,19 +1214,10 @@ int rxe_responder(void *arg)
+ 
+ 	qp->resp.aeth_syndrome = AETH_ACK_UNLIMITED;
+ 
+-	if (!qp->valid) {
+-		ret = -EINVAL;
+-		goto done;
+-	}
+-
+-	switch (qp->resp.state) {
+-	case QP_STATE_RESET:
++	if (!qp->valid || qp->resp.state == QP_STATE_RESET) {
+ 		state = RESPST_RESET;
+-		break;
+-
+-	default:
++	} else {
+ 		state = RESPST_GET_REQ;
+-		break;
  	}
+ 
+ 	while (1) {
+@@ -1374,6 +1365,18 @@ int rxe_responder(void *arg)
+ 		case RESPST_RESET:
+ 			rxe_drain_req_pkts(qp, false);
+ 			qp->resp.wqe = NULL;
++			qp->resp.msn = 0;
++			qp->resp.opcode = -1;
++			qp->resp.drop_msg = 0;
++			qp->resp.goto_error = 0;
++			qp->resp.sent_psn_nak = 0;
 +
-+	rxe_elem_cleanup(arg);
- }
- 
- static int rxe_mem_alloc(struct rxe_mem *mem, int num_buf)
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index 711d7d7f3692..3b14ab599662 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.c
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -462,9 +462,16 @@ void rxe_elem_release(struct kref *kref)
- 
- 	if (pool->cleanup)
- 		pool->cleanup(elem);
-+	else
-+		rxe_elem_cleanup(elem);
-+}
++			if (qp->resp.mr) {
++				rxe_drop_ref(&qp->resp.mr->pelem);
++				qp->resp.mr = NULL;
++			}
 +
-+void rxe_elem_cleanup(struct rxe_pool_entry *pelem)
-+{
-+	struct rxe_pool *pool = pelem->pool;
++			cleanup_rd_atomic_resources(qp);
+ 			goto exit;
  
- 	if (!(pool->flags & RXE_POOL_NO_ALLOC))
--		kmem_cache_free(pool_cache(pool), elem);
-+		kmem_cache_free(pool_cache(pool), pelem);
- 	atomic_dec(&pool->num_elem);
- 	ib_device_put(&pool->rxe->ib_dev);
- 	rxe_pool_put(pool);
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
-index 1e3508c74dc0..84cfbc749a5c 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.h
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.h
-@@ -160,6 +160,8 @@ void *rxe_pool_get_key(struct rxe_pool *pool, void *key);
- /* cleanup an object when all references are dropped */
- void rxe_elem_release(struct kref *kref);
- 
-+void rxe_elem_cleanup(struct rxe_pool_entry *pelem);
-+
- /* take a reference on an object */
- static inline void rxe_add_ref(struct rxe_pool_entry *pelem) {
- 	kref_get(&pelem->ref_cnt);
+ 		case RESPST_ERROR:
 -- 
 2.20.1
 
