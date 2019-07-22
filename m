@@ -2,96 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF3A703C3
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 17:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9571703C7
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2019 17:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbfGVP2z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 11:28:55 -0400
-Received: from os.inf.tu-dresden.de ([141.76.48.99]:59090 "EHLO
-        os.inf.tu-dresden.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728385AbfGVP2y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 11:28:54 -0400
-X-Greylist: delayed 859 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Jul 2019 11:28:53 EDT
-Received: from [195.176.96.199] (helo=[10.3.5.139])
-        by os.inf.tu-dresden.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92)
-        id 1hpaFA-0008NN-TJ; Mon, 22 Jul 2019 17:28:52 +0200
-Subject: Re: [PATCH 04/10] Protect kref_put with the lock
-To:     Jason Gunthorpe <jgg@ziepe.ca>
+        id S1729061AbfGVP3u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 11:29:50 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:39400 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728385AbfGVP3t (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jul 2019 11:29:49 -0400
+Received: by mail-vs1-f67.google.com with SMTP id u3so26355617vsh.6
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Jul 2019 08:29:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=u1HHQwKS52S4EmuUPfeZPTFm+/hCi45AhWYKrSPj4Ik=;
+        b=PKEx1YJP9uBCjqrN8BTLCJ8yorJ1CWA8nCOsypDBggKEVh6cZW2dDj9M5qoBDcK03o
+         2dgoX6+CmZpTwev504V0IKArMx0poQZxpHmid3PiIDy5julUSwmV9ogKGjQHP5v30MD5
+         0HZrz4L154NL2rDqEPdMi9fve68QaP/4lUrsZKC7+0N21OT1ERT5FxCmktDkPj5y8f6+
+         4fYEqHdDiu1H8rKuSLGcN0DIJwWh0Y+r75sru7bFyTe+30i7Zu6SK7VYbnP0vi97Sd2o
+         YxUb3srfhRym5Q26NpDq+OAlp9dAm6RCAU3HIippeC51SyjXrnMb3ivMD3Y6zdP1z90N
+         46JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=u1HHQwKS52S4EmuUPfeZPTFm+/hCi45AhWYKrSPj4Ik=;
+        b=p2gFXWp1hXo5vfC0siHYN5qse+mcQcCJ2W/lnjvXT/r36OJVr8jLFZRzv3vYFk6TnO
+         PAh3EWP3hTJQa2cronWcE7+SLwti804nX34+b1myC11hjVQ0EBwW5lLmo7nPSRftmUUO
+         YgeXX3LwuW2AHJ1wyFGWHawzG85L4Q7J6JiaLG2Wx+3q5DPsxPPwk/DlXzYS+OumWMLw
+         j7u3PCDqbDp968ropOLp/mCtmsh0TLZZoui21qBDf2hSMjASBTAPTiJaUU5LHR0pOcb9
+         t9FP8Zu9yKYPRHYr6VNy5h40nBUiXG0WSdMoDUNbjSaH91C8r0e9A3dax+4jC4j3LwGC
+         BkGA==
+X-Gm-Message-State: APjAAAUGTWvu8mUXOQHimmgVDGNL2RYMDqKay20xBfhYAECZS14ISoeu
+        MgjRZRco6ZuprBTHg93I0E+oeg==
+X-Google-Smtp-Source: APXvYqyXO5C/K9eycLxYIaN49TgoiszJjgK7Uyy5dAXmdHDosJ2JGqbxsPHDn/jrOxi5PtTDpwLJ7A==
+X-Received: by 2002:a67:f713:: with SMTP id m19mr601509vso.183.1563809388836;
+        Mon, 22 Jul 2019 08:29:48 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id t200sm15801789vke.5.2019.07.22.08.29.48
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Jul 2019 08:29:48 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hpaG3-0004rf-Qk; Mon, 22 Jul 2019 12:29:47 -0300
+Date:   Mon, 22 Jul 2019 12:29:47 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
 Cc:     Moni Shoua <monis@mellanox.com>,
         Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/10] Pass the return value of kref_put further
+Message-ID: <20190722152947.GF7607@ziepe.ca>
 References: <20190722151426.5266-1-mplaneta@os.inf.tu-dresden.de>
- <20190722151426.5266-5-mplaneta@os.inf.tu-dresden.de>
- <20190722152559.GD7607@ziepe.ca>
-From:   Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
-Message-ID: <c2fdbf86-acea-aebb-48c4-8c2f85a68978@os.inf.tu-dresden.de>
-Date:   Mon, 22 Jul 2019 17:28:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ <20190722151426.5266-8-mplaneta@os.inf.tu-dresden.de>
 MIME-Version: 1.0
-In-Reply-To: <20190722152559.GD7607@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190722151426.5266-8-mplaneta@os.inf.tu-dresden.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 22/07/2019 17:25, Jason Gunthorpe wrote:
-> On Mon, Jul 22, 2019 at 05:14:20PM +0200, Maksym Planeta wrote:
->> Need to ensure that kref_put does not run concurrently with the loop
->> inside rxe_pool_get_key.
->>
->> Signed-off-by: Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
->>   drivers/infiniband/sw/rxe/rxe_pool.c | 18 ++++++++++++++++++
->>   drivers/infiniband/sw/rxe/rxe_pool.h |  4 +---
->>   2 files changed, 19 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
->> index efa9bab01e02..30a887cf9200 100644
->> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
->> @@ -536,3 +536,21 @@ void *rxe_pool_get_key(struct rxe_pool *pool, void *key)
->>   	read_unlock_irqrestore(&pool->pool_lock, flags);
->>   	return node ? elem : NULL;
->>   }
->> +
->> +static void rxe_dummy_release(struct kref *kref)
->> +{
->> +}
->> +
->> +void rxe_drop_ref(struct rxe_pool_entry *pelem)
->> +{
->> +	int res;
->> +	struct rxe_pool *pool = pelem->pool;
->> +	unsigned long flags;
->> +
->> +	write_lock_irqsave(&pool->pool_lock, flags);
->> +	res = kref_put(&pelem->ref_cnt, rxe_dummy_release);
->> +	write_unlock_irqrestore(&pool->pool_lock, flags);
+On Mon, Jul 22, 2019 at 05:14:23PM +0200, Maksym Planeta wrote:
+> Used in a later patch.
 > 
-> This doesn't make sense..
+> Signed-off-by: Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
+>  drivers/infiniband/sw/rxe/rxe_pool.c | 3 ++-
+>  drivers/infiniband/sw/rxe/rxe_pool.h | 2 +-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
 > 
-> If something is making the kref go to 0 while the node is still in the
-> RB tree then that is a bug.
-> 
-> You should never need to add locking around a kref_put.
-> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+> index 30a887cf9200..711d7d7f3692 100644
+> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+> @@ -541,7 +541,7 @@ static void rxe_dummy_release(struct kref *kref)
+>  {
+>  }
+>  
+> -void rxe_drop_ref(struct rxe_pool_entry *pelem)
+> +int rxe_drop_ref(struct rxe_pool_entry *pelem)
+>  {
+>  	int res;
+>  	struct rxe_pool *pool = pelem->pool;
+> @@ -553,4 +553,5 @@ void rxe_drop_ref(struct rxe_pool_entry *pelem)
+>  	if (res) {
+>  		rxe_elem_release(&pelem->ref_cnt);
+>  	}
+> +	return res;
+>  }
 
- From https://www.kernel.org/doc/Documentation/kref.txt
+Using the return value of kref_put at all is super sketchy. Are you
+sure this is actually a kref usage pattern?
 
-| The last rule (rule 3) is the nastiest one to handle.  Say, for
-| instance, you have a list of items that are each kref-ed, and you wish
-| to get the first one.  You can't just pull the first item off the list
-| and kref_get() it.  That violates rule 3 because you are not already
-| holding a valid pointer.  You must add a mutex (or some other lock).
+Why would this be needed?
 
-
-> Jason
-> 
-
--- 
-Regards,
-Maksym Planeta
+Jason
