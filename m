@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 971717122B
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 08:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BD07122C
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 08:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730299AbfGWG5q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 02:57:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42440 "EHLO mail.kernel.org"
+        id S1731015AbfGWG5t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 02:57:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729469AbfGWG5p (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Jul 2019 02:57:45 -0400
+        id S1730829AbfGWG5t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 23 Jul 2019 02:57:49 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 479E72190F;
-        Tue, 23 Jul 2019 06:57:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A61982190F;
+        Tue, 23 Jul 2019 06:57:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563865064;
-        bh=sZr034tUfJRLNdTwSHE4kz0qQKlA6rbSz6skp3ytAwk=;
+        s=default; t=1563865068;
+        bh=pL35KDH1zIU8WZiUNeX0BwO4rsSPPHW4YTqjVs60RpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p3a1W3sb/QfCsgC8McrWb2bI0dZvyiyt5SSHs8qpq38RPgBvJ99n1aQpEuYsA+og7
-         ILRlqf5+ZnzdHOwQF0UVzu/k+3iIPJsS8/ivIfw3Tw/imQl8aVBiTswn9w/DwZ9nD6
-         NLR+MfZ7BPGoXGNtc/LCZ1LjYIhl7lAk7av6JuKw=
+        b=zREazr0nEgBbCh02j0TqGgltJ8QQmItuKaVbx2qmpdoIy0+FFV22HllY1oriThyEH
+         bCFsMkm6Gt5EGSuZWm0oGJqUqiv56BLBbq6z1fm3UDImXrtJ8EOmD51xkQY7KqS4fI
+         J/QmJsjFs8wSreZgz0hIz5Om3Mep06g+zrJ97FuA=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -38,9 +38,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Parav Pandit <parav@mellanox.com>,
         Sagi Grimberg <sagig@mellanox.com>,
         Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-rc 03/10] IB/mlx5: Use direct mkey destroy command upon UMR unreg failure
-Date:   Tue, 23 Jul 2019 09:57:26 +0300
-Message-Id: <20190723065733.4899-4-leon@kernel.org>
+Subject: [PATCH rdma-rc 04/10] IB/mlx5: Fix unreg_umr to set a device PD
+Date:   Tue, 23 Jul 2019 09:57:27 +0300
+Message-Id: <20190723065733.4899-5-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190723065733.4899-1-leon@kernel.org>
 References: <20190723065733.4899-1-leon@kernel.org>
@@ -53,53 +53,38 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Yishai Hadas <yishaih@mellanox.com>
 
-Use direct firmware command to destroy the mkey in case the unreg UMR
-operation has failed.
+Fix unreg_umr to set a device PD (i.e. UMR PD) which can't be given
+outside to the kernel.
 
-This prevents a case that an mkey will leak out from the cache post a
-failure to be destroyed by a UMR WR.
+As the MR addresses are still in place we must ensure that this MR can't
+be used by a user space that will get the original PD number and guess
+the MR lkey.
 
-In case the MR cache limit didn't reach a call to add another entry to
-the cache instead of the destroyed one is issued.
-
-In addition, replaced a warn message to WARN_ON() as this flow is fatal
-and can't happen unless some bug around.
-
-Cc: <stable@vger.kernel.org> # 4.10
-Fixes: 49780d42dfc9 ("IB/mlx5: Expose MR cache for mlx5_ib")
+Cc: <stable@vger.kernel.org> # 3.10
+Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
 Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
 Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/mr.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/mlx5/mr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 266edaf8029d..b83361aebf28 100644
+index b83361aebf28..7274a9b9df58 100644
 --- a/drivers/infiniband/hw/mlx5/mr.c
 +++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -545,13 +545,16 @@ void mlx5_mr_cache_free(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr)
- 		return;
+@@ -1375,8 +1375,10 @@ static int unreg_umr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr)
+ 	if (mdev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR)
+ 		return 0;
 
- 	c = order2idx(dev, mr->order);
--	if (c < 0 || c >= MAX_MR_CACHE_ENTRIES) {
--		mlx5_ib_warn(dev, "order %d, cache index %d\n", mr->order, c);
--		return;
--	}
-+	WARN_ON(c < 0 || c >= MAX_MR_CACHE_ENTRIES);
+-	umrwr.wr.send_flags = MLX5_IB_SEND_UMR_DISABLE_MR;
++	umrwr.wr.send_flags = MLX5_IB_SEND_UMR_DISABLE_MR |
++			      MLX5_IB_SEND_UMR_UPDATE_PD_ACCESS;
+ 	umrwr.wr.opcode = MLX5_IB_WR_UMR;
++	umrwr.pd = dev->umrc.pd;
+ 	umrwr.mkey = mr->mmkey.key;
+ 	umrwr.ignore_free_state = 1;
 
--	if (unreg_umr(dev, mr))
-+	if (unreg_umr(dev, mr)) {
-+		mr->allocated_from_cache = false;
-+		destroy_mkey(dev, mr);
-+		ent = &cache->ent[c];
-+		if (ent->cur < ent->limit)
-+			queue_work(cache->wq, &ent->work);
- 		return;
-+	}
-
- 	ent = &cache->ent[c];
- 	spin_lock_irq(&ent->lock);
 --
 2.20.1
 
