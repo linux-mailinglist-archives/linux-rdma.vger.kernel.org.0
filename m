@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 199BC71FCF
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED6C71FCD
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391637AbfGWTBt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S2391640AbfGWTBt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Tue, 23 Jul 2019 15:01:49 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:46110 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391653AbfGWTBt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:01:49 -0400
-Received: by mail-qt1-f194.google.com with SMTP id h21so42888149qtn.13
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 12:01:48 -0700 (PDT)
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38195 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391643AbfGWTBs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:01:48 -0400
+Received: by mail-qk1-f193.google.com with SMTP id a27so31922994qkk.5
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 12:01:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3EqDChbKkzRP/kkIXXxca7ygw4tAja1zmZyruAsHAvU=;
-        b=oTIcjnGsggk8W9LcbolM/i2hsh7PeL6D29qg93GmXDghMxUWcBN/+EnXA/uWCeGa4Y
-         sVOkLlCoeIFjrqbsGiAOeSqjSN2Awo/z3+bBdViNVAy8YPEQYJmaP7RcGSeCAcqbP8uj
-         //xwIIZSJl2kQm3pNDw+2EcPOxIe0NJ8z7LwmGOll1xN3AMI1cJXERrKVP/fTI+Eyzy1
-         yvqwmBqH3v1U+ks3bcCn0n5c7RIaozj+KfUG9279AEx1C3sBoWtQnStZHgKr16Ahj+L+
-         Vvknv7x82UqsqQmBBXduMTGgb4JT/f69KSSnUpHzWy7csF0mvehz4SLueW5bLrRDzuAW
-         1n8A==
+        bh=UKmdwvw/8ttn78/lBaV+bKRv55wjOH8lCAZy5e7wk/Y=;
+        b=J7qUhNen3Dz157dE2Ng4CmMJ5GsktjzuBk0xwqCsq7Gg0fu8uM2iULT2VTyInspP8j
+         qjfNqQlLwC+tSfmxldjXQat/ys31GWvcBP89uQX9ANmqRyqN0y56axjNw3QpGBmr31E0
+         AcbJZsLhB6p+VJzVtog0FX96AqpuQ5pDPxd4md2/HtEl8FKlG2AHzCxKsfIyG+VgZfG/
+         LVPAHJSfKK2GyyBzpK3rZiP4ZRoz9p5Ib/Ic3dB6lJpuqzPBuJBFQ7ciH0ipeeeWRQtb
+         jTxafsXUg9ADuWu+QYyAQd6x1NuC0UqYdxamfyN8ZCxLITW2yS6frBomryB4LKrW1LbX
+         rEZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3EqDChbKkzRP/kkIXXxca7ygw4tAja1zmZyruAsHAvU=;
-        b=uHXzef00uPRhysjGr7bxbaRris3RL1tsqjlFDV2U+sfb7mZdlY5sBFhpX1EcKaD8PB
-         aEH4hixCHbZgFaX1IJvxHZM+y7jRISsoyw5JKzF5baaqcBOqoj7dOty3QkJMrFv7Wn7Z
-         t4SET44jAqgc6qQpBGtuX0Wyhs4wr5qLBhvEEKLvFkJd04HaF8tuCfIQM9owF9b5AVAR
-         ZHlfkj21Xbv0qnoZzdu1iLXQwJm/YkvyRSZI99JsuDX7HNr+F1hWUvkU5gaP/ARDzfeR
-         za3KjpajDMuiBv+d63FZYtqGx75g2nbdUcYbM9N/AnWfFR7lkJ8o6oZjT7YSsyTmAZhR
-         /FOA==
-X-Gm-Message-State: APjAAAWN3yI4a4e/JEZiPHURoiN7EVIE+CDXNP+TIpLirArp6Ib5G8T8
-        gEDPs9chSz1z2U/51x+/hCW6tBPwOEeFyQ==
-X-Google-Smtp-Source: APXvYqy/LX/2E3GTLX4O9/ewRjcjD8hDJLDoIL/DfEesV3wfOQH+9QTNAnAd2HC3XKnClfka1FTpBg==
-X-Received: by 2002:ac8:1750:: with SMTP id u16mr51649419qtk.90.1563908508134;
-        Tue, 23 Jul 2019 12:01:48 -0700 (PDT)
+        bh=UKmdwvw/8ttn78/lBaV+bKRv55wjOH8lCAZy5e7wk/Y=;
+        b=IEqLEKpoEV9cikLpxsND20OKvrHU/Lh++qSljEvpubPO4AQi+QentBBbHouPbGtRfM
+         g3W12EfmgaSNyK98jkhmwg2poKlUz1okIy89NQFVLraFsl67+jJ/TMjTNOK8BokcH8Ky
+         qdyKlB6Sk8kJIEbkzF+6NUHr7FO1+M0Uy2OGyKQv6FF2qzE1EhHfGoTMWg6cNfQpj+CI
+         PtuTTXKTEbdoRzv1QwiX+b7jpWvRoMsN28bi00HY8pdpvlPr2D19QtGHiygOpq9/IW2E
+         cR4zTl048go8pebNOMH6haU1uFc/b0/LY7n2i55/+rF3rJxHSPLbpMZMTYtkLcwvLt81
+         laKQ==
+X-Gm-Message-State: APjAAAXDdZDPkVRgCNZ0uxHizMh+LWvQfXu4NTcBh8CDxOabesTxxoo8
+        aLzDsxjBs8IINacdXc9fzdRbaHY19c4FxQ==
+X-Google-Smtp-Source: APXvYqwG4XPp3FH/0xpUjVyxR2/hZmH0XFLnyWl9ztKjsNcfiTrhqbtdWPBZq806poL8TNUbJNyszw==
+X-Received: by 2002:a37:274a:: with SMTP id n71mr47384474qkn.448.1563908507213;
+        Tue, 23 Jul 2019 12:01:47 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id d23sm18627126qkk.46.2019.07.23.12.01.40
+        by smtp.gmail.com with ESMTPSA id m44sm24417261qtm.54.2019.07.23.12.01.41
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Jul 2019 12:01:42 -0700 (PDT)
+        Tue, 23 Jul 2019 12:01:41 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hq02e-00043x-AL; Tue, 23 Jul 2019 16:01:40 -0300
+        id 1hq02e-00044F-FD; Tue, 23 Jul 2019 16:01:40 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 02/19] util: Enable uninitialized_var on powerpc
-Date:   Tue, 23 Jul 2019 16:01:20 -0300
-Message-Id: <20190723190137.15370-3-jgg@ziepe.ca>
+Subject: [PATCH rdma-core 05/19] build/travis: Do not run checkpatch
+Date:   Tue, 23 Jul 2019 16:01:23 -0300
+Message-Id: <20190723190137.15370-6-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190723190137.15370-1-jgg@ziepe.ca>
 References: <20190723190137.15370-1-jgg@ziepe.ca>
@@ -65,35 +65,63 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-For some reason the gcc 8/3 build for powerpc behaves differently from
-AMD64 and ARM64:
-
-../providers/mlx4/qp.c: In function 'mlx4_post_send':
-../providers/mlx4/qp.c:478:22: warning: 'ctrl' may be used uninitialized in this function [-Wmaybe-uninitialized]
-   ctrl->owner_opcode |= htobe32((qp->sq.head & 0xffff) << 8);
+AZP does this now and shows the results in a much clearer way.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- util/compiler.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .travis.yml                |  1 -
+ buildlib/travis-checkpatch | 30 ------------------------------
+ 2 files changed, 31 deletions(-)
+ delete mode 100755 buildlib/travis-checkpatch
 
-diff --git a/util/compiler.h b/util/compiler.h
-index 16f5ee14be2a8a..dfce82f1884149 100644
---- a/util/compiler.h
-+++ b/util/compiler.h
-@@ -7,9 +7,10 @@
- 
-    This is only enabled for old compilers. gcc 6.x and beyond have excellent
-    static flow analysis. If code solicits a warning from 6.x it is almost
--   certainly too complex for a human to understand.
-+   certainly too complex for a human to understand. For some reason powerpc
-+   uses a different scheme than gcc for flow analysis.
- */
--#if __GNUC__ >= 6 || defined(__clang__)
-+#if (__GNUC__ >= 6 && !defined(__powerpc__)) || defined(__clang__)
- #define uninitialized_var(x) x
- #else
- #define uninitialized_var(x) x = x
+diff --git a/.travis.yml b/.travis.yml
+index 23226a679acb6b..d20dadf8e9d90f 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -48,7 +48,6 @@ before_script:
+   - http_proxy= pip3 install cython
+ script:
+   - buildlib/travis-build
+-  - buildlib/travis-checkpatch
+   - buildlib/github-release
+ deploy:
+   # Deploy assets to Github releases
+diff --git a/buildlib/travis-checkpatch b/buildlib/travis-checkpatch
+deleted file mode 100755
+index 5e78ec47406210..00000000000000
+--- a/buildlib/travis-checkpatch
++++ /dev/null
+@@ -1,30 +0,0 @@
+-#!/bin/bash
+-# Copyright 2017 Mellanox Technologies Ltd.
+-# Licensed under BSD (MIT variant) or GPLv2. See COPYING.
+-
+-
+-if [ "x$TRAVIS_EVENT_TYPE" != "xpull_request" ]; then
+-	# Peform checkpatch checks on pull requests only
+-	exit 0
+-fi
+-
+-# The below "set" is commented, because the checkpatch.pl returns 1 (error) for warnings too.
+-# And the rdma-core code is not mature enough to be warning safe
+-# set -e
+-
+-if [ "x$TRAVIS_COMMIT_RANGE" != "x" ]; then
+-	cd buildlib/
+-	wget -q https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl \
+-	        https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/spelling.txt
+-	DIR_FOR_PATCHES_TO_CHECK=$(mktemp -d)
+-	git format-patch --no-cover-letter $TRAVIS_COMMIT_RANGE ^$TRAVIS_BRANCH -o $DIR_FOR_PATCHES_TO_CHECK/
+-	CHECKPATCH_OPT="--no-tree --ignore PREFER_KERNEL_TYPES,FILE_PATH_CHANGES,EXECUTE_PERMISSIONS,USE_NEGATIVE_ERRNO,CONST_STRUCT $DIR_FOR_PATCHES_TO_CHECK/*"
+-	perl checkpatch.pl $CHECKPATCH_OPT
+-	if [ $? -ne 0 ]; then
+-		# We rerun checkpatch to simplify parsing and to understand if we failed for errors
+-		# For example, the output on some arbitrary patchset of the following line without awk is:
+-		# total: 1 errors, 3 warnings, 42 lines checked
+-		NUMB_ERRRORS=$(perl checkpatch.pl --terse $CHECKPATCH_OPT | awk 'BEGIN {FS = "total:"} ; {sum+=$2} END {print sum}')
+-		exit $NUMB_ERRRORS
+-	fi
+-fi
 -- 
 2.22.0
 
