@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1BA71FF5
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C10A71FF4
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbfGWTLk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 15:11:40 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:39388 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728935AbfGWTLk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:11:40 -0400
-Received: by mail-qk1-f194.google.com with SMTP id w190so31920319qkc.6
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 12:11:39 -0700 (PDT)
+        id S1729398AbfGWTLj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 15:11:39 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:45849 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728935AbfGWTLj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:11:39 -0400
+Received: by mail-qt1-f195.google.com with SMTP id x22so38053731qtp.12
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 12:11:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Lz5MTuqfXxvjBuzR2PQib/9Vw5DvcY8g/qxbQf+4H0w=;
-        b=ix3BFGlI2C69ooNZ/av43hDls0gSGoiqHEykLzmHkAVl2fZj4TBDd/hekwoExc99tI
-         sTuK8oqKoa6F+3aprpImFSxruHonDHCM05yow1wnRyBJon2nHJN+osTNm1luagjcvGy1
-         hv7NahnJW9D8eCEhqIV9P7SJsleWP42ZbgYaDJ+j3/s0kfw04vUDwlg9WHvPTQzZz08Q
-         obIxEUTQgPZMRdn8cqpw6X1I+E/+1ANnvtT56q0kMJEy9fPC8jrNjjqRHeYPB809U2tc
-         LWpbG9K/fCRNyj474hsYdGgiZRSNkn/YTON6oQioiOpEMUdMPcPEVtKG/aC4zo3L6uWx
-         qqpQ==
+        bh=7z7AyjDUrHUPyguGqWPdnXY6cT/lWyMNV1dB37o5Ea8=;
+        b=lSAbCI6gV8OJNe4zojBPVvl3+qNZv+sQg19zGPkbeYp26M1ARSyuCMrbgCUZ61c2ck
+         RyUZ3RNI7+kWm6mpXumFIrQkzpikeZnGrTTytkGoO33lOsSN1C/Zkk866Oap/q14k7+n
+         y9o4nksH8zo2HQy/afvoIoYhoXL1dVR71E5y90eZ+pI7MvTkiBHYQcNzAn66Nn6mWw1N
+         RdLMKe4AX/jSHObbOzVcY+/Sn7+mL4xnsztBa8ZpIeJoU5JpUGFELSK/qZlKWHsXUA9b
+         DktNdyh/lm1U2pVDuyRDsDc+yFt58t6COpYb2gkinLgg8zEzrGpIG+0WwvitCfF9J2W9
+         1rsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Lz5MTuqfXxvjBuzR2PQib/9Vw5DvcY8g/qxbQf+4H0w=;
-        b=ND0+NxdRlLHskurgEGzgx3VRLLM8+1+SvVd8J3g5LY6xawmwGyiXka5vq+0ransTlR
-         uGn5vJnGOwCqF5wyf5HxE4Urn5poQ4bAsggqN5g52wGBgDM4TWJuCab2rBqBZEEKKEUu
-         ee0yhFSSl6LGI4nHq0v5SWMThcl5/22drr/iS2qt1ULPRSFh9Y/vdDx6YWfN5E8ivf0K
-         sBlcEHpgseCl4hEWRIg1MxrjnQj00JnPuIPE8ohUXwc7KhbnyR01/8wOuq/Z1RaIYCnr
-         5jiV9PlcEuS8QnW9WEEbK7PDiG+areijgacpsjJF6jqSWApkSsG0GBih47aeE6ieW1w8
-         Xoiw==
-X-Gm-Message-State: APjAAAUeHfbdktTjbCE7AQGLZQltd/2MKkhHIphysGAQWGYJX1ATZzQS
-        IkHf/yepz0aUL/5OaoivJAMdRW/Vr+jx8w==
-X-Google-Smtp-Source: APXvYqxmkTKGUrnclMbj2q2i+tZZvdlVQox0lDw1CNIjmmoJpa01MXlCVgxW6mO3c8p8CLZ/esCZRg==
-X-Received: by 2002:a05:620a:12f8:: with SMTP id f24mr54193322qkl.202.1563909098849;
-        Tue, 23 Jul 2019 12:11:38 -0700 (PDT)
+        bh=7z7AyjDUrHUPyguGqWPdnXY6cT/lWyMNV1dB37o5Ea8=;
+        b=VbtrFROM6NxoB/QT10Q/MyjBtEiqM6jVU1KVk+AGNK/+yCuP8bmL8cjRA0WsqDq+9I
+         Z/8xjfgvf4IMtFugU83RVbM2W6mPdq/vGBA5WkawAsq/axNQjDbUz201uP5oG49RKwit
+         o2W+PPo+A6FevAktYJoUS1Ow6zyRNrEfVq5Vbo9JM4MkcdT49OuC2AbZ6DCphcHWEIvu
+         BY6Yg02WXcBWZMj+vrzKmJSG9wcjpxUcLH5IINnb867k5cwsup8D1TvXdWomg150pNzp
+         i0+3tGbbErovbp4Xs5Ui4XCQhWPz5Ynl/hEOLM+IVLaMVSpgMVfDoZRTGjs/N6EmCASX
+         cVfw==
+X-Gm-Message-State: APjAAAVrjNTU3UZyb3yQgPPrizDo8zi2GPZrOjMCdZksKezG8w8imarv
+        zQvg7PDeHns3gWQycMhTTjP50U3VAA9qeg==
+X-Google-Smtp-Source: APXvYqzoI9ragMjdViMfW4R93TiFofAVawSHIfT7cbMiWVdCouJlwrIVAePKTg0DdvYyWcZlka4x0g==
+X-Received: by 2002:ac8:c0e:: with SMTP id k14mr54165396qti.72.1563909096835;
+        Tue, 23 Jul 2019 12:11:36 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id z1sm20214939qke.122.2019.07.23.12.11.38
+        by smtp.gmail.com with ESMTPSA id 131sm20115725qkn.7.2019.07.23.12.11.36
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Jul 2019 12:11:38 -0700 (PDT)
+        Tue, 23 Jul 2019 12:11:36 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hq02e-000451-Py; Tue, 23 Jul 2019 16:01:40 -0300
+        id 1hq02e-000457-R7; Tue, 23 Jul 2019 16:01:40 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 13/19] build/azp: Update check-build to work with python3
-Date:   Tue, 23 Jul 2019 16:01:31 -0300
-Message-Id: <20190723190137.15370-14-jgg@ziepe.ca>
+Subject: [PATCH rdma-core 14/19] build/cbuild: Update cbuild to work with python3
+Date:   Tue, 23 Jul 2019 16:01:32 -0300
+Message-Id: <20190723190137.15370-15-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190723190137.15370-1-jgg@ziepe.ca>
 References: <20190723190137.15370-1-jgg@ziepe.ca>
@@ -65,213 +65,224 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-Remove dependencies on python2.7 so it can be removed from the container.
+This is the last script run from azp that was using python2.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- buildlib/azure-pipelines.yml | 10 +++++---
- buildlib/cbuild              |  7 +++--
- buildlib/check-build         | 50 +++++++++++++++++++-----------------
- 3 files changed, 37 insertions(+), 30 deletions(-)
+ buildlib/azure-pipelines.yml |  2 +-
+ buildlib/cbuild              | 53 +++++++++++++++++++-----------------
+ 2 files changed, 29 insertions(+), 26 deletions(-)
 
 diff --git a/buildlib/azure-pipelines.yml b/buildlib/azure-pipelines.yml
-index 7df483e3329534..39188a4c0b727b 100644
+index 39188a4c0b727b..e062908e23756b 100644
 --- a/buildlib/azure-pipelines.yml
 +++ b/buildlib/azure-pipelines.yml
-@@ -44,11 +44,13 @@ stages:
-               ninja
-             displayName: gcc 9.1 Compile
+@@ -134,7 +134,7 @@ stages:
+               ninja docs
+               cd ../artifacts
+               # FIXME: Check Build.SourceBranch for tag consistency
+-              python2.7 ../buildlib/cbuild make-dist-tar ../build-pandoc
++              python3 ../buildlib/cbuild make-dist-tar ../build-pandoc
+             displayName: Prebuild Documentation
  
--          - bash: |
--              set -e
--              cd build-gcc9
--              python2.7 ../buildlib/check-build --src .. --cc gcc-9
-+          - task: PythonScript@0
-             displayName: Check Build Script
-+            inputs:
-+              scriptPath: buildlib/check-build
-+              arguments: --src .. --cc gcc-9
-+              workingDirectory: build-gcc9
-+              pythonInterpreter: /usr/bin/python3
- 
-           # Run sparse on the subdirectories which are sparse clean
-           - bash: |
+           - task: PublishPipelineArtifact@0
 diff --git a/buildlib/cbuild b/buildlib/cbuild
-index 1441a91a8427fd..1de550e7bf8934 100755
+index 1de550e7bf8934..d6727f46669197 100755
 --- a/buildlib/cbuild
 +++ b/buildlib/cbuild
-@@ -903,8 +903,11 @@ def run_azp_build(args,env):
-             script.append(I["bash"]);
-         elif I.get("task") == "PythonScript@0":
-             script.append("set -e");
--            script.append("%s %s"%(I["inputs"]["pythonInterpreter"],
--                                   I["inputs"]["scriptPath"]));
-+            if "workingDirectory" in I["inputs"]:
-+                script.append("cd %s"%(os.path.join(srcdir,I["inputs"]["workingDirectory"])));
-+            script.append("%s %s %s"%(I["inputs"]["pythonInterpreter"],
-+                                      os.path.join(srcdir,I["inputs"]["scriptPath"]),
-+                                      I["inputs"].get("arguments","")));
-         else:
-             raise ValueError("Unknown stanza %r"%(I));
- 
-diff --git a/buildlib/check-build b/buildlib/check-build
-index 82812272b40b1d..acb72f0e1f2588 100755
---- a/buildlib/check-build
-+++ b/buildlib/check-build
-@@ -1,7 +1,8 @@
+@@ -1,4 +1,4 @@
 -#!/usr/bin/env python
 +#!/usr/bin/env python3
- # Copyright 2017 Obsidian Research Corp.
+ # Copyright 2015-2016 Obsidian Research Corp.
  # Licensed under BSD (MIT variant) or GPLv2. See COPYING.
- """check-build - Run static checks on a build"""
+ # PYTHON_ARGCOMPLETE_OK
+@@ -36,6 +36,7 @@ finished, only the base container created during 'build-images' is kept. The
+ running the build command and instead run an interactive bash shell. This is
+ useful for debugging certain kinds of build problems."""
+ 
 +from __future__ import print_function
  import argparse
- import inspect
- import os
-@@ -18,7 +19,7 @@ from distutils.version import LooseVersion;
+ import collections
+ import filecmp
+@@ -572,8 +573,8 @@ def docker_cmd_str(env,*cmd):
+     """Invoke docker"""
+     cmd = list(cmd);
+     if env.sudo:
+-        return subprocess.check_output(["sudo","docker"] + cmd);
+-    return subprocess.check_output(["docker"] + cmd);
++        return subprocess.check_output(["sudo","docker"] + cmd).decode();
++    return subprocess.check_output(["docker"] + cmd).decode();
  
- def get_src_dir():
-     """Get the source directory using git"""
--    git_top = subprocess.check_output(["git","rev-parse","--git-dir"]).strip();
-+    git_top = subprocess.check_output(["git","rev-parse","--git-dir"]).decode().strip();
-     if git_top == ".git":
-         return ".";
-     return os.path.dirname(git_top);
-@@ -55,7 +56,8 @@ def private_tmp():
+ @contextmanager
+ def private_tmp(args):
+@@ -684,7 +685,7 @@ def run_rpm_build(args,spec_file,env):
+         # rpmbuild complains if we do not have an entry in passwd and group
+         # for the user we are going to use to do the build.
+         with open(os.path.join(tmpdir,"go.py"),"w") as F:
+-            print >> F,"""
++            print("""
+ import os,subprocess;
+ with open("/etc/passwd","a") as F:
+    F.write({passwd!r} + "\\n");
+@@ -703,7 +704,7 @@ os.symlink({tarfn!r},os.path.join(b"SOURCES",tarfn));
+            uid=os.getuid(),
+            gid=os.getgid(),
+            tarfn=tarfn,
+-           tspec_file=tspec_file);
++           tspec_file=tspec_file), file=F);
  
- def get_symbol_vers(fn,exported=True):
-     """Return the symbol version suffixes from the ELF file, eg IB_VERBS_1.0, etc"""
--    syms = subprocess.check_output(["readelf","--wide","-s",fn]);
-+    syms = subprocess.check_output(["readelf","--wide","-s",fn]).decode();
-+
-     go = False;
-     res = set();
-     for I in syms.splitlines():
-@@ -166,7 +168,7 @@ def check_abi(args,fn):
-                            "-o",cur_fn]);
+             extra_opts = getattr(env,"rpmbuild_options", [])
+             bopts = ["-bb",tspec_file] + extra_opts;
+@@ -715,8 +716,8 @@ os.symlink({tarfn!r},os.path.join(b"SOURCES",tarfn));
+                 if env.build_pyverbs:
+                     bopts.extend(["--with", "pyverbs"]);
  
-     if not os.path.exists(ref_fn):
--        print >> sys.stderr, "ABI file does not exist for %r"%(ref_fn);
-+        print("ABI file does not exist for %r"%(ref_fn), file=sys.stderr);
-         return False;
+-            print >> F,'os.execlp("rpmbuild","rpmbuild",%s)'%(
+-                ",".join(repr(I) for I in bopts));
++            print('os.execlp("rpmbuild","rpmbuild",%s)'%(
++                ",".join(repr(I) for I in bopts)), file=F);
  
-     subprocess.check_call(["abi-compliance-checker",
-@@ -183,7 +185,7 @@ def test_verbs_uapi(args):
+         if args.run_shell:
+             opts.append("-ti");
+@@ -729,10 +730,10 @@ os.symlink({tarfn!r},os.path.join(b"SOURCES",tarfn));
  
-     # User must provide the ABI dir in the source tree
-     if not os.path.isdir(os.path.join(args.SRC,"ABI")):
--        print "ABI check skipped, no ABI/ directory.";
-+        print("ABI check skipped, no ABI/ directory.");
-         return;
+         docker_cmd(args,*opts)
  
-     libd = os.path.join(args.BUILD,"lib");
-@@ -221,24 +223,24 @@ def get_headers(incdir):
-     return includes;
+-        print
++        print()
+         for path,jnk,files in os.walk(os.path.join(tmpdir,"RPMS")):
+             for I in files:
+-                print "Final RPM: ",os.path.join("..",I);
++                print("Final RPM: ",os.path.join("..",I));
+                 shutil.move(os.path.join(path,I),
+                             os.path.join("..",I));
  
- def compile_test_headers(tmpd,incdir,includes,with_cxx=False):
--    cppflags = subprocess.check_output(["pkg-config","libnl-3.0","--cflags-only-I"]).strip();
-+    cppflags = subprocess.check_output(["pkg-config","libnl-3.0","--cflags-only-I"]).decode().strip();
-     cppflags = "-I %s %s"%(incdir,cppflags)
-     with open(os.path.join(tmpd,"build.ninja"),"wt") as F:
--        print >> F,"rule comp";
--        print >> F," command = %s -Werror -c %s $in -o $out"%(args.CC,cppflags);
--        print >> F," description=Header check for $in";
--        print >> F,"rule comp_cxx";
--        print >> F," command = %s -Werror -c %s $in -o $out"%(args.CXX,cppflags);
--        print >> F," description=Header C++ check for $in";
-+        print("rule comp", file=F);
-+        print(" command = %s -Werror -c %s $in -o $out"%(args.CC,cppflags), file=F);
-+        print(" description=Header check for $in", file=F);
-+        print("rule comp_cxx", file=F);
-+        print(" command = %s -Werror -c %s $in -o $out"%(args.CXX,cppflags), file=F);
-+        print(" description=Header C++ check for $in", file=F);
-         count = 0;
-         for I in sorted(includes):
-             if is_obsolete(I) or is_fixup(I):
+@@ -765,7 +766,7 @@ def run_deb_build(args,env):
+         # Create a go.py that will let us run the compilation as the user and
+         # then switch to root only for the packaging step.
+         with open(os.path.join(tmpdir,"go.py"),"w") as F:
+-            print >> F,"""
++            print("""
+ import subprocess,os;
+ def to_user():
+    os.setgid({gid:d});
+@@ -774,7 +775,7 @@ subprocess.check_call(["debian/rules","debian/rules","build"],
+             preexec_fn=to_user);
+ subprocess.check_call(["debian/rules","debian/rules","binary"]);
+ """.format(uid=os.getuid(),
+-           gid=os.getgid());
++           gid=os.getgid()), file=F);
+ 
+         if args.run_shell:
+             opts.append("-ti");
+@@ -787,10 +788,10 @@ subprocess.check_call(["debian/rules","debian/rules","binary"]);
+ 
+         docker_cmd(args,*opts);
+ 
+-        print
++        print()
+         for I in os.listdir(tmpdir):
+             if I.endswith(".deb"):
+-                print "Final DEB: ",os.path.join("..",I);
++                print("Final DEB: ",os.path.join("..",I));
+                 shutil.move(os.path.join(tmpdir,I),
+                             os.path.join("..",I));
+ 
+@@ -810,7 +811,7 @@ def copy_abi_files(src):
+             if os.path.isfile(ref_fn) and filecmp.cmp(ref_fn,cur_fn,False):
                  continue;
--            print >> F,"build %s : comp %s"%("out%d.o"%(count),I);
--            print >> F,"default %s"%("out%d.o"%(count));
--            print >> F,"build %s : comp_cxx %s"%("outxx%d.o"%(count),I);
-+            print("build %s : comp %s"%("out%d.o"%(count),I), file=F);
-+            print("default %s"%("out%d.o"%(count)), file=F);
-+            print("build %s : comp_cxx %s"%("outxx%d.o"%(count),I), file=F);
-             if with_cxx:
--                print >> F,"default %s"%("outxx%d.o"%(count));
-+                print("default %s"%("outxx%d.o"%(count)), file=F);
-             count = count + 1;
-     subprocess.check_call(["ninja"],cwd=tmpd);
  
-@@ -286,7 +288,7 @@ def test_installed_headers(args):
-         subprocess.check_output(["ninja","install"],env=env,cwd=args.BUILD);
+-            print "Changed ABI File: ", ref_fn;
++            print("Changed ABI File: ", ref_fn);
+             shutil.copy(cur_fn, ref_fn);
  
-         includes = get_headers(tmpd);
--        incdir = os.path.commonprefix(includes);
-+        incdir = os.path.commonprefix(list(includes));
-         rincludes = {I[len(incdir):] for I in includes};
+ def run_travis_build(args,env):
+@@ -832,7 +833,7 @@ def run_travis_build(args,env):
+             base = subprocess.check_output(["git",
+                                             "--git-dir",os.path.join(opwd,".git"),
+                                             "merge-base",
+-                                            "HEAD","FETCH_HEAD"]).strip();
++                                            "HEAD","FETCH_HEAD"]).decode().strip();
  
-         bincdir = os.path.abspath(os.path.join(args.BUILD,"include"));
-@@ -308,7 +310,7 @@ def test_installed_headers(args):
-                 os.makedirs(dfn);
-             assert not os.path.exists(I);
-             with open(I,"w") as F:
--                print >> F,'#error "Private internal header"';
-+                print('#error "Private internal header"', file=F);
+         home = os.path.join(os.path.sep,"home","travis");
+         home_build = os.path.join(os.path.sep,home,"build");
+@@ -856,10 +857,10 @@ def run_travis_build(args,env):
+             cmds = yaml.safe_load(F)["script"];
  
-         # Roughly check that the headers have the extern "C" for C++
-         # compilation.
-@@ -324,7 +326,7 @@ def test_installed_headers(args):
+         with open(os.path.join(tmpdir,"go.sh"),"w") as F:
+-            print >> F,"#!/bin/bash";
+-            print >> F,"set -e";
++            print("#!/bin/bash", file=F);
++            print("set -e", file=F);
+             for I in cmds:
+-                print >> F,I;
++                print(I, file=F);
  
- def get_symbol_names(fn):
-     """Return the defined, public, symbols from a ELF shlib"""
--    syms = subprocess.check_output(["readelf", "--wide", "-s", fn])
-+    syms = subprocess.check_output(["readelf", "--wide", "-s", fn]).decode()
-     go = False
-     res = set()
-     for I in syms.splitlines():
-@@ -352,7 +354,7 @@ def get_cc_args_from_pkgconfig(args, name, static):
-     flags = ["pkg-config", "--errors-to-stdout", "--cflags", "--libs"]
-     if static:
-         flags.append("--static")
--    opts = subprocess.check_output(flags + ["lib" + name])
-+    opts = subprocess.check_output(flags + ["lib" + name]).decode()
-     opts = shlex.split(opts)
+         if args.run_shell:
+             opts.append("-ti");
+@@ -872,7 +873,7 @@ def run_travis_build(args,env):
  
-     opts.insert(0, "-Wall")
-@@ -365,7 +367,7 @@ def get_cc_args_from_pkgconfig(args, name, static):
-     # The old pkg-config that travis uses incorrectly removes duplicated
-     # flags, which breaks linking.
-     if (name == "ibverbs" and
--        subprocess.check_output(["pkg-config", "--version"]).strip() == "0.26"):
-+        subprocess.check_output(["pkg-config", "--version"]).decode().strip() == "0.26"):
-         opts.insert(0, "-libverbs")
+         try:
+             docker_cmd(args,*opts);
+-        except subprocess.CalledProcessError, e:
++        except subprocess.CalledProcessError as e:
+             copy_abi_files(os.path.join(tmpdir, "src/ABI"));
+             raise;
+         copy_abi_files(os.path.join(tmpdir, "src/ABI"));
+@@ -929,7 +930,7 @@ def run_azp_build(args,env):
+             base = subprocess.check_output(["git",
+                                             "--git-dir",os.path.join(opwd,".git"),
+                                             "merge-base",
+-                                            "HEAD","FETCH_HEAD"]).strip();
++                                            "HEAD","FETCH_HEAD"]).decode().strip();
  
-     # Only static link the pkg-config stuff, otherwise we get warnings about
-@@ -392,7 +394,7 @@ def get_cc_args_from_pkgconfig(args, name, static):
+         opts = [
+             "run",
+@@ -959,7 +960,7 @@ def run_azp_build(args,env):
  
+         try:
+             docker_cmd(args,*opts);
+-        except subprocess.CalledProcessError, e:
++        except subprocess.CalledProcessError as e:
+             copy_abi_files(os.path.join(tmpdir, "s/ABI"));
+             raise;
+         copy_abi_files(os.path.join(tmpdir, "s/ABI"));
+@@ -988,7 +989,7 @@ def cmd_pkg(args):
+                           getattr(env,"specfile","%s.spec"%(project)),
+                           env);
+         else:
+-            print "%s does not support packaging"%(env.name);
++            print("%s does not support packaging"%(env.name));
  
- def compile_ninja(args, Fninja, name, cfn, opts):
--    print >> Fninja, """
-+    print("""
- rule comp_{name}
-     command = {CC} -Wall -o $out $in {opts}
-     description = Compile and link $out
-@@ -401,7 +403,7 @@ default {name}""".format(
-         name=name,
-         CC=args.CC,
-         cfn=cfn,
--        opts=" ".join(pipes.quote(I) for I in opts))
-+        opts=" ".join(pipes.quote(I) for I in opts)), file=Fninja)
+ # -------------------------------------------------------------------------
  
+@@ -1102,7 +1103,7 @@ def cmd_build_images(args):
+             fn = os.path.join(tmpdir,"Dockerfile");
+             with open(fn,"wt") as F:
+                 for ln in df.lines:
+-                    print >> F,ln;
++                    print(ln, file=F);
+             opts = (["build"] +
+                     get_build_args(args,env) +
+                     ["-f",fn,
+@@ -1176,13 +1177,15 @@ def cmd_make_dist_tar(args):
  
- def get_providers(args):
-@@ -510,6 +512,6 @@ args.SRC = os.path.abspath(args.SRC);
- args.PACKAGE_VERSION = get_package_version(args);
+ if __name__ == '__main__':
+     parser = argparse.ArgumentParser(description='Operate docker for building this package')
+-    subparsers = parser.add_subparsers(title="Sub Commands");
++    subparsers = parser.add_subparsers(title="Sub Commands",dest="command");
++    subparsers.required = True;
  
- funcs = globals();
--for k,v in funcs.items():
-+for k,v in list(funcs.items()):
-     if k.startswith("test_") and inspect.isfunction(v):
-         v(args);
+     funcs = globals();
+-    for k,v in funcs.items():
++    for k,v in list(funcs.items()):
+         if k.startswith("cmd_") and inspect.isfunction(v):
+             sparser = subparsers.add_parser(k[4:].replace('_','-'),
+                                             help=v.__doc__);
++            sparser.required = True;
+             funcs["args_" + k[4:]](sparser);
+             sparser.set_defaults(func=v);
+ 
 -- 
 2.22.0
 
