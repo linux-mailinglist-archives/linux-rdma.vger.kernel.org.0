@@ -2,63 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 717A471BC9
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 17:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E3071C54
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 17:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726967AbfGWPgo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 11:36:44 -0400
-Received: from verein.lst.de ([213.95.11.211]:42749 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726432AbfGWPgo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Jul 2019 11:36:44 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A348468B02; Tue, 23 Jul 2019 17:36:40 +0200 (CEST)
-Date:   Tue, 23 Jul 2019 17:36:40 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Christoph Hellwig <hch@lst.de>, john.hubbard@gmail.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Boaz Harrosh <boaz@plexistor.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] mm/gup: introduce __put_user_pages()
-Message-ID: <20190723153640.GB720@lst.de>
-References: <20190722223415.13269-1-jhubbard@nvidia.com> <20190722223415.13269-2-jhubbard@nvidia.com> <20190723055359.GC17148@lst.de> <8ab4899c-ec12-a713-cac2-d951fff2a347@nvidia.com>
+        id S1730926AbfGWP6B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 11:58:01 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:35113 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727398AbfGWP6B (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 11:58:01 -0400
+Received: by mail-pf1-f193.google.com with SMTP id u14so19379393pfn.2;
+        Tue, 23 Jul 2019 08:58:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tJkZzhNAgl02Ceuay5hJdySVP2Wewpu1vXVlEvr2CZo=;
+        b=GyQfNWJjbfZoPciLp6OspCsyAWIR9gBK6nLqU9lixzQKSXHAICkFgdI9yeTD3pXEdB
+         MWbaOP9voRxQKprb+s3vFrT2RIZ4HxDavdpr36abtcHXmILHey57Wx5YhSj1nZjxjV2C
+         CWPPwzK7OqaiElyEXYVJ9UhHPSPgAKibsrJabSXsrivME3GzTL2sJ3/KLaKvUHuRcKRC
+         pGw/r1ezBK92sodSabak2mPW2Aw8uJ90GwBGXPdaoVwvPLCZXp4EwxfIN4JzIRKdLZDm
+         8WogXq+yHMUMrFor1KL6RToUUTO+mz95dB16ipBPu9VBmx6uqSHFzVpbrfm15RCdv61D
+         wAYQ==
+X-Gm-Message-State: APjAAAVj2KCd94CI0y689O4uHQCYbA04M0xtbEoFeYG40k1WhmYbXq9i
+        QZPCBrGEoel1eXWcze0UxQBixXh+9vo=
+X-Google-Smtp-Source: APXvYqz7i0MQZONSk4vINYCfL9rtvoQ80o+1riCzW1MFUejFNTv8omh44XOg9j/CF0Q6YCWX0VewCA==
+X-Received: by 2002:a17:90a:d80b:: with SMTP id a11mr79117802pjv.53.1563897480328;
+        Tue, 23 Jul 2019 08:58:00 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id f15sm50666084pje.17.2019.07.23.08.57.58
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Jul 2019 08:57:59 -0700 (PDT)
+Subject: Re: [PATCH net 2/2] lib/dim: Fix -Wunused-const-variable warnings
+To:     Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Tal Gilboa <talgi@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+References: <20190723072248.6844-1-leon@kernel.org>
+ <20190723072248.6844-3-leon@kernel.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <86297343-e539-5d34-239a-4c94769f2379@acm.org>
+Date:   Tue, 23 Jul 2019 08:57:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8ab4899c-ec12-a713-cac2-d951fff2a347@nvidia.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20190723072248.6844-3-leon@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 22, 2019 at 11:33:32PM -0700, John Hubbard wrote:
-> I'm seeing about 18 places where set_page_dirty() is used, in the call site
-> conversions so far, and about 20 places where set_page_dirty_lock() is
-> used. So without knowing how many of the former (if any) represent bugs,
-> you can see why the proposal here supports both DIRTY and DIRTY_LOCK.
+On 7/23/19 12:22 AM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> DIM causes to the following warnings during kernel compilation
+> which indicates that tx_profile and rx_profile are supposed to
+> be declared in *.c and not in *.h files.
 
-Well, it should be fairly easy to audit.  set_page_dirty() is only
-safe if we are dealing with a file backed page where we have reference
-on the inode it hangs off.  Which should basically be never or almost
-never.
+Thanks Leon for this fix.
+
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
