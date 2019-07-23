@@ -2,58 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E83871FC4
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC8271FCE
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbfGWTBo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 15:01:44 -0400
-Received: from mail-qt1-f169.google.com ([209.85.160.169]:39436 "EHLO
-        mail-qt1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726621AbfGWTBo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:01:44 -0400
-Received: by mail-qt1-f169.google.com with SMTP id l9so42919542qtu.6
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 12:01:43 -0700 (PDT)
+        id S2391643AbfGWTBt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 15:01:49 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:43244 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391637AbfGWTBt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:01:49 -0400
+Received: by mail-qt1-f194.google.com with SMTP id w17so42911119qto.10
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 12:01:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2yzymNMZxCXl94f0VDmBjPwjfmfMat7L7q7G2GioiEU=;
-        b=Wa1syyNyYfGOOeUQekiIQjUF2Z/tFEN+Ya6Ea2YWyIM5FwLEw/T7ebDAwfngly9PKc
-         pfj7BQj77apTsG8JYrmJPqjDmwx6o6wwilnlgU0o8Jy9NGc9VuPLQiz2kE9hNFBY8zOS
-         6ukSapp7d4NrAz19qdB36DxFRn6kQ5iNnk/hZd3t1TxJ/inOZjXiM32oO/TQ5qDAgMtI
-         G1BiRoz+NVI5MDrgOX/n2s1uVCAMcHuZDfUfwpT2tyiZQxtFzqmi/F87kSxp7NtRlI2m
-         qC1uh9ugLIUI14wDBjQUvyujiF/6ePrKFSpE+6vdd3lVD0oMrtIsk90ADKDsAMt0Tion
-         Dq8w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OvdZj+SFpT7mCy/KQvKHVvn4GvaIji9zUtBkBbbjCSs=;
+        b=imBnxzPv54U7Up1jZ2at3rW06MtuoAI2w85upWBA19kP+7mXUnoPx6oU9Bo6/i6pvC
+         kYzt3XrNrDoSR9i8003HD5vGa0cCPv0K9ACti8xPbLc488fDEcbN0bBm9wsxVq8JRg8J
+         Svgf3Fw32qzS4h3Jq05bCIeW8x2RhOc2wFuYD3k0vqtsXSA34vlKHWOzrH9XC8jss4CU
+         FR13CCQ13W455wfCV39IENKYp6tWrLvCfv4jOyMqgSwyLkAEwd7uDWkzzk3ZyKDXBeVr
+         29IK7AV4B16USZtFHL+lm03sfZ0zez8rpr9rRorLIxbBmwG3z0k6z320ppg1JT3BuIE1
+         H+Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2yzymNMZxCXl94f0VDmBjPwjfmfMat7L7q7G2GioiEU=;
-        b=UrqHL1Ez39W1lnLQ0+hmopjAhrad8RsCde+yi3san60DiQIy1424twceYar5a1yHd8
-         sDVsPZDjWYMBTTUy3TiFPabknEuB30BlpERd19Vc6F1cMTdJxQTtgp7tVLx3zpx/aIlP
-         aoxRRtDvKrzVoD2bAxk2uCkJYUwfDh0JMtFjTlESjJM+fIPTljrC6bzImukBcO2bVyYL
-         EBzMlYXC3j3n2G4VFTkQbqwbIS0B3da4yAfRal1P6PrUU8E0VFrQRac78peJhFqXm8fG
-         A59CAN0GvXHxFSh6Jg17CmrMs/DVvpLaaZf13KX864zCWlQukqSPuZR6CzPZu3BwcEHp
-         tXvw==
-X-Gm-Message-State: APjAAAXh6+ftbxrqdrMuz0uhAHwqi13eRFBCsAiLRmbmyJQQp6Ho4W2p
-        qdTRnFC1ZBR/9HcMtEuQvbAQGfkyLJqYig==
-X-Google-Smtp-Source: APXvYqyJRgnoOTAnfg39nqDyBn1JFaLzks/P94sCOyWFGuYsUqcJJLCUVnJ2+wmOzXAxCT/FLNEfMA==
-X-Received: by 2002:ac8:2d69:: with SMTP id o38mr53824095qta.169.1563908502931;
-        Tue, 23 Jul 2019 12:01:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OvdZj+SFpT7mCy/KQvKHVvn4GvaIji9zUtBkBbbjCSs=;
+        b=KjGfPgqmsmw+s44ZUHjhTq6KGj4AZE3xjpwZBu/XT2oib7ddFpi+/qfHPoYf4DVk2M
+         TaLnRCuhYY36wXfswzSgyAsKKuyxuNsHv52RJdijfKVnHoJovz/bW0Q5as/I5bpi7+Da
+         /yEaUM8xdJ70Sb2gNkBuHN3hz8O1lQ+4F23j81jx7mCGMEGO/J9tGuvb9bvdbQtFf9+d
+         ITnm6LAeelGlZvJxWrWHZBMqu3yd0eVbLN0/2vYxtQs2m0aBUR6wYR0cy4JCS/M9CWiA
+         fuRFCOwJu6PtPlHVOVbRURaCleNTrHXgT9pdcfye6jKbEfdTzmLMeYKbEX+rLqnlhYu0
+         vVvg==
+X-Gm-Message-State: APjAAAVHzh6zWbEDjDw7gBeZFWVIOTGldZbWUXqgKClaAiNBUv4Q/hMk
+        ASOXDlTsKCk1KZoST2RpgCl8Wy81iYgOAQ==
+X-Google-Smtp-Source: APXvYqxIK9R8wA1h3CpJmfcx+dpoPxJd1HnXlFeEh0geajAgwW6wNgMNESNZLJxIbETJtVH91cgnoQ==
+X-Received: by 2002:ac8:23c5:: with SMTP id r5mr55818442qtr.319.1563908507851;
+        Tue, 23 Jul 2019 12:01:47 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id j8sm19535487qki.85.2019.07.23.12.01.40
+        by smtp.gmail.com with ESMTPSA id p23sm20579571qke.44.2019.07.23.12.01.40
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Tue, 23 Jul 2019 12:01:41 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hq02e-00043l-60; Tue, 23 Jul 2019 16:01:40 -0300
+        id 1hq02e-00043r-8D; Tue, 23 Jul 2019 16:01:40 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 00/19] Complete the azure pipelines configuration
-Date:   Tue, 23 Jul 2019 16:01:18 -0300
-Message-Id: <20190723190137.15370-1-jgg@ziepe.ca>
+Subject: [PATCH rdma-core 01/19] rdmacm: Fix missing libraries on centos6 build
+Date:   Tue, 23 Jul 2019 16:01:19 -0300
+Message-Id: <20190723190137.15370-2-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20190723190137.15370-1-jgg@ziepe.ca>
+References: <20190723190137.15370-1-jgg@ziepe.ca>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -63,63 +65,31 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-Now that it has been running with stability for a while lets finish the job.
+Build fails with:
 
-This is mostly a grab bag of things to make AZP work properly:
- - Only use python3 so we can reduce the azp image size
- - Migrate functions over from travis so we don't see as many travis false
-   failures until we retire it. Notably the problematic suse Leap is dropped
- - Build FC30 and Centos6 in AZP
- - Cross compile on PPC64 as well as ARM64
- - Version number the container images so that stable branches will continue
-   to work forever.
- - Minor bug fixes to get clean compiles in all environments
+CMakeFiles/rdmacm.dir/rsocket.c.o: In function `rs_time_us':
+/home/jgg/oss/rdma-core/librdmacm/rsocket.c:449: undefined reference to `clock_gettime'
 
-This is a PR:
+Need to have -lrt on this old glibc.
 
-https://github.com/linux-rdma/rdma-core/pull/552
+Fixes: 38c49232b67a ("rsockets: Replace gettimeofday with clock_gettime")
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ librdmacm/CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-Jason Gunthorpe (19):
-  rdmacm: Fix missing libraries on centos6 build
-  util: Enable uninitialized_var on powerpc
-  build/cbuild: Remove docker-gc
-  build/travis: Do not build packages in travis anymore
-  build/travis: Do not run checkpatch
-  build/travis: Do not cross compile for ARM64
-  build/azp: Use a version number for the docker images
-  build/cbuild: Add push-azp-images
-  build/azp: Use gcc 9.3 for building
-  build/azp: Use clang 8.0 for building
-  build/azp: Run a test compile on ppc64el as well
-  build/azp: Add Fedora 30 to the distro testing
-  build/azp: Update check-build to work with python3
-  build/cbuild: Update cbuild to work with python3
-  build/azp: Reduce the package list
-  build/azp: Add centos6 to the test distributions
-  build/azp: Run lintian over the bionic .debs
-  build: Use the CMake variable -DENABLE_WERROR to turn on WERROR mode
-  build/azp: Have Azure Pipelines create releases when tags are made
-
- .travis.yml                          |  27 ---
- CMakeLists.txt                       |   5 +
- buildlib/azure-pipelines-release.yml |  48 ++++++
- buildlib/azure-pipelines.yml         |  84 +++++----
- buildlib/cbuild                      | 248 +++++++++++++++++++--------
- buildlib/centos6.spec                | 109 ++++++++++++
- buildlib/check-build                 |  50 +++---
- buildlib/github-release              |   7 -
- buildlib/package-build-test          |  21 ---
- buildlib/travis-build                |   7 +-
- buildlib/travis-checkpatch           |  30 ----
- librdmacm/CMakeLists.txt             |   1 +
- util/compiler.h                      |   5 +-
- 13 files changed, 421 insertions(+), 221 deletions(-)
- create mode 100644 buildlib/azure-pipelines-release.yml
- create mode 100644 buildlib/centos6.spec
- delete mode 100755 buildlib/github-release
- delete mode 100755 buildlib/package-build-test
- delete mode 100755 buildlib/travis-checkpatch
-
+diff --git a/librdmacm/CMakeLists.txt b/librdmacm/CMakeLists.txt
+index 4f74d4b0ac3b79..b306841ea2134e 100644
+--- a/librdmacm/CMakeLists.txt
++++ b/librdmacm/CMakeLists.txt
+@@ -21,6 +21,7 @@ target_link_libraries(rdmacm LINK_PUBLIC ibverbs)
+ target_link_libraries(rdmacm LINK_PRIVATE
+   ${NL_LIBRARIES}
+   ${CMAKE_THREAD_LIBS_INIT}
++  ${RT_LIBRARIES}
+   )
+ 
+ # The preload library is a bit special, it needs to be open coded
 -- 
 2.22.0
 
