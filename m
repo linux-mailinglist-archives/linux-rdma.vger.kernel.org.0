@@ -2,153 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD5771CF0
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 18:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93ABD71D19
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 18:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732356AbfGWQaR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 12:30:17 -0400
-Received: from mail-eopbgr700087.outbound.protection.outlook.com ([40.107.70.87]:43745
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727671AbfGWQaR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Jul 2019 12:30:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MTV0plY43ij7Vbh1bimhDjIIxw+yy5mta4qrG8OepbubJ+8Flu2iw4uyBxQ5FojLFaQquA7wymTLwnYSWfKlTVj1qQYPBv/WmJMS9V/Cui362NqWeVqL9y2Uh3WqDau5ZdEd8hb00nv7+zIBTN42GfoEMwcL/F0kKlMs1aM5tz8lt0g0FV4QGtmcnuy7Mo3C8pDvz1n179Xwn7yt1NIa5YiR5oSA7rF0U8YP5q4PluI94ZYHHsrukwaK00fjQFA1Rdp7UA0TRvitEXWHWOBDjspqkqzN/VNUNmHV2QQoQQ5m5xXuG8dEx3mCjQgEyT3uv8fEo2u42K9gZi91IG7MfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0OMp0OWOjFiuQ0xqpv/ck38uaffY4uEN6NBtPTFfupw=;
- b=cHrEquMUbLrFQ/w0m5mYd56E9HGG9xAFWLmaB/yXRb8l1hcJTBFYFnsKF0FlA9KYXKHmvjoT1fBmvs6oRrkH2ywxC0VO8fTTui2aNjlwZUBYggslfrdMkz+GdoYYpAs2J6adUazCFLm4aHbzqIZIkpzTAGoEJIix/tox5Zu0LP3AtfZ/8Zja6G5JbrC5/vBgL4BUratuGYW/4Q9sKAXt+1ZUibk6DKm2WQZ+DOBbT+yAsYlVwjq7pPBCqYqaUckTitluQ/5rPzOOOibu1jFttpz6I0bDeEbxaKxMpTOtf+YavNvNILUVPaxHT9uAR4cHZIHk+GeG6jjZfXNHG3RbMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=amd.com;dmarc=pass action=none header.from=amd.com;dkim=pass
- header.d=amd.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector1-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0OMp0OWOjFiuQ0xqpv/ck38uaffY4uEN6NBtPTFfupw=;
- b=mqozw5D3QVBQMpzBwT0WwJ+RXszlwyaRBCJqPyQ8ulNIalcT67UrF0ko5cy3TMp6QcsLNiHv3XkWSWwFYXyvFqv6Cn+Uxgy89UvMkPM1Q0FDMAMK7hb4NP606lFzSzlAzjQJ5uFd+BTmm4VtwSXARSXJCVq0pyQdtyxFNCKLRZU=
-Received: from DM5PR12MB1546.namprd12.prod.outlook.com (10.172.36.23) by
- DM5PR12MB2391.namprd12.prod.outlook.com (52.132.141.20) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2073.14; Tue, 23 Jul 2019 16:30:14 +0000
-Received: from DM5PR12MB1546.namprd12.prod.outlook.com
- ([fe80::cda7:cfc1:ce62:bcb7]) by DM5PR12MB1546.namprd12.prod.outlook.com
- ([fe80::cda7:cfc1:ce62:bcb7%10]) with mapi id 15.20.2094.013; Tue, 23 Jul
- 2019 16:30:13 +0000
-From:   "Koenig, Christian" <Christian.Koenig@amd.com>
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Pilmore <epilmore@gigaio.com>,
-        Stephen Bates <sbates@raithlin.com>
-Subject: Re: [PATCH 00/14] PCI/P2PDMA: Support transactions that hit the host
- bridge
-Thread-Topic: [PATCH 00/14] PCI/P2PDMA: Support transactions that hit the host
- bridge
-Thread-Index: AQHVQOKBFn41TV2m5kSFYCrTCs5pgqbYZgGA
-Date:   Tue, 23 Jul 2019 16:30:13 +0000
-Message-ID: <d7c7011e-e9b7-89f8-99ba-b674d45821c6@amd.com>
-References: <20190722230859.5436-1-logang@deltatee.com>
-In-Reply-To: <20190722230859.5436-1-logang@deltatee.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-x-originating-ip: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-x-clientproxiedby: PR2P264CA0003.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101::15)
- To DM5PR12MB1546.namprd12.prod.outlook.com (2603:10b6:4:8::23)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Christian.Koenig@amd.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b98a3922-5cac-49f8-a5d8-08d70f8b09b6
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DM5PR12MB2391;
-x-ms-traffictypediagnostic: DM5PR12MB2391:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <DM5PR12MB239187FE8F6DA5533A1C856783C70@DM5PR12MB2391.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0107098B6C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(346002)(366004)(376002)(396003)(136003)(189003)(199004)(66574012)(5660300002)(99286004)(25786009)(7736002)(36756003)(2501003)(58126008)(229853002)(4326008)(6116002)(86362001)(110136005)(31696002)(66446008)(81156014)(8676002)(53936002)(65826007)(2201001)(68736007)(6512007)(66476007)(8936002)(71190400001)(81166006)(305945005)(64756008)(54906003)(66946007)(6306002)(6246003)(71200400001)(66556008)(31686004)(6506007)(52116002)(46003)(102836004)(486006)(186003)(966005)(2616005)(476003)(6436002)(65956001)(65806001)(386003)(64126003)(11346002)(446003)(76176011)(478600001)(316002)(14454004)(14444005)(2906002)(6486002)(7416002)(256004);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR12MB2391;H:DM5PR12MB1546.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: pAk67c+bU1rZPjhn8mNggiyUNSJg4HdRiFKU5CQPehjejVacV7FKZ3qSpoQTfDULGaQ+rSPIb71qpi1uGMpSW/VrTV76dEfXCMt2AaDPLPgV5SbL0X1pXk5oUWiqMLSCw//pWLVLGmMEnrFwzTJm9F+n1IhvFaMG+BWCFgcRMRbd7RjGyzqwZrbqA3B+Ad2b6R3ZgM18fUeoavvZEkqd5Vj8UtnuJnUiJfWE7O2thGJ4eXWWzlIVRnLshWjRHv9GLtqGPA6NibIcYC0zZ2PSpj2vkB/QDB8JO637gAY0LJTVHmSVlR4V3TM+AioFx8wmL+mpiG+Lfp+LdyYo9rzwFudFEyI+duIS3bTalD8RldF9Nv/3zpe9+hTrwLFwbcMm5Truqg3CmPn9nfa7AuhkRGtFYgkzA7RIT0RIIDzLoBU=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B7474CA97B07324FA8807FC37E0D0E65@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1730010AbfGWQsP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 12:48:15 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:55918 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729558AbfGWQsO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 12:48:14 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6NGixTG079378;
+        Tue, 23 Jul 2019 16:48:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=0k+/VhUSJCBvIEErGxSDSu9OEsPxw7IWedO9ub/ft4g=;
+ b=ZTatqs53drFPYCkG2EplnewuIn4yWB+e+tzgIv3weY9q3UQ/ekeeMDY/VTWIJAXW7bkf
+ hPCjKoSbquyZuwfgUaUmvjUI/TeLPBacCFO4v0IiwbhZTkg29LQM8Af+SOpP/VRLBKuR
+ QRKhf8+9QsEvr7PWVfC7fDaz/1V7yc1+/ZJ/a/fawZxZq3KvdnOpY9fYK04pmahFn1D6
+ TViLAsfqLeT8BU+G+viCFNexf5aAK//BOqPc/Thq+VROlcxnVb5jjYdYkLzSPkX79sZ1
+ 95GaDl9xHbwoBxvXEYcwNeEaxfuykaUv+Cz6LLN2bJ2dVFO9ECUC19USe3gyGc//eNLy 5Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2tx61br0h8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jul 2019 16:48:03 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6NGhs9t082996;
+        Tue, 23 Jul 2019 16:48:03 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 2tx60x82ub-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Jul 2019 16:48:03 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6NGkwYC090557;
+        Tue, 23 Jul 2019 16:48:03 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2tx60x82u0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jul 2019 16:48:03 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6NGm2Mn021476;
+        Tue, 23 Jul 2019 16:48:02 GMT
+Received: from [10.209.243.59] (/10.209.243.59)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 23 Jul 2019 09:48:02 -0700
+Subject: Re: memory leak in rds_send_probe
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com>,
+        David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <000000000000ad1dfe058e5b89ab@google.com>
+ <CACT4Y+a7eGJpsrenA-0RbWmwktDj5+XV4xaTeU+fiL5KXNbrqg@mail.gmail.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <8a1b7a3e-0022-c101-7745-206c3d1a044e@oracle.com>
+Date:   Tue, 23 Jul 2019 09:48:01 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b98a3922-5cac-49f8-a5d8-08d70f8b09b6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jul 2019 16:30:13.6952
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ckoenig@amd.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2391
+In-Reply-To: <CACT4Y+a7eGJpsrenA-0RbWmwktDj5+XV4xaTeU+fiL5KXNbrqg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9327 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1907230169
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-QW0gMjMuMDcuMTkgdW0gMDE6MDggc2NocmllYiBMb2dhbiBHdW50aG9ycGU6DQo+IEFzIGRpc2N1
-c3NlZCBvbiB0aGUgbGlzdCBwcmV2aW91c2x5LCBpbiBvcmRlciB0byBmdWxseSBzdXBwb3J0IHRo
-ZQ0KPiB3aGl0ZWxpc3QgQ2hyaXN0aWFuIGFkZGVkIHdpdGggdGhlIElPTU1VLCB3ZSBtdXN0IGVu
-c3VyZSB0aGF0IHdlDQo+IG1hcCBhbnkgYnVmZmVyIGdvaW5nIHRocm91Z2ggdGhlIElPTU1VIHdp
-dGggYW4gYXBycm9wcmlhdGUgZG1hX21hcA0KPiBjYWxsLiBUaGlzIHBhdGNoc2V0IGFjY29tcGxp
-c2hlcyB0aGlzIGJ5IGNsZWFuaW5nIHVwIHRoZSBvdXRwdXQgb2YNCj4gdXBzdHJlYW1fYnJpZGdl
-X2Rpc3RhbmNlKCkgdG8gYmV0dGVyIGluZGljYXRlIHRoZSBtYXBwaW5nIHJlcXVpcmVtZW50cywN
-Cj4gY2FjaGluZyB0aGVzZSByZXF1aXJlbWVudHMgaW4gYW4geGFycmF5LCB0aGVuIGxvb2tpbmcg
-dGhlbSB1cCBhdCBtYXANCj4gdGltZSBhbmQgYXBwbHlpbmcgdGhlIGFwcHJvcHJpYXRlIG1hcHBp
-bmcgbWV0aG9kLg0KPg0KPiBBZnRlciB0aGlzIHBhdGNoc2V0LCBpdCdzIHBvc3NpYmxlIHRvIHVz
-ZSB0aGUgTlZNZS1vZiBQMlAgc3VwcG9ydCB0bw0KPiB0cmFuc2ZlciBiZXR3ZWVuIGRldmljZXMg
-d2l0aG91dCBhIHN3aXRjaCBvbiB0aGUgd2hpdGVsaXN0ZWQgcm9vdA0KPiBjb21wbGV4ZXMuIEEg
-Y291cGxlIEludGVsIGRldmljZSBJIGhhdmUgdGVzdGVkIHRoaXMgb24gaGF2ZSBhbHNvDQo+IGJl
-ZW4gYWRkZWQgdG8gdGhlIHdoaXRlIGxpc3QuDQo+DQo+IE1vc3Qgb2YgdGhlIGNoYW5nZXMgYXJl
-IGNvbnRhaW5lZCB3aXRoaW4gdGhlIHAycGRtYS5jLCBidXQgdGhlcmUgYXJlDQo+IGEgZmV3IG1p
-bm9yIHRvdWNoZXMgdG8gb3RoZXIgc3Vic3lzdGVtcywgbW9zdGx5IHRvIGFkZCBzdXBwb3J0DQo+
-IHRvIGNhbGwgYW4gdW5tYXAgZnVuY3Rpb24uDQo+DQo+IFRoZSBmaW5hbCBwYXRjaCBpbiB0aGlz
-IHNlcmllcyBkZW1vbnN0cmF0ZXMgYSBwb3NzaWJsZQ0KPiBwY2lfcDJwZG1hX21hcF9yZXNvdXJj
-ZSgpIGZ1bmN0aW9uIHRoYXQgSSBleHBlY3QgQ2hyaXN0aWFuIHdpbGwgbmVlZA0KPiBidXQgZG9l
-cyBub3QgaGF2ZSBhbnkgdXNlcnMgYXQgdGhpcyB0aW1lIHNvIEkgZG9uJ3QgaW50ZW5kIGZvciBp
-dCB0byBiZQ0KPiBjb25zaWRlcmVkIGZvciBtZXJnaW5nLg0KPg0KPiBUaGlzIHBhdGNoc2V0IGlz
-IGJhc2VkIG9uIDUuMy1yYzEgYW5kIGEgZ2l0IGJyYW5jaCBpcyBhdmFpbGFibGUgaGVyZToNCj4N
-Cj4gaHR0cHM6Ly9naXRodWIuY29tL3NiYXRlczEzMDI3Mi9saW51eC1wMnBtZW0vIHAycGRtYV9y
-Y19tYXBfdjENCg0KSSByZXZpZXdlZCBwYXRjaGVzICMxLSMzIGFuZCAjMTQuDQoNCkZlZWwgZnJl
-ZSB0byBzdGljayBhbiBBY2tlZC1ieTogQ2hyaXN0aWFuIEvDtm5pZyANCjxjaHJpc3RpYW4ua29l
-bmlnQGFtZC5jb20+IHRvIHRoZSByZXN0LCBidXQgSSdtIG5vdCByZWFsbHkgZGVlcCBpbnRvIHRo
-ZSANCk5WTWUgUDJQIGhhbmRsaW5nIGhlcmUuDQoNClJlZ2FyZHMsDQpDaHJpc3RpYW4uDQoNCg0K
-Pg0KPiAtLQ0KPg0KPiBMb2dhbiBHdW50aG9ycGUgKDE0KToNCj4gICAgUENJL1AyUERNQTogQWRk
-IGNvbnN0YW50cyBmb3Igbm90LXN1cHBvcnRlZCByZXN1bHQNCj4gICAgICB1cHN0cmVhbV9icmlk
-Z2VfZGlzdGFuY2UoKQ0KPiAgICBQQ0kvUDJQRE1BOiBGYWN0b3Igb3V0IF9fdXBzdHJlYW1fYnJp
-ZGdlX2Rpc3RhbmNlKCkNCj4gICAgUENJL1AyUERNQTogQXBwbHkgaG9zdCBicmlkZ2Ugd2hpdGUg
-bGlzdCBmb3IgQUNTDQo+ICAgIFBDSS9QMlBETUE6IENhY2hlIHRoZSByZXN1bHQgb2YgdXBzdHJl
-YW1fYnJpZGdlX2Rpc3RhbmNlKCkNCj4gICAgUENJL1AyUERNQTogRmFjdG9yIG91dCBob3N0X2Jy
-aWRnZV93aGl0ZWxpc3QoKQ0KPiAgICBQQ0kvUDJQRE1BOiBBZGQgd2hpdGVsaXN0IHN1cHBvcnQg
-Zm9yIEludGVsIEhvc3QgQnJpZGdlcw0KPiAgICBQQ0kvUDJQRE1BOiBBZGQgdGhlIHByb3ZpZGVy
-J3MgcGNpX2RldiB0byB0aGUgZGV2X3BnbWFwIHN0cnVjdA0KPiAgICBQQ0kvUDJQRE1BOiBBZGQg
-YXR0cnMgYXJndW1lbnQgdG8gcGNpX3AycGRtYV9tYXBfc2coKQ0KPiAgICBQQ0kvUDJQRE1BOiBJ
-bnRyb2R1Y2UgcGNpX3AycGRtYV91bm1hcF9zZygpDQo+ICAgIFBDSS9QMlBETUE6IEZhY3RvciBv
-dXQgX19wY2lfcDJwZG1hX21hcF9zZygpDQo+ICAgIFBDSS9QMlBETUE6IGRtYV9tYXAgUDJQRE1B
-IG1hcCByZXF1ZXN0cyB0aGF0IHRyYXZlcnNlIHRoZSBob3N0IGJyaWRnZQ0KPiAgICBQQ0kvUDJQ
-RE1BOiBObyBsb25nZXIgcmVxdWlyZSBuby1tbXUgZm9yIGhvc3QgYnJpZGdlIHdoaXRlbGlzdA0K
-PiAgICBQQ0kvUDJQRE1BOiBVcGRhdGUgZG9jdW1lbnRhdGlvbiBmb3IgcGNpX3AycGRtYV9kaXN0
-YW5jZV9tYW55KCkNCj4gICAgUENJL1AyUERNQTogSW50cm9kdWNlIHBjaV9wMnBkbWFfW3VuXW1h
-cF9yZXNvdXJjZSgpDQo+DQo+ICAgZHJpdmVycy9pbmZpbmliYW5kL2NvcmUvcncuYyB8ICAgNiAr
-LQ0KPiAgIGRyaXZlcnMvbnZtZS9ob3N0L3BjaS5jICAgICAgfCAgMTAgKy0NCj4gICBkcml2ZXJz
-L3BjaS9wMnBkbWEuYyAgICAgICAgIHwgNDAwICsrKysrKysrKysrKysrKysrKysrKysrKysrKy0t
-LS0tLS0tDQo+ICAgaW5jbHVkZS9saW51eC9tZW1yZW1hcC5oICAgICB8ICAgMSArDQo+ICAgaW5j
-bHVkZS9saW51eC9wY2ktcDJwZG1hLmggICB8ICAyOCArKy0NCj4gICA1IGZpbGVzIGNoYW5nZWQs
-IDM0MSBpbnNlcnRpb25zKCspLCAxMDQgZGVsZXRpb25zKC0pDQo+DQo+IC0tDQo+IDIuMjAuMQ0K
-DQo=
+
+
+On 7/23/19 9:19 AM, Dmitry Vyukov wrote:
+> On Tue, Jul 23, 2019 at 6:18 PM syzbot
+> <syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com> wrote:
+>>
+>> Hello,
+>>
+>> syzbot found the following crash on:
+>>
+>> HEAD commit:    c6dd78fc Merge branch 'x86-urgent-for-linus' of git://git...
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=14be98c8600000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=8de7d700ea5ac607
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=5134cdf021c4ed5aaa5f
+>> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145df0c8600000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170001f4600000
+> 
+> +net/rds/message.c maintainers
+> 
+>> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+>> Reported-by: syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com
+>>
+>> BUG: memory leak
+>> unreferenced object 0xffff8881234e9c00 (size 512):
+
+Thanks for reporting. We will look into it.
+
+>>     comm "kworker/u4:2", pid 286, jiffies 4294948041 (age 7.750s)
+>>     hex dump (first 32 bytes):
+>>       01 00 00 00 00 00 00 00 08 9c 4e 23 81 88 ff ff  ..........N#....
+>>       08 9c 4e 23 81 88 ff ff 18 9c 4e 23 81 88 ff ff  ..N#......N#....
+>>     backtrace:
+>>       [<0000000032e378fa>] kmemleak_alloc_recursive
+>> /./include/linux/kmemleak.h:43 [inline]
+>>       [<0000000032e378fa>] slab_post_alloc_hook /mm/slab.h:522 [inline]
+>>       [<0000000032e378fa>] slab_alloc /mm/slab.c:3319 [inline]
+>>       [<0000000032e378fa>] __do_kmalloc /mm/slab.c:3653 [inline]
+>>       [<0000000032e378fa>] __kmalloc+0x16d/0x2d0 /mm/slab.c:3664
+>>       [<0000000015bc9536>] kmalloc /./include/linux/slab.h:557 [inline]
+>>       [<0000000015bc9536>] kzalloc /./include/linux/slab.h:748 [inline]
+>>       [<0000000015bc9536>] rds_message_alloc+0x3e/0xc0 /net/rds/message.c:291
+>>       [<00000000a806d18d>] rds_send_probe.constprop.0+0x42/0x2f0
+>> /net/rds/send.c:1419
+>>       [<00000000794a00cc>] rds_send_pong+0x1e/0x23 /net/rds/send.c:1482
+>>       [<00000000b2a248d0>] rds_recv_incoming+0x27e/0x460 /net/rds/recv.c:343
+>>       [<00000000ea1503db>] rds_loop_xmit+0x86/0x100 /net/rds/loop.c:96
+>>       [<00000000a9857f5a>] rds_send_xmit+0x524/0x9a0 /net/rds/send.c:355
+>>       [<00000000557b0101>] rds_send_worker+0x3c/0xd0 /net/rds/threads.c:200
+>>       [<000000004ba94868>] process_one_work+0x23f/0x490
+>> /kernel/workqueue.c:2269
+>>       [<00000000e793f811>] worker_thread+0x195/0x580 /kernel/workqueue.c:2415
+>>       [<000000003ee8c1a1>] kthread+0x13e/0x160 /kernel/kthread.c:255
+>>       [<000000004cd53c81>] ret_from_fork+0x1f/0x30
+>> /arch/x86/entry/entry_64.S:352
+>>
+>>
+>>
+>> ---
+>> This bug is generated by a bot. It may contain errors.
+>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>
+>> syzbot will keep track of this bug report. See:
+>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>> syzbot can test patches for this bug, for details see:
+>> https://goo.gl/tpsmEJ#testing-patches
+>>
+>> --
+>> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+>> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+>> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000ad1dfe058e5b89ab%40google.com.
