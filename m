@@ -2,90 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6129271715
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 13:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B747176B
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 13:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387572AbfGWL3l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 07:29:41 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:42065 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728671AbfGWL3k (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 07:29:40 -0400
-Received: by mail-qt1-f195.google.com with SMTP id h18so41496291qtm.9;
-        Tue, 23 Jul 2019 04:29:40 -0700 (PDT)
+        id S1731705AbfGWLtl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 07:49:41 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:37410 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbfGWLtl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 07:49:41 -0400
+Received: by mail-pg1-f196.google.com with SMTP id i70so8574510pgd.4;
+        Tue, 23 Jul 2019 04:49:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=syzUAD4b6NAbqJrzy/Iszf3QeWwTBpf8xpKc8pmUJvM=;
+        b=gAkjQjbGsxZAVFFI07LFZTvvr3LOWst12OhUKeU/tIiwO5vTBb6nG13uVp3icDjNxV
+         tqhsAp/vTDOD4ooePcT7aDlNSFVr/3czsHpZdgvsUek8Oj4VtIRiN01Hk2ZWQ5Hi7jcw
+         kwab/CHaO6tBrWPRaA7jc1/GbPCm0B+tI2/f0FiNTYfp7JuKj42c8KR43sW/ekuBB8nJ
+         kX45uRn4Lb9z1dUvQYPab/w1haGvEs3+kVMyM3iDc86eTEa9wdxEpr34SpURr+2LFHgJ
+         yHapWTDR54LA7P/dIrsSdAMZEk1OCSqBOAdGw/dxTpy+egedR3sURzzFRqOFzXAH07zA
+         pN9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KXa/pdiz35ep+mLCr28bqiNqSRHbUGvdnUMCdkRJY1Y=;
-        b=cUyin+8NmP6Kz7ItookwxAVzJLEtQIAgc2TAZ6DfyUGnHm9QQKwwrEFQTHwgAM9MNl
-         buGfYjyB8QYShPYlJBW4Xn9h2EL/3y0o6PpKiBFPc8LuutzTaOTBq9vwe9CB4ZGUkR3O
-         TLEZJvVFKVRMqSyLC+bzQw5eNUb390atQ/6Bg+ldwGE8Oww9YV/8oAoebbgQFeFifh9X
-         UyvHMYnRy8jmYoljcp2b2oJaeZCDF6gVpRxAE8r5JnoX1fnRuatMecYoAOlPO6wabHH0
-         siT5vEvgho9+EhtYUprlf9NA860JhSL0sIfwBdttDWsXfHkAs4R+Wov6n/vfORBKbbe1
-         3NLg==
-X-Gm-Message-State: APjAAAWjAl6kzYMiSu//FhjSAj4vyLiMRPZ3CaphbgQWIL0g+XCLkJPV
-        XcDBR4Q/IX6vrZBFM9o9vSCwj8qpPMTDzaMzyeg=
-X-Google-Smtp-Source: APXvYqx1EU51FbX6+2XlA6KUG+F0dUz/vT1YeDqdoz4SzLZTi5S2qTafHd5AE2c3/8DfMvsxeTXs4OM5qOYjY9x4kYQ=
-X-Received: by 2002:a0c:ba2c:: with SMTP id w44mr53689627qvf.62.1563881379713;
- Tue, 23 Jul 2019 04:29:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=syzUAD4b6NAbqJrzy/Iszf3QeWwTBpf8xpKc8pmUJvM=;
+        b=bI02K5gdsF0B8HMTC4Y0VxRVZBSwncUCUDgL+XiN5FaIa6b5cQxIqB0Q2rKQE6tvMa
+         jFR+4s0bQqf0wj2fC6oalcLhDIl+wm++Bg1jgP35w61nSq5XPuj7uO+UpFszPXPohsKY
+         2shTxuN0oZn5mq2pqNLCMXY6bpR+qYR1BbLv49/pvrm8Cq3qF9pQvgWPjuss7R03H8Br
+         95wjj8ql6c2wgG9IjpbnYxCVoMFB7j5rN1TanjUjNLqjBlxFpM2xHkGAPPwQ+PAuCf3S
+         oXqds3d2rfc2Daeg/udlBHSUgtb1VRQwhW0v101T4O5lL1ZrmG2s/1trK8kyDzyIByOl
+         GMKA==
+X-Gm-Message-State: APjAAAVC/9Vkb9JLQZ1iadC5XmLhOX763+ba4WQYpY3vfDrmJtPz/C/H
+        BkYRZWVYqPLtRWikKGsUMsE=
+X-Google-Smtp-Source: APXvYqwH1P575+7W1z01EgvvIi1DBxfc38jLsMjUnO/4ANwxA6kLic4BllPlqHVSUHTl/k+cyyVwbw==
+X-Received: by 2002:a63:f959:: with SMTP id q25mr75867179pgk.357.1563882580349;
+        Tue, 23 Jul 2019 04:49:40 -0700 (PDT)
+Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([89.31.126.54])
+        by smtp.gmail.com with ESMTPSA id k186sm22464204pga.68.2019.07.23.04.49.37
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 23 Jul 2019 04:49:39 -0700 (PDT)
+From:   Chuhong Yuan <hslester96@gmail.com>
+Cc:     Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>
+Subject: [PATCH] IB/usnic: Use dev_get_drvdata
+Date:   Tue, 23 Jul 2019 19:49:28 +0800
+Message-Id: <20190723114928.18424-1-hslester96@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20190708125554.3863901-1-arnd@arndb.de> <543fa599-8ea1-dbc8-d94a-f90af2069edd@mellanox.com>
- <535ebf16-c523-0799-3ffe-6cfbeee3ac57@mellanox.com>
-In-Reply-To: <535ebf16-c523-0799-3ffe-6cfbeee3ac57@mellanox.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 23 Jul 2019 13:29:23 +0200
-Message-ID: <CAK8P3a2z=h02_1ybRzL1DpW26-Qn-v22=Fdf_Z_C02fYg9OFgQ@mail.gmail.com>
-Subject: Re: [PATCH] [net-next] net/mlx5e: xsk: dynamically allocate mlx5e_channel_param
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 1:21 PM Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
-> On 2019-07-08 18:16, Maxim Mikityanskiy wrote:
-> > On 2019-07-08 15:55, Arnd Bergmann wrote:
-> >> -    mlx5e_build_xsk_cparam(priv, params, xsk, &cparam);
-> >> +    cparam = kzalloc(sizeof(*cparam), GFP_KERNEL);
-> >
-> > Similar code in mlx5e_open_channels (en_main.c) uses kvzalloc. Although
-> > the struct is currently smaller than a page anyway, and there should be
-> > no difference in behavior now, I suggest using the same alloc function
-> > to keep code uniform.
-> >
-> >>      /* Create a dedicated SQ for posting NOPs whenever we need an IRQ to be
-> >>       * triggered and NAPI to be called on the correct CPU.
-> >>       */
-> >> -    err = mlx5e_open_icosq(c, params, &cparam.icosq, &c->xskicosq);
-> >> +    err = mlx5e_open_icosq(c, params, &cparam->icosq, &c->xskicosq);
-> >>      if (unlikely(err))
-> >>              goto err_close_icocq;
-> >>
-> >
-> > Here is kfree missing. It's a memory leak in the good path.
->
-> Arnd, I'm going to take over your patch and respin it, addressing my own
-> comments, because it's been quite a while, and we want to have this fix.
->
-> Thanks for spotting it.
+Instead of using to_pci_dev + pci_get_drvdata,
+use dev_get_drvdata to make code simpler.
 
-Thanks for taking care of it now. I was planning to do a respin, but
-the reply got lost in the depth of my inbox so I forgot about it.
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+---
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-      Arnd
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+index eeb07b245ef9..a354c7c86547 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+@@ -194,7 +194,7 @@ find_free_vf_and_create_qp_grp(struct usnic_ib_dev *us_ibdev,
+ 			return ERR_CAST(dev_list);
+ 		for (i = 0; dev_list[i]; i++) {
+ 			dev = dev_list[i];
+-			vf = pci_get_drvdata(to_pci_dev(dev));
++			vf = dev_get_drvdata(dev);
+ 			spin_lock(&vf->lock);
+ 			vnic = vf->vnic;
+ 			if (!usnic_vnic_check_room(vnic, res_spec)) {
+-- 
+2.20.1
+
