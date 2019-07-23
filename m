@@ -2,36 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 097F271243
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 09:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BB271259
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 09:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729059AbfGWHES (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 03:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44716 "EHLO mail.kernel.org"
+        id S2388198AbfGWHNC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 03:13:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727819AbfGWHER (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Jul 2019 03:04:17 -0400
+        id S1732685AbfGWHNC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 23 Jul 2019 03:13:02 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C17D206B8;
-        Tue, 23 Jul 2019 07:04:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E4B72238C;
+        Tue, 23 Jul 2019 07:13:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563865457;
-        bh=GHDOoCtT2aT4xK0hvjKuQV1nFdVqXqgb/ilhneUh8ck=;
+        s=default; t=1563865981;
+        bh=/AeZYX+JUna3ZCh05UfteU3NUn8L0WgCT1Lwr+ICNrQ=;
         h=From:To:Cc:Subject:Date:From;
-        b=yx+5EH6pYLTIaGGjw/qSe4qqG3kcmUOyn1SCWfQ2iWmyQ+GlLyiwDKEQMvcNZf3ls
-         XisqsWKBnelNuyI5+fXt3yMkmmgIVySXNkP0TnNZGVRiWUk1TNp5j6kcAAkn4rrHKN
-         bqmPgOkpHkpYwJApKKnkBNP6BoAp7Df5EPrBnFik=
+        b=z+xNKoUVIlNdv2D5IaEK37LRzlxrQJVSXHIYklLzrmaF9+DDfFgmPxArZj/7K38Kk
+         KJ03eP5esud2Pofl7zjPvdfk2bujnq+8IX4sDhJDOTpdc2dLsrGqnSIJGZ+a6a3r1P
+         XA1qveE1yTjyrjAL19691BFGb7c79VhTgBUBnzws=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Max Gurtovoy <maxg@mellanox.com>,
+Cc:     Edward Srouji <edwards@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>,
         Leon Romanovsky <leonro@mellanox.com>
-Subject: [PATCH rdma-next] IB/mlx5: Add CREATE_PSV/DESTROY_PSV for devx interface
-Date:   Tue, 23 Jul 2019 10:04:12 +0300
-Message-Id: <20190723070412.6385-1-leon@kernel.org>
+Subject: [PATCH mlx5-next] net/mlx5: Fix modify_cq_in alignment
+Date:   Tue, 23 Jul 2019 10:12:55 +0300
+Message-Id: <20190723071255.6588-1-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,51 +43,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Max Gurtovoy <maxg@mellanox.com>
+From: Edward Srouji <edwards@mellanox.com>
 
-Limit the number of PSV's created through devx to 1, to create a symmetry
-between create/destroy cmds. In the kernel, one can create up to 4 PSV's
-using CREATE_PSV cmd but the destruction is one by one. Add a protection
-for this a-symmetric definition for devx.
+Fix modify_cq_in alignment to match the device specification.
+After this fix the 'cq_umem_valid' field will be in the right offset.
 
-Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+Cc: <stable@vger.kernel.org> # 4.19
+Fixes: bd37197554eb ("net/mlx5: Update mlx5_ifc with DEVX UID bits")
+Signed-off-by: Edward Srouji <edwards@mellanox.com>
+Reviewed-by: Yishai Hadas <yishaih@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/devx.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ include/linux/mlx5/mlx5_ifc.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index ec4370f99381..a527cf7f01ac 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -776,6 +776,14 @@ static bool devx_is_obj_create_cmd(const void *in, u16 *opcode)
- 			return true;
- 		return false;
- 	}
-+	case MLX5_CMD_OP_CREATE_PSV:
-+	{
-+		u8 num_psv = MLX5_GET(create_psv_in, in, num_psv);
+diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+index b3d5752657d9..ec571fd7fcf8 100644
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -5975,10 +5975,12 @@ struct mlx5_ifc_modify_cq_in_bits {
+
+ 	struct mlx5_ifc_cqc_bits cq_context;
+
+-	u8         reserved_at_280[0x40];
++	u8         reserved_at_280[0x60];
+
+ 	u8         cq_umem_valid[0x1];
+-	u8         reserved_at_2c1[0x5bf];
++	u8         reserved_at_2e1[0x1f];
 +
-+		if (num_psv == 1)
-+			return true;
-+		return false;
-+	}
- 	default:
- 		return false;
- 	}
-@@ -1215,6 +1223,12 @@ static void devx_obj_build_destroy_cmd(void *in, void *out, void *din,
- 	case MLX5_CMD_OP_ALLOC_XRCD:
- 		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DEALLOC_XRCD);
- 		break;
-+	case MLX5_CMD_OP_CREATE_PSV:
-+		MLX5_SET(general_obj_in_cmd_hdr, din, opcode,
-+			 MLX5_CMD_OP_DESTROY_PSV);
-+		MLX5_SET(destroy_psv_in, din, psvn,
-+			 MLX5_GET(create_psv_out, out, psv0_index));
-+		break;
- 	default:
- 		/* The entry must match to one of the devx_is_obj_create_cmd */
- 		WARN_ON(true);
++	u8         reserved_at_300[0x580];
+
+ 	u8         pas[0][0x40];
+ };
 --
 2.20.1
 
