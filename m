@@ -2,266 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAD371FC5
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4034471FDD
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391638AbfGWTBp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 15:01:45 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:33115 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726715AbfGWTBo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:01:44 -0400
-Received: by mail-qk1-f195.google.com with SMTP id r6so31948284qkc.0
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 12:01:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kwBVlFVHmUAlk0RjbeDedOf4oiOvdg+h11F4wryhtzQ=;
-        b=Hz3zJjpw5A8MWnCQqxzJrHCQt7ezRIIVtx+J6mVnB4BN6WH42EZOf+P3QsO2Nzp+Fo
-         0lA2shCxlEsE3CqCed2XVXh+4idA3G0o0Rit2fW2Ta39qVPXYvWH13cNgzCtfRXazW9f
-         30AepX/HuIxnIGqCThZ2tw6+dxtio3Y+sfPLSBygEH2EbkR9b6hK54E0kGzMyCkuXL+K
-         R4RaxBPz+sv0+dv7l7AiNFj9K2nRciTh9/wKiRZVTeAOn1/wslfqtEJnyrjkXRITlBPR
-         KwA6W9sLCecXFIy1lUidK6hzFzPgq0GaZt/x6sE3WFi//5OlAJXc6PC2Y8zs1jQrpVMP
-         6YAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kwBVlFVHmUAlk0RjbeDedOf4oiOvdg+h11F4wryhtzQ=;
-        b=b5tygkxNDv3eHpoS1wsJ5kYa+B2W1Pqr/7qEksr4Pe9T4Fj17YiuZuSsJfUjrrrmUJ
-         3bIXNgEadQugqHqxdPhS/ASk468ckUALGUasdywVTo46/0XEFLaPiUmeQYM/SYAkBGAX
-         9rJOLhp2i1sbLtqlpILL/tVvry24qxvPnpSEeLJ0MT+nwYTVQVOVKmeGvHm1U0ZzdDJN
-         Y5rXKthMlexhnPaz1pH2de+dQCwwWJVPg2nobyuvrWHdLy+NsNfo9AVEWg8zce/GCZBV
-         kwaxH09HcIx0r+xx+IGLbx/glwcnHA2baoZvufUskhtlk+zouK09mFqUyKHTb+NDHgrm
-         4vGQ==
-X-Gm-Message-State: APjAAAU+WVWqb0o1TXQN0jOwJvkZAyeneaA+k9ZnusTLQvwINGVGnYyY
-        bAfgZKCi8vGpF844lQF36+04fOwe4D+TLg==
-X-Google-Smtp-Source: APXvYqyQUGQI6+/VcXFsZTy9X4Fpp28dA3PqSpDSuPxiitS43dto656hlDBron1vVTVLW+NzCgExRg==
-X-Received: by 2002:ae9:eb87:: with SMTP id b129mr49031437qkg.453.1563908503207;
-        Tue, 23 Jul 2019 12:01:43 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id f14sm17998384qto.11.2019.07.23.12.01.41
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Jul 2019 12:01:41 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hq02e-00045J-TO; Tue, 23 Jul 2019 16:01:40 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 16/19] build/azp: Add centos6 to the test distributions
-Date:   Tue, 23 Jul 2019 16:01:34 -0300
-Message-Id: <20190723190137.15370-17-jgg@ziepe.ca>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190723190137.15370-1-jgg@ziepe.ca>
-References: <20190723190137.15370-1-jgg@ziepe.ca>
+        id S1732186AbfGWTEY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 15:04:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729511AbfGWTEX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 23 Jul 2019 15:04:23 -0400
+Received: from localhost (unknown [37.142.3.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34A90218F0;
+        Tue, 23 Jul 2019 19:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1563908662;
+        bh=qBdiWSKWIjCsHen6DnbxUXpe6f7Z76IfupBI004rDYA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C556rVfU9yA8awMISWDNFXvi69SukXOZ/51Z7wszIOrAmvkAKrA6vrLUlfGyp809s
+         noXnBRk//Ep/8rZoqEB2ATyLRt3aaVNL75nn/VSwqcDovIuiR9SxsQLOmbEseMqEXO
+         3ajYdU82gtgjVyI1emhn/2TfPOUBI7IS1RfkUgUw=
+Date:   Tue, 23 Jul 2019 22:04:14 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     David Miller <davem@davemloft.net>
+Cc:     dledford@redhat.com, jgg@mellanox.com, edwards@mellanox.com,
+        linux-rdma@vger.kernel.org, yishaih@mellanox.com,
+        saeedm@mellanox.com, netdev@vger.kernel.org
+Subject: Re: [PATCH mlx5-next] net/mlx5: Fix modify_cq_in alignment
+Message-ID: <20190723190414.GU5125@mtr-leonro.mtl.com>
+References: <20190723071255.6588-1-leon@kernel.org>
+ <20190723.112850.610952032088764951.davem@davemloft.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190723.112850.610952032088764951.davem@davemloft.net>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+On Tue, Jul 23, 2019 at 11:28:50AM -0700, David Miller wrote:
+> From: Leon Romanovsky <leon@kernel.org>
+> Date: Tue, 23 Jul 2019 10:12:55 +0300
+>
+> > From: Edward Srouji <edwards@mellanox.com>
+> >
+> > Fix modify_cq_in alignment to match the device specification.
+> > After this fix the 'cq_umem_valid' field will be in the right offset.
+> >
+> > Cc: <stable@vger.kernel.org> # 4.19
+> > Fixes: bd37197554eb ("net/mlx5: Update mlx5_ifc with DEVX UID bits")
+> > Signed-off-by: Edward Srouji <edwards@mellanox.com>
+> > Reviewed-by: Yishai Hadas <yishaih@mellanox.com>
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>
+> Very confusing submission on many levels.
+>
+> Coming from a Mellanox developer using a kernel.org email address.
 
-We keep having small defects related to these old glibc's, run a build
-here too. The spec file is based on the old pre-packaging rdma-core spec
-file.
+It works for us and was proven internally as the best way to have
+setup which always works.
 
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
----
- buildlib/azure-pipelines.yml |  11 +++-
- buildlib/cbuild              |  15 +++--
- buildlib/centos6.spec        | 109 +++++++++++++++++++++++++++++++++++
- 3 files changed, 127 insertions(+), 8 deletions(-)
- create mode 100644 buildlib/centos6.spec
+>
+> Targetting the mlx5-next tree, yet CC:'ing stable.
 
-diff --git a/buildlib/azure-pipelines.yml b/buildlib/azure-pipelines.yml
-index e062908e23756b..6a69e940a5b19e 100644
---- a/buildlib/azure-pipelines.yml
-+++ b/buildlib/azure-pipelines.yml
-@@ -10,6 +10,9 @@ resources:
-     - container: azp
-       image: ucfconsort.azurecr.io/rdma-core/azure_pipelines:25.0
-       endpoint: ucfconsort_registry
-+    - container: centos6
-+      image: ucfconsort.azurecr.io/rdma-core/centos6:25.0
-+      endpoint: ucfconsort_registry
-     - container: centos7
-       image: ucfconsort.azurecr.io/rdma-core/centos7:25.0
-       endpoint: ucfconsort_registry
-@@ -150,6 +153,10 @@ stages:
-           vmImage: 'Ubuntu-16.04'
-         strategy:
-           matrix:
-+            centos6:
-+              CONTAINER: centos6
-+              SPEC: buildlib/centos6.spec
-+              RPMBUILD_OPTS:
-             centos7:
-               CONTAINER: centos7
-               SPEC: redhat/rdma-core.spec
-@@ -175,7 +182,7 @@ stages:
-               set -e
-               mkdir SOURCES tmp
-               tar --wildcards -xzf rdma-core*.tar.gz  */$(SPEC) --strip-components=2
--              RPM_SRC=$(rpmspec -P rdma-core.spec | awk '/^Source:/{split($0,a,"[ \t]+");print(a[2])}')
-+              RPM_SRC=$((rpmspec -P *.spec || grep ^Source: *.spec) | awk '/^Source:/{split($0,a,"[ \t]+");print(a[2])}')
-               (cd SOURCES && ln -sf ../rdma-core*.tar.gz "$RPM_SRC")
--              rpmbuild --define '_tmppath '$(pwd)'/tmp' --define '_topdir '$(pwd) -bb rdma-core.spec $(RPMBUILD_OPTS)
-+              rpmbuild --define '_tmppath '$(pwd)'/tmp' --define '_topdir '$(pwd) -bb *.spec $(RPMBUILD_OPTS)
-             displayName: Perform Package Build
-diff --git a/buildlib/cbuild b/buildlib/cbuild
-index cc9c7e2999a9d2..e7065e3e7d8d2d 100755
---- a/buildlib/cbuild
-+++ b/buildlib/cbuild
-@@ -131,9 +131,10 @@ class centos6(YumEnvironment):
-     name = "centos6";
-     use_make = True;
-     pandoc = False;
--    is_rpm = False;
-     build_pyverbs = False;
-+    specfile = "buildlib/centos6.spec";
-     python_cmd = "python";
-+    to_azp = True;
- 
- class centos7(YumEnvironment):
-     docker_parent = "centos:7";
-@@ -713,11 +714,13 @@ with open("/etc/group","a") as F:
- os.setgid({gid:d});
- os.setuid({uid:d});
- 
--# Get RPM to tell us the expected tar filename.
--for ln in subprocess.check_output(["rpmspec","-P",{tspec_file!r}]).splitlines():
--   if ln.startswith(b"Source:"):
--      tarfn = ln.strip().partition(b' ')[2].strip();
--os.symlink({tarfn!r},os.path.join(b"SOURCES",tarfn));
-+# For Centos6
-+if "check_output" in dir(subprocess):
-+    # Get RPM to tell us the expected tar filename.
-+    for ln in subprocess.check_output(["rpmspec","-P",{tspec_file!r}]).splitlines():
-+       if ln.startswith(b"Source:"):
-+          tarfn = ln.strip().partition(b' ')[2].strip();
-+    os.symlink({tarfn!r},os.path.join(b"SOURCES",tarfn));
- """.format(passwd=":".join(str(I) for I in pwd.getpwuid(os.getuid())),
-            group=":".join(str(I) for I in grp.getgrgid(os.getgid())),
-            uid=os.getuid(),
-diff --git a/buildlib/centos6.spec b/buildlib/centos6.spec
-new file mode 100644
-index 00000000000000..943b5e65c7e1e5
---- /dev/null
-+++ b/buildlib/centos6.spec
-@@ -0,0 +1,109 @@
-+Name: rdma-core
-+Version: 25.0
-+Release: 1%{?dist}
-+Summary: RDMA core userspace libraries and daemons
-+
-+# Almost everything is licensed under the OFA dual GPLv2, 2 Clause BSD license
-+#  providers/ipathverbs/ Dual licensed using a BSD license with an extra patent clause
-+#  providers/rxe/ Incorporates code from ipathverbs and contains the patent clause
-+#  providers/hfi1verbs Uses the 3 Clause BSD license
-+License: (GPLv2 or BSD) and (GPLv2 or PathScale-BSD)
-+Url: https://github.com/linux-rdma/rdma-core
-+Source: rdma-core.tgz
-+
-+BuildRequires: binutils
-+BuildRequires: cmake >= 2.8.11
-+BuildRequires: gcc
-+BuildRequires: libudev-devel
-+BuildRequires: pkgconfig
-+BuildRequires: pkgconfig(libnl-3.0)
-+BuildRequires: pkgconfig(libnl-route-3.0)
-+BuildRequires: valgrind-devel
-+BuildRequires: python
-+
-+%define CMAKE_FLAGS %{nil}
-+BuildRequires: make
-+
-+%description
-+Temporary packaging
-+
-+This is a simple example without the split sub packages to get things started.
-+
-+%prep
-+%setup
-+
-+%build
-+
-+%define my_unitdir /tmp/
-+
-+# New RPM defines _rundir, usually as /run
-+%if 0%{?_rundir:1}
-+%else
-+%define _rundir /var/run
-+%endif
-+
-+# New RPM defines _udevrulesdir, usually as /usr/lib/udev/rules.d
-+%if 0%{?_udevrulesdir:1}
-+%else
-+# This is the old path (eg for C6)
-+%define _udevrulesdir /lib/udev/rules.d
-+%endif
-+
-+# Pass all of the rpm paths directly to GNUInstallDirs and our other defines.
-+%cmake %{CMAKE_FLAGS} \
-+         -DCMAKE_BUILD_TYPE=Release \
-+         -DCMAKE_INSTALL_BINDIR:PATH=%{_bindir} \
-+         -DCMAKE_INSTALL_SBINDIR:PATH=%{_sbindir} \
-+         -DCMAKE_INSTALL_LIBDIR:PATH=%{_libdir} \
-+         -DCMAKE_INSTALL_LIBEXECDIR:PATH=%{_libexecdir} \
-+         -DCMAKE_INSTALL_LOCALSTATEDIR:PATH=%{_localstatedir} \
-+         -DCMAKE_INSTALL_SHAREDSTATEDIR:PATH=%{_sharedstatedir} \
-+         -DCMAKE_INSTALL_INCLUDEDIR:PATH=%{_includedir} \
-+         -DCMAKE_INSTALL_INFODIR:PATH=%{_infodir} \
-+         -DCMAKE_INSTALL_MANDIR:PATH=%{_mandir} \
-+         -DCMAKE_INSTALL_SYSCONFDIR:PATH=%{_sysconfdir} \
-+	 -DCMAKE_INSTALL_SYSTEMD_SERVICEDIR:PATH=%{my_unitdir} \
-+	 -DCMAKE_INSTALL_INITDDIR:PATH=%{_initrddir} \
-+	 -DCMAKE_INSTALL_RUNDIR:PATH=%{_rundir} \
-+	 -DCMAKE_INSTALL_DOCDIR:PATH=%{_docdir}/%{name}-%{version} \
-+	 -DCMAKE_INSTALL_UDEV_RULESDIR:PATH=%{_udevrulesdir} \
-+         -DCMAKE_INSTALL_PERLDIR:PATH=%{perl_vendorlib}
-+make -s %{?_smp_mflags}
-+
-+%install
-+DESTDIR=%{buildroot} make install
-+
-+%if 0%{?_unitdir:1}
-+rm -rf %{buildroot}/%{_initrddir}/
-+%else
-+rm -rf %{buildroot}/%{my_unitdir}/
-+%endif
-+
-+%files
-+%doc %{_mandir}/man*/*
-+%{_bindir}/*
-+%{_includedir}/*
-+%{_libdir}/lib*.so*
-+%{_libdir}/libibverbs/*
-+%{_libdir}/ibacm/*
-+%{_libdir}/rsocket/*
-+%{_libdir}/pkgconfig/*.pc
-+%{_sbindir}/*
-+%{_libexecdir}/*
-+%{_udevrulesdir}/*
-+%{_udevrulesdir}/../rdma_rename
-+%doc %{_docdir}/%{name}-%{version}/*
-+%if 0%{?_unitdir:1}
-+%{_unitdir}/*
-+%else
-+%config %{_initrddir}/*
-+%endif
-+%config %{_sysconfdir}/iwpmd.conf
-+%config %{_sysconfdir}/srp_daemon.conf
-+%config %{_sysconfdir}/libibverbs.d/*
-+%config %{_sysconfdir}/rdma/modules/*
-+%{perl_vendorlib}/IBswcountlimits.pm
-+%config(noreplace) %{_sysconfdir}/udev/rules.d/*
-+%config(noreplace) %{_sysconfdir}/infiniband-diags/error_thresholds
-+%config(noreplace) %{_sysconfdir}/infiniband-diags/ibdiag.conf
-+%{_sysconfdir}/modprobe.d/*
--- 
-2.22.0
+This patch was found by RDMA team, needed by RDMA but changes are located
+in code accessible by mlx5_core part. This is why mlx5-next.
 
+>
+> A networking change, for which stable submissions are handled by me by
+> hand and not via CC:'ing stable.
+
+The intention was to have this patch in shared mlx5 branch, which is
+picked by RDMA too. This "Cc: stable@..." together with merge through
+RDMA will ensure that such patch will be part of stable automatically.
+
+I can remove "Cc: ..." line if you think that it is inappropriate to
+have such line in patch in mlx5-next.
+
+Thanks
