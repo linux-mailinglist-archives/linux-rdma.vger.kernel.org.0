@@ -2,73 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E3071C54
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 17:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060A171CC0
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 18:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730926AbfGWP6B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 11:58:01 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:35113 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727398AbfGWP6B (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 11:58:01 -0400
-Received: by mail-pf1-f193.google.com with SMTP id u14so19379393pfn.2;
-        Tue, 23 Jul 2019 08:58:01 -0700 (PDT)
+        id S1730984AbfGWQTz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 12:19:55 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:43260 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728180AbfGWQTz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 12:19:55 -0400
+Received: by mail-io1-f68.google.com with SMTP id k20so83050085ios.10
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 09:19:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KUWPAynNUOSPRo6XFgibVfZiG/NBm56uoCBvbOY3YfY=;
+        b=JkbWvc/L1jVe2xvK16FWiec+u9Wkn8bLEHQ2Otwk2wo1fNf36vdNCarOj/+5+9ysB7
+         hGoVJ50RzrPUQhM8qtVkV4bG9/Nd4DxPKWQ/IbhdfoxeWYoLpk5L4af4Tbtwj9ohVnmD
+         DsRzgjjoRFG7pAJsFp53eVnfm889mNyAtvzp4TdAmo79hACuf0DY1h1YvaJZs4fp1GBn
+         K55GH9Y5p1iFw+h2gyNS3Q/8MPrzQV9yW8qdTsQKhg7hxLcsFJPdfd+4vtu/xUQIUFyG
+         4QnSyRhM4W2erjcNAhgZyLlpCANYFNdeyB1869FdH2o+ByDy8DxuOdC2ypiXseqMvsaH
+         D0Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tJkZzhNAgl02Ceuay5hJdySVP2Wewpu1vXVlEvr2CZo=;
-        b=GyQfNWJjbfZoPciLp6OspCsyAWIR9gBK6nLqU9lixzQKSXHAICkFgdI9yeTD3pXEdB
-         MWbaOP9voRxQKprb+s3vFrT2RIZ4HxDavdpr36abtcHXmILHey57Wx5YhSj1nZjxjV2C
-         CWPPwzK7OqaiElyEXYVJ9UhHPSPgAKibsrJabSXsrivME3GzTL2sJ3/KLaKvUHuRcKRC
-         pGw/r1ezBK92sodSabak2mPW2Aw8uJ90GwBGXPdaoVwvPLCZXp4EwxfIN4JzIRKdLZDm
-         8WogXq+yHMUMrFor1KL6RToUUTO+mz95dB16ipBPu9VBmx6uqSHFzVpbrfm15RCdv61D
-         wAYQ==
-X-Gm-Message-State: APjAAAVj2KCd94CI0y689O4uHQCYbA04M0xtbEoFeYG40k1WhmYbXq9i
-        QZPCBrGEoel1eXWcze0UxQBixXh+9vo=
-X-Google-Smtp-Source: APXvYqz7i0MQZONSk4vINYCfL9rtvoQ80o+1riCzW1MFUejFNTv8omh44XOg9j/CF0Q6YCWX0VewCA==
-X-Received: by 2002:a17:90a:d80b:: with SMTP id a11mr79117802pjv.53.1563897480328;
-        Tue, 23 Jul 2019 08:58:00 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id f15sm50666084pje.17.2019.07.23.08.57.58
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Jul 2019 08:57:59 -0700 (PDT)
-Subject: Re: [PATCH net 2/2] lib/dim: Fix -Wunused-const-variable warnings
-To:     Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Tal Gilboa <talgi@mellanox.com>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-References: <20190723072248.6844-1-leon@kernel.org>
- <20190723072248.6844-3-leon@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <86297343-e539-5d34-239a-4c94769f2379@acm.org>
-Date:   Tue, 23 Jul 2019 08:57:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KUWPAynNUOSPRo6XFgibVfZiG/NBm56uoCBvbOY3YfY=;
+        b=sUK+vpPe7Ol9uHfu4QlRlxRzVxWzFvPq/7ehh49MkfhPLwvZ+rws+3awraHe0liaTs
+         LXPOgr0p/PqIFDDgJ30TLN1a77FvF4U3atwKT27QeWh9DJB0loKmrDl+H291BoVyR3rl
+         kWsg18+rixS3JR8c01GlbinN6HcACNEA58Itm4+eedlqzt8XhJkVVQl16aB/IHHJnw7m
+         j6PKGEvRrTX/OLWhMJygSrQXsqrlsLSrNlJs+3ZPOKxlDWI9aRR46UilJbQ1rNRUMkwU
+         ZJGODKun4P4Qo6itJaCoqgbD1Vf1W+OjClpm+b+nhpgsatnDHHh79v6qD4BYMo6gXxIq
+         /aJA==
+X-Gm-Message-State: APjAAAXibcC77iulDpUmUGSCR/uwBCC289LglTaj43v5zRZaoo9B4wfV
+        bumDBaGqsxSinyRcHXZtW2Ks5Z+Kp+ZD9ZnucWnBBw==
+X-Google-Smtp-Source: APXvYqztMLs7k36jGVQTGcnvuK+zFovr4er0TeB/3FrZTzVj2pa0EprwgjDyKnzaW+HqFtXQxcESSC8IEb5DWxlnLvQ=
+X-Received: by 2002:a5e:de0d:: with SMTP id e13mr47762250iok.144.1563898793984;
+ Tue, 23 Jul 2019 09:19:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190723072248.6844-3-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <000000000000ad1dfe058e5b89ab@google.com>
+In-Reply-To: <000000000000ad1dfe058e5b89ab@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 23 Jul 2019 18:19:42 +0200
+Message-ID: <CACT4Y+a7eGJpsrenA-0RbWmwktDj5+XV4xaTeU+fiL5KXNbrqg@mail.gmail.com>
+Subject: Re: memory leak in rds_send_probe
+To:     syzbot <syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/23/19 12:22 AM, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> DIM causes to the following warnings during kernel compilation
-> which indicates that tx_profile and rx_profile are supposed to
-> be declared in *.c and not in *.h files.
+On Tue, Jul 23, 2019 at 6:18 PM syzbot
+<syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following crash on:
+>
+> HEAD commit:    c6dd78fc Merge branch 'x86-urgent-for-linus' of git://git...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14be98c8600000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8de7d700ea5ac607
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5134cdf021c4ed5aaa5f
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145df0c8600000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170001f4600000
 
-Thanks Leon for this fix.
++net/rds/message.c maintainers
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com
+>
+> BUG: memory leak
+> unreferenced object 0xffff8881234e9c00 (size 512):
+>    comm "kworker/u4:2", pid 286, jiffies 4294948041 (age 7.750s)
+>    hex dump (first 32 bytes):
+>      01 00 00 00 00 00 00 00 08 9c 4e 23 81 88 ff ff  ..........N#....
+>      08 9c 4e 23 81 88 ff ff 18 9c 4e 23 81 88 ff ff  ..N#......N#....
+>    backtrace:
+>      [<0000000032e378fa>] kmemleak_alloc_recursive
+> /./include/linux/kmemleak.h:43 [inline]
+>      [<0000000032e378fa>] slab_post_alloc_hook /mm/slab.h:522 [inline]
+>      [<0000000032e378fa>] slab_alloc /mm/slab.c:3319 [inline]
+>      [<0000000032e378fa>] __do_kmalloc /mm/slab.c:3653 [inline]
+>      [<0000000032e378fa>] __kmalloc+0x16d/0x2d0 /mm/slab.c:3664
+>      [<0000000015bc9536>] kmalloc /./include/linux/slab.h:557 [inline]
+>      [<0000000015bc9536>] kzalloc /./include/linux/slab.h:748 [inline]
+>      [<0000000015bc9536>] rds_message_alloc+0x3e/0xc0 /net/rds/message.c:291
+>      [<00000000a806d18d>] rds_send_probe.constprop.0+0x42/0x2f0
+> /net/rds/send.c:1419
+>      [<00000000794a00cc>] rds_send_pong+0x1e/0x23 /net/rds/send.c:1482
+>      [<00000000b2a248d0>] rds_recv_incoming+0x27e/0x460 /net/rds/recv.c:343
+>      [<00000000ea1503db>] rds_loop_xmit+0x86/0x100 /net/rds/loop.c:96
+>      [<00000000a9857f5a>] rds_send_xmit+0x524/0x9a0 /net/rds/send.c:355
+>      [<00000000557b0101>] rds_send_worker+0x3c/0xd0 /net/rds/threads.c:200
+>      [<000000004ba94868>] process_one_work+0x23f/0x490
+> /kernel/workqueue.c:2269
+>      [<00000000e793f811>] worker_thread+0x195/0x580 /kernel/workqueue.c:2415
+>      [<000000003ee8c1a1>] kthread+0x13e/0x160 /kernel/kthread.c:255
+>      [<000000004cd53c81>] ret_from_fork+0x1f/0x30
+> /arch/x86/entry/entry_64.S:352
+>
+>
+>
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> syzbot can test patches for this bug, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000ad1dfe058e5b89ab%40google.com.
