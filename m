@@ -2,125 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F0E70E1A
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 02:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3085070EA7
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 03:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbfGWAZh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jul 2019 20:25:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:52276 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727627AbfGWAZh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 22 Jul 2019 20:25:37 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Jul 2019 17:25:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,297,1559545200"; 
-   d="scan'208";a="180568074"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga002.jf.intel.com with ESMTP; 22 Jul 2019 17:25:34 -0700
-Date:   Mon, 22 Jul 2019 17:25:34 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     john.hubbard@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Boaz Harrosh <boaz@plexistor.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH 3/3] net/xdp: convert put_page() to put_user_page*()
-Message-ID: <20190723002534.GA10284@iweiny-DESK2.sc.intel.com>
-References: <20190722223415.13269-1-jhubbard@nvidia.com>
- <20190722223415.13269-4-jhubbard@nvidia.com>
+        id S1728748AbfGWBaO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jul 2019 21:30:14 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:49726 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728108AbfGWBaO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 22 Jul 2019 21:30:14 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id D71B5FE4D2F11A6C9979;
+        Tue, 23 Jul 2019 09:30:10 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Tue, 23 Jul 2019
+ 09:30:10 +0800
+Subject: =?UTF-8?Q?Re:_=e3=80=90Question_for_srpt_in_kernel-4.14=e3=80=91?=
+To:     Bart Van Assche <bvanassche@acm.org>, <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>
+CC:     linux-rdma <linux-rdma@vger.kernel.org>
+References: <16008407-2ffd-0bbb-717e-7e874a3a5ee0@huawei.com>
+ <d4b60eb6-9e61-987e-d7ba-e3806faceedd@acm.org>
+From:   oulijun <oulijun@huawei.com>
+Message-ID: <d2531a84-b0c2-3c39-141a-166a4a8dd8be@huawei.com>
+Date:   Tue, 23 Jul 2019 09:30:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <d4b60eb6-9e61-987e-d7ba-e3806faceedd@acm.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190722223415.13269-4-jhubbard@nvidia.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 22, 2019 at 03:34:15PM -0700, john.hubbard@gmail.com wrote:
-> From: John Hubbard <jhubbard@nvidia.com>
-> 
-> For pages that were retained via get_user_pages*(), release those pages
-> via the new put_user_page*() routines, instead of via put_page() or
-> release_pages().
-> 
-> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-> ("mm: introduce put_user_page*(), placeholder versions").
-> 
-> Cc: Björn Töpel <bjorn.topel@intel.com>
-> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  net/xdp/xdp_umem.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
-> 
-> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> index 83de74ca729a..0325a17915de 100644
-> --- a/net/xdp/xdp_umem.c
-> +++ b/net/xdp/xdp_umem.c
-> @@ -166,14 +166,7 @@ void xdp_umem_clear_dev(struct xdp_umem *umem)
->  
->  static void xdp_umem_unpin_pages(struct xdp_umem *umem)
->  {
-> -	unsigned int i;
-> -
-> -	for (i = 0; i < umem->npgs; i++) {
-> -		struct page *page = umem->pgs[i];
-> -
-> -		set_page_dirty_lock(page);
-> -		put_page(page);
-> -	}
-> +	put_user_pages_dirty_lock(umem->pgs, umem->npgs);
+åœ¨ 2019/7/23 2:07, Bart Van Assche å†™é“:
+> On 7/19/19 11:54 PM, oulijun wrote:
+>> I am targeting a problem about RoCE and SCSI over RDMA from srpt in kernel-4.14. When insmod srpt.ko and insmod hns-roce-hw-v2.ko, it will
+>> report a warning in srpt_add_one:
+>>    ib_srpt srpt_add_one(hns_0) failed.
+>
+> How about the following patch?
+>
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 1a039f16d315..e2a4a14763b8 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -3109,7 +3109,8 @@ static void srpt_add_one(struct ib_device *device)
+>      srpt_use_srq(sdev, sdev->port[0].port_attrib.use_srq);
+>
+>      if (!srpt_service_guid)
+> -        srpt_service_guid = be64_to_cpu(device->node_guid);
+> +        srpt_service_guid = be64_to_cpu(device->node_guid) &
+> +            ~IB_SERVICE_ID_AGN_MASK;
+>
+>      if (rdma_port_get_link_layer(device, 1) == IB_LINK_LAYER_INFINIBAND)
+>          sdev->cm_id = ib_create_cm_id(device, srpt_cm_handler, sdev);
+>
+No, I did not find this patch in the latest kernel-5.3 or others.
+>> In addition, I analyzed a patch in kernel-4.17(IB/srpt: Add RDMA/CM support). As a result, I can understand that the previous srpt is not supported by RDMA/CM?
+>> So, all RoCE will failed when use kernel-4.14 version to run srpt.ko?
+>
+> That's correct. The upstream SRP drivers only support RoCE in kernel versions
+> v4.17 and later.
+>
+> Thanks,
+>
+> Bart.
+>
+> .
+>
 
-What is the difference between this and
 
-__put_user_pages(umem->pgs, umem->npgs, PUP_FLAGS_DIRTY_LOCK);
-
-?
-
-I'm a bit concerned with adding another form of the same interface.  We should
-either have 1 call with flags (enum in this case) or multiple calls.  Given the
-previous discussion lets move in the direction of having the enum but don't
-introduce another caller of the "old" interface.
-
-So I think on this patch NAK from me.
-
-I also don't like having a __* call in the exported interface but there is a
-__get_user_pages_fast() call so I guess there is precedent.  :-/
-
-Ira
-
->  
->  	kfree(umem->pgs);
->  	umem->pgs = NULL;
-> -- 
-> 2.22.0
-> 
