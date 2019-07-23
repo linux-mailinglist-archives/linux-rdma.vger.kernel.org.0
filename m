@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C821671FF2
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C5871FEE
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729250AbfGWTLh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 15:11:37 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:44709 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728935AbfGWTLg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:11:36 -0400
-Received: by mail-qk1-f196.google.com with SMTP id d79so31900335qke.11
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 12:11:36 -0700 (PDT)
+        id S1728954AbfGWTLd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 15:11:33 -0400
+Received: from mail-qt1-f171.google.com ([209.85.160.171]:37979 "EHLO
+        mail-qt1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728441AbfGWTLd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:11:33 -0400
+Received: by mail-qt1-f171.google.com with SMTP id n11so42966688qtl.5
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 12:11:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aNRHRL2bXDOUvPbzZoPO7YQ0ir+RwwwIW65S09T0+nI=;
-        b=W1aBQ5F7/Z6ol6vwdgDv1hBSQdaEy8iMd241PksDdWlfPpoG5Tyi4w7T08hixiD7ws
-         maFMeYAp+J2VIb+yNwW+uJENe5LUDSypiPOmuKo/eKJFo5ynEGriiK3n4sJs3ehhJMoD
-         I3n/DtcHX7VJL9M5p49P4IDUiKj/CPRfOisjw6AV3v8EfyDsf6qRoOM2DgdFyvXG77cu
-         yUjJFvtjZXNMP6n2T1If0V6z+CyKfwe45XsGbkmpoNqAJ39NPEN9+nlO69UG4eaJB3jF
-         tfRSbCzA2mVoik/p2zkRr2cPmXLP7QSuDVYqveRbHesWygAMV3VjjhvoHu60AD/7YGts
-         uSTg==
+        bh=WeLeHSW5IWfJdV5bVLUG5dsIV+T04rqjlm+2/mArvng=;
+        b=MuPSKhOrMkztA/YpagsNpBrCe/s4lb+iTFuCrvx5UyM8Laq7Tp9c/o318Evt6+A7Ff
+         raOdkq72dQkY6/po3SW/ENa4lv5YvEuheOf1bir5DAwXCojcS+7Zk7OG+lfcEkgqJ6c/
+         f7w4JV9nqxQddCOk5UnxzJN0i3zUrfsJm19WkEfT0asOXJ3jrELCw+YxwQ9YiFruxO/W
+         WMPeOnYXcVCfBhzsWLGlpvBGTjoDufvtbZdMfbveRbae6XVCM6jx6xkF06zBoy0Agkvp
+         bVj7P6q6LZA5CEobxpDx45gaI3dDWHc86jjsvseNgSdk662U/4oIaKef+1nifin9r6Qr
+         2BGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aNRHRL2bXDOUvPbzZoPO7YQ0ir+RwwwIW65S09T0+nI=;
-        b=syH9MHFUpkrHtsWPdQSa5G7VEE4ExWPec+3+5Cyk+BLrOfNU1Nyg6hZZrrhrAv5YSP
-         YFIzEuuyw5YZ924+cDkTz6DpU8C8l1IM1E0cB8b2mOUhaQPIY9kqDMHnEpVjkqc4oQQg
-         A6AfiZRrFjVwFgB9c9+u82c8dN6KViebUgsXn550ZUixDm0/U3pNAWQtevCTOcLEGmxW
-         KOOjPsIGZF/V/TefuWH5VFA+EVMlUaP+vCEqksUOnmvjNZnEFaVRohSABORePjZyhfh1
-         3OMNc/g57x2NBlbUH8+fItC/OKpTlRgrv4xNQ1x5oUBdJbxLsaZEOvTeyINOnsgDOued
-         S+bQ==
-X-Gm-Message-State: APjAAAU9xTRDve1a7gGxnFzoHqHLPMgg5le2kJ/CGyo35PyuA0WdwCGM
-        JZRWh9fBaVqA8vVSxRN0bO436Bi59dCpig==
-X-Google-Smtp-Source: APXvYqzHdz6MQqTM+b+MQ9l7Bci4+619HIKtXCGvnYcXIDS35KIFVZIAdtZX9EU9Npg8Ln1SgR6AXQ==
-X-Received: by 2002:a37:4ac3:: with SMTP id x186mr49440029qka.138.1563909095568;
-        Tue, 23 Jul 2019 12:11:35 -0700 (PDT)
+        bh=WeLeHSW5IWfJdV5bVLUG5dsIV+T04rqjlm+2/mArvng=;
+        b=tho+XWi1zBfVZsK3EJpMcdneMEq6bEi7kNQ2cogy/700AJrBJ/SmnoIXy1Q5OHtWga
+         21jyacq+bJDnFAsXK+7nCdt38Aa3OpHCh1Y/fjq1/ZyFdwNIKX94asNp5jrl+SpH0ZjF
+         5p9X4LvvsZKiqDkZYIkpOjObYZxrhksEVClacOOH3Xl4lD3ywBZXExHM9g9jL1T325fN
+         fBPaCen3sXyi6L6hHV/PcUd5HjmT+xXjNmU6QVMwdb0qxFsbZOL8iOJuNeSCgwtcgBPG
+         KbanBMxqP+GPPpNqr8oO86wv4dlYTgFi9K2i+N/PY6KbthSIhFprKYj8c4GOUo1BPsez
+         ufxg==
+X-Gm-Message-State: APjAAAULzrfdZT+UttILXUrKTqH0t4fXndOaSVsvchydkaT7qec025ML
+        99IoLo400XHGUYpyq9QyGXBOnyrD+luERg==
+X-Google-Smtp-Source: APXvYqxDD0/iqTQXR/B4n/DKM1iygVKBoohZ3RWLcU3T4N0ZeSt9BmHmXUMV4nCO3sn0jFsJon+rYg==
+X-Received: by 2002:ac8:2bd4:: with SMTP id n20mr55312288qtn.131.1563909091246;
+        Tue, 23 Jul 2019 12:11:31 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id z8sm19099189qki.23.2019.07.23.12.11.35
+        by smtp.gmail.com with ESMTPSA id r36sm23191245qte.71.2019.07.23.12.11.30
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Jul 2019 12:11:35 -0700 (PDT)
+        Tue, 23 Jul 2019 12:11:30 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hq02e-00045V-Va; Tue, 23 Jul 2019 16:01:40 -0300
+        id 1hq02f-00045b-0L; Tue, 23 Jul 2019 16:01:41 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 18/19] build: Use the CMake variable -DENABLE_WERROR to turn on WERROR mode
-Date:   Tue, 23 Jul 2019 16:01:36 -0300
-Message-Id: <20190723190137.15370-19-jgg@ziepe.ca>
+Subject: [PATCH rdma-core 19/19] build/azp: Have Azure Pipelines create releases when tags are made
+Date:   Tue, 23 Jul 2019 16:01:37 -0300
+Message-Id: <20190723190137.15370-20-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190723190137.15370-1-jgg@ziepe.ca>
 References: <20190723190137.15370-1-jgg@ziepe.ca>
@@ -65,120 +65,119 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-This way the flag can be passed through EXTRA_CMAKE_FLAGS to rpmbuild and
-debian/rules instead of hacking it in via sed/etc.
+Build a draft release and push the source .tar.gz to GitHub's releases
+page.
+
+For some reason this relies on an Azure Pipeline's user-specific service
+connection instead of the existing app installation:
+
+https://github.com/MicrosoftDocs/vsts-docs/issues/4260
+
+This is done in a dedicated YAML file as it runs with a separate
+configuration on AZP that authorizes it to use the write-access service
+connections.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- CMakeLists.txt               |  5 +++++
- buildlib/azure-pipelines.yml | 24 ++++++++++--------------
- 2 files changed, 15 insertions(+), 14 deletions(-)
+ .travis.yml                          | 17 ----------
+ buildlib/azure-pipelines-release.yml | 48 ++++++++++++++++++++++++++++
+ buildlib/github-release              |  7 ----
+ 3 files changed, 48 insertions(+), 24 deletions(-)
+ create mode 100644 buildlib/azure-pipelines-release.yml
+ delete mode 100755 buildlib/github-release
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index f9353ddbc86d1e..9bb58a9b803667 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -538,6 +538,11 @@ RDMA_DoFixup("${HAVE_STATIC_ASSERT}" "assert.h")
- RDMA_AddOptCFlag(CMAKE_C_FLAGS HAVE_C_WSTRICT_PROTOTYPES "-Wstrict-prototypes")
- RDMA_AddOptCFlag(CMAKE_C_FLAGS HAVE_C_WOLD_STYLE_DEFINITION "-Wold-style-definition")
- 
-+if (ENABLE_WERROR)
-+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
-+  message(STATUS "Enabled -Werror")
-+endif()
+diff --git a/.travis.yml b/.travis.yml
+index 82f16d65e0a646..e00b0165215b4d 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -43,20 +43,3 @@ before_script:
+   - http_proxy= pip3 install cython
+ script:
+   - buildlib/travis-build
+-  - buildlib/github-release
+-deploy:
+-  # Deploy assets to Github releases
+-  # https://docs.travis-ci.com/user/deployment/releases/
+-  provider: releases
+-  api_key:
+-    # This is encrypted OAth token generated by
+-    # Travis CLI tool (travis setup releases) limited to specific repo.
+-    secure: ok/WMzFgsSnk+NZ850QEUESHRfJ4Ae7T8eA4dcx4fuw2RqybAh8wjxrLP5GKR27WrzB3hKHHTi7fgE0VtBY024kGJ/+wlQXHN1p89JvCiQlGOKkxy5YIlS4GUhwwkqgoU+hmifxl1i+9yCuowHPIM4WoP+NR+IZgvMahlrdPCS2OleFtrqyaHZbC/Usdt0WZLeQzG+rVLec/NvPnVOn81e17yuAuluHAzu+qcV94szqe/zwDzG8RUUKXaeDEQ3JQja4bCLL/kTkWR8JGsfwvcqc9Ut4Ry2b7uEWp5/FIcxUGWviKRgRzEdcT40iMMiJbIrH7gYp66Ymr/dypqUfc4u/xSb4AmpTMcYGUXJxsdzKyL6d/7HbuHIIVc5o1V/L5mdaIjeO5KjTFjMMD5KoSXfBlNIGk2as1JD/99lxJ3VlpQGwI5390+Tyl8o4Ao4aBXSCG96PDK4+UkYFht/wrw+UoYdV07u3x7zz21O3N3Lu5733hDvcvyOW6uIzoeLQ5O62/3Pq+DOFRs/nnRiW8/gjIkEQAyj/GGxw/taslpFJFcdVt/MSueV4t5OCI2YdGA/NxG/c4FIGy+dntV5BB6Gld8KkP/PP74yzJ1o/PRDRExTbsQzrdisDrVIf0r4pxTTsw1gXRE5r6S0tQ5aNoXAQ5h4xiwAIGqqBF4HESJjA=
+-  file: rdma-core-*.tar.gz
+-  # Allow asterisks in file names.
+-  file_glob: true
+-  skip_cleanup: true
+-  # Limit scope of deploy to specific repo.
+-  on:
+-    repo: linux-rdma/rdma-core
+-    tags: true
+diff --git a/buildlib/azure-pipelines-release.yml b/buildlib/azure-pipelines-release.yml
+new file mode 100644
+index 00000000000000..fd5e4a1e43270d
+--- /dev/null
++++ b/buildlib/azure-pipelines-release.yml
+@@ -0,0 +1,48 @@
++# See https://aka.ms/yaml
++# This pipeline runs to produce GitHub releases when tags are pushed. The
++# pipeline is never run from a PR and has access to all the build secrets,
++# including write permission to GitHub.
 +
- # Old versions of libnl have a duplicated rtnl_route_put, disbale the warning on those
- # systems
- if (NOT NL_KIND EQUAL 0)
-diff --git a/buildlib/azure-pipelines.yml b/buildlib/azure-pipelines.yml
-index 153d437d8e81e9..4eef7408af027c 100644
---- a/buildlib/azure-pipelines.yml
-+++ b/buildlib/azure-pipelines.yml
-@@ -43,7 +43,7 @@ stages:
-               set -e
-               mkdir build-gcc9
-               cd build-gcc9
--              CC=gcc-9 CFLAGS="-Werror" cmake -GNinja .. -DIOCTL_MODE=both -DENABLE_STATIC=1
-+              CC=gcc-9 cmake -GNinja .. -DIOCTL_MODE=both -DENABLE_STATIC=1 -DENABLE_WERROR=1
-               ninja
-             displayName: gcc 9.1 Compile
- 
-@@ -62,7 +62,7 @@ stages:
-               mv CMakeLists.txt CMakeLists-orig.txt
-               grep -v "# NO SPARSE" CMakeLists-orig.txt > CMakeLists.txt
-               cd build-sparse
--              CC=cgcc CFLAGS="-Werror" cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1
-+              CC=cgcc cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1 -DENABLE_WERROR=1
-               ninja | grep -v '^\[' | tee out
-               # sparse does not fail gcc on messages
-               if [ -s out ]; then
-@@ -75,7 +75,7 @@ stages:
-               set -e
-               mkdir build-clang
-               cd build-clang
--              CC=clang-8 CFLAGS="-Werror -m32 -msse3" cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1
-+              CC=clang-8 CFLAGS="-m32" cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1 -DENABLE_WERROR=1
-               ninja
-             displayName: clang 8.0 32-bit Compile
- 
-@@ -85,7 +85,7 @@ stages:
-               echo "#error Fail" >> util/udma_barrier.h
-               cd build-gcc9
-               rm CMakeCache.txt
--              CC=gcc-9 CFLAGS="-Werror" cmake -GNinja .. -DIOCTL_MODE=both
-+              CC=gcc-9 cmake -GNinja .. -DIOCTL_MODE=both -DENABLE_WERROR=1
-               ninja
-               mv ../util/udma_barrier.h.old ../util/udma_barrier.h
-             displayName: Simulate non-coherent DMA Platform Compile
-@@ -94,7 +94,7 @@ stages:
-               set -e
-               mkdir build-arm64
-               cd build-arm64
--              CC=aarch64-linux-gnu-gcc-8 CFLAGS="-Werror" cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1
-+              CC=aarch64-linux-gnu-gcc-8 cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1 -DENABLE_WERROR=1
-               ninja
-             displayName: gcc 8.3 ARM64 Compile
- 
-@@ -102,18 +102,14 @@ stages:
-               set -e
-               mkdir build-ppc64el
-               cd build-ppc64el
--              CC=powerpc64le-linux-gnu-gcc-8 CFLAGS="-Werror" cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1
-+              CC=powerpc64le-linux-gnu-gcc-8 cmake -GNinja .. -DIOCTL_MODE=both -DNO_PYVERBS=1 -DENABLE_WERROR=1
-               ninja
-             displayName: gcc 8.3 PPC64EL Compile
- 
--          # When running cmake through debian/rules it is hard to set -Werror,
--          # instead force it on by changing the CMakeLists.txt
-           - bash: |
-               set -e
--              echo 'set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")' >> buildlib/RDMA_EnableCStd.cmake
--              sed -i -e 's/-DCMAKE_BUILD_TYPE=Release/-DCMAKE_BUILD_TYPE=Debug/g' debian/rules
-               sed -i -e 's/ninja \(.*\)-v/ninja \1/g' debian/rules
--              debian/rules CC=clang-8 build
-+              debian/rules CC=clang-8 EXTRA_CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=Debug -DENABLE_WERROR=1" build
-             displayName: clang 8.0 Bionic Build
-           - bash: |
-               set -e
-@@ -164,15 +160,15 @@ stages:
-             centos7:
-               CONTAINER: centos7
-               SPEC: redhat/rdma-core.spec
--              RPMBUILD_OPTS:
-+              RPMBUILD_OPTS:  --define 'EXTRA_CMAKE_FLAGS -DCMAKE_BUILD_TYPE=Debug -DENABLE_WERROR=1'
-             fedora30:
-               CONTAINER: fedora
-               SPEC: redhat/rdma-core.spec
--              RPMBUILD_OPTS:
-+              RPMBUILD_OPTS:  --define 'EXTRA_CMAKE_FLAGS -DCMAKE_BUILD_TYPE=Debug -DENABLE_WERROR=1'
-             leap:
-               CONTAINER: leap
-               SPEC: suse/rdma-core.spec
--              RPMBUILD_OPTS: --without=curlmini
-+              RPMBUILD_OPTS:  --define 'EXTRA_CMAKE_FLAGS -DCMAKE_BUILD_TYPE=Debug -DENABLE_WERROR=1' --without=curlmini
-         container: $[ variables['CONTAINER'] ]
-         steps:
-           - checkout: none
++trigger:
++  tags:
++    include:
++      - v*
++
++resources:
++  containers:
++    - container: azp
++      image: ucfconsort.azurecr.io/rdma-core/azure_pipelines:25.0
++      endpoint: ucfconsort_registry
++
++stages:
++  - stage: Release
++    jobs:
++      - job: SrcPrep
++        displayName: Build Source Tar
++        pool:
++          vmImage: 'Ubuntu-16.04'
++        container: azp
++        steps:
++          - checkout: self
++            fetchDepth: 1
++
++          - bash: |
++              set -e
++              mkdir build-pandoc artifacts
++              cd build-pandoc
++              CC=gcc-9 cmake -GNinja ..
++              ninja docs
++
++              cd ..
++              python3 buildlib/cbuild make-dist-tar build-pandoc
++            displayName: Prebuild Documentation
++
++          - task: GithubRelease@0
++            displayName: 'Create GitHub Release'
++            inputs:
++              githubConnection: github_release
++              repositoryName: linux-rdma/rdma-core
++              assets: ./*.tar.gz
++              action: create
++              isDraft: true
++              addChangeLog: true
+diff --git a/buildlib/github-release b/buildlib/github-release
+deleted file mode 100755
+index 8fc536fb8b1074..00000000000000
+--- a/buildlib/github-release
++++ /dev/null
+@@ -1,7 +0,0 @@
+-#!/bin/bash
+-
+-set -e
+-
+-if [[ $TRAVIS_TAG == v* ]] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
+-    buildlib/cbuild make-dist-tar --tag "$TRAVIS_TAG" build-travis
+-fi
 -- 
 2.22.0
 
