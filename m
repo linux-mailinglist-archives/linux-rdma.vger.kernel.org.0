@@ -2,182 +2,192 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C5871FEE
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0AC71FF9
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2019 21:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbfGWTLd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 15:11:33 -0400
-Received: from mail-qt1-f171.google.com ([209.85.160.171]:37979 "EHLO
-        mail-qt1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728441AbfGWTLd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:11:33 -0400
-Received: by mail-qt1-f171.google.com with SMTP id n11so42966688qtl.5
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2019 12:11:32 -0700 (PDT)
+        id S1729511AbfGWTOA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 15:14:00 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:39851 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728935AbfGWTOA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jul 2019 15:14:00 -0400
+Received: by mail-vs1-f65.google.com with SMTP id u3so29625487vsh.6;
+        Tue, 23 Jul 2019 12:13:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WeLeHSW5IWfJdV5bVLUG5dsIV+T04rqjlm+2/mArvng=;
-        b=MuPSKhOrMkztA/YpagsNpBrCe/s4lb+iTFuCrvx5UyM8Laq7Tp9c/o318Evt6+A7Ff
-         raOdkq72dQkY6/po3SW/ENa4lv5YvEuheOf1bir5DAwXCojcS+7Zk7OG+lfcEkgqJ6c/
-         f7w4JV9nqxQddCOk5UnxzJN0i3zUrfsJm19WkEfT0asOXJ3jrELCw+YxwQ9YiFruxO/W
-         WMPeOnYXcVCfBhzsWLGlpvBGTjoDufvtbZdMfbveRbae6XVCM6jx6xkF06zBoy0Agkvp
-         bVj7P6q6LZA5CEobxpDx45gaI3dDWHc86jjsvseNgSdk662U/4oIaKef+1nifin9r6Qr
-         2BGQ==
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=mCFR2IQNm0hmioLVOd7QF/xJfVRtWFkovxZJz2yC7AU=;
+        b=kghJOur2nzo23SRl91iCsTz2CjZTC1wGF6CEwLnGg2mcWP4nqZdK2clgIQN65Cg0dH
+         6dWW6CgwPIfvcr+K0hjDuMU9SupACSGDGyzsXaqFFACM7Ta00flpJ0L9W8romd9Cp1yX
+         lgrGGuUPYT88AHImPcytWvhg/4qaAt6TK6QI06uJQvtIBzTPv99KOrclKTOA4e7lS/Xq
+         vpI2bvzjlA+o2VBhfCYN6HESRPlu1INeMvsg4mVVOzq69ZDUFyA+c264iXb3hWR7eEYq
+         a+pLa6EIpOby+4ffhrQ7Ve8i6oXc3hQJXkS/4Sf7oxbIqRn9/tl19JtfaaHgw6wLTb+i
+         f+2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WeLeHSW5IWfJdV5bVLUG5dsIV+T04rqjlm+2/mArvng=;
-        b=tho+XWi1zBfVZsK3EJpMcdneMEq6bEi7kNQ2cogy/700AJrBJ/SmnoIXy1Q5OHtWga
-         21jyacq+bJDnFAsXK+7nCdt38Aa3OpHCh1Y/fjq1/ZyFdwNIKX94asNp5jrl+SpH0ZjF
-         5p9X4LvvsZKiqDkZYIkpOjObYZxrhksEVClacOOH3Xl4lD3ywBZXExHM9g9jL1T325fN
-         fBPaCen3sXyi6L6hHV/PcUd5HjmT+xXjNmU6QVMwdb0qxFsbZOL8iOJuNeSCgwtcgBPG
-         KbanBMxqP+GPPpNqr8oO86wv4dlYTgFi9K2i+N/PY6KbthSIhFprKYj8c4GOUo1BPsez
-         ufxg==
-X-Gm-Message-State: APjAAAULzrfdZT+UttILXUrKTqH0t4fXndOaSVsvchydkaT7qec025ML
-        99IoLo400XHGUYpyq9QyGXBOnyrD+luERg==
-X-Google-Smtp-Source: APXvYqxDD0/iqTQXR/B4n/DKM1iygVKBoohZ3RWLcU3T4N0ZeSt9BmHmXUMV4nCO3sn0jFsJon+rYg==
-X-Received: by 2002:ac8:2bd4:: with SMTP id n20mr55312288qtn.131.1563909091246;
-        Tue, 23 Jul 2019 12:11:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id r36sm23191245qte.71.2019.07.23.12.11.30
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Jul 2019 12:11:30 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hq02f-00045b-0L; Tue, 23 Jul 2019 16:01:41 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH rdma-core 19/19] build/azp: Have Azure Pipelines create releases when tags are made
-Date:   Tue, 23 Jul 2019 16:01:37 -0300
-Message-Id: <20190723190137.15370-20-jgg@ziepe.ca>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190723190137.15370-1-jgg@ziepe.ca>
-References: <20190723190137.15370-1-jgg@ziepe.ca>
+        h=x-gm-message-state:sender:subject:from:to:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=mCFR2IQNm0hmioLVOd7QF/xJfVRtWFkovxZJz2yC7AU=;
+        b=H1pCc3vsNuZpmIbHObqco6H/Lu96VH4g1Nj8eMGeMMQgfRIRHBAvY6pJdJ/OoNdoeX
+         BLQI81dyiLTpea9LcWLmKh4rkkhrvlau/WjpS/DSZfgIzi0dSctEet23iw52EasY4nPK
+         Yd77HNPO6P4Fe0q99jJIfdYOCnXowPhTfycMu46E2A1F6GEFEQHr30ivKJmhhEciaQCB
+         M9Bh010cAQ5nxAL5n9kdTZG0R2ShQa6deBLVP5K5I0b5vFQf3eZUNnaqsQpXKDQU6S7M
+         3t+qjqXmHBoREx3wbDRGdK7FiGhqYIgxnFeIcBaVFALDl0WgUzUz2kM74bC8AKTp44Kp
+         Bwxg==
+X-Gm-Message-State: APjAAAUfvrlJU983VqZdTYcILMRp7dRdziFxqL7cDgtuXvijAUd9ZAoj
+        rfSVUg1ON/EI+6qydOcwJP/FWB0o9WK8Ww==
+X-Google-Smtp-Source: APXvYqyxG/2hpnYJeRDXmNuM0ujhurNc4eqen+D0JDOO8yhUGCACahyO/ghn4Gd3Miss4oXPjxwPrw==
+X-Received: by 2002:a67:f75a:: with SMTP id w26mr45539455vso.148.1563909238532;
+        Tue, 23 Jul 2019 12:13:58 -0700 (PDT)
+Received: from seurat29.1015granger.net (dhcp-82c9.meeting.ietf.org. [31.133.130.201])
+        by smtp.gmail.com with ESMTPSA id j80sm5541004vkj.47.2019.07.23.12.13.57
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Jul 2019 12:13:58 -0700 (PDT)
+Subject: [PATCH v1] rdma: Enable ib_alloc_cq to spread work over a device's
+ comp_vectors
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
+Date:   Tue, 23 Jul 2019 15:13:37 -0400
+Message-ID: <156390915496.6759.4305845732131573253.stgit@seurat29.1015granger.net>
+User-Agent: StGit/unknown-version
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+Send and Receive completion is handled on a single CPU selected at
+the time each Completion Queue is allocated. Typically this is when
+an initiator instantiates an RDMA transport, or when a target
+accepts an RDMA connection.
 
-Build a draft release and push the source .tar.gz to GitHub's releases
-page.
+Some ULPs cannot open a connection per CPU to spread completion
+workload across available CPUs. For these ULPs, allow the RDMA core
+to select a completion vector based on the device's complement of
+available comp_vecs.
 
-For some reason this relies on an Azure Pipeline's user-specific service
-connection instead of the existing app installation:
+When a ULP elects to use RDMA_CORE_ANY_COMPVEC, if multiple CPUs are
+available, a different CPU will be selected for each Completion
+Queue. For the moment, a simple round-robin mechanism is used.
 
-https://github.com/MicrosoftDocs/vsts-docs/issues/4260
-
-This is done in a dedicated YAML file as it runs with a separate
-configuration on AZP that authorizes it to use the write-access service
-connections.
-
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Suggested-by: Håkon Bugge <haakon.bugge@oracle.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 ---
- .travis.yml                          | 17 ----------
- buildlib/azure-pipelines-release.yml | 48 ++++++++++++++++++++++++++++
- buildlib/github-release              |  7 ----
- 3 files changed, 48 insertions(+), 24 deletions(-)
- create mode 100644 buildlib/azure-pipelines-release.yml
- delete mode 100755 buildlib/github-release
+ drivers/infiniband/core/cq.c             |   20 +++++++++++++++++++-
+ include/rdma/ib_verbs.h                  |    3 +++
+ net/sunrpc/xprtrdma/svc_rdma_transport.c |    6 ++++--
+ net/sunrpc/xprtrdma/verbs.c              |    5 ++---
+ 4 files changed, 28 insertions(+), 6 deletions(-)
 
-diff --git a/.travis.yml b/.travis.yml
-index 82f16d65e0a646..e00b0165215b4d 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -43,20 +43,3 @@ before_script:
-   - http_proxy= pip3 install cython
- script:
-   - buildlib/travis-build
--  - buildlib/github-release
--deploy:
--  # Deploy assets to Github releases
--  # https://docs.travis-ci.com/user/deployment/releases/
--  provider: releases
--  api_key:
--    # This is encrypted OAth token generated by
--    # Travis CLI tool (travis setup releases) limited to specific repo.
--    secure: ok/WMzFgsSnk+NZ850QEUESHRfJ4Ae7T8eA4dcx4fuw2RqybAh8wjxrLP5GKR27WrzB3hKHHTi7fgE0VtBY024kGJ/+wlQXHN1p89JvCiQlGOKkxy5YIlS4GUhwwkqgoU+hmifxl1i+9yCuowHPIM4WoP+NR+IZgvMahlrdPCS2OleFtrqyaHZbC/Usdt0WZLeQzG+rVLec/NvPnVOn81e17yuAuluHAzu+qcV94szqe/zwDzG8RUUKXaeDEQ3JQja4bCLL/kTkWR8JGsfwvcqc9Ut4Ry2b7uEWp5/FIcxUGWviKRgRzEdcT40iMMiJbIrH7gYp66Ymr/dypqUfc4u/xSb4AmpTMcYGUXJxsdzKyL6d/7HbuHIIVc5o1V/L5mdaIjeO5KjTFjMMD5KoSXfBlNIGk2as1JD/99lxJ3VlpQGwI5390+Tyl8o4Ao4aBXSCG96PDK4+UkYFht/wrw+UoYdV07u3x7zz21O3N3Lu5733hDvcvyOW6uIzoeLQ5O62/3Pq+DOFRs/nnRiW8/gjIkEQAyj/GGxw/taslpFJFcdVt/MSueV4t5OCI2YdGA/NxG/c4FIGy+dntV5BB6Gld8KkP/PP74yzJ1o/PRDRExTbsQzrdisDrVIf0r4pxTTsw1gXRE5r6S0tQ5aNoXAQ5h4xiwAIGqqBF4HESJjA=
--  file: rdma-core-*.tar.gz
--  # Allow asterisks in file names.
--  file_glob: true
--  skip_cleanup: true
--  # Limit scope of deploy to specific repo.
--  on:
--    repo: linux-rdma/rdma-core
--    tags: true
-diff --git a/buildlib/azure-pipelines-release.yml b/buildlib/azure-pipelines-release.yml
-new file mode 100644
-index 00000000000000..fd5e4a1e43270d
---- /dev/null
-+++ b/buildlib/azure-pipelines-release.yml
-@@ -0,0 +1,48 @@
-+# See https://aka.ms/yaml
-+# This pipeline runs to produce GitHub releases when tags are pushed. The
-+# pipeline is never run from a PR and has access to all the build secrets,
-+# including write permission to GitHub.
+Jason-
+
+If this patch is acceptable to all, then I would expect you to take
+it through the RDMA tree.
+
+
+diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
+index 7c599878ccf7..a89d549490c4 100644
+--- a/drivers/infiniband/core/cq.c
++++ b/drivers/infiniband/core/cq.c
+@@ -165,12 +165,27 @@ static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
+ 	queue_work(cq->comp_wq, &cq->work);
+ }
+ 
++/*
++ * Attempt to spread ULP completion queues over a device's completion
++ * vectors so that all available CPU cores can help service the device's
++ * interrupt workload. This mechanism may be improved at a later point
++ * to dynamically take into account the system's actual workload.
++ */
++static int ib_get_comp_vector(struct ib_device *dev)
++{
++	static atomic_t cv;
 +
-+trigger:
-+  tags:
-+    include:
-+      - v*
++	if (dev->num_comp_vectors > 1)
++		return atomic_inc_return(&cv) % dev->num_comp_vectors;
++	return 0;
++}
 +
-+resources:
-+  containers:
-+    - container: azp
-+      image: ucfconsort.azurecr.io/rdma-core/azure_pipelines:25.0
-+      endpoint: ucfconsort_registry
+ /**
+  * __ib_alloc_cq_user - allocate a completion queue
+  * @dev:		device to allocate the CQ for
+  * @private:		driver private data, accessible from cq->cq_context
+  * @nr_cqe:		number of CQEs to allocate
+- * @comp_vector:	HCA completion vectors for this CQ
++ * @comp_vector:	HCA completion vector for this CQ
+  * @poll_ctx:		context to poll the CQ from.
+  * @caller:		module owner name.
+  * @udata:		Valid user data or NULL for kernel object
+@@ -208,6 +223,9 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
+ 	cq->res.type = RDMA_RESTRACK_CQ;
+ 	rdma_restrack_set_task(&cq->res, caller);
+ 
++	if (comp_vector == RDMA_CORE_ANY_COMPVEC)
++		cq_attr.comp_vector = ib_get_comp_vector(dev);
 +
-+stages:
-+  - stage: Release
-+    jobs:
-+      - job: SrcPrep
-+        displayName: Build Source Tar
-+        pool:
-+          vmImage: 'Ubuntu-16.04'
-+        container: azp
-+        steps:
-+          - checkout: self
-+            fetchDepth: 1
+ 	ret = dev->ops.create_cq(cq, &cq_attr, NULL);
+ 	if (ret)
+ 		goto out_free_wc;
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index c5f8a9f17063..547d36bcef7e 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -3669,6 +3669,9 @@ static inline int ib_post_recv(struct ib_qp *qp,
+ 	return qp->device->ops.post_recv(qp, recv_wr, bad_recv_wr ? : &dummy);
+ }
+ 
++/* Tell the RDMA core to select an appropriate comp_vector */
++#define RDMA_CORE_ANY_COMPVEC	((int)(-1))
 +
-+          - bash: |
-+              set -e
-+              mkdir build-pandoc artifacts
-+              cd build-pandoc
-+              CC=gcc-9 cmake -GNinja ..
-+              ninja docs
-+
-+              cd ..
-+              python3 buildlib/cbuild make-dist-tar build-pandoc
-+            displayName: Prebuild Documentation
-+
-+          - task: GithubRelease@0
-+            displayName: 'Create GitHub Release'
-+            inputs:
-+              githubConnection: github_release
-+              repositoryName: linux-rdma/rdma-core
-+              assets: ./*.tar.gz
-+              action: create
-+              isDraft: true
-+              addChangeLog: true
-diff --git a/buildlib/github-release b/buildlib/github-release
-deleted file mode 100755
-index 8fc536fb8b1074..00000000000000
---- a/buildlib/github-release
-+++ /dev/null
-@@ -1,7 +0,0 @@
--#!/bin/bash
--
--set -e
--
--if [[ $TRAVIS_TAG == v* ]] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
--    buildlib/cbuild make-dist-tar --tag "$TRAVIS_TAG" build-travis
--fi
--- 
-2.22.0
+ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
+ 				 int nr_cqe, int comp_vector,
+ 				 enum ib_poll_context poll_ctx,
+diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+index 3fe665152d95..7df6de6e9162 100644
+--- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
++++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+@@ -455,13 +455,15 @@ static struct svc_xprt *svc_rdma_accept(struct svc_xprt *xprt)
+ 		goto errout;
+ 	}
+ 	newxprt->sc_sq_cq = ib_alloc_cq(dev, newxprt, newxprt->sc_sq_depth,
+-					0, IB_POLL_WORKQUEUE);
++					RDMA_CORE_ANY_COMPVEC,
++					IB_POLL_WORKQUEUE);
+ 	if (IS_ERR(newxprt->sc_sq_cq)) {
+ 		dprintk("svcrdma: error creating SQ CQ for connect request\n");
+ 		goto errout;
+ 	}
+ 	newxprt->sc_rq_cq = ib_alloc_cq(dev, newxprt, rq_depth,
+-					0, IB_POLL_WORKQUEUE);
++					RDMA_CORE_ANY_COMPVEC,
++					IB_POLL_WORKQUEUE);
+ 	if (IS_ERR(newxprt->sc_rq_cq)) {
+ 		dprintk("svcrdma: error creating RQ CQ for connect request\n");
+ 		goto errout;
+diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+index 805b1f35e1ca..6e5989e2b8ed 100644
+--- a/net/sunrpc/xprtrdma/verbs.c
++++ b/net/sunrpc/xprtrdma/verbs.c
+@@ -523,8 +523,7 @@ int rpcrdma_ep_create(struct rpcrdma_xprt *r_xprt)
+ 
+ 	sendcq = ib_alloc_cq(ia->ri_id->device, NULL,
+ 			     ep->rep_attr.cap.max_send_wr + 1,
+-			     ia->ri_id->device->num_comp_vectors > 1 ? 1 : 0,
+-			     IB_POLL_WORKQUEUE);
++			     RDMA_CORE_ANY_COMPVEC, IB_POLL_WORKQUEUE);
+ 	if (IS_ERR(sendcq)) {
+ 		rc = PTR_ERR(sendcq);
+ 		goto out1;
+@@ -532,7 +531,7 @@ int rpcrdma_ep_create(struct rpcrdma_xprt *r_xprt)
+ 
+ 	recvcq = ib_alloc_cq(ia->ri_id->device, NULL,
+ 			     ep->rep_attr.cap.max_recv_wr + 1,
+-			     0, IB_POLL_WORKQUEUE);
++			     RDMA_CORE_ANY_COMPVEC, IB_POLL_WORKQUEUE);
+ 	if (IS_ERR(recvcq)) {
+ 		rc = PTR_ERR(recvcq);
+ 		goto out2;
 
