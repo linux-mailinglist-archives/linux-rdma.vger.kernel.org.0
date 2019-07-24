@@ -2,122 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F29CD73FE2
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 22:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E43173F24
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 22:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388351AbfGXUgF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Jul 2019 16:36:05 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:43429 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727851AbfGXTZG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Jul 2019 15:25:06 -0400
-Received: by mail-qk1-f193.google.com with SMTP id m14so8949589qka.10
-        for <linux-rdma@vger.kernel.org>; Wed, 24 Jul 2019 12:25:06 -0700 (PDT)
+        id S2388255AbfGXTcE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Jul 2019 15:32:04 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:35783 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388574AbfGXTcA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Jul 2019 15:32:00 -0400
+Received: by mail-qk1-f195.google.com with SMTP id r21so34685899qke.2
+        for <linux-rdma@vger.kernel.org>; Wed, 24 Jul 2019 12:31:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=OkPU/CLyukMOj3ZbNY/O7tpHR8CxfiQ425Gxa1fb2JQ=;
-        b=cizJvBvS9LWtQgqD7tHrOnbfUKLn3IKwTexaKlCz0aV8WGl+nqxYE5pseR5xXgl2ZJ
-         m8csupMpr7OwAKhyoW9lBHKDfnN0nYwK9z7/RsX4VX3pqa9PWl3XI5/GUR4dWGbBS/2X
-         l7xDDDeEor3Zjue37hzwItxKtPGOFgmLJ5n/YPHgvOS+Y7TaohrswgfdoQ2xx5ljLnn5
-         gCACdxiqqXuMTz9u7PVtheBQ9dr7K2gpEpuVehHqwNFqED9VeiqZrebhSMSMl/zhVVtH
-         139CJQm906dlJU9cmPZyBRd9LIjBH6vCpXIBSECVQGTTiiTBHHUCo4qXoOTM7WaE9BBS
-         G4Sg==
+        bh=JInymQc+r2pImT3B/SmMJqhNX9Hf0EsstZD4VE2LjQM=;
+        b=kqZlOYO69x/UMTO3KbfUun+RUej+Y76S6n3UnFY6G3wqJzkvqWxwRxlpmvMwx+lWQp
+         5P9Ndi1/9ULn3zbXOvj43rZB0qedEiDhjIQyLZpqiO5jWvvjUpbuSLTz6gw40pIyuntD
+         cggriFRIBnzO0dFwBsK1LW9AG+oSsbnKRqd9uBFaiBHzjjfM7TJVfClTjmOZ8ugBiuap
+         e+wEr5Hxo0frnDbySkZTeLae0KrjbsyVtLi40YtQfm//ENZepIaOs2io14Ncx3Had2jj
+         BXr+eLZ5gyA77h7uoSpLFR7S/AV7V7Gd6/I2q8XVXeVOcxH6jFEGqEsXWRMTP5SwFtzV
+         786A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OkPU/CLyukMOj3ZbNY/O7tpHR8CxfiQ425Gxa1fb2JQ=;
-        b=BnEqT5cLYPknHhwzOHAi4PU0BrycsF7++H181lK936BAV3RALFruCsAsw69WTkeuCl
-         v8Ls6cj/xkqkhYWa3IS+QjYfN05lf5tPUzFgJLHyP8G+fAkDiPGFSbHbJddKMXAMhZW6
-         9Xs3eCJryDABH41S+ckJ5LZswTwf2W0fbhLeS87YSGTVEyEV98oIr9vc3DpZC+EsPFRO
-         pjp1OELEzGrkzg2rHZvs0V6uF63dO29KaVigz7sYIWf2R79xtv6YJtDH4B9tTMeRNMD4
-         mB1vpsWWmivm2Ib4J0H3l51GTkKuhrT0x8o6IggxNhYbxJDkPRJ8WKU1g5SL1GhMx2Cq
-         GqnQ==
-X-Gm-Message-State: APjAAAXfI61zPPJBKtCIyyiaGK8tNndcOT0OBL8K5Bjr+aGEGo+liJJc
-        bh/worEGI2GDQaS9O95c5G2Bkg==
-X-Google-Smtp-Source: APXvYqyhflls5Pd07xc/KaSNWazAfdY/U63489DoRwgjjWJQqGNW++Rr6B+pQE207tw0i/3votp85A==
-X-Received: by 2002:a05:620a:1f4:: with SMTP id x20mr56790548qkn.415.1563996305707;
-        Wed, 24 Jul 2019 12:25:05 -0700 (PDT)
+        bh=JInymQc+r2pImT3B/SmMJqhNX9Hf0EsstZD4VE2LjQM=;
+        b=iPVK7xD2w4MDZD6AENaS890NV3HnWMoCYE0DCQI0rbfJT4LgKtk4XSfI3oV3dcXKFz
+         OHPD3kIHqvCfnqcH0EHWlNZm6bcsVdbf3alBnvc1oiJbXuBm+7FZxalSyhjq0J9ir9IR
+         YgJALVziQRBV4C22dNRB3SY6MrE3N3Qv07JGfEPPU0FHbiKm+NYJ7otm/2B1n7ELYo83
+         GXEh7UbEvQPwVPGWbbtgsRXdouJLyZBKQEan9uVhzNG31Sx+phDqx77oZO4O53EFXkO8
+         aiCgWETEMVAnmnAwjpwV6mKCb/U/JzzhTXhioLIt9cb5GNoSnmWBGzTJzTQFjguq+u5i
+         QBYg==
+X-Gm-Message-State: APjAAAVzh46/iPfyetnATuP008VSTy+P/JnIhFEF35SfEhcy9v0nZfxN
+        x/VuRpQFrRN2GzbtNO9QY1uRFL0oTnW/vA==
+X-Google-Smtp-Source: APXvYqxLDN1MDxYfhjO8ggCE8CbyvO+EWhy5R2UY8hExLnegRMJl96uiWmL/0ruwscoK42+uMywHnw==
+X-Received: by 2002:a37:7604:: with SMTP id r4mr53902933qkc.395.1563996718992;
+        Wed, 24 Jul 2019 12:31:58 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id r40sm29245885qtk.2.2019.07.24.12.25.05
+        by smtp.gmail.com with ESMTPSA id u4sm21157159qkb.16.2019.07.24.12.31.58
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 24 Jul 2019 12:25:05 -0700 (PDT)
+        Wed, 24 Jul 2019 12:31:58 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hqMsq-0001Uo-Fh; Wed, 24 Jul 2019 16:25:04 -0300
-Date:   Wed, 24 Jul 2019 16:25:04 -0300
+        id 1hqMzW-0001jO-03; Wed, 24 Jul 2019 16:31:58 -0300
+Date:   Wed, 24 Jul 2019 16:31:57 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Subject: Re: [PATCH v19 11/15] IB/mlx4: untag user pointers in
- mlx4_get_umem_mr
-Message-ID: <20190724192504.GA5716@ziepe.ca>
-References: <cover.1563904656.git.andreyknvl@google.com>
- <7969018013a67ddbbf784ac7afeea5a57b1e2bcb.1563904656.git.andreyknvl@google.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Lijun Ou <oulijun@huawei.com>, Wei Hu <xavier.huwei@huawei.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2][next] RDMA/hns: fix comparison of unsigned long
+ variable 'end' with less than zero
+Message-ID: <20190724193157.GA6620@ziepe.ca>
+References: <20190531092101.28772-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7969018013a67ddbbf784ac7afeea5a57b1e2bcb.1563904656.git.andreyknvl@google.com>
+In-Reply-To: <20190531092101.28772-1-colin.king@canonical.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 07:58:48PM +0200, Andrey Konovalov wrote:
-> This patch is a part of a series that extends kernel ABI to allow to pass
-> tagged user pointers (with the top byte set to something else other than
-> 0x00) as syscall arguments.
+On Fri, May 31, 2019 at 10:21:00AM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> mlx4_get_umem_mr() uses provided user pointers for vma lookups, which can
-> only by done with untagged pointers.
+> Currently the comparison of end with less than zero is always false
+> because end is an unsigned long.  Also, replace checks of end with
+> non-zero with end > 0 as it is possible that the #defined decrement
+> may be changed in the future causing end to step over zero and go
+> negative.
 > 
-> Untag user pointers in this function.
+> The initialization of end with 0 is also redundant as this value is
+> never read and is later set to HW_SYNC_TIMEOUT_MSECS, so fix this by
+> initializing it with this value to begin with.
 > 
-> Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Addresses-Coverity: ("Unsigned compared against 0")
+> Fixes: 669cefb654cb ("RDMA/hns: Remove jiffies operation in disable interrupt context")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  drivers/infiniband/hw/mlx4/mr.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  drivers/infiniband/hw/hns/hns_roce_hem.c   |  4 ++--
+>  drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 12 ++++++------
+>  2 files changed, 8 insertions(+), 8 deletions(-)
 
-Applied to rdma-for next, please don't sent it via other trees :)
+Applied to for-next, thanks
 
-Thanks,
 Jason
