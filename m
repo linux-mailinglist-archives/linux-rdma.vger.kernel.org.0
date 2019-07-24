@@ -2,99 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFC673356
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 18:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB31734BA
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 19:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbfGXQGj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Jul 2019 12:06:39 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:43632 "EHLO ale.deltatee.com"
+        id S1726666AbfGXRM1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Jul 2019 13:12:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:44146 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726099AbfGXQGj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 24 Jul 2019 12:06:39 -0400
-Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
-        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <logang@deltatee.com>)
-        id 1hqJmb-0005ZT-8c; Wed, 24 Jul 2019 10:06:26 -0600
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        id S1726238AbfGXRM0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 24 Jul 2019 13:12:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E49528;
+        Wed, 24 Jul 2019 10:12:26 -0700 (PDT)
+Received: from [10.1.196.72] (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3CE253F71F;
+        Wed, 24 Jul 2019 10:12:21 -0700 (PDT)
+Subject: Re: [PATCH v19 00/15] arm64: untag user pointers passed to the kernel
+To:     Will Deacon <will.deacon@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        dri-devel@lists.freedesktop.org,
+        Kostya Serebryany <kcc@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        linux-media@vger.kernel.org, Kevin Brodsky <kevin.brodsky@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
         Christian Koenig <Christian.Koenig@amd.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Pilmore <epilmore@gigaio.com>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20190722230859.5436-1-logang@deltatee.com>
- <20190722230859.5436-15-logang@deltatee.com> <20190724063235.GC1804@lst.de>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <57e8fc1a-de70-fb65-5ef1-ffa2b95c73a6@deltatee.com>
-Date:   Wed, 24 Jul 2019 10:06:22 -0600
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+References: <cover.1563904656.git.andreyknvl@google.com>
+ <CAAeHK+yc0D_nd7nTRsY4=qcSx+eQR0VLut3uXMf4NEiE-VpeCw@mail.gmail.com>
+ <20190724140212.qzvbcx5j2gi5lcoj@willie-the-truck>
+ <CAAeHK+xXzdQHpVXL7f1T2Ef2P7GwFmDMSaBH4VG8fT3=c_OnjQ@mail.gmail.com>
+ <20190724142059.GC21234@fuggles.cambridge.arm.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <f27f4e55-fcd6-9ae7-d9ca-cac2aea5fe70@arm.com>
+Date:   Wed, 24 Jul 2019 18:12:20 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190724063235.GC1804@lst.de>
+In-Reply-To: <20190724142059.GC21234@fuggles.cambridge.arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 68.147.80.180
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, epilmore@gigaio.com, dan.j.williams@intel.com, axboe@fb.com, kbusch@kernel.org, sagi@grimberg.me, jgg@mellanox.com, Christian.Koenig@amd.com, bhelgaas@google.com, linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [PATCH 14/14] PCI/P2PDMA: Introduce pci_p2pdma_[un]map_resource()
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hi Will and Andrey,
 
-
-On 2019-07-24 12:32 a.m., Christoph Hellwig wrote:
->> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
->> index baf476039396..20c834cfd2d3 100644
->> --- a/drivers/pci/p2pdma.c
->> +++ b/drivers/pci/p2pdma.c
->> @@ -874,6 +874,91 @@ void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
->>  }
->>  EXPORT_SYMBOL_GPL(pci_p2pdma_unmap_sg_attrs);
->>  
->> +static pci_bus_addr_t pci_p2pdma_phys_to_bus(struct pci_dev *dev,
->> +		phys_addr_t start, size_t size)
->> +{
->> +	struct pci_host_bridge *bridge = pci_find_host_bridge(dev->bus);
->> +	phys_addr_t end = start + size;
->> +	struct resource_entry *window;
->> +
->> +	resource_list_for_each_entry(window, &bridge->windows) {
->> +		if (window->res->start <= start && window->res->end >= end)
->> +			return start - window->offset;
->> +	}
->> +
->> +	return DMA_MAPPING_ERROR;
+On 24/07/2019 15:20, Will Deacon wrote:
+> On Wed, Jul 24, 2019 at 04:16:49PM +0200, Andrey Konovalov wrote:
+>> On Wed, Jul 24, 2019 at 4:02 PM Will Deacon <will@kernel.org> wrote:
+>>> On Tue, Jul 23, 2019 at 08:03:29PM +0200, Andrey Konovalov wrote:
+>>>> On Tue, Jul 23, 2019 at 7:59 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>>>>>
+>>>>> === Overview
+>>>>>
+>>>>> arm64 has a feature called Top Byte Ignore, which allows to embed pointer
+>>>>> tags into the top byte of each pointer. Userspace programs (such as
+>>>>> HWASan, a memory debugging tool [1]) might use this feature and pass
+>>>>> tagged user pointers to the kernel through syscalls or other interfaces.
+>>>>>
+>>>>> Right now the kernel is already able to handle user faults with tagged
+>>>>> pointers, due to these patches:
+>>>>>
+>>>>> 1. 81cddd65 ("arm64: traps: fix userspace cache maintenance emulation on a
+>>>>>              tagged pointer")
+>>>>> 2. 7dcd9dd8 ("arm64: hw_breakpoint: fix watchpoint matching for tagged
+>>>>>               pointers")
+>>>>> 3. 276e9327 ("arm64: entry: improve data abort handling of tagged
+>>>>>               pointers")
+>>>>>
+>>>>> This patchset extends tagged pointer support to syscall arguments.
+>>>
+>>> [...]
+>>>
+>>>> Do you think this is ready to be merged?
+>>>>
+>>>> Should this go through the mm or the arm tree?
+>>>
+>>> I would certainly prefer to take at least the arm64 bits via the arm64 tree
+>>> (i.e. patches 1, 2 and 15). We also need a Documentation patch describing
+>>> the new ABI.
+>>
+>> Sounds good! Should I post those patches together with the
+>> Documentation patches from Vincenzo as a separate patchset?
 > 
-> This does once again look very expensive for something called in the
-> hot path.
+> Yes, please (although as you say below, we need a new version of those
+> patches from Vincenzo to address the feedback on v5). The other thing I
+> should say is that I'd be happy to queue the other patches in the series
+> too, but some of them are missing acks from the relevant maintainers (e.g.
+> the mm/ and fs/ changes).
+> 
 
-Yes. This is the downside of dealing only with a phys_addr_t: we have to
-look up against it. Unfortunately, I believe it's possible for different
-BARs on a device to be in different windows, so something like this is
-necessary unless we already know the BAR the phys_addr_t belongs to. It
-might probably be sped up a bit by storing the offsets of each bar
-instead of looping through all the bridge windows, but I don't think it
-will get you *that* much.
+I am actively working on the document and will share v6 with the requested
+changes in the next few days.
 
-As this is an example with no users, the answer here will really depend
-on what the use-case is doing. If they can lookup, ahead of time, the
-mapping type and offset then they don't have to do this work on the hot
-path and it means that pci_p2pdma_map_resource() is simply not a
-suitable API.
+> Will
+> 
 
-Logan
-
+-- 
+Regards,
+Vincenzo
