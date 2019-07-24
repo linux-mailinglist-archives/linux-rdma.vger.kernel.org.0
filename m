@@ -2,133 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB31734BA
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 19:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC7B7373A
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 21:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbfGXRM1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Jul 2019 13:12:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:44146 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726238AbfGXRM0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 24 Jul 2019 13:12:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E49528;
-        Wed, 24 Jul 2019 10:12:26 -0700 (PDT)
-Received: from [10.1.196.72] (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3CE253F71F;
-        Wed, 24 Jul 2019 10:12:21 -0700 (PDT)
-Subject: Re: [PATCH v19 00/15] arm64: untag user pointers passed to the kernel
-To:     Will Deacon <will.deacon@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        dri-devel@lists.freedesktop.org,
-        Kostya Serebryany <kcc@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        linux-media@vger.kernel.org, Kevin Brodsky <kevin.brodsky@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-References: <cover.1563904656.git.andreyknvl@google.com>
- <CAAeHK+yc0D_nd7nTRsY4=qcSx+eQR0VLut3uXMf4NEiE-VpeCw@mail.gmail.com>
- <20190724140212.qzvbcx5j2gi5lcoj@willie-the-truck>
- <CAAeHK+xXzdQHpVXL7f1T2Ef2P7GwFmDMSaBH4VG8fT3=c_OnjQ@mail.gmail.com>
- <20190724142059.GC21234@fuggles.cambridge.arm.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <f27f4e55-fcd6-9ae7-d9ca-cac2aea5fe70@arm.com>
-Date:   Wed, 24 Jul 2019 18:12:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727777AbfGXTDe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Jul 2019 15:03:34 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:41623 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727544AbfGXTDe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Jul 2019 15:03:34 -0400
+Received: by mail-qt1-f196.google.com with SMTP id d17so46506109qtj.8
+        for <linux-rdma@vger.kernel.org>; Wed, 24 Jul 2019 12:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JxYMRxDBbiQc911aIAHJmYAqUaYKY3lTrLmxrWOfQDA=;
+        b=HYBM8NllR3h5xXaOnsFHsaekf2KO7v9LAlxcKEkHnhnUS91Fv/TZD8mJ+7qcBUrGev
+         LU/MQbloVKx38/QnNklnrJLwOZ31JaETEM6L9qzc/Il5aUrUgmK6OGY7XP+gsna8Dyp6
+         dwSXzKnoXU5yi2U1bvXt1klu6qb58WYrxQjv3KLleGoSug86dIg4luSmK9H3TEm1hWIS
+         xwxL4gpOD4ZYgKHk4oHZGKiWz4JmonqBm81BPeP8K/hqHW9tBrUiB2QB15MwG7pLZvXn
+         QXP7kA5l+EX7oTi2D43AIh90C9jsJFUJ58YapyhGGt89ZBiQAJSwnoOvVAJACIWGANy7
+         q25A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JxYMRxDBbiQc911aIAHJmYAqUaYKY3lTrLmxrWOfQDA=;
+        b=qXLNK1kgFy72+Nf5dmkeLerKCgaaXXHRxwzNbnO3CqyH937qjyVYwFzTSdmZSv9WU5
+         wTcJPglyRvzC1YCJQL322yGIeKJy3+jgbAmlu20eU28jI8NHt8hc4ABwBBQTB36K2qXz
+         GUs6cvmcbyo8mCMr5x44cr7dw8/+kgiq/G8ATa2Shd6oaGDiim50LglE9UxCWJjs18T5
+         3whrhKq2PxZBB8XUi5qfPZXptQI+pnXNFOnKDj1yomr9XNr8psp4uUHf7MfeqpmwiGF4
+         nzI9884kBZf/lTjkpRalYlADzK9CODauZCCTxc1kKq+5hKv6IApY3vZP4IJx8f1gaJfU
+         Youw==
+X-Gm-Message-State: APjAAAW4La+bVkAej0t5Gk6FdUXjAPfGET4nOEizHlsNh9eTtalPP3s/
+        70R+nwtVKUL88NDx1Fuxm3TOs7/TkSLTBA==
+X-Google-Smtp-Source: APXvYqwIOGqxuNv4C1NUqdT2MjDRL5kDCXzqkjV+EBeUxQJWSwnUe75k0rTTBHGZMNHGgeQt07425g==
+X-Received: by 2002:ac8:70d1:: with SMTP id g17mr59814923qtp.124.1563995013065;
+        Wed, 24 Jul 2019 12:03:33 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id a67sm22207335qkg.131.2019.07.24.12.03.32
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 24 Jul 2019 12:03:32 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hqMXz-0006W9-Tm; Wed, 24 Jul 2019 16:03:31 -0300
+Date:   Wed, 24 Jul 2019 16:03:31 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+Subject: Re: [PATCH for-next] RDMA/efa: Expose device statistics
+Message-ID: <20190724190331.GA25015@ziepe.ca>
+References: <20190707142038.23191-1-galpress@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20190724142059.GC21234@fuggles.cambridge.arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190707142038.23191-1-galpress@amazon.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Will and Andrey,
-
-On 24/07/2019 15:20, Will Deacon wrote:
-> On Wed, Jul 24, 2019 at 04:16:49PM +0200, Andrey Konovalov wrote:
->> On Wed, Jul 24, 2019 at 4:02 PM Will Deacon <will@kernel.org> wrote:
->>> On Tue, Jul 23, 2019 at 08:03:29PM +0200, Andrey Konovalov wrote:
->>>> On Tue, Jul 23, 2019 at 7:59 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->>>>>
->>>>> === Overview
->>>>>
->>>>> arm64 has a feature called Top Byte Ignore, which allows to embed pointer
->>>>> tags into the top byte of each pointer. Userspace programs (such as
->>>>> HWASan, a memory debugging tool [1]) might use this feature and pass
->>>>> tagged user pointers to the kernel through syscalls or other interfaces.
->>>>>
->>>>> Right now the kernel is already able to handle user faults with tagged
->>>>> pointers, due to these patches:
->>>>>
->>>>> 1. 81cddd65 ("arm64: traps: fix userspace cache maintenance emulation on a
->>>>>              tagged pointer")
->>>>> 2. 7dcd9dd8 ("arm64: hw_breakpoint: fix watchpoint matching for tagged
->>>>>               pointers")
->>>>> 3. 276e9327 ("arm64: entry: improve data abort handling of tagged
->>>>>               pointers")
->>>>>
->>>>> This patchset extends tagged pointer support to syscall arguments.
->>>
->>> [...]
->>>
->>>> Do you think this is ready to be merged?
->>>>
->>>> Should this go through the mm or the arm tree?
->>>
->>> I would certainly prefer to take at least the arm64 bits via the arm64 tree
->>> (i.e. patches 1, 2 and 15). We also need a Documentation patch describing
->>> the new ABI.
->>
->> Sounds good! Should I post those patches together with the
->> Documentation patches from Vincenzo as a separate patchset?
+On Sun, Jul 07, 2019 at 05:20:38PM +0300, Gal Pressman wrote:
+> Expose hardware statistics through the sysfs api:
+> /sys/class/infiniband/efa_0/hw_counters/*.
 > 
-> Yes, please (although as you say below, we need a new version of those
-> patches from Vincenzo to address the feedback on v5). The other thing I
-> should say is that I'd be happy to queue the other patches in the series
-> too, but some of them are missing acks from the relevant maintainers (e.g.
-> the mm/ and fs/ changes).
-> 
+> Reviewed-by: Firas JahJah <firasj@amazon.com>
+> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
+> ---
+>  drivers/infiniband/hw/efa/efa.h         |  3 +
+>  drivers/infiniband/hw/efa/efa_com_cmd.c | 35 +++++++++++
+>  drivers/infiniband/hw/efa/efa_com_cmd.h | 23 +++++++
+>  drivers/infiniband/hw/efa/efa_main.c    |  2 +
+>  drivers/infiniband/hw/efa/efa_verbs.c   | 79 +++++++++++++++++++++++++
+>  5 files changed, 142 insertions(+)
 
-I am actively working on the document and will share v6 with the requested
-changes in the next few days.
+Am I right that this patch needs 
 
-> Will
-> 
+https://patchwork.kernel.org/patch/11053949/
 
--- 
-Regards,
-Vincenzo
+before it won't crash?
+
+Jason
