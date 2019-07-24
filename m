@@ -2,58 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E8D741A8
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 00:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7D8741FC
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 01:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729170AbfGXWrH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Jul 2019 18:47:07 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:53120 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728048AbfGXWrH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Jul 2019 18:47:07 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::d71])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 18C311543C8D5;
-        Wed, 24 Jul 2019 15:47:06 -0700 (PDT)
-Date:   Wed, 24 Jul 2019 15:47:05 -0700 (PDT)
-Message-Id: <20190724.154705.141831380224703229.davem@davemloft.net>
-To:     arnd@arndb.de
-Cc:     tariqt@mellanox.com, ereza@mellanox.com, jackm@dev.mellanox.co.il,
-        eli@mellanox.co.il, moshe@mellanox.com, jiri@mellanox.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH net-next] [net-next] mlx4: avoid large stack usage in
- mlx4_init_hca()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20190722150204.1157315-1-arnd@arndb.de>
-References: <20190722150204.1157315-1-arnd@arndb.de>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 24 Jul 2019 15:47:06 -0700 (PDT)
+        id S1729707AbfGXXX1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Jul 2019 19:23:27 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:2928 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbfGXXX0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Jul 2019 19:23:26 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5d38e8730000>; Wed, 24 Jul 2019 16:23:31 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 24 Jul 2019 16:23:23 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 24 Jul 2019 16:23:23 -0700
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 24 Jul
+ 2019 23:23:22 +0000
+Subject: Re: [PATCH 00/12] block/bio, fs: convert put_page() to
+ put_user_page*()
+To:     Christoph Hellwig <hch@infradead.org>, <john.hubbard@gmail.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>, <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        <ceph-devel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-cifs@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <samba-technical@lists.samba.org>,
+        <v9fs-developer@lists.sourceforge.net>,
+        <virtualization@lists.linux-foundation.org>
+References: <20190724042518.14363-1-jhubbard@nvidia.com>
+ <20190724061750.GA19397@infradead.org>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <17f12f3d-981e-a717-c8e5-bfbbfb7ec1a3@nvidia.com>
+Date:   Wed, 24 Jul 2019 16:23:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20190724061750.GA19397@infradead.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1564010611; bh=U/byz8o3kezigETW8hWUjg+JqkNm/y0Q4UHjAnDVaRI=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=POKycPna3sFHaptSpPG8JFNhdv+KWPJt4Fqq7qra/U5uujHxVhga0mA2hyYe3oLWO
+         rvMjdBQgQaYdhe3tYVq3xzWzC7PXLH9gVg6v6GfrdnHKhzPSXOdrUzDa4Sfy+FpWme
+         AYx8XN4QHijtxUQThz9jDsFglp/BwmD6wmVyo2Ou4HoX36ySg8r0DnnWDfRMrkzmXC
+         XvSXsG7L9llJHump4bjV4yoH02Li7EYgdYhEFhGR3d1oO3a9DGx7nb70VEc+guaDrP
+         BAn4DIKE83X0lqImHCnmIIbgjVMdzz9Q4ePUhHR77cnRWD+JGehn4V8I2IYZgTvKbn
+         0ENu9Hbk0xmXw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 22 Jul 2019 17:01:55 +0200
+On 7/23/19 11:17 PM, Christoph Hellwig wrote:
+> On Tue, Jul 23, 2019 at 09:25:06PM -0700, john.hubbard@gmail.com wrote:
+>> * Store, in the iov_iter, a "came from gup (get_user_pages)" parameter.
+>>   Then, use the new iov_iter_get_pages_use_gup() to retrieve it when
+>>   it is time to release the pages. That allows choosing between put_page=
+()
+>>   and put_user_page*().
+>>
+>> * Pass in one more piece of information to bio_release_pages: a "from_gu=
+p"
+>>   parameter. Similar use as above.
+>>
+>> * Change the block layer, and several file systems, to use
+>>   put_user_page*().
+>=20
+> I think we can do this in a simple and better way.  We have 5 ITER_*
+> types.  Of those ITER_DISCARD as the name suggests never uses pages, so
+> we can skip handling it.  ITER_PIPE is rejected =D1=96n the direct I/O pa=
+th,
+> which leaves us with three.
+>=20
+> Out of those ITER_BVEC needs a user page reference, so we want to call
 
-> The mlx4_dev_cap and mlx4_init_hca_param are really too large
-> to be put on the kernel stack, as shown by this clang warning:
-> 
-> drivers/net/ethernet/mellanox/mlx4/main.c:3304:12: error: stack frame size of 1088 bytes in function 'mlx4_load_one' [-Werror,-Wframe-larger-than=]
-> 
-> With gcc, the problem is the same, but it does not warn because
-> it does not inline this function, and therefore stays just below
-> the warning limit, while clang is just above it.
-> 
-> Use kzalloc for dynamic allocation instead of putting them
-> on stack. This gets the combined stack frame down to 424 bytes.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+               ^ ITER_IOVEC, I hope. Otherwise I'm hopeless lost. :)
 
-Applied.
+> put_user_page* on it.  ITER_BVEC always already has page reference,
+> which means in the block direct I/O path path we alread don't take
+> a page reference.  We should extent that handling to all other calls
+> of iov_iter_get_pages / iov_iter_get_pages_alloc.  I think we should
+> just reject ITER_KVEC for direct I/O as well as we have no users and
+> it is rather pointless.  Alternatively if we see a use for it the
+> callers should always have a life page reference anyway (or might
+> be on kmalloc memory), so we really should not take a reference either.
+>=20
+> In other words:  the only time we should ever have to put a page in
+> this patch is when they are user pages.  We'll need to clean up
+> various bits of code for that, but that can be done gradually before
+> even getting to the actual put_user_pages conversion.
+>=20
+
+Sounds great. I'm part way into it and it doesn't look too bad. The main
+question is where to scatter various checks and assertions, to keep
+the kvecs out of direct I/0. Or at least keep the gups away from=20
+direct I/0.
+
+
+thanks,
+--=20
+John Hubbard
+NVIDIA
