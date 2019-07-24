@@ -2,95 +2,299 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F6E723C3
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 03:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076DD723F9
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 03:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbfGXBfr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jul 2019 21:35:47 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:46510 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728132AbfGXBfr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Jul 2019 21:35:47 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 31A3FA0E6E2DA1674ADF;
-        Wed, 24 Jul 2019 09:35:46 +0800 (CST)
-Received: from [127.0.0.1] (10.61.25.96) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Wed, 24 Jul 2019
- 09:35:40 +0800
-Subject: =?UTF-8?Q?Re:_=e3=80=90Question_for_srpt_in_kernel-4.14=e3=80=91?=
-From:   oulijun <oulijun@huawei.com>
-To:     Bart Van Assche <bvanassche@acm.org>, <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>
-CC:     linux-rdma <linux-rdma@vger.kernel.org>
-References: <16008407-2ffd-0bbb-717e-7e874a3a5ee0@huawei.com>
- <d4b60eb6-9e61-987e-d7ba-e3806faceedd@acm.org>
- <d2531a84-b0c2-3c39-141a-166a4a8dd8be@huawei.com>
- <c15e7a21-0e8b-b760-97dc-4bbd9a08b604@acm.org>
- <b99eb729-2a1d-5c2e-970c-e3a9baf5d6bd@huawei.com>
-Message-ID: <e39e78fb-cf7a-b27f-89e3-b753131673d8@huawei.com>
-Date:   Wed, 24 Jul 2019 09:35:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.0
+        id S1728005AbfGXBsn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jul 2019 21:48:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725837AbfGXBsn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 23 Jul 2019 21:48:43 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 522D82238C;
+        Wed, 24 Jul 2019 01:48:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1563932922;
+        bh=xWPuqjdVfcT3qt7jHBWtrnwFueRLSmJj6r6ilFHQc6A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TYw2xcll1IVLZQUMkOJ9XPOzS/DkbB96jZ1NvwNC0yetRp/99Kg1wdEkUkSM1Wxdg
+         43p35ba8FmnEEsI3MFiiFqqouu5jMnwh9usXkDcc9tbJlJVJKw2L+6Rdn/aQMRRKfy
+         PsH3UPr5be5Pt/hsGj6j9anvY8WnEjMycZuftXeA=
+Date:   Tue, 23 Jul 2019 18:48:40 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yishai Hadas <yishaih@mellanox.com>
+Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Reminder: 11 open syzbot bugs in RDMA subsystem
+Message-ID: <20190724014840.GL643@sol.localdomain>
+Mail-Followup-To: linux-rdma@vger.kernel.org,
+        Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Yishai Hadas <yishaih@mellanox.com>, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 MIME-Version: 1.0
-In-Reply-To: <b99eb729-2a1d-5c2e-970c-e3a9baf5d6bd@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.61.25.96]
-X-CFilter-Loop: Reflected
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2019/7/23 11:25, oulijun 写道:
-> 在 2019/7/23 11:13, Bart Van Assche 写道:
->> On 7/22/19 6:30 PM, oulijun wrote:
->>> 在 2019/7/23 2:07, Bart Van Assche 写道:
->>>> On 7/19/19 11:54 PM, oulijun wrote:
->>>>> I am targeting a problem about RoCE and SCSI over RDMA from srpt in kernel-4.14. When insmod srpt.ko and insmod hns-roce-hw-v2.ko, it will
->>>>> report a warning in srpt_add_one:
->>>>>     ib_srpt srpt_add_one(hns_0) failed.
->>>> How about the following patch?
->>>>
->>>> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
->>>> index 1a039f16d315..e2a4a14763b8 100644
->>>> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
->>>> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
->>>> @@ -3109,7 +3109,8 @@ static void srpt_add_one(struct ib_device *device)
->>>>       srpt_use_srq(sdev, sdev->port[0].port_attrib.use_srq);
->>>>
->>>>       if (!srpt_service_guid)
->>>> -        srpt_service_guid = be64_to_cpu(device->node_guid);
->>>> +        srpt_service_guid = be64_to_cpu(device->node_guid) &
->>>> +            ~IB_SERVICE_ID_AGN_MASK;
->>>>
->>>>       if (rdma_port_get_link_layer(device, 1) == IB_LINK_LAYER_INFINIBAND)
->>>>           sdev->cm_id = ib_create_cm_id(device, srpt_cm_handler, sdev);
->>>>
->>> No, I did not find this patch in the latest kernel-5.3 or others.
->> What I meant is: can you try that patch?
->>
->> Thanks,
->>
->> Bart.
->>
->> .
->>
-> Yes, I will do.
->
->
->
-> .
->
-Hi, Bart vlan Assche
+[This email was generated by a script.  Let me know if you have any suggestions
+to make it better, or if you want it re-generated with the latest status.]
 
-   if we don't add the patch (IB/srpt: Add RDMA/CM support) and only merge your patch, it will not resolve our question.
+Of the currently open syzbot reports against the upstream kernel, I've manually
+marked 11 of them as possibly being bugs in the RDMA subsystem.  I've listed
+these reports below, sorted by an algorithm that tries to list first the reports
+most likely to be still valid, important, and actionable.
 
-if we add the patch(IB/srpt: Add RDMA/CM support) and merge your patch, it will success.
+Of these 11 bugs, 1 was seen in mainline in the last week.
 
+Of these 11 bugs, 1 was bisected to a commit from the following person:
 
-thanks.
+	Yishai Hadas <yishaih@mellanox.com>
 
-Lijun Ou
+If you believe a bug is no longer valid, please close the syzbot report by
+sending a '#syz fix', '#syz dup', or '#syz invalid' command in reply to the
+original thread, as explained at https://goo.gl/tpsmEJ#status
 
+If you believe I misattributed a bug to the RDMA subsystem, please let me know,
+and if possible forward the report to the correct people or mailing list.
+
+Here are the bugs:
+
+--------------------------------------------------------------------------------
+Title:              KASAN: use-after-free Read in rdma_listen (2)
+Last occurred:      3 days ago
+Reported:           115 days ago
+Branches:           Mainline and others
+Dashboard link:     https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
+Original thread:    https://lkml.kernel.org/lkml/00000000000012a4cd05854a1d0a@google.com/T/#u
+
+This bug has a syzkaller reproducer only.
+
+No one replied to the original thread for this bug.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+adb15cf8c2798e4e0db4@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/00000000000012a4cd05854a1d0a@google.com
+
+--------------------------------------------------------------------------------
+Title:              WARNING: bad unlock balance in ucma_destroy_id
+Last occurred:      27 days ago
+Reported:           329 days ago
+Branches:           Mainline and others
+Dashboard link:     https://syzkaller.appspot.com/bug?id=c600e111223ce0a20e5f2fb4e9a4ebdff54d7fa6
+Original thread:    https://lkml.kernel.org/lkml/0000000000003b9c4b0574806070@google.com/T/#u
+
+This bug has a syzkaller reproducer only.
+
+This bug was bisected to:
+
+	commit e1c30298ccab87151a0c4241fc5985c591598361
+	Author: Yishai Hadas <yishaih@mellanox.com>
+	Date:   Thu Aug 13 15:32:07 2015 +0000
+
+	��IB/ucma: HW Device hot-removal support
+
+No one replied to the original thread for this bug.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+4b628fcc748474003457@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/0000000000003b9c4b0574806070@google.com
+
+--------------------------------------------------------------------------------
+Title:              WARNING: bad unlock balance in ucma_event_handler
+Last occurred:      43 days ago
+Reported:           405 days ago
+Branches:           Mainline and others
+Dashboard link:     https://syzkaller.appspot.com/bug?id=d5222b3e1659e0aea19df562c79f216515740daa
+Original thread:    https://lkml.kernel.org/lkml/000000000000af6530056e863794@google.com/T/#u
+
+This bug has a C reproducer.
+
+The original thread for this bug received 6 replies; the last was 42 days ago.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+e5579222b6a3edd96522@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/000000000000af6530056e863794@google.com
+
+--------------------------------------------------------------------------------
+Title:              KASAN: use-after-free Read in __list_del_entry_valid (4)
+Last occurred:      478 days ago
+Reported:           485 days ago
+Branches:           Mainline
+Dashboard link:     https://syzkaller.appspot.com/bug?id=56b60fb3340c5995373fe5b8eae9e8722a012fc4
+Original thread:    https://lkml.kernel.org/lkml/001a1141551246502d056845782e@google.com/T/#u
+
+This bug has a C reproducer.
+
+The original thread for this bug received 6 replies; the last was 334 days ago.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+29ee8f76017ce6cf03da@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/001a1141551246502d056845782e@google.com
+
+--------------------------------------------------------------------------------
+Title:              KASAN: use-after-free Read in addr_resolve
+Last occurred:      26 days ago
+Reported:           123 days ago
+Branches:           Mainline
+Dashboard link:     https://syzkaller.appspot.com/bug?id=07328fd3299fadf7005c46651d2ff50c1cd4e1dd
+Original thread:    https://lkml.kernel.org/lkml/0000000000006d637a0584aa6520@google.com/T/#u
+
+Unfortunately, this bug does not have a reproducer.
+
+No one replied to the original thread for this bug.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+bd034f3fdc0402e942ed@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/0000000000006d637a0584aa6520@google.com
+
+--------------------------------------------------------------------------------
+Title:              KASAN: use-after-free Read in cma_cancel_operation
+Last occurred:      136 days ago
+Reported:           476 days ago
+Branches:           Mainline and others
+Dashboard link:     https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
+Original thread:    https://lkml.kernel.org/lkml/94eb2c054604ad40010568e8ea21@google.com/T/#u
+
+This bug has a C reproducer.
+
+The original thread for this bug received 4 replies; the last was 153 days ago.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+6956235342b7317ec564@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/94eb2c054604ad40010568e8ea21@google.com
+
+--------------------------------------------------------------------------------
+Title:              KASAN: use-after-free Read in addr_handler
+Last occurred:      154 days ago
+Reported:           222 days ago
+Branches:           Mainline and others
+Dashboard link:     https://syzkaller.appspot.com/bug?id=a9796acbdecc1b2ba927578917755899c63c48af
+Original thread:    https://lkml.kernel.org/lkml/00000000000055ee31057ce8f277@google.com/T/#u
+
+This bug has a syzkaller reproducer only.
+
+syzbot has bisected this bug, but I think the bisection result is incorrect.
+
+The original thread for this bug received 2 replies; the last was 119 days ago.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+b358909d8d01556b790b@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/00000000000055ee31057ce8f277@google.com
+
+--------------------------------------------------------------------------------
+Title:              BUG: corrupted list in rdma_listen
+Last occurred:      134 days ago
+Reported:           460 days ago
+Branches:           Mainline and others
+Dashboard link:     https://syzkaller.appspot.com/bug?id=25e00dd59f31783f233185cb60064b0ab645310f
+Original thread:    https://lkml.kernel.org/lkml/000000000000a366e2056a35c6fd@google.com/T/#u
+
+This bug has a C reproducer.
+
+No one replied to the original thread for this bug.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+8458d13b13562abf6b77@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/000000000000a366e2056a35c6fd@google.com
+
+--------------------------------------------------------------------------------
+Title:              general protection fault in rdma_listen (2)
+Last occurred:      110 days ago
+Reported:           258 days ago
+Branches:           Mainline and others
+Dashboard link:     https://syzkaller.appspot.com/bug?id=38d36d1b26b4299bf964d50af4d79688d39ab960
+Original thread:    https://lkml.kernel.org/lkml/000000000000396c09057a17b6fd@google.com/T/#u
+
+This bug has a syzkaller reproducer only.
+
+The original thread for this bug received 2 replies; the last was 105 days ago.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+6b46b135602a3f3ac99e@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/000000000000396c09057a17b6fd@google.com
+
+--------------------------------------------------------------------------------
+Title:              KASAN: slab-out-of-bounds Read in rdma_listen
+Last occurred:      147 days ago
+Reported:           337 days ago
+Branches:           Mainline and others
+Dashboard link:     https://syzkaller.appspot.com/bug?id=fc5df2d4d88353572496fcf9caf8a9c7bdc034c3
+Original thread:    https://lkml.kernel.org/lkml/0000000000001de4b70573d62017@google.com/T/#u
+
+Unfortunately, this bug does not have a reproducer.
+
+No one replied to the original thread for this bug.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+c92378b32760a4eef756@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/0000000000001de4b70573d62017@google.com
+
+--------------------------------------------------------------------------------
+Title:              KASAN: use-after-free Read in rdma_bind_addr
+Last occurred:      111 days ago
+Reported:           111 days ago
+Branches:           linux-next
+Dashboard link:     https://syzkaller.appspot.com/bug?id=ecb19d20c6748a78058dac77ad17468c4e6733c4
+Original thread:    https://lkml.kernel.org/lkml/000000000000ebb6bc05859ac2cf@google.com/T/#u
+
+Unfortunately, this bug does not have a reproducer.
+
+No one replied to the original thread for this bug.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+68b44a1597636e0b342c@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/000000000000ebb6bc05859ac2cf@google.com
 
