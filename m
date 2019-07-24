@@ -2,104 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 267677277D
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 07:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70457280C
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 08:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbfGXFrp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Jul 2019 01:47:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726178AbfGXFrp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 24 Jul 2019 01:47:45 -0400
-Received: from localhost (unknown [37.142.3.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9123227BF;
-        Wed, 24 Jul 2019 05:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563947264;
-        bh=4pUsLkr3sSWA9bQ01QQSVrCjqBcz3gXUD2rLqhLl5gA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d81tVcBSuyP9AAaLAWvIxf6hNzgO5lV5QqVwFHsQFoF6L+wi0Kkg3QPLdRcX+0e4d
-         EeVuLcfN7wBP6ZzRbgfzT31zIjBSpLzv2EuIyzqFCUGep/A7VK+ujEblm3JjjlEXxM
-         AA4dfgcZNJld3TSIoP4UTDzOmAy9KDsWV3U//SVI=
-Date:   Wed, 24 Jul 2019 08:47:36 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH v1] rdma: Enable ib_alloc_cq to spread work over a
- device's comp_vectors
-Message-ID: <20190724054736.GW5125@mtr-leonro.mtl.com>
-References: <156390915496.6759.4305845732131573253.stgit@seurat29.1015granger.net>
+        id S1726086AbfGXGMk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Jul 2019 02:12:40 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2711 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725945AbfGXGMj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 24 Jul 2019 02:12:39 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id DB0DDD7CEC6E4F93575F;
+        Wed, 24 Jul 2019 14:12:36 +0800 (CST)
+Received: from [127.0.0.1] (10.133.213.239) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Wed, 24 Jul 2019
+ 14:12:26 +0800
+Subject: Re: [PATCH v2] RDMA/hns: Fix build error for hip08
+To:     <oulijun@huawei.com>, <xavier.huwei@huawei.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
+References: <20190723024908.11876-1-yuehaibing@huawei.com>
+ <20190724034016.15048-1-yuehaibing@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
+From:   Yuehaibing <yuehaibing@huawei.com>
+Message-ID: <a022a386-85cc-aa92-2f50-1b61070d4d2e@huawei.com>
+Date:   Wed, 24 Jul 2019 14:12:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <156390915496.6759.4305845732131573253.stgit@seurat29.1015granger.net>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <20190724034016.15048-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 03:13:37PM -0400, Chuck Lever wrote:
-> Send and Receive completion is handled on a single CPU selected at
-> the time each Completion Queue is allocated. Typically this is when
-> an initiator instantiates an RDMA transport, or when a target
-> accepts an RDMA connection.
->
-> Some ULPs cannot open a connection per CPU to spread completion
-> workload across available CPUs. For these ULPs, allow the RDMA core
-> to select a completion vector based on the device's complement of
-> available comp_vecs.
->
-> When a ULP elects to use RDMA_CORE_ANY_COMPVEC, if multiple CPUs are
-> available, a different CPU will be selected for each Completion
-> Queue. For the moment, a simple round-robin mechanism is used.
->
-> Suggested-by: Håkon Bugge <haakon.bugge@oracle.com>
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 
-It make me wonder why do we need comp_vector as an argument to ib_alloc_cq?
-From what I see, or callers are internally implementing similar logic
-to proposed here, or they don't care (set 0).
+Pls drop this, this cannot fix the issue.
 
-Can we enable this comp_vector for everyone and simplify our API?
-
+On 2019/7/24 11:40, YueHaibing wrote:
+> If INFINIBAND_HNS_HIP08 is selected and HNS3 is m,
+> but INFINIBAND_HNS is y, building fails:
+> 
+> drivers/infiniband/hw/hns/hns_roce_hw_v2.o: In function `hns_roce_hw_v2_exit':
+> hns_roce_hw_v2.c:(.exit.text+0xd): undefined reference to `hnae3_unregister_client'
+> drivers/infiniband/hw/hns/hns_roce_hw_v2.o: In function `hns_roce_hw_v2_init':
+> hns_roce_hw_v2.c:(.init.text+0xd): undefined reference to `hnae3_register_client'
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Suggested-by: Leon Romanovsky <leon@kernel.org>
+> Fixes: dd74282df573 ("RDMA/hns: Initialize the PCI device for hip08 RoCE")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > ---
->  drivers/infiniband/core/cq.c             |   20 +++++++++++++++++++-
->  include/rdma/ib_verbs.h                  |    3 +++
->  net/sunrpc/xprtrdma/svc_rdma_transport.c |    6 ++++--
->  net/sunrpc/xprtrdma/verbs.c              |    5 ++---
->  4 files changed, 28 insertions(+), 6 deletions(-)
->
-> Jason-
->
-> If this patch is acceptable to all, then I would expect you to take
-> it through the RDMA tree.
->
->
-> diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-> index 7c599878ccf7..a89d549490c4 100644
-> --- a/drivers/infiniband/core/cq.c
-> +++ b/drivers/infiniband/core/cq.c
-> @@ -165,12 +165,27 @@ static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
->  	queue_work(cq->comp_wq, &cq->work);
->  }
->
-> +/*
-> + * Attempt to spread ULP completion queues over a device's completion
-> + * vectors so that all available CPU cores can help service the device's
-> + * interrupt workload. This mechanism may be improved at a later point
-> + * to dynamically take into account the system's actual workload.
-> + */
-> +static int ib_get_comp_vector(struct ib_device *dev)
-> +{
-> +	static atomic_t cv;
-> +
-> +	if (dev->num_comp_vectors > 1)
-> +		return atomic_inc_return(&cv) % dev->num_comp_vectors;
+> v2: select HNS3 to fix this
+> ---
+>  drivers/infiniband/hw/hns/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/hns/Kconfig b/drivers/infiniband/hw/hns/Kconfig
+> index 8bf847b..b9dfac0 100644
+> --- a/drivers/infiniband/hw/hns/Kconfig
+> +++ b/drivers/infiniband/hw/hns/Kconfig
+> @@ -22,7 +22,8 @@ config INFINIBAND_HNS_HIP06
+>  
+>  config INFINIBAND_HNS_HIP08
+>  	bool "Hisilicon Hip08 Family RoCE support"
+> -	depends on INFINIBAND_HNS && PCI && HNS3
+> +	depends on INFINIBAND_HNS && PCI
+> +	select HNS3
+>  	---help---
+>  	  RoCE driver support for Hisilicon RoCE engine in Hisilicon Hip08 SoC.
+>  	  The RoCE engine is a PCI device.
+> 
 
-It is worth to take into account num_online_cpus(),
-
-Thanks
