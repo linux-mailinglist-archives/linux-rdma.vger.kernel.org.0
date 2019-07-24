@@ -2,115 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E69728AF
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 08:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E0572981
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2019 10:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725878AbfGXGzq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Jul 2019 02:55:46 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:60428 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725870AbfGXGzq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 24 Jul 2019 02:55:46 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id B64D5D0066629F36656E;
-        Wed, 24 Jul 2019 14:55:03 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.439.0; Wed, 24 Jul 2019
- 14:54:54 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <oulijun@huawei.com>, <xavier.huwei@huawei.com>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] RDMA/hns: Fix build error
-Date:   Wed, 24 Jul 2019 14:54:43 +0800
-Message-ID: <20190724065443.53068-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-In-Reply-To: <20190723024908.11876-1-yuehaibing@huawei.com>
-References: <20190723024908.11876-1-yuehaibing@huawei.com>
+        id S1726007AbfGXIII (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Jul 2019 04:08:08 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:43043 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbfGXIII (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Jul 2019 04:08:08 -0400
+Received: by mail-qk1-f195.google.com with SMTP id m14so7440460qka.10
+        for <linux-rdma@vger.kernel.org>; Wed, 24 Jul 2019 01:08:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=/MFYQFzENwHk5G46kOvOVKTzaxjp4jXpKM7WypPWBDc=;
+        b=SJQB1LmE39aW/69YK8MdY6zcimnmgjjuQPILmo+1LhPio2bFERg1eajqiuoQXEBn5l
+         ysj5qZuux//1xl16Z2Djb2MIWMSYC314SbskVLFVZ+LSSXBOgumckGLWb3B0442NfA9p
+         YuKdTm3w/jyh2lR20TbBd4AeObhzI4hqbloeJBT7+OG6U/J8y3vPmgVE/rTMjTmCHAHn
+         gSZx9IFArjWTqIOYidu2smryiAJ3wsANKfbKMzC/A9frNPSqdh8ydeW4wOAAiyaCRxpx
+         EquTlfstHaM+nngZcWpUhSLalGuc46DvjyG43WkkZyzGtJt1UjOvZXVIN9t4KBXyvMfu
+         LHTQ==
+X-Gm-Message-State: APjAAAXUY6Yoxs3FAjId1budKDk9FdSlpu/UTMkkTbP8577WX9mGICfK
+        ZM1IV61E1JxSyCFG70s3t09hNg==
+X-Google-Smtp-Source: APXvYqyqOJ7xj5WyBSGnSKw6r+fHzKSSQgggyWILPC/N5KbhyvrIGi3wpGDnO2q6i0xNWsrtSCd37A==
+X-Received: by 2002:a05:620a:31b:: with SMTP id s27mr17648521qkm.264.1563955687250;
+        Wed, 24 Jul 2019 01:08:07 -0700 (PDT)
+Received: from redhat.com (bzq-79-181-91-42.red.bezeqint.net. [79.181.91.42])
+        by smtp.gmail.com with ESMTPSA id t26sm23203051qtc.95.2019.07.24.01.07.58
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 24 Jul 2019 01:08:06 -0700 (PDT)
+Date:   Wed, 24 Jul 2019 04:07:55 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     john.hubbard@gmail.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>, ceph-devel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, samba-technical@lists.samba.org,
+        v9fs-developer@lists.sourceforge.net,
+        virtualization@lists.linux-foundation.org,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Ming Lei <ming.lei@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Boaz Harrosh <boaz@plexistor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: Re: [PATCH 07/12] vhost-scsi: convert put_page() to put_user_page*()
+Message-ID: <20190724040745-mutt-send-email-mst@kernel.org>
+References: <20190724042518.14363-1-jhubbard@nvidia.com>
+ <20190724042518.14363-8-jhubbard@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190724042518.14363-8-jhubbard@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-If INFINIBAND_HNS_HIP08 is selected and HNS3 is m,
-but INFINIBAND_HNS is y, building fails:
+On Tue, Jul 23, 2019 at 09:25:13PM -0700, john.hubbard@gmail.com wrote:
+> From: Jérôme Glisse <jglisse@redhat.com>
+> 
+> For pages that were retained via get_user_pages*(), release those pages
+> via the new put_user_page*() routines, instead of via put_page().
+> 
+> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+> ("mm: introduce put_user_page*(), placeholder versions").
+> 
+> Changes from Jérôme's original patch:
+> 
+> * Changed a WARN_ON to a BUG_ON.
+> 
+> Signed-off-by: Jérôme Glisse <jglisse@redhat.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> Cc: virtualization@lists.linux-foundation.org
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-block@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Johannes Thumshirn <jthumshirn@suse.de>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Ming Lei <ming.lei@redhat.com>
+> Cc: Dave Chinner <david@fromorbit.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Boaz Harrosh <boaz@plexistor.com>
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Stefan Hajnoczi <stefanha@redhat.com>
 
-drivers/infiniband/hw/hns/hns_roce_hw_v2.o: In function `hns_roce_hw_v2_exit':
-hns_roce_hw_v2.c:(.exit.text+0xd): undefined reference to `hnae3_unregister_client'
-drivers/infiniband/hw/hns/hns_roce_hw_v2.o: In function `hns_roce_hw_v2_init':
-hns_roce_hw_v2.c:(.init.text+0xd): undefined reference to `hnae3_register_client'
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-Also if INFINIBAND_HNS_HIP06 is selected and HNS_DSAF
-is m, but INFINIBAND_HNS is y, building fails:
-
-drivers/infiniband/hw/hns/hns_roce_hw_v1.o: In function `hns_roce_v1_reset':
-hns_roce_hw_v1.c:(.text+0x39fa): undefined reference to `hns_dsaf_roce_reset'
-hns_roce_hw_v1.c:(.text+0x3a25): undefined reference to `hns_dsaf_roce_reset'
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: dd74282df573 ("RDMA/hns: Initialize the PCI device for hip08 RoCE")
-Fixes: 08805fdbeb2d ("RDMA/hns: Split hw v1 driver from hns roce driver")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/infiniband/hw/hns/Kconfig  | 6 +++---
- drivers/infiniband/hw/hns/Makefile | 8 ++------
- 2 files changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/Kconfig b/drivers/infiniband/hw/hns/Kconfig
-index 8bf847b..5478219 100644
---- a/drivers/infiniband/hw/hns/Kconfig
-+++ b/drivers/infiniband/hw/hns/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config INFINIBAND_HNS
--	tristate "HNS RoCE Driver"
-+	bool "HNS RoCE Driver"
- 	depends on NET_VENDOR_HISILICON
- 	depends on ARM64 || (COMPILE_TEST && 64BIT)
- 	---help---
-@@ -11,7 +11,7 @@ config INFINIBAND_HNS
- 	  To compile HIP06 or HIP08 driver as module, choose M here.
- 
- config INFINIBAND_HNS_HIP06
--	bool "Hisilicon Hip06 Family RoCE support"
-+	tristate "Hisilicon Hip06 Family RoCE support"
- 	depends on INFINIBAND_HNS && HNS && HNS_DSAF && HNS_ENET
- 	---help---
- 	  RoCE driver support for Hisilicon RoCE engine in Hisilicon Hip06 and
-@@ -21,7 +21,7 @@ config INFINIBAND_HNS_HIP06
- 	  module will be called hns-roce-hw-v1
- 
- config INFINIBAND_HNS_HIP08
--	bool "Hisilicon Hip08 Family RoCE support"
-+	tristate "Hisilicon Hip08 Family RoCE support"
- 	depends on INFINIBAND_HNS && PCI && HNS3
- 	---help---
- 	  RoCE driver support for Hisilicon RoCE engine in Hisilicon Hip08 SoC.
-diff --git a/drivers/infiniband/hw/hns/Makefile b/drivers/infiniband/hw/hns/Makefile
-index e105945..449a2d8 100644
---- a/drivers/infiniband/hw/hns/Makefile
-+++ b/drivers/infiniband/hw/hns/Makefile
-@@ -9,12 +9,8 @@ hns-roce-objs := hns_roce_main.o hns_roce_cmd.o hns_roce_pd.o \
- 	hns_roce_ah.o hns_roce_hem.o hns_roce_mr.o hns_roce_qp.o \
- 	hns_roce_cq.o hns_roce_alloc.o hns_roce_db.o hns_roce_srq.o hns_roce_restrack.o
- 
--ifdef CONFIG_INFINIBAND_HNS_HIP06
- hns-roce-hw-v1-objs := hns_roce_hw_v1.o $(hns-roce-objs)
--obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v1.o
--endif
-+obj-$(CONFIG_INFINIBAND_HNS_HIP06) += hns-roce-hw-v1.o
- 
--ifdef CONFIG_INFINIBAND_HNS_HIP08
- hns-roce-hw-v2-objs := hns_roce_hw_v2.o hns_roce_hw_v2_dfx.o $(hns-roce-objs)
--obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v2.o
--endif
-+obj-$(CONFIG_INFINIBAND_HNS_HIP08) += hns-roce-hw-v2.o
--- 
-2.7.4
-
-
+> ---
+>  drivers/vhost/scsi.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
+> index a9caf1bc3c3e..282565ab5e3f 100644
+> --- a/drivers/vhost/scsi.c
+> +++ b/drivers/vhost/scsi.c
+> @@ -329,11 +329,11 @@ static void vhost_scsi_release_cmd(struct se_cmd *se_cmd)
+>  
+>  	if (tv_cmd->tvc_sgl_count) {
+>  		for (i = 0; i < tv_cmd->tvc_sgl_count; i++)
+> -			put_page(sg_page(&tv_cmd->tvc_sgl[i]));
+> +			put_user_page(sg_page(&tv_cmd->tvc_sgl[i]));
+>  	}
+>  	if (tv_cmd->tvc_prot_sgl_count) {
+>  		for (i = 0; i < tv_cmd->tvc_prot_sgl_count; i++)
+> -			put_page(sg_page(&tv_cmd->tvc_prot_sgl[i]));
+> +			put_user_page(sg_page(&tv_cmd->tvc_prot_sgl[i]));
+>  	}
+>  
+>  	vhost_scsi_put_inflight(tv_cmd->inflight);
+> @@ -630,6 +630,13 @@ vhost_scsi_map_to_sgl(struct vhost_scsi_cmd *cmd,
+>  	size_t offset;
+>  	unsigned int npages = 0;
+>  
+> +	/*
+> +	 * Here in all cases we should have an IOVEC which use GUP. If that is
+> +	 * not the case then we will wrongly call put_user_page() and the page
+> +	 * refcount will go wrong (this is in vhost_scsi_release_cmd())
+> +	 */
+> +	WARN_ON(!iov_iter_get_pages_use_gup(iter));
+> +
+>  	bytes = iov_iter_get_pages(iter, pages, LONG_MAX,
+>  				VHOST_SCSI_PREALLOC_UPAGES, &offset);
+>  	/* No pages were pinned */
+> @@ -681,7 +688,7 @@ vhost_scsi_iov_to_sgl(struct vhost_scsi_cmd *cmd, bool write,
+>  			while (p < sg) {
+>  				struct page *page = sg_page(p++);
+>  				if (page)
+> -					put_page(page);
+> +					put_user_page(page);
+>  			}
+>  			return ret;
+>  		}
+> -- 
+> 2.22.0
