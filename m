@@ -2,85 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C40754A4
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 18:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F295F754C1
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 18:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729485AbfGYQxT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 12:53:19 -0400
-Received: from mail-qk1-f180.google.com ([209.85.222.180]:41638 "EHLO
-        mail-qk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729083AbfGYQxT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 12:53:19 -0400
-Received: by mail-qk1-f180.google.com with SMTP id v22so36943784qkj.8
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 09:53:18 -0700 (PDT)
+        id S2388878AbfGYQ6B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 12:58:01 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:40670 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388912AbfGYQ56 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 12:57:58 -0400
+Received: by mail-qt1-f195.google.com with SMTP id a15so49740032qtn.7
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 09:57:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=gl3eL8AXPiJjdtZEVIOL9Yh7v/UpLB9V/dFfbSsPgbc=;
-        b=Xg0O6pUbZb5HsrgCG/bdUMAdkgNb/DTxJe9ikWOd4zaujM1qklEEGaCQixK6Sem4M8
-         jwpepmBNRGoxAyEqcL3vMrpPppWTFjZPI86ya9sJEQO6ySkF9RlLcsDnFiyr/T2Pkbob
-         AZHqhsxGFRqOBiF9NSAjmYBIHAz8x0eGYcKNRDpnu1Nexwtdd9EWJtBfx/+nh14Hgrv3
-         TnmpbcXShbhRJaBhbgxTVjTPPIh32o7zuSTfzgjDTQ0MK+sRo5/oU/Pozos5n17hBayf
-         3aJN83kjPGQKzL7NDnianDi2qpVdIPzKzLDdwdGT2D69D9lJCa/WFcYpRvjlQN5Y8Eie
-         jBRg==
+        bh=8ZhTHUGF4BS+/P0Rb9TkAvrSGyWNOTQnBdMjw8j9VFk=;
+        b=htDNAyfJo63MPyQIOStcJbrDyJUyecGKpxeCN1ks947EiKLGO6CkCJUa5x9dB8TbfM
+         Bwa4LWWkuzh21QnmjaMFAu3m5IR49XdNmcF4wOtSSrK+u0XluA/A2E7xA5BPmrybm48Y
+         0pGFEC6moPikmfzYE2HUddJb3GtOpFE5/myj46UxS8Q2j+z9Akz7qEcHASdhynLEi8ti
+         EWDMZOxToSy3V5vbC072JeLcbrHcrK1gBxFzhIzA3sbbibgjAld23GDDUphR5R3syQoq
+         Sn4n0EuCgjmafw8N85d6zjA5+wtvqzL90zBkgGmvH5I5hr6RKppNg+qoVTjLLZRWQqNs
+         DCoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gl3eL8AXPiJjdtZEVIOL9Yh7v/UpLB9V/dFfbSsPgbc=;
-        b=CfrJ+OuCV7m6476X4/6bpOWVdbqZn9q7Xa13oJHKSUdWJQwDe1zmx7+6FhaoUDnkym
-         7Qeh/1XAhUtUqRpHH5yMefSCr5Xb3b5rUBU+67Cun9aDxujD/SxKHTQW4wsvo8uf0MAn
-         dGm/EHL9v1PsEOeCczl3EHYDwo9EwTXvV/UZryqs32qf5FXTHvFI4vwmXjZzUooD5NUQ
-         7IKaXXLVcVjW2i2/kZW91ZR7ENTCHQnK/7u+AqugPIFcvp7ZP4F9y8u3MyAuDfzYaLnj
-         mUIchlU+lWfyPHXDe97zNerfh3ROFM1gk6pEsS9/uu+g4brwM7P8OBqZaMLuf2XVAPWd
-         CVdQ==
-X-Gm-Message-State: APjAAAU2XPXM9kW4nSDgLBAyI3Cj2UvdYkYW7/SThqr0QxOIy1354G2f
-        L1wT0XzHyT7uqTYjvDa4/3iQ4/Fj3wNhEQ==
-X-Google-Smtp-Source: APXvYqzJlnq4o1Um56bH1aNWjbLoRekBOpiJnEMjWtAMP6vqDUkFB9J0Voj5D+T0fKkKwJ+tdRyfdw==
-X-Received: by 2002:a37:6ca:: with SMTP id 193mr61921318qkg.389.1564073598249;
-        Thu, 25 Jul 2019 09:53:18 -0700 (PDT)
+        bh=8ZhTHUGF4BS+/P0Rb9TkAvrSGyWNOTQnBdMjw8j9VFk=;
+        b=HvvfZug+GyIGHEIcPbvddtPXLjRwZcR7BD9J6NNQxHvXZ6bRjIvlxgmSCU+GzheKPQ
+         7n6MRJ/1Sb4sYVpCvJ+sxnbqBWYhCETC7BQgQroeKubd2zc/C9evOQCVjIXJm59h+AjR
+         LDnL2JCVzNWAjyfLgnHmxwPpwvVk6VRuONqD5jgfxWk9dXV3u8/ILt4iCCeZ4yIVX8vW
+         3scY1AsxElGoe8YijmemseP3Y0Ren0OKczV2h3X+U66cOihBeHKcI5S6cKRmHqvJ+oWT
+         L7eBdi2ZOLX5+Rlvdf+sKfVT02hLf5yteE5ICeBLHzeoEnqDEjjJhrD9KOnsrR8qcIkN
+         msqQ==
+X-Gm-Message-State: APjAAAWzDmmoO4f2z0Dx+tt7nu+BrI83T1ZDN5gGF6Fgq3eIrfbJToRR
+        17uOZdHkBfeRnFEAisCfLcLKRw==
+X-Google-Smtp-Source: APXvYqwHQPucPMO5kUMNQPJH7Vr25vk90HiYOq2HrHUamu9EDlxdlfqXGcMUBX1+WOCtwiIPISXbag==
+X-Received: by 2002:a0c:db93:: with SMTP id m19mr62622768qvk.96.1564073877389;
+        Thu, 25 Jul 2019 09:57:57 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id r36sm26589750qte.71.2019.07.25.09.53.17
+        by smtp.gmail.com with ESMTPSA id a67sm23661396qkg.131.2019.07.25.09.57.56
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Jul 2019 09:53:17 -0700 (PDT)
+        Thu, 25 Jul 2019 09:57:56 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hqgzU-0007E2-SQ; Thu, 25 Jul 2019 13:53:16 -0300
-Date:   Thu, 25 Jul 2019 13:53:16 -0300
+        id 1hqh40-0007U5-DH; Thu, 25 Jul 2019 13:57:56 -0300
+Date:   Thu, 25 Jul 2019 13:57:56 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Honggang Li <honli@redhat.com>
-Cc:     bvanassche@acm.org, linux-rdma@vger.kernel.org
-Subject: Re: [rdma-core patch v3] srp_daemon: improve the debug message for
- is_enabled_by_rules_file
-Message-ID: <20190725165316.GA27749@ziepe.ca>
-References: <20190715041614.27979-1-honli@redhat.com>
+To:     Hariprasad Kelam <hariprasad.kelam@gmail.com>
+Cc:     Michal Kalderon <mkalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] infiniband: hw: qedr: Remove Unneeded variable rc
+Message-ID: <20190725165756.GA28745@ziepe.ca>
+References: <20190716173712.GA12949@hari-Inspiron-1545>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190715041614.27979-1-honli@redhat.com>
+In-Reply-To: <20190716173712.GA12949@hari-Inspiron-1545>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 15, 2019 at 12:16:14AM -0400, Honggang Li wrote:
-> If the target was disallowed by rule file, user can not distinguish that
-> from the old debug message.
+On Tue, Jul 16, 2019 at 11:07:12PM +0530, Hariprasad Kelam wrote:
+> fix below issue reported by coccicheck
+> drivers/infiniband/hw/qedr/verbs.c:2454:5-7: Unneeded variable: "rc".
+> Return "0" on line 2499
 > 
-> pr_debug("Found an SRP target with id_ext %s - check if it allowed by rules file\n", target->id_ext);
-> 
-> It implicitly implied by the message next to the old debug message.
-> 
-> pr_debug("Found an SRP target with id_ext %s - check if it is already connected\n", target->id_ext);
-> 
-> The improved debug message will feedback the check result of rule file, user
-> no longer needs to wonder the target is allowed or not.
-> 
-> Signed-off-by: Honggang Li <honli@redhat.com>
->  srp_daemon/srp_daemon.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+> Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+> ---
+>  drivers/infiniband/hw/qedr/verbs.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
 Applied to for-next, thanks
 
