@@ -2,58 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D949C74D87
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 13:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A3D74DED
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 14:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbfGYLul (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 07:50:41 -0400
-Received: from verein.lst.de ([213.95.11.211]:60849 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727116AbfGYLul (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 25 Jul 2019 07:50:41 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3990468BFE; Thu, 25 Jul 2019 13:50:40 +0200 (CEST)
-Date:   Thu, 25 Jul 2019 13:50:38 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Pilmore <epilmore@gigaio.com>,
-        Stephen Bates <sbates@raithlin.com>
-Subject: Re: [PATCH 14/14] PCI/P2PDMA: Introduce
- pci_p2pdma_[un]map_resource()
-Message-ID: <20190725115038.GC31065@lst.de>
-References: <20190722230859.5436-1-logang@deltatee.com> <20190722230859.5436-15-logang@deltatee.com> <20190724063235.GC1804@lst.de> <57e8fc1a-de70-fb65-5ef1-ffa2b95c73a6@deltatee.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57e8fc1a-de70-fb65-5ef1-ffa2b95c73a6@deltatee.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S2404523AbfGYMPS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 08:15:18 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:39323 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404522AbfGYMPR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 08:15:17 -0400
+Received: by mail-pl1-f194.google.com with SMTP id b7so23393287pls.6;
+        Thu, 25 Jul 2019 05:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=y+QIB4QdjKz71M1YxwynMWzO+rB27zsg8WKRIIdr3/c=;
+        b=NZ/6dTsBSydrACeiZGDz+T8flvtmaB7vfcVKnrl+A0m+HtjK/crLv0IxqiOQxBAQbL
+         WxF0sqbEatVfQFPK1FpBMgZ5WJnmz3CFAmxhteDbJ7IyIlJ6SU29kvwgUjdYdXY5FU+1
+         rqwhRgt9vSgLmCcJj9FSQtq8vQAILW5NWQas8VFEaWpJbNR3j1mbdI24sEu5hK7RA8YD
+         NN9hwU4Db0Vh4jyCE+TadqkpT9irNv9g3ultChqUEvEcuUnpTxALcwDQgttO9as3aeSa
+         YblICSsGdP9PDIXugRrTqX78FxA5locafHJeJse7BJGufMnTdBNynVp41vFZiEd5uEA/
+         2q5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=y+QIB4QdjKz71M1YxwynMWzO+rB27zsg8WKRIIdr3/c=;
+        b=sI5gQDUdnurt74chtntJekfiTA0tA+F/1FI/GioF4g5kF+RKW4PtMOInWHdlZEPEX6
+         JdYX7Ww5J98oWaYBN5IVxnCQ/jXjculsodHvy05SX64rrxZqqhPTSLvHvNfCurcFvLD1
+         qI7adv2MHpss+gPut29cFFpegkFswzfzADNXe1zglC6aZzZDm/du2CjymLEF7ntET9wP
+         GBsGOqjRCwIBc9tjLt6HSKRoiB9LcrhMA36Z5DVr4IV8d1Yub4ZUl01ySem5HPEGOyvW
+         /+q6EZmh9Gf9V4LZd4e8GQZhZw4ApMM+t8UpOgyxIgGcQAqe4cBSrZnw1X9IdFHP1y8m
+         /M4A==
+X-Gm-Message-State: APjAAAUYjU3tOknyPBfTiDVglnjM2fo1xHBf7c7vhkE2zlD4bzINxRaY
+        vX1yGb5lnr7GXBdlEHw1wwYac5RlrZ8=
+X-Google-Smtp-Source: APXvYqyA9O1rHqPuadm47R5uEU2xLyoP0cGNOItpDz8NR0nwRgJ3eN1fmwaJQGIb90cwOIH1+y2y3Q==
+X-Received: by 2002:a17:902:3181:: with SMTP id x1mr88905993plb.135.1564056917207;
+        Thu, 25 Jul 2019 05:15:17 -0700 (PDT)
+Received: from oslab.tsinghua.edu.cn ([2402:f000:4:72:808::3ca])
+        by smtp.gmail.com with ESMTPSA id l1sm64449251pfl.9.2019.07.25.05.15.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 25 Jul 2019 05:15:16 -0700 (PDT)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     bharat@chelsio.com, dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] infiniband: hw: cxgb3: Fix a possible null-pointer dereference in connect_reply_upcall()
+Date:   Thu, 25 Jul 2019 20:15:08 +0800
+Message-Id: <20190725121508.16352-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 24, 2019 at 10:06:22AM -0600, Logan Gunthorpe wrote:
-> Yes. This is the downside of dealing only with a phys_addr_t: we have to
-> look up against it. Unfortunately, I believe it's possible for different
-> BARs on a device to be in different windows, so something like this is
-> necessary unless we already know the BAR the phys_addr_t belongs to. It
-> might probably be sped up a bit by storing the offsets of each bar
-> instead of looping through all the bridge windows, but I don't think it
-> will get you *that* much.
-> 
-> As this is an example with no users, the answer here will really depend
-> on what the use-case is doing. If they can lookup, ahead of time, the
-> mapping type and offset then they don't have to do this work on the hot
-> path and it means that pci_p2pdma_map_resource() is simply not a
-> suitable API.
+In connect_reply_upcall(), there is an if statement on line 730 to check
+whether ep->com.cm_id is NULL:
+    if (ep->com.cm_id)
 
-Ok.  So lets just keep this out as an RFC and don't merge it until an
-actual concrete user shows up.
+When ep->com.cm_id is NULL, it is used on line 736:
+    ep->com.cm_id->rem_ref(ep->com.cm_id);
+
+Thus, a possible null-pointer dereference may occur.
+
+To fix this bug, ep->com.cm_id is checked before being used.
+
+This bug is found by a static analysis tool STCheck written by us.
+
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/infiniband/hw/cxgb3/iwch_cm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/cxgb3/iwch_cm.c b/drivers/infiniband/hw/cxgb3/iwch_cm.c
+index 0bca72cb4d9a..2b31c4726d3e 100644
+--- a/drivers/infiniband/hw/cxgb3/iwch_cm.c
++++ b/drivers/infiniband/hw/cxgb3/iwch_cm.c
+@@ -733,7 +733,8 @@ static void connect_reply_upcall(struct iwch_ep *ep, int status)
+ 		ep->com.cm_id->event_handler(ep->com.cm_id, &event);
+ 	}
+ 	if (status < 0) {
+-		ep->com.cm_id->rem_ref(ep->com.cm_id);
++		if (ep->com.cm_id)
++			ep->com.cm_id->rem_ref(ep->com.cm_id);
+ 		ep->com.cm_id = NULL;
+ 		ep->com.qp = NULL;
+ 	}
+-- 
+2.17.0
+
