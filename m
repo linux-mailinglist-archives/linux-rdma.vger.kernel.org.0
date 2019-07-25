@@ -2,121 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C0175554
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 19:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B574575555
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 19:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729819AbfGYRW6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 13:22:58 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:39540 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726283AbfGYRW6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 25 Jul 2019 13:22:58 -0400
-Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
-        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <logang@deltatee.com>)
-        id 1hqhRz-0001I0-Mk; Thu, 25 Jul 2019 11:22:44 -0600
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Pilmore <epilmore@gigaio.com>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20190722230859.5436-1-logang@deltatee.com>
- <20190722230859.5436-12-logang@deltatee.com> <20190724063232.GB1804@lst.de>
- <7173a4dd-0c9c-48de-98cd-93513313fd8d@deltatee.com>
- <20190725061005.GB24875@lst.de>
- <fb39485a-2914-bac4-b249-e1f4ecc8d2be@deltatee.com>
- <20190725163438.GF7450@mellanox.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <486e2a25-f6e6-75d4-a8b7-6a38fff8546a@deltatee.com>
-Date:   Thu, 25 Jul 2019 11:22:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1729843AbfGYRXE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 13:23:04 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:42880 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729841AbfGYRXD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 13:23:03 -0400
+Received: by mail-qk1-f194.google.com with SMTP id 201so37003334qkm.9
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 10:23:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=i32w2wAVyyehf6wB6Jc3nUiW8Nc61mU3JB3Ii260K3Q=;
+        b=hRRa7+Hiq0zE4C78OsxpkAoMIJKzhBqZ4cwAv2BA7VorrW62k4JHhQbuMxYU7J8Eo2
+         vUMVYGx1bih9zqUYlT3Ix+cg+FqFyOffi3DEC+9itXAT36G3GXOPQpqLLOytDUwAn04m
+         bNtbRaxs8SzEzlIRlAmyOwXj+T6L+wNuUdIVNRkRF2vPnSdYGweDlFcqYpTJ+DuBuwtT
+         0xRKF9fYO0uCBHgsTQRHMmLAL4N+KF4d9Omp5R2i7ODpfrjhg2qc7QAiYCBHtTENCJMG
+         riSyr2v3CfO9VDGkYzXsQUyBzuBzi59UP+QFfBXdvkFzeU21d472IqGTlbAGvnQIsMwA
+         N2qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=i32w2wAVyyehf6wB6Jc3nUiW8Nc61mU3JB3Ii260K3Q=;
+        b=S/ovrQ9FZc3XGSp390M/xqrVvNncSsj+wxfrVswrg8Y8SGpbNfyKjli429P+lBJf1o
+         7GjDeAqt+vs1S4nB4Fwjtqb8qK5JT8uKqs+0gadS9YCi3YxgXZapGfrtTCNHshGGEgLL
+         TikDuktZUnzNW+ccdz2w9hm5MrcfohDTLQciefF9kYmJSciRkEffNHqMqsAV2A3Xvp9+
+         ksW0yzN79eRb+VWSoqQIgFyXcvyrM0Lk2V2R97uVrdLPKLaGXrAksPJSFt11m/1opaR7
+         d5yCL4aRUdhOT7FuB+FTXwC5OKCO/MEWyqfCEmpR0NrPEN7gJuxbTl37RzKa9EWw8gSf
+         kbbg==
+X-Gm-Message-State: APjAAAUu9JJoGPoCL0PSP5mVJsJhTtio2mBiJ76OQN6YAEVZuTxDNEAd
+        qXYXRF6OOB4jGYpDYDBP/nvMlg==
+X-Google-Smtp-Source: APXvYqzaX4YBlLyhu1Gab74yJ59I7pm34XggZrLh93dbhUN7fVqo2PZdbgWKSgoDG9BGUW1w5b7ViQ==
+X-Received: by 2002:a37:6248:: with SMTP id w69mr59614762qkb.225.1564075382818;
+        Thu, 25 Jul 2019 10:23:02 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id e1sm24786827qtb.52.2019.07.25.10.23.02
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 25 Jul 2019 10:23:02 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hqhSH-0001da-Va; Thu, 25 Jul 2019 14:23:01 -0300
+Date:   Thu, 25 Jul 2019 14:23:01 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rdma/siw: avoid smp_store_mb() on a u64
+Message-ID: <20190725172301.GA6225@ziepe.ca>
+References: <20190712085212.3901785-1-arnd@arndb.de>
 MIME-Version: 1.0
-In-Reply-To: <20190725163438.GF7450@mellanox.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 68.147.80.180
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, epilmore@gigaio.com, dan.j.williams@intel.com, axboe@fb.com, kbusch@kernel.org, sagi@grimberg.me, Christian.Koenig@amd.com, bhelgaas@google.com, linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de, jgg@mellanox.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [PATCH 11/14] PCI/P2PDMA: dma_map P2PDMA map requests that
- traverse the host bridge
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190712085212.3901785-1-arnd@arndb.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2019-07-25 10:34 a.m., Jason Gunthorpe wrote:
-> On Thu, Jul 25, 2019 at 10:00:25AM -0600, Logan Gunthorpe wrote:
->>
->>
->> On 2019-07-25 12:10 a.m., Christoph Hellwig wrote:
->>> On Wed, Jul 24, 2019 at 09:58:59AM -0600, Logan Gunthorpe wrote:
->>>>
->>>>
->>>> On 2019-07-24 12:32 a.m., Christoph Hellwig wrote:
->>>>>>  	struct dev_pagemap *pgmap = sg_page(sg)->pgmap;
->>>>>> +	struct pci_dev *client;
->>>>>> +	int dist;
->>>>>> +
->>>>>> +	client = find_parent_pci_dev(dev);
->>>>>> +	if (WARN_ON_ONCE(!client))
->>>>>> +		return 0;
->>>>>>  
->>>>>> +	dist = upstream_bridge_distance(pgmap->pci_p2pdma_provider,
->>>>>> +					client, NULL);
->>>>>
->>>>> Doing this on every mapping call sounds expensive..
->>>>
->>>> The result of this function is cached in an xarray (per patch 4) so, on
->>>> the hot path, it should just be a single xa_load() which should be a
->>>> relatively fast lookup which is similarly used for other hot path
->>>> operations.
->>>
->>> We don't cache find_parent_pci_dev, though.  So we should probably
->>> export find_parent_pci_dev with a proper namespaces name and cache
->>> that in the caler.
->>
->> Oh, yes, I'll take a look at this. Of the two callers: NVMe should be
->> easy we could just pass the PCI device instead of the struct device.
->> RDMA is significantly more unclear: would you add a pci_dev to struct
->> ib_device? Or maybe we should be able to simply rely on the fact that
->> the DMA device *must* be a PCI device and just use to_pci_dev() directly?
+On Fri, Jul 12, 2019 at 10:51:23AM +0200, Arnd Bergmann wrote:
+> The new siw driver fails to build on i386 with
 > 
-> AFAIK you need to use the ib_device->dma_device and add some kind of
-> is_pci_dev to make it safe
+> drivers/infiniband/sw/siw/siw_qp.c:1025:3: error: invalid output size for constraint '+q'
+>                 smp_store_mb(*cq->notify, SIW_NOTIFY_NOT);
+>                 ^
+> include/asm-generic/barrier.h:141:35: note: expanded from macro 'smp_store_mb'
+>  #define smp_store_mb(var, value)  __smp_store_mb(var, value)
+>                                   ^
+> arch/x86/include/asm/barrier.h:65:47: note: expanded from macro '__smp_store_mb'
+>  #define __smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
+>                                               ^
+> include/asm-generic/atomic-instrumented.h:1648:2: note: expanded from macro 'xchg'
+>         arch_xchg(__ai_ptr, __VA_ARGS__);                               \
+>         ^
+> arch/x86/include/asm/cmpxchg.h:78:27: note: expanded from macro 'arch_xchg'
+>  #define arch_xchg(ptr, v)       __xchg_op((ptr), (v), xchg, "")
+>                                 ^
+> arch/x86/include/asm/cmpxchg.h:48:19: note: expanded from macro '__xchg_op'
+>                                       : "+q" (__ret), "+m" (*(ptr))     \
+>                                               ^
+> drivers/infiniband/sw/siw/siw_qp.o: In function `siw_sqe_complete':
+> siw_qp.c:(.text+0x1450): undefined reference to `__xchg_wrong_size'
+> drivers/infiniband/sw/siw/siw_qp.o: In function `siw_rqe_complete':
+> siw_qp.c:(.text+0x15b0): undefined reference to `__xchg_wrong_size'
+> drivers/infiniband/sw/siw/siw_verbs.o: In function `siw_req_notify_cq':
+> siw_verbs.c:(.text+0x18ff): undefined reference to `__xchg_wrong_size'
+> 
+> Since smp_store_mb() has to be an atomic store, but the architecture
+> can only do this on 32-bit quantities or smaller, but 'cq->notify'
+> is a 64-bit word.
+> 
+> Apparently the smp_store_mb() is paired with a READ_ONCE() here, which
+> seems like an odd choice because there is only a barrier on the writer
+> side and not the reader, and READ_ONCE() is already not atomic on
+> quantities larger than a CPU register.
+> 
+> I suspect it is sufficient to use the (possibly nonatomic) WRITE_ONCE()
+> and an SMP memory barrier here. If it does need to be atomic as well
+> as 64-bit quantities, using an atomic64_set_release()/atomic64_read_acquire()
+> may be a better choice.
+> 
+> Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+> Fixes: f29dd55b0236 ("rdma/siw: queue pair methods")
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/infiniband/sw/siw/siw_qp.c    | 4 +++-
+>  drivers/infiniband/sw/siw/siw_verbs.c | 5 +++--
+>  2 files changed, 6 insertions(+), 3 deletions(-)
 
-Yes, that's my thinking. The dma_device *should* be a PCI device. We can
-just be sure by doing is_pci_dev() and failing the mapping if it is not.
+Bernard, please send at patch for whatever solution we settled on
+against 5.3-rc1
 
-So I *think* we should be able to simply replace the
-find_parent_pci_dev() with:
-
-if (!dev_is_pci(dev))
-     return 0;
-
-client = to_pci_dev(dev);
-
-Which should be fast and reliable.
-
-The alternative is to push this out into the caller which may have a bit
-more information (like the nvme driver does).
-
-Logan
+Thanks,
+Jason
