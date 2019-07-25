@@ -2,105 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2326D75737
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 20:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1946E75740
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 20:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbfGYSuI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 14:50:08 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:46917 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbfGYSuH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 14:50:07 -0400
-Received: by mail-qk1-f196.google.com with SMTP id r4so37155088qkm.13
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 11:50:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=y4L7kTBXw1yQT2crJGOkjUhNG8iaVsIWi9dQ5W6VAqY=;
-        b=ZLrbAFi6tXbGj0H0hR5YJW0CnfSmtN6AfqvM8UrzeLUmnKJBEqCcKzwk6fQJoTXebI
-         r5TeBaGL2mIWockLaAfMudLCUsMVB2gKfwCaFkrJknQBmUAcroMJDV9n401bK8fPesr1
-         XbFNiked/+vqgZgugxkKB5OmncUpGJDujusA9BAGPRyvYfmABVlzhsMmt0ThggK7G586
-         Bk9TxGZWl02UFImC4cszPFBlHZCd73+qugqpJcwtpq1z4SXSqPdCtHTxOMLRy8A86JkO
-         exGYra7y7+1izFnKavOUmUN9fdPGeUmM+U1Fcqp5LRe06d2bj0eTZvNyZ3RpEfVy6H6j
-         /NJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=y4L7kTBXw1yQT2crJGOkjUhNG8iaVsIWi9dQ5W6VAqY=;
-        b=E0cbq6KMCvckf0o+tZLYlZrP+YcFgvDvnl0u3qWgcYTwThZQda0TptpN7zAzTju2lP
-         WbCz0GziVvi4RPtcojXpWxBtdxcBniEACOo1mMxwukpMPfsdJ7uCd9HWhEFdmwlLcjwr
-         Fup5GEBW9HzBTPIHfktcn0VpwT/ZnOJwS9SGoKOJFvIpVE5WvITkbjFpkOl6BxXPtt/i
-         RyJwXCN/wwGpKA3vl2HlQHtNqaEqWyOwI4NBwmnvPfGcYUqxn1JdPa1o7ajPPFH2HfZU
-         jrE+3W84UBsOOmbK+NLI1OKVdAlGY+J85U1C7EiJlYT9qFhu0NayEeXP95S6N1jcgeLl
-         Q3BA==
-X-Gm-Message-State: APjAAAU+pty3yDe9ScejzDHuYu08scZOcf8+gZ9w1iEnWGoczwBrxrA6
-        t/liYyaoP158MeKWgOlLRvMxjQ==
-X-Google-Smtp-Source: APXvYqwwhb5abS6t+bEuSsrus6WRso4TfWD199d8DejmWFRvwqGjAtWgkbAwtf2Rnc8TEBApIDaXlA==
-X-Received: by 2002:a37:4e17:: with SMTP id c23mr59771760qkb.34.1564080607042;
-        Thu, 25 Jul 2019 11:50:07 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id o18sm30186576qtb.53.2019.07.25.11.50.06
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Jul 2019 11:50:06 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hqioY-0000nR-6a; Thu, 25 Jul 2019 15:50:06 -0300
-Date:   Thu, 25 Jul 2019 15:50:06 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
-Cc:     Moni Shoua <monis@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/10] Replace tasklets with workqueues
-Message-ID: <20190725185006.GD7467@ziepe.ca>
-References: <20190722151426.5266-1-mplaneta@os.inf.tu-dresden.de>
- <20190722151426.5266-11-mplaneta@os.inf.tu-dresden.de>
- <20190722153205.GG7607@ziepe.ca>
- <21a4daf9-c77e-ec80-9da0-78ab512d248d@os.inf.tu-dresden.de>
+        id S1726267AbfGYSwk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 14:52:40 -0400
+Received: from mail-eopbgr70043.outbound.protection.outlook.com ([40.107.7.43]:6082
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726107AbfGYSwk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 25 Jul 2019 14:52:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PK+LV7i6YHO9/migAxqkMk4Vmcmfk7auNvQDGxW6bAkQxTbAgTLI6KDsu2+gr5phAVJuFczdT2DyF4HOKbkL7lesZFbdqSRqfwj5ZLkizgT0MRjfWGJSHFotl7RJctXvTTs1P20hH7Rv6aX4033s8HN9acEOdb8zrUcerHuUn13fRC3qhAgYfx1LhhS9gyqdDMNSvS9a79CVifIoh+dA6iejAMxAmBORVyRp1/T0cRwVJq/nX/Y1DT9SloMQkBe68x/EQhJnN13/NkoEuQacNdcKNgmtzGdVV0MDLM0KDl9sa5sPV8QxnOiuf3lDvRuoNvdBi9lAIsX+HclFRQOVJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kBO66a3QGuTu9B2KIJUgnGF7/Corv+KLAnmOAZSj3xw=;
+ b=I33y/oqvpvyFETWQKOZFrw0SEpgvip801nTJ4t//o3MMZHPPHLXKvMsIYgquuiaGpavEwgHx3EN2I1BQ5woiBtAhGtd3U7bUI/KTPLKzcIBZFO7b+MoAtnpf95TlM5MgEDDfdhiShoJ9kgMxzbyWkQrNvP2xEmdMosQhbw2dxOzyZIspLtWpEZyyvIwwAZj9Y2raHO9lr1B0FoFf2wc8905MMTIF7n7AD1HoOnrr6m2cxsdSMvx0m0+jqt2k14xz8iqUGNKhH0kYpknj1qb2BCS3yQeel5XRtI2LDWNVVxYhgTNumGXWNjZjrRkRmv/zwHfs6P7zqSgNMGD+pxjTHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=mellanox.com;dmarc=pass action=none
+ header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kBO66a3QGuTu9B2KIJUgnGF7/Corv+KLAnmOAZSj3xw=;
+ b=fmEbt+msL1qJyULMhGzRBdmgl84mQiLbiwgPzHPng2rbxPfGG64DF9qu+ghhewB2mv/MjEkhxBWtfstKuBKm7F0o8ZbWF7P79NjS7hOQCAaJGnG5bzsn4sVZiKpaIllmC5mOIAPUDghG6neIefM/W5RDiiH4kqzr3enStyWDeuc=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB3358.eurprd05.prod.outlook.com (10.170.238.147) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2115.10; Thu, 25 Jul 2019 18:52:36 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::5c6f:6120:45cd:2880]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::5c6f:6120:45cd:2880%4]) with mapi id 15.20.2115.005; Thu, 25 Jul 2019
+ 18:52:36 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Logan Gunthorpe <logang@deltatee.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Eric Pilmore <epilmore@gigaio.com>,
+        Stephen Bates <sbates@raithlin.com>
+Subject: Re: [PATCH 06/14] PCI/P2PDMA: Add whitelist support for Intel Host
+ Bridges
+Thread-Topic: [PATCH 06/14] PCI/P2PDMA: Add whitelist support for Intel Host
+ Bridges
+Thread-Index: AQHVQOKA2Us7gXzzBkKJHgxgIGkDSabbsnMA
+Date:   Thu, 25 Jul 2019 18:52:36 +0000
+Message-ID: <20190725185230.GG7450@mellanox.com>
+References: <20190722230859.5436-1-logang@deltatee.com>
+ <20190722230859.5436-7-logang@deltatee.com>
+In-Reply-To: <20190722230859.5436-7-logang@deltatee.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YQXPR0101CA0041.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:14::18) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ef2d2cb7-d562-47e4-ca15-08d71131426a
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB3358;
+x-ms-traffictypediagnostic: VI1PR05MB3358:
+x-microsoft-antispam-prvs: <VI1PR05MB33581BB96C57DE5E2609F64CCFC10@VI1PR05MB3358.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0109D382B0
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(396003)(346002)(136003)(39860400002)(366004)(189003)(199004)(186003)(6116002)(3846002)(1076003)(11346002)(2616005)(7416002)(256004)(229853002)(6916009)(305945005)(446003)(478600001)(8676002)(5660300002)(476003)(81156014)(6436002)(316002)(8936002)(81166006)(54906003)(7736002)(66066001)(2906002)(6512007)(76176011)(6246003)(52116002)(486006)(66946007)(66476007)(64756008)(25786009)(66556008)(66446008)(6486002)(86362001)(68736007)(14454004)(26005)(99286004)(102836004)(33656002)(386003)(71200400001)(4326008)(6506007)(71190400001)(36756003)(53936002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3358;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: X5zv/PNXQZX/h9bNqK/9ciD+cLCa3xdOSNNDguKFP0peleL9gzbqUPzC46rXy0e8/AGRTnVRQYsCqw7IBQt63Wl7BWd1Q6ffuRoha9pEZKwcn8h8nmeezLKaDMeY0jhKS0LcpMl7TNBC1bEEtr9L2Q0Ndu8r7is4hlBBQYfd5bBjXCVCNZ/iDwfiTZ1/EvoWzPpXVAVpXemBC1XWBMiLumziet9I9Xb1PrsNJ/l81UVfYu95+zjddS8KCvfa46PT00ZE3s/rfdDz97lzNQZRZWpCx7ZvFsKWE3UeegPStcEI+ZhHANoohNQ/sJu0U6iV1ybB/EqjBPHDUAl/X41r+k453jVYYsskXY03s7kQFqe56uG5IuGltKNpM9HsqDO7a81G1jl2o1TY3kBhcsMkYspQr4RHFuX2s+SwHB4gezc=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <7F92BB72B415A740B49C55296D8E5B71@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <21a4daf9-c77e-ec80-9da0-78ab512d248d@os.inf.tu-dresden.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef2d2cb7-d562-47e4-ca15-08d71131426a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2019 18:52:36.3907
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3358
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 25, 2019 at 04:36:20PM +0200, Maksym Planeta wrote:
-> Is this one better?
-> 
-> Replace tasklets with workqueues in rxe driver. The reason for this
-> replacement is that tasklets are supposed to run atomically, although the
-> actual code may block.
-> 
-> Modify the SKB destructor for outgoing SKB's to schedule QP tasks only if
-> the QP is not destroyed itself.
-> 
-> Add a variable "pending_skb_down" to ensure that reference counting for a QP
-> is decremented only when QP access related to this skb is over.
-> 
-> Separate part of pool element cleanup code to allow this code to be called
-> in the very end of cleanup, even if some of cleanup is scheduled for
-> asynchronous execution. Example, when it was happening is destructor for a
-> QP.
-> 
-> Disallow calling of task functions "directly". This allows to simplify logic
-> inside rxe_task.c
-> 
-> Schedule rxe_qp_do_cleanup onto high-priority system workqueue, because this
-> function can be scheduled from normal system workqueue.
-> 
-> Before destroying a QP, wait until all references to this QP are gone.
-> Previously the problem was that outgoing SKBs could be freed after the QP
-> these SKBs refer to is destroyed.
-> 
-> Add blocking rxe_run_task to replace __rxe_do_task that was calling task
-> function directly.
+On Mon, Jul 22, 2019 at 05:08:51PM -0600, Logan Gunthorpe wrote:
+> Intel devices do not have good support for P2P requests that span
+> different host bridges as the transactions will cross the QPI/UPI bus
+> and this does not perform well.
+>=20
+> Therefore, enable support for these devices only if the host bridges
+> match.
+>=20
+> Adds the Intel device's that have been tested to work. There are
+> likely many others out there that will need to be tested and added.
+>=20
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>  drivers/pci/p2pdma.c | 36 ++++++++++++++++++++++++++++++++----
+>  1 file changed, 32 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+> index dfb802afc8ca..143e11d2a5c3 100644
+> +++ b/drivers/pci/p2pdma.c
+> @@ -250,9 +250,28 @@ static void seq_buf_print_bus_devfn(struct seq_buf *=
+buf, struct pci_dev *pdev)
+>  	seq_buf_printf(buf, "%s;", pci_name(pdev));
+>  }
+> =20
+> -static bool __host_bridge_whitelist(struct pci_host_bridge *host)
+> +static const struct pci_p2pdma_whitelist_entry {
+> +	unsigned short vendor;
+> +	unsigned short device;
+> +	bool req_same_host_bridge;
 
-Mostly but it would also be good to describe the use after free and
-races more specifically
+This would be more readable in the initializer as a flags not a bool
 
 Jason
