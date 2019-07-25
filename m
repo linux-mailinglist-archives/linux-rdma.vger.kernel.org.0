@@ -2,120 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A2E74CC9
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 13:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D949C74D87
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 13:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403983AbfGYLSH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 07:18:07 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:39170 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403886AbfGYLRq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 07:17:46 -0400
-Received: by mail-pf1-f194.google.com with SMTP id f17so18604957pfn.6
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 04:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ceQemw0wuGQ3uiCqTlyBUwO60vemC2ljY3rBL1bAUvc=;
-        b=PFlEvXsHYv4lFKGCCfXZ2BH9B+e/+FJBGpnFm58EL07XzmLkrfPE7grKe+lK7OJ+3q
-         abjryupEyT3OpTe6vXeYbGcL1BUr5elNwdNVi9kwG5uLVwrmRNAlILwAOBEDWE3BDhoL
-         wa/mA/jPR9b/azqkL/67D+Mm2vUNeUnKTr67F6b6zVcvZzUWDrGmaUvbPo48izoM48MU
-         N0VWZj0yxfEFkbETpli1M4tpWnMK/JyQnFJyyMLRYouRu9gpM1Vf3XJFNTnOwCnTu9Ld
-         itsx5ZgymWeM6DKM8q2cX7rBLN4FseRE3aGipc8TJcBEDMtdp1GaAUz+JB2Q86Y09iS0
-         iOkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ceQemw0wuGQ3uiCqTlyBUwO60vemC2ljY3rBL1bAUvc=;
-        b=kmID79o3AfrREGHPQwxmF/0FP19/rdzMqGZZTDGZwgfbFSGAaT6i4eq+KjLUtzVAkN
-         /7jvEkAPd3wM97M++K9+08heNHRUURWKDCIFHL1JPtMrqAJKjk7RujAIspCuH5Za+2sZ
-         x3dAxhNh10kVSSWYJn1KH1rBHJrIbTrFLhFlViZ63VY2+PWWOtn7zNbgcAEGownxhZ3i
-         ItJHNj3l5LJalLiZoxLrpKFOfwBB5KeqJ6AYYlj0GaCebV4SaL/uC0AAPErYmJiZYGJy
-         CMkqtxiyJbL8yhKNLFuU4u2Vv7A2JO+sGfrrIXmjF02Is1TR2ZYSTyOawJ0rvxO17rub
-         seFQ==
-X-Gm-Message-State: APjAAAV96bxV1PSQKNUVQBCu9TU5oiE/Fm0wJlTJ15V9IGPcWhFA+mCP
-        uewEUsu0djiYbjcsy8ogWWBs3G+yeakcJGp4GEmIng==
-X-Google-Smtp-Source: APXvYqzUlCi07nILNklNsNS4HJ/lH+Efr4GjVTNZTHkDEiuYwLiGivIelhkfNGv3x1TCnih2kaTB3NQT1G7052KvmkQ=
-X-Received: by 2002:a17:90a:a116:: with SMTP id s22mr91662102pjp.47.1564053464334;
- Thu, 25 Jul 2019 04:17:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1563904656.git.andreyknvl@google.com> <7969018013a67ddbbf784ac7afeea5a57b1e2bcb.1563904656.git.andreyknvl@google.com>
- <20190724192504.GA5716@ziepe.ca>
-In-Reply-To: <20190724192504.GA5716@ziepe.ca>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 25 Jul 2019 13:17:32 +0200
-Message-ID: <CAAeHK+x5JFgkLLzhrkQBfa78pkyQXLhgOfXOGuHK=AfwFLHntg@mail.gmail.com>
-Subject: Re: [PATCH v19 11/15] IB/mlx4: untag user pointers in mlx4_get_umem_mr
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
+        id S1727121AbfGYLul (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 07:50:41 -0400
+Received: from verein.lst.de ([213.95.11.211]:60849 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727116AbfGYLul (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 25 Jul 2019 07:50:41 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 3990468BFE; Thu, 25 Jul 2019 13:50:40 +0200 (CEST)
+Date:   Thu, 25 Jul 2019 13:50:38 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
         Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Eric Pilmore <epilmore@gigaio.com>,
+        Stephen Bates <sbates@raithlin.com>
+Subject: Re: [PATCH 14/14] PCI/P2PDMA: Introduce
+ pci_p2pdma_[un]map_resource()
+Message-ID: <20190725115038.GC31065@lst.de>
+References: <20190722230859.5436-1-logang@deltatee.com> <20190722230859.5436-15-logang@deltatee.com> <20190724063235.GC1804@lst.de> <57e8fc1a-de70-fb65-5ef1-ffa2b95c73a6@deltatee.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57e8fc1a-de70-fb65-5ef1-ffa2b95c73a6@deltatee.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 24, 2019 at 9:25 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Tue, Jul 23, 2019 at 07:58:48PM +0200, Andrey Konovalov wrote:
-> > This patch is a part of a series that extends kernel ABI to allow to pass
-> > tagged user pointers (with the top byte set to something else other than
-> > 0x00) as syscall arguments.
-> >
-> > mlx4_get_umem_mr() uses provided user pointers for vma lookups, which can
-> > only by done with untagged pointers.
-> >
-> > Untag user pointers in this function.
-> >
-> > Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-> > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > ---
-> >  drivers/infiniband/hw/mlx4/mr.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> Applied to rdma-for next, please don't sent it via other trees :)
+On Wed, Jul 24, 2019 at 10:06:22AM -0600, Logan Gunthorpe wrote:
+> Yes. This is the downside of dealing only with a phys_addr_t: we have to
+> look up against it. Unfortunately, I believe it's possible for different
+> BARs on a device to be in different windows, so something like this is
+> necessary unless we already know the BAR the phys_addr_t belongs to. It
+> might probably be sped up a bit by storing the offsets of each bar
+> instead of looping through all the bridge windows, but I don't think it
+> will get you *that* much.
+> 
+> As this is an example with no users, the answer here will really depend
+> on what the use-case is doing. If they can lookup, ahead of time, the
+> mapping type and offset then they don't have to do this work on the hot
+> path and it means that pci_p2pdma_map_resource() is simply not a
+> suitable API.
 
-Sure, thanks!
-
->
-> Thanks,
-> Jason
+Ok.  So lets just keep this out as an RFC and don't merge it until an
+actual concrete user shows up.
