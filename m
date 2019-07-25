@@ -2,109 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D1775242
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 17:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737D075310
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 17:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387941AbfGYPNM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 11:13:12 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:45709 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387553AbfGYPNM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 11:13:12 -0400
-Received: by mail-qt1-f195.google.com with SMTP id x22so44491201qtp.12
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 08:13:11 -0700 (PDT)
+        id S2389348AbfGYPmu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 11:42:50 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:43313 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389338AbfGYPmu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 11:42:50 -0400
+Received: by mail-qt1-f193.google.com with SMTP id w17so5198406qto.10
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 08:42:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Mp0Y39R0eDlT+5ucdfd/gxLgN40NqNC9MB6jitH+YqY=;
-        b=CiVIXySFprGec9EVtn1HeRceO8uX6/gN3WCFsjrNOmjXfXP2QqEkiRqZrErP6FMIjZ
-         80HqPdWzYQqgv5fCrEkEAR9ivRwU6XCkvTAWU/OUsRzqBMGdjPF0/soYyfYGX3q2CajF
-         V6sJD+xUzomZe4vf6/2WaqTGxegYnO/gBhyO0wCsvrt8kxDf89/DvTcJWBL+hbBLjsGp
-         odvW6WyXbhHbMTEdEUTy2hSG4eDvY/5F2HsELn42rBJVP5xxVY4+gbYAS6R+12argsqa
-         WMRjfbvQpLkjyCkfuX3YRsFtTFfi3c05GrPn4bpaykMDF/sQ2bvcImJ7838HilDOju2e
-         JgrQ==
+        bh=VdsiE7PwnNCqPYMWC9Usqlf8mELKmiXFo/BWpMUIGHQ=;
+        b=aY+uSE9KsCww6ugTJthadVvy+L1ffmObEIE6BkUYCCyEWWdYPNPK0Z/aL1KBggV8BO
+         YUTWxG/wFHlT3tIHWr+ZRyc18XWC9FVZACvAjoWHQR55OGGJxDizTNUh6BOTXZRb9N0I
+         ehsZDQq8D6YMH6P4LA+8ABHRqnZeZSjF3Y2clD8KqGCyEAFtKbQM6sJ/utt1Q/UMU9SO
+         UheW58lGR+fjGk43UcyOUzkXpbJBfEbqEtXub87UZeIJH/Q0emDKELEe4BaPxUBLRPtZ
+         feNAxz9/XsxiABH4GRNEcDEavzN+2VI8UMR3zYiiwCRNHXrhqQXVV/N6WQF+/gyK8/yl
+         RXbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Mp0Y39R0eDlT+5ucdfd/gxLgN40NqNC9MB6jitH+YqY=;
-        b=n/6zG7e5YJginbhlEtrMY6J+neRmOZRg8Erm1mhUiVUQykt18rEIQRJXvdCCywV7sB
-         4v2c343po3bG+qFnG7QjtP2DPBMQLK7K0ujVsXcw9mIo0aX4GlpTzfQaDlFpmXS4Lut8
-         feCYtRUONdGZgCHBAcJvytNztb61PZ7gUXFFF/u9iBgSERxx/Zg2q+3hMr+k/AUaJQFl
-         kXVsbUPKD+t19RBwBBuEd4BO5AUT/XPGoIh3HZVoMb803WwiytJMcx2lMEKBe8GoUHrE
-         gs5Q5Xpwyb6iKfrFDui0uOSUEFiUhobDPnVN6F81LA6U3OmcxRaGRgOS/GIQS7QpUc8H
-         5+fw==
-X-Gm-Message-State: APjAAAV2ERJN1BxSz1LAxoHQYnS0Abr8TkK/GmBltzBL16eFyX6IsC+G
-        VQGjuhaHVViUxoB2/usJzkyVrg==
-X-Google-Smtp-Source: APXvYqzpGxxb+DIio0XnS4xFeD2WXzmk6fS4KCKayHLBTFkwLsFGuVQ+ALUst0TpW5ONxHi3pANT5w==
-X-Received: by 2002:ac8:35ae:: with SMTP id k43mr61491033qtb.259.1564067591512;
-        Thu, 25 Jul 2019 08:13:11 -0700 (PDT)
+        bh=VdsiE7PwnNCqPYMWC9Usqlf8mELKmiXFo/BWpMUIGHQ=;
+        b=H/N0p2T2Vxp0+GYcT4JZZ3gl/VJwlP/HRH22RWM6aFIcYRWJPmHt37YnXn/O5we5Nj
+         l0VrAIT/wHwJa6ZAxW/6E3cwE8FTbCkohOb8/bI2cKSIbk+rUD671f03dih3yVyTeTEc
+         BmwqndFy7e5G65EO263r2oiZzCiu72w9oc+H+u51KrUn2svcivYWnzbNbwtgsbSClkEH
+         PkxTCv0qedUFWAx1WaxpR1zcfkIUCZldW26YIMnJGXiKdby3uZ5U7u9EqfCITxqI5JJz
+         Ri1dXDZskyCFkwYbE2UXiiNQouydRhgC5t1LOzOG8rO6qmQW6TJzFVC6VB+GURkcnuoe
+         Y5wQ==
+X-Gm-Message-State: APjAAAX7Moe4wIemoiWb/oMQoHkdZk1I0wOKNlt2yRG5B1510oJ0lfnh
+        /CqBOxTOZ98d6fbZjyqddfdEPQ==
+X-Google-Smtp-Source: APXvYqzXQTiUXs/ASR0Wx9y8UcfQp6AkB0QyZUgsg9X7YRvKQYN3jVQbRK4tRagSTr5PU/Epyhd1HA==
+X-Received: by 2002:ac8:2425:: with SMTP id c34mr60832837qtc.257.1564069369701;
+        Thu, 25 Jul 2019 08:42:49 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id s8sm20856015qkg.64.2019.07.25.08.13.11
+        by smtp.gmail.com with ESMTPSA id o5sm22050643qkf.10.2019.07.25.08.42.49
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Jul 2019 08:13:11 -0700 (PDT)
+        Thu, 25 Jul 2019 08:42:49 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hqfQc-0006TX-KM; Thu, 25 Jul 2019 12:13:10 -0300
-Date:   Thu, 25 Jul 2019 12:13:10 -0300
+        id 1hqftI-0007Ip-Op; Thu, 25 Jul 2019 12:42:48 -0300
+Date:   Thu, 25 Jul 2019 12:42:48 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Alex Vainman <alexv@mellanox.com>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        Eli Cohen <eli@mellanox.com>,
-        Haggai Eran <haggaie@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Sagi Grimberg <sagig@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-rc 00/10] Collection of fixes for 5.3
-Message-ID: <20190725151310.GA24809@ziepe.ca>
-References: <20190723065733.4899-1-leon@kernel.org>
+To:     Lijun Ou <oulijun@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next 0/9] Codes optimization for hip08
+Message-ID: <20190725154248.GA28014@ziepe.ca>
+References: <1562593285-8037-1-git-send-email-oulijun@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190723065733.4899-1-leon@kernel.org>
+In-Reply-To: <1562593285-8037-1-git-send-email-oulijun@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 09:57:23AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On Mon, Jul 08, 2019 at 09:41:16PM +0800, Lijun Ou wrote:
+> Here are codes optimization in order to reduce complexity and
+> add readability.
 > 
-> Hi,
+> Lijun Ou (6):
+>   RDMA/hns: Package the flow of creating cq
+>   RDMA/hns: Refactor the code of creating srq
+>   RDMA/hns: Refactor for hns_roce_v2_modify_qp function
+>   RDMA/hns: Use a separated function for setting extend sge paramters
+>   RDMA/hns: Package for hns_roce_rereg_user_mr function
+>   RDMA/hns: Refactor hem table mhop check and calculation
 > 
-> This is small patch set of fixes targeted for 5.3 and stable@.
+> Xi Wang (1):
+>   RDMA/hns: optimize the duplicated code for qpc setting flow
 > 
-> Thanks
+> Yixian Liu (1):
+>   RDMA/hns: Refactor eq table init for hip08
 > 
-> Moni Shoua (1):
->   IB/mlx5: Prevent concurrent MR updates during invalidation
-> 
-> Parav Pandit (4):
->   IB/core: Fix querying total rdma stats
->   IB/counters: Initialize port counter and annotate mutex_destroy
-> 
-> Yishai Hadas (5):
->   IB/mlx5: Fix unreg_umr to ignore the mkey state
->   IB/mlx5: Use direct mkey destroy command upon UMR unreg failure
->   IB/mlx5: Fix unreg_umr to set a device PD
->   IB/mlx5: Fix clean_mr() to work in the expected order
->   IB/mlx5: Fix RSS Toeplitz function to be specification aligned
+> chenglang (1):
+>   RDMA/hns: Optimize hns_roce_mhop_alloc function.
 
-I took the above for for-rc
+Applied to for-next
 
->   IB/mlx5: Avoid unnecessary typecast
->   RDMA/core: Annotate destroy of mutex to ensure that it is released as
->     unlocked
-
-These are not really -rc patches, I took them to for-next
-
+Thanks,
 Jason
