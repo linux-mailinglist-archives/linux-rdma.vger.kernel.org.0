@@ -2,55 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E96C47536D
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 18:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2953F75382
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 18:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388670AbfGYQBJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 12:01:09 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:38186 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387874AbfGYQBI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 25 Jul 2019 12:01:08 -0400
-Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
-        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <logang@deltatee.com>)
-        id 1hqgAp-00081n-6V; Thu, 25 Jul 2019 10:00:56 -0600
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Pilmore <epilmore@gigaio.com>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20190722230859.5436-1-logang@deltatee.com>
- <20190722230859.5436-15-logang@deltatee.com> <20190724063235.GC1804@lst.de>
- <57e8fc1a-de70-fb65-5ef1-ffa2b95c73a6@deltatee.com>
- <20190725115038.GC31065@lst.de>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <3d5400df-f109-9ffa-3e79-8f6bb8d7de34@deltatee.com>
-Date:   Thu, 25 Jul 2019 10:00:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190725115038.GC31065@lst.de>
-Content-Type: text/plain; charset=utf-8
+        id S2388766AbfGYQFG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 12:05:06 -0400
+Received: from mail-eopbgr40061.outbound.protection.outlook.com ([40.107.4.61]:7041
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388481AbfGYQFF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 25 Jul 2019 12:05:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E3RRyLg6GO5EekYyxO5nT5Uf2A3XhGl6sgwl7J0U+XLFxcuRrnBxKT/2F4jM08KFHQq3pL/337b4KZGk5WdtVylan7czD3qW4IiexLMqpQY/FM9O76DHt9y5pDx3pDG066vHzDl4pzJ34kjsb6hC4Q3VZ0Yct53ygJDjajPCM/xrTqOwBT7w+wC9/atRU23rhTsMyFL60MFBQBW47nXR14NuTS8x7M2CqlrYa/U67X+VtDkACaFfuBv1/2wggYcaUGlriTaJkVw/aBIFpUgmxB6JWG/yhCUi8nxsRz7DuKe/9LUxJAXMu8slegL8ob2WMqOlUqjsoZviUUQTDUikHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=orx/TFEreh+WLgtiUlydslgxHQNXsSzfm4gn0jpXEjc=;
+ b=aZdv/jH245PKpI+Yzr4NvcKdjGD8fP9cVrMh2VaOH9zM2NmNq1sjo4fSSr/f7RzrxCc+fJeZxuNVlPOek3rzVkEgt+fDh8ux23J4okWJWDPI2EQ7kOYP9pInOMlOJc5mJDtBitjsG093pZ9sBavWxUwA9ZlI+Mx4vRBtROFRCr2ZSqA6+QZ14x9M10lPYeVp50evamAAy/sGkqCbPnjovC2EKCGGcPHpIvN7igARUQsbzlvLbLq12y6at5kgwqNk+GkvQN5jjklxetsCzF5dg/PofFM/YOsfH1zZaINKuysm/Oi6MfTr4u5zmllkeFGY88ZiFz10k40HK57oOQoxww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=mellanox.com;dmarc=pass action=none
+ header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=orx/TFEreh+WLgtiUlydslgxHQNXsSzfm4gn0jpXEjc=;
+ b=brpR6Az0K9GeLh9nt689rVbYGq83nPP7CQSM+kU2WtQqaarmttsUEmqaSbrMEgHnWKM8QevzGyPBCLRVXYiPVDZY8cd9DCAkJYcRTK1XkfG0jS7FnzRALlMknqDrnsZJ998AankXuixYuq3J/5ag9HHPtvMZt+AA1MOnng/E5RQ=
+Received: from DB7PR05MB4876.eurprd05.prod.outlook.com (20.176.235.96) by
+ DB7PR05MB5146.eurprd05.prod.outlook.com (20.178.41.206) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2115.10; Thu, 25 Jul 2019 16:05:00 +0000
+Received: from DB7PR05MB4876.eurprd05.prod.outlook.com
+ ([fe80::99d2:2fab:65f:c909]) by DB7PR05MB4876.eurprd05.prod.outlook.com
+ ([fe80::99d2:2fab:65f:c909%5]) with mapi id 15.20.2094.013; Thu, 25 Jul 2019
+ 16:05:00 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Alex Vainman <alexv@mellanox.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        Eli Cohen <eli@mellanox.com>,
+        Haggai Eran <haggaie@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Sagi Grimberg <sagig@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: RE: [PATCH rdma-rc 00/10] Collection of fixes for 5.3
+Thread-Topic: [PATCH rdma-rc 00/10] Collection of fixes for 5.3
+Thread-Index: AQHVQSPtRhD6byYB7kytqcfGLH82XKbbdKgAgAAOWHA=
+Date:   Thu, 25 Jul 2019 16:05:00 +0000
+Message-ID: <DB7PR05MB48769771EF822D5095AA733CD1C10@DB7PR05MB4876.eurprd05.prod.outlook.com>
+References: <20190723065733.4899-1-leon@kernel.org>
+ <20190725151310.GA24809@ziepe.ca>
+In-Reply-To: <20190725151310.GA24809@ziepe.ca>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 68.147.80.180
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, epilmore@gigaio.com, dan.j.williams@intel.com, axboe@fb.com, kbusch@kernel.org, sagi@grimberg.me, jgg@mellanox.com, Christian.Koenig@amd.com, bhelgaas@google.com, linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [PATCH 14/14] PCI/P2PDMA: Introduce pci_p2pdma_[un]map_resource()
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [49.207.55.248]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 22fad025-5759-4edc-d017-08d71119d8a3
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB7PR05MB5146;
+x-ms-traffictypediagnostic: DB7PR05MB5146:
+x-microsoft-antispam-prvs: <DB7PR05MB51463BB8F92C3087079F2F76D1C10@DB7PR05MB5146.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:595;
+x-forefront-prvs: 0109D382B0
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(366004)(39860400002)(396003)(346002)(136003)(13464003)(189003)(199004)(316002)(26005)(55236004)(9686003)(110136005)(7736002)(99286004)(11346002)(53936002)(53546011)(74316002)(7696005)(305945005)(66066001)(6506007)(102836004)(107886003)(55016002)(68736007)(54906003)(486006)(186003)(446003)(76116006)(6246003)(66946007)(4326008)(66476007)(81156014)(81166006)(66556008)(33656002)(66446008)(8936002)(476003)(14444005)(64756008)(8676002)(76176011)(256004)(3846002)(52536014)(71190400001)(71200400001)(6116002)(5660300002)(229853002)(86362001)(478600001)(14454004)(2906002)(6436002)(25786009);DIR:OUT;SFP:1101;SCL:1;SRVR:DB7PR05MB5146;H:DB7PR05MB4876.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: hmS+xrOuhPxbcWk2UDjYOyEBCRv061wcKbc3/ynJXpeoS9ApdGCZADzPHAWfwBkG/WpU82ctT1kqCWiV10AkFUVUJ3/uX+GiLuMI5Hy/9rThW2pDVb5Mb3AZ629EoxCFw9uasUEwqQgh4CsSgN/FFcKo6gJO6mqPzBdz4mJjl/cAoyav+cEJ+SO/+FWA/Dree3fdMxBWlxJBQgbazAxtOknjamammco80V1YDzpCF/DP5JU0tjPBi665snC0nZmQFriFxLw+gk8qWVQ+rPCT7RSfVbJFhSyCoO0/FtBMXg6bWJvVEi0pWlhH+zuXkaH0pnGTiyrbbTF670EgQXhYILPBg7mQToxdUjmEbRH/RJ1LR3qd5mRshamXGViZ4JNknDXuGF80/rv8R33Al3aBK4+WG/mNbHRdUZb0eivmFAY=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22fad025-5759-4edc-d017-08d71119d8a3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2019 16:05:00.0884
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: parav@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB5146
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
@@ -58,26 +96,49 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 2019-07-25 5:50 a.m., Christoph Hellwig wrote:
-> On Wed, Jul 24, 2019 at 10:06:22AM -0600, Logan Gunthorpe wrote:
->> Yes. This is the downside of dealing only with a phys_addr_t: we have to
->> look up against it. Unfortunately, I believe it's possible for different
->> BARs on a device to be in different windows, so something like this is
->> necessary unless we already know the BAR the phys_addr_t belongs to. It
->> might probably be sped up a bit by storing the offsets of each bar
->> instead of looping through all the bridge windows, but I don't think it
->> will get you *that* much.
->>
->> As this is an example with no users, the answer here will really depend
->> on what the use-case is doing. If they can lookup, ahead of time, the
->> mapping type and offset then they don't have to do this work on the hot
->> path and it means that pci_p2pdma_map_resource() is simply not a
->> suitable API.
-> 
-> Ok.  So lets just keep this out as an RFC and don't merge it until an
-> actual concrete user shows up.
-
-
-Yup, that was my intention and I mentioned that in the commit message.
-
-Logan
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Thursday, July 25, 2019 8:43 PM
+> To: Leon Romanovsky <leon@kernel.org>
+> Cc: Doug Ledford <dledford@redhat.com>; Leon Romanovsky
+> <leonro@mellanox.com>; RDMA mailing list <linux-rdma@vger.kernel.org>;
+> Alex Vainman <alexv@mellanox.com>; Artemy Kovalyov
+> <artemyko@mellanox.com>; Daniel Jurgens <danielj@mellanox.com>; Eli
+> Cohen <eli@mellanox.com>; Haggai Eran <haggaie@mellanox.com>; Mark
+> Zhang <markz@mellanox.com>; Moni Shoua <monis@mellanox.com>; Parav
+> Pandit <parav@mellanox.com>; Sagi Grimberg <sagig@mellanox.com>; Yishai
+> Hadas <yishaih@mellanox.com>
+> Subject: Re: [PATCH rdma-rc 00/10] Collection of fixes for 5.3
+>=20
+> On Tue, Jul 23, 2019 at 09:57:23AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@mellanox.com>
+> >
+> > Hi,
+> >
+> > This is small patch set of fixes targeted for 5.3 and stable@.
+> >
+> > Thanks
+> >
+> > Moni Shoua (1):
+> >   IB/mlx5: Prevent concurrent MR updates during invalidation
+> >
+> > Parav Pandit (4):
+> >   IB/core: Fix querying total rdma stats
+> >   IB/counters: Initialize port counter and annotate mutex_destroy
+> >
+> > Yishai Hadas (5):
+> >   IB/mlx5: Fix unreg_umr to ignore the mkey state
+> >   IB/mlx5: Use direct mkey destroy command upon UMR unreg failure
+> >   IB/mlx5: Fix unreg_umr to set a device PD
+> >   IB/mlx5: Fix clean_mr() to work in the expected order
+> >   IB/mlx5: Fix RSS Toeplitz function to be specification aligned
+>=20
+> I took the above for for-rc
+>=20
+> >   IB/mlx5: Avoid unnecessary typecast
+> >   RDMA/core: Annotate destroy of mutex to ensure that it is released as
+> >     unlocked
+>=20
+> These are not really -rc patches, I took them to for-next
+>=20
+Thank you Jason.
