@@ -2,88 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB47774C24
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 12:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A2E74CC9
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 13:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387774AbfGYKtr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 06:49:47 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:34410 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728232AbfGYKtr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 06:49:47 -0400
+        id S2403983AbfGYLSH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 07:18:07 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:39170 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403886AbfGYLRq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 07:17:46 -0400
+Received: by mail-pf1-f194.google.com with SMTP id f17so18604957pfn.6
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 04:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1564051786; x=1595587786;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=OWpIJPp8vTM7NhZuKyhjQuW7IzEfz4ncY652DNA/fvA=;
-  b=qlO46YTQdphe4FxP5stHmIYB5jL8lFrf3MrZ8diM7Yl/bIdbAbEPQJ64
-   3Vk700aMMcZgbsTNBCrVRI9k2xLuu00frW9c2MfPJQmCQIpwyTND9WL8p
-   Or7vDP9lgtmcRKr+qTSKufkSn9shLtNWoSYqyjK33sHwNuCpxpTMhFUy5
-   o=;
-X-IronPort-AV: E=Sophos;i="5.64,306,1559520000"; 
-   d="scan'208";a="687855569"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 25 Jul 2019 10:49:43 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com (Postfix) with ESMTPS id 73C47A2326;
-        Thu, 25 Jul 2019 10:49:43 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 25 Jul 2019 10:49:42 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.30) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 25 Jul 2019 10:49:39 +0000
-Subject: Re: [PATCH for-next] RDMA/efa: Expose device statistics
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        "Firas JahJah" <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-References: <20190707142038.23191-1-galpress@amazon.com>
- <20190724190331.GA25015@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <030e1429-d6ac-3538-6fd6-682c5fa5f93a@amazon.com>
-Date:   Thu, 25 Jul 2019 13:49:34 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ceQemw0wuGQ3uiCqTlyBUwO60vemC2ljY3rBL1bAUvc=;
+        b=PFlEvXsHYv4lFKGCCfXZ2BH9B+e/+FJBGpnFm58EL07XzmLkrfPE7grKe+lK7OJ+3q
+         abjryupEyT3OpTe6vXeYbGcL1BUr5elNwdNVi9kwG5uLVwrmRNAlILwAOBEDWE3BDhoL
+         wa/mA/jPR9b/azqkL/67D+Mm2vUNeUnKTr67F6b6zVcvZzUWDrGmaUvbPo48izoM48MU
+         N0VWZj0yxfEFkbETpli1M4tpWnMK/JyQnFJyyMLRYouRu9gpM1Vf3XJFNTnOwCnTu9Ld
+         itsx5ZgymWeM6DKM8q2cX7rBLN4FseRE3aGipc8TJcBEDMtdp1GaAUz+JB2Q86Y09iS0
+         iOkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ceQemw0wuGQ3uiCqTlyBUwO60vemC2ljY3rBL1bAUvc=;
+        b=kmID79o3AfrREGHPQwxmF/0FP19/rdzMqGZZTDGZwgfbFSGAaT6i4eq+KjLUtzVAkN
+         /7jvEkAPd3wM97M++K9+08heNHRUURWKDCIFHL1JPtMrqAJKjk7RujAIspCuH5Za+2sZ
+         x3dAxhNh10kVSSWYJn1KH1rBHJrIbTrFLhFlViZ63VY2+PWWOtn7zNbgcAEGownxhZ3i
+         ItJHNj3l5LJalLiZoxLrpKFOfwBB5KeqJ6AYYlj0GaCebV4SaL/uC0AAPErYmJiZYGJy
+         CMkqtxiyJbL8yhKNLFuU4u2Vv7A2JO+sGfrrIXmjF02Is1TR2ZYSTyOawJ0rvxO17rub
+         seFQ==
+X-Gm-Message-State: APjAAAV96bxV1PSQKNUVQBCu9TU5oiE/Fm0wJlTJ15V9IGPcWhFA+mCP
+        uewEUsu0djiYbjcsy8ogWWBs3G+yeakcJGp4GEmIng==
+X-Google-Smtp-Source: APXvYqzUlCi07nILNklNsNS4HJ/lH+Efr4GjVTNZTHkDEiuYwLiGivIelhkfNGv3x1TCnih2kaTB3NQT1G7052KvmkQ=
+X-Received: by 2002:a17:90a:a116:: with SMTP id s22mr91662102pjp.47.1564053464334;
+ Thu, 25 Jul 2019 04:17:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190724190331.GA25015@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.30]
-X-ClientProxiedBy: EX13D24UWB004.ant.amazon.com (10.43.161.4) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+References: <cover.1563904656.git.andreyknvl@google.com> <7969018013a67ddbbf784ac7afeea5a57b1e2bcb.1563904656.git.andreyknvl@google.com>
+ <20190724192504.GA5716@ziepe.ca>
+In-Reply-To: <20190724192504.GA5716@ziepe.ca>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 25 Jul 2019 13:17:32 +0200
+Message-ID: <CAAeHK+x5JFgkLLzhrkQBfa78pkyQXLhgOfXOGuHK=AfwFLHntg@mail.gmail.com>
+Subject: Re: [PATCH v19 11/15] IB/mlx4: untag user pointers in mlx4_get_umem_mr
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 24/07/2019 22:03, Jason Gunthorpe wrote:
-> On Sun, Jul 07, 2019 at 05:20:38PM +0300, Gal Pressman wrote:
->> Expose hardware statistics through the sysfs api:
->> /sys/class/infiniband/efa_0/hw_counters/*.
->>
->> Reviewed-by: Firas JahJah <firasj@amazon.com>
->> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
->> Signed-off-by: Gal Pressman <galpress@amazon.com>
->> ---
->>  drivers/infiniband/hw/efa/efa.h         |  3 +
->>  drivers/infiniband/hw/efa/efa_com_cmd.c | 35 +++++++++++
->>  drivers/infiniband/hw/efa/efa_com_cmd.h | 23 +++++++
->>  drivers/infiniband/hw/efa/efa_main.c    |  2 +
->>  drivers/infiniband/hw/efa/efa_verbs.c   | 79 +++++++++++++++++++++++++
->>  5 files changed, 142 insertions(+)
-> 
-> Am I right that this patch needs 
-> 
-> https://patchwork.kernel.org/patch/11053949/
-> 
-> before it won't crash?
+On Wed, Jul 24, 2019 at 9:25 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Jul 23, 2019 at 07:58:48PM +0200, Andrey Konovalov wrote:
+> > This patch is a part of a series that extends kernel ABI to allow to pass
+> > tagged user pointers (with the top byte set to something else other than
+> > 0x00) as syscall arguments.
+> >
+> > mlx4_get_umem_mr() uses provided user pointers for vma lookups, which can
+> > only by done with untagged pointers.
+> >
+> > Untag user pointers in this function.
+> >
+> > Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+> > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > ---
+> >  drivers/infiniband/hw/mlx4/mr.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> Applied to rdma-for next, please don't sent it via other trees :)
 
-That's right.
-I'm going to resubmit this patch regardless to remove the 'if (port_num)' check
-in efa_alloc_hw_stats as the exposed device stats are the same as the port stats
-(only port 1) and some userspace tools use the port stats.
+Sure, thanks!
 
-I'll make sure to note the patch dependency in v2.
+>
+> Thanks,
+> Jason
