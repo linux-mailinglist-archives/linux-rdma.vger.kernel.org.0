@@ -2,89 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C995175151
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 16:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D1775242
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 17:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728713AbfGYOgY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 10:36:24 -0400
-Received: from os.inf.tu-dresden.de ([141.76.48.99]:47460 "EHLO
-        os.inf.tu-dresden.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727322AbfGYOgY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 10:36:24 -0400
-Received: from [195.176.96.210] (helo=[10.3.5.246])
-        by os.inf.tu-dresden.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92)
-        id 1hqer0-0004Vr-D6; Thu, 25 Jul 2019 16:36:22 +0200
-Subject: Re: [PATCH 10/10] Replace tasklets with workqueues
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Moni Shoua <monis@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20190722151426.5266-1-mplaneta@os.inf.tu-dresden.de>
- <20190722151426.5266-11-mplaneta@os.inf.tu-dresden.de>
- <20190722153205.GG7607@ziepe.ca>
-From:   Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
-Message-ID: <21a4daf9-c77e-ec80-9da0-78ab512d248d@os.inf.tu-dresden.de>
-Date:   Thu, 25 Jul 2019 16:36:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S2387941AbfGYPNM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 11:13:12 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:45709 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387553AbfGYPNM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 11:13:12 -0400
+Received: by mail-qt1-f195.google.com with SMTP id x22so44491201qtp.12
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 08:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Mp0Y39R0eDlT+5ucdfd/gxLgN40NqNC9MB6jitH+YqY=;
+        b=CiVIXySFprGec9EVtn1HeRceO8uX6/gN3WCFsjrNOmjXfXP2QqEkiRqZrErP6FMIjZ
+         80HqPdWzYQqgv5fCrEkEAR9ivRwU6XCkvTAWU/OUsRzqBMGdjPF0/soYyfYGX3q2CajF
+         V6sJD+xUzomZe4vf6/2WaqTGxegYnO/gBhyO0wCsvrt8kxDf89/DvTcJWBL+hbBLjsGp
+         odvW6WyXbhHbMTEdEUTy2hSG4eDvY/5F2HsELn42rBJVP5xxVY4+gbYAS6R+12argsqa
+         WMRjfbvQpLkjyCkfuX3YRsFtTFfi3c05GrPn4bpaykMDF/sQ2bvcImJ7838HilDOju2e
+         JgrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Mp0Y39R0eDlT+5ucdfd/gxLgN40NqNC9MB6jitH+YqY=;
+        b=n/6zG7e5YJginbhlEtrMY6J+neRmOZRg8Erm1mhUiVUQykt18rEIQRJXvdCCywV7sB
+         4v2c343po3bG+qFnG7QjtP2DPBMQLK7K0ujVsXcw9mIo0aX4GlpTzfQaDlFpmXS4Lut8
+         feCYtRUONdGZgCHBAcJvytNztb61PZ7gUXFFF/u9iBgSERxx/Zg2q+3hMr+k/AUaJQFl
+         kXVsbUPKD+t19RBwBBuEd4BO5AUT/XPGoIh3HZVoMb803WwiytJMcx2lMEKBe8GoUHrE
+         gs5Q5Xpwyb6iKfrFDui0uOSUEFiUhobDPnVN6F81LA6U3OmcxRaGRgOS/GIQS7QpUc8H
+         5+fw==
+X-Gm-Message-State: APjAAAV2ERJN1BxSz1LAxoHQYnS0Abr8TkK/GmBltzBL16eFyX6IsC+G
+        VQGjuhaHVViUxoB2/usJzkyVrg==
+X-Google-Smtp-Source: APXvYqzpGxxb+DIio0XnS4xFeD2WXzmk6fS4KCKayHLBTFkwLsFGuVQ+ALUst0TpW5ONxHi3pANT5w==
+X-Received: by 2002:ac8:35ae:: with SMTP id k43mr61491033qtb.259.1564067591512;
+        Thu, 25 Jul 2019 08:13:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id s8sm20856015qkg.64.2019.07.25.08.13.11
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 25 Jul 2019 08:13:11 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hqfQc-0006TX-KM; Thu, 25 Jul 2019 12:13:10 -0300
+Date:   Thu, 25 Jul 2019 12:13:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Alex Vainman <alexv@mellanox.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        Eli Cohen <eli@mellanox.com>,
+        Haggai Eran <haggaie@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Sagi Grimberg <sagig@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: Re: [PATCH rdma-rc 00/10] Collection of fixes for 5.3
+Message-ID: <20190725151310.GA24809@ziepe.ca>
+References: <20190723065733.4899-1-leon@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20190722153205.GG7607@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190723065733.4899-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Is this one better?
-
-Replace tasklets with workqueues in rxe driver. The reason for this 
-replacement is that tasklets are supposed to run atomically, although 
-the actual code may block.
-
-Modify the SKB destructor for outgoing SKB's to schedule QP tasks only 
-if the QP is not destroyed itself.
-
-Add a variable "pending_skb_down" to ensure that reference counting for 
-a QP is decremented only when QP access related to this skb is over.
-
-Separate part of pool element cleanup code to allow this code to be 
-called in the very end of cleanup, even if some of cleanup is scheduled 
-for asynchronous execution. Example, when it was happening is destructor 
-for a QP.
-
-Disallow calling of task functions "directly". This allows to simplify 
-logic inside rxe_task.c
-
-Schedule rxe_qp_do_cleanup onto high-priority system workqueue, because 
-this function can be scheduled from normal system workqueue.
-
-Before destroying a QP, wait until all references to this QP are gone. 
-Previously the problem was that outgoing SKBs could be freed after the 
-QP these SKBs refer to is destroyed.
-
-Add blocking rxe_run_task to replace __rxe_do_task that was calling task 
-function directly.
-
-On 22/07/2019 17:32, Jason Gunthorpe wrote:
-> On Mon, Jul 22, 2019 at 05:14:26PM +0200, Maksym Planeta wrote:
->> Replace tasklets with workqueues in rxe driver.
->>
->> Ensure that task is called only through a workqueue. This allows to
->> simplify task logic.
->>
->> Add additional dependencies to make sure that cleanup tasks do not
->> happen after object's memory is already reclaimed.
->>
->> Improve overal stability of the driver by removing multiple race
->> conditions and use-after-free situations.
+On Tue, Jul 23, 2019 at 09:57:23AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> This should be described more precisely
+> Hi,
 > 
-> Jason
+> This is small patch set of fixes targeted for 5.3 and stable@.
 > 
+> Thanks
+> 
+> Moni Shoua (1):
+>   IB/mlx5: Prevent concurrent MR updates during invalidation
+> 
+> Parav Pandit (4):
+>   IB/core: Fix querying total rdma stats
+>   IB/counters: Initialize port counter and annotate mutex_destroy
+> 
+> Yishai Hadas (5):
+>   IB/mlx5: Fix unreg_umr to ignore the mkey state
+>   IB/mlx5: Use direct mkey destroy command upon UMR unreg failure
+>   IB/mlx5: Fix unreg_umr to set a device PD
+>   IB/mlx5: Fix clean_mr() to work in the expected order
+>   IB/mlx5: Fix RSS Toeplitz function to be specification aligned
 
--- 
-Regards,
-Maksym Planeta
+I took the above for for-rc
+
+>   IB/mlx5: Avoid unnecessary typecast
+>   RDMA/core: Annotate destroy of mutex to ensure that it is released as
+>     unlocked
+
+These are not really -rc patches, I took them to for-next
+
+Jason
