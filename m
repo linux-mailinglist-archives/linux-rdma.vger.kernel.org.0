@@ -2,91 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 737D075310
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 17:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805CC7536C
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 18:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389348AbfGYPmu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 11:42:50 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:43313 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389338AbfGYPmu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 11:42:50 -0400
-Received: by mail-qt1-f193.google.com with SMTP id w17so5198406qto.10
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 08:42:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VdsiE7PwnNCqPYMWC9Usqlf8mELKmiXFo/BWpMUIGHQ=;
-        b=aY+uSE9KsCww6ugTJthadVvy+L1ffmObEIE6BkUYCCyEWWdYPNPK0Z/aL1KBggV8BO
-         YUTWxG/wFHlT3tIHWr+ZRyc18XWC9FVZACvAjoWHQR55OGGJxDizTNUh6BOTXZRb9N0I
-         ehsZDQq8D6YMH6P4LA+8ABHRqnZeZSjF3Y2clD8KqGCyEAFtKbQM6sJ/utt1Q/UMU9SO
-         UheW58lGR+fjGk43UcyOUzkXpbJBfEbqEtXub87UZeIJH/Q0emDKELEe4BaPxUBLRPtZ
-         feNAxz9/XsxiABH4GRNEcDEavzN+2VI8UMR3zYiiwCRNHXrhqQXVV/N6WQF+/gyK8/yl
-         RXbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VdsiE7PwnNCqPYMWC9Usqlf8mELKmiXFo/BWpMUIGHQ=;
-        b=H/N0p2T2Vxp0+GYcT4JZZ3gl/VJwlP/HRH22RWM6aFIcYRWJPmHt37YnXn/O5we5Nj
-         l0VrAIT/wHwJa6ZAxW/6E3cwE8FTbCkohOb8/bI2cKSIbk+rUD671f03dih3yVyTeTEc
-         BmwqndFy7e5G65EO263r2oiZzCiu72w9oc+H+u51KrUn2svcivYWnzbNbwtgsbSClkEH
-         PkxTCv0qedUFWAx1WaxpR1zcfkIUCZldW26YIMnJGXiKdby3uZ5U7u9EqfCITxqI5JJz
-         Ri1dXDZskyCFkwYbE2UXiiNQouydRhgC5t1LOzOG8rO6qmQW6TJzFVC6VB+GURkcnuoe
-         Y5wQ==
-X-Gm-Message-State: APjAAAX7Moe4wIemoiWb/oMQoHkdZk1I0wOKNlt2yRG5B1510oJ0lfnh
-        /CqBOxTOZ98d6fbZjyqddfdEPQ==
-X-Google-Smtp-Source: APXvYqzXQTiUXs/ASR0Wx9y8UcfQp6AkB0QyZUgsg9X7YRvKQYN3jVQbRK4tRagSTr5PU/Epyhd1HA==
-X-Received: by 2002:ac8:2425:: with SMTP id c34mr60832837qtc.257.1564069369701;
-        Thu, 25 Jul 2019 08:42:49 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id o5sm22050643qkf.10.2019.07.25.08.42.49
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Jul 2019 08:42:49 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hqftI-0007Ip-Op; Thu, 25 Jul 2019 12:42:48 -0300
-Date:   Thu, 25 Jul 2019 12:42:48 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lijun Ou <oulijun@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next 0/9] Codes optimization for hip08
-Message-ID: <20190725154248.GA28014@ziepe.ca>
-References: <1562593285-8037-1-git-send-email-oulijun@huawei.com>
+        id S2389787AbfGYQAq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 12:00:46 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:38154 "EHLO ale.deltatee.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387874AbfGYQAq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 25 Jul 2019 12:00:46 -0400
+Received: from s01061831bf6ec98c.cg.shawcable.net ([68.147.80.180] helo=[192.168.6.132])
+        by ale.deltatee.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <logang@deltatee.com>)
+        id 1hqgAQ-00081J-CN; Thu, 25 Jul 2019 10:00:31 -0600
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Eric Pilmore <epilmore@gigaio.com>,
+        Stephen Bates <sbates@raithlin.com>
+References: <20190722230859.5436-1-logang@deltatee.com>
+ <20190722230859.5436-12-logang@deltatee.com> <20190724063232.GB1804@lst.de>
+ <7173a4dd-0c9c-48de-98cd-93513313fd8d@deltatee.com>
+ <20190725061005.GB24875@lst.de>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <fb39485a-2914-bac4-b249-e1f4ecc8d2be@deltatee.com>
+Date:   Thu, 25 Jul 2019 10:00:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1562593285-8037-1-git-send-email-oulijun@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190725061005.GB24875@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 68.147.80.180
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, epilmore@gigaio.com, dan.j.williams@intel.com, axboe@fb.com, kbusch@kernel.org, sagi@grimberg.me, jgg@mellanox.com, Christian.Koenig@amd.com, bhelgaas@google.com, linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH 11/14] PCI/P2PDMA: dma_map P2PDMA map requests that
+ traverse the host bridge
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 08, 2019 at 09:41:16PM +0800, Lijun Ou wrote:
-> Here are codes optimization in order to reduce complexity and
-> add readability.
-> 
-> Lijun Ou (6):
->   RDMA/hns: Package the flow of creating cq
->   RDMA/hns: Refactor the code of creating srq
->   RDMA/hns: Refactor for hns_roce_v2_modify_qp function
->   RDMA/hns: Use a separated function for setting extend sge paramters
->   RDMA/hns: Package for hns_roce_rereg_user_mr function
->   RDMA/hns: Refactor hem table mhop check and calculation
-> 
-> Xi Wang (1):
->   RDMA/hns: optimize the duplicated code for qpc setting flow
-> 
-> Yixian Liu (1):
->   RDMA/hns: Refactor eq table init for hip08
-> 
-> chenglang (1):
->   RDMA/hns: Optimize hns_roce_mhop_alloc function.
 
-Applied to for-next
+
+On 2019-07-25 12:10 a.m., Christoph Hellwig wrote:
+> On Wed, Jul 24, 2019 at 09:58:59AM -0600, Logan Gunthorpe wrote:
+>>
+>>
+>> On 2019-07-24 12:32 a.m., Christoph Hellwig wrote:
+>>>>  	struct dev_pagemap *pgmap = sg_page(sg)->pgmap;
+>>>> +	struct pci_dev *client;
+>>>> +	int dist;
+>>>> +
+>>>> +	client = find_parent_pci_dev(dev);
+>>>> +	if (WARN_ON_ONCE(!client))
+>>>> +		return 0;
+>>>>  
+>>>> +	dist = upstream_bridge_distance(pgmap->pci_p2pdma_provider,
+>>>> +					client, NULL);
+>>>
+>>> Doing this on every mapping call sounds expensive..
+>>
+>> The result of this function is cached in an xarray (per patch 4) so, on
+>> the hot path, it should just be a single xa_load() which should be a
+>> relatively fast lookup which is similarly used for other hot path
+>> operations.
+> 
+> We don't cache find_parent_pci_dev, though.  So we should probably
+> export find_parent_pci_dev with a proper namespaces name and cache
+> that in the caler.
+
+Oh, yes, I'll take a look at this. Of the two callers: NVMe should be
+easy we could just pass the PCI device instead of the struct device.
+RDMA is significantly more unclear: would you add a pci_dev to struct
+ib_device? Or maybe we should be able to simply rely on the fact that
+the DMA device *must* be a PCI device and just use to_pci_dev() directly?
+
+>>>
+>>>> +	if (WARN_ON_ONCE(dist & P2PDMA_NOT_SUPPORTED))
+>>>> +		return 0;
+>>>> +
+>>>> +	if (dist & P2PDMA_THRU_HOST_BRIDGE)
+>>>> +		return dma_map_sg_attrs(dev, sg, nents, dir, attrs);
+>>>> +	else
+>>>> +		return __pci_p2pdma_map_sg(pgmap, dev, sg, nents);
+>>>
+>>> Can't we organize the values so that we can switch on the return
+>>> value instead of doing flag checks?
+>>
+>> Sorry, I don't follow what you are saying here. If you mean for
+>> upstream_bridge_distance() to just return how to map and not the
+>> distance that would interfere with other uses of that function.
+> 
+> The point is that in the map path we don't even care about the
+> distance.  I think we should just have a function that returns the
+> P2PDMA_ values from the xarray (maybe also store it there as two
+> values, but that isn't quite as important), and get rid of even
+> the concept of distance in the map path. e.g.:
+> 
+> 	switch (pci_p2pdma_supported(pgmap->pci_p2pdma_provider, client))) {
+> 	case P2PDMA_HOST_BRIDGE:
+> 		return dma_map_sg_attrs(dev, sg, nents, dir, attrs);
+> 	case P2PDMA_SWITCH:
+> 		return __pci_p2pdma_map_sg(pgmap, dev, sg, nents);
+> 	default:
+> 		WARN_ON_ONCE(1);
+> 		return 0;
+> 	}
+
+Ok, will change for v2.
 
 Thanks,
-Jason
+
+Logan
+
