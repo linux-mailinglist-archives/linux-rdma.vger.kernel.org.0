@@ -2,100 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E071475137
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 16:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C995175151
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 16:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388428AbfGYOcS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 10:32:18 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:36762 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387499AbfGYOcS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 10:32:18 -0400
-Received: by mail-qk1-f194.google.com with SMTP id g18so36554057qkl.3
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 07:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ICNqjCM6BTk0YdbaUQAN22wRCFc++MdqOWy7YbXCHPM=;
-        b=ca4dKT1VkMiyi593db759K8yuIsRrp2QKQmVIndy1m5YU5QgQZSDKbirT5mWMZ9CO7
-         Cbd9U9m4zUD2IXcakLbJXC4iN7q6hD1DH67RiDJLsuYHcc0UvVDRfIeX7F8NPtiQzQOS
-         P2BkSy6AxlwhtH+mfXkANQNlI7/B8UcGJuknBZapGE8t2a52m4sAWOCb+G7b1fszFvHX
-         KxVg9FLi67c63QnBFnQEhCLfqdVhZ89Z6a6x8238NbtULX4PK5SBoqn5NovoB7zDp0pi
-         epi20FIvS95jJoxWWYq5gN6jQFc3t69nuBUnuJZj3uzlUSkGVZEXeAjzpNue1mhJkAR6
-         hkIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ICNqjCM6BTk0YdbaUQAN22wRCFc++MdqOWy7YbXCHPM=;
-        b=dq8yCSeaZ88L8OrpZC9gDlcUmISqS8RHU+XCulvd/kFFzrInv5DZUdf56U3Dw1m8IP
-         iIKlAJg9RCpzREwhgpQG4TuKxCCmfbNXqYAxCcQ2BZEcQQW8wWNT6wM7utH34DWZa2so
-         6Z9i0/ha7HFvDsijIjCz+6XyBD9Rown9ewoauomC5gWrGD3gp1mYzb+/zf6UQG9xPTqc
-         qL9iIqnEVKnJ+G5uAB5r0YYWmUcITqrk8z7QH8pksDk2uhrAyStkZ2/v6JW/0eYmC92Z
-         Tynoj1Zy5bidUAkQA0aRaqrzo14A88nC6A6hc7Q1LUpv2HQPYZJ3ftGiBy7/Dtqr1pfs
-         3hEw==
-X-Gm-Message-State: APjAAAXvi/UsGr1QGr7AUyiMzTgjQo6Bex4zxzyD+DGjzCW0xzosaeGM
-        0aDjMJEVPtYtkjof7uhIDDHe4g==
-X-Google-Smtp-Source: APXvYqwuvzaKrcrsDhMpQ8dMHToa/cOUbIjDnDvh3gbcHksbADU30nYhauaKoISOLDW6HwzltSuxhw==
-X-Received: by 2002:ae9:f016:: with SMTP id l22mr59326285qkg.51.1564065137619;
-        Thu, 25 Jul 2019 07:32:17 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id k74sm25187210qke.53.2019.07.25.07.32.16
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Jul 2019 07:32:16 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hqen2-00047M-6L; Thu, 25 Jul 2019 11:32:16 -0300
-Date:   Thu, 25 Jul 2019 11:32:16 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Alex Vainman <alexv@mellanox.com>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        Eli Cohen <eli@mellanox.com>,
-        Haggai Eran <haggaie@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Sagi Grimberg <sagig@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-rc 10/10] IB/counters: Initialize port counter and
- annotate mutex_destroy
-Message-ID: <20190725143216.GA15793@ziepe.ca>
-References: <20190723065733.4899-1-leon@kernel.org>
- <20190723065733.4899-11-leon@kernel.org>
+        id S1728713AbfGYOgY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 10:36:24 -0400
+Received: from os.inf.tu-dresden.de ([141.76.48.99]:47460 "EHLO
+        os.inf.tu-dresden.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727322AbfGYOgY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 10:36:24 -0400
+Received: from [195.176.96.210] (helo=[10.3.5.246])
+        by os.inf.tu-dresden.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92)
+        id 1hqer0-0004Vr-D6; Thu, 25 Jul 2019 16:36:22 +0200
+Subject: Re: [PATCH 10/10] Replace tasklets with workqueues
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Moni Shoua <monis@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20190722151426.5266-1-mplaneta@os.inf.tu-dresden.de>
+ <20190722151426.5266-11-mplaneta@os.inf.tu-dresden.de>
+ <20190722153205.GG7607@ziepe.ca>
+From:   Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
+Message-ID: <21a4daf9-c77e-ec80-9da0-78ab512d248d@os.inf.tu-dresden.de>
+Date:   Thu, 25 Jul 2019 16:36:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190723065733.4899-11-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190722153205.GG7607@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 09:57:33AM +0300, Leon Romanovsky wrote:
-> From: Parav Pandit <parav@mellanox.com>
-> 
-> Annotate mutex_destroy for port counters during counters release
-> operation and during error unwinding during init flow.
-> 
-> Also port counter object should be initialized even if alloc_stats is
-> unsupported, so that other QP bind operations can avoid call trace
-> if they try to bind QP on RDMA device which doesn't support counters.
-> 
-> Fixes: f34a55e497e81 ("RDMA/core: Get sum value of all counters when perform a sysfs stat read")
-> Signed-off-by: Parav Pandit <parav@mellanox.com>
-> Reviewed-by: Mark Zhang <markz@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/core/counters.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+Is this one better?
 
-Don't put two things in a for-rc patch, I split it.
+Replace tasklets with workqueues in rxe driver. The reason for this 
+replacement is that tasklets are supposed to run atomically, although 
+the actual code may block.
 
-Jason
+Modify the SKB destructor for outgoing SKB's to schedule QP tasks only 
+if the QP is not destroyed itself.
+
+Add a variable "pending_skb_down" to ensure that reference counting for 
+a QP is decremented only when QP access related to this skb is over.
+
+Separate part of pool element cleanup code to allow this code to be 
+called in the very end of cleanup, even if some of cleanup is scheduled 
+for asynchronous execution. Example, when it was happening is destructor 
+for a QP.
+
+Disallow calling of task functions "directly". This allows to simplify 
+logic inside rxe_task.c
+
+Schedule rxe_qp_do_cleanup onto high-priority system workqueue, because 
+this function can be scheduled from normal system workqueue.
+
+Before destroying a QP, wait until all references to this QP are gone. 
+Previously the problem was that outgoing SKBs could be freed after the 
+QP these SKBs refer to is destroyed.
+
+Add blocking rxe_run_task to replace __rxe_do_task that was calling task 
+function directly.
+
+On 22/07/2019 17:32, Jason Gunthorpe wrote:
+> On Mon, Jul 22, 2019 at 05:14:26PM +0200, Maksym Planeta wrote:
+>> Replace tasklets with workqueues in rxe driver.
+>>
+>> Ensure that task is called only through a workqueue. This allows to
+>> simplify task logic.
+>>
+>> Add additional dependencies to make sure that cleanup tasks do not
+>> happen after object's memory is already reclaimed.
+>>
+>> Improve overal stability of the driver by removing multiple race
+>> conditions and use-after-free situations.
+> 
+> This should be described more precisely
+> 
+> Jason
+> 
+
+-- 
+Regards,
+Maksym Planeta
