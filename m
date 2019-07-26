@@ -2,112 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EEB76741
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2019 15:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4E276B4A
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2019 16:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbfGZNXT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Jul 2019 09:23:19 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:46570 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726604AbfGZNXT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Jul 2019 09:23:19 -0400
-Received: by mail-qk1-f196.google.com with SMTP id r4so38915835qkm.13
-        for <linux-rdma@vger.kernel.org>; Fri, 26 Jul 2019 06:23:18 -0700 (PDT)
+        id S1727422AbfGZORN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Jul 2019 10:17:13 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:42698 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727358AbfGZORN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Jul 2019 10:17:13 -0400
+Received: by mail-pf1-f195.google.com with SMTP id q10so24586986pff.9;
+        Fri, 26 Jul 2019 07:17:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vRRbO5Ly4feSqORGvyHTD+nUIz4sPUrpxD23Z/PcZIs=;
-        b=lnoLpfhGnR68/ijYAsFSARa9PAiR9DurOgCVXltbgSRWnKcaEbztFF1WbVh36AWWkf
-         4FvNFQAFqBjE+TjBL5w7nzBQn2sOOIuk+Bd5FIyo8QhMLE8Hu3q5o3qa4fcIidBfVzZm
-         RYhD+vSQQI5Ck+SL4KqnCd81vzXPXuhiiGLyfdmtSNp1KktghjaJ2WvvDzpdagovDtY+
-         tWieeikirYGqiB3vBbOB9rruzOZ0hXBzqK6qfQEpeoGwIhd+YKU1AsNsB4aZghAGuUGm
-         BKteSVtyoWYGHfbzEgMpfXHr6+wAKoHIMasQ1pE60xSEPuujQVqeFzJ1l0ZRWWhHVfZB
-         wZFA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=dNnqQwHX3ETnAbhTD2AqV3KPRBqgqiL6QbUT7t0Db40=;
+        b=aCuPaDhXVM0L+4hA6IRjIBoywOkmHWDMoGVV8FRhqt4MYj3M7Fhzi+b6Lb1sfpBDTn
+         Us31F+UYEGzp/6hNLWyB3wTdQYnV603w845xUBGcOc41Dv5/Qz49XnOqGJDdRkTBTp7M
+         arVmCDNZ0tz54v6N4mLpaTsibLt/xDg93Z5ZNLCM3LbXnHMOoCJkwpfflvm2bA2xeBEG
+         x/GVx1DJejxlYLJanhWmcGZkTU1HVOaznc0cvMIURwMquqM4VqME9UUgzC6YdwzV0yAc
+         NX5hUNourXGvVqvaUPTO7Y5uLX0K1MnPMq5B9epbstfcWpknZOVl2APDjPfqPNGbxgK3
+         UT1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vRRbO5Ly4feSqORGvyHTD+nUIz4sPUrpxD23Z/PcZIs=;
-        b=MQTyACRtjBHTVWERsNwfyELPea+TNfCI7uA8/gEzQKFASSRLq2a0/w+4CYvhz+H88c
-         zX15TGjGXSMuKlY5lGUnFhg0R6VcyXcEQqiwlKn/Q5di6q5lv5YErdS4pvaouXpDHZMN
-         5cvLIOo8KtvqbYgtUrF4+P01TffkAELEfXrYDfcZq0xtnKvBJPXaWlFobonhaCSVMuBs
-         Xy2u+eCSHtzZEs0XJiuxoSzywhG+7YvSgivfi+hDiu5NCRIB7FNZE1LwTlk14DNeWNdN
-         hHxt8T9Bzev7I4Vjma73U29igE8yxoLMBpOkmBqV7MuTCIs8Y2CD+hRJ2YINR+I22W00
-         8WKg==
-X-Gm-Message-State: APjAAAXTq9sD5w9I4/d73CSdF+JtQu2X2hhHSsqalvhIMyrKrv/8wQsr
-        TQgdujtiMIMPbd0vo26kzQKDWA==
-X-Google-Smtp-Source: APXvYqxxJ3XLAwxhUmusgh+3CwAODLUZgB4GLlIST9k3xfUL6ZJU+aAvuIf5HdnLE8FWqtKGN98/Eg==
-X-Received: by 2002:ae9:c106:: with SMTP id z6mr65624136qki.285.1564147398170;
-        Fri, 26 Jul 2019 06:23:18 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id t2sm30286532qth.33.2019.07.26.06.23.17
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 26 Jul 2019 06:23:17 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hr0Bp-0002qo-0n; Fri, 26 Jul 2019 10:23:17 -0300
-Date:   Fri, 26 Jul 2019 10:23:17 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michal Kalderon <mkalderon@marvell.com>
-Cc:     Kamal Heib <kamalheib1@gmail.com>,
-        Ariel Elior <aelior@marvell.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v6 rdma-next 1/6] RDMA/core: Create mmap database and
- cookie helper functions
-Message-ID: <20190726132316.GA8695@ziepe.ca>
-References: <20190709141735.19193-1-michal.kalderon@marvell.com>
- <20190709141735.19193-2-michal.kalderon@marvell.com>
- <20190725175540.GA18757@ziepe.ca>
- <MN2PR18MB3182469DB08CD20B56C9697FA1C10@MN2PR18MB3182.namprd18.prod.outlook.com>
- <20190725195236.GF7467@ziepe.ca>
- <MN2PR18MB3182BFFEA83044C0163F9DCBA1C00@MN2PR18MB3182.namprd18.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MN2PR18MB3182BFFEA83044C0163F9DCBA1C00@MN2PR18MB3182.namprd18.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dNnqQwHX3ETnAbhTD2AqV3KPRBqgqiL6QbUT7t0Db40=;
+        b=mliyaJ6yDNbGjQvrcD1cXQUw0xNdyhar29DWAmzymj2RpjmROL1FNCkjlCtXQ+kz9e
+         duLDbzcmDqiuS0QiV5o1SlIhjrloqtMN8BsBJ6GW12upUtbbSaBXDR6irKHUOG75zM/t
+         i3OrazZOur2nl31ba/+dU10bC6m4zQzO/urOhltCsJ5xioD5yhrI4UzJrDi1o4N2/M7n
+         GhcuhY0gUlMHPTV1zxuhpofpTqnGL8tFBUBahlfNWrCHbCpJ7kwCuvhAAcr2eFIRDbYI
+         YpEkj2vBW1qCCefTPSvBkYixLTp2m5Xd1jJjb0IMi99lvAOlrnf08BXEbZ2wR7W4HB1u
+         psGQ==
+X-Gm-Message-State: APjAAAVZqty9QronGIidQxj7hV3+D4hs0zE1xvgTUsE76zk5RUV0uKSF
+        zUXe/m+z9VJWy66pVtHEtn0=
+X-Google-Smtp-Source: APXvYqx9xaENXC9Svdu6KwkHC2A9K/PjsmPxmfUJp6ijl9Wjql7ZHhAQYVndsn6qMVE5bD7MC+MKcg==
+X-Received: by 2002:aa7:9afc:: with SMTP id y28mr22080870pfp.252.1564150632442;
+        Fri, 26 Jul 2019 07:17:12 -0700 (PDT)
+Received: from oslab.tsinghua.edu.cn ([2402:f000:4:72:808::3ca])
+        by smtp.gmail.com with ESMTPSA id j6sm70251565pjd.19.2019.07.26.07.17.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Jul 2019 07:17:11 -0700 (PDT)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     santosh.shilimkar@oracle.com, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] net: rds: Fix possible null-pointer dereferences in rds_rdma_cm_event_handler_cmn()
+Date:   Fri, 26 Jul 2019 22:17:05 +0800
+Message-Id: <20190726141705.9585-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 26, 2019 at 08:42:07AM +0000, Michal Kalderon wrote:
+In rds_rdma_cm_event_handler_cmn(), there are some if statements to
+check whether conn is NULL, such as on lines 65, 96 and 112.
+But conn is not checked before being used on line 108:
+    trans->cm_connect_complete(conn, event);
+and on lines 140-143:
+    rdsdebug("DISCONNECT event - dropping connection "
+            "%pI6c->%pI6c\n", &conn->c_laddr,
+            &conn->c_faddr);
+    rds_conn_drop(conn);
 
-> > > But we don't free entires from the xa_array ( only when ucontext is
-> > > destroyed) so how will There be an empty element after we wrap ?
-> > 
-> > Oh!
-> > 
-> > That should be fixed up too, in the general case if a user is
-> > creating/destroying driver objects in loop we don't want memory usage to
-> > be unbounded.
-> > 
-> > The rdma_user_mmap stuff has VMA ops that can refcount the xa entry and
-> > now that this is core code it is easy enough to harmonize the two things and
-> > track the xa side from the struct rdma_umap_priv
-> > 
-> > The question is, does EFA or qedr have a use model for this that allows a
-> > userspace verb to create/destroy in a loop? ie do we need to fix this right
-> > now?
+Thus, possible null-pointer dereferences may occur.
 
-> The mapping occurs for every qp and cq creation. So yes.
->
-> So do you mean add a ref-cnt to the xarray entry and from umap
-> decrease the refcnt and free?
+To fix these bugs, conn is checked before being used.
 
-Yes, free the entry (release the HW resource) and release the xa_array
-ID.
+These bugs are found by a static analysis tool STCheck written by us.
 
-Then, may as well don't use cyclic allocation for the xa, just the
-algorithm above would be OK.
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ net/rds/rdma_transport.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-The zap should also clear the refs, and then when the ucontext is
-destroyed we can just WARN_ON the xarray is empty. Either all the vmas
-were destroyed or all were zapped.
+diff --git a/net/rds/rdma_transport.c b/net/rds/rdma_transport.c
+index ff74c4bbb9fc..9986d6065c4d 100644
+--- a/net/rds/rdma_transport.c
++++ b/net/rds/rdma_transport.c
+@@ -105,7 +105,8 @@ static int rds_rdma_cm_event_handler_cmn(struct rdma_cm_id *cm_id,
+ 		break;
+ 
+ 	case RDMA_CM_EVENT_ESTABLISHED:
+-		trans->cm_connect_complete(conn, event);
++		if (conn)
++			trans->cm_connect_complete(conn, event);
+ 		break;
+ 
+ 	case RDMA_CM_EVENT_REJECTED:
+@@ -137,6 +138,8 @@ static int rds_rdma_cm_event_handler_cmn(struct rdma_cm_id *cm_id,
+ 		break;
+ 
+ 	case RDMA_CM_EVENT_DISCONNECTED:
++		if (!conn)
++			break;
+ 		rdsdebug("DISCONNECT event - dropping connection "
+ 			 "%pI6c->%pI6c\n", &conn->c_laddr,
+ 			 &conn->c_faddr);
+-- 
+2.17.0
 
-Jason
