@@ -2,117 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FEA875C7F
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2019 03:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC68776073
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2019 10:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725923AbfGZBYT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 21:24:19 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:12796 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbfGZBYS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 21:24:18 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d3a563e0000>; Thu, 25 Jul 2019 18:24:14 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 25 Jul 2019 18:24:17 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 25 Jul 2019 18:24:17 -0700
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Jul
- 2019 01:24:16 +0000
-Subject: Re: [PATCH 00/12] block/bio, fs: convert put_page() to
- put_user_page*()
-To:     Bob Liu <bob.liu@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>, <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        <ceph-devel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-cifs@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <samba-technical@lists.samba.org>,
-        <v9fs-developer@lists.sourceforge.net>,
-        <virtualization@lists.linux-foundation.org>
-References: <20190724042518.14363-1-jhubbard@nvidia.com>
- <8621066c-e242-c449-eb04-4f2ce6867140@oracle.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <88864b91-516d-9774-f4ca-b45927ac4556@nvidia.com>
-Date:   Thu, 25 Jul 2019 18:24:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726103AbfGZILH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Jul 2019 04:11:07 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:39554 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbfGZILG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Jul 2019 04:11:06 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6Q89B62190146;
+        Fri, 26 Jul 2019 08:11:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
+ bh=gQdHuEke+yBenm96UqVGbsHuxiHJcndcY+qMXMTpilc=;
+ b=FRlNbmvQyKLSDPtyUsm3bPE4dWKIgvuRapMv8TL7ZFzqGgTxmBOyXlrIhIXJz/MlHfbV
+ 8eynX+Vbuwyhn/BrjoArxihVHRs77BNi5KjKsrTvLxy1yvr2C4E/p+n4Bb+im7MAIiml
+ 2vhIKjOIJTRD1ON65VAnjuSrMttsRQpymd9p+HnNAItrGCPj//yDD6tCIU77m1HhKX55
+ ZfvAjQidPikxRRQZt5oOseZ0NzHP/2Nu68ofSnhT/DhYJfjzmHJ+vE3vFsivQQ4KsKtX
+ XaVVMZioYBrGwR5fV3y/CeW96U1tXvPmLgGmosz1p+Mzb4yzY7EEzAjm5e+PXrHAuIDV 3A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2tx61c8nc9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Jul 2019 08:11:03 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6Q882TO165221;
+        Fri, 26 Jul 2019 08:11:03 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2tyd3p88cb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Jul 2019 08:11:03 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6Q8B2ao029056;
+        Fri, 26 Jul 2019 08:11:02 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 26 Jul 2019 01:11:01 -0700
+Date:   Fri, 26 Jul 2019 11:10:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     bmt@zurich.ibm.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] rdma/siw: queue pair methods
+Message-ID: <20190726081056.GA27059@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <8621066c-e242-c449-eb04-4f2ce6867140@oracle.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1564104254; bh=QKXKINFukbwLIIsnFYM0gxF2tKYcHndEGgwougXKa7I=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=PQnzJX5xz5ikEiwrLKM8WsALivZ88h6rrpD5As08defMJIkdP+u4c4qNjj9VJ4tt7
-         nwv4lirmE3zmhFpqjjtQZ51fomZqIx7+Z5K/hIMgtkne3B/lAraavguLY6SA4HXRUi
-         W4SUZZlps8N4rFxPowCNQkldeoVK/fBECjRShYxjtzJx8yvDnyDgvLG3XjCMQgN0HE
-         j0RlPZtSamPdX7GpRyHeIVO0klar+OAGzPGoJx+oiz7wZ/GbisDHnJkR/hoyBrvfQa
-         +HuyKaWvKrWvHxopvgEQcRa8uv0hWn0N0u4M8vDDfrnuUHyPlJZxMytFt1GB3uPYBU
-         1cdZ+M2GXGeqw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9329 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=676
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1907260104
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9329 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=720 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1907260105
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/24/19 5:41 PM, Bob Liu wrote:
-> On 7/24/19 12:25 PM, john.hubbard@gmail.com wrote:
->> From: John Hubbard <jhubbard@nvidia.com>
->>
->> Hi,
->>
->> This is mostly Jerome's work, converting the block/bio and related areas
->> to call put_user_page*() instead of put_page(). Because I've changed
->> Jerome's patches, in some cases significantly, I'd like to get his
->> feedback before we actually leave him listed as the author (he might
->> want to disown some or all of these).
->>
-> 
-> Could you add some background to the commit log for people don't have the context..
-> Why this converting? What's the main differences?
-> 
+Hello Bernard Metzler,
 
-Hi Bob,
+The patch f29dd55b0236: "rdma/siw: queue pair methods" from Jun 20,
+2019, leads to the following static checker warning:
 
-1. Many of the patches have a blurb like this:
+	drivers/infiniband/sw/siw/siw_qp.c:226 siw_qp_enable_crc()
+	warn: variable dereferenced before check 'siw_crypto_shash' (see line 223)
 
-For pages that were retained via get_user_pages*(), release those pages
-via the new put_user_page*() routines, instead of via put_page().
+drivers/infiniband/sw/siw/siw_qp.c
+   219  static int siw_qp_enable_crc(struct siw_qp *qp)
+   220  {
+   221          struct siw_rx_stream *c_rx = &qp->rx_stream;
+   222          struct siw_iwarp_tx *c_tx = &qp->tx_ctx;
+   223          int size = crypto_shash_descsize(siw_crypto_shash) +
+                                                 ^^^^^^^^^^^^^^^^
+Dereferenced inside function.
 
-This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-("mm: introduce put_user_page*(), placeholder versions").
+   224                          sizeof(struct shash_desc);
+   225  
+   226          if (siw_crypto_shash == NULL)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+Checked too late.
 
-...and if you look at that commit, you'll find several pages of
-information in its commit description, which should address your point.
+   227                  return -ENOENT;
+   228  
+   229          c_tx->mpa_crc_hd = kzalloc(size, GFP_KERNEL);
+   230          c_rx->mpa_crc_hd = kzalloc(size, GFP_KERNEL);
+   231          if (!c_tx->mpa_crc_hd || !c_rx->mpa_crc_hd) {
+   232                  kfree(c_tx->mpa_crc_hd);
+   233                  kfree(c_rx->mpa_crc_hd);
+   234                  c_tx->mpa_crc_hd = NULL;
+   235                  c_rx->mpa_crc_hd = NULL;
+   236                  return -ENOMEM;
+   237          }
+   238          c_tx->mpa_crc_hd->tfm = siw_crypto_shash;
+   239          c_rx->mpa_crc_hd->tfm = siw_crypto_shash;
+   240  
+   241          return 0;
+   242  }
 
-2. This whole series has to be re-worked, as per the other feedback thread.
-So I'll keep your comment in mind when I post a new series.
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+regards,
+dan carpenter
