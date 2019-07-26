@@ -2,94 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2FA761F5
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2019 11:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EEB76741
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2019 15:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbfGZJZx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Jul 2019 05:25:53 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:33705 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbfGZJZx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Jul 2019 05:25:53 -0400
-Received: by mail-lj1-f196.google.com with SMTP id h10so50823114ljg.0
-        for <linux-rdma@vger.kernel.org>; Fri, 26 Jul 2019 02:25:52 -0700 (PDT)
+        id S1727061AbfGZNXT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Jul 2019 09:23:19 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:46570 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726604AbfGZNXT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Jul 2019 09:23:19 -0400
+Received: by mail-qk1-f196.google.com with SMTP id r4so38915835qkm.13
+        for <linux-rdma@vger.kernel.org>; Fri, 26 Jul 2019 06:23:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9+PIbmOU2L0JKXtCkLpSiyF+YIeyaYLwnS78i5Iju9M=;
-        b=dbYOmz3UopyNMm7b+ZL7OYeHZdKMjC8uKvQEM6zd4xeZieU1Gi9gvjgH3EC1AIvYE7
-         duuZwTh1H+R8KFptKI/jmo5gs6vbyo1Hn4Yvszu+PAhMscpBeKE0NUDIEylJzsG9RQXx
-         O2eO72Dl+2cezfYqquobSJ95toySzW4VpudQ7IDc/a/BCdxaZULQMFGSNR1MEkaqRfzu
-         yw4myOKYtau9cDEFTvOv9lQXp+tPo3R7FgKpCKwXTLMufDI4BbufB6HK0z6U+rlKB8h6
-         Txn8SJkVcvNbYm8TbvLQK9gHymzUcOxdcaMUAG9qs1HWphbaCs1bXctY+Umltlf2xL9w
-         VbSw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vRRbO5Ly4feSqORGvyHTD+nUIz4sPUrpxD23Z/PcZIs=;
+        b=lnoLpfhGnR68/ijYAsFSARa9PAiR9DurOgCVXltbgSRWnKcaEbztFF1WbVh36AWWkf
+         4FvNFQAFqBjE+TjBL5w7nzBQn2sOOIuk+Bd5FIyo8QhMLE8Hu3q5o3qa4fcIidBfVzZm
+         RYhD+vSQQI5Ck+SL4KqnCd81vzXPXuhiiGLyfdmtSNp1KktghjaJ2WvvDzpdagovDtY+
+         tWieeikirYGqiB3vBbOB9rruzOZ0hXBzqK6qfQEpeoGwIhd+YKU1AsNsB4aZghAGuUGm
+         BKteSVtyoWYGHfbzEgMpfXHr6+wAKoHIMasQ1pE60xSEPuujQVqeFzJ1l0ZRWWhHVfZB
+         wZFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9+PIbmOU2L0JKXtCkLpSiyF+YIeyaYLwnS78i5Iju9M=;
-        b=qE+onMgxfzKIJ8RlNMNKrGvq9AyZoDu0tCt1oC3nc82tzqi0sHI2cY2JuXJBvYteLo
-         OeV0YOFxQtoHb39RRopwaAI60tmAc1xeNc37i5QjHHLvfQkRVecCbqi65tX8PqyvI2Li
-         k6Q4RJ9iAF4WorYvg7F0Ofd+m2BNQM/qseciE3VLxSALwXQq2MCyxjtQWo0bz2c99FHm
-         ACofwEMSSlxd3BSHy8nOCyZ4GU7tdAAqZsqqRArVzuTIng8ChjCZ/8wxjGT9Vel1tEg2
-         KxUKHZ0sIz72/KS/BeEGGTr+XJc61hBzgK+FvJSEsh11XpRTtgIgbPYgHC6tSKD3J7BQ
-         /6ZQ==
-X-Gm-Message-State: APjAAAU7tiHwQ2TqfiRJbAlfUqZFT/+yb5EgmgHsy40iCOXylh3qb1iR
-        vuJbxUbgwBsOOWkUWBASIwPW7w==
-X-Google-Smtp-Source: APXvYqx3uN2nE7n6qS05F8mg8lPbGXuEEWpcKrx2U8qn9xYeIoCbLmf2xLHai/CRWcn88ThrbBoiNw==
-X-Received: by 2002:a2e:a16c:: with SMTP id u12mr46776497ljl.59.1564133151828;
-        Fri, 26 Jul 2019 02:25:51 -0700 (PDT)
-Received: from localhost (c-243c70d5.07-21-73746f28.bbcust.telenor.se. [213.112.60.36])
-        by smtp.gmail.com with ESMTPSA id m17sm9919308lji.16.2019.07.26.02.25.51
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 26 Jul 2019 02:25:51 -0700 (PDT)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     bmt@zurich.ibm.com, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH] rdma: siw: remove unused variable
-Date:   Fri, 26 Jul 2019 11:25:40 +0200
-Message-Id: <20190726092540.22467-1-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vRRbO5Ly4feSqORGvyHTD+nUIz4sPUrpxD23Z/PcZIs=;
+        b=MQTyACRtjBHTVWERsNwfyELPea+TNfCI7uA8/gEzQKFASSRLq2a0/w+4CYvhz+H88c
+         zX15TGjGXSMuKlY5lGUnFhg0R6VcyXcEQqiwlKn/Q5di6q5lv5YErdS4pvaouXpDHZMN
+         5cvLIOo8KtvqbYgtUrF4+P01TffkAELEfXrYDfcZq0xtnKvBJPXaWlFobonhaCSVMuBs
+         Xy2u+eCSHtzZEs0XJiuxoSzywhG+7YvSgivfi+hDiu5NCRIB7FNZE1LwTlk14DNeWNdN
+         hHxt8T9Bzev7I4Vjma73U29igE8yxoLMBpOkmBqV7MuTCIs8Y2CD+hRJ2YINR+I22W00
+         8WKg==
+X-Gm-Message-State: APjAAAXTq9sD5w9I4/d73CSdF+JtQu2X2hhHSsqalvhIMyrKrv/8wQsr
+        TQgdujtiMIMPbd0vo26kzQKDWA==
+X-Google-Smtp-Source: APXvYqxxJ3XLAwxhUmusgh+3CwAODLUZgB4GLlIST9k3xfUL6ZJU+aAvuIf5HdnLE8FWqtKGN98/Eg==
+X-Received: by 2002:ae9:c106:: with SMTP id z6mr65624136qki.285.1564147398170;
+        Fri, 26 Jul 2019 06:23:18 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id t2sm30286532qth.33.2019.07.26.06.23.17
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 26 Jul 2019 06:23:17 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hr0Bp-0002qo-0n; Fri, 26 Jul 2019 10:23:17 -0300
+Date:   Fri, 26 Jul 2019 10:23:17 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Michal Kalderon <mkalderon@marvell.com>
+Cc:     Kamal Heib <kamalheib1@gmail.com>,
+        Ariel Elior <aelior@marvell.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v6 rdma-next 1/6] RDMA/core: Create mmap database and
+ cookie helper functions
+Message-ID: <20190726132316.GA8695@ziepe.ca>
+References: <20190709141735.19193-1-michal.kalderon@marvell.com>
+ <20190709141735.19193-2-michal.kalderon@marvell.com>
+ <20190725175540.GA18757@ziepe.ca>
+ <MN2PR18MB3182469DB08CD20B56C9697FA1C10@MN2PR18MB3182.namprd18.prod.outlook.com>
+ <20190725195236.GF7467@ziepe.ca>
+ <MN2PR18MB3182BFFEA83044C0163F9DCBA1C00@MN2PR18MB3182.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR18MB3182BFFEA83044C0163F9DCBA1C00@MN2PR18MB3182.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The variable 'p' si no longer used and the compiler rightly complains
-that it should be removed.
+On Fri, Jul 26, 2019 at 08:42:07AM +0000, Michal Kalderon wrote:
 
-../drivers/infiniband/sw/siw/siw_mem.c: In function ‘siw_free_plist’:
-../drivers/infiniband/sw/siw/siw_mem.c:66:16: warning: unused variable
- ‘p’ [-Wunused-variable]
-  struct page **p = chunk->plist;
-                ^
+> > > But we don't free entires from the xa_array ( only when ucontext is
+> > > destroyed) so how will There be an empty element after we wrap ?
+> > 
+> > Oh!
+> > 
+> > That should be fixed up too, in the general case if a user is
+> > creating/destroying driver objects in loop we don't want memory usage to
+> > be unbounded.
+> > 
+> > The rdma_user_mmap stuff has VMA ops that can refcount the xa entry and
+> > now that this is core code it is easy enough to harmonize the two things and
+> > track the xa side from the struct rdma_umap_priv
+> > 
+> > The question is, does EFA or qedr have a use model for this that allows a
+> > userspace verb to create/destroy in a loop? ie do we need to fix this right
+> > now?
 
-Rework to remove unused variable.
+> The mapping occurs for every qp and cq creation. So yes.
+>
+> So do you mean add a ref-cnt to the xarray entry and from umap
+> decrease the refcnt and free?
 
-Fixes: 8288d030447f ("mm/gup: add make_dirty arg to put_user_pages_dirty_lock()")
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- drivers/infiniband/sw/siw/siw_mem.c | 2 --
- 1 file changed, 2 deletions(-)
+Yes, free the entry (release the HW resource) and release the xa_array
+ID.
 
-diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-index 358d440efa11..ab83a9cec562 100644
---- a/drivers/infiniband/sw/siw/siw_mem.c
-+++ b/drivers/infiniband/sw/siw/siw_mem.c
-@@ -63,8 +63,6 @@ struct siw_mem *siw_mem_id2obj(struct siw_device *sdev, int stag_index)
- static void siw_free_plist(struct siw_page_chunk *chunk, int num_pages,
- 			   bool dirty)
- {
--	struct page **p = chunk->plist;
--
- 	put_user_pages_dirty_lock(chunk->plist, num_pages, dirty);
- }
- 
--- 
-2.20.1
+Then, may as well don't use cyclic allocation for the xa, just the
+algorithm above would be OK.
 
+The zap should also clear the refs, and then when the ucontext is
+destroyed we can just WARN_ON the xarray is empty. Either all the vmas
+were destroyed or all were zapped.
+
+Jason
