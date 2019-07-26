@@ -2,164 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B15617586A
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2019 21:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FEA875C7F
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2019 03:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbfGYTwj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jul 2019 15:52:39 -0400
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:38003 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbfGYTwj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 15:52:39 -0400
-Received: by mail-ua1-f67.google.com with SMTP id j2so20344192uaq.5
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2019 12:52:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NtToBUUoEbCqChwzeYr06AS46mrqcW9whj4wIInF5Bk=;
-        b=mDUTcBdI6hHxavvFRN9EkVjrZ5c0UenKDQz7bDJqViyLkUxGxy8xw91wkD4Y/61wHg
-         Igcxyo1vrkHruAr7AuMvzl766ijOO+mSJRwMtKw3BoMeCLE+9zxf2kxbW9zNPxkIlj/p
-         wht62Wnfyu1qxG96rp3E3A3nb5cjmGYL64BF0gcR8+bukdu/RrVCH00n6vMRhvRZztsc
-         fVYLDb8rmyldl+aDOsKzAhN9BjY/tawjr6hjiz30u/uDl43dmiUJe49Gq0XteyvNCPqu
-         JtG99Sz0nLR28Zm1wv4K5HSwNLzZRXqCY4i9vfpGMu2F9td3ZrfIwfXVpZhfwxPZMZmW
-         Viyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NtToBUUoEbCqChwzeYr06AS46mrqcW9whj4wIInF5Bk=;
-        b=rAb50aJX8jH4rTaLlKmbDJnI7fqF3+YHc+JxVZe78u2l2mwk+RpgUgDTCTk38lGLvf
-         Vq4s8xUAKxVKQZG+SUvutJzbZ3+4sdqmptl/KU5Wl3a+D/sn02TEkrEx2n9mD9+V60gm
-         Uy269QFeMZtiT5iCS35cS2H02ld9X6nq+nZVBBu1FlPX/D99g8z+vU1Z0tSJSixAbDDG
-         SkgRRl2rMDg+XJwUGPACAcksBWl6HCBQ1nzIeglUztKIE95rp4yPq5cffopnlu9QB0C4
-         vb9MTtqw0KGn4+fwdnqYM9lzij5cpnCuRRjvIqlKef4PjUv0pHwq7jf1OFXEcg8+rd4X
-         rm+g==
-X-Gm-Message-State: APjAAAWBvZx/e0+RDW5Lvv5Ab7fqJKJFrhCf+BdBJFtK4Ozzyn+Sa3aa
-        3CYM4NwW3KPsIJyLrpzkC/39JA==
-X-Google-Smtp-Source: APXvYqw2XPAm7nn0NCCmWDgtDzI4KR4fd20Fs236rdGP5cZtSAV35+ewIFh2H4ijoKuuhpP9tfrd7Q==
-X-Received: by 2002:ab0:36:: with SMTP id 51mr59768902uai.105.1564084357823;
-        Thu, 25 Jul 2019 12:52:37 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id z124sm13746806vkd.20.2019.07.25.12.52.37
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Jul 2019 12:52:37 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hqjn2-0001aS-Hf; Thu, 25 Jul 2019 16:52:36 -0300
-Date:   Thu, 25 Jul 2019 16:52:36 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michal Kalderon <mkalderon@marvell.com>
-Cc:     Kamal Heib <kamalheib1@gmail.com>,
-        Ariel Elior <aelior@marvell.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v6 rdma-next 1/6] RDMA/core: Create mmap database and
- cookie helper functions
-Message-ID: <20190725195236.GF7467@ziepe.ca>
-References: <20190709141735.19193-1-michal.kalderon@marvell.com>
- <20190709141735.19193-2-michal.kalderon@marvell.com>
- <20190725175540.GA18757@ziepe.ca>
- <MN2PR18MB3182469DB08CD20B56C9697FA1C10@MN2PR18MB3182.namprd18.prod.outlook.com>
+        id S1725923AbfGZBYT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jul 2019 21:24:19 -0400
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:12796 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbfGZBYS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jul 2019 21:24:18 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5d3a563e0000>; Thu, 25 Jul 2019 18:24:14 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 25 Jul 2019 18:24:17 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 25 Jul 2019 18:24:17 -0700
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Jul
+ 2019 01:24:16 +0000
+Subject: Re: [PATCH 00/12] block/bio, fs: convert put_page() to
+ put_user_page*()
+To:     Bob Liu <bob.liu@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>, <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        <ceph-devel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-cifs@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <samba-technical@lists.samba.org>,
+        <v9fs-developer@lists.sourceforge.net>,
+        <virtualization@lists.linux-foundation.org>
+References: <20190724042518.14363-1-jhubbard@nvidia.com>
+ <8621066c-e242-c449-eb04-4f2ce6867140@oracle.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <88864b91-516d-9774-f4ca-b45927ac4556@nvidia.com>
+Date:   Thu, 25 Jul 2019 18:24:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MN2PR18MB3182469DB08CD20B56C9697FA1C10@MN2PR18MB3182.namprd18.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <8621066c-e242-c449-eb04-4f2ce6867140@oracle.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1564104254; bh=QKXKINFukbwLIIsnFYM0gxF2tKYcHndEGgwougXKa7I=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=PQnzJX5xz5ikEiwrLKM8WsALivZ88h6rrpD5As08defMJIkdP+u4c4qNjj9VJ4tt7
+         nwv4lirmE3zmhFpqjjtQZ51fomZqIx7+Z5K/hIMgtkne3B/lAraavguLY6SA4HXRUi
+         W4SUZZlps8N4rFxPowCNQkldeoVK/fBECjRShYxjtzJx8yvDnyDgvLG3XjCMQgN0HE
+         j0RlPZtSamPdX7GpRyHeIVO0klar+OAGzPGoJx+oiz7wZ/GbisDHnJkR/hoyBrvfQa
+         +HuyKaWvKrWvHxopvgEQcRa8uv0hWn0N0u4M8vDDfrnuUHyPlJZxMytFt1GB3uPYBU
+         1cdZ+M2GXGeqw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 25, 2019 at 07:34:15PM +0000, Michal Kalderon wrote:
-> > > +	ibdev_dbg(ucontext->device,
-> > > +		  "mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx]
-> > removed\n",
-> > > +		  entry->obj, key, entry->address, entry->length);
-> > > +
-> > > +	return entry;
-> > > +}
-> > > +EXPORT_SYMBOL(rdma_user_mmap_entry_get);
-> > 
-> > It is a mistake we keep making, and maybe the war is hopelessly lost now,
-> > but functions called from a driver should not be part of the ib_uverbs module
-> > - ideally uverbs is an optional module. They should be in ib_core.
-> > 
-> > Maybe put this in ib_core_uverbs.c ?
+On 7/24/19 5:41 PM, Bob Liu wrote:
+> On 7/24/19 12:25 PM, john.hubbard@gmail.com wrote:
+>> From: John Hubbard <jhubbard@nvidia.com>
+>>
+>> Hi,
+>>
+>> This is mostly Jerome's work, converting the block/bio and related areas
+>> to call put_user_page*() instead of put_page(). Because I've changed
+>> Jerome's patches, in some cases significantly, I'd like to get his
+>> feedback before we actually leave him listed as the author (he might
+>> want to disown some or all of these).
+>>
+> 
+> Could you add some background to the commit log for people don't have the context..
+> Why this converting? What's the main differences?
+> 
 
-> But if there isn't ib_uverbs user apps can't be run right ? and then
-> these functions Won't get called anyway ?
+Hi Bob,
 
-Right, but, we don't want loading the driver to force creating
-/dev/infiniband/uverbs - so the driver support component of uverbs
-should live in ib_core, and the /dev/ component should be in ib_uverbs
+1. Many of the patches have a blurb like this:
 
-> > > +	xa_lock(&ucontext->mmap_xa);
-> > > +	if (check_add_overflow(ucontext->mmap_xa_page,
-> > > +			       (u32)(length >> PAGE_SHIFT),
-> > 
-> > Should this be divide round up ?
+For pages that were retained via get_user_pages*(), release those pages
+via the new put_user_page*() routines, instead of via put_page().
 
-> For cases that length is not rounded to PAGE_SHIFT? 
+This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+("mm: introduce put_user_page*(), placeholder versions").
 
-It should never happen, but yes
- 
-> > 
-> > > +			       &next_mmap_page))
-> > > +		goto err_unlock;
-> > 
-> > I still don't like that this algorithm latches into a permanent failure when the
-> > xa_page wraps.
-> > 
-> > It seems worth spending a bit more time here to tidy this.. Keep using the
-> > mmap_xa_page scheme, but instead do something like
-> > 
-> > alloc_cyclic_range():
-> > 
-> > while () {
-> >    // Find first empty element in a cyclic way
-> >    xa_page_first = mmap_xa_page;
-> >    xa_find(xa, &xa_page_first, U32_MAX, XA_FREE_MARK)
-> > 
-> >    // Is there a enough room to have the range?
-> >    if (check_add_overflow(xa_page_first, npages, &xa_page_end)) {
-> >       mmap_xa_page = 0;
-> >       continue;
-> >    }
-> > 
-> >    // See if the element before intersects
-> >    elm = xa_find(xa, &zero, xa_page_end, 0);
-> >    if (elm && intersects(xa_page_first, xa_page_last, elm->first, elm->last)) {
-> >       mmap_xa_page = elm->last + 1;
-> >       continue
-> >    }
-> > 
-> >    // xa_page_first -> xa_page_end should now be free
-> >    xa_insert(xa, xa_page_start, entry);
-> >    mmap_xa_page = xa_page_end + 1;
-> >    return xa_page_start;
-> > }
-> > 
-> > Approximately, please check it.
+...and if you look at that commit, you'll find several pages of
+information in its commit description, which should address your point.
 
-> But we don't free entires from the xa_array ( only when ucontext is destroyed) so how will 
-> There be an empty element after we wrap ?  
+2. This whole series has to be re-worked, as per the other feedback thread.
+So I'll keep your comment in mind when I post a new series.
 
-Oh!
-
-That should be fixed up too, in the general case if a user is
-creating/destroying driver objects in loop we don't want memory usage
-to be unbounded.
-
-The rdma_user_mmap stuff has VMA ops that can refcount the xa entry
-and now that this is core code it is easy enough to harmonize the two
-things and track the xa side from the struct rdma_umap_priv
-
-The question is, does EFA or qedr have a use model for this that
-allows a userspace verb to create/destroy in a loop? ie do we need to
-fix this right now?
-
-Jason
+thanks,
+-- 
+John Hubbard
+NVIDIA
