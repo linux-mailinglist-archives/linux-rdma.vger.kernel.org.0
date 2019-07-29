@@ -2,125 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 671177995D
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2019 22:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB9E79A25
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2019 22:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbfG2UPC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jul 2019 16:15:02 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:7438 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727559AbfG2UPB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Jul 2019 16:15:01 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d3f53bb0000>; Mon, 29 Jul 2019 13:14:51 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 29 Jul 2019 13:14:59 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 29 Jul 2019 13:14:59 -0700
-Received: from [10.110.48.28] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 29 Jul
- 2019 20:14:59 +0000
-Subject: Re: [PATCH] rdma: siw: remove unused variable
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Anders Roxell <anders.roxell@linaro.org>, <bmt@zurich.ibm.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20190726092540.22467-1-anders.roxell@linaro.org>
- <08d1942fa99465329348a1bbfd55823b590921c2.camel@redhat.com>
- <20190729190326.GG17990@ziepe.ca>
- <b5775622b2e8360e77f90dddfff9aa84af48240e.camel@redhat.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <f7500581-c3df-a0cb-8229-b832f12fcf05@nvidia.com>
-Date:   Mon, 29 Jul 2019 13:14:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728305AbfG2Umw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Jul 2019 16:42:52 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:35782 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727086AbfG2Umw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Jul 2019 16:42:52 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 1F91281F0F;
+        Mon, 29 Jul 2019 20:42:52 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8055B5D9C9;
+        Mon, 29 Jul 2019 20:42:51 +0000 (UTC)
+Message-ID: <f1e27e28a420e2123242bfbc196796ba250f15e4.camel@redhat.com>
+Subject: Re: [RFC] mlx5: add parameter to disable enhanced IPoIB
+From:   Doug Ledford <dledford@redhat.com>
+To:     Nicolas Morey-Chaisemartin <NMoreyChaisemartin@suse.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Date:   Mon, 29 Jul 2019 16:42:48 -0400
+In-Reply-To: <42703d01-0496-a4ce-6599-5115e49290af@suse.com>
+References: <42703d01-0496-a4ce-6599-5115e49290af@suse.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-x2WMt/5qwk2h6tLr5dpa"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <b5775622b2e8360e77f90dddfff9aa84af48240e.camel@redhat.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1564431291; bh=4uhSuXtsJxEPWIma4eracBI9ZaEU9XbH/JW6QFfPO/0=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=LqMSti86GIJ+cd/+7fUdQAPgfcFNX6ObqSp7MXDkUEgTSoUOs51kK8bKZ6Rr2p/mn
-         +ZDODHoQpGGv6VvrIa4rXlneqMSKydDQGoS8IDqgHrqD/HoGAr1u8VQO825dMy84D6
-         mKPswW11L7ZzIMCzvu/MwdTfSaqOOOGHwRmUct+oX0/tHUMvLygv9NJf1IXmgesofw
-         RqFY3WT0BYoqXvs2V0liyJjNPVJ+TrpqmtaYnPvxjitFPBQnlb7iAmkD5NqYAIM0eH
-         klCpNhdVcFo7TF29hPTCqSqV3BTJGeXqOSG2K4afrl5hJrPNWV4wHBx6bA0OKAhfNb
-         NUVd2Pl6b4mOw==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.27]); Mon, 29 Jul 2019 20:42:52 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/29/19 12:45 PM, Doug Ledford wrote:
-> On Mon, 2019-07-29 at 16:03 -0300, Jason Gunthorpe wrote:
->> On Mon, Jul 29, 2019 at 02:19:35PM -0400, Doug Ledford wrote:
->>> On Fri, 2019-07-26 at 11:25 +0200, Anders Roxell wrote:
->>>> The variable 'p' si no longer used and the compiler rightly
->>>> complains
->>>> that it should be removed.
->>>>
->>>> ../drivers/infiniband/sw/siw/siw_mem.c: In function
->>>> =E2=80=98siw_free_plist=E2=80=99:
->>>> ../drivers/infiniband/sw/siw/siw_mem.c:66:16: warning: unused
->>>> variable
->>>>  =E2=80=98p=E2=80=99 [-Wunused-variable]
->>>>   struct page **p =3D chunk->plist;
->>>>                 ^
->>>>
->>>> Rework to remove unused variable.
->>>>
->>>> Fixes: 8288d030447f ("mm/gup: add make_dirty arg to
->>>> put_user_pages_dirty_lock()")
->>>
->>> This commit hash and the commit subject does not exist in Linus'
->>> tree as
->>> of today.  What tree is this being merged through, and is it slated
->>> to
->>> merge soon or is this a for-next item?
->>
->> This is though -mm, maybe John knows what is what
+
+--=-x2WMt/5qwk2h6tLr5dpa
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2019-07-29 at 18:57 +0000, Nicolas Morey-Chaisemartin wrote:
+> Recent ConnextX-[45] HCA have enhanced IPoIB enabled which prevents
+> the use of the connected mode.
+> Although not an issue in a fully compatible setup, it can be an issue
+> in a mixed HW one.
 >=20
-> Hmmm...if it's through -mm, doesn't that mean that we can't rely on the
-> hash because the next time Andrew's tree rebases (using quilt or
-> whatever it is he does) that the hash will change?  It doesn't really
-> matter too much...we can't take the fix anyway, it should probably be
-> squashed into the patch that it's fixing, and if you follow Bernard's
-> advice, you fix the problem by eliminating this function and changing
-> the sole call site to just call put_user_pages_dirty_lock() directly.
+> Mellanox OFED uses a ipoib_enhanced flag on the ib_ipoib module to
+> work around the issue.
+> This patch adds a similarly name flag to the mlx5_ib module to disable
+> enhanced IPoIB for
+> all mlx5 HCA and allow users to pick datagram/connected the usual way.
 >=20
+> Signed-off-by: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com
+> >
+> ---
+>  drivers/infiniband/hw/mlx5/main.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> diff --git a/drivers/infiniband/hw/mlx5/main.c
+> b/drivers/infiniband/hw/mlx5/main.c
+> index c2a5780cb394..779a35883494 100644
+> --- a/drivers/infiniband/hw/mlx5/main.c
+> +++ b/drivers/infiniband/hw/mlx5/main.c
+> @@ -78,6 +78,10 @@ MODULE_AUTHOR("Eli Cohen <eli@mellanox.com>");
+>  MODULE_DESCRIPTION("Mellanox Connect-IB HCA IB driver");
+>  MODULE_LICENSE("Dual BSD/GPL");
+> =20
+> +static int ipoib_enhanced =3D 1;
+> +module_param(ipoib_enhanced, int, 0444);
+> +MODULE_PARM_DESC(ipoib_enhanced, "Enable IPoIB enhanced for capable
+> devices (default =3D 1) (0-1)");
+> +
+>  static char mlx5_version[] =3D
+>  	DRIVER_NAME ": Mellanox Connect-IB Infiniband driver v"
+>  	DRIVER_VERSION "\n";
+> @@ -6383,6 +6387,7 @@ static int mlx5_ib_stage_caps_init(struct
+> mlx5_ib_dev *dev)
+>  		(1ull << IB_USER_VERBS_EX_CMD_DESTROY_FLOW);
+> =20
+>  	if (MLX5_CAP_GEN(mdev, ipoib_enhanced_offloads) &&
+> +	    ipoib_enhanced &&
+>  	    IS_ENABLED(CONFIG_MLX5_CORE_IPOIB))
+>  		ib_set_device_ops(&dev->ib_dev,
+>  				  &mlx5_ib_dev_ipoib_enhanced_ops);
 
-Hi,
+Module parameters are highly frowned upon in general, and in this
+particular instance, I could easily see where if you had a dual port IB
+card, with one port plugged into a fully compatible setup, and the other
+port plugged into a more heterogeneous setup (say a Lustre backend or
+something), that you really want this to be on a per-port basis.  So,
+I'm gonna say this is a nak unless Mellanox comes back and says doing
+this per-port is strictly not possible (and even if it must be per-card
+or driver wide, I would still prefer maybe a netlink control to a module
+option, if for no other reason than I don't want to hear the groans from
+other kernel folk if I take a module option now a days).
 
-Although I don't know which tree has 8288d030447f, I did get a report
-from linux-next last night with that report about the warning, and so
-I believe that the patch flowed from Andrew's -mm tree (which has=20
-speculatively added my patches), to linux-next
-
-(+CC Andrew)
-
-I also sent out a fix for it, as a reply-to the warning report:
-
-    https://lore.kernel.org/r/20190729074306.10368-1-jhubbard@nvidia.com
-
-Pasting in my response (minus the trivial fix), to save you a click:
-
-"This fixes the warning. Ideally this should be merged with the commit
-that it fixes, if that's still possible.
-
-"Andrew, would you also like a fixed version of this patch posted
-as a new version of the 3-patch set that it came with?"
-
-thanks,
 --=20
-John Hubbard
-NVIDIA
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-x2WMt/5qwk2h6tLr5dpa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0/WkkACgkQuCajMw5X
+L93fKw//a8AgnzRrepsQyzBiPZFrChEsLT+8lEs9f7Ob3NzJEnr5MWmREPmftYD3
+1X09dK+hKOPXGoIYv/VCTLWdj1q3FT6cK///9hA5pik+TlQt5upfVRiE8iTpreQF
+LseEq/hMBmEsu/hpP+3mapQ1wWvd9rv2XiocQPMxYbAzM5cFOtmEPUhIOSGAZpEN
+UgVOqaE2toCeASGzmZkWh56VTo/MkIB3RGNB8aLls4S10ZRUzYeTDUy+/M2tXZVS
+60Tx1jotoAjBvVcuU6EyMaelTnNIDWQz/xOV42apKlb4xFI5N9ZY2QFJPfiPfGdO
+OmqrR7wbjyXqAIhN3RJaJ8AfHeF3tlnIddlSJh8tRLQpb8H4Ln9PR/QewZbqAvXJ
+6yXejjwKiTaqivUilmnomzfRlVuP6RzUP+P0XRcLCg0JNRnYy+v1VUxagXiVrYju
+6bILor0vGXhQq0IBozPgUyczpMA9xjlG/HMZ6FR4Vqh6tI5tYW33zdEUQL0cjEK9
+MCIbznk6ySdIFJYFWLP3K/5QaOUtQwf/SV1FuJOshd8YchHk7167ra8m0aadgmVN
+MHNaD6d915JRw5ZfUF44DiIPcjjuTGIutAwRdJIUySnSMYNEpBRn8uwZOLh/Fbor
+8ax5f5Sv/RkTiSc62bdHNRjOHXCPkAzQwAVJG+qY0uXOnJTLgXk=
+=0Er9
+-----END PGP SIGNATURE-----
+
+--=-x2WMt/5qwk2h6tLr5dpa--
+
