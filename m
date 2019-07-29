@@ -2,227 +2,283 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3807278469
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2019 07:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9FF78490
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2019 07:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbfG2F0i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jul 2019 01:26:38 -0400
-Received: from mail-eopbgr140080.outbound.protection.outlook.com ([40.107.14.80]:56497
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726048AbfG2F0h (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Jul 2019 01:26:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mgOHxaoNUOqMGiziz+06x/UohaRjKegoNpHJryQIrP3KWXDT4t3M6gdYFPid9S57qatXeJ2TGrRprYz5zyksWBcMUC8/40f4qnimOiW3k8jQWKkM1m2pbjPVTsjHz//e891qqZNiPaXT79Ou3iB6WZwNA9QiBIHQRbAbwTVi25/nB/HC6qSQOSBfEOGBwSUt51DhMvPJ1fbDtxmWVlGBYb71hVT5RIzTv1PjbTbOadU0tmtRROBLnzI0U2PaMYgDavMOJtyDvooRWcgSmysmwLDf4mfayriZ6ixxV/uEDYWm7JgjN7NwPznT7k93h7zaRiNVC1FFws2ulWq14UTvKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qmg6MYPJ5Cj+Z9OPvZEkfve+eQXXxuSSNbkyvLl6eMI=;
- b=axkMq26jEy9+Su0cDkZAKRR6KWwphi4Az2EWHuGUDNTvpI4ZdXe/XaHwgL5QUDzXB13veLW3aD6xm4tyyiZYHPJeYMh0jgGWzPbcCxLE9/Gh7Q/nDT6Gnwt5UzqJoKRw2KLjH0YboaxYUzIpH9LIhpC4Z+FnIxQgSLxEIecm/3/Km3RoKahnkXcSIXlsm+oj8lK9vuDV90NoUgPyAhNH/6geH1TGwy63VW6g1GcaGgVtflN40pmZ7uSM9VDdbb9R5WC3VoaeFVXR4CwEZjULVsXxGkhLOL5XjC1DtVn8vvT6seulJXCi5/f4JCzvwbFjz5g4kXUnsddEEMulYxt8TQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=mellanox.com;dmarc=pass action=none
- header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qmg6MYPJ5Cj+Z9OPvZEkfve+eQXXxuSSNbkyvLl6eMI=;
- b=eP5VVgfo8ibAOoTJP3AgvR53q4Zmgx/cKTVvufg0wTyPuVKKoR6UtOlSuXeaFpp3rbiVVS3/WCkBbuCrdENAq/fuR5kUilz/5/gCv5lgmlTTXjETihWSlfCMiCJcS7PSXRhByZztzW9fCxsmPWPlcHQqU9Qp4hPPt0pgy/nsw4o=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB6004.eurprd05.prod.outlook.com (20.178.117.15) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.10; Mon, 29 Jul 2019 05:26:30 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::216f:f548:1db0:41ea]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::216f:f548:1db0:41ea%6]) with mapi id 15.20.2115.005; Mon, 29 Jul 2019
- 05:26:30 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Parav Pandit <parav@mellanox.com>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [BUG] infiniband: mlx5: a possible null-pointer dereference in
- set_roce_addr()
-Thread-Topic: [BUG] infiniband: mlx5: a possible null-pointer dereference in
- set_roce_addr()
-Thread-Index: AQHVRbOmoai2hQIyp06eljqScufF66bhDLxwgAAEBWA=
-Date:   Mon, 29 Jul 2019 05:26:30 +0000
-Message-ID: <AM0PR05MB4866CE3362B36EB4257C858ED1DD0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-References: <f99031cc-795e-92bd-9310-29c669ada7dc@gmail.com>
- <AM0PR05MB48664AE114EE357CC33EA945D1DD0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-In-Reply-To: <AM0PR05MB48664AE114EE357CC33EA945D1DD0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [49.207.55.248]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4c15a603-c0bc-48cf-a700-08d713e55005
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM0PR05MB6004;
-x-ms-traffictypediagnostic: AM0PR05MB6004:
-x-microsoft-antispam-prvs: <AM0PR05MB6004342A142D2A74E906E146D1DD0@AM0PR05MB6004.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:143;
-x-forefront-prvs: 01136D2D90
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(39860400002)(136003)(396003)(376002)(189003)(199004)(13464003)(186003)(7736002)(5660300002)(446003)(2906002)(74316002)(52536014)(305945005)(26005)(6436002)(71200400001)(71190400001)(55016002)(14454004)(4326008)(476003)(11346002)(486006)(53936002)(9686003)(478600001)(33656002)(110136005)(81156014)(6246003)(54906003)(66066001)(316002)(2501003)(2940100002)(86362001)(66556008)(81166006)(7696005)(8936002)(76176011)(55236004)(68736007)(8676002)(2201001)(66446008)(6116002)(53546011)(6506007)(64756008)(99286004)(66476007)(102836004)(25786009)(256004)(14444005)(66946007)(229853002)(76116006)(3846002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6004;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 3lEZhxqdszOhxGHqlqK9rm7i1ctTKanNxApp9+b56NZuf5NeZFenngCZWvJ9LX9kUekTq6qrEO5X5Xq/VLeY4XngKcZqWoju56tjB0lZGXHyTGBRL5vcDrtGifCKqOeA00Jn+q+rsQU5qkiIq/giCoufWYVddsXkdFa7Qul6NolWwe9JnipG/+Q2Vat4pdik2f/cW7S+YnWJo1KXgc/SQWBQW79sDt5/OhEYE7SPQZLxXRPj5CIWjCKHob7tkNjpHW86kgIWiDiomSXlG1BfkyhtWPKeI+Tb++qwctHDKnkFwsDvGn4Q4GBzGfPWt6iNbacOXDjowDamOwCM7LVJKasN/hr5Z46/yCgWbhR2rt4Jqlvno0Kqp0TW187PuoIIgif0zisdYRTsQRA/YdiWlbgy2c5vvp2hkfZBw4v/gCw=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726791AbfG2Ftk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Jul 2019 01:49:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725988AbfG2Ftk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Jul 2019 01:49:40 -0400
+Received: from localhost (unknown [77.137.115.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EF3D2073F;
+        Mon, 29 Jul 2019 05:49:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564379378;
+        bh=5FSf7zYaAcj4Rbx53EQ++OMWByWA3rHKkdAgYw393Jg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FEhpg/VSfTXeZELoy7HVC7r+CT8/Qdny5rMk6KgKGYq7P4klXznvOTIuQUAYxPTod
+         v9jgsogtOSTODkXX5MriGp0dNXPYGbH5gfMRD5UYSvHOh9v7cBLt/FRhA8K9hRvDYA
+         /kA0KMR1UOPjbMFjzEv3MMTvFwIl5Z+ndNnB0vDE=
+Date:   Mon, 29 Jul 2019 08:49:33 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, v9fs-developer@lists.sourceforge.net
+Subject: Re: [PATCH v2] rdma: Enable ib_alloc_cq to spread work over a
+ device's comp_vectors
+Message-ID: <20190729054933.GK4674@mtr-leonro.mtl.com>
+References: <20190728163027.3637.70740.stgit@manet.1015granger.net>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c15a603-c0bc-48cf-a700-08d713e55005
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2019 05:26:30.5571
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: parav@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6004
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190728163027.3637.70740.stgit@manet.1015granger.net>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbGludXgta2VybmVsLW93
-bmVyQHZnZXIua2VybmVsLm9yZyA8bGludXgta2VybmVsLQ0KPiBvd25lckB2Z2VyLmtlcm5lbC5v
-cmc+IE9uIEJlaGFsZiBPZiBQYXJhdiBQYW5kaXQNCj4gU2VudDogTW9uZGF5LCBKdWx5IDI5LCAy
-MDE5IDEwOjU1IEFNDQo+IFRvOiBKaWEtSnUgQmFpIDxiYWlqaWFqdTE5OTBAZ21haWwuY29tPjsg
-bGVvbkBrZXJuZWwub3JnOw0KPiBkbGVkZm9yZEByZWRoYXQuY29tOyBqZ2dAemllcGUuY2ENCj4g
-Q2M6IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
-b3JnDQo+IFN1YmplY3Q6IFJFOiBbQlVHXSBpbmZpbmliYW5kOiBtbHg1OiBhIHBvc3NpYmxlIG51
-bGwtcG9pbnRlciBkZXJlZmVyZW5jZSBpbg0KPiBzZXRfcm9jZV9hZGRyKCkNCj4gDQo+IEhpIEpp
-YSwNCj4gDQo+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiBGcm9tOiBsaW51eC1y
-ZG1hLW93bmVyQHZnZXIua2VybmVsLm9yZyA8bGludXgtcmRtYS0NCj4gPiBvd25lckB2Z2VyLmtl
-cm5lbC5vcmc+IE9uIEJlaGFsZiBPZiBKaWEtSnUgQmFpDQo+ID4gU2VudDogTW9uZGF5LCBKdWx5
-IDI5LCAyMDE5IDc6NDcgQU0NCj4gPiBUbzogbGVvbkBrZXJuZWwub3JnOyBkbGVkZm9yZEByZWRo
-YXQuY29tOyBqZ2dAemllcGUuY2ENCj4gPiBDYzogbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc7
-IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gPiBTdWJqZWN0OiBbQlVHXSBpbmZpbmli
-YW5kOiBtbHg1OiBhIHBvc3NpYmxlIG51bGwtcG9pbnRlciBkZXJlZmVyZW5jZQ0KPiA+IGluDQo+
-ID4gc2V0X3JvY2VfYWRkcigpDQo+ID4NCj4gPiBJbiBzZXRfcm9jZV9hZGRyKCksIHRoZXJlIGlz
-IGFuIGlmIHN0YXRlbWVudCBvbiBsaW5lIDU4OSB0byBjaGVjaw0KPiA+IHdoZXRoZXIgZ2lkIGlz
-DQo+ID4gTlVMTDoNCj4gPiAgwqDCoMKgIGlmIChnaWQpDQo+ID4NCj4gPiBXaGVuIGdpZCBpcyBO
-VUxMLCBpdCBpcyB1c2VkIG9uIGxpbmUgNjEzOg0KPiA+ICDCoMKgwqAgcmV0dXJuIG1seDVfY29y
-ZV9yb2NlX2dpZF9zZXQoLi4uLCBnaWQtPnJhdywgLi4uKTsNCj4gPg0KPiA+IFRodXMsIGEgcG9z
-c2libGUgbnVsbC1wb2ludGVyIGRlcmVmZXJlbmNlIG1heSBvY2N1ci4NCj4gPg0KPiA+IFRoaXMg
-YnVnIGlzIGZvdW5kIGJ5IGEgc3RhdGljIGFuYWx5c2lzIHRvb2wgU1RDaGVjayB3cml0dGVuIGJ5
-IHVzLg0KPiA+DQo+IFdoaWxlIHN0YXRpYyBjaGVja2VyIGlzIHJpZ2h0LCBpdCBpcyBub3QgYSBy
-ZWFsIGJ1ZywgYmVjYXVzZSBnaWQtPnJhdyBwb2ludGVyDQo+IHBvaW50cyB0byBHSUQgZW50cnkg
-aXRzZWxmIHNvIHdoZW4gR0lEIGlzIE5VTEwsIGdpZC0+cmF3IGlzIE5VTEwgdG9vLg0KPiANCj4g
-T25lIHdheSB0byBzdXBwcmVzcyB0aGUgc3RhdGljIGNoZWNrZXIgd2FybmluZy9lcnJvciBpcyBi
-ZWxvdyBwYXRjaC4NCj4gV2lsbCBsZXQgTGVvbiByZXZpZXcgaXQuDQo+IA0KPiA+IEkgZG8gbm90
-IGtub3cgaG93IHRvIGNvcnJlY3RseSBmaXggdGhpcyBidWcsIHNvIEkgb25seSByZXBvcnQgaXQu
-DQo+ID4NCj4gPg0KPiA+IEJlc3Qgd2lzaGVzLA0KPiA+IEppYS1KdSBCYWkNCj4gDQo+IEZyb20g
-MzBlMDU1ZGJhNzdlNTk1YmY4OGFlYmQzYTljNzVlZDc2YmM5YzY1YSBNb24gU2VwIDE3IDAwOjAw
-OjAwDQo+IDIwMDENCj4gRnJvbTogUGFyYXYgUGFuZGl0IDxwYXJhdkBtZWxsYW5veC5jb20+DQo+
-IERhdGU6IE1vbiwgMjkgSnVsIDIwMTkgMDA6MTM6MjEgLTA1MDANCj4gU3ViamVjdDogW1BBVENI
-XSBJQi9tbHg1OiBBdm9pZCBzdGF0aWMgY2hlY2tlciB3YXJuaW5nIGZvciBOVUxMIGFjY2Vzcw0K
-PiANCj4gdW5pb24gaWJfZ2lkICpnaWQgYW5kIGdpZC0+cmF3IHBvaW50ZXJzIHJlZmVycyB0byB0
-aGUgc2FtZSBhZGRyZXNzLg0KPiBIb3dldmVyIHNvbWUgc3RhdGljIGNoZWNrZXIgcmVwb3J0cyB0
-aGlzIGFzIHBvc3NpYmxlIE5VTEwgYWNjZXNzIHdhcm5pbmcgaW4NCj4gY2FsbCB0byBtbHg1X2Nv
-cmVfcm9jZV9naWRfc2V0KCkuDQo+IA0KPiBUbyBzdXBwcmVzcyBzdWNoIHdhcm5pbmcsIGluc3Rl
-YWQgb2Ygd29ya2luZyBvbiByYXcgR0lEIGVsZW1lbnQsIGV4cG9zZSBBUEkNCj4gdXNpbmcgdW5p
-b24gaWJfZ2lkKi4NCj4gDQo+IFJlcG9ydGVkLWJ5OiBKaWEtSnUgQmFpIDxiYWlqaWFqdTE5OTBA
-Z21haWwuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBQYXJhdiBQYW5kaXQgPHBhcmF2QG1lbGxhbm94
-LmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tYWluLmMgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQ0KPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4
-NS9jb3JlL2ZwZ2EvY29ubi5jIHwgMTIgKysrKysrKy0tLS0tDQo+ICBkcml2ZXJzL25ldC9ldGhl
-cm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvbGliL2dpZC5jICAgfCAgNSArKystLQ0KPiAgZHJpdmVy
-cy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL3JkbWEuYyAgICAgIHwgIDIgKy0NCj4g
-IGluY2x1ZGUvbGludXgvbWx4NS9kcml2ZXIuaCAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0
-ICsrKy0NCj4gIDUgZmlsZXMgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25z
-KC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvbWFpbi5j
-DQo+IGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvbWFpbi5jDQo+IGluZGV4IGMyYTU3ODBj
-YjM5NC4uZTYwNzg1YmFkN2VmIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcv
-bWx4NS9tYWluLmMNCj4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvbWFpbi5jDQo+
-IEBAIC02MTAsNyArNjEwLDcgQEAgc3RhdGljIGludCBzZXRfcm9jZV9hZGRyKHN0cnVjdCBtbHg1
-X2liX2RldiAqZGV2LCB1OA0KPiBwb3J0X251bSwNCj4gIAl9DQo+IA0KPiAgCXJldHVybiBtbHg1
-X2NvcmVfcm9jZV9naWRfc2V0KGRldi0+bWRldiwgaW5kZXgsIHJvY2VfdmVyc2lvbiwNCj4gLQkJ
-CQkgICAgICByb2NlX2wzX3R5cGUsIGdpZC0+cmF3LCBtYWMsDQo+ICsJCQkJICAgICAgcm9jZV9s
-M190eXBlLCAmZ2lkLCBtYWMsDQo+ICAJCQkJICAgICAgdmxhbl9pZCA8IFZMQU5fQ0ZJX01BU0ss
-IHZsYW5faWQsDQo+ICAJCQkJICAgICAgcG9ydF9udW0pOw0KPiAgfQ0KPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2ZwZ2EvY29ubi5jDQo+IGIv
-ZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2ZwZ2EvY29ubi5jDQo+IGlu
-ZGV4IDRjNTBlZmU0ZTdmMS4uNzZiODIzNmFmOWM3IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25l
-dC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZnBnYS9jb25uLmMNCj4gKysrIGIvZHJpdmVy
-cy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2ZwZ2EvY29ubi5jDQo+IEBAIC04NTAs
-NiArODUwLDcgQEAgc3RydWN0IG1seDVfZnBnYV9jb25uICptbHg1X2ZwZ2FfY29ubl9jcmVhdGUo
-c3RydWN0DQo+IG1seDVfZnBnYV9kZXZpY2UgKmZkZXYsDQo+ICAJCQkJCSAgICAgZW51bSBtbHg1
-X2lmY19mcGdhX3FwX3R5cGUNCj4gcXBfdHlwZSkgIHsNCj4gIAlzdHJ1Y3QgbWx4NV9mcGdhX2Nv
-bm4gKnJldCwgKmNvbm47DQo+ICsJc3RydWN0IGliX2dpZCByZW1vdGVfZ2lkID0ge307DQo+ICAJ
-dTggKnJlbW90ZV9tYWMsICpyZW1vdGVfaXA7DQo+ICAJaW50IGVycjsNCj4gDQo+IEBAIC04NzYs
-MTEgKzg3NywxMiBAQCBzdHJ1Y3QgbWx4NV9mcGdhX2Nvbm4NCj4gKm1seDVfZnBnYV9jb25uX2Ny
-ZWF0ZShzdHJ1Y3QgbWx4NV9mcGdhX2RldmljZSAqZmRldiwNCj4gIAkJZ290byBlcnI7DQo+ICAJ
-fQ0KPiANCj4gLQkvKiBCdWlsZCBNb2RpZmllZCBFVUktNjQgSVB2NiBhZGRyZXNzIGZyb20gdGhl
-IE1BQyBhZGRyZXNzICovDQo+ICAJcmVtb3RlX2lwID0gTUxYNV9BRERSX09GKGZwZ2FfcXBjLCBj
-b25uLT5mcGdhX3FwYywgcmVtb3RlX2lwKTsNCj4gLQlyZW1vdGVfaXBbMF0gPSAweGZlOw0KPiAt
-CXJlbW90ZV9pcFsxXSA9IDB4ODA7DQo+IC0JYWRkcmNvbmZfYWRkcl9ldWk0OCgmcmVtb3RlX2lw
-WzhdLCByZW1vdGVfbWFjKTsNCj4gKwltZW1jcHkocmVtb3RlX2dpZC5yYXdbMF0sIHJlbW90ZV9p
-cCwgc2l6ZW9mKHJlbW90ZV9naWQucmF3KSk7DQo+ICsJLyogQnVpbGQgTW9kaWZpZWQgRVVJLTY0
-IElQdjYgYWRkcmVzcyBmcm9tIHRoZSBNQUMgYWRkcmVzcyAqLw0KPiArCXJlbXRlX2dpZC5yYXdb
-MF0gPSAweGZlOw0KPiArCXJlbXRlX2dpZC5yYXdbMV0gPSAweDgwOw0KPiArCWFkZHJjb25mX2Fk
-ZHJfZXVpNDgoJnJlbW90ZV9naWQucmF3WzhdLCByZW1vdGVfbWFjKTsNCj4gDQo+ICAJZXJyID0g
-bWx4NV9jb3JlX3Jlc2VydmVkX2dpZF9hbGxvYyhmZGV2LT5tZGV2LCAmY29ubi0NCj4gPnFwLnNn
-aWRfaW5kZXgpOw0KPiAgCWlmIChlcnIpIHsNCj4gQEAgLTg5Miw3ICs4OTQsNyBAQCBzdHJ1Y3Qg
-bWx4NV9mcGdhX2Nvbm4gKm1seDVfZnBnYV9jb25uX2NyZWF0ZShzdHJ1Y3QNCj4gbWx4NV9mcGdh
-X2RldmljZSAqZmRldiwNCj4gIAllcnIgPSBtbHg1X2NvcmVfcm9jZV9naWRfc2V0KGZkZXYtPm1k
-ZXYsIGNvbm4tPnFwLnNnaWRfaW5kZXgsDQo+ICAJCQkJICAgICBNTFg1X1JPQ0VfVkVSU0lPTl8y
-LA0KPiAgCQkJCSAgICAgTUxYNV9ST0NFX0wzX1RZUEVfSVBWNiwNCj4gLQkJCQkgICAgIHJlbW90
-ZV9pcCwgcmVtb3RlX21hYywgdHJ1ZSwgMCwNCj4gKwkJCQkgICAgICZyZW1vdGVfZ2lkLCByZW1v
-dGVfbWFjLCB0cnVlLCAwLA0KPiAgCQkJCSAgICAgTUxYNV9GUEdBX1BPUlRfTlVNKTsNCj4gIAlp
-ZiAoZXJyKSB7DQo+ICAJCW1seDVfZnBnYV9lcnIoZmRldiwgIkZhaWxlZCB0byBzZXQgU0dJRDog
-JWRcbiIsIGVycik7IGRpZmYgLS1naXQNCj4gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5v
-eC9tbHg1L2NvcmUvbGliL2dpZC5jDQo+IGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gv
-bWx4NS9jb3JlL2xpYi9naWQuYw0KPiBpbmRleCA3NzIyYTNmOWJiNjguLjliODU2M2EyYmQ1MCAx
-MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2xp
-Yi9naWQuYw0KPiArKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUv
-bGliL2dpZC5jDQo+IEBAIC0xMjAsNyArMTIwLDggQEAgdW5zaWduZWQgaW50IG1seDVfY29yZV9y
-ZXNlcnZlZF9naWRzX2NvdW50KHN0cnVjdA0KPiBtbHg1X2NvcmVfZGV2ICpkZXYpDQo+IEVYUE9S
-VF9TWU1CT0xfR1BMKG1seDVfY29yZV9yZXNlcnZlZF9naWRzX2NvdW50KTsNCj4gDQo+ICBpbnQg
-bWx4NV9jb3JlX3JvY2VfZ2lkX3NldChzdHJ1Y3QgbWx4NV9jb3JlX2RldiAqZGV2LCB1bnNpZ25l
-ZCBpbnQgaW5kZXgsDQo+IC0JCQkgICB1OCByb2NlX3ZlcnNpb24sIHU4IHJvY2VfbDNfdHlwZSwg
-Y29uc3QgdTggKmdpZCwNCj4gKwkJCSAgIHU4IHJvY2VfdmVyc2lvbiwgdTggcm9jZV9sM190eXBl
-LA0KPiArCQkJICAgY29uc3QgdW5pb24gaWJfZ2lkICpnaWQsDQo+ICAJCQkgICBjb25zdCB1OCAq
-bWFjLCBib29sIHZsYW4sIHUxNiB2bGFuX2lkLCB1OCBwb3J0X251bSkNCj4geyAgI2RlZmluZSBN
-TFg1X1NFVF9SQShwLCBmLCB2KSBNTFg1X1NFVChyb2NlX2FkZHJfbGF5b3V0LCBwLCBmLCB2KSBA
-QCAtDQo+IDE0NSw3ICsxNDYsNyBAQCBpbnQgbWx4NV9jb3JlX3JvY2VfZ2lkX3NldChzdHJ1Y3Qg
-bWx4NV9jb3JlX2RldiAqZGV2LA0KPiB1bnNpZ25lZCBpbnQgaW5kZXgsDQo+ICAJCWV0aGVyX2Fk
-ZHJfY29weShhZGRyX21hYywgbWFjKTsNCj4gIAkJTUxYNV9TRVRfUkEoaW5fYWRkciwgcm9jZV92
-ZXJzaW9uLCByb2NlX3ZlcnNpb24pOw0KPiAgCQlNTFg1X1NFVF9SQShpbl9hZGRyLCByb2NlX2wz
-X3R5cGUsIHJvY2VfbDNfdHlwZSk7DQo+IC0JCW1lbWNweShhZGRyX2wzX2FkZHIsIGdpZCwgZ2lk
-c3opOw0KPiArCQltZW1jcHkoYWRkcl9sM19hZGRyLCAmZ2lkLT5yYXdbMF0sIGdpZHN6KTsNCj4g
-IAl9DQo+IA0KPiAgCWlmIChNTFg1X0NBUF9HRU4oZGV2LCBudW1fdmhjYV9wb3J0cykgPiAwKSBk
-aWZmIC0tZ2l0DQo+IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL3Jk
-bWEuYw0KPiBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9yZG1hLmMN
-Cj4gaW5kZXggMTdjZTlkZDU2YjEzLi4yYTQ0NjczNDYyMzEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZl
-cnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9yZG1hLmMNCj4gKysrIGIvZHJpdmVy
-cy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL3JkbWEuYw0KPiBAQCAtMTM5LDcgKzEz
-OSw3IEBAIHN0YXRpYyBpbnQgbWx4NV9yZG1hX2FkZF9yb2NlX2FkZHIoc3RydWN0DQo+IG1seDVf
-Y29yZV9kZXYgKmRldikNCj4gIAltbHg1X3JkbWFfbWFrZV9kZWZhdWx0X2dpZChkZXYsICZnaWQp
-Ow0KPiAgCXJldHVybiBtbHg1X2NvcmVfcm9jZV9naWRfc2V0KGRldiwgMCwNCj4gIAkJCQkgICAg
-ICBNTFg1X1JPQ0VfVkVSU0lPTl8xLA0KPiAtCQkJCSAgICAgIDAsIGdpZC5yYXcsIG1hYywNCj4g
-KwkJCQkgICAgICAwLCAmZ2lkLCBtYWMsDQo+ICAJCQkJICAgICAgZmFsc2UsIDAsIDEpOw0KPiAg
-fQ0KPiANCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbWx4NS9kcml2ZXIuaCBiL2luY2x1
-ZGUvbGludXgvbWx4NS9kcml2ZXIuaCBpbmRleA0KPiAxZTQyYzEzODE5YWUuLjY5MTg2NGU4NTNi
-ZSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tbHg1L2RyaXZlci5oDQo+ICsrKyBiL2lu
-Y2x1ZGUvbGludXgvbWx4NS9kcml2ZXIuaA0KPiBAQCAtNDcsNiArNDcsNyBAQA0KPiAgI2luY2x1
-ZGUgPGxpbnV4L2ludGVycnVwdC5oPg0KPiAgI2luY2x1ZGUgPGxpbnV4L2lkci5oPg0KPiAgI2lu
-Y2x1ZGUgPGxpbnV4L25vdGlmaWVyLmg+DQo+ICsjaW5jbHVkZSA8cmRtYS9pYl92ZXJicy5oPg0K
-PiANCj4gICNpbmNsdWRlIDxsaW51eC9tbHg1L2RldmljZS5oPg0KPiAgI2luY2x1ZGUgPGxpbnV4
-L21seDUvZG9vcmJlbGwuaD4NCj4gQEAgLTEwMDIsNyArMTAwMyw4IEBAIHN0cnVjdCBjcHVtYXNr
-ICoNCj4gIG1seDVfY29tcF9pcnFfZ2V0X2FmZmluaXR5X21hc2soc3RydWN0IG1seDVfY29yZV9k
-ZXYgKmRldiwgaW50IHZlY3Rvcik7DQo+IHVuc2lnbmVkIGludCBtbHg1X2NvcmVfcmVzZXJ2ZWRf
-Z2lkc19jb3VudChzdHJ1Y3QgbWx4NV9jb3JlX2RldiAqZGV2KTsgIGludA0KPiBtbHg1X2NvcmVf
-cm9jZV9naWRfc2V0KHN0cnVjdCBtbHg1X2NvcmVfZGV2ICpkZXYsIHVuc2lnbmVkIGludCBpbmRl
-eCwNCj4gLQkJCSAgIHU4IHJvY2VfdmVyc2lvbiwgdTggcm9jZV9sM190eXBlLCBjb25zdCB1OCAq
-Z2lkLA0KPiArCQkJICAgdTggcm9jZV92ZXJzaW9uLCB1OCByb2NlX2wzX3R5cGUsDQo+ICsJCQkg
-ICBjb25zdCB1bmlvbiBpYl9naWQgKmdpZCwNCj4gIAkJCSAgIGNvbnN0IHU4ICptYWMsIGJvb2wg
-dmxhbiwgdTE2IHZsYW5faWQsIHU4IHBvcnRfbnVtKTsNCj4gDQo+ICBzdGF0aWMgaW5saW5lIGlu
-dCBmd19pbml0aWFsaXppbmcoc3RydWN0IG1seDVfY29yZV9kZXYgKmRldikNCj4gLS0NCj4gMi4x
-OS4yDQoNCkxlb24ganVzdCByZXBsaWVkLiBUaGFua3MuDQo=
+On Sun, Jul 28, 2019 at 12:30:27PM -0400, Chuck Lever wrote:
+> Send and Receive completion is handled on a single CPU selected at
+> the time each Completion Queue is allocated. Typically this is when
+> an initiator instantiates an RDMA transport, or when a target
+> accepts an RDMA connection.
+>
+> Some ULPs cannot open a connection per CPU to spread completion
+> workload across available CPUs and MSI vectors. For such ULPs,
+> provide an API that allows the RDMA core to select a completion
+> vector based on the device's complement of available comp_vecs.
+>
+> ULPs that invoke ib_alloc_cq() with only comp_vector 0 are converted
+> to use the new API so that their completion workloads interfere less
+> with each other.
+>
+> Suggested-by: Håkon Bugge <haakon.bugge@oracle.com>
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> Cc: <linux-cifs@vger.kernel.org>
+> Cc: <v9fs-developer@lists.sourceforge.net>
+> ---
+>  drivers/infiniband/core/cq.c             |   29 +++++++++++++++++++++++++++++
+>  drivers/infiniband/ulp/srpt/ib_srpt.c    |    4 ++--
+>  fs/cifs/smbdirect.c                      |   10 ++++++----
+>  include/rdma/ib_verbs.h                  |   19 +++++++++++++++++++
+>  net/9p/trans_rdma.c                      |    6 +++---
+>  net/sunrpc/xprtrdma/svc_rdma_transport.c |    8 ++++----
+>  net/sunrpc/xprtrdma/verbs.c              |   13 ++++++-------
+>  7 files changed, 69 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
+> index 7c59987..ea3bb0d 100644
+> --- a/drivers/infiniband/core/cq.c
+> +++ b/drivers/infiniband/core/cq.c
+> @@ -253,6 +253,35 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
+>  EXPORT_SYMBOL(__ib_alloc_cq_user);
+>
+>  /**
+> + * __ib_alloc_cq_any - allocate a completion queue
+> + * @dev:		device to allocate the CQ for
+> + * @private:		driver private data, accessible from cq->cq_context
+> + * @nr_cqe:		number of CQEs to allocate
+> + * @poll_ctx:		context to poll the CQ from.
+> + * @caller:		module owner name.
+> + *
+> + * Attempt to spread ULP Completion Queues over each device's interrupt
+> + * vectors.
+> + */
+> +struct ib_cq *__ib_alloc_cq_any(struct ib_device *dev, void *private,
+> +				int nr_cqe, enum ib_poll_context poll_ctx,
+> +				const char *caller)
+> +{
+> +	static atomic_t counter;
+> +	int comp_vector;
+
+int comp_vector = 0;
+
+> +
+> +	comp_vector = 0;
+
+This assignment is better to be part of initialization.
+
+> +	if (dev->num_comp_vectors > 1)
+> +		comp_vector =
+> +			atomic_inc_return(&counter) %
+
+Don't we need manage "free list" of comp_vectors? Otherwise we can find
+ourselves providing already "taken" comp_vector.
+
+Just as an example:
+dev->num_comp_vectors = 2
+num_online_cpus = 4
+
+The following combination will give us same comp_vector:
+1. ib_alloc_cq_any()
+2. ib_alloc_cq_any()
+3. ib_free_cq()
+4. goto 2
+
+> +			min_t(int, dev->num_comp_vectors, num_online_cpus());
+> +
+> +	return __ib_alloc_cq_user(dev, private, nr_cqe, comp_vector, poll_ctx,
+> +				  caller, NULL);
+> +}
+> +EXPORT_SYMBOL(__ib_alloc_cq_any);
+> +
+> +/**
+>   * ib_free_cq_user - free a completion queue
+>   * @cq:		completion queue to free.
+>   * @udata:	User data or NULL for kernel object
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 1a039f1..e25c70a 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -1767,8 +1767,8 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
+>  		goto out;
+>
+>  retry:
+> -	ch->cq = ib_alloc_cq(sdev->device, ch, ch->rq_size + sq_size,
+> -			0 /* XXX: spread CQs */, IB_POLL_WORKQUEUE);
+> +	ch->cq = ib_alloc_cq_any(sdev->device, ch, ch->rq_size + sq_size,
+> +				 IB_POLL_WORKQUEUE);
+>  	if (IS_ERR(ch->cq)) {
+>  		ret = PTR_ERR(ch->cq);
+>  		pr_err("failed to create CQ cqe= %d ret= %d\n",
+> diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
+> index cd07e53..3c91fa9 100644
+> --- a/fs/cifs/smbdirect.c
+> +++ b/fs/cifs/smbdirect.c
+> @@ -1654,15 +1654,17 @@ static struct smbd_connection *_smbd_get_connection(
+>
+>  	info->send_cq = NULL;
+>  	info->recv_cq = NULL;
+> -	info->send_cq = ib_alloc_cq(info->id->device, info,
+> -			info->send_credit_target, 0, IB_POLL_SOFTIRQ);
+> +	info->send_cq =
+> +		ib_alloc_cq_any(info->id->device, info,
+> +				info->send_credit_target, IB_POLL_SOFTIRQ);
+>  	if (IS_ERR(info->send_cq)) {
+>  		info->send_cq = NULL;
+>  		goto alloc_cq_failed;
+>  	}
+>
+> -	info->recv_cq = ib_alloc_cq(info->id->device, info,
+> -			info->receive_credit_max, 0, IB_POLL_SOFTIRQ);
+> +	info->recv_cq =
+> +		ib_alloc_cq_any(info->id->device, info,
+> +				info->receive_credit_max, IB_POLL_SOFTIRQ);
+>  	if (IS_ERR(info->recv_cq)) {
+>  		info->recv_cq = NULL;
+>  		goto alloc_cq_failed;
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index c5f8a9f..2a1523cc 100644
+> --- a/include/rdma/ib_verbs.h
+> +++ b/include/rdma/ib_verbs.h
+> @@ -3711,6 +3711,25 @@ static inline struct ib_cq *ib_alloc_cq(struct ib_device *dev, void *private,
+>  				NULL);
+>  }
+>
+> +struct ib_cq *__ib_alloc_cq_any(struct ib_device *dev, void *private,
+> +				int nr_cqe, enum ib_poll_context poll_ctx,
+> +				const char *caller);
+> +
+> +/**
+> + * ib_alloc_cq_any: Allocate kernel CQ
+> + * @dev: The IB device
+> + * @private: Private data attached to the CQE
+> + * @nr_cqe: Number of CQEs in the CQ
+> + * @poll_ctx: Context used for polling the CQ
+> + */
+> +static inline struct ib_cq *ib_alloc_cq_any(struct ib_device *dev,
+> +					    void *private, int nr_cqe,
+> +					    enum ib_poll_context poll_ctx)
+> +{
+> +	return __ib_alloc_cq_any(dev, private, nr_cqe, poll_ctx,
+> +				 KBUILD_MODNAME);
+> +}
+
+This should be macro and not inline function, because compiler can be
+instructed do not inline functions (there is kconfig option for that)
+and it will cause that wrong KBUILD_MODNAME will be inserted (ib_core
+instead of ulp).
+
+And yes, commit c4367a26357b ("IB: Pass uverbs_attr_bundle down ib_x
+destroy path") did it completely wrong.
+
+> +
+>  /**
+>   * ib_free_cq_user - Free kernel/user CQ
+>   * @cq: The CQ to free
+> diff --git a/net/9p/trans_rdma.c b/net/9p/trans_rdma.c
+> index bac8dad..b21c3c2 100644
+> --- a/net/9p/trans_rdma.c
+> +++ b/net/9p/trans_rdma.c
+> @@ -685,9 +685,9 @@ static int p9_rdma_bind_privport(struct p9_trans_rdma *rdma)
+>  		goto error;
+>
+>  	/* Create the Completion Queue */
+> -	rdma->cq = ib_alloc_cq(rdma->cm_id->device, client,
+> -			opts.sq_depth + opts.rq_depth + 1,
+> -			0, IB_POLL_SOFTIRQ);
+> +	rdma->cq = ib_alloc_cq_any(rdma->cm_id->device, client,
+> +				   opts.sq_depth + opts.rq_depth + 1,
+> +				   IB_POLL_SOFTIRQ);
+>  	if (IS_ERR(rdma->cq))
+>  		goto error;
+>
+> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> index 3fe6651..4d3db6e 100644
+> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> @@ -454,14 +454,14 @@ static struct svc_xprt *svc_rdma_accept(struct svc_xprt *xprt)
+>  		dprintk("svcrdma: error creating PD for connect request\n");
+>  		goto errout;
+>  	}
+> -	newxprt->sc_sq_cq = ib_alloc_cq(dev, newxprt, newxprt->sc_sq_depth,
+> -					0, IB_POLL_WORKQUEUE);
+> +	newxprt->sc_sq_cq = ib_alloc_cq_any(dev, newxprt, newxprt->sc_sq_depth,
+> +					    IB_POLL_WORKQUEUE);
+>  	if (IS_ERR(newxprt->sc_sq_cq)) {
+>  		dprintk("svcrdma: error creating SQ CQ for connect request\n");
+>  		goto errout;
+>  	}
+> -	newxprt->sc_rq_cq = ib_alloc_cq(dev, newxprt, rq_depth,
+> -					0, IB_POLL_WORKQUEUE);
+> +	newxprt->sc_rq_cq =
+> +		ib_alloc_cq_any(dev, newxprt, rq_depth, IB_POLL_WORKQUEUE);
+>  	if (IS_ERR(newxprt->sc_rq_cq)) {
+>  		dprintk("svcrdma: error creating RQ CQ for connect request\n");
+>  		goto errout;
+> diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+> index 805b1f35..b10aa16 100644
+> --- a/net/sunrpc/xprtrdma/verbs.c
+> +++ b/net/sunrpc/xprtrdma/verbs.c
+> @@ -521,18 +521,17 @@ int rpcrdma_ep_create(struct rpcrdma_xprt *r_xprt)
+>  	init_waitqueue_head(&ep->rep_connect_wait);
+>  	ep->rep_receive_count = 0;
+>
+> -	sendcq = ib_alloc_cq(ia->ri_id->device, NULL,
+> -			     ep->rep_attr.cap.max_send_wr + 1,
+> -			     ia->ri_id->device->num_comp_vectors > 1 ? 1 : 0,
+> -			     IB_POLL_WORKQUEUE);
+> +	sendcq = ib_alloc_cq_any(ia->ri_id->device, NULL,
+> +				 ep->rep_attr.cap.max_send_wr + 1,
+> +				 IB_POLL_WORKQUEUE);
+>  	if (IS_ERR(sendcq)) {
+>  		rc = PTR_ERR(sendcq);
+>  		goto out1;
+>  	}
+>
+> -	recvcq = ib_alloc_cq(ia->ri_id->device, NULL,
+> -			     ep->rep_attr.cap.max_recv_wr + 1,
+> -			     0, IB_POLL_WORKQUEUE);
+> +	recvcq = ib_alloc_cq_any(ia->ri_id->device, NULL,
+> +				 ep->rep_attr.cap.max_recv_wr + 1,
+> +				 IB_POLL_WORKQUEUE);
+>  	if (IS_ERR(recvcq)) {
+>  		rc = PTR_ERR(recvcq);
+>  		goto out2;
+>
