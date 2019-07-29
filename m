@@ -2,92 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BBC792FE
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2019 20:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F93D7936B
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2019 20:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387700AbfG2S0F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jul 2019 14:26:05 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:52436 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387396AbfG2S0E (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Jul 2019 14:26:04 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7F17A8552A;
-        Mon, 29 Jul 2019 18:26:04 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 71BBC5C1A1;
-        Mon, 29 Jul 2019 18:26:03 +0000 (UTC)
-Message-ID: <6c57b3c1ba1f906b089358ecc8cd3e7151c36b9b.camel@redhat.com>
-Subject: Re: [PATCH for-next v2] RDMA/efa: Expose device statistics
-From:   Doug Ledford <dledford@redhat.com>
-To:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, Firas JahJah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Date:   Mon, 29 Jul 2019 14:26:00 -0400
-In-Reply-To: <20190725130353.11544-1-galpress@amazon.com>
-References: <20190725130353.11544-1-galpress@amazon.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-qG+2WnCtspfrHHwZAh7Z"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1729233AbfG2Svn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Jul 2019 14:51:43 -0400
+Received: from mail-eopbgr80077.outbound.protection.outlook.com ([40.107.8.77]:8134
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728342AbfG2Svm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Jul 2019 14:51:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XCc0S8/zZ++O1Ol6BlO3lZA+NlLWnBs8GmGoNEYq8lQNm5/ytCx9TZcKK7pGxsfJcjdROPMrDHUxiFiuyfb/1UgQmu/ilA9IfgEVHPsBExPiElDh37NSZ2xEpRvqsjNdNXNnT/UDKPR5pa6goOppJ/RKluGLBxeKzIgEGPPQ+ZbdLkiT8+jmiQX/PbEP/2o6/56B+VRmf1bxduJgPE1FC1ybmQwC9SrAOmb6fRx1w0szJqE/K8q48SoNMtiqswzqMfVGpf0/8VOjhWXmb1CGWO/UZ1WIFAbPfYV5OAr8VYmGhXe1e9ze47b0Z4B1ADHTt3HfGl8f9NhtWQ6DOvOI7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XS6ZyFGklzjUe8E9Wn/DzGAD6vBh1IX1sjSOdWdzqQQ=;
+ b=JIaSMCGORev+vrtTCCc5iAejVNh9mQixoidSAcG+RzsB3M7J0eTmk8rk1rF+ErcJKO2VGHgumb6xdFHUSuwIfe5dvSZu3EOFoP6Omn1m1JSU3jw7pSqx7P7CmI2muhO63PLYdfFNMXbAIXwSk/Q6oSm0uZzn/lGWMGcrQ25caYupX3aUXrUqRAnVKIeB/zqFNfaPTlqvhTWC97SbfPk26kKgoUBFQXKU5ssuG0qHFZN/05XWHj5kJZqExLrMfjlLOOsXKj8B5SsTSrBoVcbk4xqR1SGcdlKgYOuxD/jtU+YzqvnETU3aY6FZNMj7S7EHtpvkWf1X8YaIPNWblwLHIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=mellanox.com;dmarc=pass action=none
+ header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XS6ZyFGklzjUe8E9Wn/DzGAD6vBh1IX1sjSOdWdzqQQ=;
+ b=L0uv2X3io+XeiRCBvKPuVLKnHU3yntux1+NaKj1n93k7ZPITbtW9Bk8vl1bglGrYqSOo+F9DWQIIrRyP8VdimGhBrILZbofJCQq4WhhvqOrl6o1I39DzPGnNdaYI8qYB1CNUiJnF0wWaVVpp/F81aLoayLK7VSrfwQ2+3sssykE=
+Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
+ DB6PR0501MB2822.eurprd05.prod.outlook.com (10.172.227.146) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2115.14; Mon, 29 Jul 2019 18:51:38 +0000
+Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
+ ([fe80::3c28:c77d:55b0:15b2]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
+ ([fe80::3c28:c77d:55b0:15b2%5]) with mapi id 15.20.2115.005; Mon, 29 Jul 2019
+ 18:51:38 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     "cai@lca.pw" <cai@lca.pw>, Leon Romanovsky <leonro@mellanox.com>
+CC:     Yishai Hadas <yishaih@mellanox.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net/mlx5: fix -Wtype-limits compilation warnings
+Thread-Topic: [PATCH] net/mlx5: fix -Wtype-limits compilation warnings
+Thread-Index: AQHVQLxlv3OY64S2zEK8JohEEQAAcabh+9IA
+Date:   Mon, 29 Jul 2019 18:51:38 +0000
+Message-ID: <dc0c3064e253c4fdf2a2a8351995ff061d722588.camel@mellanox.com>
+References: <1563820482-10302-1-git-send-email-cai@lca.pw>
+In-Reply-To: <1563820482-10302-1-git-send-email-cai@lca.pw>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [209.116.155.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f5e70aa5-de7b-4ef1-0860-08d71455c9da
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2822;
+x-ms-traffictypediagnostic: DB6PR0501MB2822:
+x-microsoft-antispam-prvs: <DB6PR0501MB2822036012FB5F6928080FC7BEDD0@DB6PR0501MB2822.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:257;
+x-forefront-prvs: 01136D2D90
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(376002)(366004)(346002)(136003)(396003)(189003)(199004)(6436002)(229853002)(7736002)(3846002)(305945005)(6116002)(58126008)(110136005)(54906003)(4326008)(316002)(478600001)(6636002)(26005)(2906002)(14444005)(71190400001)(71200400001)(6506007)(14454004)(11346002)(446003)(102836004)(76176011)(2616005)(6486002)(36756003)(6512007)(25786009)(256004)(6246003)(53936002)(186003)(66556008)(64756008)(66446008)(81166006)(81156014)(8936002)(8676002)(66946007)(118296001)(476003)(486006)(2501003)(66066001)(91956017)(86362001)(99286004)(68736007)(66476007)(5660300002)(76116006);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2822;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 6GPZEPXx3FXdbDfPmcrE7Mxthqv/Ry70jYpWAoG87f/+oTK2eUDdIyj0azirWUKHMcbLuqixTYdz5rS5sQeaoLznD6sXuJZLzj1JVdDKG/V4tEWTCIgrO07A8fbM2OBrNPp0VwbmX1U0nhrftSlNV8+wJ5xkhto3yGC2SQlVQeUUmLb0qnIghTm5CGziuKZ8ad98hRTc6QWPffGiPOnFQxj3oEkV/VUkuSXtm1A6FHk0oXsy/y60IREtd8e1nrakk4RW4QlivRk0O84WkT63KRq1PRVawGZsF+HrYycdqL3c2J0IknI58tixH70w2fvbYkB59SPm4qLtFoUMH9N5CGsnRx/ucStQNtNtAN/+fc+Ld/wnDGVPh7M11BYJiU6SJb4siw5US6Sw+XRScpTV0XvG7vgu+ssQjPSfsUUr9uc=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AE9B7DCC1A0B634F8A84CB41021A4424@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.28]); Mon, 29 Jul 2019 18:26:04 +0000 (UTC)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5e70aa5-de7b-4ef1-0860-08d71455c9da
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2019 18:51:38.6280
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2822
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
---=-qG+2WnCtspfrHHwZAh7Z
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2019-07-25 at 16:03 +0300, Gal Pressman wrote:
-> Expose hardware statistics through the sysfs api:
-> /sys/class/infiniband/efa_0/hw_counters/*.
-> /sys/class/infiniband/efa_0/ports/1/hw_counters/*.
->=20
-> Reviewed-by: Firas JahJah <firasj@amazon.com>
-> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
-> Signed-off-by: Gal Pressman <galpress@amazon.com>
-> ---
-> This patch should be merged after:
-> https://patchwork.kernel.org/patch/11053949/
->=20
-> To prevent null dereference.
-
-I merged the current for-rc into for-next and then took this to for-
-next.  Thanks.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-qG+2WnCtspfrHHwZAh7Z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl0/OjkACgkQuCajMw5X
-L93T8Q/+JEWjcB9PmUjC2a4J5mK1gEmOron8/ycG83aWDJMZ7UkmUKB4wDNtZim8
-yW2hahropsxavEQ6xqnuFKdjbVCUaultmPPZ/AXdzSOU5wdFerVeGqMwd0zR+Tmu
-cwtNHLCwYDpJRZedyJVvIuyN768V0MnH+6ZFpxk2lXuGrchsxxLdb8kzdMMEyJQw
-LDodqNDPHB795fMqOipzUTczEcWvxGjNtPfiKvPV2ObvHzBOR8lQUCHbxjg/eyFe
-lPo/lD8zG9iX2kecgK54bYp6GkP95N3rrn4xINfra+myC0RI8RW4oiTX13cT/nFW
-6XsWFhkNAc2mdyW3z82YPWxQ1xWd8InMDjNTeePzTaE7RfuqdGx/zrwLXaJ9CQuX
-suSQYF4Zutgoj4DVox7LImO1r2Le9lWCvTdm7vEvosZ96jYHPcwdZI8ac52gNIlI
-gM0Yek17h/rHf32fzqKb6VFJqaVR025HDnUkt9lI4g7afjsM9brNFlW1pAYnIDwB
-9LNgHaEyv36gGlN+wpzkwFiI55tcuxzV5gy6qerjE/fjs9/GUUAmej2XKOuFEEvu
-H94gHfosOO6GQbkNdLbZmdjRUw6R+upqjCqXkxKP4Fof7l9KR0JcEMYBmhHsOEe2
-GKUo1NRPnEoJ2ccvwdfKqCEzHbNSA9kQ3L6osKWVrTIaA7SQKQY=
-=7f6Y
------END PGP SIGNATURE-----
-
---=-qG+2WnCtspfrHHwZAh7Z--
-
+T24gTW9uLCAyMDE5LTA3LTIyIGF0IDE0OjM0IC0wNDAwLCBRaWFuIENhaSB3cm90ZToNCj4gVGhl
+IGNvbW1pdCBiOWE3YmE1NTYyMDcgKCJuZXQvbWx4NTogVXNlIGV2ZW50IG1hc2sgYmFzZWQgb24g
+ZGV2aWNlDQo+IGNhcGFiaWxpdGllcyIpIGludHJvZHVjZWQgYSBmZXcgY29tcGlsYXRpb24gd2Fy
+bmluZ3MgZHVlIHRvIGl0IGJ1bXBzDQo+IE1MWDVfRVZFTlRfVFlQRV9NQVggZnJvbSAweDI3IHRv
+IDB4MTAwIHdoaWNoIGlzIGFsd2F5cyBncmVhdGVyIHRoYW4NCj4gYW4gInN0cnVjdCB7bWx4NV9l
+cWV8bWx4NV9uYn0udHlwZSIgdGhhdCBpcyBhbiAidTgiLg0KPiANCj4gZHJpdmVycy9uZXQvZXRo
+ZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VxLmM6IEluIGZ1bmN0aW9uDQo+ICdtbHg1X2VxX25v
+dGlmaWVyX3JlZ2lzdGVyJzoNCj4gZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9j
+b3JlL2VxLmM6OTQ4OjIxOiB3YXJuaW5nOg0KPiBjb21wYXJpc29uDQo+IGlzIGFsd2F5cyBmYWxz
+ZSBkdWUgdG8gbGltaXRlZCByYW5nZSBvZiBkYXRhIHR5cGUgWy1XdHlwZS1saW1pdHNdDQo+ICAg
+aWYgKG5iLT5ldmVudF90eXBlID49IE1MWDVfRVZFTlRfVFlQRV9NQVgpDQo+ICAgICAgICAgICAg
+ICAgICAgICAgIF5+DQo+IGRyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9l
+cS5jOiBJbiBmdW5jdGlvbg0KPiAnbWx4NV9lcV9ub3RpZmllcl91bnJlZ2lzdGVyJzoNCj4gZHJp
+dmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VxLmM6OTU5OjIxOiB3YXJuaW5n
+Og0KPiBjb21wYXJpc29uDQo+IGlzIGFsd2F5cyBmYWxzZSBkdWUgdG8gbGltaXRlZCByYW5nZSBv
+ZiBkYXRhIHR5cGUgWy1XdHlwZS1saW1pdHNdDQo+ICAgaWYgKG5iLT5ldmVudF90eXBlID49IE1M
+WDVfRVZFTlRfVFlQRV9NQVgpDQo+IA0KPiBGaXggdGhlbSBieSByZW1vdmluZyB1bm5lY2Vzc2Fy
+eSBjaGVja2luZ3MuDQo+IA0KPiBGaXhlczogYjlhN2JhNTU2MjA3ICgibmV0L21seDU6IFVzZSBl
+dmVudCBtYXNrIGJhc2VkIG9uIGRldmljZQ0KPiBjYXBhYmlsaXRpZXMiKQ0KPiBTaWduZWQtb2Zm
+LWJ5OiBRaWFuIENhaSA8Y2FpQGxjYS5wdz4NCj4gDQoNCkFwcGxpZWQgdG8gbWx4NS1uZXh0Lg0K
+DQpUaGFua3MsDQpTYWVlZC4NCg0K
