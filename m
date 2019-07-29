@@ -2,153 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E5878D72
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2019 16:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D5378D86
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2019 16:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbfG2OHc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jul 2019 10:07:32 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:27956 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726556AbfG2OHc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Jul 2019 10:07:32 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x6TE4jte018499;
-        Mon, 29 Jul 2019 07:07:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0818;
- bh=y/cSpJZkSKGKAKnDwopZIlAFlF+dpyV1brFWY/bETyw=;
- b=NgCjk443QoVf3Ka/qNDTdnwz7HRY8pM0UL60AHLG9KqCgT40RA7BwArOPXS8QgdbKA5Z
- C2ZvbEGFcdD07BGqCs1TaKBtQddAghblXD/K84GCNGaZpFGjjBRDeE0apAqGkREWv1c3
- azQJZYk1hoQyUZjcUn+YwnW2wF0xWkiYOXYb8GAy7O8oE29FJI3Mjs7TPg6LblxurCfx
- ScNZDOd7O3uIowcTUI0igRyADc1qgyfXHeUEEiY8z1tTJclIzRiniYv791IqzIBKar5n
- bKTPurPsPwnRO3hYoAXmjtmnv+gK0zpUE+yzbn8P12w8Vjk00vyAw4bJKTvOyjQv5ZGY Yw== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2u0kyq0eam-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jul 2019 07:07:27 -0700
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 29 Jul
- 2019 07:07:26 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.57) by
- SC-EXCH03.marvell.com (10.93.176.83) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Mon, 29 Jul 2019 07:07:26 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FXWYUaxOeMVP8FchhbAtV8W+vuOD28mjUNvr9nJGpXMU2pwviNHuEiI71LzjbfvhRB/13hB8GiKn6GJOp5kZVF71Wh/BX5uiz6o6fswHrsNupCVOiYf3fwSu6L24gUE5Vg+7wBrMin49pwl+ZR4FIonwTsSsAHuuXG5PlrThte67g7HicMCl/wj3Z12Z9ES9Fejl3vg1sWC9L49zfyZKyVGSCq+Z/dbz8bNACoBuLYCSuoJAjiO1dB0d5U1GBoU5/Ua8RPyMkdrFvYmuGZJthy16GOkGC0OIXrnEpoU/etF2nlH+9vvvZDhN/MxUyAgCr5Qhy2ZSkRQIHr7PflNw3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y/cSpJZkSKGKAKnDwopZIlAFlF+dpyV1brFWY/bETyw=;
- b=SiQkoLy5xbn/iwlZ40Vk7NlHvxL7BsZa1jlA1uDChSODwWLkDfFZf/wZK7zVnJ5jhiu9XNw2lmMzyL5eFOhmGT8yNpIH+wMaNxgAzyp+m6Tagai4MoexM+Fb4mGSEVAI6mCqJLsI8J1Otl3L/LsjxG3er51eONt8ewdd5xS9uIyq2CrqloxOKVFMbtLgmGiK6jlrob9Jqael+U+u4Vg7QYiO9CQCoIKcSIFaYaxrRSeajado1f+tBjD65xhPQXd89Cr1aoJ4ZeiyFJEyfDKc+wQWq/UzqNk6UZ2fqwWzqgydzC8o6nRWSa8KtFY5QgO7Xye0pPRBtOzWKvEuq3Xkbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=marvell.com;dmarc=pass action=none
- header.from=marvell.com;dkim=pass header.d=marvell.com;arc=none
+        id S1727404AbfG2OLo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Jul 2019 10:11:44 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:37862 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726478AbfG2OLn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Jul 2019 10:11:43 -0400
+Received: by mail-qt1-f194.google.com with SMTP id y26so59789128qto.4
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Jul 2019 07:11:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y/cSpJZkSKGKAKnDwopZIlAFlF+dpyV1brFWY/bETyw=;
- b=ZKRPp9e0/5Bs/JJ0zOU3/jrj3UT8KngPQWlPtQoG6vFgYtGCrd08B2Q2plOCL0ZzSd02c8IHMronPPeCn2qzry4gV7RFZobyjlynRjXM7XKBkAhNjNvZOL1rx1P+dbFY7fWH73x9u9W6nr+VapVPF2l85qMc22p+B60vS2nMPQI=
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
- MN2PR18MB3424.namprd18.prod.outlook.com (10.255.239.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.15; Mon, 29 Jul 2019 14:07:23 +0000
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::8cb3:f7d7:8bb2:c36e]) by MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::8cb3:f7d7:8bb2:c36e%6]) with mapi id 15.20.2115.005; Mon, 29 Jul 2019
- 14:07:23 +0000
-From:   Michal Kalderon <mkalderon@marvell.com>
-To:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Ariel Elior <aelior@marvell.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH v6 rdma-next 1/6] RDMA/core: Create mmap database and
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PsPDSb+DoW3u43zya3GiTnOJ6HaiQ4dl4ZawUa34njM=;
+        b=mqbMtcNlpqUJwY0P+K1+JIC+dj5szUVllgsR5ZkCew4PvzNTl6r1482z5UzsVy19VS
+         Eb489kblJC3GJOP3vesEbAXRGvUAv1FlGFAi6r+HvOESOWmfUyXjfS52+AxgJ5PZgt4s
+         9pJ8k6jRIzTx7kcT4Wjta2biZwrVbf+eelpSbzuaMKGoR8UH81Z+V0i/9i6/Or8yccff
+         QOi1tysAyCk3KuFQz0JvejSjcW1z0OGANHHaPk3YjdzbTPRKWZJgpEKJJAXj/YMjT7lJ
+         53ZZpabUQLoWQgitMj50IHYERweSjnx08yIC5DQZYZQxGeBsdZ8Ya75g1clyHWezLxQY
+         86yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PsPDSb+DoW3u43zya3GiTnOJ6HaiQ4dl4ZawUa34njM=;
+        b=NY8Kap226Rpuiy+t0ICOG9XkqzqM+YlMK8d/oRsUvDtMkFU2mjpzVRkuL1UC1dwiAI
+         Tw+k7hG0zpJfj3ca/PEWuhKE38+oWOP/ezovzOgT/zBnkVUC2DIORUrVolJbsQe5epD/
+         K265ZW9uxv5TC4KffuHIcJz3gWnLYHDQ3q9scSyyPBycJy+xCBsk2GI2jURYU7QYfgkn
+         c+0oIBRLdMoVUrSeljLXD05GuALviV2Vn0o0A2A6GZK2NvDMX0Ia5bLUMbZjLBGhfhto
+         eyXRtDW9hBMlCLsMp7a787Lmv1lg3/eu8Qr/Gj3GhFaiC3H30l46P88A0tqM1edHNypk
+         nD6g==
+X-Gm-Message-State: APjAAAW5jA4dfs0eLrqE01cGwPEMYjL48phgked7WEtSWmRf6y7neWFC
+        /7vXz0/owbgHhDYSH85Nlb39M4zUUzrYew==
+X-Google-Smtp-Source: APXvYqy3TjMKvhup091pqqRhQYwtyDyHn+0QcPM1UqudRdbpqDLZu7FJ2F3QCIxtgvq5+Aamwv+Zwg==
+X-Received: by 2002:a0c:bd86:: with SMTP id n6mr80527285qvg.183.1564409502811;
+        Mon, 29 Jul 2019 07:11:42 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id l63sm26425544qkb.124.2019.07.29.07.11.42
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 29 Jul 2019 07:11:42 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hs6NK-000772-1m; Mon, 29 Jul 2019 11:11:42 -0300
+Date:   Mon, 29 Jul 2019 11:11:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     Michal Kalderon <michal.kalderon@marvell.com>,
+        ariel.elior@marvell.com, dledford@redhat.com, galpress@amazon.com,
+        linux-rdma@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v6 rdma-next 1/6] RDMA/core: Create mmap database and
  cookie helper functions
-Thread-Topic: [PATCH v6 rdma-next 1/6] RDMA/core: Create mmap database and
- cookie helper functions
-Thread-Index: AQHVNmFHCA5NoSkqKU2zcNxJe13QUKbbt5QAgAX1jTCAABAnAIAAAayw
-Date:   Mon, 29 Jul 2019 14:07:23 +0000
-Message-ID: <MN2PR18MB31823CA6395E3DCBC16B2647A1DD0@MN2PR18MB3182.namprd18.prod.outlook.com>
+Message-ID: <20190729141142.GD17990@ziepe.ca>
 References: <20190709141735.19193-1-michal.kalderon@marvell.com>
  <20190709141735.19193-2-michal.kalderon@marvell.com>
  <20190725175540.GA18757@ziepe.ca>
- <MN2PR18MB3182F4557BC042EE37A3C565A1DD0@MN2PR18MB3182.namprd18.prod.outlook.com>
- <d632598e-0896-fa10-9148-73794a9a49d7@amazon.com>
-In-Reply-To: <d632598e-0896-fa10-9148-73794a9a49d7@amazon.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [212.199.69.1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b07eb065-a18e-413f-6fd7-08d7142e144a
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR18MB3424;
-x-ms-traffictypediagnostic: MN2PR18MB3424:
-x-microsoft-antispam-prvs: <MN2PR18MB342444532732B17E3881C9ADA1DD0@MN2PR18MB3424.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 01136D2D90
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(189003)(199004)(9686003)(52536014)(6116002)(6246003)(74316002)(55016002)(5660300002)(305945005)(99286004)(25786009)(66946007)(64756008)(66556008)(66476007)(4326008)(53936002)(3846002)(66066001)(66446008)(86362001)(76116006)(71200400001)(71190400001)(6436002)(8676002)(68736007)(81156014)(186003)(14454004)(76176011)(14444005)(229853002)(476003)(53546011)(110136005)(8936002)(498600001)(486006)(54906003)(2906002)(6506007)(33656002)(102836004)(81166006)(11346002)(446003)(7736002)(7696005)(26005)(256004)(130980200001);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB3424;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: marvell.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: ZCE5OaHxEu5l0sbgBJ3cpcNg/wWv4kpOWtpiQ3SypUgjSaDZiE+ULIfKBcMCxsPMlsURLFMPBnsU6DreREms0fwPuz7qJWVnDbpLXMGEjo8on3KVYQdaCq8TRuOULZoND8ODpwvUpCyK/y/H6hLaxP4GHMDsVXdCb6PlxlH7qe8P0l4v3TXSNuowNTLSp724YMu+5BFt7I+ihpkM8pbUk+f7T6XBJo37bzpxCmLta7eC/5qCK/PvNEZwMtaFZMg0ta8kaclwMaFvFhS2RS9aIkU2uDXwiDzakYTc4cfmxkFKT04SyKeZmgEmjLGsaCeFQ0+wV1OYkqhwCTzwA6WytSEkOGr68F3G5I6fYd49iCBVd4XsA04Bt8/Wta+PwFoljVtv2HJemcMGcw6YsLKHoiDjvNO7YvWa14K0vGLNhC8=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <20190728093051.GB5250@kheib-workstation>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b07eb065-a18e-413f-6fd7-08d7142e144a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2019 14:07:23.6169
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mkalderon@marvell.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3424
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:5.22.84,1.0.8
- definitions=2019-07-29_07:2019-07-29,2019-07-29 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190728093051.GB5250@kheib-workstation>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiBGcm9tOiBHYWwgUHJlc3NtYW4gPGdhbHByZXNzQGFtYXpvbi5jb20+DQo+IFNlbnQ6IE1vbmRh
-eSwgSnVseSAyOSwgMjAxOSA0OjU0IFBNDQo+IA0KPiBPbiAyOS8wNy8yMDE5IDE1OjU4LCBNaWNo
-YWwgS2FsZGVyb24gd3JvdGU6DQo+ID4+IEZyb206IGxpbnV4LXJkbWEtb3duZXJAdmdlci5rZXJu
-ZWwub3JnIDxsaW51eC1yZG1hLQ0KPiA+PiBvd25lckB2Z2VyLmtlcm5lbC5vcmc+IE9uIEJlaGFs
-ZiBPZiBKYXNvbiBHdW50aG9ycGUNCj4gPj4NCj4gPj4+ICsJeGFfbG9jaygmdWNvbnRleHQtPm1t
-YXBfeGEpOw0KPiA+Pj4gKwlpZiAoY2hlY2tfYWRkX292ZXJmbG93KHVjb250ZXh0LT5tbWFwX3hh
-X3BhZ2UsDQo+ID4+PiArCQkJICAgICAgICh1MzIpKGxlbmd0aCA+PiBQQUdFX1NISUZUKSwNCj4g
-Pj4+ICsJCQkgICAgICAgJm5leHRfbW1hcF9wYWdlKSkNCj4gPj4+ICsJCWdvdG8gZXJyX3VubG9j
-azsNCj4gPj4NCj4gPj4gSSBzdGlsbCBkb24ndCBsaWtlIHRoYXQgdGhpcyBhbGdvcml0aG0gbGF0
-Y2hlcyBpbnRvIGEgcGVybWFuZW50DQo+ID4+IGZhaWx1cmUgd2hlbiB0aGUgeGFfcGFnZSB3cmFw
-cy4NCj4gPj4NCj4gPj4gSXQgc2VlbXMgd29ydGggc3BlbmRpbmcgYSBiaXQgbW9yZSB0aW1lIGhl
-cmUgdG8gdGlkeSB0aGlzLi4gS2VlcA0KPiA+PiB1c2luZyB0aGUgbW1hcF94YV9wYWdlIHNjaGVt
-ZSwgYnV0IGluc3RlYWQgZG8gc29tZXRoaW5nIGxpa2UNCj4gPj4NCj4gPj4gYWxsb2NfY3ljbGlj
-X3JhbmdlKCk6DQo+ID4+DQo+ID4+IHdoaWxlICgpIHsNCj4gPj4gICAgLy8gRmluZCBmaXJzdCBl
-bXB0eSBlbGVtZW50IGluIGEgY3ljbGljIHdheQ0KPiA+PiAgICB4YV9wYWdlX2ZpcnN0ID0gbW1h
-cF94YV9wYWdlOw0KPiA+PiAgICB4YV9maW5kKHhhLCAmeGFfcGFnZV9maXJzdCwgVTMyX01BWCwg
-WEFfRlJFRV9NQVJLKQ0KPiA+Pg0KPiA+PiAgICAvLyBJcyB0aGVyZSBhIGVub3VnaCByb29tIHRv
-IGhhdmUgdGhlIHJhbmdlPw0KPiA+PiAgICBpZiAoY2hlY2tfYWRkX292ZXJmbG93KHhhX3BhZ2Vf
-Zmlyc3QsIG5wYWdlcywgJnhhX3BhZ2VfZW5kKSkgew0KPiA+PiAgICAgICBtbWFwX3hhX3BhZ2Ug
-PSAwOw0KPiA+PiAgICAgICBjb250aW51ZTsNCj4gPj4gICAgfQ0KPiA+Pg0KPiA+PiAgICAvLyBT
-ZWUgaWYgdGhlIGVsZW1lbnQgYmVmb3JlIGludGVyc2VjdHMNCj4gPj4gICAgZWxtID0geGFfZmlu
-ZCh4YSwgJnplcm8sIHhhX3BhZ2VfZW5kLCAwKTsNCj4gPj4gICAgaWYgKGVsbSAmJiBpbnRlcnNl
-Y3RzKHhhX3BhZ2VfZmlyc3QsIHhhX3BhZ2VfbGFzdCwgZWxtLT5maXJzdCwgZWxtLQ0KPiA+bGFz
-dCkpIHsNCj4gPj4gICAgICAgbW1hcF94YV9wYWdlID0gZWxtLT5sYXN0ICsgMTsNCj4gPj4gICAg
-ICAgY29udGludWUNCj4gPj4gICAgfQ0KPiA+Pg0KPiA+PiAgICAvLyB4YV9wYWdlX2ZpcnN0IC0+
-IHhhX3BhZ2VfZW5kIHNob3VsZCBub3cgYmUgZnJlZQ0KPiA+PiAgICB4YV9pbnNlcnQoeGEsIHhh
-X3BhZ2Vfc3RhcnQsIGVudHJ5KTsNCj4gPj4gICAgbW1hcF94YV9wYWdlID0geGFfcGFnZV9lbmQg
-KyAxOw0KPiA+PiAgICByZXR1cm4geGFfcGFnZV9zdGFydDsNCj4gPj4gfQ0KPiA+Pg0KPiA+PiBB
-cHByb3hpbWF0ZWx5LCBwbGVhc2UgY2hlY2sgaXQuDQo+ID4gR2FsICYgSmFzb24sDQo+ID4NCj4g
-PiBDb21pbmcgYmFjayB0byB0aGUgbW1hcF94YV9wYWdlIGFsZ29yaXRobS4gSSBjb3VsZG4ndCBm
-aW5kIHNvbWUNCj4gYmFja2dyb3VuZCBvbiB0aGlzLg0KPiA+IFdoeSBkbyB5b3UgbmVlZCB0aGUg
-bGVuZ3RoIHRvIGJlIHJlcHJlc2VudGVkIGluIHRoZSBtbWFwX3hhX3BhZ2UgPw0KPiA+IFdoeSBu
-b3Qgc2ltcGx5IHVzZSB4YV9hbGxvY19jeWNsaWMgKCBsaWtlIGluIHNpdyApIFRoaXMgaXMgc2lt
-cGx5IGENCj4gPiBrZXkgdG8gYSBtbWFwIG9iamVjdC4uLg0KPiANCj4gVGhlIGludGVudGlvbiB3
-YXMgdGhhdCB0aGUgZW50cnkgd291bGQgIm9jY3VweSIgbnVtYmVyIG9mIHhhcnJheSBlbGVtZW50
-cw0KPiBhY2NvcmRpbmcgdG8gaXRzIHNpemUgKGluIHBhZ2VzKS4gSXQgd2Fzbid0IGluaXRpYWxs
-eSBsaWtlIHRoaXMsIGJ1dCBJSVJDIHRoaXMgd2FzDQo+IHByZWZlcnJlZCBieSBKYXNvbi4NCg0K
-VGhhbmtzLCBzbyBKYXNvbiwgaWYgd2UncmUgbm93IGZyZWVpbmcgdGhlIG9iamVjdHMsIGNhbiB3
-ZSBzaW1wbHkgdXMgeGFfYWxsb2NfY3ljbGljIGluc3RlYWQ/IA0KVGhhbmtzLA0KTWljaGFsDQo=
+On Sun, Jul 28, 2019 at 12:30:51PM +0300, Kamal Heib wrote:
+> > Maybe put this in ib_core_uverbs.c ?
+> > 
+> > Kamal, you've been tackling various cleanups, maybe making ib_uverbs
+> > unloadable again is something you'd be keen on?
+> >
+> 
+> Yes, Could you please give some background on that?
+
+Most of it is my fault from being too careless, but the general notion
+is that all of these
+
+$ grep EXPORT_SYMBOL uverbs_main.c uverbs_cmd.c  uverbs_marshall.c  rdma_core.c uverbs_std_types*.c uverbs_uapi.c 
+uverbs_main.c:EXPORT_SYMBOL(ib_uverbs_get_ucontext_file);
+uverbs_main.c:EXPORT_SYMBOL(rdma_user_mmap_io);
+uverbs_cmd.c:EXPORT_SYMBOL(flow_resources_alloc);
+uverbs_cmd.c:EXPORT_SYMBOL(ib_uverbs_flow_resources_free);
+uverbs_cmd.c:EXPORT_SYMBOL(flow_resources_add);
+uverbs_marshall.c:EXPORT_SYMBOL(ib_copy_ah_attr_to_user);
+uverbs_marshall.c:EXPORT_SYMBOL(ib_copy_qp_attr_to_user);
+uverbs_marshall.c:EXPORT_SYMBOL(ib_copy_path_rec_to_user);
+uverbs_marshall.c:EXPORT_SYMBOL(ib_copy_path_rec_from_user);
+rdma_core.c:EXPORT_SYMBOL(uverbs_idr_class);
+rdma_core.c:EXPORT_SYMBOL(uverbs_close_fd);
+rdma_core.c:EXPORT_SYMBOL(uverbs_fd_class);
+uverbs_std_types.c:EXPORT_SYMBOL(uverbs_destroy_def_handler);
+
+Need to go into some 'ib_core uverbs support' .c file in the ib_core,
+be moved to a header inline, or moved otherwise
+
+Maybe it is now unrealistic that the uapi is so complicated, ie
+uverbs_close_fd is just not easy to fixup..
+
+Maybe the only ones that need fixing are ib_uverbs_get_ucontext_file
+rdma_user_mmap_io as alot of drivers are entangled on those now.
+
+The other stuff is much harder..
+
+Jason
