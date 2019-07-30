@@ -2,126 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B1D7B1BD
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 20:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F117B327
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 21:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728804AbfG3ST6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jul 2019 14:19:58 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:33867 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387904AbfG3SQQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Jul 2019 14:16:16 -0400
-Received: by mail-pf1-f193.google.com with SMTP id b13so30263509pfo.1
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Jul 2019 11:16:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VrkRbDzr3PjCa/bkRL7w2lB6fdcpmQGt7tWtDP9dwcc=;
-        b=e+WyNRNolRLQziccTpNHSyiKpyyOeUMfcGl6wn61KqLcd1VX2GVhoen80F0RJRAzk9
-         NP6LMtp6ZhdmWXmYwqsWPM9LHwk7sLvWLOrtAnjvvNMRVic6I6U6aZho/X52ypCRNup0
-         9UPtzjMP+tAz/2ZNbfjssbrCKjy6dAzpHPong=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VrkRbDzr3PjCa/bkRL7w2lB6fdcpmQGt7tWtDP9dwcc=;
-        b=jj3VWWjBwQXHTz72P2X539AyJ6RoYAOVQYf2inQeBoi5JFAMxIi4kTUM7W86BB0/j5
-         WxKJy5zsPmnVLS3nOee2Hi11YTO22dD0yHUeV2fNslKYGRHfKDyClOC5aS9odOac9vq5
-         LNt4HgWmBX9K/y1BpLvrykN2WuOGU/TOmsQkXoKLAg6Uk2QN7YZ08zxebnq+I+Vvoy1B
-         7BW4qQIZspIv75NUVqa+/f/MEEezCn1iqJvyUUlpRtS3l2c+GQbgl0E8qzJFG2sblWBn
-         tEck+remXPsWSAop73Wtr+EgTH5wk5eXOZ4dcxA1OtF9oKGQwcse6y7Z6nGxAVWGt17A
-         LeeA==
-X-Gm-Message-State: APjAAAVDA63UVuEEEGueIqJgXhw2mvd7wpsGjZDtth+YWtBzMu/MGRwM
-        ltttmsYfkwzBS2aZXeipVVu00g==
-X-Google-Smtp-Source: APXvYqxJWxieoGzyPZ24ebf1AxpIyPNcsS5Oh6md2BEapPyVdOsYCpjQyJR8ZnzfKSIADSSU+GyQyQ==
-X-Received: by 2002:a17:90a:2486:: with SMTP id i6mr117014119pje.125.1564510576096;
-        Tue, 30 Jul 2019 11:16:16 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id g1sm106744083pgg.27.2019.07.30.11.16.15
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 30 Jul 2019 11:16:15 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v6 20/57] infiniband: Remove dev_err() usage after platform_get_irq()
-Date:   Tue, 30 Jul 2019 11:15:20 -0700
-Message-Id: <20190730181557.90391-21-swboyd@chromium.org>
-X-Mailer: git-send-email 2.22.0.709.g102302147b-goog
-In-Reply-To: <20190730181557.90391-1-swboyd@chromium.org>
-References: <20190730181557.90391-1-swboyd@chromium.org>
+        id S2388047AbfG3TUe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jul 2019 15:20:34 -0400
+Received: from os.inf.tu-dresden.de ([141.76.48.99]:44104 "EHLO
+        os.inf.tu-dresden.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388061AbfG3TUe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Jul 2019 15:20:34 -0400
+Received: from [176.12.107.132] (helo=[10.101.1.222])
+        by os.inf.tu-dresden.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92.1)
+        id 1hsXfj-0002ks-Rk; Tue, 30 Jul 2019 21:20:31 +0200
+Subject: Re: [PATCH 10/10] Replace tasklets with workqueues
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Moni Shoua <monis@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20190722151426.5266-1-mplaneta@os.inf.tu-dresden.de>
+ <20190722151426.5266-11-mplaneta@os.inf.tu-dresden.de>
+ <20190722153205.GG7607@ziepe.ca>
+ <21a4daf9-c77e-ec80-9da0-78ab512d248d@os.inf.tu-dresden.de>
+ <20190725185006.GD7467@ziepe.ca>
+From:   Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
+Message-ID: <385139f2-0d31-1148-95c0-a6e6768ab413@os.inf.tu-dresden.de>
+Date:   Tue, 30 Jul 2019 21:20:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190725185006.GD7467@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-We don't need dev_err() messages when platform_get_irq() fails now that
-platform_get_irq() prints an error message itself when something goes
-wrong. Let's remove these prints with a simple semantic patch.
 
-// <smpl>
-@@
-expression ret;
-struct platform_device *E;
-@@
 
-ret =
-(
-platform_get_irq(E, ...)
-|
-platform_get_irq_byname(E, ...)
-);
+On 25/07/2019 20:50, Jason Gunthorpe wrote:
+> On Thu, Jul 25, 2019 at 04:36:20PM +0200, Maksym Planeta wrote:
+>> Is this one better?
+>>
+>> Replace tasklets with workqueues in rxe driver. The reason for this
+>> replacement is that tasklets are supposed to run atomically, although the
+>> actual code may block.
+>>
+>> Modify the SKB destructor for outgoing SKB's to schedule QP tasks only if
+>> the QP is not destroyed itself.
+>>
+>> Add a variable "pending_skb_down" to ensure that reference counting for a QP
+>> is decremented only when QP access related to this skb is over.
+>>
+>> Separate part of pool element cleanup code to allow this code to be called
+>> in the very end of cleanup, even if some of cleanup is scheduled for
+>> asynchronous execution. Example, when it was happening is destructor for a
+>> QP.
+>>
+>> Disallow calling of task functions "directly". This allows to simplify logic
+>> inside rxe_task.c
+>>
+>> Schedule rxe_qp_do_cleanup onto high-priority system workqueue, because this
+>> function can be scheduled from normal system workqueue.
+>>
+>> Before destroying a QP, wait until all references to this QP are gone.
+>> Previously the problem was that outgoing SKBs could be freed after the QP
+>> these SKBs refer to is destroyed.
+>>
+>> Add blocking rxe_run_task to replace __rxe_do_task that was calling task
+>> function directly.
+> 
+> Mostly but it would also be good to describe the use after free and
+> races more specifically
+> 
 
-if ( \( ret < 0 \| ret <= 0 \) )
-{
-(
--if (ret != -EPROBE_DEFER)
--{ ...
--dev_err(...);
--... }
-|
-...
--dev_err(...);
-)
-...
-}
-// </smpl>
+These situations are described in the cover letter (PATCH 00/10). Do you 
+need a more detailed description than that?
 
-While we're here, remove braces on if statements that only have one
-statement (manually).
+> Jason
+> 
 
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
-
-Please apply directly to subsystem trees
-
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index 81e6dedb1e02..7541177eb648 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -4637,10 +4637,8 @@ static int hns_roce_get_cfg(struct hns_roce_dev *hr_dev)
- 	/* fetch the interrupt numbers */
- 	for (i = 0; i < HNS_ROCE_V1_MAX_IRQ_NUM; i++) {
- 		hr_dev->irq[i] = platform_get_irq(hr_dev->pdev, i);
--		if (hr_dev->irq[i] <= 0) {
--			dev_err(dev, "platform get of irq[=%d] failed!\n", i);
-+		if (hr_dev->irq[i] <= 0)
- 			return -EINVAL;
--		}
- 	}
- 
- 	return 0;
 -- 
-Sent by a computer through tubes
-
+Regards,
+Maksym Planeta
