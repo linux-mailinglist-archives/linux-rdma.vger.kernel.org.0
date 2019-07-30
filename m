@@ -2,95 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 137F37AE07
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 18:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B1D7B1BD
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 20:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbfG3Qgk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jul 2019 12:36:40 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:34208 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729448AbfG3QgI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Jul 2019 12:36:08 -0400
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1hsV6V-0003yN-MQ; Tue, 30 Jul 2019 10:36:06 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.89)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1hsV6S-0001Is-Hx; Tue, 30 Jul 2019 10:35:56 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Pilmore <epilmore@gigaio.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Tue, 30 Jul 2019 10:35:45 -0600
-Message-Id: <20190730163545.4915-15-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190730163545.4915-1-logang@deltatee.com>
-References: <20190730163545.4915-1-logang@deltatee.com>
+        id S1728804AbfG3ST6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jul 2019 14:19:58 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:33867 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387904AbfG3SQQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Jul 2019 14:16:16 -0400
+Received: by mail-pf1-f193.google.com with SMTP id b13so30263509pfo.1
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Jul 2019 11:16:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VrkRbDzr3PjCa/bkRL7w2lB6fdcpmQGt7tWtDP9dwcc=;
+        b=e+WyNRNolRLQziccTpNHSyiKpyyOeUMfcGl6wn61KqLcd1VX2GVhoen80F0RJRAzk9
+         NP6LMtp6ZhdmWXmYwqsWPM9LHwk7sLvWLOrtAnjvvNMRVic6I6U6aZho/X52ypCRNup0
+         9UPtzjMP+tAz/2ZNbfjssbrCKjy6dAzpHPong=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VrkRbDzr3PjCa/bkRL7w2lB6fdcpmQGt7tWtDP9dwcc=;
+        b=jj3VWWjBwQXHTz72P2X539AyJ6RoYAOVQYf2inQeBoi5JFAMxIi4kTUM7W86BB0/j5
+         WxKJy5zsPmnVLS3nOee2Hi11YTO22dD0yHUeV2fNslKYGRHfKDyClOC5aS9odOac9vq5
+         LNt4HgWmBX9K/y1BpLvrykN2WuOGU/TOmsQkXoKLAg6Uk2QN7YZ08zxebnq+I+Vvoy1B
+         7BW4qQIZspIv75NUVqa+/f/MEEezCn1iqJvyUUlpRtS3l2c+GQbgl0E8qzJFG2sblWBn
+         tEck+remXPsWSAop73Wtr+EgTH5wk5eXOZ4dcxA1OtF9oKGQwcse6y7Z6nGxAVWGt17A
+         LeeA==
+X-Gm-Message-State: APjAAAVDA63UVuEEEGueIqJgXhw2mvd7wpsGjZDtth+YWtBzMu/MGRwM
+        ltttmsYfkwzBS2aZXeipVVu00g==
+X-Google-Smtp-Source: APXvYqxJWxieoGzyPZ24ebf1AxpIyPNcsS5Oh6md2BEapPyVdOsYCpjQyJR8ZnzfKSIADSSU+GyQyQ==
+X-Received: by 2002:a17:90a:2486:: with SMTP id i6mr117014119pje.125.1564510576096;
+        Tue, 30 Jul 2019 11:16:16 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id g1sm106744083pgg.27.2019.07.30.11.16.15
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 30 Jul 2019 11:16:15 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v6 20/57] infiniband: Remove dev_err() usage after platform_get_irq()
+Date:   Tue, 30 Jul 2019 11:15:20 -0700
+Message-Id: <20190730181557.90391-21-swboyd@chromium.org>
+X-Mailer: git-send-email 2.22.0.709.g102302147b-goog
+In-Reply-To: <20190730181557.90391-1-swboyd@chromium.org>
+References: <20190730181557.90391-1-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, bhelgaas@google.com, hch@lst.de, Christian.Koenig@amd.com, jgg@mellanox.com, sagi@grimberg.me, kbusch@kernel.org, axboe@fb.com, dan.j.williams@intel.com, epilmore@gigaio.com, sbates@raithlin.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,MYRULES_NO_TEXT autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: [PATCH v2 14/14] PCI/P2PDMA: Update documentation for pci_p2pdma_distance_many()
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The comment describing pci_p2pdma_distance_many() still referred to
-the devices being behind the same root port. This no longer applies
-so reword the documentation.
+We don't need dev_err() messages when platform_get_irq() fails now that
+platform_get_irq() prints an error message itself when something goes
+wrong. Let's remove these prints with a simple semantic patch.
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+// <smpl>
+@@
+expression ret;
+struct platform_device *E;
+@@
+
+ret =
+(
+platform_get_irq(E, ...)
+|
+platform_get_irq_byname(E, ...)
+);
+
+if ( \( ret < 0 \| ret <= 0 \) )
+{
+(
+-if (ret != -EPROBE_DEFER)
+-{ ...
+-dev_err(...);
+-... }
+|
+...
+-dev_err(...);
+)
+...
+}
+// </smpl>
+
+While we're here, remove braces on if statements that only have one
+statement (manually).
+
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/pci/p2pdma.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-index 2d643b26d080..ac6b599a10ef 100644
---- a/drivers/pci/p2pdma.c
-+++ b/drivers/pci/p2pdma.c
-@@ -523,15 +523,14 @@ static int upstream_bridge_distance_warn(struct pci_dev *provider,
-  * @num_clients: number of clients in the array
-  * @verbose: if true, print warnings for devices when we return -1
-  *
-- * Returns -1 if any of the clients are not compatible (behind the same
-- * root port as the provider), otherwise returns a positive number where
-- * a lower number is the preferable choice. (If there's one client
-- * that's the same as the provider it will return 0, which is best choice).
-+ * Returns -1 if any of the clients are not compatible, otherwise returns a
-+ * positive number where a lower number is the preferable choice. (If there's
-+ * one client that's the same as the provider it will return 0, which is best
-+ * choice).
-  *
-- * For now, "compatible" means the provider and the clients are all behind
-- * the same PCI root port. This cuts out cases that may work but is safest
-- * for the user. Future work can expand this to white-list root complexes that
-- * can safely forward between each ports.
-+ * "compatible" means the provider and the clients are either all behind
-+ * the same PCI root port or the host bridge connected to each of the devices
-+ * are is listed in the 'pci_p2pdma_whitelist'.
-  */
- int pci_p2pdma_distance_many(struct pci_dev *provider, struct device **clients,
- 			     int num_clients, bool verbose)
+Please apply directly to subsystem trees
+
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index 81e6dedb1e02..7541177eb648 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -4637,10 +4637,8 @@ static int hns_roce_get_cfg(struct hns_roce_dev *hr_dev)
+ 	/* fetch the interrupt numbers */
+ 	for (i = 0; i < HNS_ROCE_V1_MAX_IRQ_NUM; i++) {
+ 		hr_dev->irq[i] = platform_get_irq(hr_dev->pdev, i);
+-		if (hr_dev->irq[i] <= 0) {
+-			dev_err(dev, "platform get of irq[=%d] failed!\n", i);
++		if (hr_dev->irq[i] <= 0)
+ 			return -EINVAL;
+-		}
+ 	}
+ 
+ 	return 0;
 -- 
-2.20.1
+Sent by a computer through tubes
 
