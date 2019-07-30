@@ -2,217 +2,189 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E96B7A6BD
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 13:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F667A7E8
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 14:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728233AbfG3LT0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jul 2019 07:19:26 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:13094 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728967AbfG3LT0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Jul 2019 07:19:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1564485565; x=1596021565;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=zMf/Cloak4ww5LA6XhfAIqswVW3u05UvwTK1ZCU4y1Q=;
-  b=kIhZdwJvQnZv49VWsDCMjqkIiMauhII0httHSbLn73x+WXdqg98gj0FU
-   jBg0IFLu/r0bE1MokeJnqG9MTRLFnVg1UgUjR0obSQdFWegZs8nSIBzYy
-   SSqzUiaoy3UG3fcd/9vKOr7XMRblHEp067LSm0Z2HRUBLvK9dGAXEt3+H
-   c=;
-X-IronPort-AV: E=Sophos;i="5.64,326,1559520000"; 
-   d="scan'208";a="407238919"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 30 Jul 2019 11:19:23 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com (Postfix) with ESMTPS id 2E0A0A27A2;
-        Tue, 30 Jul 2019 11:19:23 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 30 Jul 2019 11:19:22 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.211) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 30 Jul 2019 11:19:18 +0000
-Subject: Re: [PATCH for-next 02/13] RDMA/hns: Optimize hns_roce_modify_qp
- function
-To:     Lijun Ou <oulijun@huawei.com>, <dledford@redhat.com>,
-        <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <1564477010-29804-1-git-send-email-oulijun@huawei.com>
- <1564477010-29804-3-git-send-email-oulijun@huawei.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <0976a9fe-79a0-3d07-6d27-7ea120a6ba93@amazon.com>
-Date:   Tue, 30 Jul 2019 14:19:14 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <1564477010-29804-3-git-send-email-oulijun@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+        id S1728206AbfG3MPE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jul 2019 08:15:04 -0400
+Received: from mail-eopbgr60075.outbound.protection.outlook.com ([40.107.6.75]:6534
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726294AbfG3MPE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Jul 2019 08:15:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BwIWPcBKGItE/mrFkIhJYixj5tlPSdfkTkQScoOVOc3wvzBUQWIKygU7HySnGss+xLOG1vrvRTJ3dYCQXRG1L+hSn2rzWH0HGKNuMDRaRUiTYH1+nsuZVqkdMZCOxMkDaAowgJr5ryh/DbIC3Hb6G/GgN/TXEU8cAiW4qq48kLEOFSMuLiAXK7aBEuwNhjQ3PaL+hVv9fxPvVuGc94urmBLi2b/WU9eY/INjhOUeNpNepKcG+qMJvtHRILEYssyj96pnteZ5Xjlo/s/oKD1Si2g6HwlcMkRMWKgXyzjOI+Xi6PyVDNLPQlEoKckOg5T3Sr4t4ZvzOkd96If+K2m9Uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5lfBK9qEz9ivtZchZEoo1215jKbBrziIbL2M+Ec8fuo=;
+ b=JEEThh64TU/Mq+98mNYly4hODgu5zX37RIn3otdslD3nHxRsiYiKcSR23ErTq8LnHMFgHsonS5oNcsFfkE6yfwifCCChiYqIJe+Lb3dpec+F4E1B/uX2/iiVQgS4IrfZ6g/BQ8TlBAvOwJatdhAecTlQcilOR5CLJxHsfINEnzatVwaLq33UVJ8stm4qJCPUeu/gTlkH95e4NxZu0wyEA3F/wV6JlwXQT+P71Hb+GwqxgBj8AuD2dspv3t0Vj3B0rhBa4LNZd3OFr/ByHj4zBRjbqvoeOCAlzl6aBwJCI8u76iG3JvWNfMAX+C430eqP4t1ULaLy0PhT620MJPyOiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=mellanox.com;dmarc=pass action=none
+ header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5lfBK9qEz9ivtZchZEoo1215jKbBrziIbL2M+Ec8fuo=;
+ b=ah7A1Emv/YSqGgel+t+qW7OcDSLSv+czSGsuGfxVRITP9dxV8RO882xzMxllFXMB3iYapk8t5AxGH4quVS4N67EHLJh/DzU39SIWVvAU6LhXhlC+w2c+IX4on8J8umMgTh2I5NGH9TJGKNVP/5LlKkK0PaFYAdPBuQ7lZKknpeI=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB3248.eurprd05.prod.outlook.com (10.170.238.17) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2115.15; Tue, 30 Jul 2019 12:15:01 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::5c6f:6120:45cd:2880]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::5c6f:6120:45cd:2880%4]) with mapi id 15.20.2115.005; Tue, 30 Jul 2019
+ 12:15:01 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Thread-Topic: [GIT PULL] Please pull RDMA subsystem changes
+Thread-Index: AQHVRtBpX/4X/EwR7US3b7d63vE1hQ==
+Date:   Tue, 30 Jul 2019 12:15:01 +0000
+Message-ID: <20190730121455.GA23902@ziepe.ca>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.211]
-X-ClientProxiedBy: EX13D10UWB003.ant.amazon.com (10.43.161.106) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YTXPR0101CA0071.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:1::48) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 717b568d-9db0-44e2-df33-08d714e78ba3
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB3248;
+x-ms-traffictypediagnostic: VI1PR05MB3248:
+x-microsoft-antispam-prvs: <VI1PR05MB324850192B329C1948A9C802CFDC0@VI1PR05MB3248.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:142;
+x-forefront-prvs: 0114FF88F6
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(979002)(4636009)(346002)(396003)(376002)(39860400002)(366004)(136003)(189003)(199004)(36756003)(54906003)(71200400001)(3846002)(81156014)(110136005)(7736002)(81166006)(9686003)(66476007)(52116002)(6512007)(66946007)(66556008)(66446008)(6116002)(316002)(8676002)(102836004)(33656002)(99286004)(64756008)(305945005)(478600001)(68736007)(71190400001)(6486002)(2906002)(386003)(86362001)(14454004)(25786009)(26005)(6506007)(1076003)(8936002)(256004)(14444005)(5660300002)(53936002)(4326008)(476003)(486006)(6436002)(186003)(66066001)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3248;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: UtyrqN3nXxBl5AAsmJtQsYD/93pDn3BIobGJjC5W3LuSQbgcL/KW8v8XWdQnkzc6fiNXt8lcyT9c6+SlU3RxNFVy9Nd0quqEWsei96ZpKRm81INGmUxS1kJIVrJinzLOC31FBFcEELfPKypCT5WEJBWEQE3RzwgamRQHH0fmw2NYzvQQNoQWOx8RQ00kbX0166CWqqbRaZ/YEaxhCHZ7s4RcmgRtzj/2TA9+iXt/rLMhw8EZRAXyfvW0QVfNb46bP2FUegl1voE5Z/IV0gMLRvxZU1jy4163gQiR3vgCe868FSDV7TvG0GEsIB79kUNtquwTxaZ0u1gsh3ZvjTiAK6mf+M7++HwPq1+i4/kuj9anoZTQixTZFSW3Z8zQUDElWzOGO3BLbLb0G/k1y/Hl0ABmeTG1Fe6xJab3q7A5+Bs=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B5712D05A1E18844A6BEE90BD811008B@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 717b568d-9db0-44e2-df33-08d714e78ba3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jul 2019 12:15:01.0906
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3248
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 30/07/2019 11:56, Lijun Ou wrote:
-> Here mainly packages some code into some new functions in order to
-> reduce code compelexity.
-> 
-> Signed-off-by: Lijun Ou <oulijun@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_qp.c | 118 +++++++++++++++++++-------------
->  1 file changed, 72 insertions(+), 46 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> index 35ef7e2..8b2d10f 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> @@ -1070,6 +1070,76 @@ int to_hr_qp_type(int qp_type)
->  	return transport_type;
->  }
->  
-> +static int check_mtu_validate(struct hns_roce_dev *hr_dev,
-> +                             struct hns_roce_qp *hr_qp,
-> +                             struct ib_qp_attr *attr, int attr_mask)
-> +{
-> +       struct device *dev = hr_dev->dev;
-> +       enum ib_mtu active_mtu;
-> +       int p;
-> +
-> +       p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
-> +           active_mtu = iboe_get_mtu(hr_dev->iboe.netdevs[p]->mtu);
-> +
-> +       if ((hr_dev->caps.max_mtu >= IB_MTU_2048 &&
-> +            attr->path_mtu > hr_dev->caps.max_mtu) ||
-> +            attr->path_mtu < IB_MTU_256 || attr->path_mtu > active_mtu) {
-> +               dev_err(dev, "attr path_mtu(%d)invalid while modify qp",
-> +                       attr->path_mtu);
-> +               return -EINVAL;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int hns_roce_check_qp_attr(struct ib_qp *ibqp, struct ib_qp_attr *attr,
-> +                                 int attr_mask)
-> +{
-> +       struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
-> +       struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
-> +       struct device *dev = hr_dev->dev;
-> +       int ret = 0;
-> +       int p;
-> +
-> +       if ((attr_mask & IB_QP_PORT) &&
-> +           (attr->port_num == 0 || attr->port_num > hr_dev->caps.num_ports)) {
-> +               dev_err(dev, "attr port_num invalid.attr->port_num=%d\n",
-> +                       attr->port_num);
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (attr_mask & IB_QP_PKEY_INDEX) {
-> +               p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
-> +               if (attr->pkey_index >= hr_dev->caps.pkey_table_len[p]) {
-> +                       dev_err(dev, "attr pkey_index invalid.attr->pkey_index=%d\n",
-> +                               attr->pkey_index);
-> +                       return -EINVAL;
-> +               }
-> +       }
-> +
-> +       if (attr_mask & IB_QP_PATH_MTU) {
-> +               ret = check_mtu_validate(hr_dev, hr_qp, attr, attr_mask);
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
-> +       if (attr_mask & IB_QP_MAX_QP_RD_ATOMIC &&
-> +           attr->max_rd_atomic > hr_dev->caps.max_qp_init_rdma) {
-> +               dev_err(dev, "attr max_rd_atomic invalid.attr->max_rd_atomic=%d\n",
-> +                       attr->max_rd_atomic);
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (attr_mask & IB_QP_MAX_DEST_RD_ATOMIC &&
-> +           attr->max_dest_rd_atomic > hr_dev->caps.max_qp_dest_rdma) {
-> +               dev_err(dev, "attr max_dest_rd_atomic invalid.attr->max_dest_rd_atomic=%d\n",
-> +                       attr->max_dest_rd_atomic);
-> +               return -EINVAL;
-> +       }
-> +
-> +       return ret;
-> +}
-> +
->  int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
->  		       int attr_mask, struct ib_udata *udata)
->  {
-> @@ -1078,8 +1148,6 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
->  	enum ib_qp_state cur_state, new_state;
->  	struct device *dev = hr_dev->dev;
->  	int ret = -EINVAL;
-> -	int p;
-> -	enum ib_mtu active_mtu;
->  
->  	mutex_lock(&hr_qp->mutex);
->  
-> @@ -1107,51 +1175,9 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
->  		goto out;
->  	}
->  
-> -	if ((attr_mask & IB_QP_PORT) &&
-> -	    (attr->port_num == 0 || attr->port_num > hr_dev->caps.num_ports)) {
-> -		dev_err(dev, "attr port_num invalid.attr->port_num=%d\n",
-> -			attr->port_num);
-> -		goto out;
-> -	}
-> -
-> -	if (attr_mask & IB_QP_PKEY_INDEX) {
-> -		p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
-> -		if (attr->pkey_index >= hr_dev->caps.pkey_table_len[p]) {
-> -			dev_err(dev, "attr pkey_index invalid.attr->pkey_index=%d\n",
-> -				attr->pkey_index);
-> -			goto out;
-> -		}
-> -	}
-> -
-> -	if (attr_mask & IB_QP_PATH_MTU) {
-> -		p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
-> -		active_mtu = iboe_get_mtu(hr_dev->iboe.netdevs[p]->mtu);
-> -
-> -		if ((hr_dev->caps.max_mtu == IB_MTU_4096 &&
-> -		    attr->path_mtu > IB_MTU_4096) ||
-> -		    (hr_dev->caps.max_mtu == IB_MTU_2048 &&
-> -		    attr->path_mtu > IB_MTU_2048) ||
-> -		    attr->path_mtu < IB_MTU_256 ||
-> -		    attr->path_mtu > active_mtu) {
-> -			dev_err(dev, "attr path_mtu(%d)invalid while modify qp",
-> -				attr->path_mtu);
-> -			goto out;
-> -		}
-> -	}
-> -
-> -	if (attr_mask & IB_QP_MAX_QP_RD_ATOMIC &&
-> -	    attr->max_rd_atomic > hr_dev->caps.max_qp_init_rdma) {
-> -		dev_err(dev, "attr max_rd_atomic invalid.attr->max_rd_atomic=%d\n",
-> -			attr->max_rd_atomic);
-> -		goto out;
-> -	}
-> -
-> -	if (attr_mask & IB_QP_MAX_DEST_RD_ATOMIC &&
-> -	    attr->max_dest_rd_atomic > hr_dev->caps.max_qp_dest_rdma) {
-> -		dev_err(dev, "attr max_dest_rd_atomic invalid.attr->max_dest_rd_atomic=%d\n",
-> -			attr->max_dest_rd_atomic);
-> +	ret = hns_roce_check_qp_attr(ibqp, attr, attr_mask);
-> +	if (ret)
->  		goto out;
-> -	}
->  
->  	if (cur_state == new_state && cur_state == IB_QPS_RESET) {
->  		if (hr_dev->caps.min_wqes) {
-> 
+Hi Linus,
 
-This patch is formatted with spaces instead of tabs.
+First rc pull request
+
+The usual collection of driver bug fixes, and fewer siw static checker
+warnings than I feared.
+
+Thanks,
+Jason
+
+The following changes since commit 5f9e832c137075045d15cd6899ab0505cfb2ca4b=
+:
+
+  Linus 5.3-rc1 (2019-07-21 14:05:38 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linu=
+s
+
+for you to fetch changes up to b7165bd0d6cbb93732559be6ea8774653b204480:
+
+  IB/mlx5: Fix RSS Toeplitz setup to be aligned with the HW specification (=
+2019-07-25 11:45:48 -0300)
+
+----------------------------------------------------------------
+5.3 rc RDMA pull request
+
+A few regression and bug fixes for the patches merged in the last cycle:
+
+- hns fixes a subtle crash from the ib core SGL rework
+
+- hfi1 fixes various error handling, oops and protocol errors
+
+- bnxt_re fixes a regression where nvmeof doesn't work on some
+  configurations
+
+- mlx5 fixes a serious 'use after free' bug in how MR caching is handled
+
+- Some edge case crashers in the new statistic core code
+
+- More siw static checker fixups
+
+----------------------------------------------------------------
+Chuhong Yuan (1):
+      IB/mlx5: Replace kfree with kvfree
+
+John Fleck (1):
+      IB/hfi1: Check for error on call to alloc_rsm_map_table
+
+Kaike Wan (3):
+      IB/hfi1: Unreserve a flushed OPFN request
+      IB/hfi1: Field not zero-ed when allocating TID flow memory
+      IB/hfi1: Drop all TID RDMA READ RESP packets after r_next_psn
+
+Mao Wenan (1):
+      RDMA/siw: Remove set but not used variables 'rv'
+
+Moni Shoua (1):
+      IB/mlx5: Prevent concurrent MR updates during invalidation
+
+Parav Pandit (2):
+      IB/core: Fix querying total rdma stats
+      IB/counters: Always initialize the port counter object
+
+Selvin Xavier (1):
+      RDMA/bnxt_re: Honor vlan_id in GID entry comparison
+
+Wei Yongjun (1):
+      RDMA/siw: Fix error return code in siw_init_module()
+
+Xi Wang (1):
+      RDMA/hns: Fix sg offset non-zero issue
+
+Yishai Hadas (5):
+      IB/mlx5: Fix unreg_umr to ignore the mkey state
+      IB/mlx5: Use direct mkey destroy command upon UMR unreg failure
+      IB/mlx5: Move MRs to a kernel PD when freeing them to the MR cache
+      IB/mlx5: Fix clean_mr() to work in the expected order
+      IB/mlx5: Fix RSS Toeplitz setup to be aligned with the HW specificati=
+on
+
+ drivers/infiniband/core/counters.c        | 11 +++++---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  7 +++--
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 13 +++++++---
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |  2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c  | 14 ++++++----
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  7 ++++-
+ drivers/infiniband/hw/hfi1/chip.c         | 11 ++++++--
+ drivers/infiniband/hw/hfi1/rc.c           |  2 --
+ drivers/infiniband/hw/hfi1/tid_rdma.c     | 43 ++-------------------------=
+----
+ drivers/infiniband/hw/hns/hns_roce_db.c   | 15 ++++++-----
+ drivers/infiniband/hw/mlx5/mlx5_ib.h      |  1 +
+ drivers/infiniband/hw/mlx5/mr.c           | 23 ++++++++++-------
+ drivers/infiniband/hw/mlx5/odp.c          |  7 ++---
+ drivers/infiniband/hw/mlx5/qp.c           | 13 ++++++----
+ drivers/infiniband/sw/siw/siw_cm.c        |  3 +--
+ drivers/infiniband/sw/siw/siw_main.c      |  1 +
+ include/rdma/rdmavt_qp.h                  |  9 +++----
+ 17 files changed, 89 insertions(+), 93 deletions(-)
