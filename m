@@ -2,75 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1097C7B44C
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 22:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36DC7B468
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 22:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbfG3UYK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jul 2019 16:24:10 -0400
-Received: from mga09.intel.com ([134.134.136.24]:36452 "EHLO mga09.intel.com"
+        id S2387401AbfG3UkU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jul 2019 16:40:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726194AbfG3UYK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Jul 2019 16:24:10 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 30 Jul 2019 13:24:09 -0700
-X-IronPort-AV: E=Sophos;i="5.64,327,1559545200"; 
-   d="scan'208";a="166061281"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 30 Jul 2019 13:24:08 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     Tony Luck <tony.luck@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] IB/core: Add mitigation for Spectre V1
-Date:   Tue, 30 Jul 2019 13:24:07 -0700
-Message-Id: <20190730202407.31046-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728305AbfG3UkU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Jul 2019 16:40:20 -0400
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564519219;
+        bh=G70ij5Rx72+9VaiE25ukujWYmxqSpJpseXxJYn4AENQ=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=bw0XJII7U9qArJkEiHnFP3jHXWfBNrQ9eeApcmIohimsNU9yjvsbUZHOXFsXj6QQo
+         RNkkqmL84kK12bIrytq6lGOMAJKc6z9zMbq/x33JdD7IPQATOFkmA97QJMWo5WNtGk
+         b/NRDX1/bxqScbhukc2IvkZJsfEU+Dmnav3zJtCg=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20190730121455.GA23902@ziepe.ca>
+References: <20190730121455.GA23902@ziepe.ca>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20190730121455.GA23902@ziepe.ca>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: b7165bd0d6cbb93732559be6ea8774653b204480
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 32a024b9a9f3b40f84bc55a6dd35eaa770ea26a4
+Message-Id: <156451921926.18459.15979200829555980420.pr-tracker-bot@kernel.org>
+Date:   Tue, 30 Jul 2019 20:40:19 +0000
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Some processors may mispredict an array bounds check and
-speculatively access memory that they should not. With
-a user supplied array index we like to play things safe
-by masking the value with the array size before it is
-used as an index.
+The pull request you sent on Tue, 30 Jul 2019 12:15:01 +0000:
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-[I don't have h/w, so just compile tested]
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/32a024b9a9f3b40f84bc55a6dd35eaa770ea26a4
 
- drivers/infiniband/core/user_mad.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thank you!
 
-diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-index 9f8a48016b41..fdce254e4f65 100644
---- a/drivers/infiniband/core/user_mad.c
-+++ b/drivers/infiniband/core/user_mad.c
-@@ -49,6 +49,7 @@
- #include <linux/sched.h>
- #include <linux/semaphore.h>
- #include <linux/slab.h>
-+#include <linux/nospec.h>
- 
- #include <linux/uaccess.h>
- 
-@@ -888,6 +889,7 @@ static int ib_umad_unreg_agent(struct ib_umad_file *file, u32 __user *arg)
- 	mutex_lock(&file->port->file_mutex);
- 	mutex_lock(&file->mutex);
- 
-+	id = array_index_nospec(id, IB_UMAD_MAX_AGENTS);
- 	if (id >= IB_UMAD_MAX_AGENTS || !__get_agent(file, id)) {
- 		ret = -EINVAL;
- 		goto out;
 -- 
-2.20.1
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
