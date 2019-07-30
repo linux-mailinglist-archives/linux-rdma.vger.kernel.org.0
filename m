@@ -2,65 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3E77A3D5
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 11:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39217A5F4
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 12:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727624AbfG3JRK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jul 2019 05:17:10 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:43688 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727317AbfG3JRK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Jul 2019 05:17:10 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 7D309D77BADE23834B75;
-        Tue, 30 Jul 2019 17:00:53 +0800 (CST)
-Received: from linux-ioko.site (10.71.200.31) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.439.0; Tue, 30 Jul 2019 17:00:47 +0800
-From:   Lijun Ou <oulijun@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next 13/13] RDMA/hns: Disable alw_lcl_lpbk of SSU
-Date:   Tue, 30 Jul 2019 16:56:50 +0800
-Message-ID: <1564477010-29804-14-git-send-email-oulijun@huawei.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1564477010-29804-1-git-send-email-oulijun@huawei.com>
-References: <1564477010-29804-1-git-send-email-oulijun@huawei.com>
+        id S1732574AbfG3K0H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jul 2019 06:26:07 -0400
+Received: from verein.lst.de ([213.95.11.211]:49987 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727156AbfG3K0D (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Jul 2019 06:26:03 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4C21468B02; Tue, 30 Jul 2019 12:25:57 +0200 (CEST)
+Date:   Tue, 30 Jul 2019 12:25:57 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jerome Glisse <jglisse@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, john.hubbard@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>, ceph-devel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, samba-technical@lists.samba.org,
+        v9fs-developer@lists.sourceforge.net,
+        virtualization@lists.linux-foundation.org,
+        John Hubbard <jhubbard@nvidia.com>,
+        Minwoo Im <minwoo.im.dev@gmail.com>
+Subject: Re: [PATCH 03/12] block: bio_release_pages: use flags arg instead
+ of bool
+Message-ID: <20190730102557.GA1700@lst.de>
+References: <20190724042518.14363-1-jhubbard@nvidia.com> <20190724042518.14363-4-jhubbard@nvidia.com> <20190724053053.GA18330@infradead.org> <20190729205721.GB3760@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.71.200.31]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190729205721.GB3760@redhat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Weihang Li <liweihang@hisilicon.com>
+On Mon, Jul 29, 2019 at 04:57:21PM -0400, Jerome Glisse wrote:
+> > All pages releases by bio_release_pages should come from
+> > get_get_user_pages, so I don't really see the point here.
+> 
+> No they do not all comes from GUP for see various callers
+> of bio_check_pages_dirty() for instance iomap_dio_zero()
+> 
+> I have carefully tracked down all this and i did not do
+> anyconvertion just for the fun of it :)
 
-If we enabled alw_lcl_lpbk in promiscuous mode, packet whose source
-and destination mac address is equal will be handled in both inner
-loopback and outer loopback. This will halve performance of roce in
-promiscuous mode.
+Well, the point is _should_ not necessarily do.  iomap_dio_zero adds the
+ZERO_PAGE, which we by definition don't need to refcount.  So we can
+mark this bio BIO_NO_PAGE_REF safely after removing the get_page there.
 
-Signed-off-by: Weihang Li <liweihang@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Note that the equivalent in the old direct I/O code, dio_refill_pages,
+will be a little more complicated as it can match user pages and the
+ZERO_PAGE in a single bio, so a per-bio flag won't handle it easily.
+Maybe we just need to use a separate bio there as well.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 699a5b9..a9cf0c9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1308,7 +1308,7 @@ static int hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev,
- 		cpu_to_le16(HNS_ROCE_CMD_FLAG_NO_INTR | HNS_ROCE_CMD_FLAG_IN);
- 	desc.flag &= cpu_to_le16(~HNS_ROCE_CMD_FLAG_WR);
- 	roce_set_bit(swt->cfg, VF_SWITCH_DATA_CFG_ALW_LPBK_S, 1);
--	roce_set_bit(swt->cfg, VF_SWITCH_DATA_CFG_ALW_LCL_LPBK_S, 1);
-+	roce_set_bit(swt->cfg, VF_SWITCH_DATA_CFG_ALW_LCL_LPBK_S, 0);
- 	roce_set_bit(swt->cfg, VF_SWITCH_DATA_CFG_ALW_DST_OVRD_S, 1);
- 
- 	return hns_roce_cmq_send(hr_dev, &desc, 1);
--- 
-1.9.1
-
+In general with series like this we should not encode the status quo an
+pile new hacks upon the old one, but thing where we should be and fix
+up the old warts while having to wade through all that code.
