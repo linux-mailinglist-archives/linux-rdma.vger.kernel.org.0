@@ -2,317 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8552179ACB
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2019 23:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9527A100
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 08:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388516AbfG2VNa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jul 2019 17:13:30 -0400
-Received: from mail-eopbgr10050.outbound.protection.outlook.com ([40.107.1.50]:5933
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388520AbfG2VN2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Jul 2019 17:13:28 -0400
+        id S1727723AbfG3GEo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jul 2019 02:04:44 -0400
+Received: from m4a0040g.houston.softwaregrp.com ([15.124.2.86]:44607 "EHLO
+        m4a0040g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726033AbfG3GEo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Jul 2019 02:04:44 -0400
+X-Greylist: delayed 39979 seconds by postgrey-1.27 at vger.kernel.org; Tue, 30 Jul 2019 02:04:41 EDT
+Received: FROM m4a0040g.houston.softwaregrp.com (15.120.17.146) BY m4a0040g.houston.softwaregrp.com WITH ESMTP;
+ Tue, 30 Jul 2019 06:04:40 +0000
+Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
+ M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Tue, 30 Jul 2019 06:04:18 +0000
+Received: from NAM01-BY2-obe.outbound.protection.outlook.com (15.124.8.13) by
+ M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Tue, 30 Jul 2019 06:04:18 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EjWvj/4iCb3X1dnn8Owvo7IxKnw5TVCjPh4n1nX8JVHyOfccqA5pY8d4xpv8p0xqm8i37d/CTEAkN9k8ek+O6yKo794yXn0bncmt+QQnwVJ1cOEwYb1V3APGoytbBYEiZLn0jXjakNwgTcNDYODy4YPSG2f9C6HbaB1fbEqKxQWF77VqeQvMuo897uM4KMTtQG0eZ9foMlVO68aXbxO+OwNRcAmLEuwXnif+pg848tUaeak0aIay3GaczWt3st6HKQ3WG9mx6ucwfW+mZcrCGT8wB+RGr78eYoBlpydzsvx+SppI8e6bZq9WBd9iGcW0kJjaq9G2FR0HU+yf3IGqww==
+ b=FZnqmwFBm7MaeI3pULUBxsQK2YYkZanxlsRp46/fIXhAWlvdR5GVcgBnjtL1TQZGlEYjd0WVMNLI9UtEyjD+JfkYWu0tRaGKPUGRwMB/V83tatnFGfxuiDjPTcmioz2fOWMc6cygTI+04e2W1NJ69vDULzifHWgWKCGuv9SoRiW8UcMc6zCb70VqwZBOKWasfMEr6YA2dNkfdpd+qJg9gbCFj+bAyt/VTJSdpsEEqxT0lu3a74uz1db4n6AsATrxHj24+SJ1Yj2JIkCAJBTyAiXCUzfh/K6lm8r3ocwCzAiuaTS7Aojw0HS6bAS1dKLEXgPG5FWrkcoUEP77S1++wA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O3XfJjMTtTWrmDCXodkJamhpKVr3/P0U0gbbV2YT8yc=;
- b=Y7NCFnerR+dvoebFzq8usKiD5Y21znhULkM8TRC8GXSCuxgBOZDL1pFNF5PTPvDqbomcaW9U++4SNybKZOVZMCIk1JILific/GA2tNtxmPbuQ99hYZWBrns1rDJ2rIccVRcI7tlOlymtgL1zUrUHUstUdvjfh8UL1QDAakp3pwLfKJseSzbwycY1X/884jYWzXpPLH8MiJlXDZzjo68gh2b1VWWM1CzxCEeiEnFLL9+FxXg7s2+r5xqSjH89hNE+8Rf7ArXJIvAlBG7u2T11zYG6bazq/zY7ZjAnkf26im/7H/TSLA7/vFrr3phEZg2Yst2Frk6JQNR3iY0csFTNKw==
+ bh=C4fgFlx+JaRtU7YwBZmaN558J8ldN2BGoVBHmeGrmQg=;
+ b=JOk1LoD/tuBL4QB/g8wLNCYOkLpw+iaL3jalWkXIQqXbP7RltP913W+U979SvH1uJP3ON7yJB1Fx04Xf++JjmG8oNdqmEQiz2B1EgUBFKhQFQPIAdZ4HDHnIjNH+IDxRe5OxXFvd2imI3Ts5PpyrTmY0+oIYc+TC/tSmishd8PotoKcB20QHG8iF2h3Ir6GHsott1jt8wv/c9IZ+p1Z8J4I3QSWlK4nHK4rXWNJyyj9BxujZzDARzvW3CqMMnYdRmqlL0nwvQCPcQicz/zXVz06wDMQ5+Wvhc7MfXkg4V3pEQIAsZHiFOFEgN9xkTJE13LGGW/Yluqye4CJNx7Jidw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=mellanox.com;dmarc=pass action=none
- header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O3XfJjMTtTWrmDCXodkJamhpKVr3/P0U0gbbV2YT8yc=;
- b=aE+RRjg+wJyuXZU2k0M1sUY/QxMtPMK0DBfM+F8gJpbBjnpy6M3Qnk6MpqNn/qdah9WnhHSonpaPX9haGsWhufuEZZYXU9QN0EFEQyKS6Rhl66ws9mQpWc9xZZ0HPNlQuyySXWR3QsgWlw/u9azupzLTEWmlN4cxrPX+mAiYdto=
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
- DB6PR0501MB2375.eurprd05.prod.outlook.com (10.168.72.150) with Microsoft SMTP
+ smtp.mailfrom=suse.com;dmarc=pass action=none header.from=suse.com;dkim=pass
+ header.d=suse.com;arc=none
+Received: from CY4PR18MB1240.namprd18.prod.outlook.com (10.172.176.10) by
+ CY4PR18MB1399.namprd18.prod.outlook.com (10.172.176.137) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.10; Mon, 29 Jul 2019 21:13:12 +0000
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::3c28:c77d:55b0:15b2]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::3c28:c77d:55b0:15b2%5]) with mapi id 15.20.2115.005; Mon, 29 Jul 2019
- 21:13:12 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ 15.20.2115.15; Tue, 30 Jul 2019 06:04:17 +0000
+Received: from CY4PR18MB1240.namprd18.prod.outlook.com
+ ([fe80::e548:277f:9d22:e8f8]) by CY4PR18MB1240.namprd18.prod.outlook.com
+ ([fe80::e548:277f:9d22:e8f8%12]) with mapi id 15.20.2094.017; Tue, 30 Jul
+ 2019 06:04:17 +0000
+From:   Nicolas Morey-Chaisemartin <NMoreyChaisemartin@suse.com>
+To:     Doug Ledford <dledford@redhat.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     Parav Pandit <parav@mellanox.com>
-Subject: [PATCH mlx5-next 11/11] net/mlx5: E-switch, Tide up eswitch config
- sequence
-Thread-Topic: [PATCH mlx5-next 11/11] net/mlx5: E-switch, Tide up eswitch
- config sequence
-Thread-Index: AQHVRlJtLvlb9aQ/DkWqervHwap/nw==
-Date:   Mon, 29 Jul 2019 21:13:12 +0000
-Message-ID: <20190729211209.14772-12-saeedm@mellanox.com>
-References: <20190729211209.14772-1-saeedm@mellanox.com>
-In-Reply-To: <20190729211209.14772-1-saeedm@mellanox.com>
-Accept-Language: en-US
+Subject: Re: [RFC] mlx5: add parameter to disable enhanced IPoIB
+Thread-Topic: [RFC] mlx5: add parameter to disable enhanced IPoIB
+Thread-Index: AQHVRj9ohuRLHy8cmUmnUbAt1DZZQKbiEAwmgACcq4A=
+Date:   Tue, 30 Jul 2019 06:04:17 +0000
+Message-ID: <f1778c16-db19-ced4-3172-aeaab6698b42@suse.com>
+References: <42703d01-0496-a4ce-6599-5115e49290af@suse.com>
+ <f1e27e28a420e2123242bfbc196796ba250f15e4.camel@redhat.com>
+In-Reply-To: <f1e27e28a420e2123242bfbc196796ba250f15e4.camel@redhat.com>
+Accept-Language: en-150, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.21.0
-x-originating-ip: [209.116.155.178]
-x-clientproxiedby: BYAPR05CA0081.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::22) To DB6PR0501MB2759.eurprd05.prod.outlook.com
- (2603:10a6:4:84::7)
+x-clientproxiedby: PR0P264CA0200.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1f::20) To CY4PR18MB1240.namprd18.prod.outlook.com
+ (2603:10b6:903:108::10)
 authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
+ smtp.mailfrom=NMoreyChaisemartin@suse.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [86.220.97.158]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4c69e7e6-2da2-4e1d-c89e-08d714699017
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2375;
-x-ms-traffictypediagnostic: DB6PR0501MB2375:
-x-microsoft-antispam-prvs: <DB6PR0501MB237514907508991C5B63F25CBEDD0@DB6PR0501MB2375.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-forefront-prvs: 01136D2D90
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(376002)(346002)(39860400002)(366004)(396003)(199004)(189003)(50226002)(14444005)(5660300002)(6116002)(3846002)(486006)(446003)(86362001)(81156014)(186003)(36756003)(81166006)(8936002)(26005)(25786009)(316002)(71190400001)(71200400001)(110136005)(64756008)(76176011)(66556008)(2906002)(66946007)(66446008)(99286004)(66476007)(1076003)(386003)(6506007)(102836004)(256004)(7736002)(6486002)(14454004)(66066001)(2501003)(8676002)(305945005)(6436002)(4326008)(11346002)(68736007)(52116002)(2616005)(476003)(478600001)(6512007)(450100002)(2201001)(107886003)(53936002);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2375;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
+x-ms-office365-filtering-correlation-id: a874d02d-f53a-4652-2655-08d714b3c120
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:CY4PR18MB1399;
+x-ms-traffictypediagnostic: CY4PR18MB1399:
+x-microsoft-antispam-prvs: <CY4PR18MB13996C5E2F3293FF94465703BFDC0@CY4PR18MB1399.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 0114FF88F6
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(136003)(396003)(39860400002)(366004)(346002)(189003)(199004)(54524002)(76176011)(316002)(102836004)(52116002)(386003)(53546011)(66556008)(31696002)(8676002)(3846002)(186003)(6506007)(66476007)(26005)(6512007)(2501003)(66446008)(64756008)(53936002)(5660300002)(446003)(66946007)(6436002)(229853002)(6486002)(2616005)(71200400001)(476003)(7736002)(11346002)(86362001)(80792005)(8936002)(486006)(81166006)(81156014)(71190400001)(2906002)(68736007)(66066001)(36756003)(478600001)(99286004)(6116002)(25786009)(305945005)(256004)(31686004)(14454004)(110136005)(6246003);DIR:OUT;SFP:1102;SCL:1;SRVR:CY4PR18MB1399;H:CY4PR18MB1240.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: cXbbsKeX9ZoRjxdMFwanknqawjj4zuYx1wm6SGuxBcDLJiFtZ7CI7UE6bYmEzruZpwvgSfmsm3T07+bwVTbo5grFZaMDTTcQQ29pJBHOKiEbpU2O4qS4jdI8lSn5Jtk/ryp8aV4P0BWrvPagvALWSe5/ix7SxbfSBPSyJsRClEjguRAu3babFNooQ/iH1X7cGnhVNTrNHAf7MvyZsTYgyjzSkYNeSK33bVg20moFnuxN/EG4zyGsHsImnnDLiMo/hmnGoB2BBCbzAOQVLuxOjMrbOM1swxBzu792QJKrXX2ZMqAVbLqFrlBiEha+DW2hVdvsTpwflnl7rq84feTjULj4kdCpV5x182Mdudkth2Ko77PMS1vl9DR83h7/tvx4IoPbgLYCnLWVkpmCknxPj0gMmHFjWRPmuzwywnPgvVw=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+x-microsoft-antispam-message-info: cRaK+tHYkq9vcOXzfmKuvLn37s7QMu6WyD0tp+qt3jdTzmvAeR94+LSmNqJoCss3N4nZuYEocBEJQb0dUS3fZ7wnmaFwAYNPHbRhA0X/wN7/Gnp4faO72gdYUJISjiHnYA0mw6mSRzEXigjF1X9oTSdZ0dHm34jBZ71jDvgBOSWA2WBtY84kSjP46rbF8FUaq+WoXGDAOr0abHmlEZK3kF/ouz9BJsK39+pEml0NdzQcaWWVBbctUX3mC8bMdrMYQPZTpi1w8s6J5j63pt6yfPepH1O0MMqpQfRdaFtBEs9fdYLMZn+h2BKrWmUD99S17Zc0xWWPNtKoUTDfFQcBFkoun9FxVdOWYypZdlqQBzg/krZqzs2uP+rdo1+d9+EQJ1pijDY54FR9Lww8TBNI08SlSqcUE33se8ANrzvYGkQ=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2F6D08AE1B269441B5F6A9A2B184047D@namprd18.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c69e7e6-2da2-4e1d-c89e-08d714699017
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2019 21:13:12.0712
+X-MS-Exchange-CrossTenant-Network-Message-Id: a874d02d-f53a-4652-2655-08d714b3c120
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jul 2019 06:04:17.0624
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2375
+X-MS-Exchange-CrossTenant-userprincipalname: NMoreyChaisemartin@suse.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR18MB1399
+X-OriginatorOrg: suse.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@mellanox.com>
-
-Currently for PF and ECPF vports, representors are created before
-their eswitch hardware ports are initialized in below flow.
-
-mlx5_eswitch_enable()
-  esw_offloads_init()
-    esw_offloads_load_all_reps()
-[..]
-esw_enable_vport()
-
-However for VFs, vports are initialized before creating their
-respective netdev represnetors in event handling context.
-
-Similarly while disabling eswitch, first hardware vports are disabled,
-followed by destroying their representors.
-Here while underlying vports gets destroyed but its respective user
-facing netdevice can still exist on which user can continue to perform
-more offload operations.
-
-Instead, its more accurate to do
-enable_eswitch switchdev mode:
-1. perform FDB tables initialization
-2. initialize hw vport
-3. create and publish representor for this vport
-
-disable_eswitch switchdev mode:
-1. destroy user facing representor for the vport
-2. disable hw vport
-3. perform FDB tables cleanup
-
-Signed-off-by: Parav Pandit <parav@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
----
- .../net/ethernet/mellanox/mlx5/core/eswitch.c | 54 +++++++++++--------
- .../net/ethernet/mellanox/mlx5/core/eswitch.h |  4 +-
- .../mellanox/mlx5/core/eswitch_offloads.c     |  8 ++-
- 3 files changed, 41 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/ne=
-t/ethernet/mellanox/mlx5/core/eswitch.c
-index 90d150be237b..d4465dd18c11 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-@@ -452,6 +452,22 @@ static int esw_create_legacy_table(struct mlx5_eswitch=
- *esw)
- 	return err;
- }
-=20
-+#define MLX5_LEGACY_SRIOV_VPORT_EVENTS (MLX5_VPORT_UC_ADDR_CHANGE | \
-+					MLX5_VPORT_MC_ADDR_CHANGE | \
-+					MLX5_VPORT_PROMISC_CHANGE)
-+
-+static int esw_legacy_enable(struct mlx5_eswitch *esw)
-+{
-+	int ret;
-+
-+	ret =3D esw_create_legacy_table(esw);
-+	if (ret)
-+		return ret;
-+
-+	mlx5_eswitch_enable_pf_vf_vports(esw, MLX5_LEGACY_SRIOV_VPORT_EVENTS);
-+	return 0;
-+}
-+
- static void esw_destroy_legacy_table(struct mlx5_eswitch *esw)
- {
- 	esw_cleanup_vepa_rules(esw);
-@@ -459,6 +475,19 @@ static void esw_destroy_legacy_table(struct mlx5_eswit=
-ch *esw)
- 	esw_destroy_legacy_vepa_table(esw);
- }
-=20
-+static void esw_legacy_disable(struct mlx5_eswitch *esw)
-+{
-+	struct esw_mc_addr *mc_promisc;
-+
-+	mlx5_eswitch_disable_pf_vf_vports(esw);
-+
-+	mc_promisc =3D &esw->mc_promisc;
-+	if (mc_promisc->uplink_rule)
-+		mlx5_del_flow_rules(mc_promisc->uplink_rule);
-+
-+	esw_destroy_legacy_table(esw);
-+}
-+
- /* E-Switch vport UC/MC lists management */
- typedef int (*vport_addr_action)(struct mlx5_eswitch *esw,
- 				 struct vport_addr *vaddr);
-@@ -1826,13 +1855,8 @@ void mlx5_eswitch_disable_pf_vf_vports(struct mlx5_e=
-switch *esw)
- 		esw_disable_vport(esw, vport);
- }
-=20
--#define MLX5_LEGACY_SRIOV_VPORT_EVENTS (MLX5_VPORT_UC_ADDR_CHANGE | \
--					MLX5_VPORT_MC_ADDR_CHANGE | \
--					MLX5_VPORT_PROMISC_CHANGE)
--
- int mlx5_eswitch_enable(struct mlx5_eswitch *esw, int mode)
- {
--	int enabled_events;
- 	int err;
-=20
- 	if (!ESW_ALLOWED(esw) ||
-@@ -1854,21 +1878,16 @@ int mlx5_eswitch_enable(struct mlx5_eswitch *esw, i=
-nt mode)
- 	mlx5_lag_update(esw->dev);
-=20
- 	if (mode =3D=3D MLX5_ESWITCH_LEGACY) {
--		err =3D esw_create_legacy_table(esw);
-+		err =3D esw_legacy_enable(esw);
- 	} else {
- 		mlx5_reload_interface(esw->dev, MLX5_INTERFACE_PROTOCOL_ETH);
- 		mlx5_reload_interface(esw->dev, MLX5_INTERFACE_PROTOCOL_IB);
--		err =3D esw_offloads_init(esw);
-+		err =3D esw_offloads_enable(esw);
- 	}
-=20
- 	if (err)
- 		goto abort;
-=20
--	enabled_events =3D (mode =3D=3D MLX5_ESWITCH_LEGACY) ? MLX5_LEGACY_SRIOV_=
-VPORT_EVENTS :
--		MLX5_VPORT_UC_ADDR_CHANGE;
--
--	mlx5_eswitch_enable_pf_vf_vports(esw, enabled_events);
--
- 	mlx5_eswitch_event_handlers_register(esw);
-=20
- 	esw_info(esw->dev, "Enable: mode(%s), nvfs(%d), active vports(%d)\n",
-@@ -1890,7 +1909,6 @@ int mlx5_eswitch_enable(struct mlx5_eswitch *esw, int=
- mode)
-=20
- void mlx5_eswitch_disable(struct mlx5_eswitch *esw)
- {
--	struct esw_mc_addr *mc_promisc;
- 	int old_mode;
-=20
- 	if (!ESW_ALLOWED(esw) || esw->mode =3D=3D MLX5_ESWITCH_NONE)
-@@ -1902,16 +1920,10 @@ void mlx5_eswitch_disable(struct mlx5_eswitch *esw)
-=20
- 	mlx5_eswitch_event_handlers_unregister(esw);
-=20
--	mlx5_eswitch_disable_pf_vf_vports(esw);
--
--	mc_promisc =3D &esw->mc_promisc;
--	if (mc_promisc->uplink_rule)
--		mlx5_del_flow_rules(mc_promisc->uplink_rule);
--
- 	if (esw->mode =3D=3D MLX5_ESWITCH_LEGACY)
--		esw_destroy_legacy_table(esw);
-+		esw_legacy_disable(esw);
- 	else if (esw->mode =3D=3D MLX5_ESWITCH_OFFLOADS)
--		esw_offloads_cleanup(esw);
-+		esw_offloads_disable(esw);
-=20
- 	esw_destroy_tsar(esw);
-=20
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h b/drivers/ne=
-t/ethernet/mellanox/mlx5/core/eswitch.h
-index 51b6d29466f1..d447e1e44d59 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-@@ -242,8 +242,8 @@ struct mlx5_eswitch {
- 	struct mlx5_esw_functions esw_funcs;
- };
-=20
--void esw_offloads_cleanup(struct mlx5_eswitch *esw);
--int esw_offloads_init(struct mlx5_eswitch *esw);
-+void esw_offloads_disable(struct mlx5_eswitch *esw);
-+int esw_offloads_enable(struct mlx5_eswitch *esw);
- void esw_offloads_cleanup_reps(struct mlx5_eswitch *esw);
- int esw_offloads_init_reps(struct mlx5_eswitch *esw);
- void esw_vport_cleanup_ingress_rules(struct mlx5_eswitch *esw,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/d=
-rivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-index 4be19890f725..db01b8ee9385 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-@@ -2104,7 +2104,7 @@ int mlx5_esw_funcs_changed_handler(struct notifier_bl=
-ock *nb, unsigned long type
- 	return NOTIFY_OK;
- }
-=20
--int esw_offloads_init(struct mlx5_eswitch *esw)
-+int esw_offloads_enable(struct mlx5_eswitch *esw)
- {
- 	int err;
-=20
-@@ -2122,6 +2122,8 @@ int esw_offloads_init(struct mlx5_eswitch *esw)
- 	if (err)
- 		goto err_vport_metadata;
-=20
-+	mlx5_eswitch_enable_pf_vf_vports(esw, MLX5_VPORT_UC_ADDR_CHANGE);
-+
- 	err =3D esw_offloads_load_all_reps(esw);
- 	if (err)
- 		goto err_reps;
-@@ -2134,6 +2136,7 @@ int esw_offloads_init(struct mlx5_eswitch *esw)
- 	return 0;
-=20
- err_reps:
-+	mlx5_eswitch_disable_pf_vf_vports(esw);
- 	esw_set_passing_vport_metadata(esw, false);
- err_vport_metadata:
- 	esw_offloads_steering_cleanup(esw);
-@@ -2159,11 +2162,12 @@ static int esw_offloads_stop(struct mlx5_eswitch *e=
-sw,
- 	return err;
- }
-=20
--void esw_offloads_cleanup(struct mlx5_eswitch *esw)
-+void esw_offloads_disable(struct mlx5_eswitch *esw)
- {
- 	mlx5_rdma_disable_roce(esw->dev);
- 	esw_offloads_devcom_cleanup(esw);
- 	esw_offloads_unload_all_reps(esw);
-+	mlx5_eswitch_disable_pf_vf_vports(esw);
- 	esw_set_passing_vport_metadata(esw, false);
- 	esw_offloads_steering_cleanup(esw);
- 	esw->offloads.encap =3D DEVLINK_ESWITCH_ENCAP_MODE_NONE;
---=20
-2.21.0
-
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQ0KSGFzaDogU0hBMjU2DQoNCk9uIDcv
+MjkvMTkgMTA6NDIgUE0sIERvdWcgTGVkZm9yZCB3cm90ZToNCj4gT24gTW9uLCAyMDE5LTA3LTI5
+IGF0IDE4OjU3ICswMDAwLCBOaWNvbGFzIE1vcmV5LUNoYWlzZW1hcnRpbiB3cm90ZToNCj4+IFJl
+Y2VudCBDb25uZXh0WC1bNDVdIEhDQSBoYXZlIGVuaGFuY2VkIElQb0lCIGVuYWJsZWQgd2hpY2gg
+cHJldmVudHMNCj4+IHRoZSB1c2Ugb2YgdGhlIGNvbm5lY3RlZCBtb2RlLg0KPj4gQWx0aG91Z2gg
+bm90IGFuIGlzc3VlIGluIGEgZnVsbHkgY29tcGF0aWJsZSBzZXR1cCwgaXQgY2FuIGJlIGFuIGlz
+c3VlDQo+PiBpbiBhIG1peGVkIEhXIG9uZS4NCj4+DQo+PiBNZWxsYW5veCBPRkVEIHVzZXMgYSBp
+cG9pYl9lbmhhbmNlZCBmbGFnIG9uIHRoZSBpYl9pcG9pYiBtb2R1bGUgdG8NCj4+IHdvcmsgYXJv
+dW5kIHRoZSBpc3N1ZS4NCj4+IFRoaXMgcGF0Y2ggYWRkcyBhIHNpbWlsYXJseSBuYW1lIGZsYWcg
+dG8gdGhlIG1seDVfaWIgbW9kdWxlIHRvIGRpc2FibGUNCj4+IGVuaGFuY2VkIElQb0lCIGZvcg0K
+Pj4gYWxsIG1seDUgSENBIGFuZCBhbGxvdyB1c2VycyB0byBwaWNrIGRhdGFncmFtL2Nvbm5lY3Rl
+ZCB0aGUgdXN1YWwgd2F5Lg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IE5pY29sYXMgTW9yZXktQ2hh
+aXNlbWFydGluIDxubW9yZXljaGFpc2VtYXJ0aW5Ac3VzZS5jb20NCj4+Pg0KPj4gLS0tDQo+PiAg
+ZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvbWFpbi5jIHwgNSArKysrKw0KPj4gIDEgZmlsZSBj
+aGFuZ2VkLCA1IGluc2VydGlvbnMoKykNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZp
+bmliYW5kL2h3L21seDUvbWFpbi5jDQo+PiBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg1L21h
+aW4uYw0KPj4gaW5kZXggYzJhNTc4MGNiMzk0Li43NzlhMzU4ODM0OTQgMTAwNjQ0DQo+PiAtLS0g
+YS9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tYWluLmMNCj4+ICsrKyBiL2RyaXZlcnMvaW5m
+aW5pYmFuZC9ody9tbHg1L21haW4uYw0KPj4gQEAgLTc4LDYgKzc4LDEwIEBAIE1PRFVMRV9BVVRI
+T1IoIkVsaSBDb2hlbiA8ZWxpQG1lbGxhbm94LmNvbT4iKTsNCj4+ICBNT0RVTEVfREVTQ1JJUFRJ
+T04oIk1lbGxhbm94IENvbm5lY3QtSUIgSENBIElCIGRyaXZlciIpOw0KPj4gIE1PRFVMRV9MSUNF
+TlNFKCJEdWFsIEJTRC9HUEwiKTsNCj4+ICANCj4+ICtzdGF0aWMgaW50IGlwb2liX2VuaGFuY2Vk
+ID0gMTsNCj4+ICttb2R1bGVfcGFyYW0oaXBvaWJfZW5oYW5jZWQsIGludCwgMDQ0NCk7DQo+PiAr
+TU9EVUxFX1BBUk1fREVTQyhpcG9pYl9lbmhhbmNlZCwgIkVuYWJsZSBJUG9JQiBlbmhhbmNlZCBm
+b3IgY2FwYWJsZQ0KPj4gZGV2aWNlcyAoZGVmYXVsdCA9IDEpICgwLTEpIik7DQo+PiArDQo+PiAg
+c3RhdGljIGNoYXIgbWx4NV92ZXJzaW9uW10gPQ0KPj4gIAlEUklWRVJfTkFNRSAiOiBNZWxsYW5v
+eCBDb25uZWN0LUlCIEluZmluaWJhbmQgZHJpdmVyIHYiDQo+PiAgCURSSVZFUl9WRVJTSU9OICJc
+biI7DQo+PiBAQCAtNjM4Myw2ICs2Mzg3LDcgQEAgc3RhdGljIGludCBtbHg1X2liX3N0YWdlX2Nh
+cHNfaW5pdChzdHJ1Y3QNCj4+IG1seDVfaWJfZGV2ICpkZXYpDQo+PiAgCQkoMXVsbCA8PCBJQl9V
+U0VSX1ZFUkJTX0VYX0NNRF9ERVNUUk9ZX0ZMT1cpOw0KPj4gIA0KPj4gIAlpZiAoTUxYNV9DQVBf
+R0VOKG1kZXYsIGlwb2liX2VuaGFuY2VkX29mZmxvYWRzKSAmJg0KPj4gKwkgICAgaXBvaWJfZW5o
+YW5jZWQgJiYNCj4+ICAJICAgIElTX0VOQUJMRUQoQ09ORklHX01MWDVfQ09SRV9JUE9JQikpDQo+
+PiAgCQlpYl9zZXRfZGV2aWNlX29wcygmZGV2LT5pYl9kZXYsDQo+PiAgCQkJCSAgJm1seDVfaWJf
+ZGV2X2lwb2liX2VuaGFuY2VkX29wcyk7DQo+IA0KPiBNb2R1bGUgcGFyYW1ldGVycyBhcmUgaGln
+aGx5IGZyb3duZWQgdXBvbiBpbiBnZW5lcmFsLCBhbmQgaW4gdGhpcw0KPiBwYXJ0aWN1bGFyIGlu
+c3RhbmNlLCBJIGNvdWxkIGVhc2lseSBzZWUgd2hlcmUgaWYgeW91IGhhZCBhIGR1YWwgcG9ydCBJ
+Qg0KPiBjYXJkLCB3aXRoIG9uZSBwb3J0IHBsdWdnZWQgaW50byBhIGZ1bGx5IGNvbXBhdGlibGUg
+c2V0dXAsIGFuZCB0aGUgb3RoZXINCj4gcG9ydCBwbHVnZ2VkIGludG8gYSBtb3JlIGhldGVyb2dl
+bmVvdXMgc2V0dXAgKHNheSBhIEx1c3RyZSBiYWNrZW5kIG9yDQo+IHNvbWV0aGluZyksIHRoYXQg
+eW91IHJlYWxseSB3YW50IHRoaXMgdG8gYmUgb24gYSBwZXItcG9ydCBiYXNpcy4gIFNvLA0KPiBJ
+J20gZ29ubmEgc2F5IHRoaXMgaXMgYSBuYWsgdW5sZXNzIE1lbGxhbm94IGNvbWVzIGJhY2sgYW5k
+IHNheXMgZG9pbmcNCj4gdGhpcyBwZXItcG9ydCBpcyBzdHJpY3RseSBub3QgcG9zc2libGUgKGFu
+ZCBldmVuIGlmIGl0IG11c3QgYmUgcGVyLWNhcmQNCj4gb3IgZHJpdmVyIHdpZGUsIEkgd291bGQg
+c3RpbGwgcHJlZmVyIG1heWJlIGEgbmV0bGluayBjb250cm9sIHRvIGEgbW9kdWxlDQo+IG9wdGlv
+biwgaWYgZm9yIG5vIG90aGVyIHJlYXNvbiB0aGFuIEkgZG9uJ3Qgd2FudCB0byBoZWFyIHRoZSBn
+cm9hbnMgZnJvbQ0KPiBvdGhlciBrZXJuZWwgZm9sayBpZiBJIHRha2UgYSBtb2R1bGUgb3B0aW9u
+IG5vdyBhIGRheXMpLg0KPiANCg0KSSBmZWFyZWQgYXMgbXVjaCBidXQgZmlndXJlZCBpdCB3b3Vs
+ZCBuZSB3b3J0aCBhIHNob3QuDQpJJ2xsIGhhdmUgYSBsb29rIGF0IGhvdyB3ZSBjYW4gZGVhbCB3
+aXRoIHRoaXMgbmljZWx5LiBCdXQgaXQgbWlnaHQgbm90IGJlIHRoYXQgZWFzeSB0byBjaGFuZ2Ug
+dGhhdCBzZXR0aW5ncyBsYXRlciBvbiBhcyB0aGUgSVBvSUIgaW50ZXJmYWNlIGlzIHVzdWFsbHkg
+Y3JlYXRlZCB2ZXJ5IGVhcmx5IHNvIHdlIHdvdWxkIGhhdmUgdG8gZGVzdHJveSB0aGUgZXhpc3Rp
+bmcgbmV0ZGV2IGFuZCByZWNyZWF0ZSBhIG5ldyBvbmUuDQpUaGUgZWFzaWVzdCBzb2x1dGlvbiB3
+b3VsZCBiZSB0aGF0IG1zdGNvbmZpZyBhbGxvdyB0byBzZXQvY2xlYXIgdGhpcyBmbGFnIHNvIHdl
+IGNhbiBkZWFsIHdpdGggdGhpcyBpbiB0aGUgRlcgYW5kIGJlIGZ1bGx5IHRyYW5zcGFyZW50IGRy
+aXZlciB3aXNlIGJ1dCBkb24ndCBrbm93IGlmIHRoZXJlIGlzIGhvcGUgZm9yIHRoYXQuLi4NCg0K
+Tmljb2xhcw0KDQotLS0tLUJFR0lOIFBHUCBTSUdOQVRVUkUtLS0tLQ0KDQppUUV6QkFFQkNBQWRG
+aUVFUXRKVGhjR2h3Q3VMR3h4dmdCdmR1Q1dZajJRRkFsMC8zZGdBQ2drUWdCdmR1Q1dZDQpqMlJ0
+NVFnQWlmTitKNCs4cE85VUF0NnBIelRHamh3eFBTSkJPRXJzYjFwRDBMTGlNdFBnaHQ2ZG5LcWd4
+dURtDQpRNnI4Tml4bUtucUNCUmM4NjdOZUxXaGdwaG1sMHYxUFI1OVlaMmZNS3BLMHdOd0NSd3Az
+YVZFUEN3OTdtaDA2DQo4NE9qSUU2VVhCcHZlaHlrZDU1cnNLUDJjcTFkblVtY0plakZKVGhyNTFJ
+TlRUYlMyOExUZERhdUtya2NsL2djDQpNNWVqMDRPNzZMM3hOWVV1YkF1THZqM1pTY2hlZ01hYkd6
+cTd3RWVBcHRLMEFmYmp2WVVDdmk0MldMUXVOY1psDQpQZFBNRkxWc3hBVnNjNmdhQkdYRHpYaDR6
+Z3BMNHgzTnpQTVlLMGZIUnVlK3BhRWxLcGlyZFJBcjM5bUlocDZEDQpLOStwSVFLTE1CN09ud1Bi
+enhCMGwvWUoyaHJUU1E9PQ0KPStWazINCi0tLS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQ0K
