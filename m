@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 472307A392
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 11:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990CC7A3D6
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 11:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730702AbfG3JBA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jul 2019 05:01:00 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:53842 "EHLO huawei.com"
+        id S1727317AbfG3JRK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jul 2019 05:17:10 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:43690 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730144AbfG3JA7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Jul 2019 05:00:59 -0400
+        id S1727036AbfG3JRK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Jul 2019 05:17:10 -0400
 Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 79926F370A95BEED36CF;
+        by Forcepoint Email with ESMTP id 80E1656ECD906174D696;
         Tue, 30 Jul 2019 17:00:53 +0800 (CST)
 Received: from linux-ioko.site (10.71.200.31) by
  DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.439.0; Tue, 30 Jul 2019 17:00:47 +0800
+ 14.3.439.0; Tue, 30 Jul 2019 17:00:45 +0800
 From:   Lijun Ou <oulijun@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH for-next 12/13] RDMA/hns: Remove redundant print in hns_roce_v2_ceq_int()
-Date:   Tue, 30 Jul 2019 16:56:49 +0800
-Message-ID: <1564477010-29804-13-git-send-email-oulijun@huawei.com>
+Subject: [PATCH for-next 03/13] RDMA/hns: Update the prompt message for creating and destroy qp
+Date:   Tue, 30 Jul 2019 16:56:40 +0800
+Message-ID: <1564477010-29804-4-git-send-email-oulijun@huawei.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1564477010-29804-1-git-send-email-oulijun@huawei.com>
 References: <1564477010-29804-1-git-send-email-oulijun@huawei.com>
@@ -36,33 +36,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Weihang Li <liweihang@hisilicon.com>
+From: Yixian Liu <liuyixian@huawei.com>
 
-There is no need to tell users when eq->cons_index is overflow, we
-just set it back to zero.
+Current prompt message is uncorrect when destroying qp, add qpn
+information when creating qp.
 
-Signed-off-by: Weihang Li <liweihang@hisilicon.com>
+Signed-off-by: Yixian Liu <liuyixian@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 6 +++---
+ drivers/infiniband/hw/hns/hns_roce_qp.c    | 3 ++-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 8f4430b..699a5b9 100644
+index 83c58be..064e56c 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5009,10 +5009,9 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 		++eq->cons_index;
- 		aeqe_found = 1;
+@@ -4571,8 +4571,7 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
+ 		ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, NULL, 0,
+ 					    hr_qp->state, IB_QPS_RESET);
+ 		if (ret) {
+-			dev_err(dev, "modify QP %06lx to ERR failed.\n",
+-				hr_qp->qpn);
++			dev_err(dev, "modify QP to Reset failed.\n");
+ 			return ret;
+ 		}
+ 	}
+@@ -4641,7 +4640,8 @@ static int hns_roce_v2_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
  
--		if (eq->cons_index > (2 * eq->entries - 1)) {
--			dev_warn(dev, "cons_index overflow, set back to 0.\n");
-+		if (eq->cons_index > (2 * eq->entries - 1))
- 			eq->cons_index = 0;
--		}
-+
- 		hns_roce_v2_init_irq_work(hr_dev, eq, qpn, cqn);
+ 	ret = hns_roce_v2_destroy_qp_common(hr_dev, hr_qp, udata);
+ 	if (ret) {
+-		dev_err(hr_dev->dev, "Destroy qp failed(%d)\n", ret);
++		dev_err(hr_dev->dev, "Destroy qp 0x%06lx failed(%d)\n",
++			hr_qp->qpn, ret);
+ 		return ret;
+ 	}
  
- 		aeqe = next_aeqe_sw_v2(eq);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 8b2d10f..c88a42d 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -1002,7 +1002,8 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
+ 		ret = hns_roce_create_qp_common(hr_dev, pd, init_attr, udata, 0,
+ 						hr_qp);
+ 		if (ret) {
+-			dev_err(dev, "Create RC QP failed\n");
++			dev_err(dev, "Create RC QP 0x%06lx failed(%d)\n",
++				hr_qp->qpn, ret);
+ 			kfree(hr_qp);
+ 			return ERR_PTR(ret);
+ 		}
 -- 
 1.9.1
 
