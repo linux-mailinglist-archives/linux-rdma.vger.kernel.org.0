@@ -2,62 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D4A7A64C
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 12:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3ED7A65C
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2019 13:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729040AbfG3KzO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jul 2019 06:55:14 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:57348 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728940AbfG3KzO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Jul 2019 06:55:14 -0400
-Received: from Internal Mail-Server by MTLPINE2 (envelope-from sergeygo@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 30 Jul 2019 13:55:09 +0300
-Received: from rsws38.mtr.labs.mlnx (rsws38.mtr.labs.mlnx [10.209.40.117])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x6UAt9wo025972;
-        Tue, 30 Jul 2019 13:55:09 +0300
-From:   Sergey Gorenko <sergeygo@mellanox.com>
-To:     bvanassche@acm.org
-Cc:     linux-rdma@vger.kernel.org,
-        Vladimir Koushnir <vladimirk@mellanox.com>,
-        Sergey Gorenko <sergeygo@mellanox.com>
-Subject: [PATCH rdma-core] srp_daemon: check that port LID is valid before calling create_ah
-Date:   Tue, 30 Jul 2019 10:54:55 +0000
-Message-Id: <20190730105455.15080-1-sergeygo@mellanox.com>
-X-Mailer: git-send-email 2.17.2
+        id S1727564AbfG3LCB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jul 2019 07:02:01 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:31267 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbfG3LCA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Jul 2019 07:02:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1564484519; x=1596020519;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yCSldScaRyFgomBdF1jMWL9F4rzNgQ50YeV1DaYru5Q=;
+  b=ei4QFNnFJdKbxxqcJDwwwV2vDQk0A19dfVNEYWGDuIqKv57vjuMfF0I0
+   l8JP/e/CgMfxDmimjvGWvX4dgbgQ4yCTimeEKUlzrb9uAZGAkoU/j2tCF
+   cZluMsR4PjYIcdrtIxtmme7jCP9KbNWFZuZKFcCq1mQrThe87kBxlqxXq
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.64,326,1559520000"; 
+   d="scan'208";a="689177133"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 30 Jul 2019 11:01:57 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 8C582A20B3;
+        Tue, 30 Jul 2019 11:01:57 +0000 (UTC)
+Received: from EX13D19EUA004.ant.amazon.com (10.43.165.28) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 30 Jul 2019 11:01:57 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13D19EUA004.ant.amazon.com (10.43.165.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 30 Jul 2019 11:01:56 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.218.69.136) by
+ mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server id
+ 15.0.1367.3 via Frontend Transport; Tue, 30 Jul 2019 11:01:54 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        "Leon Romanovsky" <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-rc] RDMA/restrack: Track driver QP types in resource tracker
+Date:   Tue, 30 Jul 2019 14:01:37 +0300
+Message-ID: <20190730110137.37826-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Vladimir Koushnir <vladimirk@mellanox.com>
+The check for QP type different than XRC has wrongly excluded driver QP
+types from the resource tracker.
 
-The default LID that is given to the port is not valid (a valid LID value
-is > 0 and < 0xc000), so in case the port didn't get a valid lid from the
-SM there is no need to call create_ah.
-
-Signed-off-by: Vladimir Koushnir <vladimirk@mellanox.com>
-Signed-off-by: Sergey Gorenko <sergeygo@mellanox.com>
+Fixes: 78a0cd648a80 ("RDMA/core: Add resource tracking for create and destroy QPs")
+Signed-off-by: Gal Pressman <galpress@amazon.com>
 ---
- srp_daemon/srp_daemon.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/core_priv.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
-index e85b96686d47..337b21c7d7c9 100644
---- a/srp_daemon/srp_daemon.c
-+++ b/srp_daemon/srp_daemon.c
-@@ -2228,8 +2228,9 @@ catas_start:
- 			pr_debug("Starting a recalculation\n");
- 			port_lid = get_port_lid(res->ud_res->ib_ctx,
- 						config->port_num, &sm_lid);
--			if (port_lid != res->ud_res->port_attr.lid ||
--				sm_lid != res->ud_res->port_attr.sm_lid) {
-+			if (port_lid > 0 && port_lid < 0xc000 &&
-+			    (port_lid != res->ud_res->port_attr.lid ||
-+			     sm_lid != res->ud_res->port_attr.sm_lid)) {
+diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+index 589ed805e0ad..3a8b0911c3bc 100644
+--- a/drivers/infiniband/core/core_priv.h
++++ b/drivers/infiniband/core/core_priv.h
+@@ -321,7 +321,9 @@ static inline struct ib_qp *_ib_create_qp(struct ib_device *dev,
+ 					  struct ib_udata *udata,
+ 					  struct ib_uobject *uobj)
+ {
++	enum ib_qp_type qp_type = attr->qp_type;
+ 	struct ib_qp *qp;
++	bool is_xrc;
  
- 				if (res->ud_res->ah) {
- 					ibv_destroy_ah(res->ud_res->ah);
+ 	if (!dev->ops.create_qp)
+ 		return ERR_PTR(-EOPNOTSUPP);
+@@ -339,7 +341,8 @@ static inline struct ib_qp *_ib_create_qp(struct ib_device *dev,
+ 	 * and more importantly they are created internaly by driver,
+ 	 * see mlx5 create_dev_resources() as an example.
+ 	 */
+-	if (attr->qp_type < IB_QPT_XRC_INI) {
++	is_xrc = qp_type == IB_QPT_XRC_INI || qp_type == IB_QPT_XRC_TGT;
++	if ((qp_type < IB_QPT_MAX && !is_xrc) || qp_type == IB_QPT_DRIVER) {
+ 		qp->res.type = RDMA_RESTRACK_QP;
+ 		if (uobj)
+ 			rdma_restrack_uadd(&qp->res);
 -- 
-2.17.2
+2.22.0
 
