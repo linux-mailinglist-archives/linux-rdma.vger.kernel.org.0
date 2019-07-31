@@ -2,125 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7B07C7A3
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 17:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906E97C7AE
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 17:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbfGaPx1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 11:53:27 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:49614 "EHLO mx1.redhat.com"
+        id S1727221AbfGaPy7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 11:54:59 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:39692 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726115AbfGaPx1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 31 Jul 2019 11:53:27 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        id S1726755AbfGaPy6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 31 Jul 2019 11:54:58 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id A41B63007C58;
-        Wed, 31 Jul 2019 15:53:26 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id 8F2A14E93D;
+        Wed, 31 Jul 2019 15:54:58 +0000 (UTC)
 Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A0F845D9C9;
-        Wed, 31 Jul 2019 15:53:25 +0000 (UTC)
-Message-ID: <0a43aaa2bc1883f57ae1421b03cc3d5d23c2e425.camel@redhat.com>
-Subject: Re: [PATCH v6 20/57] infiniband: Remove dev_err() usage after
- platform_get_irq()
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 656975D6D0;
+        Wed, 31 Jul 2019 15:54:57 +0000 (UTC)
+Message-ID: <ccc04779d78c8856f3dd3ef57299a59df5686bc3.camel@redhat.com>
+Subject: Re: [PATCH][next] RDMA/core: fix spelling mistake "Nelink" ->
+ "Netlink"
 From:   Doug Ledford <dledford@redhat.com>
-To:     Stephen Boyd <swboyd@chromium.org>, linux-kernel@vger.kernel.org
+To:     Leon Romanovsky <leon@kernel.org>,
+        Colin King <colin.king@canonical.com>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Wed, 31 Jul 2019 11:53:23 -0400
-In-Reply-To: <20190730181557.90391-21-swboyd@chromium.org>
-References: <20190730181557.90391-1-swboyd@chromium.org>
-         <20190730181557.90391-21-swboyd@chromium.org>
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 31 Jul 2019 11:54:54 -0400
+In-Reply-To: <20190731082837.GO4878@mtr-leonro.mtl.com>
+References: <20190731080144.18327-1-colin.king@canonical.com>
+         <20190731082837.GO4878@mtr-leonro.mtl.com>
 Organization: Red Hat, Inc.
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-3uGQjmrAoGQofD5SJvvd"
+        protocol="application/pgp-signature"; boundary="=-TiHXGszeHh0v77g7ujL8"
 User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Wed, 31 Jul 2019 15:53:26 +0000 (UTC)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Wed, 31 Jul 2019 15:54:58 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---=-3uGQjmrAoGQofD5SJvvd
+--=-TiHXGszeHh0v77g7ujL8
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2019-07-30 at 11:15 -0700, Stephen Boyd wrote:
-> We don't need dev_err() messages when platform_get_irq() fails now
-> that
-> platform_get_irq() prints an error message itself when something goes
-> wrong. Let's remove these prints with a simple semantic patch.
+On Wed, 2019-07-31 at 11:28 +0300, Leon Romanovsky wrote:
+> On Wed, Jul 31, 2019 at 09:01:44AM +0100, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >=20
+> > There is a spelling mistake in a warning message, fix it.
+> >=20
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >  drivers/infiniband/core/netlink.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
 >=20
-> // <smpl>
-> @@
-> expression ret;
-> struct platform_device *E;
-> @@
->=20
-> ret =3D
-> (
-> platform_get_irq(E, ...)
-> platform_get_irq_byname(E, ...)
-> );
->=20
-> if ( \( ret < 0 \| ret <=3D 0 \) )
-> {
-> (
-> -if (ret !=3D -EPROBE_DEFER)
-> -{ ...
-> -dev_err(...);
-> -... }
-> ...
-> -dev_err(...);
-> )
-> ...
-> }
-> // </smpl>
->=20
-> While we're here, remove braces on if statements that only have one
-> statement (manually).
->=20
-> Cc: Doug Ledford <dledford@redhat.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: linux-rdma@vger.kernel.org
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->=20
-> Please apply directly to subsystem trees
->=20
+> Thanks,
+> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
 
-Thanks for being clear about where you wanted these applied.  This patch
-applied to rdma for-next, thanks.
+Thanks, applied to for-next.
 
 --=20
 Doug Ledford <dledford@redhat.com>
     GPG KeyID: B826A3330E572FDD
     Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
---=-3uGQjmrAoGQofD5SJvvd
+--=-TiHXGszeHh0v77g7ujL8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1BuXMACgkQuCajMw5X
-L91QTBAAiui1A475ITd01T4j1gUB9/Sd6MwQ0xiBHbRxH8/WUDBBv/aLmriNCEbR
-Ty0LZ9tMPoySa6KgwjCwjXAcNPLiFqQSjS3FTaafesBdlvyQ78MKbEdnEtCJoX+0
-+JjyTu3XxMD5uJzE4LE6m0T7dIJJJWUdisJhcqFa0hxHFtGQ9sUat1ap0MWJYwIr
-1XDaNDH/ovGB0DfcTaa8pI1AZesabdhwYCB5tWj90ZWJmr8E+aUxTu1pTFHbP6Yj
-hyDCQpFSrNw7ZOUDFvdghB+HtywDNWpJPV7mZ4kq5cyAdoMdHmPR1zYUFOzUEH+d
-Rx0OixPW8LYQ25Hep74mhDAkxJBcEX/B0nqhvRJHLzppWiDAKT+KqznrBuczCysA
-MXUMGFvLseEi1+lO5JasVvNemYf4E6iXXcyo+CSJvToEyXruOaunonP7nlqPRrgL
-KhNNhpCV71p0rSLemlur46V9sDvHQc5csfGYxi4TEr++nddiWTHH5eIkKbR6MUYJ
-JPJCdVyJwqnV4im6TIVnU2is/x7qMex+0ufGAPn+XtRUOxqRSHXTAh5UkHanELA0
-UpgUKT+ipnI7S+JMYjWleclqg/ZvWWRvDVNsetP/VWxlWRpfcmUsAqa1DvlSINZG
-IB/o7oJ3gGVLJLilhiW4yJVDoh9RlNvgJpv1mHDVbc3jzcUQWSo=
-=n9Yh
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1Buc4ACgkQuCajMw5X
+L93xDg/+L2blb3qy7x0h7UHlovEAcdgNtq8TTtGnS51i2gGaE0uLdfLC6JI7ohJJ
+SdeGHdxhrSRSeS0SbT1Q865JcmWlpt0fUpC109bAS78fhtsH/7ySJ1cKrZpCdCi3
+M/U7cGXKnZcdSqwBKYBpDzMQZzugOl5Q2tvRYeFv+8wuTFp7WReexDaZWeA0hEH9
+eOzsCHp4kR4/x4hIZw/feI4oAuI0MZtYawIqrR75Zj0JzXwWz1OpHMx0qJe58+cB
+N2lysGUmzgnID3iJXDKDmx1tWP4+d2WYFJ1Keeo9DhgcaCGBjuMmfW07LL0e2zou
+zuId8Xe5GwdOLpAIESPB7D+lANfVZpsJSDx+ge1x6gzQollIjA0bBnjds+28Z43G
+SEgbDmZSmhedEUiE/GnkJcQJxMKVE1bOD5RtcodqKmq1Vc4UCAK6oABE2peVzqSI
+3im0kHf26dvknZXh77ews4U5qIRERxLPDycGb8EuRvAe7yiF3G61qCKeeiTreDXH
+IIhjxPeCOhgpHh2WYSIyWZceWuZNnIx7e0UL9qvoYX+MnssfJdT7PoVgIZPRSxaX
+ifjk/AD79B1K6RpqdsrnyzGhmM6GCllsSPpR1kVlBn/pNqC8FIe3Jt5o0W86hh1U
+306tkS3oABmJyTLiW1TcrNMuAiJj5nFLeWxAzE28A1Mf6+HfBcQ=
+=inNQ
 -----END PGP SIGNATURE-----
 
---=-3uGQjmrAoGQofD5SJvvd--
+--=-TiHXGszeHh0v77g7ujL8--
 
