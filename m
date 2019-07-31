@@ -2,151 +2,182 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 020587C465
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 16:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494A47C4B9
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 16:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387678AbfGaOIv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 10:08:51 -0400
-Received: from mail-eopbgr30088.outbound.protection.outlook.com ([40.107.3.88]:35553
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387673AbfGaOIu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 31 Jul 2019 10:08:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NrVN8O0nfx4ueeMI5Il0cD1+CrLUfzBjXPpwHggF9vYF8uBjf0uEn51Tvui2TNJK43GvFe+U0poBdZNhhz9nqiOWmIllTvE/ighIOFPCqxs+p5VLDlePXNDsmDiIY+hIuI9EdcSNw9i16iEbZ8UtpGRxvC29GaM0zemQ56El6PC9hy3xf+8FZVK2NQiOBb1PC6/YbYxUxGNkMa2/76Kzw+FEn2WUsNfF0hxU2IvnZPYjmJn+jb0QLu9TLIjdlnQueOKZaZaf94lLm4f4re1GyBkkyzYcSTI9VCxcSztmK37TbG6h8GwIhnbpA58fA6DNArqCGwfvBo2bRMN57U5cgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GhvCGBaCM7Sv0KbyugAwl3LtJXSKHfibtIjpf3D3Ow0=;
- b=KfAWG2hiVSjTeLUSomiMmm3FqEQ7PBizlVVTpYWNpX6L3kfVz3+2GhxkIilRuak2h7OV3E1GrRw/nRhP0pqFkipfX+W8/tA2WnxZRS5lsr1BsOfBuBXACrgf5r22i65iClYywHt/R14t0tofk8drO2wOK59kLnYSdvCPf0axpbYqaJzHyBgbbq03xCNWFOZ/OBrB+J7eO8PWoS1kwiNyFsIkVS0lhu6MpNS35VvSKl9+BxFtKIl6N5VPlPo4SDeL84tzKTrLlzWq8HrKtTaVCjkwZrgMmJqZHU6P/j+PPb3XlmCF2J69qiOnDI+1QZTn+3J2rc9kJXmhX5SeyTIKqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=mellanox.com;dmarc=pass action=none
- header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GhvCGBaCM7Sv0KbyugAwl3LtJXSKHfibtIjpf3D3Ow0=;
- b=Zy2KcKEQD21v5dJRUk3EO6pIVCJ3yQaOTc06ygTH4pVZZZpsTzj2UtZGrsT/oHndy4xTl+6qYubvLtxDcwmflCd+GV6giOGraAnQiBW4Wg99C2C77MKS2P8h+IsQ1jwsGCaD8fooruWfPOe5JOBvbzZ4VFdtu335DVDz3TYzSVI=
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.188.155) by
- AM4PR05MB3234.eurprd05.prod.outlook.com (10.170.126.155) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2136.14; Wed, 31 Jul 2019 14:08:47 +0000
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::a1bc:70:4ca9:49f6]) by AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::a1bc:70:4ca9:49f6%7]) with mapi id 15.20.2115.005; Wed, 31 Jul 2019
- 14:08:47 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-CC:     RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Remove DEBUG ODP code
-Thread-Topic: [PATCH rdma-next] RDMA/mlx5: Remove DEBUG ODP code
-Thread-Index: AQHVR5cBIcRb5ZKgPkWhALHv2IbHa6bkw8CA
-Date:   Wed, 31 Jul 2019 14:08:47 +0000
-Message-ID: <20190731140845.GA4832@mtr-leonro.mtl.com>
-References: <20190731115627.5433-1-leon@kernel.org>
-In-Reply-To: <20190731115627.5433-1-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: PR2PR09CA0019.eurprd09.prod.outlook.com
- (2603:10a6:101:16::31) To AM4PR05MB3137.eurprd05.prod.outlook.com
- (2603:10a6:205:8::27)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [77.137.115.125]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 69bfcba2-7df2-49df-7131-08d715c09aff
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM4PR05MB3234;
-x-ms-traffictypediagnostic: AM4PR05MB3234:
-x-microsoft-antispam-prvs: <AM4PR05MB3234125C5F0F5EAF828A1B2AB0DF0@AM4PR05MB3234.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-forefront-prvs: 011579F31F
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(376002)(346002)(39860400002)(366004)(136003)(199004)(189003)(66066001)(11346002)(316002)(33656002)(229853002)(446003)(6636002)(53936002)(6246003)(71190400001)(71200400001)(86362001)(5660300002)(14444005)(256004)(14454004)(8936002)(3846002)(81166006)(6116002)(81156014)(52116002)(7736002)(6486002)(25786009)(76176011)(99286004)(66556008)(64756008)(66476007)(26005)(2906002)(186003)(6436002)(66446008)(478600001)(102836004)(66946007)(486006)(305945005)(68736007)(4326008)(6506007)(386003)(8676002)(1076003)(476003)(6512007)(9686003)(110136005);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3234;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: fAxkza+6D3NiAZ+tW1uWVBm3ggB0iVNzvg9q2z0gvueufdXBQjY08DhusMLmJGj8OsrbG4GSACiY2JrXxjS22nES1biGJCMniaRlPK8FYLqkfIx57c5YhHIf6u/zeWOd/I7R8vwji0bhM3Liu4DH64WHuTznB9K1Be6fBAC7gyeOflPYz+oHzrMhP5WeD7DUq4DmTvNu3LTwoKcQ2v7qryoEEYsEhXcK5ZsIle/UCBLPP9lZZElCqkkgq9LB9GA8+KPoHR4JBL62rG3ScBM492OV9hn+t535OMier7J7y9BLmG/WwKQn9kWt2b4m3InD7Db2XmZUTaw3DqOrzxpIR1LvD0901hyc4Qhl+sPZLuH65nvD4q+h3OpoklcvDvPx7yGM3hUQ7Wz+t3FraMpQUW4TIVQn9N2IUBPQvVm9Ozo=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <08E524FCB60B924DAE06D5154DD136C2@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726901AbfGaOUS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 10:20:18 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:59414 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726762AbfGaOUS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Jul 2019 10:20:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1564582817; x=1596118817;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=uI/N+vywvjOyaudsHbRG/eAj/NnAawYg8mLmNWnY1B0=;
+  b=dr4OzgnbMEfPSPQedH1uxmdlYADyo23Ubr7uRGEybe1tT2c8xb+oeCd2
+   4jL1NoNGBHykF8QfgpNg8oasDoX2FzvgHasjduEjaK76I+NvLWGGnMb6F
+   YDc1uULdIpVJ7VXHjOP20uiRkg7UiZ6uGmWDJs8aiTqbRFKnVdI8QvOKC
+   0=;
+X-IronPort-AV: E=Sophos;i="5.64,330,1559520000"; 
+   d="scan'208";a="689595517"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 31 Jul 2019 14:19:51 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com (Postfix) with ESMTPS id 9825CA1AA9;
+        Wed, 31 Jul 2019 14:19:50 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 31 Jul 2019 14:19:49 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.115) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 31 Jul 2019 14:19:46 +0000
+Subject: Re: [PATCH for-next 1/2] RDMA/core: Introduce ratelimited ibdev
+ printk functions
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>
+References: <20190730151834.70993-1-galpress@amazon.com>
+ <20190730151834.70993-2-galpress@amazon.com>
+ <20190730154148.GG4878@mtr-leonro.mtl.com>
+ <dd2c23a3-1d92-56d4-933e-68ec37aebb65@amazon.com>
+ <20190731074109.GL4878@mtr-leonro.mtl.com>
+ <dfffaa13-3b1a-81ef-1922-68aacf085616@amazon.com>
+ <20190731114609.GS4878@mtr-leonro.mtl.com>
+ <df557f2a-24c2-1b7d-abc9-81c62b1cdf11@amazon.com>
+ <20190731133309.GW4878@mtr-leonro.mtl.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <4a767c0c-f1cb-3edf-3ad0-7adc07fd2c78@amazon.com>
+Date:   Wed, 31 Jul 2019 17:19:41 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69bfcba2-7df2-49df-7131-08d715c09aff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2019 14:08:47.6389
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: leonro@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3234
+In-Reply-To: <20190731133309.GW4878@mtr-leonro.mtl.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.115]
+X-ClientProxiedBy: EX13D07UWA001.ant.amazon.com (10.43.160.145) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 31, 2019 at 02:56:27PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
->
-> Delete DEBU ODP dead code which is leftover from development
+On 31/07/2019 16:33, Leon Romanovsky wrote:
+> On Wed, Jul 31, 2019 at 03:56:55PM +0300, Gal Pressman wrote:
+>> On 31/07/2019 14:46, Leon Romanovsky wrote:
+>>> On Wed, Jul 31, 2019 at 01:51:05PM +0300, Gal Pressman wrote:
+>>>> On 31/07/2019 10:41, Leon Romanovsky wrote:
+>>>>> On Wed, Jul 31, 2019 at 10:22:42AM +0300, Gal Pressman wrote:
+>>>>>> On 30/07/2019 18:41, Leon Romanovsky wrote:
+>>>>>>> On Tue, Jul 30, 2019 at 06:18:33PM +0300, Gal Pressman wrote:
+>>>>>>>> Add ratelimited helpers to the ibdev_* printk functions.
+>>>>>>>> Implementation inspired by counterpart dev_*_ratelimited functions.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Gal Pressman <galpress@amazon.com>
+>>>>>>>> ---
+>>>>>>>>  include/rdma/ib_verbs.h | 51 +++++++++++++++++++++++++++++++++++++++++
+>>>>>>>>  1 file changed, 51 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+>>>>>>>> index c5f8a9f17063..356e6a105366 100644
+>>>>>>>> --- a/include/rdma/ib_verbs.h
+>>>>>>>> +++ b/include/rdma/ib_verbs.h
+>>>>>>>> @@ -107,6 +107,57 @@ static inline
+>>>>>>>>  void ibdev_dbg(const struct ib_device *ibdev, const char *format, ...) {}
+>>>>>>>>  #endif
+>>>>>>>>
+>>>>>>>> +#define ibdev_level_ratelimited(ibdev_level, ibdev, fmt, ...)           \
+>>>>>>>> +do {                                                                    \
+>>>>>>>> +	static DEFINE_RATELIMIT_STATE(_rs,                              \
+>>>>>>>> +				      DEFAULT_RATELIMIT_INTERVAL,       \
+>>>>>>>> +				      DEFAULT_RATELIMIT_BURST);         \
+>>>>>>>> +	if (__ratelimit(&_rs))                                          \
+>>>>>>>> +		ibdev_level(ibdev, fmt, ##__VA_ARGS__);                 \
+>>>>>>>> +} while (0)
+>>>>>>>> +
+>>>>>>>> +#define ibdev_emerg_ratelimited(ibdev, fmt, ...) \
+>>>>>>>> +	ibdev_level_ratelimited(ibdev_emerg, ibdev, fmt, ##__VA_ARGS__)
+>>>>>>>> +#define ibdev_alert_ratelimited(ibdev, fmt, ...) \
+>>>>>>>> +	ibdev_level_ratelimited(ibdev_alert, ibdev, fmt, ##__VA_ARGS__)
+>>>>>>>> +#define ibdev_crit_ratelimited(ibdev, fmt, ...) \
+>>>>>>>> +	ibdev_level_ratelimited(ibdev_crit, ibdev, fmt, ##__VA_ARGS__)
+>>>>>>>> +#define ibdev_err_ratelimited(ibdev, fmt, ...) \
+>>>>>>>> +	ibdev_level_ratelimited(ibdev_err, ibdev, fmt, ##__VA_ARGS__)
+>>>>>>>> +#define ibdev_warn_ratelimited(ibdev, fmt, ...) \
+>>>>>>>> +	ibdev_level_ratelimited(ibdev_warn, ibdev, fmt, ##__VA_ARGS__)
+>>>>>>>> +#define ibdev_notice_ratelimited(ibdev, fmt, ...) \
+>>>>>>>> +	ibdev_level_ratelimited(ibdev_notice, ibdev, fmt, ##__VA_ARGS__)
+>>>>>>>> +#define ibdev_info_ratelimited(ibdev, fmt, ...) \
+>>>>>>>> +	ibdev_level_ratelimited(ibdev_info, ibdev, fmt, ##__VA_ARGS__)
+>>>>>>>> +
+>>>>>>>> +#if defined(CONFIG_DYNAMIC_DEBUG)
+>>>>>>>> +/* descriptor check is first to prevent flooding with "callbacks suppressed" */
+>>>>>>>> +#define ibdev_dbg_ratelimited(ibdev, fmt, ...)                          \
+>>>>>>>> +do {                                                                    \
+>>>>>>>> +	static DEFINE_RATELIMIT_STATE(_rs,                              \
+>>>>>>>> +				      DEFAULT_RATELIMIT_INTERVAL,       \
+>>>>>>>> +				      DEFAULT_RATELIMIT_BURST);         \
+>>>>>>>> +	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor, fmt);                 \
+>>>>>>>> +	if (DYNAMIC_DEBUG_BRANCH(descriptor) && __ratelimit(&_rs))      \
+>>>>>>>> +		__dynamic_ibdev_dbg(&descriptor, ibdev, fmt,            \
+>>>>>>>> +				    ##__VA_ARGS__);                     \
+>>>>>>>> +} while (0)
+>>>>>>>> +#elif defined(DEBUG)
+>>>>>>>
+>>>>>>> When will you see this CONFIG_DEBUG set? I suspect only in private
+>>>>>>> out-of-tree builds which we are not really care. Also I can't imagine
+>>>>>>> system with this CONFIG_DEBUG and without CONFIG_DYNAMIC_DEBUG.
+>>>>>>
+>>>>>> This is the common way to handle debug prints, see:
+>>>>>> https://elixir.bootlin.com/linux/v5.2.1/source/include/linux/printk.h#L331
+>>>>>> https://elixir.bootlin.com/linux/v5.2.1/source/include/linux/device.h#L1493
+>>>>>> https://elixir.bootlin.com/linux/v5.2.1/source/include/linux/netdevice.h#L4743
+>>>>>> https://elixir.bootlin.com/linux/v5.2.1/source/include/linux/net.h#L266
+>>>>>
+>>>>> I'm more interested to know the real usage of this copy/paste and
+>>>>> understand if it makes sense for drivers/infiniband/* or not.
+>>>>>
+>>>>> Not everything in netdev is great and worth to borrow.
+>>>>
+>>>> DEBUG exists since the first commit in the tree, and is used in various parts of
+>>>> the kernel (mlx5 as well). Do you think it should be removed from the kernel?
+>>>
+>>> It is gradually removed when it is spotted, I'll send a patch for mlx5 now.
+>>
+>> Was there an on-list discussion regarding removal of DEBUG usage? Can you please
+>> share a link?
+> 
+> Sorry, but no, I didn't know that I need to save all discussions I see
+> in the mailing lists.
 
-DEBU -> DEBUG
+Trying to understand whether "It is gradually removed when it is spotted" is a
+well known guideline by the community, should checkpatch produce a warning for this?
 
-> stage and doesn't need to be part of the upstream kernel.
->
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx5/odp.c | 24 ------------------------
->  1 file changed, 24 deletions(-)
->
-> diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx=
-5/odp.c
-> index 74310d885a90..6f1de5edbe8e 100644
-> --- a/drivers/infiniband/hw/mlx5/odp.c
-> +++ b/drivers/infiniband/hw/mlx5/odp.c
-> @@ -1033,9 +1033,6 @@ static int mlx5_ib_mr_initiator_pfault_handler(
->  	u32 transport_caps;
->  	struct mlx5_base_av *av;
->  	unsigned ds, opcode;
-> -#if defined(DEBUG)
-> -	u32 ctrl_wqe_index, ctrl_qpn;
-> -#endif
->  	u32 qpn =3D qp->trans_qp.base.mqp.qpn;
->
->  	ds =3D be32_to_cpu(ctrl->qpn_ds) & MLX5_WQE_CTRL_DS_MASK;
-> @@ -1051,27 +1048,6 @@ static int mlx5_ib_mr_initiator_pfault_handler(
->  		return -EFAULT;
->  	}
->
-> -#if defined(DEBUG)
-> -	ctrl_wqe_index =3D (be32_to_cpu(ctrl->opmod_idx_opcode) &
-> -			MLX5_WQE_CTRL_WQE_INDEX_MASK) >>
-> -			MLX5_WQE_CTRL_WQE_INDEX_SHIFT;
-> -	if (wqe_index !=3D ctrl_wqe_index) {
-> -		mlx5_ib_err(dev, "Got WQE with invalid wqe_index. wqe_index=3D0x%x, qp=
-n=3D0x%x ctrl->wqe_index=3D0x%x\n",
-> -			    wqe_index, qpn,
-> -			    ctrl_wqe_index);
-> -		return -EFAULT;
-> -	}
-> -
-> -	ctrl_qpn =3D (be32_to_cpu(ctrl->qpn_ds) & MLX5_WQE_CTRL_QPN_MASK) >>
-> -		MLX5_WQE_CTRL_QPN_SHIFT;
-> -	if (qpn !=3D ctrl_qpn) {
-> -		mlx5_ib_err(dev, "Got WQE with incorrect QP number. wqe_index=3D0x%x, =
-qpn=3D0x%x ctrl->qpn=3D0x%x\n",
-> -			    wqe_index, qpn,
-> -			    ctrl_qpn);
-> -		return -EFAULT;
-> -	}
-> -#endif /* DEBUG */
-> -
->  	*wqe_end =3D *wqe + ds * MLX5_WQE_DS_UNITS;
->  	*wqe +=3D sizeof(*ctrl);
->
-> --
-> 2.20.1
->
+> 
+>> If so, I agree the DEBUG part should be removed.
+>>
+>>>
+>>>>
+>>>> Regarding combination of both, I don't think DEBUG is related to
+>>>> CONFIG_DYNAMIC_DEBUG. DEBUG is a generic debug flag (not necessarily to prints)
+>>>> while CONFIG_DYNAMIC_DEBUG is specific to the dynamic debug prints infrastructure.
+>>>
+>>> I know exactly what DEBUG and CONFIG_DYNAMIC_DEBUG mean, but I'm
+>>> asking YOU to provide us real and in-tree scenario where DEBUG will
+>>> exists and CONFIG_DYNAMIC_DEBUG won't.
+>>
+>> What's any of this has to do with in-tree? This code and defines are part of the
+>> tree.
+>>
+>> The use case doesn't matter, it's a valid permutation. Is there anything that
+>> stops a user from building the kernel this way?
+> 
+> Like everything else, nothing stops from you to do any modifications to
+> the source code, before you will build. We are talking about in-tree
+> builds and distro kernels.
+
+Last I checked turning on DEBUG doesn't require source code changes?
