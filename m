@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E81B47C037
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 13:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9017C03C
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 13:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727086AbfGaLkV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 07:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43554 "EHLO mail.kernel.org"
+        id S1727535AbfGaLk2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 07:40:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727123AbfGaLkU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 31 Jul 2019 07:40:20 -0400
+        id S1727529AbfGaLk1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 31 Jul 2019 07:40:27 -0400
 Received: from localhost (unknown [77.137.115.125])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 397BA2089E;
-        Wed, 31 Jul 2019 11:40:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A4DE2089E;
+        Wed, 31 Jul 2019 11:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564573219;
-        bh=4/3a1tEv3Us3EeT4RSsw6lgsLcr7SuHha1Rhzxd6IVs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YdRkUaAo203+cHAO8RoyIDZb97bPAdewiqd3U1lqEFWk5SoXOrZz2fRBudvmJ+y4s
-         K+zxQwkniCxl/rDJ0YvsWlFNv5QbToJrl2tBruuaONtcZvZxZIGlplUEVTlNUYN9wt
-         YzszOYho4GW4R8feIThYDDiBBvmd5NGWq1cwVL4E=
+        s=default; t=1564573227;
+        bh=nfkmVZjbiklD7mauA11uZuNUYB6Rf9S0xfeDzFGI3eo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GWWeBXQuve7KP61y3YhgCQmwG9BrgWrQ8ouFPPlxbn1KZ8oMDrC5YHKfAy8Bu6axo
+         OELyJ0EJQ3uCLVnTOWxM/MngkhBtoGBYfCjKrbcGDMFqSr/jsTibtwzXq8/YWLCbdz
+         pkBfsA/TdkEYfaQH6JVxe2K1gOQyYumIM8lammqM=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -31,10 +31,12 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Mark Zhang <markz@mellanox.com>,
         Yishai Hadas <yishaih@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH rdma-next 0/2] Enable QUERY_LAG over DEVX
-Date:   Wed, 31 Jul 2019 14:40:12 +0300
-Message-Id: <20190731114014.4786-1-leon@kernel.org>
+Subject: [PATCH mlx5-next 1/2] net/mlx5: Fix mlx5_ifc_query_lag_out_bits
+Date:   Wed, 31 Jul 2019 14:40:13 +0300
+Message-Id: <20190731114014.4786-2-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190731114014.4786-1-leon@kernel.org>
+References: <20190731114014.4786-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -42,24 +44,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Mark Zhang <markz@mellanox.com>
 
-Hi,
+Remove the "reserved_at_40" field to match the device specification.
 
-Enable QUERY_LAG command over DEVX. That command was added to the mlx5_core,
-but were not used and hence has wrong HW spec layout which is fixed in
-first patch. The second patch actually makes this command available for
-DEVX users.
+Fixes: 84df61ebc69b ("net/mlx5: Add HW interfaces used by LAG")
+Signed-off-by: Mark Zhang <markz@mellanox.com>
+Reviewed-by: Yishai Hadas <yishaih@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ include/linux/mlx5/mlx5_ifc.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-Thanks
+diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+index 5eae8d734435..726790d9ef25 100644
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -9572,8 +9572,6 @@ struct mlx5_ifc_query_lag_out_bits {
 
-Mark Zhang (2):
-  net/mlx5: Fix mlx5_ifc_query_lag_out_bits
-  IB/mlx5: Support MLX5_CMD_OP_QUERY_LAG as a DEVX general command
+ 	u8         syndrome[0x20];
 
- drivers/infiniband/hw/mlx5/devx.c | 1 +
- include/linux/mlx5/mlx5_ifc.h     | 2 --
- 2 files changed, 1 insertion(+), 2 deletions(-)
+-	u8         reserved_at_40[0x40];
+-
+ 	struct mlx5_ifc_lagc_bits ctx;
+ };
 
 --
 2.20.1
