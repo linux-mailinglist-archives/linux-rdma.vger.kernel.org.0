@@ -2,107 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A667BC42
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 10:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FCF7BDD6
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 11:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727466AbfGaIwQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 04:52:16 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:44232 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726807AbfGaIwP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Jul 2019 04:52:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1564563135; x=1596099135;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=zz6wSJgtLZdFNPvWwQOhv5FAyQmUJk+N0DO1hJFpRjQ=;
-  b=eKMBiSOzg8Oeeybv54aPR6J4+MPxdoJdXxhSBYqqon9eGYGCQpXzK8F2
-   RPZdUON9LhWB38OH9/jhD2NEPGw6gk2PJn+gv0IAMkhbce8vlPcP1A8a9
-   Zn2qG0GSKE+kS05BINy9A1WVb1gMd0nud9tLJVs5vLbWk1RVbxi+m8fB7
-   8=;
-X-IronPort-AV: E=Sophos;i="5.64,329,1559520000"; 
-   d="scan'208";a="689513934"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 31 Jul 2019 08:52:09 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id 05A8E141C26;
-        Wed, 31 Jul 2019 08:52:07 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 31 Jul 2019 08:52:06 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.197) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 31 Jul 2019 08:52:03 +0000
-Subject: Re: [PATCH for-rc] RDMA/restrack: Track driver QP types in resource
- tracker
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>
-References: <20190730110137.37826-1-galpress@amazon.com>
- <20190730133817.GC4878@mtr-leonro.mtl.com>
- <24f4f7e3-dada-5185-3988-2e821b321bc1@amazon.com>
- <20190730151936.GE4878@mtr-leonro.mtl.com>
- <1a7f11e2-ae90-3173-b24a-aae11731cad1@amazon.com>
- <20190731074612.GM4878@mtr-leonro.mtl.com>
- <ad37c9f9-2645-426c-32e1-bd63f462924c@amazon.com>
- <20190731083448.GP4878@mtr-leonro.mtl.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <08f3d48a-946a-677e-2103-5834ae0238d8@amazon.com>
-Date:   Wed, 31 Jul 2019 11:51:58 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        id S1725793AbfGaJ7H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 05:59:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729033AbfGaJ7H (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 31 Jul 2019 05:59:07 -0400
+Received: from localhost (unknown [77.137.115.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71A9C206A3;
+        Wed, 31 Jul 2019 09:59:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564567146;
+        bh=JrGOxQoylMdesv4k3NT24vPMWfkMERv7D4jIUgftwIU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=116alLq9lpBagYiYZxidyo7HmSuBaakVnH0/arEtEigZ/v6N496NL+4BFNMcAx3Fx
+         XQYRNId5SUn5mNRLHqwGO8PnbpNsW3HaiR/sDsCyh8kesH7WKYBe8K3ovzOZv6iKIE
+         HdLl5bCq+M1s0DEGNZ6xOILUSRlWk0jMWPx7VORQ=
+Date:   Wed, 31 Jul 2019 12:59:01 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     c00284828 <chenglang@huawei.com>
+Cc:     oulijun <oulijun@huawei.com>, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH for-next 10/13] RDMA/hns: Remove unnecessary kzalloc
+Message-ID: <20190731095901.GQ4878@mtr-leonro.mtl.com>
+References: <1564477010-29804-1-git-send-email-oulijun@huawei.com>
+ <1564477010-29804-11-git-send-email-oulijun@huawei.com>
+ <20190730134025.GD4878@mtr-leonro.mtl.com>
+ <aab804d4-561a-2e3a-969c-55a523c6ee0d@huawei.com>
+ <20190731074936.GN4878@mtr-leonro.mtl.com>
+ <fab1c105-b367-7ca7-fa2f-b46808ae1b24@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20190731083448.GP4878@mtr-leonro.mtl.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.197]
-X-ClientProxiedBy: EX13P01UWA004.ant.amazon.com (10.43.160.127) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fab1c105-b367-7ca7-fa2f-b46808ae1b24@huawei.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 31/07/2019 11:34, Leon Romanovsky wrote:
-> On Wed, Jul 31, 2019 at 10:53:10AM +0300, Gal Pressman wrote:
->> On 31/07/2019 10:46, Leon Romanovsky wrote:
->>> On Wed, Jul 31, 2019 at 10:05:31AM +0300, Gal Pressman wrote:
->>>> On 30/07/2019 18:19, Leon Romanovsky wrote:
->>>>> On Tue, Jul 30, 2019 at 04:49:52PM +0300, Gal Pressman wrote:
->>>>>> On 30/07/2019 16:38, Leon Romanovsky wrote:
->>>>>>> On Tue, Jul 30, 2019 at 02:01:37PM +0300, Gal Pressman wrote:
->>>>>>>> The check for QP type different than XRC has wrongly excluded driver QP
->>>>>>>> types from the resource tracker.
->>>>>>>>
->>>>>>>> Fixes: 78a0cd648a80 ("RDMA/core: Add resource tracking for create and destroy QPs")
->>>>>>>
->>>>>>> It is a little bit over to say "wrongly". At that time, we did it on purpose
->>>>>>> because it was unclear how to represent such QP types to users and we didn't
->>>>>>> have vendor specific hooks introduced by Steve later on.
->>>>>>
->>>>>> It's very confusing to see a test running and zero QPs in "rdma res".
->>>>>> I'm fine with removing the "wrongly" :), but I still think this should be
->>>>>> targeted to for-rc as a bug fix.
->>>>>
->>>>> Yes, please remove "wrongly" and change Fixes line to be
->>>>> "Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")",
->>>>> because before addition of EFA driver all other drivers had QPs.
->>>>
->>>> How are DC QPs being counted?
->>>
->>> They were not counted on purpose. We didn't imagine acceptance of
->>> non-RDMA driver which doesn't support any standard QPs and doesn't
->>> work with kernel verbs.
->>
->> Running dcping/perftest over DC shows zero QPs?
-> 
-> No, try it and you will see other QPs.
-> 
->> On purpose?
->> Sounds like a bug to me..
-> 
-> OK.
+On Wed, Jul 31, 2019 at 05:16:38PM +0800, c00284828 wrote:
+>
+> 在 2019/7/31 15:49, Leon Romanovsky 写道:
+> > On Wed, Jul 31, 2019 at 10:43:01AM +0800, oulijun wrote:
+> > > 在 2019/7/30 21:40, Leon Romanovsky 写道:
+> > > > On Tue, Jul 30, 2019 at 04:56:47PM +0800, Lijun Ou wrote:
+> > > > > From: Lang Cheng <chenglang@huawei.com>
+> > > > >
+> > > > > For hns_roce_v2_query_qp and hns_roce_v2_modify_qp,
+> > > > > we can use stack memory to create qp context data.
+> > > > > Make the code simpler.
+> > > > >
+> > > > > Signed-off-by: Lang Cheng <chenglang@huawei.com>
+> > > > > ---
+> > > > >   drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 64 +++++++++++++-----------------
+> > > > >   1 file changed, 27 insertions(+), 37 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> > > > > index 1186e34..07ddfae 100644
+> > > > > --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> > > > > +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> > > > > @@ -4288,22 +4288,19 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+> > > > >   {
+> > > > >   	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
+> > > > >   	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+> > > > > -	struct hns_roce_v2_qp_context *context;
+> > > > > -	struct hns_roce_v2_qp_context *qpc_mask;
+> > > > > +	struct hns_roce_v2_qp_context ctx[2];
+> > > > > +	struct hns_roce_v2_qp_context *context = ctx;
+> > > > > +	struct hns_roce_v2_qp_context *qpc_mask = ctx + 1;
+> > > > >   	struct device *dev = hr_dev->dev;
+> > > > >   	int ret;
+> > > > >
+> > > > > -	context = kcalloc(2, sizeof(*context), GFP_ATOMIC);
+> > > > > -	if (!context)
+> > > > > -		return -ENOMEM;
+> > > > > -
+> > > > > -	qpc_mask = context + 1;
+> > > > >   	/*
+> > > > >   	 * In v2 engine, software pass context and context mask to hardware
+> > > > >   	 * when modifying qp. If software need modify some fields in context,
+> > > > >   	 * we should set all bits of the relevant fields in context mask to
+> > > > >   	 * 0 at the same time, else set them to 0x1.
+> > > > >   	 */
+> > > > > +	memset(context, 0, sizeof(*context));
+> > > > "struct hns_roce_v2_qp_context ctx[2] = {};" will do the trick.
+> > > >
+> > > > Thanks
+> > > >
+> > > > .
+> > > In this case, the mask is actually writen twice. if you do this, will it bring extra overhead when modify qp?
+> > I don't understand first part of your sentence, and "no" to second part.
+> >
+> > Thanks
+>
+> +	struct hns_roce_v2_qp_context ctx[2];
+> +	struct hns_roce_v2_qp_context *context = ctx;
+> +	struct hns_roce_v2_qp_context *qpc_mask = ctx + 1;
+> ...
+> +	memset(context, 0, sizeof(*context));
+>  	memset(qpc_mask, 0xff, sizeof(*qpc_mask));
+>
+> ctx[2] ={} does look more simple, just like another function in patch.
+> But ctx[1] will be written 0 before being written to 0xff, is it faster than twice memset ?
 
-Does OK mean you're OK with counting DC QPs after this patch?
+Are you seriously talking about this micro optimization while you have mailbox
+allocation in your modify_qp function?
+
+Thanks
+
+>
+> > >
+> > >
+> > .
+> >
