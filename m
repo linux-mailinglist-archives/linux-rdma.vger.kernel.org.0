@@ -2,142 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B727BBDE
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 10:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A667BC42
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 10:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727471AbfGaIi6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 04:38:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726168AbfGaIi5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 31 Jul 2019 04:38:57 -0400
-Received: from localhost (unknown [77.137.115.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93E26206A2;
-        Wed, 31 Jul 2019 08:38:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564562337;
-        bh=ed98inK/RTQY/n3oe/7MZSLL80h7GykcnqpLAa493qE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ywkp2vBVEVqe0xkQ9Zc4HEhy1q9Xu8bKn3V+/DY5XRPbKFYZWmBEn7NdiEGFfFGdO
-         zbiZq7ukl3lNaygytoB57+rYLXL04wc18vZq+cdp8Knk1QXDZq05RTroK2JkSlJoGn
-         6KGYUuxGe08BEoUwRDxPhVV36XgbQtdzi8eG2cr8=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH rdma-rc] RDMA/mlx5: Release locks during notifier unregister
-Date:   Wed, 31 Jul 2019 11:38:52 +0300
-Message-Id: <20190731083852.584-1-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
+        id S1727466AbfGaIwQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 04:52:16 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:44232 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726807AbfGaIwP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Jul 2019 04:52:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1564563135; x=1596099135;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=zz6wSJgtLZdFNPvWwQOhv5FAyQmUJk+N0DO1hJFpRjQ=;
+  b=eKMBiSOzg8Oeeybv54aPR6J4+MPxdoJdXxhSBYqqon9eGYGCQpXzK8F2
+   RPZdUON9LhWB38OH9/jhD2NEPGw6gk2PJn+gv0IAMkhbce8vlPcP1A8a9
+   Zn2qG0GSKE+kS05BINy9A1WVb1gMd0nud9tLJVs5vLbWk1RVbxi+m8fB7
+   8=;
+X-IronPort-AV: E=Sophos;i="5.64,329,1559520000"; 
+   d="scan'208";a="689513934"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 31 Jul 2019 08:52:09 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id 05A8E141C26;
+        Wed, 31 Jul 2019 08:52:07 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 31 Jul 2019 08:52:06 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.197) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 31 Jul 2019 08:52:03 +0000
+Subject: Re: [PATCH for-rc] RDMA/restrack: Track driver QP types in resource
+ tracker
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>
+References: <20190730110137.37826-1-galpress@amazon.com>
+ <20190730133817.GC4878@mtr-leonro.mtl.com>
+ <24f4f7e3-dada-5185-3988-2e821b321bc1@amazon.com>
+ <20190730151936.GE4878@mtr-leonro.mtl.com>
+ <1a7f11e2-ae90-3173-b24a-aae11731cad1@amazon.com>
+ <20190731074612.GM4878@mtr-leonro.mtl.com>
+ <ad37c9f9-2645-426c-32e1-bd63f462924c@amazon.com>
+ <20190731083448.GP4878@mtr-leonro.mtl.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <08f3d48a-946a-677e-2103-5834ae0238d8@amazon.com>
+Date:   Wed, 31 Jul 2019 11:51:58 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190731083448.GP4878@mtr-leonro.mtl.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.197]
+X-ClientProxiedBy: EX13P01UWA004.ant.amazon.com (10.43.160.127) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On 31/07/2019 11:34, Leon Romanovsky wrote:
+> On Wed, Jul 31, 2019 at 10:53:10AM +0300, Gal Pressman wrote:
+>> On 31/07/2019 10:46, Leon Romanovsky wrote:
+>>> On Wed, Jul 31, 2019 at 10:05:31AM +0300, Gal Pressman wrote:
+>>>> On 30/07/2019 18:19, Leon Romanovsky wrote:
+>>>>> On Tue, Jul 30, 2019 at 04:49:52PM +0300, Gal Pressman wrote:
+>>>>>> On 30/07/2019 16:38, Leon Romanovsky wrote:
+>>>>>>> On Tue, Jul 30, 2019 at 02:01:37PM +0300, Gal Pressman wrote:
+>>>>>>>> The check for QP type different than XRC has wrongly excluded driver QP
+>>>>>>>> types from the resource tracker.
+>>>>>>>>
+>>>>>>>> Fixes: 78a0cd648a80 ("RDMA/core: Add resource tracking for create and destroy QPs")
+>>>>>>>
+>>>>>>> It is a little bit over to say "wrongly". At that time, we did it on purpose
+>>>>>>> because it was unclear how to represent such QP types to users and we didn't
+>>>>>>> have vendor specific hooks introduced by Steve later on.
+>>>>>>
+>>>>>> It's very confusing to see a test running and zero QPs in "rdma res".
+>>>>>> I'm fine with removing the "wrongly" :), but I still think this should be
+>>>>>> targeted to for-rc as a bug fix.
+>>>>>
+>>>>> Yes, please remove "wrongly" and change Fixes line to be
+>>>>> "Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")",
+>>>>> because before addition of EFA driver all other drivers had QPs.
+>>>>
+>>>> How are DC QPs being counted?
+>>>
+>>> They were not counted on purpose. We didn't imagine acceptance of
+>>> non-RDMA driver which doesn't support any standard QPs and doesn't
+>>> work with kernel verbs.
+>>
+>> Running dcping/perftest over DC shows zero QPs?
+> 
+> No, try it and you will see other QPs.
+> 
+>> On purpose?
+>> Sounds like a bug to me..
+> 
+> OK.
 
-The below kernel panic was observed when created bond mode LACP
-with GRE tunnel on top. The reason to it was not released spinlock
-during mlx5 notify unregsiter sequence.
-
-[  234.562007] BUG: scheduling while atomic: sh/10900/0x00000002
-[  234.563005] Preemption disabled at:
-[  234.566864] ------------[ cut here ]------------
-[  234.567120] DEBUG_LOCKS_WARN_ON(val > preempt_count())
-[  234.567139] WARNING: CPU: 16 PID: 10900 at kernel/sched/core.c:3203 preempt_count_sub+0xca/0x170
-[  234.569550] CPU: 16 PID: 10900 Comm: sh Tainted: G        W 5.2.0-rc1-for-linust-dbg-2019-05-25_04-57-33-60 #1
-[  234.569886] Hardware name: Dell Inc. PowerEdge R720/0X3D66, BIOS 2.6.1 02/12/2018
-[  234.570183] RIP: 0010:preempt_count_sub+0xca/0x170
-[  234.570404] Code: 03 38
-d0 7c 08 84 d2 0f 85 b0 00 00 00 8b 15 dd 02 03 04 85 d2 75 ba 48 c7 c6
-00 e1 88 83 48 c7 c7 40 e1 88 83 e8 76 11 f7 ff <0f> 0b 5b c3 65 8b 05
-d3 1f d8 7e 84 c0 75 82 e8 62 c3 c3 00 85 c0
-[  234.570911] RSP: 0018:ffff888b94477b08 EFLAGS: 00010286
-[  234.571133] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-[  234.571391] RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000246
-[  234.571648] RBP: ffff888ba5560000 R08: fffffbfff08962d5 R09: fffffbfff08962d5
-[  234.571902] R10: 0000000000000001 R11: fffffbfff08962d4 R12: ffff888bac6e9548
-[  234.572157] R13: ffff888babfaf728 R14: ffff888bac6e9568 R15: ffff888babfaf750
-[  234.572412] FS: 00007fcafa59b740(0000) GS:ffff888bed200000(0000) knlGS:0000000000000000
-[  234.572686] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  234.572914] CR2: 00007f984f16b140 CR3: 0000000b2bf0a001 CR4: 00000000001606e0
-[  234.573172] Call Trace:
-[  234.573336] _raw_spin_unlock+0x2e/0x50
-[  234.573542] mlx5_ib_unbind_slave_port+0x1bc/0x690 [mlx5_ib]
-[  234.573793] mlx5_ib_cleanup_multiport_master+0x1d3/0x660 [mlx5_ib]
-[  234.574039] mlx5_ib_stage_init_cleanup+0x4c/0x360 [mlx5_ib]
-[  234.574271]  ? kfree+0xf5/0x2f0
-[  234.574465] __mlx5_ib_remove+0x61/0xd0 [mlx5_ib]
-[  234.574688]  ? __mlx5_ib_remove+0xd0/0xd0 [mlx5_ib]
-[  234.574951] mlx5_remove_device+0x234/0x300 [mlx5_core]
-[  234.575224] mlx5_unregister_device+0x4d/0x1e0 [mlx5_core]
-[  234.575493] remove_one+0x4f/0x160 [mlx5_core]
-[  234.575704] pci_device_remove+0xef/0x2a0
-[  234.581407]  ? pcibios_free_irq+0x10/0x10
-[  234.587143]  ? up_read+0xc1/0x260
-[  234.592785] device_release_driver_internal+0x1ab/0x430
-[  234.598442] unbind_store+0x152/0x200
-[  234.604064]  ? sysfs_kf_write+0x3b/0x180
-[  234.609441]  ? sysfs_file_ops+0x160/0x160
-[  234.615021] kernfs_fop_write+0x277/0x440
-[  234.620288]  ? __sb_start_write+0x1ef/0x2c0
-[  234.625512] vfs_write+0x15e/0x460
-[  234.630786] ksys_write+0x156/0x1e0
-[  234.635988]  ? __ia32_sys_read+0xb0/0xb0
-[  234.641120]  ? trace_hardirqs_off_thunk+0x1a/0x1c
-[  234.646163] do_syscall_64+0x95/0x470
-[  234.651106] entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[  234.656004] RIP: 0033:0x7fcaf9c9cfd0
-[  234.660686] Code: 73 01
-c3 48 8b 0d c0 6e 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00
-83 3d cd cf 2d 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73
-31 c3 48 83 ec 08 e8 ee cb 01 00 48 89 04 24
-[  234.670128] RSP: 002b:00007ffd3b01ddd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-[  234.674811] RAX: ffffffffffffffda RBX: 000000000000000d RCX: 00007fcaf9c9cfd0
-[  234.679387] RDX: 000000000000000d RSI: 00007fcafa5c1000 RDI: 0000000000000001
-[  234.683848] RBP: 00007fcafa5c1000 R08: 000000000000000a R09: 00007fcafa59b740
-[  234.688167] R10: 00007ffd3b01d8e0 R11: 0000000000000246 R12: 00007fcaf9f75400
-[  234.692386] R13: 000000000000000d R14: 0000000000000001 R15: 0000000000000000
-[  234.696495] irq event stamp: 153067
-[  234.700525] hardirqs last enabled at (153067): [<ffffffff83258c39>] _raw_spin_unlock_irqrestore+0x59/0x70
-[  234.704665] hardirqs last disabled at (153066): [<ffffffff83259382>] _raw_spin_lock_irqsave+0x22/0x90
-[  234.708722] softirqs last enabled at (153058): [<ffffffff836006c5>] __do_softirq+0x6c5/0xb4e
-[  234.712673] softirqs last disabled at (153051): [<ffffffff81227c1d>] irq_exit+0x17d/0x1d0
-[  234.716601] ---[ end trace 5dbf096843ee9ce6 ]---
-
-Fixes: df097a278c75 ("IB/mlx5: Use the new mlx5 core notifier API")
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/main.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index c2a5780cb394..e12a4404096b 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -5802,13 +5802,12 @@ static void mlx5_ib_unbind_slave_port(struct mlx5_ib_dev *ibdev,
- 		return;
- 	}
- 
--	if (mpi->mdev_events.notifier_call)
--		mlx5_notifier_unregister(mpi->mdev, &mpi->mdev_events);
--	mpi->mdev_events.notifier_call = NULL;
--
- 	mpi->ibdev = NULL;
- 
- 	spin_unlock(&port->mp.mpi_lock);
-+	if (mpi->mdev_events.notifier_call)
-+		mlx5_notifier_unregister(mpi->mdev, &mpi->mdev_events);
-+	mpi->mdev_events.notifier_call = NULL;
- 	mlx5_remove_netdev_notifier(ibdev, port_num);
- 	spin_lock(&port->mp.mpi_lock);
- 
--- 
-2.20.1
-
+Does OK mean you're OK with counting DC QPs after this patch?
