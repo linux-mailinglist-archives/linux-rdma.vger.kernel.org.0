@@ -2,142 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 871B47BEAB
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 12:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF417BF06
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 13:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728077AbfGaKvS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 06:51:18 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:54603 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726811AbfGaKvS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Jul 2019 06:51:18 -0400
+        id S1726378AbfGaLP2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 07:15:28 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37643 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbfGaLP2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Jul 2019 07:15:28 -0400
+Received: by mail-wr1-f68.google.com with SMTP id n9so44154337wrr.4
+        for <linux-rdma@vger.kernel.org>; Wed, 31 Jul 2019 04:15:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1564570276; x=1596106276;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=D2uFtu23OnBV0hS+l+o18FiAzSgBCWpR8IEqt7lnPRk=;
-  b=dMOZN/FGpC5A6TxfhHJOw7nJkmZJTezohQ+eXURz9W14pDFHfLTlliYW
-   ynKiDYNPWdcQenHZ/p/o49H2+RXSrK0C1GfTuMqvDik+twvkWvAIv52kX
-   IT7ZOjQIjIOHSH0GM0zW71f96gQbsb1RB4ww6mZM8VpEgA9LCaHZxcE4q
-   4=;
-X-IronPort-AV: E=Sophos;i="5.64,329,1559520000"; 
-   d="scan'208";a="777049102"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 31 Jul 2019 10:51:15 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com (Postfix) with ESMTPS id 5C0EFA28B0;
-        Wed, 31 Jul 2019 10:51:14 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 31 Jul 2019 10:51:13 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.67) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 31 Jul 2019 10:51:10 +0000
-Subject: Re: [PATCH for-next 1/2] RDMA/core: Introduce ratelimited ibdev
- printk functions
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>
-References: <20190730151834.70993-1-galpress@amazon.com>
- <20190730151834.70993-2-galpress@amazon.com>
- <20190730154148.GG4878@mtr-leonro.mtl.com>
- <dd2c23a3-1d92-56d4-933e-68ec37aebb65@amazon.com>
- <20190731074109.GL4878@mtr-leonro.mtl.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <dfffaa13-3b1a-81ef-1922-68aacf085616@amazon.com>
-Date:   Wed, 31 Jul 2019 13:51:05 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=crtL51XQqSRRlxWMIfz7T4S/5O93x6zgYjSUF7m9UVk=;
+        b=jegIlqYynwc07GcqCHOY0cV3PO4pKWXxgl0P/sVig741TGk8zfWTHMwzAVTrkzTFVE
+         hnpOS4a0063ArcDhSiAoyYZvxi4zi3612wxCsy4gcZlzwpiKYTRV3RauIw9bCCbDbAlU
+         6WZl8d1BL0n0I9zsCulrnwsLaNeruogIhBkkJjD42iYczE4Fek8DTKO4dqMqFo3Sr7bd
+         eeEL7sFfMxEUNbBvWIbzjVW5kjW+O72ST9lv4F6laAUl7aHSxMj1ksmaubL9hxxBNxQR
+         jAJ3N+qCTnru3ihpueKBj5XjuKRQ1z7EYV7WCmSsJv5UF5gs9zR6ky6yGd4mIZ5Wcda8
+         61Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=crtL51XQqSRRlxWMIfz7T4S/5O93x6zgYjSUF7m9UVk=;
+        b=F656Im6LABWYW10oYpdTrqMZiLWFVcVYL3wMWcywn8mnROIknv+ztQPvQu/BScPLT1
+         yYF2HRmY3bxGfdmzWjlwxP7rDob1RvohHInFRwD+Ptr0dEOaW1/FWtYJx1CHM4Ynjiku
+         5U3rkhHPLbTxTId2kBvnFUdnC44fQYhYPR0gpT/kUEvLR/xss5qPw4wCN1d1O/qJPXTw
+         q51dS07kAMRaqixVNEFS+HaGZcA8gFjaIIBQU+3oKIq/9DjT/0Ou7I2GZm5gmX/uaEJG
+         UDcsEg97rJ6o2yfP4QoO0WYeGsVwA7wiCO9RnNblAi2biOmYnzc5CYEjjMl0njimBjYF
+         yRyA==
+X-Gm-Message-State: APjAAAVnAlllpLcSJRwTM4M+fTjgjQkuCwf9/YPsd6fw3811lXac01Xx
+        H4sTkiJtB5T23czyx3G43IRBI6Gi
+X-Google-Smtp-Source: APXvYqw5CbPqb2JMC1ihIn2NLADiXwqirIC51AW5eJb7kYwcENgVim7COWOflLiKdi2lhJc6Ip69dA==
+X-Received: by 2002:adf:e40e:: with SMTP id g14mr49561856wrm.161.1564571725901;
+        Wed, 31 Jul 2019 04:15:25 -0700 (PDT)
+Received: from kheib-workstation.redhat.com (bzq-109-65-15-211.red.bezeqint.net. [109.65.15.211])
+        by smtp.gmail.com with ESMTPSA id h133sm73133732wme.28.2019.07.31.04.15.23
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 31 Jul 2019 04:15:25 -0700 (PDT)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-next 0/4] RDMA: Cleanups and improvements 
+Date:   Wed, 31 Jul 2019 14:14:59 +0300
+Message-Id: <20190731111503.8872-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20190731074109.GL4878@mtr-leonro.mtl.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.67]
-X-ClientProxiedBy: EX13D28UWB001.ant.amazon.com (10.43.161.98) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 31/07/2019 10:41, Leon Romanovsky wrote:
-> On Wed, Jul 31, 2019 at 10:22:42AM +0300, Gal Pressman wrote:
->> On 30/07/2019 18:41, Leon Romanovsky wrote:
->>> On Tue, Jul 30, 2019 at 06:18:33PM +0300, Gal Pressman wrote:
->>>> Add ratelimited helpers to the ibdev_* printk functions.
->>>> Implementation inspired by counterpart dev_*_ratelimited functions.
->>>>
->>>> Signed-off-by: Gal Pressman <galpress@amazon.com>
->>>> ---
->>>>  include/rdma/ib_verbs.h | 51 +++++++++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 51 insertions(+)
->>>>
->>>> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
->>>> index c5f8a9f17063..356e6a105366 100644
->>>> --- a/include/rdma/ib_verbs.h
->>>> +++ b/include/rdma/ib_verbs.h
->>>> @@ -107,6 +107,57 @@ static inline
->>>>  void ibdev_dbg(const struct ib_device *ibdev, const char *format, ...) {}
->>>>  #endif
->>>>
->>>> +#define ibdev_level_ratelimited(ibdev_level, ibdev, fmt, ...)           \
->>>> +do {                                                                    \
->>>> +	static DEFINE_RATELIMIT_STATE(_rs,                              \
->>>> +				      DEFAULT_RATELIMIT_INTERVAL,       \
->>>> +				      DEFAULT_RATELIMIT_BURST);         \
->>>> +	if (__ratelimit(&_rs))                                          \
->>>> +		ibdev_level(ibdev, fmt, ##__VA_ARGS__);                 \
->>>> +} while (0)
->>>> +
->>>> +#define ibdev_emerg_ratelimited(ibdev, fmt, ...) \
->>>> +	ibdev_level_ratelimited(ibdev_emerg, ibdev, fmt, ##__VA_ARGS__)
->>>> +#define ibdev_alert_ratelimited(ibdev, fmt, ...) \
->>>> +	ibdev_level_ratelimited(ibdev_alert, ibdev, fmt, ##__VA_ARGS__)
->>>> +#define ibdev_crit_ratelimited(ibdev, fmt, ...) \
->>>> +	ibdev_level_ratelimited(ibdev_crit, ibdev, fmt, ##__VA_ARGS__)
->>>> +#define ibdev_err_ratelimited(ibdev, fmt, ...) \
->>>> +	ibdev_level_ratelimited(ibdev_err, ibdev, fmt, ##__VA_ARGS__)
->>>> +#define ibdev_warn_ratelimited(ibdev, fmt, ...) \
->>>> +	ibdev_level_ratelimited(ibdev_warn, ibdev, fmt, ##__VA_ARGS__)
->>>> +#define ibdev_notice_ratelimited(ibdev, fmt, ...) \
->>>> +	ibdev_level_ratelimited(ibdev_notice, ibdev, fmt, ##__VA_ARGS__)
->>>> +#define ibdev_info_ratelimited(ibdev, fmt, ...) \
->>>> +	ibdev_level_ratelimited(ibdev_info, ibdev, fmt, ##__VA_ARGS__)
->>>> +
->>>> +#if defined(CONFIG_DYNAMIC_DEBUG)
->>>> +/* descriptor check is first to prevent flooding with "callbacks suppressed" */
->>>> +#define ibdev_dbg_ratelimited(ibdev, fmt, ...)                          \
->>>> +do {                                                                    \
->>>> +	static DEFINE_RATELIMIT_STATE(_rs,                              \
->>>> +				      DEFAULT_RATELIMIT_INTERVAL,       \
->>>> +				      DEFAULT_RATELIMIT_BURST);         \
->>>> +	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor, fmt);                 \
->>>> +	if (DYNAMIC_DEBUG_BRANCH(descriptor) && __ratelimit(&_rs))      \
->>>> +		__dynamic_ibdev_dbg(&descriptor, ibdev, fmt,            \
->>>> +				    ##__VA_ARGS__);                     \
->>>> +} while (0)
->>>> +#elif defined(DEBUG)
->>>
->>> When will you see this CONFIG_DEBUG set? I suspect only in private
->>> out-of-tree builds which we are not really care. Also I can't imagine
->>> system with this CONFIG_DEBUG and without CONFIG_DYNAMIC_DEBUG.
->>
->> This is the common way to handle debug prints, see:
->> https://elixir.bootlin.com/linux/v5.2.1/source/include/linux/printk.h#L331
->> https://elixir.bootlin.com/linux/v5.2.1/source/include/linux/device.h#L1493
->> https://elixir.bootlin.com/linux/v5.2.1/source/include/linux/netdevice.h#L4743
->> https://elixir.bootlin.com/linux/v5.2.1/source/include/linux/net.h#L266
-> 
-> I'm more interested to know the real usage of this copy/paste and
-> understand if it makes sense for drivers/infiniband/* or not.
-> 
-> Not everything in netdev is great and worth to borrow.
+This series includes few cleanups and improvements, the first patch
+introduce a new enum for describing the physical state values and use it
+instead of using the magic numbers, patch 2-4 add support for a common
+query port for iWARP drivers and remove the common code from the iWARP
+drivers.
 
-DEBUG exists since the first commit in the tree, and is used in various parts of
-the kernel (mlx5 as well). Do you think it should be removed from the kernel?
+Kamal Heib (4):
+  RDMA: Introduce ib_port_phys_state enum
+  RDMA/cxgb3: Use ib_device_set_netdev()
+  RDMA/core: Add common iWARP query port
+  RDMA/{cxgb3, cxgb4, i40iw}: Remove common code
 
-Regarding combination of both, I don't think DEBUG is related to
-CONFIG_DYNAMIC_DEBUG. DEBUG is a generic debug flag (not necessarily to prints)
-while CONFIG_DYNAMIC_DEBUG is specific to the dynamic debug prints infrastructure.
+ drivers/infiniband/core/device.c             | 85 ++++++++++++++++----
+ drivers/infiniband/core/sysfs.c              | 24 ++++--
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c     |  4 +-
+ drivers/infiniband/hw/cxgb3/iwch_provider.c  | 45 +++++------
+ drivers/infiniband/hw/cxgb4/provider.c       | 24 ------
+ drivers/infiniband/hw/efa/efa_verbs.c        |  2 +-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c    | 11 ---
+ drivers/infiniband/hw/mlx5/main.c            |  4 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c  |  4 +-
+ drivers/infiniband/hw/qedr/verbs.c           |  4 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c |  7 +-
+ drivers/infiniband/sw/rxe/rxe.h              |  4 -
+ drivers/infiniband/sw/rxe/rxe_param.h        |  2 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c        |  6 +-
+ drivers/infiniband/sw/siw/siw_verbs.c        |  3 +-
+ include/rdma/ib_verbs.h                      | 10 +++
+ 16 files changed, 136 insertions(+), 103 deletions(-)
+
+-- 
+2.20.1
+
