@@ -2,113 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC5D7CC23
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 20:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A67D7CC50
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 20:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729605AbfGaSlH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 14:41:07 -0400
-Received: from gateway36.websitewelcome.com ([192.185.198.13]:44787 "EHLO
-        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727579AbfGaSlH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 31 Jul 2019 14:41:07 -0400
-X-Greylist: delayed 1500 seconds by postgrey-1.27 at vger.kernel.org; Wed, 31 Jul 2019 14:41:07 EDT
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id C3D1C400FFDD9
-        for <linux-rdma@vger.kernel.org>; Wed, 31 Jul 2019 12:18:42 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id sso1hJ4x52PzOsso1hOSXt; Wed, 31 Jul 2019 12:54:29 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
-        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SgzH7dQ1QhJtXNFRAKtAuhj9JJdZ2sxP9Z2fVINfjlc=; b=EXNnpFDTmY/QGMpJYfl+oxXKv4
-        BOZCUaVvKLBwPGGy5IxDRghhn2C5dmdcnbaOeEarPRCbQK79pP6DC/p3cqMPZML9hzSP2YkkcRKQq
-        7k+Ty4d4MQzU4uHY6tSNJHSxk2QFvKR3MJRRSZxXm1PslVQbm7bv5ASYUiOQEmN0vW+7xyK4keaSY
-        MghG58yvwPIZN/cBdBmHDBfriqkDhH7Sd5TFqQfFUXsYvu65wNtpNF+3G51Ud7RGWuQZ+gjGcBKSK
-        nALu2EWcZCvXK9pXW/M5KpoweWQ+pBhBNeRfwe1hqFbBM3YdtS4udh/ZH+Z2+B3T4wZWHYggt1ARq
-        w9oHEUrA==;
-Received: from [187.192.11.120] (port=36612 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1hsso0-003QZf-S4; Wed, 31 Jul 2019 12:54:28 -0500
-Date:   Wed, 31 Jul 2019 12:54:28 -0500
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Ira Weiny <ira.weiny@intel.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] IB/hfi1: Fix Spectre v1 vulnerability
-Message-ID: <20190731175428.GA16736@embeddedor>
+        id S1727599AbfGaSv4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 14:51:56 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:34826 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726960AbfGaSv4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 31 Jul 2019 14:51:56 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 9BC733082E91;
+        Wed, 31 Jul 2019 18:51:55 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B48925D9C5;
+        Wed, 31 Jul 2019 18:51:54 +0000 (UTC)
+Message-ID: <805ad5c2714ad2fb4c9b92eb99a256e8998334f9.camel@redhat.com>
+Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Release locks during notifier
+ unregister
+From:   Doug Ledford <dledford@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Date:   Wed, 31 Jul 2019 14:51:42 -0400
+In-Reply-To: <20190731180124.GE4832@mtr-leonro.mtl.com>
+References: <20190731083852.584-1-leon@kernel.org>
+         <44863abbef5c1e233cbedfdf959fe900f7722d74.camel@redhat.com>
+         <20190731170054.GF22677@mellanox.com>
+         <20190731170944.GC4832@mtr-leonro.mtl.com>
+         <20190731172215.GJ22677@mellanox.com>
+         <20190731180124.GE4832@mtr-leonro.mtl.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-Y7q+uNUaBGgOplPgHnb9"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.192.11.120
-X-Source-L: No
-X-Exim-ID: 1hsso0-003QZf-S4
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [187.192.11.120]:36612
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 15
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Wed, 31 Jul 2019 18:51:55 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-sl is controlled by user-space, hence leading to a potential
-exploitation of the Spectre variant 1 vulnerability.
 
-Fix this by sanitizing sl before using it to index ibp->sl_to_sc.
+--=-Y7q+uNUaBGgOplPgHnb9
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Notice that given that speculation windows are large, the policy is
-to kill the speculation on the first load and not worry if it can be
-completed with a dependent load/store [1].
+On Wed, 2019-07-31 at 21:01 +0300, Leon Romanovsky wrote:
+> On Wed, Jul 31, 2019 at 05:22:19PM +0000, Jason Gunthorpe wrote:
+> > On Wed, Jul 31, 2019 at 08:09:44PM +0300, Leon Romanovsky wrote:
+> > > On Wed, Jul 31, 2019 at 05:00:59PM +0000, Jason Gunthorpe wrote:
+> > > > On Wed, Jul 31, 2019 at 12:22:44PM -0400, Doug Ledford wrote:
+> > > > > > diff --git a/drivers/infiniband/hw/mlx5/main.c
+> > > > > > b/drivers/infiniband/hw/mlx5/main.c
+> > > > > > index c2a5780cb394..e12a4404096b 100644
+> > > > > > +++ b/drivers/infiniband/hw/mlx5/main.c
+> > > > > > @@ -5802,13 +5802,12 @@ static void
+> > > > > > mlx5_ib_unbind_slave_port(struct
+> > > > > > mlx5_ib_dev *ibdev,
+> > > > > >  		return;
+> > > > > >  	}
+> > > > > >=20
+> > > > > > -	if (mpi->mdev_events.notifier_call)
+> > > > > > -		mlx5_notifier_unregister(mpi->mdev, &mpi-
+> > > > > > >mdev_events);
+> > > > > > -	mpi->mdev_events.notifier_call =3D NULL;
+> > > > > > -
+> > > > > >  	mpi->ibdev =3D NULL;
+> > > > > >=20
+> > > > > >  	spin_unlock(&port->mp.mpi_lock);
+> > > > > > +	if (mpi->mdev_events.notifier_call)
+> > > > > > +		mlx5_notifier_unregister(mpi->mdev, &mpi-
+> > > > > > >mdev_events);
+> > > > > > +	mpi->mdev_events.notifier_call =3D NULL;
+> > > > >=20
+> > > > > I can see where this fixes the problem at hand, but this gives
+> > > > > the
+> > > > > appearance of creating a new race.  Doing a
+> > > > > check/unregister/set-null
+> > > > > series outside of any locks is a red flag to someone
+> > > > > investigating the
+> > > > > code.  You should at least make note of the fact that calling
+> > > > > unregister
+> > > > > more than once is safe.  If you're fine with it, I can add a
+> > > > > comment and
+> > > > > take the patch, or you can resubmit.
+> > > >=20
+> > > > Mucking about notifier_call like that is gross anyhow, maybe
+> > > > better to
+> > > > delete it entirely.
+> > >=20
+> > > What do you propose to delete?
+> >=20
+> > The 'mpi->mdev_events.notifier_call =3D NULL;' and 'if
+> > (mpi->mdev_events.notifier_call)'
+> >=20
+> > Once it leaves the lock it stops doing anything useful.
+> >=20
+> > If you need it, then we can't drop the lock, if you don't, it is
+> > just
+> > dead code, delete it.
+>=20
+> This specific notifier_call is protected outside
+> of mlx5_ib_unbind_slave_port() by mlx5_ib_multiport_mutex and NULL
+> check
+> is needed to ensure single call to mlx5_notifier_unregister, because
+> calls to mlx5_ib_unbind_slave_port() will be serialized.
 
-[1] https://lore.kernel.org/lkml/20180423164740.GY17484@dhcp22.suse.cz/
+But looking at the code, it doesn't appear mlx5_notifier_unregister
+requires there to only be a single call.  It's safe to call it multiple
+times for the same notifier.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/infiniband/hw/hfi1/verbs.c | 2 ++
- 1 file changed, 2 insertions(+)
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
-index f4ca436118ab..9f53f63b1453 100644
---- a/drivers/infiniband/hw/hfi1/verbs.c
-+++ b/drivers/infiniband/hw/hfi1/verbs.c
-@@ -54,6 +54,7 @@
- #include <linux/mm.h>
- #include <linux/vmalloc.h>
- #include <rdma/opa_addr.h>
-+#include <linux/nospec.h>
- 
- #include "hfi.h"
- #include "common.h"
-@@ -1537,6 +1538,7 @@ static int hfi1_check_ah(struct ib_device *ibdev, struct rdma_ah_attr *ah_attr)
- 	sl = rdma_ah_get_sl(ah_attr);
- 	if (sl >= ARRAY_SIZE(ibp->sl_to_sc))
- 		return -EINVAL;
-+	sl = array_index_nospec(sl, ARRAY_SIZE(ibp->sl_to_sc));
- 
- 	sc5 = ibp->sl_to_sc[sl];
- 	if (sc_to_vlt(dd, sc5) > num_vls && sc_to_vlt(dd, sc5) != 0xf)
--- 
-2.22.0
+--=-Y7q+uNUaBGgOplPgHnb9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1B4z4ACgkQuCajMw5X
+L91YCw//ShJTPrAms6hy8JBaetc+GRGEVzhyCAqZcR02oX2YOKP5sizzMqMetdum
+oIgKdSn9rUoD0eAryFGhkb2er9nJ8510By3KGl4x4OskIlTYZ4bLfG3nvvxtf0e3
+phvoYXTH+lc2LuFVQLFwr7tGZ4WXHBLKGle6uPJqfgps3LN+BK9HSGToP8l5csPH
+zdJzHVCr33SHD968OKRMDDLfWnn5jUTHFBB4dPC55/BAQPJOxNYLnKZMbMyOSYbY
+WYv2W6npEeTgZ44TKXX4+kCOzaC+IbPpx4G4xBa1Kpj+uHmjSBG0+to5Pi+wpnCf
+1ZmwjomWTZwsSQp+4Isn4s5dKuHzp9zx4rBQcrqfXaAq+aMlp+lVNKW45dgj9cAK
+J0n1+xRrm288267EU0al5ZIN/jr9nKV9SqWuPSzHIg4E7tyMMxmG9W98sKml8gHi
+Hei3v3UNXRPb5GMRSJdp/VC1vN8i/ONqGfiYEe0nUyThD/m0guH3aFpk/8Lc5Uk4
+rhCmyyuHE+jeXBp0JSPGhPr78UXxxz93C3OwRtI/360NGAsW37+oAkjQyp8ms2Wq
+ofAonOd7idPx4wbxhYQZ+Xx6uB+q6LxhxOXlC4JWiTvvEwUgeCqJnbFz5VUpYnnQ
+qCwv4gK/lKiz+jDED41JWKClQAmduoGn6iGy3il6tMIZs2Ceu0A=
+=m80s
+-----END PGP SIGNATURE-----
+
+--=-Y7q+uNUaBGgOplPgHnb9--
 
