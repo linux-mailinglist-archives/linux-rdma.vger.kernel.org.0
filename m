@@ -2,48 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D69BE7CE37
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 22:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D607CE38
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 22:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730332AbfGaUZT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 16:25:19 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:46738 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730165AbfGaUZT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Jul 2019 16:25:19 -0400
-Received: by mail-wr1-f65.google.com with SMTP id z1so71034386wru.13
-        for <linux-rdma@vger.kernel.org>; Wed, 31 Jul 2019 13:25:16 -0700 (PDT)
+        id S1730165AbfGaUZV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 16:25:21 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:41098 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730309AbfGaUZU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Jul 2019 16:25:20 -0400
+Received: by mail-wr1-f68.google.com with SMTP id c2so67845799wrm.8
+        for <linux-rdma@vger.kernel.org>; Wed, 31 Jul 2019 13:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7b3G8Y6WOFM4zhy7Si5KbngIYnRPAMHQHBQAU8QRr4Y=;
-        b=O5y8+bmz3Bg2JgtaQEJVOGO67OD4DLGo/XBecS0b029mp8zbk+znfN4Dq+G6Phk0iB
-         gKSZbw2tZ89uq3CTo3M6l9L0HaVpbf0wYy1oVDCshkErh7mrc71ctn0jEOFXf2VTPO8o
-         dtKktgdp0LwblWtT6L4cqFtsTaBQd1SAv+zeh9DziO7wWbNAwBazU6CWpnh+bLTnk+AF
-         wu9atwxek3vb2Iyk+tSgB8/w2hpuzz0KvsD1XpGUwYr4QhptbKXkHuetV50fC6imAEaA
-         1JG+XwZL3LtKv5jqtAhLWUl+eNt6srT6+SCZK1+VuqVqaaUFE3+JoUmC5H8sSlrha8Az
-         ISbw==
+        bh=E9BPmTE+kOCXIh8/c7E+/PPwTMY3AF0O7t/3VOscjHQ=;
+        b=t8/r4JEAd3hg784MP0U36/9Hcuzi4C0dw6uSnhkxTeqfCDjePS1idn2OrNVlFs1nYD
+         7FSV2Q112Y+Qel5z8caEP0Hv1b2M+9HRwGcOjRiVFUYbjDu8byOEHaxMH9XESYk2FuyO
+         6dYRfyG1XYR/RrEJkAR/P4NF1imgNTxDWcXFtsh95iwSd4LsSj+ap8yEYato0Q8MQjoi
+         NJ10xFfiizi5TxMSbGwAv8FNy1VblDA55WcepngTf8ZppKOI2KRE4MczsJyZ5btMaLWi
+         SrCRipPEeubHDX+WHXCQFquBWjqKsZyLHD4juhuWqyssrCnw8/N60OXoirjIMomkOBvk
+         PY+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7b3G8Y6WOFM4zhy7Si5KbngIYnRPAMHQHBQAU8QRr4Y=;
-        b=D8S4xoQ2hp+85q3j65ELCJU3sM44R76c6JSu86ih6ajkGfQn8/35+ve4w3aIHVCTBM
-         jvyw1u3Irtoorms+wyjxCg6qNH7Ek4xz0uvmNop0kkPB9HoVL7KD8u1eJrs/Gurqrf/d
-         op5jw+kYKW2vHbEUA85U324Efgvn2cAGuWnhSP4I3csb5+kMidj6M5khytWRGCmtMgNb
-         weSUKPwgI1Orh6HnUngi3Hs+crA1kGM3eK5SQZ0vM+N1exwc5p4BlvaWumvDRA0L7w0j
-         fdvxMThYseomnhDZd+u99HYrL7/cCIGdSZPH3MwAFAUUumGaOUQ0gt9klqrvh3N5wsWf
-         3Yhg==
-X-Gm-Message-State: APjAAAU12kIdiTNSOTdo3KE0Vh4gw83sDhWh1GmRBnglT14oD0P6LH+9
-        MmuvJyOCvwwKtlIe0m2FaX0ZMo6N
-X-Google-Smtp-Source: APXvYqweIOQVB5a0XX1CxXyJ0Ppsh6rf9TUec2k34K877+GpntWFElxLsAvFJHse4mSbppxuR8CtoQ==
-X-Received: by 2002:adf:b612:: with SMTP id f18mr126770297wre.97.1564604715841;
-        Wed, 31 Jul 2019 13:25:15 -0700 (PDT)
+        bh=E9BPmTE+kOCXIh8/c7E+/PPwTMY3AF0O7t/3VOscjHQ=;
+        b=H3u8UcExiq9R90sTTlAVY6q1PdLqk/Jxe8qNmwHcWroVfIqaOPh8+TUrYJI8EoGl1c
+         upIaeiasbLEr/Yhm/wrtQV9sGHLw/72v+pxF2o5Y96BwtxJv7tYpNMqnw0i31yk1OIjv
+         ZTHCbWXRtIij+zfbF8GJ1wYQRp76/DmZ+ziaH+6FXSINzGV8GQCHZY4c84lGkJO4zRmO
+         sCorZ6C0u8jALPPt16eAqfiqyW81rgHxeobdSXUN8nfoDHGcgi9rbh9T9XFOSrtmUJ25
+         yyd56gAvcw7pbH+pvs3WjaJNfmT/bxEw6dwifvai9DlPzyTS6FoSFWw32plINYhSg23s
+         dFMQ==
+X-Gm-Message-State: APjAAAVZrIgBPWdEYjoV9W4c5WimJaZ/sPOgAd6KGMzJZUTiM9Uy9/rz
+        r3Yw8L00NZcUO5GY5tDEPYXes/rB
+X-Google-Smtp-Source: APXvYqz7ANIL00UkOCo8cAjGD7qKdCAW9QeNh3GRkAe6mv15SMEROKLlIfbB87guaEOTw6AnG5k9OQ==
+X-Received: by 2002:a5d:5388:: with SMTP id d8mr14843848wrv.299.1564604717673;
+        Wed, 31 Jul 2019 13:25:17 -0700 (PDT)
 Received: from kheib-workstation.redhat.com (bzq-109-65-15-211.red.bezeqint.net. [109.65.15.211])
-        by smtp.gmail.com with ESMTPSA id c4sm54496930wrt.86.2019.07.31.13.25.14
+        by smtp.gmail.com with ESMTPSA id c4sm54496930wrt.86.2019.07.31.13.25.15
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 31 Jul 2019 13:25:15 -0700 (PDT)
+        Wed, 31 Jul 2019 13:25:17 -0700 (PDT)
 From:   Kamal Heib <kamalheib1@gmail.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
@@ -57,9 +57,9 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
         Bernard Metzler <bmt@zurich.ibm.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-next V2 3/4] RDMA/core: Add common iWARP query port
-Date:   Wed, 31 Jul 2019 23:24:58 +0300
-Message-Id: <20190731202459.19570-4-kamalheib1@gmail.com>
+Subject: [PATCH for-next V2 4/4] RDMA/{cxgb3, cxgb4, i40iw}: Remove common code
+Date:   Wed, 31 Jul 2019 23:24:59 +0300
+Message-Id: <20190731202459.19570-5-kamalheib1@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190731202459.19570-1-kamalheib1@gmail.com>
 References: <20190731202459.19570-1-kamalheib1@gmail.com>
@@ -70,131 +70,114 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add support for a common iWARP query port function, the new function
-includes a common code that is used by the iWARP devices to update the
-port attributes like max_mtu, active_mtu, state, and phys_state, the
-function also includes a call for the driver-specific query_port callback
-to query the device-specific port attributes.
+Now that we have a common iWARP query port function we can remove the
+common code from the iWARP drivers.
 
 Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
 ---
- drivers/infiniband/core/device.c | 87 ++++++++++++++++++++++++++------
- 1 file changed, 71 insertions(+), 16 deletions(-)
+ drivers/infiniband/hw/cxgb3/iwch_provider.c | 25 ---------------------
+ drivers/infiniband/hw/cxgb4/provider.c      | 24 --------------------
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c   | 11 ---------
+ 3 files changed, 60 deletions(-)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 9773145dee09..860c08ca49e7 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1940,31 +1940,64 @@ void ib_dispatch_event(struct ib_event *event)
- }
- EXPORT_SYMBOL(ib_dispatch_event);
- 
--/**
-- * ib_query_port - Query IB port attributes
-- * @device:Device to query
-- * @port_num:Port number to query
-- * @port_attr:Port attributes
-- *
-- * ib_query_port() returns the attributes of a port through the
-- * @port_attr pointer.
-- */
--int ib_query_port(struct ib_device *device,
--		  u8 port_num,
--		  struct ib_port_attr *port_attr)
-+static int iw_query_port(struct ib_device *device,
-+			   u8 port_num,
-+			   struct ib_port_attr *port_attr)
+diff --git a/drivers/infiniband/hw/cxgb3/iwch_provider.c b/drivers/infiniband/hw/cxgb3/iwch_provider.c
+index 5848e4727b2e..dcf02ec02810 100644
+--- a/drivers/infiniband/hw/cxgb3/iwch_provider.c
++++ b/drivers/infiniband/hw/cxgb3/iwch_provider.c
+@@ -991,33 +991,8 @@ static int iwch_query_device(struct ib_device *ibdev, struct ib_device_attr *pro
+ static int iwch_query_port(struct ib_device *ibdev,
+ 			   u8 port, struct ib_port_attr *props)
  {
--	union ib_gid gid;
-+	struct in_device *inetdev;
-+	struct net_device *netdev;
- 	int err;
+-	struct iwch_dev *dev;
+-	struct net_device *netdev;
+-	struct in_device *inetdev;
+-
+ 	pr_debug("%s ibdev %p\n", __func__, ibdev);
  
--	if (!rdma_is_port_valid(device, port_num))
--		return -EINVAL;
-+	memset(port_attr, 0, sizeof(*port_attr));
-+
-+	netdev = ib_device_get_netdev(device, port_num);
-+	if (!netdev)
-+		return -ENODEV;
-+
-+	dev_put(netdev);
-+
-+	port_attr->max_mtu = IB_MTU_4096;
-+	port_attr->active_mtu = ib_mtu_int_to_enum(netdev->mtu);
-+
-+	if (!netif_carrier_ok(netdev)) {
-+		port_attr->state = IB_PORT_DOWN;
-+		port_attr->phys_state = IB_PORT_PHYS_STATE_DISABLED;
-+	} else {
-+		inetdev = in_dev_get(netdev);
-+
-+		if (inetdev && inetdev->ifa_list) {
-+			port_attr->state = IB_PORT_ACTIVE;
-+			port_attr->phys_state = IB_PORT_PHYS_STATE_LINK_UP;
-+			in_dev_put(inetdev);
-+		} else {
-+			port_attr->state = IB_PORT_INIT;
-+			port_attr->phys_state =
-+				IB_PORT_PHYS_STATE_PORT_CONFIGURATION_TRAINING;
-+		}
-+	}
-+
-+	err = device->ops.query_port(device, port_num, port_attr);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static int __ib_query_port(struct ib_device *device,
-+			   u8 port_num,
-+			   struct ib_port_attr *port_attr)
-+{
-+	union ib_gid gid = {};
-+	int err;
+-	dev = to_iwch_dev(ibdev);
+-	netdev = dev->rdev.port_info.lldevs[port-1];
+-
+-	/* props being zeroed by the caller, avoid zeroing it here */
+-	props->max_mtu = IB_MTU_4096;
+-	props->active_mtu = ib_mtu_int_to_enum(netdev->mtu);
+-
+-	if (!netif_carrier_ok(netdev))
+-		props->state = IB_PORT_DOWN;
+-	else {
+-		inetdev = in_dev_get(netdev);
+-		if (inetdev) {
+-			if (inetdev->ifa_list)
+-				props->state = IB_PORT_ACTIVE;
+-			else
+-				props->state = IB_PORT_INIT;
+-			in_dev_put(inetdev);
+-		} else
+-			props->state = IB_PORT_INIT;
+-	}
+-
+ 	props->port_cap_flags =
+ 	    IB_PORT_CM_SUP |
+ 	    IB_PORT_SNMP_TUNNEL_SUP |
+diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/hw/cxgb4/provider.c
+index 5e59c5708729..d373ac0fe2cb 100644
+--- a/drivers/infiniband/hw/cxgb4/provider.c
++++ b/drivers/infiniband/hw/cxgb4/provider.c
+@@ -305,32 +305,8 @@ static int c4iw_query_device(struct ib_device *ibdev, struct ib_device_attr *pro
+ static int c4iw_query_port(struct ib_device *ibdev, u8 port,
+ 			   struct ib_port_attr *props)
+ {
+-	struct c4iw_dev *dev;
+-	struct net_device *netdev;
+-	struct in_device *inetdev;
+-
+ 	pr_debug("ibdev %p\n", ibdev);
  
- 	memset(port_attr, 0, sizeof(*port_attr));
-+
- 	err = device->ops.query_port(device, port_num, port_attr);
- 	if (err || port_attr->subnet_prefix)
- 		return err;
- 
--	if (rdma_port_get_link_layer(device, port_num) != IB_LINK_LAYER_INFINIBAND)
-+	if (rdma_port_get_link_layer(device, port_num) !=
-+	    IB_LINK_LAYER_INFINIBAND)
- 		return 0;
- 
- 	err = device->ops.query_gid(device, port_num, 0, &gid);
-@@ -1974,6 +2007,28 @@ int ib_query_port(struct ib_device *device,
- 	port_attr->subnet_prefix = be64_to_cpu(gid.global.subnet_prefix);
- 	return 0;
- }
-+
-+/**
-+ * ib_query_port - Query IB port attributes
-+ * @device:Device to query
-+ * @port_num:Port number to query
-+ * @port_attr:Port attributes
-+ *
-+ * ib_query_port() returns the attributes of a port through the
-+ * @port_attr pointer.
-+ */
-+int ib_query_port(struct ib_device *device,
-+		  u8 port_num,
-+		  struct ib_port_attr *port_attr)
-+{
-+	if (!rdma_is_port_valid(device, port_num))
-+		return -EINVAL;
-+
-+	if (rdma_node_get_transport(device->node_type) == RDMA_TRANSPORT_IWARP)
-+		return iw_query_port(device, port_num, port_attr);
-+	else
-+		return __ib_query_port(device, port_num, port_attr);
-+}
- EXPORT_SYMBOL(ib_query_port);
- 
- static void add_ndev_hash(struct ib_port_data *pdata)
+-	dev = to_c4iw_dev(ibdev);
+-	netdev = dev->rdev.lldi.ports[port-1];
+-	/* props being zeroed by the caller, avoid zeroing it here */
+-	props->max_mtu = IB_MTU_4096;
+-	props->active_mtu = ib_mtu_int_to_enum(netdev->mtu);
+-
+-	if (!netif_carrier_ok(netdev))
+-		props->state = IB_PORT_DOWN;
+-	else {
+-		inetdev = in_dev_get(netdev);
+-		if (inetdev) {
+-			if (inetdev->ifa_list)
+-				props->state = IB_PORT_ACTIVE;
+-			else
+-				props->state = IB_PORT_INIT;
+-			in_dev_put(inetdev);
+-		} else
+-			props->state = IB_PORT_INIT;
+-	}
+-
+ 	props->port_cap_flags =
+ 	    IB_PORT_CM_SUP |
+ 	    IB_PORT_SNMP_TUNNEL_SUP |
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+index d169a8031375..8056930bbe2c 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+@@ -97,18 +97,7 @@ static int i40iw_query_port(struct ib_device *ibdev,
+ 			    u8 port,
+ 			    struct ib_port_attr *props)
+ {
+-	struct i40iw_device *iwdev = to_iwdev(ibdev);
+-	struct net_device *netdev = iwdev->netdev;
+-
+-	/* props being zeroed by the caller, avoid zeroing it here */
+-	props->max_mtu = IB_MTU_4096;
+-	props->active_mtu = ib_mtu_int_to_enum(netdev->mtu);
+-
+ 	props->lid = 1;
+-	if (netif_carrier_ok(iwdev->netdev))
+-		props->state = IB_PORT_ACTIVE;
+-	else
+-		props->state = IB_PORT_DOWN;
+ 	props->port_cap_flags = IB_PORT_CM_SUP | IB_PORT_REINIT_SUP |
+ 		IB_PORT_VENDOR_CLASS_SUP | IB_PORT_BOOT_MGMT_SUP;
+ 	props->gid_tbl_len = 1;
 -- 
 2.20.1
 
