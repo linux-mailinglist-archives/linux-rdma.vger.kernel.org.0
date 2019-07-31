@@ -2,91 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C627B80C
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 04:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD427B8A9
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 06:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbfGaCnM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jul 2019 22:43:12 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3255 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727714AbfGaCnL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Jul 2019 22:43:11 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A6BA23A9573FAE8280B4;
-        Wed, 31 Jul 2019 10:43:08 +0800 (CST)
-Received: from [127.0.0.1] (10.61.25.96) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Wed, 31 Jul 2019
- 10:43:02 +0800
-Subject: Re: [PATCH for-next 10/13] RDMA/hns: Remove unnecessary kzalloc
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <dledford@redhat.com>, <jgg@ziepe.ca>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1564477010-29804-1-git-send-email-oulijun@huawei.com>
- <1564477010-29804-11-git-send-email-oulijun@huawei.com>
- <20190730134025.GD4878@mtr-leonro.mtl.com>
-From:   oulijun <oulijun@huawei.com>
-Message-ID: <aab804d4-561a-2e3a-969c-55a523c6ee0d@huawei.com>
-Date:   Wed, 31 Jul 2019 10:43:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.0
+        id S2387483AbfGaE2D (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 00:28:03 -0400
+Received: from mga05.intel.com ([192.55.52.43]:6051 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387473AbfGaE2D (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 31 Jul 2019 00:28:03 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 30 Jul 2019 21:28:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,328,1559545200"; 
+   d="scan'208";a="371952775"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Jul 2019 21:28:02 -0700
+Date:   Tue, 30 Jul 2019 21:28:01 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Parav Pandit <parav@mellanox.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB/core: Add mitigation for Spectre V1
+Message-ID: <20190731042801.GA2179@iweiny-DESK2.sc.intel.com>
+References: <20190730202407.31046-1-tony.luck@intel.com>
+ <95f5cf70-1a1d-f48c-efac-f389360f585e@embeddedor.com>
 MIME-Version: 1.0
-In-Reply-To: <20190730134025.GD4878@mtr-leonro.mtl.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.61.25.96]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <95f5cf70-1a1d-f48c-efac-f389360f585e@embeddedor.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-ÔÚ 2019/7/30 21:40, Leon Romanovsky Ð´µÀ:
-> On Tue, Jul 30, 2019 at 04:56:47PM +0800, Lijun Ou wrote:
->> From: Lang Cheng <chenglang@huawei.com>
->>
->> For hns_roce_v2_query_qp and hns_roce_v2_modify_qp,
->> we can use stack memory to create qp context data.
->> Make the code simpler.
->>
->> Signed-off-by: Lang Cheng <chenglang@huawei.com>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 64 +++++++++++++-----------------
->>  1 file changed, 27 insertions(+), 37 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index 1186e34..07ddfae 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -4288,22 +4288,19 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
->>  {
->>  	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
->>  	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
->> -	struct hns_roce_v2_qp_context *context;
->> -	struct hns_roce_v2_qp_context *qpc_mask;
->> +	struct hns_roce_v2_qp_context ctx[2];
->> +	struct hns_roce_v2_qp_context *context = ctx;
->> +	struct hns_roce_v2_qp_context *qpc_mask = ctx + 1;
->>  	struct device *dev = hr_dev->dev;
->>  	int ret;
->>
->> -	context = kcalloc(2, sizeof(*context), GFP_ATOMIC);
->> -	if (!context)
->> -		return -ENOMEM;
->> -
->> -	qpc_mask = context + 1;
->>  	/*
->>  	 * In v2 engine, software pass context and context mask to hardware
->>  	 * when modifying qp. If software need modify some fields in context,
->>  	 * we should set all bits of the relevant fields in context mask to
->>  	 * 0 at the same time, else set them to 0x1.
->>  	 */
->> +	memset(context, 0, sizeof(*context));
-> "struct hns_roce_v2_qp_context ctx[2] = {};" will do the trick.
->
-> Thanks
->
-> .
-In this case, the mask is actually writen twice. if you do this, will it bring extra overhead when modify qp?
+On Tue, Jul 30, 2019 at 06:52:12PM -0500, Gustavo A. R. Silva wrote:
+> 
+> 
+> On 7/30/19 3:24 PM, Tony Luck wrote:
+> > Some processors may mispredict an array bounds check and
+> > speculatively access memory that they should not. With
+> > a user supplied array index we like to play things safe
+> > by masking the value with the array size before it is
+> > used as an index.
+> > 
+> > Signed-off-by: Tony Luck <tony.luck@intel.com>
+> > ---
+> > 
+> > [I don't have h/w, so just compile tested]
+> > 
+> >  drivers/infiniband/core/user_mad.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
+> > index 9f8a48016b41..fdce254e4f65 100644
+> > --- a/drivers/infiniband/core/user_mad.c
+> > +++ b/drivers/infiniband/core/user_mad.c
+> > @@ -49,6 +49,7 @@
+> >  #include <linux/sched.h>
+> >  #include <linux/semaphore.h>
+> >  #include <linux/slab.h>
+> > +#include <linux/nospec.h>
+> >  
+> >  #include <linux/uaccess.h>
+> >  
+> > @@ -888,6 +889,7 @@ static int ib_umad_unreg_agent(struct ib_umad_file *file, u32 __user *arg)
+> >  	mutex_lock(&file->port->file_mutex);
+> >  	mutex_lock(&file->mutex);
+> >  
+> > +	id = array_index_nospec(id, IB_UMAD_MAX_AGENTS);
+> 
+> This is wrong. This prevents the below condition id >= IB_UMAD_MAX_AGENTS
+> from ever being true. And I don't think this is what you want.
 
+Ah Yea...  FWIW this would probably never be hit.
 
+Tony; split the check?
 
+	if (id >= IB_UMAD_MAX_AGENTS) {
+		ret = -EINVAL;
+		goto out;
+	}
+
+	id = array_index_nospec(id, IB_UMAD_MAX_AGENTS);
+
+	if (!__get_agent(file, id)) {
+		ret = -EINVAL;
+		goto out;
+	}
+
+Ira
+
+> 
+> >  	if (id >= IB_UMAD_MAX_AGENTS || !__get_agent(file, id)) {
+> >  		ret = -EINVAL;
+> >  		goto out;
+> > 
+> 
+> --
+> Gustavo
