@@ -2,106 +2,210 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB59A7C832
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 18:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F042B7C883
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 18:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730136AbfGaQJu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 12:09:50 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:28194 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbfGaQJt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Jul 2019 12:09:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1564589388; x=1596125388;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=u/iKZf/NTWKeYtuv+X+3F0b0UJUZhY5LP6X5dvuvxTw=;
-  b=m5rErEExtXwfaiTNuyu/bfqQgtckFFugQj5dDwsmPdJ49KTlNsCM3KNG
-   rQ8x6OAI3FDgeC+mwjbdiZiqjrrBcI56bTJbtTK5Q8j/TyL7gzylWRLj8
-   alNTzmNOELNZ/8PJzJPZczS3hTAaWKNfA9ymlDCMXoNCmAl5iAZ6t/COT
-   4=;
-X-IronPort-AV: E=Sophos;i="5.64,330,1559520000"; 
-   d="scan'208";a="407469620"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 31 Jul 2019 16:09:41 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id BE5DBA2784;
-        Wed, 31 Jul 2019 16:09:40 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 31 Jul 2019 16:09:40 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.137) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 31 Jul 2019 16:09:36 +0000
-Subject: Re: [PATCH for-rc v2] RDMA/restrack: Track driver QP types in
- resource tracker
-To:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>
-References: <20190730133720.62548-1-galpress@amazon.com>
- <20190730152216.GF4878@mtr-leonro.mtl.com>
- <3c9eafe8ae94190128b82329711f5f3772756406.camel@redhat.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <61a6cbd6-770d-4653-d854-33efde3e11cc@amazon.com>
-Date:   Wed, 31 Jul 2019 19:09:30 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        id S1727309AbfGaQWs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 12:22:48 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:48148 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725209AbfGaQWs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 31 Jul 2019 12:22:48 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 065B487633;
+        Wed, 31 Jul 2019 16:22:48 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E7B91600C4;
+        Wed, 31 Jul 2019 16:22:46 +0000 (UTC)
+Message-ID: <44863abbef5c1e233cbedfdf959fe900f7722d74.camel@redhat.com>
+Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Release locks during notifier
+ unregister
+From:   Doug Ledford <dledford@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Date:   Wed, 31 Jul 2019 12:22:44 -0400
+In-Reply-To: <20190731083852.584-1-leon@kernel.org>
+References: <20190731083852.584-1-leon@kernel.org>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-KN6ZYI+3YypzNlBxzxyG"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <3c9eafe8ae94190128b82329711f5f3772756406.camel@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.137]
-X-ClientProxiedBy: EX13D05UWB003.ant.amazon.com (10.43.161.26) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.26]); Wed, 31 Jul 2019 16:22:48 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 31/07/2019 18:36, Doug Ledford wrote:
-> On Tue, 2019-07-30 at 18:22 +0300, Leon Romanovsky wrote:
->> On Tue, Jul 30, 2019 at 04:37:20PM +0300, Gal Pressman wrote:
->>> The check for QP type different than XRC has wrongly excluded driver
->>> QP
->>> types from the resource tracker.
->>> As a result, "rdma resource show" user command would not show opened
->>> driver QPs which does not reflect the real state of the system.
->>>
->>> Check QP type explicitly instead of improperly assuming enum
->>> values/ordering.
->>>
->>> Fixes: 78a0cd648a80 ("RDMA/core: Add resource tracking for create
->>> and destroy QPs")
->>> Signed-off-by: Gal Pressman <galpress@amazon.com>
->>> ---
->>> v2:
->>> * Improve commit message
->>
->> Please finish review of v0 and give enough time for reviewers to see
->> patch and post their notes before resending.
-> 
-> Gal, Leon was right in his comments to the v1 of this patch in terms of
-> the original code not being broken prior to the existence of driver qp
-> types.
 
-Driver QP types existed before EFA was merged, and they existed when the
-restrack commit was merged. So if driver QP types should be counted the restrack
-commit is the one that "broke" it, not EFA.
-If driver QP types were introduced in commit X, where X comes after the restrack
-commit then it makes sense to target the Fixes line to commit X, but this is not
-the case here.
+--=-KN6ZYI+3YypzNlBxzxyG
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Anyway, I'll change it to EFA as requested.
+On Wed, 2019-07-31 at 11:38 +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+>=20
+> The below kernel panic was observed when created bond mode LACP
+> with GRE tunnel on top. The reason to it was not released spinlock
+> during mlx5 notify unregsiter sequence.
+>=20
+> [  234.562007] BUG: scheduling while atomic: sh/10900/0x00000002
+> [  234.563005] Preemption disabled at:
+> [  234.566864] ------------[ cut here ]------------
+> [  234.567120] DEBUG_LOCKS_WARN_ON(val > preempt_count())
+> [  234.567139] WARNING: CPU: 16 PID: 10900 at kernel/sched/core.c:3203
+> preempt_count_sub+0xca/0x170
+> [  234.569550] CPU: 16 PID: 10900 Comm: sh Tainted: G        W 5.2.0-
+> rc1-for-linust-dbg-2019-05-25_04-57-33-60 #1
+> [  234.569886] Hardware name: Dell Inc. PowerEdge R720/0X3D66, BIOS
+> 2.6.1 02/12/2018
+> [  234.570183] RIP: 0010:preempt_count_sub+0xca/0x170
+> [  234.570404] Code: 03 38
+> d0 7c 08 84 d2 0f 85 b0 00 00 00 8b 15 dd 02 03 04 85 d2 75 ba 48 c7
+> c6
+> 00 e1 88 83 48 c7 c7 40 e1 88 83 e8 76 11 f7 ff <0f> 0b 5b c3 65 8b 05
+> d3 1f d8 7e 84 c0 75 82 e8 62 c3 c3 00 85 c0
+> [  234.570911] RSP: 0018:ffff888b94477b08 EFLAGS: 00010286
+> [  234.571133] RAX: 0000000000000000 RBX: 0000000000000001 RCX:
+> 0000000000000000
+> [  234.571391] RDX: 0000000000000000 RSI: 0000000000000004 RDI:
+> 0000000000000246
+> [  234.571648] RBP: ffff888ba5560000 R08: fffffbfff08962d5 R09:
+> fffffbfff08962d5
+> [  234.571902] R10: 0000000000000001 R11: fffffbfff08962d4 R12:
+> ffff888bac6e9548
+> [  234.572157] R13: ffff888babfaf728 R14: ffff888bac6e9568 R15:
+> ffff888babfaf750
+> [  234.572412] FS: 00007fcafa59b740(0000) GS:ffff888bed200000(0000)
+> knlGS:0000000000000000
+> [  234.572686] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  234.572914] CR2: 00007f984f16b140 CR3: 0000000b2bf0a001 CR4:
+> 00000000001606e0
+> [  234.573172] Call Trace:
+> [  234.573336] _raw_spin_unlock+0x2e/0x50
+> [  234.573542] mlx5_ib_unbind_slave_port+0x1bc/0x690 [mlx5_ib]
+> [  234.573793] mlx5_ib_cleanup_multiport_master+0x1d3/0x660 [mlx5_ib]
+> [  234.574039] mlx5_ib_stage_init_cleanup+0x4c/0x360 [mlx5_ib]
+> [  234.574271]  ? kfree+0xf5/0x2f0
+> [  234.574465] __mlx5_ib_remove+0x61/0xd0 [mlx5_ib]
+> [  234.574688]  ? __mlx5_ib_remove+0xd0/0xd0 [mlx5_ib]
+> [  234.574951] mlx5_remove_device+0x234/0x300 [mlx5_core]
+> [  234.575224] mlx5_unregister_device+0x4d/0x1e0 [mlx5_core]
+> [  234.575493] remove_one+0x4f/0x160 [mlx5_core]
+> [  234.575704] pci_device_remove+0xef/0x2a0
+> [  234.581407]  ? pcibios_free_irq+0x10/0x10
+> [  234.587143]  ? up_read+0xc1/0x260
+> [  234.592785] device_release_driver_internal+0x1ab/0x430
+> [  234.598442] unbind_store+0x152/0x200
+> [  234.604064]  ? sysfs_kf_write+0x3b/0x180
+> [  234.609441]  ? sysfs_file_ops+0x160/0x160
+> [  234.615021] kernfs_fop_write+0x277/0x440
+> [  234.620288]  ? __sb_start_write+0x1ef/0x2c0
+> [  234.625512] vfs_write+0x15e/0x460
+> [  234.630786] ksys_write+0x156/0x1e0
+> [  234.635988]  ? __ia32_sys_read+0xb0/0xb0
+> [  234.641120]  ? trace_hardirqs_off_thunk+0x1a/0x1c
+> [  234.646163] do_syscall_64+0x95/0x470
+> [  234.651106] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> [  234.656004] RIP: 0033:0x7fcaf9c9cfd0
+> [  234.660686] Code: 73 01
+> c3 48 8b 0d c0 6e 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00
+> 00
+> 83 3d cd cf 2d 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73
+> 31 c3 48 83 ec 08 e8 ee cb 01 00 48 89 04 24
+> [  234.670128] RSP: 002b:00007ffd3b01ddd8 EFLAGS: 00000246 ORIG_RAX:
+> 0000000000000001
+> [  234.674811] RAX: ffffffffffffffda RBX: 000000000000000d RCX:
+> 00007fcaf9c9cfd0
+> [  234.679387] RDX: 000000000000000d RSI: 00007fcafa5c1000 RDI:
+> 0000000000000001
+> [  234.683848] RBP: 00007fcafa5c1000 R08: 000000000000000a R09:
+> 00007fcafa59b740
+> [  234.688167] R10: 00007ffd3b01d8e0 R11: 0000000000000246 R12:
+> 00007fcaf9f75400
+> [  234.692386] R13: 000000000000000d R14: 0000000000000001 R15:
+> 0000000000000000
+> [  234.696495] irq event stamp: 153067
+> [  234.700525] hardirqs last enabled at (153067): [<ffffffff83258c39>]
+> _raw_spin_unlock_irqrestore+0x59/0x70
+> [  234.704665] hardirqs last disabled at (153066):
+> [<ffffffff83259382>] _raw_spin_lock_irqsave+0x22/0x90
+> [  234.708722] softirqs last enabled at (153058): [<ffffffff836006c5>]
+> __do_softirq+0x6c5/0xb4e
+> [  234.712673] softirqs last disabled at (153051):
+> [<ffffffff81227c1d>] irq_exit+0x17d/0x1d0
+> [  234.716601] ---[ end trace 5dbf096843ee9ce6 ]---
+>=20
+> Fixes: df097a278c75 ("IB/mlx5: Use the new mlx5 core notifier API")
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/main.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/infiniband/hw/mlx5/main.c
+> b/drivers/infiniband/hw/mlx5/main.c
+> index c2a5780cb394..e12a4404096b 100644
+> --- a/drivers/infiniband/hw/mlx5/main.c
+> +++ b/drivers/infiniband/hw/mlx5/main.c
+> @@ -5802,13 +5802,12 @@ static void mlx5_ib_unbind_slave_port(struct
+> mlx5_ib_dev *ibdev,
+>  		return;
+>  	}
+> =20
+> -	if (mpi->mdev_events.notifier_call)
+> -		mlx5_notifier_unregister(mpi->mdev, &mpi->mdev_events);
+> -	mpi->mdev_events.notifier_call =3D NULL;
+> -
+>  	mpi->ibdev =3D NULL;
+> =20
+>  	spin_unlock(&port->mp.mpi_lock);
+> +	if (mpi->mdev_events.notifier_call)
+> +		mlx5_notifier_unregister(mpi->mdev, &mpi->mdev_events);
+> +	mpi->mdev_events.notifier_call =3D NULL;
 
-> This fix isn't needed until after the EFA driver is merged, and
-> the Fixes: tag is used in order for scripts to know if they need to take
-> a patch because they've already taken the patch prior.  So the Fixes tag
-> needs to be the EFA driver, not the original resource tracking commit,
-> as there is no issue unless the EFA driver is placed on top of the
-> original resource tracking commit.  Please resubmit with a proper commit
-> message and fixes tag.
+I can see where this fixes the problem at hand, but this gives the
+appearance of creating a new race.  Doing a check/unregister/set-null
+series outside of any locks is a red flag to someone investigating the
+code.  You should at least make note of the fact that calling unregister
+more than once is safe.  If you're fine with it, I can add a comment and
+take the patch, or you can resubmit.
 
-Thanks, As Leon mentioned I posted v2 before v1 discussion was finished. I'll
-resubmit.
+>  	mlx5_remove_netdev_notifier(ibdev, port_num);
+>  	spin_lock(&port->mp.mpi_lock);
+> =20
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-KN6ZYI+3YypzNlBxzxyG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1BwFQACgkQuCajMw5X
+L90mqA/8DA+1N5z0JXzBQQ5i1zslAqbz2/mGiRiY/eJzuYBXeBcF2+36PiAsYqzj
+Bcb7kUbh0ftSvr6ND51mzkYliWEbHcR/amcL8QqIDJRrVJZ2uTyLygJR7Z4UXT8H
+jPiopzr3I3mfvkQhbEbF4IE1uPTNZtTDBLXG29qp657dcy4F8X9Yv7uZWh/UzJq+
+NL+i5wv7zN0WtMn9zzxDjYVbRv5O4zQVK+wvpEt3M8mSZ9fHwvkbUfeUhGMvmC7T
+GnTXw0BH+vIRcWazduFXyznkVmZHIhd0FOYbhKfIBFbNgm7s6tj599rDmhpzTLbq
+Z2naR+EbzqaocbuKlY3wg8NW0N5oA4ALU3uC99cwT1aE5KUrCod/gv3pkI62rlp/
+5FQ4xNeSytxKdmYNB9FbQHw9fkVQOAGrqx+Yx+ElbBYYaPNrgQYwrIE+9yzAeMU/
+o+07bhAiOWj2N2iQnc+S5496uoG8m41dYsI0lU8amG7IfPV1xbarvtMYHXdEeyLW
+h5OoEFGrlJlFH427XyF0KTQLMTKlFFiHMXw06dTSudoMLXueaAj1hsDZGhbr3o7+
+cVYaXjhhpk+MTT2GW8ZXt8etnA6GZiQ1fRBdnt++aJWGXMhiK6f3PH3RBf2VhdEb
+n2m99yOAVZ8S5uLyltYdGVdQjlH1dtn1GH/0vrsYTN1F/IKwhPA=
+=qLDE
+-----END PGP SIGNATURE-----
+
+--=-KN6ZYI+3YypzNlBxzxyG--
+
