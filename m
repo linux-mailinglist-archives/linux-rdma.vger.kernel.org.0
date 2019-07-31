@@ -2,91 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB88E7B8D6
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 06:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F3F7BA17
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 09:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbfGaEj7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 00:39:59 -0400
-Received: from mga05.intel.com ([192.55.52.43]:6686 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726439AbfGaEj7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 31 Jul 2019 00:39:59 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 30 Jul 2019 21:39:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,328,1559545200"; 
-   d="scan'208";a="162980318"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by orsmga007.jf.intel.com with ESMTP; 30 Jul 2019 21:39:58 -0700
-Date:   Tue, 30 Jul 2019 21:39:57 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@mellanox.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2] IB/core: Add mitigation for Spectre V1
-Message-ID: <20190731043957.GA1600@agluck-desk2.amr.corp.intel.com>
-References: <20190730202407.31046-1-tony.luck@intel.com>
- <95f5cf70-1a1d-f48c-efac-f389360f585e@embeddedor.com>
- <20190731042801.GA2179@iweiny-DESK2.sc.intel.com>
+        id S1726559AbfGaHFp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 03:05:45 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:32002 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbfGaHFp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Jul 2019 03:05:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1564556744; x=1596092744;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=mcHOxj1vdlj9HuDSDTE20Sm8zx2fHQQI24Fgfy/K4+M=;
+  b=bvd9ToHMG4IoCCNCo914e7PT8TQc7Brn+GpZSXzV9QZk1waTN9Qb6k8K
+   JtTI08vl3CdNM2xzaa8t9qfLyXAqJrUXqdND+0W87yEyTFtloAatLDR1y
+   CFeM0JAOSqV9J3ndpv/0p9olouY6b9Pt9NVT9juKKZB068tWrMDg0ppQp
+   U=;
+X-IronPort-AV: E=Sophos;i="5.64,329,1559520000"; 
+   d="scan'208";a="815207560"
+Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.47.22.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 31 Jul 2019 07:05:42 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id D5C2BA227D;
+        Wed, 31 Jul 2019 07:05:40 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 31 Jul 2019 07:05:40 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.88) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 31 Jul 2019 07:05:36 +0000
+Subject: Re: [PATCH for-rc] RDMA/restrack: Track driver QP types in resource
+ tracker
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>
+References: <20190730110137.37826-1-galpress@amazon.com>
+ <20190730133817.GC4878@mtr-leonro.mtl.com>
+ <24f4f7e3-dada-5185-3988-2e821b321bc1@amazon.com>
+ <20190730151936.GE4878@mtr-leonro.mtl.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <1a7f11e2-ae90-3173-b24a-aae11731cad1@amazon.com>
+Date:   Wed, 31 Jul 2019 10:05:31 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190731042801.GA2179@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+In-Reply-To: <20190730151936.GE4878@mtr-leonro.mtl.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.88]
+X-ClientProxiedBy: EX13D24UWB001.ant.amazon.com (10.43.161.93) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 30/07/2019 18:19, Leon Romanovsky wrote:
+> On Tue, Jul 30, 2019 at 04:49:52PM +0300, Gal Pressman wrote:
+>> On 30/07/2019 16:38, Leon Romanovsky wrote:
+>>> On Tue, Jul 30, 2019 at 02:01:37PM +0300, Gal Pressman wrote:
+>>>> The check for QP type different than XRC has wrongly excluded driver QP
+>>>> types from the resource tracker.
+>>>>
+>>>> Fixes: 78a0cd648a80 ("RDMA/core: Add resource tracking for create and destroy QPs")
+>>>
+>>> It is a little bit over to say "wrongly". At that time, we did it on purpose
+>>> because it was unclear how to represent such QP types to users and we didn't
+>>> have vendor specific hooks introduced by Steve later on.
+>>
+>> It's very confusing to see a test running and zero QPs in "rdma res".
+>> I'm fine with removing the "wrongly" :), but I still think this should be
+>> targeted to for-rc as a bug fix.
+> 
+> Yes, please remove "wrongly" and change Fixes line to be
+> "Fixes: 40909f664d27 ("RDMA/efa: Add EFA verbs implementation")",
+> because before addition of EFA driver all other drivers had QPs.
 
-Some processors may mispredict an array bounds check and
-speculatively access memory that they should not. With
-a user supplied array index we like to play things safe
-by masking the value with the array size before it is
-used as an index.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-
----
-V2: Mask the index *AFTER* the bounds check. Issue pointed
-    out by Gustavo. Fix suggested by Ira.
-
- drivers/infiniband/core/user_mad.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-index 9f8a48016b41..32cea5ed9ce1 100644
---- a/drivers/infiniband/core/user_mad.c
-+++ b/drivers/infiniband/core/user_mad.c
-@@ -49,6 +49,7 @@
- #include <linux/sched.h>
- #include <linux/semaphore.h>
- #include <linux/slab.h>
-+#include <linux/nospec.h>
- 
- #include <linux/uaccess.h>
- 
-@@ -888,7 +889,12 @@ static int ib_umad_unreg_agent(struct ib_umad_file *file, u32 __user *arg)
- 	mutex_lock(&file->port->file_mutex);
- 	mutex_lock(&file->mutex);
- 
--	if (id >= IB_UMAD_MAX_AGENTS || !__get_agent(file, id)) {
-+	if (id >= IB_UMAD_MAX_AGENTS) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+	id = array_index_nospec(id, IB_UMAD_MAX_AGENTS);
-+	if (!__get_agent(file, id)) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
--- 
-2.20.1
-
+How are DC QPs being counted?
