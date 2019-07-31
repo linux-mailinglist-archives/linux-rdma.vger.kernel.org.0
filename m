@@ -2,95 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 906E97C7AE
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 17:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB59A7C832
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 18:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727221AbfGaPy7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 11:54:59 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:39692 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726755AbfGaPy6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 31 Jul 2019 11:54:58 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 8F2A14E93D;
-        Wed, 31 Jul 2019 15:54:58 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 656975D6D0;
-        Wed, 31 Jul 2019 15:54:57 +0000 (UTC)
-Message-ID: <ccc04779d78c8856f3dd3ef57299a59df5686bc3.camel@redhat.com>
-Subject: Re: [PATCH][next] RDMA/core: fix spelling mistake "Nelink" ->
- "Netlink"
-From:   Doug Ledford <dledford@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Colin King <colin.king@canonical.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 31 Jul 2019 11:54:54 -0400
-In-Reply-To: <20190731082837.GO4878@mtr-leonro.mtl.com>
-References: <20190731080144.18327-1-colin.king@canonical.com>
-         <20190731082837.GO4878@mtr-leonro.mtl.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-TiHXGszeHh0v77g7ujL8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1730136AbfGaQJu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 12:09:50 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:28194 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbfGaQJt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Jul 2019 12:09:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1564589388; x=1596125388;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=u/iKZf/NTWKeYtuv+X+3F0b0UJUZhY5LP6X5dvuvxTw=;
+  b=m5rErEExtXwfaiTNuyu/bfqQgtckFFugQj5dDwsmPdJ49KTlNsCM3KNG
+   rQ8x6OAI3FDgeC+mwjbdiZiqjrrBcI56bTJbtTK5Q8j/TyL7gzylWRLj8
+   alNTzmNOELNZ/8PJzJPZczS3hTAaWKNfA9ymlDCMXoNCmAl5iAZ6t/COT
+   4=;
+X-IronPort-AV: E=Sophos;i="5.64,330,1559520000"; 
+   d="scan'208";a="407469620"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 31 Jul 2019 16:09:41 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id BE5DBA2784;
+        Wed, 31 Jul 2019 16:09:40 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 31 Jul 2019 16:09:40 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.137) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 31 Jul 2019 16:09:36 +0000
+Subject: Re: [PATCH for-rc v2] RDMA/restrack: Track driver QP types in
+ resource tracker
+To:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>
+References: <20190730133720.62548-1-galpress@amazon.com>
+ <20190730152216.GF4878@mtr-leonro.mtl.com>
+ <3c9eafe8ae94190128b82329711f5f3772756406.camel@redhat.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <61a6cbd6-770d-4653-d854-33efde3e11cc@amazon.com>
+Date:   Wed, 31 Jul 2019 19:09:30 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Wed, 31 Jul 2019 15:54:58 +0000 (UTC)
+In-Reply-To: <3c9eafe8ae94190128b82329711f5f3772756406.camel@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.137]
+X-ClientProxiedBy: EX13D05UWB003.ant.amazon.com (10.43.161.26) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 31/07/2019 18:36, Doug Ledford wrote:
+> On Tue, 2019-07-30 at 18:22 +0300, Leon Romanovsky wrote:
+>> On Tue, Jul 30, 2019 at 04:37:20PM +0300, Gal Pressman wrote:
+>>> The check for QP type different than XRC has wrongly excluded driver
+>>> QP
+>>> types from the resource tracker.
+>>> As a result, "rdma resource show" user command would not show opened
+>>> driver QPs which does not reflect the real state of the system.
+>>>
+>>> Check QP type explicitly instead of improperly assuming enum
+>>> values/ordering.
+>>>
+>>> Fixes: 78a0cd648a80 ("RDMA/core: Add resource tracking for create
+>>> and destroy QPs")
+>>> Signed-off-by: Gal Pressman <galpress@amazon.com>
+>>> ---
+>>> v2:
+>>> * Improve commit message
+>>
+>> Please finish review of v0 and give enough time for reviewers to see
+>> patch and post their notes before resending.
+> 
+> Gal, Leon was right in his comments to the v1 of this patch in terms of
+> the original code not being broken prior to the existence of driver qp
+> types.
 
---=-TiHXGszeHh0v77g7ujL8
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Driver QP types existed before EFA was merged, and they existed when the
+restrack commit was merged. So if driver QP types should be counted the restrack
+commit is the one that "broke" it, not EFA.
+If driver QP types were introduced in commit X, where X comes after the restrack
+commit then it makes sense to target the Fixes line to commit X, but this is not
+the case here.
 
-On Wed, 2019-07-31 at 11:28 +0300, Leon Romanovsky wrote:
-> On Wed, Jul 31, 2019 at 09:01:44AM +0100, Colin King wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
-> >=20
-> > There is a spelling mistake in a warning message, fix it.
-> >=20
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >  drivers/infiniband/core/netlink.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
->=20
-> Thanks,
-> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Anyway, I'll change it to EFA as requested.
 
-Thanks, applied to for-next.
+> This fix isn't needed until after the EFA driver is merged, and
+> the Fixes: tag is used in order for scripts to know if they need to take
+> a patch because they've already taken the patch prior.  So the Fixes tag
+> needs to be the EFA driver, not the original resource tracking commit,
+> as there is no issue unless the EFA driver is placed on top of the
+> original resource tracking commit.  Please resubmit with a proper commit
+> message and fixes tag.
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-TiHXGszeHh0v77g7ujL8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1Buc4ACgkQuCajMw5X
-L93xDg/+L2blb3qy7x0h7UHlovEAcdgNtq8TTtGnS51i2gGaE0uLdfLC6JI7ohJJ
-SdeGHdxhrSRSeS0SbT1Q865JcmWlpt0fUpC109bAS78fhtsH/7ySJ1cKrZpCdCi3
-M/U7cGXKnZcdSqwBKYBpDzMQZzugOl5Q2tvRYeFv+8wuTFp7WReexDaZWeA0hEH9
-eOzsCHp4kR4/x4hIZw/feI4oAuI0MZtYawIqrR75Zj0JzXwWz1OpHMx0qJe58+cB
-N2lysGUmzgnID3iJXDKDmx1tWP4+d2WYFJ1Keeo9DhgcaCGBjuMmfW07LL0e2zou
-zuId8Xe5GwdOLpAIESPB7D+lANfVZpsJSDx+ge1x6gzQollIjA0bBnjds+28Z43G
-SEgbDmZSmhedEUiE/GnkJcQJxMKVE1bOD5RtcodqKmq1Vc4UCAK6oABE2peVzqSI
-3im0kHf26dvknZXh77ews4U5qIRERxLPDycGb8EuRvAe7yiF3G61qCKeeiTreDXH
-IIhjxPeCOhgpHh2WYSIyWZceWuZNnIx7e0UL9qvoYX+MnssfJdT7PoVgIZPRSxaX
-ifjk/AD79B1K6RpqdsrnyzGhmM6GCllsSPpR1kVlBn/pNqC8FIe3Jt5o0W86hh1U
-306tkS3oABmJyTLiW1TcrNMuAiJj5nFLeWxAzE28A1Mf6+HfBcQ=
-=inNQ
------END PGP SIGNATURE-----
-
---=-TiHXGszeHh0v77g7ujL8--
-
+Thanks, As Leon mentioned I posted v2 before v1 discussion was finished. I'll
+resubmit.
