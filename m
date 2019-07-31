@@ -2,91 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5C37C747
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 17:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7B07C7A3
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 17:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbfGaPrv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Jul 2019 11:47:51 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:53122 "EHLO mx1.redhat.com"
+        id S1726185AbfGaPx1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Jul 2019 11:53:27 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:49614 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727352AbfGaPrv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 31 Jul 2019 11:47:51 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        id S1726115AbfGaPx1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 31 Jul 2019 11:53:27 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 838C73091754;
-        Wed, 31 Jul 2019 15:47:50 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id A41B63007C58;
+        Wed, 31 Jul 2019 15:53:26 +0000 (UTC)
 Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A6FC660852;
-        Wed, 31 Jul 2019 15:47:49 +0000 (UTC)
-Message-ID: <742cfa9cf055225e73237ef21a5858ec442dbcd8.camel@redhat.com>
-Subject: Re: [PATCH rdma-core] srp_daemon: check that port LID is valid
- before calling create_ah
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A0F845D9C9;
+        Wed, 31 Jul 2019 15:53:25 +0000 (UTC)
+Message-ID: <0a43aaa2bc1883f57ae1421b03cc3d5d23c2e425.camel@redhat.com>
+Subject: Re: [PATCH v6 20/57] infiniband: Remove dev_err() usage after
+ platform_get_irq()
 From:   Doug Ledford <dledford@redhat.com>
-To:     Sergey Gorenko <sergeygo@mellanox.com>, bvanassche@acm.org
-Cc:     linux-rdma@vger.kernel.org,
-        Vladimir Koushnir <vladimirk@mellanox.com>
-Date:   Wed, 31 Jul 2019 11:47:47 -0400
-In-Reply-To: <20190730105455.15080-1-sergeygo@mellanox.com>
-References: <20190730105455.15080-1-sergeygo@mellanox.com>
+To:     Stephen Boyd <swboyd@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Wed, 31 Jul 2019 11:53:23 -0400
+In-Reply-To: <20190730181557.90391-21-swboyd@chromium.org>
+References: <20190730181557.90391-1-swboyd@chromium.org>
+         <20190730181557.90391-21-swboyd@chromium.org>
 Organization: Red Hat, Inc.
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-LyXnVDbKXu+TQaSHicBe"
+        protocol="application/pgp-signature"; boundary="=-3uGQjmrAoGQofD5SJvvd"
 User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Wed, 31 Jul 2019 15:47:50 +0000 (UTC)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Wed, 31 Jul 2019 15:53:26 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---=-LyXnVDbKXu+TQaSHicBe
+--=-3uGQjmrAoGQofD5SJvvd
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2019-07-30 at 10:54 +0000, Sergey Gorenko wrote:
-> From: Vladimir Koushnir <vladimirk@mellanox.com>
+On Tue, 2019-07-30 at 11:15 -0700, Stephen Boyd wrote:
+> We don't need dev_err() messages when platform_get_irq() fails now
+> that
+> platform_get_irq() prints an error message itself when something goes
+> wrong. Let's remove these prints with a simple semantic patch.
 >=20
-> The default LID that is given to the port is not valid (a valid LID
-> value
-> is > 0 and < 0xc000), so in case the port didn't get a valid lid from
-> the
-> SM there is no need to call create_ah.
+> // <smpl>
+> @@
+> expression ret;
+> struct platform_device *E;
+> @@
 >=20
-> Signed-off-by: Vladimir Koushnir <vladimirk@mellanox.com>
-> Signed-off-by: Sergey Gorenko <sergeygo@mellanox.com>
+> ret =3D
+> (
+> platform_get_irq(E, ...)
+> platform_get_irq_byname(E, ...)
+> );
+>=20
+> if ( \( ret < 0 \| ret <=3D 0 \) )
+> {
+> (
+> -if (ret !=3D -EPROBE_DEFER)
+> -{ ...
+> -dev_err(...);
+> -... }
+> ...
+> -dev_err(...);
+> )
+> ...
+> }
+> // </smpl>
+>=20
+> While we're here, remove braces on if statements that only have one
+> statement (manually).
+>=20
+> Cc: Doug Ledford <dledford@redhat.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: linux-rdma@vger.kernel.org
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 > ---
+>=20
+> Please apply directly to subsystem trees
+>=20
 
-Thanks, applied.
+Thanks for being clear about where you wanted these applied.  This patch
+applied to rdma for-next, thanks.
 
 --=20
 Doug Ledford <dledford@redhat.com>
     GPG KeyID: B826A3330E572FDD
     Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
---=-LyXnVDbKXu+TQaSHicBe
+--=-3uGQjmrAoGQofD5SJvvd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1BuCMACgkQuCajMw5X
-L93CqQ//cE0NUQ4xSLiUN3eOwlyvlVW8/64pzhsYuN2CVc89s5WRzaNkbXPP/1ZA
-0zsNL22Qgfiyz5hsrBDDctn05uNNwfKLRnXHBk6f5aABQ7ZPTrStRbBBnTNaqqsJ
-GtGXEbon/pB59ZHnUkXLsajrr+jZytvnKo3PqD7D+EMXuduNmpx5iqw3RZ8AbJXh
-CrPSdRJTqvhUTrabgoRLaIp5tsPfHlwrEE9PGLnmJ3NfEKNOSO0ShSpE9gR6lNYP
-Nm2EpUnWcfkw2ioDfvklg1DH3ziGokXbsWQG375D8tNk796t0RfsmSbuNqnoLWoS
-yRHZ386P6VMyGFbVpYVPZZnRQe8sJ2DwtusWGjJPEkVymgm2QylJ4wQRLphtfN1p
-svzpUnFFSIKEd8J+4gbBn6OH1L5MFskHg5aUVp7VoGQzaXzPmeIs3NTjcbQPkYYt
-po/zpOv3MTvrimNa+Y2GaL5qQ9HtBcsrwbtl/YDVh7vJsB83kYUBF2DMTSgtLFRu
-yiwyeITZmW9+lAVhkkHwOyYeL8ZjmqrryRhBEDw5+Y1l0pLSFKj1BNQ6fOAX/WIw
-qnruHgRtzAfkXKbGvzs0UHbTLO4xn0TtX86o39a5775BXsMWqxZYDmgBjP4NfvuQ
-pxunGnOueocXtiFdxvwMsIArGR1TWGl0Ecc01EgS2XYtoy/ifm8=
-=2t5/
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1BuXMACgkQuCajMw5X
+L91QTBAAiui1A475ITd01T4j1gUB9/Sd6MwQ0xiBHbRxH8/WUDBBv/aLmriNCEbR
+Ty0LZ9tMPoySa6KgwjCwjXAcNPLiFqQSjS3FTaafesBdlvyQ78MKbEdnEtCJoX+0
++JjyTu3XxMD5uJzE4LE6m0T7dIJJJWUdisJhcqFa0hxHFtGQ9sUat1ap0MWJYwIr
+1XDaNDH/ovGB0DfcTaa8pI1AZesabdhwYCB5tWj90ZWJmr8E+aUxTu1pTFHbP6Yj
+hyDCQpFSrNw7ZOUDFvdghB+HtywDNWpJPV7mZ4kq5cyAdoMdHmPR1zYUFOzUEH+d
+Rx0OixPW8LYQ25Hep74mhDAkxJBcEX/B0nqhvRJHLzppWiDAKT+KqznrBuczCysA
+MXUMGFvLseEi1+lO5JasVvNemYf4E6iXXcyo+CSJvToEyXruOaunonP7nlqPRrgL
+KhNNhpCV71p0rSLemlur46V9sDvHQc5csfGYxi4TEr++nddiWTHH5eIkKbR6MUYJ
+JPJCdVyJwqnV4im6TIVnU2is/x7qMex+0ufGAPn+XtRUOxqRSHXTAh5UkHanELA0
+UpgUKT+ipnI7S+JMYjWleclqg/ZvWWRvDVNsetP/VWxlWRpfcmUsAqa1DvlSINZG
+IB/o7oJ3gGVLJLilhiW4yJVDoh9RlNvgJpv1mHDVbc3jzcUQWSo=
+=n9Yh
 -----END PGP SIGNATURE-----
 
---=-LyXnVDbKXu+TQaSHicBe--
+--=-3uGQjmrAoGQofD5SJvvd--
 
