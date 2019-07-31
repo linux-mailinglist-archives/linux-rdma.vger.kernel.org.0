@@ -2,166 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4B67B699
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 02:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C627B80C
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2019 04:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbfGaAOR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jul 2019 20:14:17 -0400
-Received: from gateway24.websitewelcome.com ([192.185.50.71]:12335 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726210AbfGaAOR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Jul 2019 20:14:17 -0400
-X-Greylist: delayed 1321 seconds by postgrey-1.27 at vger.kernel.org; Tue, 30 Jul 2019 20:14:16 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 892C32B296
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Jul 2019 18:52:14 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id sbughLl8r90onsbughD92G; Tue, 30 Jul 2019 18:52:14 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/ukpMDk0wz5CKxDvTagctdZtNe0/IpirBbr6dKugnM8=; b=s9tQPhZIjt4WV11f3iLv3viKaM
-        3bhni4I9Xcealg6Ws/572HxaDn4LeG4l5N+qESUHYUtLAEv6BGzvULAHVBIJkPdMXrHmAWDNMtkOr
-        6IqULw1YzDY2h5m3Ygx6YW0Pf1NCkJrrBOAmCPywN8Gx8UErb+HJyMQAUMS+9YIC1uZkcoUmZkgxd
-        9lPEpeu2Xg8KOrvQtjNgk3COVcXO5aDhw/IpXXLQ4wR0Tx2873vJrgrRv8pbMl7scO6mNWz0BiqNs
-        yA1JADgLSc+LCBtcDirWfqOpU8Ehy8IvJfcMzvbY6mLoqVnaQCHscweUnLaetUzO4UIY8XIUcBMKQ
-        auXcd++w==;
-Received: from [187.192.11.120] (port=58536 helo=[192.168.43.131])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1hsbug-002CWg-56; Tue, 30 Jul 2019 18:52:14 -0500
-To:     Tony Luck <tony.luck@intel.com>, Doug Ledford <dledford@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20190730202407.31046-1-tony.luck@intel.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Subject: Re: [PATCH] IB/core: Add mitigation for Spectre V1
-Message-ID: <95f5cf70-1a1d-f48c-efac-f389360f585e@embeddedor.com>
-Date:   Tue, 30 Jul 2019 18:52:12 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727999AbfGaCnM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jul 2019 22:43:12 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3255 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727714AbfGaCnL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Jul 2019 22:43:11 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id A6BA23A9573FAE8280B4;
+        Wed, 31 Jul 2019 10:43:08 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Wed, 31 Jul 2019
+ 10:43:02 +0800
+Subject: Re: [PATCH for-next 10/13] RDMA/hns: Remove unnecessary kzalloc
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <dledford@redhat.com>, <jgg@ziepe.ca>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1564477010-29804-1-git-send-email-oulijun@huawei.com>
+ <1564477010-29804-11-git-send-email-oulijun@huawei.com>
+ <20190730134025.GD4878@mtr-leonro.mtl.com>
+From:   oulijun <oulijun@huawei.com>
+Message-ID: <aab804d4-561a-2e3a-969c-55a523c6ee0d@huawei.com>
+Date:   Wed, 31 Jul 2019 10:43:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-In-Reply-To: <20190730202407.31046-1-tony.luck@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20190730134025.GD4878@mtr-leonro.mtl.com>
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.192.11.120
-X-Source-L: No
-X-Exim-ID: 1hsbug-002CWg-56
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.131]) [187.192.11.120]:58536
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+ÔÚ 2019/7/30 21:40, Leon Romanovsky Ð´µÀ:
+> On Tue, Jul 30, 2019 at 04:56:47PM +0800, Lijun Ou wrote:
+>> From: Lang Cheng <chenglang@huawei.com>
+>>
+>> For hns_roce_v2_query_qp and hns_roce_v2_modify_qp,
+>> we can use stack memory to create qp context data.
+>> Make the code simpler.
+>>
+>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 64 +++++++++++++-----------------
+>>  1 file changed, 27 insertions(+), 37 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> index 1186e34..07ddfae 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> @@ -4288,22 +4288,19 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+>>  {
+>>  	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
+>>  	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+>> -	struct hns_roce_v2_qp_context *context;
+>> -	struct hns_roce_v2_qp_context *qpc_mask;
+>> +	struct hns_roce_v2_qp_context ctx[2];
+>> +	struct hns_roce_v2_qp_context *context = ctx;
+>> +	struct hns_roce_v2_qp_context *qpc_mask = ctx + 1;
+>>  	struct device *dev = hr_dev->dev;
+>>  	int ret;
+>>
+>> -	context = kcalloc(2, sizeof(*context), GFP_ATOMIC);
+>> -	if (!context)
+>> -		return -ENOMEM;
+>> -
+>> -	qpc_mask = context + 1;
+>>  	/*
+>>  	 * In v2 engine, software pass context and context mask to hardware
+>>  	 * when modifying qp. If software need modify some fields in context,
+>>  	 * we should set all bits of the relevant fields in context mask to
+>>  	 * 0 at the same time, else set them to 0x1.
+>>  	 */
+>> +	memset(context, 0, sizeof(*context));
+> "struct hns_roce_v2_qp_context ctx[2] = {};" will do the trick.
+>
+> Thanks
+>
+> .
+In this case, the mask is actually writen twice. if you do this, will it bring extra overhead when modify qp?
 
 
-On 7/30/19 3:24 PM, Tony Luck wrote:
-> Some processors may mispredict an array bounds check and
-> speculatively access memory that they should not. With
-> a user supplied array index we like to play things safe
-> by masking the value with the array size before it is
-> used as an index.
-> 
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
-> 
-> [I don't have h/w, so just compile tested]
-> 
->  drivers/infiniband/core/user_mad.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-> index 9f8a48016b41..fdce254e4f65 100644
-> --- a/drivers/infiniband/core/user_mad.c
-> +++ b/drivers/infiniband/core/user_mad.c
-> @@ -49,6 +49,7 @@
->  #include <linux/sched.h>
->  #include <linux/semaphore.h>
->  #include <linux/slab.h>
-> +#include <linux/nospec.h>
->  
->  #include <linux/uaccess.h>
->  
-> @@ -888,6 +889,7 @@ static int ib_umad_unreg_agent(struct ib_umad_file *file, u32 __user *arg)
->  	mutex_lock(&file->port->file_mutex);
->  	mutex_lock(&file->mutex);
->  
-> +	id = array_index_nospec(id, IB_UMAD_MAX_AGENTS);
 
-This is wrong. This prevents the below condition id >= IB_UMAD_MAX_AGENTS
-from ever being true. And I don't think this is what you want.
-
->  	if (id >= IB_UMAD_MAX_AGENTS || !__get_agent(file, id)) {
->  		ret = -EINVAL;
->  		goto out;
-> 
-
---
-Gustavo
