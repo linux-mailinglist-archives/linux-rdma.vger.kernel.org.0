@@ -2,184 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 846877DD97
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2019 16:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332E47DDD1
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2019 16:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731887AbfHAOQ2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Aug 2019 10:16:28 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:36888 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729149AbfHAOQ2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Aug 2019 10:16:28 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id A7012307D989;
-        Thu,  1 Aug 2019 14:16:27 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A721F6013A;
-        Thu,  1 Aug 2019 14:16:26 +0000 (UTC)
-Message-ID: <060b3e8fbe48312e9af33b88ba7ba62a6b64b493.camel@redhat.com>
-Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Release locks during notifier
- unregister
-From:   Doug Ledford <dledford@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Date:   Thu, 01 Aug 2019 10:16:23 -0400
-In-Reply-To: <20190801120821.GK4832@mtr-leonro.mtl.com>
-References: <20190731083852.584-1-leon@kernel.org>
-         <44863abbef5c1e233cbedfdf959fe900f7722d74.camel@redhat.com>
-         <20190731170054.GF22677@mellanox.com>
-         <20190731170944.GC4832@mtr-leonro.mtl.com>
-         <20190731172215.GJ22677@mellanox.com>
-         <20190731180124.GE4832@mtr-leonro.mtl.com>
-         <20190731195523.GK22677@mellanox.com>
-         <20190801082749.GH4832@mtr-leonro.mtl.com>
-         <20190801120007.GB23885@mellanox.com>
-         <20190801120821.GK4832@mtr-leonro.mtl.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-vQL9rswYXdZHHZzp9yAx"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1732000AbfHAOYl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Aug 2019 10:24:41 -0400
+Received: from mail-eopbgr50089.outbound.protection.outlook.com ([40.107.5.89]:11945
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731986AbfHAOYl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 1 Aug 2019 10:24:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D8IvnzRowVExBPKJvSrixxoT9RF8K1Xq+bhUgatK9YwEn3h0PwByIbXPHnePhUuP4QkYZRlrQUBFLkkMtjAzlk6OZA4/SsfBSDExwIYNl2jQ6zkcOElywTZv7ZqbIdoL8KvvRembPvMjTm7FRIYgUX2MHM2ZbIN3u21psdc49voGQoHJQiFlmpK3mD2LT1/VO231i1Jqnfi827RwPgLXq312ps/v0p2EFNC/PyfsjDM0cHj0PzO1Dr4N3B1c6Nmom2ny3ARpf1iF3xxQE+RwVd/1g9uEXT8WofnqebEwbapvCnWoGPpFZoA7iZbQIBDzdr21EvnT9XiAcqfymbuMjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ftlIbwRarAUZznkG3GrVxXv0ERwyRigpgVBNwOhoMpI=;
+ b=ht+njWZr24shbNbw9S8CnxKNl58A8IEjEJSKxRNHr46t9O1zMJrj17vEn0D6YbhSV5kYPLagNMfd03NCxif0N1yYCCUxqpptMr1+shsvIz2kfPg1Q9nK8xx32BE3X9tZrgnlDaOoY9Mxe6zg3+QXtzK/774pu0r60EmjIUoml766HPF+Vlkr6F8e7RlB2mSM5botAst2ZOabV02aPFiMdJaCRxrhkWYiZzkg0NpeV7EOrePRMz9gmWI4U9WfwuliQOx5dNe3Ten0ja2gMvS+V3U740s7Zp+wj0gp2p/l5c6r4TyitWwMWr/GQjjpj2fTCy2VY6NeaDnfYnWrI+B8wA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=mellanox.com;dmarc=pass action=none
+ header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ftlIbwRarAUZznkG3GrVxXv0ERwyRigpgVBNwOhoMpI=;
+ b=ax45Q65Q5OIkL6LA3gHGD/3XGRCH57npNB52wxpgoZnDd0NgqTQ8WgeVkMn4JSEemP52Y8ZUdBKkqCHKyiOqIvkqZ4NaBqpjDClClBgeoQaQ8Pv6q6BXDTpU9iIEuqgQlJAsfN7qI4YWpyntZqtkNcahrxsbw2IvRiHRcRp8CWE=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB6238.eurprd05.prod.outlook.com (20.178.124.29) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2115.15; Thu, 1 Aug 2019 14:24:37 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::5c6f:6120:45cd:2880]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::5c6f:6120:45cd:2880%4]) with mapi id 15.20.2136.010; Thu, 1 Aug 2019
+ 14:24:37 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next 0/3] ODP support for mlx5 DC QPs
+Thread-Topic: [PATCH rdma-next 0/3] ODP support for mlx5 DC QPs
+Thread-Index: AQHVSGOxrLc2pW/YvUu4V2Ix3/TJEqbmWOQA
+Date:   Thu, 1 Aug 2019 14:24:37 +0000
+Message-ID: <20190801142432.GD23885@mellanox.com>
+References: <20190801122139.25224-1-leon@kernel.org>
+In-Reply-To: <20190801122139.25224-1-leon@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: QB1PR01CA0025.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:2d::38) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 35bca7bb-cbaa-438b-a9a6-08d7168bfb59
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR05MB6238;
+x-ms-traffictypediagnostic: VI1PR05MB6238:
+x-microsoft-antispam-prvs: <VI1PR05MB6238D7CA74F90C9783189712CFDE0@VI1PR05MB6238.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 01165471DB
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(396003)(39860400002)(346002)(136003)(376002)(199004)(189003)(6512007)(81166006)(478600001)(25786009)(305945005)(8936002)(476003)(53936002)(81156014)(446003)(11346002)(66946007)(229853002)(36756003)(2616005)(71190400001)(4326008)(68736007)(71200400001)(8676002)(64756008)(66446008)(66476007)(66556008)(33656002)(7736002)(66066001)(99286004)(316002)(54906003)(6116002)(52116002)(3846002)(76176011)(186003)(6506007)(386003)(2906002)(5660300002)(1076003)(6436002)(6916009)(6246003)(6486002)(102836004)(14454004)(486006)(86362001)(26005)(4744005)(256004);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6238;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: ninUkD+v0MVx4zKLIWA++ZnStLvZLCA/ACplQpyRyfB7j0CGQ+T5w0YK29z202m0PrpP17dMucuTLpXp5+TMamrksuUtMIU9vCj2LApmemwU8/mWlpEHai7wWqMpQQQPue4ngk5ZJyqdbx+RUQy5cld/pgnBKcTctlgZie2phK+s8Df9k5gYEDq8SVOGRItpZJ4Ur7jYHCD9G1HvkkkZVqcJ9w6KUGDNmBJqL7f/Iq6exZ9/vGaFxilZyv19nBKrFvWliD3cvX1zFBPqFIcIQgx/pSQ2H6muXqniYbI1yHOjS3l0IquEBHcPyG3rfl6SHAs/WisOnsl4HG9unldNADVY0909Q6wrxnWOb2+IJ1wSR8eBMjKeCeuMaX/8R9R8XelRrcTP3zYBPr5FRt/RTu/1KOfEos/6kngOEgiexRc=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0F90C8B9BB2C6A4C9E351F6A2822DE29@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.48]); Thu, 01 Aug 2019 14:16:27 +0000 (UTC)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35bca7bb-cbaa-438b-a9a6-08d7168bfb59
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Aug 2019 14:24:37.1765
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6238
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
---=-vQL9rswYXdZHHZzp9yAx
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2019-08-01 at 15:08 +0300, Leon Romanovsky wrote:
-> On Thu, Aug 01, 2019 at 12:00:12PM +0000, Jason Gunthorpe wrote:
-> > On Thu, Aug 01, 2019 at 11:27:49AM +0300, Leon Romanovsky wrote:
-> > > On Wed, Jul 31, 2019 at 07:55:28PM +0000, Jason Gunthorpe wrote:
-> > > > On Wed, Jul 31, 2019 at 09:01:24PM +0300, Leon Romanovsky wrote:
-> > > > > On Wed, Jul 31, 2019 at 05:22:19PM +0000, Jason Gunthorpe
-> > > > > wrote:
-> > > > > > On Wed, Jul 31, 2019 at 08:09:44PM +0300, Leon Romanovsky
-> > > > > > wrote:
-> > > > > > > On Wed, Jul 31, 2019 at 05:00:59PM +0000, Jason Gunthorpe
-> > > > > > > wrote:
-> > > > > > > > On Wed, Jul 31, 2019 at 12:22:44PM -0400, Doug Ledford
-> > > > > > > > wrote:
-> > > > > > > > > > diff --git a/drivers/infiniband/hw/mlx5/main.c
-> > > > > > > > > > b/drivers/infiniband/hw/mlx5/main.c
-> > > > > > > > > > index c2a5780cb394..e12a4404096b 100644
-> > > > > > > > > > +++ b/drivers/infiniband/hw/mlx5/main.c
-> > > > > > > > > > @@ -5802,13 +5802,12 @@ static void
-> > > > > > > > > > mlx5_ib_unbind_slave_port(struct
-> > > > > > > > > > mlx5_ib_dev *ibdev,
-> > > > > > > > > >  		return;
-> > > > > > > > > >  	}
-> > > > > > > > > >=20
-> > > > > > > > > > -	if (mpi->mdev_events.notifier_call)
-> > > > > > > > > > -		mlx5_notifier_unregister(mpi->mdev,
-> > > > > > > > > > &mpi->mdev_events);
-> > > > > > > > > > -	mpi->mdev_events.notifier_call =3D NULL;
-> > > > > > > > > > -
-> > > > > > > > > >  	mpi->ibdev =3D NULL;
-> > > > > > > > > >=20
-> > > > > > > > > >  	spin_unlock(&port->mp.mpi_lock);
-> > > > > > > > > > +	if (mpi->mdev_events.notifier_call)
-> > > > > > > > > > +		mlx5_notifier_unregister(mpi->mdev,
-> > > > > > > > > > &mpi->mdev_events);
-> > > > > > > > > > +	mpi->mdev_events.notifier_call =3D NULL;
-> > > > > > > > >=20
-> > > > > > > > > I can see where this fixes the problem at hand, but
-> > > > > > > > > this gives the
-> > > > > > > > > appearance of creating a new race.  Doing a
-> > > > > > > > > check/unregister/set-null
-> > > > > > > > > series outside of any locks is a red flag to someone
-> > > > > > > > > investigating the
-> > > > > > > > > code.  You should at least make note of the fact that
-> > > > > > > > > calling unregister
-> > > > > > > > > more than once is safe.  If you're fine with it, I can
-> > > > > > > > > add a comment and
-> > > > > > > > > take the patch, or you can resubmit.
-> > > > > > > >=20
-> > > > > > > > Mucking about notifier_call like that is gross anyhow,
-> > > > > > > > maybe better to
-> > > > > > > > delete it entirely.
-> > > > > > >=20
-> > > > > > > What do you propose to delete?
-> > > > > >=20
-> > > > > > The 'mpi->mdev_events.notifier_call =3D NULL;' and 'if
-> > > > > > (mpi->mdev_events.notifier_call)'
-> > > > > >=20
-> > > > > > Once it leaves the lock it stops doing anything useful.
-> > > > > >=20
-> > > > > > If you need it, then we can't drop the lock, if you don't,
-> > > > > > it is just
-> > > > > > dead code, delete it.
-> > > > >=20
-> > > > > This specific notifier_call is protected outside
-> > > > > of mlx5_ib_unbind_slave_port() by mlx5_ib_multiport_mutex and
-> > > > > NULL check
-> > > > > is needed to ensure single call to mlx5_notifier_unregister,
-> > > > > because
-> > > > > calls to mlx5_ib_unbind_slave_port() will be serialized.
-> > > >=20
-> > > > If this routine is now relying on locking that is not obvious in
-> > > > the
-> > > > function itself then add a lockdep too.
-> > >=20
-> > > It was "before" without lockdep and we are
-> > > protecting "mpi->mdev_events.notifier_call =3D NULL;"
-> >=20
-> > Before the locking was relying on mpi_lock inside this function now
-> > this patch changes it to relies on mlx5_ib_multiport_mutex, so it
-> > needs a lockdep
+On Thu, Aug 01, 2019 at 03:21:36PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 >=20
-> It didn't rely, but was moved by mistake. I'll add lockdep and resend.
+> From Michael,
 >=20
-> Thanks
+> The series adds support for on-demand paging for DC transport.
+> Adding handling of DC WQE parsing upon page faults and exposing
+> capabilities.
+>=20
+> As DC is mlx-only transport, the capabilities are exposed to the user
+> using the direct-verbs mechanism. Namely through the mlx5dv_query_device.
 
-There's no need for a lockdep.  The removal of the notifier callback
-entry is re-entrant safe.  The core removal routines have their own
-spinlock they use to protect the actual notifier list.  If you call it
-more than once, the second and subsequent calls merely scan the list,
-find no matching entry, and return ENOENT.  The only reason this might
-need a lock and a lockdep entry is if you are protecting against a race
-with the *add* notifier code in the mlx5 driver specifically (the core
-add code won't have an issue, but since you only have a single place to
-store the notifier callback pointer, if it would be possible for you to
-add two callbacks and write over the first callback pointer with the
-second without removing the first, then you would leak a callback
-notifier in the core notifier list).
+The cover letter should like to the RDMA core PR that uses the new
+API...
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-vQL9rswYXdZHHZzp9yAx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1C9DgACgkQuCajMw5X
-L92+RhAAl5n4nlQtTTW4M5dau3xk5E5pcE5992ctP7vW/K5XxBIvEJbDP2nSvsJc
-WL04l3E8ctJ4YVhWwD28Fb+oKNFhEnacbOxaLqUrjXVGR0G/n4MiOeBfId8VtBbe
-lzTTkqONM2kT50XYF8aQLdF3BY4i47xQPB4AUme9ma550n0JMSsTsFWpBIIxpb8I
-7941GLxHi13yXoyrDhgJFonpIHKGd4PPJVBN8e1dDHWHBeoqu3ybbFfPdXCqVVtL
-/n9suMHZ1XCVEJgGYURc3H8zFEl1mibeL3ih3d1+zWa+lJyTp+mWKfzR4+BQJwl5
-2x/ERx+zaChd4BrZ5qFObK0M9gEdQA427ERem6+g/I8bte0F4kt2YxiqAGSLuhuj
-bYmYJlt7O2eYfO5mKC/I8Sd+W47ZuugiVvB4CoqpHKQ9iZTrtcKAF9+tnvP24S6D
-5JXs0ruM0RIvPPgI41wcN3zrjMFfXm7QJ7nDR9II8KQsFZgiz7U/bFKOyuBAfRn0
-tWHoG9CVmEljG2qLBEBb/SFsYQtW8kcBIiwe1nlwEbExu2hsQRFNgZUMzouCnIrq
-F+2qhIVd3XYSUJ8HQOdohRYSVrjEWplPg7WQgsHqrNDTwshAaH+5fYzTIZjkgQAA
-7IFF+6Br1O4gObbOH6E4jUFPAdiL3Di/XYQPE3wQtj4Gp2gbcGY=
-=5G8f
------END PGP SIGNATURE-----
-
---=-vQL9rswYXdZHHZzp9yAx--
-
+Jason
