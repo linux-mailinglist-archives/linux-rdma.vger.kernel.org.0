@@ -2,75 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C88667DA5C
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2019 13:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E727DA8E
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2019 13:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725930AbfHALed (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Aug 2019 07:34:33 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:14980 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbfHALed (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Aug 2019 07:34:33 -0400
-Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x71BYNvP029930;
-        Thu, 1 Aug 2019 04:34:24 -0700
-Date:   Thu, 1 Aug 2019 17:04:23 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     jgg@ziepe.ca, bmt@zurich.ibm.com, linux-rdma@vger.kernel.org,
-        bharat@chelsio.com, nirranjan@chelsio.com
-Subject: Re: [PATCH for-rc] siw: MPA Reply handler tries to read beyond MPA
- message
-Message-ID: <20190801113421.GA3145@chelsio.com>
-References: <20190731103310.23199-1-krishna2@chelsio.com>
- <b5c1a7d76e4aaf89063c56f1437fa803e3d7ea45.camel@redhat.com>
+        id S1727656AbfHALsd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Aug 2019 07:48:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726756AbfHALsd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 1 Aug 2019 07:48:33 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57F1320B7C;
+        Thu,  1 Aug 2019 11:48:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564660112;
+        bh=RrTALbo/Q05tGlWNwGZnAZ0tHRqY0Wj1Ki0WV4qz2ro=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PM+7yPGZGEJSamJRMnFV32nhMnZ49VP3PeUsPm7aPjUrGamaqU7ob4Bm7174E+nZ8
+         frPSJgOtpZDJM2CLC2AfUxOEpCZPyiVlZx7yzqFie2ZmZuuJJbkHeCugVFblq2Nmz2
+         +FcYNcf8llADKap48TdkDO5a/OCZcRr0/lavQS9M=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Lijun Ou <oulijun@huawei.com>
+Subject: [PATCH rdma-next] RDMA/hns: Remove not used UAR assignment
+Date:   Thu,  1 Aug 2019 14:48:27 +0300
+Message-Id: <20190801114827.24263-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5c1a7d76e4aaf89063c56f1437fa803e3d7ea45.camel@redhat.com>
-User-Agent: Mutt/1.9.3 (20180206.02d571c2)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wednesday, July 07/31/19, 2019 at 15:17:40 -0400, Doug Ledford wrote:
-> On Wed, 2019-07-31 at 16:03 +0530, Krishnamraju Eraparaju wrote:
-> > while processing MPA Reply, SIW driver is trying to read extra 4 bytes
-> > than what peer has advertised as private data length.
-> > 
-> > If a FPDU data is received before even siw_recv_mpa_rr() completed
-> > reading MPA reply, then ksock_recv() in siw_recv_mpa_rr() could also
-> > read FPDU, if "size" is larger than advertised MPA reply length.
-> > 
-> >  501 static int siw_recv_mpa_rr(struct siw_cep *cep)
-> >  502 {
-> >           .............
-> >  572
-> >  573         if (rcvd > to_rcv)
-> >  574                 return -EPROTO;   <----- Failure here
-> > 
-> > Looks like the intention here is to throw an ERROR if the received
-> > data
-> > is more than the total private data length advertised by the peer. But
-> > reading beyond MPA message causes siw_cm to generate
-> > RDMA_CM_EVENT_CONNECT_ERROR event when TCP socket recv buffer is
-> > already
-> > queued with FPDU messages.
-> > 
-> > Hence, this function should only read upto private data length.
-> > 
-> > Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-> 
-> Once you apply this patch, the if (rcvd > to_rcv) test you listed above
-> in the commit message becomes dead code.  So I removed it while applying
-> the patch.  Thanks.
-> 
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Thanks Doug.
+UAR in CQ is not used and generates the following compilation
+warning, clean the code by removing uar assignment.
 
-> -- 
-> Doug Ledford <dledford@redhat.com>
->     GPG KeyID: B826A3330E572FDD
->     Fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+drivers/infiniband/hw/hns/hns_roce_cq.c: In function _create_user_cq_:
+drivers/infiniband/hw/hns/hns_roce_cq.c:305:27: warning: parameter _uar_ set but not used [-Wunused-but-set-parameter]
+  305 |      struct hns_roce_uar *uar,
+      |      ~~~~~~~~~~~~~~~~~~~~~^~~
+
+Fixes: 4f8f0d5e33dd ("RDMA/hns: Package the flow of creating cq")
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_cq.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+index 507d3c478404..22541d19cd09 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+@@ -83,7 +83,6 @@ static int hns_roce_sw2hw_cq(struct hns_roce_dev *dev,
+
+ static int hns_roce_cq_alloc(struct hns_roce_dev *hr_dev, int nent,
+ 			     struct hns_roce_mtt *hr_mtt,
+-			     struct hns_roce_uar *hr_uar,
+ 			     struct hns_roce_cq *hr_cq, int vector)
+ {
+ 	struct hns_roce_cmd_mailbox *mailbox;
+@@ -154,7 +153,6 @@ static int hns_roce_cq_alloc(struct hns_roce_dev *hr_dev, int nent,
+
+ 	hr_cq->cons_index = 0;
+ 	hr_cq->arm_sn = 1;
+-	hr_cq->uar = hr_uar;
+
+ 	atomic_set(&hr_cq->refcount, 1);
+ 	init_completion(&hr_cq->free);
+@@ -302,7 +300,6 @@ static int create_user_cq(struct hns_roce_dev *hr_dev,
+ 			  struct hns_roce_cq *hr_cq,
+ 			  struct ib_udata *udata,
+ 			  struct hns_roce_ib_create_cq_resp *resp,
+-			  struct hns_roce_uar *uar,
+ 			  int cq_entries)
+ {
+ 	struct hns_roce_ib_create_cq ucmd;
+@@ -337,9 +334,6 @@ static int create_user_cq(struct hns_roce_dev *hr_dev,
+ 		resp->cap_flags |= HNS_ROCE_SUPPORT_CQ_RECORD_DB;
+ 	}
+
+-	/* Get user space parameters */
+-	uar = &context->uar;
+-
+ 	return 0;
+
+ err_mtt:
+@@ -350,10 +344,10 @@ static int create_user_cq(struct hns_roce_dev *hr_dev,
+ }
+
+ static int create_kernel_cq(struct hns_roce_dev *hr_dev,
+-			    struct hns_roce_cq *hr_cq, struct hns_roce_uar *uar,
+-			    int cq_entries)
++			    struct hns_roce_cq *hr_cq, int cq_entries)
+ {
+ 	struct device *dev = hr_dev->dev;
++	struct hns_roce_uar *uar;
+ 	int ret;
+
+ 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) {
+@@ -420,7 +414,6 @@ int hns_roce_ib_create_cq(struct ib_cq *ib_cq,
+ 	struct device *dev = hr_dev->dev;
+ 	struct hns_roce_ib_create_cq_resp resp = {};
+ 	struct hns_roce_cq *hr_cq = to_hr_cq(ib_cq);
+-	struct hns_roce_uar *uar = NULL;
+ 	int vector = attr->comp_vector;
+ 	int cq_entries = attr->cqe;
+ 	int ret;
+@@ -439,14 +432,13 @@ int hns_roce_ib_create_cq(struct ib_cq *ib_cq,
+ 	spin_lock_init(&hr_cq->lock);
+
+ 	if (udata) {
+-		ret = create_user_cq(hr_dev, hr_cq, udata, &resp, uar,
+-				     cq_entries);
++		ret = create_user_cq(hr_dev, hr_cq, udata, &resp, cq_entries);
+ 		if (ret) {
+ 			dev_err(dev, "Create cq failed in user mode!\n");
+ 			goto err_cq;
+ 		}
+ 	} else {
+-		ret = create_kernel_cq(hr_dev, hr_cq, uar, cq_entries);
++		ret = create_kernel_cq(hr_dev, hr_cq, cq_entries);
+ 		if (ret) {
+ 			dev_err(dev, "Create cq failed in kernel mode!\n");
+ 			goto err_cq;
+@@ -454,7 +446,7 @@ int hns_roce_ib_create_cq(struct ib_cq *ib_cq,
+ 	}
+
+ 	/* Allocate cq index, fill cq_context */
+-	ret = hns_roce_cq_alloc(hr_dev, cq_entries, &hr_cq->hr_buf.hr_mtt, uar,
++	ret = hns_roce_cq_alloc(hr_dev, cq_entries, &hr_cq->hr_buf.hr_mtt,
+ 				hr_cq, vector);
+ 	if (ret) {
+ 		dev_err(dev, "Creat CQ .Failed to cq_alloc.\n");
+--
+2.20.1
 
