@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3107D7BD
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2019 10:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA287D7B6
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2019 10:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730677AbfHAIdg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Aug 2019 04:33:36 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:42154 "EHLO huawei.com"
+        id S1730618AbfHAId2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Aug 2019 04:33:28 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:42084 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730652AbfHAIdg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Aug 2019 04:33:36 -0400
+        id S1730280AbfHAId2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 1 Aug 2019 04:33:28 -0400
 Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 3D33E79E8CF766F762FA;
+        by Forcepoint Email with ESMTP id 2AAD611FFF5FB4155AB5;
         Thu,  1 Aug 2019 16:33:23 +0800 (CST)
 Received: from linux-ioko.site (10.71.200.31) by
  DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.439.0; Thu, 1 Aug 2019 16:33:14 +0800
+ 14.3.439.0; Thu, 1 Aug 2019 16:33:15 +0800
 From:   Lijun Ou <oulijun@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH V2 for-next 11/13] RDMA/hns: Refactor hns_roce_v2_set_hem for hip08
-Date:   Thu, 1 Aug 2019 16:29:12 +0800
-Message-ID: <1564648154-123172-12-git-send-email-oulijun@huawei.com>
+Subject: [PATCH V2 for-next 12/13] RDMA/hns: Remove redundant print in hns_roce_v2_ceq_int()
+Date:   Thu, 1 Aug 2019 16:29:13 +0800
+Message-ID: <1564648154-123172-13-git-send-email-oulijun@huawei.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1564648154-123172-1-git-send-email-oulijun@huawei.com>
 References: <1564648154-123172-1-git-send-email-oulijun@huawei.com>
@@ -36,121 +36,33 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yangyang Li <liyangyang20@huawei.com>
+From: Weihang Li <liweihang@hisilicon.com>
 
-In order to reduce the complexity of hns_roce_v2_set_hem, extract
-the implementation of op as a function.
+There is no need to tell users when eq->cons_index is overflow, we
+just set it back to zero.
 
-Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+Signed-off-by: Weihang Li <liweihang@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 75 +++++++++++++++++-------------
- 1 file changed, 42 insertions(+), 33 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 577ba34..8244540 100644
+index 8244540..5cc64da 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2903,11 +2903,49 @@ static int hns_roce_v2_poll_cq(struct ib_cq *ibcq, int num_entries,
- 	return npolled;
- }
+@@ -5009,10 +5009,9 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
+ 		++eq->cons_index;
+ 		aeqe_found = 1;
  
-+static int get_op_for_set_hem(struct hns_roce_dev *hr_dev, u32 type,
-+			      int step_idx)
-+{
-+	int op;
+-		if (eq->cons_index > (2 * eq->entries - 1)) {
+-			dev_warn(dev, "cons_index overflow, set back to 0.\n");
++		if (eq->cons_index > (2 * eq->entries - 1))
+ 			eq->cons_index = 0;
+-		}
 +
-+	if (type == HEM_TYPE_SCCC && step_idx)
-+		return -EINVAL;
-+
-+	switch (type) {
-+	case HEM_TYPE_QPC:
-+		op = HNS_ROCE_CMD_WRITE_QPC_BT0;
-+		break;
-+	case HEM_TYPE_MTPT:
-+		op = HNS_ROCE_CMD_WRITE_MPT_BT0;
-+		break;
-+	case HEM_TYPE_CQC:
-+		op = HNS_ROCE_CMD_WRITE_CQC_BT0;
-+		break;
-+	case HEM_TYPE_SRQC:
-+		op = HNS_ROCE_CMD_WRITE_SRQC_BT0;
-+		break;
-+	case HEM_TYPE_SCCC:
-+		op = HNS_ROCE_CMD_WRITE_SCCC_BT0;
-+		break;
-+	case HEM_TYPE_QPC_TIMER:
-+		op = HNS_ROCE_CMD_WRITE_QPC_TIMER_BT0;
-+		break;
-+	case HEM_TYPE_CQC_TIMER:
-+		op = HNS_ROCE_CMD_WRITE_CQC_TIMER_BT0;
-+		break;
-+	default:
-+		dev_warn(hr_dev->dev,
-+			 "Table %d not to be written by mailbox!\n", type);
-+		return -EINVAL;
-+	}
-+
-+	return op + step_idx;
-+}
-+
- static int hns_roce_v2_set_hem(struct hns_roce_dev *hr_dev,
- 			       struct hns_roce_hem_table *table, int obj,
- 			       int step_idx)
- {
--	struct device *dev = hr_dev->dev;
- 	struct hns_roce_cmd_mailbox *mailbox;
- 	struct hns_roce_hem_iter iter;
- 	struct hns_roce_hem_mhop mhop;
-@@ -2920,7 +2958,7 @@ static int hns_roce_v2_set_hem(struct hns_roce_dev *hr_dev,
- 	u64 bt_ba = 0;
- 	u32 chunk_ba_num;
- 	u32 hop_num;
--	u16 op = 0xff;
-+	int op;
+ 		hns_roce_v2_init_irq_work(hr_dev, eq, qpn, cqn);
  
- 	if (!hns_roce_check_whether_mhop(hr_dev, table->type))
- 		return 0;
-@@ -2942,38 +2980,9 @@ static int hns_roce_v2_set_hem(struct hns_roce_dev *hr_dev,
- 		hem_idx = i;
- 	}
- 
--	switch (table->type) {
--	case HEM_TYPE_QPC:
--		op = HNS_ROCE_CMD_WRITE_QPC_BT0;
--		break;
--	case HEM_TYPE_MTPT:
--		op = HNS_ROCE_CMD_WRITE_MPT_BT0;
--		break;
--	case HEM_TYPE_CQC:
--		op = HNS_ROCE_CMD_WRITE_CQC_BT0;
--		break;
--	case HEM_TYPE_SRQC:
--		op = HNS_ROCE_CMD_WRITE_SRQC_BT0;
--		break;
--	case HEM_TYPE_SCCC:
--		op = HNS_ROCE_CMD_WRITE_SCCC_BT0;
--		break;
--	case HEM_TYPE_QPC_TIMER:
--		op = HNS_ROCE_CMD_WRITE_QPC_TIMER_BT0;
--		break;
--	case HEM_TYPE_CQC_TIMER:
--		op = HNS_ROCE_CMD_WRITE_CQC_TIMER_BT0;
--		break;
--	default:
--		dev_warn(dev, "Table %d not to be written by mailbox!\n",
--			 table->type);
-+	op = get_op_for_set_hem(hr_dev, table->type, step_idx);
-+	if (op == -EINVAL)
- 		return 0;
--	}
--
--	if (table->type == HEM_TYPE_SCCC && step_idx)
--		return 0;
--
--	op += step_idx;
- 
- 	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
- 	if (IS_ERR(mailbox))
+ 		aeqe = next_aeqe_sw_v2(eq);
 -- 
 1.9.1
 
