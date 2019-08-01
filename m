@@ -2,176 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4F77E3C3
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2019 22:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D36A7E6CC
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2019 01:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388761AbfHAUJb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Aug 2019 16:09:31 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:56134 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727895AbfHAUJb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Aug 2019 16:09:31 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id C9564A4528;
-        Thu,  1 Aug 2019 20:09:30 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DE9DC60BE0;
-        Thu,  1 Aug 2019 20:09:29 +0000 (UTC)
-Message-ID: <7b87cbbdfc4455fd7b265449f2f3f2d4a38e7441.camel@redhat.com>
-Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Release locks during notifier
- unregister
-From:   Doug Ledford <dledford@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Date:   Thu, 01 Aug 2019 16:09:27 -0400
-In-Reply-To: <20190801173320.GZ4832@mtr-leonro.mtl.com>
-References: <20190731180124.GE4832@mtr-leonro.mtl.com>
-         <20190731195523.GK22677@mellanox.com>
-         <20190801082749.GH4832@mtr-leonro.mtl.com>
-         <20190801120007.GB23885@mellanox.com>
-         <20190801120821.GK4832@mtr-leonro.mtl.com>
-         <060b3e8fbe48312e9af33b88ba7ba62a6b64b493.camel@redhat.com>
-         <20190801155912.GS4832@mtr-leonro.mtl.com>
-         <a0dc81b63fdef1b7e877d5172be13792dda763d2.camel@redhat.com>
-         <20190801162356.GV4832@mtr-leonro.mtl.com>
-         <5ffad7827bc72b43948fa7c4707348999434009a.camel@redhat.com>
-         <20190801173320.GZ4832@mtr-leonro.mtl.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-EsXJONIJR4sHGlXKCh3q"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1730486AbfHAXrk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Aug 2019 19:47:40 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:45998 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbfHAXrk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Aug 2019 19:47:40 -0400
+Received: by mail-pf1-f194.google.com with SMTP id r1so34951135pfq.12;
+        Thu, 01 Aug 2019 16:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vg4QzQ/7F17W/rUghukJhcqs5s9RAye4AZfxR//QV0o=;
+        b=VXApa2bKtU/+qjnj54No4w9jeBNCs/2ouRrzJwhVcI9bqY8FfV+lWiNYwbsicvbOdl
+         gMkx/W/bNkCq+wNmaOVEypvcnQYCBpMtS63geb51KtbNv6tA5o8AavZ/OkslLikGEpN7
+         TZ6jcPk7YupGsAob95DLycEHEidCNCO3vJMcSsJfyWJdg5s82DlsF0VMt6NkiZ36SD/y
+         ewsev+xHhO4YL7/M/T3jKGSqWEQRwKTVpHkem9aFrBpI2POpX89SLC42HKEqRQxV6KlB
+         XyXV7Rr5gxVbGs2rlTCzOJkRGFi8/OkuUi2i3rMP7bEQkC5KSNXB3wChRcRIy1jl586G
+         iecw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vg4QzQ/7F17W/rUghukJhcqs5s9RAye4AZfxR//QV0o=;
+        b=N1Lb8s5HpfyygsQOIpG9sj+ZBYy1wLqn6ewXAb6owpCvwBymhSEcUpPOh/UMhKFYMw
+         wFoxmKOyDV7Af+2JyEiWEc/fMZDYs1PJL5wuhXJO0qIsQqKp7zyptCn1+vNR6kGZ089R
+         y8wse0OY5zEfuPqXy8nO33Aq7mFqn+TdMXM76RJ4HsXrIsNOWh8Yg51njwpIJue/wI9k
+         LCRVD8/qBsvKvKhpNlPpoHq4ROUPRzQT4luxp8VbpGbyQmVbh4mYstsfEPG0ifr2t+u2
+         0IkKOcYZa+DNPZPmA4IlqFUyJJT9zhRMXfkcqei9hrbRzdwD0M2HZ/kzuko+sa8pFh1i
+         6J7Q==
+X-Gm-Message-State: APjAAAUadnpEirGaDcWbRXfq3TK+BrdjFpfViCN+4WwAw13G3P0Dcsom
+        DjLGlvnnmqxuCPH+gH4sUFhj/fjP
+X-Google-Smtp-Source: APXvYqwHoHG6JQ3jRjRVySMONqToxLBPphS71bd0Tygq+HVgAHEylGaHC3u+H2i9mxt915ePZzuW3w==
+X-Received: by 2002:a63:e5a:: with SMTP id 26mr117179570pgo.3.1564703259868;
+        Thu, 01 Aug 2019 16:47:39 -0700 (PDT)
+Received: from blueforge.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id q7sm79090792pff.2.2019.08.01.16.47.37
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 01 Aug 2019 16:47:38 -0700 (PDT)
+From:   john.hubbard@gmail.com
+X-Google-Original-From: jhubbard@nvidia.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Boaz Harrosh <boaz@plexistor.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v5 0/3]  mm/gup: add make_dirty arg to put_user_pages_dirty_lock()
+Date:   Thu,  1 Aug 2019 16:47:32 -0700
+Message-Id: <20190801234735.2149-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Thu, 01 Aug 2019 20:09:30 +0000 (UTC)
+Content-Type: text/plain; charset=UTF-8
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: John Hubbard <jhubbard@nvidia.com>
 
---=-EsXJONIJR4sHGlXKCh3q
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Changes since v4:
 
-On Thu, 2019-08-01 at 20:33 +0300, Leon Romanovsky wrote:
-> On Thu, Aug 01, 2019 at 12:42:43PM -0400, Doug Ledford wrote:
-> > On Thu, 2019-08-01 at 19:23 +0300, Leon Romanovsky wrote:
-> > > On Thu, Aug 01, 2019 at 12:11:20PM -0400, Doug Ledford wrote:
-> > > > On Thu, 2019-08-01 at 18:59 +0300, Leon Romanovsky wrote:
-> > > > > > There's no need for a lockdep.  The removal of the notifier
-> > > > > > callback
-> > > > > > entry is re-entrant safe.  The core removal routines have
-> > > > > > their
-> > > > > > own
-> > > > > > spinlock they use to protect the actual notifier list.  If
-> > > > > > you
-> > > > > > call
-> > > > > > it
-> > > > > > more than once, the second and subsequent calls merely scan
-> > > > > > the
-> > > > > > list,
-> > > > > > find no matching entry, and return ENOENT.  The only reason
-> > > > > > this
-> > > > > > might
-> > > > > > need a lock and a lockdep entry is if you are protecting
-> > > > > > against
-> > > > > > a
-> > > > > > race
-> > > > > > with the *add* notifier code in the mlx5 driver specifically
-> > > > > > (the
-> > > > > > core
-> > > > > > add code won't have an issue, but since you only have a
-> > > > > > single
-> > > > > > place
-> > > > > > to
-> > > > > > store the notifier callback pointer, if it would be possible
-> > > > > > for
-> > > > > > you
-> > > > > > to
-> > > > > > add two callbacks and write over the first callback pointer
-> > > > > > with
-> > > > > > the
-> > > > > > second without removing the first, then you would leak a
-> > > > > > callback
-> > > > > > notifier in the core notifier list).
-> > > > >=20
-> > > > > atomic_notifier_chain_unregister() unconditionally calls to
-> > > > > syncronize_rcu() and I'm not so sure that it is best thing to
-> > > > > do
-> > > > > for every port unbind.
-> > > > >=20
-> > > > > Actually, I'm completely lost here, we are all agree that the
-> > > > > patch
-> > > > > fixes issue correctly, and it returns the code to be exactly
-> > > > > as
-> > > > > it was before commit df097a278c75 ("IB/mlx5: Use the new mlx5
-> > > > > core
-> > > > > notifier
-> > > > > API"). Can we simply merge it and fix the kernel panic?
-> > > >=20
-> > > > As long as you are OK with me adding a comment to the patch so
-> > > > people
-> > > > coming back later won't scratch their head about how can it
-> > > > possible
-> > > > be
-> > > > right to do that sequence without a lock held, I'm fine merging
-> > > > the
-> > > > fix.
-> > > >=20
-> > > > Something like:
-> > > >=20
-> > > > /*
-> > > >  * The check/unregister/set-NULL sequence below does not need to
-> > > > be
-> > > >  * locked for correctness as it's only an optimization, and
-> > > > can't
-> > > >  * be under a lock or will throw a scheduling while atomic
-> > > > error.
-> > > >  */
-> > >=20
-> > > I think that the best place will be in commit message for this
-> > > explanation,
-> > > but I'm fine with the comment inside code as well.
-> > >=20
-> > > Thanks a lot, I appreciate it.
-> >=20
-> > Patch (unmodified) is applied to for-rc, thanks.
->=20
-> Thanks Doug, I'll prepare patch with lockdep for Jason and
-> will submit it to -next later on after passing verification.
+* Christophe Hellwig's review applied: deleted siw_free_plist() and
+  __qib_release_user_pages(), now that put_user_pages_dirty_lock() does
+  what those routines were doing.
 
-Perfect, thanks Leon.
+* Applied Bjorn's ACK for net/xdp, and Christophe's Reviewed-by for patch
+  #1.
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+Changes since v3:
 
---=-EsXJONIJR4sHGlXKCh3q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+* Fixed an unused variable warning in siw_mem.c
 
------BEGIN PGP SIGNATURE-----
+Changes since v2:
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1DRvcACgkQuCajMw5X
-L93EFBAAh6b74Zq9G4VubFBNsMEFcIHifM6AXTyeTCkxN9ROfJ1qYxY9NOJUGZ6p
-Z3P0rHh87vNLW4AVO4g3SbnAqJjE8tJYTUPhEus8xaRpo3S535/i2XuSlN4k7mvf
-9Z8yaop6JbLMatgeczZCZvGMKp/2BAcEXOreXJbxvHcrE47B/45ZrSikjsn5JCyM
-WDF5iUpBlQFX02/XeW9WZWyNbFDLy1zBbQM8lHuChjIkAncJUrdGvlCBocjhPD0m
-LhOB/HadQPlDLwLw/WLLyyK0FXBLLimW2EfC+V+M7zW4j9pAl+1pkChQhtGkCPfn
-LuQk9E+MzHq8yK4YErm5hzuazrhQMYvuNnfwDFMYORvowy9K0K3TNb5Tl+n8LQO6
-fp9kBx9Dfyw2YoZ7ZbMAHf2FbjiIecn3DCIu+WHH1DMoRtaVEKoiKlp9MWBy8KFc
-FspQvMi28GtEQmI6zRTUJOorZk4XiZqbcHN7QdLTbJPAFtOUkl0bjRY65xAi8Qbw
-gePMlNCgVq6ZgoWNEjublzwrcfibh06oww5EktaXA0iuGksUPqT0gZYA/JkC2cNl
-4V8cLtfSslcDhGQVF4bjd0wRxThgm8k8js2sj7CfyZ+suKcsTxBpKwbmxenA34Fi
-OmwgE1dqZ62mHs04OUeZcFkocnn59sGPjWiweGaFE1YTudc35eg=
-=MZsw
------END PGP SIGNATURE-----
+* Critical bug fix: remove a stray "break;" from the new routine.
 
---=-EsXJONIJR4sHGlXKCh3q--
+Changes since v1:
+
+* Instead of providing __put_user_pages(), add an argument to
+  put_user_pages_dirty_lock(), and delete put_user_pages_dirty().
+  This is based on the following points:
+
+    1. Lots of call sites become simpler if a bool is passed
+    into put_user_page*(), instead of making the call site
+    choose which put_user_page*() variant to call.
+
+    2. Christoph Hellwig's observation that set_page_dirty_lock()
+    is usually correct, and set_page_dirty() is usually a
+    bug, or at least questionable, within a put_user_page*()
+    calling chain.
+
+* Added the Infiniband driver back to the patch series, because it is
+  a caller of put_user_pages_dirty_lock().
+
+Unchanged parts from the v1 cover letter (except for the diffstat):
+
+Notes about the remaining patches to come:
+
+There are about 50+ patches in my tree [2], and I'll be sending out the
+remaining ones in a few more groups:
+
+    * The block/bio related changes (Jerome mostly wrote those, but I've
+      had to move stuff around extensively, and add a little code)
+
+    * mm/ changes
+
+    * other subsystem patches
+
+    * an RFC that shows the current state of the tracking patch set. That
+      can only be applied after all call sites are converted, but it's
+      good to get an early look at it.
+
+This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+("mm: introduce put_user_page*(), placeholder versions").
+
+
+
+John Hubbard (3):
+  mm/gup: add make_dirty arg to put_user_pages_dirty_lock()
+  drivers/gpu/drm/via: convert put_page() to put_user_page*()
+  net/xdp: convert put_page() to put_user_page*()
+
+ drivers/gpu/drm/via/via_dmablit.c          |  10 +-
+ drivers/infiniband/core/umem.c             |   5 +-
+ drivers/infiniband/hw/hfi1/user_pages.c    |   5 +-
+ drivers/infiniband/hw/qib/qib_user_pages.c |  13 +--
+ drivers/infiniband/hw/usnic/usnic_uiom.c   |   5 +-
+ drivers/infiniband/sw/siw/siw_mem.c        |  18 +---
+ include/linux/mm.h                         |   5 +-
+ mm/gup.c                                   | 115 +++++++++------------
+ net/xdp/xdp_umem.c                         |   9 +-
+ 9 files changed, 63 insertions(+), 122 deletions(-)
+
+-- 
+2.22.0
 
