@@ -2,163 +2,176 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A247E2E9
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2019 21:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4F77E3C3
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2019 22:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730851AbfHATBX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Aug 2019 15:01:23 -0400
-Received: from p3plsmtpa06-01.prod.phx3.secureserver.net ([173.201.192.102]:47875
-        "EHLO p3plsmtpa06-01.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732059AbfHATBU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Aug 2019 15:01:20 -0400
-X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Aug 2019 15:01:20 EDT
-Received: from [10.0.0.150] ([76.19.228.129])
-        by :SMTPAUTH: with ESMTPSA
-        id tGDBhmB1OAihHtGDBh4SEQ; Thu, 01 Aug 2019 11:54:02 -0700
-Subject: Re: [PATCH for-rc] siw: MPA Reply handler tries to read beyond MPA
- message
-To:     Bernard Metzler <BMT@zurich.ibm.com>,
-        Krishnamraju Eraparaju <krishna2@chelsio.com>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
-        nirranjan@chelsio.com, krishn2@chelsio.com
-References: <20190731103310.23199-1-krishna2@chelsio.com>
- <OF4DB6F345.7C76F976-ON00258449.00392FF3-00258449.003C1BFB@notes.na.collabserv.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <8499b96a-48dd-1286-ea0f-e66be34afffa@talpey.com>
-Date:   Thu, 1 Aug 2019 14:53:59 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2388761AbfHAUJb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Aug 2019 16:09:31 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:56134 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727895AbfHAUJb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 1 Aug 2019 16:09:31 -0400
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id C9564A4528;
+        Thu,  1 Aug 2019 20:09:30 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DE9DC60BE0;
+        Thu,  1 Aug 2019 20:09:29 +0000 (UTC)
+Message-ID: <7b87cbbdfc4455fd7b265449f2f3f2d4a38e7441.camel@redhat.com>
+Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Release locks during notifier
+ unregister
+From:   Doug Ledford <dledford@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Date:   Thu, 01 Aug 2019 16:09:27 -0400
+In-Reply-To: <20190801173320.GZ4832@mtr-leonro.mtl.com>
+References: <20190731180124.GE4832@mtr-leonro.mtl.com>
+         <20190731195523.GK22677@mellanox.com>
+         <20190801082749.GH4832@mtr-leonro.mtl.com>
+         <20190801120007.GB23885@mellanox.com>
+         <20190801120821.GK4832@mtr-leonro.mtl.com>
+         <060b3e8fbe48312e9af33b88ba7ba62a6b64b493.camel@redhat.com>
+         <20190801155912.GS4832@mtr-leonro.mtl.com>
+         <a0dc81b63fdef1b7e877d5172be13792dda763d2.camel@redhat.com>
+         <20190801162356.GV4832@mtr-leonro.mtl.com>
+         <5ffad7827bc72b43948fa7c4707348999434009a.camel@redhat.com>
+         <20190801173320.GZ4832@mtr-leonro.mtl.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-EsXJONIJR4sHGlXKCh3q"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <OF4DB6F345.7C76F976-ON00258449.00392FF3-00258449.003C1BFB@notes.na.collabserv.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfFqGnNQwQkrPGAKnBwDDzlCBZgI50cWrYRF9FmTN8QZO/FBzp8pI3jcIDCmBlxpZ2WidPn+2WCDmDZB9gJ6DW9mfSD+t7IZX+a+fW88nWdUw9Dg9Ze/W
- MHmjMNetchkoe3D8xf/USlMj5eo5QoALVf85IfGjBlmM9nG7YfK9gdZJm1lfODuKotPt7pFV4Jieo7kvSmKZfMcXJLVsOXZf8DjTcKGgP9vddwPcPmTlgP/C
- hP36Wm8GUZt51iw0iGTPPAAOUX1c6IkOCBIp0fG0HbaB0ZVqiQgGihEWsdXATn2AjUvesb9G4UDY4HtpGKzosN56HKw6zp7Yh4EE+qozqLvTGZbhpf91HRWA
- sIc6W3NZ
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Thu, 01 Aug 2019 20:09:30 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/1/2019 6:56 AM, Bernard Metzler wrote:
-> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
-> 
->> To: jgg@ziepe.ca, bmt@zurich.ibm.com
->> From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
->> Date: 07/31/2019 12:34PM
->> Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com,
->> nirranjan@chelsio.com, krishn2@chelsio.com, "Krishnamraju Eraparaju"
->> <krishna2@chelsio.com>
->> Subject: [EXTERNAL] [PATCH for-rc] siw: MPA Reply handler tries to
->> read beyond MPA message
->>
->> while processing MPA Reply, SIW driver is trying to read extra 4
->> bytes
->> than what peer has advertised as private data length.
->>
->> If a FPDU data is received before even siw_recv_mpa_rr() completed
->> reading MPA reply, then ksock_recv() in siw_recv_mpa_rr() could also
->> read FPDU, if "size" is larger than advertised MPA reply length.
->>
->> 501 static int siw_recv_mpa_rr(struct siw_cep *cep)
->> 502 {
->>           .............
->> 572
->> 573         if (rcvd > to_rcv)
->> 574                 return -EPROTO;   <----- Failure here
->>
->> Looks like the intention here is to throw an ERROR if the received
->> data
->> is more than the total private data length advertised by the peer.
->> But
->> reading beyond MPA message causes siw_cm to generate
->> RDMA_CM_EVENT_CONNECT_ERROR event when TCP socket recv buffer is
->> already
->> queued with FPDU messages.
->>
->> Hence, this function should only read upto private data length.
->>
->> Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
->> ---
->> drivers/infiniband/sw/siw/siw_cm.c | 4 ++--
->> 1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
->> b/drivers/infiniband/sw/siw/siw_cm.c
->> index a7cde98e73e8..8dc8cea2566c 100644
->> --- a/drivers/infiniband/sw/siw/siw_cm.c
->> +++ b/drivers/infiniband/sw/siw/siw_cm.c
->> @@ -559,13 +559,13 @@ static int siw_recv_mpa_rr(struct siw_cep *cep)
->> 	 * A private data buffer gets allocated if hdr->params.pd_len != 0.
->> 	 */
->> 	if (!cep->mpa.pdata) {
->> -		cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
->> +		cep->mpa.pdata = kmalloc(pd_len, GFP_KERNEL);
->> 		if (!cep->mpa.pdata)
->> 			return -ENOMEM;
->> 	}
->> 	rcvd = ksock_recv(
->> 		s, cep->mpa.pdata + cep->mpa.bytes_rcvd - sizeof(struct mpa_rr),
->> -		to_rcv + 4, MSG_DONTWAIT);
->> +		to_rcv, MSG_DONTWAIT);
->>
->> 	if (rcvd < 0)
->> 		return rcvd;
->> -- 
->> 2.23.0.rc0
->>
->>
-> 
-> The intention of this code is to make sure the
-> peer does not violates the MPA handshake rules.
-> The initiator MUST NOT send extra data after its
-> MPA request and before receiving the MPA reply.
 
-I think this is true only for MPA v2. With MPA v1, the
-initiator can begin sending immediately (before receiving
-the MPA reply), because there is no actual negotiation at
-the MPA layer.
+--=-EsXJONIJR4sHGlXKCh3q
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-With MPA v2, the negotiation exchange is required because
-the type of the following message is predicated by the
-"Enhanced mode" a|b|c|d flags present in the first 32 bits
-of the private data buffer.
+On Thu, 2019-08-01 at 20:33 +0300, Leon Romanovsky wrote:
+> On Thu, Aug 01, 2019 at 12:42:43PM -0400, Doug Ledford wrote:
+> > On Thu, 2019-08-01 at 19:23 +0300, Leon Romanovsky wrote:
+> > > On Thu, Aug 01, 2019 at 12:11:20PM -0400, Doug Ledford wrote:
+> > > > On Thu, 2019-08-01 at 18:59 +0300, Leon Romanovsky wrote:
+> > > > > > There's no need for a lockdep.  The removal of the notifier
+> > > > > > callback
+> > > > > > entry is re-entrant safe.  The core removal routines have
+> > > > > > their
+> > > > > > own
+> > > > > > spinlock they use to protect the actual notifier list.  If
+> > > > > > you
+> > > > > > call
+> > > > > > it
+> > > > > > more than once, the second and subsequent calls merely scan
+> > > > > > the
+> > > > > > list,
+> > > > > > find no matching entry, and return ENOENT.  The only reason
+> > > > > > this
+> > > > > > might
+> > > > > > need a lock and a lockdep entry is if you are protecting
+> > > > > > against
+> > > > > > a
+> > > > > > race
+> > > > > > with the *add* notifier code in the mlx5 driver specifically
+> > > > > > (the
+> > > > > > core
+> > > > > > add code won't have an issue, but since you only have a
+> > > > > > single
+> > > > > > place
+> > > > > > to
+> > > > > > store the notifier callback pointer, if it would be possible
+> > > > > > for
+> > > > > > you
+> > > > > > to
+> > > > > > add two callbacks and write over the first callback pointer
+> > > > > > with
+> > > > > > the
+> > > > > > second without removing the first, then you would leak a
+> > > > > > callback
+> > > > > > notifier in the core notifier list).
+> > > > >=20
+> > > > > atomic_notifier_chain_unregister() unconditionally calls to
+> > > > > syncronize_rcu() and I'm not so sure that it is best thing to
+> > > > > do
+> > > > > for every port unbind.
+> > > > >=20
+> > > > > Actually, I'm completely lost here, we are all agree that the
+> > > > > patch
+> > > > > fixes issue correctly, and it returns the code to be exactly
+> > > > > as
+> > > > > it was before commit df097a278c75 ("IB/mlx5: Use the new mlx5
+> > > > > core
+> > > > > notifier
+> > > > > API"). Can we simply merge it and fix the kernel panic?
+> > > >=20
+> > > > As long as you are OK with me adding a comment to the patch so
+> > > > people
+> > > > coming back later won't scratch their head about how can it
+> > > > possible
+> > > > be
+> > > > right to do that sequence without a lock held, I'm fine merging
+> > > > the
+> > > > fix.
+> > > >=20
+> > > > Something like:
+> > > >=20
+> > > > /*
+> > > >  * The check/unregister/set-NULL sequence below does not need to
+> > > > be
+> > > >  * locked for correctness as it's only an optimization, and
+> > > > can't
+> > > >  * be under a lock or will throw a scheduling while atomic
+> > > > error.
+> > > >  */
+> > >=20
+> > > I think that the best place will be in commit message for this
+> > > explanation,
+> > > but I'm fine with the comment inside code as well.
+> > >=20
+> > > Thanks a lot, I appreciate it.
+> >=20
+> > Patch (unmodified) is applied to for-rc, thanks.
+>=20
+> Thanks Doug, I'll prepare patch with lockdep for Jason and
+> will submit it to -next later on after passing verification.
 
-So, it seems to me that additional logic is needed here to
-determine the MPA version, before sniffing additional octets
-from the incoming stream?
+Perfect, thanks Leon.
 
-Tom.
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
+--=-EsXJONIJR4sHGlXKCh3q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-> So, for the MPA request case, this code is needed
-> to check for protocol correctness.
-> You are right for the MPA reply case - if we are
-> _not_ in peer2peer mode, the peer can immediately
-> start sending data in RDMA mode after its MPA Reply.
-> So we shall add appropriate code to be more specific
-> For an error, we are (1) processing an MPA Request,
-> OR (2) processing an MPA Reply AND we are not expected
-> to send an initial READ/WRITE/Send as negotiated with
-> the peer (peer2peer mode MPA handshake).
-> 
-> Just removing this check would make siw more permissive,
-> but to a point where peer MPA protocol errors are
-> tolerated. I am not in favor of that level of
-> forgiveness.
-> 
-> If possible, please provide an appropriate patch
-> or (if it causes current issues with another peer
-> iWarp implementation) just run in MPA peer2peer mode,
-> where the current check is appropriate.
-> Otherwise, I would provide an appropriate fix by Monday
-> (I am still out of office this week).
-> 
-> 
-> Many thanks and best regards,
-> Bernard.
-> 
-> 
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1DRvcACgkQuCajMw5X
+L93EFBAAh6b74Zq9G4VubFBNsMEFcIHifM6AXTyeTCkxN9ROfJ1qYxY9NOJUGZ6p
+Z3P0rHh87vNLW4AVO4g3SbnAqJjE8tJYTUPhEus8xaRpo3S535/i2XuSlN4k7mvf
+9Z8yaop6JbLMatgeczZCZvGMKp/2BAcEXOreXJbxvHcrE47B/45ZrSikjsn5JCyM
+WDF5iUpBlQFX02/XeW9WZWyNbFDLy1zBbQM8lHuChjIkAncJUrdGvlCBocjhPD0m
+LhOB/HadQPlDLwLw/WLLyyK0FXBLLimW2EfC+V+M7zW4j9pAl+1pkChQhtGkCPfn
+LuQk9E+MzHq8yK4YErm5hzuazrhQMYvuNnfwDFMYORvowy9K0K3TNb5Tl+n8LQO6
+fp9kBx9Dfyw2YoZ7ZbMAHf2FbjiIecn3DCIu+WHH1DMoRtaVEKoiKlp9MWBy8KFc
+FspQvMi28GtEQmI6zRTUJOorZk4XiZqbcHN7QdLTbJPAFtOUkl0bjRY65xAi8Qbw
+gePMlNCgVq6ZgoWNEjublzwrcfibh06oww5EktaXA0iuGksUPqT0gZYA/JkC2cNl
+4V8cLtfSslcDhGQVF4bjd0wRxThgm8k8js2sj7CfyZ+suKcsTxBpKwbmxenA34Fi
+OmwgE1dqZ62mHs04OUeZcFkocnn59sGPjWiweGaFE1YTudc35eg=
+=MZsw
+-----END PGP SIGNATURE-----
+
+--=-EsXJONIJR4sHGlXKCh3q--
+
