@@ -2,80 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DD17E6D9
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2019 01:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240CD7E7E6
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2019 04:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbfHAXrp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Aug 2019 19:47:45 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:42895 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388000AbfHAXro (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Aug 2019 19:47:44 -0400
-Received: by mail-pg1-f196.google.com with SMTP id t132so35047654pgb.9;
-        Thu, 01 Aug 2019 16:47:44 -0700 (PDT)
+        id S2389022AbfHBCRA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Aug 2019 22:17:00 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:37847 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728255AbfHBCQ7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Aug 2019 22:16:59 -0400
+Received: by mail-pg1-f194.google.com with SMTP id d1so2414548pgp.4;
+        Thu, 01 Aug 2019 19:16:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GHzc1obwFKwJgG7nswfPGhmCYytguM8zaNUDmj5ciqU=;
-        b=E+zHlnIpYzBr1HZfJIsD6iVbo/tVCWCbZWGouwMcKWXf5pRqLr+7fu6t6wyR76gxrS
-         Pw0XWBh+4s5Kr4C0zZ1uLNkWtKi03BCdpa29tA51sk8I+Bq12u0svuAUfdj+sK8H6N5H
-         /8lixInmiBO+tmKzSLyeiGhsebOFRuv5X1HYeJ9NG7mhRRnXPabVEo0th3yVnfWLj1Ya
-         c7rmaefTzcGx11D0smecmd6tI08T3Ivoz0JbFA+LCWcAMomm5K9oYs5qsT1cHM0HE8Jc
-         UMhXpM08RliBjrRUsniYuwevqpn1x1w55S5+T81xoskFTv+eqpjGrmLmlIP9IsRGKn2i
-         cHVg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3GzlMAdD/Fj4tpT1z/PK8Fr3raamoGX6ZwkHP2yb6K8=;
+        b=pAxzsc9vmHAK9ZK89AacBmqXQvuHXeShpu27WlEkAV6xBcEz/H1GAWLFbWBo+u7caH
+         KIqDnTL+IS2r069Sqit6niTwIVD3yHwM2oL4UXxooa0ZG6T9kc1SZGdEzbmbTAJoZkzv
+         Zbj81BMMiMsLujqrLP+vNRoPoAfxuyhBIJfz/EZgUl0FsiQZK3MgWkswQuDuhoaZBO9G
+         KrSO58P9Rr9KxqN5N1BphpFtggyeHWY4ZqA08b5SYu2LL+896Hx8WIi0vBM/z3/TtXKP
+         sQF/9gkVaL/sxZPp1Zgqo9a2gtCNNW4Q0F26WcstDN/wMJyWuPSmF5s5FUO43iGXa+xl
+         t4bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GHzc1obwFKwJgG7nswfPGhmCYytguM8zaNUDmj5ciqU=;
-        b=JjQj06NvW0tuDk5dXz02puMHpI4hGYufOcxy1pHOB3npYUZMCWl9BsfSOmc52xxZdU
-         8qSPFiSWa/Es2ZFvGy62O90bw+WGs056e3WMwlMvb8BaeJczdwfuRsM7lflT5KDCYrvI
-         4U2T+4Zra/WMSapxnp5+zXOymrq1VIH9xC+X7cpGAqT0wWlL3PFmM8PlY75PRi/KxcGO
-         a0rOhq3Pz6mW+RdPLZ1VExkSMrkHv7t4X6bWbAnrAj0m1hAbjQ6NQvuzCR4RvRvkgJK5
-         RgPRI/7O9Qhn/XJEwgSAV5M55OqL6J1SxsL2jY6gmtDJyPlXvwTxc8CX6N4CLaQQNNE6
-         tuMQ==
-X-Gm-Message-State: APjAAAVguG+9l/vDRfMNEG8zJndXb0IJhneyloIBtXOcWpna9DIj1I3T
-        srKCenHZ06qIjg7R5WTb9k4=
-X-Google-Smtp-Source: APXvYqwtPIy/q9DIVACpqZOM6oV+V9VPUP/5mN1kfjPMf5x4eodvXZuVHIq97aECtPB0t2lwdk42bg==
-X-Received: by 2002:a62:ce8e:: with SMTP id y136mr57190606pfg.29.1564703264155;
-        Thu, 01 Aug 2019 16:47:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3GzlMAdD/Fj4tpT1z/PK8Fr3raamoGX6ZwkHP2yb6K8=;
+        b=pxUI9uQSiPkrdaYjjCg63ri9x81eIH4tA4uNKQeuSqnlbqNn68GBhlo1oliYAZkNd+
+         f/ff4lrJJ5FSq+dMmai39K50JTR6skZNK1/SYJ6xIrqIpgkFnWhXD5JpEcImySXufeEc
+         5lpHw1QNCji0YtLFogyj9Q0GQwgqHEzmaCLzfQ916IcJeLVOXBHgnucF9EVAt2P87WgL
+         IFSg8UxticbZBM5vxmmfLzemLMpqv52ujuBqI+d1A9G1kG0XP6vAnBxZ5HOVasgRB9yz
+         +PY/9Fn4sTf2CDLEHuzFlDv+TctiwF4Ed2SZXRoCLsimOeNz1TMScSe8+f5sIAOswLTV
+         Mrbw==
+X-Gm-Message-State: APjAAAU77NZ/WZfIFO8YjVlx1yPL3pTLoRIOlIhqJbQom5/1tFn6nADk
+        sGNLf+j83301UXEmh6cqCSM=
+X-Google-Smtp-Source: APXvYqzWsTlsiBNw6waYjgVc0NeqKYlyVqx46uMvNCwkUysDnG1IH1bMSSj1oKU/Y8CdBrk8llU2wQ==
+X-Received: by 2002:a63:dd16:: with SMTP id t22mr90672497pgg.140.1564712218248;
+        Thu, 01 Aug 2019 19:16:58 -0700 (PDT)
 Received: from blueforge.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id q7sm79090792pff.2.2019.08.01.16.47.42
+        by smtp.gmail.com with ESMTPSA id p187sm118200292pfg.89.2019.08.01.19.16.56
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 01 Aug 2019 16:47:43 -0700 (PDT)
+        Thu, 01 Aug 2019 19:16:57 -0700 (PDT)
 From:   john.hubbard@gmail.com
 X-Google-Original-From: jhubbard@nvidia.com
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Boaz Harrosh <boaz@plexistor.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
+Cc:     Christoph Hellwig <hch@infradead.org>,
         Dan Williams <dan.j.williams@intel.com>,
         Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v5 3/3] net/xdp: convert put_page() to put_user_page*()
-Date:   Thu,  1 Aug 2019 16:47:35 -0700
-Message-Id: <20190801234735.2149-4-jhubbard@nvidia.com>
+        amd-gfx@lists.freedesktop.org, ceph-devel@vger.kernel.org,
+        devel@driverdev.osuosl.org, devel@lists.orangefs.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org, linux-xfs@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        sparclinux@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH 00/34] put_user_pages(): miscellaneous call sites
+Date:   Thu,  1 Aug 2019 19:16:19 -0700
+Message-Id: <20190802021653.4882-1-jhubbard@nvidia.com>
 X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190801234735.2149-1-jhubbard@nvidia.com>
-References: <20190801234735.2149-1-jhubbard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-NVConfidentiality: public
@@ -87,42 +82,136 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: John Hubbard <jhubbard@nvidia.com>
 
-For pages that were retained via get_user_pages*(), release those pages
-via the new put_user_page*() routines, instead of via put_page() or
-release_pages().
+Hi,
+
+These are best characterized as miscellaneous conversions: many (not all)
+call sites that don't involve biovec or iov_iter, nor mm/. It also leaves
+out a few call sites that require some more work. These are mostly pretty
+simple ones.
+
+It's probably best to send all of these via Andrew's -mm tree, assuming
+that there are no significant merge conflicts with ongoing work in other
+trees (which I doubt, given that these are small changes).
+
+These patches apply to the latest linux.git. Patch #1 is also already in
+Andrew's tree, but given the broad non-linux-mm Cc list, I thought it
+would be more convenient to just include that patch here, so that people
+can use linux.git as the base--even though these are probably destined
+for linux-mm.
 
 This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-("mm: introduce put_user_page*(), placeholder versions").
+("mm: introduce put_user_page*(), placeholder versions"). That commit
+has an extensive description of the problem and the planned steps to
+solve it, but the highlites are:
 
-Acked-by: Björn Töpel <bjorn.topel@intel.com>
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- net/xdp/xdp_umem.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+1) Provide put_user_page*() routines, intended to be used
+for releasing pages that were pinned via get_user_pages*().
 
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 83de74ca729a..17c4b3d3dc34 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -166,14 +166,7 @@ void xdp_umem_clear_dev(struct xdp_umem *umem)
- 
- static void xdp_umem_unpin_pages(struct xdp_umem *umem)
- {
--	unsigned int i;
--
--	for (i = 0; i < umem->npgs; i++) {
--		struct page *page = umem->pgs[i];
--
--		set_page_dirty_lock(page);
--		put_page(page);
--	}
-+	put_user_pages_dirty_lock(umem->pgs, umem->npgs, true);
- 
- 	kfree(umem->pgs);
- 	umem->pgs = NULL;
+2) Convert all of the call sites for get_user_pages*(), to
+invoke put_user_page*(), instead of put_page(). This involves dozens of
+call sites, and will take some time.
+
+3) After (2) is complete, use get_user_pages*() and put_user_page*() to
+implement tracking of these pages. This tracking will be separate from
+the existing struct page refcounting.
+
+4) Use the tracking and identification of these pages, to implement
+special handling (especially in writeback paths) when the pages are
+backed by a filesystem.
+
+And a few references, also from that commit:
+
+[1] https://lwn.net/Articles/774411/ : "DMA and get_user_pages()"
+[2] https://lwn.net/Articles/753027/ : "The Trouble with get_user_pages()"
+
+
+Ira Weiny (1):
+  fs/binfmt_elf: convert put_page() to put_user_page*()
+
+John Hubbard (33):
+  mm/gup: add make_dirty arg to put_user_pages_dirty_lock()
+  net/rds: convert put_page() to put_user_page*()
+  net/ceph: convert put_page() to put_user_page*()
+  x86/kvm: convert put_page() to put_user_page*()
+  drm/etnaviv: convert release_pages() to put_user_pages()
+  drm/i915: convert put_page() to put_user_page*()
+  drm/radeon: convert put_page() to put_user_page*()
+  media/ivtv: convert put_page() to put_user_page*()
+  media/v4l2-core/mm: convert put_page() to put_user_page*()
+  genwqe: convert put_page() to put_user_page*()
+  scif: convert put_page() to put_user_page*()
+  vmci: convert put_page() to put_user_page*()
+  rapidio: convert put_page() to put_user_page*()
+  oradax: convert put_page() to put_user_page*()
+  staging/vc04_services: convert put_page() to put_user_page*()
+  drivers/tee: convert put_page() to put_user_page*()
+  vfio: convert put_page() to put_user_page*()
+  fbdev/pvr2fb: convert put_page() to put_user_page*()
+  fsl_hypervisor: convert put_page() to put_user_page*()
+  xen: convert put_page() to put_user_page*()
+  fs/exec.c: convert put_page() to put_user_page*()
+  orangefs: convert put_page() to put_user_page*()
+  uprobes: convert put_page() to put_user_page*()
+  futex: convert put_page() to put_user_page*()
+  mm/frame_vector.c: convert put_page() to put_user_page*()
+  mm/gup_benchmark.c: convert put_page() to put_user_page*()
+  mm/memory.c: convert put_page() to put_user_page*()
+  mm/madvise.c: convert put_page() to put_user_page*()
+  mm/process_vm_access.c: convert put_page() to put_user_page*()
+  crypt: convert put_page() to put_user_page*()
+  nfs: convert put_page() to put_user_page*()
+  goldfish_pipe: convert put_page() to put_user_page*()
+  kernel/events/core.c: convert put_page() to put_user_page*()
+
+ arch/x86/kvm/svm.c                            |   4 +-
+ crypto/af_alg.c                               |   7 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gem.c         |   4 +-
+ drivers/gpu/drm/i915/gem/i915_gem_userptr.c   |   9 +-
+ drivers/gpu/drm/radeon/radeon_ttm.c           |   2 +-
+ drivers/infiniband/core/umem.c                |   5 +-
+ drivers/infiniband/hw/hfi1/user_pages.c       |   5 +-
+ drivers/infiniband/hw/qib/qib_user_pages.c    |   5 +-
+ drivers/infiniband/hw/usnic/usnic_uiom.c      |   5 +-
+ drivers/infiniband/sw/siw/siw_mem.c           |  10 +-
+ drivers/media/pci/ivtv/ivtv-udma.c            |  14 +--
+ drivers/media/pci/ivtv/ivtv-yuv.c             |  10 +-
+ drivers/media/v4l2-core/videobuf-dma-sg.c     |   3 +-
+ drivers/misc/genwqe/card_utils.c              |  17 +--
+ drivers/misc/mic/scif/scif_rma.c              |  17 ++-
+ drivers/misc/vmw_vmci/vmci_context.c          |   2 +-
+ drivers/misc/vmw_vmci/vmci_queue_pair.c       |  11 +-
+ drivers/platform/goldfish/goldfish_pipe.c     |   9 +-
+ drivers/rapidio/devices/rio_mport_cdev.c      |   9 +-
+ drivers/sbus/char/oradax.c                    |   2 +-
+ .../interface/vchiq_arm/vchiq_2835_arm.c      |  10 +-
+ drivers/tee/tee_shm.c                         |  10 +-
+ drivers/vfio/vfio_iommu_type1.c               |   8 +-
+ drivers/video/fbdev/pvr2fb.c                  |   3 +-
+ drivers/virt/fsl_hypervisor.c                 |   7 +-
+ drivers/xen/gntdev.c                          |   5 +-
+ drivers/xen/privcmd.c                         |   7 +-
+ fs/binfmt_elf.c                               |   2 +-
+ fs/binfmt_elf_fdpic.c                         |   2 +-
+ fs/exec.c                                     |   2 +-
+ fs/nfs/direct.c                               |   4 +-
+ fs/orangefs/orangefs-bufmap.c                 |   7 +-
+ include/linux/mm.h                            |   5 +-
+ kernel/events/core.c                          |   2 +-
+ kernel/events/uprobes.c                       |   6 +-
+ kernel/futex.c                                |  10 +-
+ mm/frame_vector.c                             |   4 +-
+ mm/gup.c                                      | 115 ++++++++----------
+ mm/gup_benchmark.c                            |   2 +-
+ mm/madvise.c                                  |   2 +-
+ mm/memory.c                                   |   2 +-
+ mm/process_vm_access.c                        |  18 +--
+ net/ceph/pagevec.c                            |   8 +-
+ net/rds/info.c                                |   5 +-
+ net/rds/message.c                             |   2 +-
+ net/rds/rdma.c                                |  15 ++-
+ virt/kvm/kvm_main.c                           |   4 +-
+ 47 files changed, 151 insertions(+), 266 deletions(-)
+
 -- 
 2.22.0
 
