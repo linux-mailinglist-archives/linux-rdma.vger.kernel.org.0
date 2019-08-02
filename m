@@ -2,106 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB2D7F697
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2019 14:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CBF7F711
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2019 14:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732494AbfHBMLK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Aug 2019 08:11:10 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:39933 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727884AbfHBMLK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Aug 2019 08:11:10 -0400
-Received: by mail-pg1-f196.google.com with SMTP id u17so35990184pgi.6;
-        Fri, 02 Aug 2019 05:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dBxG4FOJ9DD9Cx5lh35bmxbfWydS0WqQT7U1r29fUWs=;
-        b=OnZhIIczB687wVyPg13SbjSYXsSeklMmxlhBksetJU72HEqthGT8Vm0Lwjdm82fO/c
-         +GO98ncrNnPT+DJphQ5Wrak5JxReJUPCS7L3OZLxbsLExMvus77vBLjflGQaIHZybrhX
-         SblvfEyij5qNwUZYldR9W5Bm3aBeoHqj/lEMgdyIrRqSQ14SGYiA7N6R01OFonkaja2k
-         8ySEloGCbSwmg+FqtnoX4oPm5GHCSIYOoJqFoh3V4MH1qLY6JE8xUNXtFuR6GB8WRS0T
-         RmVtGjrk8EpIMjUxU6r7FLUyD8a8i70QOyoT8Fp5n8j8H/GQJPkEArg1BGVj9zWxV/V5
-         ML7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dBxG4FOJ9DD9Cx5lh35bmxbfWydS0WqQT7U1r29fUWs=;
-        b=bV2FIp6UiXpR+AU+eGRTfQIyFjM9svhyYlwHuw9LIXkO/dAg+ZULKU1DJu+wFSXVB9
-         Per+EwkUHWQyI5BOWUrMdFQRRRNzo3i+IWKwg+XfZ/fIp3K1TZtvGEyCA+95cACzByzS
-         wPHTU1CoKdUyv9PYw1R76+3DEpM5Gorhs+f7AEhz5wWNPuEX2y/kIeGnbwfEy24Bv6fi
-         Ha+hACIUTaOhBCR+nXKwnvT9kibd4PPBxSqCnogXGBEjEFW8IEmiGOPDD9JbrJq6bied
-         I4pgFTT49hSEzhupN3nhqwQHBonDlI3Ov2EmfUvWD8cVvtuGBqI20x6pwOUsSEufFNJS
-         CT2A==
-X-Gm-Message-State: APjAAAX0WSebEi+lWdeCG32NwvH138fB9xpo4XESs/w1r6TLnfwsvORn
-        Md+pyQcGCCWcotn2a7b8ef/etF3QvlDLnw==
-X-Google-Smtp-Source: APXvYqwncBG8jexi3vyTdDOj9AzySHzYVQMdIwI7HY1xN+cwAk48joKEkHEYYMRYnK9dfv1Pp8d82Q==
-X-Received: by 2002:a65:4507:: with SMTP id n7mr16054961pgq.86.1564747869964;
-        Fri, 02 Aug 2019 05:11:09 -0700 (PDT)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([89.31.126.54])
-        by smtp.gmail.com with ESMTPSA id s67sm8162531pjb.8.2019.08.02.05.11.07
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 02 Aug 2019 05:11:09 -0700 (PDT)
-From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH 3/3] IB/mlx5: Use refcount_() APIs
-Date:   Fri,  2 Aug 2019 20:11:04 +0800
-Message-Id: <20190802121104.1483-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S2388387AbfHBMlv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Aug 2019 08:41:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35710 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728404AbfHBMlv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 2 Aug 2019 08:41:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 20E6FAF94;
+        Fri,  2 Aug 2019 12:41:48 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id F40A51E3F4D; Fri,  2 Aug 2019 14:41:46 +0200 (CEST)
+Date:   Fri, 2 Aug 2019 14:41:46 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     john.hubbard@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, ceph-devel@vger.kernel.org,
+        devel@driverdev.osuosl.org, devel@lists.orangefs.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org, linux-xfs@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        sparclinux@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH 00/34] put_user_pages(): miscellaneous call sites
+Message-ID: <20190802124146.GL25064@quack2.suse.cz>
+References: <20190802022005.5117-1-jhubbard@nvidia.com>
+ <20190802091244.GD6461@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190802091244.GD6461@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch depends on PATCH 1/3.
+On Fri 02-08-19 11:12:44, Michal Hocko wrote:
+> On Thu 01-08-19 19:19:31, john.hubbard@gmail.com wrote:
+> [...]
+> > 2) Convert all of the call sites for get_user_pages*(), to
+> > invoke put_user_page*(), instead of put_page(). This involves dozens of
+> > call sites, and will take some time.
+> 
+> How do we make sure this is the case and it will remain the case in the
+> future? There must be some automagic to enforce/check that. It is simply
+> not manageable to do it every now and then because then 3) will simply
+> be never safe.
+> 
+> Have you considered coccinele or some other scripted way to do the
+> transition? I have no idea how to deal with future changes that would
+> break the balance though.
 
-After converting refcount to refcount_t, use
-refcount_() APIs to operate it.
+Yeah, that's why I've been suggesting at LSF/MM that we may need to create
+a gup wrapper - say vaddr_pin_pages() - and track which sites dropping
+references got converted by using this wrapper instead of gup. The
+counterpart would then be more logically named as unpin_page() or whatever
+instead of put_user_page().  Sure this is not completely foolproof (you can
+create new callsite using vaddr_pin_pages() and then just drop refs using
+put_page()) but I suppose it would be a high enough barrier for missed
+conversions... Thoughts?
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
----
- drivers/infiniband/hw/mlx5/srq_cmd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+								Honza
 
-diff --git a/drivers/infiniband/hw/mlx5/srq_cmd.c b/drivers/infiniband/hw/mlx5/srq_cmd.c
-index b0d0687c7a68..8fc3630a9d4c 100644
---- a/drivers/infiniband/hw/mlx5/srq_cmd.c
-+++ b/drivers/infiniband/hw/mlx5/srq_cmd.c
-@@ -86,7 +86,7 @@ struct mlx5_core_srq *mlx5_cmd_get_srq(struct mlx5_ib_dev *dev, u32 srqn)
- 	xa_lock(&table->array);
- 	srq = xa_load(&table->array, srqn);
- 	if (srq)
--		atomic_inc(&srq->common.refcount);
-+		refcount_inc(&srq->common.refcount);
- 	xa_unlock(&table->array);
- 
- 	return srq;
-@@ -592,7 +592,7 @@ int mlx5_cmd_create_srq(struct mlx5_ib_dev *dev, struct mlx5_core_srq *srq,
- 	if (err)
- 		return err;
- 
--	atomic_set(&srq->common.refcount, 1);
-+	refcount_set(&srq->common.refcount, 1);
- 	init_completion(&srq->common.free);
- 
- 	err = xa_err(xa_store_irq(&table->array, srq->srqn, srq, GFP_KERNEL));
-@@ -675,7 +675,7 @@ static int srq_event_notifier(struct notifier_block *nb,
- 	xa_lock(&table->array);
- 	srq = xa_load(&table->array, srqn);
- 	if (srq)
--		atomic_inc(&srq->common.refcount);
-+		refcount_inc(&srq->common.refcount);
- 	xa_unlock(&table->array);
- 
- 	if (!srq)
 -- 
-2.20.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
