@@ -2,65 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C224B8055C
-	for <lists+linux-rdma@lfdr.de>; Sat,  3 Aug 2019 10:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCD5806EE
+	for <lists+linux-rdma@lfdr.de>; Sat,  3 Aug 2019 17:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727542AbfHCItd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 3 Aug 2019 04:49:33 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3741 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727529AbfHCItc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 3 Aug 2019 04:49:32 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 927B04B6C9443EFBC833;
-        Sat,  3 Aug 2019 16:49:30 +0800 (CST)
-Received: from linux-ioko.site (10.71.200.31) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.439.0; Sat, 3 Aug 2019 16:49:24 +0800
-From:   Lijun Ou <oulijun@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH V3 for-next 13/13] RDMA/hns: Disable alw_lcl_lpbk of SSU
-Date:   Sat, 3 Aug 2019 16:45:19 +0800
-Message-ID: <1564821919-100676-14-git-send-email-oulijun@huawei.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1564821919-100676-1-git-send-email-oulijun@huawei.com>
-References: <1564821919-100676-1-git-send-email-oulijun@huawei.com>
+        id S1727856AbfHCPCt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 3 Aug 2019 11:02:49 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:36531 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727854AbfHCPCt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 3 Aug 2019 11:02:49 -0400
+Received: by mail-io1-f65.google.com with SMTP id o9so55109541iom.3;
+        Sat, 03 Aug 2019 08:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fo/kv+brWQ1flp7Vdkb8WoUBvAMa5Whd0L9OkVELuTQ=;
+        b=PMPGtK8UFs07wgyVwxnfAQyx3EFb0wXBwNBqjDExProlToHDrO8vJ1hKOZY4+mtnY6
+         EK1ULx/2yyTfRyW9lgo5KJwuJInKH2ClW5dsywvBbP+XNueqGOhItEYmxJNtP/DihL3j
+         elV0Eh6W7RGnsfDsdt6UEcjakmGtslXbd3KiADHYYA+eGl2ne/yQJn0fJtvRFYrAysdc
+         iJuLr3jxvoTZdXNjRUq60+UxbKic/xv1cG+Ph0uhlKsk45vC/7P8RTm/CmUkgMX+9qVS
+         7pgB+Hi9W/JvahVts2rVeUCj3cf4QrWmrZt4Do/UV3DFbVDMZwwP5SO9eMKY8ZSUkb+t
+         yq8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fo/kv+brWQ1flp7Vdkb8WoUBvAMa5Whd0L9OkVELuTQ=;
+        b=Erh04UxC24116R9oFA/aP+VpEpTOVqY/aSFHC0qQLuqSyGK0P3Z0b1b6oLUOWYU81D
+         0wK1PLucb5pM6hiVon+lSeYLLAbvRIc7VA6i27kE/7Xw2z3ZNxbhRp6D+hTAdTt3kshX
+         aTd87x2dYl6PQXmZnPWMWp0pLxoVK6Hp7/jemE82+O/+1shVdvyNh6y5oB1qgnWvwZaH
+         Cl/+U7pSabiWVHS38kabH1FH32nN54L1/rOJJhWvHULXzrHWvWn1Gy9QrGrFcecMT3tk
+         9xzD0qnkH9LuxDICS5ZVOxHMXnJWvepXPZbWjhHZAlfbDRMl47umVzRIMT923rb+/qIo
+         BKAg==
+X-Gm-Message-State: APjAAAW17REctFgznjxIqvuznV1dbubB2BU0hYl+g6hM0BgXs070ylD1
+        Hu+XjGKdXj3RCjKHLKEKXBQlNGzZvkzWX34V5MJntY/g
+X-Google-Smtp-Source: APXvYqxcf3eS9deQHUBrGtW7fFUKmTKrSFL7EwRO762escS+44kEsee8qFfmBQ4ZGsZsDRuvdb/3GYwhCE5lb9mohnE=
+X-Received: by 2002:a5d:968b:: with SMTP id m11mr84322526ion.16.1564844567923;
+ Sat, 03 Aug 2019 08:02:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.71.200.31]
-X-CFilter-Loop: Reflected
+References: <20190802151316.16011-1-colin.king@canonical.com>
+In-Reply-To: <20190802151316.16011-1-colin.king@canonical.com>
+From:   Parav Pandit <pandit.parav@gmail.com>
+Date:   Sat, 3 Aug 2019 20:32:37 +0530
+Message-ID: <CAG53R5VvSwYYVhSLpLpGyrPt6emLy_YCDBPjzWSng9EpVcQDoQ@mail.gmail.com>
+Subject: Re: [PATCH][net-next][V2] net/mlx5: remove self-assignment on esw->dev
+To:     Colin King <colin.king@canonical.com>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Weihang Li <liweihang@hisilicon.com>
-
-If we enabled alw_lcl_lpbk in promiscuous mode, packet whose source
-and destination mac address is equal will be handled in both inner
-loopback and outer loopback. This will halve performance of roce in
-promiscuous mode.
-
-Signed-off-by: Weihang Li <liweihang@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 713bfab..df0b011 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1308,7 +1308,7 @@ static int hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev,
- 		cpu_to_le16(HNS_ROCE_CMD_FLAG_NO_INTR | HNS_ROCE_CMD_FLAG_IN);
- 	desc.flag &= cpu_to_le16(~HNS_ROCE_CMD_FLAG_WR);
- 	roce_set_bit(swt->cfg, VF_SWITCH_DATA_CFG_ALW_LPBK_S, 1);
--	roce_set_bit(swt->cfg, VF_SWITCH_DATA_CFG_ALW_LCL_LPBK_S, 1);
-+	roce_set_bit(swt->cfg, VF_SWITCH_DATA_CFG_ALW_LCL_LPBK_S, 0);
- 	roce_set_bit(swt->cfg, VF_SWITCH_DATA_CFG_ALW_DST_OVRD_S, 1);
- 
- 	return hns_roce_cmq_send(hr_dev, &desc, 1);
--- 
-1.9.1
-
+On Sat, Aug 3, 2019 at 7:54 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There is a self assignment of esw->dev to itself, clean this up by
+> removing it. Also make dev a const pointer.
+>
+> Addresses-Coverity: ("Self assignment")
+> Fixes: 6cedde451399 ("net/mlx5: E-Switch, Verify support QoS element type")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>
+> V2: make dev const
+>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/eswitch.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+> index f4ace5f8e884..de0894b695e3 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+> @@ -1413,7 +1413,7 @@ static int esw_vport_egress_config(struct mlx5_eswitch *esw,
+>
+>  static bool element_type_supported(struct mlx5_eswitch *esw, int type)
+>  {
+> -       struct mlx5_core_dev *dev = esw->dev = esw->dev;
+> +       const struct mlx5_core_dev *dev = esw->dev;
+>
+>         switch (type) {
+>         case SCHEDULING_CONTEXT_ELEMENT_TYPE_TSAR:
+> --
+> 2.20.1
+>
+Reviewed-by: Parav Pandit <parav@mellanox.com>
