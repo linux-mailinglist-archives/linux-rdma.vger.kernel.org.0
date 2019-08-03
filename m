@@ -2,90 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 809E2804D8
-	for <lists+linux-rdma@lfdr.de>; Sat,  3 Aug 2019 09:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B344080564
+	for <lists+linux-rdma@lfdr.de>; Sat,  3 Aug 2019 10:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727251AbfHCHGz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 3 Aug 2019 03:06:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727206AbfHCHGx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 3 Aug 2019 03:06:53 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 756402173E;
-        Sat,  3 Aug 2019 07:06:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564816011;
-        bh=fAm+JJVlEEdZsZEnQU6VmG7AlISaD9fVfUjXl/e9MGA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EvBQbY6tUIAsZP4MFxGmLRqZJjlnz59fmNMbvE0jfno1B+JXE+PNryIyzSAnXbr8N
-         +lgw4Y3y5zL8NJKrLYjFHjBcr6/6qlTB3yc6rbylv5fVS7aSSqYd41B1eBmWwcN4jJ
-         e48QvmU3i/Btia6YyxF5rYYxbA6/qQXbJH8nGzR0=
-Date:   Sat, 3 Aug 2019 09:06:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     john.hubbard@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-fbdev@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        kvm@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        sparclinux@vger.kernel.org, ceph-devel@vger.kernel.org,
-        devel@driverdev.osuosl.org, rds-devel@oss.oracle.com,
-        linux-rdma@vger.kernel.org, x86@kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, xen-devel@lists.xenproject.org,
-        devel@lists.orangefs.org, linux-media@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Guilherme G. Piccoli" <gpiccoli@linux.vnet.ibm.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        intel-gfx@lists.freedesktop.org, linux-block@vger.kernel.org,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-xfs@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Frank Haverkamp <haver@linux.vnet.ibm.com>
-Subject: Re: [PATCH 10/34] genwqe: convert put_page() to put_user_page*()
-Message-ID: <20190803070640.GB2508@kroah.com>
-References: <20190802022005.5117-1-jhubbard@nvidia.com>
- <20190802022005.5117-11-jhubbard@nvidia.com>
+        id S2387816AbfHCItg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 3 Aug 2019 04:49:36 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3752 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387817AbfHCItf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 3 Aug 2019 04:49:35 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B1804F30EBDBD0FBB582;
+        Sat,  3 Aug 2019 16:49:30 +0800 (CST)
+Received: from linux-ioko.site (10.71.200.31) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.439.0; Sat, 3 Aug 2019 16:49:21 +0800
+From:   Lijun Ou <oulijun@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH V3 for-next 00/13] Updates for 5.3-rc2
+Date:   Sat, 3 Aug 2019 16:45:06 +0800
+Message-ID: <1564821919-100676-1-git-send-email-oulijun@huawei.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190802022005.5117-11-jhubbard@nvidia.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain
+X-Originating-IP: [10.71.200.31]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 01, 2019 at 07:19:41PM -0700, john.hubbard@gmail.com wrote:
-> From: John Hubbard <jhubbard@nvidia.com>
-> 
-> For pages that were retained via get_user_pages*(), release those pages
-> via the new put_user_page*() routines, instead of via put_page() or
-> release_pages().
-> 
-> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-> ("mm: introduce put_user_page*(), placeholder versions").
-> 
-> This changes the release code slightly, because each page slot in the
-> page_list[] array is no longer checked for NULL. However, that check
-> was wrong anyway, because the get_user_pages() pattern of usage here
-> never allowed for NULL entries within a range of pinned pages.
-> 
-> Cc: Frank Haverkamp <haver@linux.vnet.ibm.com>
-> Cc: "Guilherme G. Piccoli" <gpiccoli@linux.vnet.ibm.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  drivers/misc/genwqe/card_utils.c | 17 +++--------------
->  1 file changed, 3 insertions(+), 14 deletions(-)
+Here are some updates for hns driver based 5.3-rc2, mainly
+include some codes optimization and comments style modification.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Change from V2:
+1. Remove the unncessary memset opertion for the tenth patch
+
+Change from V1:
+1. Fix the checkpatch warning
+2. Use ibdev print interface instead of dev print interface in
+   this patchset.
+
+Lang Cheng (6):
+  RDMA/hns: Clean up unnecessary initial assignment
+  RDMA/hns: Update some comments style
+  RDMA/hns: Handling the error return value of hem function
+  RDMA/hns: Split bool statement and assign statement
+  RDMA/hns: Refactor irq request code
+  RDMA/hns: Remove unnecessary kzalloc
+
+Lijun Ou (2):
+  RDMA/hns: Encapsulate some lines for setting sq size in user mode
+  RDMA/hns: Optimize hns_roce_modify_qp function
+
+Weihang Li (2):
+  RDMA/hns: Remove redundant print in hns_roce_v2_ceq_int()
+  RDMA/hns: Disable alw_lcl_lpbk of SSU
+
+Yangyang Li (1):
+  RDMA/hns: Refactor hns_roce_v2_set_hem for hip08
+
+Yixian Liu (2):
+  RDMA/hns: Update the prompt message for creating and destroy qp
+  RDMA/hns: Remove unnessary init for cmq reg
+
+ drivers/infiniband/hw/hns/hns_roce_device.h |  65 +++++----
+ drivers/infiniband/hw/hns/hns_roce_hem.c    |  15 +-
+ drivers/infiniband/hw/hns/hns_roce_hem.h    |   6 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 211 ++++++++++++++--------------
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   2 -
+ drivers/infiniband/hw/hns/hns_roce_mr.c     |   1 -
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 178 ++++++++++++++---------
+ 7 files changed, 260 insertions(+), 218 deletions(-)
+
+-- 
+1.9.1
+
