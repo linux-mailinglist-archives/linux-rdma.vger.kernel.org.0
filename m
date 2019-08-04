@@ -2,55 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5ED80B42
-	for <lists+linux-rdma@lfdr.de>; Sun,  4 Aug 2019 16:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA7280B4D
+	for <lists+linux-rdma@lfdr.de>; Sun,  4 Aug 2019 16:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbfHDOpA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 4 Aug 2019 10:45:00 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:38466 "EHLO
+        id S1726319AbfHDO6d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 4 Aug 2019 10:58:33 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:37181 "EHLO
         mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726181AbfHDOpA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Aug 2019 10:45:00 -0400
-Received: by mail-ed1-f67.google.com with SMTP id r12so41647803edo.5;
-        Sun, 04 Aug 2019 07:44:58 -0700 (PDT)
+        with ESMTP id S1726181AbfHDO6c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Aug 2019 10:58:32 -0400
+Received: by mail-ed1-f67.google.com with SMTP id w13so76515821eds.4;
+        Sun, 04 Aug 2019 07:58:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XeyplrnYbEY6zKt90AGW5ERzcZCdMSGch8+Ck0rohmM=;
-        b=mxQb+0GUSfL3Ske/EYMGySbfRF05uwNvXKoXL/LcDrDz55FEbSaepCP9u8pOa9h3Zh
-         lOPEgSziB5E+p+pY/DXDNhd1rkNBL/iOW2JBvGtJAPs2iTFY07V7SiGsfTzNEFaDuOHG
-         ZpwKILbZ2kU0MIQMm1szb/dS50xMX2Gp4uwpnjkFN3VCEHDSCky9H/6dzU/4YUhOK7bR
-         b9Hd5gYs5hLljxXHpVUehvbu+RCZtK5j9BxRHoqVHnFpUlnNgU4liZUUuuUZm7p9YmP6
-         8l0j4p9nkKTsZIMyGnl0lLmbh+C0dLEV6I4mqRJKkdvD9h3hQBchUltf3oPCXd8y55Lr
-         xwPw==
+        bh=vxyYB1Aq9u4CCTpYWtWmXj3GAEknEiHUBIBc1JvXqZs=;
+        b=daW/hpWPxtNOzuktRo0A4gQ2yUzkZfbJxd9czvuxIjrNDZ3kewOTxxDAPEBAFgsVPV
+         /QWn6AF2V/LZL81XZvo4dNgUw9gdpW2Ac8OJiWkOvGs+n7myp1OAd10W65/fj57g6t+k
+         iGyBhtmahI2Hm/8TfMWlZwMgLp+KyirFR8CMK3TNkKR/8BOoH94yyZgpNElZXf9Cr3Sm
+         IxqCh9oVzjdSWAq5/CxJ1In77rw3DMBUgXyysW8PuzjyRqRi4JMDqs6vnqfMU5a7lH9u
+         bWn/jbBjMkWUpowsf4M2oIlItzynJ5N1mcyGCgZqQ7QqAkaSh8mEk5JxzJaJUB1nyRWM
+         YSTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XeyplrnYbEY6zKt90AGW5ERzcZCdMSGch8+Ck0rohmM=;
-        b=i7Xl+txZ6XGgmXfYMqqU91zpTCx+3jRtHW4zDaTA7sXSvU2U7onq4q50jKpxHJCxgQ
-         IxW+M3ayn0mN4ivNjD6h/4GdO5V9BllNiN1Oyo4jTtL5JfyQhe6cm4W4YcYKWJZ6330n
-         YqqTFiV4ZBJJPTOLrY+SqLBUvyhhNXt5EZ7Ncp7CRMs2Yj1olRJoy60fNvJdghZYVScu
-         eYVKWDF5DObKz7Pg667YWJyqNYCPYZEwCRG6DGZwxyXmJ2lUestNcwLfTpbKIkn1MFvl
-         tLBPv1JXWXOq2dkIPGjN90eb/dptxMgrXp8LvOXbis2abPngXfEhSuD8Q/ib5vU3Y90A
-         21dA==
-X-Gm-Message-State: APjAAAWcdCtbAmccdb4+4GLR7yS80vuIdD+i36A9l1lnuvK+IDMoeuPf
-        6J6Nkl1e8CX7LkaYrr/eNT+qi0YcWUr3IQ/jOIo=
-X-Google-Smtp-Source: APXvYqwaCLvc1w1LRp2x19+CU+YzIDgAYpRhh61mmyka90uwqml/vBNDcgKtwXcEd8dz4k5m7ZCEh+0P/x6M8QjvUWo=
-X-Received: by 2002:a17:906:4890:: with SMTP id v16mr21845600ejq.296.1564929898159;
- Sun, 04 Aug 2019 07:44:58 -0700 (PDT)
+        bh=vxyYB1Aq9u4CCTpYWtWmXj3GAEknEiHUBIBc1JvXqZs=;
+        b=q9O6KDNeWTe+AwQM0PNmgM3VmtBDjgZwh63nNd5jBdi4gYg/bgQZCbkhmQ9kNrANfH
+         Dq8+cxUahw8QXbuVgQMJHvOdEADIVn1qZl0RINSSx6oom2SDcJQuCopBGOmUJuBOdWFp
+         jiRbZHt6R1oyUr+kPHkK6FXUdTXhgY+IQbMcddiY/u7+q36GbPh6Bkgsm3UCXvQezaid
+         TmNOn/IGEh+n0sxBBZHhmuk4U0TUkcfGRu1wIlFnI5Z8EwScxt3EvxC40plK4yPJFgiV
+         YvvDd+NNzDB2LP1cY8cwNNb5AfB4Cd4UEFhhItXXEn4XLptxzVcW6fxHYi1E3F5Pd3pJ
+         mLDQ==
+X-Gm-Message-State: APjAAAVMDF3SrxptUTkUnNI9+QOGl3nC1HCZ0BPsa0G9gXZCGut0cbIV
+        3f+JT0QWrbk2CNPq7QEsCn5Mt2qtwTA50m030fs=
+X-Google-Smtp-Source: APXvYqywB49X4tnVMViZN6HXtXvVriSKwTTDhggBaGXZNsT0us14HOf/K3OieJyZOvNn5qL0On4jmdoXasobBLWngAo=
+X-Received: by 2002:a17:906:32c2:: with SMTP id k2mr21513931ejk.147.1564930710909;
+ Sun, 04 Aug 2019 07:58:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190802164828.20243-1-hslester96@gmail.com> <20190804125858.GJ4832@mtr-leonro.mtl.com>
-In-Reply-To: <20190804125858.GJ4832@mtr-leonro.mtl.com>
+References: <20190802121035.1315-1-hslester96@gmail.com> <20190804124820.GH4832@mtr-leonro.mtl.com>
+In-Reply-To: <20190804124820.GH4832@mtr-leonro.mtl.com>
 From:   Chuhong Yuan <hslester96@gmail.com>
-Date:   Sun, 4 Aug 2019 22:44:47 +0800
-Message-ID: <CANhBUQ2H5MU0m2xM0AkJGPf7+MJBZ3Eq5rR0kgeOoKRi4q1j6Q@mail.gmail.com>
-Subject: Re: [PATCH v2] net/mlx5e: Use refcount_t for refcount
+Date:   Sun, 4 Aug 2019 22:58:19 +0800
+Message-ID: <CANhBUQ0rMKHmh4ibktwRmVN6NU=HAjs-Q7PrF9yX5x5yOyOB2A@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Use refcount_t for refcount
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Saeed Mahameed <saeedm@mellanox.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Netdev <netdev@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
@@ -58,90 +60,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 4, 2019 at 8:59 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Sun, Aug 4, 2019 at 8:48 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> On Sat, Aug 03, 2019 at 12:48:28AM +0800, Chuhong Yuan wrote:
-> > refcount_t is better for reference counters since its
-> > implementation can prevent overflows.
-> > So convert atomic_t ref counters to refcount_t.
+> On Fri, Aug 02, 2019 at 08:10:35PM +0800, Chuhong Yuan wrote:
+> > Reference counters are preferred to use refcount_t instead of
+> > atomic_t.
+> > This is because the implementation of refcount_t can prevent
+> > overflows and detect possible use-after-free.
+> >
+> > First convert the refcount field to refcount_t in mlx5/driver.h.
+> > Then convert the uses to refcount_() APIs.
 >
-> I'm not thrilled to see those automatic conversion patches, especially
-> for flows which can't overflow. There is nothing wrong in using atomic_t
-> type of variable, do you have in mind flow which will cause to overflow?
+> You can't do it, because you need to ensure that driver compiles and
+> works between patches. By converting driver.h alone to refcount_t, you
+> simply broke mlx5 driver.
 >
-> Thanks
 
-I have to say that these patches are not done automatically...
-Only the detection of problems is done by a script.
-All conversions are done manually.
+It is my fault... I am not clear how to send patches which cross
+several subsystems, so I sent them in series.
+Maybe I should merge these patches together?
 
-I am not sure whether the flow can cause an overflow.
-But I think it is hard to ensure that a data path is impossible
-to have problems in any cases including being attacked.
 
-So I think it is better to do this minor revision to prevent
-potential risk, just like we have done in mlx5/core/cq.c.
+> NAK, to be clear.
+>
+> And please don't sent series of patches as standalone patches.
+>
 
-Regards,
-Chuhong
+Due to the reason mentioned above, I sent them seperately.
 
-> >
-> > Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-> > ---
-> > Changes in v2:
-> >   - Add #include.
-> >
-> >  drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
-> > index b9d4f4e19ff9..148b55c3db7a 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
-> > @@ -32,6 +32,7 @@
-> >
-> >  #include <linux/kernel.h>
-> >  #include <linux/module.h>
-> > +#include <linux/refcount.h>
-> >  #include <linux/mlx5/driver.h>
-> >  #include <net/vxlan.h>
-> >  #include "mlx5_core.h"
-> > @@ -48,7 +49,7 @@ struct mlx5_vxlan {
-> >
-> >  struct mlx5_vxlan_port {
-> >       struct hlist_node hlist;
-> > -     atomic_t refcount;
-> > +     refcount_t refcount;
-> >       u16 udp_port;
-> >  };
-> >
-> > @@ -113,7 +114,7 @@ int mlx5_vxlan_add_port(struct mlx5_vxlan *vxlan, u16 port)
-> >
-> >       vxlanp = mlx5_vxlan_lookup_port(vxlan, port);
-> >       if (vxlanp) {
-> > -             atomic_inc(&vxlanp->refcount);
-> > +             refcount_inc(&vxlanp->refcount);
-> >               return 0;
-> >       }
-> >
-> > @@ -137,7 +138,7 @@ int mlx5_vxlan_add_port(struct mlx5_vxlan *vxlan, u16 port)
-> >       }
-> >
-> >       vxlanp->udp_port = port;
-> > -     atomic_set(&vxlanp->refcount, 1);
-> > +     refcount_set(&vxlanp->refcount, 1);
-> >
-> >       spin_lock_bh(&vxlan->lock);
-> >       hash_add(vxlan->htable, &vxlanp->hlist, port);
-> > @@ -170,7 +171,7 @@ int mlx5_vxlan_del_port(struct mlx5_vxlan *vxlan, u16 port)
-> >               goto out_unlock;
-> >       }
-> >
-> > -     if (atomic_dec_and_test(&vxlanp->refcount)) {
-> > +     if (refcount_dec_and_test(&vxlanp->refcount)) {
-> >               hash_del(&vxlanp->hlist);
-> >               remove = true;
-> >       }
-> > --
-> > 2.20.1
-> >
+> Thanks,
