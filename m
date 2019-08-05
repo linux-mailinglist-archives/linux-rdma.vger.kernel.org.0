@@ -2,180 +2,213 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D22881295
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2019 08:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AB181435
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2019 10:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727225AbfHEGzs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Aug 2019 02:55:48 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:40929 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbfHEGzs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Aug 2019 02:55:48 -0400
-Received: by mail-ed1-f67.google.com with SMTP id k8so77600679eds.7;
-        Sun, 04 Aug 2019 23:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2vcIiINY4WBP+S4p7ZvCljxe/AGpBFsXIl5B5dC7+jY=;
-        b=IGZvj4IgmpHw+kKQTtY8eeb5E9cDO3t0ezYt8tkNMicugTeGnGIQ7+XxTUdxszd8qU
-         tm0/jRpIWihYTtvPPiWRHkiXFnslsPz1U67otEH+hSX2gDtw38tvjxjKw5jXUVcAjbji
-         Sef3EjUl9wORFtI68cJqtqXCtFhbVd/9o40ndI8II/QaM2ZbHB/ovA1T/1GaxbBLovhZ
-         mZYpjg3DTgTBOsTyoboXlxBwe8Bw4f5hzg6Mk4zpTsbzrBMD9vkv3wGQDNLoNVRmZQA2
-         1YnwyBDVkjAJADw/cf4V3UdeDkSn/7+P2BCV9sPKO8aKKZVwfYO616s2KRVRpi9zCh2a
-         6hjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2vcIiINY4WBP+S4p7ZvCljxe/AGpBFsXIl5B5dC7+jY=;
-        b=cbnsYt/4M/WVyV/1eKUhBXBDqXrDo0Vh2mS3eevPaQOEfoaNgb1pEqc2vYrCyzM5lU
-         KBSK73B4sSrP4o8Yuwy69+kzXxwaHPqPGKg53U/ZTO+ERa/HL8UXLCdd7woDEAyaQzcA
-         +vqyeNedM0r5a2X5cqFHk9r3uGlcTlBh6P3NpsUSH+0+iM3NGNfrjTshJjqHJFB8E8z7
-         9LmvblKMNb2kjbk4SIGo++vbq+SltIbVPq01UOJ28YcU6dF2kFtI5m2YQbdVVuNoGMJa
-         JmLqfkaGW3/oiL9J895mzR7SkV8GuKQm0b661OxGi7ofZ89QELtBBP0rL8XqKpIXSyJa
-         NGBg==
-X-Gm-Message-State: APjAAAV5BZbLVlG5RVdErLWZ3RMr1JKu72aR3YYoBRNuGhiAblo0ZzSA
-        /i3c4/iq0IN+nOt1KHvTumwo9gAnJJDeHe6nHqfAb+MIvRs=
-X-Google-Smtp-Source: APXvYqzXx3p2Pz7Q7wMxZKubkTIW6zu3x3Sr+7578oy+fMgP1ypqnD0LxU8UEDkWZatK5ntlXt5G6vS3t/3Q9WQXIx8=
-X-Received: by 2002:aa7:cf8e:: with SMTP id z14mr131881877edx.40.1564988145755;
- Sun, 04 Aug 2019 23:55:45 -0700 (PDT)
+        id S1726454AbfHEIaR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Aug 2019 04:30:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726423AbfHEIaR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 5 Aug 2019 04:30:17 -0400
+Received: from localhost (unknown [77.137.115.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BC4B2067D;
+        Mon,  5 Aug 2019 08:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564993816;
+        bh=B0kAIT3BOdhbskDsdQpdYykJgPzpXjnvzPreyxgcUPY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KYKrUyGH4hjMGxR5Xa7sG8eh/oBqbI+6nbcmufJA/SP0b6KgerX4tIHJXnxzymAOz
+         Xtpe3x7XF91qocz5IeHxefkYDtr9oO3LM0Y3nX0AZ3/EcaLWDwnGCwcGjIAxFAynwO
+         GIFwpYrwJ9NMouAfBD5W4HQE3rsmGcgBVaaCXV08=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Yishai Hadas <yishaih@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH rdma-rc] IB/mlx5: Fix implicit MR release flow
+Date:   Mon,  5 Aug 2019 11:30:10 +0300
+Message-Id: <20190805083010.21777-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20190802164828.20243-1-hslester96@gmail.com> <20190804125858.GJ4832@mtr-leonro.mtl.com>
- <CANhBUQ2H5MU0m2xM0AkJGPf7+MJBZ3Eq5rR0kgeOoKRi4q1j6Q@mail.gmail.com> <20190805061320.GN4832@mtr-leonro.mtl.com>
-In-Reply-To: <20190805061320.GN4832@mtr-leonro.mtl.com>
-From:   Chuhong Yuan <hslester96@gmail.com>
-Date:   Mon, 5 Aug 2019 14:55:34 +0800
-Message-ID: <CANhBUQ0tUTXQKq__zvhNCUxXTFfDyr2xKF+Cwupod9xmvSrw2A@mail.gmail.com>
-Subject: Re: [PATCH v2] net/mlx5e: Use refcount_t for refcount
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 5, 2019 at 2:13 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Sun, Aug 04, 2019 at 10:44:47PM +0800, Chuhong Yuan wrote:
-> > On Sun, Aug 4, 2019 at 8:59 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Sat, Aug 03, 2019 at 12:48:28AM +0800, Chuhong Yuan wrote:
-> > > > refcount_t is better for reference counters since its
-> > > > implementation can prevent overflows.
-> > > > So convert atomic_t ref counters to refcount_t.
-> > >
-> > > I'm not thrilled to see those automatic conversion patches, especially
-> > > for flows which can't overflow. There is nothing wrong in using atomic_t
-> > > type of variable, do you have in mind flow which will cause to overflow?
-> > >
-> > > Thanks
-> >
-> > I have to say that these patches are not done automatically...
-> > Only the detection of problems is done by a script.
-> > All conversions are done manually.
->
-> Even worse, you need to audit usage of atomic_t and replace there
-> it can overflow.
->
-> >
-> > I am not sure whether the flow can cause an overflow.
->
-> It can't.
->
-> > But I think it is hard to ensure that a data path is impossible
-> > to have problems in any cases including being attacked.
->
-> It is not data path, and I doubt that such conversion will be allowed
-> in data paths without proving that no performance regression is introduced.
->>
->
-> > So I think it is better to do this minor revision to prevent
-> > potential risk, just like we have done in mlx5/core/cq.c.
->
-> mlx5/core/cq.c is a different beast, refcount there means actual users
-> of CQ which are limited in SW, so in theory, they have potential
-> to be overflown.
->
-> It is not the case here, there your are adding new port.
-> There is nothing wrong with atomic_t.
->
+From: Yishai Hadas <yishaih@mellanox.com>
 
-Thanks for your explanation!
-I will pay attention to this point in similar cases.
-But it seems that the semantic of refcount is not always as clear as here...
+Once implicit MR is being called to be released by
+ib_umem_notifier_release() its leaves were marked as "dying".
 
-Regards,
-Chuhong
+However, when dereg_mr()->mlx5_ib_free_implicit_mr()->mr_leaf_free() is
+called, it skips running the mr_leaf_free_action (i.e. umem_odp->work)
+when those leaves were marked as "dying".
 
+As such ib_umem_release() for the leaves won't be called and their MRs
+will be leaked as well.
 
-> Thanks
->
-> >
-> > Regards,
-> > Chuhong
-> >
-> > > >
-> > > > Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-> > > > ---
-> > > > Changes in v2:
-> > > >   - Add #include.
-> > > >
-> > > >  drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c | 9 +++++----
-> > > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
-> > > > index b9d4f4e19ff9..148b55c3db7a 100644
-> > > > --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
-> > > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
-> > > > @@ -32,6 +32,7 @@
-> > > >
-> > > >  #include <linux/kernel.h>
-> > > >  #include <linux/module.h>
-> > > > +#include <linux/refcount.h>
-> > > >  #include <linux/mlx5/driver.h>
-> > > >  #include <net/vxlan.h>
-> > > >  #include "mlx5_core.h"
-> > > > @@ -48,7 +49,7 @@ struct mlx5_vxlan {
-> > > >
-> > > >  struct mlx5_vxlan_port {
-> > > >       struct hlist_node hlist;
-> > > > -     atomic_t refcount;
-> > > > +     refcount_t refcount;
-> > > >       u16 udp_port;
-> > > >  };
-> > > >
-> > > > @@ -113,7 +114,7 @@ int mlx5_vxlan_add_port(struct mlx5_vxlan *vxlan, u16 port)
-> > > >
-> > > >       vxlanp = mlx5_vxlan_lookup_port(vxlan, port);
-> > > >       if (vxlanp) {
-> > > > -             atomic_inc(&vxlanp->refcount);
-> > > > +             refcount_inc(&vxlanp->refcount);
-> > > >               return 0;
-> > > >       }
-> > > >
-> > > > @@ -137,7 +138,7 @@ int mlx5_vxlan_add_port(struct mlx5_vxlan *vxlan, u16 port)
-> > > >       }
-> > > >
-> > > >       vxlanp->udp_port = port;
-> > > > -     atomic_set(&vxlanp->refcount, 1);
-> > > > +     refcount_set(&vxlanp->refcount, 1);
-> > > >
-> > > >       spin_lock_bh(&vxlan->lock);
-> > > >       hash_add(vxlan->htable, &vxlanp->hlist, port);
-> > > > @@ -170,7 +171,7 @@ int mlx5_vxlan_del_port(struct mlx5_vxlan *vxlan, u16 port)
-> > > >               goto out_unlock;
-> > > >       }
-> > > >
-> > > > -     if (atomic_dec_and_test(&vxlanp->refcount)) {
-> > > > +     if (refcount_dec_and_test(&vxlanp->refcount)) {
-> > > >               hash_del(&vxlanp->hlist);
-> > > >               remove = true;
-> > > >       }
-> > > > --
-> > > > 2.20.1
-> > > >
+When an application exits/killed without calling dereg_mr we might hit
+the above flow.
+
+This fatal scenario is reported by WARN_ON() upon
+mlx5_ib_dealloc_ucontext() as ibcontext->per_mm_list is not empty, the
+call trace can be seen below.
+
+Originally the "dying" mark as part of ib_umem_notifier_release() was
+introduced to prevent pagefault_mr() from returning a success response
+once this happened. However, we already have today the completion
+mechanism so no need for that in those flows any more.  Even in case a
+success response will be returned the firmware will not find the pages
+and an error will be returned in the following call as a released mm
+will cause ib_umem_odp_map_dma_pages() to permanently fail
+mmget_not_zero().
+
+Fix the above issue by dropping the "dying" from the above flows.  The
+other flows that are using "dying" are still needed it for their
+synchronization purposes.
+
+WARNING: CPU: 1 PID: 7218 at
+drivers/infiniband/hw/mlx5/main.c:2004
+               mlx5_ib_dealloc_ucontext+0x84/0x90 [mlx5_ib]
+CPU: 1 PID: 7218 Comm: ibv_rc_pingpong Tainted: G     E
+            5.2.0-rc6+ #13
+Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
+RIP: 0010:mlx5_ib_dealloc_ucontext+0x84/0x90 [mlx5_ib]
+Code: 8d bd e8 09 00 00 48 89 de e8 58 a1 ff ff 48 8b bb
+      c8 00 00 00 e8 ec 8b 3a c9 48 8b bb d8 00 00 00 5b 5d 41
+      5c e9 dc 8b 3a c9 <0f> 0b eb a0 0f 1f 84 00 00 00 00 00
+      66 66 66 66 90 41 57 b9 09 00
+RSP: 0018:ffffb8e4c0adbc48 EFLAGS: 00010297
+RAX: ffff9e1a791a65b8 RBX: ffff9e1a643c1e00 RCX:
+     0000000000000000
+RDX: ffff9e1a643c1e40 RSI: 0000000000000246 RDI:
+     ffff9e1a643c1e20
+RBP: ffff9e1a75b70000 R08: 0000000000000000 R09:
+     ffff9e1a643c1e50
+R10: 0000000000000000 R11: 0000000000000001 R12:
+     ffff9e1a643c1e20
+R13: ffff9e1a5da6bc10 R14: ffff9e1a5da6bc70 R15:
+     ffff9e1a75b70000
+FS:  00007ff61835d740(0000) GS:ffff9e1a7bb00000(0000)
+     knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9e6ac34000 CR3: 000000011e41e000 CR4:
+     00000000000006e0
+Call Trace:
+uverbs_destroy_ufile_hw+0xb5/0x120 [ib_uverbs]
+ib_uverbs_close+0x1f/0x80 [ib_uverbs]
+__fput+0xbe/0x250
+task_work_run+0x88/0xa0
+do_exit+0x2cb/0xc30
+? __fput+0x14b/0x250
+do_group_exit+0x39/0xb0
+get_signal+0x191/0x920
+? _raw_spin_unlock_bh+0xa/0x20
+? inet_csk_accept+0x229/0x2f0
+do_signal+0x36/0x5e0
+? put_unused_fd+0x5b/0x70
+? __sys_accept4+0x1a6/0x1e0
+? inet_hash+0x35/0x40
+? release_sock+0x43/0x90
+? _raw_spin_unlock_bh+0xa/0x20
+? inet_listen+0x9f/0x120
+exit_to_usermode_loop+0x5c/0xc6
+do_syscall_64+0x182/0x1b0
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7ff617c807d0
+Code: Bad RIP value.
+RSP: 002b:00007ffd1f4f7c68 EFLAGS: 00000246 ORIG_RAX:
+     000000000000002b
+RAX: fffffffffffffe00 RBX: 00007ffd1f4f7dd0 RCX:
+     00007ff617c807d0
+RDX: 0000000000000000 RSI: 0000000000000000 RDI:
+     0000000000000005
+RBP: 00007ffd1f4f7fd0 R08: 0000000000000000 R09:
+     0000000001327f50
+R10: 00007ffd1f4f7830 R11: 0000000000000246 R12:
+     0000000001327600
+R13: 00007ffd1f4f7e10 R14: 0000000001327fb0 R15:
+     0000000000000005
+[ end trace 4fa29cb158fefa46 ]
+
+Fixes: 81713d3788d2 ("IB/mlx5: Add implicit MR support")
+Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/core/umem_odp.c |  4 ----
+ drivers/infiniband/hw/mlx5/odp.c   | 23 ++++++++---------------
+ 2 files changed, 8 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+index 2a75c6f8d827..c0e15db34680 100644
+--- a/drivers/infiniband/core/umem_odp.c
++++ b/drivers/infiniband/core/umem_odp.c
+@@ -112,10 +112,6 @@ static int ib_umem_notifier_release_trampoline(struct ib_umem_odp *umem_odp,
+ 	 * prevent any further fault handling on this MR.
+ 	 */
+ 	ib_umem_notifier_start_account(umem_odp);
+-	umem_odp->dying = 1;
+-	/* Make sure that the fact the umem is dying is out before we release
+-	 * all pending page faults. */
+-	smp_wmb();
+ 	complete_all(&umem_odp->notifier_completion);
+ 	umem_odp->umem.context->invalidate_range(
+ 		umem_odp, ib_umem_start(umem_odp), ib_umem_end(umem_odp));
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index 81da82050d05..d2492a77efb8 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -579,7 +579,6 @@ static int pagefault_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr,
+ 			u32 flags)
+ {
+ 	int npages = 0, current_seq, page_shift, ret, np;
+-	bool implicit = false;
+ 	struct ib_umem_odp *odp_mr = to_ib_umem_odp(mr->umem);
+ 	bool downgrade = flags & MLX5_PF_FLAGS_DOWNGRADE;
+ 	bool prefetch = flags & MLX5_PF_FLAGS_PREFETCH;
+@@ -594,7 +593,6 @@ static int pagefault_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr,
+ 		if (IS_ERR(odp))
+ 			return PTR_ERR(odp);
+ 		mr = odp->private;
+-		implicit = true;
+ 	} else {
+ 		odp = odp_mr;
+ 	}
+@@ -682,19 +680,14 @@ static int pagefault_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr,
+ 
+ out:
+ 	if (ret == -EAGAIN) {
+-		if (implicit || !odp->dying) {
+-			unsigned long timeout =
+-				msecs_to_jiffies(MMU_NOTIFIER_TIMEOUT);
+-
+-			if (!wait_for_completion_timeout(
+-					&odp->notifier_completion,
+-					timeout)) {
+-				mlx5_ib_warn(dev, "timeout waiting for mmu notifier. seq %d against %d. notifiers_count=%d\n",
+-					     current_seq, odp->notifiers_seq, odp->notifiers_count);
+-			}
+-		} else {
+-			/* The MR is being killed, kill the QP as well. */
+-			ret = -EFAULT;
++		unsigned long timeout =
++			msecs_to_jiffies(MMU_NOTIFIER_TIMEOUT);
++
++		if (!wait_for_completion_timeout(
++				&odp->notifier_completion,
++				timeout)) {
++			mlx5_ib_warn(dev, "timeout waiting for mmu notifier. seq %d against %d. notifiers_count=%d\n",
++				     current_seq, odp->notifiers_seq, odp->notifiers_count);
+ 		}
+ 	}
+ 
+-- 
+2.20.1
+
