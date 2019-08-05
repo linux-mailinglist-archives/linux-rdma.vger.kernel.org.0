@@ -2,90 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51129811D4
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2019 07:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1726F8120B
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2019 08:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbfHEF53 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Aug 2019 01:57:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44124 "EHLO mail.kernel.org"
+        id S1725992AbfHEGC1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Aug 2019 02:02:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725951AbfHEF52 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 5 Aug 2019 01:57:28 -0400
-Received: from localhost (unknown [77.137.115.125])
+        id S1725951AbfHEGC1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 5 Aug 2019 02:02:27 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0961B20657;
-        Mon,  5 Aug 2019 05:57:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B36B206C1;
+        Mon,  5 Aug 2019 06:02:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564984647;
-        bh=CluuMJNOmsHOA+mAZyMfZg778egHHWNYSrWjkWdY6cI=;
+        s=default; t=1564984945;
+        bh=yQX7YAlJ45FZwBgTl9rdH0N9X0UpxWT3t+wfvZobwSM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LEnRxcXU43u2fZXKbn6MhQzNUjxbHOrdqfVA1Y0H/3qTz5hhcdCwvvAxMtGuObd4k
-         6S/gfgGtA1mzMSK0vwmWmonBjHg7SeOvW1gEJc1OnMp3kZIyssFGVFqpo0g8YXmHYI
-         y7xrk7M3Sn88ATaKkP+Ys7RbQqz5rj4Hcn2SgbcY=
-Date:   Mon, 5 Aug 2019 08:57:23 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Chuhong Yuan <hslester96@gmail.com>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] Use refcount_t for refcount
-Message-ID: <20190805055723.GM4832@mtr-leonro.mtl.com>
-References: <20190802121035.1315-1-hslester96@gmail.com>
- <20190804124820.GH4832@mtr-leonro.mtl.com>
- <CANhBUQ0rMKHmh4ibktwRmVN6NU=HAjs-Q7PrF9yX5x5yOyOB2A@mail.gmail.com>
+        b=zSXgYL75mNTG7YL12V8C5eDoiC89Hf9Kaiia7s6JjkSUHCF3x6/Ak018i3ohQQ3O1
+         C+6GAAKghAvtLBKxUDxhRUd0DUmvkM7dGI43mf/Q1DPFk7szO3cfjFWxrD2gdHXb7D
+         6dlcetc0SFH7Yf9LWrJm/9N7xnUQ/WeVSCP7gH38=
+Date:   Mon, 5 Aug 2019 08:02:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     aarcange@redhat.com, jannh@google.com, oleg@redhat.com,
+        peterx@redhat.com, rppt@linux.ibm.com, jgg@mellanox.com,
+        mhocko@suse.com, srinidhir@vmware.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        amakhalov@vmware.com, sean.hefty@intel.com, srivatsa@csail.mit.edu,
+        srivatsab@vmware.com, devel@driverdev.osuosl.org,
+        linux-rdma@vger.kernel.org, bvikas@vmware.com, dledford@redhat.com,
+        riandrews@android.com, hal.rosenstock@gmail.com,
+        vsirnapalli@vmware.com, leonro@mellanox.com, jglisse@redhat.com,
+        viro@zeniv.linux.org.uk, yishaih@mellanox.com, matanb@mellanox.com,
+        stable@vger.kernel.org, arve@android.com,
+        linux-fsdevel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, mike.kravetz@oracle.com
+Subject: Re: [PATCH v6 0/3] [v4.9.y] coredump: fix race condition between
+ mmget_not_zero()/get_task_mm() and core dumping
+Message-ID: <20190805060223.GA4947@kroah.com>
+References: <1564891168-30016-1-git-send-email-akaher@vmware.com>
+ <1564891168-30016-4-git-send-email-akaher@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANhBUQ0rMKHmh4ibktwRmVN6NU=HAjs-Q7PrF9yX5x5yOyOB2A@mail.gmail.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <1564891168-30016-4-git-send-email-akaher@vmware.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 04, 2019 at 10:58:19PM +0800, Chuhong Yuan wrote:
-> On Sun, Aug 4, 2019 at 8:48 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Fri, Aug 02, 2019 at 08:10:35PM +0800, Chuhong Yuan wrote:
-> > > Reference counters are preferred to use refcount_t instead of
-> > > atomic_t.
-> > > This is because the implementation of refcount_t can prevent
-> > > overflows and detect possible use-after-free.
-> > >
-> > > First convert the refcount field to refcount_t in mlx5/driver.h.
-> > > Then convert the uses to refcount_() APIs.
-> >
-> > You can't do it, because you need to ensure that driver compiles and
-> > works between patches. By converting driver.h alone to refcount_t, you
-> > simply broke mlx5 driver.
-> >
->
-> It is my fault... I am not clear how to send patches which cross
-> several subsystems, so I sent them in series.
-> Maybe I should merge these patches together?
+On Sun, Aug 04, 2019 at 09:29:28AM +0530, Ajay Kaher wrote:
+> coredump: fix race condition between mmget_not_zero()/get_task_mm()
+> and core dumping
+> 
+> [PATCH v5 1/3]:
+> Backporting of commit 04f5866e41fb70690e28397487d8bd8eea7d712a upstream.
+> 
+> [PATCH v5 2/3]:
+> Extension of commit 04f5866e41fb to fix the race condition between
+> get_task_mm() and core dumping for IB->mlx4 and IB->mlx5 drivers.
+> 
+> [PATCH v5 3/3]
+> Backporting of commit 59ea6d06cfa9247b586a695c21f94afa7183af74 upstream.
+> 
+> [diff from v5]:
+> - Recreated [PATCH v6 1/3], to solve patch apply error.
 
-In case of conversion patches, yes, you need to perform such change
-in one shot.
+Now queued up, let's see what breaks :)
 
->
->
-> > NAK, to be clear.
-> >
-> > And please don't sent series of patches as standalone patches.
-> >
->
-> Due to the reason mentioned above, I sent them seperately.
+thanks,
 
-Create patch, run ./scripts/get_maintainer.pl on it and send according
-to generated output. You are not doing kernel core changes and there is
-no need to worry about cross subsystem complexity as long as you will
-put relevant maintainers in TO: field.
-
-Thanks
-
->
-> > Thanks,
+greg k-h
