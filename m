@@ -2,77 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1726F8120B
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2019 08:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C07581218
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2019 08:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725992AbfHEGC1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Aug 2019 02:02:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44864 "EHLO mail.kernel.org"
+        id S1725992AbfHEGN0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Aug 2019 02:13:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725951AbfHEGC1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 5 Aug 2019 02:02:27 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1725976AbfHEGN0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 5 Aug 2019 02:13:26 -0400
+Received: from localhost (unknown [77.137.115.125])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B36B206C1;
-        Mon,  5 Aug 2019 06:02:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11EEB206C1;
+        Mon,  5 Aug 2019 06:13:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564984945;
-        bh=yQX7YAlJ45FZwBgTl9rdH0N9X0UpxWT3t+wfvZobwSM=;
+        s=default; t=1564985604;
+        bh=DEza7LipQz/yKwMh3a7hoO43mdHVY4vPsu+c7eOpmmc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zSXgYL75mNTG7YL12V8C5eDoiC89Hf9Kaiia7s6JjkSUHCF3x6/Ak018i3ohQQ3O1
-         C+6GAAKghAvtLBKxUDxhRUd0DUmvkM7dGI43mf/Q1DPFk7szO3cfjFWxrD2gdHXb7D
-         6dlcetc0SFH7Yf9LWrJm/9N7xnUQ/WeVSCP7gH38=
-Date:   Mon, 5 Aug 2019 08:02:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ajay Kaher <akaher@vmware.com>
-Cc:     aarcange@redhat.com, jannh@google.com, oleg@redhat.com,
-        peterx@redhat.com, rppt@linux.ibm.com, jgg@mellanox.com,
-        mhocko@suse.com, srinidhir@vmware.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        amakhalov@vmware.com, sean.hefty@intel.com, srivatsa@csail.mit.edu,
-        srivatsab@vmware.com, devel@driverdev.osuosl.org,
-        linux-rdma@vger.kernel.org, bvikas@vmware.com, dledford@redhat.com,
-        riandrews@android.com, hal.rosenstock@gmail.com,
-        vsirnapalli@vmware.com, leonro@mellanox.com, jglisse@redhat.com,
-        viro@zeniv.linux.org.uk, yishaih@mellanox.com, matanb@mellanox.com,
-        stable@vger.kernel.org, arve@android.com,
-        linux-fsdevel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, mike.kravetz@oracle.com
-Subject: Re: [PATCH v6 0/3] [v4.9.y] coredump: fix race condition between
- mmget_not_zero()/get_task_mm() and core dumping
-Message-ID: <20190805060223.GA4947@kroah.com>
-References: <1564891168-30016-1-git-send-email-akaher@vmware.com>
- <1564891168-30016-4-git-send-email-akaher@vmware.com>
+        b=2TbYzjm38SOUrCNApTPuG9DfijA4/lcG5skmEv6yuQ6p5TbrxWoHMyk9AxcdpV9Pr
+         2WNAdl3jPIYDLzg//Qs492WC4fmMd8P8DlMV7nkUFZn8G0kKuc1QLC5nM5WQqKXOIB
+         uz+gUCFUNXjkFp0BZ6Oo52sRGUdFl1yZvavpuXz4=
+Date:   Mon, 5 Aug 2019 09:13:20 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Chuhong Yuan <hslester96@gmail.com>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] net/mlx5e: Use refcount_t for refcount
+Message-ID: <20190805061320.GN4832@mtr-leonro.mtl.com>
+References: <20190802164828.20243-1-hslester96@gmail.com>
+ <20190804125858.GJ4832@mtr-leonro.mtl.com>
+ <CANhBUQ2H5MU0m2xM0AkJGPf7+MJBZ3Eq5rR0kgeOoKRi4q1j6Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1564891168-30016-4-git-send-email-akaher@vmware.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <CANhBUQ2H5MU0m2xM0AkJGPf7+MJBZ3Eq5rR0kgeOoKRi4q1j6Q@mail.gmail.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 04, 2019 at 09:29:28AM +0530, Ajay Kaher wrote:
-> coredump: fix race condition between mmget_not_zero()/get_task_mm()
-> and core dumping
-> 
-> [PATCH v5 1/3]:
-> Backporting of commit 04f5866e41fb70690e28397487d8bd8eea7d712a upstream.
-> 
-> [PATCH v5 2/3]:
-> Extension of commit 04f5866e41fb to fix the race condition between
-> get_task_mm() and core dumping for IB->mlx4 and IB->mlx5 drivers.
-> 
-> [PATCH v5 3/3]
-> Backporting of commit 59ea6d06cfa9247b586a695c21f94afa7183af74 upstream.
-> 
-> [diff from v5]:
-> - Recreated [PATCH v6 1/3], to solve patch apply error.
+On Sun, Aug 04, 2019 at 10:44:47PM +0800, Chuhong Yuan wrote:
+> On Sun, Aug 4, 2019 at 8:59 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Sat, Aug 03, 2019 at 12:48:28AM +0800, Chuhong Yuan wrote:
+> > > refcount_t is better for reference counters since its
+> > > implementation can prevent overflows.
+> > > So convert atomic_t ref counters to refcount_t.
+> >
+> > I'm not thrilled to see those automatic conversion patches, especially
+> > for flows which can't overflow. There is nothing wrong in using atomic_t
+> > type of variable, do you have in mind flow which will cause to overflow?
+> >
+> > Thanks
+>
+> I have to say that these patches are not done automatically...
+> Only the detection of problems is done by a script.
+> All conversions are done manually.
 
-Now queued up, let's see what breaks :)
+Even worse, you need to audit usage of atomic_t and replace there
+it can overflow.
 
-thanks,
+>
+> I am not sure whether the flow can cause an overflow.
 
-greg k-h
+It can't.
+
+> But I think it is hard to ensure that a data path is impossible
+> to have problems in any cases including being attacked.
+
+It is not data path, and I doubt that such conversion will be allowed
+in data paths without proving that no performance regression is introduced.
+
+>
+> So I think it is better to do this minor revision to prevent
+> potential risk, just like we have done in mlx5/core/cq.c.
+
+mlx5/core/cq.c is a different beast, refcount there means actual users
+of CQ which are limited in SW, so in theory, they have potential
+to be overflown.
+
+It is not the case here, there your are adding new port.
+There is nothing wrong with atomic_t.
+
+Thanks
+
+>
+> Regards,
+> Chuhong
+>
+> > >
+> > > Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+> > > ---
+> > > Changes in v2:
+> > >   - Add #include.
+> > >
+> > >  drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c | 9 +++++----
+> > >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
+> > > index b9d4f4e19ff9..148b55c3db7a 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
+> > > @@ -32,6 +32,7 @@
+> > >
+> > >  #include <linux/kernel.h>
+> > >  #include <linux/module.h>
+> > > +#include <linux/refcount.h>
+> > >  #include <linux/mlx5/driver.h>
+> > >  #include <net/vxlan.h>
+> > >  #include "mlx5_core.h"
+> > > @@ -48,7 +49,7 @@ struct mlx5_vxlan {
+> > >
+> > >  struct mlx5_vxlan_port {
+> > >       struct hlist_node hlist;
+> > > -     atomic_t refcount;
+> > > +     refcount_t refcount;
+> > >       u16 udp_port;
+> > >  };
+> > >
+> > > @@ -113,7 +114,7 @@ int mlx5_vxlan_add_port(struct mlx5_vxlan *vxlan, u16 port)
+> > >
+> > >       vxlanp = mlx5_vxlan_lookup_port(vxlan, port);
+> > >       if (vxlanp) {
+> > > -             atomic_inc(&vxlanp->refcount);
+> > > +             refcount_inc(&vxlanp->refcount);
+> > >               return 0;
+> > >       }
+> > >
+> > > @@ -137,7 +138,7 @@ int mlx5_vxlan_add_port(struct mlx5_vxlan *vxlan, u16 port)
+> > >       }
+> > >
+> > >       vxlanp->udp_port = port;
+> > > -     atomic_set(&vxlanp->refcount, 1);
+> > > +     refcount_set(&vxlanp->refcount, 1);
+> > >
+> > >       spin_lock_bh(&vxlan->lock);
+> > >       hash_add(vxlan->htable, &vxlanp->hlist, port);
+> > > @@ -170,7 +171,7 @@ int mlx5_vxlan_del_port(struct mlx5_vxlan *vxlan, u16 port)
+> > >               goto out_unlock;
+> > >       }
+> > >
+> > > -     if (atomic_dec_and_test(&vxlanp->refcount)) {
+> > > +     if (refcount_dec_and_test(&vxlanp->refcount)) {
+> > >               hash_del(&vxlanp->hlist);
+> > >               remove = true;
+> > >       }
+> > > --
+> > > 2.20.1
+> > >
