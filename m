@@ -2,80 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B57E68214E
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2019 18:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321378217C
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2019 18:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728917AbfHEQJD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Aug 2019 12:09:03 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:36976 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728837AbfHEQJD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Aug 2019 12:09:03 -0400
-Received: by mail-pg1-f193.google.com with SMTP id d1so7165021pgp.4;
-        Mon, 05 Aug 2019 09:09:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ILZYy/Qkh2SOroGxB401ESLDlG+ppsquN1OQynPyiSU=;
-        b=Db+xXkTUSvOFvD9NgxsIuCJ8BpKw+snEQ5dKKMfxRnl2UcqfRQHIQaydo8o8s1mvFB
-         v66UcKUVg/yEALyxcosAOPyHpT6fCE3sCLVIHhve57kbTPJpWKZl1ogdvO4ir31v0r1J
-         6nolSJsprQ4vgIdeNmQrjY0xnNWUUv0nB83CGKZoVdFlfCH72NCrHsL+9adCE0fFBTyS
-         DIzAZZq1B/yJhlJWyXlK+sc08VeCrAK5ZC1T5pXJD+rvlelOR6OJZk6T0AAGWLWZr572
-         gaGYL5pPZseljDjpJqTvsgCTtc63AK83Vb5syB/MX8Zc80S9mazO78pTuMOI2EIoqMRg
-         oKUA==
-X-Gm-Message-State: APjAAAVPE/7m8hE1TJP4gBNJZ6LaqD0yupHQ5qcE5/udYw5lf6qTJpUq
-        7hSDlPp4S7O8nqyjZ3vDwAA=
-X-Google-Smtp-Source: APXvYqwAxl1pBS8AeJ6EZK9QTwP7S8jW1nhyg9FAGS/zhrgSmhxNmxd6AUEWfED1glvlzd4Q5NiPYA==
-X-Received: by 2002:a62:2aca:: with SMTP id q193mr75352974pfq.209.1565021342284;
-        Mon, 05 Aug 2019 09:09:02 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id b136sm111692066pfb.73.2019.08.05.09.09.00
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Aug 2019 09:09:01 -0700 (PDT)
-Subject: Re: [PATCH v3] rdma: Enable ib_alloc_cq to spread work over a
- device's comp_vectors
-To:     Chuck Lever <chuck.lever@oracle.com>, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, v9fs-developer@lists.sourceforge.net
-References: <20190729171923.13428.52555.stgit@manet.1015granger.net>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <f181b5b6-df7c-d657-4ec6-4a4e56a9b5ff@acm.org>
-Date:   Mon, 5 Aug 2019 09:09:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728991AbfHEQQx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Aug 2019 12:16:53 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:59026 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728974AbfHEQQw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 5 Aug 2019 12:16:52 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 958EF307F5E4;
+        Mon,  5 Aug 2019 16:16:52 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-50.rdu2.redhat.com [10.10.112.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A0582608C1;
+        Mon,  5 Aug 2019 16:16:51 +0000 (UTC)
+Message-ID: <91e65313556c231157cae974244f0428ac88f00b.camel@redhat.com>
+Subject: Re: [PATCH rdma-next] RDMA/hns: Remove not used UAR assignment
+From:   Doug Ledford <dledford@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Lijun Ou <oulijun@huawei.com>
+Date:   Mon, 05 Aug 2019 12:16:49 -0400
+In-Reply-To: <20190801114827.24263-1-leon@kernel.org>
+References: <20190801114827.24263-1-leon@kernel.org>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-RRPfr814EB5STy3piX7m"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <20190729171923.13428.52555.stgit@manet.1015granger.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Mon, 05 Aug 2019 16:16:52 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/29/19 10:22 AM, Chuck Lever wrote:
-> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> index 1a039f1..e25c70a 100644
-> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> @@ -1767,8 +1767,8 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
->   		goto out;
->   
->   retry:
-> -	ch->cq = ib_alloc_cq(sdev->device, ch, ch->rq_size + sq_size,
-> -			0 /* XXX: spread CQs */, IB_POLL_WORKQUEUE);
-> +	ch->cq = ib_alloc_cq_any(sdev->device, ch, ch->rq_size + sq_size,
-> +				 IB_POLL_WORKQUEUE);
->   	if (IS_ERR(ch->cq)) {
->   		ret = PTR_ERR(ch->cq);
->   		pr_err("failed to create CQ cqe= %d ret= %d\n",
-Hi Chuck,
 
-Please Cc me for future srp and srpt patches. I think my name appears 
-next to both drivers in the MAINTAINERS file.
+--=-RRPfr814EB5STy3piX7m
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
+On Thu, 2019-08-01 at 14:48 +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+>=20
+> UAR in CQ is not used and generates the following compilation
+> warning, clean the code by removing uar assignment.
+>=20
+> drivers/infiniband/hw/hns/hns_roce_cq.c: In function _create_user_cq_:
+> drivers/infiniband/hw/hns/hns_roce_cq.c:305:27: warning: parameter
+> _uar_ set but not used [-Wunused-but-set-parameter]
+>   305 |      struct hns_roce_uar *uar,
+>       |      ~~~~~~~~~~~~~~~~~~~~~^~~
+>=20
+> Fixes: 4f8f0d5e33dd ("RDMA/hns: Package the flow of creating cq")
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 
-Bart.
+Thanks, applied to for-next.
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-RRPfr814EB5STy3piX7m
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1IVnEACgkQuCajMw5X
+L92lVw/9Eib54Evvi9UcK4Mr7pvREpwjrrLPA/E92ZDqVNt4FEWHua0JfibsvyU8
+QBEuAYuSDU4XwBgQjsurdZemsCxijisWGldiSNlpno0Irm33mLDvvBxZ64c1brxl
+FL7zPHBmpHbbhzdb8SdISy6zfoNASzDb9vgdcU6CnU+jUy7H4Ol8LEFkDZGdVnz/
+fb9FPkVfaIMoPKSqNP1jooHiTNn1x+pi0G6pEuU7yeIrBHYhkAV7kyEZPFqEGKgy
+PfNTRuOF9bHG5Pjlj3t4HghhVyNJTCdKfRuXjYIfuZR0rFPVtHv0T/yAjbT3+EQr
+p1dylX8AfCXpOcMWa6JT+m8MU9eCUFl0PYGEFYk895rSp+UniR2/F9KrArvHq8Ha
+W9m0ZV8r3tKgc2LRBETTLmipe7xxqPvfwvnyRrLV4ynbfsMDfhnTtglibqd1VeXO
+xf/iIBC8w+LT8vsXKuBUZ+1PVULEMlOkVicQ9uKLoft8qg0GA6omGnnM8LLEwFBl
+sf6T/9G1OIxy/LfDMkG+iIbKSbT+hOxnhUyz186VWEmWl6ZqFMMWOCfiueJUJt/Y
+scJ3yiCwkFJWqx8O+erc/qkzuXQfKlSFehNu8S90pex3S4/xQdIHu3EDMMms5lsT
+U2G/mFTcRUelQ/dIUen1vd2iWXQdFhgUSkx0ofCfMU98vo0/ry8=
+=j4qe
+-----END PGP SIGNATURE-----
+
+--=-RRPfr814EB5STy3piX7m--
+
