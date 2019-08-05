@@ -2,162 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D09F824D2
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2019 20:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1488254E
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2019 21:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728885AbfHESXM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Aug 2019 14:23:12 -0400
-Received: from mail-eopbgr130041.outbound.protection.outlook.com ([40.107.13.41]:10817
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726779AbfHESXM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 5 Aug 2019 14:23:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xx/fCOtHqlUSUT8C3ACC9iW6LXYid2UaPsLP+yoxZCK1VgzQaqtXhvnQnUjUWBaSav+ORUE2Eh6RRTMMoufMfSvOHfqBwbJ+Ltk3VnNTR68XTZU9EIS/GtY0cMaNukRSe1wNom5Hvbpc4tLH6wdqrhKiqcXQDm/m10qpenUI2wtHjTsMXZEJujAQRWJsW2pSXwU5wm38j851CAPW14UYLRMxXxM/wzdSQ5D7v/Esgbnt3SgFsk9wtygCNBLGOloaROaQcN3pKDtoTSQ2G1vWyvh4zng/cqHsplhGsPB7uuhPh+stuBQt+0QyPJd1beWwPN+DZULiKyuUDhoqdTuIYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t7oei5bu9QLyjv2pPKsvFYoc3pZXJBvDc51IvP8nEKM=;
- b=OlX5ItZ4VesZUyzzLgGoBVMb/FL42KCAqqVEJUo50zRefwFIDT6bDaxIM1mok0mTlF+4wlhdojj8hXPhu5vMmCP8qulg0Wkz9RTNMwW+0/bbadNLKtuKoMKsFnCR0Q9BKHbce1koJ6lmC0YM/F2xNJKgeSjjT/cUDZQiqkwEcA+708EKGnDm31ysVxwH6KPBF7HHA2r0C3oT5UcSc7jiW/91XnBUKPcXEfVK5JZGRL6nPNqRw/PpFHWlsx2ujAepMUnemMkv96FIFZRdPoNBr03ydFZUhiEII2fTltUBMbDhaMXqEYiA5XKPGuVtBCGkY/5aniM1aESUq81eXdk39w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=mellanox.com;dmarc=pass action=none
- header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t7oei5bu9QLyjv2pPKsvFYoc3pZXJBvDc51IvP8nEKM=;
- b=rFxypfEdfbqW6AKp+bxKeWC5FiWLjJxiGdvbcXBuyJKB/QsUMlmI9vtrfVbuzR1XcPenqCxZpGhZPk2+F6oUIJ2KWlES2Cxv6jCy+IcVTv0odVO0C5J9tA2+ym4fEQHrpFxzSAWBwbOvUYjqDpv95vwH5gb1rgsbVCjm+aaTiq4=
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
- DB6PR0501MB2246.eurprd05.prod.outlook.com (10.168.55.155) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2136.13; Mon, 5 Aug 2019 18:23:04 +0000
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::3c28:c77d:55b0:15b2]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::3c28:c77d:55b0:15b2%5]) with mapi id 15.20.2136.018; Mon, 5 Aug 2019
- 18:23:04 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-CC:     Michael Guralnik <michaelgur@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next v1 1/3] IB/mlx5: Query ODP capabilities for DC
-Thread-Topic: [PATCH mlx5-next v1 1/3] IB/mlx5: Query ODP capabilities for DC
-Thread-Index: AQHVSquH7cBiw3thB0e75f2KBPTPqabs4EoA
-Date:   Mon, 5 Aug 2019 18:23:04 +0000
-Message-ID: <d3b21502d398fc3bf2cf38231ca84c1bb0386b17.camel@mellanox.com>
-References: <20190804100048.32671-1-leon@kernel.org>
-         <20190804100048.32671-2-leon@kernel.org>
-In-Reply-To: <20190804100048.32671-2-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.32.4 (3.32.4-1.fc30) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [209.116.155.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4cf445f8-c072-4b6b-77f5-08d719d1f4f5
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:DB6PR0501MB2246;
-x-ms-traffictypediagnostic: DB6PR0501MB2246:
-x-microsoft-antispam-prvs: <DB6PR0501MB2246EA4DE2428F07510F8B2CBEDA0@DB6PR0501MB2246.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-forefront-prvs: 01208B1E18
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(39860400002)(366004)(396003)(136003)(376002)(189003)(199004)(54906003)(14454004)(476003)(2616005)(71190400001)(71200400001)(486006)(11346002)(446003)(6246003)(25786009)(86362001)(4326008)(68736007)(2201001)(118296001)(316002)(36756003)(478600001)(58126008)(76116006)(305945005)(7736002)(26005)(229853002)(6512007)(3846002)(6116002)(110136005)(186003)(6486002)(66946007)(5660300002)(64756008)(66446008)(66556008)(2906002)(66476007)(102836004)(6436002)(53936002)(99286004)(66066001)(81156014)(81166006)(8676002)(6506007)(14444005)(91956017)(256004)(76176011)(2501003)(8936002);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2246;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: EpqJHVrWxM4c8XJIT33w59igxNc+8WQ36emGsSlnS0kTRZgThxuGx8Od3+N5gxXlT5zPfm1b6Y4MMhnCpmgtTJId9PEkVIsyFmbQl03zJmnahswgrBEAoZal9wxZZ7TEOp9NbhXqBtj5X4IJ8orvO0f2FUsDhopMHGWngZIgM5Rn5Xqxhk3mtq3sZPTZGhom31LgVkO4OX/H/3pV/OMJwd/2a9fRY6Sm8FSex4KIhQC9wPGLB8OT13aNQ2UJkhUA0FxbCtIhwj/2fYhR5QbR5ZhDCC3Zyz98WxdFMctwprjjxqgp6i153g4GRNzEkTp+Qsr/dc+52Oxk3QOEhHeUMP2BxjuFOXFkECen6PWBUXVf1/sJlbqE/0hJ7HgQCtFt/y96f4SPo42L1Hi0abqKFi5OnwgSRjcftL/CRh2UcWY=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <68D93B727C9CD44486D0D945ED388294@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727830AbfHETIF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Aug 2019 15:08:05 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:45615 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727802AbfHETIF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Aug 2019 15:08:05 -0400
+Received: by mail-pg1-f193.google.com with SMTP id o13so40193246pgp.12;
+        Mon, 05 Aug 2019 12:08:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=idFG2mTEpSbw73WHSjePYJvH/E+3K7M4GqzEgN2zlLY=;
+        b=ZayV7+qrst7eyG8CshixkEtbJEa0x/8jVG45IgTW3ZXhLUvOl4ptoJHoQAy1b6zOK3
+         WRmrrB8k4j08mO0fqBF+llGfj8N05RBvJTbVq16Z2I0uBVrW4H9y12yHxE0EvLAe0B3t
+         T8O7qgQvAmw2WWULTwaM/xa7nUGqWr7GoxbiVtH8n8y4CX6Q2EYM2c4QzWrA3TY+hcJs
+         6n9BqjG7ZaAwGHK6qEXsitI172QtFXfl8RLE0Md+Ld87Jx+5WaY5TSQqfboyN4ctn+z8
+         Bo8iI+7oYvnW9k3XvMdrY71NXZf7aVD8ExNcxRg3XfOVggPLoUvTFuXqTJINDGG0fTL3
+         OJTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=idFG2mTEpSbw73WHSjePYJvH/E+3K7M4GqzEgN2zlLY=;
+        b=OG4buZ5hEKuGB2X23XVWvwa7utrgZr6SGYdgr4t1/gwuvt+i6gTYoS3latdrWk1xEk
+         D5OsKw54XExkXkWK6NeyQ+VvggIY4WXFMwpHfyvNaPGlj4q2oajKmNWdx96fIeVptr1n
+         UVjoxuDbN5O9/I5jSL0vgeCigrDThLuFPS1nMOsDX9jj6tjyHYfN9aqcnbtZ2u4zygNO
+         tqNn2pzBVhXGJLJRLFJA57882NwwE8z1KX3Pf1fnesVzk2gYlIGwdPz1WwvMXUXexakp
+         6YucycgHhw+myFY9c7hyYIcqPJ+9Evls9irsJcgTigu2/8o6qcsakzxeJWtc2c5DUTKW
+         0PKQ==
+X-Gm-Message-State: APjAAAUCufqhCGRY0KmFarTg7D5w923AuM11stAFeO2xyUJxPzuuq1Jp
+        2qRpRhjxU6fqM+k8zK/SYe/DFxx+RsQ=
+X-Google-Smtp-Source: APXvYqyc7o+C/Qk7w77byYcljAodqdjEYcOgFI6vqLs/YZEsnATcqCv1Ru0jxpEpj1fWOqE03zFqZQ==
+X-Received: by 2002:a65:4304:: with SMTP id j4mr141221056pgq.419.1565032084722;
+        Mon, 05 Aug 2019 12:08:04 -0700 (PDT)
+Received: from [172.27.227.246] ([216.129.126.118])
+        by smtp.googlemail.com with ESMTPSA id z63sm59188703pfb.98.2019.08.05.12.08.03
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Aug 2019 12:08:03 -0700 (PDT)
+Subject: Re: [PATCH iproute2-next] rdma: Add driver QP type string
+To:     Gal Pressman <galpress@amazon.com>,
+        Stephen Hemminger <stephen@networkplumber.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Leon Romanovsky <leon@kernel.org>
+References: <20190804080756.58364-1-galpress@amazon.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <fd623a4e-d076-3eea-2d1e-7702812b0dfc@gmail.com>
+Date:   Mon, 5 Aug 2019 13:08:02 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4cf445f8-c072-4b6b-77f5-08d719d1f4f5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2019 18:23:04.2922
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2246
+In-Reply-To: <20190804080756.58364-1-galpress@amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gU3VuLCAyMDE5LTA4LTA0IGF0IDEzOjAwICswMzAwLCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6
-DQo+IEZyb206IE1pY2hhZWwgR3VyYWxuaWsgPG1pY2hhZWxndXJAbWVsbGFub3guY29tPg0KPiAN
-Cj4gU2V0IGN1cnJlbnQgY2FwYWJpbGl0aWVzIG9mIE9EUCBmb3IgREMgdG8gbWF4IGNhcGFiaWxp
-dGllcyBhbmQgY2FjaGUNCj4gdGhlbSBpbiBtbHg1X2liLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
-TWljaGFlbCBHdXJhbG5payA8bWljaGFlbGd1ckBtZWxsYW5veC5jb20+DQo+IFJldmlld2VkLWJ5
-OiBNb25pIFNob3VhIDxtb25pc0BtZWxsYW5veC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IExlb24g
-Um9tYW5vdnNreSA8bGVvbnJvQG1lbGxhbm94LmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL2luZmlu
-aWJhbmQvaHcvbWx4NS9tbHg1X2liLmggICAgICAgICAgIHwgIDEgKw0KPiAgZHJpdmVycy9pbmZp
-bmliYW5kL2h3L21seDUvb2RwLmMgICAgICAgICAgICAgICB8IDE4IA0KPiArKysrKysrKysrKysr
-KysrKysNCj4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9tYWluLmMg
-fCAgNiArKysrKysNCj4gIGluY2x1ZGUvbGludXgvbWx4NS9tbHg1X2lmYy5oICAgICAgICAgICAg
-ICAgICAgfCAgNCArKystDQoNClBsZWFzZSBhdm9pZCBjcm9zcyB0cmVlIGNoYW5nZXMgd2hlbiB5
-b3UgY2FuLi4gDQpIZXJlIHlvdSBkbyBjYW4gYXZvaWQgaXQsIHNvIHBsZWFzZSBzZXBhcmF0ZSB0
-byB0d28gc3RhZ2UgcGF0Y2hlcywNCm1seDVfaWZjIGFuZCBjb3JlLCB0aGVuIG1seDVfaWIuDQoN
-Cg0KPiAgNCBmaWxlcyBjaGFuZ2VkLCAyOCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+
-IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvbWx4NV9pYi5oDQo+
-IGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvbWx4NV9pYi5oDQo+IGluZGV4IGNiNDFhN2U2
-MjU1YS4uZjk5YzcxYjNjODc2IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcv
-bWx4NS9tbHg1X2liLmgNCj4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvbWx4NV9p
-Yi5oDQo+IEBAIC05NjcsNiArOTY3LDcgQEAgc3RydWN0IG1seDVfaWJfZGV2IHsNCj4gIAlzdHJ1
-Y3QgbXV0ZXgJCQlzbG93X3BhdGhfbXV0ZXg7DQo+ICAJaW50CQkJCWZpbGxfZGVsYXk7DQo+ICAJ
-c3RydWN0IGliX29kcF9jYXBzCW9kcF9jYXBzOw0KPiArCXVpbnQzMl90CQlkY19vZHBfY2FwczsN
-Cj4gIAl1NjQJCQlvZHBfbWF4X3NpemU7DQo+ICAJc3RydWN0IG1seDVfaWJfcGZfZXEJb2RwX3Bm
-X2VxOw0KPiAgDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9vZHAu
-Yw0KPiBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg1L29kcC5jDQo+IGluZGV4IGIwYzVkZTM5
-ZDE4Ni4uNWU4N2E1ZTI1NTc0IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcv
-bWx4NS9vZHAuYw0KPiArKysgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9vZHAuYw0KPiBA
-QCAtMzUzLDYgKzM1MywyNCBAQCB2b2lkIG1seDVfaWJfaW50ZXJuYWxfZmlsbF9vZHBfY2Fwcyhz
-dHJ1Y3QNCj4gbWx4NV9pYl9kZXYgKmRldikNCj4gIAlpZiAoTUxYNV9DQVBfT0RQKGRldi0+bWRl
-diwgeHJjX29kcF9jYXBzLnNycV9yZWNlaXZlKSkNCj4gIAkJY2Fwcy0+cGVyX3RyYW5zcG9ydF9j
-YXBzLnhyY19vZHBfY2FwcyB8PQ0KPiBJQl9PRFBfU1VQUE9SVF9TUlFfUkVDVjsNCj4gIA0KPiAr
-CWlmIChNTFg1X0NBUF9PRFAoZGV2LT5tZGV2LCBkY19vZHBfY2Fwcy5zZW5kKSkNCj4gKwkJZGV2
-LT5kY19vZHBfY2FwcyB8PSBJQl9PRFBfU1VQUE9SVF9TRU5EOw0KPiArDQo+ICsJaWYgKE1MWDVf
-Q0FQX09EUChkZXYtPm1kZXYsIGRjX29kcF9jYXBzLnJlY2VpdmUpKQ0KPiArCQlkZXYtPmRjX29k
-cF9jYXBzIHw9IElCX09EUF9TVVBQT1JUX1JFQ1Y7DQo+ICsNCj4gKwlpZiAoTUxYNV9DQVBfT0RQ
-KGRldi0+bWRldiwgZGNfb2RwX2NhcHMud3JpdGUpKQ0KPiArCQlkZXYtPmRjX29kcF9jYXBzIHw9
-IElCX09EUF9TVVBQT1JUX1dSSVRFOw0KPiArDQo+ICsJaWYgKE1MWDVfQ0FQX09EUChkZXYtPm1k
-ZXYsIGRjX29kcF9jYXBzLnJlYWQpKQ0KPiArCQlkZXYtPmRjX29kcF9jYXBzIHw9IElCX09EUF9T
-VVBQT1JUX1JFQUQ7DQo+ICsNCj4gKwlpZiAoTUxYNV9DQVBfT0RQKGRldi0+bWRldiwgZGNfb2Rw
-X2NhcHMuYXRvbWljKSkNCj4gKwkJZGV2LT5kY19vZHBfY2FwcyB8PSBJQl9PRFBfU1VQUE9SVF9B
-VE9NSUM7DQo+ICsNCj4gKwlpZiAoTUxYNV9DQVBfT0RQKGRldi0+bWRldiwgZGNfb2RwX2NhcHMu
-c3JxX3JlY2VpdmUpKQ0KPiArCQlkZXYtPmRjX29kcF9jYXBzIHw9IElCX09EUF9TVVBQT1JUX1NS
-UV9SRUNWOw0KPiArDQo+ICAJaWYgKE1MWDVfQ0FQX0dFTihkZXYtPm1kZXYsIGZpeGVkX2J1ZmZl
-cl9zaXplKSAmJg0KPiAgCSAgICBNTFg1X0NBUF9HRU4oZGV2LT5tZGV2LCBudWxsX21rZXkpICYm
-DQo+ICAJICAgIE1MWDVfQ0FQX0dFTihkZXYtPm1kZXYsIHVtcl9leHRlbmRlZF90cmFuc2xhdGlv
-bl9vZmZzZXQpKQ0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gv
-bWx4NS9jb3JlL21haW4uYw0KPiBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUv
-Y29yZS9tYWluLmMNCj4gaW5kZXggYjE1YjI3YTQ5N2ZjLi4zOTk1ZmM2ZDRkMzQgMTAwNjQ0DQo+
-IC0tLSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9tYWluLmMNCj4g
-KysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL21haW4uYw0KPiBA
-QCAtNDk1LDYgKzQ5NSwxMiBAQCBzdGF0aWMgaW50IGhhbmRsZV9oY2FfY2FwX29kcChzdHJ1Y3QN
-Cj4gbWx4NV9jb3JlX2RldiAqZGV2KQ0KPiAgCU9EUF9DQVBfU0VUX01BWChkZXYsIHhyY19vZHBf
-Y2Fwcy53cml0ZSk7DQo+ICAJT0RQX0NBUF9TRVRfTUFYKGRldiwgeHJjX29kcF9jYXBzLnJlYWQp
-Ow0KPiAgCU9EUF9DQVBfU0VUX01BWChkZXYsIHhyY19vZHBfY2Fwcy5hdG9taWMpOw0KPiArCU9E
-UF9DQVBfU0VUX01BWChkZXYsIGRjX29kcF9jYXBzLnNycV9yZWNlaXZlKTsNCj4gKwlPRFBfQ0FQ
-X1NFVF9NQVgoZGV2LCBkY19vZHBfY2Fwcy5zZW5kKTsNCj4gKwlPRFBfQ0FQX1NFVF9NQVgoZGV2
-LCBkY19vZHBfY2Fwcy5yZWNlaXZlKTsNCj4gKwlPRFBfQ0FQX1NFVF9NQVgoZGV2LCBkY19vZHBf
-Y2Fwcy53cml0ZSk7DQo+ICsJT0RQX0NBUF9TRVRfTUFYKGRldiwgZGNfb2RwX2NhcHMucmVhZCk7
-DQo+ICsJT0RQX0NBUF9TRVRfTUFYKGRldiwgZGNfb2RwX2NhcHMuYXRvbWljKTsNCj4gIA0KPiAg
-CWlmIChkb19zZXQpDQo+ICAJCWVyciA9IHNldF9jYXBzKGRldiwgc2V0X2N0eCwgc2V0X3N6LA0K
-PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tbHg1L21seDVfaWZjLmgNCj4gYi9pbmNsdWRl
-L2xpbnV4L21seDUvbWx4NV9pZmMuaA0KPiBpbmRleCBlYzU3MWZkN2ZjZjguLjVlYWU4ZDczNDQz
-NSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tbHg1L21seDVfaWZjLmgNCj4gKysrIGIv
-aW5jbHVkZS9saW51eC9tbHg1L21seDVfaWZjLmgNCj4gQEAgLTk0NCw3ICs5NDQsOSBAQCBzdHJ1
-Y3QgbWx4NV9pZmNfb2RwX2NhcF9iaXRzIHsNCj4gIA0KPiAgCXN0cnVjdCBtbHg1X2lmY19vZHBf
-cGVyX3RyYW5zcG9ydF9zZXJ2aWNlX2NhcF9iaXRzDQo+IHhyY19vZHBfY2FwczsNCj4gIA0KPiAt
-CXU4ICAgICAgICAgcmVzZXJ2ZWRfYXRfMTAwWzB4NzAwXTsNCj4gKwlzdHJ1Y3QgbWx4NV9pZmNf
-b2RwX3Blcl90cmFuc3BvcnRfc2VydmljZV9jYXBfYml0cyBkY19vZHBfY2FwczsNCj4gKw0KPiAr
-CXU4ICAgICAgICAgcmVzZXJ2ZWRfYXRfMTAwWzB4NkUwXTsNCg0KcmVzZXJ2ZWRfYXRfMTAwIHNo
-b3VsZCBtb3ZlIDIwIGJpdCBmb3J3YXJkLiBpLmUgcmVzZXJ2ZWRfYXRfMTIwDQoNCg0K
+On 8/4/19 2:07 AM, Gal Pressman wrote:
+> RDMA resource tracker now tracks driver QPs as well, add driver QP type
+> string to qp_types_to_str function.
+
+"now" means which kernel release? Leon: should this be in master or -next?
+
+> 
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
+> ---
+>  rdma/res.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/rdma/res.c b/rdma/res.c
+> index ef863f142eca..97a7b9640185 100644
+> --- a/rdma/res.c
+> +++ b/rdma/res.c
+> @@ -148,9 +148,11 @@ const char *qp_types_to_str(uint8_t idx)
+>  						     "UC", "UD", "RAW_IPV6",
+>  						     "RAW_ETHERTYPE",
+>  						     "UNKNOWN", "RAW_PACKET",
+> -						     "XRC_INI", "XRC_TGT" };
+> +						     "XRC_INI", "XRC_TGT",
+> +						     [0xFF] = "DRIVER",
+> +	};
+>  
+> -	if (idx < ARRAY_SIZE(qp_types_str))
+> +	if (idx < ARRAY_SIZE(qp_types_str) && qp_types_str[idx])
+>  		return qp_types_str[idx];
+>  	return "UNKNOWN";
+>  }
+> 
+
