@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D6683DB7
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 01:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4105483DBF
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 01:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbfHFXQg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 19:16:36 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45413 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727289AbfHFXQT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 19:16:19 -0400
-Received: by mail-qt1-f193.google.com with SMTP id x22so13035631qtp.12
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 16:16:18 -0700 (PDT)
+        id S1726686AbfHFXQz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 19:16:55 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:40021 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726998AbfHFXQS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 19:16:18 -0400
+Received: by mail-qt1-f195.google.com with SMTP id a15so86399776qtn.7
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 16:16:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Pn+tyQ3Pr4O2LIFi6En+JQU77nMjukrgPYCGXMr75Sc=;
-        b=OggTUEspMMn1b2yn+uWIxqTUSf36GrQvvrKxao/PHqyl+DTzlNDH4G1PGH3Rn0oGUS
-         9yWjg40oqduC6+lBlaQt5AEvzMMt0+HwZg55qm2B0NolxD6rKy/+kW7fIzbbXJKBopU0
-         i0almRR6UKPo/GhOflLmKlphmx9M/H798dmunpZq7PtsAO2b61x95N71srn2s2CDP8O8
-         2Nnw5Qr44QCLihcSGiRyMe3Kj2uVDFPch0f783vgeAsiRsnpUJHeAgiwM1GQwWYB1VHE
-         DvJqjSXNfKnDYlNgHN92XgTfN016uxa+ZXPo1oS4z0q6EyI5dcvmeyhfMveigWb28Muk
-         7f4w==
+        bh=JxsVo1tSo9nOofaC+CW71G9A/3jHBgy7XZ2Y+iDU6wk=;
+        b=DzuN0SMd6m3Y09EQ3hGtHT0JB2aJvet1X6xSjLP8soFwijScUkjfei+cE2aizwyqi8
+         8Jha5XC787VVWgoXYljT8xUpYPYOFigvSiU+1J03D3b5wV89VGY0fRB+2O+s8PxEW8Cc
+         XHLP7NRjVVVDcyhUMTRcguAhGAT3GgYfCIM3KKJYjCw6SRWgG0LgRecPMWYG/h7iyqhL
+         SibXtCYOyQ2FlxTLqndgSo2yQc+yBvh9wTZCUo6uritT4lvyCwq2m+CMyMiFrNowhMlw
+         wZUotLzWJuJo3OH1QCGYmHg/VKilwJSVIFt6wDKRQhIZCMQPFq5BgAju/1yQr1cKLEEf
+         ycrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Pn+tyQ3Pr4O2LIFi6En+JQU77nMjukrgPYCGXMr75Sc=;
-        b=H/Y760ehk06z9uM/255oxBLumVzNZKveSzXU1z1QrRyrxHRwkzgYrnwqgrGy/kmX2X
-         FCByFsRvjImfPlCbDGruhLaDvF+svvROZuUNQEBhmFZXaao1Bor4KeVEHcAzjMR6m74l
-         zcvTCVlXdrkVIFXJMKz27+BUaXqrec1TEAQG3D2PEJn0DBCAMZCF0i9YsUb/4ah9rifB
-         5HcLLDdIbFF33Usev+PEING/VvOlQGbG2ybdCL4Avw2uGtsWs8y5wr1wlyXQv7fAxK9+
-         l//8FGqV8p07dEilpv82KNKPUNF61o//cv6nOq6bKi+VCzOwKKKje59Ew93FM7JF3/BS
-         30cA==
-X-Gm-Message-State: APjAAAXnZfLRjB+r6GZd7xufgMkFcmUA0A0P10JcClJYyw+97+EuEjdN
-        /oNEE6EPvORzamsK9yHp6WTzvA==
-X-Google-Smtp-Source: APXvYqxTw9+mlouFwWoFRA0XatHqfMRrcpDdIv2NXf5/HvRxmFylGt3sJXAS2PMqHoBRobENBadT3A==
-X-Received: by 2002:ac8:285c:: with SMTP id 28mr5575869qtr.186.1565133378273;
-        Tue, 06 Aug 2019 16:16:18 -0700 (PDT)
+        bh=JxsVo1tSo9nOofaC+CW71G9A/3jHBgy7XZ2Y+iDU6wk=;
+        b=jmL1uUPwx01v9BmIB5TEtk3BiW8wlFfS2ophp8SrRKuVtuPwZiDlp8NMELaYhDWrWB
+         v+KsdtLlGbbl1l7VNXUAqWzl55S1mcb/89ksfQpQmJm2zCqEV+VMkXqRa6538RZC2flw
+         b38lajdt1TGHOOs4vXmGBQqdmiCs3bbZCCRbNRZ+MlCXYl4e1Uhnt2VJJvIagD/HWGcd
+         kIabfcumjNqaQ8ZJTuH14KrvS0en99Wej2bjSkkizoHvyl+ELcNz7eCRvrzRGWPaC0uh
+         8TL/opfLDWxjUEdeQtST7WPH8aGTMp/r+6YItc4SV+cKcnISIr2OY0Q2Fd/hDAPZ6XKk
+         4T1A==
+X-Gm-Message-State: APjAAAVxiYnVSXlKYu7SZrfaqyL+0JMS6v4FWor+tuL/30npnftsyN0h
+        9e0s/npSmpHrd50lg5Bu80W/Dg==
+X-Google-Smtp-Source: APXvYqxBbEyHGgxF5Nl8cVhIwdz1mu4o1neH5++dyqiahCeO4T26lyxvhtz3KCxPPf/9Z4FNDxc5Wg==
+X-Received: by 2002:aed:3ac1:: with SMTP id o59mr5389656qte.260.1565133377305;
+        Tue, 06 Aug 2019 16:16:17 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id r40sm47669868qtr.57.2019.08.06.16.16.14
+        by smtp.gmail.com with ESMTPSA id b13sm52681923qtk.55.2019.08.06.16.16.14
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Tue, 06 Aug 2019 16:16:17 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hv8gg-0006ey-Dk; Tue, 06 Aug 2019 20:16:14 -0300
+        id 1hv8gg-0006f4-G2; Tue, 06 Aug 2019 20:16:14 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-mm@kvack.org
 Cc:     Andrea Arcangeli <aarcange@redhat.com>,
@@ -65,9 +65,9 @@ Cc:     Andrea Arcangeli <aarcange@redhat.com>,
         Gavin Shan <shangw@linux.vnet.ibm.com>,
         Andrea Righi <andrea@betterlinux.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v3 hmm 08/11] drm/radeon: use mmu_notifier_get/put for struct radeon_mn
-Date:   Tue,  6 Aug 2019 20:15:45 -0300
-Message-Id: <20190806231548.25242-9-jgg@ziepe.ca>
+Subject: [PATCH v3 hmm 09/11] drm/amdkfd: fix a use after free race with mmu_notifer unregister
+Date:   Tue,  6 Aug 2019 20:15:46 -0300
+Message-Id: <20190806231548.25242-10-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190806231548.25242-1-jgg@ziepe.ca>
 References: <20190806231548.25242-1-jgg@ziepe.ca>
@@ -80,307 +80,180 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-radeon is using a device global hash table to track what mmu_notifiers
-have been registered on struct mm. This is better served with the new
-get/put scheme instead.
+When using mmu_notifer_unregister_no_release() the caller must ensure
+there is a SRCU synchronize before the mn memory is freed, otherwise use
+after free races are possible, for instance:
 
-radeon has a bug where it was not blocking notifier release() until all
-the BO's had been invalidated. This could result in a use after free of
-pages the BOs. This is tied into a second bug where radeon left the
-notifiers running endlessly even once the interval tree became
-empty. This could result in a use after free with module unload.
+     CPU0                                      CPU1
+                                      invalidate_range_start
+                                         hlist_for_each_entry_rcu(..)
+ mmu_notifier_unregister_no_release(&p->mn)
+ kfree(mn)
+                                      if (mn->ops->invalidate_range_end)
 
-Both are fixed by changing the lifetime model, the BOs exist in the
-interval tree with their natural lifetimes independent of the mm_struct
-lifetime using the get/put scheme. The release runs synchronously and just
-does invalidate_start across the entire interval tree to create the
-required DMA fence.
+The error unwind in amdkfd misses the SRCU synchronization.
 
-Additions to the interval tree after release are already impossible as
-only current->mm is used during the add.
+amdkfd keeps the kfd_process around until the mm is released, so split the
+flow to fully initialize the kfd_process and register it for find_process,
+and with the notifier. Past this point the kfd_process does not need to be
+cleaned up as it is fully ready.
 
+The final failable step does a vm_mmap() and does not seem to impact the
+kfd_process global state. Since it also cannot be undone (and already has
+problems with undo if it internally fails), it has to be last.
+
+This way we don't have to try to unwind the mmu_notifier_register() and
+avoid the problem with the SRCU.
+
+Along the way this also fixes various other error unwind bugs in the flow.
+
+Fixes: 45102048f77e ("amdkfd: Add process queue manager module")
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- drivers/gpu/drm/radeon/radeon.h        |   3 -
- drivers/gpu/drm/radeon/radeon_device.c |   2 -
- drivers/gpu/drm/radeon/radeon_drv.c    |   2 +
- drivers/gpu/drm/radeon/radeon_mn.c     | 157 ++++++-------------------
- 4 files changed, 38 insertions(+), 126 deletions(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c | 78 +++++++++++-------------
+ 1 file changed, 37 insertions(+), 41 deletions(-)
 
-AMD team: I wonder if kfd has similar lifetime issues?
-
-diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
-index 32808e50be12f8..918164f90b114a 100644
---- a/drivers/gpu/drm/radeon/radeon.h
-+++ b/drivers/gpu/drm/radeon/radeon.h
-@@ -2451,9 +2451,6 @@ struct radeon_device {
- 	/* tracking pinned memory */
- 	u64 vram_pin_size;
- 	u64 gart_pin_size;
--
--	struct mutex	mn_lock;
--	DECLARE_HASHTABLE(mn_hash, 7);
- };
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+index 8f1076c0c88a25..c06e6190f21ffa 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+@@ -62,8 +62,8 @@ static struct workqueue_struct *kfd_restore_wq;
  
- bool radeon_is_px(struct drm_device *dev);
-diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/radeon/radeon_device.c
-index dceb554e567446..788b1d8a80e660 100644
---- a/drivers/gpu/drm/radeon/radeon_device.c
-+++ b/drivers/gpu/drm/radeon/radeon_device.c
-@@ -1325,8 +1325,6 @@ int radeon_device_init(struct radeon_device *rdev,
- 	init_rwsem(&rdev->pm.mclk_lock);
- 	init_rwsem(&rdev->exclusive_lock);
- 	init_waitqueue_head(&rdev->irq.vblank_queue);
--	mutex_init(&rdev->mn_lock);
--	hash_init(rdev->mn_hash);
- 	r = radeon_gem_init(rdev);
- 	if (r)
- 		return r;
-diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
-index a6cbe11f79c611..b6535ac91fdb74 100644
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@ -35,6 +35,7 @@
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
- #include <linux/vga_switcheroo.h>
-+#include <linux/mmu_notifier.h>
+ static struct kfd_process *find_process(const struct task_struct *thread);
+ static void kfd_process_ref_release(struct kref *ref);
+-static struct kfd_process *create_process(const struct task_struct *thread,
+-					struct file *filep);
++static struct kfd_process *create_process(const struct task_struct *thread);
++static int kfd_process_init_cwsr_apu(struct kfd_process *p, struct file *filep);
  
- #include <drm/drm_crtc_helper.h>
- #include <drm/drm_drv.h>
-@@ -624,6 +625,7 @@ static void __exit radeon_exit(void)
- {
- 	pci_unregister_driver(pdriver);
- 	radeon_unregister_atpx_handler();
-+	mmu_notifier_synchronize();
- }
- 
- module_init(radeon_init);
-diff --git a/drivers/gpu/drm/radeon/radeon_mn.c b/drivers/gpu/drm/radeon/radeon_mn.c
-index 8c3871ed23a9f0..fc8254273a800b 100644
---- a/drivers/gpu/drm/radeon/radeon_mn.c
-+++ b/drivers/gpu/drm/radeon/radeon_mn.c
-@@ -37,17 +37,8 @@
- #include "radeon.h"
- 
- struct radeon_mn {
--	/* constant after initialisation */
--	struct radeon_device	*rdev;
--	struct mm_struct	*mm;
- 	struct mmu_notifier	mn;
- 
--	/* only used on destruction */
--	struct work_struct	work;
--
--	/* protected by rdev->mn_lock */
--	struct hlist_node	node;
--
- 	/* objects protected by lock */
- 	struct mutex		lock;
- 	struct rb_root_cached	objects;
-@@ -58,55 +49,6 @@ struct radeon_mn_node {
- 	struct list_head		bos;
- };
- 
--/**
-- * radeon_mn_destroy - destroy the rmn
-- *
-- * @work: previously sheduled work item
-- *
-- * Lazy destroys the notifier from a work item
-- */
--static void radeon_mn_destroy(struct work_struct *work)
--{
--	struct radeon_mn *rmn = container_of(work, struct radeon_mn, work);
--	struct radeon_device *rdev = rmn->rdev;
--	struct radeon_mn_node *node, *next_node;
--	struct radeon_bo *bo, *next_bo;
--
--	mutex_lock(&rdev->mn_lock);
--	mutex_lock(&rmn->lock);
--	hash_del(&rmn->node);
--	rbtree_postorder_for_each_entry_safe(node, next_node,
--					     &rmn->objects.rb_root, it.rb) {
--
--		interval_tree_remove(&node->it, &rmn->objects);
--		list_for_each_entry_safe(bo, next_bo, &node->bos, mn_list) {
--			bo->mn = NULL;
--			list_del_init(&bo->mn_list);
--		}
--		kfree(node);
--	}
--	mutex_unlock(&rmn->lock);
--	mutex_unlock(&rdev->mn_lock);
--	mmu_notifier_unregister(&rmn->mn, rmn->mm);
--	kfree(rmn);
--}
--
--/**
-- * radeon_mn_release - callback to notify about mm destruction
-- *
-- * @mn: our notifier
-- * @mn: the mm this callback is about
-- *
-- * Shedule a work item to lazy destroy our notifier.
-- */
--static void radeon_mn_release(struct mmu_notifier *mn,
--			      struct mm_struct *mm)
--{
--	struct radeon_mn *rmn = container_of(mn, struct radeon_mn, mn);
--	INIT_WORK(&rmn->work, radeon_mn_destroy);
--	schedule_work(&rmn->work);
--}
--
- /**
-  * radeon_mn_invalidate_range_start - callback to notify about mm change
-  *
-@@ -183,65 +125,44 @@ static int radeon_mn_invalidate_range_start(struct mmu_notifier *mn,
- 	return ret;
- }
- 
--static const struct mmu_notifier_ops radeon_mn_ops = {
--	.release = radeon_mn_release,
--	.invalidate_range_start = radeon_mn_invalidate_range_start,
--};
-+static void radeon_mn_release(struct mmu_notifier *mn, struct mm_struct *mm)
-+{
-+	struct mmu_notifier_range range = {
-+		.mm = mm,
-+		.start = 0,
-+		.end = ULONG_MAX,
-+		.flags = 0,
-+		.event = MMU_NOTIFY_UNMAP,
-+	};
+ static void evict_process_worker(struct work_struct *work);
+ static void restore_process_worker(struct work_struct *work);
+@@ -289,7 +289,15 @@ struct kfd_process *kfd_create_process(struct file *filep)
+ 	if (process) {
+ 		pr_debug("Process already found\n");
+ 	} else {
+-		process = create_process(thread, filep);
++		process = create_process(thread);
++		if (IS_ERR(process))
++			goto out;
 +
-+	radeon_mn_invalidate_range_start(mn, &range);
-+}
++		ret = kfd_process_init_cwsr_apu(process, filep);
++		if (ret) {
++			process = ERR_PTR(ret);
++			goto out;
++		}
  
--/**
-- * radeon_mn_get - create notifier context
-- *
-- * @rdev: radeon device pointer
-- *
-- * Creates a notifier context for current->mm.
-- */
--static struct radeon_mn *radeon_mn_get(struct radeon_device *rdev)
-+static struct mmu_notifier *radeon_mn_alloc_notifier(struct mm_struct *mm)
- {
--	struct mm_struct *mm = current->mm;
- 	struct radeon_mn *rmn;
--	int r;
--
--	if (down_write_killable(&mm->mmap_sem))
--		return ERR_PTR(-EINTR);
--
--	mutex_lock(&rdev->mn_lock);
--
--	hash_for_each_possible(rdev->mn_hash, rmn, node, (unsigned long)mm)
--		if (rmn->mm == mm)
--			goto release_locks;
- 
- 	rmn = kzalloc(sizeof(*rmn), GFP_KERNEL);
--	if (!rmn) {
--		rmn = ERR_PTR(-ENOMEM);
--		goto release_locks;
--	}
-+	if (!rmn)
-+		return ERR_PTR(-ENOMEM);
- 
--	rmn->rdev = rdev;
--	rmn->mm = mm;
--	rmn->mn.ops = &radeon_mn_ops;
- 	mutex_init(&rmn->lock);
- 	rmn->objects = RB_ROOT_CACHED;
--	
--	r = __mmu_notifier_register(&rmn->mn, mm);
--	if (r)
--		goto free_rmn;
--
--	hash_add(rdev->mn_hash, &rmn->node, (unsigned long)mm);
--
--release_locks:
--	mutex_unlock(&rdev->mn_lock);
--	up_write(&mm->mmap_sem);
--
--	return rmn;
--
--free_rmn:
--	mutex_unlock(&rdev->mn_lock);
--	up_write(&mm->mmap_sem);
--	kfree(rmn);
-+	return &rmn->mn;
-+}
- 
--	return ERR_PTR(r);
-+static void radeon_mn_free_notifier(struct mmu_notifier *mn)
-+{
-+	kfree(container_of(mn, struct radeon_mn, mn));
+ 		if (!procfs.kobj)
+ 			goto out;
+@@ -609,81 +617,69 @@ static int kfd_process_device_init_cwsr_dgpu(struct kfd_process_device *pdd)
+ 	return 0;
  }
  
-+static const struct mmu_notifier_ops radeon_mn_ops = {
-+	.release = radeon_mn_release,
-+	.invalidate_range_start = radeon_mn_invalidate_range_start,
-+	.alloc_notifier = radeon_mn_alloc_notifier,
-+	.free_notifier = radeon_mn_free_notifier,
-+};
-+
- /**
-  * radeon_mn_register - register a BO for notifier updates
-  *
-@@ -254,15 +175,16 @@ static struct radeon_mn *radeon_mn_get(struct radeon_device *rdev)
- int radeon_mn_register(struct radeon_bo *bo, unsigned long addr)
+-static struct kfd_process *create_process(const struct task_struct *thread,
+-					struct file *filep)
++/*
++ * On return the kfd_process is fully operational and will be freed when the
++ * mm is released
++ */
++static struct kfd_process *create_process(const struct task_struct *thread)
  {
- 	unsigned long end = addr + radeon_bo_size(bo) - 1;
--	struct radeon_device *rdev = bo->rdev;
-+	struct mmu_notifier *mn;
- 	struct radeon_mn *rmn;
- 	struct radeon_mn_node *node = NULL;
- 	struct list_head bos;
- 	struct interval_tree_node *it;
+ 	struct kfd_process *process;
+ 	int err = -ENOMEM;
  
--	rmn = radeon_mn_get(rdev);
--	if (IS_ERR(rmn))
--		return PTR_ERR(rmn);
-+	mn = mmu_notifier_get(&radeon_mn_ops, current->mm);
-+	if (IS_ERR(mn))
-+		return PTR_ERR(mn);
-+	rmn = container_of(mn, struct radeon_mn, mn);
- 
- 	INIT_LIST_HEAD(&bos);
- 
-@@ -309,22 +231,13 @@ int radeon_mn_register(struct radeon_bo *bo, unsigned long addr)
-  */
- void radeon_mn_unregister(struct radeon_bo *bo)
- {
--	struct radeon_device *rdev = bo->rdev;
--	struct radeon_mn *rmn;
-+	struct radeon_mn *rmn = bo->mn;
- 	struct list_head *head;
- 
--	mutex_lock(&rdev->mn_lock);
--	rmn = bo->mn;
--	if (rmn == NULL) {
--		mutex_unlock(&rdev->mn_lock);
--		return;
--	}
+ 	process = kzalloc(sizeof(*process), GFP_KERNEL);
 -
- 	mutex_lock(&rmn->lock);
- 	/* save the next list entry for later */
- 	head = bo->mn_list.next;
+ 	if (!process)
+ 		goto err_alloc_process;
  
--	bo->mn = NULL;
- 	list_del(&bo->mn_list);
- 
- 	if (list_empty(head)) {
-@@ -335,5 +248,7 @@ void radeon_mn_unregister(struct radeon_bo *bo)
- 	}
- 
- 	mutex_unlock(&rmn->lock);
--	mutex_unlock(&rdev->mn_lock);
+-	process->pasid = kfd_pasid_alloc();
+-	if (process->pasid == 0)
+-		goto err_alloc_pasid;
+-
+-	if (kfd_alloc_process_doorbells(process) < 0)
+-		goto err_alloc_doorbells;
+-
+ 	kref_init(&process->ref);
+-
+ 	mutex_init(&process->mutex);
+-
+ 	process->mm = thread->mm;
+-
+-	/* register notifier */
+-	process->mmu_notifier.ops = &kfd_process_mmu_notifier_ops;
+-	err = mmu_notifier_register(&process->mmu_notifier, process->mm);
+-	if (err)
+-		goto err_mmu_notifier;
+-
+-	hash_add_rcu(kfd_processes_table, &process->kfd_processes,
+-			(uintptr_t)process->mm);
+-
+ 	process->lead_thread = thread->group_leader;
+-	get_task_struct(process->lead_thread);
+-
+ 	INIT_LIST_HEAD(&process->per_device_data);
+-
++	INIT_DELAYED_WORK(&process->eviction_work, evict_process_worker);
++	INIT_DELAYED_WORK(&process->restore_work, restore_process_worker);
++	process->last_restore_timestamp = get_jiffies_64();
+ 	kfd_event_init_process(process);
++	process->is_32bit_user_mode = in_compat_syscall();
 +
-+	mmu_notifier_put(&rmn->mn);
-+	bo->mn = NULL;
- }
++	process->pasid = kfd_pasid_alloc();
++	if (process->pasid == 0)
++		goto err_alloc_pasid;
++
++	if (kfd_alloc_process_doorbells(process) < 0)
++		goto err_alloc_doorbells;
+ 
+ 	err = pqm_init(&process->pqm, process);
+ 	if (err != 0)
+ 		goto err_process_pqm_init;
+ 
+ 	/* init process apertures*/
+-	process->is_32bit_user_mode = in_compat_syscall();
+ 	err = kfd_init_apertures(process);
+ 	if (err != 0)
+ 		goto err_init_apertures;
+ 
+-	INIT_DELAYED_WORK(&process->eviction_work, evict_process_worker);
+-	INIT_DELAYED_WORK(&process->restore_work, restore_process_worker);
+-	process->last_restore_timestamp = get_jiffies_64();
+-
+-	err = kfd_process_init_cwsr_apu(process, filep);
++	/* Must be last, have to use release destruction after this */
++	process->mmu_notifier.ops = &kfd_process_mmu_notifier_ops;
++	err = mmu_notifier_register(&process->mmu_notifier, process->mm);
+ 	if (err)
+-		goto err_init_cwsr;
++		goto err_register_notifier;
++
++	get_task_struct(process->lead_thread);
++	hash_add_rcu(kfd_processes_table, &process->kfd_processes,
++			(uintptr_t)process->mm);
+ 
+ 	return process;
+ 
+-err_init_cwsr:
++err_register_notifier:
+ 	kfd_process_free_outstanding_kfd_bos(process);
+ 	kfd_process_destroy_pdds(process);
+ err_init_apertures:
+ 	pqm_uninit(&process->pqm);
+ err_process_pqm_init:
+-	hash_del_rcu(&process->kfd_processes);
+-	synchronize_rcu();
+-	mmu_notifier_unregister_no_release(&process->mmu_notifier, process->mm);
+-err_mmu_notifier:
+-	mutex_destroy(&process->mutex);
+ 	kfd_free_process_doorbells(process);
+ err_alloc_doorbells:
+ 	kfd_pasid_free(process->pasid);
+ err_alloc_pasid:
++	mutex_destroy(&process->mutex);
+ 	kfree(process);
+ err_alloc_process:
+ 	return ERR_PTR(err);
 -- 
 2.22.0
 
