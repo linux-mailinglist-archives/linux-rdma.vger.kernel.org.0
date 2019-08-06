@@ -2,107 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7C783719
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 18:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C27168371A
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 18:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732729AbfHFQge convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Aug 2019 12:36:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49626 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726877AbfHFQge (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 12:36:34 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x76GXXLv086673
-        for <linux-rdma@vger.kernel.org>; Tue, 6 Aug 2019 12:36:33 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.112])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2u7aas0aey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 12:36:32 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Tue, 6 Aug 2019 16:36:31 -0000
-Received: from us1b3-smtp01.a3dr.sjc01.isc4sb.com (10.122.7.174)
-        by smtp.notes.na.collabserv.com (10.122.47.54) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 6 Aug 2019 16:36:28 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp01.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019080616362742-727298 ;
-          Tue, 6 Aug 2019 16:36:27 +0000 
-In-Reply-To: <20190806153105.GG11627@ziepe.ca>
-Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field 32 bit size to
- remove 64 bit architecture dependency of siw.
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+        id S2387624AbfHFQjD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 12:39:03 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:38228 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387572AbfHFQjD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 12:39:03 -0400
+Received: by mail-qk1-f194.google.com with SMTP id a27so63433840qkk.5
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 09:39:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YwyMg/N5X6ofkC9K8cE+IVed/Ki0TLQDB1+WppxwuA8=;
+        b=FATBeRxVlm8jRBZdrPD6rWw8ncZCQs3iblP4pEE+tpb2l0M4BdGHUm5sBmMhBlqx1K
+         Wi7dwRwokzGRWEB6STx7tltO+MIgUdLJV1o2gpSr/ivim2bMhuDa0LE1YCe+hewsVeb3
+         w9ZURSLyEdlfof7qfo9z5E4hBv3P/OVrXFAWLL0AGWJzv5QDjyqTEQKiHaDw2syFe1Nt
+         h0ZMNQvcevF/WD3mlLJ046CHAY14sRtlVUQggt7uEzXetS/pxUn51sIb7wp62fcQ8ynE
+         2quefbndG6l15ueKNyUEszKxl1bHuRusgeVZ6M2oQ5mS9oJI9xIet1I5yjMkvphGfH6T
+         UoBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YwyMg/N5X6ofkC9K8cE+IVed/Ki0TLQDB1+WppxwuA8=;
+        b=s0dTVOtmHVpCfW1R+0TpDzMCEndfXpso+EOPkAOE/ie6CU6eaOT1gkWaw1MwqBMZnN
+         nZRqNZCQOx4+mGVXJWUB90RZfAjfyCOZI8466/GiPczh25a0n4UeMP4neZZJOuWG4uO8
+         vUR/jgnNTIorHd8aVKC/J0mz4ZlnUna+IFEuK17gZZSaqgM8IgPC5iKskQZWYD4aFreW
+         LGNEIFVtwcru6JORm1rw4JjRMRkxuNymFdaGoFJQfO1JP2WyK7zfDUQ7uL8Zwm9/5Z+A
+         J5ynIjjvrNwKGE8p013t27QYRSxY7LAQU+TotozJyAJ4nSNXpcLZIx0cxc1k4Zc5UQmL
+         ICJw==
+X-Gm-Message-State: APjAAAU//5Qno5ZnMVCIIy0PfJzBxYTva4JkBcwb52c6MdtHebzHfdgy
+        42DZfS3UV03zBMwhKbjf9qMX2pOlLXg=
+X-Google-Smtp-Source: APXvYqx7zAMZsuiccpDngwtbJxyBVw3VuUVBHQOclHaxiJJbEfgSp45MnF5/BmXyLLgZHEjXwEilqw==
+X-Received: by 2002:a05:620a:142b:: with SMTP id k11mr4170479qkj.0.1565109542601;
+        Tue, 06 Aug 2019 09:39:02 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id m44sm46799493qtm.54.2019.08.06.09.39.02
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 06 Aug 2019 09:39:02 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hv2UH-0007RO-MJ; Tue, 06 Aug 2019 13:39:01 -0300
+Date:   Tue, 6 Aug 2019 13:39:01 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
 Cc:     linux-rdma@vger.kernel.org
-Date:   Tue, 6 Aug 2019 16:36:26 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190806153105.GG11627@ziepe.ca>,<20190806121006.GC11627@ziepe.ca>
+Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field 32 bit
+ size to remove 64 bit architecture dependency of siw.
+Message-ID: <20190806163901.GI11627@ziepe.ca>
+References: <20190806153105.GG11627@ziepe.ca>
+ <20190806121006.GC11627@ziepe.ca>
  <20190805141708.9004-1-bmt@zurich.ibm.com>
  <20190805141708.9004-2-bmt@zurich.ibm.com>
  <OFCF70B144.E0186C06-ON0025844E.0050E500-0025844E.0051D4FA@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-KeepSent: 8985846C:2F1A4852-0025844E:005AADBA;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 14051
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19080616-4615-0000-0000-00000030C6E2
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000000
-X-IBM-SpamModules-Versions: BY=3.00011561; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01242974; UDB=6.00655662; IPR=6.01024438;
- MB=3.00028068; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-06 16:36:30
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-08-06 07:26:15 - 6.00010253
-x-cbparentid: 19080616-4616-0000-0000-00000050DC9A
-Message-Id: <OF8985846C.2F1A4852-ON0025844E.005AADBA-0025844E.005B3A41@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-06_09:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+ <OF8985846C.2F1A4852-ON0025844E.005AADBA-0025844E.005B3A41@notes.na.collabserv.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF8985846C.2F1A4852-ON0025844E.005AADBA-0025844E.005B3A41@notes.na.collabserv.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
+On Tue, Aug 06, 2019 at 04:36:26PM +0000, Bernard Metzler wrote:
+> 
+> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+> >Date: 08/06/2019 05:31PM
+> >Cc: linux-rdma@vger.kernel.org
+> >Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field
+> >32 bit size to remove 64 bit architecture dependency of siw.
+> >
+> >On Tue, Aug 06, 2019 at 02:53:49PM +0000, Bernard Metzler wrote:
+> >
+> >> >> index 7de68f1dc707..af735f55b291 100644
+> >> >> +++ b/include/uapi/rdma/siw-abi.h
+> >> >> @@ -180,6 +180,7 @@ struct siw_cqe {
+> >> >>   * to control CQ arming.
+> >> >>   */
+> >> >>  struct siw_cq_ctrl {
+> >> >> -	__aligned_u64 notify;
+> >> >> +	__u32 flags;
+> >> >> +	__u32 pad;
+> >> >
+> >> >The commit message needs to explain why this is compatible with
+> >> >existing user space, if it is even is safe..
+> >> >
+> >> Old libsiw would remain compatible with the new layout, since it
+> >> simply reads the 32bit 'flags' and zeroed 32bit 'pad' into a 64bit
+> >> 'notify', ending with reading the same bits.
+> >
+> >Even on big endian?
+> >
+> Well I do not have access to a BE system right now to verify.
+> But on a BE system, the lowest 3 bits (which are in use) of the first
+> 32bit variable 'flags' shall be the lowest (leftmost) 3 bits of an
+> 'overlayed' 64bit variable 'notify' as well...
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Jason Gunthorpe" <jgg@ziepe.ca>
->Date: 08/06/2019 05:31PM
->Cc: linux-rdma@vger.kernel.org
->Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field
->32 bit size to remove 64 bit architecture dependency of siw.
->
->On Tue, Aug 06, 2019 at 02:53:49PM +0000, Bernard Metzler wrote:
->
->> >> index 7de68f1dc707..af735f55b291 100644
->> >> +++ b/include/uapi/rdma/siw-abi.h
->> >> @@ -180,6 +180,7 @@ struct siw_cqe {
->> >>   * to control CQ arming.
->> >>   */
->> >>  struct siw_cq_ctrl {
->> >> -	__aligned_u64 notify;
->> >> +	__u32 flags;
->> >> +	__u32 pad;
->> >
->> >The commit message needs to explain why this is compatible with
->> >existing user space, if it is even is safe..
->> >
->> Old libsiw would remain compatible with the new layout, since it
->> simply reads the 32bit 'flags' and zeroed 32bit 'pad' into a 64bit
->> 'notify', ending with reading the same bits.
->
->Even on big endian?
->
-Well I do not have access to a BE system right now to verify.
-But on a BE system, the lowest 3 bits (which are in use) of the first
-32bit variable 'flags' shall be the lowest (leftmost) 3 bits of an
-'overlayed' 64bit variable 'notify' as well...
+One of LE or BE won't work with this scheme, it can't, the flag bit
+will end up in the pad.
 
+Jason
