@@ -2,189 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3024083130
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 14:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EFE8315F
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 14:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbfHFMKJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 08:10:09 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:35333 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726036AbfHFMKJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 08:10:09 -0400
-Received: by mail-qk1-f195.google.com with SMTP id r21so62704904qke.2
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 05:10:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rtwnfShAcCURI6hDQktzCuipc0LG6n25xta1tFHGTpw=;
-        b=ndMXZCuhwUjFBc00b6tp98v+mlQQ6BdML4iGiRycHfDV1ClWfNbZZKttQBhGtS/7mX
-         5DekRfcM7XDL5pSMjJzvQ6Wu0oU9BLF5BVr2xuYDF8ZQFTbh6U2w+srdc/bpN5UTfbvo
-         4iDFM7hYxDJg81KVO6uYHC/A0cDUUwwF4wxa9nuDDXVFkVeQ1TrDD+ye6wQD5A7gCEnJ
-         rE6vE9+TKxJ78Y9O0cxXyQUk2YIsl+1p+9ehv73NDzGfGQEhkGj1+8ufYN7hkpoRsH23
-         BVD5l6yUXtw8M6jGJHV0ZbCmlRMXiZVnsTFAstYGLpIQJjyYVDrUrvlBlJ01enioD8sB
-         az7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rtwnfShAcCURI6hDQktzCuipc0LG6n25xta1tFHGTpw=;
-        b=NqV2H2svJc8OfzlByWqW4yU14/dr63heTlOcHLH58elqLngbpCnpXqsLYsrUIkFG+P
-         k9Jb+aN6laBB8NbbTQ82/96zPr5UE9Ldv1d54sg7DljJbRMM7ICtn9A4C2NHI5Jf09Vo
-         m9s9KZzZeljpCPBpu+7PqrvKUAWhCQCCdmznmLqjBgzKVEP1QhT9hHILohZhKvNx8Ppc
-         8RXIJHXYogzvIo5Tp5QyDGdfFJWuTHzExImGCBbsKAfj9O6TH1BWcILR3+but3EVdDcJ
-         Kw6XXVpIVhRvXie0jG4KNW33OZwjKgKoqa+k6RNhran2Vp+ibUsWWNCdQiYcMiyjkfOu
-         dI0w==
-X-Gm-Message-State: APjAAAUne8jwbf7odKirAjhozTTY6OyZAvJhkPvxc8gPqQiVMhmCaf7F
-        Gmh6vOOfkHE2/QKM99p7BoWyLg==
-X-Google-Smtp-Source: APXvYqxJllsfxz4XwY9VgHLi8/FCQHsJllcrMBvmWxY8ca1AZtgOKNUcuum11FaqPFQ9heFGIcaasg==
-X-Received: by 2002:ae9:e306:: with SMTP id v6mr2803377qkf.145.1565093407766;
-        Tue, 06 Aug 2019 05:10:07 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id r205sm42701122qke.115.2019.08.06.05.10.07
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 06 Aug 2019 05:10:07 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1huyI2-0003n5-PV; Tue, 06 Aug 2019 09:10:06 -0300
-Date:   Tue, 6 Aug 2019 09:10:06 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bernard Metzler <bmt@zurich.ibm.com>
-Cc:     linux-rdma@vger.kernel.org
+        id S1726713AbfHFMcz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 08:32:55 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33552 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726711AbfHFMcz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Aug 2019 08:32:55 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 9A01030613CC;
+        Tue,  6 Aug 2019 12:32:54 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-53.rdu2.redhat.com [10.10.112.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6FE5B601B7;
+        Tue,  6 Aug 2019 12:32:53 +0000 (UTC)
+Message-ID: <044973ce7080eb5274befb99aab457897d577c96.camel@redhat.com>
 Subject: Re: [PATCH 1/1] Make user mmapped CQ arming flags field 32 bit size
  to remove 64 bit architecture dependency of siw.
-Message-ID: <20190806121006.GC11627@ziepe.ca>
+From:   Doug Ledford <dledford@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Bernard Metzler <bmt@zurich.ibm.com>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Tue, 06 Aug 2019 08:32:50 -0400
+In-Reply-To: <20190806121006.GC11627@ziepe.ca>
 References: <20190805141708.9004-1-bmt@zurich.ibm.com>
- <20190805141708.9004-2-bmt@zurich.ibm.com>
+         <20190805141708.9004-2-bmt@zurich.ibm.com>
+         <20190806121006.GC11627@ziepe.ca>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-3fHkqJT1PbIu7guEJu3H"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190805141708.9004-2-bmt@zurich.ibm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Tue, 06 Aug 2019 12:32:54 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 05, 2019 at 04:17:08PM +0200, Bernard Metzler wrote:
-> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
-> ---
 
-Don't send patches with empty commit messages. Every patch must have a
-comprehensive commit message from now on.
+--=-3fHkqJT1PbIu7guEJu3H
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->  drivers/infiniband/sw/siw/Kconfig     |  2 +-
->  drivers/infiniband/sw/siw/siw.h       |  2 +-
->  drivers/infiniband/sw/siw/siw_qp.c    | 14 ++++++++++----
->  drivers/infiniband/sw/siw/siw_verbs.c | 16 +++++++++++-----
->  include/uapi/rdma/siw-abi.h           |  3 ++-
->  5 files changed, 25 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/siw/Kconfig b/drivers/infiniband/sw/siw/Kconfig
-> index dace276aea14..b622fc62f2cd 100644
-> --- a/drivers/infiniband/sw/siw/Kconfig
-> +++ b/drivers/infiniband/sw/siw/Kconfig
-> @@ -1,6 +1,6 @@
->  config RDMA_SIW
->  	tristate "Software RDMA over TCP/IP (iWARP) driver"
-> -	depends on INET && INFINIBAND && LIBCRC32C && 64BIT
-> +	depends on INET && INFINIBAND && LIBCRC32C
->  	select DMA_VIRT_OPS
->  	help
->  	This driver implements the iWARP RDMA transport over
-> diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-> index 03fd7b2f595f..77b1aabf6ff3 100644
-> --- a/drivers/infiniband/sw/siw/siw.h
-> +++ b/drivers/infiniband/sw/siw/siw.h
-> @@ -214,7 +214,7 @@ struct siw_wqe {
->  struct siw_cq {
->  	struct ib_cq base_cq;
->  	spinlock_t lock;
-> -	u64 *notify;
-> +	struct siw_cq_ctrl *notify;
->  	struct siw_cqe *queue;
->  	u32 cq_put;
->  	u32 cq_get;
-> diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
-> index e27bd5b35b96..0990307c5d2c 100644
-> --- a/drivers/infiniband/sw/siw/siw_qp.c
-> +++ b/drivers/infiniband/sw/siw/siw_qp.c
-> @@ -1013,18 +1013,24 @@ int siw_activate_tx(struct siw_qp *qp)
->   */
->  static bool siw_cq_notify_now(struct siw_cq *cq, u32 flags)
->  {
-> -	u64 cq_notify;
-> +	u32 cq_notify;
->  
->  	if (!cq->base_cq.comp_handler)
->  		return false;
->  
-> -	cq_notify = READ_ONCE(*cq->notify);
-> +	/* Read application shared notification state */
-> +	cq_notify = READ_ONCE(cq->notify->flags);
->  
->  	if ((cq_notify & SIW_NOTIFY_NEXT_COMPLETION) ||
->  	    ((cq_notify & SIW_NOTIFY_SOLICITED) &&
->  	     (flags & SIW_WQE_SOLICITED))) {
-> -		/* dis-arm CQ */
-> -		smp_store_mb(*cq->notify, SIW_NOTIFY_NOT);
-> +		/*
-> +		 * CQ notification is one-shot: Since the
-> +		 * current CQE causes user notification,
-> +		 * the CQ gets dis-aremd and must be re-aremd
-> +		 * by the user for a new notification.
-> +		 */
-> +		WRITE_ONCE(cq->notify->flags, SIW_NOTIFY_NOT);
->  
->  		return true;
->  	}
-> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-> index 32dc79d0e898..e7f3a2379d9d 100644
-> --- a/drivers/infiniband/sw/siw/siw_verbs.c
-> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
-> @@ -1049,7 +1049,7 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
->  
->  	spin_lock_init(&cq->lock);
->  
-> -	cq->notify = &((struct siw_cq_ctrl *)&cq->queue[size])->notify;
-> +	cq->notify = (struct siw_cq_ctrl *)&cq->queue[size];
->  
->  	if (udata) {
->  		struct siw_uresp_create_cq uresp = {};
-> @@ -1141,11 +1141,17 @@ int siw_req_notify_cq(struct ib_cq *base_cq, enum ib_cq_notify_flags flags)
->  	siw_dbg_cq(cq, "flags: 0x%02x\n", flags);
->  
->  	if ((flags & IB_CQ_SOLICITED_MASK) == IB_CQ_SOLICITED)
-> -		/* CQ event for next solicited completion */
-> -		smp_store_mb(*cq->notify, SIW_NOTIFY_SOLICITED);
-> +		/*
-> +		 * Enable CQ event for next solicited completion.
-> +		 * and make it visible to all associated producers.
-> +		 */
-> +		smp_store_mb(cq->notify->flags, SIW_NOTIFY_SOLICITED);
->  	else
-> -		/* CQ event for any signalled completion */
-> -		smp_store_mb(*cq->notify, SIW_NOTIFY_ALL);
-> +		/*
-> +		 * Enable CQ event for any signalled completion.
-> +		 * and make it visible to all associated producers.
-> +		 */
-> +		smp_store_mb(cq->notify->flags, SIW_NOTIFY_ALL);
+On Tue, 2019-08-06 at 09:10 -0300, Jason Gunthorpe wrote:
+> On Mon, Aug 05, 2019 at 04:17:08PM +0200, Bernard Metzler wrote:
+> > Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+> > ---
+>=20
+> Don't send patches with empty commit messages. Every patch must have a
+> comprehensive commit message from now on.
+>=20
+> >  drivers/infiniband/sw/siw/Kconfig     |  2 +-
+> >  drivers/infiniband/sw/siw/siw.h       |  2 +-
+> >  drivers/infiniband/sw/siw/siw_qp.c    | 14 ++++++++++----
 
-this isn't what we talked about, is it?
+He had a decent commit log message, it was just in the cover letter.=20
+Bernard, on single patch submissions, skip the cover letter and just
+send the patch by itself.  Then the nice explanation you gave in the
+cover letter should go in the commit message itself.
 
-> index 7de68f1dc707..af735f55b291 100644
-> --- a/include/uapi/rdma/siw-abi.h
-> +++ b/include/uapi/rdma/siw-abi.h
-> @@ -180,6 +180,7 @@ struct siw_cqe {
->   * to control CQ arming.
->   */
->  struct siw_cq_ctrl {
-> -	__aligned_u64 notify;
-> +	__u32 flags;
-> +	__u32 pad;
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-The commit message needs to explain why this is compatible with
-existing user space, if it is even is safe..
+--=-3fHkqJT1PbIu7guEJu3H
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Jason
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1Jc3IACgkQuCajMw5X
+L90hIQ/+LBe7URgAxAN6JozqHP/X31oZJlvPGMYTlG4AgDaWjKx8wd67vmMHih/r
+Bw1UTpf0yF2tT2Oj7oi5IIIHWbhAzqcc0qVzhZnOyiSvb4vcZsmWpWZoZpRxOlSp
+M7+bUB+smQZ5f1zCXXibRj4qlCPqEKQKQEL1KCcuHW4lqwQ5g24F9SopuJemxX/T
+PE1RawSzGcTCHnunqUfD13v8SiTFJ1vEa8TDFAtXl+t+DC1dq3argiS7sI6LPOcr
+BiCMhffvjHSLxDCg2gZw2EYZgoVgawlF5N9HQOx8PP7hM6rSZu46qVxGCWL3iGcN
+VtqgS9VmMWV1FnPfg70hgibzdgEPGXOejZBsg9fjRTk9Xk7tFTPxqDiY8/9ywiR1
+8zfE6XrcnjXgAYyYL0e0mSuarqdG6bWaX0qjxD5/qY6fjh3VkkVr0i2MG8OPaJvK
+YemIlJzISuhKkAVkjrmTnC4Iwdz+OlKgufUDPC6C7cnQzSuIwYkyoQ/jFPX76eNA
+kA2tnXGzmfIQIlvH27JLQbiXLHE6JeDTnIu/EfyPzk9+A5ik3hQqVJLdRWZXEeC1
+RRArKfEHb4+hsVJpH00Hod2QCEd9/TsKLxeudMD9yfUcseICKIn8mkCDODQF3dAG
+/SYXd6FGeEJTR6BRdAWN+nyfCjOGu3vEhuDABE4VbOB+umBDw2A=
+=GoaH
+-----END PGP SIGNATURE-----
+
+--=-3fHkqJT1PbIu7guEJu3H--
+
