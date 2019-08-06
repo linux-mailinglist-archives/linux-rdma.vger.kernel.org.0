@@ -2,140 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7DD834E5
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 17:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EAD283548
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 17:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728836AbfHFPQR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 11:16:17 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:57512 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726713AbfHFPQR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Aug 2019 11:16:17 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 8B550776D1;
-        Tue,  6 Aug 2019 15:16:16 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-53.rdu2.redhat.com [10.10.112.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 79CE460127;
-        Tue,  6 Aug 2019 15:16:15 +0000 (UTC)
-Message-ID: <e94a97412c260616c8bd27d9dd361e496f15c67a.camel@redhat.com>
-Subject: Re: [PATCH rdma-core 2/2] cxgb4: remove unused c4iw_match_device
-From:   Doug Ledford <dledford@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Nirranjan Kirubaharan <nirranjan@chelsio.com>
-Date:   Tue, 06 Aug 2019 11:16:13 -0400
-In-Reply-To: <20190806111317.GV4832@mtr-leonro.mtl.com>
-References: <20190725174928.26863-1-bharat@chelsio.com>
-         <20190725181424.GB7467@ziepe.ca> <20190728083749.GH4674@mtr-leonro.mtl.com>
-         <20190729074612.GA30030@chelsio.com> <20190805110652.GB23319@chelsio.com>
-         <20190806080902.GS4832@mtr-leonro.mtl.com>
-         <20190806094849.GT4832@mtr-leonro.mtl.com>
-         <20190806110812.GA6109@chelsio.com>
-         <20190806111317.GV4832@mtr-leonro.mtl.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-IEhZ6WZTvxSKFGCIXKgP"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1728189AbfHFPbH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 11:31:07 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:37109 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726877AbfHFPbH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 11:31:07 -0400
+Received: by mail-qt1-f195.google.com with SMTP id y26so84960187qto.4
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 08:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9WHdS9yHlilQK32DStRp6jKyDuD2tZ6VXu29/s10hGY=;
+        b=TmFjfuM6/ZhBtB3neURRStFEcbUHpl7o3WAV+pMG9wMMa5hTYlaKjQ2LYYhKZnSV4I
+         JcfmfRtMzUBLciAlCm9NZdjzthCfkpTOcNSQad/5Zmp3VqbPhehrUTyQnroBvR7ObG9G
+         ycDCYhY53vEqgk37RLDqNSa+/yUoxJqkb4aG5MENhN0sdptkhbqPvRqz4kTN1rdHOayd
+         MquxPfuxxhga2VQC+8AenSQ4Yxs0dGA3qMXAcVB6pU+fCIsuZw+YIIZVxq0QwcUJdiMd
+         W2h3dX6bOQNDF0MC9R2HgWStaT6H48HuUJnVPfRQpJG6/oNc1WhjHN/PJSUR5CNsJjGg
+         gZmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9WHdS9yHlilQK32DStRp6jKyDuD2tZ6VXu29/s10hGY=;
+        b=Z/LtF2CFHLHyLslLedKkZ8Mkp28lbTqkmWcuPir0876PFxKbN3t5kdwr3DQrTBqdNd
+         zPWSNDJO2XzSJuYBZ56sPwoTw0MvBKaO6LPuxgfQFAbOxg8aZEyhbLjpxc8Gz3ubCj8D
+         gPSrVvHPMqS3BS2kLFs+dz/2yKeQP15k4cWbE+sFCT0QYJCcxO46V12Xeuq5IvCRcSVL
+         c/5wPBskxbCUCg8WilBHUsFddK93reWOqpUOHUso/S+LVyV3AL0fjnJVXfQCFOQHxdya
+         WR/+9dpXW76dIke2H7euB3nIpH9wBK7eCuNt4v1nW/dNkudhRyq9YG+rnn80qjo810AC
+         d4CA==
+X-Gm-Message-State: APjAAAX4oh5Gr/gAPgGngDruebR6ZL20utqHUZFpWt92Nr2OMhEtQqzV
+        rHZhNkyBsF1xGTFyS51Fhqj+zZTbtx0=
+X-Google-Smtp-Source: APXvYqwpLfvK9Q+hOB/OJH/p0mSsQ9SUuWFhePm8gPvH1p0dnZGmZQe6jQ09GMwUtuE6s7mVVsMsPg==
+X-Received: by 2002:ac8:45d0:: with SMTP id e16mr3493992qto.337.1565105466551;
+        Tue, 06 Aug 2019 08:31:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id x10sm34419234qtc.34.2019.08.06.08.31.05
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 06 Aug 2019 08:31:06 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hv1QX-0006dc-Hn; Tue, 06 Aug 2019 12:31:05 -0300
+Date:   Tue, 6 Aug 2019 12:31:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field 32 bit
+ size to remove 64 bit architecture dependency of siw.
+Message-ID: <20190806153105.GG11627@ziepe.ca>
+References: <20190806121006.GC11627@ziepe.ca>
+ <20190805141708.9004-1-bmt@zurich.ibm.com>
+ <20190805141708.9004-2-bmt@zurich.ibm.com>
+ <OFCF70B144.E0186C06-ON0025844E.0050E500-0025844E.0051D4FA@notes.na.collabserv.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.27]); Tue, 06 Aug 2019 15:16:16 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OFCF70B144.E0186C06-ON0025844E.0050E500-0025844E.0051D4FA@notes.na.collabserv.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Aug 06, 2019 at 02:53:49PM +0000, Bernard Metzler wrote:
 
---=-IEhZ6WZTvxSKFGCIXKgP
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> >> index 7de68f1dc707..af735f55b291 100644
+> >> +++ b/include/uapi/rdma/siw-abi.h
+> >> @@ -180,6 +180,7 @@ struct siw_cqe {
+> >>   * to control CQ arming.
+> >>   */
+> >>  struct siw_cq_ctrl {
+> >> -	__aligned_u64 notify;
+> >> +	__u32 flags;
+> >> +	__u32 pad;
+> >
+> >The commit message needs to explain why this is compatible with
+> >existing user space, if it is even is safe..
+> >
+> Old libsiw would remain compatible with the new layout, since it
+> simply reads the 32bit 'flags' and zeroed 32bit 'pad' into a 64bit
+> 'notify', ending with reading the same bits.
 
-On Tue, 2019-08-06 at 14:13 +0300, Leon Romanovsky wrote:
-> On Tue, Aug 06, 2019 at 04:38:13PM +0530, Potnuri Bharat Teja wrote:
-> > On Tuesday, August 08/06/19, 2019 at 15:18:49 +0530, Leon Romanovsky
-> > wrote:
-> > > On Tue, Aug 06, 2019 at 11:09:02AM +0300, Leon Romanovsky wrote:
-> > > > On Mon, Aug 05, 2019 at 04:36:53PM +0530, Potnuri Bharat Teja
-> > > > wrote:
-> > > > > On Monday, July 07/29/19, 2019 at 13:16:20 +0530, Potnuri
-> > > > > Bharat Teja wrote:
-> > > > > > On Sunday, July 07/28/19, 2019 at 14:07:49 +0530, Leon
-> > > > > > Romanovsky wrote:
-> > > > > > > On Thu, Jul 25, 2019 at 03:14:24PM -0300, Jason Gunthorpe
-> > > > > > > wrote:
-> > > > > > > > On Thu, Jul 25, 2019 at 11:19:28PM +0530, Potnuri Bharat
-> > > > > > > > Teja wrote:
-> > > > > > > > > match_device handler is no longer needed after latest
-> > > > > > > > > device binding changes.
-> > > > > > > > >=20
-> > > > > > > > > Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com
-> > > > > > > > > >
-> > > > > > > > > ---
-> > > > > > > > >  providers/cxgb4/dev.c | 41 --------------------------
-> > > > > > > > > ---------------
-> > > > > > > > >  1 file changed, 41 deletions(-)
-> > > > > > > >=20
-> > > > > > > > Do you know if we can also drop the same code in cxgb3?
-> > > > > > >=20
-> > > > > > > Can we simply remove cxgb3?
-> > > > > > >=20
-> > > > > >=20
-> > > > > > I am in talks with the people here. I'll confirm it soon.
-> > > > >=20
-> > > > > Hi Jason/Doug/Leon,
-> > > > > Chelsio is fine with removing cxgb3.
-> > > >=20
-> > > > Thanks a lot.
-> > >=20
-> > > Which parts of cxgb3 can we remove? RDMA, scsi, net or everything?
-> >=20
-> > I can only say RDMA. For net and scsi parts of cxgb3, the
-> > corresponding
-> > maintainers might request for their removal.
-> > Should I send a patch removing RDMA cxgb3?
->=20
-> It will be the best variant.
->=20
-> Thanks
->=20
-> > Thanks.
+Even on big endian?
 
-I'm not entirely sure that I want it removed yet.  The cxgb3 isn't the
-most stellar device, but it will do 40GBit/s.  That's still a very
-respectable speed (unlike say mthca that was mostly 10GBit/s with only a
-short run of 20GBit/s devices before it switched over to mlx4).  So a
-cxgb3 based home system is still something very usable.  Are we sure we
-want to remove this?
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-IEhZ6WZTvxSKFGCIXKgP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1Jmb0ACgkQuCajMw5X
-L9361BAAsf9svjDaaKzY+xDqTHQL23m7WxWYtqRFkzgyX1SHqu8Nx5ghKsC/Nj9Z
-oC79B0ijj7vt/cYL+714D9sETGvI8mKdDx/mOCYVv06OGYtMqSdDbAnUuOIGEWyy
-+ZucOiLlIdXgZfJdAkUVnUR+iGXf6HJ9LfQtp1vZwOAczUUyVRy/97WXQ27gGZNC
-UnpX0sjTbxZ/XHUnM9nmZWj8NuwPpzYserXZh23eaYTBj9PNss26ZnKBS0YymYfm
-FG2wkIs3SJ196p4Ms39WzhYOdBpPQkBTsjgINrpRDWvB6gZKyGYoidTEJ7UQHX+1
-dNQjR2QDduM29LU/FfxVSr3R7WV1XfFfyDlOhk9JhrI+LDQ/emzYRLqBfCY8VgxP
-hzUcS3dBHxRoszVjnOTJu6IAuw5nktYajcKk2eQmOmBM1b2Cc7hszyLujfwFQdAe
-nslDdDZSC3qrTul6DrDs/vAEj7C7GM0Bn3Dfs/hao3pySP7pV6hMNcIHxXL45INo
-iZPBdJeMfcPOXy4jRFAZ/pBWCTAXr4fylnpmMKq6sAxAvl/Tn2Y49sdbgru4a0I2
-xxbrEevXD2rFKslldhhHXdV364H02nwuzLJ2/Gf2/shH+fLOtpoCi9MRM/cGGFzQ
-XuNY1Rk+iGRzLXNzfTortLiLS6F4PWbHmjRZKomkGMhUfh2I1Mo=
-=JOQM
------END PGP SIGNATURE-----
-
---=-IEhZ6WZTvxSKFGCIXKgP--
-
+Jason
