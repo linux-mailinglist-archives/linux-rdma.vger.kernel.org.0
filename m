@@ -2,151 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B79A83A65
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 22:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F155483A72
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 22:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbfHFUjU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 16:39:20 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:2263 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbfHFUjT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 16:39:19 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d49e5760000>; Tue, 06 Aug 2019 13:39:18 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 06 Aug 2019 13:39:17 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 06 Aug 2019 13:39:17 -0700
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Aug
- 2019 20:39:16 +0000
-Subject: Re: [PATCH v2 01/34] mm/gup: add make_dirty arg to
- put_user_pages_dirty_lock()
-To:     Ira Weiny <ira.weiny@intel.com>, <john.hubbard@gmail.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jan Kara <jack@suse.cz>, Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        <amd-gfx@lists.freedesktop.org>, <ceph-devel@vger.kernel.org>,
-        <devel@driverdev.osuosl.org>, <devel@lists.orangefs.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-block@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-fbdev@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-nfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-rpi-kernel@lists.infradead.org>,
-        <linux-xfs@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <rds-devel@oss.oracle.com>, <sparclinux@vger.kernel.org>,
-        <x86@kernel.org>, <xen-devel@lists.xenproject.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20190804224915.28669-1-jhubbard@nvidia.com>
- <20190804224915.28669-2-jhubbard@nvidia.com>
- <20190806173945.GA4748@iweiny-DESK2.sc.intel.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <0e232d84-e6ea-159e-91d4-77e938377161@nvidia.com>
-Date:   Tue, 6 Aug 2019 13:39:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190806173945.GA4748@iweiny-DESK2.sc.intel.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL104.nvidia.com (172.18.146.11) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
+        id S1725974AbfHFUkQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 16:40:16 -0400
+Received: from mail-eopbgr30082.outbound.protection.outlook.com ([40.107.3.82]:46979
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726058AbfHFUkP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Aug 2019 16:40:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KB7oMe+oT/vLYcxQPcWTXFXWN0rFbPPHuYMTLZSQ90ia826GEP9ybmFZCt7Lg8auT+migAlAoRkjJOW4iWFDvAHhJzOANj+Azn/0hJb9VxifGlhgxTHaZJsLk9KyATcMlWlT2B8K6rwlD7wHrH9nIoqLf9VtEMls51KvgCUx+5iXyJCrmDQUJ5uGkmmvKbkCWvNl/0PSh/5tDgyxlBCXP42ru6Yf1+c1Y4Lzwug1K99eafMUWxGz2+kY1n8bSE+4Jj683yyiJIAyWNKURgjVAQFQD1qCaC5etTQce3XYvhV/02ssMcyyXSrmxL9RLaejtVTr3YDGrmP447g3xl4edQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QTry/fAWroqprwSPBrq0WTt0lYf/5Vhw9ZBd4xITDV4=;
+ b=N4CO0WcenCFcH0iAPDv27MHm0ofKYqIDil2AqOFYyOBK6HuyCukarPEt3W1oJZp9s05NnA8lSLy0+LoATFpdI4QuGRcOAewrMIXrF9mCIx70DJ0u8m+148s0NCEzLU2oQCCCVF15wkE1/V5lUhooPkc+XiIckNm6yXIJJZQt/MPOk35QTcFTuoMuIMfmCHmPGJl7fCnCDCreDvHV2121kVuIc7EmcThyGQ3TN6gepzw6aEkW9gdJBtIFVY1IrtCDaKEZoGcJRJ4Ie55zyWYsGVIcfVouVFhMbkLbg8pOEP+OAdxLz1NNKOkKWH9LsWz0Nr8uXFnq42QKmyt4mIn+7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=mellanox.com;dmarc=pass action=none
+ header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QTry/fAWroqprwSPBrq0WTt0lYf/5Vhw9ZBd4xITDV4=;
+ b=J0sF7COu6MWFhJwwdOknlBGy8AUzz5l+Mft9bs4IQTwmzvzP9helxAbsHtxpk1N7AoFzPkZsqda8kfq/G9HxQtLIR9ypLxSyxp80r6CBkL6Pvu7OXAeqOp7zo9+VnucneBHJdPhY296PO2EgpruVcNkG6riDPckJn0PQiDIeRgM=
+Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
+ DB6PR0501MB2790.eurprd05.prod.outlook.com (10.172.227.15) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2136.16; Tue, 6 Aug 2019 20:40:11 +0000
+Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
+ ([fe80::3c28:c77d:55b0:15b2]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
+ ([fe80::3c28:c77d:55b0:15b2%5]) with mapi id 15.20.2136.018; Tue, 6 Aug 2019
+ 20:40:11 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     "hslester96@gmail.com" <hslester96@gmail.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>
+Subject: Re: [PATCH v3] mlx5: Use refcount_t for refcount
+Thread-Topic: [PATCH v3] mlx5: Use refcount_t for refcount
+Thread-Index: AQHVS/qqPWmA6k0y9U2jqPKx2/PeLKbullCA
+Date:   Tue, 6 Aug 2019 20:40:11 +0000
+Message-ID: <cbea99e74a1f70b1a67357aaf2afdb55655cd2bd.camel@mellanox.com>
+References: <20190806015950.18167-1-hslester96@gmail.com>
+In-Reply-To: <20190806015950.18167-1-hslester96@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1565123958; bh=kP7gTuC3ZdPRsl2ZM8hKtRsMZoJPCXuUqs/7ZYFYlas=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=De7r6lQUtbn+GTEsMqljgVKTlQIrCw8ZESuRqc7w4LEYPASOCDyQM6KfNGQouIjYR
-         fh0BckBJVbNT9AbXMQb66ZhMKSleBMpCp4Q67sEppT12m031guaO+mSQiN77Vubrty
-         dLwAVLGyjRDyH8bKz/ie59UuEUjWXDBsQB9IGYcfiHyqrDkJ8dhLAwUMAPjRDqyeiY
-         KJw8zEX2A8/HIUmoazoyVwItiLDzuGpYh0geDqgdodA5dwJzt0S2azlo+PhdmfDHXO
-         6GhmRkzx66GKpfVpxeAm8ztIGHTRgebRJf3i5iJHgoMtdv7J6YmmRpepQCyIfl7KA0
-         CyUb7h3ZsvM+w==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [209.116.155.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 600f9a09-79f6-44b8-d1cd-08d71aae472e
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2790;
+x-ms-traffictypediagnostic: DB6PR0501MB2790:
+x-microsoft-antispam-prvs: <DB6PR0501MB27909C7F2CB109976939AA5CBED50@DB6PR0501MB2790.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-forefront-prvs: 0121F24F22
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(39860400002)(136003)(346002)(376002)(396003)(199004)(189003)(186003)(6486002)(11346002)(256004)(6436002)(91956017)(3846002)(6116002)(8676002)(86362001)(446003)(5640700003)(68736007)(478600001)(229853002)(76116006)(66556008)(36756003)(476003)(6512007)(6246003)(81156014)(66476007)(99286004)(66946007)(2616005)(6916009)(2351001)(81166006)(26005)(76176011)(7736002)(14454004)(2501003)(1361003)(8936002)(53936002)(66446008)(316002)(64756008)(4744005)(71200400001)(71190400001)(102836004)(58126008)(2906002)(5660300002)(4326008)(305945005)(25786009)(14444005)(1411001)(6506007)(486006)(54906003)(118296001)(66066001);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2790;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: maBUFQkYf57Hd+pWxYIqn9ubVqz9Mw55VOIftYIJ6r4lGJGOlMA/iVlllkv3tATaxZdtzF5q3/7FaCHWO6H7zdoZ/UjSTGXebLW2CqY98aoi0e/SA19BPJL53Ux49SXKe8QZJIqVIq0YPnO+7hmUGtQXsXmnez4ZGZy+haXjKopDpVL0RqmBQoeMBzKTYLYMmP2p5Tmmj86esM5sGGgX0YuwO3WvI2KlgE5dnU/KtElFnnA/v2Hhk+G4a27mJtiSu+Tvqfpw9OwxeLg4iWzlC9p5/0oyUctWYUOKA407EFpkb/YBJHTbxrepLVvIMzdq94XxrFXGfI+BD2oudLX0WczNHAZgZiLxYiRaabtMm58bclGaFmXhpo7lMJuVSl/HhRnK4IRGdnvTKbykcLqkXwlpt7YmaVCpD7XgEVRoqqM=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0A7A5275462F844DBE7C38ABF2E9A190@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 600f9a09-79f6-44b8-d1cd-08d71aae472e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Aug 2019 20:40:11.5857
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2790
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/6/19 10:39 AM, Ira Weiny wrote:
-> On Sun, Aug 04, 2019 at 03:48:42PM -0700, john.hubbard@gmail.com wrote:
->> From: John Hubbard <jhubbard@nvidia.com>
-...
->> -
->>  /**
->> - * put_user_pages_dirty() - release and dirty an array of gup-pinned pages
->> - * @pages:  array of pages to be marked dirty and released.
->> + * put_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
->> + * @pages:  array of pages to be maybe marked dirty, and definitely released.
-> 
-> Better would be.
-> 
-> @pages:  array of pages to be put
-
-OK, I'll change to that wording.
-
-> 
->>   * @npages: number of pages in the @pages array.
->> + * @make_dirty: whether to mark the pages dirty
->>   *
->>   * "gup-pinned page" refers to a page that has had one of the get_user_pages()
->>   * variants called on that page.
->>   *
->>   * For each page in the @pages array, make that page (or its head page, if a
->> - * compound page) dirty, if it was previously listed as clean. Then, release
->> - * the page using put_user_page().
->> + * compound page) dirty, if @make_dirty is true, and if the page was previously
->> + * listed as clean. In any case, releases all pages using put_user_page(),
->> + * possibly via put_user_pages(), for the non-dirty case.
-> 
-> I don't think users of this interface need this level of detail.  I think
-> something like.
-> 
->  * For each page in the @pages array, release the page.  If @make_dirty is
->  * true, mark the page dirty prior to release.
-
-Yes, it is too wordy, I'll change to that.
-
-> 
-...
->> -void put_user_pages_dirty_lock(struct page **pages, unsigned long npages)
->> -{
->> -	__put_user_pages_dirty(pages, npages, set_page_dirty_lock);
->> +	/*
->> +	 * TODO: this can be optimized for huge pages: if a series of pages is
->> +	 * physically contiguous and part of the same compound page, then a
->> +	 * single operation to the head page should suffice.
->> +	 */
-> 
-> I think this comment belongs to the for loop below...  or just something about
-> how to make this and put_user_pages() more efficient.  It is odd, that this is
-> the same comment as in put_user_pages()...
-
-Actually I think I'll just delete the comment entirely, it's just noise really.
-
-> 
-> The code is good.  So... Other than the comments.
-> 
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-
-
-Thanks for the review!
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+T24gVHVlLCAyMDE5LTA4LTA2IGF0IDA5OjU5ICswODAwLCBDaHVob25nIFl1YW4gd3JvdGU6DQo+
+IFJlZmVyZW5jZSBjb3VudGVycyBhcmUgcHJlZmVycmVkIHRvIHVzZSByZWZjb3VudF90IGluc3Rl
+YWQgb2YNCj4gYXRvbWljX3QuDQo+IFRoaXMgaXMgYmVjYXVzZSB0aGUgaW1wbGVtZW50YXRpb24g
+b2YgcmVmY291bnRfdCBjYW4gcHJldmVudA0KPiBvdmVyZmxvd3MgYW5kIGRldGVjdCBwb3NzaWJs
+ZSB1c2UtYWZ0ZXItZnJlZS4NCj4gU28gY29udmVydCBhdG9taWNfdCByZWYgY291bnRlcnMgdG8g
+cmVmY291bnRfdC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IENodWhvbmcgWXVhbiA8aHNsZXN0ZXI5
+NkBnbWFpbC5jb20+DQo+IC0tLQ0KPiBDaGFuZ2VzIGluIHYzOg0KPiAgIC0gTWVyZ2UgdjIgcGF0
+Y2hlcyB0b2dldGhlci4NCj4gDQo+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9zcnFfY21k
+LmMgICAgICAgICB8IDYgKysrLS0tDQo+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9t
+bHg1L2NvcmUvcXAuYyB8IDYgKysrLS0tDQo+ICBpbmNsdWRlL2xpbnV4L21seDUvZHJpdmVyLmgg
+ICAgICAgICAgICAgICAgICB8IDMgKystDQo+ICAzIGZpbGVzIGNoYW5nZWQsIDggaW5zZXJ0aW9u
+cygrKSwgNyBkZWxldGlvbnMoLSkNCj4gDQoNCkxHVE0sIExlb24sIGxldCBtZSBrbm93IGlmIHlv
+dSBhcmUgaGFwcHkgd2l0aCB0aGlzIHZlcnNpb24sIA0KdGhpcyBzaG91bGQgZ28gdG8gbWx4NS1u
+ZXh0Lg0K
