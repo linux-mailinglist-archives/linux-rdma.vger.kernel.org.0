@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F02B383DBC
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 01:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644F683DBD
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 01:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbfHFXQu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1727197AbfHFXQu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Tue, 6 Aug 2019 19:16:50 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36954 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727197AbfHFXQS (ORCPT
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:35968 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727096AbfHFXQS (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 19:16:18 -0400
-Received: by mail-qt1-f193.google.com with SMTP id y26so86458729qto.4
+Received: by mail-qt1-f195.google.com with SMTP id z4so86496521qtc.3
         for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 16:16:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6NUFqlMBKMBn5vDhbmYDSPrCJfAHH+vuZmJm73vmPZ4=;
-        b=LfRTCxlqNIR4uH7LAgvFKd3/HUW6EIX8oEHk8vRJZDXfu+MODxUjSc0mwQLjdlj1r5
-         TdBQZiQ/h32bzsTmZvXIlzRhFHn0mmy0idj25YbeDts1A24fsEifBIe3NP5hqVvkvhrR
-         nWWVKtWYfgjQk2Um2/MKR8gMUgvqui+DvGzyTcwS1oxYmThfLcGfOjUwJchzx5IQFtkm
-         39y5spX//3k4QzhKIKnxJHNlnrtBxmpACeuwQvwhJuooM9+kRZCHN9wt4AYFAx6mZGXI
-         dWzRId28bdIuuoDxYm8FkG1fzostiVkDLyxOWPmcJ25bAgDrnqB6r/Lbc3/r/c8WbtlX
-         CAIw==
+        bh=pkHeCt/hoSJAt//UHPk0X0I7hZeOiqjMeNu5wqmOhVU=;
+        b=EO1RyLd4d0AnXDRqElYRzxtyKz38WeGeNBRIkYdo+3VFgs/T0oIQs20Zy/5GKhTnqI
+         UfyYPmrt29HX9vdxZVEwKEX/vOCaV33r4IcvjjLv+dvBVpY91WnTDcNJXzjaMgjBsFFt
+         FdxAfV5Xk74BDXvs4obq2oP6Eu9zK7wtAWH8j4mJyF0Ged8Qf759ly97ojGQOxxLbF+m
+         EBz8VKm2ELuy2OvTFchRCVHhBVH+J3NM3xKbJA1b+9RKe4syO0dO8Tpu7jcVbUS84W+G
+         X1zRmwp67vSBaYZNs5bfg6X3fWLEdZzDSXoP+HJcr6VhTvigDkmOWFIoLfep3TCPpIME
+         lbKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6NUFqlMBKMBn5vDhbmYDSPrCJfAHH+vuZmJm73vmPZ4=;
-        b=daXzgnEzXvIA/ORQZvPExDcKcVQRzABbeYzq2vxyaMqKj0NuOIfjO1n+VV0b6ERRAs
-         dwlRr2bi3CYKq4DdwBPycwLENSbakBGYeMv2f4CJFvYZ+WZqpXciCssY4px6GHjwQV+6
-         7/ZymMfhkbRJtlHRavXxABHaiiZ4SajXJ378qkIt9TuYFJhRzHbciSM5iqU/lyLkvk9B
-         RkhlPzLhsfDCtgZnYx2A0WqASYELNxau6VOaOiMjR5TGTEnjhSZq4cT+B6sQLqK5wpU4
-         GYAVWtoPp/EJz8B37CFyUE7bNQLZxbmqwo7C0xyuPOZo3wUnFPOgVPh4rPMdZG2hiGd4
-         yKLw==
-X-Gm-Message-State: APjAAAUwhNoXpHDH4AavyXTqnFsmiCdI26jE994jdcj7wK/0vyUIK2CD
-        SFep7qlHmh4WivEGQwNf7iB8sg==
-X-Google-Smtp-Source: APXvYqzyRI5TBbiUa5tyo3mkBzAmzYq9JR3/ocS4Z9Tm5ZTYPwm7qYeGZqLl/Ddc4+CKmoOUg5XVtQ==
-X-Received: by 2002:ac8:270e:: with SMTP id g14mr5557862qtg.65.1565133377937;
+        bh=pkHeCt/hoSJAt//UHPk0X0I7hZeOiqjMeNu5wqmOhVU=;
+        b=mDnALaUN+wPmvSVuiHyBlxSpM/5lkF/Cu3edd9NGSNmpnnx6CXMntC86sAIUSCJdB4
+         FDcf3xmAWqD/qe/DNfIzT8DNXWAjrUXmOaDzu+e0B0JWQlPUy6xtBFUOw5M+EC2zK9px
+         zCj5VUrU8xoiLAJHmfE2ZU0qempT948VMvtko2dvhnAvgbAl0alUY8fljm7YTJBdIqMK
+         OJnUkZ7bOLNMpwOA57LZlZK+i02+5ukD2sf5kv1RpuSmLkPRh2XYC10I+oLKnv1xIwew
+         LUsN2vhHKJIMMNrQzJoIUsnOFrrGjd+USGPCeWHMVK2rhT8nSMyoLLcVs4vPowivXykt
+         seNw==
+X-Gm-Message-State: APjAAAWMxDE3EWmNrKd2gtXLMEvqEhCh8VEsGO0TXigouMTOh01lr6r3
+        Rtc3yOQlET42A0V+w4lmogw95w==
+X-Google-Smtp-Source: APXvYqy6Nsusk0wHFyYvRxTipEB7NphBo9CKaHBj+WOx7SnMsQAhKID5TREjs8PZo1+pA73I5XbxVg==
+X-Received: by 2002:ac8:2b01:: with SMTP id 1mr5497725qtu.177.1565133377682;
         Tue, 06 Aug 2019 16:16:17 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id y9sm37771754qki.116.2019.08.06.16.16.14
+        by smtp.gmail.com with ESMTPSA id r14sm36816958qkm.100.2019.08.06.16.16.14
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Tue, 06 Aug 2019 16:16:17 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hv8gg-0006fA-Hu; Tue, 06 Aug 2019 20:16:14 -0300
+        id 1hv8gg-0006fG-Jc; Tue, 06 Aug 2019 20:16:14 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-mm@kvack.org
 Cc:     Andrea Arcangeli <aarcange@redhat.com>,
@@ -65,9 +65,9 @@ Cc:     Andrea Arcangeli <aarcange@redhat.com>,
         Gavin Shan <shangw@linux.vnet.ibm.com>,
         Andrea Righi <andrea@betterlinux.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v3 hmm 10/11] drm/amdkfd: use mmu_notifier_put
-Date:   Tue,  6 Aug 2019 20:15:47 -0300
-Message-Id: <20190806231548.25242-11-jgg@ziepe.ca>
+Subject: [PATCH v3 hmm 11/11] mm/mmu_notifiers: remove unregister_no_release
+Date:   Tue,  6 Aug 2019 20:15:48 -0300
+Message-Id: <20190806231548.25242-12-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190806231548.25242-1-jgg@ziepe.ca>
 References: <20190806231548.25242-1-jgg@ziepe.ca>
@@ -80,70 +80,90 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-The sequence of mmu_notifier_unregister_no_release(),
-mmu_notifier_call_srcu() is identical to mmu_notifier_put() with the
-free_notifier callback.
+mmu_notifier_unregister_no_release() and mmu_notifier_call_srcu() no
+longer have any users, they have all been converted to use
+mmu_notifier_put().
 
-As this is the last user of those APIs, converting it means we can drop
-them.
+So delete this difficult to use interface.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_priv.h    |  3 ---
- drivers/gpu/drm/amd/amdkfd/kfd_process.c | 10 ++++------
- 2 files changed, 4 insertions(+), 9 deletions(-)
+ include/linux/mmu_notifier.h |  5 -----
+ mm/mmu_notifier.c            | 31 -------------------------------
+ 2 files changed, 36 deletions(-)
 
-I'm really not sure what this is doing, but it is very strange to have a
-release with no other callback. It would be good if this would change to use
-get as well.
-
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-index 3933fb6a371efb..9450e20d17093b 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-@@ -686,9 +686,6 @@ struct kfd_process {
- 	/* We want to receive a notification when the mm_struct is destroyed */
- 	struct mmu_notifier mmu_notifier;
+diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+index 31aa971315a142..52929e5ef70826 100644
+--- a/include/linux/mmu_notifier.h
++++ b/include/linux/mmu_notifier.h
+@@ -271,8 +271,6 @@ extern int __mmu_notifier_register(struct mmu_notifier *mn,
+ 				   struct mm_struct *mm);
+ extern void mmu_notifier_unregister(struct mmu_notifier *mn,
+ 				    struct mm_struct *mm);
+-extern void mmu_notifier_unregister_no_release(struct mmu_notifier *mn,
+-					       struct mm_struct *mm);
+ extern void __mmu_notifier_mm_destroy(struct mm_struct *mm);
+ extern void __mmu_notifier_release(struct mm_struct *mm);
+ extern int __mmu_notifier_clear_flush_young(struct mm_struct *mm,
+@@ -513,9 +511,6 @@ static inline void mmu_notifier_range_init(struct mmu_notifier_range *range,
+ 	set_pte_at(___mm, ___address, __ptep, ___pte);			\
+ })
  
--	/* Use for delayed freeing of kfd_process structure */
--	struct rcu_head	rcu;
+-extern void mmu_notifier_call_srcu(struct rcu_head *rcu,
+-				   void (*func)(struct rcu_head *rcu));
 -
- 	unsigned int pasid;
- 	unsigned int doorbell_index;
+ #else /* CONFIG_MMU_NOTIFIER */
  
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-index c06e6190f21ffa..e5e326f2f2675e 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-@@ -486,11 +486,9 @@ static void kfd_process_ref_release(struct kref *ref)
- 	queue_work(kfd_process_wq, &p->release_work);
+ struct mmu_notifier_range {
+diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
+index 4a770b5211b71d..2ec48f8ba9e288 100644
+--- a/mm/mmu_notifier.c
++++ b/mm/mmu_notifier.c
+@@ -21,18 +21,6 @@
+ /* global SRCU for all MMs */
+ DEFINE_STATIC_SRCU(srcu);
+ 
+-/*
+- * This function allows mmu_notifier::release callback to delay a call to
+- * a function that will free appropriate resources. The function must be
+- * quick and must not block.
+- */
+-void mmu_notifier_call_srcu(struct rcu_head *rcu,
+-			    void (*func)(struct rcu_head *rcu))
+-{
+-	call_srcu(&srcu, rcu, func);
+-}
+-EXPORT_SYMBOL_GPL(mmu_notifier_call_srcu);
+-
+ /*
+  * This function can't run concurrently against mmu_notifier_register
+  * because mm->mm_users > 0 during mmu_notifier_register and exit_mmap
+@@ -453,25 +441,6 @@ void mmu_notifier_unregister(struct mmu_notifier *mn, struct mm_struct *mm)
  }
+ EXPORT_SYMBOL_GPL(mmu_notifier_unregister);
  
--static void kfd_process_destroy_delayed(struct rcu_head *rcu)
-+static void kfd_process_free_notifier(struct mmu_notifier *mn)
+-/*
+- * Same as mmu_notifier_unregister but no callback and no srcu synchronization.
+- */
+-void mmu_notifier_unregister_no_release(struct mmu_notifier *mn,
+-					struct mm_struct *mm)
+-{
+-	spin_lock(&mm->mmu_notifier_mm->lock);
+-	/*
+-	 * Can not use list_del_rcu() since __mmu_notifier_release
+-	 * can delete it before we hold the lock.
+-	 */
+-	hlist_del_init_rcu(&mn->hlist);
+-	spin_unlock(&mm->mmu_notifier_mm->lock);
+-
+-	BUG_ON(atomic_read(&mm->mm_count) <= 0);
+-	mmdrop(mm);
+-}
+-EXPORT_SYMBOL_GPL(mmu_notifier_unregister_no_release);
+-
+ static void mmu_notifier_free_rcu(struct rcu_head *rcu)
  {
--	struct kfd_process *p = container_of(rcu, struct kfd_process, rcu);
--
--	kfd_unref_process(p);
-+	kfd_unref_process(container_of(mn, struct kfd_process, mmu_notifier));
- }
- 
- static void kfd_process_notifier_release(struct mmu_notifier *mn,
-@@ -542,12 +540,12 @@ static void kfd_process_notifier_release(struct mmu_notifier *mn,
- 
- 	mutex_unlock(&p->mutex);
- 
--	mmu_notifier_unregister_no_release(&p->mmu_notifier, mm);
--	mmu_notifier_call_srcu(&p->rcu, &kfd_process_destroy_delayed);
-+	mmu_notifier_put(&p->mmu_notifier);
- }
- 
- static const struct mmu_notifier_ops kfd_process_mmu_notifier_ops = {
- 	.release = kfd_process_notifier_release,
-+	.free_notifier = kfd_process_free_notifier,
- };
- 
- static int kfd_process_init_cwsr_apu(struct kfd_process *p, struct file *filep)
+ 	struct mmu_notifier *mn = container_of(rcu, struct mmu_notifier, rcu);
 -- 
 2.22.0
 
