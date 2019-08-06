@@ -2,39 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC41183CA1
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 23:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33C883C4F
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 23:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbfHFVm6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 17:42:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52772 "EHLO mail.kernel.org"
+        id S1728849AbfHFVgK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 17:36:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728048AbfHFVe7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Aug 2019 17:34:59 -0400
+        id S1728834AbfHFVgJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Aug 2019 17:36:09 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D2B3217D7;
-        Tue,  6 Aug 2019 21:34:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 583F32089E;
+        Tue,  6 Aug 2019 21:36:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565127299;
-        bh=gHKN6VO5FHUT4n/WevuPBAN7VBwc4Wg2WGpEHcz+kKs=;
+        s=default; t=1565127369;
+        bh=9aCRpZT8DjlVtUi6fvLsq6fR02nt0NnpDox/0cUDlfE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JrK4dhXdy+dtCt41psVtswv87CiLNPLx2+eU17rUJ/YaMZCGfK+P7hJwfaqISetvL
-         pfYyVMwPvxgKfSRYJwQkHPZo+/AeezdrXJYUKWRx3Mqe253G8hvccSEtC6l8eACSIy
-         5B6p2XwQFJN8yDAUXaF4fDyWTGh5WwXmpbZohkrg=
+        b=zsIpRrJOQRMDeQHbqquzC8b9OTfG/wrcoxBA3Ef/hk4gnYDcoeBqj0pC8prERdHWz
+         s4/Zv2iVgSEbUPeyMA8YcIsJCFslml2NccraDmm2osLFF/NJXCx7cArn385PuXJYPO
+         1PZ1MCj6cr0rvxH8IUHlXXxVyk5BWQKRlmvE4K2s=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wei Yongjun <weiyongjun1@huawei.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
         Doug Ledford <dledford@redhat.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 50/59] RDMA/hns: Fix error return code in hns_roce_v1_rsv_lp_qp()
-Date:   Tue,  6 Aug 2019 17:33:10 -0400
-Message-Id: <20190806213319.19203-50-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 24/32] IB/core: Add mitigation for Spectre V1
+Date:   Tue,  6 Aug 2019 17:35:12 -0400
+Message-Id: <20190806213522.19859-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190806213319.19203-1-sashal@kernel.org>
-References: <20190806213319.19203-1-sashal@kernel.org>
+In-Reply-To: <20190806213522.19859-1-sashal@kernel.org>
+References: <20190806213522.19859-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,40 +43,52 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: "Luck, Tony" <tony.luck@intel.com>
 
-[ Upstream commit 020fb3bebc224dfe9353a56ecbe2d5fac499dffc ]
+[ Upstream commit 61f259821dd3306e49b7d42a3f90fb5a4ff3351b ]
 
-Fix to return error code -ENOMEM from the rdma_zalloc_drv_obj() error
-handling case instead of 0, as done elsewhere in this function.
+Some processors may mispredict an array bounds check and
+speculatively access memory that they should not. With
+a user supplied array index we like to play things safe
+by masking the value with the array size before it is
+used as an index.
 
-Fixes: e8ac9389f0d7 ("RDMA: Fix allocation failure on pointer pd")
-Fixes: 21a428a019c9 ("RDMA: Handle PD allocations by IB/core")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-Link: https://lore.kernel.org/r/20190801012725.150493-1-weiyongjun1@huawei.com
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20190731043957.GA1600@agluck-desk2.amr.corp.intel.com
 Signed-off-by: Doug Ledford <dledford@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/user_mad.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index e068a02122f5e..9496c69fff3a2 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -745,8 +745,10 @@ static int hns_roce_v1_rsv_lp_qp(struct hns_roce_dev *hr_dev)
+diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
+index c34a6852d691f..a18f3f8ad77fe 100644
+--- a/drivers/infiniband/core/user_mad.c
++++ b/drivers/infiniband/core/user_mad.c
+@@ -49,6 +49,7 @@
+ #include <linux/sched.h>
+ #include <linux/semaphore.h>
+ #include <linux/slab.h>
++#include <linux/nospec.h>
  
- 	ibdev = &hr_dev->ib_dev;
- 	pd = rdma_zalloc_drv_obj(ibdev, ib_pd);
--	if (!pd)
-+	if (!pd) {
-+		ret = -ENOMEM;
- 		goto alloc_mem_failed;
-+	}
+ #include <linux/uaccess.h>
  
- 	pd->device  = ibdev;
- 	ret = hns_roce_alloc_pd(pd, NULL);
+@@ -868,11 +869,14 @@ static int ib_umad_unreg_agent(struct ib_umad_file *file, u32 __user *arg)
+ 
+ 	if (get_user(id, arg))
+ 		return -EFAULT;
++	if (id >= IB_UMAD_MAX_AGENTS)
++		return -EINVAL;
+ 
+ 	mutex_lock(&file->port->file_mutex);
+ 	mutex_lock(&file->mutex);
+ 
+-	if (id >= IB_UMAD_MAX_AGENTS || !__get_agent(file, id)) {
++	id = array_index_nospec(id, IB_UMAD_MAX_AGENTS);
++	if (!__get_agent(file, id)) {
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
 -- 
 2.20.1
 
