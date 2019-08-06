@@ -2,168 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 644F683DBD
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 01:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFC683DF0
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 01:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727197AbfHFXQu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 19:16:50 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:35968 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727096AbfHFXQS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 19:16:18 -0400
-Received: by mail-qt1-f195.google.com with SMTP id z4so86496521qtc.3
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 16:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pkHeCt/hoSJAt//UHPk0X0I7hZeOiqjMeNu5wqmOhVU=;
-        b=EO1RyLd4d0AnXDRqElYRzxtyKz38WeGeNBRIkYdo+3VFgs/T0oIQs20Zy/5GKhTnqI
-         UfyYPmrt29HX9vdxZVEwKEX/vOCaV33r4IcvjjLv+dvBVpY91WnTDcNJXzjaMgjBsFFt
-         FdxAfV5Xk74BDXvs4obq2oP6Eu9zK7wtAWH8j4mJyF0Ged8Qf759ly97ojGQOxxLbF+m
-         EBz8VKm2ELuy2OvTFchRCVHhBVH+J3NM3xKbJA1b+9RKe4syO0dO8Tpu7jcVbUS84W+G
-         X1zRmwp67vSBaYZNs5bfg6X3fWLEdZzDSXoP+HJcr6VhTvigDkmOWFIoLfep3TCPpIME
-         lbKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pkHeCt/hoSJAt//UHPk0X0I7hZeOiqjMeNu5wqmOhVU=;
-        b=mDnALaUN+wPmvSVuiHyBlxSpM/5lkF/Cu3edd9NGSNmpnnx6CXMntC86sAIUSCJdB4
-         FDcf3xmAWqD/qe/DNfIzT8DNXWAjrUXmOaDzu+e0B0JWQlPUy6xtBFUOw5M+EC2zK9px
-         zCj5VUrU8xoiLAJHmfE2ZU0qempT948VMvtko2dvhnAvgbAl0alUY8fljm7YTJBdIqMK
-         OJnUkZ7bOLNMpwOA57LZlZK+i02+5ukD2sf5kv1RpuSmLkPRh2XYC10I+oLKnv1xIwew
-         LUsN2vhHKJIMMNrQzJoIUsnOFrrGjd+USGPCeWHMVK2rhT8nSMyoLLcVs4vPowivXykt
-         seNw==
-X-Gm-Message-State: APjAAAWMxDE3EWmNrKd2gtXLMEvqEhCh8VEsGO0TXigouMTOh01lr6r3
-        Rtc3yOQlET42A0V+w4lmogw95w==
-X-Google-Smtp-Source: APXvYqy6Nsusk0wHFyYvRxTipEB7NphBo9CKaHBj+WOx7SnMsQAhKID5TREjs8PZo1+pA73I5XbxVg==
-X-Received: by 2002:ac8:2b01:: with SMTP id 1mr5497725qtu.177.1565133377682;
-        Tue, 06 Aug 2019 16:16:17 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id r14sm36816958qkm.100.2019.08.06.16.16.14
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 06 Aug 2019 16:16:17 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hv8gg-0006fG-Jc; Tue, 06 Aug 2019 20:16:14 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-mm@kvack.org
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        Dimitri Sivanich <sivanich@sgi.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        iommu@lists.linux-foundation.org, intel-gfx@lists.freedesktop.org,
-        Gavin Shan <shangw@linux.vnet.ibm.com>,
-        Andrea Righi <andrea@betterlinux.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v3 hmm 11/11] mm/mmu_notifiers: remove unregister_no_release
-Date:   Tue,  6 Aug 2019 20:15:48 -0300
-Message-Id: <20190806231548.25242-12-jgg@ziepe.ca>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190806231548.25242-1-jgg@ziepe.ca>
-References: <20190806231548.25242-1-jgg@ziepe.ca>
+        id S1726381AbfHFXom (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 19:44:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726133AbfHFXom (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Aug 2019 19:44:42 -0400
+Received: from localhost (unknown [69.71.4.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E57F7214C6;
+        Tue,  6 Aug 2019 23:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565135081;
+        bh=SOMBSaDc8nxdDI/az2lKZSoxOMnNPsmkpBZmMYOUojI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gw/NWCnHIe70JmgFGthWObyODCSyQBllFbs3c3PnI1E980XzvGktYm/v85YJkpfI2
+         2o13F61/KwT6B3Zj1o2ci7Y4InfNVb5TiZpt1crsv+hqtrF9hwym0f7OweZlosCnda
+         NVLprZCXXg1My2UaYv0tFUMbBqnG32Sjt0jDaN4s=
+Date:   Tue, 6 Aug 2019 18:44:39 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Jens Axboe <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Eric Pilmore <epilmore@gigaio.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 00/14] PCI/P2PDMA: Support transactions that hit the
+ host bridge
+Message-ID: <20190806234439.GW151852@google.com>
+References: <20190730163545.4915-1-logang@deltatee.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190730163545.4915-1-logang@deltatee.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+On Tue, Jul 30, 2019 at 10:35:31AM -0600, Logan Gunthorpe wrote:
+> Here's v2 of the patchset. It doesn't sound like there's anything
+> terribly controversial here so this version is mostly just some
+> cleanup changes for clarity.
+> 
+> Changes in v2:
+>  * Rebase on v5.3-rc2 (No changes)
+>  * Re-introduce the private pagemap structure and move the p2p-specific
+>    elements out of the commond dev_pagemap (per Christoph)
+>  * Use flags instead of bool in the whitelist (per Jason)
+>  * Only store the mapping type in the xarray (instead of the distance
+>    with flags) such that a function can return the mapping method
+>    with a switch statement to decide how to map. (per Christoph)
+>  * Drop find_parent_pci_dev() on the fast path and rely on the fact
+>    that the struct device passed to the mapping functions *must* be
+>    a PCI device and convert it directly. (per suggestions from
+>    Christoph and Jason)
+>  * Collected Christian's Reviewed-by's
+> --
+> 
+> As discussed on the list previously, in order to fully support the
+> whitelist Christian added with the IOMMU, we must ensure that we
+> map any buffer going through the IOMMU with an aprropriate dma_map
+> call. This patchset accomplishes this by cleaning up the output of
+> upstream_bridge_distance() to better indicate the mapping requirements,
+> caching these requirements in an xarray, then looking them up at map
+> time and applying the appropriate mapping method.
+> 
+> After this patchset, it's possible to use the NVMe-of P2P support to
+> transfer between devices without a switch on the whitelisted root
+> complexes. A couple Intel device I have tested this on have also
+> been added to the white list.
+> 
+> Most of the changes are contained within the p2pdma.c, but there are
+> a few minor touches to other subsystems, mostly to add support
+> to call an unmap function.
+> 
+> The final patch in this series demonstrates a possible
+> pci_p2pdma_map_resource() function that I expect Christian will need
+> but does not have any users at this time so I don't intend for it to be
+> considered for merging.
 
-mmu_notifier_unregister_no_release() and mmu_notifier_call_srcu() no
-longer have any users, they have all been converted to use
-mmu_notifier_put().
+I don't see pci_p2pdma_map_resource() in any of these patches.
 
-So delete this difficult to use interface.
+I tentatively applied these to pci/p2pdma with minor typographical
+updates (below), but I'll update the branch if necessary.
 
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
----
- include/linux/mmu_notifier.h |  5 -----
- mm/mmu_notifier.c            | 31 -------------------------------
- 2 files changed, 36 deletions(-)
+> This patchset is based on 5.3-rc2 and a git branch is available here:
+> 
+> https://github.com/sbates130272/linux-p2pmem/ p2pdma_rc_map_v2
+> 
+> --
+> 
+> Logan Gunthorpe (14):
+>   PCI/P2PDMA: Introduce private pagemap structure
+>   PCI/P2PDMA: Add the provider's pci_dev to the pci_p2pdma_pagemap
+>     struct
+>   PCI/P2PDMA: Add constants for not-supported result
+>     upstream_bridge_distance()
+>   PCI/P2PDMA: Factor out __upstream_bridge_distance()
+>   PCI/P2PDMA: Apply host bridge white list for ACS
+>   PCI/P2PDMA: Factor out host_bridge_whitelist()
+>   PCI/P2PDMA: Add whitelist support for Intel Host Bridges
+>   PCI/P2PDMA: Add attrs argument to pci_p2pdma_map_sg()
+>   PCI/P2PDMA: Introduce pci_p2pdma_unmap_sg()
+>   PCI/P2PDMA: Factor out __pci_p2pdma_map_sg()
+>   PCI/P2PDMA: Store mapping method in an xarray
+>   PCI/P2PDMA: dma_map P2PDMA map requests that traverse the host bridge
+>   PCI/P2PDMA: No longer require no-mmu for host bridge whitelist
+>   PCI/P2PDMA: Update documentation for pci_p2pdma_distance_many()
+> 
+>  drivers/infiniband/core/rw.c |   6 +-
+>  drivers/nvme/host/pci.c      |  10 +-
+>  drivers/pci/p2pdma.c         | 361 +++++++++++++++++++++++++----------
+>  include/linux/memremap.h     |   1 -
+>  include/linux/pci-p2pdma.h   |  28 ++-
+>  5 files changed, 296 insertions(+), 110 deletions(-)
 
-diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
-index 31aa971315a142..52929e5ef70826 100644
---- a/include/linux/mmu_notifier.h
-+++ b/include/linux/mmu_notifier.h
-@@ -271,8 +271,6 @@ extern int __mmu_notifier_register(struct mmu_notifier *mn,
- 				   struct mm_struct *mm);
- extern void mmu_notifier_unregister(struct mmu_notifier *mn,
- 				    struct mm_struct *mm);
--extern void mmu_notifier_unregister_no_release(struct mmu_notifier *mn,
--					       struct mm_struct *mm);
- extern void __mmu_notifier_mm_destroy(struct mm_struct *mm);
- extern void __mmu_notifier_release(struct mm_struct *mm);
- extern int __mmu_notifier_clear_flush_young(struct mm_struct *mm,
-@@ -513,9 +511,6 @@ static inline void mmu_notifier_range_init(struct mmu_notifier_range *range,
- 	set_pte_at(___mm, ___address, __ptep, ___pte);			\
- })
- 
--extern void mmu_notifier_call_srcu(struct rcu_head *rcu,
--				   void (*func)(struct rcu_head *rcu));
--
- #else /* CONFIG_MMU_NOTIFIER */
- 
- struct mmu_notifier_range {
-diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
-index 4a770b5211b71d..2ec48f8ba9e288 100644
---- a/mm/mmu_notifier.c
-+++ b/mm/mmu_notifier.c
-@@ -21,18 +21,6 @@
- /* global SRCU for all MMs */
- DEFINE_STATIC_SRCU(srcu);
- 
--/*
-- * This function allows mmu_notifier::release callback to delay a call to
-- * a function that will free appropriate resources. The function must be
-- * quick and must not block.
-- */
--void mmu_notifier_call_srcu(struct rcu_head *rcu,
--			    void (*func)(struct rcu_head *rcu))
--{
--	call_srcu(&srcu, rcu, func);
--}
--EXPORT_SYMBOL_GPL(mmu_notifier_call_srcu);
--
- /*
-  * This function can't run concurrently against mmu_notifier_register
-  * because mm->mm_users > 0 during mmu_notifier_register and exit_mmap
-@@ -453,25 +441,6 @@ void mmu_notifier_unregister(struct mmu_notifier *mn, struct mm_struct *mm)
- }
- EXPORT_SYMBOL_GPL(mmu_notifier_unregister);
- 
--/*
-- * Same as mmu_notifier_unregister but no callback and no srcu synchronization.
-- */
--void mmu_notifier_unregister_no_release(struct mmu_notifier *mn,
--					struct mm_struct *mm)
--{
--	spin_lock(&mm->mmu_notifier_mm->lock);
--	/*
--	 * Can not use list_del_rcu() since __mmu_notifier_release
--	 * can delete it before we hold the lock.
--	 */
--	hlist_del_init_rcu(&mn->hlist);
--	spin_unlock(&mm->mmu_notifier_mm->lock);
--
--	BUG_ON(atomic_read(&mm->mm_count) <= 0);
--	mmdrop(mm);
--}
--EXPORT_SYMBOL_GPL(mmu_notifier_unregister_no_release);
--
- static void mmu_notifier_free_rcu(struct rcu_head *rcu)
- {
- 	struct mmu_notifier *mn = container_of(rcu, struct mmu_notifier, rcu);
--- 
-2.22.0
-
+diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+index ac6b599a10ef..afa42512e604 100644
+--- a/drivers/pci/p2pdma.c
++++ b/drivers/pci/p2pdma.c
+@@ -442,17 +442,17 @@ static int map_types_idx(struct pci_dev *client)
+  * port of the switch, to the common upstream port, back up to the second
+  * downstream port and then to Device B.
+  *
+- * Any two devices that cannot communicate using p2pdma will return the distance
+- * with the flag P2PDMA_NOT_SUPPORTED.
++ * Any two devices that cannot communicate using p2pdma will return the
++ * distance with the flag P2PDMA_NOT_SUPPORTED.
+  *
+  * Any two devices that have a data path that goes through the host bridge
+  * will consult a whitelist. If the host bridges are on the whitelist,
+- * then the distance will be returned with the flag P2PDMA_THRU_HOST_BRIDGE set.
++ * the distance will be returned with the flag P2PDMA_THRU_HOST_BRIDGE set.
+  * If either bridge is not on the whitelist, the flag P2PDMA_NOT_SUPPORTED will
+  * be set.
+  *
+  * If a bridge which has any ACS redirection bits set is in the path
+- * then this functions will flag the result with P2PDMA_ACS_FORCES_UPSTREAM.
++ * this function will flag the result with P2PDMA_ACS_FORCES_UPSTREAM.
+  * In this case, a list of all infringing bridge addresses will be
+  * populated in acs_list (assuming it's non-null) for printk purposes.
+  */
+@@ -529,8 +529,8 @@ static int upstream_bridge_distance_warn(struct pci_dev *provider,
+  * choice).
+  *
+  * "compatible" means the provider and the clients are either all behind
+- * the same PCI root port or the host bridge connected to each of the devices
+- * are is listed in the 'pci_p2pdma_whitelist'.
++ * the same PCI root port or the host bridges connected to each of the devices
++ * are listed in the 'pci_p2pdma_whitelist'.
+  */
+ int pci_p2pdma_distance_many(struct pci_dev *provider, struct device **clients,
+ 			     int num_clients, bool verbose)
+@@ -850,7 +850,7 @@ static int __pci_p2pdma_map_sg(struct pci_p2pdma_pagemap *p2p_pgmap,
+  * @sg: scatter list to map
+  * @nents: elements in the scatterlist
+  * @dir: DMA direction
+- * @attrs: dma attributes passed to dma_map_sg() (if called)
++ * @attrs: DMA attributes passed to dma_map_sg() (if called)
+  *
+  * Scatterlists mapped with this function should be unmapped using
+  * pci_p2pdma_unmap_sg_attrs().
+@@ -888,7 +888,7 @@ EXPORT_SYMBOL_GPL(pci_p2pdma_map_sg_attrs);
+  * @sg: scatter list to map
+  * @nents: number of elements returned by pci_p2pdma_map_sg()
+  * @dir: DMA direction
+- * @attrs: dma attributes passed to dma_unmap_sg() (if called)
++ * @attrs: DMA attributes passed to dma_unmap_sg() (if called)
+  */
+ void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
+ 		int nents, enum dma_data_direction dir, unsigned long attrs)
