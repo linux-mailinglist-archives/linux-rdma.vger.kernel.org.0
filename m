@@ -2,146 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1752483768
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 18:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDC483787
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 19:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732729AbfHFQ5z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 12:57:55 -0400
-Received: from mail-eopbgr130051.outbound.protection.outlook.com ([40.107.13.51]:24736
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732048AbfHFQ5z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Aug 2019 12:57:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jpJWiqbGsgA3VdC+B8nm/JcL6uL0zjAVPDg41c/KAvVI8Ie982AQj8z9YwAG+CyvD02cB7R3cvewFNTqNvK5kvoyyay5Pls/30hpzUJu8JqmZ0rU8hWdMxgZ5J7h5tPszbHal2riQqgYw/ePSRwJujPk6PYltQrXGWTSoNY+iREvdg1cYtjqmUKLdRYy+g+/hCNUXUKmZ5VF3cct5MZPmea2Xcs7Zl5zhW0CV9fLxRW8D/74R33FY35+HWpAnbpj1F3lqDpI8jda5nMx7dZ64/xvOpeTqpHFzoKv16/XIzwLdMhik9ktg+iLkX1OnveuSpv8/WdgcufWO32zVrTd/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CLqfcmvJobaavkqTmv9oEcUNZomO3M53ymvne+tCvuk=;
- b=iG+sfAiZ9grx3herGbuOGWD32agFkIKm5vc4HQq2e9GDjJ9ob9lEtgzpVtDpDfFZ8ZMwswS19FPuOGIH8AsSyJeU2Qp7H0nDoxKOH/ECIiQ/g9hom8pvZVFB9xx/g3Cb62AJsQ5BfAgWOtZfkiDwC/uc1aXobboMPbULWi5eIzePD7TU4pZh7U+D8WcrqHuS8LLhpLVK6hcb9XquTiRLqFGKtJkE2p1jrQOUwKssNV4b11v4IMgv/vqqTrcSJ74mTh+ps+uHg3n7wNCkZdvI7PiCi8dJJOJ/qUTKzB6ZaUvXx8HLWoOSw14w0B5xQW1vfPOX7KSOfb8BUAunx4OvdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=mellanox.com;dmarc=pass action=none
- header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CLqfcmvJobaavkqTmv9oEcUNZomO3M53ymvne+tCvuk=;
- b=LU+cBafV6VP0W4jUj3MgzoTyTKsNSo3cgEGWEIEOaFSnZlWoLmxkO8/c+rIwdzhXNzigKiGM653fIywrbkH0eSHAGCC98Zxmjqkc4kaKxZGPbfdGJ49pJCe4OUV7Vhb9HJiZ3oMI7IAaAV9ctL+HFnCCj5xnMABm1/HkFtbQr8g=
-Received: from VI1PR05MB3152.eurprd05.prod.outlook.com (10.170.237.145) by
- VI1PR05MB4318.eurprd05.prod.outlook.com (52.133.12.146) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2136.17; Tue, 6 Aug 2019 16:57:51 +0000
-Received: from VI1PR05MB3152.eurprd05.prod.outlook.com
- ([fe80::c407:16fe:412b:9809]) by VI1PR05MB3152.eurprd05.prod.outlook.com
- ([fe80::c407:16fe:412b:9809%5]) with mapi id 15.20.2136.018; Tue, 6 Aug 2019
- 16:57:51 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-CC:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v2 0/4] ODP support for mlx5 DC QPs
-Thread-Topic: [PATCH rdma-next v2 0/4] ODP support for mlx5 DC QPs
-Thread-Index: AQHVTCtOqQKjL+5WjEGHmx9JTdNfD6buV86A
-Date:   Tue, 6 Aug 2019 16:57:50 +0000
-Message-ID: <20190806165747.GA4832@mtr-leonro.mtl.com>
-References: <20190806074807.9111-1-leon@kernel.org>
-In-Reply-To: <20190806074807.9111-1-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: PR0P264CA0158.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1b::26) To VI1PR05MB3152.eurprd05.prod.outlook.com
- (2603:10a6:802:1b::17)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [77.137.115.125]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 545b2ed5-2b9b-4b9a-2f81-08d71a8f373a
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4318;
-x-ms-traffictypediagnostic: VI1PR05MB4318:
-x-ms-exchange-purlcount: 2
-x-microsoft-antispam-prvs: <VI1PR05MB4318F8DA260B52DBBD9D6337B0D50@VI1PR05MB4318.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-forefront-prvs: 0121F24F22
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(396003)(366004)(376002)(346002)(39860400002)(54534003)(189003)(199004)(2906002)(966005)(81156014)(14454004)(81166006)(71200400001)(68736007)(66446008)(66556008)(66946007)(99286004)(6436002)(8676002)(9686003)(110136005)(54906003)(71190400001)(1076003)(64756008)(25786009)(33656002)(6512007)(3846002)(6116002)(229853002)(86362001)(186003)(316002)(8936002)(6306002)(66476007)(6506007)(6636002)(7736002)(478600001)(53936002)(305945005)(102836004)(26005)(6246003)(486006)(52116002)(256004)(446003)(4326008)(5660300002)(476003)(66066001)(11346002)(76176011)(6486002)(386003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4318;H:VI1PR05MB3152.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: vJbV+E1LpCb1MZnF/IMlIqExEegxV1TWtRZi0ZesgxWkXl7FES46yZmMU6a906yV2iQ1eH4JCkmfoOJ2eQNUMLswr/M4BWwNs6ijOQ3ytZ70lR2IzNaF5Mc7w1dDMXaSorezBzT32lfRKM0CrfTcotgLeeIOpXoJ4FQNgNjnU5/FNJWRitIlvyjf3nxB7vRvVPgVrzinTuVPvAdf+Zbes7JnundEWGEK1c0jFzZAwEVakhfqG75Ex2sGu3rasaRhVU97DM1oe1on1ZuCJjsuUr++KVjdi8c96eyzzAWEez0+zbWTu9/eD6nqbyhPIP9DkFKJj0On+rc3k7lAaA0HsWpMwjuXq4zvnxmu8aGhVuEq02kl2S0pSE130ndC5gESkmWdA7GE0IwuTSuuul9PE6mvbNRGmrN5CZK72JgfsqI=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <00AFFEB43C92D94E8A899FC77763A6A5@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1732729AbfHFRB4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Aug 2019 13:01:56 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23054 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730505AbfHFRB4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 13:01:56 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x76Gmqir111712
+        for <linux-rdma@vger.kernel.org>; Tue, 6 Aug 2019 13:01:54 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2u7d049gmv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 13:01:54 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 6 Aug 2019 17:01:52 -0000
+Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
+        by smtp.notes.na.collabserv.com (10.106.227.158) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 6 Aug 2019 17:01:50 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp05.a3.dal06.isc4sb.com
+          with ESMTP id 2019080617014930-807298 ;
+          Tue, 6 Aug 2019 17:01:49 +0000 
+In-Reply-To: <20190806163901.GI11627@ziepe.ca>
+Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field 32 bit size to
+ remove 64 bit architecture dependency of siw.
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Tue, 6 Aug 2019 17:01:49 +0000
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 545b2ed5-2b9b-4b9a-2f81-08d71a8f373a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Aug 2019 16:57:50.6569
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: leonro@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4318
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190806163901.GI11627@ziepe.ca>,<20190806153105.GG11627@ziepe.ca>
+ <20190806121006.GC11627@ziepe.ca> <20190805141708.9004-1-bmt@zurich.ibm.com>
+ <20190805141708.9004-2-bmt@zurich.ibm.com>
+ <OFCF70B144.E0186C06-ON0025844E.0050E500-0025844E.0051D4FA@notes.na.collabserv.com>
+ <OF8985846C.2F1A4852-ON0025844E.005AADBA-0025844E.005B3A41@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-LLNOutbound: False
+X-Disclaimed: 14403
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19080617-1335-0000-0000-000000EA7D2F
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.000238
+X-IBM-SpamModules-Versions: BY=3.00011561; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01242982; UDB=6.00655667; IPR=6.01024446;
+ MB=3.00028068; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-06 17:01:52
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-06 08:08:16 - 6.00010253
+x-cbparentid: 19080617-1336-0000-0000-000001C7B34E
+Message-Id: <OF3F75D9B9.20A30B62-ON0025844E.005D311D-0025844E.005D8CF2@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-06_09:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 06, 2019 at 10:48:03AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
->
-> Changelog
->  v2:
->  * Fixed reserved_* field wrong name (Saeed M.)
->  * Split first patch to two patches, one for mlx5-next and one for rdma-n=
-ext. (Saeed M.)
->  v1:
->  * Fixed alignment to u64 in mlx5-abi.h (Gal P.)
->  * https://lore.kernel.org/linux-rdma/20190804100048.32671-1-leon@kernel.=
-org
->  v0:
->  * https://lore.kernel.org/linux-rdma/20190801122139.25224-1-leon@kernel.=
-org
->
-> -------------------------------------------------------------------------=
---------
-> From Michael,
->
-> The series adds support for on-demand paging for DC transport.
-> Adding handling of DC WQE parsing upon page faults and exposing
-> capabilities.
->
-> As DC is mlx-only transport, the capabilities are exposed to the user
-> using the direct-verbs mechanism. Namely through the
-> mlx5dv_query_device.
->
-> Thanks
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-Please drop this series, we will reevaluate it.
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 08/06/2019 06:39PM
+>Cc: linux-rdma@vger.kernel.org
+>Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field
+>32 bit size to remove 64 bit architecture dependency of siw.
+>
+>On Tue, Aug 06, 2019 at 04:36:26PM +0000, Bernard Metzler wrote:
+>> 
+>> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >Date: 08/06/2019 05:31PM
+>> >Cc: linux-rdma@vger.kernel.org
+>> >Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags
+>field
+>> >32 bit size to remove 64 bit architecture dependency of siw.
+>> >
+>> >On Tue, Aug 06, 2019 at 02:53:49PM +0000, Bernard Metzler wrote:
+>> >
+>> >> >> index 7de68f1dc707..af735f55b291 100644
+>> >> >> +++ b/include/uapi/rdma/siw-abi.h
+>> >> >> @@ -180,6 +180,7 @@ struct siw_cqe {
+>> >> >>   * to control CQ arming.
+>> >> >>   */
+>> >> >>  struct siw_cq_ctrl {
+>> >> >> -	__aligned_u64 notify;
+>> >> >> +	__u32 flags;
+>> >> >> +	__u32 pad;
+>> >> >
+>> >> >The commit message needs to explain why this is compatible with
+>> >> >existing user space, if it is even is safe..
+>> >> >
+>> >> Old libsiw would remain compatible with the new layout, since it
+>> >> simply reads the 32bit 'flags' and zeroed 32bit 'pad' into a
+>64bit
+>> >> 'notify', ending with reading the same bits.
+>> >
+>> >Even on big endian?
+>> >
+>> Well I do not have access to a BE system right now to verify.
+>> But on a BE system, the lowest 3 bits (which are in use) of the
+>first
+>> 32bit variable 'flags' shall be the lowest (leftmost) 3 bits of an
+>> 'overlayed' 64bit variable 'notify' as well...
+>
+>One of LE or BE won't work with this scheme, it can't, the flag bit
+>will end up in the pad.
+>
+Sitting here on a x86 (LE), and it works. On a 64bits machine,
+two consecutive 32bits are obviously reordered in memory. Leaves
+32bit LE broken, which is currently not supported.
 
-Thanks
+Anyway, what would you suggest as the best path forward? A new ABI
+version? If we move to test_and_clear_bit(), 'flags' size would
+become architecture dependent...and we would break the ABI as well,
+no?
 
->
-> Michael Guralnik (4):
->   net/mlx5: Set ODP capabilities for DC transport
->   IB/mlx5: Query ODP capabilities for DC
->   IB/mlx5: Expose ODP for DC capabilities to user
->   IB/mlx5: Add page fault handler for DC initiator WQE
->
->  drivers/infiniband/hw/mlx5/main.c             |  6 +++++
->  drivers/infiniband/hw/mlx5/mlx5_ib.h          |  1 +
->  drivers/infiniband/hw/mlx5/odp.c              | 27 ++++++++++++++++++-
->  .../net/ethernet/mellanox/mlx5/core/main.c    |  6 +++++
->  include/linux/mlx5/mlx5_ifc.h                 |  4 ++-
->  include/uapi/rdma/mlx5-abi.h                  |  3 +++
->  6 files changed, 45 insertions(+), 2 deletions(-)
->
-> --
-> 2.20.1
->
+Best regards,
+Bernard.
+
