@@ -2,102 +2,220 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D63F083253
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 15:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A5A83414
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 16:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731832AbfHFNKF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Aug 2019 09:10:05 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46058 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726713AbfHFNKE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 09:10:04 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x76D3pY0142257
-        for <linux-rdma@vger.kernel.org>; Tue, 6 Aug 2019 09:10:03 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.81])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u79kf9sem-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 09:10:03 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Tue, 6 Aug 2019 13:09:59 -0000
-Received: from us1a3-smtp07.a3.dal06.isc4sb.com (10.146.103.14)
-        by smtp.notes.na.collabserv.com (10.106.227.88) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 6 Aug 2019 13:09:54 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp07.a3.dal06.isc4sb.com
-          with ESMTP id 2019080613095359-501946 ;
-          Tue, 6 Aug 2019 13:09:53 +0000 
-In-Reply-To: <044973ce7080eb5274befb99aab457897d577c96.camel@redhat.com>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Doug Ledford" <dledford@redhat.com>
-Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Date:   Tue, 6 Aug 2019 13:09:53 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <044973ce7080eb5274befb99aab457897d577c96.camel@redhat.com>,<20190805141708.9004-1-bmt@zurich.ibm.com>
- <20190805141708.9004-2-bmt@zurich.ibm.com> <20190806121006.GC11627@ziepe.ca>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-LLNOutbound: False
-X-Disclaimed: 3483
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19080613-3067-0000-0000-0000004565FF
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.195071
-X-IBM-SpamModules-Versions: BY=3.00011559; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01242905; UDB=6.00655621; IPR=6.01024369;
- MB=3.00028065; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-06 13:09:57
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-08-06 07:47:03 - 6.00010253
-x-cbparentid: 19080613-3068-0000-0000-0000006A6E87
-Message-Id: <OF463E8E86.821A1088-ON0025844E.00485105-0025844E.0048510D@notes.na.collabserv.com>
-Subject: RE: [PATCH 1/1] Make user mmapped CQ arming flags field 32 bit size to
- remove 64 bit architecture dependency of siw.
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-06_07:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+        id S1731783AbfHFOjE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 10:39:04 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:48817 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731166AbfHFOjE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 10:39:04 -0400
+Received: from Internal Mail-Server by MTLPINE2 (envelope-from haimbo@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 6 Aug 2019 17:39:01 +0300
+Received: from r-ufm115.mtr.labs.mlnx (r-ufm115.mtr.labs.mlnx [10.209.36.210])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x76Ed1Yj007268;
+        Tue, 6 Aug 2019 17:39:01 +0300
+Received: from r-ufm115.mtr.labs.mlnx (localhost [127.0.0.1])
+        by r-ufm115.mtr.labs.mlnx (8.14.7/8.14.7) with ESMTP id x76Ed1e8020952;
+        Tue, 6 Aug 2019 14:39:01 GMT
+Received: (from haimbo@localhost)
+        by r-ufm115.mtr.labs.mlnx (8.14.7/8.14.7/Submit) id x76Ed1HT020950;
+        Tue, 6 Aug 2019 14:39:01 GMT
+From:   Haim Boozaglo <haimbo@mellanox.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Vladimir Koushnir <vladimirk@mellanox.com>,
+        Haim Boozaglo <haimbo@mellanox.com>
+Subject: [PATCH 1/3] libibumad: Support arbitrary number of IB devices
+Date:   Tue,  6 Aug 2019 14:38:52 +0000
+Message-Id: <1565102334-20903-1-git-send-email-haimbo@mellanox.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Doug Ledford" <dledford@redhat.com> wrote: -----
+From: Vladimir Koushnir <vladimirk@mellanox.com>
 
->To: "Jason Gunthorpe" <jgg@ziepe.ca>, "Bernard Metzler"
-><bmt@zurich.ibm.com>
->From: "Doug Ledford" <dledford@redhat.com>
->Date: 08/06/2019 02:33PM
->Cc: linux-rdma@vger.kernel.org
->Subject: [EXTERNAL] Re: [PATCH 1/1] Make user mmapped CQ arming flags
->field 32 bit size to remove 64 bit architecture dependency of siw.
->
->On Tue, 2019-08-06 at 09:10 -0300, Jason Gunthorpe wrote:
->> On Mon, Aug 05, 2019 at 04:17:08PM +0200, Bernard Metzler wrote:
->> > Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
->> > ---
->> 
->> Don't send patches with empty commit messages. Every patch must
->have a
->> comprehensive commit message from now on.
->> 
->> >  drivers/infiniband/sw/siw/Kconfig     |  2 +-
->> >  drivers/infiniband/sw/siw/siw.h       |  2 +-
->> >  drivers/infiniband/sw/siw/siw_qp.c    | 14 ++++++++++----
->
->He had a decent commit log message, it was just in the cover letter. 
->Bernard, on single patch submissions, skip the cover letter and just
->send the patch by itself.  Then the nice explanation you gave in the
->cover letter should go in the commit message itself.
->
-sorry about this. Frankly I am still newbie here and obviously and
-unfortunately behave like this... A lame excuse, but I'll try hard
-to improve.
+Added new function returning a list of available InfiniBand device names.
+The returned list is not limited to 32 devices.
 
-Bernard.
+Signed-off-by: Vladimir Koushnir <vladimirk@mellanox.com>
+Signed-off-by: Haim Boozaglo <haimbo@mellanox.com>
+---
+ libibumad/CMakeLists.txt              |  2 +-
+ libibumad/libibumad.map               |  6 +++++
+ libibumad/man/umad_free_ca_namelist.3 | 28 ++++++++++++++++++++++++
+ libibumad/man/umad_get_ca_namelist.3  | 34 +++++++++++++++++++++++++++++
+ libibumad/umad.c                      | 41 +++++++++++++++++++++++++++++++++++
+ libibumad/umad.h                      |  2 ++
+ 6 files changed, 112 insertions(+), 1 deletion(-)
+ create mode 100644 libibumad/man/umad_free_ca_namelist.3
+ create mode 100644 libibumad/man/umad_get_ca_namelist.3
+
+diff --git a/libibumad/CMakeLists.txt b/libibumad/CMakeLists.txt
+index 1f600a0..9d0a425 100644
+--- a/libibumad/CMakeLists.txt
++++ b/libibumad/CMakeLists.txt
+@@ -10,7 +10,7 @@ publish_headers(infiniband
+ 
+ rdma_library(ibumad libibumad.map
+   # See Documentation/versioning.md
+-  3 3.0.${PACKAGE_VERSION}
++  3 3.1.${PACKAGE_VERSION}
+   sysfs.c
+   umad.c
+   umad_str.c
+diff --git a/libibumad/libibumad.map b/libibumad/libibumad.map
+index 8bf474e..1b8e7e1 100644
+--- a/libibumad/libibumad.map
++++ b/libibumad/libibumad.map
+@@ -39,3 +39,9 @@ IBUMAD_1.0 {
+ 		umad_attribute_str;
+ 	local: *;
+ };
++
++IBUMAD_1.1 {
++	global:
++		umad_get_ca_namelist;
++		umad_free_ca_namelist;
++} IBUMAD_1.0;
+diff --git a/libibumad/man/umad_free_ca_namelist.3 b/libibumad/man/umad_free_ca_namelist.3
+new file mode 100644
+index 0000000..f15958b
+--- /dev/null
++++ b/libibumad/man/umad_free_ca_namelist.3
+@@ -0,0 +1,28 @@
++.\" -*- nroff -*-
++.\"
++.TH UMAD_FREE_CA_NAMELIST 3  "May 1, 2018" "OpenIB" "OpenIB Programmer\'s Manual"
++.SH "NAME"
++umad_free_ca_namelist \- free InfiniBand devices name list
++.SH "SYNOPSIS"
++.nf
++.B #include <infiniband/umad.h>
++.sp
++.BI "void umad_free_ca_namelist(char " "*cas" );
++.fi
++.SH "DESCRIPTION"
++.B umad_get_free_namelist()
++frees the InfiniBand devices name list previously allocated with
++.B umad_get_ca_namelist()\fR.
++The argument
++.I cas
++is a character array of InfiniBand devices names
++.SH "RETURN VALUE"
++.B umad_free_ca_namelist()
++returns no value.
++.SH "SEE ALSO"
++.BR umad_get_ca_namelist(3)
++.SH "AUTHORS"
++.TP
++Vladimir Koushnir <vladimirk@mellanox.com>
++.TP
++Hal Rosenstock <hal@mellanox.com>
+diff --git a/libibumad/man/umad_get_ca_namelist.3 b/libibumad/man/umad_get_ca_namelist.3
+new file mode 100644
+index 0000000..5b30209
+--- /dev/null
++++ b/libibumad/man/umad_get_ca_namelist.3
+@@ -0,0 +1,34 @@
++.\" -*- nroff -*-
++.\"
++.TH UMAD_GET_CA_NAMELIST 3  "May 1, 2018" "OpenIB" "OpenIB Programmer\'s Manual"
++.SH "NAME"
++umad_get_ca_namelist \- get list of available InfiniBand device names
++.SH "SYNOPSIS"
++.nf
++.B #include <infiniband/umad.h>
++.sp
++.BI "int umad_get_ca_namelist(char " "**cas" );
++.fi
++.SH "DESCRIPTION"
++.B umad_get_ca_namelist()
++fills the
++.I cas
++array with arbitrary number of local IB devices (CAs) names.
++The argument
++.I cas
++is a character array that will be allocated by the function to include number of entries, each with
++.B UMAD_CA_NAME_LEN
++characters.
++.SH "RETURN VALUE"
++.B umad_get_ca_namelist()
++returns a non-negative value equal to the number of entries filled,
++or \-1 on errors.
++.SH "SEE ALSO"
++.BR umad_get_ca_portguids (3),
++.BR umad_open_port (3)
++.BR umad_free_ca_namelist(3)
++.SH "AUTHORS"
++.TP
++Vladimir Koushnir <vladimirk@mellanox.com>
++.TP
++Hal Rosenstock <hal@mellanox.com>
+diff --git a/libibumad/umad.c b/libibumad/umad.c
+index 5f8656e..9d0303b 100644
+--- a/libibumad/umad.c
++++ b/libibumad/umad.c
+@@ -1123,3 +1123,44 @@ void umad_dump(void *umad)
+ 	       mad->agent_id, mad->status, mad->timeout_ms);
+ 	umad_addr_dump(&mad->addr);
+ }
++
++int umad_get_ca_namelist(char **cas)
++{
++	struct dirent **namelist;
++	int n, i, j = 0;
++
++	n = scandir(SYS_INFINIBAND, &namelist, NULL, alphasort);
++
++	if (n > 0) {
++		*cas = (char *) calloc(1, n * sizeof(char) * UMAD_CA_NAME_LEN);
++		for (i = 0; i < n; i++) {
++			if (*cas && strcmp(namelist[i]->d_name, ".") &&
++			    strcmp(namelist[i]->d_name, "..")) {
++				if (is_ib_type(namelist[i]->d_name)) {
++					strncpy(*cas + j * UMAD_CA_NAME_LEN,
++						namelist[i]->d_name,
++						UMAD_CA_NAME_LEN);
++					j++;
++				}
++			}
++			free(namelist[i]);
++		}
++		DEBUG("return %d cas", j);
++	} else {
++		/* Is this still needed ? */
++		if ((*cas = calloc(1, UMAD_CA_NAME_LEN * sizeof(char)))) {
++			strncpy(*cas, def_ca_name, UMAD_CA_NAME_LEN);
++			DEBUG("return 1 ca");
++			j = 1;
++		}
++	}
++	if (n >= 0)
++		free(namelist);
++
++	return j;
++}
++
++void umad_free_ca_namelist(char *cas)
++{
++	free(cas);
++}
+diff --git a/libibumad/umad.h b/libibumad/umad.h
+index 3cc551f..70bc213 100644
+--- a/libibumad/umad.h
++++ b/libibumad/umad.h
+@@ -208,6 +208,8 @@ int umad_register(int portid, int mgmt_class, int mgmt_version,
+ int umad_register_oui(int portid, int mgmt_class, uint8_t rmpp_version,
+ 		      uint8_t oui[3], long method_mask[16 / sizeof(long)]);
+ int umad_unregister(int portid, int agentid);
++int umad_get_ca_namelist(char **cas);
++void umad_free_ca_namelist(char *cas);
+ 
+ enum {
+ 	UMAD_USER_RMPP = (1 << 0)
+-- 
+1.8.3.1
 
