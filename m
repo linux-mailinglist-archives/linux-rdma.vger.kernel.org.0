@@ -2,98 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CC7835F5
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 17:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7C783719
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 18:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733298AbfHFPzl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 11:55:41 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:51996 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729638AbfHFPzl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 11:55:41 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x76FraMX031630;
-        Tue, 6 Aug 2019 15:55:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2018-07-02; bh=rtVPHOT7Dhoea+2TNCPPMJU7Q/nFmQRydeRJNoDrifM=;
- b=XyI30Vx6GUwepYCmWI1GhnEfmyIkCC74jSOsMohxaavBOYkxmvVrmi1zcYy/OG2wtPfT
- ILeNUNGkd//Qr36n5LWlyiOUPcip8WNQQDqTaNA5tkiNGSznFl5ffDdvdu2kXhpxw0Ab
- BpQKNPFOXjRYiJd+KBpK7LD0/zqktkM0I7FsKUFkpaDqsKweKGcH1x/kdf9AJOwE6JGB
- wA4CDthDbRAcWKX3zTP5ho4PA0OFCJBAwkrD6EAUSazIxvsyfO0ZG/sNkdRZHnbM6Zyw
- iRSFvUCtU0C0B67dj9oq9S2zlp2/+Q0fatSxESh6uxoEqo5BUtNaTmIib7z6ledxnoDy Cg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2u52wr73h0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Aug 2019 15:55:34 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x76FrNTx089137;
-        Tue, 6 Aug 2019 15:55:33 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2u7666p93s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Aug 2019 15:55:33 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x76FtUqK010767;
-        Tue, 6 Aug 2019 15:55:32 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 06 Aug 2019 08:55:30 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v1 0/2] NFS/RDMA-related NFSD patches for -next
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <156390950940.6811.3316103129070572088.stgit@seurat29.1015granger.net>
-Date:   Tue, 6 Aug 2019 11:55:29 -0400
-Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <BFF3E871-D4B1-4692-A39B-B693BFE85899@oracle.com>
-References: <156390950940.6811.3316103129070572088.stgit@seurat29.1015granger.net>
-To:     Bruce Fields <bfields@fieldses.org>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908060152
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908060152
+        id S1732729AbfHFQge convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Aug 2019 12:36:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49626 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726877AbfHFQge (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 12:36:34 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x76GXXLv086673
+        for <linux-rdma@vger.kernel.org>; Tue, 6 Aug 2019 12:36:33 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.112])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u7aas0aey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 12:36:32 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 6 Aug 2019 16:36:31 -0000
+Received: from us1b3-smtp01.a3dr.sjc01.isc4sb.com (10.122.7.174)
+        by smtp.notes.na.collabserv.com (10.122.47.54) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 6 Aug 2019 16:36:28 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp01.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019080616362742-727298 ;
+          Tue, 6 Aug 2019 16:36:27 +0000 
+In-Reply-To: <20190806153105.GG11627@ziepe.ca>
+Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field 32 bit size to
+ remove 64 bit architecture dependency of siw.
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Tue, 6 Aug 2019 16:36:26 +0000
+MIME-Version: 1.0
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190806153105.GG11627@ziepe.ca>,<20190806121006.GC11627@ziepe.ca>
+ <20190805141708.9004-1-bmt@zurich.ibm.com>
+ <20190805141708.9004-2-bmt@zurich.ibm.com>
+ <OFCF70B144.E0186C06-ON0025844E.0050E500-0025844E.0051D4FA@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-KeepSent: 8985846C:2F1A4852-0025844E:005AADBA;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 14051
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19080616-4615-0000-0000-00000030C6E2
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000000
+X-IBM-SpamModules-Versions: BY=3.00011561; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01242974; UDB=6.00655662; IPR=6.01024438;
+ MB=3.00028068; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-06 16:36:30
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-06 07:26:15 - 6.00010253
+x-cbparentid: 19080616-4616-0000-0000-00000050DC9A
+Message-Id: <OF8985846C.2F1A4852-ON0025844E.005AADBA-0025844E.005B3A41@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-06_09:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Bruce-
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-Would you consider these for v5.4?
-
-
-> On Jul 23, 2019, at 3:20 PM, Chuck Lever <chuck.lever@oracle.com> wrote:
-> 
-> Hi-
-> 
-> Two server side patches for NFSD. Both are minor.
-> 
-> ---
-> 
-> Chuck Lever (2):
->      svcrdma: Remove svc_rdma_wq
->      svcrdma: Use llist for managing cache of recv_ctxts
-> 
-> 
-> include/linux/sunrpc/svc_rdma.h          |    6 +++---
-> net/sunrpc/xprtrdma/svc_rdma.c           |    7 -------
-> net/sunrpc/xprtrdma/svc_rdma_recvfrom.c  |   24 ++++++++++--------------
-> net/sunrpc/xprtrdma/svc_rdma_transport.c |    6 +++---
-> 4 files changed, 16 insertions(+), 27 deletions(-)
-> 
-> --
-> Chuck Lever
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 08/06/2019 05:31PM
+>Cc: linux-rdma@vger.kernel.org
+>Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field
+>32 bit size to remove 64 bit architecture dependency of siw.
+>
+>On Tue, Aug 06, 2019 at 02:53:49PM +0000, Bernard Metzler wrote:
+>
+>> >> index 7de68f1dc707..af735f55b291 100644
+>> >> +++ b/include/uapi/rdma/siw-abi.h
+>> >> @@ -180,6 +180,7 @@ struct siw_cqe {
+>> >>   * to control CQ arming.
+>> >>   */
+>> >>  struct siw_cq_ctrl {
+>> >> -	__aligned_u64 notify;
+>> >> +	__u32 flags;
+>> >> +	__u32 pad;
+>> >
+>> >The commit message needs to explain why this is compatible with
+>> >existing user space, if it is even is safe..
+>> >
+>> Old libsiw would remain compatible with the new layout, since it
+>> simply reads the 32bit 'flags' and zeroed 32bit 'pad' into a 64bit
+>> 'notify', ending with reading the same bits.
+>
+>Even on big endian?
+>
+Well I do not have access to a BE system right now to verify.
+But on a BE system, the lowest 3 bits (which are in use) of the first
+32bit variable 'flags' shall be the lowest (leftmost) 3 bits of an
+'overlayed' 64bit variable 'notify' as well...
 
