@@ -2,106 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2651B838AB
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 20:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8F3838B3
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 20:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730102AbfHFSgH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 14:36:07 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:45809 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728927AbfHFSgH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 14:36:07 -0400
-Received: by mail-qt1-f196.google.com with SMTP id x22so12193196qtp.12
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 11:36:06 -0700 (PDT)
+        id S1728558AbfHFSi0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 14:38:26 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:42150 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728189AbfHFSiY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 14:38:24 -0400
+Received: by mail-qk1-f196.google.com with SMTP id 201so63666571qkm.9
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 11:38:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=JtINiPTTaxXs89drKGXiMpthv7Xf3LRZukSbKo8R/Vs=;
-        b=NaCiCQSHxFDb4r8ia6jN1dSySpTaDWH0hxU7dWGojqAwyO4Vi0i4fKhIVVC/XM7aON
-         6edg9wk+4SBflCPw75uG5f125yoLwujQoBhnJmxT2OI9yk82hvv45lrTqZQlX+xtA3yo
-         Z0OXDCLLJSs8VsujMGl3gDEitD8HjX9/u2jz6MMHzYEikkea+dz2lXYbp6+ze3esYNIw
-         +IG+ApkkeIGIlMKYpubK2xac5Hkabx9KufnoB9IzsBVoQfe+5U0wD2pHc4DxzXOIXOtb
-         oBaGBQAmz5SQHjuspem9LnAErsMZmJ0jgoMlCzdwW7ogd1zXVEibDtdiB1NCvS8a1Gzd
-         ew6w==
+         :content-disposition:in-reply-to:user-agent;
+        bh=t0FZaLhTQo8X5m9sJH3jai3ugnitzUTUhXxicv7YDk8=;
+        b=DzULNXQEJNZwg345/aqx14lziCowwmZZ111AycKfFi5XM1I301Ud8rtZZt1wgeF5Pl
+         UU6wbBcMywCdYe2A00lP3rFFRmRHkverVEso5c/xpaLDR8J1XMlG7KG83Vs1L8jQdWhi
+         o82MwcEtBdtL0DJveIufG1vt+LkvzW6Fe5LtJGtcF3gNTJmIummsJdbcVlAV3fyEpO46
+         6VVPQLT6TIe9NED3IcRJk8e+lTOltkPSvmuu6jEvNkJHdRpRrIsHpypmQJKpFVqidOGc
+         9UEGDh2qogUsM6aedOr0W515t9WTNWR1c68j4XvUSFM/riUM3zuVVTRliMQEO0XOPTUX
+         EA3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=JtINiPTTaxXs89drKGXiMpthv7Xf3LRZukSbKo8R/Vs=;
-        b=MaU+GMXgmewaMksjj3Lh2x1/8v8AFFJB3b0WYKxoIj0K9ghOhhq/dzTnLtdKzwUKHQ
-         FQepvNjCNQR7OP35Uz0/DRM7dh+b8XQFbqs328u22MNocpX0vSNC8Yuk9hrlghapyOPq
-         USDN+qwEzH0abUsJ1dDzVePOtN6xQLGd/eNgIqht9d+dmAWMqhxuzq1VSWwuyGqng0Ld
-         3bxWbVxPZksPr9zWMqAhBdcOW1VGGg9v30H1hK60/EIsSUEWA7gKGtU2GFxTbUoYLO+m
-         46AzlYXgGKSMBJeK75COVcyVnmNEV/YfhclvJzKv8DtH9JnRh5zlZuSgz17hn/ea+SZ3
-         jOEA==
-X-Gm-Message-State: APjAAAWvrvaNqBLxW1vvFwVjArojNdrRiMZxf7MwGQDqFR0Yuq9N0vu1
-        J57O2OAFSTS8OmNORCvEdlOuWA==
-X-Google-Smtp-Source: APXvYqwy1L8dEpY8EmVTZsHO6MDZHBCEi1r8Z1tUlIX+of3znd+xvWIZm+zyAOK4Tvk+C14HehfEhA==
-X-Received: by 2002:a0c:ffc5:: with SMTP id h5mr4478918qvv.43.1565116566370;
-        Tue, 06 Aug 2019 11:36:06 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=t0FZaLhTQo8X5m9sJH3jai3ugnitzUTUhXxicv7YDk8=;
+        b=pgo3ddvifrbVhe6MR3J8dsr8xp3TR6TRKLr6CPepscfgF1i/IxAN5VtDzwbV96Ujsk
+         iO4pISQ6bOXm96oQKRvvWZZysudpBVnBw4BqnD5NEeEhH5dclEbPpct1vRwcwZ9p5VJ1
+         G+sSV5/ZrLnsFLbw4FTO5hgGATxNNqJwy4/SvM5bgBa7zYuZd0U1q4LV5dnm9DfxPzsh
+         dbu2/X5aZfdqMoQYkcTcF9bzmqqWH79pQpY36/AO6H1AT0XtJ1diZnyio5V9woCYcx5S
+         HS+RTWv/7WMy+CDk2dSIcdiolu1mCXQr4Dl+bUFyIpNm06IJ6kJ4J7Au1DO6XVMwlvtQ
+         QXjw==
+X-Gm-Message-State: APjAAAUfqd9jTMs86yqm/N5/VgMObohmxIC61kHLeaAUJNXXr0npXEHE
+        Y533o/mMrZSabTiZv0oCUmUNBg==
+X-Google-Smtp-Source: APXvYqyTCcAt6GJ8H61tbGk2kUskSoko6Ijz7dJpmZwAc8BT25Kjo621gYUI55QkHQ/0656a/D+FUw==
+X-Received: by 2002:a05:620a:124f:: with SMTP id a15mr4630085qkl.173.1565116702615;
+        Tue, 06 Aug 2019 11:38:22 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id r36sm48135303qte.71.2019.08.06.11.36.05
+        by smtp.gmail.com with ESMTPSA id d141sm37790010qke.3.2019.08.06.11.38.21
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 06 Aug 2019 11:36:05 -0700 (PDT)
+        Tue, 06 Aug 2019 11:38:21 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hv4JY-0004Lm-Pm; Tue, 06 Aug 2019 15:36:04 -0300
-Date:   Tue, 6 Aug 2019 15:36:04 -0300
+        id 1hv4Ll-0004NN-6J; Tue, 06 Aug 2019 15:38:21 -0300
+Date:   Tue, 6 Aug 2019 15:38:21 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Chuhong Yuan <hslester96@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hslester96@gmail.com" <hslester96@gmail.com>,
         "davem@davemloft.net" <davem@davemloft.net>,
-        Tariq Toukan <tariqt@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH] net/mlx4_core: Use refcount_t for refcount
-Message-ID: <20190806183604.GQ11627@ziepe.ca>
-References: <20190802121020.1181-1-hslester96@gmail.com>
- <CANhBUQ1chO0Q6wHJwbKMvp6LkD7qLBRw57xwf1QkBAKaewHs5w@mail.gmail.com>
- <47bb83d0111f1132bbf532c16be483c5efbe839f.camel@mellanox.com>
- <CANhBUQ1wZPinWicu2c_VZjpTtP_9+AxB=7zn+ymPyYVo_rsxZQ@mail.gmail.com>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] net/mlx5e: Use refcount_t for refcount
+Message-ID: <20190806183821.GR11627@ziepe.ca>
+References: <20190802164828.20243-1-hslester96@gmail.com>
+ <20190804125858.GJ4832@mtr-leonro.mtl.com>
+ <CANhBUQ2H5MU0m2xM0AkJGPf7+MJBZ3Eq5rR0kgeOoKRi4q1j6Q@mail.gmail.com>
+ <20190805061320.GN4832@mtr-leonro.mtl.com>
+ <CANhBUQ0tUTXQKq__zvhNCUxXTFfDyr2xKF+Cwupod9xmvSrw2A@mail.gmail.com>
+ <b19b7cd49d373cc51d3e745a6444b27166b88304.camel@mellanox.com>
+ <20190806065958.GQ4832@mtr-leonro.mtl.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANhBUQ1wZPinWicu2c_VZjpTtP_9+AxB=7zn+ymPyYVo_rsxZQ@mail.gmail.com>
+In-Reply-To: <20190806065958.GQ4832@mtr-leonro.mtl.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Aug 03, 2019 at 10:42:31AM +0800, Chuhong Yuan wrote:
-> Saeed Mahameed <saeedm@mellanox.com> 于2019年8月3日周六 上午2:38写道：
-> >
-> > On Sat, 2019-08-03 at 00:10 +0800, Chuhong Yuan wrote:
-> > > Chuhong Yuan <hslester96@gmail.com> 于2019年8月2日周五 下午8:10写道：
-> > > > refcount_t is better for reference counters since its
-> > > > implementation can prevent overflows.
-> > > > So convert atomic_t ref counters to refcount_t.
+On Tue, Aug 06, 2019 at 09:59:58AM +0300, Leon Romanovsky wrote:
+> On Mon, Aug 05, 2019 at 08:06:36PM +0000, Saeed Mahameed wrote:
+> > On Mon, 2019-08-05 at 14:55 +0800, Chuhong Yuan wrote:
+> > > On Mon, Aug 5, 2019 at 2:13 PM Leon Romanovsky <leon@kernel.org>
+> > > wrote:
+> > > > On Sun, Aug 04, 2019 at 10:44:47PM +0800, Chuhong Yuan wrote:
+> > > > > On Sun, Aug 4, 2019 at 8:59 PM Leon Romanovsky <leon@kernel.org>
+> > > > > wrote:
+> > > > > > On Sat, Aug 03, 2019 at 12:48:28AM +0800, Chuhong Yuan wrote:
+> > > > > > > refcount_t is better for reference counters since its
+> > > > > > > implementation can prevent overflows.
+> > > > > > > So convert atomic_t ref counters to refcount_t.
+> > > > > >
+> > > > > > I'm not thrilled to see those automatic conversion patches,
+> > > > > > especially
+> > > > > > for flows which can't overflow. There is nothing wrong in using
+> > > > > > atomic_t
+> > > > > > type of variable, do you have in mind flow which will cause to
+> > > > > > overflow?
+> > > > > >
+> > > > > > Thanks
+> > > > >
+> > > > > I have to say that these patches are not done automatically...
+> > > > > Only the detection of problems is done by a script.
+> > > > > All conversions are done manually.
 > > > >
-> > > > Also convert refcount from 0-based to 1-based.
+> > > > Even worse, you need to audit usage of atomic_t and replace there
+> > > > it can overflow.
+> > > >
+> > > > > I am not sure whether the flow can cause an overflow.
+> > > >
+> > > > It can't.
+> > > >
+> > > > > But I think it is hard to ensure that a data path is impossible
+> > > > > to have problems in any cases including being attacked.
+> > > >
+> > > > It is not data path, and I doubt that such conversion will be
+> > > > allowed
+> > > > in data paths without proving that no performance regression is
+> > > > introduced.
+> > > > > So I think it is better to do this minor revision to prevent
+> > > > > potential risk, just like we have done in mlx5/core/cq.c.
+> > > >
+> > > > mlx5/core/cq.c is a different beast, refcount there means actual
+> > > > users
+> > > > of CQ which are limited in SW, so in theory, they have potential
+> > > > to be overflown.
+> > > >
+> > > > It is not the case here, there your are adding new port.
+> > > > There is nothing wrong with atomic_t.
 > > > >
 > > >
-> > > It seems that directly converting refcount from 0-based
-> > > to 1-based is infeasible.
-> > > I am sorry for this mistake.
+> > > Thanks for your explanation!
+> > > I will pay attention to this point in similar cases.
+> > > But it seems that the semantic of refcount is not always as clear as
+> > > here...
+> > >
 > >
-> > Just curious, why not keep it 0 based and use refcout_t ?
-> >
-> > refcount API should have the same semantics as atomic_t API .. no ?
+> > Semantically speaking, there is nothing wrong with moving to refcount_t
+> > in the case of vxlan ports.. it also seems more accurate and will
+> > provide the type protection, even if it is not necessary. Please let me
+> > know what is the verdict here, i can apply this patch to net-next-mlx5.
 > 
-> refcount API will warn when increase a 0 refcount.
-> It regards this as a use-after-free.
+> There is no verdict here, it is up to you., if you like code churn, go
+> for it.
 
-If this causes failures then the code is not doing atomic as a
-refcount properly anyhow.. 
+IMHO CONFIG_REFCOUNT_FULL is a valuable enough reason to not open code
+with an atomic even if overflow is not possible. 
 
-There are some cases where the atomic refcount is just a imprecise
-debugging aide.
+Races resulting in incrs on 0 refcounts is a common enough mistake.
 
 Jason
