@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8809F83CDC
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 23:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304C683CB5
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2019 23:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbfHFVdX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 17:33:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51138 "EHLO mail.kernel.org"
+        id S1727314AbfHFVdw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 17:33:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbfHFVdX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Aug 2019 17:33:23 -0400
+        id S1727301AbfHFVdu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Aug 2019 17:33:50 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B561621743;
-        Tue,  6 Aug 2019 21:33:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DCC0217D9;
+        Tue,  6 Aug 2019 21:33:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565127202;
-        bh=SUeVgyj9KGoSJ+/rEsQbWqM3p6Wy0GHD60j0+1FUhQs=;
+        s=default; t=1565127229;
+        bh=9ci3Ug3FGCxgxpgteG3x+RIRrG59YRYacjNFOQOS1IQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WKazNVjHT/NKB7fUA3OpJ/X1J3O1TNHkHes+u8G+G2Mub8DE+G7ccSneDnYJ/5z8o
-         LA19c6dmZ0u7SO//CQXVXfS9tp9leJLcG8yJHoCdzJeHg0zLNONi9/XEfZ+24qs5Wj
-         b2RKcmeepSIv+nH+s1EpEa5GjaXHzGimHzbXzkTo=
+        b=POo0CNL7ksEVb4TlGSIYT68WRztaPHNyCP/F4uugg/gwaFU4pLw9g42ENbvDPJTqU
+         pBP9ysFo0sJ/a9yLwA2zV2kFj7401jv6g9h1YgPSrRFcEIRPSSTjPDm1odxLdzLnYy
+         stLKKrJS14Dy8Kp5i5njcImvL4EQ+9BIGvrn9+CI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chuhong Yuan <hslester96@gmail.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+Cc:     Michal Kalderon <michal.kalderon@marvell.com>,
+        Doug Ledford <dledford@redhat.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 02/59] IB/mlx5: Replace kfree with kvfree
-Date:   Tue,  6 Aug 2019 17:32:22 -0400
-Message-Id: <20190806213319.19203-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 18/59] RDMA/qedr: Fix the hca_type and hca_rev returned in device attributes
+Date:   Tue,  6 Aug 2019 17:32:38 -0400
+Message-Id: <20190806213319.19203-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190806213319.19203-1-sashal@kernel.org>
 References: <20190806213319.19203-1-sashal@kernel.org>
@@ -43,44 +43,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Michal Kalderon <michal.kalderon@marvell.com>
 
-[ Upstream commit b7f406bb883ba7ac3222298f6b44cebc4cfe2dde ]
+[ Upstream commit 15fe6a8dcc3b48358c28e17b485fc837f9605ec4 ]
 
-Memory allocated by kvzalloc should not be freed by kfree(), use kvfree()
-instead.
+There was a place holder for hca_type and vendor was returned
+in hca_rev. Fix the hca_rev to return the hw revision and fix
+the hca_type to return an informative string representing the
+hca.
 
-Fixes: 813e90b1aeaa ("IB/mlx5: Add advise_mr() support")
-Link: https://lore.kernel.org/r/20190717082101.14196-1-hslester96@gmail.com
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+Link: https://lore.kernel.org/r/20190728111338.21930-1-michal.kalderon@marvell.com
+Signed-off-by: Doug Ledford <dledford@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/odp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/qedr/main.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 91507a2e92900..f6e5351ba4d50 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -1765,7 +1765,7 @@ static void mlx5_ib_prefetch_mr_work(struct work_struct *work)
+diff --git a/drivers/infiniband/hw/qedr/main.c b/drivers/infiniband/hw/qedr/main.c
+index 083c2c00a8e91..dfdd1e16de7f5 100644
+--- a/drivers/infiniband/hw/qedr/main.c
++++ b/drivers/infiniband/hw/qedr/main.c
+@@ -125,14 +125,20 @@ static ssize_t hw_rev_show(struct device *device, struct device_attribute *attr,
+ 	struct qedr_dev *dev =
+ 		rdma_device_to_drv_device(device, struct qedr_dev, ibdev);
  
- 	num_pending_prefetch_dec(to_mdev(w->pd->device), w->sg_list,
- 				 w->num_sge, 0);
--	kfree(w);
-+	kvfree(w);
+-	return scnprintf(buf, PAGE_SIZE, "0x%x\n", dev->pdev->vendor);
++	return scnprintf(buf, PAGE_SIZE, "0x%x\n", dev->attr.hw_ver);
  }
+ static DEVICE_ATTR_RO(hw_rev);
  
- int mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
-@@ -1807,7 +1807,7 @@ int mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
- 	if (valid_req)
- 		queue_work(system_unbound_wq, &work->work);
- 	else
--		kfree(work);
-+		kvfree(work);
- 
- 	srcu_read_unlock(&dev->mr_srcu, srcu_key);
+ static ssize_t hca_type_show(struct device *device,
+ 			     struct device_attribute *attr, char *buf)
+ {
+-	return scnprintf(buf, PAGE_SIZE, "%s\n", "HCA_TYPE_TO_SET");
++	struct qedr_dev *dev =
++		rdma_device_to_drv_device(device, struct qedr_dev, ibdev);
++
++	return scnprintf(buf, PAGE_SIZE, "FastLinQ QL%x %s\n",
++			 dev->pdev->device,
++			 rdma_protocol_iwarp(&dev->ibdev, 1) ?
++			 "iWARP" : "RoCE");
+ }
+ static DEVICE_ATTR_RO(hca_type);
  
 -- 
 2.20.1
