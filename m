@@ -2,97 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C3284621
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 09:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE155846C9
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 10:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727541AbfHGHon (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Aug 2019 03:44:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727280AbfHGHon (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 7 Aug 2019 03:44:43 -0400
-Received: from localhost (unknown [77.137.115.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D66E23426;
-        Wed,  7 Aug 2019 07:44:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565163883;
-        bh=i5ql5p171PyInS14xeMLHfauUmAD2fgUH4BRHR3Jqus=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0VVkJTT3P9eCkF36XEQ036AjRY/O7djTRNVz6D2kzn1YgD7VGBdjZtf74Br0m0xxd
-         1Nj8/MUT1ykVgaIKzYUHSnFHlBM50+gEHcQTlva0rRV1+xni8Q3Uz1/HAsCHNvvOjZ
-         FnS3RllYWVKpCMdtd73wW/4s3rJsXiZSNe8vJYpM=
-Date:   Wed, 7 Aug 2019 10:44:39 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Vladimir Koushnir <vladimirk@mellanox.com>
-Cc:     Haim Boozaglo <haimbo@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH 1/3] libibumad: Support arbitrary number of IB devices
-Message-ID: <20190807074439.GB32366@mtr-leonro.mtl.com>
-References: <1565102334-20903-1-git-send-email-haimbo@mellanox.com>
- <20190806155206.GZ4832@mtr-leonro.mtl.com>
- <AM5PR0502MB2931A53B02F2615B967F3B30CED40@AM5PR0502MB2931.eurprd05.prod.outlook.com>
+        id S2387596AbfHGIHT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Aug 2019 04:07:19 -0400
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:35635 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727413AbfHGIHS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Aug 2019 04:07:18 -0400
+Received: from [IPv6:2001:983:e9a7:1:8cc6:9015:1548:23f3] ([IPv6:2001:983:e9a7:1:8cc6:9015:1548:23f3])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id vGyNhjeHgAffAvGyOh7CoE; Wed, 07 Aug 2019 10:07:15 +0200
+Subject: Re: [PATCH v3 11/41] media/v4l2-core/mm: convert put_page() to
+ put_user_page*()
+To:     john.hubbard@gmail.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, ceph-devel@vger.kernel.org,
+        devel@driverdev.osuosl.org, devel@lists.orangefs.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org, linux-xfs@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        sparclinux@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, John Hubbard <jhubbard@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>
+References: <20190807013340.9706-1-jhubbard@nvidia.com>
+ <20190807013340.9706-12-jhubbard@nvidia.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <8a02b10a-507b-2eb3-19aa-1cb498c1a4af@xs4all.nl>
+Date:   Wed, 7 Aug 2019 10:07:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM5PR0502MB2931A53B02F2615B967F3B30CED40@AM5PR0502MB2931.eurprd05.prod.outlook.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <20190807013340.9706-12-jhubbard@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfLtFI4ThDBFuoSwFqT380PxkcC6q3XCYC9HO7bxya62SPesHUoWCzd0ksBMTGkppOn75d+WBKCLiUJL1JCKKzueS8vA20zMfsb357SuvaUy4TtJTFapt
+ x/bWCTcScAJNoSAViYa6NSlEx2FKBMG1ub01wuczTnbJurUSOB+vxv+m9yWKJM94dHdvARuWMkXZdmUldHpi22HuFtGEBhfQsDY52cLv9SRNbWMy30DrEJ0t
+ IZpNWziFzZ3evJ7mzLCVhbiK2kiOOXAk37J1rrkYGH2YtOIVmpGPTJw+iPQnS41ERf+BCjbaTp9dtSr4qdKvpCtCTPfnpCYMb9QEG7YIv4Bkl6jCBTx7G7/4
+ E+/Gcs1gOswCkbsVZkXHiYav454A3NZryrYeXwugbZcaQXzdLwQKX8vixuVBgbqFmyjLnuKfL1+c17HvE7YGvrxNLgEJHTveu7qGFUgiDp8Kxm2qaSU6Ln+T
+ ElUIz8bygLmP/ZaLM0W02XHdcvoF3n3t59CNY87n3tR3oXUf8LBXliPMUlUaTsd4sTe3FnbfHAUNwVeklfrjO7mwx/ZtuvdypniGohclf+1bp5fAUTyCCCrQ
+ 2HyNedUvC2lDdYTRuhJr04fafwrpC9JLhSLKJeMRBVwa4n0gqjUnzFBrEoDnP692PfkgpqcUzLJ3ou9bn9SXymgnoZ/su+Qto3UpDDWJiMsSJM83gtLeDDPU
+ 2LAMy4jSsugrfD7VC1dmYwzG8OWIPHuvJ7Tu8XU7oActSpAZS3c9skTdMjLehhV+5MHeC8g3tQLGrW2WL0nM2XSwHbo4mwTDcXTASOqE5niPTgs0jd+PPxdD
+ 6xGBJo3u/QbyQ3ajYSHTR7/iYO7MKvqve0YwbtTNR57pWM38fmVObjBWJ2Qb5+GQ3v2MdIxvVfz42j69SfAzoN+qm5pqDcKBwXhfBdG1NM3xlepenmsR9xg5
+ 62RVbClfekDh1mdFfuyj4KBmVBX0v1np3JjJ4vNebVx2IyoyHonzCgI/VeK3Xg6+xvyxhVW0lz7O9WmdlxWKcql5t0Yb5f0zsKtS1NvNqjdoMQPPDLlgqBkJ
+ zSwzmxMfYBhUca00uKQBlssFsG5QNKIC7fFgqtDFBmNtn6ipJvZKRC79Cw4QS6qRNMXKSaUQOSPYCvM4KmrZVW9w5s8hot0TfDYbj+oHiuzjCO1jmdtzXAbt
+ gWocxcFwf55hNfAhTODtYnIcQTTBxC/fmKLTijSmU3lfUSSSsnl8ef0xn1zUtoXXnyzz6mcZVljhvITEJx0jnOlTUGnl6EnAeCVrfPoD4WCRmPS4tIKMb0Sn
+ DjxDBO/HszoKfvVJZYTfTvPxU+6WAyaIoLGRNQX6ew6/T19LTZ7M+CVC1zczygV1hOTQJzIdJnWdrI7AWTB8dFsFHEUTylMp921VegrittBprwtssRQSETDt
+ w+WAy7sK++9/GONtwbizNl49IwU+D0GMpL0NbybeY6J7lGNNM2UtsFttBraN5pO3M9SU3xDoE5SqJiulL8VfDzJKyah60WIfPdhLbN00mLGEveLuRT0YQNVO
+ Ve41rvqKpgWWp9HPZO7QwGGi4muzZFJs6F8sgGua1ktJvh99nm3LVZHEV++X5Bous3oUMbzF6ihXBdgtubshPp+ElhOLvWLff7DQNQVzst9h3eqqPREvSJlB
+ 0+CfDkY+tvaCm6YXmIbg/FxzMGySzi98TfrQYNsvylv4MWX8pxKCyY/xfBN6o8zPRNMJNc0PX0kAdkxIJbJSRls4hOcOInlZ
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 07, 2019 at 07:26:35AM +0000, Vladimir Koushnir wrote:
-> Leon,
->
-> For comment #3:
-> We are not planning to change implementation of libibumad.
-> The patches were developed with existing libibumad code and extending existing capability to provide list of devices on the node beyond 32 devocs
+On 8/7/19 3:33 AM, john.hubbard@gmail.com wrote:
+> From: John Hubbard <jhubbard@nvidia.com>
+> 
+> For pages that were retained via get_user_pages*(), release those pages
+> via the new put_user_page*() routines, instead of via put_page() or
+> release_pages().
+> 
+> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+> ("mm: introduce put_user_page*(), placeholder versions").
+> 
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Hans Verkuil <hans.verkuil@cisco.com>
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Souptick Joarder <jrdr.linux@gmail.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-media@vger.kernel.org
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-You are proposing patches for inclusion in upstream rdma-core and
-our request is to use the same functionality as already available
-in rdma-core. We don't ask you to rewrite existing libibumad code,
-but don't submit wrong code.
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
->
-> For comment #4:
-> Hot-plug is out-of-scope of the libibumad as no persistent data is maintained by libibumad.
+> ---
+>  drivers/media/v4l2-core/videobuf-dma-sg.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
+> index 66a6c6c236a7..d6eeb437ec19 100644
+> --- a/drivers/media/v4l2-core/videobuf-dma-sg.c
+> +++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
+> @@ -349,8 +349,7 @@ int videobuf_dma_free(struct videobuf_dmabuf *dma)
+>  	BUG_ON(dma->sglen);
+>  
+>  	if (dma->pages) {
+> -		for (i = 0; i < dma->nr_pages; i++)
+> -			put_page(dma->pages[i]);
+> +		put_user_pages(dma->pages, dma->nr_pages);
+>  		kfree(dma->pages);
+>  		dma->pages = NULL;
+>  	}
+> 
 
-Fair enough.
-
-Thanks
-
->
-> -----Original Message-----
-> From: Leon Romanovsky <leon@kernel.org>
-> Sent: Tuesday, August 6, 2019 6:52 PM
-> To: Haim Boozaglo <haimbo@mellanox.com>
-> Cc: linux-rdma@vger.kernel.org; Vladimir Koushnir <vladimirk@mellanox.com>
-> Subject: Re: [PATCH 1/3] libibumad: Support arbitrary number of IB devices
->
-> On Tue, Aug 06, 2019 at 02:38:52PM +0000, Haim Boozaglo wrote:
-> > From: Vladimir Koushnir <vladimirk@mellanox.com>
-> >
-> > Added new function returning a list of available InfiniBand device names.
-> > The returned list is not limited to 32 devices.
-> >
-> > Signed-off-by: Vladimir Koushnir <vladimirk@mellanox.com>
-> > Signed-off-by: Haim Boozaglo <haimbo@mellanox.com>
-> > ---
-> >  libibumad/CMakeLists.txt              |  2 +-
-> >  libibumad/libibumad.map               |  6 +++++
-> >  libibumad/man/umad_free_ca_namelist.3 | 28 ++++++++++++++++++++++++
-> >  libibumad/man/umad_get_ca_namelist.3  | 34 +++++++++++++++++++++++++++++
-> >  libibumad/umad.c                      | 41 +++++++++++++++++++++++++++++++++++
-> >  libibumad/umad.h                      |  2 ++
-> >  6 files changed, 112 insertions(+), 1 deletion(-)  create mode 100644
-> > libibumad/man/umad_free_ca_namelist.3
-> >  create mode 100644 libibumad/man/umad_get_ca_namelist.3
->
-> 1. Please use cover letter for patch series.
-> 2. There is a need to update debian package too.
-> 3. Need to use the same discovery mechanism as used in libibverbs - netlink based.
-> 4. Does it work with hot-plug where device name can change?
->
-> Thanks
