@@ -2,165 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9138C83E02
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 01:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BAB83E5B
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 02:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbfHFXru (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 19:47:50 -0400
-Received: from mail-eopbgr780047.outbound.protection.outlook.com ([40.107.78.47]:64662
-        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726133AbfHFXru (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Aug 2019 19:47:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cCXjRe643R7Zgf1czXYGDn2TvRcGXBn4fb/QK4SO/FkB09FCCQoXVrrRKZZZXzdsqMJ32OADLIDjx8Oqj54uHf3KSIroXIJy2bVEIYFmjPbKei3VNPJvB3hulL9Fu/HNdguCyfiL3X5ott3lqC3cgienAuWPWXqI+rnV5abK27uMSBOLcfVyFeJTKeP4AUKNE96Uyz7OpxyAJfmJwzv2T85LvHADWKK6EZpSUOaXCsJ1nln00gB584UCpGd1BtHsHvWvqdfAcOFeo6Zc+GPKovE70kgSfmXdQKEIAfpCZml/qoZnMwKzCBaViVF8XmdXvoDWdrVhKulHcOfZxqRf/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9uYXs8TLn9yp6zgpySJyd2NtzBnPT/uQMkDb83lZ4/g=;
- b=ndjHN3eXVleLgSM8SfPeaWzHESwW7D6KehO0pl0kncZL0AxPkEWb295m7vzXyYObj9pC/dYMDvt1Va+MwqF91nhRaDZ95Bklh+HWp3QorLp7Ne7+QvAPaifDzfF+iF0EyDowEPlsImlQFpnVMUQ05y656pNlEZko6JG042CuVvBUWuf2utf9feUFSWae9f6nvvZRSf419ObiznzfaVMXyRwopguySyev/MLHezpzjMCbHZ7zgu2RyCEO0sfVvA2RBb2mJuY/tEsDG0wonrRv6g1oGf+JgU4ei+2pc+PodaylSpJOgbj13soOpkqcOkaUAucUGF07QDWIOywAZDxlYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=amd.com;dmarc=pass action=none header.from=amd.com;dkim=pass
- header.d=amd.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector1-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9uYXs8TLn9yp6zgpySJyd2NtzBnPT/uQMkDb83lZ4/g=;
- b=NtZD+CrnutT7QoX/NN+5+MBdbO/1Cgvo6copl7F3OStBi5QjeCtpM5G+bzCzyBkqtI9oltan5WgCLRAoSsQxceTeNpqG3h0iFEq4LXvnYyuohSubVxdlADZezIrGu6T4ds9Qpkofd5uTrJJQOYPJAPpX1Kf4Tp9VE/RB4+K82Gk=
-Received: from DM6PR12MB3947.namprd12.prod.outlook.com (10.255.174.156) by
- DM6PR12MB3034.namprd12.prod.outlook.com (20.178.30.31) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2136.17; Tue, 6 Aug 2019 23:47:45 +0000
-Received: from DM6PR12MB3947.namprd12.prod.outlook.com
- ([fe80::1c82:54e7:589b:539c]) by DM6PR12MB3947.namprd12.prod.outlook.com
- ([fe80::1c82:54e7:589b:539c%5]) with mapi id 15.20.2157.011; Tue, 6 Aug 2019
- 23:47:45 +0000
-From:   "Kuehling, Felix" <Felix.Kuehling@amd.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-CC:     Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Zhou, David(ChunMing)" <David1.Zhou@amd.com>,
-        Dimitri Sivanich <sivanich@sgi.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Gavin Shan <shangw@linux.vnet.ibm.com>,
-        Andrea Righi <andrea@betterlinux.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: Re: [PATCH v3 hmm 10/11] drm/amdkfd: use mmu_notifier_put
-Thread-Topic: [PATCH v3 hmm 10/11] drm/amdkfd: use mmu_notifier_put
-Thread-Index: AQHVTKz1DOmv7threke3/c3LGGrUwabuyVIA
-Date:   Tue, 6 Aug 2019 23:47:44 +0000
-Message-ID: <d58a1a8f-f80c-edfe-4b57-6fde9c0ca180@amd.com>
-References: <20190806231548.25242-1-jgg@ziepe.ca>
- <20190806231548.25242-11-jgg@ziepe.ca>
-In-Reply-To: <20190806231548.25242-11-jgg@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [165.204.54.211]
-user-agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+        id S1726485AbfHGAb3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 20:31:29 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:50098 "EHLO ale.deltatee.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbfHGAb3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Aug 2019 20:31:29 -0400
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.89)
+        (envelope-from <logang@deltatee.com>)
+        id 1hv9rD-0003gV-OL; Tue, 06 Aug 2019 18:31:12 -0600
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Jens Axboe <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Eric Pilmore <epilmore@gigaio.com>,
+        Christoph Hellwig <hch@lst.de>
+References: <20190730163545.4915-1-logang@deltatee.com>
+ <20190806234439.GW151852@google.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <e31f13f8-5afd-6f38-a206-163e9f77c91a@deltatee.com>
+Date:   Tue, 6 Aug 2019 18:31:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
-x-clientproxiedby: YTBPR01CA0034.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:14::47) To DM6PR12MB3947.namprd12.prod.outlook.com
- (2603:10b6:5:1cb::28)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Felix.Kuehling@amd.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 26db0519-254a-49cf-877c-08d71ac87a84
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DM6PR12MB3034;
-x-ms-traffictypediagnostic: DM6PR12MB3034:
-x-microsoft-antispam-prvs: <DM6PR12MB303409776EC953633553292892D50@DM6PR12MB3034.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-forefront-prvs: 0121F24F22
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(376002)(396003)(39860400002)(346002)(136003)(189003)(199004)(26005)(53546011)(14444005)(256004)(66946007)(66476007)(66556008)(64756008)(6506007)(386003)(102836004)(25786009)(14454004)(6246003)(54906003)(6512007)(186003)(64126003)(65826007)(65956001)(99286004)(68736007)(110136005)(6436002)(305945005)(65806001)(66066001)(66446008)(478600001)(6486002)(7736002)(5660300002)(36756003)(316002)(58126008)(7416002)(52116002)(53936002)(81166006)(3846002)(6116002)(8936002)(31686004)(31696002)(4326008)(2616005)(86362001)(71190400001)(8676002)(11346002)(229853002)(486006)(2906002)(446003)(76176011)(476003)(71200400001)(2501003)(81156014);DIR:OUT;SFP:1101;SCL:1;SRVR:DM6PR12MB3034;H:DM6PR12MB3947.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: v2blSuD7K48EtfDiHnDhA5Z7bGNZG2u+PM8wAuasCzIWgI7LUavNujnsB30Db9XpvzrCpGhubEEXaMTxMQz4ziBKpQmmyJdROx5a3Wo5hEgfVUX0znfq0UXXC8yaAB/c/WLstG+d4eB3afA21frj4dXjkKn3vTvHAEJMPfSBlourYE9Sf4w9JPcKHJgvP2bWO7HJZh77B6zbga3XrvACBWFgwWCaCUjIjM1hjUqjplVKPFau+OYz/nTDlrwYQVT4oyPm3ga75hmdMIglrCewCT5QrvI0AB61gZ6rmSWzHU23yEu9arjvez2KJTwET1elX4CkpRHlXy1ZYMRFwuOnE5AEw9R4uSVgdrdU6M1X3JphhbYWBtjg9tfumnobwWqgw/EgY+B5erxdnYyecBj9CXhnH+Ol3ZLJ9SZMYtVFJmE=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <08AA45544D5F4047B8BE6878E1D59AF9@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26db0519-254a-49cf-877c-08d71ac87a84
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Aug 2019 23:47:44.9450
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fHlZiATcYSQj0+WSGSvy8ZAicH/M7tNXVlQryTfouYsJ287scDy/Lph82E+Jx7fCO7Tic+2WuNmcLFjUTVkvvA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3034
+In-Reply-To: <20190806234439.GW151852@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: hch@lst.de, epilmore@gigaio.com, dan.j.williams@intel.com, sbates@raithlin.com, jgg@mellanox.com, kbusch@kernel.org, axboe@fb.com, Christian.Koenig@amd.com, sagi@grimberg.me, linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, helgaas@kernel.org
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH v2 00/14] PCI/P2PDMA: Support transactions that hit the
+ host bridge
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMjAxOS0wOC0wNiAxOToxNSwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPiBGcm9tOiBKYXNv
-biBHdW50aG9ycGUgPGpnZ0BtZWxsYW5veC5jb20+DQo+DQo+IFRoZSBzZXF1ZW5jZSBvZiBtbXVf
-bm90aWZpZXJfdW5yZWdpc3Rlcl9ub19yZWxlYXNlKCksDQo+IG1tdV9ub3RpZmllcl9jYWxsX3Ny
-Y3UoKSBpcyBpZGVudGljYWwgdG8gbW11X25vdGlmaWVyX3B1dCgpIHdpdGggdGhlDQo+IGZyZWVf
-bm90aWZpZXIgY2FsbGJhY2suDQo+DQo+IEFzIHRoaXMgaXMgdGhlIGxhc3QgdXNlciBvZiB0aG9z
-ZSBBUElzLCBjb252ZXJ0aW5nIGl0IG1lYW5zIHdlIGNhbiBkcm9wDQo+IHRoZW0uDQo+DQo+IFNp
-Z25lZC1vZmYtYnk6IEphc29uIEd1bnRob3JwZSA8amdnQG1lbGxhbm94LmNvbT4NCg0KUmV2aWV3
-ZWQtYnk6IEZlbGl4IEt1ZWhsaW5nIDxGZWxpeC5LdWVobGluZ0BhbWQuY29tPg0KDQo+IC0tLQ0K
-PiAgIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tmZF9wcml2LmggICAgfCAgMyAtLS0NCj4g
-ICBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGtmZC9rZmRfcHJvY2Vzcy5jIHwgMTAgKysrKy0tLS0t
-LQ0KPiAgIDIgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQ0K
-Pg0KPiBJJ20gcmVhbGx5IG5vdCBzdXJlIHdoYXQgdGhpcyBpcyBkb2luZywgYnV0IGl0IGlzIHZl
-cnkgc3RyYW5nZSB0byBoYXZlIGENCj4gcmVsZWFzZSB3aXRoIG5vIG90aGVyIGNhbGxiYWNrLiBJ
-dCB3b3VsZCBiZSBnb29kIGlmIHRoaXMgd291bGQgY2hhbmdlIHRvIHVzZQ0KPiBnZXQgYXMgd2Vs
-bC4NCktGRCB1c2VzIHRoZSBNTVUgbm90aWZpZXIgdG8gZGV0ZWN0IHByb2Nlc3MgdGVybWluYXRp
-b24gYW5kIGZyZWUgYWxsIHRoZSANCnJlc291cmNlcyBhc3NvY2lhdGVkIHdpdGggdGhlIHByb2Nl
-c3MuIFRoaXMgd2FzIGZpcnN0IGFkZGVkIGZvciBBUFVzIA0Kd2hlcmUgdGhlIElPTU1VdjIgaXMg
-c2V0IHVwIHRvIHBlcmZvcm0gYWRkcmVzcyB0cmFuc2xhdGlvbnMgdXNpbmcgdGhlIA0KQ1BVIHBh
-Z2UgdGFibGUgZm9yIGRldmljZSBtZW1vcnkgYWNjZXNzLiBUaGF0J3Mgd2hlcmUgdGhlIGFzc29j
-aWF0aW9uIG9mIA0KS0ZEIHByb2Nlc3MgcmVzb3VyY2VzIHdpdGggdGhlIGxpZmV0aW1lIG9mIHRo
-ZSBtbV9zdHJ1Y3QgY29tZXMgZnJvbS4NCg0KUmVnYXJkcywNCiDCoCBGZWxpeA0KDQoNCj4NCj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tmZF9wcml2LmggYi9kcml2
-ZXJzL2dwdS9kcm0vYW1kL2FtZGtmZC9rZmRfcHJpdi5oDQo+IGluZGV4IDM5MzNmYjZhMzcxZWZi
-Li45NDUwZTIwZDE3MDkzYiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRr
-ZmQva2ZkX3ByaXYuaA0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGtmZC9rZmRfcHJp
-di5oDQo+IEBAIC02ODYsOSArNjg2LDYgQEAgc3RydWN0IGtmZF9wcm9jZXNzIHsNCj4gICAJLyog
-V2Ugd2FudCB0byByZWNlaXZlIGEgbm90aWZpY2F0aW9uIHdoZW4gdGhlIG1tX3N0cnVjdCBpcyBk
-ZXN0cm95ZWQgKi8NCj4gICAJc3RydWN0IG1tdV9ub3RpZmllciBtbXVfbm90aWZpZXI7DQo+ICAg
-DQo+IC0JLyogVXNlIGZvciBkZWxheWVkIGZyZWVpbmcgb2Yga2ZkX3Byb2Nlc3Mgc3RydWN0dXJl
-ICovDQo+IC0Jc3RydWN0IHJjdV9oZWFkCXJjdTsNCj4gLQ0KPiAgIAl1bnNpZ25lZCBpbnQgcGFz
-aWQ7DQo+ICAgCXVuc2lnbmVkIGludCBkb29yYmVsbF9pbmRleDsNCj4gICANCj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tmZF9wcm9jZXNzLmMgYi9kcml2ZXJzL2dw
-dS9kcm0vYW1kL2FtZGtmZC9rZmRfcHJvY2Vzcy5jDQo+IGluZGV4IGMwNmU2MTkwZjIxZmZhLi5l
-NWUzMjZmMmYyNjc1ZSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRrZmQv
-a2ZkX3Byb2Nlc3MuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGtmZC9rZmRfcHJv
-Y2Vzcy5jDQo+IEBAIC00ODYsMTEgKzQ4Niw5IEBAIHN0YXRpYyB2b2lkIGtmZF9wcm9jZXNzX3Jl
-Zl9yZWxlYXNlKHN0cnVjdCBrcmVmICpyZWYpDQo+ICAgCXF1ZXVlX3dvcmsoa2ZkX3Byb2Nlc3Nf
-d3EsICZwLT5yZWxlYXNlX3dvcmspOw0KPiAgIH0NCj4gICANCj4gLXN0YXRpYyB2b2lkIGtmZF9w
-cm9jZXNzX2Rlc3Ryb3lfZGVsYXllZChzdHJ1Y3QgcmN1X2hlYWQgKnJjdSkNCj4gK3N0YXRpYyB2
-b2lkIGtmZF9wcm9jZXNzX2ZyZWVfbm90aWZpZXIoc3RydWN0IG1tdV9ub3RpZmllciAqbW4pDQo+
-ICAgew0KPiAtCXN0cnVjdCBrZmRfcHJvY2VzcyAqcCA9IGNvbnRhaW5lcl9vZihyY3UsIHN0cnVj
-dCBrZmRfcHJvY2VzcywgcmN1KTsNCj4gLQ0KPiAtCWtmZF91bnJlZl9wcm9jZXNzKHApOw0KPiAr
-CWtmZF91bnJlZl9wcm9jZXNzKGNvbnRhaW5lcl9vZihtbiwgc3RydWN0IGtmZF9wcm9jZXNzLCBt
-bXVfbm90aWZpZXIpKTsNCj4gICB9DQo+ICAgDQo+ICAgc3RhdGljIHZvaWQga2ZkX3Byb2Nlc3Nf
-bm90aWZpZXJfcmVsZWFzZShzdHJ1Y3QgbW11X25vdGlmaWVyICptbiwNCj4gQEAgLTU0MiwxMiAr
-NTQwLDEyIEBAIHN0YXRpYyB2b2lkIGtmZF9wcm9jZXNzX25vdGlmaWVyX3JlbGVhc2Uoc3RydWN0
-IG1tdV9ub3RpZmllciAqbW4sDQo+ICAgDQo+ICAgCW11dGV4X3VubG9jaygmcC0+bXV0ZXgpOw0K
-PiAgIA0KPiAtCW1tdV9ub3RpZmllcl91bnJlZ2lzdGVyX25vX3JlbGVhc2UoJnAtPm1tdV9ub3Rp
-ZmllciwgbW0pOw0KPiAtCW1tdV9ub3RpZmllcl9jYWxsX3NyY3UoJnAtPnJjdSwgJmtmZF9wcm9j
-ZXNzX2Rlc3Ryb3lfZGVsYXllZCk7DQo+ICsJbW11X25vdGlmaWVyX3B1dCgmcC0+bW11X25vdGlm
-aWVyKTsNCj4gICB9DQo+ICAgDQo+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBtbXVfbm90aWZpZXJf
-b3BzIGtmZF9wcm9jZXNzX21tdV9ub3RpZmllcl9vcHMgPSB7DQo+ICAgCS5yZWxlYXNlID0ga2Zk
-X3Byb2Nlc3Nfbm90aWZpZXJfcmVsZWFzZSwNCj4gKwkuZnJlZV9ub3RpZmllciA9IGtmZF9wcm9j
-ZXNzX2ZyZWVfbm90aWZpZXIsDQo+ICAgfTsNCj4gICANCj4gICBzdGF0aWMgaW50IGtmZF9wcm9j
-ZXNzX2luaXRfY3dzcl9hcHUoc3RydWN0IGtmZF9wcm9jZXNzICpwLCBzdHJ1Y3QgZmlsZSAqZmls
-ZXApDQo=
+
+
+On 2019-08-06 5:44 p.m., Bjorn Helgaas wrote:
+> On Tue, Jul 30, 2019 at 10:35:31AM -0600, Logan Gunthorpe wrote:
+>> Here's v2 of the patchset. It doesn't sound like there's anything
+>> terribly controversial here so this version is mostly just some
+>> cleanup changes for clarity.
+>>
+>> Changes in v2:
+>>  * Rebase on v5.3-rc2 (No changes)
+>>  * Re-introduce the private pagemap structure and move the p2p-specific
+>>    elements out of the commond dev_pagemap (per Christoph)
+>>  * Use flags instead of bool in the whitelist (per Jason)
+>>  * Only store the mapping type in the xarray (instead of the distance
+>>    with flags) such that a function can return the mapping method
+>>    with a switch statement to decide how to map. (per Christoph)
+>>  * Drop find_parent_pci_dev() on the fast path and rely on the fact
+>>    that the struct device passed to the mapping functions *must* be
+>>    a PCI device and convert it directly. (per suggestions from
+>>    Christoph and Jason)
+>>  * Collected Christian's Reviewed-by's
+>> --
+>>
+>> As discussed on the list previously, in order to fully support the
+>> whitelist Christian added with the IOMMU, we must ensure that we
+>> map any buffer going through the IOMMU with an aprropriate dma_map
+>> call. This patchset accomplishes this by cleaning up the output of
+>> upstream_bridge_distance() to better indicate the mapping requirements,
+>> caching these requirements in an xarray, then looking them up at map
+>> time and applying the appropriate mapping method.
+>>
+>> After this patchset, it's possible to use the NVMe-of P2P support to
+>> transfer between devices without a switch on the whitelisted root
+>> complexes. A couple Intel device I have tested this on have also
+>> been added to the white list.
+>>
+>> Most of the changes are contained within the p2pdma.c, but there are
+>> a few minor touches to other subsystems, mostly to add support
+>> to call an unmap function.
+>>
+>> The final patch in this series demonstrates a possible
+>> pci_p2pdma_map_resource() function that I expect Christian will need
+>> but does not have any users at this time so I don't intend for it to be
+>> considered for merging.
+> 
+> I don't see pci_p2pdma_map_resource() in any of these patches.
+
+Oh, sorry, I removed that in v2 seeing there was some confusion over it.
+I guess I forgot to remove the reference in the cover letter.
+
+> I tentatively applied these to pci/p2pdma with minor typographical
+> updates (below), but I'll update the branch if necessary.
+
+Great, thanks! The typographical changes look good.
+
+I already have one very minor change queued up for these. Should I just
+send you a small patch against your branch for you to squash?
+
+Logan
+
