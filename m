@@ -2,111 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1673A8425F
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 04:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F64842D2
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 05:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728795AbfHGCVV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 22:21:21 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:52294 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728772AbfHGCVU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Aug 2019 22:21:20 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 87072C7BC258933B7C0F;
-        Wed,  7 Aug 2019 10:21:19 +0800 (CST)
-Received: from [127.0.0.1] (10.133.205.88) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.439.0; Wed, 7 Aug 2019
- 10:21:11 +0800
-To:     <bvanassche@acm.org>, <dledford@redhat.com>, <jgg@mellanox.com>
-CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <yebiaoxiang@huawei.com>, Xiexiangyou <xiexiangyou@huawei.com>
-From:   Jiangyiwen <jiangyiwen@huawei.com>
-Subject: [bug report] rdma: rtnl_lock deadlock?
-Message-ID: <5D4A3597.5020406@huawei.com>
-Date:   Wed, 7 Aug 2019 10:21:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        id S1727566AbfHGDRd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 23:17:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726334AbfHGDRc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Aug 2019 23:17:32 -0400
+Received: from localhost (unknown [77.137.115.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E4DD214C6;
+        Wed,  7 Aug 2019 03:17:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565147852;
+        bh=6+4LzktwvLiiZsXR5dAoM1MwMXyVEPFtN6KSyIYk9QI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qxvDb6VbHFau5ksd8dvNrBr1fsolVTYOGD7+DxUW2y6PrAd77CQ02zirUGyB+vj9T
+         MI0gvD1LeJ77LuEBmbX5fPDhtBZamrBCkw+BfbfWBA7gC8vxgrkGXjCTfDyLlrgpe7
+         1p3si5sZOfKFy0r7EiqmPXi/GGhr6uREwHbmjIEQ=
+Date:   Wed, 7 Aug 2019 06:17:17 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Saeed Mahameed <saeedm@mellanox.com>
+Cc:     "hslester96@gmail.com" <hslester96@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>
+Subject: Re: [PATCH v3] mlx5: Use refcount_t for refcount
+Message-ID: <20190807031717.GB4832@mtr-leonro.mtl.com>
+References: <20190806015950.18167-1-hslester96@gmail.com>
+ <cbea99e74a1f70b1a67357aaf2afdb55655cd2bd.camel@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.133.205.88]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cbea99e74a1f70b1a67357aaf2afdb55655cd2bd.camel@mellanox.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
-
-I find a scenario may cause deadlock of rtnl_lock as follows:
-
-1. CPU1 add rtnl_lock and wait kworker finished.
-CPU1 add rtnl_lock before call unregister_netdevice_queue() and
-then wait sport->work(function srpt_refresh_port_work) finished
-in srpt_remove_one().
-
-[<0>] __switch_to+0x94/0xe8
-[<0>] __flush_work+0x128/0x280
-[<0>] __cancel_work_timer+0x13c/0x1b0
-[<0>] cancel_work_sync+0x24/0x30
-[<0>] srpt_remove_one+0xf0/0x530 [ib_srpt]
-[<0>] ib_unregister_device+0x124/0x230 [ib_core]
-[<0>] rxe_unregister_device+0x30/0x40 [rdma_rxe]
-[<0>] rxe_remove+0x20/0x50 [rdma_rxe]
-[<0>] rxe_notify+0xe8/0x150 [rdma_rxe]
-[<0>] notifier_call_chain+0x5c/0xa0
-[<0>] raw_notifier_call_chain+0x3c/0x50
-[<0>] call_netdevice_notifiers_info+0x3c/0x80
-[<0>] rollback_registered_many+0x35c/0x568
-[<0>] rollback_registered+0x68/0xb0
-[<0>] unregister_netdevice_queue+0xc0/0x110
-[<0>] __tun_detach+0x25c/0x2a0 [tun]
-[<0>] tun_chr_close+0x30/0x60 [tun]
-[<0>] __fput+0xa4/0x1e0
-[<0>] ____fput+0x20/0x30
-[<0>] task_work_run+0xc0/0xf8
-[<0>] do_notify_resume+0x12c/0x138
-[<0>] work_pending+0x8/0x10
-[<0>] 0xffffffffffffffff
-
-2. CPU2 run sport->work and wait for rxe->usdev_lock.
-CPU2 run work(sport->work function: srpt_refresh_port_work) and
-wait for rxe->usdev_lock in rxe_query_port().
-
-[<0>] __switch_to+0x94/0xe8
-[<0>] rxe_query_port+0x6c/0xd0 [rdma_rxe]
-[<0>] ib_query_port+0x84/0x120 [ib_core]
-[<0>] srpt_refresh_port+0xa4/0x1b8 [ib_srpt]
-[<0>] srpt_refresh_port_work+0x20/0x30 [ib_srpt]
-[<0>] process_one_work+0x1b4/0x3f8
-[<0>] worker_thread+0x54/0x470
-[<0>] kthread+0x134/0x138
-[<0>] ret_from_fork+0x10/0x18
-[<0>] 0xffffffffffffffff
-
-3. CPU3 add rxe->usdev_lock and wait for rtnl_lock.
-CPU3 run ib_cache_task work and add rxe->usdev_lock, then wait for
-rtnl_lock is unlocked.
-
-[<0>] __switch_to+0x94/0xe8
-[<0>] rtnl_lock+0x1c/0x28
-[<0>] ib_get_eth_speed+0x78/0x1c0 [ib_core]
-[<0>] rxe_query_port+0x80/0xd0 [rdma_rxe]
-[<0>] ib_query_port+0x84/0x120 [ib_core]
-[<0>] ib_cache_update.part.7+0x74/0x388 [ib_core]
-[<0>] ib_cache_task+0x68/0x80 [ib_core]
-[<0>] process_one_work+0x1b4/0x3f8
-[<0>] worker_thread+0x54/0x470
-[<0>] kthread+0x134/0x138
-[<0>] ret_from_fork+0x10/0x18
-[<0>] 0xffffffffffffffff
-
-So, deadlock is produced, that is, CPU1 wait for CPU2 work is
-finished, CPU2 wait for CPU3 unlock rxe->usdev_lock, CPU3 wait
-for CPU1 unlock rtnl_lock.
-
-I don't know how to solve it.
+On Tue, Aug 06, 2019 at 08:40:11PM +0000, Saeed Mahameed wrote:
+> On Tue, 2019-08-06 at 09:59 +0800, Chuhong Yuan wrote:
+> > Reference counters are preferred to use refcount_t instead of
+> > atomic_t.
+> > This is because the implementation of refcount_t can prevent
+> > overflows and detect possible use-after-free.
+> > So convert atomic_t ref counters to refcount_t.
+> >
+> > Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+> > ---
+> > Changes in v3:
+> >   - Merge v2 patches together.
+> >
+> >  drivers/infiniband/hw/mlx5/srq_cmd.c         | 6 +++---
+> >  drivers/net/ethernet/mellanox/mlx5/core/qp.c | 6 +++---
+> >  include/linux/mlx5/driver.h                  | 3 ++-
+> >  3 files changed, 8 insertions(+), 7 deletions(-)
+> >
+>
+> LGTM, Leon, let me know if you are happy with this version,
+> this should go to mlx5-next.
 
 Thanks,
-Yiwen.
-
+Acked-by: Leon Romanovsky <leonro@mellanox.com>
