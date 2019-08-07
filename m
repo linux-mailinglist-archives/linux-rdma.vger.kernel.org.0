@@ -2,119 +2,169 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE155846C9
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 10:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98BF846E1
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 10:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387596AbfHGIHT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Aug 2019 04:07:19 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:35635 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727413AbfHGIHS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Aug 2019 04:07:18 -0400
-Received: from [IPv6:2001:983:e9a7:1:8cc6:9015:1548:23f3] ([IPv6:2001:983:e9a7:1:8cc6:9015:1548:23f3])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id vGyNhjeHgAffAvGyOh7CoE; Wed, 07 Aug 2019 10:07:15 +0200
-Subject: Re: [PATCH v3 11/41] media/v4l2-core/mm: convert put_page() to
- put_user_page*()
-To:     john.hubbard@gmail.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, ceph-devel@vger.kernel.org,
-        devel@driverdev.osuosl.org, devel@lists.orangefs.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org, linux-xfs@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        sparclinux@vger.kernel.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org, John Hubbard <jhubbard@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>
-References: <20190807013340.9706-1-jhubbard@nvidia.com>
- <20190807013340.9706-12-jhubbard@nvidia.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <8a02b10a-507b-2eb3-19aa-1cb498c1a4af@xs4all.nl>
-Date:   Wed, 7 Aug 2019 10:07:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <20190807013340.9706-12-jhubbard@nvidia.com>
-Content-Type: text/plain; charset=utf-8
+        id S1728110AbfHGIJ5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Aug 2019 04:09:57 -0400
+Received: from mail-eopbgr30050.outbound.protection.outlook.com ([40.107.3.50]:4553
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728078AbfHGIJ4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 7 Aug 2019 04:09:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZaNavVQmirlPu8o5KV7bJETtd+GCbKRu6lADJL3REuZzR8UK/o8rNkzyAyW0vUGxavGct4pbymQW0qPPaj/bTyy5zUOoXzk40ldsvmaVibMXCA4BqWNp4DABcm4MfeStzB2F3aZWouQpvHIHzaaAp2nyq71L4BSPI7mtO8v2oQX06SC/j8hFonE8tjYCko6eUCxNtnFodTsiLP3CcGq1I7bMmmIisGGlyro4bztkETJNKNNvf+1L3MZ5HrfncDfrfr2ZJxujRTDHYic4ZQm6H5oe1DaeWrJogz9ZEFJuAPIjzoY5M9UNHXOJR10wW5DvlvdjHIC7o6fnp29YBD4fQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MI0nPPtEauu82jRGWVBjR2wjC67U+4nFX7SCsoYQiqA=;
+ b=ktwPPVUMrCNfBVQG8f2KeXUD9Wo04/hKEL3IOr7dwodoDCD7C1RVZ0/4UN/FPkqGGqjj2N0xQkv0Z3bKeeGbk3ZVFs3H6cXXoivSpbn3bSs9Evd2zijKyJ3E0aZSrTIFi3N9atK9MpIVUIoCIhjVhGvi3f09vmOHfOxk3ITTO7FkqOwbrBPbGwlVi30EbyqBlUWsIMW5jb2TzqDUlcDCqy84lmrRBEaL/uNR5Om88OT7ED1PpMnADYfEcdhx/R1T3VOC9PbNFzHTUUQYUJUak0muxzUacmg65do+R6+wHlGx6nR/0uOaJ2RXY3hSAWH074TThnvui0FF7A2kA5op2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=mellanox.com;dmarc=pass action=none
+ header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MI0nPPtEauu82jRGWVBjR2wjC67U+4nFX7SCsoYQiqA=;
+ b=oKGUZgyk4QcoU02Dm52t9iNDq5G+87tDi/NyrzRhpEKpBAjBaFjYKmUBOO5GPbd34u2NbS3a9rh52IXre+m5GRFwWxzD625N8c8zYthxd7G//53PoDKByONEeTa9j/yXPn28yyDXbJz9Tgtk5AL22pGBpxYjdXV4RtiF9B9HwPQ=
+Received: from AM5PR0502MB2931.eurprd05.prod.outlook.com (10.175.40.12) by
+ AM5PR0502MB2883.eurprd05.prod.outlook.com (10.175.44.13) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2136.17; Wed, 7 Aug 2019 08:09:52 +0000
+Received: from AM5PR0502MB2931.eurprd05.prod.outlook.com
+ ([fe80::e85f:70d5:5157:f3bf]) by AM5PR0502MB2931.eurprd05.prod.outlook.com
+ ([fe80::e85f:70d5:5157:f3bf%4]) with mapi id 15.20.2136.018; Wed, 7 Aug 2019
+ 08:09:52 +0000
+From:   Vladimir Koushnir <vladimirk@mellanox.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Haim Boozaglo <haimbo@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Yael Shavit <yaelsh@mellanox.com>,
+        Sasha Kotchubievsky <sashakot@mellanox.com>,
+        Daniel Klein <danielk@mellanox.com>
+Subject: RE: [PATCH 1/3] libibumad: Support arbitrary number of IB devices
+Thread-Topic: [PATCH 1/3] libibumad: Support arbitrary number of IB devices
+Thread-Index: AQHVTGS1dlbRQYFwGUWbpTsg4FFs4KbuRQEAgAEEEkCAAAYSgIAABgZw
+Date:   Wed, 7 Aug 2019 08:09:52 +0000
+Message-ID: <AM5PR0502MB29315DB149BC2E6FA28C4B52CED40@AM5PR0502MB2931.eurprd05.prod.outlook.com>
+References: <1565102334-20903-1-git-send-email-haimbo@mellanox.com>
+ <20190806155206.GZ4832@mtr-leonro.mtl.com>
+ <AM5PR0502MB2931A53B02F2615B967F3B30CED40@AM5PR0502MB2931.eurprd05.prod.outlook.com>
+ <20190807074439.GB32366@mtr-leonro.mtl.com>
+In-Reply-To: <20190807074439.GB32366@mtr-leonro.mtl.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfLtFI4ThDBFuoSwFqT380PxkcC6q3XCYC9HO7bxya62SPesHUoWCzd0ksBMTGkppOn75d+WBKCLiUJL1JCKKzueS8vA20zMfsb357SuvaUy4TtJTFapt
- x/bWCTcScAJNoSAViYa6NSlEx2FKBMG1ub01wuczTnbJurUSOB+vxv+m9yWKJM94dHdvARuWMkXZdmUldHpi22HuFtGEBhfQsDY52cLv9SRNbWMy30DrEJ0t
- IZpNWziFzZ3evJ7mzLCVhbiK2kiOOXAk37J1rrkYGH2YtOIVmpGPTJw+iPQnS41ERf+BCjbaTp9dtSr4qdKvpCtCTPfnpCYMb9QEG7YIv4Bkl6jCBTx7G7/4
- E+/Gcs1gOswCkbsVZkXHiYav454A3NZryrYeXwugbZcaQXzdLwQKX8vixuVBgbqFmyjLnuKfL1+c17HvE7YGvrxNLgEJHTveu7qGFUgiDp8Kxm2qaSU6Ln+T
- ElUIz8bygLmP/ZaLM0W02XHdcvoF3n3t59CNY87n3tR3oXUf8LBXliPMUlUaTsd4sTe3FnbfHAUNwVeklfrjO7mwx/ZtuvdypniGohclf+1bp5fAUTyCCCrQ
- 2HyNedUvC2lDdYTRuhJr04fafwrpC9JLhSLKJeMRBVwa4n0gqjUnzFBrEoDnP692PfkgpqcUzLJ3ou9bn9SXymgnoZ/su+Qto3UpDDWJiMsSJM83gtLeDDPU
- 2LAMy4jSsugrfD7VC1dmYwzG8OWIPHuvJ7Tu8XU7oActSpAZS3c9skTdMjLehhV+5MHeC8g3tQLGrW2WL0nM2XSwHbo4mwTDcXTASOqE5niPTgs0jd+PPxdD
- 6xGBJo3u/QbyQ3ajYSHTR7/iYO7MKvqve0YwbtTNR57pWM38fmVObjBWJ2Qb5+GQ3v2MdIxvVfz42j69SfAzoN+qm5pqDcKBwXhfBdG1NM3xlepenmsR9xg5
- 62RVbClfekDh1mdFfuyj4KBmVBX0v1np3JjJ4vNebVx2IyoyHonzCgI/VeK3Xg6+xvyxhVW0lz7O9WmdlxWKcql5t0Yb5f0zsKtS1NvNqjdoMQPPDLlgqBkJ
- zSwzmxMfYBhUca00uKQBlssFsG5QNKIC7fFgqtDFBmNtn6ipJvZKRC79Cw4QS6qRNMXKSaUQOSPYCvM4KmrZVW9w5s8hot0TfDYbj+oHiuzjCO1jmdtzXAbt
- gWocxcFwf55hNfAhTODtYnIcQTTBxC/fmKLTijSmU3lfUSSSsnl8ef0xn1zUtoXXnyzz6mcZVljhvITEJx0jnOlTUGnl6EnAeCVrfPoD4WCRmPS4tIKMb0Sn
- DjxDBO/HszoKfvVJZYTfTvPxU+6WAyaIoLGRNQX6ew6/T19LTZ7M+CVC1zczygV1hOTQJzIdJnWdrI7AWTB8dFsFHEUTylMp921VegrittBprwtssRQSETDt
- w+WAy7sK++9/GONtwbizNl49IwU+D0GMpL0NbybeY6J7lGNNM2UtsFttBraN5pO3M9SU3xDoE5SqJiulL8VfDzJKyah60WIfPdhLbN00mLGEveLuRT0YQNVO
- Ve41rvqKpgWWp9HPZO7QwGGi4muzZFJs6F8sgGua1ktJvh99nm3LVZHEV++X5Bous3oUMbzF6ihXBdgtubshPp+ElhOLvWLff7DQNQVzst9h3eqqPREvSJlB
- 0+CfDkY+tvaCm6YXmIbg/FxzMGySzi98TfrQYNsvylv4MWX8pxKCyY/xfBN6o8zPRNMJNc0PX0kAdkxIJbJSRls4hOcOInlZ
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=vladimirk@mellanox.com; 
+x-originating-ip: [193.47.165.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0b33dd63-54f3-4092-8e9f-08d71b0ea049
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM5PR0502MB2883;
+x-ms-traffictypediagnostic: AM5PR0502MB2883:
+x-microsoft-antispam-prvs: <AM5PR0502MB28835F0E3492E54831139716CED40@AM5PR0502MB2883.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 01221E3973
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(39860400002)(376002)(396003)(366004)(136003)(199004)(189003)(13464003)(7736002)(446003)(53936002)(305945005)(186003)(476003)(11346002)(107886003)(6916009)(66066001)(14454004)(26005)(486006)(478600001)(4326008)(33656002)(5660300002)(6246003)(25786009)(8676002)(81156014)(81166006)(86362001)(66946007)(55016002)(68736007)(256004)(14444005)(6506007)(66446008)(53546011)(71200400001)(71190400001)(66476007)(102836004)(66556008)(229853002)(64756008)(6116002)(3846002)(76176011)(54906003)(6436002)(99286004)(76116006)(7696005)(52536014)(74316002)(9686003)(2906002)(8936002)(316002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM5PR0502MB2883;H:AM5PR0502MB2931.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 3RTf6qM77bsuiWDhaJlEwQr1yziDXxFOcDiEn4emECsMBZregAtUCIenKQRabY1grFhEtxbPX1xb8wb2nhsoo3mXYkmJiAoyFgFIthqlTkUSBCjqNOHwN24kpFGkm0rJfrBdpkq65zI8WI+SIOTi3zAV/AsO2uVYwcz2JHxTczbwCuHWT1H78rs/rjxcDlyIFCLZU/Z5wxJqs9fe4whmVvP2HOGUjajvcgURaO7FuKU2iKQA+t/6Uoj2Z2DcHe1PsSPpgr7CdEig8WRT5qHPjTGgwJEng3t4Qyzk3lI9ypi6aKzX4NxNHMf2uXR2PLkBXhkMC2AmVfBhQw4w+4l6Bavbv3YE7Nq6Ja4qq+KCo3ast5vmqT0A2M7vAulxjx2akVqjftyztGoX0T0aUJKqIVGs614rEwQUy/YfRq2ZjZc=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b33dd63-54f3-4092-8e9f-08d71b0ea049
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Aug 2019 08:09:52.7982
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vladimirk@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0502MB2883
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/7/19 3:33 AM, john.hubbard@gmail.com wrote:
-> From: John Hubbard <jhubbard@nvidia.com>
-> 
-> For pages that were retained via get_user_pages*(), release those pages
-> via the new put_user_page*() routines, instead of via put_page() or
-> release_pages().
-> 
-> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-> ("mm: introduce put_user_page*(), placeholder versions").
-> 
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Hans Verkuil <hans.verkuil@cisco.com>
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Souptick Joarder <jrdr.linux@gmail.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: linux-media@vger.kernel.org
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+After discussing with Leon, libibumad and probably infiniband-diags should =
+be redesigned to follow new rdma-core policy of using netlink API.
 
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+This redesign will be added to the POR and will be provided on top of provi=
+ded patches.
 
-> ---
->  drivers/media/v4l2-core/videobuf-dma-sg.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
-> index 66a6c6c236a7..d6eeb437ec19 100644
-> --- a/drivers/media/v4l2-core/videobuf-dma-sg.c
-> +++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
-> @@ -349,8 +349,7 @@ int videobuf_dma_free(struct videobuf_dmabuf *dma)
->  	BUG_ON(dma->sglen);
->  
->  	if (dma->pages) {
-> -		for (i = 0; i < dma->nr_pages; i++)
-> -			put_page(dma->pages[i]);
-> +		put_user_pages(dma->pages, dma->nr_pages);
->  		kfree(dma->pages);
->  		dma->pages = NULL;
->  	}
-> 
+So in short-term, the patches will be accepted after fixing comments #1-#2.
+In long-term, libibumad support for netlink API will be provided.
 
+-----Original Message-----
+From: Leon Romanovsky <leon@kernel.org>=20
+Sent: Wednesday, August 7, 2019 10:45 AM
+To: Vladimir Koushnir <vladimirk@mellanox.com>
+Cc: Haim Boozaglo <haimbo@mellanox.com>; linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 1/3] libibumad: Support arbitrary number of IB devices
+
+On Wed, Aug 07, 2019 at 07:26:35AM +0000, Vladimir Koushnir wrote:
+> Leon,
+>
+> For comment #3:
+> We are not planning to change implementation of libibumad.
+> The patches were developed with existing libibumad code and extending=20
+> existing capability to provide list of devices on the node beyond 32=20
+> devocs
+
+You are proposing patches for inclusion in upstream rdma-core and our reque=
+st is to use the same functionality as already available in rdma-core. We d=
+on't ask you to rewrite existing libibumad code, but don't submit wrong cod=
+e.
+
+>
+> For comment #4:
+> Hot-plug is out-of-scope of the libibumad as no persistent data is mainta=
+ined by libibumad.
+
+Fair enough.
+
+Thanks
+
+>
+> -----Original Message-----
+> From: Leon Romanovsky <leon@kernel.org>
+> Sent: Tuesday, August 6, 2019 6:52 PM
+> To: Haim Boozaglo <haimbo@mellanox.com>
+> Cc: linux-rdma@vger.kernel.org; Vladimir Koushnir=20
+> <vladimirk@mellanox.com>
+> Subject: Re: [PATCH 1/3] libibumad: Support arbitrary number of IB=20
+> devices
+>
+> On Tue, Aug 06, 2019 at 02:38:52PM +0000, Haim Boozaglo wrote:
+> > From: Vladimir Koushnir <vladimirk@mellanox.com>
+> >
+> > Added new function returning a list of available InfiniBand device name=
+s.
+> > The returned list is not limited to 32 devices.
+> >
+> > Signed-off-by: Vladimir Koushnir <vladimirk@mellanox.com>
+> > Signed-off-by: Haim Boozaglo <haimbo@mellanox.com>
+> > ---
+> >  libibumad/CMakeLists.txt              |  2 +-
+> >  libibumad/libibumad.map               |  6 +++++
+> >  libibumad/man/umad_free_ca_namelist.3 | 28 ++++++++++++++++++++++++
+> >  libibumad/man/umad_get_ca_namelist.3  | 34 +++++++++++++++++++++++++++=
+++
+> >  libibumad/umad.c                      | 41 +++++++++++++++++++++++++++=
+++++++++
+> >  libibumad/umad.h                      |  2 ++
+> >  6 files changed, 112 insertions(+), 1 deletion(-)  create mode=20
+> > 100644
+> > libibumad/man/umad_free_ca_namelist.3
+> >  create mode 100644 libibumad/man/umad_get_ca_namelist.3
+>
+> 1. Please use cover letter for patch series.
+> 2. There is a need to update debian package too.
+> 3. Need to use the same discovery mechanism as used in libibverbs - netli=
+nk based.
+> 4. Does it work with hot-plug where device name can change?
+>
+> Thanks
