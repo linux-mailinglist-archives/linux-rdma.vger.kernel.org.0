@@ -2,113 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2618385298
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 20:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98D98530A
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 20:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388694AbfHGSDr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Aug 2019 14:03:47 -0400
-Received: from mail-eopbgr40070.outbound.protection.outlook.com ([40.107.4.70]:50595
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388615AbfHGSDq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 7 Aug 2019 14:03:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aS1PwG88N8RoB1Xq4Zvr7xywoouYcdJJPjXjv1ypPj+xP42vVQf+93nKJJXWq3n9NUki+YBBmin32LksKsyHSinShNx/hiW9C3MldniAMT1BF0sPPZzzEUTHKQx/c3RwNTvnhzmrhMJAZdPcpHJmRYnLbn15fGJKv+FzU/VqKB5uIlV3E6Go/SrwFA+TRAAPQh9Dusu+ZhfyudBWXTM5JhlnLOB7KKxZDxdNELZkAh2kZG7hW/DJzsCeJxFWiZ5nWJAEA+jGbbR6r06IaSe0yLpPQMOIHRW3ZbtjlbDz/RrM7eTlG3j/gtHM2PXUyzv40sgf4/gpBIg6IutLkyXapw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SI6nb2QZ1MqUqDT8AuAEVo37tXYGehTDI32GiVLgBhY=;
- b=TTkMBWIdS8+klmJsXtviP0aIyasMNMVaFgYLBC/TPS5GWxs3WNXW+rSKxLlbeTrgSZYSP3aCgCddprU1pHEeLi3RU+su2LG3S4MUjtB/VM9Hda2SFGw4HCI472QHi9qnQ50Yjt88MUX6G9K2zHELjapanvDviwrAAXPB0uLOR4PeQEcy9poQQO0XJYbJFnfL5Ovl/J3aHTncuLvcT5XwDeGVjhCD8HkqnJPBqyaB6qjlJwm2NCw8A77lr92YgG1UTDyIwpSzvRvX+iMVqfbSOi8qrpEH8eSwm5Vq9FmosS5axDn/xQqfzXWHVW+FbzNFy4XMLqqqa5swGy1SCEPG6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SI6nb2QZ1MqUqDT8AuAEVo37tXYGehTDI32GiVLgBhY=;
- b=YaKWW1V2JMy4zyTeT3NcGwTdj4622Y6tZltg0qQE/yHiwiAjdyw7PfRZ3KRue3JSz7O9SfP7AYP0dJ8Ba+9bWBPhaDSZ/t7g0djO9oGhQIvNQhIRfWqPCpwccOiG445NPrDP1Sy6kDTpsqzx4XHAcxGmckY0abctbjajMlf6aXc=
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
- DB6PR0501MB2520.eurprd05.prod.outlook.com (10.168.74.8) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2157.14; Wed, 7 Aug 2019 18:03:43 +0000
-Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::3c28:c77d:55b0:15b2]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
- ([fe80::3c28:c77d:55b0:15b2%5]) with mapi id 15.20.2136.018; Wed, 7 Aug 2019
- 18:03:43 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "leon@kernel.org" <leon@kernel.org>
-CC:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hslester96@gmail.com" <hslester96@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v3] mlx5: Use refcount_t for refcount
-Thread-Topic: [PATCH v3] mlx5: Use refcount_t for refcount
-Thread-Index: AQHVS/qqPWmA6k0y9U2jqPKx2/PeLKbullCAgABu9oCAAPeogA==
-Date:   Wed, 7 Aug 2019 18:03:43 +0000
-Message-ID: <71b2d9688834a69d8db587dd01f92088fd9bf497.camel@mellanox.com>
-References: <20190806015950.18167-1-hslester96@gmail.com>
-         <cbea99e74a1f70b1a67357aaf2afdb55655cd2bd.camel@mellanox.com>
-         <20190807031717.GB4832@mtr-leonro.mtl.com>
-In-Reply-To: <20190807031717.GB4832@mtr-leonro.mtl.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.32.4 (3.32.4-1.fc30) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [209.116.155.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 47d0efe7-3671-40b7-f2ee-08d71b619600
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DB6PR0501MB2520;
-x-ms-traffictypediagnostic: DB6PR0501MB2520:
-x-microsoft-antispam-prvs: <DB6PR0501MB2520CB478DFDC7D57A81E17FBED40@DB6PR0501MB2520.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-forefront-prvs: 01221E3973
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(366004)(136003)(39860400002)(376002)(346002)(189003)(199004)(186003)(1730700003)(6506007)(26005)(102836004)(6512007)(53936002)(6246003)(71190400001)(71200400001)(4326008)(25786009)(256004)(54906003)(58126008)(446003)(316002)(81156014)(8936002)(81166006)(486006)(14444005)(2351001)(11346002)(476003)(6436002)(2616005)(2906002)(5640700003)(6916009)(68736007)(36756003)(66066001)(229853002)(2501003)(478600001)(66446008)(14454004)(99286004)(7736002)(4744005)(6116002)(3846002)(76176011)(8676002)(86362001)(118296001)(305945005)(66946007)(66556008)(5660300002)(6486002)(91956017)(66476007)(64756008)(76116006);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2520;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: lwYWm2NFspCbVGVQPud9832ZRda2JvYLoPKY4K+/WWTyj86bGhIieraCW2dKGtHkaTTVBJW5KXaDXwD9MwanEYRjlJPYDZ22d00z7DGhBbW1goz+ZwsAegaV+hRMCjdlMBMp6yROr/kHQ6LMRt8EXZjR4tUX2eqAS6trrXJYHvyrHw2SWEDGuwDM3pPqTyKcKadlZ7Iwsi2LovVrx0GFwYraurarKmQrb1lWtTez8ZK4b7OglqldoPbb+Ti+HtiTd9GgrzavoYRe8nobPdlxOGNBq1wSiX9OjQ6zZfS5TJKYhQgGhtYSe6cdgTIxq1rVYL2uquJOC68zy4om0NCBJtTNuA6sAo5Wm78b4MwNf1aYgJhVSuDKpQhPNoXdgj4ARw0RUNLh1RxjaQfFGGJtF66GqvSHuyvGnXZ+T8Xvs9A=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2E597FA60F51BC42BDFA7D14A1056932@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S2389057AbfHGShj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Aug 2019 14:37:39 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:41652 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388207AbfHGShj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Aug 2019 14:37:39 -0400
+Received: by mail-qt1-f196.google.com with SMTP id d17so10461448qtj.8
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Aug 2019 11:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EbcTVFfWVN5hMoX2cB+lmCWTOr0QKDPwewrmtAAyc1g=;
+        b=HMIqsvoj5lOtm+MozeYLkfla12t0AvWWipoMnkIiQVDrTwAFJ2wE96Nku2XEwMQpix
+         pLiED1iWLr74b94DuSkqtNZzOD8TiLa3+dWz+CWwn9LuLR/SV8BNd/0HTRFuw/LLP+DT
+         iRWv31GQr1p6w6IUpwOYbGv+Rkbny1Mx/2ni5ri7Cli/dCduMghQk17OupQFbF/1V2BF
+         owKLeOhHfOc7iNmgUbhm+82hBHz+kBKWe83mdIlVVQ8M+7FBTbuq4lJg8Opp8WejIRed
+         AbhgZcZSB9ne7fiDQ6oK6dN296kiuWo0tW8SOam+L6M2FCA+YPC74GphAfv0gFWNy5vw
+         Ab0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EbcTVFfWVN5hMoX2cB+lmCWTOr0QKDPwewrmtAAyc1g=;
+        b=XWLsAGC1W3mLBIDn177uffzCO9g3CZTHPbm2uM2+YOGPP+PlmKZ2ttHPDNVT9/49So
+         HVG7euFdj5Huq2CpUOmzhtEN74VK4+4Yw6QdsR0koI76J380rG+7XyhKClEpYCQ9MnoS
+         z7B1g61/LozmflqTm88oyD0KxDhfz+6MhLL8DTNlbcnXlamDxqcdjLMvG02ivHB/2mQo
+         aRMbXdR8zj5dqLptk23+bclbq+MTrn06htRwXyLdQlhkgfnHiZNaHDkvRTGaQ37Cs9cM
+         b6EAu/mzfkmrzEqq4FEKIyEY9jr4uBawYRJDPKGjNyCXGl4uNGtg86HJoXMIuJUDynbN
+         txEg==
+X-Gm-Message-State: APjAAAVkbJ29snBAWvZVHwFq+G+0SSRs9i6/aPuMNT9mPOXFZmoK6zWK
+        wBHd7M/pGiYSfK2hA+WuQKAyOA==
+X-Google-Smtp-Source: APXvYqw/dhtLcMyMrYnvdYRpAL8RjYc3PY0kSKUVQMUoVRxZ/tFi0pzKpPxT3U8swv9J1R5FILDQaw==
+X-Received: by 2002:ac8:4a9a:: with SMTP id l26mr9447109qtq.67.1565203058033;
+        Wed, 07 Aug 2019 11:37:38 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id 6sm43355291qkp.82.2019.08.07.11.37.37
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 07 Aug 2019 11:37:37 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hvQoa-0006qa-Se; Wed, 07 Aug 2019 15:37:36 -0300
+Date:   Wed, 7 Aug 2019 15:37:36 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: Re: [PATCH rdma-rc] IB/mlx5: Fix implicit MR release flow
+Message-ID: <20190807183736.GA26235@ziepe.ca>
+References: <20190805083010.21777-1-leon@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47d0efe7-3671-40b7-f2ee-08d71b619600
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Aug 2019 18:03:43.6857
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2520
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190805083010.21777-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gV2VkLCAyMDE5LTA4LTA3IGF0IDA2OjE3ICswMzAwLCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6
-DQo+IE9uIFR1ZSwgQXVnIDA2LCAyMDE5IGF0IDA4OjQwOjExUE0gKzAwMDAsIFNhZWVkIE1haGFt
-ZWVkIHdyb3RlOg0KPiA+IE9uIFR1ZSwgMjAxOS0wOC0wNiBhdCAwOTo1OSArMDgwMCwgQ2h1aG9u
-ZyBZdWFuIHdyb3RlOg0KPiA+ID4gUmVmZXJlbmNlIGNvdW50ZXJzIGFyZSBwcmVmZXJyZWQgdG8g
-dXNlIHJlZmNvdW50X3QgaW5zdGVhZCBvZg0KPiA+ID4gYXRvbWljX3QuDQo+ID4gPiBUaGlzIGlz
-IGJlY2F1c2UgdGhlIGltcGxlbWVudGF0aW9uIG9mIHJlZmNvdW50X3QgY2FuIHByZXZlbnQNCj4g
-PiA+IG92ZXJmbG93cyBhbmQgZGV0ZWN0IHBvc3NpYmxlIHVzZS1hZnRlci1mcmVlLg0KPiA+ID4g
-U28gY29udmVydCBhdG9taWNfdCByZWYgY291bnRlcnMgdG8gcmVmY291bnRfdC4NCj4gPiA+IA0K
-PiA+ID4gU2lnbmVkLW9mZi1ieTogQ2h1aG9uZyBZdWFuIDxoc2xlc3Rlcjk2QGdtYWlsLmNvbT4N
-Cj4gPiA+IC0tLQ0KPiA+ID4gQ2hhbmdlcyBpbiB2MzoNCj4gPiA+ICAgLSBNZXJnZSB2MiBwYXRj
-aGVzIHRvZ2V0aGVyLg0KPiA+ID4gDQo+ID4gPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUv
-c3JxX2NtZC5jICAgICAgICAgfCA2ICsrKy0tLQ0KPiA+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0
-L21lbGxhbm94L21seDUvY29yZS9xcC5jIHwgNiArKystLS0NCj4gPiA+ICBpbmNsdWRlL2xpbnV4
-L21seDUvZHJpdmVyLmggICAgICAgICAgICAgICAgICB8IDMgKystDQo+ID4gPiAgMyBmaWxlcyBj
-aGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pDQo+ID4gPiANCj4gPiANCj4g
-PiBMR1RNLCBMZW9uLCBsZXQgbWUga25vdyBpZiB5b3UgYXJlIGhhcHB5IHdpdGggdGhpcyB2ZXJz
-aW9uLA0KPiA+IHRoaXMgc2hvdWxkIGdvIHRvIG1seDUtbmV4dC4NCj4gDQo+IFRoYW5rcywNCj4g
-QWNrZWQtYnk6IExlb24gUm9tYW5vdnNreSA8bGVvbnJvQG1lbGxhbm94LmNvbT4NCg0KQXBwbGll
-ZCB0byBtbHg1LW5leHQuDQoNClRoYW5rcyAhDQo=
+On Mon, Aug 05, 2019 at 11:30:10AM +0300, Leon Romanovsky wrote:
+> From: Yishai Hadas <yishaih@mellanox.com>
+> 
+> Once implicit MR is being called to be released by
+> ib_umem_notifier_release() its leaves were marked as "dying".
+> 
+> However, when dereg_mr()->mlx5_ib_free_implicit_mr()->mr_leaf_free() is
+> called, it skips running the mr_leaf_free_action (i.e. umem_odp->work)
+> when those leaves were marked as "dying".
+> 
+> As such ib_umem_release() for the leaves won't be called and their MRs
+> will be leaked as well.
+> 
+> When an application exits/killed without calling dereg_mr we might hit
+> the above flow.
+> 
+> This fatal scenario is reported by WARN_ON() upon
+> mlx5_ib_dealloc_ucontext() as ibcontext->per_mm_list is not empty, the
+> call trace can be seen below.
+> 
+> Originally the "dying" mark as part of ib_umem_notifier_release() was
+> introduced to prevent pagefault_mr() from returning a success response
+> once this happened. However, we already have today the completion
+> mechanism so no need for that in those flows any more.  Even in case a
+> success response will be returned the firmware will not find the pages
+> and an error will be returned in the following call as a released mm
+> will cause ib_umem_odp_map_dma_pages() to permanently fail
+> mmget_not_zero().
+> 
+> Fix the above issue by dropping the "dying" from the above flows.  The
+> other flows that are using "dying" are still needed it for their
+> synchronization purposes.
+> 
+> WARNING: CPU: 1 PID: 7218 at
+> drivers/infiniband/hw/mlx5/main.c:2004
+>                mlx5_ib_dealloc_ucontext+0x84/0x90 [mlx5_ib]
+> CPU: 1 PID: 7218 Comm: ibv_rc_pingpong Tainted: G     E
+>             5.2.0-rc6+ #13
+> Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
+> RIP: 0010:mlx5_ib_dealloc_ucontext+0x84/0x90 [mlx5_ib]
+> Code: 8d bd e8 09 00 00 48 89 de e8 58 a1 ff ff 48 8b bb
+>       c8 00 00 00 e8 ec 8b 3a c9 48 8b bb d8 00 00 00 5b 5d 41
+>       5c e9 dc 8b 3a c9 <0f> 0b eb a0 0f 1f 84 00 00 00 00 00
+>       66 66 66 66 90 41 57 b9 09 00
+> RSP: 0018:ffffb8e4c0adbc48 EFLAGS: 00010297
+> RAX: ffff9e1a791a65b8 RBX: ffff9e1a643c1e00 RCX:
+>      0000000000000000
+> RDX: ffff9e1a643c1e40 RSI: 0000000000000246 RDI:
+>      ffff9e1a643c1e20
+> RBP: ffff9e1a75b70000 R08: 0000000000000000 R09:
+>      ffff9e1a643c1e50
+> R10: 0000000000000000 R11: 0000000000000001 R12:
+>      ffff9e1a643c1e20
+> R13: ffff9e1a5da6bc10 R14: ffff9e1a5da6bc70 R15:
+>      ffff9e1a75b70000
+> FS:  00007ff61835d740(0000) GS:ffff9e1a7bb00000(0000)
+>      knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f9e6ac34000 CR3: 000000011e41e000 CR4:
+>      00000000000006e0
+> Call Trace:
+> uverbs_destroy_ufile_hw+0xb5/0x120 [ib_uverbs]
+> ib_uverbs_close+0x1f/0x80 [ib_uverbs]
+> __fput+0xbe/0x250
+> task_work_run+0x88/0xa0
+> do_exit+0x2cb/0xc30
+> ? __fput+0x14b/0x250
+> do_group_exit+0x39/0xb0
+> get_signal+0x191/0x920
+> ? _raw_spin_unlock_bh+0xa/0x20
+> ? inet_csk_accept+0x229/0x2f0
+> do_signal+0x36/0x5e0
+> ? put_unused_fd+0x5b/0x70
+> ? __sys_accept4+0x1a6/0x1e0
+> ? inet_hash+0x35/0x40
+> ? release_sock+0x43/0x90
+> ? _raw_spin_unlock_bh+0xa/0x20
+> ? inet_listen+0x9f/0x120
+> exit_to_usermode_loop+0x5c/0xc6
+> do_syscall_64+0x182/0x1b0
+> entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x7ff617c807d0
+> Code: Bad RIP value.
+> RSP: 002b:00007ffd1f4f7c68 EFLAGS: 00000246 ORIG_RAX:
+>      000000000000002b
+> RAX: fffffffffffffe00 RBX: 00007ffd1f4f7dd0 RCX:
+>      00007ff617c807d0
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI:
+>      0000000000000005
+> RBP: 00007ffd1f4f7fd0 R08: 0000000000000000 R09:
+>      0000000001327f50
+> R10: 00007ffd1f4f7830 R11: 0000000000000246 R12:
+>      0000000001327600
+> R13: 00007ffd1f4f7e10 R14: 0000000001327fb0 R15:
+>      0000000000000005
+> [ end trace 4fa29cb158fefa46 ]
+> 
+> Fixes: 81713d3788d2 ("IB/mlx5: Add implicit MR support")
+> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+> Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/core/umem_odp.c |  4 ----
+>  drivers/infiniband/hw/mlx5/odp.c   | 23 ++++++++---------------
+>  2 files changed, 8 insertions(+), 19 deletions(-)
+
+Applied to for-rc
+
+Thanks,
+Jason
