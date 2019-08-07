@@ -2,93 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A15684BAD
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 14:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A762484BB5
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 14:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729712AbfHGMc7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Aug 2019 08:32:59 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:52084 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbfHGMc7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Aug 2019 08:32:59 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x77CJ2Et192116;
-        Wed, 7 Aug 2019 12:32:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
- bh=HvdkhpeV6ChARIQ3KEKeh0eWt36K9KxTGBvSbwOCBLw=;
- b=DyjzVjZXOECQr39cSLVd+BPTEqwoAwoIYzPDNsRFeMhUnhRdeFL3cUx9zHU6XugSFJO/
- 7G8uGKqQDcIy1Gw0dw2ziYulMTgAeetHrFhSUrp8/3KLvOujitDR2esE7CymAZKpgqyz
- /BX0c/iG6wRUgQSDXLyfT8u3Fo8C9sIFqtxT5iV+rnZUhqjvLOcGMX1KYaIUQ21DMOHU
- hUt/CDM06n1OqL1CEokwgwLafKmCAU1bZwm7AoHnybYMpD8OWjV4v6J0ihe/tMEFl6fm
- L5xyv6ry2ZMM4LenauGEYKkgzraGFM7MM0Lq001ypZj0I6lBbQ0YpMboAxvwJs9itO/g yA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2u51pu449t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Aug 2019 12:32:45 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x77CHtqR178935;
-        Wed, 7 Aug 2019 12:32:44 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2u7577waky-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Aug 2019 12:32:44 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x77CWhxU004595;
-        Wed, 7 Aug 2019 12:32:43 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Aug 2019 05:32:42 -0700
-Date:   Wed, 7 Aug 2019 15:32:36 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Yishai Hadas <yishaih@mellanox.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] IB/mlx5: Check the correct variable in error handling code
-Message-ID: <20190807123236.GA11452@mwanda>
+        id S1726873AbfHGMfN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Aug 2019 08:35:13 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:37489 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726773AbfHGMfM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Aug 2019 08:35:12 -0400
+Received: by mail-qk1-f195.google.com with SMTP id d15so65581695qkl.4
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Aug 2019 05:35:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=d5i6fTBDVLzIJhkDZo4O9K4KZ4wl04X7nsfhNuK90P8=;
+        b=i/lDTCorsC6jeGAd9HeIo17qXpwYG2YfmVEVgQ+G+JHLa4VqPuZ+rUIErfAhVO0Qjn
+         Jbg+OvwVvRy9Xx4XrRKDtpeQSTQcTDc2KQPIBxWaoGZmd+Ar2ie6ZLttkTA8v/t9CUik
+         3GwSQcoAyPngsQjFSjwP3H2/AIWRb9AgUtkTXBwSPH2HESe3b3Ty4Fh0sZHzR6f0qSR1
+         bI5YaF6Mff7N376pUALQSzgYEkGw30RmE6rFAbKsVWMO/045ioO9r0fIxTqQTaUdtwiC
+         RDgj676UowozBgGc4TUpO+KoOv3SdR8wn+xT8yi7neAvRfeY9i5MGPEuXntr3ACu7gXc
+         6UQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=d5i6fTBDVLzIJhkDZo4O9K4KZ4wl04X7nsfhNuK90P8=;
+        b=nBZoaqQm0F9N6fOSEEZi/eIPyWJNEDLMre7bMtOMxidIdZITJ8Tb4tlcmsdIC7YNEG
+         PMTR0CRTyn10ppY6WqQxrV/Sc4gKAh5BG3h5Wf51Pp8G/UVbTKDmXiokc/E0vSoA18D2
+         uodYOogS2y8T5dS6bhbqlM/WyruoUTm/Dhwjo75zG28DIDWZ8/amebPU7ZZXzBQdppQu
+         J08M/vkrBD38VcoltI5Z2E4uNlyiow7jD/KUJR+zIDBdSQzH1H3w2fcXyeTMHAg0WQoO
+         qLIezVLs5MmkF6qCTFJ+dMGd5czEJV5yDUzp0+4z+9oRUuXpNGwQNhCkV1ESp7Y7vhwl
+         yx6A==
+X-Gm-Message-State: APjAAAWsFA4ElVLYQ5QaMG+Q8iEKbBfRneG/sNLEOGJy6OogNjKOpVUF
+        3B6sttunHI+m9TZi+6DmJQ7Peg==
+X-Google-Smtp-Source: APXvYqw+5mqrpk7QIXfh8CebTWslLYto6KWAZSZYJycaEuJ+yx23LTk4SuCbKNOw2dCCEWHAn7S3cg==
+X-Received: by 2002:a37:9307:: with SMTP id v7mr1121508qkd.495.1565181311727;
+        Wed, 07 Aug 2019 05:35:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id x10sm35522621qtc.34.2019.08.07.05.35.11
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 07 Aug 2019 05:35:11 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hvL9q-0001L4-Qx; Wed, 07 Aug 2019 09:35:10 -0300
+Date:   Wed, 7 Aug 2019 09:35:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Erez Alfasi <ereza@mellanox.com>
+Subject: Re: [PATCH rdma-next 2/6] RDMA/umem: Add ODP type indicator within
+ ib_umem_odp
+Message-ID: <20190807123510.GF1557@ziepe.ca>
+References: <20190807103403.8102-1-leon@kernel.org>
+ <20190807103403.8102-3-leon@kernel.org>
+ <20190807114406.GC1571@mellanox.com>
+ <20190807121335.GC32366@mtr-leonro.mtl.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908070137
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908070137
+In-Reply-To: <20190807121335.GC32366@mtr-leonro.mtl.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The code accidentally checks "event_sub" instead of "event_sub->eventfd".
+On Wed, Aug 07, 2019 at 03:13:35PM +0300, Leon Romanovsky wrote:
+> On Wed, Aug 07, 2019 at 11:44:16AM +0000, Jason Gunthorpe wrote:
+> > On Wed, Aug 07, 2019 at 01:33:59PM +0300, Leon Romanovsky wrote:
+> > > From: Erez Alfasi <ereza@mellanox.com>
+> > >
+> > > ODP type can be divided into 2 subclasses:
+> > > Explicit and Implicit ODP.
+> > >
+> > > Adding a type enums and an odp type flag within
+> > > ib_umem_odp will give us an indication whether a
+> > > given MR is ODP implicit/explicit registered.
+> > >
+> > > Signed-off-by: Erez Alfasi <ereza@mellanox.com>
+> > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > >  drivers/infiniband/core/umem.c    |  1 +
+> > >  include/rdma/ib_umem_odp.h        | 14 ++++++++++++++
+> > >  include/uapi/rdma/ib_user_verbs.h |  5 +++++
+> > >  3 files changed, 20 insertions(+)
+> >
+> > No for this patch, I've got a series cleaning up this
+> > implicit/explicit nonsense, and the result is much cleaner than this.
+> 
+> It doesn't really clean anything, just stores implicit/explicit information.
+> 
+> >
+> > This series will have to wait.
+> 
+> The information exposed in this series is already available in uverbs,
+> so whatever cleanup will come, we still need to expose ODP MR type.
+> 
+> This patch is tiny part of whole series, why should we block whole
+> series and iproute2?
 
-Fixes: 759738537142 ("IB/mlx5: Enable subscription for device events over DEVX")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/infiniband/hw/mlx5/devx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This whole approach is really ugly, I even object to the very idea of
+patch #1
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index fd577ffd7864..e24df414fd47 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -2041,7 +2041,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_SUBSCRIBE_EVENT)(
- 			event_sub->eventfd =
- 				eventfd_ctx_fdget(redirect_fd);
- 
--			if (IS_ERR(event_sub)) {
-+			if (IS_ERR(event_sub->eventfd)) {
- 				err = PTR_ERR(event_sub->eventfd);
- 				event_sub->eventfd = NULL;
- 				goto err;
--- 
-2.20.1
+The umem is an internal detail and should not be exposed out of the
+driver for nldev to use.
 
+Jason
