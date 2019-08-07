@@ -2,171 +2,176 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D69851F2
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 19:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7BAB8525C
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 19:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387943AbfHGRRs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Aug 2019 13:17:48 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:43618 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729960AbfHGRRs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Aug 2019 13:17:48 -0400
-Received: by mail-pl1-f194.google.com with SMTP id 4so34770474pld.10
-        for <linux-rdma@vger.kernel.org>; Wed, 07 Aug 2019 10:17:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8eJrnZxNMCItWIynTatJDEuA9CjWuilxGr3zPMXDYoA=;
-        b=lvCOFn8kPw5sKWIBqAtj9nTDw5hreHjOLB8fZD9LK4XqWLqI/y9ZOZsE/4TR27f4Um
-         7sNjnMM7si41kfySDx/t9SNrRsRpe9RSjuTSsxtP/LZWsBQ/9wQ/cD4jAY9Afx15eKqx
-         drzyP65XIEr5B54raR+/HRbXQh7LyawRCf3zPKIRTqPoYkdFiyNYDBtM/quaMKyDYY7N
-         e0hyz+AA4niyiPyNwzehq1Nhy/KS415dSI2CnjbBlju4Nld2LwgPUsvJDvfBXebX8Wbi
-         Nmslq3Y7cfQOcqEViWBEfcEzC2SDosb0kffCvwGdMnZ05+LE89QNyyYCkt8oyQaFasdF
-         n/vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8eJrnZxNMCItWIynTatJDEuA9CjWuilxGr3zPMXDYoA=;
-        b=O492yfBehSUvrhAfntPmPaOo91bMnMQ9mqLF26x7DU0AbJiPhsCSVxPDHimsGbIkq/
-         UxQCgCykybNm7IbbsNdRNv5Z+984uDDZlX9ch7woywgxd0D/cvNmrWsLiXwo+ncE89qn
-         w6EUWnIkUxliTWxE5jbfFWRx1BKZivolziZ/g3iOipJuqPaDM7GFm6myYL8IoWjx3Zan
-         HUdHCOuVUXe1vnrGYrIhmdx0LD85yA2rvpbK8dkVdAu2YAaa612OQPlfA3IGvySyB6me
-         b2CPtpkkAvqmFnW3gzSgh3YUyhy0Q4CsgXky4NgQN6qUhZYHK6MOP/LeCNW+qwXHUnf2
-         5TxQ==
-X-Gm-Message-State: APjAAAUmn4LSpg4/RmP8cHTv3/LskR5dacBz+4NuEmhJSM9BFaPiR/XJ
-        25To1c/gFXWubLhL+/KTS53FAI5Qb0fbxfQNu/o0qg==
-X-Google-Smtp-Source: APXvYqyBW2S319ERBiJQIcPzcGoHmCZb6zerpXN+gU6uALMoVMzBI9LSMd7krnp9xpHZv3cXEfAdJC0fzaJdRwq+DTM=
-X-Received: by 2002:a65:4b8b:: with SMTP id t11mr8596413pgq.130.1565198266795;
- Wed, 07 Aug 2019 10:17:46 -0700 (PDT)
+        id S2388428AbfHGRu5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 7 Aug 2019 13:50:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9242 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388323AbfHGRu5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Aug 2019 13:50:57 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x77HVsoe120911
+        for <linux-rdma@vger.kernel.org>; Wed, 7 Aug 2019 13:50:56 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.67])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2u834hrr4s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Aug 2019 13:50:56 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Wed, 7 Aug 2019 17:50:55 -0000
+Received: from us1a3-smtp03.a3.dal06.isc4sb.com (10.106.154.98)
+        by smtp.notes.na.collabserv.com (10.106.227.16) with smtp.notes.na.collabserv.com ESMTP;
+        Wed, 7 Aug 2019 17:49:48 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp03.a3.dal06.isc4sb.com
+          with ESMTP id 2019080717494743-804207 ;
+          Wed, 7 Aug 2019 17:49:47 +0000 
+In-Reply-To: <20190806173526.GJ11627@ziepe.ca>
+Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field 32 bit size to
+ remove 64 bit architecture dependency of siw.
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Wed, 7 Aug 2019 17:49:46 +0000
 MIME-Version: 1.0
-References: <cover.1563904656.git.andreyknvl@google.com> <CAAeHK+yc0D_nd7nTRsY4=qcSx+eQR0VLut3uXMf4NEiE-VpeCw@mail.gmail.com>
- <20190724140212.qzvbcx5j2gi5lcoj@willie-the-truck> <CAAeHK+xXzdQHpVXL7f1T2Ef2P7GwFmDMSaBH4VG8fT3=c_OnjQ@mail.gmail.com>
- <20190724142059.GC21234@fuggles.cambridge.arm.com> <20190806171335.4dzjex5asoertaob@willie-the-truck>
-In-Reply-To: <20190806171335.4dzjex5asoertaob@willie-the-truck>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 7 Aug 2019 19:17:35 +0200
-Message-ID: <CAAeHK+zF01mxU+PkEYLkoVu-ZZM6jNfL_OwMJKRwLr-sdU4Myg@mail.gmail.com>
-Subject: Re: [PATCH v19 00/15] arm64: untag user pointers passed to the kernel
-To:     Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        dri-devel@lists.freedesktop.org,
-        Kostya Serebryany <kcc@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        linux-media@vger.kernel.org, Kevin Brodsky <kevin.brodsky@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190806173526.GJ11627@ziepe.ca>,<20190806163901.GI11627@ziepe.ca>
+ <20190806153105.GG11627@ziepe.ca> <20190806121006.GC11627@ziepe.ca>
+ <20190805141708.9004-1-bmt@zurich.ibm.com>
+ <20190805141708.9004-2-bmt@zurich.ibm.com>
+ <OFCF70B144.E0186C06-ON0025844E.0050E500-0025844E.0051D4FA@notes.na.collabserv.com>
+ <OF8985846C.2F1A4852-ON0025844E.005AADBA-0025844E.005B3A41@notes.na.collabserv.com>
+ <OF3F75D9B9.20A30B62-ON0025844E.005D311D-0025844E.005D8CF2@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-LLNOutbound: False
+X-Disclaimed: 57079
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19080717-7279-0000-0000-000000252366
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.000026
+X-IBM-SpamModules-Versions: BY=3.00011566; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01243473; UDB=6.00655962; IPR=6.01024942;
+ MB=3.00028082; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-07 17:50:54
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-07 16:46:04 - 6.00010257
+x-cbparentid: 19080717-7280-0000-0000-0000003859BD
+Message-Id: <OF3FCBE885.788F61B5-ON0025844F.002DF52F-0025844F.0061F0FB@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-07_04:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 6, 2019 at 7:13 PM Will Deacon <will@kernel.org> wrote:
+fg-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
+
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 08/06/2019 07:35PM
+>Cc: linux-rdma@vger.kernel.org
+>Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field
+>32 bit size to remove 64 bit architecture dependency of siw.
 >
-> On Wed, Jul 24, 2019 at 03:20:59PM +0100, Will Deacon wrote:
-> > On Wed, Jul 24, 2019 at 04:16:49PM +0200, Andrey Konovalov wrote:
-> > > On Wed, Jul 24, 2019 at 4:02 PM Will Deacon <will@kernel.org> wrote:
-> > > > On Tue, Jul 23, 2019 at 08:03:29PM +0200, Andrey Konovalov wrote:
-> > > > > Should this go through the mm or the arm tree?
-> > > >
-> > > > I would certainly prefer to take at least the arm64 bits via the arm64 tree
-> > > > (i.e. patches 1, 2 and 15). We also need a Documentation patch describing
-> > > > the new ABI.
-> > >
-> > > Sounds good! Should I post those patches together with the
-> > > Documentation patches from Vincenzo as a separate patchset?
-> >
-> > Yes, please (although as you say below, we need a new version of those
-> > patches from Vincenzo to address the feedback on v5). The other thing I
-> > should say is that I'd be happy to queue the other patches in the series
-> > too, but some of them are missing acks from the relevant maintainers (e.g.
-> > the mm/ and fs/ changes).
+>On Tue, Aug 06, 2019 at 05:01:49PM +0000, Bernard Metzler wrote:
+>> 
+>> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >Date: 08/06/2019 06:39PM
+>> >Cc: linux-rdma@vger.kernel.org
+>> >Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags
+>field
+>> >32 bit size to remove 64 bit architecture dependency of siw.
+>> >
+>> >On Tue, Aug 06, 2019 at 04:36:26PM +0000, Bernard Metzler wrote:
+>> >> 
+>> >> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>> >> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >> >Date: 08/06/2019 05:31PM
+>> >> >Cc: linux-rdma@vger.kernel.org
+>> >> >Subject: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags
+>> >field
+>> >> >32 bit size to remove 64 bit architecture dependency of siw.
+>> >> >
+>> >> >On Tue, Aug 06, 2019 at 02:53:49PM +0000, Bernard Metzler
+>wrote:
+>> >> >
+>> >> >> >> index 7de68f1dc707..af735f55b291 100644
+>> >> >> >> +++ b/include/uapi/rdma/siw-abi.h
+>> >> >> >> @@ -180,6 +180,7 @@ struct siw_cqe {
+>> >> >> >>   * to control CQ arming.
+>> >> >> >>   */
+>> >> >> >>  struct siw_cq_ctrl {
+>> >> >> >> -	__aligned_u64 notify;
+>> >> >> >> +	__u32 flags;
+>> >> >> >> +	__u32 pad;
+>> >> >> >
+>> >> >> >The commit message needs to explain why this is compatible
+>with
+>> >> >> >existing user space, if it is even is safe..
+>> >> >> >
+>> >> >> Old libsiw would remain compatible with the new layout, since
+>it
+>> >> >> simply reads the 32bit 'flags' and zeroed 32bit 'pad' into a
+>> >64bit
+>> >> >> 'notify', ending with reading the same bits.
+>> >> >
+>> >> >Even on big endian?
+>> >> >
+>> >> Well I do not have access to a BE system right now to verify.
+>> >> But on a BE system, the lowest 3 bits (which are in use) of the
+>> >first
+>> >> 32bit variable 'flags' shall be the lowest (leftmost) 3 bits of
+>an
+>> >> 'overlayed' 64bit variable 'notify' as well...
+>> >
+>> >One of LE or BE won't work with this scheme, it can't, the flag
+>bit
+>> >will end up in the pad.
+>> >
+>> Sitting here on a x86 (LE), and it works. On a 64bits machine,
+>> two consecutive 32bits are obviously reordered in memory. Leaves
+>> 32bit LE broken, which is currently not supported.
 >
-> Ok, I've queued patches 1, 2, and 15 on a stable branch here:
+>? I still think 64 bit BE will be broken as the low two bits will
+>overlap the pad, not the new flags.
 >
->   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/tbi
+
+It hurts, but I did finally setup qemu with a ppc image to check,
+and so you are right!
+
+...
+
+#ifdef __BIG_ENDIAN__
+
+seem to be available in both kernel and user land...
+
+But, general question: siw in its current shape isn't out
+for long, older versions from github are already broken with
+the abi. So, silently changing the abi at this stage of siw
+deployment is no option? It's a hassle to see an old mistake
+carried along forever with that #ifdef statement...no?
+
+
+Many thanks,
+Bernard.
+
+>> Anyway, what would you suggest as the best path forward? A new ABI
+>> version? If we move to test_and_clear_bit(), 'flags' size would
+>> become architecture dependent...and we would break the ABI as well,
+>> no?
 >
-> which should find its way into -next shortly via our for-next/core branch.
-> If you want to make changes, please send additional patches on top.
+>Maybe a #ifdef __big_endian__ and swap the order of the pad/flags ?
 >
-> This is targetting 5.4, but I will drop it before the merge window if
-> we don't have both of the following in place:
+>Jason
 >
->   * Updated ABI documentation with Acks from Catalin and Kevin
-
-Catalin has posted a new version today.
-
->   * The other patches in the series either Acked (so I can pick them up)
->     or queued via some other tree(s) for 5.4.
-
-So we have the following patches in this series:
-
-1. arm64: untag user pointers in access_ok and __uaccess_mask_ptr
-2. arm64: Introduce prctl() options to control the tagged user addresses ABI
-3. lib: untag user pointers in strn*_user
-4. mm: untag user pointers passed to memory syscalls
-5. mm: untag user pointers in mm/gup.c
-6. mm: untag user pointers in get_vaddr_frames
-7. fs/namespace: untag user pointers in copy_mount_options
-8. userfaultfd: untag user pointers
-9. drm/amdgpu: untag user pointers
-10. drm/radeon: untag user pointers in radeon_gem_userptr_ioctl
-11. IB/mlx4: untag user pointers in mlx4_get_umem_mr
-12. media/v4l2-core: untag user pointers in videobuf_dma_contig_user_get
-13. tee/shm: untag user pointers in tee_shm_register
-14. vfio/type1: untag user pointers in vaddr_get_pfn
-15. selftests, arm64: add a selftest for passing tagged pointers to kernel
-
-1, 2 and 15 have been picked by Will.
-
-11 has been picked up by Jason.
-
-9, 10, 12, 13 and 14 have acks from their subsystem maintainers.
-
-3 touches generic lib code, I'm not sure if there's a dedicated
-maintainer for that.
-
-The ones that are left are the mm ones: 4, 5, 6, 7 and 8.
-
-Andrew, could you take a look and give your Acked-by or pick them up directly?
-
 >
-> Make sense?
->
-> Cheers,
->
-> Will
 
-Thanks!
