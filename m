@@ -2,85 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4467884B08
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 13:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E281484B3E
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 14:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729578AbfHGLtR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Aug 2019 07:49:17 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:31956 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727171AbfHGLtR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Aug 2019 07:49:17 -0400
+        id S1729714AbfHGMKj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Aug 2019 08:10:39 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:38323 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729722AbfHGMKj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Aug 2019 08:10:39 -0400
+Received: by mail-qt1-f196.google.com with SMTP id n11so87981293qtl.5
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Aug 2019 05:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1565178556; x=1596714556;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=eLIOYNW3hq52dycV+MbVoAQsrwfbvz8vKtxrq3ps+dc=;
-  b=WH+WrygaCbdbZwGKYeI25Yj1n3IMQ/yiu8ixodVsEPzWUkpsXy68SEwh
-   21ZvFLtpsvbipF1EbUSC3amcj92UyQ3Mojv984dKI97KP7ytmIY9n04yj
-   oj4gPdwhDc04salbj0qaiQ3BclysuENQgxey4BP/9ZMLJGOhVcNh7oMV1
-   M=;
-X-IronPort-AV: E=Sophos;i="5.64,357,1559520000"; 
-   d="scan'208";a="778148186"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-97fdccfd.us-east-1.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 07 Aug 2019 11:49:14 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-97fdccfd.us-east-1.amazon.com (Postfix) with ESMTPS id 011B1A212B;
-        Wed,  7 Aug 2019 11:49:13 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 7 Aug 2019 11:49:13 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.88) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 7 Aug 2019 11:49:09 +0000
-Subject: Re: [PATCH rdma-next 2/6] RDMA/umem: Add ODP type indicator within
- ib_umem_odp
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Erez Alfasi <ereza@mellanox.com>
-References: <20190807103403.8102-1-leon@kernel.org>
- <20190807103403.8102-3-leon@kernel.org>
- <20441b80-b901-9e42-90e0-f1cf17ac6d5b@amazon.com>
- <20190807114451.GD1571@mellanox.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <7c942fe3-cfba-e50a-c8e1-73d3a8ca80a5@amazon.com>
-Date:   Wed, 7 Aug 2019 14:49:05 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TyUqRDmRKloW/sMIvGnAqMuGW5YCqBPaj3KDrOKJEqs=;
+        b=ceI/F6gB0pxxridkgCFoiRA3F2G+kFZJApg7pEkSENU7ARCk7TexijHl2DK49nkYpP
+         RjzEO0d7RqIjCSDZJYs+YFh76CV4jxQp0IOyEG81LxHwCg6Be/yrkxqjVdGNMITJpIGz
+         ZOgb2OWFAspX3mvhnNJBG+G6IH4+jtQLZo5M+MaRrPW4OoKFdcGwTe5vMicDCSViruCo
+         J0c/noMtEbxiK06G9/WA+Piez2tvMHS7swkjoxfxU9u1FGTBG6ah1XHd89BlvDAJE9qx
+         cfSopX76jwUOHLNCwL3xWmmfwrjSgBlyFIpmYgJpaK2yLdIfLsqcOd9NetaO5dYkXXqW
+         a2Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TyUqRDmRKloW/sMIvGnAqMuGW5YCqBPaj3KDrOKJEqs=;
+        b=gQMQHB7XOAiiqkJU6TT0F5h+XgANKl1X9eO6L9SLkJo3dxTYYGYya3TAKmYuSvXYSc
+         9msnpASbvz1tRJ8YXLIkk6a/cf8gwjiqbZKO/5ERGhtWLqOnvUf4T7Q1TNWn1vXK1hFJ
+         UMY7k5b+GKZAKY5AShizgfTn2bYfzdhg/t9UoGDpCdtg7C1nuYxHs31kN+KWS1MUU9NQ
+         sZyImEwrqJn2DHg8Sedd+goRARFa0KDDLrjmm7fa+3AYqJFP9b3+Jnwd7uhkI33XPq1q
+         ohmA1XIFzBLUb9mS2/cRbCDVpJRONkdZtSqtaSG5WfK0MV4EHSzkjKZc751dhDB3MZ+T
+         FqVQ==
+X-Gm-Message-State: APjAAAXDYI+woo7N+9hkE0ra8jvdwOEmmeu0VM2ieSjwnQV0oy1cG5oI
+        Lakzol/KbIRCd3PggY6MJovFwQ==
+X-Google-Smtp-Source: APXvYqyO8Is2rHqVcjoXVwRl+RRSxDujV+x1nKfBnEd3h/w6218ooFi47opkUhvYiPV6BdOH6CTKTg==
+X-Received: by 2002:a05:6214:11af:: with SMTP id u15mr7693849qvv.115.1565179838709;
+        Wed, 07 Aug 2019 05:10:38 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id l80sm19618120qke.24.2019.08.07.05.10.38
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 07 Aug 2019 05:10:38 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hvKm5-00010p-S2; Wed, 07 Aug 2019 09:10:37 -0300
+Date:   Wed, 7 Aug 2019 09:10:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jiangyiwen <jiangyiwen@huawei.com>
+Cc:     bvanassche@acm.org, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        yebiaoxiang@huawei.com, Xiexiangyou <xiexiangyou@huawei.com>
+Subject: Re: [bug report] rdma: rtnl_lock deadlock?
+Message-ID: <20190807121037.GC1557@ziepe.ca>
+References: <5D4A3597.5020406@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20190807114451.GD1571@mellanox.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.88]
-X-ClientProxiedBy: EX13D01UWA004.ant.amazon.com (10.43.160.99) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5D4A3597.5020406@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 07/08/2019 14:44, Jason Gunthorpe wrote:
-> On Wed, Aug 07, 2019 at 02:23:03PM +0300, Gal Pressman wrote:
->> On 07/08/2019 13:33, Leon Romanovsky wrote:
->>> +static inline void ib_umem_odp_set_type(struct ib_umem_odp *umem_odp,
->>> +					unsigned long start, size_t end)
->>
->> Consider renaming 'end' to 'size'?
->>
->>> +{
->>> +	if (!start && !end)
->>
->> According to the man pages, To create an implicit ODP MR, IBV_ACCESS_ON_DEMAND
->> should be set, addr should be 0 and length should be SIZE_MAX.
->> Why check end against zero?
+On Wed, Aug 07, 2019 at 10:21:11AM +0800, Jiangyiwen wrote:
+> Hello,
 > 
-> Because that isn't how it works at the umem level. The driver detects
-> tha above and triggers a special umem creation flow that has a 0
-> length umem.
+> I find a scenario may cause deadlock of rtnl_lock as follows:
+> 
+> 1. CPU1 add rtnl_lock and wait kworker finished.
+> CPU1 add rtnl_lock before call unregister_netdevice_queue() and
+> then wait sport->work(function srpt_refresh_port_work) finished
+> in srpt_remove_one().
 
-I see, thanks!
+This is an old kernel, this issue has been fixed
+
+Jason
