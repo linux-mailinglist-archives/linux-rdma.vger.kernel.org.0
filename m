@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A02849A2
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 12:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D595E849A3
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 12:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbfHGKeY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Aug 2019 06:34:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41878 "EHLO mail.kernel.org"
+        id S1726734AbfHGKe2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Aug 2019 06:34:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726269AbfHGKeY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 7 Aug 2019 06:34:24 -0400
+        id S1726731AbfHGKe2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 7 Aug 2019 06:34:28 -0400
 Received: from localhost (unknown [77.137.115.125])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38B3F21E6E;
-        Wed,  7 Aug 2019 10:34:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C954A2086D;
+        Wed,  7 Aug 2019 10:34:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565174063;
-        bh=WkOtR7Lm7gSwqhDGxdLCXW1NU8J0rgZlp05hnn5jPkI=;
+        s=default; t=1565174067;
+        bh=/MlRzhpiMFdpyu3g3tg1PxXGCzxZQlzviI7RQn/UFWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CrQDwrhvtKOAX8sf+f6mx164ZE38JNdX+TGUlEvMbE15JuaG43mSBJUrb60DBVgXq
-         DA4pvPqJDAB3fdfbqpZZYXmj/rhzSy9H9zUOkB2sYpaJLuEPmFpdrq45Ft4WxomlXO
-         FKLDb5ItifTPN4VvnBKJp/MUGVXzs99GHAITRxUI=
+        b=RHu5788aRLmW4RXsmwqr0LyGp00VI3qMXLB41Dvha2jNypCoNs/lQv5NL17EfOjxt
+         aS+00lEySI+XoyeO6T6TrX+bdayRtHxOAU7yzwMiEmE1BuAMfaY67fQtZTYg45/JhG
+         YYVBnYTsLIeYripylPkdExkk/QOly0PWputpij7Y=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Erez Alfasi <ereza@mellanox.com>
-Subject: [PATCH rdma-next 5/6] RDMA/nldev: Allow different fill function per resource
-Date:   Wed,  7 Aug 2019 13:34:02 +0300
-Message-Id: <20190807103403.8102-6-leon@kernel.org>
+Subject: [PATCH rdma-next 6/6] RDMA/nldev: Provide MR statistics
+Date:   Wed,  7 Aug 2019 13:34:03 +0300
+Message-Id: <20190807103403.8102-7-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190807103403.8102-1-leon@kernel.org>
 References: <20190807103403.8102-1-leon@kernel.org>
@@ -44,108 +44,99 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Erez Alfasi <ereza@mellanox.com>
 
-So far res_get_common_{dumpit, doit} was using the default
-resource fill function which was defined as part of the
-nldev_fill_res_entry fill_entries.
+Add RDMA nldev netlink interface for dumping MR
+statistics information.
 
-Add a fill function pointer as an argument allows us to use
-different fill function in case we want to dump different
-values then 'rdma resource' flow do, but still use the same
-existing general resources dumping flow.
+Output example:
+ereza@dev~$: ./ibv_rc_pingpong -o -P -s 500000000
+  local address:  LID 0x0001, QPN 0x00008a, PSN 0xf81096, GID ::
 
-If a NULL value is passed, it will be using the default
-fill function that was defined in 'fill_entries' for a
-given resource type.
+ereza@dev~$: rdma stat show mr
+dev mlx5_0 mrn 2 page_faults 122071 page_invalidations 0
+prefetched_pages 122071
 
 Signed-off-by: Erez Alfasi <ereza@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/nldev.c | 42 +++++++++++++++++++++++----------
- 1 file changed, 29 insertions(+), 13 deletions(-)
+ drivers/infiniband/core/nldev.c | 51 +++++++++++++++++++++++++++++++--
+ 1 file changed, 49 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 1562b9446c51..694ded552687 100644
+index 694ded552687..23a686dbc7cd 100644
 --- a/drivers/infiniband/core/nldev.c
 +++ b/drivers/infiniband/core/nldev.c
-@@ -1189,7 +1189,10 @@ static const struct nldev_fill_res_entry fill_entries[RDMA_RESTRACK_MAX] = {
- 
- static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 			       struct netlink_ext_ack *extack,
--			       enum rdma_restrack_type res_type)
-+			       enum rdma_restrack_type res_type,
-+			       int (*fill_func)(struct sk_buff*, bool,
-+						struct rdma_restrack_entry*,
-+						uint32_t))
- {
- 	const struct nldev_fill_res_entry *fe = &fill_entries[res_type];
- 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
-@@ -1252,7 +1255,12 @@ static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	}
- 
- 	has_cap_net_admin = netlink_capable(skb, CAP_NET_ADMIN);
--	ret = fe->fill_res_func(msg, has_cap_net_admin, res, port);
-+
-+	if (fill_func)
-+		ret = fill_func(msg, has_cap_net_admin, res, port);
-+	else
-+		ret = fe->fill_res_func(msg, has_cap_net_admin, res, port);
-+
- 	rdma_restrack_put(res);
- 	if (ret)
- 		goto err_free;
-@@ -1272,7 +1280,10 @@ static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 
- static int res_get_common_dumpit(struct sk_buff *skb,
- 				 struct netlink_callback *cb,
--				 enum rdma_restrack_type res_type)
-+				 enum rdma_restrack_type res_type,
-+				 int (*fill_func)(struct sk_buff*, bool,
-+						  struct rdma_restrack_entry*,
-+						  uint32_t))
- {
- 	const struct nldev_fill_res_entry *fe = &fill_entries[res_type];
- 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
-@@ -1360,7 +1371,12 @@ static int res_get_common_dumpit(struct sk_buff *skb,
- 			goto msg_full;
- 		}
- 
--		ret = fe->fill_res_func(skb, has_cap_net_admin, res, port);
-+		if (fill_func)
-+			ret = fill_func(skb, has_cap_net_admin, res, port);
-+		else
-+			ret = fe->fill_res_func(skb, has_cap_net_admin,
-+						res, port);
-+
- 		rdma_restrack_put(res);
- 
- 		if (ret) {
-@@ -1403,17 +1419,17 @@ next:		idx++;
- 	return ret;
+@@ -756,6 +756,47 @@ static int fill_stat_hwcounter_entry(struct sk_buff *msg,
+ 	return -EMSGSIZE;
  }
  
--#define RES_GET_FUNCS(name, type)                                              \
--	static int nldev_res_get_##name##_dumpit(struct sk_buff *skb,          \
-+#define RES_GET_FUNCS(name, type)					       \
-+	static int nldev_res_get_##name##_dumpit(struct sk_buff *skb,	       \
- 						 struct netlink_callback *cb)  \
--	{                                                                      \
--		return res_get_common_dumpit(skb, cb, type);                   \
--	}                                                                      \
--	static int nldev_res_get_##name##_doit(struct sk_buff *skb,            \
--					       struct nlmsghdr *nlh,           \
-+	{								       \
-+		return res_get_common_dumpit(skb, cb, type, NULL);	       \
-+	}								       \
-+	static int nldev_res_get_##name##_doit(struct sk_buff *skb,	       \
-+					       struct nlmsghdr *nlh,	       \
- 					       struct netlink_ext_ack *extack) \
--	{                                                                      \
--		return res_get_common_doit(skb, nlh, extack, type);            \
-+	{								       \
-+		return res_get_common_doit(skb, nlh, extack, type, NULL);      \
- 	}
- 
- RES_GET_FUNCS(qp, RDMA_RESTRACK_QP);
++static int fill_stat_mr_entry(struct sk_buff *msg, bool has_cap_net_admin,
++			      struct rdma_restrack_entry *res, uint32_t port)
++{
++	struct ib_mr *mr = container_of(res, struct ib_mr, res);
++	struct ib_device *dev = mr->pd->device;
++	struct ib_umem_odp *umem_odp;
++	struct nlattr *table_attr;
++
++	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_MRN, res->id))
++		goto err;
++
++	if (fill_res_entry(dev, msg, res))
++		goto err;
++
++	if (!mr->umem->is_odp)
++		return 0;
++
++	umem_odp = to_ib_umem_odp(mr->umem);
++	table_attr = nla_nest_start(msg,
++				    RDMA_NLDEV_ATTR_STAT_HWCOUNTERS);
++
++	if (!table_attr)
++		return -EMSGSIZE;
++
++	if (fill_stat_hwcounter_entry(msg, "page_faults",
++				      umem_odp->odp_stats.faults))
++		goto err;
++	if (fill_stat_hwcounter_entry(msg, "page_invalidations",
++				      umem_odp->odp_stats.invalidations))
++		goto err;
++	if (fill_stat_hwcounter_entry(msg, "prefetched_pages",
++				      umem_odp->odp_stats.prefetched))
++		goto err;
++
++	nla_nest_end(msg, table_attr);
++
++	return 0;
++
++err:    return -EMSGSIZE;
++}
++
+ static int fill_stat_counter_hwcounters(struct sk_buff *msg,
+ 					struct rdma_counter *counter)
+ {
+@@ -2012,7 +2053,10 @@ static int nldev_stat_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	case RDMA_NLDEV_ATTR_RES_QP:
+ 		ret = stat_get_doit_qp(skb, nlh, extack, tb);
+ 		break;
+-
++	case RDMA_NLDEV_ATTR_RES_MR:
++		ret = res_get_common_doit(skb, nlh, extack, RDMA_RESTRACK_MR,
++					  fill_stat_mr_entry);
++		break;
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+@@ -2036,7 +2080,10 @@ static int nldev_stat_get_dumpit(struct sk_buff *skb,
+ 	case RDMA_NLDEV_ATTR_RES_QP:
+ 		ret = nldev_res_get_counter_dumpit(skb, cb);
+ 		break;
+-
++	case RDMA_NLDEV_ATTR_RES_MR:
++		ret = res_get_common_dumpit(skb, cb, RDMA_RESTRACK_MR,
++					    fill_stat_mr_entry);
++		break;
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
 -- 
 2.20.1
 
