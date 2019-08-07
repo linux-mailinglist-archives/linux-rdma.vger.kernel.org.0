@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1500E849A5
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 12:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0B0849A1
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 12:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbfHGKeb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Aug 2019 06:34:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41988 "EHLO mail.kernel.org"
+        id S1726564AbfHGKeV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Aug 2019 06:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726744AbfHGKeb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 7 Aug 2019 06:34:31 -0400
+        id S1726269AbfHGKeV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 7 Aug 2019 06:34:21 -0400
 Received: from localhost (unknown [77.137.115.125])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 566C621E6E;
-        Wed,  7 Aug 2019 10:34:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A03992086D;
+        Wed,  7 Aug 2019 10:34:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565174071;
-        bh=sQsYb8oa6kbZFp9chjRreTMkAOUwv973c0v/4dx8DDM=;
+        s=default; t=1565174060;
+        bh=4b7JdE8+yVkeRJKXiScMPtKZvBChiNNl2iwvcDkI4PQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JsgrHoCuQuYxD209Nutyl99aAOhMjlvB/UHpJcydQu7kl6w4zbmfKQkKHNKIVqwW2
-         XaWiDZZz8zvlSP5I4j/tTRYYf5VSgdthPw/9+xS4Lba6l7tFTAL1nwS8YBkZAdYZjk
-         Fxo2hs8vATm6HZCAID0kGrs3rr8vGGmB1RGF/ELM=
+        b=LcKAozP5MLUTbhKLG/sr4uuBFM0U2Jorg6Bmb+LyVcApE3o5gX2O6iq4ug20OxrCn
+         OgFOjpZinGq3nQMVrQH67+o4OjlZ7ETn2X+hhauyH9lMYzTK5SHc8hxvUOSPNaznOO
+         32YojeHeRHZN5y4o7+HIYGcPDrryZk6tUdf+LOAY=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Erez Alfasi <ereza@mellanox.com>
-Subject: [PATCH rdma-next 3/6] RDMA/nldev: Return ODP type per MR
-Date:   Wed,  7 Aug 2019 13:34:00 +0300
-Message-Id: <20190807103403.8102-4-leon@kernel.org>
+Subject: [PATCH rdma-next 4/6] IB/mlx5: Introduce ODP diagnostic counters
+Date:   Wed,  7 Aug 2019 13:34:01 +0300
+Message-Id: <20190807103403.8102-5-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190807103403.8102-1-leon@kernel.org>
 References: <20190807103403.8102-1-leon@kernel.org>
@@ -44,72 +44,102 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Erez Alfasi <ereza@mellanox.com>
 
-Provide an ODP explicit/implicit type indicator
-as part of 'rdma resource mr show' dump.
-
-For example:
-~$: rdma resource mr show
-dev mlx5_0 mrn 1 rkey 0xa99a lkey 0xa99a mrlen 50000000
-pdn 9 pid 7372 odp explicit comm ibv_rc_pingpong
-
-For non-ODP MRs, we won't print "odp ..." at all.
+Introduce ODP diagnostic counters and count the following
+per MR within IB/mlx5 driver:
+ 1) Page faults:
+	Total number of faulted pages.
+ 2) Page invalidations:
+	Total number of pages invalidated by the OS during all
+	invalidation events. The translations can be no longer
+	valid due to either non-present pages or mapping changes.
+ 3) Prefetched pages:
+	When prefetching a page, page fault is generated
+	in order to bring the page to the main memory.
+	The prefetched pages counter will be updated
+	during a page fault flow only if it was derived
+	from prefetching operation.
 
 Signed-off-by: Erez Alfasi <ereza@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/nldev.c  | 8 ++++++++
- include/uapi/rdma/rdma_netlink.h | 5 +++++
- 2 files changed, 13 insertions(+)
+ drivers/infiniband/hw/mlx5/odp.c | 17 +++++++++++++++++
+ include/rdma/ib_umem_odp.h       | 14 ++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index e287b71a1cfd..1562b9446c51 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -37,6 +37,8 @@
- #include <net/netlink.h>
- #include <rdma/rdma_cm.h>
- #include <rdma/rdma_netlink.h>
-+#include <rdma/ib_umem.h>
-+#include <rdma/ib_umem_odp.h>
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index 673d18b0b743..c651c684a656 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -287,6 +287,10 @@ void mlx5_ib_invalidate_range(struct ib_umem_odp *umem_odp, unsigned long start,
  
- #include "core_priv.h"
- #include "cma_priv.h"
-@@ -101,6 +103,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_RES_MRLEN]		= { .type = NLA_U64 },
- 	[RDMA_NLDEV_ATTR_RES_MRN]		= { .type = NLA_U32 },
- 	[RDMA_NLDEV_ATTR_RES_MR_ENTRY]		= { .type = NLA_NESTED },
-+	[RDMA_NLDEV_ATTR_RES_MR_ODP_TYPE]	= { .type = NLA_U8 },
- 	[RDMA_NLDEV_ATTR_RES_PATH_MIG_STATE]	= { .type = NLA_U8 },
- 	[RDMA_NLDEV_ATTR_RES_PD]		= { .type = NLA_NESTED },
- 	[RDMA_NLDEV_ATTR_RES_PDN]		= { .type = NLA_U32 },
-@@ -589,6 +592,11 @@ static int fill_res_mr_entry(struct sk_buff *msg, bool has_cap_net_admin,
- 			goto err;
- 	}
+ 	ib_umem_odp_unmap_dma_pages(umem_odp, start, end);
  
-+	if (mr->umem->is_odp)
-+		if (nla_put_u8(msg, RDMA_NLDEV_ATTR_RES_MR_ODP_TYPE,
-+			       to_ib_umem_odp(mr->umem)->type))
-+			goto err;
++	/* Count page invalidations */
++	ib_update_odp_stats(mr->ibmr, invalidations,
++			    (end - start)/BIT(umem_odp->page_shift));
 +
- 	if (nla_put_u64_64bit(msg, RDMA_NLDEV_ATTR_RES_MRLEN, mr->length,
- 			      RDMA_NLDEV_ATTR_PAD))
- 		goto err;
-diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
-index 8e277783fa96..765771a7caf7 100644
---- a/include/uapi/rdma/rdma_netlink.h
-+++ b/include/uapi/rdma/rdma_netlink.h
-@@ -525,6 +525,11 @@ enum rdma_nldev_attr {
+ 	if (unlikely(!umem_odp->npages && mr->parent &&
+ 		     !umem_odp->dying)) {
+ 		WRITE_ONCE(umem_odp->dying, 1);
+@@ -830,6 +834,19 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
+ 		if (ret < 0)
+ 			goto srcu_unlock;
+ 
++		/*
++		 * When prefetching a page, page fault is generated
++		 * in order to bring the page to the main memory.
++		 * In the current flow, page faults are being counted.
++		 * Prefetched pages counter will be updated as well
++		 * only if the current page fault flow was derived
++		 * from prefetching flow.
++		 */
++		ib_update_odp_stats(mr->ibmr, faults, ret);
++
++		if (prefetch)
++			ib_update_odp_stats(mr->ibmr, prefetched, ret);
++
+ 		npages += ret;
+ 		ret = 0;
+ 		break;
+diff --git a/include/rdma/ib_umem_odp.h b/include/rdma/ib_umem_odp.h
+index 81dc53a2848c..ebc6074c8dc7 100644
+--- a/include/rdma/ib_umem_odp.h
++++ b/include/rdma/ib_umem_odp.h
+@@ -42,6 +42,12 @@ struct umem_odp_node {
+ 	struct rb_node rb;
+ };
+ 
++struct ib_odp_counters {
++	u64 faults;
++	u64 invalidations;
++	u64 prefetched;
++};
++
+ struct ib_umem_odp {
+ 	struct ib_umem umem;
+ 	struct ib_ucontext_per_mm *per_mm;
+@@ -72,6 +78,11 @@ struct ib_umem_odp {
  	 */
- 	RDMA_NLDEV_ATTR_DEV_DIM,                /* u8 */
+ 	u8			type;
  
 +	/*
-+	 * MR ODP type, e.g. implicit/explicit.
++	 * ODP diagnostic counters.
 +	 */
-+	RDMA_NLDEV_ATTR_RES_MR_ODP_TYPE,	/* u8 */
++	struct ib_odp_counters odp_stats;
 +
- 	/*
- 	 * Always the end
- 	 */
+ 	int notifiers_seq;
+ 	int notifiers_count;
+ 	int npages;
+@@ -118,6 +129,9 @@ static inline void ib_umem_odp_set_type(struct ib_umem_odp *umem_odp,
+ 		umem_odp->type = IB_ODP_TYPE_EXPLICIT;
+ }
+ 
++#define ib_update_odp_stats(mr, counter_name, value)			\
++	(to_ib_umem_odp(mr.umem)->odp_stats.counter_name += value)
++
+ /*
+  * The lower 2 bits of the DMA address signal the R/W permissions for
+  * the entry. To upgrade the permissions, provide the appropriate
 -- 
 2.20.1
 
