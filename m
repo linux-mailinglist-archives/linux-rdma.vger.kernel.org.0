@@ -2,77 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DCF842E9
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 05:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6844984300
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2019 05:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726797AbfHGDak (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Aug 2019 23:30:40 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4183 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726612AbfHGDak (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Aug 2019 23:30:40 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 65D60DBE13CC5B121D41;
-        Wed,  7 Aug 2019 11:30:35 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Wed, 7 Aug 2019
- 11:30:27 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <oulijun@huawei.com>, <xavier.huwei@huawei.com>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] RDMA/hns: remove obsolete Kconfig comment
-Date:   Wed, 7 Aug 2019 11:22:28 +0800
-Message-ID: <20190807032228.6788-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1726797AbfHGDpd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Aug 2019 23:45:33 -0400
+Received: from mail-vs1-f41.google.com ([209.85.217.41]:38668 "EHLO
+        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726612AbfHGDpd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Aug 2019 23:45:33 -0400
+Received: by mail-vs1-f41.google.com with SMTP id k9so59742936vso.5
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2019 20:45:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=61ytXJsiXRoLTNE90MZ18mf6DS6YVqgHFlQmGhP5UoE=;
+        b=txoxSlZYB9POrOcupTvnrRyG43czeWQV1yHIy6WdAyr7r1CN79q5chIwBAbT7No9gq
+         DMAGlFOFwm5QurXcGDOdjiwk/oV+zfJ7xlxJphFvhKdLbW3cWwd0FgNJNJ9b1ciZ01io
+         xA72U8DOcI/NMUzfikulcKHvyDhDvsko8KrJMixNR9TmxakYDkd4rh7v1mivnnqvmBPA
+         MYXrEa5bMWF7EkdSCOrlBAb2/yDOYU8CABGDvJR64d8dPM/nxJxslS3aidAD7KzLMLX8
+         ChPRV9zmzydvwEO1rRBO6w5vQvXlrYroFuIqScsdQCn7hVMxkDz8+eg/qiZni4blzxyx
+         W8eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=61ytXJsiXRoLTNE90MZ18mf6DS6YVqgHFlQmGhP5UoE=;
+        b=M4iJPnx+0oqIF6HHKpnCbngr96mkKszCBG25WL8G/vWpywpKeOW2QowmaimNO5NzQj
+         Tl4/nPer8S6qlg2ySPQieku4YHIndx/NpDNGp0s56AcYOYZvlXErlqhgGHHMqJEgivpL
+         1Jq8AwJwwIna4ThmA69LPNfSSEqkfsm6HuqYHkEC0vuDldxwoTAHx9D5BgEAkzfmzbqY
+         hVapGCxmYf1UAn9H1ZNXaU6Z0U8OAWfD3SB3y6sU1EIgwVMBkzM7ElA3d7FxOqBzZAW1
+         YEE/WsmosUl9j5wTJ90OPJGMjVysoTsNXOBSevUuXMxY7jz+foK3wF80HPuj9xbOU66o
+         olBQ==
+X-Gm-Message-State: APjAAAXM5+sRWYOFSjfKPa7bMDuIm/+ZM5Rh+eT9049QlySyxDma0KPg
+        th2m0Uslhkp9rL65/4i8bMFic905DoTdlZIGcdMK9pGn
+X-Google-Smtp-Source: APXvYqyX0UOOjhz7wuJ3Hod9xQ6YoLzfdrPVpzanEHC1pi0M1HnHzfphM99DsP68etQy8OEOgGvv8yoj/edplV8slUU=
+X-Received: by 2002:a67:c419:: with SMTP id c25mr4356900vsk.136.1565149532094;
+ Tue, 06 Aug 2019 20:45:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
+From:   James Harvey <jamespharvey20@gmail.com>
+Date:   Tue, 6 Aug 2019 23:45:21 -0400
+Message-ID: <CA+X5Wn75Lfh_i89sW1L+x1S3rnZsEGkzfNYju4woPvq0yCo=XA@mail.gmail.com>
+Subject: v25.0 ninja install failure on pandoc-prebuilt using git tree or
+ release tarball
+To:     linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Since commit a07fc0bb483e ("RDMA/hns: Fix build error")
-these kconfig comment is obsolete, so just remove it.
+I'm one of the Arch Linux AUR repository rdma-core maintainers.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/infiniband/hw/hns/Kconfig | 8 --------
- 1 file changed, 8 deletions(-)
+We've always build rdma-core from release tags in the git repo.
 
-diff --git a/drivers/infiniband/hw/hns/Kconfig b/drivers/infiniband/hw/hns/Kconfig
-index 5478219..d602b69 100644
---- a/drivers/infiniband/hw/hns/Kconfig
-+++ b/drivers/infiniband/hw/hns/Kconfig
-@@ -8,8 +8,6 @@ config INFINIBAND_HNS
- 	  is used in Hisilicon Hip06 and more further ICT SoC based on
- 	  platform device.
- 
--	  To compile HIP06 or HIP08 driver as module, choose M here.
--
- config INFINIBAND_HNS_HIP06
- 	tristate "Hisilicon Hip06 Family RoCE support"
- 	depends on INFINIBAND_HNS && HNS && HNS_DSAF && HNS_ENET
-@@ -17,15 +15,9 @@ config INFINIBAND_HNS_HIP06
- 	  RoCE driver support for Hisilicon RoCE engine in Hisilicon Hip06 and
- 	  Hip07 SoC. These RoCE engines are platform devices.
- 
--	  To compile this driver, choose Y here: if INFINIBAND_HNS is m, this
--	  module will be called hns-roce-hw-v1
--
- config INFINIBAND_HNS_HIP08
- 	tristate "Hisilicon Hip08 Family RoCE support"
- 	depends on INFINIBAND_HNS && PCI && HNS3
- 	---help---
- 	  RoCE driver support for Hisilicon RoCE engine in Hisilicon Hip08 SoC.
- 	  The RoCE engine is a PCI device.
--
--	  To compile this driver, choose Y here: if INFINIBAND_HNS is m, this
--	  module will be called hns-roce-hw-v2.
--- 
-2.7.4
+As-is, building v25 from the git repo has a new build requirement of
+rst2man, which isn't documented in the release notes or in the readme.
+(On Arch, part of the python-docutils package.)  I haven't directly
+used pandoc or rst2man before, so I don't know if rst2man was added to
+be an alternative to pandoc, or ran in addition to it.  In case they
+were meant as alternatives, the build system doesn't currently
+function that way.  With pandoc but without rst2man, it says
+"'install' disabled", and never builds the man pages, causing "ninja
+install" to fail from not finding
+"pandoc-prebuilt/f48a8d31ddfa68fad6c3badbc768ac703976c43f".
 
-
+I looked at switching to the release tarballs (rdma-core-25.0.tar.gz),
+which of course has the prebuilt man pages.  I assume doing this
+should completely prevent needing pandoc and rst2man.  But, then
+"ninja install" fails from not finding
+"pandoc-prebuilt/32acf8c8016edc90e7adedc5be9caecd9b8abb3e", which I do
+see is not among the 81 directories in "pandoc-prebuilt/" in
+"rdma-core-25.0.tar.gz".  Were some of the necessary prebuilt files
+not included in the 25 tarball?
