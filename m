@@ -2,249 +2,384 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EC5864ED
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 16:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CA186520
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 17:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733151AbfHHO6T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Aug 2019 10:58:19 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:50844 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1733153AbfHHO6T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Aug 2019 10:58:19 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6BC31CDFCD9BCC2D1291;
-        Thu,  8 Aug 2019 22:58:17 +0800 (CST)
-Received: from linux-ioko.site (10.71.200.31) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.439.0; Thu, 8 Aug 2019 22:58:08 +0800
-From:   Lijun Ou <oulijun@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH V4 for-next 14/14] RDMA/hns: Use the new APIs for printing log
-Date:   Thu, 8 Aug 2019 22:53:54 +0800
-Message-ID: <1565276034-97329-15-git-send-email-oulijun@huawei.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1565276034-97329-1-git-send-email-oulijun@huawei.com>
-References: <1565276034-97329-1-git-send-email-oulijun@huawei.com>
+        id S1728289AbfHHPGE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 8 Aug 2019 11:06:04 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44080 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727649AbfHHPGE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Aug 2019 11:06:04 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x78F3Rwd060037
+        for <linux-rdma@vger.kernel.org>; Thu, 8 Aug 2019 11:06:03 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.104])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2u8n04ke2q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Aug 2019 11:06:02 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Thu, 8 Aug 2019 15:06:01 -0000
+Received: from us1b3-smtp01.a3dr.sjc01.isc4sb.com (10.122.7.174)
+        by smtp.notes.na.collabserv.com (10.122.47.44) with smtp.notes.na.collabserv.com ESMTP;
+        Thu, 8 Aug 2019 15:05:12 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp01.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019080815051280-570044 ;
+          Thu, 8 Aug 2019 15:05:12 +0000 
+In-Reply-To: <20190805172605.GA5549@chelsio.com>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+Cc:     "Tom Talpey" <tom@talpey.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>,
+        "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
+Date:   Thu, 8 Aug 2019 15:05:12 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.71.200.31]
-X-CFilter-Loop: Reflected
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190805172605.GA5549@chelsio.com>,<8499b96a-48dd-1286-ea0f-e66be34afffa@talpey.com>
+ <20190731103310.23199-1-krishna2@chelsio.com>
+ <OF4DB6F345.7C76F976-ON00258449.00392FF3-00258449.003C1BFB@notes.na.collabserv.com>
+ <OF95C29EF7.244FC9E1-ON0025844A.003D049F-0025844A.003E229B@notes.na.collabserv.com>
+ <518b1734-5d72-e32d-376b-0fec1cbce8f5@talpey.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-KeepSent: 7F439620:B43AE37C-00258450:00524237;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 18695
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19080815-5525-0000-0000-00000081787E
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.261808
+X-IBM-SpamModules-Versions: BY=3.00011571; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01243887; UDB=6.00656214; IPR=6.01025364;
+ MB=3.00028094; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-08 15:05:57
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-08 12:25:41 - 6.00010260
+x-cbparentid: 19080815-5526-0000-0000-000000D78BC6
+Message-Id: <OF7F439620.B43AE37C-ON00258450.00524237-00258450.0052DFDC@notes.na.collabserv.com>
+Subject: RE: [PATCH for-rc] siw: MPA Reply handler tries to read beyond MPA message
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-08_06:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Here uses the new APIs instead of some dev print interfaces in
-some functions.
+-----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
 
-Signed-off-by: Lijun Ou <oulijun@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c |  8 +++---
- drivers/infiniband/hw/hns/hns_roce_qp.c    | 45 +++++++++++++++++-------------
- 2 files changed, 29 insertions(+), 24 deletions(-)
+>To: "Tom Talpey" <tom@talpey.com>, <BMT@zurich.ibm.com>
+>From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+>Date: 08/05/2019 07:26PM
+>Cc: "jgg@ziepe.ca" <jgg@ziepe.ca>, "linux-rdma@vger.kernel.org"
+><linux-rdma@vger.kernel.org>, "Potnuri Bharat Teja"
+><bharat@chelsio.com>, "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
+>Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler tries
+>to read beyond MPA message
+>
+>On Friday, August 08/02/19, 2019 at 18:17:37 +0530, Tom Talpey wrote:
+>> On 8/2/2019 7:18 AM, Bernard Metzler wrote:
+>> > -----"Tom Talpey" <tom@talpey.com> wrote: -----
+>> > 
+>> >> To: "Bernard Metzler" <BMT@zurich.ibm.com>, "Krishnamraju
+>Eraparaju"
+>> >> <krishna2@chelsio.com>
+>> >> From: "Tom Talpey" <tom@talpey.com>
+>> >> Date: 08/01/2019 08:54PM
+>> >> Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+>bharat@chelsio.com,
+>> >> nirranjan@chelsio.com, krishn2@chelsio.com
+>> >> Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler
+>tries
+>> >> to read beyond MPA message
+>> >>
+>> >> On 8/1/2019 6:56 AM, Bernard Metzler wrote:
+>> >>> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote:
+>-----
+>> >>>
+>> >>>> To: jgg@ziepe.ca, bmt@zurich.ibm.com
+>> >>>> From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+>> >>>> Date: 07/31/2019 12:34PM
+>> >>>> Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com,
+>> >>>> nirranjan@chelsio.com, krishn2@chelsio.com, "Krishnamraju
+>> >> Eraparaju"
+>> >>>> <krishna2@chelsio.com>
+>> >>>> Subject: [EXTERNAL] [PATCH for-rc] siw: MPA Reply handler
+>tries to
+>> >>>> read beyond MPA message
+>> >>>>
+>> >>>> while processing MPA Reply, SIW driver is trying to read extra
+>4
+>> >>>> bytes
+>> >>>> than what peer has advertised as private data length.
+>> >>>>
+>> >>>> If a FPDU data is received before even siw_recv_mpa_rr()
+>completed
+>> >>>> reading MPA reply, then ksock_recv() in siw_recv_mpa_rr()
+>could
+>> >> also
+>> >>>> read FPDU, if "size" is larger than advertised MPA reply
+>length.
+>> >>>>
+>> >>>> 501 static int siw_recv_mpa_rr(struct siw_cep *cep)
+>> >>>> 502 {
+>> >>>>            .............
+>> >>>> 572
+>> >>>> 573         if (rcvd > to_rcv)
+>> >>>> 574                 return -EPROTO;   <----- Failure here
+>> >>>>
+>> >>>> Looks like the intention here is to throw an ERROR if the
+>received
+>> >>>> data
+>> >>>> is more than the total private data length advertised by the
+>peer.
+>> >>>> But
+>> >>>> reading beyond MPA message causes siw_cm to generate
+>> >>>> RDMA_CM_EVENT_CONNECT_ERROR event when TCP socket recv buffer
+>is
+>> >>>> already
+>> >>>> queued with FPDU messages.
+>> >>>>
+>> >>>> Hence, this function should only read upto private data
+>length.
+>> >>>>
+>> >>>> Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+>> >>>> ---
+>> >>>> drivers/infiniband/sw/siw/siw_cm.c | 4 ++--
+>> >>>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>> >>>>
+>> >>>> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
+>> >>>> b/drivers/infiniband/sw/siw/siw_cm.c
+>> >>>> index a7cde98e73e8..8dc8cea2566c 100644
+>> >>>> --- a/drivers/infiniband/sw/siw/siw_cm.c
+>> >>>> +++ b/drivers/infiniband/sw/siw/siw_cm.c
+>> >>>> @@ -559,13 +559,13 @@ static int siw_recv_mpa_rr(struct
+>siw_cep
+>> >> *cep)
+>> >>>> 	 * A private data buffer gets allocated if hdr->params.pd_len
+>!=
+>> >> 0.
+>> >>>> 	 */
+>> >>>> 	if (!cep->mpa.pdata) {
+>> >>>> -		cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
+>> >>>> +		cep->mpa.pdata = kmalloc(pd_len, GFP_KERNEL);
+>> >>>> 		if (!cep->mpa.pdata)
+>> >>>> 			return -ENOMEM;
+>> >>>> 	}
+>> >>>> 	rcvd = ksock_recv(
+>> >>>> 		s, cep->mpa.pdata + cep->mpa.bytes_rcvd - sizeof(struct
+>mpa_rr),
+>> >>>> -		to_rcv + 4, MSG_DONTWAIT);
+>> >>>> +		to_rcv, MSG_DONTWAIT);
+>> >>>>
+>> >>>> 	if (rcvd < 0)
+>> >>>> 		return rcvd;
+>> >>>> -- 
+>> >>>> 2.23.0.rc0
+>> >>>>
+>> >>>>
+>> >>>
+>> >>> The intention of this code is to make sure the
+>> >>> peer does not violates the MPA handshake rules.
+>> >>> The initiator MUST NOT send extra data after its
+>> >>> MPA request and before receiving the MPA reply.
+>> >>
+>> >> I think this is true only for MPA v2. With MPA v1, the
+>> >> initiator can begin sending immediately (before receiving
+>> >> the MPA reply), because there is no actual negotiation at
+>> >> the MPA layer.
+>> >>
+>> >> With MPA v2, the negotiation exchange is required because
+>> >> the type of the following message is predicated by the
+>> >> "Enhanced mode" a|b|c|d flags present in the first 32 bits
+>> >> of the private data buffer.
+>> >>
+>> >> So, it seems to me that additional logic is needed here to
+>> >> determine the MPA version, before sniffing additional octets
+>> >>from the incoming stream?
+>> >>
+>> >> Tom.
+>> >>
+>> > 
+>> > There still is the marker negotiation taking place.
+>> > RFC 5044 says in section 7.1.2:
+>> > 
+>> > "Note: Since the receiver's ability to deal with Markers is
+>> >   unknown until the Request and Reply Frames have been
+>> >   received, sending FPDUs before this occurs is not possible."
+>> > 
+>> > This section further discusses the responder's behavior,
+>> > where it MUST receive a first FPDU from the initiator
+>> > before sending its first FPDU:
+>> > 
+>> > "4.  MPA Responder mode implementations MUST receive and validate
+>at
+>> >         least one FPDU before sending any FPDUs or Markers."
+>> > 
+>> > So it appears with MPA version 1, the current siw
+>> > code is correct. The initiator is entering FPDU mode
+>> > first, and only after receiving the MPA reply frame.
+>> > Only after the initiator sent a first FPDU, the responder
+>> > can start using the connection in FPDU mode.
+>> > Because of this somehow broken connection establishment
+>> > procedure (only the initiator can start sending data), a
+>> > later MPA version makes this first FPDU exchange explicit
+>> > and selectable (zero length READ/WRITE/Send).
+>> 
+>> Yeah, I guess so. Because nobody ever actually implemented markers,
+>> I think that they may more or less passively ignore this. But
+>you're
+>> currect that it's invalid protocol behavior.
+>> 
+>> If your testing didn't uncover any issues with existing
+>implementations
+>> failing to connect with your strict checking, I'm ok with it.
+>Tom & Bernard,
+>Thanks for the insight on MPA negotiation.
+>
+>Could the below patch be considered as a proper fix?
+>
+>diff --git a/drivers/infiniband/sw/siw/siw_cm.c
+>b/drivers/infiniband/sw/siw/siw_cm.c
+>index 9ce8a1b925d2..0aec1b5212f9 100644
+>--- a/drivers/infiniband/sw/siw/siw_cm.c
+>+++ b/drivers/infiniband/sw/siw/siw_cm.c
+>@@ -503,6 +503,7 @@ static int siw_recv_mpa_rr(struct siw_cep *cep)
+>        struct socket *s = cep->sock;
+>        u16 pd_len;
+>        int rcvd, to_rcv;
+>+       int extra_data_check = 4; /* 4Bytes, for MPA rules violation
+>checking */
+>
+>        if (cep->mpa.bytes_rcvd < sizeof(struct mpa_rr)) {
+>                rcvd = ksock_recv(s, (char *)hdr +
+>cep->mpa.bytes_rcvd,
+>@@ -553,23 +554,37 @@ static int siw_recv_mpa_rr(struct siw_cep *cep)
+>                return -EPROTO;
+>        }
+>
+>+       /*
+>+        * Peer must not send any extra data other than MPA messages
+>until MPA
+>+        * negotiation is completed, an exception is MPA V2
+>client-server Mode,
+>+        * IE, in this mode the peer after sending MPA Reply can
+>immediately
+>+        * start sending data in RDMA mode.
+>+        */
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 567be0a..87a1574 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4560,7 +4560,7 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
- 					 struct ib_udata *udata)
- {
- 	struct hns_roce_cq *send_cq, *recv_cq;
--	struct device *dev = hr_dev->dev;
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	int ret;
- 
- 	if (hr_qp->ibqp.qp_type == IB_QPT_RC && hr_qp->state != IB_QPS_RESET) {
-@@ -4568,7 +4568,7 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
- 		ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, NULL, 0,
- 					    hr_qp->state, IB_QPS_RESET);
- 		if (ret) {
--			dev_err(dev, "modify QP to Reset failed.\n");
-+			ibdev_err(ibdev, "modify QP to Reset failed.\n");
- 			return ret;
- 		}
- 	}
-@@ -4637,8 +4637,8 @@ static int hns_roce_v2_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 
- 	ret = hns_roce_v2_destroy_qp_common(hr_dev, hr_qp, udata);
- 	if (ret) {
--		dev_err(&hr_dev->dev, "Destroy qp 0x%06lx failed(%d)\n",
--			hr_qp->qpn, ret);
-+		ibdev_err(&hr_dev->ib_dev, "Destroy qp 0x%06lx failed(%d)\n",
-+			  hr_qp->qpn, ret);
- 		return ret;
- 	}
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index f803209..b729f8e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -335,13 +335,13 @@ static int check_sq_size_with_integrity(struct hns_roce_dev *hr_dev,
- 	if ((u32)(1 << ucmd->log_sq_bb_count) > hr_dev->caps.max_wqes ||
- 	     ucmd->log_sq_stride > max_sq_stride ||
- 	     ucmd->log_sq_stride < HNS_ROCE_IB_MIN_SQ_STRIDE) {
--		dev_err(hr_dev->dev, "check SQ size error!\n");
-+		ibdev_err(&hr_dev->ib_dev, "check SQ size error!\n");
- 		return -EINVAL;
- 	}
- 
- 	if (cap->max_send_sge > hr_dev->caps.max_sq_sg) {
--		dev_err(hr_dev->dev, "SQ sge error! max_send_sge=%d\n",
--			cap->max_send_sge);
-+		ibdev_err(&hr_dev->ib_dev, "SQ sge error! max_send_sge=%d\n",
-+			  cap->max_send_sge);
- 		return -EINVAL;
- 	}
- 
-@@ -988,7 +988,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 				 struct ib_udata *udata)
- {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(pd->device);
--	struct device *dev = hr_dev->dev;
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	struct hns_roce_sqp *hr_sqp;
- 	struct hns_roce_qp *hr_qp;
- 	int ret;
-@@ -1002,8 +1002,8 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 		ret = hns_roce_create_qp_common(hr_dev, pd, init_attr, udata, 0,
- 						hr_qp);
- 		if (ret) {
--			dev_err(dev, "Create RC QP 0x%06lx failed(%d)\n",
--				hr_qp->qpn, ret);
-+			ibdev_err(ibdev, "Create RC QP 0x%06lx failed(%d)\n",
-+				  hr_qp->qpn, ret);
- 			kfree(hr_qp);
- 			return ERR_PTR(ret);
- 		}
-@@ -1015,7 +1015,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 	case IB_QPT_GSI: {
- 		/* Userspace is not allowed to create special QPs: */
- 		if (udata) {
--			dev_err(dev, "not support usr space GSI\n");
-+			ibdev_err(ibdev, "not support usr space GSI\n");
- 			return ERR_PTR(-EINVAL);
- 		}
- 
-@@ -1037,7 +1037,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 		ret = hns_roce_create_qp_common(hr_dev, pd, init_attr, udata,
- 						hr_qp->ibqp.qp_num, hr_qp);
- 		if (ret) {
--			dev_err(dev, "Create GSI QP failed!\n");
-+			ibdev_err(ibdev, "Create GSI QP failed!\n");
- 			kfree(hr_sqp);
- 			return ERR_PTR(ret);
- 		}
-@@ -1045,7 +1045,8 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 		break;
- 	}
- 	default:{
--		dev_err(dev, "not support QP type %d\n", init_attr->qp_type);
-+		ibdev_err(ibdev, "not support QP type %d\n",
-+			  init_attr->qp_type);
- 		return ERR_PTR(-EINVAL);
- 	}
- 	}
-@@ -1075,7 +1076,6 @@ static int check_mtu_validate(struct hns_roce_dev *hr_dev,
- 			      struct hns_roce_qp *hr_qp,
- 			      struct ib_qp_attr *attr, int attr_mask)
- {
--	struct device *dev = hr_dev->dev;
- 	enum ib_mtu active_mtu;
- 	int p;
- 
-@@ -1085,7 +1085,8 @@ static int check_mtu_validate(struct hns_roce_dev *hr_dev,
- 	if ((hr_dev->caps.max_mtu >= IB_MTU_2048 &&
- 	    attr->path_mtu > hr_dev->caps.max_mtu) ||
- 	    attr->path_mtu < IB_MTU_256 || attr->path_mtu > active_mtu) {
--		dev_err(dev, "attr path_mtu(%d)invalid while modify qp",
-+		ibdev_err(&hr_dev->ib_dev,
-+			"attr path_mtu(%d)invalid while modify qp",
- 			attr->path_mtu);
- 		return -EINVAL;
- 	}
-@@ -1098,12 +1099,12 @@ static int hns_roce_check_qp_attr(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
- 	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
--	struct device *dev = hr_dev->dev;
- 	int p;
- 
- 	if ((attr_mask & IB_QP_PORT) &&
- 	    (attr->port_num == 0 || attr->port_num > hr_dev->caps.num_ports)) {
--		dev_err(dev, "attr port_num invalid.attr->port_num=%d\n",
-+		ibdev_err(&hr_dev->ib_dev,
-+			"attr port_num invalid.attr->port_num=%d\n",
- 			attr->port_num);
- 		return -EINVAL;
- 	}
-@@ -1111,7 +1112,8 @@ static int hns_roce_check_qp_attr(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	if (attr_mask & IB_QP_PKEY_INDEX) {
- 		p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
- 		if (attr->pkey_index >= hr_dev->caps.pkey_table_len[p]) {
--			dev_err(dev, "attr pkey_index invalid.attr->pkey_index=%d\n",
-+			ibdev_err(&hr_dev->ib_dev,
-+				"attr pkey_index invalid.attr->pkey_index=%d\n",
- 				attr->pkey_index);
- 			return -EINVAL;
- 		}
-@@ -1119,14 +1121,16 @@ static int hns_roce_check_qp_attr(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 
- 	if (attr_mask & IB_QP_MAX_QP_RD_ATOMIC &&
- 	    attr->max_rd_atomic > hr_dev->caps.max_qp_init_rdma) {
--		dev_err(dev, "attr max_rd_atomic invalid.attr->max_rd_atomic=%d\n",
-+		ibdev_err(&hr_dev->ib_dev,
-+			"attr max_rd_atomic invalid.attr->max_rd_atomic=%d\n",
- 			attr->max_rd_atomic);
- 		return -EINVAL;
- 	}
- 
- 	if (attr_mask & IB_QP_MAX_DEST_RD_ATOMIC &&
- 	    attr->max_dest_rd_atomic > hr_dev->caps.max_qp_dest_rdma) {
--		dev_err(dev, "attr max_dest_rd_atomic invalid.attr->max_dest_rd_atomic=%d\n",
-+		ibdev_err(&hr_dev->ib_dev,
-+			"attr max_dest_rd_atomic invalid.attr->max_dest_rd_atomic=%d\n",
- 			attr->max_dest_rd_atomic);
- 		return -EINVAL;
- 	}
-@@ -1143,7 +1147,6 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
- 	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
- 	enum ib_qp_state cur_state, new_state;
--	struct device *dev = hr_dev->dev;
- 	int ret = -EINVAL;
- 
- 	mutex_lock(&hr_qp->mutex);
-@@ -1160,14 +1163,15 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 			if (hr_qp->rdb_en == 1)
- 				hr_qp->rq.head = *(int *)(hr_qp->rdb.virt_addr);
- 		} else {
--			dev_warn(dev, "flush cqe is not supported in userspace!\n");
-+			ibdev_warn(&hr_dev->ib_dev,
-+				  "flush cqe is not supported in userspace!\n");
- 			goto out;
- 		}
- 	}
- 
- 	if (!ib_modify_qp_is_ok(cur_state, new_state, ibqp->qp_type,
- 				attr_mask)) {
--		dev_err(dev, "ib_modify_qp_is_ok failed\n");
-+		ibdev_err(&hr_dev->ib_dev, "ib_modify_qp_is_ok failed\n");
- 		goto out;
- 	}
- 
-@@ -1178,7 +1182,8 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	if (cur_state == new_state && cur_state == IB_QPS_RESET) {
- 		if (hr_dev->caps.min_wqes) {
- 			ret = -EPERM;
--			dev_err(dev, "cur_state=%d new_state=%d\n", cur_state,
-+			ibdev_err(&hr_dev->ib_dev,
-+				"cur_state=%d new_state=%d\n", cur_state,
- 				new_state);
- 		} else {
- 			ret = 0;
--- 
-1.9.1
+This is unfortunately not true. The responder NEVER sends
+an FPDU without having seen an FPDU from the initiator.
+I just checked RFC 6581 again. The RTR (ready-to-receive)
+indication from the initiator is still needed, but now
+provided by the protocol and not the application: w/o
+'enhanced MPA setup', the initiator sends the first
+FPDU as an application message. With 'enhanced MPA setup',
+the initiator protocol entity sends (w/o application
+interaction) a zero length READ/WRITE/Send as a first FPDU,
+as previously negotiated with the responder. Again: only
+after the responder has seen the first FPDU, it can
+start sending in FPDU mode.
+
+Sorry for the confusion. But the current
+siw code appears to be just correct.
+
+Thanks
+Bernard
+
+
+
+>+       if ((__mpa_rr_revision(cep->mpa.hdr.params.bits) ==
+>MPA_REVISION_2) &&
+>+               (cep->state == SIW_EPSTATE_AWAIT_MPAREP)) {
+>+               int mpa_p2p_mode = cep->mpa.v2_ctrl_req.ord &
+>+                               (MPA_V2_RDMA_WRITE_RTR |
+>MPA_V2_RDMA_READ_RTR);
+>+               if (!mpa_p2p_mode)
+>+                       extra_data_check = 0;
+>+       }
+>+
+>        /*
+>         * At this point, we must have hdr->params.pd_len != 0.
+>         * A private data buffer gets allocated if hdr->params.pd_len
+>!=
+>         * 0.
+>         */
+>        if (!cep->mpa.pdata) {
+>-               cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
+>+               cep->mpa.pdata = kmalloc(pd_len + extra_data_check,
+>GFP_KERNEL);
+>                if (!cep->mpa.pdata)
+>                        return -ENOMEM;
+>        }
+>        rcvd = ksock_recv(
+>                s, cep->mpa.pdata + cep->mpa.bytes_rcvd -
+>sizeof(struct
+>mpa_rr),
+>-               to_rcv + 4, MSG_DONTWAIT);
+>+               to_rcv + extra_data_check, MSG_DONTWAIT);
+>
+>        if (rcvd < 0)
+>                return rcvd;
+>
+>-       if (rcvd > to_rcv)
+>+       if (extra_data_check && (rcvd > to_rcv))
+>                return -EPROTO;
+>
+>        cep->mpa.bytes_rcvd += rcvd;
+>
+>-Krishna.
+>> 
+>> Tom.
+>> 
+>> 
+>> 
+>> > 
+>> > Bernard.
+>> > 
+>> >>
+>> >>> So, for the MPA request case, this code is needed
+>> >>> to check for protocol correctness.
+>> >>> You are right for the MPA reply case - if we are
+>> >>> _not_ in peer2peer mode, the peer can immediately
+>> >>> start sending data in RDMA mode after its MPA Reply.
+>> >>> So we shall add appropriate code to be more specific
+>> >>> For an error, we are (1) processing an MPA Request,
+>> >>> OR (2) processing an MPA Reply AND we are not expected
+>> >>> to send an initial READ/WRITE/Send as negotiated with
+>> >>> the peer (peer2peer mode MPA handshake).
+>> >>>
+>> >>> Just removing this check would make siw more permissive,
+>> >>> but to a point where peer MPA protocol errors are
+>> >>> tolerated. I am not in favor of that level of
+>> >>> forgiveness.
+>> >>>
+>> >>> If possible, please provide an appropriate patch
+>> >>> or (if it causes current issues with another peer
+>> >>> iWarp implementation) just run in MPA peer2peer mode,
+>> >>> where the current check is appropriate.
+>> >>> Otherwise, I would provide an appropriate fix by Monday
+>> >>> (I am still out of office this week).
+>> >>>
+>> >>>
+>> >>> Many thanks and best regards,
+>> >>> Bernard.
+>> >>>
+>> >>>
+>> >>>
+>> >>
+>> >>
+>> > 
+>> > 
+>> > 
+>
+>
 
