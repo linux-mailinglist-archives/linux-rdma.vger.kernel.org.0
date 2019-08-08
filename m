@@ -2,81 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 521AC85D22
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 10:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D7E85E3A
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 11:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731500AbfHHIoN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Aug 2019 04:44:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730678AbfHHIoN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Aug 2019 04:44:13 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BD80217D7;
-        Thu,  8 Aug 2019 08:44:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565253852;
-        bh=SIfM/mRJMEXLrkcEjwtTVleq8Ukx+/D0BVY1fGIEz7c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MBoNYV4D9Dm1KvBCbIPdGTJ/zF5nd2hLM9mC49KqudeUkMdJXyTvhwgYubATdOOJg
-         b8RjEIPExwdw6zSyZMfJ0zBjUsAONvXy8BnMnrEnHYZO9y0st0Z/boK8T4hYCY7MdC
-         cmT1lnR/C0AlYC0v9EJzoDeSdNPAntyFC7X3Kn3s=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Edward Srouji <edwards@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: [PATCH rdma-next 4/4] IB/mlx5: Expose XRQ legacy commands over the DEVX interface
-Date:   Thu,  8 Aug 2019 11:43:58 +0300
-Message-Id: <20190808084358.29517-5-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190808084358.29517-1-leon@kernel.org>
-References: <20190808084358.29517-1-leon@kernel.org>
+        id S1732123AbfHHJ1a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Aug 2019 05:27:30 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4193 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731788AbfHHJ1a (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 8 Aug 2019 05:27:30 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id B901F7F8BF89E20C12DF;
+        Thu,  8 Aug 2019 17:27:27 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Thu, 8 Aug 2019
+ 17:27:19 +0800
+Subject: Re: [PATCH V3 for-next 00/13] Updates for 5.3-rc2
+To:     Doug Ledford <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1564821919-100676-1-git-send-email-oulijun@huawei.com>
+ <c4af76063f6cd72b8dccf21d4256273a69fad309.camel@redhat.com>
+From:   oulijun <oulijun@huawei.com>
+Message-ID: <a9c1bcb9-42f9-9419-0243-7d212b67638a@huawei.com>
+Date:   Thu, 8 Aug 2019 17:27:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
+In-Reply-To: <c4af76063f6cd72b8dccf21d4256273a69fad309.camel@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yishai Hadas <yishaih@mellanox.com>
+在 2019/8/8 3:38, Doug Ledford 写道:
+> On Sat, 2019-08-03 at 16:45 +0800, Lijun Ou wrote:
+>> Here are some updates for hns driver based 5.3-rc2, mainly
+>> include some codes optimization and comments style modification.
+>>
+>> Change from V2:
+>> 1. Remove the unncessary memset opertion for the tenth patch
+>>
+>> Change from V1:
+>> 1. Fix the checkpatch warning
+>> 2. Use ibdev print interface instead of dev print interface in
+>>    this patchset.
+> I need you to separate the ibdev changes from other changes.  I have
+> other comments on the patches that I'll make on the individual patches,
+> but just in general, do one single patch to switch to using ibdev prints
+> and have it cover the entire driver.  You can make it the first or last
+> patch, I don't care.  But don't mix anything else in with the ibdev
+> transition patch.  You shouldn't be mixing things like fixing an
+> incorrect print with a switch to ibdev print in the same patch because
+> it makes it very difficult on people that might be backporting these
+> patches to take the fix if they haven't also taken the ibdev print
+> patchset.
+Thank your advice. I also started thinking about this problem before send V3.
+I want to use a following patch separately to instead the dev print.  But the overall
+replacement in the drvier is more troublesome and need to analysis. Because if
+replace all dev print interfaces, may cause a null print infomation.  the ibdev is NULL before
+the roce device registered sucessfully.
 
-Expose missing XRQ legacy commands over the DEVX interface.
+So my solution is to modify the dev print in the current patchset and later send a modified patch
+for replacing all dev interface after the overall analysis is clear.
+>> Lang Cheng (6):
+>>   RDMA/hns: Clean up unnecessary initial assignment
+>>   RDMA/hns: Update some comments style
+>>   RDMA/hns: Handling the error return value of hem function
+>>   RDMA/hns: Split bool statement and assign statement
+>>   RDMA/hns: Refactor irq request code
+>>   RDMA/hns: Remove unnecessary kzalloc
+>>
+>> Lijun Ou (2):
+>>   RDMA/hns: Encapsulate some lines for setting sq size in user mode
+>>   RDMA/hns: Optimize hns_roce_modify_qp function
+>>
+>> Weihang Li (2):
+>>   RDMA/hns: Remove redundant print in hns_roce_v2_ceq_int()
+>>   RDMA/hns: Disable alw_lcl_lpbk of SSU
+>>
+>> Yangyang Li (1):
+>>   RDMA/hns: Refactor hns_roce_v2_set_hem for hip08
+>>
+>> Yixian Liu (2):
+>>   RDMA/hns: Update the prompt message for creating and destroy qp
+>>   RDMA/hns: Remove unnessary init for cmq reg
+>>
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  65 +++++----
+>>  drivers/infiniband/hw/hns/hns_roce_hem.c    |  15 +-
+>>  drivers/infiniband/hw/hns/hns_roce_hem.h    |   6 +-
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 211 ++++++++++++++-----
+>> ---------
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   2 -
+>>  drivers/infiniband/hw/hns/hns_roce_mr.c     |   1 -
+>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 178 ++++++++++++++-----
+>> ----
+>>  7 files changed, 260 insertions(+), 218 deletions(-)
+>>
 
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/devx.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 3dbdfe0eb5e4..04b4e937c198 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -546,6 +546,8 @@ static u64 devx_get_obj_id(const void *in)
- 		break;
- 	case MLX5_CMD_OP_ARM_XRQ:
- 	case MLX5_CMD_OP_SET_XRQ_DC_PARAMS_ENTRY:
-+	case MLX5_CMD_OP_RELEASE_XRQ_ERROR:
-+	case MLX5_CMD_OP_MODIFY_XRQ:
- 		obj_id = get_enc_obj_id(MLX5_CMD_OP_CREATE_XRQ,
- 					MLX5_GET(arm_xrq_in, in, xrqn));
- 		break;
-@@ -822,6 +824,8 @@ static bool devx_is_obj_modify_cmd(const void *in)
- 	case MLX5_CMD_OP_ARM_DCT_FOR_KEY_VIOLATION:
- 	case MLX5_CMD_OP_ARM_XRQ:
- 	case MLX5_CMD_OP_SET_XRQ_DC_PARAMS_ENTRY:
-+	case MLX5_CMD_OP_RELEASE_XRQ_ERROR:
-+	case MLX5_CMD_OP_MODIFY_XRQ:
- 		return true;
- 	case MLX5_CMD_OP_SET_FLOW_TABLE_ENTRY:
- 	{
--- 
-2.20.1
 
