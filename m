@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C25E864EA
+	by mail.lfdr.de (Postfix) with ESMTP id 847BF864EB
 	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 16:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733144AbfHHO6T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1733149AbfHHO6T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 8 Aug 2019 10:58:19 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4199 "EHLO huawei.com"
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4197 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728289AbfHHO6S (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S1732667AbfHHO6S (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
         Thu, 8 Aug 2019 10:58:18 -0400
 Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 55A3A9511A0828951A2E;
+        by Forcepoint Email with ESMTP id 4D7A03A7BFCCBB206746;
         Thu,  8 Aug 2019 22:58:12 +0800 (CST)
 Received: from linux-ioko.site (10.71.200.31) by
  DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Lijun Ou <oulijun@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH V4 for-next 02/14] RDMA/hns: Optimize hns_roce_modify_qp function
-Date:   Thu, 8 Aug 2019 22:53:42 +0800
-Message-ID: <1565276034-97329-3-git-send-email-oulijun@huawei.com>
+Subject: [PATCH V4 for-next 03/14] RDMA/hns: Update the prompt message for creating and destroy qp
+Date:   Thu, 8 Aug 2019 22:53:43 +0800
+Message-ID: <1565276034-97329-4-git-send-email-oulijun@huawei.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1565276034-97329-1-git-send-email-oulijun@huawei.com>
 References: <1565276034-97329-1-git-send-email-oulijun@huawei.com>
@@ -36,185 +36,59 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Here mainly packages some code into some new functions in order to
-reduce code compelexity.
+From: Yixian Liu <liuyixian@huawei.com>
 
+Current prompt message is uncorrect when destroying qp, add qpn
+information when creating qp.
+
+Signed-off-by: Yixian Liu <liuyixian@huawei.com>
 Signed-off-by: Lijun Ou <oulijun@huawei.com>
 ---
 V3->V4:
-1. Remove the ibdev prefix print interface
-2. Refactor the some lines for checking mtu function according to
-   Doug Ledford's reviews
-
-V1->V2:
-1. Use ibdev prefix print interface
+1. Remove the new API.
 ---
- drivers/infiniband/hw/hns/hns_roce_qp.c | 117 +++++++++++++++++++-------------
- 1 file changed, 69 insertions(+), 48 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 6 +++---
+ drivers/infiniband/hw/hns/hns_roce_qp.c    | 3 ++-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 5fcc17e6..f76617b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -1070,48 +1070,41 @@ int to_hr_qp_type(int qp_type)
- 	return transport_type;
- }
- 
--int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
--		       int attr_mask, struct ib_udata *udata)
-+static int check_mtu_validate(struct hns_roce_dev *hr_dev,
-+			      struct hns_roce_qp *hr_qp,
-+			      struct ib_qp_attr *attr, int attr_mask)
- {
--	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
--	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
--	enum ib_qp_state cur_state, new_state;
- 	struct device *dev = hr_dev->dev;
--	int ret = -EINVAL;
--	int p;
- 	enum ib_mtu active_mtu;
-+	int p;
- 
--	mutex_lock(&hr_qp->mutex);
--
--	cur_state = attr_mask & IB_QP_CUR_STATE ?
--		    attr->cur_qp_state : (enum ib_qp_state)hr_qp->state;
--	new_state = attr_mask & IB_QP_STATE ?
--		    attr->qp_state : cur_state;
--
--	if (ibqp->uobject &&
--	    (attr_mask & IB_QP_STATE) && new_state == IB_QPS_ERR) {
--		if (hr_qp->sdb_en == 1) {
--			hr_qp->sq.head = *(int *)(hr_qp->sdb.virt_addr);
-+	p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
-+	    active_mtu = iboe_get_mtu(hr_dev->iboe.netdevs[p]->mtu);
- 
--			if (hr_qp->rdb_en == 1)
--				hr_qp->rq.head = *(int *)(hr_qp->rdb.virt_addr);
--		} else {
--			dev_warn(dev, "flush cqe is not supported in userspace!\n");
--			goto out;
--		}
-+	if ((hr_dev->caps.max_mtu >= IB_MTU_2048 &&
-+	    attr->path_mtu > hr_dev->caps.max_mtu) ||
-+	    attr->path_mtu < IB_MTU_256 || attr->path_mtu > active_mtu) {
-+		dev_err(dev, "attr path_mtu(%d)invalid while modify qp",
-+			attr->path_mtu);
-+		return -EINVAL;
- 	}
- 
--	if (!ib_modify_qp_is_ok(cur_state, new_state, ibqp->qp_type,
--				attr_mask)) {
--		dev_err(dev, "ib_modify_qp_is_ok failed\n");
--		goto out;
--	}
-+	return 0;
-+}
-+
-+static int hns_roce_check_qp_attr(struct ib_qp *ibqp, struct ib_qp_attr *attr,
-+				  int attr_mask)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
-+	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
-+	struct device *dev = hr_dev->dev;
-+	int p;
- 
- 	if ((attr_mask & IB_QP_PORT) &&
- 	    (attr->port_num == 0 || attr->port_num > hr_dev->caps.num_ports)) {
- 		dev_err(dev, "attr port_num invalid.attr->port_num=%d\n",
- 			attr->port_num);
--		goto out;
-+		return -EINVAL;
- 	}
- 
- 	if (attr_mask & IB_QP_PKEY_INDEX) {
-@@ -1119,23 +1112,7 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		if (attr->pkey_index >= hr_dev->caps.pkey_table_len[p]) {
- 			dev_err(dev, "attr pkey_index invalid.attr->pkey_index=%d\n",
- 				attr->pkey_index);
--			goto out;
--		}
--	}
--
--	if (attr_mask & IB_QP_PATH_MTU) {
--		p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
--		active_mtu = iboe_get_mtu(hr_dev->iboe.netdevs[p]->mtu);
--
--		if ((hr_dev->caps.max_mtu == IB_MTU_4096 &&
--		    attr->path_mtu > IB_MTU_4096) ||
--		    (hr_dev->caps.max_mtu == IB_MTU_2048 &&
--		    attr->path_mtu > IB_MTU_2048) ||
--		    attr->path_mtu < IB_MTU_256 ||
--		    attr->path_mtu > active_mtu) {
--			dev_err(dev, "attr path_mtu(%d)invalid while modify qp",
--				attr->path_mtu);
--			goto out;
-+			return -EINVAL;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 59f88bf0..6dff7e2 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4571,8 +4571,7 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
+ 		ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, NULL, 0,
+ 					    hr_qp->state, IB_QPS_RESET);
+ 		if (ret) {
+-			dev_err(dev, "modify QP %06lx to ERR failed.\n",
+-				hr_qp->qpn);
++			dev_err(dev, "modify QP to Reset failed.\n");
+ 			return ret;
  		}
  	}
+@@ -4641,7 +4640,8 @@ static int hns_roce_v2_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
  
-@@ -1143,16 +1120,60 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	    attr->max_rd_atomic > hr_dev->caps.max_qp_init_rdma) {
- 		dev_err(dev, "attr max_rd_atomic invalid.attr->max_rd_atomic=%d\n",
- 			attr->max_rd_atomic);
--		goto out;
-+		return -EINVAL;
+ 	ret = hns_roce_v2_destroy_qp_common(hr_dev, hr_qp, udata);
+ 	if (ret) {
+-		dev_err(hr_dev->dev, "Destroy qp failed(%d)\n", ret);
++		dev_err(&hr_dev->dev, "Destroy qp 0x%06lx failed(%d)\n",
++			hr_qp->qpn, ret);
+ 		return ret;
  	}
  
- 	if (attr_mask & IB_QP_MAX_DEST_RD_ATOMIC &&
- 	    attr->max_dest_rd_atomic > hr_dev->caps.max_qp_dest_rdma) {
- 		dev_err(dev, "attr max_dest_rd_atomic invalid.attr->max_dest_rd_atomic=%d\n",
- 			attr->max_dest_rd_atomic);
-+		return -EINVAL;
-+	}
-+
-+	if (attr_mask & IB_QP_PATH_MTU)
-+		return check_mtu_validate(hr_dev, hr_qp, attr, attr_mask);
-+
-+	return 0;
-+}
-+
-+int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
-+		       int attr_mask, struct ib_udata *udata)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
-+	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
-+	enum ib_qp_state cur_state, new_state;
-+	struct device *dev = hr_dev->dev;
-+	int ret = -EINVAL;
-+
-+	mutex_lock(&hr_qp->mutex);
-+
-+	cur_state = attr_mask & IB_QP_CUR_STATE ?
-+		    attr->cur_qp_state : (enum ib_qp_state)hr_qp->state;
-+	new_state = attr_mask & IB_QP_STATE ? attr->qp_state : cur_state;
-+
-+	if (ibqp->uobject &&
-+	    (attr_mask & IB_QP_STATE) && new_state == IB_QPS_ERR) {
-+		if (hr_qp->sdb_en == 1) {
-+			hr_qp->sq.head = *(int *)(hr_qp->sdb.virt_addr);
-+
-+			if (hr_qp->rdb_en == 1)
-+				hr_qp->rq.head = *(int *)(hr_qp->rdb.virt_addr);
-+		} else {
-+			dev_warn(dev, "flush cqe is not supported in userspace!\n");
-+			goto out;
-+		}
-+	}
-+
-+	if (!ib_modify_qp_is_ok(cur_state, new_state, ibqp->qp_type,
-+				attr_mask)) {
-+		dev_err(dev, "ib_modify_qp_is_ok failed\n");
- 		goto out;
- 	}
- 
-+	ret = hns_roce_check_qp_attr(ibqp, attr, attr_mask);
-+	if (ret)
-+		goto out;
-+
- 	if (cur_state == new_state && cur_state == IB_QPS_RESET) {
- 		if (hr_dev->caps.min_wqes) {
- 			ret = -EPERM;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index f76617b..f803209 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -1002,7 +1002,8 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
+ 		ret = hns_roce_create_qp_common(hr_dev, pd, init_attr, udata, 0,
+ 						hr_qp);
+ 		if (ret) {
+-			dev_err(dev, "Create RC QP failed\n");
++			dev_err(dev, "Create RC QP 0x%06lx failed(%d)\n",
++				hr_qp->qpn, ret);
+ 			kfree(hr_qp);
+ 			return ERR_PTR(ret);
+ 		}
 -- 
 1.9.1
 
