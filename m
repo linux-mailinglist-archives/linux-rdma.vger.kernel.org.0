@@ -2,106 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D7E85E3A
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 11:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB56785F4E
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 12:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732123AbfHHJ1a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Aug 2019 05:27:30 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4193 "EHLO huawei.com"
+        id S2389918AbfHHKLF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Aug 2019 06:11:05 -0400
+Received: from mail-eopbgr150042.outbound.protection.outlook.com ([40.107.15.42]:12846
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731788AbfHHJ1a (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Aug 2019 05:27:30 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id B901F7F8BF89E20C12DF;
-        Thu,  8 Aug 2019 17:27:27 +0800 (CST)
-Received: from [127.0.0.1] (10.61.25.96) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Thu, 8 Aug 2019
- 17:27:19 +0800
-Subject: Re: [PATCH V3 for-next 00/13] Updates for 5.3-rc2
-To:     Doug Ledford <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <1564821919-100676-1-git-send-email-oulijun@huawei.com>
- <c4af76063f6cd72b8dccf21d4256273a69fad309.camel@redhat.com>
-From:   oulijun <oulijun@huawei.com>
-Message-ID: <a9c1bcb9-42f9-9419-0243-7d212b67638a@huawei.com>
-Date:   Thu, 8 Aug 2019 17:27:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.0
+        id S2389793AbfHHKLF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 8 Aug 2019 06:11:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JPahigDfF6wEC/3GDVywJ3BfvxOL+SXRAWt9iQDI02bURx/Y9Yqj0RMBoPmcKgZhop6fp/dKVFPy25IPqvYUEniiLyncRRWJeTdHWqGhnt84ILiBoLeUOXe4UnrNq8mT1+DY1597DSHXJCN/ezpkC0khMFpQtbLnuR4Y0xixDQJt/aXs16lg+Ga73BaAJCNk5CzuYuNmTHOXE/2wWtSi17GgsvNtH2uSYKNiM0UthTWDXXDK7OhjC45mtFIp+LgphnMSbMb8aUZ4xLXhVG/PBlFbN2U3coSnd20bR7vmUAS5Pv50sINeBriaBzxENaqAEjnh96iFWEYJw0dnPyS5nA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rtmAxvYOKvJe7IuN36mkJudCF4EKWSd7gVNtboKXlxo=;
+ b=YeG7zsUdCB3FeGDW4Vh136s4D65SWpe+hpoU/FA8Z/7jv7d4BEPgMHuimhrD2eUcH/Qet6XmRaHStZJdwz6fMKVN9t7PdxqnQMUdmpGcABVJFvSRYxoiuzGAWMxpD6WpuiVHylQiSJTl6D4AzsfRzfpXnnC9mcb7wmH/HFmeHXL71tQ/t0jiwME+NB/xB3yX+ZtR2wKYnHEmG2rjCRREaBNcyzapE1ZH/T0H343MPGMgU7VKm3XFLo1izQ1MHZ8NUGJOHsNzX6MeCJ1Iq9dceLK7ERDVWWg7f19Ug+Lx2j0oEmg9+sTZv8YCCXXvkTCCMucBNNZr6gdEN6WGmY15fA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=mellanox.com;dmarc=pass action=none
+ header.from=mellanox.com;dkim=pass header.d=mellanox.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rtmAxvYOKvJe7IuN36mkJudCF4EKWSd7gVNtboKXlxo=;
+ b=Gic1EMQCtM4D16yLeRti/xK5/pyc+Qh+x7bBrCzR60RDHViS1YF9KkLo78dgDHEL0EbLPix4/bAlZEcOmqrR5SzU3HIbrATeeBO/VnKaHCfy/N6vYS8U9bSaIKcLoaLXnsCDbTj35KsKMGd5SqmJS3QkUVVAa+5SId/2iSgm+NA=
+Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.188.155) by
+ AM4PR05MB3412.eurprd05.prod.outlook.com (10.171.188.145) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2115.14; Thu, 8 Aug 2019 10:11:01 +0000
+Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
+ ([fe80::a1bc:70:4ca9:49f6]) by AM4PR05MB3137.eurprd05.prod.outlook.com
+ ([fe80::a1bc:70:4ca9:49f6%7]) with mapi id 15.20.2157.015; Thu, 8 Aug 2019
+ 10:11:01 +0000
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Edward Srouji <edwards@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next 0/4] Add XRQ and SRQ support to DEVX interface
+Thread-Topic: [PATCH rdma-next 0/4] Add XRQ and SRQ support to DEVX interface
+Thread-Index: AQHVTcVwaztmXBnL+06+efxz6YKskqbxB5uA
+Date:   Thu, 8 Aug 2019 10:11:01 +0000
+Message-ID: <20190808101059.GC28049@mtr-leonro.mtl.com>
+References: <20190808084358.29517-1-leon@kernel.org>
+In-Reply-To: <20190808084358.29517-1-leon@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: PR2PR09CA0010.eurprd09.prod.outlook.com
+ (2603:10a6:101:16::22) To AM4PR05MB3137.eurprd05.prod.outlook.com
+ (2603:10a6:205:8::27)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=leonro@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [193.47.165.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e2de0816-1c53-462a-acfb-08d71be8b71c
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM4PR05MB3412;
+x-ms-traffictypediagnostic: AM4PR05MB3412:
+x-microsoft-antispam-prvs: <AM4PR05MB34129B10D3812D0501159C5FB0D70@AM4PR05MB3412.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-forefront-prvs: 012349AD1C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(979002)(4636009)(39860400002)(396003)(136003)(376002)(346002)(366004)(189003)(199004)(81166006)(81156014)(8936002)(25786009)(6246003)(86362001)(1076003)(486006)(6636002)(66066001)(8676002)(4326008)(476003)(53936002)(305945005)(54906003)(2906002)(7736002)(316002)(9686003)(6512007)(229853002)(478600001)(76176011)(6486002)(6436002)(110136005)(14454004)(446003)(66446008)(66476007)(11346002)(256004)(64756008)(66556008)(4744005)(66946007)(6116002)(3846002)(26005)(6506007)(386003)(71200400001)(71190400001)(102836004)(186003)(52116002)(99286004)(14444005)(5660300002)(33656002)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3412;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: EMxlMGpQaLsB1mNBDlXOgqyBIb7S6Yd9w9WBIS743UQr1yFyJTvYNzlNQ8CXke1lGLt+tu2Ckr24zycOOlpHGN5N3npY3LYaUa/RxQeRHg8AYDrSMalt0La/wX/X6i2YfE2K74/7npjOLaGc1o2Z7yMAyNLoGDMiro/bkmX5XioUF7H3o5cMx8DQQ2vWQaIzvOeY/K2vicdYvPIZla6V4jdFHlcDLn3Gf099OQqiTFf5V2x3AiKAv51/8W8JQMXZNagww5iWHpDE0uPykOo7KvlmA40WHQgYDEZBly73ZtdKzPT5QYFVvfO3cLBvzQxpxiGmSfr0ZyIj689xm8XOkgHNliaM0G1/h2Co4r82Cjlu7SGreMgJAltsYL6G3x59j5vhnFrwmuaYUmEx8rym3DDqSTrdReBTU37mrbvaeMU=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <BD63A54FBDBD5C4A9F186042E3640BEC@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <c4af76063f6cd72b8dccf21d4256273a69fad309.camel@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.61.25.96]
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2de0816-1c53-462a-acfb-08d71be8b71c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Aug 2019 10:11:01.6445
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lC6rwwIk45OEDOhq8ayRxLNaeuQJRphncSnbLr8aQSv6UJwskoua6ZVTmSBc/Ha8QSnULAcbRcDF0+cOJis2sw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3412
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2019/8/8 3:38, Doug Ledford 写道:
-> On Sat, 2019-08-03 at 16:45 +0800, Lijun Ou wrote:
->> Here are some updates for hns driver based 5.3-rc2, mainly
->> include some codes optimization and comments style modification.
->>
->> Change from V2:
->> 1. Remove the unncessary memset opertion for the tenth patch
->>
->> Change from V1:
->> 1. Fix the checkpatch warning
->> 2. Use ibdev print interface instead of dev print interface in
->>    this patchset.
-> I need you to separate the ibdev changes from other changes.  I have
-> other comments on the patches that I'll make on the individual patches,
-> but just in general, do one single patch to switch to using ibdev prints
-> and have it cover the entire driver.  You can make it the first or last
-> patch, I don't care.  But don't mix anything else in with the ibdev
-> transition patch.  You shouldn't be mixing things like fixing an
-> incorrect print with a switch to ibdev print in the same patch because
-> it makes it very difficult on people that might be backporting these
-> patches to take the fix if they haven't also taken the ibdev print
-> patchset.
-Thank your advice. I also started thinking about this problem before send V3.
-I want to use a following patch separately to instead the dev print.  But the overall
-replacement in the drvier is more troublesome and need to analysis. Because if
-replace all dev print interfaces, may cause a null print infomation.  the ibdev is NULL before
-the roce device registered sucessfully.
+On Thu, Aug 08, 2019 at 11:43:54AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+>
+> Hi,
+>
+> This small series extends DEVX interface with SRQ and XRQ legacy commands=
+.
 
-So my solution is to modify the dev print in the current patchset and later send a modified patch
-for replacing all dev interface after the overall analysis is clear.
->> Lang Cheng (6):
->>   RDMA/hns: Clean up unnecessary initial assignment
->>   RDMA/hns: Update some comments style
->>   RDMA/hns: Handling the error return value of hem function
->>   RDMA/hns: Split bool statement and assign statement
->>   RDMA/hns: Refactor irq request code
->>   RDMA/hns: Remove unnecessary kzalloc
->>
->> Lijun Ou (2):
->>   RDMA/hns: Encapsulate some lines for setting sq size in user mode
->>   RDMA/hns: Optimize hns_roce_modify_qp function
->>
->> Weihang Li (2):
->>   RDMA/hns: Remove redundant print in hns_roce_v2_ceq_int()
->>   RDMA/hns: Disable alw_lcl_lpbk of SSU
->>
->> Yangyang Li (1):
->>   RDMA/hns: Refactor hns_roce_v2_set_hem for hip08
->>
->> Yixian Liu (2):
->>   RDMA/hns: Update the prompt message for creating and destroy qp
->>   RDMA/hns: Remove unnessary init for cmq reg
->>
->>  drivers/infiniband/hw/hns/hns_roce_device.h |  65 +++++----
->>  drivers/infiniband/hw/hns/hns_roce_hem.c    |  15 +-
->>  drivers/infiniband/hw/hns/hns_roce_hem.h    |   6 +-
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 211 ++++++++++++++-----
->> ---------
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   2 -
->>  drivers/infiniband/hw/hns/hns_roce_mr.c     |   1 -
->>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 178 ++++++++++++++-----
->> ----
->>  7 files changed, 260 insertions(+), 218 deletions(-)
->>
+Sorry for typo in cover letter, there is no SRQ here.
 
+Thanks
 
+>
+> Thanks
+>
+> Yishai Hadas (4):
+>   net/mlx5: Use debug message instead of warn
+>   net/mlx5: Add XRQ legacy commands opcodes
+>   IB/mlx5: Add legacy events to DEVX list
+>   IB/mlx5: Expose XRQ legacy commands over the DEVX interface
+>
+>  drivers/infiniband/hw/mlx5/devx.c             | 12 ++++++++++++
+>  drivers/net/ethernet/mellanox/mlx5/core/cmd.c |  4 ++++
+>  drivers/net/ethernet/mellanox/mlx5/core/qp.c  |  2 +-
+>  include/linux/mlx5/device.h                   |  9 +++++++++
+>  include/linux/mlx5/mlx5_ifc.h                 |  2 ++
+>  5 files changed, 28 insertions(+), 1 deletion(-)
+>
+> --
+> 2.20.1
+>
