@@ -2,210 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9285286194
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 14:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DA48642B
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 16:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728120AbfHHM02 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Aug 2019 08:26:28 -0400
-Received: from mail-eopbgr00079.outbound.protection.outlook.com ([40.107.0.79]:52086
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728718AbfHHM01 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Aug 2019 08:26:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y3rYc4Ms4joyZ3Hso551nZYX+z+I0/F5MfY9+jCpqbgUraQELwOE1pUaKcil8cUJuqwFBSjKlSmCJaAntqw3+SQlcSCI7xSq+hQAHd/bbsYkBTpejOtPdaamd/+QqnEdCxFIc92I9yzWYFPFbAt957ufpv6xb4HZ9fCAe1quO+96O1f7Wpj708+2W8zzJgbqFRdbuEV+GMlZuK5OcWdgqhvCN1u+7Bq3JEY7xDPBaHtTpScj62xJNcublXWL+gpD89g/QnNR1G+7DTpvYYMTffSsa6gzWhLN9y/1Fgg1RhNpSIEMIqqlVVmPj2+8v65367xXrU/K7s7iCn/jFOn9SA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A+GDq6f/1kLy3rhN6iz48fiQOb9054f29onYGnvyIzA=;
- b=UWyHfjfFjjH/6CdiVFqcIx63mTdFLO6oFPjU8TyRauWHKqQLl0w8uvmMquxAa5gOkARNaseh+F5Jftnk/X0TUraqxLzEPYJZwR/JAFSJj0h+ziaLe0FAWw5ecMNCSzgDi6Ug2A/WE0xf/inTrSwtOAC7zlxhsAPwvWX9FL9RJwKmgDtn4vRrkFOPD32dzuqG6+LP/uzFJ12XUX85eYCKdbYWb7VngxWm2foW8h7HTCkkzZ9cnYrBWVGvzaWAE0Dft7pWJEiqKixVwWdZv1Ji34hxmh+sQ7EJDJTb9EWfGOzwWNLV147whPjCecm9hgv2HPduvF+zAuXJgFbjWe3ZzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A+GDq6f/1kLy3rhN6iz48fiQOb9054f29onYGnvyIzA=;
- b=jAW4jidv45edUKv1DhyvnTT8k+Frd/7SNaJurIbWzK7XdqcXk7h14iN1lcZRL427/oZG+WviaqjzyJIdO5Kt2lx2tTeqsOojZOVXdPywOoLNCkRw5eVI5gs+g4DASxW4RQVIUCv/eS+WTnTQAQ2xcqZVJHR2dfFc6cfofNAs8vY=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB6383.eurprd05.prod.outlook.com (20.179.26.204) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2157.14; Thu, 8 Aug 2019 12:26:21 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::5c6f:6120:45cd:2880]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::5c6f:6120:45cd:2880%4]) with mapi id 15.20.2136.022; Thu, 8 Aug 2019
- 12:26:21 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [PATCH rdma-rc] IB/mlx5: Fix use-after-free error while accessing
- ev_file pointer
-Thread-Topic: [PATCH rdma-rc] IB/mlx5: Fix use-after-free error while
- accessing ev_file pointer
-Thread-Index: AQHVTcF9MrNNBZGTSEeMMAk1fHMANqbxLW6A
-Date:   Thu, 8 Aug 2019 12:26:21 +0000
-Message-ID: <20190808122615.GC1975@mellanox.com>
-References: <20190808081538.28772-1-leon@kernel.org>
-In-Reply-To: <20190808081538.28772-1-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: YQXPR0101CA0034.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:15::47) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3a816dd9-6c30-40e2-9d26-08d71bfb9eec
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6383;
-x-ms-traffictypediagnostic: VI1PR05MB6383:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB6383FAE412A5BCC7A44498E0CFD70@VI1PR05MB6383.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-forefront-prvs: 012349AD1C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(346002)(396003)(376002)(366004)(136003)(199004)(189003)(11346002)(107886003)(2616005)(33656002)(25786009)(99286004)(26005)(6436002)(386003)(52116002)(8676002)(3846002)(186003)(102836004)(229853002)(6246003)(256004)(14444005)(81156014)(81166006)(71200400001)(6486002)(53936002)(6512007)(478600001)(76176011)(7736002)(486006)(36756003)(305945005)(4326008)(446003)(6116002)(2906002)(8936002)(71190400001)(6506007)(6916009)(14454004)(64756008)(66946007)(476003)(66556008)(1076003)(86362001)(66476007)(66446008)(66066001)(5660300002)(54906003)(316002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6383;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: gBVeZ1iUZqiUPKXi2u3tOnr4yQ0ewgFrOlwXOVleDQa7DqlU2XGFkbr8SjsdEJyzUIjZmnsil809wvVGzQh0B9qUS/AZq9/rWCD32ObJSoRlb3/bh7v3J7HK4CGIc3ACyzOrPjtEIytftq7O97iftc6sVfcpGkjMODcR+FQxc4pBHw5ArGL3zo3pmZS0lO01Jr+SsztLaVz/vJrnVx0PCQNklFMM4+MAr2FOrqih9nR3CCzTolsIEFxDTxUiV4UcbYHJvOPahcxwd4FVKpEXmkxGefBjoLvLtJRC27UD0NJdWoGCW9EYYGM3rZWwg00H5GGHf+l/dMJPgMSGicA1S/V6YOBuAFt1RcyG/i+OcT3ZcSTMj6b9wxuqtTxyb87RPI4FRI7wAmQj5Yt48W9QI2MVfVlPIf1imSZUm84elK4=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <F11569549E09774B8E4561B5FEA88E9B@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1733200AbfHHOSE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 8 Aug 2019 10:18:04 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43808 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730993AbfHHOSE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Aug 2019 10:18:04 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x78E7Qlm094451
+        for <linux-rdma@vger.kernel.org>; Thu, 8 Aug 2019 10:18:03 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.119])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2u8kmx5c1t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Aug 2019 10:18:02 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Thu, 8 Aug 2019 14:18:02 -0000
+Received: from us1b3-smtp02.a3dr.sjc01.isc4sb.com (10.122.7.175)
+        by smtp.notes.na.collabserv.com (10.122.182.123) with smtp.notes.na.collabserv.com ESMTP;
+        Thu, 8 Aug 2019 14:17:57 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp02.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019080814175679-510523 ;
+          Thu, 8 Aug 2019 14:17:56 +0000 
+In-Reply-To: <19b1f6ad96bc2dc4d2134c32a2e79c11986ea038.camel@redhat.com>
+Subject: Re: Re: Re: [PATCH 1/1] Make user mmapped CQ arming flags field 32 bit size
+ to remove 64 bit architecture dependency of siw.
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Doug Ledford" <dledford@redhat.com>
+Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Date:   Thu, 8 Aug 2019 14:17:57 +0000
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a816dd9-6c30-40e2-9d26-08d71bfb9eec
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Aug 2019 12:26:21.4951
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgg@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6383
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <19b1f6ad96bc2dc4d2134c32a2e79c11986ea038.camel@redhat.com>,<20190806173526.GJ11627@ziepe.ca>,<20190806163901.GI11627@ziepe.ca>
+ <20190806153105.GG11627@ziepe.ca> <20190806121006.GC11627@ziepe.ca>
+ <20190805141708.9004-1-bmt@zurich.ibm.com>
+ <20190805141708.9004-2-bmt@zurich.ibm.com>
+ <OFCF70B144.E0186C06-ON0025844E.0050E500-0025844E.0051D4FA@notes.na.collabserv.com>
+ <OF8985846C.2F1A4852-ON0025844E.005AADBA-0025844E.005B3A41@notes.na.collabserv.com>
+ <OF3F75D9B9.20A30B62-ON0025844E.005D311D-0025844E.005D8CF2@notes.na.collabserv.com>
+ <OF3FCBE885.788F61B5-ON0025844F.002DF52F-0025844F.0061F0FB@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-KeepSent: 960ACAF9:E44A6FA7-00258450:003C6AE7;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 24947
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19080814-3975-0000-0000-00000015521C
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.028409
+X-IBM-SpamModules-Versions: BY=3.00011570; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01243870; UDB=6.00656205; IPR=6.01025348;
+ MB=3.00028092; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-08 14:18:00
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-08 11:51:53 - 6.00010260
+x-cbparentid: 19080814-3976-0000-0000-000000235B19
+Message-Id: <OF960ACAF9.E44A6FA7-ON00258450.003C6AE7-00258450.004E8C35@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-08_06:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 08, 2019 at 11:15:38AM +0300, Leon Romanovsky wrote:
-> From: Yishai Hadas <yishaih@mellanox.com>
->=20
-> Call to uverbs_close_fd() releases file pointer to 'ev_file' and
-> mlx5_ib_dev is going to be inaccessible. Cache pointer prior cleaning
-> resources to solve the KASAN warning below.
->=20
-> BUG: KASAN: use-after-free in devx_async_event_close+0x391/0x480 [mlx5_ib=
-]
-> Read of size 8 at addr ffff888301e3cec0 by task devx_direct_tes/4631
-> CPU: 1 PID: 4631 Comm: devx_direct_tes Tainted: G OE 5.3.0-rc1-for-upstre=
-am-dbg-2019-07-26_01-19-56-93 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Ubuntu-1.8.2-=
-1ubuntu2 04/01/2014
-> Call Trace:
-> dump_stack+0x9a/0xeb
-> print_address_description+0x1e2/0x400
-> ? devx_async_event_close+0x391/0x480 [mlx5_ib]
-> __kasan_report+0x15c/0x1df
-> ? devx_async_event_close+0x391/0x480 [mlx5_ib]
-> kasan_report+0xe/0x20
-> devx_async_event_close+0x391/0x480 [mlx5_ib]
-> __fput+0x26a/0x7b0
-> task_work_run+0x10d/0x180
-> exit_to_usermode_loop+0x137/0x160
-> do_syscall_64+0x3c7/0x490
-> entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> RIP: 0033:0x7f5df907d664
-> Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f
-> 80 00 00 00 00 8b 05 6a cd 20 00 48 63 ff 85 c0 75 13 b8
-> 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 44 f3 c3 66 90
-> 48 83 ec 18 48 89 7c 24 08 e8
-> RSP: 002b:00007ffd353cb958 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-> RAX: 0000000000000000 RBX: 000056017a88c348 RCX: 00007f5df907d664
-> RDX: 00007f5df969d400 RSI: 00007f5de8f1ec90 RDI: 0000000000000006
-> RBP: 00007f5df9681dc0 R08: 00007f5de8736410 R09: 000056017a9d2dd0
-> R10: 000000000000000b R11: 0000000000000246 R12: 00007f5de899d7d0
-> R13: 00007f5df96c4248 R14: 00007f5de8f1ecb0 R15: 000056017ae41308
->=20
-> Allocated by task 4631:
-> save_stack+0x19/0x80
-> kasan_kmalloc.constprop.3+0xa0/0xd0
-> alloc_uobj+0x71/0x230 [ib_uverbs]
-> alloc_begin_fd_uobject+0x2e/0xc0 [ib_uverbs]
-> rdma_alloc_begin_uobject+0x96/0x140 [ib_uverbs]
-> ib_uverbs_run_method+0xdf0/0x1940 [ib_uverbs]
-> ib_uverbs_cmd_verbs+0x57e/0xdb0 [ib_uverbs]
-> ib_uverbs_ioctl+0x177/0x260 [ib_uverbs]
-> do_vfs_ioctl+0x18f/0x1010
-> ksys_ioctl+0x70/0x80
-> __x64_sys_ioctl+0x6f/0xb0
-> do_syscall_64+0x95/0x490
-> entry_SYSCALL_64_after_hwframe+0x49/0xbe
->=20
-> Freed by task 4631:
-> save_stack+0x19/0x80
-> __kasan_slab_free+0x11d/0x160
-> slab_free_freelist_hook+0x67/0x1a0
-> kfree+0xb9/0x2a0
-> uverbs_close_fd+0x118/0x1c0 [ib_uverbs]
-> devx_async_event_close+0x28a/0x480 [mlx5_ib]
-> __fput+0x26a/0x7b0
-> task_work_run+0x10d/0x180
-> exit_to_usermode_loop+0x137/0x160
-> do_syscall_64+0x3c7/0x490
-> entry_SYSCALL_64_after_hwframe+0x49/0xbe
->=20
-> The buggy address belongs to the object at ffff888301e3cda8
-> which belongs to the cache kmalloc-512 of size 512
-> The buggy address is located 280 bytes inside of 512-byte region
-> [ffff888301e3cda8, ffff888301e3cfa8)
-> The buggy address belongs to the page:
-> page:ffffea000c078e00 refcount:1 mapcount:0
-> mapping:ffff888352811300 index:0x0 compound_mapcount: 0
-> flags: 0x2fffff80010200(slab|head)
-> raw: 002fffff80010200 ffffea000d152608 ffffea000c077808 ffff888352811300
-> raw: 0000000000000000 0000000000250025 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> Memory state around the buggy address:
-> ffff888301e3cd80: fc fc fc fc fc fb fb fb fb fb fb fb fb fb fb fb
-> ffff888301e3ce00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff888301e3ce80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff888301e3cf00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff888301e3cf80: fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc
-> Disabling lock debugging due to kernel taint
->=20
-> Cc: <stable@vger.kernel.org> # 5.2
-> Fixes: 759738537142 ("IB/mlx5: Enable subscription for device events over=
- DEVX")
-> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->  drivers/infiniband/hw/mlx5/devx.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/ml=
-x5/devx.c
-> index 2d1b3d9609d9..af5bbb35c058 100644
-> +++ b/drivers/infiniband/hw/mlx5/devx.c
-> @@ -2644,12 +2644,13 @@ static int devx_async_event_close(struct inode *i=
-node, struct file *filp)
->  	struct devx_async_event_file *ev_file =3D filp->private_data;
+-----"Doug Ledford" <dledford@redhat.com> wrote: -----
 
-This line is wrong, it should be
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>, "Jason Gunthorpe"
+><jgg@ziepe.ca>
+>From: "Doug Ledford" <dledford@redhat.com>
+>Date: 08/07/2019 08:53PM
+>Cc: linux-rdma@vger.kernel.org
+>Subject: [EXTERNAL] Re: Re: [PATCH 1/1] Make user mmapped CQ arming
+>flags field 32 bit size to remove 64 bit architecture dependency of
+>siw.
+>
+>On Wed, 2019-08-07 at 17:49 +0000, Bernard Metzler wrote:
+>> 
+>> It hurts, but I did finally setup qemu with a ppc image to check,
+>> and so you are right!
+>> 
+>> ...
+>> 
+>> #ifdef __BIG_ENDIAN__
+>> 
+>> seem to be available in both kernel and user land...
+>> 
+>> But, general question: siw in its current shape isn't out
+>> for long, older versions from github are already broken with
+>> the abi. So, silently changing the abi at this stage of siw
+>> deployment is no option? It's a hassle to see an old mistake
+>> carried along forever with that #ifdef statement...no?
+>
+>I was thinking about that myself.
+>
+>This really hasn't been out long enough to completely tie our hands
+>here.  A point update to rdma-core will resolve any user side issues.
+>
 
-  	struct devx_async_event_file *ev_file =3D container_of(struct
- 	                   devx_async_event_file, filp->private_data, uobj);
+What we are aiming at is ensuring backward compatibility
+for 64bit-BE architectures, which are using siw since this year.
+The community is likely of size zero. 
+I found it hard to find a machine, even in the ppc world, which
+let me test that BE thing. I ended up with an emulator. So I
+assume it is no real world issue to now just change the 64bits 
+flag into 32bits and add a 32bit pad for ABI compliance.
 
-It should get fixed in a followup, along with any other places like
-it.
+At the other hand, the change would be marginal (but awkward!):
 
-It is also a bit redundant to store the mlx5_ib_dev in the
-devx_async_event_file as uobj->ucontext->dev is the same pointer.
+diff --git a/include/uapi/rdma/siw-abi.h b/include/uapi/rdma/siw-abi.h
+index af735f55b291..162b861ad2ac 100644
+--- a/include/uapi/rdma/siw-abi.h
++++ b/include/uapi/rdma/siw-abi.h
+@@ -180,7 +180,12 @@ struct siw_cqe {
+  * to control CQ arming.
+  */
+ struct siw_cq_ctrl {
++#ifdef __BIG_ENDIAN__
++       __u32 pad;
++       __u32 flags;
++#else
+        __u32 flags;
+        __u32 pad;
++#endif
+ };
+ #endif
 
-Otherwise this patch is Ok
+I propose taking my initial patch (w/o conditional endianess code).
+But I can live with the ugly. Let me know.
 
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+In any case, I will make a PR for the user lib, since we changed
+the variable to 32 bits...
+
+Thanks
+Bernard.
+
+>Are they doing stable kernel patches for the last kernel?  If so, we
+>can
+>fix it both places.  No distros have picked up the original ABI in
+>this
+>short of a window and managed to get it into a shipped product, so we
+>can notify any that might have picked up the broken version and get
+>that
+>updated too if we don't dilly dally and make the call quickly.
+>
+>-- 
+>Doug Ledford <dledford@redhat.com>
+>    GPG KeyID: B826A3330E572FDD
+>    Fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+>
+[attachment "signature.asc" removed by Bernard Metzler/Zurich/IBM]
+
