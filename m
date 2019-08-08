@@ -2,384 +2,204 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CA186520
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 17:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C27865CD
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 17:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbfHHPGE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 8 Aug 2019 11:06:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44080 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727649AbfHHPGE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Aug 2019 11:06:04 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x78F3Rwd060037
-        for <linux-rdma@vger.kernel.org>; Thu, 8 Aug 2019 11:06:03 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.104])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u8n04ke2q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Aug 2019 11:06:02 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Thu, 8 Aug 2019 15:06:01 -0000
-Received: from us1b3-smtp01.a3dr.sjc01.isc4sb.com (10.122.7.174)
-        by smtp.notes.na.collabserv.com (10.122.47.44) with smtp.notes.na.collabserv.com ESMTP;
-        Thu, 8 Aug 2019 15:05:12 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp01.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019080815051280-570044 ;
-          Thu, 8 Aug 2019 15:05:12 +0000 
-In-Reply-To: <20190805172605.GA5549@chelsio.com>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-Cc:     "Tom Talpey" <tom@talpey.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Potnuri Bharat Teja" <bharat@chelsio.com>,
-        "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
-Date:   Thu, 8 Aug 2019 15:05:12 +0000
+        id S1732698AbfHHPcF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Aug 2019 11:32:05 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:43739 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732680AbfHHPcE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Aug 2019 11:32:04 -0400
+Received: by mail-wr1-f68.google.com with SMTP id p13so20782763wru.10
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Aug 2019 08:32:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CD6KKcY7G7jWgcxBwdqLDNxOp3UBFMpaDOGLJorY9Qo=;
+        b=Vz6ldKhFcbhyoZe6jl24AKB6NMg/ZC45oVQJLyPcW8edLVisBgPwtW5GrYp6GnTfl8
+         45tbDNOF+OV98RFDBCRV7hcVOrTPX6OJzhN2cZUtSVGYIHRpGlDLns8vV81bCQYlGQKg
+         I2aK3nxbhofe/YqHhUmDfnUnxoVH2X5LxkiGQWr0dD8nNl5TELnfVa6V8E2+zbfHd1zN
+         Pmplj+8wtqJs95XKhuPiktc4dGSdj8eJhpaANxtOXc1scjvhuiCNio8iSlHYgHSrUgOV
+         HPBhNPHwkQ7JaJG151vpf9nrUv4KRIuQ7upI+NQ7IQY03ALOKhEyk2OGfp06d61QfLhH
+         pssQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CD6KKcY7G7jWgcxBwdqLDNxOp3UBFMpaDOGLJorY9Qo=;
+        b=IP2Y2sn4ow5SxV4jKk1LvdXX99qbcB/TbnZ4Fa9/he27ac5lwWVKWMXsmntcOoBMDC
+         fHDDWOAkLuGTqZ7ajk3ymmeBNwiiwncAP5TLpsvJFtb4fIaa+T+Jn4W6wjl2kJYkzw+x
+         jPgRPm48OGSwo/tnY3rXJt5rdAgUxU9nbay+4H8C7mIBGnYkSk7B7v/rt4LtaOor52U1
+         hjZLfhaZMM6U+o+esiCZlJTze1A9HMj4/YGvaF6JPR/jBsBXFK2w/quiFeqIx1eaZlwH
+         nEohLbQN+ceU3MF1eUXqKm208OtJdiOkaHwodVNNxgt56aNKeYd/YZDEkTPg/7PDN+6x
+         JaUA==
+X-Gm-Message-State: APjAAAVl7mivLRCO7Kh+4/Z01lEubjcNS9yqRmwrKPQtYYgQ72AnoWam
+        /YVTLyw6rl0YEOhEtrQLYjt/01BPRIg=
+X-Google-Smtp-Source: APXvYqxfjykg9ZQVzc7zuRhMND/E3J25HttA3irx57d4F6GWJq6ieRTi/Hf9eT5q7U7GeR+gx6zw3w==
+X-Received: by 2002:a5d:4403:: with SMTP id z3mr18318571wrq.29.1565278321723;
+        Thu, 08 Aug 2019 08:32:01 -0700 (PDT)
+Received: from [10.80.2.155] ([193.47.165.251])
+        by smtp.googlemail.com with ESMTPSA id s3sm3287243wmh.27.2019.08.08.08.32.00
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 08 Aug 2019 08:32:01 -0700 (PDT)
+Subject: Re: [PATCH rdma-rc] IB/mlx5: Fix use-after-free error while accessing
+ ev_file pointer
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leonro@mellanox.com>
+References: <20190808081538.28772-1-leon@kernel.org>
+ <20190808122615.GC1975@mellanox.com>
+From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
+Message-ID: <869b1416-a87b-f361-7722-bf9d231bc262@dev.mellanox.co.il>
+Date:   Thu, 8 Aug 2019 18:32:00 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190805172605.GA5549@chelsio.com>,<8499b96a-48dd-1286-ea0f-e66be34afffa@talpey.com>
- <20190731103310.23199-1-krishna2@chelsio.com>
- <OF4DB6F345.7C76F976-ON00258449.00392FF3-00258449.003C1BFB@notes.na.collabserv.com>
- <OF95C29EF7.244FC9E1-ON0025844A.003D049F-0025844A.003E229B@notes.na.collabserv.com>
- <518b1734-5d72-e32d-376b-0fec1cbce8f5@talpey.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-KeepSent: 7F439620:B43AE37C-00258450:00524237;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 18695
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19080815-5525-0000-0000-00000081787E
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.261808
-X-IBM-SpamModules-Versions: BY=3.00011571; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01243887; UDB=6.00656214; IPR=6.01025364;
- MB=3.00028094; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-08 15:05:57
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-08-08 12:25:41 - 6.00010260
-x-cbparentid: 19080815-5526-0000-0000-000000D78BC6
-Message-Id: <OF7F439620.B43AE37C-ON00258450.00524237-00258450.0052DFDC@notes.na.collabserv.com>
-Subject: RE: [PATCH for-rc] siw: MPA Reply handler tries to read beyond MPA message
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-08_06:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <20190808122615.GC1975@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
+On 8/8/2019 3:26 PM, Jason Gunthorpe wrote:
+> On Thu, Aug 08, 2019 at 11:15:38AM +0300, Leon Romanovsky wrote:
+>> From: Yishai Hadas <yishaih@mellanox.com>
+>>
+>> Call to uverbs_close_fd() releases file pointer to 'ev_file' and
+>> mlx5_ib_dev is going to be inaccessible. Cache pointer prior cleaning
+>> resources to solve the KASAN warning below.
+>>
+>> BUG: KASAN: use-after-free in devx_async_event_close+0x391/0x480 [mlx5_ib]
+>> Read of size 8 at addr ffff888301e3cec0 by task devx_direct_tes/4631
+>> CPU: 1 PID: 4631 Comm: devx_direct_tes Tainted: G OE 5.3.0-rc1-for-upstream-dbg-2019-07-26_01-19-56-93 #1
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Ubuntu-1.8.2-1ubuntu2 04/01/2014
+>> Call Trace:
+>> dump_stack+0x9a/0xeb
+>> print_address_description+0x1e2/0x400
+>> ? devx_async_event_close+0x391/0x480 [mlx5_ib]
+>> __kasan_report+0x15c/0x1df
+>> ? devx_async_event_close+0x391/0x480 [mlx5_ib]
+>> kasan_report+0xe/0x20
+>> devx_async_event_close+0x391/0x480 [mlx5_ib]
+>> __fput+0x26a/0x7b0
+>> task_work_run+0x10d/0x180
+>> exit_to_usermode_loop+0x137/0x160
+>> do_syscall_64+0x3c7/0x490
+>> entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>> RIP: 0033:0x7f5df907d664
+>> Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f
+>> 80 00 00 00 00 8b 05 6a cd 20 00 48 63 ff 85 c0 75 13 b8
+>> 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 44 f3 c3 66 90
+>> 48 83 ec 18 48 89 7c 24 08 e8
+>> RSP: 002b:00007ffd353cb958 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+>> RAX: 0000000000000000 RBX: 000056017a88c348 RCX: 00007f5df907d664
+>> RDX: 00007f5df969d400 RSI: 00007f5de8f1ec90 RDI: 0000000000000006
+>> RBP: 00007f5df9681dc0 R08: 00007f5de8736410 R09: 000056017a9d2dd0
+>> R10: 000000000000000b R11: 0000000000000246 R12: 00007f5de899d7d0
+>> R13: 00007f5df96c4248 R14: 00007f5de8f1ecb0 R15: 000056017ae41308
+>>
+>> Allocated by task 4631:
+>> save_stack+0x19/0x80
+>> kasan_kmalloc.constprop.3+0xa0/0xd0
+>> alloc_uobj+0x71/0x230 [ib_uverbs]
+>> alloc_begin_fd_uobject+0x2e/0xc0 [ib_uverbs]
+>> rdma_alloc_begin_uobject+0x96/0x140 [ib_uverbs]
+>> ib_uverbs_run_method+0xdf0/0x1940 [ib_uverbs]
+>> ib_uverbs_cmd_verbs+0x57e/0xdb0 [ib_uverbs]
+>> ib_uverbs_ioctl+0x177/0x260 [ib_uverbs]
+>> do_vfs_ioctl+0x18f/0x1010
+>> ksys_ioctl+0x70/0x80
+>> __x64_sys_ioctl+0x6f/0xb0
+>> do_syscall_64+0x95/0x490
+>> entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>>
+>> Freed by task 4631:
+>> save_stack+0x19/0x80
+>> __kasan_slab_free+0x11d/0x160
+>> slab_free_freelist_hook+0x67/0x1a0
+>> kfree+0xb9/0x2a0
+>> uverbs_close_fd+0x118/0x1c0 [ib_uverbs]
+>> devx_async_event_close+0x28a/0x480 [mlx5_ib]
+>> __fput+0x26a/0x7b0
+>> task_work_run+0x10d/0x180
+>> exit_to_usermode_loop+0x137/0x160
+>> do_syscall_64+0x3c7/0x490
+>> entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>>
+>> The buggy address belongs to the object at ffff888301e3cda8
+>> which belongs to the cache kmalloc-512 of size 512
+>> The buggy address is located 280 bytes inside of 512-byte region
+>> [ffff888301e3cda8, ffff888301e3cfa8)
+>> The buggy address belongs to the page:
+>> page:ffffea000c078e00 refcount:1 mapcount:0
+>> mapping:ffff888352811300 index:0x0 compound_mapcount: 0
+>> flags: 0x2fffff80010200(slab|head)
+>> raw: 002fffff80010200 ffffea000d152608 ffffea000c077808 ffff888352811300
+>> raw: 0000000000000000 0000000000250025 00000001ffffffff 0000000000000000
+>> page dumped because: kasan: bad access detected
+>> Memory state around the buggy address:
+>> ffff888301e3cd80: fc fc fc fc fc fb fb fb fb fb fb fb fb fb fb fb
+>> ffff888301e3ce00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>> ffff888301e3ce80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>> ffff888301e3cf00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>> ffff888301e3cf80: fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc
+>> Disabling lock debugging due to kernel taint
+>>
+>> Cc: <stable@vger.kernel.org> # 5.2
+>> Fixes: 759738537142 ("IB/mlx5: Enable subscription for device events over DEVX")
+>> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>>   drivers/infiniband/hw/mlx5/devx.c | 9 +++++----
+>>   1 file changed, 5 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+>> index 2d1b3d9609d9..af5bbb35c058 100644
+>> +++ b/drivers/infiniband/hw/mlx5/devx.c
+>> @@ -2644,12 +2644,13 @@ static int devx_async_event_close(struct inode *inode, struct file *filp)
+>>   	struct devx_async_event_file *ev_file = filp->private_data;
+> 
+> This line is wrong, it should be
+> 
+>    	struct devx_async_event_file *ev_file = container_of(struct
+>   	                   devx_async_event_file, filp->private_data, uobj);
 
->To: "Tom Talpey" <tom@talpey.com>, <BMT@zurich.ibm.com>
->From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
->Date: 08/05/2019 07:26PM
->Cc: "jgg@ziepe.ca" <jgg@ziepe.ca>, "linux-rdma@vger.kernel.org"
-><linux-rdma@vger.kernel.org>, "Potnuri Bharat Teja"
-><bharat@chelsio.com>, "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
->Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler tries
->to read beyond MPA message
->
->On Friday, August 08/02/19, 2019 at 18:17:37 +0530, Tom Talpey wrote:
->> On 8/2/2019 7:18 AM, Bernard Metzler wrote:
->> > -----"Tom Talpey" <tom@talpey.com> wrote: -----
->> > 
->> >> To: "Bernard Metzler" <BMT@zurich.ibm.com>, "Krishnamraju
->Eraparaju"
->> >> <krishna2@chelsio.com>
->> >> From: "Tom Talpey" <tom@talpey.com>
->> >> Date: 08/01/2019 08:54PM
->> >> Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
->bharat@chelsio.com,
->> >> nirranjan@chelsio.com, krishn2@chelsio.com
->> >> Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler
->tries
->> >> to read beyond MPA message
->> >>
->> >> On 8/1/2019 6:56 AM, Bernard Metzler wrote:
->> >>> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote:
->-----
->> >>>
->> >>>> To: jgg@ziepe.ca, bmt@zurich.ibm.com
->> >>>> From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
->> >>>> Date: 07/31/2019 12:34PM
->> >>>> Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com,
->> >>>> nirranjan@chelsio.com, krishn2@chelsio.com, "Krishnamraju
->> >> Eraparaju"
->> >>>> <krishna2@chelsio.com>
->> >>>> Subject: [EXTERNAL] [PATCH for-rc] siw: MPA Reply handler
->tries to
->> >>>> read beyond MPA message
->> >>>>
->> >>>> while processing MPA Reply, SIW driver is trying to read extra
->4
->> >>>> bytes
->> >>>> than what peer has advertised as private data length.
->> >>>>
->> >>>> If a FPDU data is received before even siw_recv_mpa_rr()
->completed
->> >>>> reading MPA reply, then ksock_recv() in siw_recv_mpa_rr()
->could
->> >> also
->> >>>> read FPDU, if "size" is larger than advertised MPA reply
->length.
->> >>>>
->> >>>> 501 static int siw_recv_mpa_rr(struct siw_cep *cep)
->> >>>> 502 {
->> >>>>            .............
->> >>>> 572
->> >>>> 573         if (rcvd > to_rcv)
->> >>>> 574                 return -EPROTO;   <----- Failure here
->> >>>>
->> >>>> Looks like the intention here is to throw an ERROR if the
->received
->> >>>> data
->> >>>> is more than the total private data length advertised by the
->peer.
->> >>>> But
->> >>>> reading beyond MPA message causes siw_cm to generate
->> >>>> RDMA_CM_EVENT_CONNECT_ERROR event when TCP socket recv buffer
->is
->> >>>> already
->> >>>> queued with FPDU messages.
->> >>>>
->> >>>> Hence, this function should only read upto private data
->length.
->> >>>>
->> >>>> Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
->> >>>> ---
->> >>>> drivers/infiniband/sw/siw/siw_cm.c | 4 ++--
->> >>>> 1 file changed, 2 insertions(+), 2 deletions(-)
->> >>>>
->> >>>> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
->> >>>> b/drivers/infiniband/sw/siw/siw_cm.c
->> >>>> index a7cde98e73e8..8dc8cea2566c 100644
->> >>>> --- a/drivers/infiniband/sw/siw/siw_cm.c
->> >>>> +++ b/drivers/infiniband/sw/siw/siw_cm.c
->> >>>> @@ -559,13 +559,13 @@ static int siw_recv_mpa_rr(struct
->siw_cep
->> >> *cep)
->> >>>> 	 * A private data buffer gets allocated if hdr->params.pd_len
->!=
->> >> 0.
->> >>>> 	 */
->> >>>> 	if (!cep->mpa.pdata) {
->> >>>> -		cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
->> >>>> +		cep->mpa.pdata = kmalloc(pd_len, GFP_KERNEL);
->> >>>> 		if (!cep->mpa.pdata)
->> >>>> 			return -ENOMEM;
->> >>>> 	}
->> >>>> 	rcvd = ksock_recv(
->> >>>> 		s, cep->mpa.pdata + cep->mpa.bytes_rcvd - sizeof(struct
->mpa_rr),
->> >>>> -		to_rcv + 4, MSG_DONTWAIT);
->> >>>> +		to_rcv, MSG_DONTWAIT);
->> >>>>
->> >>>> 	if (rcvd < 0)
->> >>>> 		return rcvd;
->> >>>> -- 
->> >>>> 2.23.0.rc0
->> >>>>
->> >>>>
->> >>>
->> >>> The intention of this code is to make sure the
->> >>> peer does not violates the MPA handshake rules.
->> >>> The initiator MUST NOT send extra data after its
->> >>> MPA request and before receiving the MPA reply.
->> >>
->> >> I think this is true only for MPA v2. With MPA v1, the
->> >> initiator can begin sending immediately (before receiving
->> >> the MPA reply), because there is no actual negotiation at
->> >> the MPA layer.
->> >>
->> >> With MPA v2, the negotiation exchange is required because
->> >> the type of the following message is predicated by the
->> >> "Enhanced mode" a|b|c|d flags present in the first 32 bits
->> >> of the private data buffer.
->> >>
->> >> So, it seems to me that additional logic is needed here to
->> >> determine the MPA version, before sniffing additional octets
->> >>from the incoming stream?
->> >>
->> >> Tom.
->> >>
->> > 
->> > There still is the marker negotiation taking place.
->> > RFC 5044 says in section 7.1.2:
->> > 
->> > "Note: Since the receiver's ability to deal with Markers is
->> >   unknown until the Request and Reply Frames have been
->> >   received, sending FPDUs before this occurs is not possible."
->> > 
->> > This section further discusses the responder's behavior,
->> > where it MUST receive a first FPDU from the initiator
->> > before sending its first FPDU:
->> > 
->> > "4.  MPA Responder mode implementations MUST receive and validate
->at
->> >         least one FPDU before sending any FPDUs or Markers."
->> > 
->> > So it appears with MPA version 1, the current siw
->> > code is correct. The initiator is entering FPDU mode
->> > first, and only after receiving the MPA reply frame.
->> > Only after the initiator sent a first FPDU, the responder
->> > can start using the connection in FPDU mode.
->> > Because of this somehow broken connection establishment
->> > procedure (only the initiator can start sending data), a
->> > later MPA version makes this first FPDU exchange explicit
->> > and selectable (zero length READ/WRITE/Send).
->> 
->> Yeah, I guess so. Because nobody ever actually implemented markers,
->> I think that they may more or less passively ignore this. But
->you're
->> currect that it's invalid protocol behavior.
->> 
->> If your testing didn't uncover any issues with existing
->implementations
->> failing to connect with your strict checking, I'm ok with it.
->Tom & Bernard,
->Thanks for the insight on MPA negotiation.
->
->Could the below patch be considered as a proper fix?
->
->diff --git a/drivers/infiniband/sw/siw/siw_cm.c
->b/drivers/infiniband/sw/siw/siw_cm.c
->index 9ce8a1b925d2..0aec1b5212f9 100644
->--- a/drivers/infiniband/sw/siw/siw_cm.c
->+++ b/drivers/infiniband/sw/siw/siw_cm.c
->@@ -503,6 +503,7 @@ static int siw_recv_mpa_rr(struct siw_cep *cep)
->        struct socket *s = cep->sock;
->        u16 pd_len;
->        int rcvd, to_rcv;
->+       int extra_data_check = 4; /* 4Bytes, for MPA rules violation
->checking */
->
->        if (cep->mpa.bytes_rcvd < sizeof(struct mpa_rr)) {
->                rcvd = ksock_recv(s, (char *)hdr +
->cep->mpa.bytes_rcvd,
->@@ -553,23 +554,37 @@ static int siw_recv_mpa_rr(struct siw_cep *cep)
->                return -EPROTO;
->        }
->
->+       /*
->+        * Peer must not send any extra data other than MPA messages
->until MPA
->+        * negotiation is completed, an exception is MPA V2
->client-server Mode,
->+        * IE, in this mode the peer after sending MPA Reply can
->immediately
->+        * start sending data in RDMA mode.
->+        */
+You suggested the below 2 lines instead of the above one line, correct ? 
+as struct devx_async_event_file wraps uobj as its first field this is 
+logically equal, agree ?
 
-This is unfortunately not true. The responder NEVER sends
-an FPDU without having seen an FPDU from the initiator.
-I just checked RFC 6581 again. The RTR (ready-to-receive)
-indication from the initiator is still needed, but now
-provided by the protocol and not the application: w/o
-'enhanced MPA setup', the initiator sends the first
-FPDU as an application message. With 'enhanced MPA setup',
-the initiator protocol entity sends (w/o application
-interaction) a zero length READ/WRITE/Send as a first FPDU,
-as previously negotiated with the responder. Again: only
-after the responder has seen the first FPDU, it can
-start sending in FPDU mode.
+struct ib_uobject *uobj = filp->private_data;
+struct devx_async_event_file *ev_file = container_of(struct
+    	          devx_async_event_file, filp->private_data, uobj);
 
-Sorry for the confusion. But the current
-siw code appears to be just correct.
+> 
+> It should get fixed in a followup, along with any other places like
+> it.
+> 
 
-Thanks
-Bernard
+This can be done if you prefer the extra line pointed above.
 
+> It is also a bit redundant to store the mlx5_ib_dev in the
+> devx_async_event_file as uobj->ucontext->dev is the same pointer.
+> 
 
+Post hot unplug uobj->ucontext might not be accessible, isn't it ?
+Current code should be fine for that.
 
->+       if ((__mpa_rr_revision(cep->mpa.hdr.params.bits) ==
->MPA_REVISION_2) &&
->+               (cep->state == SIW_EPSTATE_AWAIT_MPAREP)) {
->+               int mpa_p2p_mode = cep->mpa.v2_ctrl_req.ord &
->+                               (MPA_V2_RDMA_WRITE_RTR |
->MPA_V2_RDMA_READ_RTR);
->+               if (!mpa_p2p_mode)
->+                       extra_data_check = 0;
->+       }
->+
->        /*
->         * At this point, we must have hdr->params.pd_len != 0.
->         * A private data buffer gets allocated if hdr->params.pd_len
->!=
->         * 0.
->         */
->        if (!cep->mpa.pdata) {
->-               cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
->+               cep->mpa.pdata = kmalloc(pd_len + extra_data_check,
->GFP_KERNEL);
->                if (!cep->mpa.pdata)
->                        return -ENOMEM;
->        }
->        rcvd = ksock_recv(
->                s, cep->mpa.pdata + cep->mpa.bytes_rcvd -
->sizeof(struct
->mpa_rr),
->-               to_rcv + 4, MSG_DONTWAIT);
->+               to_rcv + extra_data_check, MSG_DONTWAIT);
->
->        if (rcvd < 0)
->                return rcvd;
->
->-       if (rcvd > to_rcv)
->+       if (extra_data_check && (rcvd > to_rcv))
->                return -EPROTO;
->
->        cep->mpa.bytes_rcvd += rcvd;
->
->-Krishna.
->> 
->> Tom.
->> 
->> 
->> 
->> > 
->> > Bernard.
->> > 
->> >>
->> >>> So, for the MPA request case, this code is needed
->> >>> to check for protocol correctness.
->> >>> You are right for the MPA reply case - if we are
->> >>> _not_ in peer2peer mode, the peer can immediately
->> >>> start sending data in RDMA mode after its MPA Reply.
->> >>> So we shall add appropriate code to be more specific
->> >>> For an error, we are (1) processing an MPA Request,
->> >>> OR (2) processing an MPA Reply AND we are not expected
->> >>> to send an initial READ/WRITE/Send as negotiated with
->> >>> the peer (peer2peer mode MPA handshake).
->> >>>
->> >>> Just removing this check would make siw more permissive,
->> >>> but to a point where peer MPA protocol errors are
->> >>> tolerated. I am not in favor of that level of
->> >>> forgiveness.
->> >>>
->> >>> If possible, please provide an appropriate patch
->> >>> or (if it causes current issues with another peer
->> >>> iWarp implementation) just run in MPA peer2peer mode,
->> >>> where the current check is appropriate.
->> >>> Otherwise, I would provide an appropriate fix by Monday
->> >>> (I am still out of office this week).
->> >>>
->> >>>
->> >>> Many thanks and best regards,
->> >>> Bernard.
->> >>>
->> >>>
->> >>>
->> >>
->> >>
->> > 
->> > 
->> > 
->
->
+> Otherwise this patch is Ok
+> 
+> Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+> 
 
+Thanks.
+Are we fine to take this patch ?
+
+Yishai
