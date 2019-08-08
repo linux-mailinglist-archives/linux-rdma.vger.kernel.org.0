@@ -2,139 +2,177 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 922DF86BAA
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 22:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D250A86C21
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 23:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbfHHUiZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Aug 2019 16:38:25 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:28894 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725785AbfHHUiZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Aug 2019 16:38:25 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id AC5FF61281;
-        Thu,  8 Aug 2019 20:38:24 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-57.rdu2.redhat.com [10.10.112.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4F9545C299;
-        Thu,  8 Aug 2019 20:38:22 +0000 (UTC)
-Message-ID: <feab2a069bf9ac1e3c627373add292a77db86be0.camel@redhat.com>
-Subject: Re: [PATCH for-next V4 0/4] RDMA: Cleanups and improvements
-From:   Doug Ledford <dledford@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Kamal Heib <kamalheib1@gmail.com>, linux-rdma@vger.kernel.org,
+        id S2390429AbfHHVMW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Aug 2019 17:12:22 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:40783 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390428AbfHHVMW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Aug 2019 17:12:22 -0400
+Received: by mail-pg1-f195.google.com with SMTP id w10so44694566pgj.7
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Aug 2019 14:12:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ylddyGuuUpJhKUvK1ev1Q44hiLLmL8PwyC4MRMb3mUE=;
+        b=ACf43qcDjfXfx13Z+1Gsw1UZV/Uosrf1yEiF0Agjii4NCq0aSJm4NT0QzSwLCl7Dc5
+         gq+wLSnVQcR3qxZ0fm9hvoSL16jb4cCF5OkMFfCEBQn0MQdPfLlk2tDzdSCLPp3vIQBd
+         UxRwIr8unIchMakLD/5qyLX3unblGeVjDLQfg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ylddyGuuUpJhKUvK1ev1Q44hiLLmL8PwyC4MRMb3mUE=;
+        b=lEK6IeEiMsV6yaAWJqAguaWmm7oRhnmMokrIqQQol6y8BKLvmw8xhAkp/lWRgVMsY+
+         INQAOCOfL9skO2ucOWC/W3pttfe9U6B0eKbv7mnVbWVULH5up4Y3ooy4YtYFYWkT4uqP
+         BbyFI5nNgxqChIJAh1PKM8lCTOVA+sd41Y5J62xxEF5/IOaiv3rqicbilieukcol7zQ5
+         uxn77UPv2OK/L7YiGxZHDhSz+rUNPPJomFRD18OAnwcucIS1Omifl1kyOy07DieEeeoR
+         /vCaJP59wkOb0FG1rP943znNgGAYIqJyPgWEzeeit0fbhmoDgcdObQWpAVwzrQaoMw7g
+         aDnA==
+X-Gm-Message-State: APjAAAVf11V9EpQ+nMYQthPRTa/zbLnB7D6KmXS172jMzr0t/GfPOV4U
+        YelKRCT3OFmq76X2LEFg6jY1ng==
+X-Google-Smtp-Source: APXvYqy0pdWoHPkerneL5407ilt1ySmaIIJNjNXYxB0G6sGkOR++FLPJzal2z8CcZbjPxvclbtt+OA==
+X-Received: by 2002:a62:1750:: with SMTP id 77mr17827956pfx.172.1565298741745;
+        Thu, 08 Aug 2019 14:12:21 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q19sm101457867pfc.62.2019.08.08.14.12.20
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 08 Aug 2019 14:12:20 -0700 (PDT)
+Date:   Thu, 8 Aug 2019 14:12:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        dri-devel@lists.freedesktop.org,
+        Kostya Serebryany <kcc@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Christoph Hellwig <hch@infradead.org>,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Andrew Boyer <aboyer@tobark.org>
-Date:   Thu, 08 Aug 2019 16:38:19 -0400
-In-Reply-To: <20190808075441.GA28049@mtr-leonro.mtl.com>
-References: <20190807103138.17219-1-kamalheib1@gmail.com>
-         <70ab09ce261e356df5cce0ef37dca371f84c566a.camel@redhat.com>
-         <20190808075441.GA28049@mtr-leonro.mtl.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-pjtn7kVoZROs0AcCYOYV"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        linux-media@vger.kernel.org, Kevin Brodsky <kevin.brodsky@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: [PATCH v19 00/15] arm64: untag user pointers passed to the kernel
+Message-ID: <201908081410.C16D2BD@keescook>
+References: <cover.1563904656.git.andreyknvl@google.com>
+ <CAAeHK+yc0D_nd7nTRsY4=qcSx+eQR0VLut3uXMf4NEiE-VpeCw@mail.gmail.com>
+ <20190724140212.qzvbcx5j2gi5lcoj@willie-the-truck>
+ <CAAeHK+xXzdQHpVXL7f1T2Ef2P7GwFmDMSaBH4VG8fT3=c_OnjQ@mail.gmail.com>
+ <20190724142059.GC21234@fuggles.cambridge.arm.com>
+ <20190806171335.4dzjex5asoertaob@willie-the-truck>
+ <CAAeHK+zF01mxU+PkEYLkoVu-ZZM6jNfL_OwMJKRwLr-sdU4Myg@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.30]); Thu, 08 Aug 2019 20:38:25 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+zF01mxU+PkEYLkoVu-ZZM6jNfL_OwMJKRwLr-sdU4Myg@mail.gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Aug 07, 2019 at 07:17:35PM +0200, Andrey Konovalov wrote:
+> On Tue, Aug 6, 2019 at 7:13 PM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Wed, Jul 24, 2019 at 03:20:59PM +0100, Will Deacon wrote:
+> > > On Wed, Jul 24, 2019 at 04:16:49PM +0200, Andrey Konovalov wrote:
+> > > > On Wed, Jul 24, 2019 at 4:02 PM Will Deacon <will@kernel.org> wrote:
+> > > > > On Tue, Jul 23, 2019 at 08:03:29PM +0200, Andrey Konovalov wrote:
+> > > > > > Should this go through the mm or the arm tree?
+> > > > >
+> > > > > I would certainly prefer to take at least the arm64 bits via the arm64 tree
+> > > > > (i.e. patches 1, 2 and 15). We also need a Documentation patch describing
+> > > > > the new ABI.
+> > > >
+> > > > Sounds good! Should I post those patches together with the
+> > > > Documentation patches from Vincenzo as a separate patchset?
+> > >
+> > > Yes, please (although as you say below, we need a new version of those
+> > > patches from Vincenzo to address the feedback on v5). The other thing I
+> > > should say is that I'd be happy to queue the other patches in the series
+> > > too, but some of them are missing acks from the relevant maintainers (e.g.
+> > > the mm/ and fs/ changes).
+> >
+> > Ok, I've queued patches 1, 2, and 15 on a stable branch here:
+> >
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/tbi
+> >
+> > which should find its way into -next shortly via our for-next/core branch.
+> > If you want to make changes, please send additional patches on top.
+> >
+> > This is targetting 5.4, but I will drop it before the merge window if
+> > we don't have both of the following in place:
+> >
+> >   * Updated ABI documentation with Acks from Catalin and Kevin
+> 
+> Catalin has posted a new version today.
+> 
+> >   * The other patches in the series either Acked (so I can pick them up)
+> >     or queued via some other tree(s) for 5.4.
+> 
+> So we have the following patches in this series:
+> 
+> 1. arm64: untag user pointers in access_ok and __uaccess_mask_ptr
+> 2. arm64: Introduce prctl() options to control the tagged user addresses ABI
+> 3. lib: untag user pointers in strn*_user
+> 4. mm: untag user pointers passed to memory syscalls
+> 5. mm: untag user pointers in mm/gup.c
+> 6. mm: untag user pointers in get_vaddr_frames
+> 7. fs/namespace: untag user pointers in copy_mount_options
+> 8. userfaultfd: untag user pointers
+> 9. drm/amdgpu: untag user pointers
+> 10. drm/radeon: untag user pointers in radeon_gem_userptr_ioctl
+> 11. IB/mlx4: untag user pointers in mlx4_get_umem_mr
+> 12. media/v4l2-core: untag user pointers in videobuf_dma_contig_user_get
+> 13. tee/shm: untag user pointers in tee_shm_register
+> 14. vfio/type1: untag user pointers in vaddr_get_pfn
+> 15. selftests, arm64: add a selftest for passing tagged pointers to kernel
+> 
+> 1, 2 and 15 have been picked by Will.
+> 
+> 11 has been picked up by Jason.
+> 
+> 9, 10, 12, 13 and 14 have acks from their subsystem maintainers.
+> 
+> 3 touches generic lib code, I'm not sure if there's a dedicated
+> maintainer for that.
 
---=-pjtn7kVoZROs0AcCYOYV
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Andrew tends to pick up lib/ patches.
 
-On Thu, 2019-08-08 at 10:54 +0300, Leon Romanovsky wrote:
-> On Wed, Aug 07, 2019 at 03:56:26PM -0400, Doug Ledford wrote:
-> > On Wed, 2019-08-07 at 13:31 +0300, Kamal Heib wrote:
-> > > This series includes few cleanups and improvements, the first
-> > > patch
-> > > introduce a new enum for describing the physical state values and
-> > > use
-> > > it
-> > > instead of using the magic numbers, patch 2-4 add support for a
-> > > common
-> > > query port for iWARP drivers and remove the common code from the
-> > > iWARP
-> > > drivers.
-> > >=20
-> > > Changes from v3:
-> > > - Patch #1:
-> > > -- Introduce phys_state_to_str() and use it.
-> > >=20
-> > > Changes from v2:
-> > > - Patch #1:
-> > > -- Update mlx4 and hns to use the new ib_port_phys_state enum.
-> > > - Patch #3:
-> > > -- Use rdma_protocol_iwarp() instead of rdma_node_get_transport().
-> > >=20
-> > > Changes from v1 :
-> > > - Patch #3:
-> > > -- Delete __ prefix.
-> > > -- Add missing dev_put(netdev);
-> > > -- Initilize gid to {}.
-> > > -- Return error code directly.
-> > >=20
-> > > Kamal Heib (4):
-> > >   RDMA: Introduce ib_port_phys_state enum
-> > >   RDMA/cxgb3: Use ib_device_set_netdev()
-> > >   RDMA/core: Add common iWARP query port
-> > >   RDMA/{cxgb3, cxgb4, i40iw}: Remove common code
-> >=20
-> > Thanks, series applied to for-next.
->=20
-> Doug,
->=20
-> First patch is not accurate and need to be reworked/discussed.
->=20
-> first, it changed "Phy Test" output to be "PhyTest" and second
-> "<unknown>" was changed to be "Unknown". I don't think that it is a
-> big
-> deal, but who knows what will break after this change.
+> The ones that are left are the mm ones: 4, 5, 6, 7 and 8.
+> 
+> Andrew, could you take a look and give your Acked-by or pick them up directly?
 
-A quick grep -r of rdma-core for "Phy Test" and "unknown" says nothing
-will break, but that doesn't attest to anything else.
+Given the subsystem Acks, it seems like 3-10 and 12 could all just go
+via Andrew? I hope he agrees. :)
 
-It is also still in my wip branch, so can be fixed directly if needed.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-pjtn7kVoZROs0AcCYOYV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1MiDsACgkQuCajMw5X
-L92quRAAg4hlLZsdlftNd4EKfl8FhYHVQ02Wb8kfEVea4aiIRQkkXuxSel7/IRoH
-HMqPHdhlqYre5frUG/QzKZAvflPOs0IcZhhAqJ6ZAJvWHsNxsn7HTS4qc0OHbOt5
-FBq/h0QxCVnAZs/03eIlKdA+JFGEPRGmt6TGuPBnaX83pr+fwFkL4NgtN6VPRH2Z
-Of4AQNU04Yeyq7AQKGkVKEU5EaOq3v/254JhqiO1rNbuMNsUIvE0Pu29GdGPPK3e
-wJVtShJMUfPmSEpOwz0Jz+q3Tn7JQqOpeCfAW0j9uBY1gOG1Zc+1pyeqoW+XaZlJ
-qw6p9/6w6rwBFvkp7oqK/fhlilfWONhS4QSTucSrCCGv7jP/900zkJ2kM6E4oUkT
-4if5QQ5iQne4Bktq1VQfx/KWcnvOl5Dk7zLcT49NPTgKuKoPZFel3U6gDNjw5vRO
-hp61rASy9wTMMtkEUtXYjzJyDAzb89Km/0wP4KmLIOJrJinihZt47J1cG+1r5HXL
-vCJQKTuwz2USULG4K3eU6WxgIevJldpDKiWRv98ccQ6J95fCRIIKqjsCSBTFSHt5
-isnyxPggURVCTXYDdp0YT418/CRUkCh+dzutYK0qSQjrwAqMRjctfhk+uEtqlE5j
-IgwkHRIXQQrIMyRO8ytSN3X9cQMQCGGZaYbBrPii0LdBecOePY0=
-=84kC
------END PGP SIGNATURE-----
-
---=-pjtn7kVoZROs0AcCYOYV--
-
+-- 
+Kees Cook
