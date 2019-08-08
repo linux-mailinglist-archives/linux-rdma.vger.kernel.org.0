@@ -2,131 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1CC86898
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 20:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922DF86BAA
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 22:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390200AbfHHSSx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Aug 2019 14:18:53 -0400
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:14243 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731038AbfHHSSw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Aug 2019 14:18:52 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d4c678b0000>; Thu, 08 Aug 2019 11:18:52 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 08 Aug 2019 11:18:50 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 08 Aug 2019 11:18:50 -0700
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Aug
- 2019 18:18:49 +0000
-Subject: Re: [PATCH 00/34] put_user_pages(): miscellaneous call sites
-To:     "Weiny, Ira" <ira.weiny@intel.com>,
-        Michal Hocko <mhocko@kernel.org>
-CC:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
+        id S1728020AbfHHUiZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Aug 2019 16:38:25 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:28894 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725785AbfHHUiZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 8 Aug 2019 16:38:25 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id AC5FF61281;
+        Thu,  8 Aug 2019 20:38:24 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-57.rdu2.redhat.com [10.10.112.57])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4F9545C299;
+        Thu,  8 Aug 2019 20:38:22 +0000 (UTC)
+Message-ID: <feab2a069bf9ac1e3c627373add292a77db86be0.camel@redhat.com>
+Subject: Re: [PATCH for-next V4 0/4] RDMA: Cleanups and improvements
+From:   Doug Ledford <dledford@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Kamal Heib <kamalheib1@gmail.com>, linux-rdma@vger.kernel.org,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "devel@lists.orangefs.org" <devel@lists.orangefs.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-rpi-kernel@lists.infradead.org" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <20190802022005.5117-1-jhubbard@nvidia.com>
- <20190802091244.GD6461@dhcp22.suse.cz>
- <20190802124146.GL25064@quack2.suse.cz>
- <20190802142443.GB5597@bombadil.infradead.org>
- <20190802145227.GQ25064@quack2.suse.cz>
- <076e7826-67a5-4829-aae2-2b90f302cebd@nvidia.com>
- <20190807083726.GA14658@quack2.suse.cz>
- <20190807084649.GQ11812@dhcp22.suse.cz>
- <20190808023637.GA1508@iweiny-DESK2.sc.intel.com>
- <e648a7f3-6a1b-c9ea-1121-7ab69b6b173d@nvidia.com>
- <2807E5FD2F6FDA4886F6618EAC48510E79E79644@CRSMSX101.amr.corp.intel.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <b1b33292-d929-f9ff-dd75-02828228f35e@nvidia.com>
-Date:   Thu, 8 Aug 2019 11:18:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Andrew Boyer <aboyer@tobark.org>
+Date:   Thu, 08 Aug 2019 16:38:19 -0400
+In-Reply-To: <20190808075441.GA28049@mtr-leonro.mtl.com>
+References: <20190807103138.17219-1-kamalheib1@gmail.com>
+         <70ab09ce261e356df5cce0ef37dca371f84c566a.camel@redhat.com>
+         <20190808075441.GA28049@mtr-leonro.mtl.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-pjtn7kVoZROs0AcCYOYV"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <2807E5FD2F6FDA4886F6618EAC48510E79E79644@CRSMSX101.amr.corp.intel.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1565288332; bh=JXH0z+PATu5ChINAttu0xw8NI7VYrjVhdTogRmB3Q5s=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=Ne1ScLdQ+tu5qOaISiLlk/MzD+D0tWGCUEcW8KATp/99KORz80qhTvSS0MA86k71v
-         1gG74XZNfpVRbFXyQsXs+wV66Ly/i7Omeym8buU22OwtUh/B674iBCJPOoXFe5hxmV
-         1e7OUBsDbdwXkl/h4Pjx1eOWT4qAVANZ24jESe93raeMkGLORABLpzcfJ+l/YUvFr/
-         bUBCYBUk9JXLyxcXRRJ6Qo5DLPNTbuOY1/JVx8JLOWf78tx+O5w4P2ZxYGmo4q53CG
-         aum+FjJWUhUsxhssDMyUyjXEHRPMBfcGtXYtpdJqmbhfodN4x0QDM6mw3fwyew2GF4
-         p5OXETBP5SbRg==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.30]); Thu, 08 Aug 2019 20:38:25 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/8/19 9:25 AM, Weiny, Ira wrote:
->>
->> On 8/7/19 7:36 PM, Ira Weiny wrote:
->>> On Wed, Aug 07, 2019 at 10:46:49AM +0200, Michal Hocko wrote:
->>>> On Wed 07-08-19 10:37:26, Jan Kara wrote:
->>>>> On Fri 02-08-19 12:14:09, John Hubbard wrote:
->>>>>> On 8/2/19 7:52 AM, Jan Kara wrote:
->>>>>>> On Fri 02-08-19 07:24:43, Matthew Wilcox wrote:
->>>>>>>> On Fri, Aug 02, 2019 at 02:41:46PM +0200, Jan Kara wrote:
->>>>>>>>> On Fri 02-08-19 11:12:44, Michal Hocko wrote:
->>>>>>>>>> On Thu 01-08-19 19:19:31, john.hubbard@gmail.com wrote:
->>   [...]
-> Yep I can do this.  I did not realize that Andrew had accepted any of this work.  I'll check out his tree.  But I don't think he is going to accept this series through his tree.  So what is the ETA on that landing in Linus' tree?
-> 
 
-I'd expect it to go into 5.4, according to my understanding of how
-the release cycles are arranged.
+--=-pjtn7kVoZROs0AcCYOYV
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, 2019-08-08 at 10:54 +0300, Leon Romanovsky wrote:
+> On Wed, Aug 07, 2019 at 03:56:26PM -0400, Doug Ledford wrote:
+> > On Wed, 2019-08-07 at 13:31 +0300, Kamal Heib wrote:
+> > > This series includes few cleanups and improvements, the first
+> > > patch
+> > > introduce a new enum for describing the physical state values and
+> > > use
+> > > it
+> > > instead of using the magic numbers, patch 2-4 add support for a
+> > > common
+> > > query port for iWARP drivers and remove the common code from the
+> > > iWARP
+> > > drivers.
+> > >=20
+> > > Changes from v3:
+> > > - Patch #1:
+> > > -- Introduce phys_state_to_str() and use it.
+> > >=20
+> > > Changes from v2:
+> > > - Patch #1:
+> > > -- Update mlx4 and hns to use the new ib_port_phys_state enum.
+> > > - Patch #3:
+> > > -- Use rdma_protocol_iwarp() instead of rdma_node_get_transport().
+> > >=20
+> > > Changes from v1 :
+> > > - Patch #3:
+> > > -- Delete __ prefix.
+> > > -- Add missing dev_put(netdev);
+> > > -- Initilize gid to {}.
+> > > -- Return error code directly.
+> > >=20
+> > > Kamal Heib (4):
+> > >   RDMA: Introduce ib_port_phys_state enum
+> > >   RDMA/cxgb3: Use ib_device_set_netdev()
+> > >   RDMA/core: Add common iWARP query port
+> > >   RDMA/{cxgb3, cxgb4, i40iw}: Remove common code
+> >=20
+> > Thanks, series applied to for-next.
+>=20
+> Doug,
+>=20
+> First patch is not accurate and need to be reworked/discussed.
+>=20
+> first, it changed "Phy Test" output to be "PhyTest" and second
+> "<unknown>" was changed to be "Unknown". I don't think that it is a
+> big
+> deal, but who knows what will break after this change.
 
-> To that point I'm still not sure who would take all this as I am now touching mm, procfs, rdma, ext4, and xfs.
-> 
-> I just thought I would chime in with my progress because I'm to a point where things are working and so I can submit the code but I'm not sure what I can/should depend on landing...  Also, now that 0day has run overnight it has found issues with this rebase so I need to clean those up...  Perhaps I will base on Andrew's tree prior to doing that...
+A quick grep -r of rdma-core for "Phy Test" and "unknown" says nothing
+will break, but that doesn't attest to anything else.
 
-I'm certainly not the right person to answer, but in spite of that, I'd think
-Andrew's tree is a reasonable place for it. Sort of.
+It is also still in my wip branch, so can be fixed directly if needed.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-pjtn7kVoZROs0AcCYOYV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1MiDsACgkQuCajMw5X
+L92quRAAg4hlLZsdlftNd4EKfl8FhYHVQ02Wb8kfEVea4aiIRQkkXuxSel7/IRoH
+HMqPHdhlqYre5frUG/QzKZAvflPOs0IcZhhAqJ6ZAJvWHsNxsn7HTS4qc0OHbOt5
+FBq/h0QxCVnAZs/03eIlKdA+JFGEPRGmt6TGuPBnaX83pr+fwFkL4NgtN6VPRH2Z
+Of4AQNU04Yeyq7AQKGkVKEU5EaOq3v/254JhqiO1rNbuMNsUIvE0Pu29GdGPPK3e
+wJVtShJMUfPmSEpOwz0Jz+q3Tn7JQqOpeCfAW0j9uBY1gOG1Zc+1pyeqoW+XaZlJ
+qw6p9/6w6rwBFvkp7oqK/fhlilfWONhS4QSTucSrCCGv7jP/900zkJ2kM6E4oUkT
+4if5QQ5iQne4Bktq1VQfx/KWcnvOl5Dk7zLcT49NPTgKuKoPZFel3U6gDNjw5vRO
+hp61rASy9wTMMtkEUtXYjzJyDAzb89Km/0wP4KmLIOJrJinihZt47J1cG+1r5HXL
+vCJQKTuwz2USULG4K3eU6WxgIevJldpDKiWRv98ccQ6J95fCRIIKqjsCSBTFSHt5
+isnyxPggURVCTXYDdp0YT418/CRUkCh+dzutYK0qSQjrwAqMRjctfhk+uEtqlE5j
+IgwkHRIXQQrIMyRO8ytSN3X9cQMQCGGZaYbBrPii0LdBecOePY0=
+=84kC
+-----END PGP SIGNATURE-----
+
+--=-pjtn7kVoZROs0AcCYOYV--
+
