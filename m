@@ -2,166 +2,358 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4421866FC
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 18:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A9C86767
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 18:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389883AbfHHQZM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Aug 2019 12:25:12 -0400
-Received: from mga09.intel.com ([134.134.136.24]:38275 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732680AbfHHQZL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Aug 2019 12:25:11 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Aug 2019 09:25:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,362,1559545200"; 
-   d="scan'208";a="258761935"
-Received: from fmsmsx104.amr.corp.intel.com ([10.18.124.202])
-  by orsmga001.jf.intel.com with ESMTP; 08 Aug 2019 09:25:08 -0700
-Received: from fmsmsx119.amr.corp.intel.com (10.18.124.207) by
- fmsmsx104.amr.corp.intel.com (10.18.124.202) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 8 Aug 2019 09:25:07 -0700
-Received: from crsmsx104.amr.corp.intel.com (172.18.63.32) by
- FMSMSX119.amr.corp.intel.com (10.18.124.207) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 8 Aug 2019 09:25:07 -0700
-Received: from crsmsx101.amr.corp.intel.com ([169.254.1.115]) by
- CRSMSX104.amr.corp.intel.com ([169.254.6.74]) with mapi id 14.03.0439.000;
- Thu, 8 Aug 2019 10:25:05 -0600
-From:   "Weiny, Ira" <ira.weiny@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@kernel.org>
-CC:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        =?utf-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "devel@lists.orangefs.org" <devel@lists.orangefs.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        id S2404096AbfHHQqq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Aug 2019 12:46:46 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:20454 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728289AbfHHQqp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Aug 2019 12:46:45 -0400
+Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x78GkdiP024994;
+        Thu, 8 Aug 2019 09:46:41 -0700
+Date:   Thu, 8 Aug 2019 22:16:39 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Tom Talpey <tom@talpey.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-rpi-kernel@lists.infradead.org" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Subject: RE: [PATCH 00/34] put_user_pages(): miscellaneous call sites
-Thread-Topic: [PATCH 00/34] put_user_pages(): miscellaneous call sites
-Thread-Index: AQHVSNjU1EYxEMQcyke2Y16AlWiV+abn98YAgAA6ZwCAABzEgIAAB8CAgABJHoCABynCAIAAAqCAgAC1jYCAAIj3AIAAatiQ
-Date:   Thu, 8 Aug 2019 16:25:04 +0000
-Message-ID: <2807E5FD2F6FDA4886F6618EAC48510E79E79644@CRSMSX101.amr.corp.intel.com>
-References: <20190802022005.5117-1-jhubbard@nvidia.com>
- <20190802091244.GD6461@dhcp22.suse.cz>
- <20190802124146.GL25064@quack2.suse.cz>
- <20190802142443.GB5597@bombadil.infradead.org>
- <20190802145227.GQ25064@quack2.suse.cz>
- <076e7826-67a5-4829-aae2-2b90f302cebd@nvidia.com>
- <20190807083726.GA14658@quack2.suse.cz>
- <20190807084649.GQ11812@dhcp22.suse.cz>
- <20190808023637.GA1508@iweiny-DESK2.sc.intel.com>
- <e648a7f3-6a1b-c9ea-1121-7ab69b6b173d@nvidia.com>
-In-Reply-To: <e648a7f3-6a1b-c9ea-1121-7ab69b6b173d@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiNzg1NWU5YjgtN2QxYy00YWI4LWFkMDAtZTkzNjZiYzAyZWZhIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoidDZjeGJDdmV4UkoyZDkrSFdhT0RlXC9jalFDREdKeXlsWlJnSkxPamJtaXZuU2VIUmFYNG12UFE5cVIrbkR6QzkifQ==
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [172.18.205.10]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Nirranjan Kirubaharan <nirranjan@chelsio.com>
+Subject: Re: [PATCH for-rc] siw: MPA Reply handler tries to read beyond MPA
+ message
+Message-ID: <20190808164638.GA7795@chelsio.com>
+References: <20190805172605.GA5549@chelsio.com>
+ <8499b96a-48dd-1286-ea0f-e66be34afffa@talpey.com>
+ <20190731103310.23199-1-krishna2@chelsio.com>
+ <OF4DB6F345.7C76F976-ON00258449.00392FF3-00258449.003C1BFB@notes.na.collabserv.com>
+ <OF95C29EF7.244FC9E1-ON0025844A.003D049F-0025844A.003E229B@notes.na.collabserv.com>
+ <518b1734-5d72-e32d-376b-0fec1cbce8f5@talpey.com>
+ <OF7F439620.B43AE37C-ON00258450.00524237-00258450.0052DFDC@notes.na.collabserv.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF7F439620.B43AE37C-ON00258450.00524237-00258450.0052DFDC@notes.na.collabserv.com>
+User-Agent: Mutt/1.9.3 (20180206.02d571c2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiANCj4gT24gOC83LzE5IDc6MzYgUE0sIElyYSBXZWlueSB3cm90ZToNCj4gPiBPbiBXZWQsIEF1
-ZyAwNywgMjAxOSBhdCAxMDo0Njo0OUFNICswMjAwLCBNaWNoYWwgSG9ja28gd3JvdGU6DQo+ID4+
-IE9uIFdlZCAwNy0wOC0xOSAxMDozNzoyNiwgSmFuIEthcmEgd3JvdGU6DQo+ID4+PiBPbiBGcmkg
-MDItMDgtMTkgMTI6MTQ6MDksIEpvaG4gSHViYmFyZCB3cm90ZToNCj4gPj4+PiBPbiA4LzIvMTkg
-Nzo1MiBBTSwgSmFuIEthcmEgd3JvdGU6DQo+ID4+Pj4+IE9uIEZyaSAwMi0wOC0xOSAwNzoyNDo0
-MywgTWF0dGhldyBXaWxjb3ggd3JvdGU6DQo+ID4+Pj4+PiBPbiBGcmksIEF1ZyAwMiwgMjAxOSBh
-dCAwMjo0MTo0NlBNICswMjAwLCBKYW4gS2FyYSB3cm90ZToNCj4gPj4+Pj4+PiBPbiBGcmkgMDIt
-MDgtMTkgMTE6MTI6NDQsIE1pY2hhbCBIb2NrbyB3cm90ZToNCj4gPj4+Pj4+Pj4gT24gVGh1IDAx
-LTA4LTE5IDE5OjE5OjMxLCBqb2huLmh1YmJhcmRAZ21haWwuY29tIHdyb3RlOg0KPiAgIFsuLi5d
-DQo+ID4gQmVmb3JlIEkgZ28gb24sIEkgd291bGQgbGlrZSB0byBzYXkgdGhhdCB0aGUgImltYmFs
-YW5jZSIgb2YNCj4gPiBnZXRfdXNlcl9wYWdlcygpIGFuZCBwdXRfcGFnZSgpIGJvdGhlcnMgbWUg
-ZnJvbSBhIHB1cmlzdCBzdGFuZHBvaW50Li4uDQo+ID4gSG93ZXZlciwgc2luY2UgdGhpcyBkaXNj
-dXNzaW9uIGNyb3BwZWQgdXAgSSB3ZW50IGFoZWFkIGFuZCBwb3J0ZWQgbXkNCj4gPiB3b3JrIHRv
-IExpbnVzJyBjdXJyZW50IG1hc3Rlcg0KPiA+ICg1LjMtcmMzKykgYW5kIGluIGRvaW5nIHNvIEkg
-b25seSBoYWQgdG8gc3RlYWwgYSBiaXQgb2YgSm9obnMgY29kZS4uLg0KPiA+IFNvcnJ5IEpvaG4u
-Li4gIDotKA0KPiA+DQo+ID4gSSBkb24ndCBoYXZlIHRoZSBjb21taXQgbWVzc2FnZXMgYWxsIGNs
-ZWFuZWQgdXAgYW5kIEkga25vdyB0aGVyZSBtYXkNCj4gPiBiZSBzb21lIGRpc2N1c3Npb24gb24g
-dGhlc2UgbmV3IGludGVyZmFjZXMgYnV0IEkgd2FudGVkIHRvIHRocm93IHRoaXMNCj4gPiBzZXJp
-ZXMgb3V0IHRoZXJlIGJlY2F1c2UgSSB0aGluayBpdCBtYXkgYmUgd2hhdCBKYW4gYW5kIE1pY2hh
-bCBhcmUNCj4gPiBkcml2aW5nIGF0IChvciBhdCBsZWFzdCBpbiB0aGF0IGRpcmVjdGlvbi4NCj4g
-Pg0KPiA+IFJpZ2h0IG5vdyBvbmx5IFJETUEgYW5kIERBWCBGUydzIGFyZSBzdXBwb3J0ZWQuICBP
-dGhlciB1c2VycyBvZiBHVVANCj4gPiB3aWxsIHN0aWxsIGZhaWwgb24gYSBEQVggZmlsZSBhbmQg
-cmVndWxhciBmaWxlcyB3aWxsIHN0aWxsIGJlIGF0DQo+ID4gcmlzay5bMl0NCj4gPg0KPiA+IEkn
-dmUgcHVzaGVkIHRoaXMgd29yayAoYmFzZWQgNS4zLXJjMysgKDMzOTIwZjFlYzViZikpIGhlcmVb
-M106DQo+ID4NCj4gPiBodHRwczovL2dpdGh1Yi5jb20vd2VpbnkyL2xpbnV4LWtlcm5lbC90cmVl
-L2xpbnVzLXJkbWFmc2RheC1iMC12Mw0KPiA+DQo+ID4gSSB0aGluayB0aGUgbW9zdCByZWxldmFu
-dCBwYXRjaCB0byB0aGlzIGNvbnZlcnNhdGlvbiBpczoNCj4gPg0KPiA+IGh0dHBzOi8vZ2l0aHVi
-LmNvbS93ZWlueTIvbGludXgtDQo+IGtlcm5lbC9jb21taXQvNWQzNzc2NTNiYTVjZjExYzNiNzE2
-ZjkwDQo+ID4gNGIwNTdiZWU2NjQxYWFmNg0KPiA+DQo+IA0KPiBvaGhoLi4uY2FuIHlvdSBwbGVh
-c2UgYXZvaWQgdXNpbmcgdGhlIG9sZCBfX3B1dF91c2VyX3BhZ2VzX2RpcnR5KCkNCj4gZnVuY3Rp
-b24/IA0KDQpBZ3JlZWQuLi4gSSBkaWQgbm90IGxpa2UgdGhhdC4gIFBhcnQgb2YgdGhlIHJlYXNv
-biBJIGRpZCBub3QgcG9zdCB0aGlzIGlzIEknbSBzdGlsbCB0cnlpbmcgdG8gZmlndXJlIG91dCB3
-aGF0IGhhcyBsYW5kZWQgYW5kIHdoYXQgSSBjYW4gYW5kIGNhbid0IGRlcGVuZCBvbi4NCg0KRm9y
-IGV4YW1wbGUsIENocmlzdG9waCBILiB3YXMgcHJvcG9zaW5nIGNoYW5nZXMgdG8gc29tZSBvZiB0
-aGUgR1VQIGNhbGxzIHdoaWNoIG1heSBjb25mbGljdC4gIEJ1dCBJJ20gbm90IHN1cmUgaGlzIGNo
-YW5nZXMgYXJlIG1vdmluZyBmb3J3YXJkLiAgU28gcmF0aGVyIHRoYW4gd2FpdGluZyBmb3IgdGhl
-IGR1c3QgdG8gc2V0dGxlIEkgZGVjaWRlZCB0byBzZWUgaG93IGhhcmQgaXQgd291bGQgYmUgdG8g
-Z2V0IHRoaXMgcmViYXNlZCBhZ2FpbnN0IG1haW5saW5lIGFuZCB3b3JraW5nLiAgVHVybnMgb3V0
-IGl0IHdhcyBub3QgdG9vIGhhcmQuDQoNCkkgdGhpbmsgdGhhdCBpcyBiZWNhdXNlLCBhcyB0aW1l
-IGhhcyBtb3ZlZCBvbiBpdCBzZWVtcyB0aGF0LCBmb3Igc29tZSB1c2VycyBzdWNoIGFzIFJETUEs
-IGEgc2ltcGxlIHB1dF91c2VyX3BhZ2UoKSBpcyBub3QgZ29pbmcgdG8gYmUgc3VmZmljaWVudC4g
-IFdlIG5lZWQgc29tZXRoaW5nIGVsc2UgdG8gYWxsb3cgR1VQIHRvIGtlZXAgdHJhY2sgb2YgdGhl
-IGZpbGUgcGlucyBhcyB3ZSBkaXNjdXNzZWQuICBTbyBJJ20gc3RhcnRpbmcgdG8gdGhpbmsgc29t
-ZSBvZiB0aGlzIGNvdWxkIGdvIGluIGF0IHRoZSBzYW1lIHRpbWUuDQoNCj4gSSB0aG91Z2h0IEkn
-ZCBjYXVnaHQgdGhpbmdzIGVhcmx5IGVub3VnaCB0byBnZXQgYXdheSB3aXRoIHRoZQ0KPiByZW5h
-bWUgYW5kIGRlbGV0aW9uIG9mIHRoYXQuIFlvdSBjb3VsZCBlaXRoZXI6DQo+IA0KPiBhKSBvcGVu
-IGNvZGUgYW4gaW1wbGVtZW50YXRpb24gb2YgdmFkZHJfcHV0X3BhZ2VzX2RpcnR5X2xvY2soKSB0
-aGF0DQo+IGRvZXNuJ3QgY2FsbCBhbnkgb2YgdGhlICpwdXRfdXNlcl9wYWdlc19kaXJ0eSooKSB2
-YXJpYW50cywgb3INCj4gDQo+IGIpIGluY2x1ZGUgbXkgZmlyc3QgcGF0Y2ggKCIiKSBhcmUgcGFy
-dCBvZiB5b3VyIHNlcmllcywgb3INCj4gDQo+IGMpIGJhc2UgdGhpcyBvbiBBbmRyZXdzJ3MgdHJl
-ZSwgd2hpY2ggYWxyZWFkeSBoYXMgbWVyZ2VkIGluIG15IGZpcnN0IHBhdGNoLg0KPiANCg0KWWVw
-IEkgY2FuIGRvIHRoaXMuICBJIGRpZCBub3QgcmVhbGl6ZSB0aGF0IEFuZHJldyBoYWQgYWNjZXB0
-ZWQgYW55IG9mIHRoaXMgd29yay4gIEknbGwgY2hlY2sgb3V0IGhpcyB0cmVlLiAgQnV0IEkgZG9u
-J3QgdGhpbmsgaGUgaXMgZ29pbmcgdG8gYWNjZXB0IHRoaXMgc2VyaWVzIHRocm91Z2ggaGlzIHRy
-ZWUuICBTbyB3aGF0IGlzIHRoZSBFVEEgb24gdGhhdCBsYW5kaW5nIGluIExpbnVzJyB0cmVlPw0K
-DQpUbyB0aGF0IHBvaW50IEknbSBzdGlsbCBub3Qgc3VyZSB3aG8gd291bGQgdGFrZSBhbGwgdGhp
-cyBhcyBJIGFtIG5vdyB0b3VjaGluZyBtbSwgcHJvY2ZzLCByZG1hLCBleHQ0LCBhbmQgeGZzLg0K
-DQpJIGp1c3QgdGhvdWdodCBJIHdvdWxkIGNoaW1lIGluIHdpdGggbXkgcHJvZ3Jlc3MgYmVjYXVz
-ZSBJJ20gdG8gYSBwb2ludCB3aGVyZSB0aGluZ3MgYXJlIHdvcmtpbmcgYW5kIHNvIEkgY2FuIHN1
-Ym1pdCB0aGUgY29kZSBidXQgSSdtIG5vdCBzdXJlIHdoYXQgSSBjYW4vc2hvdWxkIGRlcGVuZCBv
-biBsYW5kaW5nLi4uICBBbHNvLCBub3cgdGhhdCAwZGF5IGhhcyBydW4gb3Zlcm5pZ2h0IGl0IGhh
-cyBmb3VuZCBpc3N1ZXMgd2l0aCB0aGlzIHJlYmFzZSBzbyBJIG5lZWQgdG8gY2xlYW4gdGhvc2Ug
-dXAuLi4gIFBlcmhhcHMgSSB3aWxsIGJhc2Ugb24gQW5kcmV3J3MgdHJlZSBwcmlvciB0byBkb2lu
-ZyB0aGF0Li4uDQoNClRoYW5rcywNCklyYQ0KDQo+IA0KPiB0aGFua3MsDQo+IC0tDQo+IEpvaG4g
-SHViYmFyZA0KPiBOVklESUENCg0K
+On Thursday, August 08/08/19, 2019 at 15:05:12 +0000, Bernard Metzler wrote:
+> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
+> 
+> >To: "Tom Talpey" <tom@talpey.com>, <BMT@zurich.ibm.com>
+> >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+> >Date: 08/05/2019 07:26PM
+> >Cc: "jgg@ziepe.ca" <jgg@ziepe.ca>, "linux-rdma@vger.kernel.org"
+> ><linux-rdma@vger.kernel.org>, "Potnuri Bharat Teja"
+> ><bharat@chelsio.com>, "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
+> >Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler tries
+> >to read beyond MPA message
+> >
+> >On Friday, August 08/02/19, 2019 at 18:17:37 +0530, Tom Talpey wrote:
+> >> On 8/2/2019 7:18 AM, Bernard Metzler wrote:
+> >> > -----"Tom Talpey" <tom@talpey.com> wrote: -----
+> >> > 
+> >> >> To: "Bernard Metzler" <BMT@zurich.ibm.com>, "Krishnamraju
+> >Eraparaju"
+> >> >> <krishna2@chelsio.com>
+> >> >> From: "Tom Talpey" <tom@talpey.com>
+> >> >> Date: 08/01/2019 08:54PM
+> >> >> Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+> >bharat@chelsio.com,
+> >> >> nirranjan@chelsio.com, krishn2@chelsio.com
+> >> >> Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler
+> >tries
+> >> >> to read beyond MPA message
+> >> >>
+> >> >> On 8/1/2019 6:56 AM, Bernard Metzler wrote:
+> >> >>> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote:
+> >-----
+> >> >>>
+> >> >>>> To: jgg@ziepe.ca, bmt@zurich.ibm.com
+> >> >>>> From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+> >> >>>> Date: 07/31/2019 12:34PM
+> >> >>>> Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com,
+> >> >>>> nirranjan@chelsio.com, krishn2@chelsio.com, "Krishnamraju
+> >> >> Eraparaju"
+> >> >>>> <krishna2@chelsio.com>
+> >> >>>> Subject: [EXTERNAL] [PATCH for-rc] siw: MPA Reply handler
+> >tries to
+> >> >>>> read beyond MPA message
+> >> >>>>
+> >> >>>> while processing MPA Reply, SIW driver is trying to read extra
+> >4
+> >> >>>> bytes
+> >> >>>> than what peer has advertised as private data length.
+> >> >>>>
+> >> >>>> If a FPDU data is received before even siw_recv_mpa_rr()
+> >completed
+> >> >>>> reading MPA reply, then ksock_recv() in siw_recv_mpa_rr()
+> >could
+> >> >> also
+> >> >>>> read FPDU, if "size" is larger than advertised MPA reply
+> >length.
+> >> >>>>
+> >> >>>> 501 static int siw_recv_mpa_rr(struct siw_cep *cep)
+> >> >>>> 502 {
+> >> >>>>            .............
+> >> >>>> 572
+> >> >>>> 573         if (rcvd > to_rcv)
+> >> >>>> 574                 return -EPROTO;   <----- Failure here
+> >> >>>>
+> >> >>>> Looks like the intention here is to throw an ERROR if the
+> >received
+> >> >>>> data
+> >> >>>> is more than the total private data length advertised by the
+> >peer.
+> >> >>>> But
+> >> >>>> reading beyond MPA message causes siw_cm to generate
+> >> >>>> RDMA_CM_EVENT_CONNECT_ERROR event when TCP socket recv buffer
+> >is
+> >> >>>> already
+> >> >>>> queued with FPDU messages.
+> >> >>>>
+> >> >>>> Hence, this function should only read upto private data
+> >length.
+> >> >>>>
+> >> >>>> Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+> >> >>>> ---
+> >> >>>> drivers/infiniband/sw/siw/siw_cm.c | 4 ++--
+> >> >>>> 1 file changed, 2 insertions(+), 2 deletions(-)
+> >> >>>>
+> >> >>>> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
+> >> >>>> b/drivers/infiniband/sw/siw/siw_cm.c
+> >> >>>> index a7cde98e73e8..8dc8cea2566c 100644
+> >> >>>> --- a/drivers/infiniband/sw/siw/siw_cm.c
+> >> >>>> +++ b/drivers/infiniband/sw/siw/siw_cm.c
+> >> >>>> @@ -559,13 +559,13 @@ static int siw_recv_mpa_rr(struct
+> >siw_cep
+> >> >> *cep)
+> >> >>>> 	 * A private data buffer gets allocated if hdr->params.pd_len
+> >!=
+> >> >> 0.
+> >> >>>> 	 */
+> >> >>>> 	if (!cep->mpa.pdata) {
+> >> >>>> -		cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
+> >> >>>> +		cep->mpa.pdata = kmalloc(pd_len, GFP_KERNEL);
+> >> >>>> 		if (!cep->mpa.pdata)
+> >> >>>> 			return -ENOMEM;
+> >> >>>> 	}
+> >> >>>> 	rcvd = ksock_recv(
+> >> >>>> 		s, cep->mpa.pdata + cep->mpa.bytes_rcvd - sizeof(struct
+> >mpa_rr),
+> >> >>>> -		to_rcv + 4, MSG_DONTWAIT);
+> >> >>>> +		to_rcv, MSG_DONTWAIT);
+> >> >>>>
+> >> >>>> 	if (rcvd < 0)
+> >> >>>> 		return rcvd;
+> >> >>>> -- 
+> >> >>>> 2.23.0.rc0
+> >> >>>>
+> >> >>>>
+> >> >>>
+> >> >>> The intention of this code is to make sure the
+> >> >>> peer does not violates the MPA handshake rules.
+> >> >>> The initiator MUST NOT send extra data after its
+> >> >>> MPA request and before receiving the MPA reply.
+> >> >>
+> >> >> I think this is true only for MPA v2. With MPA v1, the
+> >> >> initiator can begin sending immediately (before receiving
+> >> >> the MPA reply), because there is no actual negotiation at
+> >> >> the MPA layer.
+> >> >>
+> >> >> With MPA v2, the negotiation exchange is required because
+> >> >> the type of the following message is predicated by the
+> >> >> "Enhanced mode" a|b|c|d flags present in the first 32 bits
+> >> >> of the private data buffer.
+> >> >>
+> >> >> So, it seems to me that additional logic is needed here to
+> >> >> determine the MPA version, before sniffing additional octets
+> >> >>from the incoming stream?
+> >> >>
+> >> >> Tom.
+> >> >>
+> >> > 
+> >> > There still is the marker negotiation taking place.
+> >> > RFC 5044 says in section 7.1.2:
+> >> > 
+> >> > "Note: Since the receiver's ability to deal with Markers is
+> >> >   unknown until the Request and Reply Frames have been
+> >> >   received, sending FPDUs before this occurs is not possible."
+> >> > 
+> >> > This section further discusses the responder's behavior,
+> >> > where it MUST receive a first FPDU from the initiator
+> >> > before sending its first FPDU:
+> >> > 
+> >> > "4.  MPA Responder mode implementations MUST receive and validate
+> >at
+> >> >         least one FPDU before sending any FPDUs or Markers."
+> >> > 
+> >> > So it appears with MPA version 1, the current siw
+> >> > code is correct. The initiator is entering FPDU mode
+> >> > first, and only after receiving the MPA reply frame.
+> >> > Only after the initiator sent a first FPDU, the responder
+> >> > can start using the connection in FPDU mode.
+> >> > Because of this somehow broken connection establishment
+> >> > procedure (only the initiator can start sending data), a
+> >> > later MPA version makes this first FPDU exchange explicit
+> >> > and selectable (zero length READ/WRITE/Send).
+> >> 
+> >> Yeah, I guess so. Because nobody ever actually implemented markers,
+> >> I think that they may more or less passively ignore this. But
+> >you're
+> >> currect that it's invalid protocol behavior.
+> >> 
+> >> If your testing didn't uncover any issues with existing
+> >implementations
+> >> failing to connect with your strict checking, I'm ok with it.
+> >Tom & Bernard,
+> >Thanks for the insight on MPA negotiation.
+> >
+> >Could the below patch be considered as a proper fix?
+> >
+> >diff --git a/drivers/infiniband/sw/siw/siw_cm.c
+> >b/drivers/infiniband/sw/siw/siw_cm.c
+> >index 9ce8a1b925d2..0aec1b5212f9 100644
+> >--- a/drivers/infiniband/sw/siw/siw_cm.c
+> >+++ b/drivers/infiniband/sw/siw/siw_cm.c
+> >@@ -503,6 +503,7 @@ static int siw_recv_mpa_rr(struct siw_cep *cep)
+> >        struct socket *s = cep->sock;
+> >        u16 pd_len;
+> >        int rcvd, to_rcv;
+> >+       int extra_data_check = 4; /* 4Bytes, for MPA rules violation
+> >checking */
+> >
+> >        if (cep->mpa.bytes_rcvd < sizeof(struct mpa_rr)) {
+> >                rcvd = ksock_recv(s, (char *)hdr +
+> >cep->mpa.bytes_rcvd,
+> >@@ -553,23 +554,37 @@ static int siw_recv_mpa_rr(struct siw_cep *cep)
+> >                return -EPROTO;
+> >        }
+> >
+> >+       /*
+> >+        * Peer must not send any extra data other than MPA messages
+> >until MPA
+> >+        * negotiation is completed, an exception is MPA V2
+> >client-server Mode,
+> >+        * IE, in this mode the peer after sending MPA Reply can
+> >immediately
+> >+        * start sending data in RDMA mode.
+> >+        */
+> 
+> This is unfortunately not true. The responder NEVER sends
+> an FPDU without having seen an FPDU from the initiator.
+> I just checked RFC 6581 again. The RTR (ready-to-receive)
+> indication from the initiator is still needed, but now
+> provided by the protocol and not the application: w/o
+> 'enhanced MPA setup', the initiator sends the first
+> FPDU as an application message. With 'enhanced MPA setup',
+> the initiator protocol entity sends (w/o application
+> interaction) a zero length READ/WRITE/Send as a first FPDU,
+> as previously negotiated with the responder. Again: only
+> after the responder has seen the first FPDU, it can
+> start sending in FPDU mode.
+If I understand your statements correctly: in MPA v2 clint-server mode,
+the responder application should have some logic to wait(after ESTABLISH
+event) until the first FPDU message is received from the initiator?
+
+Thanks,
+Krishna.
+> 
+> Sorry for the confusion. But the current
+> siw code appears to be just correct.
+> 
+> Thanks
+> Bernard
+> 
+> 
+> 
+> >+       if ((__mpa_rr_revision(cep->mpa.hdr.params.bits) ==
+> >MPA_REVISION_2) &&
+> >+               (cep->state == SIW_EPSTATE_AWAIT_MPAREP)) {
+> >+               int mpa_p2p_mode = cep->mpa.v2_ctrl_req.ord &
+> >+                               (MPA_V2_RDMA_WRITE_RTR |
+> >MPA_V2_RDMA_READ_RTR);
+> >+               if (!mpa_p2p_mode)
+> >+                       extra_data_check = 0;
+> >+       }
+> >+
+> >        /*
+> >         * At this point, we must have hdr->params.pd_len != 0.
+> >         * A private data buffer gets allocated if hdr->params.pd_len
+> >!=
+> >         * 0.
+> >         */
+> >        if (!cep->mpa.pdata) {
+> >-               cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
+> >+               cep->mpa.pdata = kmalloc(pd_len + extra_data_check,
+> >GFP_KERNEL);
+> >                if (!cep->mpa.pdata)
+> >                        return -ENOMEM;
+> >        }
+> >        rcvd = ksock_recv(
+> >                s, cep->mpa.pdata + cep->mpa.bytes_rcvd -
+> >sizeof(struct
+> >mpa_rr),
+> >-               to_rcv + 4, MSG_DONTWAIT);
+> >+               to_rcv + extra_data_check, MSG_DONTWAIT);
+> >
+> >        if (rcvd < 0)
+> >                return rcvd;
+> >
+> >-       if (rcvd > to_rcv)
+> >+       if (extra_data_check && (rcvd > to_rcv))
+> >                return -EPROTO;
+> >
+> >        cep->mpa.bytes_rcvd += rcvd;
+> >
+> >-Krishna.
+> >> 
+> >> Tom.
+> >> 
+> >> 
+> >> 
+> >> > 
+> >> > Bernard.
+> >> > 
+> >> >>
+> >> >>> So, for the MPA request case, this code is needed
+> >> >>> to check for protocol correctness.
+> >> >>> You are right for the MPA reply case - if we are
+> >> >>> _not_ in peer2peer mode, the peer can immediately
+> >> >>> start sending data in RDMA mode after its MPA Reply.
+> >> >>> So we shall add appropriate code to be more specific
+> >> >>> For an error, we are (1) processing an MPA Request,
+> >> >>> OR (2) processing an MPA Reply AND we are not expected
+> >> >>> to send an initial READ/WRITE/Send as negotiated with
+> >> >>> the peer (peer2peer mode MPA handshake).
+> >> >>>
+> >> >>> Just removing this check would make siw more permissive,
+> >> >>> but to a point where peer MPA protocol errors are
+> >> >>> tolerated. I am not in favor of that level of
+> >> >>> forgiveness.
+> >> >>>
+> >> >>> If possible, please provide an appropriate patch
+> >> >>> or (if it causes current issues with another peer
+> >> >>> iWarp implementation) just run in MPA peer2peer mode,
+> >> >>> where the current check is appropriate.
+> >> >>> Otherwise, I would provide an appropriate fix by Monday
+> >> >>> (I am still out of office this week).
+> >> >>>
+> >> >>>
+> >> >>> Many thanks and best regards,
+> >> >>> Bernard.
+> >> >>>
+> >> >>>
+> >> >>>
+> >> >>
+> >> >>
+> >> > 
+> >> > 
+> >> > 
+> >
+> >
+> 
