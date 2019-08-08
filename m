@@ -2,358 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A9C86767
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 18:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1CC86898
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 20:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404096AbfHHQqq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Aug 2019 12:46:46 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:20454 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728289AbfHHQqp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Aug 2019 12:46:45 -0400
-Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x78GkdiP024994;
-        Thu, 8 Aug 2019 09:46:41 -0700
-Date:   Thu, 8 Aug 2019 22:16:39 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Tom Talpey <tom@talpey.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        id S2390200AbfHHSSx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Aug 2019 14:18:53 -0400
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:14243 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731038AbfHHSSw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Aug 2019 14:18:52 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5d4c678b0000>; Thu, 08 Aug 2019 11:18:52 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Thu, 08 Aug 2019 11:18:50 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Thu, 08 Aug 2019 11:18:50 -0700
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Aug
+ 2019 18:18:49 +0000
+Subject: Re: [PATCH 00/34] put_user_pages(): miscellaneous call sites
+To:     "Weiny, Ira" <ira.weiny@intel.com>,
+        Michal Hocko <mhocko@kernel.org>
+CC:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "devel@lists.orangefs.org" <devel@lists.orangefs.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Nirranjan Kirubaharan <nirranjan@chelsio.com>
-Subject: Re: [PATCH for-rc] siw: MPA Reply handler tries to read beyond MPA
- message
-Message-ID: <20190808164638.GA7795@chelsio.com>
-References: <20190805172605.GA5549@chelsio.com>
- <8499b96a-48dd-1286-ea0f-e66be34afffa@talpey.com>
- <20190731103310.23199-1-krishna2@chelsio.com>
- <OF4DB6F345.7C76F976-ON00258449.00392FF3-00258449.003C1BFB@notes.na.collabserv.com>
- <OF95C29EF7.244FC9E1-ON0025844A.003D049F-0025844A.003E229B@notes.na.collabserv.com>
- <518b1734-5d72-e32d-376b-0fec1cbce8f5@talpey.com>
- <OF7F439620.B43AE37C-ON00258450.00524237-00258450.0052DFDC@notes.na.collabserv.com>
+        "linux-rpi-kernel@lists.infradead.org" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <20190802022005.5117-1-jhubbard@nvidia.com>
+ <20190802091244.GD6461@dhcp22.suse.cz>
+ <20190802124146.GL25064@quack2.suse.cz>
+ <20190802142443.GB5597@bombadil.infradead.org>
+ <20190802145227.GQ25064@quack2.suse.cz>
+ <076e7826-67a5-4829-aae2-2b90f302cebd@nvidia.com>
+ <20190807083726.GA14658@quack2.suse.cz>
+ <20190807084649.GQ11812@dhcp22.suse.cz>
+ <20190808023637.GA1508@iweiny-DESK2.sc.intel.com>
+ <e648a7f3-6a1b-c9ea-1121-7ab69b6b173d@nvidia.com>
+ <2807E5FD2F6FDA4886F6618EAC48510E79E79644@CRSMSX101.amr.corp.intel.com>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <b1b33292-d929-f9ff-dd75-02828228f35e@nvidia.com>
+Date:   Thu, 8 Aug 2019 11:18:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF7F439620.B43AE37C-ON00258450.00524237-00258450.0052DFDC@notes.na.collabserv.com>
-User-Agent: Mutt/1.9.3 (20180206.02d571c2)
+In-Reply-To: <2807E5FD2F6FDA4886F6618EAC48510E79E79644@CRSMSX101.amr.corp.intel.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1565288332; bh=JXH0z+PATu5ChINAttu0xw8NI7VYrjVhdTogRmB3Q5s=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Ne1ScLdQ+tu5qOaISiLlk/MzD+D0tWGCUEcW8KATp/99KORz80qhTvSS0MA86k71v
+         1gG74XZNfpVRbFXyQsXs+wV66Ly/i7Omeym8buU22OwtUh/B674iBCJPOoXFe5hxmV
+         1e7OUBsDbdwXkl/h4Pjx1eOWT4qAVANZ24jESe93raeMkGLORABLpzcfJ+l/YUvFr/
+         bUBCYBUk9JXLyxcXRRJ6Qo5DLPNTbuOY1/JVx8JLOWf78tx+O5w4P2ZxYGmo4q53CG
+         aum+FjJWUhUsxhssDMyUyjXEHRPMBfcGtXYtpdJqmbhfodN4x0QDM6mw3fwyew2GF4
+         p5OXETBP5SbRg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thursday, August 08/08/19, 2019 at 15:05:12 +0000, Bernard Metzler wrote:
-> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
+On 8/8/19 9:25 AM, Weiny, Ira wrote:
+>>
+>> On 8/7/19 7:36 PM, Ira Weiny wrote:
+>>> On Wed, Aug 07, 2019 at 10:46:49AM +0200, Michal Hocko wrote:
+>>>> On Wed 07-08-19 10:37:26, Jan Kara wrote:
+>>>>> On Fri 02-08-19 12:14:09, John Hubbard wrote:
+>>>>>> On 8/2/19 7:52 AM, Jan Kara wrote:
+>>>>>>> On Fri 02-08-19 07:24:43, Matthew Wilcox wrote:
+>>>>>>>> On Fri, Aug 02, 2019 at 02:41:46PM +0200, Jan Kara wrote:
+>>>>>>>>> On Fri 02-08-19 11:12:44, Michal Hocko wrote:
+>>>>>>>>>> On Thu 01-08-19 19:19:31, john.hubbard@gmail.com wrote:
+>>   [...]
+> Yep I can do this.  I did not realize that Andrew had accepted any of this work.  I'll check out his tree.  But I don't think he is going to accept this series through his tree.  So what is the ETA on that landing in Linus' tree?
 > 
-> >To: "Tom Talpey" <tom@talpey.com>, <BMT@zurich.ibm.com>
-> >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-> >Date: 08/05/2019 07:26PM
-> >Cc: "jgg@ziepe.ca" <jgg@ziepe.ca>, "linux-rdma@vger.kernel.org"
-> ><linux-rdma@vger.kernel.org>, "Potnuri Bharat Teja"
-> ><bharat@chelsio.com>, "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
-> >Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler tries
-> >to read beyond MPA message
-> >
-> >On Friday, August 08/02/19, 2019 at 18:17:37 +0530, Tom Talpey wrote:
-> >> On 8/2/2019 7:18 AM, Bernard Metzler wrote:
-> >> > -----"Tom Talpey" <tom@talpey.com> wrote: -----
-> >> > 
-> >> >> To: "Bernard Metzler" <BMT@zurich.ibm.com>, "Krishnamraju
-> >Eraparaju"
-> >> >> <krishna2@chelsio.com>
-> >> >> From: "Tom Talpey" <tom@talpey.com>
-> >> >> Date: 08/01/2019 08:54PM
-> >> >> Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-> >bharat@chelsio.com,
-> >> >> nirranjan@chelsio.com, krishn2@chelsio.com
-> >> >> Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler
-> >tries
-> >> >> to read beyond MPA message
-> >> >>
-> >> >> On 8/1/2019 6:56 AM, Bernard Metzler wrote:
-> >> >>> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote:
-> >-----
-> >> >>>
-> >> >>>> To: jgg@ziepe.ca, bmt@zurich.ibm.com
-> >> >>>> From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-> >> >>>> Date: 07/31/2019 12:34PM
-> >> >>>> Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com,
-> >> >>>> nirranjan@chelsio.com, krishn2@chelsio.com, "Krishnamraju
-> >> >> Eraparaju"
-> >> >>>> <krishna2@chelsio.com>
-> >> >>>> Subject: [EXTERNAL] [PATCH for-rc] siw: MPA Reply handler
-> >tries to
-> >> >>>> read beyond MPA message
-> >> >>>>
-> >> >>>> while processing MPA Reply, SIW driver is trying to read extra
-> >4
-> >> >>>> bytes
-> >> >>>> than what peer has advertised as private data length.
-> >> >>>>
-> >> >>>> If a FPDU data is received before even siw_recv_mpa_rr()
-> >completed
-> >> >>>> reading MPA reply, then ksock_recv() in siw_recv_mpa_rr()
-> >could
-> >> >> also
-> >> >>>> read FPDU, if "size" is larger than advertised MPA reply
-> >length.
-> >> >>>>
-> >> >>>> 501 static int siw_recv_mpa_rr(struct siw_cep *cep)
-> >> >>>> 502 {
-> >> >>>>            .............
-> >> >>>> 572
-> >> >>>> 573         if (rcvd > to_rcv)
-> >> >>>> 574                 return -EPROTO;   <----- Failure here
-> >> >>>>
-> >> >>>> Looks like the intention here is to throw an ERROR if the
-> >received
-> >> >>>> data
-> >> >>>> is more than the total private data length advertised by the
-> >peer.
-> >> >>>> But
-> >> >>>> reading beyond MPA message causes siw_cm to generate
-> >> >>>> RDMA_CM_EVENT_CONNECT_ERROR event when TCP socket recv buffer
-> >is
-> >> >>>> already
-> >> >>>> queued with FPDU messages.
-> >> >>>>
-> >> >>>> Hence, this function should only read upto private data
-> >length.
-> >> >>>>
-> >> >>>> Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-> >> >>>> ---
-> >> >>>> drivers/infiniband/sw/siw/siw_cm.c | 4 ++--
-> >> >>>> 1 file changed, 2 insertions(+), 2 deletions(-)
-> >> >>>>
-> >> >>>> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
-> >> >>>> b/drivers/infiniband/sw/siw/siw_cm.c
-> >> >>>> index a7cde98e73e8..8dc8cea2566c 100644
-> >> >>>> --- a/drivers/infiniband/sw/siw/siw_cm.c
-> >> >>>> +++ b/drivers/infiniband/sw/siw/siw_cm.c
-> >> >>>> @@ -559,13 +559,13 @@ static int siw_recv_mpa_rr(struct
-> >siw_cep
-> >> >> *cep)
-> >> >>>> 	 * A private data buffer gets allocated if hdr->params.pd_len
-> >!=
-> >> >> 0.
-> >> >>>> 	 */
-> >> >>>> 	if (!cep->mpa.pdata) {
-> >> >>>> -		cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
-> >> >>>> +		cep->mpa.pdata = kmalloc(pd_len, GFP_KERNEL);
-> >> >>>> 		if (!cep->mpa.pdata)
-> >> >>>> 			return -ENOMEM;
-> >> >>>> 	}
-> >> >>>> 	rcvd = ksock_recv(
-> >> >>>> 		s, cep->mpa.pdata + cep->mpa.bytes_rcvd - sizeof(struct
-> >mpa_rr),
-> >> >>>> -		to_rcv + 4, MSG_DONTWAIT);
-> >> >>>> +		to_rcv, MSG_DONTWAIT);
-> >> >>>>
-> >> >>>> 	if (rcvd < 0)
-> >> >>>> 		return rcvd;
-> >> >>>> -- 
-> >> >>>> 2.23.0.rc0
-> >> >>>>
-> >> >>>>
-> >> >>>
-> >> >>> The intention of this code is to make sure the
-> >> >>> peer does not violates the MPA handshake rules.
-> >> >>> The initiator MUST NOT send extra data after its
-> >> >>> MPA request and before receiving the MPA reply.
-> >> >>
-> >> >> I think this is true only for MPA v2. With MPA v1, the
-> >> >> initiator can begin sending immediately (before receiving
-> >> >> the MPA reply), because there is no actual negotiation at
-> >> >> the MPA layer.
-> >> >>
-> >> >> With MPA v2, the negotiation exchange is required because
-> >> >> the type of the following message is predicated by the
-> >> >> "Enhanced mode" a|b|c|d flags present in the first 32 bits
-> >> >> of the private data buffer.
-> >> >>
-> >> >> So, it seems to me that additional logic is needed here to
-> >> >> determine the MPA version, before sniffing additional octets
-> >> >>from the incoming stream?
-> >> >>
-> >> >> Tom.
-> >> >>
-> >> > 
-> >> > There still is the marker negotiation taking place.
-> >> > RFC 5044 says in section 7.1.2:
-> >> > 
-> >> > "Note: Since the receiver's ability to deal with Markers is
-> >> >   unknown until the Request and Reply Frames have been
-> >> >   received, sending FPDUs before this occurs is not possible."
-> >> > 
-> >> > This section further discusses the responder's behavior,
-> >> > where it MUST receive a first FPDU from the initiator
-> >> > before sending its first FPDU:
-> >> > 
-> >> > "4.  MPA Responder mode implementations MUST receive and validate
-> >at
-> >> >         least one FPDU before sending any FPDUs or Markers."
-> >> > 
-> >> > So it appears with MPA version 1, the current siw
-> >> > code is correct. The initiator is entering FPDU mode
-> >> > first, and only after receiving the MPA reply frame.
-> >> > Only after the initiator sent a first FPDU, the responder
-> >> > can start using the connection in FPDU mode.
-> >> > Because of this somehow broken connection establishment
-> >> > procedure (only the initiator can start sending data), a
-> >> > later MPA version makes this first FPDU exchange explicit
-> >> > and selectable (zero length READ/WRITE/Send).
-> >> 
-> >> Yeah, I guess so. Because nobody ever actually implemented markers,
-> >> I think that they may more or less passively ignore this. But
-> >you're
-> >> currect that it's invalid protocol behavior.
-> >> 
-> >> If your testing didn't uncover any issues with existing
-> >implementations
-> >> failing to connect with your strict checking, I'm ok with it.
-> >Tom & Bernard,
-> >Thanks for the insight on MPA negotiation.
-> >
-> >Could the below patch be considered as a proper fix?
-> >
-> >diff --git a/drivers/infiniband/sw/siw/siw_cm.c
-> >b/drivers/infiniband/sw/siw/siw_cm.c
-> >index 9ce8a1b925d2..0aec1b5212f9 100644
-> >--- a/drivers/infiniband/sw/siw/siw_cm.c
-> >+++ b/drivers/infiniband/sw/siw/siw_cm.c
-> >@@ -503,6 +503,7 @@ static int siw_recv_mpa_rr(struct siw_cep *cep)
-> >        struct socket *s = cep->sock;
-> >        u16 pd_len;
-> >        int rcvd, to_rcv;
-> >+       int extra_data_check = 4; /* 4Bytes, for MPA rules violation
-> >checking */
-> >
-> >        if (cep->mpa.bytes_rcvd < sizeof(struct mpa_rr)) {
-> >                rcvd = ksock_recv(s, (char *)hdr +
-> >cep->mpa.bytes_rcvd,
-> >@@ -553,23 +554,37 @@ static int siw_recv_mpa_rr(struct siw_cep *cep)
-> >                return -EPROTO;
-> >        }
-> >
-> >+       /*
-> >+        * Peer must not send any extra data other than MPA messages
-> >until MPA
-> >+        * negotiation is completed, an exception is MPA V2
-> >client-server Mode,
-> >+        * IE, in this mode the peer after sending MPA Reply can
-> >immediately
-> >+        * start sending data in RDMA mode.
-> >+        */
-> 
-> This is unfortunately not true. The responder NEVER sends
-> an FPDU without having seen an FPDU from the initiator.
-> I just checked RFC 6581 again. The RTR (ready-to-receive)
-> indication from the initiator is still needed, but now
-> provided by the protocol and not the application: w/o
-> 'enhanced MPA setup', the initiator sends the first
-> FPDU as an application message. With 'enhanced MPA setup',
-> the initiator protocol entity sends (w/o application
-> interaction) a zero length READ/WRITE/Send as a first FPDU,
-> as previously negotiated with the responder. Again: only
-> after the responder has seen the first FPDU, it can
-> start sending in FPDU mode.
-If I understand your statements correctly: in MPA v2 clint-server mode,
-the responder application should have some logic to wait(after ESTABLISH
-event) until the first FPDU message is received from the initiator?
 
-Thanks,
-Krishna.
+I'd expect it to go into 5.4, according to my understanding of how
+the release cycles are arranged.
+
+
+> To that point I'm still not sure who would take all this as I am now touching mm, procfs, rdma, ext4, and xfs.
 > 
-> Sorry for the confusion. But the current
-> siw code appears to be just correct.
-> 
-> Thanks
-> Bernard
-> 
-> 
-> 
-> >+       if ((__mpa_rr_revision(cep->mpa.hdr.params.bits) ==
-> >MPA_REVISION_2) &&
-> >+               (cep->state == SIW_EPSTATE_AWAIT_MPAREP)) {
-> >+               int mpa_p2p_mode = cep->mpa.v2_ctrl_req.ord &
-> >+                               (MPA_V2_RDMA_WRITE_RTR |
-> >MPA_V2_RDMA_READ_RTR);
-> >+               if (!mpa_p2p_mode)
-> >+                       extra_data_check = 0;
-> >+       }
-> >+
-> >        /*
-> >         * At this point, we must have hdr->params.pd_len != 0.
-> >         * A private data buffer gets allocated if hdr->params.pd_len
-> >!=
-> >         * 0.
-> >         */
-> >        if (!cep->mpa.pdata) {
-> >-               cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
-> >+               cep->mpa.pdata = kmalloc(pd_len + extra_data_check,
-> >GFP_KERNEL);
-> >                if (!cep->mpa.pdata)
-> >                        return -ENOMEM;
-> >        }
-> >        rcvd = ksock_recv(
-> >                s, cep->mpa.pdata + cep->mpa.bytes_rcvd -
-> >sizeof(struct
-> >mpa_rr),
-> >-               to_rcv + 4, MSG_DONTWAIT);
-> >+               to_rcv + extra_data_check, MSG_DONTWAIT);
-> >
-> >        if (rcvd < 0)
-> >                return rcvd;
-> >
-> >-       if (rcvd > to_rcv)
-> >+       if (extra_data_check && (rcvd > to_rcv))
-> >                return -EPROTO;
-> >
-> >        cep->mpa.bytes_rcvd += rcvd;
-> >
-> >-Krishna.
-> >> 
-> >> Tom.
-> >> 
-> >> 
-> >> 
-> >> > 
-> >> > Bernard.
-> >> > 
-> >> >>
-> >> >>> So, for the MPA request case, this code is needed
-> >> >>> to check for protocol correctness.
-> >> >>> You are right for the MPA reply case - if we are
-> >> >>> _not_ in peer2peer mode, the peer can immediately
-> >> >>> start sending data in RDMA mode after its MPA Reply.
-> >> >>> So we shall add appropriate code to be more specific
-> >> >>> For an error, we are (1) processing an MPA Request,
-> >> >>> OR (2) processing an MPA Reply AND we are not expected
-> >> >>> to send an initial READ/WRITE/Send as negotiated with
-> >> >>> the peer (peer2peer mode MPA handshake).
-> >> >>>
-> >> >>> Just removing this check would make siw more permissive,
-> >> >>> but to a point where peer MPA protocol errors are
-> >> >>> tolerated. I am not in favor of that level of
-> >> >>> forgiveness.
-> >> >>>
-> >> >>> If possible, please provide an appropriate patch
-> >> >>> or (if it causes current issues with another peer
-> >> >>> iWarp implementation) just run in MPA peer2peer mode,
-> >> >>> where the current check is appropriate.
-> >> >>> Otherwise, I would provide an appropriate fix by Monday
-> >> >>> (I am still out of office this week).
-> >> >>>
-> >> >>>
-> >> >>> Many thanks and best regards,
-> >> >>> Bernard.
-> >> >>>
-> >> >>>
-> >> >>>
-> >> >>
-> >> >>
-> >> > 
-> >> > 
-> >> > 
-> >
-> >
-> 
+> I just thought I would chime in with my progress because I'm to a point where things are working and so I can submit the code but I'm not sure what I can/should depend on landing...  Also, now that 0day has run overnight it has found issues with this rebase so I need to clean those up...  Perhaps I will base on Andrew's tree prior to doing that...
+
+I'm certainly not the right person to answer, but in spite of that, I'd think
+Andrew's tree is a reasonable place for it. Sort of.
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
