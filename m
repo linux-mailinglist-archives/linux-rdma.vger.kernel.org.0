@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0C6864F2
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 16:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C25E864EA
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2019 16:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732606AbfHHO6W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Aug 2019 10:58:22 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4202 "EHLO huawei.com"
+        id S1733144AbfHHO6T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Aug 2019 10:58:19 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4199 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732760AbfHHO6V (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Aug 2019 10:58:21 -0400
+        id S1728289AbfHHO6S (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 8 Aug 2019 10:58:18 -0400
 Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6212C21B5A895749F92E;
+        by Forcepoint Email with ESMTP id 55A3A9511A0828951A2E;
         Thu,  8 Aug 2019 22:58:12 +0800 (CST)
 Received: from linux-ioko.site (10.71.200.31) by
  DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Lijun Ou <oulijun@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH V4 for-next 01/14] RDMA/hns: Encapsulate some lines for setting sq size in user mode
-Date:   Thu, 8 Aug 2019 22:53:41 +0800
-Message-ID: <1565276034-97329-2-git-send-email-oulijun@huawei.com>
+Subject: [PATCH V4 for-next 02/14] RDMA/hns: Optimize hns_roce_modify_qp function
+Date:   Thu, 8 Aug 2019 22:53:42 +0800
+Message-ID: <1565276034-97329-3-git-send-email-oulijun@huawei.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1565276034-97329-1-git-send-email-oulijun@huawei.com>
 References: <1565276034-97329-1-git-send-email-oulijun@huawei.com>
@@ -36,72 +36,185 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It needs to check the sq size with integrity when configures
-the relatived parameters of sq. Here moves the relatived code
-into a special function.
+Here mainly packages some code into some new functions in order to
+reduce code compelexity.
 
 Signed-off-by: Lijun Ou <oulijun@huawei.com>
 ---
 V3->V4:
-1. Remove replace operation for the origin dev print interface.
+1. Remove the ibdev prefix print interface
+2. Refactor the some lines for checking mtu function according to
+   Doug Ledford's reviews
 
 V1->V2:
-1. Use the new print interface according to Gal Pressman because it
-   can print the detail ib_device name
+1. Use ibdev prefix print interface
 ---
- drivers/infiniband/hw/hns/hns_roce_qp.c | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 117 +++++++++++++++++++-------------
+ 1 file changed, 69 insertions(+), 48 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 9c272c2..5fcc17e6 100644
+index 5fcc17e6..f76617b 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -324,16 +324,12 @@ static int hns_roce_set_rq_size(struct hns_roce_dev *hr_dev,
- 	return 0;
+@@ -1070,48 +1070,41 @@ int to_hr_qp_type(int qp_type)
+ 	return transport_type;
  }
  
--static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
--				     struct ib_qp_cap *cap,
--				     struct hns_roce_qp *hr_qp,
--				     struct hns_roce_ib_create_qp *ucmd)
-+static int check_sq_size_with_integrity(struct hns_roce_dev *hr_dev,
-+					struct ib_qp_cap *cap,
-+					struct hns_roce_ib_create_qp *ucmd)
+-int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+-		       int attr_mask, struct ib_udata *udata)
++static int check_mtu_validate(struct hns_roce_dev *hr_dev,
++			      struct hns_roce_qp *hr_qp,
++			      struct ib_qp_attr *attr, int attr_mask)
  {
- 	u32 roundup_sq_stride = roundup_pow_of_two(hr_dev->caps.max_sq_desc_sz);
- 	u8 max_sq_stride = ilog2(roundup_sq_stride);
--	u32 ex_sge_num;
--	u32 page_size;
--	u32 max_cnt;
+-	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
+-	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+-	enum ib_qp_state cur_state, new_state;
+ 	struct device *dev = hr_dev->dev;
+-	int ret = -EINVAL;
+-	int p;
+ 	enum ib_mtu active_mtu;
++	int p;
  
- 	/* Sanity check SQ size before proceeding */
- 	if ((u32)(1 << ucmd->log_sq_bb_count) > hr_dev->caps.max_wqes ||
-@@ -349,6 +345,25 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
- 		return -EINVAL;
+-	mutex_lock(&hr_qp->mutex);
+-
+-	cur_state = attr_mask & IB_QP_CUR_STATE ?
+-		    attr->cur_qp_state : (enum ib_qp_state)hr_qp->state;
+-	new_state = attr_mask & IB_QP_STATE ?
+-		    attr->qp_state : cur_state;
+-
+-	if (ibqp->uobject &&
+-	    (attr_mask & IB_QP_STATE) && new_state == IB_QPS_ERR) {
+-		if (hr_qp->sdb_en == 1) {
+-			hr_qp->sq.head = *(int *)(hr_qp->sdb.virt_addr);
++	p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
++	    active_mtu = iboe_get_mtu(hr_dev->iboe.netdevs[p]->mtu);
+ 
+-			if (hr_qp->rdb_en == 1)
+-				hr_qp->rq.head = *(int *)(hr_qp->rdb.virt_addr);
+-		} else {
+-			dev_warn(dev, "flush cqe is not supported in userspace!\n");
+-			goto out;
+-		}
++	if ((hr_dev->caps.max_mtu >= IB_MTU_2048 &&
++	    attr->path_mtu > hr_dev->caps.max_mtu) ||
++	    attr->path_mtu < IB_MTU_256 || attr->path_mtu > active_mtu) {
++		dev_err(dev, "attr path_mtu(%d)invalid while modify qp",
++			attr->path_mtu);
++		return -EINVAL;
  	}
  
+-	if (!ib_modify_qp_is_ok(cur_state, new_state, ibqp->qp_type,
+-				attr_mask)) {
+-		dev_err(dev, "ib_modify_qp_is_ok failed\n");
+-		goto out;
+-	}
 +	return 0;
 +}
 +
-+static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
-+				     struct ib_qp_cap *cap,
-+				     struct hns_roce_qp *hr_qp,
-+				     struct hns_roce_ib_create_qp *ucmd)
++static int hns_roce_check_qp_attr(struct ib_qp *ibqp, struct ib_qp_attr *attr,
++				  int attr_mask)
 +{
-+	u32 ex_sge_num;
-+	u32 page_size;
-+	u32 max_cnt;
-+	int ret;
-+
-+	ret = check_sq_size_with_integrity(hr_dev, cap, ucmd);
-+	if (ret) {
-+		ibdev_err(&hr_dev->ib_dev, "Sanity check sq size failed\n");
-+		return ret;
++	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
++	struct device *dev = hr_dev->dev;
++	int p;
+ 
+ 	if ((attr_mask & IB_QP_PORT) &&
+ 	    (attr->port_num == 0 || attr->port_num > hr_dev->caps.num_ports)) {
+ 		dev_err(dev, "attr port_num invalid.attr->port_num=%d\n",
+ 			attr->port_num);
+-		goto out;
++		return -EINVAL;
+ 	}
+ 
+ 	if (attr_mask & IB_QP_PKEY_INDEX) {
+@@ -1119,23 +1112,7 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		if (attr->pkey_index >= hr_dev->caps.pkey_table_len[p]) {
+ 			dev_err(dev, "attr pkey_index invalid.attr->pkey_index=%d\n",
+ 				attr->pkey_index);
+-			goto out;
+-		}
+-	}
+-
+-	if (attr_mask & IB_QP_PATH_MTU) {
+-		p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
+-		active_mtu = iboe_get_mtu(hr_dev->iboe.netdevs[p]->mtu);
+-
+-		if ((hr_dev->caps.max_mtu == IB_MTU_4096 &&
+-		    attr->path_mtu > IB_MTU_4096) ||
+-		    (hr_dev->caps.max_mtu == IB_MTU_2048 &&
+-		    attr->path_mtu > IB_MTU_2048) ||
+-		    attr->path_mtu < IB_MTU_256 ||
+-		    attr->path_mtu > active_mtu) {
+-			dev_err(dev, "attr path_mtu(%d)invalid while modify qp",
+-				attr->path_mtu);
+-			goto out;
++			return -EINVAL;
+ 		}
+ 	}
+ 
+@@ -1143,16 +1120,60 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 	    attr->max_rd_atomic > hr_dev->caps.max_qp_init_rdma) {
+ 		dev_err(dev, "attr max_rd_atomic invalid.attr->max_rd_atomic=%d\n",
+ 			attr->max_rd_atomic);
+-		goto out;
++		return -EINVAL;
+ 	}
+ 
+ 	if (attr_mask & IB_QP_MAX_DEST_RD_ATOMIC &&
+ 	    attr->max_dest_rd_atomic > hr_dev->caps.max_qp_dest_rdma) {
+ 		dev_err(dev, "attr max_dest_rd_atomic invalid.attr->max_dest_rd_atomic=%d\n",
+ 			attr->max_dest_rd_atomic);
++		return -EINVAL;
 +	}
 +
- 	hr_qp->sq.wqe_cnt = 1 << ucmd->log_sq_bb_count;
- 	hr_qp->sq.wqe_shift = ucmd->log_sq_stride;
++	if (attr_mask & IB_QP_PATH_MTU)
++		return check_mtu_validate(hr_dev, hr_qp, attr, attr_mask);
++
++	return 0;
++}
++
++int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
++		       int attr_mask, struct ib_udata *udata)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
++	enum ib_qp_state cur_state, new_state;
++	struct device *dev = hr_dev->dev;
++	int ret = -EINVAL;
++
++	mutex_lock(&hr_qp->mutex);
++
++	cur_state = attr_mask & IB_QP_CUR_STATE ?
++		    attr->cur_qp_state : (enum ib_qp_state)hr_qp->state;
++	new_state = attr_mask & IB_QP_STATE ? attr->qp_state : cur_state;
++
++	if (ibqp->uobject &&
++	    (attr_mask & IB_QP_STATE) && new_state == IB_QPS_ERR) {
++		if (hr_qp->sdb_en == 1) {
++			hr_qp->sq.head = *(int *)(hr_qp->sdb.virt_addr);
++
++			if (hr_qp->rdb_en == 1)
++				hr_qp->rq.head = *(int *)(hr_qp->rdb.virt_addr);
++		} else {
++			dev_warn(dev, "flush cqe is not supported in userspace!\n");
++			goto out;
++		}
++	}
++
++	if (!ib_modify_qp_is_ok(cur_state, new_state, ibqp->qp_type,
++				attr_mask)) {
++		dev_err(dev, "ib_modify_qp_is_ok failed\n");
+ 		goto out;
+ 	}
  
++	ret = hns_roce_check_qp_attr(ibqp, attr, attr_mask);
++	if (ret)
++		goto out;
++
+ 	if (cur_state == new_state && cur_state == IB_QPS_RESET) {
+ 		if (hr_dev->caps.min_wqes) {
+ 			ret = -EPERM;
 -- 
 1.9.1
 
