@@ -2,485 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD24287740
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2019 12:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E59B878C9
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2019 13:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406218AbfHIK35 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 9 Aug 2019 06:29:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41090 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406167AbfHIK34 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Aug 2019 06:29:56 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x79ATZx8022305
-        for <linux-rdma@vger.kernel.org>; Fri, 9 Aug 2019 06:29:53 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.110])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u945df2ym-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Aug 2019 06:29:53 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Fri, 9 Aug 2019 10:29:53 -0000
-Received: from us1b3-smtp07.a3dr.sjc01.isc4sb.com (10.122.203.198)
-        by smtp.notes.na.collabserv.com (10.122.47.50) with smtp.notes.na.collabserv.com ESMTP;
-        Fri, 9 Aug 2019 10:29:48 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp07.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019080910294656-266502 ;
-          Fri, 9 Aug 2019 10:29:46 +0000 
-In-Reply-To: <20190808164638.GA7795@chelsio.com>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-Cc:     "Tom Talpey" <tom@talpey.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Potnuri Bharat Teja" <bharat@chelsio.com>,
-        "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
-Date:   Fri, 9 Aug 2019 10:29:46 +0000
+        id S2406454AbfHILil (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Aug 2019 07:38:41 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:59138 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbfHILik (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Aug 2019 07:38:40 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20190809113835euoutp0203cf6a40c6ba20e7419068b4b083de35~5Pi6zKulA2402024020euoutp02V;
+        Fri,  9 Aug 2019 11:38:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20190809113835euoutp0203cf6a40c6ba20e7419068b4b083de35~5Pi6zKulA2402024020euoutp02V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1565350715;
+        bh=ciOb6spUFxEopuASAxMYr4OicRDjbbeUQNl3/3W2RC0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=F4jCspHo1ZNymcum0RJ4SAewCj16GaDlAVZIDT2iz4G3oLIcVNFv7QZq1tB9+Mno+
+         zjxkidwYaZ/byaK+48GmSjpyd4EP3CVVtb2hsnlR4r3Xd9Txb3fjCp02LLNQjfvbhA
+         LfZtr2jIlfH7OXIPbRApNOZfFUcXc5fICbOu4WY0=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20190809113835eucas1p164d330c27bd3a49537b7450fadf60f2f~5Pi6eb4BE0165101651eucas1p1R;
+        Fri,  9 Aug 2019 11:38:35 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 1E.84.04374.B3B5D4D5; Fri,  9
+        Aug 2019 12:38:35 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20190809113834eucas1p1ff05719f819b28ade78ac677ea76b915~5Pi5VNrUE2548825488eucas1p1t;
+        Fri,  9 Aug 2019 11:38:34 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20190809113833eusmtrp1d0d26c18325a624784804f5dcd2b3a9f~5Pi5F7Mcq0891408914eusmtrp1l;
+        Fri,  9 Aug 2019 11:38:33 +0000 (GMT)
+X-AuditID: cbfec7f5-4f7ff70000001116-2d-5d4d5b3beff2
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id A2.7E.04166.93B5D4D5; Fri,  9
+        Aug 2019 12:38:33 +0100 (BST)
+Received: from [106.120.51.71] (unknown [106.120.51.71]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20190809113832eusmtip25484f3be8e362eb8076e0844f903c912~5Pi3tqsfV0444004440eusmtip2N;
+        Fri,  9 Aug 2019 11:38:32 +0000 (GMT)
+Subject: Re: [PATCH v3 20/41] fbdev/pvr2fb: convert put_page() to
+ put_user_page*()
+To:     john.hubbard@gmail.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, ceph-devel@vger.kernel.org,
+        devel@driverdev.osuosl.org, devel@lists.orangefs.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org, linux-xfs@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        sparclinux@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, John Hubbard <jhubbard@nvidia.com>,
+        Kees Cook <keescook@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Bhumika Goyal <bhumirks@gmail.com>,
+        Arvind Yadav <arvind.yadav.cs@gmail.com>
+From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Message-ID: <1f1656b4-3411-3237-726f-8fb7b73ae363@samsung.com>
+Date:   Fri, 9 Aug 2019 13:38:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.6.1
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190808164638.GA7795@chelsio.com>,<20190805172605.GA5549@chelsio.com>
- <8499b96a-48dd-1286-ea0f-e66be34afffa@talpey.com>
- <20190731103310.23199-1-krishna2@chelsio.com>
- <OF4DB6F345.7C76F976-ON00258449.00392FF3-00258449.003C1BFB@notes.na.collabserv.com>
- <OF95C29EF7.244FC9E1-ON0025844A.003D049F-0025844A.003E229B@notes.na.collabserv.com>
- <518b1734-5d72-e32d-376b-0fec1cbce8f5@talpey.com>
- <OF7F439620.B43AE37C-ON00258450.00524237-00258450.0052DFDC@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-KeepSent: 5309F939:D7FB77B5-00258451:002EE699;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 38263
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19080910-1059-0000-0000-0000000706A9
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.262215
-X-IBM-SpamModules-Versions: BY=3.00011574; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01244270; UDB=6.00656447; IPR=6.01025753;
- MB=3.00028106; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-09 10:29:51
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-08-09 09:10:29 - 6.00010264
-x-cbparentid: 19080910-1060-0000-0000-0000000F069F
-Message-Id: <OF5309F939.D7FB77B5-ON00258451.002EE699-00258451.0039A86F@notes.na.collabserv.com>
-Subject: RE: [PATCH for-rc] siw: MPA Reply handler tries to read beyond MPA message
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-09_02:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <20190807013340.9706-21-jhubbard@nvidia.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02TfUxTVxjGd+53O8uuBcYJui02fs1F3aLLXsfGXObiNY6o0UQzZbOTm2JG
+        q7ZW5wxZWZOpIBsFG6RtHOsmXyrUtlPsUExJWqBYcRKiTMsyBBmIVhwiCDrKHRn//c7zPs/7
+        8cfhSOUIk8zt1O0V9Tp1loqRU+cCI1cXp2xNS3+zzyIDR81pBk7W5LDQnv8TCYORHxiI3iwk
+        oNjaiqDXdQiBNxBBUNcyykK95xgBbUMPGAgVOAmwF3gIqO++S4G92ExAyfFGNEG9BJztdrLQ
+        fFkHLXlacFj3gLurnYaLHW9AZ2SEgMbvozTUXWyi4LrPwcBR1680RE4/p6H1coiGHn8+BZY/
+        XCz4xmpZCJS+DGHPIxpMTRU0XB0P0vDE1UXDsLeIWLlAsJuuUULkUgMlNDuxcMF2mxU8FYuE
+        n+v+JgR31RFGcA8WskLj8aeUcKJpg9CZFyQEzy/fCCZrByM0RNsoId98nxFay+4x6xM/lb+X
+        IWbt3Cfql6Zul2eOdRcTu6+8+JWzb5wxoVuyXCTjML8cO6usZIyVfAXCd/uTcpF8gv9BuLrQ
+        S0mPRwhHwy30VOL5/QYkJcoRPjO0XDINIHyqpXLSFM9vwnn1FirGCXwyDpcN0zETyffJcDRU
+        ysYKDP8uthyqmuyk4FNxyeMTRC7iOIqfi3uc62JyIr8FdwZctGSZiZtK7kz2lPEr8M171ZNt
+        SD4Jd9z5kZD4NXx+wEHGZmE+IsOu3zyktPUq7HNXIInjcV/Qy0o8G4eKjlJSoBrh8cO9/6XP
+        I1xe9IyRXCm4IXiNjm1H8q/jGt9SSf4Qh59GmJiM+Th8Y2CmtEQcLjxXTEqyAh/+Tim552NX
+        mYuZGpt7oZIsQCrbtNNs086xTTvH9v/cUkRVoSTRaNBqRMMynbh/iUGtNRh1miU7dmndaOJD
+        hJ4Fh2rRpbEv/IjnkGqGwjTnk3Qlrd5nOKD1I8yRqgRFG5eWrlRkqA98Lep3fa43ZokGP5rF
+        UaokxcEX/tyq5DXqveKXorhb1E9VCU6WbELV9tTrlg17nJqxUILm4w/Mt0rtgXcs+7dZj/Q/
+        nKU522zNijNnZx6rNG/b/urgbbsiSHw2I/vBvJyXcjr/ypFTa953Zhu9K1albmE3r155I1C+
+        8Qno1ywMP/xo+Hds9H27cV1oYXuGvz/Fspbumfv26OgrJ1cv6xnkuhy1O9amxc9OVFGGTPVb
+        i0i9Qf0vm535fAwEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTVxiAc+53mTV3BfTIpmCHmvhRVxD71rhu2X54YzTbMmOm2GiHN1Cl
+        LfYWNrfEdUGDgGzg+JC2YawOwgiT0ooioUPLpCBMwTEScas/ED+ZNuhkOhxrbUz495zzPk9O
+        TvJypOIYk8QZzTbRajbkKpk4auC/YGiNNnOr/s3Dfg24WlsYaGj9ioXRsu9JmAp9w0D42nEC
+        aqqGENzxFCE43RtC0DX4jIVuXyUBI38/ZGCg3E2As9xHQPfEbQqcNYUE1J7oQxG6Q0DbhJuF
+        S+fNMFhqAlfVAfCOj9LgH1sFN0JPCej7OkxDl7+fgt86XQwc87TTEGqZpWHo/AANtwJlFFRc
+        97DQOdPBQm/9Arjse0SDvb+JhivPgzT84xmnYfr0t8Q7KwSnfZgSQj/3UMIlNxbOOf5kBV/T
+        SuFk111C8DYXM4J36jgr9J34lxLq+j8UbpQGCcH3w5eCvWqMEXrCI5RQVviAEYYaJ5kPEneq
+        Nlot+TYxJcci2d5SZqohTaXWgiptnValTtfoN6RlKNfqNu4Vc40FonWtbo8qZ2aihsj79ZXP
+        3PeeM3b0h6wEyTjMr8OzD3pQCYrjFHwDws8aGyIHLjJ4HQdbC2JOPJ4ZLWFizn2Ep6uDKDqI
+        57fh0u4KKsoJfBK+3DhNRyWSn5Th6qFfiFjRifBU+2MmajH8BlxR1PyilvM6XPukjoi+RvGp
+        +Jb7/eh1Iv8xHnzYRMWUV3F/7c0XLOO1+NrkKTbKJL8Cz9RdJWO8EI/d/I6IcTI++5eLLEcK
+        x5zcMSdxzEkcc5J6RDWjBDFfMmWbJLVKMpikfHO2Ksti8qLIJp7pferrQFfbPgognkPKeXL7
+        0i16BW0okA6aAghzpDJBPsJt1Svkew0HPxetlt3W/FxRCqCMyN8qyKTELEtkr8223eoMtQa0
+        ak26Jn09KBfKj/IXdin4bINN3C+KeaL1ZUdwsiQ7emPe2K5FR+zJhf7h5mUp21sWHyKu3C20
+        fjJ5XTPwZHP8uympgUypM1y5+bWWYuUXxpx9QclZbKz/Pfnx4cXoovHkGo/ZoF++I8Fl0507
+        ui1U+XaKM7y+J7XL/ukZuiHrYkfm8I8/+TctKaredKBt/nurb5/Sld6LGz+U184umPV6HjFK
+        SsoxqFeSVsnwP1w/tA+fAwAA
+X-CMS-MailID: 20190809113834eucas1p1ff05719f819b28ade78ac677ea76b915
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20190807013420epcas1p1a38f499e39127e66501040b7e9e788ba
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20190807013420epcas1p1a38f499e39127e66501040b7e9e788ba
+References: <20190807013340.9706-1-jhubbard@nvidia.com>
+        <CGME20190807013420epcas1p1a38f499e39127e66501040b7e9e788ba@epcas1p1.samsung.com>
+        <20190807013340.9706-21-jhubbard@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
->Date: 08/08/2019 06:47PM
->Cc: "Tom Talpey" <tom@talpey.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
->"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "Potnuri
->Bharat Teja" <bharat@chelsio.com>, "Nirranjan Kirubaharan"
-><nirranjan@chelsio.com>
->Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler tries
->to read beyond MPA message
->
->On Thursday, August 08/08/19, 2019 at 15:05:12 +0000, Bernard Metzler
->wrote:
->> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
->> 
->> >To: "Tom Talpey" <tom@talpey.com>, <BMT@zurich.ibm.com>
->> >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
->> >Date: 08/05/2019 07:26PM
->> >Cc: "jgg@ziepe.ca" <jgg@ziepe.ca>, "linux-rdma@vger.kernel.org"
->> ><linux-rdma@vger.kernel.org>, "Potnuri Bharat Teja"
->> ><bharat@chelsio.com>, "Nirranjan Kirubaharan"
-><nirranjan@chelsio.com>
->> >Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler
->tries
->> >to read beyond MPA message
->> >
->> >On Friday, August 08/02/19, 2019 at 18:17:37 +0530, Tom Talpey
->wrote:
->> >> On 8/2/2019 7:18 AM, Bernard Metzler wrote:
->> >> > -----"Tom Talpey" <tom@talpey.com> wrote: -----
->> >> > 
->> >> >> To: "Bernard Metzler" <BMT@zurich.ibm.com>, "Krishnamraju
->> >Eraparaju"
->> >> >> <krishna2@chelsio.com>
->> >> >> From: "Tom Talpey" <tom@talpey.com>
->> >> >> Date: 08/01/2019 08:54PM
->> >> >> Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
->> >bharat@chelsio.com,
->> >> >> nirranjan@chelsio.com, krishn2@chelsio.com
->> >> >> Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler
->> >tries
->> >> >> to read beyond MPA message
->> >> >>
->> >> >> On 8/1/2019 6:56 AM, Bernard Metzler wrote:
->> >> >>> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote:
->> >-----
->> >> >>>
->> >> >>>> To: jgg@ziepe.ca, bmt@zurich.ibm.com
->> >> >>>> From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
->> >> >>>> Date: 07/31/2019 12:34PM
->> >> >>>> Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com,
->> >> >>>> nirranjan@chelsio.com, krishn2@chelsio.com, "Krishnamraju
->> >> >> Eraparaju"
->> >> >>>> <krishna2@chelsio.com>
->> >> >>>> Subject: [EXTERNAL] [PATCH for-rc] siw: MPA Reply handler
->> >tries to
->> >> >>>> read beyond MPA message
->> >> >>>>
->> >> >>>> while processing MPA Reply, SIW driver is trying to read
->extra
->> >4
->> >> >>>> bytes
->> >> >>>> than what peer has advertised as private data length.
->> >> >>>>
->> >> >>>> If a FPDU data is received before even siw_recv_mpa_rr()
->> >completed
->> >> >>>> reading MPA reply, then ksock_recv() in siw_recv_mpa_rr()
->> >could
->> >> >> also
->> >> >>>> read FPDU, if "size" is larger than advertised MPA reply
->> >length.
->> >> >>>>
->> >> >>>> 501 static int siw_recv_mpa_rr(struct siw_cep *cep)
->> >> >>>> 502 {
->> >> >>>>            .............
->> >> >>>> 572
->> >> >>>> 573         if (rcvd > to_rcv)
->> >> >>>> 574                 return -EPROTO;   <----- Failure here
->> >> >>>>
->> >> >>>> Looks like the intention here is to throw an ERROR if the
->> >received
->> >> >>>> data
->> >> >>>> is more than the total private data length advertised by
->the
->> >peer.
->> >> >>>> But
->> >> >>>> reading beyond MPA message causes siw_cm to generate
->> >> >>>> RDMA_CM_EVENT_CONNECT_ERROR event when TCP socket recv
->buffer
->> >is
->> >> >>>> already
->> >> >>>> queued with FPDU messages.
->> >> >>>>
->> >> >>>> Hence, this function should only read upto private data
->> >length.
->> >> >>>>
->> >> >>>> Signed-off-by: Krishnamraju Eraparaju
-><krishna2@chelsio.com>
->> >> >>>> ---
->> >> >>>> drivers/infiniband/sw/siw/siw_cm.c | 4 ++--
->> >> >>>> 1 file changed, 2 insertions(+), 2 deletions(-)
->> >> >>>>
->> >> >>>> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
->> >> >>>> b/drivers/infiniband/sw/siw/siw_cm.c
->> >> >>>> index a7cde98e73e8..8dc8cea2566c 100644
->> >> >>>> --- a/drivers/infiniband/sw/siw/siw_cm.c
->> >> >>>> +++ b/drivers/infiniband/sw/siw/siw_cm.c
->> >> >>>> @@ -559,13 +559,13 @@ static int siw_recv_mpa_rr(struct
->> >siw_cep
->> >> >> *cep)
->> >> >>>> 	 * A private data buffer gets allocated if
->hdr->params.pd_len
->> >!=
->> >> >> 0.
->> >> >>>> 	 */
->> >> >>>> 	if (!cep->mpa.pdata) {
->> >> >>>> -		cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
->> >> >>>> +		cep->mpa.pdata = kmalloc(pd_len, GFP_KERNEL);
->> >> >>>> 		if (!cep->mpa.pdata)
->> >> >>>> 			return -ENOMEM;
->> >> >>>> 	}
->> >> >>>> 	rcvd = ksock_recv(
->> >> >>>> 		s, cep->mpa.pdata + cep->mpa.bytes_rcvd - sizeof(struct
->> >mpa_rr),
->> >> >>>> -		to_rcv + 4, MSG_DONTWAIT);
->> >> >>>> +		to_rcv, MSG_DONTWAIT);
->> >> >>>>
->> >> >>>> 	if (rcvd < 0)
->> >> >>>> 		return rcvd;
->> >> >>>> -- 
->> >> >>>> 2.23.0.rc0
->> >> >>>>
->> >> >>>>
->> >> >>>
->> >> >>> The intention of this code is to make sure the
->> >> >>> peer does not violates the MPA handshake rules.
->> >> >>> The initiator MUST NOT send extra data after its
->> >> >>> MPA request and before receiving the MPA reply.
->> >> >>
->> >> >> I think this is true only for MPA v2. With MPA v1, the
->> >> >> initiator can begin sending immediately (before receiving
->> >> >> the MPA reply), because there is no actual negotiation at
->> >> >> the MPA layer.
->> >> >>
->> >> >> With MPA v2, the negotiation exchange is required because
->> >> >> the type of the following message is predicated by the
->> >> >> "Enhanced mode" a|b|c|d flags present in the first 32 bits
->> >> >> of the private data buffer.
->> >> >>
->> >> >> So, it seems to me that additional logic is needed here to
->> >> >> determine the MPA version, before sniffing additional octets
->> >> >>from the incoming stream?
->> >> >>
->> >> >> Tom.
->> >> >>
->> >> > 
->> >> > There still is the marker negotiation taking place.
->> >> > RFC 5044 says in section 7.1.2:
->> >> > 
->> >> > "Note: Since the receiver's ability to deal with Markers is
->> >> >   unknown until the Request and Reply Frames have been
->> >> >   received, sending FPDUs before this occurs is not possible."
->> >> > 
->> >> > This section further discusses the responder's behavior,
->> >> > where it MUST receive a first FPDU from the initiator
->> >> > before sending its first FPDU:
->> >> > 
->> >> > "4.  MPA Responder mode implementations MUST receive and
->validate
->> >at
->> >> >         least one FPDU before sending any FPDUs or Markers."
->> >> > 
->> >> > So it appears with MPA version 1, the current siw
->> >> > code is correct. The initiator is entering FPDU mode
->> >> > first, and only after receiving the MPA reply frame.
->> >> > Only after the initiator sent a first FPDU, the responder
->> >> > can start using the connection in FPDU mode.
->> >> > Because of this somehow broken connection establishment
->> >> > procedure (only the initiator can start sending data), a
->> >> > later MPA version makes this first FPDU exchange explicit
->> >> > and selectable (zero length READ/WRITE/Send).
->> >> 
->> >> Yeah, I guess so. Because nobody ever actually implemented
->markers,
->> >> I think that they may more or less passively ignore this. But
->> >you're
->> >> currect that it's invalid protocol behavior.
->> >> 
->> >> If your testing didn't uncover any issues with existing
->> >implementations
->> >> failing to connect with your strict checking, I'm ok with it.
->> >Tom & Bernard,
->> >Thanks for the insight on MPA negotiation.
->> >
->> >Could the below patch be considered as a proper fix?
->> >
->> >diff --git a/drivers/infiniband/sw/siw/siw_cm.c
->> >b/drivers/infiniband/sw/siw/siw_cm.c
->> >index 9ce8a1b925d2..0aec1b5212f9 100644
->> >--- a/drivers/infiniband/sw/siw/siw_cm.c
->> >+++ b/drivers/infiniband/sw/siw/siw_cm.c
->> >@@ -503,6 +503,7 @@ static int siw_recv_mpa_rr(struct siw_cep
->*cep)
->> >        struct socket *s = cep->sock;
->> >        u16 pd_len;
->> >        int rcvd, to_rcv;
->> >+       int extra_data_check = 4; /* 4Bytes, for MPA rules
->violation
->> >checking */
->> >
->> >        if (cep->mpa.bytes_rcvd < sizeof(struct mpa_rr)) {
->> >                rcvd = ksock_recv(s, (char *)hdr +
->> >cep->mpa.bytes_rcvd,
->> >@@ -553,23 +554,37 @@ static int siw_recv_mpa_rr(struct siw_cep
->*cep)
->> >                return -EPROTO;
->> >        }
->> >
->> >+       /*
->> >+        * Peer must not send any extra data other than MPA
->messages
->> >until MPA
->> >+        * negotiation is completed, an exception is MPA V2
->> >client-server Mode,
->> >+        * IE, in this mode the peer after sending MPA Reply can
->> >immediately
->> >+        * start sending data in RDMA mode.
->> >+        */
->> 
->> This is unfortunately not true. The responder NEVER sends
->> an FPDU without having seen an FPDU from the initiator.
->> I just checked RFC 6581 again. The RTR (ready-to-receive)
->> indication from the initiator is still needed, but now
->> provided by the protocol and not the application: w/o
->> 'enhanced MPA setup', the initiator sends the first
->> FPDU as an application message. With 'enhanced MPA setup',
->> the initiator protocol entity sends (w/o application
->> interaction) a zero length READ/WRITE/Send as a first FPDU,
->> as previously negotiated with the responder. Again: only
->> after the responder has seen the first FPDU, it can
->> start sending in FPDU mode.
->If I understand your statements correctly: in MPA v2 clint-server
->mode,
->the responder application should have some logic to wait(after
->ESTABLISH
->event) until the first FPDU message is received from the initiator?
->
->Thanks,
->Krishna.
+On 8/7/19 3:33 AM, john.hubbard@gmail.com wrote:
+> From: John Hubbard <jhubbard@nvidia.com>
+> 
+> For pages that were retained via get_user_pages*(), release those pages
+> via the new put_user_page*() routines, instead of via put_page() or
+> release_pages().
+> 
+> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+> ("mm: introduce put_user_page*(), placeholder versions").
+> 
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Bhumika Goyal <bhumirks@gmail.com>
+> Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-fbdev@vger.kernel.org
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-The responder may either delay the established event
-until it sees the first peer FPDU, or it delays sending
-the first (now already posted) FPDU, until it sees the
-first initiator FPDU. This, since (theoretically), the
-responder does not know yet the result of CRC and
-Marker negotiation. siw delays the established event,
-which seems the more clear path to me.
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 
-This MPA handshake is cumbersome. siw is permissive
-for violations of these rules to the extend, that the
-responder shall not send back to back the first FPDU
-with the MPA reply. If a (Chelsio ?) iWarp adapter
-would send the first responder FPDU only after it
-got TCP acked its MPA reply, the chances are high the
-(siw) iWarp initiator has already transitioned to RTS
-and it would accept that FPU, even if not having sent
-it's first FPDU.
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
 
-siw sticks to this rule to that extend, since all receive
-processing is triggered by socket callbacks (from
-sk->sk_data_ready()). As long as the QP is not
-in RTS, all TCP bytestream processing is done by the
-MPA protocol (code in siw_cm.c). If the QP reaches
-RTS, RX processing is done bt the full iWarp
-protocol (code in siw_qp_rx.c for RX).
-Now, if the higher layer (application) protocol has
-a semantic where the responder sends the first message,
-we could end up in an infinite wait for that packet
-at initiator application side.
-This, since the complete first FPDU was already
-received at the TCP socket, while the QP was not in
-RTS. It will not trigger any additional sk->sk_data_ready()
-and we are stuck with a FPDU in the socket rx buffer.
-
-I implemented that 4 bytes extra data testing only to
-keep the siw protocol state machine as simple as
-possible (it is already unfortunately complex, if
-you count the lines in siw_cm.c), while following
-the protocol rules.
-
-I suggest to correctly implement peer2peer mode and
-delay the established event at the responder side until
-it got the negotiated first zero length FPDU. Out
-of the possible options, siw supports both zero length
-WRITE and READ, but no SEND, since this would consume
-an extra receive WQE.
-
-As a last resort, I might consider extending the
-siw state machine to handle those - non-complaint -
-cases gracefully. But, that would result in different
-code than just avoiding checking for peer protocol
-violation.
-
-Thanks,
-Bernard.
-
-
->> 
->> Sorry for the confusion. But the current
->> siw code appears to be just correct.
->> 
->> Thanks
->> Bernard
->> 
->> 
->> 
->> >+       if ((__mpa_rr_revision(cep->mpa.hdr.params.bits) ==
->> >MPA_REVISION_2) &&
->> >+               (cep->state == SIW_EPSTATE_AWAIT_MPAREP)) {
->> >+               int mpa_p2p_mode = cep->mpa.v2_ctrl_req.ord &
->> >+                               (MPA_V2_RDMA_WRITE_RTR |
->> >MPA_V2_RDMA_READ_RTR);
->> >+               if (!mpa_p2p_mode)
->> >+                       extra_data_check = 0;
->> >+       }
->> >+
->> >        /*
->> >         * At this point, we must have hdr->params.pd_len != 0.
->> >         * A private data buffer gets allocated if
->hdr->params.pd_len
->> >!=
->> >         * 0.
->> >         */
->> >        if (!cep->mpa.pdata) {
->> >-               cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
->> >+               cep->mpa.pdata = kmalloc(pd_len +
->extra_data_check,
->> >GFP_KERNEL);
->> >                if (!cep->mpa.pdata)
->> >                        return -ENOMEM;
->> >        }
->> >        rcvd = ksock_recv(
->> >                s, cep->mpa.pdata + cep->mpa.bytes_rcvd -
->> >sizeof(struct
->> >mpa_rr),
->> >-               to_rcv + 4, MSG_DONTWAIT);
->> >+               to_rcv + extra_data_check, MSG_DONTWAIT);
->> >
->> >        if (rcvd < 0)
->> >                return rcvd;
->> >
->> >-       if (rcvd > to_rcv)
->> >+       if (extra_data_check && (rcvd > to_rcv))
->> >                return -EPROTO;
->> >
->> >        cep->mpa.bytes_rcvd += rcvd;
->> >
->> >-Krishna.
->> >> 
->> >> Tom.
->> >> 
->> >> 
->> >> 
->> >> > 
->> >> > Bernard.
->> >> > 
->> >> >>
->> >> >>> So, for the MPA request case, this code is needed
->> >> >>> to check for protocol correctness.
->> >> >>> You are right for the MPA reply case - if we are
->> >> >>> _not_ in peer2peer mode, the peer can immediately
->> >> >>> start sending data in RDMA mode after its MPA Reply.
->> >> >>> So we shall add appropriate code to be more specific
->> >> >>> For an error, we are (1) processing an MPA Request,
->> >> >>> OR (2) processing an MPA Reply AND we are not expected
->> >> >>> to send an initial READ/WRITE/Send as negotiated with
->> >> >>> the peer (peer2peer mode MPA handshake).
->> >> >>>
->> >> >>> Just removing this check would make siw more permissive,
->> >> >>> but to a point where peer MPA protocol errors are
->> >> >>> tolerated. I am not in favor of that level of
->> >> >>> forgiveness.
->> >> >>>
->> >> >>> If possible, please provide an appropriate patch
->> >> >>> or (if it causes current issues with another peer
->> >> >>> iWarp implementation) just run in MPA peer2peer mode,
->> >> >>> where the current check is appropriate.
->> >> >>> Otherwise, I would provide an appropriate fix by Monday
->> >> >>> (I am still out of office this week).
->> >> >>>
->> >> >>>
->> >> >>> Many thanks and best regards,
->> >> >>> Bernard.
->> >> >>>
->> >> >>>
->> >> >>>
->> >> >>
->> >> >>
->> >> > 
->> >> > 
->> >> > 
->> >
->> >
->> 
->
->
-
+> ---
+>  drivers/video/fbdev/pvr2fb.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/pvr2fb.c b/drivers/video/fbdev/pvr2fb.c
+> index 7ff4b6b84282..0e4f9aa6444d 100644
+> --- a/drivers/video/fbdev/pvr2fb.c
+> +++ b/drivers/video/fbdev/pvr2fb.c
+> @@ -700,8 +700,7 @@ static ssize_t pvr2fb_write(struct fb_info *info, const char *buf,
+>  	ret = count;
+>  
+>  out_unmap:
+> -	for (i = 0; i < nr_pages; i++)
+> -		put_page(pages[i]);
+> +	put_user_pages(pages, nr_pages);
+>  
+>  	kfree(pages);
