@@ -2,54 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DAD87DD5
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2019 17:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF5087DDA
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2019 17:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726457AbfHIPRN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Aug 2019 11:17:13 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36160 "EHLO
+        id S1726463AbfHIPTF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Aug 2019 11:19:05 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20566 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726358AbfHIPRN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Aug 2019 11:17:13 -0400
+        by vger.kernel.org with ESMTP id S1726358AbfHIPTF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Aug 2019 11:19:05 -0400
 Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x79FDuXu039259
-        for <linux-rdma@vger.kernel.org>; Fri, 9 Aug 2019 11:17:13 -0400
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x79FIvtr056897
+        for <linux-rdma@vger.kernel.org>; Fri, 9 Aug 2019 11:19:04 -0400
 Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u98v374dt-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2u98v3761c-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Aug 2019 11:17:12 -0400
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Aug 2019 11:19:00 -0400
 Received: from localhost
         by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
-        Fri, 9 Aug 2019 16:17:10 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        Fri, 9 Aug 2019 16:18:22 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
         by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 9 Aug 2019 16:17:07 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x79FGmOw40042792
+        Fri, 9 Aug 2019 16:18:21 +0100
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x79FIK2F58064976
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Aug 2019 15:16:48 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2103F11C052;
-        Fri,  9 Aug 2019 15:17:06 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB09B11C050;
-        Fri,  9 Aug 2019 15:17:05 +0000 (GMT)
+        Fri, 9 Aug 2019 15:18:20 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F03FA4060;
+        Fri,  9 Aug 2019 15:18:20 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DFFC2A4066;
+        Fri,  9 Aug 2019 15:18:19 +0000 (GMT)
 Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Aug 2019 15:17:05 +0000 (GMT)
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  9 Aug 2019 15:18:19 +0000 (GMT)
 From:   Bernard Metzler <bmt@zurich.ibm.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     jgg@ziepe.ca, Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [PATCH] Make user mmapped CQ arming flags field 32-bit size to remove 64-bit architecture dependency of siw.
-Date:   Fri,  9 Aug 2019 17:16:59 +0200
+Subject: [PATCH v2] Make user mmapped CQ arming flags field 32-bit size to remove 64-bit architecture dependency of siw.
+Date:   Fri,  9 Aug 2019 17:18:16 +0200
 X-Mailer: git-send-email 2.17.2
 X-TM-AS-GCONF: 00
-x-cbid: 19080915-4275-0000-0000-00000357220D
+x-cbid: 19080915-4275-0000-0000-000003572223
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19080915-4276-0000-0000-000038692AA7
-Message-Id: <20190809151700.12960-1-bmt@zurich.ibm.com>
+x-cbparentid: 19080915-4276-0000-0000-000038692ABD
+Message-Id: <20190809151816.13018-1-bmt@zurich.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-09_04:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
