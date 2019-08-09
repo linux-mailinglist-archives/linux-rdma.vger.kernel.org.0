@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B82D8868C
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Aug 2019 01:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C5488694
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Aug 2019 01:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730032AbfHIW7A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Aug 2019 18:59:00 -0400
-Received: from mga05.intel.com ([192.55.52.43]:23645 "EHLO mga05.intel.com"
+        id S1730552AbfHIW7E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Aug 2019 18:59:04 -0400
+Received: from mga03.intel.com ([134.134.136.65]:58582 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730266AbfHIW7A (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 9 Aug 2019 18:59:00 -0400
+        id S1730531AbfHIW7D (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 9 Aug 2019 18:59:03 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:58:59 -0700
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:59:02 -0700
 X-IronPort-AV: E=Sophos;i="5.64,367,1559545200"; 
-   d="scan'208";a="177765523"
+   d="scan'208";a="259172583"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.157])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:58:58 -0700
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:59:01 -0700
 From:   ira.weiny@intel.com
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
@@ -32,9 +32,9 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
         linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
         linux-ext4@vger.kernel.org, linux-mm@kvack.org,
         Ira Weiny <ira.weiny@intel.com>
-Subject: [RFC PATCH v2 11/19] mm/gup: Pass follow_page_context further down the call stack
-Date:   Fri,  9 Aug 2019 15:58:25 -0700
-Message-Id: <20190809225833.6657-12-ira.weiny@intel.com>
+Subject: [RFC PATCH v2 13/19] {mm,file}: Add file_pins objects
+Date:   Fri,  9 Aug 2019 15:58:27 -0700
+Message-Id: <20190809225833.6657-14-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190809225833.6657-1-ira.weiny@intel.com>
 References: <20190809225833.6657-1-ira.weiny@intel.com>
@@ -47,242 +47,169 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-In preparation for passing more information (vaddr_pin) into
-follow_page_pte(), follow_devmap_pud(), and follow_devmap_pmd().
+User page pins (aka GUP) needs to track file information of files being
+pinned by those calls.  Depending on the needs of the caller this
+information is stored in 1 of 2 ways.
+
+1) Some subsystems like RDMA associate GUP pins with file descriptors
+   which can be passed around to other process'.  In this case a file
+   being pined must be associated with an owning file object (which can
+   then be resolved back to any of the processes which have a file
+   descriptor 'pointing' to that file object).
+
+2) Other subsystems do not have an owning file and can therefore
+   associate the file pin directly to the mm of the process which
+   created them.
+
+This patch introduces the new file pin structures and ensures struct
+file and struct mm_struct are prepared to store them.
+
+In subsequent patches the required information will be passed into new
+pin page calls and procfs is enhanced to show this information to the user.
 
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- include/linux/huge_mm.h | 17 -----------------
- mm/gup.c                | 31 +++++++++++++++----------------
- mm/huge_memory.c        |  6 ++++--
- mm/internal.h           | 28 ++++++++++++++++++++++++++++
- 4 files changed, 47 insertions(+), 35 deletions(-)
+ fs/file_table.c          |  4 ++++
+ include/linux/file.h     | 49 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/fs.h       |  2 ++
+ include/linux/mm_types.h |  2 ++
+ kernel/fork.c            |  3 +++
+ 5 files changed, 60 insertions(+)
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index 45ede62aa85b..b01a20ce0bb9 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -233,11 +233,6 @@ static inline int hpage_nr_pages(struct page *page)
- 	return 1;
+diff --git a/fs/file_table.c b/fs/file_table.c
+index b07b53f24ff5..38947b9a4769 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -46,6 +46,7 @@ static void file_free_rcu(struct rcu_head *head)
+ {
+ 	struct file *f = container_of(head, struct file, f_u.fu_rcuhead);
+ 
++	WARN_ON(!list_empty(&f->file_pins));
+ 	put_cred(f->f_cred);
+ 	kmem_cache_free(filp_cachep, f);
  }
+@@ -118,6 +119,9 @@ static struct file *__alloc_file(int flags, const struct cred *cred)
+ 	f->f_mode = OPEN_FMODE(flags);
+ 	/* f->f_version: 0 */
  
--struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
--		pmd_t *pmd, int flags, struct dev_pagemap **pgmap);
--struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
--		pud_t *pud, int flags, struct dev_pagemap **pgmap);
--
- extern vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf, pmd_t orig_pmd);
- 
- extern struct page *huge_zero_page;
-@@ -375,18 +370,6 @@ static inline void mm_put_huge_zero_page(struct mm_struct *mm)
- 	return;
- }
- 
--static inline struct page *follow_devmap_pmd(struct vm_area_struct *vma,
--	unsigned long addr, pmd_t *pmd, int flags, struct dev_pagemap **pgmap)
--{
--	return NULL;
--}
--
--static inline struct page *follow_devmap_pud(struct vm_area_struct *vma,
--	unsigned long addr, pud_t *pud, int flags, struct dev_pagemap **pgmap)
--{
--	return NULL;
--}
--
- static inline bool thp_migration_supported(void)
- {
- 	return false;
-diff --git a/mm/gup.c b/mm/gup.c
-index 504af3e9a942..a7a9d2f5278c 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -24,11 +24,6 @@
- 
- #include "internal.h"
- 
--struct follow_page_context {
--	struct dev_pagemap *pgmap;
--	unsigned int page_mask;
--};
--
- /**
-  * put_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
-  * @pages:  array of pages to be maybe marked dirty, and definitely released.
-@@ -172,8 +167,9 @@ static inline bool can_follow_write_pte(pte_t pte, unsigned int flags)
- 
- static struct page *follow_page_pte(struct vm_area_struct *vma,
- 		unsigned long address, pmd_t *pmd, unsigned int flags,
--		struct dev_pagemap **pgmap)
-+		struct follow_page_context *ctx)
- {
-+	struct dev_pagemap **pgmap = &ctx->pgmap;
- 	struct mm_struct *mm = vma->vm_mm;
- 	struct page *page;
- 	spinlock_t *ptl;
-@@ -363,13 +359,13 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
- 	}
- 	if (pmd_devmap(pmdval)) {
- 		ptl = pmd_lock(mm, pmd);
--		page = follow_devmap_pmd(vma, address, pmd, flags, &ctx->pgmap);
-+		page = follow_devmap_pmd(vma, address, pmd, flags, ctx);
- 		spin_unlock(ptl);
- 		if (page)
- 			return page;
- 	}
- 	if (likely(!pmd_trans_huge(pmdval)))
--		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
-+		return follow_page_pte(vma, address, pmd, flags, ctx);
- 
- 	if ((flags & FOLL_NUMA) && pmd_protnone(pmdval))
- 		return no_page_table(vma, flags);
-@@ -389,7 +385,7 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
- 	}
- 	if (unlikely(!pmd_trans_huge(*pmd))) {
- 		spin_unlock(ptl);
--		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
-+		return follow_page_pte(vma, address, pmd, flags, ctx);
- 	}
- 	if (flags & (FOLL_SPLIT | FOLL_SPLIT_PMD)) {
- 		int ret;
-@@ -419,7 +415,7 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
- 		}
- 
- 		return ret ? ERR_PTR(ret) :
--			follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
-+			follow_page_pte(vma, address, pmd, flags, ctx);
- 	}
- 	page = follow_trans_huge_pmd(vma, address, pmd, flags);
- 	spin_unlock(ptl);
-@@ -456,7 +452,7 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
- 	}
- 	if (pud_devmap(*pud)) {
- 		ptl = pud_lock(mm, pud);
--		page = follow_devmap_pud(vma, address, pud, flags, &ctx->pgmap);
-+		page = follow_devmap_pud(vma, address, pud, flags, ctx);
- 		spin_unlock(ptl);
- 		if (page)
- 			return page;
-@@ -786,7 +782,8 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
- static long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
- 		unsigned long start, unsigned long nr_pages,
- 		unsigned int gup_flags, struct page **pages,
--		struct vm_area_struct **vmas, int *nonblocking)
-+		struct vm_area_struct **vmas, int *nonblocking,
-+		struct vaddr_pin *vaddr_pin)
- {
- 	long ret = 0, i = 0;
- 	struct vm_area_struct *vma = NULL;
-@@ -797,6 +794,8 @@ static long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
- 
- 	VM_BUG_ON(!!pages != !!(gup_flags & FOLL_GET));
- 
-+	ctx.vaddr_pin = vaddr_pin;
++	INIT_LIST_HEAD(&f->file_pins);
++	spin_lock_init(&f->fp_lock);
 +
- 	/*
- 	 * If FOLL_FORCE is set then do not force a full fault as the hinting
- 	 * fault information is unrelated to the reference behaviour of a task
-@@ -1025,7 +1024,7 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
- 	lock_dropped = false;
- 	for (;;) {
- 		ret = __get_user_pages(tsk, mm, start, nr_pages, flags, pages,
--				       vmas, locked);
-+				       vmas, locked, vaddr_pin);
- 		if (!locked)
- 			/* VM_FAULT_RETRY couldn't trigger, bypass */
- 			return ret;
-@@ -1068,7 +1067,7 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
- 		lock_dropped = true;
- 		down_read(&mm->mmap_sem);
- 		ret = __get_user_pages(tsk, mm, start, 1, flags | FOLL_TRIED,
--				       pages, NULL, NULL);
-+				       pages, NULL, NULL, vaddr_pin);
- 		if (ret != 1) {
- 			BUG_ON(ret > 1);
- 			if (!pages_done)
-@@ -1226,7 +1225,7 @@ long populate_vma_page_range(struct vm_area_struct *vma,
- 	 * not result in a stack expansion that recurses back here.
- 	 */
- 	return __get_user_pages(current, mm, start, nr_pages, gup_flags,
--				NULL, NULL, nonblocking);
-+				NULL, NULL, nonblocking, NULL);
+ 	return f;
  }
  
- /*
-@@ -1311,7 +1310,7 @@ struct page *get_dump_page(unsigned long addr)
+diff --git a/include/linux/file.h b/include/linux/file.h
+index 3fcddff56bc4..cd79adad5b23 100644
+--- a/include/linux/file.h
++++ b/include/linux/file.h
+@@ -9,6 +9,7 @@
+ #include <linux/compiler.h>
+ #include <linux/types.h>
+ #include <linux/posix_types.h>
++#include <linux/kref.h>
  
- 	if (__get_user_pages(current, current->mm, addr, 1,
- 			     FOLL_FORCE | FOLL_DUMP | FOLL_GET, &page, &vma,
--			     NULL) < 1)
-+			     NULL, NULL) < 1)
- 		return NULL;
- 	flush_cache_page(vma, addr, page_to_pfn(page));
- 	return page;
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index bc1a07a55be1..7e09f2f17ed8 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -916,8 +916,9 @@ static void touch_pmd(struct vm_area_struct *vma, unsigned long addr,
- }
+ struct file;
  
- struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
--		pmd_t *pmd, int flags, struct dev_pagemap **pgmap)
-+		pmd_t *pmd, int flags, struct follow_page_context *ctx)
- {
-+	struct dev_pagemap **pgmap = &ctx->pgmap;
- 	unsigned long pfn = pmd_pfn(*pmd);
- 	struct mm_struct *mm = vma->vm_mm;
- 	struct page *page;
-@@ -1068,8 +1069,9 @@ static void touch_pud(struct vm_area_struct *vma, unsigned long addr,
- }
+@@ -91,4 +92,52 @@ extern void fd_install(unsigned int fd, struct file *file);
+ extern void flush_delayed_fput(void);
+ extern void __fput_sync(struct file *);
  
- struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
--		pud_t *pud, int flags, struct dev_pagemap **pgmap)
-+		pud_t *pud, int flags, struct follow_page_context *ctx)
- {
-+	struct dev_pagemap **pgmap = &ctx->pgmap;
- 	unsigned long pfn = pud_pfn(*pud);
- 	struct mm_struct *mm = vma->vm_mm;
- 	struct page *page;
-diff --git a/mm/internal.h b/mm/internal.h
-index 0d5f720c75ab..46ada5279856 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -12,6 +12,34 @@
- #include <linux/pagemap.h>
- #include <linux/tracepoint-defs.h>
- 
-+struct follow_page_context {
-+	struct dev_pagemap *pgmap;
-+	unsigned int page_mask;
-+	struct vaddr_pin *vaddr_pin;
++/**
++ * struct file_file_pin
++ *
++ * Associate a pin'ed file with another file owner.
++ *
++ * Subsystems such as RDMA have the ability to pin memory which is associated
++ * with a file descriptor which can be passed to other processes without
++ * necessarily having that memory accessed in the remote processes address
++ * space.
++ *
++ * @file file backing memory which was pined by a GUP caller
++ * @f_owner the file representing the GUP owner
++ * @list of all file pins this owner has
++ *       (struct file *)->file_pins
++ * @ref number of times this pin was taken (roughly the number of pages pinned
++ *      in the file)
++ */
++struct file_file_pin {
++	struct file *file;
++	struct file *f_owner;
++	struct list_head list;
++	struct kref ref;
 +};
 +
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
-+		pmd_t *pmd, int flags, struct follow_page_context *ctx);
-+struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
-+		pud_t *pud, int flags, struct follow_page_context *ctx);
-+#else
-+static inline struct page *follow_devmap_pmd(struct vm_area_struct *vma,
-+	unsigned long addr, pmd_t *pmd, int flags,
-+	struct follow_page_context *ctx)
-+{
-+	return NULL;
-+}
++/*
++ * struct mm_file_pin
++ *
++ * Some GUP callers do not have an "owning" file.  Those pins are accounted for
++ * in the mm of the process that called GUP.
++ *
++ * The tuple {file, inode} is used to track this as a unique file pin and to
++ * track when this pin has been removed.
++ *
++ * @file file backing memory which was pined by a GUP caller
++ * @mm back point to owning mm
++ * @inode backing the file
++ * @list of all file pins this owner has
++ *       (struct mm_struct *)->file_pins
++ * @ref number of times this pin was taken
++ */
++struct mm_file_pin {
++	struct file *file;
++	struct mm_struct *mm;
++	struct inode *inode;
++	struct list_head list;
++	struct kref ref;
++};
 +
-+static inline struct page *follow_devmap_pud(struct vm_area_struct *vma,
-+	unsigned long addr, pud_t *pud, int flags,
-+	struct follow_page_context *ctx)
-+{
-+	return NULL;
-+}
-+#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-+
-+
- /*
-  * The set of flags that only affect watermark checking and reclaim
-  * behaviour. This is used by the MM to obey the caller constraints
+ #endif /* __LINUX_FILE_H */
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 2e41ce547913..d2e08feb9737 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -963,6 +963,8 @@ struct file {
+ #endif /* #ifdef CONFIG_EPOLL */
+ 	struct address_space	*f_mapping;
+ 	errseq_t		f_wb_err;
++	struct list_head        file_pins;
++	spinlock_t              fp_lock;
+ } __randomize_layout
+   __attribute__((aligned(4)));	/* lest something weird decides that 2 is OK */
+ 
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 6a7a1083b6fb..4f6ea4acddbd 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -516,6 +516,8 @@ struct mm_struct {
+ 		/* HMM needs to track a few things per mm */
+ 		struct hmm *hmm;
+ #endif
++		struct list_head file_pins;
++		spinlock_t fp_lock; /* lock file_pins */
+ 	} __randomize_layout;
+ 
+ 	/*
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 0e2f9a2c132c..093f2f2fce1a 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -675,6 +675,7 @@ void __mmdrop(struct mm_struct *mm)
+ 	BUG_ON(mm == &init_mm);
+ 	WARN_ON_ONCE(mm == current->mm);
+ 	WARN_ON_ONCE(mm == current->active_mm);
++	WARN_ON(!list_empty(&mm->file_pins));
+ 	mm_free_pgd(mm);
+ 	destroy_context(mm);
+ 	mmu_notifier_mm_destroy(mm);
+@@ -1013,6 +1014,8 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
+ 	mm->pmd_huge_pte = NULL;
+ #endif
+ 	mm_init_uprobes_state(mm);
++	INIT_LIST_HEAD(&mm->file_pins);
++	spin_lock_init(&mm->fp_lock);
+ 
+ 	if (current->mm) {
+ 		mm->flags = current->mm->flags & MMF_INIT_MASK;
 -- 
 2.20.1
 
