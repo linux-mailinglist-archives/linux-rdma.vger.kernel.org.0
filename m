@@ -2,316 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3845D8869A
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Aug 2019 01:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B13886F4
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Aug 2019 01:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729234AbfHIW73 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Aug 2019 18:59:29 -0400
-Received: from mga11.intel.com ([192.55.52.93]:23377 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730744AbfHIW7J (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 9 Aug 2019 18:59:09 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:59:08 -0700
-X-IronPort-AV: E=Sophos;i="5.64,367,1559545200"; 
-   d="scan'208";a="199539307"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.157])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:59:08 -0700
-From:   ira.weiny@intel.com
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        id S1726652AbfHIXbt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Aug 2019 19:31:49 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:60305 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726053AbfHIXbt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Aug 2019 19:31:49 -0400
+X-Greylist: delayed 504 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Aug 2019 19:31:47 EDT
+Received: from dread.disaster.area (pa49-181-167-148.pa.nsw.optusnet.com.au [49.181.167.148])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id CE576364A0D;
+        Sat, 10 Aug 2019 09:31:44 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hwELF-0001Z4-7E; Sat, 10 Aug 2019 09:30:37 +1000
+Date:   Sat, 10 Aug 2019 09:30:37 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     ira.weiny@intel.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Dan Williams <dan.j.williams@intel.com>,
         Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        "Theodore Ts'o" <tytso@mit.edu>,
+        Theodore Ts'o <tytso@mit.edu>,
         John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: [RFC PATCH v2 18/19] {mm,procfs}: Add display file_pins proc
-Date:   Fri,  9 Aug 2019 15:58:32 -0700
-Message-Id: <20190809225833.6657-19-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190809225833.6657-1-ira.weiny@intel.com>
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 07/19] fs/xfs: Teach xfs to use new
+ dax_layout_busy_page()
+Message-ID: <20190809233037.GB7777@dread.disaster.area>
 References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190809225833.6657-8-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190809225833.6657-8-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
+        a=gu9DDhuZhshYSb5Zs/lkOA==:117 a=gu9DDhuZhshYSb5Zs/lkOA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=Goxn531fkllQGndbsM8A:9
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Fri, Aug 09, 2019 at 03:58:21PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> dax_layout_busy_page() can now operate on a sub-range of the
+> address_space provided.
+> 
+> Have xfs specify the sub range to dax_layout_busy_page()
 
-Now that we have the file pins information stored add a new procfs entry
-to display them to the user.
+Hmmm. I've got patches that change all these XFS interfaces to
+support range locks. I'm not sure the way the ranges are passed here
+is the best way to do it, and I suspect they aren't correct in some
+cases, either....
 
-NOTE output will be dependant on where the file pin is tied to.  Some
-processes may have the pin associated with a file descriptor in which
-case that file is reported as well.
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index ff3c1fae5357..f0de5486f6c1 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -1042,10 +1042,16 @@ xfs_vn_setattr(
+>  		xfs_ilock(ip, XFS_MMAPLOCK_EXCL);
+>  		iolock = XFS_IOLOCK_EXCL | XFS_MMAPLOCK_EXCL;
+>  
+> -		error = xfs_break_layouts(inode, &iolock, BREAK_UNMAP);
+> -		if (error) {
+> -			xfs_iunlock(ip, XFS_MMAPLOCK_EXCL);
+> -			return error;
+> +		if (iattr->ia_size < inode->i_size) {
+> +			loff_t                  off = iattr->ia_size;
+> +			loff_t                  len = inode->i_size - iattr->ia_size;
+> +
+> +			error = xfs_break_layouts(inode, &iolock, off, len,
+> +						  BREAK_UNMAP);
+> +			if (error) {
+> +				xfs_iunlock(ip, XFS_MMAPLOCK_EXCL);
+> +				return error;
+> +			}
 
-Others are associated directly with the process mm and are reported as
-such.
+This isn't right - truncate up still needs to break the layout on
+the last filesystem block of the file, and truncate down needs to
+extend to "maximum file offset" because we remove all extents beyond
+EOF on a truncate down.
 
-For example of a file pinned to an RDMA open context (fd 4) and a file
-pinned to the mm of that process:
+i.e. when we use preallocation, the extent map extends beyond EOF,
+and layout leases need to be able to extend beyond the current EOF
+to allow the lease owner to do extending writes, extending truncate,
+preallocation beyond EOF, etc safely without having to get a new
+lease to cover the new region in the extended file...
 
-4: /dev/infiniband/uverbs0
-   /mnt/pmem/foo
-/mnt/pmem/bar
+Cheers,
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- fs/proc/base.c | 214 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 214 insertions(+)
-
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index ebea9501afb8..f4d219172235 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -2995,6 +2995,7 @@ static int proc_stack_depth(struct seq_file *m, struct pid_namespace *ns,
-  */
- static const struct file_operations proc_task_operations;
- static const struct inode_operations proc_task_inode_operations;
-+static const struct file_operations proc_pid_file_pins_operations;
- 
- static const struct pid_entry tgid_base_stuff[] = {
- 	DIR("task",       S_IRUGO|S_IXUGO, proc_task_inode_operations, proc_task_operations),
-@@ -3024,6 +3025,7 @@ static const struct pid_entry tgid_base_stuff[] = {
- 	ONE("stat",       S_IRUGO, proc_tgid_stat),
- 	ONE("statm",      S_IRUGO, proc_pid_statm),
- 	REG("maps",       S_IRUGO, proc_pid_maps_operations),
-+	REG("file_pins",  S_IRUGO, proc_pid_file_pins_operations),
- #ifdef CONFIG_NUMA
- 	REG("numa_maps",  S_IRUGO, proc_pid_numa_maps_operations),
- #endif
-@@ -3422,6 +3424,7 @@ static const struct pid_entry tid_base_stuff[] = {
- 	ONE("stat",      S_IRUGO, proc_tid_stat),
- 	ONE("statm",     S_IRUGO, proc_pid_statm),
- 	REG("maps",      S_IRUGO, proc_pid_maps_operations),
-+	REG("file_pins", S_IRUGO, proc_pid_file_pins_operations),
- #ifdef CONFIG_PROC_CHILDREN
- 	REG("children",  S_IRUGO, proc_tid_children_operations),
- #endif
-@@ -3718,3 +3721,214 @@ void __init set_proc_pid_nlink(void)
- 	nlink_tid = pid_entry_nlink(tid_base_stuff, ARRAY_SIZE(tid_base_stuff));
- 	nlink_tgid = pid_entry_nlink(tgid_base_stuff, ARRAY_SIZE(tgid_base_stuff));
- }
-+
-+/**
-+ * file_pin information below.
-+ */
-+
-+struct proc_file_pins_private {
-+	struct inode *inode;
-+	struct task_struct *task;
-+	struct mm_struct *mm;
-+	struct files_struct *files;
-+	unsigned int nr_pins;
-+	struct xarray fps;
-+} __randomize_layout;
-+
-+static void release_fp(struct proc_file_pins_private *priv)
-+{
-+	up_read(&priv->mm->mmap_sem);
-+	mmput(priv->mm);
-+}
-+
-+static void print_fd_file_pin(struct seq_file *m, struct file *file,
-+			    unsigned long i)
-+{
-+	struct file_file_pin *fp;
-+	struct file_file_pin *tmp;
-+
-+	if (list_empty_careful(&file->file_pins))
-+		return;
-+
-+	seq_printf(m, "%lu: ", i);
-+	seq_file_path(m, file, "\n");
-+	seq_putc(m, '\n');
-+
-+	list_for_each_entry_safe(fp, tmp, &file->file_pins, list) {
-+		seq_puts(m, "   ");
-+		seq_file_path(m, fp->file, "\n");
-+		seq_putc(m, '\n');
-+	}
-+}
-+
-+/* We are storing the index's within the FD table for later retrieval */
-+static int store_fd(const void *priv , struct file *file, unsigned i)
-+{
-+	struct proc_file_pins_private *fp_priv;
-+
-+	/* cast away const... */
-+	fp_priv = (struct proc_file_pins_private *)priv;
-+
-+	if (list_empty_careful(&file->file_pins))
-+		return 0;
-+
-+	/* can't sleep in the iterate of the fd table */
-+	xa_store(&fp_priv->fps, fp_priv->nr_pins, xa_mk_value(i), GFP_ATOMIC);
-+	fp_priv->nr_pins++;
-+
-+	return 0;
-+}
-+
-+static void store_mm_pins(struct proc_file_pins_private *priv)
-+{
-+	struct mm_file_pin *fp;
-+	struct mm_file_pin *tmp;
-+
-+	list_for_each_entry_safe(fp, tmp, &priv->mm->file_pins, list) {
-+		xa_store(&priv->fps, priv->nr_pins, fp, GFP_KERNEL);
-+		priv->nr_pins++;
-+	}
-+}
-+
-+
-+static void *fp_start(struct seq_file *m, loff_t *ppos)
-+{
-+	struct proc_file_pins_private *priv = m->private;
-+	unsigned int pos = *ppos;
-+
-+	priv->task = get_proc_task(priv->inode);
-+	if (!priv->task)
-+		return ERR_PTR(-ESRCH);
-+
-+	if (!priv->mm || !mmget_not_zero(priv->mm))
-+		return NULL;
-+
-+	priv->files = get_files_struct(priv->task);
-+	down_read(&priv->mm->mmap_sem);
-+
-+	xa_destroy(&priv->fps);
-+	priv->nr_pins = 0;
-+
-+	/* grab fds of "files" which have pins and store as xa values */
-+	if (priv->files)
-+		iterate_fd(priv->files, 0, store_fd, priv);
-+
-+	/* store mm_file_pins as xa entries */
-+	store_mm_pins(priv);
-+
-+	if (pos >= priv->nr_pins) {
-+		release_fp(priv);
-+		return NULL;
-+	}
-+
-+	return xa_load(&priv->fps, pos);
-+}
-+
-+static void *fp_next(struct seq_file *m, void *v, loff_t *pos)
-+{
-+	struct proc_file_pins_private *priv = m->private;
-+
-+	(*pos)++;
-+	if ((*pos) >= priv->nr_pins) {
-+		release_fp(priv);
-+		return NULL;
-+	}
-+
-+	return xa_load(&priv->fps, *pos);
-+}
-+
-+static void fp_stop(struct seq_file *m, void *v)
-+{
-+	struct proc_file_pins_private *priv = m->private;
-+
-+	if (v)
-+		release_fp(priv);
-+
-+	if (priv->task) {
-+		put_task_struct(priv->task);
-+		priv->task = NULL;
-+	}
-+
-+	if (priv->files) {
-+		put_files_struct(priv->files);
-+		priv->files = NULL;
-+	}
-+}
-+
-+static int show_fp(struct seq_file *m, void *v)
-+{
-+	struct proc_file_pins_private *priv = m->private;
-+
-+	if (xa_is_value(v)) {
-+		struct file *file;
-+		unsigned long fd = xa_to_value(v);
-+
-+		rcu_read_lock();
-+		file = fcheck_files(priv->files, fd);
-+		if (file)
-+			print_fd_file_pin(m, file, fd);
-+		rcu_read_unlock();
-+	} else {
-+		struct mm_file_pin *fp = v;
-+
-+		seq_puts(m, "mm: ");
-+		seq_file_path(m, fp->file, "\n");
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct seq_operations proc_pid_file_pins_op = {
-+	.start	= fp_start,
-+	.next	= fp_next,
-+	.stop	= fp_stop,
-+	.show	= show_fp
-+};
-+
-+static int proc_file_pins_open(struct inode *inode, struct file *file)
-+{
-+	struct proc_file_pins_private *priv = __seq_open_private(file,
-+						&proc_pid_file_pins_op,
-+						sizeof(*priv));
-+
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	xa_init(&priv->fps);
-+	priv->inode = inode;
-+	priv->mm = proc_mem_open(inode, PTRACE_MODE_READ);
-+	priv->task = NULL;
-+	if (IS_ERR(priv->mm)) {
-+		int err = PTR_ERR(priv->mm);
-+
-+		seq_release_private(inode, file);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int proc_file_pins_release(struct inode *inode, struct file *file)
-+{
-+	struct seq_file *seq = file->private_data;
-+	struct proc_file_pins_private *priv = seq->private;
-+
-+	/* This is for "protection" not sure when these may end up not being
-+	 * NULL here... */
-+	WARN_ON(priv->files);
-+	WARN_ON(priv->task);
-+
-+	if (priv->mm)
-+		mmdrop(priv->mm);
-+
-+	xa_destroy(&priv->fps);
-+
-+	return seq_release_private(inode, file);
-+}
-+
-+static const struct file_operations proc_pid_file_pins_operations = {
-+	.open		= proc_file_pins_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= proc_file_pins_release,
-+};
+Dave.
 -- 
-2.20.1
-
+Dave Chinner
+david@fromorbit.com
