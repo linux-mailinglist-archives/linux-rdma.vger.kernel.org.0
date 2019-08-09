@@ -2,184 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 423F9876D9
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2019 12:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A96876FC
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2019 12:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbfHIKBY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Aug 2019 06:01:24 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:49852 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726152AbfHIKBY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 9 Aug 2019 06:01:24 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id CE9A3AAEFD90F4BBB567;
-        Fri,  9 Aug 2019 17:45:31 +0800 (CST)
-Received: from linux-ioko.site (10.71.200.31) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.439.0; Fri, 9 Aug 2019 17:45:21 +0800
-From:   Lijun Ou <oulijun@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next 9/9] RDMA/hns: Copy some information of AV to user
-Date:   Fri, 9 Aug 2019 17:41:06 +0800
-Message-ID: <1565343666-73193-10-git-send-email-oulijun@huawei.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
-References: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
+        id S2406188AbfHIKOY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Aug 2019 06:14:24 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:39366 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727040AbfHIKOY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Aug 2019 06:14:24 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x79ADYiM069930;
+        Fri, 9 Aug 2019 10:14:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
+ bh=ZWbEpnhuB30Qt2a9BaYNxLpabBsXHKx4OLlX4Pl7K+4=;
+ b=Vd2neWGq8LPqX85WozffXswKiyzWJ9c4RcmrC+cVsfPkla73LlZ2M1KPd+2KnGa0E6xm
+ KjSVdMx27GswBthk74MedM8THC9DCFXhHirVmMJiuf1KFTNQdZTzbYu5CZTxk4Tq5Y4w
+ W/nyJA8vN+LZ4mWJFVnBJ+wZijIf+1oRszs/ub0B3SuPThfkH62CTqKXbps7/gCDgFbB
+ C4hTTu7hnyfSJ3SXVHzWUtWFQkDKUv1QCkyodAvwGRPSnuXXUMs1kL7ZP9VIg/CJnSoa
+ hqCeM7wUZ6JjV2L/ojCsL25zRjXxZf2QXxZgrMgu93GEEWFOS+TvcEX2qs1O5WKHpXtv 7w== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
+ bh=ZWbEpnhuB30Qt2a9BaYNxLpabBsXHKx4OLlX4Pl7K+4=;
+ b=geBIQjnYeKVGUQ5v55kbLdJxO1U27U9qfOGJHmQexTQxCf79/V0NbQohziiGjLymAxGC
+ U/AhKxQbQEixAvCGh6kbZ27cLOThzKQwVEqGMa6+AHzSC/fripTfKXqHYn2txNGub3K1
+ aX4NGjX7Tungbk017juSG1CIIpbK2bQ5ozfjd0g1O8c/weljcIL8i0WTrJGNdzL/bMrT
+ upgMOwWrQPxySEinazrDP8YTn2hLT+eCoJqQwQDxhLU1E5Fk83o1FNB6o/AGSFj/r7Ii
+ Xcfk41FkHwyed0qZNbkq7BFounTOQoW5uNdudxqu43Vd2PLSMxtLzwMhV/hp2dTtwHaQ OA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2u8hasenms-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 09 Aug 2019 10:14:02 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x79ADrvH110134;
+        Fri, 9 Aug 2019 10:14:01 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2u90t7at4f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 09 Aug 2019 10:14:01 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x79ADSkS001789;
+        Fri, 9 Aug 2019 10:13:28 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 09 Aug 2019 03:13:28 -0700
+Date:   Fri, 9 Aug 2019 13:13:19 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Doug Ledford <dledford@redhat.com>, Mark Zhang <markz@mellanox.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Majd Dibbiny <majd@mellanox.com>,
+        Steve Wise <swise@opengridcomputing.com>,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] RDMA/core: Fix error code in stat_get_doit_qp()
+Message-ID: <20190809101311.GA17867@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.71.200.31]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9343 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908090106
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9343 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908090106
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When the driver support UD transport in user mode, it needs to
-create the Address Handle(AH) and transfer Address Vector to
-The hardware. The Address Vector includes the destination mac
-and vlan inforation and it will be generated from the kernel
-driver. As a result, we can copy this information to user
-through ib_copy_to_udata function.
+We need to set the error codes on these paths.  Currently the only
+possible error code is -EMSGSIZE so that's what the patch uses.
 
-Signed-off-by: Lijun Ou <oulijun@huawei.com>
+Fixes: 83c2c1fcbd08 ("RDMA/nldev: Allow get counter mode through RDMA netlink")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_ah.c     | 22 ++++++++++++++++++----
- drivers/infiniband/hw/hns/hns_roce_device.h |  3 ++-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  3 ++-
- drivers/infiniband/hw/hns/hns_roce_main.c   |  7 +++++++
- include/uapi/rdma/hns-abi.h                 |  7 +++++++
- 5 files changed, 36 insertions(+), 6 deletions(-)
+ drivers/infiniband/core/nldev.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
-index cdd2ac2..eee53be 100644
---- a/drivers/infiniband/hw/hns/hns_roce_ah.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
-@@ -31,6 +31,7 @@
-  */
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index e287b71a1cfd..cc08218f1ef7 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -1952,12 +1952,16 @@ static int stat_get_doit_qp(struct sk_buff *skb, struct nlmsghdr *nlh,
  
- #include <linux/platform_device.h>
-+#include <rdma/hns-abi.h>
- #include <rdma/ib_addr.h>
- #include <rdma/ib_cache.h>
- #include "hns_roce_device.h"
-@@ -43,13 +44,14 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr,
- 		       u32 flags, struct ib_udata *udata)
- {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibah->device);
-+	struct hns_roce_ib_create_ah_resp resp = {};
- 	const struct ib_gid_attr *gid_attr;
- 	struct device *dev = hr_dev->dev;
- 	struct hns_roce_ah *ah = to_hr_ah(ibah);
- 	u16 vlan_tag = 0xffff;
- 	const struct ib_global_route *grh = rdma_ah_read_grh(ah_attr);
--	bool vlan_en = false;
--	int ret;
-+	u8 vlan_en = 0;
-+	int ret = 0;
- 
- 	gid_attr = ah_attr->grh.sgid_attr;
- 	ret = rdma_read_gid_l2_fields(gid_attr, &vlan_tag, NULL);
-@@ -60,7 +62,7 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr,
- 	memcpy(ah->av.mac, ah_attr->roce.dmac, ETH_ALEN);
- 
- 	if (vlan_tag < VLAN_CFI_MASK) {
--		vlan_en = true;
-+		vlan_en = 1;
- 		vlan_tag |= (rdma_ah_get_sl(ah_attr) &
- 			     HNS_ROCE_VLAN_SL_BIT_MASK) <<
- 			     HNS_ROCE_VLAN_SL_SHIFT;
-@@ -80,7 +82,19 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr,
- 
- 	memcpy(ah->av.dgid, grh->dgid.raw, HNS_ROCE_GID_SIZE);
- 	ah->av.sl_tclass_flowlabel = cpu_to_le32(rdma_ah_get_sl(ah_attr) <<
--						 HNS_ROCE_SL_SHIFT);
-+				i		 HNS_ROCE_SL_SHIFT);
-+
-+       if (udata) {
-+               memcpy(resp.dmac, ah_attr->roce.dmac, ETH_ALEN);
-+               resp.vlan = vlan_tag;
-+               resp.vlan_en = vlan_en;
-+               ret = ib_copy_to_udata(udata, &resp,
-+                                      min(udata->outlen, sizeof(resp)));
-+               if (ret) {
-+                       kfree(ah);
-+                       return ret;
-+               }
-+       }
- 
- 	return 0;
- }
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index be65fce..e703912 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -217,6 +217,7 @@ enum {
- 	HNS_ROCE_CAP_FLAG_FRMR                  = BIT(8),
- 	HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL		= BIT(9),
- 	HNS_ROCE_CAP_FLAG_ATOMIC		= BIT(10),
-+	HNS_ROCE_CAP_FLAG_UD			= BIT(11),
- };
- 
- enum hns_roce_mtt_type {
-@@ -578,7 +579,7 @@ struct hns_roce_av {
- 	u8          dgid[HNS_ROCE_GID_SIZE];
- 	u8          mac[ETH_ALEN];
- 	__le16      vlan;
--	bool	    vlan_en;
-+	u8	    vlan_en;
- };
- 
- struct hns_roce_ah {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 138e5a8..71166e7 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1653,7 +1653,8 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
- 	if (hr_dev->pci_dev->revision == 0x21) {
- 		caps->flags |= HNS_ROCE_CAP_FLAG_ATOMIC |
- 			       HNS_ROCE_CAP_FLAG_SRQ |
--			       HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL;
-+			       HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL |
-+			       HNS_ROCE_CAP_FLAG_UD;
- 
- 		caps->num_qpc_timer	  = HNS_ROCE_V2_MAX_QPC_TIMER_NUM;
- 		caps->qpc_timer_entry_sz  = HNS_ROCE_V2_QPC_TIMER_ENTRY_SZ;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 1bda7a5..ba9594c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -550,6 +550,13 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
- 		if (ret)
- 			return ret;
- 	}
-+
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_UD) {
-+		ib_dev->uverbs_cmd_mask |=
-+					(1ULL << IB_USER_VERBS_CMD_CREATE_AH) |
-+					(1ULL << IB_USER_VERBS_CMD_DESTROY_AH);
+ 	if (fill_nldev_handle(msg, device) ||
+ 	    nla_put_u32(msg, RDMA_NLDEV_ATTR_PORT_INDEX, port) ||
+-	    nla_put_u32(msg, RDMA_NLDEV_ATTR_STAT_MODE, mode))
++	    nla_put_u32(msg, RDMA_NLDEV_ATTR_STAT_MODE, mode)) {
++		ret = -EMSGSIZE;
+ 		goto err_msg;
 +	}
-+
- 	ret = ib_register_device(ib_dev, "hns_%d");
- 	if (ret) {
- 		dev_err(dev, "ib_register_device failed!\n");
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index eb76b38..6a2d994 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -80,4 +80,11 @@ struct hns_roce_ib_alloc_pd_resp {
- 	__u32 pdn;
- };
  
-+struct hns_roce_ib_create_ah_resp {
-+	__u8	dmac[6];
-+	__u16	vlan;
-+	__u8	vlan_en;
-+	__u8	reserved[7];
-+};
-+
- #endif /* HNS_ABI_USER_H */
+ 	if ((mode == RDMA_COUNTER_MODE_AUTO) &&
+-	    nla_put_u32(msg, RDMA_NLDEV_ATTR_STAT_AUTO_MODE_MASK, mask))
++	    nla_put_u32(msg, RDMA_NLDEV_ATTR_STAT_AUTO_MODE_MASK, mask)) {
++		ret = -EMSGSIZE;
+ 		goto err_msg;
++	}
+ 
+ 	nlmsg_end(msg, nlh);
+ 	ib_device_put(device);
 -- 
-1.9.1
+2.20.1
 
