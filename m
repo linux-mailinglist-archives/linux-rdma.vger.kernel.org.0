@@ -2,74 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A96876FC
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2019 12:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAC687707
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2019 12:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406188AbfHIKOY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Aug 2019 06:14:24 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:39366 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727040AbfHIKOY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Aug 2019 06:14:24 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x79ADYiM069930;
-        Fri, 9 Aug 2019 10:14:02 GMT
+        id S2406127AbfHIKQm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Aug 2019 06:16:42 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:53936 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726091AbfHIKQm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Aug 2019 06:16:42 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x79ADXhQ062581;
+        Fri, 9 Aug 2019 10:16:31 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
- bh=ZWbEpnhuB30Qt2a9BaYNxLpabBsXHKx4OLlX4Pl7K+4=;
- b=Vd2neWGq8LPqX85WozffXswKiyzWJ9c4RcmrC+cVsfPkla73LlZ2M1KPd+2KnGa0E6xm
- KjSVdMx27GswBthk74MedM8THC9DCFXhHirVmMJiuf1KFTNQdZTzbYu5CZTxk4Tq5Y4w
- W/nyJA8vN+LZ4mWJFVnBJ+wZijIf+1oRszs/ub0B3SuPThfkH62CTqKXbps7/gCDgFbB
- C4hTTu7hnyfSJ3SXVHzWUtWFQkDKUv1QCkyodAvwGRPSnuXXUMs1kL7ZP9VIg/CJnSoa
- hqCeM7wUZ6JjV2L/ojCsL25zRjXxZf2QXxZgrMgu93GEEWFOS+TvcEX2qs1O5WKHpXtv 7w== 
+ bh=SXvs2DZuZMKGjo1bM1lqmXKa5nVW3ZemlDFW438SK4M=;
+ b=AvMAXWQd6kKO4uCKwjA6zkuVjNR4Vs7npe/iJFgiDbxt/H3eajIW0Oo/kuQmkAChRjdo
+ /icnUrnOHu3NN+wYwK5N3ELrjLyh5dyhnPsaMEQ4o80c4OTCHuY3pVITS4vaEh6ts137
+ PjL7+IyunFpmKnHxxArRRECLqKw5BJIAne34YUA52PGR6ZnCnlQACn+aHX+njiDoehmN
+ 8W3eg7Zxffbalvw0CPFO/PF1f3SLStNfz+NEFNOZi/KipOoJ04Q48/kE5pZIV1ZScBq3
+ 2Aa3wQnqPHmIxbGlf/3lfoEVJIvyLPntVU4GRBm0Sjhsh9hbdwbwuF5/62Xy7ex2PXC5 gg== 
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
- bh=ZWbEpnhuB30Qt2a9BaYNxLpabBsXHKx4OLlX4Pl7K+4=;
- b=geBIQjnYeKVGUQ5v55kbLdJxO1U27U9qfOGJHmQexTQxCf79/V0NbQohziiGjLymAxGC
- U/AhKxQbQEixAvCGh6kbZ27cLOThzKQwVEqGMa6+AHzSC/fripTfKXqHYn2txNGub3K1
- aX4NGjX7Tungbk017juSG1CIIpbK2bQ5ozfjd0g1O8c/weljcIL8i0WTrJGNdzL/bMrT
- upgMOwWrQPxySEinazrDP8YTn2hLT+eCoJqQwQDxhLU1E5Fk83o1FNB6o/AGSFj/r7Ii
- Xcfk41FkHwyed0qZNbkq7BFounTOQoW5uNdudxqu43Vd2PLSMxtLzwMhV/hp2dTtwHaQ OA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2u8hasenms-1
+ bh=SXvs2DZuZMKGjo1bM1lqmXKa5nVW3ZemlDFW438SK4M=;
+ b=XbGAE/sQjZCgx1BOYDR24H7ErGxxn2pkPvqnOzHoAzoR+W6sJnsGHfTpsJxtkKA+xD/v
+ CZH/9m80r0/Teqyq3FkE3aer4Zgp15rfWu/racnEBSTqVpSLlCEct89/OcD3xcwpJFV4
+ BEbNf/UyLusaflcZNPnmbKcEFZ7nwJC5maQ42dWH+hihbPlFunhQAJ95kmFtxLeJAwY5
+ bT0DPUByBSdAA9xal4ju8G44rkhCbphmdalJb2Ln2iJ7mYfVVQQuxPtkLXR5oiMXr83W
+ rEm/3fFRsIqgVdMejBz2krp43W87zBmWKEhAQFm/iKJQQGhr9i94rV1xuZLg0VPXNy8L 4Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2u8hgp6myq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Aug 2019 10:14:02 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x79ADrvH110134;
-        Fri, 9 Aug 2019 10:14:01 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2u90t7at4f-1
+        Fri, 09 Aug 2019 10:16:31 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x79ADDnJ144080;
+        Fri, 9 Aug 2019 10:16:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2u8pj8xjct-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Aug 2019 10:14:01 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x79ADSkS001789;
-        Fri, 9 Aug 2019 10:13:28 GMT
+        Fri, 09 Aug 2019 10:16:31 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x79AGQRh006838;
+        Fri, 9 Aug 2019 10:16:26 GMT
 Received: from mwanda (/41.57.98.10)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 09 Aug 2019 03:13:28 -0700
-Date:   Fri, 9 Aug 2019 13:13:19 +0300
+        with ESMTP ; Fri, 09 Aug 2019 03:16:26 -0700
+Date:   Fri, 9 Aug 2019 13:16:19 +0300
 From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>, Mark Zhang <markz@mellanox.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Majd Dibbiny <majd@mellanox.com>,
-        Steve Wise <swise@opengridcomputing.com>,
+To:     Bernard Metzler <bmt@zurich.ibm.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] RDMA/core: Fix error code in stat_get_doit_qp()
-Message-ID: <20190809101311.GA17867@mwanda>
+Subject: [PATCH] RDMA/siw: Fix a memory leak in siw_init_cpulist()
+Message-ID: <20190809101619.GB17867@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email haha only kidding
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9343 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1906280000 definitions=main-1908090106
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9343 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
  definitions=main-1908090106
@@ -78,38 +75,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-We need to set the error codes on these paths.  Currently the only
-possible error code is -EMSGSIZE so that's what the patch uses.
+The error handling code doesn't free siw_cpu_info.tx_valid_cpus[0].  The
+first iteration through the loop is a no-op so this is sort of an off by
+one bug.
 
-Fixes: 83c2c1fcbd08 ("RDMA/nldev: Allow get counter mode through RDMA netlink")
+Fixes: bdcf26bf9b3a ("rdma/siw: network and RDMA core interface")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/infiniband/core/nldev.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/infiniband/sw/siw/siw_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index e287b71a1cfd..cc08218f1ef7 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -1952,12 +1952,16 @@ static int stat_get_doit_qp(struct sk_buff *skb, struct nlmsghdr *nlh,
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index d0f140daf659..95ace3967391 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -160,9 +160,9 @@ static int siw_init_cpulist(void)
  
- 	if (fill_nldev_handle(msg, device) ||
- 	    nla_put_u32(msg, RDMA_NLDEV_ATTR_PORT_INDEX, port) ||
--	    nla_put_u32(msg, RDMA_NLDEV_ATTR_STAT_MODE, mode))
-+	    nla_put_u32(msg, RDMA_NLDEV_ATTR_STAT_MODE, mode)) {
-+		ret = -EMSGSIZE;
- 		goto err_msg;
-+	}
- 
- 	if ((mode == RDMA_COUNTER_MODE_AUTO) &&
--	    nla_put_u32(msg, RDMA_NLDEV_ATTR_STAT_AUTO_MODE_MASK, mask))
-+	    nla_put_u32(msg, RDMA_NLDEV_ATTR_STAT_AUTO_MODE_MASK, mask)) {
-+		ret = -EMSGSIZE;
- 		goto err_msg;
-+	}
- 
- 	nlmsg_end(msg, nlh);
- 	ib_device_put(device);
+ out_err:
+ 	siw_cpu_info.num_nodes = 0;
+-	while (i) {
++	while (--i >= 0) {
+ 		kfree(siw_cpu_info.tx_valid_cpus[i]);
+-		siw_cpu_info.tx_valid_cpus[i--] = NULL;
++		siw_cpu_info.tx_valid_cpus[i] = NULL;
+ 	}
+ 	kfree(siw_cpu_info.tx_valid_cpus);
+ 	siw_cpu_info.tx_valid_cpus = NULL;
 -- 
 2.20.1
 
