@@ -2,125 +2,540 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A51F389954
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2019 11:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BEF89AAD
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2019 11:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727196AbfHLJFn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Aug 2019 05:05:43 -0400
-Received: from mail-eopbgr10084.outbound.protection.outlook.com ([40.107.1.84]:53509
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727181AbfHLJFn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Aug 2019 05:05:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cFmpaiDRtPGjKutyllLUgxvMBslQavPLQczVUqBSS1hVq+CmfZSVDrHms6IeJ2/9g2RsGsl0Nt8UGm6I1zg2hVHOysRQPvNB+D9LQDvwEl58q9XaLf31+1c+dnMGaq3QWROyuqB03yQ5Jp8R2p4ybCzI9o8vzjXMlInevU9zVMxMGHc9UO4YYX4tnGzs2vFgUG8aILamfeSm8XDGOkWbo6G14xHHqGJTihKmuPJg2DlrdVXwgRWWBQ7J5mU+n+7cxGQ2wHXf8QJbCYDK7ZOLqfnDed1qfn+JHdmWp0ZboezAukrGWgHY5MTRSNfR7QG0dBi/SeXYzQzuzDNicf6WVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xaKv4UiFyOgemcQmmsOdXQLdo1Si4yTTeYfHSZf9XgQ=;
- b=E9WhdYqZ2Y7DA8FJHttHEercVAQaLV+FfQGgbOvtkf+1xGhCC80LXgPMA4gIBe52usA/qH3kfZVnEvr20so7zW33szVULNz9GJ3LlHQs8TQToGZCLVE/0nsIoEujsJKpLCZsJwWn30cczExtNino9iQZxqFNzkO+9Vt5Omi6WcSHQ9HU5aXVRwIVZ04V0vIoTa9EEejdqLxihZYA/FyUcSNnEUZ7tYzl3cmGXRKBeugd06pNnC+nsK9QfTlnUpULrm/u3vF8HJOfMNCkY551uUV1eyPLiajczqQPAdCwV2GPmeKvuvOHZjxNBkJYVcj548l2OpLXZ1o15ivShuLW8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xaKv4UiFyOgemcQmmsOdXQLdo1Si4yTTeYfHSZf9XgQ=;
- b=aPztfcN3uuIdyemXy4Vm7g5DXbh2aWQoEHAHW/20IRigfhCQdv34zXn9yQCpLBOa+QDpo7xhoMsX+1UZH5seqRLYGD6UyO2PzmrKqMO+Kyg8wsZcKKuoLtFsLA6kiiJl+5n5GgptaioUB1jT1z90TxrddjvUnIDA1qcaPB45OqI=
-Received: from DBBPR05MB6283.eurprd05.prod.outlook.com (20.179.40.84) by
- DBBPR05MB6554.eurprd05.prod.outlook.com (20.179.44.19) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2157.20; Mon, 12 Aug 2019 09:04:59 +0000
-Received: from DBBPR05MB6283.eurprd05.prod.outlook.com
- ([fe80::c5c1:c1d:85e9:a16a]) by DBBPR05MB6283.eurprd05.prod.outlook.com
- ([fe80::c5c1:c1d:85e9:a16a%6]) with mapi id 15.20.2157.022; Mon, 12 Aug 2019
- 09:04:59 +0000
-From:   Tariq Toukan <tariqt@mellanox.com>
-To:     Wenwen Wang <wenwen@cs.uga.edu>
-CC:     Tariq Toukan <tariqt@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "open list:MELLANOX ETHERNET DRIVER (mlx4_en)" 
-        <netdev@vger.kernel.org>,
-        "open list:MELLANOX MLX4 core VPI driver" 
-        <linux-rdma@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net/mlx4_en: fix a memory leak bug
-Thread-Topic: [PATCH] net/mlx4_en: fix a memory leak bug
-Thread-Index: AQHVUNg+K+c1E2gjG02bEtXNUDsXd6b3OFQA
-Date:   Mon, 12 Aug 2019 09:04:59 +0000
-Message-ID: <75e09920-4ae3-0a19-4c2a-112d16bb81a5@mellanox.com>
-References: <1565591765-6461-1-git-send-email-wenwen@cs.uga.edu>
-In-Reply-To: <1565591765-6461-1-git-send-email-wenwen@cs.uga.edu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: PR0P264CA0174.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1c::18) To DBBPR05MB6283.eurprd05.prod.outlook.com
- (2603:10a6:10:c1::20)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=tariqt@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [193.47.165.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1a5ed917-807d-4454-05cc-08d71f0426e1
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:DBBPR05MB6554;
-x-ms-traffictypediagnostic: DBBPR05MB6554:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBBPR05MB6554E94DDFDEB9B8981A0F44AED30@DBBPR05MB6554.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-forefront-prvs: 012792EC17
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(376002)(346002)(396003)(366004)(136003)(199004)(189003)(25786009)(2171002)(54906003)(11346002)(446003)(2906002)(476003)(2616005)(52116002)(8676002)(76176011)(53936002)(3846002)(36756003)(6246003)(31686004)(6116002)(186003)(102836004)(6512007)(81156014)(99286004)(4326008)(86362001)(53546011)(386003)(31696002)(6506007)(256004)(14444005)(81166006)(26005)(66476007)(66446008)(64756008)(66556008)(66946007)(5660300002)(6486002)(66066001)(14454004)(6916009)(8936002)(229853002)(71190400001)(71200400001)(7736002)(6436002)(305945005)(316002)(486006)(478600001);DIR:OUT;SFP:1101;SCL:1;SRVR:DBBPR05MB6554;H:DBBPR05MB6283.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 1vvfTivX0uTIGkC7IFmnkz2JsJFtan30TcsWANDqBn8uf4ccdX0uRIgvaLwF9BmGcRwfD/P2qrkpJWqdFK8B3C6Gmim/bqS/HkmVHSZnMwXotvriusBnBV8oiP9lSETGXw6g1AI16r+YpxkA/Mp3AL6FxqBOqJISPiYLQW018bbhVcnvUp4yGiBoNvCL6FFQbFuWzuyQCvDEnXYoUwCkmPZZMd+Sa/qan441J5qdzQjzDIKaDCS+7kdrtr4ph10KXIP4/MkEZ/YQenW4rC0YW/nbt0VVFVqLowXBc7jDx/+AfE50370Hn+Pon4NMAu5QqQaXBYHjj6HqmkxrDVXnfz+TEQ50ktzYQhk8jIr2/l13lniYxDROO6VLGhJiT9hnSATojfkoOdqDxFKoQOjymwOTBSgMdG8ug/+wxQvrAYM=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2A6B1C4F980D244AB1DD60C0F10AF81E@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727543AbfHLJ6K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Aug 2019 05:58:10 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:32461 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727485AbfHLJ6K (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Aug 2019 05:58:10 -0400
+Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x7C9w4kv023573;
+        Mon, 12 Aug 2019 02:58:06 -0700
+Date:   Mon, 12 Aug 2019 15:28:04 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Bernard Metzler <bmt@zurich.ibm.com>
+Cc:     Tom Talpey <tom@talpey.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Nirranjan Kirubaharan <nirranjan@chelsio.com>
+Subject: Re: [PATCH for-rc] siw: MPA Reply handler tries to read beyond MPA
+ message
+Message-ID: <20190812095802.GA16978@chelsio.com>
+References: <20190805172605.GA5549@chelsio.com>
+ <8499b96a-48dd-1286-ea0f-e66be34afffa@talpey.com>
+ <20190731103310.23199-1-krishna2@chelsio.com>
+ <OF4DB6F345.7C76F976-ON00258449.00392FF3-00258449.003C1BFB@notes.na.collabserv.com>
+ <OF95C29EF7.244FC9E1-ON0025844A.003D049F-0025844A.003E229B@notes.na.collabserv.com>
+ <518b1734-5d72-e32d-376b-0fec1cbce8f5@talpey.com>
+ <OF7F439620.B43AE37C-ON00258450.00524237-00258450.0052DFDC@notes.na.collabserv.com>
+ <OF5309F939.D7FB77B5-ON00258451.002EE699-00258451.0039A86F@notes.na.collabserv.com>
+ <OF748C7EEE.1CA3CB7C-ON00258451.004B1A16-00258451.004C38AC@notes.na.collabserv.com>
+ <1043a512-68c6-c263-7589-5da4b9a9e282@talpey.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a5ed917-807d-4454-05cc-08d71f0426e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Aug 2019 09:04:59.2144
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CBNUJPbCJSr1TBbko808d2mW2ELgjCQgyLDSnnOfq/0jrL6OuUk48PWTntDR87RECw8jPDnFqZo5c8D1onZ+EA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR05MB6554
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1043a512-68c6-c263-7589-5da4b9a9e282@talpey.com>
+User-Agent: Mutt/1.9.3 (20180206.02d571c2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SGkgV2Vud2VuLA0KDQpUaGFua3MgZm9yIHlvdXIgcGF0Y2guDQoNCk9uIDgvMTIvMjAxOSA5OjM2
-IEFNLCBXZW53ZW4gV2FuZyB3cm90ZToNCj4gSW4gbWx4NF9lbl9jb25maWdfcnNzX3N0ZWVyKCks
-ICdyc3NfbWFwLT5pbmRpcl9xcCcgaXMgYWxsb2NhdGVkIHRocm91Z2gNCj4ga3phbGxvYygpLiBB
-ZnRlciB0aGF0LCBtbHg0X3FwX2FsbG9jKCkgaXMgaW52b2tlZCB0byBjb25maWd1cmUgUlNTDQo+
-IGluZGlyZWN0aW9uLiBIb3dldmVyLCBpZiBtbHg0X3FwX2FsbG9jKCkgZmFpbHMsIHRoZSBhbGxv
-Y2F0ZWQNCj4gJ3Jzc19tYXAtPmluZGlyX3FwJyBpcyBub3QgZGVhbGxvY2F0ZWQsIGxlYWRpbmcg
-dG8gYSBtZW1vcnkgbGVhayBidWcuDQo+IA0KPiBUbyBmaXggdGhlIGFib3ZlIGlzc3VlLCBhZGQg
-dGhlICdtbHg0X2VycicgbGFiZWwgdG8gZnJlZQ0KPiAncnNzX21hcC0+aW5kaXJfcXAnLg0KPiAN
-Cg0KQWRkIGEgRml4ZXMgbGluZS4NCg0KPiBTaWduZWQtb2ZmLWJ5OiBXZW53ZW4gV2FuZyA8d2Vu
-d2VuQGNzLnVnYS5lZHU+ID4gLS0tDQo+ICAgZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gv
-bWx4NC9lbl9yeC5jIHwgMyArKy0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCsp
-LCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQv
-bWVsbGFub3gvbWx4NC9lbl9yeC5jIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4
-NC9lbl9yeC5jDQo+IGluZGV4IDZjMDEzMTQuLjk0NzZkYmQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZl
-cnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDQvZW5fcnguYw0KPiArKysgYi9kcml2ZXJzL25l
-dC9ldGhlcm5ldC9tZWxsYW5veC9tbHg0L2VuX3J4LmMNCj4gQEAgLTExODcsNyArMTE4Nyw3IEBA
-IGludCBtbHg0X2VuX2NvbmZpZ19yc3Nfc3RlZXIoc3RydWN0IG1seDRfZW5fcHJpdiAqcHJpdikN
-Cj4gICAJZXJyID0gbWx4NF9xcF9hbGxvYyhtZGV2LT5kZXYsIHByaXYtPmJhc2VfcXBuLCByc3Nf
-bWFwLT5pbmRpcl9xcCk7DQo+ICAgCWlmIChlcnIpIHsNCj4gICAJCWVuX2Vycihwcml2LCAiRmFp
-bGVkIHRvIGFsbG9jYXRlIFJTUyBpbmRpcmVjdGlvbiBRUFxuIik7DQo+IC0JCWdvdG8gcnNzX2Vy
-cjsNCj4gKwkJZ290byBtbHg0X2VycjsNCj4gICAJfQ0KPiAgIA0KPiAgIAlyc3NfbWFwLT5pbmRp
-cl9xcC0+ZXZlbnQgPSBtbHg0X2VuX3NxcF9ldmVudDsNCj4gQEAgLTEyNDEsNiArMTI0MSw3IEBA
-IGludCBtbHg0X2VuX2NvbmZpZ19yc3Nfc3RlZXIoc3RydWN0IG1seDRfZW5fcHJpdiAqcHJpdikN
-Cj4gICAJCSAgICAgICBNTFg0X1FQX1NUQVRFX1JTVCwgTlVMTCwgMCwgMCwgcnNzX21hcC0+aW5k
-aXJfcXApOw0KPiAgIAltbHg0X3FwX3JlbW92ZShtZGV2LT5kZXYsIHJzc19tYXAtPmluZGlyX3Fw
-KTsNCj4gICAJbWx4NF9xcF9mcmVlKG1kZXYtPmRldiwgcnNzX21hcC0+aW5kaXJfcXApOw0KPiAr
-bWx4NF9lcnI6DQoNCkkgZG9uJ3QgbGlrZSB0aGUgbGFiZWwgbmFtZS4gSXQncyB0b28gZ2VuZXJh
-bCBhbmQgbm90IGluZm9ybWF0aXZlLg0KTWF5YmUgcXBfYWxsb2NfZXJyPw0KDQo+ICAgCWtmcmVl
-KHJzc19tYXAtPmluZGlyX3FwKTsNCj4gICAJcnNzX21hcC0+aW5kaXJfcXAgPSBOVUxMOw0KPiAg
-IHJzc19lcnI6DQo+IA0K
+On Saturday, August 08/10/19, 2019 at 02:05:00 +0530, Tom Talpey wrote:
+> On 8/9/2019 9:52 AM, Bernard Metzler wrote:
+> > -----"Tom Talpey" <tom@talpey.com> wrote: -----
+> > 
+> >> To: "Bernard Metzler" <BMT@zurich.ibm.com>, "Krishnamraju Eraparaju"
+> >> <krishna2@chelsio.com>
+> >> From: "Tom Talpey" <tom@talpey.com>
+> >> Date: 08/09/2019 02:27PM
+> >> Cc: "jgg@ziepe.ca" <jgg@ziepe.ca>, "linux-rdma@vger.kernel.org"
+> >> <linux-rdma@vger.kernel.org>, "Potnuri Bharat Teja"
+> >> <bharat@chelsio.com>, "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
+> >> Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler tries
+> >> to read beyond MPA message
+> >>
+> >> On 8/9/2019 6:29 AM, Bernard Metzler wrote:
+> >>> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
+> >>>
+> >>>> To: "Bernard Metzler" <BMT@zurich.ibm.com>
+> >>>> From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+> >>>> Date: 08/08/2019 06:47PM
+> >>>> Cc: "Tom Talpey" <tom@talpey.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+> >>>> "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+> >> "Potnuri
+> >>>> Bharat Teja" <bharat@chelsio.com>, "Nirranjan Kirubaharan"
+> >>>> <nirranjan@chelsio.com>
+> >>>> Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler
+> >> tries
+> >>>> to read beyond MPA message
+> >>>>
+> >>>> On Thursday, August 08/08/19, 2019 at 15:05:12 +0000, Bernard
+> >> Metzler
+> >>>> wrote:
+> >>>>> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
+> >>>>>
+> >>>>>> To: "Tom Talpey" <tom@talpey.com>, <BMT@zurich.ibm.com>
+> >>>>>> From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+> >>>>>> Date: 08/05/2019 07:26PM
+> >>>>>> Cc: "jgg@ziepe.ca" <jgg@ziepe.ca>, "linux-rdma@vger.kernel.org"
+> >>>>>> <linux-rdma@vger.kernel.org>, "Potnuri Bharat Teja"
+> >>>>>> <bharat@chelsio.com>, "Nirranjan Kirubaharan"
+> >>>> <nirranjan@chelsio.com>
+> >>>>>> Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler
+> >>>> tries
+> >>>>>> to read beyond MPA message
+> >>>>>>
+> >>>>>> On Friday, August 08/02/19, 2019 at 18:17:37 +0530, Tom Talpey
+> >>>> wrote:
+> >>>>>>> On 8/2/2019 7:18 AM, Bernard Metzler wrote:
+> >>>>>>>> -----"Tom Talpey" <tom@talpey.com> wrote: -----
+> >>>>>>>>
+> >>>>>>>>> To: "Bernard Metzler" <BMT@zurich.ibm.com>, "Krishnamraju
+> >>>>>> Eraparaju"
+> >>>>>>>>> <krishna2@chelsio.com>
+> >>>>>>>>> From: "Tom Talpey" <tom@talpey.com>
+> >>>>>>>>> Date: 08/01/2019 08:54PM
+> >>>>>>>>> Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+> >>>>>> bharat@chelsio.com,
+> >>>>>>>>> nirranjan@chelsio.com, krishn2@chelsio.com
+> >>>>>>>>> Subject: [EXTERNAL] Re: [PATCH for-rc] siw: MPA Reply handler
+> >>>>>> tries
+> >>>>>>>>> to read beyond MPA message
+> >>>>>>>>>
+> >>>>>>>>> On 8/1/2019 6:56 AM, Bernard Metzler wrote:
+> >>>>>>>>>> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote:
+> >>>>>> -----
+> >>>>>>>>>>
+> >>>>>>>>>>> To: jgg@ziepe.ca, bmt@zurich.ibm.com
+> >>>>>>>>>>> From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+> >>>>>>>>>>> Date: 07/31/2019 12:34PM
+> >>>>>>>>>>> Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com,
+> >>>>>>>>>>> nirranjan@chelsio.com, krishn2@chelsio.com, "Krishnamraju
+> >>>>>>>>> Eraparaju"
+> >>>>>>>>>>> <krishna2@chelsio.com>
+> >>>>>>>>>>> Subject: [EXTERNAL] [PATCH for-rc] siw: MPA Reply handler
+> >>>>>> tries to
+> >>>>>>>>>>> read beyond MPA message
+> >>>>>>>>>>>
+> >>>>>>>>>>> while processing MPA Reply, SIW driver is trying to read
+> >>>> extra
+> >>>>>> 4
+> >>>>>>>>>>> bytes
+> >>>>>>>>>>> than what peer has advertised as private data length.
+> >>>>>>>>>>>
+> >>>>>>>>>>> If a FPDU data is received before even siw_recv_mpa_rr()
+> >>>>>> completed
+> >>>>>>>>>>> reading MPA reply, then ksock_recv() in siw_recv_mpa_rr()
+> >>>>>> could
+> >>>>>>>>> also
+> >>>>>>>>>>> read FPDU, if "size" is larger than advertised MPA reply
+> >>>>>> length.
+> >>>>>>>>>>>
+> >>>>>>>>>>> 501 static int siw_recv_mpa_rr(struct siw_cep *cep)
+> >>>>>>>>>>> 502 {
+> >>>>>>>>>>>              .............
+> >>>>>>>>>>> 572
+> >>>>>>>>>>> 573         if (rcvd > to_rcv)
+> >>>>>>>>>>> 574                 return -EPROTO;   <----- Failure here
+> >>>>>>>>>>>
+> >>>>>>>>>>> Looks like the intention here is to throw an ERROR if the
+> >>>>>> received
+> >>>>>>>>>>> data
+> >>>>>>>>>>> is more than the total private data length advertised by
+> >>>> the
+> >>>>>> peer.
+> >>>>>>>>>>> But
+> >>>>>>>>>>> reading beyond MPA message causes siw_cm to generate
+> >>>>>>>>>>> RDMA_CM_EVENT_CONNECT_ERROR event when TCP socket recv
+> >>>> buffer
+> >>>>>> is
+> >>>>>>>>>>> already
+> >>>>>>>>>>> queued with FPDU messages.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Hence, this function should only read upto private data
+> >>>>>> length.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Signed-off-by: Krishnamraju Eraparaju
+> >>>> <krishna2@chelsio.com>
+> >>>>>>>>>>> ---
+> >>>>>>>>>>> drivers/infiniband/sw/siw/siw_cm.c | 4 ++--
+> >>>>>>>>>>> 1 file changed, 2 insertions(+), 2 deletions(-)
+> >>>>>>>>>>>
+> >>>>>>>>>>> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
+> >>>>>>>>>>> b/drivers/infiniband/sw/siw/siw_cm.c
+> >>>>>>>>>>> index a7cde98e73e8..8dc8cea2566c 100644
+> >>>>>>>>>>> --- a/drivers/infiniband/sw/siw/siw_cm.c
+> >>>>>>>>>>> +++ b/drivers/infiniband/sw/siw/siw_cm.c
+> >>>>>>>>>>> @@ -559,13 +559,13 @@ static int siw_recv_mpa_rr(struct
+> >>>>>> siw_cep
+> >>>>>>>>> *cep)
+> >>>>>>>>>>> 	 * A private data buffer gets allocated if
+> >>>> hdr->params.pd_len
+> >>>>>> !=
+> >>>>>>>>> 0.
+> >>>>>>>>>>> 	 */
+> >>>>>>>>>>> 	if (!cep->mpa.pdata) {
+> >>>>>>>>>>> -		cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
+> >>>>>>>>>>> +		cep->mpa.pdata = kmalloc(pd_len, GFP_KERNEL);
+> >>>>>>>>>>> 		if (!cep->mpa.pdata)
+> >>>>>>>>>>> 			return -ENOMEM;
+> >>>>>>>>>>> 	}
+> >>>>>>>>>>> 	rcvd = ksock_recv(
+> >>>>>>>>>>> 		s, cep->mpa.pdata + cep->mpa.bytes_rcvd - sizeof(struct
+> >>>>>> mpa_rr),
+> >>>>>>>>>>> -		to_rcv + 4, MSG_DONTWAIT);
+> >>>>>>>>>>> +		to_rcv, MSG_DONTWAIT);
+> >>>>>>>>>>>
+> >>>>>>>>>>> 	if (rcvd < 0)
+> >>>>>>>>>>> 		return rcvd;
+> >>>>>>>>>>> -- 
+> >>>>>>>>>>> 2.23.0.rc0
+> >>>>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>> The intention of this code is to make sure the
+> >>>>>>>>>> peer does not violates the MPA handshake rules.
+> >>>>>>>>>> The initiator MUST NOT send extra data after its
+> >>>>>>>>>> MPA request and before receiving the MPA reply.
+> >>>>>>>>>
+> >>>>>>>>> I think this is true only for MPA v2. With MPA v1, the
+> >>>>>>>>> initiator can begin sending immediately (before receiving
+> >>>>>>>>> the MPA reply), because there is no actual negotiation at
+> >>>>>>>>> the MPA layer.
+> >>>>>>>>>
+> >>>>>>>>> With MPA v2, the negotiation exchange is required because
+> >>>>>>>>> the type of the following message is predicated by the
+> >>>>>>>>> "Enhanced mode" a|b|c|d flags present in the first 32 bits
+> >>>>>>>>> of the private data buffer.
+> >>>>>>>>>
+> >>>>>>>>> So, it seems to me that additional logic is needed here to
+> >>>>>>>>> determine the MPA version, before sniffing additional octets
+> >>>>>>>> >from the incoming stream?
+> >>>>>>>>>
+> >>>>>>>>> Tom.
+> >>>>>>>>>
+> >>>>>>>>
+> >>>>>>>> There still is the marker negotiation taking place.
+> >>>>>>>> RFC 5044 says in section 7.1.2:
+> >>>>>>>>
+> >>>>>>>> "Note: Since the receiver's ability to deal with Markers is
+> >>>>>>>>     unknown until the Request and Reply Frames have been
+> >>>>>>>>     received, sending FPDUs before this occurs is not
+> >> possible."
+> >>>>>>>>
+> >>>>>>>> This section further discusses the responder's behavior,
+> >>>>>>>> where it MUST receive a first FPDU from the initiator
+> >>>>>>>> before sending its first FPDU:
+> >>>>>>>>
+> >>>>>>>> "4.  MPA Responder mode implementations MUST receive and
+> >>>> validate
+> >>>>>> at
+> >>>>>>>>           least one FPDU before sending any FPDUs or Markers."
+> >>>>>>>>
+> >>>>>>>> So it appears with MPA version 1, the current siw
+> >>>>>>>> code is correct. The initiator is entering FPDU mode
+> >>>>>>>> first, and only after receiving the MPA reply frame.
+> >>>>>>>> Only after the initiator sent a first FPDU, the responder
+> >>>>>>>> can start using the connection in FPDU mode.
+> >>>>>>>> Because of this somehow broken connection establishment
+> >>>>>>>> procedure (only the initiator can start sending data), a
+> >>>>>>>> later MPA version makes this first FPDU exchange explicit
+> >>>>>>>> and selectable (zero length READ/WRITE/Send).
+> >>>>>>>
+> >>>>>>> Yeah, I guess so. Because nobody ever actually implemented
+> >>>> markers,
+> >>>>>>> I think that they may more or less passively ignore this. But
+> >>>>>> you're
+> >>>>>>> currect that it's invalid protocol behavior.
+> >>>>>>>
+> >>>>>>> If your testing didn't uncover any issues with existing
+> >>>>>> implementations
+> >>>>>>> failing to connect with your strict checking, I'm ok with it.
+> >>>>>> Tom & Bernard,
+> >>>>>> Thanks for the insight on MPA negotiation.
+> >>>>>>
+> >>>>>> Could the below patch be considered as a proper fix?
+> >>>>>>
+> >>>>>> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
+> >>>>>> b/drivers/infiniband/sw/siw/siw_cm.c
+> >>>>>> index 9ce8a1b925d2..0aec1b5212f9 100644
+> >>>>>> --- a/drivers/infiniband/sw/siw/siw_cm.c
+> >>>>>> +++ b/drivers/infiniband/sw/siw/siw_cm.c
+> >>>>>> @@ -503,6 +503,7 @@ static int siw_recv_mpa_rr(struct siw_cep
+> >>>> *cep)
+> >>>>>>          struct socket *s = cep->sock;
+> >>>>>>          u16 pd_len;
+> >>>>>>          int rcvd, to_rcv;
+> >>>>>> +       int extra_data_check = 4; /* 4Bytes, for MPA rules
+> >>>> violation
+> >>>>>> checking */
+> >>>>>>
+> >>>>>>          if (cep->mpa.bytes_rcvd < sizeof(struct mpa_rr)) {
+> >>>>>>                  rcvd = ksock_recv(s, (char *)hdr +
+> >>>>>> cep->mpa.bytes_rcvd,
+> >>>>>> @@ -553,23 +554,37 @@ static int siw_recv_mpa_rr(struct siw_cep
+> >>>> *cep)
+> >>>>>>                  return -EPROTO;
+> >>>>>>          }
+> >>>>>>
+> >>>>>> +       /*
+> >>>>>> +        * Peer must not send any extra data other than MPA
+> >>>> messages
+> >>>>>> until MPA
+> >>>>>> +        * negotiation is completed, an exception is MPA V2
+> >>>>>> client-server Mode,
+> >>>>>> +        * IE, in this mode the peer after sending MPA Reply can
+> >>>>>> immediately
+> >>>>>> +        * start sending data in RDMA mode.
+> >>>>>> +        */
+> >>>>>
+> >>>>> This is unfortunately not true. The responder NEVER sends
+> >>>>> an FPDU without having seen an FPDU from the initiator.
+> >>>>> I just checked RFC 6581 again. The RTR (ready-to-receive)
+> >>>>> indication from the initiator is still needed, but now
+> >>>>> provided by the protocol and not the application: w/o
+> >>>>> 'enhanced MPA setup', the initiator sends the first
+> >>>>> FPDU as an application message. With 'enhanced MPA setup',
+> >>>>> the initiator protocol entity sends (w/o application
+> >>>>> interaction) a zero length READ/WRITE/Send as a first FPDU,
+> >>>>> as previously negotiated with the responder. Again: only
+> >>>>> after the responder has seen the first FPDU, it can
+> >>>>> start sending in FPDU mode.
+> >>>> If I understand your statements correctly: in MPA v2 clint-server
+> >>>> mode,
+> >>>> the responder application should have some logic to wait(after
+> >>>> ESTABLISH
+> >>>> event) until the first FPDU message is received from the
+> >> initiator?
+> >>>>
+> >>>> Thanks,
+> >>>> Krishna.
+> >>>
+> >>> The responder may either delay the established event
+> >>> until it sees the first peer FPDU, or it delays sending
+> >>> the first (now already posted) FPDU, until it sees the
+> >>> first initiator FPDU. This, since (theoretically), the
+> >>> responder does not know yet the result of CRC and
+> >>> Marker negotiation. siw delays the established event,
+> >>> which seems the more clear path to me.
+> >>>
+> >>> This MPA handshake is cumbersome. siw is permissive
+> >>> for violations of these rules to the extend, that the
+> >>> responder shall not send back to back the first FPDU
+> >>> with the MPA reply. If a (Chelsio ?) iWarp adapter
+> >>> would send the first responder FPDU only after it
+> >>> got TCP acked its MPA reply, the chances are high the
+> >>> (siw) iWarp initiator has already transitioned to RTS
+> >>> and it would accept that FPU, even if not having sent
+> >>> it's first FPDU.
+> >>>
+> >>> siw sticks to this rule to that extend, since all receive
+> >>> processing is triggered by socket callbacks (from
+> >>> sk->sk_data_ready()). As long as the QP is not
+> >>> in RTS, all TCP bytestream processing is done by the
+> >>> MPA protocol (code in siw_cm.c). If the QP reaches
+> >>> RTS, RX processing is done bt the full iWarp
+> >>> protocol (code in siw_qp_rx.c for RX).
+> >>> Now, if the higher layer (application) protocol has
+> >>> a semantic where the responder sends the first message,
+> >>> we could end up in an infinite wait for that packet
+> >>> at initiator application side.
+> >>> This, since the complete first FPDU was already
+> >>> received at the TCP socket, while the QP was not in
+> >>> RTS. It will not trigger any additional sk->sk_data_ready()
+> >>> and we are stuck with a FPDU in the socket rx buffer.
+> >>>
+> >>> I implemented that 4 bytes extra data testing only to
+> >>> keep the siw protocol state machine as simple as
+> >>> possible (it is already unfortunately complex, if
+> >>> you count the lines in siw_cm.c), while following
+> >>> the protocol rules.
+> >>>
+> >>> I suggest to correctly implement peer2peer mode and
+> >>> delay the established event at the responder side until
+> >>> it got the negotiated first zero length FPDU. Out
+> >>> of the possible options, siw supports both zero length
+> >>> WRITE and READ, but no SEND, since this would consume
+> >>> an extra receive WQE.
+> >>>
+> >>> As a last resort, I might consider extending the
+> >>> siw state machine to handle those - non-complaint -
+> >>> cases gracefully. But, that would result in different
+> >>> code than just avoiding checking for peer protocol
+> >>> violation.
+> >>
+> >> Bernard, everything you describe in siw seems perfectly valid
+> >> to me, and in fact that's why the MPA enhanced connection mode
+> >> was designed the way it is. I disagree that it's "cumbersome",
+> >> but that's a nit.
+> >>
+> >> The issue is that the responder reaches RTS at a different time
+> >> than the initiator reaches RTR. The original iWARP connection
+> >> model did not make any requirement, and races were possible.
+> >> MPAv2 fixes those.
+> >>
+> > Tom, thanks, exactly. MPAv2 fixes it. And an implementation
+
+Thanks Bernard & Tom,
+
+Could you also please consider making MPA ehanced connection
+mode(with RTR handshake) as default for SIW, as MPA V2 peer-
+to-peer mode seems to be more promising that MPA V2
+client-server Mode, wrt race conditions.
+
+Currently SIW has MPA V2 client-server Mode as default.
+
+
+In siw_main.c:
+         const bool peer_to_peer = 1;
+
+
+Between, as per my observations, the chances of hitting this 'connect
+error' issue is higher with:   SIW(initator)<--->(responder)SIW
+than:    SIW(initator) <---> (responder)hard-iwarp
+
+
+> > of that fix MUST adhere to the defined rules. If one
+> > negotiates an extra handshake to synchronize, it
+> > MUST adhere to that handshake rules. There is no point in
+> > negotiating an extra handshake, and right away ignoring it.
+> > If the responder wants a zero length WRITE, it MUST use
+> > its reception to synchronize its transition to RTS.
+> > 
+> > Shall we extend the siw state machine to support silly
+> > peer behavior? As said, if I read there is no way of
+> 
+> Of course the right answer to this is "no", but I'd reserve
+> drawing that conclusion until I am certain it won't cause
+> trouble. If existing iWARP implementations don't enforce
+> this, and SIW becomes the odd duck failing connections, then
+> I'm afraid I would have to say "yes" instead.
+> 
+> > making the peer implementation RFC compliant (it would
+> > be unexpected), I'll look into the applicability of
+> > Postel's Rule. But let's make those things explicit.
+> 
+> Explicit is best, agreed.
+> 
+> Tom.
+> 
+> > 
+> >> SIW is certainly within its rights to prevent peers from
+> >> sending prior to responder RTR. I'd suggest that if possible,
+> >> you try to detect the deadlock rather than flatly rejecting any
+> >> incoming bytes. The Internet Principle (be liberal in what you
+> >> accept...), after all.
+> >>
+> >> This same dance happens in IB/RoCE, btw. Just via different
+> >> messages.
+> >>
+> > Interesting!
+> > 
+> > Thanks
+> > Bernard.
+> > 
+> >> Tom.
+> >>
+> >>
+> >>>
+> >>> Thanks,
+> >>> Bernard.
+> >>>
+> >>>
+> >>>>>
+> >>>>> Sorry for the confusion. But the current
+> >>>>> siw code appears to be just correct.
+> >>>>>
+> >>>>> Thanks
+> >>>>> Bernard
+> >>>>>
+> >>>>>
+> >>>>>
+> >>>>>> +       if ((__mpa_rr_revision(cep->mpa.hdr.params.bits) ==
+> >>>>>> MPA_REVISION_2) &&
+> >>>>>> +               (cep->state == SIW_EPSTATE_AWAIT_MPAREP)) {
+> >>>>>> +               int mpa_p2p_mode = cep->mpa.v2_ctrl_req.ord &
+> >>>>>> +                               (MPA_V2_RDMA_WRITE_RTR |
+> >>>>>> MPA_V2_RDMA_READ_RTR);
+> >>>>>> +               if (!mpa_p2p_mode)
+> >>>>>> +                       extra_data_check = 0;
+> >>>>>> +       }
+> >>>>>> +
+> >>>>>>          /*
+> >>>>>>           * At this point, we must have hdr->params.pd_len != 0.
+> >>>>>>           * A private data buffer gets allocated if
+> >>>> hdr->params.pd_len
+> >>>>>> !=
+> >>>>>>           * 0.
+> >>>>>>           */
+> >>>>>>          if (!cep->mpa.pdata) {
+> >>>>>> -               cep->mpa.pdata = kmalloc(pd_len + 4,
+> >> GFP_KERNEL);
+> >>>>>> +               cep->mpa.pdata = kmalloc(pd_len +
+> >>>> extra_data_check,
+> >>>>>> GFP_KERNEL);
+> >>>>>>                  if (!cep->mpa.pdata)
+> >>>>>>                          return -ENOMEM;
+> >>>>>>          }
+> >>>>>>          rcvd = ksock_recv(
+> >>>>>>                  s, cep->mpa.pdata + cep->mpa.bytes_rcvd -
+> >>>>>> sizeof(struct
+> >>>>>> mpa_rr),
+> >>>>>> -               to_rcv + 4, MSG_DONTWAIT);
+> >>>>>> +               to_rcv + extra_data_check, MSG_DONTWAIT);
+> >>>>>>
+> >>>>>>          if (rcvd < 0)
+> >>>>>>                  return rcvd;
+> >>>>>>
+> >>>>>> -       if (rcvd > to_rcv)
+> >>>>>> +       if (extra_data_check && (rcvd > to_rcv))
+> >>>>>>                  return -EPROTO;
+> >>>>>>
+> >>>>>>          cep->mpa.bytes_rcvd += rcvd;
+> >>>>>>
+> >>>>>> -Krishna.
+> >>>>>>>
+> >>>>>>> Tom.
+> >>>>>>>
+> >>>>>>>
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>> Bernard.
+> >>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>>> So, for the MPA request case, this code is needed
+> >>>>>>>>>> to check for protocol correctness.
+> >>>>>>>>>> You are right for the MPA reply case - if we are
+> >>>>>>>>>> _not_ in peer2peer mode, the peer can immediately
+> >>>>>>>>>> start sending data in RDMA mode after its MPA Reply.
+> >>>>>>>>>> So we shall add appropriate code to be more specific
+> >>>>>>>>>> For an error, we are (1) processing an MPA Request,
+> >>>>>>>>>> OR (2) processing an MPA Reply AND we are not expected
+> >>>>>>>>>> to send an initial READ/WRITE/Send as negotiated with
+> >>>>>>>>>> the peer (peer2peer mode MPA handshake).
+> >>>>>>>>>>
+> >>>>>>>>>> Just removing this check would make siw more permissive,
+> >>>>>>>>>> but to a point where peer MPA protocol errors are
+> >>>>>>>>>> tolerated. I am not in favor of that level of
+> >>>>>>>>>> forgiveness.
+> >>>>>>>>>>
+> >>>>>>>>>> If possible, please provide an appropriate patch
+> >>>>>>>>>> or (if it causes current issues with another peer
+> >>>>>>>>>> iWarp implementation) just run in MPA peer2peer mode,
+> >>>>>>>>>> where the current check is appropriate.
+> >>>>>>>>>> Otherwise, I would provide an appropriate fix by Monday
+> >>>>>>>>>> (I am still out of office this week).
+> >>>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>> Many thanks and best regards,
+> >>>>>>>>>> Bernard.
+> >>>>>>>>>>
+> >>
+> >>
+> > 
+> > 
+> > 
