@@ -2,112 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFEF896FE
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2019 07:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF6389737
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2019 08:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725843AbfHLFw1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Aug 2019 01:52:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725822AbfHLFw1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Aug 2019 01:52:27 -0400
-Received: from localhost (unknown [77.137.115.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36B522070C;
-        Mon, 12 Aug 2019 05:52:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565589146;
-        bh=lwjrFNiRVlxYY8eL4EjsKkgRTO2TS6xYQUAV1/FHCj4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vo5vFeJeE2r8MGuCyC5+m1GudhxMMLkucD8pJ0lnGAr3pDDPtXwCWZYMyxhCkUcy+
-         tjvdXTpZ3Q6+fI+2PjExQLe82+hVBi2OSKvTohqTp4hmAH3z8IdEmRWveOwU5uunJK
-         2c+9JVB0VBz+ARW9MtlqbWeglOXspaEbRuEValSA=
-Date:   Mon, 12 Aug 2019 08:52:20 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Lijun Ou <oulijun@huawei.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next 8/9] RDMA/hns: Kernel notify usr space to stop
- ring db
-Message-ID: <20190812055220.GA8440@mtr-leonro.mtl.com>
-References: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
- <1565343666-73193-9-git-send-email-oulijun@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1565343666-73193-9-git-send-email-oulijun@huawei.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        id S1725901AbfHLGgO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Aug 2019 02:36:14 -0400
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:44199 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbfHLGgO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Aug 2019 02:36:14 -0400
+Received: by mail-yw1-f68.google.com with SMTP id l79so38333803ywe.11;
+        Sun, 11 Aug 2019 23:36:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kslLH4Uqs+rGxpqwQFf+1cq9Y1E7WzeuukGAnIal7z0=;
+        b=dS+6OhJRFhKArjmG/gu/Muevn9h8UX4xXBB0Ss1a5zALcuRaqZP/oLvFm8Xp+fndEZ
+         5lRdq/qtJuwoqnRT0haMpmFp3GN8uK9Lgyy2ivKx7yAFWOAKlFV5Gn/eqbJ4ZqFRg7MR
+         plQXDT/zpVBPq8+XqVMEFPybfjU3nsD+ZdWYTi85X+IsyWbx4LdcXTUwYcpNl9XUDTl1
+         blX5/gK9ijV7SP5ZQ+P7LRwEtVE/PE7XO8scKhdjx/gtNKIrU46m82pGuTVEOwN45zKg
+         efA0qIflZ9ZVN2rPA2NWmoZjADvrAvWuPpwGxmJ5rwRDh4QfC46Mem8uuH6w6GJ7BGY4
+         aypg==
+X-Gm-Message-State: APjAAAVDObY/tCQAcNWp2+1FhcQRCar2MLcpJI5My51MAgrC1bsEMEBg
+        +AC2/zsIjcKaSalZxF1yxAXaHD3Lyvg=
+X-Google-Smtp-Source: APXvYqyEH4UpzW429OeouTIxC9M996cLjK/PStI+h3bBVuoPhPsqS7myPAFcrl1ssuzlf5lq+bMdTg==
+X-Received: by 2002:a0d:c945:: with SMTP id l66mr2618710ywd.291.1565591773268;
+        Sun, 11 Aug 2019 23:36:13 -0700 (PDT)
+Received: from localhost.localdomain (24-158-240-219.dhcp.smyr.ga.charter.com. [24.158.240.219])
+        by smtp.gmail.com with ESMTPSA id q132sm24029658ywb.26.2019.08.11.23.36.11
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Sun, 11 Aug 2019 23:36:12 -0700 (PDT)
+From:   Wenwen Wang <wenwen@cs.uga.edu>
+To:     Wenwen Wang <wenwen@cs.uga.edu>
+Cc:     Tariq Toukan <tariqt@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        netdev@vger.kernel.org (open list:MELLANOX ETHERNET DRIVER (mlx4_en)),
+        linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] net/mlx4_en: fix a memory leak bug
+Date:   Mon, 12 Aug 2019 01:36:05 -0500
+Message-Id: <1565591765-6461-1-git-send-email-wenwen@cs.uga.edu>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 09, 2019 at 05:41:05PM +0800, Lijun Ou wrote:
-> From: Yangyang Li <liyangyang20@huawei.com>
->
-> In the reset scenario, if the kernel receives the reset signal,
-> it needs to notify the user space to stop ring doorbell.
+In mlx4_en_config_rss_steer(), 'rss_map->indir_qp' is allocated through
+kzalloc(). After that, mlx4_qp_alloc() is invoked to configure RSS
+indirection. However, if mlx4_qp_alloc() fails, the allocated
+'rss_map->indir_qp' is not deallocated, leading to a memory leak bug.
 
-I doubt about it, it is racy like hell and relies on assumption that
-userspace will honor such request to stop.
+To fix the above issue, add the 'mlx4_err' label to free
+'rss_map->indir_qp'.
 
->
-> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_device.h |  4 +++
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 52 ++++++++++++++++++++++++++++-
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 +++
->  drivers/infiniband/hw/hns/hns_roce_main.c   | 22 ++++++------
->  4 files changed, 70 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-> index 32465f5..be65fce 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
-> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-> @@ -268,6 +268,8 @@ enum {
->
->  #define PAGE_ADDR_SHIFT				12
->
-> +#define HNS_ROCE_IS_RESETTING			1
-> +
->  struct hns_roce_uar {
->  	u64		pfn;
->  	unsigned long	index;
-> @@ -1043,6 +1045,8 @@ struct hns_roce_dev {
->  	u32			odb_offset;
->  	dma_addr_t		tptr_dma_addr;	/* only for hw v1 */
->  	u32			tptr_size;	/* only for hw v1 */
-> +	struct page		*reset_page; /* store reset state */
-> +	void			*reset_kaddr; /* addr of reset page */
->  	const struct hns_roce_hw *hw;
->  	void			*priv;
->  	struct workqueue_struct *irq_workq;
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> index d33341e..138e5a8 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> @@ -1867,17 +1867,49 @@ static void hns_roce_free_link_table(struct hns_roce_dev *hr_dev,
->  			  link_tbl->table.map);
->  }
->
-> +static int hns_roce_v2_get_reset_page(struct hns_roce_dev *hr_dev)
-> +{
-> +	hr_dev->reset_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-> +	if (!hr_dev->reset_page)
-> +		return -ENOMEM;
-> +
-> +	hr_dev->reset_kaddr = vmap(&hr_dev->reset_page, 1, VM_MAP, PAGE_KERNEL);
-> +	if (!hr_dev->reset_kaddr)
-> +		goto err_with_vmap;
-> +
-> +	return 0;
-> +
-> +err_with_vmap:
-> +	put_page(hr_dev->reset_page);
+Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+---
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Are you sure that pages allocated with alloc_page() are released with put_page()?
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+index 6c01314..9476dbd 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+@@ -1187,7 +1187,7 @@ int mlx4_en_config_rss_steer(struct mlx4_en_priv *priv)
+ 	err = mlx4_qp_alloc(mdev->dev, priv->base_qpn, rss_map->indir_qp);
+ 	if (err) {
+ 		en_err(priv, "Failed to allocate RSS indirection QP\n");
+-		goto rss_err;
++		goto mlx4_err;
+ 	}
+ 
+ 	rss_map->indir_qp->event = mlx4_en_sqp_event;
+@@ -1241,6 +1241,7 @@ int mlx4_en_config_rss_steer(struct mlx4_en_priv *priv)
+ 		       MLX4_QP_STATE_RST, NULL, 0, 0, rss_map->indir_qp);
+ 	mlx4_qp_remove(mdev->dev, rss_map->indir_qp);
+ 	mlx4_qp_free(mdev->dev, rss_map->indir_qp);
++mlx4_err:
+ 	kfree(rss_map->indir_qp);
+ 	rss_map->indir_qp = NULL;
+ rss_err:
+-- 
+2.7.4
 
-I would say with high confidence that whole this patch is wrong.
-
-Thanks
