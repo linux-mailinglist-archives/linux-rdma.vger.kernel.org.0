@@ -2,205 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F218A6C2
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2019 21:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3098A6E7
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2019 21:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbfHLTCa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Aug 2019 15:02:30 -0400
-Received: from mga18.intel.com ([134.134.136.126]:63529 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726510AbfHLTC3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Aug 2019 15:02:29 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Aug 2019 12:01:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,378,1559545200"; 
-   d="scan'208";a="194025844"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga001.fm.intel.com with ESMTP; 12 Aug 2019 12:01:58 -0700
-Date:   Mon, 12 Aug 2019 12:01:58 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>, Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 11/19] mm/gup: Pass follow_page_context further
- down the call stack
-Message-ID: <20190812190158.GA20634@iweiny-DESK2.sc.intel.com>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-12-ira.weiny@intel.com>
- <57000521-cc09-9c33-9fa4-1fae5a3972c2@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57000521-cc09-9c33-9fa4-1fae5a3972c2@nvidia.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        id S1726655AbfHLTLw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Aug 2019 15:11:52 -0400
+Received: from mail-yb1-f195.google.com ([209.85.219.195]:41221 "EHLO
+        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbfHLTLw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Aug 2019 15:11:52 -0400
+Received: by mail-yb1-f195.google.com with SMTP id n7so4236975ybd.8;
+        Mon, 12 Aug 2019 12:11:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oWFM6rsWwr2/8NmCYG8dA8Afg3RG0C8rbixsAOZiZhE=;
+        b=VJb9ZR4CPV3So7W3wv26gLPoXvFhcBA/IEF/Ju1HN+bXVruAmKoGhIJ5rnzbWMgSZE
+         fALw598tdsp4F0NtyJVp8dtpSp8I8scOpmp1Y5IcxtMUAnAjjjTWbnnnonVCYlKk78Wm
+         4MSlYWx/dLGGlHeMGyRlM0EzStng3K0oFpNlmJRD3neToHHd4Qz4Q7xJ47iE2QNO/Tkk
+         nAAeMdTbi5R8NnvqlqGsQBHcCYLo/HMYcSM3kvz79Q35QLBFQtXu/fjtLcpeNm0DR1ng
+         0jgLlsdTPjGDIV/zQ0iCQqNhnLw1C1fqokk+inKWZq4HHbQBOVz3fPMar/1r3BCYHaAa
+         vPJg==
+X-Gm-Message-State: APjAAAUzNKrVKPQMMhgtHfFQJdpuLrThZxx2yduU6+EOcygxEuYj9nWb
+        wE0DHQPGDlbSCVvyp/HEiL4=
+X-Google-Smtp-Source: APXvYqyEJYx2b36OinXqAO2z76u3/xvYcHi3C4xSFH4ddR32DXQs6x+YIR2GBrmU4FmV71KsqNvSbw==
+X-Received: by 2002:a25:57d5:: with SMTP id l204mr24262546ybb.508.1565637111019;
+        Mon, 12 Aug 2019 12:11:51 -0700 (PDT)
+Received: from BlueSky.guest.pso.uga.edu (75-131-184-98.static.gwnt.ga.charter.com. [75.131.184.98])
+        by smtp.gmail.com with ESMTPSA id x15sm2001013ywj.63.2019.08.12.12.11.49
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Mon, 12 Aug 2019 12:11:50 -0700 (PDT)
+From:   Wenwen Wang <wenwen@cs.uga.edu>
+To:     Wenwen Wang <wenwen@cs.uga.edu>
+Cc:     Tariq Toukan <tariqt@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        netdev@vger.kernel.org (open list:MELLANOX ETHERNET DRIVER (mlx4_en)),
+        linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] net/mlx4_en: fix a memory leak bug
+Date:   Mon, 12 Aug 2019 14:11:35 -0500
+Message-Id: <1565637095-7972-1-git-send-email-wenwen@cs.uga.edu>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 09, 2019 at 05:18:31PM -0700, John Hubbard wrote:
-> On 8/9/19 3:58 PM, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > In preparation for passing more information (vaddr_pin) into
-> > follow_page_pte(), follow_devmap_pud(), and follow_devmap_pmd().
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+In mlx4_en_config_rss_steer(), 'rss_map->indir_qp' is allocated through
+kzalloc(). After that, mlx4_qp_alloc() is invoked to configure RSS
+indirection. However, if mlx4_qp_alloc() fails, the allocated
+'rss_map->indir_qp' is not deallocated, leading to a memory leak bug.
 
-[snip]
+To fix the above issue, add the 'qp_alloc_err' label to free
+'rss_map->indir_qp'.
 
-> > @@ -786,7 +782,8 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
-> >  static long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
-> >  		unsigned long start, unsigned long nr_pages,
-> >  		unsigned int gup_flags, struct page **pages,
-> > -		struct vm_area_struct **vmas, int *nonblocking)
-> > +		struct vm_area_struct **vmas, int *nonblocking,
-> > +		struct vaddr_pin *vaddr_pin)
-> 
-> I didn't expect to see more vaddr_pin arg passing, based on the commit
-> description. Did you want this as part of patch 9 or 10 instead? If not,
-> then let's mention it in the commit description.
+Fixes: 4931c6ef04b4 ("net/mlx4_en: Optimized single ring steering")
 
-Yea that does seem out of place now that I look at it.  I'll add to the commit
-message because this is really getting vaddr_pin into the context _and_ passing
-it down the stack.  With all the rebasing I may have squashed something I did
-not mean to.  But I think this patch is ok because it is not to complicated to
-see what is going on.
+Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+---
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks,
-Ira
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+index 6c01314..db3552f 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+@@ -1187,7 +1187,7 @@ int mlx4_en_config_rss_steer(struct mlx4_en_priv *priv)
+ 	err = mlx4_qp_alloc(mdev->dev, priv->base_qpn, rss_map->indir_qp);
+ 	if (err) {
+ 		en_err(priv, "Failed to allocate RSS indirection QP\n");
+-		goto rss_err;
++		goto qp_alloc_err;
+ 	}
+ 
+ 	rss_map->indir_qp->event = mlx4_en_sqp_event;
+@@ -1241,6 +1241,7 @@ int mlx4_en_config_rss_steer(struct mlx4_en_priv *priv)
+ 		       MLX4_QP_STATE_RST, NULL, 0, 0, rss_map->indir_qp);
+ 	mlx4_qp_remove(mdev->dev, rss_map->indir_qp);
+ 	mlx4_qp_free(mdev->dev, rss_map->indir_qp);
++qp_alloc_err:
+ 	kfree(rss_map->indir_qp);
+ 	rss_map->indir_qp = NULL;
+ rss_err:
+-- 
+2.7.4
 
-> 
-> >  {
-> >  	long ret = 0, i = 0;
-> >  	struct vm_area_struct *vma = NULL;
-> > @@ -797,6 +794,8 @@ static long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
-> >  
-> >  	VM_BUG_ON(!!pages != !!(gup_flags & FOLL_GET));
-> >  
-> > +	ctx.vaddr_pin = vaddr_pin;
-> > +
-> >  	/*
-> >  	 * If FOLL_FORCE is set then do not force a full fault as the hinting
-> >  	 * fault information is unrelated to the reference behaviour of a task
-> > @@ -1025,7 +1024,7 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
-> >  	lock_dropped = false;
-> >  	for (;;) {
-> >  		ret = __get_user_pages(tsk, mm, start, nr_pages, flags, pages,
-> > -				       vmas, locked);
-> > +				       vmas, locked, vaddr_pin);
-> >  		if (!locked)
-> >  			/* VM_FAULT_RETRY couldn't trigger, bypass */
-> >  			return ret;
-> > @@ -1068,7 +1067,7 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
-> >  		lock_dropped = true;
-> >  		down_read(&mm->mmap_sem);
-> >  		ret = __get_user_pages(tsk, mm, start, 1, flags | FOLL_TRIED,
-> > -				       pages, NULL, NULL);
-> > +				       pages, NULL, NULL, vaddr_pin);
-> >  		if (ret != 1) {
-> >  			BUG_ON(ret > 1);
-> >  			if (!pages_done)
-> > @@ -1226,7 +1225,7 @@ long populate_vma_page_range(struct vm_area_struct *vma,
-> >  	 * not result in a stack expansion that recurses back here.
-> >  	 */
-> >  	return __get_user_pages(current, mm, start, nr_pages, gup_flags,
-> > -				NULL, NULL, nonblocking);
-> > +				NULL, NULL, nonblocking, NULL);
-> >  }
-> >  
-> >  /*
-> > @@ -1311,7 +1310,7 @@ struct page *get_dump_page(unsigned long addr)
-> >  
-> >  	if (__get_user_pages(current, current->mm, addr, 1,
-> >  			     FOLL_FORCE | FOLL_DUMP | FOLL_GET, &page, &vma,
-> > -			     NULL) < 1)
-> > +			     NULL, NULL) < 1)
-> >  		return NULL;
-> >  	flush_cache_page(vma, addr, page_to_pfn(page));
-> >  	return page;
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index bc1a07a55be1..7e09f2f17ed8 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -916,8 +916,9 @@ static void touch_pmd(struct vm_area_struct *vma, unsigned long addr,
-> >  }
-> >  
-> >  struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
-> > -		pmd_t *pmd, int flags, struct dev_pagemap **pgmap)
-> > +		pmd_t *pmd, int flags, struct follow_page_context *ctx)
-> >  {
-> > +	struct dev_pagemap **pgmap = &ctx->pgmap;
-> >  	unsigned long pfn = pmd_pfn(*pmd);
-> >  	struct mm_struct *mm = vma->vm_mm;
-> >  	struct page *page;
-> > @@ -1068,8 +1069,9 @@ static void touch_pud(struct vm_area_struct *vma, unsigned long addr,
-> >  }
-> >  
-> >  struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
-> > -		pud_t *pud, int flags, struct dev_pagemap **pgmap)
-> > +		pud_t *pud, int flags, struct follow_page_context *ctx)
-> >  {
-> > +	struct dev_pagemap **pgmap = &ctx->pgmap;
-> >  	unsigned long pfn = pud_pfn(*pud);
-> >  	struct mm_struct *mm = vma->vm_mm;
-> >  	struct page *page;
-> > diff --git a/mm/internal.h b/mm/internal.h
-> > index 0d5f720c75ab..46ada5279856 100644
-> > --- a/mm/internal.h
-> > +++ b/mm/internal.h
-> > @@ -12,6 +12,34 @@
-> >  #include <linux/pagemap.h>
-> >  #include <linux/tracepoint-defs.h>
-> >  
-> > +struct follow_page_context {
-> > +	struct dev_pagemap *pgmap;
-> > +	unsigned int page_mask;
-> > +	struct vaddr_pin *vaddr_pin;
-> > +};
-> > +
-> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > +struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
-> > +		pmd_t *pmd, int flags, struct follow_page_context *ctx);
-> > +struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
-> > +		pud_t *pud, int flags, struct follow_page_context *ctx);
-> > +#else
-> > +static inline struct page *follow_devmap_pmd(struct vm_area_struct *vma,
-> > +	unsigned long addr, pmd_t *pmd, int flags,
-> > +	struct follow_page_context *ctx)
-> > +{
-> > +	return NULL;
-> > +}
-> > +
-> > +static inline struct page *follow_devmap_pud(struct vm_area_struct *vma,
-> > +	unsigned long addr, pud_t *pud, int flags,
-> > +	struct follow_page_context *ctx)
-> > +{
-> > +	return NULL;
-> > +}
-> > +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-> > +
-> > +
-> >  /*
-> >   * The set of flags that only affect watermark checking and reclaim
-> >   * behaviour. This is used by the MM to obey the caller constraints
-> > 
-> 
-> 
-> 
-> 
-> thanks,
-> -- 
-> John Hubbard
-> NVIDIA
