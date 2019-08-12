@@ -2,130 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1249989F66
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2019 15:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29B989FC1
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2019 15:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbfHLNOj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Aug 2019 09:14:39 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36807 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728563AbfHLNOj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Aug 2019 09:14:39 -0400
-Received: by mail-qt1-f193.google.com with SMTP id z4so102768026qtc.3
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Aug 2019 06:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vbrMZbAlGPGIi9DYbOom+lM0TPxk5SFfu4EZNBvas+0=;
-        b=e/wVC5Jsg0dpN+nqggurv3OeAZMQPfVoIZJqlbzNt4BX/crXn1r3Md5uvCU+vUTL0+
-         3sawdcTQd4cLhODY2C+Do6IAAG8fJRk0p+f2CiXiEpC9OattHXuMKRj94aYVxKfSjPjl
-         amvS0eoFZG5pIhIMZKX0gvfSKMxywUCbqSV6mrbV1wG+6BqDHmw/svBQUiueU3maQp73
-         Mn6YvC7+UmPM7/Hv+GAJ5buzPlMdlSC98CEmgUUgRWBEP/xMjckbnFwrd2bmDAvGmKpf
-         JyK1VjEhDit4sx0uJjwJiBAyiVgnB2bX1JX62kqVZ47gp8sMt8+BmfTXRr6IEVOvy+e5
-         JyEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vbrMZbAlGPGIi9DYbOom+lM0TPxk5SFfu4EZNBvas+0=;
-        b=WuirAmaFlCNhVGoskjErBvRXUqUFn1WNVDgXLZflRRtyOilhrGuD/nuihPYFdCq7GC
-         aBqkSCu5SiNCkn6jrwQgP856/jxwbM6/MnZmJI3zP3bqNnoQE/Zmy44uUHQDBeVYHsT7
-         CZImrpT5tn/HVtf4ToMSSCOTNigskuq+2Kysd9hxCY4ZpgosFV/owOkQmTG5RnnATk0b
-         aWoAsCBYrHGFrUj/t/H883BAi3+pmixSrvszu2URqA2/BeXiLgwzCgY0VlSh+74SrhNx
-         Mj8zfkmqUE+zPts27r5I6FabtjgLuN7mGeeJF4QL6Rj6fwfuRJ6HxVlsQFNAqdXKy6rN
-         d2Lg==
-X-Gm-Message-State: APjAAAXhdKQKLvC3o2wedVYD+BaD+YMiS3vsunaEoAS2cxgToXM8Gw53
-        eN+VL3tSHFv57meOwJWWASO46w==
-X-Google-Smtp-Source: APXvYqzHX5Z/+L9bk7vjqS6B9s5w6reatSvTYGtMgJe0+fwP88eLOkF3PhJT49YD7Yn993GaX7Yzfg==
-X-Received: by 2002:ad4:430f:: with SMTP id c15mr6553622qvs.25.1565615678691;
-        Mon, 12 Aug 2019 06:14:38 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id g18sm622441qtq.69.2019.08.12.06.14.38
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Aug 2019 06:14:38 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hxA9l-0007cl-Tc; Mon, 12 Aug 2019 10:14:37 -0300
-Date:   Mon, 12 Aug 2019 10:14:37 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Lijun Ou <oulijun@huawei.com>, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH for-next 8/9] RDMA/hns: Kernel notify usr space to stop
- ring db
-Message-ID: <20190812131437.GG24457@ziepe.ca>
-References: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
- <1565343666-73193-9-git-send-email-oulijun@huawei.com>
- <20190812055220.GA8440@mtr-leonro.mtl.com>
+        id S1728841AbfHLNc4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Aug 2019 09:32:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728826AbfHLNcz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Aug 2019 09:32:55 -0400
+Received: from localhost (unknown [77.137.115.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE444206C2;
+        Mon, 12 Aug 2019 13:32:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565616774;
+        bh=POD3ptsADRQbSPUAAdShRLWE6WFbHmXdxzxQu7o7hkE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eoFq1pTaGs2TdBqc388ZIp+2REiSujjJ8j8xYZ0cpP/99Gn63VXLnJF/u0eRgjo5q
+         pfdFpBWZUgZcmCKF9WtdL9s0cKlcFMcgx7o8DNr+EGcfuSWeVBk1/UDCcgIDO5kpyg
+         lSE2Q8yA36h/qz5sBUQSZueOpYVja0FqOdRqxBqc=
+Date:   Mon, 12 Aug 2019 16:32:48 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Erez Alfasi <ereza@mellanox.com>
+Subject: Re: [PATCH rdma-next 2/6] RDMA/umem: Add ODP type indicator within
+ ib_umem_odp
+Message-ID: <20190812133248.GB29138@mtr-leonro.mtl.com>
+References: <20190807103403.8102-1-leon@kernel.org>
+ <20190807103403.8102-3-leon@kernel.org>
+ <20190807114406.GC1571@mellanox.com>
+ <20190807121335.GC32366@mtr-leonro.mtl.com>
+ <20190807123510.GF1557@ziepe.ca>
+ <20190807131239.GF32366@mtr-leonro.mtl.com>
+ <20190812105324.GA29138@mtr-leonro.mtl.com>
+ <20190812121124.GA24457@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190812055220.GA8440@mtr-leonro.mtl.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190812121124.GA24457@ziepe.ca>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 08:52:20AM +0300, Leon Romanovsky wrote:
-> On Fri, Aug 09, 2019 at 05:41:05PM +0800, Lijun Ou wrote:
-> > From: Yangyang Li <liyangyang20@huawei.com>
+On Mon, Aug 12, 2019 at 09:11:24AM -0300, Jason Gunthorpe wrote:
+> On Mon, Aug 12, 2019 at 01:53:24PM +0300, Leon Romanovsky wrote:
+> > On Wed, Aug 07, 2019 at 04:12:39PM +0300, Leon Romanovsky wrote:
+> > > On Wed, Aug 07, 2019 at 09:35:10AM -0300, Jason Gunthorpe wrote:
+> > > > On Wed, Aug 07, 2019 at 03:13:35PM +0300, Leon Romanovsky wrote:
+> > > > > On Wed, Aug 07, 2019 at 11:44:16AM +0000, Jason Gunthorpe wrote:
+> > > > > > On Wed, Aug 07, 2019 at 01:33:59PM +0300, Leon Romanovsky wrote:
+> > > > > > > From: Erez Alfasi <ereza@mellanox.com>
+> > > > > > >
+> > > > > > > ODP type can be divided into 2 subclasses:
+> > > > > > > Explicit and Implicit ODP.
+> > > > > > >
+> > > > > > > Adding a type enums and an odp type flag within
+> > > > > > > ib_umem_odp will give us an indication whether a
+> > > > > > > given MR is ODP implicit/explicit registered.
+> > > > > > >
+> > > > > > > Signed-off-by: Erez Alfasi <ereza@mellanox.com>
+> > > > > > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > > > > > >  drivers/infiniband/core/umem.c    |  1 +
+> > > > > > >  include/rdma/ib_umem_odp.h        | 14 ++++++++++++++
+> > > > > > >  include/uapi/rdma/ib_user_verbs.h |  5 +++++
+> > > > > > >  3 files changed, 20 insertions(+)
+> > > > > >
+> > > > > > No for this patch, I've got a series cleaning up this
+> > > > > > implicit/explicit nonsense, and the result is much cleaner than this.
+> > > > >
+> > > > > It doesn't really clean anything, just stores implicit/explicit information.
+> > > > >
+> > > > > >
+> > > > > > This series will have to wait.
+> > > > >
+> > > > > The information exposed in this series is already available in uverbs,
+> > > > > so whatever cleanup will come, we still need to expose ODP MR type.
+> > > > >
+> > > > > This patch is tiny part of whole series, why should we block whole
+> > > > > series and iproute2?
+> > > >
+> > > > This whole approach is really ugly, I even object to the very idea of
+> > > > patch #1
+> > >
+> > > How did patch #1 relate? It simply removed same code from drivers and
+> > > put it in one place.
+> > >
+> > > >
+> > > > The umem is an internal detail and should not be exposed out of the
+> > > > driver for nldev to use.
+> > >
+> > > We are exporting ODP MR property, users are not aware of umem thing
+> > > underneath at all.
 > >
-> > In the reset scenario, if the kernel receives the reset signal,
-> > it needs to notify the user space to stop ring doorbell.
-> 
-> I doubt about it, it is racy like hell and relies on assumption that
-> userspace will honor such request to stop.
+> > Jason ???
+> >
+> > I don't want to send iproute2 and make noise if the kernel part is
+> > put on hold.
+>
+> Like I said, this is layered wrong and does not support the direction
+> I want to go in with the ODP code, needs respin.
 
-Sounds like this is the device unplug flow we already have support
-for, use the APIs to drop the VMA refering to the doorbell
+Base on what should I respin? We are in -rc4.
 
-> > Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-> >  drivers/infiniband/hw/hns/hns_roce_device.h |  4 +++
-> >  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 52 ++++++++++++++++++++++++++++-
-> >  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 +++
-> >  drivers/infiniband/hw/hns/hns_roce_main.c   | 22 ++++++------
-> >  4 files changed, 70 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-> > index 32465f5..be65fce 100644
-> > +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-> > @@ -268,6 +268,8 @@ enum {
-> >
-> >  #define PAGE_ADDR_SHIFT				12
-> >
-> > +#define HNS_ROCE_IS_RESETTING			1
-> > +
-> >  struct hns_roce_uar {
-> >  	u64		pfn;
-> >  	unsigned long	index;
-> > @@ -1043,6 +1045,8 @@ struct hns_roce_dev {
-> >  	u32			odb_offset;
-> >  	dma_addr_t		tptr_dma_addr;	/* only for hw v1 */
-> >  	u32			tptr_size;	/* only for hw v1 */
-> > +	struct page		*reset_page; /* store reset state */
-> > +	void			*reset_kaddr; /* addr of reset page */
-> >  	const struct hns_roce_hw *hw;
-> >  	void			*priv;
-> >  	struct workqueue_struct *irq_workq;
-> > diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> > index d33341e..138e5a8 100644
-> > +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> > @@ -1867,17 +1867,49 @@ static void hns_roce_free_link_table(struct hns_roce_dev *hr_dev,
-> >  			  link_tbl->table.map);
-> >  }
-> >
-> > +static int hns_roce_v2_get_reset_page(struct hns_roce_dev *hr_dev)
-> > +{
-> > +	hr_dev->reset_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-> > +	if (!hr_dev->reset_page)
-> > +		return -ENOMEM;
-> > +
-> > +	hr_dev->reset_kaddr = vmap(&hr_dev->reset_page, 1, VM_MAP, PAGE_KERNEL);
-> > +	if (!hr_dev->reset_kaddr)
-> > +		goto err_with_vmap;
+Thanks
 
-Yes, this vmap is nonsense too, get_zeroed_page() is the right API
-
-Jason
+>
+> Jason
