@@ -2,124 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 138F88BEC4
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2019 18:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7F48BFC0
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2019 19:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbfHMQjl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Aug 2019 12:39:41 -0400
-Received: from mga09.intel.com ([134.134.136.24]:48418 "EHLO mga09.intel.com"
+        id S1726903AbfHMRlo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Aug 2019 13:41:44 -0400
+Received: from mga09.intel.com ([134.134.136.24]:57181 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726705AbfHMQjl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 13 Aug 2019 12:39:41 -0400
+        id S1726137AbfHMRln (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 13 Aug 2019 13:41:43 -0400
 X-Amp-Result: UNSCANNABLE
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Aug 2019 09:39:40 -0700
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Aug 2019 10:41:42 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.64,382,1559545200"; 
-   d="scan'208";a="260176044"
+   d="scan'208";a="376374540"
 Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga001.jf.intel.com with ESMTP; 13 Aug 2019 09:39:40 -0700
-Date:   Tue, 13 Aug 2019 09:39:40 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 13 Aug 2019 10:41:42 -0700
+Date:   Tue, 13 Aug 2019 10:41:42 -0700
 From:   Ira Weiny <ira.weiny@intel.com>
-To:     Haim Boozaglo <haimbo@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org,
-        Vladimir Koushnir <vladimirk@mellanox.com>
-Subject: Re: [PATCH 1/3] libibumad: Support arbitrary number of IB devices
-Message-ID: <20190813163939.GA11882@iweiny-DESK2.sc.intel.com>
-References: <1565540962-20188-1-git-send-email-haimbo@mellanox.com>
- <1565540962-20188-2-git-send-email-haimbo@mellanox.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
+ file object
+Message-ID: <20190813174142.GB11882@iweiny-DESK2.sc.intel.com>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190809225833.6657-17-ira.weiny@intel.com>
+ <20190812130039.GD24457@ziepe.ca>
+ <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
+ <20190812175615.GI24457@ziepe.ca>
+ <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
+ <20190813114842.GB29508@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1565540962-20188-2-git-send-email-haimbo@mellanox.com>
+In-Reply-To: <20190813114842.GB29508@ziepe.ca>
 User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 11, 2019 at 04:29:20PM +0000, Haim Boozaglo wrote:
-> From: Vladimir Koushnir <vladimirk@mellanox.com>
+On Tue, Aug 13, 2019 at 08:48:42AM -0300, Jason Gunthorpe wrote:
+> On Mon, Aug 12, 2019 at 02:15:37PM -0700, Ira Weiny wrote:
+> > On Mon, Aug 12, 2019 at 02:56:15PM -0300, Jason Gunthorpe wrote:
+> > > On Mon, Aug 12, 2019 at 10:28:27AM -0700, Ira Weiny wrote:
+> > > > On Mon, Aug 12, 2019 at 10:00:40AM -0300, Jason Gunthorpe wrote:
+> > > > > On Fri, Aug 09, 2019 at 03:58:30PM -0700, ira.weiny@intel.com wrote:
+> > > > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > > > > 
+> > > > > > In order for MRs to be tracked against the open verbs context the ufile
+> > > > > > needs to have a pointer to hand to the GUP code.
+> > > > > > 
+> > > > > > No references need to be taken as this should be valid for the lifetime
+> > > > > > of the context.
+> > > > > > 
+> > > > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > > > >  drivers/infiniband/core/uverbs.h      | 1 +
+> > > > > >  drivers/infiniband/core/uverbs_main.c | 1 +
+> > > > > >  2 files changed, 2 insertions(+)
+> > > > > > 
+> > > > > > diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+> > > > > > index 1e5aeb39f774..e802ba8c67d6 100644
+> > > > > > +++ b/drivers/infiniband/core/uverbs.h
+> > > > > > @@ -163,6 +163,7 @@ struct ib_uverbs_file {
+> > > > > >  	struct page *disassociate_page;
+> > > > > >  
+> > > > > >  	struct xarray		idr;
+> > > > > > +	struct file             *sys_file; /* backpointer to system file object */
+> > > > > >  };
+> > > > > 
+> > > > > The 'struct file' has a lifetime strictly shorter than the
+> > > > > ib_uverbs_file, which is kref'd on its own lifetime. Having a back
+> > > > > pointer like this is confouding as it will be invalid for some of the
+> > > > > lifetime of the struct.
+> > > > 
+> > > > Ah...  ok.  I really thought it was the other way around.
+> > > > 
+> > > > __fput() should not call ib_uverbs_close() until the last reference on struct
+> > > > file is released...  What holds references to struct ib_uverbs_file past that?
+> > > 
+> > > Child fds hold onto the internal ib_uverbs_file until they are closed
+> > 
+> > The FDs hold the struct file, don't they?
 > 
-> Added new function returning a list of available InfiniBand device names.
-> The returned list is not limited to 32 devices.
+> Only dups, there are other 'child' FDs we can create
 > 
-> Signed-off-by: Vladimir Koushnir <vladimirk@mellanox.com>
-> Signed-off-by: Haim Boozaglo <haimbo@mellanox.com>
-> ---
+> > > Now this has unlocked updates to that data.. you'd need some lock and
+> > > get not zero pattern
+> > 
+> > You can't call "get" here because I'm 99% sure we only get here when struct
+> > file has no references left...
+> 
+> Nope, like I said the other FDs hold the uverbs_file independent of
+> the struct file it is related too. 
 
-[snip]
+<sigh>
 
-> diff --git a/libibumad/umad.c b/libibumad/umad.c
-> index 5f8656e..9d0303b 100644
-> --- a/libibumad/umad.c
-> +++ b/libibumad/umad.c
-> @@ -1123,3 +1123,44 @@ void umad_dump(void *umad)
->  	       mad->agent_id, mad->status, mad->timeout_ms);
->  	umad_addr_dump(&mad->addr);
->  }
-> +
-> +int umad_get_ca_namelist(char **cas)
-> +{
-> +	struct dirent **namelist;
-> +	int n, i, j = 0;
-> +
-> +	n = scandir(SYS_INFINIBAND, &namelist, NULL, alphasort);
-> +
-> +	if (n > 0) {
-> +		*cas = (char *) calloc(1, n * sizeof(char) * UMAD_CA_NAME_LEN);
-> +		for (i = 0; i < n; i++) {
-> +			if (*cas && strcmp(namelist[i]->d_name, ".") &&
-> +			    strcmp(namelist[i]->d_name, "..")) {
-> +				if (is_ib_type(namelist[i]->d_name)) {
-> +					strncpy(*cas + j * UMAD_CA_NAME_LEN,
-> +						namelist[i]->d_name,
-> +						UMAD_CA_NAME_LEN);
-> +					j++;
-> +				}
+We don't allow memory registrations to be created with those other FDs...
 
-This all seems overly complicated to avoid allocating the strings separate from
-the pointer array.  Why not just allocate the pointer array and strdup() the
-names into the array?  And then make unamd_free_ca_namelist() do some work?
+And I was pretty sure uverbs_destroy_ufile_hw() would take care of (or ensure
+that some other thread is) destroying all the MR's we have associated with this
+FD.
+
+I'll have to think on this more since uverbs_destroy_ufile_hw() does not
+block...  Which means there is a window here within the GUP code...  :-/
+
+> 
+> This is why having a back pointer like this is so ugly, it creates a
+> reference counting cycle
+
+Yep...  I worked through this...  and it was giving me fits...
+
+Anyway, the struct file is the only object in the core which was reasonable to
+store this information in since that is what is passed around to other
+processes...
+
+Another idea I explored was to create a callback into the driver from the core
+which put the responsibility of printing the pin information on the driver.
+
+But that started to be (and is likely going to be) a pretty complicated "dance"
+between the core and the drivers so I went this way...
+
+I also thought about holding some other reference on struct file which would
+allow release to be called while keeping struct file around.  But that seemed
+crazy...
 
 Ira
 
-> +			}
-> +			free(namelist[i]);
-> +		}
-> +		DEBUG("return %d cas", j);
-> +	} else {
-> +		/* Is this still needed ? */
-> +		if ((*cas = calloc(1, UMAD_CA_NAME_LEN * sizeof(char)))) {
-> +			strncpy(*cas, def_ca_name, UMAD_CA_NAME_LEN);
-> +			DEBUG("return 1 ca");
-> +			j = 1;
-> +		}
-> +	}
-> +	if (n >= 0)
-> +		free(namelist);
-> +
-> +	return j;
-> +}
-> +
-> +void umad_free_ca_namelist(char *cas)
-> +{
-> +	free(cas);
-> +}
-> diff --git a/libibumad/umad.h b/libibumad/umad.h
-> index 3cc551f..70bc213 100644
-> --- a/libibumad/umad.h
-> +++ b/libibumad/umad.h
-> @@ -208,6 +208,8 @@ int umad_register(int portid, int mgmt_class, int mgmt_version,
->  int umad_register_oui(int portid, int mgmt_class, uint8_t rmpp_version,
->  		      uint8_t oui[3], long method_mask[16 / sizeof(long)]);
->  int umad_unregister(int portid, int agentid);
-> +int umad_get_ca_namelist(char **cas);
-> +void umad_free_ca_namelist(char *cas);
->  
->  enum {
->  	UMAD_USER_RMPP = (1 << 0)
-> -- 
-> 1.8.3.1
-> 
