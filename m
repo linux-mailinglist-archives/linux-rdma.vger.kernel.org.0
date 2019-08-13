@@ -2,114 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0923C8BEAC
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2019 18:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 138F88BEC4
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2019 18:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbfHMQei (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Aug 2019 12:34:38 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:53248 "EHLO mx1.redhat.com"
+        id S1727697AbfHMQjl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Aug 2019 12:39:41 -0400
+Received: from mga09.intel.com ([134.134.136.24]:48418 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726705AbfHMQei (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 13 Aug 2019 12:34:38 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id DE4C330C3402;
-        Tue, 13 Aug 2019 16:34:37 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-57.rdu2.redhat.com [10.10.112.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C89FC1001281;
-        Tue, 13 Aug 2019 16:34:36 +0000 (UTC)
-Message-ID: <ac9cd14a089a03bf1d19ca5a938c8d6bfa1e5f70.camel@redhat.com>
-Subject: Re: [PATCH for-next 0/9] Bugfixes for 5.3-rc2
-From:   Doug Ledford <dledford@redhat.com>
-To:     Lijun Ou <oulijun@huawei.com>, jgg@ziepe.ca
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Date:   Tue, 13 Aug 2019 12:34:34 -0400
-In-Reply-To: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
-References: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-YMQO3hJ3TJlkhY0XQG1g"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1726705AbfHMQjl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 13 Aug 2019 12:39:41 -0400
+X-Amp-Result: UNSCANNABLE
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Aug 2019 09:39:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,382,1559545200"; 
+   d="scan'208";a="260176044"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga001.jf.intel.com with ESMTP; 13 Aug 2019 09:39:40 -0700
+Date:   Tue, 13 Aug 2019 09:39:40 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Haim Boozaglo <haimbo@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org,
+        Vladimir Koushnir <vladimirk@mellanox.com>
+Subject: Re: [PATCH 1/3] libibumad: Support arbitrary number of IB devices
+Message-ID: <20190813163939.GA11882@iweiny-DESK2.sc.intel.com>
+References: <1565540962-20188-1-git-send-email-haimbo@mellanox.com>
+ <1565540962-20188-2-git-send-email-haimbo@mellanox.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Tue, 13 Aug 2019 16:34:37 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1565540962-20188-2-git-send-email-haimbo@mellanox.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Sun, Aug 11, 2019 at 04:29:20PM +0000, Haim Boozaglo wrote:
+> From: Vladimir Koushnir <vladimirk@mellanox.com>
+> 
+> Added new function returning a list of available InfiniBand device names.
+> The returned list is not limited to 32 devices.
+> 
+> Signed-off-by: Vladimir Koushnir <vladimirk@mellanox.com>
+> Signed-off-by: Haim Boozaglo <haimbo@mellanox.com>
+> ---
 
---=-YMQO3hJ3TJlkhY0XQG1g
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+[snip]
 
-On Fri, 2019-08-09 at 17:40 +0800, Lijun Ou wrote:
-> Here fixes some bugs for hip08
->=20
-> Lang Cheng (1):
->   RDMA/hns: Remove unuseful member
->=20
-> Lijun Ou (2):
->   RDMA/hns: Bugfix for creating qp attached to srq
->   RDMA/hns: Copy some information of AV to user
->=20
-> Weihang Li (1):
->   RDMA/hns: Logic optimization of wc_flags
->=20
-> Xi Wang (2):
->   RDMA/hns: Bugfix for slab-out-of-bounds when unloading hip08 driver
->   RDMA/hns: bugfix for slab-out-of-bounds when loading hip08 driver
->=20
-> Yangyang Li (3):
->   RDMA/hns: Completely release qp resources when hw err
->   RDMA/hns: Modify pi vlaue when cq overflows
->   RDMA/hns: Kernel notify usr space to stop ring db
->=20
->  drivers/infiniband/hw/hns/hns_roce_ah.c     | 22 ++++++--
->  drivers/infiniband/hw/hns/hns_roce_cmd.c    |  1 -
->  drivers/infiniband/hw/hns/hns_roce_device.h |  8 ++-
->  drivers/infiniband/hw/hns/hns_roce_hem.c    | 19 ++++---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 78
-> +++++++++++++++++++++++------
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 ++
->  drivers/infiniband/hw/hns/hns_roce_main.c   | 29 +++++++----
->  drivers/infiniband/hw/hns/hns_roce_qp.c     | 25 ++++++---
->  include/uapi/rdma/hns-abi.h                 |  7 +++
->  9 files changed, 148 insertions(+), 45 deletions(-)
->=20
+> diff --git a/libibumad/umad.c b/libibumad/umad.c
+> index 5f8656e..9d0303b 100644
+> --- a/libibumad/umad.c
+> +++ b/libibumad/umad.c
+> @@ -1123,3 +1123,44 @@ void umad_dump(void *umad)
+>  	       mad->agent_id, mad->status, mad->timeout_ms);
+>  	umad_addr_dump(&mad->addr);
+>  }
+> +
+> +int umad_get_ca_namelist(char **cas)
+> +{
+> +	struct dirent **namelist;
+> +	int n, i, j = 0;
+> +
+> +	n = scandir(SYS_INFINIBAND, &namelist, NULL, alphasort);
+> +
+> +	if (n > 0) {
+> +		*cas = (char *) calloc(1, n * sizeof(char) * UMAD_CA_NAME_LEN);
+> +		for (i = 0; i < n; i++) {
+> +			if (*cas && strcmp(namelist[i]->d_name, ".") &&
+> +			    strcmp(namelist[i]->d_name, "..")) {
+> +				if (is_ib_type(namelist[i]->d_name)) {
+> +					strncpy(*cas + j * UMAD_CA_NAME_LEN,
+> +						namelist[i]->d_name,
+> +						UMAD_CA_NAME_LEN);
+> +					j++;
+> +				}
 
-Patches 1, 2, 4, 5, 6, and 7 applied to for-next.
+This all seems overly complicated to avoid allocating the strings separate from
+the pointer array.  Why not just allocate the pointer array and strdup() the
+names into the array?  And then make unamd_free_ca_namelist() do some work?
 
-I have concerns about patches 3, 8, and 9.  I'm skipping them until you
-can address the comments I made on and off list.
+Ira
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-YMQO3hJ3TJlkhY0XQG1g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1S5poACgkQuCajMw5X
-L938uQ//eTtYa0H3qw9eGA0EVDnxmYw23SdCDZJyMB6Eb9LNK3LOVfG8ZkXKJzzM
-ULvp7nvbT51pQhqD32y1ZkwRAl2lNkKUCLvCrTzpbQvV3AC6xekwfe48Ktm3gEjS
-J3fwtDnLm+gasr23Rgxc5tgVu/Kfry4VBi4gcdFSLjVEBzOOOq5mM8Y/ApMgYD2A
-mPpZ+RImv7Kmbxozlfo/nijcc0j+KYFQuxWJSLEkt/DI59N2m2VJvnpiJ/0gItw7
-8sKroRHU6R4TZP2Omm3B9dpQW8uPhEOZccnhtgsJ4nK/axXSkg6xr7X9dm8dRe+7
-ylFfVLwtvZhsbfpY3Fe5uz0Hrlj5aH0OsWVohdf59CviO6Hcnd+4y5WRcRf1rSi2
-gMTCC7OiUOCu6l8J+DxlOfqEW3cc0RwPL0HeqirpiS4kinaiRMw2ZmuYFC4X8eso
-LYpVfYJVr5fvKEMVqtKQsB0wDvx6AjWaV8upoJLMUgH4YLH5XBtOug9ShkYSdcQP
-2nt/Sx2PJAW2sWqN65YkzM07rtiQt7mGk0gBQ8uJWqSktyj7tlz4ajty6FHjM4ku
-AHPnzne/qoRSJus2/kVebIz8LJjPHASL9MUzCsvB5tNdCMAbnNnc2O3m1NsJwNKq
-LJKfVVyXq9cNfQ1ErlGieWFghNHicYW8XKe94wUsclNY8lcLcRE=
-=fytQ
------END PGP SIGNATURE-----
-
---=-YMQO3hJ3TJlkhY0XQG1g--
-
+> +			}
+> +			free(namelist[i]);
+> +		}
+> +		DEBUG("return %d cas", j);
+> +	} else {
+> +		/* Is this still needed ? */
+> +		if ((*cas = calloc(1, UMAD_CA_NAME_LEN * sizeof(char)))) {
+> +			strncpy(*cas, def_ca_name, UMAD_CA_NAME_LEN);
+> +			DEBUG("return 1 ca");
+> +			j = 1;
+> +		}
+> +	}
+> +	if (n >= 0)
+> +		free(namelist);
+> +
+> +	return j;
+> +}
+> +
+> +void umad_free_ca_namelist(char *cas)
+> +{
+> +	free(cas);
+> +}
+> diff --git a/libibumad/umad.h b/libibumad/umad.h
+> index 3cc551f..70bc213 100644
+> --- a/libibumad/umad.h
+> +++ b/libibumad/umad.h
+> @@ -208,6 +208,8 @@ int umad_register(int portid, int mgmt_class, int mgmt_version,
+>  int umad_register_oui(int portid, int mgmt_class, uint8_t rmpp_version,
+>  		      uint8_t oui[3], long method_mask[16 / sizeof(long)]);
+>  int umad_unregister(int portid, int agentid);
+> +int umad_get_ca_namelist(char **cas);
+> +void umad_free_ca_namelist(char *cas);
+>  
+>  enum {
+>  	UMAD_USER_RMPP = (1 << 0)
+> -- 
+> 1.8.3.1
+> 
