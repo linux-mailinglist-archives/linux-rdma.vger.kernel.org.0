@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 837968B773
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2019 13:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D828B77F
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2019 13:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727632AbfHMLrI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Aug 2019 07:47:08 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:44985 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727611AbfHMLrI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Aug 2019 07:47:08 -0400
-Received: by mail-qt1-f194.google.com with SMTP id 44so74907927qtg.11
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Aug 2019 04:47:08 -0700 (PDT)
+        id S1727752AbfHMLso (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Aug 2019 07:48:44 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:42540 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727434AbfHMLso (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Aug 2019 07:48:44 -0400
+Received: by mail-qt1-f196.google.com with SMTP id t12so17394456qtp.9
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Aug 2019 04:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=A5jSIc/RY/hZ7f+bEkMhOVRTEXKJZMsh3LcoJICOYZA=;
-        b=QCZ4PvH+HERINAIC/rIX57CfHFpykExOSCWoiRBdSClOqTC5WAYKVE/wNtLd1ZCdXb
-         KZp5v/22WAqZ0EMeHD9gQcL9jjBHQrauhwB1tY41cMyXOMQcHirf3q33hSp3+J4vow0U
-         GPXzEq3gqF2wrMV1Rw/sgqnEqIShtnXpz04NN7ACpnW2Kb2z/8KWS7MN/hESlyb75tlS
-         YMQH3uuf6z8f1q/jLKcYyFLyOZd7D+SDwoKD8lO4RahnM5opPz9OKgrwrp/X5BI8wvMd
-         OzyT60/eIe57jrf+8q2zyLqpHM8YRV9JQevqDnSiRM5+NRuM8rm/DiPdBJOWMMsLftQz
-         b4GQ==
+        bh=Zt45e40hCF0YCbbLZ0aQGoNlrA/sQl/2BzKPlIDcczo=;
+        b=D9yc6YFGEplkH0AEJkqbv5QQ/YqFFErgaOhlLwwyajnLxYCmzuYuYjTPu5K8IzHc7W
+         EHziDWuZnP0EJUoJorsIB/Vle5Jq4HW1ZePpJfpxeJ3PiL6g9IJgSG7a6i4U9+NgvGWa
+         Ai92AkBB6qVdNZzDPFs/+bpyxdePG4eiTSYai6xHFsXo6eqanU0phpcPPEHhvrx1/xET
+         /OrVUPcq3jLH3XTfzYOI9j16wl1cGoll9zeKlcNrafKlJBFPS3Xu3jF23bvmZsNJxEuE
+         b6+41/KGpH+t1xSORBP9OYFknrdMrMYelZfdaoojCQpOYGYaQ11oiLC8AtSSDLjOlbXi
+         Q++A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=A5jSIc/RY/hZ7f+bEkMhOVRTEXKJZMsh3LcoJICOYZA=;
-        b=YY9aP12NfU3dowkLMXXtx+FZji2giPoyMxoqDwO33V5zHZ28ZljRxARDB8ktxN4x7T
-         t67sGvSL4sjX1NVC5NV06uMMj8whkOmDZBu3JVCAvGQqR/Kd0oCLr0xQkHeA9RTyezRu
-         rxJ+w6wCf7RAyJcvwfHDsJB8uRjVrOpET4e1+1ePLrDVonZ4axWeNzYxu+OMApjyKEW3
-         Ww624Yzzvrj6pLt5zRNEvTTqwYDvRbR3x0SCrUmtLHv7A0RFmRt4mznKsiUnyfJQy2Th
-         ewM3ufpyrwB//kU+oa54THnNCTm+n3kMVbCkVv/ZqgpEs7jlk43L/I0cOV8jDuoF0l2p
-         k/Dw==
-X-Gm-Message-State: APjAAAUTe2FUb5XK5zKiucaOklittod1EIBkMBjYobqKfWOMg4/Z2PEG
-        63xovDOXy83aWCA8DFI0LPnfHw==
-X-Google-Smtp-Source: APXvYqxNaQQNPStukKuBzbe7ho0VUZGNKPG9lP34sc9j+nxvDvhp77mkTMuiRQNU50cP5mt/nBqv4g==
-X-Received: by 2002:ac8:3f86:: with SMTP id d6mr30794575qtk.346.1565696827682;
-        Tue, 13 Aug 2019 04:47:07 -0700 (PDT)
+        bh=Zt45e40hCF0YCbbLZ0aQGoNlrA/sQl/2BzKPlIDcczo=;
+        b=qpfbVwYRBPt4DW/k2+Jhewm3fnLNVJbXws78S/+/UA5uNaSpeDKF8QOrGqkgE4Cxra
+         xiLppmnWbyt43i/1vOZxd8wCD3IDFcZJ7GCPQzchaqt7zKGWmIfCNoAI66PrL+dLZbnp
+         4H2qVF9fUdV8FuXvoXHFI3xq6ALE17CzJhi7smV3rnYz2KtAn4/k7ByrPw4juiAiWRtK
+         C3XdSFm/LXjJ17xmS9YxTlkHeULAb/RpCe5c8wCCEiIYW4buPJHp47irLn8rngDy7VA8
+         5z6WC6MN6MT4wl3oikaCC0V+4yxrxshUxYEG+Y4eO2o4IMfPlOsdzgw5WY5t4tG1fBsc
+         O6ag==
+X-Gm-Message-State: APjAAAX69RjwRj5GCpKXY6P456XGgWKOP86VZGsJ42WhY6zlznKaTzYi
+        RdaOn84fxYKJ7vUwT6ZxWRzWKA==
+X-Google-Smtp-Source: APXvYqw4TQlyWpH+GsoO+iiZQsGjdJlFsSEd7xLsZ4WRKAsozWVqNJgjFHJHWU5rc/t0VYgJHvE8mg==
+X-Received: by 2002:a0c:ae35:: with SMTP id y50mr33835040qvc.204.1565696923435;
+        Tue, 13 Aug 2019 04:48:43 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id 67sm47417797qkh.108.2019.08.13.04.47.06
+        by smtp.gmail.com with ESMTPSA id m38sm12868061qta.43.2019.08.13.04.48.42
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 13 Aug 2019 04:47:07 -0700 (PDT)
+        Tue, 13 Aug 2019 04:48:42 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hxVGc-0007jx-3A; Tue, 13 Aug 2019 08:47:06 -0300
-Date:   Tue, 13 Aug 2019 08:47:06 -0300
+        id 1hxVIA-0007l2-Ec; Tue, 13 Aug 2019 08:48:42 -0300
+Date:   Tue, 13 Aug 2019 08:48:42 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Ira Weiny <ira.weiny@intel.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -60,61 +60,79 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
         linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 15/19] mm/gup: Introduce vaddr_pin_pages()
-Message-ID: <20190813114706.GA29508@ziepe.ca>
+Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
+ file object
+Message-ID: <20190813114842.GB29508@ziepe.ca>
 References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-16-ira.weiny@intel.com>
- <20190812122814.GC24457@ziepe.ca>
- <20190812214854.GF20634@iweiny-DESK2.sc.intel.com>
+ <20190809225833.6657-17-ira.weiny@intel.com>
+ <20190812130039.GD24457@ziepe.ca>
+ <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
+ <20190812175615.GI24457@ziepe.ca>
+ <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190812214854.GF20634@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 02:48:55PM -0700, Ira Weiny wrote:
-> On Mon, Aug 12, 2019 at 09:28:14AM -0300, Jason Gunthorpe wrote:
-> > On Fri, Aug 09, 2019 at 03:58:29PM -0700, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
+On Mon, Aug 12, 2019 at 02:15:37PM -0700, Ira Weiny wrote:
+> On Mon, Aug 12, 2019 at 02:56:15PM -0300, Jason Gunthorpe wrote:
+> > On Mon, Aug 12, 2019 at 10:28:27AM -0700, Ira Weiny wrote:
+> > > On Mon, Aug 12, 2019 at 10:00:40AM -0300, Jason Gunthorpe wrote:
+> > > > On Fri, Aug 09, 2019 at 03:58:30PM -0700, ira.weiny@intel.com wrote:
+> > > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > > > 
+> > > > > In order for MRs to be tracked against the open verbs context the ufile
+> > > > > needs to have a pointer to hand to the GUP code.
+> > > > > 
+> > > > > No references need to be taken as this should be valid for the lifetime
+> > > > > of the context.
+> > > > > 
+> > > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > > >  drivers/infiniband/core/uverbs.h      | 1 +
+> > > > >  drivers/infiniband/core/uverbs_main.c | 1 +
+> > > > >  2 files changed, 2 insertions(+)
+> > > > > 
+> > > > > diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+> > > > > index 1e5aeb39f774..e802ba8c67d6 100644
+> > > > > +++ b/drivers/infiniband/core/uverbs.h
+> > > > > @@ -163,6 +163,7 @@ struct ib_uverbs_file {
+> > > > >  	struct page *disassociate_page;
+> > > > >  
+> > > > >  	struct xarray		idr;
+> > > > > +	struct file             *sys_file; /* backpointer to system file object */
+> > > > >  };
+> > > > 
+> > > > The 'struct file' has a lifetime strictly shorter than the
+> > > > ib_uverbs_file, which is kref'd on its own lifetime. Having a back
+> > > > pointer like this is confouding as it will be invalid for some of the
+> > > > lifetime of the struct.
 > > > 
-> > > The addition of FOLL_LONGTERM has taken on additional meaning for CMA
-> > > pages.
+> > > Ah...  ok.  I really thought it was the other way around.
 > > > 
-> > > In addition subsystems such as RDMA require new information to be passed
-> > > to the GUP interface to track file owning information.  As such a simple
-> > > FOLL_LONGTERM flag is no longer sufficient for these users to pin pages.
-> > > 
-> > > Introduce a new GUP like call which takes the newly introduced vaddr_pin
-> > > information.  Failure to pass the vaddr_pin object back to a vaddr_put*
-> > > call will result in a failure if pins were created on files during the
-> > > pin operation.
+> > > __fput() should not call ib_uverbs_close() until the last reference on struct
+> > > file is released...  What holds references to struct ib_uverbs_file past that?
 > > 
-> > Is this a 'vaddr' in the traditional sense, ie does it work with
-> > something returned by valloc?
+> > Child fds hold onto the internal ib_uverbs_file until they are closed
 > 
-> ...or malloc in user space, yes.  I think the idea is that it is a user virtual
-> address.
+> The FDs hold the struct file, don't they?
 
-valloc is a kernel call
+Only dups, there are other 'child' FDs we can create
 
-> So I'm open to suggestions.  Jan gave me this one, so I figured it was safer to
-> suggest it...
-
-Should have the word user in it, imho
-
-> > I also wish GUP like functions took in a 'void __user *' instead of
-> > the unsigned long to make this clear :\
+> > Now this has unlocked updates to that data.. you'd need some lock and
+> > get not zero pattern
 > 
-> Not a bad idea.  But I only see a couple of call sites who actually use a 'void
-> __user *' to pass into GUP...  :-/
-> 
-> For RDMA the address is _never_ a 'void __user *' AFAICS.
+> You can't call "get" here because I'm 99% sure we only get here when struct
+> file has no references left...
 
-That is actually a bug, converting from u64 to a 'user VA' needs to go
-through u64_to_user_ptr().
+Nope, like I said the other FDs hold the uverbs_file independent of
+the struct file it is related too. 
+
+This is why having a back pointer like this is so ugly, it creates a
+reference counting cycle
 
 Jason
