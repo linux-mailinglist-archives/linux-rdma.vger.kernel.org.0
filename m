@@ -2,137 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D828B77F
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2019 13:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2658BA5E
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2019 15:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727752AbfHMLso (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Aug 2019 07:48:44 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:42540 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727434AbfHMLso (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Aug 2019 07:48:44 -0400
-Received: by mail-qt1-f196.google.com with SMTP id t12so17394456qtp.9
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Aug 2019 04:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Zt45e40hCF0YCbbLZ0aQGoNlrA/sQl/2BzKPlIDcczo=;
-        b=D9yc6YFGEplkH0AEJkqbv5QQ/YqFFErgaOhlLwwyajnLxYCmzuYuYjTPu5K8IzHc7W
-         EHziDWuZnP0EJUoJorsIB/Vle5Jq4HW1ZePpJfpxeJ3PiL6g9IJgSG7a6i4U9+NgvGWa
-         Ai92AkBB6qVdNZzDPFs/+bpyxdePG4eiTSYai6xHFsXo6eqanU0phpcPPEHhvrx1/xET
-         /OrVUPcq3jLH3XTfzYOI9j16wl1cGoll9zeKlcNrafKlJBFPS3Xu3jF23bvmZsNJxEuE
-         b6+41/KGpH+t1xSORBP9OYFknrdMrMYelZfdaoojCQpOYGYaQ11oiLC8AtSSDLjOlbXi
-         Q++A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Zt45e40hCF0YCbbLZ0aQGoNlrA/sQl/2BzKPlIDcczo=;
-        b=qpfbVwYRBPt4DW/k2+Jhewm3fnLNVJbXws78S/+/UA5uNaSpeDKF8QOrGqkgE4Cxra
-         xiLppmnWbyt43i/1vOZxd8wCD3IDFcZJ7GCPQzchaqt7zKGWmIfCNoAI66PrL+dLZbnp
-         4H2qVF9fUdV8FuXvoXHFI3xq6ALE17CzJhi7smV3rnYz2KtAn4/k7ByrPw4juiAiWRtK
-         C3XdSFm/LXjJ17xmS9YxTlkHeULAb/RpCe5c8wCCEiIYW4buPJHp47irLn8rngDy7VA8
-         5z6WC6MN6MT4wl3oikaCC0V+4yxrxshUxYEG+Y4eO2o4IMfPlOsdzgw5WY5t4tG1fBsc
-         O6ag==
-X-Gm-Message-State: APjAAAX69RjwRj5GCpKXY6P456XGgWKOP86VZGsJ42WhY6zlznKaTzYi
-        RdaOn84fxYKJ7vUwT6ZxWRzWKA==
-X-Google-Smtp-Source: APXvYqw4TQlyWpH+GsoO+iiZQsGjdJlFsSEd7xLsZ4WRKAsozWVqNJgjFHJHWU5rc/t0VYgJHvE8mg==
-X-Received: by 2002:a0c:ae35:: with SMTP id y50mr33835040qvc.204.1565696923435;
-        Tue, 13 Aug 2019 04:48:43 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id m38sm12868061qta.43.2019.08.13.04.48.42
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 13 Aug 2019 04:48:42 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hxVIA-0007l2-Ec; Tue, 13 Aug 2019 08:48:42 -0300
-Date:   Tue, 13 Aug 2019 08:48:42 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
- file object
-Message-ID: <20190813114842.GB29508@ziepe.ca>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-17-ira.weiny@intel.com>
- <20190812130039.GD24457@ziepe.ca>
- <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
- <20190812175615.GI24457@ziepe.ca>
- <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
+        id S1729142AbfHMNdz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Aug 2019 09:33:55 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:60214 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728229AbfHMNdy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 13 Aug 2019 09:33:54 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 725D8307D90E;
+        Tue, 13 Aug 2019 13:33:54 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-57.rdu2.redhat.com [10.10.112.57])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6C1F8194B6;
+        Tue, 13 Aug 2019 13:33:53 +0000 (UTC)
+Message-ID: <107ef16030f6b7ffe70ba46cb22920ec21c707db.camel@redhat.com>
+Subject: Re: [PATCH V4 for-next 14/14] RDMA/hns: Use the new APIs for
+ printing log
+From:   Doug Ledford <dledford@redhat.com>
+To:     oulijun <oulijun@huawei.com>, jgg@ziepe.ca
+Cc:     leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Date:   Tue, 13 Aug 2019 09:33:50 -0400
+In-Reply-To: <e741a9b0-a716-3cb0-4635-1e71a431fb33@huawei.com>
+References: <1565276034-97329-1-git-send-email-oulijun@huawei.com>
+         <1565276034-97329-15-git-send-email-oulijun@huawei.com>
+         <e89dd9d3c6b38f826252c00d1f7becb96cac7bad.camel@redhat.com>
+         <0466fce2-1cde-73d5-fc98-25930dd9957b@huawei.com>
+         <e741a9b0-a716-3cb0-4635-1e71a431fb33@huawei.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-mtDr19CcDodUmfPd+d+1"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.48]); Tue, 13 Aug 2019 13:33:54 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 02:15:37PM -0700, Ira Weiny wrote:
-> On Mon, Aug 12, 2019 at 02:56:15PM -0300, Jason Gunthorpe wrote:
-> > On Mon, Aug 12, 2019 at 10:28:27AM -0700, Ira Weiny wrote:
-> > > On Mon, Aug 12, 2019 at 10:00:40AM -0300, Jason Gunthorpe wrote:
-> > > > On Fri, Aug 09, 2019 at 03:58:30PM -0700, ira.weiny@intel.com wrote:
-> > > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > > > 
-> > > > > In order for MRs to be tracked against the open verbs context the ufile
-> > > > > needs to have a pointer to hand to the GUP code.
-> > > > > 
-> > > > > No references need to be taken as this should be valid for the lifetime
-> > > > > of the context.
-> > > > > 
-> > > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > > >  drivers/infiniband/core/uverbs.h      | 1 +
-> > > > >  drivers/infiniband/core/uverbs_main.c | 1 +
-> > > > >  2 files changed, 2 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
-> > > > > index 1e5aeb39f774..e802ba8c67d6 100644
-> > > > > +++ b/drivers/infiniband/core/uverbs.h
-> > > > > @@ -163,6 +163,7 @@ struct ib_uverbs_file {
-> > > > >  	struct page *disassociate_page;
-> > > > >  
-> > > > >  	struct xarray		idr;
-> > > > > +	struct file             *sys_file; /* backpointer to system file object */
-> > > > >  };
-> > > > 
-> > > > The 'struct file' has a lifetime strictly shorter than the
-> > > > ib_uverbs_file, which is kref'd on its own lifetime. Having a back
-> > > > pointer like this is confouding as it will be invalid for some of the
-> > > > lifetime of the struct.
-> > > 
-> > > Ah...  ok.  I really thought it was the other way around.
-> > > 
-> > > __fput() should not call ib_uverbs_close() until the last reference on struct
-> > > file is released...  What holds references to struct ib_uverbs_file past that?
-> > 
-> > Child fds hold onto the internal ib_uverbs_file until they are closed
-> 
-> The FDs hold the struct file, don't they?
 
-Only dups, there are other 'child' FDs we can create
+--=-mtDr19CcDodUmfPd+d+1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > Now this has unlocked updates to that data.. you'd need some lock and
-> > get not zero pattern
-> 
-> You can't call "get" here because I'm 99% sure we only get here when struct
-> file has no references left...
+On Tue, 2019-08-13 at 17:31 +0800, oulijun wrote:
+> =E5=9C=A8 2019/8/13 17:13, oulijun =E5=86=99=E9=81=93:
+> > =E5=9C=A8 2019/8/12 22:48, Doug Ledford =E5=86=99=E9=81=93:
+> > > On Thu, 2019-08-08 at 22:53 +0800, Lijun Ou wrote:
+> > > > -               dev_err(&hr_dev->dev, "Destroy qp 0x%06lx
+> > > > failed(%d)\n",
+> > > > -                       hr_qp->qpn, ret);
+> > > > +               ibdev_err(&hr_dev->ib_dev, "Destroy qp 0x%06lx
+> > > > failed(%d)\n",
+> > > > +                         hr_qp->qpn, ret);
+> > > And then fixed it up here too.
+> > >=20
+> > Thanks. I will be more careless in the next time.
+> >=20
+> >=20
+> >=20
+> > .
+> >=20
+> Sorry, I will be more careful in the next time.
 
-Nope, like I said the other FDs hold the uverbs_file independent of
-the struct file it is related too. 
+I have to admit, I did get a chuckle out of the previous email, thanks
+for that ;-)
 
-This is why having a back pointer like this is so ugly, it creates a
-reference counting cycle
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-Jason
+--=-mtDr19CcDodUmfPd+d+1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1SvD4ACgkQuCajMw5X
+L920yRAAmF47i7kr6DfBvg+mj7wpR6bBq94bEk5v3D04M/EhnXebt33nrStP77MO
+BShkgBzeV5PDLlZ37yWxEousTUPsXQZED9VlDDuUmzmJJqVh/V9hii3+Qf7EequU
+3g7MiG16B0uOsf5gRuthVISswgSdHhha010gxBsLIpp5oiigIRvO0Z4FeplLFLPp
+ym9JFIWnxt2AlcUAlUjrPtCdSOq2b1gBTTcn9/vd2kj7dNLxx0XPkwIh0x5Q+Lsh
+oP2nqk/9me+WY2OQBMb4JM+Jf8MWpWN1lSoeXf1TRMNN4wYqAMSN5tJgnx/0YT0E
+kInUK4YB8n46sAgnRL1mlVNAP/Y8Nu3zXqwdz2CTwOt0V6nff7Jud8M+2rN8RldM
+3SxECIugGM+rck8AaxZHwb1eyHXHUCNiqw6xktv1gj7JjjsOEvtC+J5U9/voygA5
+4U/pzvO1PCAc+jygVQZCqkP68uD0Y9kUFiSz9uI73du2KvrmqoI7PgzsThR6L+Zo
+nK68xGtn4siKEeqFB2dkY9YzDxIPtca470S0K+DgVzuA2DTXj6fa6QeIMmOLTVTQ
+EE5AxbRZ4+9/ZVGncnAS1HaxOmvSY9uoO8grRZXLh7dqHvhZfWC+vHZXS+9zbh7p
+cHSvI7F1Xgk7YJtmQ7Qq7eWExycoDztGzjWPhCpUVBTXtCVUNUU=
+=Ymud
+-----END PGP SIGNATURE-----
+
+--=-mtDr19CcDodUmfPd+d+1--
+
