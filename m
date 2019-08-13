@@ -2,106 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5318C011
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2019 20:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124F58C070
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2019 20:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728259AbfHMSAY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Aug 2019 14:00:24 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:40050 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727517AbfHMSAY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Aug 2019 14:00:24 -0400
-Received: by mail-qt1-f195.google.com with SMTP id e8so6727289qtp.7
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Aug 2019 11:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IBxnXq2Ic/FEKXbpZLemvQFxGE32/we3wuo4f4S9MyU=;
-        b=JkdPDFhKWlCBD9Qi7RNp1yC1abkdUc7/1dY6LV39VmLNemSn9Powu35LNiuyO8uczt
-         Nadnkpe9izQcaWOyGGeQHJ23tWPRR6bGmsg+cyaAilqF+z1rDRrm+slvgHjrpOBu79SN
-         04/Y6/+5Ps6m17X0m+HDUinYIh8C32SkpSSPGyvi4DXoJS3WXfpvU9blzoRZ5bcDgJEL
-         IDg+rbA5MUkHi8mQ00jNvvGVGA9O50CHREVVTEuNyId2Vgr0BUJk+6udZ7yoDqN0JsU4
-         gZy0AfBcuVAFDG6OCN/ZVHt5uncO6CdDnK24oMMrw6a/bv0Qfkyj1OjJY0s/rkuU/UyI
-         PpFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IBxnXq2Ic/FEKXbpZLemvQFxGE32/we3wuo4f4S9MyU=;
-        b=YopL9YWOXuCsgipEtBz1j2oa/QzLwD2yZ7gzRC7CMeTL95zZuCo3ExlLdVbKvk1JZA
-         tMY7IcDmjYcok98j/zCQ1AufjNYoPNnm5U+XNeSVKEosApJgSOBHtpuWaPPr3IpBiDii
-         6IibrYG+BhBUTzjRSQgVDxf4rPHnXsUhBymeV29elFe/qnQ5ZxpmcEfvPahUnXCjB7eq
-         m5y5zacEJeYgSOuXzv0qUERGQlDu1uwHBZQh/7qTGHlZ+KqAtOhSQWYyL8ffHuhmtPFG
-         lVkOZMHfO5IPUZhmYsX3XADSEAsoZdOkZhDtE4hxNonWj+SGXlEUs2Tj9xlLcWkWR1QJ
-         LpEA==
-X-Gm-Message-State: APjAAAVk17LYYl0h2u63jfGY7zNklUHKV7WZYpLFCFZZiQpBy29/XbnP
-        2fw0u9BCWZGcz7XmG9U+do3CMA==
-X-Google-Smtp-Source: APXvYqwwH31e/CxiSAwLKzyYNpXPBlqnkZplwVbsfv2VH9N4iB3HSg736Ni8yTKYk8KDSLHvJDt7lg==
-X-Received: by 2002:ac8:1a6c:: with SMTP id q41mr32662928qtk.217.1565719223137;
-        Tue, 13 Aug 2019 11:00:23 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id y204sm5010562qka.54.2019.08.13.11.00.22
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 13 Aug 2019 11:00:22 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hxb5q-0000sY-7l; Tue, 13 Aug 2019 15:00:22 -0300
-Date:   Tue, 13 Aug 2019 15:00:22 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
- file object
-Message-ID: <20190813180022.GF29508@ziepe.ca>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-17-ira.weiny@intel.com>
- <20190812130039.GD24457@ziepe.ca>
- <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
- <20190812175615.GI24457@ziepe.ca>
- <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
- <20190813114842.GB29508@ziepe.ca>
- <20190813174142.GB11882@iweiny-DESK2.sc.intel.com>
+        id S1728169AbfHMSUs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Aug 2019 14:20:48 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35142 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727960AbfHMSUr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Aug 2019 14:20:47 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7DI91eh107580;
+        Tue, 13 Aug 2019 18:20:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ cc : message-id : date : mime-version : content-type :
+ content-transfer-encoding; s=corp-2019-08-05;
+ bh=oRJkJgrXT76QdvLc1KMWDXURdxrfwV4b+y8f06Jhz3c=;
+ b=PDkzw5sse4WJ5Jva5MoYL+oiU24GHpNvkK0nJn5o0+k8rWrYlBjGgz8KbkmWDDj0LOfl
+ xpJnACpfv8RtrQxxEkH7id0bI51O0eWay4dUUOhSZ0JwZ2z6b8SFPoy9vfKCSVyZeo4c
+ XB9NjbumGH4yCLAs/zf8qIt+1+amyLuAtybeZxgdNdfXqq3vd2nU6IAHYTQAPxJmE2mR
+ xd0upp811Q2vZV9+aHFckHTjJvO5aPCLO1879/sVtc3c72CPiLllGfq/AP657ay+35gG
+ bcwtl3Gwj3EXfR3P99RQsuejr8etY/rdjXqXu5k9cKQIX4zI7o7Gl8nKXAh0N1kJCbYQ Hw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2u9nvp83mm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Aug 2019 18:20:40 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7DIDmOs060674;
+        Tue, 13 Aug 2019 18:20:39 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2ubwrrmc5j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 13 Aug 2019 18:20:39 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7DIKdhK081374;
+        Tue, 13 Aug 2019 18:20:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2ubwrrmc57-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Aug 2019 18:20:39 +0000
+Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7DIKcZF031613;
+        Tue, 13 Aug 2019 18:20:38 GMT
+Received: from [10.211.54.53] (/10.211.54.53)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 13 Aug 2019 11:20:38 -0700
+From:   Gerd Rausch <gerd.rausch@oracle.com>
+Subject: [PATCH net-next 2/5] RDS: limit the number of times we loop in
+ rds_send_xmit
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Cc:     David Miller <davem@davemloft.net>
+Message-ID: <4d04cec6-ef2d-392b-233b-0abf7a57fe44@oracle.com>
+Date:   Tue, 13 Aug 2019 11:20:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190813174142.GB11882@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9348 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908130171
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 13, 2019 at 10:41:42AM -0700, Ira Weiny wrote:
+From: Chris Mason <chris.mason@oracle.com>
+Date: Fri, 3 Feb 2012 11:07:54 -0500
 
-> And I was pretty sure uverbs_destroy_ufile_hw() would take care of (or ensure
-> that some other thread is) destroying all the MR's we have associated with this
-> FD.
+This will kick the RDS worker thread if we have been looping
+too long.
 
-fd's can't be revoked, so destroy_ufile_hw() can't touch them. It
-deletes any underlying HW resources, but the FD persists.
+Original commit from 2012 updated to include a change by
+Venkat Venkatsubra <venkat.x.venkatsubra@oracle.com>
+that triggers "must_wake" if "rds_ib_recv_refill_one" fails.
+
+Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+---
+ net/rds/ib_recv.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
+index 3cae88cbdaa0..1a8a4a760b84 100644
+--- a/net/rds/ib_recv.c
++++ b/net/rds/ib_recv.c
+@@ -385,6 +385,7 @@ void rds_ib_recv_refill(struct rds_connection *conn, int prefill, gfp_t gfp)
+ 	unsigned int posted = 0;
+ 	int ret = 0;
+ 	bool can_wait = !!(gfp & __GFP_DIRECT_RECLAIM);
++	bool must_wake = false;
+ 	u32 pos;
  
-> > This is why having a back pointer like this is so ugly, it creates a
-> > reference counting cycle
-> 
-> Yep...  I worked through this...  and it was giving me fits...
-> 
-> Anyway, the struct file is the only object in the core which was reasonable to
-> store this information in since that is what is passed around to other
-> processes...
+ 	/* the goal here is to just make sure that someone, somewhere
+@@ -405,6 +406,7 @@ void rds_ib_recv_refill(struct rds_connection *conn, int prefill, gfp_t gfp)
+ 		recv = &ic->i_recvs[pos];
+ 		ret = rds_ib_recv_refill_one(conn, recv, gfp);
+ 		if (ret) {
++			must_wake = true;
+ 			break;
+ 		}
+ 
+@@ -423,6 +425,11 @@ void rds_ib_recv_refill(struct rds_connection *conn, int prefill, gfp_t gfp)
+ 		}
+ 
+ 		posted++;
++
++		if ((posted > 128 && need_resched()) || posted > 8192) {
++			must_wake = true;
++			break;
++		}
+ 	}
+ 
+ 	/* We're doing flow control - update the window. */
+@@ -445,10 +452,13 @@ void rds_ib_recv_refill(struct rds_connection *conn, int prefill, gfp_t gfp)
+ 	 * if we should requeue.
+ 	 */
+ 	if (rds_conn_up(conn) &&
+-	    ((can_wait && rds_ib_ring_low(&ic->i_recv_ring)) ||
++	    (must_wake ||
++	    (can_wait && rds_ib_ring_low(&ic->i_recv_ring)) ||
+ 	    rds_ib_ring_empty(&ic->i_recv_ring))) {
+ 		queue_delayed_work(rds_wq, &conn->c_recv_w, 1);
+ 	}
++	if (can_wait)
++		cond_resched();
+ }
+ 
+ /*
+-- 
+2.22.0
 
-It could be passed down in the uattr_bundle, once you are in file operations
-handle the file is guarenteed to exist, and we've now arranged things
-so the uattr_bundle flows into the umem, as umems can only be
-established under a system call.
 
-Jason
