@@ -2,85 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A628DA86
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 19:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C501A8DC18
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 19:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730994AbfHNRS0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Aug 2019 13:18:26 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:13982 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730983AbfHNRS0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 14 Aug 2019 13:18:26 -0400
-Received: from pps.filterd (m0150244.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7EGvC4f020879;
-        Wed, 14 Aug 2019 17:18:09 GMT
-Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
-        by mx0b-002e3701.pphosted.com with ESMTP id 2ucm0vh8y6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Aug 2019 17:18:09 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g9t5008.houston.hpe.com (Postfix) with ESMTP id 92E2768;
-        Wed, 14 Aug 2019 17:18:07 +0000 (UTC)
-Received: from hpe.com (teo-eag.americas.hpqcorp.net [10.33.152.10])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 4CB6F45;
-        Wed, 14 Aug 2019 17:18:06 +0000 (UTC)
-Date:   Wed, 14 Aug 2019 12:18:06 -0500
-From:   Dimitri Sivanich <sivanich@hpe.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        Dimitri Sivanich <sivanich@hpe.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Gavin Shan <shangw@linux.vnet.ibm.com>,
-        Andrea Righi <andrea@betterlinux.com>
-Subject: Re: [PATCH v3 hmm 04/11] misc/sgi-gru: use mmu_notifier_get/put for
- struct gru_mm_struct
-Message-ID: <20190814171806.GA14680@hpe.com>
-References: <20190806231548.25242-1-jgg@ziepe.ca>
- <20190806231548.25242-5-jgg@ziepe.ca>
- <20190808102556.GB648@lst.de>
- <20190814155830.GO13756@mellanox.com>
+        id S1728262AbfHNRmO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Aug 2019 13:42:14 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:54204 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726951AbfHNRmO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Aug 2019 13:42:14 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7EGs4au046819;
+        Wed, 14 Aug 2019 17:41:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=vt3RvfccuDz7u3wStto053OL4aIZLvwLj/wAfsvE7Pg=;
+ b=DJfFSImEtNs/tA5U/IPn7OL5Lsek4G89bJltvae4omqJ3RkfRVGEA5pTRmcj8+eMg5nB
+ DY3GfaV6IRpMzjpX7UyvXUJyubAZY4r7ABjjjNfgsjihd5+xBEkkmKeIa7DhEGNLnSR7
+ OBYOZamH2XKyj+GCTUNeYwiPhKiXuUEvHacmsT1PLKBsJfcUTorz9m1Kn+YcJHwzxRMl
+ nE4NI6f47lQfahNvAL7E+WfUfa3OvoRQrN2JMwJEymGXryuHj1Q5T4xdbgsl3JJfTDNL
+ v2F3xGHosT92EnTtu6jNyEPJy+SnYouNd2o0yLN9aAfRU0cWLhD6vlrgJRc52Ebj6gVm tA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2u9pjqp614-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Aug 2019 17:41:57 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7EGrtec030652;
+        Wed, 14 Aug 2019 17:41:57 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2ucgf010fs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 14 Aug 2019 17:41:57 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7EHdWt2182248;
+        Wed, 14 Aug 2019 17:41:56 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2ucgf010fb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Aug 2019 17:41:56 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7EHft2u016762;
+        Wed, 14 Aug 2019 17:41:55 GMT
+Received: from [10.211.54.53] (/10.211.54.53)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 14 Aug 2019 10:41:55 -0700
+Subject: Re: [PATCH net-next 1/5] RDS: Re-add pf/sol access via sysctl
+To:     Doug Ledford <dledford@redhat.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Cc:     David Miller <davem@davemloft.net>
+References: <e0397d30-7405-a7af-286c-fe76887caf0a@oracle.com>
+ <53b40b359d18dd73a6cf264aa8013d33547b593f.camel@redhat.com>
+From:   Gerd Rausch <gerd.rausch@oracle.com>
+Message-ID: <d9281697-27c6-2aa5-6675-4b082be31c5d@oracle.com>
+Date:   Wed, 14 Aug 2019 10:41:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190814155830.GO13756@mellanox.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-14_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=636 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908140158
+In-Reply-To: <53b40b359d18dd73a6cf264aa8013d33547b593f.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9349 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908140158
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 03:58:34PM +0000, Jason Gunthorpe wrote:
-> On Thu, Aug 08, 2019 at 12:25:56PM +0200, Christoph Hellwig wrote:
-> > Looks good,
-> > 
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+Hi Doug,
+
+On 14/08/2019 08.56, Doug Ledford wrote:
+> Good Lord...RDS was taken into the kernel in Feb of 2009, so over 10
+> years ago.  The patch to put PF_RDS/AF_RDS/SOL_RDS was taken into
+> include/linux/socket.h Feb 26, 2009.  The RDS ports were allocated by
+> IANA on Feb 27 and May 20, 2009.  And you *still* have software that
+> needs this?
+
+I'll let Santosh elaborate on this, but it looks like we (i.e. Oracle) do:
+
+From our Gerrit, posted on Aug 08, 2019, 10:39:29 AM UTC-07:00:
+--------%<--------%<--------%<--------%<--------%<--------%<--------
+Santosh Shilimkar Acked-by +1
+Patch Set 1: Acked-by+1
+Unfortunately we need to keep these around.
+--------%<--------%<--------%<--------%<--------%<--------%<--------
+
+> As of today, does your current build of Oracle software still require this,
+> or have you at least fixed it up in your modern builds?
 > 
-> Dimitri, are you OK with this patch?
->
 
-I think this looks OK.
+I'll let Santosh answer that question as well.
 
-Reviewed-by: Dimitri Sivanich <sivanich@hpe.com>
+Thanks,
+
+  Gerd
