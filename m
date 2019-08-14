@@ -2,179 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCABC8D5BE
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 16:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9526A8D6C1
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 16:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbfHNOPL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Aug 2019 10:15:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50896 "EHLO mail.kernel.org"
+        id S1726551AbfHNO7O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Aug 2019 10:59:14 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:59584 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726019AbfHNOPK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 14 Aug 2019 10:15:10 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726166AbfHNO7O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 14 Aug 2019 10:59:14 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F11AF2133F;
-        Wed, 14 Aug 2019 14:15:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565792109;
-        bh=kburXRh82xHoH2ULBf4qbUaBruG20vqIvfvEbFcltJY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=YmMNPxPAWp25eQhuqgZ4ltWhMxF28BvGB5vskr14XqYVCQZZ96TVxfUdULrpt9Fg0
-         60trd+Jkb520pjcYaqrosDqW5ftToo6hZAXtZVmiRfDVvso+e6i9CkZS/dVjFp3R2p
-         sxNd0hLUe0BkrhCT6Rwkhd2HlJfkAotXSoeuAaW0=
-Message-ID: <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
-Subject: Re: [RFC PATCH v2 02/19] fs/locks: Add Exclusive flag to user
- Layout lease
-From:   Jeff Layton <jlayton@kernel.org>
-To:     ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Date:   Wed, 14 Aug 2019 10:15:06 -0400
-In-Reply-To: <20190809225833.6657-3-ira.weiny@intel.com>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
-         <20190809225833.6657-3-ira.weiny@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        by mx1.redhat.com (Postfix) with ESMTPS id C0BEB641C9;
+        Wed, 14 Aug 2019 14:59:13 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-57.rdu2.redhat.com [10.10.112.57])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CF0BA27BB8;
+        Wed, 14 Aug 2019 14:59:12 +0000 (UTC)
+Message-ID: <09bcafaab07dfde728357bfe61b6a7edfa3b25c9.camel@redhat.com>
+Subject: [PULL REQUEST] Please pull rdma.git
+From:   Doug Ledford <dledford@redhat.com>
+To:     "Torvalds, Linus" <torvalds@linux-foundation.org>
+Cc:     "Gunthorpe, Jason" <jgg@ziepe.ca>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Wed, 14 Aug 2019 10:59:07 -0400
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-9C7C2VeN3jiOYx/dWxTp"
 User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Wed, 14 Aug 2019 14:59:13 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 2019-08-09 at 15:58 -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> Add an exclusive lease flag which indicates that the layout mechanism
-> can not be broken.
-> 
-> Exclusive layout leases allow the file system to know that pages may be
-> GUP pined and that attempts to change the layout, ie truncate, should be
-> failed.
-> 
-> A process which attempts to break it's own exclusive lease gets an
-> EDEADLOCK return to help determine that this is likely a programming bug
-> vs someone else holding a resource.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  fs/locks.c                       | 23 +++++++++++++++++++++--
->  include/linux/fs.h               |  1 +
->  include/uapi/asm-generic/fcntl.h |  2 ++
->  3 files changed, 24 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/locks.c b/fs/locks.c
-> index ad17c6ffca06..0c7359cdab92 100644
-> --- a/fs/locks.c
-> +++ b/fs/locks.c
-> @@ -626,6 +626,8 @@ static int lease_init(struct file *filp, long type, unsigned int flags,
->  	fl->fl_flags = FL_LEASE;
->  	if (flags & FL_LAYOUT)
->  		fl->fl_flags |= FL_LAYOUT;
-> +	if (flags & FL_EXCLUSIVE)
-> +		fl->fl_flags |= FL_EXCLUSIVE;
->  	fl->fl_start = 0;
->  	fl->fl_end = OFFSET_MAX;
->  	fl->fl_ops = NULL;
-> @@ -1619,6 +1621,14 @@ int __break_lease(struct inode *inode, unsigned int mode, unsigned int type)
->  	list_for_each_entry_safe(fl, tmp, &ctx->flc_lease, fl_list) {
->  		if (!leases_conflict(fl, new_fl))
->  			continue;
-> +		if (fl->fl_flags & FL_EXCLUSIVE) {
-> +			error = -ETXTBSY;
-> +			if (new_fl->fl_pid == fl->fl_pid) {
-> +				error = -EDEADLOCK;
-> +				goto out;
-> +			}
-> +			continue;
-> +		}
->  		if (want_write) {
->  			if (fl->fl_flags & FL_UNLOCK_PENDING)
->  				continue;
-> @@ -1634,6 +1644,13 @@ int __break_lease(struct inode *inode, unsigned int mode, unsigned int type)
->  			locks_delete_lock_ctx(fl, &dispose);
->  	}
->  
-> +	/* We differentiate between -EDEADLOCK and -ETXTBSY so the above loop
-> +	 * continues with -ETXTBSY looking for a potential deadlock instead.
-> +	 * If deadlock is not found go ahead and return -ETXTBSY.
-> +	 */
-> +	if (error == -ETXTBSY)
-> +		goto out;
-> +
->  	if (list_empty(&ctx->flc_lease))
->  		goto out;
->  
-> @@ -2044,9 +2061,11 @@ static int do_fcntl_add_lease(unsigned int fd, struct file *filp, long arg)
->  	 * to revoke the lease in break_layout()  And this is done by using
->  	 * F_WRLCK in the break code.
->  	 */
-> -	if (arg == F_LAYOUT) {
-> +	if ((arg & F_LAYOUT) == F_LAYOUT) {
-> +		if ((arg & F_EXCLUSIVE) == F_EXCLUSIVE)
-> +			flags |= FL_EXCLUSIVE;
->  		arg = F_RDLCK;
-> -		flags = FL_LAYOUT;
-> +		flags |= FL_LAYOUT;
->  	}
->  
->  	fl = lease_alloc(filp, arg, flags);
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index dd60d5be9886..2e41ce547913 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -1005,6 +1005,7 @@ static inline struct file *get_file(struct file *f)
->  #define FL_UNLOCK_PENDING	512 /* Lease is being broken */
->  #define FL_OFDLCK	1024	/* lock is "owned" by struct file */
->  #define FL_LAYOUT	2048	/* outstanding pNFS layout or user held pin */
-> +#define FL_EXCLUSIVE	4096	/* Layout lease is exclusive */
->  
->  #define FL_CLOSE_POSIX (FL_POSIX | FL_CLOSE)
->  
-> diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-> index baddd54f3031..88b175ceccbc 100644
-> --- a/include/uapi/asm-generic/fcntl.h
-> +++ b/include/uapi/asm-generic/fcntl.h
-> @@ -176,6 +176,8 @@ struct f_owner_ex {
->  
->  #define F_LAYOUT	16      /* layout lease to allow longterm pins such as
->  				   RDMA */
-> +#define F_EXCLUSIVE	32      /* layout lease is exclusive */
-> +				/* FIXME or shoudl this be F_EXLCK??? */
->  
->  /* operations for bsd flock(), also used by the kernel implementation */
->  #define LOCK_SH		1	/* shared lock */
 
-This interface just seems weird to me. The existing F_*LCK values aren't
-really set up to be flags, but are enumerated values (even if there are
-some gaps on some arches). For instance, on parisc and sparc:
+--=-9C7C2VeN3jiOYx/dWxTp
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-/* for posix fcntl() and lockf() */
-#define F_RDLCK         01
-#define F_WRLCK         02
-#define F_UNLCK         03
+Hi Linus,
 
-While your new flag values are well above these values, it's still a bit
-sketchy to do what you're proposing from a cross-platform interface
-standpoint.
+Fairly small pull request for -rc3.  I'm out of town the rest of this
+week, so I made sure to clean out as much as possible from patchworks in
+enough time for 0-day to chew through it (Yay! for 0-day being back
+online! :-)).  Jason might send through any emergency stuff that could
+pop up, otherwise I'm back next week.
 
-I think this would be a lot cleaner if you weren't overloading the
-F_SETLEASE command with new flags, and instead added new
-F_SETLAYOUT/F_GETLAYOUT cmd values.
+The only real thing of note is the siw ABI change.  Since we just merged
+siw *this* release, there are no prior kernel releases to maintain
+kernel ABI with.  I told Bernard that if there is anything else about
+the siw ABI he thinks he might want to change before it goes set in
+stone, he should get it in ASAP.  The siw module was around for several
+years outside the kernel tree, and it had to be revamped considerably
+for inclusion upstream, so we are making no attempts to be backward
+compatible with the out of tree version.  Once 5.3 is actually released,
+we will have our baseline ABI to maintain.
 
-You'd then be free to define a new set of "arg" values for use with
-layouts, and there's be a clear distinction interface-wise between
-setting a layout and a lease.
+Here's the boiler plate:
 
--- 
-Jeff Layton <jlayton@kernel.org>
+The following changes since commit e21a712a9685488f5ce80495b37b9fdbe96c230d=
+:
+
+  Linux 5.3-rc3 (2019-08-04 18:40:12 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linu=
+s
+
+for you to fetch changes up to 2c8ccb37b08fe364f02a9914daca474d43151453:
+
+  RDMA/siw: Change CQ flags from 64->32 bits (2019-08-13 12:22:06 -0400)
+
+----------------------------------------------------------------
+Pull request for 5.3-rc3
+
+- Fix a memory registration release flow issue that was causing a
+  WARN_ON (mlx5)
+- If the counters for a port aren't allocated, then we can't do
+  operations on the non-existent counters (core)
+- Check the right variable for error code result (mlx5)
+- Fix a use after free issue (mlx5)
+- Fix an off by one memory leak (siw)
+- Actually return an error code on error (core)
+- Allow siw to be built on 32bit arches (siw, ABI change, but OK since
+  siw was just merged this merge window and there is no prior released
+  kernel to maintain compatibility with and we also updated the
+  rdma-core user space package to match)
+
+Signed-off-by: Doug Ledford <dledford@redhat.com>
+
+----------------------------------------------------------------
+Bernard Metzler (1):
+      RDMA/siw: Change CQ flags from 64->32 bits
+
+Dan Carpenter (3):
+      IB/mlx5: Check the correct variable in error handling code
+      RDMA/siw: Fix a memory leak in siw_init_cpulist()
+      RDMA/core: Fix error code in stat_get_doit_qp()
+
+Mark Zhang (1):
+      RDMA/counter: Prevent QP counter binding if counters unsupported
+
+Yishai Hadas (2):
+      IB/mlx5: Fix implicit MR release flow
+      IB/mlx5: Fix use-after-free error while accessing ev_file pointer
+
+ drivers/infiniband/core/counters.c    |  6 ++++++
+ drivers/infiniband/core/nldev.c       |  8 ++++++--
+ drivers/infiniband/core/umem_odp.c    |  4 ----
+ drivers/infiniband/hw/mlx5/devx.c     | 11 ++++++-----
+ drivers/infiniband/hw/mlx5/odp.c      | 24 +++++++++---------------
+ drivers/infiniband/sw/siw/Kconfig     |  2 +-
+ drivers/infiniband/sw/siw/siw.h       |  2 +-
+ drivers/infiniband/sw/siw/siw_main.c  |  4 +---
+ drivers/infiniband/sw/siw/siw_qp.c    | 14 ++++++++++----
+ drivers/infiniband/sw/siw/siw_verbs.c | 16 +++++++++++-----
+ include/uapi/rdma/siw-abi.h           |  3 ++-
+ 11 files changed, 53 insertions(+), 41 deletions(-)
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-9C7C2VeN3jiOYx/dWxTp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1UIbsACgkQuCajMw5X
+L93Waw/7BBwYtlEzdT4fP+3PmeLNrqQ6jz+2uM0TMsBIR8ggOvXubpfnTv7+jqta
+scsZI1i4ClqNfPo397+aQyj/GHTJpieb+5EoUYg1aEYyOoLd0OElSGVKGbbQZsjr
+UZYZ//7iuKICpQ1H9bhWLWAA4kxwiYRj+8g9jFXplLwyyy/V571Ua5QCN6Noszhe
+pSei/VmzKbQVd0ZfUF4NmgntAzrOEVanFQAmZyAhi8cIWFK/9N/mOU6QtAewZ+Hw
+VRHyVx05Mycp5j0Z2B7HDSJFtGAxr8HXxL9RLwsl6PIG+akFo/PrCVtMkzT8Kz1z
+Kk29LJSvWPoh2lEVftxYRKqLUOBGQRl7YgxSsv1S64Yz7ccLIAx3khxb11Ss0BsK
+42m4Wb9NulY9ObtVnkz2XUaSQ6EDMoyXKrfZHI61HZN58LzY3CoDoy6TuugEdTHo
+q0ttcalAd/w8aHurhBzQVJ35Quv14akpgpUnUb+TlxeGAOLz8e7bCNfSvkQfb6+w
+kycEUXgNsOX0zbV/KkCU2r2a7jQuuI5oIT/+msCF3lJmdx7FkNssZNU5b8jJY70l
+ZlEuMTvmJkvPsGyIsR/JiOd/M1MzlpgAURp58Wa/Qenq4jl9vCje9Ud5fuhnesxK
+pjeX2DV+Xz/WOBuI1FOKrWp6f15+5tZCx01ycquX0/vV8tn2cto=
+=4r9B
+-----END PGP SIGNATURE-----
+
+--=-9C7C2VeN3jiOYx/dWxTp--
 
