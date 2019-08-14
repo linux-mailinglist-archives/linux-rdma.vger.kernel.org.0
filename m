@@ -2,79 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F6B8C9AE
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 04:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCD08CB6F
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 07:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727198AbfHNCqh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Aug 2019 22:46:37 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:40879 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbfHNCqh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Aug 2019 22:46:37 -0400
-Received: by mail-qt1-f194.google.com with SMTP id e8so8115160qtp.7
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Aug 2019 19:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=pD/XpBOcxU6zmV0LLVzBEhXOXBom/NndH3aawH5g868=;
-        b=IzzlmTyB3Xsgb8CSHmNFv3EZm3rd7s/+Rpz8uK8clVoBf/U3P301mjwFTXWDqj1oSM
-         MQxMT8zWzlQhEBsElEoALqvNR+djrAIKRJ53nhPBVa5aeO26PnkJVrZgrXfbf8ebT6Kj
-         r7qxLrrdPykTVPYutPYmHibq89a7LpC/Cl6EVfYmS3XrUeITn2zAbbnaM7MUJfmRf2S/
-         ToYyAmhLTfC//ryy8k1z/E2YdvDMFN+uUV418XIAbOviazwxZEJsChBJjfMfbLEv8cHK
-         mvOsjt/5WsQYjAATOc8GbVcqfUrdB74JHXDEQ4L9B/LfbRRto9pY3SEndaiir56Sb9rv
-         Qbvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=pD/XpBOcxU6zmV0LLVzBEhXOXBom/NndH3aawH5g868=;
-        b=Su8NKKXuuNWTst6DwxPZg+1JX7gSkmf5ofYdyFC/rrXf2eod95ZJN5j2DMeJyjrU6J
-         YCN7DvIB9xPWlE36C19VfR43tf1sQul0H8UOG6u67iXS3iDuyXqBFiX625a6f+Xk0DlA
-         Cyo1kYM1M2AaMx9qJVN8/BN6AtCik0pQ18eKZ4YzuPT8cmFt7VzkfYnkFrByX1YLKtoc
-         r1fjxkouAflGF7rwdB5CoFJCUibcl8CzskZM90bOumBzBQ2ocQ7AGFnkI55w3HQAecFU
-         lteNEZSXEN4PxI073YKPNztOpLntm93wOLa+pvsfYWBkLlq8sGjLJolm5YB/mhSH3qdh
-         IDYw==
-X-Gm-Message-State: APjAAAUpbAgZVdUAgFKxNtHhsVVhE6iP1UzN50sMlPzgO+Kl1uFWojfO
-        TJnco4g83c9lEDnvti4FKkGCkQ==
-X-Google-Smtp-Source: APXvYqwZUhcYfqLZD1BmBDbDtrEp3VN4xaZXc5CMIUNdlUNrEwxJ99tUrtylVEq/hwrY8z7BcVtK5g==
-X-Received: by 2002:ac8:688:: with SMTP id f8mr36243068qth.130.1565750796315;
-        Tue, 13 Aug 2019 19:46:36 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id t26sm61485262qtc.95.2019.08.13.19.46.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Aug 2019 19:46:36 -0700 (PDT)
-Date:   Tue, 13 Aug 2019 19:46:25 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Wenwen Wang <wenwen@cs.uga.edu>
-Cc:     Tariq Toukan <tariqt@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        netdev@vger.kernel.org (open list:MELLANOX ETHERNET DRIVER (mlx4_en)),
-        linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver),
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH v2] net/mlx4_en: fix a memory leak bug
-Message-ID: <20190813194625.565e02b8@cakuba.netronome.com>
-In-Reply-To: <1565637095-7972-1-git-send-email-wenwen@cs.uga.edu>
-References: <1565637095-7972-1-git-send-email-wenwen@cs.uga.edu>
-Organization: Netronome Systems, Ltd.
+        id S1727578AbfHNFyo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Aug 2019 01:54:44 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:50666 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725263AbfHNFyo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 14 Aug 2019 01:54:44 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id F0160D08E1BA1BB87DFA;
+        Wed, 14 Aug 2019 13:54:37 +0800 (CST)
+Received: from [127.0.0.1] (10.74.150.236) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Wed, 14 Aug 2019
+ 13:54:27 +0800
+Subject: Re: [PATCH for-next 8/9] RDMA/hns: Kernel notify usr space to stop
+ ring db
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+CC:     Lijun Ou <oulijun@huawei.com>, <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
+ <1565343666-73193-9-git-send-email-oulijun@huawei.com>
+ <20190812055220.GA8440@mtr-leonro.mtl.com> <20190812131437.GG24457@ziepe.ca>
+From:   Yangyang Li <liyangyang20@huawei.com>
+Message-ID: <6ab06eaf-e257-2a3b-2c1b-c008f2a70038@huawei.com>
+Date:   Wed, 14 Aug 2019 13:54:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20190812131437.GG24457@ziepe.ca>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.74.150.236]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 12 Aug 2019 14:11:35 -0500, Wenwen Wang wrote:
-> In mlx4_en_config_rss_steer(), 'rss_map->indir_qp' is allocated through
-> kzalloc(). After that, mlx4_qp_alloc() is invoked to configure RSS
-> indirection. However, if mlx4_qp_alloc() fails, the allocated
-> 'rss_map->indir_qp' is not deallocated, leading to a memory leak bug.
-> 
-> To fix the above issue, add the 'qp_alloc_err' label to free
-> 'rss_map->indir_qp'.
-> 
-> Fixes: 4931c6ef04b4 ("net/mlx4_en: Optimized single ring steering")
-> Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+Hi, Leon & Jason
+Thanks a lot for your reply.
 
-Applied, thanks.
+ÔÚ 2019/8/12 21:14, Jason Gunthorpe Ð´µÀ:
+> On Mon, Aug 12, 2019 at 08:52:20AM +0300, Leon Romanovsky wrote:
+>> On Fri, Aug 09, 2019 at 05:41:05PM +0800, Lijun Ou wrote:
+>>> From: Yangyang Li <liyangyang20@huawei.com>
+>>>
+>>> In the reset scenario, if the kernel receives the reset signal,
+>>> it needs to notify the user space to stop ring doorbell.
+>>
+>> I doubt about it, it is racy like hell and relies on assumption that
+>> userspace will honor such request to stop.
+> 
+> Sounds like this is the device unplug flow we already have support
+> for, use the APIs to drop the VMA refering to the doorbell
+
+Thanks for the suggestion, I have found this new unplug API,
+and  I am trying to use it in the driver..
+
+> 
+>>> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  4 +++
+>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 52 ++++++++++++++++++++++++++++-
+>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 +++
+>>>  drivers/infiniband/hw/hns/hns_roce_main.c   | 22 ++++++------
+>>>  4 files changed, 70 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+>>> index 32465f5..be65fce 100644
+>>> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+>>> @@ -268,6 +268,8 @@ enum {
+>>>
+>>>  #define PAGE_ADDR_SHIFT				12
+>>>
+>>> +#define HNS_ROCE_IS_RESETTING			1
+>>> +
+>>>  struct hns_roce_uar {
+>>>  	u64		pfn;
+>>>  	unsigned long	index;
+>>> @@ -1043,6 +1045,8 @@ struct hns_roce_dev {
+>>>  	u32			odb_offset;
+>>>  	dma_addr_t		tptr_dma_addr;	/* only for hw v1 */
+>>>  	u32			tptr_size;	/* only for hw v1 */
+>>> +	struct page		*reset_page; /* store reset state */
+>>> +	void			*reset_kaddr; /* addr of reset page */
+>>>  	const struct hns_roce_hw *hw;
+>>>  	void			*priv;
+>>>  	struct workqueue_struct *irq_workq;
+>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>>> index d33341e..138e5a8 100644
+>>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>>> @@ -1867,17 +1867,49 @@ static void hns_roce_free_link_table(struct hns_roce_dev *hr_dev,
+>>>  			  link_tbl->table.map);
+>>>  }
+>>>
+>>> +static int hns_roce_v2_get_reset_page(struct hns_roce_dev *hr_dev)
+>>> +{
+>>> +	hr_dev->reset_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
+>>> +	if (!hr_dev->reset_page)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	hr_dev->reset_kaddr = vmap(&hr_dev->reset_page, 1, VM_MAP, PAGE_KERNEL);
+>>> +	if (!hr_dev->reset_kaddr)
+>>> +		goto err_with_vmap;
+> 
+> Yes, this vmap is nonsense too, get_zeroed_page() is the right API
+> 
+> Jason
+> 
+> 
+Thanks for the suggestion, put_page is not the correct usage,
+I will use the appropriate API to fix it in the next patch.
+
+Thanks
+
