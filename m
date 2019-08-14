@@ -2,148 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EC88D25A
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 13:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210938D2EF
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 14:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727586AbfHNLjY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Aug 2019 07:39:24 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:43043 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725800AbfHNLjX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 14 Aug 2019 07:39:23 -0400
-Received: from dread.disaster.area (pa49-195-190-67.pa.nsw.optusnet.com.au [49.195.190.67])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 4D35443D5DD;
-        Wed, 14 Aug 2019 21:39:17 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hxrbW-0002CL-QK; Wed, 14 Aug 2019 21:38:10 +1000
-Date:   Wed, 14 Aug 2019 21:38:10 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        id S1726365AbfHNMXL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Aug 2019 08:23:11 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:37284 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbfHNMXL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Aug 2019 08:23:11 -0400
+Received: by mail-qt1-f195.google.com with SMTP id y26so109880608qto.4
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2019 05:23:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FsrM9iQimb3FYscqsqAsnH27bNwSQwrEhuf8y7pTQg4=;
+        b=MFiCvrWusQBCqyuv0MsnT3yWbG9zhhmIK7HccUs0r5kMXPkuqKNunVQ1h/zORuyu1K
+         dPCooMZtmzJUb73IhrAfW/RZn4uYi3/BcDXSM/JcFnAxpkgDO1ZnxF/dhwE9LrJIMKK2
+         GIj2ajzFnej54EdngHyC+E8SXNY43OW5hl/3FkeZd7g7YORhHWyVwCG9TQ3dfsA80OiH
+         HWrzFKQ3z7OgUVHt5oT61jV6sjY3dSq3dQapXw9as/49/pFairabCCHK8rm27pDfH41T
+         89o7Sbf/Wh6HwQkqcQV3HvbMUxSx6Ms+71YocGCgvEMjq5pAvY9mDNWZDltPkDZJ4FU7
+         pvDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FsrM9iQimb3FYscqsqAsnH27bNwSQwrEhuf8y7pTQg4=;
+        b=eyQcc+N1CKotJ70EpPorwCzEMeo4v8XrRg7FDbMoEbIxN5tnj23NfFnNkNwGVOwL8w
+         bq8rkXSDr/OfEHBz21rpBIn866+nwxxsRv9yMRMNDa8Q+8tbojNc4QIlmHaWls8D1blZ
+         43HP4x645e6SANnvdExChJIRAYFnGxRPrAco/rcGhGcHobJtBdARCgiDT2mfu9Keqd2B
+         NrGW8tyeVSYfJnIErTLQQZWmyHMlg3igqpwm+zNxvilXpEfSsJBLdzZGH+hXEKwY0onY
+         U5enEDhty4Y0ikgiuYR6q9ikI7/hAfVCGSbfgFutcaNDnwEwuhEduUaAzi2Flyt9Kvxb
+         R+BQ==
+X-Gm-Message-State: APjAAAVO7ovyprMrYmLSZmy3s1cIiuXV0ScK2kQiI3tr3ncSTGAqAlkZ
+        W+0RuHLedkJIEkPdG1N9NAlDSw==
+X-Google-Smtp-Source: APXvYqzonRYXwuBtV/92ARGeHeTsDCMwXjWO17US6GUvZqwZjITlYGafac4H3tDArYgjya/pKX0Bmw==
+X-Received: by 2002:a0c:fe6b:: with SMTP id b11mr2192818qvv.64.1565785390263;
+        Wed, 14 Aug 2019 05:23:10 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id e7sm46275956qtp.91.2019.08.14.05.23.09
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 14 Aug 2019 05:23:09 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hxsJ2-00049A-QU; Wed, 14 Aug 2019 09:23:08 -0300
+Date:   Wed, 14 Aug 2019 09:23:08 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Dan Williams <dan.j.williams@intel.com>,
         Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
         Theodore Ts'o <tytso@mit.edu>,
         John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
         linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 01/19] fs/locks: Export F_LAYOUT lease to user
- space
-Message-ID: <20190814113810.GJ7777@dread.disaster.area>
+Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
+ file object
+Message-ID: <20190814122308.GB13770@ziepe.ca>
 References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-2-ira.weiny@intel.com>
- <20190809235231.GC7777@dread.disaster.area>
- <20190812173626.GB19746@iweiny-DESK2.sc.intel.com>
- <20190814080547.GJ6129@dread.disaster.area>
- <1ba29bfa22f82e6d880ab31c3835047f3353f05a.camel@kernel.org>
+ <20190809225833.6657-17-ira.weiny@intel.com>
+ <20190812130039.GD24457@ziepe.ca>
+ <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
+ <20190812175615.GI24457@ziepe.ca>
+ <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
+ <20190813114842.GB29508@ziepe.ca>
+ <20190813174142.GB11882@iweiny-DESK2.sc.intel.com>
+ <20190813180022.GF29508@ziepe.ca>
+ <20190813203858.GA12695@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1ba29bfa22f82e6d880ab31c3835047f3353f05a.camel@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=TR82T6zjGmBjdfWdGgpkDw==:117 a=TR82T6zjGmBjdfWdGgpkDw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=ZoWuoDdl_XJqS1jHo3MA:9
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20190813203858.GA12695@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 07:21:34AM -0400, Jeff Layton wrote:
-> On Wed, 2019-08-14 at 18:05 +1000, Dave Chinner wrote:
-> > On Mon, Aug 12, 2019 at 10:36:26AM -0700, Ira Weiny wrote:
-> > > On Sat, Aug 10, 2019 at 09:52:31AM +1000, Dave Chinner wrote:
-> > > > On Fri, Aug 09, 2019 at 03:58:15PM -0700, ira.weiny@intel.com wrote:
-> > > > > +	/*
-> > > > > +	 * NOTE on F_LAYOUT lease
-> > > > > +	 *
-> > > > > +	 * LAYOUT lease types are taken on files which the user knows that
-> > > > > +	 * they will be pinning in memory for some indeterminate amount of
-> > > > > +	 * time.
-> > > > 
-> > > > Indeed, layout leases have nothing to do with pinning of memory.
-> > > 
-> > > Yep, Fair enough.  I'll rework the comment.
-> > > 
-> > > > That's something an application taht uses layout leases might do,
-> > > > but it largely irrelevant to the functionality layout leases
-> > > > provide. What needs to be done here is explain what the layout lease
-> > > > API actually guarantees w.r.t. the physical file layout, not what
-> > > > some application is going to do with a lease. e.g.
-> > > > 
-> > > > 	The layout lease F_RDLCK guarantees that the holder will be
-> > > > 	notified that the physical file layout is about to be
-> > > > 	changed, and that it needs to release any resources it has
-> > > > 	over the range of this lease, drop the lease and then
-> > > > 	request it again to wait for the kernel to finish whatever
-> > > > 	it is doing on that range.
-> > > > 
-> > > > 	The layout lease F_RDLCK also allows the holder to modify
-> > > > 	the physical layout of the file. If an operation from the
-> > > > 	lease holder occurs that would modify the layout, that lease
-> > > > 	holder does not get notification that a change will occur,
-> > > > 	but it will block until all other F_RDLCK leases have been
-> > > > 	released by their holders before going ahead.
-> > > > 
-> > > > 	If there is a F_WRLCK lease held on the file, then a F_RDLCK
-> > > > 	holder will fail any operation that may modify the physical
-> > > > 	layout of the file. F_WRLCK provides exclusive physical
-> > > > 	modification access to the holder, guaranteeing nothing else
-> > > > 	will change the layout of the file while it holds the lease.
-> > > > 
-> > > > 	The F_WRLCK holder can change the physical layout of the
-> > > > 	file if it so desires, this will block while F_RDLCK holders
-> > > > 	are notified and release their leases before the
-> > > > 	modification will take place.
-> > > > 
-> > > > We need to define the semantics we expose to userspace first.....
-> 
-> Absolutely.
-> 
-> > > 
-> > > Agreed.  I believe I have implemented the semantics you describe above.  Do I
-> > > have your permission to use your verbiage as part of reworking the comment and
-> > > commit message?
+On Tue, Aug 13, 2019 at 01:38:59PM -0700, Ira Weiny wrote:
+> On Tue, Aug 13, 2019 at 03:00:22PM -0300, Jason Gunthorpe wrote:
+> > On Tue, Aug 13, 2019 at 10:41:42AM -0700, Ira Weiny wrote:
 > > 
-> > Of course. :)
+> > > And I was pretty sure uverbs_destroy_ufile_hw() would take care of (or ensure
+> > > that some other thread is) destroying all the MR's we have associated with this
+> > > FD.
 > > 
-> > Cheers,
-> > 
+> > fd's can't be revoked, so destroy_ufile_hw() can't touch them. It
+> > deletes any underlying HW resources, but the FD persists.
 > 
-> I'll review this in more detail soon, but subsequent postings of the set
-> should probably also go to linux-api mailing list. This is a significant
-> API change. It might not also hurt to get the glibc folks involved here
-> too since you'll probably want to add the constants to the headers there
-> as well.
+> I misspoke.  I should have said associated with this "context".  And of course
+> uverbs_destroy_ufile_hw() does not touch the FD.  What I mean is that the
+> struct file which had file_pins hanging off of it would be getting its file
+> pins destroyed by uverbs_destroy_ufile_hw().  Therefore we don't need the FD
+> after uverbs_destroy_ufile_hw() is done.
+> 
+> But since it does not block it may be that the struct file is gone before the
+> MR is actually destroyed.  Which means I think the GUP code would blow up in
+> that case...  :-(
 
-Sure, but lets first get it to the point where we have something
-that is actually workable, much more complete and somewhat validated
-with unit tests before we start involving too many people. Wide
-review of prototype code isn't really a good use of resources given
-how much it's probably going to change from here...
+Oh, yes, that is true, you also can't rely on the struct file living
+longer than the HW objects either, that isn't how the lifetime model
+works.
 
-> Finally, consider going ahead and drafting a patch to the fcntl(2)
-> manpage if you think you have the API mostly nailed down. This API is a
-> little counterintuitive (i.e. you can change the layout with an F_RDLCK
-> lease), so it will need to be very clearly documented. I've also found
-> that when creating a new API, documenting it tends to help highlight its
-> warts and areas where the behavior is not clearly defined.
+If GUP consumes the struct file it must allow the struct file to be
+deleted before the GUP pin is released.
 
-I find writing unit tests for xfstests to validate the new APIs work
-as intended finds far more problems with the API than writing the
-documentation. :)
+> The drivers could provide some generic object (in RDMA this could be the
+> uverbs_attr_bundle) which represents their "context".
 
-Cheers,
+For RDMA the obvious context is the struct ib_mr *
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> But for the procfs interface, that context then needs to be associated with any
+> file which points to it...  For RDMA, or any other "FD based pin mechanism", it
+> would be up to the driver to "install" a procfs handler into any struct file
+> which _may_ point to this context.  (before _or_ after memory pins).
+
+Is this all just for debugging? Seems like a lot of complication just
+to print a string
+
+Generally, I think you'd be better to associate things with the
+mm_struct not some struct file... The whole design is simpler as GUP
+already has the mm_struct.
+
+Jason
