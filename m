@@ -2,104 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 335208E035
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 23:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E897D8E076
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 00:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbfHNV5n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Aug 2019 17:57:43 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:57130 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728745AbfHNV5m (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 14 Aug 2019 17:57:42 -0400
-Received: from dread.disaster.area (pa49-195-190-67.pa.nsw.optusnet.com.au [49.195.190.67])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 800D843DB39;
-        Thu, 15 Aug 2019 07:57:37 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hy1Fu-0006Ca-2B; Thu, 15 Aug 2019 07:56:30 +1000
-Date:   Thu, 15 Aug 2019 07:56:30 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 02/19] fs/locks: Add Exclusive flag to user Layout
- lease
-Message-ID: <20190814215630.GQ6129@dread.disaster.area>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-3-ira.weiny@intel.com>
- <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
+        id S1729917AbfHNWOV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Aug 2019 18:14:21 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:46989 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729879AbfHNWOV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Aug 2019 18:14:21 -0400
+Received: by mail-qt1-f196.google.com with SMTP id j15so320589qtl.13
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2019 15:14:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=p6m83mGjllDiHyeRTSS1oVMHX5M/xE6ILn6PPhzsgs4=;
+        b=l5PC+4msT+R1VOq1FIInu61dIh2STHPN9aSBt/Y5M3n644FfA169IT6wzP+sfbruwG
+         5vHd8QNfmmF7FOlV1OW4+1ls9+argQAW0MZ9696kjqRFjMtNiRxkPVvom8CpuMz6+P3J
+         lvnykAE+N5ClLjt8+21Oenlj55mmWn47h6bOufTUj3iAyACG+cL0ImoQgj5m6u3w1/lr
+         fVPm9fs++0X3Li7mpOQ13No26+jYpH9OobXYps5GGnrfpp0Xq6qTsPtsJRMHzlRsuSi2
+         Q5RuPSHMeFGhG1MzboDTj+tp2IBpQDy9TN5wUYjWC528WeGARQxpLHz2F9meUvIkEvkQ
+         sSPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=p6m83mGjllDiHyeRTSS1oVMHX5M/xE6ILn6PPhzsgs4=;
+        b=GkU/rFS7hmryJPHBaYTuVtHuSCFU/IUaSW9udS/K8X9BAQGNMbCn34BD7h+CpZz495
+         Zmxj2O7TuZQyLSukhpdOlaCzgpzZj8h3IsLpAu1aMERUDTMYGO74lEEyHiSzPzsqRN6Y
+         KGpQccFJCBLR7yMwGCyg5VB4j1gQfpAX66S3EP1W+hCyFdykBJt06jzmofn+Gb5n0Kk5
+         YAtdqmGS9jlehk4P54PQR13wLB+BYp7Ecat41rLPIuvxvX5mrbSnLHIkkH8wdsrUhSvS
+         2ip2F/mAg3KrYMIv7hTMMURnU+ymOpo6v1yDVzy+kTXVvsmTQRZgOpv1SoUJ6QWoGgBJ
+         xcWA==
+X-Gm-Message-State: APjAAAWfTyGJVjgEWnf0jHMvdWz0T253BGehOZ8qO6HkDsv05ZjiC5Ln
+        regN0RPa+1RYx30b0HrNt7o/58miEwWswrO5bRE=
+X-Google-Smtp-Source: APXvYqwvEwq36YC/YcFdGthiFQqEswOUmu8y33AXL4ty34gsygcaTEjmhvj04/dFUfa1vFoE719aJcDSjuFoUwkSVes=
+X-Received: by 2002:aed:3826:: with SMTP id j35mr1333309qte.54.1565820860049;
+ Wed, 14 Aug 2019 15:14:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=TR82T6zjGmBjdfWdGgpkDw==:117 a=TR82T6zjGmBjdfWdGgpkDw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=qa3ElbQomqnm_qv8Y-cA:9
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Received: by 2002:aed:3544:0:0:0:0:0 with HTTP; Wed, 14 Aug 2019 15:14:19
+ -0700 (PDT)
+Reply-To: Katerinejones19@gmail.com
+From:   "MS. MARYANNA B. THOMASON" <westernunion.benin982@gmail.com>
+Date:   Wed, 14 Aug 2019 23:14:19 +0100
+Message-ID: <CAP=nHB+U+By16HzeUHiDfPT5KNtemGam6gniZhL2s7_itZ3F8w@mail.gmail.com>
+Subject: TODAY, Wed, Aug 14, 2019 I AM READY FOR COMING TO YOUR ADDRESS WITH
+ THIS ATM CARD
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 10:15:06AM -0400, Jeff Layton wrote:
-> On Fri, 2019-08-09 at 15:58 -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Add an exclusive lease flag which indicates that the layout mechanism
-> > can not be broken.
-> > 
-> > Exclusive layout leases allow the file system to know that pages may be
-> > GUP pined and that attempts to change the layout, ie truncate, should be
-> > failed.
-> > 
-> > A process which attempts to break it's own exclusive lease gets an
-> > EDEADLOCK return to help determine that this is likely a programming bug
-> > vs someone else holding a resource.
-.....
-> > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-> > index baddd54f3031..88b175ceccbc 100644
-> > --- a/include/uapi/asm-generic/fcntl.h
-> > +++ b/include/uapi/asm-generic/fcntl.h
-> > @@ -176,6 +176,8 @@ struct f_owner_ex {
-> >  
-> >  #define F_LAYOUT	16      /* layout lease to allow longterm pins such as
-> >  				   RDMA */
-> > +#define F_EXCLUSIVE	32      /* layout lease is exclusive */
-> > +				/* FIXME or shoudl this be F_EXLCK??? */
-> >  
-> >  /* operations for bsd flock(), also used by the kernel implementation */
-> >  #define LOCK_SH		1	/* shared lock */
-> 
-> This interface just seems weird to me. The existing F_*LCK values aren't
-> really set up to be flags, but are enumerated values (even if there are
-> some gaps on some arches). For instance, on parisc and sparc:
+ATTN DEAR PARCEL BENEFICIARY.
 
-I don't think we need to worry about this - the F_WRLCK version of
-the layout lease should have these exclusive access semantics (i.e
-other ops fail rather than block waiting for lease recall) and hence
-the API shouldn't need a new flag to specify them.
+I AM CATHY JONES,DIPLOMATIC AGENT ASIGNED ON THE DELIVERY OF YOUR ATM
+CARD THROUGH MS. MARYANNA B. THOMASON, DHL MANAGEMENT DIRECTOR NEW
+YORK.
+TODAY, Wed, Aug 14, 2019 I AM READY FOR COMING TO YOUR ADDRESS WITH
+THIS ATM CARD, So before i deliver I want you to send me.
+official diplomatic agent delivery fee sum of $150.00 us
+ only. I am here at JFK Airport,Florida. USA
 
-i.e. the primary difference between F_RDLCK and F_WRLCK layout
-leases is that the F_RDLCK is a shared, co-operative lease model
-where only delays in operations will be seen, while F_WRLCK is a
-"guarantee exclusive access and I don't care what it breaks"
-model... :)
+SEND THIS FEE BY WESTERN UNION OR MONEY WITH RECEIVER'S NAME AND ADDRESS BELOW.
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+RECEIVER'S NAME-----------------ERROL PRINGLE
+ADDRESS----------------3500 OLD DENTON RD APT 208; CARROLLTON, TEXAS 75007
+COUNTRY----------------USA
+AMOUNT--------------------$150.00 ONLY
+TEST QUESTION----------------WHO IS THE CREATOR
+ANSWER------------------GOD
+ meanwhile this $150.00 is required by the Custom Service,USA Homeland
+Security,for protection of your delivery, it will make the ATM CARD
+and funds worth $15.8MILLION US DOLLARS secure, Beleiev me, this is my
+word, remark my word,you will receive your delivery from me, Mrs.
+Cathy Jones once you send this only $150.00 today.
+I WAIT ON YOUR PAYMENT CONFIRMATION, ONCE I GOT YOUR PAYMENT, I WILL
+FINALLY ARRIVE TO YOUR NEAREST ADDRESS. today
+THANKS AND MAY GOD BLESS  YOU
+CATHY JONES,DIPLOMATIC AGENT
+EMAIL; katerinejones19@gmail.com
+CALL OR TEXT ME, DIPLOMATIC AGENT MS. CATHY JONES
+Phone Number; (408) 650-6103,
