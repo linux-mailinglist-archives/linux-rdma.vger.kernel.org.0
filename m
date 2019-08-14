@@ -2,94 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B951C8D57B
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 16:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCABC8D5BE
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 16:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbfHNOAm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Aug 2019 10:00:42 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:55324 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727972AbfHNOAm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Aug 2019 10:00:42 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7EDwbw5070362;
-        Wed, 14 Aug 2019 14:00:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=90xGyy1ITT+ME0I1VV4EmGapgnMTBq2qrf2gaMSB2Sg=;
- b=h4sMk7gfy57lzDfcRa12wBKOOOld4PhpXYP3zG2WMe22hsBydxymmNNcjdytcMlzNKcL
- PSsUs2aiMhJMUClEh6G82ejeN3DZxH1WFD80Woc2dJ2aGexfAlhFChldd3EzoCaigvVC
- msuaXjIZJ/te3Tc1QHIqwnUl7oSFCGa5Hsr0ymJGH86t1AN0+TYum2O8doxRfZapl6i0
- 4Z7WIC99EO0XzZzig8OsqFzoAtYs2AoXVcnSO+//UTq1mwxSm/JDb0HMrTv3NsUw/NLT
- lZel1iQoM59mKQdg+r2GfYqZSXN5d5RsEBG310zOTA7nd+5SRdCLpMxnyt0zPsL2Rmvp OQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2u9nbtn31c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Aug 2019 14:00:37 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7EDvOFc194164;
-        Wed, 14 Aug 2019 14:00:36 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 2ubwqt8ku7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Aug 2019 14:00:36 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7EE0YSP025068;
-        Wed, 14 Aug 2019 14:00:34 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 14 Aug 2019 07:00:33 -0700
-Date:   Wed, 14 Aug 2019 17:00:25 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Vlad Buslov <vladbu@mellanox.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [bug report] net/mlx5e: Extend encap entry with reference counter
-Message-ID: <20190814140025.GA24910@kadam>
-References: <20190814105302.GA14514@mwanda>
- <vbfpnl73lhc.fsf@mellanox.com>
+        id S1726157AbfHNOPL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Aug 2019 10:15:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726019AbfHNOPK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 14 Aug 2019 10:15:10 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F11AF2133F;
+        Wed, 14 Aug 2019 14:15:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565792109;
+        bh=kburXRh82xHoH2ULBf4qbUaBruG20vqIvfvEbFcltJY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=YmMNPxPAWp25eQhuqgZ4ltWhMxF28BvGB5vskr14XqYVCQZZ96TVxfUdULrpt9Fg0
+         60trd+Jkb520pjcYaqrosDqW5ftToo6hZAXtZVmiRfDVvso+e6i9CkZS/dVjFp3R2p
+         sxNd0hLUe0BkrhCT6Rwkhd2HlJfkAotXSoeuAaW0=
+Message-ID: <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
+Subject: Re: [RFC PATCH v2 02/19] fs/locks: Add Exclusive flag to user
+ Layout lease
+From:   Jeff Layton <jlayton@kernel.org>
+To:     ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Date:   Wed, 14 Aug 2019 10:15:06 -0400
+In-Reply-To: <20190809225833.6657-3-ira.weiny@intel.com>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+         <20190809225833.6657-3-ira.weiny@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <vbfpnl73lhc.fsf@mellanox.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9348 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908140145
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9348 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908140145
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 01:49:54PM +0000, Vlad Buslov wrote:
-> >   1447
-> >   1448                          if (mlx5e_is_offloaded_flow(flow)) {
-> >   1449                                  counter = mlx5e_tc_get_counter(flow);
-> >   1450                                  lastuse = mlx5_fc_query_lastuse(counter);
-> >   1451                                  if (time_after((unsigned long)lastuse, nhe->reported_lastuse)) {
-> >   1452                                          mlx5e_flow_put(netdev_priv(e->out_dev), flow);
-> >   1453                                          neigh_used = true;
-> >   1454                                          break;
-> >
-> > I think we need to call mlx5e_encap_put(netdev_priv(e->out_dev), e);
-> > before this break;
+On Fri, 2019-08-09 at 15:58 -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> We are breaking from the inner loop (not returning from the function,
-> just breaking the innermost loop) here after releasing the reference to
-> flow which was obtained at the beginning of the loop.
+> Add an exclusive lease flag which indicates that the layout mechanism
+> can not be broken.
 > 
+> Exclusive layout leases allow the file system to know that pages may be
+> GUP pined and that attempts to change the layout, ie truncate, should be
+> failed.
+> 
+> A process which attempts to break it's own exclusive lease gets an
+> EDEADLOCK return to help determine that this is likely a programming bug
+> vs someone else holding a resource.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>  fs/locks.c                       | 23 +++++++++++++++++++++--
+>  include/linux/fs.h               |  1 +
+>  include/uapi/asm-generic/fcntl.h |  2 ++
+>  3 files changed, 24 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/locks.c b/fs/locks.c
+> index ad17c6ffca06..0c7359cdab92 100644
+> --- a/fs/locks.c
+> +++ b/fs/locks.c
+> @@ -626,6 +626,8 @@ static int lease_init(struct file *filp, long type, unsigned int flags,
+>  	fl->fl_flags = FL_LEASE;
+>  	if (flags & FL_LAYOUT)
+>  		fl->fl_flags |= FL_LAYOUT;
+> +	if (flags & FL_EXCLUSIVE)
+> +		fl->fl_flags |= FL_EXCLUSIVE;
+>  	fl->fl_start = 0;
+>  	fl->fl_end = OFFSET_MAX;
+>  	fl->fl_ops = NULL;
+> @@ -1619,6 +1621,14 @@ int __break_lease(struct inode *inode, unsigned int mode, unsigned int type)
+>  	list_for_each_entry_safe(fl, tmp, &ctx->flc_lease, fl_list) {
+>  		if (!leases_conflict(fl, new_fl))
+>  			continue;
+> +		if (fl->fl_flags & FL_EXCLUSIVE) {
+> +			error = -ETXTBSY;
+> +			if (new_fl->fl_pid == fl->fl_pid) {
+> +				error = -EDEADLOCK;
+> +				goto out;
+> +			}
+> +			continue;
+> +		}
+>  		if (want_write) {
+>  			if (fl->fl_flags & FL_UNLOCK_PENDING)
+>  				continue;
+> @@ -1634,6 +1644,13 @@ int __break_lease(struct inode *inode, unsigned int mode, unsigned int type)
+>  			locks_delete_lock_ctx(fl, &dispose);
+>  	}
+>  
+> +	/* We differentiate between -EDEADLOCK and -ETXTBSY so the above loop
+> +	 * continues with -ETXTBSY looking for a potential deadlock instead.
+> +	 * If deadlock is not found go ahead and return -ETXTBSY.
+> +	 */
+> +	if (error == -ETXTBSY)
+> +		goto out;
+> +
+>  	if (list_empty(&ctx->flc_lease))
+>  		goto out;
+>  
+> @@ -2044,9 +2061,11 @@ static int do_fcntl_add_lease(unsigned int fd, struct file *filp, long arg)
+>  	 * to revoke the lease in break_layout()  And this is done by using
+>  	 * F_WRLCK in the break code.
+>  	 */
+> -	if (arg == F_LAYOUT) {
+> +	if ((arg & F_LAYOUT) == F_LAYOUT) {
+> +		if ((arg & F_EXCLUSIVE) == F_EXCLUSIVE)
+> +			flags |= FL_EXCLUSIVE;
+>  		arg = F_RDLCK;
+> -		flags = FL_LAYOUT;
+> +		flags |= FL_LAYOUT;
+>  	}
+>  
+>  	fl = lease_alloc(filp, arg, flags);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index dd60d5be9886..2e41ce547913 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1005,6 +1005,7 @@ static inline struct file *get_file(struct file *f)
+>  #define FL_UNLOCK_PENDING	512 /* Lease is being broken */
+>  #define FL_OFDLCK	1024	/* lock is "owned" by struct file */
+>  #define FL_LAYOUT	2048	/* outstanding pNFS layout or user held pin */
+> +#define FL_EXCLUSIVE	4096	/* Layout lease is exclusive */
+>  
+>  #define FL_CLOSE_POSIX (FL_POSIX | FL_CLOSE)
+>  
+> diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
+> index baddd54f3031..88b175ceccbc 100644
+> --- a/include/uapi/asm-generic/fcntl.h
+> +++ b/include/uapi/asm-generic/fcntl.h
+> @@ -176,6 +176,8 @@ struct f_owner_ex {
+>  
+>  #define F_LAYOUT	16      /* layout lease to allow longterm pins such as
+>  				   RDMA */
+> +#define F_EXCLUSIVE	32      /* layout lease is exclusive */
+> +				/* FIXME or shoudl this be F_EXLCK??? */
+>  
+>  /* operations for bsd flock(), also used by the kernel implementation */
+>  #define LOCK_SH		1	/* shared lock */
 
-Oh...  Duh.  I am embarrassed.  I misread it to think we were breaking
-from the outer loop.
+This interface just seems weird to me. The existing F_*LCK values aren't
+really set up to be flags, but are enumerated values (even if there are
+some gaps on some arches). For instance, on parisc and sparc:
 
-regards,
-dan carpenter
+/* for posix fcntl() and lockf() */
+#define F_RDLCK         01
+#define F_WRLCK         02
+#define F_UNLCK         03
+
+While your new flag values are well above these values, it's still a bit
+sketchy to do what you're proposing from a cross-platform interface
+standpoint.
+
+I think this would be a lot cleaner if you weren't overloading the
+F_SETLEASE command with new flags, and instead added new
+F_SETLAYOUT/F_GETLAYOUT cmd values.
+
+You'd then be free to define a new set of "arg" values for use with
+layouts, and there's be a clear distinction interface-wise between
+setting a layout and a lease.
+
+-- 
+Jeff Layton <jlayton@kernel.org>
 
