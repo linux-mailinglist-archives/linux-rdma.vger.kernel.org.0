@@ -2,123 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D5F8D089
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 12:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66A68D199
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 12:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727235AbfHNKRS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Aug 2019 06:17:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48234 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726019AbfHNKRS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 14 Aug 2019 06:17:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6A4C8AC8C;
-        Wed, 14 Aug 2019 10:17:15 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B08BB1E4200; Wed, 14 Aug 2019 12:17:14 +0200 (CEST)
-Date:   Wed, 14 Aug 2019 12:17:14 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190814101714.GA26273@quack2.suse.cz>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
+        id S1726865AbfHNKzQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Aug 2019 06:55:16 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33376 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbfHNKzQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Aug 2019 06:55:16 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7EAs1JC137006;
+        Wed, 14 Aug 2019 10:55:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
+ bh=gt0l2zsTz2l3ZjXvyhBQHpE/YiRmTp5wblWGuBO41M8=;
+ b=JTe88/0H+qGvdeCIRyvhaz2cO6LBofqN90G6OO4Zi77Fwe9ynOO6ClEYnF1iuAgBkXmI
+ BNeyb7UCTa/5rk3SPET8pZwhnIVYCF0Kx9C/SSj3PyVu5oOIPg+IJiHWdpzp//v3h+1k
+ bEYRjEgtH1e5vxprpZmz3h8bd6x2Xn8Ko7xh9YXbt0IKOIlq0anjonYfCE5T0B67ktGJ
+ vQzGPCRuxAHgL41GYfY80JuTRd8VU2yhHXC8t8tFj+gZCPUhKxxfFjMLl0wCIDXtdRyW
+ FD6IjGA5He5qOYGYvQVI6VzkF9FULkMBuria4EvoK2+XVldrbrlecxAj3vFYYiObQohW kg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2u9nvpc4mj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Aug 2019 10:55:12 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7EAqSkF052474;
+        Wed, 14 Aug 2019 10:53:11 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2ubwcxvxk8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Aug 2019 10:53:11 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7EArAkr005259;
+        Wed, 14 Aug 2019 10:53:10 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 14 Aug 2019 03:53:09 -0700
+Date:   Wed, 14 Aug 2019 13:53:02 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     vladbu@mellanox.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] net/mlx5e: Extend encap entry with reference counter
+Message-ID: <20190814105302.GA14514@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190809225833.6657-1-ira.weiny@intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9348 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908140113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9348 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908140113
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello!
+[ I already wrote this email, but it looks like I deleted it instead of
+  sending it.  So weird.  I hopefully don't send it twice! ]
 
-On Fri 09-08-19 15:58:14, ira.weiny@intel.com wrote:
-> Pre-requisites
-> ==============
-> 	Based on mmotm tree.
-> 
-> Based on the feedback from LSFmm, the LWN article, the RFC series since
-> then, and a ton of scenarios I've worked in my mind and/or tested...[1]
-> 
-> Solution summary
-> ================
-> 
-> The real issue is that there is no use case for a user to have RDMA pinn'ed
-> memory which is then truncated.  So really any solution we present which:
-> 
-> A) Prevents file system corruption or data leaks
-> ...and...
-> B) Informs the user that they did something wrong
-> 
-> Should be an acceptable solution.
-> 
-> Because this is slightly new behavior.  And because this is going to be
-> specific to DAX (because of the lack of a page cache) we have made the user
-> "opt in" to this behavior.
-> 
-> The following patches implement the following solution.
-> 
-> 0) Registrations to Device DAX char devs are not affected
-> 
-> 1) The user has to opt in to allowing page pins on a file with an exclusive
->    layout lease.  Both exclusive and layout lease flags are user visible now.
-> 
-> 2) page pins will fail if the lease is not active when the file back page is
->    encountered.
-> 
-> 3) Any truncate or hole punch operation on a pinned DAX page will fail.
+Hi Vlad,
 
-So I didn't fully grok the patch set yet but by "pinned DAX page" do you
-mean a page which has corresponding file_pin covering it? Or do you mean a
-page which has pincount increased? If the first then I'd rephrase this to
-be less ambiguous, if the second then I think it is wrong. 
+I noticed a possible refcounting bug in commit 948993f2beeb ("net/mlx5e:
+Extend encap entry with reference counter") from Jun 3, 2018.
 
-> 4) The user has the option of holding the lease or releasing it.  If they
->    release it no other pin calls will work on the file.
+	drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:1435 mlx5e_tc_update_neigh_used_value()
+	error: dereferencing freed memory 'e'
 
-Last time we spoke the plan was that the lease is kept while the pages are
-pinned (and an attempt to release the lease would block until the pages are
-unpinned). That also makes it clear that the *lease* is what is making
-truncate and hole punch fail with ETXTBUSY and the file_pin structure is
-just an implementation detail how the existence is efficiently tracked (and
-what keeps the backing file for the pages open so that the lease does not
-get auto-destroyed). Why did you change this?
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
 
-> 5) Closing the file is ok.
-> 
-> 6) Unmapping the file is ok
-> 
-> 7) Pins against the files are tracked back to an owning file or an owning mm
->    depending on the internal subsystem needs.  With RDMA there is an owning
->    file which is related to the pined file.
-> 
-> 8) Only RDMA is currently supported
+  1415  void mlx5e_tc_update_neigh_used_value(struct mlx5e_neigh_hash_entry *nhe)
+  1416  {
+  1417          struct mlx5e_neigh *m_neigh = &nhe->m_neigh;
+  1418          struct mlx5e_tc_flow *flow;
+  1419          struct mlx5e_encap_entry *e;
+  1420          struct mlx5_fc *counter;
+  1421          struct neigh_table *tbl;
+  1422          bool neigh_used = false;
+  1423          struct neighbour *n;
+  1424          u64 lastuse;
+  1425  
+  1426          if (m_neigh->family == AF_INET)
+  1427                  tbl = &arp_tbl;
+  1428  #if IS_ENABLED(CONFIG_IPV6)
+  1429          else if (m_neigh->family == AF_INET6)
+  1430                  tbl = &nd_tbl;
+  1431  #endif
+  1432          else
+  1433                  return;
+  1434  
+  1435          list_for_each_entry_safe(e, tmp, &nhe->encap_list, encap_list) {
+  1436                  struct encap_flow_item *efi, *tmp;
+  1437  
+  1438                  if (!(e->flags & MLX5_ENCAP_ENTRY_VALID) ||
+  1439                      !mlx5e_encap_take(e))
+                            ^^^^^^^^^^^^^^^^^^^
+We take a reference here.
 
-If you currently only need "owning file" variant in your patch set, then
-I'd just implement that and leave "owning mm" variant for later if it
-proves to be necessary. The things are complex enough as is...
+  1440                          continue;
+  1441  
+  1442                  list_for_each_entry_safe(efi, tmp, &e->flows, list) {
+  1443                          flow = container_of(efi, struct mlx5e_tc_flow,
+  1444                                              encaps[efi->index]);
+  1445                          if (IS_ERR(mlx5e_flow_get(flow)))
+  1446                                  continue;
+  1447  
+  1448                          if (mlx5e_is_offloaded_flow(flow)) {
+  1449                                  counter = mlx5e_tc_get_counter(flow);
+  1450                                  lastuse = mlx5_fc_query_lastuse(counter);
+  1451                                  if (time_after((unsigned long)lastuse, nhe->reported_lastuse)) {
+  1452                                          mlx5e_flow_put(netdev_priv(e->out_dev), flow);
+  1453                                          neigh_used = true;
+  1454                                          break;
 
-> 9) Truncation of pages which are not actively pinned nor covered by a lease
->    will succeed.
+I think we need to call mlx5e_encap_put(netdev_priv(e->out_dev), e);
+before this break;
 
-Otherwise I like the design.
+  1455                                  }
+  1456                          }
+  1457  
+  1458                          mlx5e_flow_put(netdev_priv(e->out_dev), flow);
+  1459                  }
+  1460  
+  1461                  mlx5e_encap_put(netdev_priv(e->out_dev), e);
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  1462                  if (neigh_used)
+  1463                          break;
+  1464          }
+  1465  
 
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+regards,
+dan carpenter
