@@ -2,209 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCED8D724
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 17:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E948D781
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2019 17:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbfHNPYh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Aug 2019 11:24:37 -0400
-Received: from condef-09.nifty.com ([202.248.20.74]:18116 "EHLO
-        condef-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbfHNPYh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Aug 2019 11:24:37 -0400
-Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-09.nifty.com with ESMTP id x7EFKeIR031864
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Aug 2019 00:20:40 +0900
-Received: from grover.flets-west.jp (softbank126125143222.bbtec.net [126.125.143.222]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id x7EFJLNa020382;
-        Thu, 15 Aug 2019 00:19:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com x7EFJLNa020382
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1565795963;
-        bh=KGInDuib3ttevnP+7+WuDjXitD/kBZuxU7S3UlEMP84=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LLkaKFDJHU8VP5478qZgjrpiY5pXKxQ+37C36RyCMy4jDxKARuEcaehzLj/DHAKc0
-         rqk7UejfA9jICs7M8CRjJQr/hf83FUC2jgLYmHXWbTvQDnMSbPHegjECwMCjvBBNkf
-         nnLG3b/qNTEuCSnWww97NgjA22P6GSghpkqbAcIDE9aXBEzwgtGkaQoCLdopJyoodl
-         Xffoad6xGM+IsO5+vSSR5J9L3q/gM6g+qGF/7BtJe6BRf2iyn3J6TzJ2U8wxkw2N8L
-         Z7q94tyHzWjMw0LK790VShUYyqx9E66+AVrgTFncNirq4M3HHtDCnRjrVjaB/KpUXb
-         uv8qSM41B109g==
-X-Nifty-SrcIP: [126.125.143.222]
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Boris Pismenny <borisp@mellanox.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Igor Russkikh <igor.russkikh@aquantia.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com
-Subject: [PATCH v2 2/2] treewide: remove dummy Makefiles for single targets
-Date:   Thu, 15 Aug 2019 00:19:19 +0900
-Message-Id: <20190814151919.16300-2-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190814151919.16300-1-yamada.masahiro@socionext.com>
-References: <20190814151919.16300-1-yamada.masahiro@socionext.com>
+        id S1726704AbfHNP5C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Aug 2019 11:57:02 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:53482 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726509AbfHNP5B (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 14 Aug 2019 11:57:01 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 7B34413A82;
+        Wed, 14 Aug 2019 15:57:01 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-57.rdu2.redhat.com [10.10.112.57])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 18AB781E27;
+        Wed, 14 Aug 2019 15:56:59 +0000 (UTC)
+Message-ID: <53b40b359d18dd73a6cf264aa8013d33547b593f.camel@redhat.com>
+Subject: Re: [PATCH net-next 1/5] RDS: Re-add pf/sol access via sysctl
+From:   Doug Ledford <dledford@redhat.com>
+To:     Gerd Rausch <gerd.rausch@oracle.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Cc:     David Miller <davem@davemloft.net>
+Date:   Wed, 14 Aug 2019 11:56:57 -0400
+In-Reply-To: <e0397d30-7405-a7af-286c-fe76887caf0a@oracle.com>
+References: <e0397d30-7405-a7af-286c-fe76887caf0a@oracle.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-uUWdoCCJ1ECep/mp9jWF"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.29]); Wed, 14 Aug 2019 15:57:01 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Now that the single target build descends into sub-directories in the
-same way as the normal build, these dummy Makefiles are not needed
-any more.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+--=-uUWdoCCJ1ECep/mp9jWF
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Changes in v2: None
+On Tue, 2019-08-13 at 11:20 -0700, Gerd Rausch wrote:
+> From: Andy Grover <andy.grover@oracle.com>
+> Date: Tue, 24 Nov 2009 15:35:51 -0800
+>=20
+> Although RDS has an official PF_RDS value now, existing software
+> expects to look for rds sysctls to determine it. We need to maintain
+> these for now, for backwards compatibility.
+>=20
+> Signed-off-by: Andy Grover <andy.grover@oracle.com>
+> Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+> ---
+>  net/rds/sysctl.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>=20
+> diff --git a/net/rds/sysctl.c b/net/rds/sysctl.c
+> index e381bbcd9cc1..9760292a0af4 100644
+> --- a/net/rds/sysctl.c
+> +++ b/net/rds/sysctl.c
+> @@ -49,6 +49,13 @@ unsigned int  rds_sysctl_max_unacked_bytes =3D (16 <<
+> 20);
+> =20
+>  unsigned int rds_sysctl_ping_enable =3D 1;
+> =20
+> +/*
+> + * We have official values, but must maintain the sysctl interface
+> for existing
+> + * software that expects to find these values here.
+> + */
+> +static int rds_sysctl_pf_rds =3D PF_RDS;
+> +static int rds_sysctl_sol_rds =3D SOL_RDS;
+> +
+>  static struct ctl_table rds_sysctl_rds_table[] =3D {
+>  	{
+>  		.procname       =3D "reconnect_min_delay_ms",
+> @@ -68,6 +75,20 @@ static struct ctl_table rds_sysctl_rds_table[] =3D {
+>  		.extra1		=3D &rds_sysctl_reconnect_min_jiffies,
+>  		.extra2		=3D &rds_sysctl_reconnect_max,
+>  	},
+> +	{
+> +		.procname       =3D "pf_rds",
+> +		.data		=3D &rds_sysctl_pf_rds,
+> +		.maxlen         =3D sizeof(int),
+> +		.mode           =3D 0444,
+> +		.proc_handler   =3D &proc_dointvec,
+> +	},
+> +	{
+> +		.procname       =3D "sol_rds",
+> +		.data		=3D &rds_sysctl_sol_rds,
+> +		.maxlen         =3D sizeof(int),
+> +		.mode           =3D 0444,
+> +		.proc_handler   =3D &proc_dointvec,
+> +	},
+>  	{
+>  		.procname	=3D "max_unacked_packets",
+>  		.data		=3D &rds_sysctl_max_unacked_packets,
 
- drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile      | 2 --
- drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile      | 2 --
- drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile       | 2 --
- drivers/net/ethernet/mellanox/mlx5/core/en/Makefile         | 2 --
- drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile     | 1 -
- drivers/net/ethernet/mellanox/mlx5/core/en_accel/Makefile   | 2 --
- drivers/net/ethernet/mellanox/mlx5/core/fpga/Makefile       | 2 --
- drivers/net/ethernet/mellanox/mlx5/core/ipoib/Makefile      | 2 --
- drivers/net/ethernet/mellanox/mlx5/core/lib/Makefile        | 2 --
- drivers/net/ethernet/netronome/nfp/bpf/Makefile             | 2 --
- drivers/net/ethernet/netronome/nfp/flower/Makefile          | 2 --
- drivers/net/ethernet/netronome/nfp/nfpcore/Makefile         | 2 --
- drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile | 2 --
- drivers/net/ethernet/netronome/nfp/nic/Makefile             | 2 --
- 14 files changed, 27 deletions(-)
- delete mode 100644 drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile
- delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile
- delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile
- delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/Makefile
- delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile
- delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en_accel/Makefile
- delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/fpga/Makefile
- delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/ipoib/Makefile
- delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/lib/Makefile
- delete mode 100644 drivers/net/ethernet/netronome/nfp/bpf/Makefile
- delete mode 100644 drivers/net/ethernet/netronome/nfp/flower/Makefile
- delete mode 100644 drivers/net/ethernet/netronome/nfp/nfpcore/Makefile
- delete mode 100644 drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile
- delete mode 100644 drivers/net/ethernet/netronome/nfp/nic/Makefile
+Good Lord...RDS was taken into the kernel in Feb of 2009, so over 10
+years ago.  The patch to put PF_RDS/AF_RDS/SOL_RDS was taken into
+include/linux/socket.h Feb 26, 2009.  The RDS ports were allocated by
+IANA on Feb 27 and May 20, 2009.  And you *still* have software that
+needs this?  The only software that has ever used RDS was Oracle
+software.  I would have expected you guys to update your source code to
+do the right thing long before now.  In fact, I would expect you were
+ready to retire all of the legacy software that needs this by now.  As
+of today, does your current build of Oracle software still require this,
+or have you at least fixed it up in your modern builds?
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile b/drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile
-deleted file mode 100644
-index 805fa28f391a..000000000000
---- a/drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--# kbuild requires Makefile in a directory to build individual objects
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile
-deleted file mode 100644
-index c78512eed8d7..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--subdir-ccflags-y += -I$(src)/..
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile
-deleted file mode 100644
-index c78512eed8d7..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--subdir-ccflags-y += -I$(src)/..
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/en/Makefile
-deleted file mode 100644
-index c78512eed8d7..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--subdir-ccflags-y += -I$(src)/..
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile
-deleted file mode 100644
-index 5ee42991900a..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile
-+++ /dev/null
-@@ -1 +0,0 @@
--subdir-ccflags-y += -I$(src)/../..
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/Makefile
-deleted file mode 100644
-index c78512eed8d7..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--subdir-ccflags-y += -I$(src)/..
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/fpga/Makefile
-deleted file mode 100644
-index c78512eed8d7..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--subdir-ccflags-y += -I$(src)/..
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/Makefile
-deleted file mode 100644
-index c78512eed8d7..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--subdir-ccflags-y += -I$(src)/..
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/lib/Makefile
-deleted file mode 100644
-index c78512eed8d7..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--subdir-ccflags-y += -I$(src)/..
-diff --git a/drivers/net/ethernet/netronome/nfp/bpf/Makefile b/drivers/net/ethernet/netronome/nfp/bpf/Makefile
-deleted file mode 100644
-index 805fa28f391a..000000000000
---- a/drivers/net/ethernet/netronome/nfp/bpf/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--# kbuild requires Makefile in a directory to build individual objects
-diff --git a/drivers/net/ethernet/netronome/nfp/flower/Makefile b/drivers/net/ethernet/netronome/nfp/flower/Makefile
-deleted file mode 100644
-index 805fa28f391a..000000000000
---- a/drivers/net/ethernet/netronome/nfp/flower/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--# kbuild requires Makefile in a directory to build individual objects
-diff --git a/drivers/net/ethernet/netronome/nfp/nfpcore/Makefile b/drivers/net/ethernet/netronome/nfp/nfpcore/Makefile
-deleted file mode 100644
-index 805fa28f391a..000000000000
---- a/drivers/net/ethernet/netronome/nfp/nfpcore/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--# kbuild requires Makefile in a directory to build individual objects
-diff --git a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile
-deleted file mode 100644
-index 805fa28f391a..000000000000
---- a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--# kbuild requires Makefile in a directory to build individual objects
-diff --git a/drivers/net/ethernet/netronome/nfp/nic/Makefile b/drivers/net/ethernet/netronome/nfp/nic/Makefile
-deleted file mode 100644
-index 805fa28f391a..000000000000
---- a/drivers/net/ethernet/netronome/nfp/nic/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--# kbuild requires Makefile in a directory to build individual objects
--- 
-2.17.1
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-uUWdoCCJ1ECep/mp9jWF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1UL0kACgkQuCajMw5X
+L93ophAAw3TK/JcdYvqs2yP2wP8HKL87nzD18xu3M6UeWfUQkZtW1u9Ag5zFGbf1
+L3Z437/z8FJZldEUawZnA+3kecrYE/Ln03+WFQ51K00TVpJ8VJ8p1rwNESsYZT+C
+gYVW5vCOZ+Ko9bbGXiugT8Kho1WbHvpJTXqgO5Uc3aZH/hvemCrwYXns8wbdIVvs
+3Y/HA7NmlTbECHpdauo0YEcAAsDeqIJjFJJImnjkW4AJo+HJPZZDibhmwf0pNU/Q
+8MVOd/5KvnTR7Cf0X+2hjW7XjCsfyelrCo1GCsUuJm85ji02zgAM/INwJXFxjd9M
+s3XfBuWW+QawUzwocGkDECCMv0fA25CSZAy5jwoe2wbMnApQmI/c2eiTxs9ZbX4p
+1nbA0FKCezS4CUmFe8umM+1au9El2HYa/puob7E5YzXezkz9QRdvK36xAtO4Si2z
+KzwFY0pZuHDzk5uvLbNSbqGNMx3EP2JPpZyN0WpT+Ll8MizAw1/MiT4V5On1Kt74
+Gh9CCl3WT+d4WrTw6apwPRDrzAsVcrEgV/leF2n+YTVmTNiIJOgfg3s1xx1ccDn3
+qna9Eqg1kJ2XZ1tmBsRd/b3Dmn25JRt2dOasGTIUYttXwUXWjbaMOs5SS4WlG5sc
+tAZLJECY2e7jADI5CQgp59DpJWN+N1o73YYWOJywYXI69jWjg90=
+=25/J
+-----END PGP SIGNATURE-----
+
+--=-uUWdoCCJ1ECep/mp9jWF--
 
