@@ -2,124 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 312418ECF5
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 15:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195868EE70
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 16:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732301AbfHONfN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Aug 2019 09:35:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49628 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731747AbfHONfN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 15 Aug 2019 09:35:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C57B7AE12;
-        Thu, 15 Aug 2019 13:35:10 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 357491E4200; Thu, 15 Aug 2019 15:35:10 +0200 (CEST)
-Date:   Thu, 15 Aug 2019 15:35:10 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] mm/gup: introduce vaddr_pin_pages_remote()
-Message-ID: <20190815133510.GA21302@quack2.suse.cz>
-References: <20190812015044.26176-3-jhubbard@nvidia.com>
- <20190812234950.GA6455@iweiny-DESK2.sc.intel.com>
- <38d2ff2f-4a69-e8bd-8f7c-41f1dbd80fae@nvidia.com>
- <20190813210857.GB12695@iweiny-DESK2.sc.intel.com>
- <a1044a0d-059c-f347-bd68-38be8478bf20@nvidia.com>
- <90e5cd11-fb34-6913-351b-a5cc6e24d85d@nvidia.com>
- <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
- <2cbdf599-2226-99ae-b4d5-8909a0a1eadf@nvidia.com>
- <ac834ac6-39bd-6df9-fca4-70b9520b6c34@nvidia.com>
- <20190815132622.GG14313@quack2.suse.cz>
+        id S1730919AbfHOOki (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Aug 2019 10:40:38 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:59616 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729820AbfHOOkh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Aug 2019 10:40:37 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7FEWUDD095032;
+        Thu, 15 Aug 2019 14:40:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=u7iCHZBLlf374ODvm9c4+zyfb5Zw9jRZAYXzhXJte0o=;
+ b=IOVeWPe/Mh1ML5aYfxxVjXJ15xcOK75ZHk9c01IFzCOlTRwxxhF1e2//uGi4m3VYp2Ds
+ LBUUF7v0jYZqrTjpjHrowiahJ8h51e5cj7X3gROAyWYVEZ962PrWSWXcQqjKu35B8bMk
+ Vm9IQTnXjlM8UW4X0mdVg69MO1ESCU5yCWelPed11G24PMNgbogMfWbGjkqRb5QZ3Ohx
+ QbcwuI2kZGG8uCftzx1Y26goYErF14LF4RGU3YfdoNji0o19eVy/GNlh/8H1MLO+owG3
+ s0y/KROhNamIWIqjmr3JB8OYBo7XPRo06CqashZpZ02CBEUzQNQknPyIt+16h9bpjhvG ww== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2u9pjqtyq6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Aug 2019 14:40:28 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7FEWrgl044605;
+        Thu, 15 Aug 2019 14:40:27 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 2ucs881b3b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Aug 2019 14:40:27 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7FEeRMS062176;
+        Thu, 15 Aug 2019 14:40:27 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 2ucs881b36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Aug 2019 14:40:27 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7FEePl3025898;
+        Thu, 15 Aug 2019 14:40:25 GMT
+Received: from [10.159.252.166] (/10.159.252.166)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 15 Aug 2019 07:40:25 -0700
+From:   Gerd Rausch <gerd.rausch@oracle.com>
+Subject: [PATCH net-next v2 0/4] net/rds: Fixes from internal Oracle repo
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Cc:     David Miller <davem@davemloft.net>
+References: <20190814.212525.326606319186601317.davem@davemloft.net>
+Message-ID: <ee77e550-2231-be7f-861f-31d609631e9f@oracle.com>
+Date:   Thu, 15 Aug 2019 07:40:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190815132622.GG14313@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190814.212525.326606319186601317.davem@davemloft.net>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908150148
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu 15-08-19 15:26:22, Jan Kara wrote:
-> On Wed 14-08-19 20:01:07, John Hubbard wrote:
-> > On 8/14/19 5:02 PM, John Hubbard wrote:
-> > > On 8/14/19 4:50 PM, Ira Weiny wrote:
-> > > > On Tue, Aug 13, 2019 at 05:56:31PM -0700, John Hubbard wrote:
-> > > > > On 8/13/19 5:51 PM, John Hubbard wrote:
-> > > > > > On 8/13/19 2:08 PM, Ira Weiny wrote:
-> > > > > > > On Mon, Aug 12, 2019 at 05:07:32PM -0700, John Hubbard wrote:
-> > > > > > > > On 8/12/19 4:49 PM, Ira Weiny wrote:
-> > > > > > > > > On Sun, Aug 11, 2019 at 06:50:44PM -0700, john.hubbard@gmail.com wrote:
-> > > > > > > > > > From: John Hubbard <jhubbard@nvidia.com>
-> > > > > > > > ...
-> > > > > > > Finally, I struggle with converting everyone to a new call.  It is more
-> > > > > > > overhead to use vaddr_pin in the call above because now the GUP code is going
-> > > > > > > to associate a file pin object with that file when in ODP we don't need that
-> > > > > > > because the pages can move around.
-> > > > > > 
-> > > > > > What if the pages in ODP are file-backed?
-> > > > > > 
-> > > > > 
-> > > > > oops, strike that, you're right: in that case, even the file system case is covered.
-> > > > > Don't mind me. :)
-> > > > 
-> > > > Ok so are we agreed we will drop the patch to the ODP code?  I'm going to keep
-> > > > the FOLL_PIN flag and addition in the vaddr_pin_pages.
-> > > > 
-> > > 
-> > > Yes. I hope I'm not overlooking anything, but it all seems to make sense to
-> > > let ODP just rely on the MMU notifiers.
-> > > 
-> > 
-> > Hold on, I *was* forgetting something: this was a two part thing, and
-> > you're conflating the two points, but they need to remain separate and
-> > distinct. There were:
-> > 
-> > 1. FOLL_PIN is necessary because the caller is clearly in the use case that
-> > requires it--however briefly they might be there. As Jan described it,
-> > 
-> > "Anything that gets page reference and then touches page data (e.g.
-> > direct IO) needs the new kind of tracking so that filesystem knows
-> > someone is messing with the page data." [1]
-> 
-> So when the GUP user uses MMU notifiers to stop writing to pages whenever
-> they are writeprotected with page_mkclean(), they don't really need page
-> pin - their access is then fully equivalent to any other mmap userspace
-> access and filesystem knows how to deal with those. I forgot out this case
-> when I wrote the above sentence.
-> 
-> So to sum up there are three cases:
-> 1) DIO case - GUP references to pages serving as DIO buffers are needed for
->    relatively short time, no special synchronization with page_mkclean() or
->    munmap() => needs FOLL_PIN
-> 2) RDMA case - GUP references to pages serving as DMA buffers needed for a
->    long time, no special synchronization with page_mkclean() or munmap()
->    => needs FOLL_PIN | FOLL_LONGTERM
->    This case has also a special case when the pages are actually DAX. Then
->    the caller additionally needs file lease and additional file_pin
->    structure is used for tracking this usage.
-> 3) ODP case - GUP references to pages serving as DMA buffers, MMU notifiers
->    used to synchronize with page_mkclean() and munmap() => normal page
->    references are fine.
+This is the first set of (mostly old) patches from our internal repository
+in an effort to synchronize what Oracle had been using internally
+with what is shipped with the Linux kernel.
 
-I want to add that I'd like to convert users in cases 1) and 2) from using
-GUP to using differently named function. Users in case 3) can stay as they
-are for now although ultimately I'd like to denote such use cases in a
-special way as well...
+Andy Grover (1):
+  rds: check for excessive looping in rds_send_xmit
 
-								Honza
+Chris Mason (2):
+  RDS: limit the number of times we loop in rds_send_xmit
+  RDS: don't use GFP_ATOMIC for sk_alloc in rds_create
+
+Gerd Rausch (1):
+  net/rds: Add a few missing rds_stat_names entries
+
+ net/rds/af_rds.c  |  2 +-
+ net/rds/ib_recv.c | 12 +++++++++++-
+ net/rds/rds.h     |  2 +-
+ net/rds/send.c    | 12 ++++++++++++
+ net/rds/stats.c   |  3 +++
+ 5 files changed, 28 insertions(+), 3 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+Changes in submitted patch v2:
+* Dropped the controversial "sysctl" patch:
+  https://lore.kernel.org/netdev/20190814.142112.1080694155114782651.davem@davemloft.net/
