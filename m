@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7393B8E6FC
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 10:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0F38E70B
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 10:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730823AbfHOIix (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Aug 2019 04:38:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56210 "EHLO mail.kernel.org"
+        id S1730841AbfHOIjK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Aug 2019 04:39:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725875AbfHOIix (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 15 Aug 2019 04:38:53 -0400
+        id S1725875AbfHOIjK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Aug 2019 04:39:10 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B7E522387;
-        Thu, 15 Aug 2019 08:38:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E1872235C;
+        Thu, 15 Aug 2019 08:39:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565858332;
-        bh=L11hKorvZW28GkqLNvqA7712NVQnrQhNz6gTBU98o08=;
+        s=default; t=1565858350;
+        bh=AFRkQLZI+8XDklm1zo97b1gCLuojb80Z6LUBwZL+v6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W41x+rE595eTdj27//nC1F35v6/U4pzuF3ytySOOZMMxa3XFmTW+vgLaga27Wke1x
-         ve2IV8g28t3wEA8+AVddID0sccZHTY9YZF6wWy/HSJOXNXwBkc62ufScJ2FgvW8bVg
-         CF4GXahJMS7mJFt96ZV4Gxw3E0xepXVtL8j9zKIQ=
+        b=ffGqLpCinOVMsoQbkTDhgg1x5EXzwNkBw08AUGTFG4Fb/Cb7vXMR2jGpX/AQ6tQaR
+         5aGb+Fh+o8kt+6v8hft9N57PN32vJLEAo/bWuvLmSVVLHzAFcYcQsmcIafP6gLpznG
+         4L1hpcf8CZvNb6GCN5YOnXRrvZE6JUYjupVMeQvI=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -33,9 +33,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Majd Dibbiny <majd@mellanox.com>,
         Mark Zhang <markz@mellanox.com>,
         Moni Shoua <monis@mellanox.com>
-Subject: [PATCH rdma-rc 3/8] RDMA/restrack: Rewrite PID namespace check to be reliable
-Date:   Thu, 15 Aug 2019 11:38:29 +0300
-Message-Id: <20190815083834.9245-4-leon@kernel.org>
+Subject: [PATCH rdma-rc 4/8] RDMA/mlx5: Fix MR npages calculation for IB_ACCESS_HUGETLB
+Date:   Thu, 15 Aug 2019 11:38:30 +0300
+Message-Id: <20190815083834.9245-5-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190815083834.9245-1-leon@kernel.org>
 References: <20190815083834.9245-1-leon@kernel.org>
@@ -46,93 +46,57 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-task_active_pid_ns() is wrong API to check PID namespace because it
-posses some restrictions and return PID namespace where the process
-was allocated. It created mismatches with current namespace, which
-can be different.
+When ODP is enabled with IB_ACCESS_HUGETLB then the required pages
+should be calculated based on the extent of the MR, which is rounded
+to the nearest huge page alignment.
 
-Rewrite whole rdma_is_visible_in_pid_ns() logic to provide reliable
-results without any relation to allocated PID namespace.
-
-Fixes: 8be565e65fa9 ("RDMA/nldev: Factor out the PID namespace check")
-Fixes: 6a6c306a09b5 ("RDMA/restrack: Make is_visible_in_pid_ns() as an API")
-Reviewed-by: Mark Zhang <markz@mellanox.com>
+Fixes: d2183c6f1958 ("RDMA/umem: Move page_shift from ib_umem to ib_odp_umem")
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/nldev.c    |  3 +--
- drivers/infiniband/core/restrack.c | 15 +++++++--------
- include/rdma/restrack.h            |  3 +--
- 3 files changed, 9 insertions(+), 12 deletions(-)
+ drivers/infiniband/core/umem.c   | 7 +------
+ drivers/infiniband/hw/mlx5/mem.c | 5 +++--
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 87d40d1ecdde..020c26976558 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -382,8 +382,7 @@ static int fill_res_info(struct sk_buff *msg, struct ib_device *device)
- 	for (i = 0; i < RDMA_RESTRACK_MAX; i++) {
- 		if (!names[i])
- 			continue;
--		curr = rdma_restrack_count(device, i,
--					   task_active_pid_ns(current));
-+		curr = rdma_restrack_count(device, i);
- 		ret = fill_res_info_entry(msg, names[i], curr);
- 		if (ret)
- 			goto err;
-diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-index bddff426ee0f..a07665f7ef8c 100644
---- a/drivers/infiniband/core/restrack.c
-+++ b/drivers/infiniband/core/restrack.c
-@@ -107,10 +107,8 @@ void rdma_restrack_clean(struct ib_device *dev)
-  * rdma_restrack_count() - the current usage of specific object
-  * @dev:  IB device
-  * @type: actual type of object to operate
-- * @ns:   PID namespace
-  */
--int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type,
--			struct pid_namespace *ns)
-+int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type)
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 08da840ed7ee..56553668256f 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -379,14 +379,9 @@ EXPORT_SYMBOL(ib_umem_release);
+ 
+ int ib_umem_page_count(struct ib_umem *umem)
  {
- 	struct rdma_restrack_root *rt = &dev->res[type];
- 	struct rdma_restrack_entry *e;
-@@ -119,10 +117,9 @@ int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type,
+-	int i;
+-	int n;
++	int i, n = 0;
+ 	struct scatterlist *sg;
  
- 	xa_lock(&rt->xa);
- 	xas_for_each(&xas, e, U32_MAX) {
--		if (ns == &init_pid_ns ||
--		    (!rdma_is_kernel_res(e) &&
--		     ns == task_active_pid_ns(e->task)))
--			cnt++;
-+		if (!rdma_is_visible_in_pid_ns(e))
-+			continue;
-+		cnt++;
- 	}
- 	xa_unlock(&rt->xa);
- 	return cnt;
-@@ -360,5 +357,7 @@ bool rdma_is_visible_in_pid_ns(struct rdma_restrack_entry *res)
- 	 */
- 	if (rdma_is_kernel_res(res))
- 		return task_active_pid_ns(current) == &init_pid_ns;
--	return task_active_pid_ns(current) == task_active_pid_ns(res->task);
-+
-+	/* PID 0 means that resource is not found in current namespace */
-+	return task_pid_vnr(res->task);
- }
-diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
-index b0fc6b26bdf5..83df1ec6664e 100644
---- a/include/rdma/restrack.h
-+++ b/include/rdma/restrack.h
-@@ -105,8 +105,7 @@ struct rdma_restrack_entry {
- };
+-	if (umem->is_odp)
+-		return ib_umem_num_pages(umem);
+-
+-	n = 0;
+ 	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i)
+ 		n += sg_dma_len(sg) >> PAGE_SHIFT;
  
- int rdma_restrack_count(struct ib_device *dev,
--			enum rdma_restrack_type type,
--			struct pid_namespace *ns);
-+			enum rdma_restrack_type type);
+diff --git a/drivers/infiniband/hw/mlx5/mem.c b/drivers/infiniband/hw/mlx5/mem.c
+index fe1a76d8531c..a40e0abf2338 100644
+--- a/drivers/infiniband/hw/mlx5/mem.c
++++ b/drivers/infiniband/hw/mlx5/mem.c
+@@ -57,9 +57,10 @@ void mlx5_ib_cont_pages(struct ib_umem *umem, u64 addr,
+ 	int entry;
  
- void rdma_restrack_kadd(struct rdma_restrack_entry *res);
- void rdma_restrack_uadd(struct rdma_restrack_entry *res);
+ 	if (umem->is_odp) {
+-		unsigned int page_shift = to_ib_umem_odp(umem)->page_shift;
++		struct ib_umem_odp *odp = to_ib_umem_odp(umem);
++		unsigned int page_shift = odp->page_shift;
+ 
+-		*ncont = ib_umem_page_count(umem);
++		*ncont = ib_umem_odp_num_pages(odp);
+ 		*count = *ncont << (page_shift - PAGE_SHIFT);
+ 		*shift = page_shift;
+ 		if (order)
 -- 
 2.20.1
 
