@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0F38E70B
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 10:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCF08E6FE
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 10:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730841AbfHOIjK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Aug 2019 04:39:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56602 "EHLO mail.kernel.org"
+        id S1730829AbfHOIi5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Aug 2019 04:38:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725875AbfHOIjK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 15 Aug 2019 04:39:10 -0400
+        id S1725875AbfHOIi5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Aug 2019 04:38:57 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E1872235C;
-        Thu, 15 Aug 2019 08:39:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C07A22387;
+        Thu, 15 Aug 2019 08:38:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565858350;
-        bh=AFRkQLZI+8XDklm1zo97b1gCLuojb80Z6LUBwZL+v6g=;
+        s=default; t=1565858336;
+        bh=ZyzqQf17cnEyHFW9E++HcPHt+RGN+l++Znjp64bFEak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ffGqLpCinOVMsoQbkTDhgg1x5EXzwNkBw08AUGTFG4Fb/Cb7vXMR2jGpX/AQ6tQaR
-         5aGb+Fh+o8kt+6v8hft9N57PN32vJLEAo/bWuvLmSVVLHzAFcYcQsmcIafP6gLpznG
-         4L1hpcf8CZvNb6GCN5YOnXRrvZE6JUYjupVMeQvI=
+        b=cv/FAEJZXBoV/aKe7iCw7y5DqEOZ3E1YFbZzNiW0opDaugMee/flpafuTRM+LAAv6
+         qKcUiEJNXlITmW0pwPnpAV7FchHtelTX+OYT4buqCGo28JifzjAe/mYu6xaWjzUqxs
+         JnGSk7Xe5nYo9VN7Uz5SXZ1guZAMdAeLJJD5xKKA=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -33,9 +33,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Majd Dibbiny <majd@mellanox.com>,
         Mark Zhang <markz@mellanox.com>,
         Moni Shoua <monis@mellanox.com>
-Subject: [PATCH rdma-rc 4/8] RDMA/mlx5: Fix MR npages calculation for IB_ACCESS_HUGETLB
-Date:   Thu, 15 Aug 2019 11:38:30 +0300
-Message-Id: <20190815083834.9245-5-leon@kernel.org>
+Subject: [PATCH rdma-rc 5/8] IB/mlx5: Consolidate use_umr checks into single function
+Date:   Thu, 15 Aug 2019 11:38:31 +0300
+Message-Id: <20190815083834.9245-6-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190815083834.9245-1-leon@kernel.org>
 References: <20190815083834.9245-1-leon@kernel.org>
@@ -46,57 +46,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Moni Shoua <monis@mellanox.com>
 
-When ODP is enabled with IB_ACCESS_HUGETLB then the required pages
-should be calculated based on the extent of the MR, which is rounded
-to the nearest huge page alignment.
+Introduce helper function to unify various use_umr checks.
 
-Fixes: d2183c6f1958 ("RDMA/umem: Move page_shift from ib_umem to ib_odp_umem")
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Moni Shoua <monis@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/umem.c   | 7 +------
- drivers/infiniband/hw/mlx5/mem.c | 5 +++--
- 2 files changed, 4 insertions(+), 8 deletions(-)
+ drivers/infiniband/hw/mlx5/mlx5_ib.h | 14 ++++++++++++++
+ drivers/infiniband/hw/mlx5/mr.c      |  4 +---
+ 2 files changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 08da840ed7ee..56553668256f 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -379,14 +379,9 @@ EXPORT_SYMBOL(ib_umem_release);
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index f6a53455bf8b..9ae587b74b12 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1475,4 +1475,18 @@ int bfregn_to_uar_index(struct mlx5_ib_dev *dev,
+ 			bool dyn_bfreg);
  
- int ib_umem_page_count(struct ib_umem *umem)
- {
--	int i;
--	int n;
-+	int i, n = 0;
- 	struct scatterlist *sg;
+ int mlx5_ib_qp_set_counter(struct ib_qp *qp, struct rdma_counter *counter);
++
++static inline bool mlx5_ib_can_use_umr(struct mlx5_ib_dev *dev,
++				       bool do_modify_atomic)
++{
++	if (MLX5_CAP_GEN(dev->mdev, umr_modify_entity_size_disabled))
++		return false;
++
++	if (do_modify_atomic &&
++	    MLX5_CAP_GEN(dev->mdev, atomic) &&
++	    MLX5_CAP_GEN(dev->mdev, umr_modify_atomic_disabled))
++		return false;
++
++	return true;
++}
+ #endif /* MLX5_IB_H */
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index b74fad08412f..8bce65c03b84 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1293,9 +1293,7 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	if (err < 0)
+ 		return ERR_PTR(err);
  
--	if (umem->is_odp)
--		return ib_umem_num_pages(umem);
--
--	n = 0;
- 	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i)
- 		n += sg_dma_len(sg) >> PAGE_SHIFT;
+-	use_umr = !MLX5_CAP_GEN(dev->mdev, umr_modify_entity_size_disabled) &&
+-		  (!MLX5_CAP_GEN(dev->mdev, umr_modify_atomic_disabled) ||
+-		   !MLX5_CAP_GEN(dev->mdev, atomic));
++	use_umr = mlx5_ib_can_use_umr(dev, true);
  
-diff --git a/drivers/infiniband/hw/mlx5/mem.c b/drivers/infiniband/hw/mlx5/mem.c
-index fe1a76d8531c..a40e0abf2338 100644
---- a/drivers/infiniband/hw/mlx5/mem.c
-+++ b/drivers/infiniband/hw/mlx5/mem.c
-@@ -57,9 +57,10 @@ void mlx5_ib_cont_pages(struct ib_umem *umem, u64 addr,
- 	int entry;
- 
- 	if (umem->is_odp) {
--		unsigned int page_shift = to_ib_umem_odp(umem)->page_shift;
-+		struct ib_umem_odp *odp = to_ib_umem_odp(umem);
-+		unsigned int page_shift = odp->page_shift;
- 
--		*ncont = ib_umem_page_count(umem);
-+		*ncont = ib_umem_odp_num_pages(odp);
- 		*count = *ncont << (page_shift - PAGE_SHIFT);
- 		*shift = page_shift;
- 		if (order)
+ 	if (order <= mr_cache_max_order(dev) && use_umr) {
+ 		mr = alloc_mr_from_cache(pd, umem, virt_addr, length, ncont,
 -- 
 2.20.1
 
