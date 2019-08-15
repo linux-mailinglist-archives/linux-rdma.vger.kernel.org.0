@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7028E6F7
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 10:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6627B8E6F8
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 10:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbfHOIik (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Aug 2019 04:38:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56016 "EHLO mail.kernel.org"
+        id S1726865AbfHOIim (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Aug 2019 04:38:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725875AbfHOIik (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 15 Aug 2019 04:38:40 -0400
+        id S1726443AbfHOIim (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Aug 2019 04:38:42 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 969C22235C;
-        Thu, 15 Aug 2019 08:38:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA48322387;
+        Thu, 15 Aug 2019 08:38:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565858319;
-        bh=46Yq+zl//G7zUWKlqawAyH/NQ9s4IR+M2R0EUKgNFy0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=X1U6NYg3ornT/BJcVK7ottML5nRkionXKC9lcY09R7UXfYDS7wlZgPck4xtYFU9Uy
-         8NouAlMfNn8bAjXSJAXk6wLXaUzzaGF0bwOq+AednPx0UyymJHh5mCgW3SIP6RzDmF
-         WhzFIp7vhBbxaZ+t7qQ2R+bLrvaxl6bKi8d4jK4Q=
+        s=default; t=1565858322;
+        bh=aEhbEIJvaeRc9m9j1JAXD6aHvWZvVWRh38CHquhzCek=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pqnU0RTlMGztRP8O2bL4bchYzja4KaUX9y7DUJGfdMErplH0z327oynhzz1oeGv6b
+         77dItO0tH/3BePrWB8UwHuBlljPpVhynDfgjx/h8xyMpqJ04y9bb3N9I0bYTRfrume
+         IWn9dwrD0mTOLZFp/1f5m5rgsl97fAVpYEJGQRH0=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -33,10 +33,12 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Majd Dibbiny <majd@mellanox.com>,
         Mark Zhang <markz@mellanox.com>,
         Moni Shoua <monis@mellanox.com>
-Subject: [PATCH rdma-rc 0/8] Fixes for v5.3
-Date:   Thu, 15 Aug 2019 11:38:26 +0300
-Message-Id: <20190815083834.9245-1-leon@kernel.org>
+Subject: [PATCH rdma-rc 1/8] IB/core: Fix NULL pointer dereference when bind QP to counter
+Date:   Thu, 15 Aug 2019 11:38:27 +0300
+Message-Id: <20190815083834.9245-2-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190815083834.9245-1-leon@kernel.org>
+References: <20190815083834.9245-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -44,46 +46,56 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Ido Kalir <idok@mellanox.com>
 
-Hi,
+If QP is not visible to the pid, then we try to decrease its reference
+count and return from the function before the QP pointer is
+initialized. This lead to NULL pointer dereference.
+Fix it by pass directly the res to the rdma_restract_put as arg instead of
+&qp->res.
 
-This is a collection of new fixes for v5.3, everything here is fixing
-kernel crash or visible bug with one exception: patch #5 "IB/mlx5:
-Consolidate use_umr checks into single function". That patch is nice
-to have improvement to implement rest of the series.
+This fixes below call trace:
+[ 5845.110329] BUG: kernel NULL pointer dereference, address:
+00000000000000dc
+[ 5845.120482] Oops: 0002 [#1] SMP PTI
+[ 5845.129119] RIP: 0010:rdma_restrack_put+0x5/0x30 [ib_core]
+[ 5845.169450] Call Trace:
+[ 5845.170544]  rdma_counter_get_qp+0x5c/0x70 [ib_core]
+[ 5845.172074]  rdma_counter_bind_qpn_alloc+0x6f/0x1a0 [ib_core]
+[ 5845.173731]  nldev_stat_set_doit+0x314/0x330 [ib_core]
+[ 5845.175279]  rdma_nl_rcv_msg+0xeb/0x1d0 [ib_core]
+[ 5845.176772]  ? __kmalloc_node_track_caller+0x20b/0x2b0
+[ 5845.178321]  rdma_nl_rcv+0xcb/0x120 [ib_core]
+[ 5845.179753]  netlink_unicast+0x179/0x220
+[ 5845.181066]  netlink_sendmsg+0x2d8/0x3d0
+[ 5845.182338]  sock_sendmsg+0x30/0x40
+[ 5845.183544]  __sys_sendto+0xdc/0x160
+[ 5845.184832]  ? syscall_trace_enter+0x1f8/0x2e0
+[ 5845.186209]  ? __audit_syscall_exit+0x1d9/0x280
+[ 5845.187584]  __x64_sys_sendto+0x24/0x30
+[ 5845.188867]  do_syscall_64+0x48/0x120
+[ 5845.190097]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Thanks
+Fixes: 1bd8e0a9d0fd1 ("RDMA/counter: Allow manual mode configuration support")
+Signed-off-by: Ido Kalir <idok@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/core/counters.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ido Kalir (1):
-  IB/core: Fix NULL pointer dereference when bind QP to counter
-
-Jason Gunthorpe (1):
-  RDMA/mlx5: Fix MR npages calculation for IB_ACCESS_HUGETLB
-
-Leon Romanovsky (2):
-  RDMA/counters: Properly implement PID checks
-  RDMA/restrack: Rewrite PID namespace check to be reliable
-
-Moni Shoua (4):
-  IB/mlx5: Consolidate use_umr checks into single function
-  IB/mlx5: Report and handle ODP support properly
-  IB/mlx5: Fix MR re-registration flow to use UMR properly
-  IB/mlx5: Block MR WR if UMR is not possible
-
- drivers/infiniband/core/counters.c   | 10 ++++------
- drivers/infiniband/core/nldev.c      |  3 +--
- drivers/infiniband/core/restrack.c   | 15 +++++++--------
- drivers/infiniband/core/umem.c       |  7 +------
- drivers/infiniband/hw/mlx5/main.c    |  6 +++---
- drivers/infiniband/hw/mlx5/mem.c     |  5 +++--
- drivers/infiniband/hw/mlx5/mlx5_ib.h | 14 ++++++++++++++
- drivers/infiniband/hw/mlx5/mr.c      |  7 +++----
- drivers/infiniband/hw/mlx5/odp.c     | 17 +++++++++--------
- drivers/infiniband/hw/mlx5/qp.c      | 24 +++++++++++++++++++-----
- include/rdma/restrack.h              |  3 +--
- 11 files changed, 65 insertions(+), 46 deletions(-)
-
---
+diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
+index b79890739a2c..955d061af06a 100644
+--- a/drivers/infiniband/core/counters.c
++++ b/drivers/infiniband/core/counters.c
+@@ -424,7 +424,7 @@ static struct ib_qp *rdma_counter_get_qp(struct ib_device *dev, u32 qp_num)
+ 	return qp;
+ 
+ err:
+-	rdma_restrack_put(&qp->res);
++	rdma_restrack_put(res);
+ 	return NULL;
+ }
+ 
+-- 
 2.20.1
 
