@@ -2,100 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6918EEAC
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 16:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C801A8F042
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 18:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733133AbfHOOvE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Aug 2019 10:51:04 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:40141 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732505AbfHOOvE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Aug 2019 10:51:04 -0400
-Received: by mail-qk1-f195.google.com with SMTP id s145so2016182qke.7
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Aug 2019 07:51:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=z90nPpYO8UuUUSb9IN8rKS3L0KsgC8zXmObZdfo6ctQ=;
-        b=dU2EhV+6EWSs1MNrZJWfU76DaiGX5NQgWL4uohTv/GZxgH6FeggKTIKZ+d/6xxWmB5
-         Uq7EirJG422MX6svb2pK3O0rmVD5upXZhrC0obDyAVUsClwMUccie10LZ+VusUXs6G5t
-         Cfxm7G3duJErwOwTzL6wlTMWxPvhXqi0t55/HXZYJ0ksP5CllSxCeRSJEwA3qeLb3Mw+
-         H9tQF6/hs2KVjejIpKYI3tuEWzOasQMSO5OrPdyS6Tf6gZNSrPhr0d7BWVqY895GeZU7
-         3vhMlzFvKziDCq6pld4ycFVFRE1zOEJ/X+8kNMBCMNIgJ/nYLqTQqzhkO3QmO9Oxi/p7
-         z4xQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=z90nPpYO8UuUUSb9IN8rKS3L0KsgC8zXmObZdfo6ctQ=;
-        b=cDfpizyGGrqbxm/0rB28fm7xu5SnmjzJ8D3+ifKJLHuacN3FTKPkcZjE4uArNev4iS
-         m58B2hL0wV4Bbbaz1lMpIx7QoT91pe5cn05i18cU+gTImRcWDUu8CLNX2xNX9k/u/Bu4
-         H82FbsVPzI1yFvFUssTMhdGoBOUfKEUzG2AHRLGiH8ZJ636AerFFAXgYyVKeheUxcDXc
-         /mX7QTtONEM+xSj/cD62NBH+IAL7JTCSPpy6nzzCf4GkibSgUFHe9IyeErl1IFuEpswm
-         /UeT3yd6yu9xBARZ+SweBHamwoVeCzsucmWY2expd+P2+ITS+6KP6OCSg/M363TjIQts
-         9Kpg==
-X-Gm-Message-State: APjAAAWzxwOYWv5vICQHcD6OWVj+aCSbOSpZCG+et1xcy5B5dmuHvbqA
-        Bc8Twod/15dkv5MJyFg2Rqq/BQ==
-X-Google-Smtp-Source: APXvYqyMHfwmFKSYVNb8WeeauLH7Hep/WJZ+jheCJjAwrLvMcjUnfX6gEreyk5eeamBSEzYzpviglQ==
-X-Received: by 2002:a05:620a:71a:: with SMTP id 26mr4357407qkc.374.1565880663323;
-        Thu, 15 Aug 2019 07:51:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id e15sm805595qtr.51.2019.08.15.07.51.02
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 15 Aug 2019 07:51:02 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hyH5i-0005L9-BH; Thu, 15 Aug 2019 11:51:02 -0300
-Date:   Thu, 15 Aug 2019 11:51:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jan Kara <jack@suse.cz>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] mm/gup: introduce vaddr_pin_pages_remote()
-Message-ID: <20190815145102.GH21596@ziepe.ca>
-References: <20190812234950.GA6455@iweiny-DESK2.sc.intel.com>
- <38d2ff2f-4a69-e8bd-8f7c-41f1dbd80fae@nvidia.com>
- <20190813210857.GB12695@iweiny-DESK2.sc.intel.com>
- <a1044a0d-059c-f347-bd68-38be8478bf20@nvidia.com>
- <90e5cd11-fb34-6913-351b-a5cc6e24d85d@nvidia.com>
- <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
- <2cbdf599-2226-99ae-b4d5-8909a0a1eadf@nvidia.com>
- <ac834ac6-39bd-6df9-fca4-70b9520b6c34@nvidia.com>
- <20190815132622.GG14313@quack2.suse.cz>
- <20190815133510.GA21302@quack2.suse.cz>
+        id S1726203AbfHOQQv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Aug 2019 12:16:51 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52596 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbfHOQQv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Aug 2019 12:16:51 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7FGDWRd184373;
+        Thu, 15 Aug 2019 16:16:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=OkMXRsF4mDAdzvH3/kAdilVCSMv7mJzK/Hgh4U/ioh8=;
+ b=m1sZIs7rgOtalL9bfFLc1vfI0QG9a5gASpiMaB6NDKsFEmxm0O6atb26quTMmySJltV5
+ Yy0+50mRrrjAk1y1k+6MKGfc1dlWOARnkIEyDLyT6DxWANuLcfnmO2+wjHEIAU69zXg9
+ iU+8Jrvm0iwUb9I+LEJ6ytSBEXXFjco1254HRiorgLSdYxqm0FDMNWQQYNXG+09J1LiI
+ l7Sn7shn+tFGO7/dwi+q9dKuNQijCzsSP9BpOaaTnvKiQYndEbHNQrVf1LycXYvAYwaP
+ MMLafAXP8i4CWi8rehhSppUBZWzF94MunfCTV0ABlCYzeEWiIKrl68w9s+iEkwb8TDN5 XA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2u9pjqugfh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Aug 2019 16:16:44 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7FGDDvZ094667;
+        Thu, 15 Aug 2019 16:16:43 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2ucgf16rbj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Aug 2019 16:16:43 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7FGDUBA096548;
+        Thu, 15 Aug 2019 16:16:43 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2ucgf16raf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Aug 2019 16:16:43 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7FGGgZf016397;
+        Thu, 15 Aug 2019 16:16:42 GMT
+Received: from [10.159.249.63] (/10.159.249.63)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 15 Aug 2019 09:16:42 -0700
+Subject: Re: [PATCH net-next v2 1/4] RDS: limit the number of times we loop in
+ rds_send_xmit
+To:     Gerd Rausch <gerd.rausch@oracle.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
+Cc:     David Miller <davem@davemloft.net>
+References: <20190814.212525.326606319186601317.davem@davemloft.net>
+ <cover.1565879451.git.gerd.rausch@oracle.com>
+ <90b76f24-d799-5362-df53-19102d781e3e@oracle.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <60c48651-a910-ad82-f8f5-1af188f43009@oracle.com>
+Date:   Thu, 15 Aug 2019 09:16:39 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190815133510.GA21302@quack2.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <90b76f24-d799-5362-df53-19102d781e3e@oracle.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908150159
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 15, 2019 at 03:35:10PM +0200, Jan Kara wrote:
-
-> > 3) ODP case - GUP references to pages serving as DMA buffers, MMU notifiers
-> >    used to synchronize with page_mkclean() and munmap() => normal page
-> >    references are fine.
+On 8/15/19 7:42 AM, Gerd Rausch wrote:
+> From: Chris Mason <chris.mason@oracle.com>
+> Date: Fri, 3 Feb 2012 11:07:54 -0500
 > 
-> I want to add that I'd like to convert users in cases 1) and 2) from using
-> GUP to using differently named function. Users in case 3) can stay as they
-> are for now although ultimately I'd like to denote such use cases in a
-> special way as well...
+> This will kick the RDS worker thread if we have been looping
+> too long.
+> 
+> Original commit from 2012 updated to include a change by
+> Venkat Venkatsubra <venkat.x.venkatsubra@oracle.com>
+> that triggers "must_wake" if "rds_ib_recv_refill_one" fails.
+> 
+> Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+> ---
+Thought I acked V1 series.
 
-3) users also want a special function and path, right now it is called
-hmm_range_fault() but perhaps it would be good to harmonize it more
-with the GUP infrastructure?
-
-I'm not quite sure what the best plan for that is yet.
-
-Jason
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
