@@ -2,136 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B098F50E
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 21:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6268F5BB
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 22:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbfHOTqm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Aug 2019 15:46:42 -0400
-Received: from mail-eopbgr10083.outbound.protection.outlook.com ([40.107.1.83]:16619
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        id S1731963AbfHOU0Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Aug 2019 16:26:24 -0400
+Received: from mail-eopbgr40056.outbound.protection.outlook.com ([40.107.4.56]:50049
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729779AbfHOTqm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 15 Aug 2019 15:46:42 -0400
+        id S1731850AbfHOU0X (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Aug 2019 16:26:23 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AejlJQM/OKLo2+k9TEkPp1nwsFoCCBMUqabBrzobO/QgkF4UIemLMS5WECx4sEdhgaSfcfmDQ+/SQhbLZ4r59pUeJCc3lAeCZQ6vuki57qRbUoF1+PWn+a0seJnkj99cpZumNVSok4Kjv+UiCWnmgc+1aAnLe/OhUZJAAP+tf+wRK/mM5BmjtiHzRh+O4Ix3G7WrPBWJDotqMfjVraeXlnTweT0BpFKfQpITo9fkWgDElkZGVQZBGsSs1tVxRmp+fHXlzR7Pag9Wk+Z24qQw5+86y8k36KHggTX6MSD9wyd920v3i5j/id8EnaYLOnneF0YQjwBAR+Gq5/qrfIOk2w==
+ b=TUpJ+UlwqNgRqGHELoHIeW/U4VAlGy7J4s1KxewDpqBAfMoOQzWpYBEYjMGSyK185V9JIwfLwF0C6o5tmdDwFf5wR0vusjJbGE+SuYqTqAYNnlyKzeF1WjLYjOUyfKR9wR3kORigmFZ47Mqvkc9v6uIAcdmt2RDpqBTZNll053njXNrn0XlO6B+zWMSYKIxxyQEcCCcomt8bk8oj4GyWiyvam74z9+T0XvhSDlgpB+RDpLiKquL5LbLmZhuc76+sYlZxPLiWSzJbD4rMleb4b/HkiVC9FahmDWGUYIlcev2UyVwHnYt0ZjfwWzRwp+XUNbNT8sd1mSP+X/6doHQgPg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w0BTBF8kBiLrHFHJkVGaHXIMzhmWMU/iNoD1oXuo9IM=;
- b=a4g93HA7YNi34/bB4mruBaU4piOs7lnki1BwSA/APcFccMD19aOE9Sm2VLWqWJTVM0lpof2gLxiW2pw6HA/LZrTRsVdpyoeetpsa7C0WArGdUZwQR7ikuYt/z0XCx/747M1//XgjrLw/9TnMGAgh1jSyrRbKX3Ls1Nt2c42/hgvmK8hBqr7UpVgHOkUgqL+KytTXfPk9dXIY1O3QrKgEheIq/9ehx687zVu56ly0WldAhaRJiYRYwT1xj+H4t9j0L5VWXPqy4eQ0maartBDvYwe6uFwT3r0eT5uDQae8t2Cctkn6Amj73GwGiepIYsbH2Z2ygmBvgIv1euplWTH4Cw==
+ bh=4Lmwq4ctt1OvxMmYpzSxlvmO5aifUEaILaNRW32iR40=;
+ b=G7n5NN7gyLkwoDEPXOMiEA+f/MAaXv1HFsekXnzDdBut5yhbxnI584vS1fO8rQvlzOQ2ZNiGQGaBoEfbhIGFoA/TbYk/6Ynz6gLZwPp+bR+TJ7811RYTdJkeFABNRPSfKxF+ngdWQ7JRMRbfC7gX1SwhNYCMm4vURW9uq50gKsivYi6eF118wU1OXMt8zDyuQ1oPH3DSEz+SZSvbh1Jl5bjwYB+NvtSC+QdH4tEFw7Z2oeQd+WqLumZc/CFBy16fz3ICkdQiBDITmCHa8nyx2Bzkhso3yRQqNxMQrRCwhye/EajCyb76URDH3V4TwZott0DCtnaB9150Ut4Eo7oB8g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w0BTBF8kBiLrHFHJkVGaHXIMzhmWMU/iNoD1oXuo9IM=;
- b=NOCyQ0RJptuOlGmC66pGD1CZi5Sr530aX0F//3KLxm8rlhs/T8hWJXKdOwFXsqgg4U5DpcEpUq2cMksGRMqM689bq0J8wZKL+T+7aLbxir19IBnoxXB+lxgu3kB0tHl1YZb/1IY3Cy3az7xAZzldEgmQy3FJGB62PmZoDQA6yQU=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB5168.eurprd05.prod.outlook.com (20.178.10.160) with Microsoft SMTP
+ bh=4Lmwq4ctt1OvxMmYpzSxlvmO5aifUEaILaNRW32iR40=;
+ b=CfeqTpEesuGLwQlE1vKAM6yMt/e8waGeVF5gFV3Psnlbh3hQF0yvkgPiEtKNmO4s2zDm467ouH55c1dLLj7wdEk0lhnZfcHxOCvdPl59iIlhWt2mhkl/ekHrvW+lhlk1M6BUOnxtEO6pXdkuVimBrkHHZ7E24p8I4KBHbg9+RgU=
+Received: from AM0PR05MB5331.eurprd05.prod.outlook.com (20.178.16.25) by
+ AM0PR05MB6529.eurprd05.prod.outlook.com (20.179.35.143) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2157.21; Thu, 15 Aug 2019 19:46:26 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::1d6:9c67:ea2d:38a7]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::1d6:9c67:ea2d:38a7%6]) with mapi id 15.20.2157.022; Thu, 15 Aug 2019
- 19:46:26 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     "christian.koenig@amd.com" <christian.koenig@amd.com>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Dimitri Sivanich <sivanich@sgi.com>,
-        Gavin Shan <shangw@linux.vnet.ibm.com>,
-        Andrea Righi <andrea@betterlinux.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        =?utf-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 hmm 08/11] drm/radeon: use mmu_notifier_get/put for
- struct radeon_mn
-Thread-Topic: [PATCH v3 hmm 08/11] drm/radeon: use mmu_notifier_get/put for
- struct radeon_mn
-Thread-Index: AQHVTKz1YDgPM7GGLU27kR5zKXuwhab77XGAgAC9boA=
-Date:   Thu, 15 Aug 2019 19:46:26 +0000
-Message-ID: <20190815194621.GF22970@mellanox.com>
-References: <20190806231548.25242-1-jgg@ziepe.ca>
- <20190806231548.25242-9-jgg@ziepe.ca>
- <2baff2e5-b923-c39b-98e5-b3e7f77bd6d3@gmail.com>
-In-Reply-To: <2baff2e5-b923-c39b-98e5-b3e7f77bd6d3@gmail.com>
+ 15.20.2157.15; Thu, 15 Aug 2019 20:26:19 +0000
+Received: from AM0PR05MB5331.eurprd05.prod.outlook.com
+ ([fe80::1d05:2252:6ace:70fd]) by AM0PR05MB5331.eurprd05.prod.outlook.com
+ ([fe80::1d05:2252:6ace:70fd%6]) with mapi id 15.20.2178.016; Thu, 15 Aug 2019
+ 20:26:19 +0000
+From:   "Guy Levi(SW)" <guyle@mellanox.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Moni Shoua <monis@mellanox.com>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Ido Kalir <idok@mellanox.com>,
+        Majd Dibbiny <majd@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>
+Subject: RE: [PATCH rdma-rc 0/8] Fixes for v5.3
+Thread-Topic: [PATCH rdma-rc 0/8] Fixes for v5.3
+Thread-Index: AQHVU0TY5bq7GiGYXE2a5M1bGzk0Iqb8mQyAgAAOFHA=
+Date:   Thu, 15 Aug 2019 20:26:19 +0000
+Message-ID: <AM0PR05MB53310C7255ABD0333FA3387AC7AC0@AM0PR05MB5331.eurprd05.prod.outlook.com>
+References: <20190815083834.9245-1-leon@kernel.org>
+ <20190815192940.GS21596@ziepe.ca>
+In-Reply-To: <20190815192940.GS21596@ziepe.ca>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: YQBPR0101CA0057.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:1::34) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
 authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [156.34.55.100]
+ smtp.mailfrom=guyle@mellanox.com; 
+x-originating-ip: [2a00:a040:19a:e326:4cf0:180f:5ece:fd05]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 28c89de1-b5a2-4a9a-c12d-08d721b9428c
+x-ms-office365-filtering-correlation-id: 3fab805d-945f-4ee7-8f9b-08d721bed509
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5168;
-x-ms-traffictypediagnostic: VI1PR05MB5168:
-x-microsoft-antispam-prvs: <VI1PR05MB51681C1EF442D179C3BE8696CFAC0@VI1PR05MB5168.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM0PR05MB6529;
+x-ms-traffictypediagnostic: AM0PR05MB6529:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR05MB6529A393237330FF720B4638C7AC0@AM0PR05MB6529.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2000;
 x-forefront-prvs: 01304918F3
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(199004)(189003)(6506007)(305945005)(2351001)(11346002)(36756003)(186003)(2616005)(102836004)(7416002)(66476007)(14454004)(64756008)(66556008)(26005)(486006)(446003)(66446008)(76176011)(476003)(66946007)(386003)(5660300002)(52116002)(7736002)(4326008)(316002)(256004)(66066001)(71200400001)(2906002)(33656002)(54906003)(81166006)(8676002)(1076003)(6512007)(25786009)(81156014)(71190400001)(6486002)(3846002)(6116002)(66574012)(99286004)(53936002)(478600001)(5640700003)(229853002)(86362001)(6916009)(8936002)(6246003)(6436002)(2501003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5168;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(346002)(39860400002)(366004)(376002)(396003)(199004)(189003)(13464003)(110136005)(486006)(476003)(66556008)(6436002)(14444005)(229853002)(256004)(6636002)(14454004)(8936002)(5660300002)(71190400001)(54906003)(66476007)(66446008)(11346002)(64756008)(478600001)(71200400001)(316002)(446003)(81156014)(2906002)(6246003)(76176011)(7696005)(7736002)(81166006)(53936002)(6506007)(76116006)(107886003)(99286004)(33656002)(8676002)(86362001)(46003)(66946007)(53546011)(74316002)(102836004)(9686003)(52536014)(4326008)(186003)(305945005)(25786009)(6116002)(55016002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6529;H:AM0PR05MB5331.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: fILogM5ET6wCipH9DgoM3HqNITLwlrxJI2cgDafFx5J9icOy7soEV1u/6g/yFdRMglGjJikP8+X19/UX2lPTWyn+kxdMSMeD9cwhCSRrEAf6IuXOSlStS2IlrXHAEwvuJsqLp5ge8B5d+0MmE+0r7yT0ZiU82tFXz5lbVuFw7DmiCVKKmmmlj8UQgiI24v1LSAU09TWm7MpD2LTXmaTWVRHr6ZSmxFsNjbM+HHP6Iwlry4K9Dk/WDEXiUSWcqKuutbYNNOGSsNMra+0+54JMj4OwFocKLSrhWQBRu44Ap37S7KztIlp0xPX49c+2Uhcjz4N37WYO2tBC/Gj0RNFzoMvtiHin7s6yAiSuwO9tVerzA2tGBUDCS1Y3LvB0BPJSMPfVYE119C2WMnrvNyrimbmyChHdxlSOiMvOrFTpN5k=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2697329F3A1E3A4682A1061BFB978A84@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+x-microsoft-antispam-message-info: D2ODWG3OFgMOA3q/kor/uCCqsppxZHAjl5zLlOa4C6FeJu/TlvZ7hy/mbRrCp8qAKaC3Zu5NjVHXbvIr/xWpypShITNdCbceLA7Dtv++oDTtojHwDQ+LNx4OB117BDWQw4qufGYytEHozD0m7rmHgtzNoe3nOHl/JwDu+/YsoCQB/UE5eMTMQnvrhX7hXaFXi25BldL6KIxykMpKBcDOrHQZ7La+rsD8nITiauy4zOaTqIJdnRi5emyEnJsB17A39boDFJGAlrPCfgS5DYkUY9jsHep33qgg8Uu17HhDO6LoSIS0w5wZZ1lxoqHPzvniNujnBRjV4gDNeniOT6qLNzYnZeccAucM6y/wv336vlx9JNmHagWv10vqi1O+hvc+IEV8pXo0ymSht83Bds8Vd5nlNEY7YiEW+WhDGI/30Xk=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28c89de1-b5a2-4a9a-c12d-08d721b9428c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Aug 2019 19:46:26.7080
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3fab805d-945f-4ee7-8f9b-08d721bed509
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Aug 2019 20:26:19.6191
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wr44nuzrOFqyQ8CDBnIZBpKKVc1F/faVzxn1IB0CV8N2pnaiWwXawzoXNPWFVXppCL/XneYKDHgeBk/kLVkTpw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5168
+X-MS-Exchange-CrossTenant-userprincipalname: /1NnWXMJwJSQRBt15aMEbtmJOIRnUlQMYNyD8ryJ5JtRyzB+bL+1+acMup2tOR+xMBqg42hMGf0v5ggsCn/nqw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6529
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gVGh1LCBBdWcgMTUsIDIwMTkgYXQgMTA6Mjg6MjFBTSArMDIwMCwgQ2hyaXN0aWFuIEvDtm5p
-ZyB3cm90ZToNCj4gQW0gMDcuMDguMTkgdW0gMDE6MTUgc2NocmllYiBKYXNvbiBHdW50aG9ycGU6
-DQo+ID4gRnJvbTogSmFzb24gR3VudGhvcnBlIDxqZ2dAbWVsbGFub3guY29tPg0KPiA+IA0KPiA+
-IHJhZGVvbiBpcyB1c2luZyBhIGRldmljZSBnbG9iYWwgaGFzaCB0YWJsZSB0byB0cmFjayB3aGF0
-IG1tdV9ub3RpZmllcnMNCj4gPiBoYXZlIGJlZW4gcmVnaXN0ZXJlZCBvbiBzdHJ1Y3QgbW0uIFRo
-aXMgaXMgYmV0dGVyIHNlcnZlZCB3aXRoIHRoZSBuZXcNCj4gPiBnZXQvcHV0IHNjaGVtZSBpbnN0
-ZWFkLg0KPiA+IA0KPiA+IHJhZGVvbiBoYXMgYSBidWcgd2hlcmUgaXQgd2FzIG5vdCBibG9ja2lu
-ZyBub3RpZmllciByZWxlYXNlKCkgdW50aWwgYWxsDQo+ID4gdGhlIEJPJ3MgaGFkIGJlZW4gaW52
-YWxpZGF0ZWQuIFRoaXMgY291bGQgcmVzdWx0IGluIGEgdXNlIGFmdGVyIGZyZWUgb2YNCj4gPiBw
-YWdlcyB0aGUgQk9zLiBUaGlzIGlzIHRpZWQgaW50byBhIHNlY29uZCBidWcgd2hlcmUgcmFkZW9u
-IGxlZnQgdGhlDQo+ID4gbm90aWZpZXJzIHJ1bm5pbmcgZW5kbGVzc2x5IGV2ZW4gb25jZSB0aGUg
-aW50ZXJ2YWwgdHJlZSBiZWNhbWUNCj4gPiBlbXB0eS4gVGhpcyBjb3VsZCByZXN1bHQgaW4gYSB1
-c2UgYWZ0ZXIgZnJlZSB3aXRoIG1vZHVsZSB1bmxvYWQuDQo+ID4gDQo+ID4gQm90aCBhcmUgZml4
-ZWQgYnkgY2hhbmdpbmcgdGhlIGxpZmV0aW1lIG1vZGVsLCB0aGUgQk9zIGV4aXN0IGluIHRoZQ0K
-PiA+IGludGVydmFsIHRyZWUgd2l0aCB0aGVpciBuYXR1cmFsIGxpZmV0aW1lcyBpbmRlcGVuZGVu
-dCBvZiB0aGUgbW1fc3RydWN0DQo+ID4gbGlmZXRpbWUgdXNpbmcgdGhlIGdldC9wdXQgc2NoZW1l
-LiBUaGUgcmVsZWFzZSBydW5zIHN5bmNocm9ub3VzbHkgYW5kIGp1c3QNCj4gPiBkb2VzIGludmFs
-aWRhdGVfc3RhcnQgYWNyb3NzIHRoZSBlbnRpcmUgaW50ZXJ2YWwgdHJlZSB0byBjcmVhdGUgdGhl
-DQo+ID4gcmVxdWlyZWQgRE1BIGZlbmNlLg0KPiA+IA0KPiA+IEFkZGl0aW9ucyB0byB0aGUgaW50
-ZXJ2YWwgdHJlZSBhZnRlciByZWxlYXNlIGFyZSBhbHJlYWR5IGltcG9zc2libGUgYXMNCj4gPiBv
-bmx5IGN1cnJlbnQtPm1tIGlzIHVzZWQgZHVyaW5nIHRoZSBhZGQuDQo+ID4gDQo+ID4gU2lnbmVk
-LW9mZi1ieTogSmFzb24gR3VudGhvcnBlIDxqZ2dAbWVsbGFub3guY29tPg0KPiANCj4gQWNrZWQt
-Ynk6IENocmlzdGlhbiBLw7ZuaWcgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4NCg0KVGhhbmtz
-IQ0KDQo+IEJ1dCBJJ20gd29uZGVyaW5nIGlmIHdlIHNob3VsZG4ndCBjb21wbGV0ZWx5IGRyb3Ag
-cmFkZW9uIHVzZXJwdHIgc3VwcG9ydC4NCj4gSXQncyBqdXN0IHRvIGJ1Z2d5LA0KDQpJIHdvdWxk
-IG5vdCBvYmplY3QgOikNCg0KSmFzb24NCg==
+
+
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> Sent: Thursday, August 15, 2019 10:30 PM
+> To: Leon Romanovsky <leon@kernel.org>; Moni Shoua
+> <monis@mellanox.com>
+> Cc: Doug Ledford <dledford@redhat.com>; Leon Romanovsky
+> <leonro@mellanox.com>; RDMA mailing list <linux-rdma@vger.kernel.org>;
+> Guy Levi(SW) <guyle@mellanox.com>; Ido Kalir <idok@mellanox.com>; Majd
+> Dibbiny <majd@mellanox.com>; Mark Zhang <markz@mellanox.com>
+> Subject: Re: [PATCH rdma-rc 0/8] Fixes for v5.3
+>=20
+> On Thu, Aug 15, 2019 at 11:38:26AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@mellanox.com>
+> >
+> > Hi,
+> >
+> > This is a collection of new fixes for v5.3, everything here is fixing
+> > kernel crash or visible bug with one exception: patch #5 "IB/mlx5:
+> > Consolidate use_umr checks into single function". That patch is nice
+> > to have improvement to implement rest of the series.
+> >
+> > Thanks
+> >
+> > Ido Kalir (1):
+> >   IB/core: Fix NULL pointer dereference when bind QP to counter
+> >
+> > Jason Gunthorpe (1):
+> >   RDMA/mlx5: Fix MR npages calculation for IB_ACCESS_HUGETLB
+> >
+> > Leon Romanovsky (2):
+> >   RDMA/counters: Properly implement PID checks
+> >   RDMA/restrack: Rewrite PID namespace check to be reliable
+> >
+> > Moni Shoua (4):
+> >   IB/mlx5: Consolidate use_umr checks into single function
+> >   IB/mlx5: Report and handle ODP support properly
+> >   IB/mlx5: Fix MR re-registration flow to use UMR properly
+> >   IB/mlx5: Block MR WR if UMR is not possible
+>=20
+> I'm a little murky on what thes are fixing? Moni?
+
+See original fixed patch.
+Sometime the HW device disables some UMR abilities and hence driver should =
+avoid UMR usage in some cases. This HW behavior can be seen today in Linux@=
+windows environment with "untrusted VF".
+
+>=20
+> Jason
