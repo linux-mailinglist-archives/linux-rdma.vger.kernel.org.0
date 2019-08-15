@@ -2,435 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BEABF8EA91
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 13:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB568EC59
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 15:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbfHOLrJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Aug 2019 07:47:09 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:33752 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726317AbfHOLrJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Aug 2019 07:47:09 -0400
-Received: by mail-pg1-f196.google.com with SMTP id n190so1220426pgn.0
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Aug 2019 04:47:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=+5vF8n7SxP1az+SCvmhumg0EOXYcHdTCSxgtSCl2x20=;
-        b=On4+6rYRl+nNZ/+oqqf5wdOgFQHMAGVLlzoFpgCU1rfkz0B/Tu0TJ/p6yTkyQHM33z
-         5GW9EFi/FlRDpJvcGRq4S9aDYLtzXsIPLIzv4c+1pNAGkD3ZTy1JguqBWcOdTRD07vP9
-         QGQtieyRYY3fe3CBAevz+0CoJWW4IQgIAm8vI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=+5vF8n7SxP1az+SCvmhumg0EOXYcHdTCSxgtSCl2x20=;
-        b=cfW977mN0LcrfEB+9rCRQviTR6dwqxrlex0Djm+j4BBpJUVu60yWucKqlOmdyUtmVm
-         BPqIhe0IA8x9yfJAEHYF+TadjhYdGnoc8SigPuLulcmK4zciIUgh+aNdOphRciV1gOF/
-         5oxi2KX9WTJzd+os4cCQj2TbioK0Yuh0ixLvE1krAwV0WFeI1yvQfVFmycHq/Tc8itX3
-         MNvnxGMv3jQhU6SB6k69dG90Z9bu2cOSf9OyElJ6D30PmsWTR5gDYd8mOPkccIw4T1dw
-         M59GFwl1kOL1/ooLTOZtjz8daDXf1os59gslDFXCVMghIN0YJ/R2zoClOHixK9ulDL2S
-         Aa2A==
-X-Gm-Message-State: APjAAAVaxJwe53HYyPg/fC0XVj0t2zbeqPT+qqRGUAV84dTx6tRjjL6Y
-        9kJAnDpLtdZf9+6Kbi08RpodsqOxCN4JtQ==
-X-Google-Smtp-Source: APXvYqzIx8Nbv74mHU3zC/OOK3E5y0IPkZ7M/ACh5TW5Xtjge4Qcq5m9QFD5eY4cwXsCeoFdvLPizg==
-X-Received: by 2002:a62:f245:: with SMTP id y5mr5010722pfl.156.1565869628205;
-        Thu, 15 Aug 2019 04:47:08 -0700 (PDT)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id p90sm1611058pjp.7.2019.08.15.04.47.05
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Aug 2019 04:47:07 -0700 (PDT)
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc] RDMA/bnxt_re: Fix stack-out-of-bounds in bnxt_qplib_rcfw_send_message
-Date:   Thu, 15 Aug 2019 04:44:37 -0700
-Message-Id: <1565869477-19306-1-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
+        id S1731846AbfHONGC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Aug 2019 09:06:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37356 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730304AbfHONGC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Aug 2019 09:06:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id B6D16ACC5;
+        Thu, 15 Aug 2019 13:05:59 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id F206B1E4200; Thu, 15 Aug 2019 15:05:58 +0200 (CEST)
+Date:   Thu, 15 Aug 2019 15:05:58 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190815130558.GF14313@quack2.suse.cz>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190814101714.GA26273@quack2.suse.cz>
+ <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Driver copies FW commands to the HW queue as  multiple of 16 bytes. Some
-of the command structures are not exact multiple of 16. So while copying
-the data from those structures, the stack out of bounds messages are
-reported by KASAN. The following error is reported.
+On Wed 14-08-19 11:08:49, Ira Weiny wrote:
+> On Wed, Aug 14, 2019 at 12:17:14PM +0200, Jan Kara wrote:
+> > Hello!
+> > 
+> > On Fri 09-08-19 15:58:14, ira.weiny@intel.com wrote:
+> > > Pre-requisites
+> > > ==============
+> > > 	Based on mmotm tree.
+> > > 
+> > > Based on the feedback from LSFmm, the LWN article, the RFC series since
+> > > then, and a ton of scenarios I've worked in my mind and/or tested...[1]
+> > > 
+> > > Solution summary
+> > > ================
+> > > 
+> > > The real issue is that there is no use case for a user to have RDMA pinn'ed
+> > > memory which is then truncated.  So really any solution we present which:
+> > > 
+> > > A) Prevents file system corruption or data leaks
+> > > ...and...
+> > > B) Informs the user that they did something wrong
+> > > 
+> > > Should be an acceptable solution.
+> > > 
+> > > Because this is slightly new behavior.  And because this is going to be
+> > > specific to DAX (because of the lack of a page cache) we have made the user
+> > > "opt in" to this behavior.
+> > > 
+> > > The following patches implement the following solution.
+> > > 
+> > > 0) Registrations to Device DAX char devs are not affected
+> > > 
+> > > 1) The user has to opt in to allowing page pins on a file with an exclusive
+> > >    layout lease.  Both exclusive and layout lease flags are user visible now.
+> > > 
+> > > 2) page pins will fail if the lease is not active when the file back page is
+> > >    encountered.
+> > > 
+> > > 3) Any truncate or hole punch operation on a pinned DAX page will fail.
+> > 
+> > So I didn't fully grok the patch set yet but by "pinned DAX page" do you
+> > mean a page which has corresponding file_pin covering it? Or do you mean a
+> > page which has pincount increased? If the first then I'd rephrase this to
+> > be less ambiguous, if the second then I think it is wrong. 
+> 
+> I mean the second.  but by "fail" I mean hang.  Right now the "normal" page
+> pincount processing will hang the truncate.  Given the discussion with John H
+> we can make this a bit better if we use something like FOLL_PIN and the page
+> count bias to indicate this type of pin.  Then I could fail the truncate
+> outright.  but that is not done yet.
+> 
+> so... I used the word "fail" to be a bit more vague as the final implementation
+> may return ETXTBUSY or hang as noted.
 
-[ 1337.530155] ==================================================================
-[ 1337.530277] BUG: KASAN: stack-out-of-bounds in bnxt_qplib_rcfw_send_message+0x40a/0x850 [bnxt_re]
-[ 1337.530413] Read of size 16 at addr ffff888725477a48 by task rmmod/2785
+Ah, OK. Hanging is fine in principle but with longterm pins, your work
+makes sure they actually fail with ETXTBUSY, doesn't it? The thing is that
+e.g. DIO will use page pins as well for its buffers and we must wait there
+until the pin is released. So please just clarify your 'fail' here a bit
+:).
 
-[ 1337.530540] CPU: 5 PID: 2785 Comm: rmmod Tainted: G           OE     5.2.0-rc6+ #75
-[ 1337.530541] Hardware name: Dell Inc. PowerEdge R730/0599V5, BIOS 1.0.4 08/28/2014
-[ 1337.530542] Call Trace:
-[ 1337.530548]  dump_stack+0x5b/0x90
-[ 1337.530556]  ? bnxt_qplib_rcfw_send_message+0x40a/0x850 [bnxt_re]
-[ 1337.530560]  print_address_description+0x65/0x22e
-[ 1337.530568]  ? bnxt_qplib_rcfw_send_message+0x40a/0x850 [bnxt_re]
-[ 1337.530575]  ? bnxt_qplib_rcfw_send_message+0x40a/0x850 [bnxt_re]
-[ 1337.530577]  __kasan_report.cold.3+0x37/0x77
-[ 1337.530581]  ? _raw_write_trylock+0x10/0xe0
-[ 1337.530588]  ? bnxt_qplib_rcfw_send_message+0x40a/0x850 [bnxt_re]
-[ 1337.530590]  kasan_report+0xe/0x20
-[ 1337.530592]  memcpy+0x1f/0x50
-[ 1337.530600]  bnxt_qplib_rcfw_send_message+0x40a/0x850 [bnxt_re]
-[ 1337.530608]  ? bnxt_qplib_creq_irq+0xa0/0xa0 [bnxt_re]
-[ 1337.530611]  ? xas_create+0x3aa/0x5f0
-[ 1337.530613]  ? xas_start+0x77/0x110
-[ 1337.530615]  ? xas_clear_mark+0x34/0xd0
-[ 1337.530623]  bnxt_qplib_free_mrw+0x104/0x1a0 [bnxt_re]
-[ 1337.530631]  ? bnxt_qplib_destroy_ah+0x110/0x110 [bnxt_re]
-[ 1337.530633]  ? bit_wait_io_timeout+0xc0/0xc0
-[ 1337.530641]  bnxt_re_dealloc_mw+0x2c/0x60 [bnxt_re]
-[ 1337.530648]  bnxt_re_destroy_fence_mr+0x77/0x1d0 [bnxt_re]
-[ 1337.530655]  bnxt_re_dealloc_pd+0x25/0x60 [bnxt_re]
-[ 1337.530677]  ib_dealloc_pd_user+0xbe/0xe0 [ib_core]
-[ 1337.530683]  srpt_remove_one+0x5de/0x690 [ib_srpt]
-[ 1337.530689]  ? __srpt_close_all_ch+0xc0/0xc0 [ib_srpt]
-[ 1337.530692]  ? xa_load+0x87/0xe0
-...
-[ 1337.530840]  do_syscall_64+0x6d/0x1f0
-[ 1337.530843]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[ 1337.530845] RIP: 0033:0x7ff5b389035b
-[ 1337.530848] Code: 73 01 c3 48 8b 0d 2d 0b 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d fd 0a 2c 00 f7 d8 64 89 01 48
-[ 1337.530849] RSP: 002b:00007fff83425c28 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-[ 1337.530852] RAX: ffffffffffffffda RBX: 00005596443e6750 RCX: 00007ff5b389035b
-[ 1337.530853] RDX: 000000000000000a RSI: 0000000000000800 RDI: 00005596443e67b8
-[ 1337.530854] RBP: 0000000000000000 R08: 00007fff83424ba1 R09: 0000000000000000
-[ 1337.530856] R10: 00007ff5b3902960 R11: 0000000000000206 R12: 00007fff83425e50
-[ 1337.530857] R13: 00007fff8342673c R14: 00005596443e6260 R15: 00005596443e6750
+> > > 4) The user has the option of holding the lease or releasing it.  If they
+> > >    release it no other pin calls will work on the file.
+> > 
+> > Last time we spoke the plan was that the lease is kept while the pages are
+> > pinned (and an attempt to release the lease would block until the pages are
+> > unpinned). That also makes it clear that the *lease* is what is making
+> > truncate and hole punch fail with ETXTBUSY and the file_pin structure is
+> > just an implementation detail how the existence is efficiently tracked (and
+> > what keeps the backing file for the pages open so that the lease does not
+> > get auto-destroyed). Why did you change this?
+> 
+> closing the file _and_ unmaping it will cause the lease to be released
+> regardless of if we allow this or not.
+> 
+> As we discussed preventing the close seemed intractable.
 
-[ 1337.530885] The buggy address belongs to the page:
-[ 1337.530962] page:ffffea001c951dc0 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0
-[ 1337.530964] flags: 0x57ffffc0000000()
-[ 1337.530967] raw: 0057ffffc0000000 0000000000000000 ffffffff1c950101 0000000000000000
-[ 1337.530970] raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-[ 1337.530970] page dumped because: kasan: bad access detected
+Yes, preventing the application from closing the file is difficult. But
+from a quick look at your patches it seemed to me that you actually hold a
+backing file reference from the file_pin structure thus even though the
+application closes its file descriptor, the struct file (and thus the
+lease) lives further until the file_pin gets released. And that should last
+as long as the pages are pinned. Am I missing something?
 
-[ 1337.530996] Memory state around the buggy address:
-[ 1337.531072]  ffff888725477900: 00 00 00 00 f1 f1 f1 f1 00 00 00 00 00 f2 f2 f2
-[ 1337.531180]  ffff888725477980: 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1 00
-[ 1337.531288] >ffff888725477a00: 00 f2 f2 f2 f2 f2 f2 00 00 00 f2 00 00 00 00 00
-[ 1337.531393]                                                  ^
-[ 1337.531478]  ffff888725477a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[ 1337.531585]  ffff888725477b00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[ 1337.531691] ==================================================================
+> I thought about failing the munmap but that seemed wrong as well.  But more
+> importantly AFAIK RDMA can pass its memory pins to other processes via FD
+> passing...  This means that one could pin this memory, pass it to another
+> process and exit.  The file lease on the pin'ed file is lost.
 
-Fix this by passing the exact size of each FW command to
-bnxt_qplib_rcfw_send_message.
+Not if file_pin grabs struct file reference as I mentioned above...
+ 
+> The file lease is just a key to get the memory pin.  Once unlocked the procfs
+> tracking keeps track of where that pin goes and which processes need to be
+> killed to get rid of it.
 
-Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/qplib_fp.c   | 21 +++++++++---------
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 12 ++++++-----
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  2 +-
- drivers/infiniband/hw/bnxt_re/qplib_sp.c   | 34 +++++++++++++++++-------------
- 4 files changed, 38 insertions(+), 31 deletions(-)
+I think having file lease being just a key to get the pin is conceptually
+wrong. The lease is what expresses: "I'm accessing these blocks directly,
+don't touch them without coordinating with me." So it would be only natural
+if we maintained the lease while we are accessing blocks instead of
+transferring this protection responsibility to another structure - namely
+file_pin - and letting the lease go. But maybe I miss some technical reason
+why maintaining file lease is difficult. If that's the case, I'd like to hear
+what...
+ 
+> > > 5) Closing the file is ok.
+> > > 
+> > > 6) Unmapping the file is ok
+> > > 
+> > > 7) Pins against the files are tracked back to an owning file or an owning mm
+> > >    depending on the internal subsystem needs.  With RDMA there is an owning
+> > >    file which is related to the pined file.
+> > > 
+> > > 8) Only RDMA is currently supported
+> > 
+> > If you currently only need "owning file" variant in your patch set, then
+> > I'd just implement that and leave "owning mm" variant for later if it
+> > proves to be necessary. The things are complex enough as is...
+> 
+> I can do that...  I was trying to get io_uring working as well with the
+> owning_mm but I should save that for later.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index 958c1ff..ea03c0d 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -522,7 +522,8 @@ void bnxt_qplib_destroy_srq(struct bnxt_qplib_res *res,
- 	req.srq_cid = cpu_to_le32(srq->id);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (struct cmdq_base *)&req,
--					  (struct creq_base *)&resp, NULL, 0);
-+					  (struct creq_base *)&resp,
-+					  sizeof(req), NULL, 0);
- 	kfree(srq->swq);
- 	if (rc)
- 		return;
-@@ -583,7 +584,7 @@ int bnxt_qplib_create_srq(struct bnxt_qplib_res *res,
- 	req.eventq_id = cpu_to_le16(srq->eventq_hw_ring_id);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, 0);
-+					  (void *)&resp, sizeof(req), NULL, 0);
- 	if (rc)
- 		goto fail;
- 
-@@ -650,7 +651,7 @@ int bnxt_qplib_query_srq(struct bnxt_qplib_res *res,
- 		return -ENOMEM;
- 	sb = sbuf->sb;
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
--					  (void *)sbuf, 0);
-+					  sizeof(req), (void *)sbuf, 0);
- 	srq->threshold = le16_to_cpu(sb->srq_limit);
- 	bnxt_qplib_rcfw_free_sbuf(rcfw, sbuf);
- 
-@@ -834,7 +835,7 @@ int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	req.pd_id = cpu_to_le32(qp->pd->id);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, 0);
-+					  (void *)&resp, sizeof(req), NULL, 0);
- 	if (rc)
- 		goto fail;
- 
-@@ -1058,7 +1059,7 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	req.pd_id = cpu_to_le32(qp->pd->id);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, 0);
-+					  (void *)&resp, sizeof(req), NULL, 0);
- 	if (rc)
- 		goto fail;
- 
-@@ -1278,7 +1279,7 @@ int bnxt_qplib_modify_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	req.vlan_pcp_vlan_dei_vlan_id = cpu_to_le16(qp->vlan_id);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, 0);
-+					  (void *)&resp, sizeof(req), NULL, 0);
- 	if (rc)
- 		return rc;
- 	qp->cur_qp_state = qp->state;
-@@ -1306,7 +1307,7 @@ int bnxt_qplib_query_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	req.qp_cid = cpu_to_le32(qp->id);
- 	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
--					  (void *)sbuf, 0);
-+					  sizeof(req), (void *)sbuf, 0);
- 	if (rc)
- 		goto bail;
- 	/* Extract the context from the side buffer */
-@@ -1426,7 +1427,7 @@ int bnxt_qplib_destroy_qp(struct bnxt_qplib_res *res,
- 
- 	req.qp_cid = cpu_to_le32(qp->id);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, 0);
-+					  (void *)&resp, sizeof(req), NULL, 0);
- 	if (rc) {
- 		rcfw->qp_tbl[qp->id].qp_id = qp->id;
- 		rcfw->qp_tbl[qp->id].qp_handle = qp;
-@@ -1971,7 +1972,7 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
- 			 CMDQ_CREATE_CQ_CNQ_ID_SFT);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, 0);
-+					  (void *)&resp, sizeof(req), NULL, 0);
- 	if (rc)
- 		goto fail;
- 
-@@ -2005,7 +2006,7 @@ int bnxt_qplib_destroy_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
- 
- 	req.cq_cid = cpu_to_le32(cq->id);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, 0);
-+					  (void *)&resp, sizeof(req), NULL, 0);
- 	if (rc)
- 		return rc;
- 	bnxt_qplib_free_hwq(res->pdev, &cq->hwq);
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 48b04d2..32c259e 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -82,7 +82,8 @@ static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
- };
- 
- static int __send_message(struct bnxt_qplib_rcfw *rcfw, struct cmdq_base *req,
--			  struct creq_base *resp, void *sb, u8 is_block)
-+			  struct creq_base *resp, u32 req_size,
-+			  void *sb, u8 is_block)
- {
- 	struct bnxt_qplib_cmdqe *cmdqe, **cmdq_ptr;
- 	struct bnxt_qplib_hwq *cmdq = &rcfw->cmdq;
-@@ -150,7 +151,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw, struct cmdq_base *req,
- 
- 	cmdq_ptr = (struct bnxt_qplib_cmdqe **)cmdq->pbl_ptr;
- 	preq = (u8 *)req;
--	size = req->cmd_size * BNXT_QPLIB_CMDQE_UNITS;
-+	size = req_size;
- 	do {
- 		/* Locate the next cmdq slot */
- 		sw_prod = HWQ_CMP(cmdq->prod, cmdq);
-@@ -198,6 +199,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw, struct cmdq_base *req,
- int bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 				 struct cmdq_base *req,
- 				 struct creq_base *resp,
-+				 u32 req_size,
- 				 void *sb, u8 is_block)
- {
- 	struct creq_qp_event *evnt = (struct creq_qp_event *)resp;
-@@ -207,7 +209,7 @@ int bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 
- 	do {
- 		opcode = req->opcode;
--		rc = __send_message(rcfw, req, resp, sb, is_block);
-+		rc = __send_message(rcfw, req, resp, req_size, sb, is_block);
- 		cookie = le16_to_cpu(req->cookie) & RCFW_MAX_COOKIE_VALUE;
- 		if (!rc)
- 			break;
-@@ -442,7 +444,7 @@ int bnxt_qplib_deinit_rcfw(struct bnxt_qplib_rcfw *rcfw)
- 
- 	RCFW_CMD_PREP(req, DEINITIALIZE_FW, cmd_flags);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
--					  NULL, 0);
-+					  sizeof(req), NULL, 0);
- 	if (rc)
- 		return rc;
- 
-@@ -543,7 +545,7 @@ int bnxt_qplib_init_rcfw(struct bnxt_qplib_rcfw *rcfw,
- skip_ctx_setup:
- 	req.stat_ctx_id = cpu_to_le32(ctx->stats.fw_id);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
--					  NULL, 0);
-+					  sizeof(req), NULL, 0);
- 	if (rc)
- 		return rc;
- 	set_bit(FIRMWARE_INITIALIZED_FLAG, &rcfw->flags);
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-index 2138533..ea5144f 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-@@ -285,7 +285,7 @@ void bnxt_qplib_rcfw_free_sbuf(struct bnxt_qplib_rcfw *rcfw,
- 			       struct bnxt_qplib_rcfw_sbuf *sbuf);
- int bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 				 struct cmdq_base *req, struct creq_base *resp,
--				 void *sbuf, u8 is_block);
-+				 u32 req_size, void *sbuf, u8 is_block);
- 
- int bnxt_qplib_deinit_rcfw(struct bnxt_qplib_rcfw *rcfw);
- int bnxt_qplib_init_rcfw(struct bnxt_qplib_rcfw *rcfw,
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index 40296b9..0d89334 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -65,7 +65,7 @@ static void bnxt_qplib_query_version(struct bnxt_qplib_rcfw *rcfw,
- 	RCFW_CMD_PREP(req, QUERY_VERSION, cmd_flags);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, 0);
-+					  (void *)&resp, sizeof(req), NULL, 0);
- 	if (rc)
- 		return;
- 	fw_ver[0] = resp.fw_maj;
-@@ -98,7 +98,7 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
- 	sb = sbuf->sb;
- 	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
--					  (void *)sbuf, 0);
-+					  sizeof(req), (void *)sbuf, 0);
- 	if (rc)
- 		goto bail;
- 
-@@ -194,7 +194,7 @@ int bnxt_qplib_set_func_resources(struct bnxt_qplib_res *res,
- 	req.max_gid_per_vf = cpu_to_le32(ctx->vf_res.max_gid_per_vf);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp,
-+					  (void *)&resp, sizeof(req),
- 					  NULL, 0);
- 	if (rc) {
- 		dev_err(&res->pdev->dev, "Failed to set function resources\n");
-@@ -259,7 +259,8 @@ int bnxt_qplib_del_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
- 		}
- 		req.gid_index = cpu_to_le16(sgid_tbl->hw_id[index]);
- 		rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--						  (void *)&resp, NULL, 0);
-+						  (void *)&resp,
-+						  sizeof(req), NULL, 0);
- 		if (rc)
- 			return rc;
- 	}
-@@ -347,7 +348,8 @@ int bnxt_qplib_add_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
- 		req.src_mac[2] = cpu_to_be16(((u16 *)smac)[2]);
- 
- 		rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--						  (void *)&resp, NULL, 0);
-+						  (void *)&resp, sizeof(req),
-+						  NULL, 0);
- 		if (rc)
- 			return rc;
- 		sgid_tbl->hw_id[free_idx] = le32_to_cpu(resp.xid);
-@@ -401,7 +403,7 @@ int bnxt_qplib_update_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
- 	req.gid_index = cpu_to_le16(gid_idx);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, 0);
-+					  (void *)&resp, sizeof(req), NULL, 0);
- 	return rc;
- }
- 
-@@ -528,7 +530,7 @@ int bnxt_qplib_create_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
- 	req.dest_mac[2] = cpu_to_le16(temp16[2]);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
--					  NULL, block);
-+					  sizeof(req), NULL, block);
- 	if (rc)
- 		return rc;
- 
-@@ -549,8 +551,8 @@ void bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
- 
- 	req.ah_cid = cpu_to_le32(ah->id);
- 
--	bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp, NULL,
--				     block);
-+	bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
-+				     sizeof(req), NULL, block);
- }
- 
- /* MRW */
-@@ -579,7 +581,7 @@ int bnxt_qplib_free_mrw(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mrw)
- 		req.key = cpu_to_le32(mrw->lkey);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
--					  NULL, 0);
-+					  sizeof(req), NULL, 0);
- 	if (rc)
- 		return rc;
- 
-@@ -612,7 +614,7 @@ int bnxt_qplib_alloc_mrw(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mrw)
- 	req.mrw_handle = cpu_to_le64(tmp);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, 0);
-+					  (void *)&resp, sizeof(req), NULL, 0);
- 	if (rc)
- 		return rc;
- 
-@@ -638,7 +640,8 @@ int bnxt_qplib_dereg_mrw(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mrw,
- 
- 	req.lkey = cpu_to_le32(mrw->lkey);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, block);
-+					  (void *)&resp, sizeof(req),
-+					  NULL, block);
- 	if (rc)
- 		return rc;
- 
-@@ -726,7 +729,8 @@ int bnxt_qplib_reg_mr(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mr,
- 	req.mr_size = cpu_to_le64(mr->total_size);
- 
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
--					  (void *)&resp, NULL, block);
-+					  (void *)&resp, sizeof(req),
-+					  NULL, block);
- 	if (rc)
- 		goto fail;
- 
-@@ -782,7 +786,7 @@ int bnxt_qplib_map_tc2cos(struct bnxt_qplib_res *res, u16 *cids)
- 	req.cos1 = cpu_to_le16(cids[1]);
- 
- 	return bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
--						NULL, 0);
-+					    sizeof(req), NULL, 0);
- }
- 
- int bnxt_qplib_get_roce_stats(struct bnxt_qplib_rcfw *rcfw,
-@@ -807,7 +811,7 @@ int bnxt_qplib_get_roce_stats(struct bnxt_qplib_rcfw *rcfw,
- 	sb = sbuf->sb;
- 	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
--					  (void *)sbuf, 0);
-+					  sizeof(req), (void *)sbuf, 0);
- 	if (rc)
- 		goto bail;
- 	/* Extract the context from the side buffer */
+Ah, OK. Yes, I guess io_uring can be next step.
+
+								Honza
 -- 
-2.5.5
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
