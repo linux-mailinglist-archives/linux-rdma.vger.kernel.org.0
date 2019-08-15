@@ -2,151 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC678EE85
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 16:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6918EEAC
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 16:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731995AbfHOOnX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Aug 2019 10:43:23 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:58542 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729838AbfHOOnX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Aug 2019 10:43:23 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7FEVWdN083341;
-        Thu, 15 Aug 2019 14:43:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=nMsYPMoYmwV5SXmTmk2bacMSb5F8g0yBpO2XL1HPzdc=;
- b=eOgN4SQCD5smuqGpRSaabM1gSFcgFmtjsTC2Zh4ov5ozVCJa5x1JzwblDSBwiBZs77+j
- K0G0vB7i8aezm7owRG2xpC3UcgcWmgR39F53GMACQneCKXPVugqVA9oAG56xX2KhsfIc
- sJPBxRpiexrDrHWpJpqfpRI3xeO4xQDbpzI8iNQAGp2a+JLVRsBltdaQSRCGc1rQ/YdG
- P/iQcDZfmzIntSUAfY/90gWusbUFNiNghYVB6dtn0PPB9y7snz9yJ5HOexYS3Gf1QVym
- 1DE0IiMc1NsqqWTvUmWOi4n3IzHlcrp9iD6mfxtZTnPrrtySeAWbhDfqtbfvJMo1LwkF sw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2u9nbtu4r7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Aug 2019 14:43:21 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7FEXa9D172227;
-        Thu, 15 Aug 2019 14:43:20 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 2ucgf1325c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Aug 2019 14:43:20 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7FEhKuP003067;
-        Thu, 15 Aug 2019 14:43:20 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2ucgf1324t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Aug 2019 14:43:20 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7FEhJRe025300;
-        Thu, 15 Aug 2019 14:43:19 GMT
-Received: from [10.159.252.166] (/10.159.252.166)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 15 Aug 2019 07:43:19 -0700
-From:   Gerd Rausch <gerd.rausch@oracle.com>
-Subject: [PATCH net-next v2 4/4] rds: check for excessive looping in
- rds_send_xmit
-To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com
-Cc:     David Miller <davem@davemloft.net>
-References: <20190814.212525.326606319186601317.davem@davemloft.net>
- <cover.1565879451.git.gerd.rausch@oracle.com>
-Message-ID: <d91e3273-48bb-13bf-af65-40472890f975@oracle.com>
-Date:   Thu, 15 Aug 2019 07:43:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1733133AbfHOOvE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Aug 2019 10:51:04 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:40141 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732505AbfHOOvE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Aug 2019 10:51:04 -0400
+Received: by mail-qk1-f195.google.com with SMTP id s145so2016182qke.7
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Aug 2019 07:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=z90nPpYO8UuUUSb9IN8rKS3L0KsgC8zXmObZdfo6ctQ=;
+        b=dU2EhV+6EWSs1MNrZJWfU76DaiGX5NQgWL4uohTv/GZxgH6FeggKTIKZ+d/6xxWmB5
+         Uq7EirJG422MX6svb2pK3O0rmVD5upXZhrC0obDyAVUsClwMUccie10LZ+VusUXs6G5t
+         Cfxm7G3duJErwOwTzL6wlTMWxPvhXqi0t55/HXZYJ0ksP5CllSxCeRSJEwA3qeLb3Mw+
+         H9tQF6/hs2KVjejIpKYI3tuEWzOasQMSO5OrPdyS6Tf6gZNSrPhr0d7BWVqY895GeZU7
+         3vhMlzFvKziDCq6pld4ycFVFRE1zOEJ/X+8kNMBCMNIgJ/nYLqTQqzhkO3QmO9Oxi/p7
+         z4xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=z90nPpYO8UuUUSb9IN8rKS3L0KsgC8zXmObZdfo6ctQ=;
+        b=cDfpizyGGrqbxm/0rB28fm7xu5SnmjzJ8D3+ifKJLHuacN3FTKPkcZjE4uArNev4iS
+         m58B2hL0wV4Bbbaz1lMpIx7QoT91pe5cn05i18cU+gTImRcWDUu8CLNX2xNX9k/u/Bu4
+         H82FbsVPzI1yFvFUssTMhdGoBOUfKEUzG2AHRLGiH8ZJ636AerFFAXgYyVKeheUxcDXc
+         /mX7QTtONEM+xSj/cD62NBH+IAL7JTCSPpy6nzzCf4GkibSgUFHe9IyeErl1IFuEpswm
+         /UeT3yd6yu9xBARZ+SweBHamwoVeCzsucmWY2expd+P2+ITS+6KP6OCSg/M363TjIQts
+         9Kpg==
+X-Gm-Message-State: APjAAAWzxwOYWv5vICQHcD6OWVj+aCSbOSpZCG+et1xcy5B5dmuHvbqA
+        Bc8Twod/15dkv5MJyFg2Rqq/BQ==
+X-Google-Smtp-Source: APXvYqyMHfwmFKSYVNb8WeeauLH7Hep/WJZ+jheCJjAwrLvMcjUnfX6gEreyk5eeamBSEzYzpviglQ==
+X-Received: by 2002:a05:620a:71a:: with SMTP id 26mr4357407qkc.374.1565880663323;
+        Thu, 15 Aug 2019 07:51:03 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id e15sm805595qtr.51.2019.08.15.07.51.02
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 15 Aug 2019 07:51:02 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hyH5i-0005L9-BH; Thu, 15 Aug 2019 11:51:02 -0300
+Date:   Thu, 15 Aug 2019 11:51:02 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jan Kara <jack@suse.cz>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] mm/gup: introduce vaddr_pin_pages_remote()
+Message-ID: <20190815145102.GH21596@ziepe.ca>
+References: <20190812234950.GA6455@iweiny-DESK2.sc.intel.com>
+ <38d2ff2f-4a69-e8bd-8f7c-41f1dbd80fae@nvidia.com>
+ <20190813210857.GB12695@iweiny-DESK2.sc.intel.com>
+ <a1044a0d-059c-f347-bd68-38be8478bf20@nvidia.com>
+ <90e5cd11-fb34-6913-351b-a5cc6e24d85d@nvidia.com>
+ <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
+ <2cbdf599-2226-99ae-b4d5-8909a0a1eadf@nvidia.com>
+ <ac834ac6-39bd-6df9-fca4-70b9520b6c34@nvidia.com>
+ <20190815132622.GG14313@quack2.suse.cz>
+ <20190815133510.GA21302@quack2.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <cover.1565879451.git.gerd.rausch@oracle.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908150148
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190815133510.GA21302@quack2.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Andy Grover <andy.grover@oracle.com>
-Date: Thu, 13 Jan 2011 11:40:31 -0800
+On Thu, Aug 15, 2019 at 03:35:10PM +0200, Jan Kara wrote:
 
-Original commit from 2011 updated to include a change by
-Yuval Shaia <yuval.shaia@oracle.com>
-that adds a new statistic counter "send_stuck_rm"
-to capture the messages looping exessively
-in the send path.
+> > 3) ODP case - GUP references to pages serving as DMA buffers, MMU notifiers
+> >    used to synchronize with page_mkclean() and munmap() => normal page
+> >    references are fine.
+> 
+> I want to add that I'd like to convert users in cases 1) and 2) from using
+> GUP to using differently named function. Users in case 3) can stay as they
+> are for now although ultimately I'd like to denote such use cases in a
+> special way as well...
 
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
----
- net/rds/rds.h   |  2 +-
- net/rds/send.c  | 12 ++++++++++++
- net/rds/stats.c |  1 +
- 3 files changed, 14 insertions(+), 1 deletion(-)
+3) users also want a special function and path, right now it is called
+hmm_range_fault() but perhaps it would be good to harmonize it more
+with the GUP infrastructure?
 
-diff --git a/net/rds/rds.h b/net/rds/rds.h
-index f0066d168499..ad605fd61655 100644
---- a/net/rds/rds.h
-+++ b/net/rds/rds.h
-@@ -717,7 +717,7 @@ struct rds_statistics {
- 	uint64_t	s_cong_send_blocked;
- 	uint64_t	s_recv_bytes_added_to_socket;
- 	uint64_t	s_recv_bytes_removed_from_socket;
--
-+	uint64_t	s_send_stuck_rm;
- };
- 
- /* af_rds.c */
-diff --git a/net/rds/send.c b/net/rds/send.c
-index 031b1e97a466..9ce552abf9e9 100644
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -145,6 +145,7 @@ int rds_send_xmit(struct rds_conn_path *cp)
- 	LIST_HEAD(to_be_dropped);
- 	int batch_count;
- 	unsigned long send_gen = 0;
-+	int same_rm = 0;
- 
- restart:
- 	batch_count = 0;
-@@ -200,6 +201,17 @@ int rds_send_xmit(struct rds_conn_path *cp)
- 
- 		rm = cp->cp_xmit_rm;
- 
-+		if (!rm) {
-+			same_rm = 0;
-+		} else {
-+			same_rm++;
-+			if (same_rm >= 4096) {
-+				rds_stats_inc(s_send_stuck_rm);
-+				ret = -EAGAIN;
-+				break;
-+			}
-+		}
-+
- 		/*
- 		 * If between sending messages, we can send a pending congestion
- 		 * map update.
-diff --git a/net/rds/stats.c b/net/rds/stats.c
-index 6bbab4d74c4f..9e87da43c004 100644
---- a/net/rds/stats.c
-+++ b/net/rds/stats.c
-@@ -78,6 +78,7 @@ static const char *const rds_stat_names[] = {
- 	"cong_send_blocked",
- 	"recv_bytes_added_to_sock",
- 	"recv_bytes_freed_fromsock",
-+	"send_stuck_rm",
- };
- 
- void rds_stats_info_copy(struct rds_info_iterator *iter,
--- 
-2.22.1
+I'm not quite sure what the best plan for that is yet.
 
+Jason
