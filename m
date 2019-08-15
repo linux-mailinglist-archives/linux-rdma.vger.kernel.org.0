@@ -2,78 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2DB8EC61
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 15:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BF78ECC3
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 15:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732042AbfHONHm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Aug 2019 09:07:42 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:42227 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730304AbfHONHm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Aug 2019 09:07:42 -0400
-Received: by mail-qt1-f195.google.com with SMTP id t12so2205227qtp.9
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Aug 2019 06:07:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=502PNjJ03tb74tMbD+BofBD7Dbg2E/vBEOvDVeixxNg=;
-        b=BqUUXWs7AS5ik2TPWkYX7s538Te5FqlfaUo8uRvkshw/l6aDkS2lVA7w5ReLCw0nMp
-         Jxo0RKxSPardxbFZbZGpfUVAhlIrDgdxbN1pyIuMfIA7rli8t0tRlMu9AGnHfM0f1Dqa
-         tZixr0DLUGsOU5oau1EKiLQTy88QlaYE1bjmE1ekUKVd5wXcSMgok+G3GBBI22U5u18l
-         p0hbBi+pIwH2n8iVXEFUXwpHvD3AZpSSf7k+p+CMd2cw8rAhFoXTq4QK9GcS+36+NdFV
-         4MIzuYqau6jhaYQ3/MEX+qWFYFa4jncSjkEyojDlOt6Iy63Bqm+tGHsGw/emKU1u0fjE
-         J3MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=502PNjJ03tb74tMbD+BofBD7Dbg2E/vBEOvDVeixxNg=;
-        b=OWWFI0WOPM2ZEl3V89aQhrqs5M7zmemf9MJ14guPBMWUx2l70xT0vF3dS/xL+1Z6F/
-         ygg3t9GzpXM6sNrRNWTsc7Iapdk+424Y7slyTpfGFBudL37koiI0ADevSAjR45mlhW8f
-         f7OHk7CaG94BD1C1p/rppefgZMuFoFY1Xs7xaLQV1ReAQ7Twaiqmrki0E2g7D2iP4Bq/
-         xUEy770NHu1jjKAM8jHkBn+QtCnmH/BGbqwYCttsAIglug97Gs7tIMJUdd0O9GStPKq/
-         muogmPwcdICswJohGT1vn/iTgOYri7o/A4WueTTI76xcPXL9PyBYRDrPZcnfXBx6tJKV
-         Sxyw==
-X-Gm-Message-State: APjAAAVE0GTtxfJPvKSCrW0K31IoYJPab/9fXyF3RMKs3JdGh7ZtUSgK
-        dUwEXI6sEsq+AIhSKiM1bRL7Pg==
-X-Google-Smtp-Source: APXvYqzEoX4q/8t96Kg9WS2o6QHOo926gKFpEe8wD3a5oRFyfEd805f+Gk3CLfoWje/Vg28g4p4AHw==
-X-Received: by 2002:ac8:1c42:: with SMTP id j2mr3833404qtk.68.1565874461077;
-        Thu, 15 Aug 2019 06:07:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id g3sm1366704qke.105.2019.08.15.06.07.40
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 15 Aug 2019 06:07:40 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hyFTg-0004JC-9d; Thu, 15 Aug 2019 10:07:40 -0300
-Date:   Thu, 15 Aug 2019 10:07:40 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-rc] RDMA/bnxt_re: Fix stack-out-of-bounds in
- bnxt_qplib_rcfw_send_message
-Message-ID: <20190815130740.GE21596@ziepe.ca>
-References: <1565869477-19306-1-git-send-email-selvin.xavier@broadcom.com>
+        id S1732253AbfHON0Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Aug 2019 09:26:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45032 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731846AbfHON0Z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Aug 2019 09:26:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id C4A59AE12;
+        Thu, 15 Aug 2019 13:26:22 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 1C66F1E4200; Thu, 15 Aug 2019 15:26:22 +0200 (CEST)
+Date:   Thu, 15 Aug 2019 15:26:22 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] mm/gup: introduce vaddr_pin_pages_remote()
+Message-ID: <20190815132622.GG14313@quack2.suse.cz>
+References: <20190812015044.26176-1-jhubbard@nvidia.com>
+ <20190812015044.26176-3-jhubbard@nvidia.com>
+ <20190812234950.GA6455@iweiny-DESK2.sc.intel.com>
+ <38d2ff2f-4a69-e8bd-8f7c-41f1dbd80fae@nvidia.com>
+ <20190813210857.GB12695@iweiny-DESK2.sc.intel.com>
+ <a1044a0d-059c-f347-bd68-38be8478bf20@nvidia.com>
+ <90e5cd11-fb34-6913-351b-a5cc6e24d85d@nvidia.com>
+ <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
+ <2cbdf599-2226-99ae-b4d5-8909a0a1eadf@nvidia.com>
+ <ac834ac6-39bd-6df9-fca4-70b9520b6c34@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1565869477-19306-1-git-send-email-selvin.xavier@broadcom.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ac834ac6-39bd-6df9-fca4-70b9520b6c34@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 15, 2019 at 04:44:37AM -0700, Selvin Xavier wrote:
-> @@ -583,7 +584,7 @@ int bnxt_qplib_create_srq(struct bnxt_qplib_res *res,
->  	req.eventq_id = cpu_to_le16(srq->eventq_hw_ring_id);
->  
->  	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
-> -					  (void *)&resp, NULL, 0);
-> +					  (void *)&resp, sizeof(req), NULL, 0);
+On Wed 14-08-19 20:01:07, John Hubbard wrote:
+> On 8/14/19 5:02 PM, John Hubbard wrote:
+> > On 8/14/19 4:50 PM, Ira Weiny wrote:
+> > > On Tue, Aug 13, 2019 at 05:56:31PM -0700, John Hubbard wrote:
+> > > > On 8/13/19 5:51 PM, John Hubbard wrote:
+> > > > > On 8/13/19 2:08 PM, Ira Weiny wrote:
+> > > > > > On Mon, Aug 12, 2019 at 05:07:32PM -0700, John Hubbard wrote:
+> > > > > > > On 8/12/19 4:49 PM, Ira Weiny wrote:
+> > > > > > > > On Sun, Aug 11, 2019 at 06:50:44PM -0700, john.hubbard@gmail.com wrote:
+> > > > > > > > > From: John Hubbard <jhubbard@nvidia.com>
+> > > > > > > ...
+> > > > > > Finally, I struggle with converting everyone to a new call.  It is more
+> > > > > > overhead to use vaddr_pin in the call above because now the GUP code is going
+> > > > > > to associate a file pin object with that file when in ODP we don't need that
+> > > > > > because the pages can move around.
+> > > > > 
+> > > > > What if the pages in ODP are file-backed?
+> > > > > 
+> > > > 
+> > > > oops, strike that, you're right: in that case, even the file system case is covered.
+> > > > Don't mind me. :)
+> > > 
+> > > Ok so are we agreed we will drop the patch to the ODP code?  I'm going to keep
+> > > the FOLL_PIN flag and addition in the vaddr_pin_pages.
+> > > 
+> > 
+> > Yes. I hope I'm not overlooking anything, but it all seems to make sense to
+> > let ODP just rely on the MMU notifiers.
+> > 
+> 
+> Hold on, I *was* forgetting something: this was a two part thing, and
+> you're conflating the two points, but they need to remain separate and
+> distinct. There were:
+> 
+> 1. FOLL_PIN is necessary because the caller is clearly in the use case that
+> requires it--however briefly they might be there. As Jan described it,
+> 
+> "Anything that gets page reference and then touches page data (e.g.
+> direct IO) needs the new kind of tracking so that filesystem knows
+> someone is messing with the page data." [1]
 
-I really don't like seeing casts to void * in code. Why can't you
-properly embed the header in the structs??
+So when the GUP user uses MMU notifiers to stop writing to pages whenever
+they are writeprotected with page_mkclean(), they don't really need page
+pin - their access is then fully equivalent to any other mmap userspace
+access and filesystem knows how to deal with those. I forgot out this case
+when I wrote the above sentence.
 
-Jason
+So to sum up there are three cases:
+1) DIO case - GUP references to pages serving as DIO buffers are needed for
+   relatively short time, no special synchronization with page_mkclean() or
+   munmap() => needs FOLL_PIN
+2) RDMA case - GUP references to pages serving as DMA buffers needed for a
+   long time, no special synchronization with page_mkclean() or munmap()
+   => needs FOLL_PIN | FOLL_LONGTERM
+   This case has also a special case when the pages are actually DAX. Then
+   the caller additionally needs file lease and additional file_pin
+   structure is used for tracking this usage.
+3) ODP case - GUP references to pages serving as DMA buffers, MMU notifiers
+   used to synchronize with page_mkclean() and munmap() => normal page
+   references are fine.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
