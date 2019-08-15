@@ -2,102 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9388E1A2
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 02:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C4E8E1B6
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Aug 2019 02:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbfHOADr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Aug 2019 20:03:47 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:14990 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbfHOADq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Aug 2019 20:03:46 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d54a1640000>; Wed, 14 Aug 2019 17:03:48 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 14 Aug 2019 17:03:46 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 14 Aug 2019 17:03:46 -0700
-Received: from [10.2.171.178] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 15 Aug
- 2019 00:03:45 +0000
-Subject: Re: [RFC PATCH 2/2] mm/gup: introduce vaddr_pin_pages_remote()
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-References: <20190812015044.26176-1-jhubbard@nvidia.com>
- <20190812015044.26176-3-jhubbard@nvidia.com>
- <20190812234950.GA6455@iweiny-DESK2.sc.intel.com>
- <38d2ff2f-4a69-e8bd-8f7c-41f1dbd80fae@nvidia.com>
- <20190813210857.GB12695@iweiny-DESK2.sc.intel.com>
- <a1044a0d-059c-f347-bd68-38be8478bf20@nvidia.com>
- <90e5cd11-fb34-6913-351b-a5cc6e24d85d@nvidia.com>
- <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <2cbdf599-2226-99ae-b4d5-8909a0a1eadf@nvidia.com>
-Date:   Wed, 14 Aug 2019 17:02:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728373AbfHOANV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Aug 2019 20:13:21 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40579 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726865AbfHOANV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Aug 2019 20:13:21 -0400
+Received: by mail-qk1-f193.google.com with SMTP id s145so567242qke.7
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2019 17:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qzhD8inHCWGPsSExfxoS4FMI+7+fcQwlxaBDgT12qb4=;
+        b=kQ7rO4RrHFSZ6MZuuxxoF8VbnBnjRycJLb07elyvEnUiIa4wJgsVinEba3cE2MqTB9
+         fJulQuWx6Y5tYTxlddWTc11PBfISadqD+ExfUHnpoPQON92Ku+S5Y/WG1rnAqUDmFm/t
+         sZdh11B/5WH1wkWaQw580ROrmY5paRB/mKD6yO6YRdOAjXFOKeMa/lNRNHsDHR11a2YM
+         fH5CrO9kz+3OETBgm2cIOfKwCC5iyZs6YtbJwN/rErrCwql6u7WwlNfS1W19r/IYCdLa
+         OB/xGbNt8+DZYg3Zcz43LE9VgkFuylrF77Y+9lVNSAp5BzomHMMBV2AknnHcgTQXagXw
+         j3Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qzhD8inHCWGPsSExfxoS4FMI+7+fcQwlxaBDgT12qb4=;
+        b=Xl5uODU+ElY69ccGiSxz4Xx+Oca0A0ylO2AHPeXCgtZqXf3t44hV/5V++bHJ5AHIPa
+         WfDPab8Zg+Mzto6Re2DOUY42evaFNRNJuyv0Pp6z4TMTmwtWRsEpqjBw3v4BtVhdZoFf
+         Q0o9zq5BZnnsMIYy5bgI/SPRbo8eEagVLh0PoKDSpdumEczd44EIHJB7qMjHUOELBQmC
+         hkQg8+h6BKuL3MJxnv+qw3InP6TmXu6yGVTEzaw0zC8l+JtW5h3gLDQ519s2whA3/O9T
+         ZY8SwNMGJGecTnWdy/erlbpcTorNowIW/AhikFBWE06L7l3UVT7kUJvKte5gsveYH3jw
+         AZbA==
+X-Gm-Message-State: APjAAAWXBRmM7vumX2itjtxpq5Urw0rQfOQNBUvPKDJXs/hGQJs0T8s9
+        cJMI0sT7sBXw8xEExSkndDLdmg==
+X-Google-Smtp-Source: APXvYqxctXlgOtCTuI+nHfly9zVzKydMCFWuaFknzokpvDUX3JdzMaNu+TsBvuyQsnsSgXcVbMLc+w==
+X-Received: by 2002:a05:620a:130d:: with SMTP id o13mr1851841qkj.285.1565828000618;
+        Wed, 14 Aug 2019 17:13:20 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id i5sm756517qti.0.2019.08.14.17.13.20
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 14 Aug 2019 17:13:20 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hy3OJ-0003bl-SN; Wed, 14 Aug 2019 21:13:19 -0300
+Date:   Wed, 14 Aug 2019 21:13:19 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        Dimitri Sivanich <sivanich@sgi.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        iommu@lists.linux-foundation.org, intel-gfx@lists.freedesktop.org,
+        Gavin Shan <shangw@linux.vnet.ibm.com>,
+        Andrea Righi <andrea@betterlinux.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v3 hmm 03/11] mm/mmu_notifiers: add a get/put scheme for
+ the registration
+Message-ID: <20190815001319.GF11200@ziepe.ca>
+References: <20190806231548.25242-1-jgg@ziepe.ca>
+ <20190806231548.25242-4-jgg@ziepe.ca>
+ <0a23adb8-b827-cd90-503e-bfa84166c67e@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1565827428; bh=hz8lTdgR0x8GaLCXZ+gwdewpGK5z8PDTvxWlhUrVd/U=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=IgA9r9wi9TjtWDXtQOaw18ttkfzxxnqWWK+KbZeDEl1Va/Ek14rGmc/fuZ8FVDdnK
-         F+xyO9NHzAtIOlP2woh9TTG0FbZbH+77iW7gIAu+unsfZC/stNXZzITa4Aqnt0yTNZ
-         vI4sZG0Qns16nkO3YBTG+kDr0a9dFuVA5wlTcvlVmhuQWN+nNgxRhw9igtUP6JRflT
-         uQDQO/ZLpW4Q4ozEdUVdHg4yVIQ2pCIEvM4IWIdCrd5uNC6owczN5yfsaZIYL+cTOC
-         uPCGn611bLCLb8ZDJV1A4g1ez8Fb2spQfxj6gwiWIq1/tkkUrxtUi8DkQ5uWZhQaz8
-         ImaSu3p4l2mSw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a23adb8-b827-cd90-503e-bfa84166c67e@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/14/19 4:50 PM, Ira Weiny wrote:
-> On Tue, Aug 13, 2019 at 05:56:31PM -0700, John Hubbard wrote:
->> On 8/13/19 5:51 PM, John Hubbard wrote:
->>> On 8/13/19 2:08 PM, Ira Weiny wrote:
->>>> On Mon, Aug 12, 2019 at 05:07:32PM -0700, John Hubbard wrote:
->>>>> On 8/12/19 4:49 PM, Ira Weiny wrote:
->>>>>> On Sun, Aug 11, 2019 at 06:50:44PM -0700, john.hubbard@gmail.com wrote:
->>>>>>> From: John Hubbard <jhubbard@nvidia.com>
->>>>> ...
->>>> Finally, I struggle with converting everyone to a new call.  It is more
->>>> overhead to use vaddr_pin in the call above because now the GUP code is going
->>>> to associate a file pin object with that file when in ODP we don't need that
->>>> because the pages can move around.
->>>
->>> What if the pages in ODP are file-backed?
->>>
->>
->> oops, strike that, you're right: in that case, even the file system case is covered.
->> Don't mind me. :)
+On Wed, Aug 14, 2019 at 02:20:31PM -0700, Ralph Campbell wrote:
 > 
-> Ok so are we agreed we will drop the patch to the ODP code?  I'm going to keep
-> the FOLL_PIN flag and addition in the vaddr_pin_pages.
+> On 8/6/19 4:15 PM, Jason Gunthorpe wrote:
+> > From: Jason Gunthorpe <jgg@mellanox.com>
+> > 
+> > Many places in the kernel have a flow where userspace will create some
+> > object and that object will need to connect to the subsystem's
+> > mmu_notifier subscription for the duration of its lifetime.
+> > 
+> > In this case the subsystem is usually tracking multiple mm_structs and it
+> > is difficult to keep track of what struct mmu_notifier's have been
+> > allocated for what mm's.
+> > 
+> > Since this has been open coded in a variety of exciting ways, provide core
+> > functionality to do this safely.
+> > 
+> > This approach uses the strct mmu_notifier_ops * as a key to determine if
 > 
+> s/strct/struct
 
-Yes. I hope I'm not overlooking anything, but it all seems to make sense to
-let ODP just rely on the MMU notifiers.
+Yes, thanks for all of this, I like having comments, but I'm a
+terrible proofreader :(
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+Jason
