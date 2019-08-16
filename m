@@ -2,166 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D558F8C5
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2019 04:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B56D8FA0D
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2019 06:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbfHPCOK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Aug 2019 22:14:10 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:15793 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbfHPCOK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Aug 2019 22:14:10 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d5611740000>; Thu, 15 Aug 2019 19:14:12 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 15 Aug 2019 19:14:09 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 15 Aug 2019 19:14:09 -0700
-Received: from [10.110.48.28] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Aug
- 2019 02:14:08 +0000
-Subject: Re: [RFC PATCH 2/2] mm/gup: introduce vaddr_pin_pages_remote()
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-References: <20190812234950.GA6455@iweiny-DESK2.sc.intel.com>
- <38d2ff2f-4a69-e8bd-8f7c-41f1dbd80fae@nvidia.com>
- <20190813210857.GB12695@iweiny-DESK2.sc.intel.com>
- <a1044a0d-059c-f347-bd68-38be8478bf20@nvidia.com>
- <90e5cd11-fb34-6913-351b-a5cc6e24d85d@nvidia.com>
- <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
- <2cbdf599-2226-99ae-b4d5-8909a0a1eadf@nvidia.com>
- <ac834ac6-39bd-6df9-fca4-70b9520b6c34@nvidia.com>
- <20190815132622.GG14313@quack2.suse.cz>
- <20190815133510.GA21302@quack2.suse.cz>
- <20190815173237.GA30924@iweiny-DESK2.sc.intel.com>
- <b378a363-f523-518d-9864-e2f8e5bd0c34@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <58b75fa9-1272-b683-cb9f-722cc316bf8f@nvidia.com>
-Date:   Thu, 15 Aug 2019 19:14:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1725971AbfHPEwi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Aug 2019 00:52:38 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:36791 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbfHPEwi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Aug 2019 00:52:38 -0400
+Received: by mail-ot1-f66.google.com with SMTP id k18so8590167otr.3
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Aug 2019 21:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VTMqI5Eu8u89MKzxAFFRQUjr81lee/eY+Efph4JijUw=;
+        b=NjQQ7phprht8KhW3RCNZ5HcS077TyCbumKL3EaK+NawKP+YtPDLYbzZvSZEZ318tTi
+         SeuWqDSPP17rCaivwei94iFTaHbfUINTXbYneUoZ613IMGbPnN3va+HU3X5x0zAyvksv
+         HMhssga6Hn5OK8Wc27xDung+Qm6ueGCyRRbTQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VTMqI5Eu8u89MKzxAFFRQUjr81lee/eY+Efph4JijUw=;
+        b=h7AMbTDoyUNKXveiuDkWZf6zrJ3BuEal6sP2UbTqbrwJkZfDxelY2Rh9Vs6O1JTA9K
+         g15yAN8omN8+sJ9+5JwLrHBZNcbNpXf9WRS+kU46S341A7OU7zAo47bk9/9Rgnlu3ZNx
+         MurEVmWFx1VOeQAyLLp4iUgwlvSwLEo6U/BUxDIl0RvOH9XzGtonMjRTX/7ThHRqXcdz
+         ijudEAhJm6uVQhqXNY9YtX059O/nrvUPwhBAxtXAXXE99ubN/ZGOsR36OCjZ+ZFhhTUh
+         3h0N8JUkLAtRDeHeYrCqAlOZXIHx19jgmBRbuxEw74YpcPL6TeNRavR81m21Plm0fcOf
+         43Tg==
+X-Gm-Message-State: APjAAAXd1nLJTWHWEwtdoL/kgz1K5bYLFQuKsC/v5orwfpWeaX0vU5At
+        gt7HanePkOnUYSCDdLvGBuh/kwiQDdW6VAHdGE9vrg==
+X-Google-Smtp-Source: APXvYqxqixczoHigmGL13adiOo7WHEMgVyGd9hS1Ckwku+c8PGQEEdo8EoQGeRDY36zm3y5a+wd+qNmI7l/oL7OWY+U=
+X-Received: by 2002:a9d:37c7:: with SMTP id x65mr5574322otb.47.1565931156890;
+ Thu, 15 Aug 2019 21:52:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b378a363-f523-518d-9864-e2f8e5bd0c34@nvidia.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1565921652; bh=iNYDYKVrRpRnEo7TyIFnzJma8HwHSIJJS6Onnonm3a4=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=gRe/cawPAvvKSdqcSXxV0BoA22Rm11wp20pEHyCpKtYaNY3NvTNMCgmALlhtzu63M
-         RIN3ZKEK8vifpbjEEnzFOUyI3Yl6wn/IXsxA7v8zVZr/JTwcIZiqqXqnZVpR31FtxW
-         LRjVeT7m2OURFkEMYaWljedPYFG11RUPR+Kj9YErvI8wkkj12ypFa9D6sllAiLfyfl
-         0Re0SVd3Yol0BqOOIfZwkoSUIa605h9OKR8HgGsdeLCjZCuQngc0TTm5JUNQeqGAFw
-         K/rTsEjAfTKf2rtwDqQpM7AKASOcW56X99NJr0h5hYkPgG0MQNSnrxD6ZasNBIsLz4
-         lcQC4JwZDBA3w==
+References: <1565869477-19306-1-git-send-email-selvin.xavier@broadcom.com> <20190815130740.GE21596@ziepe.ca>
+In-Reply-To: <20190815130740.GE21596@ziepe.ca>
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+Date:   Fri, 16 Aug 2019 10:22:25 +0530
+Message-ID: <CA+sbYW3t2=bCpYjkuNQeT3LSFcL9n9=awHYpSrB6VZBna4dWhg@mail.gmail.com>
+Subject: Re: [PATCH for-rc] RDMA/bnxt_re: Fix stack-out-of-bounds in bnxt_qplib_rcfw_send_message
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/15/19 10:41 AM, John Hubbard wrote:
-> On 8/15/19 10:32 AM, Ira Weiny wrote:
->> On Thu, Aug 15, 2019 at 03:35:10PM +0200, Jan Kara wrote:
->>> On Thu 15-08-19 15:26:22, Jan Kara wrote:
->>>> On Wed 14-08-19 20:01:07, John Hubbard wrote:
->>>>> On 8/14/19 5:02 PM, John Hubbard wrote:
-...
->> Ok just to make this clear I threw up my current tree with your patches here:
->>
->> https://github.com/weiny2/linux-kernel/commits/mmotm-rdmafsdax-b0-v4
->>
->> I'm talking about dropping the final patch:
->> 05fd2d3afa6b rdma/umem_odp: Use vaddr_pin_pages_remote() in ODP
->>
->> The other 2 can stay.  I split out the *_remote() call.  We don't have a user
->> but I'll keep it around for a bit.
->>
->> This tree is still WIP as I work through all the comments.  So I've not changed
->> names or variable types etc...  Just wanted to settle this.
->>
-> 
-> Right. And now that ODP is not a user, I'll take a quick look through my other
-> call site conversions and see if I can find an easy one, to include here as
-> the first user of vaddr_pin_pages_remote(). I'll send it your way if that
-> works out.
-> 
-
-OK, there was only process_vm_access.c, plus (sort of) Bharath's sgi-gru
-patch, maybe eventually [1].  But looking at process_vm_access.c, I think 
-it is one of the patches that is no longer applicable, and I can just
-drop it entirely...I'd welcome a second opinion on that...
-
-So we might be all out of potential users for vaddr_pin_pages_remote()!
-
-For quick reference, it looks like this:
- 
-diff --git a/mm/process_vm_access.c b/mm/process_vm_access.c
-index 357aa7bef6c0..4d29d54ec93f 100644
---- a/mm/process_vm_access.c
-+++ b/mm/process_vm_access.c
-@@ -96,7 +96,7 @@ static int process_vm_rw_single_vec(unsigned long addr,
-                flags |= FOLL_WRITE;
- 
-        while (!rc && nr_pages && iov_iter_count(iter)) {
--               int pages = min(nr_pages, max_pages_per_loop);
-+               int pinned_pages = min(nr_pages, max_pages_per_loop);
-                int locked = 1;
-                size_t bytes;
- 
-@@ -106,14 +106,15 @@ static int process_vm_rw_single_vec(unsigned long addr,
-                 * current/current->mm
-                 */
-                down_read(&mm->mmap_sem);
--               pages = get_user_pages_remote(task, mm, pa, pages, flags,
--                                             process_pages, NULL, &locked);
-+               pinned_pages = get_user_pages_remote(task, mm, pa, pinned_pages,
-+                                                    flags, process_pages, NULL,
-+                                                    &locked);
-                if (locked)
-                        up_read(&mm->mmap_sem);
--               if (pages <= 0)
-+               if (pinned_pages <= 0)
-                        return -EFAULT;
- 
--               bytes = pages * PAGE_SIZE - start_offset;
-+               bytes = pinned_pages * PAGE_SIZE - start_offset;
-                if (bytes > len)
-                        bytes = len;
- 
-@@ -122,10 +123,9 @@ static int process_vm_rw_single_vec(unsigned long addr,
-                                         vm_write);
-                len -= bytes;
-                start_offset = 0;
--               nr_pages -= pages;
--               pa += pages * PAGE_SIZE;
--               while (pages)
--                       put_page(process_pages[--pages]);
-+               nr_pages -= pinned_pages;
-+               pa += pinned_pages * PAGE_SIZE;
-+               put_user_pages(process_pages, pinned_pages);
-        }
- 
-        return rc;
-
-
-[1] https://lore.kernel.org/r/1565379497-29266-2-git-send-email-linux.bhar@gmail.com
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+On Thu, Aug 15, 2019 at 6:37 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Thu, Aug 15, 2019 at 04:44:37AM -0700, Selvin Xavier wrote:
+> > @@ -583,7 +584,7 @@ int bnxt_qplib_create_srq(struct bnxt_qplib_res *res,
+> >       req.eventq_id = cpu_to_le16(srq->eventq_hw_ring_id);
+> >
+> >       rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req,
+> > -                                       (void *)&resp, NULL, 0);
+> > +                                       (void *)&resp, sizeof(req), NULL, 0);
+>
+> I really don't like seeing casts to void * in code. Why can't you
+> properly embed the header in the structs??
+Is your objection only in casting to void * or you dont like any
+casting here? These
+structures are directly copied from some auto-generated files.
+Embedding struct cmdq_base
+to each req structures should be okay, but it involves lot of code
+line changes in roce_hsi.h
+and we will have to do this activity every time we copy a new req/resp
+structure from the
+auto generated file. I prefer to change these void * to struct
+cmdq_base * and struct creq_base *,
+ if that is okay with you.
+>
+> Jason
