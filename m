@@ -2,213 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A236990811
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2019 21:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B09990A77
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2019 23:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbfHPTFb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Aug 2019 15:05:31 -0400
-Received: from mga07.intel.com ([134.134.136.100]:6901 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727067AbfHPTFb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 16 Aug 2019 15:05:31 -0400
-X-Amp-Result: UNSCANNABLE
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Aug 2019 12:05:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,394,1559545200"; 
-   d="scan'208";a="201624636"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Aug 2019 12:05:28 -0700
-Date:   Fri, 16 Aug 2019 12:05:28 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190814101714.GA26273@quack2.suse.cz>
- <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
- <20190815130558.GF14313@quack2.suse.cz>
+        id S1727755AbfHPVtN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Aug 2019 17:49:13 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:41426 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727654AbfHPVtM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Aug 2019 17:49:12 -0400
+Received: by mail-io1-f66.google.com with SMTP id j5so9141824ioj.8;
+        Fri, 16 Aug 2019 14:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=/JfZ5SjXpt5gfI++vXcouK9eBbTLEP3XL3e3yy0wgJg=;
+        b=b3arI/U8KPCR6LvOV4wkAX8KYrYfXqPCovnBwybZjQHVMXW9LSDnh3fp3bhIjmoqFE
+         1ajvhmNEpmfrvWQaOXL2yKI7EA2JYcgALJDnfjM39qjvdRfx5KCm7Vhcvl8LTK5003lH
+         puFBVPL9x7YFRXZ25DgtO+94Z31QznfKmqj0eqWlK3KIyfQrjOrJLOW3Am/2MD2G1Gaf
+         OCCwwqK66LyKo/aH+L5lcCOxXykVYmk6FOAM35UThCDm714W6jON3pO7yQIKKFyLlErq
+         SzxhrRLHnpphDq0/6dq3/u9RrHw6s4BMqMf+5M+le3X9kZYQnFr2ZD2+eQGWYsX4lMj8
+         P1lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=/JfZ5SjXpt5gfI++vXcouK9eBbTLEP3XL3e3yy0wgJg=;
+        b=hVuWV0rmHZjcpbfOV1+asXLJB3ObiRlD1c6nY/gm2qge2iV4Yq7XX3IDK+nXsbiTua
+         TVlF/doEIBhae9sUUNaEC8BT6Me7stx53K6DRNj5wmS/0wAsuVy+BS0B81jDttWVXu2w
+         Ee4n/7HSF9zGpw/u7PoG/G3Dc66T4zvNuSpyNVHfJqSVuIhMxTLzsAkLqaNY1rUCevE8
+         rmCUclbL7rqWnvTBIYocM09HmAlmKj5tBedEJi+2xA0iXeIgsBBBtpuXpy2SkX4iGgST
+         BXGreQvMmH5zLYksTjkQGKVMRCrvcjfyi76u2j7ccshdj+sVgHs/1aJ09AIHPgQuiYk7
+         Lrjg==
+X-Gm-Message-State: APjAAAVWHvSY/+OEtReoatBi7ueZ/3zyVZQMYolz5ru7y+O2uaifDQKo
+        XQ7KmhYW+1ZgyCkG0g9Y+a1y2/9p
+X-Google-Smtp-Source: APXvYqxCtNHcLOpbCeUvdMHuOB7Th1OP7QidASMJupP6Y/xTsu7D2A8n7qFxyadPbSO0twzJ45lyUg==
+X-Received: by 2002:a05:6602:2585:: with SMTP id p5mr4728639ioo.183.1565992152194;
+        Fri, 16 Aug 2019 14:49:12 -0700 (PDT)
+Received: from seurat29.1015granger.net ([8.46.76.57])
+        by smtp.gmail.com with ESMTPSA id y5sm6780214ioc.86.2019.08.16.14.49.06
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 16 Aug 2019 14:49:11 -0700 (PDT)
+Subject: [PATCH 1/2] svcrdma: Remove svc_rdma_wq
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     bfields@fieldses.org
+Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Date:   Fri, 16 Aug 2019 17:48:36 -0400
+Message-ID: <156599209136.1245.654792745471627630.stgit@seurat29.1015granger.net>
+User-Agent: StGit/unknown-version
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190815130558.GF14313@quack2.suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 15, 2019 at 03:05:58PM +0200, Jan Kara wrote:
-> On Wed 14-08-19 11:08:49, Ira Weiny wrote:
-> > On Wed, Aug 14, 2019 at 12:17:14PM +0200, Jan Kara wrote:
-> > > Hello!
-> > > 
-> > > On Fri 09-08-19 15:58:14, ira.weiny@intel.com wrote:
-> > > > Pre-requisites
-> > > > ==============
-> > > > 	Based on mmotm tree.
-> > > > 
-> > > > Based on the feedback from LSFmm, the LWN article, the RFC series since
-> > > > then, and a ton of scenarios I've worked in my mind and/or tested...[1]
-> > > > 
-> > > > Solution summary
-> > > > ================
-> > > > 
-> > > > The real issue is that there is no use case for a user to have RDMA pinn'ed
-> > > > memory which is then truncated.  So really any solution we present which:
-> > > > 
-> > > > A) Prevents file system corruption or data leaks
-> > > > ...and...
-> > > > B) Informs the user that they did something wrong
-> > > > 
-> > > > Should be an acceptable solution.
-> > > > 
-> > > > Because this is slightly new behavior.  And because this is going to be
-> > > > specific to DAX (because of the lack of a page cache) we have made the user
-> > > > "opt in" to this behavior.
-> > > > 
-> > > > The following patches implement the following solution.
-> > > > 
-> > > > 0) Registrations to Device DAX char devs are not affected
-> > > > 
-> > > > 1) The user has to opt in to allowing page pins on a file with an exclusive
-> > > >    layout lease.  Both exclusive and layout lease flags are user visible now.
-> > > > 
-> > > > 2) page pins will fail if the lease is not active when the file back page is
-> > > >    encountered.
-> > > > 
-> > > > 3) Any truncate or hole punch operation on a pinned DAX page will fail.
-> > > 
-> > > So I didn't fully grok the patch set yet but by "pinned DAX page" do you
-> > > mean a page which has corresponding file_pin covering it? Or do you mean a
-> > > page which has pincount increased? If the first then I'd rephrase this to
-> > > be less ambiguous, if the second then I think it is wrong. 
-> > 
-> > I mean the second.  but by "fail" I mean hang.  Right now the "normal" page
-> > pincount processing will hang the truncate.  Given the discussion with John H
-> > we can make this a bit better if we use something like FOLL_PIN and the page
-> > count bias to indicate this type of pin.  Then I could fail the truncate
-> > outright.  but that is not done yet.
-> > 
-> > so... I used the word "fail" to be a bit more vague as the final implementation
-> > may return ETXTBUSY or hang as noted.
-> 
-> Ah, OK. Hanging is fine in principle but with longterm pins, your work
-> makes sure they actually fail with ETXTBUSY, doesn't it? The thing is that
-> e.g. DIO will use page pins as well for its buffers and we must wait there
-> until the pin is released. So please just clarify your 'fail' here a bit
-> :).
+Clean up: the system workqueue will work just as well.
 
-It will fail with ETXTBSY.  I've fixed a bug...  See below.
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+---
+ include/linux/sunrpc/svc_rdma.h          |    1 -
+ net/sunrpc/xprtrdma/svc_rdma.c           |    7 -------
+ net/sunrpc/xprtrdma/svc_rdma_transport.c |    3 ++-
+ 3 files changed, 2 insertions(+), 9 deletions(-)
 
-> 
-> > > > 4) The user has the option of holding the lease or releasing it.  If they
-> > > >    release it no other pin calls will work on the file.
-> > > 
-> > > Last time we spoke the plan was that the lease is kept while the pages are
-> > > pinned (and an attempt to release the lease would block until the pages are
-> > > unpinned). That also makes it clear that the *lease* is what is making
-> > > truncate and hole punch fail with ETXTBUSY and the file_pin structure is
-> > > just an implementation detail how the existence is efficiently tracked (and
-> > > what keeps the backing file for the pages open so that the lease does not
-> > > get auto-destroyed). Why did you change this?
-> > 
-> > closing the file _and_ unmaping it will cause the lease to be released
-> > regardless of if we allow this or not.
-> > 
-> > As we discussed preventing the close seemed intractable.
-> 
-> Yes, preventing the application from closing the file is difficult. But
-> from a quick look at your patches it seemed to me that you actually hold a
-> backing file reference from the file_pin structure thus even though the
-> application closes its file descriptor, the struct file (and thus the
-> lease) lives further until the file_pin gets released. And that should last
-> as long as the pages are pinned. Am I missing something?
-> 
-> > I thought about failing the munmap but that seemed wrong as well.  But more
-> > importantly AFAIK RDMA can pass its memory pins to other processes via FD
-> > passing...  This means that one could pin this memory, pass it to another
-> > process and exit.  The file lease on the pin'ed file is lost.
-> 
-> Not if file_pin grabs struct file reference as I mentioned above...
->  
-> > The file lease is just a key to get the memory pin.  Once unlocked the procfs
-> > tracking keeps track of where that pin goes and which processes need to be
-> > killed to get rid of it.
-> 
-> I think having file lease being just a key to get the pin is conceptually
-> wrong. The lease is what expresses: "I'm accessing these blocks directly,
-> don't touch them without coordinating with me." So it would be only natural
-> if we maintained the lease while we are accessing blocks instead of
-> transferring this protection responsibility to another structure - namely
-> file_pin - and letting the lease go.
-
-We do transfer that protection to the file_pin but we don't have to "let the
-lease" go.  We just keep the lease with the file_pin as you said.  See below...
-
-> But maybe I miss some technical reason
-> why maintaining file lease is difficult. If that's the case, I'd like to hear
-> what...
-
-Ok, I've thought a bit about what you said and indeed it should work that way.
-The reason I had to think a bit is that I was not sure why I thought we needed
-to hang...  Turns out there were a couple of reasons...  1 not so good and 1 ok
-but still not good enough to allow this...
-
-1) I had a bug in the XFS code which should have failed rather than hanging...
-   So this was not a good reason...  And I was able to find/fix it...  Thanks!
-
-2) Second reason is that I thought I did not have a good way to tell if the
-   lease was actually in use.  What I mean is that letting the lease go should
-   be ok IFF we don't have any pins...  I was thinking that without John's code
-   we don't have a way to know if there are any pins...  But that is wrong...
-   All we have to do is check
-
-	!list_empty(file->file_pins)
-
-So now with this detail I think you are right, we should be able to hold the
-lease through the struct file even if the process no longer has any
-"references" to it (ie closes and munmaps the file).
-
-I'm going to add a patch to fail releasing the lease and remove this (item 4)
-as part of the overall solution.
-
->  
-> > > > 5) Closing the file is ok.
-> > > > 
-> > > > 6) Unmapping the file is ok
-> > > > 
-> > > > 7) Pins against the files are tracked back to an owning file or an owning mm
-> > > >    depending on the internal subsystem needs.  With RDMA there is an owning
-> > > >    file which is related to the pined file.
-> > > > 
-> > > > 8) Only RDMA is currently supported
-> > > 
-> > > If you currently only need "owning file" variant in your patch set, then
-> > > I'd just implement that and leave "owning mm" variant for later if it
-> > > proves to be necessary. The things are complex enough as is...
-> > 
-> > I can do that...  I was trying to get io_uring working as well with the
-> > owning_mm but I should save that for later.
-> 
-> Ah, OK. Yes, I guess io_uring can be next step.
-
-FWIW I have split the mm_struct stuff out.  I can keep it as a follow on series
-for other users later.  At this point I have to solve the issue Jason brought
-up WRT the RDMA file reference counting.
-
-Thanks!
-Ira
+diff --git a/include/linux/sunrpc/svc_rdma.h b/include/linux/sunrpc/svc_rdma.h
+index 981f0d726ad4..edb39900fe04 100644
+--- a/include/linux/sunrpc/svc_rdma.h
++++ b/include/linux/sunrpc/svc_rdma.h
+@@ -200,7 +200,6 @@ extern struct svc_xprt_class svc_rdma_bc_class;
+ #endif
+ 
+ /* svc_rdma.c */
+-extern struct workqueue_struct *svc_rdma_wq;
+ extern int svc_rdma_init(void);
+ extern void svc_rdma_cleanup(void);
+ 
+diff --git a/net/sunrpc/xprtrdma/svc_rdma.c b/net/sunrpc/xprtrdma/svc_rdma.c
+index abdb3004a1e3..97bca509a391 100644
+--- a/net/sunrpc/xprtrdma/svc_rdma.c
++++ b/net/sunrpc/xprtrdma/svc_rdma.c
+@@ -73,8 +73,6 @@ atomic_t rdma_stat_rq_prod;
+ atomic_t rdma_stat_sq_poll;
+ atomic_t rdma_stat_sq_prod;
+ 
+-struct workqueue_struct *svc_rdma_wq;
+-
+ /*
+  * This function implements reading and resetting an atomic_t stat
+  * variable through read/write to a proc file. Any write to the file
+@@ -230,7 +228,6 @@ static struct ctl_table svcrdma_root_table[] = {
+ void svc_rdma_cleanup(void)
+ {
+ 	dprintk("SVCRDMA Module Removed, deregister RPC RDMA transport\n");
+-	destroy_workqueue(svc_rdma_wq);
+ 	if (svcrdma_table_header) {
+ 		unregister_sysctl_table(svcrdma_table_header);
+ 		svcrdma_table_header = NULL;
+@@ -246,10 +243,6 @@ int svc_rdma_init(void)
+ 	dprintk("\tmax_bc_requests  : %u\n", svcrdma_max_bc_requests);
+ 	dprintk("\tmax_inline       : %d\n", svcrdma_max_req_size);
+ 
+-	svc_rdma_wq = alloc_workqueue("svc_rdma", 0, 0);
+-	if (!svc_rdma_wq)
+-		return -ENOMEM;
+-
+ 	if (!svcrdma_table_header)
+ 		svcrdma_table_header =
+ 			register_sysctl_table(svcrdma_root_table);
+diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+index 4d3db6ee7f09..30dbbc77ad16 100644
+--- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
++++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+@@ -630,8 +630,9 @@ static void svc_rdma_free(struct svc_xprt *xprt)
+ {
+ 	struct svcxprt_rdma *rdma =
+ 		container_of(xprt, struct svcxprt_rdma, sc_xprt);
++
+ 	INIT_WORK(&rdma->sc_work, __svc_rdma_free);
+-	queue_work(svc_rdma_wq, &rdma->sc_work);
++	schedule_work(&rdma->sc_work);
+ }
+ 
+ static int svc_rdma_has_wspace(struct svc_xprt *xprt)
 
