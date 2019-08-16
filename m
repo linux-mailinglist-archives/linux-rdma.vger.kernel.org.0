@@ -2,101 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1C790666
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2019 19:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FFC907C7
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2019 20:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbfHPREN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Aug 2019 13:04:13 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:44240 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726557AbfHPREM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Aug 2019 13:04:12 -0400
-Received: by mail-qk1-f195.google.com with SMTP id d79so5237144qke.11
-        for <linux-rdma@vger.kernel.org>; Fri, 16 Aug 2019 10:04:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3/tESAZDqjf2ti4MOUFqaLyuCU2G0DdLcKzf9OCJK1A=;
-        b=CgyAwPGtGbDRUG8Q8IPdiAN946YBd9GiTLHLY9qdMO5DtczZ+v/ksZz5SGjHhHDB0g
-         hiV6XUJ4c9P/Fox7d6UOuEz97SD/EhMDbiCw8kD+oxlGk5WZy2o/dhyrB5D8Leo7SHAD
-         BKUA1fyEb0S2R5LJe+cV2l0+5GCV3Ei1qwVPLJVNjVyjL/1JaNhiXlUIMTcYmIQCwa5w
-         UFybR3WyOnO6J0TyWyymvk11R0w9E51nhI3I9ejTlLJRWh894PP5rmYob/zftnr58EHa
-         1R9EcYM6LGmbUn/CP/1T6cgliyd8l3igSjchOMhsF9pHYkfmf7q8dp+B8ImzDvpVFHxr
-         0xBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3/tESAZDqjf2ti4MOUFqaLyuCU2G0DdLcKzf9OCJK1A=;
-        b=q+MwkatE0+L3eWUFuxysQoZeLPTz8V2A5koYOgWa/68YzJkVS80bEB0RWdmx3bYLX/
-         Cpb3Sk+iY5pa6roVU2uhPk8RFewZPj+y0mlrPXVzJerNctT9peZu6ceXFpuFNWQmtKsB
-         hC9xIgpDGiRDJw8/amihAPvfUzQgYmhCi8vJOxF4BkwbZzdCddLvaMV3h2/dWRmn5txi
-         6FJh3QlEJSyM9EK15CzNE8opyG0Lqu5m1qtBTU1e8mflSFKJHafLj67w+fqkSDUk8VJU
-         QvhneG0LJouti6MoE5V5fwsw//UXjvS3tJYWBL2VpcY94V+Tlr/XLvx0qIvOOGccko0p
-         OCEQ==
-X-Gm-Message-State: APjAAAVpmU/ZwYbwWyBpCESkpl8VB4lLkhxMae2pJhmNafOEmgA3R2i7
-        wtGwElZMkNk+c64c1RRCzYnpqQ==
-X-Google-Smtp-Source: APXvYqx/H9DYP00gkOY/+C82HTHZ3xyAsu8DjOC+iOmym4LKCzVRjzFvWdNtwrKPess7YdPgQyP7Sw==
-X-Received: by 2002:a05:620a:16d6:: with SMTP id a22mr9866792qkn.414.1565975051948;
-        Fri, 16 Aug 2019 10:04:11 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id s58sm3477747qth.59.2019.08.16.10.04.10
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 16 Aug 2019 10:04:10 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hyfe6-0000CI-Dj; Fri, 16 Aug 2019 14:04:10 -0300
-Date:   Fri, 16 Aug 2019 14:04:10 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jerome Glisse <jglisse@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>, Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
+        id S1727545AbfHPSdk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Aug 2019 14:33:40 -0400
+Received: from mga07.intel.com ([134.134.136.100]:4860 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727381AbfHPSdk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 16 Aug 2019 14:33:40 -0400
+X-Amp-Result: UNSCANNABLE
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Aug 2019 11:33:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,394,1559545200"; 
+   d="scan'208";a="261183726"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga001.jf.intel.com with ESMTP; 16 Aug 2019 11:33:38 -0700
+Date:   Fri, 16 Aug 2019 11:33:38 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Christoph Hellwig <hch@infradead.org>,
         Dan Williams <dan.j.williams@intel.com>,
         Dave Chinner <david@fromorbit.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org, linux-rdma@vger.kernel.org
 Subject: Re: [RFC PATCH 2/2] mm/gup: introduce vaddr_pin_pages_remote()
-Message-ID: <20190816170410.GH5398@ziepe.ca>
-References: <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
+Message-ID: <20190816183337.GA371@iweiny-DESK2.sc.intel.com>
+References: <90e5cd11-fb34-6913-351b-a5cc6e24d85d@nvidia.com>
+ <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
  <2cbdf599-2226-99ae-b4d5-8909a0a1eadf@nvidia.com>
  <ac834ac6-39bd-6df9-fca4-70b9520b6c34@nvidia.com>
  <20190815132622.GG14313@quack2.suse.cz>
  <20190815133510.GA21302@quack2.suse.cz>
- <0d6797d8-1e04-1ebe-80a7-3d6895fe71b0@suse.cz>
- <20190816154404.GF3041@quack2.suse.cz>
- <20190816155220.GC3149@redhat.com>
- <20190816161355.GL3041@quack2.suse.cz>
- <20190816165445.GD3149@redhat.com>
+ <20190815173237.GA30924@iweiny-DESK2.sc.intel.com>
+ <b378a363-f523-518d-9864-e2f8e5bd0c34@nvidia.com>
+ <58b75fa9-1272-b683-cb9f-722cc316bf8f@nvidia.com>
+ <20190816154108.GE3041@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190816165445.GD3149@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190816154108.GE3041@quack2.suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 16, 2019 at 12:54:45PM -0400, Jerome Glisse wrote:
-
-> > Yes, I understand. But the fact is that GUP calls are currently still there
-> > e.g. in ODP code. If you can make the code work without taking a page
-> > reference at all, I'm only happy :)
+On Fri, Aug 16, 2019 at 05:41:08PM +0200, Jan Kara wrote:
+> On Thu 15-08-19 19:14:08, John Hubbard wrote:
+> > On 8/15/19 10:41 AM, John Hubbard wrote:
+> > > On 8/15/19 10:32 AM, Ira Weiny wrote:
+> > >> On Thu, Aug 15, 2019 at 03:35:10PM +0200, Jan Kara wrote:
+> > >>> On Thu 15-08-19 15:26:22, Jan Kara wrote:
+> > >>>> On Wed 14-08-19 20:01:07, John Hubbard wrote:
+> > >>>>> On 8/14/19 5:02 PM, John Hubbard wrote:
+> > ...
+> > >> Ok just to make this clear I threw up my current tree with your patches here:
+> > >>
+> > >> https://github.com/weiny2/linux-kernel/commits/mmotm-rdmafsdax-b0-v4
+> > >>
+> > >> I'm talking about dropping the final patch:
+> > >> 05fd2d3afa6b rdma/umem_odp: Use vaddr_pin_pages_remote() in ODP
+> > >>
+> > >> The other 2 can stay.  I split out the *_remote() call.  We don't have a user
+> > >> but I'll keep it around for a bit.
+> > >>
+> > >> This tree is still WIP as I work through all the comments.  So I've not changed
+> > >> names or variable types etc...  Just wanted to settle this.
+> > >>
+> > > 
+> > > Right. And now that ODP is not a user, I'll take a quick look through my other
+> > > call site conversions and see if I can find an easy one, to include here as
+> > > the first user of vaddr_pin_pages_remote(). I'll send it your way if that
+> > > works out.
+> > > 
+> > 
+> > OK, there was only process_vm_access.c, plus (sort of) Bharath's sgi-gru
+> > patch, maybe eventually [1].  But looking at process_vm_access.c, I think 
+> > it is one of the patches that is no longer applicable, and I can just
+> > drop it entirely...I'd welcome a second opinion on that...
 > 
-> Already in rdma next AFAIK so in 5.4 it will be gone :)
+> I don't think you can drop the patch. process_vm_rw_pages() clearly touches
+> page contents and does not synchronize with page_mkclean(). So it is case
+> 1) and needs FOLL_PIN semantics.
 
-Unfortunately no.. only a lot of patches supporting this change will
-be in 5.4. The notifiers are still a problem, and I need to figure out
-if the edge cases in hmm_range_fault are OK for ODP or not. :(
+John could you send a formal patch using vaddr_pin* and I'll add it to the
+tree?
 
-This is taking a long time in part because ODP itself has all sorts of
-problems that make it hard to tell if the other changes are safe or
-not..
+Ira
 
-Lots of effort is being spent to get there though.
-
-Jason
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+> 
