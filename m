@@ -2,40 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F372F90639
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2019 18:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1C790666
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2019 19:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbfHPQyt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Aug 2019 12:54:49 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:48756 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726245AbfHPQyt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 16 Aug 2019 12:54:49 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id CF1BE3001895;
-        Fri, 16 Aug 2019 16:54:48 +0000 (UTC)
-Received: from redhat.com (ovpn-123-168.rdu2.redhat.com [10.10.123.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6CAC884256;
-        Fri, 16 Aug 2019 16:54:47 +0000 (UTC)
-Date:   Fri, 16 Aug 2019 12:54:45 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        id S1726690AbfHPREN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Aug 2019 13:04:13 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:44240 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726557AbfHPREM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Aug 2019 13:04:12 -0400
+Received: by mail-qk1-f195.google.com with SMTP id d79so5237144qke.11
+        for <linux-rdma@vger.kernel.org>; Fri, 16 Aug 2019 10:04:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3/tESAZDqjf2ti4MOUFqaLyuCU2G0DdLcKzf9OCJK1A=;
+        b=CgyAwPGtGbDRUG8Q8IPdiAN946YBd9GiTLHLY9qdMO5DtczZ+v/ksZz5SGjHhHDB0g
+         hiV6XUJ4c9P/Fox7d6UOuEz97SD/EhMDbiCw8kD+oxlGk5WZy2o/dhyrB5D8Leo7SHAD
+         BKUA1fyEb0S2R5LJe+cV2l0+5GCV3Ei1qwVPLJVNjVyjL/1JaNhiXlUIMTcYmIQCwa5w
+         UFybR3WyOnO6J0TyWyymvk11R0w9E51nhI3I9ejTlLJRWh894PP5rmYob/zftnr58EHa
+         1R9EcYM6LGmbUn/CP/1T6cgliyd8l3igSjchOMhsF9pHYkfmf7q8dp+B8ImzDvpVFHxr
+         0xBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3/tESAZDqjf2ti4MOUFqaLyuCU2G0DdLcKzf9OCJK1A=;
+        b=q+MwkatE0+L3eWUFuxysQoZeLPTz8V2A5koYOgWa/68YzJkVS80bEB0RWdmx3bYLX/
+         Cpb3Sk+iY5pa6roVU2uhPk8RFewZPj+y0mlrPXVzJerNctT9peZu6ceXFpuFNWQmtKsB
+         hC9xIgpDGiRDJw8/amihAPvfUzQgYmhCi8vJOxF4BkwbZzdCddLvaMV3h2/dWRmn5txi
+         6FJh3QlEJSyM9EK15CzNE8opyG0Lqu5m1qtBTU1e8mflSFKJHafLj67w+fqkSDUk8VJU
+         QvhneG0LJouti6MoE5V5fwsw//UXjvS3tJYWBL2VpcY94V+Tlr/XLvx0qIvOOGccko0p
+         OCEQ==
+X-Gm-Message-State: APjAAAVpmU/ZwYbwWyBpCESkpl8VB4lLkhxMae2pJhmNafOEmgA3R2i7
+        wtGwElZMkNk+c64c1RRCzYnpqQ==
+X-Google-Smtp-Source: APXvYqx/H9DYP00gkOY/+C82HTHZ3xyAsu8DjOC+iOmym4LKCzVRjzFvWdNtwrKPess7YdPgQyP7Sw==
+X-Received: by 2002:a05:620a:16d6:: with SMTP id a22mr9866792qkn.414.1565975051948;
+        Fri, 16 Aug 2019 10:04:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id s58sm3477747qth.59.2019.08.16.10.04.10
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 16 Aug 2019 10:04:10 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hyfe6-0000CI-Dj; Fri, 16 Aug 2019 14:04:10 -0300
+Date:   Fri, 16 Aug 2019 14:04:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jerome Glisse <jglisse@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>, Vlastimil Babka <vbabka@suse.cz>,
         John Hubbard <jhubbard@nvidia.com>,
         Ira Weiny <ira.weiny@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Christoph Hellwig <hch@infradead.org>,
         Dan Williams <dan.j.williams@intel.com>,
         Dave Chinner <david@fromorbit.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
         LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org, linux-rdma@vger.kernel.org
 Subject: Re: [RFC PATCH 2/2] mm/gup: introduce vaddr_pin_pages_remote()
-Message-ID: <20190816165445.GD3149@redhat.com>
-References: <90e5cd11-fb34-6913-351b-a5cc6e24d85d@nvidia.com>
- <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
+Message-ID: <20190816170410.GH5398@ziepe.ca>
+References: <20190814234959.GA463@iweiny-DESK2.sc.intel.com>
  <2cbdf599-2226-99ae-b4d5-8909a0a1eadf@nvidia.com>
  <ac834ac6-39bd-6df9-fca4-70b9520b6c34@nvidia.com>
  <20190815132622.GG14313@quack2.suse.cz>
@@ -44,78 +70,33 @@ References: <90e5cd11-fb34-6913-351b-a5cc6e24d85d@nvidia.com>
  <20190816154404.GF3041@quack2.suse.cz>
  <20190816155220.GC3149@redhat.com>
  <20190816161355.GL3041@quack2.suse.cz>
+ <20190816165445.GD3149@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190816161355.GL3041@quack2.suse.cz>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Fri, 16 Aug 2019 16:54:48 +0000 (UTC)
+In-Reply-To: <20190816165445.GD3149@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 16, 2019 at 06:13:55PM +0200, Jan Kara wrote:
-> On Fri 16-08-19 11:52:20, Jerome Glisse wrote:
-> > On Fri, Aug 16, 2019 at 05:44:04PM +0200, Jan Kara wrote:
-> > > On Fri 16-08-19 10:47:21, Vlastimil Babka wrote:
-> > > > On 8/15/19 3:35 PM, Jan Kara wrote:
-> > > > >> 
-> > > > >> So when the GUP user uses MMU notifiers to stop writing to pages whenever
-> > > > >> they are writeprotected with page_mkclean(), they don't really need page
-> > > > >> pin - their access is then fully equivalent to any other mmap userspace
-> > > > >> access and filesystem knows how to deal with those. I forgot out this case
-> > > > >> when I wrote the above sentence.
-> > > > >> 
-> > > > >> So to sum up there are three cases:
-> > > > >> 1) DIO case - GUP references to pages serving as DIO buffers are needed for
-> > > > >>    relatively short time, no special synchronization with page_mkclean() or
-> > > > >>    munmap() => needs FOLL_PIN
-> > > > >> 2) RDMA case - GUP references to pages serving as DMA buffers needed for a
-> > > > >>    long time, no special synchronization with page_mkclean() or munmap()
-> > > > >>    => needs FOLL_PIN | FOLL_LONGTERM
-> > > > >>    This case has also a special case when the pages are actually DAX. Then
-> > > > >>    the caller additionally needs file lease and additional file_pin
-> > > > >>    structure is used for tracking this usage.
-> > > > >> 3) ODP case - GUP references to pages serving as DMA buffers, MMU notifiers
-> > > > >>    used to synchronize with page_mkclean() and munmap() => normal page
-> > > > >>    references are fine.
-> > > > 
-> > > > IMHO the munlock lesson told us about another one, that's in the end equivalent
-> > > > to 3)
-> > > > 
-> > > > 4) pinning for struct page manipulation only => normal page references
-> > > > are fine
-> > > 
-> > > Right, it's good to have this for clarity.
-> > > 
-> > > > > I want to add that I'd like to convert users in cases 1) and 2) from using
-> > > > > GUP to using differently named function. Users in case 3) can stay as they
-> > > > > are for now although ultimately I'd like to denote such use cases in a
-> > > > > special way as well...
-> > > > 
-> > > > So after 1/2/3 is renamed/specially denoted, only 4) keeps the current
-> > > > interface?
-> > > 
-> > > Well, munlock() code doesn't even use GUP, just follow_page(). I'd wait to
-> > > see what's left after handling cases 1), 2), and 3) to decide about the
-> > > interface for the remainder.
-> > > 
-> > 
-> > For 3 we do not need to take a reference at all :) So just forget about 3
-> > it does not exist. For 3 the reference is the reference the CPU page table
-> > has on the page and that's it. GUP is no longer involve in ODP or anything
-> > like that.
+On Fri, Aug 16, 2019 at 12:54:45PM -0400, Jerome Glisse wrote:
+
+> > Yes, I understand. But the fact is that GUP calls are currently still there
+> > e.g. in ODP code. If you can make the code work without taking a page
+> > reference at all, I'm only happy :)
 > 
-> Yes, I understand. But the fact is that GUP calls are currently still there
-> e.g. in ODP code. If you can make the code work without taking a page
-> reference at all, I'm only happy :)
+> Already in rdma next AFAIK so in 5.4 it will be gone :)
 
-Already in rdma next AFAIK so in 5.4 it will be gone :) i have been
-removing all GUP users that do not need reference. Intel i915 driver
-is a left over i will work some more with them to get rid of it too.
+Unfortunately no.. only a lot of patches supporting this change will
+be in 5.4. The notifiers are still a problem, and I need to figure out
+if the edge cases in hmm_range_fault are OK for ODP or not. :(
 
-Cheers,
-Jérôme
+This is taking a long time in part because ODP itself has all sorts of
+problems that make it hard to tell if the other changes are safe or
+not..
+
+Lots of effort is being spent to get there though.
+
+Jason
