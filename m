@@ -2,104 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C5690BF4
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 Aug 2019 03:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A5090C14
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 Aug 2019 04:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbfHQBnb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Aug 2019 21:43:31 -0400
-Received: from fieldses.org ([173.255.197.46]:36180 "EHLO fieldses.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726023AbfHQBnb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 16 Aug 2019 21:43:31 -0400
-Received: by fieldses.org (Postfix, from userid 2815)
-        id A80A763F; Fri, 16 Aug 2019 21:43:30 -0400 (EDT)
-Date:   Fri, 16 Aug 2019 21:43:30 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 1/2] svcrdma: Remove svc_rdma_wq
-Message-ID: <20190817014330.GA14789@fieldses.org>
-References: <156599209136.1245.654792745471627630.stgit@seurat29.1015granger.net>
+        id S1726013AbfHQCYW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Aug 2019 22:24:22 -0400
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:2869 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbfHQCYW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Aug 2019 22:24:22 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5d5765580000>; Fri, 16 Aug 2019 19:24:24 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 16 Aug 2019 19:24:21 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 16 Aug 2019 19:24:21 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL104.nvidia.com
+ (172.18.146.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 17 Aug
+ 2019 02:24:21 +0000
+Received: from hqnvemgw02.nvidia.com (172.16.227.111) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Sat, 17 Aug 2019 02:24:21 +0000
+Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by hqnvemgw02.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5d5765550000>; Fri, 16 Aug 2019 19:24:21 -0700
+From:   <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [RFC PATCH v2 0/3] mm/gup: introduce vaddr_pin_pages_remote(), FOLL_PIN
+Date:   Fri, 16 Aug 2019 19:24:16 -0700
+Message-ID: <20190817022419.23304-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <156599209136.1245.654792745471627630.stgit@seurat29.1015granger.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1566008664; bh=cCBt59CWewaBIVEcA498iHRyQV6bodOTBBV+5/6So/Y=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=kkkl/f/UoNGU6FK/KdkQCX3YCPwYCnNXbf01z2x4dt7QASf7pR39O4CIg1mZFS88g
+         Fx/XdwN929OPjhQ7ioyJ3sMzlsI3gOEetwXdW8wXH96UWABayyIFFCxiXXdA+ATrXU
+         szUHbZRFKqefq4YoGrJA7bE8TUArVyykiCp1YgMmp5+AJgNd0ZtFi/j6g6+0WUUS+g
+         AfED/9jTR9gazFuk9sVLtOyXpcFPV2riKtj5KnGo3e4yzUrPG3s8XdNWpM8ksXHnFR
+         JDWTzCIDuOGXbvcM+zwS36d+kd7qP4IrjH4yQZ4gRK/Z/K4mE7XPlVXOvw8LGU6qgy
+         /RgdQLtU2pBAQ==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thanks!  Applying both for 5.4.
+From: John Hubbard <jhubbard@nvidia.com>
 
---b.
+Hi Ira,
 
-On Fri, Aug 16, 2019 at 05:48:36PM -0400, Chuck Lever wrote:
-> Clean up: the system workqueue will work just as well.
-> 
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
->  include/linux/sunrpc/svc_rdma.h          |    1 -
->  net/sunrpc/xprtrdma/svc_rdma.c           |    7 -------
->  net/sunrpc/xprtrdma/svc_rdma_transport.c |    3 ++-
->  3 files changed, 2 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/linux/sunrpc/svc_rdma.h b/include/linux/sunrpc/svc_rdma.h
-> index 981f0d726ad4..edb39900fe04 100644
-> --- a/include/linux/sunrpc/svc_rdma.h
-> +++ b/include/linux/sunrpc/svc_rdma.h
-> @@ -200,7 +200,6 @@ extern struct svc_xprt_class svc_rdma_bc_class;
->  #endif
->  
->  /* svc_rdma.c */
-> -extern struct workqueue_struct *svc_rdma_wq;
->  extern int svc_rdma_init(void);
->  extern void svc_rdma_cleanup(void);
->  
-> diff --git a/net/sunrpc/xprtrdma/svc_rdma.c b/net/sunrpc/xprtrdma/svc_rdma.c
-> index abdb3004a1e3..97bca509a391 100644
-> --- a/net/sunrpc/xprtrdma/svc_rdma.c
-> +++ b/net/sunrpc/xprtrdma/svc_rdma.c
-> @@ -73,8 +73,6 @@ atomic_t rdma_stat_rq_prod;
->  atomic_t rdma_stat_sq_poll;
->  atomic_t rdma_stat_sq_prod;
->  
-> -struct workqueue_struct *svc_rdma_wq;
-> -
->  /*
->   * This function implements reading and resetting an atomic_t stat
->   * variable through read/write to a proc file. Any write to the file
-> @@ -230,7 +228,6 @@ static struct ctl_table svcrdma_root_table[] = {
->  void svc_rdma_cleanup(void)
->  {
->  	dprintk("SVCRDMA Module Removed, deregister RPC RDMA transport\n");
-> -	destroy_workqueue(svc_rdma_wq);
->  	if (svcrdma_table_header) {
->  		unregister_sysctl_table(svcrdma_table_header);
->  		svcrdma_table_header = NULL;
-> @@ -246,10 +243,6 @@ int svc_rdma_init(void)
->  	dprintk("\tmax_bc_requests  : %u\n", svcrdma_max_bc_requests);
->  	dprintk("\tmax_inline       : %d\n", svcrdma_max_req_size);
->  
-> -	svc_rdma_wq = alloc_workqueue("svc_rdma", 0, 0);
-> -	if (!svc_rdma_wq)
-> -		return -ENOMEM;
-> -
->  	if (!svcrdma_table_header)
->  		svcrdma_table_header =
->  			register_sysctl_table(svcrdma_root_table);
-> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-> index 4d3db6ee7f09..30dbbc77ad16 100644
-> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
-> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-> @@ -630,8 +630,9 @@ static void svc_rdma_free(struct svc_xprt *xprt)
->  {
->  	struct svcxprt_rdma *rdma =
->  		container_of(xprt, struct svcxprt_rdma, sc_xprt);
-> +
->  	INIT_WORK(&rdma->sc_work, __svc_rdma_free);
-> -	queue_work(svc_rdma_wq, &rdma->sc_work);
-> +	schedule_work(&rdma->sc_work);
->  }
->  
->  static int svc_rdma_has_wspace(struct svc_xprt *xprt)
+As requested, this is for your tree:
+https://github.com/weiny2/linux-kernel.git (mmotm-rdmafsdax-b0-v4), to be
+applied at your last authored commit, which is: commit f625f92ecfb4
+("mm/gup: Remove FOLL_LONGTERM DAX exclusion"). In other words, please
+delete my previous patches from the tree, and apply these replacement
+patches.
+
+This now has a user for the new vaddr_pin_user_pages_remote() call. And
+it also moves the gup flag setting out to the caller.
+
+I'm pretty pleased to be able to include a bit of documentation (see the
+FOLL_PIN patch) that covers those four cases. This should really help
+clarify things. Thanks to Jan Kara and Vlastimil Babka for providing
+the meaingful core of that documentation.
+
+The naming can of course be tweaked to match whatever the final is. For
+now, I've used vaddr_pin_user_pages_remote(). That addresses Jason's
+request for a "user" in the name, and it also makes it very clear that
+it's a replacement for get_user_pages_remote().
+
+v1 of this RFC is here:
+https://lore.kernel.org/r/20190812015044.26176-1-jhubbard@nvidia.com
+
+John Hubbard (3):
+  For Ira: tiny formatting tweak to kerneldoc
+  mm/gup: introduce FOLL_PIN flag for get_user_pages()
+  mm/gup: introduce vaddr_pin_pages_remote(), and invoke it
+
+ include/linux/mm.h     | 61 +++++++++++++++++++++++++++++++++++++-----
+ mm/gup.c               | 37 +++++++++++++++++++++++--
+ mm/process_vm_access.c | 23 +++++++++-------
+ 3 files changed, 104 insertions(+), 17 deletions(-)
+
+--=20
+2.22.1
+
