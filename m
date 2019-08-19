@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CAB921FE
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 13:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F7C921FF
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 13:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727443AbfHSLRf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 07:17:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33052 "EHLO mail.kernel.org"
+        id S1727111AbfHSLRi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 07:17:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727424AbfHSLRf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 19 Aug 2019 07:17:35 -0400
+        id S1727424AbfHSLRi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Aug 2019 07:17:38 -0400
 Received: from localhost (unknown [77.137.115.125])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69EC82085A;
-        Mon, 19 Aug 2019 11:17:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 075D92086C;
+        Mon, 19 Aug 2019 11:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1566213454;
-        bh=iCQI4x4JIdcl6S5yE/FVzBg1bu/HtlL84De0JbvijlY=;
+        s=default; t=1566213457;
+        bh=lUsjta7Efh5fZbdhlHOVWXZIQxyhiQZTzrFYfpVf+B4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i4O5AWZBFFVyCopYqqAcpjcVJoNs7Es6kTLyucoNFotAp9Q1VRpA4+MaqLO3RSdnL
-         NdaXMXs2x9mFlNuHqZAP7LT2b4KWIHi+bTios/kKreW/Y99Z9Chimp7tSe8D3NhSEO
-         jNXmCaxR+QYv1kiOxJ9eQDiUXx86s6EX/vjhfz9o=
+        b=DWqUheM7pTOEs3qIpGD4WCIViMipe6B8lBfRZoxj73oEaR+Eii68uqMznNCDumiTY
+         Cpv8V2svhph721csyYxcIR0S0vPt/BP9vgOZSG8uUbpIN8JuVTF5Jd5gopLhR99JDd
+         XUK87zCn7dKtTpZ0zSt27Isoo/wzE20TjTuYne0Y=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Guy Levi <guyle@mellanox.com>, Moni Shoua <monis@mellanox.com>
-Subject: [PATCH rdma-next 06/12] RDMA/odp: Split creating a umem_odp from ib_umem_get
-Date:   Mon, 19 Aug 2019 14:17:04 +0300
-Message-Id: <20190819111710.18440-7-leon@kernel.org>
+Subject: [PATCH rdma-next 07/12] RDMA/odp: Provide ib_umem_odp_release() to undo the allocs
+Date:   Mon, 19 Aug 2019 14:17:05 +0300
+Message-Id: <20190819111710.18440-8-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190819111710.18440-1-leon@kernel.org>
 References: <20190819111710.18440-1-leon@kernel.org>
@@ -44,292 +44,119 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-This is the last creation API that is overloaded for both, there is very
-little code sharing and a driver has to be specifically ready for a
-umem_odp to be created to use the odp version.
+Now that there are allocator APIs that return the ib_umem_odp directly
+it should be freed through a umem_odp free'er as well.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/umem.c     | 30 +++----------
- drivers/infiniband/core/umem_odp.c | 67 ++++++++++++++++++++++--------
- drivers/infiniband/hw/mlx5/mem.c   | 13 ------
- drivers/infiniband/hw/mlx5/mr.c    | 34 +++++++++++----
- include/rdma/ib_umem_odp.h         |  9 ++--
- 5 files changed, 86 insertions(+), 67 deletions(-)
+ drivers/infiniband/core/umem.c     | 20 ++++----------------
+ drivers/infiniband/core/umem_odp.c |  3 +++
+ drivers/infiniband/hw/mlx5/mr.c    |  2 +-
+ drivers/infiniband/hw/mlx5/odp.c   |  6 +++---
+ 4 files changed, 11 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index f3bedbb7c4ab..ac7376401965 100644
+index ac7376401965..312289f84987 100644
 --- a/drivers/infiniband/core/umem.c
 +++ b/drivers/infiniband/core/umem.c
-@@ -184,9 +184,6 @@ EXPORT_SYMBOL(ib_umem_find_best_pgsz);
+@@ -326,15 +326,6 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
+ }
+ EXPORT_SYMBOL(ib_umem_get);
+ 
+-static void __ib_umem_release_tail(struct ib_umem *umem)
+-{
+-	mmdrop(umem->owning_mm);
+-	if (umem->is_odp)
+-		kfree(to_ib_umem_odp(umem));
+-	else
+-		kfree(umem);
+-}
+-
  /**
-  * ib_umem_get - Pin and DMA map userspace memory.
-  *
-- * If access flags indicate ODP memory, avoid pinning. Instead, stores
-- * the mm for future page fault handling in conjunction with MMU notifiers.
-- *
-  * @udata: userspace context to pin memory for
-  * @addr: userspace virtual address to start at
-  * @size: length of region to pin
-@@ -231,17 +228,12 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
- 	if (!can_do_mlock())
- 		return ERR_PTR(-EPERM);
- 
--	if (access & IB_ACCESS_ON_DEMAND) {
--		umem = kzalloc(sizeof(struct ib_umem_odp), GFP_KERNEL);
--		if (!umem)
--			return ERR_PTR(-ENOMEM);
--		umem->is_odp = 1;
--	} else {
--		umem = kzalloc(sizeof(*umem), GFP_KERNEL);
--		if (!umem)
--			return ERR_PTR(-ENOMEM);
--	}
-+	if (access & IB_ACCESS_ON_DEMAND)
-+		return ERR_PTR(-EOPNOTSUPP);
- 
-+	umem = kzalloc(sizeof(*umem), GFP_KERNEL);
-+	if (!umem)
-+		return ERR_PTR(-ENOMEM);
- 	umem->context    = context;
- 	umem->length     = size;
- 	umem->address    = addr;
-@@ -249,18 +241,6 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
- 	umem->owning_mm = mm = current->mm;
- 	mmgrab(mm);
- 
--	if (access & IB_ACCESS_ON_DEMAND) {
--		if (WARN_ON_ONCE(!context->invalidate_range)) {
--			ret = -EINVAL;
--			goto umem_kfree;
--		}
--
--		ret = ib_umem_odp_get(to_ib_umem_odp(umem), access);
--		if (ret)
--			goto umem_kfree;
--		return umem;
--	}
--
- 	page_list = (struct page **) __get_free_page(GFP_KERNEL);
- 	if (!page_list) {
- 		ret = -ENOMEM;
-diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-index 9b1f779493e9..79995766316a 100644
---- a/drivers/infiniband/core/umem_odp.c
-+++ b/drivers/infiniband/core/umem_odp.c
-@@ -342,6 +342,7 @@ static inline int ib_init_umem_odp(struct ib_umem_odp *umem_odp,
- 				     &per_mm->umem_tree);
- 		up_write(&per_mm->umem_rwsem);
- 	}
-+	mmgrab(umem_odp->umem.owning_mm);
- 
- 	return 0;
- 
-@@ -396,9 +397,6 @@ struct ib_umem_odp *ib_umem_odp_alloc_implicit(struct ib_udata *udata,
- 		kfree(umem_odp);
- 		return ERR_PTR(ret);
- 	}
--
--	mmgrab(umem->owning_mm);
--
- 	return umem_odp;
- }
- EXPORT_SYMBOL(ib_umem_odp_alloc_implicit);
-@@ -442,27 +440,51 @@ struct ib_umem_odp *ib_umem_odp_alloc_child(struct ib_umem_odp *root,
- 		kfree(odp_data);
- 		return ERR_PTR(ret);
- 	}
--
--	mmgrab(umem->owning_mm);
--
- 	return odp_data;
- }
- EXPORT_SYMBOL(ib_umem_odp_alloc_child);
- 
- /**
-- * ib_umem_odp_get - Complete ib_umem_get()
-+ * ib_umem_odp_get - Create a umem_odp for a userspace va
-  *
-- * @umem_odp: The partially configured umem from ib_umem_get()
-- * @addr: The starting userspace VA
-- * @access: ib_reg_mr access flags
-+ * @udata: userspace context to pin memory for
-+ * @addr: userspace virtual address to start at
-+ * @size: length of region to pin
-+ * @access: IB_ACCESS_xxx flags for memory being pinned
-+ *
-+ * The driver should use when the access flags indicate ODP memory. It avoids
-+ * pinning, instead, stores the mm for future page fault handling in
-+ * conjunction with MMU notifiers.
-  */
--int ib_umem_odp_get(struct ib_umem_odp *umem_odp, int access)
-+struct ib_umem_odp *ib_umem_odp_get(struct ib_udata *udata, unsigned long addr,
-+				    size_t size, int access)
+  * ib_umem_release - release memory pinned with ib_umem_get
+  * @umem: umem struct to release
+@@ -343,17 +334,14 @@ void ib_umem_release(struct ib_umem *umem)
  {
--	/*
--	 * NOTE: This must called in a process context where umem->owning_mm
--	 * == current->mm
--	 */
--	struct mm_struct *mm = umem_odp->umem.owning_mm;
-+	struct ib_umem_odp *umem_odp;
-+	struct ib_ucontext *context;
-+	struct mm_struct *mm;
-+	int ret;
-+
-+	if (!udata)
-+		return ERR_PTR(-EIO);
-+
-+	context = container_of(udata, struct uverbs_attr_bundle, driver_udata)
-+			  ->context;
-+	if (!context)
-+		return ERR_PTR(-EIO);
-+
-+	if (WARN_ON_ONCE(!(access & IB_ACCESS_ON_DEMAND)) ||
-+	    WARN_ON_ONCE(!context->invalidate_range))
-+		return ERR_PTR(-EINVAL);
-+
-+	umem_odp = kzalloc(sizeof(struct ib_umem_odp), GFP_KERNEL);
-+	if (!umem_odp)
-+		return ERR_PTR(-ENOMEM);
-+
-+	umem_odp->umem.context = context;
-+	umem_odp->umem.length = size;
-+	umem_odp->umem.address = addr;
-+	umem_odp->umem.writable = ib_access_writable(access);
-+	umem_odp->umem.owning_mm = mm = current->mm;
- 
- 	umem_odp->page_shift = PAGE_SHIFT;
- 	if (access & IB_ACCESS_HUGETLB) {
-@@ -473,15 +495,24 @@ int ib_umem_odp_get(struct ib_umem_odp *umem_odp, int access)
- 		vma = find_vma(mm, ib_umem_start(umem_odp));
- 		if (!vma || !is_vm_hugetlb_page(vma)) {
- 			up_read(&mm->mmap_sem);
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto err_free;
- 		}
- 		h = hstate_vma(vma);
- 		umem_odp->page_shift = huge_page_shift(h);
- 		up_read(&mm->mmap_sem);
- 	}
- 
--	return ib_init_umem_odp(umem_odp, NULL);
-+	ret = ib_init_umem_odp(umem_odp, NULL);
-+	if (ret)
-+		goto err_free;
-+	return umem_odp;
-+
-+err_free:
-+	kfree(umem_odp);
-+	return ERR_PTR(ret);
- }
-+EXPORT_SYMBOL(ib_umem_odp_get);
- 
- void ib_umem_odp_release(struct ib_umem_odp *umem_odp)
- {
-diff --git a/drivers/infiniband/hw/mlx5/mem.c b/drivers/infiniband/hw/mlx5/mem.c
-index a40e0abf2338..b5aece786b36 100644
---- a/drivers/infiniband/hw/mlx5/mem.c
-+++ b/drivers/infiniband/hw/mlx5/mem.c
-@@ -56,19 +56,6 @@ void mlx5_ib_cont_pages(struct ib_umem *umem, u64 addr,
- 	struct scatterlist *sg;
- 	int entry;
- 
+ 	if (!umem)
+ 		return;
+-
 -	if (umem->is_odp) {
--		struct ib_umem_odp *odp = to_ib_umem_odp(umem);
--		unsigned int page_shift = odp->page_shift;
--
--		*ncont = ib_umem_odp_num_pages(odp);
--		*count = *ncont << (page_shift - PAGE_SHIFT);
--		*shift = page_shift;
--		if (order)
--			*order = ilog2(roundup_pow_of_two(*ncont));
--
+-		ib_umem_odp_release(to_ib_umem_odp(umem));
+-		__ib_umem_release_tail(umem);
 -		return;
 -	}
--
- 	addr = addr >> PAGE_SHIFT;
- 	tmp = (unsigned long)addr;
- 	m = find_first_bit(&tmp, BITS_PER_LONG);
++	if (umem->is_odp)
++		return ib_umem_odp_release(to_ib_umem_odp(umem));
+ 
+ 	__ib_umem_release(umem->context->device, umem, 1);
+ 
+ 	atomic64_sub(ib_umem_num_pages(umem), &umem->owning_mm->pinned_vm);
+-	__ib_umem_release_tail(umem);
++	mmdrop(umem->owning_mm);
++	kfree(umem);
+ }
+ EXPORT_SYMBOL(ib_umem_release);
+ 
+diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+index 79995766316a..2575dd783196 100644
+--- a/drivers/infiniband/core/umem_odp.c
++++ b/drivers/infiniband/core/umem_odp.c
+@@ -530,7 +530,10 @@ void ib_umem_odp_release(struct ib_umem_odp *umem_odp)
+ 		vfree(umem_odp->page_list);
+ 	}
+ 	put_per_mm(umem_odp);
++	mmdrop(umem_odp->umem.owning_mm);
++	kfree(umem_odp);
+ }
++EXPORT_SYMBOL(ib_umem_odp_release);
+ 
+ /*
+  * Map for DMA and insert a single page into the on-demand paging page tables.
 diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index e0015b612ffd..c9690d3cfb5c 100644
+index c9690d3cfb5c..aa0299662c05 100644
 --- a/drivers/infiniband/hw/mlx5/mr.c
 +++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -794,19 +794,37 @@ static int mr_umem_get(struct mlx5_ib_dev *dev, struct ib_udata *udata,
- 		       int *ncont, int *order)
- {
- 	struct ib_umem *u;
--	int err;
+@@ -1638,7 +1638,7 @@ static void dereg_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr)
+ 		 * so that there will not be any invalidations in
+ 		 * flight, looking at the *mr struct.
+ 		 */
+-		ib_umem_release(umem);
++		ib_umem_odp_release(umem_odp);
+ 		atomic_sub(npages, &dev->mdev->priv.reg_pages);
  
- 	*umem = NULL;
+ 		/* Avoid double-freeing the umem. */
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index 4371fc759c23..ad5d5f2c8509 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -206,7 +206,7 @@ static void mr_leaf_free_action(struct work_struct *work)
+ 	mr->parent = NULL;
+ 	synchronize_srcu(&mr->dev->mr_srcu);
  
--	u = ib_umem_get(udata, start, length, access_flags, 0);
--	err = PTR_ERR_OR_ZERO(u);
--	if (err) {
--		mlx5_ib_dbg(dev, "umem get failed (%d)\n", err);
--		return err;
-+	if (access_flags & IB_ACCESS_ON_DEMAND) {
-+		struct ib_umem_odp *odp;
-+
-+		odp = ib_umem_odp_get(udata, start, length, access_flags);
-+		if (IS_ERR(odp)) {
-+			mlx5_ib_dbg(dev, "umem get failed (%ld)\n",
-+				    PTR_ERR(odp));
-+			return PTR_ERR(odp);
-+		}
-+
-+		u = &odp->umem;
-+
-+		*page_shift = odp->page_shift;
-+		*ncont = ib_umem_odp_num_pages(odp);
-+		*npages = *ncont << (*page_shift - PAGE_SHIFT);
-+		if (order)
-+			*order = ilog2(roundup_pow_of_two(*ncont));
-+	} else {
-+		u = ib_umem_get(udata, start, length, access_flags, 0);
-+		if (IS_ERR(u)) {
-+			mlx5_ib_dbg(dev, "umem get failed (%ld)\n", PTR_ERR(u));
-+			return PTR_ERR(u);
-+		}
-+
-+		mlx5_ib_cont_pages(u, start, MLX5_MKEY_PAGE_SHIFT_MASK, npages,
-+				   page_shift, ncont, order);
+-	ib_umem_release(&odp->umem);
++	ib_umem_odp_release(odp);
+ 	if (imr->live)
+ 		mlx5_ib_update_xlt(imr, idx, 1, 0,
+ 				   MLX5_IB_UPD_XLT_INDIRECT |
+@@ -472,7 +472,7 @@ static struct ib_umem_odp *implicit_mr_get_data(struct mlx5_ib_mr *mr,
+ 					mr->access_flags);
+ 		if (IS_ERR(mtt)) {
+ 			mutex_unlock(&odp_mr->umem_mutex);
+-			ib_umem_release(&odp->umem);
++			ib_umem_odp_release(odp);
+ 			return ERR_CAST(mtt);
+ 		}
+ 
+@@ -526,7 +526,7 @@ struct mlx5_ib_mr *mlx5_ib_alloc_implicit_mr(struct mlx5_ib_pd *pd,
+ 
+ 	imr = implicit_mr_alloc(&pd->ibpd, umem_odp, 1, access_flags);
+ 	if (IS_ERR(imr)) {
+-		ib_umem_release(&umem_odp->umem);
++		ib_umem_odp_release(umem_odp);
+ 		return ERR_CAST(imr);
  	}
  
--	mlx5_ib_cont_pages(u, start, MLX5_MKEY_PAGE_SHIFT_MASK, npages,
--			   page_shift, ncont, order);
- 	if (!*npages) {
- 		mlx5_ib_warn(dev, "avoid zero region\n");
- 		ib_umem_release(u);
-diff --git a/include/rdma/ib_umem_odp.h b/include/rdma/ib_umem_odp.h
-index 219fe7015e7d..5efb67f97b0a 100644
---- a/include/rdma/ib_umem_odp.h
-+++ b/include/rdma/ib_umem_odp.h
-@@ -139,7 +139,8 @@ struct ib_ucontext_per_mm {
- 	struct rcu_head rcu;
- };
- 
--int ib_umem_odp_get(struct ib_umem_odp *umem_odp, int access);
-+struct ib_umem_odp *ib_umem_odp_get(struct ib_udata *udata, unsigned long addr,
-+				    size_t size, int access);
- struct ib_umem_odp *ib_umem_odp_alloc_implicit(struct ib_udata *udata,
- 					       int access);
- struct ib_umem_odp *ib_umem_odp_alloc_child(struct ib_umem_odp *root_umem,
-@@ -199,9 +200,11 @@ static inline int ib_umem_mmu_notifier_retry(struct ib_umem_odp *umem_odp,
- 
- #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
- 
--static inline int ib_umem_odp_get(struct ib_umem_odp *umem_odp, int access)
-+static inline struct ib_umem_odp *ib_umem_odp_get(struct ib_udata *udata,
-+						  unsigned long addr,
-+						  size_t size, int access)
- {
--	return -EINVAL;
-+	return ERR_PTR(-EINVAL);
- }
- 
- static inline void ib_umem_odp_release(struct ib_umem_odp *umem_odp) {}
 -- 
 2.20.1
 
