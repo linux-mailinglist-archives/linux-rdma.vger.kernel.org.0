@@ -2,94 +2,176 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEB3948D7
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 17:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7626C94937
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 17:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727353AbfHSPqc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 11:46:32 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:33151 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728009AbfHSPqB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 11:46:01 -0400
-Received: by mail-pg1-f193.google.com with SMTP id n190so1455455pgn.0
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 08:46:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=el7674EF4eBar/UH/zKb5ZWvnbkkR4odtqUFMSxzlWs=;
-        b=E/CNxBUP2nwAZgcMOGRqefi8U1wEZibwORB5gDisjEXgm/CSinj+Ox5ay9bgcUAyhW
-         Vmt/VJMp3YdCm2EzsVjuCtc2T5PayXGO9ymSzDOWU1CTNIGx/L1HxvNC1We5dbGGg9Ra
-         r3TNTA691yjgJP9XMmnxCK9wq9CJVixIbXkjSyLKcDKn9B8V+73fyngBO8B2iDVzSLA+
-         zFNdBYNis1s4nmWdvQCx9+p3LjrmjG2VqTI7IdoJX4pcmFHYxmpQr5r/A3IDGHsBhX4v
-         TlNpFwFgVOKFXg90fCKk1stqpN+d41cmtkRVCHXNmSdA4fBvDezSQxZkI2OV3xByhJqu
-         K/Ww==
-X-Gm-Message-State: APjAAAXzGMYiJ5lac5Ix3HWiGkINYpc898SIPFN6u0ixlnQYJvTYV2XT
-        tAXJHhCc1vY+VePcaRzpC+g9Xljb
-X-Google-Smtp-Source: APXvYqw7edY2B4yxv3a+xc+lDVsx1m9pKCIpLH9Atx+RMllMcIps/RediRAFVV3R4ZWLXBnzKJ1xiA==
-X-Received: by 2002:a65:6096:: with SMTP id t22mr21147762pgu.204.1566229560870;
-        Mon, 19 Aug 2019 08:46:00 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id o130sm19003389pfg.171.2019.08.19.08.45.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Aug 2019 08:45:59 -0700 (PDT)
-Subject: Re: [PATCH] RDMA/srpt: Filter out AGN bits
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Hal Rosenstock <hal@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        oulijun <oulijun@huawei.com>
-References: <20190814151507.140572-1-bvanassche@acm.org>
- <20190819122126.GA6509@ziepe.ca>
- <d2429292-be75-ee67-2cce-081d9d0aa676@acm.org>
- <20190819151722.GG5080@mellanox.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <ad0d3211-bf70-d349-7e14-e4b515bb3e98@acm.org>
-Date:   Mon, 19 Aug 2019 08:45:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726959AbfHSPzG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 19 Aug 2019 11:55:06 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26276 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726373AbfHSPzF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Aug 2019 11:55:05 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JFlgcv023996
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 11:55:03 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.73])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ufvxddbnc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 11:55:03 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 19 Aug 2019 15:55:03 -0000
+Received: from us1a3-smtp04.a3.dal06.isc4sb.com (10.106.154.237)
+        by smtp.notes.na.collabserv.com (10.106.227.90) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 19 Aug 2019 15:54:57 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp04.a3.dal06.isc4sb.com
+          with ESMTP id 2019081915545714-682546 ;
+          Mon, 19 Aug 2019 15:54:57 +0000 
+In-Reply-To: <20190819150723.GH5058@ziepe.ca>
+Subject: Re: Re: Re: Re: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit due to
+ u64/pointer abuse
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Doug Ledford" <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 19 Aug 2019 15:54:56 +0000
 MIME-Version: 1.0
-In-Reply-To: <20190819151722.GG5080@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190819150723.GH5058@ziepe.ca>,<20190819141856.GG5058@ziepe.ca>
+ <20190819135213.GF5058@ziepe.ca> <20190819122456.GB5058@ziepe.ca>
+ <20190819100526.13788-1-geert@linux-m68k.org>
+ <OF7DB4AD51.C58B8A8B-ON0025845B.004A0CF6-0025845B.004AB95C@notes.na.collabserv.com>
+ <OFD7D2994B.750F3146-ON0025845B.004D965D-0025845B.004E5577@notes.na.collabserv.com>
+ <OFD7C97688.66331960-ON0025845B.005081B6-0025845B.0051AF67@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-LLNOutbound: False
+X-Disclaimed: 48307
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19081915-8877-0000-0000-000000D9CA43
+X-IBM-SpamModules-Scores: BY=0.002744; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.006883
+X-IBM-SpamModules-Versions: BY=3.00011618; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01249118; UDB=6.00659382; IPR=6.01030652;
+ MB=3.00028235; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-19 15:55:01
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-19 14:23:28 - 6.00010304
+x-cbparentid: 19081915-8878-0000-0000-000003B8E432
+Message-Id: <OFB73D0AD1.A2D5DDF4-ON0025845B.00545951-0025845B.00576D84@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_03:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/19/19 8:17 AM, Jason Gunthorpe wrote:
-> On Mon, Aug 19, 2019 at 08:11:21AM -0700, Bart Van Assche wrote:
->> Does uniqueness of the I/O controller GUID only matter in InfiniBand
->> networks or does it also matter in other RDMA networks?
->>
->> How about using 0 as default value for the srpt_service_guid in RoCE
->> networks?
-> 
-> How does SRP connection management even work on RoCE?? The CM MADs
-> still carry a service_id? How do the sides exchange the service ID to
-> start the connection? Or is it ultimately overriden in the CM to use
-> an IP port based service ID?
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-The ib_srpt kernel driver would have to set id_ext to a unique value if 
-srpt_service_guid would be zero since the SRP initiator kernel driver 
-uses the IOC GUID + id_ext + initiator_ext combination in its connection 
-uniqueness check (srp_conn_unique()).
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 08/19/2019 05:07PM
+>Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, "Doug Ledford"
+><dledford@redhat.com>, linux-rdma@vger.kernel.org,
+>linux-kernel@vger.kernel.org
+>Subject: [EXTERNAL] Re: Re: Re: [PATCH] RDMA/siw: Fix compiler
+>warnings on 32-bit due to u64/pointer abuse
+>
+>On Mon, Aug 19, 2019 at 02:52:13PM +0000, Bernard Metzler wrote:
+>> 
+>> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >Date: 08/19/2019 04:19PM
+>> >Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, "Doug Ledford"
+>> ><dledford@redhat.com>, linux-rdma@vger.kernel.org,
+>> >linux-kernel@vger.kernel.org
+>> >Subject: [EXTERNAL] Re: Re: Re: [PATCH] RDMA/siw: Fix compiler
+>> >warnings on 32-bit due to u64/pointer abuse
+>> >
+>> >On Mon, Aug 19, 2019 at 02:15:36PM +0000, Bernard Metzler wrote:
+>> >> 
+>> >> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>> >> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >> >Date: 08/19/2019 03:52PM
+>> >> >Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, "Doug Ledford"
+>> >> ><dledford@redhat.com>, linux-rdma@vger.kernel.org,
+>> >> >linux-kernel@vger.kernel.org
+>> >> >Subject: [EXTERNAL] Re: Re: [PATCH] RDMA/siw: Fix compiler
+>> >warnings
+>> >> >on 32-bit due to u64/pointer abuse
+>> >> >
+>> >> >On Mon, Aug 19, 2019 at 01:36:11PM +0000, Bernard Metzler
+>wrote:
+>> >> >> >If the value is really a kernel pointer, then it ought to be
+>> >> >printed
+>> >> >> >with %p. We have been getting demanding on this point lately
+>in
+>> >> >RDMA
+>> >> >> >to enforce the ability to keep kernel pointers secret.
+>> >> >> >
+>> >> >> >> -			wqe->sqe.sge[0].laddr = (u64)&wqe->sqe.sge[1];
+>> >> >> >> +			wqe->sqe.sge[0].laddr = (uintptr_t)&wqe->sqe.sge[1];
+>> >> >> >
+>> >> >> >[..]
+>> >> >> >
+>> >> >> >>  			rv = siw_rx_kva(srx,
+>> >> >> >> -					(void *)(sge->laddr + frx->sge_off),
+>> >> >> >> +					(void *)(uintptr_t)(sge->laddr + frx->sge_off),
+>> >> >> >>  					sge_bytes);
+>> >> >> >
+>> >> >> >Bernard, this is nonsense, what is going on here with
+>> >sge->laddr
+>> >> >that
+>> >> >> >it can't be a void *?
+>> >> >> >
+>> >> >> siw_sge is defined in siw-abi.h. We make the address u64 to
+>keep
+>> >> >the ABI
+>> >> >> arch independent.
+>> >> >
+>> >> >Eh? How does the siw-abi.h store a kernel pointer? Sounds like
+>> >kernel
+>> >> >and user types are being mixed.
+>> >> >
+>> >> 
+>> >> siw-abi.h defines the work queue elements of a siw send queue.
+>> >> For user land, the send queue is mmapped. Kernel or user land
+>> >> clients write to its send queue when posting work
+>> >> (SGE: buffer address, length, local key). 
+>> >
+>> >Should have different types.. Don't want to accidently mix a laddr
+>> >under user control with one under kernel control.
+>> >
+>> Well we have an unsigned 64bit for both user and kernel
+>> application buffer addresses throughout the rdma stack, 
+>
+>We do not. Kernel addresses are consistenyly void * or dma_addr_t
+>
+Absolutely. But these addresses are conveyed through the
+API as unsigned 64 during post_send(), and land in the siw
+send queue as is. During send queue processing, these addresses
+must be interpreted according to its context and transformed
+(casted) back to the callers intention. I frankly do not
+know what we can do differently... The representation of
+all addresses as unsigned 64 is given. Sorry for the confusion.
 
-The ib_srp kernel driver supports both the IB/CM and the RDMA/CM. The 
-srp_daemon software tells ib_srp to use the IB/CM. Software like 
-blktests tells ib_srp to use the RDMA/CM. From 
-https://github.com/osandov/blktests/blob/master/tests/srp/rc:
 
-   srp_single_login \
-     "id_ext=$ioc_guid,ioc_guid=$ioc_guid,dest=$dest,$add_param" \
-     "$p/add_target"
+>Most places that consume a data address are using lkeys anyhow, which
+>does have a lkey & u64, but that u64 is not a application buffer
+>address, but the IOVA of the lkey, which is very different.
+>
+>I really have no idea why siw needs to mix kernel VAs with user
+>pointers, particularly in wqes...
+>
+>Jason
+>
+>
 
-The most important parameter in the login string is $dest. That is a 
-string with the following format:
-
-   <IP address>:<port number>.
-
-Bart.
