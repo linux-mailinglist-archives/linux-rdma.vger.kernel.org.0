@@ -2,149 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C29927F7
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 17:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE23092811
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 17:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbfHSPHZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 11:07:25 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:42967 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726810AbfHSPHZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 11:07:25 -0400
-Received: by mail-qk1-f195.google.com with SMTP id 201so1662306qkm.9
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 08:07:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pYG07FQXinRxulmKHOMsg40sZWME3PdnJpDYcJpltkI=;
-        b=mwjGdyFnrfMnbo4xepP5VDv4cV810K0v/nwltdU9hB6YmpGhEZ56PUqqfO8z88Oda0
-         yvgi0mfqOc1Sq+XUKoBBmEmsB709wKk/MrINiAPdg90ZHjACST9Gw2Tm1av+57lv2+d0
-         CDOJncwdS+/KNy5SS4ejwTHRo/z2YWyKnx75ihJuc1ezRt9sA2F1t0Row2IkgQM+VZ0V
-         Srdg+irL0vWbrzbquTSmaQcCy//SxScfUTrmogfcI40bZc/qPoQ/IJPbCO+5Vg+9v0LK
-         n9ocKDUniz0Drq46+nzenO/SaBGtODwwI/ShaHa5CmBjhYPZRn8h1UGJ3NE3ms9xBCwQ
-         ZjjA==
+        id S1726636AbfHSPLZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 11:11:25 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:40971 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbfHSPLY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 11:11:24 -0400
+Received: by mail-pg1-f196.google.com with SMTP id x15so1386670pgg.8
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 08:11:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pYG07FQXinRxulmKHOMsg40sZWME3PdnJpDYcJpltkI=;
-        b=qlRuemODZDu8RKec++Pu6L/Rmo6c7SP7m1SNbqVG2ObdZWE9gN0F/6ZbIybsz6QpR+
-         bGCG+/tivUMupjYj3RhZ2UTnM+4MjH+HqlDerGx7ML9wGFmBRHhBaBd6cP9pAvzg/J8f
-         EbcWBXW41rpume8cuHmApwFt/a5KqG2fYUJzzq+h3kMjxa6qGZ7o9bLMU1+khB+VyRm9
-         rgzXfHT4UztoZrc0OVC0rzPJKc9b/NEDVfKTBfZCtpqh+trfGkGZ6qFsKZAAGMsqrH/N
-         iChKDbCVo3cmRS9wTf0Zh88f2bJbVHcwq672i7xsjOj5gH/nkmonXjpVSqWllvbjllRy
-         Q2dA==
-X-Gm-Message-State: APjAAAXjNOXkjZ1oP5qTs+QxvYzHyRTmhPwIbizXxxz0C75HkPiDGy76
-        KiXR/yGMJefcS8laYFu2EZ2YXg==
-X-Google-Smtp-Source: APXvYqw1y3jYMmvxJOlP9VxdzBIRPZnY3jaTAKfEBX5WHmI1u1LjD3CAWBGFEEgq5D2r4VA9EhPXQw==
-X-Received: by 2002:a37:9f07:: with SMTP id i7mr18332057qke.485.1566227244160;
-        Mon, 19 Aug 2019 08:07:24 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id b127sm7103473qkc.22.2019.08.19.08.07.23
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 19 Aug 2019 08:07:23 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hzjFj-0004zq-Cl; Mon, 19 Aug 2019 12:07:23 -0300
-Date:   Mon, 19 Aug 2019 12:07:23 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: Re: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit due to
- u64/pointer abuse
-Message-ID: <20190819150723.GH5058@ziepe.ca>
-References: <20190819141856.GG5058@ziepe.ca>
- <20190819135213.GF5058@ziepe.ca>
- <20190819122456.GB5058@ziepe.ca>
- <20190819100526.13788-1-geert@linux-m68k.org>
- <OF7DB4AD51.C58B8A8B-ON0025845B.004A0CF6-0025845B.004AB95C@notes.na.collabserv.com>
- <OFD7D2994B.750F3146-ON0025845B.004D965D-0025845B.004E5577@notes.na.collabserv.com>
- <OFD7C97688.66331960-ON0025845B.005081B6-0025845B.0051AF67@notes.na.collabserv.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6J6lEWblAK4hsi7AVZjnjOuY7FG+3npadeKpaVWTO30=;
+        b=DS10kI40SeyOw0jwTBjqgd3ewuNB58aBYHj5bO4NIjQlbUGNVPSaZcR4wM7FQp+MiM
+         eTnpvIa/sTPwqsJXjvPFNDLi9K4cWDwDfVTmCO6o5ae02TCiMbvP7a9m9soMMbfdMGe6
+         Qzn42ruXXsh5LJ0naM0brxYSKayVZVkr487p0X6nKxZ6UcS1qJEx8JppMxI/wSV7PWeJ
+         /UAoZjysoKtV2mRPZAELCFdLwE+EGNC1MWX25FUg0vprW02+HrY+2NAs59aYWlpERBf2
+         dRHrdN4Q8kC+Tfeu2g2wj+PVS8xIsONlnAlcKGT48yIIQBUEl7bOrUB+dNvP3AMb2+3S
+         gPWw==
+X-Gm-Message-State: APjAAAXsuPLz5mGjHRKXLkA0OxSsX6IUjjLncLgHnCGPi+Yf4oYzVgDQ
+        ifPNDEMNJvQ8QXTcB4XO2K8=
+X-Google-Smtp-Source: APXvYqxj0WAaACmO+A2NGDQE+rnIfB9c9/LInBz22E5S/LXM8VDpEEDFL12QQtZKQ3KU3VdMSzypcg==
+X-Received: by 2002:a63:9249:: with SMTP id s9mr19746973pgn.356.1566227483737;
+        Mon, 19 Aug 2019 08:11:23 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id l4sm12628151pjq.9.2019.08.19.08.11.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Aug 2019 08:11:22 -0700 (PDT)
+Subject: Re: [PATCH] RDMA/srpt: Filter out AGN bits
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Hal Rosenstock <hal@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        oulijun <oulijun@huawei.com>
+References: <20190814151507.140572-1-bvanassche@acm.org>
+ <20190819122126.GA6509@ziepe.ca>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <d2429292-be75-ee67-2cce-081d9d0aa676@acm.org>
+Date:   Mon, 19 Aug 2019 08:11:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OFD7C97688.66331960-ON0025845B.005081B6-0025845B.0051AF67@notes.na.collabserv.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190819122126.GA6509@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 19, 2019 at 02:52:13PM +0000, Bernard Metzler wrote:
+On 8/19/19 5:21 AM, Jason Gunthorpe wrote:
+> On Wed, Aug 14, 2019 at 08:15:07AM -0700, Bart Van Assche wrote:
+>> The ib_srpt driver derives its default service GUID from the node GUID
+>> of the first encountered HCA. Since that service GUID is passed to
+>> ib_cm_listen(), the AGN bits must not be set. Since the AGN bits can
+>> be set in the node GUID of RoCE HCAs, filter these bits out. This
+>> patch avoids that loading the ib_srpt driver fails as follows for the
+>> hns driver:
+>>
+>>    ib_srpt srpt_add_one(hns_0) failed.
+>>
+>> Cc: oulijun <oulijun@huawei.com>
+>> Reported-by: oulijun <oulijun@huawei.com>
+>> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+>>   drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+>> index e25c70a56be6..114bf8d6c82b 100644
+>> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+>> @@ -3109,7 +3109,8 @@ static void srpt_add_one(struct ib_device *device)
+>>   	srpt_use_srq(sdev, sdev->port[0].port_attrib.use_srq);
+>>   
+>>   	if (!srpt_service_guid)
+>> -		srpt_service_guid = be64_to_cpu(device->node_guid);
+>> +		srpt_service_guid = be64_to_cpu(device->node_guid) &
+>> +			~IB_SERVICE_ID_AGN_MASK;
 > 
-> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
-> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
-> >Date: 08/19/2019 04:19PM
-> >Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, "Doug Ledford"
-> ><dledford@redhat.com>, linux-rdma@vger.kernel.org,
-> >linux-kernel@vger.kernel.org
-> >Subject: [EXTERNAL] Re: Re: Re: [PATCH] RDMA/siw: Fix compiler
-> >warnings on 32-bit due to u64/pointer abuse
-> >
-> >On Mon, Aug 19, 2019 at 02:15:36PM +0000, Bernard Metzler wrote:
-> >> 
-> >> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
-> >> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
-> >> >Date: 08/19/2019 03:52PM
-> >> >Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, "Doug Ledford"
-> >> ><dledford@redhat.com>, linux-rdma@vger.kernel.org,
-> >> >linux-kernel@vger.kernel.org
-> >> >Subject: [EXTERNAL] Re: Re: [PATCH] RDMA/siw: Fix compiler
-> >warnings
-> >> >on 32-bit due to u64/pointer abuse
-> >> >
-> >> >On Mon, Aug 19, 2019 at 01:36:11PM +0000, Bernard Metzler wrote:
-> >> >> >If the value is really a kernel pointer, then it ought to be
-> >> >printed
-> >> >> >with %p. We have been getting demanding on this point lately in
-> >> >RDMA
-> >> >> >to enforce the ability to keep kernel pointers secret.
-> >> >> >
-> >> >> >> -			wqe->sqe.sge[0].laddr = (u64)&wqe->sqe.sge[1];
-> >> >> >> +			wqe->sqe.sge[0].laddr = (uintptr_t)&wqe->sqe.sge[1];
-> >> >> >
-> >> >> >[..]
-> >> >> >
-> >> >> >>  			rv = siw_rx_kva(srx,
-> >> >> >> -					(void *)(sge->laddr + frx->sge_off),
-> >> >> >> +					(void *)(uintptr_t)(sge->laddr + frx->sge_off),
-> >> >> >>  					sge_bytes);
-> >> >> >
-> >> >> >Bernard, this is nonsense, what is going on here with
-> >sge->laddr
-> >> >that
-> >> >> >it can't be a void *?
-> >> >> >
-> >> >> siw_sge is defined in siw-abi.h. We make the address u64 to keep
-> >> >the ABI
-> >> >> arch independent.
-> >> >
-> >> >Eh? How does the siw-abi.h store a kernel pointer? Sounds like
-> >kernel
-> >> >and user types are being mixed.
-> >> >
-> >> 
-> >> siw-abi.h defines the work queue elements of a siw send queue.
-> >> For user land, the send queue is mmapped. Kernel or user land
-> >> clients write to its send queue when posting work
-> >> (SGE: buffer address, length, local key). 
-> >
-> >Should have different types.. Don't want to accidently mix a laddr
-> >under user control with one under kernel control.
-> >
-> Well we have an unsigned 64bit for both user and kernel
-> application buffer addresses throughout the rdma stack, 
+> This seems kind of sketchy, masking bits in the GUID is going to make
+> it non-unique.. Should we do this only for roce or something?
 
-We do not. Kernel addresses are consistenyly void * or dma_addr_t
+Hi Jason and Hal,
 
-Most places that consume a data address are using lkeys anyhow, which
-does have a lkey & u64, but that u64 is not a application buffer
-address, but the IOVA of the lkey, which is very different.
+The I/O controller GUID can be used in the srp_daemon configuration file 
+for filtering purposes. The srp_daemon only supports IB networks.
 
-I really have no idea why siw needs to mix kernel VAs with user
-pointers, particularly in wqes...
+In the IBTA spec I found the following about the I/O controller GUID: 
+"An EUI-64 GUID used to uniquely identify the controller. This could be 
+the same one as the Node/Port GUID if there is only one controller."
 
-Jason
+Does uniqueness of the I/O controller GUID only matter in InfiniBand 
+networks or does it also matter in other RDMA networks?
+
+How about using 0 as default value for the srpt_service_guid in RoCE 
+networks?
+
+Thanks,
+
+Bart.
+
