@@ -2,103 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC8E927B3
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 16:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C244927D9
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 17:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbfHSO4S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 10:56:18 -0400
-Received: from condef-01.nifty.com ([202.248.20.66]:57022 "EHLO
-        condef-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbfHSO4S (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 10:56:18 -0400
-Received: from conssluserg-05.nifty.com ([10.126.8.84])by condef-01.nifty.com with ESMTP id x7JErQd9004823
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 23:53:26 +0900
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id x7JErLqi016770;
-        Mon, 19 Aug 2019 23:53:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com x7JErLqi016770
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1566226402;
-        bh=jEu8aQX5I9UhJUPk3G8xxRC1ppfr3n6cyqKi0hQLb9M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=u2azZPVEkmdrMqZ+df69ql2NhVZyk/amJ8yBXhENizaAp7xZAlwavoKDWOUy64j5X
-         7Ol5pixAPNmMxYYFLzlRplB7MdnCh1T7QhKVx62aPwdeIsVDKdfNpW9supx5zMCsEt
-         SaZE9kjWOM3HaxpfT/Tjfzj8a0B6pHALrxyJEqtPtQYSuinBcPnd+SRCVx0gLL77Yo
-         SAq3f7SR+ydz/LFVfYmBs/dYk2pNe2uuozGeU/sEjXMfzTJSW/dsClcBq8p+fEgO8K
-         nxbIlZHiK6Q2r7cNuV8P+KDiCAXJVZHA62HMjPNYoFDuponNDjABakVzHiiHm4y9vu
-         bcKgYN7U7z1gw==
-X-Nifty-SrcIP: [209.85.217.41]
-Received: by mail-vs1-f41.google.com with SMTP id s5so1346835vsi.10;
-        Mon, 19 Aug 2019 07:53:21 -0700 (PDT)
-X-Gm-Message-State: APjAAAW6ogC0F+hwrrzceXjqVpfmQHKqoDDimGcl07AZaFM1ZpIZqTyn
-        prgot42kSND7z0woze247/en3gJaunzUA1BLJto=
-X-Google-Smtp-Source: APXvYqxgEC2VFMiHOd7G3mWTc+2xaLAjkP+fEtaPJ3YQKpAGfGzDTP2YAySEwmJ0lzP+zfuCSunuNfSxssKJkMtKdPw=
-X-Received: by 2002:a67:8a83:: with SMTP id m125mr14427234vsd.181.1566226400699;
- Mon, 19 Aug 2019 07:53:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190810155307.29322-1-yamada.masahiro@socionext.com>
-In-Reply-To: <20190810155307.29322-1-yamada.masahiro@socionext.com>
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Mon, 19 Aug 2019 23:52:44 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATkeM=w2rymdvaqBuVYfRb9=US+FzVqGS6Hr81h5RAbWA@mail.gmail.com>
-Message-ID: <CAK7LNATkeM=w2rymdvaqBuVYfRb9=US+FzVqGS6Hr81h5RAbWA@mail.gmail.com>
-Subject: Re: [PATCH 00/11] kbuild: clean-ups and improvement of single targets
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Sam Ravnborg <sam@ravnborg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Boris Pismenny <borisp@mellanox.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Igor Russkikh <igor.russkikh@aquantia.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        id S1726918AbfHSPDy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 11:03:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726295AbfHSPDx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Aug 2019 11:03:53 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E95F2082A;
+        Mon, 19 Aug 2019 15:03:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566227032;
+        bh=r6Qgo/EerA13r1XKtNaY4F+Fih36uuDtTQD1GOLw7VQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0nEyQxrzKySESBGUKFh6Mc7GKgYYTSFMG2ya3Aynwg+mkt7CdHwX1ZGgwWQIBVQNC
+         csQxb4ByJHAcqnYqU7+Fm9Hsps67VrFjc2c/XCKmA+NKVGLnxTKLf6kehDfxn/TIGn
+         4gQpsLvC7laSzTwVSqSMjm+lPXfV7VopH5mFLfEs=
+Date:   Mon, 19 Aug 2019 16:03:43 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Networking <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com
-Content-Type: text/plain; charset="UTF-8"
+        Christoph Hellwig <hch@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: [PATCH ARM] selftests, arm64: fix uninitialized symbol in
+ tags_test.c
+Message-ID: <20190819150342.sxk3zzxvrxhkpp6j@willie-the-truck>
+References: <00eb8ba84205c59cac01b1b47615116a461c302c.1566220355.git.andreyknvl@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00eb8ba84205c59cac01b1b47615116a461c302c.1566220355.git.andreyknvl@google.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 11, 2019 at 12:55 AM Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
->
->
-> 01/11-09/11 are trivial clean-ups.
->
-> 10/11 makes the single targets work more correctly.
->
-> 11/11 cleans up Makefiles that have been added
-> to work aroud the single target issues.
->
->
->
-> Masahiro Yamada (11):
->   kbuild: move the Module.symvers check for external module build
->   kbuild: refactor part-of-module more
->   kbuild: fix modkern_aflags implementation
->   kbuild: remove 'make /' support
->   kbuild: remove meaningless 'targets' in ./Kbuild
->   kbuild: do not descend to ./Kbuild when cleaning
->   kbuild: unset variables in top Makefile instead of setting 0
->   kbuild: unify vmlinux-dirs and module-dirs rules
->   kbuild: unify clean-dirs rule for in-kernel and external module
->   kbuild: make single targets work more correctly
->   treewide: remove dummy Makefiles for single targets
+On Mon, Aug 19, 2019 at 03:14:42PM +0200, Andrey Konovalov wrote:
+> Fix tagged_ptr not being initialized when TBI is not enabled.
+> 
+> Dan Carpenter <dan.carpenter@oracle.com>
 
+Guessing this was Reported-by, or has Dan introduced his own tag now? ;)
 
-Patch 01-09 applied.
+Got a link to the report?
 
-10-11 have been superseded.
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Will
