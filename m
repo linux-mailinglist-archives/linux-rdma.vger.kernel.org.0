@@ -2,26 +2,26 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E447F91D72
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 08:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1E191D78
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 08:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725958AbfHSG6f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726553AbfHSG6f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Mon, 19 Aug 2019 02:58:35 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:53157 "EHLO
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:53158 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726211AbfHSG6f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 02:58:35 -0400
+        with ESMTP id S1726541AbfHSG6e (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 02:58:34 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from noaos@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 19 Aug 2019 09:58:30 +0300
 Received: from reg-l-vrt-059-007.mtl.labs.mlnx (reg-l-vrt-059-007.mtl.labs.mlnx [10.135.59.7])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x7J6wUNE004602;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x7J6wUNF004602;
         Mon, 19 Aug 2019 09:58:30 +0300
 From:   Noa Osherovich <noaos@mellanox.com>
 To:     dledford@redhat.com, jgg@mellanox.com, leonro@mellanox.com
 Cc:     linux-rdma@vger.kernel.org, Noa Osherovich <noaos@mellanox.com>
-Subject: [PATCH rdma-core 02/14] pyverbs: Move tests to a stand-alone directory
-Date:   Mon, 19 Aug 2019 09:58:15 +0300
-Message-Id: <20190819065827.26921-3-noaos@mellanox.com>
+Subject: [PATCH rdma-core 03/14] build: Add pyverbs-based test to the build
+Date:   Mon, 19 Aug 2019 09:58:16 +0300
+Message-Id: <20190819065827.26921-4-noaos@mellanox.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190819065827.26921-1-noaos@mellanox.com>
 References: <20190819065827.26921-1-noaos@mellanox.com>
@@ -32,181 +32,134 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Unittests can be added regardless of pyverbs, change the directory
-hierarchy to reflect that.
+Have the tests installed separately from pyverbs as they're not a
+part of the package. They will now be placed under
+/usr/share/doc/rdma-core-{version}/tests.
+The tests can be executed as follows:
+python3 /usr/share/doc/rdma-core-{version}/run_tests.py
 
 Signed-off-by: Noa Osherovich <noaos@mellanox.com>
 ---
- tests/CMakeLists.txt                            | 14 ++++++++++++++
- {pyverbs/tests => tests}/__init__.py            |  0
- {pyverbs/tests => tests}/base.py                |  0
- pyverbs/tests/addr.py => tests/test_addr.py     |  2 +-
- pyverbs/tests/cq.py => tests/test_cq.py         |  4 ++--
- pyverbs/tests/device.py => tests/test_device.py |  4 ++--
- pyverbs/tests/mr.py => tests/test_mr.py         |  4 ++--
- pyverbs/tests/pd.py => tests/test_pd.py         |  2 +-
- pyverbs/tests/qp.py => tests/test_qp.py         |  4 ++--
- {pyverbs/tests => tests}/utils.py               |  0
- 10 files changed, 24 insertions(+), 10 deletions(-)
- create mode 100644 tests/CMakeLists.txt
- rename {pyverbs/tests => tests}/__init__.py (100%)
- rename {pyverbs/tests => tests}/base.py (100%)
- rename pyverbs/tests/addr.py => tests/test_addr.py (98%)
- rename pyverbs/tests/cq.py => tests/test_cq.py (98%)
- rename pyverbs/tests/device.py => tests/test_device.py (99%)
- rename pyverbs/tests/mr.py => tests/test_mr.py (99%)
- rename pyverbs/tests/pd.py => tests/test_pd.py (97%)
- rename pyverbs/tests/qp.py => tests/test_qp.py (99%)
- rename {pyverbs/tests => tests}/utils.py (100%)
+ CMakeLists.txt                       | 11 +++++++++++
+ buildlib/pyverbs_functions.cmake     |  7 +++++++
+ debian/python3-pyverbs.install       |  2 ++
+ pyverbs/CMakeLists.txt               | 17 -----------------
+ redhat/rdma-core.spec                |  2 ++
+ pyverbs/run_tests.py => run_tests.py |  0
+ suse/rdma-core.spec                  |  2 ++
+ 7 files changed, 24 insertions(+), 17 deletions(-)
+ rename pyverbs/run_tests.py => run_tests.py (100%)
 
-diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-new file mode 100644
-index 000000000000..f1ba542fab90
---- /dev/null
-+++ b/tests/CMakeLists.txt
-@@ -0,0 +1,14 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
-+# Copyright (c) 2019, Mellanox Technologies. All rights reserved. See COPYING file
-+
-+rdma_python_test(tests
-+  __init__.py
-+  test_addr.py
-+  base.py
-+  test_cq.py
-+  test_device.py
-+  test_mr.py
-+  test_pd.py
-+  test_qp.py
-+  utils.py
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fc17ef36cf24..d076ab2c9d3a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -648,6 +648,7 @@ add_subdirectory(infiniband-diags/man)
+ 
+ if (CYTHON_EXECUTABLE)
+   add_subdirectory(pyverbs)
++  add_subdirectory(tests)
+ endif()
+ 
+ # Binaries
+@@ -666,6 +667,16 @@ if (UDEV_FOUND)
+ endif()
+ add_subdirectory(srp_daemon)
+ 
++if (CYTHON_EXECUTABLE)
++rdma_python_test(""
++  run_tests.py
 +  )
-diff --git a/pyverbs/tests/__init__.py b/tests/__init__.py
++
++rdma_internal_binary(
++  run_tests.py
++  )
++endif()
++
+ ibverbs_finalize()
+ rdma_finalize_libs()
+ 
+diff --git a/buildlib/pyverbs_functions.cmake b/buildlib/pyverbs_functions.cmake
+index 9d5258617035..8ea5dc0df7de 100644
+--- a/buildlib/pyverbs_functions.cmake
++++ b/buildlib/pyverbs_functions.cmake
+@@ -35,6 +35,13 @@ function(rdma_python_module PY_MODULE)
+   endforeach()
+ endfunction()
+ 
++function(rdma_python_test PY_MODULE)
++  foreach(PY_FILE ${ARGN})
++    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${PY_FILE}
++      DESTINATION ${CMAKE_INSTALL_DOCDIR}/${PY_MODULE})
++  endforeach()
++endfunction()
++
+ # Make a python script runnable from the build/bin directory with all the
+ # correct paths filled in
+ function(rdma_internal_binary)
+diff --git a/debian/python3-pyverbs.install b/debian/python3-pyverbs.install
+index 20130d8a9a03..10efb97232fd 100644
+--- a/debian/python3-pyverbs.install
++++ b/debian/python3-pyverbs.install
+@@ -1 +1,3 @@
+ usr/lib/python3/dist-packages/pyverbs
++usr/share/doc/rdma-core/run_tests.py
++usr/share/doc/rdma-core/tests
+diff --git a/pyverbs/CMakeLists.txt b/pyverbs/CMakeLists.txt
+index 328263fcc739..da49093c2cf0 100644
+--- a/pyverbs/CMakeLists.txt
++++ b/pyverbs/CMakeLists.txt
+@@ -16,22 +16,5 @@ rdma_cython_module(pyverbs
+ rdma_python_module(pyverbs
+   __init__.py
+   pyverbs_error.py
+-  run_tests.py
+   utils.py
+   )
+-
+-rdma_python_module(pyverbs/tests
+-  tests/__init__.py
+-  tests/addr.py
+-  tests/base.py
+-  tests/cq.py
+-  tests/device.py
+-  tests/mr.py
+-  tests/pd.py
+-  tests/qp.py
+-  tests/utils.py
+-  )
+-
+-rdma_internal_binary(
+-  run_tests.py
+-  )
+diff --git a/redhat/rdma-core.spec b/redhat/rdma-core.spec
+index f07919ccecd5..239c56b581e8 100644
+--- a/redhat/rdma-core.spec
++++ b/redhat/rdma-core.spec
+@@ -650,4 +650,6 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
+ %if %{with_pyverbs}
+ %files -n python3-pyverbs
+ %{python3_sitearch}/pyverbs
++%{_docdir}/%{name}-%{version}/tests/*.py
++%{_docdir}/%{name}-%{version}/run_tests.py
+ %endif
+diff --git a/pyverbs/run_tests.py b/run_tests.py
 similarity index 100%
-rename from pyverbs/tests/__init__.py
-rename to tests/__init__.py
-diff --git a/pyverbs/tests/base.py b/tests/base.py
-similarity index 100%
-rename from pyverbs/tests/base.py
-rename to tests/base.py
-diff --git a/pyverbs/tests/addr.py b/tests/test_addr.py
-similarity index 98%
-rename from pyverbs/tests/addr.py
-rename to tests/test_addr.py
-index 1c56f56bd0bd..9cc801226e69 100644
---- a/pyverbs/tests/addr.py
-+++ b/tests/test_addr.py
-@@ -1,9 +1,9 @@
- # SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
- # Copyright (c) 2019 Mellanox Technologies, Inc. All rights reserved.  See COPYING file
+rename from pyverbs/run_tests.py
+rename to run_tests.py
+diff --git a/suse/rdma-core.spec b/suse/rdma-core.spec
+index 5a01327c4852..cdb6793e4f75 100644
+--- a/suse/rdma-core.spec
++++ b/suse/rdma-core.spec
+@@ -852,6 +852,8 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
+ %if %{with_pyverbs}
+ %files -n python3-pyverbs
+ %{python3_sitearch}/pyverbs
++%{_docdir}/%{name}-%{version}/tests/*.py
++%{_docdir}/%{name}-%{version}/run_tests.py
+ %endif
  
--from pyverbs.tests.base import PyverbsAPITestCase
- from pyverbs.addr import GlobalRoute, AHAttr, AH
- from pyverbs.pyverbs_error import PyverbsError
-+from tests.base import PyverbsAPITestCase
- import pyverbs.device as d
- import pyverbs.enums as e
- from pyverbs.pd import PD
-diff --git a/pyverbs/tests/cq.py b/tests/test_cq.py
-similarity index 98%
-rename from pyverbs/tests/cq.py
-rename to tests/test_cq.py
-index e1e56d363011..7848f39c9c63 100644
---- a/pyverbs/tests/cq.py
-+++ b/tests/test_cq.py
-@@ -7,9 +7,9 @@ import random
- 
- from pyverbs.cq import CompChannel, CQ, CqInitAttrEx, CQEX
- from pyverbs.pyverbs_error import PyverbsError
--from pyverbs.tests.base import PyverbsAPITestCase
--import pyverbs.tests.utils as u
-+from tests.base import PyverbsAPITestCase
- import pyverbs.enums as e
-+import tests.utils as u
- 
- 
- class CQTest(PyverbsAPITestCase):
-diff --git a/pyverbs/tests/device.py b/tests/test_device.py
-similarity index 99%
-rename from pyverbs/tests/device.py
-rename to tests/test_device.py
-index 63f195156119..e395e793c28f 100644
---- a/pyverbs/tests/device.py
-+++ b/tests/test_device.py
-@@ -8,8 +8,8 @@ import resource
- import random
- 
- from pyverbs.pyverbs_error import PyverbsError, PyverbsRDMAError
--from pyverbs.tests.base import PyverbsAPITestCase
--import pyverbs.tests.utils as u
-+from tests.base import PyverbsAPITestCase
-+import tests.utils as u
- import pyverbs.device as d
- 
- PAGE_SIZE = resource.getpagesize()
-diff --git a/pyverbs/tests/mr.py b/tests/test_mr.py
-similarity index 99%
-rename from pyverbs/tests/mr.py
-rename to tests/test_mr.py
-index 4be3987fc18b..e87fb33624ed 100644
---- a/pyverbs/tests/mr.py
-+++ b/tests/test_mr.py
-@@ -7,13 +7,13 @@ from itertools import combinations as com
- import random
- 
- from pyverbs.pyverbs_error import PyverbsRDMAError, PyverbsError
--from pyverbs.tests.base import PyverbsAPITestCase
-+from tests.base import PyverbsAPITestCase
- from pyverbs.base import PyverbsRDMAErrno
- from pyverbs.mr import MR, MW, DMMR
--import pyverbs.tests.utils as u
- import pyverbs.device as d
- from pyverbs.pd import PD
- import pyverbs.enums as e
-+import tests.utils as u
- 
- MAX_IO_LEN = 1048576
- 
-diff --git a/pyverbs/tests/pd.py b/tests/test_pd.py
-similarity index 97%
-rename from pyverbs/tests/pd.py
-rename to tests/test_pd.py
-index 87528db7d437..978cf4900146 100644
---- a/pyverbs/tests/pd.py
-+++ b/tests/test_pd.py
-@@ -5,7 +5,7 @@ Test module for pyverbs' pd module.
- """
- import random
- 
--from pyverbs.tests.base import PyverbsAPITestCase
-+from tests.base import PyverbsAPITestCase
- from pyverbs.base import PyverbsRDMAErrno
- import pyverbs.device as d
- from pyverbs.pd import PD
-diff --git a/pyverbs/tests/qp.py b/tests/test_qp.py
-similarity index 99%
-rename from pyverbs/tests/qp.py
-rename to tests/test_qp.py
-index bbf28244f641..1ce98388871b 100644
---- a/pyverbs/tests/qp.py
-+++ b/tests/test_qp.py
-@@ -5,12 +5,12 @@ Test module for pyverbs' qp module.
- """
- import random
- 
--from pyverbs.tests.base import PyverbsAPITestCase
- from pyverbs.qp import QPInitAttr, QPAttr, QP
--import pyverbs.tests.utils as u
-+from tests.base import PyverbsAPITestCase
- import pyverbs.enums as e
- from pyverbs.pd import PD
- from pyverbs.cq import CQ
-+import tests.utils as u
- 
- 
- class QPTest(PyverbsAPITestCase):
-diff --git a/pyverbs/tests/utils.py b/tests/utils.py
-similarity index 100%
-rename from pyverbs/tests/utils.py
-rename to tests/utils.py
+ %changelog
 -- 
 2.21.0
 
