@@ -2,98 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 717ED94AC9
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 18:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6C294AFE
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 18:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727268AbfHSQsa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 12:48:30 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:46695 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726553AbfHSQsa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 12:48:30 -0400
-Received: by mail-pl1-f194.google.com with SMTP id c2so1221195plz.13
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 09:48:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F63iNPc0Oexd6AUh4x/BYfGPuPUXD9wScU+N6Iz1h70=;
-        b=UcJuI5JeyImBAAOMC5UhBtj2DX/Zj+5X6xmDZt8W4HbImSiRQyvH3dpUZtg+Y5g1N8
-         D9Z3lrlHj2aZrNmxmtvQNMrza35FSwfkCVPWnc/zk0JYgTtUDBe2VngvUgiir0WGML9C
-         m2VXF6JaIesOOeK4epnZSZeQLD3XTIhZ6EQvfiDEs026z2S3h6jSnQyGmE7fPM2l6WOm
-         bRlUcvLbrQ5dJMRGRfnDewSPYFqoTCGguu31gedebL1IIWFV+X8kB2C+KyjW6CzFRfMJ
-         vY1doI4i8ciMzxu8A8xxQ0H0JGYpy3//eYbMA3bFUNGLn2rUnwhX5MfTz06gve5V0aWg
-         9g3A==
-X-Gm-Message-State: APjAAAVf/Iq7GwM3blpZ2YQ0+Lymz1zkkRrFEOT7LNM+nFOuNe7BQaU0
-        XXvDAamRO+xGMdy+d4XaeV4=
-X-Google-Smtp-Source: APXvYqwORBX7KwY1Jehvk/USW9PVP00s55WaTJj8Ril8EWo8PJbBIvCWBdKs87XaUEENZEiB2pzItA==
-X-Received: by 2002:a17:902:9349:: with SMTP id g9mr23222370plp.262.1566233309522;
-        Mon, 19 Aug 2019 09:48:29 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id u1sm15103661pgi.28.2019.08.19.09.48.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Aug 2019 09:48:28 -0700 (PDT)
-Subject: Re: [PATCH] RDMA/srpt: Filter out AGN bits
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Hal Rosenstock <hal@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
+        id S1726918AbfHSQ4Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 12:56:24 -0400
+Received: from smtprelay0107.hostedemail.com ([216.40.44.107]:58363 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726525AbfHSQ4Y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Aug 2019 12:56:24 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 97F20180A7F8C;
+        Mon, 19 Aug 2019 16:56:22 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2691:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:4321:4605:5007:6119:7903:8603:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:30054:30080:30091,0,RBL:23.242.196.136:@perches.com:.lbl8.mailshell.net-62.8.0.180 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:31,LUA_SUMMARY:none
+X-HE-Tag: twist55_71b833439d92c
+X-Filterd-Recvd-Size: 2537
+Received: from XPS-9350.home (cpe-23-242-196-136.socal.res.rr.com [23.242.196.136])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 19 Aug 2019 16:56:21 +0000 (UTC)
+Message-ID: <581e7d79ed75484beb227672b2695ff14e1f1e34.camel@perches.com>
+Subject: Re: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit due to
+ u64/pointer abuse
+From:   Joe Perches <joe@perches.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
         Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        oulijun <oulijun@huawei.com>
-References: <20190814151507.140572-1-bvanassche@acm.org>
- <20190819122126.GA6509@ziepe.ca>
- <d2429292-be75-ee67-2cce-081d9d0aa676@acm.org>
- <20190819151722.GG5080@mellanox.com>
- <ad0d3211-bf70-d349-7e14-e4b515bb3e98@acm.org>
- <20190819161658.GJ5058@ziepe.ca>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <6cd489d0-6af1-38e8-3d69-d95b7df03452@acm.org>
-Date:   Mon, 19 Aug 2019 09:48:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 19 Aug 2019 09:56:20 -0700
+In-Reply-To: <20190819100526.13788-1-geert@linux-m68k.org>
+References: <20190819100526.13788-1-geert@linux-m68k.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.32.1-2 
 MIME-Version: 1.0
-In-Reply-To: <20190819161658.GJ5058@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/19/19 9:16 AM, Jason Gunthorpe wrote:
-> On Mon, Aug 19, 2019 at 08:45:58AM -0700, Bart Van Assche wrote:
->> On 8/19/19 8:17 AM, Jason Gunthorpe wrote:
->>> On Mon, Aug 19, 2019 at 08:11:21AM -0700, Bart Van Assche wrote:
->>>> Does uniqueness of the I/O controller GUID only matter in InfiniBand
->>>> networks or does it also matter in other RDMA networks?
->>>>
->>>> How about using 0 as default value for the srpt_service_guid in RoCE
->>>> networks?
->>>
->>> How does SRP connection management even work on RoCE?? The CM MADs
->>> still carry a service_id? How do the sides exchange the service ID to
->>> start the connection? Or is it ultimately overriden in the CM to use
->>> an IP port based service ID?
->>
->> The ib_srpt kernel driver would have to set id_ext to a unique value if
->> srpt_service_guid would be zero since the SRP initiator kernel driver uses
->> the IOC GUID + id_ext + initiator_ext combination in its connection
->> uniqueness check (srp_conn_unique()).
+On Mon, 2019-08-19 at 12:05 +0200, Geert Uytterhoeven wrote:
+> When compiling on 32-bit:
 > 
-> Sounds like you should just generate something random for RDMA/CM mode ?
-> 
-> Still a bit confused how this is usable though if the initiating side
-> needs the service ID?
+>     drivers/infiniband/sw/siw/siw_cq.c:76:20: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+>     drivers/infiniband/sw/siw/siw_qp.c:952:28: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+[]
+> Fix this by applying the following rules:
+>   1. When printing a u64, the %llx format specififer should be used,
+>      instead of casting to a pointer, and printing the latter.
+>   2. When assigning a pointer to a u64, the pointer should be cast to
+>      uintptr_t, not u64,
+>   3. When casting from u64 to pointer, an intermediate cast to uintptr_t
+>      should be added,
 
-Hi Jason,
+I think a cast to unsigned long is rather more common.
 
-When I read Lijun Ou's e-mails for the first time I was assuming that my 
-patch had been tested on top of a recent kernel. After having reread 
-these e-mails I think my patch had been tested on top of kernel v4.14 
-and is not necessary for more recent kernels. So I think we can drop the 
-patch at the start of this e-mail thread.
+uintptr_t is used ~1300 times in the kernel.
+I believe a cast to unsigned long is much more common.
 
-Bart.
+It might be useful to add something to the Documentation
+for this style.  Documentation/process/coding-style.rst
+
+And trivia:
+
+> > diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+[]
+> @@ -842,8 +842,8 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
+>  			rv = -EINVAL;
+>  			break;
+>  		}
+> -		siw_dbg_qp(qp, "opcode %d, flags 0x%x, wr_id 0x%p\n",
+> -			   sqe->opcode, sqe->flags, (void *)sqe->id);
+> +		siw_dbg_qp(qp, "opcode %d, flags 0x%x, wr_id 0x%llx\n",
+> +			   sqe->opcode, sqe->flags, sqe->id);
+
+Printing possible pointers as %llx is generally not a good idea
+given the desire for %p obfuscation.
+
 
