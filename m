@@ -2,211 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2859252C
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 15:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE46292550
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 15:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727466AbfHSNgT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 19 Aug 2019 09:36:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49628 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727172AbfHSNgS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 19 Aug 2019 09:36:18 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JDXqxW011635
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 09:36:17 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.93])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ufuf1bmaj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 09:36:17 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Mon, 19 Aug 2019 13:36:16 -0000
-Received: from us1a3-smtp07.a3.dal06.isc4sb.com (10.146.103.14)
-        by smtp.notes.na.collabserv.com (10.106.227.39) with smtp.notes.na.collabserv.com ESMTP;
-        Mon, 19 Aug 2019 13:36:11 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp07.a3.dal06.isc4sb.com
-          with ESMTP id 2019081913361102-501300 ;
-          Mon, 19 Aug 2019 13:36:11 +0000 
-In-Reply-To: <20190819122456.GB5058@ziepe.ca>
-Subject: Re:  Re: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit due to u64/pointer
- abuse
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Jason Gunthorpe" <jgg@ziepe.ca>
-Cc:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Doug Ledford" <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 19 Aug 2019 13:36:11 +0000
+        id S1727352AbfHSNk2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 09:40:28 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:32813 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727301AbfHSNk1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 09:40:27 -0400
+Received: by mail-qt1-f195.google.com with SMTP id v38so1902875qtb.0
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 06:40:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=INf+VFKPO2m565domq567dUmdkVMV4jYkBmZ6kOEpU0=;
+        b=YIyIgjOb3pKvTEN1GMZCmS5LYoVmHsVI/Y2JSBh38AsApHstCbQ17Dy1MIdtKH05EA
+         uACvTA0J9AWf5S6ZPQUhtEYyiGIS9uFZFIz60GsmYMa+9gR0ArwbESXAKQmTXAA7yH5Q
+         PUkqhWcinCOOQTdZDqr1bnyAVkkZoN+qbUxBkMOBPliRK5kRwjyUnz8K5diroNbZ9tQb
+         UfxY4XG3eSkWt2jjh/dln4qHopYLR/hhzqQxWH0iTQReszPovYHoJGkQuO1i2MOp4Bg8
+         lq0g+KqQgjWMLmH/nxyj2t6JbTqYB8l9TQVue1KVcM+b9aYoS2w3q5iPc+NUf6u7x/KY
+         axsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=INf+VFKPO2m565domq567dUmdkVMV4jYkBmZ6kOEpU0=;
+        b=EL6nRpTHE8vwuBD1DX6rwIJ6dKuUkQ7Gnd5+AT8NgqbRJPmzQBm8KfYdyveHDXKsiK
+         WKH2VOvsvH2ZAfqZQitIu0s1TqLiYMUrmGMfU+bH7xMmGjT1zaqsJXHzjMt3ESH4U/n9
+         NcgR53c5QQgVVEfvEKkLNYCP8s0TcpdoRUnvBtMsWPNw/Xctozg8lohVv76093vpStbf
+         7hZjx3VczgeaIbePTe7U5hEasIODk/ctJxp2fD1X9WMBfny+ldRa7qZIYrMRD0C2aTZd
+         /gZ/7IfV+o5h42/202dsA/SMsH6pkSqYmssn74b15iytHxcPrd7+8ZY0RGoHP1u+ITBM
+         VNzQ==
+X-Gm-Message-State: APjAAAWkXl/44PXtaf1zQvMlqV0uHPuh7yxfGgiYDrSQRmtEOohgNRez
+        zxfBh3gkWQUM6i2HPzGsSxUh/UGcdXA=
+X-Google-Smtp-Source: APXvYqy+cqQ3+i2AiHz/cPCRnMz3wdoUop01JfTokd0AI1uCpwemT9543vfHRXhVn30lcg6JXJknrw==
+X-Received: by 2002:a0c:b92c:: with SMTP id u44mr10151328qvf.146.1566222026756;
+        Mon, 19 Aug 2019 06:40:26 -0700 (PDT)
+Received: from [192.168.1.119] (c-67-189-171-39.hsd1.ma.comcast.net. [67.189.171.39])
+        by smtp.googlemail.com with ESMTPSA id 6sm8129956qtu.15.2019.08.19.06.40.25
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Aug 2019 06:40:25 -0700 (PDT)
+Subject: Re: [PATCH] RDMA/srpt: Filter out AGN bits
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Hal Rosenstock <hal@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        oulijun <oulijun@huawei.com>
+References: <20190814151507.140572-1-bvanassche@acm.org>
+ <20190819122126.GA6509@ziepe.ca>
+From:   Hal Rosenstock <hal@dev.mellanox.co.il>
+Message-ID: <c8bf9c9e-6f4b-b3f3-2c12-72fab52f6a05@dev.mellanox.co.il>
+Date:   Mon, 19 Aug 2019 09:40:24 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190819122456.GB5058@ziepe.ca>,<20190819100526.13788-1-geert@linux-m68k.org>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-LLNOutbound: False
-X-Disclaimed: 51891
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19081913-8889-0000-0000-000000285E23
-X-IBM-SpamModules-Scores: BY=0.002624; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.080357
-X-IBM-SpamModules-Versions: BY=3.00011617; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01249081; UDB=6.00659356; IPR=6.01030608;
- MB=3.00028231; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-19 13:36:16
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-08-19 08:09:42 - 6.00010303
-x-cbparentid: 19081913-8890-0000-0000-0000003A673D
-Message-Id: <OF7DB4AD51.C58B8A8B-ON0025845B.004A0CF6-0025845B.004AB95C@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_03:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <20190819122126.GA6509@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
+On 8/19/2019 8:21 AM, Jason Gunthorpe wrote:
+> On Wed, Aug 14, 2019 at 08:15:07AM -0700, Bart Van Assche wrote:
+>> The ib_srpt driver derives its default service GUID from the node GUID
+>> of the first encountered HCA. Since that service GUID is passed to
+>> ib_cm_listen(), the AGN bits must not be set. Since the AGN bits can
+>> be set in the node GUID of RoCE HCAs, filter these bits out. This
+>> patch avoids that loading the ib_srpt driver fails as follows for the
+>> hns driver:
+>>
+>>   ib_srpt srpt_add_one(hns_0) failed.
+>>
+>> Cc: oulijun <oulijun@huawei.com>
+>> Reported-by: oulijun <oulijun@huawei.com>
+>> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+>>  drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+>> index e25c70a56be6..114bf8d6c82b 100644
+>> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+>> @@ -3109,7 +3109,8 @@ static void srpt_add_one(struct ib_device *device)
+>>  	srpt_use_srq(sdev, sdev->port[0].port_attrib.use_srq);
+>>  
+>>  	if (!srpt_service_guid)
+>> -		srpt_service_guid = be64_to_cpu(device->node_guid);
+>> +		srpt_service_guid = be64_to_cpu(device->node_guid) &
+>> +			~IB_SERVICE_ID_AGN_MASK;
+> 
+> This seems kind of sketchy, masking bits in the GUID is going to make
+> it non-unique.. Should we do this only for roce or something?
+> 
+> Hal, do you have any insight?
 
->To: "Geert Uytterhoeven" <geert@linux-m68k.org>
->From: "Jason Gunthorpe" <jgg@ziepe.ca>
->Date: 08/19/2019 02:25PM
->Cc: "Bernard Metzler" <bmt@zurich.ibm.com>, "Doug Ledford"
-><dledford@redhat.com>, linux-rdma@vger.kernel.org,
->linux-kernel@vger.kernel.org
->Subject: [EXTERNAL] Re: [PATCH] RDMA/siw: Fix compiler warnings on
->32-bit due to u64/pointer abuse
->
->On Mon, Aug 19, 2019 at 12:05:26PM +0200, Geert Uytterhoeven wrote:
->> When compiling on 32-bit:
->> 
->>     drivers/infiniband/sw/siw/siw_cq.c:76:20: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp.c:952:28: warning: cast from
->pointer to integer of different size [-Wpointer-to-int-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:53:10: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:59:11: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:59:26: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:61:23: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:62:9: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:82:12: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:87:12: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:101:12: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:169:29: warning: cast
->from pointer to integer of different size [-Wpointer-to-int-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:192:29: warning: cast
->from pointer to integer of different size [-Wpointer-to-int-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:204:29: warning: cast
->from pointer to integer of different size [-Wpointer-to-int-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:219:29: warning: cast
->from pointer to integer of different size [-Wpointer-to-int-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:476:24: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:535:7: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:832:29: warning: cast
->from pointer to integer of different size [-Wpointer-to-int-cast]
->>     drivers/infiniband/sw/siw/siw_qp_tx.c:927:26: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_rx.c:43:5: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_rx.c:43:24: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_rx.c:141:23: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_rx.c:488:6: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_rx.c:601:5: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_qp_rx.c:844:24: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->>     drivers/infiniband/sw/siw/siw_verbs.c:665:22: warning: cast
->from pointer to integer of different size [-Wpointer-to-int-cast]
->>     drivers/infiniband/sw/siw/siw_verbs.c:828:19: warning: cast
->from pointer to integer of different size [-Wpointer-to-int-cast]
->>     drivers/infiniband/sw/siw/siw_verbs.c:846:32: warning: cast to
->pointer from integer of different size [-Wint-to-pointer-cast]
->> 
->> Fix this by applying the following rules:
->>   1. When printing a u64, the %llx format specififer should be
->used,
->>      instead of casting to a pointer, and printing the latter.
->>   2. When assigning a pointer to a u64, the pointer should be cast
->to
->>      uintptr_t, not u64,
->>   3. When casting from u64 to pointer, an intermediate cast to
->uintptr_t
->>      should be added,
->> 
->> Fixes: 2c8ccb37b08fe364 ("RDMA/siw: Change CQ flags from 64->32
->bits")
->> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> The issues predate the commit mentioned above, but didn't become
->visible
->> before.
->> 
->> The Right Thing(TM) would be to get rid of all this casting, and
->use
->> proper types instead.
->> This would involve teaching the siw people that a kernel virtual
->address
->> is not called a physical address, and should not use u64.
->>  drivers/infiniband/sw/siw/siw_cq.c    |  5 ++--
->>  drivers/infiniband/sw/siw/siw_qp.c    |  2 +-
->>  drivers/infiniband/sw/siw/siw_qp_rx.c | 16 +++++++------
->>  drivers/infiniband/sw/siw/siw_qp_tx.c | 34
->++++++++++++++-------------
->>  drivers/infiniband/sw/siw/siw_verbs.c |  8 +++----
->>  5 files changed, 35 insertions(+), 30 deletions(-)
->> 
->> diff --git a/drivers/infiniband/sw/siw/siw_cq.c
->b/drivers/infiniband/sw/siw/siw_cq.c
->> index e381ae9b7d62498e..f4ec26eeb9df62bf 100644
->> +++ b/drivers/infiniband/sw/siw/siw_cq.c
->> @@ -71,9 +71,10 @@ int siw_reap_cqe(struct siw_cq *cq, struct ib_wc
->*wc)
->>  				wc->wc_flags = IB_WC_WITH_INVALIDATE;
->>  			}
->>  			wc->qp = cqe->base_qp;
->> -			siw_dbg_cq(cq, "idx %u, type %d, flags %2x, id 0x%p\n",
->> +			siw_dbg_cq(cq,
->> +				   "idx %u, type %d, flags %2x, id 0x%llx\n",
->>  				   cq->cq_get % cq->num_cqe, cqe->opcode,
->> -				   cqe->flags, (void *)cqe->id);
->> +				   cqe->flags, cqe->id);
->
->If the value is really a kernel pointer, then it ought to be printed
->with %p. We have been getting demanding on this point lately in RDMA
->to enforce the ability to keep kernel pointers secret.
->
->> -			wqe->sqe.sge[0].laddr = (u64)&wqe->sqe.sge[1];
->> +			wqe->sqe.sge[0].laddr = (uintptr_t)&wqe->sqe.sge[1];
->
->[..]
->
->>  			rv = siw_rx_kva(srx,
->> -					(void *)(sge->laddr + frx->sge_off),
->> +					(void *)(uintptr_t)(sge->laddr + frx->sge_off),
->>  					sge_bytes);
->
->Bernard, this is nonsense, what is going on here with sge->laddr that
->it can't be a void *?
->
-siw_sge is defined in siw-abi.h. We make the address u64 to keep the ABI
-arch independent.
+include/rdma/ib_cm.h:#define IB_SERVICE_ID_AGN_MASK
+cpu_to_be64(0xFF00000000000000ULL)
 
-Thanks and best regards,
-Bernard.
+IB_SERVICE_ID_AGN_MASK masks entire first byte of OUI which seems like
+too much to me as it contains company related bits.
 
+Would it work just masking the first 2 bits (local/global and X bits) ?
 
+-- Hal
+
+> Jason
+> 
