@@ -2,95 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5188992586
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 15:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB92925C1
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 16:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbfHSNwP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 09:52:15 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:38864 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726987AbfHSNwP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 09:52:15 -0400
-Received: by mail-qt1-f196.google.com with SMTP id x4so1931419qts.5
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 06:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Bnb9CKB/tUC7U3C6zfvlJTsla79VOjwcHcog5ZBZ4GQ=;
-        b=Ndbx0dCJ+2SuD3Msmy+Xj62gM8jjfCmnpKHbyJLn4KLWJUVBbvnd6rNUj1WSnft6hr
-         IwFgxCanPilNhHpgRMEAXiMS2UMY/g5inXlwhDwiEUaBET+6IhTd97abOeo220f5cinQ
-         m8/ndbjL9i88PW1P4iouqC4E5CCjIBG9ivqutDyRFmtgfB+k5B0GHSfSZsPl5wgQ53VB
-         MsV+aMYhKYEsSQOJon9ohdFqHmQrNrpYq3DuoYxoTm3eWJa0KeNZI7RWbDTvofXUemuL
-         oZTq+EvFrB2hrzDkxfFYniyByAu/9Nmc94VvTx/MDc5N6UEOv+FtmzOyFT5UPYMTHt98
-         GWcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Bnb9CKB/tUC7U3C6zfvlJTsla79VOjwcHcog5ZBZ4GQ=;
-        b=lGSOq9Re0WhJOk7qCKsaZHOMWM8q2ylKI5b9rlG4pD9WvSX+BqqF4RRjPKQjPqugCT
-         Do1lkXnfqw50Paa9HF3mylSOuehWPPweGsTRmLxqESt5YTApzupsI/i8AadbNLaASire
-         FxAiDXu+1bK6D0td6ePZpHqwPBixRznTs7z6wTlH0pYnF4DO4zs3j9PO7yaScQdqZaYY
-         juRvOCgFi1+OgSDGG5+AXACyQ3RN8b29uM/hdPrdPyil8SfodtA+DxTzAM/xWaC5WMaA
-         HSQEijRqn2Pg0sMWSNMD0uCdkVTanHTcxxST+nMywAGvwMU/tN+6tyLXm33lrQGlhtBo
-         MRCw==
-X-Gm-Message-State: APjAAAXLggXYUCiBL5+BrI6mXV5mN56O0ZbAOnwEQ4rb11iYURTgbMGJ
-        ohChgbcgn+K4VmtC/aNUo780sg==
-X-Google-Smtp-Source: APXvYqxcKG5ouN9UlYrki/9v0cHyD7bRPQtoBuOJvF3+cVrxMUun8T0S+0aa+uyjxp05nT/bh3K6Pw==
-X-Received: by 2002:ac8:4816:: with SMTP id g22mr21315595qtq.179.1566222734137;
-        Mon, 19 Aug 2019 06:52:14 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id r15sm6997402qtp.94.2019.08.19.06.52.13
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 19 Aug 2019 06:52:13 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hzi4z-0002ul-BL; Mon, 19 Aug 2019 10:52:13 -0300
-Date:   Mon, 19 Aug 2019 10:52:13 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit due to
- u64/pointer abuse
-Message-ID: <20190819135213.GF5058@ziepe.ca>
-References: <20190819122456.GB5058@ziepe.ca>
- <20190819100526.13788-1-geert@linux-m68k.org>
- <OF7DB4AD51.C58B8A8B-ON0025845B.004A0CF6-0025845B.004AB95C@notes.na.collabserv.com>
+        id S1727354AbfHSOCw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 19 Aug 2019 10:02:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1774 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727352AbfHSOCw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Aug 2019 10:02:52 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JDuo2l086096
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 10:02:51 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.91])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ufuf1cpga-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 10:02:51 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 19 Aug 2019 14:02:50 -0000
+Received: from us1a3-smtp02.a3.dal06.isc4sb.com (10.106.154.159)
+        by smtp.notes.na.collabserv.com (10.106.227.143) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 19 Aug 2019 14:02:47 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp02.a3.dal06.isc4sb.com
+          with ESMTP id 2019081914024669-570198 ;
+          Mon, 19 Aug 2019 14:02:46 +0000 
+In-Reply-To: <20190819120943.GA27514@mwanda>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Dan Carpenter" <dan.carpenter@oracle.com>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Mon, 19 Aug 2019 14:02:47 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF7DB4AD51.C58B8A8B-ON0025845B.004A0CF6-0025845B.004AB95C@notes.na.collabserv.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190819120943.GA27514@mwanda>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-LLNOutbound: False
+X-Disclaimed: 57139
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19081914-2475-0000-0000-000000616FAD
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.000002
+X-IBM-SpamModules-Versions: BY=3.00011618; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01249088; UDB=6.00659360; IPR=6.01030615;
+ MB=3.00028231; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-19 14:02:49
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-19 13:57:58 - 6.00010304
+x-cbparentid: 19081914-2476-0000-0000-00002B5F7AF5
+Message-Id: <OFF4B5F90A.4B8AD913-ON0025845B.004D28B6-0025845B.004D28BD@notes.na.collabserv.com>
+Subject: Re:  [bug report] rdma/siw: connection management
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_03:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 19, 2019 at 01:36:11PM +0000, Bernard Metzler wrote:
-> >If the value is really a kernel pointer, then it ought to be printed
-> >with %p. We have been getting demanding on this point lately in RDMA
-> >to enforce the ability to keep kernel pointers secret.
-> >
-> >> -			wqe->sqe.sge[0].laddr = (u64)&wqe->sqe.sge[1];
-> >> +			wqe->sqe.sge[0].laddr = (uintptr_t)&wqe->sqe.sge[1];
-> >
-> >[..]
-> >
-> >>  			rv = siw_rx_kva(srx,
-> >> -					(void *)(sge->laddr + frx->sge_off),
-> >> +					(void *)(uintptr_t)(sge->laddr + frx->sge_off),
-> >>  					sge_bytes);
-> >
-> >Bernard, this is nonsense, what is going on here with sge->laddr that
-> >it can't be a void *?
-> >
-> siw_sge is defined in siw-abi.h. We make the address u64 to keep the ABI
-> arch independent.
+-----"Dan Carpenter" <dan.carpenter@oracle.com> wrote: -----
 
-Eh? How does the siw-abi.h store a kernel pointer? Sounds like kernel
-and user types are being mixed.
+>To: bmt@zurich.ibm.com
+>From: "Dan Carpenter" <dan.carpenter@oracle.com>
+>Date: 08/19/2019 02:12PM
+>Cc: linux-rdma@vger.kernel.org
+>Subject: [EXTERNAL] [bug report] rdma/siw: connection management
+>
+>Hello Bernard Metzler,
+>
+>This is a semi-automatic email about new static checker warnings.
+>
+>The patch 6c52fdc244b5: "rdma/siw: connection management" from Jun
+>20, 2019, leads to the following Smatch complaint:
+>
+>    drivers/infiniband/sw/siw/siw_cm.c:1518 siw_connect()
+>    error: we previously assumed 'qp' could be null (see line 1372)
+>
+>drivers/infiniband/sw/siw/siw_cm.c
+>  1371		qp = siw_qp_id2obj(sdev, params->qpn);
+>  1372		if (!qp) {
+>                    ^^^
+>NULL
+>
+>  1373			WARN(1, "[QP %u] does not exist\n", params->qpn);
+>  1374			rv = -EINVAL;
+>  1375			goto error;
+>                        ^^^^^^^^^^
+>
+>  1376		}
+>  1377		if (v4)
+>  1378			siw_dbg_qp(qp,
+>
+>[ snip ]
+>
+>  1508		if (rv >= 0) {
+>  1509			rv = siw_cm_queue_work(cep, SIW_CM_WORK_MPATIMEOUT);
+>  1510			if (!rv) {
+>  1511				siw_dbg_cep(cep, "id 0x%p, [QP %u]: exit\n", id,
+>  1512					    qp_id(qp));
+>  1513				siw_cep_set_free(cep);
+>  1514				return 0;
+>  1515			}
+>  1516		}
+>  1517	error:
+>  1518		siw_dbg_qp(qp, "failed: %d\n", rv);
+>                           ^^
+>NULL dereference.
+>
+>  1519	
+>  1520		if (cep) {
+>
 
-Jason
+Thanks Dan!
+
+A patch is on its way...
+
+Bernard.
+
+>regards,
+>dan carpenter
+>
+>
+
