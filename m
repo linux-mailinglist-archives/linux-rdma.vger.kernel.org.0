@@ -2,169 +2,218 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D0291D75
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 08:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3517591D84
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 09:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbfHSG6h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 02:58:37 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:53190 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726814AbfHSG6g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 02:58:36 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from noaos@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 19 Aug 2019 09:58:31 +0300
-Received: from reg-l-vrt-059-007.mtl.labs.mlnx (reg-l-vrt-059-007.mtl.labs.mlnx [10.135.59.7])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x7J6wUNQ004602;
-        Mon, 19 Aug 2019 09:58:31 +0300
-From:   Noa Osherovich <noaos@mellanox.com>
-To:     dledford@redhat.com, jgg@mellanox.com, leonro@mellanox.com
-Cc:     linux-rdma@vger.kernel.org, Noa Osherovich <noaos@mellanox.com>
-Subject: [PATCH rdma-core 14/14] tests: Unify API tests' output
-Date:   Mon, 19 Aug 2019 09:58:27 +0300
-Message-Id: <20190819065827.26921-15-noaos@mellanox.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190819065827.26921-1-noaos@mellanox.com>
-References: <20190819065827.26921-1-noaos@mellanox.com>
+        id S1725871AbfHSHEp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 19 Aug 2019 03:04:45 -0400
+Received: from mail.wl.linuxfoundation.org ([198.145.29.98]:49900 "EHLO
+        mail.wl.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725536AbfHSHEp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Aug 2019 03:04:45 -0400
+Received: from mail.wl.linuxfoundation.org (localhost [127.0.0.1])
+        by mail.wl.linuxfoundation.org (Postfix) with ESMTP id 0F8F628590
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 07:04:44 +0000 (UTC)
+Received: by mail.wl.linuxfoundation.org (Postfix, from userid 486)
+        id 000C9285B3; Mon, 19 Aug 2019 07:04:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on
+        pdx-wl-mail.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=2.0 tests=BAYES_00,NO_RECEIVED,
+        NO_RELAYS autolearn=ham version=3.3.1
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-rdma@vger.kernel.org
+Subject: [Bug 204617] New: drivers/infiniband/sw/siw not 32-bit clean - cast
+ from pointer to integer warnings on i686
+Date:   Mon, 19 Aug 2019 07:04:43 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo
+ drivers_infiniband-rdma@kernel-bugs.osdl.org
+X-Bugzilla-Product: Drivers
+X-Bugzilla-Component: Infiniband/RDMA
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: hramrach@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: drivers_infiniband-rdma@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-204617-11804@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When executed in verbose mode, unittest infrastructure prints a test's
-docstring if it's in a single line format, which was used in some
-tests. Change those to use multiline format instead.
+https://bugzilla.kernel.org/show_bug.cgi?id=204617
 
-Signed-off-by: Noa Osherovich <noaos@mellanox.com>
----
- tests/test_device.py |  6 ++++--
- tests/test_mr.py     | 36 +++++++++++++++++++++++++++---------
- 2 files changed, 31 insertions(+), 11 deletions(-)
+            Bug ID: 204617
+           Summary: drivers/infiniband/sw/siw not 32-bit clean - cast from
+                    pointer to integer warnings on i686
+           Product: Drivers
+           Version: 2.5
+    Kernel Version: 5.3
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: Infiniband/RDMA
+          Assignee: drivers_infiniband-rdma@kernel-bugs.osdl.org
+          Reporter: hramrach@gmail.com
+        Regression: No
 
-diff --git a/tests/test_device.py b/tests/test_device.py
-index e395e793c28f..32dedb34d559 100644
---- a/tests/test_device.py
-+++ b/tests/test_device.py
-@@ -120,7 +120,9 @@ class DeviceTest(unittest.TestCase):
- 
-     @staticmethod
-     def test_query_port_bad_flow():
--        """ Verify that querying non-existing ports fails as expected """
-+        """
-+        Verify that querying non-existing ports fails as expected
-+        """
-         lst = d.get_device_list()
-         for dev in lst:
-             with d.Context(name=dev.name.decode()) as ctx:
-@@ -199,7 +201,7 @@ class DMTest(PyverbsAPITestCase):
- 
-     def test_destroy_dm_bad_flow(self):
-         """
--        test calling ibv_free_dm() twice
-+        Test calling ibv_free_dm() twice
-         """
-         for ctx, attr, attr_ex in self.devices:
-             if attr_ex.max_dm_size == 0:
-diff --git a/tests/test_mr.py b/tests/test_mr.py
-index e87fb33624ed..d11a4b8f8f26 100644
---- a/tests/test_mr.py
-+++ b/tests/test_mr.py
-@@ -32,7 +32,9 @@ class MRTest(PyverbsAPITestCase):
-                         pass
- 
-     def test_dereg_mr(self):
--        """ Test ibv_dereg_mr() """
-+        """
-+        Test ibv_dereg_mr()
-+        """
-         for ctx, attr, attr_ex in self.devices:
-             with PD(ctx) as pd:
-                 flags = u.get_access_flags(ctx)
-@@ -42,7 +44,9 @@ class MRTest(PyverbsAPITestCase):
- 
-     @staticmethod
-     def test_reg_mr_bad_flow():
--        """ Verify that trying to register a MR with None PD fails """
-+        """
-+        Verify that trying to register a MR with None PD fails
-+        """
-         try:
-             # Use the simplest access flags necessary
-             MR(None, random.randint(0, 10000), e.IBV_ACCESS_LOCAL_WRITE)
-@@ -53,7 +57,9 @@ class MRTest(PyverbsAPITestCase):
-             raise PyverbsRDMAErrno('Created a MR with None PD')
- 
-     def test_dereg_mr_twice(self):
--        """ Verify that explicit call to MR's close() doesn't fails """
-+        """
-+        Verify that explicit call to MR's close() doesn't fail
-+        """
-         for ctx, attr, attr_ex in self.devices:
-             with PD(ctx) as pd:
-                 flags = u.get_access_flags(ctx)
-@@ -65,7 +71,9 @@ class MRTest(PyverbsAPITestCase):
-                         mr.close()
- 
-     def test_reg_mr_bad_flags(self):
--        """ Verify that illegal flags combination fails as expected """
-+        """
-+        Verify that illegal flags combination fails as expected
-+        """
-         for ctx, attr, attr_ex in self.devices:
-             with PD(ctx) as pd:
-                 for i in range(5):
-@@ -159,35 +167,45 @@ class MWTest(PyverbsAPITestCase):
-     Test various functionalities of the MW class.
-     """
-     def test_reg_mw_type1(self):
--        """ Test ibv_alloc_mw() """
-+        """
-+        Test ibv_alloc_mw() for type 1 MW
-+        """
-         for ctx, attr, attr_ex in self.devices:
-             with PD(ctx) as pd:
-                 with MW(pd, e.IBV_MW_TYPE_1):
-                     pass
- 
-     def test_reg_mw_type2(self):
--        """ Test ibv_alloc_mw() """
-+        """
-+        Test ibv_alloc_mw() for type 2 MW
-+        """
-         for ctx, attr, attr_ex in self.devices:
-             with PD(ctx) as pd:
-                 with MW(pd, e.IBV_MW_TYPE_2):
-                     pass
- 
-     def test_dereg_mw_type1(self):
--        """ Test ibv_dealloc_mw() """
-+        """
-+        Test ibv_dealloc_mw() for type 1 MW
-+        """
-         for ctx, attr, attr_ex in self.devices:
-             with PD(ctx) as pd:
-                 with MW(pd, e.IBV_MW_TYPE_1) as mw:
-                     mw.close()
- 
-     def test_dereg_mw_type2(self):
--        """ Test ibv_dealloc_mw() """
-+        """
-+        Test ibv_dealloc_mw() for type 2 MW
-+        """
-         for ctx, attr, attr_ex in self.devices:
-             with PD(ctx) as pd:
-                 with MW(pd, e.IBV_MW_TYPE_2) as mw:
-                     mw.close()
- 
-     def test_reg_mw_wrong_type(self):
--        """ Test ibv_alloc_mw() """
-+        """
-+        Verify that trying to create a MW of a wrong type fails
-+        """
-         for ctx, attr, attr_ex in self.devices:
-             with PD(ctx) as pd:
-                 try:
+In file included from ../include/linux/printk.h:332,
+../drivers/infiniband/sw/siw/siw_cq.c: In function 'siw_reap_cqe':
+../drivers/infiniband/sw/siw/siw_cq.c:76:20: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+../include/linux/dynamic_debug.h:125:15: note: in definition of macro
+'__dynamic_func_call'
+../include/linux/dynamic_debug.h:165:2: note: in expansion of macro
+'_dynamic_func_call'
+../include/rdma/ib_verbs.h:100:2: note: in expansion of macro
+'dynamic_ibdev_dbg'
+../drivers/infiniband/sw/siw/siw.h:725:2: note: in expansion of macro
+'ibdev_dbg'
+../drivers/infiniband/sw/siw/siw_cq.c:74:4: note: in expansion of macro
+'siw_dbg_cq'
+
+../drivers/infiniband/sw/siw/siw_qp.c: In function 'siw_activate_tx':
+../drivers/infiniband/sw/siw/siw_qp.c:952:28: warning: cast from pointer to
+integer of different size [-Wpointer-to-int-cast]
+
+In file included from ../include/linux/kernel.h:15,
+../drivers/infiniband/sw/siw/siw_qp_rx.c: In function 'siw_rx_umem':
+../drivers/infiniband/sw/siw/siw_qp_rx.c:43:5: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+../include/linux/printk.h:306:37: note: in definition of macro 'pr_warning'
+../drivers/infiniband/sw/siw/siw_qp_rx.c:41:4: note: in expansion of macro
+'pr_warn'
+
+../drivers/infiniband/sw/siw/siw_qp_rx.c:43:24: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+../include/linux/printk.h:306:37: note: in definition of macro 'pr_warning'
+../drivers/infiniband/sw/siw/siw_qp_rx.c:41:4: note: in expansion of macro
+'pr_warn'
+
+../drivers/infiniband/sw/siw/siw_qp_rx.c: In function 'siw_rx_pbl':
+../drivers/infiniband/sw/siw/siw_qp_rx.c:141:23: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_rx.c: In function 'siw_proc_send':
+../drivers/infiniband/sw/siw/siw_qp_rx.c:488:6: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_rx.c: In function 'siw_proc_write':
+../drivers/infiniband/sw/siw/siw_qp_rx.c:601:5: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_rx.c: In function 'siw_proc_rresp':
+../drivers/infiniband/sw/siw/siw_qp_rx.c:844:24: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+
+In file included from ../arch/x86/include/asm/string.h:3,
+../drivers/infiniband/sw/siw/siw_qp_tx.c: In function 'siw_try_1seg':
+../drivers/infiniband/sw/siw/siw_qp_tx.c:53:10: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+../arch/x86/include/asm/string_32.h:182:42: note: in definition of macro
+'memcpy'
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c:59:11: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+../arch/x86/include/asm/string_32.h:182:42: note: in definition of macro
+'memcpy'
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c:59:26: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+../arch/x86/include/asm/string_32.h:182:45: note: in definition of macro
+'memcpy'
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c:61:23: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c:62:9: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+
+In file included from ../arch/x86/include/asm/string.h:3,
+../drivers/infiniband/sw/siw/siw_qp_tx.c:82:12: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+../arch/x86/include/asm/string_32.h:182:42: note: in definition of macro
+'memcpy'
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c:87:12: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+../arch/x86/include/asm/string_32.h:182:42: note: in definition of macro
+'memcpy'
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c:101:12: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+../arch/x86/include/asm/string_32.h:182:42: note: in definition of macro
+'memcpy'
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c: In function 'siw_qp_prepare_tx':
+../drivers/infiniband/sw/siw/siw_qp_tx.c:169:29: warning: cast from pointer to
+integer of different size [-Wpointer-to-int-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c:192:29: warning: cast from pointer to
+integer of different size [-Wpointer-to-int-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c:204:29: warning: cast from pointer to
+integer of different size [-Wpointer-to-int-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c:219:29: warning: cast from pointer to
+integer of different size [-Wpointer-to-int-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c: In function 'siw_tx_hdt':
+../drivers/infiniband/sw/siw/siw_qp_tx.c:476:24: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c:535:7: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c: In function 'siw_qp_sq_proc_tx':
+../drivers/infiniband/sw/siw/siw_qp_tx.c:832:29: warning: cast from pointer to
+integer of different size [-Wpointer-to-int-cast]
+
+../drivers/infiniband/sw/siw/siw_qp_tx.c: In function 'siw_fastreg_mr':
+../drivers/infiniband/sw/siw/siw_qp_tx.c:927:26: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+
+../drivers/infiniband/sw/siw/siw_verbs.c: In function 'siw_copy_inline_sgl':
+../drivers/infiniband/sw/siw/siw_verbs.c:665:22: warning: cast from pointer to
+integer of different size [-Wpointer-to-int-cast]
+
+../drivers/infiniband/sw/siw/siw_verbs.c: In function 'siw_post_send':
+../drivers/infiniband/sw/siw/siw_verbs.c:828:19: warning: cast from pointer to
+integer of different size [-Wpointer-to-int-cast]
+
+In file included from ../include/linux/printk.h:332,
+../drivers/infiniband/sw/siw/siw_verbs.c:846:32: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+../include/linux/dynamic_debug.h:125:15: note: in definition of macro
+'__dynamic_func_call'
+../include/linux/dynamic_debug.h:165:2: note: in expansion of macro
+'_dynamic_func_call'
+../include/rdma/ib_verbs.h:100:2: note: in expansion of macro
+'dynamic_ibdev_dbg'
+../drivers/infiniband/sw/siw/siw.h:721:2: note: in expansion of macro
+'ibdev_dbg'
+../drivers/infiniband/sw/siw/siw_verbs.c:845:3: note: in expansion of macro
+'siw_dbg_qp'
+
 -- 
-2.21.0
-
+You are receiving this mail because:
+You are watching the assignee of the bug.
