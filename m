@@ -2,27 +2,26 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A5B91D73
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 08:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E5991D6E
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 08:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbfHSG6f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726817AbfHSG6f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Mon, 19 Aug 2019 02:58:35 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:53153 "EHLO
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:53154 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726550AbfHSG6e (ORCPT
+        with ESMTP id S1726810AbfHSG6e (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 02:58:34 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from noaos@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 19 Aug 2019 09:58:31 +0300
 Received: from reg-l-vrt-059-007.mtl.labs.mlnx (reg-l-vrt-059-007.mtl.labs.mlnx [10.135.59.7])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x7J6wUNI004602;
-        Mon, 19 Aug 2019 09:58:30 +0300
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x7J6wUNJ004602;
+        Mon, 19 Aug 2019 09:58:31 +0300
 From:   Noa Osherovich <noaos@mellanox.com>
 To:     dledford@redhat.com, jgg@mellanox.com, leonro@mellanox.com
-Cc:     linux-rdma@vger.kernel.org, Noa Osherovich <noaos@mellanox.com>,
-        Maxim Chicherin <maximc@mellanox.com>
-Subject: [PATCH rdma-core 06/14] tests: TrafficResources class
-Date:   Mon, 19 Aug 2019 09:58:19 +0300
-Message-Id: <20190819065827.26921-7-noaos@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Maxim Chicherin <maximc@mellanox.com>
+Subject: [PATCH rdma-core 07/14] tests: RCResources and UDResources classes
+Date:   Mon, 19 Aug 2019 09:58:20 +0300
+Message-Id: <20190819065827.26921-8-noaos@mellanox.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190819065827.26921-1-noaos@mellanox.com>
 References: <20190819065827.26921-1-noaos@mellanox.com>
@@ -33,148 +32,100 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Basic traffic aggregation object which contains MR, CQ and QP. It
-also provides common control path functions to create these objects.
+From: Maxim Chicherin <maximc@mellanox.com>
+
+Add RC and UD specific aggregation objects. They provide
+traffic-specific implementations for control path functions such as
+modify QP.
 
 Signed-off-by: Maxim Chicherin <maximc@mellanox.com>
-Signed-off-by: Noa Osherovich <noaos@mellanox.com>
 ---
- tests/base.py  | 85 ++++++++++++++++++++++++++++++++++++++++++++++++++
- tests/utils.py | 20 ++++++++++++
- 2 files changed, 105 insertions(+)
+ tests/base.py | 66 +++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 64 insertions(+), 2 deletions(-)
 
 diff --git a/tests/base.py b/tests/base.py
-index e141b83dea0e..54ebac27d522 100644
+index 54ebac27d522..a28e9b9dc466 100644
 --- a/tests/base.py
 +++ b/tests/base.py
-@@ -4,10 +4,15 @@
+@@ -4,9 +4,8 @@
  import unittest
  import random
  
-+from pyverbs.pyverbs_error import PyverbsError, PyverbsRDMAError
-+from pyverbs.qp import QPCap, QPInitAttr, QPAttr, QP
-+from tests.utils import wc_status_to_str
+-from pyverbs.pyverbs_error import PyverbsError, PyverbsRDMAError
+ from pyverbs.qp import QPCap, QPInitAttr, QPAttr, QP
+-from tests.utils import wc_status_to_str
++from pyverbs.addr import AHAttr, GlobalRoute
  from pyverbs.device import Context
  import pyverbs.device as d
  import pyverbs.enums as e
- from pyverbs.pd import PD
-+from pyverbs.cq import CQ
-+from pyverbs.mr import MR
- 
- 
- class PyverbsAPITestCase(unittest.TestCase):
-@@ -144,3 +149,83 @@ class BaseResources(object):
-         self.gid_index = gid_index
-         self.pd = PD(self.ctx)
-         self.ib_port = ib_port
+@@ -229,3 +228,66 @@ class TrafficResources(BaseResources):
+         :return: None
+         """
+         raise NotImplementedError()
 +
 +
-+class TrafficResources(BaseResources):
-+    """
-+    Basic traffic class. It provides the basic RDMA resources and operations
-+    needed for traffic.
-+    """
-+    def __init__(self, dev_name, ib_port, gid_index):
++class RCResources(TrafficResources):
++    PATH_MTU = e.IBV_MTU_1024
++    MAX_DEST_RD_ATOMIC = 1
++    MAX_RD_ATOMIC = 1
++    MIN_RNR_TIMER =12
++    RETRY_CNT = 7
++    RNR_RETRY = 7
++    TIMEOUT = 14
++
++    def to_rts(self, rpsn, rqpn):
 +        """
-+        Initializes a TrafficResources object with the given values and creates
-+        basic RDMA resources.
-+        :param dev_name: Device name to be used
-+        :param ib_port: IB port of the device to use
-+        :param gid_index: Which GID index to use
-+        """
-+        super(TrafficResources, self).__init__(dev_name=dev_name,
-+                                               ib_port=ib_port,
-+                                               gid_index=gid_index)
-+        self.psn = random.getrandbits(24)
-+        self.msg_size = 1024
-+        self.num_msgs = 1000
-+        self.port_attr = None
-+        self.mr = None
-+        self.cq = None
-+        self.qp = None
-+        self.rqpn = 0
-+        self.rpsn = 0
-+        self.init_resources()
-+
-+    @property
-+    def qpn(self):
-+        return self.qp.qp_num
-+
-+    def init_resources(self):
-+        """
-+        Initializes a CQ, MR and an RC QP.
++        Set the QP attributes' values to arbitrary values (same values used in
++        ibv_rc_pingpong).
++        :param rpsn: Remote PSN (packet serial number)
++        :param rqpn: Remote QP number
 +        :return: None
 +        """
-+        self.port_attr = self.ctx.query_port(self.ib_port)
-+        self.create_cq()
-+        self.create_mr()
-+        self.create_qp()
++        attr = QPAttr(port_num=self.ib_port)
++        attr.dest_qp_num = rqpn
++        attr.path_mtu = self.PATH_MTU
++        attr.max_dest_rd_atomic = self.MAX_DEST_RD_ATOMIC
++        attr.min_rnr_timer = self.MIN_RNR_TIMER
++        attr.rq_psn = rpsn
++        attr.sq_psn = self.psn
++        attr.timeout = self.TIMEOUT
++        attr.retry_cnt = self.RETRY_CNT
++        attr.rnr_retry = self.RNR_RETRY
++        attr.max_rd_atomic = self.MAX_RD_ATOMIC
++        gr = GlobalRoute(dgid=self.ctx.query_gid(self.ib_port, self.gid_index),
++                         sgid_index=self.gid_index)
++        ah_attr = AHAttr(port_num=self.ib_port, is_global=1, gr=gr,
++                         dlid=self.port_attr.lid)
++        attr.ah_attr = ah_attr
++        self.qp.to_rts(attr)
 +
-+    def create_cq(self):
-+        """
-+        Initializes self.cq with a CQ of depth <num_msgs> - defined by each
-+        test.
-+        :return: None
-+        """
-+        self.cq = CQ(self.ctx, self.num_msgs, None, None, 0)
++    def pre_run(self, rpsn, rqpn):
++        self.rqpn = rqpn
++        self.rpsn = rpsn
++        self.to_rts(rpsn, rqpn)
++
++
++class UDResources(TrafficResources):
++    UD_QKEY = 0x11111111
++    UD_PKEY_INDEX = 0
 +
 +    def create_mr(self):
-+        """
-+        Initializes self.mr with an MR of length <msg_size> - defined by each
-+        test.
-+        :return: None
-+        """
-+        self.mr = MR(self.pd, self.msg_size, e.IBV_ACCESS_LOCAL_WRITE)
++        self.mr = MR(self.pd, self.msg_size + self.GRH_SIZE,
++                     e.IBV_ACCESS_LOCAL_WRITE)
 +
 +    def create_qp(self):
-+        """
-+        Initializes self.qp with an RC QP.
-+        :return: None
-+        """
 +        qp_caps = QPCap(max_recv_wr=self.num_msgs)
-+        qp_init_attr = QPInitAttr(qp_type=e.IBV_QPT_RC, scq=self.cq,
-+                                  rcq=self.cq, cap=qp_caps)
++        qp_init_attr = QPInitAttr(qp_type=e.IBV_QPT_UD, cap=qp_caps,
++                                  scq=self.cq, rcq=self.cq)
 +        qp_attr = QPAttr(port_num=self.ib_port)
++        qp_attr.qkey = self.UD_QKEY
++        qp_attr.pkey_index = self.UD_PKEY_INDEX
 +        self.qp = QP(self.pd, qp_init_attr, qp_attr)
 +
 +    def pre_run(self, rpsn, rqpn):
-+        """
-+        Modify the QP's state to RTS and fill receive queue with <num_msgs> work
-+        requests.
-+        This method is not implemented in this class.
-+        :param rpsn: Remote PSN
-+        :param rqpn: Remote QPN
-+        :return: None
-+        """
-+        raise NotImplementedError()
-diff --git a/tests/utils.py b/tests/utils.py
-index c84865a10a40..30166f41d555 100644
---- a/tests/utils.py
-+++ b/tests/utils.py
-@@ -221,3 +221,23 @@ def random_qp_init_attr_ex(attr_ex, attr, qpt=None):
-     qia = QPInitAttrEx(qp_type=qpt, cap=qp_cap, sq_sig_all=sig, comp_mask=mask,
-                        create_flags=cflags, max_tso_header=max_tso)
-     return qia
-+
-+
-+def wc_status_to_str(status):
-+    try:
-+        return \
-+            {0: 'Success', 1: 'Local length error',
-+             2: 'local QP operation error', 3: 'Local EEC operation error',
-+             4: 'Local protection error', 5: 'WR flush error',
-+             6: 'Memory window bind error', 7: 'Bad response error',
-+             8: 'Local access error', 9: 'Remote invalidate request error',
-+             10: 'Remote access error', 11: 'Remote operation error',
-+             12: 'Retry exceeded', 13: 'RNR retry exceeded',
-+             14: 'Local RDD violation error',
-+             15: 'Remote invalidate RD request error',
-+             16: 'Remote aort error', 17: 'Invalidate EECN error',
-+             18: 'Invalidate EEC state error', 19: 'Fatal error',
-+             20: 'Response timeout error', 21: 'General error'}[status]
-+    except KeyError:
-+        return 'Unknown WC status ({s})'.format(s=status)
-+
++        self.rqpn = rqpn
++        self.rpsn = rpsn
+\ No newline at end of file
 -- 
 2.21.0
 
