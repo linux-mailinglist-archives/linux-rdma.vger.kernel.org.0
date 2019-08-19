@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3660791D7C
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 08:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A5B91D73
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 08:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbfHSG6j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 02:58:39 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:53155 "EHLO
+        id S1726808AbfHSG6f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 02:58:35 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:53153 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726812AbfHSG6f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 02:58:35 -0400
+        with ESMTP id S1726550AbfHSG6e (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 02:58:34 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from noaos@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 19 Aug 2019 09:58:31 +0300
 Received: from reg-l-vrt-059-007.mtl.labs.mlnx (reg-l-vrt-059-007.mtl.labs.mlnx [10.135.59.7])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x7J6wUNH004602;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x7J6wUNI004602;
         Mon, 19 Aug 2019 09:58:30 +0300
 From:   Noa Osherovich <noaos@mellanox.com>
 To:     dledford@redhat.com, jgg@mellanox.com, leonro@mellanox.com
-Cc:     linux-rdma@vger.kernel.org, Maxim Chicherin <maximc@mellanox.com>,
-        Noa Osherovich <noaos@mellanox.com>
-Subject: [PATCH rdma-core 05/14] tests: RDMATestCase
-Date:   Mon, 19 Aug 2019 09:58:18 +0300
-Message-Id: <20190819065827.26921-6-noaos@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Noa Osherovich <noaos@mellanox.com>,
+        Maxim Chicherin <maximc@mellanox.com>
+Subject: [PATCH rdma-core 06/14] tests: TrafficResources class
+Date:   Mon, 19 Aug 2019 09:58:19 +0300
+Message-Id: <20190819065827.26921-7-noaos@mellanox.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190819065827.26921-1-noaos@mellanox.com>
 References: <20190819065827.26921-1-noaos@mellanox.com>
@@ -33,140 +33,148 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maxim Chicherin <maximc@mellanox.com>
-
-Base class for future tests which allows user-set parameters:
-device name, IB port, GID index and PKey index can be provided to the
-tests. If not, they're selected at random.
+Basic traffic aggregation object which contains MR, CQ and QP. It
+also provides common control path functions to create these objects.
 
 Signed-off-by: Maxim Chicherin <maximc@mellanox.com>
 Signed-off-by: Noa Osherovich <noaos@mellanox.com>
 ---
- tests/base.py | 101 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 101 insertions(+)
+ tests/base.py  | 85 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/utils.py | 20 ++++++++++++
+ 2 files changed, 105 insertions(+)
 
 diff --git a/tests/base.py b/tests/base.py
-index 88f00e07b326..e141b83dea0e 100644
+index e141b83dea0e..54ebac27d522 100644
 --- a/tests/base.py
 +++ b/tests/base.py
-@@ -2,9 +2,11 @@
- # Copyright (c) 2019 Mellanox Technologies, Inc . All rights reserved. See COPYING file
- 
+@@ -4,10 +4,15 @@
  import unittest
-+import random
+ import random
  
++from pyverbs.pyverbs_error import PyverbsError, PyverbsRDMAError
++from pyverbs.qp import QPCap, QPInitAttr, QPAttr, QP
++from tests.utils import wc_status_to_str
  from pyverbs.device import Context
  import pyverbs.device as d
-+import pyverbs.enums as e
+ import pyverbs.enums as e
  from pyverbs.pd import PD
++from pyverbs.cq import CQ
++from pyverbs.mr import MR
  
  
-@@ -26,6 +28,105 @@ class PyverbsAPITestCase(unittest.TestCase):
-             tup[0].close()
- 
- 
-+class RDMATestCase(unittest.TestCase):
+ class PyverbsAPITestCase(unittest.TestCase):
+@@ -144,3 +149,83 @@ class BaseResources(object):
+         self.gid_index = gid_index
+         self.pd = PD(self.ctx)
+         self.ib_port = ib_port
++
++
++class TrafficResources(BaseResources):
 +    """
-+    A base class for test cases which provides the option for user parameters.
-+    These can be provided by manually adding the test case to the runner:
-+    suite = unittest.TestSuite()
-+    ... # Regular auto-detection of test cases, no parameters used.
-+    # Now follows your manual addition of test cases e.g:
-+    suite.addTest(RDMATestCase.parametrize(<TestCaseName>, dev_name='..',
-+                                           ib_port=1, gid_index=3,
-+                                           pkey_index=42))
++    Basic traffic class. It provides the basic RDMA resources and operations
++    needed for traffic.
 +    """
-+    ZERO_GID = '0000:0000:0000:0000'
-+
-+    def __init__(self, methodName='runTest', dev_name=None, ib_port=None,
-+                 gid_index=None, pkey_index=None):
-+        super(RDMATestCase, self).__init__(methodName)
-+        self.dev_name = dev_name
-+        self.ib_port = ib_port
-+        self.gid_index = gid_index
-+        self.pkey_index = pkey_index
-+
-+    @staticmethod
-+    def parametrize(testcase_klass, dev_name=None, ib_port=None, gid_index=None,
-+                    pkey_index=None):
++    def __init__(self, dev_name, ib_port, gid_index):
 +        """
-+        Create a test suite containing all the tests from the given subclass
-+        with the given dev_name, port, gid index and pkey_index.
++        Initializes a TrafficResources object with the given values and creates
++        basic RDMA resources.
++        :param dev_name: Device name to be used
++        :param ib_port: IB port of the device to use
++        :param gid_index: Which GID index to use
 +        """
-+        loader = unittest.TestLoader()
-+        names = loader.getTestCaseNames(testcase_klass)
-+        suite = unittest.TestSuite()
-+        for n in names:
-+            suite.addTest(testcase_klass(n, dev_name=dev_name, ib_port=ib_port,
-+                                         gid_index=gid_index,
-+                                         pkey_index=pkey_index))
-+        return suite
++        super(TrafficResources, self).__init__(dev_name=dev_name,
++                                               ib_port=ib_port,
++                                               gid_index=gid_index)
++        self.psn = random.getrandbits(24)
++        self.msg_size = 1024
++        self.num_msgs = 1000
++        self.port_attr = None
++        self.mr = None
++        self.cq = None
++        self.qp = None
++        self.rqpn = 0
++        self.rpsn = 0
++        self.init_resources()
 +
-+    def setUp(self):
++    @property
++    def qpn(self):
++        return self.qp.qp_num
++
++    def init_resources(self):
 +        """
-+        Verify that the test case has dev_name, ib_port, gid_index and pkey index.
-+        If not provided by the user, a random valid combination will be used.
++        Initializes a CQ, MR and an RC QP.
++        :return: None
 +        """
-+        if self.pkey_index is None:
-+            # To avoid iterating the entire pkeys table, if a pkey index wasn't
-+            # provided, use index 0 which is always valid
-+            self.pkey_index = 0
++        self.port_attr = self.ctx.query_port(self.ib_port)
++        self.create_cq()
++        self.create_mr()
++        self.create_qp()
 +
-+        self.args = []
-+        if self.dev_name is not None:
-+            ctx = d.Context(name=self.dev_name)
-+            if self.ib_port is not None:
-+                if self.gid_index is not None:
-+                    # We have all we need, return
-+                    return
-+                else:
-+                    # Add avaiable GIDs of the given dev_name + port
-+                    self._add_gids_per_port(ctx, self.dev_name, self.ib_port)
-+            else:
-+                # Add available GIDs for each port of the given dev_name
-+                self._add_gids_per_device(ctx, self.dev_name)
-+        else:
-+            # Iterate available devices, add available GIDs for each of
-+            # their ports
-+            lst = d.get_device_list()
-+            for dev in lst:
-+                dev_name = dev.name.decode()
-+                ctx = d.Context(name=dev_name)
-+                self._add_gids_per_device(ctx, dev_name)
++    def create_cq(self):
++        """
++        Initializes self.cq with a CQ of depth <num_msgs> - defined by each
++        test.
++        :return: None
++        """
++        self.cq = CQ(self.ctx, self.num_msgs, None, None, 0)
 +
-+        if not self.args:
-+            raise unittest.SkipTest('No dev/port/GID combinations, please check your setup and try again')
-+        # Choose one combination and use it
-+        args = random.choice(self.args)
-+        self.dev_name = args[0]
-+        self.ib_port = args[1]
-+        self.gid_index = args[2]
++    def create_mr(self):
++        """
++        Initializes self.mr with an MR of length <msg_size> - defined by each
++        test.
++        :return: None
++        """
++        self.mr = MR(self.pd, self.msg_size, e.IBV_ACCESS_LOCAL_WRITE)
 +
-+    def _add_gids_per_port(self, ctx, dev, port):
-+        idx = 0
-+        ll = ctx.query_port(port).link_layer
-+        while True:
-+            gid = ctx.query_gid(port, idx)
-+            if gid.gid[-19:] == self.ZERO_GID:
-+                # No point iterating on
-+                break
-+            if ll == e.IBV_LINK_LAYER_ETHERNET and gid.gid[0:4] == 'fe80':
-+                # Use only IPv4/IPv6 GIDs
-+                idx += 1
-+                continue
-+            else:
-+                self.args.append([dev, port, idx])
-+                idx += 1
++    def create_qp(self):
++        """
++        Initializes self.qp with an RC QP.
++        :return: None
++        """
++        qp_caps = QPCap(max_recv_wr=self.num_msgs)
++        qp_init_attr = QPInitAttr(qp_type=e.IBV_QPT_RC, scq=self.cq,
++                                  rcq=self.cq, cap=qp_caps)
++        qp_attr = QPAttr(port_num=self.ib_port)
++        self.qp = QP(self.pd, qp_init_attr, qp_attr)
 +
-+    def _add_gids_per_device(self, ctx, dev):
-+        port_count = ctx.query_device().phys_port_cnt
-+        for port in range(port_count):
-+            self._add_gids_per_port(ctx, dev, port+1)
++    def pre_run(self, rpsn, rqpn):
++        """
++        Modify the QP's state to RTS and fill receive queue with <num_msgs> work
++        requests.
++        This method is not implemented in this class.
++        :param rpsn: Remote PSN
++        :param rqpn: Remote QPN
++        :return: None
++        """
++        raise NotImplementedError()
+diff --git a/tests/utils.py b/tests/utils.py
+index c84865a10a40..30166f41d555 100644
+--- a/tests/utils.py
++++ b/tests/utils.py
+@@ -221,3 +221,23 @@ def random_qp_init_attr_ex(attr_ex, attr, qpt=None):
+     qia = QPInitAttrEx(qp_type=qpt, cap=qp_cap, sq_sig_all=sig, comp_mask=mask,
+                        create_flags=cflags, max_tso_header=max_tso)
+     return qia
 +
 +
- class BaseResources(object):
-     """
-     BaseResources class is a base aggregator object which contains basic
++def wc_status_to_str(status):
++    try:
++        return \
++            {0: 'Success', 1: 'Local length error',
++             2: 'local QP operation error', 3: 'Local EEC operation error',
++             4: 'Local protection error', 5: 'WR flush error',
++             6: 'Memory window bind error', 7: 'Bad response error',
++             8: 'Local access error', 9: 'Remote invalidate request error',
++             10: 'Remote access error', 11: 'Remote operation error',
++             12: 'Retry exceeded', 13: 'RNR retry exceeded',
++             14: 'Local RDD violation error',
++             15: 'Remote invalidate RD request error',
++             16: 'Remote aort error', 17: 'Invalidate EECN error',
++             18: 'Invalidate EEC state error', 19: 'Fatal error',
++             20: 'Response timeout error', 21: 'General error'}[status]
++    except KeyError:
++        return 'Unknown WC status ({s})'.format(s=status)
++
 -- 
 2.21.0
 
