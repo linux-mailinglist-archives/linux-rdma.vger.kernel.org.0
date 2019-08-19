@@ -2,124 +2,196 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C67094F85
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 23:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEBA94FFB
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 23:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbfHSVBL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 17:01:11 -0400
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:6549 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728014AbfHSVBL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 17:01:11 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d5b0e150001>; Mon, 19 Aug 2019 14:01:10 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 19 Aug 2019 14:01:10 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 19 Aug 2019 14:01:10 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 19 Aug
- 2019 21:01:09 +0000
-Received: from [10.2.161.11] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 19 Aug
- 2019 21:01:09 +0000
-Subject: Re: [RFC PATCH v2 2/3] mm/gup: introduce FOLL_PIN flag for
- get_user_pages()
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Bharath Vedartham" <linux.bhar@gmail.com>
-References: <20190817022419.23304-1-jhubbard@nvidia.com>
- <20190817022419.23304-3-jhubbard@nvidia.com>
- <5a95d15b-f54c-e663-7031-c2bf9b19899e@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <252677d2-9e98-d4c8-7fe4-26635c05334d@nvidia.com>
-Date:   Mon, 19 Aug 2019 13:59:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728363AbfHSVkS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 19 Aug 2019 17:40:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41458 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728351AbfHSVkS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Aug 2019 17:40:18 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JLbALW145140
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 17:40:17 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.81])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ufyyvrw22-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 17:40:16 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 19 Aug 2019 21:40:16 -0000
+Received: from us1a3-smtp04.a3.dal06.isc4sb.com (10.106.154.237)
+        by smtp.notes.na.collabserv.com (10.106.227.88) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 19 Aug 2019 21:40:11 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp04.a3.dal06.isc4sb.com
+          with ESMTP id 2019081921401079-999766 ;
+          Mon, 19 Aug 2019 21:40:10 +0000 
+In-Reply-To: <20190819180004.GL5058@ziepe.ca>
+Subject: Re: Re: Re: Re: Re: Re: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit
+ due to u64/pointer abuse
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Doug Ledford" <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 19 Aug 2019 21:40:10 +0000
 MIME-Version: 1.0
-In-Reply-To: <5a95d15b-f54c-e663-7031-c2bf9b19899e@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1566248470; bh=vl1GVCNIrilyALRxb5n0ufm74IES1+XneLPl9dgh6lA=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=mM94VwganRCZrt6v6UGZSTEpO6uOcs8kAY0ekNDgsUXL4dZeWkSB7CsGeCRWy6/fR
-         OjEVn4ebUUA62eLB0+2XQSPDLNIAhoNem9MsNvJiq5usLc+e6nHIdIPhtYnw7qJZ03
-         Q4hQ57f4C30ediziBOifrI3wUN9gFsQUtPvY0WdBgYZgo9kYMEq1C1/eHqyOKVL8CW
-         FEg85YzjBn9AdL3FJPxeRBYUQP6RSPnALAT5yduufUXwM9pLEM6p8BT67OxwF8XGjh
-         /6w4lBWLddHMgwcuNVgG6yjU/kLluTlsWO4f+BmWSa6KkgPUVr2rLEq/QdzzK/Ac4z
-         5bg+buL4eKhfQ==
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190819180004.GL5058@ziepe.ca>,<20190819141856.GG5058@ziepe.ca>
+ <20190819135213.GF5058@ziepe.ca> <20190819122456.GB5058@ziepe.ca>
+ <20190819100526.13788-1-geert@linux-m68k.org>
+ <OF7DB4AD51.C58B8A8B-ON0025845B.004A0CF6-0025845B.004AB95C@notes.na.collabserv.com>
+ <OFD7D2994B.750F3146-ON0025845B.004D965D-0025845B.004E5577@notes.na.collabserv.com>
+ <OFD7C97688.66331960-ON0025845B.005081B6-0025845B.0051AF67@notes.na.collabserv.com>
+ <OFB73D0AD1.A2D5DDF4-ON0025845B.00545951-0025845B.00576D84@notes.na.collabserv.com>
+ <OFFE3BC87B.CF197FD5-ON0025845B.0059957B-0025845B.005A903D@notes.na.collabserv.com>
+ <OF0F37B635.09509188-ON0025845B.005BF4A4-0025845B.0060F5F0@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
+X-LLNOutbound: False
+X-Disclaimed: 9831
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19081921-3067-0000-0000-0000006B8069
+X-IBM-SpamModules-Scores: BY=0.276324; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.425523; ST=0; TS=0; UL=0; ISC=; MB=0.373937
+X-IBM-SpamModules-Versions: BY=3.00011620; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01249231; UDB=6.00659450; IPR=6.01030766;
+ MB=3.00028239; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-19 21:40:15
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-19 19:41:45 - 6.00010305
+x-cbparentid: 19081921-3068-0000-0000-00001162BF2E
+Message-Id: <OF399EF474.834C3102-ON0025845B.006D75AA-0025845B.007708F2@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_04:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/16/19 7:36 PM, John Hubbard wrote:
-> On 8/16/19 7:24 PM, jhubbard@nvidia.com wrote:
->> From: John Hubbard <jhubbard@nvidia.com>
->> DKIM-Signature: v=01 a a-sha256; c=0Elaxed/relaxed; d idia.com; s=01;
->> 	t=1566008674; bh=05Mai0va6k/z2enpQJ4Nfvbj5WByFxGAO1JwdIBbXio	h PGP-Univ=
-ersal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
->> 	 In-Reply-To:References:MIME-Version:X-NVConfidentiality:
->> 	 Content-Transfer-Encoding:Content-Type;
->> 	b=C3=96UDSde9XF/IsNteBaYOBWeKiHhWmeU9ekUJNvCviHssBDCtw0T+M/2TlEPEzomIT
->> 	 fGXzIQNlGN6MXFbaBoyBmF/zjCu02TmTNExbVJ3/5N6PTyOuJFCx9ZN1/5gXsB11m1
->> 	 xAHIWE+VOZs4qqDeHDBqKZq+FaxQHNvGz0j6lyVBA70TfseNoZqZZrSil8uvaKJwKd
->> 	 TQ1ht+AGWbw9p610JmaPb4u6o/eV6Ns8Sl3EVnjWWu94T6ISNIaWCiC6wQQF6L1YCH
->> 	 G5Pjn+0rEjhk6XG4TyLudi5lWp3IVBHd8+WlWlnl+bvLCC55RUAjPJLn7LaVyVdh0F
->> 	 nLHwm3bN2Jotg
->=20
-> I cannot readily explain the above email glitch, but I did just now switc=
-h
-> back to mailgw.nvidia.com for this patchset, in order to get the nice beh=
-avior
-> of having "From:" really be my native NVIDIA email address. That's very n=
-ice,
-> but if the glitches happen again, I'll switch back to using gmail for
-> git-send-email.
->=20
-> Sorry about the weirdness. It does still let you apply the patch, I
-> just now checked on that.
->=20
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-Hi Ira, could you please let me know if you'd like me to repost this patch,=
- or
-the entire patchset, or if you're able to deal with it as-is? As it stands,=
- the
-DKIM-Signature cruft above needs to be manually removed, either from the pa=
-tch, or
-from the commit log after applying the patch.
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 08/19/2019 08:00PM
+>Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, "Doug Ledford"
+><dledford@redhat.com>, linux-rdma@vger.kernel.org,
+>linux-kernel@vger.kernel.org
+>Subject: [EXTERNAL] Re: Re: Re: Re: Re: [PATCH] RDMA/siw: Fix
+>compiler warnings on 32-bit due to u64/pointer abuse
+>
+>On Mon, Aug 19, 2019 at 05:39:04PM +0000, Bernard Metzler wrote:
+>> 
+>> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >Date: 08/19/2019 06:35PM
+>> >Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, "Doug Ledford"
+>> ><dledford@redhat.com>, linux-rdma@vger.kernel.org,
+>> >linux-kernel@vger.kernel.org
+>> >Subject: [EXTERNAL] Re: Re: Re: Re: Re: [PATCH] RDMA/siw: Fix
+>> >compiler warnings on 32-bit due to u64/pointer abuse
+>> >
+>> >On Mon, Aug 19, 2019 at 04:29:11PM +0000, Bernard Metzler wrote:
+>> >> 
+>> >> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>> >> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >> >Date: 08/19/2019 06:05PM
+>> >> >Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, "Doug Ledford"
+>> >> ><dledford@redhat.com>, linux-rdma@vger.kernel.org,
+>> >> >linux-kernel@vger.kernel.org
+>> >> >Subject: [EXTERNAL] Re: Re: Re: Re: [PATCH] RDMA/siw: Fix
+>compiler
+>> >> >warnings on 32-bit due to u64/pointer abuse
+>> >> >
+>> >> >On Mon, Aug 19, 2019 at 03:54:56PM +0000, Bernard Metzler
+>wrote:
+>> >> >
+>> >> >> Absolutely. But these addresses are conveyed through the
+>> >> >> API as unsigned 64 during post_send(), and land in the siw
+>> >> >> send queue as is. During send queue processing, these
+>addresses
+>> >> >> must be interpreted according to its context and transformed
+>> >> >> (casted) back to the callers intention. I frankly do not
+>> >> >> know what we can do differently... The representation of
+>> >> >> all addresses as unsigned 64 is given. Sorry for the
+>confusion.
+>> >> >
+>> >> >send work does not have pointers in it, so I'm confused what
+>this
+>> >is
+>> >> >about. Does siw allow userspace to stick an ordinary pointer
+>for
+>> >the
+>> >> >SG list?
+>> >> 
+>> >> Right a user references a buffer by address and local key it
+>> >> got during reservation of that buffer. The user can provide any
+>> >> VA between start of that buffer and registered length. 
+>> >
+>> >Oh gross, it overloads the IOVA in the WR with a kernel void * ??
+>> 
+>> Oh no. The user library writes the buffer address into
+>> the 64bit address field of the WR. This is nothing siw
+>> has invented.
+>
+>No HW provider sticks pointers into the WR ring.
 
-Also, as noted in the email thread involving Bharath and sgi-gru [1], I'm
-currently planning on branching from your tree, and continuing the misc
-call site conversions from there. And then just adapting to whatever API
-changes are made to vaddr_*() functions. And the biovec call site conversio=
-ns should
-be based on that as well.
+Now siw is a SW only provider. It sits on top of TCP
+kernel sockets. siw translates any local application buffer
+reference it gets back into a kvec or page pointer (transmit
+from), or a virtual address (receive into). This is what the 
+TCP interface wants.
 
-[1] https://lore.kernel.org/r/0c2ad29b-934c-ec30-66c3-b153baf1fba5@nvidia.c=
-om
+In fact, siw cares about physical addresses only since the RDMA
+(kernel level) user may care about it. It translates those back
+into something the TCP interface can consume. 
+>
+>It is either an iova & lkey pair, or SGE information is inlined into
+>the WR ring.
+>
+In siw, the reference to any type of memory is kept uninterpreted
+in the send/receive queue until it gets accessed by a data
+transfer. The information on what type of memory is being referenced
+is deducted from the local memory key. As said, this step is
+being executed only when the actual buffer is to be touched.
+All it needs before that translation is to keep the 32bit key +
+length and the up to 64bit address in a work queue element within
+the send queue.
+lkey lookup and memory translation + access validation happens
+after the work queue element left the send/receive queue and a
+local copy of it is being processed by the kernel driver
+during RX or TX operations.
 
-thanks,
---=20
-John Hubbard
-NVIDIA
+Inline data is implemented similar to how HW providers do
+it - user data are copied immediately into the WR array.
+
+>Never, ever, a user or kernel pointer.
+>
+>The closest we get to a kernel pointer is with the local dma lkey &
+>iova == physical memory address.
+>
+>> >Why does siw_pbl_get_buffer not return a void *??
+>>
+>> 
+>> I think, in fact, it should be dma_addr_t, since this is
+>> what PBL's are described with. Makes sense?
+>
+>You mean because siw uses dma_virt_ops and can translate a dma_addr_t
+>back to a pfn? Yes, that would make alot more sense.
+>
+>If all conversions went explicitly from a iova & lkey -> dma_addr_t
+>-> void * in
+>the kmap then I'd be a lot happier
+>
+>Jason
+>
+>
 
