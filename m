@@ -2,169 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B0D94BDD
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 19:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495D794BDF
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 19:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728055AbfHSRjM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 19 Aug 2019 13:39:12 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41924 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727913AbfHSRjM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 19 Aug 2019 13:39:12 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JHc4mA048222
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 13:39:11 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.104])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ufwytdxu2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 13:39:11 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Mon, 19 Aug 2019 17:39:11 -0000
-Received: from us1b3-smtp07.a3dr.sjc01.isc4sb.com (10.122.203.198)
-        by smtp.notes.na.collabserv.com (10.122.47.44) with smtp.notes.na.collabserv.com ESMTP;
-        Mon, 19 Aug 2019 17:39:04 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp07.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019081917390429-682222 ;
-          Mon, 19 Aug 2019 17:39:04 +0000 
-In-Reply-To: <20190819163521.GK5058@ziepe.ca>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Jason Gunthorpe" <jgg@ziepe.ca>
-Cc:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Doug Ledford" <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 19 Aug 2019 17:39:04 +0000
+        id S1727653AbfHSRjn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 13:39:43 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:53686 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727483AbfHSRjm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Aug 2019 13:39:42 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 7E3243082B67;
+        Mon, 19 Aug 2019 17:39:42 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DFDD190F42;
+        Mon, 19 Aug 2019 17:39:40 +0000 (UTC)
+Message-ID: <3d51b645485b861ff7b20108c638de37e29b4c0f.camel@redhat.com>
+Subject: Re: [PATCH for-next 3/9] RDMA/hns: Completely release qp resources
+ when hw err
+From:   Doug Ledford <dledford@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Yangyang Li <liyangyang20@huawei.com>,
+        Lijun Ou <oulijun@huawei.com>, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Date:   Mon, 19 Aug 2019 13:39:38 -0400
+In-Reply-To: <20190814184737.GB5893@mtr-leonro.mtl.com>
+References: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
+         <1565343666-73193-4-git-send-email-oulijun@huawei.com>
+         <f49c56933205d90d82ffd3fa55a951843e22cda1.camel@redhat.com>
+         <0d325f78-a929-f088-cc29-e2c7af98fd40@huawei.com>
+         <f1609a31d9b0d1cdc3b2db38dda1543126755007.camel@redhat.com>
+         <20190814184737.GB5893@mtr-leonro.mtl.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-dvxwM7sh6688gTL9Tr9F"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190819163521.GK5058@ziepe.ca>,<20190819150723.GH5058@ziepe.ca>
- <20190819141856.GG5058@ziepe.ca> <20190819135213.GF5058@ziepe.ca>
- <20190819122456.GB5058@ziepe.ca>
- <20190819100526.13788-1-geert@linux-m68k.org>
- <OF7DB4AD51.C58B8A8B-ON0025845B.004A0CF6-0025845B.004AB95C@notes.na.collabserv.com>
- <OFD7D2994B.750F3146-ON0025845B.004D965D-0025845B.004E5577@notes.na.collabserv.com>
- <OFD7C97688.66331960-ON0025845B.005081B6-0025845B.0051AF67@notes.na.collabserv.com>
- <OFB73D0AD1.A2D5DDF4-ON0025845B.00545951-0025845B.00576D84@notes.na.collabserv.com>
- <OFFE3BC87B.CF197FD5-ON0025845B.0059957B-0025845B.005A903D@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP55 May 22, 2019 at 11:09
-X-KeepSent: 0F37B635:09509188-0025845B:005BF4A4;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 16519
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19081917-5525-0000-0000-00000099A0F5
-X-IBM-SpamModules-Scores: BY=0.002691; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.052891
-X-IBM-SpamModules-Versions: BY=3.00011618; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01249150; UDB=6.00659401; IPR=6.01030686;
- MB=3.00028236; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-19 17:39:08
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-08-19 14:25:48 - 6.00010304
-x-cbparentid: 19081917-5526-0000-0000-00000F47B5DF
-Message-Id: <OF0F37B635.09509188-ON0025845B.005BF4A4-0025845B.0060F5F0@notes.na.collabserv.com>
-Subject: RE: Re: Re: Re: Re: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit due
- to u64/pointer abuse
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_03:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Mon, 19 Aug 2019 17:39:42 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Jason Gunthorpe" <jgg@ziepe.ca>
->Date: 08/19/2019 06:35PM
->Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, "Doug Ledford"
-><dledford@redhat.com>, linux-rdma@vger.kernel.org,
->linux-kernel@vger.kernel.org
->Subject: [EXTERNAL] Re: Re: Re: Re: Re: [PATCH] RDMA/siw: Fix
->compiler warnings on 32-bit due to u64/pointer abuse
->
->On Mon, Aug 19, 2019 at 04:29:11PM +0000, Bernard Metzler wrote:
->> 
->> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
->> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
->> >Date: 08/19/2019 06:05PM
->> >Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, "Doug Ledford"
->> ><dledford@redhat.com>, linux-rdma@vger.kernel.org,
->> >linux-kernel@vger.kernel.org
->> >Subject: [EXTERNAL] Re: Re: Re: Re: [PATCH] RDMA/siw: Fix compiler
->> >warnings on 32-bit due to u64/pointer abuse
->> >
->> >On Mon, Aug 19, 2019 at 03:54:56PM +0000, Bernard Metzler wrote:
->> >
->> >> Absolutely. But these addresses are conveyed through the
->> >> API as unsigned 64 during post_send(), and land in the siw
->> >> send queue as is. During send queue processing, these addresses
->> >> must be interpreted according to its context and transformed
->> >> (casted) back to the callers intention. I frankly do not
->> >> know what we can do differently... The representation of
->> >> all addresses as unsigned 64 is given. Sorry for the confusion.
->> >
->> >send work does not have pointers in it, so I'm confused what this
->is
->> >about. Does siw allow userspace to stick an ordinary pointer for
->the
->> >SG list?
->> 
->> Right a user references a buffer by address and local key it
->> got during reservation of that buffer. The user can provide any
->> VA between start of that buffer and registered length. 
->
->Oh gross, it overloads the IOVA in the WR with a kernel void * ??
+--=-dvxwM7sh6688gTL9Tr9F
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Oh no. The user library writes the buffer address into
-the 64bit address field of the WR. This is nothing siw
-has invented.
+On Wed, 2019-08-14 at 21:47 +0300, Leon Romanovsky wrote:
+> On Wed, Aug 14, 2019 at 11:05:04AM -0400, Doug Ledford wrote:
+> > On Wed, 2019-08-14 at 14:02 +0800, Yangyang Li wrote:
+> > > > I don't know your hardware, but this patch sounds
+> > > > wrong/dangerous to
+> > > > me.
+> > > > As long as the resources this card might access are allocated by
+> > > > the
+> > > > kernel, you can't get random data corruption by the card writing
+> > > > to
+> > > > memory used elsewhere in the kernel.  So if your card is not
+> > > > responding
+> > > > to your requests to free the resources, it would seem safer to
+> > > > leak
+> > > > those resources permanently than to free them and risk the card
+> > > > coming
+> > > > back to life long enough to corrupt memory reallocated to some
+> > > > other
+> > > > task.
+> > > >=20
+> > > > Only if you can guarantee me that there is no way your commands
+> > > > to
+> > > > the
+> > > > card will fail and then the card start working again later would
+> > > > I
+> > > > consider this patch safe.  And if it's possible for the card to
+> > > > hang
+> > > > like this, should that be triggering a reset of the device?
+> > > >=20
+> > >=20
+> > > Thanks for your suggestion, I agree with you, it would seem safer
+> > > to
+> > > leak
+> > > those resources permanently than to free them. I will abandon this
+> > > change
+> > > and consider cleaning up these leaked resources during
+> > > uninstallation
+> > > or reset.
+> >=20
+> > Ok, patch dropped from patchworks, thanks.
+>=20
+> Sorry for being late, but I don't like the idea of having leaked
+> memory.
+>=20
+> All my allocation patches are actually trying to avoid such situation
+> by ensuring that no driver does crazy stuff like this. It means that
+> once I'll have time to work on QP allocations, I'll ensure that memory
+> is freed, so it is better to free such memory now.
 
+You can't free something if the card might still access it.  A leak is
+always preferable to data corruption.
 
->
->> >The code paths here must be totally different, so there should be
->> >different types and functions for each case.
->> 
->> Yes, there is a function to process application memory
->(siw_rx_umem),
->> to process a kernel PBL (siw_rx_pbl), and one to process kernel
->> addresses (siw_rx_kva). Before running that function, the API
->> representation of the current SGE gets translated into target
->> buffer representation.
->
->Why does siw_pbl_get_buffer not return a void *??
->
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-I think, in fact, it should be dma_addr_t, since this is
-what PBL's are described with. Makes sense?
+--=-dvxwM7sh6688gTL9Tr9F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
+-----BEGIN PGP SIGNATURE-----
 
->Still looks like two types have been crammed together.
->
->The kernel can't ever store anything into the user WQE buffer, so I
->would think it would copy the buffer to kernel space, transform it
->properly and then refer to it as a kernel buffer. Kernel sourced
->buffers just skip the transofmration.
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1a3toACgkQuCajMw5X
+L93sVQ//TIdbEZhB/l/vPS5cr5MN5uXswIl58klaW83E66BSwZQXQh70BvlzieyQ
+SK/stnFQ8GelM9EB+hwE8z90ZpFoeYGf5eb9Mr51i46D8Fz3yR5yzKbRsoolPVkU
+dYhY7T3HBiEc/nzyV0GrHql24pa5TKDZG71TAsaWr7gwOzAppd+O1JM9vxlPaQO5
+RFhu6Xh8/Y9zh9IO1F21lOUUnhhL+1qSnJ8W4+Xrc3Q+zpnWi39zKY1qdpYrjHI/
+eIKOY3qG4MjJRi43KKH9rUBiLTg3E04tVFwressIDRT5btH/2TGcc5+50XgQrkNq
+EHlVGYKey+1dlRUDG9suoZz66HpOeBuQeedCOkmwpXY9NmuhdoxnfLNa9ScYu/Mc
+5y6jZ7h/FuPMiccYzNS5fvCbLtGwb8X7M7F53cLshfsZjMwIRSqfrPBj+AppsIz2
+YB7uD9O44MiasIaOSrMqqao2rgcxSEgAHTSw9i8HlaWI6OLCWxrA+uA4siEFussz
+dyZsoXEz385EnZfVt63xZTzc40eXoZwEMPjlx9bswgoiFxT+RS2kO4rxEDmcOGuC
+6z2rOzG6Qx3umBj9qowFFwkUubfWIP6gv2bFabFBCYRY1RmfMOj/WL5rnu+eXkVp
+llPX2IjdrKw6f4pCaFXgQVpOT3DAOWpkJNiZTjhTXfrLxK4MxwA=
+=R684
+-----END PGP SIGNATURE-----
 
-This is in fact what happens. siw just does not copy immediately
-during post send, but maintains a mmapped shared send queue.
-The kernel driver copies the current element from the send queue
-and processes it. Only then the current element gets transformed
-into the right buffer representation, since it is not being
-accessed before.
-
-
-Thanks
-Bernard.
->
->JAson
->
->
+--=-dvxwM7sh6688gTL9Tr9F--
 
