@@ -2,94 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA36A94965
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 18:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0B39499B
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 18:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbfHSQFH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 12:05:07 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:38004 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbfHSQFE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 12:05:04 -0400
-Received: by mail-qt1-f196.google.com with SMTP id x4so2456964qts.5
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 09:05:04 -0700 (PDT)
+        id S1727398AbfHSQRB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 12:17:01 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:34674 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727784AbfHSQRB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 12:17:01 -0400
+Received: by mail-qk1-f195.google.com with SMTP id m10so1891860qkk.1
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 09:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=qjbUMhoyRlBrB2pmx0yMahiahDUwqPVaQy5IFCKDGeI=;
-        b=OIqsSXPXZbviyknbeplJa6FF5mEXzPBpNrHBLvf0OMF8gfvJD8rMtRaqC2i40w60Q6
-         0ooems/EWxdnaXQFW36fYWtAjJrDvPcvdsW6YzldSxGpx3VcaW+O5jcOw+TMk3pErFYs
-         OZZSqimYb/Z0K/YmjGgnPZ/vzOFpFweKtucZK/WF6MrI+suDDcwVxza8veuThMPLO+w8
-         iZcaR2srQpXzJdK9bslrKpXDHhWvtPURyDP47vEQxpRHtAqZyKhlwt3L2C9E3lYyY4zl
-         taZGVkxvxGeQwmccmhEEk92+fRCaHGdoUJkldjTeDQ3ZU5qO2nMjLHql3TBAexJxgM+M
-         nBYQ==
+        bh=/l+DQMaOiKLikOxyV6ugkYFx5NSKQR+zmDinWPzvmCE=;
+        b=loiRFXqaKPiBB2/TCP9gbLF5KlHd8G7z29hNdlZtOOMG2Utd6fGM53cDju8/eZ8BYs
+         e9zMxC1nsAdQe8bUCje4ytyWASFXLfa1w9bCGKvVsJL8CaVw1NNDpI8S1uCcD1IvOePf
+         e2UklcC63WHz8n1AusG+jrXcYaZIma/TUCbeYKB86wcRN44qsc9c3QCI/UmB6U1P9r/6
+         XJ5bJxKzF4mzfth3Zl2NkuEbziivg0RxNCRtn2bC/evdbIpR8fpPNxjZ0Wv9HIlCSsHU
+         bETspX4H8S3zkApTKz7cunpXEetA18AHw5uu+h7IeJSlE4Psr/MhRnBF0U6CJeF6Jw5O
+         JIQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qjbUMhoyRlBrB2pmx0yMahiahDUwqPVaQy5IFCKDGeI=;
-        b=DdN6yp8j16nJsA2iotUGamfXXMpZDN/doWeCzj+EONfVTWrHUnLv8m5h8lF4z/j+B3
-         675WR/K7eMqtFLg/dD3I0mKCYhBP7Qmi9ybxXXNqMa1LWjWMLESeMvmV2lx15rJBKGO9
-         O/zBbWjPPKYiJrEXZw2czxYwT/TiQ8C3efIOgKWUZ+ZHZCGtcmu6TYoIWh1FAx//D/gw
-         dXMvwlJheNb84c8mlogCwN1Fv6oMPxH8p3nREjII76aIkwalw++uEedO5zyHhnyRIGHt
-         PEy8iIvdZkRULNX8sSBupQMh2acg9yAZw3kPB9J4Vn3jx20+JjT197jNjCF9mZQKLiZZ
-         BLwQ==
-X-Gm-Message-State: APjAAAWckYJEmM3+oPdTW54fKem0Kt3e0MPePrg+rlPNLeCvexV6/NP/
-        Gg1WeESFr780OxZfB4TkONQHEg==
-X-Google-Smtp-Source: APXvYqztyQOS4b1pKjCeXKm705+A0GDuP5UsZRh4JOIvQy8A9jr5ymKEfXY9yahhCbkDHmMgSpDEMw==
-X-Received: by 2002:aed:3f29:: with SMTP id p38mr21199002qtf.126.1566230703478;
-        Mon, 19 Aug 2019 09:05:03 -0700 (PDT)
+        bh=/l+DQMaOiKLikOxyV6ugkYFx5NSKQR+zmDinWPzvmCE=;
+        b=lBztihyXb0JOffLEsJgy0VqYISBv+e7gQhLTblYU61FYRMlp+1lZGRjOzluJxs2h5W
+         0wj0KVguusEcle2lLsO7F+b5TNSfKreWFiyw02gC+W2jPT+I7VjfvNtCAt03jroaSaml
+         BqKG4ZTPAYBiWn6XhfXar89TCQgkr/uCisLoFLMUQhXvGumzQ5qGHNCIeyaCKxI0prI8
+         dKqrwol0RvLgWr3g7x9jKXhyLdE7dL8WgNygZcsJppBJsh/2RCGZCEynd9RSJlrrzuN1
+         a0Vy15Eq7zW5Su1MAa83P12Vv6DoILCC/AODL5eV8iIqGL2JmZF+oJCLDoXG+fmjfWZU
+         ifRQ==
+X-Gm-Message-State: APjAAAXzzxbB9x/8SKjGiLjfi8PkwtoksFTBBoFOa8DUn3HHlzqpWKAH
+        0iqxSFyj5HiAuqeVDAwEUiuoBQ==
+X-Google-Smtp-Source: APXvYqwraXzRJ/XVUPuFlRpBXHvzLkUfb/xkD9Z4Lmh8CujGh/ETFbP/u2USLJgiliVzsiWCq+ne9Q==
+X-Received: by 2002:a37:4b49:: with SMTP id y70mr20068157qka.447.1566231419819;
+        Mon, 19 Aug 2019 09:16:59 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id p38sm9417040qtc.76.2019.08.19.09.05.02
+        by smtp.gmail.com with ESMTPSA id n14sm7086078qkk.75.2019.08.19.09.16.59
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 19 Aug 2019 09:05:02 -0700 (PDT)
+        Mon, 19 Aug 2019 09:16:59 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hzk9W-0007Mr-AA; Mon, 19 Aug 2019 13:05:02 -0300
-Date:   Mon, 19 Aug 2019 13:05:02 -0300
+        id 1hzkL4-0007Uk-NR; Mon, 19 Aug 2019 13:16:58 -0300
+Date:   Mon, 19 Aug 2019 13:16:58 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: Re: Re: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit
- due to u64/pointer abuse
-Message-ID: <20190819160502.GI5058@ziepe.ca>
-References: <20190819150723.GH5058@ziepe.ca>
- <20190819141856.GG5058@ziepe.ca>
- <20190819135213.GF5058@ziepe.ca>
- <20190819122456.GB5058@ziepe.ca>
- <20190819100526.13788-1-geert@linux-m68k.org>
- <OF7DB4AD51.C58B8A8B-ON0025845B.004A0CF6-0025845B.004AB95C@notes.na.collabserv.com>
- <OFD7D2994B.750F3146-ON0025845B.004D965D-0025845B.004E5577@notes.na.collabserv.com>
- <OFD7C97688.66331960-ON0025845B.005081B6-0025845B.0051AF67@notes.na.collabserv.com>
- <OFB73D0AD1.A2D5DDF4-ON0025845B.00545951-0025845B.00576D84@notes.na.collabserv.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Hal Rosenstock <hal@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        oulijun <oulijun@huawei.com>
+Subject: Re: [PATCH] RDMA/srpt: Filter out AGN bits
+Message-ID: <20190819161658.GJ5058@ziepe.ca>
+References: <20190814151507.140572-1-bvanassche@acm.org>
+ <20190819122126.GA6509@ziepe.ca>
+ <d2429292-be75-ee67-2cce-081d9d0aa676@acm.org>
+ <20190819151722.GG5080@mellanox.com>
+ <ad0d3211-bf70-d349-7e14-e4b515bb3e98@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OFB73D0AD1.A2D5DDF4-ON0025845B.00545951-0025845B.00576D84@notes.na.collabserv.com>
+In-Reply-To: <ad0d3211-bf70-d349-7e14-e4b515bb3e98@acm.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 19, 2019 at 03:54:56PM +0000, Bernard Metzler wrote:
+On Mon, Aug 19, 2019 at 08:45:58AM -0700, Bart Van Assche wrote:
+> On 8/19/19 8:17 AM, Jason Gunthorpe wrote:
+> > On Mon, Aug 19, 2019 at 08:11:21AM -0700, Bart Van Assche wrote:
+> > > Does uniqueness of the I/O controller GUID only matter in InfiniBand
+> > > networks or does it also matter in other RDMA networks?
+> > > 
+> > > How about using 0 as default value for the srpt_service_guid in RoCE
+> > > networks?
+> > 
+> > How does SRP connection management even work on RoCE?? The CM MADs
+> > still carry a service_id? How do the sides exchange the service ID to
+> > start the connection? Or is it ultimately overriden in the CM to use
+> > an IP port based service ID?
+> 
+> The ib_srpt kernel driver would have to set id_ext to a unique value if
+> srpt_service_guid would be zero since the SRP initiator kernel driver uses
+> the IOC GUID + id_ext + initiator_ext combination in its connection
+> uniqueness check (srp_conn_unique()).
 
-> Absolutely. But these addresses are conveyed through the
-> API as unsigned 64 during post_send(), and land in the siw
-> send queue as is. During send queue processing, these addresses
-> must be interpreted according to its context and transformed
-> (casted) back to the callers intention. I frankly do not
-> know what we can do differently... The representation of
-> all addresses as unsigned 64 is given. Sorry for the confusion.
+Sounds like you should just generate something random for RDMA/CM mode ?
 
-send work does not have pointers in it, so I'm confused what this is
-about. Does siw allow userspace to stick an ordinary pointer for the
-SG list?
-
-The code paths here must be totally different, so there should be
-different types and functions for each case.
+Still a bit confused how this is usable though if the initiating side
+needs the service ID?
 
 Jason
