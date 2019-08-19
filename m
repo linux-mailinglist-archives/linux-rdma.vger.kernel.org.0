@@ -2,125 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D80948B9
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 17:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEB3948D7
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 17:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726959AbfHSPpJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 11:45:09 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:33084 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726949AbfHSPpJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 11:45:09 -0400
-Received: by mail-pg1-f194.google.com with SMTP id n190so1454191pgn.0
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 08:45:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zMGg7ZRNK7NfpqI/Qet9Dxr9rbclh2xtbR4hUTFM6IY=;
-        b=GJoHV9QE4xGJAUCqD7zOGEihP3UiAZjpj3bmVElnV3mGgDu9+IBupxqZo5crTOTBSn
-         9E4KUL6HMvh/OBYUcO8Tpulqz8WiyGQenGKjsASlkTFv2dXi8Y/niM3/Z+P7vnlKNIaZ
-         MtFd0UdR9JYH1Lcgtiq3NMGR7NeTcmBx3BytYCkuY0+Mh6In/PjXGCT7JB+YD1Ki2rnw
-         M/YU/3ABnIwEbCJlH3DAt0qAYIkuPOryLlR92BarOXnc/HJERVegrVcC8hFgAU/vJ7Go
-         FvSFH9zA3QmxP0Me+8WMdbNNwakaShO+N+03UzcmCf/+VKatv8Kx3ZtIc9UnmtYKv3wf
-         5kAg==
+        id S1727353AbfHSPqc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 11:46:32 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:33151 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728009AbfHSPqB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 11:46:01 -0400
+Received: by mail-pg1-f193.google.com with SMTP id n190so1455455pgn.0
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 08:46:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zMGg7ZRNK7NfpqI/Qet9Dxr9rbclh2xtbR4hUTFM6IY=;
-        b=JfqsUM+3eLXTk6rlwc5isVISK2Jtlu6siCNDMt8/zjEaK9I3S/qvSg7OfBLsy153lp
-         xrgVq5rNZoCasPd43VIkY/YO2oELDVp8si756UIPWt+k00AGd1TRskj+LLedzlyNAYva
-         Lx5XZUvL98Ml4qTjSYsy5PcuL4nnQk3FYEf21T9Hj2gGsVKyGY8BmQP9F1G3fw7ly6Ht
-         kbvy9o2MU0V6Jg+56YYr65AwNpH37xZTUs0Vsi13RYmWDUJPZgzPe65e6D3xo8og83nD
-         MyOa/uPihgrx7P+guh6jWX/rxGKyJK+v8VdxVmMCoTM+bQiELsCQ6Wag3+K01xoxDjDg
-         8Duw==
-X-Gm-Message-State: APjAAAUlwrJhl3Ck4UE5e+6AVUNNQioxxf+sJz081jzxtKfe3tRhk7le
-        yPi9RXaGAXulbCW0bnoMyRiDRwYhRE+6UVUbGOsf3Q==
-X-Google-Smtp-Source: APXvYqyflWC4oeyk4cX94v5k6CQJ/8FEDGgMF+Kmp2ZaCbPDE8MBxb9njXOAWHJ8AnGwbz7Ioq7XIseAIciXEoaHYEw=
-X-Received: by 2002:a63:3006:: with SMTP id w6mr20727946pgw.440.1566229508161;
- Mon, 19 Aug 2019 08:45:08 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=el7674EF4eBar/UH/zKb5ZWvnbkkR4odtqUFMSxzlWs=;
+        b=E/CNxBUP2nwAZgcMOGRqefi8U1wEZibwORB5gDisjEXgm/CSinj+Ox5ay9bgcUAyhW
+         Vmt/VJMp3YdCm2EzsVjuCtc2T5PayXGO9ymSzDOWU1CTNIGx/L1HxvNC1We5dbGGg9Ra
+         r3TNTA691yjgJP9XMmnxCK9wq9CJVixIbXkjSyLKcDKn9B8V+73fyngBO8B2iDVzSLA+
+         zFNdBYNis1s4nmWdvQCx9+p3LjrmjG2VqTI7IdoJX4pcmFHYxmpQr5r/A3IDGHsBhX4v
+         TlNpFwFgVOKFXg90fCKk1stqpN+d41cmtkRVCHXNmSdA4fBvDezSQxZkI2OV3xByhJqu
+         K/Ww==
+X-Gm-Message-State: APjAAAXzGMYiJ5lac5Ix3HWiGkINYpc898SIPFN6u0ixlnQYJvTYV2XT
+        tAXJHhCc1vY+VePcaRzpC+g9Xljb
+X-Google-Smtp-Source: APXvYqw7edY2B4yxv3a+xc+lDVsx1m9pKCIpLH9Atx+RMllMcIps/RediRAFVV3R4ZWLXBnzKJ1xiA==
+X-Received: by 2002:a65:6096:: with SMTP id t22mr21147762pgu.204.1566229560870;
+        Mon, 19 Aug 2019 08:46:00 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id o130sm19003389pfg.171.2019.08.19.08.45.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Aug 2019 08:45:59 -0700 (PDT)
+Subject: Re: [PATCH] RDMA/srpt: Filter out AGN bits
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Hal Rosenstock <hal@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        oulijun <oulijun@huawei.com>
+References: <20190814151507.140572-1-bvanassche@acm.org>
+ <20190819122126.GA6509@ziepe.ca>
+ <d2429292-be75-ee67-2cce-081d9d0aa676@acm.org>
+ <20190819151722.GG5080@mellanox.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <ad0d3211-bf70-d349-7e14-e4b515bb3e98@acm.org>
+Date:   Mon, 19 Aug 2019 08:45:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <00eb8ba84205c59cac01b1b47615116a461c302c.1566220355.git.andreyknvl@google.com>
- <20190819150342.sxk3zzxvrxhkpp6j@willie-the-truck> <CAAeHK+xP6HnLJt_RKW67x8nbJLJp5A=av57BfwiFrA88eFn60w@mail.gmail.com>
- <20190819153856.odtneqxfxva2wjgu@willie-the-truck>
-In-Reply-To: <20190819153856.odtneqxfxva2wjgu@willie-the-truck>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 19 Aug 2019 17:44:56 +0200
-Message-ID: <CAAeHK+zf_VKOttBVfZUdp-ra=uNTx_faCmJkrM81BzgEaOZjSQ@mail.gmail.com>
-Subject: Re: [PATCH ARM] selftests, arm64: fix uninitialized symbol in tags_test.c
-To:     Will Deacon <will@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190819151722.GG5080@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 19, 2019 at 5:39 PM Will Deacon <will@kernel.org> wrote:
->
-> On Mon, Aug 19, 2019 at 05:16:37PM +0200, Andrey Konovalov wrote:
-> > On Mon, Aug 19, 2019 at 5:03 PM Will Deacon <will@kernel.org> wrote:
-> > >
-> > > On Mon, Aug 19, 2019 at 03:14:42PM +0200, Andrey Konovalov wrote:
-> > > > Fix tagged_ptr not being initialized when TBI is not enabled.
-> > > >
-> > > > Dan Carpenter <dan.carpenter@oracle.com>
-> > >
-> > > Guessing this was Reported-by, or has Dan introduced his own tag now? ;)
-> >
-> > Oops, yes, Reported-by :)
-> >
-> > >
-> > > Got a link to the report?
-> >
-> > https://www.spinics.net/lists/linux-kselftest/msg09446.html
->
-> Thanks, I'll fix up the commit message and push this out later on. If you
-> get a chance, would you be able to look at the pending changes from
-> Catalin[1], please?
->
-> Will
->
-> [1] https://lkml.kernel.org/r/20190815154403.16473-1-catalin.marinas@arm.com
+On 8/19/19 8:17 AM, Jason Gunthorpe wrote:
+> On Mon, Aug 19, 2019 at 08:11:21AM -0700, Bart Van Assche wrote:
+>> Does uniqueness of the I/O controller GUID only matter in InfiniBand
+>> networks or does it also matter in other RDMA networks?
+>>
+>> How about using 0 as default value for the srpt_service_guid in RoCE
+>> networks?
+> 
+> How does SRP connection management even work on RoCE?? The CM MADs
+> still carry a service_id? How do the sides exchange the service ID to
+> start the connection? Or is it ultimately overriden in the CM to use
+> an IP port based service ID?
 
-Sure! I didn't realize some actioned is required from me on those.
-I'll add my Acked-by's. Thanks!
+The ib_srpt kernel driver would have to set id_ext to a unique value if 
+srpt_service_guid would be zero since the SRP initiator kernel driver 
+uses the IOC GUID + id_ext + initiator_ext combination in its connection 
+uniqueness check (srp_conn_unique()).
+
+The ib_srp kernel driver supports both the IB/CM and the RDMA/CM. The 
+srp_daemon software tells ib_srp to use the IB/CM. Software like 
+blktests tells ib_srp to use the RDMA/CM. From 
+https://github.com/osandov/blktests/blob/master/tests/srp/rc:
+
+   srp_single_login \
+     "id_ext=$ioc_guid,ioc_guid=$ioc_guid,dest=$dest,$add_param" \
+     "$p/add_target"
+
+The most important parameter in the login string is $dest. That is a 
+string with the following format:
+
+   <IP address>:<port number>.
+
+Bart.
