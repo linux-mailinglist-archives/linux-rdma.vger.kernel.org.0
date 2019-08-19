@@ -2,109 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE23092811
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 17:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70E592826
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Aug 2019 17:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbfHSPLZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 11:11:25 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:40971 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbfHSPLY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 11:11:24 -0400
-Received: by mail-pg1-f196.google.com with SMTP id x15so1386670pgg.8
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 08:11:24 -0700 (PDT)
+        id S1727818AbfHSPQu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 11:16:50 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:46675 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727771AbfHSPQt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 11:16:49 -0400
+Received: by mail-pl1-f195.google.com with SMTP id c2so1104494plz.13
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2019 08:16:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GlFmsxpfwLpG5XFQZcDJGrUJIAXAnOONymKIPYeVWy4=;
+        b=GASLs+yZnKXgCHGknNLNo71e6UtRt515EbzdpWYm/Hpg75x/UubNKrVS4Ph4uPK+8D
+         Ti+bZvb7RwZ8Rgn5diZiCZOC7bC9H+dTrKcVTPMW/pFv9U1AucjO/hRKCCkTBhzRIaU3
+         D9sPMjOcAkw+sn0WiouQhRmANU/HoJXNnBPivxMzU2mCd+1bqEU622XIt7CtOkyBUScf
+         CddY5regO8tRNMImraZP3DECenQ45DhILnBAxk2TuQ3iyHoyjpEbXWuF3zSR6z/Z8e3z
+         D8kAaqFBdLd66b1BOwiK9p1SMntN4cI0JAUQgHjwyJ5ye9BNp3phuuPzg6paxdjmOKUJ
+         Bduw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6J6lEWblAK4hsi7AVZjnjOuY7FG+3npadeKpaVWTO30=;
-        b=DS10kI40SeyOw0jwTBjqgd3ewuNB58aBYHj5bO4NIjQlbUGNVPSaZcR4wM7FQp+MiM
-         eTnpvIa/sTPwqsJXjvPFNDLi9K4cWDwDfVTmCO6o5ae02TCiMbvP7a9m9soMMbfdMGe6
-         Qzn42ruXXsh5LJ0naM0brxYSKayVZVkr487p0X6nKxZ6UcS1qJEx8JppMxI/wSV7PWeJ
-         /UAoZjysoKtV2mRPZAELCFdLwE+EGNC1MWX25FUg0vprW02+HrY+2NAs59aYWlpERBf2
-         dRHrdN4Q8kC+Tfeu2g2wj+PVS8xIsONlnAlcKGT48yIIQBUEl7bOrUB+dNvP3AMb2+3S
-         gPWw==
-X-Gm-Message-State: APjAAAXsuPLz5mGjHRKXLkA0OxSsX6IUjjLncLgHnCGPi+Yf4oYzVgDQ
-        ifPNDEMNJvQ8QXTcB4XO2K8=
-X-Google-Smtp-Source: APXvYqxj0WAaACmO+A2NGDQE+rnIfB9c9/LInBz22E5S/LXM8VDpEEDFL12QQtZKQ3KU3VdMSzypcg==
-X-Received: by 2002:a63:9249:: with SMTP id s9mr19746973pgn.356.1566227483737;
-        Mon, 19 Aug 2019 08:11:23 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id l4sm12628151pjq.9.2019.08.19.08.11.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Aug 2019 08:11:22 -0700 (PDT)
-Subject: Re: [PATCH] RDMA/srpt: Filter out AGN bits
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Hal Rosenstock <hal@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        oulijun <oulijun@huawei.com>
-References: <20190814151507.140572-1-bvanassche@acm.org>
- <20190819122126.GA6509@ziepe.ca>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <d2429292-be75-ee67-2cce-081d9d0aa676@acm.org>
-Date:   Mon, 19 Aug 2019 08:11:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GlFmsxpfwLpG5XFQZcDJGrUJIAXAnOONymKIPYeVWy4=;
+        b=mnMvAt60n1SvjfznBNjQ6R1wQXE9ebYYNP10PAJtRtKScX4++UVxQ1iIRWhAZMsQg6
+         ERWtl3OFQvg1jTXMqyQmJx2y2NuqRtAIieoLBtwHfC6hrraq6rH5XAcOfG6s6BGAsqtd
+         Q54a0NwtjYeDr145qYPCTLH/sPqfdwO9H0MWZbXyT1c+wIBEkbFj9OQhGrP2vWk+gyr9
+         KV2WtGV4IxKyoj99BGxyNkGnKPXkT4sovyQDVLKuSyAFuk7+EK5TMbEwmFuxteqfXst+
+         uDvCp4VhhIt2HcXuVV4CUHUpFg5mniOu4+0O2ue36oXVkJTGB81h87KuhgoSzPE/0Vep
+         JTUA==
+X-Gm-Message-State: APjAAAV5mqlXwLrRKEBMzlxX06upON3J2myjzbmc0os3p5/Vw9bRdAwD
+        UD9718+SFNVmuvFQoCA4/o7mwEv6jNcfDn8abOLlXw==
+X-Google-Smtp-Source: APXvYqxAVYv/X47htv2GfhrYLw10pOmVgC147AdMR4amTTESkgYjtOO9fvfN54mImyUI3YtolKb0GRqZDtWypE7Vt8Q=
+X-Received: by 2002:a17:902:ab96:: with SMTP id f22mr23622721plr.147.1566227808825;
+ Mon, 19 Aug 2019 08:16:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190819122126.GA6509@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <00eb8ba84205c59cac01b1b47615116a461c302c.1566220355.git.andreyknvl@google.com>
+ <20190819150342.sxk3zzxvrxhkpp6j@willie-the-truck>
+In-Reply-To: <20190819150342.sxk3zzxvrxhkpp6j@willie-the-truck>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 19 Aug 2019 17:16:37 +0200
+Message-ID: <CAAeHK+xP6HnLJt_RKW67x8nbJLJp5A=av57BfwiFrA88eFn60w@mail.gmail.com>
+Subject: Re: [PATCH ARM] selftests, arm64: fix uninitialized symbol in tags_test.c
+To:     Will Deacon <will@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        enh <enh@google.com>, Robin Murphy <robin.murphy@arm.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/19/19 5:21 AM, Jason Gunthorpe wrote:
-> On Wed, Aug 14, 2019 at 08:15:07AM -0700, Bart Van Assche wrote:
->> The ib_srpt driver derives its default service GUID from the node GUID
->> of the first encountered HCA. Since that service GUID is passed to
->> ib_cm_listen(), the AGN bits must not be set. Since the AGN bits can
->> be set in the node GUID of RoCE HCAs, filter these bits out. This
->> patch avoids that loading the ib_srpt driver fails as follows for the
->> hns driver:
->>
->>    ib_srpt srpt_add_one(hns_0) failed.
->>
->> Cc: oulijun <oulijun@huawei.com>
->> Reported-by: oulijun <oulijun@huawei.com>
->> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
->>   drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
->> index e25c70a56be6..114bf8d6c82b 100644
->> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
->> @@ -3109,7 +3109,8 @@ static void srpt_add_one(struct ib_device *device)
->>   	srpt_use_srq(sdev, sdev->port[0].port_attrib.use_srq);
->>   
->>   	if (!srpt_service_guid)
->> -		srpt_service_guid = be64_to_cpu(device->node_guid);
->> +		srpt_service_guid = be64_to_cpu(device->node_guid) &
->> +			~IB_SERVICE_ID_AGN_MASK;
-> 
-> This seems kind of sketchy, masking bits in the GUID is going to make
-> it non-unique.. Should we do this only for roce or something?
+On Mon, Aug 19, 2019 at 5:03 PM Will Deacon <will@kernel.org> wrote:
+>
+> On Mon, Aug 19, 2019 at 03:14:42PM +0200, Andrey Konovalov wrote:
+> > Fix tagged_ptr not being initialized when TBI is not enabled.
+> >
+> > Dan Carpenter <dan.carpenter@oracle.com>
+>
+> Guessing this was Reported-by, or has Dan introduced his own tag now? ;)
 
-Hi Jason and Hal,
+Oops, yes, Reported-by :)
 
-The I/O controller GUID can be used in the srp_daemon configuration file 
-for filtering purposes. The srp_daemon only supports IB networks.
+>
+> Got a link to the report?
 
-In the IBTA spec I found the following about the I/O controller GUID: 
-"An EUI-64 GUID used to uniquely identify the controller. This could be 
-the same one as the Node/Port GUID if there is only one controller."
+https://www.spinics.net/lists/linux-kselftest/msg09446.html
 
-Does uniqueness of the I/O controller GUID only matter in InfiniBand 
-networks or does it also matter in other RDMA networks?
-
-How about using 0 as default value for the srpt_service_guid in RoCE 
-networks?
-
-Thanks,
-
-Bart.
-
+>
+> Will
