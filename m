@@ -2,433 +2,443 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 368D895FAC
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 15:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB86295FDE
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 15:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729810AbfHTNPN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Aug 2019 09:15:13 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23480 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729024AbfHTNPM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Aug 2019 09:15:12 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7KDDGCI035203
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Aug 2019 09:15:11 -0400
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2uggd1bxb4-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Aug 2019 09:15:11 -0400
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
-        Tue, 20 Aug 2019 14:15:08 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 20 Aug 2019 14:15:07 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7KDF6el44957838
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Aug 2019 13:15:06 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 66275AE051;
-        Tue, 20 Aug 2019 13:15:06 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 374B2AE05D;
-        Tue, 20 Aug 2019 13:15:06 +0000 (GMT)
-Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Aug 2019 13:15:06 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     jgg@ziepe.ca, geert@linux-m68k.org,
-        Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [PATCH] siw: fix 64/32bit pointer inconsistency.
-Date:   Tue, 20 Aug 2019 15:14:42 +0200
-X-Mailer: git-send-email 2.17.2
-X-TM-AS-GCONF: 00
-x-cbid: 19082013-0012-0000-0000-00000340B65A
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19082013-0013-0000-0000-0000217ADA94
-Message-Id: <20190820131442.26466-1-bmt@zurich.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-20_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908200139
+        id S1729836AbfHTNV1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Aug 2019 09:21:27 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:46418 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728248AbfHTNV1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Aug 2019 09:21:27 -0400
+Received: by mail-qt1-f194.google.com with SMTP id j15so5902734qtl.13
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Aug 2019 06:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2pmfBCcQdsvAyC0PmU8if8EKsdxS4xAr7InqmF2QzJQ=;
+        b=VzCyDU2ECagwCZ/Hs4EJsWJKTYvRYYnr8uNM6vF1bplHvXFIImN+tgc0jIG3CVnyiN
+         IVzC1Ur0VoCd1y9EPZbqnmHMp6U4UuSp6Fs2vVI/qhVF6KwntVPTqC8h5Cte/DwnIAIu
+         4XF6vXziI2SpAYuSLg3G9sm/Wwu8hrf104ls8mZ2HrIgwti+IJJ2+6+AGYIDOZc6LTzI
+         YqWd5dVMBPrJq2CdMc97xzd8VAAygk4u2oTRQR0ebBAcBDoiwgoyDOZ/gqR0EuW8a3qL
+         ChNiw4J0aDf6681+xC+6mf9BuH9aoLuYeSGet2KwmQPHT6I/rNo8cScNvEpWZnHB94Vk
+         bplQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2pmfBCcQdsvAyC0PmU8if8EKsdxS4xAr7InqmF2QzJQ=;
+        b=BsubpRrXHZbIS5R6kEkl/bQw1SNl9kfn0O6+AyOiMZyoHPSBIVhMZWdxr7UZbuw4Cw
+         BjuUmDb3zaRTjd3Edfd6rvehQpRrFAK1hjsOoceOW/+kJX9zg9jAeDvG/ZRXrdSrPXQV
+         mhHtPIBFozdcb4ToXbz/7QvMaGLOA1TeQEEU6P0pul/ypiduc/RJ/wkk14ENUyyLqgLM
+         leV2Ll0FiI4aEUlQNr8ghvvr5kbBk+a6caCOhKn9BRO1MXjihqxiQfnf98ZiY+C4HuPs
+         CVLvHoYhVbN6to7WU9JcDS+ers82r6FbUFaYjFv5rejn5WNSDX58yZRHS8SQfTxmgDi1
+         XZEg==
+X-Gm-Message-State: APjAAAVxiFeqrhoqXMSqfz6BU6G6LqzlXV8hwWp26ew+BQBESYpsdFqT
+        ELyt6r6jS8MCJ8pNgXiG1AK88Q==
+X-Google-Smtp-Source: APXvYqzyrTCO/VP99JxtXczgA1rDyWFq7IhYPTHcavkwziNRRfJwyE9PqcK124vDbgSanUq3GZMrtQ==
+X-Received: by 2002:a05:6214:1254:: with SMTP id q20mr535119qvv.164.1566307286128;
+        Tue, 20 Aug 2019 06:21:26 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id y194sm8371394qkb.111.2019.08.20.06.21.25
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 20 Aug 2019 06:21:25 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1i044j-0000KT-4h; Tue, 20 Aug 2019 10:21:25 -0300
+Date:   Tue, 20 Aug 2019 10:21:25 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Michal Kalderon <michal.kalderon@marvell.com>
+Cc:     mkalderon@marvell.com, aelior@marvell.com, dledford@redhat.com,
+        bmt@zurich.ibm.com, galpress@amazon.com, sleybo@amazon.com,
+        leon@kernel.org, linux-rdma@vger.kernel.org,
+        Ariel Elior <ariel.elior@marvell.com>
+Subject: Re: [PATCH v7 rdma-next 2/7] RDMA/core: Create mmap database and
+ cookie helper functions
+Message-ID: <20190820132125.GC29246@ziepe.ca>
+References: <20190820121847.25871-1-michal.kalderon@marvell.com>
+ <20190820121847.25871-3-michal.kalderon@marvell.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190820121847.25871-3-michal.kalderon@marvell.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fixes improper casting between addresses and unsigned types.
-Changes siw_pbl_get_buffer() function to return appropriate
-dma_addr_t, and not u64.
+On Tue, Aug 20, 2019 at 03:18:42PM +0300, Michal Kalderon wrote:
+> Create some common API's for adding entries to a xa_mmap.
+> Searching for an entry and freeing one.
+> 
+> Most of the code was copied from the efa driver almost as is, just renamed
+> function to be generic and not efa specific.
+> In addition to original code, the xa_mmap entries are now linked
+> to a umap_priv object and reference counted according to umap operations.
+> The fact that this code moved to core enabled managing it differently,
+> so that now entries can be removed and deleted when driver+user are
+> done with them. This enabled changing the insert algorithm in
+> comparison to what was done in efa.
+> 
+> Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
+> Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+>  drivers/infiniband/core/core_priv.h      |  12 +-
+>  drivers/infiniband/core/device.c         |   1 +
+>  drivers/infiniband/core/ib_core_uverbs.c | 343 +++++++++++++++++++++++++++++--
+>  drivers/infiniband/core/rdma_core.c      |   1 +
+>  drivers/infiniband/core/uverbs_cmd.c     |   1 +
+>  drivers/infiniband/core/uverbs_main.c    |  18 +-
+>  include/rdma/ib_verbs.h                  |  41 +++-
+>  7 files changed, 381 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+> index 6850e973401c..4951ecfbf133 100644
+> +++ b/drivers/infiniband/core/core_priv.h
+> @@ -388,9 +388,17 @@ void rdma_nl_net_exit(struct rdma_dev_net *rnet);
+>  struct rdma_umap_priv {
+>  	struct vm_area_struct *vma;
+>  	struct list_head list;
+> +	struct rdma_user_mmap_entry *entry;
+>  };
+>  
+> -void rdma_umap_priv_init(struct rdma_umap_priv *priv,
+> -			 struct vm_area_struct *vma);
+> +int rdma_umap_priv_init(struct vm_area_struct *vma,
+> +			struct rdma_user_mmap_entry *entry);
+> +
+> +void rdma_umap_priv_delete(struct ib_uverbs_file *ufile,
+> +			   struct rdma_umap_priv *priv);
+> +
+> +void rdma_user_mmap_entries_remove_free(struct ib_ucontext *ucontext);
+> +void rdma_user_mmap_entry_put(struct ib_ucontext *ucontext,
+> +			      struct rdma_user_mmap_entry *entry);
+>  
+>  #endif /* _CORE_PRIV_H */
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> index 8892862fb759..229977237d1a 100644
+> +++ b/drivers/infiniband/core/device.c
+> @@ -2594,6 +2594,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+>  	SET_DEVICE_OP(dev_ops, map_mr_sg_pi);
+>  	SET_DEVICE_OP(dev_ops, map_phys_fmr);
+>  	SET_DEVICE_OP(dev_ops, mmap);
+> +	SET_DEVICE_OP(dev_ops, mmap_free);
+>  	SET_DEVICE_OP(dev_ops, modify_ah);
+>  	SET_DEVICE_OP(dev_ops, modify_cq);
+>  	SET_DEVICE_OP(dev_ops, modify_device);
+> diff --git a/drivers/infiniband/core/ib_core_uverbs.c b/drivers/infiniband/core/ib_core_uverbs.c
+> index cab7dc922cf0..cce20172cd71 100644
+> +++ b/drivers/infiniband/core/ib_core_uverbs.c
+> @@ -36,41 +36,98 @@
+>  #include "uverbs.h"
+>  #include "core_priv.h"
+>  
+> -/*
+> - * Each time we map IO memory into user space this keeps track of the mapping.
+> - * When the device is hot-unplugged we 'zap' the mmaps in user space to point
+> - * to the zero page and allow the hot unplug to proceed.
+> +/**
+> + * rdma_umap_priv_init() - Initialize the private data of a vma
+> + *
+> + * @vma: The vm area struct that needs private data
+> + * @entry: entry into the mmap_xa that needs to be linked with
+> + *       this vma
+> + *
+> + * Each time we map IO memory into user space this keeps track
+> + * of the mapping. When the device is hot-unplugged we 'zap' the
+> + * mmaps in user space to point to the zero page and allow the
+> + * hot unplug to proceed.
+>   *
+>   * This is necessary for cases like PCI physical hot unplug as the actual BAR
+>   * memory may vanish after this and access to it from userspace could MCE.
+>   *
+>   * RDMA drivers supporting disassociation must have their user space designed
+>   * to cope in some way with their IO pages going to the zero page.
+> + *
+> + * We extended the umap list usage to track all memory that was mapped by
+> + * user space and not only the IO memory. This will occur for drivers that use
+> + * the mmap_xa database and helper functions
+> + *
+> + * Return 0 on success or -ENOMEM if out of memory
+>   */
+> -void rdma_umap_priv_init(struct rdma_umap_priv *priv,
+> -			 struct vm_area_struct *vma)
+> +int rdma_umap_priv_init(struct vm_area_struct *vma,
+> +			struct rdma_user_mmap_entry *entry)
+>  {
+>  	struct ib_uverbs_file *ufile = vma->vm_file->private_data;
+> +	struct rdma_umap_priv *priv;
+> +
+> +	/* If the xa_mmap is used, private data will already be initialized.
+> +	 * this is required for the cases that rdma_user_mmap_io is called
+> +	 * from drivers that don't use the xa_mmap database yet
+> +	 */
+> +	if (vma->vm_private_data)
+> +		return 0;
 
-In debug prints, all potentially kernel private variables
-are printed as void * to allow keeping that information
-secret.
+?? Still have to track the ufile->umaps though
 
-Fixes: 2c8ccb37b08fe364 ("RDMA/siw: Change CQ flags from 64->32 bits")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reported-by: Jason Gunthorpe <jgg@ziepe.ca>
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
- drivers/infiniband/sw/siw/siw.h       |  6 ++--
- drivers/infiniband/sw/siw/siw_cq.c    |  2 +-
- drivers/infiniband/sw/siw/siw_mem.c   |  2 +-
- drivers/infiniband/sw/siw/siw_mem.h   |  2 +-
- drivers/infiniband/sw/siw/siw_qp.c    |  2 +-
- drivers/infiniband/sw/siw/siw_qp_rx.c | 18 ++++++-----
- drivers/infiniband/sw/siw/siw_qp_tx.c | 43 ++++++++++++++-------------
- drivers/infiniband/sw/siw/siw_verbs.c | 19 +++++++-----
- 8 files changed, 51 insertions(+), 43 deletions(-)
+> +/**
+> + * rdma_user_mmap_entry_put() - drop reference to the mmap entry
+> + *
+> + * @ucontext: associated user context.
+> + * @entry: An entry in the mmap_xa.
+> + *
+> + * This function is called when the mapping is closed or when
+> + * the driver is done with the entry for some other reason.
+> + * Should be called after rdma_user_mmap_entry_get was called
+> + * and entry is no longer needed. This function will erase the
+> + * entry and free it if it's refcnt reaches zero.
+> + */
+> +void rdma_user_mmap_entry_put(struct ib_ucontext *ucontext,
+> +			      struct rdma_user_mmap_entry *entry)
+> +{
+> +	WARN_ON(!kref_read(&entry->ref));
 
-diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-index 77b1aabf6ff3..b7838e95fcc1 100644
---- a/drivers/infiniband/sw/siw/siw.h
-+++ b/drivers/infiniband/sw/siw/siw.h
-@@ -138,9 +138,9 @@ struct siw_umem {
- };
- 
- struct siw_pble {
--	u64 addr; /* Address of assigned user buffer */
--	u64 size; /* Size of this entry */
--	u64 pbl_off; /* Total offset from start of PBL */
-+	dma_addr_t addr; /* Address of assigned buffer */
-+	unsigned int size; /* Size of this entry */
-+	unsigned long pbl_off; /* Total offset from start of PBL */
- };
- 
- struct siw_pbl {
-diff --git a/drivers/infiniband/sw/siw/siw_cq.c b/drivers/infiniband/sw/siw/siw_cq.c
-index e381ae9b7d62..9637f43a6ff1 100644
---- a/drivers/infiniband/sw/siw/siw_cq.c
-+++ b/drivers/infiniband/sw/siw/siw_cq.c
-@@ -73,7 +73,7 @@ int siw_reap_cqe(struct siw_cq *cq, struct ib_wc *wc)
- 			wc->qp = cqe->base_qp;
- 			siw_dbg_cq(cq, "idx %u, type %d, flags %2x, id 0x%p\n",
- 				   cq->cq_get % cq->num_cqe, cqe->opcode,
--				   cqe->flags, (void *)cqe->id);
-+				   cqe->flags, (void *)(uintptr_t)cqe->id);
- 		}
- 		WRITE_ONCE(cqe->flags, 0);
- 		cq->cq_get++;
-diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-index 67171c82b0c4..93d1fbd25e79 100644
---- a/drivers/infiniband/sw/siw/siw_mem.c
-+++ b/drivers/infiniband/sw/siw/siw_mem.c
-@@ -330,7 +330,7 @@ int siw_invalidate_stag(struct ib_pd *pd, u32 stag)
-  * Optionally, provides remaining len within current element, and
-  * current PBL index for later resume at same element.
-  */
--u64 siw_pbl_get_buffer(struct siw_pbl *pbl, u64 off, int *len, int *idx)
-+dma_addr_t siw_pbl_get_buffer(struct siw_pbl *pbl, u64 off, int *len, int *idx)
- {
- 	int i = idx ? *idx : 0;
- 
-diff --git a/drivers/infiniband/sw/siw/siw_mem.h b/drivers/infiniband/sw/siw/siw_mem.h
-index f43daf280891..db138c8423da 100644
---- a/drivers/infiniband/sw/siw/siw_mem.h
-+++ b/drivers/infiniband/sw/siw/siw_mem.h
-@@ -9,7 +9,7 @@
- struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable);
- void siw_umem_release(struct siw_umem *umem, bool dirty);
- struct siw_pbl *siw_pbl_alloc(u32 num_buf);
--u64 siw_pbl_get_buffer(struct siw_pbl *pbl, u64 off, int *len, int *idx);
-+dma_addr_t siw_pbl_get_buffer(struct siw_pbl *pbl, u64 off, int *len, int *idx);
- struct siw_mem *siw_mem_id2obj(struct siw_device *sdev, int stag_index);
- int siw_mem_add(struct siw_device *sdev, struct siw_mem *m);
- int siw_invalidate_stag(struct ib_pd *pd, u32 stag);
-diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
-index 0990307c5d2c..430314c8abd9 100644
---- a/drivers/infiniband/sw/siw/siw_qp.c
-+++ b/drivers/infiniband/sw/siw/siw_qp.c
-@@ -949,7 +949,7 @@ int siw_activate_tx(struct siw_qp *qp)
- 				rv = -EINVAL;
- 				goto out;
- 			}
--			wqe->sqe.sge[0].laddr = (u64)&wqe->sqe.sge[1];
-+			wqe->sqe.sge[0].laddr = (uintptr_t)&wqe->sqe.sge[1];
- 			wqe->sqe.sge[0].lkey = 0;
- 			wqe->sqe.num_sge = 1;
- 		}
-diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
-index f87657a11657..22dc01ea9e8d 100644
---- a/drivers/infiniband/sw/siw/siw_qp_rx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
-@@ -40,7 +40,8 @@ static int siw_rx_umem(struct siw_rx_stream *srx, struct siw_umem *umem,
- 		if (unlikely(!p)) {
- 			pr_warn("siw: %s: [QP %u]: bogus addr: %p, %p\n",
- 				__func__, qp_id(rx_qp(srx)),
--				(void *)dest_addr, (void *)umem->fp_addr);
-+				(void *)(uintptr_t)dest_addr,
-+				(void *)(uintptr_t)umem->fp_addr);
- 			/* siw internal error */
- 			srx->skb_copied += copied;
- 			srx->skb_new -= copied;
-@@ -132,7 +133,7 @@ static int siw_rx_pbl(struct siw_rx_stream *srx, int *pbl_idx,
- 
- 	while (len) {
- 		int bytes;
--		u64 buf_addr =
-+		dma_addr_t buf_addr =
- 			siw_pbl_get_buffer(pbl, offset, &bytes, pbl_idx);
- 		if (!buf_addr)
- 			break;
-@@ -485,8 +486,8 @@ int siw_proc_send(struct siw_qp *qp)
- 		mem_p = *mem;
- 		if (mem_p->mem_obj == NULL)
- 			rv = siw_rx_kva(srx,
--					(void *)(sge->laddr + frx->sge_off),
--					sge_bytes);
-+				(void *)(uintptr_t)(sge->laddr + frx->sge_off),
-+				sge_bytes);
- 		else if (!mem_p->is_pbl)
- 			rv = siw_rx_umem(srx, mem_p->umem,
- 					 sge->laddr + frx->sge_off, sge_bytes);
-@@ -598,8 +599,8 @@ int siw_proc_write(struct siw_qp *qp)
- 
- 	if (mem->mem_obj == NULL)
- 		rv = siw_rx_kva(srx,
--				(void *)(srx->ddp_to + srx->fpdu_part_rcvd),
--				bytes);
-+			(void *)(uintptr_t)(srx->ddp_to + srx->fpdu_part_rcvd),
-+			bytes);
- 	else if (!mem->is_pbl)
- 		rv = siw_rx_umem(srx, mem->umem,
- 				 srx->ddp_to + srx->fpdu_part_rcvd, bytes);
-@@ -841,8 +842,9 @@ int siw_proc_rresp(struct siw_qp *qp)
- 	bytes = min(srx->fpdu_part_rem, srx->skb_new);
- 
- 	if (mem_p->mem_obj == NULL)
--		rv = siw_rx_kva(srx, (void *)(sge->laddr + wqe->processed),
--				bytes);
-+		rv = siw_rx_kva(srx,
-+			(void *)(uintptr_t)(sge->laddr + wqe->processed),
-+			bytes);
- 	else if (!mem_p->is_pbl)
- 		rv = siw_rx_umem(srx, mem_p->umem, sge->laddr + wqe->processed,
- 				 bytes);
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 43020d2040fc..1dca4aade09a 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -26,7 +26,7 @@ static struct page *siw_get_pblpage(struct siw_mem *mem, u64 addr, int *idx)
- {
- 	struct siw_pbl *pbl = mem->pbl;
- 	u64 offset = addr - mem->va;
--	u64 paddr = siw_pbl_get_buffer(pbl, offset, NULL, idx);
-+	dma_addr_t paddr = siw_pbl_get_buffer(pbl, offset, NULL, idx);
- 
- 	if (paddr)
- 		return virt_to_page(paddr);
-@@ -37,7 +37,7 @@ static struct page *siw_get_pblpage(struct siw_mem *mem, u64 addr, int *idx)
- /*
-  * Copy short payload at provided destination payload address
-  */
--static int siw_try_1seg(struct siw_iwarp_tx *c_tx, u64 paddr)
-+static int siw_try_1seg(struct siw_iwarp_tx *c_tx, void *paddr)
- {
- 	struct siw_wqe *wqe = &c_tx->wqe_active;
- 	struct siw_sge *sge = &wqe->sqe.sge[0];
-@@ -50,17 +50,18 @@ static int siw_try_1seg(struct siw_iwarp_tx *c_tx, u64 paddr)
- 		return 0;
- 
- 	if (tx_flags(wqe) & SIW_WQE_INLINE) {
--		memcpy((void *)paddr, &wqe->sqe.sge[1], bytes);
-+		memcpy(paddr, &wqe->sqe.sge[1], bytes);
- 	} else {
- 		struct siw_mem *mem = wqe->mem[0];
- 
- 		if (!mem->mem_obj) {
- 			/* Kernel client using kva */
--			memcpy((void *)paddr, (void *)sge->laddr, bytes);
-+			memcpy(paddr,
-+			       (const void *)(uintptr_t)sge->laddr, bytes);
- 		} else if (c_tx->in_syscall) {
--			if (copy_from_user((void *)paddr,
--					   (const void __user *)sge->laddr,
--					   bytes))
-+			if (copy_from_user(paddr,
-+				(const void __user *)(uintptr_t)sge->laddr,
-+				bytes))
- 				return -EFAULT;
- 		} else {
- 			unsigned int off = sge->laddr & ~PAGE_MASK;
-@@ -79,12 +80,12 @@ static int siw_try_1seg(struct siw_iwarp_tx *c_tx, u64 paddr)
- 			buffer = kmap_atomic(p);
- 
- 			if (likely(PAGE_SIZE - off >= bytes)) {
--				memcpy((void *)paddr, buffer + off, bytes);
-+				memcpy(paddr, buffer + off, bytes);
- 				kunmap_atomic(buffer);
- 			} else {
- 				unsigned long part = bytes - (PAGE_SIZE - off);
- 
--				memcpy((void *)paddr, buffer + off, part);
-+				memcpy(paddr, buffer + off, part);
- 				kunmap_atomic(buffer);
- 
- 				if (!mem->is_pbl)
-@@ -98,7 +99,7 @@ static int siw_try_1seg(struct siw_iwarp_tx *c_tx, u64 paddr)
- 					return -EFAULT;
- 
- 				buffer = kmap_atomic(p);
--				memcpy((void *)(paddr + part), buffer,
-+				memcpy(paddr + part, buffer,
- 				       bytes - part);
- 				kunmap_atomic(buffer);
- 			}
-@@ -166,7 +167,7 @@ static int siw_qp_prepare_tx(struct siw_iwarp_tx *c_tx)
- 		c_tx->ctrl_len = sizeof(struct iwarp_send);
- 
- 		crc = (char *)&c_tx->pkt.send_pkt.crc;
--		data = siw_try_1seg(c_tx, (u64)crc);
-+		data = siw_try_1seg(c_tx, crc);
- 		break;
- 
- 	case SIW_OP_SEND_REMOTE_INV:
-@@ -189,7 +190,7 @@ static int siw_qp_prepare_tx(struct siw_iwarp_tx *c_tx)
- 		c_tx->ctrl_len = sizeof(struct iwarp_send_inv);
- 
- 		crc = (char *)&c_tx->pkt.send_pkt.crc;
--		data = siw_try_1seg(c_tx, (u64)crc);
-+		data = siw_try_1seg(c_tx, crc);
- 		break;
- 
- 	case SIW_OP_WRITE:
-@@ -201,7 +202,7 @@ static int siw_qp_prepare_tx(struct siw_iwarp_tx *c_tx)
- 		c_tx->ctrl_len = sizeof(struct iwarp_rdma_write);
- 
- 		crc = (char *)&c_tx->pkt.write_pkt.crc;
--		data = siw_try_1seg(c_tx, (u64)crc);
-+		data = siw_try_1seg(c_tx, crc);
- 		break;
- 
- 	case SIW_OP_READ_RESPONSE:
-@@ -216,7 +217,7 @@ static int siw_qp_prepare_tx(struct siw_iwarp_tx *c_tx)
- 		c_tx->ctrl_len = sizeof(struct iwarp_rdma_rresp);
- 
- 		crc = (char *)&c_tx->pkt.write_pkt.crc;
--		data = siw_try_1seg(c_tx, (u64)crc);
-+		data = siw_try_1seg(c_tx, crc);
- 		break;
- 
- 	default:
-@@ -473,7 +474,8 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 			 * tx from kernel virtual address: either inline data
- 			 * or memory region with assigned kernel buffer
- 			 */
--			iov[seg].iov_base = (void *)(sge->laddr + sge_off);
-+			iov[seg].iov_base =
-+				(void *)(uintptr_t)(sge->laddr + sge_off);
- 			iov[seg].iov_len = sge_len;
- 
- 			if (do_crc)
-@@ -526,13 +528,13 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 						page_address(p) + fp_off,
- 						plen);
- 			} else {
--				u64 pa = ((sge->laddr + sge_off) & PAGE_MASK);
-+				u64 va = sge->laddr + sge_off;
- 
--				page_array[seg] = virt_to_page(pa);
-+				page_array[seg] = virt_to_page(va & PAGE_MASK);
- 				if (do_crc)
- 					crypto_shash_update(
- 						c_tx->mpa_crc_hd,
--						(void *)(sge->laddr + sge_off),
-+						(void *)(uintptr_t)va,
- 						plen);
- 			}
- 
-@@ -829,7 +831,8 @@ static int siw_qp_sq_proc_tx(struct siw_qp *qp, struct siw_wqe *wqe)
- 					rv = -EINVAL;
- 					goto tx_error;
- 				}
--				wqe->sqe.sge[0].laddr = (u64)&wqe->sqe.sge[1];
-+				wqe->sqe.sge[0].laddr =
-+					(u64)(uintptr_t)&wqe->sqe.sge[1];
- 			}
- 		}
- 		wqe->wr_status = SIW_WR_INPROGRESS;
-@@ -924,7 +927,7 @@ static int siw_qp_sq_proc_tx(struct siw_qp *qp, struct siw_wqe *wqe)
- 
- static int siw_fastreg_mr(struct ib_pd *pd, struct siw_sqe *sqe)
- {
--	struct ib_mr *base_mr = (struct ib_mr *)sqe->base_mr;
-+	struct ib_mr *base_mr = (struct ib_mr *)(uintptr_t)sqe->base_mr;
- 	struct siw_device *sdev = to_siw_dev(pd->device);
- 	struct siw_mem *mem = siw_mem_id2obj(sdev, sqe->rkey  >> 8);
- 	int rv = 0;
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index e7f3a2379d9d..7abe29aeea35 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -662,7 +662,7 @@ static int siw_copy_inline_sgl(const struct ib_send_wr *core_wr,
- 	void *kbuf = &sqe->sge[1];
- 	int num_sge = core_wr->num_sge, bytes = 0;
- 
--	sqe->sge[0].laddr = (u64)kbuf;
-+	sqe->sge[0].laddr = (uintptr_t)kbuf;
- 	sqe->sge[0].lkey = 0;
- 
- 	while (num_sge--) {
-@@ -825,7 +825,7 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
- 			break;
- 
- 		case IB_WR_REG_MR:
--			sqe->base_mr = (uint64_t)reg_wr(wr)->mr;
-+			sqe->base_mr = (uintptr_t)reg_wr(wr)->mr;
- 			sqe->rkey = reg_wr(wr)->key;
- 			sqe->access = reg_wr(wr)->access & IWARP_ACCESS_MASK;
- 			sqe->opcode = SIW_OP_REG_MR;
-@@ -843,7 +843,8 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
- 			break;
- 		}
- 		siw_dbg_qp(qp, "opcode %d, flags 0x%x, wr_id 0x%p\n",
--			   sqe->opcode, sqe->flags, (void *)sqe->id);
-+			   sqe->opcode, sqe->flags,
-+			   (void *)(uintptr_t)sqe->id);
- 
- 		if (unlikely(rv < 0))
- 			break;
-@@ -1363,7 +1364,7 @@ int siw_map_mr_sg(struct ib_mr *base_mr, struct scatterlist *sl, int num_sle,
- 	struct siw_mem *mem = mr->mem;
- 	struct siw_pbl *pbl = mem->pbl;
- 	struct siw_pble *pble;
--	u64 pbl_size;
-+	unsigned long pbl_size;
- 	int i, rv;
- 
- 	if (!pbl) {
-@@ -1402,16 +1403,18 @@ int siw_map_mr_sg(struct ib_mr *base_mr, struct scatterlist *sl, int num_sle,
- 			pbl_size += sg_dma_len(slp);
- 		}
- 		siw_dbg_mem(mem,
--			"sge[%d], size %llu, addr 0x%016llx, total %llu\n",
--			i, pble->size, pble->addr, pbl_size);
-+			"sge[%d], size %u, addr 0x%p, total %lu\n",
-+			i, pble->size, (void *)(uintptr_t)pble->addr,
-+			pbl_size);
- 	}
- 	rv = ib_sg_to_pages(base_mr, sl, num_sle, sg_off, siw_set_pbl_page);
- 	if (rv > 0) {
- 		mem->len = base_mr->length;
- 		mem->va = base_mr->iova;
- 		siw_dbg_mem(mem,
--			"%llu bytes, start 0x%016llx, %u SLE to %u entries\n",
--			mem->len, mem->va, num_sle, pbl->num_buf);
-+			"%llu bytes, start 0x%p, %u SLE to %u entries\n",
-+			mem->len, (void *)(uintptr_t)mem->va, num_sle,
-+			pbl->num_buf);
- 	}
- 	return rv;
- }
--- 
-2.17.2
+kref_put does this internally when refcount debugging is enabled
 
+> +	kref_put(&entry->ref, rdma_user_mmap_entry_free);
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entry_put);
+> +
+> +/**
+> + * rdma_user_mmap_entry_remove() - Remove a key's entry from the mmap_xa
+> + *
+> + * @ucontext: associated user context.
+> + * @key: The key to be deleted
+> + *
+> + * This function will find if there is an entry matching the key and if so
+> + * decrease it's refcnt, which will in turn delete the entry if its refcount
+> + * reaches zero.
+> + */
+> +void rdma_user_mmap_entry_remove(struct ib_ucontext *ucontext, u64 key)
+> +{
+> +	struct rdma_user_mmap_entry *entry;
+> +	u32 mmap_page;
+> +
+> +	if (key == RDMA_USER_MMAP_INVALID)
+> +		return;
+> +
+> +	mmap_page = key >> PAGE_SHIFT;
+> +	if (mmap_page > U32_MAX)
+> +		return;
+> +
+> +	entry = xa_load(&ucontext->mmap_xa, mmap_page);
+> +	if (!entry)
+> +		return;
+> +
+> +	rdma_user_mmap_entry_put(ucontext, entry);
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entry_remove);
+> +
+> +/**
+> + * rdma_user_mmap_entry_insert() - Allocate and insert an entry to the mmap_xa.
+> + *
+> + * @ucontext: associated user context.
+> + * @obj: opaque driver object that will be stored in the entry.
+> + * @address: The address that will be mmapped to the user
+> + * @length: Length of the address that will be mmapped
+> + * @mmap_flag: opaque driver flags related to the address (For
+> + *           example could be used for cachability)
+> + *
+> + * This function should be called by drivers that use the rdma_user_mmap
+> + * interface for handling user mmapped addresses. The database is handled in
+> + * the core and helper functions are provided to insert entries into the
+> + * database and extract entries when the user call mmap with the given key.
+> + * The function returns a unique key that should be provided to user, the user
+> + * will use the key to map the given address.
+> + *
+> + * Return: unique key or RDMA_USER_MMAP_INVALID if entry was not added.
+> + */
+> +u64 rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext, void *obj,
+> +				u64 address, u64 length, u8 mmap_flag)
+> +{
+> +	XA_STATE(xas, &ucontext->mmap_xa, 0);
+> +	struct rdma_user_mmap_entry *entry;
+> +	unsigned long index = 0, index_max;
+> +	u32 xa_first, xa_last, npages;
+> +	int err, i;
+> +	void *ent;
+> +
+> +	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+> +	if (!entry)
+> +		return RDMA_USER_MMAP_INVALID;
+> +
+> +	entry->obj = obj;
+
+It is more a kernel pattern to have the driver allocate a
+rdma_user_mmap_entry and extend it with its 'priv', then use
+container_of
+
+
+> +	entry->address = address;
+> +	entry->length = length;
+> +	kref_init(&entry->ref);
+> +	entry->mmap_flag = mmap_flag;
+> +	entry->ucontext = ucontext;
+> +
+> +	xa_lock(&ucontext->mmap_xa);
+> +
+> +	/* We want to find an empty range */
+> +	npages = (u32)DIV_ROUND_UP(length, PAGE_SIZE);
+> +	do {
+> +		/* First find an empty index */
+> +		xas_find_marked(&xas, U32_MAX, XA_FREE_MARK);
+> +		if (xas.xa_node == XAS_RESTART)
+> +			goto err_unlock;
+> +
+> +		xa_first = xas.xa_index;
+> +
+> +		/* Is there enough room to have the range? */
+> +		if (check_add_overflow(xa_first, npages, &xa_last))
+> +			goto err_unlock;
+> +
+> +		/* Iterate over all present entries in the range. If a present
+> +		 * entry exists we will finish this with the largest index
+> +		 * occupied in the range which will serve as the start of the
+> +		 * new search
+> +		 */
+> +		index_max = xa_last;
+> +		xa_for_each_start(&ucontext->mmap_xa, index, ent, xa_first)
+
+I think this can just be written as xas_next_entry() ?
+
+And if it returns something we know the range xa_first -> xas.xa_index
+is not occupied, then check if it has the right size? Otherwise the
+range xa_first -> U32_MAX
+
+
+> +			if (index < xa_last)
+> +				index_max = index;
+> +			else
+> +				break;
+> +		if (index_max == xa_last) /* range is free */
+> +			break;
+> +		/* o/w start again from largest index found in range */
+> +		xas_set(&xas, index_max);
+> +	} while (true);
+> +
+> +	for (i = xa_first; i < xa_last; i++) {
+> +		err = __xa_insert(&ucontext->mmap_xa, i, entry, GFP_KERNEL);
+
+Hum, keep in mind this is a bit tricky as the __xa_insert will drop
+the xa_lock lock to allocate and a parallel thread could jump into the
+gap
+
+This seems undesirable, so we probably need to enclose the whole thing
+in a sleeping mutex. Can probably use the umap_lock
+
+> +void rdma_user_mmap_entries_remove_free(struct ib_ucontext *ucontext)
+> +{
+> +	struct rdma_user_mmap_entry *entry;
+> +	unsigned long mmap_page;
+> +
+> +	WARN_ON(!xa_empty(&ucontext->mmap_xa));
+> +	xa_for_each(&ucontext->mmap_xa, mmap_page, entry) {
+> +		ibdev_dbg(ucontext->device,
+> +			  "mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx] removed\n",
+> +			  entry->obj, rdma_user_mmap_get_key(entry),
+> +			  entry->address, entry->length);
+> +
+> +		/* override the refcnt to make sure entry is deleted */
+> +		kref_init(&entry->ref);
+
+Yikes, no. The zap flow has to clean this up so the kref goes
+naturally to zero.
+
+> +		rdma_user_mmap_entry_put(ucontext, entry);
+> +	}
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entries_remove_free);
+> diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
+> index ccf4d069c25c..7166741834c8 100644
+> +++ b/drivers/infiniband/core/rdma_core.c
+> @@ -817,6 +817,7 @@ static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
+>  	rdma_restrack_del(&ucontext->res);
+>  
+>  	ib_dev->ops.dealloc_ucontext(ucontext);
+> +	rdma_user_mmap_entries_remove_free(ucontext);
+>  	kfree(ucontext);
+>  
+>  	ufile->ucontext = NULL;
+> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+> index 7ddd0e5bc6b3..4903e6eee854 100644
+> +++ b/drivers/infiniband/core/uverbs_cmd.c
+> @@ -254,6 +254,7 @@ static int ib_uverbs_get_context(struct uverbs_attr_bundle *attrs)
+>  
+>  	mutex_init(&ucontext->per_mm_list_lock);
+>  	INIT_LIST_HEAD(&ucontext->per_mm_list);
+> +	xa_init_flags(&ucontext->mmap_xa, XA_FLAGS_ALLOC);
+>  
+>  	ret = get_unused_fd_flags(O_CLOEXEC);
+>  	if (ret < 0)
+> diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+> index 180a5e0f70e4..80d0d3467d93 100644
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -802,7 +802,7 @@ static void rdma_umap_open(struct vm_area_struct *vma)
+>  {
+>  	struct ib_uverbs_file *ufile = vma->vm_file->private_data;
+>  	struct rdma_umap_priv *opriv = vma->vm_private_data;
+> -	struct rdma_umap_priv *priv;
+> +	int ret;
+>  
+>  	if (!opriv)
+>  		return;
+> @@ -816,10 +816,12 @@ static void rdma_umap_open(struct vm_area_struct *vma)
+>  	if (!ufile->ucontext)
+>  		goto out_unlock;
+>  
+> -	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+> -	if (!priv)
+> +	if (opriv->entry)
+> +		kref_get(&opriv->entry->ref);
+> +
+> +	ret = rdma_umap_priv_init(vma, opriv->entry);
+> +	if (ret)
+>  		goto out_unlock;
+> -	rdma_umap_priv_init(priv, vma);
+>  
+>  	up_read(&ufile->hw_destroy_rwsem);
+>  	return;
+> @@ -844,15 +846,15 @@ static void rdma_umap_close(struct vm_area_struct *vma)
+>  	if (!priv)
+>  		return;
+>  
+> +	if (priv->entry)
+> +		rdma_user_mmap_entry_put(ufile->ucontext, priv->entry);
+> +
+>  	/*
+>  	 * The vma holds a reference on the struct file that created it, which
+>  	 * in turn means that the ib_uverbs_file is guaranteed to exist at
+>  	 * this point.
+>  	 */
+> -	mutex_lock(&ufile->umap_lock);
+> -	list_del(&priv->list);
+> -	mutex_unlock(&ufile->umap_lock);
+> -	kfree(priv);
+> +	rdma_umap_priv_delete(ufile, priv);
+>  }
+>  
+>  /*
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index 391499008a22..b66c197a7079 100644
+> +++ b/include/rdma/ib_verbs.h
+> @@ -1479,6 +1479,7 @@ struct ib_ucontext {
+>  	 * Implementation details of the RDMA core, don't use in drivers:
+>  	 */
+>  	struct rdma_restrack_entry res;
+> +	struct xarray mmap_xa;
+>  };
+>  
+>  struct ib_uobject {
+> @@ -2259,6 +2260,19 @@ struct iw_cm_conn_param;
+>  
+>  #define DECLARE_RDMA_OBJ_SIZE(ib_struct) size_t size_##ib_struct
+>  
+> +#define RDMA_USER_MMAP_FLAG_SHIFT 56
+> +#define RDMA_USER_MMAP_PAGE_MASK GENMASK(EFA_MMAP_FLAG_SHIFT - 1, 0)
+
+Why is something called EFA_MMAP_FLAGS_SHIFT in ib_verbs.h?
+
+Jason
