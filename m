@@ -2,164 +2,264 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC3A9522F
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 02:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA49952CE
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 02:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728830AbfHTAHu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 20:07:50 -0400
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:17228 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728828AbfHTAHt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 20:07:49 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d5b39d20003>; Mon, 19 Aug 2019 17:07:46 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 19 Aug 2019 17:07:47 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 19 Aug 2019 17:07:47 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Aug
- 2019 00:07:46 +0000
-Received: from [10.2.161.11] (172.20.13.39) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Aug
- 2019 00:07:46 +0000
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-To:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>
-CC:     Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Michal Hocko <mhocko@suse.com>,
-        <linux-xfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-ext4@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190814101714.GA26273@quack2.suse.cz>
- <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
- <20190815130558.GF14313@quack2.suse.cz>
- <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
- <20190817022603.GW6129@dread.disaster.area>
- <20190819063412.GA20455@quack2.suse.cz>
- <20190819092409.GM7777@dread.disaster.area>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <ae64491b-85f8-eeca-14e8-2f09caf8abd2@nvidia.com>
-Date:   Mon, 19 Aug 2019 17:05:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190819092409.GM7777@dread.disaster.area>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1566259666; bh=LvsaO/W/E/mixOshAJzHMebgelNBff1xUMLnLN/pLvo=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=NsArZvwEDvm66ilI2A1eoZO1p7yAFDlWQdBa+cdoJUp6xnObqdh93g35BKg+RAtqq
-         5uv3Rpv0MuFMd/RYZ+O+Jeptq6JJ6o3taZk4nS4LtTZnX4hTh9GqjKQbTdHTwW9HVp
-         BL9NB7wfaZ5V4qvIsbaf4YFIY9zcb6TByHfWZ9IgOXgD8Wbil7W1m8ED+j7+rcnkQl
-         R38dD9UnwVcboo7pgRnIY03uxeSGgS/jha4G1NHtzdfKimjXq5O1uAc177Y0Z1cbBj
-         hv8AgOnUWOj++DPbwNeuv9z8Ol83AEAbe60Oaxg1fbVgjXs2MuIf4ZQL7pw0cVuDcY
-         izLC9uCreFx8A==
+        id S1728647AbfHTAnz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 20:43:55 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:44632 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728580AbfHTAnz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 20:43:55 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7K0hlYa084540;
+        Tue, 20 Aug 2019 00:43:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id; s=corp-2019-08-05;
+ bh=jUKoGz6dLyZKPy1hVZucbIQKRceX9z/kHIo+jbbs4BE=;
+ b=Q9UaDJGnz/meiBUOyoH2dMm84CjAPwaL06ZW1z1l+HuI+Uk1eUSkiiIJz3ewOwHOCM08
+ lANh+BJEUwfNu7QbIUGmeMHsoCgcf6a1QREGx+ueBHB9EL/FxaUrSDPGPkqD7nfbOWWv
+ gxvyNINi8tCIPs8Xbl/K2IN8m1ODfYJ/dy1o1DWI+A+zmn8NLWrVX3/HIPP4tqCNjp+V
+ 7xO7aP95BaeL3WEM+mmrMXlwwb3FKEoEr1ItFuZcuDUhej37PBbxpG/rkAOd2VZKSxfX
+ NSqUAKc4IAhsa2MzaPDMzjgz71XNXY3L041/koaXbVLne6c4KR7o0btFT+9Jbv9K3hfG 8w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2uea7qjms3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Aug 2019 00:43:46 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7K0hIXl085372;
+        Tue, 20 Aug 2019 00:43:46 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 2uejxermf9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 20 Aug 2019 00:43:46 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7K0hjoe086899;
+        Tue, 20 Aug 2019 00:43:45 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2uejxermf6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Aug 2019 00:43:45 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7K0hiC7016346;
+        Tue, 20 Aug 2019 00:43:44 GMT
+Received: from shipfan.cn.oracle.com (/10.113.210.105)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 19 Aug 2019 17:43:43 -0700
+From:   Zhu Yanjun <yanjun.zhu@oracle.com>
+To:     davem@davemloft.net, yanjun.zhu@oracle.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
+Subject: [PATCH 1/1] net: rds: add service level support in rds-info
+Date:   Mon, 19 Aug 2019 20:52:21 -0400
+Message-Id: <1566262341-18165-1-git-send-email-yanjun.zhu@oracle.com>
+X-Mailer: git-send-email 2.7.4
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9354 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908200002
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/19/19 2:24 AM, Dave Chinner wrote:
-> On Mon, Aug 19, 2019 at 08:34:12AM +0200, Jan Kara wrote:
->> On Sat 17-08-19 12:26:03, Dave Chinner wrote:
->>> On Fri, Aug 16, 2019 at 12:05:28PM -0700, Ira Weiny wrote:
->>>> On Thu, Aug 15, 2019 at 03:05:58PM +0200, Jan Kara wrote:
->>>>> On Wed 14-08-19 11:08:49, Ira Weiny wrote:
->>>>>> On Wed, Aug 14, 2019 at 12:17:14PM +0200, Jan Kara wrote:
+From IB specific 7.6.5 SERVICE LEVEL, Service Level (SL)
+is used to identify different flows within an IBA subnet.
+It is carried in the local route header of the packet.
+
+Before this commit, run "rds-info -I". The output is as
+below:
+"
+RDS IB Connections:
+ LocalAddr  RemoteAddr Tos SL  LocalDev               RemoteDev
+192.2.95.3  192.2.95.1  2   0  fe80::21:28:1a:39  fe80::21:28:10:b9
+192.2.95.3  192.2.95.1  1   0  fe80::21:28:1a:39  fe80::21:28:10:b9
+192.2.95.3  192.2.95.1  0   0  fe80::21:28:1a:39  fe80::21:28:10:b9
+"
+After this commit, the output is as below:
+"
+RDS IB Connections:
+ LocalAddr  RemoteAddr Tos SL  LocalDev               RemoteDev
+192.2.95.3  192.2.95.1  2   2  fe80::21:28:1a:39  fe80::21:28:10:b9
+192.2.95.3  192.2.95.1  1   1  fe80::21:28:1a:39  fe80::21:28:10:b9
+192.2.95.3  192.2.95.1  0   0  fe80::21:28:1a:39  fe80::21:28:10:b9
+"
+
+The commit fe3475af3bdf ("net: rds: add per rds connection cache
+statistics") adds cache_allocs in struct rds_info_rdma_connection
+as below:
+struct rds_info_rdma_connection {
 ...
-> The last close is an interesting case because the __fput() call
-> actually runs from task_work() context, not where the last reference
-> is actually dropped. So it already has certain specific interactions
-> with signals and task exit processing via task_add_work() and
-> task_work_run().
-> 
-> task_add_work() calls set_notify_resume(task), so if nothing else
-> triggers when returning to userspace we run this path:
-> 
-> exit_to_usermode_loop()
->    tracehook_notify_resume()
->      task_work_run()
->        __fput()
-> 	locks_remove_file()
-> 	  locks_remove_lease()
-> 	    ....
-> 
-> It's worth noting that locks_remove_lease() does a
-> percpu_down_read() which means we can already block in this context
-> removing leases....
-> 
-> If there is a signal pending, the task work is run this way (before
-> the above notify path):
-> 
-> exit_to_usermode_loop()
->    do_signal()
->      get_signal()
->        task_work_run()
->          __fput()
-> 
-> We can detect this case via signal_pending() and even SIGKILL via
-> fatal_signal_pending(), and so we can decide not to block based on
-> the fact the process is about to be reaped and so the lease largely
-> doesn't matter anymore. I'd argue that it is close and we can't
-> easily back out, so we'd only break the block on a fatal signal....
-> 
-> And then, of course, is the call path through do_exit(), which has
-> the PF_EXITING task flag set:
-> 
-> do_exit()
->    exit_task_work()
->      task_work_run()
->        __fput()
-> 
-> and so it's easy to avoid blocking in this case, too.
+        __u32           rdma_mr_max;
+        __u32           rdma_mr_size;
+        __u8            tos;
+        __u32           cache_allocs;
+ };
+The peer struct in rds-tools of struct rds_info_rdma_connection is as
+below:
+struct rds_info_rdma_connection {
+...
+        uint32_t        rdma_mr_max;
+        uint32_t        rdma_mr_size;
+        uint8_t         tos;
+        uint8_t         sl;
+        uint32_t        cache_allocs;
+};
+The difference between userspace and kernel is the member variable sl.
+In kernel struct, the member variable sl is missing. This will introduce
+risks. So it is necessary to use this commit to avoid this risk.
 
-Any thoughts about sockets? I'm looking at net/xdp/xdp_umem.c which pins
-memory with FOLL_LONGTERM, and wondering how to make that work here.
+Fixes: fe3475af3bdf ("net: rds: add per rds connection cache statistics")
+CC: Joe Jin <joe.jin@oracle.com>
+CC: JUNXIAO_BI <junxiao.bi@oracle.com>
+Suggested-by: Gerd Rausch <gerd.rausch@oracle.com>
+Signed-off-by: Zhu Yanjun <yanjun.zhu@oracle.com>
+---
+ include/uapi/linux/rds.h |    2 ++
+ net/rds/ib.c             |   16 ++++++++++------
+ net/rds/ib.h             |    1 +
+ net/rds/ib_cm.c          |    3 +++
+ net/rds/rdma_transport.c |   10 ++++++++--
+ 5 files changed, 24 insertions(+), 8 deletions(-)
 
-These are close to files, in how they're handled, but just different
-enough that it's not clear to me how to make work with this system.
-
-
-> 
-> So that leaves just the normal close() syscall exit case, where the
-> application has full control of the order in which resources are
-> released. We've already established that we can block in this
-> context.  Blocking in an interruptible state will allow fatal signal
-> delivery to wake us, and then we fall into the
-> fatal_signal_pending() case if we get a SIGKILL while blocking.
-> 
-> Hence I think blocking in this case would be OK - it indicates an
-> application bug (releasing a lease before releasing the resources)
-> but leaves SIGKILL available to administrators to resolve situations
-> involving buggy applications.
-> 
-> This requires applications to follow the rules: any process
-> that pins physical resources must have an active reference to a
-> layout lease, either via a duplicated fd or it's own private lease.
-> If the app doesn't play by the rules, it hangs in close() until it
-> is killed.
-
-+1 for these rules, assuming that we can make them work. They are
-easy to explain and intuitive.
-
-
-thanks,
+diff --git a/include/uapi/linux/rds.h b/include/uapi/linux/rds.h
+index fd6b5f6..cba368e 100644
+--- a/include/uapi/linux/rds.h
++++ b/include/uapi/linux/rds.h
+@@ -250,6 +250,7 @@ struct rds_info_rdma_connection {
+ 	__u32		rdma_mr_max;
+ 	__u32		rdma_mr_size;
+ 	__u8		tos;
++	__u8		sl;
+ 	__u32		cache_allocs;
+ };
+ 
+@@ -265,6 +266,7 @@ struct rds6_info_rdma_connection {
+ 	__u32		rdma_mr_max;
+ 	__u32		rdma_mr_size;
+ 	__u8		tos;
++	__u8		sl;
+ 	__u32		cache_allocs;
+ };
+ 
+diff --git a/net/rds/ib.c b/net/rds/ib.c
+index ec05d91..45acab2 100644
+--- a/net/rds/ib.c
++++ b/net/rds/ib.c
+@@ -291,7 +291,7 @@ static int rds_ib_conn_info_visitor(struct rds_connection *conn,
+ 				    void *buffer)
+ {
+ 	struct rds_info_rdma_connection *iinfo = buffer;
+-	struct rds_ib_connection *ic;
++	struct rds_ib_connection *ic = conn->c_transport_data;
+ 
+ 	/* We will only ever look at IB transports */
+ 	if (conn->c_trans != &rds_ib_transport)
+@@ -301,15 +301,16 @@ static int rds_ib_conn_info_visitor(struct rds_connection *conn,
+ 
+ 	iinfo->src_addr = conn->c_laddr.s6_addr32[3];
+ 	iinfo->dst_addr = conn->c_faddr.s6_addr32[3];
+-	iinfo->tos = conn->c_tos;
++	if (ic) {
++		iinfo->tos = conn->c_tos;
++		iinfo->sl = ic->i_sl;
++	}
+ 
+ 	memset(&iinfo->src_gid, 0, sizeof(iinfo->src_gid));
+ 	memset(&iinfo->dst_gid, 0, sizeof(iinfo->dst_gid));
+ 	if (rds_conn_state(conn) == RDS_CONN_UP) {
+ 		struct rds_ib_device *rds_ibdev;
+ 
+-		ic = conn->c_transport_data;
+-
+ 		rdma_read_gids(ic->i_cm_id, (union ib_gid *)&iinfo->src_gid,
+ 			       (union ib_gid *)&iinfo->dst_gid);
+ 
+@@ -329,7 +330,7 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
+ 				     void *buffer)
+ {
+ 	struct rds6_info_rdma_connection *iinfo6 = buffer;
+-	struct rds_ib_connection *ic;
++	struct rds_ib_connection *ic = conn->c_transport_data;
+ 
+ 	/* We will only ever look at IB transports */
+ 	if (conn->c_trans != &rds_ib_transport)
+@@ -337,6 +338,10 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
+ 
+ 	iinfo6->src_addr = conn->c_laddr;
+ 	iinfo6->dst_addr = conn->c_faddr;
++	if (ic) {
++		iinfo6->tos = conn->c_tos;
++		iinfo6->sl = ic->i_sl;
++	}
+ 
+ 	memset(&iinfo6->src_gid, 0, sizeof(iinfo6->src_gid));
+ 	memset(&iinfo6->dst_gid, 0, sizeof(iinfo6->dst_gid));
+@@ -344,7 +349,6 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
+ 	if (rds_conn_state(conn) == RDS_CONN_UP) {
+ 		struct rds_ib_device *rds_ibdev;
+ 
+-		ic = conn->c_transport_data;
+ 		rdma_read_gids(ic->i_cm_id, (union ib_gid *)&iinfo6->src_gid,
+ 			       (union ib_gid *)&iinfo6->dst_gid);
+ 		rds_ibdev = ic->rds_ibdev;
+diff --git a/net/rds/ib.h b/net/rds/ib.h
+index 303c6ee..f2b558e 100644
+--- a/net/rds/ib.h
++++ b/net/rds/ib.h
+@@ -220,6 +220,7 @@ struct rds_ib_connection {
+ 	/* Send/Recv vectors */
+ 	int			i_scq_vector;
+ 	int			i_rcq_vector;
++	u8			i_sl;
+ };
+ 
+ /* This assumes that atomic_t is at least 32 bits */
+diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
+index fddaa09..233f136 100644
+--- a/net/rds/ib_cm.c
++++ b/net/rds/ib_cm.c
+@@ -152,6 +152,9 @@ void rds_ib_cm_connect_complete(struct rds_connection *conn, struct rdma_cm_even
+ 		  RDS_PROTOCOL_MINOR(conn->c_version),
+ 		  ic->i_flowctl ? ", flow control" : "");
+ 
++	/* receive sl from the peer */
++	ic->i_sl = ic->i_cm_id->route.path_rec->sl;
++
+ 	atomic_set(&ic->i_cq_quiesce, 0);
+ 
+ 	/* Init rings and fill recv. this needs to wait until protocol
+diff --git a/net/rds/rdma_transport.c b/net/rds/rdma_transport.c
+index ff74c4b..28668ad 100644
+--- a/net/rds/rdma_transport.c
++++ b/net/rds/rdma_transport.c
+@@ -43,6 +43,9 @@
+ static struct rdma_cm_id *rds6_rdma_listen_id;
+ #endif
+ 
++/* Per IB specification 7.7.3, service level is a 4-bit field. */
++#define TOS_TO_SL(tos)		((tos) & 0xF)
++
+ static int rds_rdma_cm_event_handler_cmn(struct rdma_cm_id *cm_id,
+ 					 struct rdma_cm_event *event,
+ 					 bool isv6)
+@@ -97,10 +100,13 @@ static int rds_rdma_cm_event_handler_cmn(struct rdma_cm_id *cm_id,
+ 			struct rds_ib_connection *ibic;
+ 
+ 			ibic = conn->c_transport_data;
+-			if (ibic && ibic->i_cm_id == cm_id)
++			if (ibic && ibic->i_cm_id == cm_id) {
++				cm_id->route.path_rec[0].sl =
++					TOS_TO_SL(conn->c_tos);
+ 				ret = trans->cm_initiate_connect(cm_id, isv6);
+-			else
++			} else {
+ 				rds_conn_drop(conn);
++			}
+ 		}
+ 		break;
+ 
 -- 
-John Hubbard
-NVIDIA
+1.7.1
+
