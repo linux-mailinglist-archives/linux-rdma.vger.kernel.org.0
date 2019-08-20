@@ -2,187 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B569F95E49
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 14:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF6A95F48
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 14:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729525AbfHTMVJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Aug 2019 08:21:09 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:7800 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729409AbfHTMVJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Aug 2019 08:21:09 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x7KCA3Tc030592;
-        Tue, 20 Aug 2019 05:21:03 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=sSh4tOULXFW+3YkqEZmGufA1hPTaGreKXtSX+ZSRiI8=;
- b=Feu/NkAYTtWpPfgSA++Q/jbsXY1LoHs6h8fz4XzjSP4liNi49xqhiOfxGRnbRWwoSMXQ
- q/vkh1jYQVQXvkK51/IAl0W1UorJHGv9Pr/fx85FiYTdpnP/l0uDxjPTqaxhVdk8mNCJ
- MEPXRlbXL4UrAyQDnMifBnSS/zYTh1uzS6BFJ4vtiqODCIHjVp8hWkplzUG2QchNWXEZ
- ixM2f7zyvmIfl8VQ3Orbo1Ty2g3G0EVw5pAXoVf/I6hWwPvRkc0JL6neA8La5fFmkaSr
- am2/PwgtP9eiFgIlzzZagH2d3U5RXaZd4akjHCAmD4wE5mTvKDJ26lUlaIuujgJyRk1v FA== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2ug8d79maq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 20 Aug 2019 05:21:03 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 20 Aug
- 2019 05:21:01 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Tue, 20 Aug 2019 05:21:01 -0700
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 7C36A3F7040;
-        Tue, 20 Aug 2019 05:20:58 -0700 (PDT)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
-        <dledford@redhat.com>, <bmt@zurich.ibm.com>, <galpress@amazon.com>,
-        <sleybo@amazon.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
+        id S1729024AbfHTM6F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Aug 2019 08:58:05 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:35473 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728248AbfHTM6F (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Aug 2019 08:58:05 -0400
+Received: by mail-qk1-f196.google.com with SMTP id r21so4370790qke.2
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Aug 2019 05:58:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=C6UpvYTpsEP7nxqequtc0g4wPRlBHrZ6ZGninWBI6oc=;
+        b=gZdDMQAbtr3917oEYkF0T4VJIvgxxMYxjtrDMrGHvBnoYlUPaawJwsNkp3uoWyOMJw
+         tYsXz5ZwJfacFSATUF6co4WtmaYsV9as2MVrPGdvsMElV+arc3fnL/XI0Fej3xTvl3Zp
+         NEaDmOu2dKiDGH8sPKA674MTlsQkZPNNnsy9q0DfPxHsxq4cPizoBKXeW3Gc00REVPEC
+         lPGo/pO7KCo8/ems6GkkRTlpQT3lcsLqbVq8SH3ykTGVjCVbFpIww5rLpi8yk2LDMcUx
+         pseKMbICxKIYtlIT02vQiIZWcS4SO5uWgBnjjk6inqdgpl+uxEg0Q16SZIQivpG6bcD6
+         dkug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=C6UpvYTpsEP7nxqequtc0g4wPRlBHrZ6ZGninWBI6oc=;
+        b=LJ3cVayq67M9huGjjFCnenJJRJY1ixr5j36Ss8vGfXLgQbS36SsdM1+ATdTjMpvVCD
+         H84dNe6EF2m3AEI4+fsdUlPs6VN1t+GQzsyDFIhb5JLypaXnTkHKyr4a4Hokan6f4Zu2
+         s5eVF/iABlDIqYYXJCG3+J25qieyqq29cAbTuRZ4dRET4/8MEzQt6nZc2iORG0NgDwOJ
+         62AaXwGwvy7z7O8D2ynfI9IQJ0gOXRmlFTt6Cw08JvAZxEZeB5ZYUi374OvwOkMtjAiS
+         GypRuj1eDPJ7KpaK7l57iHlJGWr7l+tcyFlcGczD9Q3D0HcXn5Rz2sjTtsw/UxdqSHV6
+         yMFA==
+X-Gm-Message-State: APjAAAW5r4Onh8IoLu0XSCi7CliNCByLwmsAVQBy5dy4J2Vkm0biYlEd
+        GLrir7Zisyk5pCgiDP2Ztoacbw==
+X-Google-Smtp-Source: APXvYqzXeOQM0SW8ZZh2BPkG+l5oTzqufyAzRd83QO7qPgl84lS+oW6g5Rk98NqPponeqG2s6K1iyQ==
+X-Received: by 2002:ae9:f812:: with SMTP id x18mr25448988qkh.290.1566305884697;
+        Tue, 20 Aug 2019 05:58:04 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id h1sm11092678qtc.92.2019.08.20.05.58.04
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 20 Aug 2019 05:58:04 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1i03i7-0008Ve-Ir; Tue, 20 Aug 2019 09:58:03 -0300
+Date:   Tue, 20 Aug 2019 09:58:03 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Michal Kalderon <michal.kalderon@marvell.com>
+Cc:     mkalderon@marvell.com, aelior@marvell.com, dledford@redhat.com,
+        bmt@zurich.ibm.com, galpress@amazon.com, sleybo@amazon.com,
+        leon@kernel.org, linux-rdma@vger.kernel.org,
         Ariel Elior <ariel.elior@marvell.com>
-Subject: [PATCH v7 rdma-next 7/7] RDMA/qedr: Add iWARP doorbell recovery support
-Date:   Tue, 20 Aug 2019 15:18:47 +0300
-Message-ID: <20190820121847.25871-8-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20190820121847.25871-1-michal.kalderon@marvell.com>
+Subject: Re: [PATCH v7 rdma-next 1/7] RDMA/core: Move core content from
+ ib_uverbs to ib_core
+Message-ID: <20190820125803.GB29246@ziepe.ca>
 References: <20190820121847.25871-1-michal.kalderon@marvell.com>
+ <20190820121847.25871-2-michal.kalderon@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:5.22.84,1.0.8
- definitions=2019-08-20_04:2019-08-19,2019-08-20 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190820121847.25871-2-michal.kalderon@marvell.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch adds the iWARP specific doorbells to the doorbell
-recovery mechanism
+On Tue, Aug 20, 2019 at 03:18:41PM +0300, Michal Kalderon wrote:
+> Move functionality that is called by the driver, which is
+> related to umap, to a new file that will be linked in ib_core.
+> This is a first step in later enabling ib_uverbs to be optional.
+> vm_ops is now initialized in ib_uverbs_mmap instead of
+> priv_init to avoid having to move all the rdma_umap functions
+> as well.
 
-Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/infiniband/hw/qedr/qedr.h  | 12 +++++++-----
- drivers/infiniband/hw/qedr/verbs.c | 37 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 43 insertions(+), 6 deletions(-)
+Sneaky, lets please have a comment though
 
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index cef94b3b9d74..15fe9679e2b8 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -237,6 +237,11 @@ struct qedr_ucontext {
- 	bool db_rec;
- };
- 
-+union db_prod32 {
-+	struct rdma_pwm_val16_data data;
-+	u32 raw;
-+};
-+
- union db_prod64 {
- 	struct rdma_pwm_val32_data data;
- 	u64 raw;
-@@ -268,6 +273,8 @@ struct qedr_userq {
- 	struct qedr_user_db_rec *db_rec_data;
- 	u64 db_rec_phys;
- 	u64 db_rec_key;
-+	void __iomem *db_rec_db2_addr;
-+	union db_prod32 db_rec_db2_data;
- };
- 
- struct qedr_cq {
-@@ -303,11 +310,6 @@ struct qedr_pd {
- 	struct qedr_ucontext *uctx;
- };
- 
--union db_prod32 {
--	struct rdma_pwm_val16_data data;
--	u32 raw;
--};
--
- struct qedr_qp_hwq_info {
- 	/* WQE Elements */
- 	struct qed_chain pbl;
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index a5c199ba9c7f..5ee7b6cde72e 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1694,6 +1694,10 @@ static void qedr_cleanup_user(struct qedr_dev *dev,
- 		rdma_user_mmap_entry_remove(&ctx->ibucontext,
- 					    qp->urq.db_rec_key);
- 	}
-+
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+		qedr_db_recovery_del(dev, qp->urq.db_rec_db2_addr,
-+				     &qp->urq.db_rec_db2_data);
- }
- 
- static int qedr_create_user_qp(struct qedr_dev *dev,
-@@ -1768,6 +1772,17 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 	qp->usq.db_addr = ctx->dpi_addr + uresp.sq_db_offset;
- 	qp->urq.db_addr = ctx->dpi_addr + uresp.rq_db_offset;
- 
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		qp->urq.db_rec_db2_addr = ctx->dpi_addr + uresp.rq_db2_offset;
-+
-+		/* calculate the db_rec_db2 data since it is constant so no
-+		 *  need to reflect from user
-+		 */
-+		qp->urq.db_rec_db2_data.data.icid = cpu_to_le16(qp->icid);
-+		qp->urq.db_rec_db2_data.data.value =
-+			cpu_to_le16(DQ_TCM_IWARP_POST_RQ_CF_CMD);
-+	}
-+
- 	rc = qedr_db_recovery_add(dev, qp->usq.db_addr,
- 				  &qp->usq.db_rec_data->db_data,
- 				  DB_REC_WIDTH_32B,
-@@ -1781,6 +1796,15 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 				  DB_REC_USER);
- 	if (rc)
- 		goto err;
-+
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		rc = qedr_db_recovery_add(dev, qp->urq.db_rec_db2_addr,
-+					  &qp->urq.db_rec_db2_data,
-+					  DB_REC_WIDTH_32B,
-+					  DB_REC_USER);
-+		if (rc)
-+			goto err;
-+	}
- 	qedr_qp_user_print(dev, qp);
- 
- 	return rc;
-@@ -1821,7 +1845,13 @@ static int qedr_set_iwarp_db_info(struct qedr_dev *dev, struct qedr_qp *qp)
- 				  &qp->rq.db_data,
- 				  DB_REC_WIDTH_32B,
- 				  DB_REC_KERNEL);
-+	if (rc)
-+		return rc;
- 
-+	rc = qedr_db_recovery_add(dev, qp->rq.iwarp_db2,
-+				  &qp->rq.iwarp_db2_data,
-+				  DB_REC_WIDTH_32B,
-+				  DB_REC_KERNEL);
- 	return rc;
- }
- 
-@@ -1950,8 +1980,13 @@ static void qedr_cleanup_kernel(struct qedr_dev *dev, struct qedr_qp *qp)
- 
- 	qedr_db_recovery_del(dev, qp->sq.db, &qp->sq.db_data);
- 
--	if (!qp->srq)
-+	if (!qp->srq) {
- 		qedr_db_recovery_del(dev, qp->rq.db, &qp->rq.db_data);
-+
-+		if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+			qedr_db_recovery_del(dev, qp->rq.iwarp_db2,
-+					     &qp->rq.iwarp_db2_data);
-+	}
- }
- 
- static int qedr_create_kernel_qp(struct qedr_dev *dev,
--- 
-2.14.5
+> +/*
+> + * Each time we map IO memory into user space this keeps track of the mapping.
+> + * When the device is hot-unplugged we 'zap' the mmaps in user space to point
+> + * to the zero page and allow the hot unplug to proceed.
+> + *
+> + * This is necessary for cases like PCI physical hot unplug as the actual BAR
+> + * memory may vanish after this and access to it from userspace could MCE.
+> + *
+> + * RDMA drivers supporting disassociation must have their user space designed
+> + * to cope in some way with their IO pages going to the zero page.
+> + */
+> +void rdma_umap_priv_init(struct rdma_umap_priv *priv,
+> +			 struct vm_area_struct *vma)
+> +{
+> +	struct ib_uverbs_file *ufile = vma->vm_file->private_data;
+> +
+> +	priv->vma = vma;
+> +	vma->vm_private_data = priv;
 
+   /* vm_ops is setup in ib_uverbs_mmap() to avoid module dependencies */
+
+> +
+> +	mutex_lock(&ufile->umap_lock);
+> +	list_add(&priv->list, &ufile->umaps);
+> +	mutex_unlock(&ufile->umap_lock);
+> +}
+> +EXPORT_SYMBOL(rdma_umap_priv_init);
+
+Does rdma_umap_open need to set ops too, or does the VM initialize it
+already?
+
+Jason
