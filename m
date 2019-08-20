@@ -2,264 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA49952CE
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 02:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FC695301
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 03:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbfHTAnz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Aug 2019 20:43:55 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:44632 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728580AbfHTAnz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Aug 2019 20:43:55 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7K0hlYa084540;
-        Tue, 20 Aug 2019 00:43:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id; s=corp-2019-08-05;
- bh=jUKoGz6dLyZKPy1hVZucbIQKRceX9z/kHIo+jbbs4BE=;
- b=Q9UaDJGnz/meiBUOyoH2dMm84CjAPwaL06ZW1z1l+HuI+Uk1eUSkiiIJz3ewOwHOCM08
- lANh+BJEUwfNu7QbIUGmeMHsoCgcf6a1QREGx+ueBHB9EL/FxaUrSDPGPkqD7nfbOWWv
- gxvyNINi8tCIPs8Xbl/K2IN8m1ODfYJ/dy1o1DWI+A+zmn8NLWrVX3/HIPP4tqCNjp+V
- 7xO7aP95BaeL3WEM+mmrMXlwwb3FKEoEr1ItFuZcuDUhej37PBbxpG/rkAOd2VZKSxfX
- NSqUAKc4IAhsa2MzaPDMzjgz71XNXY3L041/koaXbVLne6c4KR7o0btFT+9Jbv9K3hfG 8w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2uea7qjms3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Aug 2019 00:43:46 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7K0hIXl085372;
-        Tue, 20 Aug 2019 00:43:46 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 2uejxermf9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 20 Aug 2019 00:43:46 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7K0hjoe086899;
-        Tue, 20 Aug 2019 00:43:45 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 2uejxermf6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Aug 2019 00:43:45 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7K0hiC7016346;
-        Tue, 20 Aug 2019 00:43:44 GMT
-Received: from shipfan.cn.oracle.com (/10.113.210.105)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 19 Aug 2019 17:43:43 -0700
-From:   Zhu Yanjun <yanjun.zhu@oracle.com>
-To:     davem@davemloft.net, yanjun.zhu@oracle.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: [PATCH 1/1] net: rds: add service level support in rds-info
-Date:   Mon, 19 Aug 2019 20:52:21 -0400
-Message-Id: <1566262341-18165-1-git-send-email-yanjun.zhu@oracle.com>
-X-Mailer: git-send-email 2.7.4
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9354 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908200002
+        id S1728898AbfHTBNZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Aug 2019 21:13:25 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:55616 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728615AbfHTBNZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Aug 2019 21:13:25 -0400
+Received: from dread.disaster.area (pa49-195-190-67.pa.nsw.optusnet.com.au [49.195.190.67])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 26BC943CF13;
+        Tue, 20 Aug 2019 11:13:17 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hzsh0-0001Xw-UC; Tue, 20 Aug 2019 11:12:10 +1000
+Date:   Tue, 20 Aug 2019 11:12:10 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jan Kara <jack@suse.cz>, Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190820011210.GP7777@dread.disaster.area>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190814101714.GA26273@quack2.suse.cz>
+ <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
+ <20190815130558.GF14313@quack2.suse.cz>
+ <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
+ <20190817022603.GW6129@dread.disaster.area>
+ <20190819063412.GA20455@quack2.suse.cz>
+ <20190819092409.GM7777@dread.disaster.area>
+ <20190819123841.GC5058@ziepe.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190819123841.GC5058@ziepe.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
+        a=TR82T6zjGmBjdfWdGgpkDw==:117 a=TR82T6zjGmBjdfWdGgpkDw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=7-415B0cAAAA:8 a=3RYR1JOu_4gKP4_ft30A:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From IB specific 7.6.5 SERVICE LEVEL, Service Level (SL)
-is used to identify different flows within an IBA subnet.
-It is carried in the local route header of the packet.
+On Mon, Aug 19, 2019 at 09:38:41AM -0300, Jason Gunthorpe wrote:
+> On Mon, Aug 19, 2019 at 07:24:09PM +1000, Dave Chinner wrote:
+> 
+> > So that leaves just the normal close() syscall exit case, where the
+> > application has full control of the order in which resources are
+> > released. We've already established that we can block in this
+> > context.  Blocking in an interruptible state will allow fatal signal
+> > delivery to wake us, and then we fall into the
+> > fatal_signal_pending() case if we get a SIGKILL while blocking.
+> 
+> The major problem with RDMA is that it doesn't always wait on close() for the
+> MR holding the page pins to be destoyed. This is done to avoid a
+> deadlock of the form:
+> 
+>    uverbs_destroy_ufile_hw()
+>       mutex_lock()
+>        [..]
+>         mmput()
+>          exit_mmap()
+>           remove_vma()
+>            fput();
+>             file_operations->release()
 
-Before this commit, run "rds-info -I". The output is as
-below:
-"
-RDS IB Connections:
- LocalAddr  RemoteAddr Tos SL  LocalDev               RemoteDev
-192.2.95.3  192.2.95.1  2   0  fe80::21:28:1a:39  fe80::21:28:10:b9
-192.2.95.3  192.2.95.1  1   0  fe80::21:28:1a:39  fe80::21:28:10:b9
-192.2.95.3  192.2.95.1  0   0  fe80::21:28:1a:39  fe80::21:28:10:b9
-"
-After this commit, the output is as below:
-"
-RDS IB Connections:
- LocalAddr  RemoteAddr Tos SL  LocalDev               RemoteDev
-192.2.95.3  192.2.95.1  2   2  fe80::21:28:1a:39  fe80::21:28:10:b9
-192.2.95.3  192.2.95.1  1   1  fe80::21:28:1a:39  fe80::21:28:10:b9
-192.2.95.3  192.2.95.1  0   0  fe80::21:28:1a:39  fe80::21:28:10:b9
-"
+I think this is wrong, and I'm pretty sure it's an example of why
+the final __fput() call is moved out of line.
 
-The commit fe3475af3bdf ("net: rds: add per rds connection cache
-statistics") adds cache_allocs in struct rds_info_rdma_connection
-as below:
-struct rds_info_rdma_connection {
-...
-        __u32           rdma_mr_max;
-        __u32           rdma_mr_size;
-        __u8            tos;
-        __u32           cache_allocs;
- };
-The peer struct in rds-tools of struct rds_info_rdma_connection is as
-below:
-struct rds_info_rdma_connection {
-...
-        uint32_t        rdma_mr_max;
-        uint32_t        rdma_mr_size;
-        uint8_t         tos;
-        uint8_t         sl;
-        uint32_t        cache_allocs;
-};
-The difference between userspace and kernel is the member variable sl.
-In kernel struct, the member variable sl is missing. This will introduce
-risks. So it is necessary to use this commit to avoid this risk.
+		fput()
+		  fput_many()
+		    task_add_work(f, __fput())
 
-Fixes: fe3475af3bdf ("net: rds: add per rds connection cache statistics")
-CC: Joe Jin <joe.jin@oracle.com>
-CC: JUNXIAO_BI <junxiao.bi@oracle.com>
-Suggested-by: Gerd Rausch <gerd.rausch@oracle.com>
-Signed-off-by: Zhu Yanjun <yanjun.zhu@oracle.com>
----
- include/uapi/linux/rds.h |    2 ++
- net/rds/ib.c             |   16 ++++++++++------
- net/rds/ib.h             |    1 +
- net/rds/ib_cm.c          |    3 +++
- net/rds/rdma_transport.c |   10 ++++++++--
- 5 files changed, 24 insertions(+), 8 deletions(-)
+and the call chain ends there.
 
-diff --git a/include/uapi/linux/rds.h b/include/uapi/linux/rds.h
-index fd6b5f6..cba368e 100644
---- a/include/uapi/linux/rds.h
-+++ b/include/uapi/linux/rds.h
-@@ -250,6 +250,7 @@ struct rds_info_rdma_connection {
- 	__u32		rdma_mr_max;
- 	__u32		rdma_mr_size;
- 	__u8		tos;
-+	__u8		sl;
- 	__u32		cache_allocs;
- };
- 
-@@ -265,6 +266,7 @@ struct rds6_info_rdma_connection {
- 	__u32		rdma_mr_max;
- 	__u32		rdma_mr_size;
- 	__u8		tos;
-+	__u8		sl;
- 	__u32		cache_allocs;
- };
- 
-diff --git a/net/rds/ib.c b/net/rds/ib.c
-index ec05d91..45acab2 100644
---- a/net/rds/ib.c
-+++ b/net/rds/ib.c
-@@ -291,7 +291,7 @@ static int rds_ib_conn_info_visitor(struct rds_connection *conn,
- 				    void *buffer)
- {
- 	struct rds_info_rdma_connection *iinfo = buffer;
--	struct rds_ib_connection *ic;
-+	struct rds_ib_connection *ic = conn->c_transport_data;
- 
- 	/* We will only ever look at IB transports */
- 	if (conn->c_trans != &rds_ib_transport)
-@@ -301,15 +301,16 @@ static int rds_ib_conn_info_visitor(struct rds_connection *conn,
- 
- 	iinfo->src_addr = conn->c_laddr.s6_addr32[3];
- 	iinfo->dst_addr = conn->c_faddr.s6_addr32[3];
--	iinfo->tos = conn->c_tos;
-+	if (ic) {
-+		iinfo->tos = conn->c_tos;
-+		iinfo->sl = ic->i_sl;
-+	}
- 
- 	memset(&iinfo->src_gid, 0, sizeof(iinfo->src_gid));
- 	memset(&iinfo->dst_gid, 0, sizeof(iinfo->dst_gid));
- 	if (rds_conn_state(conn) == RDS_CONN_UP) {
- 		struct rds_ib_device *rds_ibdev;
- 
--		ic = conn->c_transport_data;
--
- 		rdma_read_gids(ic->i_cm_id, (union ib_gid *)&iinfo->src_gid,
- 			       (union ib_gid *)&iinfo->dst_gid);
- 
-@@ -329,7 +330,7 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
- 				     void *buffer)
- {
- 	struct rds6_info_rdma_connection *iinfo6 = buffer;
--	struct rds_ib_connection *ic;
-+	struct rds_ib_connection *ic = conn->c_transport_data;
- 
- 	/* We will only ever look at IB transports */
- 	if (conn->c_trans != &rds_ib_transport)
-@@ -337,6 +338,10 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
- 
- 	iinfo6->src_addr = conn->c_laddr;
- 	iinfo6->dst_addr = conn->c_faddr;
-+	if (ic) {
-+		iinfo6->tos = conn->c_tos;
-+		iinfo6->sl = ic->i_sl;
-+	}
- 
- 	memset(&iinfo6->src_gid, 0, sizeof(iinfo6->src_gid));
- 	memset(&iinfo6->dst_gid, 0, sizeof(iinfo6->dst_gid));
-@@ -344,7 +349,6 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
- 	if (rds_conn_state(conn) == RDS_CONN_UP) {
- 		struct rds_ib_device *rds_ibdev;
- 
--		ic = conn->c_transport_data;
- 		rdma_read_gids(ic->i_cm_id, (union ib_gid *)&iinfo6->src_gid,
- 			       (union ib_gid *)&iinfo6->dst_gid);
- 		rds_ibdev = ic->rds_ibdev;
-diff --git a/net/rds/ib.h b/net/rds/ib.h
-index 303c6ee..f2b558e 100644
---- a/net/rds/ib.h
-+++ b/net/rds/ib.h
-@@ -220,6 +220,7 @@ struct rds_ib_connection {
- 	/* Send/Recv vectors */
- 	int			i_scq_vector;
- 	int			i_rcq_vector;
-+	u8			i_sl;
- };
- 
- /* This assumes that atomic_t is at least 32 bits */
-diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
-index fddaa09..233f136 100644
---- a/net/rds/ib_cm.c
-+++ b/net/rds/ib_cm.c
-@@ -152,6 +152,9 @@ void rds_ib_cm_connect_complete(struct rds_connection *conn, struct rdma_cm_even
- 		  RDS_PROTOCOL_MINOR(conn->c_version),
- 		  ic->i_flowctl ? ", flow control" : "");
- 
-+	/* receive sl from the peer */
-+	ic->i_sl = ic->i_cm_id->route.path_rec->sl;
-+
- 	atomic_set(&ic->i_cq_quiesce, 0);
- 
- 	/* Init rings and fill recv. this needs to wait until protocol
-diff --git a/net/rds/rdma_transport.c b/net/rds/rdma_transport.c
-index ff74c4b..28668ad 100644
---- a/net/rds/rdma_transport.c
-+++ b/net/rds/rdma_transport.c
-@@ -43,6 +43,9 @@
- static struct rdma_cm_id *rds6_rdma_listen_id;
- #endif
- 
-+/* Per IB specification 7.7.3, service level is a 4-bit field. */
-+#define TOS_TO_SL(tos)		((tos) & 0xF)
-+
- static int rds_rdma_cm_event_handler_cmn(struct rdma_cm_id *cm_id,
- 					 struct rdma_cm_event *event,
- 					 bool isv6)
-@@ -97,10 +100,13 @@ static int rds_rdma_cm_event_handler_cmn(struct rdma_cm_id *cm_id,
- 			struct rds_ib_connection *ibic;
- 
- 			ibic = conn->c_transport_data;
--			if (ibic && ibic->i_cm_id == cm_id)
-+			if (ibic && ibic->i_cm_id == cm_id) {
-+				cm_id->route.path_rec[0].sl =
-+					TOS_TO_SL(conn->c_tos);
- 				ret = trans->cm_initiate_connect(cm_id, isv6);
--			else
-+			} else {
- 				rds_conn_drop(conn);
-+			}
- 		}
- 		break;
- 
+Before the syscall returns to userspace, it then runs the __fput()
+call through the task_work_run() interfaces, and hence the call
+chain is just:
+
+	task_work_run
+	  __fput
+>             file_operations->release()
+>              ib_uverbs_close()
+>               uverbs_destroy_ufile_hw()
+>                mutex_lock()   <-- Deadlock
+
+And there is no deadlock because nothing holds the mutex at this
+point.
+
+Cheers,
+
+Dave.
 -- 
-1.7.1
-
+Dave Chinner
+david@fromorbit.com
