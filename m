@@ -2,54 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA07D967AF
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 19:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B512967FE
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 19:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728682AbfHTRiO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Aug 2019 13:38:14 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34801 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727358AbfHTRiO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Aug 2019 13:38:14 -0400
-Received: by mail-qk1-f195.google.com with SMTP id m10so5203729qkk.1
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Aug 2019 10:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=t/XucQk/F+uHSqHuBS2YrnHXMmID5xflFtz7nTUyQdQ=;
-        b=bckHKnzaSP1IJnDDGsBm6dmBKwP2gQFWZpK+sG9FsrTRv8UhFKdG0mgtwPw3BfVtin
-         VuhSkAXZsux9oJpk8OgJunoVUnVuU0LlLUZIjdQR7vv1P0Sq7deX9BOvm5okLKcEwmPF
-         56Ib3iJwAw1rAy1hktg4wTUOH3e6tsb/LKZTMvocNTv0K6y49c8HTz2yEAHVitA6k8RF
-         ND+PNkrGg7amvPkGCw835L8Vluu6NG9zx6jQTUfxQdODGYXOAly0lGwSFyXl48L525Dj
-         9eER+VAVKAvT1QVdMSPSE/EY2Vs0m26UziVPSXl/XKP81vOOkrHi9NPVpLSQiAOJLDkk
-         5MEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=t/XucQk/F+uHSqHuBS2YrnHXMmID5xflFtz7nTUyQdQ=;
-        b=HPEVMn8N+CsXL2HRLyueZAaB2VwhdmdAqhJ8mbzFBh0sH5gRx3Cz75rac7OLme8dsH
-         PfwQn+SJaZrLGSLCJ6/V+I/aMMzFGppwUO8iQGSyWRCCzQpHr/MUHItfKZxDFfz55nvP
-         0muZYYrnmumjQlvQM7fa0kQxk80QN6SWi0popgnNmZQS0wuYMvd/qHnqLJz9cElXNSD8
-         AJpzluVdxYBZTBemwh0PKSk+IdmE++hwsJUrqCbg2lmyx6ggk39TbmToATJrkqZasRX1
-         8TieFFhFDwpXwPRnBxRxK94QXQsEMoFmxvdCM2d8xAw9ZhfKxQWBBp5BkAE3ETDW3J+9
-         WrGw==
-X-Gm-Message-State: APjAAAW9I35rgSYSr5ldB2zfDH3Ad1C38e3A2LRUCXR9uovoemufAqMg
-        hkMMnpiw/TiRetLYRd8kaCRJKg==
-X-Google-Smtp-Source: APXvYqwtSww+Mj7BIpUXNkgW1GL1xrnHxjogfyBZorKKh+//l8c2RRuRKSFSgwDWK6b+RCJQ+rtq7g==
-X-Received: by 2002:a05:620a:659:: with SMTP id a25mr26865992qka.148.1566322693238;
-        Tue, 20 Aug 2019 10:38:13 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id q6sm8766686qke.109.2019.08.20.10.38.12
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 20 Aug 2019 10:38:12 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1i085E-00059H-7M; Tue, 20 Aug 2019 14:38:12 -0300
-Date:   Tue, 20 Aug 2019 14:38:12 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Doug Ledford <dledford@redhat.com>
+        id S1730092AbfHTRsA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Aug 2019 13:48:00 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:42513 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728360AbfHTRsA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 20 Aug 2019 13:48:00 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 98A4A772C7;
+        Tue, 20 Aug 2019 17:47:59 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DFAB227CD2;
+        Tue, 20 Aug 2019 17:47:57 +0000 (UTC)
+Message-ID: <c3fa211d433088fd5384126888162d2568c39c2f.camel@redhat.com>
+Subject: Re: [PATCH rdma-rc 0/8] Fixes for v5.3
+From:   Doug Ledford <dledford@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Leon Romanovsky <leon@kernel.org>,
         Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
@@ -57,61 +30,108 @@ Cc:     Leon Romanovsky <leon@kernel.org>,
         Majd Dibbiny <majd@mellanox.com>,
         Mark Zhang <markz@mellanox.com>,
         Moni Shoua <monis@mellanox.com>
-Subject: Re: [PATCH rdma-rc 0/8] Fixes for v5.3
-Message-ID: <20190820173812.GI29246@ziepe.ca>
+Date:   Tue, 20 Aug 2019 13:47:55 -0400
+In-Reply-To: <20190820173812.GI29246@ziepe.ca>
 References: <20190815083834.9245-1-leon@kernel.org>
- <a263ac8f6c8340f050ca28394361aa956ac94cb4.camel@redhat.com>
+         <a263ac8f6c8340f050ca28394361aa956ac94cb4.camel@redhat.com>
+         <20190820173812.GI29246@ziepe.ca>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-bwhY7odoOZoMk2wDcUMX"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a263ac8f6c8340f050ca28394361aa956ac94cb4.camel@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.26]); Tue, 20 Aug 2019 17:47:59 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 12:56:37PM -0400, Doug Ledford wrote:
-> On Thu, 2019-08-15 at 11:38 +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> > 
-> > Hi,
-> > 
-> > This is a collection of new fixes for v5.3, everything here is fixing
-> > kernel crash or visible bug with one exception: patch #5 "IB/mlx5:
-> > Consolidate use_umr checks into single function". That patch is nice
-> > to have improvement to implement rest of the series.
-> > 
-> > Thanks
-> > 
-> > Ido Kalir (1):
-> >   IB/core: Fix NULL pointer dereference when bind QP to counter
-> > 
-> > Jason Gunthorpe (1):
-> >   RDMA/mlx5: Fix MR npages calculation for IB_ACCESS_HUGETLB
-> > 
-> > Leon Romanovsky (2):
-> >   RDMA/counters: Properly implement PID checks
-> >   RDMA/restrack: Rewrite PID namespace check to be reliable
-> > 
-> > Moni Shoua (4):
-> >   IB/mlx5: Consolidate use_umr checks into single function
-> >   IB/mlx5: Report and handle ODP support properly
-> >   IB/mlx5: Fix MR re-registration flow to use UMR properly
-> >   IB/mlx5: Block MR WR if UMR is not possible
-> 
-> Hi Leon,
-> 
-> I took everything except Jason's patch to for-rc.  He had tagged his
-> patch in patchworks as under review by himself, mainly because there are
-> some conflicts with other hmm patches I think, so he wanted to process
-> all the patches himself on a distinct branch to resolve the issues. 
-> Thanks.
 
-Ah, I thought that got grabbed alread
+--=-bwhY7odoOZoMk2wDcUMX
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Can you take it but rebase it to be the first patch on top of v5.3-rc5
-in the -rc branch?
+On Tue, 2019-08-20 at 14:38 -0300, Jason Gunthorpe wrote:
+> On Tue, Aug 20, 2019 at 12:56:37PM -0400, Doug Ledford wrote:
+> > On Thu, 2019-08-15 at 11:38 +0300, Leon Romanovsky wrote:
+> > > From: Leon Romanovsky <leonro@mellanox.com>
+> > >=20
+> > > Hi,
+> > >=20
+> > > This is a collection of new fixes for v5.3, everything here is
+> > > fixing
+> > > kernel crash or visible bug with one exception: patch #5 "IB/mlx5:
+> > > Consolidate use_umr checks into single function". That patch is
+> > > nice
+> > > to have improvement to implement rest of the series.
+> > >=20
+> > > Thanks
+> > >=20
+> > > Ido Kalir (1):
+> > >   IB/core: Fix NULL pointer dereference when bind QP to counter
+> > >=20
+> > > Jason Gunthorpe (1):
+> > >   RDMA/mlx5: Fix MR npages calculation for IB_ACCESS_HUGETLB
+> > >=20
+> > > Leon Romanovsky (2):
+> > >   RDMA/counters: Properly implement PID checks
+> > >   RDMA/restrack: Rewrite PID namespace check to be reliable
+> > >=20
+> > > Moni Shoua (4):
+> > >   IB/mlx5: Consolidate use_umr checks into single function
+> > >   IB/mlx5: Report and handle ODP support properly
+> > >   IB/mlx5: Fix MR re-registration flow to use UMR properly
+> > >   IB/mlx5: Block MR WR if UMR is not possible
+> >=20
+> > Hi Leon,
+> >=20
+> > I took everything except Jason's patch to for-rc.  He had tagged his
+> > patch in patchworks as under review by himself, mainly because there
+> > are
+> > some conflicts with other hmm patches I think, so he wanted to
+> > process
+> > all the patches himself on a distinct branch to resolve the issues.=20
+> > Thanks.
+>=20
+> Ah, I thought that got grabbed alread
 
-Thanks,
-Jason
+I assume you meant to when you bumped for-rc to -rc5?  Evidently, it got
+missed ;-)
+
+> Can you take it but rebase it to be the first patch on top of v5.3-rc5
+> in the -rc branch?
+
+Sure.  You can get your branch head by digging this commit out from my
+wip/dl-for-rc, but just for ease, I also pushed this patch as the head
+out to the official for-rc branch.
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-bwhY7odoOZoMk2wDcUMX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1cMksACgkQuCajMw5X
+L92PrxAAnyZ2+mal+PMwlRnZ3VLWiiwZZnVWKb8OXAGXWEaAcCWtK7S8pB6X51Ff
+qZYyO3SgQ8+Ciiopm2Rj2fdvIQtuPFE7YHxGk45VHdHdk+HVlCIUg6yjuDOSRmX7
+G1FIPolTmgAkNz7x6GTOtLPKQb+Key3qp8pcEOqRrfCmMBYcR89JctEqpPTGF2ep
+S9/97l0TRCufk87icdQ/5UABoRu+UyhIawgzVuavoPlfDSviPmFjaN4JW2D7jvgL
++rfu7fo4mHZCds33pp8HGf8W+n7CMJtNUjW4RBRoSEyVJYZPagTSeeAb7JHuQwtK
+AY0096mCBMApJFVQwpGbuqcTc/SqPDmKyedyNaTgBw68ANiQPswZY+mnX+2qOt06
+t/8wAntrGx2TJccdyisawfyXKz1DTYh9w0awbiLp0v2Ri7Vspnlhguxgw8h6boJU
+BoZY+0bWyM1b9ljNiin371/YP/uJyIjV+Ou8vCc4HDwVjTOeRPr23R1Qai9tll3V
+TZ8XX2anEihHcmox+yENE29fowbA24yl+dKEt2JY6liwogh4Kt1PFrvK6PHml47Z
+W6guas4L4vCn4TN9vyYHoh/dg49OaoGV01SxCII+ZRgfFFYdvIY3OCNwn6B6p8Tv
+1RpX3qhvkqQW1Y1SMN78C9Hcw539fDuwIvp8sk7FlgRd1iEsBPM=
+=sORh
+-----END PGP SIGNATURE-----
+
+--=-bwhY7odoOZoMk2wDcUMX--
+
