@@ -2,100 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5302396814
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 19:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADD19681C
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 19:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728344AbfHTRzE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Aug 2019 13:55:04 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:53556 "EHLO mx1.redhat.com"
+        id S1730614AbfHTRzu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Aug 2019 13:55:50 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:56066 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726717AbfHTRzE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Aug 2019 13:55:04 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        id S1730423AbfHTRzu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 20 Aug 2019 13:55:50 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id B5C12C0022F1;
-        Tue, 20 Aug 2019 17:55:03 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id 255567BDAE;
+        Tue, 20 Aug 2019 17:55:44 +0000 (UTC)
 Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4098427CCF;
-        Tue, 20 Aug 2019 17:55:02 +0000 (UTC)
-Message-ID: <6e099d052f1803e74b5731fe3da2d9109533734d.camel@redhat.com>
-Subject: Re: [PATCH rdma-next 0/3] RDMA RX RoCE Steering Support
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E7A04841DC;
+        Tue, 20 Aug 2019 17:55:37 +0000 (UTC)
+Message-ID: <b2251973c16b336c4d48e8417ce50f0c55598a9b.camel@redhat.com>
+Subject: Re: [PATCH for-rc] siw: fix for 'is_kva' flag issue in siw_tx_hdt()
 From:   Doug Ledford <dledford@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Mark Bloch <markb@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Date:   Tue, 20 Aug 2019 13:54:59 -0400
-In-Reply-To: <20190819113626.20284-1-leon@kernel.org>
-References: <20190819113626.20284-1-leon@kernel.org>
+To:     Bernard Metzler <BMT@zurich.ibm.com>,
+        Krishnamraju Eraparaju <krishna2@chelsio.com>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com
+Date:   Tue, 20 Aug 2019 13:55:35 -0400
+In-Reply-To: <OFB7456B6B.E1C4D049-ON0025845B.00533DDF-0025845B.00776B49@notes.na.collabserv.com>
+References: <20190819111338.9366-1-krishna2@chelsio.com>
+         <OFB7456B6B.E1C4D049-ON0025845B.00533DDF-0025845B.00776B49@notes.na.collabserv.com>
 Organization: Red Hat, Inc.
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-3B5VOJtY6hTY/+Hg+kip"
+        protocol="application/pgp-signature"; boundary="=-NaBbsG73tOAts70UNLLH"
 User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Tue, 20 Aug 2019 17:55:03 +0000 (UTC)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.26]); Tue, 20 Aug 2019 17:55:50 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---=-3B5VOJtY6hTY/+Hg+kip
+--=-NaBbsG73tOAts70UNLLH
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2019-08-19 at 14:36 +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On Mon, 2019-08-19 at 21:44 +0000, Bernard Metzler wrote:
+> Hi Krishna,
+> That is a good catch. I was not aware of the possibility of mixed
+> PBL and kernel buffer addresses in one SQE.
 >=20
-> Hi,
->=20
-> This series from Mark extends mlx5 with RDMA_RX RoCE flow steering
-> support
-> for DEVX and QP objects.
->=20
-> Thanks
->=20
-> Mark Zhang (3):
->   net/mlx5: Add per-namespace flow table default miss action support
->   net/mlx5: Create bypass and loopback flow steering namespaces for
-> RDMA
->     RX
->   RDMA/mlx5: RDMA_RX flow type support for user applications
+> A correct fix must also handle the un-mapping of any kmap()'d
+> buffers. The current TX code expects all buffers be either kmap()'d or
+> all not kmap()'d. So the fix is a little more complex, if we must
+> handle mixed SGL's during un-mapping. I think I can provide it by
+> tomorrow. It's almost midnight ;)
 
-I have no objection to this series.
+I'll wait for a proper fix.  Dropping this patch.  Thanks.
 
 --=20
 Doug Ledford <dledford@redhat.com>
     GPG KeyID: B826A3330E572FDD
     Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
---=-3B5VOJtY6hTY/+Hg+kip
+--=-NaBbsG73tOAts70UNLLH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1cM/MACgkQuCajMw5X
-L92Qmg//TjZFAGoUsS2Mx4bqktSXOLOvSnKtxGJE9nSmZzNftq7zbhqmnCMEizA7
-j6Jd7WyVAQu1aHQRvRlH1swQlY8S88yLV8HGtLtcALI1/2auyy8734Loaer3eVJh
-x6D+TC8bneDIFzWXhuq7Ug7qucSqL40elklo1s9qMSBgp/YC9iulH1GrPcH+kMS6
-CByqlg7y6zLpvBcdFnYp78mroRt1jzSxH7vCpm2HrEvdFZEmGbOYYITryy5FAwUj
-tK9HarL1uc4k28J8UW6nQBtH6QKCsWhwV5+G7VdTWBK1G+zDoZXs17MkDOLP9oJZ
-+Hq+5xDTAF53aSMNjKa35mcqRwJvS32hrfigrcsX+7ZnmGvRMOMMYqMdLsX4dMil
-Qlh/cer70af/0yx+CS1ysJ2vryJWVo0D+6a0HwcQ6XVlFyZxKyc+tDO4wIWXaHuW
-fOTHNb/hM6MBfVnQxUjYTvbluqGw6CSqGtPYniGTknj65k5+tiO8ohHfIcGUdLJV
-SDiineOwkxusockHG2WOCSmKrY2Q6H9YcNl2QtzIEtgg3FL6FAv1/vv5lHlBfu4R
-z04Gr4pihJoGxbpbZX9SXK9jScub9yZLynxl4ygpu2Mimwn/GgZSN9uDxaPwwb75
-0ciFc5MFZzONviyjApSegTGT1T2C28MohHh6bqzJwkH0JRAMGBY=
-=/ncf
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1cNBcACgkQuCajMw5X
+L93TZRAAl91DrXalczEMvxAL//MFUeU8cgkxBce2aj4VcdVkvLLqLD1GHjqAi9bX
+9XYXhdGfkB5rKYi1ZgXCRWz7In2KMj6we208D6v1IV+hUi1sWkqDVWQwTw3+1aW6
+8fReBzQyEtwWwdw22/OS2YW8QSxTNv/+rNwMn8caG9EMckiGsxYKeqSiFcIz4swL
+dHLashy4LS++cVet+uD/5GhjK545uiVZtBUA4rOYZFfI41CTgc14LMxqtZ+uJe4M
+eOmqhbSU6t94DKqFZm+PBGQcrx/z2Uo7jRUK3AahuZq0m/bWp+I6r9Jzu5DUJ3Ws
+U2ewt0i066gW8ZG4NhvL/SftPOTJlND3aEUr23JhnyhTMPZsWjOrtNwCbbyTvjFO
+oXcMe4d2cooLjCdq4vXDvWuRzciqOqsmWufSF7zjbOTN+wSysdgpS10IhiPun4+Z
+MNyBKsp0kyNmkRnodDh/Rf2fwHiorQixsGnSJj4BhGfh8MFX2xkyNorx/2UXHBhj
+TsYtm9fpVWGvUaijao4BQPNwJyXTMLt5j6n96clkulj3GgslGLC9FG/rgvCX1maH
+Zm3fg8HReSfsn/ZqcG22FB9dJbn7HEDIl18WVk810k93zJQWHQOePhjWog9kVswn
+K6aObXpjk/HnHWATxl9LwHkRamTVVUiyYD4nFBVOXeWIq421jD8=
+=LM/M
 -----END PGP SIGNATURE-----
 
---=-3B5VOJtY6hTY/+Hg+kip--
+--=-NaBbsG73tOAts70UNLLH--
 
