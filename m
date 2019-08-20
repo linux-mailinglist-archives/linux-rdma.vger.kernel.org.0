@@ -2,139 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2539C9689E
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 20:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CB996AEE
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 22:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730006AbfHTSbm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Aug 2019 14:31:42 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:64290 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728283AbfHTSbm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Aug 2019 14:31:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1566325900; x=1597861900;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=/3D0vkvli2XjMxnJNd0pe882hijPCHFrMGRiE3hUqlU=;
-  b=njxnwrPewNszAss1idcTDUupw+K3k+0CGAYZhg9xT7P4XCpGqeXon05i
-   bcSHo36lU/cEKDKFkFYsolr66e85hTgpDyEKhGAyyi4YTry7k1QkTvJm2
-   OTvMK3JDMa6OIEbxDdvwBPWpwq003/JZI6R8n9VuvsnMWYfHu7fCe4UQt
-   o=;
-X-IronPort-AV: E=Sophos;i="5.64,408,1559520000"; 
-   d="scan'208";a="780168408"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-168cbb73.us-west-2.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 20 Aug 2019 18:31:38 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-168cbb73.us-west-2.amazon.com (Postfix) with ESMTPS id D9892A250A;
-        Tue, 20 Aug 2019 18:31:37 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 20 Aug 2019 18:31:37 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.177) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 20 Aug 2019 18:31:31 +0000
-Subject: Re: [PATCH v7 rdma-next 0/7] RDMA/qedr: Use the doorbell overflow
- recovery mechanism for RDMA
-To:     Michal Kalderon <michal.kalderon@marvell.com>,
-        <mkalderon@marvell.com>, <jgg@ziepe.ca>, <dledford@redhat.com>
-CC:     <aelior@marvell.com>, <bmt@zurich.ibm.com>, <sleybo@amazon.com>,
-        <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-References: <20190820121847.25871-1-michal.kalderon@marvell.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <aca72068-1155-6755-4494-0436a5d5a31f@amazon.com>
-Date:   Tue, 20 Aug 2019 21:31:25 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190820121847.25871-1-michal.kalderon@marvell.com>
-Content-Type: text/plain; charset="utf-8"
+        id S1730092AbfHTUyx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Aug 2019 16:54:53 -0400
+Received: from mail-eopbgr00063.outbound.protection.outlook.com ([40.107.0.63]:40901
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729900AbfHTUyw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 20 Aug 2019 16:54:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DYxOlUqDsKp0+Nig5iThsc+cds1kwWOB2rH7KVA2un+Gn3cCvUME8Ksna1PFPy2HtvGIZIHGYIZd7AJjPxue6p8oOYSJnoWw1KXvyPcldMlg2cOQ26TIVo+n5IlHWCXjVTYCa2Z1D1w+m2BXzOp8AfCmyrgz6Rg/w3q67lD5gU1I7gLSO3/RyGjbmdaM1+7SS6oYxd1Xd2kcmhRjROm4L+SYTWXhJ4zyYUTnB0m8VZqD6nNKaTy568s2M8GD4FfDlIcKqbTes1Yx2C40K2pjln+PmQogpBL2elRsOu8HEA7V7giCozVDM26tdUoPtnCx/2Y+adMyWnH5DVG4cuIwfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=orjSSI1FCSUhVlX008HFF7JMvbAlRNJKKcUqEt6qauk=;
+ b=oCOBmdlvAkxnY5TfRdbTtSTwut6vjAmvZF4+nHth/AtuZSGKFwNnVtzCeFNx76nQ+KZFW6DlycNDFza4SMcSJWztvjhuv2uPRLiZRFDfEXcaTqWUB7WZxKO/4wKX1AC2FOgFlMA5EGo6lw11dDlUEdGxayi4H1ZwvKMCG0rw6mezq+iUkKmhmxVNd3MTJJeuIapO1urEf6Fo3BiBzNyIEU7AHqaFNuAkvQLHaGDh6wBc+xSsn1aPZeb/o6TD7/TXgLbiqrK7GmeDbjsSAxGrvV4C9r4/R0X9P7seUBf5wUFYTIpK0/Z1GZSHomatx9N3ZfPep6tDHvrsq7dLAMAiXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=orjSSI1FCSUhVlX008HFF7JMvbAlRNJKKcUqEt6qauk=;
+ b=iCCdTiiXB4fxpmKlixh4vLYTpMv2mZOg2f+FfFwQz8tQTdXqNm9njCgtEketabIFaTNOv3E+0Ed6dJcZvY+OWtcfmg1XQjrFW+yc3nKwjy8gRUA3tPU5sg+gaRqOBN5jrW2G+O7YdTJHxgJ11Kv3aVnVjgyjrGE6eeDAmv1X6ww=
+Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com (10.172.227.7) by
+ DB6PR0501MB2375.eurprd05.prod.outlook.com (10.168.72.150) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2178.18; Tue, 20 Aug 2019 20:54:48 +0000
+Received: from DB6PR0501MB2759.eurprd05.prod.outlook.com
+ ([fe80::3c28:c77d:55b0:15b2]) by DB6PR0501MB2759.eurprd05.prod.outlook.com
+ ([fe80::3c28:c77d:55b0:15b2%5]) with mapi id 15.20.2178.018; Tue, 20 Aug 2019
+ 20:54:48 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     Leon Romanovsky <leonro@mellanox.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH mlx5-next 0/5] Mellanox, Updates for mlx5-next branch
+ 2019-08-15
+Thread-Topic: [PATCH mlx5-next 0/5] Mellanox, Updates for mlx5-next branch
+ 2019-08-15
+Thread-Index: AQHVU6IUZREU+lqw60OtGrhrmpkosacEi7sA
+Date:   Tue, 20 Aug 2019 20:54:48 +0000
+Message-ID: <9e34f8b0d2f5f80bcc12e902e4010a6d650cafba.camel@mellanox.com>
+References: <20190815194543.14369-1-saeedm@mellanox.com>
+In-Reply-To: <20190815194543.14369-1-saeedm@mellanox.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.177]
-X-ClientProxiedBy: EX13D04UWB004.ant.amazon.com (10.43.161.103) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [209.116.155.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 933581c3-797d-4d40-35ef-08d725b0a389
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:DB6PR0501MB2375;
+x-ms-traffictypediagnostic: DB6PR0501MB2375:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR0501MB23757C5C0127C2005C50D5A4BEAB0@DB6PR0501MB2375.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-forefront-prvs: 013568035E
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(346002)(39860400002)(396003)(366004)(136003)(53754006)(199004)(189003)(99286004)(450100002)(7736002)(316002)(76116006)(305945005)(91956017)(66476007)(66556008)(64756008)(66446008)(66946007)(6116002)(25786009)(118296001)(37006003)(15650500001)(54906003)(478600001)(2906002)(3846002)(81166006)(58126008)(8676002)(81156014)(6436002)(6486002)(8936002)(256004)(229853002)(186003)(26005)(476003)(486006)(6506007)(71200400001)(102836004)(71190400001)(11346002)(14454004)(4744005)(6512007)(446003)(2616005)(36756003)(66066001)(5660300002)(6862004)(76176011)(53936002)(6636002)(86362001)(4326008)(6246003);DIR:OUT;SFP:1101;SCL:1;SRVR:DB6PR0501MB2375;H:DB6PR0501MB2759.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: pHfPZotuXCrWhEh/zQlZifdYujn+CZWli5NPx6psTxQhZD9ONJ1oQtisKpHufL7SFqSJEX5YIzP0G2Cfufgr3zt/nlsyumPv8xqB5V5+iPDY0PjJU88pqo5CPwLztqmRRzY0QxLrRLmv1OMxO8NfzEAAkf23pHr2BzXe4viyBmQGTcL/HMbqnFgcPhYcWfewv1+MQUJx31GE/hyr11cTh2jAuv9Ky3xgRGHqFR4tq7OzF19UwTDlk5nfzBX7Fb8WmEbog718akkT6TW0HV4HHES6TLn3n7g4xRZi1ZEqC6HbUBZex1/8gNc6XbUq8HqfNcAQ+mR02GPZIpHhqtD7KKiYsMYQqmIAOMzLj1RZFw1X2Aj+uRkLM9XzFhKpbyI3RRxF5JSvGQKMtacnogFgcYTSOXSZ9U4dLX3sMfrhMOQ=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9FD151FE310F8C418E380D19E448DEE1@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 933581c3-797d-4d40-35ef-08d725b0a389
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Aug 2019 20:54:48.3015
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: T+Uf6xzrqJC5MN58tqY0+cKAUOoD0i6i9C5a8TAcya3tQJxNt4GvpEPCTmHP/JxEOV1kpbJ05gy4wVtKzWwV6g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0501MB2375
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 20/08/2019 15:18, Michal Kalderon wrote:
-> This patch series uses the doorbell overflow recovery mechanism
-> introduced in
-> commit 36907cd5cd72 ("qed: Add doorbell overflow recovery mechanism")
-> for rdma ( RoCE and iWARP )
-> 
-> The first five patches modify the core code to contain helper
-> functions for managing mmap_xa inserting, getting and freeing
-> entries. The code was based on the code from efa driver.
-> There is still an open discussion on whether we should take
-> this even further and make the entire mmap generic. Until a
-> decision is made, I only created the database API and modified
-> the efa, qedr, siw driver to use it. The functions are integrated
-> witht the umap mechanism.
-> 
-> The doorbell recovery code is based on the common code.
-> 
-> Efa driver was compile tested and checked only modprobe/rmmod.
-> SIW was compile tested only
-
-Hey Michal,
-
-I haven't had the time to review the patches yet, but I did run it through our
-regression and got some dmesg call traces [1].
-There are also some kmemleak warnings for suspected memory leaks, don't have the
-full information ATM but I can try and extract it if needed.
-
-Thanks!
-
-[1] (this is the first trace of many)
-BUG: Bad page state in process ib_send_bw  pfn:1411f76
-page:ffffea005047dd80 refcount:-1 mapcount:0 mapping:0000000000000000 index:0x0
-flags: 0x2fffe000000000()
-raw: 002fffe000000000 dead000000000100 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000000000 ffffffffffffffff 0000000000000000
-page dumped because: nonzero _refcount
-Modules linked in: sunrpc dm_mirror dm_region_hash dm_log dm_mod efa ib_uverbs
-ib_core crc32_pclmul ghash_clmulni_intel aesni_intel aes_x86_64 crypto_simd
-cryptd glue_helper button pcspkr evdev ip_tables x_tables xfs libcrc32c nvme
-crc32c_intel nvme_core ena ipv6 crc_ccitt nf_defrag_ipv6 autofs4
-CPU: 29 PID: 62474 Comm: ib_send_bw Not tainted 5.3.0-rc1-dirty #1
-Hardware name: Amazon EC2 c5n.18xlarge/, BIOS 1.0 10/16/2017
-Call Trace:
- dump_stack+0x9a/0xeb
- bad_page+0x104/0x180
- free_pcppages_bulk+0x31b/0xdd0
- ? uncharge_batch+0x1d2/0x2b0
- ? free_compound_page+0x40/0x40
- ? free_unref_page_commit+0x152/0x1b0
- free_unref_page_list+0x1b8/0x3e0
- release_pages+0x4c6/0x620
- ? put_pages_list+0xf0/0xf0
- ? free_pages_and_swap_cache+0x97/0x140
- tlb_flush_mmu+0x7a/0x280
- tlb_finish_mmu+0x44/0x170
- exit_mmap+0x147/0x2b0
- ? do_munmap+0x10/0x10
- mmput+0xb4/0x1d0
- do_exit+0x4c2/0x14d0
- ? mm_update_next_owner+0x360/0x360
- ? ktime_get_coarse_real_ts64+0xc0/0x120
- ? syscall_trace_enter+0x22d/0x5f0
- ? __audit_syscall_exit+0x31e/0x460
- ? syscall_slow_exit_work+0x2c0/0x2c0
- ? kfree+0x221/0x290
- ? mark_held_locks+0x1c/0xa0
- do_group_exit+0x6f/0x140
- __x64_sys_exit_group+0x28/0x30
- do_syscall_64+0x68/0x290
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x7f6072a3b928
-Code: Bad RIP value.
-RSP: 002b:00007ffe4e09ae68 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f6072a3b928
-RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
-RBP: 00007f6072d24898 R08: 00000000000000e7 R09: ffffffffffffff70
-R10: 00007f60724ead68 R11: 0000000000000246 R12: 00007f6072d24898
-R13: 00007f6072d29d80 R14: 0000000000000000 R15: 0000000000000000
-Disabling lock debugging due to kernel taint
+T24gVGh1LCAyMDE5LTA4LTE1IGF0IDE5OjQ2ICswMDAwLCBTYWVlZCBNYWhhbWVlZCB3cm90ZToN
+Cj4gSGkgQWxsLA0KPiANCj4gVGhpcyBzZXJpZXMgaW5jbHVkZXMgbWlzYyB1cGRhdGVzIGZvciBt
+bHg1LW5leHQgc2hhcmVkIGJyYW5jaC4NCj4gDQo+IG1seDUgSFcgc3BlYyBhbmQgYml0cyB1cGRh
+dGVzOg0KPiAxKSBBeWEgZXhwb3NlcyBJUC1pbi1JUCBjYXBhYmlsaXR5IGluIG1seDVfY29yZS4N
+Cj4gMikgTWF4aW0gZXhwb3NlcyBsYWcgdHggcG9ydCBhZmZpbml0eSBjYXBhYmlsaXRpZXMuDQo+
+IDMpIE1vc2hlIGFkZHMgVk5JQ19FTlYgaW50ZXJuYWwgcnEgY291bnRlciBiaXRzLg0KPiANCj4g
+TWlzYyB1cGRhdGVzOg0KPiA0KSBTYWVlZCwgdHdvIGNvbXBpbGVyIHdhcm5pbmdzIGNsZWFudXBz
+DQo+IA0KPiANCg0KQXBwbGllZCB0byBtbHg1LW5leHQuDQo=
