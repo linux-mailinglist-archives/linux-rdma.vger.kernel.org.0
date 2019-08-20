@@ -2,112 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF6A95F48
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 14:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0DC95F54
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 15:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729024AbfHTM6F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Aug 2019 08:58:05 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:35473 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728248AbfHTM6F (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Aug 2019 08:58:05 -0400
-Received: by mail-qk1-f196.google.com with SMTP id r21so4370790qke.2
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Aug 2019 05:58:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=C6UpvYTpsEP7nxqequtc0g4wPRlBHrZ6ZGninWBI6oc=;
-        b=gZdDMQAbtr3917oEYkF0T4VJIvgxxMYxjtrDMrGHvBnoYlUPaawJwsNkp3uoWyOMJw
-         tYsXz5ZwJfacFSATUF6co4WtmaYsV9as2MVrPGdvsMElV+arc3fnL/XI0Fej3xTvl3Zp
-         NEaDmOu2dKiDGH8sPKA674MTlsQkZPNNnsy9q0DfPxHsxq4cPizoBKXeW3Gc00REVPEC
-         lPGo/pO7KCo8/ems6GkkRTlpQT3lcsLqbVq8SH3ykTGVjCVbFpIww5rLpi8yk2LDMcUx
-         pseKMbICxKIYtlIT02vQiIZWcS4SO5uWgBnjjk6inqdgpl+uxEg0Q16SZIQivpG6bcD6
-         dkug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=C6UpvYTpsEP7nxqequtc0g4wPRlBHrZ6ZGninWBI6oc=;
-        b=LJ3cVayq67M9huGjjFCnenJJRJY1ixr5j36Ss8vGfXLgQbS36SsdM1+ATdTjMpvVCD
-         H84dNe6EF2m3AEI4+fsdUlPs6VN1t+GQzsyDFIhb5JLypaXnTkHKyr4a4Hokan6f4Zu2
-         s5eVF/iABlDIqYYXJCG3+J25qieyqq29cAbTuRZ4dRET4/8MEzQt6nZc2iORG0NgDwOJ
-         62AaXwGwvy7z7O8D2ynfI9IQJ0gOXRmlFTt6Cw08JvAZxEZeB5ZYUi374OvwOkMtjAiS
-         GypRuj1eDPJ7KpaK7l57iHlJGWr7l+tcyFlcGczD9Q3D0HcXn5Rz2sjTtsw/UxdqSHV6
-         yMFA==
-X-Gm-Message-State: APjAAAW5r4Onh8IoLu0XSCi7CliNCByLwmsAVQBy5dy4J2Vkm0biYlEd
-        GLrir7Zisyk5pCgiDP2Ztoacbw==
-X-Google-Smtp-Source: APXvYqzXeOQM0SW8ZZh2BPkG+l5oTzqufyAzRd83QO7qPgl84lS+oW6g5Rk98NqPponeqG2s6K1iyQ==
-X-Received: by 2002:ae9:f812:: with SMTP id x18mr25448988qkh.290.1566305884697;
-        Tue, 20 Aug 2019 05:58:04 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id h1sm11092678qtc.92.2019.08.20.05.58.04
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 20 Aug 2019 05:58:04 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1i03i7-0008Ve-Ir; Tue, 20 Aug 2019 09:58:03 -0300
-Date:   Tue, 20 Aug 2019 09:58:03 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michal Kalderon <michal.kalderon@marvell.com>
-Cc:     mkalderon@marvell.com, aelior@marvell.com, dledford@redhat.com,
-        bmt@zurich.ibm.com, galpress@amazon.com, sleybo@amazon.com,
-        leon@kernel.org, linux-rdma@vger.kernel.org,
-        Ariel Elior <ariel.elior@marvell.com>
-Subject: Re: [PATCH v7 rdma-next 1/7] RDMA/core: Move core content from
- ib_uverbs to ib_core
-Message-ID: <20190820125803.GB29246@ziepe.ca>
-References: <20190820121847.25871-1-michal.kalderon@marvell.com>
- <20190820121847.25871-2-michal.kalderon@marvell.com>
+        id S1728248AbfHTNAu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Aug 2019 09:00:50 -0400
+Received: from mail-eopbgr30043.outbound.protection.outlook.com ([40.107.3.43]:14451
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727006AbfHTNAu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 20 Aug 2019 09:00:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Th6Rf1irq3rE5bCs2Xz4axK+i+6bnE1CtXGfoDZWxuAKur4U4j3rIt8m+jyH+pKHcvW6plMSXlgeQuINnNLPg9a8HBhDDcQP2KjerQOkaZ8QwSQkKbVZkbv4qk4dfCKCCVRudNWF20qvyyRwjZsEEELz3qEIzi7UO1OV807P6GqAWn3iq60UTCn4CJS49EfWkq4aRzFrsafv1En8ELA6xInpeemuYiNG8PBk20F3hS3ZgKsC3/76IkzHWLeShpMhr35YubosyrzCl64mYt60h27Qc3ujdoj8tUFJ9HmDtjAAC94M1dm0Y6sZ9d485jsfEcdRR+y1KWwk0W/IzSFe8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VW+/FjHMZi/M5mf1Ux4a5BqsyIm/G45Gx3mvCnxdaOw=;
+ b=Fcg5Gpe18japJ/zBiDUoR2ZKCevepo9ONYd2WnFceFBUmu+5KPy+ZUCobfsl3WMJcK6SSq2bTf5ek6BWzxlmctawreoZnGlDpRu+JizarDHhruQG2pB1YyzTRoEB5D2t7Gr0BXFvGlr+YE2pM8DqGEXzeySH+b7osi2pm9L23z/1P4e0TGpsSqcn6QGZRDLMcrBEO1gWkFxBhUyQy7hpX7ghtPoFPK1o+meyRlVCOo15HuHLVxtS2mtVVWWygCDvUF+xxbqfPAb+BHf8uTEBN96WKDHqrElx4AK0FxTNgO3Bf1O0EHjQ5ENfEA+BFE9ry77JjDV/5q9ar0kpMH0j1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VW+/FjHMZi/M5mf1Ux4a5BqsyIm/G45Gx3mvCnxdaOw=;
+ b=k6ErY0lKtssunmqRD6dPlpOF1zCHjJmS09XVn7av6UME+phE6D9Faplp2MR8oKc1mH7CPe0W3dLQ+y0PGGRVQ/ItgUiVrn40Hrtt1ICf7SJF7+vMJM/zG2E79EmVCaeLXxcfw1ZIfhMhm2g3g68nCGF7B/RX/opCVVqB4dlwbKE=
+Received: from AM6PR05MB4968.eurprd05.prod.outlook.com (20.177.33.17) by
+ AM6PR05MB4456.eurprd05.prod.outlook.com (52.135.162.153) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2178.18; Tue, 20 Aug 2019 13:00:47 +0000
+Received: from AM6PR05MB4968.eurprd05.prod.outlook.com
+ ([fe80::c14e:4a4a:7bf5:3e2d]) by AM6PR05MB4968.eurprd05.prod.outlook.com
+ ([fe80::c14e:4a4a:7bf5:3e2d%7]) with mapi id 15.20.2178.018; Tue, 20 Aug 2019
+ 13:00:47 +0000
+From:   Noa Osherovich <noaos@mellanox.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-core 03/14] build: Add pyverbs-based test to the
+ build
+Thread-Topic: [PATCH rdma-core 03/14] build: Add pyverbs-based test to the
+ build
+Thread-Index: AQHVVluKi/1wMEsI4UWSJliEROGNkacCfWOAgAGEcwA=
+Date:   Tue, 20 Aug 2019 13:00:47 +0000
+Message-ID: <2ac30209-2c89-15ef-3907-98d3cd552f4d@mellanox.com>
+References: <20190819065827.26921-1-noaos@mellanox.com>
+ <20190819065827.26921-4-noaos@mellanox.com>
+ <20190819135019.GF5080@mellanox.com>
+In-Reply-To: <20190819135019.GF5080@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MR2P264CA0115.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:500:33::31) To AM6PR05MB4968.eurprd05.prod.outlook.com
+ (2603:10a6:20b:4::17)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=noaos@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [193.47.165.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fee0cbf3-b12d-44cc-3df7-08d7256e6b1f
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM6PR05MB4456;
+x-ms-traffictypediagnostic: AM6PR05MB4456:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR05MB445659CC9CD275936DA38D13D9AB0@AM6PR05MB4456.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 013568035E
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(39860400002)(376002)(346002)(366004)(136003)(189003)(199004)(14454004)(229853002)(6862004)(7736002)(305945005)(558084003)(6116002)(6486002)(6636002)(36756003)(86362001)(31696002)(6246003)(6512007)(2616005)(486006)(11346002)(5660300002)(6506007)(386003)(71200400001)(71190400001)(53546011)(476003)(6436002)(256004)(26005)(81166006)(81156014)(8936002)(186003)(446003)(4326008)(25786009)(31686004)(478600001)(37006003)(54906003)(99286004)(52116002)(102836004)(76176011)(2906002)(66066001)(8676002)(66446008)(64756008)(66556008)(66476007)(66946007)(316002)(53936002)(3846002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB4456;H:AM6PR05MB4968.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: KPRqUtuQIeEtG6HVMwvouQPECNThzqat2eiMsg+GB1l2eQNqpMa4l752XNoCGuLPnnEUvJ5dX6PaXSv2yj/4uAM78oX8ClrDmyDOhJ3t+DoKlvwysnfpK6U44KCIdbFzIfC3huuZnGkhlVdJz7kyKC1qae9wEMMEfOK77mVVRU3bBrAkJL1P+4DDhkZrlrGh0zTxjIKPTAa7em+Do400BJW9mPNMbItfNgFt/lhdin4UgHO1JXfsNPQEAzc7mhIuXB8ehPc2CWdG2ifN2aD2q6L7nHIVmgOCjjgVl5JAk4jSy/4IPmVhkTWT71/8RkCI/xseW0vpBiGZr7eqZrZhxKf1V6JNtW4I8BdDmteJGjav1ZAn7IN0elifjw2/u1WNUhRNy25zait59SbE/P7eG/FcdsCqwnsPPFSYEKoCaaI=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3C31B5492523E34384074F7792BFB185@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190820121847.25871-2-michal.kalderon@marvell.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fee0cbf3-b12d-44cc-3df7-08d7256e6b1f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Aug 2019 13:00:47.1383
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oyiCU2nXxrYvTL11+fiwzilbm3udyFC0MoUTtB8I7nL8k8KVTPfj2sPPJskWIngRzajR5VJ+FBhslNFdPfa0NA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4456
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 03:18:41PM +0300, Michal Kalderon wrote:
-> Move functionality that is called by the driver, which is
-> related to umap, to a new file that will be linked in ib_core.
-> This is a first step in later enabling ib_uverbs to be optional.
-> vm_ops is now initialized in ib_uverbs_mmap instead of
-> priv_init to avoid having to move all the rdma_umap functions
-> as well.
-
-Sneaky, lets please have a comment though
-
-> +/*
-> + * Each time we map IO memory into user space this keeps track of the mapping.
-> + * When the device is hot-unplugged we 'zap' the mmaps in user space to point
-> + * to the zero page and allow the hot unplug to proceed.
-> + *
-> + * This is necessary for cases like PCI physical hot unplug as the actual BAR
-> + * memory may vanish after this and access to it from userspace could MCE.
-> + *
-> + * RDMA drivers supporting disassociation must have their user space designed
-> + * to cope in some way with their IO pages going to the zero page.
-> + */
-> +void rdma_umap_priv_init(struct rdma_umap_priv *priv,
-> +			 struct vm_area_struct *vma)
-> +{
-> +	struct ib_uverbs_file *ufile = vma->vm_file->private_data;
-> +
-> +	priv->vma = vma;
-> +	vma->vm_private_data = priv;
-
-   /* vm_ops is setup in ib_uverbs_mmap() to avoid module dependencies */
-
-> +
-> +	mutex_lock(&ufile->umap_lock);
-> +	list_add(&priv->list, &ufile->umaps);
-> +	mutex_unlock(&ufile->umap_lock);
-> +}
-> +EXPORT_SYMBOL(rdma_umap_priv_init);
-
-Does rdma_umap_open need to set ops too, or does the VM initialize it
-already?
-
-Jason
+T24gOC8xOS8yMDE5IDQ6NTAgUE0sIEphc29uIEd1bnRob3JwZSB3cm90ZToNCg0KPiBJJ2QgcHJl
+ZmVyIHJ1bl90ZXN0cyB0byBiZSBpbiB0aGUgdGVzdHMgZGlyZWN0b3J5Li4NCj4NCj4gSmFzb24N
+Cg0KUFIgd2FzIHVwZGF0ZWQNCg0KVGhhbmtzLA0KTm9hDQoNCg==
