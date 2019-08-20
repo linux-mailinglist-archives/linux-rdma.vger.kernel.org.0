@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C17D95E46
+	by mail.lfdr.de (Postfix) with ESMTP id A5E1395E47
 	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2019 14:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729336AbfHTMU5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Aug 2019 08:20:57 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:31112 "EHLO
+        id S1729420AbfHTMU7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Aug 2019 08:20:59 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:61718 "EHLO
         mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729409AbfHTMU5 (ORCPT
+        by vger.kernel.org with ESMTP id S1729409AbfHTMU6 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Aug 2019 08:20:57 -0400
+        Tue, 20 Aug 2019 08:20:58 -0400
 Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x7KCAacp027732;
-        Tue, 20 Aug 2019 05:20:52 -0700
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x7KCBG4u028267;
+        Tue, 20 Aug 2019 05:20:55 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=i28oIjO724lZX8jaAkYPrPnvh/qvlVSq3iS9+r1djgA=;
- b=RjO431nHtlhp43llGOgsu3j8BSei0WizALwvSDNfY83a7ViJYoLM666KL5kIFjrdd1nz
- 3OdqD1dKy+wU3zB5kjVBYwIyqEw2fJH9qZxEAZy3ya2aDeUDgtHEuQYl0Vnhtw2WvdiZ
- I7dWgSkEjD6DVwIqxeTmqyf5A0u8b0BUwt7pjAdn+IdKPD9xWiSQ3r9HKsueNF8JtHsn
- RXmpQ+dgOmU3T88R6bE5sCAZzq1SzT4Zy2GH3EMtfNCS2Xyg55sQGnAv1FfCyNAUOBkU
- lhDCllyi8TnN5tOL5tLMW4j9CxbZeOfVyBA2tOdD5RpXi4EjobKh4StJItisDkPoFfox NQ== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2ug8a99p10-1
+ content-type; s=pfpt0818; bh=ajq7CArU0Sa7HV7YTMOrbsT53XCVsJB0rmktwhDDI/A=;
+ b=SPR0WZVpuBmTRASddU8X9TOfXLNinwCBrfgXa1SlpITfRRmQZOhlOjbH8iMLq8MYogyp
+ 8RoBqDZsQdkJ5BV3xUe05FNdILfaigN1uosNmuxAeAQwFp7fkYTj7qFmqq/QoPdmJcKM
+ X7ateXV1daJWEos9veZnAHy7LTdRjcRmeo0Lh/EDWn50xf4fxeuUg+d+PtOuKWXpft0I
+ /1Dv+sKEuarE5m5OJ356MnrXzF4rskaoZf1F7EaoOiQmq17sBjLplIXFrv1P0LodLPjv
+ /f02nEiz2OcogGpTraJksWKyfBNtHzqp3FnDfsxWO5bcFkXjCpn7ymWjtWeoRP8xyoGL 2A== 
+Received: from sc-exch04.marvell.com ([199.233.58.184])
+        by mx0a-0016f401.pphosted.com with ESMTP id 2ug8a99p19-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 20 Aug 2019 05:20:52 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 20 Aug
- 2019 05:20:50 -0700
+        Tue, 20 Aug 2019 05:20:55 -0700
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 20 Aug
+ 2019 05:20:54 -0700
 Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
  (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Tue, 20 Aug 2019 05:20:50 -0700
+ Transport; Tue, 20 Aug 2019 05:20:54 -0700
 Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id B39A93F703F;
-        Tue, 20 Aug 2019 05:20:47 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id 3DBE33F7040;
+        Tue, 20 Aug 2019 05:20:51 -0700 (PDT)
 From:   Michal Kalderon <michal.kalderon@marvell.com>
 To:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
         <dledford@redhat.com>, <bmt@zurich.ibm.com>, <galpress@amazon.com>,
@@ -43,9 +43,9 @@ To:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
 CC:     <linux-rdma@vger.kernel.org>,
         Michal Kalderon <michal.kalderon@marvell.com>,
         Ariel Elior <ariel.elior@marvell.com>
-Subject: [PATCH v7 rdma-next 4/7] RDMA/siw: Use the common mmap_xa helpers
-Date:   Tue, 20 Aug 2019 15:18:44 +0300
-Message-ID: <20190820121847.25871-5-michal.kalderon@marvell.com>
+Subject: [PATCH v7 rdma-next 5/7] RDMA/qedr: Use the common mmap API
+Date:   Tue, 20 Aug 2019 15:18:45 +0300
+Message-ID: <20190820121847.25871-6-michal.kalderon@marvell.com>
 X-Mailer: git-send-email 2.14.5
 In-Reply-To: <20190820121847.25871-1-michal.kalderon@marvell.com>
 References: <20190820121847.25871-1-michal.kalderon@marvell.com>
@@ -58,353 +58,284 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Remove the functions related to managing the mmap_xa database.
-This code is now common in ib_core. Use the common API's instead.
+Remove all function related to mmap from qedr and use the common
+API
 
 Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
 Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 ---
- drivers/infiniband/sw/siw/siw.h       |   8 +-
- drivers/infiniband/sw/siw/siw_verbs.c | 160 ++++++++++++++--------------------
- 2 files changed, 69 insertions(+), 99 deletions(-)
+ drivers/infiniband/hw/qedr/qedr.h  |  14 +---
+ drivers/infiniband/hw/qedr/verbs.c | 157 +++++++++++++------------------------
+ drivers/infiniband/hw/qedr/verbs.h |   2 +-
+ 3 files changed, 57 insertions(+), 116 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-index 03fd7b2f595f..3ac745dac7e4 100644
---- a/drivers/infiniband/sw/siw/siw.h
-+++ b/drivers/infiniband/sw/siw/siw.h
-@@ -220,7 +220,7 @@ struct siw_cq {
- 	u32 cq_get;
- 	u32 num_cqe;
- 	bool kernel_verbs;
--	u32 xa_cq_index; /* mmap information for CQE array */
-+	u64 cq_key; /* mmap information for CQE array */
- 	u32 id; /* For debugging only */
+diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
+index 0cfd849b13d6..1e75dc8ad8de 100644
+--- a/drivers/infiniband/hw/qedr/qedr.h
++++ b/drivers/infiniband/hw/qedr/qedr.h
+@@ -230,14 +230,10 @@ struct qedr_ucontext {
+ 	struct qedr_dev *dev;
+ 	struct qedr_pd *pd;
+ 	void __iomem *dpi_addr;
++	u64 db_key;
+ 	u64 dpi_phys_addr;
+ 	u32 dpi_size;
+ 	u16 dpi;
+-
+-	struct list_head mm_head;
+-
+-	/* Lock to protect mm list */
+-	struct mutex mm_list_lock;
  };
  
-@@ -263,7 +263,7 @@ struct siw_srq {
- 	u32 rq_put;
- 	u32 rq_get;
- 	u32 num_rqe; /* max # of wqe's allowed */
--	u32 xa_srq_index; /* mmap information for SRQ array */
-+	u64 srq_key; /* mmap information for SRQ array */
- 	char armed; /* inform user if limit hit */
- 	char kernel_verbs; /* '1' if kernel client */
- };
-@@ -477,8 +477,8 @@ struct siw_qp {
- 		u8 layer : 4, etype : 4;
- 		u8 ecode;
- 	} term_info;
--	u32 xa_sq_index; /* mmap information for SQE array */
--	u32 xa_rq_index; /* mmap information for RQE array */
-+	u64 sq_key; /* mmap information for SQE array */
-+	u64 rq_key; /* mmap information for RQE array */
- 	struct rcu_head rcu;
+ union db_prod64 {
+@@ -300,14 +296,6 @@ struct qedr_pd {
+ 	struct qedr_ucontext *uctx;
  };
  
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index 404e7ca4b30c..b5d3dff70741 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -34,43 +34,11 @@ static char ib_qp_state_to_string[IB_QPS_ERR + 1][sizeof("RESET")] = {
- 	[IB_QPS_ERR] = "ERR"
- };
+-struct qedr_mm {
+-	struct {
+-		u64 phy_addr;
+-		unsigned long len;
+-	} key;
+-	struct list_head entry;
+-};
+-
+ union db_prod32 {
+ 	struct rdma_pwm_val16_data data;
+ 	u32 raw;
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index 6f3ce86019b7..ea5b56f190f4 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -58,6 +58,10 @@
  
--static u32 siw_create_uobj(struct siw_ucontext *uctx, void *vaddr, u32 size)
--{
--	struct siw_uobj *uobj;
--	struct xa_limit limit = XA_LIMIT(0, SIW_UOBJ_MAX_KEY);
--	u32 key;
--
--	uobj = kzalloc(sizeof(*uobj), GFP_KERNEL);
--	if (!uobj)
--		return SIW_INVAL_UOBJ_KEY;
--
--	if (xa_alloc_cyclic(&uctx->xa, &key, uobj, limit, &uctx->uobj_nextkey,
--			    GFP_KERNEL) < 0) {
--		kfree(uobj);
--		return SIW_INVAL_UOBJ_KEY;
--	}
--	uobj->size = PAGE_ALIGN(size);
--	uobj->addr = vaddr;
--
--	return key;
--}
--
--static struct siw_uobj *siw_get_uobj(struct siw_ucontext *uctx,
--				     unsigned long off, u32 size)
--{
--	struct siw_uobj *uobj = xa_load(&uctx->xa, off);
--
--	if (uobj && uobj->size == size)
--		return uobj;
--
--	return NULL;
--}
--
- int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma)
- {
- 	struct siw_ucontext *uctx = to_siw_ctx(ctx);
--	struct siw_uobj *uobj;
--	unsigned long off = vma->vm_pgoff;
-+	struct rdma_user_mmap_entry *entry;
-+	unsigned long off = vma->vm_pgoff << PAGE_SHIFT;
- 	int size = vma->vm_end - vma->vm_start;
- 	int rv = -EINVAL;
+ #define DB_ADDR_SHIFT(addr)		((addr) << DB_PWM_ADDR_OFFSET_SHIFT)
  
-@@ -81,15 +49,17 @@ int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma)
- 		pr_warn("siw: mmap not page aligned\n");
- 		goto out;
- 	}
--	uobj = siw_get_uobj(uctx, off, size);
--	if (!uobj) {
-+	entry = rdma_user_mmap_entry_get(&uctx->base_ucontext, off, size, vma);
-+	if (!entry) {
- 		siw_dbg(&uctx->sdev->base_dev, "mmap lookup failed: %lu, %u\n",
- 			off, size);
- 		goto out;
- 	}
--	rv = remap_vmalloc_range(vma, uobj->addr, 0);
--	if (rv)
-+	rv = remap_vmalloc_range(vma, (void *)entry->address, 0);
-+	if (rv) {
- 		pr_warn("remap_vmalloc_range failed: %lu, %u\n", off, size);
-+		rdma_user_mmap_entry_put(&uctx->base_ucontext, entry);
-+	}
- out:
- 	return rv;
- }
-@@ -105,7 +75,7 @@ int siw_alloc_ucontext(struct ib_ucontext *base_ctx, struct ib_udata *udata)
- 		rv = -ENOMEM;
- 		goto err_out;
- 	}
--	xa_init_flags(&ctx->xa, XA_FLAGS_ALLOC);
++enum {
++	QEDR_USER_MMAP_IO_WC = 0,
++};
 +
- 	ctx->uobj_nextkey = 0;
- 	ctx->sdev = sdev;
- 
-@@ -135,19 +105,7 @@ int siw_alloc_ucontext(struct ib_ucontext *base_ctx, struct ib_udata *udata)
- void siw_dealloc_ucontext(struct ib_ucontext *base_ctx)
+ static inline int qedr_ib_copy_to_udata(struct ib_udata *udata, void *src,
+ 					size_t len)
  {
- 	struct siw_ucontext *uctx = to_siw_ctx(base_ctx);
--	void *entry;
--	unsigned long index;
+@@ -256,60 +260,6 @@ int qedr_modify_port(struct ib_device *ibdev, u8 port, int mask,
+ 	return 0;
+ }
  
--	/*
--	 * Make sure all user mmap objects are gone. Since QP, CQ
--	 * and SRQ destroy routines destroy related objects, nothing
--	 * should be found here.
+-static int qedr_add_mmap(struct qedr_ucontext *uctx, u64 phy_addr,
+-			 unsigned long len)
+-{
+-	struct qedr_mm *mm;
+-
+-	mm = kzalloc(sizeof(*mm), GFP_KERNEL);
+-	if (!mm)
+-		return -ENOMEM;
+-
+-	mm->key.phy_addr = phy_addr;
+-	/* This function might be called with a length which is not a multiple
+-	 * of PAGE_SIZE, while the mapping is PAGE_SIZE grained and the kernel
+-	 * forces this granularity by increasing the requested size if needed.
+-	 * When qedr_mmap is called, it will search the list with the updated
+-	 * length as a key. To prevent search failures, the length is rounded up
+-	 * in advance to PAGE_SIZE.
 -	 */
--	xa_for_each(&uctx->xa, index, entry) {
--		kfree(xa_erase(&uctx->xa, index));
--		pr_warn("siw: dropping orphaned uobj at %lu\n", index);
+-	mm->key.len = roundup(len, PAGE_SIZE);
+-	INIT_LIST_HEAD(&mm->entry);
+-
+-	mutex_lock(&uctx->mm_list_lock);
+-	list_add(&mm->entry, &uctx->mm_head);
+-	mutex_unlock(&uctx->mm_list_lock);
+-
+-	DP_DEBUG(uctx->dev, QEDR_MSG_MISC,
+-		 "added (addr=0x%llx,len=0x%lx) for ctx=%p\n",
+-		 (unsigned long long)mm->key.phy_addr,
+-		 (unsigned long)mm->key.len, uctx);
+-
+-	return 0;
+-}
+-
+-static bool qedr_search_mmap(struct qedr_ucontext *uctx, u64 phy_addr,
+-			     unsigned long len)
+-{
+-	bool found = false;
+-	struct qedr_mm *mm;
+-
+-	mutex_lock(&uctx->mm_list_lock);
+-	list_for_each_entry(mm, &uctx->mm_head, entry) {
+-		if (len != mm->key.len || phy_addr != mm->key.phy_addr)
+-			continue;
+-
+-		found = true;
+-		break;
 -	}
--	xa_destroy(&uctx->xa);
- 	atomic_dec(&uctx->sdev->num_ctx);
+-	mutex_unlock(&uctx->mm_list_lock);
+-	DP_DEBUG(uctx->dev, QEDR_MSG_MISC,
+-		 "searched for (addr=0x%llx,len=0x%lx) for ctx=%p, result=%d\n",
+-		 mm->key.phy_addr, mm->key.len, uctx, found);
+-
+-	return found;
+-}
+-
+ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
+ {
+ 	struct ib_device *ibdev = uctx->device;
+@@ -334,13 +284,17 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
+ 	ctx->dpi_addr = oparams.dpi_addr;
+ 	ctx->dpi_phys_addr = oparams.dpi_phys_addr;
+ 	ctx->dpi_size = oparams.dpi_size;
+-	INIT_LIST_HEAD(&ctx->mm_head);
+-	mutex_init(&ctx->mm_list_lock);
++	ctx->db_key = rdma_user_mmap_entry_insert(uctx, ctx,
++						  ctx->dpi_phys_addr,
++						  ctx->dpi_size,
++						  QEDR_USER_MMAP_IO_WC);
++	if (ctx->db_key == RDMA_USER_MMAP_INVALID)
++		return -ENOMEM;
+ 
+ 	uresp.dpm_enabled = dev->user_dpm_enabled;
+ 	uresp.wids_enabled = 1;
+ 	uresp.wid_count = oparams.wid_count;
+-	uresp.db_pa = ctx->dpi_phys_addr;
++	uresp.db_pa = ctx->db_key;
+ 	uresp.db_size = ctx->dpi_size;
+ 	uresp.max_send_wr = dev->attr.max_sqe;
+ 	uresp.max_recv_wr = dev->attr.max_rqe;
+@@ -356,10 +310,6 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
+ 
+ 	ctx->dev = dev;
+ 
+-	rc = qedr_add_mmap(ctx, ctx->dpi_phys_addr, ctx->dpi_size);
+-	if (rc)
+-		return rc;
+-
+ 	DP_DEBUG(dev, QEDR_MSG_INIT, "Allocating user context %p\n",
+ 		 &ctx->ibucontext);
+ 	return 0;
+@@ -368,66 +318,69 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
+ void qedr_dealloc_ucontext(struct ib_ucontext *ibctx)
+ {
+ 	struct qedr_ucontext *uctx = get_qedr_ucontext(ibctx);
+-	struct qedr_mm *mm, *tmp;
+ 
+ 	DP_DEBUG(uctx->dev, QEDR_MSG_INIT, "Deallocating user context %p\n",
+ 		 uctx);
+-	uctx->dev->ops->rdma_remove_user(uctx->dev->rdma_ctx, uctx->dpi);
+ 
+-	list_for_each_entry_safe(mm, tmp, &uctx->mm_head, entry) {
+-		DP_DEBUG(uctx->dev, QEDR_MSG_MISC,
+-			 "deleted (addr=0x%llx,len=0x%lx) for ctx=%p\n",
+-			 mm->key.phy_addr, mm->key.len, uctx);
+-		list_del(&mm->entry);
+-		kfree(mm);
+-	}
++	rdma_user_mmap_entry_remove(ibctx, uctx->db_key);
++	uctx->dev->ops->rdma_remove_user(uctx->dev->rdma_ctx, uctx->dpi);
  }
  
-@@ -317,6 +275,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
- 	struct siw_cq *scq = NULL, *rcq = NULL;
- 	unsigned long flags;
- 	int num_sqe, num_rqe, rv = 0;
-+	u64 length;
-+	u64 key;
+-int qedr_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
++int qedr_mmap(struct ib_ucontext *ucontext, struct vm_area_struct *vma)
+ {
+-	struct qedr_ucontext *ucontext = get_qedr_ucontext(context);
+-	struct qedr_dev *dev = get_qedr_dev(context->device);
+-	unsigned long phys_addr = vma->vm_pgoff << PAGE_SHIFT;
+-	unsigned long len = (vma->vm_end - vma->vm_start);
+-	unsigned long dpi_start;
++	struct ib_device *dev = ucontext->device;
++	u64 length = vma->vm_end - vma->vm_start;
++	u64 key = vma->vm_pgoff << PAGE_SHIFT;
++	struct rdma_user_mmap_entry *entry;
++	u64 pfn;
++	int err;
  
- 	siw_dbg(base_dev, "create new QP\n");
- 
-@@ -380,8 +340,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
- 	spin_lock_init(&qp->orq_lock);
- 
- 	qp->kernel_verbs = !udata;
--	qp->xa_sq_index = SIW_INVAL_UOBJ_KEY;
--	qp->xa_rq_index = SIW_INVAL_UOBJ_KEY;
-+	qp->sq_key = RDMA_USER_MMAP_INVALID;
-+	qp->rq_key = RDMA_USER_MMAP_INVALID;
- 
- 	rv = siw_qp_add(sdev, qp);
- 	if (rv)
-@@ -459,22 +419,29 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
- 		uresp.qp_id = qp_id(qp);
- 
- 		if (qp->sendq) {
--			qp->xa_sq_index =
--				siw_create_uobj(uctx, qp->sendq,
--					num_sqe * sizeof(struct siw_sqe));
-+			length = num_sqe * sizeof(struct siw_sqe);
-+			key = rdma_user_mmap_entry_insert(&uctx->base_ucontext,
-+							  qp,
-+							  (uintptr_t)qp->sendq,
-+							  length, 0);
-+			qp->sq_key = key;
- 		}
-+
- 		if (qp->recvq) {
--			qp->xa_rq_index =
--				 siw_create_uobj(uctx, qp->recvq,
--					num_rqe * sizeof(struct siw_rqe));
-+			length = num_rqe * sizeof(struct siw_rqe);
-+			key = rdma_user_mmap_entry_insert(&uctx->base_ucontext,
-+							  qp,
-+							  (uintptr_t)qp->recvq,
-+							  length, 0);
-+			qp->rq_key = key;
- 		}
--		if (qp->xa_sq_index == SIW_INVAL_UOBJ_KEY ||
--		    qp->xa_rq_index == SIW_INVAL_UOBJ_KEY) {
-+		if (qp->sq_key == RDMA_USER_MMAP_INVALID ||
-+		    qp->rq_key == RDMA_USER_MMAP_INVALID) {
- 			rv = -ENOMEM;
- 			goto err_out_xa;
- 		}
--		uresp.sq_key = qp->xa_sq_index << PAGE_SHIFT;
--		uresp.rq_key = qp->xa_rq_index << PAGE_SHIFT;
-+		uresp.sq_key = qp->sq_key;
-+		uresp.rq_key = qp->rq_key;
- 
- 		if (udata->outlen < sizeof(uresp)) {
- 			rv = -EINVAL;
-@@ -502,11 +469,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
- 	kfree(siw_base_qp);
- 
- 	if (qp) {
--		if (qp->xa_sq_index != SIW_INVAL_UOBJ_KEY)
--			kfree(xa_erase(&uctx->xa, qp->xa_sq_index));
--		if (qp->xa_rq_index != SIW_INVAL_UOBJ_KEY)
--			kfree(xa_erase(&uctx->xa, qp->xa_rq_index));
+-	dpi_start = dev->db_phys_addr + (ucontext->dpi * ucontext->dpi_size);
 -
-+		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->sq_key);
-+		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->rq_key);
- 		vfree(qp->sendq);
- 		vfree(qp->recvq);
- 		kfree(qp);
-@@ -620,10 +584,10 @@ int siw_destroy_qp(struct ib_qp *base_qp, struct ib_udata *udata)
- 	qp->attrs.flags |= SIW_QP_IN_DESTROY;
- 	qp->rx_stream.rx_suspend = 1;
+-	DP_DEBUG(dev, QEDR_MSG_INIT,
+-		 "mmap invoked with vm_start=0x%pK, vm_end=0x%pK,vm_pgoff=0x%pK; dpi_start=0x%pK dpi_size=0x%x\n",
+-		 (void *)vma->vm_start, (void *)vma->vm_end,
+-		 (void *)vma->vm_pgoff, (void *)dpi_start, ucontext->dpi_size);
++	ibdev_dbg(dev,
++		  "start %#lx, end %#lx, length = %#llx, key = %#llx\n",
++		  vma->vm_start, vma->vm_end, length, key);
  
--	if (uctx && qp->xa_sq_index != SIW_INVAL_UOBJ_KEY)
--		kfree(xa_erase(&uctx->xa, qp->xa_sq_index));
--	if (uctx && qp->xa_rq_index != SIW_INVAL_UOBJ_KEY)
--		kfree(xa_erase(&uctx->xa, qp->xa_rq_index));
-+	if (uctx) {
-+		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->sq_key);
-+		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->rq_key);
+-	if ((vma->vm_start & (PAGE_SIZE - 1)) || (len & (PAGE_SIZE - 1))) {
+-		DP_ERR(dev,
+-		       "failed mmap, addresses must be page aligned: start=0x%pK, end=0x%pK\n",
+-		       (void *)vma->vm_start, (void *)vma->vm_end);
++	if (length % PAGE_SIZE != 0 || !(vma->vm_flags & VM_SHARED)) {
++		ibdev_dbg(dev,
++			  "length[%#llx] is not page size aligned[%#lx] or VM_SHARED is not set [%#lx]\n",
++			  length, PAGE_SIZE, vma->vm_flags);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!qedr_search_mmap(ucontext, phys_addr, len)) {
+-		DP_ERR(dev, "failed mmap, vm_pgoff=0x%lx is not authorized\n",
+-		       vma->vm_pgoff);
+-		return -EINVAL;
++	if (vma->vm_flags & VM_EXEC) {
++		ibdev_dbg(dev, "Mapping executable pages is not permitted\n");
++		return -EPERM;
+ 	}
++	vma->vm_flags &= ~VM_MAYEXEC;
+ 
+-	if (phys_addr < dpi_start ||
+-	    ((phys_addr + len) > (dpi_start + ucontext->dpi_size))) {
+-		DP_ERR(dev,
+-		       "failed mmap, pages are outside of dpi; page address=0x%pK, dpi_start=0x%pK, dpi_size=0x%x\n",
+-		       (void *)phys_addr, (void *)dpi_start,
+-		       ucontext->dpi_size);
++	entry = rdma_user_mmap_entry_get(ucontext, key, length, vma);
++	if (!entry) {
++		ibdev_dbg(dev, "key[%#llx] does not have valid entry\n",
++			  key);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (vma->vm_flags & VM_READ) {
+-		DP_ERR(dev, "failed mmap, cannot map doorbell bar for read\n");
+-		return -EINVAL;
++	ibdev_dbg(dev,
++		  "Mapping address[%#llx], length[%#llx], mmap_flag[%d]\n",
++		  entry->address, length, entry->mmap_flag);
++
++	pfn = entry->address >> PAGE_SHIFT;
++	switch (entry->mmap_flag) {
++	case QEDR_USER_MMAP_IO_WC:
++		err = rdma_user_mmap_io(ucontext, vma, pfn, length,
++					pgprot_writecombine(vma->vm_page_prot));
++		break;
++	default:
++		err = -EINVAL;
 +	}
- 
- 	down_write(&qp->state_lock);
- 
-@@ -993,8 +957,8 @@ void siw_destroy_cq(struct ib_cq *base_cq, struct ib_udata *udata)
- 
- 	siw_cq_flush(cq);
- 
--	if (ctx && cq->xa_cq_index != SIW_INVAL_UOBJ_KEY)
--		kfree(xa_erase(&ctx->xa, cq->xa_cq_index));
-+	if (ctx)
-+		rdma_user_mmap_entry_remove(&ctx->base_ucontext, cq->cq_key);
- 
- 	atomic_dec(&sdev->num_cq);
- 
-@@ -1031,7 +995,7 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
- 	size = roundup_pow_of_two(size);
- 	cq->base_cq.cqe = size;
- 	cq->num_cqe = size;
--	cq->xa_cq_index = SIW_INVAL_UOBJ_KEY;
-+	cq->cq_key = RDMA_USER_MMAP_INVALID;
- 
- 	if (!udata) {
- 		cq->kernel_verbs = 1;
-@@ -1057,16 +1021,18 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
- 		struct siw_ucontext *ctx =
- 			rdma_udata_to_drv_context(udata, struct siw_ucontext,
- 						  base_ucontext);
--
--		cq->xa_cq_index =
--			siw_create_uobj(ctx, cq->queue,
--					size * sizeof(struct siw_cqe) +
--						sizeof(struct siw_cq_ctrl));
--		if (cq->xa_cq_index == SIW_INVAL_UOBJ_KEY) {
-+		u64 length = size * sizeof(struct siw_cqe) +
-+			     sizeof(struct siw_cq_ctrl);
 +
-+		cq->cq_key = rdma_user_mmap_entry_insert(&ctx->base_ucontext,
-+							 cq,
-+							 (uintptr_t)cq->queue,
-+							 length, 0);
-+		if (cq->cq_key == RDMA_USER_MMAP_INVALID) {
- 			rv = -ENOMEM;
- 			goto err_out;
- 		}
--		uresp.cq_key = cq->xa_cq_index << PAGE_SHIFT;
-+		uresp.cq_key = cq->cq_key;
- 		uresp.cq_id = cq->id;
- 		uresp.num_cqe = size;
- 
-@@ -1087,8 +1053,7 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
- 		struct siw_ucontext *ctx =
- 			rdma_udata_to_drv_context(udata, struct siw_ucontext,
- 						  base_ucontext);
--		if (cq->xa_cq_index != SIW_INVAL_UOBJ_KEY)
--			kfree(xa_erase(&ctx->xa, cq->xa_cq_index));
-+		rdma_user_mmap_entry_remove(&ctx->base_ucontext, cq->cq_key);
- 		vfree(cq->queue);
++	if (err) {
++		ibdev_dbg(dev,
++			  "Couldn't mmap address[%#llx] length[%#llx] mmap_flag[%d] err[%d]\n",
++			  entry->address, length, entry->mmap_flag, err);
++		rdma_user_mmap_entry_put(ucontext, entry);
  	}
- 	atomic_dec(&sdev->num_cq);
-@@ -1484,7 +1449,7 @@ int siw_create_srq(struct ib_srq *base_srq,
- 	}
- 	srq->max_sge = attrs->max_sge;
- 	srq->num_rqe = roundup_pow_of_two(attrs->max_wr);
--	srq->xa_srq_index = SIW_INVAL_UOBJ_KEY;
-+	srq->srq_key = RDMA_USER_MMAP_INVALID;
- 	srq->limit = attrs->srq_limit;
- 	if (srq->limit)
- 		srq->armed = 1;
-@@ -1503,15 +1468,18 @@ int siw_create_srq(struct ib_srq *base_srq,
- 	}
- 	if (udata) {
- 		struct siw_uresp_create_srq uresp = {};
--
--		srq->xa_srq_index = siw_create_uobj(
--			ctx, srq->recvq, srq->num_rqe * sizeof(struct siw_rqe));
--
--		if (srq->xa_srq_index == SIW_INVAL_UOBJ_KEY) {
-+		u64 length = srq->num_rqe * sizeof(struct siw_rqe);
-+
-+		srq->srq_key =
-+			rdma_user_mmap_entry_insert(&ctx->base_ucontext,
-+						    srq,
-+						    (uintptr_t)srq->recvq,
-+						    length, 0);
-+		if (srq->srq_key == RDMA_USER_MMAP_INVALID) {
- 			rv = -ENOMEM;
- 			goto err_out;
- 		}
--		uresp.srq_key = srq->xa_srq_index;
-+		uresp.srq_key = srq->srq_key;
- 		uresp.num_rqe = srq->num_rqe;
  
- 		if (udata->outlen < sizeof(uresp)) {
-@@ -1530,8 +1498,9 @@ int siw_create_srq(struct ib_srq *base_srq,
+-	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+-	return io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff, len,
+-				  vma->vm_page_prot);
++	return err;
+ }
  
- err_out:
- 	if (srq->recvq) {
--		if (ctx && srq->xa_srq_index != SIW_INVAL_UOBJ_KEY)
--			kfree(xa_erase(&ctx->xa, srq->xa_srq_index));
-+		if (ctx)
-+			rdma_user_mmap_entry_remove(&ctx->base_ucontext,
-+						    srq->srq_key);
- 		vfree(srq->recvq);
- 	}
- 	atomic_dec(&sdev->num_srq);
-@@ -1617,8 +1586,9 @@ void siw_destroy_srq(struct ib_srq *base_srq, struct ib_udata *udata)
- 		rdma_udata_to_drv_context(udata, struct siw_ucontext,
- 					  base_ucontext);
+ int qedr_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+diff --git a/drivers/infiniband/hw/qedr/verbs.h b/drivers/infiniband/hw/qedr/verbs.h
+index 9aaa90283d6e..724d0983e972 100644
+--- a/drivers/infiniband/hw/qedr/verbs.h
++++ b/drivers/infiniband/hw/qedr/verbs.h
+@@ -46,7 +46,7 @@ int qedr_query_pkey(struct ib_device *, u8 port, u16 index, u16 *pkey);
+ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata);
+ void qedr_dealloc_ucontext(struct ib_ucontext *uctx);
  
--	if (ctx && srq->xa_srq_index != SIW_INVAL_UOBJ_KEY)
--		kfree(xa_erase(&ctx->xa, srq->xa_srq_index));
-+	if (ctx)
-+		rdma_user_mmap_entry_remove(&ctx->base_ucontext,
-+					    srq->srq_key);
+-int qedr_mmap(struct ib_ucontext *, struct vm_area_struct *vma);
++int qedr_mmap(struct ib_ucontext *ucontext, struct vm_area_struct *vma);
+ int qedr_alloc_pd(struct ib_pd *pd, struct ib_udata *udata);
+ void qedr_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
  
- 	vfree(srq->recvq);
- 	atomic_dec(&sdev->num_srq);
 -- 
 2.14.5
 
