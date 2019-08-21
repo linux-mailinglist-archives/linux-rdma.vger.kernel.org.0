@@ -2,29 +2,30 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8B8978ED
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 14:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253D597901
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 14:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbfHUMKh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 08:10:37 -0400
-Received: from mga03.intel.com ([134.134.136.65]:44724 "EHLO mga03.intel.com"
+        id S1728125AbfHUMQB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 08:16:01 -0400
+Received: from mga04.intel.com ([192.55.52.120]:12626 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728065AbfHUMKh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Aug 2019 08:10:37 -0400
-X-Amp-Result: UNSCANNABLE
+        id S1727953AbfHUMQB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Aug 2019 08:16:01 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Aug 2019 05:10:36 -0700
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Aug 2019 05:15:59 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.64,412,1559545200"; 
-   d="scan'208";a="203005925"
+   d="scan'208";a="378119052"
 Received: from jerryopenix.sh.intel.com (HELO jerryopenix) ([10.239.158.171])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2019 05:10:35 -0700
-Date:   Wed, 21 Aug 2019 20:09:12 +0800
+  by fmsmga005.fm.intel.com with ESMTP; 21 Aug 2019 05:16:00 -0700
+Date:   Wed, 21 Aug 2019 20:14:36 +0800
 From:   "Liu, Changcheng" <changcheng.liu@intel.com>
 To:     linux-rdma@vger.kernel.org
-Subject: CX314A WCE error: WR_FLUSH_ERR
-Message-ID: <20190821120912.GA1672@jerryopenix>
+Subject: why ibv_wc src_qp is zero
+Message-ID: <20190821121436.GA1834@jerryopenix>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
@@ -36,20 +37,12 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 Hi all,
-   In one system, it always frequently hit "IBV_WC_WR_FLUSH_ERR" in the WCE(work completion element) polled from completion queue bound with RQ(Receive Queue).
-   Does anyone has some idea to debug "IBV_WC_WR_FLUSH_ERR" problem?
+   Does anyone know the usage of the src_qp field in struct ibv_wc?
 
-   With CX314A/40Gb NIC, I hit this error when using RC transport type with only Send Operation(IBV_WR_SEND) WR(work request) on SQ(Send Queue).
-   Every WR only has one SGE(scatter/gather element) and all the SGE on RQ has the same size. The SGE size in SQ WR is not greater than the SGE size in RQ WR.
+   I’m using RC transport type with only Send Operation on Send Queue.
+     On the requester side, when SQ WR is finished, there’s one WCE is on CQ. ibv_wc::src_qp is checked with zero value.
+     On the responder side, when RQ WR is finished, there’s one WCE is on CQ. ibv_wc::src_qp is checked with zero value too.
+   Why the ibv_wc::src_qp field is zero instead of recording the peer's qp number?
 
-  There’s one explanation about IBV_WC_WR_FLUSH_ERR on page 114 in the "RDMA Aware Networks Programming User Manual" http://www.mellanox.com/related-docs/prod_software/RDMA_Aware_Programming_user_manual.pdf
-  But I still didn't understand it well. How to trigger this error with a short demo program?
-  "
-    IBV_WC_WR_FLUSH_ERR
-    This event is generated when an invalid remote error is thrown when the responder detects an
-    invalid request. It may be that the operation is not supported by the request queue or there is
-    insufficient buffer space to receive the request.
-  "
-
-B.R.
+--Thanks
 Changcheng
