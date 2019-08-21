@@ -2,119 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4531A985DE
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 22:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D22D986D0
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 23:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729184AbfHUUoW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 16:44:22 -0400
-Received: from mga05.intel.com ([192.55.52.43]:7963 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727022AbfHUUoW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Aug 2019 16:44:22 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Aug 2019 13:44:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,412,1559545200"; 
-   d="scan'208";a="196076495"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga001.fm.intel.com with ESMTP; 21 Aug 2019 13:44:21 -0700
-Date:   Wed, 21 Aug 2019 13:44:21 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
-References: <20190817022603.GW6129@dread.disaster.area>
- <20190819063412.GA20455@quack2.suse.cz>
- <20190819092409.GM7777@dread.disaster.area>
- <20190819123841.GC5058@ziepe.ca>
- <20190820011210.GP7777@dread.disaster.area>
- <20190820115515.GA29246@ziepe.ca>
- <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
- <20190821181343.GH8653@ziepe.ca>
- <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
- <20190821194810.GI8653@ziepe.ca>
+        id S1729069AbfHUVrb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 17:47:31 -0400
+Received: from emh02.mail.saunalahti.fi ([62.142.5.108]:51270 "EHLO
+        emh02.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728028AbfHUVrb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 17:47:31 -0400
+X-Greylist: delayed 490 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Aug 2019 17:47:30 EDT
+Received: from darkstar.musicnaut.iki.fi (85-76-66-34-nat.elisa-mobile.fi [85.76.66.34])
+        by emh02.mail.saunalahti.fi (Postfix) with ESMTP id A7EC92002C;
+        Thu, 22 Aug 2019 00:39:18 +0300 (EEST)
+Date:   Thu, 22 Aug 2019 00:39:18 +0300
+From:   Aaro Koskinen <aaro.koskinen@iki.fi>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>, Qian Cai <cai@lca.pw>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>
+Subject: Re: Build regressions/improvements in v5.3-rc5
+Message-ID: <20190821213918.GE30291@darkstar.musicnaut.iki.fi>
+References: <20190819081157.9736-1-geert@linux-m68k.org>
+ <CAMuHMdV11Km7yF3gk5uTrPS1mVhjMdkbg28QRymcYyBPiAMBMw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190821194810.GI8653@ziepe.ca>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <CAMuHMdV11Km7yF3gk5uTrPS1mVhjMdkbg28QRymcYyBPiAMBMw@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 04:48:10PM -0300, Jason Gunthorpe wrote:
-> On Wed, Aug 21, 2019 at 11:57:03AM -0700, Ira Weiny wrote:
+Hi,
+
+On Mon, Aug 19, 2019 at 11:07:49AM +0200, Geert Uytterhoeven wrote:
+> On Mon, Aug 19, 2019 at 10:47 AM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > JFYI, when comparing v5.3-rc5[1] to v5.3-rc4[3], the summaries are:
+> >   - build errors: +7/-0
 > 
-> > > Oh, I didn't think we were talking about that. Hanging the close of
-> > > the datafile fd contingent on some other FD's closure is a recipe for
-> > > deadlock..
-> > 
-> > The discussion between Jan and Dave was concerning what happens when a user
-> > calls
-> > 
-> > fd = open()
-> > fnctl(...getlease...)
-> > addr = mmap(fd...)
-> > ib_reg_mr() <pin>
-> > munmap(addr...)
-> > close(fd)
+>   + /kisskb/src/include/asm-generic/5level-fixup.h: error: unknown
+> type name 'pgd_t'; did you mean 'pid_t'?:  => 14:18
+>   + /kisskb/src/include/asm-generic/pgtable.h: error: implicit
+> declaration of function 'p4d_bad'; did you mean 'pgd_bad'?
+> [-Werror=implicit-function-declaration]:  => 580:15
+>   + /kisskb/src/include/asm-generic/pgtable.h: error: implicit
+> declaration of function 'p4d_bad'; did you mean 'pud_bad'?
+> [-Werror=implicit-function-declaration]:  => 580:15
+>   + /kisskb/src/include/asm-generic/pgtable.h: error: implicit
+> declaration of function 'p4d_none'; did you mean 'pgd_none'?
+> [-Werror=implicit-function-declaration]:  => 578:6
+>   + /kisskb/src/include/asm-generic/pgtable.h: error: implicit
+> declaration of function 'p4d_none'; did you mean 'pud_none'?
+> [-Werror=implicit-function-declaration]:  => 578:6
 > 
-> I don't see how blocking close(fd) could work.
+> parisc-defconfig
 
-Well Dave was saying this _could_ work.  FWIW I'm not 100% sure it will but I
-can't prove it won't..  Maybe we are all just touching a different part of this
-elephant[1] but the above scenario or one without munmap is very reasonably
-something a user would do.  So we can either allow the close to complete (my
-current patches) or try to make it block like Dave is suggesting.
+This commit broke PA-RISC build:
 
-I don't disagree with Dave with the semantics being nice and clean for the
-filesystem.  But the fact that RDMA, and potentially others, can "pass the
-pins" to other processes is something I spent a lot of time trying to work out.
+0cfaee2af3a04c0be5f056cebe5f804dedc59a43 is the first bad commit
+commit 0cfaee2af3a04c0be5f056cebe5f804dedc59a43
+Author: Qian Cai <cai@lca.pw>
+Date:   Tue Aug 13 15:37:47 2019 -0700  
 
->
-> Write it like this:
-> 
->  fd = open()
->  uverbs = open(/dev/uverbs)
->  fnctl(...getlease...)
->  addr = mmap(fd...)
->  ib_reg_mr() <pin>
->  munmap(addr...)
->   <sigkill>
-> 
-> The order FD's are closed during sigkill is not deterministic, so when
-> all the fputs happen during a kill'd exit we could end up blocking in
-> close(fd) as close(uverbs) will come after in the close
-> list. close(uverbs) is the thing that does the dereg_mr and releases
-> the pin.
+    include/asm-generic/5level-fixup.h: fix variable 'p4d' set but not used
 
-Of course, that is a different scenario which needs to be fixed in my patch
-set.  Now that my servers are back up I can hopefully make progress.  (Power
-was down for them yesterday).
-
-> 
-> We don't need complexity with dup to create problems.
-
-No but that complexity _will_ come unless we "zombie" layout leases.
-
-Ira
-
-[1] https://en.wikipedia.org/wiki/Blind_men_and_an_elephant
-
-> 
-> Jason
-> 
+A.
