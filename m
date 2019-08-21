@@ -2,150 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6E29811D
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 19:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEBF9813A
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 19:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727255AbfHURTc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 13:19:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38590 "EHLO mail.kernel.org"
+        id S1728386AbfHUR1i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 13:27:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727211AbfHURTc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Aug 2019 13:19:32 -0400
+        id S1727266AbfHUR1h (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Aug 2019 13:27:37 -0400
 Received: from localhost (wsip-184-188-36-2.sd.sd.cox.net [184.188.36.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87AE022CF7;
-        Wed, 21 Aug 2019 17:19:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65FE222D6D;
+        Wed, 21 Aug 2019 17:27:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1566407970;
-        bh=71ENEsP+F98XdHBG8f3fjIBNDWVMQhpPuvMiBO7waD4=;
+        s=default; t=1566408456;
+        bh=2P2QORCP5BUmFfqq7uz+PeEQA+dg8frNWDlKIpnqufI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IJnSP3Vz4gGMQryweLWX/mqlFhxoeIcWElLTMd0DHYcUiBWxGNAWA8KiafpwXn//U
-         eDAfNiNnpo/15wqW2VajS/+c+QbQRsgE3L2IqmGiW4C30TF6QQUAttY7NJUnY8DlBc
-         vmbzXjHbyVCgxiAH1bfsooF8hts0B1qyQn+7wMIU=
-Date:   Wed, 21 Aug 2019 20:19:28 +0300
+        b=bXhKyyTeJnrU+6LjP1lZfiru59zSfLomw2Dht4v9LVaUs2OdLZY6PW+IjfqJSc8Y2
+         OLe1nxZqFbfS3SJ/7o7yNAa+RuzND+VtADi46RrYajquYfNZkoK3A1ykfy82UWX719
+         9/NlFXXP1yM8pTZa2blKLhMFqRqigZENEiXMiTRI=
+Date:   Wed, 21 Aug 2019 20:27:35 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Lijun Ou <oulijun@huawei.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next 1/9] RDMA/hns: Refactor cmd init and mode
- selection for hip08
-Message-ID: <20190821171928.GB27741@mtr-leonro.mtl.com>
-References: <1566393276-42555-1-git-send-email-oulijun@huawei.com>
- <1566393276-42555-2-git-send-email-oulijun@huawei.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Guy Levi <guyle@mellanox.com>, Moni Shoua <monis@mellanox.com>
+Subject: Re: [PATCH rdma-next 02/12] RDMA/odp: Iterate over the whole rbtree
+ directly
+Message-ID: <20190821172735.GC27741@mtr-leonro.mtl.com>
+References: <20190819111710.18440-1-leon@kernel.org>
+ <20190819111710.18440-3-leon@kernel.org>
+ <20190821171502.GA23022@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1566393276-42555-2-git-send-email-oulijun@huawei.com>
+In-Reply-To: <20190821171502.GA23022@ziepe.ca>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 09:14:28PM +0800, Lijun Ou wrote:
-> From: Yixian Liu <liuyixian@huawei.com>
+On Wed, Aug 21, 2019 at 02:15:02PM -0300, Jason Gunthorpe wrote:
+> On Mon, Aug 19, 2019 at 02:17:00PM +0300, Leon Romanovsky wrote:
+> > From: Jason Gunthorpe <jgg@mellanox.com>
+> >
+> > Instead of intersecting a full interval, just iterate over every element
+> > directly. This is faster and clearer.
+> >
+> > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> >  drivers/infiniband/core/umem_odp.c | 51 ++++++++++++++++--------------
+> >  drivers/infiniband/hw/mlx5/odp.c   | 41 +++++++++++-------------
+> >  2 files changed, 47 insertions(+), 45 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+> > index 8358eb8e3a26..b9bebef00a33 100644
+> > +++ b/drivers/infiniband/core/umem_odp.c
+> > @@ -72,35 +72,41 @@ static void ib_umem_notifier_end_account(struct ib_umem_odp *umem_odp)
+> >  	mutex_unlock(&umem_odp->umem_mutex);
+> >  }
+> >
+> > -static int ib_umem_notifier_release_trampoline(struct ib_umem_odp *umem_odp,
+> > -					       u64 start, u64 end, void *cookie)
+> > -{
+> > -	/*
+> > -	 * Increase the number of notifiers running, to
+> > -	 * prevent any further fault handling on this MR.
+> > -	 */
+> > -	ib_umem_notifier_start_account(umem_odp);
+> > -	umem_odp->dying = 1;
 >
-> This patch refactor the initialization of cmd, and also for the cmd
-> mode selection on event and poll mode.
->
-> Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-> Signed-off-by: Lang Chen <chenglang@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_cmd.c  | 14 ++++----------
->  drivers/infiniband/hw/hns/hns_roce_main.c | 18 ++++++++----------
->  2 files changed, 12 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-> index ade26fa..547002f 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-> @@ -251,23 +251,17 @@ int hns_roce_cmd_use_events(struct hns_roce_dev *hr_dev)
->  	hr_cmd->token_mask = CMD_TOKEN_MASK;
->  	hr_cmd->use_events = 1;
->
-> -	down(&hr_cmd->poll_sem);
-> -
->  	return 0;
->  }
->
->  void hns_roce_cmd_use_polling(struct hns_roce_dev *hr_dev)
->  {
->  	struct hns_roce_cmdq *hr_cmd = &hr_dev->cmd;
-> -	int i;
-> -
-> -	hr_cmd->use_events = 0;
->
-> -	for (i = 0; i < hr_cmd->max_cmds; ++i)
-> -		down(&hr_cmd->event_sem);
-> -
-> -	kfree(hr_cmd->context);
-> -	up(&hr_cmd->poll_sem);
-> +	if (hr_cmd->use_events) {
+> This patch was not applied on top of the commit noted in the cover
+> letter
 
-Ensure that hr_cmd->context == NULL in places where it shouldn't be
-kfreed and remove this "if (hr_cmd->use_events)".
-
-Thanks
-.
+Strange: git log --oneline on my submission queue.
+....
+39c10977a728 RDMA/odp: Iterate over the whole rbtree directly
+779c1205d0e0 RDMA/odp: Use the common interval tree library instead of generic
+25705cc22617 RDMA/mlx5: Fix MR npages calculation for IB_ACCESS_HUGETLB
+---
 
 
-> +		kfree(hr_cmd->context);
-> +		hr_cmd->use_events = 0;
-> +	}
->  }
 >
->  struct hns_roce_cmd_mailbox
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-> index 1b757cc..f3b2f67 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_main.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-> @@ -902,6 +902,7 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
->  		goto error_failed_cmd_init;
->  	}
+> > -	/* Make sure that the fact the umem is dying is out before we release
+> > -	 * all pending page faults. */
+> > -	smp_wmb();
+> > -	complete_all(&umem_odp->notifier_completion);
+> > -	umem_odp->umem.context->invalidate_range(
+> > -		umem_odp, ib_umem_start(umem_odp), ib_umem_end(umem_odp));
+> > -	return 0;
+> > -}
+> > -
+> >  static void ib_umem_notifier_release(struct mmu_notifier *mn,
+> >  				     struct mm_struct *mm)
+> >  {
+> >  	struct ib_ucontext_per_mm *per_mm =
+> >  		container_of(mn, struct ib_ucontext_per_mm, mn);
+> > +	struct rb_node *node;
+> >
+> >  	down_read(&per_mm->umem_rwsem);
+> > -	if (per_mm->active)
+> > -		rbt_ib_umem_for_each_in_range(
+> > -			&per_mm->umem_tree, 0, ULLONG_MAX,
+> > -			ib_umem_notifier_release_trampoline, true, NULL);
+> > +	if (!per_mm->active)
+> > +		goto out;
+> > +
+> > +	for (node = rb_first_cached(&per_mm->umem_tree); node;
+> > +	     node = rb_next(node)) {
+> > +		struct ib_umem_odp *umem_odp =
+> > +			rb_entry(node, struct ib_umem_odp, interval_tree.rb);
+> > +
+> > +		/*
+> > +		 * Increase the number of notifiers running, to prevent any
+> > +		 * further fault handling on this MR.
+> > +		 */
+> > +		ib_umem_notifier_start_account(umem_odp);
+> > +
+> > +		umem_odp->dying = 1;
 >
-> +	/* EQ depends on poll mode, event mode depends on EQ */
->  	ret = hr_dev->hw->init_eq(hr_dev);
->  	if (ret) {
->  		dev_err(dev, "eq init failed!\n");
-> @@ -911,8 +912,9 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
->  	if (hr_dev->cmd_mod) {
->  		ret = hns_roce_cmd_use_events(hr_dev);
->  		if (ret) {
-> -			dev_err(dev, "Switch to event-driven cmd failed!\n");
-> -			goto error_failed_use_event;
-> +			dev_warn(dev,
-> +				 "Cmd event  mode failed, set back to poll!\n");
-> +			hns_roce_cmd_use_polling(hr_dev);
->  		}
->  	}
+> So this ends up as a 'rebasing error'
 >
-> @@ -928,12 +930,10 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
->  		goto error_failed_setup_hca;
->  	}
+> I fixed it
 >
-> -	if (hr_dev->hw->hw_init) {
-> -		ret = hr_dev->hw->hw_init(hr_dev);
-> -		if (ret) {
-> -			dev_err(dev, "hw_init failed!\n");
-> -			goto error_failed_engine_init;
-> -		}
-> +	ret = hr_dev->hw->hw_init(hr_dev);
-> +	if (ret) {
-> +		dev_err(dev, "hw_init failed!\n");
-> +		goto error_failed_engine_init;
->  	}
->
->  	ret = hns_roce_register_device(hr_dev);
-> @@ -955,8 +955,6 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
->  error_failed_init_hem:
->  	if (hr_dev->cmd_mod)
->  		hns_roce_cmd_use_polling(hr_dev);
-> -
-> -error_failed_use_event:
->  	hr_dev->hw->cleanup_eq(hr_dev);
->
->  error_failed_eq_table:
-> --
-> 2.8.1
->
+> Jason
