@@ -2,138 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB31C987F4
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 01:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3DA98822
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 01:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbfHUXhj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 19:37:39 -0400
-Received: from mga03.intel.com ([134.134.136.65]:37641 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727401AbfHUXhj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Aug 2019 19:37:39 -0400
-X-Amp-Result: UNSCANNABLE
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Aug 2019 16:37:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,414,1559545200"; 
-   d="scan'208";a="172936554"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga008.jf.intel.com with ESMTP; 21 Aug 2019 16:37:37 -0700
-Date:   Wed, 21 Aug 2019 16:37:37 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Yuval Shaia <yuval.shaia@oracle.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        monis@mellanox.com, parav@mellanox.com, danielj@mellanox.com,
-        kamalheib1@gmail.com, markz@mellanox.com,
-        swise@opengridcomputing.com, shamir.rabinovitch@oracle.com,
-        johannes.berg@intel.com, willy@infradead.org,
-        michaelgur@mellanox.com, markb@mellanox.com,
-        dan.carpenter@oracle.com, bvanassche@acm.org, maxg@mellanox.com,
-        israelr@mellanox.com, galpress@amazon.com, denisd@mellanox.com,
-        yuvalav@mellanox.com, dennis.dalessandro@intel.com,
-        will@kernel.org, ereza@mellanox.com, jgg@mellanox.com,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v1 00/24] Shared PD and MR
-Message-ID: <20190821233736.GG5965@iweiny-DESK2.sc.intel.com>
-References: <20190821142125.5706-1-yuval.shaia@oracle.com>
+        id S1730821AbfHUXts (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 19:49:48 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44664 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729152AbfHUXtr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 19:49:47 -0400
+Received: by mail-qt1-f194.google.com with SMTP id 44so5310092qtg.11
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Aug 2019 16:49:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8Dz6lpgjK94wsk5MHL4jboQE1NnpsCOBFBvUAahO07A=;
+        b=gPyjbbOlWbFMNLNEHlm3dVB7Uzz3AKtizx4gilO4AsJS5UDSi7tKtuKLliMJh4+rPu
+         1Jf/sMigbAhn4QGVmiCQ6jvV0hXBmnUimeqP0xUMpcAFxLHy5mSvYZ2fitBb6fMv1QEd
+         cZ2rJhYAzO91SSmOVmphbBBxbh+HSxrYlvJ3tgnRnP1JDEhZkz5GiMo9UEiNo9GyVRUF
+         8WnH6kAl7p/wnpPhgEWF5q/2JAvm1wPyF94nsUIZ3Nn/qacJn/LeA6n513wpAcQCJroq
+         gRk02pguSic3ESpZjlGMGpJT0L4SvQqRx3eSvDn9QgwMdBegopEE9vJkJ6UvTjj8CtPC
+         e/+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8Dz6lpgjK94wsk5MHL4jboQE1NnpsCOBFBvUAahO07A=;
+        b=bl+i+v31D7HxtiliuBfNPxQJs18cvX29r5g4apX2aAk5RQ5CPwqh4q8g+sOgrzlh7u
+         p650txoKFVGjahJf322AxUPmQeUTeQLYZ4K/vqIekBPDKIlZL+/h9G1UeD7kgw8/tDHl
+         xOu7ASK6OOoQwCl6TXs/E1YWweWDPlYssML0vAvV6EmCou1tzh63I//rCI+cNG35Om0P
+         0pFtiSNbrV5IVK+O837nua5VNTJXF5UQ4hkdiEIBJhSdX2lq8yhLi13RBRSl4aTE+IRC
+         /qEwf42VZvS7G1tnXEaXLoH9ePnhu8RBWwFprUHNoAtgtUCBx9QrAzX19Jy7zA7IE5MN
+         hUZQ==
+X-Gm-Message-State: APjAAAUSdfzB/S5/Gs6pj9YDhvcSAf/6JZG8ZD8fyDkyJ9V/HRQZfcy6
+        fsSvv113ZuRLpcLFLGVsz1/jhg==
+X-Google-Smtp-Source: APXvYqydXtesxNmJNprP51Mg7fYbplLAQObHr5i5Uy4KKN0cJaAIkir0EBD/uw5rTQeKc1g+BuOcEQ==
+X-Received: by 2002:ac8:22ac:: with SMTP id f41mr33955957qta.362.1566431386704;
+        Wed, 21 Aug 2019 16:49:46 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id 125sm11156870qkl.36.2019.08.21.16.49.46
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 21 Aug 2019 16:49:46 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1i0aML-0008RC-Ks; Wed, 21 Aug 2019 20:49:45 -0300
+Date:   Wed, 21 Aug 2019 20:49:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190821234945.GA31944@ziepe.ca>
+References: <20190819063412.GA20455@quack2.suse.cz>
+ <20190819092409.GM7777@dread.disaster.area>
+ <20190819123841.GC5058@ziepe.ca>
+ <20190820011210.GP7777@dread.disaster.area>
+ <20190820115515.GA29246@ziepe.ca>
+ <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
+ <20190821181343.GH8653@ziepe.ca>
+ <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
+ <20190821194810.GI8653@ziepe.ca>
+ <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190821142125.5706-1-yuval.shaia@oracle.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 05:21:01PM +0300, Yuval Shaia wrote:
-> Following patch-set introduce the shared object feature.
-> 
-> A shared object feature allows one process to create HW objects (currently
-> PD and MR) so that a second process can import.
+On Wed, Aug 21, 2019 at 01:44:21PM -0700, Ira Weiny wrote:
 
-For something this fundamental I think the cover letter should be more
-detailed than this.  Questions I have without digging into the code:
-
-What is the use case?
-
-What is the "key" that allows a MR to be shared among 2 processes?  Do you
-introduce some PD identifier?  And then some {PDID, lkey} tuple is used to ID
-the MR?
-
-I assume you have to share the PD first and then any MR in the shared PD can be
-shared?  If so how does the MR get shared?
-
-Again I'm concerned with how this will interact with the RDMA and file system
-interaction we have been trying to fix.
-
-Why is SCM_RIGHTS on the rdma context FD not sufficient to share the entire
-context, PD, and all MR's?
-
-Ira
-
+> > The order FD's are closed during sigkill is not deterministic, so when
+> > all the fputs happen during a kill'd exit we could end up blocking in
+> > close(fd) as close(uverbs) will come after in the close
+> > list. close(uverbs) is the thing that does the dereg_mr and releases
+> > the pin.
 > 
-> Patch-set is logically splits to 4 parts as the following:
-> - patches 1 to 7 and 18 are preparation steps.
-> - patches 8 to 14 are the implementation of import PD
-> - patches 15 to 17 are the implementation of the verb
-> - patches 19 to 24 are the implementation of import MR
-> 
-> v0 -> v1:
-> 	* Delete the patch "IB/uverbs: ufile must be freed only when not
-> 	  used anymore". The process can die, the ucontext remains until
-> 	  last reference to it is closed.
-> 	* Rebase to latest for-next branch
-> 
-> Shamir Rabinovitch (16):
->   RDMA/uverbs: uobj_get_obj_read should return the ib_uobject
->   RDMA/uverbs: Delete the macro uobj_put_obj_read
->   RDMA/nldev: ib_pd can be pointed by multiple ib_ucontext
->   IB/{core,hw}: ib_pd should not have ib_uobject pointer
->   IB/core: ib_uobject need HW object reference count
->   IB/uverbs: Helper function to initialize ufile member of
->     uverbs_attr_bundle
->   IB/uverbs: Add context import lock/unlock helper
->   IB/verbs: Prototype of HW object clone callback
->   IB/mlx4: Add implementation of clone_pd callback
->   IB/mlx5: Add implementation of clone_pd callback
->   RDMA/rxe: Add implementation of clone_pd callback
->   IB/uverbs: Add clone reference counting to ib_pd
->   IB/uverbs: Add PD import verb
->   IB/mlx4: Enable import from FD verb
->   IB/mlx5: Enable import from FD verb
->   RDMA/rxe: Enable import from FD verb
-> 
-> Yuval Shaia (8):
->   IB/core: Install clone ib_pd in device ops
->   IB/core: ib_mr should not have ib_uobject pointer
->   IB/core: Install clone ib_mr in device ops
->   IB/mlx4: Add implementation of clone_pd callback
->   IB/mlx5: Add implementation of clone_pd callback
->   RDMA/rxe: Add implementation of clone_pd callback
->   IB/uverbs: Add clone reference counting to ib_mr
->   IB/uverbs: Add MR import verb
-> 
->  drivers/infiniband/core/device.c              |   2 +
->  drivers/infiniband/core/nldev.c               | 127 ++++-
->  drivers/infiniband/core/rdma_core.c           |  23 +-
->  drivers/infiniband/core/uverbs.h              |   2 +
->  drivers/infiniband/core/uverbs_cmd.c          | 489 +++++++++++++++---
->  drivers/infiniband/core/uverbs_main.c         |   1 +
->  drivers/infiniband/core/uverbs_std_types_mr.c |   1 -
->  drivers/infiniband/core/verbs.c               |   4 -
->  drivers/infiniband/hw/hns/hns_roce_hw_v1.c    |   1 -
->  drivers/infiniband/hw/mlx4/main.c             |  18 +-
->  drivers/infiniband/hw/mlx5/main.c             |  34 +-
->  drivers/infiniband/hw/mthca/mthca_qp.c        |   3 +-
->  drivers/infiniband/sw/rxe/rxe_verbs.c         |   5 +
->  include/rdma/ib_verbs.h                       |  43 +-
->  include/rdma/uverbs_std_types.h               |  11 +-
->  include/uapi/rdma/ib_user_verbs.h             |  15 +
->  include/uapi/rdma/rdma_netlink.h              |   3 +
->  17 files changed, 669 insertions(+), 113 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
+> Of course, that is a different scenario which needs to be fixed in my patch
+> set.  Now that my servers are back up I can hopefully make progress.  (Power
+> was down for them yesterday).
+
+It isn't really a different scenario, the problem is that the
+filesystem fd must be closable independenly of fencing the MR to avoid
+deadlock cycles. Once you resolve that the issue of the uverbs FD out
+living it won't matter one bit if it is in the same process or
+another.
+
+Jason
