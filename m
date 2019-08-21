@@ -2,213 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C26970C2
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 06:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFBA971E2
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 08:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbfHUEHk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 00:07:40 -0400
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:18953 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727479AbfHUEHg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 00:07:36 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d5cc3860002>; Tue, 20 Aug 2019 21:07:34 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 20 Aug 2019 21:07:34 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 20 Aug 2019 21:07:34 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 21 Aug
- 2019 04:07:34 +0000
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 21 Aug
- 2019 04:07:33 +0000
-Received: from hqnvemgw02.nvidia.com (172.16.227.111) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 21 Aug 2019 04:07:34 +0000
-Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by hqnvemgw02.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5d5cc3850005>; Tue, 20 Aug 2019 21:07:33 -0700
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v2 3/3] mm/gup: introduce vaddr_pin_pages_remote(), and invoke it
-Date:   Tue, 20 Aug 2019 21:07:27 -0700
-Message-ID: <20190821040727.19650-4-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.22.1
-In-Reply-To: <20190821040727.19650-1-jhubbard@nvidia.com>
-References: <20190821040727.19650-1-jhubbard@nvidia.com>
+        id S1727655AbfHUGHF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 02:07:05 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:63399 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727630AbfHUGHF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 02:07:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1566367624; x=1597903624;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=kWMI+juwKRtPJaV9AZ08garuu76Mg5531vsi4q5UgvQ=;
+  b=ojLjfq/2Zz+WWY23N+DFf0Yq9t2yvrRFILu75blENKxGKVaKgosp6TiF
+   p+6gXM/SvEKkYOS3HW5b/s7jyReyUzA86eQ4WBLzAPWOwiNFpYANxP0f0
+   1Fx7plTiNntxUmcQCDLoE8gUgIYI212PgFhSquJg+JFFCVoETC3AEhq1D
+   U=;
+X-IronPort-AV: E=Sophos;i="5.64,411,1559520000"; 
+   d="scan'208";a="416577209"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 21 Aug 2019 06:07:01 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com (Postfix) with ESMTPS id DF625A2512;
+        Wed, 21 Aug 2019 06:07:00 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 21 Aug 2019 06:07:00 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.230) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 21 Aug 2019 06:06:55 +0000
+Subject: Re: [PATCH v7 rdma-next 1/7] RDMA/core: Move core content from
+ ib_uverbs to ib_core
+To:     Michal Kalderon <mkalderon@marvell.com>
+CC:     Ariel Elior <aelior@marvell.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20190820121847.25871-1-michal.kalderon@marvell.com>
+ <20190820121847.25871-2-michal.kalderon@marvell.com>
+ <0f6f1dd6-e4b3-5261-7480-0735f29bac63@amazon.com>
+ <MN2PR18MB3182BE00A39C1A933C584737A1AB0@MN2PR18MB3182.namprd18.prod.outlook.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <3ba20a5e-8fd6-a42c-0818-7fcaa25a979a@amazon.com>
+Date:   Wed, 21 Aug 2019 09:06:40 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1566360454; bh=yaS48N2o2CPvqMWzUWhpSpOm4JNtAfActS1Th7wctzE=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=qUOBGoJIEf/YL08oCTcD4iSkBMJKo16mo4WSO2uW9Tcw8WKfd/nCAvDlVcUPKWCNP
-         Z8ZgbCOK0B2mKWctwfX3z0PsDzknh2dJF+WCT+ZUaDmv055HjoS1XzCjVmsC6tOxq+
-         cm/0B4U9iyKnl+GKGAAYdhgqzxvQju0MNYSprL2O16ZJrKl9ELPyKIyrjzVtIy73eB
-         /SCUMKsMJVqoEMLZGyud5/rFqD2njRVbT+8DSl9Za/uWEWrDvphikno0VX7t4VZx4U
-         PNsDCO0gp7taqzGYS1hizU+vuZMc2c+h7C+EDcp9KG8QhNUiIZEt/1ppoCRsXfGzJH
-         1EdKGW5PtlAbw==
+In-Reply-To: <MN2PR18MB3182BE00A39C1A933C584737A1AB0@MN2PR18MB3182.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.230]
+X-ClientProxiedBy: EX13D05UWB002.ant.amazon.com (10.43.161.50) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-vaddr_pin_user_pages_remote() is the "vaddr_pin_pages" corresponding
-variant to get_user_pages_remote(), except that:
-   a) it sets FOLL_PIN, and
-   b) it can handle FOLL_LONGTERM (and the associated vaddr_pin arg).
+On 21/08/2019 0:32, Michal Kalderon wrote:
+>> From: Gal Pressman <galpress@amazon.com>
+>> Sent: Tuesday, August 20, 2019 5:08 PM
+>>
+>> On 20/08/2019 15:18, Michal Kalderon wrote:
+>>> diff --git a/drivers/infiniband/core/ib_core_uverbs.c
+>> b/drivers/infiniband/core/ib_core_uverbs.c
+>>> new file mode 100644
+>>> index 000000000000..cab7dc922cf0
+>>> --- /dev/null
+>>> +++ b/drivers/infiniband/core/ib_core_uverbs.c
+>>> @@ -0,0 +1,100 @@
+>>> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>>> +/*
+>>> + * Copyright (c) 2005 Mellanox Technologies. All rights reserved.
+>>> + * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights
+>> reserved.
+>>> + * Copyright 2019 Marvell. All rights reserved.
+>>> + *
+>>> + * This software is available to you under a choice of one of two
+>>> + * licenses.  You may choose to be licensed under the terms of the GNU
+>>> + * General Public License (GPL) Version 2, available from the file
+>>> + * COPYING in the main directory of this source tree, or the
+>>> + * OpenIB.org BSD license below:
+>>> + *
+>>> + *     Redistribution and use in source and binary forms, with or
+>>> + *     without modification, are permitted provided that the following
+>>> + *     conditions are met:
+>>> + *
+>>> + *      - Redistributions of source code must retain the above
+>>> + *        copyright notice, this list of conditions and the following
+>>> + *        disclaimer.
+>>> + *
+>>> + *      - Redistributions in binary form must reproduce the above
+>>> + *        copyright notice, this list of conditions and the following
+>>> + *        disclaimer in the documentation and/or other materials
+>>> + *        provided with the distribution.
+>>> + *
+>>> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+>> KIND,
+>>> + * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+>> WARRANTIES OF
+>>> + * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+>>> + * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+>> COPYRIGHT HOLDERS
+>>> + * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+>> AN
+>>> + * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+>> OR IN
+>>> + * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+>> IN THE
+>>> + * SOFTWARE.
+>>> + */
+>>
+>> Is the full license needed in addition to the SPDX?
+> The file contains code that was placed in a different file and copyrighted, so I copied
+> The copyrights from the original files based on the git history of the code lines I copied.
+> Thanks,
+> Michal
 
-Change process_vm_rw_single_vec() to invoke the new function.
-
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
----
- include/linux/mm.h     |  5 +++++
- mm/gup.c               | 34 ++++++++++++++++++++++++++++++++++
- mm/process_vm_access.c | 23 +++++++++++++----------
- 3 files changed, 52 insertions(+), 10 deletions(-)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 6e7de424bf5e..849b509e9f89 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1606,6 +1606,11 @@ int __account_locked_vm(struct mm_struct *mm, unsign=
-ed long pages, bool inc,
- long vaddr_pin_pages(unsigned long addr, unsigned long nr_pages,
- 		     unsigned int gup_flags, struct page **pages,
- 		     struct vaddr_pin *vaddr_pin);
-+long vaddr_pin_user_pages_remote(struct task_struct *tsk, struct mm_struct=
- *mm,
-+				 unsigned long start, unsigned long nr_pages,
-+				 unsigned int gup_flags, struct page **pages,
-+				 struct vm_area_struct **vmas, int *locked,
-+				 struct vaddr_pin *vaddr_pin);
- void vaddr_unpin_pages(struct page **pages, unsigned long nr_pages,
- 		       struct vaddr_pin *vaddr_pin, bool make_dirty);
- bool mapping_inode_has_layout(struct vaddr_pin *vaddr_pin, struct page *pa=
-ge);
-diff --git a/mm/gup.c b/mm/gup.c
-index ba316d960d7a..d713ed9d4b9a 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -2522,3 +2522,37 @@ void vaddr_unpin_pages(struct page **pages, unsigned=
- long nr_pages,
- 	__put_user_pages_dirty_lock(pages, nr_pages, make_dirty, vaddr_pin);
- }
- EXPORT_SYMBOL(vaddr_unpin_pages);
-+
-+/**
-+ * vaddr_pin_user_pages_remote() - pin pages by virtual address and return=
- the
-+ * pages to the user.
-+ *
-+ * @tsk:	the task_struct to use for page fault accounting, or
-+ *		NULL if faults are not to be recorded.
-+ * @mm:		mm_struct of target mm
-+ * @addr:	start address
-+ * @nr_pages:	number of pages to pin
-+ * @gup_flags:	flags to use for the pin. Please see FOLL_* documentation i=
-n
-+ *		mm.h.
-+ * @pages:	array of pages returned
-+ * @vaddr_pin:  If FOLL_LONGTERM is set, then vaddr_pin should point to an
-+ * initialized struct that contains the owning mm and file. Otherwise, vad=
-dr_pin
-+ * should be set to NULL.
-+ *
-+ * This is the "vaddr_pin_pages" corresponding variant to
-+ * get_user_pages_remote(), except that:
-+ *    a) it sets FOLL_PIN, and
-+ *    b) it can handle FOLL_LONGTERM (and the associated vaddr_pin arg).
-+ */
-+long vaddr_pin_user_pages_remote(struct task_struct *tsk, struct mm_struct=
- *mm,
-+				 unsigned long start, unsigned long nr_pages,
-+				 unsigned int gup_flags, struct page **pages,
-+				 struct vm_area_struct **vmas, int *locked,
-+				 struct vaddr_pin *vaddr_pin)
-+{
-+	gup_flags |=3D FOLL_TOUCH | FOLL_REMOTE | FOLL_PIN;
-+
-+	return __get_user_pages_locked(tsk, mm, start, nr_pages, pages, vmas,
-+				       locked, gup_flags, vaddr_pin);
-+}
-+EXPORT_SYMBOL(vaddr_pin_user_pages_remote);
-diff --git a/mm/process_vm_access.c b/mm/process_vm_access.c
-index 357aa7bef6c0..28e0a17b6080 100644
---- a/mm/process_vm_access.c
-+++ b/mm/process_vm_access.c
-@@ -44,7 +44,6 @@ static int process_vm_rw_pages(struct page **pages,
-=20
- 		if (vm_write) {
- 			copied =3D copy_page_from_iter(page, offset, copy, iter);
--			set_page_dirty_lock(page);
- 		} else {
- 			copied =3D copy_page_to_iter(page, offset, copy, iter);
- 		}
-@@ -96,7 +95,7 @@ static int process_vm_rw_single_vec(unsigned long addr,
- 		flags |=3D FOLL_WRITE;
-=20
- 	while (!rc && nr_pages && iov_iter_count(iter)) {
--		int pages =3D min(nr_pages, max_pages_per_loop);
-+		int pinned_pages =3D min(nr_pages, max_pages_per_loop);
- 		int locked =3D 1;
- 		size_t bytes;
-=20
-@@ -106,14 +105,17 @@ static int process_vm_rw_single_vec(unsigned long add=
-r,
- 		 * current/current->mm
- 		 */
- 		down_read(&mm->mmap_sem);
--		pages =3D get_user_pages_remote(task, mm, pa, pages, flags,
--					      process_pages, NULL, &locked);
-+
-+		pinned_pages =3D vaddr_pin_user_pages_remote(task, mm, pa,
-+							   pinned_pages, flags,
-+							   process_pages, NULL,
-+							   &locked, NULL);
- 		if (locked)
- 			up_read(&mm->mmap_sem);
--		if (pages <=3D 0)
-+		if (pinned_pages <=3D 0)
- 			return -EFAULT;
-=20
--		bytes =3D pages * PAGE_SIZE - start_offset;
-+		bytes =3D pinned_pages * PAGE_SIZE - start_offset;
- 		if (bytes > len)
- 			bytes =3D len;
-=20
-@@ -122,10 +124,11 @@ static int process_vm_rw_single_vec(unsigned long add=
-r,
- 					 vm_write);
- 		len -=3D bytes;
- 		start_offset =3D 0;
--		nr_pages -=3D pages;
--		pa +=3D pages * PAGE_SIZE;
--		while (pages)
--			put_page(process_pages[--pages]);
-+		nr_pages -=3D pinned_pages;
-+		pa +=3D pinned_pages * PAGE_SIZE;
-+
-+		/* If vm_write is set, the pages need to be made dirty: */
-+		vaddr_unpin_pages(process_pages, pinned_pages, NULL, vm_write);
- 	}
-=20
- 	return rc;
---=20
-2.22.1
-
+I'm referring to the license text, not the copyrights.
