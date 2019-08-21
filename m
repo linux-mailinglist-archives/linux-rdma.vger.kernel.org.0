@@ -2,44 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A748897CEB
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 16:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 217BB97CEC
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 16:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729179AbfHUO2R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 10:28:17 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:40070 "EHLO
+        id S1729217AbfHUO2U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 10:28:20 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:40158 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727949AbfHUO2R (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 10:28:17 -0400
+        with ESMTP id S1727949AbfHUO2U (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 10:28:20 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LENWCL071682;
-        Wed, 21 Aug 2019 14:27:55 GMT
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LENWGx071690;
+        Wed, 21 Aug 2019 14:28:00 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2019-08-05;
- bh=usSucixGuOCiUwrNiR4a10CDAZBMMaBGmklm0lRyOo8=;
- b=SyZ0eJttAMIkqYxPvMM5yuPtPYz11Pcq8AqZ3a1wrI4ejVJ6cllOHRQiylVNiNiUXqO0
- mFWwyn5tUSoxo513QKH/MSuebFB63Jvn7m6OvwnoaImcEnPjw+NMuyDBo8mt8D2xeuBv
- pGWe8+ZhY1VSyVzkQ+zthM0t7cygUiVUus201y60+Ljjr8V5YyvuQX/2AhAJOXCm4UNc
- lonn0mcwGi/hhKHehqp/02gBSsXsmbw5+TNoGa9cF/FNAZRdUWcYSF0R69FB3uBjsp1M
- ZujAAX4JHcfSCZ2QdUV+h7DDBCT+ENCzbZGYu0fhDSh6cghIWZqYYE7fBGeWK8Obyw56 1A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2ue90tp4y8-1
+ bh=kvOfN0B/wXgfdBbnvAiqnUduYetF9SZ+iTehEmRkrGc=;
+ b=CB2hYMwfKDqhBbbx7ssurxTegp/JVMwN5Lkfqd+LG5aMmpvDq67BC7b3Mn86tNqKvMZ+
+ QolSbOV4egv0QdW3j3JRL6xH0wkuB6Xjg/P9hxILj/D41XIdGESNSEdwioKu493mh0UF
+ K7tXj2CcdCR68m7etJ1NpxCIZLLLGL+U6OUHiEnRFWOhhCNrGKrAhOW67e52dwxx6sHr
+ YhL6fToyWIlBPfhzIL4BJGxMQDpiBMD3D0Zzgz2z1pC7K1HdqHDJ2i2YdLD9CP3pzi6e
+ rtdprFQceZa+F2EjxDx9vFIi1qw7vdZIYCWAMy1/IHqRUqhoAsa3GW8hWWgXGkAjMxGj bg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2ue90tp50f-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 14:27:55 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LENW4a106942;
-        Wed, 21 Aug 2019 14:27:54 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2ugj7pydwr-1
+        Wed, 21 Aug 2019 14:28:00 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LEMY6J115118;
+        Wed, 21 Aug 2019 14:28:00 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2ug26a3gca-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 14:27:54 +0000
+        Wed, 21 Aug 2019 14:27:59 +0000
 Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7LERqZQ014331;
-        Wed, 21 Aug 2019 14:27:52 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7LERwG8018800;
+        Wed, 21 Aug 2019 14:27:58 GMT
 Received: from host5.lan (/77.138.183.59)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 21 Aug 2019 07:27:50 -0700
+        with ESMTP ; Wed, 21 Aug 2019 07:27:57 -0700
 From:   Yuval Shaia <yuval.shaia@oracle.com>
 To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
         monis@mellanox.com, parav@mellanox.com, danielj@mellanox.com,
@@ -53,9 +53,9 @@ To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
         dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
         jgg@mellanox.com, linux-rdma@vger.kernel.org
 Cc:     Shamir Rabinovitch <srabinov7@gmail.com>
-Subject: [PATCH v1 rdma-core 09/12] mlx4: Implementation of import MR callback
-Date:   Wed, 21 Aug 2019 17:26:36 +0300
-Message-Id: <20190821142639.5807-10-yuval.shaia@oracle.com>
+Subject: [PATCH v1 rdma-core 10/12] mlx5: Implementation of import MR callback
+Date:   Wed, 21 Aug 2019 17:26:37 +0300
+Message-Id: <20190821142639.5807-11-yuval.shaia@oracle.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190821142639.5807-1-yuval.shaia@oracle.com>
 References: <20190821142639.5807-1-yuval.shaia@oracle.com>
@@ -80,51 +80,51 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 The import MR verb take care of importing the generic part of the MR
 object and then triggers provider's specific callback to take care of
 provider's specific attributes.
-Add implementation of mlx4 related MR attributes.
+Add implementation of mlx5 related MR attributes.
 
 Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
 Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
 Signed-off-by: Shamir Rabinovitch <srabinov7@gmail.com>
 ---
- providers/mlx4/mlx4.c  |  1 +
- providers/mlx4/mlx4.h  |  2 ++
- providers/mlx4/verbs.c | 26 ++++++++++++++++++++++++++
+ providers/mlx5/mlx5.c  |  1 +
+ providers/mlx5/mlx5.h  |  2 ++
+ providers/mlx5/verbs.c | 26 ++++++++++++++++++++++++++
  3 files changed, 29 insertions(+)
 
-diff --git a/providers/mlx4/mlx4.c b/providers/mlx4/mlx4.c
-index 62ea5539..40935ca0 100644
---- a/providers/mlx4/mlx4.c
-+++ b/providers/mlx4/mlx4.c
-@@ -86,6 +86,7 @@ static const struct verbs_context_ops mlx4_ctx_ops = {
- 	.query_port    = mlx4_query_port,
- 	.alloc_pd      = mlx4_alloc_pd,
- 	.dealloc_pd    = mlx4_free_pd,
-+	.import_mr     = mlx4_import_mr,
- 	.import_pd     = mlx4_import_pd,
- 	.reg_mr	       = mlx4_reg_mr,
- 	.rereg_mr      = mlx4_rereg_mr,
-diff --git a/providers/mlx4/mlx4.h b/providers/mlx4/mlx4.h
-index 9f171d09..d919e30c 100644
---- a/providers/mlx4/mlx4.h
-+++ b/providers/mlx4/mlx4.h
-@@ -316,6 +316,8 @@ int mlx4_query_rt_values(struct ibv_context *context,
- 			 struct ibv_values_ex *values);
- struct ibv_pd *mlx4_alloc_pd(struct ibv_context *context);
- int mlx4_free_pd(struct ibv_pd *pd);
-+struct ibv_mr *mlx4_import_mr(struct ibv_context *context, uint32_t fd,
+diff --git a/providers/mlx5/mlx5.c b/providers/mlx5/mlx5.c
+index c16b30b3..8d1fa232 100644
+--- a/providers/mlx5/mlx5.c
++++ b/providers/mlx5/mlx5.c
+@@ -91,6 +91,7 @@ static const struct verbs_context_ops mlx5_ctx_common_ops = {
+ 	.alloc_pd      = mlx5_alloc_pd,
+ 	.async_event   = mlx5_async_event,
+ 	.dealloc_pd    = mlx5_free_pd,
++	.import_mr     = mlx5_import_mr,
+ 	.import_pd     = mlx5_import_pd,
+ 	.reg_mr	       = mlx5_reg_mr,
+ 	.rereg_mr      = mlx5_rereg_mr,
+diff --git a/providers/mlx5/mlx5.h b/providers/mlx5/mlx5.h
+index 06e2b471..858ae7c2 100644
+--- a/providers/mlx5/mlx5.h
++++ b/providers/mlx5/mlx5.h
+@@ -816,6 +816,8 @@ int mlx5_query_port(struct ibv_context *context, uint8_t port,
+ 
+ struct ibv_pd *mlx5_alloc_pd(struct ibv_context *context);
+ int mlx5_free_pd(struct ibv_pd *pd);
++struct ibv_mr *mlx5_import_mr(struct ibv_context *context, uint32_t fd,
 +			      uint32_t handle);
- struct ibv_pd *mlx4_import_pd(struct ibv_context *context, uint32_t fd,
+ struct ibv_pd *mlx5_import_pd(struct ibv_context *context, uint32_t fd,
  			      uint32_t handle);
- struct ibv_xrcd *mlx4_open_xrcd(struct ibv_context *context,
-diff --git a/providers/mlx4/verbs.c b/providers/mlx4/verbs.c
-index 87fbf2e1..13b2799c 100644
---- a/providers/mlx4/verbs.c
-+++ b/providers/mlx4/verbs.c
-@@ -239,6 +239,32 @@ int mlx4_free_pd(struct ibv_pd *pd)
- 	return 0;
+ 
+diff --git a/providers/mlx5/verbs.c b/providers/mlx5/verbs.c
+index 3d2510c3..b4964b17 100644
+--- a/providers/mlx5/verbs.c
++++ b/providers/mlx5/verbs.c
+@@ -178,6 +178,32 @@ struct ibv_pd *mlx5_alloc_pd(struct ibv_context *context)
+ 	return &pd->ibv_pd;
  }
  
-+struct ibv_mr *mlx4_import_mr(struct ibv_context *context, uint32_t fd,
++struct ibv_mr *mlx5_import_mr(struct ibv_context *context, uint32_t fd,
 +			      uint32_t handle)
 +{
 +	struct ibv_import_mr cmd = {
@@ -132,25 +132,25 @@ index 87fbf2e1..13b2799c 100644
 +		.type = UVERBS_OBJECT_MR,
 +		.fd = fd,
 +	};
-+	struct ib_uverbs_import_fr_fd_resp resp;
-+	struct verbs_mr *vmr;
++	struct ib_uverbs_import_fr_fd_resp resp = {0};
++	struct mlx5_mr *mr;
 +	int ret;
 +
-+	vmr = calloc(1, sizeof(*vmr));
-+	if (!vmr)
++	mr = calloc(1, sizeof(*mr));
++	if (!mr)
 +		return NULL;
 +
-+	ret = ibv_cmd_import_mr(context, vmr, &cmd, sizeof(cmd), &resp,
++	ret = ibv_cmd_import_mr(context, &mr->vmr, &cmd, sizeof(cmd), &resp,
 +				sizeof(resp));
 +	if (ret) {
-+		free(vmr);
++		free(mr);
 +		return NULL;
 +	}
 +
-+	return &vmr->ibv_mr;
++	return &mr->vmr.ibv_mr;
 +}
 +
- struct ibv_pd *mlx4_import_pd(struct ibv_context *context, uint32_t fd,
+ struct ibv_pd *mlx5_import_pd(struct ibv_context *context, uint32_t fd,
  			      uint32_t handle)
  {
 -- 
