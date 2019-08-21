@@ -2,174 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7C298380
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 20:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F13983D5
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 21:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbfHUSrG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 14:47:06 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:35114 "EHLO mx1.redhat.com"
+        id S1728406AbfHUS5E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 14:57:04 -0400
+Received: from mga04.intel.com ([192.55.52.120]:47683 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727976AbfHUSrG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Aug 2019 14:47:06 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 1462158569;
-        Wed, 21 Aug 2019 18:47:06 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 404A160126;
-        Wed, 21 Aug 2019 18:47:05 +0000 (UTC)
-Message-ID: <0ce34055454c68cf9089e9e742b04397419a6309.camel@redhat.com>
-Subject: Re: CX314A WCE error: WR_FLUSH_ERR
-From:   Doug Ledford <dledford@redhat.com>
-To:     "Liu, Changcheng" <changcheng.liu@intel.com>,
-        Tom Talpey <tom@talpey.com>
-Cc:     linux-rdma@vger.kernel.org
-Date:   Wed, 21 Aug 2019 14:47:02 -0400
-In-Reply-To: <20190821153844.GA4545@jerryopenix>
-References: <20190821120912.GA1672@jerryopenix>
-         <6aed3f75-2445-eb6f-0bd8-7c79ea4a0967@talpey.com>
-         <20190821153844.GA4545@jerryopenix>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-vuIwJ44XM8U33rnYtB5w"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1726903AbfHUS5E (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Aug 2019 14:57:04 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Aug 2019 11:57:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,412,1559545200"; 
+   d="scan'208";a="203121300"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2019 11:57:03 -0700
+Date:   Wed, 21 Aug 2019 11:57:03 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
+References: <20190815130558.GF14313@quack2.suse.cz>
+ <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
+ <20190817022603.GW6129@dread.disaster.area>
+ <20190819063412.GA20455@quack2.suse.cz>
+ <20190819092409.GM7777@dread.disaster.area>
+ <20190819123841.GC5058@ziepe.ca>
+ <20190820011210.GP7777@dread.disaster.area>
+ <20190820115515.GA29246@ziepe.ca>
+ <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
+ <20190821181343.GH8653@ziepe.ca>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Wed, 21 Aug 2019 18:47:06 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190821181343.GH8653@ziepe.ca>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Aug 21, 2019 at 03:13:43PM -0300, Jason Gunthorpe wrote:
+> On Wed, Aug 21, 2019 at 11:02:00AM -0700, Ira Weiny wrote:
+> > On Tue, Aug 20, 2019 at 08:55:15AM -0300, Jason Gunthorpe wrote:
+> > > On Tue, Aug 20, 2019 at 11:12:10AM +1000, Dave Chinner wrote:
+> > > > On Mon, Aug 19, 2019 at 09:38:41AM -0300, Jason Gunthorpe wrote:
+> > > > > On Mon, Aug 19, 2019 at 07:24:09PM +1000, Dave Chinner wrote:
+> > > > > 
+> > > > > > So that leaves just the normal close() syscall exit case, where the
+> > > > > > application has full control of the order in which resources are
+> > > > > > released. We've already established that we can block in this
+> > > > > > context.  Blocking in an interruptible state will allow fatal signal
+> > > > > > delivery to wake us, and then we fall into the
+> > > > > > fatal_signal_pending() case if we get a SIGKILL while blocking.
+> > > > > 
+> > > > > The major problem with RDMA is that it doesn't always wait on close() for the
+> > > > > MR holding the page pins to be destoyed. This is done to avoid a
+> > > > > deadlock of the form:
+> > > > > 
+> > > > >    uverbs_destroy_ufile_hw()
+> > > > >       mutex_lock()
+> > > > >        [..]
+> > > > >         mmput()
+> > > > >          exit_mmap()
+> > > > >           remove_vma()
+> > > > >            fput();
+> > > > >             file_operations->release()
+> > > > 
+> > > > I think this is wrong, and I'm pretty sure it's an example of why
+> > > > the final __fput() call is moved out of line.
+> > > 
+> > > Yes, I think so too, all I can say is this *used* to happen, as we
+> > > have special code avoiding it, which is the code that is messing up
+> > > Ira's lifetime model.
+> > > 
+> > > Ira, you could try unraveling the special locking, that solves your
+> > > lifetime issues?
+> > 
+> > Yes I will try to prove this out...  But I'm still not sure this fully solves
+> > the problem.
+> > 
+> > This only ensures that the process which has the RDMA context (RDMA FD) is safe
+> > with regard to hanging the close for the "data file FD" (the file which has
+> > pinned pages) in that _same_ process.  But what about the scenario.
+> 
+> Oh, I didn't think we were talking about that. Hanging the close of
+> the datafile fd contingent on some other FD's closure is a recipe for
+> deadlock..
 
---=-vuIwJ44XM8U33rnYtB5w
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The discussion between Jan and Dave was concerning what happens when a user
+calls
 
-On Wed, 2019-08-21 at 23:38 +0800, Liu, Changcheng wrote:
-> On 09:36 Wed 21 Aug, Tom Talpey wrote:
-> > On 8/21/2019 8:09 AM, Liu, Changcheng wrote:
-> > > Hi all,
-> > >     In one system, it always frequently hit "IBV_WC_WR_FLUSH_ERR"
-> > > in the WCE(work completion element) polled from completion queue
-> > > bound with RQ(Receive Queue).
-> > >     Does anyone has some idea to debug "IBV_WC_WR_FLUSH_ERR"
-> > > problem?
-> > >=20
-> > >     With CX314A/40Gb NIC, I hit this error when using RC transport
-> > > type with only Send Operation(IBV_WR_SEND) WR(work request) on
-> > > SQ(Send Queue).
-> > >     Every WR only has one SGE(scatter/gather element) and all the
-> > > SGE on RQ has the same size. The SGE size in SQ WR is not greater
-> > > than the SGE size in RQ WR.
-> > >=20
-> > >    There=E2=80=99s one explanation about IBV_WC_WR_FLUSH_ERR on page =
-114
-> > > in the "RDMA Aware Networks Programming User Manual"=20
-> > > http://www.mellanox.com/related-docs/prod_software/RDMA_Aware_Program=
-ming_user_manual.pdf
-> > >    But I still didn't understand it well. How to trigger this
-> > > error with a short demo program?
-> > >    "
-> > >      IBV_WC_WR_FLUSH_ERR
-> > >      This event is generated when an invalid remote error is
-> > > thrown when the responder detects an
-> > >      invalid request. It may be that the operation is not
-> > > supported by the request queue or there is
-> > >      insufficient buffer space to receive the request.
-> > >    "
-> >=20
-> > The most common reason for a flushed work request is loss of
-> > the connection to the remote peer. This can be caused by any
-> > number of conditions.
-> Good diretion. I'll debug it in this way first.
-> > The second-most common is a programming error in the upper
-> > layer protocol. A shortage of posted receives on either peer,
-> > a protection error on some buffer, etc.
-> Do you mean the protection key such as l_key/r_key isn't set well?
-> What's kind of protection error could trigger IBV_WC_WR_FLUSH_ERR?
+fd = open()
+fnctl(...getlease...)
+addr = mmap(fd...)
+ib_reg_mr() <pin>
+munmap(addr...)
+close(fd)
 
-FLUSH_ERR is the error used whenever a queue pair goes into an error
-state and there are still WQEs posted to the queue pair.  All
-outstanding WQEs are returned with the state IBV_WC_WR_FLUSH_ERR.  This
-is how you make sure you don't loose WQEs when the QP hits an error
-state.  So, literally *anything* that can cause a QP to go into an ERROR
-state will result in all WQEs currently posted to the QP being sent back
-with this FLUSH_ERR.  FLUSH_ERR literally just means that the card is
-flushing out the QP's work queue because now that the QP is in an error
-state it can't process the WQEs and, presumably, the application needs
-to know which ones completed and which ones didn't so it knows what to
-requeue once the QP is no longer in an error state.
+Dave suggested:
 
-As Tom has already pointed out, all of these things will throw the queue
-pair into an error state and cause all posted WQEs to be flushed with
-the FLUSH_ERR condition:
+"I'm of a mind to make the last close() on a file block if there's an
+active layout lease to prevent processes from zombie-ing layout
+leases like this. i.e. you can't close the fd until resources that
+pin the lease have been released."
 
-1) Loss of queue pair connection
-2) Any memory permission violation (attempt to write to read only
-memory, attempt to RDMA read/write to an invalid rkey, etc)
-3) Receipt of any post_send message without a waiting post_recv buffer
-to accept the message
-4) Receipt of a post_send message that is too large to fit in the first
-available post_recv buffer
+	-- Dave https://lkml.org/lkml/2019/8/16/994
 
-A common cause of this sort of thing is when you don't do proper flow
-control on the queue pair and the sending side floods the receiving side
-and runs it out of posted recv WQEs.  Although, in your case, you did
-say this was happening on the receive queue, so that implies this is
-happening on the receiving side, so if that is what's happenining here,
-the process would have to be something like:
+> 
+> IMHO the pin refcnt is held by the driver char dev FD, that is the
+> object you need to make it visible against.
 
-sender starts sending data (maybe without any flow control)
-	receiver starts receiving data and refilling buffers
-	...
-	receiver runs totally dry of buffers and gets an incoming recv
-	causing qp to go into error state
+I'm sorry but what do you mean by "driver char dev FD"?
 
-	receiver then posts refill buffers to the RQ after the QP
-	went into error state but before acknowledging the error state
-	and shutting down the recv processing thread
+> 
+> Why not just have a single table someplace of all the layout leases
+> with the file they are held on and the FD/socket/etc that is holding
+> the pin? Make it independent of processes and FDs?
 
-	all recv buffers posted as WQEs are flushed back to the process
-	with FLUSH_ERR because they were posted to a QP in ERROR state
+If it is independent of processes how will we know which process is blocking
+the truncate?  Using a global table is an interesting idea but I still believe
+the users are going to want to track this to specific processes.  It's not
+clear to me how that would be done with a global table.
 
-> > If you're looking to actually trigger this error for testing,
-> > well, try one of the above. If you're trying to figure out
-> > why it's happening, that can take some digging, but not in
-> > the RDMA stack, typically.
-> Many thanks.
->=20
-> --Changcheng
-> > Tom.
-> >=20
+I agree the XDP/socket case is bothersome...  I was thinking that somewhere the
+fd of the socket could be hooked up in this case.  But taking a look at it
+reveals that is not going to be easy.  And I assume XDP has the same issue WRT
+SCM_RIGHTS and the ability to share the xdp context?
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+Ira
 
---=-vuIwJ44XM8U33rnYtB5w
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1dkaYACgkQuCajMw5X
-L92eQA//cJjWy9tKcuJsWxJozc1FsCkf6pOmQPhnoLgA6M9jHTj/2XDW4dcN/FXf
-5THfGW6FJD2QbBe5XtcOkvH0CDPVfOBB4OYN9Lo6D7fRCkKekcHbbCvPH7FDQWSR
-0ViOhCaaS/gZFj0uq+Tmvzzsjs+5nAFwJyBMbEVOVVCqVoTV67Bt58vmxij2jwUp
-rq2eW40pT3ZLisoyQu8lOd/JAUCiICbOQrLn6tztUencAiZm44R/RPe9t7vXzq9w
-2OA/6AkXt9pVplJMpAmYS0yfs8UxW+o/TdTComxbOySaVdNG6TxUZg6iETk+OZuQ
-gPMltTt0KU1E/Se1a8KWm0anvYcCLw9JgIcyRAQFrNbhci8GP1s5FHGRxk0aYWeg
-3yq3896cy2XePSYyH9qHdvSLw1p+KOuYA5HIcukyErJ/Ss0DSiUfLyFGwl5Hd/Mx
-vy2Wp6M/wL90wAY3ea+58cVkwZs3dSVVfjlPflB21qp3PG17zkKMh9zjAargXUtv
-JUBvi90zC/huZMgoQcK/qvECF/E1G5g7oyacFNMO9VIvAO5wQVOctaTvdoHmHQoY
-VVxfGpFb2vnmVCxsNE/ScpOsSfydJp4F8wCAZHSXjCckpNDlvZJ/gXbSTveK7NEV
-o7JiJWPXIJ0jsQ20Xcr1/GNEstWTkBv821fBPFrpl83w37vD9K4=
-=oh8x
------END PGP SIGNATURE-----
-
---=-vuIwJ44XM8U33rnYtB5w--
-
+> 
+> Jason
