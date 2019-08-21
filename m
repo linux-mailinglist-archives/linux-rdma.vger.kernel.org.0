@@ -2,44 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C57D497CB9
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 16:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EBB97CBC
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 16:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729086AbfHUOYH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 10:24:07 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47150 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729204AbfHUOYH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 10:24:07 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LENU9a096318;
-        Wed, 21 Aug 2019 14:23:51 GMT
+        id S1728964AbfHUOYS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 10:24:18 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40654 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729221AbfHUOYR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 10:24:17 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LENUB7086634;
+        Wed, 21 Aug 2019 14:23:56 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
  date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2019-08-05;
- bh=K7BgwGf7KnKFTXUzsrmZWFfIHOf64JCc3F7iGU883Rs=;
- b=mcmh4fw2Rh/ziunipYKiEZbJBDLc3yfXNIWTqyoAf9TpkNnKCs4zp5lxyzcBMUZmpU4T
- c8KzxIAmBbtuYnuFnOnCnHYZhpNjwziouUizelVLqpIkM8sBJ4jBE7/UWpDsDp1iZTox
- LhFI1w8/+vavHnBdiE1mJoO7SU5o3NhFJzGiFnm4tx+kgoutFytfFky1DmSsk+yO/MWc
- dn32jYJ4yIBJDrGQ45gcFAV6VL/bpkZaDTJZ+QaHl6tZSeVKquRJ9wS0rJgP2SaS1xGV
- hlBLCVxsU6iOXGZKy9WN0XSFAemTkedh3drG/A+Egcc/RrMYcKSG6uKLkfB8os2IMcBc 6A== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2ue9hpnvb1-1
+ bh=OSdMwoQnxUe3oXlreY1YQcGPEPndBKsBlIiB7WW83SM=;
+ b=IRARvdbT5zMq8R/rp0nCAJ+94UGdpjN9UGqvkqgwUsYzQZTqStRw1Ao9ImX/lmyLM1lm
+ Cz04M7xtCA8mmChzlOcxkKZ6cwZ16Boo9GYyQeegFUsGpKXvPvovp9QGQlGl9QwQiTZN
+ s8p9GERmKpdIK3zhHyoy371bFOe1NMSK3Cm9CFGYQ/nfdEup8pViRIqhvhUE95c43ljM
+ qe68lUwwtuOoyN5FO9QqfnbkU4ZWj+zKmZyZNgCRkssYxbtd9UYjIG66yWzZQWYtk/Nc
+ isHre+o7iiqZiKGHieHkX7oYbtTx2N5DsHt136IA7nAYT2khB8e4D+Zuzm1og9ieH/p9 HA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2uea7qwxvr-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 14:23:51 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LEMZCK115188;
-        Wed, 21 Aug 2019 14:23:50 GMT
+        Wed, 21 Aug 2019 14:23:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LEMqXN017152;
+        Wed, 21 Aug 2019 14:23:56 GMT
 Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2ug26a3bkd-1
+        by userp3030.oracle.com with ESMTP id 2uh2q4jxcg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 14:23:50 +0000
+        Wed, 21 Aug 2019 14:23:55 +0000
 Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7LENndV031946;
-        Wed, 21 Aug 2019 14:23:49 GMT
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7LENsqQ031990;
+        Wed, 21 Aug 2019 14:23:54 GMT
 Received: from host5.lan (/77.138.183.59)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 21 Aug 2019 07:23:48 -0700
+        with ESMTP ; Wed, 21 Aug 2019 07:23:54 -0700
 From:   Yuval Shaia <yuval.shaia@oracle.com>
 To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
         monis@mellanox.com, parav@mellanox.com, danielj@mellanox.com,
@@ -52,9 +52,9 @@ To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
         galpress@amazon.com, denisd@mellanox.com, yuvalav@mellanox.com,
         dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
         jgg@mellanox.com, linux-rdma@vger.kernel.org
-Subject: [PATCH v1 22/24] RDMA/rxe: Add implementation of clone_pd callback
-Date:   Wed, 21 Aug 2019 17:21:23 +0300
-Message-Id: <20190821142125.5706-23-yuval.shaia@oracle.com>
+Subject: [PATCH v1 23/24] IB/uverbs: Add clone reference counting to ib_mr
+Date:   Wed, 21 Aug 2019 17:21:24 +0300
+Message-Id: <20190821142125.5706-24-yuval.shaia@oracle.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190821142125.5706-1-yuval.shaia@oracle.com>
 References: <20190821142125.5706-1-yuval.shaia@oracle.com>
@@ -76,26 +76,43 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-No special handling in for object cloning, utilize the trivial
-implementation.
+To keep track of shared object life time add ref count to ib_mr
 
 Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
 ---
- drivers/infiniband/sw/rxe/rxe_verbs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/core/uverbs_cmd.c | 2 ++
+ include/rdma/ib_verbs.h              | 3 +++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 3c4a0b89f28f..ec2cade76372 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -1150,6 +1150,7 @@ static const struct ib_device_ops rxe_dev_ops = {
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 25eab9dc9cad..92f04e7360b6 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -768,8 +768,10 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
+ 	atomic_inc(&pd->usecnt);
+ 	mr->res.type = RDMA_RESTRACK_MR;
+ 	rdma_restrack_uadd(&mr->res);
++	atomic_set(&mr->refcnt, 1);
  
- 	/* Object sharing callbacks */
- 	.clone_ib_pd = trivial_clone_ib_pd,
-+	.clone_ib_mr = trivial_clone_ib_mr,
+ 	uobj->object = mr;
++	uobj->refcnt = &mr->refcnt;
  
- 	INIT_RDMA_OBJ_SIZE(ib_ah, rxe_ah, ibah),
- 	INIT_RDMA_OBJ_SIZE(ib_cq, rxe_cq, ibcq),
+ 	memset(&resp, 0, sizeof resp);
+ 	resp.lkey      = mr->lkey;
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 877932305ea7..80fd78b3b654 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1794,6 +1794,9 @@ struct ib_mr {
+ 	 * Implementation details of the RDMA core, don't use in drivers:
+ 	 */
+ 	struct rdma_restrack_entry res;
++
++	/* number of uobj using this ib_pd */
++	atomic_t	      refcnt;
+ };
+ 
+ struct ib_mw {
 -- 
 2.20.1
 
