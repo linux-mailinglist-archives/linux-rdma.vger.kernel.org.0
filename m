@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E97097A87
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 15:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E8597A8B
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 15:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728531AbfHUNR6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 09:17:58 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:38348 "EHLO huawei.com"
+        id S1728861AbfHUNSA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 09:18:00 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:4747 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726372AbfHUNR5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Aug 2019 09:17:57 -0400
+        id S1728219AbfHUNSA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Aug 2019 09:18:00 -0400
 Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D8F9A20888A132DDF76B;
-        Wed, 21 Aug 2019 21:17:53 +0800 (CST)
+        by Forcepoint Email with ESMTP id E4AE76DE12217181A863;
+        Wed, 21 Aug 2019 21:17:58 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.439.0; Wed, 21 Aug 2019 21:17:47 +0800
+ 14.3.439.0; Wed, 21 Aug 2019 21:17:48 +0800
 From:   Lijun Ou <oulijun@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH for-next 8/9] RDMA/hns: Delete the not-used lines
-Date:   Wed, 21 Aug 2019 21:14:35 +0800
-Message-ID: <1566393276-42555-9-git-send-email-oulijun@huawei.com>
+Subject: [PATCH for-next 9/9] RDMA/hns: Fix wrong assignment of qp_access_flags
+Date:   Wed, 21 Aug 2019 21:14:36 +0800
+Message-ID: <1566393276-42555-10-git-send-email-oulijun@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1566393276-42555-1-git-send-email-oulijun@huawei.com>
 References: <1566393276-42555-1-git-send-email-oulijun@huawei.com>
@@ -35,29 +35,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Wenpeng Liang <liangwenpeng@huawei.com>
+We used wrong shifts when set qp_attr->qp_access_flag,
+this patch exchange V2_QP_RRE_S and V2_QP_RWE_S to fix it.
 
-Delete the assignment of srq->ibsrq.ext.xrc.srq_num, beacause this
-value is not used.
-
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Fixes: 2a3d923f8730 ("RDMA/hns: Replace magic numbers with #defines")
+Signed-off-by: Weihang Li <liweihang@hisilicon.com>
 Signed-off-by: Lijun Ou <oulijun@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_srq.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index 1a42172..9591457 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -412,7 +412,6 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
- 		goto err_wrid;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index ecd0283..7a89d66 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4574,9 +4574,9 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
+ 						  V2_QPC_BYTE_56_DQPN_M,
+ 						  V2_QPC_BYTE_56_DQPN_S);
+ 	qp_attr->qp_access_flags = ((roce_get_bit(context.byte_76_srqn_op_en,
+-				    V2_QPC_BYTE_76_RRE_S)) << V2_QP_RWE_S) |
++				    V2_QPC_BYTE_76_RRE_S)) << V2_QP_RRE_S) |
+ 				    ((roce_get_bit(context.byte_76_srqn_op_en,
+-				    V2_QPC_BYTE_76_RWE_S)) << V2_QP_RRE_S) |
++				    V2_QPC_BYTE_76_RWE_S)) << V2_QP_RWE_S) |
+ 				    ((roce_get_bit(context.byte_76_srqn_op_en,
+ 				    V2_QPC_BYTE_76_ATE_S)) << V2_QP_ATE_S);
  
- 	srq->event = hns_roce_ib_srq_event;
--	srq->ibsrq.ext.xrc.srq_num = srq->srqn;
- 	resp.srqn = srq->srqn;
- 
- 	if (udata) {
 -- 
 2.8.1
 
