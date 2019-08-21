@@ -2,102 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9960898408
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 21:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C7E984BE
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 21:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbfHUTJF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 15:09:05 -0400
-Received: from mga17.intel.com ([192.55.52.151]:6091 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729037AbfHUTJF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Aug 2019 15:09:05 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Aug 2019 12:09:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,412,1559545200"; 
-   d="scan'208";a="178594638"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Aug 2019 12:09:04 -0700
-Date:   Wed, 21 Aug 2019 12:09:04 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>
+        id S1730143AbfHUTsN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 15:48:13 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:39412 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730141AbfHUTsM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 15:48:12 -0400
+Received: by mail-qt1-f195.google.com with SMTP id l9so4558822qtu.6
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Aug 2019 12:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RKaQWnWiA/zCcExfi75lqB9ALEnDHuRristulqneTd4=;
+        b=VF//ZkIgb0ccMf/fYMR8ys1oZHmy5JRKO8S8IVnwY93iOCu/W7+tqrcWFw+5rldxNI
+         aOtLu3PsXm0Him3edXbZNXCIhRk5dw4XYfKu4e3yv8iN/mxXDcev7A64Goh60uRoeToj
+         KsbYARzI5dfW3WUW2nHR+o8WkktwHJGaehfIiJX8Npx8V5kKAL0zIUWne13iFi3yzfE0
+         Mr3GgB9fCwjOgBICH92Ndb17k2AjhI3vfLJVcZ59QAI/xkGuigPoWEVo0xwQOrmHgZvG
+         +llknKnaKUAXOzinx5ExtHyGDbPgE5bGB/pnb1FjLysYXUDhwnplOXXe90luAkrxNaEF
+         /MsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RKaQWnWiA/zCcExfi75lqB9ALEnDHuRristulqneTd4=;
+        b=rI8IUlsLQupe3TmtMK70xAlL6AezFF18BC/C0EPViWMwqe62XKc3EF+FtnQZAwdFeA
+         mW0E2vS9cKeFx9AhDOl6urIJH2WB1DzUQyxzoo1kndmMW7MvvEtDgjMbsWbNzdYwQTu0
+         rRj/Qd0SB7WzhY8D1dHYowgN5v14Q07JzhygfXl7MhQtIcbmBatIy1mDkV2ZxktCTUNJ
+         avay6oQ1mTG0anRcVik3EBg/l1Y5/ThHlFUOGmXcp5yRPbvkz7GnWq/cLAqPmjl2BFyv
+         Hjh9i8PzURE7mw/Ta6G49dW44HSlGHskXalr4h4K1Y+fzm0NJrfaXSp+2/wEGgy3DVZQ
+         f35w==
+X-Gm-Message-State: APjAAAVDbJ5GSYGkEpttxdJvauYIPuFyKI+hpwTNjXbtuMYZr4+PK/Iu
+        k5Rgnyvbm+7HB0h25shLi5iE9A==
+X-Google-Smtp-Source: APXvYqynnJZ0Zi7g4jGmr+xM0aj4NgAU3mYFQCm90qX+6uBLqZGFaKsA8ELnMbT3xzkDRjmj+/uCGg==
+X-Received: by 2002:ac8:468f:: with SMTP id g15mr33328922qto.353.1566416891773;
+        Wed, 21 Aug 2019 12:48:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id q62sm11253497qkb.69.2019.08.21.12.48.11
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 21 Aug 2019 12:48:11 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1i0WaY-0005kK-I1; Wed, 21 Aug 2019 16:48:10 -0300
+Date:   Wed, 21 Aug 2019 16:48:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ira Weiny <ira.weiny@intel.com>
 Cc:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
         Dan Williams <dan.j.williams@intel.com>,
         Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>, Michal Hocko <mhocko@suse.com>,
-        linux-xfs@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190821190904.GD5965@iweiny-DESK2.sc.intel.com>
-References: <20190815130558.GF14313@quack2.suse.cz>
- <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
+Message-ID: <20190821194810.GI8653@ziepe.ca>
+References: <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
  <20190817022603.GW6129@dread.disaster.area>
  <20190819063412.GA20455@quack2.suse.cz>
  <20190819092409.GM7777@dread.disaster.area>
- <ae64491b-85f8-eeca-14e8-2f09caf8abd2@nvidia.com>
- <20190820012021.GQ7777@dread.disaster.area>
- <84318b51-bd07-1d9b-d842-e65cac2ff484@nvidia.com>
- <20190820033608.GB1119@dread.disaster.area>
- <29c89d84-d847-0221-70a7-9e5a3d472cda@nvidia.com>
+ <20190819123841.GC5058@ziepe.ca>
+ <20190820011210.GP7777@dread.disaster.area>
+ <20190820115515.GA29246@ziepe.ca>
+ <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
+ <20190821181343.GH8653@ziepe.ca>
+ <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <29c89d84-d847-0221-70a7-9e5a3d472cda@nvidia.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 11:43:30AM -0700, John Hubbard wrote:
-> On 8/19/19 8:36 PM, Dave Chinner wrote:
-> > On Mon, Aug 19, 2019 at 08:09:33PM -0700, John Hubbard wrote:
-> > > On 8/19/19 6:20 PM, Dave Chinner wrote:
-> > > > On Mon, Aug 19, 2019 at 05:05:53PM -0700, John Hubbard wrote:
-> > > > > On 8/19/19 2:24 AM, Dave Chinner wrote:
-> > > > > > On Mon, Aug 19, 2019 at 08:34:12AM +0200, Jan Kara wrote:
-> > > > > > > On Sat 17-08-19 12:26:03, Dave Chinner wrote:
-> > > > > > > > On Fri, Aug 16, 2019 at 12:05:28PM -0700, Ira Weiny wrote:
-> > > > > > > > > On Thu, Aug 15, 2019 at 03:05:58PM +0200, Jan Kara wrote:
-> > > > > > > > > > On Wed 14-08-19 11:08:49, Ira Weiny wrote:
-> > > > > > > > > > > On Wed, Aug 14, 2019 at 12:17:14PM +0200, Jan Kara wrote:
-> > > > > ...
-> > AFAIA, there is no struct file here - the memory that has been pinned
-> > is just something mapped into the application's address space.
-> > 
-> > It seems to me that the socket here is equivalent of the RDMA handle
-> > that that owns the hardware that pins the pages. Again, that RDMA
-> > handle is not aware of waht the mapping represents, hence need to
-> > hold a layout lease if it's a file mapping.
-> > 
-> > SO from the filesystem persepctive, there's no difference between
-> > XDP or RDMA - if it's a FSDAX mapping then it is DMAing directly
-> > into the filesystem's backing store and that will require use of
-> > layout leases to perform safely.
-> > 
+On Wed, Aug 21, 2019 at 11:57:03AM -0700, Ira Weiny wrote:
+
+> > Oh, I didn't think we were talking about that. Hanging the close of
+> > the datafile fd contingent on some other FD's closure is a recipe for
+> > deadlock..
 > 
-> OK, got it! Makes perfect sense.
-
-Just to chime in here... Yea from the FS perspective it is the same.
-
-But on the driver side it is more complicated because of how the references to
-the pins can be shared among other processes.
-
-See the other branch of this thread
-
-https://lkml.org/lkml/2019/8/21/828
-
-Ira
-
+> The discussion between Jan and Dave was concerning what happens when a user
+> calls
 > 
-> thanks,
-> -- 
-> John Hubbard
-> NVIDIA
+> fd = open()
+> fnctl(...getlease...)
+> addr = mmap(fd...)
+> ib_reg_mr() <pin>
+> munmap(addr...)
+> close(fd)
+
+I don't see how blocking close(fd) could work. Write it like this:
+
+ fd = open()
+ uverbs = open(/dev/uverbs)
+ fnctl(...getlease...)
+ addr = mmap(fd...)
+ ib_reg_mr() <pin>
+ munmap(addr...)
+  <sigkill>
+
+The order FD's are closed during sigkill is not deterministic, so when
+all the fputs happen during a kill'd exit we could end up blocking in
+close(fd) as close(uverbs) will come after in the close
+list. close(uverbs) is the thing that does the dereg_mr and releases
+the pin.
+
+We don't need complexity with dup to create problems.
+
+Jason
