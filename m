@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F7497A85
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 15:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C885B97A8A
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 15:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727559AbfHUNR5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 09:17:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:38352 "EHLO huawei.com"
+        id S1728413AbfHUNR7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 09:17:59 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:38320 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728050AbfHUNR4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Aug 2019 09:17:56 -0400
+        id S1728219AbfHUNR6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Aug 2019 09:17:58 -0400
 Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E07B526F5063EE32A895;
+        by Forcepoint Email with ESMTP id D45C26A7AEFEFF65B26B;
         Wed, 21 Aug 2019 21:17:53 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
@@ -20,9 +20,9 @@ Received: from localhost.localdomain (10.67.165.24) by
 From:   Lijun Ou <oulijun@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH for-next 2/9] RDMA/hns: Refactor the codes of creating qp
-Date:   Wed, 21 Aug 2019 21:14:29 +0800
-Message-ID: <1566393276-42555-3-git-send-email-oulijun@huawei.com>
+Subject: [PATCH for-next 3/9] RDMA/hns: Modify the data structure of hns_roce_av
+Date:   Wed, 21 Aug 2019 21:14:30 +0800
+Message-ID: <1566393276-42555-4-git-send-email-oulijun@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1566393276-42555-1-git-send-email-oulijun@huawei.com>
 References: <1566393276-42555-1-git-send-email-oulijun@huawei.com>
@@ -35,190 +35,149 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Here packages the codes of allocating receive rq inline buffer
-in hns_roce_create_qp_common function in order to reduce the
-complexity.
+From: Lang Cheng <chenglang@huawei.com>
 
-Signed-off-by: Lijun Ou <oulijun@huawei.com>
+we change type of some members to u32/u8 from __le32 as well as
+split sl_tclass_flowlabel into three variables in hns_roce_av.
+
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_qp.c | 100 +++++++++++++++++++-------------
- 1 file changed, 61 insertions(+), 39 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_ah.c     | 23 +++++++----------------
+ drivers/infiniband/hw/hns/hns_roce_device.h |  8 +++++---
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c  |  9 +++------
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  9 +++------
+ 4 files changed, 18 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index ec6b5dd..7e10820 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -635,6 +635,55 @@ static int hns_roce_qp_has_rq(struct ib_qp_init_attr *attr)
- 	return 1;
- }
- 
-+static int hns_roce_alloc_recv_inline_buffer(struct hns_roce_qp *hr_qp,
-+					     struct ib_qp_init_attr *init_attr)
-+{
-+	int ret;
-+	int i;
-+
-+	/* allocate recv inline buf */
-+	hr_qp->rq_inl_buf.wqe_list = kcalloc(hr_qp->rq.wqe_cnt,
-+					     sizeof(struct hns_roce_rinl_wqe),
-+					     GFP_KERNEL);
-+	if (!hr_qp->rq_inl_buf.wqe_list) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	hr_qp->rq_inl_buf.wqe_cnt = hr_qp->rq.wqe_cnt;
-+
-+	/* Firstly, allocate a list of sge space buffer */
-+	hr_qp->rq_inl_buf.wqe_list[0].sg_list =
-+					kcalloc(hr_qp->rq_inl_buf.wqe_cnt,
-+					init_attr->cap.max_recv_sge *
-+					sizeof(struct hns_roce_rinl_sge),
-+					GFP_KERNEL);
-+	if (!hr_qp->rq_inl_buf.wqe_list[0].sg_list) {
-+		ret = -ENOMEM;
-+		goto err_wqe_list;
-+	}
-+
-+	for (i = 1; i < hr_qp->rq_inl_buf.wqe_cnt; i++)
-+		/* Secondly, reallocate the buffer */
-+		hr_qp->rq_inl_buf.wqe_list[i].sg_list =
-+				     &hr_qp->rq_inl_buf.wqe_list[0].sg_list[i *
-+				     init_attr->cap.max_recv_sge];
-+
-+	return 0;
-+
-+err_wqe_list:
-+	kfree(hr_qp->rq_inl_buf.wqe_list);
-+
-+err:
-+	return ret;
-+}
-+
-+static void hns_roce_free_recv_inline_buffer(struct hns_roce_qp *hr_qp)
-+{
-+	kfree(hr_qp->rq_inl_buf.wqe_list[0].sg_list);
-+	kfree(hr_qp->rq_inl_buf.wqe_list);
-+}
-+
- static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 				     struct ib_pd *ib_pd,
- 				     struct ib_qp_init_attr *init_attr,
-@@ -676,33 +725,11 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 
- 	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
- 	    hns_roce_qp_has_rq(init_attr)) {
--		/* allocate recv inline buf */
--		hr_qp->rq_inl_buf.wqe_list = kcalloc(hr_qp->rq.wqe_cnt,
--					       sizeof(struct hns_roce_rinl_wqe),
--					       GFP_KERNEL);
--		if (!hr_qp->rq_inl_buf.wqe_list) {
--			ret = -ENOMEM;
-+		ret = hns_roce_alloc_recv_inline_buffer(hr_qp, init_attr);
-+		if (ret) {
-+			dev_err(dev, "allocate receive inline buffer failed\n");
- 			goto err_out;
- 		}
--
--		hr_qp->rq_inl_buf.wqe_cnt = hr_qp->rq.wqe_cnt;
--
--		/* Firstly, allocate a list of sge space buffer */
--		hr_qp->rq_inl_buf.wqe_list[0].sg_list =
--					kcalloc(hr_qp->rq_inl_buf.wqe_cnt,
--					       init_attr->cap.max_recv_sge *
--					       sizeof(struct hns_roce_rinl_sge),
--					       GFP_KERNEL);
--		if (!hr_qp->rq_inl_buf.wqe_list[0].sg_list) {
--			ret = -ENOMEM;
--			goto err_wqe_list;
--		}
--
--		for (i = 1; i < hr_qp->rq_inl_buf.wqe_cnt; i++)
--			/* Secondly, reallocate the buffer */
--			hr_qp->rq_inl_buf.wqe_list[i].sg_list =
--				&hr_qp->rq_inl_buf.wqe_list[0].sg_list[i *
--				init_attr->cap.max_recv_sge];
+diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
+index cdd2ac2..90e08c0 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_ah.c
++++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
+@@ -66,11 +66,9 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr,
+ 			     HNS_ROCE_VLAN_SL_SHIFT;
  	}
  
- 	page_shift = PAGE_SHIFT + hr_dev->caps.mtt_buf_pg_sz;
-@@ -710,14 +737,14 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd))) {
- 			dev_err(dev, "ib_copy_from_udata error for create qp\n");
- 			ret = -EFAULT;
--			goto err_rq_sge_list;
-+			goto err_alloc_recv_inline_buffer;
- 		}
+-	ah->av.port_pd = cpu_to_le32(to_hr_pd(ibah->pd)->pdn |
+-				     (rdma_ah_get_port_num(ah_attr) <<
+-				     HNS_ROCE_PORT_NUM_SHIFT));
++	ah->av.port = rdma_ah_get_port_num(ah_attr);
+ 	ah->av.gid_index = grh->sgid_index;
+-	ah->av.vlan = cpu_to_le16(vlan_tag);
++	ah->av.vlan = vlan_tag;
+ 	ah->av.vlan_en = vlan_en;
+ 	dev_dbg(dev, "gid_index = 0x%x,vlan = 0x%x\n", ah->av.gid_index,
+ 		ah->av.vlan);
+@@ -79,8 +77,7 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr,
+ 		ah->av.stat_rate = IB_RATE_10_GBPS;
  
- 		ret = hns_roce_set_user_sq_size(hr_dev, &init_attr->cap, hr_qp,
- 						&ucmd);
- 		if (ret) {
- 			dev_err(dev, "hns_roce_set_user_sq_size error for create qp\n");
--			goto err_rq_sge_list;
-+			goto err_alloc_recv_inline_buffer;
- 		}
+ 	memcpy(ah->av.dgid, grh->dgid.raw, HNS_ROCE_GID_SIZE);
+-	ah->av.sl_tclass_flowlabel = cpu_to_le32(rdma_ah_get_sl(ah_attr) <<
+-						 HNS_ROCE_SL_SHIFT);
++	ah->av.sl = rdma_ah_get_sl(ah_attr);
  
- 		hr_qp->umem = ib_umem_get(udata, ucmd.buf_addr,
-@@ -725,7 +752,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		if (IS_ERR(hr_qp->umem)) {
- 			dev_err(dev, "ib_umem_get error for create qp\n");
- 			ret = PTR_ERR(hr_qp->umem);
--			goto err_rq_sge_list;
-+			goto err_alloc_recv_inline_buffer;
- 		}
- 		hr_qp->region_cnt = split_wqe_buf_region(hr_dev, hr_qp,
- 				hr_qp->regions, ARRAY_SIZE(hr_qp->regions),
-@@ -786,13 +813,13 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		    IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK) {
- 			dev_err(dev, "init_attr->create_flags error!\n");
- 			ret = -EINVAL;
--			goto err_rq_sge_list;
-+			goto err_alloc_recv_inline_buffer;
- 		}
+ 	return 0;
+ }
+@@ -91,17 +88,11 @@ int hns_roce_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr)
  
- 		if (init_attr->create_flags & IB_QP_CREATE_IPOIB_UD_LSO) {
- 			dev_err(dev, "init_attr->create_flags error!\n");
- 			ret = -EINVAL;
--			goto err_rq_sge_list;
-+			goto err_alloc_recv_inline_buffer;
- 		}
+ 	memset(ah_attr, 0, sizeof(*ah_attr));
  
- 		/* Set SQ size */
-@@ -800,7 +827,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 						  hr_qp);
- 		if (ret) {
- 			dev_err(dev, "hns_roce_set_kernel_sq_size error!\n");
--			goto err_rq_sge_list;
-+			goto err_alloc_recv_inline_buffer;
- 		}
+-	rdma_ah_set_sl(ah_attr, (le32_to_cpu(ah->av.sl_tclass_flowlabel) >>
+-				 HNS_ROCE_SL_SHIFT));
+-	rdma_ah_set_port_num(ah_attr, (le32_to_cpu(ah->av.port_pd) >>
+-				       HNS_ROCE_PORT_NUM_SHIFT));
++	rdma_ah_set_sl(ah_attr, ah->av.sl);
++	rdma_ah_set_port_num(ah_attr, ah->av.port);
+ 	rdma_ah_set_static_rate(ah_attr, ah->av.stat_rate);
+-	rdma_ah_set_grh(ah_attr, NULL,
+-			(le32_to_cpu(ah->av.sl_tclass_flowlabel) &
+-			 HNS_ROCE_FLOW_LABEL_MASK), ah->av.gid_index,
+-			ah->av.hop_limit,
+-			(le32_to_cpu(ah->av.sl_tclass_flowlabel) >>
+-			 HNS_ROCE_TCLASS_SHIFT));
++	rdma_ah_set_grh(ah_attr, NULL, ah->av.flowlabel,
++			ah->av.gid_index, ah->av.hop_limit, ah->av.tclass);
+ 	rdma_ah_set_dgid_raw(ah_attr, ah->av.dgid);
  
- 		/* QP doorbell register address */
-@@ -814,7 +841,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 			ret = hns_roce_alloc_db(hr_dev, &hr_qp->rdb, 0);
- 			if (ret) {
- 				dev_err(dev, "rq record doorbell alloc failed!\n");
--				goto err_rq_sge_list;
-+				goto err_alloc_recv_inline_buffer;
- 			}
- 			*hr_qp->rdb.db_record = 0;
- 			hr_qp->rdb_en = 1;
-@@ -980,15 +1007,10 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 	    (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB))
- 		hns_roce_free_db(hr_dev, &hr_qp->rdb);
+ 	return 0;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index c7bf738..011e038 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -568,14 +568,16 @@ struct hns_roce_raq_table {
+ };
  
--err_rq_sge_list:
--	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
--	     hns_roce_qp_has_rq(init_attr))
--		kfree(hr_qp->rq_inl_buf.wqe_list[0].sg_list);
--
--err_wqe_list:
-+err_alloc_recv_inline_buffer:
- 	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
- 	     hns_roce_qp_has_rq(init_attr))
--		kfree(hr_qp->rq_inl_buf.wqe_list);
-+		hns_roce_free_recv_inline_buffer(hr_qp);
+ struct hns_roce_av {
+-	__le32      port_pd;
++	u8          port;
+ 	u8          gid_index;
+ 	u8          stat_rate;
+ 	u8          hop_limit;
+-	__le32      sl_tclass_flowlabel;
++	u32         flowlabel;
++	u8          sl;
++	u8          tclass;
+ 	u8          dgid[HNS_ROCE_GID_SIZE];
+ 	u8          mac[ETH_ALEN];
+-	__le16      vlan;
++	u16         vlan;
+ 	bool	    vlan_en;
+ };
  
- err_out:
- 	return ret;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index 0ff5f96..d5be11a 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -175,13 +175,11 @@ static int hns_roce_v1_post_send(struct ib_qp *ibqp,
+ 			roce_set_field(ud_sq_wqe->u32_36,
+ 				       UD_SEND_WQE_U32_36_FLOW_LABEL_M,
+ 				       UD_SEND_WQE_U32_36_FLOW_LABEL_S,
+-				       ah->av.sl_tclass_flowlabel &
+-				       HNS_ROCE_FLOW_LABEL_MASK);
++				       ah->av.flowlabel);
+ 			roce_set_field(ud_sq_wqe->u32_36,
+ 				      UD_SEND_WQE_U32_36_PRIORITY_M,
+ 				      UD_SEND_WQE_U32_36_PRIORITY_S,
+-				      le32_to_cpu(ah->av.sl_tclass_flowlabel) >>
+-				      HNS_ROCE_SL_SHIFT);
++				      ah->av.sl);
+ 			roce_set_field(ud_sq_wqe->u32_36,
+ 				       UD_SEND_WQE_U32_36_SGID_INDEX_M,
+ 				       UD_SEND_WQE_U32_36_SGID_INDEX_S,
+@@ -195,8 +193,7 @@ static int hns_roce_v1_post_send(struct ib_qp *ibqp,
+ 			roce_set_field(ud_sq_wqe->u32_40,
+ 				       UD_SEND_WQE_U32_40_TRAFFIC_CLASS_M,
+ 				       UD_SEND_WQE_U32_40_TRAFFIC_CLASS_S,
+-				       ah->av.sl_tclass_flowlabel >>
+-				       HNS_ROCE_TCLASS_SHIFT);
++				       ah->av.tclass);
+ 
+ 			memcpy(&ud_sq_wqe->dgid[0], &ah->av.dgid[0], GID_LEN);
+ 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 206dfdb..67e56b8 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -397,18 +397,15 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
+ 			roce_set_field(ud_sq_wqe->byte_36,
+ 				       V2_UD_SEND_WQE_BYTE_36_TCLASS_M,
+ 				       V2_UD_SEND_WQE_BYTE_36_TCLASS_S,
+-				       ah->av.sl_tclass_flowlabel >>
+-				       HNS_ROCE_TCLASS_SHIFT);
++				       ah->av.tclass);
+ 			roce_set_field(ud_sq_wqe->byte_40,
+ 				       V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_M,
+ 				       V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_S,
+-				       ah->av.sl_tclass_flowlabel &
+-				       HNS_ROCE_FLOW_LABEL_MASK);
++				       ah->av.flowlabel);
+ 			roce_set_field(ud_sq_wqe->byte_40,
+ 				       V2_UD_SEND_WQE_BYTE_40_SL_M,
+ 				       V2_UD_SEND_WQE_BYTE_40_SL_S,
+-				      le32_to_cpu(ah->av.sl_tclass_flowlabel) >>
+-				      HNS_ROCE_SL_SHIFT);
++				       ah->av.sl);
+ 			roce_set_field(ud_sq_wqe->byte_40,
+ 				       V2_UD_SEND_WQE_BYTE_40_PORTN_M,
+ 				       V2_UD_SEND_WQE_BYTE_40_PORTN_S,
 -- 
 2.8.1
 
