@@ -2,144 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA22C98114
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 19:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6E29811D
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 19:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbfHURPE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 13:15:04 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34604 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbfHURPE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 13:15:04 -0400
-Received: by mail-qk1-f195.google.com with SMTP id m10so2513973qkk.1
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Aug 2019 10:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HLep7YwJTYmynxq0tyS2wjXjpj05GXr2FH8L7z2ItUU=;
-        b=I5m0SnUlyCWxMxxP1kCr50mdUAAYc3OpnEOBjGG7IbUgXWGnN1WmDzRAAQCp7j9MCO
-         NROmRTASjVshu+xe7Msx+8JkNnYztCFsu4GAJ9AEH5wrrhcl70oxr74olEZ4gnmscImE
-         9gOs0xc12V2t6AjdJ0/pWU2k84mcAx5/ciIQeJaRMZ6RKkDJp5tJ83EeSq9TghxYN5Hm
-         AdYdcmvFskh2NJzBSPrYZ+2jIueU3pwBw7oHKfo6JoM1GqZ35MIUlDceAZoPGcKNJuWJ
-         YnoMaff1RxvYJA5HpNBq/k4xHg+eIDIk5oHEJFZArqAbIFmrkUVIMv7Cq4IJdVG55EIF
-         0Udg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HLep7YwJTYmynxq0tyS2wjXjpj05GXr2FH8L7z2ItUU=;
-        b=Prd71k9Y4Zgeda+fDhwI+TfOIHtgHFlziQSoh8VMykQTa9WADDNiL9gHW8w/xPtuuE
-         nh4k8owYP9r+GokVJL+vn296sku8szxFIH+iWsHeNNWbH5WMtvc3FPyHI2hVfYpItrNv
-         XYLoV0cK4vf4uAadF5mcJ5QeEJH75bEgA3Sg0Awi9hdf+SNenZCeJqft8VAz+FyKt3vZ
-         WWtvuZDj9qVV0c5HdrNqV2hcY+hZ0ws/G+l/jelxc9LpEYIgWrH4Ex6LvLU4deRw4uVx
-         Jbo1w5ZcteRekyZKCbT240Ft9TDBo/G1/4jJn/yScV7/etaEbgIygT99ggQb5KQC2Mni
-         /PQQ==
-X-Gm-Message-State: APjAAAV8XI6ackeFm3PHJdMTtX1sfyv+zAxCnpioRD2Znh6jXt2zc5yg
-        JWfNYVieG0SLEhBQ2rh4LaoQRg==
-X-Google-Smtp-Source: APXvYqwg3r4yYIS6SHUHAWabTJvZmuLx8NKf8ithcCWdm0GSmFsSMTy379ij3Xfx/Nb+0pISjtmNlw==
-X-Received: by 2002:a37:5347:: with SMTP id h68mr19462742qkb.236.1566407703249;
-        Wed, 21 Aug 2019 10:15:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id b1sm9647032qkk.8.2019.08.21.10.15.02
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 21 Aug 2019 10:15:02 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1i0UCM-0005zw-GF; Wed, 21 Aug 2019 14:15:02 -0300
-Date:   Wed, 21 Aug 2019 14:15:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Guy Levi <guyle@mellanox.com>, Moni Shoua <monis@mellanox.com>
-Subject: Re: [PATCH rdma-next 02/12] RDMA/odp: Iterate over the whole rbtree
- directly
-Message-ID: <20190821171502.GA23022@ziepe.ca>
-References: <20190819111710.18440-1-leon@kernel.org>
- <20190819111710.18440-3-leon@kernel.org>
+        id S1727255AbfHURTc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 13:19:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727211AbfHURTc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Aug 2019 13:19:32 -0400
+Received: from localhost (wsip-184-188-36-2.sd.sd.cox.net [184.188.36.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87AE022CF7;
+        Wed, 21 Aug 2019 17:19:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566407970;
+        bh=71ENEsP+F98XdHBG8f3fjIBNDWVMQhpPuvMiBO7waD4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IJnSP3Vz4gGMQryweLWX/mqlFhxoeIcWElLTMd0DHYcUiBWxGNAWA8KiafpwXn//U
+         eDAfNiNnpo/15wqW2VajS/+c+QbQRsgE3L2IqmGiW4C30TF6QQUAttY7NJUnY8DlBc
+         vmbzXjHbyVCgxiAH1bfsooF8hts0B1qyQn+7wMIU=
+Date:   Wed, 21 Aug 2019 20:19:28 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Lijun Ou <oulijun@huawei.com>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next 1/9] RDMA/hns: Refactor cmd init and mode
+ selection for hip08
+Message-ID: <20190821171928.GB27741@mtr-leonro.mtl.com>
+References: <1566393276-42555-1-git-send-email-oulijun@huawei.com>
+ <1566393276-42555-2-git-send-email-oulijun@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190819111710.18440-3-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1566393276-42555-2-git-send-email-oulijun@huawei.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 19, 2019 at 02:17:00PM +0300, Leon Romanovsky wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> Instead of intersecting a full interval, just iterate over every element
-> directly. This is faster and clearer.
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->  drivers/infiniband/core/umem_odp.c | 51 ++++++++++++++++--------------
->  drivers/infiniband/hw/mlx5/odp.c   | 41 +++++++++++-------------
->  2 files changed, 47 insertions(+), 45 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-> index 8358eb8e3a26..b9bebef00a33 100644
-> +++ b/drivers/infiniband/core/umem_odp.c
-> @@ -72,35 +72,41 @@ static void ib_umem_notifier_end_account(struct ib_umem_odp *umem_odp)
->  	mutex_unlock(&umem_odp->umem_mutex);
->  }
->  
-> -static int ib_umem_notifier_release_trampoline(struct ib_umem_odp *umem_odp,
-> -					       u64 start, u64 end, void *cookie)
-> -{
-> -	/*
-> -	 * Increase the number of notifiers running, to
-> -	 * prevent any further fault handling on this MR.
-> -	 */
-> -	ib_umem_notifier_start_account(umem_odp);
-> -	umem_odp->dying = 1;
-
-This patch was not applied on top of the commit noted in the cover
-letter
-
-> -	/* Make sure that the fact the umem is dying is out before we release
-> -	 * all pending page faults. */
-> -	smp_wmb();
-> -	complete_all(&umem_odp->notifier_completion);
-> -	umem_odp->umem.context->invalidate_range(
-> -		umem_odp, ib_umem_start(umem_odp), ib_umem_end(umem_odp));
-> -	return 0;
-> -}
+On Wed, Aug 21, 2019 at 09:14:28PM +0800, Lijun Ou wrote:
+> From: Yixian Liu <liuyixian@huawei.com>
+>
+> This patch refactor the initialization of cmd, and also for the cmd
+> mode selection on event and poll mode.
+>
+> Signed-off-by: Yixian Liu <liuyixian@huawei.com>
+> Signed-off-by: Lang Chen <chenglang@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_cmd.c  | 14 ++++----------
+>  drivers/infiniband/hw/hns/hns_roce_main.c | 18 ++++++++----------
+>  2 files changed, 12 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
+> index ade26fa..547002f 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
+> @@ -251,23 +251,17 @@ int hns_roce_cmd_use_events(struct hns_roce_dev *hr_dev)
+>  	hr_cmd->token_mask = CMD_TOKEN_MASK;
+>  	hr_cmd->use_events = 1;
+>
+> -	down(&hr_cmd->poll_sem);
 > -
->  static void ib_umem_notifier_release(struct mmu_notifier *mn,
->  				     struct mm_struct *mm)
+>  	return 0;
+>  }
+>
+>  void hns_roce_cmd_use_polling(struct hns_roce_dev *hr_dev)
 >  {
->  	struct ib_ucontext_per_mm *per_mm =
->  		container_of(mn, struct ib_ucontext_per_mm, mn);
-> +	struct rb_node *node;
->  
->  	down_read(&per_mm->umem_rwsem);
-> -	if (per_mm->active)
-> -		rbt_ib_umem_for_each_in_range(
-> -			&per_mm->umem_tree, 0, ULLONG_MAX,
-> -			ib_umem_notifier_release_trampoline, true, NULL);
-> +	if (!per_mm->active)
-> +		goto out;
-> +
-> +	for (node = rb_first_cached(&per_mm->umem_tree); node;
-> +	     node = rb_next(node)) {
-> +		struct ib_umem_odp *umem_odp =
-> +			rb_entry(node, struct ib_umem_odp, interval_tree.rb);
-> +
-> +		/*
-> +		 * Increase the number of notifiers running, to prevent any
-> +		 * further fault handling on this MR.
-> +		 */
-> +		ib_umem_notifier_start_account(umem_odp);
-> +
-> +		umem_odp->dying = 1;
+>  	struct hns_roce_cmdq *hr_cmd = &hr_dev->cmd;
+> -	int i;
+> -
+> -	hr_cmd->use_events = 0;
+>
+> -	for (i = 0; i < hr_cmd->max_cmds; ++i)
+> -		down(&hr_cmd->event_sem);
+> -
+> -	kfree(hr_cmd->context);
+> -	up(&hr_cmd->poll_sem);
+> +	if (hr_cmd->use_events) {
 
-So this ends up as a 'rebasing error'
+Ensure that hr_cmd->context == NULL in places where it shouldn't be
+kfreed and remove this "if (hr_cmd->use_events)".
 
-I fixed it
+Thanks
+.
 
-Jason
+
+> +		kfree(hr_cmd->context);
+> +		hr_cmd->use_events = 0;
+> +	}
+>  }
+>
+>  struct hns_roce_cmd_mailbox
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+> index 1b757cc..f3b2f67 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_main.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+> @@ -902,6 +902,7 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
+>  		goto error_failed_cmd_init;
+>  	}
+>
+> +	/* EQ depends on poll mode, event mode depends on EQ */
+>  	ret = hr_dev->hw->init_eq(hr_dev);
+>  	if (ret) {
+>  		dev_err(dev, "eq init failed!\n");
+> @@ -911,8 +912,9 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
+>  	if (hr_dev->cmd_mod) {
+>  		ret = hns_roce_cmd_use_events(hr_dev);
+>  		if (ret) {
+> -			dev_err(dev, "Switch to event-driven cmd failed!\n");
+> -			goto error_failed_use_event;
+> +			dev_warn(dev,
+> +				 "Cmd event  mode failed, set back to poll!\n");
+> +			hns_roce_cmd_use_polling(hr_dev);
+>  		}
+>  	}
+>
+> @@ -928,12 +930,10 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
+>  		goto error_failed_setup_hca;
+>  	}
+>
+> -	if (hr_dev->hw->hw_init) {
+> -		ret = hr_dev->hw->hw_init(hr_dev);
+> -		if (ret) {
+> -			dev_err(dev, "hw_init failed!\n");
+> -			goto error_failed_engine_init;
+> -		}
+> +	ret = hr_dev->hw->hw_init(hr_dev);
+> +	if (ret) {
+> +		dev_err(dev, "hw_init failed!\n");
+> +		goto error_failed_engine_init;
+>  	}
+>
+>  	ret = hns_roce_register_device(hr_dev);
+> @@ -955,8 +955,6 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
+>  error_failed_init_hem:
+>  	if (hr_dev->cmd_mod)
+>  		hns_roce_cmd_use_polling(hr_dev);
+> -
+> -error_failed_use_event:
+>  	hr_dev->hw->cleanup_eq(hr_dev);
+>
+>  error_failed_eq_table:
+> --
+> 2.8.1
+>
