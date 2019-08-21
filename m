@@ -2,173 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 040D996F36
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 04:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71347970AD
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 06:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbfHUCHn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Aug 2019 22:07:43 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:54934 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726804AbfHUCHn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Aug 2019 22:07:43 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7L24NkZ038648;
-        Wed, 21 Aug 2019 02:07:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=Jpt22Rz137CZfbO+YNmSg/zTZ/piPXKdBPp0iZlKO/0=;
- b=Cs+O3zZk1BepOggOr1uoFsihlwIt+PNNSRX3LY1YwXU78muD0maHLkZKM9Pj8oMJE4xQ
- 0mJZYKLOiofftifO17pAedxAHBvzJ48NHXO32Z6WlRqq0QJlgpkO6jSMb6lBax7QedHj
- 6STyGs3sPoDbvpeE13XtRq6DYbesl+BvQShNchSYFcGGzqDwPoktv9iQFA4bIEFoZepO
- prFyCpiy2IPWgUcWkvvgiFnAFWTFtHeZhHT4IwhlLtKGrSqLdsGUvBbkRsrxXszp4jjR
- TSoC53V0UBjhrVQjXHPQHB40PTMUNKkdJJRGNXJm9Mr8m5ywNdHUQETgmjnhmR8+iK3p tw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2ue9hpj5cc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 02:07:19 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7L23DDW088308;
-        Wed, 21 Aug 2019 02:07:19 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 2ug1ga0dhm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 21 Aug 2019 02:07:18 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7L27I1A098271;
-        Wed, 21 Aug 2019 02:07:18 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 2ug1ga0dhb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 02:07:18 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7L27HLa032090;
-        Wed, 21 Aug 2019 02:07:17 GMT
-Received: from [10.182.71.192] (/10.182.71.192)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 20 Aug 2019 19:07:17 -0700
-Subject: Re: [PATCH 1/1] net: rds: add service level support in rds-info
-To:     Doug Ledford <dledford@redhat.com>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com
-References: <1566262341-18165-1-git-send-email-yanjun.zhu@oracle.com>
- <f3de2e40f1bc2eb219d3056ee954747db90dbbb4.camel@redhat.com>
-From:   Zhu Yanjun <yanjun.zhu@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <f3ff7a39-8b24-5398-26c9-8a07ac9863bc@oracle.com>
-Date:   Wed, 21 Aug 2019 10:10:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727352AbfHUEEC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 00:04:02 -0400
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:18789 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727335AbfHUEEB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 00:04:01 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5d5cc2ad0000>; Tue, 20 Aug 2019 21:03:57 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Tue, 20 Aug 2019 21:03:57 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Tue, 20 Aug 2019 21:03:57 -0700
+Received: from HQMAIL110.nvidia.com (172.18.146.15) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 21 Aug
+ 2019 04:03:57 +0000
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by hqmail110.nvidia.com
+ (172.18.146.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 21 Aug
+ 2019 04:03:56 +0000
+Received: from hqnvemgw02.nvidia.com (172.16.227.111) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 21 Aug 2019 04:03:56 +0000
+Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by hqnvemgw02.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5d5cc2ac0000>; Tue, 20 Aug 2019 21:03:56 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Andy Whitcroft" <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        "Gilad Ben-Yossef" <gilad@benyossef.com>,
+        Ofir Drang <ofir.drang@arm.com>
+Subject: [PATCH 1/4] checkpatch: revert broken NOTIFIER_HEAD check
+Date:   Tue, 20 Aug 2019 21:03:52 -0700
+Message-ID: <20190821040355.19566-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
-In-Reply-To: <f3de2e40f1bc2eb219d3056ee954747db90dbbb4.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908210018
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1566360237; bh=b0DVOtsBG53vqmQyIWzNnfUqAU65Pon9C8BrFwFcc1M=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=RCYmMjup+49b/+zlM0P/oVeE+gZMo0wjyYY2EUAhT1rekOgnfipguhjJHZ7SBUwr+
+         pA8/CDo2+IUJmyYtpK8ZnPHRk2seQr5lND0QkjR1ZMaqCQbH262dqNVO+054zFEbK8
+         uT1cXvR2T/upHLCdRwlLnU0fef5Fv5lcInQ5Cfysp8XIKy+z4tGs9wj2VtdkhKSfYf
+         k7b+QtXH4UP+aWWme7vPSCeQi5BYwUuyup4McTAZ90K3ZlxcpxwdEdVIYvsR97Tpu5
+         7QZCtVVMikBs3kYXP0ChmL0Bf1c2nZv8olUfiEi1ld5I/1Fk38nFdgtANUfGh9Pioz
+         BJhhcSmhgBkLg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi，Doug
+commit 1a47005dd5aa ("checkpatch: add *_NOTIFIER_HEAD as var
+definition") causes the following warning when run on some
+patches:
 
-My reply is in line.
+Unescaped left brace in regex is passed through in regex;
+marked by < --HERE in m/(?:
+...
+   [238 lines of appalling perl output, mercifully not included]
+...
+)/ at ./scripts/checkpatch.pl line 3889.
 
-On 2019/8/20 23:28, Doug Ledford wrote:
-> On Mon, 2019-08-19 at 20:52 -0400, Zhu Yanjun wrote:
->> diff --git a/include/uapi/linux/rds.h b/include/uapi/linux/rds.h
->> index fd6b5f6..cba368e 100644
->> --- a/include/uapi/linux/rds.h
->> +++ b/include/uapi/linux/rds.h
->> @@ -250,6 +250,7 @@ struct rds_info_rdma_connection {
->>          __u32           rdma_mr_max;
->>          __u32           rdma_mr_size;
->>          __u8            tos;
->> +       __u8            sl;
->>          __u32           cache_allocs;
->>   };
->>   
->> @@ -265,6 +266,7 @@ struct rds6_info_rdma_connection {
->>          __u32           rdma_mr_max;
->>          __u32           rdma_mr_size;
->>          __u8            tos;
->> +       __u8            sl;
->>          __u32           cache_allocs;
->>   };
->>   
-> This is a user space API break (as was the prior patch mentioned
-> below)...
->
->> The commit fe3475af3bdf ("net: rds: add per rds connection cache
->> statistics") adds cache_allocs in struct rds_info_rdma_connection
->> as below:
->> struct rds_info_rdma_connection {
->> ...
->>          __u32           rdma_mr_max;
->>          __u32           rdma_mr_size;
->>          __u8            tos;
->>          __u32           cache_allocs;
->>   };
->> The peer struct in rds-tools of struct rds_info_rdma_connection is as
->> below:
->> struct rds_info_rdma_connection {
->> ...
->>          uint32_t        rdma_mr_max;
->>          uint32_t        rdma_mr_size;
->>          uint8_t         tos;
->>          uint8_t         sl;
->>          uint32_t        cache_allocs;
->> };
-> Why are the user space rds tools not using the kernel provided abi
-> files?
-Perhaps it is a long story.
->
-> In order to know if this ABI breakage is safe, we need to know what
-> versions of rds-tools are out in the wild and have their own headers
-> that we need to match up with.
+This is broken, so revert it until a better solution is found.
 
- From my works in LAB and in the customer's host, rds-tools 2.0.7 is the 
-popular
+Fixes: 1a47005dd5aa ("checkpatch: add *_NOTIFIER_HEAD as var
+definition")
 
-version. Other versions rds-tools are used less.
+Cc: Andy Whitcroft <apw@canonical.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: Gilad Ben-Yossef <gilad@benyossef.com>
+Cc: Ofir Drang <ofir.drang@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+---
+ scripts/checkpatch.pl | 1 -
+ 1 file changed, 1 deletion(-)
 
->    Are there any versions of rds-tools that
-> actually use the kernel provided headers?
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 5c00151cdee8..284eb4bd84aa 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3891,7 +3891,6 @@ sub process {
+ 				^.DEFINE_$Ident\(\Q$name\E\)|
+ 				^.DECLARE_$Ident\(\Q$name\E\)|
+ 				^.LIST_HEAD\(\Q$name\E\)|
+-				^.{$Ident}_NOTIFIER_HEAD\(\Q$name\E\)|
+ 				^.(?:$Storage\s+)?$Type\s*\(\s*\*\s*\Q$name\E\s*\)\s*\(|
+ 				\b\Q$name\E(?:\s+$Attribute)*\s*(?:;|=3D|\[|\()
+ 			    )/x) {
+--=20
+2.22.1
 
-"the kernel provided headers", do you mean include/uapi/linux/rds.h?
-
-I checked the rds-tools source code. I do not find any version of 
-rds-tools us this header files.
-
-> Are there any other users of
-> uapi/linux/rds.h besides rds-tools?
-
-Not sure. But in Oracle, there are some rds applications. I am not sure 
-whether these rds applications
-
-will use include/uapi/linux/rds.h file or not.
-
-I will investigate it.
-
->
-> Once the kernel and rds-tools package are in sync,
-
-After this commit is merged into mailine, the kernel and rds-tools 
-package are in sync.
-
-I will make investigations about rds-tools using the kernel header 
-include/uapi/linux/rds.h.
-
-Thanks a lot for your comments.
-
-Zhu Yanjun
-
->   rds-tools needs to be
-> modified to use the kernel header and proper ABI maintenance needs to be
-> started.
->
