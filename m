@@ -2,44 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 977B597C9D
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 16:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483E497C9F
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2019 16:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729419AbfHUOWp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Aug 2019 10:22:45 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:60130 "EHLO
+        id S1729298AbfHUOWu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Aug 2019 10:22:50 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:60270 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728871AbfHUOWp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 10:22:45 -0400
+        with ESMTP id S1728871AbfHUOWu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Aug 2019 10:22:50 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LEEGqM063028;
-        Wed, 21 Aug 2019 14:22:19 GMT
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LEEFbx062990;
+        Wed, 21 Aug 2019 14:22:25 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2019-08-05;
- bh=ybhLgSGVLJ67m4QDxTOeSAqQDsQJq+m/uygR3hR2iRA=;
- b=Z/zvsYF2RdvlbLwWUmW/hMr4V4beXwEWTm/2Pg/cYIhJ9tbya0mIZdN8vwrAUW7xxtxg
- EGcfgfqkL4j/+k14ReoCNqx1gJOVFWB9HWSqN5ogZ9CWFrYJQhya454ofWYK8Dnbzuz6
- /m5lZV5G76Sf8USjh1ksKtVZuGclIBVts0hZs3363C5zxQHCyBD8Zi0kGcomIUOw/7sm
- wnXZ8mrs/2LP9RaIhO1Rdwxhsvtido+06bIqvP4akRyho8h2XMMpz+QS9nVCASc4JOxs
- OWxmoE5c+stpjMy5mS26Qx6tihnlTohDWMRW8ZvFutL9n4nCF77UtqjbmbfwBx1pKqro jQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2ue90tp3tc-1
+ bh=Bw5rBVMtFc/wy4cPAyGoP+bM791bvmcREz2jMYPokbQ=;
+ b=G5QAXBhhZbet9kbUtQvhJT/6pQqBXXaD91waaKbRUrHMTeaHz5z1ujJZ5NYP9/ECNchn
+ AqmL4cD74Z67lfRwl1ngRMnf1uMUCyg9xAUXAVuln1VRZhdc8zwFpXBz+kYICu2lu7Mb
+ Cu5xidsdkw4pycHRwtjsE6uSmXPEL6Y64shF1nGXFOKfO+qvnlLwWEuTC5zQbCItvFnc
+ k64eHfCD5Gcdg2OrHT7CPke4IDQFMZERkwbM82wLgIcUln3sT36RtbmpPTjIyHNkumVK
+ s7rx2+MTKHVfB0O/HO2mJnuQicwoKF54SAVf2JBIjsAo9l1Ec5HFxltgqxNGJ9/isaMG ZA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2ue90tp3u4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 14:22:19 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LEIaa2094365;
-        Wed, 21 Aug 2019 14:22:18 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 2ugj7py818-1
+        Wed, 21 Aug 2019 14:22:25 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LEI5uh001562;
+        Wed, 21 Aug 2019 14:22:25 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 2uh2q4jvq9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 14:22:17 +0000
+        Wed, 21 Aug 2019 14:22:24 +0000
 Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7LEMFLT014800;
-        Wed, 21 Aug 2019 14:22:15 GMT
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7LEMMxm031044;
+        Wed, 21 Aug 2019 14:22:22 GMT
 Received: from host5.lan (/77.138.183.59)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 21 Aug 2019 07:22:15 -0700
+        with ESMTP ; Wed, 21 Aug 2019 07:22:21 -0700
 From:   Yuval Shaia <yuval.shaia@oracle.com>
 To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
         monis@mellanox.com, parav@mellanox.com, danielj@mellanox.com,
@@ -53,22 +53,22 @@ To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
         dennis.dalessandro@intel.com, will@kernel.org, ereza@mellanox.com,
         jgg@mellanox.com, linux-rdma@vger.kernel.org
 Cc:     Shamir Rabinovitch <srabinov7@gmail.com>
-Subject: [PATCH v1 06/24] IB/uverbs: Helper function to initialize ufile member of uverbs_attr_bundle
-Date:   Wed, 21 Aug 2019 17:21:07 +0300
-Message-Id: <20190821142125.5706-7-yuval.shaia@oracle.com>
+Subject: [PATCH v1 07/24] IB/uverbs: Add context import lock/unlock helper
+Date:   Wed, 21 Aug 2019 17:21:08 +0300
+Message-Id: <20190821142125.5706-8-yuval.shaia@oracle.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190821142125.5706-1-yuval.shaia@oracle.com>
 References: <20190821142125.5706-1-yuval.shaia@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1906280000 definitions=main-1908210157
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
  definitions=main-1908210157
@@ -79,70 +79,132 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
 
-Helper function to initialize ufile member of structure uverbs_attr_bundle.
+The lock/unlock helpers will be used in every import verb.
 
-This helper produce structure uverbs_attr_bundle that is safe for the below
-operations on the given ufile:
-
-- uobj_get_[read|write]
-- uobj_alloc_commit
-- uobj_alloc_abort
-
-The last 2 ops are more complicated. Abort for example triggers the
-below which pass the uverbs_attr_bundle driver_udata down to the
-drivers level:
-
-uobj_alloc_abort
- rdma_alloc_abort_uobject
-  uverbs_destroy_uobject
-   uobj->uapi_object->type_class->destroy_hw
-    destroy_hw_idr_uobject
-     idr_type->destroy_object
-      uverbs_free_pd
-       ib_dealloc_pd_user
-        pd->device->ops.dealloc_pd
-	 mlx4_ib_dealloc_pd
-
-For more information about the potential issues, please see
-commit f89adedaf3fe ("RDMA/uverbs: Initialize udata struct
-on destroy flows")
-
-Cc: Gal Pressman <galpress@amazon.com>
 Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
 Signed-off-by: Shamir Rabinovitch <srabinov7@gmail.com>
 ---
- drivers/infiniband/core/uverbs_cmd.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/infiniband/core/uverbs.h      |  2 +
+ drivers/infiniband/core/uverbs_cmd.c  | 73 +++++++++++++++++++++++++++
+ drivers/infiniband/core/uverbs_main.c |  1 +
+ 3 files changed, 76 insertions(+)
 
+diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+index 1e5aeb39f774..cf76336cb460 100644
+--- a/drivers/infiniband/core/uverbs.h
++++ b/drivers/infiniband/core/uverbs.h
+@@ -163,6 +163,8 @@ struct ib_uverbs_file {
+ 	struct page *disassociate_page;
+ 
+ 	struct xarray		idr;
++
++	struct file	       *filp;
+ };
+ 
+ struct ib_uverbs_event {
 diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index d1f0c04f0ae8..4f42f9732dca 100644
+index 4f42f9732dca..21f0a1a986f4 100644
 --- a/drivers/infiniband/core/uverbs_cmd.c
 +++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -3773,6 +3773,24 @@ static int ib_uverbs_ex_modify_cq(struct uverbs_attr_bundle *attrs)
- 	return ret;
+@@ -43,6 +43,7 @@
+ 
+ #include <rdma/uverbs_types.h>
+ #include <rdma/uverbs_std_types.h>
++#include <rdma/uverbs_ioctl.h>
+ #include "rdma_core.h"
+ 
+ #include "uverbs.h"
+@@ -3791,6 +3792,78 @@ static void uverbs_init_attrs_ufile(struct uverbs_attr_bundle *attrs_bundle,
+ 	};
  }
  
-+/**
-+ * uverbs_init_attrs_ufile - Helper function to create minimal
-+ * uverbs_attr_bundle out of ib_uverbs_file that is suitable
-+ * for the below operations:
++/* ib_uverbs_import_lock - Function which gathers code that is
++ *	common in the import verbs.
 + *
-+ * - uobj_get_[read|write]
-+ * - uobj_alloc_commit
-+ * - uobj_alloc_abort
++ *	This function guarntee that both source and destination files are
++ *	protected from race with vfs close. The current file is protected
++ *	from such race because verb is executed in a system-call context.
++ *	The other file is protected by 'fget'. This function also ensures
++ *	that ib_uobject identified by the type & handle is locked for read.
++ *
++ *	Callers of this helper must also call ib_uverbs_import_unlock
++ *	to undo any locking performed by this helper.
 + */
-+static void uverbs_init_attrs_ufile(struct uverbs_attr_bundle *attrs_bundle,
-+				    struct ib_uverbs_file *ufile)
++static int ib_uverbs_import_lock(struct uverbs_attr_bundle *attrs,
++				 int fd, u16 type, u32 handle,
++				 struct ib_uobject **uobj,
++				 struct file **filep,
++				 struct ib_uverbs_file **ufile)
 +{
-+	*attrs_bundle = (struct uverbs_attr_bundle) {
-+		.ufile = ufile,
-+		.context = ufile->ucontext,
-+	};
++	struct ib_uverbs_file *file = attrs->ufile;
++	struct ib_uverbs_device *dev = file->device;
++	struct uverbs_attr_bundle fd_attrs;
++	struct ib_uverbs_device *fd_dev;
++	int ret = 0;
++
++	*filep = fget(fd);
++	if (!*filep)
++		return -EINVAL;
++
++	/* check uverbs ops exist */
++	if ((*filep)->f_op != file->filp->f_op) {
++		ret = -EINVAL;
++		goto file;
++	}
++
++	*ufile = (*filep)->private_data;
++	fd_dev = (*ufile)->device;
++
++	/* check that both files belong to same ib_device */
++	if (dev != fd_dev) {
++		ret = -EINVAL;
++		goto file;
++	}
++
++	uverbs_init_attrs_ufile(&fd_attrs, *ufile);
++
++	*uobj = uobj_get_read(type, handle, &fd_attrs);
++	if (IS_ERR(*uobj)) {
++		ret = -EINVAL;
++		goto file;
++	}
++
++	/* verify ib_object is shareable */
++	if (!(*uobj)->refcnt) {
++		ret = -EINVAL;
++		goto uobj;
++	}
++
++	return 0;
++uobj:
++	uobj_put_read(*uobj);
++file:
++	fput(*filep);
++	return ret;
++}
++
++static void ib_uverbs_import_unlock(struct ib_uobject *uobj,
++				    struct file *filep)
++{
++	uobj_put_read(uobj);
++	fput(filep);
 +}
 +
  /*
   * Describe the input structs for write(). Some write methods have an input
   * only struct, most have an input and output. If the struct has an output then
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 02b57240176c..e42a9b5c38b2 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -1095,6 +1095,7 @@ static int ib_uverbs_open(struct inode *inode, struct file *filp)
+ 	mutex_init(&file->umap_lock);
+ 	INIT_LIST_HEAD(&file->umaps);
+ 
++	file->filp = filp;
+ 	filp->private_data = file;
+ 	list_add_tail(&file->list, &dev->uverbs_file_list);
+ 	mutex_unlock(&dev->lists_mutex);
 -- 
 2.20.1
 
