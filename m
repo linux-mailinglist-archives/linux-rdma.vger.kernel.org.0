@@ -2,122 +2,394 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BEB998C48
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 09:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6C198DDD
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 10:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbfHVHMs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 03:12:48 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:36766 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbfHVHMs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Aug 2019 03:12:48 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7M78pAi031486;
-        Thu, 22 Aug 2019 07:12:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=0NRxzX8BxNs4uWBHiIcfM60enfXRWDPox17XpmTwAlY=;
- b=hGvojV7U0jRzW56AnydHJk0PQFT88zIbpFmSFdQjhFmBsiCKyN93taZsdVvV9qS6SJhn
- i6sHr2pZsQnNTrDzqowzt0DOgrPkl75Qu95UDF08F1bbx0Nw1pnMlGrVxAKU3Pf7f35/
- Eifd4OM6REUYpawqnaV4ico+IhYcu9yoQDDLZK3fZdLt495h6JCdZU6YMlFeJhWIXfDh
- h8zBtt9Fw5cS1h/zWmRzW5FF0p6tIFy83WXTFTxGc2LFoyqD8wy9XlNrQFo6bqUS6Lw+
- kqPWaX2IxL2Bkq4MBAugyhjF2LMFyoA6NqsQxwmf8Jor6GlQXNDuHl7B/NeU6Y25Vpl1 5Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2ue9hpu56y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Aug 2019 07:12:32 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7M79FRi037955;
-        Thu, 22 Aug 2019 07:10:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2uh2q5gsj5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Aug 2019 07:10:31 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7M7ATHf006548;
-        Thu, 22 Aug 2019 07:10:30 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 22 Aug 2019 00:10:29 -0700
-Date:   Thu, 22 Aug 2019 10:10:23 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] siw: Fix potential NULL pointer in siw_connect().
-Message-ID: <20190822071023.GF3964@kadam>
-References: <20190819140257.19319-1-bmt@zurich.ibm.com>
- <30814d3ca3b06c83b31f9255f140fdf2115e83e5.camel@redhat.com>
- <20190821125645.GE3964@kadam>
- <adc716f5d2105a3cc7978873cd0f14503ae323d8.camel@redhat.com>
- <20190821141225.GB8653@ziepe.ca>
+        id S1726050AbfHVIg1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 04:36:27 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:55769 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731681AbfHVIg0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Aug 2019 04:36:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1566462985; x=1597998985;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=qPtrDoHvuXRi8D5RaEyuT3IUKGT89DX9QNed/DaIHJ0=;
+  b=PFm+DIrD0m5r2i9V3Ahz66fP/l/3I/o9FanR3t5fJ6Bi2SxamivdDgfh
+   wzU91Eev7KTRGcyngsT0nM8Gag43p+iF/NbeAGSMNT+ElxKK02ZVptX4E
+   BYfWr4kL4T+dqAjFVoCNh9PRvIobgjsbF0bdv+b7loDRz982VAGdVegMJ
+   A=;
+X-IronPort-AV: E=Sophos;i="5.64,416,1559520000"; 
+   d="scan'208";a="696396636"
+Received: from sea3-co-svc-lb6-vlan3.sea.amazon.com (HELO email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com) ([10.47.22.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 22 Aug 2019 08:35:38 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com (Postfix) with ESMTPS id 3F548A26F1;
+        Thu, 22 Aug 2019 08:35:38 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 22 Aug 2019 08:35:37 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.177) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 22 Aug 2019 08:35:31 +0000
+Subject: Re: [PATCH v7 rdma-next 2/7] RDMA/core: Create mmap database and
+ cookie helper functions
+To:     Michal Kalderon <michal.kalderon@marvell.com>
+CC:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
+        <dledford@redhat.com>, <bmt@zurich.ibm.com>, <sleybo@amazon.com>,
+        <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        Ariel Elior <ariel.elior@marvell.com>
+References: <20190820121847.25871-1-michal.kalderon@marvell.com>
+ <20190820121847.25871-3-michal.kalderon@marvell.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <3b297196-1ef6-c046-d0b2-c68648a50913@amazon.com>
+Date:   Thu, 22 Aug 2019 11:35:26 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190821141225.GB8653@ziepe.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908220078
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908220078
+In-Reply-To: <20190820121847.25871-3-michal.kalderon@marvell.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.177]
+X-ClientProxiedBy: EX13D02UWB002.ant.amazon.com (10.43.161.160) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 11:12:25AM -0300, Jason Gunthorpe wrote:
-> On Wed, Aug 21, 2019 at 09:39:50AM -0400, Doug Ledford wrote:
-> > On Wed, 2019-08-21 at 15:56 +0300, Dan Carpenter wrote:
-> > > On Tue, Aug 20, 2019 at 12:05:33PM -0400, Doug Ledford wrote:
-> > > > Please take a look (I pushed it out to my wip/dl-for-rc branch) so
-> > > > you
-> > > > can see what I mean about how to make both a simple subject line and
-> > > > a
-> > > > decent commit message.  Also, no final punctuation on the subject
-> > > > line,
-> > > > and try to keep the subject length <= 50 chars total.  If you have
-> > > > to go
-> > > > over to have a decent subject, then so be it, but we strive for that
-> > > > 50
-> > > > char limit to make a subject stay on one line when displayed using
-> > > > git
-> > > > log --oneline.
-> > > 
-> > > 50 is really small.
-> > 
-> > 50 is the vim syntax highlighting suggested limit.  You can go over,
-> > which is why I indicated it was a soft limit, but there you are.  It
-> > leaves room for the displayed hash length to grow as well.
-> 
-> I use 75 for all text in the commit message, as per
-> Documentation/process/submitting-patches.rst
-> 
+On 20/08/2019 15:18, Michal Kalderon wrote:
+> -/*
+> - * Each time we map IO memory into user space this keeps track of the mapping.
+> - * When the device is hot-unplugged we 'zap' the mmaps in user space to point
+> - * to the zero page and allow the hot unplug to proceed.
+> +/**
+> + * rdma_umap_priv_init() - Initialize the private data of a vma
+> + *
+> + * @vma: The vm area struct that needs private data
+> + * @entry: entry into the mmap_xa that needs to be linked with
+> + *       this vma
+> + *
+> + * Each time we map IO memory into user space this keeps track
+> + * of the mapping. When the device is hot-unplugged we 'zap' the
+> + * mmaps in user space to point to the zero page and allow the
+> + * hot unplug to proceed.
+>   *
+>   * This is necessary for cases like PCI physical hot unplug as the actual BAR
+>   * memory may vanish after this and access to it from userspace could MCE.
+>   *
+>   * RDMA drivers supporting disassociation must have their user space designed
+>   * to cope in some way with their IO pages going to the zero page.
+> + *
+> + * We extended the umap list usage to track all memory that was mapped by
+> + * user space and not only the IO memory. This will occur for drivers that use
+> + * the mmap_xa database and helper functions
+> + *
+> + * Return 0 on success or -ENOMEM if out of memory
+>   */
+> -void rdma_umap_priv_init(struct rdma_umap_priv *priv,
+> -			 struct vm_area_struct *vma)
+> +int rdma_umap_priv_init(struct vm_area_struct *vma,
+> +			struct rdma_user_mmap_entry *entry)
+>  {
+>  	struct ib_uverbs_file *ufile = vma->vm_file->private_data;
+> +	struct rdma_umap_priv *priv;
+> +
+> +	/* If the xa_mmap is used, private data will already be initialized.
+> +	 * this is required for the cases that rdma_user_mmap_io is called
+> +	 * from drivers that don't use the xa_mmap database yet
 
-My limit is 57 characters for the subject (because otherwise mutt
-introduces a newline).  I sometimes go over but I'm annoyed when forced
-to do that.
+Yet? I don't think all drivers are going to use it.
 
-72 characters for the commit message because that's my limit for emails.
+> +	 */
+> +	if (vma->vm_private_data)
+> +		return 0;
+> +
+> +	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+>  
+>  	priv->vma = vma;
+> +	priv->entry = entry;
+>  	vma->vm_private_data = priv;
+>  
+>  	mutex_lock(&ufile->umap_lock);
+>  	list_add(&priv->list, &ufile->umaps);
+>  	mutex_unlock(&ufile->umap_lock);
+> +
+> +	return 0;
+>  }
+>  EXPORT_SYMBOL(rdma_umap_priv_init);
+>  
+> +void rdma_user_mmap_entry_free(struct kref *kref)
+> +{
+> +	struct rdma_user_mmap_entry *entry =
+> +		container_of(kref, struct rdma_user_mmap_entry, ref);
+> +	unsigned long i, npages = (u32)DIV_ROUND_UP(entry->length, PAGE_SIZE);
+> +	struct ib_ucontext *ucontext = entry->ucontext;
+> +
+> +	/* need to erase all entries occupied... */
+> +	for (i = 0; i < npages; i++) {
+> +		xa_erase(&ucontext->mmap_xa, entry->mmap_page + i);
+> +
+> +		ibdev_dbg(ucontext->device,
+> +			  "mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx] npages[%#lx] removed\n",
+> +			  entry->obj, rdma_user_mmap_get_key(entry),
+> +			  entry->address, entry->length, npages);
+> +
+> +		if (ucontext->device->ops.mmap_free)
+> +			ucontext->device->ops.mmap_free(entry);
+> +	}
 
-> People using 'git log --oneline' should have terminals wider than 80
-> :)
-> 
-> The bigger question is if the first character after the subject tag
-> should be uppper case or lower case <hum>
+Should this loop be surrounded with a lock? What happens with concurrent insertions?
 
-I feel like more and more people are moving to upper case.  There are
-some people who insist on upper case and no one who insists on lower
-case so it's easier to just make everything upper case.
+> +	kfree(entry);
+> +}
+> +
+> +/**
+> + * rdma_user_mmap_entry_put() - drop reference to the mmap entry
+> + *
+> + * @ucontext: associated user context.
+> + * @entry: An entry in the mmap_xa.
 
-regards,
-dan carpenter
+Nit: sometimes a capital letter is used and sometimes not.
 
+> + *
+> + * This function is called when the mapping is closed or when
+> + * the driver is done with the entry for some other reason.
+> + * Should be called after rdma_user_mmap_entry_get was called
+> + * and entry is no longer needed. This function will erase the
+> + * entry and free it if it's refcnt reaches zero.
+
+"it's" -> "its".
+
+> + */
+> +void rdma_user_mmap_entry_put(struct ib_ucontext *ucontext,
+> +			      struct rdma_user_mmap_entry *entry)
+> +{
+> +	WARN_ON(!kref_read(&entry->ref));
+> +	kref_put(&entry->ref, rdma_user_mmap_entry_free);
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entry_put);
+> +
+> +/**
+> + * rdma_user_mmap_entry_remove() - Remove a key's entry from the mmap_xa
+> + *
+> + * @ucontext: associated user context.
+> + * @key: The key to be deleted
+> + *
+> + * This function will find if there is an entry matching the key and if so
+> + * decrease it's refcnt, which will in turn delete the entry if its refcount
+
+Same.
+
+> + * reaches zero.
+> + */
+> +void rdma_user_mmap_entry_remove(struct ib_ucontext *ucontext, u64 key)
+> +{
+> +	struct rdma_user_mmap_entry *entry;
+> +	u32 mmap_page;
+> +
+> +	if (key == RDMA_USER_MMAP_INVALID)
+> +		return;
+
+How could this happen?
+
+> +
+> +	mmap_page = key >> PAGE_SHIFT;
+> +	if (mmap_page > U32_MAX)
+> +		return;
+> +
+> +	entry = xa_load(&ucontext->mmap_xa, mmap_page);
+> +	if (!entry)
+> +		return;
+> +
+> +	rdma_user_mmap_entry_put(ucontext, entry);
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entry_remove);
+> +
+> +/**
+> + * rdma_user_mmap_entry_insert() - Allocate and insert an entry to the mmap_xa.
+> + *
+> + * @ucontext: associated user context.
+> + * @obj: opaque driver object that will be stored in the entry.
+> + * @address: The address that will be mmapped to the user
+> + * @length: Length of the address that will be mmapped
+> + * @mmap_flag: opaque driver flags related to the address (For
+> + *           example could be used for cachability)
+> + *
+> + * This function should be called by drivers that use the rdma_user_mmap
+> + * interface for handling user mmapped addresses. The database is handled in
+> + * the core and helper functions are provided to insert entries into the
+> + * database and extract entries when the user call mmap with the given key.
+> + * The function returns a unique key that should be provided to user, the user
+> + * will use the key to map the given address.
+> + *
+> + * Return: unique key or RDMA_USER_MMAP_INVALID if entry was not added.
+> + */
+> +u64 rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext, void *obj,
+> +				u64 address, u64 length, u8 mmap_flag)
+> +{
+> +	XA_STATE(xas, &ucontext->mmap_xa, 0);
+> +	struct rdma_user_mmap_entry *entry;
+> +	unsigned long index = 0, index_max;
+> +	u32 xa_first, xa_last, npages;
+> +	int err, i;
+> +	void *ent;
+> +
+> +	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+> +	if (!entry)
+> +		return RDMA_USER_MMAP_INVALID;
+> +
+> +	entry->obj = obj;
+> +	entry->address = address;
+> +	entry->length = length;
+> +	kref_init(&entry->ref);
+> +	entry->mmap_flag = mmap_flag;
+> +	entry->ucontext = ucontext;
+> +
+> +	xa_lock(&ucontext->mmap_xa);
+> +
+> +	/* We want to find an empty range */
+> +	npages = (u32)DIV_ROUND_UP(length, PAGE_SIZE);
+> +	do {
+> +		/* First find an empty index */
+> +		xas_find_marked(&xas, U32_MAX, XA_FREE_MARK);
+> +		if (xas.xa_node == XAS_RESTART)
+> +			goto err_unlock;
+> +
+> +		xa_first = xas.xa_index;
+> +
+> +		/* Is there enough room to have the range? */
+> +		if (check_add_overflow(xa_first, npages, &xa_last))
+> +			goto err_unlock;
+> +
+> +		/* Iterate over all present entries in the range. If a present
+> +		 * entry exists we will finish this with the largest index
+> +		 * occupied in the range which will serve as the start of the
+> +		 * new search
+> +		 */
+> +		index_max = xa_last;
+> +		xa_for_each_start(&ucontext->mmap_xa, index, ent, xa_first)
+> +			if (index < xa_last)
+> +				index_max = index;
+> +			else
+> +				break;
+> +		if (index_max == xa_last) /* range is free */
+> +			break;
+> +		/* o/w start again from largest index found in range */
+> +		xas_set(&xas, index_max);
+> +	} while (true);
+> +
+> +	for (i = xa_first; i < xa_last; i++) {
+> +		err = __xa_insert(&ucontext->mmap_xa, i, entry, GFP_KERNEL);
+> +		if (err)
+> +			goto err_undo;
+> +	}
+> +
+> +	entry->mmap_page = xa_first;
+> +	xa_unlock(&ucontext->mmap_xa);
+> +
+> +	ibdev_dbg(ucontext->device,
+> +		  "mmap: obj[0x%p] addr[%#llx], len[%#llx], key[%#llx] npages[%#x] inserted\n",
+> +		  entry->obj, entry->address, entry->length,
+> +		  rdma_user_mmap_get_key(entry), npages);
+> +
+> +	return rdma_user_mmap_get_key(entry);
+> +
+> +err_undo:
+> +	for (; i > xa_first; i--)
+> +		__xa_erase(&ucontext->mmap_xa, i - 1);
+
+Personal taste, but I find this clearer:
+	for (i--; i >= xa_first; i--)
+		__xa_erase(&ucontext->mmap_xa, i);
+
+> +
+> +err_unlock:
+> +	xa_unlock(&ucontext->mmap_xa);
+> +	kfree(entry);
+> +	return RDMA_USER_MMAP_INVALID;
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entry_insert);
+> +
+> +/**
+> + * rdma_user_mmap_entries_remove_free() - Free remaining entries
+> + * in mmap_xa.
+> + *
+> + * @ucontext: associated user context
+> + *
+> + * This is only called when the ucontext is destroyed and there
+> + * can be no concurrent query via mmap or allocate on the
+> + * xarray, thus we can be sure no other thread is using the
+> + * entry pointer. We also know that all the BAR pages have
+> + * either been zap'd or munmaped at this point. Normal pages are
+> + * refcounted and will be freed at the proper time.
+> + */
+> +void rdma_user_mmap_entries_remove_free(struct ib_ucontext *ucontext)
+> +{
+> +	struct rdma_user_mmap_entry *entry;
+> +	unsigned long mmap_page;
+> +
+> +	WARN_ON(!xa_empty(&ucontext->mmap_xa));
+> +	xa_for_each(&ucontext->mmap_xa, mmap_page, entry) {
+> +		ibdev_dbg(ucontext->device,
+> +			  "mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx] removed\n",
+> +			  entry->obj, rdma_user_mmap_get_key(entry),
+> +			  entry->address, entry->length);
+> +
+> +		/* override the refcnt to make sure entry is deleted */
+> +		kref_init(&entry->ref);
+> +		rdma_user_mmap_entry_put(ucontext, entry);
+> +	}
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entries_remove_free);
+> diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
+> index ccf4d069c25c..7166741834c8 100644
+> --- a/drivers/infiniband/core/rdma_core.c
+> +++ b/drivers/infiniband/core/rdma_core.c
+> @@ -817,6 +817,7 @@ static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
+>  	rdma_restrack_del(&ucontext->res);
+>  
+>  	ib_dev->ops.dealloc_ucontext(ucontext);
+> +	rdma_user_mmap_entries_remove_free(ucontext);
+
+Why did you switch the order again?
+
+>  	kfree(ucontext);
+>  
+>  	ufile->ucontext = NULL;
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index 391499008a22..b66c197a7079 100644
+> --- a/include/rdma/ib_verbs.h
+> +++ b/include/rdma/ib_verbs.h
+> @@ -1479,6 +1479,7 @@ struct ib_ucontext {
+>  	 * Implementation details of the RDMA core, don't use in drivers:
+>  	 */
+>  	struct rdma_restrack_entry res;
+> +	struct xarray mmap_xa;
+>  };
+>  
+>  struct ib_uobject {
+> @@ -2259,6 +2260,19 @@ struct iw_cm_conn_param;
+>  
+>  #define DECLARE_RDMA_OBJ_SIZE(ib_struct) size_t size_##ib_struct
+>  
+> +#define RDMA_USER_MMAP_FLAG_SHIFT 56
+> +#define RDMA_USER_MMAP_PAGE_MASK GENMASK(EFA_MMAP_FLAG_SHIFT - 1, 0)
+
+These are unused.
+
+> +#define RDMA_USER_MMAP_INVALID U64_MAX
+> +struct rdma_user_mmap_entry {
+> +	struct kref ref;
+> +	struct ib_ucontext *ucontext;
+> +	void *obj;
+> +	u64 address;
+> +	u64 length;
+> +	u32 mmap_page;
+> +	u8 mmap_flag;
+> +};
