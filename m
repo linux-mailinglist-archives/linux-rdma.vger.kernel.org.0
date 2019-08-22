@@ -2,86 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFD999160
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 12:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280F8992C9
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 14:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732378AbfHVKvC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 06:51:02 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:1420 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731964AbfHVKvC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Aug 2019 06:51:02 -0400
-Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x7MAoer0007835;
-        Thu, 22 Aug 2019 03:50:41 -0700
-Date:   Thu, 22 Aug 2019 16:20:39 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Doug Ledford <dledford@redhat.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Nirranjan Kirubaharan <nirranjan@chelsio.com>
-Subject: Re: Re: [PATCH for-rc] siw: fix for 'is_kva' flag issue in
- siw_tx_hdt()
-Message-ID: <20190822105037.GA18600@chelsio.com>
-References: <b2251973c16b336c4d48e8417ce50f0c55598a9b.camel@redhat.com>
- <20190819111338.9366-1-krishna2@chelsio.com>
- <OFB7456B6B.E1C4D049-ON0025845B.00533DDF-0025845B.00776B49@notes.na.collabserv.com>
- <OF1D1F6B77.321AEAB1-ON0025845D.004B601C-0025845D.004B6025@notes.na.collabserv.com>
+        id S2388175AbfHVMCO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 08:02:14 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:41888 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388173AbfHVMCO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Aug 2019 08:02:14 -0400
+Received: by mail-qt1-f193.google.com with SMTP id i4so7255744qtj.8
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2019 05:02:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SZYRiB5UNNsuh7siRqUTpPzIk+00t3Ho85yWWXDEnlk=;
+        b=ouliwZjnSQCXbUtIzBIH6NY7u8rYbUZjI4YVDeuNtBMPL6J9Tk6NuM3X7TIH7uRs/B
+         kWioMmnsP+5nzc56gkpzE1QSHj4I1u6KIjpPu5V4FF/SEzUXk91nYVf74PXXqPjrfDqC
+         rwwo5SSeXMydtUK7qdp6V98vx/WnBGlcj6OU2ufU7Ymqbcq84C1Is+xUket9q1G4dFkc
+         H5ZvdJKeY5SW6ziKJSfRNHWX1dUhsQA65P9v0S07F2wVf4z362O4G2KOiDfOjJIlMrLq
+         lPSGNqBZbd2ecuop2GvOtoo9L0nlBq1rDqsB1kn85sL+O5FC8J0ssjd3FTOsQe60Lr4p
+         B5Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SZYRiB5UNNsuh7siRqUTpPzIk+00t3Ho85yWWXDEnlk=;
+        b=sRRnR3YIemoQuOiKI+yA/w1PZya2CRMlY53waiynJcgI8ZhFBsT4Q1Z+cl5848gstd
+         xfS+urBdjMuMmEvaG5OClBcu7Ai4TvBcr3233XTg/T4TEWLeR61OhCFZpauBGKiHadp8
+         cwYoHo+XT5qafPUgw023mUsqRFdQQInjtOAWUxX3t/LG3j4L9O5z6cI8kloWKN72Sv6Z
+         9krQQMaQ4BrDo513jIrIdh213UDI2AIm2CLnPjRbEYMAnD3dPYBC/w9ymYDCyqGqbmyb
+         U6s6uBuf6loD4Xhrv4od+4vsMjGPOHfWJjzA/6PrQF3kheKVrEr0ALW9NtegOvw2Mlri
+         ByHg==
+X-Gm-Message-State: APjAAAVpxFZo1mqK5Dxw1VSrebdbWzQtBMERo2evviP7KaBU7JzdLTod
+        fTk/xir4Cj32PeUbI+uon2sGDA==
+X-Google-Smtp-Source: APXvYqyUeJQLcBFKgDxZMyIgVmkbCKS1JeTSzMgqG2k/c22I5gLq0TDkUw9oQPbnhkpAFXMBnHZImg==
+X-Received: by 2002:ac8:540d:: with SMTP id b13mr35623826qtq.288.1566475333260;
+        Thu, 22 Aug 2019 05:02:13 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id z7sm5886911qtu.47.2019.08.22.05.02.12
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 22 Aug 2019 05:02:12 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1i0ln9-0002BY-FJ; Thu, 22 Aug 2019 09:02:11 -0300
+Date:   Thu, 22 Aug 2019 09:02:11 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] siw: Fix potential NULL pointer in siw_connect().
+Message-ID: <20190822120211.GA8339@ziepe.ca>
+References: <20190819140257.19319-1-bmt@zurich.ibm.com>
+ <30814d3ca3b06c83b31f9255f140fdf2115e83e5.camel@redhat.com>
+ <20190821125645.GE3964@kadam>
+ <adc716f5d2105a3cc7978873cd0f14503ae323d8.camel@redhat.com>
+ <20190821141225.GB8653@ziepe.ca>
+ <20190822071023.GF3964@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OF1D1F6B77.321AEAB1-ON0025845D.004B601C-0025845D.004B6025@notes.na.collabserv.com>
-User-Agent: Mutt/1.9.3 (20180206.02d571c2)
+In-Reply-To: <20190822071023.GF3964@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wednesday, August 08/21/19, 2019 at 19:13:18 +0530, Bernard Metzler wrote:
-> -----"Doug Ledford" <dledford@redhat.com> wrote: -----
+On Thu, Aug 22, 2019 at 10:10:23AM +0300, Dan Carpenter wrote:
+
+> > People using 'git log --oneline' should have terminals wider than 80
+> > :)
+> > 
+> > The bigger question is if the first character after the subject tag
+> > should be uppper case or lower case <hum>
 > 
-> >To: "Bernard Metzler" <BMT@zurich.ibm.com>, "Krishnamraju Eraparaju"
-> ><krishna2@chelsio.com>
-> >From: "Doug Ledford" <dledford@redhat.com>
-> >Date: 08/20/2019 07:56PM
-> >Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
-> >nirranjan@chelsio.com
-> >Subject: [EXTERNAL] Re: [PATCH for-rc] siw: fix for 'is_kva' flag
-> >issue in siw_tx_hdt()
-> >
-> >On Mon, 2019-08-19 at 21:44 +0000, Bernard Metzler wrote:
-> >> Hi Krishna,
-> >> That is a good catch. I was not aware of the possibility of mixed
-> >> PBL and kernel buffer addresses in one SQE.
-> >> 
-> >> A correct fix must also handle the un-mapping of any kmap()'d
-> >> buffers. The current TX code expects all buffers be either kmap()'d
-> >or
-> >> all not kmap()'d. So the fix is a little more complex, if we must
-> >> handle mixed SGL's during un-mapping. I think I can provide it by
-> >> tomorrow. It's almost midnight ;)
-> >
-> >I'll wait for a proper fix.  Dropping this patch.  Thanks.
-> >
-> Thanks Doug!
-> 
-> I have a fix ready but still have to test it with iSER. 
-> Unfortunately I have a hard time to test iSER with siw, since
-> both iSCSI-TCP target and iSER want to bind to the same
-> TCP port. While this may be considered a bug in that code,
-> siw is the first RDMA provider to take notice (since using
-> kernel sockets and not offloaded, hitting a TCP port
-> already bound).
-Not sure if this will become a serious problem when a iSCSI target
-is configured to serve both iSCSI-TCP & iSER connections simultaniously.
-Because, offloaded iSER CM handles all the TCP SYN packets that were
-destined to iSCSI-TCP.
-> 
-> I sent the patch to Chelsio folks and hope for
-> the best. They know the trick to make it working.
-I have tested your patch, it's working fine.
-> 
-> Thanks
-> Bernard.
-> 
+> I feel like more and more people are moving to upper case.  There are
+> some people who insist on upper case and no one who insists on lower
+> case so it's easier to just make everything upper case.
+
+I've noticed Andrew lower cases everything going through his
+tree. I've always used upper case for no prarticular reason
+
+Jason
