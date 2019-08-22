@@ -2,170 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2B699317
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 14:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCF9993C7
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 14:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729716AbfHVMQd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 08:16:33 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57574 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728872AbfHVMQd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 22 Aug 2019 08:16:33 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7MC8dTe055113
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2019 08:16:32 -0400
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2uhtebsg28-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2019 08:16:31 -0400
-Received: from localhost
-        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
-        Thu, 22 Aug 2019 13:16:29 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 22 Aug 2019 13:16:26 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7MCGP3Y49676488
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Aug 2019 12:16:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B3C81AE055;
-        Thu, 22 Aug 2019 12:16:25 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8A37FAE053;
-        Thu, 22 Aug 2019 12:16:25 +0000 (GMT)
-Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 22 Aug 2019 12:16:25 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     krishna2@chelsio.com, dledford@redhat.com,
-        Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [PATCH] RDMA/siw: Enable SGL's with mixed memory types
-Date:   Thu, 22 Aug 2019 14:16:14 +0200
-X-Mailer: git-send-email 2.17.2
-X-TM-AS-GCONF: 00
-x-cbid: 19082212-0028-0000-0000-000003927BF1
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19082212-0029-0000-0000-00002454A6F5
-Message-Id: <20190822121614.21146-1-bmt@zurich.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-22_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=897 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908220132
+        id S2387696AbfHVMeD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 08:34:03 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:38217 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730203AbfHVMeD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Aug 2019 08:34:03 -0400
+Received: by mail-lj1-f193.google.com with SMTP id x3so5390020lji.5
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2019 05:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=aWwEGZ7IKPwlD1SyN53LweuoS+rG8j2WBRgPDxMagPA=;
+        b=Rbh3JsGIh2x+jDuVbneOEsdobwGn2xF3k9KTKgjnK8Dyd2ODu1sdAQZQ15vVyYnqdt
+         7E9K7FhpCx9S2Dr1Ddo93q8TQvnmC/kE524CSoK66UbjC0Keqf53qhQ3yEqx3HAqneCK
+         QJH+OsNLuiNr6NKxEeJtactPjxkq0IA/anzWTZbfxsdGDFNukm8hCNfpT4lameBjcg1P
+         vMEErESY7RDQugMc/b/MZ0+sk5n2uzgwjXg1V0nNdJsVb5O6VyZacEb0HGljYN7+OPri
+         sm6Rp5BE3EkVBy2/1k5KenPYcnLllMAdQCixAZH/6rT6ERxgPTfrELU8FhhN52TrBApt
+         4Cxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=aWwEGZ7IKPwlD1SyN53LweuoS+rG8j2WBRgPDxMagPA=;
+        b=a7/kdBtRH1qtPSvh86cHnmsiWi7iH5S/7frWk7bax2xUSL84C5iypYL/VVX/OobeB1
+         iGnb/DBapzpzIg0hQ9zHnHSqt+YGs1vlMpZOaLNZ52bODjza/sq/hOfP8U0Z07pISpGz
+         M302YGGXjr7wWvkPlAjVkdF99mFwo15Jitwo2rbqrggmIg/X4zUsT6x5zeAvckuubgQ3
+         VE0PCtgWR73aV3dMybTolxlLFN0R01OO7l0iXPbuuPaw8+PW0J0xEsPq46pkzfW8/L8K
+         ZZtbAZSLJncBbyS2/s3zqj+5Ojhv5XP9OL3YqNxxstkkXkfpCJP5+YwVEoFD92uB8EP9
+         zftw==
+X-Gm-Message-State: APjAAAU5UImig+SbYK9hMlPR3Jpb9jUKq7JPOf/1YR7HGB9UWFJdoC94
+        H4fzxq6aTPYZJuST+jLsfcrUXFmYeq05RggvxW4=
+X-Google-Smtp-Source: APXvYqz3MRqWqCJljuYvGs7Z39vR8szuBA98XmfHPUkBGUeOj4vI/x4jHKyZ57W6CcLrF9xDbGoqKi5bbRMPFZ+Cc3Y=
+X-Received: by 2002:a2e:9a44:: with SMTP id k4mr17910876ljj.96.1566477241520;
+ Thu, 22 Aug 2019 05:34:01 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:ab3:6a0f:0:0:0:0:0 with HTTP; Thu, 22 Aug 2019 05:34:01
+ -0700 (PDT)
+Reply-To: eku.lawfirm@gmail.com
+From:   "Law firm(Eku and Associates)" <ezeobodo1@gmail.com>
+Date:   Thu, 22 Aug 2019 12:34:01 +0000
+Message-ID: <CAN-_bTZ726ayFtAv4dpjhKOuZFqgxZg3rZFa8VV4nXz4ZvjT-Q@mail.gmail.com>
+Subject: MY $25,000,000.00 INVESTMENT PROPOSAL WITH YOU AND IN YOUR COUNTRY.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch enables the transmission of work requests with SGL's
-of mixed types, e.g. kernel buffers and PBL regions referenced
-by same work request. This enables iSER as a kernel client.
+--=20
+Dear,
+With due respect this is not spam or Scam mail, because I have
+contacted you before and there was no response from you,I apologise if
+the contents of this mail are contrary to your moral ethics, which I
+feel may be of great disturbance to your person, but please treat this
+with absolute confidentiality, believing that this email reaches you
+in good faith. My contacting you is not a mistake or a coincidence
+because God can use any person known or unknown to accomplish great
+things.
+I am a lawyer and I have an investment business proposal to offer you.
+It is not official but should be considered as legal and confidential
+business. I have a customer's deposit of $US25 million dollars ready
+to be moved for investment if you can partner with us. We are ready to
+offer you 10% of this total amount as your compensation for supporting
+the transaction to completion. If you are interested to help me please
+reply me with your full details as stated below:
+(1) Your full names:
+(2) Your address:
+(3) Your occupation:
+(4) Your mobile telephone number:
+(5) Your nationality:
+(6) Your present location:
+(7) Your age:
+So that I will provide you more details on what to do and what is
+required for successful completion.
+Note: DO NOT REPLY ME IF YOU ARE NOT INTERESTED AND WITHOUT THE ABOVE
+MENTIONED DETAILS
 
-Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-Tested-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
- drivers/infiniband/sw/siw/siw_qp_tx.c | 37 +++++++++++----------------
- 1 file changed, 15 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 43020d2040fc..42c63622c7bd 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -398,15 +398,13 @@ static int siw_0copy_tx(struct socket *s, struct page **page,
- 
- #define MAX_TRAILER (MPA_CRC_SIZE + 4)
- 
--static void siw_unmap_pages(struct page **pages, int hdr_len, int num_maps)
-+static void siw_unmap_pages(struct page **pp, unsigned long kmap_mask)
- {
--	if (hdr_len) {
--		++pages;
--		--num_maps;
--	}
--	while (num_maps-- > 0) {
--		kunmap(*pages);
--		pages++;
-+	while (kmap_mask) {
-+		if (kmap_mask & BIT(0))
-+			kunmap(*pp);
-+		pp++;
-+		kmap_mask >>= 1;
- 	}
- }
- 
-@@ -437,6 +435,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 	unsigned int data_len = c_tx->bytes_unsent, hdr_len = 0, trl_len = 0,
- 		     sge_off = c_tx->sge_off, sge_idx = c_tx->sge_idx,
- 		     pbl_idx = c_tx->pbl_idx;
-+	unsigned long kmap_mask = 0L;
- 
- 	if (c_tx->state == SIW_SEND_HDR) {
- 		if (c_tx->use_sendpage) {
-@@ -463,8 +462,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 
- 		if (!(tx_flags(wqe) & SIW_WQE_INLINE)) {
- 			mem = wqe->mem[sge_idx];
--			if (!mem->mem_obj)
--				is_kva = 1;
-+			is_kva = mem->mem_obj == NULL ? 1 : 0;
- 		} else {
- 			is_kva = 1;
- 		}
-@@ -500,12 +498,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 					p = siw_get_upage(mem->umem,
- 							  sge->laddr + sge_off);
- 				if (unlikely(!p)) {
--					if (hdr_len)
--						seg--;
--					if (!c_tx->use_sendpage && seg) {
--						siw_unmap_pages(page_array,
--								hdr_len, seg);
--					}
-+					siw_unmap_pages(page_array, kmap_mask);
- 					wqe->processed -= c_tx->bytes_unsent;
- 					rv = -EFAULT;
- 					goto done_crc;
-@@ -515,6 +508,10 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 				if (!c_tx->use_sendpage) {
- 					iov[seg].iov_base = kmap(p) + fp_off;
- 					iov[seg].iov_len = plen;
-+
-+					/* Remember for later kunmap() */
-+					kmap_mask |= BIT(seg);
-+
- 					if (do_crc)
- 						crypto_shash_update(
- 							c_tx->mpa_crc_hd,
-@@ -543,10 +540,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 
- 			if (++seg > (int)MAX_ARRAY) {
- 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
--				if (!is_kva && !c_tx->use_sendpage) {
--					siw_unmap_pages(page_array, hdr_len,
--							seg - 1);
--				}
-+				siw_unmap_pages(page_array, kmap_mask);
- 				wqe->processed -= c_tx->bytes_unsent;
- 				rv = -EMSGSIZE;
- 				goto done_crc;
-@@ -597,8 +591,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 	} else {
- 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
- 				    hdr_len + data_len + trl_len);
--		if (!is_kva)
--			siw_unmap_pages(page_array, hdr_len, seg);
-+		siw_unmap_pages(page_array, kmap_mask);
- 	}
- 	if (rv < (int)hdr_len) {
- 		/* Not even complete hdr pushed or negative rv */
--- 
-2.17.2
-
+Sinc=C3=A8rement v=C3=B4tre,
+Avocat Etienne Eku Esq.(Lawfirm)
+Procureur principal. De Cabinet d=E2=80=99avocats de l=E2=80=99Afrique de l=
+=E2=80=99ouest.
+Skype:westafricalawfirm
