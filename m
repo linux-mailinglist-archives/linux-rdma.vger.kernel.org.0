@@ -2,175 +2,202 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7D1997BB
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 17:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE118997C3
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 17:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387529AbfHVPHy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 11:07:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51130 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387481AbfHVPHy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 22 Aug 2019 11:07:54 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7MF2q7E027043
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2019 11:07:52 -0400
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2uhvbekcqq-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2019 11:07:51 -0400
-Received: from localhost
-        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
-        Thu, 22 Aug 2019 16:07:50 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 22 Aug 2019 16:07:47 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7MF7PFX37224946
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Aug 2019 15:07:25 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F17D4203F;
-        Thu, 22 Aug 2019 15:07:46 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0A86742042;
-        Thu, 22 Aug 2019 15:07:46 +0000 (GMT)
-Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 22 Aug 2019 15:07:45 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
+        id S1732611AbfHVPIz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 11:08:55 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:38505 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727874AbfHVPIy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Aug 2019 11:08:54 -0400
+Received: by mail-lf1-f68.google.com with SMTP id h28so4793332lfj.5
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2019 08:08:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=golem.network; s=google;
+        h=from:openpgp:autocrypt:to:subject:message-id:date:user-agent
+         :mime-version;
+        bh=h4hESacy91lGQ/ljk8WpkSVj0xmTpa94yxVLUv41XyQ=;
+        b=Q81h87dMfZT2Jdwoyw8eAA+0m+BxJl74j18nTbipq0ZIYcL2XPY9dVTPEq/B4s7QF1
+         H/OyXgqfGbPb34jY9hybJqS9MThdWXaTLtUVqYik1JvlVE9oiu1BuxGGk2JhAyxUjrmy
+         d2iqtJAZdm649a60hD/G/HRasqjPe+UR/D+BM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:openpgp:autocrypt:to:subject:message-id
+         :date:user-agent:mime-version;
+        bh=h4hESacy91lGQ/ljk8WpkSVj0xmTpa94yxVLUv41XyQ=;
+        b=DyZFGEHXP9g+NO9ZUMqZ2iNHUkv8v+I65ERXqQiMDht99Go9HXzT0RUVgZ4k+mfzlv
+         a3bgtPBrKYOvRFutf7TF1DSzFPwgVgsWX0zUm8U1o3JIW5zCLH12myEWvBL63V/I1sVl
+         WiN8QLyEPF8wsK9UpzDoubRg31AE+SSle7rYfxy3pTpuS6cVbjeIKDyow+kwh6BBVx3G
+         msH3gyfotgmi4yIsIckS/ZHGIuRDnsFsOyTz+Hzdxn8M5sIp9EcN37egFtaYdHDyTFiG
+         T79aUfF1wc1xKv5dyUTQCcaBIs1V1sftpgL/AIcJj8x4dCPeEA4vS+E3ROjyU1LBmMQA
+         hA9g==
+X-Gm-Message-State: APjAAAVtfA9FFVQEgn/G0vqyYIc9wPYIu1I6hB9ijC0UA507HZpzq+ny
+        2rSu7VGKHhg5Yrk7fpVjEIsp446/xrQ=
+X-Google-Smtp-Source: APXvYqwrScXA2CFNXC9ac70lWSez6zWptnWng2IYzc6pWndCHoDRBOLS2NOqgG7keqBlPsWoCuyRjA==
+X-Received: by 2002:ac2:55a9:: with SMTP id y9mr22918383lfg.28.1566486531594;
+        Thu, 22 Aug 2019 08:08:51 -0700 (PDT)
+Received: from [10.30.8.231] (5-226-70-4.static.ip.netia.com.pl. [5.226.70.4])
+        by smtp.gmail.com with ESMTPSA id y66sm4019504lje.61.2019.08.22.08.08.50
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Aug 2019 08:08:50 -0700 (PDT)
+From:   Marcin Mielniczuk <marcin@golem.network>
+Openpgp: preference=signencrypt
+Autocrypt: addr=marcin@golem.network; prefer-encrypt=mutual; keydata=
+ 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
 To:     linux-rdma@vger.kernel.org
-Cc:     krishna2@chelsio.com, dledford@redhat.com,
-        Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [PATCH] RDMA/siw: Fix SGL mapping issues
-Date:   Thu, 22 Aug 2019 17:07:41 +0200
-X-Mailer: git-send-email 2.17.2
-X-TM-AS-GCONF: 00
-x-cbid: 19082215-0028-0000-0000-000003928A0B
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19082215-0029-0000-0000-00002454B5CC
-Message-Id: <20190822150741.21871-1-bmt@zurich.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-22_10:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908220150
+Subject: Setting up siw devices
+Message-ID: <421f6635-e69c-623d-746a-df541c27f428@golem.network>
+Date:   Thu, 22 Aug 2019 17:08:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="zPm7yi6s8Xp8TH1wMwJcYubBaLH5x44XA"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-All user level and most in-kernel applications submit WQEs
-where the SG list entries are all of a single type.
-iSER in particular, however, will send us WQEs with mixed SG
-types: sge[0] = kernel buffer, sge[1] = PBL region.
-Check and set is_kva on each SG entry individually instead of
-assuming the first SGE type carries through to the last.
-This fixes iSER over siw.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--zPm7yi6s8Xp8TH1wMwJcYubBaLH5x44XA
+Content-Type: multipart/mixed; boundary="X84vvcmta4jba38Jezmvrzqe8YmqS0Iei";
+ protected-headers="v1"
+From: Marcin Mielniczuk <marcin@golem.network>
+To: linux-rdma@vger.kernel.org
+Message-ID: <421f6635-e69c-623d-746a-df541c27f428@golem.network>
+Subject: Setting up siw devices
 
-Fixes: b9be6f18cf9e ("rdma/siw: transmit path")
-Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-Tested-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
- drivers/infiniband/sw/siw/siw_qp_tx.c | 37 +++++++++++----------------
- 1 file changed, 15 insertions(+), 22 deletions(-)
+--X84vvcmta4jba38Jezmvrzqe8YmqS0Iei
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 43020d2040fc..42c63622c7bd 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -398,15 +398,13 @@ static int siw_0copy_tx(struct socket *s, struct page **page,
- 
- #define MAX_TRAILER (MPA_CRC_SIZE + 4)
- 
--static void siw_unmap_pages(struct page **pages, int hdr_len, int num_maps)
-+static void siw_unmap_pages(struct page **pp, unsigned long kmap_mask)
- {
--	if (hdr_len) {
--		++pages;
--		--num_maps;
--	}
--	while (num_maps-- > 0) {
--		kunmap(*pages);
--		pages++;
-+	while (kmap_mask) {
-+		if (kmap_mask & BIT(0))
-+			kunmap(*pp);
-+		pp++;
-+		kmap_mask >>= 1;
- 	}
- }
- 
-@@ -437,6 +435,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 	unsigned int data_len = c_tx->bytes_unsent, hdr_len = 0, trl_len = 0,
- 		     sge_off = c_tx->sge_off, sge_idx = c_tx->sge_idx,
- 		     pbl_idx = c_tx->pbl_idx;
-+	unsigned long kmap_mask = 0L;
- 
- 	if (c_tx->state == SIW_SEND_HDR) {
- 		if (c_tx->use_sendpage) {
-@@ -463,8 +462,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 
- 		if (!(tx_flags(wqe) & SIW_WQE_INLINE)) {
- 			mem = wqe->mem[sge_idx];
--			if (!mem->mem_obj)
--				is_kva = 1;
-+			is_kva = mem->mem_obj == NULL ? 1 : 0;
- 		} else {
- 			is_kva = 1;
- 		}
-@@ -500,12 +498,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 					p = siw_get_upage(mem->umem,
- 							  sge->laddr + sge_off);
- 				if (unlikely(!p)) {
--					if (hdr_len)
--						seg--;
--					if (!c_tx->use_sendpage && seg) {
--						siw_unmap_pages(page_array,
--								hdr_len, seg);
--					}
-+					siw_unmap_pages(page_array, kmap_mask);
- 					wqe->processed -= c_tx->bytes_unsent;
- 					rv = -EFAULT;
- 					goto done_crc;
-@@ -515,6 +508,10 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 				if (!c_tx->use_sendpage) {
- 					iov[seg].iov_base = kmap(p) + fp_off;
- 					iov[seg].iov_len = plen;
-+
-+					/* Remember for later kunmap() */
-+					kmap_mask |= BIT(seg);
-+
- 					if (do_crc)
- 						crypto_shash_update(
- 							c_tx->mpa_crc_hd,
-@@ -543,10 +540,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 
- 			if (++seg > (int)MAX_ARRAY) {
- 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
--				if (!is_kva && !c_tx->use_sendpage) {
--					siw_unmap_pages(page_array, hdr_len,
--							seg - 1);
--				}
-+				siw_unmap_pages(page_array, kmap_mask);
- 				wqe->processed -= c_tx->bytes_unsent;
- 				rv = -EMSGSIZE;
- 				goto done_crc;
-@@ -597,8 +591,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 	} else {
- 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
- 				    hdr_len + data_len + trl_len);
--		if (!is_kva)
--			siw_unmap_pages(page_array, hdr_len, seg);
-+		siw_unmap_pages(page_array, kmap_mask);
- 	}
- 	if (rv < (int)hdr_len) {
- 		/* Not even complete hdr pushed or negative rv */
--- 
-2.17.2
+Hi,
 
+I'm trying to test the recently merged siw module.
+I'm running kernel 5.3-rc5 (taken from the Ubuntu mainline-kernel
+repository [1]) on Ubuntu 18.04 (bionic).
+I also manually installed rdma-core 25.0 from tarball, using the
+included Debian packaging. I installed all the packages but ibacm.
+
+After booting the new kernel I manually loaded the kernel module by
+
+=C2=A0=C2=A0=C2=A0=C2=A0 modprobe siw
+=C2=A0=C2=A0=C2=A0=C2=A0 modprobe rdma_ucm
+
+Then ibv_devinfo shows: "No IB devices found".
+dmesg only shows:
+=C2=A0=C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 29.856751] SoftiWARP attached
+
+According to this tutorial, [2] it should be enough to just load the siw
+module. (unlike RXE, where one needs to use rxe_cfg to set up the
+interface)
+Is this a bug in siw or just a configuration issue on my side?
+
+Thanks,
+Marcin
+
+[1] https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.3-rc5/
+[2] https://budevg.github.io/posts/tutorials/2017/04/29/rdma-101-1.html
+
+
+--X84vvcmta4jba38Jezmvrzqe8YmqS0Iei--
+
+--zPm7yi6s8Xp8TH1wMwJcYubBaLH5x44XA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEUs2I3Xxy/OFAqHUBLPDOZmYLjMkFAl1esAIACgkQLPDOZmYL
+jMlZxhAAnhFY0yAqJUE0i+Kd91Vf8JnQLXf+c3nPMjNSo5bVYDkT1Wd19UwcUWXi
+8T4rotgQls41OCDocx2jLWWFfbnS4fbBJ1o8hQs06aTZbVXGrL0c0Tpt1yX5Yq3v
+EXt8bZIRg8ebdTH5axRiVLFsPEWMeMsCCh8w7p/tQwJClLnS2XnVWc76MCO0oZnf
+F21IaM/gbdqm7K/NsGTmMh1vWWTDdF7LVXEBaatJ92ZGBhnXeYlSnaSjgwk1qg2F
+u+rjp4Q7qpCqBSLCBfiH2D8y7wBPE+U6lTAWJvR6oltC7d+A2fpWuiMoJh8Lkk4f
+P3hquykQTNDZwy6WGBWPH+P3/59d8EZdfY50UFCBc52bUceKLe6WMlNUGGzGqEeQ
+VbzCxYNa5VT8MXnFfPuyl72qbK9EvgpnkUQeJvxfZL+tinHIksj6KZG4XbGGeH1W
+C0hwGH2mGOf/LnTZvrsSNaq+UfuVNvGn1MZcBOW5cZNVUQYpGvkeBuvdD1q3BmSv
+NNaHUjnjP37ivDKuweN08sFCwmT7xiUdkbC/ltMGq9+uOHLVU9h1YPhch7qRxSXv
+H1triy6NM4Xnu3JElPaXFrb+W6NSGEvFnV80cQ0ZcEAiPPoX0RkCzxoQm4VdfzGy
+8LC+VX7uThYACa90NNRkf54WW3WLuclXbAbL8Q15mUY8A5GhZZw=
+=ufPK
+-----END PGP SIGNATURE-----
+
+--zPm7yi6s8Xp8TH1wMwJcYubBaLH5x44XA--
