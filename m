@@ -2,73 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2979985E
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 17:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DC19986B
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 17:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729829AbfHVPnq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 11:43:46 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:64660 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbfHVPnq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Aug 2019 11:43:46 -0400
-Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x7MFhPo8009808;
-        Thu, 22 Aug 2019 08:43:26 -0700
-Date:   Thu, 22 Aug 2019 21:13:25 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Marcin Mielniczuk <marcin@golem.network>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: Setting up siw devices
-Message-ID: <20190822154323.GA19899@chelsio.com>
-References: <421f6635-e69c-623d-746a-df541c27f428@golem.network>
+        id S1728125AbfHVPpG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 11:45:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732460AbfHVPpG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 22 Aug 2019 11:45:06 -0400
+Received: from localhost (wsip-184-188-36-2.sd.sd.cox.net [184.188.36.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 178EF23400;
+        Thu, 22 Aug 2019 15:45:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566488705;
+        bh=0lsRsK+iB9uzsfVYAueEgtqb2iXaNyfPtL5bw0ygs40=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jmmQ9bcX0eF5kRcWdcR0w17hzS1aGLtTqiFDJSzScNVoOPqPn+XgV4IhOAChAZ6aW
+         orJUyc9Gwd72N+oBqtCUfkSYgSkZDHPHGhWOdprTfS+tpfGPTxCWkouPisqwRj2VSH
+         AcWCwxDe6i27f0d76s82ZR4G90HHsR3IxPc1Emj8=
+Date:   Thu, 22 Aug 2019 18:45:04 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Mark Bloch <markb@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next 0/3] RDMA RX RoCE Steering Support
+Message-ID: <20190822154504.GF29433@mtr-leonro.mtl.com>
+References: <20190819113626.20284-1-leon@kernel.org>
+ <6e099d052f1803e74b5731fe3da2d9109533734d.camel@redhat.com>
+ <20190821140204.GG4459@mtr-leonro.mtl.com>
+ <c7caa8eece02f3d15a0928663e9f64f99572f3ab.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <421f6635-e69c-623d-746a-df541c27f428@golem.network>
-User-Agent: Mutt/1.9.3 (20180206.02d571c2)
+In-Reply-To: <c7caa8eece02f3d15a0928663e9f64f99572f3ab.camel@redhat.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thursday, August 08/22/19, 2019 at 17:08:49 +0200, Marcin Mielniczuk wrote:
-> Hi,
-> 
-> I'm trying to test the recently merged siw module.
-> I'm running kernel 5.3-rc5 (taken from the Ubuntu mainline-kernel
-> repository [1]) on Ubuntu 18.04 (bionic).
-> I also manually installed rdma-core 25.0 from tarball, using the
-> included Debian packaging. I installed all the packages but ibacm.
-> 
-> After booting the new kernel I manually loaded the kernel module by
-> 
->      modprobe siw
->      modprobe rdma_ucm
-> 
-> Then ibv_devinfo shows: "No IB devices found".
-> dmesg only shows:
->      [   29.856751] SoftiWARP attached
-> 
-> According to this tutorial, [2] it should be enough to just load the siw
-> module. (unlike RXE, where one needs to use rxe_cfg to set up the
-> interface)
-> Is this a bug in siw or just a configuration issue on my side?
+On Thu, Aug 22, 2019 at 11:29:02AM -0400, Doug Ledford wrote:
+> On Wed, 2019-08-21 at 17:02 +0300, Leon Romanovsky wrote:
+> > On Tue, Aug 20, 2019 at 01:54:59PM -0400, Doug Ledford wrote:
+> > > On Mon, 2019-08-19 at 14:36 +0300, Leon Romanovsky wrote:
+> > > > From: Leon Romanovsky <leonro@mellanox.com>
+> > > >
+> > > > Hi,
+> > > >
+> > > > This series from Mark extends mlx5 with RDMA_RX RoCE flow steering
+> > > > support
+> > > > for DEVX and QP objects.
+> > > >
+> > > > Thanks
+> > > >
+> > > > Mark Zhang (3):
+> > > >   net/mlx5: Add per-namespace flow table default miss action
+> > > > support
+> > > >   net/mlx5: Create bypass and loopback flow steering namespaces
+> > > > for
+> > > > RDMA
+> > > >     RX
+> > > >   RDMA/mlx5: RDMA_RX flow type support for user applications
+> > >
+> > > I have no objection to this series.
+> >
+> > Thanks, first two patches were applied to mlx5-next
+> >
+> > e6806e9a63a7 net/mlx5: Create bypass and loopback flow steering
+> > namespaces for RDMA RX
+> > f66ad830b114 net/mlx5: Add per-namespace flow table default miss
+> > action support
+>
+> mlx5-next merged into for-next, final patch applied, thanks.
 
-Have you done "rdma link"?
-
-rdma link add <NAME> type siw netdev <NETDEV>
-
-http://man7.org/linux/man-pages/man8/rdma-link.8.html
-
-
-> 
-> Thanks,
-> Marcin
-> 
-> [1] https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.3-rc5/
-> [2] https://budevg.github.io/posts/tutorials/2017/04/29/rdma-101-1.html
-> 
-
+Thanks
+>
+> --
+> Doug Ledford <dledford@redhat.com>
+>     GPG KeyID: B826A3330E572FDD
+>     Fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
 
