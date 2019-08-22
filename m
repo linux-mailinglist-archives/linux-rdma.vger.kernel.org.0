@@ -2,149 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F0C99FFF
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 21:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111669A0DB
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 22:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732576AbfHVT00 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 15:26:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42524 "EHLO mail.kernel.org"
+        id S1733250AbfHVUKN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 22 Aug 2019 16:10:13 -0400
+Received: from mga14.intel.com ([192.55.52.115]:13134 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726693AbfHVT00 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 22 Aug 2019 15:26:26 -0400
-Received: from localhost (unknown [12.235.16.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC6A62082F;
-        Thu, 22 Aug 2019 19:26:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1566501984;
-        bh=Oc9lOM7DYCfv2OME31BC1dhYW8+BXtLSlitG46eL8Ss=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s6T4vCD8WDHCfmS4ydQaYgR0si5tFK/Xmk1bNQV2pdwTXpYb8Imr7FiqKbmyPNdC9
-         7Tj60ud1k9Nt+VatmjoFj9sVcp65H+7BIkkdLY3/TLnZGrTGvjIIEMEWOAMPJpri0V
-         LHz/JA68+QQ25kikfVoa6WyHLTlEXyP4tXWdbZFo=
-Date:   Thu, 22 Aug 2019 22:26:23 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org,
-        jgg@ziepe.ca, geert@linux-m68k.org
-Subject: Re: [PATCH v3] RDMA/siw: Fix 64/32bit pointer inconsistency
-Message-ID: <20190822192623.GR29433@mtr-leonro.mtl.com>
-References: <20190822173738.26817-1-bmt@zurich.ibm.com>
- <20190822184147.GO29433@mtr-leonro.mtl.com>
- <0f280f83ded4ec624ab897f8a83b4ab1565f35cd.camel@redhat.com>
+        id S1733269AbfHVUKN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 22 Aug 2019 16:10:13 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Aug 2019 13:10:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,417,1559545200"; 
+   d="scan'208";a="378637720"
+Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
+  by fmsmga005.fm.intel.com with ESMTP; 22 Aug 2019 13:10:12 -0700
+Received: from crsmsx104.amr.corp.intel.com (172.18.63.32) by
+ FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 22 Aug 2019 13:10:12 -0700
+Received: from crsmsx102.amr.corp.intel.com ([169.254.2.72]) by
+ CRSMSX104.amr.corp.intel.com ([169.254.6.74]) with mapi id 14.03.0439.000;
+ Thu, 22 Aug 2019 14:10:10 -0600
+From:   "Weiny, Ira" <ira.weiny@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     Yuval Shaia <yuval.shaia@oracle.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Moni Shoua <monis@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        "Mark Zhang" <markz@mellanox.com>,
+        "swise@opengridcomputing.com" <swise@opengridcomputing.com>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        Mark Bloch <markb@mellanox.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Israel Rukshin <israelr@mellanox.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "Denis Drozdov" <denisd@mellanox.com>,
+        Yuval Avnery <yuvalav@mellanox.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        "will@kernel.org" <will@kernel.org>,
+        Erez Alfasi <ereza@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Shamir Rabinovitch <srabinov7@gmail.com>
+Subject: RE: [PATCH v1 00/24] Shared PD and MR
+Thread-Topic: [PATCH v1 00/24] Shared PD and MR
+Thread-Index: AQHVWCvZmDSd66uZEUuzBhvtgWBiJKcGMbcAgAENL4CAABWyAIAAdp+A///NYNA=
+Date:   Thu, 22 Aug 2019 20:10:09 +0000
+Message-ID: <2807E5FD2F6FDA4886F6618EAC48510E898ADD18@CRSMSX102.amr.corp.intel.com>
+References: <20190821142125.5706-1-yuval.shaia@oracle.com>
+ <20190821233736.GG5965@iweiny-DESK2.sc.intel.com>
+ <20190822084102.GA2898@lap1>
+ <20190822165841.GA17588@iweiny-DESK2.sc.intel.com>
+ <20190822170309.GC8325@mellanox.com>
+In-Reply-To: <20190822170309.GC8325@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMTZmNmU5YTItYjg1OC00ZGE3LTkwZmEtNzU1NjhiMTFmMDJmIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiZnJzMVZ4QzlTeEsyeXlFMXY3dW5EK0xYM0wyYURId0hqNWU2YmE4SmhvcWg4Wk9cL2tET2pod2ZcL0Z0QWhxdGtxIn0=
+x-ctpclassification: CTP_NT
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [172.18.205.10]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f280f83ded4ec624ab897f8a83b4ab1565f35cd.camel@redhat.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 22, 2019 at 03:08:38PM -0400, Doug Ledford wrote:
-> On Thu, 2019-08-22 at 21:41 +0300, Leon Romanovsky wrote:
-> > On Thu, Aug 22, 2019 at 07:37:38PM +0200, Bernard Metzler wrote:
-> > > Fixes improper casting between addresses and unsigned types.
-> > > Changes siw_pbl_get_buffer() function to return appropriate
-> > > dma_addr_t, and not u64.
-> > >
-> > > Also fixes debug prints. Now any potentially kernel private
-> > > pointers are printed formatted as '%pK', to allow keeping that
-> > > information secret.
-> > >
-> > > Fixes: d941bfe500be ("RDMA/siw: Change CQ flags from 64->32 bits")
-> > > Fixes: b0fff7317bb4 ("rdma/siw: completion queue methods")
-> > > Fixes: 8b6a361b8c48 ("rdma/siw: receive path")
-> > > Fixes: b9be6f18cf9e ("rdma/siw: transmit path")
-> > > Fixes: f29dd55b0236 ("rdma/siw: queue pair methods")
-> > > Fixes: 2251334dcac9 ("rdma/siw: application buffer management")
-> > > Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-> > > Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
-> > > Fixes: a531975279f3 ("rdma/siw: main include file")
-> > >
-> > > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > Reported-by: Jason Gunthorpe <jgg@ziepe.ca>
-> > > Reported-by: Leon Romanovsky <leon@kernel.org>
-> > > Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
-> > > ---
-> > >  drivers/infiniband/sw/siw/siw.h       |  8 +--
-> > >  drivers/infiniband/sw/siw/siw_cm.c    | 74 ++++++++++++----------
-> > > -----
-> > >  drivers/infiniband/sw/siw/siw_cq.c    |  5 +-
-> > >  drivers/infiniband/sw/siw/siw_mem.c   | 14 ++---
-> > >  drivers/infiniband/sw/siw/siw_mem.h   |  2 +-
-> > >  drivers/infiniband/sw/siw/siw_qp.c    |  2 +-
-> > >  drivers/infiniband/sw/siw/siw_qp_rx.c | 26 +++++-----
-> > >  drivers/infiniband/sw/siw/siw_qp_tx.c | 43 ++++++++--------
-> > >  drivers/infiniband/sw/siw/siw_verbs.c | 40 +++++++--------
-> > >  9 files changed, 106 insertions(+), 108 deletions(-)
-> > >
-> > > diff --git a/drivers/infiniband/sw/siw/siw.h
-> > > b/drivers/infiniband/sw/siw/siw.h
-> > > index 77b1aabf6ff3..dba4535494ab 100644
-> > > --- a/drivers/infiniband/sw/siw/siw.h
-> > > +++ b/drivers/infiniband/sw/siw/siw.h
-> > > @@ -138,9 +138,9 @@ struct siw_umem {
-> > >  };
-> > >
-> > >  struct siw_pble {
-> > > -	u64 addr; /* Address of assigned user buffer */
-> > > -	u64 size; /* Size of this entry */
-> > > -	u64 pbl_off; /* Total offset from start of PBL */
-> > > +	dma_addr_t addr; /* Address of assigned buffer */
-> > > +	unsigned int size; /* Size of this entry */
-> > > +	unsigned long pbl_off; /* Total offset from start of PBL */
-> > >  };
-> > >
-> > >  struct siw_pbl {
-> > > @@ -734,7 +734,7 @@ static inline void siw_crc_skb(struct
-> > > siw_rx_stream *srx, unsigned int len)
-> > >  		  "MEM[0x%08x] %s: " fmt, mem->stag, __func__,
-> > > ##__VA_ARGS__)
-> > >
-> > >  #define siw_dbg_cep(cep, fmt,
-> > > ...)                                             \
-> > > -	ibdev_dbg(&cep->sdev->base_dev, "CEP[0x%p] %s: "
-> > > fmt,                  \
-> > > +	ibdev_dbg(&cep->sdev->base_dev, "CEP[0x%pK] %s: "
-> > > fmt,                  \
-> > >  		  cep, __func__, ##__VA_ARGS__)
-> > >
-> > >  void siw_cq_flush(struct siw_cq *cq);
-> > > diff --git a/drivers/infiniband/sw/siw/siw_cm.c
-> > > b/drivers/infiniband/sw/siw/siw_cm.c
-> > > index 9ce8a1b925d2..ae7ea3ad7224 100644
-> > > --- a/drivers/infiniband/sw/siw/siw_cm.c
-> > > +++ b/drivers/infiniband/sw/siw/siw_cm.c
-> > > @@ -355,8 +355,8 @@ static int siw_cm_upcall(struct siw_cep *cep,
-> > > enum iw_cm_event_type reason,
-> > >  		getname_local(cep->sock, &event.local_addr);
-> > >  		getname_peer(cep->sock, &event.remote_addr);
-> > >  	}
-> > > -	siw_dbg_cep(cep, "[QP %u]: id 0x%p, reason=%d, status=%d\n",
-> > > -		    cep->qp ? qp_id(cep->qp) : -1, id, reason, status);
-> > > +	siw_dbg_cep(cep, "[QP %u]: reason=%d, status=%d\n",
-> > > +		    cep->qp ? qp_id(cep->qp) : -1, reason, status);
-> >                                              ^^^^
-> > There is a chance that such construction (attempt to print -1 with %u)
-> > will generate some sort of warning.
+> On Thu, Aug 22, 2019 at 09:58:42AM -0700, Ira Weiny wrote:
+> 
+> > Add to your list "how does destruction of a MR in 1 process get
+> > communicated to the other?"  Does the 2nd process just get failed WR's?
+> 
+> IHMO a object that has been shared can no longer be asynchronously destroyed.
+> That is the whole point. A lkey/rkey # alone is inherently unsafe without also
+> holding a refcount on the MR.
+> 
+> > I have some of the same concerns as Doug WRT memory sharing.  FWIW I'm
+> > not sure that what SCM_RIGHTS is doing is safe or correct.
 > >
-> > Thanks
->
-> I didn't see any warnings when I built it.  And %u->-1 would be the same
-> error on 64bit or 32bit, so I think we're safe here.
+> > For that work I'm really starting to think SCM_RIGHTS transfers should
+> > be blocked.
+> 
+> That isn't possible, SCM_RIGHTS is just some special case, fork(), exec(), etc all
+> cause the same situation. Any solution that blocks those is a total non-starter.
 
-I tried -Wextra now with gcc version 9.1.1 and such code didn't produce
-any warnings, so you are right, it is safe.
+Right, except in the case of fork(), exec() all of the file system references which may be pinned also get copied.  With SCM_RIGHTS they may not...  And my concern here is, if I understand this mechanism, it would introduce another avenue where the file pin is shared _without_ the file lease (or with a potentially zombie'ed lease).[1]
 
->
-> Thanks Bernard, it's in my wip/dl-for-rc branch to get 0day testing.
->
-> --
-> Doug Ledford <dledford@redhat.com>
->     GPG KeyID: B826A3330E572FDD
->     Fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+[1] https://lkml.org/lkml/2019/8/16/994
 
+> 
+> > It just seems wrong that Process B gets references to Process A's
+> > mm_struct and holds the memory Process A allocated.
+> 
+> Except for ODP, a MR doesn't reference the mm_struct. It references the pages.
+> It is not unlike a memfd.
 
+I'm thinking of the owner_mm...  It is not like it is holding the entire process address space I know that.  But it is holding onto memory which Process A allocated.
+
+Ira
+
+> 
+> Jason
