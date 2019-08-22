@@ -2,118 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 111669A0DB
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 22:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809449A0F9
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 22:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733250AbfHVUKN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 22 Aug 2019 16:10:13 -0400
-Received: from mga14.intel.com ([192.55.52.115]:13134 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733269AbfHVUKN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 22 Aug 2019 16:10:13 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Aug 2019 13:10:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,417,1559545200"; 
-   d="scan'208";a="378637720"
-Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
-  by fmsmga005.fm.intel.com with ESMTP; 22 Aug 2019 13:10:12 -0700
-Received: from crsmsx104.amr.corp.intel.com (172.18.63.32) by
- FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 22 Aug 2019 13:10:12 -0700
-Received: from crsmsx102.amr.corp.intel.com ([169.254.2.72]) by
- CRSMSX104.amr.corp.intel.com ([169.254.6.74]) with mapi id 14.03.0439.000;
- Thu, 22 Aug 2019 14:10:10 -0600
-From:   "Weiny, Ira" <ira.weiny@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     Yuval Shaia <yuval.shaia@oracle.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Moni Shoua <monis@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
-        "Mark Zhang" <markz@mellanox.com>,
-        "swise@opengridcomputing.com" <swise@opengridcomputing.com>,
-        "Berg, Johannes" <johannes.berg@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        Mark Bloch <markb@mellanox.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Israel Rukshin <israelr@mellanox.com>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        "Denis Drozdov" <denisd@mellanox.com>,
-        Yuval Avnery <yuvalav@mellanox.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
-        "will@kernel.org" <will@kernel.org>,
-        Erez Alfasi <ereza@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Shamir Rabinovitch <srabinov7@gmail.com>
-Subject: RE: [PATCH v1 00/24] Shared PD and MR
-Thread-Topic: [PATCH v1 00/24] Shared PD and MR
-Thread-Index: AQHVWCvZmDSd66uZEUuzBhvtgWBiJKcGMbcAgAENL4CAABWyAIAAdp+A///NYNA=
-Date:   Thu, 22 Aug 2019 20:10:09 +0000
-Message-ID: <2807E5FD2F6FDA4886F6618EAC48510E898ADD18@CRSMSX102.amr.corp.intel.com>
-References: <20190821142125.5706-1-yuval.shaia@oracle.com>
- <20190821233736.GG5965@iweiny-DESK2.sc.intel.com>
- <20190822084102.GA2898@lap1>
- <20190822165841.GA17588@iweiny-DESK2.sc.intel.com>
- <20190822170309.GC8325@mellanox.com>
-In-Reply-To: <20190822170309.GC8325@mellanox.com>
+        id S2390310AbfHVUSa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 16:18:30 -0400
+Received: from mail-eopbgr800075.outbound.protection.outlook.com ([40.107.80.75]:26160
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727310AbfHVUSa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 22 Aug 2019 16:18:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aSjEGPjdYyDEGC9etBDda3nNZtomvucHIVSO4QS4MFHdpuD2eep/ZoZZxDVmiYhTYO/WhhJYqr0o/NPX1k3PiwVtRZpv2vgZQkMWB84gRuib3S5wP99C11dMRXTkQNLuPX2s6YAq8/0L/f/soT1YKjMuFzu2fGVkRHG+hyKBu/6YQHjXJUMFz9A6Uk368ZUbtqXKadFOVjL5TPsK8cfKB490k0rIH3ODqOiy85DKnDS5A8Suiz5Gcg4abkFuYaG+lEscn4ozjFTMKae9llnx6f/yctci/NYlcjzBxFE7eJIveV/zTVpAqBPLoWDlXtEkNfzKSojH5RoOvUIWUi4P4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0h4UNhgVaQZJidbdlcZfmWlbKr/6Rur3XHfXcyoBYcg=;
+ b=VsVQP9BbZaNY/7AcG6YlYyuHC/ADXV0oyRHwHcayadhJl11idzOaUFOMgt+ke/76h2vW+t0tnFR3pO3QcSco4xRw8gBBZEuwuCi/e+nM+7aMAmtccLtIEMQKaCeNRLGOji1y/lO9CRntU/p/KBJAkNTlAmSDKSJnpKTuL37FmA/3unv8KsnzR+DQZU49slwiFyfcpbt2NniYsdfVtJjPacGiXXSrHunOp0HDF+HeKTUAA3+QaCfXSaJKn1WR+YYecG8yI+eWYgJOCxnjRdC1SptgDoIAdDGPdKvmImVQcM0EvPlexiytAZaeIxgvrapLmVykrI/yresTaUlMz/SLJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=netapp.com; dmarc=pass action=none header.from=netapp.com;
+ dkim=pass header.d=netapp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=netapp.onmicrosoft.com; s=selector2-netapp-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0h4UNhgVaQZJidbdlcZfmWlbKr/6Rur3XHfXcyoBYcg=;
+ b=ttYK2kLZJthGIbK5pRGlRgO2Pw8EqKuWHpGPGSiZPKODvF8lqwcL8SZpKqL41zj1CJsqKUGpJ7/D2Y4ugmUi7RDHu8Fxmk9P8+GbuldcztoPqj6ii6swcJgkMZU7vvJvsImYDrQBVYPxGrFBGmfAvQEQRIswaSuJxtSsJaDO2Qo=
+Received: from CY4PR06MB3479.namprd06.prod.outlook.com (10.175.117.23) by
+ CY4PR06MB2648.namprd06.prod.outlook.com (10.173.39.16) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2178.16; Thu, 22 Aug 2019 20:18:26 +0000
+Received: from CY4PR06MB3479.namprd06.prod.outlook.com
+ ([fe80::b0fc:fa55:aefa:2df2]) by CY4PR06MB3479.namprd06.prod.outlook.com
+ ([fe80::b0fc:fa55:aefa:2df2%7]) with mapi id 15.20.2178.020; Thu, 22 Aug 2019
+ 20:18:26 +0000
+From:   "Schumaker, Anna" <Anna.Schumaker@netapp.com>
+To:     "chuck.lever@oracle.com" <chuck.lever@oracle.com>
+CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v2 00/21] NFS/RDMA client-side for-5.4
+Thread-Topic: [PATCH v2 00/21] NFS/RDMA client-side for-5.4
+Thread-Index: AQHVVt55iitIcm1Cv0Cfk2tYgEa26qcHn8IA
+Date:   Thu, 22 Aug 2019 20:18:25 +0000
+Message-ID: <13c0cc293fa62406161aa3cc3f1afcb2d1a6557a.camel@netapp.com>
+References: <156625401091.8161.14744201497689200191.stgit@seurat29.1015granger.net>
+In-Reply-To: <156625401091.8161.14744201497689200191.stgit@seurat29.1015granger.net>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMTZmNmU5YTItYjg1OC00ZGE3LTkwZmEtNzU1NjhiMTFmMDJmIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiZnJzMVZ4QzlTeEsyeXlFMXY3dW5EK0xYM0wyYURId0hqNWU2YmE4SmhvcWg4Wk9cL2tET2pod2ZcL0Z0QWhxdGtxIn0=
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [172.18.205.10]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+user-agent: Evolution 3.32.4 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Anna.Schumaker@netapp.com; 
+x-originating-ip: [23.28.75.121]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c7d20fe3-956a-4754-95f4-08d7273de39a
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600166)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:CY4PR06MB2648;
+x-ms-traffictypediagnostic: CY4PR06MB2648:
+x-microsoft-antispam-prvs: <CY4PR06MB2648DBA17A4FF5BF1BFF8BF6F8A50@CY4PR06MB2648.namprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:133;
+x-forefront-prvs: 01371B902F
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(136003)(346002)(376002)(366004)(396003)(199004)(189003)(6246003)(66446008)(118296001)(64756008)(66476007)(66556008)(86362001)(66946007)(305945005)(66066001)(6116002)(2351001)(446003)(3846002)(76116006)(6506007)(14454004)(476003)(7736002)(6436002)(256004)(14444005)(11346002)(316002)(5640700003)(2906002)(2501003)(5660300002)(25786009)(99286004)(81156014)(8676002)(81166006)(54906003)(6512007)(71200400001)(2616005)(58126008)(71190400001)(186003)(36756003)(53936002)(102836004)(76176011)(486006)(4326008)(6916009)(229853002)(6486002)(8936002)(91956017)(478600001)(26005);DIR:OUT;SFP:1101;SCL:1;SRVR:CY4PR06MB2648;H:CY4PR06MB3479.namprd06.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: netapp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: Y8o0IOKPp1bjGQ9jafRjt+dMh90mtSsRyglHI3MKCWRfgMLk85nt7bolPChwIAsJLKM3yaW3iQSsq6l2uOgcjydVabifdC2wvNMVKhT0qcV9SxMCPo4vK9eJzQdi1otOL5mxZAdR4v75+97WGR5qEIiCxIVmmHMc5oJ5Zxlvt7Ip4qsAUTkjYajNL8GV79keRTFeWP0WSOeQ/vi9JsbFrUjIpo5b1cf3Z+u8bdtaV/VO5rhRU45HrWR5fgUaYNl3ixWcRH6zKSp4E/sgFHA9I0eF12fg9DryWR1UjuWJnmNmVo1p7VpkdyDlk/+sx0Y2/O/+P3Rc39bdbFRsbrWlo9/9nv7KZSgV/DklgBy1exyRYyhlf+Vkm2NSHE4MfO+BDfrXyTUTH/8XzFJI7bsi1X83ybtgbdHb8/+odWoBlv4=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E6B4238D396FCA4ABB1B2F792A70B69A@namprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
+X-OriginatorOrg: netapp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7d20fe3-956a-4754-95f4-08d7273de39a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Aug 2019 20:18:25.8613
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4b0911a0-929b-4715-944b-c03745165b3a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ByqQu5HJQIi8hIHXQDH5BcA/PJnJ9IAeAhL8x9RBGHXJyBRNO4KD+ZcDKK3aRCu6BXNQvw4sR8iT0aL8zg4x0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR06MB2648
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> On Thu, Aug 22, 2019 at 09:58:42AM -0700, Ira Weiny wrote:
-> 
-> > Add to your list "how does destruction of a MR in 1 process get
-> > communicated to the other?"  Does the 2nd process just get failed WR's?
-> 
-> IHMO a object that has been shared can no longer be asynchronously destroyed.
-> That is the whole point. A lkey/rkey # alone is inherently unsafe without also
-> holding a refcount on the MR.
-> 
-> > I have some of the same concerns as Doug WRT memory sharing.  FWIW I'm
-> > not sure that what SCM_RIGHTS is doing is safe or correct.
-> >
-> > For that work I'm really starting to think SCM_RIGHTS transfers should
-> > be blocked.
-> 
-> That isn't possible, SCM_RIGHTS is just some special case, fork(), exec(), etc all
-> cause the same situation. Any solution that blocks those is a total non-starter.
-
-Right, except in the case of fork(), exec() all of the file system references which may be pinned also get copied.  With SCM_RIGHTS they may not...  And my concern here is, if I understand this mechanism, it would introduce another avenue where the file pin is shared _without_ the file lease (or with a potentially zombie'ed lease).[1]
-
-[1] https://lkml.org/lkml/2019/8/16/994
-
-> 
-> > It just seems wrong that Process B gets references to Process A's
-> > mm_struct and holds the memory Process A allocated.
-> 
-> Except for ODP, a MR doesn't reference the mm_struct. It references the pages.
-> It is not unlike a memfd.
-
-I'm thinking of the owner_mm...  It is not like it is holding the entire process address space I know that.  But it is holding onto memory which Process A allocated.
-
-Ira
-
-> 
-> Jason
+VGhhbmtzLCBDaHVjayEgSSd2ZSBwdXNoZWQgdGhlc2Ugb3V0IHRvIG15IGxpbnV4LW5leHQgYnJh
+bmNoLg0KDQpBbm5hDQoNCk9uIE1vbiwgMjAxOS0wOC0xOSBhdCAxODozNSAtMDQwMCwgQ2h1Y2sg
+TGV2ZXIgd3JvdGU6DQo+IEhpIEFubmEtDQo+IA0KPiBUaGVzZSBmZWVsIGxpa2UgdGhleSBhcmUg
+cmVhZHkgZm9yIHlvdSB0byBtZXJnZS4NCj4gDQo+IENoYW5nZXMgc2luY2UgdjE6DQo+IC0gUmVi
+YXNlZCBvbiB2NS4zLXJjNQ0KPiAtIEltcHJvdmVkICJCb29zdCBtYXhpbXVtIHRyYW5zcG9ydCBo
+ZWFkZXIgc2l6ZSINCj4gLSBNaW5vciBjbGFyaWZpY2F0aW9ucw0KPiANCj4gLS0tDQo+IA0KPiBD
+aHVjayBMZXZlciAoMjEpOg0KPiAgICAgICBTVU5SUEM6IFJlbW92ZSBycGNfd2FrZV91cF9xdWV1
+ZWRfdGFza19vbl93cSgpDQo+ICAgICAgIFNVTlJQQzogSW5saW5lIHhkcl9jb21taXRfZW5jb2Rl
+DQo+ICAgICAgIHhwcnRyZG1hOiBSZWZyZXNoIHRoZSBkb2N1bWVudGluZyBjb21tZW50IGluIGZy
+d3Jfb3BzLmMNCj4gICAgICAgeHBydHJkbWE6IFVwZGF0ZSBvYnNvbGV0ZSBjb21tZW50DQo+ICAg
+ICAgIHhwcnRyZG1hOiBGaXggY2FsY3VsYXRpb24gb2YgcmlfbWF4X3NlZ3MgYWdhaW4NCj4gICAg
+ICAgeHBydHJkbWE6IEJvb3N0IG1heGltdW0gdHJhbnNwb3J0IGhlYWRlciBzaXplDQo+ICAgICAg
+IHhwcnRyZG1hOiBCb29zdCBjbGllbnQncyBtYXggc2xvdCB0YWJsZSBzaXplIHRvIG1hdGNoIExp
+bnV4DQo+IHNlcnZlcg0KPiAgICAgICB4cHJ0cmRtYTogUmVuYW1lIENRRSBmaWVsZCBpbiBSZWNl
+aXZlIHRyYWNlIHBvaW50cw0KPiAgICAgICB4cHJ0cmRtYTogUmVuYW1lIHJwY3JkbWFfYnVmZmVy
+OjpyYl9hbGwNCj4gICAgICAgeHBydHJkbWE6IFRvZ2dsZSBYUFJUX0NPTkdFU1RFRCBpbiB4cHJ0
+cmRtYSdzIHNsb3QgbWV0aG9kcw0KPiAgICAgICB4cHJ0cmRtYTogU2ltcGxpZnkgcnBjcmRtYV9t
+cl9wb3ANCj4gICAgICAgeHBydHJkbWE6IENvbWJpbmUgcnBjcmRtYV9tcl9wdXQgYW5kIHJwY3Jk
+bWFfbXJfdW5tYXBfYW5kX3B1dA0KPiAgICAgICB4cHJ0cmRtYTogTW92ZSBycGNyZG1hX21yX2dl
+dCBvdXQgb2YgZnJ3cl9tYXANCj4gICAgICAgeHBydHJkbWE6IEVuc3VyZSBjcmVhdGluZyBhbiBN
+UiBkb2VzIG5vdCB0cmlnZ2VyIEZTIHdyaXRlYmFjaw0KPiAgICAgICB4cHJ0cmRtYTogQ2FjaGUg
+ZnJlZSBNUnMgaW4gZWFjaCBycGNyZG1hX3JlcQ0KPiAgICAgICB4cHJ0cmRtYTogUmVtb3ZlIHJw
+Y3JkbWFfYnVmZmVyOjpyYl9tcmxvY2sNCj4gICAgICAgeHBydHJkbWE6IFVzZSBhbiBsbGlzdCB0
+byBtYW5hZ2UgZnJlZSBycGNyZG1hX3JlcHMNCj4gICAgICAgeHBydHJkbWE6IENsZWFuIHVwIHhw
+cnRfcmRtYV9zZXRfY29ubmVjdF90aW1lb3V0KCkNCj4gICAgICAgeHBydHJkbWE6IEZpeCBiY19t
+YXhfc2xvdHMgcmV0dXJuIHZhbHVlDQo+ICAgICAgIHhwcnRyZG1hOiBJbmxpbmUgWERSIGNodW5r
+IGVuY29kZXIgZnVuY3Rpb25zDQo+ICAgICAgIHhwcnRyZG1hOiBPcHRpbWl6ZSBycGNyZG1hX3Bv
+c3RfcmVjdnMoKQ0KPiANCj4gDQo+ICBpbmNsdWRlL2xpbnV4L3N1bnJwYy9zY2hlZC5oICAgICAg
+fCAgICAzIA0KPiAgaW5jbHVkZS9saW51eC9zdW5ycGMveHBydHJkbWEuaCAgIHwgICAgNCAtDQo+
+ICBpbmNsdWRlL3RyYWNlL2V2ZW50cy9ycGNyZG1hLmggICAgfCAgIDg4ICsrKysrKysrKysrKy0t
+DQo+ICBuZXQvc3VucnBjL3NjaGVkLmMgICAgICAgICAgICAgICAgfCAgIDI3ICstLS0NCj4gIG5l
+dC9zdW5ycGMveGRyLmMgICAgICAgICAgICAgICAgICB8ICAgIDIgDQo+ICBuZXQvc3VucnBjL3hw
+cnRyZG1hL2JhY2tjaGFubmVsLmMgfCAgICA0IC0NCj4gIG5ldC9zdW5ycGMveHBydHJkbWEvZnJ3
+cl9vcHMuYyAgICB8ICAxMzEgKysrKysrKy0tLS0tLS0tLS0tLS0tDQo+ICBuZXQvc3VucnBjL3hw
+cnRyZG1hL3JwY19yZG1hLmMgICAgfCAgIDYzICsrKysrKystLS0NCj4gIG5ldC9zdW5ycGMveHBy
+dHJkbWEvdHJhbnNwb3J0LmMgICB8ICAgMTIgKy0NCj4gIG5ldC9zdW5ycGMveHBydHJkbWEvdmVy
+YnMuYyAgICAgICB8ICAyMzUgKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tDQo+IC0tLS0tLS0t
+LS0NCj4gIG5ldC9zdW5ycGMveHBydHJkbWEveHBydF9yZG1hLmggICB8ICAgNTggKysrKy0tLS0t
+DQo+ICAxMSBmaWxlcyBjaGFuZ2VkLCAzMDUgaW5zZXJ0aW9ucygrKSwgMzIyIGRlbGV0aW9ucygt
+KQ0KPiANCj4gLS0NCj4gQ2h1Y2sgTGV2ZXINCg==
