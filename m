@@ -2,158 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E226D999AC
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 18:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F7E999CE
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 19:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731846AbfHVQ6n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 12:58:43 -0400
-Received: from mga07.intel.com ([134.134.136.100]:41204 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730411AbfHVQ6n (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 22 Aug 2019 12:58:43 -0400
-X-Amp-Result: UNSCANNABLE
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Aug 2019 09:58:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,417,1559545200"; 
-   d="scan'208";a="180441046"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Aug 2019 09:58:42 -0700
-Date:   Thu, 22 Aug 2019 09:58:42 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Yuval Shaia <yuval.shaia@oracle.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        monis@mellanox.com, parav@mellanox.com, danielj@mellanox.com,
-        kamalheib1@gmail.com, markz@mellanox.com,
-        swise@opengridcomputing.com, johannes.berg@intel.com,
-        willy@infradead.org, michaelgur@mellanox.com, markb@mellanox.com,
-        dan.carpenter@oracle.com, bvanassche@acm.org, maxg@mellanox.com,
-        israelr@mellanox.com, galpress@amazon.com, denisd@mellanox.com,
-        yuvalav@mellanox.com, dennis.dalessandro@intel.com,
-        will@kernel.org, ereza@mellanox.com, jgg@mellanox.com,
-        linux-rdma@vger.kernel.org,
+        id S1729506AbfHVRDW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 13:03:22 -0400
+Received: from mail-eopbgr20065.outbound.protection.outlook.com ([40.107.2.65]:26190
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730824AbfHVRDW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 22 Aug 2019 13:03:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ky0LUGz3+xjC0UQ5zWndDsODeIrNiMDQUt/swj3hil8wpjcgD2es+dFwRAIrqt5POtQpLVIOXzNelkhsJ3ZdQR5Va2Sh7pZrcReNiwaJNO8Uz2TA9mdLg+BbkbUH414QTSXtJBDgCdMpDyi4AhwtL8VDh+iskaJNJcdrjjS9RHnhN2BiV2YIaqCiTUHW6Bi/bSta5xldxK19XRw6eJGZygY8fokxkhVrYk6ZbrrWYZ910yBrOxDT4SCATjJhWoexrOwaoA6Nj6ICU4eMCNWzSkcYDjHgQQ6gvyomRT2GhyLaAMLMxlyMcLzbqrTXLkwxSdIgOCzOZ7lV1J6f4p8zCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1fJykrPowo1FYt0oKU414SjNrZ5lQmq9WE8IlmNA2uo=;
+ b=ORXGp8yKZTcQuO55Rva+U4ySUdpQO44IYEUfV7OFLn6SbIiBs3exyi7Y2Y4DEo00ug9AdFk9AbJEb51P8IsPOHRY/CGOxTFWg0lb+4Gz9+NkpCWrHiXWhdFVYr4Df93XqXIcGhPDuWiodt++nQpjr9TnZRwYuH3rECJJz31FOGAV+UFvSTrFe1w5xjhz1BLCMY7VCgG2Ehp7Of413pbnZLWkCb6kyB0u6/lz/JhALlSV5oIn7uEERARbTyMezhQdSS6yFuHTocX+Nn4MTEJ5Nq3CAdiXSaRvPuLPq5H6soqXC0fFd++9N+5wpXUZp27fTw8Np/BsZURyDHsAGpJvdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1fJykrPowo1FYt0oKU414SjNrZ5lQmq9WE8IlmNA2uo=;
+ b=DRM9q8pdxQ/ECDin5AMMZExkr8/WyjzOVWqBivn/u9lFUVzEHNQKXdQJLQTrdkGAfYlDRBqWm+l/8ArcUldWB4XN8gohCHchaLL/CLN1bvEYO8HmHu3q8jdXn3HXZQvNIyOvx9K5NbUvpAFmFwr2W18Lt7AOObSd+0Tv5g1g5TA=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB4144.eurprd05.prod.outlook.com (10.171.182.147) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2178.16; Thu, 22 Aug 2019 17:03:15 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1d6:9c67:ea2d:38a7]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1d6:9c67:ea2d:38a7%6]) with mapi id 15.20.2178.020; Thu, 22 Aug 2019
+ 17:03:15 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+CC:     Yuval Shaia <yuval.shaia@oracle.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Moni Shoua <monis@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        Mark Zhang <markz@mellanox.com>,
+        "swise@opengridcomputing.com" <swise@opengridcomputing.com>,
+        "johannes.berg@intel.com" <johannes.berg@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        Mark Bloch <markb@mellanox.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Israel Rukshin <israelr@mellanox.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        Denis Drozdov <denisd@mellanox.com>,
+        Yuval Avnery <yuvalav@mellanox.com>,
+        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>,
+        "will@kernel.org" <will@kernel.org>,
+        Erez Alfasi <ereza@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Shamir Rabinovitch <srabinov7@gmail.com>
 Subject: Re: [PATCH v1 00/24] Shared PD and MR
-Message-ID: <20190822165841.GA17588@iweiny-DESK2.sc.intel.com>
+Thread-Topic: [PATCH v1 00/24] Shared PD and MR
+Thread-Index: AQHVWCvPpKVLbk/iqEuq+9fKELazmacGQnyAgACX1YCAAIsLAIAAAT6A
+Date:   Thu, 22 Aug 2019 17:03:15 +0000
+Message-ID: <20190822170309.GC8325@mellanox.com>
 References: <20190821142125.5706-1-yuval.shaia@oracle.com>
  <20190821233736.GG5965@iweiny-DESK2.sc.intel.com>
  <20190822084102.GA2898@lap1>
+ <20190822165841.GA17588@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20190822165841.GA17588@iweiny-DESK2.sc.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YTXPR0101CA0071.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:1::48) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [156.34.55.100]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 098f482d-5902-4b11-3b9f-08d727229f0d
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600166)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR05MB4144;
+x-ms-traffictypediagnostic: VI1PR05MB4144:
+x-ld-processed: a652971c-7d2e-4d9b-a6a4-d149256f461b,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB4144ACB9750404BF9870C350CFA50@VI1PR05MB4144.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1247;
+x-forefront-prvs: 01371B902F
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(376002)(136003)(39860400002)(346002)(396003)(189003)(199004)(6246003)(2616005)(4326008)(66446008)(25786009)(316002)(229853002)(71200400001)(14444005)(256004)(53936002)(66066001)(36756003)(6506007)(386003)(66476007)(86362001)(66946007)(66556008)(54906003)(81166006)(7416002)(1076003)(14454004)(8936002)(26005)(478600001)(5660300002)(52116002)(99286004)(64756008)(102836004)(186003)(6916009)(71190400001)(6116002)(3846002)(6436002)(6512007)(6486002)(2906002)(76176011)(8676002)(486006)(81156014)(305945005)(7736002)(33656002)(446003)(11346002)(476003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4144;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: tLNoNu5Ehk5l0J3VekKwwfnaXKXFsnTlIs7VRzhEihZCTwZt77fw+GzLDeAePzN0ctYSQbB8q3h67onv3g9/YgT8fE64Vrbg6PaPkwmOnzKtgAoTmOBHu4jEzY5ZRW62V0bXH0xplDHa1wL9nEaUxUO2cfxDaDyUda7YYWbVag4yGywK2cYBPXzczJ1n1a0fcBjEd1HwvMRCcyPN3BLklAYJLxzbLAcgPCkT2LOBd25Km+ggvMwh4AUbGkQRzO7pnAmmT+H/SXp6xpmndQcUpfx/ephUDUdcEvPhf8WhwQuJLdZQxHiNRR8DV9Lm+P0bTeTlJrkpu/kBQPN3FAGne5Nukwk8qxRn61lGtythUBfE3BzzBX6ntSRE4SGfqZqnNeMUPBdOPTPap/GW5Nd9mGe8AwzH4efZ9EUEhh1VQXk=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <A1D7D11398C2A142A8976F122884F2F4@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190822084102.GA2898@lap1>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 098f482d-5902-4b11-3b9f-08d727229f0d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Aug 2019 17:03:15.1297
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Of/ehsXRhzxq1lYXS9zBM+zUICZI8B/hxxmsXdVY6MXAqXYQVS0Klz90mwZGwhp3j2ilO3egcVf9xkQQyXn1qg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4144
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 22, 2019 at 11:41:03AM +0300, Yuval Shaia wrote:
-> On Wed, Aug 21, 2019 at 04:37:37PM -0700, Ira Weiny wrote:
-> > On Wed, Aug 21, 2019 at 05:21:01PM +0300, Yuval Shaia wrote:
-> > > Following patch-set introduce the shared object feature.
-> > > 
-> > > A shared object feature allows one process to create HW objects (currently
-> > > PD and MR) so that a second process can import.
-> 
-> Hi Ira,
-> 
-> > 
-> > For something this fundamental I think the cover letter should be more
-> > detailed than this.  Questions I have without digging into the code:
-> > 
-> > What is the use case?
-> 
-> I have only one use case but i didn't added it to commit log just not to
-> limit the usage of this feature but you are right, cover letter is great
-> for such things, will add it for v2.
-> 
-> Anyway, here is our use case: Consider a case of server with huge amount
-> of memory and some hundreds or even thousands processes are using it to
-> serves clients requests. In this case the HCA will have to manage hundreds
-> or thousands MRs. A better design maybe would be that one process will
-> create one (or several) MR(s) which will be shared with the other
-> processes. This will reduce the number of address translation entries and
-> cache miss dramatically.
+On Thu, Aug 22, 2019 at 09:58:42AM -0700, Ira Weiny wrote:
 
-I think Doug covered my concerns in this area.
+> Add to your list "how does destruction of a MR in 1 process get communica=
+ted to
+> the other?"  Does the 2nd process just get failed WR's?
 
-> 
-> > 
-> > What is the "key" that allows a MR to be shared among 2 processes?  Do you
-> > introduce some PD identifier?  And then some {PDID, lkey} tuple is used to ID
-> > the MR?
-> > 
-> > I assume you have to share the PD first and then any MR in the shared PD can be
-> > shared?  If so how does the MR get shared?
-> 
-> Sorry, i'm not following.
-> I think the term 'share' is somehow mistake, it is actually a process
-> 'imports' objects into it's context. And yes, the workflow is first to
-> import the PD and then import the MR.
+IHMO a object that has been shared can no longer be asynchronously
+destroyed. That is the whole point. A lkey/rkey # alone is inherently
+unsafe without also holding a refcount on the MR.
 
-Ok fair enough but the title of the thread is "Sharing PD and MR" so I used the
-term Share.  And I expect that any random process can't import objects to which
-the owning process does not allow them to right?
+> I have some of the same concerns as Doug WRT memory sharing.  FWIW I'm no=
+t sure
+> that what SCM_RIGHTS is doing is safe or correct.
+>=20
+> For that work I'm really starting to think SCM_RIGHTS transfers should be
+> blocked. =20
 
-I mean you can't just have any process grab a PD and MR and start using it.  So
-I assume there is some "sharing" by the originating process.
+That isn't possible, SCM_RIGHTS is just some special case, fork(),
+exec(), etc all cause the same situation. Any solution that blocks
+those is a total non-starter.
 
-> 
-> > 
-> > Again I'm concerned with how this will interact with the RDMA and file system
-> > interaction we have been trying to fix.
-> 
-> I'm not aware of this file-system thing, can you point me to some
-> discussion on that so i'll see how this patch-set affect it.
+> It just seems wrong that Process B gets references to Process A's
+> mm_struct and holds the memory Process A allocated. =20
 
+Except for ODP, a MR doesn't reference the mm_struct. It references
+the pages. It is not unlike a memfd.
 
-https://lkml.org/lkml/2019/6/6/1101
-https://lkml.org/lkml/2019/8/9/1043
-https://lwn.net/Articles/796000/
-
-There are many more articles, patch sets, discussion threads...  This work has
-been going on much longer than I have been working on it.
-
-> 
-> > 
-> > Why is SCM_RIGHTS on the rdma context FD not sufficient to share the entire
-> > context, PD, and all MR's?
-> 
-> Well, this SCM_RIGHTS is great, one can share the IB context with another.
-> But it is not enough, because:
-> - What API the second process can use to get his hands on one of the PDs or
->   MRs from this context?
-
-MRs can be passed by {PD,key} through any number of mechanisms.  All you need
-is an ID for them.  Maybe this is clear in the code.  If so sorry about that.
-
-> - What mechanism takes care of the destruction of such objects (SCM_RIGHTS
->   takes care for the ref counting of the context but i'm referring to the
->   PDs and MRs objects)?
-
-This is inherent in the lifetime of the uverbs file object to which cloned FDs
-(one in each process) have a reference to.
-
-Add to your list "how does destruction of a MR in 1 process get communicated to
-the other?"  Does the 2nd process just get failed WR's?
-
-> 
-> The entire purpose of this patch set is to address these two questions.
-
-Fair enough but the cover letter should spell out the above and how this series
-fixes that problem.
-
-I have some of the same concerns as Doug WRT memory sharing.  FWIW I'm not sure
-that what SCM_RIGHTS is doing is safe or correct.
-
-For that work I'm really starting to think SCM_RIGHTS transfers should be
-blocked.  It just seems wrong that Process B gets references to Process A's
-mm_struct and holds the memory Process A allocated.  This seems wrong for any
-type of memory, file system or not.  That said I'm assuming that this is all
-within a single user so admins can at least determine who is pinning down all
-this memory.
-
-Ira
-
+Jason
