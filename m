@@ -2,208 +2,248 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD4C994BC
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 15:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A6799617
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 16:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732471AbfHVNTC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 09:19:02 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:47276 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730621AbfHVNTC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Aug 2019 09:19:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1566479940; x=1598015940;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=n/3vAev783aW10q4zG7wP4DwkX2/tDR3BZut9NH2m5c=;
-  b=rhgWLfgELWbQ3VB9EVk0Rh6jxOk6wrwvq+9iCwAB9fgvve6tQvDkEDfF
-   3+fCtSHUpnNun8bDQP+ZagwQ71ZsdGXEjP6wpeuyCfMW7x4Q2uncfOoff
-   xugOfRwcdxHKsTXR8Cisfq8Mim0TlPTCKyMtj7YRYFyzJ/YN6lf3FVkdm
-   E=;
-X-IronPort-AV: E=Sophos;i="5.64,416,1559520000"; 
-   d="scan'208";a="780763984"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 22 Aug 2019 13:18:58 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 20DC4A2FC0;
-        Thu, 22 Aug 2019 13:18:55 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 22 Aug 2019 13:18:55 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.67) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 22 Aug 2019 13:18:50 +0000
-Subject: Re: [PATCH v7 rdma-next 3/7] RDMA/efa: Use the common mmap_xa helpers
-To:     Michal Kalderon <michal.kalderon@marvell.com>
-CC:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
-        <dledford@redhat.com>, <bmt@zurich.ibm.com>, <sleybo@amazon.com>,
-        <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        Ariel Elior <ariel.elior@marvell.com>
-References: <20190820121847.25871-1-michal.kalderon@marvell.com>
- <20190820121847.25871-4-michal.kalderon@marvell.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <6f524e9e-b866-d538-3dc9-322aa4e30b5f@amazon.com>
-Date:   Thu, 22 Aug 2019 16:18:45 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        id S1731069AbfHVOPT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 10:15:19 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:37408 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726687AbfHVOPT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 22 Aug 2019 10:15:19 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 075143082A6C;
+        Thu, 22 Aug 2019 14:15:18 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B08BE60925;
+        Thu, 22 Aug 2019 14:15:13 +0000 (UTC)
+Message-ID: <fbc950ac651d49e7f88dc483570b1ea3e56b980f.camel@redhat.com>
+Subject: Re: [PATCH v1 00/24] Shared PD and MR
+From:   Doug Ledford <dledford@redhat.com>
+To:     Yuval Shaia <yuval.shaia@oracle.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Cc:     jgg@ziepe.ca, leon@kernel.org, monis@mellanox.com,
+        parav@mellanox.com, danielj@mellanox.com, kamalheib1@gmail.com,
+        markz@mellanox.com, johannes.berg@intel.com, willy@infradead.org,
+        michaelgur@mellanox.com, markb@mellanox.com,
+        dan.carpenter@oracle.com, bvanassche@acm.org, maxg@mellanox.com,
+        israelr@mellanox.com, galpress@amazon.com, denisd@mellanox.com,
+        yuvalav@mellanox.com, dennis.dalessandro@intel.com,
+        will@kernel.org, ereza@mellanox.com, jgg@mellanox.com,
+        linux-rdma@vger.kernel.org,
+        Shamir Rabinovitch <srabinov7@gmail.com>
+Date:   Thu, 22 Aug 2019 10:15:11 -0400
+In-Reply-To: <20190822084102.GA2898@lap1>
+References: <20190821142125.5706-1-yuval.shaia@oracle.com>
+         <20190821233736.GG5965@iweiny-DESK2.sc.intel.com>
+         <20190822084102.GA2898@lap1>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-7PzAS4z6Vp9b3tMhCizS"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <20190820121847.25871-4-michal.kalderon@marvell.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.67]
-X-ClientProxiedBy: EX13D15UWA004.ant.amazon.com (10.43.160.219) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Thu, 22 Aug 2019 14:15:18 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 20/08/2019 15:18, Michal Kalderon wrote:
->  int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
->  {
-> +	struct efa_ucontext *ucontext;
 
-Reverse xmas tree please.
+--=-7PzAS4z6Vp9b3tMhCizS
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->  	struct efa_dev *dev = to_edev(ibqp->pd->device);
->  	struct efa_qp *qp = to_eqp(ibqp);
->  	int err;
->  
->  	ibdev_dbg(&dev->ibdev, "Destroy qp[%u]\n", ibqp->qp_num);
-> +	ucontext = rdma_udata_to_drv_context(udata, struct efa_ucontext,
-> +					     ibucontext);
+On Thu, 2019-08-22 at 11:41 +0300, Yuval Shaia wrote:
+> On Wed, Aug 21, 2019 at 04:37:37PM -0700, Ira Weiny wrote:
+> > On Wed, Aug 21, 2019 at 05:21:01PM +0300, Yuval Shaia wrote:
+> > > Following patch-set introduce the shared object feature.
+> > >=20
+> > > A shared object feature allows one process to create HW objects
+> > > (currently
+> > > PD and MR) so that a second process can import.
+>=20
+> Hi Ira,
+>=20
+> > For something this fundamental I think the cover letter should be
+> > more
+> > detailed than this.  Questions I have without digging into the code:
+> >=20
+> > What is the use case?
+>=20
+> I have only one use case but i didn't added it to commit log just not
+> to
+> limit the usage of this feature but you are right, cover letter is
+> great
+> for such things, will add it for v2.
+>=20
+> Anyway, here is our use case: Consider a case of server with huge
+> amount
+> of memory and some hundreds or even thousands processes are using it
+> to
+> serves clients requests. In this case the HCA will have to manage
+> hundreds
+> or thousands MRs. A better design maybe would be that one process will
+> create one (or several) MR(s) which will be shared with the other
+> processes. This will reduce the number of address translation entries
+> and
+> cache miss dramatically.
 
-Consider initializing on ucontext declaration.
+Unless I'm misreading you here, it will be at the expense of pretty much
+all inter-process memory security.  You're talking about one process
+creating some large MRs just to cover the overall memory in the machine,
+then sharing that among processes, and all using it to reduce the MR
+workload of the card.  This sounds like going back to the days of MSDos.
+It also sounds like a programming error in one process could expose
+potentially all processes data buffers across all processes sharing this
+PD and MR.
 
-> +
->  	err = efa_destroy_qp_handle(dev, qp->qp_handle);
->  	if (err)
->  		return err;
->  
-> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->sq_db_mmap_key);
-> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
-> +				    qp->llq_desc_mmap_key);
+I get the idea, and the problem you are trying to solve, but I'm not
+sure that going down this path is wise.
 
-The mmap entries removal should happen before efa_destroy_qp_handle.
+Maybe....maybe if you limit a queue pair to send/recv only and no
+rdma_{read,write}, then this wouldn't be quite as bad.  But even then
+I'm still very leary of this "feature".
 
->  	if (qp->rq_cpu_addr) {
->  		ibdev_dbg(&dev->ibdev,
->  			  "qp->cpu_addr[0x%p] freed: size[%lu], dma[%pad]\n",
-> @@ -503,6 +392,10 @@ int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
->  			  &qp->rq_dma_addr);
->  		dma_unmap_single(&dev->pdev->dev, qp->rq_dma_addr, qp->rq_size,
->  				 DMA_TO_DEVICE);
-> +		rdma_user_mmap_entry_remove(&ucontext->ibucontext,
-> +					    qp->rq_mmap_key);
-> +		rdma_user_mmap_entry_remove(&ucontext->ibucontext,
-> +					    qp->rq_db_mmap_key);
+>=20
+> > What is the "key" that allows a MR to be shared among 2
+> > processes?  Do you
+> > introduce some PD identifier?  And then some {PDID, lkey} tuple is
+> > used to ID
+> > the MR?
+> >=20
+> > I assume you have to share the PD first and then any MR in the
+> > shared PD can be
+> > shared?  If so how does the MR get shared?
+>=20
+> Sorry, i'm not following.
+> I think the term 'share' is somehow mistake, it is actually a process
+> 'imports' objects into it's context. And yes, the workflow is first to
+> import the PD and then import the MR.
+>=20
+> > Again I'm concerned with how this will interact with the RDMA and
+> > file system
+> > interaction we have been trying to fix.
+>=20
+> I'm not aware of this file-system thing, can you point me to some
+> discussion on that so i'll see how this patch-set affect it.
+>=20
+> > Why is SCM_RIGHTS on the rdma context FD not sufficient to share the
+> > entire
+> > context, PD, and all MR's?
+>=20
+> Well, this SCM_RIGHTS is great, one can share the IB context with
+> another.
+> But it is not enough, because:
+> - What API the second process can use to get his hands on one of the
+> PDs or
+>   MRs from this context?
+> - What mechanism takes care of the destruction of such objects
+> (SCM_RIGHTS
+>   takes care for the ref counting of the context but i'm referring to
+> the
+>   PDs and MRs objects)?
+>=20
+> The entire purpose of this patch set is to address these two
+> questions.
+>=20
+> Yuval
+>=20
+> > Ira
+> >=20
+> > > Patch-set is logically splits to 4 parts as the following:
+> > > - patches 1 to 7 and 18 are preparation steps.
+> > > - patches 8 to 14 are the implementation of import PD
+> > > - patches 15 to 17 are the implementation of the verb
+> > > - patches 19 to 24 are the implementation of import MR
+> > >=20
+> > > v0 -> v1:
+> > > 	* Delete the patch "IB/uverbs: ufile must be freed only when not
+> > > 	  used anymore". The process can die, the ucontext remains until
+> > > 	  last reference to it is closed.
+> > > 	* Rebase to latest for-next branch
+> > >=20
+> > > Shamir Rabinovitch (16):
+> > >   RDMA/uverbs: uobj_get_obj_read should return the ib_uobject
+> > >   RDMA/uverbs: Delete the macro uobj_put_obj_read
+> > >   RDMA/nldev: ib_pd can be pointed by multiple ib_ucontext
+> > >   IB/{core,hw}: ib_pd should not have ib_uobject pointer
+> > >   IB/core: ib_uobject need HW object reference count
+> > >   IB/uverbs: Helper function to initialize ufile member of
+> > >     uverbs_attr_bundle
+> > >   IB/uverbs: Add context import lock/unlock helper
+> > >   IB/verbs: Prototype of HW object clone callback
+> > >   IB/mlx4: Add implementation of clone_pd callback
+> > >   IB/mlx5: Add implementation of clone_pd callback
+> > >   RDMA/rxe: Add implementation of clone_pd callback
+> > >   IB/uverbs: Add clone reference counting to ib_pd
+> > >   IB/uverbs: Add PD import verb
+> > >   IB/mlx4: Enable import from FD verb
+> > >   IB/mlx5: Enable import from FD verb
+> > >   RDMA/rxe: Enable import from FD verb
+> > >=20
+> > > Yuval Shaia (8):
+> > >   IB/core: Install clone ib_pd in device ops
+> > >   IB/core: ib_mr should not have ib_uobject pointer
+> > >   IB/core: Install clone ib_mr in device ops
+> > >   IB/mlx4: Add implementation of clone_pd callback
+> > >   IB/mlx5: Add implementation of clone_pd callback
+> > >   RDMA/rxe: Add implementation of clone_pd callback
+> > >   IB/uverbs: Add clone reference counting to ib_mr
+> > >   IB/uverbs: Add MR import verb
+> > >=20
+> > >  drivers/infiniband/core/device.c              |   2 +
+> > >  drivers/infiniband/core/nldev.c               | 127 ++++-
+> > >  drivers/infiniband/core/rdma_core.c           |  23 +-
+> > >  drivers/infiniband/core/uverbs.h              |   2 +
+> > >  drivers/infiniband/core/uverbs_cmd.c          | 489
+> > > +++++++++++++++---
+> > >  drivers/infiniband/core/uverbs_main.c         |   1 +
+> > >  drivers/infiniband/core/uverbs_std_types_mr.c |   1 -
+> > >  drivers/infiniband/core/verbs.c               |   4 -
+> > >  drivers/infiniband/hw/hns/hns_roce_hw_v1.c    |   1 -
+> > >  drivers/infiniband/hw/mlx4/main.c             |  18 +-
+> > >  drivers/infiniband/hw/mlx5/main.c             |  34 +-
+> > >  drivers/infiniband/hw/mthca/mthca_qp.c        |   3 +-
+> > >  drivers/infiniband/sw/rxe/rxe_verbs.c         |   5 +
+> > >  include/rdma/ib_verbs.h                       |  43 +-
+> > >  include/rdma/uverbs_std_types.h               |  11 +-
+> > >  include/uapi/rdma/ib_user_verbs.h             |  15 +
+> > >  include/uapi/rdma/rdma_netlink.h              |   3 +
+> > >  17 files changed, 669 insertions(+), 113 deletions(-)
+> > >=20
+> > > --=20
+> > > 2.20.1
+> > >=20
 
-Same.
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
->  	}
->  
->  	kfree(qp);
-> @@ -515,46 +408,55 @@ static int qp_mmap_entries_setup(struct efa_qp *qp,
->  				 struct efa_com_create_qp_params *params,
->  				 struct efa_ibv_create_qp_resp *resp)
->  {
-> +	u64 address;
-> +	u64 length;
-> +
->  	/*
->  	 * Once an entry is inserted it might be mmapped, hence cannot be
->  	 * cleaned up until dealloc_ucontext.
->  	 */
->  	resp->sq_db_mmap_key =
+--=-7PzAS4z6Vp9b3tMhCizS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Not a big deal, but now it makes more sense to assign qp->sq_db_mmap_key and
-assign the response later on.
+-----BEGIN PGP SIGNATURE-----
 
-> -		mmap_entry_insert(dev, ucontext, qp,
-> -				  dev->db_bar_addr + resp->sq_db_offset,
-> -				  PAGE_SIZE, EFA_MMAP_IO_NC);
-> -	if (resp->sq_db_mmap_key == EFA_MMAP_INVALID)
-> +		rdma_user_mmap_entry_insert(&ucontext->ibucontext, qp,
-> +					    dev->db_bar_addr +
-> +					    resp->sq_db_offset,
-> +					    PAGE_SIZE, EFA_MMAP_IO_NC);
-> +	if (resp->sq_db_mmap_key == RDMA_USER_MMAP_INVALID)
->  		return -ENOMEM;
-> -
-> +	qp->sq_db_mmap_key = resp->sq_db_mmap_key;
->  	resp->sq_db_offset &= ~PAGE_MASK;
->  
-> +	address = dev->mem_bar_addr + resp->llq_desc_offset;
-> +	length = PAGE_ALIGN(params->sq_ring_size_in_bytes +
-> +			    (resp->llq_desc_offset & ~PAGE_MASK));
->  	resp->llq_desc_mmap_key =
-> -		mmap_entry_insert(dev, ucontext, qp,
-> -				  dev->mem_bar_addr + resp->llq_desc_offset,
-> -				  PAGE_ALIGN(params->sq_ring_size_in_bytes +
-> -					     (resp->llq_desc_offset & ~PAGE_MASK)),
-> -				  EFA_MMAP_IO_WC);
-> -	if (resp->llq_desc_mmap_key == EFA_MMAP_INVALID)
-> +		rdma_user_mmap_entry_insert(&ucontext->ibucontext, qp,
-> +					    address,
-> +					    length,
-> +					    EFA_MMAP_IO_WC);
-> +	if (resp->llq_desc_mmap_key == RDMA_USER_MMAP_INVALID)
->  		return -ENOMEM;
-> -
-> +	qp->llq_desc_mmap_key = resp->llq_desc_mmap_key;
->  	resp->llq_desc_offset &= ~PAGE_MASK;
->  
->  	if (qp->rq_size) {
-> +		address = dev->db_bar_addr + resp->rq_db_offset;
->  		resp->rq_db_mmap_key =
-> -			mmap_entry_insert(dev, ucontext, qp,
-> -					  dev->db_bar_addr + resp->rq_db_offset,
-> -					  PAGE_SIZE, EFA_MMAP_IO_NC);
-> -		if (resp->rq_db_mmap_key == EFA_MMAP_INVALID)
-> +			rdma_user_mmap_entry_insert(&ucontext->ibucontext, qp,
-> +						    address, PAGE_SIZE,
-> +						    EFA_MMAP_IO_NC);
-> +		if (resp->rq_db_mmap_key == RDMA_USER_MMAP_INVALID)
->  			return -ENOMEM;
-> -
-> +		qp->rq_db_mmap_key = resp->rq_db_mmap_key;
->  		resp->rq_db_offset &= ~PAGE_MASK;
->  
-> +		address = virt_to_phys(qp->rq_cpu_addr);
->  		resp->rq_mmap_key =
-> -			mmap_entry_insert(dev, ucontext, qp,
-> -					  virt_to_phys(qp->rq_cpu_addr),
-> -					  qp->rq_size, EFA_MMAP_DMA_PAGE);
-> -		if (resp->rq_mmap_key == EFA_MMAP_INVALID)
-> +			rdma_user_mmap_entry_insert(&ucontext->ibucontext, qp,
-> +						    address, qp->rq_size,
-> +						    EFA_MMAP_DMA_PAGE);
-> +		if (resp->rq_mmap_key == RDMA_USER_MMAP_INVALID)
->  			return -ENOMEM;
-> +		qp->rq_mmap_key = resp->rq_mmap_key;
->  
->  		resp->rq_mmap_size = qp->rq_size;
->  	}
-> @@ -775,6 +677,9 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
->  				 DMA_TO_DEVICE);
->  		if (!rq_entry_inserted)
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1eo28ACgkQuCajMw5X
+L910jA/+O77x+tkd/b4LBhbBsORAcPf5hUeb7XbIHPL7xiXDtLHNkDKQJdX7cvzM
+HGpgQ3Wjg94VJFVTUpKhPXlTMGmWZe8wq2mI37B5mQlADyTmYxlJgWoMCg3iRHub
+ChksvkSkqncyK+0QR3fydAA/shiZGrP8+SJ1P6tnbtX/qKUpKUeh3KPf9z3YchoX
+MV2ZtOqSF/9rDFDMN4FYD+fnMK4h9HZES3R7t4txqVmUYYN3FXoAbnYofXirysGU
+ISKM8AaXgs/yBAqDwYJdEbp/HxoR9ihUdtT1Bam7QiWfls3W4slsB4hfyRqzakH+
+xIXcxHQ5p+4hQLlVWoHUG513AGN0nt2fdIJu+xPeoIIOuiSezOsC5MILPM8FY90H
+DljRiBwMeCBOoH9lbOw5KcxQK0ZBkJ62Ef4utEtLoKGJNFiJFRs+JKHwmVUMUG0X
+EJ7eaKzqQz3WFK0f+8/7HyYlnv6GC+78tyeK2JHJzeBMk78kvR3U/X2nyDtPFBit
+xefQTy33D5PSLP2qdz+ViMi1Mt+bydFH6h9BA+asmcOhwrby4qhRfphOPuZiEjTv
+QOp+WpWIyDHuteR/TV6bAxQuCA+5StGYsHJQdkrQLHZ7scG+tBrlQKmj77yRno1l
+b27Q9FMBwW8CISMwP9suzKNYyRXCkvXlA5hM3gulVMAZlCvllS8=
+=6sm8
+-----END PGP SIGNATURE-----
 
-Now that we store the keys on the QP object we can remove the rq_entry_inserted
-variable and test for !qp->rq_mmap_key.
+--=-7PzAS4z6Vp9b3tMhCizS--
 
->  			free_pages_exact(qp->rq_cpu_addr, qp->rq_size);
-> +		else
-> +			rdma_user_mmap_entry_remove(&ucontext->ibucontext,
-> +						    qp->rq_mmap_key);
-
-Other entries need to be removed as well, otherwise the refcount won't reach
-zero. This error flow should now be similar to efa_destroy_qp. I think that
-means losing the free_pages_exact too.
-
->  	}
->  err_free_qp:
->  	kfree(qp);
-
-Pretty much the same comments for the CQ parts as the QP.
