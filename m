@@ -2,114 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A6199731
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 16:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8076F997A4
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 17:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387705AbfHVOo2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 10:44:28 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:37478 "EHLO mx1.redhat.com"
+        id S1731898AbfHVPDT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 11:03:19 -0400
+Received: from mga11.intel.com ([192.55.52.93]:63532 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387660AbfHVOo2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 22 Aug 2019 10:44:28 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 1892C7F762;
-        Thu, 22 Aug 2019 14:44:28 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 65C6561F27;
-        Thu, 22 Aug 2019 14:44:27 +0000 (UTC)
-Message-ID: <fced439fbf0de8b9036bb071251562b3183debef.camel@redhat.com>
-Subject: Re: [PATCH] RDMA/siw: Enable SGL's with mixed memory types
-From:   Doug Ledford <dledford@redhat.com>
-To:     Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org
-Cc:     krishna2@chelsio.com
-Date:   Thu, 22 Aug 2019 10:44:24 -0400
-In-Reply-To: <20190822121614.21146-1-bmt@zurich.ibm.com>
-References: <20190822121614.21146-1-bmt@zurich.ibm.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-3sB6FhuC34wN+78UM3zX"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1727484AbfHVPDT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 22 Aug 2019 11:03:19 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Aug 2019 08:03:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,417,1559545200"; 
+   d="scan'208";a="186595013"
+Received: from jerryopenix.sh.intel.com (HELO jerryopenix) ([10.239.158.171])
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Aug 2019 08:03:17 -0700
+Date:   Thu, 22 Aug 2019 23:01:54 +0800
+From:   "Liu, Changcheng" <changcheng.liu@intel.com>
+To:     Doug Ledford <dledford@redhat.com>, tom@talpey.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: CX314A WCE error: WR_FLUSH_ERR
+Message-ID: <20190822150154.GA27163@jerryopenix>
+References: <20190821120912.GA1672@jerryopenix>
+ <6aed3f75-2445-eb6f-0bd8-7c79ea4a0967@talpey.com>
+ <20190821153844.GA4545@jerryopenix>
+ <0ce34055454c68cf9089e9e742b04397419a6309.camel@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.71]); Thu, 22 Aug 2019 14:44:28 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0ce34055454c68cf9089e9e742b04397419a6309.camel@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Thanks Doug Ledford & Tom. I've found that QP is force switched into
+Error status to flush outstandting WQEs into CQ with WR_FLUSH_ERR
+status.
 
---=-3sB6FhuC34wN+78UM3zX
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 14:47 Wed 21 Aug, Doug Ledford wrote:
+> On Wed, 2019-08-21 at 23:38 +0800, Liu, Changcheng wrote:
+> > On 09:36 Wed 21 Aug, Tom Talpey wrote:
+> > > On 8/21/2019 8:09 AM, Liu, Changcheng wrote:
+> > > > Hi all,
+> > > >     In one system, it always frequently hit "IBV_WC_WR_FLUSH_ERR"
+> > > > in the WCE(work completion element) polled from completion queue
+> > > > bound with RQ(Receive Queue).
+> > > >     Does anyone has some idea to debug "IBV_WC_WR_FLUSH_ERR"
+> > > > problem?
+> > > > 
+> > > >     With CX314A/40Gb NIC, I hit this error when using RC transport
+> > > > type with only Send Operation(IBV_WR_SEND) WR(work request) on
+> > > > SQ(Send Queue).
+> > > >     Every WR only has one SGE(scatter/gather element) and all the
+> > > > SGE on RQ has the same size. The SGE size in SQ WR is not greater
+> > > > than the SGE size in RQ WR.
+> > > > 
+> > > >    There’s one explanation about IBV_WC_WR_FLUSH_ERR on page 114
+> > > > in the "RDMA Aware Networks Programming User Manual" 
+> > > > http://www.mellanox.com/related-docs/prod_software/RDMA_Aware_Programming_user_manual.pdf
+> > > >    But I still didn't understand it well. How to trigger this
+> > > > error with a short demo program?
+> > > >    "
+> > > >      IBV_WC_WR_FLUSH_ERR
+> > > >      This event is generated when an invalid remote error is
+> > > > thrown when the responder detects an
+> > > >      invalid request. It may be that the operation is not
+> > > > supported by the request queue or there is
+> > > >      insufficient buffer space to receive the request.
+> > > >    "
+> > > 
+> > > The most common reason for a flushed work request is loss of
+> > > the connection to the remote peer. This can be caused by any
+> > > number of conditions.
+> > Good diretion. I'll debug it in this way first.
+> > > The second-most common is a programming error in the upper
+> > > layer protocol. A shortage of posted receives on either peer,
+> > > a protection error on some buffer, etc.
+> > Do you mean the protection key such as l_key/r_key isn't set well?
+> > What's kind of protection error could trigger IBV_WC_WR_FLUSH_ERR?
+> 
+> FLUSH_ERR is the error used whenever a queue pair goes into an error
+> state and there are still WQEs posted to the queue pair.  All
+> outstanding WQEs are returned with the state IBV_WC_WR_FLUSH_ERR.  This
+> is how you make sure you don't loose WQEs when the QP hits an error
+> state.  So, literally *anything* that can cause a QP to go into an ERROR
+> state will result in all WQEs currently posted to the QP being sent back
+> with this FLUSH_ERR.  FLUSH_ERR literally just means that the card is
+> flushing out the QP's work queue because now that the QP is in an error
+> state it can't process the WQEs and, presumably, the application needs
+> to know which ones completed and which ones didn't so it knows what to
+> requeue once the QP is no longer in an error state.
+> 
+> As Tom has already pointed out, all of these things will throw the queue
+> pair into an error state and cause all posted WQEs to be flushed with
+> the FLUSH_ERR condition:
+> 
+> 1) Loss of queue pair connection
+> 2) Any memory permission violation (attempt to write to read only
+> memory, attempt to RDMA read/write to an invalid rkey, etc)
+> 3) Receipt of any post_send message without a waiting post_recv buffer
+> to accept the message
+> 4) Receipt of a post_send message that is too large to fit in the first
+> available post_recv buffer
+> 
+> A common cause of this sort of thing is when you don't do proper flow
+> control on the queue pair and the sending side floods the receiving side
+> and runs it out of posted recv WQEs.  Although, in your case, you did
+> say this was happening on the receive queue, so that implies this is
+> happening on the receiving side, so if that is what's happenining here,
+> the process would have to be something like:
+> 
+> sender starts sending data (maybe without any flow control)
+> 	receiver starts receiving data and refilling buffers
+> 	...
+> 	receiver runs totally dry of buffers and gets an incoming recv
+> 	causing qp to go into error state
+> 
+> 	receiver then posts refill buffers to the RQ after the QP
+> 	went into error state but before acknowledging the error state
+> 	and shutting down the recv processing thread
+> 
+> 	all recv buffers posted as WQEs are flushed back to the process
+> 	with FLUSH_ERR because they were posted to a QP in ERROR state
+> 
+> > > If you're looking to actually trigger this error for testing,
+> > > well, try one of the above. If you're trying to figure out
+> > > why it's happening, that can take some digging, but not in
+> > > the RDMA stack, typically.
+> > Many thanks.
+> > 
+> > --Changcheng
+> > > Tom.
+> > > 
+> 
+> -- 
+> Doug Ledford <dledford@redhat.com>
+>     GPG KeyID: B826A3330E572FDD
+>     Fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-On Thu, 2019-08-22 at 14:16 +0200, Bernard Metzler wrote:
-> This patch enables the transmission of work requests with SGL's
-> of mixed types, e.g. kernel buffers and PBL regions referenced
-> by same work request. This enables iSER as a kernel client.
->=20
-> Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-> Tested-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
-
-Hi Bernard,
-
-Commit subject and message are much better this time.  However, it's rc5
-already, and we *just* merged siw this merge cycle, so I'd rather have
-this in the next -rc pull and not in for-next so that siw "just works"
-across the board on initial release.  Your language in a commit message
-makes all the difference in the world in terms of whether or not a
-commit should go to for-rc.  In this case, you used "Enable SGL's...".=20
-Enable is new feature language.  For the rc cycles, you need Fix
-language.  Something like this:
-
-RDMA/siw: Fix SGE element mapping issues
-
-Most upper layer kernel modules submit WQEs where the SG list entries
-are all of a single type.  iSER in particular, however, will send us
-WQEs with mixed SG types: sge[0] =3D kernel buffer, sge[1] =3D PBL region.=
-=20
-Check and set is_kva on each SG entry individually instead of assuming
-the first SGE type carries through to the last.  This fixes iSER over
-siw.
-
-Same patch, but the difference in wording makes a world of difference in
-terms of whether or not Linus will give you the evil eye for sending it
-in an -rc cycle.  And really, you didn't care about enabling SGLs with
-mixed memory types.  It's not like that's some sort of sought after
-feature.  It was what was needed to fix siw.  So just remember that in
-the future.  Fix language for fixes, enable language for features.  The
-difference does matter ;-)
-
-Please resubmit with a fixed commit message and a Fixes: tag.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-3sB6FhuC34wN+78UM3zX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1eqkgACgkQuCajMw5X
-L93zBhAAkXk6s7lE4dOLe/nbfdEgsDkZDk5MAhM5VCOcOutFABN2P/XHaotb4XRE
-WrFSwBqRdBS3nkqywX6J0Yk3zFht4d0PC138QGJ6fSM0WEsAsTPOBu6lTBDGXNPC
-HUHowLsrEW9PtWwHYMC846XrE3bMClb63tmyydgHAaWMbf969R016DoigzGfss+Y
-z6IwC9I1wpbozWWokhgp6yPkC3EHEaR1lTjOlTYjYDwoYithS3L2n+kWJObawdRK
-spXyE3/tOuMca9zYIAaty+2Ol/BWBe+++ZwY/MyOzYRq/DJqv3gWKOFSJAmZT89I
-kKoKmljYi8+UlO3HSU+UlUSxHgUvFEV5av1n3xKxe5BZwSRmcBscGXAg/dJ9RF+v
-2UDrrU3WbyBD5Xo8dXMXEEgNtv0VelnJHTei/izzZQnx5iLPhp6davAovbcp+w/K
-4ooUA8KjAKFa3L4mvSDgZ/HOMtmqxEXUw7w4yQ3JfeDh7qSRO5vv5JZbRglAdNTJ
-SeZqWzltZ4D28P8eDZe+D45DSEt9AymCaEBh4d2tNYpaUvxjnAo3ltvdptruqRPL
-ySeY9rh137ljRukwCbVW2pKaS3ELgcix0D9mw9ZVOQPqii7colZeQ5ew6ccQ4M2X
-HjV7MoKvFiRX8NnlRCLsDTtc/BBebNiG75FvoAjktruRtugyFWs=
-=PJOQ
------END PGP SIGNATURE-----
-
---=-3sB6FhuC34wN+78UM3zX--
 
