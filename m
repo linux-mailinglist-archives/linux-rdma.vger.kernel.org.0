@@ -2,86 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2FD997AC
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 17:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7D1997BB
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2019 17:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387590AbfHVPFJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 11:05:09 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:43026 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387546AbfHVPFJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 22 Aug 2019 11:05:09 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id B271C3082128;
-        Thu, 22 Aug 2019 15:05:08 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DFF5260925;
-        Thu, 22 Aug 2019 15:05:07 +0000 (UTC)
-Message-ID: <26ae8c4006cb31ee8c26fb821451d43732c7a35a.camel@redhat.com>
-Subject: Re: [PATCH for-rc v2] RDMA/bnxt_re: Fix stack-out-of-bounds in
- bnxt_qplib_rcfw_send_message
-From:   Doug Ledford <dledford@redhat.com>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org
-Date:   Thu, 22 Aug 2019 11:05:05 -0400
-In-Reply-To: <1566468170-489-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1566468170-489-1-git-send-email-selvin.xavier@broadcom.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-vslb/vdnHvaWXhcMvDdn"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Thu, 22 Aug 2019 15:05:09 +0000 (UTC)
+        id S2387529AbfHVPHy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 11:07:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51130 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387481AbfHVPHy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 22 Aug 2019 11:07:54 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7MF2q7E027043
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2019 11:07:52 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2uhvbekcqq-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2019 11:07:51 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
+        Thu, 22 Aug 2019 16:07:50 +0100
+Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 22 Aug 2019 16:07:47 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7MF7PFX37224946
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Aug 2019 15:07:25 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3F17D4203F;
+        Thu, 22 Aug 2019 15:07:46 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0A86742042;
+        Thu, 22 Aug 2019 15:07:46 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 22 Aug 2019 15:07:45 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     krishna2@chelsio.com, dledford@redhat.com,
+        Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [PATCH] RDMA/siw: Fix SGL mapping issues
+Date:   Thu, 22 Aug 2019 17:07:41 +0200
+X-Mailer: git-send-email 2.17.2
+X-TM-AS-GCONF: 00
+x-cbid: 19082215-0028-0000-0000-000003928A0B
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19082215-0029-0000-0000-00002454B5CC
+Message-Id: <20190822150741.21871-1-bmt@zurich.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-22_10:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908220150
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+All user level and most in-kernel applications submit WQEs
+where the SG list entries are all of a single type.
+iSER in particular, however, will send us WQEs with mixed SG
+types: sge[0] = kernel buffer, sge[1] = PBL region.
+Check and set is_kva on each SG entry individually instead of
+assuming the first SGE type carries through to the last.
+This fixes iSER over siw.
 
---=-vslb/vdnHvaWXhcMvDdn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Fixes: b9be6f18cf9e ("rdma/siw: transmit path")
+Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+Tested-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw_qp_tx.c | 37 +++++++++++----------------
+ 1 file changed, 15 insertions(+), 22 deletions(-)
 
-On Thu, 2019-08-22 at 03:02 -0700, Selvin Xavier wrote:
-> Driver copies FW commands to the HW queue as  units of 16 bytes. Some
-> of the command structures are not exact multiple of 16. So while
-> copying
-> the data from those structures, the stack out of bounds messages are
-> reported by KASAN. The following error is reported.
-
-[ snip ]
-
-Much less churn, thanks.  Applied to for-rc.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-vslb/vdnHvaWXhcMvDdn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1eryEACgkQuCajMw5X
-L93LVA//WkJmpTl4FOhiHummh6/De9kx7ohHaLc8blsXeCQte2VLbf/OQwE+185T
-5xsnBSueGgfzDje0y6e9E+SEB5BqLbHgCWqzByonC4Ppk7jlqFy9Ob/OHtrk7LFf
-Bs7FmzRzLgWxH7KqZUgkDx6HsHYSA33HZqXjnqdJuuwsIz7sYuHUbeNWOCIBlWDY
-jxTFX84kddyesLdsjYOQVDIjXztTKnNajexiawsZ8dDsUil8kfmuwLgYCRsgrWNx
-A27ILQW8LObRMZ7liRvDDddBPJEflq8WfS7W1DjiQZHLnTsQRDKlPbCiZT5InfR8
-f7Kp6QgIpkRZSYdS0H7vuv4FU1PYzyGvEip+rd+yzcfhyr2sqpH/vXUgoiqsEFdW
-l2AXKAyh/k9RMdRhrLsVBdL9NRuyZWrcaymTvJgklLfhnnB6escjrb7Lf467tJ2O
-sMVOULAdHjLxJ2MteP7jAc0GNMDfyAL42meqXOntdCwtTnQn3cWoDtPIH3Uv08mj
-hm6GLaLMGjXbfi0+gIY2/UMqCXPaG08o3EFFVcttTdzMBsAbOgy72qzPWi5yeiGu
-gxkhlIbqbKIQ3C0Ie3LNNHxUPt/CWyLsyFaJ7ioptyJOmX9MUsXtqVte1sb9lkYf
-DD07WiFZiCzri+jKTboT8L9DsugCTnUR+bGRcdAoZhq6OpfZaaA=
-=xnw2
------END PGP SIGNATURE-----
-
---=-vslb/vdnHvaWXhcMvDdn--
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+index 43020d2040fc..42c63622c7bd 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -398,15 +398,13 @@ static int siw_0copy_tx(struct socket *s, struct page **page,
+ 
+ #define MAX_TRAILER (MPA_CRC_SIZE + 4)
+ 
+-static void siw_unmap_pages(struct page **pages, int hdr_len, int num_maps)
++static void siw_unmap_pages(struct page **pp, unsigned long kmap_mask)
+ {
+-	if (hdr_len) {
+-		++pages;
+-		--num_maps;
+-	}
+-	while (num_maps-- > 0) {
+-		kunmap(*pages);
+-		pages++;
++	while (kmap_mask) {
++		if (kmap_mask & BIT(0))
++			kunmap(*pp);
++		pp++;
++		kmap_mask >>= 1;
+ 	}
+ }
+ 
+@@ -437,6 +435,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 	unsigned int data_len = c_tx->bytes_unsent, hdr_len = 0, trl_len = 0,
+ 		     sge_off = c_tx->sge_off, sge_idx = c_tx->sge_idx,
+ 		     pbl_idx = c_tx->pbl_idx;
++	unsigned long kmap_mask = 0L;
+ 
+ 	if (c_tx->state == SIW_SEND_HDR) {
+ 		if (c_tx->use_sendpage) {
+@@ -463,8 +462,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 
+ 		if (!(tx_flags(wqe) & SIW_WQE_INLINE)) {
+ 			mem = wqe->mem[sge_idx];
+-			if (!mem->mem_obj)
+-				is_kva = 1;
++			is_kva = mem->mem_obj == NULL ? 1 : 0;
+ 		} else {
+ 			is_kva = 1;
+ 		}
+@@ -500,12 +498,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 					p = siw_get_upage(mem->umem,
+ 							  sge->laddr + sge_off);
+ 				if (unlikely(!p)) {
+-					if (hdr_len)
+-						seg--;
+-					if (!c_tx->use_sendpage && seg) {
+-						siw_unmap_pages(page_array,
+-								hdr_len, seg);
+-					}
++					siw_unmap_pages(page_array, kmap_mask);
+ 					wqe->processed -= c_tx->bytes_unsent;
+ 					rv = -EFAULT;
+ 					goto done_crc;
+@@ -515,6 +508,10 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 				if (!c_tx->use_sendpage) {
+ 					iov[seg].iov_base = kmap(p) + fp_off;
+ 					iov[seg].iov_len = plen;
++
++					/* Remember for later kunmap() */
++					kmap_mask |= BIT(seg);
++
+ 					if (do_crc)
+ 						crypto_shash_update(
+ 							c_tx->mpa_crc_hd,
+@@ -543,10 +540,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 
+ 			if (++seg > (int)MAX_ARRAY) {
+ 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
+-				if (!is_kva && !c_tx->use_sendpage) {
+-					siw_unmap_pages(page_array, hdr_len,
+-							seg - 1);
+-				}
++				siw_unmap_pages(page_array, kmap_mask);
+ 				wqe->processed -= c_tx->bytes_unsent;
+ 				rv = -EMSGSIZE;
+ 				goto done_crc;
+@@ -597,8 +591,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 	} else {
+ 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
+ 				    hdr_len + data_len + trl_len);
+-		if (!is_kva)
+-			siw_unmap_pages(page_array, hdr_len, seg);
++		siw_unmap_pages(page_array, kmap_mask);
+ 	}
+ 	if (rv < (int)hdr_len) {
+ 		/* Not even complete hdr pushed or negative rv */
+-- 
+2.17.2
 
