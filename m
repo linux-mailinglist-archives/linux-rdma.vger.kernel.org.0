@@ -2,113 +2,229 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BB59B628
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 20:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7258F9B6D9
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 21:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404925AbfHWSSH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Aug 2019 14:18:07 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:40188 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404909AbfHWSSH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Aug 2019 14:18:07 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7NI9DZH111071;
-        Fri, 23 Aug 2019 18:18:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=qw/+dBxi0xaQHO0HdiHxHCSOHZ9NpH1CDedfvIfubgQ=;
- b=aR6zyseqqygJLIcScad8RF7DHuGpgXG8TzisC+VvKKvrTruISeDuIhWfKxal5I7s6Fez
- Is35lFGaIb6MTEA4nPDDLts6UCUD3qFAczueK5tFywtJJGOTihmheISibPDCf8GOw8LZ
- gtIW8nmDDO/qkxJzdKrLScE8eHdxrMHNM0tWRuZLPAKvGCLRauP3CZfvftfJ0bGtuFKF
- 6r24yfBDyaJtQPXHkrLplxBRYsdPhgm+6clb/nJPuyThYsLfX/efYWCgGtz2GUK+QN27
- DxtaxIohKTIWCLGARQPyt8pPT7+YmW7M8xr6OqSGDe3m5mcRnVqKBd3mTm+fXsa/5JMS Vg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2uea7recdf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Aug 2019 18:18:02 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7NI84lV176247;
-        Fri, 23 Aug 2019 18:18:02 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 2ujhvcfu47-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 23 Aug 2019 18:18:01 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7NII1dW010963;
-        Fri, 23 Aug 2019 18:18:01 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2ujhvcfu3q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Aug 2019 18:18:01 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7NII0lR014780;
-        Fri, 23 Aug 2019 18:18:00 GMT
-Received: from [10.209.243.58] (/10.209.243.58)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 23 Aug 2019 11:18:00 -0700
-Subject: Re: [PATCH net-next] net/rds: Whitelist rdma_cookie and rx_tstamp for
- usercopy
-To:     Dag Moxnes <dag.moxnes@oracle.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Cc:     davem@davemloft.net
-References: <1566568998-26222-1-git-send-email-dag.moxnes@oracle.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <d304ac22-1b04-6ff0-c36d-cd6605f341f8@oracle.com>
-Date:   Fri, 23 Aug 2019 11:17:59 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+        id S1728671AbfHWTOW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Aug 2019 15:14:22 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:42236 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728512AbfHWTOV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Aug 2019 15:14:21 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 43A383086262;
+        Fri, 23 Aug 2019 19:14:21 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6590A5D9E5;
+        Fri, 23 Aug 2019 19:14:20 +0000 (UTC)
+Message-ID: <324f57e86a1e9240657dd0c3beede10d6c89baea.camel@redhat.com>
+Subject: Re: [PULL REQUEST] Please pull rdma.git
+From:   Doug Ledford <dledford@redhat.com>
+To:     "Torvalds, Linus" <torvalds@linux-foundation.org>
+Cc:     "Gunthorpe, Jason" <jgg@ziepe.ca>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 23 Aug 2019 15:14:17 -0400
+In-Reply-To: <5b0aa103f6007e1887f9b2cacaec8015834589b8.camel@xsintricity.com>
+References: <5b0aa103f6007e1887f9b2cacaec8015834589b8.camel@xsintricity.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-d9vBLQc5DZJC2HMDiJ6l"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <1566568998-26222-1-git-send-email-dag.moxnes@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9358 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908230172
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Fri, 23 Aug 2019 19:14:21 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/23/19 7:03 AM, Dag Moxnes wrote:
-> Add the RDMA cookie and RX timestamp to the usercopy whitelist.
-> 
-> After the introduction of hardened usercopy whitelisting
-> (https://lwn.net/Articles/727322/), a warning is displayed when the
-> RDMA cookie or RX timestamp is copied to userspace:
-> 
-> kernel: WARNING: CPU: 3 PID: 5750 at
-> mm/usercopy.c:81 usercopy_warn+0x8e/0xa6
-> [...]
-> kernel: Call Trace:
-> kernel: __check_heap_object+0xb8/0x11b
-> kernel: __check_object_size+0xe3/0x1bc
-> kernel: put_cmsg+0x95/0x115
-> kernel: rds_recvmsg+0x43d/0x620 [rds]
-> kernel: sock_recvmsg+0x43/0x4a
-> kernel: ___sys_recvmsg+0xda/0x1e6
-> kernel: ? __handle_mm_fault+0xcae/0xf79
-> kernel: __sys_recvmsg+0x51/0x8a
-> kernel: SyS_recvmsg+0x12/0x1c
-> kernel: do_syscall_64+0x79/0x1ae
-> 
-> When the whitelisting feature was introduced, the memory for the RDMA
-> cookie and RX timestamp in RDS was not added to the whitelist, causing
-> the warning above.
-> 
-> Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
-> Tested-by: jenny.x.xu@oracle.com
-> ---
-Thanks Dag to get this out on list.
-You might have to fix the Tested-by tag.
-Tested-by: Jenny <jenny.x.xu@oracle.com
 
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+--=-d9vBLQc5DZJC2HMDiJ6l
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Linus,
 
+I didn't notice I was on my personal email identity when I sent the pull
+request.  Sorry about that.  It's really me ;-)
+
+On Fri, 2019-08-23 at 14:48 -0400, Doug Ledford wrote:
+> Hi Linus,
+>=20
+> No beating around the bush: this is a monster pull request for an -rc5
+> kernel.  Intel hit me with a series of fixes for TID processing.=20
+> Mellanox hit me with a series for their UMR memory support.
+>=20
+> And we had one fix for siw that fixes the 32bit build warnings and
+> because of the number of casts that had to be changed to properly
+> silence the warnings, that one patch alone is a full 40% of the LOC of
+> this entire pull request.  Given that this is the initial release
+> kernel
+> for siw, I'm trying to fix anything in it that we can, so that adds to
+> the impetus to take fixes for it like this one.
+>=20
+> I had to do a rebase early in the week.  Jason had thought he put a
+> patch on the rc queue that he needed to be there so he could base some
+> work off of it, and it had actually not been placed there.  So he
+> asked
+> me (on Tuesday) to fix that up before pushing my wip branch to the
+> official rc branch.  I did, and that's why the early patches look like
+> they were all committed at the same time on Tuesday.  That bunch had
+> been in my queue prior.
+>=20
+> The various patches all pass my test for being legitimate fixes and
+> not
+> attempts to slide new features or development into a late rc.  Well,
+> they were all fixes with the exception of a couple clean up patches
+> people wrote for making the fixes they also wrote better (like a
+> cleanup
+> patch to move UMR checking into a function so that the remaining UMR
+> fix
+> patches can reference that function), so I left those in place too.
+>=20
+> My apologies for the LOC count and the number of patches here, it's
+> just
+> how the cards fell this cycle.  I hope you agree with me that they're
+> justified fixes.
+>=20
+> Here's the boilerplate:
+>=20
+> The following changes since commit
+> d1abaeb3be7b5fa6d7a1fbbd2e14e3310005c4c1:
+>=20
+>   Linux 5.3-rc5 (2019-08-18 14:31:08 -0700)
+>=20
+> are available in the Git repository at:
+>=20
+>   git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
+> tags/for-linus
+>=20
+> for you to fetch changes up to
+> c536277e0db1ad2e9fbb9dfd940c3565a14d9c52:
+>=20
+>   RDMA/siw: Fix 64/32bit pointer inconsistency (2019-08-23 12:08:27
+> -0400)
+>=20
+> ----------------------------------------------------------------
+> Pull request for 5.3-rc5
+>=20
+> - Fix siw buffer mapping issue
+> - Fix siw 32/64 casting issues
+> - Fix a KASAN access issue in bnxt_re
+> - Fix several memory leaks (hfi1, mlx4)
+> - Fix a NULL deref in cma_cleanup
+> - Fixes for UMR memory support in mlx5 (4 patch series)
+> - Fix namespace check for restrack
+> - Fixes for counter support
+> - Fixes for hfi1 TID processing (5 patch series)
+> - Fix potential NULL deref in siw
+> - Fix memory page calculations in mlx5
+>=20
+> Signed-off-by: Doug Ledford <dledford@redhat.com>
+>=20
+> ----------------------------------------------------------------
+> Bernard Metzler (3):
+>       RDMA/siw: Fix potential NULL de-ref
+>       RDMA/siw: Fix SGL mapping issues
+>       RDMA/siw: Fix 64/32bit pointer inconsistency
+>=20
+> Ido Kalir (1):
+>       IB/core: Fix NULL pointer dereference when bind QP to counter
+>=20
+> Jason Gunthorpe (1):
+>       RDMA/mlx5: Fix MR npages calculation for IB_ACCESS_HUGETLB
+>=20
+> Kaike Wan (5):
+>       IB/hfi1: Drop stale TID RDMA packets
+>       IB/hfi1: Unsafe PSN checking for TID RDMA READ Resp packet
+>       IB/hfi1: Add additional checks when handling TID RDMA READ RESP
+> packet
+>       IB/hfi1: Add additional checks when handling TID RDMA WRITE DATA
+> packet
+>       IB/hfi1: Drop stale TID RDMA packets that cause TIDErr
+>=20
+> Leon Romanovsky (2):
+>       RDMA/counters: Properly implement PID checks
+>       RDMA/restrack: Rewrite PID namespace check to be reliable
+>=20
+> Moni Shoua (4):
+>       IB/mlx5: Consolidate use_umr checks into single function
+>       IB/mlx5: Report and handle ODP support properly
+>       IB/mlx5: Fix MR re-registration flow to use UMR properly
+>       IB/mlx5: Block MR WR if UMR is not possible
+>=20
+> Selvin Xavier (1):
+>       RDMA/bnxt_re: Fix stack-out-of-bounds in
+> bnxt_qplib_rcfw_send_message
+>=20
+> Wenwen Wang (3):
+>       IB/mlx4: Fix memory leaks
+>       infiniband: hfi1: fix a memory leak bug
+>       infiniband: hfi1: fix memory leaks
+>=20
+> zhengbin (1):
+>       RDMA/cma: fix null-ptr-deref Read in cma_cleanup
+>=20
+>  drivers/infiniband/core/cma.c              |  6 ++-
+>  drivers/infiniband/core/counters.c         | 10 ++--
+>  drivers/infiniband/core/nldev.c            |  3 +-
+>  drivers/infiniband/core/restrack.c         | 15 +++---
+>  drivers/infiniband/core/umem.c             |  7 +--
+>  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  8 ++-
+>  drivers/infiniband/hw/bnxt_re/qplib_rcfw.h | 11 ++--
+>  drivers/infiniband/hw/hfi1/fault.c         | 12 +++--
+>  drivers/infiniband/hw/hfi1/tid_rdma.c      | 76 ++++++++++-----------
+> ------
+>  drivers/infiniband/hw/mlx4/mad.c           |  4 +-
+>  drivers/infiniband/hw/mlx5/main.c          |  6 +--
+>  drivers/infiniband/hw/mlx5/mem.c           |  5 +-
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h       | 14 +++++
+>  drivers/infiniband/hw/mlx5/mr.c            |  7 ++-
+>  drivers/infiniband/hw/mlx5/odp.c           | 17 ++++---
+>  drivers/infiniband/hw/mlx5/qp.c            | 24 +++++++--
+>  drivers/infiniband/sw/siw/siw.h            |  8 +--
+>  drivers/infiniband/sw/siw/siw_cm.c         | 82 ++++++++++++++-------
+> ---------
+>  drivers/infiniband/sw/siw/siw_cq.c         |  5 +-
+>  drivers/infiniband/sw/siw/siw_mem.c        | 14 ++---
+>  drivers/infiniband/sw/siw/siw_mem.h        |  2 +-
+>  drivers/infiniband/sw/siw/siw_qp.c         |  2 +-
+>  drivers/infiniband/sw/siw/siw_qp_rx.c      | 26 +++++-----
+>  drivers/infiniband/sw/siw/siw_qp_tx.c      | 80 ++++++++++++++-------
+> --------
+>  drivers/infiniband/sw/siw/siw_verbs.c      | 40 +++++++--------
+>  include/rdma/restrack.h                    |  3 +-
+>  26 files changed, 248 insertions(+), 239 deletions(-)
+>=20
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-d9vBLQc5DZJC2HMDiJ6l
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1gOwkACgkQuCajMw5X
+L90DKQ//fSAE4ev1OxxfyQzo9HhweIbuZNeY1Iq66mBhDQl6BJUfDq1nZyLxV/Ab
+vxhCookz3SVn1ItQ4JUrW1LJF9qvuHdRQvWm9KnVhDqRyRvUxkgz8Mxjvr8G8/8h
+cWwI9PYdcR/yOKNPA4rQ4OGBdVGJePgKdfkFuLojR28KAh4i0XWnJEnsKXEADbGO
+qqh86Jv2x+wIkaunEOBjMfYdvDz7VhXWuy4Jelqc2WxjbBYPsEXcSWgHB342XTbK
+j+eBUMv0O+ns4er5ckIefNKWEp/1HK3JI+x2gvRNdy9oBdsYrwnB+5Zkhnohoj8y
+cZYT3jOwEFKvy0Tt6txcy3KZOzA3gRm3edmg4Ld3FpN5bQ6EGQ0CzGdu7CADCvCg
+/EmYmVashRxp71QLmP/jKdK3bBHs5NC/he3lkUnzSfNdNlX/JVi//XtztFb8gmRD
+GIWdEvIBiy5wVoXJ1NKDySbc7SVxhKSUyuPPqxBMp0utxvXOBo3IGu3BHj1UKqUe
+bTFyaZWnjsrfW8EvYnanuLqCkateNPqs3xUbEmC/kwx5mipcTz9KsJG8+CSUJM+7
+drape5hCjo/NESn8VPPc8RHZngIILH/9OpHmRfXApLTwTEaGGW8AiMNqKIXnUhch
+Fnj5U717adEC3sVsWLbpYk8Tl4pXL1EE72RhEzHjSHr3s4eMPBY=
+=kyjY
+-----END PGP SIGNATURE-----
+
+--=-d9vBLQc5DZJC2HMDiJ6l--
 
