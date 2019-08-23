@@ -2,126 +2,251 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FF19B8B4
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Aug 2019 01:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5886F9B8C7
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Aug 2019 01:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726378AbfHWXCq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Aug 2019 19:02:46 -0400
-Received: from mail-pf1-f172.google.com ([209.85.210.172]:42906 "EHLO
-        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbfHWXCp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Aug 2019 19:02:45 -0400
-Received: by mail-pf1-f172.google.com with SMTP id i30so7441869pfk.9
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Aug 2019 16:02:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=3VU/a/WV3CucsoLfYy+9X5VdQSeMRLMiGTmnNwiYjXQ=;
-        b=QVJnnR4WB0JEMqKMCqPBaKfrR13n3UBDXXyVkFL5wKJxs7nN9KQxIr/3cHAlywW2AH
-         NU4occX/bMwa6z6gXJGk92yn3T/yq1ZXGdWG13nVgteJCEEk/0zMnoE5Xx9iyn/0gSSs
-         cLmrklngMu7DGODA/mML575T2PNyajRKve7rpRdGqKJUDrxytcIePbuaU6skywXD+Lac
-         m3+pHLNiyOsBZPzlGKI7TSdHFegythmul8VEPpGF96Lpb32LHGiGFM3kYh1rwTIjwnpw
-         9yTEuCeWcU5UBSvo925B+A+HvHtA6T8lm4oCJzG/A5vgA7teeQx64JcB0BeV8DF8ZSpa
-         u2yQ==
-X-Gm-Message-State: APjAAAW9ExkB82D+DpgwrvS6+K0guL3KUuV9oBHAIwcpmXc5eemwtjn+
-        AQmCCtMzyJf16TacS7+i/tjpAYfH
-X-Google-Smtp-Source: APXvYqzU6SxAzOXoUR+w+ahXyAOIKDuae/954Vv26Cl+ankT2dmHCh+lABHhKofC1/WRYsBnjuY8QQ==
-X-Received: by 2002:a63:fc52:: with SMTP id r18mr6030059pgk.378.1566601364469;
-        Fri, 23 Aug 2019 16:02:44 -0700 (PDT)
-Received: from asus.site ([2601:647:4000:1349:56c2:95e9:3c7:9c11])
-        by smtp.gmail.com with ESMTPSA id u74sm9242567pjb.26.2019.08.23.16.02.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Aug 2019 16:02:43 -0700 (PDT)
-From:   Bart Van Assche <bvanassche@acm.org>
-Subject: siw trigger BUG: sleeping function called from invalid context at
- mm/slab.h:50
-To:     Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org
-Message-ID: <6ed77231-800b-f629-5d15-14409f0777c7@acm.org>
-Date:   Fri, 23 Aug 2019 16:02:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727066AbfHWXYo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Aug 2019 19:24:44 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:51980 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727065AbfHWXYo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Aug 2019 19:24:44 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 7325D36955;
+        Fri, 23 Aug 2019 23:24:43 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9F0AF5D6B2;
+        Fri, 23 Aug 2019 23:24:42 +0000 (UTC)
+Message-ID: <558c67120506011fdb903a18b56ce494a202405f.camel@redhat.com>
+Subject: Re: [PULL REQUEST] Please pull rdma.git
+From:   Doug Ledford <dledford@redhat.com>
+To:     "dledford@redhat.com" <dledford@redhat.com>
+Cc:     "Gunthorpe, Jason" <jgg@ziepe.ca>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Date:   Fri, 23 Aug 2019 19:24:40 -0400
+In-Reply-To: <324f57e86a1e9240657dd0c3beede10d6c89baea.camel@redhat.com>
+References: <5b0aa103f6007e1887f9b2cacaec8015834589b8.camel@xsintricity.com>
+         <324f57e86a1e9240657dd0c3beede10d6c89baea.camel@redhat.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-u4vYlDaGMr3xaT0zWXPa"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.30]); Fri, 23 Aug 2019 23:24:43 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Bernard,
 
-If I try to associate the ib_srpt driver with the siw driver the
-complaint shown below appears on the console. In iw_cm_listen() I
-found the following:
+--=-u4vYlDaGMr3xaT0zWXPa
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-         [ ... ]
-	spin_lock_irqsave(&cm_id_priv->lock, flags);
-	switch (cm_id_priv->state) {
-	case IW_CM_STATE_IDLE:
-		cm_id_priv->state = IW_CM_STATE_LISTEN;
-		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-		ret = iw_cm_map(cm_id, false);
-		if (!ret)
-			ret = cm_id->device->ops.iw_create_listen(cm_id,
-								  backlog);
-		if (ret)
-			cm_id_priv->state = IW_CM_STATE_IDLE;
-		spin_lock_irqsave(&cm_id_priv->lock, flags);
-		break;
-	default:
-		ret = -EINVAL;
-	}
-	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-         [ ... ]
+The mixup with me sending the original pull request from the wrong
+address kept the pull request from appearing on the lists, but not from
+Linus' mailbox.  As a result, it's been taken, but there doesn't appear
+to be any pr-tracker-bot update forthcoming.  So I decided I'd let y'all
+know ;-)
 
-So it surprises me that siw_listen_address() calls a function that
-can sleep. Do you think this is a correct analysis of the call trace
-shown below?
+Deet-doot-dot I am *not* a bot.
 
-Thanks,
+On Fri, 2019-08-23 at 15:14 -0400, Doug Ledford wrote:
+> Hi Linus,
+>=20
+> I didn't notice I was on my personal email identity when I sent the
+> pull
+> request.  Sorry about that.  It's really me ;-)
+>=20
+> On Fri, 2019-08-23 at 14:48 -0400, Doug Ledford wrote:
+> > Hi Linus,
+> >=20
+> > No beating around the bush: this is a monster pull request for an
+> > -rc5
+> > kernel.  Intel hit me with a series of fixes for TID processing.=20
+> > Mellanox hit me with a series for their UMR memory support.
+> >=20
+> > And we had one fix for siw that fixes the 32bit build warnings and
+> > because of the number of casts that had to be changed to properly
+> > silence the warnings, that one patch alone is a full 40% of the LOC
+> > of
+> > this entire pull request.  Given that this is the initial release
+> > kernel
+> > for siw, I'm trying to fix anything in it that we can, so that adds
+> > to
+> > the impetus to take fixes for it like this one.
+> >=20
+> > I had to do a rebase early in the week.  Jason had thought he put a
+> > patch on the rc queue that he needed to be there so he could base
+> > some
+> > work off of it, and it had actually not been placed there.  So he
+> > asked
+> > me (on Tuesday) to fix that up before pushing my wip branch to the
+> > official rc branch.  I did, and that's why the early patches look
+> > like
+> > they were all committed at the same time on Tuesday.  That bunch had
+> > been in my queue prior.
+> >=20
+> > The various patches all pass my test for being legitimate fixes and
+> > not
+> > attempts to slide new features or development into a late rc.  Well,
+> > they were all fixes with the exception of a couple clean up patches
+> > people wrote for making the fixes they also wrote better (like a
+> > cleanup
+> > patch to move UMR checking into a function so that the remaining UMR
+> > fix
+> > patches can reference that function), so I left those in place too.
+> >=20
+> > My apologies for the LOC count and the number of patches here, it's
+> > just
+> > how the cards fell this cycle.  I hope you agree with me that
+> > they're
+> > justified fixes.
+> >=20
+> > Here's the boilerplate:
+> >=20
+> > The following changes since commit
+> > d1abaeb3be7b5fa6d7a1fbbd2e14e3310005c4c1:
+> >=20
+> >   Linux 5.3-rc5 (2019-08-18 14:31:08 -0700)
+> >=20
+> > are available in the Git repository at:
+> >=20
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
+> > tags/for-linus
+> >=20
+> > for you to fetch changes up to
+> > c536277e0db1ad2e9fbb9dfd940c3565a14d9c52:
+> >=20
+> >   RDMA/siw: Fix 64/32bit pointer inconsistency (2019-08-23 12:08:27
+> > -0400)
+> >=20
+> > ----------------------------------------------------------------
+> > Pull request for 5.3-rc5
+> >=20
+> > - Fix siw buffer mapping issue
+> > - Fix siw 32/64 casting issues
+> > - Fix a KASAN access issue in bnxt_re
+> > - Fix several memory leaks (hfi1, mlx4)
+> > - Fix a NULL deref in cma_cleanup
+> > - Fixes for UMR memory support in mlx5 (4 patch series)
+> > - Fix namespace check for restrack
+> > - Fixes for counter support
+> > - Fixes for hfi1 TID processing (5 patch series)
+> > - Fix potential NULL deref in siw
+> > - Fix memory page calculations in mlx5
+> >=20
+> > Signed-off-by: Doug Ledford <dledford@redhat.com>
+> >=20
+> > ----------------------------------------------------------------
+> > Bernard Metzler (3):
+> >       RDMA/siw: Fix potential NULL de-ref
+> >       RDMA/siw: Fix SGL mapping issues
+> >       RDMA/siw: Fix 64/32bit pointer inconsistency
+> >=20
+> > Ido Kalir (1):
+> >       IB/core: Fix NULL pointer dereference when bind QP to counter
+> >=20
+> > Jason Gunthorpe (1):
+> >       RDMA/mlx5: Fix MR npages calculation for IB_ACCESS_HUGETLB
+> >=20
+> > Kaike Wan (5):
+> >       IB/hfi1: Drop stale TID RDMA packets
+> >       IB/hfi1: Unsafe PSN checking for TID RDMA READ Resp packet
+> >       IB/hfi1: Add additional checks when handling TID RDMA READ
+> > RESP
+> > packet
+> >       IB/hfi1: Add additional checks when handling TID RDMA WRITE
+> > DATA
+> > packet
+> >       IB/hfi1: Drop stale TID RDMA packets that cause TIDErr
+> >=20
+> > Leon Romanovsky (2):
+> >       RDMA/counters: Properly implement PID checks
+> >       RDMA/restrack: Rewrite PID namespace check to be reliable
+> >=20
+> > Moni Shoua (4):
+> >       IB/mlx5: Consolidate use_umr checks into single function
+> >       IB/mlx5: Report and handle ODP support properly
+> >       IB/mlx5: Fix MR re-registration flow to use UMR properly
+> >       IB/mlx5: Block MR WR if UMR is not possible
+> >=20
+> > Selvin Xavier (1):
+> >       RDMA/bnxt_re: Fix stack-out-of-bounds in
+> > bnxt_qplib_rcfw_send_message
+> >=20
+> > Wenwen Wang (3):
+> >       IB/mlx4: Fix memory leaks
+> >       infiniband: hfi1: fix a memory leak bug
+> >       infiniband: hfi1: fix memory leaks
+> >=20
+> > zhengbin (1):
+> >       RDMA/cma: fix null-ptr-deref Read in cma_cleanup
+> >=20
+> >  drivers/infiniband/core/cma.c              |  6 ++-
+> >  drivers/infiniband/core/counters.c         | 10 ++--
+> >  drivers/infiniband/core/nldev.c            |  3 +-
+> >  drivers/infiniband/core/restrack.c         | 15 +++---
+> >  drivers/infiniband/core/umem.c             |  7 +--
+> >  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  8 ++-
+> >  drivers/infiniband/hw/bnxt_re/qplib_rcfw.h | 11 ++--
+> >  drivers/infiniband/hw/hfi1/fault.c         | 12 +++--
+> >  drivers/infiniband/hw/hfi1/tid_rdma.c      | 76 ++++++++++---------
+> > --
+> > ------
+> >  drivers/infiniband/hw/mlx4/mad.c           |  4 +-
+> >  drivers/infiniband/hw/mlx5/main.c          |  6 +--
+> >  drivers/infiniband/hw/mlx5/mem.c           |  5 +-
+> >  drivers/infiniband/hw/mlx5/mlx5_ib.h       | 14 +++++
+> >  drivers/infiniband/hw/mlx5/mr.c            |  7 ++-
+> >  drivers/infiniband/hw/mlx5/odp.c           | 17 ++++---
+> >  drivers/infiniband/hw/mlx5/qp.c            | 24 +++++++--
+> >  drivers/infiniband/sw/siw/siw.h            |  8 +--
+> >  drivers/infiniband/sw/siw/siw_cm.c         | 82 ++++++++++++++-----
+> > --
+> > ---------
+> >  drivers/infiniband/sw/siw/siw_cq.c         |  5 +-
+> >  drivers/infiniband/sw/siw/siw_mem.c        | 14 ++---
+> >  drivers/infiniband/sw/siw/siw_mem.h        |  2 +-
+> >  drivers/infiniband/sw/siw/siw_qp.c         |  2 +-
+> >  drivers/infiniband/sw/siw/siw_qp_rx.c      | 26 +++++-----
+> >  drivers/infiniband/sw/siw/siw_qp_tx.c      | 80 ++++++++++++++-----
+> > --
+> > --------
+> >  drivers/infiniband/sw/siw/siw_verbs.c      | 40 +++++++--------
+> >  include/rdma/restrack.h                    |  3 +-
+> >  26 files changed, 248 insertions(+), 239 deletions(-)
+> >=20
 
-Bart.
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-Target_Core_ConfigFS: REGISTER -> Allocated Fabric: srpt
-iwpm_register_pid: Unable to send a nlmsg (client = 2)
-BUG: sleeping function called from invalid context at mm/slab.h:501
-in_atomic(): 1, irqs_disabled(): 0, pid: 1097, name: restart-lio-srp
-4 locks held by restart-lio-srp/1097:
-  #0: 0000000083aba319 (sb_writers#11){.+.+}, at: vfs_write+0x24a/0x2c0
-  #1: 00000000dc6d2df5 (&buffer->mutex){+.+.}, at: configfs_write_file+0x4e/0x1d0 [configfs]
-  #2: 000000004db62204 (lock#7){+.+.}, at: rdma_listen+0x34c/0x450 [rdma_cm]
-  #3: 00000000ca45d89f (&ndev->lock){++--}, at: siw_create_listen+0x1d1/0x8b0 [siw]
-Preemption disabled at:
-[<ffffffffa0db6071>] siw_create_listen+0x1d1/0x8b0 [siw]
-CPU: 0 PID: 1097 Comm: restart-lio-srp Not tainted 5.3.0-rc5-dbg+ #2
-Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
-Call Trace:
-  dump_stack+0x8a/0xd6
-  ___might_sleep.cold+0x128/0x139
-  __might_sleep+0x76/0xe0
-  kmem_cache_alloc+0x2b4/0x3a0
-  sock_alloc_inode+0x20/0xf0
-  alloc_inode+0x34/0xe0
-  new_inode_pseudo+0x17/0x90
-  sock_alloc+0x2f/0x110
-  __sock_create+0x61/0x360
-  sock_create+0x5f/0x70
-  siw_listen_address+0xbe/0x630 [siw]
-  siw_create_listen+0x2f5/0x8b0 [siw]
-  iw_cm_listen+0xd9/0x110 [iw_cm]
-  rdma_listen+0x32e/0x450 [rdma_cm]
-  cma_listen_on_dev+0x276/0x290 [rdma_cm]
-  rdma_listen+0x3c7/0x450 [rdma_cm]
-  srpt_create_rdma_id+0xc8/0x120 [ib_srpt]
-  srpt_rdma_cm_port_store+0x1a0/0x1f0 [ib_srpt]
-  configfs_write_file+0x15c/0x1d0 [configfs]
-  __vfs_write+0x4c/0x90
-  vfs_write+0x145/0x2c0
-  ksys_write+0xd7/0x180
-  __x64_sys_write+0x47/0x50
-  do_syscall_64+0x75/0x280
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[...]
-siw: device registration error -23
+--=-u4vYlDaGMr3xaT0zWXPa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1gdbgACgkQuCajMw5X
+L91SXg//b7w6iFPstbotOkdpFBAAivWmIM2gwn6rZ9OpYTpq3JyF/pnFSUyg6aoJ
+gO9+j0Kc1YAbAuwgXemRz0TmbvOeHDx2j4LBY3ZD+F5BFsYmzfTqESqPrtbtN9J0
+h+RNaBgCq5bLo+POE1EzENhmdtGwKJz3JAlf5V/OpgbKG2kr6LQ+dH0/oE4DkSVa
+fvES/AiONqW7RpqfKgjX7IrAOW0+qNBO0l5TXsthH9E+aSVso17+a3QiFEqiRanW
+MpJoXNe+xUQOP3cYXBiX5rk87EzzBsKLVFrUwrq0npOuY9cRs64+YxC+7rdiHoa8
+Z0fqe4kzbbXEB1PADXRCQt36x1jI475j8R9cDrezTLxZTeqmDG6VF1+1UamV65NC
+nzGYSQEkmqtKGguj0MhFinbj7rjtBZyoi1GabzDn5iP9N2PcBI99SwfVNDfV+176
+KU85xwG2Kv1ENRubtgp9H8wrwm4ushZjMB47KC8Fsn4J5CYOap+ukjSHtMYXT0uJ
+L/qCW+eMwogq2Cx0srSXBWC560WnNjrDx/tUAAPHd4fg6DXspZgt+VoAmuG2hacQ
+/K2QFJgCx9u/gSnkJhoM9aH2KBZO6oiPBD5c2w2kW4mMTYGR+H76qeDfvPN9lcJI
+r1Dv2TyYCyGC4/1jl4+iUflZSiiyIsuN+FZv9Qfl6y04qiU1xEk=
+=BCIJ
+-----END PGP SIGNATURE-----
+
+--=-u4vYlDaGMr3xaT0zWXPa--
+
