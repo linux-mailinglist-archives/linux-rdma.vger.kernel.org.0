@@ -2,110 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8869B777
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 21:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACEDF9B83C
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 23:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387956AbfHWT4o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Aug 2019 15:56:44 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:46386 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387860AbfHWT4o (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Aug 2019 15:56:44 -0400
-Received: by mail-qk1-f195.google.com with SMTP id p13so9235537qkg.13
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Aug 2019 12:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=vTaAshi9pluGjENrrfftMicTMpjOrhGopwZB6hzguXI=;
-        b=XmdnQ3XPOSwrLu3tByxh+ZVBCu+8gf4v3QrEQR7MLi6j6hCE30XvsnJlLL3xDZlsdg
-         V1QEtfzdpAf2+cNrL+4PWXQ1bkdi4NPtQUY21KiBJBxJjlLTYKtN1Ev401gmS8S9+QBa
-         rrse08tR0y5CdeiPpQM5Lr6s/vZBeJS0OcSoV0Zcn+GSOtvQmMs4JWZz2HzJ5oNt6S0e
-         SLjINAoTnzuj3cLyU+aKUhFN9ity7DDqvCICkoz9933SUyRY5JR1DTyKatCz8RQMw8Zr
-         8KoaRwTw14XZYst0RkajkIELjTnq6a7JkugjoJ37Y9ZCFdWmqih+POIn4bBq7NMGOT8Y
-         o7OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=vTaAshi9pluGjENrrfftMicTMpjOrhGopwZB6hzguXI=;
-        b=sgRriGXrjnk63laXBehC0WWskMnDVh8f4oJJRBF7l69NLGUHlL5R/67+VfRNOQkxqL
-         VdbLsr0zDGdL3QBcwWImUXx4+yVbjokTfK7k3bgSzxdH2Otb1xrJYazkQfRacyWCAYnX
-         SXMThJWUPro5yF39DK8eqtKj6tKMEXlCk1QQh3FWrQYi5YCvW0l4BOTGH+8Ka9PvHRn6
-         uuTPNEsMxtaASlml5wUBOrINt5N0siIMmwf0EqVJXE6uQ2tRcxk5teoCvfLThIH6Xp+y
-         iB/1obZh8gvXZQEqmy2Aw/+/NmvadY72YsKp+JM0B/j8jbzHHyEL+H673RB9LRBhXSl2
-         nR3w==
-X-Gm-Message-State: APjAAAXdcWgCs/7RG82CF/4Av7EgS59FQjDrMHmON5cvWWsPeJGZLv8t
-        Fy3aYUL0R/V/RhhUpWrk3ZM+HA==
-X-Google-Smtp-Source: APXvYqxgf5wgeiL6ufbZ334VqWwMQGezy5CWWm0nzrMhCFpi0O8GIzGoB/gmIFkF6u6wtWR6LRzjFQ==
-X-Received: by 2002:a37:9c88:: with SMTP id f130mr5826483qke.494.1566590203704;
-        Fri, 23 Aug 2019 12:56:43 -0700 (PDT)
-Received: from qcai.nay.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
-        by smtp.gmail.com with ESMTPSA id n21sm2159771qtc.70.2019.08.23.12.56.41
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 23 Aug 2019 12:56:42 -0700 (PDT)
-From:   Qian Cai <cai@lca.pw>
-To:     saeedm@mellanox.com
-Cc:     leon@kernel.org, davem@davemloft.net, moshe@mellanox.com,
-        ferasda@mellanox.com, eranbe@mellanox.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qian Cai <cai@lca.pw>
-Subject: [PATCH] net/mlx5: fix a -Wstringop-truncation warning
-Date:   Fri, 23 Aug 2019 15:56:23 -0400
-Message-Id: <1566590183-9898-1-git-send-email-cai@lca.pw>
-X-Mailer: git-send-email 1.8.3.1
+        id S2392812AbfHWVdL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 23 Aug 2019 17:33:11 -0400
+Received: from mga03.intel.com ([134.134.136.65]:23346 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392807AbfHWVdL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Aug 2019 17:33:11 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Aug 2019 14:33:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,422,1559545200"; 
+   d="scan'208";a="378989703"
+Received: from fmsmsx104.amr.corp.intel.com ([10.18.124.202])
+  by fmsmga005.fm.intel.com with ESMTP; 23 Aug 2019 14:33:10 -0700
+Received: from fmsmsx120.amr.corp.intel.com (10.18.124.208) by
+ fmsmsx104.amr.corp.intel.com (10.18.124.202) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 23 Aug 2019 14:33:10 -0700
+Received: from crsmsx152.amr.corp.intel.com (172.18.7.35) by
+ fmsmsx120.amr.corp.intel.com (10.18.124.208) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 23 Aug 2019 14:33:09 -0700
+Received: from crsmsx102.amr.corp.intel.com ([169.254.2.72]) by
+ CRSMSX152.amr.corp.intel.com ([169.254.5.138]) with mapi id 14.03.0439.000;
+ Fri, 23 Aug 2019 15:33:07 -0600
+From:   "Weiny, Ira" <ira.weiny@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     Yuval Shaia <yuval.shaia@oracle.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Moni Shoua <monis@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        "Mark Zhang" <markz@mellanox.com>,
+        "swise@opengridcomputing.com" <swise@opengridcomputing.com>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        Mark Bloch <markb@mellanox.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Israel Rukshin <israelr@mellanox.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "Denis Drozdov" <denisd@mellanox.com>,
+        Yuval Avnery <yuvalav@mellanox.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        "will@kernel.org" <will@kernel.org>,
+        Erez Alfasi <ereza@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Shamir Rabinovitch <srabinov7@gmail.com>
+Subject: RE: [PATCH v1 00/24] Shared PD and MR
+Thread-Topic: [PATCH v1 00/24] Shared PD and MR
+Thread-Index: AQHVWCvZmDSd66uZEUuzBhvtgWBiJKcGMbcAgAENL4CAABWyAIAAdp+A///NYNCAAW+PAIAANQcQ
+Date:   Fri, 23 Aug 2019 21:33:06 +0000
+Message-ID: <2807E5FD2F6FDA4886F6618EAC48510E898B2F17@CRSMSX102.amr.corp.intel.com>
+References: <20190821142125.5706-1-yuval.shaia@oracle.com>
+ <20190821233736.GG5965@iweiny-DESK2.sc.intel.com>
+ <20190822084102.GA2898@lap1>
+ <20190822165841.GA17588@iweiny-DESK2.sc.intel.com>
+ <20190822170309.GC8325@mellanox.com>
+ <2807E5FD2F6FDA4886F6618EAC48510E898ADD18@CRSMSX102.amr.corp.intel.com>
+ <20190823115731.GA12847@mellanox.com>
+In-Reply-To: <20190823115731.GA12847@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiNmUzNzM0MWItOGExZS00ZDE0LTliYzktNGEwMGI5MmYyNjU4IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiSjdvNllqcXNCaWdJcjNkcUN1cDcrdDZtaVNHVDdFS3h0S1wvanlYbDU2akxEZXhWQzVzUDdNcVwvaElyY1U2QndGIn0=
+x-ctpclassification: CTP_NT
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [172.18.205.10]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In file included from ./arch/powerpc/include/asm/paca.h:15,
-                 from ./arch/powerpc/include/asm/current.h:13,
-                 from ./include/linux/thread_info.h:21,
-                 from ./include/asm-generic/preempt.h:5,
-                 from ./arch/powerpc/include/generated/asm/preempt.h:1,
-                 from ./include/linux/preempt.h:78,
-                 from ./include/linux/spinlock.h:51,
-                 from ./include/linux/wait.h:9,
-                 from ./include/linux/completion.h:12,
-                 from ./include/linux/mlx5/driver.h:37,
-                 from
-drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h:6,
-                 from
-drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:33:
-In function 'strncpy',
-    inlined from 'mlx5_fw_tracer_save_trace' at
-drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:549:2,
-    inlined from 'mlx5_tracer_print_trace' at
-drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:574:2:
-./include/linux/string.h:305:9: warning: '__builtin_strncpy' output may
-be truncated copying 256 bytes from a string of length 511
-[-Wstringop-truncation]
-  return __builtin_strncpy(p, q, size);
-         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> Subject: Re: [PATCH v1 00/24] Shared PD and MR
+> 
+> On Thu, Aug 22, 2019 at 08:10:09PM +0000, Weiny, Ira wrote:
+> > > On Thu, Aug 22, 2019 at 09:58:42AM -0700, Ira Weiny wrote:
+> > >
+> > > > Add to your list "how does destruction of a MR in 1 process get
+> > > > communicated to the other?"  Does the 2nd process just get failed
+> WR's?
+> > >
+> > > IHMO a object that has been shared can no longer be asynchronously
+> destroyed.
+> > > That is the whole point. A lkey/rkey # alone is inherently unsafe
+> > > without also holding a refcount on the MR.
+> > >
+> > > > I have some of the same concerns as Doug WRT memory sharing.
+> FWIW
+> > > > I'm not sure that what SCM_RIGHTS is doing is safe or correct.
+> > > >
+> > > > For that work I'm really starting to think SCM_RIGHTS transfers
+> > > > should be blocked.
+> > >
+> > > That isn't possible, SCM_RIGHTS is just some special case, fork(),
+> > > exec(), etc all cause the same situation. Any solution that blocks those is a
+> total non-starter.
+> >
+> > Right, except in the case of fork(), exec() all of the file system
+> > references which may be pinned also get copied.
+> 
+> And what happens one one child of the fork closes the reference, or exec with
+> CLOEXEC causes it to no inherent?
 
-Fix it by using the new strscpy_pad() since the commit 458a3bf82df4
-("lib/string: Add strscpy_pad() function") which will always
-NUL-terminate the string, and avoid possibly leak data through the ring
-buffer where non-admin account might enable these events through perf.
+Dave Chinner is suggesting the close will hang.  Exec with CLOEXEC would probably not because the RDMA close would release the pin allowing the close of the data file to finish...  At least as far as my testing has shown.
 
-Fixes: fd1483fe1f9f ("net/mlx5: Add support for FW reporter dump")
-Signed-off-by: Qian Cai <cai@lca.pw>
----
- drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> It completely breaks the unix model to tie something to a process not to a
+> FD.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-index 8a4930c8bf62..2011eaf15cc5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-@@ -546,7 +546,7 @@ static void mlx5_fw_tracer_save_trace(struct mlx5_fw_tracer *tracer,
- 	trace_data->timestamp = timestamp;
- 	trace_data->lost = lost;
- 	trace_data->event_id = event_id;
--	strncpy(trace_data->msg, msg, TRACE_STR_MSG);
-+	strscpy_pad(trace_data->msg, msg, TRACE_STR_MSG);
- 
- 	tracer->st_arr.saved_traces_index =
- 		(tracer->st_arr.saved_traces_index + 1) & (SAVED_TRACES_NUM - 1);
--- 
-1.8.3.1
+But that is just it.  Dave is advocating that the FD's must get transferred.  It has nothing to do with a process.
+
+I'm somewhat confused at this point because in this thread I was advocating that the RDMA context FD is what needs to get "shared" between the processes.  Is that what you are advocating as well?  Does this patch set do that?
+
+> 
+> > > Except for ODP, a MR doesn't reference the mm_struct. It references the
+> pages.
+> > > It is not unlike a memfd.
+> >
+> > I'm thinking of the owner_mm...  It is not like it is holding the
+> > entire process address space I know that.  But it is holding onto
+> > memory which Process A allocated.
+> 
+> It only hold the mm for some statistics accounting, it is really just holding
+> pages outside the mm.
+
+But those pages aren't necessarily mapped in Process B.  and if they are mapped in Process A then you are sending data to Process A not "B"...  That is one twisted way to look at it anyway...
+
+Ira
 
