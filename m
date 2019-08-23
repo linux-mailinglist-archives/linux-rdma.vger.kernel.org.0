@@ -2,117 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8119A450
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 02:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B859A47B
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 03:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731630AbfHWAgJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Aug 2019 20:36:09 -0400
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:5967 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731619AbfHWAgI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Aug 2019 20:36:08 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d5f34f80000>; Thu, 22 Aug 2019 17:36:08 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 22 Aug 2019 17:36:08 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 22 Aug 2019 17:36:08 -0700
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 23 Aug
- 2019 00:36:07 +0000
-Subject: Re: [PATCH v2 0/3] mm/gup: introduce vaddr_pin_pages_remote(),
- FOLL_PIN
+        id S1732536AbfHWBA3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Aug 2019 21:00:29 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:42419 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731564AbfHWBA3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 22 Aug 2019 21:00:29 -0400
+Received: from dread.disaster.area (pa49-181-142-13.pa.nsw.optusnet.com.au [49.181.142.13])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id B22C8362588;
+        Fri, 23 Aug 2019 11:00:22 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1i0xv8-0007PG-K9; Fri, 23 Aug 2019 10:59:14 +1000
+Date:   Fri, 23 Aug 2019 10:59:14 +1000
+From:   Dave Chinner <david@fromorbit.com>
 To:     Ira Weiny <ira.weiny@intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-References: <20190821040727.19650-1-jhubbard@nvidia.com>
- <20190823002443.GA19517@iweiny-DESK2.sc.intel.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <2f91e1a2-f82f-406a-600a-939bc07a0651@nvidia.com>
-Date:   Thu, 22 Aug 2019 17:36:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190823005914.GF1119@dread.disaster.area>
+References: <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
+ <20190815130558.GF14313@quack2.suse.cz>
+ <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
+ <20190817022603.GW6129@dread.disaster.area>
+ <20190819063412.GA20455@quack2.suse.cz>
+ <20190819092409.GM7777@dread.disaster.area>
+ <20190819123841.GC5058@ziepe.ca>
+ <20190820011210.GP7777@dread.disaster.area>
+ <20190820115515.GA29246@ziepe.ca>
+ <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20190823002443.GA19517@iweiny-DESK2.sc.intel.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1566520568; bh=XTi8KewFAAPPdzH/kxXHq8AUlFdgw9TNIY7CgXtissQ=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=IPR34iXbP32VBS6NawFx8vHbWCUpISM/8+gLYDeZ6Kn8p2dNebgZFMMZM36L06l9/
-         D5C9xcsy+TfGK3CuFf2rQpMA+u8LhLeA4IdVY2ZiH8cmDVjox21UIx+hCfjQxwRbwP
-         CzRFrnCGWC7SWeskityM3OIPQ4agRt87OI4q7DhiQ/K9Br7m5Uq2L+oMLR2W6y7IUL
-         mET+mAaJIL5IP+a9iN+n1n9EebRhfqym+VuStBKaHcCphfqLFPM9uT/TUFg6cQEuT9
-         WF3YqJmEjk5vFi8XYhA13YoR2Wai7R7gpFagUrT5OfutwJCqbHP/JG8A1AaYO7VwcC
-         Y4ZtFg9tjzDiA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
+        a=pdRIKMFd4+xhzJrg6WzXNA==:117 a=pdRIKMFd4+xhzJrg6WzXNA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=7-415B0cAAAA:8 a=lzGJWfNdbh4cDx3VhMgA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/22/19 5:24 PM, Ira Weiny wrote:
-> On Tue, Aug 20, 2019 at 09:07:24PM -0700, John Hubbard wrote:
->> Hi Ira,
->>
->> This is for your tree. I'm dropping the RFC because this aspect is
->> starting to firm up pretty well.
->>
->> I've moved FOLL_PIN inside the vaddr_pin_*() routines, and moved
->> FOLL_LONGTERM outside, based on our recent discussions. This is
->> documented pretty well within the patches.
->>
->> Note that there are a lot of references in comments and commit
->> logs, to vaddr_pin_pages(). We'll want to catch all of those if
->> we rename that. I am pushing pretty hard to rename it to
->> vaddr_pin_user_pages().
->>
->> v1 of this may be found here:
->> https://lore.kernel.org/r/20190812015044.26176-1-jhubbard@nvidia.com
+On Wed, Aug 21, 2019 at 11:02:00AM -0700, Ira Weiny wrote:
+> On Tue, Aug 20, 2019 at 08:55:15AM -0300, Jason Gunthorpe wrote:
+> > On Tue, Aug 20, 2019 at 11:12:10AM +1000, Dave Chinner wrote:
+> > > On Mon, Aug 19, 2019 at 09:38:41AM -0300, Jason Gunthorpe wrote:
+> > > > On Mon, Aug 19, 2019 at 07:24:09PM +1000, Dave Chinner wrote:
+> > > > 
+> > > > > So that leaves just the normal close() syscall exit case, where the
+> > > > > application has full control of the order in which resources are
+> > > > > released. We've already established that we can block in this
+> > > > > context.  Blocking in an interruptible state will allow fatal signal
+> > > > > delivery to wake us, and then we fall into the
+> > > > > fatal_signal_pending() case if we get a SIGKILL while blocking.
+> > > > 
+> > > > The major problem with RDMA is that it doesn't always wait on close() for the
+> > > > MR holding the page pins to be destoyed. This is done to avoid a
+> > > > deadlock of the form:
+> > > > 
+> > > >    uverbs_destroy_ufile_hw()
+> > > >       mutex_lock()
+> > > >        [..]
+> > > >         mmput()
+> > > >          exit_mmap()
+> > > >           remove_vma()
+> > > >            fput();
+> > > >             file_operations->release()
+> > > 
+> > > I think this is wrong, and I'm pretty sure it's an example of why
+> > > the final __fput() call is moved out of line.
+> > 
+> > Yes, I think so too, all I can say is this *used* to happen, as we
+> > have special code avoiding it, which is the code that is messing up
+> > Ira's lifetime model.
+> > 
+> > Ira, you could try unraveling the special locking, that solves your
+> > lifetime issues?
 > 
-> I am really sorry about this...
+> Yes I will try to prove this out...  But I'm still not sure this fully solves
+> the problem.
 > 
-> I think it is fine to pull these in...  There are some nits which are wrong but
-> I think with the XDP complication and Daves' objection I think the vaddr_pin
-> information is going to need reworking.  So the documentation there is probably
-> wrong.  But until we know what it is going to be we should just take this.
+> This only ensures that the process which has the RDMA context (RDMA FD) is safe
+> with regard to hanging the close for the "data file FD" (the file which has
+> pinned pages) in that _same_ process.  But what about the scenario.
 > 
-
-Sure, I was thinking the same thing: FOLL_PIN is clearing up, but vaddr_pin_pages() 
-is still under heavy discussion.
-
-
-> Do you have a branch with this on it?
+> Process A has the RDMA context FD and data file FD (with lease) open.
 > 
+> Process A uses SCM_RIGHTS to pass the RDMA context FD to Process B.
 
-Yes, it's on: git@github.com:johnhubbard/linux.git , branch: vaddr_FOLL_PIN_next
+Passing the RDMA context dependent on a file layout lease to another
+process that doesn't have a file layout lease or a reference to the
+original lease should be considered a violation of the layout lease.
+Process B does not have an active layout lease, and so by the rules
+of layout leases, it is not allowed to pin the layout of the file.
 
-
-> The patches don't seem to apply.  Looks like they got corrupted somewhere...
+> Process A attempts to exit (hangs because data file FD is pinned).
 > 
+> Admin kills process A.  kill works because we have allowed for it...
+> 
+> Process B _still_ has the RDMA context FD open _and_ therefore still holds the
+> file pins.
+> 
+> Truncation still fails.
+> 
+> Admin does not know which process is holding the pin.
+> 
+> What am I missing?
 
-Lately I'm trying out .nvidia.com outgoing servers for git-send-email, so I'm 
-still nervous about potential email-based patch problems. I suspect, though,
-that it's really just a "must be on exactly the right commit in order to apply"
-situation. Please let me know, so I can make any corrections necessary on this end.
+Application does not hold the correct file layout lease references.
+Passing the fd via SCM_RIGHTS to a process without a layout lease
+is equivalent to not using layout leases in the first place.
 
+Cheers,
 
-thanks,
+Dave.
 -- 
-John Hubbard
-NVIDIA
+Dave Chinner
+david@fromorbit.com
