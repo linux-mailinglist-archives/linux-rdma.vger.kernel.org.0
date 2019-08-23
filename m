@@ -2,218 +2,234 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A139B189
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 16:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAAB59B1B9
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 16:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389958AbfHWOEW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Aug 2019 10:04:22 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54228 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726894AbfHWOEW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Aug 2019 10:04:22 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7NE4EWt067263;
-        Fri, 23 Aug 2019 14:04:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2019-08-05;
- bh=IDxcKcBV6zGKVEQdfou/OVhAl7PAzAEZMKbLS7MrvG0=;
- b=Tde+ZdWXnNeVakcmrK+++e/KK/perHHv93N1TRY4ooLzHhb0PJy5+24BiBhn9tT9JU/C
- ExiPyOb58vxpB8NNVKOEvJodIcTUL5aIIHnXHUMlq7LoFPXh1k+ot+88/IhmEFcDujyN
- LDBqaLsb5eFO4rzgZEnMtvPs8kd91R+Xr7JxrypSotAO1HQGSmesMuyx9C14bQpQsBm/
- dEwxKsw0qQhopbpOkPHaJcEGi5gKGrlomWgQPR5Ax9vqs5d8Ph/rZ4oB3OwyKT+rLIRF
- ldrFTgMOXTIgUf1p0zCns9Kd8Xuv+mFKtS49FiE8i3z64dyvrxSq9Mj3b6bbmO21Utlf Zw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2ue90u52p5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Aug 2019 14:04:14 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7NDw8th027288;
-        Fri, 23 Aug 2019 14:04:13 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 2ujca84w6v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 23 Aug 2019 14:04:13 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7NE4DqK048844;
-        Fri, 23 Aug 2019 14:04:13 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2ujca84w6a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Aug 2019 14:04:13 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7NE4CPS027028;
-        Fri, 23 Aug 2019 14:04:12 GMT
-Received: from dm-oel.no.oracle.com (/10.172.157.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 23 Aug 2019 07:04:12 -0700
-From:   Dag Moxnes <dag.moxnes@oracle.com>
-To:     santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Cc:     davem@davemloft.net, dag.moxnes@oracle.com
-Subject: [PATCH net-next] net/rds: Whitelist rdma_cookie and rx_tstamp for usercopy
-Date:   Fri, 23 Aug 2019 16:03:18 +0200
-Message-Id: <1566568998-26222-1-git-send-email-dag.moxnes@oracle.com>
-X-Mailer: git-send-email 1.7.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9357 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908230146
+        id S2388563AbfHWORy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Aug 2019 10:17:54 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:41240 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388188AbfHWORy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Aug 2019 10:17:54 -0400
+Received: by mail-lj1-f195.google.com with SMTP id m24so9004082ljg.8
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Aug 2019 07:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=golem.network; s=google;
+        h=subject:from:to:cc:references:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tzCi7ejmdr33Lx8YTUwMRmX9I0WBLbrMuyS2XUAys4U=;
+        b=BK0j+Q7WocfO2PWy2drxQk1wtzj+/idYcOdCY7lGGH8vZyRr6ZsaayUBVYuUxgQKxp
+         pJeERLftwHFHpHpfDYUXuz4S98EykpBctyli8vAFWkXfKmqXWGQbq2ksuOiXmcJ7B5TH
+         ZZWDFSD5qb9VbGbeH/aHMISqS40Br145moYxw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=tzCi7ejmdr33Lx8YTUwMRmX9I0WBLbrMuyS2XUAys4U=;
+        b=oa5rX+FnwF9yXuzyLYn1hNWofsn2SX1G6CeRkpljrREjYdw7smheB/gOf60ihSoWSE
+         7qxQgoSRiCzKD/u9G+AfYPVpTzrm5S+uTxk2e6bk2WXdJARiJGAEKX5jmmNaTLopdzuG
+         GdK9aZTgbBaoeom48twDGwPNIdxCXzAdMG6UVk2S/1KZOs5Maa7C9aAwZOa470R2fNRG
+         smsfwzGQe2cylnJMYeQD0lsaHNwBYDOSWk3LX4fAY2X2ast3gubygXb0ItbZu3ZVKO3/
+         yYfRSgTWBVQPoNibNQa3tIXwp9S6BpxPCVbKjVbSUQrdYBKPQjBUFY8AivTCZNYiuckS
+         Pj6A==
+X-Gm-Message-State: APjAAAXys6VOlnKhpcrMmMCo6zejMKwsncCrGreaQRw6lr7mr3oEIeBb
+        9yxuJs21ohqkJ3GmpxH7VAN/zOBv2aY=
+X-Google-Smtp-Source: APXvYqw9Lxtfa/Zdc14HyKhQmrlRZNRcOy6yFavy/xQ7P6OaSSIrmALeCBeawchXK8AoLeBMl2nLcw==
+X-Received: by 2002:a2e:5c45:: with SMTP id q66mr3048717ljb.197.1566569871346;
+        Fri, 23 Aug 2019 07:17:51 -0700 (PDT)
+Received: from [10.30.8.152] (5-226-70-4.static.ip.netia.com.pl. [5.226.70.4])
+        by smtp.gmail.com with ESMTPSA id w196sm564284lff.80.2019.08.23.07.17.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Aug 2019 07:17:50 -0700 (PDT)
+Subject: Re: Setting up siw devices
+From:   Marcin Mielniczuk <marcin@golem.network>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Krishnamraju Eraparaju <krishna2@chelsio.com>
+Cc:     linux-rdma@vger.kernel.org
+References: <421f6635-e69c-623d-746a-df541c27f428@golem.network>
+ <20190822154323.GA19899@chelsio.com>
+ <20190822155228.GH29433@mtr-leonro.mtl.com>
+ <b4bf4bc2-8dc7-a2c2-6bd2-ab41d9fbadc9@golem.network>
+Openpgp: preference=signencrypt
+Autocrypt: addr=marcin@golem.network; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <945643c8-198e-f8bf-1e8f-536f77612db0@golem.network>
+Date:   Fri, 23 Aug 2019 16:17:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <b4bf4bc2-8dc7-a2c2-6bd2-ab41d9fbadc9@golem.network>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add the RDMA cookie and RX timestamp to the usercopy whitelist.
+While the device is detected by ibv_devices and rping works, I can't get
+ibv_rc_pingpong working
+(and as far as I understand, RC should be supported by the iWARP driver)
 
-After the introduction of hardened usercopy whitelisting
-(https://lwn.net/Articles/727322/), a warning is displayed when the
-RDMA cookie or RX timestamp is copied to userspace:
+rping works:
 
-kernel: WARNING: CPU: 3 PID: 5750 at
-mm/usercopy.c:81 usercopy_warn+0x8e/0xa6
-[...]
-kernel: Call Trace:
-kernel: __check_heap_object+0xb8/0x11b
-kernel: __check_object_size+0xe3/0x1bc
-kernel: put_cmsg+0x95/0x115
-kernel: rds_recvmsg+0x43d/0x620 [rds]
-kernel: sock_recvmsg+0x43/0x4a
-kernel: ___sys_recvmsg+0xda/0x1e6
-kernel: ? __handle_mm_fault+0xcae/0xf79
-kernel: __sys_recvmsg+0x51/0x8a
-kernel: SyS_recvmsg+0x12/0x1c
-kernel: do_syscall_64+0x79/0x1ae
+    server$  rping -s -a 10.30.10.211 -v
+    server ping data: rdma-ping-0:
+ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+    server ping data: rdma-ping-1:
+BCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrs
+    server DISCONNECT EVENT...
+    wait for RDMA_READ_ADV state 10
 
-When the whitelisting feature was introduced, the memory for the RDMA
-cookie and RX timestamp in RDS was not added to the whitelist, causing
-the warning above.
+    client$ rping -c -a 10.30.10.211 -C 2 -v
+    (output omitted)
 
-Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
-Tested-by: jenny.x.xu@oracle.com
----
- net/rds/ib_recv.c | 11 ++++++++---
- net/rds/rds.h     |  9 +++++++--
- net/rds/recv.c    | 22 ++++++++++++----------
- 3 files changed, 27 insertions(+), 15 deletions(-)
 
-diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
-index 3cae88cbda..fecd0abdc7 100644
---- a/net/rds/ib_recv.c
-+++ b/net/rds/ib_recv.c
-@@ -1038,9 +1038,14 @@ int rds_ib_recv_init(void)
- 	si_meminfo(&si);
- 	rds_ib_sysctl_max_recv_allocation = si.totalram / 3 * PAGE_SIZE / RDS_FRAG_SIZE;
- 
--	rds_ib_incoming_slab = kmem_cache_create("rds_ib_incoming",
--					sizeof(struct rds_ib_incoming),
--					0, SLAB_HWCACHE_ALIGN, NULL);
-+	rds_ib_incoming_slab =
-+		kmem_cache_create_usercopy("rds_ib_incoming",
-+					   sizeof(struct rds_ib_incoming),
-+					   0, SLAB_HWCACHE_ALIGN,
-+					   offsetof(struct rds_ib_incoming,
-+						    ii_inc.i_usercopy),
-+					   sizeof(struct rds_inc_usercopy),
-+					   NULL);
- 	if (!rds_ib_incoming_slab)
- 		goto out;
- 
-diff --git a/net/rds/rds.h b/net/rds/rds.h
-index f0066d1684..e792a67dd5 100644
---- a/net/rds/rds.h
-+++ b/net/rds/rds.h
-@@ -271,6 +271,12 @@ struct rds_ext_header_rdma_dest {
- #define	RDS_MSG_RX_END		2
- #define	RDS_MSG_RX_CMSG		3
- 
-+/* The following values are whitelisted for usercopy */
-+struct rds_inc_usercopy {
-+	rds_rdma_cookie_t	rdma_cookie;
-+	ktime_t			rx_tstamp;
-+};
-+
- struct rds_incoming {
- 	refcount_t		i_refcount;
- 	struct list_head	i_item;
-@@ -280,8 +286,7 @@ struct rds_incoming {
- 	unsigned long		i_rx_jiffies;
- 	struct in6_addr		i_saddr;
- 
--	rds_rdma_cookie_t	i_rdma_cookie;
--	ktime_t			i_rx_tstamp;
-+	struct rds_inc_usercopy i_usercopy;
- 	u64			i_rx_lat_trace[RDS_RX_MAX_TRACES];
- };
- 
-diff --git a/net/rds/recv.c b/net/rds/recv.c
-index 853de48760..7e451c8259 100644
---- a/net/rds/recv.c
-+++ b/net/rds/recv.c
-@@ -47,8 +47,8 @@ void rds_inc_init(struct rds_incoming *inc, struct rds_connection *conn,
- 	INIT_LIST_HEAD(&inc->i_item);
- 	inc->i_conn = conn;
- 	inc->i_saddr = *saddr;
--	inc->i_rdma_cookie = 0;
--	inc->i_rx_tstamp = ktime_set(0, 0);
-+	inc->i_usercopy.rdma_cookie = 0;
-+	inc->i_usercopy.rx_tstamp = ktime_set(0, 0);
- 
- 	memset(inc->i_rx_lat_trace, 0, sizeof(inc->i_rx_lat_trace));
- }
-@@ -62,8 +62,8 @@ void rds_inc_path_init(struct rds_incoming *inc, struct rds_conn_path *cp,
- 	inc->i_conn = cp->cp_conn;
- 	inc->i_conn_path = cp;
- 	inc->i_saddr = *saddr;
--	inc->i_rdma_cookie = 0;
--	inc->i_rx_tstamp = ktime_set(0, 0);
-+	inc->i_usercopy.rdma_cookie = 0;
-+	inc->i_usercopy.rx_tstamp = ktime_set(0, 0);
- }
- EXPORT_SYMBOL_GPL(rds_inc_path_init);
- 
-@@ -186,7 +186,7 @@ static void rds_recv_incoming_exthdrs(struct rds_incoming *inc, struct rds_sock
- 		case RDS_EXTHDR_RDMA_DEST:
- 			/* We ignore the size for now. We could stash it
- 			 * somewhere and use it for error checking. */
--			inc->i_rdma_cookie = rds_rdma_make_cookie(
-+			inc->i_usercopy.rdma_cookie = rds_rdma_make_cookie(
- 					be32_to_cpu(buffer.rdma_dest.h_rdma_rkey),
- 					be32_to_cpu(buffer.rdma_dest.h_rdma_offset));
- 
-@@ -380,7 +380,7 @@ void rds_recv_incoming(struct rds_connection *conn, struct in6_addr *saddr,
- 				      be32_to_cpu(inc->i_hdr.h_len),
- 				      inc->i_hdr.h_dport);
- 		if (sock_flag(sk, SOCK_RCVTSTAMP))
--			inc->i_rx_tstamp = ktime_get_real();
-+			inc->i_usercopy.rx_tstamp = ktime_get_real();
- 		rds_inc_addref(inc);
- 		inc->i_rx_lat_trace[RDS_MSG_RX_END] = local_clock();
- 		list_add_tail(&inc->i_item, &rs->rs_recv_queue);
-@@ -540,16 +540,18 @@ static int rds_cmsg_recv(struct rds_incoming *inc, struct msghdr *msg,
- {
- 	int ret = 0;
- 
--	if (inc->i_rdma_cookie) {
-+	if (inc->i_usercopy.rdma_cookie) {
- 		ret = put_cmsg(msg, SOL_RDS, RDS_CMSG_RDMA_DEST,
--				sizeof(inc->i_rdma_cookie), &inc->i_rdma_cookie);
-+				sizeof(inc->i_usercopy.rdma_cookie),
-+				&inc->i_usercopy.rdma_cookie);
- 		if (ret)
- 			goto out;
- 	}
- 
--	if ((inc->i_rx_tstamp != 0) &&
-+	if ((inc->i_usercopy.rx_tstamp != 0) &&
- 	    sock_flag(rds_rs_to_sk(rs), SOCK_RCVTSTAMP)) {
--		struct __kernel_old_timeval tv = ns_to_kernel_old_timeval(inc->i_rx_tstamp);
-+		struct __kernel_old_timeval tv =
-+			ns_to_kernel_old_timeval(inc->i_usercopy.rx_tstamp);
- 
- 		if (!sock_flag(rds_rs_to_sk(rs), SOCK_TSTAMP_NEW)) {
- 			ret = put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
--- 
-2.20.1
+But ibv_rc_pingpong doesn't
+
+    server$ ibv_rc_pingpong -d iwp____
+      local address:  LID 0x0000, QPN 0x000001, PSN 0xb8aafc, GID ::
+    Failed to modify QP to RTS
+    Couldn't connect to remote QP
+    client$ ibv_rc_pingpong  -d iwp____ 10.30.10.211
+      local address:  LID 0x0000, QPN 0x000001, PSN 0x71abc5, GID ::
+    client read/write: Protocol not supported
+    Couldn't read/write remote address
+
+dmesg says: [   93.957733] iwpm_register_pid: Unable to send a nlmsg
+(client = 2)
+
+And OpenMPI/UCX doesn't want to use the transport either:
+
+    [1566564168.338103] [host:23059:0]         select.c:410  UCX  ERROR
+no active messages transport to <no debug data>: mm/posix - Destination
+is unreachable, mm/sysv - Destination is unreachable, self/self -
+Destination is unreachable, rdmacm/sockaddr - no am bcopy, cma/cma - no
+am bcopy
+
+Is this a bug or a limitation of siw?
+Thanks,
+Marcin
+
+On 22.08.2019 18:24, Marcin Mielniczuk wrote:
+> Thanks a lot, this did the trick. I think this is worth documenting
+> somewhere.
+> Would README.md in the rdma-core repo be a good place?
+>
+> Why
+>
+> On 22.08.2019 17:52, Leon Romanovsky wrote:
+>> On Thu, Aug 22, 2019 at 09:13:25PM +0530, Krishnamraju Eraparaju wrote:
+>>> On Thursday, August 08/22/19, 2019 at 17:08:49 +0200, Marcin Mielniczuk wrote:
+>>>> Hi,
+>>>>
+>>>> I'm trying to test the recently merged siw module.
+>>>> I'm running kernel 5.3-rc5 (taken from the Ubuntu mainline-kernel
+>>>> repository [1]) on Ubuntu 18.04 (bionic).
+>>>> I also manually installed rdma-core 25.0 from tarball, using the
+>>>> included Debian packaging. I installed all the packages but ibacm.
+>>>>
+>>>> After booting the new kernel I manually loaded the kernel module by
+>>>>
+>>>>      modprobe siw
+>>>>      modprobe rdma_ucm
+>>>>
+>>>> Then ibv_devinfo shows: "No IB devices found".
+>>>> dmesg only shows:
+>>>>      [   29.856751] SoftiWARP attached
+>>>>
+>>>> According to this tutorial, [2] it should be enough to just load the siw
+>>>> module. (unlike RXE, where one needs to use rxe_cfg to set up the
+>>>> interface)
+>>>> Is this a bug in siw or just a configuration issue on my side?
+>>> Have you done "rdma link"?
+>>>
+>>> rdma link add <NAME> type siw netdev <NETDEV>
+>>>
+>>> http://man7.org/linux/man-pages/man8/rdma-link.8.html
+>> BTW, the same goes for RXE and rxe_cfg is discouraged.
+>>
+>> Thanks
+>>
+>>>> Thanks,
+>>>> Marcin
+>>>>
+>>>> [1] https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.3-rc5/
+>>>> [2] https://budevg.github.io/posts/tutorials/2017/04/29/rdma-101-1.html
+>>>>
+>
 
