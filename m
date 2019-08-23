@@ -2,229 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7258F9B6D9
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 21:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8869B777
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 21:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728671AbfHWTOW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Aug 2019 15:14:22 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:42236 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728512AbfHWTOV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Aug 2019 15:14:21 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 43A383086262;
-        Fri, 23 Aug 2019 19:14:21 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6590A5D9E5;
-        Fri, 23 Aug 2019 19:14:20 +0000 (UTC)
-Message-ID: <324f57e86a1e9240657dd0c3beede10d6c89baea.camel@redhat.com>
-Subject: Re: [PULL REQUEST] Please pull rdma.git
-From:   Doug Ledford <dledford@redhat.com>
-To:     "Torvalds, Linus" <torvalds@linux-foundation.org>
-Cc:     "Gunthorpe, Jason" <jgg@ziepe.ca>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 23 Aug 2019 15:14:17 -0400
-In-Reply-To: <5b0aa103f6007e1887f9b2cacaec8015834589b8.camel@xsintricity.com>
-References: <5b0aa103f6007e1887f9b2cacaec8015834589b8.camel@xsintricity.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-d9vBLQc5DZJC2HMDiJ6l"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Fri, 23 Aug 2019 19:14:21 +0000 (UTC)
+        id S2387956AbfHWT4o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Aug 2019 15:56:44 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:46386 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387860AbfHWT4o (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Aug 2019 15:56:44 -0400
+Received: by mail-qk1-f195.google.com with SMTP id p13so9235537qkg.13
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Aug 2019 12:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=vTaAshi9pluGjENrrfftMicTMpjOrhGopwZB6hzguXI=;
+        b=XmdnQ3XPOSwrLu3tByxh+ZVBCu+8gf4v3QrEQR7MLi6j6hCE30XvsnJlLL3xDZlsdg
+         V1QEtfzdpAf2+cNrL+4PWXQ1bkdi4NPtQUY21KiBJBxJjlLTYKtN1Ev401gmS8S9+QBa
+         rrse08tR0y5CdeiPpQM5Lr6s/vZBeJS0OcSoV0Zcn+GSOtvQmMs4JWZz2HzJ5oNt6S0e
+         SLjINAoTnzuj3cLyU+aKUhFN9ity7DDqvCICkoz9933SUyRY5JR1DTyKatCz8RQMw8Zr
+         8KoaRwTw14XZYst0RkajkIELjTnq6a7JkugjoJ37Y9ZCFdWmqih+POIn4bBq7NMGOT8Y
+         o7OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vTaAshi9pluGjENrrfftMicTMpjOrhGopwZB6hzguXI=;
+        b=sgRriGXrjnk63laXBehC0WWskMnDVh8f4oJJRBF7l69NLGUHlL5R/67+VfRNOQkxqL
+         VdbLsr0zDGdL3QBcwWImUXx4+yVbjokTfK7k3bgSzxdH2Otb1xrJYazkQfRacyWCAYnX
+         SXMThJWUPro5yF39DK8eqtKj6tKMEXlCk1QQh3FWrQYi5YCvW0l4BOTGH+8Ka9PvHRn6
+         uuTPNEsMxtaASlml5wUBOrINt5N0siIMmwf0EqVJXE6uQ2tRcxk5teoCvfLThIH6Xp+y
+         iB/1obZh8gvXZQEqmy2Aw/+/NmvadY72YsKp+JM0B/j8jbzHHyEL+H673RB9LRBhXSl2
+         nR3w==
+X-Gm-Message-State: APjAAAXdcWgCs/7RG82CF/4Av7EgS59FQjDrMHmON5cvWWsPeJGZLv8t
+        Fy3aYUL0R/V/RhhUpWrk3ZM+HA==
+X-Google-Smtp-Source: APXvYqxgf5wgeiL6ufbZ334VqWwMQGezy5CWWm0nzrMhCFpi0O8GIzGoB/gmIFkF6u6wtWR6LRzjFQ==
+X-Received: by 2002:a37:9c88:: with SMTP id f130mr5826483qke.494.1566590203704;
+        Fri, 23 Aug 2019 12:56:43 -0700 (PDT)
+Received: from qcai.nay.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id n21sm2159771qtc.70.2019.08.23.12.56.41
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Aug 2019 12:56:42 -0700 (PDT)
+From:   Qian Cai <cai@lca.pw>
+To:     saeedm@mellanox.com
+Cc:     leon@kernel.org, davem@davemloft.net, moshe@mellanox.com,
+        ferasda@mellanox.com, eranbe@mellanox.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@lca.pw>
+Subject: [PATCH] net/mlx5: fix a -Wstringop-truncation warning
+Date:   Fri, 23 Aug 2019 15:56:23 -0400
+Message-Id: <1566590183-9898-1-git-send-email-cai@lca.pw>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+In file included from ./arch/powerpc/include/asm/paca.h:15,
+                 from ./arch/powerpc/include/asm/current.h:13,
+                 from ./include/linux/thread_info.h:21,
+                 from ./include/asm-generic/preempt.h:5,
+                 from ./arch/powerpc/include/generated/asm/preempt.h:1,
+                 from ./include/linux/preempt.h:78,
+                 from ./include/linux/spinlock.h:51,
+                 from ./include/linux/wait.h:9,
+                 from ./include/linux/completion.h:12,
+                 from ./include/linux/mlx5/driver.h:37,
+                 from
+drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h:6,
+                 from
+drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:33:
+In function 'strncpy',
+    inlined from 'mlx5_fw_tracer_save_trace' at
+drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:549:2,
+    inlined from 'mlx5_tracer_print_trace' at
+drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:574:2:
+./include/linux/string.h:305:9: warning: '__builtin_strncpy' output may
+be truncated copying 256 bytes from a string of length 511
+[-Wstringop-truncation]
+  return __builtin_strncpy(p, q, size);
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
---=-d9vBLQc5DZJC2HMDiJ6l
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Fix it by using the new strscpy_pad() since the commit 458a3bf82df4
+("lib/string: Add strscpy_pad() function") which will always
+NUL-terminate the string, and avoid possibly leak data through the ring
+buffer where non-admin account might enable these events through perf.
 
-Hi Linus,
+Fixes: fd1483fe1f9f ("net/mlx5: Add support for FW reporter dump")
+Signed-off-by: Qian Cai <cai@lca.pw>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I didn't notice I was on my personal email identity when I sent the pull
-request.  Sorry about that.  It's really me ;-)
-
-On Fri, 2019-08-23 at 14:48 -0400, Doug Ledford wrote:
-> Hi Linus,
->=20
-> No beating around the bush: this is a monster pull request for an -rc5
-> kernel.  Intel hit me with a series of fixes for TID processing.=20
-> Mellanox hit me with a series for their UMR memory support.
->=20
-> And we had one fix for siw that fixes the 32bit build warnings and
-> because of the number of casts that had to be changed to properly
-> silence the warnings, that one patch alone is a full 40% of the LOC of
-> this entire pull request.  Given that this is the initial release
-> kernel
-> for siw, I'm trying to fix anything in it that we can, so that adds to
-> the impetus to take fixes for it like this one.
->=20
-> I had to do a rebase early in the week.  Jason had thought he put a
-> patch on the rc queue that he needed to be there so he could base some
-> work off of it, and it had actually not been placed there.  So he
-> asked
-> me (on Tuesday) to fix that up before pushing my wip branch to the
-> official rc branch.  I did, and that's why the early patches look like
-> they were all committed at the same time on Tuesday.  That bunch had
-> been in my queue prior.
->=20
-> The various patches all pass my test for being legitimate fixes and
-> not
-> attempts to slide new features or development into a late rc.  Well,
-> they were all fixes with the exception of a couple clean up patches
-> people wrote for making the fixes they also wrote better (like a
-> cleanup
-> patch to move UMR checking into a function so that the remaining UMR
-> fix
-> patches can reference that function), so I left those in place too.
->=20
-> My apologies for the LOC count and the number of patches here, it's
-> just
-> how the cards fell this cycle.  I hope you agree with me that they're
-> justified fixes.
->=20
-> Here's the boilerplate:
->=20
-> The following changes since commit
-> d1abaeb3be7b5fa6d7a1fbbd2e14e3310005c4c1:
->=20
->   Linux 5.3-rc5 (2019-08-18 14:31:08 -0700)
->=20
-> are available in the Git repository at:
->=20
->   git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
-> tags/for-linus
->=20
-> for you to fetch changes up to
-> c536277e0db1ad2e9fbb9dfd940c3565a14d9c52:
->=20
->   RDMA/siw: Fix 64/32bit pointer inconsistency (2019-08-23 12:08:27
-> -0400)
->=20
-> ----------------------------------------------------------------
-> Pull request for 5.3-rc5
->=20
-> - Fix siw buffer mapping issue
-> - Fix siw 32/64 casting issues
-> - Fix a KASAN access issue in bnxt_re
-> - Fix several memory leaks (hfi1, mlx4)
-> - Fix a NULL deref in cma_cleanup
-> - Fixes for UMR memory support in mlx5 (4 patch series)
-> - Fix namespace check for restrack
-> - Fixes for counter support
-> - Fixes for hfi1 TID processing (5 patch series)
-> - Fix potential NULL deref in siw
-> - Fix memory page calculations in mlx5
->=20
-> Signed-off-by: Doug Ledford <dledford@redhat.com>
->=20
-> ----------------------------------------------------------------
-> Bernard Metzler (3):
->       RDMA/siw: Fix potential NULL de-ref
->       RDMA/siw: Fix SGL mapping issues
->       RDMA/siw: Fix 64/32bit pointer inconsistency
->=20
-> Ido Kalir (1):
->       IB/core: Fix NULL pointer dereference when bind QP to counter
->=20
-> Jason Gunthorpe (1):
->       RDMA/mlx5: Fix MR npages calculation for IB_ACCESS_HUGETLB
->=20
-> Kaike Wan (5):
->       IB/hfi1: Drop stale TID RDMA packets
->       IB/hfi1: Unsafe PSN checking for TID RDMA READ Resp packet
->       IB/hfi1: Add additional checks when handling TID RDMA READ RESP
-> packet
->       IB/hfi1: Add additional checks when handling TID RDMA WRITE DATA
-> packet
->       IB/hfi1: Drop stale TID RDMA packets that cause TIDErr
->=20
-> Leon Romanovsky (2):
->       RDMA/counters: Properly implement PID checks
->       RDMA/restrack: Rewrite PID namespace check to be reliable
->=20
-> Moni Shoua (4):
->       IB/mlx5: Consolidate use_umr checks into single function
->       IB/mlx5: Report and handle ODP support properly
->       IB/mlx5: Fix MR re-registration flow to use UMR properly
->       IB/mlx5: Block MR WR if UMR is not possible
->=20
-> Selvin Xavier (1):
->       RDMA/bnxt_re: Fix stack-out-of-bounds in
-> bnxt_qplib_rcfw_send_message
->=20
-> Wenwen Wang (3):
->       IB/mlx4: Fix memory leaks
->       infiniband: hfi1: fix a memory leak bug
->       infiniband: hfi1: fix memory leaks
->=20
-> zhengbin (1):
->       RDMA/cma: fix null-ptr-deref Read in cma_cleanup
->=20
->  drivers/infiniband/core/cma.c              |  6 ++-
->  drivers/infiniband/core/counters.c         | 10 ++--
->  drivers/infiniband/core/nldev.c            |  3 +-
->  drivers/infiniband/core/restrack.c         | 15 +++---
->  drivers/infiniband/core/umem.c             |  7 +--
->  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  8 ++-
->  drivers/infiniband/hw/bnxt_re/qplib_rcfw.h | 11 ++--
->  drivers/infiniband/hw/hfi1/fault.c         | 12 +++--
->  drivers/infiniband/hw/hfi1/tid_rdma.c      | 76 ++++++++++-----------
-> ------
->  drivers/infiniband/hw/mlx4/mad.c           |  4 +-
->  drivers/infiniband/hw/mlx5/main.c          |  6 +--
->  drivers/infiniband/hw/mlx5/mem.c           |  5 +-
->  drivers/infiniband/hw/mlx5/mlx5_ib.h       | 14 +++++
->  drivers/infiniband/hw/mlx5/mr.c            |  7 ++-
->  drivers/infiniband/hw/mlx5/odp.c           | 17 ++++---
->  drivers/infiniband/hw/mlx5/qp.c            | 24 +++++++--
->  drivers/infiniband/sw/siw/siw.h            |  8 +--
->  drivers/infiniband/sw/siw/siw_cm.c         | 82 ++++++++++++++-------
-> ---------
->  drivers/infiniband/sw/siw/siw_cq.c         |  5 +-
->  drivers/infiniband/sw/siw/siw_mem.c        | 14 ++---
->  drivers/infiniband/sw/siw/siw_mem.h        |  2 +-
->  drivers/infiniband/sw/siw/siw_qp.c         |  2 +-
->  drivers/infiniband/sw/siw/siw_qp_rx.c      | 26 +++++-----
->  drivers/infiniband/sw/siw/siw_qp_tx.c      | 80 ++++++++++++++-------
-> --------
->  drivers/infiniband/sw/siw/siw_verbs.c      | 40 +++++++--------
->  include/rdma/restrack.h                    |  3 +-
->  26 files changed, 248 insertions(+), 239 deletions(-)
->=20
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-d9vBLQc5DZJC2HMDiJ6l
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1gOwkACgkQuCajMw5X
-L90DKQ//fSAE4ev1OxxfyQzo9HhweIbuZNeY1Iq66mBhDQl6BJUfDq1nZyLxV/Ab
-vxhCookz3SVn1ItQ4JUrW1LJF9qvuHdRQvWm9KnVhDqRyRvUxkgz8Mxjvr8G8/8h
-cWwI9PYdcR/yOKNPA4rQ4OGBdVGJePgKdfkFuLojR28KAh4i0XWnJEnsKXEADbGO
-qqh86Jv2x+wIkaunEOBjMfYdvDz7VhXWuy4Jelqc2WxjbBYPsEXcSWgHB342XTbK
-j+eBUMv0O+ns4er5ckIefNKWEp/1HK3JI+x2gvRNdy9oBdsYrwnB+5Zkhnohoj8y
-cZYT3jOwEFKvy0Tt6txcy3KZOzA3gRm3edmg4Ld3FpN5bQ6EGQ0CzGdu7CADCvCg
-/EmYmVashRxp71QLmP/jKdK3bBHs5NC/he3lkUnzSfNdNlX/JVi//XtztFb8gmRD
-GIWdEvIBiy5wVoXJ1NKDySbc7SVxhKSUyuPPqxBMp0utxvXOBo3IGu3BHj1UKqUe
-bTFyaZWnjsrfW8EvYnanuLqCkateNPqs3xUbEmC/kwx5mipcTz9KsJG8+CSUJM+7
-drape5hCjo/NESn8VPPc8RHZngIILH/9OpHmRfXApLTwTEaGGW8AiMNqKIXnUhch
-Fnj5U717adEC3sVsWLbpYk8Tl4pXL1EE72RhEzHjSHr3s4eMPBY=
-=kyjY
------END PGP SIGNATURE-----
-
---=-d9vBLQc5DZJC2HMDiJ6l--
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+index 8a4930c8bf62..2011eaf15cc5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+@@ -546,7 +546,7 @@ static void mlx5_fw_tracer_save_trace(struct mlx5_fw_tracer *tracer,
+ 	trace_data->timestamp = timestamp;
+ 	trace_data->lost = lost;
+ 	trace_data->event_id = event_id;
+-	strncpy(trace_data->msg, msg, TRACE_STR_MSG);
++	strscpy_pad(trace_data->msg, msg, TRACE_STR_MSG);
+ 
+ 	tracer->st_arr.saved_traces_index =
+ 		(tracer->st_arr.saved_traces_index + 1) & (SAVED_TRACES_NUM - 1);
+-- 
+1.8.3.1
 
