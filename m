@@ -2,254 +2,218 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 972009B177
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 15:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A139B189
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 16:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405762AbfHWN4T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Aug 2019 09:56:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:34904 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388949AbfHWN4T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Aug 2019 09:56:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EBE6B28;
-        Fri, 23 Aug 2019 06:56:17 -0700 (PDT)
-Received: from [10.1.197.50] (e120937-lin.cambridge.arm.com [10.1.197.50])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 310B13F718;
-        Fri, 23 Aug 2019 06:56:13 -0700 (PDT)
-Subject: Re: [PATCH v18 15/15] selftests, arm64: add a selftest for passing
- tagged pointers to kernel
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Evgeniy Stepanov <eugenis@google.com>,
-        Lee Smith <Lee.Smith@arm.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        Jacob Bramley <Jacob.Bramley@arm.com>,
-        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-References: <cover.1561386715.git.andreyknvl@google.com>
- <0999c80cd639b78ae27c0674069d552833227564.1561386715.git.andreyknvl@google.com>
-From:   Cristian Marussi <cristian.marussi@arm.com>
-Message-ID: <6af3f619-4356-2f67-ed76-92beceb1e0a0@arm.com>
-Date:   Fri, 23 Aug 2019 14:56:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <0999c80cd639b78ae27c0674069d552833227564.1561386715.git.andreyknvl@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S2389958AbfHWOEW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Aug 2019 10:04:22 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54228 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726894AbfHWOEW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Aug 2019 10:04:22 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7NE4EWt067263;
+        Fri, 23 Aug 2019 14:04:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2019-08-05;
+ bh=IDxcKcBV6zGKVEQdfou/OVhAl7PAzAEZMKbLS7MrvG0=;
+ b=Tde+ZdWXnNeVakcmrK+++e/KK/perHHv93N1TRY4ooLzHhb0PJy5+24BiBhn9tT9JU/C
+ ExiPyOb58vxpB8NNVKOEvJodIcTUL5aIIHnXHUMlq7LoFPXh1k+ot+88/IhmEFcDujyN
+ LDBqaLsb5eFO4rzgZEnMtvPs8kd91R+Xr7JxrypSotAO1HQGSmesMuyx9C14bQpQsBm/
+ dEwxKsw0qQhopbpOkPHaJcEGi5gKGrlomWgQPR5Ax9vqs5d8Ph/rZ4oB3OwyKT+rLIRF
+ ldrFTgMOXTIgUf1p0zCns9Kd8Xuv+mFKtS49FiE8i3z64dyvrxSq9Mj3b6bbmO21Utlf Zw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2ue90u52p5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Aug 2019 14:04:14 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7NDw8th027288;
+        Fri, 23 Aug 2019 14:04:13 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2ujca84w6v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 23 Aug 2019 14:04:13 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7NE4DqK048844;
+        Fri, 23 Aug 2019 14:04:13 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 2ujca84w6a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Aug 2019 14:04:13 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7NE4CPS027028;
+        Fri, 23 Aug 2019 14:04:12 GMT
+Received: from dm-oel.no.oracle.com (/10.172.157.165)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 23 Aug 2019 07:04:12 -0700
+From:   Dag Moxnes <dag.moxnes@oracle.com>
+To:     santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
+Cc:     davem@davemloft.net, dag.moxnes@oracle.com
+Subject: [PATCH net-next] net/rds: Whitelist rdma_cookie and rx_tstamp for usercopy
+Date:   Fri, 23 Aug 2019 16:03:18 +0200
+Message-Id: <1566568998-26222-1-git-send-email-dag.moxnes@oracle.com>
+X-Mailer: git-send-email 1.7.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9357 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908230146
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Andrey
+Add the RDMA cookie and RX timestamp to the usercopy whitelist.
 
-On 24/06/2019 15:33, Andrey Konovalov wrote:
-> This patch is a part of a series that extends kernel ABI to allow to pass
-> tagged user pointers (with the top byte set to something else other than
-> 0x00) as syscall arguments.
-> 
-> This patch adds a simple test, that calls the uname syscall with a
-> tagged user pointer as an argument. Without the kernel accepting tagged
-> user pointers the test fails with EFAULT.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> ---
->  tools/testing/selftests/arm64/.gitignore      |  1 +
->  tools/testing/selftests/arm64/Makefile        | 11 +++++++
->  .../testing/selftests/arm64/run_tags_test.sh  | 12 ++++++++
->  tools/testing/selftests/arm64/tags_test.c     | 29 +++++++++++++++++++
->  4 files changed, 53 insertions(+)
->  create mode 100644 tools/testing/selftests/arm64/.gitignore
->  create mode 100644 tools/testing/selftests/arm64/Makefile
->  create mode 100755 tools/testing/selftests/arm64/run_tags_test.sh
->  create mode 100644 tools/testing/selftests/arm64/tags_test.c
+After the introduction of hardened usercopy whitelisting
+(https://lwn.net/Articles/727322/), a warning is displayed when the
+RDMA cookie or RX timestamp is copied to userspace:
 
-After building a fresh Kernel from arm64/for-next-core from scratch at:
+kernel: WARNING: CPU: 3 PID: 5750 at
+mm/usercopy.c:81 usercopy_warn+0x8e/0xa6
+[...]
+kernel: Call Trace:
+kernel: __check_heap_object+0xb8/0x11b
+kernel: __check_object_size+0xe3/0x1bc
+kernel: put_cmsg+0x95/0x115
+kernel: rds_recvmsg+0x43d/0x620 [rds]
+kernel: sock_recvmsg+0x43/0x4a
+kernel: ___sys_recvmsg+0xda/0x1e6
+kernel: ? __handle_mm_fault+0xcae/0xf79
+kernel: __sys_recvmsg+0x51/0x8a
+kernel: SyS_recvmsg+0x12/0x1c
+kernel: do_syscall_64+0x79/0x1ae
 
-commit 239ab658bea3b387424501e7c416640d6752dc0c 
-Merge: 6bfa3134bd3a 42d038c4fb00 1243cb6a676f d55c5f28afaf d06fa5a118f1 34b5560db40d
-Author: Will Deacon <will@kernel.org>
-Date:   Thu Aug 22 18:23:53 2019 +0100
+When the whitelisting feature was introduced, the memory for the RDMA
+cookie and RX timestamp in RDS was not added to the whitelist, causing
+the warning above.
 
-    Merge branches 'for-next/error-injection', 'for-next/tbi', 'for-next/psci-cpuidle', 'for-next/cpu-topology' and 'for-next/52-bit-kva' into for-next/core
+Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
+Tested-by: jenny.x.xu@oracle.com
+---
+ net/rds/ib_recv.c | 11 ++++++++---
+ net/rds/rds.h     |  9 +++++++--
+ net/rds/recv.c    | 22 ++++++++++++----------
+ 3 files changed, 27 insertions(+), 15 deletions(-)
 
-
-KSFT arm64 tests build is broken for me, both setting or not KBUILD_OUTPUT=
-
-13:30 $ make TARGETS=arm64 kselftest-clean                       
-make[1]: Entering directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
-rm -f -r /home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/arm64/tags_test
-make[1]: Leaving directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
-
-✔ ~/ARM/dev/src/pdsw/linux [arm64_for_next_core|…8⚑ 23]
-
-13:30 $ make TARGETS=arm64 kselftest                  
-make[1]: Entering directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
-arch/arm64/Makefile:56: CROSS_COMPILE_COMPAT not defined or empty, the compat vDSO will not be built
-make --no-builtin-rules INSTALL_HDR_PATH=$BUILD/usr \
-        ARCH=arm64 -C ../../.. headers_install             
-  HOSTCC  scripts/basic/fixdep                     
-  HOSTCC  scripts/unifdef                         
-...
-...
-  HDRINST usr/include/asm/msgbuf.h
-  HDRINST usr/include/asm/shmbuf.h
-  INSTALL /home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/usr/include
-/opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc     tags_test.c  -o /home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/arm64/tags_test
-tags_test.c: In function ‘main’:
-tags_test.c:21:12: error: ‘PR_SET_TAGGED_ADDR_CTRL’ undeclared (first use in this function); did you mean ‘PR_GET_TID_ADDRESS’?
-  if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) == 0)
-            ^~~~~~~~~~~~~~~~~~~~~~~
-            PR_GET_TID_ADDRESS
-tags_test.c:21:12: note: each undeclared identifier is reported only once for each function it appears in
-tags_test.c:21:37: error: ‘PR_TAGGED_ADDR_ENABLE’ undeclared (first use in this function); did you mean ‘PR_GET_DUMPABLE’?
-  if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) == 0)
-                                     ^~~~~~~~~~~~~~~~~~~~~
-                                     PR_GET_DUMPABLE
-../lib.mk:138: recipe for target '/home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/arm64/tags_test' failed
-make[3]: *** [/home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/arm64/tags_test] Error 1
-Makefile:136: recipe for target 'all' failed
-make[2]: *** [all] Error 2
-/home/crimar01/ARM/dev/src/pdsw/linux/Makefile:1237: recipe for target 'kselftest' failed
-make[1]: *** [kselftest] Error 2
-make[1]: Leaving directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
-Makefile:179: recipe for target 'sub-make' failed
-make: *** [sub-make] Error 2
-
-Despite seeing KSFT installing Kernel Headers, they cannot be found.
-
-Fixing this patch like this make it work for me:
-
-diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/selftests/arm64/Makefile                                                                                        
-index a61b2e743e99..f9f79fb272f0 100644                             
---- a/tools/testing/selftests/arm64/Makefile   
-+++ b/tools/testing/selftests/arm64/Makefile                                                     
-@@ -4,6 +4,7 @@                                                                       
- ARCH ?= $(shell uname -m 2>/dev/null || echo not)                                              
-                                                       
- ifneq (,$(filter $(ARCH),aarch64 arm64))                                            
-+CFLAGS += -I../../../../usr/include/                                                               
- TEST_GEN_PROGS := tags_test                                  
- TEST_PROGS := run_tags_test.sh                                    
- endif                                                             
-
-but is not really a proper fix since it does NOT account for case in which you have
-installed the Kernel Headers in a non standard location like when you use KBUILD_OUTPUT.
-
-Am I missing something ?
-
-Thanks
-
-Cristian
-
-> 
-> diff --git a/tools/testing/selftests/arm64/.gitignore b/tools/testing/selftests/arm64/.gitignore
-> new file mode 100644
-> index 000000000000..e8fae8d61ed6
-> --- /dev/null
-> +++ b/tools/testing/selftests/arm64/.gitignore
-> @@ -0,0 +1 @@
-> +tags_test
-> diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/selftests/arm64/Makefile
-> new file mode 100644
-> index 000000000000..a61b2e743e99
-> --- /dev/null
-> +++ b/tools/testing/selftests/arm64/Makefile
-> @@ -0,0 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +# ARCH can be overridden by the user for cross compiling
-> +ARCH ?= $(shell uname -m 2>/dev/null || echo not)
-> +
-> +ifneq (,$(filter $(ARCH),aarch64 arm64))
-> +TEST_GEN_PROGS := tags_test
-> +TEST_PROGS := run_tags_test.sh
-> +endif
-> +
-> +include ../lib.mk
-> diff --git a/tools/testing/selftests/arm64/run_tags_test.sh b/tools/testing/selftests/arm64/run_tags_test.sh
-> new file mode 100755
-> index 000000000000..745f11379930
-> --- /dev/null
-> +++ b/tools/testing/selftests/arm64/run_tags_test.sh
-> @@ -0,0 +1,12 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +echo "--------------------"
-> +echo "running tags test"
-> +echo "--------------------"
-> +./tags_test
-> +if [ $? -ne 0 ]; then
-> +	echo "[FAIL]"
-> +else
-> +	echo "[PASS]"
-> +fi
-> diff --git a/tools/testing/selftests/arm64/tags_test.c b/tools/testing/selftests/arm64/tags_test.c
-> new file mode 100644
-> index 000000000000..22a1b266e373
-> --- /dev/null
-> +++ b/tools/testing/selftests/arm64/tags_test.c
-> @@ -0,0 +1,29 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <stdint.h>
-> +#include <sys/prctl.h>
-> +#include <sys/utsname.h>
-> +
-> +#define SHIFT_TAG(tag)		((uint64_t)(tag) << 56)
-> +#define SET_TAG(ptr, tag)	(((uint64_t)(ptr) & ~SHIFT_TAG(0xff)) | \
-> +					SHIFT_TAG(tag))
-> +
-> +int main(void)
-> +{
-> +	static int tbi_enabled = 0;
-> +	struct utsname *ptr, *tagged_ptr;
-> +	int err;
-> +
-> +	if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) == 0)
-> +		tbi_enabled = 1;
-> +	ptr = (struct utsname *)malloc(sizeof(*ptr));
-> +	if (tbi_enabled)
-> +		tagged_ptr = (struct utsname *)SET_TAG(ptr, 0x42);
-> +	err = uname(tagged_ptr);
-> +	free(ptr);
-> +
-> +	return err;
-> +}
-> 
+diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
+index 3cae88cbda..fecd0abdc7 100644
+--- a/net/rds/ib_recv.c
++++ b/net/rds/ib_recv.c
+@@ -1038,9 +1038,14 @@ int rds_ib_recv_init(void)
+ 	si_meminfo(&si);
+ 	rds_ib_sysctl_max_recv_allocation = si.totalram / 3 * PAGE_SIZE / RDS_FRAG_SIZE;
+ 
+-	rds_ib_incoming_slab = kmem_cache_create("rds_ib_incoming",
+-					sizeof(struct rds_ib_incoming),
+-					0, SLAB_HWCACHE_ALIGN, NULL);
++	rds_ib_incoming_slab =
++		kmem_cache_create_usercopy("rds_ib_incoming",
++					   sizeof(struct rds_ib_incoming),
++					   0, SLAB_HWCACHE_ALIGN,
++					   offsetof(struct rds_ib_incoming,
++						    ii_inc.i_usercopy),
++					   sizeof(struct rds_inc_usercopy),
++					   NULL);
+ 	if (!rds_ib_incoming_slab)
+ 		goto out;
+ 
+diff --git a/net/rds/rds.h b/net/rds/rds.h
+index f0066d1684..e792a67dd5 100644
+--- a/net/rds/rds.h
++++ b/net/rds/rds.h
+@@ -271,6 +271,12 @@ struct rds_ext_header_rdma_dest {
+ #define	RDS_MSG_RX_END		2
+ #define	RDS_MSG_RX_CMSG		3
+ 
++/* The following values are whitelisted for usercopy */
++struct rds_inc_usercopy {
++	rds_rdma_cookie_t	rdma_cookie;
++	ktime_t			rx_tstamp;
++};
++
+ struct rds_incoming {
+ 	refcount_t		i_refcount;
+ 	struct list_head	i_item;
+@@ -280,8 +286,7 @@ struct rds_incoming {
+ 	unsigned long		i_rx_jiffies;
+ 	struct in6_addr		i_saddr;
+ 
+-	rds_rdma_cookie_t	i_rdma_cookie;
+-	ktime_t			i_rx_tstamp;
++	struct rds_inc_usercopy i_usercopy;
+ 	u64			i_rx_lat_trace[RDS_RX_MAX_TRACES];
+ };
+ 
+diff --git a/net/rds/recv.c b/net/rds/recv.c
+index 853de48760..7e451c8259 100644
+--- a/net/rds/recv.c
++++ b/net/rds/recv.c
+@@ -47,8 +47,8 @@ void rds_inc_init(struct rds_incoming *inc, struct rds_connection *conn,
+ 	INIT_LIST_HEAD(&inc->i_item);
+ 	inc->i_conn = conn;
+ 	inc->i_saddr = *saddr;
+-	inc->i_rdma_cookie = 0;
+-	inc->i_rx_tstamp = ktime_set(0, 0);
++	inc->i_usercopy.rdma_cookie = 0;
++	inc->i_usercopy.rx_tstamp = ktime_set(0, 0);
+ 
+ 	memset(inc->i_rx_lat_trace, 0, sizeof(inc->i_rx_lat_trace));
+ }
+@@ -62,8 +62,8 @@ void rds_inc_path_init(struct rds_incoming *inc, struct rds_conn_path *cp,
+ 	inc->i_conn = cp->cp_conn;
+ 	inc->i_conn_path = cp;
+ 	inc->i_saddr = *saddr;
+-	inc->i_rdma_cookie = 0;
+-	inc->i_rx_tstamp = ktime_set(0, 0);
++	inc->i_usercopy.rdma_cookie = 0;
++	inc->i_usercopy.rx_tstamp = ktime_set(0, 0);
+ }
+ EXPORT_SYMBOL_GPL(rds_inc_path_init);
+ 
+@@ -186,7 +186,7 @@ static void rds_recv_incoming_exthdrs(struct rds_incoming *inc, struct rds_sock
+ 		case RDS_EXTHDR_RDMA_DEST:
+ 			/* We ignore the size for now. We could stash it
+ 			 * somewhere and use it for error checking. */
+-			inc->i_rdma_cookie = rds_rdma_make_cookie(
++			inc->i_usercopy.rdma_cookie = rds_rdma_make_cookie(
+ 					be32_to_cpu(buffer.rdma_dest.h_rdma_rkey),
+ 					be32_to_cpu(buffer.rdma_dest.h_rdma_offset));
+ 
+@@ -380,7 +380,7 @@ void rds_recv_incoming(struct rds_connection *conn, struct in6_addr *saddr,
+ 				      be32_to_cpu(inc->i_hdr.h_len),
+ 				      inc->i_hdr.h_dport);
+ 		if (sock_flag(sk, SOCK_RCVTSTAMP))
+-			inc->i_rx_tstamp = ktime_get_real();
++			inc->i_usercopy.rx_tstamp = ktime_get_real();
+ 		rds_inc_addref(inc);
+ 		inc->i_rx_lat_trace[RDS_MSG_RX_END] = local_clock();
+ 		list_add_tail(&inc->i_item, &rs->rs_recv_queue);
+@@ -540,16 +540,18 @@ static int rds_cmsg_recv(struct rds_incoming *inc, struct msghdr *msg,
+ {
+ 	int ret = 0;
+ 
+-	if (inc->i_rdma_cookie) {
++	if (inc->i_usercopy.rdma_cookie) {
+ 		ret = put_cmsg(msg, SOL_RDS, RDS_CMSG_RDMA_DEST,
+-				sizeof(inc->i_rdma_cookie), &inc->i_rdma_cookie);
++				sizeof(inc->i_usercopy.rdma_cookie),
++				&inc->i_usercopy.rdma_cookie);
+ 		if (ret)
+ 			goto out;
+ 	}
+ 
+-	if ((inc->i_rx_tstamp != 0) &&
++	if ((inc->i_usercopy.rx_tstamp != 0) &&
+ 	    sock_flag(rds_rs_to_sk(rs), SOCK_RCVTSTAMP)) {
+-		struct __kernel_old_timeval tv = ns_to_kernel_old_timeval(inc->i_rx_tstamp);
++		struct __kernel_old_timeval tv =
++			ns_to_kernel_old_timeval(inc->i_usercopy.rx_tstamp);
+ 
+ 		if (!sock_flag(rds_rs_to_sk(rs), SOCK_TSTAMP_NEW)) {
+ 			ret = put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
+-- 
+2.20.1
 
