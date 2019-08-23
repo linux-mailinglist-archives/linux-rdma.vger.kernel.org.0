@@ -2,107 +2,254 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8159AEA4
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 14:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972009B177
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2019 15:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733244AbfHWMEb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Aug 2019 08:04:31 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:41527 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731719AbfHWMEb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Aug 2019 08:04:31 -0400
-Received: by mail-qt1-f193.google.com with SMTP id i4so10870299qtj.8
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Aug 2019 05:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4WWnnUwkVly7nnLYY9/xwNxHF5WTTLqjxhffU6DvYt8=;
-        b=LlubO/GS/GhZglMDymM8i9G+fFfCfYWxOMiJWGFKTJ+7MexkpK+xhGSSSSGIlCd8sh
-         LYjJIWWBTfUmUOwrHHbjY3dTkOfMghu7dvZKY/xzOtIIPFg1CWAroOH7HI0rxZPUhekx
-         NWkLeiB3PmZsjpNRdnJTAHo4jsoGVnnwr3u0SnIu9QiAcH/zcFhaPHa4bs0n9xRi82de
-         1FsheC/kz3jFsXQoRjitUsUSSPOzGJ+zc5qrPsHbsgJ+e17Wx0jO8gKKg/uxK9a83up+
-         7nNzKjJBOKbutD1rBLV9UoB3jzxfGlgc66BAN2T9uyH9XBVPLhqnZPQGkzxGFH3aJED5
-         o38Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4WWnnUwkVly7nnLYY9/xwNxHF5WTTLqjxhffU6DvYt8=;
-        b=bMlsST/34hZ8V3RhR1ujzNuBPKOL+mrJglXn2pOXE0GV2QD6KBeI/oWJdn6MsU8p6N
-         LGRH9Fr2hViiiwxddwSIIAe4Pb/qRYqAs0zlvFTZYpbKuWxOq9LzrKBGzxtE2H5PBMhM
-         Vj6KDS8rRC366BLRePaiHwjU2KM5prieBDcZHL86vHm75DeW08eVqN2gmwd5Dv/mX1FF
-         sHAWEoWYOfe74HRmAD9Gl2zFRy1EUO2CrVdS0CU+CKqYszbnwpVC0wp4OpeSWXiOB4wG
-         FW6FegNui8aPgUynntlxxqFtmV0EC0nbc42M0CchGYl0fm11WRcRHjZomL0hs9Zk9MOh
-         tGug==
-X-Gm-Message-State: APjAAAUvwBjvPZbADRF6DuDgd/IQBcZszWmjaPmwrl3UkRSGF2tvZA46
-        qTBsvkNyCJamyE9AZgmjDKIlVA==
-X-Google-Smtp-Source: APXvYqyCs/rzVTzNRsPBfJ6LJC2PPTsVCNC51CTcK/BboosGBx8za229rn7rBII+tLDrCwrPqCn+Sg==
-X-Received: by 2002:ac8:3933:: with SMTP id s48mr4377146qtb.232.1566561870183;
-        Fri, 23 Aug 2019 05:04:30 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id 145sm1353913qkm.1.2019.08.23.05.04.29
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 23 Aug 2019 05:04:29 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1i18Iv-0003Z7-0f; Fri, 23 Aug 2019 09:04:29 -0300
-Date:   Fri, 23 Aug 2019 09:04:29 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        id S2405762AbfHWN4T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Aug 2019 09:56:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:34904 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388949AbfHWN4T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Aug 2019 09:56:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EBE6B28;
+        Fri, 23 Aug 2019 06:56:17 -0700 (PDT)
+Received: from [10.1.197.50] (e120937-lin.cambridge.arm.com [10.1.197.50])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 310B13F718;
+        Fri, 23 Aug 2019 06:56:13 -0700 (PDT)
+Subject: Re: [PATCH v18 15/15] selftests, arm64: add a selftest for passing
+ tagged pointers to kernel
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190823120428.GA12968@ziepe.ca>
-References: <20190819092409.GM7777@dread.disaster.area>
- <20190819123841.GC5058@ziepe.ca>
- <20190820011210.GP7777@dread.disaster.area>
- <20190820115515.GA29246@ziepe.ca>
- <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
- <20190821181343.GH8653@ziepe.ca>
- <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
- <20190821194810.GI8653@ziepe.ca>
- <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
- <20190823032345.GG1119@dread.disaster.area>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+References: <cover.1561386715.git.andreyknvl@google.com>
+ <0999c80cd639b78ae27c0674069d552833227564.1561386715.git.andreyknvl@google.com>
+From:   Cristian Marussi <cristian.marussi@arm.com>
+Message-ID: <6af3f619-4356-2f67-ed76-92beceb1e0a0@arm.com>
+Date:   Fri, 23 Aug 2019 14:56:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190823032345.GG1119@dread.disaster.area>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <0999c80cd639b78ae27c0674069d552833227564.1561386715.git.andreyknvl@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 01:23:45PM +1000, Dave Chinner wrote:
+Hi Andrey
 
-> > But the fact that RDMA, and potentially others, can "pass the
-> > pins" to other processes is something I spent a lot of time trying to work out.
+On 24/06/2019 15:33, Andrey Konovalov wrote:
+> This patch is a part of a series that extends kernel ABI to allow to pass
+> tagged user pointers (with the top byte set to something else other than
+> 0x00) as syscall arguments.
 > 
-> There's nothing in file layout lease architecture that says you
-> can't "pass the pins" to another process.  All the file layout lease
-> requirements say is that if you are going to pass a resource for
-> which the layout lease guarantees access for to another process,
-> then the destination process already have a valid, active layout
-> lease that covers the range of the pins being passed to it via the
-> RDMA handle.
+> This patch adds a simple test, that calls the uname syscall with a
+> tagged user pointer as an argument. Without the kernel accepting tagged
+> user pointers the test fails with EFAULT.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> ---
+>  tools/testing/selftests/arm64/.gitignore      |  1 +
+>  tools/testing/selftests/arm64/Makefile        | 11 +++++++
+>  .../testing/selftests/arm64/run_tags_test.sh  | 12 ++++++++
+>  tools/testing/selftests/arm64/tags_test.c     | 29 +++++++++++++++++++
+>  4 files changed, 53 insertions(+)
+>  create mode 100644 tools/testing/selftests/arm64/.gitignore
+>  create mode 100644 tools/testing/selftests/arm64/Makefile
+>  create mode 100755 tools/testing/selftests/arm64/run_tags_test.sh
+>  create mode 100644 tools/testing/selftests/arm64/tags_test.c
 
-How would the kernel detect and enforce this? There are many ways to
-pass a FD.
+After building a fresh Kernel from arm64/for-next-core from scratch at:
 
-IMHO it is wrong to try and create a model where the file lease exists
-independently from the kernel object relying on it. In other words the
-IB MR object itself should hold a reference to the lease it relies
-upon to function properly.
+commit 239ab658bea3b387424501e7c416640d6752dc0c 
+Merge: 6bfa3134bd3a 42d038c4fb00 1243cb6a676f d55c5f28afaf d06fa5a118f1 34b5560db40d
+Author: Will Deacon <will@kernel.org>
+Date:   Thu Aug 22 18:23:53 2019 +0100
 
-Then we don't have to wreck the unix FD model to fit this in.
+    Merge branches 'for-next/error-injection', 'for-next/tbi', 'for-next/psci-cpuidle', 'for-next/cpu-topology' and 'for-next/52-bit-kva' into for-next/core
 
-Jason
+
+KSFT arm64 tests build is broken for me, both setting or not KBUILD_OUTPUT=
+
+13:30 $ make TARGETS=arm64 kselftest-clean                       
+make[1]: Entering directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+rm -f -r /home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/arm64/tags_test
+make[1]: Leaving directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+
+✔ ~/ARM/dev/src/pdsw/linux [arm64_for_next_core|…8⚑ 23]
+
+13:30 $ make TARGETS=arm64 kselftest                  
+make[1]: Entering directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+arch/arm64/Makefile:56: CROSS_COMPILE_COMPAT not defined or empty, the compat vDSO will not be built
+make --no-builtin-rules INSTALL_HDR_PATH=$BUILD/usr \
+        ARCH=arm64 -C ../../.. headers_install             
+  HOSTCC  scripts/basic/fixdep                     
+  HOSTCC  scripts/unifdef                         
+...
+...
+  HDRINST usr/include/asm/msgbuf.h
+  HDRINST usr/include/asm/shmbuf.h
+  INSTALL /home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/usr/include
+/opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc     tags_test.c  -o /home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/arm64/tags_test
+tags_test.c: In function ‘main’:
+tags_test.c:21:12: error: ‘PR_SET_TAGGED_ADDR_CTRL’ undeclared (first use in this function); did you mean ‘PR_GET_TID_ADDRESS’?
+  if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) == 0)
+            ^~~~~~~~~~~~~~~~~~~~~~~
+            PR_GET_TID_ADDRESS
+tags_test.c:21:12: note: each undeclared identifier is reported only once for each function it appears in
+tags_test.c:21:37: error: ‘PR_TAGGED_ADDR_ENABLE’ undeclared (first use in this function); did you mean ‘PR_GET_DUMPABLE’?
+  if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) == 0)
+                                     ^~~~~~~~~~~~~~~~~~~~~
+                                     PR_GET_DUMPABLE
+../lib.mk:138: recipe for target '/home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/arm64/tags_test' failed
+make[3]: *** [/home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/arm64/tags_test] Error 1
+Makefile:136: recipe for target 'all' failed
+make[2]: *** [all] Error 2
+/home/crimar01/ARM/dev/src/pdsw/linux/Makefile:1237: recipe for target 'kselftest' failed
+make[1]: *** [kselftest] Error 2
+make[1]: Leaving directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+Makefile:179: recipe for target 'sub-make' failed
+make: *** [sub-make] Error 2
+
+Despite seeing KSFT installing Kernel Headers, they cannot be found.
+
+Fixing this patch like this make it work for me:
+
+diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/selftests/arm64/Makefile                                                                                        
+index a61b2e743e99..f9f79fb272f0 100644                             
+--- a/tools/testing/selftests/arm64/Makefile   
++++ b/tools/testing/selftests/arm64/Makefile                                                     
+@@ -4,6 +4,7 @@                                                                       
+ ARCH ?= $(shell uname -m 2>/dev/null || echo not)                                              
+                                                       
+ ifneq (,$(filter $(ARCH),aarch64 arm64))                                            
++CFLAGS += -I../../../../usr/include/                                                               
+ TEST_GEN_PROGS := tags_test                                  
+ TEST_PROGS := run_tags_test.sh                                    
+ endif                                                             
+
+but is not really a proper fix since it does NOT account for case in which you have
+installed the Kernel Headers in a non standard location like when you use KBUILD_OUTPUT.
+
+Am I missing something ?
+
+Thanks
+
+Cristian
+
+> 
+> diff --git a/tools/testing/selftests/arm64/.gitignore b/tools/testing/selftests/arm64/.gitignore
+> new file mode 100644
+> index 000000000000..e8fae8d61ed6
+> --- /dev/null
+> +++ b/tools/testing/selftests/arm64/.gitignore
+> @@ -0,0 +1 @@
+> +tags_test
+> diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/selftests/arm64/Makefile
+> new file mode 100644
+> index 000000000000..a61b2e743e99
+> --- /dev/null
+> +++ b/tools/testing/selftests/arm64/Makefile
+> @@ -0,0 +1,11 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +# ARCH can be overridden by the user for cross compiling
+> +ARCH ?= $(shell uname -m 2>/dev/null || echo not)
+> +
+> +ifneq (,$(filter $(ARCH),aarch64 arm64))
+> +TEST_GEN_PROGS := tags_test
+> +TEST_PROGS := run_tags_test.sh
+> +endif
+> +
+> +include ../lib.mk
+> diff --git a/tools/testing/selftests/arm64/run_tags_test.sh b/tools/testing/selftests/arm64/run_tags_test.sh
+> new file mode 100755
+> index 000000000000..745f11379930
+> --- /dev/null
+> +++ b/tools/testing/selftests/arm64/run_tags_test.sh
+> @@ -0,0 +1,12 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +echo "--------------------"
+> +echo "running tags test"
+> +echo "--------------------"
+> +./tags_test
+> +if [ $? -ne 0 ]; then
+> +	echo "[FAIL]"
+> +else
+> +	echo "[PASS]"
+> +fi
+> diff --git a/tools/testing/selftests/arm64/tags_test.c b/tools/testing/selftests/arm64/tags_test.c
+> new file mode 100644
+> index 000000000000..22a1b266e373
+> --- /dev/null
+> +++ b/tools/testing/selftests/arm64/tags_test.c
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <stdint.h>
+> +#include <sys/prctl.h>
+> +#include <sys/utsname.h>
+> +
+> +#define SHIFT_TAG(tag)		((uint64_t)(tag) << 56)
+> +#define SET_TAG(ptr, tag)	(((uint64_t)(ptr) & ~SHIFT_TAG(0xff)) | \
+> +					SHIFT_TAG(tag))
+> +
+> +int main(void)
+> +{
+> +	static int tbi_enabled = 0;
+> +	struct utsname *ptr, *tagged_ptr;
+> +	int err;
+> +
+> +	if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) == 0)
+> +		tbi_enabled = 1;
+> +	ptr = (struct utsname *)malloc(sizeof(*ptr));
+> +	if (tbi_enabled)
+> +		tagged_ptr = (struct utsname *)SET_TAG(ptr, 0x42);
+> +	err = uname(tagged_ptr);
+> +	free(ptr);
+> +
+> +	return err;
+> +}
+> 
+
