@@ -2,141 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 705C59BBEB
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Aug 2019 07:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3763A9BC33
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Aug 2019 08:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726058AbfHXFIi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 24 Aug 2019 01:08:38 -0400
-Received: from mga03.intel.com ([134.134.136.65]:26578 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbfHXFIi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 24 Aug 2019 01:08:38 -0400
-X-Amp-Result: UNSCANNABLE
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Aug 2019 22:08:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,424,1559545200"; 
-   d="scan'208";a="191147429"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga002.jf.intel.com with ESMTP; 23 Aug 2019 22:08:36 -0700
-Date:   Fri, 23 Aug 2019 22:08:36 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
-References: <20190820011210.GP7777@dread.disaster.area>
- <20190820115515.GA29246@ziepe.ca>
- <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
- <20190821181343.GH8653@ziepe.ca>
- <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
- <20190821194810.GI8653@ziepe.ca>
- <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
- <20190823032345.GG1119@dread.disaster.area>
- <20190823120428.GA12968@ziepe.ca>
- <20190824001124.GI1119@dread.disaster.area>
+        id S1725906AbfHXGXt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 24 Aug 2019 02:23:49 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5651 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725616AbfHXGXt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 24 Aug 2019 02:23:49 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 804BFC2DEB470B56E543;
+        Sat, 24 Aug 2019 14:23:38 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Sat, 24 Aug 2019
+ 14:23:27 +0800
+Subject: Re: [PATCH for-next 0/9] Bugfixes for 5.3-rc2
+To:     Doug Ledford <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
+ <ac9cd14a089a03bf1d19ca5a938c8d6bfa1e5f70.camel@redhat.com>
+From:   oulijun <oulijun@huawei.com>
+Message-ID: <f29f004a-6cd4-a843-14b2-fe866af0947f@huawei.com>
+Date:   Sat, 24 Aug 2019 14:23:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190824001124.GI1119@dread.disaster.area>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <ac9cd14a089a03bf1d19ca5a938c8d6bfa1e5f70.camel@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
-> On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
-> > On Fri, Aug 23, 2019 at 01:23:45PM +1000, Dave Chinner wrote:
-> > 
-> > > > But the fact that RDMA, and potentially others, can "pass the
-> > > > pins" to other processes is something I spent a lot of time trying to work out.
-> > > 
-> > > There's nothing in file layout lease architecture that says you
-> > > can't "pass the pins" to another process.  All the file layout lease
-> > > requirements say is that if you are going to pass a resource for
-> > > which the layout lease guarantees access for to another process,
-> > > then the destination process already have a valid, active layout
-> > > lease that covers the range of the pins being passed to it via the
-> > > RDMA handle.
-> > 
-> > How would the kernel detect and enforce this? There are many ways to
-> > pass a FD.
-> 
-> AFAIC, that's not really a kernel problem. It's more of an
-> application design constraint than anything else. i.e. if the app
-> passes the IB context to another process without a lease, then the
-> original process is still responsible for recalling the lease and
-> has to tell that other process to release the IB handle and it's
-> resources.
-> 
-> > IMHO it is wrong to try and create a model where the file lease exists
-> > independently from the kernel object relying on it. In other words the
-> > IB MR object itself should hold a reference to the lease it relies
-> > upon to function properly.
-> 
-> That still doesn't work. Leases are not individually trackable or
-> reference counted objects objects - they are attached to a struct
-> file bUt, in reality, they are far more restricted than a struct
-> file.
-> 
-> That is, a lease specifically tracks the pid and the _open fd_ it
-> was obtained for, so it is essentially owned by a specific process
-> context.  Hence a lease is not able to be passed to a separate
-> process context and have it still work correctly for lease break
-> notifications.  i.e. the layout break signal gets delivered to
-> original process that created the struct file, if it still exists
-> and has the original fd still open. It does not get sent to the
-> process that currently holds a reference to the IB context.
+在 2019/8/14 0:34, Doug Ledford 写道:
+> On Fri, 2019-08-09 at 17:40 +0800, Lijun Ou wrote:
+>> Here fixes some bugs for hip08
+>>
+>> Lang Cheng (1):
+>>   RDMA/hns: Remove unuseful member
+>>
+>> Lijun Ou (2):
+>>   RDMA/hns: Bugfix for creating qp attached to srq
+>>   RDMA/hns: Copy some information of AV to user
+>>
+>> Weihang Li (1):
+>>   RDMA/hns: Logic optimization of wc_flags
+>>
+>> Xi Wang (2):
+>>   RDMA/hns: Bugfix for slab-out-of-bounds when unloading hip08 driver
+>>   RDMA/hns: bugfix for slab-out-of-bounds when loading hip08 driver
+>>
+>> Yangyang Li (3):
+>>   RDMA/hns: Completely release qp resources when hw err
+>>   RDMA/hns: Modify pi vlaue when cq overflows
+>>   RDMA/hns: Kernel notify usr space to stop ring db
+>>
+>>  drivers/infiniband/hw/hns/hns_roce_ah.c     | 22 ++++++--
+>>  drivers/infiniband/hw/hns/hns_roce_cmd.c    |  1 -
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  8 ++-
+>>  drivers/infiniband/hw/hns/hns_roce_hem.c    | 19 ++++---
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 78
+>> +++++++++++++++++++++++------
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 ++
+>>  drivers/infiniband/hw/hns/hns_roce_main.c   | 29 +++++++----
+>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 25 ++++++---
+>>  include/uapi/rdma/hns-abi.h                 |  7 +++
+>>  9 files changed, 148 insertions(+), 45 deletions(-)
+>>
+> Patches 1, 2, 4, 5, 6, and 7 applied to for-next.
 >
+> I have concerns about patches 3, 8, and 9.  I'm skipping them until you
+> can address the comments I made on and off list.
+>
+Thanks. We will talk about further analysis discussion for the comments before send the next patch.
 
-The fcntl man page says:
 
-"Leases are associated with an open file description (see open(2)).  This means
-that duplicate file descriptors (created by, for example, fork(2) or dup(2))
-refer to the same lease, and this lease may be modified or released using any
-of these descriptors.  Furthermore,  the lease is released by either an
-explicit F_UNLCK operation on any of these duplicate file descriptors, or when
-all such file descriptors have been closed."
-
-From this I took it that the child process FD would have the lease as well
-_and_ could release it.  I _assumed_ that applied to SCM_RIGHTS but it does not
-seem to work the same way as dup() so I'm not so sure.
-
-Ira
-
-> 
-> So while a struct file passed to another process might still have
-> an active lease, and you can change the owner of the struct file
-> via fcntl(F_SETOWN), you can't associate the existing lease with a
-> the new fd in the new process and so layout break signals can't be
-> directed at the lease fd....
-> 
-> This really means that a lease can only be owned by a single process
-> context - it can't be shared across multiple processes (so I was
-> wrong about dup/pass as being a possible way of passing them)
-> because there's only one process that can "own" a struct file, and
-> that where signals are sent when the lease needs to be broken.
-> 
-> So, fundamentally, if you want to pass a resource that pins a file
-> layout between processes, both processes need to hold a layout lease
-> on that file range. And that means exclusive leases and passing
-> layouts between processes are fundamentally incompatible because you
-> can't hold two exclusive leases on the same file range....
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
