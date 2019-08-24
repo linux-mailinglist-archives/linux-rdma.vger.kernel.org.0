@@ -2,83 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3763A9BC33
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Aug 2019 08:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4219BEE1
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Aug 2019 18:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbfHXGXt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 24 Aug 2019 02:23:49 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5651 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725616AbfHXGXt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 24 Aug 2019 02:23:49 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 804BFC2DEB470B56E543;
-        Sat, 24 Aug 2019 14:23:38 +0800 (CST)
-Received: from [127.0.0.1] (10.61.25.96) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Sat, 24 Aug 2019
- 14:23:27 +0800
-Subject: Re: [PATCH for-next 0/9] Bugfixes for 5.3-rc2
-To:     Doug Ledford <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
- <ac9cd14a089a03bf1d19ca5a938c8d6bfa1e5f70.camel@redhat.com>
-From:   oulijun <oulijun@huawei.com>
-Message-ID: <f29f004a-6cd4-a843-14b2-fe866af0947f@huawei.com>
-Date:   Sat, 24 Aug 2019 14:23:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.0
-MIME-Version: 1.0
-In-Reply-To: <ac9cd14a089a03bf1d19ca5a938c8d6bfa1e5f70.camel@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.61.25.96]
-X-CFilter-Loop: Reflected
+        id S1726464AbfHXQqi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 24 Aug 2019 12:46:38 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:38929 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726390AbfHXQqi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 24 Aug 2019 12:46:38 -0400
+Received: by mail-pg1-f193.google.com with SMTP id u17so7720822pgi.6;
+        Sat, 24 Aug 2019 09:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ltb6VREx479pvKIqHb/++NdQYS9lzIX8qGSfLsJGfA8=;
+        b=mngzlxNAHsCaCw6r4DSsj6cBqeE9vK8cHnH52g9J87buWUE2f6SvlDXzKYrTWVKSV+
+         JmLPpS3DaVVlWivouAs6SyCdjhBc5nCZUmMHNlgL6mMcpdGYWd7vd4gAjnlEv0IRsvBE
+         s0ANk2LfMHCeF6pEoEnAhdg4MKts5D8aUrTRQr8FOuykskQN2Sut2ZLMDAGLJ/TL9jVm
+         97XAXaxyfoRsOSkgUKGvacMu6LAA9uIZ5s+vSG0x0OdaJEB03SvjerlK6duZO1NWnQL7
+         6L7kurbuqrsedxagpmKfHUkVbxLRi0SwbDDv2kCaCYwdYOPip8/QkGK7Qh2GPt4IusCn
+         EIPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ltb6VREx479pvKIqHb/++NdQYS9lzIX8qGSfLsJGfA8=;
+        b=HdPOfchkz3uj3ya/JW+X3wNB1MugrfwOC9OOAYn3F46xp8/VQjAw7xxImVDKKY/fEe
+         pLqpgEtJyi7c/hNnMjILM3aWl4G3FyK4CyStO4h7NxmRu1VF1y/Iktd2px6nRjqoz74/
+         IvDmkrRv2sCU9AJxVK7d4gSFzc3/jO0Zj9S15Y5r9Pbxa6Y5RLGSy+3Sc9lVfoQOHvJp
+         3NlKtOw9RF4yG6pHvRU4yQmXQlstkKZyfrF4mie32+s1u0W0FQsJOcCFAjcXTLwh6JwW
+         x7LW1KlbSLIVkdrPxyGtfJW6HzY1zCBxyzSUuPgQhP9qYp8mZxmItB+Nv6TB6lEXA4u4
+         p8Pg==
+X-Gm-Message-State: APjAAAUss97q8Mvp6KBrUjAWkz1vserJ1LPKtQVge8UE+BHXsmEfmMHU
+        nAHx5tuHcGHy3G7aIw6OHEY=
+X-Google-Smtp-Source: APXvYqyJnrBvt/8og29GUcn1DC2jOAl4WNe/dSEAk0y++bQsU7ttBrGARYYcKlDUlCPiAdJ/SRxdMg==
+X-Received: by 2002:a17:90a:2841:: with SMTP id p1mr11253686pjf.101.1566665197514;
+        Sat, 24 Aug 2019 09:46:37 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([106.51.17.2])
+        by smtp.gmail.com with ESMTPSA id z16sm8921213pfr.136.2019.08.24.09.46.34
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Sat, 24 Aug 2019 09:46:36 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] RDMA/mlx5: Merge two enums into a single one
+Date:   Sat, 24 Aug 2019 22:22:26 +0530
+Message-Id: <1566665546-8209-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2019/8/14 0:34, Doug Ledford 写道:
-> On Fri, 2019-08-09 at 17:40 +0800, Lijun Ou wrote:
->> Here fixes some bugs for hip08
->>
->> Lang Cheng (1):
->>   RDMA/hns: Remove unuseful member
->>
->> Lijun Ou (2):
->>   RDMA/hns: Bugfix for creating qp attached to srq
->>   RDMA/hns: Copy some information of AV to user
->>
->> Weihang Li (1):
->>   RDMA/hns: Logic optimization of wc_flags
->>
->> Xi Wang (2):
->>   RDMA/hns: Bugfix for slab-out-of-bounds when unloading hip08 driver
->>   RDMA/hns: bugfix for slab-out-of-bounds when loading hip08 driver
->>
->> Yangyang Li (3):
->>   RDMA/hns: Completely release qp resources when hw err
->>   RDMA/hns: Modify pi vlaue when cq overflows
->>   RDMA/hns: Kernel notify usr space to stop ring db
->>
->>  drivers/infiniband/hw/hns/hns_roce_ah.c     | 22 ++++++--
->>  drivers/infiniband/hw/hns/hns_roce_cmd.c    |  1 -
->>  drivers/infiniband/hw/hns/hns_roce_device.h |  8 ++-
->>  drivers/infiniband/hw/hns/hns_roce_hem.c    | 19 ++++---
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 78
->> +++++++++++++++++++++++------
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 ++
->>  drivers/infiniband/hw/hns/hns_roce_main.c   | 29 +++++++----
->>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 25 ++++++---
->>  include/uapi/rdma/hns-abi.h                 |  7 +++
->>  9 files changed, 148 insertions(+), 45 deletions(-)
->>
-> Patches 1, 2, 4, 5, 6, and 7 applied to for-next.
->
-> I have concerns about patches 3, 8, and 9.  I'm skipping them until you
-> can address the comments I made on and off list.
->
-Thanks. We will talk about further analysis discussion for the comments before send the next patch.
+These two enums can be merged into a single one wihtout effecting
+their caller if those were created without intension.
 
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+---
+ include/uapi/rdma/mlx5-abi.h | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/include/uapi/rdma/mlx5-abi.h b/include/uapi/rdma/mlx5-abi.h
+index 624f5b53..c89363a 100644
+--- a/include/uapi/rdma/mlx5-abi.h
++++ b/include/uapi/rdma/mlx5-abi.h
+@@ -461,13 +461,10 @@ enum mlx5_ib_mmap_cmd {
+ 	MLX5_IB_MMAP_DEVICE_MEM                 = 8,
+ };
+ 
+-enum {
+-	MLX5_IB_CLOCK_INFO_KERNEL_UPDATING = 1,
+-};
+-
+ /* Bit indexes for the mlx5_alloc_ucontext_resp.clock_info_versions bitmap */
+ enum {
+ 	MLX5_IB_CLOCK_INFO_V1              = 0,
++	MLX5_IB_CLOCK_INFO_KERNEL_UPDATING = 1,
+ };
+ 
+ struct mlx5_ib_flow_counters_desc {
+-- 
+1.9.1
 
