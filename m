@@ -2,102 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E779B8FF
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Aug 2019 01:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B77E9B96B
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Aug 2019 02:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725782AbfHWXlk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Aug 2019 19:41:40 -0400
-Received: from mail-pl1-f180.google.com ([209.85.214.180]:40465 "EHLO
-        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbfHWXlk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Aug 2019 19:41:40 -0400
-Received: by mail-pl1-f180.google.com with SMTP id h3so6432847pls.7
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Aug 2019 16:41:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KFA3JD8/xRJ4eOK2EI8Rzz9iVovpG18oSiXIKRj77Ss=;
-        b=kWzcpXzfZgcvFUUUmgQvb7ABHHnXvhWsxI4YBWzUqlL8jk2rTZrOgoUpr3aVr8h7ra
-         3OCbGAhIQKMTWbjF5QG3fG+2Yqh1a7BXqqA+zl8AAWZ2WKirW9z4ZVyf9BoP1YuYJuiv
-         kJENTYRneeKAs7XTjQAvIjDFUhjXUV282n+0i9OxNLJyxKqpjs2uFLL0D6OG7GQxQ/p/
-         YV4f6uir1ZMQRIr04jysEZ+03OTCI7s2q+sfTtYbIgAN8zqLyGwTAsFApGLKJbtt35to
-         XFYraJQxxR+qp+EvAcQUYKtSc43HOiDdZut9/1DYKJ6wHD3W+nDKlmh6C/hSpF3V79xh
-         yV8Q==
-X-Gm-Message-State: APjAAAWKu1CgK5gesJCBzOdHUVHqP0sosG5pfLJ6ha9CJL8A43bdbBFy
-        uHesaLC20M1ODTI9xK/MeDWRRVYK
-X-Google-Smtp-Source: APXvYqy7+WmqC246N7GQcy1n8kIKk03fJ42OhdaD88/YuSgMlj37OskAhJMyfje/88Y3ZWTqefAUAA==
-X-Received: by 2002:a17:902:223:: with SMTP id 32mr7684382plc.220.1566603698866;
-        Fri, 23 Aug 2019 16:41:38 -0700 (PDT)
-Received: from asus.site ([2601:647:4000:1349:56c2:95e9:3c7:9c11])
-        by smtp.gmail.com with ESMTPSA id 16sm6508609pfc.66.2019.08.23.16.41.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Aug 2019 16:41:38 -0700 (PDT)
-Subject: Re: siw trigger BUG: sleeping function called from invalid context at
- mm/slab.h:50
-To:     Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org
-References: <6ed77231-800b-f629-5d15-14409f0777c7@acm.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <03dfc9ef-c854-4821-7eaa-9f862bcc6d70@acm.org>
-Date:   Fri, 23 Aug 2019 16:41:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726369AbfHXAMk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Aug 2019 20:12:40 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:45548 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726283AbfHXAMk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Aug 2019 20:12:40 -0400
+Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id EF9B9361F93;
+        Sat, 24 Aug 2019 10:12:31 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1i1JeO-0007di-F2; Sat, 24 Aug 2019 10:11:24 +1000
+Date:   Sat, 24 Aug 2019 10:11:24 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190824001124.GI1119@dread.disaster.area>
+References: <20190819123841.GC5058@ziepe.ca>
+ <20190820011210.GP7777@dread.disaster.area>
+ <20190820115515.GA29246@ziepe.ca>
+ <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
+ <20190821181343.GH8653@ziepe.ca>
+ <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
+ <20190821194810.GI8653@ziepe.ca>
+ <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
+ <20190823032345.GG1119@dread.disaster.area>
+ <20190823120428.GA12968@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <6ed77231-800b-f629-5d15-14409f0777c7@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190823120428.GA12968@ziepe.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
+        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=7-415B0cAAAA:8 a=G1NtteZr6bW4K8DtrmYA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/23/19 4:02 PM, Bart Van Assche wrote:
-> If I try to associate the ib_srpt driver with the siw driver the
-> complaint shown below appears on the console.
-According to gdb:
+On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
+> On Fri, Aug 23, 2019 at 01:23:45PM +1000, Dave Chinner wrote:
+> 
+> > > But the fact that RDMA, and potentially others, can "pass the
+> > > pins" to other processes is something I spent a lot of time trying to work out.
+> > 
+> > There's nothing in file layout lease architecture that says you
+> > can't "pass the pins" to another process.  All the file layout lease
+> > requirements say is that if you are going to pass a resource for
+> > which the layout lease guarantees access for to another process,
+> > then the destination process already have a valid, active layout
+> > lease that covers the range of the pins being passed to it via the
+> > RDMA handle.
+> 
+> How would the kernel detect and enforce this? There are many ways to
+> pass a FD.
 
-(gdb) list *(siw_create_listen+0x2f5)
-0x6195 is in siw_create_listen (drivers/infiniband/sw/siw
-/siw_cm.c:2011).
-2006                            bind_addr.sin6_port =
-                                         s_laddr->sin6_port;
-2007                            bind_addr.sin6_flowinfo = 0;
-2008                            bind_addr.sin6_addr = ifp->addr;
-2009                            bind_addr.sin6_scope_id = dev->ifindex;
-2010
-2011                            rv = siw_listen_address(id, backlog,
-2012                                      (struct sockaddr *)&bind_addr,
-2013                                            AF_INET6);
-2014                            if (!rv)
-2015                                      listeners++;
+AFAIC, that's not really a kernel problem. It's more of an
+application design constraint than anything else. i.e. if the app
+passes the IB context to another process without a lease, then the
+original process is still responsible for recalling the lease and
+has to tell that other process to release the IB handle and it's
+resources.
 
-This is the code that causes trouble:
+> IMHO it is wrong to try and create a model where the file lease exists
+> independently from the kernel object relying on it. In other words the
+> IB MR object itself should hold a reference to the lease it relies
+> upon to function properly.
 
-	read_lock_bh(&in6_dev->lock);
-	list_for_each_entry(ifp, &in6_dev->addr_list, if_list) {
-		struct sockaddr_in6 bind_addr;
+That still doesn't work. Leases are not individually trackable or
+reference counted objects objects - they are attached to a struct
+file bUt, in reality, they are far more restricted than a struct
+file.
 
-		if (ipv6_addr_any(&s_laddr->sin6_addr) ||
-		    ipv6_addr_equal(&s_laddr->sin6_addr, &ifp->addr)) {
-			bind_addr.sin6_family = AF_INET6;
-			bind_addr.sin6_port = s_laddr->sin6_port;
-			bind_addr.sin6_flowinfo = 0;
-			bind_addr.sin6_addr = ifp->addr;
-			bind_addr.sin6_scope_id = dev->ifindex;
-				rv = siw_listen_address(id, backlog,
-					(struct sockaddr *)&bind_addr,
-					AF_INET6);
-			if (!rv)
-				listeners++;
-		}
-	}
-	read_unlock_bh(&in6_dev->lock);
+That is, a lease specifically tracks the pid and the _open fd_ it
+was obtained for, so it is essentially owned by a specific process
+context. Hence a lease is not able to be passed to a separate
+process context and have it still work correctly for lease break
+notifications.  i.e. the layout break signal gets delivered to
+original process that created the struct file, if it still exists
+and has the original fd still open. It does not get sent to the
+process that currently holds a reference to the IB context.
 
-siw_listen_address() calls sock_create(). I don't think it is allowed to 
-call sock_create() from atomic context.
+So while a struct file passed to another process might still have
+an active lease, and you can change the owner of the struct file
+via fcntl(F_SETOWN), you can't associate the existing lease with a
+the new fd in the new process and so layout break signals can't be
+directed at the lease fd....
 
-Thanks,
+This really means that a lease can only be owned by a single process
+context - it can't be shared across multiple processes (so I was
+wrong about dup/pass as being a possible way of passing them)
+because there's only one process that can "own" a struct file, and
+that where signals are sent when the lease needs to be broken.
 
-Bart.
+So, fundamentally, if you want to pass a resource that pins a file
+layout between processes, both processes need to hold a layout lease
+on that file range. And that means exclusive leases and passing
+layouts between processes are fundamentally incompatible because you
+can't hold two exclusive leases on the same file range....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
