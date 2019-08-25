@@ -2,179 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 823799C2EF
-	for <lists+linux-rdma@lfdr.de>; Sun, 25 Aug 2019 12:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0A39C444
+	for <lists+linux-rdma@lfdr.de>; Sun, 25 Aug 2019 16:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbfHYKpj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 25 Aug 2019 06:45:39 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:19730 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbfHYKpj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 25 Aug 2019 06:45:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1566729937; x=1598265937;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=qHs7d9fAbYKTXVEdMOaDRsxDOmoo07NS2GpPvTKCybY=;
-  b=viBr/6DfbmJ7vxTSGMGAVZrRuMSXkJI+v4cpCfWm50KvERNQ1I4yrO+T
-   xQU7xiDfRj65PTIUjqkSX9tpyiUFmsM4IfsjXmg95Ezm6z0qOk8GwiAvP
-   ScldYAnEjGCEdT6nyFKhKosZI6OLzToQPxJy7wuR4p9YubUJleVZChQFz
-   o=;
-X-IronPort-AV: E=Sophos;i="5.64,429,1559520000"; 
-   d="scan'208";a="781268814"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 25 Aug 2019 10:45:37 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id 39817A1FF2;
-        Sun, 25 Aug 2019 10:45:34 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 25 Aug 2019 10:45:34 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.167) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 25 Aug 2019 10:45:30 +0000
-Subject: Re: [PATCH v7 rdma-next 3/7] RDMA/efa: Use the common mmap_xa helpers
-To:     Michal Kalderon <mkalderon@marvell.com>
-CC:     Ariel Elior <aelior@marvell.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20190820121847.25871-1-michal.kalderon@marvell.com>
- <20190820121847.25871-4-michal.kalderon@marvell.com>
- <6f524e9e-b866-d538-3dc9-322aa4e30b5f@amazon.com>
- <MN2PR18MB3182C05D896D4FCA5CC86019A1A60@MN2PR18MB3182.namprd18.prod.outlook.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <942f87b9-53dd-88ff-9045-2f3de7cc719c@amazon.com>
-Date:   Sun, 25 Aug 2019 13:45:25 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        id S1728270AbfHYOId (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 25 Aug 2019 10:08:33 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:56034 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbfHYOId (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 25 Aug 2019 10:08:33 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7PE3lRG067198;
+        Sun, 25 Aug 2019 14:08:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=PvhRdo7N/zTKpxLlKU0DBJOPSW502ClruZlBheiTva0=;
+ b=M8jTXlFRJZk4oGxvGffyEKQJcpe1WP2n4lm8ecMOE8iKS3UHKlhB636lD1qOdDpe7yuQ
+ Z7qnbP/0utoRz6rIXBabdu5Tjzg3Hzmc2N3eHq8e6D8mkuZJBfc8bsefc8KSd9Q5wVVS
+ p/ysxtcJwUxxztmx0+5cZr67TnYdS6qcVLS1hXx5AKtzlpTttk544VJNIuBBdRtvcmMe
+ GgJ5pbA0/m6aW4samyj0s2VNhA7KKsYotPxj8v0wC5gKE+3HEw66fI4tEMM1z+v5D5zq
+ 4EJkp78h338SOLnD1+v+E0s3AIgOirayUho6fRiDH69leQLUkau0r4inyk7arVQDcvi9 YQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2ujwvq42xj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 25 Aug 2019 14:08:25 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7PE3weZ143904;
+        Sun, 25 Aug 2019 14:08:24 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 2ujw6ty7dt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 25 Aug 2019 14:08:24 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7PE8OZI153277;
+        Sun, 25 Aug 2019 14:08:24 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2ujw6ty7dn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 25 Aug 2019 14:08:24 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7PE8NmJ017774;
+        Sun, 25 Aug 2019 14:08:23 GMT
+Received: from [10.182.71.192] (/10.182.71.192)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 25 Aug 2019 07:08:23 -0700
+Subject: Re: [PATCHv2 1/1] net: rds: add service level support in rds-info
+To:     David Miller <davem@davemloft.net>
+Cc:     santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        gerd.rausch@oracle.com
+References: <1566608656-30836-1-git-send-email-yanjun.zhu@oracle.com>
+ <20190824.165851.1817456673626840850.davem@davemloft.net>
+From:   Zhu Yanjun <yanjun.zhu@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <23ca3876-ee47-6ee9-8d03-9ceada3eca98@oracle.com>
+Date:   Sun, 25 Aug 2019 22:11:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <MN2PR18MB3182C05D896D4FCA5CC86019A1A60@MN2PR18MB3182.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.160.167]
-X-ClientProxiedBy: EX13D18UWC002.ant.amazon.com (10.43.162.88) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+In-Reply-To: <20190824.165851.1817456673626840850.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9359 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908250160
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 25/08/2019 11:41, Michal Kalderon wrote:
->>> @@ -515,46 +408,55 @@ static int qp_mmap_entries_setup(struct efa_qp
->> *qp,
->>>  				 struct efa_com_create_qp_params
->> *params,
->>>  				 struct efa_ibv_create_qp_resp *resp)  {
->>> +	u64 address;
->>> +	u64 length;
->>> +
->>>  	/*
->>>  	 * Once an entry is inserted it might be mmapped, hence cannot be
->>>  	 * cleaned up until dealloc_ucontext.
->>>  	 */
->>>  	resp->sq_db_mmap_key =
->>
->> Not a big deal, but now it makes more sense to assign qp-
->>> sq_db_mmap_key and assign the response later on.
-> ok
->>
->>> -		mmap_entry_insert(dev, ucontext, qp,
->>> -				  dev->db_bar_addr + resp->sq_db_offset,
->>> -				  PAGE_SIZE, EFA_MMAP_IO_NC);
->>> -	if (resp->sq_db_mmap_key == EFA_MMAP_INVALID)
->>> +		rdma_user_mmap_entry_insert(&ucontext->ibucontext, qp,
->>> +					    dev->db_bar_addr +
->>> +					    resp->sq_db_offset,
->>> +					    PAGE_SIZE, EFA_MMAP_IO_NC);
->>> +	if (resp->sq_db_mmap_key == RDMA_USER_MMAP_INVALID)
->>>  		return -ENOMEM;
->>> -
->>> +	qp->sq_db_mmap_key = resp->sq_db_mmap_key;
->>>  	resp->sq_db_offset &= ~PAGE_MASK;
->>>
->>> +	address = dev->mem_bar_addr + resp->llq_desc_offset;
->>> +	length = PAGE_ALIGN(params->sq_ring_size_in_bytes +
->>> +			    (resp->llq_desc_offset & ~PAGE_MASK));
->>>  	resp->llq_desc_mmap_key =
->>> -		mmap_entry_insert(dev, ucontext, qp,
->>> -				  dev->mem_bar_addr + resp-
->>> llq_desc_offset,
->>> -				  PAGE_ALIGN(params-
->>> sq_ring_size_in_bytes +
->>> -					     (resp->llq_desc_offset &
->> ~PAGE_MASK)),
->>> -				  EFA_MMAP_IO_WC);
->>> -	if (resp->llq_desc_mmap_key == EFA_MMAP_INVALID)
->>> +		rdma_user_mmap_entry_insert(&ucontext->ibucontext, qp,
->>> +					    address,
->>> +					    length,
->>> +					    EFA_MMAP_IO_WC);
->>> +	if (resp->llq_desc_mmap_key == RDMA_USER_MMAP_INVALID)
->>>  		return -ENOMEM;
->>> -
->>> +	qp->llq_desc_mmap_key = resp->llq_desc_mmap_key;
->>>  	resp->llq_desc_offset &= ~PAGE_MASK;
->>>
->>>  	if (qp->rq_size) {
->>> +		address = dev->db_bar_addr + resp->rq_db_offset;
->>>  		resp->rq_db_mmap_key =
->>> -			mmap_entry_insert(dev, ucontext, qp,
->>> -					  dev->db_bar_addr + resp-
->>> rq_db_offset,
->>> -					  PAGE_SIZE, EFA_MMAP_IO_NC);
->>> -		if (resp->rq_db_mmap_key == EFA_MMAP_INVALID)
->>> +			rdma_user_mmap_entry_insert(&ucontext-
->>> ibucontext, qp,
->>> +						    address, PAGE_SIZE,
->>> +						    EFA_MMAP_IO_NC);
->>> +		if (resp->rq_db_mmap_key ==
->> RDMA_USER_MMAP_INVALID)
->>>  			return -ENOMEM;
->>> -
->>> +		qp->rq_db_mmap_key = resp->rq_db_mmap_key;
->>>  		resp->rq_db_offset &= ~PAGE_MASK;
->>>
->>> +		address = virt_to_phys(qp->rq_cpu_addr);
->>>  		resp->rq_mmap_key =
->>> -			mmap_entry_insert(dev, ucontext, qp,
->>> -					  virt_to_phys(qp->rq_cpu_addr),
->>> -					  qp->rq_size,
->> EFA_MMAP_DMA_PAGE);
->>> -		if (resp->rq_mmap_key == EFA_MMAP_INVALID)
->>> +			rdma_user_mmap_entry_insert(&ucontext-
->>> ibucontext, qp,
->>> +						    address, qp->rq_size,
->>> +						    EFA_MMAP_DMA_PAGE);
->>> +		if (resp->rq_mmap_key == RDMA_USER_MMAP_INVALID)
->>>  			return -ENOMEM;
->>> +		qp->rq_mmap_key = resp->rq_mmap_key;
->>>
->>>  		resp->rq_mmap_size = qp->rq_size;
->>>  	}
->>> @@ -775,6 +677,9 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
->>>  				 DMA_TO_DEVICE);
->>>  		if (!rq_entry_inserted)
->>
->> Now that we store the keys on the QP object we can remove the
->> rq_entry_inserted variable and test for !qp->rq_mmap_key.
-> ok
->>
->>>  			free_pages_exact(qp->rq_cpu_addr, qp->rq_size);
->>> +		else
->>> +			rdma_user_mmap_entry_remove(&ucontext-
->>> ibucontext,
->>> +						    qp->rq_mmap_key);
->>
->> Other entries need to be removed as well, otherwise the refcount won't
->> reach zero. This error flow should now be similar to efa_destroy_qp. I think
->> that means losing the free_pages_exact too.
-> Not sure I understand, how can we loose the free_pages_exact ? if the entry wasn’t 
-> Inserted into the mmap_xa what flow will free the pages ? 
 
-You're right.
-Still need to remove other entries though.
+On 2019/8/25 7:58, David Miller wrote:
+> From: Zhu Yanjun <yanjun.zhu@oracle.com>
+> Date: Fri, 23 Aug 2019 21:04:16 -0400
+>
+>> diff --git a/include/uapi/linux/rds.h b/include/uapi/linux/rds.h
+>> index fd6b5f6..cba368e 100644
+>> --- a/include/uapi/linux/rds.h
+>> +++ b/include/uapi/linux/rds.h
+>> @@ -250,6 +250,7 @@ struct rds_info_rdma_connection {
+>>   	__u32		rdma_mr_max;
+>>   	__u32		rdma_mr_size;
+>>   	__u8		tos;
+>> +	__u8		sl;
+>>   	__u32		cache_allocs;
+>>   };
+> I'm applying this, but I am once again severely disappointed in how
+> RDS development is being handled.
+>
+> >From the Fixes: commit:
+>
+> 	Since rds.h in rds-tools is not related with the kernel rds.h,
+> 	the change in kernel rds.h does not affect rds-tools.
+>
+> This is the height of arrogance and shows a lack of understanding of
+> what user ABI requirements are all about.
+>
+> It is possible for other userland components to be built by other
+> people, outside of your controlled eco-system and tools, that use
+> these interfaces.
+>
+> And you cannot control that.
+>
+> Therefore you cannot make arbitrary changes to UABI data strucures
+> just because the tool you use and maintain is not effected by it.
+>
+> Please stop making these incredibly incompatible user interface
+> changes in the RDS stack.
+>
+> I am, from this point forward, going to be extra strict on RDS stack
+> changes especially in this area.
+
+OK. It is up to you to decide to merge this commit or not.
+
+Zhu Yanjun
+
+>
+>
