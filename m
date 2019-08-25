@@ -2,55 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B69859C5D8
-	for <lists+linux-rdma@lfdr.de>; Sun, 25 Aug 2019 21:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EEF9C5E2
+	for <lists+linux-rdma@lfdr.de>; Sun, 25 Aug 2019 21:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbfHYTjE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 25 Aug 2019 15:39:04 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:45646 "EHLO
+        id S1728467AbfHYTkv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 25 Aug 2019 15:40:51 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:42951 "EHLO
         mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729059AbfHYTjD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 25 Aug 2019 15:39:03 -0400
-Received: by mail-qt1-f194.google.com with SMTP id k13so15970725qtm.12
-        for <linux-rdma@vger.kernel.org>; Sun, 25 Aug 2019 12:39:03 -0700 (PDT)
+        with ESMTP id S1728727AbfHYTkv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 25 Aug 2019 15:40:51 -0400
+Received: by mail-qt1-f194.google.com with SMTP id t12so16024453qtp.9
+        for <linux-rdma@vger.kernel.org>; Sun, 25 Aug 2019 12:40:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=IcftYbtF8hmiS81ypdWg52goznYue2k46OBNV8xIDyo=;
-        b=jY1JCn+ldE3+NTo3VG4D8ssjZZ/12uHiNC485pYaAlQaG8pq2px0AOjE6MH3L2daUE
-         OBQQMbkBAQx1ajmooyQh4PWVjIdt6ikqEPLDm20L670hA8QUe1IDUU8Cq7RXHKvaCJs6
-         htKXA0TQcvkuZNBGS9+1p2d+L62V+4CGU22UmkrAkD8MZulxOHzPTTFZ136Y5UdWTW5x
-         idbHVJEbZfo8m9QYHUrZMB8nBu9bO4c81G3htyFqwzCZfcFCkUU0+OO9AT3zsqJ59i9L
-         HxpSOEcHwKnDcvmLtQNemKrtsmfjrFYpGaWhT4ebFkdejRPPm33Mc2qKmXCed7vAMCi4
-         f5sw==
+        bh=MbwQAvf1EYum17/LkDk/Jqba2/uydGN6gfIsgEOsYXY=;
+        b=csbaERMJ0Qm3fTZnuLpzIjVz7PuxaBDQQJ/N3o9t1f1/O1EC67YkcNUX1PTDR0QX9F
+         CsiyO4OBG8bzeZJciVsQB91tb6blADeyhKHLyLThI3ARBz75ebkC45wlGR0IkSxBcUD2
+         2xeTuyMoSBYRe5bqNxCmJQnvuICJPZ9GuLJ4Nml7q/xr5iz9leiEmNUNS3NKBkqV5G3W
+         GoPTz9MQ0GzalUXYG6AV6bPU/WGtGLWX68CCfjNTgPu4NarALIprMgs485MAmtIHW4hf
+         3vVykhJ+Upyxi5DrpPD1TXlQZLPEEbmUpkTiXOjfd8adN/oepc2B/zAbciY4ewq8xIm/
+         RYnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IcftYbtF8hmiS81ypdWg52goznYue2k46OBNV8xIDyo=;
-        b=L820/QQJMiNduguYvoT1Ir4QcGIQq2WXD57Otl/KzACHEnG2JuYMyBSDt9y94wvnqG
-         MPvcN0zxpoH4ts/aW/F2On+rNSF9v4/RD0WmdyRl0/3JFarP/kWAtLAcBXIU/i40B2y1
-         PbUoZxWqOi5Qg0bUBV+rX6katR7pqSdDt1hb2uZyFMVrWkYQN7HKDx+7PLCY521JX5pA
-         pWXyR2vjLmAHToANkTiRmPoLSseJIneqOAn3wEYlQVyd8HMoZ79yeWdXaUzbwwPJ93ky
-         hUZU7FEnmXzTMXYbfh4f0ApHKIsgf5STXn0lvo8hDP/0AEW9vmhUvq5uR0fNHI+UXwJK
-         cKBg==
-X-Gm-Message-State: APjAAAXZ8ZJpES/UUa+JNRxlckwEiE0uysueXAa39dQNHLfNVnudQYH3
-        XC3lT3ECxSlqi8A290rGNFeTQQ==
-X-Google-Smtp-Source: APXvYqxGjNntfiQL8TISYg5BInHS+cQ0ODQq/4ockdGbt/O3U8AzybLVwFgyx4YCA0QWh5oy2S8plQ==
-X-Received: by 2002:ac8:450c:: with SMTP id q12mr14722642qtn.298.1566761942403;
-        Sun, 25 Aug 2019 12:39:02 -0700 (PDT)
+        bh=MbwQAvf1EYum17/LkDk/Jqba2/uydGN6gfIsgEOsYXY=;
+        b=T7uJBTBF4H60GG0QDfYpz6b6+88EeEk21U3Rpy792r/zpcLzeKXmeF3gHbuMYpsRQ2
+         XWON9Mz0SmxkkiCetui2tjoU9itPutL19cMgkxzK916hi1Y1HiNnIFO5LvNdRukTPEIU
+         DDUQxJgJHwawHA8BEwGWXbKGX5rWVdyc1vUbvfbjyzZT+wTutO3WBjSbMSJvdp0cKtKi
+         Uqsj2PXoerYFuzxomc/72vBjWNZpvHNg9+Pgc5BdGRE0HKeKJTLOUnQHCB8cr8H0vXm2
+         QzuCpCcRVSFpvX9nWcsHzxwJ1Z/LB4Y1erSAQx3wJcG9N81fOUhgdIEMXgufd6rFyHOU
+         M0tQ==
+X-Gm-Message-State: APjAAAXUG9NcWfFkS3fVQS6hfLxG7nadi/MfzE7ceIF4RgZVqdnkEJjg
+        GO8XdDpCuBMj1sY1qLrdRjciHw==
+X-Google-Smtp-Source: APXvYqxk7xnMH5RsCss+5xcOEKbvxQMkTe4ENpEKEAcbqmZYFpESkrWsVxsf7euTTp0g3Hl9/ekeqA==
+X-Received: by 2002:ac8:42c4:: with SMTP id g4mr14703846qtm.228.1566762050152;
+        Sun, 25 Aug 2019 12:40:50 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-167-216-168.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.216.168])
-        by smtp.gmail.com with ESMTPSA id m10sm4699826qka.43.2019.08.25.12.39.01
+        by smtp.gmail.com with ESMTPSA id c5sm5783563qtc.90.2019.08.25.12.40.49
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 25 Aug 2019 12:39:01 -0700 (PDT)
+        Sun, 25 Aug 2019 12:40:49 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1i1yLs-0005oN-Oc; Sun, 25 Aug 2019 16:39:00 -0300
-Date:   Sun, 25 Aug 2019 16:39:00 -0300
+        id 1i1yNd-0005pU-9Z; Sun, 25 Aug 2019 16:40:49 -0300
+Date:   Sun, 25 Aug 2019 16:40:49 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>,
         Dan Williams <dan.j.williams@intel.com>,
         Matthew Wilcox <willy@infradead.org>,
@@ -61,8 +61,9 @@ Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
         linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
         linux-ext4@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190825193900.GA21239@ziepe.ca>
-References: <20190820011210.GP7777@dread.disaster.area>
+Message-ID: <20190825194049.GB21239@ziepe.ca>
+References: <20190819123841.GC5058@ziepe.ca>
+ <20190820011210.GP7777@dread.disaster.area>
  <20190820115515.GA29246@ziepe.ca>
  <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
  <20190821181343.GH8653@ziepe.ca>
@@ -70,60 +71,27 @@ References: <20190820011210.GP7777@dread.disaster.area>
  <20190821194810.GI8653@ziepe.ca>
  <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
  <20190823032345.GG1119@dread.disaster.area>
- <20190823120428.GA12968@ziepe.ca>
- <20190824001124.GI1119@dread.disaster.area>
+ <20190824044911.GB1092@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190824001124.GI1119@dread.disaster.area>
+In-Reply-To: <20190824044911.GB1092@iweiny-DESK2.sc.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
-> On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
-> > On Fri, Aug 23, 2019 at 01:23:45PM +1000, Dave Chinner wrote:
-> > 
-> > > > But the fact that RDMA, and potentially others, can "pass the
-> > > > pins" to other processes is something I spent a lot of time trying to work out.
-> > > 
-> > > There's nothing in file layout lease architecture that says you
-> > > can't "pass the pins" to another process.  All the file layout lease
-> > > requirements say is that if you are going to pass a resource for
-> > > which the layout lease guarantees access for to another process,
-> > > then the destination process already have a valid, active layout
-> > > lease that covers the range of the pins being passed to it via the
-> > > RDMA handle.
-> > 
-> > How would the kernel detect and enforce this? There are many ways to
-> > pass a FD.
-> 
-> AFAIC, that's not really a kernel problem. It's more of an
-> application design constraint than anything else. i.e. if the app
-> passes the IB context to another process without a lease, then the
-> original process is still responsible for recalling the lease and
-> has to tell that other process to release the IB handle and it's
-> resources.
+On Fri, Aug 23, 2019 at 09:49:12PM -0700, Ira Weiny wrote:
 
-It is a kernel problem, the MR exists and is doing DMA. That relies on
-the lease to prevent data corruption.
+> So far, I have not been able to get RDMA to have an issue like Jason suggested
+> would happen (or used to happen).  So from that perspective it may be ok to
+> hang the close.
 
-The sanest outcome I could suggest is that when the kernel detects the
-MR has outlived the lease it needs then we forcibly abort the entire
-RDMA state. Ie the application has malfunctioned and gets wacked with
-a very big hammer.
+No, it is not OK to hang the close. You will deadlock on process
+destruction when the 'lease fd' hangs waiting for the 'uverbs fd'
+which is later in the single threaded destruction sequence.
 
-> That still doesn't work. Leases are not individually trackable or
-> reference counted objects objects - they are attached to a struct
-> file bUt, in reality, they are far more restricted than a struct
-> file.
-
-This is the problem. How to link something that is not refcounted to
-the refcounted world of file descriptors does not seem very obvious.
-
-There are too many places where struct file relies on its refcounting
-to try to and plug them.
+This is different from the uverbs deadlock I outlined
 
 Jason
