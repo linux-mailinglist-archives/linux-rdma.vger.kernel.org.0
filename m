@@ -2,114 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 872BB9CEE0
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 14:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4029CF71
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 14:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbfHZMCB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Aug 2019 08:02:01 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:10074 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbfHZMCB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Aug 2019 08:02:01 -0400
+        id S1731850AbfHZMU6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Aug 2019 08:20:58 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:45187 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730287AbfHZMU6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Aug 2019 08:20:58 -0400
+Received: by mail-qt1-f194.google.com with SMTP id k13so17541250qtm.12
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Aug 2019 05:20:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1566820920; x=1598356920;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=PQR2uQrchM0xGPejc5KE/ICDArUkEAoh8XQ3qYzEwU8=;
-  b=kf6JhxfvTOBc6cFiZEGExTHAL8ZOucUh1ZSAlr4XcNKvwTZXtfAImkrK
-   UHI46jve51dr17UXSCv6zB1w6ufI9LPrwbPuixFpTIGxnzD2J6NRo4v9A
-   jr8A6vMbEjUSCeA2dzx7tJs8gjl6pHDoRaTVo5Wlw7tRxHDLZ7idzK6Lt
-   w=;
-X-IronPort-AV: E=Sophos;i="5.64,433,1559520000"; 
-   d="scan'208";a="781477706"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 26 Aug 2019 12:01:56 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id A4F3EA2409;
-        Mon, 26 Aug 2019 12:01:54 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Mon, 26 Aug 2019 12:01:53 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.191) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Mon, 26 Aug 2019 12:01:49 +0000
-Subject: Re: [EXT] Re: [PATCH v7 rdma-next 2/7] RDMA/core: Create mmap
- database and cookie helper functions
-To:     Michal Kalderon <mkalderon@marvell.com>
-CC:     Ariel Elior <aelior@marvell.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <20190820121847.25871-1-michal.kalderon@marvell.com>
- <20190820121847.25871-3-michal.kalderon@marvell.com>
- <20190820132125.GC29246@ziepe.ca>
- <MN2PR18MB31821E7411D0E44267F4A256A1AB0@MN2PR18MB3182.namprd18.prod.outlook.com>
- <CH2PR18MB31752BE286837BFDCEE3B17CA1AA0@CH2PR18MB3175.namprd18.prod.outlook.com>
- <20190821165121.GE8653@ziepe.ca>
- <CH2PR18MB3175EDB5640A3987D97A4DC0A1AA0@CH2PR18MB3175.namprd18.prod.outlook.com>
- <20190821173702.GG8653@ziepe.ca>
- <MN2PR18MB318200091BB02266B29125DAA1A10@MN2PR18MB3182.namprd18.prod.outlook.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <8eab82f5-600e-f865-4168-548910cda3b8@amazon.com>
-Date:   Mon, 26 Aug 2019 15:01:44 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IInbJuct5ufzKNiytsnk+jMIYv1V6eVTEaTj38ohm3M=;
+        b=fnMzsCTram2mN7X12asMshdyTXllFMcSBIdA21KFh1RFEex2/5FeKlO+9rtE32Hfem
+         jNFRntwunRTt9MR1Ovw/7sG8gRUDu02VVxJVeHApVsYUYSL3ColhOVAIONzU/OwgzIsI
+         Cf+dbVDkOq6orHb9v/8o9ozQW9LemkmRD/qs4cgkUG9GO8bMKSsQ5fVmxRZ8QKmTd/UN
+         cMzUj24siEC0zPzjoKcmIhXTIs2pUPmj3ydsCJXBTyle1aaPAglspzS3pqQgQ9jGMdgs
+         V8/0FEQAaqOhMwcD4fjLClL9PYtQeZh0epvkMiiCdtfvZJMAYEZM7IJ41fzr+ZyQcPqf
+         fuvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IInbJuct5ufzKNiytsnk+jMIYv1V6eVTEaTj38ohm3M=;
+        b=Nfk6wZ9aM6HJNQZ6IGw6/MD4RIvwPUSSOGgjxmQB57VVZPz4bRXHYZVSAS9GFU0Wro
+         dqTKf6qwAWz2HSojbBiVC/+ulCyDeUvIaSG4G328eOfPc2sySl/WeOYbzj3z8yW0munH
+         fEq6xcl4Auj+nVN+hHQfsvJNLaKMDUs2yKW1A+Y3ycbR7WaM8Xxp+cts1tKU5PR2FtQo
+         3UO0LoPHwhUBdP/lI+OuTEUr4RLr6LOZcEjeAigyk0jsIixOECgBWXBElzdwvZ6AKRAw
+         4hTkgK/TLIee10+qAodWdPb3XSHkYEbH9qE8FG8EFsiGRRxVbM3Of+g3A8HmyhPjGyjZ
+         8/bw==
+X-Gm-Message-State: APjAAAWhRkpTYU2YCgF7lh5XxzCYG6wniKYLs5mVWlgfIRb3d+fh8/2Q
+        8JhFxNbQlpNQ5JkICrMQDYAGLg==
+X-Google-Smtp-Source: APXvYqz+8moKXNMjENzuAiUz9yUTyRo1T98w+98Tx3SfRXc69ey23f/HpA4QXKYMoXk3ry4w8yOQ3g==
+X-Received: by 2002:ac8:73c7:: with SMTP id v7mr14706237qtp.9.1566822056913;
+        Mon, 26 Aug 2019 05:20:56 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-167-216-168.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.216.168])
+        by smtp.gmail.com with ESMTPSA id q6sm6213402qke.109.2019.08.26.05.20.56
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 26 Aug 2019 05:20:56 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1i2DzT-0007A1-Sv; Mon, 26 Aug 2019 09:20:55 -0300
+Date:   Mon, 26 Aug 2019 09:20:55 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     leon@kernel.org, Doug Ledford <dledford@redhat.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] IB/mlx5: Convert to use vm_map_pages_zero()
+Message-ID: <20190826122055.GA27349@ziepe.ca>
+References: <1566713247-23873-1-git-send-email-jrdr.linux@gmail.com>
+ <20190825194354.GC21239@ziepe.ca>
+ <CAFqt6za5uUSKLMn0E25M1tYG853tpdE-kcoUYHdmby5s4d0JKg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <MN2PR18MB318200091BB02266B29125DAA1A10@MN2PR18MB3182.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.191]
-X-ClientProxiedBy: EX13D24UWB003.ant.amazon.com (10.43.161.222) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFqt6za5uUSKLMn0E25M1tYG853tpdE-kcoUYHdmby5s4d0JKg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 26/08/2019 14:53, Michal Kalderon wrote:
->> From: Jason Gunthorpe <jgg@ziepe.ca>
->> Sent: Wednesday, August 21, 2019 8:37 PM
->>
->> On Wed, Aug 21, 2019 at 05:14:38PM +0000, Michal Kalderon wrote:
->>
->>>>> Jason, I looked into this deeper today, it seems that since the
->>>>> Core is the one handling the reference counting, and eventually
->>>>> Freeing the object that it makes more sense to keep the allocation
->>>>> In core and not in the drivers, since the driver won't be able to
->>>>> free The entry without providing yet an additional callback
->>>>> function to the Core to be called once the reference count reaches
->> zero.
->>>>
->>>> This already added a callback to free the xa_entry, why can't it
->>>> free all the memory too when kref goes to 0?
->>> True, could free it there. I just think we'll have a bit more
->>> duplication code
->>
->> Well, the drivers already needed to allocate something right?
->>
->>> Between the drivers defining a very similar private structure and
->>> adding Allocation calls before each of the rdma_user_mmap_insert
->> function calls.
->>>  And just to make sure I follow,
->>> Do you mean creating the following structure per driver:
->>> Struct <driver>_user_mmap_entry {
->>> 	struct rdma_user_mmap_entry umap_entry;
->>>               ... <private fields> ...
->>> }
->>
->> Yes, that is the general pattern
-> Gal, 
+On Mon, Aug 26, 2019 at 01:32:09AM +0530, Souptick Joarder wrote:
+> On Mon, Aug 26, 2019 at 1:13 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Sun, Aug 25, 2019 at 11:37:27AM +0530, Souptick Joarder wrote:
+> > > First, length passed to mmap is checked explicitly against
+> > > PAGE_SIZE.
+> > >
+> > > Second, if vma->vm_pgoff is passed as non zero, it would return
+> > > error. It appears like driver is expecting vma->vm_pgoff to
+> > > be passed as 0 always.
+> >
+> > ? pg_off is not zero
 > 
-> Following this request from Jason I took another look at the obj that originally
-> Was stored in efa_user_mmap_entry, this was used only in debug prints. 
-> Do you see added value in storing this obj? or do you agree
-> We can drop it ? 
+> Sorry, I mean, driver has a check against non zero to return error -EOPNOTSUPP
+> which means in true scenario driver is expecting vma->vm_pgoff should be passed
+> as 0.
 
-It originally had more use-cases, we lost them at some point.
-I'm fine with removing it, especially if each driver can add his own private
-fields to the entry.
+get_index is masking vm_pgoff, it is not 0
+
+Jason
