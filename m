@@ -2,175 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C61C9D4B9
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 19:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272569D5BA
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 20:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732779AbfHZRM7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Aug 2019 13:12:59 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:33695 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbfHZRM7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Aug 2019 13:12:59 -0400
-Received: by mail-io1-f67.google.com with SMTP id z3so39163661iog.0;
-        Mon, 26 Aug 2019 10:12:58 -0700 (PDT)
+        id S1733311AbfHZSVz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Aug 2019 14:21:55 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:43103 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730248AbfHZSVy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Aug 2019 14:21:54 -0400
+Received: by mail-lf1-f65.google.com with SMTP id q27so3420542lfo.10
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Aug 2019 11:21:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=EmA8Pt9k4ctmz/aV8eavE1ECUTo3QhbykSiR5VH4SRc=;
-        b=N7U42xHolsO+uCXckGUfZhdSzeGLQqP1/pJjX4M5UE2XVK7oQw5e9rTunKTHa1krTX
-         4JbZzQFsZjzi5ifikkDAmPLXEUPrQIxS/Ql9lSae2sYRBJXbRU49PbCQH02opn7dXkaT
-         UWQutu5DmOgJd6EPrAWnzW944VFck7EUqr5/4U7tHK12j1Anpx6rY/345QHSsiFsPn6S
-         fafnSZ+ZL0CMwiHxbtcru0dZBUaVeT6p2mmrFAW8HLKf0pobYbbggfGn0wWch2TClnnH
-         IcWzFKJ4AMeRlxL7YuS+QMJfJWnHIopgtZPwGChw8V81LMACK6adyuA4wFX/xTo4wgdb
-         B2+A==
+        d=golem.network; s=google;
+        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Fs3oZ4OWcZC7pSC1MY8mtXkLftPZv650t6Rb4ohgLm4=;
+        b=YqPYtiJx1vKSPZKzprZjaUmhDs6qA94bIjTY/MW8rxblIvLLi22ltSIiu9HAKcSwQa
+         xpjT7UYFT7ZtkXNQK8JIlr8NzczIS6aRNJnm6eSjUjTNCrmOKlWcTW8Y4HClmoZTofEq
+         JpLwZ9GsEPuzI4yF1qGKPZgmVwLKabpRrG5QU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=EmA8Pt9k4ctmz/aV8eavE1ECUTo3QhbykSiR5VH4SRc=;
-        b=ENdEKaU6/6CTBYmvdqYwN6g3bHgyHubWVlIdGdZw04db8Jlc7ujWesPVFD6lXa78UQ
-         2YhMRgoIVi0y85Eq6M7Twk2iv7h4wyWm3UCPKz6a7ZePKasv68Yxmy0PwrX4SYZGjrkF
-         qytLIU+8Mw7BnJ5c5pXq5AG3TDpd5LEomDBxa2ND7LbdLNfJXB/4Rb0y5C7vymXJVdLr
-         eNQj6Hkir2eH592loujVbA69eC6mMnsq7A8BouXths+cN/1Ux5Or7CVsZEziIx5MdKKz
-         /NrRYUu5Rmohwnf0exPmXeZ4OLNb/1fY3ogyODpFsnh/I5wejKONEeuegyaIiXrGIoWr
-         uIRg==
-X-Gm-Message-State: APjAAAW0EDF19pLtW29Rj/I4YHeypcEJk2MNoC1QvWuaiBBuCms5uZfK
-        SvC96QcDIBxcEG61RoGfv5Y=
-X-Google-Smtp-Source: APXvYqx1l90O8qGhET2Wj5C/9RHATifdYMPOaUpkERsPswHsWM9MYbzGrNuYdiB0G4skzSel99znfA==
-X-Received: by 2002:a6b:fd19:: with SMTP id c25mr3822003ioi.267.1566839578335;
-        Mon, 26 Aug 2019 10:12:58 -0700 (PDT)
-Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id r2sm10029912ioh.61.2019.08.26.10.12.57
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Aug 2019 10:12:58 -0700 (PDT)
-Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id x7QHCv2t031327;
-        Mon, 26 Aug 2019 17:12:57 GMT
-Subject: [PATCH 3/3] xprtrdma: Send Queue size grows after a reconnect
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     anna.schumaker@netapp.com
-Cc:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
-Date:   Mon, 26 Aug 2019 13:12:57 -0400
-Message-ID: <20190826171257.4841.70242.stgit@manet.1015granger.net>
-In-Reply-To: <20190826171107.4841.41733.stgit@manet.1015granger.net>
-References: <20190826171107.4841.41733.stgit@manet.1015granger.net>
-User-Agent: StGit/0.17.1-dirty
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=Fs3oZ4OWcZC7pSC1MY8mtXkLftPZv650t6Rb4ohgLm4=;
+        b=CfmFP9k7p0xOjfmWHDz6A70mSQDN1QZJmfuRea3ufKsEWaaHtkwFveqhnFCWkpHCTC
+         Zkxay+BOKA6r+Y9/nbXY1KWc8wtqTmGWaf4rz0bGZiildM0sMgkJgpFtk8TnaFwSAIML
+         FTkXw8jYX4gqsKHzRLU5ImHR16ATTdeAnSqr+Kx9H1UuahZ6QMy6L0IhKh5zN6e6KXWh
+         kJ2qzF68Rl55BjCdRidj5GGE9wGE4RPM0u4cgFrdIq8AYgSZjemg1CwPJn4VbUDKska4
+         RUSShdKuYVJ7uuDO/15EdVy1OA3w0DJjnI1DsKue+jRXJLA3tPZx5GR4ot8YN0lamuf4
+         BnAg==
+X-Gm-Message-State: APjAAAUhLz3QZonpQ5HeoekQ/ArbjpZh5zN0cKXVWl9vCJH8VcpStPOF
+        8saOikxBkeqVQTVZnRKMOfTcg1GCP/g=
+X-Google-Smtp-Source: APXvYqynjixWkUFC4aU8cgPNJjBTgNw9+FxX4OSD95iCZnUSJNTYABvl17M5T0zDIQocCjkxiOnNWA==
+X-Received: by 2002:a19:e04f:: with SMTP id g15mr12087560lfj.46.1566843711884;
+        Mon, 26 Aug 2019 11:21:51 -0700 (PDT)
+Received: from ?IPv6:2a02:a317:223c:8100:514a:8b7b:6531:f981? ([2a02:a317:223c:8100:514a:8b7b:6531:f981])
+        by smtp.gmail.com with ESMTPSA id z128sm218367lfa.1.2019.08.26.11.21.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Aug 2019 11:21:50 -0700 (PDT)
+Subject: Re: Setting up siw devices
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Krishnamraju Eraparaju <krishna2@chelsio.com>,
+        linux-rdma@vger.kernel.org
+References: <421f6635-e69c-623d-746a-df541c27f428@golem.network>
+ <20190822154323.GA19899@chelsio.com>
+ <20190822155228.GH29433@mtr-leonro.mtl.com>
+ <bf42725d-d441-0237-9df5-bd39cb981dcc@golem.network>
+ <20190822172155.GL29433@mtr-leonro.mtl.com>
+ <b46f158f-61c9-b949-9174-ec110dc92f9a@golem.network>
+ <20190822183807.GN29433@mtr-leonro.mtl.com>
+ <1d28390e-c55a-3f9b-4b25-2239bdb71d6e@golem.network>
+ <20190826113907.GB4584@mtr-leonro.mtl.com>
+From:   Marcin Mielniczuk <marcin@golem.network>
+Openpgp: preference=signencrypt
+Autocrypt: addr=marcin@golem.network; keydata=
+ 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
+Message-ID: <12f5c983-ff77-1585-d408-c5a73306aeac@golem.network>
+Date:   Mon, 26 Aug 2019 20:21:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20190826113907.GB4584@mtr-leonro.mtl.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Eli Dorfman reports that after a series of idle disconnects, an
-RPC/RDMA transport becomes unusable (rdma_create_qp returns
--ENOMEM). Problem was tracked down to increasing Send Queue size
-after each reconnect.
+Btw. I noticed that on Linux 4.15 rxe_cfg created a device called rxe0
+and it was not renamed. On the other hand, on 5.3-rc6, rxe_cfg the
+device gets renamed from rxe0 to rocepXsXXfX
 
-The rdma_create_qp() API does not promise to leave its @qp_init_attr
-parameter unaltered. In fact, some drivers do modify one or more of
-its fields. Thus our calls to rdma_create_qp must use a fresh copy
-of ib_qp_init_attr each time.
-
-This fix is appropriate for kernels dating back to late 2007, though
-it will have to be adapted, as the connect code has changed over the
-years.
-
-Reported-by: Eli Dorfman <eli@vastdata.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- net/sunrpc/xprtrdma/verbs.c |   26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
-
-diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-index 1dadc9e..7969457 100644
---- a/net/sunrpc/xprtrdma/verbs.c
-+++ b/net/sunrpc/xprtrdma/verbs.c
-@@ -606,10 +606,10 @@ void rpcrdma_ep_destroy(struct rpcrdma_xprt *r_xprt)
-  * Unlike a normal reconnection, a fresh PD and a new set
-  * of MRs and buffers is needed.
-  */
--static int
--rpcrdma_ep_recreate_xprt(struct rpcrdma_xprt *r_xprt,
--			 struct rpcrdma_ep *ep, struct rpcrdma_ia *ia)
-+static int rpcrdma_ep_recreate_xprt(struct rpcrdma_xprt *r_xprt,
-+				    struct ib_qp_init_attr *qp_init_attr)
- {
-+	struct rpcrdma_ia *ia = &r_xprt->rx_ia;
- 	int rc, err;
- 
- 	trace_xprtrdma_reinsert(r_xprt);
-@@ -626,7 +626,7 @@ void rpcrdma_ep_destroy(struct rpcrdma_xprt *r_xprt)
- 	}
- 
- 	rc = -ENETUNREACH;
--	err = rdma_create_qp(ia->ri_id, ia->ri_pd, &ep->rep_attr);
-+	err = rdma_create_qp(ia->ri_id, ia->ri_pd, qp_init_attr);
- 	if (err) {
- 		pr_err("rpcrdma: rdma_create_qp returned %d\n", err);
- 		goto out3;
-@@ -643,16 +643,16 @@ void rpcrdma_ep_destroy(struct rpcrdma_xprt *r_xprt)
- 	return rc;
- }
- 
--static int
--rpcrdma_ep_reconnect(struct rpcrdma_xprt *r_xprt, struct rpcrdma_ep *ep,
--		     struct rpcrdma_ia *ia)
-+static int rpcrdma_ep_reconnect(struct rpcrdma_xprt *r_xprt,
-+				struct ib_qp_init_attr *qp_init_attr)
- {
-+	struct rpcrdma_ia *ia = &r_xprt->rx_ia;
- 	struct rdma_cm_id *id, *old;
- 	int err, rc;
- 
- 	trace_xprtrdma_reconnect(r_xprt);
- 
--	rpcrdma_ep_disconnect(ep, ia);
-+	rpcrdma_ep_disconnect(&r_xprt->rx_ep, ia);
- 
- 	rc = -EHOSTUNREACH;
- 	id = rpcrdma_create_id(r_xprt, ia);
-@@ -674,7 +674,7 @@ void rpcrdma_ep_destroy(struct rpcrdma_xprt *r_xprt)
- 		goto out_destroy;
- 	}
- 
--	err = rdma_create_qp(id, ia->ri_pd, &ep->rep_attr);
-+	err = rdma_create_qp(id, ia->ri_pd, qp_init_attr);
- 	if (err)
- 		goto out_destroy;
- 
-@@ -699,25 +699,27 @@ void rpcrdma_ep_destroy(struct rpcrdma_xprt *r_xprt)
- 	struct rpcrdma_xprt *r_xprt = container_of(ia, struct rpcrdma_xprt,
- 						   rx_ia);
- 	struct rpc_xprt *xprt = &r_xprt->rx_xprt;
-+	struct ib_qp_init_attr qp_init_attr;
- 	int rc;
- 
- retry:
-+	memcpy(&qp_init_attr, &ep->rep_attr, sizeof(qp_init_attr));
- 	switch (ep->rep_connected) {
- 	case 0:
- 		dprintk("RPC:       %s: connecting...\n", __func__);
--		rc = rdma_create_qp(ia->ri_id, ia->ri_pd, &ep->rep_attr);
-+		rc = rdma_create_qp(ia->ri_id, ia->ri_pd, &qp_init_attr);
- 		if (rc) {
- 			rc = -ENETUNREACH;
- 			goto out_noupdate;
- 		}
- 		break;
- 	case -ENODEV:
--		rc = rpcrdma_ep_recreate_xprt(r_xprt, ep, ia);
-+		rc = rpcrdma_ep_recreate_xprt(r_xprt, &qp_init_attr);
- 		if (rc)
- 			goto out_noupdate;
- 		break;
- 	default:
--		rc = rpcrdma_ep_reconnect(r_xprt, ep, ia);
-+		rc = rpcrdma_ep_reconnect(r_xprt, &qp_init_attr);
- 		if (rc)
- 			goto out;
- 	}
+On 26.08.2019 13:39, Leon Romanovsky wrote:
+> On Mon, Aug 26, 2019 at 12:02:47PM +0200, Marcin Mielniczuk wrote:
+>> With the kernel built with yiour patch the device is still being
+>> renamed. (tbh, I don't even see why this patch would help)
+> Because I'm afraid that SIW sets wrong "parent" device.
+>
+> Thanks
 
