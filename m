@@ -2,174 +2,229 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 862DC9C8D1
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 07:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7859CB05
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 09:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729160AbfHZFzV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Aug 2019 01:55:21 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:36676 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725806AbfHZFzV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 26 Aug 2019 01:55:21 -0400
-Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 1199A43F692;
-        Mon, 26 Aug 2019 15:55:12 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1i27yA-0002Rg-EJ; Mon, 26 Aug 2019 15:55:10 +1000
-Date:   Mon, 26 Aug 2019 15:55:10 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190826055510.GL1119@dread.disaster.area>
-References: <20190820115515.GA29246@ziepe.ca>
- <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
- <20190821181343.GH8653@ziepe.ca>
- <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
- <20190821194810.GI8653@ziepe.ca>
- <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
- <20190823032345.GG1119@dread.disaster.area>
- <20190823120428.GA12968@ziepe.ca>
- <20190824001124.GI1119@dread.disaster.area>
- <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
+        id S1728168AbfHZHyj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Aug 2019 03:54:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727674AbfHZHyi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 26 Aug 2019 03:54:38 -0400
+Received: from localhost (unknown [77.137.115.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EBA320874;
+        Mon, 26 Aug 2019 07:54:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566806078;
+        bh=5CpPvydFqxvmfQ1yTpWgV10PymVJLDKsLcWc6N97l6E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OfGuoC0ytN3nOh7s4GrZVyoDKDBOww7vqavLDQAM4dnrZ9VecUM4ZaTK0KT5TfaBj
+         WSo5bhtg2IG4T2nQgsdQVg+eYeUdjXvnKr+xrrNcDvU7scYhLc8ZG91KC86/UK8SBA
+         cNMt5bXxQ/LHgVvegLXDfRnnQU+njqXMkRry31tw=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Michael Guralnik <michaelgur@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH rdma-core] mlx5: Report ODP capabilities for DC transport
+Date:   Mon, 26 Aug 2019 10:54:31 +0300
+Message-Id: <20190826075431.19717-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
-        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=7-415B0cAAAA:8 a=l-5HZ6ThFU8XlB48y_YA:9 a=qRlaua0cGjGJrKa9:21
-        a=OEwtXWmnxFRK9C0v:21 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 10:08:36PM -0700, Ira Weiny wrote:
-> On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
-> > On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
-> > > On Fri, Aug 23, 2019 at 01:23:45PM +1000, Dave Chinner wrote:
-> > > 
-> > > > > But the fact that RDMA, and potentially others, can "pass the
-> > > > > pins" to other processes is something I spent a lot of time trying to work out.
-> > > > 
-> > > > There's nothing in file layout lease architecture that says you
-> > > > can't "pass the pins" to another process.  All the file layout lease
-> > > > requirements say is that if you are going to pass a resource for
-> > > > which the layout lease guarantees access for to another process,
-> > > > then the destination process already have a valid, active layout
-> > > > lease that covers the range of the pins being passed to it via the
-> > > > RDMA handle.
-> > > 
-> > > How would the kernel detect and enforce this? There are many ways to
-> > > pass a FD.
-> > 
-> > AFAIC, that's not really a kernel problem. It's more of an
-> > application design constraint than anything else. i.e. if the app
-> > passes the IB context to another process without a lease, then the
-> > original process is still responsible for recalling the lease and
-> > has to tell that other process to release the IB handle and it's
-> > resources.
-> > 
-> > > IMHO it is wrong to try and create a model where the file lease exists
-> > > independently from the kernel object relying on it. In other words the
-> > > IB MR object itself should hold a reference to the lease it relies
-> > > upon to function properly.
-> > 
-> > That still doesn't work. Leases are not individually trackable or
-> > reference counted objects objects - they are attached to a struct
-> > file bUt, in reality, they are far more restricted than a struct
-> > file.
-> > 
-> > That is, a lease specifically tracks the pid and the _open fd_ it
-> > was obtained for, so it is essentially owned by a specific process
-> > context.  Hence a lease is not able to be passed to a separate
-> > process context and have it still work correctly for lease break
-> > notifications.  i.e. the layout break signal gets delivered to
-> > original process that created the struct file, if it still exists
-> > and has the original fd still open. It does not get sent to the
-> > process that currently holds a reference to the IB context.
-> >
-> 
-> The fcntl man page says:
-> 
-> "Leases are associated with an open file description (see open(2)).  This means
-> that duplicate file descriptors (created by, for example, fork(2) or dup(2))
-> refer to the same lease, and this lease may be modified or released using any
-> of these descriptors.  Furthermore,  the lease is released by either an
-> explicit F_UNLCK operation on any of these duplicate file descriptors, or when
-> all such file descriptors have been closed."
+From: Michael Guralnik <michaelgur@mellanox.com>
 
-Right, the lease is attached to the struct file, so it follows
-where-ever the struct file goes. That doesn't mean it's actually
-useful when the struct file is duplicated and/or passed to another
-process. :/
+Report ODP capabilities for DC through mlx5dv_query_device.
 
-AFAICT, the problem is that when we take another reference to the
-struct file, or when the struct file is passed to a different
-process, nothing updates the lease or lease state attached to that
-struct file.
+Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
+Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ PR: https://github.com/linux-rdma/rdma-core/pull/570
+ Kernel: https://lore.kernel.org/linux-rdma/20190819120815.21225-1-leon@kernel.org
+---
+ providers/mlx5/man/mlx5dv_query_device.3 |  5 +++
+ providers/mlx5/mlx5.c                    | 42 ++++++++++++++++++++++++
+ providers/mlx5/mlx5_ifc.h                | 33 +++++++++++++++++++
+ providers/mlx5/mlx5dv.h                  |  2 ++
+ 4 files changed, 82 insertions(+)
 
-> From this I took it that the child process FD would have the lease as well
-> _and_ could release it.  I _assumed_ that applied to SCM_RIGHTS but it does not
-> seem to work the same way as dup() so I'm not so sure.
+diff --git a/providers/mlx5/man/mlx5dv_query_device.3 b/providers/mlx5/man/mlx5dv_query_device.3
+index 64415a1c4..73353f302 100644
+--- a/providers/mlx5/man/mlx5dv_query_device.3
++++ b/providers/mlx5/man/mlx5dv_query_device.3
+@@ -49,6 +49,9 @@ struct mlx5dv_cqe_comp_caps     cqe_comp_caps;
+ struct mlx5dv_sw_parsing_caps sw_parsing_caps;
+ uint32_t	tunnel_offloads_caps;
+ uint32_t        max_dynamic_bfregs /* max blue-flame registers that can be dynamiclly allocated */
++uint64_t        max_clock_info_update_nsec;
++uint32_t        flow_action_flags; /* use enum mlx5dv_flow_action_cap_flags */
++uint32_t        dc_odp_caps; /* use enum ibv_odp_transport_cap_bits */
+ .in -8
+ };
 
-Sure, that part works because the struct file is passed. It doesn't
-end up with the same fd number in the other process, though.
+@@ -77,6 +80,8 @@ MLX5DV_CONTEXT_MASK_STRIDING_RQ         = 1 << 2,
+ MLX5DV_CONTEXT_MASK_TUNNEL_OFFLOADS     = 1 << 3,
+ MLX5DV_CONTEXT_MASK_DYN_BFREGS          = 1 << 4,
+ MLX5DV_CONTEXT_MASK_CLOCK_INFO_UPDATE   = 1 << 5,
++MLX5DV_CONTEXT_MASK_FLOW_ACTION_FLAGS   = 1 << 6,
++MLX5DV_CONTEXT_MASK_DC_ODP_CAPS         = 1 << 7,
+ .in -8
+ };
 
-The issue is that layout leases need to notify userspace when they
-are broken by the kernel, so a lease stores the owner pid/tid in the
-file->f_owner field via __f_setown(). It also keeps a struct fasync
-attached to the file_lock that records the fd that the lease was
-created on.  When a signal needs to be sent to userspace for that
-lease, we call kill_fasync() and that walks the list of fasync
-structures on the lease and calls:
+diff --git a/providers/mlx5/mlx5.c b/providers/mlx5/mlx5.c
+index 291e7ee0a..1e6733737 100644
+--- a/providers/mlx5/mlx5.c
++++ b/providers/mlx5/mlx5.c
+@@ -47,6 +47,7 @@
+ #include "mlx5.h"
+ #include "mlx5-abi.h"
+ #include "wqe.h"
++#include "mlx5_ifc.h"
 
-	send_sigio(fown, fa->fa_fd, band);
+ #ifndef PCI_VENDOR_ID_MELLANOX
+ #define PCI_VENDOR_ID_MELLANOX			0x15b3
+@@ -672,6 +673,42 @@ static void mlx5_map_clock_info(struct mlx5_device *mdev,
+ 		context->clock_info_page = clock_info_page;
+ }
 
-And it does for every fasync struct attached to a lease. Yes, a
-lease can track multiple fds, but it can only track them in a single
-process context. The moment the struct file is shared with another
-process, the lease is no longer capable of sending notifications to
-all the lease holders.
++static uint32_t get_dc_odp_caps(struct ibv_context *ctx)
++{
++	uint32_t in[DEVX_ST_SZ_DW(query_hca_cap_in)] = {};
++	uint32_t out[DEVX_ST_SZ_DW(query_hca_cap_out)] = {};
++	uint16_t opmod = (MLX5_CAP_ODP << 1) | HCA_CAP_OPMOD_GET_CUR;
++	uint32_t ret;
++
++	DEVX_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP);
++	DEVX_SET(query_hca_cap_in, in, op_mod, opmod);
++
++	ret = mlx5dv_devx_general_cmd(ctx, in, sizeof(in), out, sizeof(out));
++	if (ret)
++		return 0;
++
++	if (DEVX_GET(query_hca_cap_out, out,
++		     capability.odp_cap.dc_odp_caps.send))
++		ret |= IBV_ODP_SUPPORT_SEND;
++	if (DEVX_GET(query_hca_cap_out, out,
++		     capability.odp_cap.dc_odp_caps.receive))
++		ret |= IBV_ODP_SUPPORT_RECV;
++	if (DEVX_GET(query_hca_cap_out, out,
++		     capability.odp_cap.dc_odp_caps.write))
++		ret |= IBV_ODP_SUPPORT_WRITE;
++	if (DEVX_GET(query_hca_cap_out, out,
++		     capability.odp_cap.dc_odp_caps.read))
++		ret |= IBV_ODP_SUPPORT_READ;
++	if (DEVX_GET(query_hca_cap_out, out,
++		     capability.odp_cap.dc_odp_caps.atomic))
++		ret |= IBV_ODP_SUPPORT_ATOMIC;
++	if (DEVX_GET(query_hca_cap_out, out,
++		     capability.odp_cap.dc_odp_caps.srq_receive))
++		ret |= IBV_ODP_SUPPORT_SRQ_RECV;
++
++	return ret;
++}
++
+ int mlx5dv_query_device(struct ibv_context *ctx_in,
+ 			 struct mlx5dv_context *attrs_out)
+ {
+@@ -741,6 +778,11 @@ int mlx5dv_query_device(struct ibv_context *ctx_in,
+ 		comp_mask_out |= MLX5DV_CONTEXT_MASK_FLOW_ACTION_FLAGS;
+ 	}
 
-Yes, you can change the owning process via F_SETOWNER, but that's
-still only a single process context, and you can't change the fd in
-the fasync list. You can add new fd to an existing lease by calling
-F_SETLEASE on the new fd, but you still only have a single process
-owner context for signal delivery.
++	if (attrs_out->comp_mask & MLX5DV_CONTEXT_MASK_DC_ODP_CAPS) {
++		attrs_out->dc_odp_caps = get_dc_odp_caps(ctx_in);
++		comp_mask_out |= MLX5DV_CONTEXT_MASK_DC_ODP_CAPS;
++	}
++
+ 	attrs_out->comp_mask = comp_mask_out;
 
-As such, leases that require callbacks to userspace are currently
-only valid within the process context the lease was taken in.
-Indeed, even closing the fd the lease was taken on without
-F_UNLCKing it first doesn't mean the lease has been torn down if
-there is some other reference to the struct file. That means the
-original lease owner will still get SIGIO delivered to that fd on a
-lease break regardless of whether it is open or not. ANd if we
-implement "layout lease not released within SIGIO response timeout"
-then that process will get killed, despite the fact it may not even
-have a reference to that file anymore.
+ 	return 0;
+diff --git a/providers/mlx5/mlx5_ifc.h b/providers/mlx5/mlx5_ifc.h
+index 5a1c85d21..c8e11dd2b 100644
+--- a/providers/mlx5/mlx5_ifc.h
++++ b/providers/mlx5/mlx5_ifc.h
+@@ -972,12 +972,44 @@ struct mlx5_ifc_flow_table_eswitch_cap_bits {
+ 	u8      reserved_at_1900[0x6700];
+ };
 
-So, AFAICT, leases that require userspace callbacks only work within
-their original process context while they original fd is still open.
++struct mlx5_ifc_odp_per_transport_service_cap_bits {
++	u8         send[0x1];
++	u8         receive[0x1];
++	u8         write[0x1];
++	u8         read[0x1];
++	u8         atomic[0x1];
++	u8         srq_receive[0x1];
++	u8         reserved_at_6[0x1a];
++};
++
++struct mlx5_ifc_odp_cap_bits {
++	u8         reserved_at_0[0x40];
++
++	u8         sig[0x1];
++	u8         reserved_at_41[0x1f];
++
++	u8         reserved_at_60[0x20];
++
++	struct mlx5_ifc_odp_per_transport_service_cap_bits rc_odp_caps;
++
++	struct mlx5_ifc_odp_per_transport_service_cap_bits uc_odp_caps;
++
++	struct mlx5_ifc_odp_per_transport_service_cap_bits ud_odp_caps;
++
++	struct mlx5_ifc_odp_per_transport_service_cap_bits xrc_odp_caps;
++
++	struct mlx5_ifc_odp_per_transport_service_cap_bits dc_odp_caps;
++
++	u8         reserved_at_120[0x6e0];
++};
++
+ union mlx5_ifc_hca_cap_union_bits {
+ 	struct mlx5_ifc_atomic_caps_bits atomic_caps;
+ 	struct mlx5_ifc_cmd_hca_cap_bits cmd_hca_cap;
+ 	struct mlx5_ifc_flow_table_nic_cap_bits flow_table_nic_cap;
+ 	struct mlx5_ifc_flow_table_eswitch_cap_bits flow_table_eswitch_cap;
+ 	struct mlx5_ifc_device_mem_cap_bits device_mem_cap;
++	struct mlx5_ifc_odp_cap_bits odp_cap;
+ 	u8         reserved_at_0[0x8000];
+ };
 
-Cheers,
+@@ -1007,6 +1039,7 @@ struct mlx5_ifc_query_hca_cap_in_bits {
+ };
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+ enum mlx5_cap_type {
++	MLX5_CAP_ODP = 2,
+ 	MLX5_CAP_ATOMIC = 3,
+ };
+
+diff --git a/providers/mlx5/mlx5dv.h b/providers/mlx5/mlx5dv.h
+index 8e620b962..d5e8e0c16 100644
+--- a/providers/mlx5/mlx5dv.h
++++ b/providers/mlx5/mlx5dv.h
+@@ -72,6 +72,7 @@ enum mlx5dv_context_comp_mask {
+ 	MLX5DV_CONTEXT_MASK_DYN_BFREGS		= 1 << 4,
+ 	MLX5DV_CONTEXT_MASK_CLOCK_INFO_UPDATE	= 1 << 5,
+ 	MLX5DV_CONTEXT_MASK_FLOW_ACTION_FLAGS	= 1 << 6,
++	MLX5DV_CONTEXT_MASK_DC_ODP_CAPS		= 1 << 7,
+ };
+
+ struct mlx5dv_cqe_comp_caps {
+@@ -122,6 +123,7 @@ struct mlx5dv_context {
+ 	uint32_t	max_dynamic_bfregs;
+ 	uint64_t	max_clock_info_update_nsec;
+ 	uint32_t        flow_action_flags; /* use enum mlx5dv_flow_action_cap_flags */
++	uint32_t	dc_odp_caps; /* use enum ibv_odp_transport_cap_bits */
+ };
+
+ enum mlx5dv_context_flags {
+--
+2.20.1
+
