@@ -2,97 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AE69D1D1
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 16:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A8D9D25F
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 17:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729800AbfHZOji (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Aug 2019 10:39:38 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:39271 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729753AbfHZOji (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Aug 2019 10:39:38 -0400
-Received: by mail-qk1-f195.google.com with SMTP id 125so14192414qkl.6
-        for <linux-rdma@vger.kernel.org>; Mon, 26 Aug 2019 07:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0k5/+Y5VKXj7neG5X6VrgqhNhf9FivAl06TLGcqnZMk=;
-        b=Zh76jB3eQ7xCieoS9chHiylQvIosustRRm/FGU1E2VukQRLpa3OmJU/dzugjioeLii
-         E56Iixc5mS4/jc3o6vNZ8s4tvmmWbBPAeonZVSvMk4749S5ggzruV9J2TfB10T8p8J2V
-         KlBFqSjgO0jZfiOVWZysMhZes+l8fxWjS4GUg4koJSwS2gxOjXewr3Mw9In/YfxDQYVX
-         fde6d0zexkk2wg461+UYtfiO3pKsatoa0Xfu186lrukeWZb+X3zl42I0m9TDresZq6dt
-         plvj4LvkDMuOOEKxKdDFCqyXZ3BK2lbIEpSE3ahgLIbqT+xpEDnrX3fN/CvbfVe+c41I
-         AL0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0k5/+Y5VKXj7neG5X6VrgqhNhf9FivAl06TLGcqnZMk=;
-        b=sUj5RK8YX9XIizlm8SSU1BhNDGrgnklBCVG6cuwRiBlNe05xVVU93G8tak5APmz6GL
-         Vcf4+b3P1ORvIEz7Cg4XKnCwc9ej91KdlLsafBnn8jK7aQ8m7oEEwFR3TY3pkTApxH4z
-         UfeFKDTIC1uddNgi6LxozrXT2TJ57cM4LRZmslGninkZswPtle6/iHTMd4iDdhrz82jl
-         A4cAkIcdOxZ/6mLEfqjejtZLL8hyFL/vcWw4U+8lgyMLDmE7JsZxE9zXPOP06IxCl9JM
-         vuIighb4enira/2YDuS2u/EW4mKWVXDus+QVRT8XU9v472OOkGRhpEMk5pcJdliAUaZZ
-         5akw==
-X-Gm-Message-State: APjAAAVP7/UDPjIzJj0hJm2L0sZK0QzNO2b4xedHi0TCreQFa1hz1m1u
-        RfpIFfxujT/BElm+NkinxXPiqA==
-X-Google-Smtp-Source: APXvYqwbMSn3ShURz5fd0L4o5RO2JbfsMX6vrPIdeL+u9KiyHO/d43XXwmgpxdT8KYSbG64So6PsBA==
-X-Received: by 2002:ae9:ec0d:: with SMTP id h13mr15058593qkg.407.1566830377329;
-        Mon, 26 Aug 2019 07:39:37 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-167-216-168.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.216.168])
-        by smtp.gmail.com with ESMTPSA id y47sm2141619qtb.62.2019.08.26.07.39.36
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 26 Aug 2019 07:39:36 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1i2G9g-00060g-Ej; Mon, 26 Aug 2019 11:39:36 -0300
-Date:   Mon, 26 Aug 2019 11:39:36 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>, Christoph Hellwig <hch@lst.de>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: ib_umem_get and DMA_API_DEBUG question
-Message-ID: <20190826143936.GC27349@ziepe.ca>
-References: <526c5b18-5853-c8dc-e112-31287a46e707@amazon.com>
+        id S1732089AbfHZPMe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 26 Aug 2019 11:12:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30282 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731256AbfHZPMe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 26 Aug 2019 11:12:34 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7QF7IsV112622
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Aug 2019 11:12:32 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.119])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2umfyh55ge-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Aug 2019 11:12:31 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 26 Aug 2019 15:12:27 -0000
+Received: from us1b3-smtp02.a3dr.sjc01.isc4sb.com (10.122.7.175)
+        by smtp.notes.na.collabserv.com (10.122.182.123) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 26 Aug 2019 15:12:21 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp02.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019082615122044-525291 ;
+          Mon, 26 Aug 2019 15:12:20 +0000 
+In-Reply-To: <20190826142520.GB27349@ziepe.ca>
+Subject: Re: Re: [PATCH] RDMA/siw: Fix IPv6 addr_list locking
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, dledford@redhat.com
+Date:   Mon, 26 Aug 2019 15:12:20 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <526c5b18-5853-c8dc-e112-31287a46e707@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190826142520.GB27349@ziepe.ca>,<20190826141740.12969-1-bmt@zurich.ibm.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
+X-KeepSent: 9B978FE2:360D6425-00258462:00521BE6;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 51479
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19082615-3975-0000-0000-000000355A84
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000000
+X-IBM-SpamModules-Versions: BY=3.00011660; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01252398; UDB=6.00661382; IPR=6.01033991;
+ MB=3.00028340; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-26 15:12:24
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-26 11:48:43 - 6.00010332
+x-cbparentid: 19082615-3976-0000-0000-0000005664A5
+Message-Id: <OF9B978FE2.360D6425-ON00258462.00521BE6-00258462.00538708@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-26_08:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 26, 2019 at 05:05:12PM +0300, Gal Pressman wrote:
-> Hi all,
-> 
-> Lately I've been seeing DMA-API call traces on our automated testing runs which
-> complain about overlapping mappings of the same cacheline [1].
-> The problem is (most likely) caused due to multiple calls to ibv_reg_mr with the
-> same address, which as a result DMA maps the same physical addresses more than 7
-> (ACTIVE_CACHELINE_MAX_OVERLAP) times.
-> 
-> Is this considered a bad behavior by the test? Should this be caught by
-> ib_core/driver somehow?
-> 
-> Thanks,
-> Gal
-> 
-> [1]
-> DMA-API: exceeded 7 overlapping mappings of cacheline 0x000000004a0ad6c0
-> WARNING: CPU: 56 PID: 63572 at kernel/dma/debug.c:501 add_dma_entry+0x1fd/0x230
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-I understand it is technically a violation of the DMA Mapping API to
-do this, as it can create incoherence in the CPU cache if there are
-multiple entities claiming responsibility to flush it around DMA.
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 08/26/2019 04:25PM
+>Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org,
+>dledford@redhat.com
+>Subject: [EXTERNAL] Re: [PATCH] RDMA/siw: Fix IPv6 addr_list locking
+>
+>On Mon, Aug 26, 2019 at 04:17:40PM +0200, Bernard Metzler wrote:
+>> Walking the address list of an inet6_dev requires
+>> appropriate locking. Since the called function
+>> siw_listen_address() may sleep, we have to use
+>> rtnl_lock() + rcu_read_lock_bh() instead of
+>> read_lock_bh().
+>
+>What is the RCU for if you have RTNL?
+>
 
-So if you see this from a kernel ULP it is probably a bug.
+Frankly, I looked around in net/ipv6 and found, if not
+rwlocked, addr_list walking to be rcu protected, even
+if rtnl_lock()'d (e.g. addrconf_verify_rtnl()).
 
-From the userspace flow.. We only support DMA cache coherent archs in
-userspace, and there is no way to prevent userspace from registering
-the same page multiple times (in fact there are good reasons to do
-this), so it is a false message. Would be nice to be able to suppress
-it from this path.
+You are saying this is useless and overdone, since all
+changes to that list are rtnl_lock protected right?
+I was not sure about that.
 
-Jason
+For the IPv4 case further up, we also take the rtnl_lock,
+and RCU-deref the address pointer (via
+in_dev_for_each_ifa_rtnl()).
+
+
+Hmmm.
+
+Thanks for your help,
+Bernard.
+
