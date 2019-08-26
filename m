@@ -2,229 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7859CB05
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 09:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0A79CB2F
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 10:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbfHZHyj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Aug 2019 03:54:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727674AbfHZHyi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 26 Aug 2019 03:54:38 -0400
-Received: from localhost (unknown [77.137.115.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EBA320874;
-        Mon, 26 Aug 2019 07:54:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1566806078;
-        bh=5CpPvydFqxvmfQ1yTpWgV10PymVJLDKsLcWc6N97l6E=;
-        h=From:To:Cc:Subject:Date:From;
-        b=OfGuoC0ytN3nOh7s4GrZVyoDKDBOww7vqavLDQAM4dnrZ9VecUM4ZaTK0KT5TfaBj
-         WSo5bhtg2IG4T2nQgsdQVg+eYeUdjXvnKr+xrrNcDvU7scYhLc8ZG91KC86/UK8SBA
-         cNMt5bXxQ/LHgVvegLXDfRnnQU+njqXMkRry31tw=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Michael Guralnik <michaelgur@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: [PATCH rdma-core] mlx5: Report ODP capabilities for DC transport
-Date:   Mon, 26 Aug 2019 10:54:31 +0300
-Message-Id: <20190826075431.19717-1-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
+        id S1730241AbfHZIAt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 26 Aug 2019 04:00:49 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60228 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728233AbfHZIAs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 26 Aug 2019 04:00:48 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7Q7sxgb106403
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Aug 2019 04:00:47 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.93])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2umbbj0ht6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Aug 2019 04:00:47 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 26 Aug 2019 08:00:46 -0000
+Received: from us1a3-smtp03.a3.dal06.isc4sb.com (10.106.154.98)
+        by smtp.notes.na.collabserv.com (10.106.227.39) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 26 Aug 2019 08:00:42 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp03.a3.dal06.isc4sb.com
+          with ESMTP id 2019082608004186-178688 ;
+          Mon, 26 Aug 2019 08:00:41 +0000 
+In-Reply-To: <6ed77231-800b-f629-5d15-14409f0777c7@acm.org>
+Subject: Re: siw trigger BUG: sleeping function called from invalid context at
+ mm/slab.h:50
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Bart Van Assche" <bvanassche@acm.org>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Mon, 26 Aug 2019 08:00:42 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <6ed77231-800b-f629-5d15-14409f0777c7@acm.org>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
+X-LLNOutbound: False
+X-Disclaimed: 41579
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19082608-8889-0000-0000-00000038C9D0
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.000077
+X-IBM-SpamModules-Versions: BY=3.00011657; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01252255; UDB=6.00661296; IPR=6.01033847;
+ MB=3.00028335; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-26 08:00:44
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-26 05:12:12 - 6.00010331
+x-cbparentid: 19082608-8890-0000-0000-00000052D508
+Message-Id: <OFF0E427F2.51415251-ON00258462.002C0261-00258462.002C0268@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-26_05:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Michael Guralnik <michaelgur@mellanox.com>
+-----"Bart Van Assche" <bvanassche@acm.org> wrote: -----
 
-Report ODP capabilities for DC through mlx5dv_query_device.
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>,
+>linux-rdma@vger.kernel.org
+>From: "Bart Van Assche" <bvanassche@acm.org>
+>Date: 08/24/2019 01:02AM
+>Subject: [EXTERNAL] siw trigger BUG: sleeping function called from
+>invalid context at mm/slab.h:50
+>
+>Hi Bernard,
+>
+>If I try to associate the ib_srpt driver with the siw driver the
+>complaint shown below appears on the console. In iw_cm_listen() I
+>found the following:
+>
+>         [ ... ]
+>	spin_lock_irqsave(&cm_id_priv->lock, flags);
+>	switch (cm_id_priv->state) {
+>	case IW_CM_STATE_IDLE:
+>		cm_id_priv->state = IW_CM_STATE_LISTEN;
+>		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+>		ret = iw_cm_map(cm_id, false);
+>		if (!ret)
+>			ret = cm_id->device->ops.iw_create_listen(cm_id,
+>								  backlog);
+>		if (ret)
+>			cm_id_priv->state = IW_CM_STATE_IDLE;
+>		spin_lock_irqsave(&cm_id_priv->lock, flags);
+>		break;
+>	default:
+>		ret = -EINVAL;
+>	}
+>	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+>         [ ... ]
+>
+>So it surprises me that siw_listen_address() calls a function that
+>can sleep. Do you think this is a correct analysis of the call trace
+>shown below?
+>
 
-Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- PR: https://github.com/linux-rdma/rdma-core/pull/570
- Kernel: https://lore.kernel.org/linux-rdma/20190819120815.21225-1-leon@kernel.org
----
- providers/mlx5/man/mlx5dv_query_device.3 |  5 +++
- providers/mlx5/mlx5.c                    | 42 ++++++++++++++++++++++++
- providers/mlx5/mlx5_ifc.h                | 33 +++++++++++++++++++
- providers/mlx5/mlx5dv.h                  |  2 ++
- 4 files changed, 82 insertions(+)
+Hi Bart,
 
-diff --git a/providers/mlx5/man/mlx5dv_query_device.3 b/providers/mlx5/man/mlx5dv_query_device.3
-index 64415a1c4..73353f302 100644
---- a/providers/mlx5/man/mlx5dv_query_device.3
-+++ b/providers/mlx5/man/mlx5dv_query_device.3
-@@ -49,6 +49,9 @@ struct mlx5dv_cqe_comp_caps     cqe_comp_caps;
- struct mlx5dv_sw_parsing_caps sw_parsing_caps;
- uint32_t	tunnel_offloads_caps;
- uint32_t        max_dynamic_bfregs /* max blue-flame registers that can be dynamiclly allocated */
-+uint64_t        max_clock_info_update_nsec;
-+uint32_t        flow_action_flags; /* use enum mlx5dv_flow_action_cap_flags */
-+uint32_t        dc_odp_caps; /* use enum ibv_odp_transport_cap_bits */
- .in -8
- };
+Yes, this is a BUG. Thanks very much for spotting it!
+Obviously, there is not similar thing for ipv6 like
+'in_dev_for_each_ifa_rtnl()'. Let me think about a
+good fix to that and come back asap.
 
-@@ -77,6 +80,8 @@ MLX5DV_CONTEXT_MASK_STRIDING_RQ         = 1 << 2,
- MLX5DV_CONTEXT_MASK_TUNNEL_OFFLOADS     = 1 << 3,
- MLX5DV_CONTEXT_MASK_DYN_BFREGS          = 1 << 4,
- MLX5DV_CONTEXT_MASK_CLOCK_INFO_UPDATE   = 1 << 5,
-+MLX5DV_CONTEXT_MASK_FLOW_ACTION_FLAGS   = 1 << 6,
-+MLX5DV_CONTEXT_MASK_DC_ODP_CAPS         = 1 << 7,
- .in -8
- };
+Many thanks!
+Bernard.
 
-diff --git a/providers/mlx5/mlx5.c b/providers/mlx5/mlx5.c
-index 291e7ee0a..1e6733737 100644
---- a/providers/mlx5/mlx5.c
-+++ b/providers/mlx5/mlx5.c
-@@ -47,6 +47,7 @@
- #include "mlx5.h"
- #include "mlx5-abi.h"
- #include "wqe.h"
-+#include "mlx5_ifc.h"
-
- #ifndef PCI_VENDOR_ID_MELLANOX
- #define PCI_VENDOR_ID_MELLANOX			0x15b3
-@@ -672,6 +673,42 @@ static void mlx5_map_clock_info(struct mlx5_device *mdev,
- 		context->clock_info_page = clock_info_page;
- }
-
-+static uint32_t get_dc_odp_caps(struct ibv_context *ctx)
-+{
-+	uint32_t in[DEVX_ST_SZ_DW(query_hca_cap_in)] = {};
-+	uint32_t out[DEVX_ST_SZ_DW(query_hca_cap_out)] = {};
-+	uint16_t opmod = (MLX5_CAP_ODP << 1) | HCA_CAP_OPMOD_GET_CUR;
-+	uint32_t ret;
-+
-+	DEVX_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP);
-+	DEVX_SET(query_hca_cap_in, in, op_mod, opmod);
-+
-+	ret = mlx5dv_devx_general_cmd(ctx, in, sizeof(in), out, sizeof(out));
-+	if (ret)
-+		return 0;
-+
-+	if (DEVX_GET(query_hca_cap_out, out,
-+		     capability.odp_cap.dc_odp_caps.send))
-+		ret |= IBV_ODP_SUPPORT_SEND;
-+	if (DEVX_GET(query_hca_cap_out, out,
-+		     capability.odp_cap.dc_odp_caps.receive))
-+		ret |= IBV_ODP_SUPPORT_RECV;
-+	if (DEVX_GET(query_hca_cap_out, out,
-+		     capability.odp_cap.dc_odp_caps.write))
-+		ret |= IBV_ODP_SUPPORT_WRITE;
-+	if (DEVX_GET(query_hca_cap_out, out,
-+		     capability.odp_cap.dc_odp_caps.read))
-+		ret |= IBV_ODP_SUPPORT_READ;
-+	if (DEVX_GET(query_hca_cap_out, out,
-+		     capability.odp_cap.dc_odp_caps.atomic))
-+		ret |= IBV_ODP_SUPPORT_ATOMIC;
-+	if (DEVX_GET(query_hca_cap_out, out,
-+		     capability.odp_cap.dc_odp_caps.srq_receive))
-+		ret |= IBV_ODP_SUPPORT_SRQ_RECV;
-+
-+	return ret;
-+}
-+
- int mlx5dv_query_device(struct ibv_context *ctx_in,
- 			 struct mlx5dv_context *attrs_out)
- {
-@@ -741,6 +778,11 @@ int mlx5dv_query_device(struct ibv_context *ctx_in,
- 		comp_mask_out |= MLX5DV_CONTEXT_MASK_FLOW_ACTION_FLAGS;
- 	}
-
-+	if (attrs_out->comp_mask & MLX5DV_CONTEXT_MASK_DC_ODP_CAPS) {
-+		attrs_out->dc_odp_caps = get_dc_odp_caps(ctx_in);
-+		comp_mask_out |= MLX5DV_CONTEXT_MASK_DC_ODP_CAPS;
-+	}
-+
- 	attrs_out->comp_mask = comp_mask_out;
-
- 	return 0;
-diff --git a/providers/mlx5/mlx5_ifc.h b/providers/mlx5/mlx5_ifc.h
-index 5a1c85d21..c8e11dd2b 100644
---- a/providers/mlx5/mlx5_ifc.h
-+++ b/providers/mlx5/mlx5_ifc.h
-@@ -972,12 +972,44 @@ struct mlx5_ifc_flow_table_eswitch_cap_bits {
- 	u8      reserved_at_1900[0x6700];
- };
-
-+struct mlx5_ifc_odp_per_transport_service_cap_bits {
-+	u8         send[0x1];
-+	u8         receive[0x1];
-+	u8         write[0x1];
-+	u8         read[0x1];
-+	u8         atomic[0x1];
-+	u8         srq_receive[0x1];
-+	u8         reserved_at_6[0x1a];
-+};
-+
-+struct mlx5_ifc_odp_cap_bits {
-+	u8         reserved_at_0[0x40];
-+
-+	u8         sig[0x1];
-+	u8         reserved_at_41[0x1f];
-+
-+	u8         reserved_at_60[0x20];
-+
-+	struct mlx5_ifc_odp_per_transport_service_cap_bits rc_odp_caps;
-+
-+	struct mlx5_ifc_odp_per_transport_service_cap_bits uc_odp_caps;
-+
-+	struct mlx5_ifc_odp_per_transport_service_cap_bits ud_odp_caps;
-+
-+	struct mlx5_ifc_odp_per_transport_service_cap_bits xrc_odp_caps;
-+
-+	struct mlx5_ifc_odp_per_transport_service_cap_bits dc_odp_caps;
-+
-+	u8         reserved_at_120[0x6e0];
-+};
-+
- union mlx5_ifc_hca_cap_union_bits {
- 	struct mlx5_ifc_atomic_caps_bits atomic_caps;
- 	struct mlx5_ifc_cmd_hca_cap_bits cmd_hca_cap;
- 	struct mlx5_ifc_flow_table_nic_cap_bits flow_table_nic_cap;
- 	struct mlx5_ifc_flow_table_eswitch_cap_bits flow_table_eswitch_cap;
- 	struct mlx5_ifc_device_mem_cap_bits device_mem_cap;
-+	struct mlx5_ifc_odp_cap_bits odp_cap;
- 	u8         reserved_at_0[0x8000];
- };
-
-@@ -1007,6 +1039,7 @@ struct mlx5_ifc_query_hca_cap_in_bits {
- };
-
- enum mlx5_cap_type {
-+	MLX5_CAP_ODP = 2,
- 	MLX5_CAP_ATOMIC = 3,
- };
-
-diff --git a/providers/mlx5/mlx5dv.h b/providers/mlx5/mlx5dv.h
-index 8e620b962..d5e8e0c16 100644
---- a/providers/mlx5/mlx5dv.h
-+++ b/providers/mlx5/mlx5dv.h
-@@ -72,6 +72,7 @@ enum mlx5dv_context_comp_mask {
- 	MLX5DV_CONTEXT_MASK_DYN_BFREGS		= 1 << 4,
- 	MLX5DV_CONTEXT_MASK_CLOCK_INFO_UPDATE	= 1 << 5,
- 	MLX5DV_CONTEXT_MASK_FLOW_ACTION_FLAGS	= 1 << 6,
-+	MLX5DV_CONTEXT_MASK_DC_ODP_CAPS		= 1 << 7,
- };
-
- struct mlx5dv_cqe_comp_caps {
-@@ -122,6 +123,7 @@ struct mlx5dv_context {
- 	uint32_t	max_dynamic_bfregs;
- 	uint64_t	max_clock_info_update_nsec;
- 	uint32_t        flow_action_flags; /* use enum mlx5dv_flow_action_cap_flags */
-+	uint32_t	dc_odp_caps; /* use enum ibv_odp_transport_cap_bits */
- };
-
- enum mlx5dv_context_flags {
---
-2.20.1
 
