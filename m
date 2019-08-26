@@ -2,127 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9139CD49
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 12:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733519CD6C
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2019 12:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729262AbfHZKaU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Aug 2019 06:30:20 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35826 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727000AbfHZKaU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Aug 2019 06:30:20 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7QASpLn172062;
-        Mon, 26 Aug 2019 10:29:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=gg/F2008xLqqk04E+7/hujm1Y0Z7+qjs2mihTbYp3Bo=;
- b=jwzYomrWSG3mjAv+gXUVZOizc5TEcnaeWI04IntqCT4DHZvgYwgRwUFACjcuhgjcvjjl
- TJTPx7QYMOkYXkhfql33DrHZMsT4bBMY3GuoyZi45jxCF2dmniZ6xc8aF/ICcljIlL4K
- 2Zva9ie500dyklekDkg95bsLGjsoN9uJJzCd8F52889chQMK+WpIFIFFoP9R/2Bj/xF/
- TPB9QW1uJAXwgeyA/+Z758ETqnGpWl8yYQALrJFkeAeqNV9rZnyS7sqc1/XeulwLTxz1
- GEgSnZiBJeFibtr+Gq/4ZuBMiyf6U57+4cDrJNTcXvNs0WLYxehL7NWnGu1hvOcNCEoF eg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2ujwvq80vt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Aug 2019 10:29:39 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7QAT6Ot169201;
-        Mon, 26 Aug 2019 10:29:38 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 2ujw6upqse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Aug 2019 10:29:38 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7QATZZ2012133;
-        Mon, 26 Aug 2019 10:29:35 GMT
-Received: from lap1 (/77.138.183.59)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 26 Aug 2019 03:29:35 -0700
-Date:   Mon, 26 Aug 2019 13:29:27 +0300
-From:   Yuval Shaia <yuval.shaia@oracle.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Moni Shoua <monis@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
-        Mark Zhang <markz@mellanox.com>,
-        "swise@opengridcomputing.com" <swise@opengridcomputing.com>,
-        "johannes.berg@intel.com" <johannes.berg@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        Mark Bloch <markb@mellanox.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Israel Rukshin <israelr@mellanox.com>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        Denis Drozdov <denisd@mellanox.com>,
-        Yuval Avnery <yuvalav@mellanox.com>,
-        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>,
-        "will@kernel.org" <will@kernel.org>,
-        Erez Alfasi <ereza@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Shamir Rabinovitch <srabinov7@gmail.com>
-Subject: Re: [PATCH v1 00/24] Shared PD and MR
-Message-ID: <20190826102926.GF3698@lap1>
-References: <20190821142125.5706-1-yuval.shaia@oracle.com>
- <20190821233736.GG5965@iweiny-DESK2.sc.intel.com>
- <20190822084102.GA2898@lap1>
- <20190822165841.GA17588@iweiny-DESK2.sc.intel.com>
- <20190822170309.GC8325@mellanox.com>
+        id S1730700AbfHZKlM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Aug 2019 06:41:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730640AbfHZKlM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 26 Aug 2019 06:41:12 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E32920828;
+        Mon, 26 Aug 2019 10:41:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566816070;
+        bh=8ziD+meEXqXL5pLNd7FdOcpozYaNgK5kwHaeo4uhx28=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=It43Y4jhI4WRMT7EOX/lr7UQrAHGcp7abrKi/dW/O0Kd9egEDPpQrb9qKy1oWb9pe
+         lnOftVy2OCBwYNxuaPQUMNRvYTlPGOmE5p+KJsXKHIySHdTnGKve5YDOmGidGBo/29
+         cnTh0m+X3A/MuYbOjoz90Mp0uG6r73lbyIxhL/QI=
+Message-ID: <e6f4f619967f4551adb5003d0364770fde2b8110.camel@kernel.org>
+Subject: Re: [RFC PATCH v2 02/19] fs/locks: Add Exclusive flag to user
+ Layout lease
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Date:   Mon, 26 Aug 2019 06:41:07 -0400
+In-Reply-To: <20190814215630.GQ6129@dread.disaster.area>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+         <20190809225833.6657-3-ira.weiny@intel.com>
+         <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
+         <20190814215630.GQ6129@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190822170309.GC8325@mellanox.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9360 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908260116
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9360 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908260117
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 22, 2019 at 05:03:15PM +0000, Jason Gunthorpe wrote:
-> On Thu, Aug 22, 2019 at 09:58:42AM -0700, Ira Weiny wrote:
-> 
-> > Add to your list "how does destruction of a MR in 1 process get communicated to
-> > the other?"  Does the 2nd process just get failed WR's?
-> 
-> IHMO a object that has been shared can no longer be asynchronously
-> destroyed. That is the whole point. A lkey/rkey # alone is inherently
-> unsafe without also holding a refcount on the MR.
-
-You meant to say "can no longer be synchronously destroyed", right?
-
-> 
-> > I have some of the same concerns as Doug WRT memory sharing.  FWIW I'm not sure
-> > that what SCM_RIGHTS is doing is safe or correct.
+On Thu, 2019-08-15 at 07:56 +1000, Dave Chinner wrote:
+> On Wed, Aug 14, 2019 at 10:15:06AM -0400, Jeff Layton wrote:
+> > On Fri, 2019-08-09 at 15:58 -0700, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > Add an exclusive lease flag which indicates that the layout mechanism
+> > > can not be broken.
+> > > 
+> > > Exclusive layout leases allow the file system to know that pages may be
+> > > GUP pined and that attempts to change the layout, ie truncate, should be
+> > > failed.
+> > > 
+> > > A process which attempts to break it's own exclusive lease gets an
+> > > EDEADLOCK return to help determine that this is likely a programming bug
+> > > vs someone else holding a resource.
+> .....
+> > > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
+> > > index baddd54f3031..88b175ceccbc 100644
+> > > --- a/include/uapi/asm-generic/fcntl.h
+> > > +++ b/include/uapi/asm-generic/fcntl.h
+> > > @@ -176,6 +176,8 @@ struct f_owner_ex {
+> > >  
+> > >  #define F_LAYOUT	16      /* layout lease to allow longterm pins such as
+> > >  				   RDMA */
+> > > +#define F_EXCLUSIVE	32      /* layout lease is exclusive */
+> > > +				/* FIXME or shoudl this be F_EXLCK??? */
+> > >  
+> > >  /* operations for bsd flock(), also used by the kernel implementation */
+> > >  #define LOCK_SH		1	/* shared lock */
 > > 
-> > For that work I'm really starting to think SCM_RIGHTS transfers should be
-> > blocked.  
+> > This interface just seems weird to me. The existing F_*LCK values aren't
+> > really set up to be flags, but are enumerated values (even if there are
+> > some gaps on some arches). For instance, on parisc and sparc:
 > 
-> That isn't possible, SCM_RIGHTS is just some special case, fork(),
-> exec(), etc all cause the same situation. Any solution that blocks
-> those is a total non-starter.
+> I don't think we need to worry about this - the F_WRLCK version of
+> the layout lease should have these exclusive access semantics (i.e
+> other ops fail rather than block waiting for lease recall) and hence
+> the API shouldn't need a new flag to specify them.
 > 
-> > It just seems wrong that Process B gets references to Process A's
-> > mm_struct and holds the memory Process A allocated.  
+> i.e. the primary difference between F_RDLCK and F_WRLCK layout
+> leases is that the F_RDLCK is a shared, co-operative lease model
+> where only delays in operations will be seen, while F_WRLCK is a
+> "guarantee exclusive access and I don't care what it breaks"
+> model... :)
 > 
-> Except for ODP, a MR doesn't reference the mm_struct. It references
-> the pages. It is not unlike a memfd.
-> 
-> Jason
+
+Not exactly...
+
+F_WRLCK and F_RDLCK leases can both be broken, and will eventually time
+out if there is conflicting access. The F_EXCLUSIVE flag on the other
+hand is there to prevent any sort of lease break from 
+
+I'm guessing what Ira really wants with the F_EXCLUSIVE flag is
+something akin to what happens when we set fl_break_time to 0 in the
+nfsd code. nfsd never wants the locks code to time out a lease of any
+sort, since it handles that timeout itself.
+
+If you're going to add this functionality, it'd be good to also convert
+knfsd to use it as well, so we don't end up with multiple ways to deal
+with that situation.
+-- 
+Jeff Layton <jlayton@kernel.org>
+
