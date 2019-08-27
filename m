@@ -2,187 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE969E96A
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 15:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3059E99A
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 15:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbfH0Nbv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Aug 2019 09:31:51 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:60018 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726441AbfH0Nbu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Aug 2019 09:31:50 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x7RDUdJ4006576;
-        Tue, 27 Aug 2019 06:31:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=/ua8lF83KqzPsVDVk3mPQD4/Th3ygZwGVHNkMlpbDJw=;
- b=bG1dKJc+zSvwV36IKP0DkmaO2wy2kXizhTBYp4SRVls/lne8ffituq/FG5qyf0st33+1
- ja/IKnMnPkNsLu3ZH7rlmyG9PGN2x0WU9Efv4BBvN6AqcBNiQToDDm/mzOQOy8gc4MpQ
- XtZKigRVyiZjO43sK9yRgaRekfl9JbNTEH2IIv32G1VqtiSadLJJEqq/fLeIyNNwg2cd
- RvmDLK9V1pN0wwnPAp8Yv61+Yb2wx4+Isp2Kq9txgtgmuRa+RPwm1rt0dQDEw7G5ELJ8
- /Q5jBOgF3XQZs+1aBwo9mRCc9wBTqv0NOyzLMcyjtgNkKD+eAW7/Nj0qv/ZCvCC9TrTr xg== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2uk4rkjp4t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 27 Aug 2019 06:31:45 -0700
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 27 Aug
- 2019 06:31:44 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Tue, 27 Aug 2019 06:31:44 -0700
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 3BC703F7044;
-        Tue, 27 Aug 2019 06:31:41 -0700 (PDT)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
-        <dledford@redhat.com>, <bmt@zurich.ibm.com>, <galpress@amazon.com>,
-        <sleybo@amazon.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Ariel Elior <ariel.elior@marvell.com>
-Subject: [PATCH v8 rdma-next 7/7] RDMA/qedr: Add iWARP doorbell recovery support
-Date:   Tue, 27 Aug 2019 16:28:46 +0300
-Message-ID: <20190827132846.9142-8-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20190827132846.9142-1-michal.kalderon@marvell.com>
-References: <20190827132846.9142-1-michal.kalderon@marvell.com>
+        id S1726621AbfH0NhY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Aug 2019 09:37:24 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:44746 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbfH0NhW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Aug 2019 09:37:22 -0400
+Received: by mail-qk1-f194.google.com with SMTP id y22so1072449qkb.11
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 06:37:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4F+jyMe7x0DrmScryO4CRPVX00mde3Nov6/+ivhb0gs=;
+        b=cMxk6RUoI9W95sWCXowsIPZRvVJkBQfAyZHR/eRbwvn4gwN8EDikyucD8YM/KOLQ04
+         MWZLbwV2BgZd+HoCKEhCn0ucD0A3Od8bhSnum0eb4HEEoR9qpva5wA0cqFN+ZxVMuzRo
+         Ogl3hsYUMNJUnpCwBHxQLUK+dk2iTDMChtF+43aQQwHvmXhS3LHjZv0r4PD6fq/QE5Ve
+         D8CXc5FDcEj2tgNgbneqwEJ3edpERoUw//aYF8ojumxtPXLl1NPo4rySd0ZZtefYR9MG
+         EMyfXcJvmQZ8rIFEoTLYjNFff8hktU3bllVoxmSny4SaLfXL0SQACy4Cuzrxte34OeaX
+         AjxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4F+jyMe7x0DrmScryO4CRPVX00mde3Nov6/+ivhb0gs=;
+        b=idV1yFw1qdgK3opwU45jREAAsf/WkAsgOtuLjhYw4YvYjEj8CIbj2DRrfz3E/Y8+Pw
+         pffYlhfy3DAgRduYkAbbglvP/0tQ/LF5d+JtsD/jkAM5ip85DByo+D8JUvpiEs5Qy0OU
+         g1ZuFVk9tjC1ScyUJuDVdG7t0vcp55Pp5gHm6mFM4xA/fNxpXNxEww2dvwKMeGb7kWAu
+         RMNa7bMS2QgcQs4Vrcb9iViSCNLEg9+Dcub6G/sL78ZilapeW0ANsMEqv/yeorLOrqve
+         Cx54lbgLKB8T5hwvr18Eo1Yqm72IsfKW76K0H7AVMPOGIcGZZEcqacqj0q9E/nE+nJRL
+         C/Fg==
+X-Gm-Message-State: APjAAAWgBVa7jgX61ipfVdTlBY0nt5rFz41BG4+Tz8zJe8Bm64eFwjtp
+        MkcaGoEZX/jmdkzJ661EpVuakg==
+X-Google-Smtp-Source: APXvYqzQHxtlfKXq5Cj7nUZqhTCednETfEMPtjoSYA63JnWoNEMqLYWpjt1uR6pZwrKsHNJbnsVROQ==
+X-Received: by 2002:ae9:f101:: with SMTP id k1mr21248183qkg.193.1566913040962;
+        Tue, 27 Aug 2019 06:37:20 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-167-216-168.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.216.168])
+        by smtp.gmail.com with ESMTPSA id h13sm8124634qkk.12.2019.08.27.06.37.20
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 27 Aug 2019 06:37:20 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1i2bey-0002XU-06; Tue, 27 Aug 2019 10:37:20 -0300
+Date:   Tue, 27 Aug 2019 10:37:19 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: ib_umem_get and DMA_API_DEBUG question
+Message-ID: <20190827133719.GC7149@ziepe.ca>
+References: <526c5b18-5853-c8dc-e112-31287a46e707@amazon.com>
+ <9bae7550-35cf-b183-1e1c-fd1f8e01ef79@amazon.com>
+ <20190827120011.GA7149@ziepe.ca>
+ <b58d77f3-b9cb-2cab-b068-60a6bf42d8b0@amazon.com>
+ <20190827131722.GB7149@ziepe.ca>
+ <53d882a0-8f2b-802e-b985-5a85419ccecd@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:5.22.84,1.0.8
- definitions=2019-08-27_02:2019-08-27,2019-08-27 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <53d882a0-8f2b-802e-b985-5a85419ccecd@amazon.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch adds the iWARP specific doorbells to the doorbell
-recovery mechanism
+On Tue, Aug 27, 2019 at 04:22:51PM +0300, Gal Pressman wrote:
+> On 27/08/2019 16:17, Jason Gunthorpe wrote:
+> > On Tue, Aug 27, 2019 at 03:53:29PM +0300, Gal Pressman wrote:
+> >> On 27/08/2019 15:00, Jason Gunthorpe wrote:
+> >>> On Tue, Aug 27, 2019 at 11:28:20AM +0300, Gal Pressman wrote:
+> >>>> On 26/08/2019 17:05, Gal Pressman wrote:
+> >>>>> Hi all,
+> >>>>>
+> >>>>> Lately I've been seeing DMA-API call traces on our automated testing runs which
+> >>>>> complain about overlapping mappings of the same cacheline [1].
+> >>>>> The problem is (most likely) caused due to multiple calls to ibv_reg_mr with the
+> >>>>> same address, which as a result DMA maps the same physical addresses more than 7
+> >>>>> (ACTIVE_CACHELINE_MAX_OVERLAP) times.
+> >>>>
+> >>>> BTW, on rare occasions I'm seeing the boundary check in check_sg_segment [1]
+> >>>> fail as well. I don't have a stable repro for it though.
+> >>>>
+> >>>> Is this a known issue as well? The comment there states it might be a bug in the
+> >>>> DMA API implementation, but I'm not sure.
+> >>>>
+> >>>> [1] https://elixir.bootlin.com/linux/v5.3-rc3/source/kernel/dma/debug.c#L1230
+> >>>
+> >>> Maybe we are missing a dma_set_seg_boundary ?
+> >>>
+> >>> PCI uses low defaults:
+> >>>
+> >>> 	dma_set_max_seg_size(&dev->dev, 65536);
+> >>> 	dma_set_seg_boundary(&dev->dev, 0xffffffff);
+> >>
+> >> What would you set it to?
+> > 
+> > Full 64 bits.
+> > 
+> > For umem the driver is responsible to chop up the SGL as required, not
+> > the core code.
+> 
+> But wouldn't this possibly hide driver bugs? Perhaps even in other flows?
 
-Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/infiniband/hw/qedr/qedr.h  | 12 +++++++-----
- drivers/infiniband/hw/qedr/verbs.c | 37 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 43 insertions(+), 6 deletions(-)
+The block stack also uses this information, I've been meaning to check
+if we should use dma_attrs in umem so we can have different
+parameters.
 
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index 8cb12b3396d5..07d8ba2a82b2 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -237,6 +237,11 @@ struct qedr_ucontext {
- 	bool db_rec;
- };
- 
-+union db_prod32 {
-+	struct rdma_pwm_val16_data data;
-+	u32 raw;
-+};
-+
- union db_prod64 {
- 	struct rdma_pwm_val32_data data;
- 	u64 raw;
-@@ -268,6 +273,8 @@ struct qedr_userq {
- 	struct qedr_user_db_rec *db_rec_data;
- 	u64 db_rec_phys;
- 	u64 db_rec_key;
-+	void __iomem *db_rec_db2_addr;
-+	union db_prod32 db_rec_db2_data;
- };
- 
- struct qedr_cq {
-@@ -303,11 +310,6 @@ struct qedr_pd {
- 	struct qedr_ucontext *uctx;
- };
- 
--union db_prod32 {
--	struct rdma_pwm_val16_data data;
--	u32 raw;
--};
--
- struct qedr_qp_hwq_info {
- 	/* WQE Elements */
- 	struct qed_chain pbl;
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 205985490df1..43c9536d0f5d 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1733,6 +1733,10 @@ static void qedr_cleanup_user(struct qedr_dev *dev,
- 		rdma_user_mmap_entry_remove(&ctx->ibucontext,
- 					    qp->urq.db_rec_key);
- 	}
-+
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+		qedr_db_recovery_del(dev, qp->urq.db_rec_db2_addr,
-+				     &qp->urq.db_rec_db2_data);
- }
- 
- static int qedr_create_user_qp(struct qedr_dev *dev,
-@@ -1807,6 +1811,17 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 	qp->usq.db_addr = ctx->dpi_addr + uresp.sq_db_offset;
- 	qp->urq.db_addr = ctx->dpi_addr + uresp.rq_db_offset;
- 
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		qp->urq.db_rec_db2_addr = ctx->dpi_addr + uresp.rq_db2_offset;
-+
-+		/* calculate the db_rec_db2 data since it is constant so no
-+		 *  need to reflect from user
-+		 */
-+		qp->urq.db_rec_db2_data.data.icid = cpu_to_le16(qp->icid);
-+		qp->urq.db_rec_db2_data.data.value =
-+			cpu_to_le16(DQ_TCM_IWARP_POST_RQ_CF_CMD);
-+	}
-+
- 	rc = qedr_db_recovery_add(dev, qp->usq.db_addr,
- 				  &qp->usq.db_rec_data->db_data,
- 				  DB_REC_WIDTH_32B,
-@@ -1820,6 +1835,15 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 				  DB_REC_USER);
- 	if (rc)
- 		goto err;
-+
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		rc = qedr_db_recovery_add(dev, qp->urq.db_rec_db2_addr,
-+					  &qp->urq.db_rec_db2_data,
-+					  DB_REC_WIDTH_32B,
-+					  DB_REC_USER);
-+		if (rc)
-+			goto err;
-+	}
- 	qedr_qp_user_print(dev, qp);
- 
- 	return rc;
-@@ -1860,7 +1884,13 @@ static int qedr_set_iwarp_db_info(struct qedr_dev *dev, struct qedr_qp *qp)
- 				  &qp->rq.db_data,
- 				  DB_REC_WIDTH_32B,
- 				  DB_REC_KERNEL);
-+	if (rc)
-+		return rc;
- 
-+	rc = qedr_db_recovery_add(dev, qp->rq.iwarp_db2,
-+				  &qp->rq.iwarp_db2_data,
-+				  DB_REC_WIDTH_32B,
-+				  DB_REC_KERNEL);
- 	return rc;
- }
- 
-@@ -1989,8 +2019,13 @@ static void qedr_cleanup_kernel(struct qedr_dev *dev, struct qedr_qp *qp)
- 
- 	qedr_db_recovery_del(dev, qp->sq.db, &qp->sq.db_data);
- 
--	if (!qp->srq)
-+	if (!qp->srq) {
- 		qedr_db_recovery_del(dev, qp->rq.db, &qp->rq.db_data);
-+
-+		if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+			qedr_db_recovery_del(dev, qp->rq.iwarp_db2,
-+					     &qp->rq.iwarp_db2_data);
-+	}
- }
- 
- static int qedr_create_kernel_qp(struct qedr_dev *dev,
--- 
-2.14.5
+I'm not aware of any issue with the 32 bit boundary on RDMA devices..
 
+Jason
