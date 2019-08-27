@@ -2,180 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E380F9F025
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 18:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 001A49F096
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 18:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbfH0Q3Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Aug 2019 12:29:24 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:39474 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727064AbfH0Q3Y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Aug 2019 12:29:24 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7RGFY0C177790;
-        Tue, 27 Aug 2019 16:28:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=YK7gRhbHUDLyxukzYG8KPX9xAkK+aVeam7Mmjg6hY1o=;
- b=eFQks6brOX0KN1jV/QF0vR8QOgb9ovqOH3+xwu76Ex3Awxwf9qzjUYHNsjrJ4RjUzipr
- Haq7RDclBvmNtkYJfVhUD29qUxE7ZCGozc60sdkShyZ1aTaBWOcu/xwVYixp/58OH4ni
- uy1PDHQQV3RpjBdp1BVMWBtZGHRL9L5qn1kBTgOQm8UqdbfUTZSe2ZrOo5qYIBnYYOso
- SzS8xSDxKYB5+y8IytsaQ/XAFswzgs0YV5SD8Dc3pmnZ5TlbxME/cipUVI0Z0t1g92F/
- XgJZBdrAHgVBq/qYF/cumUV/lTNs0MC0a3SXhyfbR1wIgpOXq5kwEp/S+/TigPjgxqUO Lg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2un7b4gcnd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Aug 2019 16:28:28 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7RGIUxM103791;
-        Tue, 27 Aug 2019 16:28:28 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2un5rjpyex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Aug 2019 16:28:28 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7RGSM1M019585;
-        Tue, 27 Aug 2019 16:28:22 GMT
-Received: from lap1 (/77.138.183.59)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 27 Aug 2019 09:28:22 -0700
-Date:   Tue, 27 Aug 2019 19:28:14 +0300
-From:   Yuval Shaia <yuval.shaia@oracle.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Moni Shoua <monis@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
-        Mark Zhang <markz@mellanox.com>,
-        "swise@opengridcomputing.com" <swise@opengridcomputing.com>,
-        "shamir.rabinovitch@oracle.com" <shamir.rabinovitch@oracle.com>,
-        "johannes.berg@intel.com" <johannes.berg@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        Mark Bloch <markb@mellanox.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Israel Rukshin <israelr@mellanox.com>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        Denis Drozdov <denisd@mellanox.com>,
-        Yuval Avnery <yuvalav@mellanox.com>,
-        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>,
-        "will@kernel.org" <will@kernel.org>,
-        Erez Alfasi <ereza@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Shamir Rabinovitch <srabinov7@gmail.com>
-Subject: Re: [PATCH v1 05/24] IB/core: ib_uobject need HW object reference
- count
-Message-ID: <20190827162813.GA4737@lap1>
-References: <20190821142125.5706-1-yuval.shaia@oracle.com>
- <20190821142125.5706-6-yuval.shaia@oracle.com>
- <20190821145324.GB8667@mellanox.com>
+        id S1729377AbfH0QqR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 27 Aug 2019 12:46:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64294 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726610AbfH0QqQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 27 Aug 2019 12:46:16 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7RGjHBg011118
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 12:46:15 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.110])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2un5cy1jf9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 12:46:13 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 27 Aug 2019 16:43:42 -0000
+Received: from us1b3-smtp05.a3dr.sjc01.isc4sb.com (10.122.203.183)
+        by smtp.notes.na.collabserv.com (10.122.47.50) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 27 Aug 2019 16:43:38 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp05.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019082716433759-642017 ;
+          Tue, 27 Aug 2019 16:43:37 +0000 
+In-Reply-To: <20190826151445.GD27349@ziepe.ca>
+Subject: Re: Re: Re: [PATCH] RDMA/siw: Fix IPv6 addr_list locking
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, dledford@redhat.com
+Date:   Tue, 27 Aug 2019 16:43:37 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190821145324.GB8667@mellanox.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9362 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908270161
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9362 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908270161
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190826151445.GD27349@ziepe.ca>,<20190826142520.GB27349@ziepe.ca>
+ <20190826141740.12969-1-bmt@zurich.ibm.com>
+ <OF9B978FE2.360D6425-ON00258462.00521BE6-00258462.00538708@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
+X-KeepSent: 6E542CAD:2005C01F-00258463:00582841;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 31475
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19082716-1059-0000-0000-0000002894C8
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.233015
+X-IBM-SpamModules-Versions: BY=3.00011666; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01252903; UDB=6.00661688; IPR=6.01034501;
+ MB=3.00028360; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-27 16:43:42
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-27 11:07:20 - 6.00010336
+x-cbparentid: 19082716-1060-0000-0000-0000004FA4A9
+Message-Id: <OF6E542CAD.2005C01F-ON00258463.00582841-00258463.005BE272@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-27_03:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 02:53:29PM +0000, Jason Gunthorpe wrote:
-> On Wed, Aug 21, 2019 at 05:21:06PM +0300, Yuval Shaia wrote:
-> > From: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-> > 
-> > This new refcnt will points to the refcnt member of the HW object and will
-> > behaves as expected by refcnt, i.e. will be increased and decreased as a
-> > result of usage changes and will destroy the object when reaches to zero.
-> > For a non-shared object refcnt will remain NULL.
-> > 
-> > Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-> > Signed-off-by: Shamir Rabinovitch <srabinov7@gmail.com>
-> >  drivers/infiniband/core/rdma_core.c | 23 +++++++++++++++++++++--
-> >  include/rdma/ib_verbs.h             |  7 +++++++
-> >  2 files changed, 28 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-> > index ccf4d069c25c..651625f632d7 100644
-> > +++ b/drivers/infiniband/core/rdma_core.c
-> > @@ -516,7 +516,26 @@ static int __must_check destroy_hw_idr_uobject(struct ib_uobject *uobj,
-> >  	const struct uverbs_obj_idr_type *idr_type =
-> >  		container_of(uobj->uapi_object->type_attrs,
-> >  			     struct uverbs_obj_idr_type, type);
-> > -	int ret = idr_type->destroy_object(uobj, why, attrs);
-> > +	static DEFINE_MUTEX(lock);
-> > +	int ret, count;
-> > +
-> > +	mutex_lock(&lock);
-> > +
-> > +	if (uobj->refcnt) {
-> > +		count = atomic_dec_return(uobj->refcnt);
-> > +		WARN_ON(count < 0); /* use after free! */
-> 
-> Use a proper refcount_t
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-uobj->refcnt points to HW object's refcnt (e.x ib_pd.refcnt)
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 08/26/2019 05:14PM
+>Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org,
+>dledford@redhat.com
+>Subject: [EXTERNAL] Re: Re: [PATCH] RDMA/siw: Fix IPv6 addr_list
+>locking
+>
+>On Mon, Aug 26, 2019 at 03:12:20PM +0000, Bernard Metzler wrote:
+>> 
+>> >To: "Bernard Metzler" <bmt@zurich.ibm.com>
+>> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >Date: 08/26/2019 04:25PM
+>> >Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org,
+>> >dledford@redhat.com
+>> >Subject: [EXTERNAL] Re: [PATCH] RDMA/siw: Fix IPv6 addr_list
+>locking
+>> >
+>> >On Mon, Aug 26, 2019 at 04:17:40PM +0200, Bernard Metzler wrote:
+>> >> Walking the address list of an inet6_dev requires
+>> >> appropriate locking. Since the called function
+>> >> siw_listen_address() may sleep, we have to use
+>> >> rtnl_lock() + rcu_read_lock_bh() instead of
+>> >> read_lock_bh().
+>> >
+>> >What is the RCU for if you have RTNL?
+>> >
+>> 
+>> Frankly, I looked around in net/ipv6 and found, if not
+>> rwlocked, addr_list walking to be rcu protected, even
+>> if rtnl_lock()'d (e.g. addrconf_verify_rtnl()).
+>> 
+>> You are saying this is useless and overdone, since all
+>> changes to that list are rtnl_lock protected right?
+>> I was not sure about that.
+>
+>I'm not sure, I thought it was the case that rtnl protected the
+>address lists on write.
+>
+>> For the IPv4 case further up, we also take the rtnl_lock,
+>> and RCU-deref the address pointer (via
+>> in_dev_for_each_ifa_rtnl()).
+>
+>That uses rtnl_derference which calls into rcu_dereference_protected
+>which is saying 'this RCU protected data is being read outside RCU
+>because we are holding the write side lock'
+>
+>Which means it is locked by RTNL
+>
 
-> 
-> > +		if (count) {
-> > +			mutex_unlock(&lock);
-> > +			goto skip;
-> > +		}
-> > +	}
-> > +
-> > +	ret = idr_type->destroy_object(uobj, why, attrs);
-> > +
-> > +	if (ret)
-> > +		atomic_inc(uobj->refcnt);
-> > +
-> > +	mutex_unlock(&lock);
-> >  
-> >  	/*
-> >  	 * We can only fail gracefully if the user requested to destroy the
-> > @@ -525,7 +544,7 @@ static int __must_check destroy_hw_idr_uobject(struct ib_uobject *uobj,
-> >  	 */
-> >  	if (ib_is_destroy_retryable(ret, why, uobj))
-> >  		return ret;
-> > -
-> > +skip:
-> 
-> This doesn't seem to properly define who owns the rdmacg count - it
-> should belong to the HW object not to the uobject.
-> 
-> > +
-> > +	/*
-> > +	 * ib_X HW object sharing support
-> > +	 * - NULL for HW objects that are not shareable
-> > +	 * - Pointer to ib_X reference counter for shareable HW objects
-> > +	 */
-> > +	atomic_t	       *refcnt;		/* ib_X object ref count */
-> 
-> Gross, shouldn't this actually be in the hw object?
+Yes, I think you are right - RCU locking is not appropriate,
+since we may sleep -- and that's completely against the RCU
+principle.
 
-It is belongs to the HW object, this one just *points* to it and it is
-defined here since we like to maintain it when destroy_hw_idr_uobject is
-called.
+Sorry for the confusion. Will resend the patch.
+I will also take the opportunity to add skipping dead
+or tentative IPv6 addresses for the wildcard listen
+case.
 
-The actual assignment is only for object that *supports* import and it is
-set in function ib_uverbs_import_ib_pd (patch "IB/uverbs: Add PD import
-verb").
 
-Hope it make sense.
+Thanks!
+Bernard. 
 
-> 
-> Jason
