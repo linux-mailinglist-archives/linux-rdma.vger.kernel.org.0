@@ -2,106 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDC09EF5C
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 17:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5299EF6D
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 17:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729570AbfH0Pti (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Aug 2019 11:49:38 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:46951 "EHLO
+        id S1726420AbfH0Pvm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Aug 2019 11:51:42 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:38575 "EHLO
         mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbfH0Pti (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Aug 2019 11:49:38 -0400
-Received: by mail-qt1-f194.google.com with SMTP id j15so21691045qtl.13
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 08:49:37 -0700 (PDT)
+        with ESMTP id S1726190AbfH0Pvm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Aug 2019 11:51:42 -0400
+Received: by mail-qt1-f194.google.com with SMTP id q64so10091889qtd.5
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 08:51:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=6pvvgSgM9CbdJfaBulsERf+5+2yHIplcG96TA5AmISw=;
-        b=eV1MNaGvP7HxNr2esjzckKmVddzEK3y7o8MIrme4Sno04F5ZbnmCDdt1jLLqed8T5x
-         v8iKIaKUtUSGNbnyxxGyzJTxXIdBzWKlSZ43Rq/9Pf/2vqnR7w6zd5p2saeIKtEBqatg
-         7QPDCEirLtYTsISXIpTvmiTHySnITzmN4dNvB8krvT5hS/7nNJZ3v7+QmSq5Pibvohgm
-         CpMRJRA0VPZalQ50kXT4KXcDPiaXdp4FPv+qqHfIy7wCv4kbh8HHCgg1Usu2Wrn9CtEo
-         XlaAy3fyNDYxZWCkeR6goHFSLQNbXq93U3RQhpcIcV7vri4KHtCVJoVOtjwHjAOFcsfK
-         10kQ==
+        bh=zyOqqZfVXaCdrCD6D2ADnklikXRFi8MLAZgK4YpK3lU=;
+        b=K/bbIrpgxbhTbNLLQ8Mbof1XU5jsCZUBILQwYFjwIw1Jm+QwosYS+qs1o/fHLIT86V
+         7ng6HsAiMP5hq7rEGv6g0xDYI/afW50y2v0IjNTBAO9tk12JAGWnsBX9AfqiurTEDXVt
+         hModd6XprgX65JEkeKN9FhmlxSIql7qa+Y3ekPNXdto6jIkuLfFcH/biv7KJg2zj/Sr+
+         SP1AL7QvQPkZZUxUqcCbhI9Z+F+u/BnTWMrWlx/XZFDbJ0s4I/bDbp3BC0K3gbxL3JRu
+         RLy8/4rEr01lrJM5sfQHSf6mQ+PiNq8JayhMo1Alt1yMixuHE2WjUz0nxxQcea5ulJHT
+         klKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6pvvgSgM9CbdJfaBulsERf+5+2yHIplcG96TA5AmISw=;
-        b=MhPQdLhqd2e6HiP4JbLZmxuV5DO3U9uLuWJ7KY2ZRg0S+serDv2wScHxAuqf/7haax
-         7FtAUaMQ1CgFovyPn6K5FC3BrOTfz1CWq1xYMvaOoQFzfyc3nRxe3atJDdKzq+CwlVJu
-         fanwg1biD8dAHyKq4dSzWBJNA94mKhxPYA9vZnGUOsKip2RlLW08fisdED1dGOuODRdE
-         8QbZJngeXv80lSmVtEUMqhebem3X2z/qJ0ty4AJhumH6i3eASbA0s6OYgd1ItS0DwqWY
-         23DGu0dl1RBQpaNIUG/wFrwHT3k3UlVgYjReoQyfG4FKSHzAD9knVyw11G9ioURbVG3T
-         EXag==
-X-Gm-Message-State: APjAAAXxypV+IVzvO/6nJXkYWPtSkR5sOD+Klk458B9Tu6LQB3flj6cn
-        o4KZC7EoPYeL9fweQExGIxC5gw==
-X-Google-Smtp-Source: APXvYqyu/DYHXP5pxPrBOc9TAqxSuEjtwU6gt2+NCviFunNPjMYicGGmamfkRX2Rl60RbuNuhl7oWg==
-X-Received: by 2002:ac8:24ce:: with SMTP id t14mr24042841qtt.246.1566920977057;
-        Tue, 27 Aug 2019 08:49:37 -0700 (PDT)
+        bh=zyOqqZfVXaCdrCD6D2ADnklikXRFi8MLAZgK4YpK3lU=;
+        b=Ln8PuEXa3GLiLx88ZbJPdgR0gkwTTpt7dwIuZWAjWHe2ulwhoPKqHZmowQ2CJb6tm/
+         mBBCceWyx/WH4FY7RAr2QbFo74Av6QRk7yleXYLGclOvCAtPOk5BYoZXOOrJiZfxRpVt
+         cAeUgKYSO7BbYBvdjzpAD2FGrF3jmqHObKZe8OSBEuScBvhj8xBqCf1yaJ0mMglsWOEP
+         X2q/yeisnEy2fvRX2NDF6R7V3j/6i2qK95NrxkdMwHhXjjwJMjyeB4+aftbkKhmSTPa3
+         i08LTXKqvCVR6jskosDgaIbf0L+33Fn45BsvlmQ6yo/LbAfzgH8k+OiIo5UoXSJPcwGo
+         NwSw==
+X-Gm-Message-State: APjAAAWZ/HGsz6egRYpy8BIPSVzSTkLyVoQqLx8ff2acy3cRMl5dlakE
+        SCjIzfpomC9NO9oAE1qTKD/Izw==
+X-Google-Smtp-Source: APXvYqxC5++4GwpcvpfYV8bMDOpFXrgbxlYFkTLHLhOEWerw6Sv4yfHLnjFTy4ys4vDT4qhURjcK+Q==
+X-Received: by 2002:aed:27d1:: with SMTP id m17mr23681669qtg.111.1566921101686;
+        Tue, 27 Aug 2019 08:51:41 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-167-216-168.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.216.168])
-        by smtp.gmail.com with ESMTPSA id u187sm8745056qkh.110.2019.08.27.08.49.36
+        by smtp.gmail.com with ESMTPSA id w24sm9840661qtb.35.2019.08.27.08.51.41
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 27 Aug 2019 08:49:36 -0700 (PDT)
+        Tue, 27 Aug 2019 08:51:41 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1i2dix-0003vR-SQ; Tue, 27 Aug 2019 12:49:35 -0300
-Date:   Tue, 27 Aug 2019 12:49:35 -0300
+        id 1i2dky-0003wu-NZ; Tue, 27 Aug 2019 12:51:40 -0300
+Date:   Tue, 27 Aug 2019 12:51:40 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     leon@kernel.org, Doug Ledford <dledford@redhat.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] IB/mlx5: Convert to use vm_map_pages_zero()
-Message-ID: <20190827154935.GD7149@ziepe.ca>
-References: <1566713247-23873-1-git-send-email-jrdr.linux@gmail.com>
- <20190825194354.GC21239@ziepe.ca>
- <CAFqt6za5uUSKLMn0E25M1tYG853tpdE-kcoUYHdmby5s4d0JKg@mail.gmail.com>
- <20190826122055.GA27349@ziepe.ca>
- <CAFqt6zbTm7jA692-Ta9c5rxKoJyMUz2UPBpYGGs69wRtU=itpw@mail.gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v3 0/3] ODP support for mlx5 DC QPs
+Message-ID: <20190827155140.GA15153@ziepe.ca>
+References: <20190819120815.21225-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFqt6zbTm7jA692-Ta9c5rxKoJyMUz2UPBpYGGs69wRtU=itpw@mail.gmail.com>
+In-Reply-To: <20190819120815.21225-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 27, 2019 at 01:48:57AM +0530, Souptick Joarder wrote:
-> On Mon, Aug 26, 2019 at 5:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Mon, Aug 26, 2019 at 01:32:09AM +0530, Souptick Joarder wrote:
-> > > On Mon, Aug 26, 2019 at 1:13 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > >
-> > > > On Sun, Aug 25, 2019 at 11:37:27AM +0530, Souptick Joarder wrote:
-> > > > > First, length passed to mmap is checked explicitly against
-> > > > > PAGE_SIZE.
-> > > > >
-> > > > > Second, if vma->vm_pgoff is passed as non zero, it would return
-> > > > > error. It appears like driver is expecting vma->vm_pgoff to
-> > > > > be passed as 0 always.
-> > > >
-> > > > ? pg_off is not zero
-> > >
-> > > Sorry, I mean, driver has a check against non zero to return error -EOPNOTSUPP
-> > > which means in true scenario driver is expecting vma->vm_pgoff should be passed
-> > > as 0.
-> >
-> > get_index is masking vm_pgoff, it is not 0
+On Mon, Aug 19, 2019 at 03:08:12PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> Sorry, I missed this part. Further looking into code,
-> in mlx5_ib_mmap(), vma_vm_pgoff is used to get command and
-> inside mlx5_ib_mmap_clock_info_page() entire *dev->mdev->clock_info*
-> is mapped.
+> Changelog
+>  v3:
+>  * Rewrote patches to expose through DEVX without need to change mlx5-abi.h at all.
+>  v2: https://lore.kernel.org/linux-rdma/20190806074807.9111-1-leon@kernel.org
+>  * Fixed reserved_* field wrong name (Saeed M.)
+>  * Split first patch to two patches, one for mlx5-next and one for  rdma-next. (Saeed M.)
+>  v1: https://lore.kernel.org/linux-rdma/20190804100048.32671-1-leon@kernel.org
+>  * Fixed alignment to u64 in mlx5-abi.h (Gal P.)
+>  v0: https://lore.kernel.org/linux-rdma/20190801122139.25224-1-leon@kernel.org
 > 
-> Consider that, the below modification will only take care of vma length
-> error check inside vm_map_pages_zero() and an extra check for vma
-> length is not needed.
+> >From Michael,
+> 
+> The series adds support for on-demand paging for DC transport.
+> 
+> As DC is mlx-only transport, the capabilities are exposed
+> to the user using DEVX objects and later on through mlx5dv_query_device.
+> 
+> Thanks
+> 
+> Michael Guralnik (3):
+>   net/mlx5: Set ODP capabilities for DC transport to max
+>   IB/mlx5: Remove check of FW capabilities in ODP page fault handling
+>   IB/mlx5: Add page fault handler for DC initiator WQE
 
-What is the point of vm_map_pages_zero() Is there some reason we should
-prefer it for mapping a single page?
+This seems fine, can you put the commit on the shared branch?
 
+Thanks,
 Jason
