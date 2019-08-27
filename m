@@ -2,136 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 001A49F096
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 18:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CAD9F0BF
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 18:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729377AbfH0QqR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 27 Aug 2019 12:46:17 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64294 "EHLO
+        id S1730237AbfH0Qu5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Aug 2019 12:50:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20058 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726610AbfH0QqQ (ORCPT
+        by vger.kernel.org with ESMTP id S1727057AbfH0Qu5 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Aug 2019 12:46:16 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7RGjHBg011118
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 12:46:15 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.110])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2un5cy1jf9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 12:46:13 -0400
+        Tue, 27 Aug 2019 12:50:57 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7RGjXqS142107
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 12:50:55 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2un6dqnxfm-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 12:50:55 -0400
 Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Tue, 27 Aug 2019 16:43:42 -0000
-Received: from us1b3-smtp05.a3dr.sjc01.isc4sb.com (10.122.203.183)
-        by smtp.notes.na.collabserv.com (10.122.47.50) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 27 Aug 2019 16:43:38 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp05.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019082716433759-642017 ;
-          Tue, 27 Aug 2019 16:43:37 +0000 
-In-Reply-To: <20190826151445.GD27349@ziepe.ca>
-Subject: Re: Re: Re: [PATCH] RDMA/siw: Fix IPv6 addr_list locking
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Jason Gunthorpe" <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, dledford@redhat.com
-Date:   Tue, 27 Aug 2019 16:43:37 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190826151445.GD27349@ziepe.ca>,<20190826142520.GB27349@ziepe.ca>
- <20190826141740.12969-1-bmt@zurich.ibm.com>
- <OF9B978FE2.360D6425-ON00258462.00521BE6-00258462.00538708@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
-X-KeepSent: 6E542CAD:2005C01F-00258463:00582841;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 31475
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19082716-1059-0000-0000-0000002894C8
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.233015
-X-IBM-SpamModules-Versions: BY=3.00011666; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01252903; UDB=6.00661688; IPR=6.01034501;
- MB=3.00028360; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-27 16:43:42
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-08-27 11:07:20 - 6.00010336
-x-cbparentid: 19082716-1060-0000-0000-0000004FA4A9
-Message-Id: <OF6E542CAD.2005C01F-ON00258463.00582841-00258463.005BE272@notes.na.collabserv.com>
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
+        Tue, 27 Aug 2019 17:50:53 +0100
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 27 Aug 2019 17:50:51 +0100
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7RGooj649021046
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Aug 2019 16:50:50 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 77AF64C058;
+        Tue, 27 Aug 2019 16:50:50 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42E564C04E;
+        Tue, 27 Aug 2019 16:50:50 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Aug 2019 16:50:50 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, jgg@ziepe.ca, dledford@redhat.com,
+        Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [PATCH v2] RDMA/siw: Fix IPv6 addr_list locking
+Date:   Tue, 27 Aug 2019 18:49:55 +0200
+X-Mailer: git-send-email 2.17.2
+X-TM-AS-GCONF: 00
+x-cbid: 19082716-0012-0000-0000-000003438CF3
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19082716-0013-0000-0000-0000217DC6AB
+Message-Id: <20190827164955.9249-1-bmt@zurich.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-27_03:,,
  signatures=0
-X-Proofpoint-Spam-Reason: safe
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=925 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908270162
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
+Walking the address list of an inet6_dev requires
+appropriate locking. Since the called function
+siw_listen_address() may sleep, we have to use
+rtnl_lock() instead of read_lock_bh().
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Jason Gunthorpe" <jgg@ziepe.ca>
->Date: 08/26/2019 05:14PM
->Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org,
->dledford@redhat.com
->Subject: [EXTERNAL] Re: Re: [PATCH] RDMA/siw: Fix IPv6 addr_list
->locking
->
->On Mon, Aug 26, 2019 at 03:12:20PM +0000, Bernard Metzler wrote:
->> 
->> >To: "Bernard Metzler" <bmt@zurich.ibm.com>
->> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
->> >Date: 08/26/2019 04:25PM
->> >Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org,
->> >dledford@redhat.com
->> >Subject: [EXTERNAL] Re: [PATCH] RDMA/siw: Fix IPv6 addr_list
->locking
->> >
->> >On Mon, Aug 26, 2019 at 04:17:40PM +0200, Bernard Metzler wrote:
->> >> Walking the address list of an inet6_dev requires
->> >> appropriate locking. Since the called function
->> >> siw_listen_address() may sleep, we have to use
->> >> rtnl_lock() + rcu_read_lock_bh() instead of
->> >> read_lock_bh().
->> >
->> >What is the RCU for if you have RTNL?
->> >
->> 
->> Frankly, I looked around in net/ipv6 and found, if not
->> rwlocked, addr_list walking to be rcu protected, even
->> if rtnl_lock()'d (e.g. addrconf_verify_rtnl()).
->> 
->> You are saying this is useless and overdone, since all
->> changes to that list are rtnl_lock protected right?
->> I was not sure about that.
->
->I'm not sure, I thought it was the case that rtnl protected the
->address lists on write.
->
->> For the IPv4 case further up, we also take the rtnl_lock,
->> and RCU-deref the address pointer (via
->> in_dev_for_each_ifa_rtnl()).
->
->That uses rtnl_derference which calls into rcu_dereference_protected
->which is saying 'this RCU protected data is being read outside RCU
->because we are holding the write side lock'
->
->Which means it is locked by RTNL
->
+Also introduces:
+- sanity checks if we got a device from
+  in_dev_get() or in6_dev_get().
+- skipping IPv6 addresses flagged IFA_F_TENTATIVE
+  or IFA_F_DEPRECATED
 
-Yes, I think you are right - RCU locking is not appropriate,
-since we may sleep -- and that's completely against the RCU
-principle.
+Reported-by: Bart Van Assche <bvanassche@acm.org>
+Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw_cm.c | 33 +++++++++++++++++++-----------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
-Sorry for the confusion. Will resend the patch.
-I will also take the opportunity to add skipping dead
-or tentative IPv6 addresses for the wildcard listen
-case.
-
-
-Thanks!
-Bernard. 
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index 1db5ad3d9580..c145b4ff4556 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -1962,6 +1962,10 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 		struct sockaddr_in s_laddr, *s_raddr;
+ 		const struct in_ifaddr *ifa;
+ 
++		if (!in_dev) {
++			rv = -ENODEV;
++			goto out;
++		}
+ 		memcpy(&s_laddr, &id->local_addr, sizeof(s_laddr));
+ 		s_raddr = (struct sockaddr_in *)&id->remote_addr;
+ 
+@@ -1991,22 +1995,27 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 		struct sockaddr_in6 *s_laddr = &to_sockaddr_in6(id->local_addr),
+ 			*s_raddr = &to_sockaddr_in6(id->remote_addr);
+ 
++		if (!in6_dev) {
++			rv = -ENODEV;
++			goto out;
++		}
+ 		siw_dbg(id->device,
+ 			"laddr %pI6:%d, raddr %pI6:%d\n",
+ 			&s_laddr->sin6_addr, ntohs(s_laddr->sin6_port),
+ 			&s_raddr->sin6_addr, ntohs(s_raddr->sin6_port));
+ 
+-		read_lock_bh(&in6_dev->lock);
+-		list_for_each_entry(ifp, &in6_dev->addr_list, if_list) {
+-			struct sockaddr_in6 bind_addr;
+-
++		rtnl_lock();
++		list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) {
++			if (ifp->flags & (IFA_F_TENTATIVE | IFA_F_DEPRECATED))
++				continue;
+ 			if (ipv6_addr_any(&s_laddr->sin6_addr) ||
+ 			    ipv6_addr_equal(&s_laddr->sin6_addr, &ifp->addr)) {
+-				bind_addr.sin6_family = AF_INET6;
+-				bind_addr.sin6_port = s_laddr->sin6_port;
+-				bind_addr.sin6_flowinfo = 0;
+-				bind_addr.sin6_addr = ifp->addr;
+-				bind_addr.sin6_scope_id = dev->ifindex;
++				struct sockaddr_in6 bind_addr  = {
++					.sin6_family = AF_INET6,
++					.sin6_port = s_laddr->sin6_port,
++					.sin6_flowinfo = 0,
++					.sin6_addr = ifp->addr,
++					.sin6_scope_id = dev->ifindex };
+ 
+ 				rv = siw_listen_address(id, backlog,
+ 						(struct sockaddr *)&bind_addr,
+@@ -2015,12 +2024,12 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 					listeners++;
+ 			}
+ 		}
+-		read_unlock_bh(&in6_dev->lock);
+-
++		rtnl_unlock();
+ 		in6_dev_put(in6_dev);
+ 	} else {
+-		return -EAFNOSUPPORT;
++		rv = -EAFNOSUPPORT;
+ 	}
++out:
+ 	if (listeners)
+ 		rv = 0;
+ 	else if (!rv)
+-- 
+2.17.2
 
