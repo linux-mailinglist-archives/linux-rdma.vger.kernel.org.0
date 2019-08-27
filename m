@@ -2,70 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 332379EAAE
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 16:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25DF9EBE5
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 17:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbfH0ORp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Aug 2019 10:17:45 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:35677 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725987AbfH0ORp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Aug 2019 10:17:45 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-14-7hY9DUGUPHysiFy6Id__jw-1; Tue, 27 Aug 2019 15:17:41 +0100
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 27 Aug 2019 15:17:40 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 27 Aug 2019 15:17:40 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Geert Uytterhoeven' <geert@linux-m68k.org>,
-        Joe Perches <joe@perches.com>
-CC:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit due to
- u64/pointer abuse
-Thread-Topic: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit due to
- u64/pointer abuse
-Thread-Index: AQHVVrGr4BhhBlFhpEW57H2RBHAQPacPFp7g
-Date:   Tue, 27 Aug 2019 14:17:40 +0000
-Message-ID: <dbc03b4ac1ef4ba2a807409676cf8066@AcuMS.aculab.com>
-References: <20190819100526.13788-1-geert@linux-m68k.org>
- <581e7d79ed75484beb227672b2695ff14e1f1e34.camel@perches.com>
- <CAMuHMdVh8dwd=77mHTqG80_D8DK+EtVGewRUJuaJzK1qRYrB+w@mail.gmail.com>
-In-Reply-To: <CAMuHMdVh8dwd=77mHTqG80_D8DK+EtVGewRUJuaJzK1qRYrB+w@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726170AbfH0PIf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Aug 2019 11:08:35 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:43541 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726054AbfH0PIf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 27 Aug 2019 11:08:35 -0400
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 3717B308123B;
+        Tue, 27 Aug 2019 15:08:35 +0000 (UTC)
+Received: from treble (ovpn-121-55.rdu2.redhat.com [10.10.121.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B8ED560BFB;
+        Tue, 27 Aug 2019 15:08:32 +0000 (UTC)
+Date:   Tue, 27 Aug 2019 10:08:30 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bernard Metzler <BMT@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rdma/siw: Use proper enumerated type in map_cqe_status
+Message-ID: <20190827150830.brsvsoopxut2od66@treble>
+References: <OFE93E0F86.E35CE856-ON00258434.002A83CE-00258434.002A83DF@notes.na.collabserv.com>
+ <20190711081434.GA86557@archlinux-threadripper>
+ <20190711133915.GA25807@ziepe.ca>
+ <CAKwvOdnHz3uH4ZM20LGQJ3FYhLQQUYn4Lg0B-YMr7Y1L66TAsA@mail.gmail.com>
+ <20190711171808.GF25807@ziepe.ca>
+ <20190711173030.GA844@archlinux-threadripper>
+ <20190823142427.GD12968@ziepe.ca>
+ <20190826153800.GA4752@archlinux-threadripper>
+ <20190826154228.GE27349@ziepe.ca>
+ <20190826233829.GA36284@archlinux-threadripper>
 MIME-Version: 1.0
-X-MC-Unique: 7hY9DUGUPHysiFy6Id__jw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20190826233829.GA36284@archlinux-threadripper>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Tue, 27 Aug 2019 15:08:35 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuDQo+IFNlbnQ6IDE5IEF1Z3VzdCAyMDE5IDE4OjE1DQou
-Li4NCj4gPiBJIHRoaW5rIGEgY2FzdCB0byB1bnNpZ25lZCBsb25nIGlzIHJhdGhlciBtb3JlIGNv
-bW1vbi4NCj4gPg0KPiA+IHVpbnRwdHJfdCBpcyB1c2VkIH4xMzAwIHRpbWVzIGluIHRoZSBrZXJu
-ZWwuDQo+ID4gSSBiZWxpZXZlIGEgY2FzdCB0byB1bnNpZ25lZCBsb25nIGlzIG11Y2ggbW9yZSBj
-b21tb24uDQo+IA0KPiBUaGF0IGlzIHRydWUsIGFzIHVpbnRwdHJfdCB3YXMgaW50cm9kdWNlZCBp
-biBDOTkuDQo+IFNpbWlsYXJseSwgdW5zaWduZWQgbG9uZyB3YXMgdXNlZCBiZWZvcmUgc2l6ZV90
-IGJlY2FtZSBjb21tb24uDQo+IA0KPiBIb3dldmVyLCBub3dhZGF5cyBzaXplX3QgYW5kIHVpbnRw
-dHJfdCBhcmUgcHJlZmVycmVkLg0KDQpJc24ndCB1aW50cHRyX3QgZGVmaW5lZCBieSB0aGUgc2Ft
-ZSBzdGFuZGFyZCBhcyB1aW50MzJfdD8NCklmIHRoZSBmb3JtZXIgaXMgYWxsb3dlZCBzbyBzaG91
-bGQgdGhlIGxhdHRlci4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lk
-ZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0K
-UmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Mon, Aug 26, 2019 at 04:38:29PM -0700, Nathan Chancellor wrote:
+> Looks like that comes from tune_qsfp, which gets inlined into
+> tune_serdes but I am far from an objtool expert so I am not
+> really sure what kind of issues I am looking for. Adding Josh
+> and Peter for a little more visibility.
+> 
+> Here is the original .o file as well:
+> 
+> https://github.com/nathanchance/creduce-files/raw/4e252c0ca19742c90be1445e6c722a43ae561144/rdma-objtool/platform.o.orig
 
+     574:       0f 87 00 0c 00 00       ja     117a <tune_serdes+0xdfa>
+
+It's jumping to la-la-land past the end of the function.
+
+-- 
+Josh
