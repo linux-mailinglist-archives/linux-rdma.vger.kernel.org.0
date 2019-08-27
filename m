@@ -2,107 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 289829DEAB
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 09:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8649E2A4
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 10:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727939AbfH0HYz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Aug 2019 03:24:55 -0400
-Received: from mx01-fr.bfs.de ([193.174.231.67]:28688 "EHLO mx01-fr.bfs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725825AbfH0HYz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Aug 2019 03:24:55 -0400
-Received: from mail-fr.bfs.de (mail-fr.bfs.de [10.177.18.200])
-        by mx01-fr.bfs.de (Postfix) with ESMTPS id 44CC1201EB;
-        Tue, 27 Aug 2019 09:24:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1566890689; h=from:from:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wJMTtUj8Ra+odPWVkrfvhn2xJpbg4XTU+hLSZTGs2WA=;
-        b=ChrZR7qMGM+a6B00tnrZ5ZiY4CyP6EItaZ/LwPHlY/rt5S43xRoI6soOQ1XQNvAGPpBOfG
-        jJT1jT2D3hWa/Jf98KTSJQ4fae0P2kNLJyAff7sA7ijSAz6lpw7f2XDhA3xuOq6wndtDq9
-        eljxzIDSuG2pfBnJmu6bsf7VrICOQQmw/e3fdZ0E6FIzy+d6IbVpc8gTIwTotcXh0IF448
-        dVSsEVPpKtKjGtyAkr1hpwUw3B7BPZ2s4VjHCOThcsWfxODn9rraxDK+xDhp1EAwBY22iy
-        33iNPV89c3LqqiZs9qL/HXG2BXtr4afSLA6dHYmNxd9wbKHZbdArtl2a9VjaUQ==
-Received: from [134.92.181.33] (unknown [134.92.181.33])
-        by mail-fr.bfs.de (Postfix) with ESMTPS id 6CF34BEEBD;
-        Tue, 27 Aug 2019 09:24:48 +0200 (CEST)
-Message-ID: <5D64DABF.4010601@bfs.de>
-Date:   Tue, 27 Aug 2019 09:24:47 +0200
-From:   walter harms <wharms@bfs.de>
-Reply-To: wharms@bfs.de
-User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; de; rv:1.9.1.16) Gecko/20101125 SUSE/3.0.11 Thunderbird/3.0.11
+        id S1729474AbfH0I2g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Aug 2019 04:28:36 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:13337 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727788AbfH0I2f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Aug 2019 04:28:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1566894515; x=1598430515;
+  h=subject:to:references:cc:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=G7H+QouqGSpwgOsiTCuPsPrWleoif0FFIIbMT7Oz3pg=;
+  b=czNucGoXg+r28gnBiZnWlor0fXVXdRcBQjwJFZv+pbDoKaXTX+jt+2YI
+   Cu3sH8Dh0tPZxg/iL5cuGowxB9OAJmELfNJO5oW3xZBCcnskppE2/aV4I
+   EtSazaJRuNhP23uLb0OW6qWhYHAhwh/UuvkrWhlTBNATjs0EtNDu8Ga/2
+   0=;
+X-IronPort-AV: E=Sophos;i="5.64,436,1559520000"; 
+   d="scan'208";a="417882302"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 27 Aug 2019 08:28:30 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id A21091A0E3A;
+        Tue, 27 Aug 2019 08:28:29 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 27 Aug 2019 08:28:29 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.100) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 27 Aug 2019 08:28:25 +0000
+Subject: Re: ib_umem_get and DMA_API_DEBUG question
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <526c5b18-5853-c8dc-e112-31287a46e707@amazon.com>
+CC:     RDMA mailing list <linux-rdma@vger.kernel.org>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <9bae7550-35cf-b183-1e1c-fd1f8e01ef79@amazon.com>
+Date:   Tue, 27 Aug 2019 11:28:20 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-To:     Mao Wenan <maowenan@huawei.com>
-CC:     saeedm@mellanox.com, leon@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] net: mlx5: Kconfig: Fix MLX5_CORE_EN dependencies
-References: <20190827031251.98881-1-maowenan@huawei.com>
-In-Reply-To: <20190827031251.98881-1-maowenan@huawei.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <526c5b18-5853-c8dc-e112-31287a46e707@amazon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.10
-Authentication-Results: mx01-fr.bfs.de
-X-Spamd-Result: default: False [-3.10 / 7.00];
-         HAS_REPLYTO(0.00)[wharms@bfs.de];
-         TO_DN_SOME(0.00)[];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_MATCH_FROM(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[];
-         NEURAL_HAM(-0.00)[-0.999,0];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[]
+X-Originating-IP: [10.43.160.100]
+X-ClientProxiedBy: EX13D23UWA002.ant.amazon.com (10.43.160.40) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-Am 27.08.2019 05:12, schrieb Mao Wenan:
-> When MLX5_CORE_EN=y and PCI_HYPERV_INTERFACE is not set, below errors are found:
-> drivers/net/ethernet/mellanox/mlx5/core/en_main.o: In function `mlx5e_nic_enable':
-> en_main.c:(.text+0xb649): undefined reference to `mlx5e_hv_vhca_stats_create'
-> drivers/net/ethernet/mellanox/mlx5/core/en_main.o: In function `mlx5e_nic_disable':
-> en_main.c:(.text+0xb8c4): undefined reference to `mlx5e_hv_vhca_stats_destroy'
+On 26/08/2019 17:05, Gal Pressman wrote:
+> Hi all,
 > 
-> This because CONFIG_PCI_HYPERV_INTERFACE is newly introduced by 'commit 348dd93e40c1
-> ("PCI: hv: Add a Hyper-V PCI interface driver for software backchannel interface"),
-> Fix this by making MLX5_CORE_EN imply PCI_HYPERV_INTERFACE.
-> 
-> Fixes: cef35af34d6d ("net/mlx5e: Add mlx5e HV VHCA stats agent")
-> Signed-off-by: Mao Wenan <maowenan@huawei.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-> index 37fef8c..a6a70ce 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-> @@ -35,6 +35,7 @@ config MLX5_CORE_EN
->  	depends on IPV6=y || IPV6=n || MLX5_CORE=m
+> Lately I've been seeing DMA-API call traces on our automated testing runs which
+> complain about overlapping mappings of the same cacheline [1].
+> The problem is (most likely) caused due to multiple calls to ibv_reg_mr with the
+> same address, which as a result DMA maps the same physical addresses more than 7
+> (ACTIVE_CACHELINE_MAX_OVERLAP) times.
 
-OT but ...
-is that IPV6 needed at all ? can there be something else that yes or no ?
+BTW, on rare occasions I'm seeing the boundary check in check_sg_segment [1]
+fail as well. I don't have a stable repro for it though.
 
-re,
- wh
+Is this a known issue as well? The comment there states it might be a bug in the
+DMA API implementation, but I'm not sure.
 
->  	select PAGE_POOL
->  	select DIMLIB
-> +	imply PCI_HYPERV_INTERFACE
->  	default n
->  	---help---
->  	  Ethernet support in Mellanox Technologies ConnectX-4 NIC.
+[1] https://elixir.bootlin.com/linux/v5.3-rc3/source/kernel/dma/debug.c#L1230
