@@ -2,120 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5C89F102
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 19:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F899F108
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 19:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730316AbfH0RAR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Aug 2019 13:00:17 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:35666 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729960AbfH0RAQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Aug 2019 13:00:16 -0400
-Received: by mail-qk1-f195.google.com with SMTP id r21so17626027qke.2
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 10:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kYPGDUj5sH4SCUP1lHKgm5YKw8keIudyH7NDu4pQAdc=;
-        b=ks/YCDjWuxdseUyu1rZdsbddlOLt7LPQU/UhYXinHw2NsTKTqTrznA5c43DZXOhn8m
-         U6uy0u8yB4o2IpW40kY1tF8l79FmqdQBOaNk96dWLzJnFG8TXUJtNuS0kEDG1osBYo1X
-         MOuuVabxN9xgm0kQJiz8iDIeV5azCoSxH92t0MuIbgOdXX9X0afYi8FiMoO4s/U/KnLi
-         OeMA6cq8lSygxDW/4B66zV5KtWlv3AVS0plx9XbaK6UOjXrt3MGrlB9/XP3+Fdlsa4Un
-         jg1pEmMhwiZPGwxVRE/hZUOAan9ZMzYwuwb+svPDOVPbfjlcmuKEvjkg+Mt+9ZUhwx89
-         EBsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kYPGDUj5sH4SCUP1lHKgm5YKw8keIudyH7NDu4pQAdc=;
-        b=Dj0W+Mb0ct4F9qDxNmFuG+aO+Pc4iVYhiGcnosIbiwmOWauDCXklkT6snQHp3MKuRK
-         7vb4T5Lfbj8RfnwZ+zO7FZzowCMMQJBuL09YSCGpvdFqwy8ShyD7CoAzBJy8zcK4wvO8
-         PG9PQ1rFt0YKNfRax6Cst3/pzLIfBcUC5HWxsYCudXklcBxRbzKj1d7jjWydSdul8VZR
-         LxX8ZO+dq7+tC2jSbD9nPRn0M4PwJG3RBqMmy14+9nYoZCzANuA4YklNfjF6YxR36ABU
-         9jDti4pohqr0E4yyihFAypeGvQR8xgE8nJimuIMhbyiMdW2RrBJJd64N1t+qWfcHnMhF
-         AkTA==
-X-Gm-Message-State: APjAAAXmfwM5dlCVB2y4yo0xgIf1i7IIhJJfioewlEn0Hu8Em/C+9St5
-        Tc/s9IRwd2duLrNd95RqYbuYnA==
-X-Google-Smtp-Source: APXvYqx8camKj4IS5lBSNcLQf3zjZzTN2+rHGB68UuSJooPY4VqMUAPKuBYrCPxKbxqFAaBdVGetVQ==
-X-Received: by 2002:a05:620a:16a9:: with SMTP id s9mr20832064qkj.48.1566925216014;
-        Tue, 27 Aug 2019 10:00:16 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-167-216-168.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.216.168])
-        by smtp.gmail.com with ESMTPSA id f20sm10760842qtf.68.2019.08.27.10.00.15
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 27 Aug 2019 10:00:15 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1i2epK-0005Z7-Qb; Tue, 27 Aug 2019 14:00:14 -0300
-Date:   Tue, 27 Aug 2019 14:00:14 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bernard Metzler <bmt@zurich.ibm.com>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, dledford@redhat.com
-Subject: Re: [PATCH v2] RDMA/siw: Fix IPv6 addr_list locking
-Message-ID: <20190827170014.GE7149@ziepe.ca>
-References: <20190827164955.9249-1-bmt@zurich.ibm.com>
+        id S1727306AbfH0RBD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Aug 2019 13:01:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726871AbfH0RBD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 27 Aug 2019 13:01:03 -0400
+Received: from localhost (unknown [77.137.115.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6ED072184D;
+        Tue, 27 Aug 2019 17:01:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566925262;
+        bh=R7F9h5uQJlGzntybFGiaLkhr8sE4tt5MZxDxbvAJzNA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EVEs4Ht8U0ir6fvcOpezFkjKPvmqxAwn+FdEUcX9zNklA+hAq8P9NiwBBnYQ54Lc7
+         gNZpwO3748lbaLq8djYP+/uY/W/ZSDieNn3HY+mdUtbrNcmf8yveAUqeGqPbjaNO/d
+         WXaBqeDmqOMieK0pReos8pJIDyzAn7IafcP94410=
+Date:   Tue, 27 Aug 2019 20:00:18 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bernard Metzler <BMT@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] rdma/siw: Use proper enumerated type in map_cqe_status
+Message-ID: <20190827170018.GA4725@mtr-leonro.mtl.com>
+References: <20190711081434.GA86557@archlinux-threadripper>
+ <20190711133915.GA25807@ziepe.ca>
+ <CAKwvOdnHz3uH4ZM20LGQJ3FYhLQQUYn4Lg0B-YMr7Y1L66TAsA@mail.gmail.com>
+ <20190711171808.GF25807@ziepe.ca>
+ <20190711173030.GA844@archlinux-threadripper>
+ <20190823142427.GD12968@ziepe.ca>
+ <20190826153800.GA4752@archlinux-threadripper>
+ <20190826154228.GE27349@ziepe.ca>
+ <20190826233829.GA36284@archlinux-threadripper>
+ <20190827150830.brsvsoopxut2od66@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190827164955.9249-1-bmt@zurich.ibm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190827150830.brsvsoopxut2od66@treble>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 27, 2019 at 06:49:55PM +0200, Bernard Metzler wrote:
-> Walking the address list of an inet6_dev requires
-> appropriate locking. Since the called function
-> siw_listen_address() may sleep, we have to use
-> rtnl_lock() instead of read_lock_bh().
-> 
-> Also introduces:
-> - sanity checks if we got a device from
->   in_dev_get() or in6_dev_get().
-> - skipping IPv6 addresses flagged IFA_F_TENTATIVE
->   or IFA_F_DEPRECATED
-> 
-> Reported-by: Bart Van Assche <bvanassche@acm.org>
-> Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
-> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
->  drivers/infiniband/sw/siw/siw_cm.c | 33 +++++++++++++++++++-----------
->  1 file changed, 21 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-> index 1db5ad3d9580..c145b4ff4556 100644
-> +++ b/drivers/infiniband/sw/siw/siw_cm.c
-> @@ -1962,6 +1962,10 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
->  		struct sockaddr_in s_laddr, *s_raddr;
->  		const struct in_ifaddr *ifa;
->  
-> +		if (!in_dev) {
-> +			rv = -ENODEV;
-> +			goto out;
-> +		}
->  		memcpy(&s_laddr, &id->local_addr, sizeof(s_laddr));
->  		s_raddr = (struct sockaddr_in *)&id->remote_addr;
->  
-> @@ -1991,22 +1995,27 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
->  		struct sockaddr_in6 *s_laddr = &to_sockaddr_in6(id->local_addr),
->  			*s_raddr = &to_sockaddr_in6(id->remote_addr);
->  
-> +		if (!in6_dev) {
-> +			rv = -ENODEV;
-> +			goto out;
-> +		}
->  		siw_dbg(id->device,
->  			"laddr %pI6:%d, raddr %pI6:%d\n",
->  			&s_laddr->sin6_addr, ntohs(s_laddr->sin6_port),
->  			&s_raddr->sin6_addr, ntohs(s_raddr->sin6_port));
->  
-> -		read_lock_bh(&in6_dev->lock);
-> -		list_for_each_entry(ifp, &in6_dev->addr_list, if_list) {
-> -			struct sockaddr_in6 bind_addr;
-> -
-> +		rtnl_lock();
-> +		list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) {
+On Tue, Aug 27, 2019 at 10:08:30AM -0500, Josh Poimboeuf wrote:
+> On Mon, Aug 26, 2019 at 04:38:29PM -0700, Nathan Chancellor wrote:
+> > Looks like that comes from tune_qsfp, which gets inlined into
+> > tune_serdes but I am far from an objtool expert so I am not
+> > really sure what kind of issues I am looking for. Adding Josh
+> > and Peter for a little more visibility.
+> >
+> > Here is the original .o file as well:
+> >
+> > https://github.com/nathanchance/creduce-files/raw/4e252c0ca19742c90be1445e6c722a43ae561144/rdma-objtool/platform.o.orig
+>
+>      574:       0f 87 00 0c 00 00       ja     117a <tune_serdes+0xdfa>
+>
+> It's jumping to la-la-land past the end of the function.
 
-If not holding RCU then don't use the rcu list iterator..
+How is it possible?
 
-Jason
+Thanks
+
+>
+> --
+> Josh
