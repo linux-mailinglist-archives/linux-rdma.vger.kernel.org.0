@@ -2,125 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C57769F594
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 23:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AACB9F5C2
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 00:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725835AbfH0Vv6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Aug 2019 17:51:58 -0400
-Received: from mail-eopbgr00040.outbound.protection.outlook.com ([40.107.0.40]:11295
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726232AbfH0Vv6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Aug 2019 17:51:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GXCha5WGDHeBDUq4/zvGmmLCbw8n3ujnSbr/lt9lCm0GzNhR4fZOX18jq0jexrAwd9kTEhb5BkB5FP9qzT8nb9z34whg9EwMgaYabUhVK4Xroib153R7JfbVTBlMPTPQo3Vr3QSVy2dl0B9z3Oqa8wOacxjEOMGWeSt9oZV+XlRLtr5CyKx3sq22CkTJjFWvh9TaAeU1vzs2mI0ZWvwga4NY/mNdkEiq7E3OaLmPVpyXOq00kprIKvJX1IFVje9KDSmf7QEbq4MlJYHFGWdmYkRDb0RRVHHPcfkwZ3wlQWmBDgor54AhCHF1/j+bDlLuNYK2PYkUGh6HOp83Hjpmsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=28XXo6l5g+sEORBSkSVPPtglv6gsftJyZkcePrSe9DU=;
- b=gWEOVWyuu2EF1MLKyrGZj+hQuzyRVnwcyFz6plSJzZ2yD7FiNSc242dRpJGg+hjX9En3anOeuJQnu474O5isXZNJs4fQ70EMqck2PE0dtHN3s5sljNy57P8s7/rXBEJE1QTozfd7Zy2MfwZxi3jewI8j8l8ojM6lUXhPg9vqA8i88dB9VHciC+e6tsa+wLmub6pYGXZ66yXsgRxhme2BqOf/9wLzMfQV4OKUBRxTIgUhdR3XZBkKOns2YbIDDWDBSapsXefAWTdkB18OTisH0JkgstgAHDL/7YtXiM5kMMP4aVU74NSVZjwfCe9aYh3dVLgOa6ScCLEOIPWB3Ge+Eg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=28XXo6l5g+sEORBSkSVPPtglv6gsftJyZkcePrSe9DU=;
- b=UDWWLfCr42qKIkmfc2VUaL/weISiIClGE/JcTVULM7/xIK3wTQKZwZfQ7iS3pZ6lB6avjzMyyE6X1TIl+Ybu1hNUu/OY1Gs2n1h6XjRti2Nx6S1mMbC616K0p8OlANcXFdR3YdACK4XXuiNufBprnyfhxBJwRiqSQ3vrCUyltQE=
-Received: from VI1PR0501MB2765.eurprd05.prod.outlook.com (10.172.11.140) by
- VI1PR0501MB2384.eurprd05.prod.outlook.com (10.168.135.18) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2199.21; Tue, 27 Aug 2019 21:51:54 +0000
-Received: from VI1PR0501MB2765.eurprd05.prod.outlook.com
- ([fe80::5cab:4f5c:d7ed:5e27]) by VI1PR0501MB2765.eurprd05.prod.outlook.com
- ([fe80::5cab:4f5c:d7ed:5e27%6]) with mapi id 15.20.2199.021; Tue, 27 Aug 2019
- 21:51:53 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "cai@lca.pw" <cai@lca.pw>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Feras Daoud <ferasda@mellanox.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [PATCH] net/mlx5: fix a -Wstringop-truncation warning
-Thread-Topic: [PATCH] net/mlx5: fix a -Wstringop-truncation warning
-Thread-Index: AQHVWezn79S9mYXS9UOCwXmOlPmrCacPj2qA
-Date:   Tue, 27 Aug 2019 21:51:53 +0000
-Message-ID: <5332ef7927d759dbf0f07ed0dc082fc5d4615e91.camel@mellanox.com>
-References: <1566590183-9898-1-git-send-email-cai@lca.pw>
-In-Reply-To: <1566590183-9898-1-git-send-email-cai@lca.pw>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.32.4 (3.32.4-1.fc30) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [209.116.155.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b2d327f1-e5e9-4fa6-d6a6-08d72b38c624
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600166)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR0501MB2384;
-x-ms-traffictypediagnostic: VI1PR0501MB2384:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0501MB2384FA3990E6FC9793F3987EBEA00@VI1PR0501MB2384.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1060;
-x-forefront-prvs: 0142F22657
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(396003)(376002)(39860400002)(366004)(136003)(189003)(199004)(478600001)(5660300002)(2616005)(3846002)(66066001)(486006)(2501003)(25786009)(7736002)(305945005)(476003)(76116006)(81156014)(81166006)(1730700003)(36756003)(66476007)(91956017)(66946007)(66446008)(64756008)(14454004)(58126008)(2351001)(316002)(54906003)(118296001)(6486002)(6116002)(76176011)(99286004)(8676002)(66556008)(71190400001)(5640700003)(4326008)(6246003)(71200400001)(102836004)(186003)(446003)(11346002)(6506007)(229853002)(6916009)(26005)(256004)(8936002)(14444005)(53936002)(2906002)(86362001)(6512007)(6436002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0501MB2384;H:VI1PR0501MB2765.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 3TGSQYNHIwAE8Q7F3F6KfNqkGAkHPfTPz/z227joerud9EiPgY8Aes9Ek+bq3Y9McWupkD4ylKF4XuxRp59FNszGBwMvYVHLmEBfS1AZfm0EGU/C+pDrNlGrehJplIQ6DvRw9mov+WrhyOociL+BCWTFHoYao65Kb0WMMZMtYVkazmJBwjrkF9iM37q2WZjbGM4CUAGL90vmX8PqGb0napfiaJk9fVGAY+moZDC+zLuI1/X82v56toQGWD+KuG7wnqpJziPyn40p89/ZRPYTmSlAyKRorTUbotwowU8u3DpIRjwmRKHjyv8tHPI4/oPe/FKzFDAQY0V1YlVoTDK5SvAaa88qgAQbfc4YLZBR/AsHTAkwS/RVZte/8wHFQSiCxYjyyFixonBr0IP/yYP2Gi3DGCEL203ctDRKFH6ftgY=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <84B1A0ED4C5E1B4D8D800C58699CA843@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726030AbfH0WCB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 27 Aug 2019 18:02:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39560 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725804AbfH0WCB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 27 Aug 2019 18:02:01 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7RLvsBJ007576
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 18:02:00 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.114])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2unap0nnyj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 18:02:00 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 27 Aug 2019 22:01:59 -0000
+Received: from us1b3-smtp06.a3dr.sjc01.isc4sb.com (10.122.203.184)
+        by smtp.notes.na.collabserv.com (10.122.47.58) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 27 Aug 2019 22:01:55 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp06.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019082722015441-871045 ;
+          Tue, 27 Aug 2019 22:01:54 +0000 
+In-Reply-To: <20190827170014.GE7149@ziepe.ca>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, dledford@redhat.com
+Date:   Tue, 27 Aug 2019 22:01:54 +0000
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2d327f1-e5e9-4fa6-d6a6-08d72b38c624
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2019 21:51:53.7411
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DQMeifwmCED300QbHbGjG5+r3eKoiJlD1mitSw8zTFYRqehDExu4Oq4btWsknA+JKwwxw2I1+bKtSjoFDiPiiw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2384
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190827170014.GE7149@ziepe.ca>,<20190827164955.9249-1-bmt@zurich.ibm.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
+X-KeepSent: 8277E452:BD63BE1B-00258463:00790602;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 54511
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19082722-1639-0000-0000-0000004318E6
+X-IBM-SpamModules-Scores: BY=0.02042; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000000
+X-IBM-SpamModules-Versions: BY=3.00011668; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01253009; UDB=6.00661752; IPR=6.01034607;
+ MB=3.00028363; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-27 22:01:58
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-27 17:37:34 - 6.00010337
+x-cbparentid: 19082722-1640-0000-0000-0000006B3494
+Message-Id: <OF8277E452.BD63BE1B-ON00258463.00790602-00258463.0079060A@notes.na.collabserv.com>
+Subject: RE: [PATCH v2] RDMA/siw: Fix IPv6 addr_list locking
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-27_04:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gRnJpLCAyMDE5LTA4LTIzIGF0IDE1OjU2IC0wNDAwLCBRaWFuIENhaSB3cm90ZToNCj4gSW4g
-ZmlsZSBpbmNsdWRlZCBmcm9tIC4vYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL3BhY2EuaDoxNSwN
-Cj4gICAgICAgICAgICAgICAgICBmcm9tIC4vYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2N1cnJl
-bnQuaDoxMywNCj4gICAgICAgICAgICAgICAgICBmcm9tIC4vaW5jbHVkZS9saW51eC90aHJlYWRf
-aW5mby5oOjIxLA0KPiAgICAgICAgICAgICAgICAgIGZyb20gLi9pbmNsdWRlL2FzbS1nZW5lcmlj
-L3ByZWVtcHQuaDo1LA0KPiAgICAgICAgICAgICAgICAgIGZyb20NCj4gLi9hcmNoL3Bvd2VycGMv
-aW5jbHVkZS9nZW5lcmF0ZWQvYXNtL3ByZWVtcHQuaDoxLA0KPiAgICAgICAgICAgICAgICAgIGZy
-b20gLi9pbmNsdWRlL2xpbnV4L3ByZWVtcHQuaDo3OCwNCj4gICAgICAgICAgICAgICAgICBmcm9t
-IC4vaW5jbHVkZS9saW51eC9zcGlubG9jay5oOjUxLA0KPiAgICAgICAgICAgICAgICAgIGZyb20g
-Li9pbmNsdWRlL2xpbnV4L3dhaXQuaDo5LA0KPiAgICAgICAgICAgICAgICAgIGZyb20gLi9pbmNs
-dWRlL2xpbnV4L2NvbXBsZXRpb24uaDoxMiwNCj4gICAgICAgICAgICAgICAgICBmcm9tIC4vaW5j
-bHVkZS9saW51eC9tbHg1L2RyaXZlci5oOjM3LA0KPiAgICAgICAgICAgICAgICAgIGZyb20NCj4g
-ZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2xpYi9lcS5oOjYsDQo+ICAg
-ICAgICAgICAgICAgICAgZnJvbQ0KPiBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1
-L2NvcmUvZGlhZy9md190cmFjZXIuYzozMzoNCj4gSW4gZnVuY3Rpb24gJ3N0cm5jcHknLA0KPiAg
-ICAgaW5saW5lZCBmcm9tICdtbHg1X2Z3X3RyYWNlcl9zYXZlX3RyYWNlJyBhdA0KPiBkcml2ZXJz
-L25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZGlhZy9md190cmFjZXIuYzo1NDk6MiwN
-Cj4gICAgIGlubGluZWQgZnJvbSAnbWx4NV90cmFjZXJfcHJpbnRfdHJhY2UnIGF0DQo+IGRyaXZl
-cnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9kaWFnL2Z3X3RyYWNlci5jOjU3NDoy
-Og0KPiAuL2luY2x1ZGUvbGludXgvc3RyaW5nLmg6MzA1Ojk6IHdhcm5pbmc6ICdfX2J1aWx0aW5f
-c3RybmNweScgb3V0cHV0DQo+IG1heQ0KPiBiZSB0cnVuY2F0ZWQgY29weWluZyAyNTYgYnl0ZXMg
-ZnJvbSBhIHN0cmluZyBvZiBsZW5ndGggNTExDQo+IFstV3N0cmluZ29wLXRydW5jYXRpb25dDQo+
-ICAgcmV0dXJuIF9fYnVpbHRpbl9zdHJuY3B5KHAsIHEsIHNpemUpOw0KPiAgICAgICAgICBefn5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPiANCj4gRml4IGl0IGJ5IHVzaW5nIHRoZSBuZXcg
-c3Ryc2NweV9wYWQoKSBzaW5jZSB0aGUgY29tbWl0IDQ1OGEzYmY4MmRmNA0KPiAoImxpYi9zdHJp
-bmc6IEFkZCBzdHJzY3B5X3BhZCgpIGZ1bmN0aW9uIikgd2hpY2ggd2lsbCBhbHdheXMNCj4gTlVM
-LXRlcm1pbmF0ZSB0aGUgc3RyaW5nLCBhbmQgYXZvaWQgcG9zc2libHkgbGVhayBkYXRhIHRocm91
-Z2ggdGhlDQo+IHJpbmcNCj4gYnVmZmVyIHdoZXJlIG5vbi1hZG1pbiBhY2NvdW50IG1pZ2h0IGVu
-YWJsZSB0aGVzZSBldmVudHMgdGhyb3VnaA0KPiBwZXJmLg0KPiANCj4gRml4ZXM6IGZkMTQ4M2Zl
-MWY5ZiAoIm5ldC9tbHg1OiBBZGQgc3VwcG9ydCBmb3IgRlcgcmVwb3J0ZXIgZHVtcCIpDQo+IFNp
-Z25lZC1vZmYtYnk6IFFpYW4gQ2FpIDxjYWlAbGNhLnB3Pg0KPiANCg0KQXBwbGllZCB0byBtbHg1
-LW5leHQsIFRoYW5rcyAhDQo=
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
+
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 08/27/2019 07:28PM
+>Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org,
+>dledford@redhat.com
+>Subject: [EXTERNAL] Re: [PATCH v2] RDMA/siw: Fix IPv6 addr_list
+>locking
+>
+>On Tue, Aug 27, 2019 at 06:49:55PM +0200, Bernard Metzler wrote:
+>> Walking the address list of an inet6_dev requires
+>> appropriate locking. Since the called function
+>> siw_listen_address() may sleep, we have to use
+>> rtnl_lock() instead of read_lock_bh().
+>> 
+>> Also introduces:
+>> - sanity checks if we got a device from
+>>   in_dev_get() or in6_dev_get().
+>> - skipping IPv6 addresses flagged IFA_F_TENTATIVE
+>>   or IFA_F_DEPRECATED
+>> 
+>> Reported-by: Bart Van Assche <bvanassche@acm.org>
+>> Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
+>> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+>>  drivers/infiniband/sw/siw/siw_cm.c | 33
+>+++++++++++++++++++-----------
+>>  1 file changed, 21 insertions(+), 12 deletions(-)
+>> 
+>> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
+>b/drivers/infiniband/sw/siw/siw_cm.c
+>> index 1db5ad3d9580..c145b4ff4556 100644
+>> +++ b/drivers/infiniband/sw/siw/siw_cm.c
+>> @@ -1962,6 +1962,10 @@ int siw_create_listen(struct iw_cm_id *id,
+>int backlog)
+>>  		struct sockaddr_in s_laddr, *s_raddr;
+>>  		const struct in_ifaddr *ifa;
+>>  
+>> +		if (!in_dev) {
+>> +			rv = -ENODEV;
+>> +			goto out;
+>> +		}
+>>  		memcpy(&s_laddr, &id->local_addr, sizeof(s_laddr));
+>>  		s_raddr = (struct sockaddr_in *)&id->remote_addr;
+>>  
+>> @@ -1991,22 +1995,27 @@ int siw_create_listen(struct iw_cm_id *id,
+>int backlog)
+>>  		struct sockaddr_in6 *s_laddr = &to_sockaddr_in6(id->local_addr),
+>>  			*s_raddr = &to_sockaddr_in6(id->remote_addr);
+>>  
+>> +		if (!in6_dev) {
+>> +			rv = -ENODEV;
+>> +			goto out;
+>> +		}
+>>  		siw_dbg(id->device,
+>>  			"laddr %pI6:%d, raddr %pI6:%d\n",
+>>  			&s_laddr->sin6_addr, ntohs(s_laddr->sin6_port),
+>>  			&s_raddr->sin6_addr, ntohs(s_raddr->sin6_port));
+>>  
+>> -		read_lock_bh(&in6_dev->lock);
+>> -		list_for_each_entry(ifp, &in6_dev->addr_list, if_list) {
+>> -			struct sockaddr_in6 bind_addr;
+>> -
+>> +		rtnl_lock();
+>> +		list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) {
+>
+>If not holding RCU then don't use the rcu list iterator..
+>
+
+absolutely!
+
