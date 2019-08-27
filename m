@@ -2,145 +2,190 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7362C9F344
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 21:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944559F3D0
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 22:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730392AbfH0TZR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Aug 2019 15:25:17 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46995 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728834AbfH0TZR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Aug 2019 15:25:17 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z1so19924244wru.13
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 12:25:16 -0700 (PDT)
+        id S1730972AbfH0UMR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Aug 2019 16:12:17 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:37268 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726871AbfH0UMR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Aug 2019 16:12:17 -0400
+Received: by mail-qt1-f195.google.com with SMTP id y26so360750qto.4
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 13:12:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8uxOvUS0CLmC08brbnOrY7MLibuZbjpCkI2EXp2DOCE=;
-        b=Wm5iTTJF9PuqueSrM/raVJtGwSYZMvFcbLspZTAnym//7tJdPfOr1MGq/DSP4how1w
-         6Uq0QXlVbWK9ksniI7lqgD81AkHUM1+yfUjUynPoFJ5KO9FxnAKv+WsygefbeQ2QeKSR
-         LnIMUGDA+A6vNUaGOFsuXxAhYFAypIxJ0uFr4r+iwXw5+sTgvcqXVs5j5jNLdNSSmxio
-         /28WnHnnAu2qdIOyt7xI2/0EPcO/zPgjZFv74SK9twosldYeU1k+ukH+FpoLAzCaMeus
-         AIFE/oAKhE3P0o1FsA6OwhUgqqHwKosGPoQR4tH4v+Vhk1Wsy2tCk3JavvTtVSg3iK74
-         K9ow==
+        d=lca.pw; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BkZIfmKZ7qzT0/Q98A2MpbsT7hkDc5a1un54X3X6iBY=;
+        b=nJhYBdc8MTQ/bmYv05s4tR+VuVWiEu3RS+H58f9PqTo+QX/BCcCnXTUecm64r1sTgE
+         7NAxgLbhS+OvQ6AdVC+Sift3RvjjeBRIbDZL+KcRN1Olpt3FUGdRyhk6mRHnmLIVP3PP
+         v4/uDVMWFU28cAV5IMArPgkc1lat1SiTW8IVf72eoMmZ0Kx+D/5MN5XYK3EL4uv97qdL
+         XPOw019DIJahaVadM8hKoJdm1XXayH6zxzT3eOZVgaPcvzoPXggHpTw7BcbA88M+CseC
+         Atv2jO85PRB7PhcpLSMatOELhVseZ7Iq+Q0iu0xSZ12SRzfA77tPs0OgyLWe2uT+KuuM
+         d6dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8uxOvUS0CLmC08brbnOrY7MLibuZbjpCkI2EXp2DOCE=;
-        b=KsyaB1vHufKZ3TqyI11KTJ7DRlA6bs3W0dH+X1VWfTPKjZtcGX2S8Ucz8KkpclnzeA
-         Ky4WQZsbY4VMYqqKMV4Y12NvHyUoN8cdFv4VjuUjFbbzHH3XebWVAQhFUDc/TC0Qs0fT
-         s0phRycxT1W2q91U24yjr202L4NXEtfJmNstt7TTzppbIKIAwp1dOoifkYyv30LXOJSl
-         wRnyje3a/4rt0ffFlUOuqfcPxP0XPyJ+PE/G2h15zOz0VOh55FM3OAB2CIdFaSI1NJBD
-         rYendUJN3xQNXpHeEF6TIXw5o1HtfukBAN0+/Jq1tnfEOPiuyD2y3Gb3ldMcsUxReE5V
-         86Tg==
-X-Gm-Message-State: APjAAAWnAAdwVk/k7M6JTtz8bX9I/skCDmFOPyHRszs6stN1KAwtv4qy
-        ezjvG+Sn6NGMF8c8sYa9wr1dtVYruTXgVQ==
-X-Google-Smtp-Source: APXvYqyOAPDZGDXVkUPBRL2lhBq6HPYN6axfbP+igp8asO042Rbsb+9XQ78t0akDAmRRuBwBP+dZGg==
-X-Received: by 2002:a5d:4946:: with SMTP id r6mr33063917wrs.266.1566933915177;
-        Tue, 27 Aug 2019 12:25:15 -0700 (PDT)
-Received: from archlinux-threadripper ([2a01:4f8:222:2f1b::2])
-        by smtp.gmail.com with ESMTPSA id g7sm160229wmh.1.2019.08.27.12.25.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Aug 2019 12:25:14 -0700 (PDT)
-Date:   Tue, 27 Aug 2019 12:25:13 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        "Guy Levi(SW)" <guyle@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Philip Li <philip.li@intel.com>,
-        Rong Chen <rong.a.chen@intel.com>
-Subject: Re: [PATCH rdma-next 08/12] RDMA/odp: Check for overflow when
- computing the umem_odp end
-Message-ID: <20190827192513.GA24496@archlinux-threadripper>
-References: <20190819111710.18440-1-leon@kernel.org>
- <20190819111710.18440-9-leon@kernel.org>
- <20190826164223.GA122752@archlinux-threadripper>
- <20190826165539.GF27031@mellanox.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190826165539.GF27031@mellanox.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BkZIfmKZ7qzT0/Q98A2MpbsT7hkDc5a1un54X3X6iBY=;
+        b=WXpcWmfMKCVDgneCpFrDs6rJIeqrIgtPlWTNz1BjpBPlA3UrbQzChDw+SehlvCXQCl
+         NbJS/c5BdajryHBbM/BYpPG+UW7X9080ADNx/XnxQoqg26fEqTKUEstNRcxOzyw5RIpp
+         z5Api9usrlzs3N56499XLgZtAgtLWDWJGAV3IdwODlp4smw0nl/YEWp+pgHkcx73z7qx
+         pZ8rlv/LITfQbcWx6xgfyQdV/fWEkUv39iN7/0ID4f8aGZLhlynARxDZCMHuPbaagYeG
+         ashKtX7kTwG91E7oDLGfslUGy/gFF7leMaP+RtQkq8b3bWp+iuJDN0Zyx2l6vk/LBZvX
+         Ypzw==
+X-Gm-Message-State: APjAAAUXrHU5YFNVlfUCehCsLbMAoMyqqH+f6yEWdhXvV04hdFmB266U
+        Td5Va93GUMHvDmamMEObUN8NMg==
+X-Google-Smtp-Source: APXvYqwqlWIGIWvpy5/f8fYmogPINRbnGzcIQ8VA4zmB7qImfGYvICCMRTDbbZMdWyXzI8jgs8DZ9Q==
+X-Received: by 2002:ac8:7959:: with SMTP id r25mr700399qtt.208.1566936736033;
+        Tue, 27 Aug 2019 13:12:16 -0700 (PDT)
+Received: from dhcp-41-57.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id p32sm56327qtb.67.2019.08.27.13.12.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Aug 2019 13:12:15 -0700 (PDT)
+Message-ID: <1566936733.5576.16.camel@lca.pw>
+Subject: Re: [PATCH] net/mlx5: fix a -Wstringop-truncation warning
+From:   Qian Cai <cai@lca.pw>
+To:     Saeed Mahameed <saeedm@mellanox.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Feras Daoud <ferasda@mellanox.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>
+Date:   Tue, 27 Aug 2019 16:12:13 -0400
+In-Reply-To: <21994e7e141ee5453c6814de025e083eeb651127.camel@mellanox.com>
+References: <1566590183-9898-1-git-send-email-cai@lca.pw>
+         <21994e7e141ee5453c6814de025e083eeb651127.camel@mellanox.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.22.6 (3.22.6-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 26, 2019 at 04:55:45PM +0000, Jason Gunthorpe wrote:
-> On Mon, Aug 26, 2019 at 09:42:23AM -0700, Nathan Chancellor wrote:
-> > On Mon, Aug 19, 2019 at 02:17:06PM +0300, Leon Romanovsky wrote:
-> > > From: Jason Gunthorpe <jgg@mellanox.com>
-> > > 
-> > > Since the page size can be extended in the ODP case by IB_ACCESS_HUGETLB
-> > > the existing overflow checks done by ib_umem_get() are not
-> > > sufficient. Check for overflow again.
-> > > 
-> > > Further, remove the unchecked math from the inlines and just use the
-> > > precomputed value stored in the interval_tree_node.
-> > > 
-> > > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > >  drivers/infiniband/core/umem_odp.c | 25 +++++++++++++++++++------
-> > >  include/rdma/ib_umem_odp.h         |  5 ++---
-> > >  2 files changed, 21 insertions(+), 9 deletions(-)
-> > > 
-> > > diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-> > > index 2575dd783196..46ae9962fae3 100644
-> > > +++ b/drivers/infiniband/core/umem_odp.c
-> > > @@ -294,19 +294,32 @@ static inline int ib_init_umem_odp(struct ib_umem_odp *umem_odp,
-> > >  
-> > >  	umem_odp->umem.is_odp = 1;
-> > >  	if (!umem_odp->is_implicit_odp) {
-> > > -		size_t pages = ib_umem_odp_num_pages(umem_odp);
-> > > -
-> > > +		size_t page_size = 1UL << umem_odp->page_shift;
-> > > +		size_t pages;
-> > > +
-> > > +		umem_odp->interval_tree.start =
-> > > +			ALIGN_DOWN(umem_odp->umem.address, page_size);
-> > > +		if (check_add_overflow(umem_odp->umem.address,
-> > > +				       umem_odp->umem.length,
-> > > +				       &umem_odp->interval_tree.last))
-> > > +			return -EOVERFLOW;
+On Mon, 2019-08-26 at 21:11 +0000, Saeed Mahameed wrote:
+> On Fri, 2019-08-23 at 15:56 -0400, Qian Cai wrote:
+> > In file included from ./arch/powerpc/include/asm/paca.h:15,
+> >                  from ./arch/powerpc/include/asm/current.h:13,
+> >                  from ./include/linux/thread_info.h:21,
+> >                  from ./include/asm-generic/preempt.h:5,
+> >                  from
+> > ./arch/powerpc/include/generated/asm/preempt.h:1,
+> >                  from ./include/linux/preempt.h:78,
+> >                  from ./include/linux/spinlock.h:51,
+> >                  from ./include/linux/wait.h:9,
+> >                  from ./include/linux/completion.h:12,
+> >                  from ./include/linux/mlx5/driver.h:37,
+> >                  from
+> > drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h:6,
+> >                  from
+> > drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:33:
+> > In function 'strncpy',
+> >     inlined from 'mlx5_fw_tracer_save_trace' at
+> > drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:549:2,
+> >     inlined from 'mlx5_tracer_print_trace' at
+> > drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:574:2:
+> > ./include/linux/string.h:305:9: warning: '__builtin_strncpy' output
+> > may
+> > be truncated copying 256 bytes from a string of length 511
+> > [-Wstringop-truncation]
+> >   return __builtin_strncpy(p, q, size);
+> >          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > > 
-> > This if statement causes a warning on 32-bit ARM:
+> > Fix it by using the new strscpy_pad() since the commit 458a3bf82df4
+> > ("lib/string: Add strscpy_pad() function") which will always
+> > NUL-terminate the string, and avoid possibly leak data through the
+> > ring
+> > buffer where non-admin account might enable these events through
+> > perf.
 > > 
-> > drivers/infiniband/core/umem_odp.c:295:7: warning: comparison of distinct
-> > pointer types ('typeof (umem_odp->umem.address) *' (aka 'unsigned long *')
-> > and 'typeof (umem_odp->umem.length) *' (aka 'unsigned int *'))
-> > [-Wcompare-distinct-pointer-types]
-> >                 if (check_add_overflow(umem_odp->umem.address,
-> >                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/linux/overflow.h:59:15: note: expanded from macro 'check_add_overflow'
-> >         (void) (&__a == &__b);                  \
-> >                 ~~~~ ^  ~~~~
-> > 1 warning generated.
+> > Fixes: fd1483fe1f9f ("net/mlx5: Add support for FW reporter dump")
+> > Signed-off-by: Qian Cai <cai@lca.pw>
 > 
-> Hum, I'm pretty sure 0-day has stopped running 32 bit builds or
-> something :\
 > 
-> Jason
+> Hi Qian and thanks for your patch,
+> 
+> We already have a patch that handles this issue, please check it out:
+> https://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux.git/commit/?h=net-
+> next-mlx5
+> 
 
-My report was with clang but GCC reports the same type of warning:
+That commit will make "struct mlx5_fw_tracer" too large and trigger a warning in
+__alloc_pages_nodemask(),
 
-In file included from ../include/linux/slab.h:16,
-                 from ../drivers/infiniband/core/umem_odp.c:38:
-../drivers/infiniband/core/umem_odp.c: In function 'ib_init_umem_odp':
-../include/linux/overflow.h:59:15: warning: comparison of distinct pointer types lacks a cast
-   59 |  (void) (&__a == &__b);   \
-      |               ^~
-../drivers/infiniband/core/umem_odp.c:220:7: note: in expansion of macro 'check_add_overflow'
-  220 |   if (check_add_overflow(umem_odp->umem.address,
-      |       ^~~~~~~~~~~~~~~~~~
+        /*
+         * There are several places where we assume that the order value is sane
+         * so bail out early if the request is out of bound.
+         */
+        if (unlikely(order >= MAX_ORDER)) {
+                WARN_ON_ONCE(!(gfp_mask & __GFP_NOWARN));
+                return NULL;
+        }
 
-Adding Philip and Rong as I believe that they are the current 0-day
-maintainers.
-
-Cheers,
-Nathan
+[   98.339576][  T914] WARNING: CPU: 0 PID: 914 at mm/page_alloc.c:4705
+__alloc_pages_nodemask+0x441/0x1bb0
+[   98.349174][  T914] Modules linked in: smartpqi(+) scsi_transport_sas tg3
+mlx5_core(+) libphy firmware_class dm_mirror dm_region_hash dm_log dm_mod
+efivarfs
+[   98.363495][  T914] CPU: 0 PID: 914 Comm: kworker/0:2 Not tainted 5.3.0-rc6-
+next-20190827+ #14
+[   98.372243][  T914] Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385
+Gen10, BIOS A40 07/10/2019
+[   98.381627][  T914] Workqueue: events work_for_cpu_fn
+[   98.386720][  T914] RIP: 0010:__alloc_pages_nodemask+0x441/0x1bb0
+[   98.392917][  T914] Code: 17 00 00 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d
+c3 89 85 3c fe ff ff bb 01 00 00 00 e9 96 fd ff ff 81 e7 00 20 00 00 75 02 <0f>
+0b 48 c7 85 50 fe ff ff 00 00 00 00 eb 82 31 d2 be 36 12 00 00
+[   98.412740][  T914] RSP: 0018:ffff88853418f948 EFLAGS: 00010246
+[   98.418704][  T914] RAX: 0000000000000000 RBX: ffffffff9571a860 RCX:
+1ffff110a6831f3e
+[   98.426652][  T914] RDX: 0000000000000000 RSI: 000000000000000b RDI:
+0000000000000000
+[   98.434661][  T914] RBP: ffff88853418fb58 R08: ffffed1108808465 R09:
+ffffed1108808465
+[   98.442613][  T914] R10: ffffed1108808464 R11: ffff888844042323 R12:
+0000000000000000
+[   98.450548][  T914] R13: 000000000000000b R14: 0000000000000000 R15:
+0000000000000001
+[   98.458434][  T914] FS:  0000000000000000(0000) GS:ffff888844000000(0000)
+knlGS:0000000000000000
+[   98.467350][  T914] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   98.473911][  T914] CR2: 0000555c64680148 CR3: 0000000550412000 CR4:
+00000000003406b0
+[   98.481838][  T914] Call Trace:
+[   98.485011][  T914]  ? find_next_bit+0x2c/0xa0
+[   98.489490][  T914]  ? __kasan_check_write+0x14/0x20
+[   98.494506][  T914]  ? graph_lock+0xb8/0x120
+[   98.498811][  T914]  ? __free_zapped_classes+0x740/0x740
+[   98.504239][  T914]  ? gfp_pfmemalloc_allowed+0xc0/0xc0
+[   98.509504][  T914]  ? __kasan_check_read+0x11/0x20
+[   98.514443][  T914]  ? register_lock_class+0x5ef/0x960
+[   98.519624][  T914]  ? rcu_read_lock_sched_held+0xac/0xe0
+[   98.525152][  T914]  ? rcu_read_lock_any_held.part.5+0x20/0x20
+[   98.531130][  T914]  ? find_next_bit+0x2c/0xa0
+[   98.535610][  T914]  alloc_pages_current+0x9c/0x110
+[   98.540638][  T914]  kmalloc_order+0x22/0x70
+[   98.544943][  T914]  kmalloc_order_trace+0x23/0x100
+[   98.550072][  T914]  mlx5_fw_tracer_create+0x51/0x870 [mlx5_core]
+[   98.556213][  T914]  ? __mutex_init+0x94/0xa0
+[   98.560744][  T914]  ? mlx5_init_rl_table+0x144/0x210 [mlx5_core]
+[   98.566929][  T914]  mlx5_load_one+0x199/0x980 [mlx5_core]
+[   98.572637][  T914]  init_one+0x494/0x760 [mlx5_core]
+[   98.577771][  T914]  ? mlx5_pci_resume+0xd0/0xd0 [mlx5_core]
+[   98.583574][  T914]  local_pci_probe+0x7a/0xc0
+[   98.588054][  T914]  ? pci_dma_configure+0xa0/0xa0
+[   98.592938][  T914]  work_for_cpu_fn+0x2e/0x50
+[   98.597416][  T914]  process_one_work+0x53b/0xa70
+[   98.602220][  T914]  ? pwq_dec_nr_in_flight+0x170/0x170
+[   98.607485][  T914]  ? move_linked_works+0x113/0x150
+[   98.612497][  T914]  worker_thread+0x363/0x5b0
+[   98.616976][  T914]  kthread+0x1df/0x200
+[   98.620932][  T914]  ? process_one_work+0xa70/0xa70
+[   98.625847][  T914]  ? kthread_park+0xd0/0xd0
+[   98.630240][  T914]  ret_from_fork+0x22/0x40
