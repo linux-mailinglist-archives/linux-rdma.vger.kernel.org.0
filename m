@@ -2,95 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2208C9EF70
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 17:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EEB9EFB8
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 18:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbfH0Pwl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Aug 2019 11:52:41 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:38210 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727057AbfH0Pwk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Aug 2019 11:52:40 -0400
-Received: by mail-qk1-f194.google.com with SMTP id u190so17438595qkh.5
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 08:52:40 -0700 (PDT)
+        id S1726257AbfH0QHx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Aug 2019 12:07:53 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:37059 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbfH0QHw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Aug 2019 12:07:52 -0400
+Received: by mail-qt1-f194.google.com with SMTP id y26so21861178qto.4
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Aug 2019 09:07:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=6lrUQjg09W/CYM9ClcXNjxE0QVh6IyAkViPvOSjzfzA=;
-        b=oC/bR3dP+V6QA0ryrp2Q5gukrhxwTxWGqUa4c5vEsZoDDuMZE8u8XWgvaANi6aYmn5
-         kOFVUPTtT65NdqiMlddOfAw1S02Saa7YodAHtYo3Hz8tbcKNV8NM6MtZOTaj105pdrSy
-         e8fr0I+zgUjP37DiaflDF+RtDPJebz++manAmhh2//MT/GoNGSUiRpNiAW4S/E7wzNWq
-         s9/30/jHgFtPrWaEwp0nC3T3hsfW6MgmYVZ/Y+gJLeiIn/cuovL2AGwa/qtwY+E19NJ+
-         SORxM5ivQHxJxUcpSWTb7HbkxRlFbqK7GTDiVZej+yqeIPZG7fmwfpQhehfEzdbvjm9R
-         0cKQ==
+        bh=cckA6/bRrPXW6qlTX9ByJE7u0RzD14bJX9GtDxcEUnM=;
+        b=IcSzgYDFrTYOvzL2QEY6oZkzwLPFZSxu7FRMqbtlk9ctbzKeeyh7O/QpUfPs9awo4I
+         hOnklEreT0B6Zwb++yAMaqMpqbWPl0+BrjOFL6EnfVBvBvvGO3BCAYuvF02ZxnZpB+1W
+         2NZd+SWihsogHt9/AdyLrlLvQmFeR8Dl6n1s+YDv3oqXzHPc3C40yKSGQ44STRvmgjm/
+         z/MMT0/UxKjhWPCTCurjlF3U8ibMxMamMIF12jMY/poa6HPqVIeWf3gYnFEBGz4MmUHj
+         YVQpOGI3oS/9jKyf1badLjGD+G2cxm+d7X4fyExX6MkvmIefqXIRYYjA2DPapIjn031b
+         Mj1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6lrUQjg09W/CYM9ClcXNjxE0QVh6IyAkViPvOSjzfzA=;
-        b=FgpA910hJ4HDTbrrAkzAoqRlnB9B/qoKCN/wnFqJW5NlV5ppQ+R+d8J2c3UBNYqBQ8
-         ugxFD7erO1bpo3s7bK8IPJgee/iwaCXMTrQz5MYrdrdXG219Wh1h3MSQkb1Nxl/MV7mQ
-         9U7AQ4RiHFRYVUlCP5WZA0nywwZDdNhOigzRuM2yaBe9izmlVqUE4UJrXELdGO0v8aPd
-         uGaAkubfTxeKaW2hFYbRzChMxfCLo2sZJOUFizVOtQokiactZR8QNpaPWwd6M0XzUDye
-         n7mHP7XiNaTiXZ+ltgLZKfZla+tbzMbMd3FhdcVvFxz7InmF7y0fU/h+poNwS5qygQ7H
-         tYHQ==
-X-Gm-Message-State: APjAAAUizQjfgDunJ41bQPefOSFFWYCekhfyeuEA7vvtQ3Gn0jT7y2EG
-        dW+kzuGaUmX4Tfcp2/20B4fbng==
-X-Google-Smtp-Source: APXvYqyUG6WklpHvBbsoklMcXBZJhAec8BZF3MrQ5LSq8fMd8YxJID2nO0xhjXKRoobutfRjmk8IYQ==
-X-Received: by 2002:a37:8381:: with SMTP id f123mr21349287qkd.316.1566921160105;
-        Tue, 27 Aug 2019 08:52:40 -0700 (PDT)
+        bh=cckA6/bRrPXW6qlTX9ByJE7u0RzD14bJX9GtDxcEUnM=;
+        b=b+X4V3od8BbEyakhGbgViYPyuHL9zvkqxC8UwgBqMnSR4UvkTX4eLBekUA1s0QNP/3
+         q6tyQ62dBWQSmUxMTiVAm/PYi6qBkGNqFPUyukPn+1sslI0tc51GIudv8EdhQqIPj2eA
+         DZrRLd7wagvrlIHIWUdt/szkQzSEChP2WrOYem9BFr4MvFZZhbRCVHf08RuyJO9wgNrI
+         duJniv4vXQqO+vMKFcyBSCD243V1up+Ng182CzbOxI7upgmkv4k/nEptXCJsZbM9X4VK
+         xYSuLijo5Zgi+tMKY0eiQIYosJ+L5q1scx1PldEeKqBeXtl+4AW5azzSTKDDmcKl876G
+         n5BQ==
+X-Gm-Message-State: APjAAAVg3V9SOcUlmyyXhGx4sVSTiPbI8js2zH3CwDJR98eRBQRIK9CJ
+        J3UQjsUTEGH2cRHA1OMXpJWz8w==
+X-Google-Smtp-Source: APXvYqzW5E1ESn8R7XS3rNNFe7PjBVxzc5GLyhDLRceVpABaKHJnIbZ2CaRK9bftzQ+sKbSn63YKAw==
+X-Received: by 2002:ac8:1a08:: with SMTP id v8mr23635612qtj.277.1566922071939;
+        Tue, 27 Aug 2019 09:07:51 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-167-216-168.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.216.168])
-        by smtp.gmail.com with ESMTPSA id x68sm8700999qkc.16.2019.08.27.08.52.39
+        by smtp.gmail.com with ESMTPSA id v13sm1029399qkj.109.2019.08.27.09.07.51
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 27 Aug 2019 08:52:39 -0700 (PDT)
+        Tue, 27 Aug 2019 09:07:51 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1i2dlv-0003zK-93; Tue, 27 Aug 2019 12:52:39 -0300
-Date:   Tue, 27 Aug 2019 12:52:39 -0300
+        id 1i2e0c-0002yU-SA; Tue, 27 Aug 2019 13:07:50 -0300
+Date:   Tue, 27 Aug 2019 13:07:50 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     leon@kernel.org, dledford@redhat.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx5: Merge two enums into a single one
-Message-ID: <20190827155239.GA15262@ziepe.ca>
-References: <1566665546-8209-1-git-send-email-jrdr.linux@gmail.com>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next 0/2] EFA cleanups 2019-08-26
+Message-ID: <20190827160750.GA11348@ziepe.ca>
+References: <20190826115350.21718-1-galpress@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1566665546-8209-1-git-send-email-jrdr.linux@gmail.com>
+In-Reply-To: <20190826115350.21718-1-galpress@amazon.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Aug 24, 2019 at 10:22:26PM +0530, Souptick Joarder wrote:
-> These two enums can be merged into a single one wihtout effecting
-> their caller if those were created without intension.
+On Mon, Aug 26, 2019 at 02:53:48PM +0300, Gal Pressman wrote:
+> Hello,
 > 
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
->  include/uapi/rdma/mlx5-abi.h | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+> This series introduces two minor cleanups for EFA that were hanging
+> around in my local git waiting to be submitted.
+> The patches are very straight forward, nothing intersting to say about
+> them :)..
 > 
-> diff --git a/include/uapi/rdma/mlx5-abi.h b/include/uapi/rdma/mlx5-abi.h
-> index 624f5b53..c89363a 100644
-> +++ b/include/uapi/rdma/mlx5-abi.h
-> @@ -461,13 +461,10 @@ enum mlx5_ib_mmap_cmd {
->  	MLX5_IB_MMAP_DEVICE_MEM                 = 8,
->  };
->  
-> -enum {
-> -	MLX5_IB_CLOCK_INFO_KERNEL_UPDATING = 1,
-> -};
-> -
->  /* Bit indexes for the mlx5_alloc_ucontext_resp.clock_info_versions bitmap */
->  enum {
->  	MLX5_IB_CLOCK_INFO_V1              = 0,
-> +	MLX5_IB_CLOCK_INFO_KERNEL_UPDATING = 1,
->  };
+> Gal Pressman (2):
+>   RDMA/efa: Remove umem check on dereg MR flow
+>   RDMA/efa: Use existing FIELD_SIZEOF macro
 
-The enums are used in different contexts, I don't think this is an
-improvement
+Applied to for-next, thanks
 
 Jason
