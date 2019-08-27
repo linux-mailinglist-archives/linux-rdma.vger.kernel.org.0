@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F03AE9E963
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 15:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B5C9E964
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2019 15:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbfH0Nbh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Aug 2019 09:31:37 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:46000 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726441AbfH0Nbh (ORCPT
+        id S1727048AbfH0Nbl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Aug 2019 09:31:41 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:14166 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726441AbfH0Nbl (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Aug 2019 09:31:37 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x7RDU4p3025031;
-        Tue, 27 Aug 2019 06:31:32 -0700
+        Tue, 27 Aug 2019 09:31:41 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x7RDUjOB006750;
+        Tue, 27 Aug 2019 06:31:36 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=1OLv64ILyQPn1rMl5k7fKEkeI8Sjy5wo6zzwITVjZvQ=;
- b=Gr8y2pFIKzjtBoHPLGb9CXWg5lhGmqJ3nUQe1Nqggz0UCNQod2oyTBExCDQGkPV04AlR
- J7kMGw2VfYhwxNE8bE3c+bqOO6m9peFQzX6tJFi/5TyITjMa2loRmZXJesGd4z0aFjZ+
- tJEGW9isle52784987jvQplcINYnqEQY/9EU77Ddgjh40j3Zxt0olnEACkRo/JddOIeD
- FSrhWwrdllr/ioinMdKaVxsuu5avrwWehUhM3PgggAKC9mm7yY3u2zHWv8gw6kapRHDM
- kbWcotDQ3vfFFucCzfyER+8G0LQLkvsnVrk0mD4i15Zi1sDwGeePjwqSwNI6vvKsHl6A Pw== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2uk2kq3kp2-1
+ content-type; s=pfpt0818; bh=2MAsB2C8/t/L3oSdhi+Z6UcFf+YProIMl5i4Wh+LX1M=;
+ b=TblMlpVxDcZ9JQzRanaTxB54GAuJPvKnSFrubgrrA/G02JZB/U4XtFwbwdgVZn3rwAD8
+ sWl21U1Y4Aav70+tEqYF9H/F5B33yOyrDWVTpmTooi42tf+u5wRDy/GuMhgjy1NaBZFi
+ 6MK3xCGqEGvKui2O5Rrvoo808SzUKQUCEJsrlDEaQm23B1mu1vEjNQZ61MPMShgMBbNS
+ ybiH+f7p7bXWVM5NOdz3gWfgRB6XYjnv2qKGWvDpPcjOn0NLRBgRandz2e7gXCRHCj4c
+ yAc3Y5MBWG1JOektSR6xLDkdGkbvFWBuK3/DcACBMuUyn5fvJZUYxDGNcioozOHQ3yEF bg== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2uk4rkjp40-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 27 Aug 2019 06:31:32 -0700
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 27 Aug
- 2019 06:31:31 -0700
+        Tue, 27 Aug 2019 06:31:36 -0700
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 27 Aug
+ 2019 06:31:34 -0700
 Received: from maili.marvell.com (10.93.176.43) by SC-EXCH03.marvell.com
  (10.93.176.83) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Tue, 27 Aug 2019 06:31:31 -0700
+ Transport; Tue, 27 Aug 2019 06:31:34 -0700
 Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 36C6E3F7045;
-        Tue, 27 Aug 2019 06:31:28 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id 67D263F703F;
+        Tue, 27 Aug 2019 06:31:31 -0700 (PDT)
 From:   Michal Kalderon <michal.kalderon@marvell.com>
 To:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
         <dledford@redhat.com>, <bmt@zurich.ibm.com>, <galpress@amazon.com>,
@@ -43,9 +43,9 @@ To:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
 CC:     <linux-rdma@vger.kernel.org>,
         Michal Kalderon <michal.kalderon@marvell.com>,
         Ariel Elior <ariel.elior@marvell.com>
-Subject: [PATCH v8 rdma-next 3/7] RDMA/efa: Use the common mmap_xa helpers
-Date:   Tue, 27 Aug 2019 16:28:42 +0300
-Message-ID: <20190827132846.9142-4-michal.kalderon@marvell.com>
+Subject: [PATCH v8 rdma-next 4/7] RDMA/siw: Use the common mmap_xa helpers
+Date:   Tue, 27 Aug 2019 16:28:43 +0300
+Message-ID: <20190827132846.9142-5-michal.kalderon@marvell.com>
 X-Mailer: git-send-email 2.14.5
 In-Reply-To: <20190827132846.9142-1-michal.kalderon@marvell.com>
 References: <20190827132846.9142-1-michal.kalderon@marvell.com>
@@ -59,286 +59,219 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 Remove the functions related to managing the mmap_xa database.
-This code was copied to the ib_core. Use the common API's instead.
+This code is now common in ib_core. Use the common API's instead.
 
 Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
 Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 ---
- drivers/infiniband/hw/efa/efa.h       |  18 +-
- drivers/infiniband/hw/efa/efa_main.c  |   1 +
- drivers/infiniband/hw/efa/efa_verbs.c | 339 +++++++++++++++++-----------------
- 3 files changed, 185 insertions(+), 173 deletions(-)
+ drivers/infiniband/sw/siw/siw.h       |  20 ++-
+ drivers/infiniband/sw/siw/siw_main.c  |   1 +
+ drivers/infiniband/sw/siw/siw_verbs.c | 223 +++++++++++++++++++---------------
+ drivers/infiniband/sw/siw/siw_verbs.h |   1 +
+ 4 files changed, 144 insertions(+), 101 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-index 2283e432693e..148ff5b86746 100644
---- a/drivers/infiniband/hw/efa/efa.h
-+++ b/drivers/infiniband/hw/efa/efa.h
-@@ -71,8 +71,6 @@ struct efa_dev {
- 
- struct efa_ucontext {
- 	struct ib_ucontext ibucontext;
--	struct xarray mmap_xa;
--	u32 mmap_xa_page;
- 	u16 uarn;
+diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+index 77b1aabf6ff3..d48cd42ae43e 100644
+--- a/drivers/infiniband/sw/siw/siw.h
++++ b/drivers/infiniband/sw/siw/siw.h
+@@ -220,7 +220,7 @@ struct siw_cq {
+ 	u32 cq_get;
+ 	u32 num_cqe;
+ 	bool kernel_verbs;
+-	u32 xa_cq_index; /* mmap information for CQE array */
++	u64 cq_key; /* mmap information for CQE array */
+ 	u32 id; /* For debugging only */
  };
  
-@@ -91,6 +89,7 @@ struct efa_cq {
- 	struct efa_ucontext *ucontext;
- 	dma_addr_t dma_addr;
- 	void *cpu_addr;
-+	u64 mmap_key;
- 	size_t size;
- 	u16 cq_idx;
+@@ -263,7 +263,7 @@ struct siw_srq {
+ 	u32 rq_put;
+ 	u32 rq_get;
+ 	u32 num_rqe; /* max # of wqe's allowed */
+-	u32 xa_srq_index; /* mmap information for SRQ array */
++	u64 srq_key; /* mmap information for SRQ array */
+ 	char armed; /* inform user if limit hit */
+ 	char kernel_verbs; /* '1' if kernel client */
  };
-@@ -101,6 +100,13 @@ struct efa_qp {
- 	void *rq_cpu_addr;
- 	size_t rq_size;
- 	enum ib_qp_state state;
-+
-+	/* Used for saving mmap_xa entries */
-+	u64 sq_db_mmap_key;
-+	u64 llq_desc_mmap_key;
-+	u64 rq_db_mmap_key;
-+	u64 rq_mmap_key;
-+
- 	u32 qp_handle;
- 	u32 max_send_wr;
- 	u32 max_recv_wr;
-@@ -116,6 +122,13 @@ struct efa_ah {
- 	u8 id[EFA_GID_SIZE];
+@@ -477,8 +477,8 @@ struct siw_qp {
+ 		u8 layer : 4, etype : 4;
+ 		u8 ecode;
+ 	} term_info;
+-	u32 xa_sq_index; /* mmap information for SQE array */
+-	u32 xa_rq_index; /* mmap information for RQE array */
++	u64 sq_key; /* mmap information for SQE array */
++	u64 rq_key; /* mmap information for RQE array */
+ 	struct rcu_head rcu;
  };
  
-+struct efa_user_mmap_entry {
+@@ -503,6 +503,12 @@ struct iwarp_msg_info {
+ 	int (*rx_data)(struct siw_qp *qp);
+ };
+ 
++struct siw_user_mmap_entry {
 +	struct rdma_user_mmap_entry rdma_entry;
 +	u64 address;
 +	u64 length;
-+	u8 mmap_flag;
 +};
 +
- int efa_query_device(struct ib_device *ibdev,
- 		     struct ib_device_attr *props,
- 		     struct ib_udata *udata);
-@@ -147,6 +160,7 @@ int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata);
- void efa_dealloc_ucontext(struct ib_ucontext *ibucontext);
- int efa_mmap(struct ib_ucontext *ibucontext,
- 	     struct vm_area_struct *vma);
-+void efa_mmap_free(struct rdma_user_mmap_entry *entry);
- int efa_create_ah(struct ib_ah *ibah,
- 		  struct rdma_ah_attr *ah_attr,
- 		  u32 flags,
-diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index 83858f7e83d0..0e3050d01b75 100644
---- a/drivers/infiniband/hw/efa/efa_main.c
-+++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -217,6 +217,7 @@ static const struct ib_device_ops efa_dev_ops = {
- 	.get_link_layer = efa_port_link_layer,
- 	.get_port_immutable = efa_get_port_immutable,
- 	.mmap = efa_mmap,
-+	.mmap_free = efa_mmap_free,
- 	.modify_qp = efa_modify_qp,
- 	.query_device = efa_query_device,
- 	.query_gid = efa_query_gid,
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 70851bd7f801..dde276acbd00 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -13,10 +13,6 @@
- 
- #include "efa.h"
- 
--#define EFA_MMAP_FLAG_SHIFT 56
--#define EFA_MMAP_PAGE_MASK GENMASK(EFA_MMAP_FLAG_SHIFT - 1, 0)
--#define EFA_MMAP_INVALID U64_MAX
--
- enum {
- 	EFA_MMAP_DMA_PAGE = 0,
- 	EFA_MMAP_IO_WC,
-@@ -27,20 +23,6 @@ enum {
- 	(BIT(EFA_ADMIN_FATAL_ERROR) | BIT(EFA_ADMIN_WARNING) | \
- 	 BIT(EFA_ADMIN_NOTIFICATION) | BIT(EFA_ADMIN_KEEP_ALIVE))
- 
--struct efa_mmap_entry {
--	void  *obj;
--	u64 address;
--	u64 length;
--	u32 mmap_page;
--	u8 mmap_flag;
--};
--
--static inline u64 get_mmap_key(const struct efa_mmap_entry *efa)
--{
--	return ((u64)efa->mmap_flag << EFA_MMAP_FLAG_SHIFT) |
--	       ((u64)efa->mmap_page << PAGE_SHIFT);
--}
--
- #define EFA_DEFINE_STATS(op) \
- 	op(EFA_TX_BYTES, "tx_bytes") \
- 	op(EFA_TX_PKTS, "tx_pkts") \
-@@ -147,6 +129,12 @@ static inline struct efa_ah *to_eah(struct ib_ah *ibah)
- 	return container_of(ibah, struct efa_ah, ibah);
+ /* Global siw parameters. Currently set in siw_main.c */
+ extern const bool zcopy_tx;
+ extern const bool try_gso;
+@@ -607,6 +613,12 @@ static inline struct siw_mr *to_siw_mr(struct ib_mr *base_mr)
+ 	return container_of(base_mr, struct siw_mr, base_mr);
  }
  
-+static inline struct efa_user_mmap_entry *
-+to_emmap(struct rdma_user_mmap_entry *rdma_mmap)
++static inline struct siw_user_mmap_entry *
++to_siw_mmap_entry(struct rdma_user_mmap_entry *rdma_mmap)
 +{
-+	return container_of(rdma_mmap, struct efa_user_mmap_entry, rdma_entry);
++	return container_of(rdma_mmap, struct siw_user_mmap_entry, rdma_entry);
 +}
 +
- #define field_avail(x, fld, sz) (offsetof(typeof(x), fld) + \
- 				 sizeof(((typeof(x) *)0)->fld) <= (sz))
- 
-@@ -172,106 +160,6 @@ static void *efa_zalloc_mapped(struct efa_dev *dev, dma_addr_t *dma_addr,
- 	return addr;
- }
- 
--/*
-- * This is only called when the ucontext is destroyed and there can be no
-- * concurrent query via mmap or allocate on the xarray, thus we can be sure no
-- * other thread is using the entry pointer. We also know that all the BAR
-- * pages have either been zap'd or munmaped at this point.  Normal pages are
-- * refcounted and will be freed at the proper time.
-- */
--static void mmap_entries_remove_free(struct efa_dev *dev,
--				     struct efa_ucontext *ucontext)
--{
--	struct efa_mmap_entry *entry;
--	unsigned long mmap_page;
--
--	xa_for_each(&ucontext->mmap_xa, mmap_page, entry) {
--		xa_erase(&ucontext->mmap_xa, mmap_page);
--
--		ibdev_dbg(
--			&dev->ibdev,
--			"mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx] removed\n",
--			entry->obj, get_mmap_key(entry), entry->address,
--			entry->length);
--		if (entry->mmap_flag == EFA_MMAP_DMA_PAGE)
--			/* DMA mapping is already gone, now free the pages */
--			free_pages_exact(phys_to_virt(entry->address),
--					 entry->length);
--		kfree(entry);
--	}
--}
--
--static struct efa_mmap_entry *mmap_entry_get(struct efa_dev *dev,
--					     struct efa_ucontext *ucontext,
--					     u64 key, u64 len)
--{
--	struct efa_mmap_entry *entry;
--	u64 mmap_page;
--
--	mmap_page = (key & EFA_MMAP_PAGE_MASK) >> PAGE_SHIFT;
--	if (mmap_page > U32_MAX)
--		return NULL;
--
--	entry = xa_load(&ucontext->mmap_xa, mmap_page);
--	if (!entry || get_mmap_key(entry) != key || entry->length != len)
--		return NULL;
--
--	ibdev_dbg(&dev->ibdev,
--		  "mmap: obj[0x%p] key[%#llx] addr[%#llx] len[%#llx] removed\n",
--		  entry->obj, key, entry->address, entry->length);
--
--	return entry;
--}
--
--/*
-- * Note this locking scheme cannot support removal of entries, except during
-- * ucontext destruction when the core code guarentees no concurrency.
-- */
--static u64 mmap_entry_insert(struct efa_dev *dev, struct efa_ucontext *ucontext,
--			     void *obj, u64 address, u64 length, u8 mmap_flag)
--{
--	struct efa_mmap_entry *entry;
--	u32 next_mmap_page;
--	int err;
--
--	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
--	if (!entry)
--		return EFA_MMAP_INVALID;
--
--	entry->obj = obj;
--	entry->address = address;
--	entry->length = length;
--	entry->mmap_flag = mmap_flag;
--
--	xa_lock(&ucontext->mmap_xa);
--	if (check_add_overflow(ucontext->mmap_xa_page,
--			       (u32)(length >> PAGE_SHIFT),
--			       &next_mmap_page))
--		goto err_unlock;
--
--	entry->mmap_page = ucontext->mmap_xa_page;
--	ucontext->mmap_xa_page = next_mmap_page;
--	err = __xa_insert(&ucontext->mmap_xa, entry->mmap_page, entry,
--			  GFP_KERNEL);
--	if (err)
--		goto err_unlock;
--
--	xa_unlock(&ucontext->mmap_xa);
--
--	ibdev_dbg(
--		&dev->ibdev,
--		"mmap: obj[0x%p] addr[%#llx], len[%#llx], key[%#llx] inserted\n",
--		entry->obj, entry->address, entry->length, get_mmap_key(entry));
--
--	return get_mmap_key(entry);
--
--err_unlock:
--	xa_unlock(&ucontext->mmap_xa);
--	kfree(entry);
--	return EFA_MMAP_INVALID;
--
--}
--
- int efa_query_device(struct ib_device *ibdev,
- 		     struct ib_device_attr *props,
- 		     struct ib_udata *udata)
-@@ -485,13 +373,28 @@ static int efa_destroy_qp_handle(struct efa_dev *dev, u32 qp_handle)
- 	return efa_com_destroy_qp(&dev->edev, &params);
- }
- 
-+static void efa_qp_user_mmap_entries_remove(struct efa_ucontext *ucontext,
-+					    struct efa_qp *qp)
-+{
-+	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->sq_db_mmap_key);
-+	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
-+				    qp->llq_desc_mmap_key);
-+	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->rq_mmap_key);
-+	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->rq_db_mmap_key);
-+}
-+
- int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ static inline struct siw_qp *siw_qp_id2obj(struct siw_device *sdev, int id)
  {
-+	struct efa_ucontext *ucontext = rdma_udata_to_drv_context(udata,
-+		struct efa_ucontext, ibucontext);
- 	struct efa_dev *dev = to_edev(ibqp->pd->device);
- 	struct efa_qp *qp = to_eqp(ibqp);
- 	int err;
+ 	struct siw_qp *qp;
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index 05a92f997f60..46c0bb59489d 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -298,6 +298,7 @@ static const struct ib_device_ops siw_device_ops = {
+ 	.iw_rem_ref = siw_qp_put_ref,
+ 	.map_mr_sg = siw_map_mr_sg,
+ 	.mmap = siw_mmap,
++	.mmap_free = siw_mmap_free,
+ 	.modify_qp = siw_verbs_modify_qp,
+ 	.modify_srq = siw_modify_srq,
+ 	.poll_cq = siw_poll_cq,
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index 03176a3d1e18..9e049241051e 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -34,44 +34,21 @@ static char ib_qp_state_to_string[IB_QPS_ERR + 1][sizeof("RESET")] = {
+ 	[IB_QPS_ERR] = "ERR"
+ };
  
- 	ibdev_dbg(&dev->ibdev, "Destroy qp[%u]\n", ibqp->qp_num);
-+
-+	efa_qp_user_mmap_entries_remove(ucontext, qp);
-+
- 	err = efa_destroy_qp_handle(dev, qp->qp_handle);
- 	if (err)
- 		return err;
-@@ -509,57 +412,114 @@ int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 	return 0;
+-static u32 siw_create_uobj(struct siw_ucontext *uctx, void *vaddr, u32 size)
++void siw_mmap_free(struct rdma_user_mmap_entry *rdma_entry)
+ {
+-	struct siw_uobj *uobj;
+-	struct xa_limit limit = XA_LIMIT(0, SIW_UOBJ_MAX_KEY);
+-	u32 key;
++	struct siw_user_mmap_entry *entry = to_siw_mmap_entry(rdma_entry);
+ 
+-	uobj = kzalloc(sizeof(*uobj), GFP_KERNEL);
+-	if (!uobj)
+-		return SIW_INVAL_UOBJ_KEY;
+-
+-	if (xa_alloc_cyclic(&uctx->xa, &key, uobj, limit, &uctx->uobj_nextkey,
+-			    GFP_KERNEL) < 0) {
+-		kfree(uobj);
+-		return SIW_INVAL_UOBJ_KEY;
+-	}
+-	uobj->size = PAGE_ALIGN(size);
+-	uobj->addr = vaddr;
+-
+-	return key;
+-}
+-
+-static struct siw_uobj *siw_get_uobj(struct siw_ucontext *uctx,
+-				     unsigned long off, u32 size)
+-{
+-	struct siw_uobj *uobj = xa_load(&uctx->xa, off);
+-
+-	if (uobj && uobj->size == size)
+-		return uobj;
+-
+-	return NULL;
++	vfree((void *)entry->address);
++	kfree(entry);
  }
  
-+static int efa_user_mmap_entry_insert(struct ib_ucontext *ucontext,
+ int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma)
+ {
+ 	struct siw_ucontext *uctx = to_siw_ctx(ctx);
+-	struct siw_uobj *uobj;
+-	unsigned long off = vma->vm_pgoff;
++	unsigned long off = vma->vm_pgoff << PAGE_SHIFT;
++	struct rdma_user_mmap_entry *rdma_entry;
+ 	int size = vma->vm_end - vma->vm_start;
++	struct siw_user_mmap_entry *entry;
+ 	int rv = -EINVAL;
+ 
+ 	/*
+@@ -81,15 +58,26 @@ int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma)
+ 		pr_warn("siw: mmap not page aligned\n");
+ 		goto out;
+ 	}
+-	uobj = siw_get_uobj(uctx, off, size);
+-	if (!uobj) {
++	rdma_entry = rdma_user_mmap_entry_get(&uctx->base_ucontext, off,
++					      size, vma);
++	if (!rdma_entry) {
+ 		siw_dbg(&uctx->sdev->base_dev, "mmap lookup failed: %lu, %u\n",
+ 			off, size);
+ 		goto out;
+ 	}
+-	rv = remap_vmalloc_range(vma, uobj->addr, 0);
+-	if (rv)
++	entry = to_siw_mmap_entry(rdma_entry);
++	if (entry->length != size) {
++		siw_dbg(&uctx->sdev->base_dev,
++			"key[%#lx] does not have valid length[%#x] expected[%#llx]\n",
++			off, size, entry->length);
++		return -EINVAL;
++	}
++
++	rv = remap_vmalloc_range(vma, (void *)entry->address, 0);
++	if (rv) {
+ 		pr_warn("remap_vmalloc_range failed: %lu, %u\n", off, size);
++		rdma_user_mmap_entry_put(&uctx->base_ucontext, rdma_entry);
++	}
+ out:
+ 	return rv;
+ }
+@@ -105,7 +93,7 @@ int siw_alloc_ucontext(struct ib_ucontext *base_ctx, struct ib_udata *udata)
+ 		rv = -ENOMEM;
+ 		goto err_out;
+ 	}
+-	xa_init_flags(&ctx->xa, XA_FLAGS_ALLOC);
++
+ 	ctx->uobj_nextkey = 0;
+ 	ctx->sdev = sdev;
+ 
+@@ -135,19 +123,7 @@ int siw_alloc_ucontext(struct ib_ucontext *base_ctx, struct ib_udata *udata)
+ void siw_dealloc_ucontext(struct ib_ucontext *base_ctx)
+ {
+ 	struct siw_ucontext *uctx = to_siw_ctx(base_ctx);
+-	void *entry;
+-	unsigned long index;
+ 
+-	/*
+-	 * Make sure all user mmap objects are gone. Since QP, CQ
+-	 * and SRQ destroy routines destroy related objects, nothing
+-	 * should be found here.
+-	 */
+-	xa_for_each(&uctx->xa, index, entry) {
+-		kfree(xa_erase(&uctx->xa, index));
+-		pr_warn("siw: dropping orphaned uobj at %lu\n", index);
+-	}
+-	xa_destroy(&uctx->xa);
+ 	atomic_dec(&uctx->sdev->num_ctx);
+ }
+ 
+@@ -293,6 +269,28 @@ void siw_qp_put_ref(struct ib_qp *base_qp)
+ 	siw_qp_put(to_siw_qp(base_qp));
+ }
+ 
++static int siw_user_mmap_entry_insert(struct ib_ucontext *ucontext,
 +				      u64 address, u64 length,
-+				      u8 mmap_flag, u64 *key)
++				      u64 *key)
 +{
-+	struct efa_user_mmap_entry *entry = kzalloc(sizeof(*entry), GFP_KERNEL);
++	struct siw_user_mmap_entry *entry = kzalloc(sizeof(*entry), GFP_KERNEL);
 +
 +	if (!entry)
 +		return -ENOMEM;
 +
 +	entry->address = address;
 +	entry->length = length;
-+	entry->mmap_flag = mmap_flag;
 +
 +	*key = rdma_user_mmap_entry_insert(ucontext, &entry->rdma_entry,
 +					   length);
@@ -350,341 +283,263 @@ index 70851bd7f801..dde276acbd00 100644
 +	return 0;
 +}
 +
-+static void efa_qp_init_keys(struct efa_qp *qp)
-+{
-+	qp->sq_db_mmap_key = RDMA_USER_MMAP_INVALID;
-+	qp->llq_desc_mmap_key = RDMA_USER_MMAP_INVALID;
-+	qp->rq_db_mmap_key = RDMA_USER_MMAP_INVALID;
-+	qp->rq_mmap_key = RDMA_USER_MMAP_INVALID;
-+}
-+
- static int qp_mmap_entries_setup(struct efa_qp *qp,
- 				 struct efa_dev *dev,
- 				 struct efa_ucontext *ucontext,
- 				 struct efa_com_create_qp_params *params,
- 				 struct efa_ibv_create_qp_resp *resp)
- {
--	/*
--	 * Once an entry is inserted it might be mmapped, hence cannot be
--	 * cleaned up until dealloc_ucontext.
--	 */
--	resp->sq_db_mmap_key =
--		mmap_entry_insert(dev, ucontext, qp,
--				  dev->db_bar_addr + resp->sq_db_offset,
--				  PAGE_SIZE, EFA_MMAP_IO_NC);
--	if (resp->sq_db_mmap_key == EFA_MMAP_INVALID)
--		return -ENOMEM;
-+	u64 address;
+ /*
+  * siw_create_qp()
+  *
+@@ -317,6 +315,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 	struct siw_cq *scq = NULL, *rcq = NULL;
+ 	unsigned long flags;
+ 	int num_sqe, num_rqe, rv = 0;
 +	u64 length;
-+	int err;
++	u64 key;
+ 
+ 	siw_dbg(base_dev, "create new QP\n");
+ 
+@@ -380,8 +380,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 	spin_lock_init(&qp->orq_lock);
+ 
+ 	qp->kernel_verbs = !udata;
+-	qp->xa_sq_index = SIW_INVAL_UOBJ_KEY;
+-	qp->xa_rq_index = SIW_INVAL_UOBJ_KEY;
++	qp->sq_key = RDMA_USER_MMAP_INVALID;
++	qp->rq_key = RDMA_USER_MMAP_INVALID;
+ 
+ 	rv = siw_qp_add(sdev, qp);
+ 	if (rv)
+@@ -459,26 +459,41 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 		uresp.qp_id = qp_id(qp);
+ 
+ 		if (qp->sendq) {
+-			qp->xa_sq_index =
+-				siw_create_uobj(uctx, qp->sendq,
+-					num_sqe * sizeof(struct siw_sqe));
++			length = num_sqe * sizeof(struct siw_sqe);
++			rv = siw_user_mmap_entry_insert(&uctx->base_ucontext,
++							(uintptr_t)qp->sendq,
++							length, &key);
++			if (!rv)
++				goto err_out_xa;
 +
-+	err = efa_user_mmap_entry_insert(&ucontext->ibucontext,
-+					 dev->db_bar_addr +
-+					 resp->sq_db_offset,
-+					 PAGE_SIZE, EFA_MMAP_IO_NC,
-+					 &qp->sq_db_mmap_key);
-+	if (err)
-+		return err;
- 
-+	resp->sq_db_mmap_key = qp->sq_db_mmap_key;
- 	resp->sq_db_offset &= ~PAGE_MASK;
- 
--	resp->llq_desc_mmap_key =
--		mmap_entry_insert(dev, ucontext, qp,
--				  dev->mem_bar_addr + resp->llq_desc_offset,
--				  PAGE_ALIGN(params->sq_ring_size_in_bytes +
--					     (resp->llq_desc_offset & ~PAGE_MASK)),
--				  EFA_MMAP_IO_WC);
--	if (resp->llq_desc_mmap_key == EFA_MMAP_INVALID)
--		return -ENOMEM;
-+	address = dev->mem_bar_addr + resp->llq_desc_offset;
-+	length = PAGE_ALIGN(params->sq_ring_size_in_bytes +
-+			    (resp->llq_desc_offset & ~PAGE_MASK));
-+
-+	err = efa_user_mmap_entry_insert(&ucontext->ibucontext,
-+					 address,
-+					 length,
-+					 EFA_MMAP_IO_WC,
-+					 &qp->llq_desc_mmap_key);
-+	if (err)
-+		goto err1;
- 
-+	resp->llq_desc_mmap_key = qp->llq_desc_mmap_key;
- 	resp->llq_desc_offset &= ~PAGE_MASK;
- 
- 	if (qp->rq_size) {
--		resp->rq_db_mmap_key =
--			mmap_entry_insert(dev, ucontext, qp,
--					  dev->db_bar_addr + resp->rq_db_offset,
--					  PAGE_SIZE, EFA_MMAP_IO_NC);
--		if (resp->rq_db_mmap_key == EFA_MMAP_INVALID)
--			return -ENOMEM;
-+		address = dev->db_bar_addr + resp->rq_db_offset;
- 
-+		err = efa_user_mmap_entry_insert(&ucontext->ibucontext,
-+						 address, PAGE_SIZE,
-+						 EFA_MMAP_IO_NC,
-+						 &qp->rq_db_mmap_key);
-+		if (err)
-+			goto err2;
-+
-+		resp->rq_db_mmap_key = qp->rq_db_mmap_key;
- 		resp->rq_db_offset &= ~PAGE_MASK;
- 
--		resp->rq_mmap_key =
--			mmap_entry_insert(dev, ucontext, qp,
--					  virt_to_phys(qp->rq_cpu_addr),
--					  qp->rq_size, EFA_MMAP_DMA_PAGE);
--		if (resp->rq_mmap_key == EFA_MMAP_INVALID)
--			return -ENOMEM;
-+		address = virt_to_phys(qp->rq_cpu_addr);
-+		err = efa_user_mmap_entry_insert(&ucontext->ibucontext,
-+						 address, qp->rq_size,
-+						 EFA_MMAP_DMA_PAGE,
-+						 &qp->rq_mmap_key);
-+		if (err)
-+			goto err3;
- 
-+		resp->rq_mmap_key = qp->rq_mmap_key;
- 		resp->rq_mmap_size = qp->rq_size;
- 	}
- 
- 	return 0;
-+
-+err3:
-+	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->rq_db_mmap_key);
-+
-+err2:
-+	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
-+				    qp->llq_desc_mmap_key);
-+
-+err1:
-+	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->sq_db_mmap_key);
-+
-+	/* If any error occurred, we init the keys back to invalid */
-+	efa_qp_init_keys(qp);
-+
-+	return err;
- }
- 
- static int efa_qp_validate_cap(struct efa_dev *dev,
-@@ -634,7 +594,6 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
- 	struct efa_dev *dev = to_edev(ibpd->device);
- 	struct efa_ibv_create_qp_resp resp = {};
- 	struct efa_ibv_create_qp cmd = {};
--	bool rq_entry_inserted = false;
- 	struct efa_ucontext *ucontext;
- 	struct efa_qp *qp;
- 	int err;
-@@ -687,6 +646,7 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
- 		goto err_out;
- 	}
- 
-+	efa_qp_init_keys(qp);
- 	create_qp_params.uarn = ucontext->uarn;
- 	create_qp_params.pd = to_epd(ibpd)->pdn;
- 
-@@ -742,7 +702,6 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
- 	if (err)
- 		goto err_destroy_qp;
- 
--	rq_entry_inserted = true;
- 	qp->qp_handle = create_qp_resp.qp_handle;
- 	qp->ibqp.qp_num = create_qp_resp.qp_num;
- 	qp->ibqp.qp_type = init_attr->qp_type;
-@@ -759,7 +718,7 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
- 			ibdev_dbg(&dev->ibdev,
- 				  "Failed to copy udata for qp[%u]\n",
- 				  create_qp_resp.qp_num);
--			goto err_destroy_qp;
-+			goto err_remove_mmap_entries;
++			/* If entry was inserted successfully, qp->sendq
++			 * will be freed by siw_mmap_free
++			 */
++			qp->sendq = NULL;
++			qp->sq_key = key;
  		}
- 	}
- 
-@@ -767,15 +726,17 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
- 
- 	return &qp->ibqp;
- 
-+err_remove_mmap_entries:
-+	efa_qp_user_mmap_entries_remove(ucontext, qp);
- err_destroy_qp:
- 	efa_destroy_qp_handle(dev, create_qp_resp.qp_handle);
- err_free_mapped:
--	if (qp->rq_size) {
-+	if (qp->rq_dma_addr)
- 		dma_unmap_single(&dev->pdev->dev, qp->rq_dma_addr, qp->rq_size,
- 				 DMA_TO_DEVICE);
--		if (!rq_entry_inserted)
--			free_pages_exact(qp->rq_cpu_addr, qp->rq_size);
--	}
 +
-+	if (qp->rq_mmap_key == RDMA_USER_MMAP_INVALID)
-+		free_pages_exact(qp->rq_cpu_addr, qp->rq_size);
- err_free_qp:
- 	kfree(qp);
- err_out:
-@@ -887,6 +848,7 @@ static int efa_destroy_cq_idx(struct efa_dev *dev, int cq_idx)
- 
- void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- {
-+	struct efa_ucontext *ucontext;
- 	struct efa_dev *dev = to_edev(ibcq->device);
- 	struct efa_cq *cq = to_ecq(ibcq);
- 
-@@ -894,20 +856,33 @@ void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- 		  "Destroy cq[%d] virt[0x%p] freed: size[%lu], dma[%pad]\n",
- 		  cq->cq_idx, cq->cpu_addr, cq->size, &cq->dma_addr);
- 
-+	ucontext = rdma_udata_to_drv_context(udata, struct efa_ucontext,
-+					     ibucontext);
- 	efa_destroy_cq_idx(dev, cq->cq_idx);
- 	dma_unmap_single(&dev->pdev->dev, cq->dma_addr, cq->size,
- 			 DMA_FROM_DEVICE);
-+	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
-+				    cq->mmap_key);
- }
- 
- static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
- 				 struct efa_ibv_create_cq_resp *resp)
- {
-+	struct efa_ucontext *ucontext = cq->ucontext;
-+	int err;
+ 		if (qp->recvq) {
+-			qp->xa_rq_index =
+-				 siw_create_uobj(uctx, qp->recvq,
+-					num_rqe * sizeof(struct siw_rqe));
+-		}
+-		if (qp->xa_sq_index == SIW_INVAL_UOBJ_KEY ||
+-		    qp->xa_rq_index == SIW_INVAL_UOBJ_KEY) {
+-			rv = -ENOMEM;
+-			goto err_out_xa;
++			length = num_rqe * sizeof(struct siw_rqe);
++			rv = siw_user_mmap_entry_insert(&uctx->base_ucontext,
++							(uintptr_t)qp->recvq,
++							length, &key);
++			if (!rv)
++				goto err_out_mmap_rem;
 +
- 	resp->q_mmap_size = cq->size;
--	resp->q_mmap_key = mmap_entry_insert(dev, cq->ucontext, cq,
--					     virt_to_phys(cq->cpu_addr),
--					     cq->size, EFA_MMAP_DMA_PAGE);
--	if (resp->q_mmap_key == EFA_MMAP_INVALID)
--		return -ENOMEM;
++			/* If entry was inserted successfully, qp->recvq will
++			 * be freed by siw_mmap_free
++			 */
++			qp->recvq = NULL;
++			qp->rq_key = key;
+ 		}
+-		uresp.sq_key = qp->xa_sq_index << PAGE_SHIFT;
+-		uresp.rq_key = qp->xa_rq_index << PAGE_SHIFT;
 +
-+	err = efa_user_mmap_entry_insert(&ucontext->ibucontext,
-+					 virt_to_phys(cq->cpu_addr),
-+					 cq->size, EFA_MMAP_DMA_PAGE,
-+					 &cq->mmap_key);
-+	if (err) {
-+		cq->mmap_key = RDMA_USER_MMAP_INVALID;
-+		return err;
++		uresp.sq_key = qp->sq_key;
++		uresp.rq_key = qp->rq_key;
+ 
+ 		if (udata->outlen < sizeof(uresp)) {
+ 			rv = -EINVAL;
+-			goto err_out_xa;
++			goto err_out_mmap_rem;
+ 		}
+ 		rv = ib_copy_to_udata(udata, &uresp, sizeof(uresp));
+ 		if (rv)
+@@ -496,21 +511,23 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 
+ 	return qp->ib_qp;
+ 
++err_out_mmap_rem:
++	if (udata) {
++		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->sq_key);
++		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->rq_key);
 +	}
 +
-+	resp->q_mmap_key = cq->mmap_key;
+ err_out_xa:
+ 	xa_erase(&sdev->qp_xa, qp_id(qp));
+ err_out:
+ 	kfree(siw_base_qp);
  
- 	return 0;
- }
-@@ -924,7 +899,6 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	struct efa_dev *dev = to_edev(ibdev);
- 	struct efa_ibv_create_cq cmd = {};
- 	struct efa_cq *cq = to_ecq(ibcq);
--	bool cq_entry_inserted = false;
- 	int entries = attr->cqe;
- 	int err;
- 
-@@ -1013,15 +987,13 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 		goto err_destroy_cq;
- 	}
- 
--	cq_entry_inserted = true;
+ 	if (qp) {
+-		if (qp->xa_sq_index != SIW_INVAL_UOBJ_KEY)
+-			kfree(xa_erase(&uctx->xa, qp->xa_sq_index));
+-		if (qp->xa_rq_index != SIW_INVAL_UOBJ_KEY)
+-			kfree(xa_erase(&uctx->xa, qp->xa_rq_index));
 -
- 	if (udata->outlen) {
- 		err = ib_copy_to_udata(udata, &resp,
- 				       min(sizeof(resp), udata->outlen));
- 		if (err) {
- 			ibdev_dbg(ibdev,
- 				  "Failed to copy udata for create_cq\n");
--			goto err_destroy_cq;
-+			goto err_remove_mmap;
- 		}
+ 		vfree(qp->sendq);
+ 		vfree(qp->recvq);
+ 		kfree(qp);
  	}
- 
-@@ -1030,13 +1002,16 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 
- 	return 0;
- 
-+err_remove_mmap:
-+	rdma_user_mmap_entry_remove(&ucontext->ibucontext, cq->mmap_key);
- err_destroy_cq:
- 	efa_destroy_cq_idx(dev, cq->cq_idx);
- err_free_mapped:
- 	dma_unmap_single(&dev->pdev->dev, cq->dma_addr, cq->size,
- 			 DMA_FROM_DEVICE);
--	if (!cq_entry_inserted)
-+	if (cq->mmap_key == RDMA_USER_MMAP_INVALID)
- 		free_pages_exact(cq->cpu_addr, cq->size);
 +
- err_out:
- 	atomic64_inc(&dev->stats.sw_stats.create_cq_err);
- 	return err;
-@@ -1558,7 +1533,6 @@ int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata)
- 		goto err_out;
+ 	atomic_dec(&sdev->num_qp);
  
- 	ucontext->uarn = result.uarn;
--	xa_init(&ucontext->mmap_xa);
+ 	return ERR_PTR(rv);
+@@ -620,10 +637,10 @@ int siw_destroy_qp(struct ib_qp *base_qp, struct ib_udata *udata)
+ 	qp->attrs.flags |= SIW_QP_IN_DESTROY;
+ 	qp->rx_stream.rx_suspend = 1;
  
- 	resp.cmds_supp_udata_mask |= EFA_USER_CMDS_SUPP_UDATA_QUERY_DEVICE;
- 	resp.cmds_supp_udata_mask |= EFA_USER_CMDS_SUPP_UDATA_CREATE_AH;
-@@ -1587,28 +1561,47 @@ void efa_dealloc_ucontext(struct ib_ucontext *ibucontext)
- 	struct efa_ucontext *ucontext = to_eucontext(ibucontext);
- 	struct efa_dev *dev = to_edev(ibucontext->device);
- 
--	mmap_entries_remove_free(dev, ucontext);
- 	efa_dealloc_uar(dev, ucontext->uarn);
- }
- 
-+void efa_mmap_free(struct rdma_user_mmap_entry *rdma_entry)
-+{
-+	struct efa_user_mmap_entry *entry = to_emmap(rdma_entry);
-+
-+	/* DMA mapping is already gone, now free the pages */
-+	if (entry->mmap_flag == EFA_MMAP_DMA_PAGE)
-+		free_pages_exact(phys_to_virt(entry->address),
-+				 entry->length);
-+	kfree(entry);
-+}
-+
- static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
- 		      struct vm_area_struct *vma, u64 key, u64 length)
- {
--	struct efa_mmap_entry *entry;
-+	struct rdma_user_mmap_entry *rdma_entry;
-+	struct efa_user_mmap_entry *entry;
- 	unsigned long va;
- 	u64 pfn;
- 	int err;
- 
--	entry = mmap_entry_get(dev, ucontext, key, length);
--	if (!entry) {
-+	rdma_entry = rdma_user_mmap_entry_get(&ucontext->ibucontext, key,
-+					      length, vma);
-+	if (!rdma_entry) {
- 		ibdev_dbg(&dev->ibdev, "key[%#llx] does not have valid entry\n",
- 			  key);
- 		return -EINVAL;
- 	}
-+	entry = to_emmap(rdma_entry);
-+	if (entry->length != length) {
-+		ibdev_dbg(&dev->ibdev,
-+			  "key[%#llx] does not have valid length[%#llx] expected[%#llx]\n",
-+			  key, length, entry->length);
-+		return -EINVAL;
+-	if (uctx && qp->xa_sq_index != SIW_INVAL_UOBJ_KEY)
+-		kfree(xa_erase(&uctx->xa, qp->xa_sq_index));
+-	if (uctx && qp->xa_rq_index != SIW_INVAL_UOBJ_KEY)
+-		kfree(xa_erase(&uctx->xa, qp->xa_rq_index));
++	if (uctx) {
++		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->sq_key);
++		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->rq_key);
 +	}
  
- 	ibdev_dbg(&dev->ibdev,
- 		  "Mapping address[%#llx], length[%#llx], mmap_flag[%d]\n",
--		  entry->address, length, entry->mmap_flag);
-+		  entry->address, entry->length, entry->mmap_flag);
+ 	down_write(&qp->state_lock);
  
- 	pfn = entry->address >> PAGE_SHIFT;
- 	switch (entry->mmap_flag) {
-@@ -1637,6 +1630,10 @@ static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
- 			&dev->ibdev,
- 			"Couldn't mmap address[%#llx] length[%#llx] mmap_flag[%d] err[%d]\n",
- 			entry->address, length, entry->mmap_flag, err);
+@@ -993,8 +1010,8 @@ void siw_destroy_cq(struct ib_cq *base_cq, struct ib_udata *udata)
+ 
+ 	siw_cq_flush(cq);
+ 
+-	if (ctx && cq->xa_cq_index != SIW_INVAL_UOBJ_KEY)
+-		kfree(xa_erase(&ctx->xa, cq->xa_cq_index));
++	if (ctx)
++		rdma_user_mmap_entry_remove(&ctx->base_ucontext, cq->cq_key);
+ 
+ 	atomic_dec(&sdev->num_cq);
+ 
+@@ -1031,7 +1048,7 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+ 	size = roundup_pow_of_two(size);
+ 	cq->base_cq.cqe = size;
+ 	cq->num_cqe = size;
+-	cq->xa_cq_index = SIW_INVAL_UOBJ_KEY;
++	cq->cq_key = RDMA_USER_MMAP_INVALID;
+ 
+ 	if (!udata) {
+ 		cq->kernel_verbs = 1;
+@@ -1057,16 +1074,21 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+ 		struct siw_ucontext *ctx =
+ 			rdma_udata_to_drv_context(udata, struct siw_ucontext,
+ 						  base_ucontext);
++		u64 length = size * sizeof(struct siw_cqe) +
++			     sizeof(struct siw_cq_ctrl);
+ 
+-		cq->xa_cq_index =
+-			siw_create_uobj(ctx, cq->queue,
+-					size * sizeof(struct siw_cqe) +
+-						sizeof(struct siw_cq_ctrl));
+-		if (cq->xa_cq_index == SIW_INVAL_UOBJ_KEY) {
+-			rv = -ENOMEM;
++		rv = siw_user_mmap_entry_insert(&ctx->base_ucontext,
++						(uintptr_t)cq->queue,
++						length, &cq->cq_key);
++		if (!rv)
+ 			goto err_out;
+-		}
+-		uresp.cq_key = cq->xa_cq_index << PAGE_SHIFT;
 +
-+		rdma_user_mmap_entry_put(&ucontext->ibucontext,
-+					 rdma_entry);
++		/* If entry was inserted successfully, cq->queue will be freed
++		 * by siw_mmap_free
++		 */
++		cq->queue = NULL;
 +
- 		return err;
++		uresp.cq_key = cq->cq_key;
+ 		uresp.cq_id = cq->id;
+ 		uresp.num_cqe = size;
+ 
+@@ -1087,8 +1109,9 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+ 		struct siw_ucontext *ctx =
+ 			rdma_udata_to_drv_context(udata, struct siw_ucontext,
+ 						  base_ucontext);
+-		if (cq->xa_cq_index != SIW_INVAL_UOBJ_KEY)
+-			kfree(xa_erase(&ctx->xa, cq->xa_cq_index));
++		if (udata)
++			rdma_user_mmap_entry_remove(&ctx->base_ucontext,
++						    cq->cq_key);
+ 		vfree(cq->queue);
  	}
+ 	atomic_dec(&sdev->num_cq);
+@@ -1490,7 +1513,7 @@ int siw_create_srq(struct ib_srq *base_srq,
+ 	}
+ 	srq->max_sge = attrs->max_sge;
+ 	srq->num_rqe = roundup_pow_of_two(attrs->max_wr);
+-	srq->xa_srq_index = SIW_INVAL_UOBJ_KEY;
++	srq->srq_key = RDMA_USER_MMAP_INVALID;
+ 	srq->limit = attrs->srq_limit;
+ 	if (srq->limit)
+ 		srq->armed = 1;
+@@ -1509,15 +1532,19 @@ int siw_create_srq(struct ib_srq *base_srq,
+ 	}
+ 	if (udata) {
+ 		struct siw_uresp_create_srq uresp = {};
++		u64 length = srq->num_rqe * sizeof(struct siw_rqe);
  
+-		srq->xa_srq_index = siw_create_uobj(
+-			ctx, srq->recvq, srq->num_rqe * sizeof(struct siw_rqe));
+-
+-		if (srq->xa_srq_index == SIW_INVAL_UOBJ_KEY) {
+-			rv = -ENOMEM;
++		rv = siw_user_mmap_entry_insert(&ctx->base_ucontext,
++						(uintptr_t)srq->recvq,
++						length, &srq->srq_key);
++		if (!rv)
+ 			goto err_out;
+-		}
+-		uresp.srq_key = srq->xa_srq_index;
++
++		/* If entry was inserted successfully, srq->recvq will be freed
++		 * by siw_mmap_free
++		 */
++		srq->recvq = NULL;
++		uresp.srq_key = srq->srq_key;
+ 		uresp.num_rqe = srq->num_rqe;
+ 
+ 		if (udata->outlen < sizeof(uresp)) {
+@@ -1536,8 +1563,9 @@ int siw_create_srq(struct ib_srq *base_srq,
+ 
+ err_out:
+ 	if (srq->recvq) {
+-		if (ctx && srq->xa_srq_index != SIW_INVAL_UOBJ_KEY)
+-			kfree(xa_erase(&ctx->xa, srq->xa_srq_index));
++		if (udata)
++			rdma_user_mmap_entry_remove(&ctx->base_ucontext,
++						    srq->srq_key);
+ 		vfree(srq->recvq);
+ 	}
+ 	atomic_dec(&sdev->num_srq);
+@@ -1623,8 +1651,9 @@ void siw_destroy_srq(struct ib_srq *base_srq, struct ib_udata *udata)
+ 		rdma_udata_to_drv_context(udata, struct siw_ucontext,
+ 					  base_ucontext);
+ 
+-	if (ctx && srq->xa_srq_index != SIW_INVAL_UOBJ_KEY)
+-		kfree(xa_erase(&ctx->xa, srq->xa_srq_index));
++	if (ctx)
++		rdma_user_mmap_entry_remove(&ctx->base_ucontext,
++					    srq->srq_key);
+ 
+ 	vfree(srq->recvq);
+ 	atomic_dec(&sdev->num_srq);
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.h b/drivers/infiniband/sw/siw/siw_verbs.h
+index 1910869281cb..1a731989fad6 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.h
++++ b/drivers/infiniband/sw/siw/siw_verbs.h
+@@ -83,6 +83,7 @@ void siw_destroy_srq(struct ib_srq *base_srq, struct ib_udata *udata);
+ int siw_post_srq_recv(struct ib_srq *base_srq, const struct ib_recv_wr *wr,
+ 		      const struct ib_recv_wr **bad_wr);
+ int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma);
++void siw_mmap_free(struct rdma_user_mmap_entry *rdma_entry);
+ void siw_qp_event(struct siw_qp *qp, enum ib_event_type type);
+ void siw_cq_event(struct siw_cq *cq, enum ib_event_type type);
+ void siw_srq_event(struct siw_srq *srq, enum ib_event_type type);
 -- 
 2.14.5
 
