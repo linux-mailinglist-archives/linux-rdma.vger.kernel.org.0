@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A080CA03A9
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 15:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACF7A03C2
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 15:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbfH1Nsg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Aug 2019 09:48:36 -0400
-Received: from mail-eopbgr130059.outbound.protection.outlook.com ([40.107.13.59]:50318
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        id S1726382AbfH1NxS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Aug 2019 09:53:18 -0400
+Received: from mail-eopbgr20067.outbound.protection.outlook.com ([40.107.2.67]:2877
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726407AbfH1Nsg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 28 Aug 2019 09:48:36 -0400
+        id S1726368AbfH1NxR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 28 Aug 2019 09:53:17 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MLP7LHXRGJO9sJMMgaKEBPG7hSOm7qWlgvJ3IyOINXLL8WPccAH9qkpJEiQexHC1bQD7rRcu4QJFFros7Y4mW0nZo5Riuh92+RMb3snZUShArDCrmXYDQacOh0rqQYcslZedJJ8NS4QkK4zD7oVMQcHAuUduzg9gENt+zQRIxfPwjDD4/5jZRy4ChQmqk1BXAbtIyqQ713UKwtuV0Vn1SRM6TOtYUWEuZly2m0kLbwX9QeBpC8oMlRNPpdd6eRN33/gdjBrOKRtAqHs3Y36eBwe71puwZsgzw9Z1hJzKxPJtmL6h1JOPtg8nIelEp2Nu9YGlAwi4/X3mmm13JXekUQ==
+ b=TFnXwdSXGm6q8jFHribJI1Rzr9tqo4FXsyv/Ukv5YSgck4YO6oAEDSy24J0QEl0MTdhXQWmvHMK0xCtkU5riwM8aALji3znPWr/brcmf2xH7mrGZccML3rxj9+vtSKJ8sFIljMxvgsC2De5AIBW9AhhjpshIGwfdFkgBqjUN/DUMtJacQE3YOW/EwKXIaUX/9MCQYPUhGVrs59IdH0nvcs9nyDiQSmly7AH395Pnp+mw7jnE8IRsOruPvylXujuDptAgbmprIkeC7H2ljd5KxUX6wVBjjmuEw4IYVHS72zaGQeVcDGSrI+UttO3YO9ohAC9NjI3sRdFGpsaZcu17UA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2vGJDNZv8MsE7urt8kTwKSfsD0OQedtkckdMwSSimTI=;
- b=ToyW0xQ4nkyjuoZ5iOl6/gnnatv4d/jmuYyBm0w8UxmT1pq3yL8AD51xzcbU6UhOowxEEKlLZo9IwAWUAmO85beHdRekPuKqrHDl2lUdInyruVBbsEYVNMC+phV0+lpjI3PhOrTenws+6YGjTA2//jfv4hXvj3VLgGreQZOyNI07H13m1eDQsGCHf1jzEcWVjWmtdtxUpzxjWICwvK1/+48whTNJg9lqFPMnZuS24s1ohUJb16BaezLjgSRreikzjxARucuae+UlWAAtCB+SUgrY7bCmkxdaZc26rbMeks5E4eO4DBBLLCHT/xfOFwKR++/7RZUfh5HVkS+xCkr5ig==
+ bh=UbX1BM+IyVhg1I7J9XYA2aKzXxw/bWf7aUAtjk4rxo4=;
+ b=VbROHUN4yTQKhEyuQhDP/wj7gqsTGJhvIvBldq1y5rOh49xA1cJL7oYK6qhixvlnxyDvEhKJ8wp2YUqIJvkZO/hQOzUKFco+fxq7p6ZiHKRmK51Iq6Au2hWIW8bqZ/pJU7+Eft94rm8XLJUW+Ec2RTyXhSbCZ1OTHgFp3GLdvv+j5tyG1XrvbJeG1uPVGT/q2yAtjVGiQdI5rq/waUNGMJVw/r/+vPps3WOHIalJf80tWRG0fePzhJLwkKJh4FOqN4qY34N+1N88wfc+/V+hGmg+VcDtv2EgchNRHNr4XfBBzwyG/Bnx/mXGkqRv/KSyuuobmi1OlFkqp67ByRNLcA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2vGJDNZv8MsE7urt8kTwKSfsD0OQedtkckdMwSSimTI=;
- b=prpYkV0iTfCVvlTNISs8hyVoRqgSbsi6raB24UvFP+yDmoUm/UpuR5ZqXxfgTgih3g21abocLviyfHTSZ0bTcdlCYoTT9B6iPoO3bLVDF+1VvQKsdfg6lCBEqvO9pcnHOkh8Kf5PD+1Aqkv41VaOgObiOdB4C0rauZXGmsdQQzQ=
+ bh=UbX1BM+IyVhg1I7J9XYA2aKzXxw/bWf7aUAtjk4rxo4=;
+ b=HwNGdyisn02sCYuEqhtSpQZgkulviFa9Tcggg6Ucp7rOExkFECN8j2FyvvdAS0OyrH98mt5hXqvw1j8h6BiByoR3iG7fY2VXnwnLiePwnU6nYCj+Y4VjiOfqsVepK1Bw9fnsPZJz1NYYmRMJ1SB5p07AfjTMuo13KVzRdwch9E0=
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB4190.eurprd05.prod.outlook.com (10.171.183.16) with Microsoft SMTP
+ VI1PR05MB6045.eurprd05.prod.outlook.com (20.178.204.11) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2199.19; Wed, 28 Aug 2019 13:48:23 +0000
+ 15.20.2199.19; Wed, 28 Aug 2019 13:53:12 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::1d6:9c67:ea2d:38a7]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::1d6:9c67:ea2d:38a7%6]) with mapi id 15.20.2199.021; Wed, 28 Aug 2019
- 13:48:23 +0000
+ 13:53:12 +0000
 From:   Jason Gunthorpe <jgg@mellanox.com>
 To:     Yuval Shaia <yuval.shaia@oracle.com>
 CC:     "dledford@redhat.com" <dledford@redhat.com>,
@@ -56,137 +56,87 @@ CC:     "dledford@redhat.com" <dledford@redhat.com>,
         "will@kernel.org" <will@kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "srabinov7@gmail.com" <srabinov7@gmail.com>,
-        "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>
-Subject: Re: [PATCH v1 4/5] IB/core: ib_mr should not have ib_uobject pointer
-Thread-Topic: [PATCH v1 4/5] IB/core: ib_mr should not have ib_uobject pointer
-Thread-Index: AQHVXYFCn5THWXrmTkW4xFnRRwvM96cQk3qA
-Date:   Wed, 28 Aug 2019 13:48:23 +0000
-Message-ID: <20190828134817.GG914@mellanox.com>
+        "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Subject: Re: [PATCH v1 5/5] RDMA/nldev: ib_pd can be pointed by multiple
+ ib_ucontext
+Thread-Topic: [PATCH v1 5/5] RDMA/nldev: ib_pd can be pointed by multiple
+ ib_ucontext
+Thread-Index: AQHVXYFEn/7D2acVzkGMw1QsYEJ+MqcQlNSA
+Date:   Wed, 28 Aug 2019 13:53:12 +0000
+Message-ID: <20190828135307.GH914@mellanox.com>
 References: <20190828091533.3129-1-yuval.shaia@oracle.com>
- <20190828091533.3129-5-yuval.shaia@oracle.com>
-In-Reply-To: <20190828091533.3129-5-yuval.shaia@oracle.com>
+ <20190828091533.3129-6-yuval.shaia@oracle.com>
+In-Reply-To: <20190828091533.3129-6-yuval.shaia@oracle.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: YTXPR0101CA0010.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00::23) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
+x-clientproxiedby: YT1PR01CA0016.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::29)
+ To VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:4d::16)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [142.167.216.168]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: be701bd1-9119-425a-931b-08d72bbe64cf
+x-ms-office365-filtering-correlation-id: ee1d2438-5e7e-4f4d-ae32-08d72bbf1133
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4190;
-x-ms-traffictypediagnostic: VI1PR05MB4190:
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6045;
+x-ms-traffictypediagnostic: VI1PR05MB6045:
 x-ld-processed: a652971c-7d2e-4d9b-a6a4-d149256f461b,ExtAddr
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB41909A7E7FA665848BFAC981CFA30@VI1PR05MB4190.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:289;
+x-microsoft-antispam-prvs: <VI1PR05MB60459693650BBB8A9F130ABFCFA30@VI1PR05MB6045.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
 x-forefront-prvs: 014304E855
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(366004)(396003)(376002)(136003)(39860400002)(199004)(189003)(66946007)(229853002)(54906003)(316002)(81166006)(256004)(446003)(81156014)(36756003)(64756008)(1076003)(33656002)(305945005)(478600001)(186003)(26005)(66556008)(66446008)(8676002)(86362001)(7736002)(71190400001)(8936002)(386003)(6506007)(14444005)(71200400001)(102836004)(11346002)(4326008)(6116002)(25786009)(6246003)(2906002)(66476007)(6512007)(99286004)(53936002)(14454004)(476003)(66066001)(52116002)(486006)(7416002)(6486002)(6436002)(6916009)(2616005)(3846002)(5660300002)(76176011);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4190;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(376002)(39860400002)(396003)(366004)(136003)(189003)(199004)(8936002)(446003)(478600001)(6512007)(2906002)(229853002)(54906003)(11346002)(316002)(71190400001)(52116002)(4744005)(71200400001)(2616005)(6246003)(81156014)(102836004)(476003)(7736002)(6916009)(3846002)(256004)(81166006)(36756003)(186003)(386003)(99286004)(76176011)(6506007)(26005)(305945005)(66556008)(25786009)(1076003)(4326008)(8676002)(66946007)(7416002)(5660300002)(33656002)(6116002)(66476007)(64756008)(6436002)(486006)(6486002)(66066001)(86362001)(53936002)(66446008)(14454004);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6045;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: I+ufocYL4krwCqykZWBgqUnpkjm1Kfm2UAW0WEcRgWbb91ieyGaoySbXzgA6PBKpG+9qPujmuHAVCk1lZdjszt4i8DknNSHlA2vHbF3POYnn+e3rxMlmztucMpwlGei3xNnkGVbxk6HEZaSbOqHzPeuB4HtyYNXb+N0jZZwE9qoXLO4l5adcm6Za01lwuvT57GH1v3PMvlLzcgl/46JsKPsazz6bG8TiZtqVJvZKUgNoN3KzfGSWxDLOTXrrs/5OJR3Xq6JF+dCJi+CUB63b4mcj1IMpJQQJx8eglmhDoDuUXsZLdEBPEK+IpBW0z2YI8iymobZRxWdRz6KY/uBTZdzfiEr+NJzaK3nZg/VL2BxMsZ4BLZFQ7IlAZJEYnYAQz2lZgzq4GD8zyLm0Q2bQxy3sAgA1NSPy/quBHi0xA9k=
+x-microsoft-antispam-message-info: Sc5btlhLB5I4Azyqrw7ulY0MzXH+N2VDMUVV5V34lGifmZTpY82utr/+2IVo/c3WH5wtI3ZTsav5q4Ew9pKWX7TFYTcH9J8/oudSSPMh4BIbXlkqmkeid8Ig9hcLgmFT/BpKanRrgLjcotWhf9+Bf6Gi/2UdJ1pJ4dBSRlJUMxhku4E4BOOnpgAkTejvY7JZJkOOhUUU9TO279cb34D9UmTsuFrubyMZyLxGb7j227gHBm4zqiUCqsSWlkUESLWVI2Oq4JA19+vfLD8VdRrCA91oImVwNZ8y9+o99puGpRQvJUuuqXn3kYeiYUgIoH8h6/mhozSCpdUuVyinvmAblyEe1bC2j1woo9P36VrjByHYUImiyo3CKnPm2d4yQis8JRIIXz8nrC77YAj9N68eqemu/Jo1erysiFI4KCmBo1E=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E44908765E3FDA4C96983D857A5A245B@eurprd05.prod.outlook.com>
+Content-ID: <0A21518F4F0EC74ABB1049D5F62FF112@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: be701bd1-9119-425a-931b-08d72bbe64cf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2019 13:48:23.6167
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee1d2438-5e7e-4f4d-ae32-08d72bbf1133
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2019 13:53:12.6830
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: a38N0W3Npx+UakXCM7PMu3rmMi+0XtcLqnRjMtHudmg7IVmi9ktp61gN2ilQ2N6vwqb5aOU+PPbNuzt6gRcbzg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4190
+X-MS-Exchange-CrossTenant-userprincipalname: rWGNv3BnEIhMatPc8pStRF9btd5oK+pCgnTMvxzmQ1bBgqQNrHnLvqXRn23Sx1ND8ahdIik/lhqs+uIH8YXuOA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6045
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 12:15:32PM +0300, Yuval Shaia wrote:
-> As a preparation step to shared MR, where ib_mr object will be pointed
-> by one or more ib_uobjects, remove ib_uobject pointer from ib_mr struct.
->=20
-> Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
->  drivers/infiniband/core/uverbs_cmd.c          | 1 -
->  drivers/infiniband/core/uverbs_std_types_mr.c | 1 -
->  drivers/infiniband/core/verbs.c               | 3 ---
->  include/rdma/ib_verbs.h                       | 1 -
->  4 files changed, 6 deletions(-)
->=20
-> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/co=
-re/uverbs_cmd.c
-> index d1f0c04f0ae8..54326ee25eaa 100644
-> +++ b/drivers/infiniband/core/uverbs_cmd.c
-> @@ -761,7 +761,6 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle=
- *attrs)
->  	mr->type    =3D IB_MR_TYPE_USER;
->  	mr->dm	    =3D NULL;
->  	mr->sig_attrs =3D NULL;
-> -	mr->uobject =3D uobj;
->  	atomic_inc(&pd->usecnt);
->  	mr->res.type =3D RDMA_RESTRACK_MR;
->  	rdma_restrack_uadd(&mr->res);
-> diff --git a/drivers/infiniband/core/uverbs_std_types_mr.c b/drivers/infi=
-niband/core/uverbs_std_types_mr.c
-> index c1286a52dc84..5219af8960a3 100644
-> +++ b/drivers/infiniband/core/uverbs_std_types_mr.c
-> @@ -130,7 +130,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_DM_MR_REG)(
->  	mr->pd      =3D pd;
->  	mr->type    =3D IB_MR_TYPE_DM;
->  	mr->dm      =3D dm;
-> -	mr->uobject =3D uobj;
->  	atomic_inc(&pd->usecnt);
->  	atomic_inc(&dm->usecnt);
+On Wed, Aug 28, 2019 at 12:15:33PM +0300, Yuval Shaia wrote:
+>  static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin=
+,
+>  			     struct rdma_restrack_entry *res, uint32_t port)
+>  {
+>  	struct ib_pd *pd =3D container_of(res, struct ib_pd, res);
+>  	struct ib_device *dev =3D pd->device;
+> +	struct nlattr *table_attr =3D NULL;
+> +	struct nlattr *entry_attr =3D NULL;
+> +	struct context_id *ctx_id;
+> +	struct context_id *tmp;
+> +	LIST_HEAD(pd_context_ids);
+> +	int ctx_count =3D 0;
 > =20
-> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/ve=
-rbs.c
-> index 1d0215c1a504..a7722d54869e 100644
-> +++ b/drivers/infiniband/core/verbs.c
-> @@ -299,7 +299,6 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device,=
- unsigned int flags,
->  		mr->device	=3D pd->device;
->  		mr->pd		=3D pd;
->  		mr->type        =3D IB_MR_TYPE_DMA;
-> -		mr->uobject	=3D NULL;
->  		mr->need_inval	=3D false;
+>  	if (has_cap_net_admin) {
+>  		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_LOCAL_DMA_LKEY,
+> @@ -633,10 +709,38 @@ static int fill_res_pd_entry(struct sk_buff *msg, b=
+ool has_cap_net_admin,
+>  	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, res->id))
+>  		goto err;
 > =20
->  		pd->__internal_mr =3D mr;
-> @@ -2035,7 +2034,6 @@ struct ib_mr *ib_alloc_mr_user(struct ib_pd *pd, en=
-um ib_mr_type mr_type,
->  		mr->device  =3D pd->device;
->  		mr->pd      =3D pd;
->  		mr->dm      =3D NULL;
-> -		mr->uobject =3D NULL;
->  		atomic_inc(&pd->usecnt);
->  		mr->need_inval =3D false;
->  		mr->res.type =3D RDMA_RESTRACK_MR;
-> @@ -2088,7 +2086,6 @@ struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *p=
-d,
->  	mr->device =3D pd->device;
->  	mr->pd =3D pd;
->  	mr->dm =3D NULL;
-> -	mr->uobject =3D NULL;
->  	atomic_inc(&pd->usecnt);
->  	mr->need_inval =3D false;
->  	mr->res.type =3D RDMA_RESTRACK_MR;
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index 7b429b2e7cf6..fc4b1a0d3bf2 100644
-> +++ b/include/rdma/ib_verbs.h
-> @@ -1775,7 +1775,6 @@ struct ib_mr {
->  	enum ib_mr_type	   type;
->  	bool		   need_inval;
->  	union {
-> -		struct ib_uobject	*uobject;	/* user */
->  		struct list_head	qp_entry;	/* FR */
->  	};
+> -	if (!rdma_is_kernel_res(res) &&
+> -	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
+> -			pd->uobject->context->res.id))
+> -		goto err;
 
-Delete the union too
+How do earlier patches compile?
 
 Jason
