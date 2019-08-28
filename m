@@ -2,278 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C129FE3E
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 11:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B849FE93
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 11:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbfH1JQe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Aug 2019 05:16:34 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:55508 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbfH1JQd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Aug 2019 05:16:33 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7S996PX020665;
-        Wed, 28 Aug 2019 09:16:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2019-08-05;
- bh=viZ0rpJhtreNNatRCsPHwnK5It+ZresIydLMQiXle/U=;
- b=XkfHuvfvUQzAgfiFcQ/1cylZ+WBW9HfJ1Ii3excIGiIO8vxV2vI3CDDcEXLBT4rZaUQl
- HJQRZht/IfB0s6BQW13Expua+Nw6ypx0o2/MuBc3V5t/yP2h90Cp1sUFuR3IVyqST24n
- SHNvLrlNDY1sxNKEVNmx/lvd8uFBD+79Wb2Thrn+wWPxJZ5zdbAT6of+Qv/o/qQpubJp
- SIQNwsyEt1zdee2iTQ9Hd5J6OmKEuK98M0I5juQ4tfvPfwJ5Ha22vJOcCdT/+jVsPgDF
- +i/zmznosLv0aWDuD+VXQPvyw3YhK/9bvwlhpyPcaMdKYdLjhnBsJU8AC4Ilq/UTeGZ1 kg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2unnbhgp3r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Aug 2019 09:16:12 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7S996EK184324;
-        Wed, 28 Aug 2019 09:16:12 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2undw77qfr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Aug 2019 09:16:12 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7S9GBOO022549;
-        Wed, 28 Aug 2019 09:16:11 GMT
-Received: from host5.lan (/77.138.183.59)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 28 Aug 2019 02:16:11 -0700
-From:   Yuval Shaia <yuval.shaia@oracle.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, oulijun@huawei.com,
-        xavier.huwei@huawei.com, leon@kernel.org, parav@mellanox.com,
-        markz@mellanox.com, swise@opengridcomputing.com,
-        galpress@amazon.com, israelr@mellanox.com, monis@mellanox.com,
-        maxg@mellanox.com, kamalheib1@gmail.com, yuval.shaia@oracle.com,
-        denisd@mellanox.com, yuvalav@mellanox.com,
-        dennis.dalessandro@intel.com, ereza@mellanox.com, will@kernel.org,
-        linux-rdma@vger.kernel.org, jgg@mellanox.com, srabinov7@gmail.com,
-        santosh.shilimkar@oracle.com
-Cc:     Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-Subject: [PATCH v1 5/5] RDMA/nldev: ib_pd can be pointed by multiple ib_ucontext
-Date:   Wed, 28 Aug 2019 12:15:33 +0300
-Message-Id: <20190828091533.3129-6-yuval.shaia@oracle.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190828091533.3129-1-yuval.shaia@oracle.com>
-References: <20190828091533.3129-1-yuval.shaia@oracle.com>
+        id S1726328AbfH1Jf5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 28 Aug 2019 05:35:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49030 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726326AbfH1Jf4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 28 Aug 2019 05:35:56 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7S9Z1F0016646
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2019 05:35:56 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2unn0fvsq4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2019 05:35:56 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Wed, 28 Aug 2019 09:35:55 -0000
+Received: from us1b3-smtp04.a3dr.sjc01.isc4sb.com (10.122.203.161)
+        by smtp.notes.na.collabserv.com (10.122.47.46) with smtp.notes.na.collabserv.com ESMTP;
+        Wed, 28 Aug 2019 09:35:50 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp04.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019082809354932-237045 ;
+          Wed, 28 Aug 2019 09:35:49 +0000 
+In-Reply-To: <20190828050248.GC4725@mtr-leonro.mtl.com>
+Subject: Re: Re: [PATCH v3] RDMA/siw: Fix IPv6 addr_list locking
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, jgg@ziepe.ca,
+        dledford@redhat.com
+Date:   Wed, 28 Aug 2019 09:35:49 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9362 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908280098
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9362 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908280098
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190828050248.GC4725@mtr-leonro.mtl.com>,<20190827220720.19581-1-bmt@zurich.ibm.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
+X-KeepSent: 53DD86EF:89F32DAB-00258464:0034B7C6;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 55155
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19082809-3017-0000-0000-000000B06F80
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000261
+X-IBM-SpamModules-Versions: BY=3.00011671; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01253233; UDB=6.00661891; IPR=6.01034838;
+ MB=3.00028369; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-28 09:35:53
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-08-28 05:21:22 - 6.00010339
+x-cbparentid: 19082809-3018-0000-0000-000001199597
+Message-Id: <OF53DD86EF.89F32DAB-ON00258464.0034B7C6-00258464.0034B7D3@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-28_03:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+-----"Leon Romanovsky" <leon@kernel.org> wrote: -----
 
-In shared object model ib_pd can belong to 1 or more ib_ucontext.
-Fix the nldev code so it could report multiple context ids.
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>
+>From: "Leon Romanovsky" <leon@kernel.org>
+>Date: 08/28/2019 07:03AM
+>Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org, jgg@ziepe.ca,
+>dledford@redhat.com
+>Subject: [EXTERNAL] Re: [PATCH v3] RDMA/siw: Fix IPv6 addr_list
+>locking
+>
+>On Wed, Aug 28, 2019 at 12:07:20AM +0200, Bernard Metzler wrote:
+>> Walking the address list of an inet6_dev requires
+>> appropriate locking. Since the called function
+>> siw_listen_address() may sleep, we have to use
+>> rtnl_lock() instead of read_lock_bh().
+>>
+>> Also introduces:
+>> - sanity checks if we got a device from
+>>   in_dev_get() or in6_dev_get().
+>> - skipping IPv6 addresses flagged IFA_F_TENTATIVE
+>>   or IFA_F_DEPRECATED
+>>
+>> Reported-by: Bart Van Assche <bvanassche@acm.org>
+>> Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
+>> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+>> ---
+>
+>Bernand,
+>
+>Can you please post changelog along your patches?
+>
+Hi Leon,
 
-Signed-off-by: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-Signed-off-by: Shamir Rabinovitch <srabinov7@gmail.com>
----
- drivers/infiniband/core/nldev.c  | 127 +++++++++++++++++++++++++++++--
- include/uapi/rdma/rdma_netlink.h |   3 +
- 2 files changed, 125 insertions(+), 5 deletions(-)
+Thanks, yes. Let me further try getting it alright ;)
+I'll re-post v3.
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index e287b71a1cfd..7ad23a6607f7 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -41,6 +41,7 @@
- #include "core_priv.h"
- #include "cma_priv.h"
- #include "restrack.h"
-+#include "uverbs.h"
- 
- /*
-  * Sort array elements by the netlink attribute name
-@@ -141,6 +142,8 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID]	= { .type = NLA_U32 },
- 	[RDMA_NLDEV_NET_NS_FD]			= { .type = NLA_U32 },
- 	[RDMA_NLDEV_SYS_ATTR_NETNS_MODE]	= { .type = NLA_U8 },
-+	[RDMA_NLDEV_ATTR_RES_CTX]		= { .type = NLA_NESTED },
-+	[RDMA_NLDEV_ATTR_RES_CTX_ENTRY]		= { .type = NLA_NESTED },
- };
- 
- static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
-@@ -611,11 +614,84 @@ static int fill_res_mr_entry(struct sk_buff *msg, bool has_cap_net_admin,
- err:	return -EMSGSIZE;
- }
- 
-+struct context_id {
-+	struct list_head list;
-+	u32 id;
-+};
-+
-+static void pd_context(struct ib_pd *pd, struct list_head *list, int *count)
-+{
-+	struct ib_device *device = pd->device;
-+	struct rdma_restrack_entry *res;
-+	struct rdma_restrack_root *rt;
-+	struct ib_uverbs_file *ufile;
-+	struct ib_ucontext *ucontext;
-+	struct ib_uobject *uobj;
-+	unsigned long flags;
-+	unsigned long id;
-+	bool found;
-+
-+	rt = &device->res[RDMA_RESTRACK_CTX];
-+
-+	xa_lock(&rt->xa);
-+
-+	xa_for_each(&rt->xa, id, res) {
-+		if (!rdma_is_visible_in_pid_ns(res))
-+			continue;
-+
-+		if (!rdma_restrack_get(res))
-+			continue;
-+
-+		xa_unlock(&rt->xa);
-+
-+		ucontext = container_of(res, struct ib_ucontext, res);
-+		ufile = ucontext->ufile;
-+		found = false;
-+
-+		/* See locking requirements in struct ib_uverbs_file */
-+		down_read(&ufile->hw_destroy_rwsem);
-+		spin_lock_irqsave(&ufile->uobjects_lock, flags);
-+
-+		list_for_each_entry(uobj, &ufile->uobjects, list) {
-+			if (uobj->object == pd) {
-+				found = true;
-+				goto found;
-+			}
-+		}
-+
-+found:		spin_unlock_irqrestore(&ufile->uobjects_lock, flags);
-+		up_read(&ufile->hw_destroy_rwsem);
-+
-+		if (found) {
-+			struct context_id *ctx_id =
-+				kmalloc(sizeof(*ctx_id), GFP_KERNEL);
-+
-+			if (WARN_ON_ONCE(!ctx_id))
-+				goto next;
-+
-+			ctx_id->id = ucontext->res.id;
-+			list_add(&ctx_id->list, list);
-+			(*count)++;
-+		}
-+
-+next:		rdma_restrack_put(res);
-+		xa_lock(&rt->xa);
-+	}
-+
-+	xa_unlock(&rt->xa);
-+}
-+
- static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
- 			     struct rdma_restrack_entry *res, uint32_t port)
- {
- 	struct ib_pd *pd = container_of(res, struct ib_pd, res);
- 	struct ib_device *dev = pd->device;
-+	struct nlattr *table_attr = NULL;
-+	struct nlattr *entry_attr = NULL;
-+	struct context_id *ctx_id;
-+	struct context_id *tmp;
-+	LIST_HEAD(pd_context_ids);
-+	int ctx_count = 0;
- 
- 	if (has_cap_net_admin) {
- 		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_LOCAL_DMA_LKEY,
-@@ -633,10 +709,38 @@ static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
- 	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, res->id))
- 		goto err;
- 
--	if (!rdma_is_kernel_res(res) &&
--	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
--			pd->uobject->context->res.id))
--		goto err;
-+	if (!rdma_is_kernel_res(res)) {
-+		pd_context(pd, &pd_context_ids, &ctx_count);
-+		if (ctx_count == 1) {
-+			/* user pd, not shared */
-+			ctx_id = list_first_entry(&pd_context_ids,
-+						  struct context_id, list);
-+			if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
-+					ctx_id->id))
-+				goto err;
-+		} else if (ctx_count > 1) {
-+			/* user pd, shared */
-+			table_attr = nla_nest_start(msg,
-+					RDMA_NLDEV_ATTR_RES_CTX);
-+			if (!table_attr)
-+				goto err;
-+
-+			list_for_each_entry(ctx_id, &pd_context_ids, list) {
-+				entry_attr = nla_nest_start(msg,
-+						RDMA_NLDEV_ATTR_RES_CTX_ENTRY);
-+				if (!entry_attr)
-+					goto err;
-+				if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
-+						ctx_id->id))
-+					goto err;
-+				nla_nest_end(msg, entry_attr);
-+				entry_attr = NULL;
-+			}
-+
-+			nla_nest_end(msg, table_attr);
-+			table_attr = NULL;
-+		}
-+	}
- 
- 	if (fill_res_name_pid(msg, res))
- 		goto err;
-@@ -644,9 +748,22 @@ static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
- 	if (fill_res_entry(dev, msg, res))
- 		goto err;
- 
-+	list_for_each_entry_safe(ctx_id, tmp, &pd_context_ids, list)
-+		kfree(ctx_id);
-+
- 	return 0;
- 
--err:	return -EMSGSIZE;
-+err:
-+	if (entry_attr)
-+		nla_nest_end(msg, entry_attr);
-+
-+	if (table_attr)
-+		nla_nest_end(msg, table_attr);
-+
-+	list_for_each_entry_safe(ctx_id, tmp, &pd_context_ids, list)
-+		kfree(ctx_id);
-+
-+	return -EMSGSIZE;
- }
- 
- static int fill_stat_counter_mode(struct sk_buff *msg,
-diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
-index 8e277783fa96..7fbbfb07f071 100644
---- a/include/uapi/rdma/rdma_netlink.h
-+++ b/include/uapi/rdma/rdma_netlink.h
-@@ -525,6 +525,9 @@ enum rdma_nldev_attr {
- 	 */
- 	RDMA_NLDEV_ATTR_DEV_DIM,                /* u8 */
- 
-+	RDMA_NLDEV_ATTR_RES_CTX,		/* nested table */
-+	RDMA_NLDEV_ATTR_RES_CTX_ENTRY,		/* nested table */
-+
- 	/*
- 	 * Always the end
- 	 */
--- 
-2.20.1
+Sorry!
+
+Bernard.
 
