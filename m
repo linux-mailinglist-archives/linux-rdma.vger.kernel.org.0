@@ -2,113 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B508A0655
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 17:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9D1A0A12
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 20:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726457AbfH1PbF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Aug 2019 11:31:05 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:33536 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbfH1PbF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 28 Aug 2019 11:31:05 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id D8B3236899;
-        Wed, 28 Aug 2019 15:31:04 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C5AC45DA8B;
-        Wed, 28 Aug 2019 15:31:03 +0000 (UTC)
-Message-ID: <d8f70a3e7bf0cd2da5873c75509dc39b0510c83d.camel@redhat.com>
-Subject: Re: [PATCH for-next 0/9] Fixes for hip08 driver
-From:   Doug Ledford <dledford@redhat.com>
-To:     Lijun Ou <oulijun@huawei.com>, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Date:   Wed, 28 Aug 2019 11:31:00 -0400
-In-Reply-To: <1566393276-42555-1-git-send-email-oulijun@huawei.com>
-References: <1566393276-42555-1-git-send-email-oulijun@huawei.com>
-Organization: Red Hat, Inc.
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-HrFDf95R7oyRI9A3ZjKb"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1726605AbfH1S51 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Aug 2019 14:57:27 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:46642 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbfH1S51 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Aug 2019 14:57:27 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7SIsEAr149716;
+        Wed, 28 Aug 2019 18:56:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=tnAx5aTiWrBSJPE6YoUpnKBoxIq8DKshBaGqp5JxstQ=;
+ b=MwKnHX0YXWVSCFmR/AMi5QDSjZ4BJdaxzHE0nBUQ2bg0q8mOv83TYI84EoJqx8wAyXYi
+ XR2NE7mptII6uDUBHKBOHQTcrustg1tEo/1GHjwBZbFGy8WuoGJLN0AJRKvzDOBD4YU4
+ nkXKH98OjrJ2eC+J2zMM9hper4TDzpHBi1ToMfYA+Uu6D7S6opfWXtv6Nq4ffJepxRaz
+ 9W6RiAayAHzQYh/EkxnRuSueYsgqeCa1CVVRdEzMGT7bOb/oU24OyVFkkgh3g5pUw1+8
+ 34DzjPdOXPRnjZp7iAVJ4f9hTvP/ugBumxONQ0zlWTP/FUuVghXIEt+ouOWbNlJaEQyB 6w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2uny3903x3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Aug 2019 18:56:55 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7SIr0fA173991;
+        Wed, 28 Aug 2019 18:56:54 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2unduq9vbe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Aug 2019 18:56:54 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7SIur6r030386;
+        Wed, 28 Aug 2019 18:56:53 GMT
+Received: from lap1 (/77.138.183.59)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 28 Aug 2019 11:56:53 -0700
+Date:   Wed, 28 Aug 2019 21:56:46 +0300
+From:   Yuval Shaia <yuval.shaia@oracle.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     "dledford@redhat.com" <dledford@redhat.com>,
+        "oulijun@huawei.com" <oulijun@huawei.com>,
+        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        "swise@opengridcomputing.com" <swise@opengridcomputing.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        Israel Rukshin <israelr@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        Denis Drozdov <denisd@mellanox.com>,
+        Yuval Avnery <yuvalav@mellanox.com>,
+        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>,
+        Erez Alfasi <ereza@mellanox.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "srabinov7@gmail.com" <srabinov7@gmail.com>,
+        "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Subject: Re: [PATCH v1 5/5] RDMA/nldev: ib_pd can be pointed by multiple
+ ib_ucontext
+Message-ID: <20190828185645.GA4799@lap1>
+References: <20190828091533.3129-1-yuval.shaia@oracle.com>
+ <20190828091533.3129-6-yuval.shaia@oracle.com>
+ <20190828135307.GH914@mellanox.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.30]); Wed, 28 Aug 2019 15:31:04 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190828135307.GH914@mellanox.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9363 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908280184
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9363 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908280184
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Aug 28, 2019 at 01:53:12PM +0000, Jason Gunthorpe wrote:
+> On Wed, Aug 28, 2019 at 12:15:33PM +0300, Yuval Shaia wrote:
+> >  static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
+> >  			     struct rdma_restrack_entry *res, uint32_t port)
+> >  {
+> >  	struct ib_pd *pd = container_of(res, struct ib_pd, res);
+> >  	struct ib_device *dev = pd->device;
+> > +	struct nlattr *table_attr = NULL;
+> > +	struct nlattr *entry_attr = NULL;
+> > +	struct context_id *ctx_id;
+> > +	struct context_id *tmp;
+> > +	LIST_HEAD(pd_context_ids);
+> > +	int ctx_count = 0;
+> >  
+> >  	if (has_cap_net_admin) {
+> >  		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_LOCAL_DMA_LKEY,
+> > @@ -633,10 +709,38 @@ static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
+> >  	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, res->id))
+> >  		goto err;
+> >  
+> > -	if (!rdma_is_kernel_res(res) &&
+> > -	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
+> > -			pd->uobject->context->res.id))
+> > -		goto err;
+> 
+> How do earlier patches compile?
 
---=-HrFDf95R7oyRI9A3ZjKb
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+They did not
 
-On Wed, 2019-08-21 at 21:14 +0800, Lijun Ou wrote:
-> Here optimizes some codes and removes some warnings
-> by sparse tool checking as well as fixes some defects.
->=20
-> Lang Cheng (3):
->   RDMA/hns: Modify the data structure of hns_roce_av
->   RDMA/hns: Fix cast from or to restricted __le32 for driver
->   RDMA/hns: Add reset process for function-clear
->=20
-> Lijun Ou (3):
->   RDMA/hns: Refactor the codes of creating qp
->   RDMA/hns: Remove the some magic number
->   RDMA/hns: Fix wrong assignment of qp_access_flags
->=20
-> Wenpeng Liang (2):
->   RDMA/hns: Remove if-else judgment statements for creating srq
->   RDMA/hns: Delete the not-used lines
->=20
-> Yixian Liu (1):
->   RDMA/hns: Refactor cmd init and mode selection for hip08
->=20
->  drivers/infiniband/hw/hns/hns_roce_ah.c     |  23 +--
->  drivers/infiniband/hw/hns/hns_roce_cmd.c    |  14 +-
->  drivers/infiniband/hw/hns/hns_roce_device.h |  17 +-
->  drivers/infiniband/hw/hns/hns_roce_hem.c    |  34 ++--
->  drivers/infiniband/hw/hns/hns_roce_hw_v1.c  |  49 +++---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 256
-> +++++++++++++++++++---------
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   5 +-
->  drivers/infiniband/hw/hns/hns_roce_main.c   |  18 +-
->  drivers/infiniband/hw/hns/hns_roce_mr.c     |   7 +-
->  drivers/infiniband/hw/hns/hns_roce_qp.c     | 108 +++++++-----
->  drivers/infiniband/hw/hns/hns_roce_srq.c    |  30 +---
->  11 files changed, 314 insertions(+), 247 deletions(-)
->=20
-
-I took patches 3-9 into for-next.  Please fixup and resend 1 and 2.=20
-Thanks.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-HrFDf95R7oyRI9A3ZjKb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1mnjQACgkQuCajMw5X
-L91RphAAnFiwKztaZEAc5cLAIRuR/3xEkc3BE3tytONLA83mYeV6CLdrmtxO25p3
-aixOH4ddX/eA4RCXhkn5TwWY8ZPs1BSOAw0Hpcu3HkC8MjEdFp5trEIXk/RfZoHt
-YdHnz7dLRXLvh0vVr5QhoTjljF960YDZVVaIqbx2LMtumINSEOyyDL6ijZu18wbD
-jNxhN0Co2bftx8/B/NeV5STS8vxQAMWccBl+yFdvacuScAIl9tkow8scpAB0PCMc
-UsFPuy6VTkHndCqUwLX9Mb0wXaWjRmu9B9J0Cfe3NCh+lc5VEOpLMtL6cJDtQ66a
-tV9SLoHgbCcVeTHa5ka15UToeUK5pEhil7kzSwMaJ4CfXl0j9u4BJl00A1Q1J41Z
-dWM2ySrhKosH3SRnVp5+Hm8fqausOujWcVyYQT/KuIOHH5P+Yi1uE7Ox2xswFviz
-WPn5nI4BvWjpCnjHBGAx57geXuoQmBhcjzSGJ475l65xP1rmDnyCk0ZdvEFN7Gl5
-UShuEpW5Lf5XpY9k/nKH4CZ9bZk+HETE9H5X9AFEOmNGmwgKJTtvtD8Jzy/tYDwo
-DjMVM0ihJ1MnpjLUQm8icDMo5boxoHL7eUtF4XorF0O08RK2B9l3R4S2zFTEkZWt
-EcvL8SYUm0oAAfG+NApvpD7Bue6BYPe23BOkjqD+ngCQZdUZHzY=
-=jJWV
------END PGP SIGNATURE-----
-
---=-HrFDf95R7oyRI9A3ZjKb--
-
+> 
+> Jason
