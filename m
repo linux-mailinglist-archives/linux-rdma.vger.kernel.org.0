@@ -2,153 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D369FC29
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 09:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3D19FCE6
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 10:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbfH1Hq3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Aug 2019 03:46:29 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:45848 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbfH1Hq2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Aug 2019 03:46:28 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7S7hg15135405;
-        Wed, 28 Aug 2019 07:46:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2019-08-05;
- bh=/uKWKfZKHxnopONxtzqg6DLer8B2DFebpi3V4z54eiA=;
- b=haO332dSH58RDaLGQS6w1BIzsRtyIu3YadQoh7WQi49QF7QyTbR0uaQ5czFTPfs/y8/c
- nooTPNtZXjKhxXN9uQ/m0YRqlV2wljiU77P7qLMjKIDNr6+mwGjJuoTPvjUnawkhzgsY
- r0xXmMRsbcM6arVYMCmiuwlrW5tiY/6DsnsOnDUq3rJPryHaDIvwvDtC2OUL+cmq8TcA
- IRcW8x1iW1Ou0tUF2LbDGeO5P0/DCIhyg4Aq/l7G9cafdRsDIebAwSe3oWENr8/ivrFq
- /h6Ly5pdzxSm/AJcP3kKOOLYHNvKPBDNMlrFefvfdGKM22AGCCp2EweFbpZhBhOmtHTy 3w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2unnbhg2c2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Aug 2019 07:46:10 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7S7cKCO158971;
-        Wed, 28 Aug 2019 07:42:19 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2undupmrvj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Aug 2019 07:42:18 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7S7gI13016674;
-        Wed, 28 Aug 2019 07:42:18 GMT
-Received: from host5.lan (/77.138.183.59)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 28 Aug 2019 00:42:18 -0700
-From:   Yuval Shaia <yuval.shaia@oracle.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, oulijun@huawei.com,
-        xavier.huwei@huawei.com, leon@kernel.org, majd@mellanox.com,
-        markz@mellanox.com, swise@opengridcomputing.com,
-        galpress@amazon.com, monis@mellanox.com, israelr@mellanox.com,
-        maxg@mellanox.com, dan.carpenter@oracle.com, kamalheib1@gmail.com,
-        yuval.shaia@oracle.com, denisd@mellanox.com, yuvalav@mellanox.com,
-        dennis.dalessandro@intel.com, ereza@mellanox.com, will@kernel.org,
-        linux-rdma@vger.kernel.org, jgg@mellanox.com, srabinov7@gmail.com,
-        santosh.shilimkar@oracle.com
-Subject: [PATCH 4/4] IB/core: ib_mr should not have ib_uobject pointer
-Date:   Wed, 28 Aug 2019 10:41:34 +0300
-Message-Id: <20190828074134.17042-5-yuval.shaia@oracle.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190828074134.17042-1-yuval.shaia@oracle.com>
-References: <20190828074134.17042-1-yuval.shaia@oracle.com>
+        id S1726310AbfH1I1v convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 28 Aug 2019 04:27:51 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:29109 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726259AbfH1I1v (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 28 Aug 2019 04:27:51 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-44-7Eyd5yFUMV6GmCf8-LeV7A-1; Wed, 28 Aug 2019 09:27:48 +0100
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 28 Aug 2019 09:27:46 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 28 Aug 2019 09:27:46 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit due to
+ u64/pointer abuse
+Thread-Topic: [PATCH] RDMA/siw: Fix compiler warnings on 32-bit due to
+ u64/pointer abuse
+Thread-Index: AQHVXQXl4BhhBlFhpEW57H2RBHAQPacQOptA
+Date:   Wed, 28 Aug 2019 08:27:45 +0000
+Message-ID: <ab04933a7dea42049d20597cb65d84f1@AcuMS.aculab.com>
+References: <20190819100526.13788-1-geert@linux-m68k.org>
+         <581e7d79ed75484beb227672b2695ff14e1f1e34.camel@perches.com>
+         <CAMuHMdVh8dwd=77mHTqG80_D8DK+EtVGewRUJuaJzK1qRYrB+w@mail.gmail.com>
+         <dbc03b4ac1ef4ba2a807409676cf8066@AcuMS.aculab.com>
+         <CAMuHMdWHGTMwK+PO_BgsNZMpqRat1SHE-_CP0UqxEALA_OJeNg@mail.gmail.com>
+         <20190827174639.GT1131@ZenIV.linux.org.uk>
+         <CAMuHMdW0jEpE3YrA5Znq8O9e4eswARwYYerEhRLSLWxeXMbsEQ@mail.gmail.com>
+ <b0fe444622e32af6c34f3326e5dce3513adf5113.camel@perches.com>
+In-Reply-To: <b0fe444622e32af6c34f3326e5dce3513adf5113.camel@perches.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9362 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908280080
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9362 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908280081
+X-MC-Unique: 7Eyd5yFUMV6GmCf8-LeV7A-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-As a preparation step to shared MR, where ib_mr object will be pointed
-by one or more ib_uobjects, remove ib_uobject pointer from ib_mr struct.
+From: Joe Perches
+> Sent: 27 August 2019 19:33
+> On Tue, 2019-08-27 at 19:59 +0200, Geert Uytterhoeven wrote:
+> > On Tue, Aug 27, 2019 at 7:46 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> > > On Tue, Aug 27, 2019 at 07:29:52PM +0200, Geert Uytterhoeven wrote:
+> > > > On Tue, Aug 27, 2019 at 4:17 PM David Laight <David.Laight@aculab.com> wrote:
+> > > > > From: Geert Uytterhoeven
+> > > > > > Sent: 19 August 2019 18:15
+> > > > > ...
+> > > > > > > I think a cast to unsigned long is rather more common.
+> > > > > > >
+> > > > > > > uintptr_t is used ~1300 times in the kernel.
+> > > > > > > I believe a cast to unsigned long is much more common.
+> 
+> btw: apparently that's not true.
+> 
+> This grep may be incomplete but it seems there are fewer
+> kernel uses of a cast to unsigned long then pointer:
+> 
+> $ git grep -P '\(\s*\w+(\s+\w+){0,3}(\s*\*)+\s*\)\s*\(\s*unsigned\s+long\s*\)'|wc -l
+> 423
+> 
+> Maybe add a cast_to_ptr macro like
+> 
+> #define cast_to_ptr(type, val)	((type)(uintptr_t)(val))
+> 
+> though that may not save any horizontal space
 
-Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
----
- drivers/infiniband/core/uverbs_cmd.c          | 1 -
- drivers/infiniband/core/uverbs_std_types_mr.c | 1 -
- drivers/infiniband/core/verbs.c               | 3 ---
- include/rdma/ib_verbs.h                       | 1 -
- 4 files changed, 6 deletions(-)
+And it is another bit of pointless obfuscation....
 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index d1f0c04f0ae8..54326ee25eaa 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -761,7 +761,6 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
- 	mr->type    = IB_MR_TYPE_USER;
- 	mr->dm	    = NULL;
- 	mr->sig_attrs = NULL;
--	mr->uobject = uobj;
- 	atomic_inc(&pd->usecnt);
- 	mr->res.type = RDMA_RESTRACK_MR;
- 	rdma_restrack_uadd(&mr->res);
-diff --git a/drivers/infiniband/core/uverbs_std_types_mr.c b/drivers/infiniband/core/uverbs_std_types_mr.c
-index c1286a52dc84..5219af8960a3 100644
---- a/drivers/infiniband/core/uverbs_std_types_mr.c
-+++ b/drivers/infiniband/core/uverbs_std_types_mr.c
-@@ -130,7 +130,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_DM_MR_REG)(
- 	mr->pd      = pd;
- 	mr->type    = IB_MR_TYPE_DM;
- 	mr->dm      = dm;
--	mr->uobject = uobj;
- 	atomic_inc(&pd->usecnt);
- 	atomic_inc(&dm->usecnt);
- 
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 1d0215c1a504..a7722d54869e 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -299,7 +299,6 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
- 		mr->device	= pd->device;
- 		mr->pd		= pd;
- 		mr->type        = IB_MR_TYPE_DMA;
--		mr->uobject	= NULL;
- 		mr->need_inval	= false;
- 
- 		pd->__internal_mr = mr;
-@@ -2035,7 +2034,6 @@ struct ib_mr *ib_alloc_mr_user(struct ib_pd *pd, enum ib_mr_type mr_type,
- 		mr->device  = pd->device;
- 		mr->pd      = pd;
- 		mr->dm      = NULL;
--		mr->uobject = NULL;
- 		atomic_inc(&pd->usecnt);
- 		mr->need_inval = false;
- 		mr->res.type = RDMA_RESTRACK_MR;
-@@ -2088,7 +2086,6 @@ struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
- 	mr->device = pd->device;
- 	mr->pd = pd;
- 	mr->dm = NULL;
--	mr->uobject = NULL;
- 	atomic_inc(&pd->usecnt);
- 	mr->need_inval = false;
- 	mr->res.type = RDMA_RESTRACK_MR;
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 7b429b2e7cf6..fc4b1a0d3bf2 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1775,7 +1775,6 @@ struct ib_mr {
- 	enum ib_mr_type	   type;
- 	bool		   need_inval;
- 	union {
--		struct ib_uobject	*uobject;	/* user */
- 		struct list_head	qp_entry;	/* FR */
- 	};
- 
--- 
-2.20.1
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
