@@ -2,108 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 998F2A0603
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 17:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3D6A0608
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2019 17:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbfH1PSd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Aug 2019 11:18:33 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:38952 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726545AbfH1PSd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Aug 2019 11:18:33 -0400
-Received: by mail-qk1-f195.google.com with SMTP id 4so70876qki.6
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2019 08:18:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZZj0Vw8g8acx3uGEEU339ohn0wxG5BPORUI3lZ8CKRM=;
-        b=Ay3bKy7BSVw2wL/PIX3Ej6dlMZ25ti5cVqZgO8d00Tf3qrtMKJDmfDrap8bnGymTQF
-         Vdc38Y+6u+5rxi7JSTjFIh821e2giTqEDtwh1YJxIAgGJnN0RCi+pAWEvBJA0ehv5Lx7
-         yPT/RHIkb1zAQauDDWu5DKQy0SSTNXQKlnyi3ULmd8ebFlUxiRQRzu28EdDGRv8BCfqG
-         a0c10BXF7rGpSs96KMN1snj05mvMuPqz3AgRgMJsOVQXMrp20Tr7HoSBIjiHzbKPZF04
-         OxbwXCNI85Itz2G0HzFWxyLBObs/4o/E7oN57+XXgXwPiq3CDoJNzYrp1FjJD6/aTS96
-         PvUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZZj0Vw8g8acx3uGEEU339ohn0wxG5BPORUI3lZ8CKRM=;
-        b=tF3yIyWhWhSXp/tBuPQp5SzmrsRFfRZuLj45NLu9N70iQ/7Sd4lbrReqKCAGv/UAXo
-         SGLhLUkFAtwZfzgD6SMKgRXrm3GATOD/LT3zZDX/iXI2CkKTxpQm2kf+UUq/BIL1J03k
-         k1dt36VnZyNGiNhO4DPJUr4swgjJC2IYKfvJQnfmGSoJo+pGxCVBl0wbYBcrsVIcRO3P
-         aagY/vmwsfsM/TQd8zdKfJdB2uEL0ZSXKGslv5OfBRgQXoI6laI+RV5R4Ief7Z0Y5OV8
-         Iv7DYd3Fzsn4rV328Mj+LyupNelW3hgTmFfqKYGgAyrwx9I+xgRuHVMlTZlWWKTMXwZK
-         Rpig==
-X-Gm-Message-State: APjAAAU1yOE7/Vi5i2PaO1XW1We49DKWaVtbqKUkhS/FIEbWZdgKG42Z
-        v44o7IV7Pw0HNroIsKbd2QFlTw==
-X-Google-Smtp-Source: APXvYqy7fnnGgNjMHr05W5MKWV+LZ6g68ac2ky+vaGukCPjBSOWvxfeUt0EuUxqf6zP54k7gpruPjw==
-X-Received: by 2002:a37:e208:: with SMTP id g8mr4599967qki.237.1567005512247;
-        Wed, 28 Aug 2019 08:18:32 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-167-216-168.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.216.168])
-        by smtp.gmail.com with ESMTPSA id q28sm1573277qtk.34.2019.08.28.08.18.31
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 28 Aug 2019 08:18:31 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1i2ziR-0004FG-5B; Wed, 28 Aug 2019 12:18:31 -0300
-Date:   Wed, 28 Aug 2019 12:18:31 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v3 0/3] ODP support for mlx5 DC QPs
-Message-ID: <20190828151831.GB933@ziepe.ca>
-References: <20190819120815.21225-1-leon@kernel.org>
- <20190827155140.GA15153@ziepe.ca>
- <20190828070620.GD4725@mtr-leonro.mtl.com>
+        id S1726394AbfH1PTX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Aug 2019 11:19:23 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:52122 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726315AbfH1PTX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 28 Aug 2019 11:19:23 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id BA6513CA0D;
+        Wed, 28 Aug 2019 15:19:22 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AB52719D7A;
+        Wed, 28 Aug 2019 15:19:21 +0000 (UTC)
+Message-ID: <e91d1e75aad3b283e3d232993b15c1bb33e522d7.camel@redhat.com>
+Subject: Re: [PATCH for-next 2/9] RDMA/hns: Refactor the codes of creating qp
+From:   Doug Ledford <dledford@redhat.com>
+To:     Lijun Ou <oulijun@huawei.com>, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Date:   Wed, 28 Aug 2019 11:19:18 -0400
+In-Reply-To: <1566393276-42555-3-git-send-email-oulijun@huawei.com>
+References: <1566393276-42555-1-git-send-email-oulijun@huawei.com>
+         <1566393276-42555-3-git-send-email-oulijun@huawei.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-m8jrDxGeHb3iDK9zPcSk"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190828070620.GD4725@mtr-leonro.mtl.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Wed, 28 Aug 2019 15:19:22 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 10:06:20AM +0300, Leon Romanovsky wrote:
-> On Tue, Aug 27, 2019 at 12:51:40PM -0300, Jason Gunthorpe wrote:
-> > On Mon, Aug 19, 2019 at 03:08:12PM +0300, Leon Romanovsky wrote:
-> > > From: Leon Romanovsky <leonro@mellanox.com>
-> > >
-> > > Changelog
-> > >  v3:
-> > >  * Rewrote patches to expose through DEVX without need to change mlx5-abi.h at all.
-> > >  v2: https://lore.kernel.org/linux-rdma/20190806074807.9111-1-leon@kernel.org
-> > >  * Fixed reserved_* field wrong name (Saeed M.)
-> > >  * Split first patch to two patches, one for mlx5-next and one for  rdma-next. (Saeed M.)
-> > >  v1: https://lore.kernel.org/linux-rdma/20190804100048.32671-1-leon@kernel.org
-> > >  * Fixed alignment to u64 in mlx5-abi.h (Gal P.)
-> > >  v0: https://lore.kernel.org/linux-rdma/20190801122139.25224-1-leon@kernel.org
-> > >
-> > > >From Michael,
-> > >
-> > > The series adds support for on-demand paging for DC transport.
-> > >
-> > > As DC is mlx-only transport, the capabilities are exposed
-> > > to the user using DEVX objects and later on through mlx5dv_query_device.
-> > >
-> > > Thanks
-> > >
-> > > Michael Guralnik (3):
-> > >   net/mlx5: Set ODP capabilities for DC transport to max
-> > >   IB/mlx5: Remove check of FW capabilities in ODP page fault handling
-> > >   IB/mlx5: Add page fault handler for DC initiator WQE
-> >
-> > This seems fine, can you put the commit on the shared branch?
-> 
-> Thanks, applied to mlx5-next
-> 00679b631edd net/mlx5: Set ODP capabilities for DC transport to max
 
-Done, thanks
+--=-m8jrDxGeHb3iDK9zPcSk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Jason
+On Wed, 2019-08-21 at 21:14 +0800, Lijun Ou wrote:
+> +static int hns_roce_alloc_recv_inline_buffer(struct hns_roce_qp
+> *hr_qp,
+> +                                            struct ib_qp_init_attr
+> *init_attr)
+> +{
+> +       int ret;
+> +       int i;
+> +
+> +       /* allocate recv inline buf */
+> +       hr_qp->rq_inl_buf.wqe_list =3D kcalloc(hr_qp->rq.wqe_cnt,
+> +                                            sizeof(struct
+> hns_roce_rinl_wqe),
+> +                                            GFP_KERNEL);
+> +       if (!hr_qp->rq_inl_buf.wqe_list) {
+> +               ret =3D -ENOMEM;
+> +               goto err;
+> +       }
+> +
+> +       hr_qp->rq_inl_buf.wqe_cnt =3D hr_qp->rq.wqe_cnt;
+> +
+> +       /* Firstly, allocate a list of sge space buffer */
+> +       hr_qp->rq_inl_buf.wqe_list[0].sg_list =3D
+> +                                       kcalloc(hr_qp-
+> >rq_inl_buf.wqe_cnt,
+> +                                       init_attr->cap.max_recv_sge *
+> +                                       sizeof(struct
+> hns_roce_rinl_sge),
+> +                                       GFP_KERNEL);
+> +       if (!hr_qp->rq_inl_buf.wqe_list[0].sg_list) {
+> +               ret =3D -ENOMEM;
+> +               goto err_wqe_list;
+> +       }
+> +
+> +       for (i =3D 1; i < hr_qp->rq_inl_buf.wqe_cnt; i++)
+> +               /* Secondly, reallocate the buffer */
+> +               hr_qp->rq_inl_buf.wqe_list[i].sg_list =3D
+> +                                    &hr_qp-
+> >rq_inl_buf.wqe_list[0].sg_list[i *
+> +                                    init_attr->cap.max_recv_sge];
+> +
+> +       return 0;
+> +
+> +err_wqe_list:
+> +       kfree(hr_qp->rq_inl_buf.wqe_list);
+> +
+> +err:
+> +       return ret;
+> +}
+
+This function is klunky.  You don't need int ret; at all as there are
+only two possible return values and you have distinct locations for each
+return, so each return can use a constant.  It would be much more
+readable like this:
+
++static int hns_roce_alloc_recv_inline_buffer(struct hns_roce_qp *hr_qp,
++                                            struct ib_qp_init_attr *init_a=
+ttr)
++{
++	int num_sge =3D init_attr->cap.max_recv_sge;
++	int wqe_cnt =3D hr_qp->rq.wqe_cnt;
++       int i;
++
++       /* allocate recv inline WQE bufs */
++       hr_qp->rq_inl_buf.wqe_list =3D kcalloc(wqe_cnt,
++                                            sizeof(struct hns_roce_rinl_wq=
+e),
++                                            GFP_KERNEL);
++       if (!hr_qp->rq_inl_buf.wqe_list)
++               goto err;
++
++       hr_qp->rq_inl_buf.wqe_cnt =3D wqe_cnt;
++
++       /* allocate a single sge array for all WQEs */
++       hr_qp->rq_inl_buf.wqe_list[0].sg_list =3D
++                                       kcalloc(wqe_cnt,
++                                       num_sge *
++                                       sizeof(struct hns_roce_rinl_sge),
++                                       GFP_KERNEL);
++       if (!hr_qp->rq_inl_buf.wqe_list[0].sg_list)
++               goto err_wqe_list;
++
++       for (i =3D 1; i < wqe_cnt; i++)
++               /* give each WQE a pointer to its array space */
++               hr_qp->rq_inl_buf.wqe_list[i].sg_list =3D
++                           &hr_qp->rq_inl_buf.wqe_list[0].sg_list[i * num_=
+sge];
++
++       return 0;
++
++err_wqe_list:
++       kfree(hr_qp->rq_inl_buf.wqe_list);
++err:
++       return -ENOMEM;
++}
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-m8jrDxGeHb3iDK9zPcSk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl1mm3YACgkQuCajMw5X
+L90/LxAAlQMskOoq8DFdyuqIb0Jc05KXMrEv4/FAacA7Jd9BHYdwqed2za6l43LR
+/0adkxBtRqTZXF3hpJCU+/0DFy+QW7DR/FVDMWYa3S4doMQIVB6Aol11cQmZjsgE
+3GN0eSraFIwqwqTOLjQ/vxsGELuzWTOTP1EJJQTxWTNBu86U+9TGB7lM3rcGJo82
+bWOLRRppOBSzFTQoXFeRiE7TNvJmRmyEmJxykpZK7ULumFCQZSMgROOPWdvgoQJB
+QCpG5dp64MIsaY1UWrTO2WfbOfuGI4rC4RgTu1G0zLm9PI+q3DZmECJFaSb2KGb0
+ytMZUSxQlPUlleoMEg7W7JgyvFCvWZjAzxqUgwcNRhJv82W8bEOg/vjwlhT3MaXH
+rTa+myZ1KHOv+QyLeXmTdaBTYjfYQNfAQlU3sgJ+GWb+YBAvA6ZJy8tzzN7XYZuY
+qse/OOlYm8+fXRmQ/fgWGqPndxSVhwKtBmLQ5W/OpqrLklmz8rI/rAiHd8sEcLms
+TNdNnP3Mg9PIE1gOEXMmTpjkvFeuCX2D+eKqNuruSi5K1OQQhW4CUOgVvTjhGEIb
+hmU9t5p2KQB8XQtUPynBjomsP5kF9sFNjaON4rmGrdaE3H1yujpSxx+Z6O1WqNZb
+hdEQnoKSyIJssLagWENvfcrJgrj5VLa0ckX4ix/8gZSELKb0dbY=
+=35lI
+-----END PGP SIGNATURE-----
+
+--=-m8jrDxGeHb3iDK9zPcSk--
+
