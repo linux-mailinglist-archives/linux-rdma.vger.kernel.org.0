@@ -2,124 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FC6A2091
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 18:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAB1A2152
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 18:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727161AbfH2QQb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Aug 2019 12:16:31 -0400
-Received: from mga05.intel.com ([192.55.52.43]:19642 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727066AbfH2QQb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Aug 2019 12:16:31 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Aug 2019 09:16:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,444,1559545200"; 
-   d="scan'208";a="183523268"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga003.jf.intel.com with ESMTP; 29 Aug 2019 09:16:28 -0700
-Date:   Thu, 29 Aug 2019 09:16:28 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Dave Chinner <david@fromorbit.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jan Kara <jack@suse.cz>,
+        id S1727534AbfH2Quy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Aug 2019 12:50:54 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:38855 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726973AbfH2Qux (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Aug 2019 12:50:53 -0400
+Received: by mail-wm1-f67.google.com with SMTP id o184so4553699wme.3;
+        Thu, 29 Aug 2019 09:50:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EAPNXwtNcvomkAv43HK7BcSQSi3ID9bH+hr63tWVdSI=;
+        b=B5HGm8Y0d+BC3TOmZ23uuf+WqGqYOV7ombVlzG70cKlsV5JRtEvvNhzfPX4mECWFhx
+         u5j/9cXAx5IqdKYxp7N//EOr02YdCxMO9TImOTBYGSfNXGWuDvoj6pJX11SgB//Tt5im
+         yYal4ni8RQu92gT5EGlqUSz2C0ZgmGFTTf+a6stQq6hqSBqIOsB4/FaV7WQu1kPe6C3X
+         +xLocX36sKRkLLs3x2PB2D+myD7iamK/wRKiMKBKp2+VCm7/qCDUbUDyTARThORMu67E
+         QuOMPvFXZtlfAMMmQxgNFbLz16ewEqahiYYT8vzew1IHcjJ1Y165M5UTbENb5n3dJ24k
+         kxqA==
+X-Gm-Message-State: APjAAAX+kGHw6qYwNcIPCIAbgM17lyiHVPh/qD8mC15U8cFFX3Ij61QJ
+        D4+f5ZSeYUoFEP3fmz575wgwXYvwuHo=
+X-Google-Smtp-Source: APXvYqyG8Uv9qqAEzfuwRYVShx38vJV1pUSPq3W7ZBAlPx5+N1oEiU4zijmswr1WDwZJj2S7mhEW8w==
+X-Received: by 2002:a1c:f704:: with SMTP id v4mr361727wmh.90.1567097450438;
+        Thu, 29 Aug 2019 09:50:50 -0700 (PDT)
+Received: from green.intra.ispras.ru (bran.ispras.ru. [83.149.199.196])
+        by smtp.googlemail.com with ESMTPSA id o14sm8340770wrg.64.2019.08.29.09.50.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Aug 2019 09:50:49 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Denis Efremov <efremov@linux.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Boris Pismenny <borisp@mellanox.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sean Paul <sean@poorly.run>, linux-arm-msm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-rdma@vger.kernel.org,
+        linux-wimax@intel.com, linux-xfs@vger.kernel.org,
+        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Joe Perches <joe@perches.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>, Michal Hocko <mhocko@suse.com>,
-        linux-xfs@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190829161627.GB18249@iweiny-DESK2.sc.intel.com>
-References: <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
- <20190821194810.GI8653@ziepe.ca>
- <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
- <20190823032345.GG1119@dread.disaster.area>
- <20190823120428.GA12968@ziepe.ca>
- <20190824001124.GI1119@dread.disaster.area>
- <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
- <20190826055510.GL1119@dread.disaster.area>
- <20190829020230.GA18249@iweiny-DESK2.sc.intel.com>
- <3e5c5053-a74a-509c-660c-a6075ed87f11@nvidia.com>
+        Andy Whitcroft <apw@canonical.com>
+Subject: [PATCH v3 01/11] checkpatch: check for nested (un)?likely() calls
+Date:   Thu, 29 Aug 2019 19:50:15 +0300
+Message-Id: <20190829165025.15750-1-efremov@linux.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3e5c5053-a74a-509c-660c-a6075ed87f11@nvidia.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 08:27:23PM -0700, John Hubbard wrote:
-> On 8/28/19 7:02 PM, Ira Weiny wrote:
-> > On Mon, Aug 26, 2019 at 03:55:10PM +1000, Dave Chinner wrote:
-> > > On Fri, Aug 23, 2019 at 10:08:36PM -0700, Ira Weiny wrote:
-> > > > On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
-> > > > > On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
-> ...
-> > > 
-> > > Sure, that part works because the struct file is passed. It doesn't
-> > > end up with the same fd number in the other process, though.
-> > > 
-> > > The issue is that layout leases need to notify userspace when they
-> > > are broken by the kernel, so a lease stores the owner pid/tid in the
-> > > file->f_owner field via __f_setown(). It also keeps a struct fasync
-> > > attached to the file_lock that records the fd that the lease was
-> > > created on.  When a signal needs to be sent to userspace for that
-> > > lease, we call kill_fasync() and that walks the list of fasync
-> > > structures on the lease and calls:
-> > > 
-> > > 	send_sigio(fown, fa->fa_fd, band);
-> > > 
-> > > And it does for every fasync struct attached to a lease. Yes, a
-> > > lease can track multiple fds, but it can only track them in a single
-> > > process context. The moment the struct file is shared with another
-> > > process, the lease is no longer capable of sending notifications to
-> > > all the lease holders.
-> > > 
-> > > Yes, you can change the owning process via F_SETOWNER, but that's
-> > > still only a single process context, and you can't change the fd in
-> > > the fasync list. You can add new fd to an existing lease by calling
-> > > F_SETLEASE on the new fd, but you still only have a single process
-> > > owner context for signal delivery.
-> > > 
-> > > As such, leases that require callbacks to userspace are currently
-> > > only valid within the process context the lease was taken in.
-> > 
-> > But for long term pins we are not requiring callbacks.
-> > 
-> 
-> Hi Ira,
-> 
-> If "require callbacks to userspace" means sending SIGIO, then actually
-> FOLL_LONGTERM *does* require those callbacks. Because we've been, so
-> far, equating FOLL_LONGTERM with the vaddr_pin struct and with a lease.
-> 
-> What am I missing here?
+IS_ERR(), IS_ERR_OR_NULL(), IS_ERR_VALUE() and WARN*() already contain
+unlikely() optimization internally. Thus, there is no point in calling
+these functions and defines under likely()/unlikely().
 
-We agreed back in June that the layout lease would have 2 "levels".  The
-"normal" layout lease would cause SIGIO and could be broken and another
-"exclusive" level which could _not_ be broken.
+This check is based on the coccinelle rule developed by Enrico Weigelt
+https://lore.kernel.org/lkml/1559767582-11081-1-git-send-email-info@metux.net/
 
-Because we _can't_ _trust_ user space to react to the SIGIO properly the
-"exclusive" lease is required to take the longterm pins.  Also this is the
-lease which causes the truncate to fail (return ETXTBSY) because the kernel
-can't break the lease.
+Signed-off-by: Denis Efremov <efremov@linux.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Whitcroft <apw@canonical.com>
+---
+ scripts/checkpatch.pl | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-The vaddr_pin struct in the current RFC is there for a couple of reasons.
-
-1) To ensure that we have a way to correlate the long term pin user with the
-   file if the data file FD's are closed.  (ie the application has zombie'd the
-   lease).
-
-2) And more importantly as a token the vaddr_pin*() callers use to be able to
-   properly ref count the file itself while in use.
-
-Ira
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 93a7edfe0f05..56969ce06df4 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6480,6 +6480,12 @@ sub process {
+ 			     "Using $1 should generally have parentheses around the comparison\n" . $herecurr);
+ 		}
+ 
++# nested likely/unlikely calls
++		if ($line =~ /\b(?:(?:un)?likely)\s*\(\s*!?\s*(IS_ERR(?:_OR_NULL|_VALUE)?|WARN)/) {
++			WARN("LIKELY_MISUSE",
++			     "nested (un)?likely() calls, $1 already uses unlikely() internally\n" . $herecurr);
++		}
++
+ # whine mightly about in_atomic
+ 		if ($line =~ /\bin_atomic\s*\(/) {
+ 			if ($realfile =~ m@^drivers/@) {
+-- 
+2.21.0
 
