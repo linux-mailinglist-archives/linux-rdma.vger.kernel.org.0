@@ -2,155 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A3DA267B
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 20:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7DEA2AF4
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2019 01:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbfH2SwR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Aug 2019 14:52:17 -0400
-Received: from mga17.intel.com ([192.55.52.151]:43358 "EHLO mga17.intel.com"
+        id S1726825AbfH2XeK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Aug 2019 19:34:10 -0400
+Received: from mga01.intel.com ([192.55.52.88]:30261 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727798AbfH2SwR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Aug 2019 14:52:17 -0400
+        id S1725847AbfH2XeK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 29 Aug 2019 19:34:10 -0400
 X-Amp-Result: UNKNOWN
 X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Aug 2019 11:52:15 -0700
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Aug 2019 16:34:09 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,444,1559545200"; 
-   d="scan'208";a="180965850"
+X-IronPort-AV: E=Sophos;i="5.64,445,1559545200"; 
+   d="scan'208";a="172060373"
 Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Aug 2019 11:52:15 -0700
-Date:   Thu, 29 Aug 2019 11:52:15 -0700
+  by orsmga007.jf.intel.com with ESMTP; 29 Aug 2019 16:34:08 -0700
+Date:   Thu, 29 Aug 2019 16:34:08 -0700
 From:   Ira Weiny <ira.weiny@intel.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
-        linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
         John Hubbard <jhubbard@nvidia.com>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
         linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 06/19] fs/ext4: Teach dax_layout_busy_page() to
- operate on a sub-range
-Message-ID: <20190829185215.GC18249@iweiny-DESK2.sc.intel.com>
+Subject: Re: [RFC PATCH v2 02/19] fs/locks: Add Exclusive flag to user Layout
+ lease
+Message-ID: <20190829233408.GD18249@iweiny-DESK2.sc.intel.com>
 References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-7-ira.weiny@intel.com>
- <20190823151826.GB11009@redhat.com>
+ <20190809225833.6657-3-ira.weiny@intel.com>
+ <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
+ <20190814215630.GQ6129@dread.disaster.area>
+ <e6f4f619967f4551adb5003d0364770fde2b8110.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190823151826.GB11009@redhat.com>
+In-Reply-To: <e6f4f619967f4551adb5003d0364770fde2b8110.camel@kernel.org>
 User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 11:18:26AM -0400, Vivek Goyal wrote:
-> On Fri, Aug 09, 2019 at 03:58:20PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
+Missed this.  sorry.
+
+On Mon, Aug 26, 2019 at 06:41:07AM -0400, Jeff Layton wrote:
+> On Thu, 2019-08-15 at 07:56 +1000, Dave Chinner wrote:
+> > On Wed, Aug 14, 2019 at 10:15:06AM -0400, Jeff Layton wrote:
+> > > On Fri, 2019-08-09 at 15:58 -0700, ira.weiny@intel.com wrote:
+> > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > > 
+> > > > Add an exclusive lease flag which indicates that the layout mechanism
+> > > > can not be broken.
+> > > > 
+> > > > Exclusive layout leases allow the file system to know that pages may be
+> > > > GUP pined and that attempts to change the layout, ie truncate, should be
+> > > > failed.
+> > > > 
+> > > > A process which attempts to break it's own exclusive lease gets an
+> > > > EDEADLOCK return to help determine that this is likely a programming bug
+> > > > vs someone else holding a resource.
+> > .....
+> > > > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
+> > > > index baddd54f3031..88b175ceccbc 100644
+> > > > --- a/include/uapi/asm-generic/fcntl.h
+> > > > +++ b/include/uapi/asm-generic/fcntl.h
+> > > > @@ -176,6 +176,8 @@ struct f_owner_ex {
+> > > >  
+> > > >  #define F_LAYOUT	16      /* layout lease to allow longterm pins such as
+> > > >  				   RDMA */
+> > > > +#define F_EXCLUSIVE	32      /* layout lease is exclusive */
+> > > > +				/* FIXME or shoudl this be F_EXLCK??? */
+> > > >  
+> > > >  /* operations for bsd flock(), also used by the kernel implementation */
+> > > >  #define LOCK_SH		1	/* shared lock */
+> > > 
+> > > This interface just seems weird to me. The existing F_*LCK values aren't
+> > > really set up to be flags, but are enumerated values (even if there are
+> > > some gaps on some arches). For instance, on parisc and sparc:
 > > 
-> > Callers of dax_layout_busy_page() are only rarely operating on the
-> > entire file of concern.
+> > I don't think we need to worry about this - the F_WRLCK version of
+> > the layout lease should have these exclusive access semantics (i.e
+> > other ops fail rather than block waiting for lease recall) and hence
+> > the API shouldn't need a new flag to specify them.
 > > 
-> > Teach dax_layout_busy_page() to operate on a sub-range of the
-> > address_space provided.  Specifying 0 - ULONG_MAX however, will continue
-> > to operate on the "entire file" and XFS is split out to a separate patch
-> > by this method.
+> > i.e. the primary difference between F_RDLCK and F_WRLCK layout
+> > leases is that the F_RDLCK is a shared, co-operative lease model
+> > where only delays in operations will be seen, while F_WRLCK is a
+> > "guarantee exclusive access and I don't care what it breaks"
+> > model... :)
 > > 
-> > This could potentially speed up dax_layout_busy_page() as well.
 > 
-> I need this functionality as well for virtio_fs and posted a patch for
-> this.
+> Not exactly...
 > 
-> https://lkml.org/lkml/2019/8/21/825
+> F_WRLCK and F_RDLCK leases can both be broken, and will eventually time
+> out if there is conflicting access. The F_EXCLUSIVE flag on the other
+> hand is there to prevent any sort of lease break from 
+
+Right EXCLUSIVE will not break for any reason.  It will fail truncate and hole
+punch as we discussed back in June.  This is for the use case where the user
+has handed this file/pages off to some hardware for which removing the lease
+would be impossible.  _And_ we don't anticipate any valid use case that someone
+will need to truncate short of killing the process to free up file system
+space.
+
 > 
-> Given this is an optimization which existing users can benefit from already,
-> this patch could probably be pushed upstream independently.
-
-I'm ok with that.
-
-However, this patch does not apply cleanly to head as I had some other
-additions to dax.h.
-
+> I'm guessing what Ira really wants with the F_EXCLUSIVE flag is
+> something akin to what happens when we set fl_break_time to 0 in the
+> nfsd code. nfsd never wants the locks code to time out a lease of any
+> sort, since it handles that timeout itself.
 > 
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > ---
-> > Changes from RFC v1
-> > 	Fix 0-day build errors
-> > 
-> >  fs/dax.c            | 15 +++++++++++----
-> >  fs/ext4/ext4.h      |  2 +-
-> >  fs/ext4/extents.c   |  6 +++---
-> >  fs/ext4/inode.c     | 19 ++++++++++++-------
-> >  fs/xfs/xfs_file.c   |  3 ++-
-> >  include/linux/dax.h |  6 ++++--
-> >  6 files changed, 33 insertions(+), 18 deletions(-)
-> > 
-> > diff --git a/fs/dax.c b/fs/dax.c
-> > index a14ec32255d8..3ad19c384454 100644
-> > --- a/fs/dax.c
-> > +++ b/fs/dax.c
-> > @@ -573,8 +573,11 @@ bool dax_mapping_is_dax(struct address_space *mapping)
-> >  EXPORT_SYMBOL_GPL(dax_mapping_is_dax);
-> >  
-> >  /**
-> > - * dax_layout_busy_page - find first pinned page in @mapping
-> > + * dax_layout_busy_page - find first pinned page in @mapping within
-> > + *                        the range @off - @off + @len
-> >   * @mapping: address space to scan for a page with ref count > 1
-> > + * @off: offset to start at
-> > + * @len: length to scan through
-> >   *
-> >   * DAX requires ZONE_DEVICE mapped pages. These pages are never
-> >   * 'onlined' to the page allocator so they are considered idle when
-> > @@ -587,9 +590,13 @@ EXPORT_SYMBOL_GPL(dax_mapping_is_dax);
-> >   * to be able to run unmap_mapping_range() and subsequently not race
-> >   * mapping_mapped() becoming true.
-> >   */
-> > -struct page *dax_layout_busy_page(struct address_space *mapping)
-> > +struct page *dax_layout_busy_page(struct address_space *mapping,
-> > +				  loff_t off, loff_t len)
-> >  {
-> > -	XA_STATE(xas, &mapping->i_pages, 0);
-> > +	unsigned long start_idx = off >> PAGE_SHIFT;
-> > +	unsigned long end_idx = (len == ULONG_MAX) ? ULONG_MAX
-> > +				: start_idx + (len >> PAGE_SHIFT);
-> > +	XA_STATE(xas, &mapping->i_pages, start_idx);
-> >  	void *entry;
-> >  	unsigned int scanned = 0;
-> >  	struct page *page = NULL;
-> > @@ -612,7 +619,7 @@ struct page *dax_layout_busy_page(struct address_space *mapping)
-> >  	unmap_mapping_range(mapping, 0, 0, 1);
-> 
-> Should we unmap only those pages which fall in the range specified by caller.
-> Unmapping whole file seems to be less efficient.
+> If you're going to add this functionality, it'd be good to also convert
+> knfsd to use it as well, so we don't end up with multiple ways to deal
+> with that situation.
 
-Seems reasonable to me.  I was focused on getting pages which were busy not
-necessarily on what got unmapped.  So I did not consider this.  Thanks for the
-suggestion.
+Could you point me at the source for knfsd?  I looked in 
 
-However, I don't understand the math you do for length?  Is this comment/code
-correct?
+git://git.linux-nfs.org/projects/steved/nfs-utils.git
 
-+  /* length is being calculated from lstart and not start.
-+   * This is due to behavior of unmap_mapping_range(). If
-+   * start is say 4094 and end is on 4093 then want to
-+   * unamp two pages, idx 0 and 1. But unmap_mapping_range()
-+   * will unmap only page at idx 0. If we calculate len
-+   * from the rounded down start, this problem should not
-+   * happen.
-+   */
-+  len = end - lstart + 1;
+but I don't see anywhere leases are used in that source?
 
-
-How can end (4093) be < start (4094)?  Is that valid?  And why would a start of
-4094 unmap idx 0?
-
+Thanks,
 Ira
 
