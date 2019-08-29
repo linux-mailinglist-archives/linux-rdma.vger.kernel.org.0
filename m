@@ -2,325 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE46AA1C94
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 16:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 911CCA1CAE
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 16:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbfH2OVK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Aug 2019 10:21:10 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:60595 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727001AbfH2OVK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Aug 2019 10:21:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1567088467; x=1598624467;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=ULPu82uL7J1zB7hXtY/qlVoaaYVMW8jQsw2vIz/J2wI=;
-  b=nAyZwzRLOk1PuXFWAu+I5t8/cuyKe1YLXJyAazuBS8lbtPdXA+A9mceN
-   dbPZAOeasklC3e+wOODTEg3sYpF3aXleBb6DgBbR2+hNLft8+YlCyMMmt
-   IH8exBn6kKqPmpp+qDtKWEN39yleygQ4y/vWJgKfGuCLFoLrklJh/hOgU
-   s=;
-X-IronPort-AV: E=Sophos;i="5.64,443,1559520000"; 
-   d="scan'208";a="747997851"
-Received: from iad6-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.124.125.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 29 Aug 2019 14:21:05 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 873621A589D;
-        Thu, 29 Aug 2019 14:21:04 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 29 Aug 2019 14:21:04 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.100) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 29 Aug 2019 14:20:58 +0000
-Subject: Re: [PATCH v8 rdma-next 3/7] RDMA/efa: Use the common mmap_xa helpers
-To:     Michal Kalderon <michal.kalderon@marvell.com>
-CC:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
-        <dledford@redhat.com>, <bmt@zurich.ibm.com>, <sleybo@amazon.com>,
-        <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        Ariel Elior <ariel.elior@marvell.com>
-References: <20190827132846.9142-1-michal.kalderon@marvell.com>
- <20190827132846.9142-4-michal.kalderon@marvell.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <c8781373-53ec-649e-1f1d-56cc17c229f9@amazon.com>
-Date:   Thu, 29 Aug 2019 17:20:53 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190827132846.9142-4-michal.kalderon@marvell.com>
-Content-Type: text/plain; charset="utf-8"
+        id S1727069AbfH2O2A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Aug 2019 10:28:00 -0400
+Received: from mail-eopbgr30049.outbound.protection.outlook.com ([40.107.3.49]:47428
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726973AbfH2O2A (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 29 Aug 2019 10:28:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kUW2+aSFB0SvC3sfUeYPNaMhjz4emA7rkLAgzXHmKfbfWmGjghkge6Ps0N3DU20GlPUq5QgfN1oOBaD0+l1rneMvo2aPBPKWGknVYa0Jrv1ukET0Yl+L/TPKjLKDX3pfDxWZQwZ0kLgu+hOB4lwJT6Y9VyV29H5Y22d/Fa/f5+0fYWWpJcb2m1qSl1oBnQf4vHDrbNy5ooOnUQ85juWQ3zE+FGbrRbr+Bpk3jMPvfnh2QAYwpB/3LdpbXgQm1CtvRAlU3svf2Cu+a1K7i3z/U6iwarXafipQxGepWqL0A/wI9iyA6XkV4YiqmZkyoXLtOJl/JkHU9/kKniIG7GF8kQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BTFVCfx5njWtXStqmJg3If+nfp0248wgwHmlw3dgU10=;
+ b=JPEiKYbSxq9rvJqlxDfayBO+wy8QzeYj1c9v2WPAG1wr6aLFcY1Fl7s59NqTv67uRqvxbL1c1U/2NJUHLTWJx67bnF6v89nvOK0GW51IldtadoDfnNQLwXqmPb/v8Cfa3yOWm9jItzGt/8a2jbH/8Rbq3Li0eRYHptql1hdcru4dMuoSqb+ZKnKX6/wsHGs8+j3PTddrMJnOazlJNzSJY30l9oCBX2eM8Beb9T6cDYH/UcrVI/+RcT8wLtEFcSS392e2xT0yX/qApyTXaWKzYoDjxLZeWfo2xuOprtV1Xv3xjnYfeJJuSRD8kD6CyI2TYQU4MDzZezEw4EU5Bo5MWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BTFVCfx5njWtXStqmJg3If+nfp0248wgwHmlw3dgU10=;
+ b=MkaYYpigSIT8gbOXufNRgMpP+Qe3FAQmhuIabNFKjbM5OoaDLaapc2Dt67rWG3dyo7CXjjUsV3CPHIOSIywbAyXqZsogBV+w7YZy4DqLszXq0WlQp7C5qcOLRl5/ivnvOL//aB47vHxL0uCcrLc7sCTJLPTS0z/vtWYGgTISKX4=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
+ VI1PR05MB6350.eurprd05.prod.outlook.com (20.179.25.202) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2199.21; Thu, 29 Aug 2019 14:27:13 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1d6:9c67:ea2d:38a7]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1d6:9c67:ea2d:38a7%6]) with mapi id 15.20.2199.021; Thu, 29 Aug 2019
+ 14:27:13 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Yuval Shaia <yuval.shaia@oracle.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "oulijun@huawei.com" <oulijun@huawei.com>,
+        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        "swise@opengridcomputing.com" <swise@opengridcomputing.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        Israel Rukshin <israelr@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        Denis Drozdov <denisd@mellanox.com>,
+        Yuval Avnery <yuvalav@mellanox.com>,
+        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>,
+        Erez Alfasi <ereza@mellanox.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "srabinov7@gmail.com" <srabinov7@gmail.com>,
+        "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Subject: Re: [PATCH v1 5/5] RDMA/nldev: ib_pd can be pointed by multiple
+ ib_ucontext
+Thread-Topic: [PATCH v1 5/5] RDMA/nldev: ib_pd can be pointed by multiple
+ ib_ucontext
+Thread-Index: AQHVXYFEn/7D2acVzkGMw1QsYEJ+MqcQlNSAgABU1wCAAAjPAIAAxOiAgAB5SAA=
+Date:   Thu, 29 Aug 2019 14:27:13 +0000
+Message-ID: <20190829142708.GD17101@mellanox.com>
+References: <20190828091533.3129-1-yuval.shaia@oracle.com>
+ <20190828091533.3129-6-yuval.shaia@oracle.com>
+ <20190828135307.GH914@mellanox.com> <20190828185645.GA4799@lap1>
+ <20190828192818.GR914@mellanox.com> <20190829071303.GA3339@lap1>
+In-Reply-To: <20190829071303.GA3339@lap1>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.100]
-X-ClientProxiedBy: EX13D30UWC003.ant.amazon.com (10.43.162.122) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: YTOPR0101CA0055.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:14::32) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:4d::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.167.216.168]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8f63e267-0fba-465d-2cdb-08d72c8cfc14
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6350;
+x-ms-traffictypediagnostic: VI1PR05MB6350:
+x-ld-processed: a652971c-7d2e-4d9b-a6a4-d149256f461b,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB6350E7D23068F1C607722517CFA20@VI1PR05MB6350.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:962;
+x-forefront-prvs: 0144B30E41
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(136003)(396003)(376002)(39860400002)(189003)(199004)(316002)(6246003)(2906002)(54906003)(52116002)(4326008)(478600001)(66066001)(8936002)(6506007)(1076003)(36756003)(6512007)(53936002)(66476007)(66946007)(64756008)(66446008)(71200400001)(71190400001)(386003)(76176011)(66556008)(6116002)(3846002)(99286004)(102836004)(81156014)(81166006)(229853002)(25786009)(26005)(33656002)(6436002)(5660300002)(305945005)(7736002)(8676002)(6486002)(186003)(256004)(7416002)(446003)(486006)(2616005)(86362001)(11346002)(476003)(6916009)(14454004);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6350;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: qIV2SkswOhiXOr6fOGrl/N3RTj7JT48tpi11M+V9tivwlyFcq7RC8SFhR8+41vFOAx+vSs4yhOszOa/xuDDXKANgVqDNrXeUrID6qWkijSqohFfhWrZKjlLHJGGF9/f0frBq5ddprz0wmNPe/vZEYf5qHDYh4+F0PkRLoL35/lTJTGOxz7QIBmMKvCXPg1/6VowmSggZt7lYlywLMoVpstJjW0b70BY64OjTYWTi56DhC0qVaOJxoVVE5BTU1ci6S1s8drMDy4NsVMn4gh+Sp4NH9YVx1oFMRia8hTGGJfyaNz8p97jvDopdkTAlCzZhyZrLn3+taBvs/5YmIZSUjVRdodWZK+eDODj4yFGiDVM2h/oX3uktSN9ybgtHoolZecc9w9doGpjVUISjfoEoKsiw/Cvm3EgLa7b5/5M/VEs=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9379576F1BB53E48B57104B94D99E62B@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f63e267-0fba-465d-2cdb-08d72c8cfc14
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Aug 2019 14:27:13.4677
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zVDIFvNqBXEUqjNI87WcO/akihJ3OmuSYCJVENJEvP+k+POVxAbosc02jh/uL+Hm846yW8eqFPKsWMxko2BwLQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6350
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 27/08/2019 16:28, Michal Kalderon wrote:
-> +static void efa_qp_user_mmap_entries_remove(struct efa_ucontext *ucontext,
-> +					    struct efa_qp *qp)
-> +{
-> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->sq_db_mmap_key);
-> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
-> +				    qp->llq_desc_mmap_key);
-> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->rq_mmap_key);
-> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->rq_db_mmap_key);
+On Thu, Aug 29, 2019 at 10:13:03AM +0300, Yuval Shaia wrote:
+> On Wed, Aug 28, 2019 at 07:28:23PM +0000, Jason Gunthorpe wrote:
+> > On Wed, Aug 28, 2019 at 09:56:46PM +0300, Yuval Shaia wrote:
+> > > On Wed, Aug 28, 2019 at 01:53:12PM +0000, Jason Gunthorpe wrote:
+> > > > On Wed, Aug 28, 2019 at 12:15:33PM +0300, Yuval Shaia wrote:
+> > > > >  static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_n=
+et_admin,
+> > > > >  			     struct rdma_restrack_entry *res, uint32_t port)
+> > > > >  {
+> > > > >  	struct ib_pd *pd =3D container_of(res, struct ib_pd, res);
+> > > > >  	struct ib_device *dev =3D pd->device;
+> > > > > +	struct nlattr *table_attr =3D NULL;
+> > > > > +	struct nlattr *entry_attr =3D NULL;
+> > > > > +	struct context_id *ctx_id;
+> > > > > +	struct context_id *tmp;
+> > > > > +	LIST_HEAD(pd_context_ids);
+> > > > > +	int ctx_count =3D 0;
+> > > > > =20
+> > > > >  	if (has_cap_net_admin) {
+> > > > >  		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_LOCAL_DMA_LKEY,
+> > > > > @@ -633,10 +709,38 @@ static int fill_res_pd_entry(struct sk_buff=
+ *msg, bool has_cap_net_admin,
+> > > > >  	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, res->id))
+> > > > >  		goto err;
+> > > > > =20
+> > > > > -	if (!rdma_is_kernel_res(res) &&
+> > > > > -	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
+> > > > > -			pd->uobject->context->res.id))
+> > > > > -		goto err;
+> > > >=20
+> > > > How do earlier patches compile?
+> > >=20
+> > > They did not
+> >=20
+> > That is not OK
+>=20
+> Sorry, i probably misunderstood you, what patches are you referring to?
 
-Please remove the entries in reverse insertion order.
+Just make sure every patch in the series compiles.
 
-> +}
-> +
->  static int qp_mmap_entries_setup(struct efa_qp *qp,
->  				 struct efa_dev *dev,
->  				 struct efa_ucontext *ucontext,
->  				 struct efa_com_create_qp_params *params,
->  				 struct efa_ibv_create_qp_resp *resp)
->  {
-> -	/*
-> -	 * Once an entry is inserted it might be mmapped, hence cannot be
-> -	 * cleaned up until dealloc_ucontext.
-> -	 */
-> -	resp->sq_db_mmap_key =
-> -		mmap_entry_insert(dev, ucontext, qp,
-> -				  dev->db_bar_addr + resp->sq_db_offset,
-> -				  PAGE_SIZE, EFA_MMAP_IO_NC);
-> -	if (resp->sq_db_mmap_key == EFA_MMAP_INVALID)
-> -		return -ENOMEM;
-> +	u64 address;
-> +	u64 length;
-> +	int err;
-> +
-> +	err = efa_user_mmap_entry_insert(&ucontext->ibucontext,
-> +					 dev->db_bar_addr +
-> +					 resp->sq_db_offset,
-> +					 PAGE_SIZE, EFA_MMAP_IO_NC,
-> +					 &qp->sq_db_mmap_key);
-> +	if (err)
-> +		return err;
->  
-> +	resp->sq_db_mmap_key = qp->sq_db_mmap_key;
->  	resp->sq_db_offset &= ~PAGE_MASK;
->  
-> -	resp->llq_desc_mmap_key =
-> -		mmap_entry_insert(dev, ucontext, qp,
-> -				  dev->mem_bar_addr + resp->llq_desc_offset,
-> -				  PAGE_ALIGN(params->sq_ring_size_in_bytes +
-> -					     (resp->llq_desc_offset & ~PAGE_MASK)),
-> -				  EFA_MMAP_IO_WC);
-> -	if (resp->llq_desc_mmap_key == EFA_MMAP_INVALID)
-> -		return -ENOMEM;
-> +	address = dev->mem_bar_addr + resp->llq_desc_offset;
-> +	length = PAGE_ALIGN(params->sq_ring_size_in_bytes +
-> +			    (resp->llq_desc_offset & ~PAGE_MASK));
-> +
-> +	err = efa_user_mmap_entry_insert(&ucontext->ibucontext,
-> +					 address,
-> +					 length,
-> +					 EFA_MMAP_IO_WC,
-> +					 &qp->llq_desc_mmap_key);
-> +	if (err)
-> +		goto err1;
->  
-> +	resp->llq_desc_mmap_key = qp->llq_desc_mmap_key;
->  	resp->llq_desc_offset &= ~PAGE_MASK;
->  
->  	if (qp->rq_size) {
-> -		resp->rq_db_mmap_key =
-> -			mmap_entry_insert(dev, ucontext, qp,
-> -					  dev->db_bar_addr + resp->rq_db_offset,
-> -					  PAGE_SIZE, EFA_MMAP_IO_NC);
-> -		if (resp->rq_db_mmap_key == EFA_MMAP_INVALID)
-> -			return -ENOMEM;
-> +		address = dev->db_bar_addr + resp->rq_db_offset;
->  
-> +		err = efa_user_mmap_entry_insert(&ucontext->ibucontext,
-> +						 address, PAGE_SIZE,
-> +						 EFA_MMAP_IO_NC,
-> +						 &qp->rq_db_mmap_key);
-> +		if (err)
-> +			goto err2;
-> +
-> +		resp->rq_db_mmap_key = qp->rq_db_mmap_key;
->  		resp->rq_db_offset &= ~PAGE_MASK;
->  
-> -		resp->rq_mmap_key =
-> -			mmap_entry_insert(dev, ucontext, qp,
-> -					  virt_to_phys(qp->rq_cpu_addr),
-> -					  qp->rq_size, EFA_MMAP_DMA_PAGE);
-> -		if (resp->rq_mmap_key == EFA_MMAP_INVALID)
-> -			return -ENOMEM;
-> +		address = virt_to_phys(qp->rq_cpu_addr);
-> +		err = efa_user_mmap_entry_insert(&ucontext->ibucontext,
-> +						 address, qp->rq_size,
-> +						 EFA_MMAP_DMA_PAGE,
-> +						 &qp->rq_mmap_key);
-> +		if (err)
-> +			goto err3;
->  
-> +		resp->rq_mmap_key = qp->rq_mmap_key;
->  		resp->rq_mmap_size = qp->rq_size;
->  	}
->  
->  	return 0;
-> +
-> +err3:
-> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->rq_db_mmap_key);
-> +
-> +err2:
-> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
-> +				    qp->llq_desc_mmap_key);
-> +
-> +err1:
-> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp->sq_db_mmap_key);
-
-I prefer meaningful goto labels, e.g err_remove_sq_db instead of err1.
-
-> +
-> +	/* If any error occurred, we init the keys back to invalid */
-> +	efa_qp_init_keys(qp);
-> +
-> +	return err;
->  }
->  
->  static int efa_qp_validate_cap(struct efa_dev *dev,
-> @@ -634,7 +594,6 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
->  	struct efa_dev *dev = to_edev(ibpd->device);
->  	struct efa_ibv_create_qp_resp resp = {};
->  	struct efa_ibv_create_qp cmd = {};
-> -	bool rq_entry_inserted = false;
->  	struct efa_ucontext *ucontext;
->  	struct efa_qp *qp;
->  	int err;
-> @@ -687,6 +646,7 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
->  		goto err_out;
->  	}
->  
-> +	efa_qp_init_keys(qp);
->  	create_qp_params.uarn = ucontext->uarn;
->  	create_qp_params.pd = to_epd(ibpd)->pdn;
->  
-> @@ -742,7 +702,6 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
->  	if (err)
->  		goto err_destroy_qp;
->  
-> -	rq_entry_inserted = true;
->  	qp->qp_handle = create_qp_resp.qp_handle;
->  	qp->ibqp.qp_num = create_qp_resp.qp_num;
->  	qp->ibqp.qp_type = init_attr->qp_type;
-> @@ -759,7 +718,7 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
->  			ibdev_dbg(&dev->ibdev,
->  				  "Failed to copy udata for qp[%u]\n",
->  				  create_qp_resp.qp_num);
-> -			goto err_destroy_qp;
-> +			goto err_remove_mmap_entries;
->  		}
->  	}
->  
-> @@ -767,15 +726,17 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
->  
->  	return &qp->ibqp;
->  
-> +err_remove_mmap_entries:
-> +	efa_qp_user_mmap_entries_remove(ucontext, qp);
->  err_destroy_qp:
->  	efa_destroy_qp_handle(dev, create_qp_resp.qp_handle);
->  err_free_mapped:
-> -	if (qp->rq_size) {
-> +	if (qp->rq_dma_addr)
-
-What's the difference?
-
->  		dma_unmap_single(&dev->pdev->dev, qp->rq_dma_addr, qp->rq_size,
->  				 DMA_TO_DEVICE);
-> -		if (!rq_entry_inserted)
-> -			free_pages_exact(qp->rq_cpu_addr, qp->rq_size);
-> -	}
-> +
-> +	if (qp->rq_mmap_key == RDMA_USER_MMAP_INVALID)
-> +		free_pages_exact(qp->rq_cpu_addr, qp->rq_size);
-
-This should be inside the previous if statement, otherwise it might try to free
-pages that weren't allocated.
-
->  err_free_qp:
->  	kfree(qp);
->  err_out:
-> @@ -887,6 +848,7 @@ static int efa_destroy_cq_idx(struct efa_dev *dev, int cq_idx)
->  
->  void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
->  {
-> +	struct efa_ucontext *ucontext;
-
-Reverse xmas tree.
-
->  	struct efa_dev *dev = to_edev(ibcq->device);
->  	struct efa_cq *cq = to_ecq(ibcq);
->  
-> @@ -894,20 +856,33 @@ void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
->  		  "Destroy cq[%d] virt[0x%p] freed: size[%lu], dma[%pad]\n",
->  		  cq->cq_idx, cq->cpu_addr, cq->size, &cq->dma_addr);
->  
-> +	ucontext = rdma_udata_to_drv_context(udata, struct efa_ucontext,
-> +					     ibucontext);
->  	efa_destroy_cq_idx(dev, cq->cq_idx);
->  	dma_unmap_single(&dev->pdev->dev, cq->dma_addr, cq->size,
->  			 DMA_FROM_DEVICE);
-> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
-> +				    cq->mmap_key);
-
-Entry removal should be first.
-
->  }
->  
->  static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
->  		      struct vm_area_struct *vma, u64 key, u64 length)
->  {
-> -	struct efa_mmap_entry *entry;
-> +	struct rdma_user_mmap_entry *rdma_entry;
-> +	struct efa_user_mmap_entry *entry;
->  	unsigned long va;
->  	u64 pfn;
->  	int err;
->  
-> -	entry = mmap_entry_get(dev, ucontext, key, length);
-> -	if (!entry) {
-> +	rdma_entry = rdma_user_mmap_entry_get(&ucontext->ibucontext, key,
-> +					      length, vma);
-> +	if (!rdma_entry) {
->  		ibdev_dbg(&dev->ibdev, "key[%#llx] does not have valid entry\n",
->  			  key);
->  		return -EINVAL;
->  	}
-> +	entry = to_emmap(rdma_entry);
-> +	if (entry->length != length) {
-> +		ibdev_dbg(&dev->ibdev,
-> +			  "key[%#llx] does not have valid length[%#llx] expected[%#llx]\n",
-> +			  key, length, entry->length);
-
-Need to put the entry.
-
-> +		return -EINVAL;
-> +	}
->  
->  	ibdev_dbg(&dev->ibdev,
->  		  "Mapping address[%#llx], length[%#llx], mmap_flag[%d]\n",
-> -		  entry->address, length, entry->mmap_flag);
-> +		  entry->address, entry->length, entry->mmap_flag);
->  
->  	pfn = entry->address >> PAGE_SHIFT;
->  	switch (entry->mmap_flag) {
-> @@ -1637,6 +1630,10 @@ static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
->  			&dev->ibdev,
->  			"Couldn't mmap address[%#llx] length[%#llx] mmap_flag[%d] err[%d]\n",
->  			entry->address, length, entry->mmap_flag, err);
-> +
-> +		rdma_user_mmap_entry_put(&ucontext->ibucontext,
-> +					 rdma_entry);
-> +
->  		return err;
->  	}
->  
+Jason
