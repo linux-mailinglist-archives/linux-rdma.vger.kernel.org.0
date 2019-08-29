@@ -2,124 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BADAA0FEF
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 05:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C9CA1266
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 09:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbfH2D3Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Aug 2019 23:29:24 -0400
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:13912 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbfH2D3Y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Aug 2019 23:29:24 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d6746950001>; Wed, 28 Aug 2019 20:29:25 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 28 Aug 2019 20:29:23 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 28 Aug 2019 20:29:23 -0700
-Received: from [10.2.174.243] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Aug
- 2019 03:29:22 +0000
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-To:     Ira Weiny <ira.weiny@intel.com>, Dave Chinner <david@fromorbit.com>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>, Michal Hocko <mhocko@suse.com>,
-        <linux-xfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-ext4@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
- <20190821181343.GH8653@ziepe.ca>
- <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
- <20190821194810.GI8653@ziepe.ca>
- <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
- <20190823032345.GG1119@dread.disaster.area> <20190823120428.GA12968@ziepe.ca>
- <20190824001124.GI1119@dread.disaster.area>
- <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
- <20190826055510.GL1119@dread.disaster.area>
- <20190829020230.GA18249@iweiny-DESK2.sc.intel.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <3e5c5053-a74a-509c-660c-a6075ed87f11@nvidia.com>
-Date:   Wed, 28 Aug 2019 20:27:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727235AbfH2HNp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Aug 2019 03:13:45 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:42654 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbfH2HNo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Aug 2019 03:13:44 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7T78vj8111354;
+        Thu, 29 Aug 2019 07:13:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=diKMxoXhC0X0aiYXZ1e+L4ZndxdFHw7IHHrWXgxrw4E=;
+ b=LuDOIuuL2DU9i305Lr0zwWscoEo3G3zJwdF+aJPuXjNGRTu5L+MoZL8THdS1HWedJbrw
+ 7tp7h4DXK3FY3C8MYhdfXLGU9WaVrZfYJrMqlRRZxu9bMFu2/z4W9m1AMbiifHuZ4WPQ
+ zqhqz0t4KhnUht/dVzBkscXQvFVRrFTtLQMqol4LO1hwaRuA8K15kdqQPfY2jhgrNuUQ
+ Lmfw2kg9/K/pNT+Z3zEKF9Rk9yUym4wWCDgR01w1fA1bJUnwykw5IhssKvKHOdduh2mZ
+ ZHx/iLKBF/lQH2ECCprq2lrPLCFhy1Y6ZsFXi1JKeTmhd7NpBy8M93SJ1g/FdSBcYCVi Rg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2up9x6r3gs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Aug 2019 07:13:13 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7T7D76W184357;
+        Thu, 29 Aug 2019 07:13:13 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2unvtygbqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Aug 2019 07:13:13 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7T7DBWK021505;
+        Thu, 29 Aug 2019 07:13:11 GMT
+Received: from lap1 (/77.138.183.59)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Aug 2019 00:13:10 -0700
+Date:   Thu, 29 Aug 2019 10:13:03 +0300
+From:   Yuval Shaia <yuval.shaia@oracle.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     "dledford@redhat.com" <dledford@redhat.com>,
+        "oulijun@huawei.com" <oulijun@huawei.com>,
+        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Parav Pandit <parav@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        "swise@opengridcomputing.com" <swise@opengridcomputing.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        Israel Rukshin <israelr@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        Denis Drozdov <denisd@mellanox.com>,
+        Yuval Avnery <yuvalav@mellanox.com>,
+        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>,
+        Erez Alfasi <ereza@mellanox.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "srabinov7@gmail.com" <srabinov7@gmail.com>,
+        "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Subject: Re: [PATCH v1 5/5] RDMA/nldev: ib_pd can be pointed by multiple
+ ib_ucontext
+Message-ID: <20190829071303.GA3339@lap1>
+References: <20190828091533.3129-1-yuval.shaia@oracle.com>
+ <20190828091533.3129-6-yuval.shaia@oracle.com>
+ <20190828135307.GH914@mellanox.com>
+ <20190828185645.GA4799@lap1>
+ <20190828192818.GR914@mellanox.com>
 MIME-Version: 1.0
-In-Reply-To: <20190829020230.GA18249@iweiny-DESK2.sc.intel.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1567049365; bh=U2zxSkDmfFQFUW8ITCuFuqzogPoHzY3eUcatrjlA5a8=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=br5k4UQ1c3ttyAEINc727xSgtnH39dAWjWSCaXGTLwro1CU1YneuoppDXhLMmA4uD
-         aDQ3MTA6HOZLsrWjeRsmclmc+9VuPFDc3mjUYq5LVFTaiCoeFJ5fy4G3b324J/gsUa
-         1/2Te/7AfanbM290SQcF7x/TWeee+3u45vwvCyED11F/dogTN4V6SByz3yIloOJ3jT
-         cLvs8UFo3vWu0RzGtWuxTuxbTth7a/DwXWriVQxLCn7BVTFeq34iQK1UkdryZj/+oB
-         pVGut1zha9UABjnIclmX/RBYsT1gxtKg14OYbEVTjMUr+uzTVtNuUOwSxrEb1ZPXtX
-         CMDU/9O7s997Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190828192818.GR914@mellanox.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9363 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908290079
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9363 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908290078
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/28/19 7:02 PM, Ira Weiny wrote:
-> On Mon, Aug 26, 2019 at 03:55:10PM +1000, Dave Chinner wrote:
->> On Fri, Aug 23, 2019 at 10:08:36PM -0700, Ira Weiny wrote:
->>> On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
->>>> On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
-...
->>
->> Sure, that part works because the struct file is passed. It doesn't
->> end up with the same fd number in the other process, though.
->>
->> The issue is that layout leases need to notify userspace when they
->> are broken by the kernel, so a lease stores the owner pid/tid in the
->> file->f_owner field via __f_setown(). It also keeps a struct fasync
->> attached to the file_lock that records the fd that the lease was
->> created on.  When a signal needs to be sent to userspace for that
->> lease, we call kill_fasync() and that walks the list of fasync
->> structures on the lease and calls:
->>
->> 	send_sigio(fown, fa->fa_fd, band);
->>
->> And it does for every fasync struct attached to a lease. Yes, a
->> lease can track multiple fds, but it can only track them in a single
->> process context. The moment the struct file is shared with another
->> process, the lease is no longer capable of sending notifications to
->> all the lease holders.
->>
->> Yes, you can change the owning process via F_SETOWNER, but that's
->> still only a single process context, and you can't change the fd in
->> the fasync list. You can add new fd to an existing lease by calling
->> F_SETLEASE on the new fd, but you still only have a single process
->> owner context for signal delivery.
->>
->> As such, leases that require callbacks to userspace are currently
->> only valid within the process context the lease was taken in.
+On Wed, Aug 28, 2019 at 07:28:23PM +0000, Jason Gunthorpe wrote:
+> On Wed, Aug 28, 2019 at 09:56:46PM +0300, Yuval Shaia wrote:
+> > On Wed, Aug 28, 2019 at 01:53:12PM +0000, Jason Gunthorpe wrote:
+> > > On Wed, Aug 28, 2019 at 12:15:33PM +0300, Yuval Shaia wrote:
+> > > >  static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
+> > > >  			     struct rdma_restrack_entry *res, uint32_t port)
+> > > >  {
+> > > >  	struct ib_pd *pd = container_of(res, struct ib_pd, res);
+> > > >  	struct ib_device *dev = pd->device;
+> > > > +	struct nlattr *table_attr = NULL;
+> > > > +	struct nlattr *entry_attr = NULL;
+> > > > +	struct context_id *ctx_id;
+> > > > +	struct context_id *tmp;
+> > > > +	LIST_HEAD(pd_context_ids);
+> > > > +	int ctx_count = 0;
+> > > >  
+> > > >  	if (has_cap_net_admin) {
+> > > >  		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_LOCAL_DMA_LKEY,
+> > > > @@ -633,10 +709,38 @@ static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
+> > > >  	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, res->id))
+> > > >  		goto err;
+> > > >  
+> > > > -	if (!rdma_is_kernel_res(res) &&
+> > > > -	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
+> > > > -			pd->uobject->context->res.id))
+> > > > -		goto err;
+> > > 
+> > > How do earlier patches compile?
+> > 
+> > They did not
 > 
-> But for long term pins we are not requiring callbacks.
+> That is not OK
+
+Sorry, i probably misunderstood you, what patches are you referring to?
+
 > 
-
-Hi Ira,
-
-If "require callbacks to userspace" means sending SIGIO, then actually
-FOLL_LONGTERM *does* require those callbacks. Because we've been, so
-far, equating FOLL_LONGTERM with the vaddr_pin struct and with a lease.
-
-What am I missing here?
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+> Jason
