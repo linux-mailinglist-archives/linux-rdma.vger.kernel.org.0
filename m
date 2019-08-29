@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C9639A13FC
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 10:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523C0A13FE
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 10:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbfH2IpE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Aug 2019 04:45:04 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45112 "EHLO huawei.com"
+        id S1726038AbfH2IpG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Aug 2019 04:45:06 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:45110 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725990AbfH2IpE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Aug 2019 04:45:04 -0400
+        id S1725939AbfH2IpG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 29 Aug 2019 04:45:06 -0400
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D435DEC08ECDA0C1C58A;
+        by Forcepoint Email with ESMTP id CF96C3EDE1A825363B9D;
         Thu, 29 Aug 2019 16:45:00 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
@@ -20,9 +20,9 @@ Received: from localhost.localdomain (10.67.165.24) by
 From:   Weihang Li <liweihang@hisilicon.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 1/2] RDMA/hns: Optimize cmd init and mode selection for hip08
-Date:   Thu, 29 Aug 2019 16:41:41 +0800
-Message-ID: <1567068102-56919-2-git-send-email-liweihang@hisilicon.com>
+Subject: [PATCH v2 for-next 2/2] RDMA/hns: Package operations of rq inline buffer into separate functions
+Date:   Thu, 29 Aug 2019 16:41:42 +0800
+Message-ID: <1567068102-56919-3-git-send-email-liweihang@hisilicon.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1567068102-56919-1-git-send-email-liweihang@hisilicon.com>
 References: <1567068102-56919-1-git-send-email-liweihang@hisilicon.com>
@@ -35,87 +35,188 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixian Liu <liuyixian@huawei.com>
+From: Lijun Ou <oulijun@huawei.com>
 
-There are two modes for mailbox command (cmd) queue, i.e., event mode and
-poll mode. For each mode, we use corresponding semaphores to protect the
-cmd queue resource competition, so called event_sem and poll_sem. During
-cmd init, both semaphores are initialized and poll mode is selected.
-Thus, there is no need to up poll_sema again in cmd_use_polling.
+Here packages the codes of allocating and freeing rq inline buffer
+in hns_roce_create_qp_common function in order to reduce the
+complexity.
 
-Furthermore, there is no need to down the sema of the other side while
-switching mode. This patch aims to decouple the switch between event
-mode and poll mode of cmd.
-
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
+Signed-off-by: Lijun Ou <oulijun@huawei.com>
 Signed-off-by: Weihang Li <liweihang@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_cmd.c  | 10 +---------
- drivers/infiniband/hw/hns/hns_roce_main.c |  8 ++++----
- 2 files changed, 5 insertions(+), 13 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 95 +++++++++++++++++++--------------
+ 1 file changed, 56 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-index ade26fa..455d533 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-@@ -251,23 +251,15 @@ int hns_roce_cmd_use_events(struct hns_roce_dev *hr_dev)
- 	hr_cmd->token_mask = CMD_TOKEN_MASK;
- 	hr_cmd->use_events = 1;
- 
--	down(&hr_cmd->poll_sem);
--
- 	return 0;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 8868172..bd78ff9 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -635,6 +635,50 @@ static int hns_roce_qp_has_rq(struct ib_qp_init_attr *attr)
+ 	return 1;
  }
  
- void hns_roce_cmd_use_polling(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_cmdq *hr_cmd = &hr_dev->cmd;
--	int i;
--
--	hr_cmd->use_events = 0;
--
--	for (i = 0; i < hr_cmd->max_cmds; ++i)
--		down(&hr_cmd->event_sem);
++static int alloc_rq_inline_buf(struct hns_roce_qp *hr_qp,
++			       struct ib_qp_init_attr *init_attr)
++{
++	u32 max_recv_sge = init_attr->cap.max_recv_sge;
++	struct hns_roce_rinl_wqe *wqe_list;
++	u32 wqe_cnt = hr_qp->rq.wqe_cnt;
++	int i;
++
++	/* allocate recv inline buf */
++	wqe_list = kcalloc(wqe_cnt, sizeof(struct hns_roce_rinl_wqe),
++			   GFP_KERNEL);
++
++	if (!wqe_list)
++		goto err;
++
++	/* Allocate a continuous buffer for all inline sge we need */
++	wqe_list[0].sg_list = kcalloc(wqe_cnt, (max_recv_sge *
++				      sizeof(struct hns_roce_rinl_sge)),
++				      GFP_KERNEL);
++	if (!wqe_list[0].sg_list)
++		goto err_wqe_list;
++
++	/* Assign buffers of sg_list to each inline wqe */
++	for (i = 1; i < wqe_cnt; i++)
++		wqe_list[i].sg_list = &wqe_list[0].sg_list[i * max_recv_sge];
++
++	hr_qp->rq_inl_buf.wqe_list = wqe_list;
++	hr_qp->rq_inl_buf.wqe_cnt = wqe_cnt;
++
++	return 0;
++
++err_wqe_list:
++	kfree(wqe_list);
++
++err:
++	return -ENOMEM;
++}
++
++static void free_rq_inline_buf(struct hns_roce_qp *hr_qp)
++{
++	kfree(hr_qp->rq_inl_buf.wqe_list[0].sg_list);
++	kfree(hr_qp->rq_inl_buf.wqe_list);
++}
++
+ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
+ 				     struct ib_pd *ib_pd,
+ 				     struct ib_qp_init_attr *init_attr,
+@@ -676,33 +720,11 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
  
- 	kfree(hr_cmd->context);
--	up(&hr_cmd->poll_sem);
-+	hr_cmd->use_events = 0;
- }
- 
- struct hns_roce_cmd_mailbox
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 1b757cc..b5d196c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -902,6 +902,7 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
- 		goto error_failed_cmd_init;
- 	}
- 
-+	/* EQ depends on poll mode, event mode depends on EQ */
- 	ret = hr_dev->hw->init_eq(hr_dev);
- 	if (ret) {
- 		dev_err(dev, "eq init failed!\n");
-@@ -911,8 +912,9 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
- 	if (hr_dev->cmd_mod) {
- 		ret = hns_roce_cmd_use_events(hr_dev);
- 		if (ret) {
--			dev_err(dev, "Switch to event-driven cmd failed!\n");
--			goto error_failed_use_event;
-+			dev_warn(dev,
-+				 "Cmd event  mode failed, set back to poll!\n");
-+			hns_roce_cmd_use_polling(hr_dev);
+ 	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
+ 	    hns_roce_qp_has_rq(init_attr)) {
+-		/* allocate recv inline buf */
+-		hr_qp->rq_inl_buf.wqe_list = kcalloc(hr_qp->rq.wqe_cnt,
+-					       sizeof(struct hns_roce_rinl_wqe),
+-					       GFP_KERNEL);
+-		if (!hr_qp->rq_inl_buf.wqe_list) {
+-			ret = -ENOMEM;
++		ret = alloc_rq_inline_buf(hr_qp, init_attr);
++		if (ret) {
++			dev_err(dev, "allocate receive inline buffer failed\n");
+ 			goto err_out;
  		}
+-
+-		hr_qp->rq_inl_buf.wqe_cnt = hr_qp->rq.wqe_cnt;
+-
+-		/* Firstly, allocate a list of sge space buffer */
+-		hr_qp->rq_inl_buf.wqe_list[0].sg_list =
+-					kcalloc(hr_qp->rq_inl_buf.wqe_cnt,
+-					       init_attr->cap.max_recv_sge *
+-					       sizeof(struct hns_roce_rinl_sge),
+-					       GFP_KERNEL);
+-		if (!hr_qp->rq_inl_buf.wqe_list[0].sg_list) {
+-			ret = -ENOMEM;
+-			goto err_wqe_list;
+-		}
+-
+-		for (i = 1; i < hr_qp->rq_inl_buf.wqe_cnt; i++)
+-			/* Secondly, reallocate the buffer */
+-			hr_qp->rq_inl_buf.wqe_list[i].sg_list =
+-				&hr_qp->rq_inl_buf.wqe_list[0].sg_list[i *
+-				init_attr->cap.max_recv_sge];
  	}
  
-@@ -955,8 +957,6 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
- error_failed_init_hem:
- 	if (hr_dev->cmd_mod)
- 		hns_roce_cmd_use_polling(hr_dev);
--
--error_failed_use_event:
- 	hr_dev->hw->cleanup_eq(hr_dev);
+ 	page_shift = PAGE_SHIFT + hr_dev->caps.mtt_buf_pg_sz;
+@@ -710,14 +732,14 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
+ 		if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd))) {
+ 			dev_err(dev, "ib_copy_from_udata error for create qp\n");
+ 			ret = -EFAULT;
+-			goto err_rq_sge_list;
++			goto err_alloc_rq_inline_buf;
+ 		}
  
- error_failed_eq_table:
+ 		ret = hns_roce_set_user_sq_size(hr_dev, &init_attr->cap, hr_qp,
+ 						&ucmd);
+ 		if (ret) {
+ 			dev_err(dev, "hns_roce_set_user_sq_size error for create qp\n");
+-			goto err_rq_sge_list;
++			goto err_alloc_rq_inline_buf;
+ 		}
+ 
+ 		hr_qp->umem = ib_umem_get(udata, ucmd.buf_addr,
+@@ -725,7 +747,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
+ 		if (IS_ERR(hr_qp->umem)) {
+ 			dev_err(dev, "ib_umem_get error for create qp\n");
+ 			ret = PTR_ERR(hr_qp->umem);
+-			goto err_rq_sge_list;
++			goto err_alloc_rq_inline_buf;
+ 		}
+ 		hr_qp->region_cnt = split_wqe_buf_region(hr_dev, hr_qp,
+ 				hr_qp->regions, ARRAY_SIZE(hr_qp->regions),
+@@ -786,13 +808,13 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
+ 		    IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK) {
+ 			dev_err(dev, "init_attr->create_flags error!\n");
+ 			ret = -EINVAL;
+-			goto err_rq_sge_list;
++			goto err_alloc_rq_inline_buf;
+ 		}
+ 
+ 		if (init_attr->create_flags & IB_QP_CREATE_IPOIB_UD_LSO) {
+ 			dev_err(dev, "init_attr->create_flags error!\n");
+ 			ret = -EINVAL;
+-			goto err_rq_sge_list;
++			goto err_alloc_rq_inline_buf;
+ 		}
+ 
+ 		/* Set SQ size */
+@@ -800,7 +822,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
+ 						  hr_qp);
+ 		if (ret) {
+ 			dev_err(dev, "hns_roce_set_kernel_sq_size error!\n");
+-			goto err_rq_sge_list;
++			goto err_alloc_rq_inline_buf;
+ 		}
+ 
+ 		/* QP doorbell register address */
+@@ -814,7 +836,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
+ 			ret = hns_roce_alloc_db(hr_dev, &hr_qp->rdb, 0);
+ 			if (ret) {
+ 				dev_err(dev, "rq record doorbell alloc failed!\n");
+-				goto err_rq_sge_list;
++				goto err_alloc_rq_inline_buf;
+ 			}
+ 			*hr_qp->rdb.db_record = 0;
+ 			hr_qp->rdb_en = 1;
+@@ -980,15 +1002,10 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
+ 	    (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB))
+ 		hns_roce_free_db(hr_dev, &hr_qp->rdb);
+ 
+-err_rq_sge_list:
+-	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
+-	     hns_roce_qp_has_rq(init_attr))
+-		kfree(hr_qp->rq_inl_buf.wqe_list[0].sg_list);
+-
+-err_wqe_list:
++err_alloc_rq_inline_buf:
+ 	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
+ 	     hns_roce_qp_has_rq(init_attr))
+-		kfree(hr_qp->rq_inl_buf.wqe_list);
++		free_rq_inline_buf(hr_qp);
+ 
+ err_out:
+ 	return ret;
 -- 
 2.8.1
 
